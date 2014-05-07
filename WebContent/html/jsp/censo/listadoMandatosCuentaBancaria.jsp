@@ -105,15 +105,23 @@
 				int i=j+1;
 				CenMandatosCuentasBancariasBean mandatoBean = (CenMandatosCuentasBancariasBean)vMandatos.get(j);
 				
-				// JPT: 
+				// JPT: Siempre se puede modificar los datos de los ficheros de anexos			
+				//	
 				// - Si tiene fecha de uso, pero no tiene fecha de firma:
-				// 		a. No se puede modificar la informacion del mandato
-				//		b. Se pueden modificar los ficheros de la firma de mandatos y anexos
-				// - Si tiene fecha de firma
-				// 		a. No se puede modificar la informacion del mandato
-				//		b. No se puede modificar los ficheros de la firma de mandatos y anexos que ya estan firmados y tienen un documento asignado
-				//		c. Solo Se puede modificar el documento asignado (no se puede moficiar la fecha, lugar, origen y descripcion de la firma), para los ficheros firmados sin documento asignado
-				//		d. Se pueden modificar todos los datos de los ficheros de mandatos y anexos que no estan firmados				
+				// 		a. No se puede modificar los datos de la informacion del mandato
+				//		b. Se puede modificar los datos del fichero de firma del mandato
+				//
+				// - Si tiene fecha de uso y fecha de firma:
+				// 		a. No se puede modificar los datos de la informacion del mandato
+				//		b. No se puede modificar los datos del fichero de firma del mandato (excepto si no tiene el documento adjunto)
+				//
+				// - Si no tiene fecha de uso, pero si tiene fecha de firma
+				// 		a. No se puede modificar los datos de la informacion del mandato
+				//		b. Se puede modificar los datos del fichero de firma del mandato
+				//
+				// - Si no tiene fecha de uso, ni fecha de firma
+				// 		a. Se puede modificar los datos de la informacion del mandato
+				// 		b. Se puede modificar los datos del fichero de firma del mandato
 				String botonesMandato = "C";
 				if (modo.equals("editar"))
 					botonesMandato += ",E";

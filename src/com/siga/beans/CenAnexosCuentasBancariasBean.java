@@ -9,7 +9,7 @@ public class CenAnexosCuentasBancariasBean extends MasterBean {
 
 	/* Variables */	
 	private String idInstitucion, idPersona, idCuenta, idMandato, idAnexo, fechaCreacion, usuCreacion, origen, descripcion;
-	private String firmaFecha, firmaLugar, idFicheroFirma;
+	private String firmaFecha, firmaLugar, idFicheroFirma, fechaUso;
 
 	public String getIdFicheroFirma() {
 		return idFicheroFirma;
@@ -51,7 +51,7 @@ public class CenAnexosCuentasBancariasBean extends MasterBean {
 		this.firmaLugar = formAnexo.getFirmaLugar();
 		this.idFicheroFirma = formAnexo.getIdFichero();
 	}
-	
+
 	public CenAnexosCuentasBancariasBean() {
 		super();
 		this.idInstitucion = "";
@@ -66,7 +66,17 @@ public class CenAnexosCuentasBancariasBean extends MasterBean {
 		this.firmaFecha = "";
 		this.firmaLugar = "";
 		this.idFicheroFirma = "";
+		this.fechaUso = "";
 	}
+	
+	
+	public String getFechaUso() {
+		return fechaUso;
+	}
+
+	public void setFechaUso(String fechaUso) {
+		this.fechaUso = fechaUso;
+	}	
 	
 	public String getIdInstitucion() {
 		return idInstitucion;

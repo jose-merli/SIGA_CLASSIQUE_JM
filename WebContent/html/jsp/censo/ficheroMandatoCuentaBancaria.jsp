@@ -35,7 +35,7 @@
 	String sConsultaFirma = "false";
 	boolean bConsultaFirma = false;
 	String sClaseConsultaFirma = "box";
-	if (bConsulta || (beanMandato.getFirmaFecha()!=null && !beanMandato.getFirmaFecha().equals(""))) {
+	if (bConsulta || (beanMandato.getFirmaFecha()!=null && !beanMandato.getFirmaFecha().equals("") && beanMandato.getFechaUso()!=null && !beanMandato.getFechaUso().equals(""))) {
 		sConsultaFirma = "true";
 		bConsultaFirma = true;
 		sClaseConsultaFirma = "boxConsulta";
