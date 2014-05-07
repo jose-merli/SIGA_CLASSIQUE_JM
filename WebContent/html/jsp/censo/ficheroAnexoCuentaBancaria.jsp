@@ -81,7 +81,7 @@
 		
 		function controlFirma() {
 			if (jQuery("#firmado")[0].checked) {
-			jQuery("#divFicheros").css("display", "block");
+				jQuery("#divFicheros").css("display", "block");
 				jQuery("#firmaFecha").removeAttr("disabled");	
 				jQuery("#firmaFecha-datepicker-trigger").show();
 				jQuery("#firmaFechaHora").removeAttr("disabled");
@@ -164,9 +164,7 @@
 				if(document.forms['AnexosCuentasBancariasForm'].theFile && document.forms['AnexosCuentasBancariasForm'].theFile.value && !TestFileType(document.forms['AnexosCuentasBancariasForm'].theFile.value, ['DOC','DOCX','PDF'])){
 					fin();
 					return false;
-				}	
-			} else {
-				errores += "<siga:Idioma key='errors.required' arg0='censo.fichaCliente.bancos.mandatos.anexos.firmado'/>"+ '\n';	
+				}		
 			} 
 			
 			if (errores != "") {
