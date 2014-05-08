@@ -64,27 +64,22 @@
 			sub();
 			
 			if(validarFechasSEPA()){
-				if (confirm('<siga:Idioma key="facturacion.ficheroBancarioPagos.literal.confirmarFicheroRenegociaciones"/>')) {
-					document.confirmarFacturacionForm.fechaEntrega.value = jQuery("#fechaPresentacion").val();
-					
-					if (jQuery("input[name='radioAccion']:checked").val() == "0") { //Checkeado Unica
-						document.confirmarFacturacionForm.fechaTipoUnica.value = "1";
-						document.confirmarFacturacionForm.fechaUnica.value = jQuery("#fechaCargoUnica").val();	
-					} else {
-						document.confirmarFacturacionForm.fechaTipoUnica.value = "0";
-						document.confirmarFacturacionForm.fechaFRST.value = jQuery("#fechaRecibosPrimeros").val();
-						document.confirmarFacturacionForm.fechaRCUR.value = jQuery("#fechaRecibosRecurrentes").val();
-						document.confirmarFacturacionForm.fechaCOR1.value = jQuery("#fechaRecibosCOR1").val();
-						document.confirmarFacturacionForm.fechaB2B.value = jQuery("#fechaRecibosB2B").val();	
-					}
-					
-					document.confirmarFacturacionForm.modo.value = "confirmarFactura";
-					document.confirmarFacturacionForm.facturacionRapida.value = "1";
-					document.confirmarFacturacionForm.submit();							
-					
+				document.confirmarFacturacionForm.fechaEntrega.value = jQuery("#fechaPresentacion").val();
+				
+				if (jQuery("input[name='radioAccion']:checked").val() == "0") { //Checkeado Unica
+					document.confirmarFacturacionForm.fechaTipoUnica.value = "1";
+					document.confirmarFacturacionForm.fechaUnica.value = jQuery("#fechaCargoUnica").val();	
 				} else {
-					fin();
+					document.confirmarFacturacionForm.fechaTipoUnica.value = "0";
+					document.confirmarFacturacionForm.fechaFRST.value = jQuery("#fechaRecibosPrimeros").val();
+					document.confirmarFacturacionForm.fechaRCUR.value = jQuery("#fechaRecibosRecurrentes").val();
+					document.confirmarFacturacionForm.fechaCOR1.value = jQuery("#fechaRecibosCOR1").val();
+					document.confirmarFacturacionForm.fechaB2B.value = jQuery("#fechaRecibosB2B").val();	
 				}
+				
+				document.confirmarFacturacionForm.modo.value = "confirmarFactura";
+				document.confirmarFacturacionForm.facturacionRapida.value = "1";
+				document.confirmarFacturacionForm.submit();							
 				
 			} else {
 				fin();
