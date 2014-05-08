@@ -1771,7 +1771,7 @@ public class DefinirEnviosAction extends MasterAction {
 		try {
 
 			
-			tx = userBean.getTransaction();
+//			tx = userBean.getTransaction();
 
 			// Obtengo las claves
 			DefinirEnviosForm form = (DefinirEnviosForm)formulario;
@@ -1814,7 +1814,7 @@ public class DefinirEnviosAction extends MasterAction {
 				
 				Envio envio = new Envio(envBean, userBean);
 				// lo proceso
-				envio.procesarEnvio(tx);
+				envio.procesarEnvio();
 				idEstadoEnvioFinal = envBean.getIdEstado();
 			}
 

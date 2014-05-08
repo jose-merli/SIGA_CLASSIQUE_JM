@@ -457,7 +457,7 @@ public class ProgramacionAction extends MasterAction {
 		try {
 			
 		    EnvEnviosAdm envAdm = new EnvEnviosAdm(this.getUserBean(request));
-			tx = userBean.getTransaction();
+//			tx = userBean.getTransaction();
 			
 			// Obtengo las claves
 			ProgramacionForm form = (ProgramacionForm)formulario;
@@ -481,7 +481,7 @@ public class ProgramacionAction extends MasterAction {
 				
 			}
 			// lo proceso
-			envio.procesarEnvio(tx);
+			envio.procesarEnvio();
 			
 	    }catch (Exception e){
 	        this.throwExcp("messages.general.error",new String[] {"modulo.envios"},e,tx);

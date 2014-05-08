@@ -1562,7 +1562,7 @@ public EnvDestinatariosBean addDestinatario(String idPersona,String tipoDestinat
 	 * Procesa un envío individual y genera su log
 	 * @throws SIGAException
 	 */
-	public void procesarEnvio(UserTransaction tx) throws SIGAException, ClsExceptions {
+	public void procesarEnvio() throws SIGAException, ClsExceptions {
 
 		// OBTENCION DE DESTINATARIOS 
         /////////////////////////////////////
@@ -1580,10 +1580,10 @@ public EnvDestinatariosBean addDestinatario(String idPersona,String tipoDestinat
 		}
 		
 		
-		this.procesarEnvioMasivo(vDestinatarios, htErrores, true, tx);
+		this.procesarEnvioMasivo(vDestinatarios, htErrores, true);
 	}
 	
-	public void procesarEnvioMasivo(Vector vDestinatarios,Hashtable htErrores,boolean generarLog, UserTransaction tx) throws SIGAException,ClsExceptions{
+	public void procesarEnvioMasivo(Vector vDestinatarios,Hashtable htErrores,boolean generarLog) throws SIGAException,ClsExceptions{
 
 		EnvEnviosAdm envAdm = new EnvEnviosAdm(this.usrBean);
 		Integer idTipoEnvio = enviosBean.getIdTipoEnvios();
@@ -1665,7 +1665,7 @@ public EnvDestinatariosBean addDestinatario(String idPersona,String tipoDestinat
 			    EnvEnviosAdm envAdm = new EnvEnviosAdm(_usrBean);
 			    enviosBeans = envAdm.getEnviosPendientes(idInstitucion);
 			    UsrBean usr = new UsrBean();
-			    UserTransaction tx = (UserTransaction)usr.getTransaction();
+//			    UserTransaction tx = (UserTransaction)usr.getTransaction();
 				
 	    		ClsLogging.writeFileLog("### Numero de envios: "+enviosBeans.size(),7);
 			    
@@ -1714,7 +1714,7 @@ public EnvDestinatariosBean addDestinatario(String idPersona,String tipoDestinat
 		    			
 		    			Hashtable htErrores = new Hashtable();
 		    			
-		    			envio.procesarEnvioMasivo(vDestinatarios,htErrores,false,tx);
+		    			envio.procesarEnvioMasivo(vDestinatarios,htErrores,false);
 		    	
 		    			// yo genero el log fuera de la transaccion
 		    			envAdm.generarLogEnvioHT(vDestinatarios,null,null, htErrores, envBean);
