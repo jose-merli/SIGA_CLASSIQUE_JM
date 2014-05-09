@@ -50,6 +50,27 @@ public class UtilidadesNumero {
 	{
 	   return formatear(numero,true);
 	}
+	/**
+	 * 
+	 * los miles el punto, los decimale las coma,
+	 * 103.652,35(ciento tres mil seiscientos cincuenta y dos con treinta y cinco)
+	 * 
+	 * @param numero
+	 * @return
+	 */
+	static public String formatoCartas(double numero)
+	{
+		
+		DecimalFormat df = (DecimalFormat)NumberFormat.getInstance();
+		DecimalFormatSymbols dfs = new DecimalFormatSymbols();
+		dfs.setDecimalSeparator(',');  //Separador de decimales.
+		dfs.setGroupingSeparator('.'); //Separador de miles.
+		df.setMinimumFractionDigits(2); //Mínimo 2 decimales.
+		df.setMaximumFractionDigits(2); //Máximo 2 decimales.
+		df.setGroupingUsed(true); //Muestra el separador de miles en función del parámetro.
+		df.setDecimalFormatSymbols(dfs);
+		return df.format(numero);
+	}
 
 	static public String formatoCampo (String numero)
 	{
