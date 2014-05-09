@@ -607,7 +607,7 @@ public class CenCuentasBancariasAdm extends MasterBeanAdmVisible {
 					} else if (resultado[0].equals("2")) {
 						throw new SIGAException ("messages.censo.direcciones.facturacion");
 						
-					} else {
+					} else if (!resultado[0].equals("0")) {
 						throw new ClsExceptions ("Error al insertar los mandatos de las cuentas");
 					}
 				}
