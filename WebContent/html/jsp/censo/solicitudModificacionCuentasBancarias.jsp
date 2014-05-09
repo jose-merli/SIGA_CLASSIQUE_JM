@@ -324,7 +324,7 @@
 
 							<!-- FILA -->
 							<tr><td colspan="4" style="<%=visibilidad%>">
-								<siga:ConjCampos leyenda="Cuenta Antigua">
+								<siga:ConjCampos leyenda="datosCuentaBancaria.literal.formatoAntiguo">
 									<table>
 		
 										<!-- FILA -->

@@ -269,7 +269,6 @@ VERSIONES: -->
 				if (!document.all.cuentasBancariasForm.cuentaAbono.checked) {
 					var mensaje = "<siga:Idioma key="messages.censo.cuentasBancarias.cuentaSJCS"/>";
 					alert (mensaje);
-					document.all.cuentasBancariasForm.abonoSJCS.checked = false;
 					return false;
 				}
 			}
@@ -490,7 +489,7 @@ VERSIONES: -->
 							
 						<%	if(visibilidad){ %>
 							<tr><td COLSPAN="4">
-								<siga:ConjCampos leyenda="Cuenta Antigua">
+								<siga:ConjCampos leyenda="datosCuentaBancaria.literal.formatoAntiguo">
 									<table>
 		
 										<!-- FILA -->

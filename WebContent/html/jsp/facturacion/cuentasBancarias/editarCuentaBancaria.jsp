@@ -272,7 +272,7 @@
 		<c:if test="${CuentasBancariasForm.modo != 'insertar' && CuentasBancariasForm.cuentaBanco != null &&  CuentasBancariasForm.cuentaBanco != ''}">	
 			<!-- FILA -->
 			<tr><td COLSPAN="8">
-				<siga:ConjCampos leyenda="Cuenta Antigua">
+				<siga:ConjCampos leyenda="datosCuentaBancaria.literal.formatoAntiguo">
 					<table>
 						<tr>						
 							<td class="labelText" nowrap colspan="2">C.C.C.&nbsp;(*)</td>

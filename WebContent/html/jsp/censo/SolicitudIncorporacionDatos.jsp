@@ -242,7 +242,6 @@
 			if (!document.SolicitudIncorporacionForm.cuentaAbono.checked) {
 				var mensaje = "<siga:Idioma key="messages.censo.cuentasBancarias.cuentaSJCS"/>";
 				alert (mensaje);
-				document.SolicitudIncorporacionForm.abonoSJCS.checked = false;
 				return false;
 			}
 		}

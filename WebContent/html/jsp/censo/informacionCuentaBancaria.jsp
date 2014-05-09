@@ -183,9 +183,8 @@ VERSIONES: -->
 		function guardar(modo){
 			// Validamos los errores ///////////
 			sub();
-			if ((!document.all.cuentasBancariasForm.cuentaAbono.checked) && 
-			    (!document.all.cuentasBancariasForm.cuentaCargo.checked)) {
-				var mensaje = "<siga:Idioma key="censo.datosCuentaBancaria.literal.tipoCuenta"/> <siga:Idioma key="messages.campoObligatorio.error"/>";
+			if ((!document.all.cuentasBancariasForm.cuentaAbono.checked) && (!document.all.cuentasBancariasForm.cuentaCargo.checked)) {
+				var mensaje = "<siga:Idioma key="censo.datosCuentaBancaria.literal.tipoCuentaObligatoria"/>";
 				alert(mensaje);
 				fin();
 			    return false;
@@ -277,7 +276,6 @@ VERSIONES: -->
 				if (!document.all.cuentasBancariasForm.cuentaAbono.checked) {
 					var mensaje = "<siga:Idioma key="messages.censo.cuentasBancarias.cuentaSJCS"/>";
 					alert (mensaje);
-					document.all.cuentasBancariasForm.abonoSJCS.checked = false;
 					return false;
 				}
 			}
@@ -503,7 +501,7 @@ VERSIONES: -->
 								
 							<%	if(visibilidad){ %>
 								<tr><td COLSPAN="4">
-									<siga:ConjCampos leyenda="Cuenta Antigua">
+									<siga:ConjCampos leyenda="datosCuentaBancaria.literal.formatoAntiguo">
 										<table>
 			
 											<!-- FILA -->
