@@ -597,8 +597,19 @@ public class CenCuentasBancariasAdm extends MasterBeanAdmVisible {
 				
 				String resultado[] = new String[2];
 				resultado = ClsMngBBDD.callPLProcedure("{call PKG_SIGA_CARGOS.InsertarMandatos(?,?,?,?,?,?)}", 2, paramMandatos);
-				if (resultado == null || !resultado[0].equals("0")) {
+				if (resultado == null) {
 					throw new ClsExceptions ("Error al insertar los mandatos de las cuentas");
+					
+				} else {
+					if (resultado[0].equals("1")) {
+						throw new SIGAException ("messages.censo.direcciones.facturacion");
+						
+					} else if (resultado[0].equals("2")) {
+						throw new SIGAException ("messages.censo.direcciones.facturacion");
+						
+					} else {
+						throw new ClsExceptions ("Error al insertar los mandatos de las cuentas");
+					}
 				}
 			}
 		}
