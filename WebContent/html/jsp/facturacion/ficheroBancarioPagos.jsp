@@ -27,6 +27,8 @@
 <%@ page import="com.siga.Utilidades.*"%>
 <%@ page import="com.siga.beans.FacDisqueteCargosBean"%>
 <%@ page import="com.siga.tlds.FilaExtElement"%>
+<%@ page import="org.redabogacia.sigaservices.app.util.PropertyReader"%>
+<%@ page import="org.redabogacia.sigaservices.app.util.SIGAReferences"%>
 
 <!-- JSP -->
 <% 
@@ -184,7 +186,15 @@
 				Row row = (Row)resultado.elementAt(i);
 				
 				FilaExtElement[] elems = new FilaExtElement[3];
-				elems[0]=new FilaExtElement("editar", "editar", SIGAConstants.ACCESS_READ); 	
+				
+				String nombreFichero = row.getString(FacDisqueteCargosBean.C_NOMBREFICHERO);
+				
+				Properties props = PropertyReader.getProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+				String extensionSEPA = ".n" + props.getProperty("facturacion.cuaderno.identificador");
+				
+				if (nombreFichero.endsWith(extensionSEPA)) {
+					elems[0]=new FilaExtElement("editar", "editar", SIGAConstants.ACCESS_READ); 						
+				}
 				elems[1]=new FilaExtElement("download", "download", SIGAConstants.ACCESS_READ); 	
 				elems[2]=new FilaExtElement("versolicitud", "versolicitud", "Informe remesa", SIGAConstants.ACCESS_READ);
 				
