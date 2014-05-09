@@ -315,6 +315,10 @@ public class CenSolicitudMutualidadAdm extends MasterBeanAdministrador {
 		contador ++;
 		sql.append(contador);
 		htCodigos.put(new Integer(contador),idPersona);
+		sql.append(" AND IDINSTITUCION =:");
+		contador ++;
+		sql.append(contador);
+		htCodigos.put(new Integer(contador),usrbean.getLocation());
 		sql.append(")) AND SOL.IDTIPOSOLICITUD = :");
 		contador ++;
 		sql.append(contador);
