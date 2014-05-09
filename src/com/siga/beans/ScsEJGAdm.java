@@ -2418,17 +2418,17 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			
 			if ((miHash.containsKey("NOMBRE")) && (!miHash.get("NOMBRE").toString().equals(""))){
 				contador++;
-    			consulta += " AND " + ComodinBusquedas.prepararSentenciaCompletaBind(((String)miHash.get("NOMBRE")).trim(), "UPPER(PJG.NOMBRE)", contador, codigos);
+    			consulta += " AND " + ComodinBusquedas.prepararSentenciaCompletaTranslateUpperBind(((String)miHash.get("NOMBRE")).trim(), "UPPER(PJG.NOMBRE)", contador, codigos);
 			}
 			
 			if ((miHash.containsKey("APELLIDO1")) && (!miHash.get("APELLIDO1").toString().equals(""))){
 				contador++; 
-				consulta += " AND " + ComodinBusquedas.prepararSentenciaCompletaBind(((String)miHash.get("APELLIDO1")).trim(), "UPPER(PJG.apellido1)", contador, codigos);
+				consulta += " AND " + ComodinBusquedas.prepararSentenciaCompletaTranslateUpperBind(((String)miHash.get("APELLIDO1")).trim(), "UPPER(PJG.apellido1)", contador, codigos);
 			}
 			
 			if ((miHash.containsKey("APELLIDO2")) && (!miHash.get("APELLIDO2").toString().equals(""))){
 				contador++;
-				consulta += " AND " + ComodinBusquedas.prepararSentenciaCompletaBind(((String)miHash.get("APELLIDO2")).trim(), "UPPER(PJG.apellido2)", contador, codigos);
+				consulta += " AND " + ComodinBusquedas.prepararSentenciaCompletaTranslateUpperBind(((String)miHash.get("APELLIDO2")).trim(), "UPPER(PJG.apellido2)", contador, codigos);
 			}
 			
 			consulta += ") >0 ";
