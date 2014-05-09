@@ -312,12 +312,12 @@ public class Direccion {
 			insertarModificacionConsejo(beanDir,usr, ClsConstants.COLA_CAMBIO_LETRADO_MODIFICACION_DIRECCION);
 			
 			// JPT: Modificaciones para los anexos de los mandatos en SEPA
-			boolean cambio = (!beanDir.getDomicilio().equals(beanDir.getOriginalHash().get(CenDireccionesBean.C_DOMICILIO))) ||
-								(!beanDir.getCodigoPostal().equals(beanDir.getOriginalHash().get(CenDireccionesBean.C_CODIGOPOSTAL))) ||
-								(!beanDir.getIdPais().equals(beanDir.getOriginalHash().get(CenDireccionesBean.C_IDPAIS))) ||
-								(!beanDir.getIdProvincia().equals(beanDir.getOriginalHash().get(CenDireccionesBean.C_IDPROVINCIA))) ||
-								(!beanDir.getIdPoblacion().equals(beanDir.getOriginalHash().get(CenDireccionesBean.C_IDPOBLACION))) ||
-								(!beanDir.getPoblacionExtranjera().equals(beanDir.getOriginalHash().get(CenDireccionesBean.C_POBLACIONEXTRANJERA)));
+			boolean cambio = (beanDir.getDomicilio()!=null&&!beanDir.getDomicilio().equals(beanDir.getOriginalHash().get(CenDireccionesBean.C_DOMICILIO))) ||
+								(beanDir.getCodigoPostal()!=null&&!beanDir.getCodigoPostal().equals(beanDir.getOriginalHash().get(CenDireccionesBean.C_CODIGOPOSTAL))) ||
+								(beanDir.getIdPais()!=null&&!beanDir.getIdPais().equals(beanDir.getOriginalHash().get(CenDireccionesBean.C_IDPAIS))) ||
+								(beanDir.getIdProvincia()!=null&&!beanDir.getIdProvincia().equals(beanDir.getOriginalHash().get(CenDireccionesBean.C_IDPROVINCIA))) ||
+								(beanDir.getIdPoblacion()!=null&&!beanDir.getIdPoblacion().equals(beanDir.getOriginalHash().get(CenDireccionesBean.C_IDPOBLACION))) ||
+								(beanDir.getPoblacionExtranjera()!=null&&!beanDir.getPoblacionExtranjera().equals(beanDir.getOriginalHash().get(CenDireccionesBean.C_POBLACIONEXTRANJERA)));
 			if (cambio) {
 				
 				// Recorro todos los tipos de direcciones actuales
@@ -347,7 +347,7 @@ public class Direccion {
 			throw e;
 			
 		} catch(Exception e){
-			throw new SIGAException ("messages.general.error");
+			throw new SIGAException ("messages.general.error"+e.toString());
 		}
 		
 		return dir; 
