@@ -491,11 +491,23 @@ public class EnvioInformesGenericos extends MasterReport {
 			double deudaTotal = 0;
 
 			for (int j = 0; j < vDatosInforme.size(); j++) {
+				
+				
+			       
+			       
+				
+				
 				Hashtable fila = (Hashtable) vDatosInforme.get(j);
 				double importe = Double.parseDouble((String) fila.get("TOTAL"));
 				importeTotal += importe;
+				fila.put("TOTAL", UtilidadesNumero.formatoCartas(importe));
 				double deuda = Double.parseDouble((String) fila.get("DEUDA"));
 				deudaTotal += deuda;
+				fila.put("DEUDA", UtilidadesNumero.formatoCartas(deuda));
+				
+				fila.put("TOTALIVA", UtilidadesNumero.formatoCartas(Double.parseDouble((String) fila.get("TOTALIVA")!=null?(String) fila.get("TOTALIVA"):"0")));
+				fila.put("NETO", UtilidadesNumero.formatoCartas(Double.parseDouble((String) fila.get("NETO")!=null?(String) fila.get("NETO"):"0")));
+				fila.put("PAGADO", UtilidadesNumero.formatoCartas(Double.parseDouble((String) fila.get("PAGADO")!=null?(String) fila.get("PAGADO"):"0")));
 
 				// Descripcion de concepto que se pedia que saliera.
 				htCabeceraInforme.put("DESCRIPCION_PROGRAMACION",
@@ -539,9 +551,9 @@ public class EnvioInformesGenericos extends MasterReport {
 			}
 
 			htCabeceraInforme.put("BRUTO", UtilidadesNumero
-					.formatoCampo(UtilidadesNumero.redondea(importeTotal, 2)));
+					.formatoCartas(UtilidadesNumero.redondea(importeTotal, 2)));
 			htCabeceraInforme.put("LIQUIDO", UtilidadesNumero
-					.formatoCampo(UtilidadesNumero.redondea(deudaTotal, 2)));
+					.formatoCartas(UtilidadesNumero.redondea(deudaTotal, 2)));
 
 			htDatosInforme.put("row", htCabeceraInforme);
 			htDatosInforme.put("region", vDatosInforme);
