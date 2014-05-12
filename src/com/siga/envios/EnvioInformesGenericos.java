@@ -2125,11 +2125,11 @@ public class EnvioInformesGenericos extends MasterReport {
 							identificador = new StringBuffer();
 							identificador.append(idInstitucion);
 							identificador.append("_");
-							identificador.append(idTipoEJG);
-							identificador.append("_");
 							identificador.append(anio);
 							identificador.append("_");
 							identificador.append(numero);
+							identificador.append("_");
+							identificador.append(idTipoEJG);
 							identificador.append("_");
 							identificador.append(i);
 							identificador.append("_");
