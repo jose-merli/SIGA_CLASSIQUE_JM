@@ -231,7 +231,7 @@ public class MandatosCuentasBancariasAction extends MasterAction{
 			throwExcp("messages.general.error",new String[] {"modulo.censo"}, e, null);
 		}
 		
-		return exito("messages.updated.success", request);
+		return exitoRefresco("messages.updated.success", request);
 	}			
 	
 	/**
