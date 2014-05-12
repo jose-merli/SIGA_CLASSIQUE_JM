@@ -309,23 +309,23 @@ public class Direccion {
 				throw new SIGAException (direccionesAdm.getError ());
 			
 			//insertando en la cola de modificacion de datos para Consejos
-			insertarModificacionConsejo(beanDir,usr, ClsConstants.COLA_CAMBIO_LETRADO_MODIFICACION_DIRECCION);
-			
-			// JPT: Modificaciones para los anexos de los mandatos en SEPA
-			boolean cambio = (beanDir.getDomicilio()!=null&&!beanDir.getDomicilio().equals(beanDir.getOriginalHash().get(CenDireccionesBean.C_DOMICILIO))) ||
-								(beanDir.getCodigoPostal()!=null&&!beanDir.getCodigoPostal().equals(beanDir.getOriginalHash().get(CenDireccionesBean.C_CODIGOPOSTAL))) ||
-								(beanDir.getIdPais()!=null&&!beanDir.getIdPais().equals(beanDir.getOriginalHash().get(CenDireccionesBean.C_IDPAIS))) ||
-								(beanDir.getIdProvincia()!=null&&!beanDir.getIdProvincia().equals(beanDir.getOriginalHash().get(CenDireccionesBean.C_IDPROVINCIA))) ||
-								(beanDir.getIdPoblacion()!=null&&!beanDir.getIdPoblacion().equals(beanDir.getOriginalHash().get(CenDireccionesBean.C_IDPOBLACION))) ||
-								(beanDir.getPoblacionExtranjera()!=null&&!beanDir.getPoblacionExtranjera().equals(beanDir.getOriginalHash().get(CenDireccionesBean.C_POBLACIONEXTRANJERA)));
-			if (cambio) {
+			insertarModificacionConsejo(beanDir,usr, ClsConstants.COLA_CAMBIO_LETRADO_MODIFICACION_DIRECCION);		
 				
-				// Recorro todos los tipos de direcciones actuales
-				for (int i=0; i<vBeanTipoDir.length; i++){
+			// Recorro todos los tipos de direcciones actuales
+			for (int i=0; i<vBeanTipoDir.length; i++){
+				
+				// Compruebo que tenga activado el tipo de facturacion
+				if (vBeanTipoDir[i].getIdTipoDireccion().equals(ClsConstants.TIPO_DIRECCION_FACTURACION)) {
 					
-					// Compruebo que tenga activado el tipo de facturacion
-					if (vBeanTipoDir[i].getIdTipoDireccion().equals(ClsConstants.TIPO_DIRECCION_FACTURACION)) {
-						
+					// JPT: Modificaciones para los anexos de los mandatos en SEPA
+					boolean cambio = (beanDir.getDomicilio()!=null&&!beanDir.getDomicilio().equals(beanDir.getOriginalHash().get(CenDireccionesBean.C_DOMICILIO))) ||
+										(beanDir.getCodigoPostal()!=null&&!beanDir.getCodigoPostal().equals(beanDir.getOriginalHash().get(CenDireccionesBean.C_CODIGOPOSTAL))) ||
+										(beanDir.getIdPais()!=null&&!beanDir.getIdPais().equals(beanDir.getOriginalHash().get(CenDireccionesBean.C_IDPAIS))) ||
+										(beanDir.getIdProvincia()!=null&&!beanDir.getIdProvincia().equals(beanDir.getOriginalHash().get(CenDireccionesBean.C_IDPROVINCIA))) ||
+										(beanDir.getIdPoblacion()!=null&&!beanDir.getIdPoblacion().equals(beanDir.getOriginalHash().get(CenDireccionesBean.C_IDPOBLACION))) ||
+										(beanDir.getPoblacionExtranjera()!=null&&!beanDir.getPoblacionExtranjera().equals(beanDir.getOriginalHash().get(CenDireccionesBean.C_POBLACIONEXTRANJERA)));
+					if (cambio) {						
+					
 						// Se realiza el proceso de revision de anexos para SEPA
 						Object[] paramAnexos = new Object[4];
 						paramAnexos[0] = beanDir.getIdInstitucion().toString();
