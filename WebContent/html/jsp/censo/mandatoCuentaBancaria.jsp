@@ -107,13 +107,17 @@
 				jQuery("#autorizacionB2BCheck").attr("disabled","disabled");
 			}
 		}	    
+		
+		function refrescarLocal() {
+			document.MandatosCuentasBancariasForm.target = "_self";
+			document.MandatosCuentasBancariasForm.modo.value = "mandatoCuentaBancaria";		
+			document.MandatosCuentasBancariasForm.submit();	
+		}				
 	
 		// Asociada al boton Restablecer
 		function accionRestablecer(){		
 			if(confirm('<siga:Idioma key="messages.confirm.cancel"/>')) {
-				document.MandatosCuentasBancariasForm.target = "_self";
-				document.MandatosCuentasBancariasForm.modo.value = "mandatoCuentaBancaria";		
-				document.MandatosCuentasBancariasForm.submit();
+				refrescarLocal();
 			}						
 		}		
 		
