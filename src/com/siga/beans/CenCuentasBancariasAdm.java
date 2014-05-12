@@ -393,7 +393,7 @@ public class CenCuentasBancariasAdm extends MasterBeanAdmVisible {
 	 * @return
 	 * @throws ClsExceptions
 	 */
-	public boolean insert(CenCuentasBancariasBean beanCuentas) throws ClsExceptions{
+	public boolean insert(CenCuentasBancariasBean beanCuentas) throws ClsExceptions, SIGAException {
 		try {
 			// Obtiene el nuevo idCuenta
 			if (beanCuentas.getIdCuenta()==null) {
@@ -420,8 +420,19 @@ public class CenCuentasBancariasAdm extends MasterBeanAdmVisible {
 						
 						String resultado[] = new String[2];
 						resultado = ClsMngBBDD.callPLProcedure("{call PKG_SIGA_CARGOS.InsertarMandatos(?,?,?,?,?,?)}", 2, paramMandatos);
-						if (resultado == null || !resultado[0].equals("0")) {
+						if (resultado == null) {
 							throw new ClsExceptions ("Error al insertar los mandatos de las cuentas");
+							
+						} else {
+							if (resultado[0].equals("1")) {
+								throw new SIGAException ("messages.censo.direcciones.facturacion");
+								
+							} else if (resultado[0].equals("2")) {
+								throw new SIGAException ("messages.censo.direcciones.facturacion");
+								
+							} else if (!resultado[0].equals("0")) {
+								throw new ClsExceptions ("Error al insertar los mandatos de las cuentas");
+							}
 						}
 					}
 				}	
@@ -430,6 +441,9 @@ public class CenCuentasBancariasAdm extends MasterBeanAdmVisible {
 			}
 			
 			return false;
+			
+		} catch (SIGAException e) {
+			throw e;			
 					
 		} catch (Exception e)	{
 			throw new ClsExceptions (e,  e.getMessage());
@@ -563,7 +577,7 @@ public class CenCuentasBancariasAdm extends MasterBeanAdmVisible {
 	 * @throws ClsExceptions
 	 * @throws SIGAException 
 	 */
-	public int revisionesCuentas(CenCuentasBancariasBean beanCuentas, Integer userName, UsrBean usrBean, boolean comprobarSJCS) throws ClsExceptions, SIGAException{
+	public int revisionesCuentas(CenCuentasBancariasBean beanCuentas, Integer userName, UsrBean usrBean, boolean comprobarSJCS) throws ClsExceptions, SIGAException {
 		
 	Integer iResult = -1;
 	
