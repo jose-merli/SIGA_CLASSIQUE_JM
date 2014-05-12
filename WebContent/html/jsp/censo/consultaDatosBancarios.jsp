@@ -70,25 +70,9 @@
 	<!-- SCRIPTS LOCALES -->
 	<script language="JavaScript">	
 		function solicitar(fila) {
-			var datos;
-			datos = document.getElementById('tablaDatosDinamicosD');
-			datos.value = ""; 
-			var j;
-			var flag = true;
-			j = 1;
-			while (flag) {
-				var aux = 'oculto' + fila + '_' + j;
-				var oculto = document.getElementById(aux);
-				if (oculto == null)  { 
-					flag = false; 
-				} else { 
-					datos.value = datos.value + oculto.value + ','; 
-				}
-			  	j++;
-			}
-			datos.value = datos.value + "%";
-	    	document.cuentasBancariasForm.modo.value = "solicitarModificacion";
-	    	ventaModalGeneral(document.cuentasBancariasForm.name,"M");   
+			preparaDatos(fila, 'tablaDatos');
+			document.cuentasBancariasForm.modo.value = "solicitarModificacion";
+	    	ventaModalGeneral(document.cuentasBancariasForm.name, "M"); 		
 		}
 	
 		function accionNuevo() {		
@@ -142,6 +126,7 @@
 			<input type='hidden' name="idInstitucion" id="idInstitucion" value="<%=institucion%>" /> 
 			<input type='hidden' name="accion"  id="accion" value="<%=String.valueOf(request.getAttribute("accion"))%>" />
 			<input type="hidden" name="incluirRegistrosConBajaLogica" id="incluirRegistrosConBajaLogica" value="<%=bIncluirBajaLogica%>" />
+			<input type="hidden" id="actionModal" name="actionModal" value="">
 		</form>
 		
 		<tr>
