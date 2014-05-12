@@ -1687,7 +1687,7 @@ public class ScsGuardiasTurnoAdm extends MasterBeanAdministrador
 				sql.append(" ORDER BY GUA.NOMBRE ");
 
 			} else {
-				sql.append(" SELECT GUA.IDGUARDIA, GUA.NOMBRE, GUA.IDTURNO, GUA.IDINSTITUCION ");
+				sql.append(" SELECT DISTINCT GUA.IDGUARDIA, GUA.NOMBRE, GUA.IDTURNO, GUA.IDINSTITUCION ");
 				sql.append(" FROM SCS_GUARDIASTURNO GUA,SCS_CALENDARIOGUARDIAS GC ");
 				sql.append(" WHERE GUA.IDINSTITUCION = :");
 				contador++;
