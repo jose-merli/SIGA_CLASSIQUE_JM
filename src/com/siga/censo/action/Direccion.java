@@ -312,38 +312,41 @@ public class Direccion {
 			insertarModificacionConsejo(beanDir,usr, ClsConstants.COLA_CAMBIO_LETRADO_MODIFICACION_DIRECCION);		
 				
 			// Recorro todos los tipos de direcciones actuales
-			for (int i=0; i<vBeanTipoDir.length; i++){
-				
-				// Compruebo que tenga activado el tipo de facturacion
-				if (vBeanTipoDir[i].getIdTipoDireccion().equals(ClsConstants.TIPO_DIRECCION_FACTURACION)) {
+			if (vBeanTipoDir!=null) {			
+				for (int i=0; i<vBeanTipoDir.length; i++){
 					
-					// JPT: Modificaciones para los anexos de los mandatos en SEPA
-					boolean cambio = (beanDir.getDomicilio()!=null&&!beanDir.getDomicilio().equals(beanDir.getOriginalHash().get(CenDireccionesBean.C_DOMICILIO))) ||
-										(beanDir.getCodigoPostal()!=null&&!beanDir.getCodigoPostal().equals(beanDir.getOriginalHash().get(CenDireccionesBean.C_CODIGOPOSTAL))) ||
-										(beanDir.getIdPais()!=null&&!beanDir.getIdPais().equals(beanDir.getOriginalHash().get(CenDireccionesBean.C_IDPAIS))) ||
-										(beanDir.getIdProvincia()!=null&&!beanDir.getIdProvincia().equals(beanDir.getOriginalHash().get(CenDireccionesBean.C_IDPROVINCIA))) ||
-										(beanDir.getIdPoblacion()!=null&&!beanDir.getIdPoblacion().equals(beanDir.getOriginalHash().get(CenDireccionesBean.C_IDPOBLACION))) ||
-										(beanDir.getPoblacionExtranjera()!=null&&!beanDir.getPoblacionExtranjera().equals(beanDir.getOriginalHash().get(CenDireccionesBean.C_POBLACIONEXTRANJERA)));
-					if (cambio) {						
-					
-						// Se realiza el proceso de revision de anexos para SEPA
-						Object[] paramAnexos = new Object[4];
-						paramAnexos[0] = beanDir.getIdInstitucion().toString();
-						paramAnexos[1] = beanDir.getIdPersona().toString();
-						paramAnexos[2] = usr.getUserName();
-						paramAnexos[3] = usr.getLanguage();
+					// Compruebo que tenga activado el tipo de facturacion
+					if (vBeanTipoDir[i]!=null && 
+							vBeanTipoDir[i].getIdTipoDireccion()!=null && 
+							vBeanTipoDir[i].getIdTipoDireccion().equals(ClsConstants.TIPO_DIRECCION_FACTURACION)) {
 						
-						String resultado[] = new String[2];
-						resultado = ClsMngBBDD.callPLProcedure("{call PKG_SIGA_CARGOS.RevisarAnexos(?,?,?,?,?,?)}", 2, paramAnexos);
-						if (resultado == null || !resultado[0].equals("0")) {
-							throw new ClsExceptions ("Error al insertar los anexos de las cuentas");
-						}						
+						// JPT: Modificaciones para los anexos de los mandatos en SEPA
+						boolean cambio = (beanDir.getDomicilio()!=null && !beanDir.getDomicilio().equals(beanDir.getOriginalHash().get(CenDireccionesBean.C_DOMICILIO))) ||
+											(beanDir.getCodigoPostal()!=null && !beanDir.getCodigoPostal().equals(beanDir.getOriginalHash().get(CenDireccionesBean.C_CODIGOPOSTAL))) ||
+											(beanDir.getIdPais()!=null && !beanDir.getIdPais().equals(beanDir.getOriginalHash().get(CenDireccionesBean.C_IDPAIS))) ||
+											(beanDir.getIdProvincia()!=null && !beanDir.getIdProvincia().equals(beanDir.getOriginalHash().get(CenDireccionesBean.C_IDPROVINCIA))) ||
+											(beanDir.getIdPoblacion()!=null && !beanDir.getIdPoblacion().equals(beanDir.getOriginalHash().get(CenDireccionesBean.C_IDPOBLACION))) ||
+											(beanDir.getPoblacionExtranjera()!=null && !beanDir.getPoblacionExtranjera().equals(beanDir.getOriginalHash().get(CenDireccionesBean.C_POBLACIONEXTRANJERA)));
+						if (cambio) {						
+						
+							// Se realiza el proceso de revision de anexos para SEPA
+							Object[] paramAnexos = new Object[4];
+							paramAnexos[0] = beanDir.getIdInstitucion().toString();
+							paramAnexos[1] = beanDir.getIdPersona().toString();
+							paramAnexos[2] = usr.getUserName();
+							paramAnexos[3] = usr.getLanguage();
+							
+							String resultado[] = new String[2];
+							resultado = ClsMngBBDD.callPLProcedure("{call PKG_SIGA_CARGOS.RevisarAnexos(?,?,?,?,?,?)}", 2, paramAnexos);
+							if (resultado == null || !resultado[0].equals("0")) {
+								throw new ClsExceptions ("Error al insertar los anexos de las cuentas");
+							}						
+						}
 					}
 				}
 			}
-					
 			
-		}catch (SIGAException e) {
+		} catch (SIGAException e) {
 			throw e;
 			
 		} catch(Exception e){
