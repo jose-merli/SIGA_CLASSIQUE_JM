@@ -395,6 +395,12 @@
 			jQuery("#nig").mask("AAAAA AA A AAAA AAAAAAA");
 			jQuery("#nig").keyup();	
 		});	
+
+		jQuery(document).ready(function(){
+			jQuery('#mainDiv').height(jQuery(window).height()-62);
+		});
+		
+		
 	</script>		
 </head>
 
@@ -430,6 +436,8 @@
 	<html:hidden property = "anio" value="<%=anio%>" />	
 	<html:hidden property = "numero" value="<%=numero%>" />
 		
+		
+<div id="mainDiv" style="overflow-y:auto;overflow-x:hidden">
 <!-- INICIO: CAMPOS -->
 <!-- Zona de campos de busqueda o filtro -->
 <table class="tablaCentralCampos" align="center" >
@@ -737,7 +745,7 @@
 							<siga:Idioma key="gratuita.altaGuardia.literal.observaciones"/>
 						</td>
 						<td colspan="3">
-							<% if (!modoAnterior.equalsIgnoreCase("VER") && !usr.isLetrado() && validarJustificaciones.equalsIgnoreCase("S")) { %>
+							<% if (!modoAnterior.equalsIgnoreCase("VER") && !usr.isLetrado()) { %>
 								<textarea class="box" name="observacionesJustificacion"
 									onKeyDown="cuenta(this,1024)" onChange="cuenta(this,1024)" style="overflow:auto;width:600px;height:45px"
 								><%=observacionesJustificacion%></textarea>
@@ -823,6 +831,7 @@
 		</tr>
 	<%}%>	
 </table>
+</div>
 
 </html:form>
 	
