@@ -455,8 +455,8 @@
 
 	}
 	
-	
-	iniciarPlantillasEnvio();
+	if(document.getElementById("botonEnviar"))
+		iniciarPlantillasEnvio();
 	onclickchkPL();
 	function refrescarLocal() {}
 	

@@ -604,8 +604,23 @@ public class InformeJustificacionMasivaAction extends MasterAction {
 			informeUnicoResolucion = ClsConstants.DB_FALSE;
 		}
 		request.setAttribute("informeUnicoResolucion", informeUnicoResolucion);
+		
+		
+		
 		String activarDescargaResolucionLetrado = paramAdm.getValor (usrBean.getLocation (), ClsConstants.MODULO_SJCS, ClsConstants.GEN_PARAM_ACTIVAR_DESCARGA_RESOLUCION_EJG, "0");
 		boolean isResolucionLetradoActivo = informeBeans!=null && informeBeans.size()>0 && activarDescargaResolucionLetrado!=null && activarDescargaResolucionLetrado.equals(ClsConstants.DB_TRUE);
+		
+		informeBeans=admInformeAdm.obtenerInformesTipo(usrBean.getLocation(),EnvioInformesGenericos.comunicacionesDesigna,null, "C");
+		String informeUnicoOficio = ClsConstants.DB_TRUE;
+		if(informeBeans!=null && informeBeans.size()>1){
+			informeUnicoOficio = ClsConstants.DB_FALSE;
+		}
+		request.setAttribute("informeUnicoOficio", informeUnicoOficio);
+		
+		String activarInformesOficioLetrado = paramAdm.getValor (usrBean.getLocation (), ClsConstants.MODULO_SJCS, ClsConstants.GEN_PARAM_ACTIVAR_INFORMES_OFICIO_LETRADO, "0");
+		boolean isinformesOficioLetradoActivo = informeBeans!=null && informeBeans.size()>0 && activarInformesOficioLetrado!=null && activarInformesOficioLetrado.equals(ClsConstants.DB_TRUE);
+		
+		
 		
 		try {
 			HashMap databackup=getPaginador(request, paginadorPenstania);
@@ -757,6 +772,7 @@ public class InformeJustificacionMasivaAction extends MasterAction {
 		}
 		request.setAttribute("permitirBotones", isPermisoActualizarDesignas);
 		request.setAttribute("resolucionLetradoActivo", isResolucionLetradoActivo);
+		request.setAttribute("informesOficioLetradoActivo", isinformesOficioLetradoActivo);
 		
 		
 		

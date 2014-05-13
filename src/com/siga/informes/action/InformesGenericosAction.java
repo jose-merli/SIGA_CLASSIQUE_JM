@@ -1825,6 +1825,13 @@ public class InformesGenericosAction extends MasterAction {
 			
 			String asunto = "";
 			if(idTipoInforme.equals(EnvioInformesGenericos.comunicacionesDesigna)){
+				if(informeBeans.size()==1&&miForm.getEnviar().equals(ClsConstants.DB_FALSE)){
+					AdmInformeBean informeBean = (AdmInformeBean)informeBeans.get(0);
+					String idInformes = informeBean.getIdPlantilla()+","+informeBean.getIdInstitucion()+"";
+					miForm.setIdInforme(idInformes);
+					return download(mapping, formulario, request, response);
+				}
+				
 				asunto = UtilidadesString.getMensajeIdioma(usr.getLanguage(), "informes.genericos.designas.asunto");
 				
 				

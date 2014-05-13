@@ -633,18 +633,22 @@ function downloadDocumentoResolucion(docResolucion) {
 function downloadResolucionCAJG(idInstitucion,anio,idTipo,numero) {			
 	
 	
-	var datos = "idinstitucion=="+idInstitucion + "##idtipo==" +idTipo+"##anio=="+anio +"##numero==" +numero+"##idTipoInforme==REJG%%%";
-	document.InformeResolucionCAJG.datosInforme.value=datos;
+	var datos = "idinstitucion=="+idInstitucion + "##idtipo==" +idTipo+"##anio=="+anio +"##numero==" +numero+"%%%";
+	document.Informe.datosInforme.value=datos;
+	document.Informe.idTipoInforme.value='REJG';
+	document.Informe.destinatarios.value='';
+	
+	
 	if(document.getElementById("informeUnicoResolucion").value=='1'){
-		document.InformeResolucionCAJG.submit();
+		document.Informe.submit();
 	}else{
 	
-		var arrayResultado = ventaModalGeneral("InformeResolucionCAJG","M");
+		var arrayResultado = ventaModalGeneral("Informe","M");
 		if (arrayResultado==undefined||arrayResultado[0]==undefined){
 		   		
 	   	} 
 	   	else {
-	   		var confirmar = confirm("<siga:Idioma key='general.envios.confirmar.edicion'/>");
+	   		/*var confirmar = confirm("<siga:Idioma key='general.envios.confirmar.edicion'/>");
 	   		if(confirmar){
 	   			var idEnvio = arrayResultado[0];
 			    var idTipoEnvio = arrayResultado[1];
@@ -653,7 +657,7 @@ function downloadResolucionCAJG(idInstitucion,anio,idTipo,numero) {
 			   	document.DefinirEnviosForm.tablaDatosDinamicosD.value=idEnvio + ',' + idTipoEnvio + '%' + nombreEnvio;		
 			   	document.DefinirEnviosForm.modo.value='editar';
 			   	document.DefinirEnviosForm.submit();
-	   		}
+	   		}*/
 	   	}
 	}
 	
@@ -662,7 +666,42 @@ function downloadResolucionCAJG(idInstitucion,anio,idTipo,numero) {
 	
    	
 }
-		
+
+function downloadInformesOficio(idInstitucion,anio,idTurno,numero) {			
+	
+	
+	var datos = "idInstitucion=="+idInstitucion + "##idTurno==" +idTurno+"##anio=="+anio +"##numero==" +numero+"##destinatarios==C%%%";
+	document.Informe.datosInforme.value=datos;
+	document.Informe.idTipoInforme.value='OFICI';
+	document.Informe.destinatarios.value='C';
+	alertStop("document.getElementById(informeUnicoOficio).value"+document.getElementById("informeUnicoOficio").value)
+	if(document.getElementById("informeUnicoOficio").value=='1'){
+		document.Informe.submit();
+	}else{
+	
+		var arrayResultado = ventaModalGeneral("Informe","M");
+		if (arrayResultado==undefined||arrayResultado[0]==undefined){
+		   		
+	   	} 
+	   	else {
+	   		/*var confirmar = confirm("<siga:Idioma key='general.envios.confirmar.edicion'/>");
+	   		if(confirmar){
+	   			var idEnvio = arrayResultado[0];
+			    var idTipoEnvio = arrayResultado[1];
+			    var nombreEnvio = arrayResultado[2];				    
+			    
+			   	document.DefinirEnviosForm.tablaDatosDinamicosD.value=idEnvio + ',' + idTipoEnvio + '%' + nombreEnvio;		
+			   	document.DefinirEnviosForm.modo.value='editar';
+			   	document.DefinirEnviosForm.submit();
+	   		}*/
+	   	}
+	}
+	
+	
+	
+	
+   	
+}		
 
 
 </script>
@@ -676,9 +715,11 @@ function downloadResolucionCAJG(idInstitucion,anio,idTipo,numero) {
 	type="com.atos.utils.UsrBean"></bean:define>
 <bean:define id="informeUnico" name="informeUnico" scope="request"></bean:define>
 <bean:define id="informeUnicoResolucion" name="informeUnicoResolucion" scope="request"></bean:define>
+<bean:define id="informeUnicoOficio" name="informeUnicoOficio" scope="request"></bean:define>
 
 <input type="hidden" id= "informeUnico" value="${informeUnico}">
 <input type="hidden" id= "informeUnicoResolucion" value="${informeUnicoResolucion}">
+<input type="hidden" id= "informeUnicoOficio" value="${informeUnicoOficio}">
 
 <!-- FIN: TITULO OPCIONAL DE LA TABLA -->
 <!-- INICIO: CAMPOS -->
@@ -802,6 +843,8 @@ function downloadResolucionCAJG(idInstitucion,anio,idTipo,numero) {
 		scope="request"></bean:define>
 	<bean:define id="resolucionLetradoActivo" name="resolucionLetradoActivo"
 		scope="request"></bean:define>
+	<bean:define id="informesOficioLetradoActivo" name="informesOficioLetradoActivo"
+		scope="request"></bean:define>
 		
 
 	<bean:define id="designaFormList" name="designaFormList"
@@ -865,8 +908,19 @@ function downloadResolucionCAJG(idInstitucion,anio,idTipo,numero) {
 				
 				
 				
-					<td rowspan="${designa.rowSpan}"><c:out
-						value="${designa.codigoDesigna}" /></td>
+					<td rowspan="${designa.rowSpan}">
+						<c:choose>            
+							<c:when test="${informesOficioLetradoActivo==true}">
+								<a href='#' onclick="downloadInformesOficio('${designa.idInstitucion}','${designa.anio}','${designa.idTurno}','${designa.numero}')"><c:out value="${designa.codigoDesigna}" /></a>
+							</c:when>
+							
+							<c:otherwise><c:out
+								value="${designa.codigoDesigna}" />
+								</c:otherwise>
+						</c:choose>
+			
+						
+						</td>
 						
 					<c:choose>
 						<c:when test="${InformeJustificacionMasivaForm.fichaColegial==false  && designa.tipoResolucionDesigna=='NO_FAVORABLE'}">
@@ -1767,15 +1821,16 @@ function downloadResolucionCAJG(idInstitucion,anio,idTipo,numero) {
 	<input type="hidden" name="tablaDatosDinamicosD" value="">
 
 </form>
-<html:form action="/INF_InformesGenericos" name="InformeResolucionCAJG" type="com.siga.informes.form.InformesGenericosForm"  method="post"	target="submitArea">
+<html:form action="/INF_InformesGenericos" name="Informe" type="com.siga.informes.form.InformesGenericosForm"  method="post"	target="submitArea">
 		<html:hidden property="idInstitucion" value="${InformeJustificacionMasivaForm.idInstitucion}"/>
-		<html:hidden property="idTipoInforme" value='REJG'/>
+		<html:hidden property="idTipoInforme" value=''/>
 		<html:hidden property="enviar"  value="0"/>
 		<html:hidden property="descargar" value="1"/>
 		<html:hidden property="datosInforme"/>
+		<html:hidden property="destinatarios"/>
 		<html:hidden property="modo" value = "preSeleccionInformes"/>
 		<input type='hidden' name='actionModal'>
-	</html:form>	
+	</html:form>
 
 <iframe name="submitArea"
 	src="<html:rewrite page='/html/jsp/general/blank.jsp'/>"
