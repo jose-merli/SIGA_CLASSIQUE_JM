@@ -477,11 +477,12 @@ public class FacAbonoAdm extends MasterBeanAdministrador {
 							FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IMPTOTALABONADO + " AS TOTALABONADO," +
 							FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IMPTOTALABONADOEFECTIVO + " AS TOTALABONADOEFECTIVO," +
 							FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IMPTOTALABONADOPORBANCO + " AS TOTALABONADOPORBANCO," +
-							FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDCUENTA + //"," +
+							FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDCUENTA + "," +
 	            			//"F_SIGA_ESTADOSABONO("+ FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDINSTITUCION +","+ FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDABONO + ") AS ESTADO" + "," +
 							//"PKG_SIGA_TOTALESABONO.TOTALNETO("+ FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDINSTITUCION +","+ FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDABONO + ") AS TOTALNETO" + "," +
 							//"PKG_SIGA_TOTALESABONO.TOTALIVA("+ FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDINSTITUCION +","+ FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDABONO + ") AS TOTALIVA" + "," +
 							//"PKG_SIGA_TOTALESABONO.TOTAL("+ FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDINSTITUCION +","+ FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDABONO + ") AS TOTAL" +
+							"NVL(" + FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDPAGOSJG + ",'') AS IDPAGOSJG" + 
 							" FROM " + FacAbonoBean.T_NOMBRETABLA;
 				            contador++;
 							codigos.put(new Integer(contador),abono);
@@ -679,7 +680,7 @@ public class FacAbonoAdm extends MasterBeanAdministrador {
 								FacPagoAbonoEfectivoBean.T_NOMBRETABLA + "." + FacPagoAbonoEfectivoBean.C_FECHAMODIFICACION   + " AS FECHA_ORDEN, "   +
 								" F_SIGA_GETRECURSO_ETIQUETA('facturacion.pagosAbonos.accion.pagosCaja'," + this.usrbean.getLanguage() + ") AS MODO, " +
 								FacPagoAbonoEfectivoBean.T_NOMBRETABLA + "." + FacPagoAbonoEfectivoBean.C_IMPORTE + " AS IMPORTE, " +
-								" '' AS NOMBRE_BANCO " + 
+								" '' AS NOMBRE_BANCO, null AS IDPAGOSJG " + 
 							" FROM " + FacPagoAbonoEfectivoBean.T_NOMBRETABLA + 
 							" WHERE " + FacPagoAbonoEfectivoBean.T_NOMBRETABLA +"."+ FacPagoAbonoEfectivoBean.C_IDABONO + "=" + abono +
 								" AND " + FacPagoAbonoEfectivoBean.T_NOMBRETABLA +"."+ FacPagoAbonoEfectivoBean.C_IDINSTITUCION + "=" + institucion +
@@ -693,7 +694,7 @@ public class FacAbonoAdm extends MasterBeanAdministrador {
 								FacPagoAbonoEfectivoBean.T_NOMBRETABLA + "." + FacPagoAbonoEfectivoBean.C_FECHAMODIFICACION   + " AS FECHA_ORDEN, "   +
 								" F_SIGA_GETRECURSO_ETIQUETA('facturacion.pagosAbonos.accion.pagosCaja'," + this.usrbean.getLanguage() + ") AS MODO, " +
 								FacPagoAbonoEfectivoBean.T_NOMBRETABLA + "." + FacPagoAbonoEfectivoBean.C_IMPORTE + " AS IMPORTE, " +
-								" '' AS NOMBRE_BANCO " + 
+								" '' AS NOMBRE_BANCO, null AS IDPAGOSJG " + 
 							" FROM " + FacPagoAbonoEfectivoBean.T_NOMBRETABLA + "," + FacPagosPorCajaBean.T_NOMBRETABLA +
 							" WHERE " + FacPagoAbonoEfectivoBean.T_NOMBRETABLA +"."+ FacPagoAbonoEfectivoBean.C_IDABONO + "=" + abono +
 							" AND " + FacPagoAbonoEfectivoBean.T_NOMBRETABLA +"."+ FacPagoAbonoEfectivoBean.C_IDINSTITUCION + "=" + institucion +
@@ -710,7 +711,7 @@ public class FacAbonoAdm extends MasterBeanAdministrador {
 								FacPagoAbonoEfectivoBean.T_NOMBRETABLA + "." + FacPagoAbonoEfectivoBean.C_FECHAMODIFICACION   + " AS FECHA_ORDEN, "   +
 								" F_SIGA_GETRECURSO_ETIQUETA('facturacion.pagosAbonos.accion.compensacion'," + this.usrbean.getLanguage() + ") || " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_NUMEROFACTURA + " AS MODO, " +								
 								FacPagoAbonoEfectivoBean.T_NOMBRETABLA + "." + FacPagoAbonoEfectivoBean.C_IMPORTE + " AS IMPORTE, " +
-								" '' AS NOMBRE_BANCO " + 
+								" '' AS NOMBRE_BANCO,null AS IDPAGOSJG " + 
 							" FROM " + FacPagoAbonoEfectivoBean.T_NOMBRETABLA + "," + FacPagosPorCajaBean.T_NOMBRETABLA + "," + FacFacturaBean.T_NOMBRETABLA +
 							" WHERE " + FacPagoAbonoEfectivoBean.T_NOMBRETABLA +"."+ FacPagoAbonoEfectivoBean.C_IDABONO + "=" + abono +
 								" AND " + FacPagoAbonoEfectivoBean.T_NOMBRETABLA +"."+ FacPagoAbonoEfectivoBean.C_IDINSTITUCION + "=" + institucion +
@@ -736,7 +737,7 @@ public class FacAbonoAdm extends MasterBeanAdministrador {
 									" WHERE " + CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_CBO_CODIGO + " = " + CenBancosBean.T_NOMBRETABLA + "."+CenBancosBean.C_CODIGO +
 										" AND " + CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_IDINSTITUCION + " = " + FacAbonoBean.T_NOMBRETABLA +"."+ FacAbonoBean.C_IDINSTITUCION +
 										" AND " + CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_IDPERSONA + " = " + FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDPERSONA +
-										" AND " + CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_IDCUENTA + " = " + FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDCUENTA + ") as NOMBRE_BANCO " +
+										" AND " + CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_IDCUENTA + " = " + FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDCUENTA + ") as NOMBRE_BANCO, null AS IDPAGOSJG " +
 							" FROM " + FacAbonoIncluidoEnDisqueteBean.T_NOMBRETABLA + ", " + 
 										FacAbonoBean.T_NOMBRETABLA +
 							" WHERE " + FacAbonoIncluidoEnDisqueteBean.T_NOMBRETABLA +"."+ FacAbonoIncluidoEnDisqueteBean.C_IDABONO + "=" + abono +
@@ -760,7 +761,8 @@ public class FacAbonoAdm extends MasterBeanAdministrador {
 									" WHERE " + CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_CBO_CODIGO + " = " + CenBancosBean.T_NOMBRETABLA + "."+CenBancosBean.C_CODIGO +
 										" AND " + CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_IDINSTITUCION + " = " + FacAbonoBean.T_NOMBRETABLA +"."+ FacAbonoBean.C_IDINSTITUCION +
 										" AND " + CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_IDPERSONA + " = " + FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDPERSONA +
-										" AND " + CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_IDCUENTA + " = " + FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDCUENTA + ") as NOMBRE_BANCO " +
+										" AND " + CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_IDCUENTA + " = " + FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDCUENTA + ") as NOMBRE_BANCO, " +
+								"NVL(" + FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDPAGOSJG + ",'') AS IDPAGOSJG " + 		
 							" FROM " + FacAbonoBean.T_NOMBRETABLA + 
 							" WHERE " + FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDABONO + " = " + abono +
 								" AND " + FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDINSTITUCION + " = " + institucion +
@@ -793,7 +795,8 @@ public class FacAbonoAdm extends MasterBeanAdministrador {
 								FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_FECHAMODIFICACION + " AS FECHA_ORDEN, " +
 								" F_SIGA_GETRECURSO_ETIQUETA('facturacion.pagosAbonos.accion.emisionPago'," + this.usrbean.getLanguage() + ") AS MODO, " +
 								" 0 AS IMPORTE, " +
-								" '' AS NOMBRE_BANCO " + 
+								" '' AS NOMBRE_BANCO, " + 
+								"NVL(" + FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDPAGOSJG + ",'') AS IDPAGOSJG " +
 							" FROM " + FacAbonoBean.T_NOMBRETABLA + 
 							" WHERE " + FacAbonoBean.T_NOMBRETABLA +"."+ FacAbonoBean.C_IDABONO + "=" + abono +
 								" AND " + FacAbonoBean.T_NOMBRETABLA +"."+ FacAbonoBean.C_IDINSTITUCION + "=" + institucion +

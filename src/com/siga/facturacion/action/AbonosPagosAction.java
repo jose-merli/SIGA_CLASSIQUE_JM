@@ -147,6 +147,9 @@ public class AbonosPagosAction extends MasterAction {
 			FacAbonoAdm adm = new FacAbonoAdm(this.getUserBean(request));
 			seleccionados=adm.getDatosPagosAbono(idInstitucionAbono,idAbono);
 			totales=adm.getTotalesPagos(idInstitucionAbono,idAbono);
+
+			//idPagoJG:Esto es para saber si estamos en abonos de SJCS en Censo > Ficha > Turno Oficio > Facturaciones > Pagos
+			request.setAttribute("idPagoJG", ((Row)seleccionados.firstElement()).getRow().get("IDPAGOSJG"));
 						
 			// Paso de parametros empleando request
 			request.setAttribute("IDABONO", idAbono);

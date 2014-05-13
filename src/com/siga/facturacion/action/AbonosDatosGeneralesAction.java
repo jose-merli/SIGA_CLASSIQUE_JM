@@ -67,6 +67,8 @@ public class AbonosDatosGeneralesAction extends MasterAction {
 			seleccionados=abonoAdm.getAbono(idInstitucionAbono,idAbono);
 			datosAbono=((Row)seleccionados.firstElement()).getRow();
 			
+			if(idPagoJG.isEmpty())
+				idPagoJG=(String) datosAbono.get("IDPAGOSJG");
 			
 			// Paso de parametros empleando request
 			request.setAttribute("IDABONO", idAbono);

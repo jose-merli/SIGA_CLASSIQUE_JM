@@ -49,6 +49,7 @@
 	String modo=(String)request.getAttribute("ACCION"); // Obtengo la accion anterior
 	String idInstitucion=(String)request.getAttribute("IDINSTITUCION"); // Obtengo el identificador de la institucion
 	String idFactura=(String)request.getAttribute("IDFACTURA"); // Obtengo el identificador de la institucion
+	String idPagoJG = (String)request.getAttribute("idPagoJG"); // Obtengo el identificador del pago
 	
 	Vector datosPagos= new Vector();
 	Hashtable datosTotales= new Hashtable();
@@ -127,7 +128,9 @@
 			<siga:Titulo titulo="facturacion.pagos.pagos.cabecera" localizacion="facturacion.abonos.localizacion"/>
 	<% } else if (usr.getStrutsTrans().equals("CEN_BusquedaClientesColegiados")) { %>
 			<siga:Titulo titulo="facturacion.pagos.pagos.cabecera" localizacion="censo.facturacion.abonos.localizacion"/>
-	<% } %>	
+	<% } else if (usr.getStrutsTrans().equals("CEN_FichaColegial")&&(idPagoJG!=null)&&(idPagoJG.isEmpty()==false)) {%>
+		<siga:Titulo titulo="censo.fichaCliente.sjcs.to.facturacion.pagos.pago.generales.titulo"	localizacion="censo.fichaCliente.sjcs.to.facturacion.pagos.localizacion"/>
+	<% }%>
 	<!-- FIN: TITULO Y LOCALIZACION -->
 </head>
 

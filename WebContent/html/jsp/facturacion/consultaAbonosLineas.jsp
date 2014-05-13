@@ -52,6 +52,7 @@
 	String idFactura=(String)request.getAttribute("IDFACTURA"); // Obtengo si esta o no contabilizado
 	Vector datosDesglose= new Vector();
 	String iconos="";
+	String idPagoJG = (String)request.getAttribute("idPagoJG"); // Obtengo el identificador del pago
 
 	// Muestro o no las opciones de edición o borrado
 	if (contabilizado.equalsIgnoreCase(ClsConstants.FACTURA_ABONO_NO_CONTABILIZADA)){
@@ -119,7 +120,9 @@
 			<siga:Titulo titulo="facturacion.pagos.lineas.cabecera"	localizacion="facturacion.abonos.localizacion"/>
 	<% } else if (usr.getStrutsTrans().equals("CEN_BusquedaClientesColegiados")) {%>
 			<siga:Titulo titulo="facturacion.pagos.lineas.cabecera"	localizacion="censo.facturacion.abonos.localizacion"/>
-	<% } %>
+	<% } else if (usr.getStrutsTrans().equals("CEN_FichaColegial")&&(idPagoJG!=null)&&(idPagoJG.isEmpty()==false)) {%>
+		<siga:Titulo titulo="censo.fichaCliente.sjcs.to.facturacion.pagos.lineas.generales.titulo"	localizacion="censo.fichaCliente.sjcs.to.facturacion.pagos.localizacion"/>
+	<% }%>
 	<!-- FIN: TITULO Y LOCALIZACION -->
 </head>
 

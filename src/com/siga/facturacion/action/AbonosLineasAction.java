@@ -94,6 +94,8 @@ public class AbonosLineasAction extends MasterAction {
 			
 						
 			// Paso de parametros empleando request
+			//idPagoJG:Esto es para saber si estamos en abonos de SJCS en Censo > Ficha > Turno Oficio > Facturaciones > Pagos
+			request.setAttribute("idPagoJG", ((Row)escogido.firstElement()).getRow().get("IDPAGOSJG"));
 			request.setAttribute("IDABONO", idAbono);
 			request.setAttribute("IDINSTITUCION", idInstitucion);			
 			request.setAttribute("ACCION", accion);

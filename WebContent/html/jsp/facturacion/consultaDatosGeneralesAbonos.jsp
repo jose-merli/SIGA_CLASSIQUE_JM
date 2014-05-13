@@ -52,7 +52,12 @@
 	String idFactura = (String)request.getAttribute("IDFACTURA"); // Obtengo el identificador de la factura
 	String idPagoJG = (String)request.getAttribute("idPagoJG"); // Obtengo el identificador del pago
 	Hashtable datosAbono= new Hashtable();
-
+	
+	String idTipoInforme="";
+	if((idPagoJG!=null)&&(idPagoJG.isEmpty()==false))
+		idTipoInforme="CPAGO";
+	else
+		idTipoInforme="ABONO";
 	
 	// Obtencion del tipo de acceso sobre la pestanha del usuario de la aplicacion
 	UsrBean usr=(UsrBean)request.getSession().getAttribute("USRBEAN");
@@ -114,7 +119,9 @@
  		<siga:Titulo titulo="facturacion.pagos.datosGenerales.cabecera"	localizacion="facturacion.abonos.localizacion"/>
 	<% } else if (usr.getStrutsTrans().equals("CEN_BusquedaClientesColegiados")) {%>
 		<siga:Titulo titulo="facturacion.pagos.datosGenerales.cabecera"	localizacion="censo.facturacion.abonos.localizacion"/>
-	<% } %>
+	<% } else if (usr.getStrutsTrans().equals("CEN_FichaColegial")&&(idPagoJG!=null)&&(idPagoJG.isEmpty()==false)) {%>
+		<siga:Titulo titulo="censo.fichaCliente.sjcs.to.facturacion.pagos.datos.generales.titulo"	localizacion="censo.fichaCliente.sjcs.to.facturacion.pagos.localizacion"/>
+	<% }%>
 	<!-- FIN: TITULO Y LOCALIZACION -->
 </head>
 
@@ -132,7 +139,6 @@
 			<html:hidden property="idInstitucion" value="<%=idInstitucion%>"/>	
 			<html:hidden property="idPersona" value="<%=(String)datosAbono.get(FacAbonoBean.C_IDPERSONA)%>"/>
 			<html:hidden property="idFactura" value="<%=(String)datosAbono.get(FacAbonoBean.C_IDFACTURA)%>"/>		
-	
 			<tr>				
 				<td>
 					<!-- SUBCONJUNTO DE DATOS -->
@@ -384,7 +390,7 @@
 
 	<html:form action="/INF_InformesGenericos" method="post"	target="submitArea">
 		<html:hidden property="idInstitucion" value = "<%=idInstitucion%>"/>
-		<html:hidden property="idTipoInforme" value="ABONO"/>
+		<html:hidden property="idTipoInforme" value="<%=idTipoInforme%>"/>
 		<html:hidden property="enviar" value="0"/>
 		<html:hidden property="descargar" value="1"/>
 		<html:hidden property="datosInforme"/>
