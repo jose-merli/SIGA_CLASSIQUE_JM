@@ -417,15 +417,15 @@
 				<div id='scrollDiv' class='scrollClass'>
 				<c:forEach items="${requestScope.estados}" var="estado" varStatus="status">
 					<div class='${status.index % 2 == 0 ? "filaTablaImpar": "filaTablaPar"}' style='float:left;width:100%;padding:2px;'>
-						<div class='colIzq col300px labelTextValue' style='vertical-align: middle;'>	
+						<div class='${status.index % 2 == 0 ? "filaTablaImpar": "filaTablaPar"} colIzq col300px labelTextValue' style='vertical-align: middle;'>	
 							<c:out value="${estado.ESTADO}"></c:out>
 							<c:if test="${estado.IDESTADO==3 && status.last}">
 								<IMG onclick="descargaLog();" title="Descargar informe" 
 								style="CURSOR: pointer;vertical-align: middle" border=0 alt="Descargar informe" src="/SIGA/html/imagenes/bdescargaLog_off.gif">
 							</c:if>
 						</div>
-						<div class='col180px labelTextValue'><c:out value="${estado.FECHACAMBIOESTADO}"></c:out></div>
-						<div class='col400px labelTextValue'><c:out value="${estado.USUARIO}"></c:out></div>
+						<div class='${status.index % 2 == 0 ? "filaTablaImpar": "filaTablaPar"} col180px labelTextValue'><c:out value="${estado.FECHACAMBIOESTADO}"></c:out></div>
+						<div class='${status.index % 2 == 0 ? "filaTablaImpar": "filaTablaPar"} col400px labelTextValue'><c:out value="${estado.USUARIO}"></c:out></div>
 					</div>
 				</c:forEach>
 				</div>
