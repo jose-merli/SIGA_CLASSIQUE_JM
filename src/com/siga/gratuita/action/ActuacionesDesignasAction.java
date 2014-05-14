@@ -441,11 +441,16 @@ public class ActuacionesDesignasAction extends MasterAction {
 			UtilidadesHash.set(hashEJG,ScsEJGBean.C_IDTIPOEJG,(String)hashDesigna.get("IDTIPOEJG"));
 			Vector vEjgRelacionado=(Vector)ejgAdm.selectByPK(hashEJG);
 			
+			request.setAttribute("ejgs", vEjgRelacionado);
+			
 		    if ((vEjgRelacionado != null) && (vEjgRelacionado.size() == 1)) {
 		
+		     UtilidadesHash.set(hashDesigna,ScsEJGBean.C_NUMEJG,((ScsEJGBean)vEjgRelacionado.get(0)).getNumEJG());
 			 UtilidadesHash.set(hashDesigna,ScsEJGBean.C_IDTIPORATIFICACIONEJG,((ScsEJGBean)vEjgRelacionado.get(0)).getIdTipoRatificacionEJG());
 			 UtilidadesHash.set(hashDesigna,ScsEJGBean.C_FECHARATIFICACION,((ScsEJGBean)vEjgRelacionado.get(0)).getFechaRatificacion());
 			 UtilidadesHash.set(hashDesigna,ScsEJGBean.C_FECHANOTIFICACION,((ScsEJGBean)vEjgRelacionado.get(0)).getFechaNotificacion());
+			 UtilidadesHash.set(hashDesigna,ScsEJGBean.C_FECHAAUTO,((ScsEJGBean)vEjgRelacionado.get(0)).getFechaAuto());
+			 UtilidadesHash.set(hashDesigna,ScsEJGBean.C_IDTIPORESOLAUTO,((ScsEJGBean)vEjgRelacionado.get(0)).getIdTipoResolAuto());
 			 
 		    }
 			//Se muestra todas las Actuaciones de la designa.
@@ -586,6 +591,10 @@ public class ActuacionesDesignasAction extends MasterAction {
 			 UtilidadesHash.set(designaActual,ScsEJGBean.C_IDTIPORATIFICACIONEJG,((ScsEJGBean)vEjgRelacionado.get(0)).getIdTipoRatificacionEJG());
 			 UtilidadesHash.set(designaActual,ScsEJGBean.C_FECHARATIFICACION,((ScsEJGBean)vEjgRelacionado.get(0)).getFechaRatificacion());
 			 UtilidadesHash.set(designaActual,ScsEJGBean.C_FECHANOTIFICACION,((ScsEJGBean)vEjgRelacionado.get(0)).getFechaNotificacion());
+		     UtilidadesHash.set(designaActual,ScsEJGBean.C_NUMEJG,((ScsEJGBean)vEjgRelacionado.get(0)).getNumEJG());
+			 UtilidadesHash.set(designaActual,ScsEJGBean.C_FECHAAUTO,((ScsEJGBean)vEjgRelacionado.get(0)).getFechaAuto());
+			 UtilidadesHash.set(designaActual,ScsEJGBean.C_IDTIPORESOLAUTO,((ScsEJGBean)vEjgRelacionado.get(0)).getIdTipoResolAuto());
+			 
 		    }
 			designaActual = actuacionDesignaAdm.prepararInsert(designaActual);
 			int valorPcajgActivo=CajgConfiguracion.getTipoCAJG(new Integer(usr.getLocation()));

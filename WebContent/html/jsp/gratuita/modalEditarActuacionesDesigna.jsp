@@ -60,7 +60,7 @@
 	ArrayList motCambioSel = new ArrayList();
 
 	String idJuzgado=null, idInstitucionJuzgado=null, idPrision=null, idInstitucionPrision=null, idProcedimiento="-1", idInstitucionProcedimiento=null, idAcreditacion=null, idMotivoCambio=null;
-	String idTipoRatificacion=null,fechaRatificacion=null,fechaNotificacion=null,anioEJG=null;
+	String idTipoRatificacion=null,fechaRatificacion=null,fechaNotificacion=null,anioEJG=null,numEJG=null;
 	String idPretension=null;
 	String nombreJuzgado="", nombreProcedimiento="", nombreAcreditacion="";
 	String deDonde=(String)request.getParameter("deDonde");
@@ -115,6 +115,7 @@
 		}
     anioEJG=(String)hashDesigna.get("ANIOEJG");
 	if (anioEJG!=null && !anioEJG.equals("")){
+    	numEJG=(String)hashDesigna.get("NUMEJG");
 	 fechaRatificacion=GstDate.getFormatedDateShort("",(String)hashDesigna.get("FECHARATIFICACION"));
 	 fechaNotificacion=GstDate.getFormatedDateShort("",(String)hashDesigna.get("FECHANOTIFICACION"));
 	}
@@ -298,7 +299,13 @@
 		validaNumeroProcedimiento = true;
 	}
 	
+	ArrayList vTipoResolAuto = new ArrayList();
+	if (hashDesigna.containsKey(ScsEJGBean.C_IDTIPORESOLAUTO)&& hashDesigna.get(ScsEJGBean.C_IDTIPORESOLAUTO) != "")
+		vTipoResolAuto.add(hashDesigna.get(ScsEJGBean.C_IDTIPORESOLAUTO).toString());
 	
+	String fechaAuto = "";
+	if (hashDesigna.containsKey("FECHAAUTO"))
+		fechaAuto = GstDate.getFormatedDateShort("",hashDesigna.get(ScsEJGBean.C_FECHAAUTO).toString()).toString();
 	%>
 
 <%@page import="com.siga.ws.CajgConfiguracion"%>
@@ -437,15 +444,8 @@
 	<html:hidden property = "numero" value="<%=numero%>" />
 		
 		
-<div id="mainDiv" style="overflow-y:auto;overflow-x:hidden">
-<!-- INICIO: CAMPOS -->
-<!-- Zona de campos de busqueda o filtro -->
-<table class="tablaCentralCampos" align="center" >
-		
-	<!-- INICIO: CAMPOS DEL REGISTRO -->
-	<tr>			
-		<td>
-			<!-- SUBCONJUNTO DE DATOS -->
+<div id="mainDiv" style="overflow-y:auto;overflow-x:hidden;padding-left:5px;">
+
 			<siga:ConjCampos leyenda="gratuita.busquedaDesignas.literal.Designacion">
 				<table width="100%" >
 					<tr>
@@ -486,11 +486,7 @@
 					</tr>
 				</table>
 			</siga:ConjCampos>
-		</td>
-	</tr>
-	
-	<tr>
-		<td>
+
 			<siga:ConjCampos leyenda="gratuita.busquedaDesignas.literal.letrado">
 				<table width="100%">
 					<tr>
@@ -510,11 +506,7 @@
 					</tr>
 				</table>
 			</siga:ConjCampos>
-		</td>
-	</tr>
-	
-	<tr>
-		<td>
+
 			<siga:ConjCampos leyenda="gratuita.actuacionesDesigna.literal.titulo">
 				<table width="100%" border="0">
 					<tr>				
@@ -699,11 +691,7 @@
 					</tr>
 				</table>
 			</siga:ConjCampos>			
-		</td>
-	</tr>
-		
-	<tr>
-		<td>
+
 			<siga:ConjCampos leyenda="gratuita.actuacionesDesigna.literal.justificacion">
 				<table width="100%" border="0">
 					<tr>
@@ -757,55 +745,78 @@
 						</td>
 					</tr>
 				</table>
+		</siga:ConjCampos>
 		
+		<%if(!numEJG.equalsIgnoreCase("")){ %>
+		<siga:ConjCampos leyenda='gratuita.operarEJG.literal.expedienteEJG' desplegable="true">
 				<table width="100%" border="0">
 					<%if(anioEJG!=null && !anioEJG.equals("")){ //si la designa tiene EJG asociad... %>
 						<tr>
-							<td class="labelText" width="160px">
+							<td class="labelText"><siga:Idioma key="gratuita.busquedaEJG.literal.anyo" />/<siga:Idioma key="gratuita.busquedaEJG.literal.codigo" /></td>
+							<td class="labelTextValue"><%=anioEJG%>/<%=numEJG%></td>
+							<td class="labelText" width="200px">
 								<siga:Idioma key="gratuita.operarRatificacion.literal.tipoRatificacion"/>
 							</td>	
 			
+							<td class="labelTextValue">
 							<%if (vTipoRatificacion!=null && vTipoRatificacion.size()>0){%>	
-								<td>
 									<siga:ComboBD nombre="idTipoRatificacionEJG" tipo="tipoResolucionTodos" ancho="375" clase="boxConsulta" parametro="<%=dato%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  elementoSel="<%=vTipoRatificacion%>" readOnly="true"/>				
-								</td>
+			 				<%}else{%>
+			 					-	
 			 				<%}%>	
+							</td>
 						</tr>
 			
 	
 						<tr>
-							<td class="labelText" width="160px">
+							<td class="labelText" width="180px">
 								<siga:Idioma key="gratuita.operarRatificacion.literal.fechaNotificacion"/>
 							</td>
 							
+							<td class="labelTextValue" width="160px">
 							 <%if (fechaNotificacion!=null && !fechaNotificacion.equals("")){%>			
-								<td>
 									<html:text name="DefinirEJGForm" property="fechaNotificacion" size="10" styleClass="boxConsulta" value="<%=fechaNotificacion%>" disabled="false" readonly="true"/>
-								</td>
-							 <%}%>	
-						</tr>
-	
-	
-						<tr>
+							 <%}else{%>
+							 	-
+							 <%} %>	
+							</td>
+
 							<td class="labelText" width="160px">
 								<siga:Idioma key="gratuita.operarRatificacion.literal.fechaRatificacion"/>
 							</td>
 								
+							<td class="labelTextValue">
 							<%if (fechaRatificacion!=null && !fechaRatificacion.equals("")){%>
-								<td>
 									<html:text name="DefinirEJGForm" property="fechaRatificacion" size="10" styleClass="boxConsulta" value="<%=fechaRatificacion%>" disabled="false" readonly="true"/>			
-								</td>
-							<%}%>
+							<%}else{%>
+								-
+							<%} %>
+							</td>
 						</tr>
+						<%if(!fechaAuto.equalsIgnoreCase("")){ %>
+						<tr>
+							<td class="labelText">
+								<siga:Idioma key="pestana.justiciagratuitaejg.impugnacion"/>
+								<siga:Idioma key="gratuita.operarRatificacion.literal.fechaAuto"/>
+							</td>
+							<td class="labelTextValue">
+								<siga:Fecha nombreCampo="fechaAuto" valorInicial="<%=fechaAuto%>" disabled="true" readonly="true"></siga:Fecha>
+							</td>
+							<td class="labelText">
+								<siga:Idioma key="gratuita.EJG.literal.autoResolutorio"/>
+							</td>	
+							<td class="labelTextValue">
+								<siga:ComboBD nombre="idTipoResolAuto" tipo="idTipoResolAuto" clase="boxConsulta" ancho="375"  filasMostrar="1" seleccionMultiple="false" obligatorio="false" elementoSel="<%=vTipoResolAuto%>" readOnly="true"/>
+							</td>
+						</tr>
+						<%} %>
 					<%}%>
 				</table>
 			</siga:ConjCampos>		
-		</td>
-	</tr>
+		<%} %>
 	
 	<%if (nombreFacturacion!=null && !nombreFacturacion.equals("")){%>
-		<tr>
-			<td>
+
 				<siga:ConjCampos leyenda="gratuita.actuacionesDesigna.literal.facturacion">
 					<table width="100%">
 						<tr>
@@ -827,13 +838,12 @@
 						</tr>
 					</table>
 				</siga:ConjCampos>
-			</td>
-		</tr>
+
 	<%}%>	
-</table>
+
 </div>
 
-</html:form>
+</html:form>		
 	
    <html:form action = "/JGR_MantenimientoJuzgados.do" method="POST" target="submitArea">
 	<input type="hidden" name="modo"        value="buscarJuzgado">
