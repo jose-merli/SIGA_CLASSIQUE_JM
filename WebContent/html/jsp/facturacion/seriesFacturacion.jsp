@@ -560,17 +560,11 @@
 							:
 							<html:text name="programarFacturacionForm" property="minutosConfirmacion"   value="<%=sMinutosConfirmacion%>" size="1" maxlength="2" styleClass="boxConsulta" readonly="true" />	
 						<% } %>
-					</td>
-										
+					</td>									
 				</tr>
-					
-				<tr>
-					<td colspan ="4">
-						<%@ include file="/html/jsp/facturacion/fechasFicheroBancario.jsp"%>
-					</td>
-				</tr>	
-				
 			</table>
+				
+			<%@ include file="/html/jsp/facturacion/fechasFicheroBancario.jsp"%>
 		</siga:ConjCampos>
 
 		<siga:ConjCampos leyenda="facturacion.seriesFacturacion.literal.configuracionCheck">

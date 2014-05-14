@@ -30,116 +30,105 @@
 	String habilesRecibosB2B = (String) request.getAttribute("habilesRecibosB2B");	
 %>
 
-<table class="tablaCentralCamposPeque" align="center">
+<table class="tablaCampos" align="center" border="0" cellspacing="0" cellpadding="0">
 	<tr>
-		<td class="labelText" width="206px">
-			<siga:Idioma key="facturacion.fechasficherobancario.fechapresentacion"/>&nbsp;(*)
-		</td>
-		<td width="120px">
-			<siga:Fecha nombreCampo="fechaPresentacion"	posicionX="10" posicionY="10" valorInicial="<%=fechaPresentacion%>"/>
-		</td>
-		
-		<td>
-			<siga:ToolTip id='ayudaFechaPresentacion' imagen='/SIGA/html/imagenes/botonAyuda.gif' texto='Recuerde que debera presentar el/los fichero/s en su banco en este día' />				
-		</td>
+		<td class="labelText" width="210px"><siga:Idioma key="facturacion.fechasficherobancario.fechapresentacion"/>&nbsp;(*)</td>
+		<td width="120px"><siga:Fecha nombreCampo="fechaPresentacion"	posicionX="10" posicionY="10" valorInicial="<%=fechaPresentacion%>"/></td>
+		<td><siga:ToolTip id='ayudaFechaPresentacion' imagen='/SIGA/html/imagenes/botonAyuda.gif' texto='<%=UtilidadesString.mostrarDatoJSP(UtilidadesString.getMensajeIdioma (usr, "facturacion.fechasficherobancario.ayudaFechaPresentacion"))%>'/></td>
 	</tr>
+</table>	
 	
-	<tr>
-		<td colspan="3">
-			<siga:ConjCampos leyenda="Fecha Cargo" >
-				<table class="tablaCampos" border="0">
-					<tr>
-						<td class="labelText" colspan="5">
-							<input type="radio" id="radiofechaCargo" name='radioAccion' value="0" onclick="accionRadio()"/>
-							<label for="radiofechaCargo"><siga:Idioma key="facturacion.fechasficherobancario.unica"/></label>
-						</td>
-					</tr>
-					
-					<tr>
-						<td width="30px">&nbsp;</td>
+<siga:ConjCampos leyenda="facturacion.fechasficherobancario.fechacargo">
+	<table class="tablaCampos" border="0">
+		<tr>
+			<td class="labelText" colspan="5">
+				<input type="radio" id="radiofechaCargo" name='radioAccion' value="0" onclick="accionRadio()"/>
+				<label for="radiofechaCargo"><siga:Idioma key="facturacion.fechasficherobancario.unica"/></label>
+			</td>
+		</tr>
+		
+		<tr>
+			<td width="30px">&nbsp;</td>
 
-						<td class="labelText" width="250px" id="fechaCargoUnicaSinAsterisco"><siga:Idioma key="facturacion.fechasficherobancario.fechascargounica"/></td>
-						<td class="labelText" width="250px" id="fechaCargoUnicaConAsterisco"><siga:Idioma key="facturacion.fechasficherobancario.fechascargounica"/>&nbsp;(*)</td>
-						
-						<td><siga:Fecha nombreCampo="fechaCargoUnica" posicionX="10" posicionY="10" valorInicial="<%=fechaUnicaCargos%>"/></td>						
+			<td class="labelText" width="250px" id="fechaCargoUnicaSinAsterisco"><siga:Idioma key="facturacion.fechasficherobancario.fechascargounica"/></td>
+			<td class="labelText" width="250px" id="fechaCargoUnicaConAsterisco"><siga:Idioma key="facturacion.fechasficherobancario.fechascargounica"/>&nbsp;(*)</td>
+			
+			<td><siga:Fecha nombreCampo="fechaCargoUnica" posicionX="10" posicionY="10" valorInicial="<%=fechaUnicaCargos%>"/></td>						
 <%
-						if (habilesUnicaCargos!=null && !habilesUnicaCargos.equals("")) {
+			if (habilesUnicaCargos!=null && !habilesUnicaCargos.equals("")) {
 %>						
-							<td>(<siga:Idioma key='facturacion.fechasficherobancario.fechaMinimoDiasHabiles' arg0='<%=habilesUnicaCargos%>'/>)</td>
+				<td>(<siga:Idioma key='facturacion.fechasficherobancario.fechaMinimoDiasHabiles' arg0='<%=habilesUnicaCargos%>'/>)</td>
 <%
-						}
+			}
 %>							
-					</tr>
-					
-					<tr>
-						<td class="labelText" colspan="5">
-							<input type="radio" id="radioMinimas" name='radioAccion' value="1" onclick="accionRadio()" />
-							<label for="radioMinimas"><siga:Idioma key="facturacion.fechasficherobancario.minimas"/></label>
-						</td>
-					</tr>
+		</tr>
+		
+		<tr>
+			<td class="labelText" colspan="5">
+				<input type="radio" id="radioMinimas" name='radioAccion' value="1" onclick="accionRadio()" />
+				<label for="radioMinimas"><siga:Idioma key="facturacion.fechasficherobancario.minimas"/></label>
+			</td>
+		</tr>
 
-					<tr>
-						<td width="30px" rowspan="4">&nbsp;</td>
-						
-						<td class="labelText" width="250px" id="fechaRecibosPrimerosSinAsterisco"><siga:Idioma key="facturacion.fechasficherobancario.fechaprimerosrecibos"/></td>
-						<td class="labelText" width="250px" id="fechaRecibosPrimerosConAsterisco"><siga:Idioma key="facturacion.fechasficherobancario.fechaprimerosrecibos"/>&nbsp;(*)</td>
-						
-						<td><siga:Fecha nombreCampo="fechaRecibosPrimeros" posicionX="10" posicionY="10" valorInicial="<%=fechaPrimerosRecibos%>"/></td>
+		<tr>
+			<td width="30px" rowspan="4">&nbsp;</td>
+			
+			<td class="labelText" width="250px" id="fechaRecibosPrimerosSinAsterisco"><siga:Idioma key="facturacion.fechasficherobancario.fechaprimerosrecibos"/></td>
+			<td class="labelText" width="250px" id="fechaRecibosPrimerosConAsterisco"><siga:Idioma key="facturacion.fechasficherobancario.fechaprimerosrecibos"/>&nbsp;(*)</td>
+			
+			<td><siga:Fecha nombreCampo="fechaRecibosPrimeros" posicionX="10" posicionY="10" valorInicial="<%=fechaPrimerosRecibos%>"/></td>
 <%
-						if (habilesPrimerosRecibos!=null && !habilesPrimerosRecibos.equals("")) {
+			if (habilesPrimerosRecibos!=null && !habilesPrimerosRecibos.equals("")) {
 %>														
-							<td>(<siga:Idioma key='facturacion.fechasficherobancario.fechaMinimoDiasHabiles' arg0='<%=habilesPrimerosRecibos%>'/>)</td>
+				<td>(<siga:Idioma key='facturacion.fechasficherobancario.fechaMinimoDiasHabiles' arg0='<%=habilesPrimerosRecibos%>'/>)</td>
 <%
-						}
+			}
 %>								
-					</tr>
-					
-					<tr>
-						<td class="labelText" width="250px" id="fechaRecibosRecurrentesSinAsterisco"><siga:Idioma key="facturacion.fechasficherobancario.fecharecibosrecurrentes"/></td>
-						<td class="labelText" width="250px" id="fechaRecibosRecurrentesConAsterisco"><siga:Idioma key="facturacion.fechasficherobancario.fecharecibosrecurrentes"/>&nbsp;(*)</td>
+		</tr>
+		
+		<tr>
+			<td class="labelText" width="250px" id="fechaRecibosRecurrentesSinAsterisco"><siga:Idioma key="facturacion.fechasficherobancario.fecharecibosrecurrentes"/></td>
+			<td class="labelText" width="250px" id="fechaRecibosRecurrentesConAsterisco"><siga:Idioma key="facturacion.fechasficherobancario.fecharecibosrecurrentes"/>&nbsp;(*)</td>
 
-						<td><siga:Fecha nombreCampo="fechaRecibosRecurrentes" posicionX="10" posicionY="10" valorInicial="<%=fechaRecibosRecurrentes%>"/></td>
+			<td><siga:Fecha nombreCampo="fechaRecibosRecurrentes" posicionX="10" posicionY="10" valorInicial="<%=fechaRecibosRecurrentes%>"/></td>
 <%
-						if (habilesRecibosRecurrentes!=null && !habilesRecibosRecurrentes.equals("")) {
+			if (habilesRecibosRecurrentes!=null && !habilesRecibosRecurrentes.equals("")) {
 %>						
-							<td>(<siga:Idioma key='facturacion.fechasficherobancario.fechaMinimoDiasHabiles' arg0='<%=habilesRecibosRecurrentes%>'/>)</td>
+				<td>(<siga:Idioma key='facturacion.fechasficherobancario.fechaMinimoDiasHabiles' arg0='<%=habilesRecibosRecurrentes%>'/>)</td>
 <%
-						}
+			}
 %>								
-					</tr>
-					
-					<tr>
-						<td class="labelText" width="250px" id="fechaRecibosCOR1SinAsterisco"><siga:Idioma key="facturacion.fechasficherobancario.fechareciboscor1"/></td>
-						<td class="labelText" width="250px" id="fechaRecibosCOR1ConAsterisco"><siga:Idioma key="facturacion.fechasficherobancario.fechareciboscor1"/>&nbsp;(*)</td>
+		</tr>
+		
+		<tr>
+			<td class="labelText" width="250px" id="fechaRecibosCOR1SinAsterisco"><siga:Idioma key="facturacion.fechasficherobancario.fechareciboscor1"/></td>
+			<td class="labelText" width="250px" id="fechaRecibosCOR1ConAsterisco"><siga:Idioma key="facturacion.fechasficherobancario.fechareciboscor1"/>&nbsp;(*)</td>
 
-						<td><siga:Fecha nombreCampo="fechaRecibosCOR1" posicionX="10" posicionY="10" valorInicial="<%=fechaRecibosCOR1%>"/></td>
+			<td><siga:Fecha nombreCampo="fechaRecibosCOR1" posicionX="10" posicionY="10" valorInicial="<%=fechaRecibosCOR1%>"/></td>
 <%
-						if (habilesRecibosCOR1!=null && !habilesRecibosCOR1.equals("")) {
+			if (habilesRecibosCOR1!=null && !habilesRecibosCOR1.equals("")) {
 %>							
-							<td>(<siga:Idioma key='facturacion.fechasficherobancario.fechaMinimoDiasHabiles' arg0='<%=habilesRecibosCOR1%>'/>)</td>
+				<td>(<siga:Idioma key='facturacion.fechasficherobancario.fechaMinimoDiasHabiles' arg0='<%=habilesRecibosCOR1%>'/>)</td>
 <%
-						}
+			}
 %>								
-					</tr>
+		</tr>
 
-					<tr>
-						<td class="labelText" width="250px" id="fechaRecibosB2BSinAsterisco"><siga:Idioma key="facturacion.fechasficherobancario.fecharecibosb2b"/></td>
-						<td class="labelText" width="250px" id="fechaRecibosB2BConAsterisco"><siga:Idioma key="facturacion.fechasficherobancario.fecharecibosb2b"/>&nbsp;(*)</td>
+		<tr>
+			<td class="labelText" width="250px" id="fechaRecibosB2BSinAsterisco"><siga:Idioma key="facturacion.fechasficherobancario.fecharecibosb2b"/></td>
+			<td class="labelText" width="250px" id="fechaRecibosB2BConAsterisco"><siga:Idioma key="facturacion.fechasficherobancario.fecharecibosb2b"/>&nbsp;(*)</td>
 
-						<td><siga:Fecha nombreCampo="fechaRecibosB2B" posicionX="10" posicionY="10" valorInicial="<%=fechaRecibosB2B%>"/></td>
+			<td><siga:Fecha nombreCampo="fechaRecibosB2B" posicionX="10" posicionY="10" valorInicial="<%=fechaRecibosB2B%>"/></td>
 <%
-						if (habilesRecibosB2B!=null && !habilesRecibosB2B.equals("")) {
+			if (habilesRecibosB2B!=null && !habilesRecibosB2B.equals("")) {
 %>								
-							<td>(<siga:Idioma key='facturacion.fechasficherobancario.fechaMinimoDiasHabiles' arg0='<%=habilesRecibosB2B%>'/>)</td>
+				<td>(<siga:Idioma key='facturacion.fechasficherobancario.fechaMinimoDiasHabiles' arg0='<%=habilesRecibosB2B%>'/>)</td>
 <%
-						}
+			}
 %>								
-					</tr>
-				</table>
-			</siga:ConjCampos>
-		</td>
-	</tr>
-</table>
+		</tr>
+	</table>
+</siga:ConjCampos>
 
 <script type="text/javascript">
 

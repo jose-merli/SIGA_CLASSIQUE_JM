@@ -19,10 +19,12 @@
 <!-- IMPORTS -->
 <%@ page import="com.siga.beans.FacSufijoBean"%>
 <%@ page import="com.siga.Utilidades.UtilidadesString"%>
+<%@ page import="com.atos.utils.UsrBean"%>
 
 <!-- JSP -->
 <%
 	String app = request.getContextPath();
+	UsrBean usr=(UsrBean)request.getSession().getAttribute("USRBEAN");
 	String modoAction = ""; //NO BORRAR
 %>
 
@@ -111,14 +113,9 @@
 		
 	<html:form action="/FAC_ConfirmarFacturacion.do" method="POST" target="submitArea">
 		<html:hidden name="confirmarFacturacionForm" property="modo" value = ""/>
-		<siga:ConjCampos leyenda="Fechas">
-			<table class="tablaCampos" align="center" border="0" cellspacing="0" cellpadding="0">	
-				<tr>
-					<td>
-						<%@ include file="/html/jsp/facturacion/fechasFicheroBancario.jsp"%>
-					</td>
-				</tr>	
-			</table>
+		
+		<siga:ConjCampos leyenda="facturacion.fechasficherobancario.fechas">
+			<%@ include file="/html/jsp/facturacion/fechasFicheroBancario.jsp"%>
 		</siga:ConjCampos>
 	</html:form>
 

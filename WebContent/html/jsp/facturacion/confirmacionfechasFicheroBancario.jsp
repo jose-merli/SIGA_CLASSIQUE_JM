@@ -121,14 +121,9 @@
 		<html:hidden name="confirmarFacturacionForm" property="idSerieFacturacion" value="<%=idSerieFacturacion%>"/>
 		<html:hidden name="confirmarFacturacionForm" property="idProgramacion" value="<%=idProgramacion%>"/>
 		<html:hidden name="confirmarFacturacionForm" property="modo" value = ""/>		
-		<siga:ConjCampos leyenda="Fechas" >
-			<table class="tablaCampos" align="center" border="0" cellspacing="0" cellpadding="0">	
-				<tr>
-					<td class="labelText" >
-						<%@ include file="/html/jsp/facturacion/fechasFicheroBancario.jsp"%>
-					</td>
-				</tr>	
-			</table>
+		
+		<siga:ConjCampos leyenda="facturacion.fechasficherobancario.fechas" >
+			<%@ include file="/html/jsp/facturacion/fechasFicheroBancario.jsp"%>
 		</siga:ConjCampos>
 	</html:form>
 			
