@@ -71,9 +71,22 @@
 						</label>
 					</td>
 					<td style="vertical-align:middle" width="90px">
-						<siga:ComboBD nombre="idPonente"  tipo="tipoPonente" clase="boxCombo" ancho="500" filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=dato%>"/>
+						<siga:ComboBD nombre="idPonente"  tipo="tipoPonente" clase="boxCombo" ancho="500" filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=dato%>" />
 					</td>
 				</tr>
+				<tr>
+					<td style="vertical-align:middle" width="20px">
+						
+					</td>
+					<td class="labelText">
+						<siga:Idioma key="gratuita.operarEJG.literal.presentacionPonente"/>
+					</td>
+					<td >
+						<siga:Fecha nombreCampo="fechaPresentacionPonente" postFunction="postFunctionFechaPresentacionPonente();" ></siga:Fecha>
+					</td>
+				</tr>
+				
+				
 				
 				<tr>
 					<td style="vertical-align:middle" width="20px">
@@ -126,7 +139,15 @@
 			}else if (document.ActaComisionForm.guardaRatificacion.checked && !document.ActaComisionForm.guardaFundamento.checked) {
 				alert("<siga:Idioma key='sjcs.actas.checkresolucion'/>");
 				fin();
-			} else {
+			} else if (document.ActaComisionForm.guardaPonente.checked && jQuery('#idPonente').val()!='' && jQuery('#fechaPresentacionPonente').val()=='') {
+				
+				alert("<siga:Idioma key='errors.required' arg0='gratuita.operarEJG.literal.presentacionPonente'/>");
+				fin();
+			}else if (document.ActaComisionForm.guardaPonente.checked && jQuery('#idPonente').val()=='' && jQuery('#fechaPresentacionPonente').val()!='') {
+				
+				alert("<siga:Idioma key='errors.required' arg0='gratuita.operarRatificacion.literal.ponente'/>");
+				fin();
+			}else {
 			
 				if (document.ActaComisionForm.guardaFundamento.checked && !document.ActaComisionForm.guardaRatificacion.checked) {
 					alert("<siga:Idioma key='sjcs.actas.checkfundamentojuridico'/>");
@@ -168,17 +189,32 @@
 			return error;
 			
 		}
-
-
+		function postFunctionFechaPresentacionPonente() {
+			
+			jQuery('#guardaPonente').attr('checked',jQuery('#fechaPresentacionPonente').val()!=''||jQuery('#idPonente').val()!='');
+			
+		}
+		 
 		jQuery('#idActaComp').on('change', function (e) {jQuery('#guardaActa').attr('checked',jQuery('#idActaComp option:selected').text()!="");});
-		jQuery('#idPonente').on('change', function (e) {jQuery('#guardaPonente').attr('checked',jQuery('#idPonente option:selected').text()!="");});
+		jQuery('#idPonente').on('change', function (e) {
+			jQuery('#guardaPonente').attr('checked',jQuery('#idPonente option:selected').text()!="");
+				if(jQuery('#idPonente').val()!=''){
+					if(jQuery('#fechaPresentacionPonente').val()==''){
+						var fechaActual = getFechaActualDDMMYYYY();
+						jQuery('#fechaPresentacionPonente').val(fechaActual);
+					}
+				}else{
+					jQuery('#fechaPresentacionPonente').val('');
+				}
+			}
+		);
 		jQuery('#idTipoResolucion').on('change', function (e) {jQuery('#guardaRatificacion').attr('checked',jQuery('#idTipoResolucion option:selected').text()!="");});
 		function actualizaCheckFundamento(){
 			jQuery('#guardaFundamento').attr('checked',jQuery('#idFundamentoJuridico').val()!="");
 		}
 
 		jQuery('#guardaActa').on('change', function (e) {jQuery('#idActaComp').val('');});
-		jQuery('#guardaPonente').on('change', function (e) {jQuery('#idPonente').val('');});
+		jQuery('#guardaPonente').on('change', function (e) {jQuery('#idPonente').val('');jQuery('#fechaPresentacionPonente').val('');});
 		jQuery('#guardaRatificacion').on('change', function (e) {jQuery('#idTipoResolucion').val('');});
 		jQuery('#guardaFundamento').on('change', function (e) {
 			jQuery("#idFundamentoJuridicoFrame").contents().find("#idFundamentoJuridicoSel").val('');

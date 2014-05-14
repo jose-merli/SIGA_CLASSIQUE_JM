@@ -152,6 +152,18 @@
 			document.forms[0].target="submitArea";		   	
 			document.forms[0].submit();
 		}
+		function accionComboTipoPonente(comboPonente){
+			if(comboPonente.value!=''){
+				if(document.getElementById('fechaPresentacionPonente').value==''){
+					var fechaActual = getFechaActualDDMMYYYY();
+					document.getElementById('fechaPresentacionPonente').value = fechaActual;
+				}
+			}else{
+				document.getElementById('fechaPresentacionPonente').value = '';
+			}
+			
+		}
+		
 	</script>
 	<siga:Titulo 
 		titulo="pestana.justiciagratuitaejg.ratificacion" 
@@ -314,7 +326,7 @@
 						<%if (accion.equalsIgnoreCase("ver")){%>
 							<siga:ComboBD nombre="idPonente"  ancho="700" tipo="tipoPonente" clase="boxConsulta"  filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=dato%>" elementoSel="<%=vPonente%>" readOnly="true"/>
 						<%} else {%>
-							<siga:ComboBD nombre="idPonente"  ancho="700" tipo="tipoPonente" clase="boxCombo"  	  filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=dato%>" elementoSel="<%=vPonente%>" />
+							<siga:ComboBD nombre="idPonente"  ancho="700" tipo="tipoPonente" clase="boxCombo"  	  filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=dato%>" elementoSel="<%=vPonente%>" accion="return accionComboTipoPonente(this);" />
 						<%}%>
 					</td>
 					
@@ -523,6 +535,17 @@
 				document.forms[0].anioActa.value=actaComp[1];
 				document.forms[0].idActa.value=actaComp[2];
 			}
+			if(document.getElementById("idPonente").value!=''&&document.getElementById('fechaPresentacionPonente').value==''){
+				error += "<siga:Idioma key='errors.required' arg0='gratuita.operarEJG.literal.presentacionPonente'/>"+ '\n';
+				
+			}
+			if(document.getElementById("idPonente").value==''&&document.getElementById('fechaPresentacionPonente').value!=''){
+				error += "<siga:Idioma key='errors.required' arg0='gratuita.operarRatificacion.literal.ponente'/>"+ '\n';
+				
+			}
+			
+			
+			
 			if(error!=''){
 				fin();
 			    alert(error);
@@ -609,6 +632,8 @@
 			}
 		}
 		
+		
+		
 		function abrirActa(){
 			if(document.getElementById("idActaComp")&&document.getElementById("idActaComp").value!=""){
 				var actaComp= document.getElementById("idActaComp").value.split(',');
@@ -631,6 +656,8 @@
 				inicioFechaResolucionCAJG();
 			});
 		<%}%>
+		
+		
 		
 	</script>
 	<!-- FIN: SCRIPTS BOTONES -->

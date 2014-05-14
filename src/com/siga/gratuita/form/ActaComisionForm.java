@@ -45,7 +45,10 @@ public class ActaComisionForm extends MasterForm {
 	private boolean guardaPonente = false;
 	private boolean guardaFundamento = false;
 	private boolean guardaRatificacion = false;
+	
+	private String fechaPresentacionPonente;
 
+	
 	public void setNumeroActa(String valor) 	{this.numeroActa = valor;}
 	public void setAnioActa(String valor) 		{this.anioActa = valor;}
 	public void setFechaResolucion(String valor){this.fechaResolucion = valor;}
@@ -93,6 +96,18 @@ public class ActaComisionForm extends MasterForm {
 	public boolean getGuardaFundamento() 	{return guardaFundamento;}
 	public boolean getGuardaRatificacion() 	{return guardaRatificacion;}
 	public String getPendientes() 	{return pendientes;}
+	/**
+	 * @return the fechaPresentacionPonente
+	 */
+	public String getFechaPresentacionPonente() {
+		return fechaPresentacionPonente;
+	}
+	/**
+	 * @param fechaPresentacionPonente the fechaPresentacionPonente to set
+	 */
+	public void setFechaPresentacionPonente(String fechaPresentacionPonente) {
+		this.fechaPresentacionPonente = fechaPresentacionPonente;
+	}
 	
 	public void reset(){
 		numeroActa		= null;
@@ -118,6 +133,7 @@ public class ActaComisionForm extends MasterForm {
 		guardaPonente 	= false;
 		guardaFundamento 	= false;
 		guardaRatificacion 	= false;
+		fechaPresentacionPonente = null;
 	}
 	
 	public ActionErrors validate(ActionMapping mapping, HttpServletRequest request ) {		

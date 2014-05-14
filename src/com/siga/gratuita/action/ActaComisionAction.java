@@ -690,11 +690,11 @@ public class ActaComisionAction extends MasterAction{
 	protected String updateMasivo(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException{
 		ActaComisionForm actaForm = (ActaComisionForm)formulario;
 		UsrBean usr = (UsrBean)request.getSession().getAttribute("USRBEAN");
-		ScsEJGBean ejgBean = new ScsEJGBean();
 		ScsEJGAdm ejgAdm = new ScsEJGAdm(usr);  
 		String anioActa 	= actaForm.getAnioActa().equalsIgnoreCase("")?"null":actaForm.getAnioActa();
 		String idActa 		= actaForm.getIdActa().equalsIgnoreCase("")?"null":actaForm.getIdActa();
 		String idPonente 	= actaForm.getIdPonente().equalsIgnoreCase("")?"null":actaForm.getIdPonente();
+		
 		String idInstitucion 	= actaForm.getIdInstitucion().equalsIgnoreCase("")?"null":actaForm.getIdInstitucion();
 		String idFundamentoJuridico 	= actaForm.getIdFundamentoJuridico().equalsIgnoreCase("")?"null":actaForm.getIdFundamentoJuridico();
 		String idTipoRatificacionEJG 	= actaForm.getIdTipoRatificacionEJG().equalsIgnoreCase("")?"null":actaForm.getIdTipoRatificacionEJG();
@@ -719,6 +719,10 @@ public class ActaComisionAction extends MasterAction{
 		}
 		if(actaForm.getGuardaPonente()){
 			update.append(ScsEJGBean.C_IDPONENTE + "=" + idPonente + " , ");
+			if(actaForm.getFechaPresentacionPonente()!=null && !actaForm.getFechaPresentacionPonente().equalsIgnoreCase(""))
+				update.append(ScsEJGBean.C_FECHAPRESENTACIONPONENTE + "='" + actaForm.getFechaPresentacionPonente() + "' , ");
+			else
+				update.append(ScsEJGBean.C_FECHAPRESENTACIONPONENTE + "=null , ");
 		}
 		if(actaForm.getGuardaRatificacion()){
 			update.append(ScsEJGBean.C_IDTIPORATIFICACIONEJG + "=" + idTipoRatificacionEJG + " , ");
