@@ -285,7 +285,8 @@ protected String relacionarConEJG (boolean bCrear, MasterForm formulario, HttpSe
 										" and des.anio =" +(String)designaActual.get("ANIO")+
 										" and des.numero ="+(String)designaActual.get("NUMERO")+
 										" and des.idturno ="+(String)designaActual.get("IDTURNO")+
-										" and des.idinstitucion="+usr.getLocation();
+										" and des.idinstitucion="+usr.getLocation()+
+										" order by ejg.anio desc, ejg.numejg desc";
 			
 			Vector resultado = (Vector)contrariosAdm.ejecutaSelect(consultaContrarios);
 			request.getSession().setAttribute("resultado",resultado);

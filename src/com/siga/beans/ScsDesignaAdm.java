@@ -895,7 +895,7 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 							   " AND ed." + ScsEJGDESIGNABean.C_IDINSTITUCION + " = e."+ ScsEJGBean.C_IDINSTITUCION +
 							
 							" ) " +
-						 " ORDER BY SJCS, IDINSTITUCION, ANIO, CODIGO ";
+						 " ORDER BY SJCS, IDINSTITUCION, ANIO desc, CODIGO desc";
 
 	       	return this.selectGenerico(sql);
 		}

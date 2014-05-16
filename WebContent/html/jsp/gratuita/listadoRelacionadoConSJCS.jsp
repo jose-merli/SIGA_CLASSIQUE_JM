@@ -191,7 +191,7 @@
 					else regSJCS = new String("");
 	%>	
 
-			<siga:FilaConIconos fila="<%=String.valueOf(recordNumber)%>" botones = "<%=botones%>" clase="listaNonEdit" pintarEspacio="false" visibleBorrado="no" visibleEdicion="no" modo="<%=modo%>" >
+			<siga:FilaConIconos fila="<%=String.valueOf(recordNumber)%>" botones = "C,E,B" clase="listaNonEdit" pintarEspacio="false" visibleBorrado="no" visibleEdicion="no" modo="<%=modo%>" >
 
 						<td nombre="SJCS">
 							<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_1" value="<%=regSJCS2%>">

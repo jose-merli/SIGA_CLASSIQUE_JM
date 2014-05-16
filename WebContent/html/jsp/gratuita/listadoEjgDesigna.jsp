@@ -125,8 +125,8 @@
 			<siga:Table 
 			   name="tablaDatos"
 			   border="1"
-			   columnNames="gratuita.listadoAsistencias.literal.anio,gratuita.ejgDesigna.literal.tipoEjg,gratuita.listadoAsistencias.literal.numero,gratuita.listaTurnosLetrados.literal.turno,pestana.tiposexpedientes.estado,gratuita.ejgDesigna.literal.beneficiario,"
-			   columnSizes="5,20,10,25,10,20,10">
+			   columnNames="gratuita.listadoAsistencias.literal.anio,gratuita.listadoAsistencias.literal.numero,gratuita.ejgDesigna.literal.tipoEjg,gratuita.listaTurnosLetrados.literal.turno,pestana.tiposexpedientes.estado,gratuita.ejgDesigna.literal.beneficiario,"
+			   columnSizes="5,10,20,25,10,20,10">
 		
 		<% if (obj==null || obj.size()==0){%>
 	 		<tr class="notFound">
@@ -156,7 +156,7 @@
 					String idInstitucionEJG = (String)hash.get("IDINSTITUCION");
 	%>	
 
-						<siga:FilaConIconos fila="<%=String.valueOf(recordNumber)%>" botones="C,E, B" clase="listaNonEdit" visibleBorrado="no" visibleEdicion="no"  modo="<%=modo%>"	>
+						<siga:FilaConIconos fila="<%=String.valueOf(recordNumber)%>" botones="C,E,B" clase="listaNonEdit" visibleBorrado="no" visibleEdicion="no"  modo="<%=modo%>"	>
 
 				  	<%	consultaBeneficiario = " select (per.nombre||' '||per.apellido1||' '||per.apellido2) beneficiario  "+
 														" from scs_personajg per "+
@@ -181,8 +181,8 @@
 							<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_4" value="<%=numeroEJG%>">
 							&nbsp;<%=(String)hash.get("ANIOEJG")%>
 						</td>
-						<td >&nbsp;<%=descripcionTipo%></td>
 						<td >&nbsp;<%=(String)hash.get("CODIGO")%></td>
+						<td >&nbsp;<%=descripcionTipo%></td>
 						<td >&nbsp;<%=descripcionTurno%></td>
 						<td >&nbsp;<%=estado%></td>
 						<td >&nbsp;<%=(String)beneficiario.get("BENEFICIARIO")%></td>
