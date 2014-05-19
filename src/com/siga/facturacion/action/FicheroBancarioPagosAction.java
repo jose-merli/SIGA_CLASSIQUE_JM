@@ -351,7 +351,7 @@ public class FicheroBancarioPagosAction extends MasterAction{
 			// Controlar que las fechas cumplen los dias habiles introducidos en parametros generales
 			FacDisqueteCargosAdm adm = new FacDisqueteCargosAdm(this.getUserBean(request));	
 			if (!adm.controlarFechasFicheroBancario(idInstitucion, fechaEntrega, fechaUnica, fechaRecibosPrimeros, fechaRecibosRecurrentes, fechaRecibosCOR1, fechaRecibosB2B, form.getFechaTipoUnica(), null)) {
-				throw new SIGAException("fecha.error.valida");
+				throw new SIGAException("facturacion.ficheroBancarioPagos.errorMandatos.mensajeFechas");
 			}				
 			
 			// Se envían a banco para su renegociación
@@ -606,7 +606,7 @@ public class FicheroBancarioPagosAction extends MasterAction{
 			// Controlar que las fechas cumplen los dias habiles introducidos en parametros generales
 			FacDisqueteCargosAdm adm = new FacDisqueteCargosAdm(this.getUserBean(request));	
 			if (!adm.controlarFechasFicheroBancario(idInstitucion, fechaEntrega, fechaUnica, fechaRecibosPrimeros, fechaRecibosRecurrentes, fechaRecibosCOR1, fechaRecibosB2B, form.getFechaTipoUnica(), null)) {
-				throw new SIGAException("fecha.error.valida");
+				throw new SIGAException("facturacion.ficheroBancarioPagos.errorMandatos.mensajeFechas");
 			}			
 			
 			// Se envían los parametros para modificar las fechas del fichero

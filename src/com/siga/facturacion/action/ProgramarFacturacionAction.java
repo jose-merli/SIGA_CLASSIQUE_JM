@@ -351,7 +351,7 @@ public class ProgramarFacturacionAction extends MasterAction{
 			// Controlar que las fechas cumplen los dias habiles introducidos en parametros generales			
 			FacDisqueteCargosAdm admDisqueteCargos = new FacDisqueteCargosAdm(this.getUserBean(request));	
 			if (!admDisqueteCargos.controlarFechasFicheroBancario(idInstitucion, fechaEntrega, fechaUnica, fechaRecibosPrimeros, fechaRecibosRecurrentes, fechaRecibosCOR1, fechaRecibosB2B, form.getFechaTipoUnica(), fechaPrevistaConfirmacion)) {
-				throw new SIGAException("fecha.error.valida");
+				throw new SIGAException("facturacion.ficheroBancarioPagos.errorMandatos.mensajeFechas");
 			}				
 			
 			// Comprobaciones antes de confirmacion 
@@ -483,7 +483,7 @@ public class ProgramarFacturacionAction extends MasterAction{
 			// Controlar que las fechas cumplen los dias habiles introducidos en parametros generales
 			FacDisqueteCargosAdm admDisqueteCargos = new FacDisqueteCargosAdm(this.getUserBean(request));	
 			if (!admDisqueteCargos.controlarFechasFicheroBancario(idInstitucion, fechaEntrega, fechaUnica, fechaRecibosPrimeros, fechaRecibosRecurrentes, fechaRecibosCOR1, fechaRecibosB2B, form.getFechaTipoUnica(), fechaPrevistaConfirmacion)) {
-				throw new SIGAException("fecha.error.valida");
+				throw new SIGAException("facturacion.ficheroBancarioPagos.errorMandatos.mensajeFechas");
 			}					
 			
 			// tratamiento de estados de la programacion 
