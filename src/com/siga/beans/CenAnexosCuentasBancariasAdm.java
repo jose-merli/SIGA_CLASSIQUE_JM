@@ -302,7 +302,7 @@ public class CenAnexosCuentasBancariasAdm extends MasterBeanAdministrador {
 			Hashtable anexo = null;
 			if (rc.find(getSqlObtenerAnexo(beanAnexo,isFirmado)) && rc.size()>0) {
 				for (int i = 0; i < rc.size(); i++){
-					Row fila = (Row) rc.get(0);
+					Row fila = (Row) rc.get(i);
 					beanMandato = new CenMandatosCuentasBancariasBean();
 					beanMandato.setIdInstitucion(beanAnexo.getIdInstitucion());
 					beanMandato.setIdPersona(beanAnexo.getIdPersona());

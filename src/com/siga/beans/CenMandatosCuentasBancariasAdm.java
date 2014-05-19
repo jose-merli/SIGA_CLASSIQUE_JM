@@ -383,7 +383,7 @@ public class CenMandatosCuentasBancariasAdm extends MasterBeanAdministrador {
 			mandatosList = new ArrayList<Hashtable>();
 			if (rc.find(getSqlObtenerMandato(beanMandato,isFirmado)) && rc.size()>0) {
 				for (int i = 0; i < rc.size(); i++){
-					Row fila = (Row) rc.get(0);
+					Row fila = (Row) rc.get(i);
 					mandatosList.add(fila.getRow());
 				}
 				
