@@ -160,82 +160,88 @@
 
 	function accionRadio(){		
 		if (jQuery("input[name='radioAccion']:checked").val() == "0") {
-			jQuery('#fechaRecibosPrimeros').addClass("boxConsulta").removeClass("box");
-			jQuery('#fechaRecibosRecurrentes').addClass("boxConsulta").removeClass("box");
-			jQuery('#fechaRecibosCOR1').addClass("boxConsulta").removeClass("box");
-			jQuery('#fechaRecibosB2B').addClass("boxConsulta").removeClass("box");
-			jQuery("#fechaRecibosPrimeros-datepicker-trigger").hide();	
-			jQuery("#fechaRecibosRecurrentes-datepicker-trigger").hide();
-			jQuery("#fechaRecibosCOR1-datepicker-trigger").hide();
-			jQuery("#fechaRecibosB2B-datepicker-trigger").hide();
+			jQuery('#fechaCargoUnica').addClass("box").removeClass("boxConsulta").removeAttr('disabled');
 			jQuery("#fechaCargoUnica-datepicker-trigger").show();
-			jQuery('#fechaCargoUnica').addClass("box").removeClass("boxConsulta");				
 			jQuery('#fechaCargoUnicaConAsterisco').show();
-			jQuery('#fechaCargoUnicaSinAsterisco').hide();	
+			jQuery('#fechaCargoUnicaSinAsterisco').hide();
+						
+			jQuery('#fechaRecibosPrimeros').addClass("boxConsulta").removeClass("box").attr('disabled','disabled');
+			jQuery("#fechaRecibosPrimeros-datepicker-trigger").hide();
 			jQuery('#fechaRecibosPrimerosConAsterisco').hide();
-			jQuery('#fechaRecibosPrimerosSinAsterisco').show();	
+			jQuery('#fechaRecibosPrimerosSinAsterisco').show();
+						
+			jQuery('#fechaRecibosRecurrentes').addClass("boxConsulta").removeClass("box").attr('disabled','disabled');
+			jQuery("#fechaRecibosRecurrentes-datepicker-trigger").hide();
 			jQuery('#fechaRecibosRecurrentesConAsterisco').hide();
-			jQuery('#fechaRecibosRecurrentesSinAsterisco').show();	
+			jQuery('#fechaRecibosRecurrentesSinAsterisco').show();
+						
+			jQuery('#fechaRecibosCOR1').addClass("boxConsulta").removeClass("box").attr('disabled','disabled');
+			jQuery("#fechaRecibosCOR1-datepicker-trigger").hide();
 			jQuery('#fechaRecibosCOR1ConAsterisco').hide();
 			jQuery('#fechaRecibosCOR1SinAsterisco').show();	
+			
+			jQuery('#fechaRecibosB2B').addClass("boxConsulta").removeClass("box").attr('disabled','disabled');
+			jQuery("#fechaRecibosB2B-datepicker-trigger").hide();
 			jQuery('#fechaRecibosB2BConAsterisco').hide();
-			jQuery('#fechaRecibosB2BSinAsterisco').show();				
+			jQuery('#fechaRecibosB2BSinAsterisco').show();	
 			
 		} else {
-			jQuery('#fechaCargoUnica').addClass("boxConsulta").removeClass("box");	
-			jQuery('#fechaRecibosPrimeros').addClass("box").removeClass("boxConsulta");	
-			jQuery('#fechaRecibosRecurrentes').addClass("box").removeClass("boxConsulta");	
-			jQuery('#fechaRecibosCOR1').addClass("box").removeClass("boxConsulta");	
-			jQuery('#fechaRecibosB2B').addClass("box").removeClass("boxConsulta");	
+			jQuery('#fechaCargoUnica').addClass("boxConsulta").removeClass("box").attr('disabled','disabled');
 			jQuery("#fechaCargoUnica-datepicker-trigger").hide();
-			jQuery("#fechaRecibosPrimeros-datepicker-trigger").show();
-			jQuery("#fechaRecibosRecurrentes-datepicker-trigger").show();
-			jQuery("#fechaRecibosCOR1-datepicker-trigger").show();
-			jQuery("#fechaRecibosB2B-datepicker-trigger").show();	
-			
 			jQuery('#fechaCargoUnicaConAsterisco').hide();
-			jQuery('#fechaCargoUnicaSinAsterisco').show();	
+			jQuery('#fechaCargoUnicaSinAsterisco').show();
+			
+			jQuery('#fechaRecibosPrimeros').addClass("box").removeClass("boxConsulta").removeAttr('disabled');
+			jQuery("#fechaRecibosPrimeros-datepicker-trigger").show();
 			jQuery('#fechaRecibosPrimerosConAsterisco').show();
 			jQuery('#fechaRecibosPrimerosSinAsterisco').hide();
+			
+			jQuery('#fechaRecibosRecurrentes').addClass("box").removeClass("boxConsulta").removeAttr('disabled');
+			jQuery("#fechaRecibosRecurrentes-datepicker-trigger").show();
 			jQuery('#fechaRecibosRecurrentesConAsterisco').show();
 			jQuery('#fechaRecibosRecurrentesSinAsterisco').hide();
+			
+			jQuery('#fechaRecibosCOR1').addClass("box").removeClass("boxConsulta").removeAttr('disabled');
+			jQuery("#fechaRecibosCOR1-datepicker-trigger").show();
 			jQuery('#fechaRecibosCOR1ConAsterisco').show();
 			jQuery('#fechaRecibosCOR1SinAsterisco').hide();
+						
+			jQuery('#fechaRecibosB2B').addClass("box").removeClass("boxConsulta").removeAttr('disabled');					
+			jQuery("#fechaRecibosB2B-datepicker-trigger").show();	
 			jQuery('#fechaRecibosB2BConAsterisco').show();
 			jQuery('#fechaRecibosB2BSinAsterisco').hide();	
 		}
 	}
 	
 	function deshabilitar(){
-		//input fecha
-		jQuery('#fechaPresentacion').addClass("boxConsulta").removeClass("box");	
-		jQuery('#fechaCargoUnica').addClass("boxConsulta").removeClass("box");	
-		jQuery('#fechaRecibosPrimeros').addClass("boxConsulta").removeClass("box");
-		jQuery('#fechaRecibosRecurrentes').addClass("boxConsulta").removeClass("box");
-		jQuery('#fechaRecibosCOR1').addClass("boxConsulta").removeClass("box");
-		jQuery('#fechaRecibosB2B').addClass("boxConsulta").removeClass("box");
-		
-		//icono fecha
+		jQuery('#fechaPresentacion').addClass("boxConsulta").removeClass("box").attr('disabled','disabled');
 		jQuery("#fechaPresentacion-datepicker-trigger").hide();
-		jQuery("#fechaCargoUnica-datepicker-trigger").hide();
-		jQuery("#fechaRecibosPrimeros-datepicker-trigger").hide();	
-		jQuery("#fechaRecibosRecurrentes-datepicker-trigger").hide();
-		jQuery("#fechaRecibosCOR1-datepicker-trigger").hide();
-		jQuery("#fechaRecibosB2B-datepicker-trigger").hide();
 		
-		//Asteriscos (todos fuera en modo ver)
+		jQuery('#fechaCargoUnica').addClass("boxConsulta").removeClass("box").attr('disabled','disabled');
+		jQuery("#fechaCargoUnica-datepicker-trigger").hide();
 		jQuery('#fechaCargoUnicaConAsterisco').hide();
 		jQuery('#fechaCargoUnicaSinAsterisco').show();	
+							
+		jQuery('#fechaRecibosPrimeros').addClass("boxConsulta").removeClass("box").attr('disabled','disabled');
+		jQuery("#fechaRecibosPrimeros-datepicker-trigger").hide();
 		jQuery('#fechaRecibosPrimerosConAsterisco').hide();
-		jQuery('#fechaRecibosPrimerosSinAsterisco').show();	
+		jQuery('#fechaRecibosPrimerosSinAsterisco').show();
+		
+		jQuery('#fechaRecibosRecurrentes').addClass("boxConsulta").removeClass("box").attr('disabled','disabled');
+		jQuery("#fechaRecibosRecurrentes-datepicker-trigger").hide();
 		jQuery('#fechaRecibosRecurrentesConAsterisco').hide();
-		jQuery('#fechaRecibosRecurrentesSinAsterisco').show();	
+		jQuery('#fechaRecibosRecurrentesSinAsterisco').show();
+		
+		jQuery('#fechaRecibosCOR1').addClass("boxConsulta").removeClass("box").attr('disabled','disabled');
+		jQuery("#fechaRecibosCOR1-datepicker-trigger").hide();
 		jQuery('#fechaRecibosCOR1ConAsterisco').hide();
-		jQuery('#fechaRecibosCOR1SinAsterisco').show();	
+		jQuery('#fechaRecibosCOR1SinAsterisco').show();
+		
+		jQuery('#fechaRecibosB2B').addClass("boxConsulta").removeClass("box").attr('disabled','disabled');
+		jQuery("#fechaRecibosB2B-datepicker-trigger").hide();
 		jQuery('#fechaRecibosB2BConAsterisco').hide();
 		jQuery('#fechaRecibosB2BSinAsterisco').show();
 		
-		//radiobuttons
 		jQuery("input[name='radioAccion']").attr("disabled","disabled");	
 	}
 	
