@@ -363,11 +363,11 @@ public class FacDisqueteCargosAdm extends MasterBeanAdministrador {
 			fechaPrevista = fechaPreviaPresentacion;
 		} else {
 			fechaPrevista = GstDate.getHoyJsp(); // Obtengo la fecha actual
-		}			
+		}
 		
-		String fechaMinimaEntrega = EjecucionPLs.ejecutarSumarDiasHabiles(idInstitucionCGAE, fechaPrevista, "1"); // fechaPrevista + 1				
-		
-		if (GstDate.compararFechas(fechaEntrega, fechaMinimaEntrega) < 0) {
+		/*String fechaMinimaEntrega = EjecucionPLs.ejecutarSumarDiasHabiles(idInstitucionCGAE, fechaPrevista, "1"); // fechaPrevista + 1						
+		if (GstDate.compararFechas(fechaEntrega, fechaMinimaEntrega) < 0) {*/
+		if (GstDate.compararFechas(fechaEntrega, fechaPrevista) < 0) { // INC_12343_SIGA y INC_12345_SIGA solicitan la fecha actual como permitida 	
 			return false;
 		}
 		

@@ -872,7 +872,8 @@ or	 * @param request -
 				/** CR7 - Insercion de Fechas SEPA segun el algoritmo empleado en la ventana de Programacion **/
 				String idInstitucionCGAE = String.valueOf(ClsConstants.INSTITUCION_CGAE);
 				String fechaActual = GstDate.getHoyJsp(); // Obtengo la fecha actual
-				String fechaPresentacion = EjecucionPLs.ejecutarSumarDiasHabiles(idInstitucionCGAE, fechaActual, "1"); // Fecha actual + 1
+				// String fechaPresentacion = EjecucionPLs.ejecutarSumarDiasHabiles(idInstitucionCGAE, fechaActual, "1"); // Fecha actual + 1
+				String fechaPresentacion = fechaActual; // INC_12343_SIGA y INC_12345_SIGA solicitan la fecha actual como permitida 
 				
 				GenParametrosAdm admParametros = new GenParametrosAdm(user);
 				String habilesUnicaCargos = admParametros.getValor(idInstitucion.toString(), "FAC", "DIAS_HABILES_UNICA_CARGOS", "7");
