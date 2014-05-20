@@ -1559,7 +1559,8 @@ public class PersonaJGAction extends MasterAction {
 								UtilidadesHash.setForCompare(hash, ScsContrariosDesignaBean.C_IDINSTITUCIONPROCURADOR,ufBean.getIdInstitucionProcurador());
 								UtilidadesHash.setForCompare(hash, ScsContrariosDesignaBean.C_IDPROCURADOR,ufBean.getIdProcurador());
 								UtilidadesHash.setForCompare(hash, ScsContrariosDesignaBean.C_NOMBREABOGADOCONTRARIO,ufBean.getnombreAbogadoContrario());	
-								UtilidadesHash.setForCompare(hash, ScsContrariosDesignaBean.C_IDABOGADOCONTRARIO,ufBean.getIdAbogadoContrario());	
+								UtilidadesHash.setForCompare(hash, ScsContrariosDesignaBean.C_IDABOGADOCONTRARIO,ufBean.getIdAbogadoContrario());
+								UtilidadesHash.setForCompare(hash, ScsContrariosDesignaBean.C_IDINSTITUCIONORIGEN,ufBean.getIdInstitucionOrigen());
 								dataBackup.put(ScsContrariosDesignaBean.T_NOMBRETABLA,hash);						
 								
 								
@@ -1872,11 +1873,11 @@ public class PersonaJGAction extends MasterAction {
 			
 			if ((miform.getFechaNac()==null)||(miform.getFechaNac().equalsIgnoreCase(""))) {
 				UtilidadesHash.set(persona,ScsPersonaJGBean.C_FECHANACIMIENTO,"");
-				UtilidadesHash.set(persona,ScsPersonaJGBean.C_EDAD,miform.getEdad());				
+				UtilidadesHash.set(persona,ScsPersonaJGBean.C_EDAD,"");				
 			}
 			else {
 				UtilidadesHash.set(persona,ScsPersonaJGBean.C_FECHANACIMIENTO,GstDate.getApplicationFormatDate("",miform.getFechaNac()));
-				UtilidadesHash.set(persona,ScsPersonaJGBean.C_EDAD,"");
+				UtilidadesHash.set(persona,ScsPersonaJGBean.C_EDAD,miform.getEdad());
 			}
 			
 			UtilidadesHash.set(persona,ScsPersonaJGBean.C_IDPROFESION,miform.getProfesion());
@@ -2566,6 +2567,7 @@ public class PersonaJGAction extends MasterAction {
 				UtilidadesHash.set(contrariosDesignaHash,ScsContrariosDesignaBean.C_IDPERSONA,miform.getIdPersonaJG());
 				UtilidadesHash.set(contrariosDesignaHash,ScsContrariosDesignaBean.C_NOMBREABOGADOCONTRARIO,miform.getAbogadoContrario());
 				UtilidadesHash.set(contrariosDesignaHash,ScsContrariosDesignaBean.C_IDABOGADOCONTRARIO,miform.getIdPersonaContrario());
+				UtilidadesHash.set(contrariosDesignaHash,ScsContrariosDesignaBean.C_IDINSTITUCIONORIGEN,miform.getNinstitucionOrigen()); //Si es vacio la institucion sera la actual
 				// separar el valor del procurador y su institucion
 				if (miform.getIdProcurador()!=null && !miform.getIdProcurador().trim().equals("")) {
 					String id_proc = miform.getIdProcurador().substring(0,miform.getIdProcurador().indexOf(","));
