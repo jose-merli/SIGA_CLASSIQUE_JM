@@ -89,7 +89,7 @@
 		<siga:Idioma key="gratuita.listadoAreas.literal.contenidoArea"/>
 	</td>
 	<td valign="top">
-		<textarea name="contenidoArea" onKeyDown="cuenta(this,4000)" onChange="cuenta(this,4000)" rows="5" cols="60" class="box"></textarea>
+		<textarea name="contenidoArea" onKeyDown="cuenta(this,4000)" onChange="cuenta(this,4000)" rows="5" cols="560" class="box" style="width:530px"></textarea>
 	</td>
 	</tr>
 	</table>
