@@ -121,20 +121,11 @@
 		}
 		
 		paramsJuzgadoJSON = "{\"idjuzgado\":\"-1\"}";
-		//if(filtrarModulos.equals("S")){
-	    	comboJuzgados = "getJuzgadosTurnosModulos";
-	    	comboModulos = "getProcedimientosEnVigencia";
-	    	comboModulosParentQueryIds = "idjuzgado,fechadesdevigor,fechahastavigor";
-	    	comboPretensionesEjis= "getPretensionesEjisModulosFiltros";
-	    	comboPretensionesParentQueryIds = "idpretension";
-	    	
-	    //}else{
-			//comboJuzgados = "getJuzgadosTurnos";
-	    	//comboModulos = "getProcedimientosEnVigencia";
-	    	//comboModulosParentQueryIds = "idjuzgado,idprocedimiento,fechadesdevigor,fechahastavigor";
-	    	//comboPretensionesEjis= "getPretensionesEjisModulos";
-	    	//comboPretensionesParentQueryIds = "idpretension";
-	   // }
+    	comboJuzgados = "getJuzgadosJurisdiccion";
+    	comboModulos = "getProcedimientosEnVigencia";
+    	comboModulosParentQueryIds = "idjuzgado,fechadesdevigor,fechahastavigor";
+    	comboPretensionesEjis= "getPretensionesEjisModulosFiltros";
+    	comboPretensionesParentQueryIds = "idpretension";
 
 		tipo = (String) resultado.get("IDTIPODESIGNACOLEGIO");
 		turno = (String)resultado.get("TURNO");
@@ -229,6 +220,7 @@
 		
 		juzgadoSel.add(0,"{\"idjuzgado\":\""+idJuzgado+"\",\"idinstitucion\":\""+idInstitucionJuzgado+"\",\"fechadesdevigor\":\""+fechaVigor+"\",\"fechahastavigor\":\""+fechaVigor+"\"}");
 		paramsJuzgadoJSON = "{\"idjuzgado\":\""+idJuzgado+"\"";
+		paramsJuzgadoJSON += ",\"idturno\":\""+idTurno+"\"";
 		paramsJuzgadoJSON += ",\"fechadesdevigor\":\""+fechaVigor+"\"";
 		paramsJuzgadoJSON += ",\"fechahastavigor\":\""+fechaVigor+"\"}";
 		idProcedimientoParamsJSON += ",\"idjuzgado\":\""+idJuzgado+"\"";
@@ -954,7 +946,7 @@
 																
 																<% } %>
 																	<td colspan="2" nowrap="nowrap">
-																		<siga:Select id="juzgado" queryId="<%=comboJuzgados%>" queryParamId="idjuzgado" params="<%=paramsJuzgadoJSON%>" selectedIds="<%=juzgadoSel%>" showSearchBox="true" searchkey="CODIGOEXT2" searchBoxMaxLength="10" searchBoxWidth="8" width="500" childrenIds="idProcedimiento,idPretension" readonly="<%=modoVerReadOnly%>"/>
+																		<siga:Select id="juzgado" queryId="<%=comboJuzgados%>" queryParamId="idjuzgado,idturno" params="<%=paramsJuzgadoJSON%>" selectedIds="<%=juzgadoSel%>" showSearchBox="true" searchkey="CODIGOEXT2" searchBoxMaxLength="10" searchBoxWidth="8" width="500" childrenIds="idProcedimiento,idPretension" readonly="<%=modoVerReadOnly%>"/>
 																	</td> 
 															</tr>
 															
@@ -970,7 +962,7 @@
 																<% } %> 
 																
 																<td rowspan="2" nowrap="nowrap">
-																	<siga:Select id="juzgado" queryId="<%=comboJuzgados%>" queryParamId="idjuzgado" params="<%=paramsJuzgadoJSON%>" selectedIds="<%=juzgadoSel%>" showSearchBox="true" searchkey="CODIGOEXT2" searchBoxMaxLength="10" searchBoxWidth="8" width="500" childrenIds="idProcedimiento" readonly="<%=modoVerReadOnly%>"/>
+																	<siga:Select id="juzgado" queryId="<%=comboJuzgados%>" queryParamId="idjuzgado,idturno" params="<%=paramsJuzgadoJSON%>" selectedIds="<%=juzgadoSel%>" showSearchBox="true" searchkey="CODIGOEXT2" searchBoxMaxLength="10" searchBoxWidth="8" width="500" childrenIds="idProcedimiento" readonly="<%=modoVerReadOnly%>"/>
 																</td> 
 															</tr>									
 													<% } %>		

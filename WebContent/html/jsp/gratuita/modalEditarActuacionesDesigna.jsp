@@ -123,20 +123,22 @@
     String param[] = {usr.getLocation(),idTurno};
     
     if(filtrarModulos.equals("S")){
-    	datoJuzg = new String[5];
+    	datoJuzg = new String[6];
     	datoJuzg [0] = "-1";
     	datoJuzg [1] = fecha;
     	datoJuzg [2] = fecha;
     	datoJuzg [3] = usr.getLocation();
-    	datoJuzg [4] = "-1";
-    	comboJuzgados = "comboJuzgadosTurnosModulos";
+    	datoJuzg [4] = idTurno;
+    	datoJuzg [5] = "-1";
+    	comboJuzgados = "comboJuzgadosJurisdiccionModulos";
     	comboModulos = "comboProcedimientosVigencia";
     	comboJuzgadosJustificacion = "comboProcedimientosJustificacionVigencia";
     }else{
-    	datoJuzg = new String[2];
+    	datoJuzg = new String[3];
     	datoJuzg [0] = usr.getLocation();
-		datoJuzg [1] = "-1";
-		comboJuzgados = "comboJuzgadosTurno";
+		datoJuzg [1] = idTurno;
+		datoJuzg [2] = "-1";
+		comboJuzgados = "comboJuzgadosJurisdiccion";
     	comboModulos = "comboProcedimientos";
     	comboJuzgadosJustificacion = "comboProcedimientosJustificacion";
     }
@@ -258,7 +260,7 @@
 			juzgadoSel.add(0,idJuzgado+","+idInstitucionJuzgado+","+idProcedimiento+","+fecha+","+fecha);
 		
 		if(idJuzgado!=null && !idJuzgado.equals(""))
-			datoJuzg[4]=idJuzgado;
+			datoJuzg[5]=idJuzgado;
 		
 		if(idProcedimiento!=null && !idProcedimiento.equals(""))
 			datoJuzg[0]=idProcedimiento;
@@ -269,7 +271,7 @@
 			juzgadoSel.add(0,idJuzgado+","+idInstitucionJuzgado);
 				
 		if(idJuzgado!=null && !idJuzgado.equals(""))
-			datoJuzg[1]=idJuzgado;
+			datoJuzg[2]=idJuzgado;
 	}
 
 	if (idProcedimiento!=null && idInstitucionProcedimiento!=null)
@@ -955,32 +957,31 @@
 		}		
 		
 		function limpiarValor(combo){
-			  seleccionComboSiga (combo, "");
+			seleccionComboSiga (combo, "");
 		}
 
 		function validarJustificacion () {
-				if(document.forms[0].actuacionValidada.value=="1"){
-					jQuery("#fechaJustificacion").removeClass("boxConsulta");
-					jQuery("#fechaJustificacion").addClass("box");
-					jQuery("#fechaJustificacion-datepicker-trigger").show();
-					jQuery("#fechaJustificacion").attr("readonly", false);
-					
-					document.forms[0].actuacionValidada.value="0";
-					
-					document.forms[0].fechaJustificacion.value="";
-					document.forms[0].estadoActuacion.value= "";
-				}else{
-					jQuery("#fechaJustificacion").removeClass("box");
-					jQuery("#fechaJustificacion").addClass("boxConsulta");
-					jQuery("#fechaJustificacion-datepicker-trigger").hide();
-					jQuery("#fechaJustificacion").attr("readonly", true);
-					document.forms[0].actuacionValidada.value="1";					
-					document.forms[0].estadoActuacion.value='<siga:Idioma key='gratuita.mantActuacion.literal.actuacionValidada'/>';
-					if((document.forms[0].fechaJustificacion.value==null)||(document.forms[0].fechaJustificacion.value=="")){					
-						document.forms[0].fechaJustificacion.value="<%=UtilidadesBDAdm.getFechaBD("")%>";
-					}		
-				}				
+			if(document.forms[0].actuacionValidada.value=="1"){
+				jQuery("#fechaJustificacion").removeClass("boxConsulta");
+				jQuery("#fechaJustificacion").addClass("box");
+				jQuery("#fechaJustificacion-datepicker-trigger").show();
+				jQuery("#fechaJustificacion").attr("readonly", false);
 				
+				document.forms[0].actuacionValidada.value="0";
+				
+				document.forms[0].fechaJustificacion.value="";
+				document.forms[0].estadoActuacion.value= "";
+			}else{
+				jQuery("#fechaJustificacion").removeClass("box");
+				jQuery("#fechaJustificacion").addClass("boxConsulta");
+				jQuery("#fechaJustificacion-datepicker-trigger").hide();
+				jQuery("#fechaJustificacion").attr("readonly", true);
+				document.forms[0].actuacionValidada.value="1";					
+				document.forms[0].estadoActuacion.value='<siga:Idioma key='gratuita.mantActuacion.literal.actuacionValidada'/>';
+				if((document.forms[0].fechaJustificacion.value==null)||(document.forms[0].fechaJustificacion.value=="")){					
+					document.forms[0].fechaJustificacion.value="<%=UtilidadesBDAdm.getFechaBD("")%>";
+				}		
+			}			
 		}
 
 		function validaProcedimiento( strValue ) {
