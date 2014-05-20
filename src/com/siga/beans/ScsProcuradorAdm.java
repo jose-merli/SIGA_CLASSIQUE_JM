@@ -59,7 +59,7 @@ public class ScsProcuradorAdm extends MasterBeanAdministrador {
 	 * 
 	 */
 	
-	protected String[] getClavesBean() {
+	public String[] getClavesBean() {
 		String[] campos = {	ScsProcuradorBean.C_IDINSTITUCION, ScsProcuradorBean.C_IDPROCURADOR};
 		return campos;
 	}
@@ -181,6 +181,7 @@ public class ScsProcuradorAdm extends MasterBeanAdministrador {
 			select += " , procurador."+ScsProcuradorBean.C_FAX1;
 			select += " , procurador."+ScsProcuradorBean.C_EMAIL;
 			select += " , procurador."+ScsProcuradorBean.C_CODPROCURADOR;
+			select += " , procurador."+ScsProcuradorBean.C_FECHABAJA;
 			select += " , (SELECT provincia."+CenProvinciaBean.C_NOMBRE+
 					  "    FROM "+CenProvinciaBean.T_NOMBRETABLA +" provincia "+
 					  "    WHERE provincia."+CenProvinciaBean.C_IDPROVINCIA+"=procurador."+ScsProcuradorBean.C_IDPROVINCIA+
@@ -313,6 +314,7 @@ public class ScsProcuradorAdm extends MasterBeanAdministrador {
 			select += " , procurador."+ScsProcuradorBean.C_FAX1;
 			select += " , procurador."+ScsProcuradorBean.C_EMAIL;
 			select += " , procurador."+ScsProcuradorBean.C_CODPROCURADOR;
+			select += " , procurador."+ScsProcuradorBean.C_FECHABAJA;
 			select += " , (SELECT provincia."+CenProvinciaBean.C_NOMBRE+
 					  "    FROM "+CenProvinciaBean.T_NOMBRETABLA +" provincia "+
 					  "    WHERE provincia."+CenProvinciaBean.C_IDPROVINCIA+"=procurador."+ScsProcuradorBean.C_IDPROVINCIA+
@@ -437,6 +439,8 @@ public class ScsProcuradorAdm extends MasterBeanAdministrador {
 		       		sql += " AND (" + ComodinBusquedas.prepararSentenciaCompleta(codigo.trim(), ScsProcuradorBean.C_CODPROCURADOR) + ") ";
 		       	}
 			}
+			
+			sql += " AND " + ScsProcuradorBean.C_FECHABAJA + " IS NULL ";
 				
 			sql = UtilidadesBDAdm.sqlSelect(ScsProcuradorBean.T_NOMBRETABLA, this.getCamposBean()) +
 				  (sql.equals("")?"": " WHERE " + sql) + " ORDER BY " + ScsProcuradorBean.C_APELLIDO1+", "+ScsProcuradorBean.C_APELLIDO2+", "+ScsProcuradorBean.C_NOMBRE;
@@ -458,7 +462,56 @@ public class ScsProcuradorAdm extends MasterBeanAdministrador {
 		}
 	}
 	
-	
+	public Vector getProcuradoresRelacionadosPorDesigna (String idInstitucion, String idTipoEJG, String anioEJG, String numeroEJG) throws ClsExceptions {
+		Vector datos = new Vector();
+		String select = null;
+		
+		try {
+			//SELECT
+			select  = " SELECT p."+ScsProcuradorBean.C_NOMBRE;
+			select += " , p."+ScsProcuradorBean.C_NCOLEGIADO;
+			select += " , p."+ScsProcuradorBean.C_APELLIDO1;
+			select += " , p."+ScsProcuradorBean.C_APELLIDO2;
+			select += " , d."+ScsDesignaBean.C_ANIO;
+			select += " , d."+ScsDesignaBean.C_NUMERO;
+			select += " , d."+ScsDesignaBean.C_IDTURNO;
+			select += " , d."+ScsDesignaBean.C_IDINSTITUCION;
+			select += " , d."+ScsDesignaBean.C_CODIGO;
+			
+			//FROM
+			select += " FROM "+ ScsProcuradorBean.T_NOMBRETABLA+" p ";
+			select += " , scs_designaprocurador dp ";
+			select += " , scs_ejgdesigna ed ";
+			select += " , scs_designa d ";
+			
+			//WHERE
+			select += " WHERE p.idprocurador (+) = dp.idprocurador  ";
+			select += " 	AND p.idinstitucion (+)= dp.idinstitucion_proc ";
+			select += " 	AND dp.idinstitucion (+) = ed.idinstitucion ";
+		   	select += " 	AND dp.anio (+) = ed.aniodesigna ";
+		   	select += " 	AND dp.numero (+) = ed.numerodesigna ";
+		   	select += " 	AND dp.idturno (+) = ed.idturno ";
+		   	select += " 	AND dp.fecharenuncia is null ";
+		   	select += " 	AND ed.idinstitucion = d.idinstitucion ";
+		   	select += " 	AND ed.aniodesigna = d.anio ";
+		   	select += " 	AND ed.numerodesigna = d.numero ";
+		   	select += " 	AND ed.idturno = d.idturno ";
+   
+		   	//FILTROS
+		   	select += " 	AND ed.anioejg = 		"	+ anioEJG;
+		   	select += " 	AND ed.numeroejg = 		" 	+ numeroEJG;
+		   	select += " 	AND ed.idtipoejg = 		"	+ idTipoEJG;
+		   	select += " 	AND ed.idinstitucion =  " 	+ idInstitucion;
+			
+   		   //CONSULTA
+   		   datos = this.selectGenerico(select);			
+		
+		} catch (Exception e) { 	
+			throw new ClsExceptions (e, "Error al ejecutar el 'select' en B.D."); 
+		}
+		
+		return datos;
+	}	
 	
 	
 	

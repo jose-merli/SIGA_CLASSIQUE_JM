@@ -98,6 +98,9 @@
 									String fax1 = (String)hashProcurador.get(ScsProcuradorBean.C_FAX1);
 									String codProcurador = (String)hashProcurador.get(ScsProcuradorBean.C_CODPROCURADOR);
 									String botones=(idInstitucion.equals(idInstitucionProcurador)?"E,C,B":"C");
+
+									String fechaBaja = (String)hashProcurador.get(ScsProcuradorBean.C_FECHABAJA);
+									if(fechaBaja!=null && !fechaBaja.equals(""))botones = "C";
    	 		%>
 									<siga:FilaConIconos fila='<%=""+i%>' botones='<%=botones%>' visibleConsulta="false" clase="listaNonEdit"> 
 									<td><!-- Datos ocultos tabla -->

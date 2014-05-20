@@ -233,12 +233,15 @@ public class MantenimientoProcuradorAction extends MasterAction {
 			String	idProcurador = (String)miForm.getDatosTablaOcultos(0).get(1);
 			
 			ScsProcuradorAdm procuradorAdm = new ScsProcuradorAdm(this.getUserBean(request));
-			Hashtable claves = new Hashtable ();
-			UtilidadesHash.set (claves, ScsProcuradorBean.C_IDPROCURADOR, idProcurador);
-			UtilidadesHash.set (claves, ScsProcuradorBean.C_IDINSTITUCION, idInstitucionProcurador);
+			Hashtable hash = new Hashtable ();
+			UtilidadesHash.set (hash, ScsProcuradorBean.C_IDPROCURADOR, idProcurador);
+			UtilidadesHash.set (hash, ScsProcuradorBean.C_IDINSTITUCION, idInstitucionProcurador);
+			UtilidadesHash.set (hash, ScsProcuradorBean.C_FECHABAJA, "sysdate");			
+			String[] campos = {ScsProcuradorBean.C_FECHABAJA};
 			
 			tx.begin();
-			procuradorAdm.delete(claves);
+			//CR7 - AHora no eliminara el registro, simplemente se dará de baja logica
+			procuradorAdm.updateDirect(hash, procuradorAdm.getClavesBean(),campos);
 			tx.commit();
 		}
 		catch (Exception e) { 

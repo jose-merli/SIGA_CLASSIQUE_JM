@@ -19,6 +19,7 @@
 <!-- IMPORTS -->
 <%@ page import="com.siga.gratuita.form.MantenimientoProcuradorForm"%>
 <%@ page import="java.util.ArrayList"%>
+<%@ page import="com.siga.Utilidades.UtilidadesString"%>
 
 <!-- JSP -->
 <% 
@@ -42,6 +43,8 @@
 
 	// Formulario
 	MantenimientoProcuradorForm formulario = (MantenimientoProcuradorForm) request.getAttribute("MantenimientoProcuradorForm");
+	
+	String fechaBaja = UtilidadesString.formatoFecha(formulario.getFechaBaja(),"yyyy/MM/dd hh:mm:ss","dd/MM/yyyy");
 
 	if (modo.equalsIgnoreCase("EDITAR")) {
 		desactivado  = false;
@@ -155,7 +158,17 @@
 								</td>
 								<td>
 									<html:text name="MantenimientoProcuradorForm" property="codProcurador" size="10" maxlength="10" styleClass="<%=estilo%>" readonly="<%=desactivado%>" />
-								</td>								
+								</td>	
+								
+								<% if (formulario.getFechaBaja()!=null && !formulario.getFechaBaja().equals("")) { %>
+									<td class="labelText">
+										<siga:Idioma key="censo.consultaDatosBancarios.literal.fechaBaja"/>
+									</td>
+									<td>
+										<html:text name="MantenimientoProcuradorForm" property="fechaBaja" size="10" maxlength="10" styleClass="boxConsulta" readonly="true" value="<%=fechaBaja%>" />
+									</td>																
+								<% } %>								
+								
 							</tr>
 							
 							<tr>

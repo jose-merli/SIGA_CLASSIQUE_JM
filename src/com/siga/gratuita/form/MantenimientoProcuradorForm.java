@@ -11,7 +11,6 @@ import com.siga.general.MasterForm;
  */
 public class MantenimientoProcuradorForm extends MasterForm {
 	
-	
 	// METODOS SET
 	public void setIdInstitucionProcurador(String dato) {
 		UtilidadesHash.set(this.datos, ScsProcuradorBean.C_IDINSTITUCION , dato);
@@ -66,9 +65,10 @@ public class MantenimientoProcuradorForm extends MasterForm {
 	}
 	public void setCodProcurador(String dato) {
 		UtilidadesHash.set(this.datos, ScsProcuradorBean.C_CODPROCURADOR , dato);
-	
 	}
-	
+	public void setFechaBaja(String dato) {
+		UtilidadesHash.set(this.datos, ScsProcuradorBean.C_FECHABAJA , dato);
+	}
 	
 	// METODOS GET
 	public String getIdInstitucionProcurador() {
@@ -122,8 +122,10 @@ public class MantenimientoProcuradorForm extends MasterForm {
 	public String getProvincia() {
 		return UtilidadesHash.getString(this.datos, "PROVINCIA");
 	}
-
 	public String getCodProcurador() {
 		return UtilidadesHash.getString(this.datos, ScsProcuradorBean.C_CODPROCURADOR);
+	}
+	public String getFechaBaja() {
+		return UtilidadesHash.getString(this.datos, ScsProcuradorBean.C_FECHABAJA);
 	}
 }
