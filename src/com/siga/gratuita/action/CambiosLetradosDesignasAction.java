@@ -265,10 +265,11 @@ public class CambiosLetradosDesignasAction extends MasterAction {
 				miform.setDatos(hash);
 			}
 			request.setAttribute("accion","ver");
+			request.setAttribute("CambiosLetradosDesignasForm",miform);
 		}catch(Exception e){
 			throwExcp("messages.general.error",new String[] {"modulo.gratuita"},e,null);
 		}
-		return "edicion";
+		return "nuevo";
 
 	}
 
@@ -342,6 +343,10 @@ public class CambiosLetradosDesignasAction extends MasterAction {
 				ses.removeAttribute("DATABACKUP_CLD");
 				miform.setDatos(hash);
 			}
+			
+			request.setAttribute("accion","nuevo");
+			request.setAttribute("CambiosLetradosDesignasForm",miform);
+			
 		}catch(Exception e){
 			throwExcp("messages.general.error",new String[] {"modulo.gratuita"},e,null);
 		}
@@ -376,6 +381,7 @@ public class CambiosLetradosDesignasAction extends MasterAction {
 			String numero = miform.getNumero();
 			String idTurno = miform.getIdTurno();
 			String idPersona = miform.getIdPersona();
+			String fRenuncia=miform.getAplFechaRenunciaSolicita();
 
 			String fCambio = miform.getAplFechaDesigna();
 
@@ -470,6 +476,7 @@ public class CambiosLetradosDesignasAction extends MasterAction {
 					idPersonaSaliente = (String) datos.get(ScsDesignasLetradoBean.C_IDPERSONA);
 					Hashtable<String, Object> designaActual = (Hashtable<String, Object>) datos.clone();
 					designaActual.put(ScsDesignasLetradoBean.C_FECHARENUNCIA, fCambio);
+					designaActual.put(ScsDesignasLetradoBean.C_FECHARENUNCIASOLICITA, fRenuncia);
 					if (cambioMismoDia != null && cambioMismoDia.equalsIgnoreCase("1")) {
 						ScsSaltosCompensacionesAdm saltosCompenAdm = new ScsSaltosCompensacionesAdm(usr);
 						Hashtable<String, Object> saltosCompenHash = new Hashtable<String, Object>();
@@ -493,7 +500,7 @@ public class CambiosLetradosDesignasAction extends MasterAction {
 							throw new ClsExceptions(designaLetradoAdm.getError());
 					
 					} else {
-						if (!designaLetradoAdm.updateDirect(designaActual,designaLetradoAdm.getClavesBean(),new String[] { ScsDesignasLetradoBean.C_FECHARENUNCIA }))
+						if (!designaLetradoAdm.updateDirect(designaActual,designaLetradoAdm.getClavesBean(),new String[] { ScsDesignasLetradoBean.C_FECHARENUNCIA,ScsDesignasLetradoBean.C_FECHARENUNCIASOLICITA }))
 							throw new ClsExceptions(designaLetradoAdm.getError());
 					}
 				}

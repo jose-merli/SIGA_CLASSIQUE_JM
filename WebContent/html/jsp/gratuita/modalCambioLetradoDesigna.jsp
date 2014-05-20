@@ -14,16 +14,24 @@
 <%@ taglib uri = "struts-bean.tld" prefix="bean"%>
 <%@ taglib uri = "struts-html.tld" prefix="html"%>
 <%@ taglib uri = "struts-logic.tld" prefix="logic"%>
+<%@ taglib uri = "c.tld" prefix="c"%>
 
 <!-- IMPORTS -->
 <%@ page import="java.util.*"%>
 <%@ page import="com.atos.utils.*"%>
+<%@ page import="com.siga.gratuita.form.CambiosLetradosDesignasForm"%>
 
 <!-- JSP -->
 <%  String app=request.getContextPath();
 	HttpSession ses=request.getSession();
 	UsrBean usr=(UsrBean)ses.getAttribute("USRBEAN");	
-	String[] parametros = new String[]{usr.getLocation()};%>
+	String[] parametros = new String[]{usr.getLocation()};
+	String accion = (String) request.getAttribute("accion");
+	
+	// Formulario
+	CambiosLetradosDesignasForm formulario = (CambiosLetradosDesignasForm) request.getAttribute("CambiosLetradosDesignasForm");
+
+%>
 
 
 <!-- HEAD -->
@@ -98,14 +106,15 @@
 
 	<table  class="tablaCentralCamposMedia"  align="center">
 	<tr>				
-	<td>
+	<td colspan="3">
 
 	<!-- INICIO: CAMPOS -->
 	<logic:notEmpty name="CambiosLetradosDesignasForm" property="nombreActual">
 		<siga:ConjCampos leyenda="gratuita.cambioLetrados.literal.letradoActual">
 			<table  width="100%">
+				<!-- FILA -->
 				<tr>				
-					<td class="labelText" width="140px">
+					<td class="labelText">
 						<siga:Idioma key="gratuita.busquedaSOJ.literal.numeroColegidado"/>
 					</td>
 					<td class="boxConsulta">
@@ -120,85 +129,135 @@
 						<bean:write name="CambiosLetradosDesignasForm" property="apellido2Actual"/>			
 					</td>		
 				</tr>
+				
+				<!-- FILA -->
+				<tr>				
+					<td class="labelText">
+						<siga:Idioma key="gratuita.cambiosProcuradoresDesigna.literal.fechaDesignado"/>
+					</td>
+					<td class="boxConsulta">
+						<input type="text" id="fechaAntigua" value="<%=formulario.getFechaDesigna()%>" style="width:80px" class="boxConsulta" readonly />
+					</td>
+				</tr>	
+				
+				<!-- FILA -->
+				<tr>
+					<td class="labelText" width="170px">
+						<siga:Idioma key="gratuita.cambiosProcuradoresDesigna.literal.fechaRenunciaSolicita"/>
+					</td>
+					<td>		
+						<%if (accion.equalsIgnoreCase("ver")) {%>
+							<bean:write name="CambiosLetradosDesignasForm" property="fechaRenunciaSolicita"/>
+						<%} else { %>
+							<siga:Fecha nombreCampo="fechaRenunciaSolicita"></siga:Fecha>
+						<%} %>
+					</td>				
+				
+					<td class="labelText">
+						<siga:Idioma key="gratuita.cambiosProcuradoresDesigna.literal.tipoMotivo"/>&nbsp;<%if (accion.equalsIgnoreCase("nuevo")) {%>(*)<%}%>
+					</td>
+					<td colspan="3">
+					    <bean:define id="vIdTipoMotivo" name="CambiosLetradosDesignasForm" property="idTipoMotivo" type="java.lang.String"/>
+						<%ArrayList idTipoMotivoValue=new ArrayList();
+							if (vIdTipoMotivo!=null)
+								idTipoMotivoValue.add(vIdTipoMotivo);
+						 %>
+						<%if (accion.equalsIgnoreCase("ver")){%>
+							<siga:ComboBD pestana="true" nombre="idTipoMotivo" tipo="tipoMotivo" estilo="true" clase="boxConsulta" readonly="true" filasMostrar="1" elementoSel="<%=idTipoMotivoValue%>" seleccionMultiple="false" obligatorio="true"/>
+						<%} else {%>
+							<siga:ComboBD pestana="true" nombre="idTipoMotivo" tipo="tipoMotivo" estilo="true" clase="box" filasMostrar="1" elementoSel="<%=idTipoMotivoValue%>" seleccionMultiple="false" obligatorio="true" ancho="240"/>
+						<%}%>	
+					</td>
+				</tr>				
+							
+				
+				<!-- FILA -->
 				<tr>
 					<td class="labelText">
-						<siga:Idioma key='gratuita.busquedaSJCS.literal.incluirCompensacion'/>
+						<siga:Idioma key="gratuita.cambiosProcuradoresDesigna.literal.fechaRenuncia"/>
 					</td>
 					<td>
-						<input type="Checkbox" id="compensacionActual" name="compensacionActual">
+						<html:text name="CambiosLetradosDesignasForm" styleId="fechaRenuncia" property="fechaRenuncia" size="10" maxlength="10" styleClass="boxConsulta" readonly="true"></html:text>
 					</td>
+					<%if (accion.equalsIgnoreCase("nuevo")) {%>				
+						<td class="labelText" colspan="2">
+							<siga:Idioma key='gratuita.busquedaSJCS.literal.incluirCompensacion'/>
+							&nbsp;&nbsp;&nbsp;
+							<input type="Checkbox" id="compensacionActual" name="compensacionActual">
+						</td>
+					<%} %>
 				</tr>
+				
+				<!-- FILA -->
+				<tr>
+					<td class="labelText">
+						<siga:Idioma key="gratuita.modalConsulta_DefinirCalendarioGuardia.literal.observaciones"/>
+					</td>				
+					<td colspan="3">
+						<html:textarea name="CambiosLetradosDesignasForm" onKeyDown="cuenta(this,1024)" onChange="cuenta(this,1024)" rows="4" cols="150" styleClass="box" property="observaciones"/>
+					</td>
+				</tr>				
 			</table>
 		</siga:ConjCampos>
 	</logic:notEmpty>
 	
-	<table border="0" width="100%">
-	<tr>
-	<td>
-	<siga:ConjCampos leyenda="gratuita.seleccionColegiadoJG.literal.titulo"> 
-		<table class="tablaCampos" border="0" width="100%">		
+	<%if (accion.equalsIgnoreCase("nuevo")){%>
+
+		<!-- FECHA DESIGNACION-->
+		<tr>
+			<td class="labelText" width="150px">
+				<siga:Idioma key="gratuita.cambiosProcuradoresDesigna.literal.fechaDesigna"/>&nbsp;(*)
+			</td>
+			<td width="110px">			
+				<siga:Fecha nombreCampo="fechaDesigna" postFunction="rellenarFechaRenunciaEfectiva(this)"></siga:Fecha>
+			</td>
+			
+			<td class="labelText" width="390px">
+				&nbsp;
+			</td>
+		</tr>
+		
+		<tr>
+			<td class="labelText" colspan="5">	
+				<siga:Idioma key="gratuita.designa.designacionAutomatica"/>
+			</td>		
+		</tr>
+		
+		<!-- SELECCION DE LETRADO -->
+		<table border="0" width="100%">
 			<tr>
-				<td colspan="5">
-					<siga:BusquedaSJCS propiedad="buscaLetrado" concepto="designacion" operacion="sustitucion" nombre="CambiosLetradosDesignasForm" botones="M"
-							campoTurno="idTurno" campoFecha="fechaDesigna" campoPersona="idPersona" campoColegiado="NColegiado" campoNombreColegiado="nomColegiado" mostrarNColegiado="true"
-							mostrarNombreColegiado="true" campoFlagSalto="flagSalto" campoFlagCompensacion="flagCompensacion" modo="nuevo"  campoSalto="checkSalto" campoCompensacion="checkCompensacion"
-						/>		
-				</td>	
-			</tr>
-			<tr>
-				<td class="labelText">
-					<siga:Idioma key='gratuita.busquedaEJG.literal.numeroColegidado'/>
-				</td>		
 				<td>
-					<input type="text" name="NColegiado" class="boxConsulta" readOnly value="" style="width:'100px';">
+					<siga:ConjCampos leyenda="gratuita.seleccionColegiadoJG.literal.titulo"> 
+						<table class="tablaCampos" border="0" width="100%">		
+							<tr>
+								<td colspan="5">
+									<siga:BusquedaSJCS propiedad="buscaLetrado" concepto="designacion" operacion="sustitucion" nombre="CambiosLetradosDesignasForm" botones="M"
+											campoTurno="idTurno" campoFecha="fechaDesigna" campoPersona="idPersona" campoColegiado="NColegiado" campoNombreColegiado="nomColegiado" mostrarNColegiado="true"
+											mostrarNombreColegiado="true" campoFlagSalto="flagSalto" campoFlagCompensacion="flagCompensacion" modo="nuevo"  campoSalto="checkSalto" campoCompensacion="checkCompensacion"
+										/>		
+								</td>	
+							</tr>
+							<tr>
+								<td class="labelText">
+									<siga:Idioma key='gratuita.busquedaEJG.literal.numeroColegidado'/>
+								</td>		
+								<td>
+									<input type="text" name="NColegiado" class="boxConsulta" readOnly value="" style="width:'100px';">
+								</td>
+								<td class="labelText">
+									<siga:Idioma key='FactSJCS.listadoRetencionesJ.literal.nombreColegiado'/>
+								</td>
+								<td colspan="2">
+									<input type="text" name="nomColegiado" class="boxConsulta" readOnly value="" style="width:'240px';">
+								</td>			
+							</tr>	
+						</table>
+				    </siga:ConjCampos> 
 				</td>
-				<td class="labelText">
-					<siga:Idioma key='FactSJCS.listadoRetencionesJ.literal.nombreColegiado'/>
-				</td>
-				<td colspan="2">
-					<input type="text" name="nomColegiado" class="boxConsulta" readOnly value="" style="width:'240px';">
-				</td>			
-			</tr>	
-		</table>
-    </siga:ConjCampos> 
-	</td>
-	</tr>
-	</table>   
-	<table width="100%" >
-	<tr>
-		<td class="labelText">
-			<!--siga:Idioma key="gratuita.modalCambioLetradoDesigna.literal.fechaCambio"/-->
-			<siga:Idioma key="gratuita.cambiosProcuradoresDesigna.literal.fechaDesigna"/>&nbsp;(*)
-		</td>
-		<td>			
-			<siga:Fecha nombreCampo="fechaDesigna"></siga:Fecha>
-		</td>
-	</tr>
-	<tr>
-		<td class="labelText">
-			<siga:Idioma key="gratuita.cambiosProcuradoresDesigna.literal.tipoMotivo"/>&nbsp;(*)
-		</td>
-		<td colspan="3">
-	    <bean:define id="vIdTipoMotivo" name="CambiosLetradosDesignasForm" property="idTipoMotivo" type="java.lang.String"/>
-		<%ArrayList idTipoMotivoValue=new ArrayList();
-			if (vIdTipoMotivo!=null)
-				idTipoMotivoValue.add(vIdTipoMotivo);
-		 %>
-		 <siga:ComboBD pestana="true" nombre="idTipoMotivo" tipo="tipoMotivo" estilo="true" clase="box" filasMostrar="1" elementoSel="<%=idTipoMotivoValue%>" seleccionMultiple="false" obligatorio="true"/>
-		</td>
-	</tr>
-	<tr>
-		<td class="labelText" colspan="4">
-			<siga:Idioma key="gratuita.modalConsulta_DefinirCalendarioGuardia.literal.observaciones"/><br>
-			<html:textarea name="CambiosLetradosDesignasForm" onKeyDown="cuenta(this,1024)" onChange="cuenta(this,1024)" rows="4" cols="150" styleClass="box" property="observaciones"/>
-		</td>
-	</tr>
-	<tr>
-		<td class="labelText" colspan="3">	
-			<siga:Idioma key="gratuita.designa.designacionAutomatica"/>
-		</td>		
-	</tr>
-	</table>
+			</tr>
+		</table>   
+	
+	<%}%>
 
 	</td>
 	</tr>
@@ -213,7 +272,11 @@
 		 La propiedad modal dice el tamanho de la ventana (M,P,G)
 	-->
 
-		<siga:ConjBotonesAccion botones="Y,R,C" modal="M" />
+	<%if (accion.equalsIgnoreCase("ver")){%>
+		<siga:ConjBotonesAccion botones="C" modal="M" />
+	<%} else {%>
+		<siga:ConjBotonesAccion botones="Y,R,C" modal="M"/>
+	<%}%>
 
 	<!-- FIN: BOTONES REGISTRO -->
 
@@ -223,56 +286,89 @@
 	<!-- Aqui se reescriben las funciones que vayamos a utilizar -->
 	<script language="JavaScript">
 
-
 		//Asociada al boton GuardarCerrar
+		
+		//Asociada al boton GuardarCerrar -->
 		function accionGuardarCerrar() 
 		{	
-			sub();
 			
-			if(personaActual!='' && personaActual==document.forms[0].idPersona.value)
-			{	//ha seleccionado al mismo
-				alert("<siga:Idioma key='gratuita.busquedaSJCS.alert2'/>");
-				fin();
-			    return false;
-			}else if (validateCambiosLetradosDesignasForm(document.forms[0])) {
-				if(fechaActual!=''){
-				  if (isEquals(document.forms[0].fechaDesigna.value,fechaActual)){
-				    if (confirm("<siga:Idioma key='messages.designa.confirmacion.igualdadFechas' />")) {
-					 
-					  document.CambiosLetradosDesignasForm.cambioMismoDia.value="1";
-					  document.forms[0].modo.value="insertar";
-					  document.forms[0].submit();
-					}else{
-					      document.CambiosLetradosDesignasForm.cambioMismoDia.value="0";
-					      fin();
-					      return false;
-					      
-					  	 
+			<%if (accion.equalsIgnoreCase("editar")){%>			
+				var f=document.forms[0]; 
+				sub();
+				if (validateCambiosLetradosDesignasForm(document.forms[0]))		
+				{	
+					if(f.fechaRenunciaSolicita.value=="" || isAfter(f.fechaRenunciaSolicita.value,jQuery("#fechaAntigua").val()))
+					{
+						f.modo.value="modificar";
+						f.submit();
+					}else
+					{
+						alert("<siga:Idioma key="gratuita.cambiosProcuradoresDesigna.literal.fechaRenunciaSolicita"/>"+
+						  	  " <siga:Idioma key="gratuita.cambiosProcuradoresDesigna.alert1"/>"+jQuery("#fechaAntigua").val());
+						  	  fin();
+						  	  return false;
 					}
 				}else{
-				  if (!isAfter(document.forms[0].fechaDesigna.value,fechaActual)){
-				       alert("<siga:Idioma key='gratuita.cambiosProcuradoresDesigna.literal.fechaDesigna'/> "+
-					  	  "<siga:Idioma key='gratuita.cambiosProcuradoresDesigna.alert2'/>"+fechaActual);
-					  	  fin();
-					  	  return false;
-				  }else{
-				    if (document.forms[0].NColegiado.value || confirm("<siga:Idioma key='messages.designa.confirmacion.seleccionAutomaticaLetrado' />")){
-				    	document.forms[0].modo.value="insertar";
-						document.forms[0].submit();
-					}else{
+				
+					fin();
+					return false;
+				}
+			
+			<%} else if (accion.equalsIgnoreCase("nuevo")) {%>	
+				sub();
+				
+				if(personaActual!='' && personaActual==document.forms[0].idPersona.value)
+				{	//ha seleccionado al mismo
+					alert("<siga:Idioma key='gratuita.busquedaSJCS.alert2'/>");
+					fin();
+				    return false;
+				}else if (validateCambiosLetradosDesignasForm(document.forms[0])) {
+					
+					//Se saca fuera de la validacion por struts ya que esta validacion no se hace al modificar
+					if(document.forms[0].fechaDesigna.value == ''){
+						alert("<siga:Idioma key='gratuita.cambiosProcuradoresDesigna.literal.fechaDesigna'/> ");
 						fin();
 						return false;
 					}
-				  }
-				}	
-				}
 					
+					
+					if(fechaActual!=''){
+						if (isEquals(document.forms[0].fechaDesigna.value,fechaActual)){
+						    if (confirm("<siga:Idioma key='messages.designa.confirmacion.igualdadFechas' />")) {
+							 
+							  document.CambiosLetradosDesignasForm.cambioMismoDia.value="1";
+							  document.forms[0].modo.value="insertar";
+							  document.forms[0].submit();
+							}else{
+							      document.CambiosLetradosDesignasForm.cambioMismoDia.value="0";
+							      fin();
+							      return false;
+							}
+					    
+						}else{
+						  if (!isAfter(document.forms[0].fechaDesigna.value,fechaActual)){
+						       alert("<siga:Idioma key='gratuita.cambiosProcuradoresDesigna.literal.fechaDesigna'/> "+
+							  	  "<siga:Idioma key='gratuita.cambiosProcuradoresDesigna.alert2'/>"+fechaActual);
+							  	  fin();
+							  	  return false;
+						  }else{
+						   	if (document.forms[0].NColegiado.value || confirm("<siga:Idioma key='messages.designa.confirmacion.seleccionAutomaticaLetrado' />")){
+						    	document.forms[0].modo.value="insertar";
+								document.forms[0].submit();
+							}else{
+								fin();
+								return false;
+							}
+						  }
+						}	
+					}
+					
+				}else{
 				
-			}else{
-			
-				fin();
-				return false;
-			}
+					fin();
+					return false;
+				}
+			<%}%>	
 		}
 		
 		function refrescarLocal() 
@@ -293,6 +389,12 @@
 		{		
 			document.forms[0].reset();
 		}
+		
+		function rellenarFechaRenunciaEfectiva(o) 
+		{		
+			jQuery('#fechaRenuncia').val(o.value);
+		}
+		
 		
 
 	</script>
