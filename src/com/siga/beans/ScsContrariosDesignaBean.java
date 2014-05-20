@@ -25,6 +25,7 @@ public class ScsContrariosDesignaBean extends MasterBean{
 	private String  idRepresentanteLegal;
 	private String  idAbogadoContrario;
 	private String  nombreAbogadoContrario;
+	private String  idInstitucionOrigen;
 	
 	
 	public String getIdAbogadoContrario() {
@@ -78,6 +79,7 @@ public class ScsContrariosDesignaBean extends MasterBean{
 	static public final String	C_IDREPRESENTANTELEGAL	=	"IDREPRESENTANTELEGAL";
 	static public final String	C_NOMBREABOGADOCONTRARIO=	"NOMBREABOGADOCONTRARIO";
 	static public final String	C_IDABOGADOCONTRARIO	=	"IDABOGADOCONTRARIO";
+	static public final String	C_IDINSTITUCIONORIGEN	=	"IDINSTITUCIONORIGEN";
 		
 	
 	/*
@@ -220,6 +222,13 @@ public class ScsContrariosDesignaBean extends MasterBean{
 	 */
 	public String getIdRepresentanteLegal() {
 		return idRepresentanteLegal;
+	}
+	
+	public String getIdInstitucionOrigen() {
+		return idInstitucionOrigen;
+	}
+	public void setIdInstitucionOrigen(String idInstitucionOrigen) {
+		this.idInstitucionOrigen = idInstitucionOrigen;
 	}
 
 }

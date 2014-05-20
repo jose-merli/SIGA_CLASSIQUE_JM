@@ -39,7 +39,8 @@ public class ScsContrariosDesignaAdm extends MasterBeanAdministrador {
 							ScsContrariosDesignaBean.C_IDPERSONA,				ScsContrariosDesignaBean.C_OBSERVACIONES,
 							ScsContrariosDesignaBean.C_IDINSTITUCIONPROCURADOR,	ScsContrariosDesignaBean.C_IDPROCURADOR,
 							ScsContrariosDesignaBean.C_NOMBREREPRESENTANTE,     ScsContrariosDesignaBean.C_IDREPRESENTANTELEGAL,
-							ScsContrariosDesignaBean.C_NOMBREABOGADOCONTRARIO,  ScsContrariosDesignaBean.C_IDABOGADOCONTRARIO};
+							ScsContrariosDesignaBean.C_NOMBREABOGADOCONTRARIO,  ScsContrariosDesignaBean.C_IDABOGADOCONTRARIO,
+							ScsContrariosDesignaBean.C_IDINSTITUCIONORIGEN};
 		return campos;
 	}
 	/** Funcion getClavesBean ()
@@ -77,6 +78,7 @@ public class ScsContrariosDesignaAdm extends MasterBeanAdministrador {
 			bean.setUsuMod(UtilidadesHash.getInteger(hash,ScsContrariosDesignaBean.C_USUMODIFICACION));
 			bean.setnombreAbogadoContrario(UtilidadesHash.getString(hash,ScsContrariosDesignaBean.C_NOMBREABOGADOCONTRARIO));
 			bean.setIdAbogadoContrario(UtilidadesHash.getString(hash,ScsContrariosDesignaBean.C_IDABOGADOCONTRARIO));
+			bean.setIdInstitucionOrigen(UtilidadesHash.getString(hash,ScsContrariosDesignaBean.C_IDINSTITUCIONORIGEN));
 		}
 		catch(Exception e){
 			bean = null;
@@ -109,6 +111,7 @@ public class ScsContrariosDesignaAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(hash, ScsContrariosDesignaBean.C_IDPROCURADOR,b.getIdProcurador());	
 			UtilidadesHash.set(hash, ScsContrariosDesignaBean.C_NOMBREABOGADOCONTRARIO,b.getnombreAbogadoContrario());	
 			UtilidadesHash.set(hash, ScsContrariosDesignaBean.C_IDABOGADOCONTRARIO,b.getIdAbogadoContrario());	
+			UtilidadesHash.set(hash, ScsContrariosDesignaBean.C_IDINSTITUCIONORIGEN,b.getIdInstitucionOrigen());	
 			
 		}
 		catch (Exception e){

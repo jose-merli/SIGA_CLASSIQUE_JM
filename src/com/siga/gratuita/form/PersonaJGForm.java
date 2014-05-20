@@ -635,6 +635,14 @@ public class PersonaJGForm extends MasterForm {
 		UtilidadesHash.set(this.datos,"NcolegiadoRepresentante",dato);
 	}
 	
+	public String getNinstitucionOrigen() {
+		return UtilidadesHash.getString(this.datos, "NinstitucionOrigen");
+	}
+
+	public void setNinstitucionOrigen(String dato) {
+		UtilidadesHash.set(this.datos,"NinstitucionOrigen",dato);
+	}	
+	
 	//Para el correoElectronico de la personajg
 	
 	String correoElectronico=null;
@@ -732,7 +740,7 @@ public class PersonaJGForm extends MasterForm {
 	}
 	/**nos creamos las variables para sacar el idTipoPersona y el idTipoidentificacion.**/
 	String idTipo;
-	String idTipoPersona;	
+	String idTipoPersona;
 	
 	public String getIdTipoPersona() {
 		return idTipoPersona;
@@ -786,5 +794,4 @@ public class PersonaJGForm extends MasterForm {
 		this.forzarAjax = forzarAjax;
 	}
 
-	
 }

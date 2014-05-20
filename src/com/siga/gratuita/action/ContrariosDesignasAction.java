@@ -97,7 +97,7 @@ public class ContrariosDesignasAction extends MasterAction {
 		
 		ScsContrariosDesignaAdm contrariosAdm = new ScsContrariosDesignaAdm(this.getUserBean(request));
 		String consultaContrarios = " select def.idpersona idpersona, per.nif nif, (per.nombre||' '|| per.apellido1 ||' '|| per.apellido2) nombre, def.nombrerepresentante representante,"+
-		 							" def.idabogadocontrario, def.nombreabogadocontrario,"+
+		 							" def.idabogadocontrario, def.nombreabogadocontrario, def.IDINSTITUCIONORIGEN, F_SIGA_CALCULONCOLEGIADO(def.IDINSTITUCIONORIGEN, def.idabogadocontrario) NCOLEGIADOORIGEN,"+
 		 							"(select  pro.nombre || ' ' || pro.apellidos1 || ' ' || pro.apellidos2  from "+ ScsProcuradorBean.T_NOMBRETABLA+  " pro"+
 		 								" where  pro."+ScsProcuradorBean.C_IDINSTITUCION+"= def."+ScsContrariosDesignaBean.C_IDINSTITUCIONPROCURADOR+
 		 								" and pro."+ScsProcuradorBean.C_IDPROCURADOR+"= def."+ScsContrariosDesignaBean.C_IDPROCURADOR+") PROCURADOR"+
