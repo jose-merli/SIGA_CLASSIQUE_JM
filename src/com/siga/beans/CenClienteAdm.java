@@ -4,6 +4,7 @@ package com.siga.beans;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
@@ -3770,7 +3771,8 @@ public class CenClienteAdm extends MasterBeanAdmVisible
 			String tiposDir = ClsConstants.TIPO_DIRECCION_CENSOWEB + "," +ClsConstants.TIPO_DIRECCION_DESPACHO + "," + ClsConstants.TIPO_DIRECCION_GUIA+ "," + ClsConstants.TIPO_DIRECCION_FACTURACION;
 			
 			// Se llama a la interfaz Direccion para actualizar una nueva direccion
-			direccion.insertar(beanDir, tiposDir, null, null, this.usrbean);
+			
+			direccion.insertar(beanDir, tiposDir, null, Direccion.getListaDireccionesObligatorias(ClsConstants.TIPO_ACCESO_PESTANAS_COLEGIADO), null, this.usrbean);
 			
 		}
 		catch (SIGAException se) {
@@ -5613,7 +5615,8 @@ public class CenClienteAdm extends MasterBeanAdmVisible
 
 			// Se llama a la interfaz Direccion para actualizar una nueva
 			// direccion
-			direccion.insertar(beanDir, tiposDir, "", null, this.usrbean);
+			
+			direccion.insertar(beanDir, tiposDir, "",null,null, this.usrbean);
 			
 			//actualiza los campos temporales tras insertar
 			beanSolic.setIdPersonaTemp(beanDir.getIdPersona());

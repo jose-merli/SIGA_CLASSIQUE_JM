@@ -1632,9 +1632,9 @@ public class DatosGeneralesAction extends MasterAction {
 				if(miForm.getMotivo ()!=null){
 					motivo = miForm.getMotivo ();	
 				}
-				
+				List<Integer> tiposDireccionAValidarIntegers = Direccion.getListaDireccionesObligatorias(ClsConstants.TIPO_ACCESO_PESTANAS_NOCOLEGIADO);
 				// Se llama a la interfaz Direccion para insertar una nueva direccion
-				direccion.insertar(beanDir, tiposDir, motivo, null, usr);
+				direccion.insertar(beanDir, tiposDir, motivo,tiposDireccionAValidarIntegers, null, usr);
 				
 				request.setAttribute("idDireccion",beanDir.getIdDireccion().toString());   		    
    		    }

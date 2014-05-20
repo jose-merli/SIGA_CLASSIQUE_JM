@@ -296,7 +296,8 @@ public class BusquedaCensoAction extends MasterAction {
 					//Si la dirección es nueva se añade para este no colegiado se inserta en el sistema
 					if(miForm.getDirecciones()!= null && miForm.getDirecciones().equals("-1")){
 						// Se llama a la interfaz Direccion para insertar una nueva direccion
-						Direccion dirAux = direccion.insertar(beanDir, tiposDir, "", request, usr);
+						
+						Direccion dirAux = direccion.insertar(beanDir, tiposDir, "",Direccion.getListaDireccionesObligatorias(ClsConstants.TIPO_ACCESO_PESTANAS_NOCOLEGIADO), request, usr);
 						
 						//Si se necesita confirmación por parte del usuario se realiza una peticion de pregunta
 						if(dirAux.isConfirmacionPregunta()){
@@ -420,9 +421,9 @@ public class BusquedaCensoAction extends MasterAction {
 			if(miForm.getTipoDireccion()!= null && !miForm.getTipoDireccion().equals("")){
 				tiposDir = miForm.getTipoDireccion();
 			}
-				
+			
 			// Se llama a la interfaz Direccion para insertar una nueva direccion
-			direccion.insertar(beanDir, tiposDir, "", null, usr);
+			direccion.insertar(beanDir, tiposDir, "",Direccion.getListaDireccionesObligatorias(ClsConstants.TIPO_ACCESO_PESTANAS_NOCOLEGIADO), null, usr);
 				
 			//confirmando las modificaciones de BD
 			tx.commit();	
@@ -515,9 +516,9 @@ public class BusquedaCensoAction extends MasterAction {
 				
 			//estableciendo los datos del tipo de direccion
 			String tiposDir = "3";
-				
+			
 			// Se llama a la interfaz Direccion para insertar una nueva direccion
-			direccion.insertar(beanDir, tiposDir, "", request, usr);
+			direccion.insertar(beanDir, tiposDir, "", Direccion.getListaDireccionesObligatorias(ClsConstants.TIPO_ACCESO_PESTANAS_NOCOLEGIADO),request, usr);
 			
 			request.setAttribute("idDireccion",beanDir.getIdDireccion().toString());
 			

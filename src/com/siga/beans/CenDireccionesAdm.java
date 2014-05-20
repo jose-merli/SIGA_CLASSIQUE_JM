@@ -415,7 +415,8 @@ public class CenDireccionesAdm extends MasterBeanAdmVisible
 	 * @param beanTipoDir datos el tipo de la direccion.
 	 * @param BeanHis con el motivo y el tipo, para almacenar en el Historico
 	 */
-	public boolean insertarConHistorico (CenDireccionesBean beanDir, CenDireccionTipoDireccionBean beanTipoDir[], CenHistoricoBean beanHis, String idioma) throws ClsExceptions, SIGAException 
+	public boolean insertarConHistorico (CenDireccionesBean beanDir, CenDireccionTipoDireccionBean beanTipoDir[], CenHistoricoBean beanHis,
+			List<Integer> idTipoDireccionAValidarIntegers, String idioma) throws ClsExceptions, SIGAException 
 	{
 		try {
 			// Insertamos la direccion
@@ -439,7 +440,7 @@ public class CenDireccionesAdm extends MasterBeanAdmVisible
 
 				// si es direccion postal
 //				if (beanDir.getDomicilio()!=null && !beanDir.getDomicilio().equals("")) { 
-					validarRestricciones(beanDir);
+					validarRestricciones(beanDir, idTipoDireccionAValidarIntegers);
 //				}
 				
 				if (!error) {
@@ -512,7 +513,7 @@ public class CenDireccionesAdm extends MasterBeanAdmVisible
 	 * @param BeanTipoDir conjunto de tipos de la direccion
 	 * @param BeanHis con el motivo y el tipo, para almacenar en el Historico
 	 */
-	public boolean updateConHistorico (CenDireccionesBean beanDir, CenDireccionTipoDireccionBean beanTipoDir[], CenHistoricoBean beanHis, String idioma) throws ClsExceptions, SIGAException {
+	public boolean updateConHistorico (CenDireccionesBean beanDir, CenDireccionTipoDireccionBean beanTipoDir[], CenHistoricoBean beanHis,List<Integer> idTipoDireccionAValidarIntegers, String idioma) throws ClsExceptions, SIGAException {
 		try {
 			if (update(beanToHashTable(beanDir), beanDir.getOriginalHash())) {
 				
@@ -550,7 +551,7 @@ public class CenDireccionesAdm extends MasterBeanAdmVisible
 							error = true;
 						}
 					}
-					validarRestricciones (beanDir);
+					validarRestricciones (beanDir,idTipoDireccionAValidarIntegers);
 				}
 				
 				if (!error) {
@@ -865,11 +866,14 @@ public class CenDireccionesAdm extends MasterBeanAdmVisible
 	    }
 	
 	
-	void validarRestricciones (CenDireccionesBean beanDir) throws SIGAException {
+	void validarRestricciones (CenDireccionesBean beanDir,List<Integer> idTipoDireccionAValidarIntegers ) throws SIGAException {
 		try {
 			// 		QUE EXISTA UNA DIRECCION DE CORREO
 			
-			if (this.getNumDirecciones(beanDir, ClsConstants.TIPO_DIRECCION_FACTURACION) < 1) {
+			
+			
+			if (idTipoDireccionAValidarIntegers!=null && idTipoDireccionAValidarIntegers.contains( ClsConstants.TIPO_DIRECCION_FACTURACION) &&
+					this.getNumDirecciones(beanDir, ClsConstants.TIPO_DIRECCION_FACTURACION) < 1) {
 				SIGAException sigaExp = new SIGAException ("messages.censo.direcciones.facturacion");
 				throw sigaExp;
 			}
@@ -887,7 +891,7 @@ public class CenDireccionesAdm extends MasterBeanAdmVisible
 				return;
 			}
 			
-			if (this.getNumDirecciones(beanDir, ClsConstants.TIPO_DIRECCION_CENSOWEB) < 1) {
+			if (idTipoDireccionAValidarIntegers!=null && idTipoDireccionAValidarIntegers.contains( ClsConstants.TIPO_DIRECCION_CENSOWEB) && this.getNumDirecciones(beanDir, ClsConstants.TIPO_DIRECCION_CENSOWEB) < 1) {
 				SIGAException sigaExp = new SIGAException ("messages.censo.direcciones.tipoCorreo");
 				throw sigaExp;
 			}
@@ -909,14 +913,14 @@ public class CenDireccionesAdm extends MasterBeanAdmVisible
 			if (!(esLetrado.equals("1") && !tieneColegiacionEjerciente)){
 				// SI ES EJERCIENTE O LETRADO QUE EXISTA UNA DIRECCION DE DESPACHO
 				if ((((estado!=null && estado.intValue() == ClsConstants.ESTADO_COLEGIAL_EJERCIENTE) || esLetrado.equals("1"))) && 
-					(this.getNumDirecciones(beanDir, ClsConstants.TIPO_DIRECCION_DESPACHO) < 1)) {
+						idTipoDireccionAValidarIntegers!=null && idTipoDireccionAValidarIntegers.contains( ClsConstants.TIPO_DIRECCION_DESPACHO) && (this.getNumDirecciones(beanDir, ClsConstants.TIPO_DIRECCION_DESPACHO) < 1)) {
 					SIGAException sigaExp = new SIGAException ("messages.censo.direcciones.tipoDespacho");
 					throw sigaExp;
 				}
 				
 				// SI ES EJERCIENTE O LETRADO QUE EXISTA UNA DIRECCION DE GUIA JUDICIAL
 				if ((((estado!=null && estado.intValue() == ClsConstants.ESTADO_COLEGIAL_EJERCIENTE)) || esLetrado.equals("1"))&& 
-					(this.getNumDirecciones(beanDir, ClsConstants.TIPO_DIRECCION_GUIA) < 1)) {
+						idTipoDireccionAValidarIntegers!=null && idTipoDireccionAValidarIntegers.contains( ClsConstants.TIPO_DIRECCION_GUIA) && (this.getNumDirecciones(beanDir, ClsConstants.TIPO_DIRECCION_GUIA) < 1)) {
 					SIGAException sigaExp = new SIGAException ("messages.censo.direcciones.tipoGuia");
 					throw sigaExp;
 				}
@@ -975,14 +979,14 @@ public class CenDireccionesAdm extends MasterBeanAdmVisible
 	 * @param Hash con las claves de la direccion a borrar
 	 * @param BeanHis con el motivo y el tipo, para almacenar en el Historico.
 	 */
-	public boolean deleteConHistorico (Hashtable clavesDir, CenHistoricoBean beanHis, String idioma, boolean validar) throws ClsExceptions, SIGAException 
+	public boolean deleteConHistorico (Hashtable clavesDir, CenHistoricoBean beanHis, String idioma, boolean validar,List<Integer> idTipoDireccionAValidarIntegers) throws ClsExceptions, SIGAException 
 	{
 		try {
 			CenDireccionesBean beanDir = (CenDireccionesBean) this.selectByPK(clavesDir).get(0);
 
 			if (delete(clavesDir)) {
 				
-				if(validar) validarRestricciones((CenDireccionesBean)hashTableToBean(clavesDir));
+				if(validar) validarRestricciones((CenDireccionesBean)hashTableToBean(clavesDir),idTipoDireccionAValidarIntegers);
 				
 				CenHistoricoAdm admHis = new CenHistoricoAdm(this.usrbean);
 				if (admHis.insertCompleto(beanHis, beanDir, CenHistoricoAdm.ACCION_DELETE, idioma)) {
@@ -1152,7 +1156,7 @@ public class CenDireccionesAdm extends MasterBeanAdmVisible
 		
 	}
 	
-	public boolean modificarDireccionesPreferentes (Long idPersona, String idInstitucion,  String idDireccion, String preferencia) throws SIGAException, ClsExceptions 
+	public boolean modificarDireccionesPreferentes (Long idPersona, String idInstitucion,  String idDireccion, String preferencia, List<Integer> idTipoDireccionAValidarIntegers) throws SIGAException, ClsExceptions 
 	{
 		boolean salida = false;
 		
@@ -1193,7 +1197,7 @@ public class CenDireccionesAdm extends MasterBeanAdmVisible
 				}	
 				
 				
-				if (!direccionesAdm.updateConHistorico(dirBean,null, beanHis,this.usrbean.getLanguageInstitucion())){
+				if (!direccionesAdm.updateConHistorico(dirBean,null, beanHis,idTipoDireccionAValidarIntegers,this.usrbean.getLanguageInstitucion())){
 					throw new SIGAException (direccionesAdm.getError ());
 				}
 				//insertando en la cola de modificacion de datos para Consejos
@@ -1786,7 +1790,7 @@ public class CenDireccionesAdm extends MasterBeanAdmVisible
 			beanDir.setOriginalHash(original);
 				
 			// Se llama a la interfaz Direccion para actualizar una nueva direccion
-			direccion.actualizar(beanDir, "", "", null, this.usrbean);
+			direccion.actualizar(beanDir, "", "",null, null, this.usrbean);
 			
 		}else{
 			
@@ -1805,7 +1809,8 @@ public class CenDireccionesAdm extends MasterBeanAdmVisible
 			beanDir.setPreferente("");
 
 			// Se llama a la interfaz Direccion para actualizar una nueva direccion
-			direccion.insertar(beanDir, tiposDir, "", null, this.usrbean);
+			
+			direccion.insertar(beanDir, tiposDir, "",null, null, this.usrbean);
 		}
 	}
 	

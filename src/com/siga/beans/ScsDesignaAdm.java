@@ -2,6 +2,7 @@
 package com.siga.beans;
 
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Vector;
 
@@ -10,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.struts.action.ActionMapping;
+import org.codehaus.jackson.map.ObjectMapper;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
@@ -343,32 +345,46 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 			
 			UtilidadesHash.set(entrada, ScsDesignaBean.C_FECHAESTADO,UtilidadesBDAdm.getFechaBD(""));
 			
-			
-			if (entrada.get("JUZGADO")!=null && !(entrada.get("JUZGADO")).equals("")) {
-				String juzgado = (String)entrada.get("JUZGADO");
-				String idJuzgado = juzgado.substring(0, juzgado.indexOf(","));
-				String idInstitucionJuzgado = juzgado.substring(juzgado.indexOf(",")+1);
-				entrada.put(ScsDesignaBean.C_IDJUZGADO, idJuzgado);			
-				entrada.put(ScsDesignaBean.C_IDINSTITUCIONJUZGADO, idInstitucionJuzgado);				
+			String sJuzgado=((String)entrada.get("JUZGADO"));
+			if (sJuzgado!=null && !sJuzgado.equals("")) {
+				String sIdJuzgado = "";
+				String sIdInstitucionJuzgado = "";
+				if (sJuzgado.startsWith("{")){
+					// ES UN JSON
+					HashMap<String, String> hmIdJuzgadoObtenido = new ObjectMapper().readValue(sJuzgado, HashMap.class);
+					sIdJuzgado = hmIdJuzgadoObtenido.get("idjuzgado");
+					sIdInstitucionJuzgado = hmIdJuzgadoObtenido.get("idinstitucion");
+				} else if (!sJuzgado.equals("")){
+					String[] juzgado =sJuzgado.split(",");
+					sIdJuzgado = juzgado[0];
+					sIdInstitucionJuzgado = juzgado[1];
+				}
+				if (sIdJuzgado!=null && !sIdJuzgado.equals("")){
+					entrada.put(ScsDesignaBean.C_IDJUZGADO, sIdJuzgado);
+					entrada.put(ScsDesignaBean.C_IDINSTITUCIONJUZGADO, sIdInstitucionJuzgado);
+				} else {
+					entrada.put(ScsDesignaBean.C_IDJUZGADO, "");
+					entrada.put(ScsDesignaBean.C_IDINSTITUCIONJUZGADO, "");
+				}	
+			} 
+			String idPretension =  ((String)entrada.get("IDPRETENSION"));
+			if (idPretension!=null && !idPretension.equals("")) {
+				entrada.put(ScsDesignaBean.C_IDPRETENSION, idPretension);
 			}
-//			if(entrada.get("DILIGENCIA")!=null&& !(entrada.get("DILIGENCIA")).equals("")) {
-//				String diligencia=(String)entrada.get("DILIGENCIA");
-//				entrada.put(ScsDesignaBean.c_, diligencia);
-//			}
-//			if(entrada.get("COMISARIA")!=null&& !(entrada.get("COMISARIA")).equals("")) {
-//				String comisaria=(String)entrada.get("COMISARIA");
-//				entrada.put(ScsDesignaBean.C_IDJUZGADO, comisaria);
-//			}
+			
+			String idModulo =  ((String)entrada.get("IDPROCEDIMIENTO"));
+			if (idModulo!=null && !idModulo.equals("")) {
+				entrada.put(ScsDesignaBean.C_IDPROCEDIMIENTO, idModulo);
+			}			
+			
+			
+			
 			if(entrada.get("PROCEDIMIENTO")!=null&& !(entrada.get("PROCEDIMIENTO")).equals("")) {
 				String procedimiento=(String)entrada.get("PROCEDIMIENTO");
 				entrada.put(ScsDesignaBean.C_NUMPROCEDIMIENTO, procedimiento);
 			}
-//			if(entrada.get("JUZGADO")!=null&& !(entrada.get("JUZGADO")).equals("")) {
-//				String juzgado=(String)entrada.get("JUZGADO");
-//				entrada.put(ScsDesignaBean.C_IDJUZGADO, juzgado);
-//			}
 		}	
-		catch (ClsExceptions e) {		
+		catch (Exception e) {		
 			throw new ClsExceptions (e, "Error al ejecutar el 'prepararInsert' en B.D.");		
 		}
 		return entrada;

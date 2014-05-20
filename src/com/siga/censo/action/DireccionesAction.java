@@ -1,8 +1,10 @@
 
 package com.siga.censo.action;
 
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
@@ -443,7 +445,7 @@ protected String insertar (ActionMapping mapping,
 			CenDireccionesBean beanDir = new CenDireccionesBean ();
 			Direccion direccion = new Direccion();
 			UsrBean usr = this.getUserBean (request);
-			
+		
 			t = usr.getTransactionPesada();
 			t.begin ();
 			
@@ -496,7 +498,7 @@ protected String insertar (ActionMapping mapping,
 			}			
 			
 			// Se llama a la interfaz Direccion para insertar una nueva direccion
-			Direccion dirAux = direccion.insertar(beanDir, tiposDir, motivo, request, usr);
+			Direccion dirAux = direccion.insertar(beanDir, tiposDir, motivo,Direccion.getListaDireccionesObligatorias(miForm.getTipoAcceso()), request, usr);
 
 			//Si se necesita confirmación por parte del usuario se realiza una peticion de pregunta
 			if(dirAux.isConfirmacionPregunta()){
@@ -609,9 +611,8 @@ protected String insertar (ActionMapping mapping,
 			beanDir.setIdInstitucion (miForm.getIDInstitucion ());
 			beanDir.setIdDireccion (miForm.getIdDireccion ());
 			beanDir.setOriginalHash ((Hashtable) request.getSession ().getAttribute ("DATABACKUP"));
-			
 			// Se llama a la interfaz Direccion para insertar una nueva direccion
-			Direccion dirAux = direccion.actualizar(beanDir, tiposDir, miForm.getMotivo (), request, usr);
+			Direccion dirAux = direccion.actualizar(beanDir, tiposDir, miForm.getMotivo (),Direccion.getListaDireccionesObligatorias(miForm.getTipoAcceso()), request, usr);
 
 			//Si se necesita confirmación por parte del usuario se realiza una peticion de pregunta
 			if(dirAux.isConfirmacionPregunta()){
@@ -680,9 +681,10 @@ protected String insertar (ActionMapping mapping,
 				beanDir.setIdDireccion(miForm.getIdDireccion());
 			else
 				beanDir.setIdDireccion(new Long ((String) miForm.getDatosTablaOcultos (0).get (0)));
- 			
+			
+			
 			//Se llama a la interfaz Direccion para realizar el borrado
-			direccion.borrar(beanDir, request, usr);
+			direccion.borrar(beanDir,Direccion.getListaDireccionesObligatorias(miForm.getTipoAcceso()), request, usr);
 			
 			//confirmando los cambios en BD
 			t.commit();
@@ -1005,8 +1007,9 @@ protected String insertar (ActionMapping mapping,
 				motivo = miForm.getMotivo ();	
 			}
 			
+			List<Integer> tiposDireccionAValidarIntegers = Direccion.getListaDireccionesObligatorias(miForm.getTipoAcceso());
 			// Se llama a la interfaz Direccion para insertar una nueva direccion
-			Direccion dirAux = direccion.insertar(beanDir, tiposDir, motivo, request, usr); 
+			Direccion dirAux = direccion.insertar(beanDir, tiposDir, motivo,tiposDireccionAValidarIntegers, request, usr); 
 			
 			//Se llama a la interfaz Direccion para realizar el borrado de la direccion antigua
 			beanDir.setIdDireccion(idDireccionAntigua);
@@ -1018,7 +1021,7 @@ protected String insertar (ActionMapping mapping,
 				return dirAux.getTipoPregunta();
 			}
 			
-			direccion.borrar(beanDir, request, usr);
+			direccion.borrar(beanDir,tiposDireccionAValidarIntegers, request, usr);
 			
 			//confirmando las modificaciones de BD
 			t.commit();

@@ -1,9 +1,11 @@
 
 package com.siga.censo.action;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
@@ -29,10 +31,8 @@ import com.siga.beans.CenDireccionTipoDireccionAdm;
 import com.siga.beans.CenDireccionTipoDireccionBean;
 import com.siga.beans.CenDireccionesAdm;
 import com.siga.beans.CenDireccionesBean;
-import com.siga.beans.CenHistoricoBean;
 import com.siga.beans.CenNoColegiadoAdm;
 import com.siga.beans.CenNoColegiadoBean;
-import com.siga.beans.ScsRetencionesAdm;
 import com.siga.general.EjecucionPLs;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
@@ -327,6 +327,7 @@ public class ColegiarAction extends MasterAction
 				Long idDireccionDestino, idDireccionOrigen;
 				CenDireccionesBean beanDir;
 				Direccion direccion;
+				
 				for (int i=0; i < listaBeanDireccion.size (); i++) {
 					
 					//obteniendo direccion de Consejo
@@ -355,11 +356,13 @@ public class ColegiarAction extends MasterAction
 							if(estadoColegial.equalsIgnoreCase("20")){
 								if (!tiposDir.contains("2")) tiposDir += "2,";
 								if (!tiposDir.contains("5")) tiposDir += "5,";
+								
 							}
-						
+							if (!tiposDir.contains("8")) tiposDir += "8,";
 							//Insertamos en el colegio
 							beanDir.setIdInstitucion (new Integer (colegio));
-							direccion.insertar(beanDir, tiposDir, "", null, user);
+							
+							direccion.insertar(beanDir, tiposDir, "",null, null, user);
 							
 							//enlazando la direccion de Consejo con la del Colegio
 							beanDir = (CenDireccionesBean) listaBeanDireccion.get (i);
@@ -368,7 +371,7 @@ public class ColegiarAction extends MasterAction
 							beanDir.setIdDireccion (idDireccionOrigen);
 							beanDir.setIdInstitucionAlta (new Integer (colegio));
 							
-							direccion.actualizar(beanDir, "", null, null, user);
+							direccion.actualizar(beanDir, "", null,null, null, user);
 						}
 					}					
 				} //for

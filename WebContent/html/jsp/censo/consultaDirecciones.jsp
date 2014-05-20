@@ -52,6 +52,7 @@
 	String botones="N"; 
 	String accion = String.valueOf(request.getAttribute("accion"));	
 	String sTipo = request.getParameter("tipo");
+	String tipoAcceso = request.getParameter("tipoAcceso");
 	
 	// Gestion de Volver
 	String busquedaVolver = (String)
@@ -163,6 +164,7 @@
 			<!-- RGG: cambio a formularios ligeros -->
 
 			<input type="hidden" id="incluirRegistrosConBajaLogica"  name="incluirRegistrosConBajaLogica" value="<%=bIncluirBajaLogica%>">
+			<html:hidden styleId="tipoAcceso"  property="tipoAcceso" value="<%=tipoAcceso%>" />
 		</html:form>
 
 		<tr>

@@ -28,7 +28,22 @@ public class DireccionesForm extends MasterForm{
 	String incluirRegistrosConBajaLogica;
 	String vieneDe;
 	String nombre;
+	String tipoAcceso;
 	
+	/**
+	 * @return the tipoAcceso
+	 */
+	public String getTipoAcceso() {
+		return tipoAcceso;
+	}
+
+	/**
+	 * @param tipoAcceso the tipoAcceso to set
+	 */
+	public void setTipoAcceso(String tipoAcceso) {
+		this.tipoAcceso = tipoAcceso;
+	}
+
 	//	metodos set de los campos del formulario
 	public void setCodigoPostal(String codigoPostal) {
 		UtilidadesHash.set(this.datos, CenDireccionesBean.C_CODIGOPOSTAL, codigoPostal);

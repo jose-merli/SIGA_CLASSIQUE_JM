@@ -887,6 +887,7 @@
 			<input type="hidden" id="idDireccionesFacturacion"
 				name="idDireccionesFacturacion" value="" />	
 			<html:hidden property="vieneDe" styleId="vieneDe" />
+			<html:hidden styleId="tipoAcceso"  property="tipoAcceso" />
 
 			<%
 				if (editarCampos) {

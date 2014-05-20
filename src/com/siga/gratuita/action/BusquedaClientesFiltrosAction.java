@@ -1,25 +1,36 @@
 package com.siga.gratuita.action;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.transaction.UserTransaction;
 
-
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
-import com.atos.utils.*;
-import com.ibatis.sqlmap.engine.mapping.sql.dynamic.elements.IsEmptyTagHandler;
+import com.atos.utils.ClsConstants;
+import com.atos.utils.ClsExceptions;
+import com.atos.utils.GstDate;
+import com.atos.utils.Row;
+import com.atos.utils.UsrBean;
 import com.siga.Utilidades.Paginador;
 import com.siga.Utilidades.UtilidadesHash;
-import com.siga.beans.*;
+import com.siga.beans.BusquedaClientesFiltrosAdm;
+import com.siga.beans.CenDireccionTipoDireccionAdm;
+import com.siga.beans.CenDireccionTipoDireccionBean;
+import com.siga.beans.CenDireccionesAdm;
+import com.siga.beans.CenDireccionesBean;
+import com.siga.beans.ScsGuardiasColegiadoAdm;
 import com.siga.censo.action.Direccion;
-import com.siga.general.*;
+import com.siga.general.MasterAction;
+import com.siga.general.MasterForm;
+import com.siga.general.SIGAException;
 import com.siga.gratuita.form.BusquedaClientesFiltrosForm;
 
 public class BusquedaClientesFiltrosAction extends MasterAction
@@ -435,9 +446,9 @@ public class BusquedaClientesFiltrosAction extends MasterAction
 			
 			//estableciendo los datos del tipo de direccion
 			String tiposDir = ""+ClsConstants.TIPO_DIRECCION_GUARDIA;
-	
+			
 			// Se llama a la interfaz Direccion para actualizar una nueva direccion
-			direccion.insertar(beanDir, tiposDir, "", null, usr);
+			direccion.insertar(beanDir, tiposDir, "",null, null, usr);
 			
 			request.setAttribute("mensaje","messages.inserted.success");
 			tx.commit();
@@ -490,9 +501,8 @@ public class BusquedaClientesFiltrosAction extends MasterAction
 			// Actualizamos el registro de la dirección de guardia
 			beanDir.setIdDireccion(formulario.getIdDireccion());
 			beanDir.setOriginalHash((Hashtable)request.getSession().getAttribute("DATABACKUP_CLIENTESFILTRO"));
-			
 			// Se llama a la interfaz Direccion para actualizar una nueva direccion
-			direccion.actualizar(beanDir, "", "", null, usr);
+			direccion.actualizar(beanDir, "", "",null, null, usr);
 			
 			request.setAttribute("mensaje","messages.inserted.success");
 			tx.commit();

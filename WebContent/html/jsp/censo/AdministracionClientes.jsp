@@ -91,7 +91,9 @@
 			elementoactivo="<%=elementoActivo%>"
 			tipoAcceso="<%=tipoAcceso.toString()%>"
 			idInstitucionCliente="<%=idInstitucion %>"	
-			procesosinvisibles="<%=pestanasOcultas%>"		
+			procesosinvisibles="<%=pestanasOcultas%>"
+			
+					
 	/>
 	<%
 		}

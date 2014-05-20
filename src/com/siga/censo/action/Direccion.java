@@ -1,7 +1,9 @@
 
 package com.siga.censo.action;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
@@ -37,7 +39,7 @@ public class Direccion {
 		
 	}
 
-	public static Direccion insertar (CenDireccionesBean beanDir, String tiposDir, String motivoHis, HttpServletRequest request,UsrBean usr) throws SIGAException {
+	public static Direccion insertar (CenDireccionesBean beanDir, String tiposDir, String motivoHis,List<Integer> tiposDireccionAValidarIntegers, HttpServletRequest request,UsrBean usr) throws SIGAException {
 		
 		// Variables generales
 		Direccion dir = new Direccion();		
@@ -125,7 +127,7 @@ public class Direccion {
 			}
 			
 			// Comprobar tipo direccion
-			comprobarTipoDireccion(tipos, beanDir, direccionesAdm, dir, control, idDireccionesCensoWeb, idPersona, idInstitucionPersona, idDireccionesPreferentes, tipoDirAdm, modificarPreferencias, modificarDireccionesCensoWeb,modificarDireccionesFacturacion,idDireccionesFacturacion);
+			comprobarTipoDireccion(tipos, beanDir, direccionesAdm, dir, control, idDireccionesCensoWeb, idPersona, idInstitucionPersona, idDireccionesPreferentes, tipoDirAdm, modificarPreferencias, modificarDireccionesCensoWeb,modificarDireccionesFacturacion,idDireccionesFacturacion,tiposDireccionAValidarIntegers);
 			
 			//estableciendo los datos del tipo de direccion
 			CenDireccionTipoDireccionBean vBeanTipoDir [] = establecerTipoDireccion(tipos);
@@ -142,8 +144,10 @@ public class Direccion {
 				beanHis.setMotivo (motivoHis);
 			}			
 			
+			
+			
 			//insertando la direccion
-			if (! direccionesAdm.insertarConHistorico (beanDir, vBeanTipoDir, beanHis, usr.getLanguage()))
+			if (! direccionesAdm.insertarConHistorico (beanDir, vBeanTipoDir, beanHis,tiposDireccionAValidarIntegers, usr.getLanguage()))
 				throw new SIGAException (direccionesAdm.getError());
 			
 			
@@ -193,7 +197,9 @@ public class Direccion {
 	 * @return  String  Destino del action  
 	 * @exception  ClsExceptions  En cualquier caso de error
 	 */
-	public static Direccion actualizar (CenDireccionesBean beanDir, String tiposDir, String motivoHis,HttpServletRequest request,UsrBean usr) throws SIGAException {
+	public static Direccion actualizar (CenDireccionesBean beanDir, String tiposDir, String motivoHis,List<Integer> tiposDireccionAValidarIntegers,HttpServletRequest request,UsrBean usr) throws SIGAException {
+		
+		
 		
 		//Variables generales
 		Direccion dir = new Direccion();	
@@ -285,7 +291,7 @@ public class Direccion {
 						
 			if(!tiposDir.equals("")){
 				// Comprobar tipo direccion
-				comprobarTipoDireccion(tipos, beanDir, direccionesAdm, dir, control, idDireccionesCensoWeb, idPersona, idInstitucionPersona, idDireccionesPreferentes, tipoDirAdm, modificarPreferencias, modificarDireccionesCensoWeb,modificarDireccionesFacturacion,idDireccionesFacturacion);
+				comprobarTipoDireccion(tipos, beanDir, direccionesAdm, dir, control, idDireccionesCensoWeb, idPersona, idInstitucionPersona, idDireccionesPreferentes, tipoDirAdm, modificarPreferencias, modificarDireccionesCensoWeb,modificarDireccionesFacturacion,idDireccionesFacturacion,tiposDireccionAValidarIntegers);
 
 				//estableciendo los datos del tipo de direccion
 				vBeanTipoDir = establecerTipoDireccion(tipos);
@@ -304,8 +310,9 @@ public class Direccion {
 				beanHis.setMotivo (motivoHis);
 			}			
 			
+			
 			//Actualizando la direccion
-			if (!direccionesAdm.updateConHistorico (beanDir, vBeanTipoDir, beanHis, usr.getLanguage()))
+			if (!direccionesAdm.updateConHistorico (beanDir, vBeanTipoDir, beanHis,tiposDireccionAValidarIntegers, usr.getLanguage()))
 				throw new SIGAException (direccionesAdm.getError ());
 			
 			//insertando en la cola de modificacion de datos para Consejos
@@ -367,7 +374,7 @@ public class Direccion {
 	 * @return  String  Destino del action  
 	 * @exception  ClsExceptions  En cualquier caso de error
 	 */
-	protected boolean borrar (CenDireccionesBean beanDir,HttpServletRequest request,UsrBean usr) throws SIGAException {
+	protected boolean borrar (CenDireccionesBean beanDir,List<Integer> tiposDireccionAValidarIntegers,HttpServletRequest request,UsrBean usr) throws SIGAException {
 		//Variables generales
 		
 		try	{
@@ -385,9 +392,9 @@ public class Direccion {
 			//estableciendo los datos del Historico
 			CenHistoricoBean beanHis = new CenHistoricoBean();
 			beanHis.setMotivo(ClsConstants.HISTORICO_REGISTRO_ELIMINADO);
- 			
+			
 			//borrando la direccion en BD
-			if (!admDir.deleteConHistorico (claves, beanHis, usr.getLanguage(), true))
+			if (!admDir.deleteConHistorico (claves, beanHis, usr.getLanguage(), true,tiposDireccionAValidarIntegers))
 				throw new SIGAException (admDir.getError ());
 			
 			insertarModificacionConsejo(beanDir, usr, ClsConstants.COLA_CAMBIO_LETRADO_BORRADO_DIRECCION);
@@ -403,7 +410,9 @@ public class Direccion {
 	} //borrar()
 	
 
-	private static void comprobarTipoDireccion(String [] tipos,CenDireccionesBean beanDir, CenDireccionesAdm direccionesAdm, Direccion dir, String control, String idDireccionesCensoWeb, Long idPersona, Integer idInstitucionPersona, String idDireccionesPreferentes, CenDireccionTipoDireccionAdm tipoDirAdm, String modificarPreferencias, String modificarDireccionesCensoWeb, String modificarDireccionesFacturacion, String idDireccionesFacturacion) throws SIGAException, ClsExceptions, IllegalStateException, SecurityException, SystemException{
+	private static void comprobarTipoDireccion(String [] tipos,CenDireccionesBean beanDir, CenDireccionesAdm direccionesAdm, Direccion dir, String control, 
+			String idDireccionesCensoWeb, Long idPersona, Integer idInstitucionPersona, String idDireccionesPreferentes, CenDireccionTipoDireccionAdm tipoDirAdm, 
+			String modificarPreferencias, String modificarDireccionesCensoWeb, String modificarDireccionesFacturacion, String idDireccionesFacturacion,List<Integer> tiposDireccionAValidarIntegers) throws SIGAException, ClsExceptions, IllegalStateException, SecurityException, SystemException{
 	
 		String preferenteModif = "";
 		int j=0;
@@ -431,7 +440,8 @@ public class Direccion {
 					}	
 					
 					if (!idDireccionesPreferentes.equals("")) {
-						direccionesAdm.modificarDireccionesPreferentes(idPersona, idInstitucionPersona.toString (), idDireccionesPreferentes, preferenteModif);
+						
+						direccionesAdm.modificarDireccionesPreferentes(idPersona, idInstitucionPersona.toString (), idDireccionesPreferentes, preferenteModif,tiposDireccionAValidarIntegers);
 					}
 				}
 
@@ -442,7 +452,8 @@ public class Direccion {
 					
 					if (control != null && control.equals("0")){
 						if (!preferenteModif.equals("")){
-							direccionesAdm.modificarDireccionesPreferentes(idPersona, idInstitucionPersona.toString (), idDireccionesPreferentes, preferenteModif);	
+							
+							direccionesAdm.modificarDireccionesPreferentes(idPersona, idInstitucionPersona.toString (), idDireccionesPreferentes, preferenteModif,tiposDireccionAValidarIntegers);	
 						}
 					}else{ 
 						cambioDirecciones (beanDir,sql1, tipo, idDireccionesCensoWeb, tipoDirAdm, direccionesAdm);
@@ -455,7 +466,7 @@ public class Direccion {
 					
 					if (control != null && control.equals("0")){
 						if (!preferenteModif.equals("")){
-							direccionesAdm.modificarDireccionesPreferentes(idPersona, idInstitucionPersona.toString (), idDireccionesPreferentes, preferenteModif);	
+							direccionesAdm.modificarDireccionesPreferentes(idPersona, idInstitucionPersona.toString (), idDireccionesPreferentes, preferenteModif,tiposDireccionAValidarIntegers);	
 						}
 					}else{ 
 						cambioDirecciones (beanDir,sql1, tipo, idDireccionesFacturacion, tipoDirAdm, direccionesAdm);
@@ -465,11 +476,11 @@ public class Direccion {
 			}else { 
 				if (!preferenteModif.equals("")){
 					 if (!idDireccionesCensoWeb.equals("") &&(!idDireccionesPreferentes.equals(""))){
-						 direccionesAdm.modificarDireccionesPreferentes(idPersona, idInstitucionPersona.toString (), idDireccionesPreferentes, preferenteModif);
+						 direccionesAdm.modificarDireccionesPreferentes(idPersona, idInstitucionPersona.toString (), idDireccionesPreferentes, preferenteModif,tiposDireccionAValidarIntegers);
 					 }
 				
 					 if (control != null && control.equals("0")){ // Igual vale 0.....
-						  direccionesAdm.modificarDireccionesPreferentes(idPersona, idInstitucionPersona.toString (), idDireccionesPreferentes, preferenteModif);
+						  direccionesAdm.modificarDireccionesPreferentes(idPersona, idInstitucionPersona.toString (), idDireccionesPreferentes, preferenteModif,tiposDireccionAValidarIntegers);
 					 }
 				}
 			}
@@ -506,9 +517,42 @@ public class Direccion {
 		return valor;
 	} //parsearPreferenteModificado()
 		
+	/**
+	 * Devuelve el la lista los ids de los tipos de direccion que son obligatorios para cada tipo de cliente
+	 * @param tipoCliente: 8 Nocolegiado, 16 letrado, Colegiado
+	 * @return
+	 */
 	
-	
-	
+	public static List<Integer> getListaDireccionesObligatorias(String tipoCliente){
+		
+		if(tipoCliente==null)
+			return null;
+		List<Integer> tiposDireccionAValidarIntegers = new ArrayList<Integer>();
+		// Ninguna restriccion para el no colegiado
+		if(tipoCliente.equals(ClsConstants.TIPO_ACCESO_PESTANAS_NOCOLEGIADO) 
+				|| tipoCliente.equals(ClsConstants.TIPO_ACCESO_PESTANAS_NOCOLEGIADO_FISICO) 
+				|| tipoCliente.equals(ClsConstants.TIPO_ACCESO_PESTANAS_FACTURACION_NOCOLEGIADO)){
+			
+		}else if(tipoCliente.equals(ClsConstants.TIPO_ACCESO_PESTANAS_LETRADO)){
+			//Para el letrado la unica restriccion es que tenga drecion de censo web
+			tiposDireccionAValidarIntegers.add(ClsConstants.TIPO_DIRECCION_CENSOWEB);
+		}else if(tipoCliente.equals(ClsConstants.TIPO_ACCESO_PESTANAS_COLEGIADO)){
+			//Para los colegiados deben tener
+			tiposDireccionAValidarIntegers.add(ClsConstants.TIPO_DIRECCION_FACTURACION);
+			tiposDireccionAValidarIntegers.add(ClsConstants.TIPO_DIRECCION_CENSOWEB);
+			//En metodo que las validad mira si es ejerciente o no ejerciente para validar la de despacho y la de guia judicial
+			tiposDireccionAValidarIntegers.add(ClsConstants.TIPO_DIRECCION_DESPACHO);
+			tiposDireccionAValidarIntegers.add(ClsConstants.TIPO_DIRECCION_GUIA);	
+		}else{
+			//Para no identyificados ponemos la restriccion maxima, por si acaso
+			tiposDireccionAValidarIntegers.add(ClsConstants.TIPO_DIRECCION_FACTURACION);
+			tiposDireccionAValidarIntegers.add(ClsConstants.TIPO_DIRECCION_CENSOWEB);
+			tiposDireccionAValidarIntegers.add(ClsConstants.TIPO_DIRECCION_DESPACHO);
+			tiposDireccionAValidarIntegers.add(ClsConstants.TIPO_DIRECCION_GUIA);	
+		}
+		return tiposDireccionAValidarIntegers;
+		
+	}
 	
 	protected static void cambioDirecciones (CenDireccionesBean beanDir,String sql,String tipoDireccion,String idDirecciones, CenDireccionTipoDireccionAdm tipoDirAdm, CenDireccionesAdm direccionesAdm)	throws SIGAException
 	{

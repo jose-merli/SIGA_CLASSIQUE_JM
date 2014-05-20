@@ -6,7 +6,9 @@
  */
 package com.siga.beans;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
@@ -481,14 +483,15 @@ public class CenSoliModiDireccionesAdm extends MasterBeanAdministrador {
 					if(hash.get(CenSoliModiDireccionesBean.C_MOTIVO)!=null){
 						motivo = ((String)hash.get(CenSoliModiDireccionesBean.C_MOTIVO));	
 					}
-					
+
 					// Se llama a la interfaz Direccion para actualizar una nueva direccion
-					direccion.actualizar(dirModificada, "", motivo, null, this.usrbean);
+					direccion.actualizar(dirModificada, "", motivo,null, null, this.usrbean);
 
 					if(!dirModificada.getPreferente().equals("")){ //Cambio de preferencia si la tuviese
 						String preferenteModif = direccion.parsearPreferenteModificado(dirModificada.getPreferente());
 						String idDireccionesPreferentes = adminDir.obtenerPreferenteDirecciones (dirModificada.getIdPersona().toString(), dirModificada.getIdInstitucion().toString(), dirModificada.getPreferente(), dirModificada.getIdDireccion());
-						adminDir.modificarDireccionesPreferentes(dirModificada.getIdPersona(), dirModificada.getIdInstitucion().toString(), idDireccionesPreferentes,preferenteModif);
+						
+						adminDir.modificarDireccionesPreferentes(dirModificada.getIdPersona(), dirModificada.getIdInstitucion().toString(), idDireccionesPreferentes,preferenteModif,null);
 					}				
 					
 					// Nos quedamos con una copia de la direccion original (pedido por Jaen) y la insertamos hacemos
@@ -509,8 +512,8 @@ public class CenSoliModiDireccionesAdm extends MasterBeanAdministrador {
 							tiposDir = tipoDir.getIdTipoDireccion()+",";
 						}
 					}
-
-					direccion.insertar(beanDir, tiposDir, motivo, null, this.usrbean);
+					
+					direccion.insertar(beanDir, tiposDir, motivo,null, null, this.usrbean);
 										
 				}
 			}
