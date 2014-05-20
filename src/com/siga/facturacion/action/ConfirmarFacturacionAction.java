@@ -402,7 +402,7 @@ public class ConfirmarFacturacionAction extends MasterAction{
 			if (ret.size()>0) {
 				resultadoFinal[0] = UtilidadesString.getMensajeIdioma(this.getUserBean(request),"messages.facturacion.comprueba.avisosConfirmacion");
 				for (int i=0;i<ret.size();i++) {
-					resultadoFinal[0] += "\n" + UtilidadesString.getMensajeIdioma(this.getUserBean(request),(String)ret.get(i));
+					resultadoFinal[0] += "\\n" + UtilidadesString.getMensajeIdioma(this.getUserBean(request),(String)ret.get(i));
 				}
 			} 
 			
