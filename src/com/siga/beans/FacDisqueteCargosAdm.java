@@ -8,7 +8,6 @@ package com.siga.beans;
 import java.util.Hashtable;
 import java.util.Vector;
 
-import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.GstDate;
 import com.atos.utils.UsrBean;
@@ -329,29 +328,27 @@ public class FacDisqueteCargosAdm extends MasterBeanAdministrador {
 		 * 3º. Obtiene las fechas minimas para el fichero
 		 * 4º. Control de fechas (si alguna fecha es menor que su minimo, entonces es un error)
 		 */
-		
-		String idInstitucionCGAE = String.valueOf(ClsConstants.INSTITUCION_CGAE);
 
-		if (EjecucionPLs.ejecutarEsDiaHabil(idInstitucionCGAE, fechaEntrega) == 0) {
+		if (EjecucionPLs.ejecutarEsDiaHabil(fechaEntrega) == 0) {
 			return false;
 		}
 		
 		if (fechaTipoUnica.equals("1")) {
-			if (EjecucionPLs.ejecutarEsDiaHabil(idInstitucionCGAE, fechaUnica) == 0) {
+			if (EjecucionPLs.ejecutarEsDiaHabil(fechaUnica) == 0) {
 				return false;
 			}
 			
 		} else {
-			if (EjecucionPLs.ejecutarEsDiaHabil(idInstitucionCGAE, fechaRecibosPrimeros) == 0) {
+			if (EjecucionPLs.ejecutarEsDiaHabil(fechaRecibosPrimeros) == 0) {
 				return false;
 			}
-			if (EjecucionPLs.ejecutarEsDiaHabil(idInstitucionCGAE, fechaRecibosRecurrentes) == 0) {
+			if (EjecucionPLs.ejecutarEsDiaHabil(fechaRecibosRecurrentes) == 0) {
 				return false;
 			}
-			if (EjecucionPLs.ejecutarEsDiaHabil(idInstitucionCGAE, fechaRecibosCOR1) == 0) {
+			if (EjecucionPLs.ejecutarEsDiaHabil(fechaRecibosCOR1) == 0) {
 				return false;
 			}
-			if (EjecucionPLs.ejecutarEsDiaHabil(idInstitucionCGAE, fechaRecibosB2B) == 0) {
+			if (EjecucionPLs.ejecutarEsDiaHabil(fechaRecibosB2B) == 0) {
 				return false;
 			}			
 		}
@@ -365,7 +362,7 @@ public class FacDisqueteCargosAdm extends MasterBeanAdministrador {
 			fechaPrevista = GstDate.getHoyJsp(); // Obtengo la fecha actual
 		}
 		
-		/*String fechaMinimaEntrega = EjecucionPLs.ejecutarSumarDiasHabiles(idInstitucionCGAE, fechaPrevista, "1"); // fechaPrevista + 1						
+		/*String fechaMinimaEntrega = EjecucionPLs.ejecutarSumarDiasHabiles(fechaPrevista, "1"); // fechaPrevista + 1						
 		if (GstDate.compararFechas(fechaEntrega, fechaMinimaEntrega) < 0) {*/
 		if (GstDate.compararFechas(fechaEntrega, fechaPrevista) < 0) { // INC_12343_SIGA y INC_12345_SIGA solicitan la fecha actual como permitida 	
 			return false;
@@ -374,7 +371,7 @@ public class FacDisqueteCargosAdm extends MasterBeanAdministrador {
 		if (fechaTipoUnica.equals("1")) {
 			String habilesUnicaCargos = admParametros.getValor(idInstitucion, "FAC", "DIAS_HABILES_UNICA_CARGOS", "7");
 			
-			String fechaMinimaUnica = EjecucionPLs.ejecutarSumarDiasHabiles(idInstitucionCGAE, fechaEntrega, habilesUnicaCargos);
+			String fechaMinimaUnica = EjecucionPLs.ejecutarSumarDiasHabiles(fechaEntrega, habilesUnicaCargos);
 
 			if (GstDate.compararFechas(fechaUnica, fechaMinimaUnica) < 0) {
 				return false;
@@ -386,10 +383,10 @@ public class FacDisqueteCargosAdm extends MasterBeanAdministrador {
 			String habilesRecibosCOR1 = admParametros.getValor(idInstitucion, "FAC", "DIAS_HABILES_RECIBOS_COR1", "3");
 			String habilesRecibosB2B = admParametros.getValor(idInstitucion, "FAC", "DIAS_HABILES_RECIBOS_B2B", "3");
 			
-			String fechaMinimaPrimerosRecibos = EjecucionPLs.ejecutarSumarDiasHabiles(idInstitucionCGAE, fechaEntrega, habilesPrimerosRecibos);
-			String fechaMinimaRecibosRecurrentes = EjecucionPLs.ejecutarSumarDiasHabiles(idInstitucionCGAE, fechaEntrega, habilesRecibosRecurrentes);
-			String fechaMinimaRecibosCOR1 = EjecucionPLs.ejecutarSumarDiasHabiles(idInstitucionCGAE, fechaEntrega, habilesRecibosCOR1);
-			String fechaMinimaRecibosB2B = EjecucionPLs.ejecutarSumarDiasHabiles(idInstitucionCGAE, fechaEntrega, habilesRecibosB2B);			
+			String fechaMinimaPrimerosRecibos = EjecucionPLs.ejecutarSumarDiasHabiles( fechaEntrega, habilesPrimerosRecibos);
+			String fechaMinimaRecibosRecurrentes = EjecucionPLs.ejecutarSumarDiasHabiles(fechaEntrega, habilesRecibosRecurrentes);
+			String fechaMinimaRecibosCOR1 = EjecucionPLs.ejecutarSumarDiasHabiles(fechaEntrega, habilesRecibosCOR1);
+			String fechaMinimaRecibosB2B = EjecucionPLs.ejecutarSumarDiasHabiles(fechaEntrega, habilesRecibosB2B);			
 			
 			if (GstDate.compararFechas(fechaRecibosPrimeros, fechaMinimaPrimerosRecibos) < 0) {
 				return false;

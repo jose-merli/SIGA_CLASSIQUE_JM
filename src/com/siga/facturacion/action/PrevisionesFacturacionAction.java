@@ -12,30 +12,40 @@
 package com.siga.facturacion.action;
 
 import java.io.File;
-import com.atos.utils.GstDate;
-
 import java.util.Date;
 import java.util.Hashtable;
 import java.util.Locale;
 import java.util.Vector;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.transaction.UserTransaction;
-import org.apache.struts.action.*;
+
+import org.apache.struts.action.ActionForm;
+import org.apache.struts.action.ActionForward;
+import org.apache.struts.action.ActionMapping;
 import org.redabogacia.sigaservices.app.util.ReadProperties;
 import org.redabogacia.sigaservices.app.util.SIGAReferences;
 
-import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsLogging;
 import com.atos.utils.ClsMngBBDD;
+import com.atos.utils.GstDate;
 import com.atos.utils.UsrBean;
-import com.siga.Utilidades.UtilidadesFecha;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;
-import com.siga.beans.*;
-import com.siga.general.*;
+import com.siga.beans.FacFacturacionProgramadaAdm;
+import com.siga.beans.FacFacturacionProgramadaBean;
+import com.siga.beans.FacPrevisionFacturacionAdm;
+import com.siga.beans.FacPrevisionFacturacionBean;
+import com.siga.beans.FacSerieFacturacionAdm;
+import com.siga.beans.FacSerieFacturacionBean;
+import com.siga.beans.GenParametrosAdm;
 import com.siga.facturacion.form.PrevisionesFacturacionForm;
+import com.siga.general.EjecucionPLs;
+import com.siga.general.MasterAction;
+import com.siga.general.MasterForm;
+import com.siga.general.SIGAException;
 
 
 public class PrevisionesFacturacionAction extends MasterAction {
@@ -870,14 +880,13 @@ or	 * @param request -
 				bean.setIdPrevision(new Long(idPrevision));
 				
 				/** CR7 - Insercion de Fechas SEPA segun el algoritmo empleado en la ventana de Programacion **/
-				String idInstitucionCGAE = String.valueOf(ClsConstants.INSTITUCION_CGAE);
 				String fechaActual = GstDate.getHoyJsp(); // Obtengo la fecha actual
-				// String fechaPresentacion = EjecucionPLs.ejecutarSumarDiasHabiles(idInstitucionCGAE, fechaActual, "1"); // Fecha actual + 1
+				// String fechaPresentacion = EjecucionPLs.ejecutarSumarDiasHabiles(fechaActual, "1"); // Fecha actual + 1
 				String fechaPresentacion = fechaActual; // INC_12343_SIGA y INC_12345_SIGA solicitan la fecha actual como permitida 
 				
 				GenParametrosAdm admParametros = new GenParametrosAdm(user);
 				String habilesUnicaCargos = admParametros.getValor(idInstitucion.toString(), "FAC", "DIAS_HABILES_UNICA_CARGOS", "7");
-				String fechaUnicaCargos = EjecucionPLs.ejecutarSumarDiasHabiles(idInstitucionCGAE, fechaPresentacion, habilesUnicaCargos);
+				String fechaUnicaCargos = EjecucionPLs.ejecutarSumarDiasHabiles(fechaPresentacion, habilesUnicaCargos);
 				
 				bean.setFechaPresentacion		(GstDate.getApplicationFormatDate("en",fechaPresentacion));
 				bean.setFechaCargoUnica			(GstDate.getApplicationFormatDate("en",fechaUnicaCargos));

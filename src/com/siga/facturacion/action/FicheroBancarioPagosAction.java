@@ -25,7 +25,6 @@ import org.redabogacia.sigaservices.app.services.fac.CuentasBancariasService;
 import org.redabogacia.sigaservices.app.util.ReadProperties;
 import org.redabogacia.sigaservices.app.util.SIGAReferences;
 
-import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsMngBBDD;
 import com.atos.utils.GstDate;
@@ -505,7 +504,6 @@ public class FicheroBancarioPagosAction extends MasterAction{
 			FicheroBancarioPagosForm form 	= (FicheroBancarioPagosForm)formulario;
 			// Obtengo el UserBean y el identificador de la institucion
 			UsrBean user=(UsrBean)request.getSession().getAttribute("USRBEAN");						
-			String idInstitucionCGAE = String.valueOf(ClsConstants.INSTITUCION_CGAE);	
 			String idInstitucion=user.getLocation();							
 			
 			/** CR7 - Control de fechas de presentación y cargo en ficheros SEPA **/
@@ -517,14 +515,14 @@ public class FicheroBancarioPagosAction extends MasterAction{
 			String habilesRecibosB2B = admParametros.getValor(idInstitucion, "FAC", "DIAS_HABILES_RECIBOS_B2B", "3");
 			
 			String fechaActual = GstDate.getHoyJsp(); // Obtengo la fecha actual
-			// String fechaPresentacion = EjecucionPLs.ejecutarSumarDiasHabiles(idInstitucionCGAE, fechaActual, "1"); // Fecha actual + 1
+			// String fechaPresentacion = EjecucionPLs.ejecutarSumarDiasHabiles(fechaActual, "1"); // Fecha actual + 1
 			String fechaPresentacion = fechaActual; // INC_12343_SIGA y INC_12345_SIGA solicitan la fecha actual como permitida 
 			
-			String fechaUnicaCargos = EjecucionPLs.ejecutarSumarDiasHabiles(idInstitucionCGAE,fechaPresentacion,habilesUnicaCargos);
-			String fechaPrimerosRecibos = EjecucionPLs.ejecutarSumarDiasHabiles(idInstitucionCGAE,fechaPresentacion,habilesPrimerosRecibos);
-			String fechaRecibosRecurrentes = EjecucionPLs.ejecutarSumarDiasHabiles(idInstitucionCGAE,fechaPresentacion,habilesRecibosRecurrentes);
-			String fechaRecibosCOR1 = EjecucionPLs.ejecutarSumarDiasHabiles(idInstitucionCGAE,fechaPresentacion,habilesRecibosCOR1);
-			String fechaRecibosB2B = EjecucionPLs.ejecutarSumarDiasHabiles(idInstitucionCGAE,fechaPresentacion,habilesRecibosB2B);
+			String fechaUnicaCargos = EjecucionPLs.ejecutarSumarDiasHabiles(fechaPresentacion,habilesUnicaCargos);
+			String fechaPrimerosRecibos = EjecucionPLs.ejecutarSumarDiasHabiles(fechaPresentacion,habilesPrimerosRecibos);
+			String fechaRecibosRecurrentes = EjecucionPLs.ejecutarSumarDiasHabiles(fechaPresentacion,habilesRecibosRecurrentes);
+			String fechaRecibosCOR1 = EjecucionPLs.ejecutarSumarDiasHabiles(fechaPresentacion,habilesRecibosCOR1);
+			String fechaRecibosB2B = EjecucionPLs.ejecutarSumarDiasHabiles(fechaPresentacion,habilesRecibosB2B);
 			
 			request.setAttribute("radio","1"); // El radio seleccionado será Unica
 			request.setAttribute("fechaPresentacion",fechaPresentacion);

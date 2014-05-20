@@ -1266,22 +1266,20 @@ public static String[] ejecutarF_SIGA_COMPROBAR_ANTICIPAR (
 	
 	/**
 	 * Funcion que suma los dias hábiles a una fecha pasada por parámetro
-	 * @param idInstitucion
 	 * @param fecha
 	 * @param dias
 	 * @return Fecha sumada en formato (dd/mm/yyyy)
 	 * @throws ClsExceptions
 	 */
-	public static String ejecutarSumarDiasHabiles (String idInstitucion, String fecha, String dias) throws ClsExceptions {
+	public static String ejecutarSumarDiasHabiles (String fecha, String dias) throws ClsExceptions {
 		RowsContainer rc = null;
 		Hashtable miHash = new Hashtable();
 		Hashtable codigos = new Hashtable();
-		codigos.put(new Integer(1),idInstitucion);
-		codigos.put(new Integer(2),fecha);
-		codigos.put(new Integer(3),dias);
+		codigos.put(new Integer(1),fecha);
+		codigos.put(new Integer(2),dias);
 		String resultado = null;
 	
-		String consulta = "select F_SUMARDIASHABILES(:1,:2,:3) FECHA FROM DUAL ";
+		String consulta = "select F_SUMARDIASHABILES(:1,:2) FECHA FROM DUAL ";
 		rc = new RowsContainer(); 
 		if (rc.queryBind(consulta,codigos)) {
 			Row fila = (Row) rc.get(0);
@@ -1294,14 +1292,13 @@ public static String[] ejecutarF_SIGA_COMPROBAR_ANTICIPAR (
 	
 	/**
 	 * Función que comprueba si el dia actual es hábil
-	 * @param idInstitucion
 	 * @param fecha
 	 * @return Boolean que indica si es hábil
 	 * @throws ClsExceptions
 	 */
-	public static Integer ejecutarEsDiaHabil (String idInstitucion, String fecha) throws ClsExceptions {
+	public static Integer ejecutarEsDiaHabil (String fecha) throws ClsExceptions {
 		Integer resultado = 0;
-		String sql = " SELECT F_ESDIAHABIL(" + idInstitucion + ", TO_DATE('" + fecha + "', 'DD/MM/YYYY')) AS ESHABIL FROM DUAL";
+		String sql = " SELECT F_ESDIAHABIL(TO_DATE('" + fecha + "', 'DD/MM/YYYY')) AS ESHABIL FROM DUAL";
 		
 		RowsContainer rc = new RowsContainer(); 
 		if (rc.query(sql)) {

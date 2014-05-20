@@ -496,8 +496,6 @@ public class ConfirmarFacturacionAction extends MasterAction{
 	protected String nuevo(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		
 		try {
-
-			String idInstitucionCGAE = String.valueOf(ClsConstants.INSTITUCION_CGAE);
 			String idInstitucion	 = this.getIDInstitucion(request).toString();
 			/** CR7 - Control de fechas de presentación y cargo en ficheros SEPA **/
 			GenParametrosAdm admParametros = new GenParametrosAdm(this.getUserBean(request));
@@ -508,14 +506,14 @@ public class ConfirmarFacturacionAction extends MasterAction{
 			String habilesRecibosB2B = admParametros.getValor(idInstitucion, "FAC", "DIAS_HABILES_RECIBOS_B2B", "3");
 			
 			String fechaActual = GstDate.getHoyJsp(); // Obtengo la fecha actual
-			// String fechaPresentacion = EjecucionPLs.ejecutarSumarDiasHabiles(idInstitucionCGAE, fechaActual, "1"); // Fecha actual + 1
+			// String fechaPresentacion = EjecucionPLs.ejecutarSumarDiasHabiles(fechaActual, "1"); // Fecha actual + 1
 			String fechaPresentacion = fechaActual; // INC_12343_SIGA y INC_12345_SIGA solicitan la fecha actual como permitida 				
 			
-			String fechaUnicaCargos = EjecucionPLs.ejecutarSumarDiasHabiles(idInstitucionCGAE,fechaPresentacion,habilesUnicaCargos);
-			String fechaPrimerosRecibos = EjecucionPLs.ejecutarSumarDiasHabiles(idInstitucionCGAE,fechaPresentacion,habilesPrimerosRecibos);
-			String fechaRecibosRecurrentes = EjecucionPLs.ejecutarSumarDiasHabiles(idInstitucionCGAE,fechaPresentacion,habilesRecibosRecurrentes);
-			String fechaRecibosCOR1 = EjecucionPLs.ejecutarSumarDiasHabiles(idInstitucionCGAE,fechaPresentacion,habilesRecibosCOR1);
-			String fechaRecibosB2B = EjecucionPLs.ejecutarSumarDiasHabiles(idInstitucionCGAE,fechaPresentacion,habilesRecibosB2B);
+			String fechaUnicaCargos = EjecucionPLs.ejecutarSumarDiasHabiles(fechaPresentacion,habilesUnicaCargos);
+			String fechaPrimerosRecibos = EjecucionPLs.ejecutarSumarDiasHabiles(fechaPresentacion,habilesPrimerosRecibos);
+			String fechaRecibosRecurrentes = EjecucionPLs.ejecutarSumarDiasHabiles(fechaPresentacion,habilesRecibosRecurrentes);
+			String fechaRecibosCOR1 = EjecucionPLs.ejecutarSumarDiasHabiles(fechaPresentacion,habilesRecibosCOR1);
+			String fechaRecibosB2B = EjecucionPLs.ejecutarSumarDiasHabiles(fechaPresentacion,habilesRecibosB2B);
 			
 			request.setAttribute("radio","1"); // El radio seleccionado será Unica
 			request.setAttribute("fechaPresentacion",fechaPresentacion);
@@ -908,7 +906,6 @@ public class ConfirmarFacturacionAction extends MasterAction{
 			String fechaRecibosRecurrentes = "";
 			String fechaRecibosCOR1 = "";
 			String fechaRecibosB2B = "";
-			String idInstitucionCGAE = String.valueOf(ClsConstants.INSTITUCION_CGAE);
 			String habilesUnicaCargos = admParametros.getValor(idInstitucion, "FAC", "DIAS_HABILES_UNICA_CARGOS", "7");
 			String habilesPrimerosRecibos = admParametros.getValor(idInstitucion, "FAC", "DIAS_HABILES_PRIMEROS_RECIBOS", "7");
 			String habilesRecibosRecurrentes = admParametros.getValor(idInstitucion, "FAC", "DIAS_HABILES_RECIBOS_RECURRENTES", "4");
@@ -917,14 +914,14 @@ public class ConfirmarFacturacionAction extends MasterAction{
 			
 			if(hash.get("FECHACARGOUNICA") != null && !((String)hash.get("FECHACARGOUNICA")).equals("")){  //El radio button seleccionado es Unica
 				fechaUnicaCargos = GstDate.getFormatedDateShort("es",(String)hash.get("FECHACARGOUNICA"));
-				fechaPrimerosRecibos = EjecucionPLs.ejecutarSumarDiasHabiles(idInstitucionCGAE,fechaPresentacion,habilesPrimerosRecibos);
-				fechaRecibosRecurrentes = EjecucionPLs.ejecutarSumarDiasHabiles(idInstitucionCGAE,fechaPresentacion,habilesRecibosRecurrentes);
-				fechaRecibosCOR1 = EjecucionPLs.ejecutarSumarDiasHabiles(idInstitucionCGAE,fechaPresentacion,habilesRecibosCOR1);
-				fechaRecibosB2B = EjecucionPLs.ejecutarSumarDiasHabiles(idInstitucionCGAE,fechaPresentacion,habilesRecibosB2B);
+				fechaPrimerosRecibos = EjecucionPLs.ejecutarSumarDiasHabiles(fechaPresentacion,habilesPrimerosRecibos);
+				fechaRecibosRecurrentes = EjecucionPLs.ejecutarSumarDiasHabiles(fechaPresentacion,habilesRecibosRecurrentes);
+				fechaRecibosCOR1 = EjecucionPLs.ejecutarSumarDiasHabiles(fechaPresentacion,habilesRecibosCOR1);
+				fechaRecibosB2B = EjecucionPLs.ejecutarSumarDiasHabiles(fechaPresentacion,habilesRecibosB2B);
 				request.setAttribute("radio","1"); // El radio seleccionado será Unica
 				
 			} else if(hash.get("FECHARECIBOSPRIMEROS") != null && !((String)hash.get("FECHARECIBOSPRIMEROS")).equals("")){ //El radio button seleccionado es Minimas
-				fechaUnicaCargos = EjecucionPLs.ejecutarSumarDiasHabiles(idInstitucionCGAE,fechaPresentacion,habilesUnicaCargos);
+				fechaUnicaCargos = EjecucionPLs.ejecutarSumarDiasHabiles(fechaPresentacion,habilesUnicaCargos);
 				fechaPrimerosRecibos = GstDate.getFormatedDateShort("es",(String)hash.get("FECHARECIBOSPRIMEROS"));
 				fechaRecibosRecurrentes = GstDate.getFormatedDateShort("es",(String)hash.get("FECHARECIBOSRECURRENTES"));
 				fechaRecibosCOR1 = GstDate.getFormatedDateShort("es",(String)hash.get("FECHARECIBOSCOR1"));
@@ -933,14 +930,14 @@ public class ConfirmarFacturacionAction extends MasterAction{
 			
 			} else { //Son las programacioens antiguas, por tanto no tienen ni fecha de presentacion ni ningun tipo de fecha SEPA		
 				String fechaActual = GstDate.getHoyJsp(); // Obtengo la fecha actual
-				// fechaPresentacion = EjecucionPLs.ejecutarSumarDiasHabiles(idInstitucionCGAE, fechaActual, "1"); // Fecha actual + 1
+				// fechaPresentacion = EjecucionPLs.ejecutarSumarDiasHabiles(fechaActual, "1"); // Fecha actual + 1
 				fechaPresentacion = fechaActual; // INC_12343_SIGA y INC_12345_SIGA solicitan la fecha actual como permitida 	
 				
-				fechaUnicaCargos = EjecucionPLs.ejecutarSumarDiasHabiles(idInstitucionCGAE,fechaPresentacion,habilesUnicaCargos);
-				fechaPrimerosRecibos = EjecucionPLs.ejecutarSumarDiasHabiles(idInstitucionCGAE,fechaPresentacion,habilesPrimerosRecibos);
-				fechaRecibosRecurrentes = EjecucionPLs.ejecutarSumarDiasHabiles(idInstitucionCGAE,fechaPresentacion,habilesRecibosRecurrentes);
-				fechaRecibosCOR1 = EjecucionPLs.ejecutarSumarDiasHabiles(idInstitucionCGAE,fechaPresentacion,habilesRecibosCOR1);
-				fechaRecibosB2B = EjecucionPLs.ejecutarSumarDiasHabiles(idInstitucionCGAE,fechaPresentacion,habilesRecibosB2B);
+				fechaUnicaCargos = EjecucionPLs.ejecutarSumarDiasHabiles(fechaPresentacion,habilesUnicaCargos);
+				fechaPrimerosRecibos = EjecucionPLs.ejecutarSumarDiasHabiles(fechaPresentacion,habilesPrimerosRecibos);
+				fechaRecibosRecurrentes = EjecucionPLs.ejecutarSumarDiasHabiles(fechaPresentacion,habilesRecibosRecurrentes);
+				fechaRecibosCOR1 = EjecucionPLs.ejecutarSumarDiasHabiles(fechaPresentacion,habilesRecibosCOR1);
+				fechaRecibosB2B = EjecucionPLs.ejecutarSumarDiasHabiles(fechaPresentacion,habilesRecibosB2B);
 				request.setAttribute("radio","1"); // El radio seleccionado será Unica
 			}						
 			

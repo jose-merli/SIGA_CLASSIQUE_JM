@@ -40,7 +40,6 @@ import com.siga.beans.CenDireccionesAdm;
 import com.siga.beans.CenInstitucionAdm;
 import com.siga.beans.CenPaisAdm;
 import com.siga.beans.CenPersonaAdm;
-import com.siga.beans.CenSucursalesAdm;
 import com.siga.beans.FacAbonoAdm;
 import com.siga.beans.FacAbonoBean;
 import com.siga.beans.FacAbonoIncluidoEnDisqueteAdm;
@@ -54,6 +53,7 @@ import com.siga.beans.FicheroEmisorAbonoBean;
 import com.siga.beans.FicheroReceptorAbonoBean;
 import com.siga.beans.GenParametrosAdm;
 import com.siga.facturacion.form.FicheroBancarioAbonosForm;
+import com.siga.general.EjecucionPLs;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
@@ -827,6 +827,10 @@ public class FicheroBancarioAbonosAction extends MasterAction{
 			
 			// calculando fechas y version del cuaderno
 			String fActual 			= UtilidadesBDAdm.getFechaBD("EN");
+			
+			// JPT: Si la fecha indicada no es habil, se indica el siguiente dia habil
+			fActual = EjecucionPLs.ejecutarSumarDiasHabiles(fActual, "0");			
+			
 			String[] aux 			= fActual.split("/");
 			String sFechaEnvio		= aux[0] + aux[1] + aux[2];
 			String sFechaEmision	= sFechaEnvio;
