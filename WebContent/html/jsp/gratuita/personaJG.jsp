@@ -2035,18 +2035,23 @@
 						}
 	
 					function buscarPersonaContrario() {				
-						var resultado = ventaModalGeneral("busquedaClientesModalForm","G");			
-						if (resultado != null && resultado[0]!=null) {			
-							document.PersonaJGForm.idPersonaContrario.value       = resultado[0];
-							document.PersonaJGForm.ncolegiadoContrario.value    = resultado[2];
-							document.PersonaJGForm.abogadoContrario.value   = resultado[4]+' '+resultado[5]+' '+resultado[6];
-					   }
+						
+						busquedaCensoModalForm.modo.value = "designarArt27";
+						var resultado=ventaModalGeneral(busquedaCensoModalForm.name,"G");
+						if(resultado!=null && resultado[0] != null && resultado[0] != ""){
+							document.PersonaJGForm.idPersonaContrario.value=resultado[0];
+							document.PersonaJGForm.ncolegiadoContrario.value    = resultado[1];
+							document.PersonaJGForm.abogadoContrario.value   = resultado[2]+' '+resultado[3]+' '+resultado[4];
+							document.PersonaJGForm.ninstitucionOrigen.value = resultado[5];
+						}							
+						
 					}
 		
 					function limpiarPersonaContrario() {
 						document.PersonaJGForm.idPersonaContrario.value="";
 						document.PersonaJGForm.ncolegiadoContrario.value="";
 						document.PersonaJGForm.abogadoContrario.value="";
+						document.PersonaJGForm.ninstitucionOrigen.value="";
 						return false;		
 					}	
 				</script>
@@ -2090,6 +2095,7 @@
 							<td>			       
 								<html:hidden  name="PersonaJGForm" property="ncolegiadoContrario" styleClass="boxConsulta"  readOnly="false" size="10" maxlength="10" /> 	
 			 					<html:hidden  name="PersonaJGForm" property="idPersonaContrario" styleClass="box"  readOnly="true" size="10" maxlength="10" />
+			 					<html:hidden  name="PersonaJGForm" property="ninstitucionOrigen" size="4" maxlength="4" />
 			 					<html:text  name="PersonaJGForm" property="abogadoContrario" size="70" maxlength="200" styleClass="boxConsulta" readOnly="true" />
 							</td>		
 							<td> 
@@ -3599,7 +3605,7 @@
 					return false;
 					
 				} else {
-					if (validatePersonaJGForm(document.forms[0]) ){						
+					if (validatePersonaJGForm(document.forms[0]) ){		
 						document.forms[0].submit();
 					}else{
 						fin();
@@ -3890,6 +3896,13 @@ function accionRestablecer()
 		<input type="hidden" id="conceptoE" name="conceptoE" value="<%=conceptoE%>">
 	</html:form>
 	<!-- FIN formulario para buscar personaJG-->
+	
+	<!-- formulario para buscar letrados por art 27-->
+	<html:form  action="/CEN_BusquedaCensoModal" method="POST" target="submitArea"  enctype="multipart/form-data">
+			<html:hidden  name="busquedaCensoModalForm" property="modo"/>
+			<html:hidden property = "actionModal" value = ""/>
+	</html:form>	
+	<!-- FIN formulario para buscar letrados-->
 	
 <!-- INICIO: SUBMIT AREA -->
 <!-- Obligatoria en todas las páginas-->

@@ -151,6 +151,7 @@
 			<html:hidden property="escaleraDir"/>
 			<html:hidden property="puertaDir"/>			
 			<html:hidden property="numeroDir"/>			
+			<html:hidden property="ninstitucionOrigen"/>
 			<input type="hidden" name="actionModal" value="">
 		</html:form>
 

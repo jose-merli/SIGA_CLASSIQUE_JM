@@ -25,6 +25,7 @@
 <%@ page import="java.util.Hashtable"%>
 <%@ page import="com.siga.beans.*"%>
 <%@ page import="com.siga.Utilidades.*"%>
+<%@ page import="com.siga.general.*"%>
 
 <!-- JSP -->
 <% 
@@ -134,7 +135,7 @@
 	   name="tablaDatos"
 	   border="1"
 	   columnNames="gratuita.defendidosDesigna.literal.nif,gratuita.defendidosDesigna.literal.nombreApellidos,envios.etiquetas.tipoCliente.abogado,gratuita.personaJG.literal.procurador,"
-	   columnSizes="10,30,24,24,12"
+	   columnSizes="10,30,30,20,10"
 	   modal="G">
 
 		<% if (obj==null || obj.size()==0){%>
@@ -148,6 +149,20 @@
 	    	int recordNumber=1;
 			while ((recordNumber) <= obj.size()){	 
 				Hashtable hash = (Hashtable)obj.get(recordNumber-1);
+				
+				String infoOrigen = "";	
+				String idInstitucionOrigen=(String)hash.get("IDINSTITUCIONORIGEN");
+				String ncolegiadoOrigen  = (String) hash.get("NCOLEGIADOORIGEN");
+				String institucionOrigen ="";
+				if(idInstitucionOrigen!=null && !idInstitucionOrigen.equals("")) {
+					institucionOrigen = CenVisibilidad.getAbreviaturaInstitucion(idInstitucionOrigen);
+					if (ncolegiadoOrigen==null || ncolegiadoOrigen.equals("")) { // No colegiado 
+						infoOrigen = "";
+					} else {
+						infoOrigen = " - " + ncolegiadoOrigen+ " ("+institucionOrigen+")";
+					}	
+					
+				}
 		 %>	
 				<siga:FilaConIconos fila='<%=String.valueOf(recordNumber)%>' botones="E,C,B" clase="listaNonEdit" modo="<%=modo%>">						
 										
@@ -166,7 +181,7 @@
 					<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_10" value="<%=numero %>">	
 					&nbsp;<%=hash.get("NIF")%></td>
 					<td>&nbsp;<%=hash.get("NOMBRE")%></td>						
-					<td>&nbsp;<%=(String)hash.get("NOMBREABOGADOCONTRARIO")%></td>
+					<td>&nbsp;<%=(String)hash.get("NOMBREABOGADOCONTRARIO") + infoOrigen%></td>
 					<td>&nbsp;<%=(String)hash.get("PROCURADOR")%></td>
 				</siga:FilaConIconos>	
 				
