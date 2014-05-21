@@ -271,11 +271,18 @@
 		jQuery(function(){
 			jQuery("#pais").on("change", function(){
 				selPais(jQuery(this).val());
+				
+				if(trim(document.consultaDireccionesForm.codigoPostal.value) != "")
+					if(trim(document.consultaDireccionesForm.pais.value)!=idEspana)
+						jQuery("#codigoPostal").val("");
 			});
 			jQuery("#provincia").on("change", function(){
-				if (trim(document.consultaDireccionesForm.pais.value) == idEspana) {
-					jQuery("#codigoPostal").val(jQuery(this).val() + "000");
-				}
+				
+					if(trim(document.consultaDireccionesForm.provincia.value) != ""){
+						if(trim(document.consultaDireccionesForm.codigoPostal.value).substring(0,2)!=trim(document.consultaDireccionesForm.provincia.value).substring(0,2))
+							jQuery("#codigoPostal").val(jQuery(this).val() + "000");
+							
+					}
 			});
 		});
 		
@@ -835,6 +842,7 @@
 					alert("No se ha encontrado provincia para el código postal: " + document.consultaDireccionesForm.codigoPostal.value);
 				}
 			} 
+		
 		}
 	}       
 	</script>
