@@ -270,6 +270,11 @@
 		function nuevo() {
 			document.forms[0].modo.value = "nuevo";			
 			var resultado=ventaModalGeneral(document.forms[0].name,"M");
+			
+			if (resultado!=undefined && resultado[0]!='') {								
+				alert(resultado[0]);
+			}	
+
 			buscar();			
 			if(resultado && resultado[0]=="MODIFICADO"){
 			

@@ -1,31 +1,39 @@
 package com.siga.gratuita.action;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.Reader;
+import java.lang.reflect.Field;
 import java.nio.charset.Charset;
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Scanner;
 import java.util.Vector;
-
+import weblogic.management.timer.Timer;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.transaction.UserTransaction;
 
+import net.sf.cglib.beans.BulkBean;
+
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.apache.struts.upload.CommonsMultipartRequestHandler;
 import org.apache.struts.upload.FormFile;
 import org.redabogacia.sigaservices.app.AppConstants;
 import org.redabogacia.sigaservices.app.autogen.model.EcomCola;
@@ -40,15 +48,18 @@ import com.atos.utils.GstDate;
 import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
+import com.bea.xbean.store.Path;
 import com.siga.Utilidades.GestorContadores;
 import com.siga.Utilidades.Paginador;
 import com.siga.Utilidades.PaginadorCaseSensitive;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;
+import com.siga.administracion.form.UploadForm;
 import com.siga.beans.CajgRemesaResolucionAdm;
 import com.siga.beans.CajgRemesaResolucionBean;
 import com.siga.beans.CajgRemesaResolucionFicheroAdm;
 import com.siga.beans.CajgRemesaResolucionFicheroBean;
+import com.siga.beans.GenParametrosAdm;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
@@ -56,7 +67,12 @@ import com.siga.gratuita.form.DefinicionRemesaResolucionesCAJGForm;
 import com.siga.gratuita.form.DefinirEJGForm;
 import com.siga.gratuita.pcajg.resoluciones.ResolucionesFicheroAbstract;
 import com.siga.informes.MasterWords;
+import com.siga.servlets.SIGASvlProcesoAutomaticoRapido;
 import com.siga.ws.CajgConfiguracion;
+import com.siga.ws.SIGAWSClientAbstract;
+import com.siga.ws.SIGAWSListener;
+import com.siga.ws.SIGAWUploadDocResRemListener;
+import com.siga.ws.SigaWSUploadDocResRem;
 import com.siga.ws.i2055.DesignacionProcuradorAsigna;
 import com.siga.ws.i2055.ResolucionesAsigna;
 
@@ -539,92 +555,87 @@ public class DefinirRemesaResolucionesCAJGAction extends MasterAction {
 
 			FormFile formFile = miForm.getFile();
 			if (formFile.getFileSize() == 0){
+			
 				throw new SIGAException("message.cajg.ficheroValido"); 
 			}
 			
-			tx = usr.getTransaction();
-			tx.begin();
-	    		
-			GestorContadores gcRemesa = new GestorContadores(this.getUserBean(request));
-			
-			
-			Hashtable contadorTablaHashRemesa = gcRemesa.getContador(this.getIDInstitucion(request), getIdContador(usr, idInstitucion, miForm.getIdTipoRemesa()));
-			String siguiente = gcRemesa.getNuevoContador(contadorTablaHashRemesa);		
-			
-			cajgRemesaResolucionBean.setPrefijo(contadorTablaHashRemesa.get("PREFIJO").toString());
-			cajgRemesaResolucionBean.setSufijo(contadorTablaHashRemesa.get("SUFIJO").toString());
-			cajgRemesaResolucionBean.setNumero(siguiente);
-			cajgRemesaResolucionBean.setFechaCarga(GstDate.getApplicationFormatDate("", miForm.getFechaCarga()));
-			cajgRemesaResolucionBean.setFechaResolucion(GstDate.getApplicationFormatDate("", miForm.getFechaResolucion()));
+			//Se comprueba el número de líneas del fichero
+			InputStream fis =formFile.getInputStream();
+			InputStreamReader isr = new InputStreamReader(fis, "ISO-8859-15"); 
+			BufferedReader br = new BufferedReader(isr);
 
-			gcRemesa.setContador(contadorTablaHashRemesa, siguiente);
+			int numLineas = 0;
 
-			cajgRemesaResolucionBean.setIdInstitucion(this.getIDInstitucion(request));
+			String linea="";
+			while(br.ready()) {  
+                linea = br.readLine();  
+                if(linea!=null){
+                	numLineas++;
+				}
+            } 
 			
-			String idRemesaResolucion = resolucionAdm.seleccionarMaximo(this.getIDInstitucion(request).toString());
+			br.close();
+			isr.close();
+			fis.close();
 			
-			cajgRemesaResolucionBean.setIdRemesaResolucion(Integer.valueOf(idRemesaResolucion));			
-			cajgRemesaResolucionBean.setIdTipoRemesa(Integer.valueOf(miForm.getIdTipoRemesa()));
-						
-			File parentFile = getRutaAlmacenFichero(idInstitucion, idRemesaResolucion);			
-						
-	    	InputStream stream = formFile.getInputStream();
-	    	
-	    	File file = new File(parentFile, formFile.getFileName());
-	    	cajgRemesaResolucionBean.setNombreFichero(file.getName());
-	    	cajgRemesaResolucionBean.setLogGenerado("1");
-    		
-    		resolucionAdm.insert(cajgRemesaResolucionBean);
-    		
-    		boolean generaLog = createZIP(usr, idInstitucion, miForm.getIdTipoRemesa(), idRemesaResolucion, file, stream);
-    		
-    		if (!generaLog) {
-    			cajgRemesaResolucionBean.setLogGenerado("0");
-    			resolucionAdm.updateDirect(cajgRemesaResolucionBean);
-    		}
-    		
-			tx.commit();
+			GenParametrosAdm admParametros = new GenParametrosAdm(usr);
+			int maxNumLineas=Integer.parseInt(admParametros.getValor("0","SCS", "MAX_NUM_LINEAS_FICH","10000"));
+			
+			SigaWSUploadDocResRem obj = new SigaWSUploadDocResRem();
+				
+			obj.setFechaResolucion(miForm.getFechaResolucion());
+			obj.setFechaCarga(miForm.getFechaCarga());
+			obj.setIdTipoRemesa(Integer.parseInt(miForm.getIdTipoRemesa()));
+			obj.setFile(miForm.getFile()); 
+			obj.setUsrBean(usr);
+			obj.setIdInstitucion(Integer.parseInt(idInstitucion));
+			obj.setPrefijo(miForm.getPrefijo());
+			obj.setSufijo(miForm.getSufijo());
+			obj.setNumero(miForm.getNumero());
+			
+			String idRemesaResolucion = resolucionAdm.seleccionarMaximo(String.valueOf(idInstitucion));
+			obj.setIdRemesaResolucion(idRemesaResolucion);
 
+			if(numLineas>maxNumLineas){
+
+				//Se ejecuta en background
+				obj.setTipoEjecucion("background");
+				SIGAWUploadDocResRemListener sigaWSListener = new SIGAWUploadDocResRemListener();
+				Timer timer = new Timer();
+				timer.addNotificationListener(sigaWSListener, null, timer);
+				Integer idNotificacion = timer.addNotification("WSType", "WSMessage", obj, new Date(), 0);
+				sigaWSListener.setIdNotificacion(idNotificacion);		
+				timer.start();
+
+				mensaje = (UtilidadesString.getMensajeIdioma(usr, "messages.fichero.supera.nummax.lineas"));
+
+			}else{
+				
+				//Se ejecuta en online
+				obj.setTipoEjecucion("online");
+				obj.execute();
+				
+				if(obj.getMensajeOut().isEmpty()) 
+					mensaje = "messages.inserted.success";
+				else
+					mensaje =obj.getMensajeOut();
+
+			}
+			
 			session.setAttribute("accion", "editar");
 			request.setAttribute(CajgRemesaResolucionBean.C_IDREMESARESOLUCION, idRemesaResolucion);
 			request.setAttribute(CajgRemesaResolucionBean.C_IDINSTITUCION, this.getIDInstitucion(request).toString());
-			
-			mensaje = "messages.inserted.success";
-			
-			if (!miForm.getPrefijo().equals(contadorTablaHashRemesa.get("PREFIJO")) || 
-					!miForm.getSufijo().equals(contadorTablaHashRemesa.get("SUFIJO")) ||
-					!miForm.getNumero().equals(siguiente)) {
-						String[] datos = new String[]{contadorTablaHashRemesa.get("PREFIJO")+siguiente+contadorTablaHashRemesa.get("SUFIJO")};						
-						mensaje = UtilidadesString.getMensaje("message.cajg.distintoNumRegistro", datos, usr.getLanguage());
-			}
-				 
-
+				
 		} catch (Exception e) {
 			throwExcp("messages.general.error", new String[] { "modulo.gratuita" }, e, tx);
 		}
-
-		request.setAttribute("mensaje", mensaje);
+		String resultadoFinal[] = new String[1];
+		resultadoFinal[0] =mensaje;
+		request.setAttribute("parametrosArray",resultadoFinal);
 		request.setAttribute("modal", "");
-
-		return exitoModal(mensaje, request);
+		return "exitoParametros";
 	}
 
-	/**
-	 * 
-	 * @param idInstitucion
-	 * @return
-	 */
-	public static File getRutaAlmacenFichero(String idInstitucion, String idRemesaResolucion) {
-		ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
-		String rutaAlmacen = rp.returnProperty("cajg.directorioFisicoCAJG") + rp.returnProperty("cajg.directorioCAJGJava");				
-		rutaAlmacen += File.separator + idInstitucion + File.separator + rp.returnProperty("cajg.directorioRemesaResoluciones");
-		
-		File parentFile = new File(rutaAlmacen, idRemesaResolucion);
-		deleteFiles(parentFile);			
-		parentFile.mkdirs();
-		
-		return parentFile;
-	}
 
 	/**
 	 * 
@@ -643,56 +654,6 @@ public class DefinirRemesaResolucionesCAJGAction extends MasterAction {
 			}
 		}
 	}
-
-	/**
-	 * 
-	 * @param file
-	 * @param stream
-	 * @throws IOException
-	 * @throws ClsExceptions
-	 * @throws ClassNotFoundException 
-	 * @throws IllegalAccessException 
-	 * @throws InstantiationException 
-	 */
-	private boolean createZIP(UsrBean usr, String idInstitucion, String idTipoRemesa, String idRemesaResolucion, File file, InputStream stream) throws IOException, ClsExceptions, SIGAException, ClassNotFoundException, InstantiationException, IllegalAccessException {
-		
-		OutputStream bos = new FileOutputStream(file);
-		int bytesRead = 0;
-		byte[] buffer = new byte[8192];
-		while ((bytesRead = stream.read(buffer, 0, 8192)) != -1) {
-			bos.write(buffer, 0, bytesRead);
-		}
-		
-		stream.close();
-		bos.flush();
-		bos.close();
-		
-		//ver si con el tipo de remesa hay alguna clase java para ejecutar
-		String sql = "SELECT T.JAVACLASS FROM CAJG_TIPOREMESA T" +
-				" WHERE T.IDINSTITUCION = " + idInstitucion +
-				" AND T.IDTIPOREMESA = " + idTipoRemesa;
-		
-		RowsContainer rc = new RowsContainer();
-		if (rc.find(sql)) {
-			Row row = (Row) rc.get(0);
-			String javaClass = row.getString("JAVACLASS");
-			if (javaClass != null && !javaClass.trim().equals("")) {
-				Class<ResolucionesFicheroAbstract> clase = (Class<ResolucionesFicheroAbstract>) Class.forName(javaClass);
-				file = clase.newInstance().execute(idInstitucion, idRemesaResolucion, file);
-			}
-		}
-		
-		boolean generaLog = callProcedure(usr, idInstitucion, idTipoRemesa, idRemesaResolucion, file);		
-		
-		ArrayList ficheros = new ArrayList();
-		ficheros.add(file);
-		String nombreZip = file.getAbsolutePath();
-		nombreZip = nombreZip.substring(0, nombreZip.lastIndexOf("."));
-		MasterWords.doZip(ficheros, nombreZip);
-		
-		return generaLog;
-	}
-	
 
 	public Charset detectCodepage(InputStream in) throws IOException {
     	int len = 1;
@@ -718,170 +679,6 @@ public class DefinirRemesaResolucionesCAJGAction extends MasterAction {
             return Charset.forName("UCS-4");
         return null;
     }
-
-
-	/**
-	 * 
-	 * @param file
-	 * @throws IOException
-	 */
-	private boolean callProcedure(UsrBean usr, String idInstitucion, String idTipoRemesa, String idRemesaResolucion, File file) throws IOException, SIGAException, ClsExceptions {
-		boolean generaLog = false;
-		FileInputStream fileInputStream = new FileInputStream(file);
-		InputStreamReader inputStreamReader = new InputStreamReader(fileInputStream);
-		Reader reader = new BufferedReader(inputStreamReader);
-				
-				
-		String sql = "SELECT CONSULTA, CABECERA, DELIMITADOR" +
-				" FROM CAJG_PROCEDIMIENTOREMESARESOL" +
-				" WHERE IDINSTITUCION = " + idInstitucion +
-				" AND IDTIPOREMESA = " + idTipoRemesa;
-		RowsContainer rc = new RowsContainer();
-		if (!rc.find(sql)) {							
-			throw new SIGAException("messages.cajg.funcionNoDefinida");
-		}
-
-		
-		Row row = null;
-		String funcion = null;
-		String cabecera = null;
-		String delimitador = null;
-				
-		CajgRemesaResolucionFicheroAdm cajgResolucionFicheroAdm = new CajgRemesaResolucionFicheroAdm(usr);
-		int idRemesaResolucionFichero = cajgResolucionFicheroAdm.seleccionarMaximo();
-		int primerIdRemesaResolucionFichero = idRemesaResolucionFichero;
-		
-		CajgRemesaResolucionFicheroBean cajgRemesaResolucionFicheroBean = new CajgRemesaResolucionFicheroBean();
-		cajgRemesaResolucionFicheroBean.setIdInstitucion(Integer.valueOf(idInstitucion));
-		cajgRemesaResolucionFicheroBean.setIdRemesaResolucion(Integer.valueOf(idRemesaResolucion));
-		
-		int numLinea = 1;			    
-	    int ch = -1;
-	    
-	    String line = "";
-	    while((ch = reader.read()) != -1) {
-	    	
-	    	if (Character.LINE_SEPARATOR == (byte)ch) {
-	    		if (line != null && !line.trim().equals("")) {
-		    		cajgRemesaResolucionFicheroBean.setNumeroLinea(new Integer(numLinea++));
-					cajgRemesaResolucionFicheroBean.setLinea(line);
-					cajgRemesaResolucionFicheroBean.setIdRemesaResolucionFichero(new Integer(idRemesaResolucionFichero++));
-					cajgResolucionFicheroAdm.insert(cajgRemesaResolucionFicheroBean);
-	    		}
-				line = "";	 
-	    	} else if (Character.LETTER_NUMBER == (byte)ch) {
-	    		
-	    	} else {
-	    		line += (char)ch;
-	    	}
-	    }
-	    
-	    if (line != null && !line.trim().equals("")) {
-	    	cajgRemesaResolucionFicheroBean.setNumeroLinea(new Integer(numLinea++));
-			cajgRemesaResolucionFicheroBean.setLinea(line);
-			cajgRemesaResolucionFicheroBean.setIdRemesaResolucionFichero(new Integer(idRemesaResolucionFichero++));
-			cajgResolucionFicheroAdm.insert(cajgRemesaResolucionFicheroBean);
-	    }
-	    
-//		while ((line = reader.rereadLine()) != null) {
-//			System.out.println(line);
-//			ByteBuffer byteBuffer = ByteBuffer.wrap(line.getBytes());
-//			if (byteBuffer.capacity() > 1) {
-//				String lineSet = decoder.decode(byteBuffer).toString();	
-//				System.out.println(lineSet);
-//				if (lineSet != null && !lineSet.trim().equals("")) {			
-//					cajgRemesaResolucionFicheroBean.setNumeroLinea(new Integer(numLinea++));
-//					cajgRemesaResolucionFicheroBean.setLinea(lineSet);
-//					cajgRemesaResolucionFicheroBean.setIdRemesaResolucionFichero(new Integer(idRemesaResolucionFichero++));
-//					cajgResolucionFicheroAdm.insert(cajgRemesaResolucionFicheroBean);
-//				}
-//			}
-//			
-//			
-//		}
-		
-		
-		reader.close();
-		inputStreamReader.close();
-				
-		String nombreFichero = file.getName();
-		nombreFichero = nombreFichero.substring(0, nombreFichero.lastIndexOf("."));
-    	
-		for (int j = 0; j < rc.size(); j++) {		
-			row = (Row) rc.get(j);
-			funcion = row.getString("CONSULTA");
-			cabecera = (String) row.getValue("CABECERA");
-			delimitador = row.getString("DELIMITADOR");
-						
-			if (j == 0 && cabecera != null && (cabecera.trim().equals("1") || cabecera.trim().equals("3"))) {
-				cajgRemesaResolucionFicheroBean = new CajgRemesaResolucionFicheroBean();
-				cajgRemesaResolucionFicheroBean.setIdRemesaResolucionFichero(new Integer(primerIdRemesaResolucionFichero));
-				cajgResolucionFicheroAdm.delete(cajgRemesaResolucionFicheroBean);
-			}
-			
-			Object[] param_in = new String[]{idInstitucion, idRemesaResolucion, delimitador, nombreFichero, usr.getUserName()};
-	    	
-	    	ClsMngBBDD.callPLProcedure("{call " + funcion + " (?,?,?,?,?)}", 0, param_in);	 	
-	    	
-		}
-		
-		String consulta = "SELECT E.CODIGO, E.DESCRIPCION" +
-				", R." + CajgRemesaResolucionFicheroBean.C_PARAMETROSERROR +
-				", R." + CajgRemesaResolucionFicheroBean.C_NUMEROLINEA +
-				" FROM " + CajgRemesaResolucionFicheroBean.T_NOMBRETABLA + " R, CAJG_ERRORESREMESARESOL E" +
-				" WHERE R." + CajgRemesaResolucionFicheroBean.C_IDERRORESREMESARESOL + " = E.IDERRORESREMESARESOL" +
-				" AND R." + CajgRemesaResolucionFicheroBean.C_IDINSTITUCION + " = E.IDINSTITUCION" +
-				" AND R." + CajgRemesaResolucionFicheroBean.C_IDINSTITUCION + " = " + idInstitucion + 
-				" AND R." + CajgRemesaResolucionFicheroBean.C_IDREMESARESOLUCION + " = " + idRemesaResolucion +
-				" ORDER BY R." + CajgRemesaResolucionFicheroBean.C_NUMEROLINEA;
-				
-		RowsContainer rowsContainer = new RowsContainer();
-		rowsContainer.query(consulta);
-				
-		if (rowsContainer != null && rowsContainer.size() > 0) {
-			generaLog = true;
-			File logFile = getLogFile(file.getParentFile(), nombreFichero);
-						
-			FileWriter fileWriter = new FileWriter(logFile);
-			BufferedWriter bw = new BufferedWriter(fileWriter);
-			String descripcion, parametrosError, codigo, numeroLinea;
-			String[] params;
-			MessageFormat messageFormat;
-			
-			for (int i = 0; i < rowsContainer.size(); i++) {				
-				row = (Row)rowsContainer.get(i);
-				codigo = row.getString("CODIGO");
-				descripcion = row.getString("DESCRIPCION");
-				parametrosError = row.getString(CajgRemesaResolucionFicheroBean.C_PARAMETROSERROR);
-				numeroLinea = row.getString(CajgRemesaResolucionFicheroBean.C_NUMEROLINEA);
-				params = parametrosError.split(",");
-				messageFormat = new MessageFormat(descripcion);				
-				
-				bw.write("[Línea:" + numeroLinea + "] " + "[" + codigo + "] " + messageFormat.format(params));
-				bw.newLine();
-			}
-			
-			bw.flush();
-			bw.close();
-		}
-		
-		if (ELIMINA_DATOS_TABLA_TEMPORAL && cabecera != null && !cabecera.trim().equals("2") && !cabecera.trim().equals("3")) {
-			Hashtable hash = new Hashtable();
-			hash.put(CajgRemesaResolucionFicheroBean.C_IDINSTITUCION, idInstitucion);
-			hash.put(CajgRemesaResolucionFicheroBean.C_IDREMESARESOLUCION, idRemesaResolucion);
-			cajgResolucionFicheroAdm.deleteDirect(hash, new String[]{CajgRemesaResolucionFicheroBean.C_IDINSTITUCION, CajgRemesaResolucionFicheroBean.C_IDREMESARESOLUCION});
-		}
-
-    	return generaLog;
-	}
-
-	public static File getLogFile(File parentFile, String nombreFichero) {
-		File logFile = new File(parentFile, "log");
-		deleteFiles(logFile);
-		logFile.mkdirs();
-		logFile = new File(logFile, nombreFichero + "_errores.txt");
-		return logFile;
-	}
 
 	/**
 	 * Rellena un hash con los valores recogidos del formulario y los modifica
