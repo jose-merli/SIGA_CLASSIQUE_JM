@@ -749,7 +749,7 @@
 				</table>
 		</siga:ConjCampos>
 		
-		<%if(!numEJG.equalsIgnoreCase("")){ %>
+		<%if(numEJG!=null && !numEJG.equalsIgnoreCase("")){ %>
 		<siga:ConjCampos leyenda='gratuita.operarEJG.literal.expedienteEJG' desplegable="true">
 				<table width="100%" border="0">
 					<%if(anioEJG!=null && !anioEJG.equals("")){ //si la designa tiene EJG asociad... %>
