@@ -27,6 +27,7 @@ import org.redabogacia.sigaservices.app.util.SIGAReferences;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
+import com.atos.utils.GstDate;
 import com.atos.utils.Row;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.PaginadorCaseSensitive;
@@ -826,13 +827,13 @@ public class FicheroBancarioAbonosAction extends MasterAction{
 			String nombreFichero 	= barra + sPrefijo + numDisco + "." + sExtension;
 			
 			// calculando fechas y version del cuaderno
-			String fActual 			= UtilidadesBDAdm.getFechaBD("EN");
+			String fActual 			= GstDate.getHoyJsp();
 			
 			// JPT: Si la fecha indicada no es habil, se indica el siguiente dia habil
-			fActual = EjecucionPLs.ejecutarSumarDiasHabiles(fActual, "0");			
+			fActual = EjecucionPLs.ejecutarSumarDiasHabiles(fActual, "0");		
 			
 			String[] aux 			= fActual.split("/");
-			String sFechaEnvio		= aux[0] + aux[1] + aux[2];
+			String sFechaEnvio		= aux[2] + aux[1] + aux[0];
 			String sFechaEmision	= sFechaEnvio;
 			String versionCuaderno 	= rp.returnProperty("facturacion.cuaderno.transferencias.identificador");  
 			versionCuaderno 		+= Integer.parseInt(versionCuaderno) % 7;
