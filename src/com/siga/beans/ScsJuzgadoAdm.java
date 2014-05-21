@@ -576,7 +576,7 @@ public class ScsJuzgadoAdm extends MasterBeanAdministrador {
        
 	} 
 	
-	public List<ScsJuzgadoBean> getJuzgadosActualizar(String idInstitucion,UsrBean usrBean,boolean isObligatorio, boolean isBusqueda, String idJuzgado)throws ClsExceptions{
+	public List<ScsJuzgadoBean> getJuzgadosActualizar(String idInstitucion, String idTurno, UsrBean usrBean, boolean isObligatorio, boolean isBusqueda, String idJuzgado)throws ClsExceptions{
 
 		Hashtable<Integer, Object> htCodigos = new Hashtable<Integer, Object>();
 		int contador = 0;
@@ -589,23 +589,41 @@ public class ScsJuzgadoAdm extends MasterBeanAdministrador {
 		else
 			sql.append(" scs_juzgado.NOMBRE || ' (' || cen_poblaciones.nombre || ')' AS NOMBRE ");
 		
-		sql.append("   FROM scs_procedimientos, ");
-		sql.append("         scs_juzgadoprocedimiento, ");
-		sql.append("         scs_juzgado, ");
-		sql.append("         cen_poblaciones ");
-		sql.append("   WHERE scs_procedimientos.idinstitucion = ");
-		sql.append("         scs_juzgadoprocedimiento.idinstitucion ");
-		sql.append("     AND scs_procedimientos.idprocedimiento = ");
-		sql.append("         scs_juzgadoprocedimiento.idprocedimiento ");
-		sql.append("     AND scs_juzgadoprocedimiento.idinstitucion_juzg = ");
-		sql.append("         scs_juzgado.idinstitucion ");
-		sql.append("     AND scs_juzgadoprocedimiento.idjuzgado = scs_juzgado.idjuzgado ");
-		sql.append("     AND scs_juzgado.idpoblacion = cen_poblaciones.idpoblacion(+) ");
+		
+		sql.append("   FROM scs_juzgado, cen_poblaciones   ");
+		sql.append("   WHERE scs_juzgado.idpoblacion = cen_poblaciones.idpoblacion(+)   ");
+		sql.append("     AND EXISTS   ");
+		sql.append("        (SELECT *   ");
+		sql.append("          FROM scs_turno,   ");
+		sql.append("              scs_materiajurisdiccion,   ");
+		sql.append("              scs_procedimientos,   ");
+		sql.append("              scs_juzgadoprocedimiento   ");
+		sql.append("          WHERE scs_turno.idinstitucion =   ");
+		sql.append("                scs_materiajurisdiccion.idinstitucion   ");
+		sql.append("            AND scs_turno.idmateria = scs_materiajurisdiccion.idmateria   ");
+		sql.append("            AND scs_turno.idarea = scs_materiajurisdiccion.idarea   ");
+		sql.append("            AND scs_materiajurisdiccion.idjurisdiccion =   ");
+		sql.append("                scs_procedimientos.idjurisdiccion   ");
+		sql.append("            AND scs_materiajurisdiccion.idinstitucion =   ");
+		sql.append("                scs_procedimientos.idinstitucion   ");
+		sql.append("            AND scs_procedimientos.idinstitucion =   ");
+		sql.append("                scs_juzgadoprocedimiento.idinstitucion   ");
+		sql.append("            AND scs_procedimientos.idprocedimiento =   ");
+		sql.append("                scs_juzgadoprocedimiento.idprocedimiento   ");
+		sql.append("            AND scs_juzgadoprocedimiento.idinstitucion_juzg =   ");
+		sql.append("                scs_juzgado.idinstitucion   ");
+		sql.append("            AND scs_juzgadoprocedimiento.idjuzgado = scs_juzgado.idjuzgado   ");
 
 		sql.append(" and scs_juzgado.IDINSTITUCION = :");
 		contador ++;
 		sql.append(contador);
 		htCodigos.put(new Integer(contador),idInstitucion);
+		
+		sql.append(" and scs_turno.idturno = :");
+		contador ++;
+		sql.append(contador);
+		htCodigos.put(new Integer(contador),idTurno);
+		sql.append("  ) ");
 
 		sql.append(" AND (scs_juzgado.fechabaja is null OR scs_juzgado.idjuzgado = :");
 		contador ++;
