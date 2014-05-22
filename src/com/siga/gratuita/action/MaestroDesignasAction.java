@@ -1071,7 +1071,7 @@ public class MaestroDesignasAction extends MasterAction {
 		if(miform.getJuzgado()!=null)
 			idJuzgado = miform.getJuzgado();
 		
-		alJuzgados = admJuzgados.getJuzgadosActualizar((String)usr.getLocation(),usr,true, false, idJuzgado);
+		alJuzgados = admJuzgados.getJuzgadosActualizar((String)usr.getLocation(),String.valueOf(turnoBean.getIdTurno()),usr,true, false, idJuzgado);
 		if(alJuzgados==null){
 			alJuzgados = new ArrayList<ScsJuzgadoBean>();
 		
