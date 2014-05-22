@@ -9,8 +9,11 @@ package com.siga.beans;
 import java.util.Hashtable;
 import java.util.Vector;
 
-import com.atos.utils.*;
-import com.siga.Utilidades.*;
+import com.atos.utils.ClsExceptions;
+import com.atos.utils.Row;
+import com.atos.utils.RowsContainer;
+import com.atos.utils.UsrBean;
+import com.siga.Utilidades.UtilidadesHash;
 import com.siga.general.SIGAException;
 
 /**
@@ -282,7 +285,7 @@ public class FacPagosPorCajaAdm extends MasterBeanAdministrador {
 							   "." + FacEstadoFacturaBean.C_DESCRIPCION + "," + this.usrbean.getLanguage() + ") from "  + FacEstadoFacturaBean.T_NOMBRETABLA +
 							   " where " + FacEstadoFacturaBean.C_IDESTADO + " = 1) AS estado, " + 
 							 " cargos." +  FacDisqueteCargosBean.C_FECHACREACION + " AS FECHA, "+
-							 "cargos." + FacDisqueteCargosBean.C_FECHAMODIFICACION   + " AS FECHA_ORDEN, "   +							   
+							 "cargos." + FacDisqueteCargosBean.C_FECHACREACION   + " AS FECHA_ORDEN, "   +							   
 							 " incluidadisquete." + FacFacturaIncluidaEnDisqueteBean.C_IMPORTE + " AS IMPORTE, " +
 							 " incluidadisquete." + FacFacturaIncluidaEnDisqueteBean.C_DEVUELTA + " AS DEVUELTA, " +
 							 "'' AS TARJETA, " +
@@ -432,7 +435,7 @@ public class FacPagosPorCajaAdm extends MasterBeanAdministrador {
 
 			String consulta = "SELECT idtabla, TABLA, ESTADO, FECHA, FECHA_ORDEN, IMPORTE, DEVUELTA, TARJETA, IDABONO_IDCUENTA, NUMEROABONO, IDPAGO, NOMBREBANCO FROM ( " + 
 							   consulta1 + " UNION " + consulta10 + " UNION " + consulta2 + " UNION " + consulta3 + " UNION " + consulta4 + " UNION " + consulta5 + " UNION " + consulta6 + " UNION " + consulta7 + 
-							   " ) ORDER BY idtabla ASC, FECHA ASC, FECHA_ORDEN ASC, IDPAGO ASC"; 
+							   " ) ORDER BY idtabla ASC, TO_CHAR(FECHA, 'YYYYMMDD') ASC, FECHA_ORDEN ASC, IDPAGO ASC"; 
 
 			RowsContainer rc = new RowsContainer(); 
 			if (rc.query(consulta)) {
