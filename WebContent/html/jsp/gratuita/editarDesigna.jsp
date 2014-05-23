@@ -100,7 +100,7 @@
 	
 	String maxLenghtProc = "20", estilo = "box", readOnly="false", estiloCombo="boxCombo";
 	String idPretension = "",pretension="", turno = "", paramsJuzgadoJSON = "", idProcedimientoParamsJSON = "", filtrarModulos = "N";
-	String comboJuzgados ="", comboModulos="",comboPretensionesEjis="", comboModulosParentQueryIds="", comboPretensionesParentQueryIds = "";
+	String comboJuzgados ="", comboModulos="",comboPretensionesEjis="", comboModulosParentQueryIds="";
 	String art27 = "", fechaVigor = "";
 	
 	try {
@@ -125,7 +125,6 @@
     	comboModulos = "getProcedimientosEnVigencia";
     	comboModulosParentQueryIds = "idjuzgado,fechadesdevigor,fechahastavigor";
     	comboPretensionesEjis= "getPretensionesEjisModulosFiltros";
-    	comboPretensionesParentQueryIds = "idpretension";
 
 		tipo = (String) resultado.get("IDTIPODESIGNACOLEGIO");
 		turno = (String)resultado.get("TURNO");
@@ -283,21 +282,14 @@
 	if (pcajgActivo==2){
 		maxLenghtProc = "15";
 		obligatorioProcedimiento = true;
-	}
-	
-	if(pcajgActivo==3){
+	}else if(pcajgActivo==3){
 		obligatorioProcedimiento = true;
-	}	
-
-	if (pcajgActivo==4){
+	}else if (pcajgActivo==4){
 		validarProcedimiento = true;
 	    obligatorioProcedimiento = true;
 		obligatorioModulo=true;
 		obligatorioTipoDesigna=true;		
-	}
-	
-	/*Se modifica para que sea obligatorio el juzgado para pcajg=5*/
-	if (pcajgActivo==5){
+	}else if (pcajgActivo==5){
 		validarProcedimiento = true;
 		obligatoriojuzgado = true;
 		obligatorioProcedimiento = true;
@@ -317,25 +309,27 @@
 	String idPretensionParamsJSON = "";
 	if(beanDesigna.getIdPretension()!=null){
 		idPretensionParamsJSON = "{\"idpretension\":\""+beanDesigna.getIdPretension().toString()+"\"";
-		comboPretensionesParentQueryIds = "idpretension,";
 	} else {
 		String aux = "-2";
 		idPretensionParamsJSON = "{\"idpretension\":\""+aux+"\"";
 	}
 	
 	String comboPretensiones = "getPretensiones";
+	
+	String comboPretensionesParentQueryIds = null;
 	if (ejisActivo>0 || pcajgActivo == 4){
 		comboPretensiones = comboPretensionesEjis;
-		String sIdJuzgado = "";
+		String sIdJuzgado = "-1";
 		if (beanDesigna.getIdJuzgado() != null){
 			sIdJuzgado = beanDesigna.getIdJuzgado().toString();
-			comboPretensionesParentQueryIds = "idpretension,idjuzgado";
-			idPretensionParamsJSON += ",\"idjuzgado\":\""+sIdJuzgado+"\"}";
 		}
+		comboPretensionesParentQueryIds = "idpretension,idjuzgado";
+		idPretensionParamsJSON += ",\"idjuzgado\":\""+sIdJuzgado+"\"}";
 	} else {
 		comboPretensionesParentQueryIds = "";
 		idPretensionParamsJSON = "";
 	}
+	
 %>	
 
 <!-- HEAD -->
