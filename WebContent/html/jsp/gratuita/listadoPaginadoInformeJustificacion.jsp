@@ -674,7 +674,6 @@ function downloadInformesOficio(idInstitucion,anio,idTurno,numero) {
 	document.Informe.datosInforme.value=datos;
 	document.Informe.idTipoInforme.value='OFICI';
 	document.Informe.destinatarios.value='C';
-	alertStop("document.getElementById(informeUnicoOficio).value"+document.getElementById("informeUnicoOficio").value)
 	if(document.getElementById("informeUnicoOficio").value=='1'){
 		document.Informe.submit();
 	}else{
