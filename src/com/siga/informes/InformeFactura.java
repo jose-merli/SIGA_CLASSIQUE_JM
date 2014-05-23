@@ -17,6 +17,7 @@ import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsLogging;
 import com.atos.utils.Row;
 import com.atos.utils.UsrBean;
+import com.siga.Utilidades.SIGALogging;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.beans.AdmLenguajesAdm;
@@ -26,6 +27,7 @@ import com.siga.beans.FacLineaFacturaAdm;
 import com.siga.beans.FacPlantillaFacturacionAdm;
 import com.siga.beans.GenParametrosAdm;
 import com.siga.certificados.Plantilla;
+import com.siga.facturacion.Facturacion;
 import com.siga.general.SIGAException;
 
 
@@ -199,7 +201,7 @@ public class InformeFactura extends MasterReport {
 		plantilla = this.reemplazaVariables(htDatos, plantilla);
 		return plantilla;
 	}
-
+	
 	/**
 	 * Metodo que implementa la generación de la factura en PDF
 	 * @param  mapping - Mapeo de los struts
@@ -301,6 +303,73 @@ public class InformeFactura extends MasterReport {
 		}
 		
         return fPdf;
+	}
+
+	
+	/**
+	 * Metodo que implementa la generación de la factura en PDF
+	 * @param  mapping - Mapeo de los struts
+	 * @param  formulario -  Action Form asociado a este Action
+	 * @param  request - objeto llamada HTTP 
+	 * @param  response - objeto respuesta HTTP
+	 * @param  idFactura - 
+	 * @return  File - fichero PDF generado  
+	 * @exception  ClsExceptions  En cualquier caso de error
+	 */
+	public File generarFacturaRapida (HttpServletRequest request,String institucion, String idFactura) throws ClsExceptions,SIGAException {
+		String resultado="exito";
+		File rutaZIP = null;
+			
+		try {
+		    HttpSession ses = request.getSession();
+			GenParametrosAdm admParametros = new GenParametrosAdm(usrbean);
+		    ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+		    
+			// necesario para que lo pueda obtener la otra funcion
+			request.setAttribute("IDFACTURA_INFORME",idFactura);
+			
+			//obtener plantilla
+			FacFacturaAdm facAdm= new FacFacturaAdm(usrbean);
+			Vector v = facAdm.getFactura(institucion,idFactura);
+			Hashtable ht =null;
+			if (v!=null && v.size()>0) {
+				ht = ((Row) v.get(0)).getRow(); 
+				FacPlantillaFacturacionAdm plAdm= new FacPlantillaFacturacionAdm(usrbean);
+			}
+			
+			// obtener ruta almacen
+			String idserieidprogramacion = ht.get(FacFacturaBean.C_IDSERIEFACTURACION).toString()+"_" + ht.get(FacFacturaBean.C_IDPROGRAMACION).toString();
+			String rutaAlmacen = rp.returnProperty("facturacion.directorioFisicoFacturaPDFJava")+rp.returnProperty("facturacion.directorioFacturaPDFJava");
+    		rutaAlmacen += ClsConstants.FILE_SEP+institucion.toString()+ClsConstants.FILE_SEP+idserieidprogramacion;
+    		
+    		//Si existe ya el fichero ZIP (porque se ha generado en la confirmacion) se le devuelve, si no se genera y se devuelve
+    		String rutaFileZipAux = rutaAlmacen +".zip";
+    		rutaZIP =new File(rutaFileZipAux);
+    		
+    		if(!rutaZIP.exists()){   	
+    			//No se generó xq en la serie no estaba configurado que se generara el fichero .zip. AQUI LO CREAMOS    			
+				ClsLogging.writeFileLog("ANTES DE GENERAR EL INFORME ZIP. ",10);
+				
+				//Fichero de log
+				String nombreFichero = "LOG_COMPRARAPIDA_FAC_"+ institucion+"_"+idserieidprogramacion+".log.xls"; 
+				SIGALogging	log = new SIGALogging(rutaAlmacen+ClsConstants.FILE_SEP+nombreFichero);
+				
+				Facturacion facturacion = new Facturacion(usrbean);
+				facturacion.generaryEnviarProgramacionFactura (request, usrbean, Integer.parseInt(institucion), Long.valueOf(ht.get(FacFacturaBean.C_IDSERIEFACTURACION).toString()),Long.valueOf(ht.get(FacFacturaBean.C_IDPROGRAMACION).toString()), false, log, null);
+				ClsLogging.writeFileLog("DESPUES DE GENERAR EL INFORME EN  "+rutaAlmacen,10);			
+    		} else {
+    			ClsLogging.writeFileLog("SE DEVUELVE EL ZIP PREVIAMENTE GENERADO EN CONFIRMACION",10);
+    		}
+    		
+		}catch (SIGAException se) {
+			throw se;
+		}catch (ClsExceptions ex) {
+			throw ex;
+		}catch (Exception e) {
+			throw new ClsExceptions(e,"Error a l generar el informe: "+e.getLocalizedMessage());
+		} 
+		
+        return rutaZIP;
 	}
 	
 	

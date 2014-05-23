@@ -1678,21 +1678,14 @@ public class SolicitudCompraAction extends MasterAction{
 			Hashtable factHash=new Hashtable();
 			factHash.put(FacFacturaBean.C_IDINSTITUCION, pysCompraBean.getIdInstitucion());
 			factHash.put(FacFacturaBean.C_IDFACTURA,idFactura);
-			CenColegiadoAdm admCol = new CenColegiadoAdm(this.getUserBean(request));
 			
-  			Hashtable htCol = admCol.obtenerDatosColegiado(this.getUserBean(request).getLocation(),pysCompraBean.getIdPersona().toString(),this.getUserBean(request).getLanguage());
-  			String nColegiado = "";
-  			if (htCol!=null && htCol.size()>0) {
-  			    nColegiado = (String)htCol.get("NCOLEGIADO_LETRADO");
-  			}	
-
   			Vector vFac=admF1.select(factHash);
 			if (vFac==null || vFac.size()==0) { // Control extra de existencia de factura				
 			    throw new SIGAException("messages.facturacionRapida.noFactura");
 			} 
 			
 			InformeFactura informe = new InformeFactura(usr);
-			File filePDF = informe.generarFactura(request, usr.getLanguage().toUpperCase(), idInstitucion, idFactura, nColegiado);
+			File filePDF = informe.generarFacturaRapida(request, idInstitucion, idFactura);
 			if (filePDF == null) {
 				throw new ClsExceptions("Error al generar la factura. Fichero devuelto es nulo.");
 			}
