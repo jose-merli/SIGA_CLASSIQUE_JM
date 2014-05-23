@@ -524,11 +524,41 @@ public class BuscarDesignasForm extends MasterForm {
 	private String idTipoTurno = "";
 	List<ScsTurnoBean> turnos;
 	private String idTurno = "";
+	private String idPretension = null;
+	private String idProcedimiento = null;
 
+	/**
+	 * @return the idPretension
+	 */
+	public String getIdPretension() {
+		return idPretension;
+	}
+	/**
+	 * @param idPretension the idPretension to set
+	 */
+	public void setIdPretension(String idPretension) {
+		this.idPretension = idPretension;
+	}
+	/**
+	 * @return the idModulo
+	 */
+	
 	public void setCabeceraCarta(String id){
 		this.cabeceraCarta=id;
 	}
 	
+	/**
+	 * @return the idProcedimiento
+	 */
+	public String getIdProcedimiento() {
+		return idProcedimiento;
+	}
+	/**
+	 * @param idProcedimiento the idProcedimiento to set
+	 */
+	public void setIdProcedimiento(String idProcedimiento) {
+		this.idProcedimiento = idProcedimiento;
+	}
 	public void setMotivoCarta(String id){
 		this.motivoCarta=id;
 	}

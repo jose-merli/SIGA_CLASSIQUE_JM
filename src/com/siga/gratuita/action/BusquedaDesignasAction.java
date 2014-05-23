@@ -16,6 +16,7 @@ import javax.transaction.UserTransaction;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.redabogacia.sigaservices.app.util.ReadProperties;
 import org.redabogacia.sigaservices.app.util.SIGAReferences;
 
@@ -72,6 +73,7 @@ import com.siga.gratuita.form.BuscarDesignasForm;
 import com.siga.gratuita.util.calendarioSJCS.CalendarioSJCS;
 import com.siga.gratuita.util.calendarioSJCS.LetradoInscripcion;
 import com.siga.informes.InformeBusquedaDesignas;
+import com.siga.ws.CajgConfiguracion;
 
 
 
@@ -621,6 +623,18 @@ public class BusquedaDesignasAction extends MasterAction {
 
 				}
 			}
+			UsrBean usr = (UsrBean)request.getSession().getAttribute("USRBEAN");
+			int valorPcajgActivo=CajgConfiguracion.getTipoCAJG(new Integer(usr.getLocation()));
+			request.setAttribute("PCAJG_ACTIVO", new Integer(valorPcajgActivo));
+			GenParametrosAdm admParametros = new GenParametrosAdm(usr);		
+			String ejisActivo = admParametros.getValor(usr.getLocation(), "ECOM", "EJIS_ACTIVO", "0");
+			request.setAttribute("EJIS_ACTIVO", ejisActivo);
+						
+			miform.setIdPretension("");
+			GenParametrosAdm adm = new GenParametrosAdm (this.getUserBean(request));
+			String filtrarModulos = adm.getValor((String)usr.getLocation(),"SCS","FILTRAR_MODULOS_PORFECHA_DESIGNACION", "");
+			request.setAttribute("filtrarModulos", filtrarModulos);
+			
 
 		}catch (Exception e) {
 			throwExcp("messages.general.error",new String[] {"modulo.gratuita"},e,null);
@@ -636,15 +650,19 @@ public class BusquedaDesignasAction extends MasterAction {
 		UsrBean usr = (UsrBean)request.getSession().getAttribute("USRBEAN");
 		Hashtable formAvanzada = (Hashtable)request.getSession().getAttribute("formularioAvanzada");
 		BuscarDesignasForm miform = (BuscarDesignasForm)formulario;
+		
 		String desdeAsistencia=(String)request.getSession().getAttribute("asistencia");
 		String desdeEjg=(String)request.getSession().getAttribute("ejg");
-		String [] splitTurno = null;
-		String idTurno = "";
-		if(miform.getIdTurno()!=null && !miform.getIdTurno().equals("")){
-			splitTurno = miform.getIdTurno().split(",");
-			idTurno = splitTurno[1];
-		}
+		String turnoJSON =  miform.getIdTurno();
 		
+		HashMap<String, String> hmTurnos;
+		try {
+			hmTurnos = new ObjectMapper().readValue(turnoJSON, HashMap.class);
+		} catch (Exception e1) {
+			throw new ClsExceptions("Error al recoger datos json de designa");
+		}
+		String idTurno = hmTurnos.get("idturno");
+			
 		if ((desdeAsistencia!=null &&  desdeAsistencia.equalsIgnoreCase("si"))||(desdeEjg!=null &&  desdeEjg.equalsIgnoreCase("si"))){
 			request.getSession().removeAttribute("DATAPAGINADOR");
 		}
@@ -727,8 +745,18 @@ public class BusquedaDesignasAction extends MasterAction {
 			request.getSession().removeAttribute("idTipoEjg");
 			request.getSession().removeAttribute("art27");
 
+			if(miform.getIdPretension()!=null && !miform.getIdPretension().equals("")){
+				formDesignaHash.put("IDPRETENSION", miform.getIdPretension());
+				
+			}
+			
+			if(miform.getIdProcedimiento()!=null && !miform.getIdProcedimiento().equals("")){
+				formDesignaHash.put("IDPROCEDIMIENTO", miform.getIdProcedimiento());
+				
+			}
+			
 			// 1. Creamos la Designa
-
+			
 			nuevaDesigna = designaAdm.prepararInsert(formDesignaHash);
 			
 			
@@ -925,7 +953,11 @@ public class BusquedaDesignasAction extends MasterAction {
 			if (datosDesigna.get(ScsDesignaBean.C_IDINSTITUCIONJUZGADO)!=null && !((String)datosDesigna.get(ScsDesignaBean.C_IDINSTITUCIONJUZGADO)).equals(""))
 				designaBean.setIdInstitucionJuzgado(new Integer(UtilidadesHash.getString(datosDesigna, ScsDesignaBean.C_IDINSTITUCIONJUZGADO)));
 
-
+			if (datosDesigna.get(ScsDesignaBean.C_IDPRETENSION)!=null && !((String)datosDesigna.get(ScsDesignaBean.C_IDPRETENSION)).equals(""))
+				designaBean.setIdPretension(new Integer(UtilidadesHash.getString(datosDesigna, ScsDesignaBean.C_IDPRETENSION)));
+			
+			if (datosDesigna.get(ScsDesignaBean.C_IDPROCEDIMIENTO)!=null && !((String)datosDesigna.get(ScsDesignaBean.C_IDPROCEDIMIENTO)).equals(""))
+				designaBean.setProcedimiento(UtilidadesHash.getString(datosDesigna, ScsDesignaBean.C_IDPROCEDIMIENTO));
 
 			/*Vector vResultado = null;
 			String codigo=null;

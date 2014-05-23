@@ -1,4 +1,6 @@
 <!DOCTYPE html>
+<%@page import="com.atos.utils.ClsExceptions"%>
+<%@page import="org.codehaus.jackson.map.ObjectMapper"%>
 <html>
 <head>
 <!-- busquedaClientesFiltros.jsp -->
@@ -36,6 +38,20 @@
 	ArrayList seleccion2 = new ArrayList();
 	String dato[] = { (String) usr.getLocation() };
 	String idturno = (String) request.getParameter("idTurno");
+	//Si viene de insertar designacion, el combo es un tagselect anidado por eso tiene formayo json
+	if (idturno!=null && idturno.startsWith("{")){
+		String turnoJSON =  idturno;
+		
+		HashMap<String, String> hmTurnos;
+		try {
+			hmTurnos = new ObjectMapper().readValue(turnoJSON, HashMap.class);
+		} catch (Exception e1) {
+			throw new ClsExceptions("Error al recoger datos json de designa");
+		}
+		idturno = hmTurnos.get("idturno");
+	}
+	
+	
 	String idguardia = (String) request.getParameter("idGuardia");
 	String institucion = (String) usr.getLocation();
 

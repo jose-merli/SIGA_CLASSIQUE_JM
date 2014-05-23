@@ -374,7 +374,16 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 			
 			String idModulo =  ((String)entrada.get("IDPROCEDIMIENTO"));
 			if (idModulo!=null && !idModulo.equals("")) {
-				entrada.put(ScsDesignaBean.C_IDPROCEDIMIENTO, idModulo);
+				String sIdModulo = "";
+				if (idModulo.startsWith("{")){
+					// ES UN JSON
+					HashMap<String, String> hmIdJuzgadoObtenido = new ObjectMapper().readValue(idModulo, HashMap.class);
+					sIdModulo = hmIdJuzgadoObtenido.get("idprocedimiento");
+				} else{
+					sIdModulo = idModulo;
+				}
+				entrada.put(ScsDesignaBean.C_IDPROCEDIMIENTO, sIdModulo);
+
 			}			
 			
 			

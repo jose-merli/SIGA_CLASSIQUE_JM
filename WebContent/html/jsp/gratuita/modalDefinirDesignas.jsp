@@ -44,6 +44,7 @@
 		anioProcedimiento = (String)request.getAttribute("anioProcedimiento");
 	}
 	
+	
 	BuscarDesignasForm miform = (BuscarDesignasForm) ses.getAttribute("BuscarDesignasForm");
 	String desdeEJG = miform.getDesdeEjg();
 
@@ -68,57 +69,124 @@
 	ArrayList elementoSelTurno = new ArrayList();
 	String claseComboTurno = "boxCombo";
 	String sreadonly="false";
+	String idTurnoSeleccionado = "-1";
 	if (idTurnoAsistencia != null && !idTurnoAsistencia.equals("")) {// Cuando venimos de Asistencias
-		elementoSelTurno.add(idTurnoAsistencia);
-//		claseComboTurno = "boxConsulta";
-//		sreadonly="true";
+		idTurnoSeleccionado = (idTurnoAsistencia.split(","))[1];
+
 	}
     else if (idTurnoEJG != null && !idTurnoEJG.equals("")) {// cuando venimos de EJG
-		elementoSelTurno.add(idTurnoEJG);
+    	idTurnoSeleccionado = (idTurnoEJG.split(","))[1];
+		
+	}
+	elementoSelTurno.add(idTurnoSeleccionado);
+	
+	int pcajgActivo = 0;
+	if (request.getAttribute("PCAJG_ACTIVO")!=null){
+		pcajgActivo = Integer.parseInt(request.getAttribute("PCAJG_ACTIVO").toString());
+	}
+	String filtrarModulos = "N";
+	if (request.getAttribute("filtrarModulos") != null) {
+		filtrarModulos = (String)request.getAttribute("filtrarModulos");
 	}
 	
-	String[] datoJuzgado = new String[2];
-	try {
-		datoJuzgado[0] = usr.getLocation();
-		if (idTurnoAsistencia!=null){
-		 datoJuzgado[1] = (idTurnoAsistencia.split(","))[1];		 
-		}else{
-		  if (idTurnoEJG!=null){
-		     datoJuzgado[1] = (idTurnoEJG.split(","))[1];
-		  }else{
-		    datoJuzgado[1]="-1";
-		  }	 		 
-		}
-	}
-	catch(Exception e) {}
+	String comboJuzgados = "getJuzgadosJurisdiccionNuevaDesigna";
+   	String comboModulos = "getProcedimientosEnVigencia";
+   	String comboModulosParentQueryIds = "idjuzgado,fechadesdevigor,fechahastavigor";
+   	String comboPretensionesEjis= "getPretensionesNuevaDesignaEjisModulosFiltros";
+   	
 	
-	String juzgadoAsistencia = (String)request.getAttribute("juzgadoAsistencia");
+
+	String fechaVigor = GstDate.getHoyJsp();
+	ArrayList elementoSelJuzgado = new ArrayList();
+	String idJuzgado = null;
 	String juzgadoEJG = (String)request.getAttribute("idjuzgadoEJG");
 	if(juzgadoEJG == null || juzgadoEJG.equals("")){
 		juzgadoEJG = (String)request.getParameter("idjuzgadoEJG");
 	}
+	if (juzgadoEJG != null && !juzgadoEJG.equals("")) {
+		//El atributo viene de la forma  idJuzgado, idinstitucion por lo que hacemos split
+		//request.setAttribute("idjuzgadoEJG", miform.getJuzgadoAsi()+ "," + miform.getJuzgadoInstitucionAsi());
+		String idsJuzgadoEJG[] = juzgadoEJG.split(","); 
+		idJuzgado = idsJuzgadoEJG[0];
+		elementoSelJuzgado.add(0,"{\"idjuzgado\":\""+idJuzgado+"\",\"idinstitucion\":\""+idsJuzgadoEJG[1]+"\",\"fechadesdevigor\":\""+fechaVigor+"\",\"fechahastavigor\":\""+fechaVigor+"\"}");
 	
-	ArrayList elementoSelJuzgado = new ArrayList();
+	}
+	
+	String juzgadoAsistencia = (String)request.getAttribute("juzgadoAsistencia");	
 	
 	if (juzgadoAsistencia != null && !juzgadoAsistencia.equals("")) {
-		elementoSelJuzgado.add(juzgadoAsistencia);
+		//El atributo viene de la forma  idJuzgado, idinstitucion por lo que hacemos split
+		//request.setAttribute("juzgadoAsistencia", miform.getJuzgadoAsi()+ "," + miform.getJuzgadoInstitucionAsi());
+		String idsJuzgadoAsistencia[] = juzgadoAsistencia.split(","); 
+		idJuzgado = idsJuzgadoAsistencia[0];
+		elementoSelJuzgado.add(0,"{\"idjuzgado\":\""+idJuzgado+"\",\"idinstitucion\":\""+idsJuzgadoAsistencia[1]+"\",\"fechadesdevigor\":\""+fechaVigor+"\",\"fechahastavigor\":\""+fechaVigor+"\"}");
 		
 	}
 	
+	if(idJuzgado==null||idJuzgado.equals("")){
+		idJuzgado = "-1";
+	}
+	String comboPretensiones = "getPretensionesNuevaDesigna";
+	String comboPretensionesParentQueryIds = null;
+	
+	String paramsTurnosJSON = "{\"idturno\":\""+idTurnoSeleccionado+"\"";
+	paramsTurnosJSON += ",\"fechadesdevigor\":\""+fechaVigor+"\"";
+	paramsTurnosJSON += ",\"fechahastavigor\":\""+fechaVigor+"\"}";
+	
+	String paramsJuzgadoJSON = "";
+	paramsJuzgadoJSON += "{\"idturno\":\""+idTurnoSeleccionado+"\"";
+	paramsJuzgadoJSON += ",\"fechadesdevigor\":\""+fechaVigor+"\"";
+	paramsJuzgadoJSON += ",\"fechahastavigor\":\""+fechaVigor+"\"}";
+	
+	String idProcedimientoParamsJSON = "{\"idprocedimiento\":\"-1\"";
+	idProcedimientoParamsJSON += ",\"fechadesdevigor\":\""+fechaVigor+"\"";
+	idProcedimientoParamsJSON += ",\"fechahastavigor\":\""+fechaVigor+"\"}";
+	
+	
+	String idPretensionParamsJSON ="";
+	boolean obligatoriojuzgado=false;
+	
+	
+	if (ejisActivo>0 || pcajgActivo == 4){
+		comboPretensiones = comboPretensionesEjis;
+		comboPretensionesParentQueryIds = "idjuzgado";
+		//obligatoriojuzgado = true;
+	} else {
+		comboPretensionesParentQueryIds = "";
+		idPretensionParamsJSON = "";
+	}
+	
+	String asterisco = "&nbsp(*)&nbsp";
+	
+	boolean obligatorioProcedimiento = false;
+	boolean obligatorioModulo=false;
+	boolean obligatorioTipoDesigna=false;
+	
+	/*
+	if (pcajgActivo==2){
+		obligatorioProcedimiento = true;
+	}else if(pcajgActivo==3){
+		obligatorioProcedimiento = true;
+	}else if (pcajgActivo==4){
+	    obligatorioProcedimiento = true;
+		obligatorioModulo=true;
+		obligatorioTipoDesigna=true;		
+	}else if (pcajgActivo==5){
+		obligatoriojuzgado = true;
+		obligatorioProcedimiento = true;
+	}
+	*/
+	
+	
+	
+	
 	ArrayList elementoSelSolicitante = new ArrayList();
 	elementoSelSolicitante.add("-1");
-	
-	
 	
 	String diligenciaAsi = (String)request.getAttribute("diligencia");
 	String procedimientoAsi = (String)request.getAttribute("procedimiento");
 	String comisariaAsi = (String)request.getAttribute("comisaria");
 	
-	
-	if (juzgadoEJG != null && !juzgadoEJG.equals("")) {
-		elementoSelJuzgado.add(juzgadoEJG);
-		
-	}
 	String[] datoSolicitante = new String[5];
 	datoSolicitante[0] = usr.getLocation();
 	datoSolicitante[1] = usr.getLocation();
@@ -126,10 +194,14 @@
 	datoSolicitante[3] = numeroEjg;
 	datoSolicitante[4] = idTipoEjg;
 	
-
 	String idPersona				 = (String)request.getAttribute("idPersona");
 	String nColegiadoAsistencia      = (String)request.getAttribute("nColegiadoAsistencia");
 	String nombreColegiadoAsistencia = (String)request.getAttribute("nombreColegiadoAsistencia");
+	
+	
+	
+	
+	
 	// -----------------------------------------------------------	
 %>	
 
@@ -193,44 +265,8 @@
 			fin();
 		}
 		
-	   function obtenerJuzgado() { 
-			if (document.forms[1].codigoExtJuzgado.value!=""){	
- 				document.MantenimientoJuzgadoForm.codigoExt2.value=document.forms[1].codigoExtJuzgado.value;
-				document.MantenimientoJuzgadoForm.submit();	
-			 }
-			 else
-		 		seleccionComboSiga("juzgado",-1);
-		}
-		
-		function traspasoDatos(resultado) {
-			if (resultado[0]==undefined) {
-				seleccionComboSiga("juzgado",-1);
-				document.getElementById("codigoExtJuzgado").value = "";
-			} 
-			else
-				seleccionComboSiga("juzgado",resultado[0]);	
-		}
-		
-		function cambiarJuzgado(comboJuzgado) {
-			if(comboJuzgado.value!=""){
-				jQuery.ajax({ //Comunicación jQuery hacia JSP  
-		   			type: "POST",
-					url: "/SIGA/GEN_Juzgados.do?modo=getAjaxJuzgado2",
-					data: "idCombo="+comboJuzgado.value,
-					dataType: "json",
-					success: function(json){		
-			       		document.getElementById("codigoExtJuzgado").value = json.codigoExt2;      		
-						fin();
-					},
-					error: function(e){
-						alert('Error de comunicación: ' + e);
-						fin();
-					}
-				});
-			}
-			else
-				document.getElementById("codigoExtJuzgado").value = "";
-		}		
+	  
+			
 	</script>
 
 <body onload="cargarCliente()">
@@ -253,13 +289,14 @@
 
 	<!-- INICIO: CAMPOS -->
 
-	<table  class="tablaCentralCamposMedia"  align="center" border="0" width="100%">
+<table  class="tablaCentralCamposMedia"  align="center" border="0" width="100%">
 
 	<html:javascript formName="BuscarDesignasForm" staticJavascript="false" />
 	<html:form action="/JGR_Designas.do" method="POST" target="submitArea" >
 	<html:hidden property = "modo" value = "insertar"/>
 	<html:hidden property = "idPersona" value="<%=idPersona %>" />
 	<html:hidden property = "manual" value = "0"/>
+	
 	
 	<html:hidden property ="anioAsistencia" value = "<%=anioAsistencia%>"/>
 	<html:hidden property ="anioEjg" value = "<%=anioEJG%>"/>
@@ -282,11 +319,17 @@
 	<tr>
 		<td class="labelText">
 			<siga:Idioma key="gratuita.busquedaDesignas.literal.tipoDesigna"/>
+			<% if (obligatorioTipoDesigna) { %>
+		 		<%= asterisco %>
+			<% } %>
 		</td>
 		<td class="labelText" >	
 			<siga:ComboBD nombre="tipoDesigna" tipo="tipoDesignaColegio" estilo="true" clase="boxCombo" parametro="<%=dato%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false" elementoSel="<%=elementoSelTipoDesigna%>"  ancho="480" />
 		</td>	
 	</tr>	
+	
+	
+	
 	<%if (anioEJG!=null && !anioEJG.equals("")){%>
 	<tr>
 		<td class="labelText">
@@ -301,113 +344,142 @@
 	
 	<tr>
 		<td colspan="2">	
-		<siga:ConjCampos leyenda="gratuita.seleccionColegiadoJG.literal.titulo"> 
-		<table border="0" width="100%">
-			<tr>
-				<td class="labelText" width="20%">
-					<siga:Idioma key="gratuita.busquedaSOJ.literal.turno"/>&nbsp;(*)
-				</td>
-				<td class="labelText" colspan="3">
-					<siga:ComboBD nombre="idTurno" tipo="turnosDesignacionAlta" estilo="true" ancho="480" clase="<%=claseComboTurno%>" parametro="<%=dato%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false" elementoSel="<%=elementoSelTurno%>" accion="Hijo:juzgado" readOnly="<%=sreadonly%>" ancho="500"/>
-				</td>
-			</tr>
-			<tr>
+			<siga:ConjCampos leyenda="gratuita.seleccionColegiadoJG.literal.titulo"> 
+				<table border="0" width="100%">
+					<tr>
+						<td class="labelText" width="20%">
+							<siga:Idioma key="gratuita.busquedaSOJ.literal.turno"/>&nbsp;(*)
+						</td>
+						<td class="labelText" colspan="3">
+							<siga:Select id="idTurno" queryId="getTurnosDesignacionVisibles" queryParamId="idturno" params="<%=paramsTurnosJSON%>" selectedIds="<%=elementoSelTurno%>" required="true" childrenIds="juzgado"  width="500"/>
+						
+							
+						</td>
+					</tr>
+				</table>
+				<table border="0" width="100%">
+					<tr>
+						<td width="22%">&nbsp;</td>
+						<td width="10%">&nbsp;</td>
+						<td width="33%">&nbsp;</td>
+						<td width="35%">&nbsp;</td>
+					</tr>
+					<tr>
+						<td colspan="4">
+							<html:hidden property="flagSalto" value=""></html:hidden>
+							<html:hidden property="flagCompensacion" value=""></html:hidden>
+							<siga:BusquedaSJCS	propiedad="seleccionLetrado" botones="M,D"
+								concepto="Designacion" operacion="Asignacion" nombre="BuscarDesignasForm" campoTurno="idTurno" campoFecha="fechaAperturaInicio"
+								campoPersona="idPersona" campoColegiado="ncolegiado" campoNombreColegiado="nomColegiado" mostrarNColegiado="true" campoColegio="colegioOrigen" 
+								mostrarNombreColegiado="true" campoFlagSalto="flagSalto" campoFlagCompensacion="flagCompensacion" campoSalto="checkSalto" modo="nuevo"
+							/>
+						</td>
+					</tr>
+					<tr>
+						<td class="labelText">
+							<siga:Idioma key='gratuita.busquedaEJG.literal.numeroColegidado'/>
+						</td>		
+						<td>
+							<input type="text" name="ncolegiado" class="boxConsulta" readOnly value="" style="width:50px;"/>
+							<html:hidden property="colegioOrigen" value=""></html:hidden>
+			
+						</td>
+						<td class="labelText">
+							<siga:Idioma key='FactSJCS.listadoRetencionesJ.literal.nombreColegiado'/>
+						</td>
+						<td >
+							<input type="text" name="nomColegiado" class="boxConsulta" readOnly value="" style="width:320px;"/>
+						</td>			
+					</tr>
+					
+					
+				</table>
+				
+				
+				
+			</siga:ConjCampos> 
+		</td>	
+	</tr>
+	<tr>
+		<td class="labelText" colspan="2"><siga:Idioma key="gratuita.designa.designacionAutomatica"/></td>		
+	</tr>
+	
+	<tr>
 
-		   <td class="labelText" colspan="4">	
-<!-- Busqueda automatica de juzgados-->
-		<siga:ConjCampos leyenda="gratuita.mantenimientoTablasMaestra.literal.juzgado">
-			 <table width="100%" >
-			   	<tr>
-					<td class="labelText" width="10%">	
-					   <siga:Idioma key="gratuita.mantenimientoTablasMaestra.literal.codigoext"/>
-					</td>	 
-					<td class="labelText" width="10%" >	
-					   <input type="text" name="codigoExtJuzgado" class="box" size="8" maxlength="10" onBlur="obtenerJuzgado();"/>&nbsp;
-					</td>	 
-					<td> &nbsp;</td>	
-					<td>
-					   <siga:ComboBD nombre="juzgado" tipo="comboJuzgadosTurno" ancho="460" estilo="true"  clase="boxCombo" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  parametro="<%=datoJuzgado%>" elementoSel="<%=elementoSelJuzgado%>" hijo="t" accion="parent.cambiarJuzgado(this);"/>
-					</td>   
-				</tr>
+		<td colspan= "2"><!-- Busqueda automatica de juzgados--> 						
+			<siga:ConjCampos leyenda="gratuita.mantenimientoTablasMaestra.literal.juzgado">
+				<table>							
+					<tr>
+							
+						<td class="labelText">
+							<siga:Idioma key="gratuita.mantenimientoTablasMaestra.literal.codigoext" />
+							<% if (obligatoriojuzgado){ %>
+								<%= asterisco %>
+						</td>
+					
+						<td>
+							<siga:Select id="juzgado" queryId="<%=comboJuzgados%>" queryParamId="idjuzgado" parentQueryParamIds="idTurno" params="<%=paramsJuzgadoJSON%>" selectedIds="<%=elementoSelJuzgado%>" showSearchBox="true" searchkey="CODIGOEXT2" searchBoxMaxLength="10" searchBoxWidth="8" width="515" required="true" childrenIds="idPretension,idProcedimiento"/>		
+						</td>
+							<%}else{%>
+							</td>
+					
+						<td>
+							<siga:Select id="juzgado" queryId="<%=comboJuzgados%>" queryParamId="idjuzgado" parentQueryParamIds="idTurno" params="<%=paramsJuzgadoJSON%>" selectedIds="<%=elementoSelJuzgado%>" showSearchBox="true" searchkey="CODIGOEXT2" searchBoxMaxLength="10" searchBoxWidth="8" width="515"  childrenIds="idPretension,idProcedimiento"/>		
+						</td>
+							<%}%>
+						 
+					</tr>
+						
+				
+				<!-- Juzgado -->		
 			</table>
-		</siga:ConjCampos> 
-<!------------------>
-		
+		</siga:ConjCampos> 																
 		</td>
 	</tr>
-	</table>
-	<table border="0" width="100%">
-		<tr>
-			<td colspan="5">
-				<html:hidden property="flagSalto" value=""></html:hidden>
-				<html:hidden property="flagCompensacion" value=""></html:hidden>
-					<siga:BusquedaSJCS	propiedad="seleccionLetrado" botones="M,D"
-						concepto="Designacion" operacion="Asignacion" nombre="BuscarDesignasForm" campoTurno="idTurno" campoFecha="fechaAperturaInicio"
-						campoPersona="idPersona" campoColegiado="ncolegiado" campoNombreColegiado="nomColegiado" mostrarNColegiado="true" campoColegio="colegioOrigen" 
-						mostrarNombreColegiado="true" campoFlagSalto="flagSalto" campoFlagCompensacion="flagCompensacion" campoSalto="checkSalto" modo="nuevo"
-					/>
-			</td>
-		</tr>
-		<tr>
-			<td class="labelText">
-				<siga:Idioma key='gratuita.busquedaEJG.literal.numeroColegidado'/>
-			</td>		
-			<td>
-				<input type="text" name="ncolegiado" class="boxConsulta" readOnly value="" style="width:'100px';">
-				<html:hidden property="colegioOrigen" value=""></html:hidden>
-
-			</td>
-			<td class="labelText">
-				<siga:Idioma key='FactSJCS.listadoRetencionesJ.literal.nombreColegiado'/>
-			</td>
-			<td colspan="2">
-				<input type="text" name="nomColegiado" class="boxConsulta" readOnly value="" style="width:'240px';">
-			</td>			
-		</tr>
-	</table>
-	</siga:ConjCampos> 
-	 	</td>	
-	</tr>
+	
 	<tr>
-		<td class="labelText" colspan="3">	
-			<siga:Idioma key="gratuita.designa.designacionAutomatica"/>
-		</td>		
-	</tr>
-<!--
-	<tr>
-		<td class="labelText">	
-			<siga:Idioma key="gratuita.listadoModal_DefinirCalendarioGuardia.literal.numeroColegiado"/>
-		</td>
 		<td class="labelText">
-				<html:text name="BuscarDesignasForm" property="ncolegiado" size="10" maxlength="10" styleClass="box" value=""></html:text>
-		</td>
-		<td class="labelText">	
-			<input type="button" class="button" name="buscarColegiado" value="Buscar Colegiado" onClick="buscarCliente();"> 
-		</td>	
+			<siga:Idioma key="gratuita.actuacionesDesigna.literal.modulo" />
+			<% if (obligatorioModulo) { %>
+		 		<%= asterisco %>
+		 	</td>
+			<td>
+				<siga:Select id="idProcedimiento" queryId="<%=comboModulos%>" parentQueryParamIds="<%=comboModulosParentQueryIds%>" params="<%=idProcedimientoParamsJSON%>" required="true"  width="490"/>
+			</td>
+			<%} else { %>
+		 		</td>
+			<td>
+				<siga:Select id="idProcedimiento" queryId="<%=comboModulos%>" parentQueryParamIds="<%=comboModulosParentQueryIds%>" params="<%=idProcedimientoParamsJSON%>"  width="490"/>
+			</td>
+			<% } %>
+			
 	</tr>
 	<tr>
-		<td colspan="2">
-			&nbsp;
-		</td>
 		<td class="labelText">	
-			<input type="button" class="button" name="seleccionAutomatica" value="Selección Automática" onClick="buscarClienteAutomatica();"> 
-		</td>	
+			<siga:Idioma key='gratuita.actuacionesDesigna.literal.pretensiones'/>
+			<% if (obligatorioProcedimiento) { %>
+		 		<%= asterisco %>
+		 		</td>				
+				<td >
+					<siga:Select id="idPretension" queryId="<%=comboPretensiones %>"  parentQueryParamIds="<%=comboPretensionesParentQueryIds %>"  required="true" width="490" />
+				</td>
+			<%}else { %>
+		 		</td>				
+				<td >
+					<siga:Select id="idPretension" queryId="<%=comboPretensiones %>"  parentQueryParamIds="<%=comboPretensionesParentQueryIds %>"   width="490" />
+				</td>
+			<% } %>
+		
 	</tr>
-	<tr>
-		<td colspan="3">
-			&nbsp;
-		</td>
-	</tr>
--->	
 
-	</html:form>
+</html:form>
 	
-	<html:form action = "/JGR_MantenimientoJuzgados.do" method="POST" target="submitArea">
-		<input type="hidden" name="modo"        value="buscarJuzgado">
-		<html:hidden property = "codigoExt2" value=""/>
-	</html:form>	
-	
-	</table>
+<html:form action="/JGR_MantenimientoJuzgados.do" method="POST" target="submitArea">
+	<input type="hidden" name="modo" value="buscarJuzgado">
+	<html:hidden property="codigoExt2" value="" />
+	<html:hidden property="nombreObjetoDestino" value="" />
+</html:form>
+</table>
 
 	<!-- INICIO: BOTONES REGISTRO -->
 
@@ -425,23 +497,52 @@
 		function accionGuardarCerrar() 
 		{	 
 			sub();
+			var error = "";
+			<%if (pcajgActivo>0) { %>
+				
+			
+				if (<%=obligatorioTipoDesigna%> && document.getElementById("tipoDesigna").value=="")
+					error += "<siga:Idioma key='errors.required' arg0='gratuita.editarDesigna.literal.tipo'/>"+ '\n';
+
+				if(<%=obligatoriojuzgado%> && document.getElementById("juzgado").value=="")										
+					error += "<siga:Idioma key='gratuita.editarDesigna.juzgado'/>"+ '\n';
+			
+				if (<%=obligatorioModulo%> && document.getElementById("idProcedimiento").value=="")
+					error += "<siga:Idioma key='errors.required' arg0='gratuita.actuacionesDesigna.literal.modulo'/>"+ '\n';
+				
+				if (<%=obligatorioProcedimiento%> && document.getElementById("idPretension").value=="")
+					error += "<siga:Idioma key='errors.required' arg0='gratuita.actuacionesDesigna.literal.pretensiones'/>"+ '\n';
+			
+			
+				
+	 		<%} %>
+			
+			
 			if(document.forms[1].colegioOrigen.value==0)
 				document.forms[1].colegioOrigen.value="";
-			if((document.forms[1].idTurno.selectedIndex < 1)//||(document.forms[1].ncolegiado.value.length < 1)
-			   ||(document.forms[1].fechaAperturaInicio.value.length < 1)||(document.forms[1].idSolicitante && document.forms[1].idSolicitante.value=="")){
-				alert("Debe rellenar todos los campos");
+			
+			if(document.forms[1].idTurno.selectedIndex < 1){
+				error += "<siga:Idioma key='errors.required' arg0='gratuita.busquedaSOJ.literal.turno'/>"+ '\n';
+			
+			}
+			if(document.forms[1].fechaAperturaInicio.value.length < 1){
+				error += "<siga:Idioma key='errors.required' arg0='gratuita.busquedaDesignas.literal.fechaApertura'/>"+ '\n';
+			
+			}
+			
+			if(error!=""){
+				alert(error);
 				fin();
 				return false;
-			}else{
-				
-				if (document.forms[1].ncolegiado.value || confirm("<siga:Idioma key='messages.designa.confirmacion.seleccionAutomaticaLetrado' />")){
-					document.forms[1].modo.value="insertar";
-					document.forms[1].submit();
-				}else{
-					fin();
-					return false;
-				}				
 			}
+			if (document.forms[1].ncolegiado.value || confirm("<siga:Idioma key='messages.designa.confirmacion.seleccionAutomaticaLetrado' />")){
+				document.forms[1].modo.value="insertar";
+				document.forms[1].submit();
+			}else{
+				fin();
+				return false;
+			}				
+			
 		}
 
 				
@@ -459,7 +560,6 @@
 			document.forms[1].reset();
 			seleccionComboSiga("juzgado",-1);
 		}
-		
 		<!-- Funcion asociada a boton buscar -->
 
 	</script>
