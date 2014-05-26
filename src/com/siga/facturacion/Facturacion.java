@@ -2395,25 +2395,30 @@ public class Facturacion {
 			if (resultado){
 				String formaPago="";
 				// Inserciones relacionadas previa obtencion forma de pago
-				PysFormaPagoProductoAdm admFPP= new PysFormaPagoProductoAdm(userBean);
+				//Ini Mod MJM: INC_12175_SIGA. Se informa la misma forma de pago que la que tenga la factura
+				//PysFormaPagoProductoAdm admFPP= new PysFormaPagoProductoAdm(userBean); 
 
 				//aalg: INC_09853_SIGA. Hay que buscar la forma de pago que tenga la comisión bancaria
-			
-				Vector formasPagoProductoComision = admFPP.getFormasPagoProducto((String)productoComision.get(PysProductosInstitucionBean.C_IDINSTITUCION),(String)productoComision.get(PysProductosInstitucionBean.C_IDTIPOPRODUCTO), (String)productoComision.get(PysProductosInstitucionBean.C_IDPRODUCTO), (String)productoComision.get(PysProductosInstitucionBean.C_IDPRODUCTOINSTITUCION));
-				if (formasPagoProductoComision == null || formasPagoProductoComision.isEmpty()){
-					// No existe forma de pago por banco para el producto comision.
-					formaPago=String.valueOf(ClsConstants.TIPO_FORMAPAGO_FACTURA);
-					idCuenta=facturaDisquete.getIdCuenta().toString();
-				} else {
-					// SI existe forma de pago por banco para el producto comision.
-					formaPago=((Row)formasPagoProductoComision.firstElement()).getRow().get(PysFormaPagoProductoBean.C_IDFORMAPAGO).toString();
-					if (formaPago.equalsIgnoreCase(String.valueOf(ClsConstants.TIPO_FORMAPAGO_FACTURA)))
-						idCuenta=facturaDisquete.getIdCuenta().toString();
-					else
-						idCuenta = "";
+//				Vector formasPagoProductoComision = admFPP.getFormasPagoProducto((String)productoComision.get(PysProductosInstitucionBean.C_IDINSTITUCION),(String)productoComision.get(PysProductosInstitucionBean.C_IDTIPOPRODUCTO), (String)productoComision.get(PysProductosInstitucionBean.C_IDPRODUCTO), (String)productoComision.get(PysProductosInstitucionBean.C_IDPRODUCTOINSTITUCION));
+//				if (formasPagoProductoComision == null || formasPagoProductoComision.isEmpty()){
+//					// No existe forma de pago por banco para el producto comision.
+//					formaPago=String.valueOf(ClsConstants.TIPO_FORMAPAGO_FACTURA);
+//					idCuenta=facturaDisquete.getIdCuenta().toString();
+//				} else {
+//					// SI existe forma de pago por banco para el producto comision.
+//					formaPago=((Row)formasPagoProductoComision.firstElement()).getRow().get(PysFormaPagoProductoBean.C_IDFORMAPAGO).toString();
+//					if (formaPago.equalsIgnoreCase(String.valueOf(ClsConstants.TIPO_FORMAPAGO_FACTURA)))
+//						idCuenta=facturaDisquete.getIdCuenta().toString();
+//					else
+//						idCuenta = "";
+//
+//				}
 
-				}
-				
+				if((idCuenta==null)||(idCuenta.isEmpty()))
+					formaPago=String.valueOf(ClsConstants.TIPO_FORMAPAGO_METALICO);
+				else
+					formaPago=String.valueOf(ClsConstants.TIPO_FORMAPAGO_FACTURA);
+				//Fin Mod MJM: INC_12175_SIGA. Se informa la misma forma de pago que la que tenga la factura
 				
 				// Insercion PYS_COMPRASUSCRIPCION						
 				PysPeticionCompraSuscripcionAdm ppcsa= new PysPeticionCompraSuscripcionAdm(userBean);
