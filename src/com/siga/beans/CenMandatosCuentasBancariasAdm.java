@@ -315,11 +315,11 @@ public class CenMandatosCuentasBancariasAdm extends MasterBeanAdministrador {
 			if(isFirmado!=null){
 				if(isFirmado){
 					sql.append(" AND  MANDATOS.");
-					sql.append(CenMandatosCuentasBancariasBean.C_IDFICHEROFIRMA);
+					sql.append(CenMandatosCuentasBancariasBean.C_FIRMA_FECHA);
 					sql.append(" IS NOT NULL ");
 				}else{
 					sql.append(" AND  MANDATOS.");
-					sql.append(CenMandatosCuentasBancariasBean.C_IDFICHEROFIRMA);
+					sql.append(CenMandatosCuentasBancariasBean.C_FIRMA_FECHA);
 					sql.append(" IS  NULL ");
 					
 					
