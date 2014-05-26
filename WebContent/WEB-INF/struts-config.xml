@@ -2979,6 +2979,7 @@
 			<forward name="mantenimiento" path="/html/jsp/gratuita/datosProcedimientos.jsp"/>
 			<forward name="nuevoAcreditacion" path="/html/jsp/gratuita/datosProcedimientosAcreditacion.jsp"/>
 			<forward name="exitoInsercionProcedimiento" path="/html/jsp/gratuita/exitoInsercionProcedimiento.jsp"/>
+            <forward name="buscarProcedimiento" path="/html/jsp/gratuita/buscarProcedimientoOculta.jsp"/>			
 		</action>
 
 		<!-- ***** Justicia Gratuita / Mantenimiento Incompatibilidades de Guardias *****

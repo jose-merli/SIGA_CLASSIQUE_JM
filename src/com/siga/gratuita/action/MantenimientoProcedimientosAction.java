@@ -67,6 +67,9 @@ public class MantenimientoProcedimientosAction extends MasterAction {
 				else if (accion.equalsIgnoreCase("modificarAcreditacion")){
 					mapDestino = modificarAcreditacion(mapping, miForm, request, response);
 				}
+				else if (accion.equalsIgnoreCase("buscarProcedimiento")){
+					mapDestino = buscarProcedimiento(mapping, miForm, request, response);
+				}				
 				else {
 					return super.executeInternal(mapping,
 							      formulario,
@@ -401,6 +404,29 @@ public class MantenimientoProcedimientosAction extends MasterAction {
 		return "listarProcedimientos";
 	}
 
+	protected String buscarProcedimiento (ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions {
+		//Recogemos de sesion el UsrBean
+		UsrBean usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
+		MantenimientoProcedimientosForm miForm = (MantenimientoProcedimientosForm)formulario;
+		ScsProcedimientosAdm procedimientosAdm = new ScsProcedimientosAdm(this.getUserBean(request));		
+		
+		try {
+			String condicion =  " SELECT " + ScsProcedimientosBean.C_NOMBRE + "," + ScsProcedimientosBean.C_CODIGO + "," + ScsProcedimientosBean.C_IDINSTITUCION + "," + ScsProcedimientosBean.C_IDPROCEDIMIENTO+ " " +
+								" FROM " + ScsProcedimientosBean.T_NOMBRETABLA + " " +
+								" WHERE " + ScsProcedimientosBean.C_IDINSTITUCION + "=" + (String)usr.getLocation(); 
+
+			// Ahora se anhade el criterio de búsqueda
+			if ((miForm.getCodigoBusqueda()!= null) && (!miForm.getCodigoBusqueda().toString().equals("")))	condicion += " and "  + ComodinBusquedas.prepararSentenciaCompleta(miForm.getCodigoBusqueda().trim(),ScsProcedimientosBean.C_CODIGO);
+			
+			Vector resultado = (Vector)procedimientosAdm.selectGenerico(condicion);
+			request.setAttribute("resultadoProcedimiento",resultado);
+		}
+		catch (Exception e) {
+			throw new ClsExceptions (e, "Error al ejecutar el 'select' en B.D."); 
+		}
+		return "buscarProcedimiento";
+	}	
+	
 	
 	/** 
 	 *  Funcion que implementa la accion borrar

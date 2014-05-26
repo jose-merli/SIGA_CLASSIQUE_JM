@@ -321,10 +321,11 @@
 	<!-- Incluido jquery en siga.js -->
 	
 	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js?v=${sessionScope.VERSIONJS}'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
-	<script type="text/javascript" src="<%=app%>/html/jsp/general/validacionSIGA.jsp"></script>
+	
 	<!-- validaciones struct -->
 	<html:javascript formName="ActuacionesDesignasForm" staticJavascript="false" />  
-	<script type="text/javascript" src="<%=app%>/html/js/validacionStruts.js"></script>
+	<script src="<%=app%>/html/js/validacionStruts.js" type="text/javascript"></script>
+	<script src="<%=app%>/html/jsp/general/validacionSIGA.jsp" type="text/javascript"></script>
 	<!-- fin validaciones struct -->
 
 	<script language="JavaScript">
@@ -352,16 +353,37 @@
 			}
 		}
 		
-		function traspasoDatos(resultado){
+		function obtenerProcedimiento() { 
+			if (document.getElementById("codigoBusquedaAux").value!= ""){
+				document.MantenimientoProcedimientosForm.codigoBusqueda.value = document.getElementById("codigoBusquedaAux").value;
+				document.MantenimientoProcedimientosForm.submit();		
+			 }
+			else {
+				document.getElementById("procedimiento").value=-1;			
+			}
+		}		
+		
+		function traspasoDatos(resultado){			
 			if (resultado[0]==undefined) {
 				document.getElementById("juzgado").value=-1;
 				document.getElementById("codigoExtJuzgado").value = "";
-			} 
-			else
+			} else {
 				document.getElementById("juzgado").value=resultado[0];
+			}
 			
 			bJuzgado=true;
 			document.getElementById("juzgado").onchange();
+		}
+		
+		function traspasoProcDatos(resultado){			
+			if (resultado[0]==undefined) {
+				document.forms[0].procedimiento.value=-1;
+				document.getElementById("codigoBusquedaAux").value = "";
+			} else {
+				var procSelect = jQuery("#procedimientoFrame").contents().find("select");
+				procSelect.val(resultado[0]);
+				procSelect.change();
+			}
 		}
 		
 		function cambiarJuzgado(comboJuzgado) {
@@ -603,6 +625,7 @@
 								<html:text name="ActuacionesDesignasForm" style="width:600px" property="procedimiento1" styleClass="boxConsulta" readOnly="true" value="<%=nombreProcedimiento%>"/>
 								
 							<%} else { %>				
+								<input type="text" id="codigoBusquedaAux" name="codigoBusquedaAux" class="box" size="8"  style="margin-top:0px;" maxlength="10" onBlur="obtenerProcedimiento();" />
 			                	<siga:ComboBD ancho="600" nombre="procedimiento" tipo="<%=comboModulos%>" estilo="true" clase="<%=estiloCombo%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false" readOnly="<%=readOnlyCombo%>" hijo="t"  elementoSel="<%=procedimientoSel%>" accion="Hijo:acreditacion" />
 							<%}%>
 						</td>
@@ -848,9 +871,14 @@
 </html:form>		
 	
    <html:form action = "/JGR_MantenimientoJuzgados.do" method="POST" target="submitArea">
-	<input type="hidden" name="modo"        value="buscarJuzgado">
-	<html:hidden property = "codigoExt2" value=""/>
-</html:form>	
+		<input type="hidden" name="modo"        value="buscarJuzgado">
+		<html:hidden property = "codigoExt2" value=""/>
+	</html:form>
+	
+	<html:form action = "/JGR_MantenimientoProcedimientos.do" method="POST" target="submitArea">
+		<input type="hidden" name="modo"        value="buscarProcedimiento">
+		<html:hidden property = "codigoBusqueda" value=""/>
+	</html:form>
 
 <% if (modoAnterior.equalsIgnoreCase("VER")) { %>
 	<siga:ConjBotonesAccion botones="C" modal="G"/>
