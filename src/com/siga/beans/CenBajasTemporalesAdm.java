@@ -309,15 +309,20 @@ public class CenBajasTemporalesAdm extends MasterBeanAdministrador {
 			int keyContador = 0;
 			StringBuffer select = new StringBuffer();
 			select.append(" SELECT * FROM CEN_BAJASTEMPORALES T ");
+			
 			select.append("  WHERE T.IDINSTITUCION = :");
 			keyContador++;
 			select.append(keyContador);
 			htCodigos.put(new Integer(keyContador), idInstitucion);
+			
 			select.append("    AND T.IDPERSONA = :");
 			keyContador++;
 			select.append(keyContador);
 			htCodigos.put(new Integer(keyContador), idColegiado);
 
+			//CR7 - INC_12375_SIGA: Solo se debe tener en cuenta una baja temporal si esta validada
+			select.append("    AND T.VALIDADO = 1");
+			
 			Vector datos = this.selectGenericoBind(select.toString(), htCodigos);
 
 			mSalida = new TreeMap<String, CenBajasTemporalesBean>();
