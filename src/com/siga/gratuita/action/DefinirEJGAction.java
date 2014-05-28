@@ -1848,6 +1848,8 @@ public class DefinirEJGAction extends MasterAction
 			// Hay que actualizarla. La borro con la clave adecuada
 			// anterior para el caso de que haya cambiado
 			
+			// jbd // Crisis de bloqueos de SCS_EJG
+			/* Quito el borrado de la UF que se hace sin sentido, ya que se acaba de crear el EJG
 				Hashtable borrar = new Hashtable();
 				borrar.put(ScsUnidadFamiliarEJGBean.C_IDINSTITUCION,hdatosEJG.get(ScsEJGBean.C_IDINSTITUCION).toString());
 				borrar.put(ScsUnidadFamiliarEJGBean.C_IDTIPOEJG,hdatosEJG.get(ScsEJGBean.C_IDTIPOEJG).toString());
@@ -1855,7 +1857,7 @@ public class DefinirEJGAction extends MasterAction
 				borrar.put(ScsUnidadFamiliarEJGBean.C_NUMERO,hdatosEJG.get(ScsEJGBean.C_NUMERO).toString());
 				borrar.put(ScsUnidadFamiliarEJGBean.C_IDPERSONA,personaJGBean.getIdPersona());
 				ufAdm.delete(borrar);
-					
+			*/		
 			
 			// Insert unidad familiar con los nuevos valores
 			if (!ufAdm.insert(unidadFamiliarBean)) {
