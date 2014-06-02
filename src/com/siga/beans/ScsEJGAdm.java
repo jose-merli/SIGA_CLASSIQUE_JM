@@ -6710,4 +6710,32 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 		
 		return salida;
 	}	
+	
+	public boolean actualizarProcuradoresEJG(Vector ejs, String idProcurador, String idInstProcurador) throws ClsExceptions {
+		boolean ok = true;
+		try {			
+			for (int  j = 0; j < ejs.size(); j++){				
+				Hashtable ejgProc = (Hashtable) ejs.get(j);		
+				
+				// HASH DE INSERCION para el nuevo
+				Hashtable hash = new Hashtable();
+				hash.put(ScsEJGBean.C_IDINSTITUCION,ejgProc.get(ScsEJGBean.C_IDINSTITUCION));
+				hash.put(ScsEJGBean.C_NUMERO,ejgProc.get(ScsEJGBean.C_NUMERO));
+				hash.put(ScsEJGBean.C_ANIO,ejgProc.get(ScsEJGBean.C_ANIO));
+				hash.put(ScsEJGBean.C_IDTIPOEJG,ejgProc.get(ScsEJGBean.C_IDTIPOEJG));
+				hash.put(ScsEJGBean.C_IDPROCURADOR,idProcurador);
+				hash.put(ScsEJGBean.C_IDINSTITUCIONPROCURADOR,idInstProcurador);
+				
+				String[] campos= {ScsEJGBean.C_IDPROCURADOR, ScsEJGBean.C_IDINSTITUCIONPROCURADOR};
+				
+				ok= this.updateDirect(hash, this.getClavesBean(), campos);
+				if (!ok) throw new ClsExceptions(this.getError());			
+			}
+			
+		}catch (Exception e) { 	
+			throw new ClsExceptions (e, "Error al ejecutar el 'select' en B.D."); 
+		}
+		
+		return ok;
+	}
 }

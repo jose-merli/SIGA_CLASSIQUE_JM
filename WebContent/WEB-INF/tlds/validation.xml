@@ -4106,9 +4106,7 @@
 
 	<!-- INICIO: CambiosLetradosDesignasForm raul.ggonzalez 3-3-2006  --> 
 	<form name="CambiosLetradosDesignasForm">
-	    <field property = "fechaDesigna" depends = "required">
-	        <arg0 key="gratuita.cambiosProcuradoresDesigna.literal.fechaDesigna"/>
-	    </field>
+
 	    <field property = "idPersona" depends = "required">
 	        <arg0 key="gratuita.modalCambioLetradoDesigna.titulo"/>
 	    </field>

@@ -101,6 +101,9 @@
 	}
 
 	</script>
+	
+	<bean:define id="datosProcuradoresEJGRel" name="datosProcuradoresEJGRel" scope="request" />
+	
 </head>
 
 <body onload="borraActual()">
@@ -123,7 +126,7 @@
 	<html:hidden name="CambiosProcuradoresDesignasForm" property = "anio"/>
 	<html:hidden name="CambiosProcuradoresDesignasForm" property = "numero"/>
 	<html:hidden name="CambiosProcuradoresDesignasForm" property = "idTurno"/>
-	
+	<html:hidden name="CambiosProcuradoresDesignasForm" property = "actualizaProcuradores" value = "0"/>	
 	<html:hidden property = "cambioMismoDia" value=""/>
 
 	<table  class="tablaCentralCamposMedia"  align="center">
@@ -276,6 +279,7 @@
 				return false;
 			}
 	 		<%}%> 
+	 		
 			// JBD 23-1-2009 Añadida comprobacion de seleccionadoProcurador INC-5643
 			if(seleccionadoProc){	
 				sub();
@@ -287,6 +291,16 @@
 						}else if (isEquals(document.forms[0].fechaDesigna.value,fechaActual)){
 						    if (confirm("<siga:Idioma key='messages.designa.confirmacion.igualdadFechas.procurador' />")) {	
 						    	document.CambiosProcuradoresDesignasForm.cambioMismoDia.value="1";						 
+						    	
+								if(document.getElementById("idProcurador").value != null && document.getElementById("idProcurador").value != '' && '${datosProcuradoresEJGRel}' != null && '${datosProcuradoresEJGRel}' != ''){
+									var type = "<siga:Idioma key="gratuita.cambiosProcuradoresDesigna.actualizar.procuradoresEJG"/>";
+									if(confirm(type)){				
+										document.CambiosProcuradoresDesignasForm.actualizaProcuradores.value = "1";
+									} else{
+										document.CambiosProcuradoresDesignasForm.actualizaProcuradores.value = "0";
+									}
+								}
+						    	
 							  	document.forms[0].modo.value="insertar";
 							  	document.forms[0].submit();
 							}else{
@@ -302,7 +316,17 @@
 									 fin();
 									 return false;
 							  }else{
-							    	document.forms[0].modo.value="insertar";
+								  
+									if(document.getElementById("idProcurador").value != null && document.getElementById("idProcurador").value != '' && '${datosProcuradoresEJGRel}' != null && '${datosProcuradoresEJGRel}' != ''){
+										var type = "<siga:Idioma key="gratuita.cambiosProcuradoresDesigna.actualizar.procuradoresEJG"/>";
+										if(confirm(type)){				
+											document.CambiosProcuradoresDesignasForm.actualizaProcuradores.value = "1";
+										} else{
+											document.CambiosProcuradoresDesignasForm.actualizaProcuradores.value = "0";
+										}
+									}	
+							    	
+								  	document.forms[0].modo.value="insertar";
 									document.forms[0].submit();								
 								}
 							}				

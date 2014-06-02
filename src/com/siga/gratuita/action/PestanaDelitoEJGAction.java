@@ -46,6 +46,7 @@ public class PestanaDelitoEJGAction extends MasterAction {
 		try {			
 			UsrBean usr=(UsrBean)request.getSession().getAttribute("USRBEAN");
 			ScsEJGAdm admBean =  new ScsEJGAdm(this.getUserBean(request));
+			ScsProcuradorAdm procuradorAdm = new ScsProcuradorAdm(this.getUserBean(request));
 			request.getSession().removeAttribute("DATABACKUP");
 			int valorPcajgActivo=CajgConfiguracion.getTipoCAJG(new Integer(usr.getLocation()));
 			request.setAttribute("PCAJG_ACTIVO", new Integer(valorPcajgActivo));
@@ -98,19 +99,27 @@ public class PestanaDelitoEJGAction extends MasterAction {
 			UtilidadesHash.set(ejg,"ANIO",anio);			
 			UtilidadesHash.set(ejg,"IDTIPOEJG",idTipoEJG);
 			
-			try {
-				ScsProcuradorAdm procuradorAdm = new ScsProcuradorAdm(this.getUserBean(request));
+			try {				
 				Hashtable h = new Hashtable();
 				UtilidadesHash.set(h, ScsProcuradorBean.C_IDPROCURADOR, idProcurador);
 				UtilidadesHash.set(h, ScsProcuradorBean.C_IDINSTITUCION, idInstitucionProcurador);
 				ScsProcuradorBean b = (ScsProcuradorBean)(procuradorAdm.select(h)).get(0);
 				UtilidadesHash.set(ejg,"PROCURADOR_NUM_COLEGIADO", b.getNColegiado());
 				UtilidadesHash.set(ejg,"PROCURADOR_NOMBRE_COMPLETO", b.getNombre() + " " + b.getApellido1() + " " + b.getApellido2());
+				
+			} catch (Exception e) {
+				
 			}
-			catch (Exception e) {}
 			
 			request.getSession().setAttribute("DATABACKUP",ejg);
 			
+			//CR7 - PROCURADORES DE DESIGNA RELACIONADA				
+			Vector procuradoresDES = procuradorAdm.getProcuradoresRelacionadosPorDesigna(usr.getLocation(), idTipoEJG, anio, numero);
+			if(procuradoresDES!=null && procuradoresDES.size() > 0){
+				request.setAttribute("ProcuradoresDES", procuradoresDES);
+			}else{
+				request.setAttribute("ProcuradoresDES", "");
+			}
 			
 			// Almaceno los parametros en el formulario:
 			miForm.setIdTipoEJG(new Integer(idTipoEJG));

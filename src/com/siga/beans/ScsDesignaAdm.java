@@ -4180,4 +4180,43 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 		}
 		return idJuzgado;                        
 	}
+	
+	public Vector getDatosProcuradoresEJGRelacionados(String idInstitucion, String numero, String idTurno, String anio) throws ClsExceptions {
+		Vector datos = null;
+
+		//SELECT
+		StringBuffer sql = new StringBuffer("SELECT ejg.idprocurador, ejg.idinstitucion_proc, ");
+		sql.append("  ejg.idtipoejg, ejg.idinstitucion, ejg.numero, ejg.numejg, ejg.anio      ");
+		
+		//FROM 
+		sql.append(" FROM scs_ejg             ejg,   ");
+		sql.append("      scs_designa         des,   ");
+		sql.append("      scs_ejgdesigna      ejgDes ");
+		
+		//WHERE
+		sql.append(" WHERE ejgDes.Aniodesigna 	= des.anio ");
+		sql.append("   AND ejgDes.Numerodesigna	= des.numero ");
+		sql.append("   AND ejgDes.Idturno 		= des.idturno ");
+		sql.append("   AND ejgDes.Idinstitucion = des.idinstitucion ");
+		sql.append("   AND ejgDes.Idinstitucion = ejg.idinstitucion ");
+		sql.append("   AND ejgDes.Anioejg 		= ejg.anio ");
+		sql.append("   AND ejgDes.Numeroejg 	= ejg.numero ");
+		sql.append("   AND ejgDes.Idtipoejg 	= ejg.idtipoejg ");
+		
+		//FILTROS
+		sql.append("   AND des.anio 		 = " + anio);
+		sql.append("   AND des.numero 		 = " + numero);
+		sql.append("   AND des.idturno 		 = " + idTurno);
+		sql.append("   AND des.idinstitucion = " + idInstitucion);
+		
+		try {
+			datos = this.ejecutaSelect(sql.toString());
+		
+		} catch (ClsExceptions e) {
+			throw new ClsExceptions(e,e.toString()); 
+		}
+
+		return datos;
+	}	
+	
 }

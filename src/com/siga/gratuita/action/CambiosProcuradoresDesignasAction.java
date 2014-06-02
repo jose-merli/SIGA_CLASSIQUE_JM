@@ -16,9 +16,11 @@ import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesHash;
+import com.siga.beans.ScsDesignaAdm;
 import com.siga.beans.ScsDesignaBean;
 import com.siga.beans.ScsDesignasProcuradorAdm;
 import com.siga.beans.ScsDesignasProcuradorBean;
+import com.siga.beans.ScsEJGAdm;
 import com.siga.beans.ScsProcuradorBean;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
@@ -283,7 +285,7 @@ public class CambiosProcuradoresDesignasAction extends MasterAction {
 				" and dp."+ScsDesignasProcuradorBean.C_IDINSTITUCION+"="+instit+//inc-5342 falta filtro por institucion
 				" and dp."+ScsDesignasProcuradorBean.C_FECHARENUNCIA+" is null ";
 			
-			ScsDesignasProcuradorAdm designaAdm = new ScsDesignasProcuradorAdm (this.getUserBean(request));
+			ScsDesignasProcuradorAdm designaAdm = new ScsDesignasProcuradorAdm (usr);
 			Vector vDesigna=(Vector)designaAdm.selectGenerico(consultaDesigna);
 			if(vDesigna!=null && vDesigna.size()>0){
 				Hashtable datos=(Hashtable)vDesigna.get(0);
@@ -297,6 +299,11 @@ public class CambiosProcuradoresDesignasAction extends MasterAction {
 			}
 			miform.setObservaciones("");
 			miform.setNumeroDesigna("");
+			
+			ScsDesignaAdm desAdm = new ScsDesignaAdm(usr);
+			Vector datosProcuradoresEJGRel = desAdm.getDatosProcuradoresEJGRelacionados(instit, numero, turno, anio);
+			request.setAttribute("datosProcuradoresEJGRel", datosProcuradoresEJGRel);
+			
 			
 		}catch(Exception e){
 			throwExcp("messages.general.error",new String[] {"modulo.gratuita"},e,null);
@@ -377,6 +384,17 @@ public class CambiosProcuradoresDesignasAction extends MasterAction {
 
 			// Se cierra la transacción
 			tx.commit();		
+			
+			//CR7 - Actualizamos el procurador a las designaciones relacionadas
+			if(miform.getActualizaProcuradores() != null && miform.getActualizaProcuradores().equals("1")){
+				ScsDesignaAdm desAdm = new ScsDesignaAdm(usr);
+				ScsEJGAdm ejgAdm = new ScsEJGAdm(usr);
+				Vector datosProcuradoresEJGRel = desAdm.getDatosProcuradoresEJGRelacionados(instit, numero, turno, anio);	
+				ejgAdm.actualizarProcuradoresEJG(datosProcuradoresEJGRel,miform.getAplIdProcurador(),miform.getAplInstitProcurador());
+			}			
+			
+		
+			
 			
 		}catch(Exception e){
 			throwExcp("messages.general.error", new String[] {"modulo.gratuita"}, e, tx); 

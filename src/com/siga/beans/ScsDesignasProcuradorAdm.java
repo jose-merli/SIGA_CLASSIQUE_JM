@@ -151,5 +151,44 @@ public class ScsDesignasProcuradorAdm extends MasterBeanAdministrador {
 		return datos;
 	}
 	
+	public boolean actualizarProcuradoresDesignas(Vector designaciones, String idProcurador, String idInstProcurador) throws ClsExceptions {
+		boolean ok = true;
+		try {			
+			for (int  j = 0; j < designaciones.size(); j++){				
+				Hashtable designaProc = (Hashtable) designaciones.get(j);
+				
+				// UPDATE DE MODIFICACION para el que actualmente estaba asignado
+				String sql = "UPDATE SCS_DESIGNAPROCURADOR "+
+							" SET FECHARENUNCIA = SYSDATE, MOTIVOSRENUNCIA = 'Cambio automatico registros relacionados' " +
+							" WHERE   IDINSTITUCION = " + designaProc.get(ScsDesignasProcuradorBean.C_IDINSTITUCION) + 
+								" AND IDTURNO = " + designaProc.get(ScsDesignasProcuradorBean.C_IDTURNO) +
+								" AND ANIO = " + designaProc.get(ScsDesignasProcuradorBean.C_ANIO) + 
+								" AND NUMERO = " + designaProc.get(ScsDesignasProcuradorBean.C_NUMERO) +
+								" AND FECHARENUNCIA IS NULL";
+				ok = this.updateSQL(sql);
+				if (!ok) throw new ClsExceptions(this.getError());
+				
+				// HASH DE INSERCION para el nuevo
+				Hashtable designaNueva = new Hashtable();
+				designaNueva.put(ScsDesignasProcuradorBean.C_IDINSTITUCION,designaProc.get(ScsDesignasProcuradorBean.C_IDINSTITUCION));
+				designaNueva.put(ScsDesignasProcuradorBean.C_IDTURNO,designaProc.get(ScsDesignasProcuradorBean.C_IDTURNO));
+				designaNueva.put(ScsDesignasProcuradorBean.C_NUMERO,designaProc.get(ScsDesignasProcuradorBean.C_NUMERO));
+				designaNueva.put(ScsDesignasProcuradorBean.C_ANIO,designaProc.get(ScsDesignasProcuradorBean.C_ANIO));
+				designaNueva.put(ScsDesignasProcuradorBean.C_IDPROCURADOR,idProcurador);
+				designaNueva.put(ScsDesignasProcuradorBean.C_IDINSTITUCION_PROC,idInstProcurador);
+				designaNueva.put(ScsDesignasProcuradorBean.C_FECHADESIGNA, "sysdate");		
+				designaNueva.put(ScsDesignasProcuradorBean.C_NUMERODESIGNACION,"");
+				designaNueva.put(ScsDesignasProcuradorBean.C_OBSERVACIONES,"");
+				
+				ok= this.insert(designaNueva);
+				if (!ok) throw new ClsExceptions(this.getError());			
+			}
+			
+		}catch (Exception e) { 	
+			throw new ClsExceptions (e, "Error al ejecutar el 'select' en B.D."); 
+		}
+		
+		return ok;
+	}
 		
 }

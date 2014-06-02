@@ -35,6 +35,7 @@ import com.siga.general.MasterForm;
 	String NIG = "";
 	String idProcurador="";
 	String idInstitucionProcurador="";
+	String actualizaProcuradores = "";
 
 	
 
@@ -387,6 +388,14 @@ import com.siga.general.MasterForm;
 
 	public void setAnioProcedimiento(String anioProcedimiento) {
 		this.anioProcedimiento = anioProcedimiento;
+	}
+
+	public String getActualizaProcuradores() {
+		return actualizaProcuradores;
+	}
+
+	public void setActualizaProcuradores(String actualizaProcuradores) {
+		this.actualizaProcuradores = actualizaProcuradores;
 	}
 	
 }

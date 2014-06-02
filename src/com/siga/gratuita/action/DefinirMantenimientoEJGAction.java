@@ -35,6 +35,7 @@ import com.siga.beans.ScsContrariosDesignaBean;
 import com.siga.beans.ScsDefendidosDesignaAdm;
 import com.siga.beans.ScsDefendidosDesignaBean;
 import com.siga.beans.ScsDesignaBean;
+import com.siga.beans.ScsDesignasProcuradorAdm;
 import com.siga.beans.ScsEJGAdm;
 import com.siga.beans.ScsEJGBean;
 import com.siga.beans.ScsEJGDESIGNAAdm;
@@ -531,7 +532,16 @@ public class DefinirMantenimientoEJGAction extends MasterAction
 				//admFiltros.crearCompensacion(idInstitucionSJCS,idTurnoSJCS,idGuardiaSJCS,idPersonaSJCS,checkCompensacion,motivoCompensacionSJCS);
 				///////////////////////////////////////////////////////////////////////////////////////////
 				
-				tx.commit();			
+				tx.commit();					
+				
+				//CR7 - Actualizamos el procurador a las designaciones relacionadas
+				if(miForm.getActualizaProcuradores() != null && miForm.getActualizaProcuradores().equals("1")){
+					ScsProcuradorAdm procuradorAdm = new ScsProcuradorAdm(usr);
+					ScsDesignasProcuradorAdm designasProcuradorAdm = new ScsDesignasProcuradorAdm(usr);
+					Vector designasProcuradorRelacionadas = procuradorAdm.getProcuradoresRelacionadosPorDesigna (idInstitucionSJCS, miForm.getIdTipoEJG(), miForm.getAnio(), miForm.getNumero());
+					designasProcuradorAdm.actualizarProcuradoresDesignas(designasProcuradorRelacionadas,miForm.getIdProcurador(),miForm.getIdInstitucionProcurador());
+				}
+				
 			}
 			catch (Exception e) 
 			{

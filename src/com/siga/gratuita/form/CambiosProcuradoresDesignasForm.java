@@ -31,6 +31,8 @@ public class CambiosProcuradoresDesignasForm extends MasterForm {
 	protected String institProcurador=ScsDesignasProcuradorBean.C_IDINSTITUCION_PROC;
 	protected String numeroDesigna=ScsDesignasProcuradorBean.C_NUMERODESIGNACION;
 	
+	private String actualizaProcuradores = "";
+	
 	//Metodos get de los campos del formulario
 	public String getAnio() {
 		return UtilidadesHash.getString(datos,anio);
@@ -155,6 +157,12 @@ public class CambiosProcuradoresDesignasForm extends MasterForm {
 	}
 	public void setObservaciones(String observaciones) {
 		UtilidadesHash.set(datos,this.observaciones,observaciones);
+	}
+	public String getActualizaProcuradores() {
+		return actualizaProcuradores;
+	}
+	public void setActualizaProcuradores(String actualizaProcuradores) {
+		this.actualizaProcuradores = actualizaProcuradores;
 	}
 
 }
