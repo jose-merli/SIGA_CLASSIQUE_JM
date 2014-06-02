@@ -233,7 +233,19 @@
 	<!-- Escribe el título y localización en la barra de título del frame principal -->
 	<siga:Titulo titulo="gratuita.EJG.delitosFaltas" localizacion="gratuita.busquedaEJG.localizacion"/>
 	<!-- FIN: TITULO Y LOCALIZACION -->
-	
+
+	<bean:define id="ProcuradoresDESVector" name="ProcuradoresDES" scope="request" />
+	<style>
+		.literalRelacion{display:inline-block;width:100px;padding:0px;padding-left:10px;}
+		.literalNombreProc{display:inline-block;width:67px;padding:0px}
+		.literalProc{display:inline-block;width:110px;padding:0px}
+		.ncol{display:inline-block;width:70px;padding:0px}
+		.designacion{display:inline-block;width:160px;padding:0px}
+		.nombreProc{display:inline-block;width:220px;padding:0px}
+		.botonera{display:inline-block;width:100px;padding:0px;text-align:right}
+		.toggleButton{display:inline-block;width:67px;padding:0px}
+		.botonDesplegar{cursor:pointer;width:16px;display:inline;padding:0;margin:0}
+	</style>	
 	<script>
 			function obtenerJuzgado() { 
 			  	if (document.getElementById("codigoExtJuzgado").value!=""){
@@ -338,6 +350,18 @@
 			jQuery("#nig2").mask("AAAAA AA A AAAA AAAAAAA");
 			jQuery("#nig2").keyup();	
 		});	
+		
+		function mostrarProcuradoresDES(){
+			jQuery('.contenedorProcOtros').show();		
+			jQuery("#botonToggleProc").html("<img src=\"<html:rewrite page='/html/imagenes/iconoOcultar.gif'/>\" onclick=\"ocultarProcuradoresDES();\" class=\"botonDesplegar\"/>");
+		}
+		
+		function ocultarProcuradoresDES(){
+			jQuery('.contenedorProcOtros').hide();
+			jQuery("#botonToggleProc").html("<img src=\"<html:rewrite page='/html/imagenes/iconoDesplegar.gif'/>\" onclick=\"mostrarProcuradoresDES();\" class=\"botonDesplegar\"/>");
+
+		}		
+		
 	</script>	
 </head>
 
@@ -379,6 +403,7 @@
 		<html:hidden property = "numeroDesignaProc" value="<%=numeroDesignaProc%>"/>
 		<html:hidden property = "idRenuncia" value="<%=idRenuncia%>"/>
 		<html:hidden property = "NIG" value="<%=nig%>"/>
+		<html:hidden property = "actualizaProcuradores" value="0"/>
 	</html:form>
 	
 	<html:form action="/CEN_BusquedaClientesModal.do" method="POST" target="submitArea" type=""  style="display:none">
@@ -785,86 +810,122 @@
 					
 					<tr>
 						<td colspan="6"> 
-							<siga:ConjCampos leyenda="gratuita.datosProcurador.literal.procurador">
-								<table  width="100%" border="0">
-									<tr>
-										<td class="labelText">
-<%--										<html:hidden name = "DefinirMantenimientoEJGForm" property = "procurador" value="<%=procuradorSel%>"/> --%>
-											<siga:Idioma key="gratuita.busquedaSOJ.literal.numeroColegidado"/>
-<%
-											if (obligatorioProcurador) {
-%>
-												<%=asterisco%> 
-<%
-											}
-%>
-										</td>
-										<td>
-											<input type="text" name="nColegiadoProcurador" id="nColegiadoProcurador" size="5" maxlength="100" class="boxConsulta" readOnly="true" value="<%=procuradorNumColegiado%>"/>
-										</td>
-										
-										<td  class="labelText" >
-											<siga:Idioma key="gratuita.busquedaSOJ.literal.nombre"/>
-										</td>
-										<td>
-											<input type="text" name="nombreCompleto" id="nombreCompleto" size="30" maxlength="100" class="boxConsulta" readOnly="true" value="<%=procuradorNombreCompleto%>"/>
-										</td>
-										
-										<td class="labelText">
-											<siga:Idioma key='gratuita.operarEJG.literal.numDesigProc'/>
-										</td>
-										<td>
-<%
-											if (modopestanha.equals("ver")) {
-%>
-					                        	<input type="text" class="boxConsulta" value="99" readOnly="true">
-<%
-											} else {
-%>
-											  	<input type="text" name="numDesignaProc" class="box" size="5" maxlength="20" value="<%=numeroDesignaProc%>">
-<%
-											}
-%>
-			                            </td>
-			                            
-			                            <td class="labelText">	
-			                             	<siga:Idioma key='gratuita.operarEJG.literal.fechaDesigProc'/>
-			                            </td>
-			                            <td>
-<%   
-											if (modopestanha.equals("ver")) {
-%>
-				                             	<input type="text" class="boxConsulta" value="<%=FECHAPROCURADOR%>" readOnly="true">
-<%	
-											} else { 
-%>
-			                             		<siga:Fecha nombreCampo="fechaProc1" valorInicial="<%=FECHAPROCURADOR%>" readOnly="true" />
-<%
-											}
-%>
-			                            </td>
-			                            
-										<td>
-<%
-											if(modopestanha.equals("editar")) {
-%>
-												<html:button property='idButton' onclick="return buscarProcurador();" styleClass="button"><siga:Idioma key="general.boton.search"/></html:button>
-<%
-											}
-%>
-										</td>
-										<td>
-<%
-											if(modopestanha.equals("editar")) {
-%>
-												<html:button property='idButton' onclick="return limpiarProcurador();" styleClass="button"><siga:Idioma key="general.boton.clear"/></html:button> 
-<%
-											}
-%>
-										</td>
-									</tr>									
-								</table>
-							</siga:ConjCampos>				
+						
+				<siga:ConjCampos leyenda="gratuita.datosProcurador.literal.procurador">
+					<table  width="100%" border="0">
+						<tr>
+
+							<td class="labelText">
+	<%--										<html:hidden name = "DefinirMantenimientoEJGForm" property = "procurador" value="<%=procuradorSel%>"/> --%>
+								<siga:Idioma key="gratuita.busquedaSOJ.literal.numeroColegidado"/>
+	<%
+								if (obligatorioProcurador) {
+	%>
+									<%=asterisco%> 
+	<%
+								}
+	%>
+							</td>
+							<td>
+								<input type="text" name="nColegiadoProcurador" id="nColegiadoProcurador" size="5" maxlength="100" class="boxConsulta" readOnly="true" value="<%=procuradorNumColegiado%>"/>
+							</td>
+							
+							<td  class="labelText" >
+								<siga:Idioma key="gratuita.busquedaSOJ.literal.nombre"/>
+							</td>
+							<td>
+								<input type="text" name="nombreCompleto" id="nombreCompleto" size="30" maxlength="100" class="boxConsulta" readOnly="true" value="<%=procuradorNombreCompleto%>"/>
+							</td>
+							
+							<td class="labelText">
+								<siga:Idioma key='gratuita.operarEJG.literal.numDesigProc'/>
+							</td>
+							<td>
+	<%
+								if (modopestanha.equals("ver")) {
+	%>
+		                        	<input type="text" class="boxConsulta" value="99" readOnly="true">
+	<%
+								} else {
+	%>
+								  	<input type="text" name="numDesignaProc" class="box" size="5" maxlength="20" value="<%=numeroDesignaProc%>">
+	<%
+								}
+	%>
+	                           </td>
+	                           
+	                           <td class="labelText">	
+	                            	<siga:Idioma key='gratuita.operarEJG.literal.fechaDesigProc'/>
+	                           </td>
+	                           <td>
+	<%   
+								if (modopestanha.equals("ver")) {
+	%>
+	                             	<input type="text" class="boxConsulta" value="<%=FECHAPROCURADOR%>" readOnly="true">
+	<%	
+								} else { 
+	%>
+	                            		<siga:Fecha nombreCampo="fechaProc1" valorInicial="<%=FECHAPROCURADOR%>" readOnly="true" />
+	<%
+								}
+	%>
+	                           </td>
+	                           
+							<td>
+	<%
+								if(modopestanha.equals("editar")) {
+	%>
+									<html:button property='idButton' onclick="return buscarProcurador();" styleClass="button"><siga:Idioma key="general.boton.search"/></html:button>
+	<%
+								}
+	%>
+							</td>
+							<td>
+	<%
+								if(modopestanha.equals("editar")) {
+	%>
+									<html:button property='idButton' onclick="return limpiarProcurador();" styleClass="button"><siga:Idioma key="general.boton.clear"/></html:button> 
+	<%
+								}
+	%>
+							</td>
+							
+						</tr> 
+						
+						<logic:notEmpty name="ProcuradoresDES" scope="request">						
+							<tr>
+								<td colspan="10">
+									<logic:iterate name="ProcuradoresDES" id="procurador" scope="request" indexId="index"> 
+										<logic:equal name="index" value="0">
+											<div class="contenedorPrimerProc">
+												<span class="labelText literalRelacion">Relacionados</span>
+												<span id="botonToggleProc" class="toggleButton"><img src="<html:rewrite page='/html/imagenes/iconoDesplegar.gif'/>" onclick="mostrarProcuradoresDES();" class="botonDesplegar"/></span>
+											</logic:equal>
+										<logic:notEqual name="index" value="0">
+											<div class="contenedorProcOtros" style="display:none">
+												<span class="labelText literalRelacion">&nbsp;</span>
+												<span class="toggleButton">&nbsp;</span>
+										</logic:notEqual>
+											<span class="labelText literalNombreProc"><siga:Idioma key='gratuita.busquedaSOJ.literal.nombre'/></span>
+											<span class="labelTextValue nombreProc">${procurador.NOMBRE}&nbsp;${procurador.APELLIDOS1}&nbsp; ${procurador.APELLIDOS2}</span>
+											<span class="labelText literalProc"><siga:Idioma key='gratuita.busquedaSOJ.literal.numeroColegidado'/></span>
+											<span class="labelTextValue ncol">${procurador.NCOLEGIADO}</span>
+											<span class="labelText literalProc"><siga:Idioma key='gratuita.busquedaDesignas.literal.Designacion'/></span>
+											<span class="labelTextValue designacion">${procurador.ANIO}/${procurador.CODIGO}</span>
+										</div>
+									</logic:iterate>
+									<script type="text/javascript">
+										if (jQuery('.contenedorProcOtros')[0]) {
+											jQuery("#botonToggleProc").show();
+										}else{
+											//jQuery("#botonToggleProc").hide();
+										}
+									</script>
+								  </td>
+								</tr>	
+							</logic:notEmpty>									
+						</table>
+						</siga:ConjCampos>		
 						</td>			
 					</tr>					
 				</table>
@@ -1072,6 +1133,16 @@
 			}
 			if(document.getElementById('info'))
 				jQuery('#info').hide();
+			
+			if(document.getElementById("idProcurador").value != null && document.getElementById("idProcurador").value != '' && '${ProcuradoresDESVector}' != null && '${ProcuradoresDESVector}' != ''){
+				var type = "<siga:Idioma key="gratuita.cambiosProcuradoresDesigna.actualizar.procuradores"/>";
+				if(confirm(type)){				
+					document.DefinirMantenimientoEJGForm.actualizaProcuradores.value = "1";
+				} else{
+					document.DefinirMantenimientoEJGForm.actualizaProcuradores.value = "0";
+				}
+			}			
+			
 			document.DefinirMantenimientoEJGForm.submit();
 			
 		} else  {
