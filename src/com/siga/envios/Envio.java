@@ -443,31 +443,51 @@ public EnvDestinatariosBean addDestinatario(String idPersona,String tipoDestinat
 			        destBean.setCodigoPostal(personaJGBean.getCodigoPostal());
 			        destBean.setCorreoElectronico(personaJGBean.getCorreoElectronico());
 			        destBean.setFax1(personaJGBean.getFax());
+			        
+			        //CR7 - Ahora esta gestión de telefonos depende del parametro ENVIAR_SMS_SOLO_PREFERENTE y ENVIAR_BUROSMS_SOLO_PREFERENTE
 			        Vector vTelefonos = personaJGBean.getTelefonos();
 			        if(vTelefonos!=null && vTelefonos.size()>0){
-			        	boolean bTienePreferenteSMS = false;
-				        for (int i = 0; i < vTelefonos.size(); i++) {
-				        	ScsTelefonosPersonaJGBean telefono = (ScsTelefonosPersonaJGBean)vTelefonos.get(i);
-				        	if(telefono.getpreferenteSms()!=null && telefono.getpreferenteSms().equals("1")){
-				        		bTienePreferenteSMS = true;
-				        		if (UtilidadesString.esNumMovilECOS(telefono.getNumeroTelefono())){
-					        		destBean.setMovil(telefono.getNumeroTelefono());
-					        		break;
-				        		}
-				        	}
-				        	//BEGIN BNS INC_09399_SIGA
-				        	else if (!bTienePreferenteSMS){
-				        		//Buscamos si existe algún teléfono que parezca movil aunque no tenga el preferenteSMS
-				        		if (UtilidadesString.esNumMovilECOS(telefono.getNumeroTelefono())){
-				        			destBean.setMovil(telefono.getNumeroTelefono());
-				        		}
-				        	}
-				        	// END BNS INC_09399_SIGA
-						}
+				        GenParametrosAdm admParametros = new GenParametrosAdm(usrBean);
+				        String activoParamSMS = "0";
+				        if(enviosBean.getIdTipoEnvios() == EnvEnviosAdm.TIPO_SMS ){
+				        	activoParamSMS = admParametros.getValor(enviosBean.getIdInstitucion().toString(), "SCS", "ENVIAR_SMS_SOLO_PREFERENTES", "0");
+				        } else if(enviosBean.getIdTipoEnvios() == EnvEnviosAdm.TIPO_BUROSMS ){
+				        	activoParamSMS = admParametros.getValor(enviosBean.getIdInstitucion().toString(), "SCS", "ENVIAR_BUROSMS_SOLO_PREFERENTES", "0");
+				        }
 				        
+				        if (activoParamSMS.equals("1")) { //Si el parametro es 1 solo se enviaran los marcados
+					        for (int i = 0; i < vTelefonos.size(); i++) {
+					        	ScsTelefonosPersonaJGBean telefono = (ScsTelefonosPersonaJGBean)vTelefonos.get(i);
+					        	if(telefono.getpreferenteSms()!=null && telefono.getpreferenteSms().equals("1")){
+					        		if (UtilidadesString.esNumMovilECOS(telefono.getNumeroTelefono())){
+						        		destBean.setMovil(telefono.getNumeroTelefono());
+						        		break;
+					        		}
+					        	}
+							}
+				        	
+				        } else if (activoParamSMS.equals("0")) { //Si el parametro es 0 se genstionará como se hacia anteriormente			        
+				        	boolean bTienePreferenteSMS = false;
+					        for (int i = 0; i < vTelefonos.size(); i++) {
+					        	ScsTelefonosPersonaJGBean telefono = (ScsTelefonosPersonaJGBean)vTelefonos.get(i);
+					        	if(telefono.getpreferenteSms()!=null && telefono.getpreferenteSms().equals("1")){
+					        		bTienePreferenteSMS = true;
+					        		if (UtilidadesString.esNumMovilECOS(telefono.getNumeroTelefono())){
+						        		destBean.setMovil(telefono.getNumeroTelefono());
+						        		break;
+					        		}
+					        	}
+					        	//BEGIN BNS INC_09399_SIGA
+					        	else if (!bTienePreferenteSMS){
+					        		//Buscamos si existe algún teléfono que parezca movil aunque no tenga el preferenteSMS
+					        		if (UtilidadesString.esNumMovilECOS(telefono.getNumeroTelefono())){
+					        			destBean.setMovil(telefono.getNumeroTelefono());
+					        		}
+					        	}
+					        	// END BNS INC_09399_SIGA
+							}
+				        }
 			        }
-			        
-	    			
 	    			
 	    			
 	    		}else if(tipoDestinatario.equals(EnvDestinatariosBean.TIPODESTINATARIO_SCSPROCURADOR)){
