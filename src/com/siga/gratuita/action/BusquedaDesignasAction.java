@@ -1529,7 +1529,7 @@ public class BusquedaDesignasAction extends MasterAction {
 
 
 				if (paginador!=null){	
-					if (pagina!=null){
+					if (pagina!=null && !pagina.equals("")){
 						datos = paginador.obtenerPagina(Integer.parseInt(pagina));
 					}else{// cuando hemos editado un registro de la busqueda y volvemos a la paginacion
 						datos = paginador.obtenerPagina((paginador.getPaginaActual()));
