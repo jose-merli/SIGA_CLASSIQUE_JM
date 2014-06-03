@@ -66,6 +66,7 @@ public class CenMandatosCuentasBancariasAdm extends MasterBeanAdministrador {
 	private String sqlMandatosWhere = " WHERE CUENTAS." + CenCuentasBancariasBean.C_IDINSTITUCION + " = MANDATOS." + CenMandatosCuentasBancariasBean.C_IDINSTITUCION +
 										" AND CUENTAS." + CenCuentasBancariasBean.C_IDPERSONA + " = MANDATOS." + CenMandatosCuentasBancariasBean.C_IDPERSONA +
 										" AND CUENTAS." + CenCuentasBancariasBean.C_IDCUENTA + " = MANDATOS." + CenMandatosCuentasBancariasBean.C_IDCUENTA +
+										" AND CUENTAS." + CenCuentasBancariasBean.C_FECHABAJA + " IS NULL" +
 										" AND BANCOS." + CenBancosBean.C_CODIGO + " = CUENTAS." + CenCuentasBancariasBean.C_CBO_CODIGO;	
 						
 	public CenMandatosCuentasBancariasAdm(UsrBean usuario) {
