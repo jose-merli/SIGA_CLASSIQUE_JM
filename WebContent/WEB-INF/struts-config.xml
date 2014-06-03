@@ -54,6 +54,7 @@
 		<form-bean name="facturasClienteForm" type="com.siga.censo.form.FacturasClienteForm"/>
 		<form-bean name="SancionesLetradoForm" type="com.siga.censo.form.SancionesLetradoForm"/>
 		<form-bean name="MantenimientoDuplicadosForm" type="com.siga.censo.form.MantenimientoDuplicadosForm"/>
+		<form-bean name="mantenimientoMandatosForm" type="com.siga.censo.form.MantenimientoMandatosForm"/>
 		
 		<!-- ************************** FORMS WEBSERVICECENSO *************************
 -->		
@@ -562,6 +563,12 @@
 			<forward name="resultadoAvanzada" path="/html/jsp/censo/ResultadoBusquedaClientesAvanzada.jsp"/>
 			<forward name="administracion" path="/html/jsp/censo/AdministracionClientes.jsp"/>
 			<forward name="generaExcel" path="/SIGASvlVectorToClientFile.svrl"/>
+		</action>
+		
+		<action path="/CEN_MantenimientoMandatos" type="com.siga.censo.action.MantenimientoMandatosAction" name="mantenimientoMandatosForm" scope="session">
+			<forward name="inicio" path="/html/jsp/censo/BusquedaMandatos.jsp"/>
+			<forward name="resultado" path="/html/jsp/censo/ResultadoBusquedaMandatos.jsp"/>
+			<forward name="generaExcel" path="/SIGASvlVectorToClientFile.svrl"/>		
 		</action>
 
 		<!-- ***** Censo / Busqueda modal ***** -->
