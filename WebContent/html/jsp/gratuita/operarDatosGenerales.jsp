@@ -358,14 +358,14 @@ String informeUnico =(String) request.getAttribute("informeUnico");
 		<%if (accion.equalsIgnoreCase("ver")){%>
 			<textarea name="descripcionConsulta" cols="70" rows="<%=rows%>" readonly="true" class="boxConsulta"><%=consulta%></textarea>
 		<%} else {%>
-			<textarea name="descripcionConsulta" onKeyDown="cuenta(this,1024)" onChange="cuenta(this,1024)" cols="70" rows="<%=rows%>" class="box"><%=consulta%></textarea>
+			<textarea name="descripcionConsulta" onKeyDown="cuenta(this,4000)" onChange="cuenta(this,4000)" cols="70" rows="<%=rows%>" class="box"><%=consulta%></textarea>
 		<%}%>
 	</td>
 	<td class="labelText"  colspan="2">
 		<%if (accion.equalsIgnoreCase("ver")){%>
 			<textarea name="respuestaLetrado" cols="70" rows="<%=rows%>" readonly="true" class="boxConsulta"><%=respuesta%></textarea>
 		<%} else {%>
-			<textarea name="respuestaLetrado" onKeyDown="cuenta(this,1024)" onChange="cuenta(this,1024)" cols="70" rows="<%=rows%>" class="box"><%=respuesta%></textarea>
+			<textarea name="respuestaLetrado" onKeyDown="cuenta(this,4000)" onChange="cuenta(this,4000)" cols="70" rows="<%=rows%>" class="box"><%=respuesta%></textarea>
 		<%}%>
 	</td>
 	</tr>
@@ -589,8 +589,8 @@ String informeUnico =(String) request.getAttribute("informeUnico");
 			sub();
 			var descripcionConsulta = document.forms[0].descripcionConsulta.value;
 			var respuestaLetrado = document.forms[0].respuestaLetrado.value;
-			if (descripcionConsulta.length <= 1024) {
-				if (respuestaLetrado.length <= 1024) {
+			if (descripcionConsulta.length <= 4000) {
+				if (respuestaLetrado.length <= 4000) {
 					//if (validateDatosGeneralesSOJForm(document.forms[0])){
 					    var datosTurno =  document.forms[0].identificador.value.split(",");
 						if (datosTurno!=""){
