@@ -22,21 +22,16 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
-import weblogic.wtc.jatmi.viewjCompiler;
-
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.UsrBean;
-import com.siga.Utilidades.UtilidadesFecha;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.Utilidades.paginadores.Paginador;
-import com.siga.beans.CenClienteBean;
 import com.siga.beans.CenColegiadoAdm;
 import com.siga.beans.CenInstitucionAdm;
 import com.siga.beans.CenMandatosAdm;
 import com.siga.beans.CenNoColegiadoAdm;
 import com.siga.beans.EnvEnviosAdm;
-import com.siga.beans.GenParametrosAdm;
 import com.siga.censo.form.MantenimientoMandatosForm;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
