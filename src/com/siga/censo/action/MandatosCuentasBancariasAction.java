@@ -288,6 +288,8 @@ public class MandatosCuentasBancariasAction extends MasterAction{
 			UsrBean usuario = (UsrBean) request.getSession().getAttribute("USRBEAN");
 			CenMandatosCuentasBancariasAdm mandatosAdm = new CenMandatosCuentasBancariasAdm(usuario);
 			beanMandato = mandatosAdm.obtenerMandato(beanMandato);
+			//pasamos si es obligatorio el archivo
+			request.setAttribute("fileRequired", false);
 			try {
 				String permisoFicheros = testAccess(request.getContextPath()+"/CEN_MandatosCuentasBancarias.do",null,request);
 				request.setAttribute("permisoFicheros", permisoFicheros);

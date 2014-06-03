@@ -111,7 +111,8 @@ public class DefinirDocumentacionAsistenciaAction extends MasterAction {
 			miForm.setModo("modificar");
 			request.setAttribute("DefinirDocumentacionAsistenciaForm",miForm);
 			request.setAttribute("accionModo", "editar");
-
+			//pasamos si es obligatorio el archivo
+			request.setAttribute("fileRequired", false);
 			try {
 				String permisoFicheros = testAccess(request.getContextPath()+"/JGR_DocumentacionAsistencia.do",null,request);
 				request.setAttribute("permisoFicheros", permisoFicheros);
@@ -166,7 +167,8 @@ public class DefinirDocumentacionAsistenciaAction extends MasterAction {
 			request.setAttribute("DefinirDocumentacionAsistenciaForm",miForm);
 
 			request.setAttribute("accionModo", "ver");
-			
+			//pasamos si es obligatorio el archivo
+			request.setAttribute("fileRequired", false);
 			try {
 				String permisoFicheros = testAccess(request.getContextPath()+"/JGR_DocumentacionAsistencia.do",null,request);
 				request.setAttribute("permisoFicheros", permisoFicheros);
@@ -215,7 +217,8 @@ public class DefinirDocumentacionAsistenciaAction extends MasterAction {
 			request.setAttribute("idTipoDocumentoSelected",new ArrayList<String>() );
 			request.setAttribute("accionModo", "editar");
 			miForm.setModo("insertar");
-			
+			//pasamos si es obligatorio el archivo
+			request.setAttribute("fileRequired", false);
 			try {
 				String permisoFicheros = testAccess(request.getContextPath()+"/JGR_DocumentacionAsistencia.do",null,request);
 				request.setAttribute("permisoFicheros", permisoFicheros);

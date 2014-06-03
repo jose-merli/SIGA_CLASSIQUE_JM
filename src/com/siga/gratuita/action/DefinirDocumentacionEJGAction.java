@@ -133,7 +133,8 @@ public class DefinirDocumentacionEJGAction extends MasterAction {
 			request.setAttribute("idDocumentoSelected",idDocumentoSelected );
 			request.setAttribute("accionModo", "editar");
 
-
+			//pasamos si es obligatorio el archivo
+			request.setAttribute("fileRequired", false);
 			try {
 				String permisoFicheros = testAccess(request.getContextPath()+"/JGR_FicherosDocumentacionEjg.do",null,request);
 				request.setAttribute("permisoFicheros", permisoFicheros);
@@ -198,7 +199,8 @@ public class DefinirDocumentacionEJGAction extends MasterAction {
 			
 			
 			request.setAttribute("accionModo", "ver");
-			
+			//pasamos si es obligatorio el archivo
+			request.setAttribute("fileRequired", false);
 			try {
 				String permisoFicheros = testAccess(request.getContextPath()+"/JGR_FicherosDocumentacionEjg.do",null,request);
 				request.setAttribute("permisoFicheros", permisoFicheros);
@@ -262,6 +264,8 @@ public class DefinirDocumentacionEJGAction extends MasterAction {
 			request.setAttribute("idDocumentoSelected",new ArrayList<String>() );
 			request.setAttribute("accionModo", "editar");
 			miForm.setModo("insertar");
+			//pasamos si es obligatorio el archivo
+			request.setAttribute("fileRequired", false);
 			try {
 				String permisoFicheros = testAccess(request.getContextPath()+"/JGR_FicherosDocumentacionEjg.do",null,request);
 				request.setAttribute("permisoFicheros", permisoFicheros);
@@ -420,6 +424,10 @@ public class DefinirDocumentacionEJGAction extends MasterAction {
 			DocumentacionEjgVo documentacionEjgVo = voService.getForm2Vo(definirDocumentacionEJGForm);
 			
 			documentacionEjgService.borrar(documentacionEjgVo);
+			if(documentacionEjgVo.getIdfichero()!=null){
+				documentacionEjgService.deleteFile(documentacionEjgVo);
+			}
+			
 			
 			
 
@@ -569,7 +577,12 @@ public class DefinirDocumentacionEJGAction extends MasterAction {
 			VoUiService<DefinirDocumentacionEJGForm, DocumentacionEjgVo> voService = new DocumentacionEjgVoService();		
 			DocumentacionEjgVo documentacionEjgVo = voService.getForm2Vo(definirDocumentacionEJGForm);
 			documentacionEjgVo.setUsumodificacion(Integer.parseInt(usr.getUserName()));
+			Long idFicheroOld = documentacionEjgVo.getIdfichero();
 			documentacionEjgService.borrarFichero(documentacionEjgVo);
+			documentacionEjgVo.setIdfichero(idFicheroOld);
+			if(idFicheroOld!=null)
+				documentacionEjgService.deleteFile(documentacionEjgVo);
+			
 
 		} catch (Exception e) {
 			throwExcp("messages.general.error", new String[] { "modulo.gratuita" }, e, null);

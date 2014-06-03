@@ -119,7 +119,8 @@ public class AnexosCuentasBancariasAction extends MasterAction{
 				CenAnexosCuentasBancariasAdm anexosAdm = new CenAnexosCuentasBancariasAdm(usuario);
 				beanAnexo = anexosAdm.obtenerAnexo(beanAnexo);				
 			}
-			
+			//pasamos si es obligatorio el archivo
+			request.setAttribute("fileRequired", false);
 			try {
 				String permisoFicheros = testAccess(request.getContextPath()+"/CEN_MandatosCuentasBancarias.do",null,request);
 				request.setAttribute("permisoFicheros", permisoFicheros);
