@@ -437,10 +437,10 @@ public class DocumentosAction extends MasterAction
 		    
 	    	//CR7-INC_10354_SIGA. Comprobamos que el tamaño del archivo no supere cierto tamaño (en principio 5MB)
         	ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
-			String maxsize = rp.returnProperty(AppConstants.GEN_PROPERTIES.ficheros_maxsize_bytes.getValor());
-			if(theFile!=null && form.getTheFile().getFileSize()>Integer.parseInt(maxsize)){				
-				
-				throw new SIGAException("messages.general.file.maxsize",new String[] { maxsize });
+			String maxsize = rp.returnProperty(AppConstants.GEN_PROPERTIES.ficheros_maxsize_MB.getValor());
+			int maxSizebytes = Integer.parseInt(maxsize) * 1000 * 1024;
+			if(theFile!=null && form.getTheFile().getFileSize() > maxSizebytes){				
+				throw new SIGAException("messages.general.file.maxsize",new String[] { (maxsize) });
 			}
 			
 	        EnvDocumentosAdm docAdm = new EnvDocumentosAdm(this.getUserBean(request));

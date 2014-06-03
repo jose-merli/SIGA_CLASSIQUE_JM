@@ -352,10 +352,12 @@ public class MandatosCuentasBancariasAction extends MasterAction{
 			MandatosCuentasBancariasForm formMandato = (MandatosCuentasBancariasForm) formulario;
 			
 			ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
-			String maxsize = rp.returnProperty(AppConstants.GEN_PROPERTIES.ficheros_maxsize_bytes.getValor());
-			if(formMandato.getTheFile()!=null && formMandato.getTheFile().getFileSize()>Integer.parseInt(maxsize)){
-				throw new SIGAException("messages.general.file.maxsize",new String[] { maxsize });
-			}
+			String maxsize = rp.returnProperty(AppConstants.GEN_PROPERTIES.ficheros_maxsize_MB.getValor());
+			int maxSizebytes = Integer.parseInt(maxsize) * 1000 * 1024;
+			if(formMandato.getTheFile()!=null && formMandato.getTheFile().getFileSize() > maxSizebytes){				
+				throw new SIGAException("messages.general.file.maxsize",new String[] { (maxsize) });
+			}			
+
 			// Relleno el bean con los datos del formulario
 			CenMandatosCuentasBancariasBean beanMandato = new CenMandatosCuentasBancariasBean(formMandato);
 			

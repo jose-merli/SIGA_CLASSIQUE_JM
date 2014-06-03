@@ -178,11 +178,12 @@ public class AnexosCuentasBancariasAction extends MasterAction{
 			// Obtengo los datos del formulario
 			AnexosCuentasBancariasForm formAnexo = (AnexosCuentasBancariasForm) formulario;
 			
-			ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
-			String maxsize = rp.returnProperty(AppConstants.GEN_PROPERTIES.ficheros_maxsize_bytes.getValor());
-			if(formAnexo.getTheFile()!=null && formAnexo.getTheFile().getFileSize()>Integer.parseInt(maxsize)){
-				throw new SIGAException("messages.general.file.maxsize",new String[] { maxsize });
-			}
+			ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);			
+			String maxsize = rp.returnProperty(AppConstants.GEN_PROPERTIES.ficheros_maxsize_MB.getValor());
+			int maxSizebytes = Integer.parseInt(maxsize) * 1000 * 1024;
+			if(formAnexo.getTheFile()!=null && formAnexo.getTheFile().getFileSize() > maxSizebytes){				
+				throw new SIGAException("messages.general.file.maxsize",new String[] { (maxsize) });
+			}			
 			
 			// Transformo los datos del formulario en un bean
 			CenAnexosCuentasBancariasBean beanAnexo = new CenAnexosCuentasBancariasBean(formAnexo);
@@ -230,9 +231,10 @@ public class AnexosCuentasBancariasAction extends MasterAction{
 			anexosAdm.insertarFirmaAnexo(beanAnexo);
 			
 			ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
-			String maxsize = rp.returnProperty(AppConstants.GEN_PROPERTIES.ficheros_maxsize_bytes.getValor());
-			if(formAnexo.getTheFile()!=null && formAnexo.getTheFile().getFileSize()>Integer.parseInt(maxsize)){
-				throw new SIGAException("messages.general.file.maxsize",new String[] { maxsize });
+			String maxsize = rp.returnProperty(AppConstants.GEN_PROPERTIES.ficheros_maxsize_MB.getValor());
+			int maxSizebytes = Integer.parseInt(maxsize) * 1000 * 1024;
+			if(formAnexo.getTheFile()!=null && formAnexo.getTheFile().getFileSize() > maxSizebytes){				
+				throw new SIGAException("messages.general.file.maxsize",new String[] { (maxsize) });
 			}			
 
 			// Cargo el nuevo identificador del anexo

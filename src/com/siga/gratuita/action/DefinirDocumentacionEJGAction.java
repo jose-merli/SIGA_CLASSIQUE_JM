@@ -290,11 +290,14 @@ public class DefinirDocumentacionEJGAction extends MasterAction {
 			UsrBean usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
 			DefinirDocumentacionEJGForm definirDocumentacionEJGForm = (DefinirDocumentacionEJGForm) formulario;
 			ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
-			String maxsize = rp.returnProperty(AppConstants.GEN_PROPERTIES.ficheros_maxsize_bytes.getValor());
-			if(definirDocumentacionEJGForm.getTheFile()!=null && definirDocumentacionEJGForm.getTheFile().getFileSize()>Integer.parseInt(maxsize)){
-				
-				throw new SIGAException("messages.general.file.maxsize",new String[] { maxsize });
+			
+			String maxsize = rp.returnProperty(AppConstants.GEN_PROPERTIES.ficheros_maxsize_MB.getValor());
+			int maxSizebytes = Integer.parseInt(maxsize) * 1000 * 1024;
+			if(definirDocumentacionEJGForm.getTheFile()!=null && definirDocumentacionEJGForm.getTheFile().getFileSize() > maxSizebytes){				
+				throw new SIGAException("messages.general.file.maxsize",new String[] { (maxsize) });
 			}
+			
+		
 			
 			BusinessManager bm = getBusinessManager();
 			DocumentacionEjgService documentacionEjgService = (DocumentacionEjgService) bm.getService(DocumentacionEjgService.class);
@@ -354,11 +357,11 @@ public class DefinirDocumentacionEJGAction extends MasterAction {
 			//Subimos primero el fichero
 			if(documentacionEjgVo.getFichero()!=null){
 				ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
-				String maxsize = rp.returnProperty(AppConstants.GEN_PROPERTIES.ficheros_maxsize_bytes.getValor());
-				if(definirDocumentacionEJGForm.getTheFile()!=null && definirDocumentacionEJGForm.getTheFile().getFileSize()>Integer.parseInt(maxsize)){
-					
-					throw new SIGAException("messages.general.file.maxsize",new String[] { maxsize });
-				}
+				String maxsize = rp.returnProperty(AppConstants.GEN_PROPERTIES.ficheros_maxsize_MB.getValor());
+				int maxSizebytes = Integer.parseInt(maxsize) * 1000 * 1024;
+				if(definirDocumentacionEJGForm.getTheFile()!=null && definirDocumentacionEJGForm.getTheFile().getFileSize() > maxSizebytes){				
+					throw new SIGAException("messages.general.file.maxsize",new String[] { (maxsize) });
+				}				
 				
 				documentacionEjgService.uploadFile(documentacionEjgVo);
 				documentacionEjgService.updateSelective(documentacionEjgVo);
