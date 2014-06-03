@@ -506,7 +506,7 @@
 		<!-- Funcion asociada a boton buscar -->
 		function buscar() 
 		{ 
-			
+
 			var nigAux = document.getElementById("nig2").value;
 			nigAux = formateaNig(nigAux);
 			
@@ -585,7 +585,7 @@
 	</script>
 	<%
 		// para el boton volver
-		if(buscar) %><script>buscarPaginador();</script>
+		if(buscar) %><script>buscar();</script>
 	
 	<!-- INICIO: BOTONES BUSQUEDA -->	
 	<!-- FIN: BOTONES BUSQUEDA -->
