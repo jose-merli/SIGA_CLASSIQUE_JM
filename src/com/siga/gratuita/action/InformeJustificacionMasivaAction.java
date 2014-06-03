@@ -609,6 +609,11 @@ public class InformeJustificacionMasivaAction extends MasterAction {
 		
 		String activarDescargaResolucionLetrado = paramAdm.getValor (usrBean.getLocation (), ClsConstants.MODULO_SJCS, ClsConstants.GEN_PARAM_ACTIVAR_DESCARGA_RESOLUCION_EJG, "0");
 		boolean isResolucionLetradoActivo = informeBeans!=null && informeBeans.size()>0 && activarDescargaResolucionLetrado!=null && activarDescargaResolucionLetrado.equals(ClsConstants.DB_TRUE);
+		String activarSubidaJustificacion = paramAdm.getValor (usrBean.getLocation (), ClsConstants.MODULO_SJCS, ClsConstants.GEN_PARAM_ACTIVAR_SUBIDA_JUSTIFICACION_DESIGNA, "0");
+		boolean isActivarSubidaJustificacion = activarSubidaJustificacion!=null && activarSubidaJustificacion.equals(ClsConstants.DB_TRUE);
+		request.setAttribute("subidaJustificacionesActiva", isActivarSubidaJustificacion);
+		
+		
 		
 		informeBeans=admInformeAdm.obtenerInformesTipo(usrBean.getLocation(),EnvioInformesGenericos.comunicacionesDesigna,null, "C");
 		String informeUnicoOficio = ClsConstants.DB_TRUE;

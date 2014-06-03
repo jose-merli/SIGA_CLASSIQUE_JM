@@ -701,7 +701,36 @@ function downloadInformesOficio(idInstitucion,anio,idTurno,numero) {
 	
    	
 }		
+function accionDescargaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,numeroActuacion) 
+{	
+	
+	document.forms['DefinirDocumentacionDesignaForm'].anio.value = anio;
+	document.forms['DefinirDocumentacionDesignaForm'].idTurno.value = idTurno;
+	document.forms['DefinirDocumentacionDesignaForm'].numero.value = numero;
+	document.forms['DefinirDocumentacionDesignaForm'].idActuacion.value = numeroActuacion;
+	document.forms['DefinirDocumentacionDesignaForm'].idInstitucion.value = idInstitucion;
+	document.forms['DefinirDocumentacionDesignaForm'].modo.value = "downloadFicheros";
+	document.forms['DefinirDocumentacionDesignaForm'].target = "submitArea";
+	document.forms['DefinirDocumentacionDesignaForm'].submit();
 
+	
+}
+function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,numeroActuacion) 
+{	
+	
+	document.forms['DefinirDocumentacionDesignaForm'].anio.value = anio;
+	document.forms['DefinirDocumentacionDesignaForm'].idTurno.value = idTurno;
+	document.forms['DefinirDocumentacionDesignaForm'].numero.value = numero;
+	document.forms['DefinirDocumentacionDesignaForm'].idActuacion.value = numeroActuacion;
+	document.forms['DefinirDocumentacionDesignaForm'].idInstitucion.value = idInstitucion;
+	document.forms['DefinirDocumentacionDesignaForm'].modo.value = "nuevo";
+	document.forms['DefinirDocumentacionDesignaForm'].target = "mainPestanas";
+	var resultado=ventaModalGeneral(document.forms['DefinirDocumentacionDesignaForm'].name,"M");
+	if(resultado=='MODIFICADO') 
+		refrescarLocal();
+
+	
+}
 
 </script>
 </head>
@@ -839,6 +868,9 @@ function downloadInformesOficio(idInstitucion,anio,idTurno,numero) {
 	<bean:define id="permitirBotones" name="permitirBotones"
 		scope="request"></bean:define>
 	<bean:define id="editarDesignaLetrados" name="EDITAR_DESIGNA_LETRADOS"
+		scope="request"></bean:define>
+		
+	<bean:define id="subidaJustificacionesActiva" name="subidaJustificacionesActiva"
 		scope="request"></bean:define>
 	<bean:define id="resolucionLetradoActivo" name="resolucionLetradoActivo"
 		scope="request"></bean:define>
@@ -1435,7 +1467,52 @@ function downloadInformesOficio(idInstitucion,anio,idTurno,numero) {
 															<td>&nbsp;</td>
 														</c:otherwise>
 													</c:choose>
-													<td><c:out value="${actuacion.numero}" /></td>
+													<td>
+														<table>
+															<tr>
+															
+															
+															
+															<c:choose>
+																<c:when test="${actuacion.documentoJustificacion&&subidaJustificacionesActiva}">
+																<td style="text-align: left;  font-size: 13px;">
+																<c:out value="${actuacion.numero}" /></td>
+																<td>
+																<img id="iconoboton_download1" 
+																		src="/SIGA/html/imagenes/bdownload_off.gif" style="cursor:pointer;" 
+																		alt="Descargar" name="iconoFila" title="Descargar" border="0" 
+																		onClick="accionDescargaDocumentacionActuacion(${designa.anio},${designa.idTurno},${designa.numero},${designa.idInstitucion},${actuacion.numero})" 
+																		onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('download_1','','/SIGA/html/imagenes/bdownload_on.gif',1)">
+																
+																</td>
+																	
+																
+																</c:when>
+																
+																
+																
+																<c:when test="${!actuacion.documentoJustificacion&&subidaJustificacionesActiva}">
+																	<td style="text-align: left;  font-size: 13px;">
+																	<c:out value="${actuacion.numero}" /></td>
+																	<td>
+																		<img id="iconoboton_nuevaDocuemntacion" 
+																		src="/SIGA/html/imagenes/bupload.gif" style="cursor:pointer;" 
+																		alt="Nueva Documentacion" name="iconoFila" title="Nueva Documentacion" border="0" 
+																		onClick="accionNuevaDocumentacionActuacion(${designa.anio},${designa.idTurno},${designa.numero},${designa.idInstitucion},${actuacion.numero})" 
+																		onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('iconoboton_nuevaDocuemntacion','','/SIGA/html/imagenes/binsertarestado_on.gif',1)">
+																	</td>
+																</c:when>
+																<c:otherwise>
+																<td style="text-align: left;  font-size: 13px;">
+																	<c:out value="${actuacion.numero}" /></td>
+																	<td>
+																		
+																	</td>
+																</c:otherwise>
+															</c:choose>
+															</tr>
+														</table>	
+													</td>
 													<td><c:choose>
 														<c:when
 															test="${actuacion.fechaJustificacion==null || actuacion.fechaJustificacion==''}">
@@ -1576,7 +1653,47 @@ function downloadInformesOficio(idInstitucion,anio,idTurno,numero) {
 															</c:otherwise>
 														</c:choose>
 
-														<td><c:out value="${actuacion.numero}" /></td>
+														<td>
+															
+															<table>
+															<tr>
+															<c:choose>
+																<c:when test="${actuacion.documentoJustificacion&&subidaJustificacionesActiva}">
+																<td style="text-align: left;  font-size: 13px;">
+																<c:out value="${actuacion.numero}" /></td>
+																<td>
+																<img id="iconoboton_download1" 
+																		src="/SIGA/html/imagenes/bdownload_off.gif" style="cursor:pointer;" 
+																		alt="Descargar" name="iconoFila" title="Descargar" border="0" 
+																		onClick="accionDescargaDocumentacionActuacion(${designa.anio},${designa.idTurno},${designa.numero},${designa.idInstitucion},${actuacion.numero})" 
+																		onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('download_1','','/SIGA/html/imagenes/bdownload_on.gif',1)">
+																
+																</td>
+																	
+																
+																</c:when>
+																<c:when test="${!actuacion.documentoJustificacion&&subidaJustificacionesActiva}">
+																	<td style="text-align: left;  font-size: 13px;">
+																	<c:out value="${actuacion.numero}" /></td>
+																	<td>
+																		<img id="iconoboton_nuevaDocuemntacion" 
+																		src="/SIGA/html/imagenes/bupload.gif" style="cursor:pointer;" 
+																		alt="Nueva Documentacion" name="iconoFila" title="Nueva Documentacion" border="0" 
+																		onClick="accionNuevaDocumentacionActuacion(${designa.anio},${designa.idTurno},${designa.numero},${designa.idInstitucion},${actuacion.numero})" 
+																		onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('iconoboton_nuevaDocuemntacion','','/SIGA/html/imagenes/binsertarestado_on.gif',1)">
+																	</td>
+																	</c:when>
+																<c:otherwise>
+																<td style="text-align: left;  font-size: 13px;">
+																	<c:out value="${actuacion.numero}" /></td>
+																	<td>
+																		
+																	</td>
+																</c:otherwise>
+															</c:choose>
+															</tr>
+														</table>
+															</td>
 														<td><c:choose>
 															<c:when
 																test="${actuacion.fechaJustificacion==null || actuacion.fechaJustificacion==''}">
@@ -1829,8 +1946,15 @@ function downloadInformesOficio(idInstitucion,anio,idTurno,numero) {
 		<html:hidden property="destinatarios"/>
 		<html:hidden property="modo" value = "preSeleccionInformes"/>
 		<input type='hidden' name='actionModal'>
-	</html:form>
-
+</html:form><html:form action="/JGR_DocumentacionDesigna" method="post" target="mainPestanas" style="display:none">
+	<html:hidden property = "modo" value = ""/>	
+	<html:hidden styleId="idInstitucion" property = "idInstitucion" />
+	<html:hidden styleId="anio" property = "anio"/>
+	<html:hidden styleId="numero" property = "numero"/>
+	<html:hidden styleId="idTurno" property = "idTurno"/>
+	<html:hidden styleId="idActuacion" property = "idActuacion"/>
+	<input type="hidden" name="actionModal" value="">
+</html:form>	
 <iframe name="submitArea"
 	src="<html:rewrite page='/html/jsp/general/blank.jsp'/>"
 	style="display: none"></iframe>

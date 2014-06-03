@@ -24,6 +24,19 @@ public class FicheroForm extends MasterForm {
 	
 	//Para la documentacion EJG
 	private String idTipoEJG;
+	private String idTurnoDesigna;
+	/**
+	 * @return the idTurnoDesigna
+	 */
+	public String getIdTurnoDesigna() {
+		return idTurnoDesigna;
+	}
+	/**
+	 * @param idTurnoDesigna the idTurnoDesigna to set
+	 */
+	public void setIdTurnoDesigna(String idTurnoDesigna) {
+		this.idTurnoDesigna = idTurnoDesigna;
+	}
 	private String anio;
 	private String numero;
 	private String idDocumentacion;

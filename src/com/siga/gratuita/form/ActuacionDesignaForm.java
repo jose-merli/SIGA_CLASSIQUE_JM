@@ -33,7 +33,21 @@ public class ActuacionDesignaForm extends MasterForm
 	private String permitirEditarActuacion;
 	private String numeroProcedimiento;
 	
+	private boolean documentoJustificacion;
 	
+	
+	/**
+	 * @return the documentoJustificacion
+	 */
+	public boolean isDocumentoJustificacion() {
+		return documentoJustificacion;
+	}
+	/**
+	 * @param documentoJustificacion the documentoJustificacion to set
+	 */
+	public void setDocumentoJustificacion(boolean documentoJustificacion) {
+		this.documentoJustificacion = documentoJustificacion;
+	}
 	public String getDescripcionProcedimiento() {
 		return descripcionProcedimiento;
 	}

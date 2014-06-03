@@ -60,9 +60,10 @@ public class DocumentacionAsistenciaVoService implements VoUiService<DefinirDocu
 		
 		if(objectForm.getIdActuacion()!=null && !objectForm.getIdActuacion().equals("")){
 			DocumentacionAsistenciaVo.setIdactuacion(Long.valueOf(objectForm.getIdActuacion()));
-		}else{
-			DocumentacionAsistenciaVo.setIdactuacion(Long.valueOf("-1"));
 		}
+//		else{
+//			DocumentacionAsistenciaVo.setIdactuacion(Long.valueOf("-1"));
+//		}
 
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 		

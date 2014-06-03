@@ -10,6 +10,8 @@ import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.redabogacia.sigaservices.app.AppConstants;
+
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.Row;
@@ -635,6 +637,9 @@ public class ScsActuacionDesignaAdm extends MasterBeanAdministrador {
 		sql.append(" WHERE FJG.IDINSTITUCION = ACT.IDINSTITUCION ");
 		sql.append(" AND FJG.IDFACTURACION = ACT.IDFACTURACION) AS ");
 		sql.append(" DESCRIPCIONFACTURACION ");
+		sql.append(" ,ACT.DOCJUSTIFICACION ");
+		
+		
 		sql.append(" FROM SCS_ACTUACIONDESIGNA          ACT, ");
 		sql.append(" SCS_PROCEDIMIENTOS            PRO, ");
 		sql.append(" SCS_ACREDITACIONPROCEDIMIENTO ACP, ");
@@ -700,6 +705,8 @@ public class ScsActuacionDesignaAdm extends MasterBeanAdministrador {
 				actuacionDesigna.setDescripcionFacturacion((String)registro.get("DESCRIPCIONFACTURACION"));
 				actuacionDesigna.setPermitirEditarActuacion((String)registro.get("PERMITIRANIADIRLETRADO"));
 				actuacionDesigna.setNumeroProcedimiento((String)registro.get("NUMEROPROCEDIMIENTO"));
+				actuacionDesigna.setDocumentoJustificacion(registro.get("DOCJUSTIFICACION")!=null && ((String)registro.get("DOCJUSTIFICACION")).equals(AppConstants.DB_TRUE));
+				
 				if(actuacionDesigna.getNumeroProcedimiento()!=null && !actuacionDesigna.getNumeroProcedimiento().equals("")){
 					asuntoDesigna.append(actuacionDesigna.getNumeroProcedimiento());
 					asuntoDesigna.append(" ");
