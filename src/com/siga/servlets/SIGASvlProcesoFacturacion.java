@@ -105,6 +105,39 @@ public class SIGASvlProcesoFacturacion extends HttpServlet {
 						else
 							ClsLogging.writeFileLogWithoutSession(" ---------- ERROR GENERACION DE FACTURAS.", 3);
 					}
+   					
+   					//MJM PROCESO DE PREVISIÓN FACTURACIÓN
+					try {
+						
+						beanInstitucion = (CenInstitucionBean)vInstituciones.elementAt(i);
+   	   					UsrBean usr			= UsrBean.UsrBeanAutomatico(beanInstitucion.getIdInstitucion().toString());
+   	   					
+						ClsLogging
+								.writeFileLogWithoutSession(
+										" ---------- INICIO PREVISIÓN FACTURACIÓN",
+										10);
+						fac = new Facturacion(usr); 
+						fac.procesarPrevisionesFactPend(request, ""
+								+ beanInstitucion.getIdInstitucion(), usr);
+						ClsLogging.writeFileLogWithoutSession(
+								" ---------- OK PREVISIÓN FACTURACIÓN. INSTITUCION: "
+										+ beanInstitucion
+												.getIdInstitucion(), 10);
+					} catch (Exception e) {
+						if (beanInstitucion != null
+								&& beanInstitucion.getIdInstitucion() != null)
+							ClsLogging.writeFileLogError(
+									" ---------- ERROR PREVISIÓN FACTURACIÓN. INSTITUCION: "
+											+ beanInstitucion
+													.getIdInstitucion(), e,
+									3);
+						else
+							ClsLogging
+									.writeFileLogError(
+											" ---------- ERROR PREVISIÓN FACTURACIÓN.",
+											e, 3);
+					}
+
    				}
    			}
    	        

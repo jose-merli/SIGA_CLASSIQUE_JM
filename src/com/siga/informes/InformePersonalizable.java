@@ -2,7 +2,11 @@ package com.siga.informes;
 
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -72,14 +76,14 @@ public class InformePersonalizable extends MasterReport
 						listaFicheros.addAll(this.generarInformeDOC(informe, filtrosInforme, usr));	
 					} catch (SIGAException e) {
 						if(e.getLiteral().equals("noExistePlantilla")){
-							listaFicheros.addAll(this.generarInformeXLS(informe, filtrosInforme, usr));
+							listaFicheros.addAll(this.generarInformeXLS(informe, filtrosInforme,null,null, usr));
 						}else
 							throw e;
 							
 					}
 					
 				} else if (informe.getTipoformato().equalsIgnoreCase(AdmInformeBean.TIPOFORMATO_EXCEL)) {
-					listaFicheros.addAll(this.generarInformeXLS(informe, filtrosInforme, usr));
+					listaFicheros.addAll(this.generarInformeXLS(informe, filtrosInforme,null,null, usr));
 				} else if (informe.getTipoformato().equalsIgnoreCase(AdmInformeBean.TIPOFORMATO_XML)) {
 //					llamada
 					String claseJava = informe.getClaseJava();
@@ -97,7 +101,7 @@ public class InformePersonalizable extends MasterReport
 					}
 					
 				} else {
-					listaFicheros.addAll(this.generarInformeXLS(informe, filtrosInforme, usr));
+					listaFicheros.addAll(this.generarInformeXLS(informe, filtrosInforme,null,null, usr));
 				}
 			}
 			File ficheroSalida = getFicheroSalida(listaFicheros, tipoInformeBean, usr);
@@ -270,9 +274,9 @@ public class InformePersonalizable extends MasterReport
 		
 	} // generarInformeDOC()
 	
-	private ArrayList<File> generarInformeXLS(AdmInformeBean informe,
+	public static ArrayList<File> generarInformeXLS(AdmInformeBean informe,
 								  ArrayList<HashMap<String, String>> filtrosInforme,
-								  UsrBean usr)
+								  String sRutaJava, String sRutaOracle, UsrBean usr)
 		throws ClsExceptions, SIGAException
 	{
 		// Variables
@@ -289,11 +293,19 @@ public class InformePersonalizable extends MasterReport
 		String idiomainforme = usr.getLanguageExt();
 		ReadProperties rp = new ReadProperties(
 				SIGAReferences.RESOURCE_FILES.SIGA);
-		String rutaAlm = rp.returnProperty("informes.directorioFisicoSalidaInformesJava")
-				+ ClsConstants.FILE_SEP
-				+ informe.getDirectorio() + ClsConstants.FILE_SEP
-				+ (idinstitucionInforme.equals("0") ? "2000" : idinstitucionInforme) + ClsConstants.FILE_SEP;
+		
+		String rutaAlm="";
+		
+		if((sRutaJava==null)||(sRutaJava.isEmpty())){
 
+			rutaAlm = rp.returnProperty("informes.directorioFisicoSalidaInformesJava")
+					+ ClsConstants.FILE_SEP
+					+ informe.getDirectorio() + ClsConstants.FILE_SEP
+					+ (idinstitucionInforme.equals("0") ? "2000" : idinstitucionInforme) + ClsConstants.FILE_SEP;
+		}else{
+			rutaAlm = sRutaJava;
+		}
+		
 		// obteniendo los tipos de filtros obligatorios
 		AdmTipoFiltroInformeAdm tipoFiltroAdm = new AdmTipoFiltroInformeAdm(usr);
 		Hashtable<String, String> tipoFiltroHash = new Hashtable<String, String>();
@@ -338,6 +350,7 @@ public class InformePersonalizable extends MasterReport
 		File crear = new File(rutaAlm);
 		if (!crear.exists())
 			crear.mkdirs();
+
 		ArrayList<File> listaFicheros = new ArrayList<File> ();
 
 		// variables para los ficheros de salida
@@ -351,7 +364,7 @@ public class InformePersonalizable extends MasterReport
 		String nombreFichero;
 		File ficheroGenerado = null;
 		BufferedWriter out;
-		
+
 		for (Iterator<AdmConsultaInformeConsultaBean> iterConsultas = consultas.iterator(); iterConsultas.hasNext(); ) {
 			consulta = iterConsultas.next();
 
@@ -385,10 +398,20 @@ public class InformePersonalizable extends MasterReport
 			try {
 				if (datos != null && datos.size() > 0) {
 					// creando fichero para cada consulta
-					nombreFichero = informe.getNombreSalida() + "_" + idinstitucion + "_" + usr.getUserName() + "_"
+					if(informe.getIdTipoInforme().equalsIgnoreCase("PREV"))
+					{	
+						//Si estamos generando un informe de previsiones 
+						nombreFichero = informe.getNombreSalida()+ ".xls";
+						
+					}else{
+						
+						nombreFichero = informe.getNombreSalida() + "_" + idinstitucion + "_" + usr.getUserName() + "_"
 							+ UtilidadesBDAdm.getFechaCompletaBD("").replaceAll("/", "").replaceAll(":", "").replaceAll(" ", "") + '_'
 							+ consulta.getNombre() + ".xls";
+					}	
+
 					ficheroGenerado = new File (rutaAlm + ClsConstants.FILE_SEP + nombreFichero);
+					
 					if (ficheroGenerado.exists())
 						ficheroGenerado.delete();
 					ficheroGenerado.createNewFile();
@@ -398,6 +421,7 @@ public class InformePersonalizable extends MasterReport
 					Vector<Hashtable<String, String>> hashOrdenado = datos.get(0);
 					for (int i = 0; i < hashOrdenado.size(); i++) {
 						out.write(hashOrdenado.get(i).keys().nextElement() + "\t");
+
 					}
 					out.newLine();
 					
@@ -405,13 +429,50 @@ public class InformePersonalizable extends MasterReport
 					for (Iterator<Vector<Hashtable<String, String>>> iter = datos.iterator(); iter.hasNext(); ) {
 						hashOrdenado = iter.next();
 						for (int i = 0; i < hashOrdenado.size(); i++) {
+	
 							out.write(hashOrdenado.get(i).elements().nextElement() + "\t");
 						}
 						out.newLine();
+
 					}
 					
 					// cerrando el fichero
 					out.close();
+
+					if((sRutaOracle!=null)||(!sRutaOracle.isEmpty())){
+						
+						try {
+			                    
+								File crearOracle = new File(sRutaOracle);
+								if (!crearOracle.exists())
+									crearOracle.mkdirs();
+			
+								String sBarra = "";
+								if (sRutaOracle.indexOf("/") > -1)
+									sBarra = "/";
+								if (sRutaOracle.indexOf("\\") > -1)
+									sBarra = "\\";    
+							
+								InputStream in = new FileInputStream(rutaAlm+ClsConstants.FILE_SEP+nombreFichero);	                        
+		                        OutputStream out2 = new FileOutputStream(sRutaOracle+sBarra+nombreFichero);
+		                                
+		                        byte[] buf = new byte[1024];
+		                        int len;
+		
+		                        while ((len = in.read(buf)) > 0) {
+		                                out2.write(buf, 0, len);
+		                        }
+		                
+		                        in.close();
+		                        out.close();
+		                        
+			                } catch (Exception e2){
+			                        throw new SIGAException(
+									"Problema en la generacion del fichero Excel en directorio Oracle",
+									e2, new String[] { e2.toString() });
+			                }
+					
+					}
 					listaFicheros.add(ficheroGenerado);
 				}
 			} catch (Exception sqle) {

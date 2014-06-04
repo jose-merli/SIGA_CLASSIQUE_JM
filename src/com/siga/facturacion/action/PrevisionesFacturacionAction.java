@@ -34,6 +34,8 @@ import com.atos.utils.GstDate;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;
+import com.siga.beans.FacEstadoConfirmFactAdm;
+import com.siga.beans.FacEstadoConfirmFactBean;
 import com.siga.beans.FacFacturacionProgramadaAdm;
 import com.siga.beans.FacFacturacionProgramadaBean;
 import com.siga.beans.FacPrevisionFacturacionAdm;
@@ -46,6 +48,7 @@ import com.siga.general.EjecucionPLs;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
+import com.siga.servlets.SIGASvlProcesoAutomaticoRapido;
 
 
 public class PrevisionesFacturacionAction extends MasterAction {
@@ -200,6 +203,12 @@ or	 * @param request -
 
 			Vector datosPrev = admPrev.selectTabla(where);
 			request.setAttribute("datosPrev", datosPrev);
+			
+			//Columna de estados de la previsión
+			FacEstadoConfirmFactAdm admEstados = new FacEstadoConfirmFactAdm(this.getUserBean(request));
+			Hashtable htEstados = admEstados.getEstadosConfirmacionFacturacion(user.getLanguage());
+			request.setAttribute("ESTADOS",htEstados);
+			
 		} catch (Exception e) {
 			throwExcp(
 					"messages.general.error",
@@ -355,12 +364,12 @@ or	 * @param request -
 				String idPrevision = UtilidadesHash.getString(hashMaximo,
 						FacPrevisionFacturacionBean.C_IDPREVISION);
 
-			    ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+			   ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA); 
 //				ReadProperties rp = new ReadProperties("SIGA.properties");
 				String nombreFichero = rp
 						.returnProperty("facturacion.prefijo.ficherosPrevisiones")
 						+ idSerieFacturacion + "_" + idPrevision;
-				;
+				
 
 				
 				miHash.put(FacPrevisionFacturacionBean.C_IDINSTITUCION,
@@ -384,92 +393,97 @@ or	 * @param request -
 				miHash.put(FacPrevisionFacturacionBean.C_NOMBREFICHERO,
 						nombreFichero);
 				miHash.put(FacPrevisionFacturacionBean.C_DESCRIPCION, formPrev.getDescripcionPrevision());
-
+				
+				//Se pone estado de previsión pendiente para que la trate el proceso automático
+				miHash.put(FacPrevisionFacturacionBean.C_IDESTADOPREVISION,FacEstadoConfirmFactBean.CONFIRM_PENDIENTE);
 				// Insertamos el registro.
 				result = admPrev.insert(miHash);
 
 				// RGG 13/02/2007 CIERRO LA TRANSACCION ANTES PARA QUE NO ME DE PROBLEMAS DE 
 				// TIEMPO EL PROCESO DE CREAR EL FICHERO DE PREVISIONES.
 				tx.commit();
+				//Se notifica
+				SIGASvlProcesoAutomaticoRapido.NotificarAhora(SIGASvlProcesoAutomaticoRapido.procesoRapidoFacturacion);
 
+				//MJM INI REM se comenta porque se hace en el proceso automático rápido de facturación
+//				// Se crea el directorio en el servidor web.
+//				String sRutaJava = rp
+//						.returnProperty("facturacion.directorioPrevisionesJava");
+//				String sRutaFisicaJava = rp
+//						.returnProperty("facturacion.directorioFisicoPrevisionesJava");
+//				sRutaJava = sRutaFisicaJava + File.separator + sRutaJava;
+//				sRutaJava += File.separator + idInstitucion;
+//				File fDirectorio = new File(sRutaJava);
+//				fDirectorio.mkdirs();
+//
+//				// Se genera el fichero de previsiones en el servidor Oracle.
+//				String sRutaOracle = rp
+//						.returnProperty("facturacion.directorioPrevisionesOracle");
+//				// Tratamiento de la barra de la ruta para posibles cambios de
+//				// servidor de BBDD
+//				String sBarra = "";
+//				if (sRutaOracle.indexOf("/") > -1)
+//					sBarra = "/";
+//				if (sRutaOracle.indexOf("\\") > -1)
+//					sBarra = "\\";
+//				sRutaOracle += sBarra + idInstitucion;
+//				String sExtension = "."
+//						+ rp
+//								.returnProperty("facturacion.extension.ficherosPrevisiones");
+//				nombreFichero += sExtension;
+//
+//				//RGG
+//				tx.begin();
+//				
+//				Object[] param_in = new Object[6];
+//				param_in[0] = idInstitucion;
+//				param_in[1] = idSerieFacturacion;
+//				param_in[2] = idPrevision;
+//				param_in[3] = sRutaOracle;
+//				param_in[4] = nombreFichero;
+//				param_in[5] = idLenguaje;
+//				String resultado[] = new String[2];
+//				resultado = ClsMngBBDD
+//						.callPLProcedure(
+//								"{call PKG_SIGA_FACTURACION.PREVISIONFACTURACION(?,?,?,?,?,?,?,?)}",
+//								2, param_in);
+//				//            	 resultado = ClsMngBBDD.callPLProcedure("{call
+//				// PRUEBA_GENERARFICHERO.PREVISIONFACTURACION(?,?,?,?,?,?,?,?)}",
+//				// 2, param_in);
+//				String codretorno = resultado[0];
+//				if (!codretorno.equals("0")) {
+//					//RGG
+//					tx.rollback();
+//					
+//					/*
+//					request.setAttribute("mensaje",
+//						"facturacion.nuevaPrevisionFacturacion.mensaje.generacionFicheroERROR");
+//					
+//					tx.begin();
+//					String claves[] = new String[3];
+//					claves[0] = FacPrevisionFacturacionBean.C_IDINSTITUCION;
+//					claves[1] = FacPrevisionFacturacionBean.C_IDSERIEFACTURACION;
+//					claves[2] = FacPrevisionFacturacionBean.C_IDPREVISION;
+//					admPrev.deleteDirect(miHash, claves);
+//					tx.commit();
+//					*/
+//					
+//					throw new ClsExceptions(UtilidadesString.getMensajeIdioma(this.getLenguaje(request),"facturacion.nuevaPrevisionFacturacion.mensaje.generacionFicheroERROR")+ " - Codigo error:"+codretorno);
+//
+//				} else {
+//					//RGG
+//					tx.commit();
+//
+//					if (result)
+//						request
+//								.setAttribute("mensaje",
+//										"facturacion.nuevaPrevisionFacturacion.mensaje.insercionOK");
+//					else
+//						request.setAttribute("mensaje",
+//								"messages.inserted.error");
+//				}
+				//MJM Fin REM se comenta porque se hace en el proceso automático rápido de facturación
 				
-				// Se crea el directorio en el servidor web.
-				String sRutaJava = rp
-						.returnProperty("facturacion.directorioPrevisionesJava");
-				String sRutaFisicaJava = rp
-						.returnProperty("facturacion.directorioFisicoPrevisionesJava");
-				sRutaJava = sRutaFisicaJava + File.separator + sRutaJava;
-				sRutaJava += File.separator + idInstitucion;
-				File fDirectorio = new File(sRutaJava);
-				fDirectorio.mkdirs();
-
-				// Se genera el fichero de previsiones en el servidor Oracle.
-				String sRutaOracle = rp
-						.returnProperty("facturacion.directorioPrevisionesOracle");
-				// Tratamiento de la barra de la ruta para posibles cambios de
-				// servidor de BBDD
-				String sBarra = "";
-				if (sRutaOracle.indexOf("/") > -1)
-					sBarra = "/";
-				if (sRutaOracle.indexOf("\\") > -1)
-					sBarra = "\\";
-				sRutaOracle += sBarra + idInstitucion;
-				String sExtension = "."
-						+ rp
-								.returnProperty("facturacion.extension.ficherosPrevisiones");
-				nombreFichero += sExtension;
-
-				//RGG
-				tx.begin();
-				
-				Object[] param_in = new Object[6];
-				param_in[0] = idInstitucion;
-				param_in[1] = idSerieFacturacion;
-				param_in[2] = idPrevision;
-				param_in[3] = sRutaOracle;
-				param_in[4] = nombreFichero;
-				param_in[5] = idLenguaje;
-				String resultado[] = new String[2];
-				resultado = ClsMngBBDD
-						.callPLProcedure(
-								"{call PKG_SIGA_FACTURACION.PREVISIONFACTURACION(?,?,?,?,?,?,?,?)}",
-								2, param_in);
-				//            	 resultado = ClsMngBBDD.callPLProcedure("{call
-				// PRUEBA_GENERARFICHERO.PREVISIONFACTURACION(?,?,?,?,?,?,?,?)}",
-				// 2, param_in);
-				String codretorno = resultado[0];
-				if (!codretorno.equals("0")) {
-					//RGG
-					tx.rollback();
-					
-					/*
-					request.setAttribute("mensaje",
-						"facturacion.nuevaPrevisionFacturacion.mensaje.generacionFicheroERROR");
-					
-					tx.begin();
-					String claves[] = new String[3];
-					claves[0] = FacPrevisionFacturacionBean.C_IDINSTITUCION;
-					claves[1] = FacPrevisionFacturacionBean.C_IDSERIEFACTURACION;
-					claves[2] = FacPrevisionFacturacionBean.C_IDPREVISION;
-					admPrev.deleteDirect(miHash, claves);
-					tx.commit();
-					*/
-					
-					throw new ClsExceptions(UtilidadesString.getMensajeIdioma(this.getLenguaje(request),"facturacion.nuevaPrevisionFacturacion.mensaje.generacionFicheroERROR")+ " - Codigo error:"+codretorno);
-
-				} else {
-					//RGG
-					tx.commit();
-
-					if (result)
-						request
-								.setAttribute("mensaje",
-										"facturacion.nuevaPrevisionFacturacion.mensaje.insercionOK");
-					else
-						request.setAttribute("mensaje",
-								"messages.inserted.error");
-				}
-
 				// Refrescamos la tabla con los valores insertados
 				request.setAttribute("modal", "1");
 				forward = "exito";

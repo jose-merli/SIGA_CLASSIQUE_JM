@@ -80,6 +80,35 @@ public class SIGASvlProcesoRapidoFacturacion extends HttpServlet {
 											e, 3);
 					}
 
+					//MJM PROCESO DE PREVISIÓN FACTURACIÓN
+					try {
+						ClsLogging
+								.writeFileLogWithoutSession(
+										" ---------- INICIO GENERACIÓN FACTURACIÓN",
+										10);
+						fac = new Facturacion(usr); 
+						fac.procesarPrevisionesFactPend(request, ""
+								+ beanInstitucion.getIdInstitucion(), usr);
+						ClsLogging.writeFileLogWithoutSession(
+								" ---------- OK GENERACIÓN FACTURACIÓN. INSTITUCION: "
+										+ beanInstitucion
+												.getIdInstitucion(), 10);
+					} catch (Exception e) {
+						if (beanInstitucion != null
+								&& beanInstitucion.getIdInstitucion() != null)
+							ClsLogging.writeFileLogError(
+									" ---------- ERROR GENERACIÓN FACTURACIÓN. INSTITUCION: "
+											+ beanInstitucion
+													.getIdInstitucion(), e,
+									3);
+						else
+							ClsLogging
+									.writeFileLogError(
+											" ---------- ERROR GENERACIÓN FACTURACIÓN.",
+											e, 3);
+					}
+					
+					
 					// RGG 01/06/2009: PROCESO DE EXPORTACION DE
 					// CONTABILIDAD
 					try {

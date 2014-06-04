@@ -41,7 +41,12 @@
 	UsrBean usr=(UsrBean)request.getSession().getAttribute("USRBEAN");
 	
 	Vector vDatosPrev = (Vector)request.getAttribute("datosPrev");
-	request.removeAttribute("datosPrev");	
+	request.removeAttribute("datosPrev");
+	
+	//Columna del estado de la previsión
+	Hashtable htEstados = (Hashtable)request.getAttribute("ESTADOS");
+	FacEstadoConfirmFactAdm admEstados = new FacEstadoConfirmFactAdm(usr);
+	String sEstadoPrevision;
 %>
 
 
@@ -111,8 +116,9 @@
 	   							facturacion.nuevaPrevisionFacturacion.literal.descripcion,
 	   							facturacion.previsionesFacturacion.literal.seriesFacturacion, 
 	   							facturacion.previsionesFacturacion.literal.fechaInicioProductos, 
-	   							facturacion.previsionesFacturacion.literal.fechaInicioServicios, "
-	   				columnSizes="9,27,22,16,16,10">
+	   							facturacion.previsionesFacturacion.literal.fechaInicioServicios,
+	   							facturacion.previsionesFacturacion.literal.estadoPrevision, "
+	   				columnSizes="8,24,20,15,15,8,10">
 			<%
 			if (vDatosPrev==null || vDatosPrev.size()==0)
 			{
@@ -145,6 +151,11 @@
 								botones="";
 							}
 							
+							if(htEstados!=null){
+								sEstadoPrevision =  UtilidadesString.mostrarDatoJSP(htEstados.get((String)miHash.get("IDESTADOPREVISION")));
+							}else{
+								sEstadoPrevision="";	
+							}
 							
 							%>
 							
@@ -168,6 +179,7 @@
 								</td>
 								<td><%=miHash.get("FECHAINICIOPRODUCTOS")%> - <%=miHash.get("FECHAFINPRODUCTOS")%></td>
 								<td><%=miHash.get("FECHAINICIOSERVICIOS")%> - <%=miHash.get("FECHAFINSERVICIOS")%></td>
+								<td><%=sEstadoPrevision%></td> 	
 							</siga:FilaConIconos>
 						<%}%>
 						

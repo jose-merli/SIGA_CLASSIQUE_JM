@@ -147,7 +147,7 @@ public class GenerarFacturacionAction extends MasterAction{
 			String idProgramacion 	= (String)ocultos.elementAt(1);
 			String usuMod			= (String)ocultos.elementAt(2);
 			String idInstitucion	= this.getIDInstitucion(request).toString();	
-			Object[] param_in = new Object[6];
+			Object[] param_in = new Object[7];
 
 			// BLOQUEAMOS LA PROGRAMACION
 			tx = usr.getTransactionPesada(); 
@@ -171,16 +171,16 @@ public class GenerarFacturacionAction extends MasterAction{
 			try {
 				//tx = usr.getTransaction(); 
 				tx.begin();
-	
+				String idPrevision="0"; 
 	        	param_in[0] = idInstitucion;
 	        	param_in[1] = idSerieFacturacion;
 	        	param_in[2] = idProgramacion;
 	        	param_in[3] = this.getUserBean(request).getLanguageInstitucion();		// idioma
 	        	param_in[4] = "";		// IDPETICION
 	        	param_in[5] = usuMod;
-	        	
+	        	param_in[6] = idPrevision;
 	        	String resultado[] = new String[2];
-	        	resultado = ClsMngBBDD.callPLProcedure("{call PKG_SIGA_FACTURACION.GENERACIONFACTURACION(?,?,?,?,?,?,?,?)}", 2, param_in);
+	        	resultado = ClsMngBBDD.callPLProcedure("{call PKG_SIGA_FACTURACION.GENERACIONFACTURACION(?,?,?,?,?,?,?,?,?)}", 2, param_in);
 	        	String codretorno = resultado[0];
 	        	if (!codretorno.equals("0")){
 	        		 throw new ClsExceptions ("Error al generar la Facturación: " + resultado[0] + " - "+ resultado[1]);

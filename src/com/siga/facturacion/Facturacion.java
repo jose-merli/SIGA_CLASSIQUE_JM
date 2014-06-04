@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Vector;
@@ -38,6 +39,9 @@ import com.siga.Utilidades.UtilidadesBDAdm;
 import com.siga.Utilidades.UtilidadesFecha;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;
+import com.siga.beans.AdmInformeAdm;
+import com.siga.beans.AdmInformeBean;
+import com.siga.beans.AdmTipoFiltroInformeBean;
 import com.siga.beans.CenClienteAdm;
 import com.siga.beans.CenClienteBean;
 import com.siga.beans.CenColegiadoAdm;
@@ -68,6 +72,8 @@ import com.siga.beans.FacFacturacionSuscripcionAdm;
 import com.siga.beans.FacLineaDevoluDisqBancoAdm;
 import com.siga.beans.FacLineaDevoluDisqBancoBean;
 import com.siga.beans.FacPlantillaFacturacionAdm;
+import com.siga.beans.FacPrevisionFacturacionAdm;
+import com.siga.beans.FacPrevisionFacturacionBean;
 import com.siga.beans.FacRenegociacionAdm;
 import com.siga.beans.FacRenegociacionBean;
 import com.siga.beans.FacSerieFacturacionAdm;
@@ -75,6 +81,7 @@ import com.siga.beans.FacSerieFacturacionBean;
 import com.siga.beans.FacTiposProduIncluEnFactuAdm;
 import com.siga.beans.FacTiposProduIncluEnFactuBean;
 import com.siga.beans.GenParametrosAdm;
+import com.siga.beans.MasterBeanAdministrador;
 import com.siga.beans.PysCompraAdm;
 import com.siga.beans.PysCompraBean;
 import com.siga.beans.PysFormaPagoProductoAdm;
@@ -89,6 +96,7 @@ import com.siga.envios.Documento;
 import com.siga.envios.Envio;
 import com.siga.general.SIGAException;
 import com.siga.informes.InformeFactura;
+import com.siga.informes.InformePersonalizable;
 
 
 /**
@@ -144,16 +152,16 @@ public class Facturacion {
 			//tx = idUsua.getTransaction(); 
 			//tx.begin();
 			
-			Object[] param_in = new Object[6];
+			Object[] param_in = new Object[7];
         	param_in[0] = idInstitucion;
         	param_in[1] = idSerie;
         	param_in[2] = idProgramacion;
         	param_in[3] = userBean.getLanguageInstitucion();	//idioma;
         	param_in[4] = ""; 				// idUsuario;
         	param_in[5] = userBean.getUserName(); 				// idUsuario;
-        	
+        	param_in[6] = "0";
         	String resultado[] = new String[2];
-        	resultado = ClsMngBBDD.callPLProcedure("{call PKG_SIGA_FACTURACION.GENERACIONFACTURACION(?,?,?,?,?,?,?,?)}", 2, param_in);
+        	resultado = ClsMngBBDD.callPLProcedure("{call PKG_SIGA_FACTURACION.GENERACIONFACTURACION(?,?,?,?,?,?,?,?,?)}", 2, param_in);
         	String codretorno = resultado[0];
         	if (!codretorno.equals("0")){
         		 throw new ClsExceptions ("Error al generar la Facturación");
@@ -807,15 +815,16 @@ public class Facturacion {
     	    }
     	    
     	    // generamos la facturacion programada
-			Object[] param_in = new Object[6];
+			Object[] param_in = new Object[7];
 			param_in[0] = beanPro.getIdInstitucion().toString();
         	param_in[1] = beanPro.getIdSerieFacturacion().toString();
         	param_in[2] = beanPro.getIdProgramacion().toString();
         	param_in[3] = this.usrbean.getLanguageInstitucion();		// idioma
         	param_in[4] = "";
         	param_in[5] = this.usrbean.getUserName();
+        	param_in[6] = "0";
         	String resultado[] = new String[2];
-        	resultado = ClsMngBBDD.callPLProcedure("{call PKG_SIGA_FACTURACION.GENERACIONFACTURACION(?,?,?,?,?,?,?,?)}", 2, param_in);
+        	resultado = ClsMngBBDD.callPLProcedure("{call PKG_SIGA_FACTURACION.GENERACIONFACTURACION(?,?,?,?,?,?,?,?,?)}", 2, param_in);
         	String codretorno = resultado[0];
         	if (!codretorno.equals("0")){
         		 throw new ClsExceptions ("Error al generar la Facturación rapida: "+resultado[1]);
@@ -1867,15 +1876,16 @@ public class Facturacion {
     	    
     	    
     	    // generamos la facturacion programada
-			Object[] param_in = new Object[6];
+			Object[] param_in = new Object[7];
 			param_in[0] = beanPro.getIdInstitucion().toString();
         	param_in[1] = beanPro.getIdSerieFacturacion().toString();
         	param_in[2] = beanPro.getIdProgramacion().toString();
         	param_in[3] = this.usrbean.getLanguageInstitucion();		// idioma
         	param_in[4] = beanPeticion.getIdPeticion().toString();
         	param_in[5] = this.usrbean.getUserName();
+        	param_in[6] = "0";
         	String resultado[] = new String[2];
-        	resultado = ClsMngBBDD.callPLProcedure("{call PKG_SIGA_FACTURACION.GENERACIONFACTURACION(?,?,?,?,?,?,?,?)}", 2, param_in);
+        	resultado = ClsMngBBDD.callPLProcedure("{call PKG_SIGA_FACTURACION.GENERACIONFACTURACION(?,?,?,?,?,?,?,?,?)}", 2, param_in);
         	String codretorno = resultado[0];
         	if (!codretorno.equals("0")){
         		throw new ClsExceptions ("Error al generar la Facturación rapida: "+resultado[1]);
@@ -2574,5 +2584,189 @@ public class Facturacion {
 			salida = "0"+salida;
 		}
 		return salida; 
-	}		
+	}
+
+	public void procesarPrevisionesFactPend(HttpServletRequest request, String idInstitucion, UsrBean usr) throws ClsExceptions {
+				
+		 try {	 	
+			 	FacPrevisionFacturacionAdm admPrev = new FacPrevisionFacturacionAdm(usr);
+				String where = " where ";
+				where += FacPrevisionFacturacionBean.T_NOMBRETABLA + "."
+						+ FacPrevisionFacturacionBean.C_IDINSTITUCION + "="
+						+ idInstitucion + " and " + 
+						FacPrevisionFacturacionBean.T_NOMBRETABLA + "."
+						+ FacPrevisionFacturacionBean.C_IDESTADOPREVISION + "=" 
+						+ FacEstadoConfirmFactBean.CONFIRM_PENDIENTE;
+	
+				Vector v = admPrev.selectTabla(where);
+
+			    if (v!=null && v.size()>0) {
+		           for (int i=0;i<v.size();i++) {
+		        	  
+			           FacPrevisionFacturacionBean beanPrev = (FacPrevisionFacturacionBean) admPrev.hashTableToBean((Hashtable) v.get(i));
+			           // Genero los multiples ficheros pendientes
+		               this.generarFicheroPrevisiones(beanPrev,usr);
+		           }
+			    }
+	    
+		} catch (Exception e) {
+		    throw new ClsExceptions(e,"Error al lanzar las previsiones de facturacion");
+		}
+		
+	}
+
+
+	private void generarFicheroPrevisiones(FacPrevisionFacturacionBean beanPrev,UsrBean usr) throws SIGAException, ClsExceptions {
+		
+		UserTransaction tx = null;
+		tx = usr.getTransactionPesada(); 
+		FacPrevisionFacturacionAdm admPrev = new FacPrevisionFacturacionAdm(usr);
+		
+		String [] claves = {FacPrevisionFacturacionBean.C_IDINSTITUCION, FacPrevisionFacturacionBean.C_IDSERIEFACTURACION, FacPrevisionFacturacionBean.C_IDPREVISION};
+		String [] camposPrevFactura = {FacPrevisionFacturacionBean.C_IDESTADOPREVISION};
+    	Hashtable hashEstado = new Hashtable();
+		UtilidadesHash.set(hashEstado, FacPrevisionFacturacionBean.C_IDINSTITUCION, beanPrev.getIdInstitucion().toString());
+    	UtilidadesHash.set(hashEstado, FacPrevisionFacturacionBean.C_IDPREVISION, beanPrev.getIdPrevision().toString());
+    	UtilidadesHash.set(hashEstado, FacPrevisionFacturacionBean.C_IDSERIEFACTURACION,beanPrev.getIdSerieFacturacion().toString() );
+		
+		try{
+			tx.begin();
+			
+			UtilidadesHash.set(hashEstado,FacPrevisionFacturacionBean.C_IDESTADOPREVISION, FacEstadoConfirmFactBean.CONFIRM_PROCESANDO);
+		    if (!admPrev.updateDirect(hashEstado,claves,camposPrevFactura)) {
+		        throw new ClsExceptions("Error al actualizar el estado de la previsión. en proceso.");
+		    }
+			
+			tx.commit();
+					    			
+			tx.begin();
+
+			Object[] param_in = new Object[7];		
+			String idProgramacion="0";
+			
+			param_in[0] = beanPrev.getIdInstitucion().toString();
+        	param_in[1] = beanPrev.getIdSerieFacturacion().toString();
+        	param_in[2] = idProgramacion;
+        	param_in[3] = usr.getLanguageInstitucion();
+        	param_in[4] = "";		// IDPETICION
+        	param_in[5] = usr.getUserName();
+        	param_in[6] = beanPrev.getIdPrevision().toString();
+        	
+        	String resultado[] = new String[2];
+        	resultado = ClsMngBBDD.callPLProcedure("{call PKG_SIGA_FACTURACION.GENERACIONFACTURACION(?,?,?,?,?,?,?,?,?)}", 2, param_in);
+			
+			String codretorno = resultado[0];
+			
+			if (!codretorno.equals("0")) {
+				tx.rollback();
+				
+				tx.begin();
+				UtilidadesHash.set(hashEstado,FacPrevisionFacturacionBean.C_IDESTADOPREVISION, FacEstadoConfirmFactBean.CONFIRM_FINALIZADAERRORES);
+			    if (!admPrev.updateDirect(hashEstado,claves,camposPrevFactura)) {
+			        throw new ClsExceptions("Error al actualizar el estado de la previsión. finalizada con errores.");
+			    }
+			    tx.commit();
+			    
+				throw new ClsExceptions(UtilidadesString.getMensajeIdioma(usr.getLanguage(),"facturacion.nuevaPrevisionFacturacion.mensaje.generacionFicheroERROR")+ " - Codigo error:"+codretorno);
+	
+			} else {
+
+				//consulto los datos de la previsión y genero el fichero
+				AdmInformeAdm datosInforme = new AdmInformeAdm(usr);
+				AdmInformeBean informe = new AdmInformeBean();
+				Hashtable hashWhere = new Hashtable();
+				
+				UtilidadesHash.set(hashWhere, AdmInformeBean.C_IDTIPOINFORME, "PREV");
+				UtilidadesHash.set(hashWhere, AdmInformeBean.C_IDINSTITUCION, "0");
+				
+				Vector v =datosInforme.select(hashWhere);
+				
+				Hashtable hashDatos= new Hashtable();
+				
+				if(v!=null && v.size()>0){
+					
+					informe=(AdmInformeBean)v.get(0);
+				}
+				
+				ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+				String nombreFichero = rp
+						.returnProperty("facturacion.prefijo.ficherosPrevisiones")
+						+ beanPrev.getIdSerieFacturacion().toString() + "_" + beanPrev.getIdPrevision().toString();
+				
+				informe.setNombreSalida(nombreFichero) ;
+								
+				String sRutaJava = rp.returnProperty("facturacion.directorioPrevisionesJava")
+				+ rp.returnProperty("facturacion.directorioFisicoPrevisionesJava") + ClsConstants.FILE_SEP
+				+ beanPrev.getIdInstitucion().toString() + ClsConstants.FILE_SEP;
+				
+				
+				// Se genera el fichero de previsiones en el servidor Oracle.
+				String sRutaOracle = rp
+						.returnProperty("facturacion.directorioPrevisionesOracle");
+				// Tratamiento de la barra de la ruta para posibles cambios de
+				// servidor de BBDD
+				String sBarra = "";
+				if (sRutaOracle.indexOf("/") > -1)
+					sBarra = "/";
+				if (sRutaOracle.indexOf("\\") > -1)
+					sBarra = "\\";
+				sRutaOracle += sBarra + beanPrev.getIdInstitucion().toString();			
+
+				ArrayList<HashMap<String, String>> filtrosInforme = new ArrayList<HashMap<String, String>>();
+				HashMap<String, String> filtro;
+				
+				filtro = new HashMap<String, String>();
+				filtro.put(AdmTipoFiltroInformeBean.C_NOMBRECAMPO, "IDIOMA");
+				filtro.put("VALOR", usr.getLanguageInstitucion().toString());
+				filtrosInforme.add(filtro);	
+				
+				filtro = new HashMap<String, String>();
+				filtro.put(AdmTipoFiltroInformeBean.C_NOMBRECAMPO, "IDSERIEFACTURACION");
+				filtro.put("VALOR", beanPrev.getIdSerieFacturacion().toString());
+				filtrosInforme.add(filtro);	
+				
+				filtro = new HashMap<String, String>();
+				filtro.put(AdmTipoFiltroInformeBean.C_NOMBRECAMPO, "IDPREVISION");
+				filtro.put("VALOR", beanPrev.getIdPrevision().toString());
+				filtrosInforme.add(filtro);	
+				
+				filtro = new HashMap<String, String>();
+				filtro.put(AdmTipoFiltroInformeBean.C_NOMBRECAMPO, "IDINSTITUCION");
+				filtro.put("VALOR", beanPrev.getIdInstitucion().toString());
+				filtrosInforme.add(filtro);
+				
+				ArrayList<File> fichPrev= InformePersonalizable.generarInformeXLS(informe, filtrosInforme,sRutaJava,sRutaOracle, usr);
+
+				tx.rollback();
+
+				tx.begin();
+				UtilidadesHash.set(hashEstado,FacPrevisionFacturacionBean.C_IDESTADOPREVISION, FacEstadoConfirmFactBean.CONFIRM_FINALIZADA);
+				UtilidadesHash.set(hashEstado,FacPrevisionFacturacionBean.C_NOMBREFICHERO,fichPrev.get(0).getName());
+			    
+				if (!admPrev.updateDirect(hashEstado,claves,camposPrevFactura)) {
+			        throw new ClsExceptions("Error al actualizar el estado de la previsión. finalizada.");
+			    }
+				tx.commit();
+	
+			}
+			
+		}catch (Exception e) {
+			//le cambio el estado a error
+			try{ 
+				
+				tx.rollback();
+				
+				tx.begin(); 
+				UtilidadesHash.set(hashEstado,FacPrevisionFacturacionBean.C_IDESTADOPREVISION, FacEstadoConfirmFactBean.CONFIRM_FINALIZADAERRORES);
+			    if (!admPrev.updateDirect(hashEstado,claves,camposPrevFactura)) {
+			        throw new ClsExceptions("Error al actualizar el estado de la previsión. finalizada con errores. "+e);
+			    }
+			    tx.commit(); 
+			}catch(Exception e2){
+				throw new ClsExceptions(UtilidadesString.getMensajeIdioma(this.usrbean.getLanguage(),"facturacion.nuevaPrevisionFacturacion.mensaje.generacionFicheroERROR")+ " - Codigo error:"+e2);
+			}	
+		   
+		}
+	}
+	
 }

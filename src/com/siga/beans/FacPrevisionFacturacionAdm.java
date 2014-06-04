@@ -29,7 +29,8 @@ public class FacPrevisionFacturacionAdm extends MasterBeanAdministrador {
 							FacPrevisionFacturacionBean.C_FECHAMODIFICACION,
 							FacPrevisionFacturacionBean.C_USUMODIFICACION,
 							FacPrevisionFacturacionBean.C_NOMBREFICHERO,
-							FacPrevisionFacturacionBean.C_DESCRIPCION};
+							FacPrevisionFacturacionBean.C_DESCRIPCION,
+							FacPrevisionFacturacionBean.C_IDESTADOPREVISION};
 		return campos;
 	}
 
@@ -38,7 +39,7 @@ public class FacPrevisionFacturacionAdm extends MasterBeanAdministrador {
 		return claves;
 	}
 	
-	protected MasterBean hashTableToBean(Hashtable hash) throws ClsExceptions {
+	public MasterBean hashTableToBean(Hashtable hash) throws ClsExceptions {
 
 		FacPrevisionFacturacionBean bean = null;
 		
@@ -55,6 +56,7 @@ public class FacPrevisionFacturacionAdm extends MasterBeanAdministrador {
 			bean.setUsuMod					(UtilidadesHash.getInteger(hash, FacPrevisionFacturacionBean.C_USUMODIFICACION));
 			bean.setNombreFichero	 		(UtilidadesHash.getString(hash, FacPrevisionFacturacionBean.C_NOMBREFICHERO));
 			bean.setDescripcion				(UtilidadesHash.getString(hash, FacPrevisionFacturacionBean.C_DESCRIPCION));
+			bean.setIdEstadoPrevision		(UtilidadesHash.getInteger(hash, FacPrevisionFacturacionBean.C_IDESTADOPREVISION));
 		}
 		catch (Exception e) { 
 			bean = null;	
@@ -81,6 +83,7 @@ public class FacPrevisionFacturacionAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(htData, FacPrevisionFacturacionBean.C_USUMODIFICACION, b.getUsuMod());
 			UtilidadesHash.set(htData, FacPrevisionFacturacionBean.C_NOMBREFICHERO, b.getNombreFichero());
 			UtilidadesHash.set(htData, FacPrevisionFacturacionBean.C_DESCRIPCION, b.getDescripcion());
+			UtilidadesHash.set(htData, FacPrevisionFacturacionBean.C_IDESTADOPREVISION, b.getIdEstadoPrevision());
 		}
 		catch (Exception e) {
 			htData = null;
@@ -100,6 +103,7 @@ public class FacPrevisionFacturacionAdm extends MasterBeanAdministrador {
 		String [] campos = {FacPrevisionFacturacionBean.T_NOMBRETABLA+"."+FacPrevisionFacturacionBean.C_IDINSTITUCION+" IDINSTITUCION", 		
 							FacPrevisionFacturacionBean.T_NOMBRETABLA+"."+FacPrevisionFacturacionBean.C_IDSERIEFACTURACION+" IDSERIEFACTURACION",
 							FacPrevisionFacturacionBean.T_NOMBRETABLA+"."+FacPrevisionFacturacionBean.C_IDPREVISION+" IDPREVISION",
+							FacPrevisionFacturacionBean.T_NOMBRETABLA+"."+FacPrevisionFacturacionBean.C_IDESTADOPREVISION+" IDESTADOPREVISION",
 							" (SELECT COUNT(*) FROM FAC_FACTURACIONPROGRAMADA PP WHERE PP.IDINSTITUCION=FAC_PREVISIONFACTURACION.IDINSTITUCION" +
 							" AND PP.IDSERIEFACTURACION = FAC_PREVISIONFACTURACION.IDSERIEFACTURACION" +
 							" AND PP.IDPREVISION=FAC_PREVISIONFACTURACION.IDPREVISION) EXISTEPROGRAMACION ",

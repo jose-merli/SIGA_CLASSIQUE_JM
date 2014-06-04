@@ -9,7 +9,7 @@ package com.siga.beans;
 public class FacPrevisionFacturacionBean extends MasterBean {
 
 	/* Variables */
-	private Integer idInstitucion;
+	private Integer idInstitucion, idEstadoPrevision;
 	
 	private Long idSerieFacturacion, idPrevision;
 	
@@ -28,6 +28,7 @@ public class FacPrevisionFacturacionBean extends MasterBean {
 	static public final String C_FECHAFINSERVICIOS 		= "FECHAFINSERVICIOS";
 	static public final String C_NOMBREFICHERO 		    = "NOMBREFICHERO";
 	static public final String C_DESCRIPCION 		    = "DESCRIPCION";
+	static public final String C_IDESTADOPREVISION 		= "IDESTADOPREVISION";
 	
 	// Metodos SET
 	public void setIdInstitucion (Integer id)		{ this.idInstitucion = id; }
@@ -39,6 +40,7 @@ public class FacPrevisionFacturacionBean extends MasterBean {
 	public void setFechaFinServicios (String f)		{ this.fechaFinServicios = f; }
 	public void setNombreFichero (String n)			{ this.nombreFichero = n; }
 	public void setDescripcion(String descripcion) 	{ this.descripcion = descripcion; }
+	public void setIdEstadoPrevision (Integer id)	{ this.idEstadoPrevision = id; }
 	
 	// Metodos GET
 	public Integer getIdInstitucion 		()	{ return this.idInstitucion; }
@@ -49,5 +51,6 @@ public class FacPrevisionFacturacionBean extends MasterBean {
 	public String  getFechaInicioServicios 	()	{ return this.fechaInicioServicios; }
 	public String  getFechaFinServicios		()	{ return this.fechaFinServicios; }
 	public String  getNombreFichero			()	{ return this.nombreFichero; }
-	public String getDescripcion			() 	{ return descripcion;	}
+	public String  getDescripcion			() 	{ return descripcion;	}
+	public Integer getIdEstadoPrevision  	()	{ return idEstadoPrevision; }
 }

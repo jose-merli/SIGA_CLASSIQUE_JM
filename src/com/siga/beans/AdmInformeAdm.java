@@ -78,7 +78,7 @@ public class AdmInformeAdm extends MasterBeanAdministrador
 		return orden;
 	} //getOrdenCampos()
 	
-	protected MasterBean hashTableToBean (Hashtable hash) throws ClsExceptions
+	public MasterBean hashTableToBean (Hashtable hash) throws ClsExceptions
 	{
 		AdmInformeBean bean = null;
 		
@@ -549,4 +549,6 @@ public class AdmInformeAdm extends MasterBeanAdministrador
 
     	return htFila;
     }	
+	
+	
 }

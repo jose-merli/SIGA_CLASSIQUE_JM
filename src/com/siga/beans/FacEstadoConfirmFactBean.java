@@ -40,6 +40,8 @@ public class FacEstadoConfirmFactBean extends MasterBean{
 	static public final Integer ENVIO_PROCESANDO = new Integer(14);  
 	static public final Integer ENVIO_FINALIZADA = new Integer(15);  
 	static public final Integer ENVIO_FINALIZADAERRORES = new Integer(16);  
+	
+	static public final Integer CONFIRM_PROCESANDO = new Integer(17); 
 
 	/* Nombre tabla */
 	static public String T_NOMBRETABLA = "FAC_ESTADOCONFIRMFACT";
