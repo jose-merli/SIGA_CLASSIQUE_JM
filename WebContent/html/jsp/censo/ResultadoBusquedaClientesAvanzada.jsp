@@ -656,7 +656,7 @@
 
 	<html:form action="/INF_InformesGenericos" method="post"	target="submitArea">
 	<html:hidden property="idInstitucion" value = "<%=idInstitucionLocation%>"/>
-	<html:hidden property="idTipoInforme" value="CENSO"/>
+	<html:hidden property="idTipoInforme" value="CENSO#OSEPA#ASEPA"/>/>
 	<html:hidden property="enviar" value="1"/>
 	<html:hidden property="descargar" value="1"/>
 	<html:hidden property="datosInforme"/>
