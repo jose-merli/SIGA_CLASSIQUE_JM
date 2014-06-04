@@ -308,7 +308,7 @@ public class CenMandatosAdm extends MasterBeanAdmVisible
 	public boolean firmarReferencia(String ref, String fecha, String lugar){
 		String sql = "update cen_mandatos_cuentasbancarias mcb ";
 			sql+=" set firma_fecha='"+fecha+"'";
-			sql+= ", firma_lugar='"+lugar+"'";
+			sql+= ", firma_lugar='"+lugar.replaceAll("'", "''")+"'";
 			sql+= ", mcb.fechamodificacion=sysdate";
 			sql+= ", mcb.usumodificacion="+usrbean.getUserName();
 			sql+=" where mcb.refmandatosepa='"+ref+"'";
