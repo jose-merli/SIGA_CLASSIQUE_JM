@@ -121,15 +121,6 @@ public class MantenimientoMandatosAction extends MasterAction {
 	{
 		try {
 			
-			// borro el formulario en session de Avanzada
-			MantenimientoMandatosForm miformSession = (MantenimientoMandatosForm)request.getSession().getAttribute("busquedaClientesAvanzadaForm");
-			if (miformSession!=null) {
-				miformSession.reset(mapping,request);
-			}
-			MantenimientoMandatosForm miformSession2 = (MantenimientoMandatosForm)request.getSession().getAttribute("mantenimientoMandatosForm");
-			if (miformSession2!=null) {
-				miformSession2.reset(mapping,request);
-			}
 			MantenimientoMandatosForm miform = (MantenimientoMandatosForm)formulario;
 			miform.reset(mapping,request);
 			
@@ -496,7 +487,7 @@ public class MantenimientoMandatosAction extends MasterAction {
 			request.setAttribute("campos",campos);
 			request.setAttribute("datos",datos);
 			request.setAttribute("cabeceras",cabeceras);
-			request.setAttribute("descripcion", idInstitucion+"_"+this.getUserName(request).toString());
+			request.setAttribute("descripcion", "Mandatos_"+idInstitucion+"_"+this.getUserName(request).toString());
 						
 			
 		} 

@@ -114,7 +114,7 @@
 
 	<!-- INICIO: TITULO Y LOCALIZACION -->
 	<!-- Escribe el título y localización en la barra de título del frame principal -->
-	<siga:Titulo titulo="Mantenimiento de mandatos" localizacion="Censo"/>
+	<siga:Titulo titulo="censo.mantenimientoMandatos.titulo" localizacion="Censo"/>
 	<!-- FIN: TITULO Y LOCALIZACION -->
 
 	<!-- INICIO: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->
@@ -143,6 +143,7 @@
 				}
 				
 				document.forms[0].tipoMandato.value=jQuery('#idTipoMandato').val();
+				document.forms[0].tipoCliente.value=jQuery('#idTipoCliente').val();
 				
 				document.forms[0].valorCheck.value="1";
 
@@ -248,13 +249,21 @@
 
 
 									<tr>
+										<td class="labelText"><siga:Idioma key="censo.busquedaClientesAvanzada.literal.tipoColegiacion"/></td>
+										<td>
+											<select id="idTipoCliente">
+												<option></option>
+												<option value="C" selected="selected"><siga:Idioma key="censo.colegiacion.colegiado"/></option>
+												<option value="N"><siga:Idioma key="censo.colegiacion.noColegiado"/></option>
+											</select>
+										</td>
+										<input type="hidden" name="tipoCliente">
 										<td class="labelText">
 											<siga:Idioma key="censo.busquedaClientesAvanzada.literal.nColegiado"/>
 										</td>
 										<td>
 											<html:text name="mantenimientoMandatosForm" property="numeroColegiado" maxlength="20" size="10" styleClass="box" />
 										</td>
-										<input type="hidden" name="tipoCliente">
 									</tr>
 									
 								<!-- FILA -->
@@ -266,13 +275,7 @@
 										<html:text name="mantenimientoMandatosForm" property="nif" size="15" styleClass="box"/>
 									</td>
 	
-									<td class="labelText">
-										<% if (colegiado.equals(ClsConstants.DB_TRUE)||colegiado.equals("2")) { %>
-										<siga:Idioma key="censo.busquedaClientes.literal.nombre"/>
-										<% } else { %>
-										<siga:Idioma key="censo.busquedaClientes.literal.nombreDenominacion" />
-										<% } %>
-									</td>				
+									<td class="labelText"><siga:Idioma key="censo.busquedaClientes.literal.nombre"/></td>				
 									<td>
 										<html:text name="mantenimientoMandatosForm" property="nombrePersona" size="30" styleClass="box"/>
 									</td>
@@ -294,9 +297,9 @@
 									</td>
 								</tr>
 								<tr>
-									<td class="labelText">Fecha de firma</td>
+									<td class="labelText"><siga:Idioma key="censo.fichaCliente.bancos.mandatos.fechaFirma"/></td>
 									<td><siga:Fecha nombreCampo="fechaFirmaInicio" /> - <siga:Fecha nombreCampo="fechaFirmaFin"/></td>
-									<td class="labelText">Fecha de modificación</td>
+									<td class="labelText"><siga:Idioma key="gratuita.retenciones.fechaModificacion"/></td>
 									<td><siga:Fecha nombreCampo="fechaModInicio"/> - <siga:Fecha nombreCampo="fechaModFin"/></td>
 								</tr>
 								<tr style="border-top:1px solid black">
@@ -304,14 +307,12 @@
 									<td>
 										<select id="idTipoMandato">
 											<option></option>
-											<option value="0" selected="selected">SERVICIOS</option>
-											<option value="1">PRODUCTOS</option>
+											<option value="0" selected="selected"><siga:Idioma key="pestana.fichaCliente.datosServicios"/></option>
+											<option value="1"><siga:Idioma key="pestana.fichaCliente.datosProductos"/></option>
 										</select>
 									</td>
 									
-									<td class="labelText">
-									  Pendientes de firmar
-									</td>
+									<td class="labelText"><siga:Idioma key="censo.mantenimientoMandatos.pendieteFirmar"/></td>
 									<td>		 
 		 								<input type="checkbox" id="idChkPendientesFirmar" checked/>		
 									</td>
@@ -341,7 +342,7 @@
 
 		%>
 
-		<siga:ConjBotonesBusqueda botones="<%=botones %>"  titulo="<%=busc%>" />
+		<siga:ConjBotonesBusqueda botones="<%=botones %>"  titulo="" />
 		<!-- FIN: BOTONES BUSQUEDA -->
 
 		<!-- INICIO: IFRAME LISTA RESULTADOS -->

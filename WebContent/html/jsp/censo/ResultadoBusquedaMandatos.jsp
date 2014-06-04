@@ -145,7 +145,8 @@
   	
   	<script src="//code.jquery.com/jquery-1.10.2.js"></script>
   	<script src="//code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
-	
+	<link rel="stylesheet" href="//code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css">
+  
 	<!-- INICIO: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->
 	<!-- Validaciones en Cliente -->
 	<!-- El nombre del formulario se obtiene del struts-config -->
@@ -216,7 +217,7 @@
 						for (int p = 0; p < registrosSeleccionados.size(); p++) {
 							Hashtable clavesEJG = (Hashtable) registrosSeleccionados.get(p);
 							valorCheckPersona = (String) clavesEJG.get("CLAVE");%>
-							ObjArray.push('<%=valorCheckPersona%>');
+							ObjArray.push("<%=valorCheckPersona%>");
 						<%
 						}
 					}%>
@@ -379,6 +380,8 @@
 				          }
 				    }
 			);
+			jQuery(".ui-widget-overlay").css("opacity","0");
+			/*
 			jQuery(".ui-dialog").css("border", "1px solid black" );
 			jQuery(".ui-dialog").css("background-color", jQuery('body').css("background-color") );
 			jQuery(".ui-dialog-content").css("padding", "4px" );
@@ -399,7 +402,7 @@
 			jQuery(".ui-button").css("border",  "2px solid black" );
 			jQuery(".ui-button").css("padding",  "0 3 0 3px" );
 			jQuery(".ui-button").css("text-align", "center" );
-			
+			*/
 			
 		}
 		
@@ -437,9 +440,9 @@
 </html:form>
 
 <%
-		String tamanosCol = "3,8,8,14,9,9,20,14";
+		String tamanosCol = "3,8,8,13,13,8,20,14";
 		//String nombresCol = "<input type='checkbox' name='chkGeneral'  id='chkGeneral' onclick='cargarChecksTodos(this)'/>, NColegiado, NIF, Apellidos, Nombre,IBAN,Titular,Tipo, Referencia, Fecha de firma";
-		String nombresCol = "<input type='checkbox' name='chkGeneral'  id='chkGeneral' onclick='cargarChecksTodos(this)'/>, NColegiado, NIF, Apellidos, Nombre,Tipo, IBAN/Referencia, Fecha/Lugar de firma";
+		String nombresCol = "<input type='checkbox' name='chkGeneral'  id='chkGeneral' onclick='cargarChecksTodos(this)'/>, censo.busquedaClientesAvanzada.literal.nColegiado, censo.busquedaClientes.literal.nif, censo.busquedaClientes.literal.apellidos, censo.busquedaClientes.literal.nombre,censo.busquedaClientesAvanzada.literal.tipoCliente, IBAN/Referencia, Fecha/Lugar de firma";
 %>
 <siga:Table name="tablaDatos"
 	width="100%"
@@ -564,24 +567,24 @@
 		&nbsp;
 		</td>
 		<td class="tdBotones">
-		<input type="button" alt="Firmar Mandatos"  id="idButton" onclick='firmarMandatos()' class="button" name="idButton" value="Firmar Mandatos">
+		<input type="button" alt="Firmar Mandatos"  id="idButton" onclick='firmarMandatos()' class="button" name="idButton" value="<siga:Idioma key='censo.mantenimientoMandatos.firmarMandatos'/>"/>
 		</td>
 		<td class="tdBotones">
-		<input type="button" alt="Generar Excels"  id="idButton" onclick='return accionGenerarExcels();' class="button" name="idButton" value="Generar Excels">
+		<input type="button" alt="Generar Excels"  id="idButton" onclick='return accionGenerarExcels();' class="button" name="idButton" value="<siga:Idioma key='general.boton.exportarExcel'/>"/>
 		</td>
 	</tr>
 </table>
 
 <div id="dialogoFirma" title="Firma de Mandatos" style="display:none">
 <div>
-  	<p class="labelTextValue">Indique la fecha y lugar de la firma del mandato.</p>
-  	<p class="labelTextValue">Si el mandato ya está firmado no verá afectado</p>
+  	<p class="labelTextValue"><siga:Idioma key='censo.mantenimientoMandatos.explicacion1'/></p>
+  	<p class="labelTextValue"><siga:Idioma key='censo.mantenimientoMandatos.explicacion2'/></p>
   	
   	<siga:ConjCampos>
-  		<div style="width:75px;float:left" class="labelText"><label for="diagFechaFirma">Fecha (*)</label></div>
+  		<div style="width:75px;float:left" class="labelText"><label for="diagFechaFirma"><siga:Idioma key='cen.consultaAnticipos.literal.fecha'/> (*)</label></div>
 	    <div class="labelTextValue"><siga:Fecha nombreCampo="diagFechaFirma" valorInicial="" anchoTextField="8"/></div>
-  		<div style="width:75px;float:left" class="labelText">Lugar (*)</div>
-	    <div class="labelTextValue"><input type="text" id="diagLugarFirma" maxlength="100" size="50" value="<%=colegio%>"/></div>
+  		<div style="width:75px;float:left" class="labelText"><siga:Idioma key='gratuita.mantenimientoLG.literal.lugar'/> (*)</div>
+	    <div class="labelTextValue"><input type="text" id="diagLugarFirma" maxlength="100" size="40" value="<%=colegio%>"/></div>
   	</siga:ConjCampos>
 </div>
   	

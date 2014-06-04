@@ -1990,10 +1990,14 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 	    //Obtenemos el bean del estado actual
 	    ExpEstadosAdm expEstAdm = new ExpEstadosAdm(UsrBean.UsrBeanAutomatico(expBean.getIdInstitucion().toString()));
 	    Hashtable htPkEst = new Hashtable();
-	    htPkEst.put(ExpEstadosBean.C_IDINSTITUCION,expBean.getIdInstitucion_tipoExpediente());
-	    htPkEst.put(ExpEstadosBean.C_IDTIPOEXPEDIENTE,expBean.getIdTipoExpediente());
-	    htPkEst.put(ExpEstadosBean.C_IDFASE,expBean.getIdFase());
-	    htPkEst.put(ExpEstadosBean.C_IDESTADO,expBean.getIdEstado());
+	    try{    	
+		    htPkEst.put(ExpEstadosBean.C_IDINSTITUCION,expBean.getIdInstitucion_tipoExpediente());
+		    htPkEst.put(ExpEstadosBean.C_IDTIPOEXPEDIENTE,expBean.getIdTipoExpediente());
+		    htPkEst.put(ExpEstadosBean.C_IDFASE,expBean.getIdFase());
+		    htPkEst.put(ExpEstadosBean.C_IDESTADO,expBean.getIdEstado());
+	    }catch (Exception e) {
+	    	throw new ClsExceptions(e,"El expediente no tiene estado");
+		}
 	    ExpEstadosBean expEstOld;
 	    ExpEstadosBean expEstNew = null;        
 	    try {

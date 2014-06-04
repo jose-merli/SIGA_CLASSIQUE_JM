@@ -220,7 +220,7 @@ public class CenMandatosAdm extends MasterBeanAdmVisible
 			sql.append(" PER.NIFCIF NIFCIF,");
 			sql.append(" PER.IDPERSONA IDPERSONA,");
 			sql.append(" PER.NOMBRE NOMBRE,");
-			sql.append(" PER.APELLIDOS1 || ' ' || PER.APELLIDOS2 APELLIDOS,");
+			sql.append(" DECODE(PER.APELLIDOS1,'#NA','',PER.APELLIDOS1 || ' ' || PER.APELLIDOS2) APELLIDOS,");
 			sql.append(" CUENTA.IBAN IBAN,");
 			sql.append(" CUENTA.TITULAR TITULAR,");
 			sql.append(" DECODE(MAN.TIPOMANDATO, 0, 'SERVICIOS', 1, 'PRODUCTOS') TIPOMANDATO,");
@@ -273,6 +273,13 @@ public class CenMandatosAdm extends MasterBeanAdmVisible
 			}
 			if (formulario.getTipoMandato()!=null && !formulario.getTipoMandato().trim().equals("")) {
 				sql.append(" AND MAN.TIPOMANDATO='"+formulario.getTipoMandato()+"'");
+			}
+			if (formulario.getTipoCliente()!=null && !formulario.getTipoCliente().trim().equals("")) {
+				if(formulario.getTipoCliente().equalsIgnoreCase("C")){
+					sql.append("    and exists (select 1 from cen_colegiado col where col.idpersona=per.idpersona and col.idinstitucion=man.idinstitucion)");
+				}else if(formulario.getTipoCliente().equalsIgnoreCase("N")){
+					sql.append("    and not exists (select 1 from cen_colegiado col where col.idpersona=per.idpersona and col.idinstitucion=man.idinstitucion)");			
+				}
 			}
 
 			sql.append(" Order by APELLIDOS asc, nombre asc ");			
