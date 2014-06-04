@@ -70,8 +70,8 @@
 		}
 	</script>
 	<siga:Titulo 
-		titulo="gratuita.busquedaEJG.documentacion" 
-		localizacion="gratuita.busquedaEJG.localizacion"/>
+		titulo="gratuita.asistencia.documentacion" 
+		localizacion="gratuita.asisResp.literal.localizacionAsis"/>
 </head>
 
 <body class="tablaCentralCampos">	
