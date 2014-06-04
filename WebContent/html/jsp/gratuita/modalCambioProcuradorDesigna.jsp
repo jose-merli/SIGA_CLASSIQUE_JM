@@ -285,9 +285,22 @@
 				sub();
 				if (validateCambiosProcuradoresDesignasForm(document.forms[0])){
 					if(fechaActual!=''){
+						
+						//CASO 1
 						if(fechaActual == null){
+							if(document.getElementById("idProcurador").value != null && document.getElementById("idProcurador").value != '' && '${datosProcuradoresEJGRel}' != null && '${datosProcuradoresEJGRel}' != ''){
+								var type = "<siga:Idioma key="gratuita.cambiosProcuradoresDesigna.actualizar.procuradoresEJG"/>";
+								if(confirm(type)){				
+									document.CambiosProcuradoresDesignasForm.actualizaProcuradores.value = "1";
+								} else{
+									document.CambiosProcuradoresDesignasForm.actualizaProcuradores.value = "0";
+								}
+							}	
+							
 							document.forms[0].modo.value="insertar";
 							document.forms[0].submit();
+							
+						//CASO 2	
 						}else if (isEquals(document.forms[0].fechaDesigna.value,fechaActual)){
 						    if (confirm("<siga:Idioma key='messages.designa.confirmacion.igualdadFechas.procurador' />")) {	
 						    	document.CambiosProcuradoresDesignasForm.cambioMismoDia.value="1";						 
@@ -309,7 +322,8 @@
 							    return false;
 							}
 					
-							}else{
+						//CASO 3
+						}else{
 							  if (!isAfter(document.forms[0].fechaDesigna.value,fechaActual)){
 									alert("<siga:Idioma key="gratuita.cambiosProcuradoresDesigna.literal.fechaDesigna"/>"+
 									  "<siga:Idioma key="gratuita.cambiosProcuradoresDesigna.alert1"/>"+fechaActual);
