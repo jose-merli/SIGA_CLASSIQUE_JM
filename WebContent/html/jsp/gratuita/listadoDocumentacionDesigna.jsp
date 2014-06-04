@@ -114,7 +114,7 @@
 		<siga:Table 		   
 		   name="listadoDocumentacion"
 		   border="1"
-		   columnNames="gratuita.documentacionAsistencia.fechaentrada,gratuita.documentacionAsistencia.nombre,gratuita.documentacionDesigna.actuacion"
+		   columnNames="gratuita.documentacionAsistencia.fechaentrada,sjcs.ejg.documentacion.tipoDocumentacion,gratuita.documentacionDesigna.actuacion"
 		   columnSizes="10,40,40,10"
 		   modal="M">
 		   
