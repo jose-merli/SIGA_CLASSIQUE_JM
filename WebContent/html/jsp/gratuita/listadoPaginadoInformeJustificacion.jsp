@@ -1499,7 +1499,7 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 																		src="/SIGA/html/imagenes/bupload.gif" style="cursor:pointer;" 
 																		alt="Nueva Documentacion" name="iconoFila" title="Nueva Documentacion" border="0" 
 																		onClick="accionNuevaDocumentacionActuacion(${designa.anio},${designa.idTurno},${designa.numero},${designa.idInstitucion},${actuacion.numero})" 
-																		onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('iconoboton_nuevaDocuemntacion','','/SIGA/html/imagenes/binsertarestado_on.gif',1)">
+																		onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('iconoboton_nuevaDocuemntacion','','/SIGA/html/imagenes/bupload.gif.gif',1)">
 																	</td>
 																</c:when>
 																<c:otherwise>
@@ -1680,7 +1680,7 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 																		src="/SIGA/html/imagenes/bupload.gif" style="cursor:pointer;" 
 																		alt="Nueva Documentacion" name="iconoFila" title="Nueva Documentacion" border="0" 
 																		onClick="accionNuevaDocumentacionActuacion(${designa.anio},${designa.idTurno},${designa.numero},${designa.idInstitucion},${actuacion.numero})" 
-																		onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('iconoboton_nuevaDocuemntacion','','/SIGA/html/imagenes/binsertarestado_on.gif',1)">
+																		onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('iconoboton_nuevaDocuemntacion','','/SIGA/html/imagenes/bupload.gif',1)">
 																	</td>
 																	</c:when>
 																<c:otherwise>
