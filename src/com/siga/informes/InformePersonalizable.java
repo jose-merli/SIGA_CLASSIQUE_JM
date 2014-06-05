@@ -374,15 +374,11 @@ public class InformePersonalizable extends MasterReport
 				throw new SIGAException(
 						"informes.personalizable.error.configuracion.filtros");
 
-			// ejecutando la consulta
-			//tx = usr.getTransactionLigera();
 			try {
-//				tx.begin();
 
 				/** @TODO Convendria que cambiar a selectBind */
 				datos = consultaAdm.selectCamposOrdenados(sentencia);
 
-			//	tx.commit();
 			} catch (Exception sqle) {
 				String mensaje = sqle.getMessage();
 				if (mensaje.indexOf("TimedOutException") != -1
@@ -395,92 +391,91 @@ public class InformePersonalizable extends MasterReport
 				}
 			}
 
+			// Si no hay datos no se genera informe en esta iteracion
+			if (datos == null || datos.size() == 0)
+				continue;
+				
+			// generando el fichero
 			try {
-				if (datos != null && datos.size() > 0) {
-					// creando fichero para cada consulta
-					if(informe.getIdTipoInforme().equalsIgnoreCase("PREV"))
-					{	
-						//Si estamos generando un informe de previsiones 
-						nombreFichero = informe.getNombreSalida()+ ".xls";
-						
-					}else{
-						
-						nombreFichero = informe.getNombreSalida() + "_" + idinstitucion + "_" + usr.getUserName() + "_"
-							+ UtilidadesBDAdm.getFechaCompletaBD("").replaceAll("/", "").replaceAll(":", "").replaceAll(" ", "") + '_'
-							+ consulta.getNombre() + ".xls";
-					}	
+				// creando fichero para cada consulta
+				if(informe.getIdTipoInforme().equalsIgnoreCase("PREV"))
+				{	
+					//Si estamos generando un informe de previsiones 
+					nombreFichero = informe.getNombreSalida()+ ".xls";
+					
+				}else{
+					
+					nombreFichero = informe.getNombreSalida() + "_" + idinstitucion + "_" + usr.getUserName() + "_"
+						+ UtilidadesBDAdm.getFechaCompletaBD("").replaceAll("/", "").replaceAll(":", "").replaceAll(" ", "") + '_'
+						+ consulta.getNombre() + ".xls";
+				}	
 
-					ficheroGenerado = new File (rutaAlm + ClsConstants.FILE_SEP + nombreFichero);
-					
-					if (ficheroGenerado.exists())
-						ficheroGenerado.delete();
-					ficheroGenerado.createNewFile();
-					out = new BufferedWriter(new FileWriter(ficheroGenerado));
-					
-					// escribiendo las cabeceras
-					Vector<Hashtable<String, String>> hashOrdenado = datos.get(0);
+				ficheroGenerado = new File (rutaAlm + ClsConstants.FILE_SEP + nombreFichero);
+				
+				if (ficheroGenerado.exists())
+					ficheroGenerado.delete();
+				ficheroGenerado.createNewFile();
+				out = new BufferedWriter(new FileWriter(ficheroGenerado));
+				
+				// escribiendo las cabeceras
+				Vector<Hashtable<String, String>> hashOrdenado = datos.get(0);
+				for (int i = 0; i < hashOrdenado.size(); i++) {
+					out.write(hashOrdenado.get(i).keys().nextElement() + "\t");
+
+				}
+				out.newLine();
+				
+				// escribiendo los resultados
+				for (Iterator<Vector<Hashtable<String, String>>> iter = datos.iterator(); iter.hasNext(); ) {
+					hashOrdenado = iter.next();
 					for (int i = 0; i < hashOrdenado.size(); i++) {
-						out.write(hashOrdenado.get(i).keys().nextElement() + "\t");
 
+						out.write(hashOrdenado.get(i).elements().nextElement() + "\t");
 					}
 					out.newLine();
-					
-					// escribiendo los resultados
-					for (Iterator<Vector<Hashtable<String, String>>> iter = datos.iterator(); iter.hasNext(); ) {
-						hashOrdenado = iter.next();
-						for (int i = 0; i < hashOrdenado.size(); i++) {
-	
-							out.write(hashOrdenado.get(i).elements().nextElement() + "\t");
-						}
-						out.newLine();
 
+				}
+				
+				// cerrando el fichero
+				out.close();
+				listaFicheros.add(ficheroGenerado);
+			} catch (Exception sqle) {
+				throw new SIGAException("Problema en la generacion del fichero Excel", sqle, new String[] { sqle.toString() });
+			}
+
+			// copiando el fichero a la otra ruta solo si es necesario 
+			/** @TODO Creemos que generar el fichero en la ruta anterior no seria necesario, pero no vamos a tocarlo */
+			if (sRutaOracle != null && !sRutaOracle.isEmpty()) {
+
+				try {
+					File crearOracle = new File(sRutaOracle);
+					if (!crearOracle.exists())
+						crearOracle.mkdirs();
+
+					String sBarra = "";
+					if (sRutaOracle.indexOf("/") > -1)
+						sBarra = "/";
+					if (sRutaOracle.indexOf("\\") > -1)
+						sBarra = "\\";
+
+					InputStream in = new FileInputStream(rutaAlm + ClsConstants.FILE_SEP + nombreFichero);
+					OutputStream out2 = new FileOutputStream(sRutaOracle + sBarra + nombreFichero);
+
+					byte[] buf = new byte[1024];
+					int len;
+
+					while ((len = in.read(buf)) > 0) {
+						out2.write(buf, 0, len);
 					}
-					
-					// cerrando el fichero
+
+					in.close();
 					out.close();
 
-					if((sRutaOracle!=null)||(!sRutaOracle.isEmpty())){
-						
-						try {
-			                    
-								File crearOracle = new File(sRutaOracle);
-								if (!crearOracle.exists())
-									crearOracle.mkdirs();
-			
-								String sBarra = "";
-								if (sRutaOracle.indexOf("/") > -1)
-									sBarra = "/";
-								if (sRutaOracle.indexOf("\\") > -1)
-									sBarra = "\\";    
-							
-								InputStream in = new FileInputStream(rutaAlm+ClsConstants.FILE_SEP+nombreFichero);	                        
-		                        OutputStream out2 = new FileOutputStream(sRutaOracle+sBarra+nombreFichero);
-		                                
-		                        byte[] buf = new byte[1024];
-		                        int len;
-		
-		                        while ((len = in.read(buf)) > 0) {
-		                                out2.write(buf, 0, len);
-		                        }
-		                
-		                        in.close();
-		                        out.close();
-		                        
-			                } catch (Exception e2){
-			                        throw new SIGAException(
-									"Problema en la generacion del fichero Excel en directorio Oracle",
-									e2, new String[] { e2.toString() });
-			                }
-					
-					}
-					listaFicheros.add(ficheroGenerado);
+				} catch (Exception e2) {
+					throw new SIGAException("Problema en la generacion del fichero Excel en directorio Oracle", e2, new String[] { e2.toString() });
 				}
-			} catch (Exception sqle) {
-				throw new SIGAException(
-						"Problema en la generacion del fichero Excel",
-						sqle, new String[] { sqle.toString() });
 			}
-		}
+		} // For
 
 		// devolviendo el fichero
 		return listaFicheros;
