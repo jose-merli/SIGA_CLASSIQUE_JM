@@ -1946,7 +1946,7 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 		<html:hidden property="destinatarios"/>
 		<html:hidden property="modo" value = "preSeleccionInformes"/>
 		<input type='hidden' name='actionModal'>
-</html:form><html:form action="/JGR_DocumentacionDesigna" method="post" target="mainPestanas" style="display:none">
+</html:form><html:form action="/JGR_DocumentacionActuacionLetrado" method="post" target="mainPestanas" style="display:none">
 	<html:hidden property = "modo" value = ""/>	
 	<html:hidden styleId="idInstitucion" property = "idInstitucion" />
 	<html:hidden styleId="anio" property = "anio"/>

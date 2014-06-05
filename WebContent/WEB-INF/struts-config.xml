@@ -2846,7 +2846,9 @@
 			<forward name="inicio" path="/html/jsp/gratuita/listadoDocumentacionDesigna.jsp"/>
 			<forward name="editar" path="/html/jsp/gratuita/operarDocumentacionDesigna.jsp"/>
 		</action>		
-
+		<action path="/JGR_DocumentacionActuacionLetrado" type="com.siga.gratuita.action.DefinirDocumentacionDesignaAction" name="DefinirDocumentacionDesignaForm" scope="request">
+			<forward name="editar" path="/html/jsp/gratuita/operarDocumentacionDesigna.jsp"/>
+		</action>	
 		<action path="/JGR_EstadosEJG" type="com.siga.gratuita.action.DefinirEstadosEJGAction" name="DefinirEstadosEJGForm" scope="request">
 			<forward name="inicio" path="/html/jsp/gratuita/listadoEstadosEJG.jsp"/>
 			<forward name="insertar" path="/html/jsp/gratuita/insertarEstadoEJG.jsp"/>
