@@ -169,6 +169,12 @@
 			} else {				   
 				validarNew="N";
 			}
+		   
+			if (document.forms[0].abreviatura.value=="") {
+				alert('<siga:Idioma key="gratuita.definirTurnosIndex.literal.abreviatura"/> <siga:Idioma key="messages.campoObligatorio.error"/>');
+				fin();
+				return false;
+			}
 				
 			<%String mensaje = UtilidadesString.getMensajeIdioma(usr, "messages.subzona.obligatoria");%>
 			var mensaje="<%=mensaje%>";
