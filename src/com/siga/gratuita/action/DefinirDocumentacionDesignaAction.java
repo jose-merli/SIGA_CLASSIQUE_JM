@@ -125,7 +125,7 @@ public class DefinirDocumentacionDesignaAction extends MasterAction {
 			//pasamos si es obligatorio el archivo
 			request.setAttribute("fileRequired", true);
 			try {
-				String permisoFicheros = testAccess(request.getContextPath()+"/JGR_DocumentacionDesigna.do",null,request);
+				String permisoFicheros = testAccess(request.getContextPath()+mapping.getPath()+".do",null,request);
 				request.setAttribute("permisoFicheros", permisoFicheros);
 			} catch (ClsExceptions e) {
 				throw new SIGAException(e.getMsg());
@@ -191,7 +191,7 @@ public class DefinirDocumentacionDesignaAction extends MasterAction {
 			//pasamos si es obligatorio el archivo
 			request.setAttribute("fileRequired", true);
 			try {
-				String permisoFicheros = testAccess(request.getContextPath()+"/JGR_DocumentacionDesigna.do",null,request);
+				String permisoFicheros = testAccess(request.getContextPath()+mapping.getPath()+".do",null,request);
 				request.setAttribute("permisoFicheros", permisoFicheros);
 			} catch (ClsExceptions e) {
 				throw new SIGAException(e.getMsg());
@@ -254,8 +254,13 @@ public class DefinirDocumentacionDesignaAction extends MasterAction {
 			miForm.setModo("insertar");
 			//pasamos si es obligatorio el archivo
 			request.setAttribute("fileRequired", true);
+
+			
+			
+			
+			
 			try {
-				String permisoFicheros = testAccess(request.getContextPath()+"/JGR_DocumentacionDesigna.do",null,request);
+				String permisoFicheros = testAccess(request.getContextPath()+mapping.getPath()+".do",null,request);
 				request.setAttribute("permisoFicheros", permisoFicheros);
 			} catch (ClsExceptions e) {
 				throw new SIGAException(e.getMsg());
