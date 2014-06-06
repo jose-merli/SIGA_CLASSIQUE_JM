@@ -318,13 +318,9 @@ public class MantenimientoPagoAction extends MasterAction {
 			// Recupero el nombre de los ficheros asociados a la facturacion
 			Hashtable nombreFicheros = UtilidadesFacturacionSJCS.getNombreFicherosPago(idInstitucion, idFacturacion, idPago, null, this.getUserBean(request));
 			
+			// deshaciendo los cobros de retenciones judiciales
 			Vector vAuxCobrosRetencionJudicial = cobrosRetencionJudicialAdm.selectCobroRetencionJudicial(idInstitucion.toString(), idPago.toString());
-			
-			
-			
 			if ((vAuxCobrosRetencionJudicial != null) && (vAuxCobrosRetencionJudicial.size() > 0)) {
-				cobrosRetencionJudicialAdm.deleteCobroRetLEC(idInstitucion.toString(), idPago.toString());
-				
 				cobrosRetencionJudicialAdm.deleteCobroRetencionJudicial(idInstitucion.toString(), idPago.toString());
 			}
 			

@@ -292,10 +292,14 @@ public class FicheroBancarioPagosAction extends MasterAction{
     		throw new SIGAException("No se ha encontrado el fichero generado");
     	}
     	
-    	pathFichero += File.separator + idInstitucion + File.separator + nombreFichero+".zip";
-    	File filezip = SIGAServicesHelper.doZip(pathFichero, lista);		
-		
-		request.setAttribute("nombreFichero", nombreFichero+".zip");
+    	// devolviendo el fichero: (ZIP si hay varios)
+    	if (lista.size() == 1) {
+    		request.setAttribute("nombreFichero", lista.get(0).getName());
+    	} else {
+	    	pathFichero += File.separator + idInstitucion + File.separator + nombreFichero+".zip";
+	    	File filezip = SIGAServicesHelper.doZip(pathFichero, lista);		
+			request.setAttribute("nombreFichero", nombreFichero+".zip");
+    	}
 		request.setAttribute("rutaFichero", pathFichero);
 		request.setAttribute("borrarFichero", "true");		
 		

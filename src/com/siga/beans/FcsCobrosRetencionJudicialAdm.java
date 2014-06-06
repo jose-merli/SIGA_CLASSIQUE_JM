@@ -208,7 +208,7 @@ public class FcsCobrosRetencionJudicialAdm extends MasterBeanAdministrador {
 		sql.append(" RET.IDDESTINATARIO,dest.nombre NOMBREDESTINATARIO,RET.DESCDESTINATARIO,RET.FECHAINICIO, " );
 		sql.append(" RET.FECHAFIN, ");
 		sql.append(" COB.FECHARETENCION,COB.IMPORTERETENIDO,COB.IDPAGOSJG, ");
-		sql.append(" COB.MES,COB.ANIO, ");
+		sql.append(" lpad(Cob.Mes, 2, '0') mes,COB.ANIO, ");
 		sql.append(" PAGO.NOMBRE PAGORELACIONADO, ");
 		sql.append(" ABONO.NUMEROABONO ABONORELACIONADO ");
 		sql.append(" ,COB.IDCOBRO,COB.IDRETENCION, COB.IDINSTITUCION,    COB.IDPERSONA ");
@@ -357,6 +357,7 @@ public class FcsCobrosRetencionJudicialAdm extends MasterBeanAdministrador {
 					retencionAplicada.setIdRetencion(new Integer((String)registro.get("IDRETENCION")));
 					retencionAplicada.setFechaDesdePago(UtilidadesHash.getString(registro, "FECHADESDE") );
 					retencionAplicada.setFechaHastaPago(UtilidadesHash.getString(registro, "FECHAHASTA") );
+					retencionAplicada.setTipoRetencion(UtilidadesHash.getString(registro, "TIPORETENCION"));
 					
 					datos.add(retencionAplicada);
 				}
@@ -484,58 +485,89 @@ public class FcsCobrosRetencionJudicialAdm extends MasterBeanAdministrador {
 		}
 	}
 	
-	public Vector getConsultaLEC (String idInstitucion, String idPersona, String idRetencion, String fechaDesde, String fechaHasta) throws ClsExceptions 
+	public Vector getConsultaLEC(String idInstitucion,
+			String idPersona,
+			String idRetencion,
+			String fechaDesde,
+			String fechaHasta) throws ClsExceptions
 	{
-		//donde devolveremos el resultado
-		Vector resultado = new Vector();
-		//query con la select a ejecutar
+		// query con la select a ejecutar
 		StringBuffer sql = new StringBuffer();
-		sql.append("SELECT T.IDINSTITUCION,  T.IDPERSONA, T.IDRETENCION,  T.IDCOBRO , T.MES, T.ANIO, ");     
-		sql.append("T.IMPORTEANTAPLICARETENCION,  T.IMPORTEANTRETENIDO,         T.IMPORTEAPLICARETENCION, ");
-		sql.append("T.IMPORTETOTAPLICARETENCION,     T.IMPORTETOTRETENIDO,         T.IMPORTERETENIDO, ");          
-		sql.append("T.IMPORTESMI ");
-		sql.append(",C.NCOLEGIADO||' ' ||P.NOMBRE||' '||P.APELLIDOS1||' '||NVL(P.APELLIDOS2,'') COLEGIADO ");
-		sql.append(",PG.NOMBRE NOMBREPAGO ");
-		sql.append("FROM FCS_RETLECCOBROS T,FCS_COBROS_RETENCIONJUDICIAL CB,FCS_PAGOSJG PG, CEN_PERSONA P , CEN_COLEGIADO C ");  
-		sql.append("WHERE "); 
+		sql.append("Select lpad(Cob.Mes, 2, '0') as mes, ");
+		sql.append("       Cob.Anio as anio, ");
+		sql.append("       (Select Ret.Tiporetencion ");
+		sql.append("         From Fcs_Retenciones_Judiciales Ret ");
+		sql.append("        Where Cob.Idinstitucion = Ret.Idinstitucion ");
+		sql.append("          And Cob.Idretencion = Ret.Idretencion) as tiporetencion, ");
+		sql.append("       f_siga_formatonumero((Select Nvl(Sum(Cob2.Importeaplicaretencion), 0) ");
+		sql.append("          From Fcs_Cobros_Retencionjudicial Cob2 ");
+		sql.append("         Where Cob2.Idinstitucion = Cob.Idinstitucion ");
+		sql.append("           And Cob2.Idpersona = Cob.Idpersona ");
+		sql.append("           And Cob2.Mes = Cob.Mes ");
+		sql.append("           And Cob2.Anio = Cob.Anio ");
+		sql.append("           And Cob2.Idpagosjg < Cob.Idpagosjg), 2) As Importeantaplicaretencion, "); //importe hasta antes de ahora
+		sql.append("       f_siga_formatonumero((Select Nvl(Sum(Cob2.Importeretenido), 0) ");
+		sql.append("          From Fcs_Cobros_Retencionjudicial Cob2 ");
+		sql.append("         Where Cob2.Idinstitucion = Cob.Idinstitucion ");
+		sql.append("           And Cob2.Idpersona = Cob.Idpersona ");
+		sql.append("           And Cob2.Mes = Cob.Mes ");
+		sql.append("           And Cob2.Anio = Cob.Anio ");
+		sql.append("           And Cob2.Idpagosjg < Cob.Idpagosjg), 2) As Importeantretenido, "); //importe hasta antes de ahora
+		sql.append("       f_siga_formatonumero(Nvl(sum(Cob.Importeaplicaretencion), 0), 2) as IMPORTEAPLICARETENCION, "); //importe de ahora
+		sql.append("       f_siga_formatonumero(Nvl(sum(Cob.Importeretenido), 0), 2) as IMPORTERETENIDO, "); //importe de ahora
+		sql.append("       f_siga_formatonumero((Select Nvl(Sum(Cob2.Importeaplicaretencion), 0) ");
+		sql.append("          From Fcs_Cobros_Retencionjudicial Cob2 ");
+		sql.append("         Where Cob2.Idinstitucion = Cob.Idinstitucion ");
+		sql.append("           And Cob2.Idpersona = Cob.Idpersona ");
+		sql.append("           And Cob2.Mes = Cob.Mes ");
+		sql.append("           And Cob2.Anio = Cob.Anio ");
+		sql.append("           And Cob2.Idpagosjg <= Cob.Idpagosjg), 2) As Importetotaplicaretencion, "); //importe hasta ahora incluido
+		sql.append("       f_siga_formatonumero((Select Nvl(Sum(Cob2.Importeretenido), 0) ");
+		sql.append("          From Fcs_Cobros_Retencionjudicial Cob2 ");
+		sql.append("         Where Cob2.Idinstitucion = Cob.Idinstitucion ");
+		sql.append("           And Cob2.Idpersona = Cob.Idpersona ");
+		sql.append("           And Cob2.Mes = Cob.Mes ");
+		sql.append("           And Cob2.Anio = Cob.Anio ");
+		sql.append("           And Cob2.Idpagosjg <= Cob.Idpagosjg), 2) As Importetotretenido, "); //importe hasta ahora incluido
+		sql.append("       f_siga_formatonumero((Select Smi.Valor From Fcs_Smi Smi Where Smi.Anio = Cob.Anio), 2) As Importesmi, ");
+		sql.append("       (Select c.Ncolegiado || ' ' || p.Nombre || ' ' || p.Apellidos1 || ' ' || ");
+		sql.append("               Nvl(p.Apellidos2, '') ");
+		sql.append("          From Cen_Persona p, Cen_Colegiado c ");
+		sql.append("         Where Cob.Idinstitucion = c.Idinstitucion ");
+		sql.append("           And Cob.Idpersona = c.Idpersona ");
+		sql.append("           And c.Idpersona = p.Idpersona) As Colegiado, ");
+		sql.append("       Pg.Nombre || ' (' || To_Char(Pg.Fechadesde, 'dd/mm/yy') || '-' || To_Char(Pg.Fechahasta, 'dd/mm/yy') || ')' As Nombrepago ");
+		sql.append(" ");
+		sql.append("  From Fcs_Cobros_Retencionjudicial Cob, ");
+		sql.append("       Fcs_Pago_Colegiado           Pagcol, ");
+		sql.append("       Fcs_Pagosjg                  Pg ");
+		sql.append(" ");
+		sql.append(" Where Cob.Idinstitucion = Pagcol.Idinstitucion ");
+		sql.append("   And Cob.Idpagosjg = Pagcol.Idpagosjg ");
+		sql.append("   And Cob.Idpersona = Pagcol.Idperorigen ");
+		sql.append("   And Pagcol.Idinstitucion = Pg.Idinstitucion ");
+		sql.append("   And Pagcol.Idpagosjg = Pg.Idpagosjg ");
+		sql.append(" ");
+		sql.append("   And Cob.Idinstitucion = " + idInstitucion + " ");
+		sql.append("   And Cob.Idpersona = " + idPersona + " ");
+		sql.append("   And To_Date('01' || lpad(Cob.Mes, 2, '0') || Cob.Anio, 'ddmmyyyy') Between ");
+		sql.append("       To_Date('01' || To_Char(to_date('" + fechaDesde + "', 'dd/mm/yyyy'), 'mmyyyy'), 'ddmmyyyy') And ");
+		sql.append("       To_Date('01' || To_Char(to_date('" + fechaHasta + "', 'dd/mm/yyyy'), 'mmyyyy'), 'ddmmyyyy') ");
+		sql.append(" ");
+		sql.append(" Group By Cob.Idinstitucion, Cob.Idretencion, Cob.Idpersona, Cob.Anio, Cob.Mes, Cob.Idpagosjg, Pg.Nombre, Pg.Fechadesde, Pg.Fechahasta ");
+		sql.append(" Order By Cob.Anio, Cob.Mes, Cob.Idpagosjg");
 
-		sql.append("C.IDPERSONA = P.IDPERSONA ");
-		sql.append("AND C.IDINSTITUCION = T.IDINSTITUCION ");
-		sql.append("AND P.IDPERSONA = T.IDPERSONA ");
-		sql.append("AND CB.IDINSTITUCION = PG.IDINSTITUCION ");
-		sql.append("AND CB.IDPAGOSJG = PG.IDPAGOSJG ");
-		sql.append("AND CB.IDINSTITUCION =T.IDINSTITUCION "); 
-		sql.append("AND CB.IDPERSONA=T.IDPERSONA ");
-		sql.append("AND CB.IDRETENCION = T.IDRETENCION ");
-		sql.append("AND CB.IDCOBRO = T.IDCOBRO ");
-		
-		sql.append("AND T.IDINSTITUCION = "); 
-		sql.append(idInstitucion);
-		sql.append(" AND T.IDPERSONA = ");
-		sql.append(idPersona);
-//		sql.append(" AND T.IDRETENCION = ");
-//		sql.append(idRetencion);
-		sql.append(" AND T.MES BETWEEN ");
-		sql.append(" TO_CHAR(TO_DATE('");
-		sql.append(fechaDesde);
-		sql.append("'), 'MM')");
-		sql.append(" AND TO_CHAR(TO_DATE('");
-		sql.append(fechaHasta);
-		sql.append("'), 'MM')");
-		
-		sql.append(" ORDER BY T.MES,T.IMPORTEANTAPLICARETENCION ");
-
-		
-							
-		try{
-			resultado = (Vector)this.selectGenerico(sql.toString());
-		}catch(Exception e){
-			throw new ClsExceptions (e,"Error en FcsCobrosRetencionJudicialAdm.getConsultaLEC:"+sql);
+		// donde devolveremos el resultado
+		Vector resultado = null;
+		try {
+			resultado = (Vector) this.selectGenerico(sql.toString());
+		} catch (Exception e) {
+			throw new ClsExceptions(e, "Error en FcsCobrosRetencionJudicialAdm.getConsultaLEC:" + sql);
 		}
-		
+
 		return resultado;
-		
-	}
+
+	} // getConsultaLEC()
 	
 	/**
 	 * Obtiene el listado de los registros de la tabla FCS_COBROS_RETENCIONJUDICIAL que tengan el valo de la institución
@@ -591,28 +623,6 @@ public class FcsCobrosRetencionJudicialAdm extends MasterBeanAdministrador {
    			throw new ClsExceptions (e, "Excepcion en FcsCobrosRetencionJudicialAdm.deleteCobroRetencionJudicial(). Consulta SQL:" + consulta);
    		}
    	} //deleteCobroRetencionJudicial ()
-   	public void deleteCobroRetLEC (String idinstitucion,
-			  String idPago)
- 		throws ClsExceptions {
- 		
- 		StringBuffer consulta = new StringBuffer("");
- 		try {
- 			consulta.append(" ");
- 			consulta.append(" Delete From Fcs_Retleccobros");
- 			consulta.append(" Where (Idinstitucion, Idretencion, Idpersona, Idcobro) In");
- 			consulta.append(" (Select Idinstitucion, Idretencion, Idpersona, Idcobro");
- 			consulta.append(" From Fcs_Cobros_Retencionjudicial");
- 			consulta.append(" Where Idinstitucion = ");
- 			consulta.append(idinstitucion);
- 			consulta.append(" And Idpagosjg =");
- 			consulta.append(idPago);
- 			consulta.append(" )");
-
- 			ClsMngBBDD.executeUpdate (consulta.toString());
- 		} catch (Exception e) {
- 			throw new ClsExceptions (e, "Excepcion en FcsCobrosRetencionJudicialAdm.deleteCobroRetLEC(). Consulta SQL:" + consulta);
- 		}
- 	} //deleteCobroRetencionJudicial ()	
 	
 }
 
