@@ -495,24 +495,23 @@ public class FcsCobrosRetencionJudicialAdm extends MasterBeanAdministrador {
 		StringBuffer sql = new StringBuffer();
 		sql.append("Select lpad(Cob.Mes, 2, '0') as mes, ");
 		sql.append("       Cob.Anio as anio, ");
-		sql.append("       (Select Ret.Tiporetencion ");
-		sql.append("         From Fcs_Retenciones_Judiciales Ret ");
-		sql.append("        Where Cob.Idinstitucion = Ret.Idinstitucion ");
-		sql.append("          And Cob.Idretencion = Ret.Idretencion) as tiporetencion, ");
+		sql.append("       Ret.Tiporetencion as tiporetencion, ");
 		sql.append("       f_siga_formatonumero((Select Nvl(Sum(Cob2.Importeaplicaretencion), 0) ");
 		sql.append("          From Fcs_Cobros_Retencionjudicial Cob2 ");
 		sql.append("         Where Cob2.Idinstitucion = Cob.Idinstitucion ");
 		sql.append("           And Cob2.Idpersona = Cob.Idpersona ");
 		sql.append("           And Cob2.Mes = Cob.Mes ");
 		sql.append("           And Cob2.Anio = Cob.Anio ");
-		sql.append("           And Cob2.Idpagosjg < Cob.Idpagosjg), 2) As Importeantaplicaretencion, "); //importe hasta antes de ahora
+		sql.append("           And Cob2.Idpagosjg <= Cob.Idpagosjg ");
+		sql.append("           And Cob2.Idcobro < Cob.Idcobro), 2) As Importeantaplicaretencion, "); //importe hasta antes de ahora
 		sql.append("       f_siga_formatonumero((Select Nvl(Sum(Cob2.Importeretenido), 0) ");
 		sql.append("          From Fcs_Cobros_Retencionjudicial Cob2 ");
 		sql.append("         Where Cob2.Idinstitucion = Cob.Idinstitucion ");
 		sql.append("           And Cob2.Idpersona = Cob.Idpersona ");
 		sql.append("           And Cob2.Mes = Cob.Mes ");
 		sql.append("           And Cob2.Anio = Cob.Anio ");
-		sql.append("           And Cob2.Idpagosjg < Cob.Idpagosjg), 2) As Importeantretenido, "); //importe hasta antes de ahora
+		sql.append("           And Cob2.Idpagosjg <= Cob.Idpagosjg ");
+		sql.append("           And Cob2.Idcobro < Cob.Idcobro), 2) As Importeantretenido, "); //importe hasta antes de ahora
 		sql.append("       f_siga_formatonumero(Nvl(sum(Cob.Importeaplicaretencion), 0), 2) as IMPORTEAPLICARETENCION, "); //importe de ahora
 		sql.append("       f_siga_formatonumero(Nvl(sum(Cob.Importeretenido), 0), 2) as IMPORTERETENIDO, "); //importe de ahora
 		sql.append("       f_siga_formatonumero((Select Nvl(Sum(Cob2.Importeaplicaretencion), 0) ");
@@ -521,14 +520,16 @@ public class FcsCobrosRetencionJudicialAdm extends MasterBeanAdministrador {
 		sql.append("           And Cob2.Idpersona = Cob.Idpersona ");
 		sql.append("           And Cob2.Mes = Cob.Mes ");
 		sql.append("           And Cob2.Anio = Cob.Anio ");
-		sql.append("           And Cob2.Idpagosjg <= Cob.Idpagosjg), 2) As Importetotaplicaretencion, "); //importe hasta ahora incluido
+		sql.append("           And Cob2.Idpagosjg <= Cob.Idpagosjg ");
+		sql.append("           And Cob2.Idcobro <= Cob.Idcobro), 2) As Importetotaplicaretencion, "); //importe hasta ahora incluido
 		sql.append("       f_siga_formatonumero((Select Nvl(Sum(Cob2.Importeretenido), 0) ");
 		sql.append("          From Fcs_Cobros_Retencionjudicial Cob2 ");
 		sql.append("         Where Cob2.Idinstitucion = Cob.Idinstitucion ");
 		sql.append("           And Cob2.Idpersona = Cob.Idpersona ");
 		sql.append("           And Cob2.Mes = Cob.Mes ");
 		sql.append("           And Cob2.Anio = Cob.Anio ");
-		sql.append("           And Cob2.Idpagosjg <= Cob.Idpagosjg), 2) As Importetotretenido, "); //importe hasta ahora incluido
+		sql.append("           And Cob2.Idpagosjg <= Cob.Idpagosjg ");
+		sql.append("           And Cob2.Idcobro <= Cob.Idcobro), 2) As Importetotretenido, "); //importe hasta ahora incluido
 		sql.append("       f_siga_formatonumero((Select Smi.Valor From Fcs_Smi Smi Where Smi.Anio = Cob.Anio), 2) As Importesmi, ");
 		sql.append("       (Select c.Ncolegiado || ' ' || p.Nombre || ' ' || p.Apellidos1 || ' ' || ");
 		sql.append("               Nvl(p.Apellidos2, '') ");
@@ -539,6 +540,7 @@ public class FcsCobrosRetencionJudicialAdm extends MasterBeanAdministrador {
 		sql.append("       Pg.Nombre || ' (' || To_Char(Pg.Fechadesde, 'dd/mm/yy') || '-' || To_Char(Pg.Fechahasta, 'dd/mm/yy') || ')' As Nombrepago ");
 		sql.append(" ");
 		sql.append("  From Fcs_Cobros_Retencionjudicial Cob, ");
+		sql.append("       Fcs_Retenciones_Judiciales   Ret, ");
 		sql.append("       Fcs_Pago_Colegiado           Pagcol, ");
 		sql.append("       Fcs_Pagosjg                  Pg ");
 		sql.append(" ");
@@ -547,9 +549,12 @@ public class FcsCobrosRetencionJudicialAdm extends MasterBeanAdministrador {
 		sql.append("   And Cob.Idpersona = Pagcol.Idperorigen ");
 		sql.append("   And Pagcol.Idinstitucion = Pg.Idinstitucion ");
 		sql.append("   And Pagcol.Idpagosjg = Pg.Idpagosjg ");
+		sql.append("   And Cob.Idinstitucion = Ret.Idinstitucion ");
+		sql.append("   And Cob.Idretencion = Ret.Idretencion ");
 		sql.append(" ");
 		sql.append("   And Cob.Idinstitucion = " + idInstitucion + " ");
 		sql.append("   And Cob.Idpersona = " + idPersona + " ");
+		sql.append("   And Ret.Tiporetencion = 'L' ");
 		sql.append("   And To_Date('01' || lpad(Cob.Mes, 2, '0') || Cob.Anio, 'ddmmyyyy') Between ");
 		sql.append("       To_Date('01' || To_Char(to_date('" + fechaDesde + "', 'dd/mm/yyyy'), 'mmyyyy'), 'ddmmyyyy') And ");
 		sql.append("       To_Date('01' || To_Char(to_date('" + fechaHasta + "', 'dd/mm/yyyy'), 'mmyyyy'), 'ddmmyyyy') ");
