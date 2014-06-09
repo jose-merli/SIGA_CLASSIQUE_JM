@@ -2638,7 +2638,7 @@ public class Facturacion {
 		    }
 			
 			tx.commit();
-					    			
+
 			tx.begin();
 
 			Object[] param_in = new Object[7];		
@@ -2653,8 +2653,25 @@ public class Facturacion {
         	param_in[6] = beanPrev.getIdPrevision().toString();
         	
         	String resultado[] = new String[2];
-        	resultado = ClsMngBBDD.callPLProcedure("{call PKG_SIGA_FACTURACION.GENERACIONFACTURACION(?,?,?,?,?,?,?,?,?)}", 2, param_in);
+        	
+        	try{
+        	
+        		resultado = ClsMngBBDD.callPLProcedure("{call PKG_SIGA_FACTURACION.GENERACIONFACTURACION(?,?,?,?,?,?,?,?,?)}", 2, param_in);
 			
+        	}catch (Exception ep) {
+				
+				tx.rollback();
+				
+				tx.begin(); 
+				UtilidadesHash.set(hashEstado,FacPrevisionFacturacionBean.C_IDESTADOPREVISION, FacEstadoConfirmFactBean.CONFIRM_FINALIZADAERRORES);
+			    if (!admPrev.updateDirect(hashEstado,claves,camposPrevFactura)) {
+			        throw new ClsExceptions("Error al actualizar el estado de la previsión. finalizada con errores. "+ep);
+			    }
+			    tx.commit(); 
+			    throw new ClsExceptions(UtilidadesString.getMensajeIdioma(this.usrbean.getLanguage(),"facturacion.nuevaPrevisionFacturacion.mensaje.procesoPlSQLERROR")+"Serie:" +beanPrev.getIdSerieFacturacion().toString()+ "Prev:"+beanPrev.getIdPrevision().toString()+" - Codigo error:"+ep);
+				
+			}
+        	
 			String codretorno = resultado[0];
 			
 			if (!codretorno.equals("0")) {
@@ -2762,6 +2779,8 @@ public class Facturacion {
 			        throw new ClsExceptions("Error al actualizar el estado de la previsión. finalizada con errores. "+e);
 			    }
 			    tx.commit(); 
+			    throw new ClsExceptions(UtilidadesString.getMensajeIdioma(this.usrbean.getLanguage(),"facturacion.nuevaPrevisionFacturacion.mensaje.generacionFicheroERROR")+ " - Codigo error:"+e);
+
 			}catch(Exception e2){
 				throw new ClsExceptions(UtilidadesString.getMensajeIdioma(this.usrbean.getLanguage(),"facturacion.nuevaPrevisionFacturacion.mensaje.generacionFicheroERROR")+ " - Codigo error:"+e2);
 			}	
