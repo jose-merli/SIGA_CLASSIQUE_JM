@@ -107,7 +107,12 @@
 					document.forms[0].modo.value="nuevo";
 					document.forms[0].target='';						
 					var salida = ventaModalGeneral(document.forms[0].name,"M");
-					if (salida == "MODIFICADO") buscar();
+					if (salida == "MODIFICADO"){
+						var mensaje = '<siga:Idioma key="comunicaciones.info.procesandoSolicitud"/>'
+						var estilo="success";
+						alert(unescape(mensaje,estilo));
+						buscar();
+					}
 				}
 	
 			</script>
