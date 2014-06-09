@@ -559,8 +559,8 @@ public class FcsCobrosRetencionJudicialAdm extends MasterBeanAdministrador {
 		sql.append("       To_Date('01' || To_Char(to_date('" + fechaDesde + "', 'dd/mm/yyyy'), 'mmyyyy'), 'ddmmyyyy') And ");
 		sql.append("       To_Date('01' || To_Char(to_date('" + fechaHasta + "', 'dd/mm/yyyy'), 'mmyyyy'), 'ddmmyyyy') ");
 		sql.append(" ");
-		sql.append(" Group By Cob.Idinstitucion, Cob.Idretencion, Cob.Idpersona, Cob.Anio, Cob.Mes, Cob.Idpagosjg, Pg.Nombre, Pg.Fechadesde, Pg.Fechahasta ");
-		sql.append(" Order By Cob.Anio, Cob.Mes, Cob.Idpagosjg");
+		sql.append(" Group By Cob.Idinstitucion, Cob.Idretencion, Cob.Idpersona, Cob.Anio, Cob.Mes, Cob.Idpagosjg, Cob.Idcobro, Ret.Tiporetencion, Pg.Nombre, Pg.Fechadesde, Pg.Fechahasta ");
+		sql.append(" Order By Cob.Anio, Cob.Mes, Cob.Idpagosjg, Cob.Idcobro");
 
 		// donde devolveremos el resultado
 		Vector resultado = null;
