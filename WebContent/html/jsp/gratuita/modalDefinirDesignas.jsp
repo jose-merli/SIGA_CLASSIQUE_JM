@@ -31,7 +31,7 @@
 	String app=request.getContextPath();
 	HttpSession ses=request.getSession();
 	UsrBean usr=(UsrBean)ses.getAttribute("USRBEAN");	
-	
+	String fechaVigor = GstDate.getHoyJsp();
 	String letradoSeleccionado = (String) request.getAttribute("letradoSeleccionado");
 	String hayDatos = (String)request.getAttribute("hayDatos");
 	String numProcedimiento = (String)request.getAttribute("numProcedimiento");
@@ -71,14 +71,14 @@
 	String sreadonly="false";
 	String idTurnoSeleccionado = "-1";
 	if (idTurnoAsistencia != null && !idTurnoAsistencia.equals("")) {// Cuando venimos de Asistencias
-		idTurnoSeleccionado = (idTurnoAsistencia.split(","))[1];
-
+		String idsTurnosAsi[] = idTurnoAsistencia.split(",");
+		idTurnoSeleccionado = idsTurnosAsi[1];	
+		elementoSelTurno.add(0,"{\"idturno\":\""+idTurnoSeleccionado+"\",\"idinstitucion\":\""+idsTurnosAsi[0]+"\",\"fechadesdevigor\":\""+fechaVigor+"\",\"fechahastavigor\":\""+fechaVigor+"\"}");
+	}else if (idTurnoEJG != null && !idTurnoEJG.equals("")) {// cuando venimos de EJG
+    	String idsTurnosEJG[] = idTurnoEJG.split(",");
+    	idTurnoSeleccionado = idsTurnosEJG[1];
+    	elementoSelTurno.add(0,"{\"idturno\":\""+idTurnoSeleccionado+"\",\"idinstitucion\":\""+idsTurnosEJG[0]+"\",\"fechadesdevigor\":\""+fechaVigor+"\",\"fechahastavigor\":\""+fechaVigor+"\"}");
 	}
-    else if (idTurnoEJG != null && !idTurnoEJG.equals("")) {// cuando venimos de EJG
-    	idTurnoSeleccionado = (idTurnoEJG.split(","))[1];
-		
-	}
-	elementoSelTurno.add(idTurnoSeleccionado);
 	
 	int pcajgActivo = 0;
 	if (request.getAttribute("PCAJG_ACTIVO")!=null){
@@ -96,7 +96,7 @@
    	
 	
 
-	String fechaVigor = GstDate.getHoyJsp();
+	
 	ArrayList elementoSelJuzgado = new ArrayList();
 	String idJuzgado = null;
 	String juzgadoEJG = (String)request.getAttribute("idjuzgadoEJG");
@@ -139,6 +139,7 @@
 	paramsJuzgadoJSON += ",\"fechahastavigor\":\""+fechaVigor+"\"}";
 	
 	String idProcedimientoParamsJSON = "{\"idprocedimiento\":\"-1\"";
+	idProcedimientoParamsJSON += ",\"idjuzgado\":\""+idJuzgado+"\"";
 	idProcedimientoParamsJSON += ",\"fechadesdevigor\":\""+fechaVigor+"\"";
 	idProcedimientoParamsJSON += ",\"fechahastavigor\":\""+fechaVigor+"\"}";
 	
@@ -150,6 +151,11 @@
 	if (ejisActivo>0 || pcajgActivo == 4){
 		comboPretensiones = comboPretensionesEjis;
 		comboPretensionesParentQueryIds = "idjuzgado";
+		
+		idPretensionParamsJSON += "{\"idjuzgado\":\""+idJuzgado+"\"}";
+		
+		
+		
 		//obligatoriojuzgado = true;
 	} else {
 		comboPretensionesParentQueryIds = "";
@@ -359,10 +365,10 @@
 				</table>
 				<table border="0" width="100%">
 					<tr>
-						<td width="22%">&nbsp;</td>
-						<td width="10%">&nbsp;</td>
-						<td width="33%">&nbsp;</td>
-						<td width="35%">&nbsp;</td>
+						<td width="22%"></td>
+						<td width="10%"></td>
+						<td width="33%"></td>
+						<td width="35%"></td>
 					</tr>
 					<tr>
 						<td colspan="4">
@@ -415,23 +421,23 @@
 							<siga:Idioma key="gratuita.mantenimientoTablasMaestra.literal.codigoext" />
 							<% if (obligatoriojuzgado){ %>
 								<%= asterisco %>
-						</td>
-					
-						<td>
-							<siga:Select id="juzgado" queryId="<%=comboJuzgados%>" queryParamId="idjuzgado" parentQueryParamIds="idTurno" params="<%=paramsJuzgadoJSON%>" selectedIds="<%=elementoSelJuzgado%>" showSearchBox="true" searchkey="CODIGOEXT2" searchBoxMaxLength="10" searchBoxWidth="8" width="515" required="true" childrenIds="idPretension,idProcedimiento"/>		
-						</td>
+								</td>
+							
+								<td>
+									<siga:Select id="juzgado" queryId="<%=comboJuzgados%>" queryParamId="idjuzgado" parentQueryParamIds="idturno" params="<%=paramsJuzgadoJSON%>" selectedIds="<%=elementoSelJuzgado%>" showSearchBox="true" searchkey="CODIGOEXT2" searchBoxMaxLength="10" searchBoxWidth="8" width="515" required="true" childrenIds="idPretension,idProcedimiento"/>		
+								</td>
 							<%}else{%>
-							</td>
+								</td>
 					
-						<td>
-							<siga:Select id="juzgado" queryId="<%=comboJuzgados%>" queryParamId="idjuzgado" parentQueryParamIds="idTurno" params="<%=paramsJuzgadoJSON%>" selectedIds="<%=elementoSelJuzgado%>" showSearchBox="true" searchkey="CODIGOEXT2" searchBoxMaxLength="10" searchBoxWidth="8" width="515"  childrenIds="idPretension,idProcedimiento"/>		
-						</td>
+								<td>
+									<siga:Select id="juzgado" queryId="<%=comboJuzgados%>" queryParamId="idjuzgado" parentQueryParamIds="idturno" params="<%=paramsJuzgadoJSON%>" selectedIds="<%=elementoSelJuzgado%>" showSearchBox="true" searchkey="CODIGOEXT2" searchBoxMaxLength="10" searchBoxWidth="8" width="515"  childrenIds="idPretension,idProcedimiento"/>		
+								</td>
 							<%}%>
 						 
 					</tr>
 						
 				
-				<!-- Juzgado -->		
+						
 			</table>
 		</siga:ConjCampos> 																
 		</td>
@@ -461,12 +467,12 @@
 		 		<%= asterisco %>
 		 		</td>				
 				<td >
-					<siga:Select id="idPretension" queryId="<%=comboPretensiones %>"  parentQueryParamIds="<%=comboPretensionesParentQueryIds %>"  required="true" width="490" />
+					<siga:Select id="idPretension" queryId="<%=comboPretensiones %>"  parentQueryParamIds="<%=comboPretensionesParentQueryIds %>" params="<%=idPretensionParamsJSON%>" required="true" width="490" />
 				</td>
 			<%}else { %>
 		 		</td>				
 				<td >
-					<siga:Select id="idPretension" queryId="<%=comboPretensiones %>"  parentQueryParamIds="<%=comboPretensionesParentQueryIds %>"   width="490" />
+					<siga:Select id="idPretension" queryId="<%=comboPretensiones%>"  parentQueryParamIds="<%=comboPretensionesParentQueryIds %>" params="<%=idPretensionParamsJSON%>"   width="490" />
 				</td>
 			<% } %>
 		

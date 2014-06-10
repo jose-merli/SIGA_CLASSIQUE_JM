@@ -586,11 +586,13 @@ public class BusquedaDesignasAction extends MasterAction {
 				GenParametrosAdm adm = new GenParametrosAdm (this.getUserBean(request));
 				String tipoDesigna = adm.getValor(""+this.getIDInstitucion(request),"SCS","TIPO_DESIGNACION_DESDE_ASISTENCIA", "");
 				request.setAttribute("tipoDesignaAsistencia", tipoDesigna);
-				request.setAttribute("idTurnoAsistencia", this.getIDInstitucion(request) + "," + miform.getIdTurno());
+				if(miform.getIdTurno()!=null && !miform.getIdTurno().equalsIgnoreCase(""))
+					request.setAttribute("idTurnoAsistencia", this.getIDInstitucion(request) + "," + miform.getIdTurno());
 				request.setAttribute("idPersona", miform.getIdPersona());
 				request.setAttribute("nColegiadoAsistencia", miform.getNcolegiado());
 				request.setAttribute("nombreColegiadoAsistencia", miform.getNombre());
-				request.setAttribute("juzgadoAsistencia", miform.getJuzgadoAsi()+ "," + miform.getJuzgadoInstitucionAsi());
+				if(miform.getJuzgadoAsi()!=null && !miform.getJuzgadoAsi().equalsIgnoreCase(""))
+					request.setAttribute("juzgadoAsistencia", miform.getJuzgadoAsi()+ "," + miform.getJuzgadoInstitucionAsi());
 			} 
 			else {
 				if((miform.getDesdeEjg()!=null)&&(!miform.getDesdeEjg().equalsIgnoreCase(""))) {
@@ -600,8 +602,10 @@ public class BusquedaDesignasAction extends MasterAction {
 					request.getSession().setAttribute("numeroEjg",(String)miform.getNumeroEjg());
 					request.getSession().setAttribute("idTipoEjg",(String)miform.getIdTipoEjg());
 					request.setAttribute("anioEJG", miform.getAnioEjg());
-					request.setAttribute("turnoEJG", this.getIDInstitucion(request) + "," + miform.getIdTurnoEJG());
-					request.setAttribute("idjuzgadoEJG", miform.getJuzgadoAsi()+ "," + miform.getJuzgadoInstitucionAsi());
+					if(miform.getIdTurnoEJG()!=null && !miform.getIdTurnoEJG().equalsIgnoreCase(""))
+						request.setAttribute("turnoEJG", this.getIDInstitucion(request) + "," + miform.getIdTurnoEJG());
+					if(miform.getJuzgadoAsi()!=null && !miform.getJuzgadoAsi().equalsIgnoreCase(""))
+						request.setAttribute("idjuzgadoEJG", miform.getJuzgadoAsi()+"," + miform.getJuzgadoInstitucionAsi());
 					//TEMPORAL!!!
 					UsrBean usr = (UsrBean)request.getSession().getAttribute("USRBEAN");
 					GenParametrosAdm admParametros = new GenParametrosAdm(usr);		
@@ -1039,7 +1043,14 @@ public class BusquedaDesignasAction extends MasterAction {
 			
 			if (datosDesigna.get(ScsDesignaBean.C_ANIOPROCEDIMIENTO)!=null)
 				designaBean.setAnioProcedimiento(UtilidadesHash.getInteger(datosDesigna, ScsDesignaBean.C_ANIOPROCEDIMIENTO));					
-
+			
+			if (datosDesigna.get(ScsDesignaBean.C_IDPRETENSION)!=null && !((String)datosDesigna.get(ScsDesignaBean.C_IDPRETENSION)).equals(""))
+				designaBean.setIdPretension(new Integer(UtilidadesHash.getString(datosDesigna, ScsDesignaBean.C_IDPRETENSION)));
+			
+			if (datosDesigna.get(ScsDesignaBean.C_IDPROCEDIMIENTO)!=null && !((String)datosDesigna.get(ScsDesignaBean.C_IDPROCEDIMIENTO)).equals(""))
+				designaBean.setProcedimiento(UtilidadesHash.getString(datosDesigna, ScsDesignaBean.C_IDPROCEDIMIENTO));
+			
+			
 			ScsDesignaAdm designaAdm = new ScsDesignaAdm (usuario);
 			designaBean.setFechaAlta("SYSDATE");
 			if (!designaAdm.insert(designaBean)) {
@@ -1226,6 +1237,12 @@ public class BusquedaDesignasAction extends MasterAction {
 				designaBean.setIdPretension(new Integer(idPretension));
 			}
 
+			if (datosHash.get(ScsDesignaBean.C_IDPRETENSION)!=null && !((String)datosHash.get(ScsDesignaBean.C_IDPRETENSION)).equals(""))
+				designaBean.setIdPretension(new Integer(UtilidadesHash.getString(datosHash, ScsDesignaBean.C_IDPRETENSION)));
+			
+			if (datosHash.get(ScsDesignaBean.C_IDPROCEDIMIENTO)!=null && !((String)datosHash.get(ScsDesignaBean.C_IDPROCEDIMIENTO)).equals(""))
+				designaBean.setProcedimiento(UtilidadesHash.getString(datosHash, ScsDesignaBean.C_IDPROCEDIMIENTO));
+			
 			designaBean.setCodigo(UtilidadesHash.getString(datosHash, ScsDesignaBean.C_CODIGO));
 
 
