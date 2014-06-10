@@ -356,16 +356,16 @@ String informeUnico =(String) request.getAttribute("informeUnico");
 	<%int rows= (hayEJG?6:10);%>
 	<td class="labelText"  colspan="2">
 		<%if (accion.equalsIgnoreCase("ver")){%>
-			<textarea name="descripcionConsulta" cols="70" rows="<%=rows%>" readonly="true" class="boxConsulta"><%=consulta%></textarea>
+			<textarea name="descripcionConsulta" cols="70" rows="<%=rows%>" readonly="true" class="boxConsulta" style="overflow-y:auto; overflow-x:hidden; width:470px; height:200px; resize:none;"><%=consulta%></textarea>
 		<%} else {%>
-			<textarea name="descripcionConsulta" onKeyDown="cuenta(this,4000)" onChange="cuenta(this,4000)" cols="70" rows="<%=rows%>" class="box"><%=consulta%></textarea>
+			<textarea name="descripcionConsulta" onKeyDown="cuenta(this,4000)" onChange="cuenta(this,4000)" cols="70" rows="<%=rows%>" class="box" style="overflow-y:auto; overflow-x:hidden; width:470px; height:200px; resize:none;"><%=consulta%></textarea>
 		<%}%>
 	</td>
 	<td class="labelText"  colspan="2">
 		<%if (accion.equalsIgnoreCase("ver")){%>
-			<textarea name="respuestaLetrado" cols="70" rows="<%=rows%>" readonly="true" class="boxConsulta"><%=respuesta%></textarea>
+			<textarea name="respuestaLetrado" cols="70" rows="<%=rows%>" readonly="true" class="boxConsulta" style="overflow-y:auto; overflow-x:hidden; width:450px; height:200px; resize:none;"><%=respuesta%></textarea>
 		<%} else {%>
-			<textarea name="respuestaLetrado" onKeyDown="cuenta(this,4000)" onChange="cuenta(this,4000)" cols="70" rows="<%=rows%>" class="box"><%=respuesta%></textarea>
+			<textarea name="respuestaLetrado" onKeyDown="cuenta(this,4000)" onChange="cuenta(this,4000)" cols="70" rows="<%=rows%>" class="box" style="overflow-y:auto; overflow-x:hidden; width:450px; height:200px; resize:none;"><%=respuesta%></textarea>
 		<%}%>
 	</td>
 	</tr>

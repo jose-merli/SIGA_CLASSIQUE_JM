@@ -174,7 +174,7 @@
 		</tr>
 	</table>
 	
-	<div style="position:absolute; left:150px;bottom:5px;z-index:2;">
+	<div style="position:absolute; left:80px;bottom:5px;z-index:2; display:none;" id="textoArt">
 		<table align="center" border="0">
 			<tr>
 				<td class="labelText">
@@ -207,6 +207,11 @@
 		function refrescarLocal() {
 			buscar();
 		}
+		
+		jQuery(document).ready(function () {	
+			jQuery('#textoArt').show();	
+		});	
+
 	</script>		
 
 	<!-- Obligatoria en todas las páginas-->
