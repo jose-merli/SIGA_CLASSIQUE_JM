@@ -149,7 +149,7 @@
 						<%if (accion.equalsIgnoreCase("ver")) {%>
 							<bean:write name="CambiosLetradosDesignasForm" property="fechaRenunciaSolicita"/>
 						<%} else { %>
-							<siga:Fecha nombreCampo="fechaRenunciaSolicita"></siga:Fecha>
+							<siga:Fecha nombreCampo="fechaRenunciaSolicita" valorInicial="<%=formulario.getFechaRenunciaSolicita()%>"></siga:Fecha>
 						<%} %>
 					</td>				
 				
