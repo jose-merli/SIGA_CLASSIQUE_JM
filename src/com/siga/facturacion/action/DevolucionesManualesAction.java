@@ -268,11 +268,15 @@ public class DevolucionesManualesAction extends MasterAction{
 				    	}
 				    }
 				} else	if (ret.equals("5397")) {
-					throw new ClsExceptions("Fichero de devoluciones manuales: El fichero no se ha encontrado.");
+					throw new SIGAException("error.messages.fileNotFound");
+					
 				} else 	if (ret.equals("5402")) {
-					throw new ClsExceptions("Fichero de devoluciones manuales: Formato del fichero incorrecto.");
-				} else 
-				{
+					throw new SIGAException("facturacion.nuevoFichero.literal.errorFormato");
+					
+				} else 	if (ret.equals("5404")) {
+					throw new SIGAException("facturacion.devolucionManual.error.fechaDevolucion");
+					
+				} else  {
 					throw new ClsExceptions("Fichero de devoluciones manuales: Error en el proceso de actualicacion de tablas de devolucion. RETORNO: "+ret);
 				}  
 			} else {
@@ -292,8 +296,13 @@ public class DevolucionesManualesAction extends MasterAction{
 			//request.setAttribute("borrarFichero","false");
 			
 			// RGG 08/02/2007 Fianlmente se va a descargar los ficheros desde la ventana de devoluciones por fichero.
-		}catch (SIGAException e) { 
-			throw e;
+		} catch (SIGAException e) {
+			String sms = e.getLiteral();
+			if (sms == null || sms.equals("")) {
+				sms = "messages.general.error";
+			}
+			
+			throwExcp(sms, new String[] {"modulo.facturacion"}, e, tx);
 		
 		} catch (Exception e) { 
 		   throwExcp("messages.general.error",new String[] {"modulo.facturacion"},e,tx); 
