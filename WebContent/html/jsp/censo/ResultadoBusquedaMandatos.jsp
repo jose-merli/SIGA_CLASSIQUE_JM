@@ -34,7 +34,7 @@
 <%@ page import="java.util.Enumeration"%>
 <%@ page import="com.siga.Utilidades.*"%>
 
-<%@ page import="com.siga.Utilidades.paginadores.Paginador"%>
+<%@ page import="com.siga.Utilidades.Paginador"%>
 
 <%@ page import="java.util.*"%>
 <%@ page import="com.atos.utils.Row"%>
@@ -47,7 +47,6 @@
 <!-- JSP -->
 <bean:define id="registrosSeleccionados" name="mantenimientoMandatosForm" property="registrosSeleccionados" type="java.util.ArrayList"/>
 <bean:define id="datosPaginador" name="mantenimientoMandatosForm" property="datosPaginador" type="java.util.HashMap"/>
-<bean:define id="colegiado" name="mantenimientoMandatosForm" property="colegiado" type="java.lang.String"/>
 
 <%
 	try {
@@ -62,31 +61,12 @@
 
 		CenClienteAdm admCen = new CenClienteAdm(usrbean);
 		String valorCheckPersona = "";
-		// locales
-		//BusquedaClientesForm formulario = (BusquedaClientesForm) request
-		//	.getSession().getAttribute("mantenimientoMandatosForm");
-
-		//String colegiado = formulario.getColegiado();
-		if (colegiado == null)
-			colegiado = " ";
 
 		Vector resultado = null;
 
 		String titu = "";
 
-		if (colegiado.equals(ClsConstants.DB_TRUE)) {
-			//colegiados
 
-			titu = "censo.busquedaClientes.colegiados.titulo";
-		} else {
-			if (colegiado.equals(ClsConstants.DB_FALSE)) {
-				//no colegiados
-				titu = "censo.busquedaClientes.noColegiados.titulo";
-			} else {
-				//Letrados
-				titu = "censo.busquedaClientes.letrados.titulo";
-			}
-		}
 		/** PAGINADOR ***/
 		String paginaSeleccionada = "";
 
@@ -120,7 +100,7 @@
 			registrosPorPagina = "0";
 		}
 
-		String action = app + "/CEN_MantenimientoMandatos.do?noReset=true";
+		String action = app + "/CEN_MantenimientoMandatos.do";
 		
 		String colegio=(String)request.getAttribute("nombreColegio");
 		/**************/
@@ -169,26 +149,7 @@
 		function refrescarLocal() {
 			parent.buscar();
 		}
-		function vueltaEnvio() {
-			
-		}
-		function accionCerrar() {
-			
-		}
-		
-		function informacionLetrado(fila) {
-			document.forms[0].filaSelD.value = fila;					
-		    var idInst = <%=idInstitucionLocation%>;			   				   	
-		   	var auxPers = 'oculto' + fila + '_1';
-		    var idPers = document.getElementById(auxPers);
-			document.forms[0].tablaDatosDinamicosD.value=idPers.value + ',' + idInst + ',LETRADO' + '%';		
-			document.forms[0].modo.value="editar";
-			var verLetradoAux = 'oculto' + fila + '_4';
-		    var verLetrado = document.getElementById(verLetradoAux);			    
-			document.forms[0].verFichaLetrado.value=verLetrado.value;
-		   	document.forms[0].submit();			   	
-		}
-		
+	
 		
 		ObjArray = new Array();
 		
@@ -201,7 +162,7 @@
 		function pulsarCheck(obj){	
 			if (!obj.checked ){		   		
 				ObjArray.splice(ObjArray.indexOf(obj.value),1);
-				seleccionados1=ObjArray+"##";
+				seleccionados1=ObjArray;
 			 } else {
 				ObjArray.push(obj.value);
 			   	seleccionados1=ObjArray;
@@ -214,8 +175,8 @@
 		function cargarChecks(){
 			<%if (registrosSeleccionados != null) {
 						for (int p = 0; p < registrosSeleccionados.size(); p++) {
-							Hashtable clavesEJG = (Hashtable) registrosSeleccionados.get(p);
-							valorCheckPersona = (String) clavesEJG.get("CLAVE");%>
+							Hashtable claves = (Hashtable) registrosSeleccionados.get(p);
+							valorCheckPersona = (String) claves.get("CLAVE");%>
 							ObjArray.push("<%=valorCheckPersona%>");
 						<%
 						}
@@ -284,10 +245,10 @@
 		 	var ele = document.getElementsByName("chkPersona");
 			var todos=1;	
 		  	for (i = 0; i < ele.length; i++) {
-	   			if(!ele[i].checked && !ele[i].disabled){
+	   			if(!ele[i].checked){
 	   				todos=0;
 	   				break;
-	   			} 
+	   			}
 	   		}	   
 		    if (todos==1){	   		
 				document.getElementById("chkGeneral").checked=true;
@@ -318,6 +279,7 @@
 			}
 			document.forms[0].tablaDatosDinamicosD.value = datos;
 			document.forms[0].modo.value ='generaExcel';		
+			document.forms[0].target='submitArea';
 			document.forms[0].submit();			
 			fin();			
 	   	}
@@ -380,28 +342,7 @@
 				    }
 			);
 			jQuery(".ui-widget-overlay").css("opacity","0");
-			/*
-			jQuery(".ui-dialog").css("border", "1px solid black" );
-			jQuery(".ui-dialog").css("background-color", jQuery('body').css("background-color") );
-			jQuery(".ui-dialog-content").css("padding", "4px" );
-			jQuery(".ui-button").css("text-align", "right" );
 			
-			jQuery(".ui-dialog-titlebar").css("font-size",  "13px" );
-			jQuery(".ui-dialog-titlebar").css("padding",  "4px" );
-			jQuery(".ui-dialog-titlebar").css("text-align",  "center" );
-			jQuery(".ui-dialog-titlebar").css("background-color", jQuery('.tableTitle').css("background-color") );
-			jQuery(".ui-dialog-titlebar").css("border-bottom", "1px solid black" );
-			jQuery(".ui-dialog-titlebar").css("cursor", "default" );
-			
-			jQuery(".ui-dialog-buttonset").css("background-color", jQuery('.botonesDetalle').css("background-color") );
-			jQuery(".ui-dialog-buttonset").css("padding",  "2px" );
-			jQuery(".ui-dialog-buttonset").css("text-align", "right" );
-			
-			jQuery(".ui-button").css("background",  "white" );
-			jQuery(".ui-button").css("border",  "2px solid black" );
-			jQuery(".ui-button").css("padding",  "0 3 0 3px" );
-			jQuery(".ui-button").css("text-align", "center" );
-			*/
 			
 		}
 		
@@ -417,27 +358,17 @@
 			 de cabeceras fijas -->
 
 <!-- Formulario de la lista de detalle multiregistro -->
-<html:form action="/CEN_MantenimientoMandatos.do?noReset=true" method="POST"
-	target="mainWorkArea" style="display:none">
 
-	<!-- Campo obligatorio -->
-	<html:hidden styleId="modo" property="modo" value="" />
-	<html:hidden styleId="registrosSeleccionados" property="registrosSeleccionados" />
-	<html:hidden styleId="datosPaginador"  property="datosPaginador" />
-	<html:hidden styleId="seleccionarTodos"  property="seleccionarTodos" />
+	<html:form action="/CEN_MantenimientoMandatos.do?noReset=true" method="POST" target="mainWorkArea" style="display:none">
+		<input type="hidden" name="modo"  id="modo"  value="">
+		<input type="hidden" name="actionModal"  id="actionModal"  value="">
+		<input type="hidden" id="fechaFirma"  name="fechaFirma" value="">
+		<input type="hidden" id="lugarFirma"  name="lugarFirma" value="">
+		<html:hidden property="registrosSeleccionados"  styleId="registrosSeleccionados"/>
+		<html:hidden property="datosPaginador"  styleId="datosPaginador" />
+		<html:hidden property="seleccionarTodos"  styleId="seleccionarTodos" value=""/>
+	</html:form>
 	
-
-	<!-- parametro para colegiados o no -->
-	<html:hidden styleId="colegiado"  property="colegiado" value="<%=colegiado %>" />
-	<html:hidden  styleId="avanzada" property="avanzada" value="" />
-
-	<input type="hidden" id="actionModal"  name="actionModal" value="">
-	<input type="hidden" id="verFichaLetrado"  name="verFichaLetrado" value="">
-	
-	<input type="hidden" id="fechaFirma"  name="fechaFirma" value="">
-	<input type="hidden" id="lugarFirma"  name="lugarFirma" value="">
-</html:form>
-
 <%
 		String tamanosCol = "3,8,8,13,13,8,20,14";
 		//String nombresCol = "<input type='checkbox' name='chkGeneral'  id='chkGeneral' onclick='cargarChecksTodos(this)'/>, NColegiado, NIF, Apellidos, Nombre,IBAN,Titular,Tipo, Referencia, Fecha de firma";
@@ -471,7 +402,6 @@
 						Row fila = (Row) resultado.elementAt(i);
 						Hashtable registro = (Hashtable) fila.getRow();
 
-
 						String cont = new Integer(i + 1).toString();
 						UsrBean user = (UsrBean) ses.getAttribute("USRBEAN");
 						String modo = "edicion";
@@ -486,26 +416,7 @@
 						idInstitucion=user.getLocation();
 						
 						valorCheck="";
-						valorCheck+=registro.get("NCOLEGIADO");
-						valorCheck+="||";
-						valorCheck+=registro.get("NIFCIF");
-						valorCheck+="||";
-						valorCheck+=registro.get("APELLIDOS");
-						valorCheck+="||";
-						valorCheck+=registro.get("NOMBRE");
-						valorCheck+="||";
-						valorCheck+=registro.get("TIPOMANDATO");
-						valorCheck+="||";
-						valorCheck+=registro.get("IBAN");
-						valorCheck+="||";
-						valorCheck+=registro.get("REFERENCIA");
-						valorCheck+="||";
-						valorCheck+=registro.get("FECHAFIRMA");
-						valorCheck+="||";
-						valorCheck+=registro.get("LUGARFIRMA");
-						//valorCheck=valorCheck.replaceAll("#", " ");
-						//valorCheck+="##";
-						
+						valorCheck+=registro.get("REFERENCIA");			
 						
 	%>
 	<!-- REGISTRO  -->
@@ -515,26 +426,26 @@
  
 
 		<tr class="<%=clase%>">
+			<td>
 			<%boolean isChecked = false;
 			for (int z = 0; z < registrosSeleccionados.size(); z++) {
 				Hashtable clavesRegistro = (Hashtable) registrosSeleccionados.get(z);
 				String clave = (String) clavesRegistro.get("CLAVE");
-				if (valorCheck.trim().equals(clave.trim())) {
+				if (valorCheck.trim().equalsIgnoreCase(clave.trim())) {
 					isChecked = true;
 					break;
 				}
 	
 			}
 			if (isChecked) { %> 
-				<td><input type="checkbox" value="<%=valorCheck%>" name="chkPersona" checked onclick="pulsarCheck(this)"> </td>
+				<input type="checkbox" value="<%=valorCheck%>" name="chkPersona" checked onclick="pulsarCheck(this)">
 			<%} else { %> 
-				<td><input type="checkbox" value="<%=valorCheck%>"	name="chkPersona" onclick="pulsarCheck(this)"> </td>
+				<input type="checkbox" value="<%=valorCheck%>"	name="chkPersona" onclick="pulsarCheck(this)"> 
 			<%}%>
+			</td>
 			
 			<td>
-				<input type="hidden" name="oculto<%=cont%>_1" id="oculto<%=cont%>_1" value="<%=idPersona%>" /> 
-				<input type="hidden" name="oculto<%=cont%>_2" id="oculto<%=cont%>_2" value="<%=idInstitucion%>" />
-				<input type="hidden" name="oculto<%=cont%>_3" id="oculto<%=cont%>_3" value="LETRADO" />
+				<input type="hidden" name="oculto<%=cont%>_1" id="oculto<%=cont%>_1" value="<%=valorCheck%>" />
 			<%=registro.get("NCOLEGIADO")%>
 			</td>
 			<td><%=registro.get("NIFCIF")%></td>
@@ -544,7 +455,6 @@
 			<td>IBAN - <%=registro.get("IBAN")%><br>Ref - <%=registro.get("REFERENCIA")%></td>
 			<td><%=fechaFirma%><BR><%=registro.get("LUGARFIRMA")%></td>
 		</tr>
-
 
 	<!-- FIN REGISTRO -->
 	<%
@@ -574,6 +484,7 @@
 	</tr>
 </table>
 
+
 <div id="dialogoFirma" title="Firma de Mandatos" style="display:none">
 <div>
   	<p class="labelTextValue"><siga:Idioma key='censo.mantenimientoMandatos.explicacion1'/></p>
@@ -586,28 +497,15 @@
 	    <div class="labelTextValue"><input type="text" id="diagLugarFirma" maxlength="100" size="40" value="<%=colegio%>"/></div>
   	</siga:ConjCampos>
 </div>
-  	
 </div>
+
 
 <!-- FIN: LISTA DE VALORES -->
 <%
 	if (datosPaginador != null && datosPaginador.get("datos") != null && !datosPaginador.get("datos").equals("")) {
 			String regSeleccionados = ("" + ((registrosSeleccionados == null) ? 0 : registrosSeleccionados.size()));
 
-			if (colegiado.equals("2")) {
-%>
-<siga:Paginador totalRegistros="<%=totalRegistros%>"
-	registrosPorPagina="<%=registrosPorPagina%>"
-	paginaSeleccionada="<%=paginaSeleccionada%>" idioma="<%=idioma%>"
-	registrosSeleccionados="<%=regSeleccionados%>"
-	modo="buscarPor" clase="paginator"
-	divStyle="position:absolute; width:100%; height:20; z-index:3; bottom:30px; left: 0px"
-	
-	distanciaPaginas="" action="<%=action%>" 
-	
-	/>
-<%
-	} else {
+
 %>
 
 <siga:Paginador totalRegistros="<%=totalRegistros%>"
@@ -616,15 +514,10 @@
 	registrosSeleccionados="<%=regSeleccionados%>"
 	modo="buscarPor" clase="paginator"
 	divStyle="position:absolute; width:100%; height:20; z-index:3; bottom:30px; left: 0px"
-	
 	distanciaPaginas="" action="<%=action%>" 
-	
 	/>
 
-<%
-	}
-		}
-%>
+<%}%>
 <html:form action="/INF_InformesGenericos" method="post"	target="submitArea">
 	<html:hidden property="idInstitucion" value = "<%=idInstitucionLocation%>"/>
 	<html:hidden property="idTipoInforme" value="CENSO#OSEPA#ASEPA"/>

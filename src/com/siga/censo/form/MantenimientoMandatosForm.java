@@ -3,6 +3,7 @@ package com.siga.censo.form;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.struts.action.ActionMapping;
+import org.apache.struts.upload.FormFile;
 
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.general.MasterForm;
@@ -13,72 +14,19 @@ import com.siga.general.MasterForm;
  * @version 30/01/2006 (david.sanchezp): modificacion de las busquedas por el tipo
  */
  public class MantenimientoMandatosForm extends MasterForm {	
-	private String codigo="";
-	private String estadoFormulario="0"; 
-	private String fechaAltaDesde="";
-	private String fechaAltaHasta=""; 
-	private String fechaIncorporacionDesde="";
-	private String fechaIncorporacionHasta="";
-	private String fechaNacimientoDesde="";
-	private String fechaNacimientoHasta="";
-	private String idInstitucion;
-	private String idInstitucionCargo;
-	private String idPersona= null;
-	private String obtenerColegiados;
-	private String permitirAniadirNuevo= "N";
-	private String solBusqueda="";
-	private String verFichaLetrado;
+
 	
 	private String fechaFirma="";
 	private String lugarFirma="";
-
-	// BLOQUE PARA EL FORMULARIO DE BUSQUEDA AVANZADA 
- 	public void setGrupoClientes (String dato) { 
- 		try {
- 			UtilidadesHash.set(this.datos, "GrupoClientes", dato);
- 		} catch (Exception e) {
- 			e.printStackTrace();
- 		}
- 	}
+	private String idPersona;
+	private String idInstitucion;
+	private FormFile fichero;
 	
- 	public void setFechaNacimiento (String dato) { 
- 		try {
- 			UtilidadesHash.set(this.datos, "FechaNacimiento", dato);
- 		} catch (Exception e) {
- 			e.printStackTrace();
- 		}
- 	} 	
- 	
- 	public void setSexo (String dato) { 
- 		try {
- 			UtilidadesHash.set(this.datos, "Sexo", dato);
- 		} catch (Exception e) {
- 			e.printStackTrace();
- 		}
+ 	public void setFichero(FormFile valor){
+ 		this.fichero = valor;
  	}
- 	
- 	public void setTipoApunte (String dato) { 
- 		try {
- 			UtilidadesHash.set(this.datos, "TipoApunte", dato);
- 		} catch (Exception e) {
- 			e.printStackTrace();
- 		}
- 	}
- 	
- 	public void setIdTipoCVSubtipo1 (String dato) {
- 		try{
- 			UtilidadesHash.set(this.datos, "IdTipoCVSubtipo1", dato);
- 		} catch (Exception e) {
- 			e.printStackTrace();
- 		} 		 		
- 	}
- 	
- 	public void setIdTipoCVSubtipo2 (String dato) {
- 		try{
- 			UtilidadesHash.set(this.datos, "IdTipoCVSubtipo2", dato);
- 		} catch (Exception e) {
- 			e.printStackTrace();
- 		}
+ 	public FormFile getFichero	() 	{ 
+ 		return this.fichero;		
  	}
  	
  	public void setTipoColegiacion (String dato) { 
@@ -88,131 +36,6 @@ import com.siga.general.MasterForm;
  			e.printStackTrace();
  		}
  	}
- 	
- 	public void setComision (String dato) { 
- 		try {
- 			UtilidadesHash.set(this.datos,"Comision", dato);
- 		} catch (Exception e) {
- 			e.printStackTrace();
- 		}
- 	}
- 	
- 	public void setDomicilio (String dato) { 
- 		try {
- 			UtilidadesHash.set(this.datos, "Domicilio", dato);
- 		} catch (Exception e) {
- 			e.printStackTrace();
- 		}
- 	}
-	
- 	public void setCodigoPostal (String dato) { 
- 		try {
- 			UtilidadesHash.set(this.datos, "CodigoPostal", dato);
- 		} catch (Exception e) {
- 			e.printStackTrace();
- 		}
- 	}
-	
- 	public void setTelefono (String dato) { 
- 		try {
- 			UtilidadesHash.set(this.datos, "Telefono", dato);
- 		} catch (Exception e) {
- 			e.printStackTrace();
- 		}
- 	}
-	
- 	public void setFax (String dato) { 
- 		try {
- 			UtilidadesHash.set(this.datos, "Fax", dato);
- 		} catch (Exception e) {
- 			e.printStackTrace();
- 		}
- 	}
-	
- 	public void setCorreo (String dato) { 
- 		try {
- 			UtilidadesHash.set(this.datos, "Correo", dato);
- 		} catch (Exception e) {
- 			e.printStackTrace();
- 		}
- 	}
-	
- 	public void setEjerciente (String dato) { 
- 		try {
- 			UtilidadesHash.set(this.datos, "Ejerciente", dato);
- 		} catch (Exception e) {
- 			e.printStackTrace();
- 		}
- 	}
-	
- 	public void setFechaIncorporacion (String dato) { 
- 		try {
- 			UtilidadesHash.set(this.datos, "FechaIncorporacion", dato);
- 		} catch (Exception e) {
- 			e.printStackTrace();
- 		}
- 	}
-	
- 	public void setResidente (String dato) { 
- 		try {
- 			UtilidadesHash.set(this.datos, "Residente", dato);
- 		} catch (Exception e) {
- 			e.printStackTrace();
- 		}
- 	}
- 	
- 	public void setComunitario (String dato) { 
- 		try {
- 			UtilidadesHash.set(this.datos, "Comunitario", dato);
- 		} catch (Exception e) {
- 			e.printStackTrace();
- 		}
- 	}
-	
- 	public void setFechaAlta (String dato) { 
- 		try {
- 			UtilidadesHash.set(this.datos, "FechaAlta", dato);
- 		} catch (Exception e) {
- 			e.printStackTrace();
- 		}
- 	}
-	
- 	public void setConcepto (String dato) { 
- 		try {
- 			UtilidadesHash.set(this.datos, "Concepto", dato);
- 		} catch (Exception e) {
- 			e.printStackTrace();
- 		}
- 	}
-	
- 	public void setColegiado (String dato) { 
- 		try {
- 			UtilidadesHash.set(this.datos, "Colegiado", dato);
- 		} catch (Exception e) {
- 			e.printStackTrace();
- 		}
- 	}
-	
- 	public void setAvanzada (String dato) { 
- 		try {
- 			UtilidadesHash.set(this.datos, "Avanzada", dato);
- 		} catch (Exception e) {
- 			e.printStackTrace();
- 		}
- 	}
-
-	// Metodos Get 1 por campo Formulario (*.jsp)
- 	
-	// BLOQUE PARA EL FORMULARIO DE BUSQUEDA SIMPLE 
-
- 	public String getTipo () 	{ 
- 		return UtilidadesHash.getString(this.datos, "Tipo");		
- 	}
- 	
- 	public String getNombreInstitucion	() 	{ 
- 		return UtilidadesHash.getString(this.datos, "NombreInstitucion");		
- 	}
-
  	public String getNumeroColegiado	() 	{ 
  		return UtilidadesHash.getString(this.datos, "NumeroColegiado");		
  	}
@@ -236,186 +59,6 @@ import com.siga.general.MasterForm;
  	public String getApellido2	() 	{ 
  		return UtilidadesHash.getString(this.datos, "Apellido2");		
  	}
-
-	// BLOQUE PARA EL FORMULARIO DE BUSQUEDA AVANZADA 
-
- 	public String getGrupoClientes	() 	{ 
- 		return UtilidadesHash.getString(this.datos, "GrupoClientes");		
- 	}
-
- 	public String getFechaNacimiento	() 	{ 
- 		return UtilidadesHash.getString(this.datos, "FechaNacimiento");		
- 	}
- 	
- 	public String getFechaNacimientoHasta() {	
- 		return UtilidadesHash.getString(this.datos, "FechaNacimientoHasta");	
-	} 	
-	public void setFechaNacimientoHasta(String fechaNacimientoHasta) {		
-		try {
- 			UtilidadesHash.set(this.datos, "FechaNacimientoHasta", fechaNacimientoHasta);
- 		} catch (Exception e) {
- 			e.printStackTrace();
- 		}
-	}
-	
-	public String getFechaNacimientoDesde() {		
-		return UtilidadesHash.getString(this.datos, "FechaNacimientoDesde");
-	}
-	public void setFechaNacimientoDesde(String fechaNacimientoDesde) {		
-		try {
- 			UtilidadesHash.set(this.datos, "FechaNacimientoDesde", fechaNacimientoDesde);
- 		} catch (Exception e) {
- 			e.printStackTrace();
- 		}
-	}
-	
-	public String getFechaIncorporacionDesde() 	{ 
-		return UtilidadesHash.getString(this.datos, "FechaIncorporacionDesde");
- 	}
-	public void setFechaIncorporacionDesde(String fechaIncorporacionDesde) {
-		try {
- 			UtilidadesHash.set(this.datos, "FechaIncorporacionDesde", fechaIncorporacionDesde);
- 		} catch (Exception e) {
- 			e.printStackTrace();
- 		}
-	}
-	
-	public String getFechaIncorporacionHasta() 	{ 
-		return UtilidadesHash.getString(this.datos, "FechaIncorporacionHasta");
- 	}
-	public void setFechaIncorporacionHasta(String fechaIncorporacionHasta) {
-		try {
- 			UtilidadesHash.set(this.datos, "FechaIncorporacionHasta", fechaIncorporacionHasta);
- 		} catch (Exception e) {
- 			e.printStackTrace();
- 		}
-	}	
-	
-	public String getFechaAltaDesde() 	{ 
-		return UtilidadesHash.getString(this.datos, "FechaAltaDesde");
- 	}
-	public void setFechaAltaDesde(String fechaAltaDesde) {
-		try {
- 			UtilidadesHash.set(this.datos, "FechaAltaDesde", fechaAltaDesde);
- 		} catch (Exception e) {
- 			e.printStackTrace();
- 		}
-	}		
-	
-	public String getFechaAltaHasta() 	{ 
-		return UtilidadesHash.getString(this.datos, "FechaAltaHasta");
- 	}
-	public void setFechaAltaHasta(String fechaAltaHasta) {
-		try {
- 			UtilidadesHash.set(this.datos, "FechaAltaHasta", fechaAltaHasta);
- 		} catch (Exception e) {
- 			e.printStackTrace();
- 		}
-	}		
-	
-	public String getEstadoFormulario() 	{ 
-		return UtilidadesHash.getString(this.datos, "EstadoFormulario");
- 	}
-	public void setEstadoFormulario(String estadoFormulario) {
-		try {
- 			UtilidadesHash.set(this.datos, "EstadoFormulario", estadoFormulario);
- 		} catch (Exception e) {
- 			e.printStackTrace();
- 		}
-	}	
-
- 	public String getSexo	() 	{ 
- 		return UtilidadesHash.getString(this.datos, "Sexo");		
- 	}
-
- 	public String getDomicilio	() 	{ 
- 		return UtilidadesHash.getString(this.datos, "Domicilio");		
- 	}
-
- 	public String getCodigoPostal	() 	{ 
- 		return UtilidadesHash.getString(this.datos, "CodigoPostal");		
- 	}
-
- 	public String getTelefono	() 	{ 
- 		return UtilidadesHash.getString(this.datos, "Telefono");		
- 	}
-
- 	public String getFax	() 	{ 
- 		return UtilidadesHash.getString(this.datos, "Fax");		
- 	}
-
- 	public String getCorreo	() 	{ 
- 		return UtilidadesHash.getString(this.datos, "Correo");		
- 	}
-
- 	public String getEjerciente	() 	{ 
- 		return UtilidadesHash.getString(this.datos, "Ejerciente");		
- 	}
-
- 	public String getFechaIncorporacion	() 	{ 
- 		return UtilidadesHash.getString(this.datos, "FechaIncorporacion");		
- 	}
-
- 	public String getResidente	() 	{ 
- 		return UtilidadesHash.getString(this.datos, "Residente");		
- 	}
- 	
- 	public String getComunitario	() 	{ 
- 		return UtilidadesHash.getString(this.datos, "Comunitario");		
- 	}
-
- 	public String getFechaAlta	() 	{ 
- 		return UtilidadesHash.getString(this.datos, "FechaAlta");		
- 	}
-
- 	public String getConcepto	() 	{ 
- 		return UtilidadesHash.getString(this.datos, "Concepto");		
- 	}
-
- 	public String getColegiado	() 	{ 
- 		return UtilidadesHash.getString(this.datos, "Colegiado");		
- 	}
-
- 	public String getAvanzada	() 	{ 
- 		return UtilidadesHash.getString(this.datos, "Avanzada");		
- 	}
- 	
- 	public String getTipoApunte	() 	{ 
- 		return UtilidadesHash.getString(this.datos, "TipoApunte");		
- 	}
- 	public String getIdTipoCVSubtipo1 () {
- 		return UtilidadesHash.getString(this.datos, "IdTipoCVSubtipo1"); 
- 	}
- 	public String getIdTipoCVSubtipo2 () {
- 		return UtilidadesHash.getString(this.datos, "IdTipoCVSubtipo2");
- 	}
-
- 	public String getComision	() 	{ 
- 		return UtilidadesHash.getString(this.datos, "Comision");		
- 	}
- 	
- 	public void setLetrado (String dato) { 
- 		try {
- 			UtilidadesHash.set(this.datos,"Letrado", dato);
- 		} catch (Exception e) {
- 			// escribimos la traza de momento
- 			e.printStackTrace();
- 		}
- 	}
- 	public String getLetrado	() 	{ 
- 		return UtilidadesHash.getString(this.datos, "Letrado");		
- 	}
- 	public String getTipoColegiacion	() 	{ 
- 		return UtilidadesHash.getString(this.datos, "TipoColegiacion");		
- 	}
-
-	public String getCodigo() {
-		return codigo;
-	}
-	public void setCodigo(String codigo) {
-		this.codigo = codigo;
-	}
-
 	// OTRAS FUNCIONES 
 
 	/**
@@ -426,19 +69,11 @@ import com.siga.general.MasterForm;
 	public void reset(ActionMapping mapping, HttpServletRequest request) {
 		try {
 			// resetea el formulario
-			String colegiadoAux = this.getColegiado();
 			super.reset(mapping, request);
-			this.setColegiado(colegiadoAux);
 		}
 		catch (Exception e) {
 			e.printStackTrace();
 		}
-	}
-	public String getPermitirAniadirNuevo() {
-		return permitirAniadirNuevo;
-	}
-	public void setPermitirAniadirNuevo(String permitirAniadirNuevo) {
-		this.permitirAniadirNuevo = permitirAniadirNuevo;
 	}
 	public String getIdPersona() {
 		return idPersona;
@@ -453,53 +88,9 @@ import com.siga.general.MasterForm;
 		this.idInstitucion = idInstitucion;
 	}
 	
-	public String getVerFichaLetrado(){
-		return this.verFichaLetrado;
-	}
-	public void setVerFichaLetrado(String verFichaLetrado){
-		this.verFichaLetrado = verFichaLetrado;
-	}
-	public String getObtenerColegiados() {
-		return obtenerColegiados;
-	}
-	public void setObtenerColegiados(String obtenerColegiados) {
-		this.obtenerColegiados = obtenerColegiados;
-	}
-	
-	/**
-	 * Almacena y recupera del tagBusquedaPersona 
-	 * 
-	 * @param  
-	 * @return void 
-	 */
-
- 	public String getIdInstitucionCargo() {
-		return idInstitucionCargo;
-	}
-	public void setIdInstitucionCargo(String idInstitucionCargo) {
-		this.idInstitucionCargo = idInstitucionCargo;
-	}
-	
-	public String getTipoBus() { 
-		return (this.datos.get("TIPOBUS")!=null)?this.datos.get("TIPOBUS").toString():"";				
-	}
-	public void setTipoBus (String tipoBus) { 
-		this.datos.put("TIPOBUS", tipoBus);
-	}
-	
-	public String  getNumeroNif () { 
-		return this.datos.get("NUMERONIF").toString();	
-	}
-	public void setNumeroNif (String numeroNif) { 
-		this.datos.put("NUMERONIF", numeroNif);
-	}
-	
 	// Getters
 	public String getChkPendientesFirmar(){
  		return UtilidadesHash.getString(this.datos, "ChkPendientesFirmar");
-	}	
-	public String  getValorCheck(){
- 		return UtilidadesHash.getString(this.datos, "ValorCheck");
 	}	
 	
 	// Setters	
@@ -566,59 +157,92 @@ import com.siga.general.MasterForm;
  			e.printStackTrace();
  		}
  	} 	
-	public void setValorCheck(String valor){
-	 	try {
- 			UtilidadesHash.set(this.datos, "ValorCheck", valor);
+	
+	public String  getFechaFirma() { 
+		return UtilidadesHash.getString(this.datos, "FECHAFIRMA");
+	}
+	public void setFechaFirma (String dato) { 
+ 		try {
+ 			UtilidadesHash.set(this.datos, "FECHAFIRMA", dato);
  		} catch (Exception e) {
  			e.printStackTrace();
  		}
-	}	
-	
-	public String  getFechaFirma() { 
-		return this.datos.get("FECHAFIRMA").toString();	
-	}
-	public void setFechaFirma (String fecha) { 
-		this.datos.put("FECHAFIRMA", fecha);
 	}
 	
 	public String  getLugarFirma () { 
-		return this.datos.get("LUGARFIRMA").toString();	
+		return UtilidadesHash.getString(this.datos, "LUGARFIRMA");
 	}
-	public void setLugarFirma (String lugar) { 
-		this.datos.put("LUGARFIRMA", lugar);
+	public void setLugarFirma (String dato) { 
+ 		try {
+ 			UtilidadesHash.set(this.datos, "LUGARFIRMA", dato);
+ 		} catch (Exception e) {
+ 			e.printStackTrace();
+ 		}
 	}
 	
 	public String  getFechaFirmaInicio() { 
-		return this.datos.get("FECHAFIRMAINICIO").toString();	
+		return UtilidadesHash.getString(this.datos, "FECHAFIRMAINICIO");
 	}
-	public void setFechaFirmaInicio (String fecha) { 
-		this.datos.put("FECHAFIRMAINICIO", fecha);
+	public void setFechaFirmaInicio (String dato) { 
+ 		try {
+ 			UtilidadesHash.set(this.datos, "FECHAFIRMAINICIO", dato);
+ 		} catch (Exception e) {
+ 			e.printStackTrace();
+ 		}
 	}
 	
 	public String  getFechaFirmaFin () { 
-		return this.datos.get("FECHAFIRMAFIN").toString();	
+		return UtilidadesHash.getString(this.datos, "FECHAFIRMAFIN");
 	}
-	public void setFechaFirmaFin (String lugar) { 
-		this.datos.put("FECHAFIRMAFIN", lugar);
+	public void setFechaFirmaFin (String dato) { 
+ 		try {
+ 			UtilidadesHash.set(this.datos, "FECHAFIRMAFIN", dato);
+ 		} catch (Exception e) {
+ 			e.printStackTrace();
+ 		}
 	}
 	
 	public String  getFechaModInicio() { 
-		return this.datos.get("FECHAMODINICIO").toString();	
+		return UtilidadesHash.getString(this.datos, "FECHAMODINICIO");
 	}
-	public void setFechaModInicio (String fecha) { 
-		this.datos.put("FECHAMODINICIO", fecha);
+	public void setFechaModInicio (String dato) { 
+ 		try {
+ 			UtilidadesHash.set(this.datos, "FECHAMODINICIO", dato);
+ 		} catch (Exception e) {
+ 			e.printStackTrace();
+ 		}
+	}
+	
+	public String  getValorCheck() { 
+		return UtilidadesHash.getString(this.datos, "VALORCHECK");
+	}
+	public void setValorCheck (String dato) { 
+		try {
+			UtilidadesHash.set(this.datos, "VALORCHECK", dato);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public String  getFechaModFin () { 
-		return this.datos.get("FECHAMODFIN").toString();	
+		return UtilidadesHash.getString(this.datos, "FECHAMODFIN");
 	}
-	public void setFechaModFin (String lugar) { 
-		this.datos.put("FECHAMODFIN", lugar);
+	public void setFechaModFin (String dato) { 
+ 		try {
+ 			UtilidadesHash.set(this.datos, "FECHAMODFIN", dato);
+ 		} catch (Exception e) {
+ 			e.printStackTrace();
+ 		}
 	}
+	
 	public String  getTipoMandato () { 
-		return this.datos.get("TIPOMANDATO").toString();	
+		return UtilidadesHash.getString(this.datos, "TIPOMANDATO");
 	}
-	public void setTipoMandato (String tipo) { 
-		this.datos.put("TIPOMANDATO", tipo);
+	public void setTipoMandato (String dato) { 
+ 		try {
+ 			UtilidadesHash.set(this.datos, "TIPOMANDATO", dato);
+ 		} catch (Exception e) {
+ 			e.printStackTrace();
+ 		}
 	}
 }

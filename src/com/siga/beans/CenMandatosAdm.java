@@ -22,7 +22,8 @@ import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.GestorContadores;
-import com.siga.Utilidades.paginadores.Paginador;
+import com.siga.Utilidades.Paginador;
+import com.siga.Utilidades.PaginadorBind;
 import com.siga.Utilidades.UtilidadesBDAdm;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesMultidioma;
@@ -255,7 +256,7 @@ public class CenMandatosAdm extends MasterBeanAdmVisible
 			if (formulario.getApellido2()!=null && !formulario.getApellido2().trim().equals("")) {
 				sql.append(" AND UPPER(PER.APELLIDOS2) LIKE '%"+formulario.getApellido2().toUpperCase()+"%' ");
 			}
-			if (!formulario.getNif().trim().equals("")) {
+			if (formulario.getNif()!=null && !formulario.getNif().trim().equals("")) {
 				sql.append(" AND UPPER(PER.NIFCIF) LIKE '%"+formulario.getNif().toUpperCase()+"%' ");
 			}
 			
@@ -315,11 +316,14 @@ public class CenMandatosAdm extends MasterBeanAdmVisible
 			sql+=" and mcb.idInstitucion="+usrbean.getLocation();
 			sql+=" and mcb.firma_fecha is null";
 		try {
-			this.updateSQL(sql);
+			if(this.updateSQL(sql)){
+				return true;
+			}else{
+				return false;
+			}
 		} catch (ClsExceptions e) {
-			e.printStackTrace();
+			return false;
 		}
-		return true;
 		
 	}
 

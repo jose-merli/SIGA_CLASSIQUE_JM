@@ -25,72 +25,15 @@
  
 <!-- JSP -->
 <%
-	HttpSession ses=request.getSession();
-		
  
-	// locales
-	MantenimientoMandatosForm formulario = (MantenimientoMandatosForm)request.getSession().getAttribute("mantenimientoMandatosForm");
-	// datos seleccionados Combo
-	ArrayList colegioSel = new ArrayList();
-	colegioSel.add(formulario.getNombreInstitucion());
-
-	ArrayList tipoSel = new ArrayList();
-	if (formulario!=null && formulario.getTipo()!=null && !formulario.getTipo().equals(""))
-		tipoSel.add(formulario.getTipo());
-
-	// para ver si tengo que buscar tras mostrar la pantalla
 	String buscar = (String)request.getAttribute("buscar");
-	
-	/*String funcionBuscar = "";
-	if (buscar!=null) {
-		funcionBuscar = "buscarPaginador()";
-	}*/
-	
-	// colegiado
-	String colegiado = formulario.getColegiado();
-	if (colegiado==null) colegiado="";
-	String titu = "";
-	String loca = "censo.busquedaClientes.localizacion";
-	String busc = "";
-	if (colegiado.equals(ClsConstants.DB_TRUE)) {
-		//colegiados
-		titu = "censo.busquedaClientes.colegiados.titulo";
-		busc = "censo.busquedaClientes.colegiados.titulo";
-	} else {
-	   if (colegiado.equals(ClsConstants.DB_FALSE)){
-		//no colegiados
-		titu = "censo.busquedaClientes.noColegiados.titulo";
-		busc = "censo.busquedaClientes.noColegiados.titulo";
-	   }else{
-	    //letrados
-	    titu = "censo.busquedaClientes.letrados.titulo";
-		busc = "censo.busquedaClientes.letrados.titulo"; 
-	   }	
-	}
 
-	// institucionesVisibles
-	String institucionesVisibles = (String) request.getAttribute("CenInstitucionesVisibles");
-	if (institucionesVisibles==null) institucionesVisibles="";
-	/*String parametro[] = new String[1];
-	parametro[0] = institucionesVisibles;*/
 	
 	UsrBean user=(UsrBean)request.getSession().getAttribute("USRBEAN");
-	String parametro[] = new String[1];
-	parametro[0] = user.getLocation();
 
 	// MAV 14/7/05 Mostrar combo solo para aquellos colegios que permitan busquedas en más de una institucion
 	// Obtengo el UserBean y en consecuencia la institucion a la que pertenece y su nombre
 	
-	String institucionAcceso=user.getLocation();
-	String nombreInstitucionAcceso="";
-	if (institucionAcceso.equalsIgnoreCase(institucionesVisibles)){
-		CenInstitucionAdm institucionAdm = new CenInstitucionAdm(user);
-		nombreInstitucionAcceso=institucionAdm.getNombreInstitucion(institucionAcceso);
-	}
-	
-	String nColegiado=(String)request.getAttribute("nColegiado");
-	String idInstitucion=(String)request.getAttribute("idInstitucion");
-	String nifcif=(String)request.getAttribute("nifcif");
 %>	
 
 <%@page import="java.util.Properties"%>
@@ -144,8 +87,6 @@
 				
 				document.forms[0].tipoMandato.value=jQuery('#idTipoMandato').val();
 				document.forms[0].tipoCliente.value=jQuery('#idTipoCliente').val();
-				
-				document.forms[0].valorCheck.value="1";
 
 				if(modo)
 					document.forms[0].modo.value = modo;
@@ -169,15 +110,7 @@
 				document.forms[0].apellido2.value="";
 				if ($("#numeroColegiado").length != 0)
 					document.forms[0].numeroColegiado.value="";
-				
-				<%if (colegiado.equals("2")){%>
-					document.forms[0].residente.value="";
-				<%} else if (colegiado.equals(ClsConstants.DB_TRUE)) { %>
-					document.forms[0].nombreInstitucion.value="";
-					document.forms[0].numeroColegiado.value="";
-				<%} else {%>
-					document.forms[0].nombreInstitucion.value="";
-				<%}%>				
+		
 				
 				document.forms[0].nif.value="";
 				document.forms[0].modo.value="abrir";
@@ -189,40 +122,35 @@
 				document.RecuperarConsultasForm.submit();				
 			}
 			
-			function inicio() {			  
-			  	// Cuando venimos de las colegiaciones de letrados introducimos los siguientes criterios de busqueda por defecto:
-				<%if (nColegiado!=null && !nColegiado.equals("")) {%>				     
-					mantenimientoMandatosForm.numeroColegiado.value=<%=nColegiado%>;					 
-				<%}%>
+			function accionProcesar() {
 				
-				<%if (nifcif!=null && !nifcif.equals("")) {%>
-					mantenimientoMandatosForm.nif.value='<%=nifcif%>';
-				<%}%>
-				
-				<%if (idInstitucion!=null && !idInstitucion.equals("")) {%>				          
-					mantenimientoMandatosForm.nombreInstitucion.value=<%=idInstitucion%>;
-				<%}%>
-				   
-				<%if (request.getParameter("buscar")!=null && request.getParameter("buscar").equals("1")){%>
-					// Cuando venimos de las colegiaciones de letrados	            
-				    buscar();
+				if(document.getElementById("uploadBox").value != "") {
+					sub();
 					
-				<%} else if(request.getParameter("buscar")!=null && request.getParameter("buscar").equals("true")){%>
-					// Cuando volvemos a la paginación
-					// Recuperamos si el check de busqueda estaba activado o no  
-	               	if ( document.forms[0].valorCheck.value=="1"){
-						mantenimientoMandatosForm.chkPendientesFirmar.checked=true;
-					} else {
-						mantenimientoMandatosForm.chkPendientesFirmar.checked=false;
-					} 
-					buscarPaginador();
-			  	<%}%>	
+					var mensaje = "<siga:Idioma key='censo.mantenimientoMandatos.confirmarCarga'/> ";
+						
+					//Preguntamos si queremos subir los datos del fichero o no							
+					if (confirm(mensaje)) 
+					{
+						document.forms[0].modo.value="procesarFichero";
+						document.forms[0].target="submitArea";	
+						var alerta = "<siga:Idioma key='censo.mantenimientoMandatos.procesandoFichero'/> ";
+						alert(alerta);
+						document.forms[0].submit();	
+					} else{
+						fin();
+					}	
+				}else{
+					var mensaje = "Debe seleccionar un fichero";
+					alert(mensaje);
+				}
+
 			}
 		</script>
 		<!-- FIN: SCRIPTS BOTONES BUSQUEDA -->	
 </head>
 
-<body onLoad="inicio();ajusteAlto('resultado');">
+<body onLoad="inicio(); ajusteAlto('resultado');">
 	<bean:define id="path" name="org.apache.struts.action.mapping.instance"	property="path" scope="request" />
 	
 	<!-- ******* BOTONES Y CAMPOS DE BUSQUEDA ****** -->
@@ -235,15 +163,12 @@
 				<td>
 					<siga:ConjCampos leyenda="censo.busquedaClientes.literal.titulo1">
 						<table class="tablaCampos" align="center">
-							<html:form styleId="buscarForm" action="/CEN_MantenimientoMandatos.do?noReset=true" method="POST" target="resultado">
+							<html:form styleId="buscarForm" action="/CEN_MantenimientoMandatos.do?noReset=true" method="POST" target="resultado"  enctype="multipart/form-data" >
 								<html:hidden name="mantenimientoMandatosForm" property = "modo" value = ""/>
-								<html:hidden property="seleccionarTodos" />
+								<html:hidden name="mantenimientoMandatosForm" property="seleccionarTodos" />
 								<input type="hidden" id="limpiarFilaSeleccionada" name="limpiarFilaSeleccionada" value=""/>
 
 								<!-- parametro para colegiados o no -->
-								<html:hidden name="mantenimientoMandatosForm" property = "colegiado"  value="<%=colegiado%>"/>
-								<html:hidden name="mantenimientoMandatosForm" property = "avanzada" />
-								<html:hidden name="mantenimientoMandatosForm" property = "valorCheck" />
 								<html:hidden name="mantenimientoMandatosForm" property = "chkPendientesFirmar" />
 								<html:hidden name="mantenimientoMandatosForm" property = "tipoMandato" value=""/>
 
@@ -317,12 +242,25 @@
 		 								<input type="checkbox" id="idChkPendientesFirmar" checked/>		
 									</td>
 								</tr>
+								<tr>
+									<td colspan="4">
+								<div id="divSubida" style="padding:2px;">
+								<siga:ConjCampos leyenda="Carga por fichero">
+									<c:out class="labelText"><siga:Idioma key='censo.mantenimientoMandatos.exportarMandatos'/></c:out><br>
+									<html:file name="mantenimientoMandatosForm" styleId="uploadBox" property="fichero" size="90" styleClass="box"  
+									accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"/>
+									<input type="button" alt="Buscar" name="botonProcesar" onclick="accionProcesar()" class="button" value="Procesar">
+								</siga:ConjCampos>
+								</div>
+									</td>
+								</tr>
 							</html:form>
 						</table>
 					</siga:ConjCampos>
 				</td>
 			</tr>
 		</table>
+		
 
 		<html:form action="/CON_RecuperarConsultas" method="POST" target="mainWorkArea">
 			<html:hidden property="idModulo" value="<%=ConModuloBean.IDMODULO_CENSO%>"/>
@@ -330,54 +268,31 @@
 			<html:hidden property="accionAnterior" value="${path}"/>
 		</html:form>
 
-		<!-- FIN: CAMPOS DE BUSQUEDA-->
-	
-		<!-- INICIO: BOTONES BUSQUEDA -->
-		<!-- Esto pinta los botones que le digamos de busqueda. Ademas, tienen asociado cada
-			 boton una funcion que abajo se reescribe. Los valores asociados separados por comas
-			 son: V Volver, B Buscar,A Avanzada ,S Simple,N Nuevo registro ,L Limpiar,R Borrar Log
-		-->
-		<%  
-			String botones = "B,CON";
 
-		%>
-
-		<siga:ConjBotonesBusqueda botones="<%=botones %>"  titulo="" />
+		<siga:ConjBotonesBusqueda botones="B,CON"  titulo="" />
 		<!-- FIN: BOTONES BUSQUEDA -->
 
 		<!-- INICIO: IFRAME LISTA RESULTADOS -->
-		<% if (colegiado.equals("2")) {%>
-	  		<iframe align="center" src="<html:rewrite page='/html/jsp/general/blank.jsp'/>"
-				id="resultado"
-				name="resultado" 
-				scrolling="no"
-				frameborder="0"
-				marginheight="0"
-				marginwidth="0";					 
-				class="frameGeneral">
-			<!--style="position:absolute; width:964; height:350; z-index:2; top: 150px; left: 0px">-->
-	  		</iframe>
-	
-		<%} else {%>
-	   		<iframe align="center" src="<html:rewrite page='/html/jsp/general/blank.jsp'/>"
-				id="resultado"
-				name="resultado" 
-				scrolling="no"
-				frameborder="0"
-				marginheight="0"
-				marginwidth="0";					 
-				class="frameGeneral">
-			<!--style="position:absolute; width:964; height:297; z-index:2; top: 177px; left: 0px"> -->
-	  		</iframe>
-		<%}%>  	
+
+	</div>	
+   		<iframe align="center" src="<html:rewrite page='/html/jsp/general/blank.jsp'/>"
+			id="resultado"
+			name="resultado" 
+			scrolling="no"
+			frameborder="0"
+			marginheight="0"
+			marginwidth="0";
+			class="frameGeneral">
+		<!--style="position:absolute; width:964; height:297; z-index:2; top: 177px; left: 0px"> -->
+  		</iframe>
+
 		<!-- FIN: IFRAME LISTA RESULTADOS -->
 		<!-- FIN  ******* BOTONES Y CAMPOS DE BUSQUEDA ****** -->
-	</div>	
 
 	<!-- INICIO: SUBMIT AREA -->
 	<!-- Obligatoria en todas las páginas-->
 	<iframe name="submitArea" src="<html:rewrite page='/html/jsp/general/blank.jsp'/>" style="display:none"></iframe>
 	<!-- FIN: SUBMIT AREA -->
-
+<script>ajusteAlto('resultado');</script>
 </body>
 </html>

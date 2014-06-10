@@ -8,25 +8,47 @@
  */
 package com.siga.censo.action;
 
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Hashtable;
-import java.util.StringTokenizer;
 import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFCellStyle;
+import org.apache.poi.hssf.usermodel.HSSFFont;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.apache.struts.upload.FormFile;
+import org.redabogacia.sigaservices.app.util.ReadProperties;
+import org.redabogacia.sigaservices.app.util.SIGAReferences;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
+import com.atos.utils.LogFileWriter;
 import com.atos.utils.UsrBean;
+import com.siga.Utilidades.Paginador;
+import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;
-import com.siga.Utilidades.paginadores.Paginador;
 import com.siga.beans.CenColegiadoAdm;
 import com.siga.beans.CenInstitucionAdm;
 import com.siga.beans.CenMandatosAdm;
@@ -86,6 +108,8 @@ public class MantenimientoMandatosAction extends MasterAction {
 						mapDestino = generaExcel(mapping, miForm, request, response);
 					}else if (accion.equalsIgnoreCase("firmarSeleccionados")){
 						mapDestino = firmarMandatos(mapping, miForm, request, response);
+					}else if (accion.equalsIgnoreCase("procesarFichero")){
+						mapDestino = procesarFichero(mapping, miForm, request, response);
 					}else {
 						return super.executeInternal(mapping,formulario,request,response);
 					}
@@ -105,6 +129,9 @@ public class MantenimientoMandatosAction extends MasterAction {
 	}
 
 	
+
+
+
 	/**
 	 * Metodo que implementa el modo abrir
 	 * @param  mapping - Mapeo de los struts
@@ -124,31 +151,9 @@ public class MantenimientoMandatosAction extends MasterAction {
 			MantenimientoMandatosForm miform = (MantenimientoMandatosForm)formulario;
 			miform.reset(mapping,request);
 			
-			String colegiado = request.getParameter("colegiado");
-			miform.setColegiado(colegiado);
-	
-			// para saber en que tipo de busqueda estoy
-			request.getSession().setAttribute("CenBusquedaClientesTipo","N"); // busqueda normal
-			
-		/** Cuando venimos de la pestaña de datos de colegiacion**/	
 			String buscar = request.getParameter("buscar");
 			request.setAttribute("buscar",buscar);
-			String nColegiado="";
-			String idInstitucion="";
-			String nifcif="";
-	       
-	        if (request.getParameter("nColegiado")!=null){
-	        	nColegiado=(String)request.getParameter("nColegiado");
-	        }
-	        if (request.getParameter("idInstitucion")!=null){
-	        	idInstitucion=(String)request.getParameter("idInstitucion");
-	        }
-	        if (request.getParameter("nifcif")!=null){
-	        	nifcif=(String)request.getParameter("nifcif");
-	        }
-	        request.setAttribute("nColegiado",nColegiado);
-	        request.setAttribute("idInstitucion",idInstitucion);
-	        request.setAttribute("nifcif",nifcif);
+
 	        
 	      /***************************************************/  
 		}
@@ -177,7 +182,7 @@ public class MantenimientoMandatosAction extends MasterAction {
 		//Atencion!!Tenr en cuenta que el orden de estas claves es el mismo oden que se va a
 		//seguir al obtener los adtos en la jsp. Ver metodos actualizarSelecionados y aniadeClaveBusqueda(2)
 		//de la super clase(MasterAction)
-		String[] clavesBusqueda={"NCOLEGIADO","NIFCIF","APELLIDOS","NOMBRE","TIPOMANDATO","IBAN","REFERENCIA","FECHAFIRMA","LUGARFIRMA"};
+		String[] clavesBusqueda={"REFERENCIA"};
 	 
 		try {
 			// obtener institucion
@@ -196,7 +201,7 @@ public class MantenimientoMandatosAction extends MasterAction {
 			//habra que actualizar estos datos
 			if(!isSeleccionarTodos){
 				ArrayList clavesRegSeleccinados = (ArrayList) miFormulario.getRegistrosSeleccionados();
-				String seleccionados = request.getParameter("seleccion");
+				String seleccionados = request.getParameter("Seleccion");
 				
 				
 				if (seleccionados != null ) {
@@ -230,7 +235,7 @@ public class MantenimientoMandatosAction extends MasterAction {
 
 				databackup=new HashMap();
 				 			
-				com.siga.Utilidades.paginadores.Paginador resultado = null;
+				Paginador resultado = null;
 				Vector datos = null;
 
 				resultado = mandatoAdm.getClientesMandatos(idInstitucion,miFormulario, user.getLanguage());
@@ -443,60 +448,134 @@ public class MantenimientoMandatosAction extends MasterAction {
 		try {
 			UsrBean user = ((UsrBean)request.getSession().getAttribute(("USRBEAN")));
 			String idInstitucion=user.getLocation();
-	        MantenimientoMandatosForm form = (MantenimientoMandatosForm)formulario;
-	        CenColegiadoAdm colegiadoAdm = null;
+			MantenimientoMandatosForm form = (MantenimientoMandatosForm)formulario;
+			CenColegiadoAdm colegiadoAdm = null;
 			CenNoColegiadoAdm noColegiadoAdm = null;
 			Vector datosTabla = null;
 			String idTipoPersona = null;
-	        for (int i = 0; i < form.getDatosTabla().size(); i++) {
-	        	datosTabla = new Vector();
-	        	String linea = form.getDatosTablaOcultos(i).toString();
-	        	linea=linea.replaceAll("#", " ");
-	        	linea=linea.substring(1, linea.length()-1);
-				StringTokenizer tokCampos = new StringTokenizer(linea, "||");
-	        	String[] vCampos ={"","","","","","","","",""};
-	        	vCampos=linea.split("\\|\\|", 9);
-	        	/*int j=0;
-	        	while(tokCampos.hasMoreElements()){
-					vCampos[j]=tokCampos.nextToken();
-					j++;
-				}*/
-	        	
-	        	Hashtable ht = new Hashtable();
-				ht.put("NCOLEGIADO", 	vCampos[0]);
-				ht.put("NIFCIF", 		vCampos[1]);
-				ht.put("APELLIDOS", 	vCampos[2]);
-				ht.put("NOMBRE", 		vCampos[3]);
-				ht.put("TIPOMANDATO", 	vCampos[4]);
-				ht.put("IBAN", 			vCampos[5]);
-				ht.put("REFERENCIA", 	vCampos[6]);
-				ht.put("FECHA FIRMA", 	UtilidadesString.formatoFecha(vCampos[7], ClsConstants.DATE_FORMAT_JAVA, ClsConstants.DATE_FORMAT_SHORT_SPANISH));
-				ht.put("LUGAR FIRMA",	vCampos[8]);
-				datosTabla.add(ht);
-				
-				if(datosTabla!=null)
-					datos.addAll(datosTabla);
-				else
-					System.out.println("Bingo");
-			}
+			CenMandatosAdm mandatoAdm = new CenMandatosAdm(user);
+			HashMap databackup = (HashMap) form.getDatosPaginador();
+			Paginador resultado = mandatoAdm.getClientesMandatos(idInstitucion, form, user.getLanguage());
+			ArrayList registrosBusqueda = new ArrayList((Collection)mandatoAdm.selectGenerico(resultado.getQueryInicio()));
+			Hashtable registro = null;
+			boolean isSeleccionado=false;
+			int fila=1;
 			
+			String ruta=getDirectorioFicherosCarga(user.getLocation());
+			File path = new File(ruta);
+			path.mkdirs();
 			
-	        String[] cabeceras = new String[]{"NCOLEGIADO","NIFCIF","APELLIDOS","NOMBRE","TIPOMANDATO","IBAN","REFERENCIA","FECHA FIRMA","LUGAR FIRMA"};
-	        String[] campos = new String[]{"NCOLEGIADO","NIFCIF","APELLIDOS","NOMBRE","TIPOMANDATO","IBAN","REFERENCIA","FECHA FIRMA","LUGAR FIRMA"};
-	        
-			request.setAttribute("campos",campos);
-			request.setAttribute("datos",datos);
-			request.setAttribute("cabeceras",cabeceras);
-			request.setAttribute("descripcion", "Mandatos_"+idInstitucion+"_"+this.getUserName(request).toString());
-						
+			StringBuffer nombreFichero = new StringBuffer("Mandatos_" + user.getLocation());
+			nombreFichero.append("_");
+			nombreFichero.append(UtilidadesString.getTimeStamp());
+			nombreFichero.append(".xls");
 			
-		} 
-		catch (Exception e) { 
+			String fichero=ruta+File.separator+nombreFichero.toString();
 			
-			throwExcp("facturacion.consultaMorosos.errorInformes", new String[] {"modulo.facturacion"}, e, null); 
-		}
+			File output = new File(fichero);
+			
+			FileOutputStream fileOut = new FileOutputStream(output);
+			HSSFWorkbook workbook = new HSSFWorkbook();
+			HSSFSheet worksheet = workbook.createSheet("Mandatos");
+			HSSFCellStyle cellStyle = workbook.createCellStyle();
+			HSSFFont font = workbook.createFont();
+			cellStyle.setBorderBottom((short) 2);
+			font.setBoldweight(HSSFFont.BOLDWEIGHT_BOLD);
+			cellStyle.setFont(font);
+			
+			worksheet.setColumnWidth(0, 10*256);
+			worksheet.setColumnWidth(1, 14*256);
+			worksheet.setColumnWidth(2, 20*256);
+			worksheet.setColumnWidth(3, 20*256);
+			worksheet.setColumnWidth(4, 13*256);
+			worksheet.setColumnWidth(5, 30*256);
+			worksheet.setColumnWidth(6, 30*256);
+			worksheet.setColumnWidth(7, 13*256);
+			worksheet.setColumnWidth(8, 30*256);
+			
+			HSSFRow cabecera = worksheet.createRow(0);
+			HSSFCell cab0 = cabecera.createCell(0);
+			cab0.setCellValue("NCOLEGIADO");
+			cab0.setCellStyle(cellStyle);
+			HSSFCell cab1 = cabecera.createCell(1);
+			cab1.setCellValue("NIFCIF");
+			cab1.setCellStyle(cellStyle);
+			HSSFCell cab2 = cabecera.createCell(2);
+			cab2.setCellValue("APELLIDOS");
+			cab2.setCellStyle(cellStyle);
+			HSSFCell cab3 = cabecera.createCell(3);
+			cab3.setCellValue("NOMBRE");
+			cab3.setCellStyle(cellStyle);
+			HSSFCell cab4 = cabecera.createCell(4);
+			cab4.setCellValue("TIPOMANDATO");
+			cab4.setCellStyle(cellStyle);
+			HSSFCell cab5 = cabecera.createCell(5);
+			cab5.setCellValue("IBAN");
+			cab5.setCellStyle(cellStyle);
+			HSSFCell cab6 = cabecera.createCell(6);
+			cab6.setCellValue("REFERENCIA");
+			cab6.setCellStyle(cellStyle);
+			HSSFCell cab7 = cabecera.createCell(7);
+			cab7.setCellValue("FECHA FIRMA");
+			cab7.setCellStyle(cellStyle);
+			HSSFCell cab8 = cabecera.createCell(8);
+			cab8.setCellValue("LUGAR FIRMA");
+			cab8.setCellStyle(cellStyle);
 
-		return "generaExcel";
+			for (int i = 0; i < registrosBusqueda.size(); i++) {
+				registro=(Hashtable)registrosBusqueda.get(i);
+				
+	        	isSeleccionado = form.getDatosTabla().toString().contains("[["+registro.get("REFERENCIA")+"]]");
+	        	
+	        	if(isSeleccionado){
+					HSSFRow row = worksheet.createRow(fila);
+					HSSFCell c0 = row.createCell(0);
+					c0.setCellValue(UtilidadesHash.getString(registro,"NCOLEGIADO"));
+					HSSFCell c1 = row.createCell(1);
+					c1.setCellValue(UtilidadesHash.getString(registro,"NIFCIF"));
+					HSSFCell c2 = row.createCell(2);
+					c2.setCellValue(UtilidadesHash.getString(registro,"APELLIDOS"));
+					HSSFCell c3 = row.createCell(3);
+					c3.setCellValue(UtilidadesHash.getString(registro,"NOMBRE"));
+					HSSFCell c4 = row.createCell(4);
+					c4.setCellValue(UtilidadesHash.getString(registro,"TIPOMANDATO"));
+					HSSFCell c5 = row.createCell(5);
+					c5.setCellValue(UtilidadesHash.getString(registro,"IBAN"));
+					HSSFCell c6 = row.createCell(6);
+					c6.setCellValue(UtilidadesHash.getString(registro,"REFERENCIA"));
+					HSSFCell c7 = row.createCell(7);
+					c7.setCellValue(UtilidadesString.formatoFecha(UtilidadesHash.getString(registro,"FECHAFIRMA"), ClsConstants.DATE_FORMAT_JAVA, ClsConstants.DATE_FORMAT_SHORT_SPANISH));
+					HSSFCell c8 = row.createCell(8);
+					c8.setCellValue(UtilidadesHash.getString(registro,"LUGARFIRMA"));
+					fila++;
+	        	}
+			}
+			// Bloqueamos la primera
+			workbook.getSheetAt(workbook.getActiveSheetIndex()).createFreezePane(0, 1);
+
+			workbook.write(fileOut);
+			fileOut.flush();
+			fileOut.close();
+			
+			if(output==null || !output.exists()){
+				throw new SIGAException("error.messages.fileNotFound"); 
+			}
+			request.setAttribute("nombreFichero", output.getName());
+			request.setAttribute("rutaFichero", output.getPath());
+			request.setAttribute("borrarFichero", "true");			
+			request.setAttribute("generacionOK","OK");
+		} 
+		catch (SIGAException e) 
+		{ 
+		  	throw e; 
+		}
+		catch (Exception e) 
+		{ 
+			throwExcp("messages.general.error", new String[] {"modulo.envios"}, e, null); 
+		}
+		
+		
+		return "descarga";
 	}
 	
 	protected String firmarMandatos(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, SIGAException {
@@ -514,40 +593,12 @@ public class MantenimientoMandatosAction extends MasterAction {
 	        	String linea = form.getDatosTablaOcultos(i).toString();
 	        	linea=linea.replaceAll("#", " ");
 	        	linea=linea.substring(1, linea.length()-1);
-				StringTokenizer tokCampos = new StringTokenizer(linea, "||");
-	        	String[] vCampos ={"","","","","","","","",""};
-	        	vCampos=linea.split("\\|\\|", 9);
-	        	/*int j=0;
-	        	while(tokCampos.hasMoreElements()){
-					vCampos[j]=tokCampos.nextToken();
-					j++;
-				}*/
 	        	
-	        	Hashtable ht = new Hashtable();
-				ht.put("NCOLEGIADO", 	vCampos[0]);
-				ht.put("NIFCIF", 		vCampos[1]);
-				ht.put("APELLIDOS", 	vCampos[2]);
-				ht.put("NOMBRE", 		vCampos[3]);
-				ht.put("TIPOMANDATO", 	vCampos[4]);
-				ht.put("IBAN", 			vCampos[5]);
-				ht.put("REFERENCIA", 	vCampos[6]);
-				ht.put("FECHA FIRMA", 	vCampos[7]);
-				ht.put("LUGAR FIRMA",	vCampos[8]);
-				
-				mandatoAdm.firmarReferencia(vCampos[6], form.getFechaFirma(), form.getLugarFirma());
+	        	Hashtable ht = new Hashtable();				
+				mandatoAdm.firmarReferencia(linea, form.getFechaFirma(), form.getLugarFirma());
 
 			}
-			
-			/*
-	        String[] cabeceras = new String[]{"NCOLEGIADO","NIFCIF","APELLIDOS","NOMBRE","TIPOMANDATO","IBAN","REFERENCIA","FECHA FIRMA","LUGAR FIRMA"};
-	        String[] campos = new String[]{"NCOLEGIADO","NIFCIF","APELLIDOS","NOMBRE","TIPOMANDATO","IBAN","REFERENCIA","FECHA FIRMA","LUGAR FIRMA"};
-	        
-			request.setAttribute("campos",campos);
-			request.setAttribute("datos",datos);
-			request.setAttribute("cabeceras",cabeceras);
-			request.setAttribute("descripcion", idInstitucion+"_"+this.getUserName(request).toString());
-						
-			*/
+
 		} 
 		catch (Exception e) { 
 			
@@ -557,5 +608,129 @@ public class MantenimientoMandatosAction extends MasterAction {
 		return "exito";
 	}
 
+	private String procesarFichero(ActionMapping mapping,
+			MasterForm formulario, HttpServletRequest request,
+			HttpServletResponse response) throws SIGAException {
+		
+
+		try {
+			MantenimientoMandatosForm form = (MantenimientoMandatosForm) formulario;
+			FormFile formFile = form.getFichero();
+			UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");
+			CenMandatosAdm mandatoAdm = new CenMandatosAdm(user);
+			
+			StringBuffer pathFichero = new StringBuffer(getDirectorioFicherosCarga(user.getLocation()));
+			File path = new File(pathFichero.toString());
+			path.mkdirs();
+			
+			StringBuffer nombreFichero = new StringBuffer(formFile.getFileName().substring(0, formFile.getFileName().lastIndexOf('.')));
+			nombreFichero.append("_");
+			nombreFichero.append( user.getUserName()+"_"+UtilidadesString.getTimeStamp());
+			nombreFichero.append(".xls");
+			FileOutputStream fileOut = new FileOutputStream(pathFichero.toString()+File.separator+nombreFichero.toString());
+			
+			String ruta = getDirectorioFicherosCarga(user.getLocation());
+			
+			// Recuperamos el archivo del formulario 
+			File file = new File(formFile.getFileName());
+			// Creamos el streamd el archivo
+			InputStream is = new BufferedInputStream(formFile.getInputStream());  
+			// A partir del stream creamos el workbook (generico para xls y xlsx)
+			Workbook wb = WorkbookFactory.create(is);
+			// Usaremos la primera hoja
+	        Sheet ws = wb.getSheetAt(0);
+	        // Cogemos los datos de columnas y filas
+	        int rowNum = ws.getLastRowNum() + 1;
+	        int colNum = ws.getRow(0).getLastCellNum();
+
+	        String ref = "";
+	        String fecha = "";
+	        Date fechaDate;
+	        String lugar = "";
+	        
+	        String accion = "";
+	        
+	        // Recorremos las filas
+	        for(int i = 1; i <rowNum; i++){
+	            Row row = ws.getRow(i);
+	            // Para cada fila nos quedamos con la referencia, fecha y lugar
+	            ref   = row.getCell(6, Row.CREATE_NULL_AS_BLANK).toString();
+	            
+	            try{
+	            	fechaDate= row.getCell(7, Row.CREATE_NULL_AS_BLANK).getDateCellValue();
+	            	fecha=UtilidadesString.formatoFecha(fechaDate,ClsConstants.DATE_FORMAT_SHORT_SPANISH);
+	            }catch (Exception e) {
+	        		fecha = row.getCell(7, Row.CREATE_NULL_AS_BLANK).toString();
+	        	}
+	            lugar = row.getCell(8, Row.CREATE_NULL_AS_BLANK).toString();
+	            if(notNull(ref)&&notNull(fecha)&&notNull(lugar)){
+	            	fecha = fecha.replaceAll("[^\\d]", "/");
+	            	if(isValid(fecha)){
+		        	// Si los campos tienen valor atualizamos el mandato
+			        	if(mandatoAdm.firmarReferencia(ref, fecha, lugar)){
+			        		accion="FIRMADO";
+			        	}else{
+			        		accion="No se ha podido firmar";
+			        	}
+	            	}else{
+	            		accion="Fecha no válida - dd/mm/yyyy";
+	            	}
+	            }else{
+		        	// Si no no podemos hacer nada
+		        	accion="Datos insuficientes para poder firmar";
+	            }
+	            // Finalmente escribimos en el archivo la fila con
+	            Cell resultado = row.createCell(9);
+	            resultado.setCellValue(accion);
+	        }
+	        
+	        // Finalmente guardamos el excel extendido como log
+	        wb.write(fileOut);
+			fileOut.flush();
+			fileOut.close();
+			request.setAttribute("nombreFichero",nombreFichero.toString());
+			request.setAttribute("rutaFichero", pathFichero.toString()+"/"+nombreFichero.toString());
+			request.setAttribute("borrarFichero", "false");			
+			request.setAttribute("generacionOK","OK");
+			
+			return "descarga";
+			
+		} catch (Exception e) {
+		    throwExcp("Error al leer el documento", new String[] {"modulo.censo"}, e, null);
+		}
+		
+		return "inicio";
+	}
+	
+	private boolean notNull(String val){
+	    return (val!=null&!val.equalsIgnoreCase(""));
+	}
+	
+	private String getDirectorioFicherosCarga(String idInstitucion){
+	    ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+	    String pathFicheros = rp.returnProperty("gen.ficheros.path");
+	    StringBuffer directorioFichero = new StringBuffer(pathFicheros);
+		directorioFichero.append(idInstitucion);
+		directorioFichero.append(File.separator);
+		directorioFichero.append(rp.returnProperty("fac.ficheros.mandatos"));
+		directorioFichero.append(File.separator);
+		directorioFichero.append("ficherosCarga");
+					
+		return directorioFichero.toString();
+	}
+	
+	private boolean isValid(String text) {
+	    if (text == null || !text.matches("\\d{2}.\\d{2}.\\d{4}"))
+	        return false;
+	    
+	    SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+	    df.setLenient(false);
+	    try {
+	        df.parse(text);
+	        return true;
+	    } catch (Exception ex) {
+	        return false;
+	    }
+	}
 
 }
