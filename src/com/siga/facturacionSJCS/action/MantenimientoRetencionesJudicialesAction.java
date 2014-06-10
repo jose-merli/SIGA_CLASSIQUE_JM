@@ -331,7 +331,7 @@ public class MantenimientoRetencionesJudicialesAction extends MasterAction {
 			// Si vengo desde la ficha colegial
 			if (mapping.getParameter() != null && mapping.getParameter().toUpperCase().contains(ClsConstants.PARAM_ESFICHACOLEGIAL.toUpperCase())) {
 				String idPersona = (String) request.getSession().getAttribute("idPersonaPestanha");
-				consulta += " AND RETENCIONES." + FcsRetencionesJudicialesBean.C_IDPERSONA + " = " + idPersona;
+				consulta += " AND nvl(RETENCIONES."+FcsRetencionesJudicialesBean.C_IDPERSONA+", "+idPersona+") = "+idPersona+" ";
 			}
 			
 			String fDesde = UtilidadesHash.getString(miHash,"FECHANOTIFICACIONDESDE"); 

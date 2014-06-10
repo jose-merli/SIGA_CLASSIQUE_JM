@@ -61,7 +61,7 @@
 			,factSJCS.busquedaRetAplicadas.literal.fechaHasta,factSJCS.busquedaRetAplicadas.literal.fechaRetencion
 			,factSJCS.busquedaRetAplicadas.literal.importeRetenido,factSJCS.busquedaRetAplicadas.literal.anyomes
 			,factSJCS.busquedaRetAplicadas.literal.abonoRelacionado,factSJCS.busquedaRetAplicadas.literal.pagoRelacionado,"
-	   columnSizes="8,16,14,8,8,8,8,6,10,10,4">
+	   columnSizes="8,18,8,7,7,7,9,6,10,16,4">
 	<logic:empty  name="BusquedaRetencionesAplicadasForm" property="retencionesAplicadas">
 		<tr class="notFound">
 			<td class="titulitos"><siga:Idioma key="messages.noRecordFound"/></td>
@@ -93,10 +93,10 @@
 			<td><bean:write name="retencionJudicial" property="descTipoRetencion" /></td>
 			<td><bean:write name="persona" property="nombre" /></td>
 			<td><bean:write name="destinatarioRetencion" property="nombre" /></td>
-			<td><%=fechaInicio%></td>
-			<td><%=fechaFin%></td>
-			<td><%=UtilidadesString.mostrarDatoJSP(GstDate.getFormatedDateShort(usr.getLanguage(),fechaRetencion))%></td>
-			<td align="right"><%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero.formatoCampo(importeRetenido.toString()))%></td>
+			<td align="center"><%=fechaInicio%></td>
+			<td align="center"><%=fechaFin%></td>
+			<td align="center"><%=UtilidadesString.mostrarDatoJSP(GstDate.getFormatedDateShort(usr.getLanguage(),fechaRetencion))%></td>
+			<td align="right"><%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero.formato(importeRetenido.toString()))%> &euro;</td>
 			
 			<td align="center">
 			<c:choose>
