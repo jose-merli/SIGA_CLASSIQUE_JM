@@ -425,7 +425,16 @@ public class FicheroBancarioPagosAction extends MasterAction{
 			resultado = ClsMngBBDD.callPLProcedure("{call PKG_SIGA_CARGOS.PRESENTACION(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}", 3, param_in_banco);
 			String codretorno = resultado[1];
 			
-			// Da error cuando no obtiene el mandato (5412) 
+			if (codretorno.equals("5412") || codretorno.equals("5413") || codretorno.equals("5414") || codretorno.equals("5415")) {
+				throw new SIGAException(resultado[2]);
+				
+			} else {
+				if (!codretorno.equals("0")){
+					throw new SIGAException("censo.fichaCliente.bancos.mandatos.error.generacionFicheros");
+				}							
+			}	
+			
+			/*// Da error cuando no obtiene el mandato (5412) 
 			if (codretorno.equals("5412")) {
 				throw new SIGAException("censo.fichaCliente.bancos.mandatos.error.sinMandato");
 				
@@ -451,7 +460,7 @@ public class FicheroBancarioPagosAction extends MasterAction{
 						}						
 					}					
 				}				
-			}			
+			}*/			
 
 			tx.commit();
 			resultadoFinal[0] = resultado[0];
