@@ -634,7 +634,8 @@ public class MantenimientoMandatosAction extends MasterAction {
 			// Recuperamos el archivo del formulario 
 			File file = new File(formFile.getFileName());
 			// Creamos el streamd el archivo
-			InputStream is = new BufferedInputStream(formFile.getInputStream());  
+			//InputStream is = new BufferedInputStream(formFile.getInputStream());  
+			InputStream is = formFile.getInputStream();
 			// A partir del stream creamos el workbook (generico para xls y xlsx)
 			Workbook wb = WorkbookFactory.create(is);
 			// Usaremos la primera hoja
