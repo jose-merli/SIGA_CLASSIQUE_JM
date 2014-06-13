@@ -260,7 +260,8 @@ public class FicheroBancarioPagosAction extends MasterAction{
 			ocultos 				= (Vector)form.getDatosTablaOcultos(0);			
 			//idDisqueteCargos 		= (String)ocultos.elementAt(0);			
 			nombreFichero 			= (String)ocultos.elementAt(1);	
-			idInstitucion			= this.getIDInstitucion(request).toString();			
+			idInstitucion			= this.getIDInstitucion(request).toString();	
+			pathFichero += File.separator + idInstitucion;
 			
 		}catch (Exception e) { 
 			throwExcp("messages.general.error",new String[] {"modulo.facturacion"},e,null); 
@@ -271,7 +272,7 @@ public class FicheroBancarioPagosAction extends MasterAction{
 		
 		//creamos la lista de ficheros adjuntos
     	List<File> lista = new ArrayList<File>();    	
-    	File directorioFicheros= new File(pathFichero + File.separator + idInstitucion);
+    	File directorioFicheros= new File(pathFichero);
     	
     	//Se buscan todos los ficheros que coincidan con el nombre del fichero
     	if(directorioFicheros.exists()){
@@ -293,10 +294,11 @@ public class FicheroBancarioPagosAction extends MasterAction{
     	}
     	
     	// devolviendo el fichero: (ZIP si hay varios)
-    	if (lista.size() == 1) {
+    	if (lista.size() == 1) {    		
     		request.setAttribute("nombreFichero", lista.get(0).getName());
+    		pathFichero += File.separator + lista.get(0).getName();
     	} else {
-	    	pathFichero += File.separator + idInstitucion + File.separator + nombreFichero+".zip";
+	    	pathFichero += File.separator + nombreFichero + ".zip";
 	    	File filezip = SIGAServicesHelper.doZip(pathFichero, lista);		
 			request.setAttribute("nombreFichero", nombreFichero+".zip");
     	}
