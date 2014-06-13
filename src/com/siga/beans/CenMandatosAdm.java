@@ -316,7 +316,7 @@ public class CenMandatosAdm extends MasterBeanAdmVisible
 			sql+=" and mcb.idInstitucion="+usrbean.getLocation();
 			sql+=" and mcb.firma_fecha is null";
 		try {
-			if(this.updateSQL(sql)){
+			if(this.updateOnlyOneSQL(sql)){
 				return true;
 			}else{
 				return false;
