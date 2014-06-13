@@ -8,10 +8,7 @@
  */
 package com.siga.censo.action;
 
-import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -33,11 +30,7 @@ import org.apache.poi.hssf.usermodel.HSSFFont;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
@@ -47,7 +40,6 @@ import org.redabogacia.sigaservices.app.util.SIGAReferences;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
-import com.atos.utils.LogFileWriter;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.Paginador;
 import com.siga.Utilidades.UtilidadesHash;
@@ -635,9 +627,12 @@ public class MantenimientoMandatosAction extends MasterAction {
 			FileOutputStream fileOut = new FileOutputStream(pathFichero.toString()+File.separator+nombreFichero.toString());
 			
 			// A partir del stream creamos el workbook (generico para xls y xlsx)
-			Workbook wb = WorkbookFactory.create(new File(fileCopy(formFile, pathFichero.toString(), formFile.getFileName())));
+			//Workbook wb = WorkbookFactory.create(new File(fileCopy(formFile, pathFichero.toString(), formFile.getFileName())));
+			
+			HSSFWorkbook wb = new HSSFWorkbook(formFile.getInputStream());
+			
 			// Usaremos la primera hoja
-	        Sheet ws = wb.getSheetAt(0);
+	        HSSFSheet ws = wb.getSheetAt(0);
 	        // Cogemos los datos de columnas y filas
 	        int rowNum = ws.getLastRowNum() + 1;
 	        int colNum = ws.getRow(0).getLastCellNum();
@@ -651,7 +646,7 @@ public class MantenimientoMandatosAction extends MasterAction {
 	        
 	        // Recorremos las filas
 	        for(int i = 1; i <rowNum; i++){
-	            Row row = ws.getRow(i);
+	            HSSFRow row = ws.getRow(i);
 	            // Para cada fila nos quedamos con la referencia, fecha y lugar
 	            ref   = row.getCell(6, Row.CREATE_NULL_AS_BLANK).toString();
 	            
@@ -679,7 +674,7 @@ public class MantenimientoMandatosAction extends MasterAction {
 		        	accion="Datos insuficientes para poder firmar";
 	            }
 	            // Finalmente escribimos en el archivo la fila con
-	            Cell resultado = row.createCell(9);
+	            HSSFCell resultado = row.createCell(9);
 	            resultado.setCellValue(accion);
 	        }
 	        
