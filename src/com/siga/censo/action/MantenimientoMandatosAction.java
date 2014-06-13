@@ -10,7 +10,10 @@ package com.siga.censo.action;
 
 import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.text.SimpleDateFormat;
@@ -623,19 +626,16 @@ public class MantenimientoMandatosAction extends MasterAction {
 			File path = new File(pathFichero.toString());
 			path.mkdirs();
 			
+			
+			
 			StringBuffer nombreFichero = new StringBuffer(formFile.getFileName().substring(0, formFile.getFileName().lastIndexOf('.')));
 			nombreFichero.append("_");
-			nombreFichero.append( user.getUserName()+"_"+UtilidadesString.getTimeStamp());
+			nombreFichero.append( user.getUserName()+"_log");
 			nombreFichero.append(".xls");
 			FileOutputStream fileOut = new FileOutputStream(pathFichero.toString()+File.separator+nombreFichero.toString());
 			
-			String ruta = getDirectorioFicherosCarga(user.getLocation());
+			InputStream is = new FileInputStream(fileCopy(formFile, pathFichero.toString(), formFile.getFileName()));
 			
-			// Recuperamos el archivo del formulario 
-			File file = new File(formFile.getFileName());
-			// Creamos el streamd el archivo
-			//InputStream is = new BufferedInputStream(formFile.getInputStream());  
-			InputStream is = formFile.getInputStream();
 			// A partir del stream creamos el workbook (generico para xls y xlsx)
 			Workbook wb = WorkbookFactory.create(is);
 			// Usaremos la primera hoja
@@ -732,6 +732,33 @@ public class MantenimientoMandatosAction extends MasterAction {
 	    } catch (Exception ex) {
 	        return false;
 	    }
+	}
+	
+	private String fileCopy(FormFile formFile, String path, String newFileName) throws SIGAException, IOException{
+		InputStream stream =null;
+    	
+    	OutputStream bos = null;
+    	try {			
+    		//retrieve the file data
+    		stream = formFile.getInputStream();
+    		//write the file to the file specified
+    		File camino = new File (path);
+    		camino.mkdirs();
+    		bos = new FileOutputStream(path + File.separator+ newFileName);
+    		int bytesRead = 0;
+    		byte[] buffer = new byte[8192];
+    		while ((bytesRead = stream.read(buffer, 0, 8192)) != -1) {
+    			bos.write(buffer, 0, bytesRead);
+    		}			    
+    	} 
+    	catch (Exception e) {
+    		throw new SIGAException("message.err.error.subiendoarchivo.datosgenerales",e);
+    	}finally	{
+    		// close the stream
+    		stream.close();
+    		bos.close();
+    	}
+    	return path + File.separator+ newFileName;
 	}
 
 }
