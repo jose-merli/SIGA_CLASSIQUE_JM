@@ -648,15 +648,15 @@ public class MantenimientoMandatosAction extends MasterAction {
 	        for(int i = 1; i <rowNum; i++){
 	            HSSFRow row = ws.getRow(i);
 	            // Para cada fila nos quedamos con la referencia, fecha y lugar
-	            ref   = row.getCell(6, Row.CREATE_NULL_AS_BLANK).toString();
+	            ref   = row.getCell(6).toString();
 	            
 	            try{
-	            	fechaDate= row.getCell(7, Row.CREATE_NULL_AS_BLANK).getDateCellValue();
+	            	fechaDate= row.getCell(7).getDateCellValue();
 	            	fecha=UtilidadesString.formatoFecha(fechaDate,ClsConstants.DATE_FORMAT_SHORT_SPANISH);
 	            }catch (Exception e) {
-	        		fecha = row.getCell(7, Row.CREATE_NULL_AS_BLANK).toString();
+	        		fecha = row.getCell(7).toString();
 	        	}
-	            lugar = row.getCell(8, Row.CREATE_NULL_AS_BLANK).toString();
+	            lugar = row.getCell(8).toString();
 	            if(notNull(ref)&&notNull(fecha)&&notNull(lugar)){
 	            	fecha = fecha.replaceAll("[^\\d]", "/");
 	            	if(isValid(fecha)){
