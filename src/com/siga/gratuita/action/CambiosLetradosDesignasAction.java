@@ -308,7 +308,9 @@ public class CambiosLetradosDesignasAction extends MasterAction {
 				" dp."+ ScsDesignasLetradoBean.C_ANIO+","+
 				" dp."+ ScsDesignasLetradoBean.C_NUMERO+","+ 
 				" dp."+ ScsDesignasLetradoBean.C_IDPERSONA+","+
-				" dp."+ScsDesignasLetradoBean.C_IDINSTITUCIONORIGEN+","+				
+				" dp."+ScsDesignasLetradoBean.C_IDINSTITUCIONORIGEN+","+	
+				" dp."+ ScsDesignasLetradoBean.C_FECHARENUNCIASOLICITA+", " +
+				" dp."+ ScsDesignasLetradoBean.C_IDTIPOMOTIVO+", " +
 				" dp."+ ScsDesignasLetradoBean.C_FECHADESIGNA+
 				" from "+ 
 				ScsDesignasLetradoBean.T_NOMBRETABLA+" dp, "+
@@ -335,10 +337,10 @@ public class CambiosLetradosDesignasAction extends MasterAction {
 				ses.setAttribute("DATABACKUP_CLD",datos);
 				miform.setDatos(datos);
 				//Controlo este valor que debe ir en la hash de sesion (se usa en un tag <bean:define> del JSP):
-				if (hash.containsKey("IDTIPOMOTIVO"))
+				/*if (hash.containsKey("IDTIPOMOTIVO"))
 					miform.setIdTipoMotivo((String)hash.get("IDTIPOMOTIVO"));
 				else
-					miform.setIdTipoMotivo("");
+					miform.setIdTipoMotivo("");*/
 			}else{
 				ses.removeAttribute("DATABACKUP_CLD");
 				miform.setDatos(hash);
@@ -477,6 +479,7 @@ public class CambiosLetradosDesignasAction extends MasterAction {
 					Hashtable<String, Object> designaActual = (Hashtable<String, Object>) datos.clone();
 					designaActual.put(ScsDesignasLetradoBean.C_FECHARENUNCIA, fCambio);
 					designaActual.put(ScsDesignasLetradoBean.C_FECHARENUNCIASOLICITA, fRenuncia);
+					designaActual.put(ScsDesignasLetradoBean.C_IDTIPOMOTIVO, motivo);
 					if (cambioMismoDia != null && cambioMismoDia.equalsIgnoreCase("1")) {
 						ScsSaltosCompensacionesAdm saltosCompenAdm = new ScsSaltosCompensacionesAdm(usr);
 						Hashtable<String, Object> saltosCompenHash = new Hashtable<String, Object>();
@@ -500,7 +503,7 @@ public class CambiosLetradosDesignasAction extends MasterAction {
 							throw new ClsExceptions(designaLetradoAdm.getError());
 					
 					} else {
-						if (!designaLetradoAdm.updateDirect(designaActual,designaLetradoAdm.getClavesBean(),new String[] { ScsDesignasLetradoBean.C_FECHARENUNCIA,ScsDesignasLetradoBean.C_FECHARENUNCIASOLICITA }))
+						if (!designaLetradoAdm.updateDirect(designaActual,designaLetradoAdm.getClavesBean(),new String[] { ScsDesignasLetradoBean.C_FECHARENUNCIA,ScsDesignasLetradoBean.C_FECHARENUNCIASOLICITA,ScsDesignasLetradoBean.C_IDTIPOMOTIVO }))
 							throw new ClsExceptions(designaLetradoAdm.getError());
 					}
 				}
@@ -515,7 +518,6 @@ public class CambiosLetradosDesignasAction extends MasterAction {
 				designaNueva.put(ScsDesignasLetradoBean.C_ANIO, anio);
 				designaNueva.put(ScsDesignasLetradoBean.C_IDPERSONA, idPersona);
 				designaNueva.put(ScsDesignasLetradoBean.C_FECHADESIGNA, fCambio);
-				designaNueva.put(ScsDesignasLetradoBean.C_IDTIPOMOTIVO, motivo);
 				designaNueva.put(ScsDesignasLetradoBean.C_MANUAL,isManual?ClsConstants.DB_TRUE:ClsConstants.DB_FALSE);
 				designaNueva.put(ScsDesignasLetradoBean.C_LETRADODELTURNO, ClsConstants.DB_FALSE);
 				designaNueva.put(ScsDesignasLetradoBean.C_OBSERVACIONES, observaciones);
