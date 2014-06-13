@@ -304,7 +304,7 @@ public class MantenimientoRetencionesJudicialesAction extends MasterAction {
 							  CenPersonaBean.T_NOMBRETABLA + " PER" + " WHERE PER." + CenPersonaBean.C_IDPERSONA +  " = RETENCIONES." + CenPersonaBean.C_IDPERSONA + ") AS " + CenPersonaBean.C_NOMBRE + ", (SELECT " + FcsDestinatariosRetencionesBean.C_NOMBRE + 
 							  " FROM " + FcsDestinatariosRetencionesBean.T_NOMBRETABLA + " DES" + " WHERE DES." + FcsDestinatariosRetencionesBean.C_IDINSTITUCION + " = RETENCIONES." + FcsRetencionesJudicialesBean.C_IDINSTITUCION +
 							  " AND DES." + FcsDestinatariosRetencionesBean.C_IDDESTINATARIO + " = RETENCIONES." + FcsRetencionesJudicialesBean.C_IDDESTINATARIO + ") AS NOMBREDESTINATARIO" + ", RETENCIONES." + 
-							  FcsRetencionesJudicialesBean.C_FECHAINICIO + ", RETENCIONES." + FcsRetencionesJudicialesBean.C_FECHAFIN + ", RETENCIONES."+FcsRetencionesJudicialesBean.C_IMPORTE+", F_SIGA_APLICADARETENCION(2040,retenciones.idretencion) RETENCIONAPLICADA FROM " + FcsRetencionesJudicialesBean.T_NOMBRETABLA + " RETENCIONES, " + FcsDestinatariosRetencionesBean.T_NOMBRETABLA + " o";
+							  FcsRetencionesJudicialesBean.C_FECHAINICIO + ", RETENCIONES." + FcsRetencionesJudicialesBean.C_FECHAFIN + ", RETENCIONES."+FcsRetencionesJudicialesBean.C_IMPORTE+", F_SIGA_APLICADARETENCION(retenciones."+FcsRetencionesJudicialesBean.C_IDINSTITUCION+",retenciones.idretencion) RETENCIONAPLICADA FROM " + FcsRetencionesJudicialesBean.T_NOMBRETABLA + " RETENCIONES, " + FcsDestinatariosRetencionesBean.T_NOMBRETABLA + " o";
 			
 			// Segunda parte de la consulta (con los criterios de búsqueda seleccionados)
 			consulta += " WHERE RETENCIONES." + FcsRetencionesJudicialesBean.C_IDINSTITUCION + " = " + user.getLocation();
