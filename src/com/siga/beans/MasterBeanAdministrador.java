@@ -960,6 +960,32 @@ public abstract class MasterBeanAdministrador {
 		}
 		return false;
 	}
+
+	public boolean updateOnlyOneSQL(String sql) throws ClsExceptions
+	{
+		int retorno;
+		
+		try {
+			retorno = new Row().updateSQL(sql); 
+		} catch (Exception e) {
+			this.error = e.toString();
+			throw new ClsExceptions(e, e.getMessage());
+		}
+		
+		if (retorno == 1) {
+			return true;
+		} else if (retorno > 0) {
+			this.error = "Warning: se actualizaron varios registros en BD";
+			return false;
+		} else if (retorno == 0) {
+			this.error = "Warning: no se actualizo ningun registro en BD";
+			return false;
+		} else {
+			this.error = "Error: al actualizar el elemento en BD";
+			return false;
+		}
+	}
+
 	public boolean updateSQL(String sql) throws ClsExceptions{
 
 		try {
