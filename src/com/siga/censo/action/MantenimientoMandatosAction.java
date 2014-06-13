@@ -634,10 +634,8 @@ public class MantenimientoMandatosAction extends MasterAction {
 			nombreFichero.append(".xls");
 			FileOutputStream fileOut = new FileOutputStream(pathFichero.toString()+File.separator+nombreFichero.toString());
 			
-			InputStream is = new FileInputStream(fileCopy(formFile, pathFichero.toString(), formFile.getFileName()));
-			
 			// A partir del stream creamos el workbook (generico para xls y xlsx)
-			Workbook wb = WorkbookFactory.create(is);
+			Workbook wb = WorkbookFactory.create(new File(fileCopy(formFile, pathFichero.toString(), formFile.getFileName())));
 			// Usaremos la primera hoja
 	        Sheet ws = wb.getSheetAt(0);
 	        // Cogemos los datos de columnas y filas
