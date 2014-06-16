@@ -566,7 +566,7 @@ public class MantenimientoMandatosAction extends MasterAction {
 		}
 		catch (Exception e) 
 		{ 
-			throwExcp("messages.general.error", new String[] {"modulo.envios"}, e, null); 
+			throwExcp("messages.general.error", new String[] {"modulo.censo"}, e, null); 
 		}
 		
 		
@@ -597,7 +597,7 @@ public class MantenimientoMandatosAction extends MasterAction {
 		} 
 		catch (Exception e) { 
 			
-			throwExcp("facturacion.consultaMorosos.errorInformes", new String[] {"modulo.facturacion"}, e, null); 
+			throwExcp("Ha ocurrido un error al firmar los mandatos", new String[] {"Censo"}, e, null); 
 		}
 
 		return "exito";
@@ -626,13 +626,18 @@ public class MantenimientoMandatosAction extends MasterAction {
 			nombreFichero.append(".xls");
 			FileOutputStream fileOut = new FileOutputStream(pathFichero.toString()+File.separator+nombreFichero.toString());
 			
-			// A partir del stream creamos el workbook (generico para xls y xlsx)
-			//Workbook wb = WorkbookFactory.create(new File(fileCopy(formFile, pathFichero.toString(), formFile.getFileName())));
 			
-			HSSFWorkbook wb = new HSSFWorkbook(formFile.getInputStream());
+			HSSFWorkbook wb;
+			HSSFSheet ws;
+			try{
+				// A partir del stream creamos el workbook
+				wb = new HSSFWorkbook(formFile.getInputStream());
+				// Accedemos a la primera hoja
+				ws = wb.getSheetAt(0);
+			}catch (Exception e) {
+				return error("El formato del fichero no es válido. Debe ser un fichero xls", new ClsExceptions(e, "Error al abrir el fichero de mandatos"), request);
+			}
 			
-			// Usaremos la primera hoja
-	        HSSFSheet ws = wb.getSheetAt(0);
 	        // Cogemos los datos de columnas y filas
 	        int rowNum = ws.getLastRowNum() + 1;
 	        int colNum = ws.getRow(0).getLastCellNum();
