@@ -208,8 +208,6 @@ public class CenMandatosAdm extends MasterBeanAdmVisible
 		Integer idInstitucionSubtipo1=null;
 		Integer idTipoCVSubtipo2 = null;
 		Integer idInstitucionSubtipo2=null;
-		Hashtable codigosBind = new Hashtable();
-		int contador=0;
 	  	
 	  	// Acceso a BBDD
 		try { 
@@ -243,10 +241,7 @@ public class CenMandatosAdm extends MasterBeanAdmVisible
 				sql.append(" AND MAN.FIRMA_FECHA IS NULL ");
 			}
 			// Aplicamos los filtros de busqueda
-			if (formulario.getNumeroColegiado()!=null && !formulario.getNumeroColegiado().trim().equals("")) {
-				sql.append(" AND f_siga_getncol_ncom("+usrbean.getLocation()+", PER.IDPERSONA)=");
-				sql.append(formulario.getNumeroColegiado());
-			}
+
 			if (formulario.getNombrePersona()!=null && !formulario.getNombrePersona().trim().equals("")) {
 				sql.append(" AND UPPER(PER.NOMBRE) LIKE '%"+formulario.getNombrePersona().toUpperCase()+"%' ");
 			}
@@ -277,9 +272,47 @@ public class CenMandatosAdm extends MasterBeanAdmVisible
 			}
 			if (formulario.getTipoCliente()!=null && !formulario.getTipoCliente().trim().equals("")) {
 				if(formulario.getTipoCliente().equalsIgnoreCase("C")){
-					sql.append("    and exists (select 1 from cen_colegiado col where col.idpersona=per.idpersona and col.idinstitucion=man.idinstitucion)");
+					sql.append(" AND exists (select 1 from cen_colegiado col where col.idpersona=per.idpersona and col.idinstitucion=man.idinstitucion)");
+					if (formulario.getNumeroColegiado()!=null && !formulario.getNumeroColegiado().trim().equals("")) {
+						sql.append(" AND f_siga_getncol_ncom("+usrbean.getLocation()+", PER.IDPERSONA)=");
+						sql.append(formulario.getNumeroColegiado());
+					}
+					 if (formulario.getTipoColegiado()!=null && !formulario.getTipoColegiado().equals("")){
+						 String sqlColegiado="";
+						 	if (formulario.getTipoColegiado().equals(String.valueOf(ClsConstants.ESTADO_COLEGIAL_ALTA))){
+						 		
+						 		sqlColegiado = " AND 1 in (select 1 from "+CenDatosColegialesEstadoBean.T_NOMBRETABLA+
+	                              " where "+CenDatosColegialesEstadoBean.T_NOMBRETABLA+"."+CenDatosColegialesEstadoBean.C_IDINSTITUCION+" = man."+CenClienteBean.C_IDINSTITUCION+
+	                              " and "+CenDatosColegialesEstadoBean.C_IDPERSONA+"=man."+CenClienteBean.C_IDPERSONA+
+	                              " and "+CenDatosColegialesEstadoBean.C_FECHAESTADO+" = (select max("+CenDatosColegialesEstadoBean.C_FECHAESTADO+")"+
+	                              " from "+CenDatosColegialesEstadoBean.T_NOMBRETABLA+
+								  " where "+ CenDatosColegialesEstadoBean.C_IDINSTITUCION+" = man."+CenClienteBean.C_IDINSTITUCION+
+								  " and "+CenDatosColegialesEstadoBean.C_IDPERSONA+"=man."+CenClienteBean.C_IDPERSONA;
+							  
+						 		sqlColegiado += " and "+CenDatosColegialesEstadoBean.C_FECHAESTADO+" <= sysdate)";
+						 		sqlColegiado += " and "+CenDatosColegialesEstadoBean.C_IDESTADO+" in ("+ClsConstants.ESTADO_COLEGIAL_EJERCIENTE+","+ClsConstants.ESTADO_COLEGIAL_SINEJERCER+"))";
+							  
+						 	} else{
+						 		sqlColegiado = " AND exists(select 1"+ 
+				                  " from "+CenDatosColegialesEstadoBean.T_NOMBRETABLA+
+				                  " where "+CenDatosColegialesEstadoBean.T_NOMBRETABLA+"."+CenDatosColegialesEstadoBean.C_IDINSTITUCION+" = man."+CenClienteBean.C_IDINSTITUCION+
+				                  " and "+CenDatosColegialesEstadoBean.C_IDPERSONA+"=man."+CenClienteBean.C_IDPERSONA+
+				                  " and "+CenDatosColegialesEstadoBean.C_FECHAESTADO+" = (select max("+CenDatosColegialesEstadoBean.C_FECHAESTADO+")"+
+				                  " from "+CenDatosColegialesEstadoBean.T_NOMBRETABLA+
+								  " where "+ CenDatosColegialesEstadoBean.C_IDINSTITUCION+" = man."+CenClienteBean.C_IDINSTITUCION+
+								  " and "+CenDatosColegialesEstadoBean.C_IDPERSONA+"=man."+CenClienteBean.C_IDPERSONA;
+						 	
+						 		sqlColegiado +=" and "+CenDatosColegialesEstadoBean.C_FECHAESTADO+" <=sysdate)";
+						 		sqlColegiado +=" and "+CenDatosColegialesEstadoBean.C_IDESTADO+" in ("+formulario.getTipoColegiado()+"))";	
+						 	}
+						 	sql.append(sqlColegiado);
+						 }
 				}else if(formulario.getTipoCliente().equalsIgnoreCase("N")){
-					sql.append("    and not exists (select 1 from cen_colegiado col where col.idpersona=per.idpersona and col.idinstitucion=man.idinstitucion)");			
+					sql.append(" AND NOT exists (select 1 from cen_colegiado col where col.idpersona=per.idpersona and col.idinstitucion=man.idinstitucion)");
+					if (formulario.getTipoNoColegiado()!=null && !formulario.getTipoNoColegiado().equalsIgnoreCase("")){
+						sql.append(" AND exists (select 1 from cen_nocolegiado nocol where nocol.idpersona=per.idpersona and nocol.idinstitucion=man.idinstitucion");
+						sql.append(" and nocol.tipo='"+formulario.getTipoNoColegiado()+"')");
+					}
 				}
 			}
 

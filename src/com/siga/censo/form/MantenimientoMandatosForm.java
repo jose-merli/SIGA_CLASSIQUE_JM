@@ -245,4 +245,26 @@ import com.siga.general.MasterForm;
  			e.printStackTrace();
  		}
 	}
+
+	public String  getTipoColegiado() { 
+		return UtilidadesHash.getString(this.datos, "TIPOCOLEGIADO");
+	}
+	public void setTipoColegiado(String dato) { 
+		try {
+			UtilidadesHash.set(this.datos, "TIPOCOLEGIADO", dato);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public String  getTipoNoColegiado() { 
+		return UtilidadesHash.getString(this.datos, "TIPONOCOLEGIADO");
+	}
+	public void setTipoNoColegiado(String dato) { 
+		try {
+			UtilidadesHash.set(this.datos, "TIPONOCOLEGIADO", dato);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 }

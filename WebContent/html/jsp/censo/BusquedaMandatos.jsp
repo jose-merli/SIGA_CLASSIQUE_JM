@@ -87,6 +87,9 @@
 				
 				document.forms[0].tipoMandato.value=jQuery('#idTipoMandato').val();
 				document.forms[0].tipoCliente.value=jQuery('#idTipoCliente').val();
+				document.forms[0].tipoColegiado.value=jQuery('#idTipoColegiado').val();
+				console.log();
+				document.forms[0].tipoNoColegiado.value=jQuery('#idTipoNoColegiado').val();
 
 				if(modo)
 					document.forms[0].modo.value = modo;
@@ -146,11 +149,25 @@
 				}
 
 			}
+			
+			function cambioColegiado(){
+				if(jQuery('#idTipoCliente').val()=='C'){
+					jQuery('.campoNoColegiado').hide();
+					jQuery('.campoColegiado').show();
+				}else if(jQuery('#idTipoCliente').val()=='N'){			
+					jQuery('.campoNoColegiado').show();
+					jQuery('.campoColegiado').hide();
+				}else{
+					jQuery('.campoNoColegiado').hide();
+					jQuery('.campoColegiado').hide();
+					
+				}
+			}
 		</script>
 		<!-- FIN: SCRIPTS BOTONES BUSQUEDA -->	
 </head>
 
-<body onLoad="inicio(); ajusteAlto('resultado');">
+<body onLoad="ajusteAlto('resultado');">
 	<bean:define id="path" name="org.apache.struts.action.mapping.instance"	property="path" scope="request" />
 	
 	<!-- ******* BOTONES Y CAMPOS DE BUSQUEDA ****** -->
@@ -171,25 +188,42 @@
 								<!-- parametro para colegiados o no -->
 								<html:hidden name="mantenimientoMandatosForm" property = "chkPendientesFirmar" />
 								<html:hidden name="mantenimientoMandatosForm" property = "tipoMandato" value=""/>
+								<html:hidden name="mantenimientoMandatosForm" property = "tipoColegiado" value=""/>
+								<html:hidden name="mantenimientoMandatosForm" property = "tipoNoColegiado" value=""/>
 
+								
+								<tr>
+									<input type="hidden" name="tipoCliente">
+									<td class="labelText">
+										<siga:Idioma key="censo.busquedaClientesAvanzada.literal.tipoColegiacion"/>
+									</td>
+									<td width="300px">
+										<select id="idTipoCliente" class="boxCombo" onchange="cambioColegiado()">
+											<option></option>
+											<option value="C" selected="selected"><siga:Idioma key="censo.colegiacion.colegiado"/></option>
+											<option value="N"><siga:Idioma key="censo.colegiacion.noColegiado"/></option>
+										</select>
+										<span class="campoColegiado">
+		 									<siga:Select queryId="getTiposColegiacion" id="idTipoColegiado"/>
+										</span>
+									</td>
+									<!-- Para el colegiado -->
+									<td class="labelText campoColegiado">
+										<siga:Idioma key="censo.busquedaClientesAvanzada.literal.nColegiado"/>
+									</td>
+									<td class="campoColegiado">
+										<html:text name="mantenimientoMandatosForm" property="numeroColegiado" maxlength="20" size="10" styleClass="box" />
+									</td>
 
-									<tr>
-										<td class="labelText"><siga:Idioma key="censo.busquedaClientesAvanzada.literal.tipoColegiacion"/></td>
-										<td>
-											<select id="idTipoCliente">
-												<option></option>
-												<option value="C" selected="selected"><siga:Idioma key="censo.colegiacion.colegiado"/></option>
-												<option value="N"><siga:Idioma key="censo.colegiacion.noColegiado"/></option>
-											</select>
-										</td>
-										<input type="hidden" name="tipoCliente">
-										<td class="labelText">
-											<siga:Idioma key="censo.busquedaClientesAvanzada.literal.nColegiado"/>
-										</td>
-										<td>
-											<html:text name="mantenimientoMandatosForm" property="numeroColegiado" maxlength="20" size="10" styleClass="box" />
-										</td>
-									</tr>
+									<!-- Para el no colegiado -->
+									<td class="labelText campoNoColegiado">
+										Tipo
+									</td>
+									<td class="campoNoColegiado">
+										<siga:Select id="idTipoNoColegiado" queryId="getTiposNoColegiado" width="200"/>
+									</td>
+								</tr>
+									
 									
 								<!-- FILA -->
 								<tr>				
@@ -230,7 +264,7 @@
 								<tr style="border-top:1px solid black">
 									<td class="labelText">Tipo</td>
 									<td>
-										<select id="idTipoMandato">
+										<select id="idTipoMandato" class="boxCombo">
 											<option></option>
 											<option value="0" selected="selected"><siga:Idioma key="pestana.fichaCliente.datosServicios"/></option>
 											<option value="1"><siga:Idioma key="pestana.fichaCliente.datosProductos"/></option>
@@ -242,13 +276,16 @@
 		 								<input type="checkbox" id="idChkPendientesFirmar" checked/>		
 									</td>
 								</tr>
+
+									
+									
 								<tr>
 									<td colspan="4">
 								<div id="divSubida" style="padding:2px;">
 								<siga:ConjCampos leyenda="Carga por fichero">
 									<c:out class="labelText"><siga:Idioma key='censo.mantenimientoMandatos.exportarMandatos'/></c:out><br>
 									<html:file name="mantenimientoMandatosForm" styleId="uploadBox" property="fichero" size="90" styleClass="box"  
-									accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"/>
+									accept="application/vnd.ms-excel"/>
 									<input type="button" alt="Buscar" name="botonProcesar" onclick="accionProcesar()" class="button" value="Procesar">
 								</siga:ConjCampos>
 								</div>
@@ -293,6 +330,6 @@
 	<!-- Obligatoria en todas las páginas-->
 	<iframe name="submitArea" src="<html:rewrite page='/html/jsp/general/blank.jsp'/>" style="display:none"></iframe>
 	<!-- FIN: SUBMIT AREA -->
-<script>ajusteAlto('resultado');</script>
+<script>ajusteAlto('resultado');cambioColegiado();</script>
 </body>
 </html>
