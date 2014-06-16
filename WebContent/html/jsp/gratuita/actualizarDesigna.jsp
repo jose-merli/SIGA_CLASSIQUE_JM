@@ -35,6 +35,11 @@
 	<script type="text/javascript" src="<html:rewrite page='/html/js/overlibmws/overlibmws.js'/>"></script>
 	<script type="text/javascript" src="<html:rewrite page='/html/js/ajaxtags.js'/>"></script>
 
+<style type="text/css">
+ul#tabs li.actual {
+	font-weight: bold;
+}
+</style>
 <script>
 
 	function cambiarJuzgado() {
@@ -299,8 +304,8 @@
 				</table>
 			</siga:ConjCampos>
 		
- 			<siga:ConjCampos leyenda="gratuita.operarEJG.literal.expedienteEJG">
-
+ 		<siga:ConjCampos leyenda="gratuita.operarEJG.literal.expedienteEJG">
+		<div id="panelEJGs" style="display: inline;overflow-y: auto;overflow-x: hidden;">
 			 	<bean:define id="ejgs" name="MaestroDesignasForm"	property="ejgs" type="java.util.Collection"/>
 	   	<c:choose>
 		<c:when test="${empty ejgs}">
@@ -314,8 +319,8 @@
 		</table>	
 		</c:when>
 		<c:otherwise>
-				<div align="right" id="panel">
-					<ul id="tabs">
+				<div align="right" id="panel" style="width:100%;">
+					<ul id="tabs" style="width:100%;">
 					<logic:notEmpty name="MaestroDesignasForm" property="ejgs">
 						<logic:iterate name="MaestroDesignasForm" property="ejgs" id="ejg1" indexId="index">
 					    	<li id="tab_${index}"><a href="#" onclick="tab('tab_${index}','panel_${index}');"><c:out
@@ -328,7 +333,7 @@
 
 					<logic:notEmpty name="MaestroDesignasForm" property="ejgs">
 						<logic:iterate name="MaestroDesignasForm" property="ejgs" id="ejg2" indexId="index2">
-							<div id="panel_${index2}" style="display: inline">
+							<div id="panel_${index2}" style="display: inline;overflow-y: auto;overflow-x: hidden;">
 								<table class="tablaCampos" align="center" cellpadding="0"
 									cellpadding="0" width="100%" border="0">
 								<tr>
@@ -488,10 +493,12 @@
 						</div>
 						<script type="text/javascript">
 							tab('tab_0','panel_0');
+							ajusteAlto('panelEJGs');
 						</script>
 					</div>
 				  </c:otherwise>
 				</c:choose>
+				</div>
 			</siga:ConjCampos> 
 			
 			</td>
