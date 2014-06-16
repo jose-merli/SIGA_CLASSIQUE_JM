@@ -15,9 +15,14 @@ import org.redabogacia.sigaservices.app.util.SIGAReferences;
 import com.atos.utils.*;
 import com.siga.Utilidades.UtilidadesBDAdm;
 import com.siga.Utilidades.UtilidadesHash;
+import com.siga.Utilidades.paginadores.Paginador;
+import com.siga.Utilidades.paginadores.PaginadorBind;
 import com.siga.certificados.Plantilla;
 import com.siga.envios.Envio;
+import com.siga.facturacion.form.ConfirmarFacturacionForm;
 import com.siga.general.SIGAException;
+import com.siga.gratuita.form.DesignaForm;
+import com.siga.gratuita.form.InformeJustificacionMasivaForm;
 
 
 
@@ -656,5 +661,108 @@ public class FacFacturacionProgramadaAdm extends MasterBeanAdministrador {
     		return "";
     	}
     }
+   
+    public Paginador getProgramacioneFacturacionPaginador(ConfirmarFacturacionForm confirmarFacturacionForm) throws ClsExceptions, SIGAException{
+		
+    	Integer idInstitucion	=  Integer.valueOf(this.usrbean.getLocation());	
+		String fechaInicial 	= "01/01/2000";
+		
+		FacFacturacionProgramadaAdm adm = new FacFacturacionProgramadaAdm(this.usrbean);
+		
+		
+		
+		//Este select interno si devuelve un numero > 0 querra decir que debo pedir la fecha de cargo
+		String selectInterno = "SELECT count(*) FROM "+FacFacturaBean.T_NOMBRETABLA+" fac "+
+							   " WHERE fac."+FacFacturaBean.C_IDINSTITUCION+" = facProg."+FacFacturacionProgramadaBean.C_IDINSTITUCION+
+							   " AND fac."+FacFacturaBean.C_IDSERIEFACTURACION+" = facProg."+FacFacturacionProgramadaBean.C_IDSERIEFACTURACION+
+							   " AND fac."+FacFacturaBean.C_IDPROGRAMACION+" = facProg."+FacFacturacionProgramadaBean.C_IDPROGRAMACION+
+							   " AND fac."+FacFacturaBean.C_IDFORMAPAGO+"="+ClsConstants.TIPO_FORMAPAGO_FACTURA;
+							   
+		StringBuffer select = new StringBuffer("SELECT  ");
+		
+		select.append(FacFacturacionProgramadaBean.C_FECHAINICIOPRODUCTOS);
+		select.append(",");
+		select.append(FacFacturacionProgramadaBean.C_FECHAFINPRODUCTOS);
+		select.append(",");
+		select.append(FacFacturacionProgramadaBean.C_FECHAINICIOSERVICIOS);
+		select.append(",");
+		select.append(FacFacturacionProgramadaBean.C_FECHAFINSERVICIOS);
+		select.append(",");
+		select.append(FacFacturacionProgramadaBean.C_FECHAPROGRAMACION);
+		select.append(",");
+		select.append(FacFacturacionProgramadaBean.C_FECHAPREVISTAGENERACION);
+		select.append(",");
+		select.append(FacFacturacionProgramadaBean.C_FECHAPREVISTACONFIRM);
+		select.append(",");
+		select.append(FacFacturacionProgramadaBean.C_FECHACONFIRMACION);
+		select.append(",");
+		select.append(FacFacturacionProgramadaBean.C_FECHAREALGENERACION);
+		select.append(",");
+		
+		select.append("IDESTADOCONFIRMACION,IDESTADOPDF,IDESTADOENVIO");
+
+		select.append(",ARCHIVARFACT,IDPROGRAMACION");
+		select.append(",facProg.");
+		select.append(FacFacturacionProgramadaBean.C_IDSERIEFACTURACION);
+		
+		select.append(",facProg.");
+		select.append(FacFacturacionProgramadaBean.C_USUMODIFICACION);
+		select.append(",");
+		
+		
+		
+		
+
+		select.append(" ("+selectInterno+") AS FECHACARGO, ");
+		select.append(" serieFac."+FacSerieFacturacionBean.C_NOMBREABREVIADO);
+			select.append(" FROM "+FacFacturacionProgramadaBean.T_NOMBRETABLA+" facProg, ");
+		select.append(FacSerieFacturacionBean.T_NOMBRETABLA+" serieFac");
+		select.append(" WHERE facProg." + FacFacturacionProgramadaBean.C_IDINSTITUCION + " = " + idInstitucion);
+//		select.append(" and facProg."+FacFacturacionProgramadaBean.C_FECHAREALGENERACION + " IS NOT NULL ");
+//		select.append(" and facProg."+FacFacturacionProgramadaBean.C_FECHAREALGENERACION + ">= TO_DATE ('" + fechaInicial + "', 'DD/MM/YYYY')");
+		select.append(" AND facProg."+FacFacturacionProgramadaBean.C_IDINSTITUCION+"= serieFac."+FacSerieFacturacionBean.C_IDINSTITUCION);
+		select.append(" AND facProg."+FacFacturacionProgramadaBean.C_IDSERIEFACTURACION+"= serieFac."+FacSerieFacturacionBean.C_IDSERIEFACTURACION);
+						
+		// filtros
+		if (!confirmarFacturacionForm.getEstadoConfirmacion().trim().equals("")) {
+			select.append(" AND facProg."+FacFacturacionProgramadaBean.C_IDESTADOCONFIRMACION+"="+confirmarFacturacionForm.getEstadoConfirmacion());
+		}
+		if (!confirmarFacturacionForm.getEstadoPDF().trim().equals("")) {
+			select.append(" AND facProg."+FacFacturacionProgramadaBean.C_IDESTADOPDF+"="+confirmarFacturacionForm.getEstadoPDF());
+		}
+		if (!confirmarFacturacionForm.getEstadoEnvios().trim().equals("")) {
+			select.append(" AND facProg."+FacFacturacionProgramadaBean.C_IDESTADOENVIO+"="+confirmarFacturacionForm.getEstadoEnvios());
+		}
+		if (confirmarFacturacionForm.getArchivadas()!=null && confirmarFacturacionForm.getArchivadas().trim().equals("1")) {
+			select.append(" AND facProg."+FacFacturacionProgramadaBean.C_ARCHIVARFACT+"='1'");
+		} else {
+			select.append(" AND facProg."+FacFacturacionProgramadaBean.C_ARCHIVARFACT+"='0'");
+		} 
+		if (confirmarFacturacionForm.getFechaDesdeConfirmacion()!=null && !confirmarFacturacionForm.getFechaDesdeConfirmacion().trim().equals("")) {
+			select.append(" AND facProg."+FacFacturacionProgramadaBean.C_FECHACONFIRMACION+">=TO_DATE ('" + confirmarFacturacionForm.getFechaDesdeConfirmacion() + "', 'DD/MM/YYYY')");
+		}
+		if (confirmarFacturacionForm.getFechaHastaConfirmacion()!=null && !confirmarFacturacionForm.getFechaHastaConfirmacion().trim().equals("")) {
+			select.append(" AND facProg."+FacFacturacionProgramadaBean.C_FECHACONFIRMACION+"<TO_DATE ('" + confirmarFacturacionForm.getFechaHastaConfirmacion() + "', 'DD/MM/YYYY')");
+		}
+		if (confirmarFacturacionForm.getFechaDesdeGeneracion()!=null && !confirmarFacturacionForm.getFechaDesdeGeneracion().trim().equals("")) {
+			select.append(" AND facProg."+FacFacturacionProgramadaBean.C_FECHAREALGENERACION+">=TO_DATE ('" + confirmarFacturacionForm.getFechaDesdeGeneracion() + "', 'DD/MM/YYYY')");
+		}
+		if (confirmarFacturacionForm.getFechaHastaGeneracion()!=null && !confirmarFacturacionForm.getFechaHastaGeneracion().trim().equals("")) {
+			select.append(" AND facProg."+FacFacturacionProgramadaBean.C_FECHAREALGENERACION+"<TO_DATE ('" + confirmarFacturacionForm.getFechaHastaGeneracion() + "', 'DD/MM/YYYY')");
+		}
+
+		
+		
+		
+		
+		select.append( " ORDER BY "+FacFacturacionProgramadaBean.C_FECHAREALGENERACION+" DESC");
+    	
+    	Paginador paginador= new Paginador(select.toString());
+		
+		return paginador;                        
+	}	
+    
+    
+   
 
 }

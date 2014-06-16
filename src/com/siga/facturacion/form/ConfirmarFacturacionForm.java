@@ -17,9 +17,57 @@ public class ConfirmarFacturacionForm extends MasterForm{
 	private String fechaCargo, estadoConfirmacion, estadoPDF, estadoEnvios, archivadas;
 	private String facturacionRapida, idSerieFacturacion, idProgramacion;
 	private String fechaEntrega="", fechaUnica="", fechaFRST="", fechaRCUR="", fechaCOR1="", fechaB2B="", fechaTipoUnica="";
-	
+	private String fechaDesdeConfirmacion,fechaHastaConfirmacion,fechaDesdeGeneracion,fechaHastaGeneracion;
 //	private String generarEnvios = "";
 	
+	/**
+	 * @return the fechaDesdeConfirmacion
+	 */
+	public String getFechaDesdeConfirmacion() {
+		return fechaDesdeConfirmacion;
+	}
+	/**
+	 * @param fechaDesdeConfirmacion the fechaDesdeConfirmacion to set
+	 */
+	public void setFechaDesdeConfirmacion(String fechaDesdeConfirmacion) {
+		this.fechaDesdeConfirmacion = fechaDesdeConfirmacion;
+	}
+	/**
+	 * @return the fechaHastaConfirmacion
+	 */
+	public String getFechaHastaConfirmacion() {
+		return fechaHastaConfirmacion;
+	}
+	/**
+	 * @param fechaHastaConfirmacion the fechaHastaConfirmacion to set
+	 */
+	public void setFechaHastaConfirmacion(String fechaHastaConfirmacion) {
+		this.fechaHastaConfirmacion = fechaHastaConfirmacion;
+	}
+	/**
+	 * @return the fechaDesdeGeneracion
+	 */
+	public String getFechaDesdeGeneracion() {
+		return fechaDesdeGeneracion;
+	}
+	/**
+	 * @param fechaDesdeGeneracion the fechaDesdeGeneracion to set
+	 */
+	public void setFechaDesdeGeneracion(String fechaDesdeGeneracion) {
+		this.fechaDesdeGeneracion = fechaDesdeGeneracion;
+	}
+	/**
+	 * @return the fechaHastaGeneracion
+	 */
+	public String getFechaHastaGeneracion() {
+		return fechaHastaGeneracion;
+	}
+	/**
+	 * @param fechaHastaGeneracion the fechaHastaGeneracion to set
+	 */
+	public void setFechaHastaGeneracion(String fechaHastaGeneracion) {
+		this.fechaHastaGeneracion = fechaHastaGeneracion;
+	}
 	public String getFechaCargo() {
 		return fechaCargo;
 	}

@@ -6,6 +6,10 @@
 package com.siga.facturacion.action;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Vector;
 
@@ -27,6 +31,7 @@ import com.atos.utils.GstDate;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;
+import com.siga.Utilidades.paginadores.Paginador;
 import com.siga.beans.FacDisqueteCargosAdm;
 import com.siga.beans.FacEstadoConfirmFactAdm;
 import com.siga.beans.FacEstadoConfirmFactBean;
@@ -94,6 +99,11 @@ public class ConfirmarFacturacionAction extends MasterAction{
 					mapDestino = consultarFacturas(mapping, miForm, request, response);
 				} else if (accion.equalsIgnoreCase("editarFechas")){
 					mapDestino = editarFechas(mapping, miForm, request, response);					
+				}else if (accion.equalsIgnoreCase("buscarInit")){
+					borrarPaginador(request, paginador);
+					mapDestino = buscarPor(mapping, miForm, request, response);
+				}else if (accion.equalsIgnoreCase("buscarPor")){
+					mapDestino = buscarPor(mapping, miForm, request, response);	
 				}else {
 					return super.executeInternal(mapping, formulario, request, response);
 				}
@@ -115,6 +125,79 @@ public class ConfirmarFacturacionAction extends MasterAction{
 		 } 
 		 
 		   return mapping.findForward(mapDestino);   	
+	}
+	
+	
+	protected String buscarPor(ActionMapping mapping, MasterForm formulario,
+			HttpServletRequest request, HttpServletResponse response)
+			throws ClsExceptions, SIGAException {
+		
+		ConfirmarFacturacionForm confirmarFacturacionForm = (ConfirmarFacturacionForm) formulario;
+		UsrBean usrBean = this.getUserBean(request);
+		FacFacturacionProgramadaAdm facturacionProgramadaAdm = new FacFacturacionProgramadaAdm(usrBean);
+		FacEstadoConfirmFactAdm admEstados = new FacEstadoConfirmFactAdm(usrBean);
+		Hashtable htEstados = admEstados.getEstadosConfirmacionFacturacion(usrBean.getLanguage());
+		request.setAttribute("ESTADOS",htEstados);
+		
+		try {
+			HashMap databackup=getPaginador(request, this.paginador);
+			if (databackup!=null){ 
+
+				Paginador paginador = (Paginador)databackup.get("paginador");
+				//Si no es la primera llamada, obtengo la página del request y la busco con el paginador
+				String pagina = (String)request.getParameter("pagina");
+				if (paginador!=null){	
+					Vector datos=new Vector();
+					if (pagina!=null){
+						datos = paginador.obtenerPagina(Integer.parseInt(pagina));
+					}else{// cuando hemos editado un registro de la busqueda y volvemos a la paginacion
+						datos = paginador.obtenerPagina((paginador.getPaginaActual()));
+					}
+					
+					request.setAttribute("paginaSeleccionada", paginador.getPaginaActual());
+					request.setAttribute("totalRegistros", paginador.getNumeroTotalRegistros());
+					request.setAttribute("registrosPorPagina", paginador.getNumeroRegistrosPorPagina());
+					databackup.put("paginador",paginador);
+					databackup.put("datos",datos);
+					request.setAttribute("datos", datos);
+				}else{
+					databackup.put("datos",new Vector());
+					request.setAttribute("datos", new Vector());
+					request.setAttribute("paginaSeleccionada", 1);
+					request.setAttribute("totalRegistros", 0);
+					request.setAttribute("registrosPorPagina",1);
+					setPaginador(request, this.paginador, databackup);
+				}	
+			}else{	
+				databackup=new HashMap();
+				 Paginador paginador = facturacionProgramadaAdm.getProgramacioneFacturacionPaginador(confirmarFacturacionForm);
+				if (paginador!=null&& paginador.getNumeroTotalRegistros()>0){
+					int totalRegistros = paginador.getNumeroTotalRegistros();
+					databackup.put("paginador",paginador);
+					Vector datos = paginador.obtenerPagina(1);
+					request.setAttribute("paginaSeleccionada", paginador.getPaginaActual());
+					request.setAttribute("totalRegistros", paginador.getNumeroTotalRegistros());
+					request.setAttribute("registrosPorPagina", paginador.getNumeroRegistrosPorPagina());
+					databackup.put("datos",datos);
+					request.setAttribute("datos", datos);
+					setPaginador(request, this.paginador, databackup);
+				}else{
+					databackup.put("datos",new Vector());
+					request.setAttribute("datos", new Vector());
+					request.setAttribute("paginaSeleccionada", 1);
+					request.setAttribute("totalRegistros", 0);
+					request.setAttribute("registrosPorPagina",1);
+					setPaginador(request, this.paginador, databackup);
+				} 	
+			}
+		}catch (SIGAException e1) {
+			// Excepcion procedente de obtenerPagina cuando se han borrado datos
+			 return exitoRefresco("error.messages.obtenerPagina",request);
+		}catch (Exception e) 
+		{
+			throw new SIGAException("messages.general.error",e,new String[] {"modulo.gratuita"});
+		} 
+		return "resultados";
 	}
 	
 	/** 
@@ -201,6 +284,19 @@ public class ConfirmarFacturacionAction extends MasterAction{
 	 */
 	protected String abrir(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		try {
+			ConfirmarFacturacionForm form = (ConfirmarFacturacionForm) formulario;
+			SimpleDateFormat formateo = new SimpleDateFormat("dd/MM/yyyy");
+			Calendar calendar = Calendar.getInstance();
+			calendar.setTime(new Date());
+			if(calendar.get(Calendar.MONTH)==Calendar.FEBRUARY && calendar.get(Calendar.DAY_OF_MONTH)==29){
+				calendar.set(Calendar.YEAR, calendar.get(Calendar.YEAR)-1);
+				calendar.set(Calendar.DAY_OF_MONTH, 28);
+			}else{
+				calendar.set(Calendar.YEAR, calendar.get(Calendar.YEAR)-1);	
+			}
+			String fechaAnioPasado = 	formateo.format(calendar.getTime());
+			form.setFechaDesdeGeneracion(fechaAnioPasado);
+			form.setFechaDesdeConfirmacion(fechaAnioPasado);
 			
 		} catch (Exception e) { 
 			throwExcp("messages.general.error",new String[] {"modulo.facturacion"},e,null); 
