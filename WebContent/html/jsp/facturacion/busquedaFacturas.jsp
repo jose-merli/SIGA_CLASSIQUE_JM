@@ -317,6 +317,7 @@
 				if (compararFecha (document.BusquedaFacturaForm.buscarFechaDesde, document.BusquedaFacturaForm.buscarFechaHasta) == 1) {
 					mensaje = '<siga:Idioma key="messages.fechas.rangoFechas"/>'
 					alert(mensaje);
+					fin();
 					return false;
 					
 				}
