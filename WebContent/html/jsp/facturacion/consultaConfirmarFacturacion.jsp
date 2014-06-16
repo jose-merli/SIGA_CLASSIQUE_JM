@@ -35,13 +35,12 @@
 
 <!-- JSP -->
 <% 
-	String app=request.getContextPath();
 	HttpSession ses=request.getSession();
 		
 
 	UsrBean usr=(UsrBean)request.getSession().getAttribute("USRBEAN");
 
-	Vector vDatos = (Vector)request.getSession().getAttribute("DATABACKUP");	
+	Vector vDatos = (Vector)request.getAttribute("datos");	
 		
 	String fInicialProducto; 
 	String fFinalProducto;	
@@ -132,7 +131,6 @@
 				document.confirmarFacturacionForm.modo.value = "confirmarFactura";
 				var f = document.confirmarFacturacionForm.name;	
 				// Abro la ventana de las tuercas:
-				//document.frames.submitArea.location='<%=app%>/html/jsp/general/loadingWindowOpener.jsp?formName='+f+'&msg=facturacion.generarFacturacion.mensaje.generandoFactura';
 				document.confirmarFacturacionForm.submit();
 			} 				
 		 }
@@ -342,7 +340,13 @@
 </head> 
 
 <body class="tablaCentralCampos">	
-
+<bean:define id="path" name="org.apache.struts.action.mapping.instance"
+	property="path" scope="request" />
+<bean:define id="paginaSeleccionada" name="paginaSeleccionada"
+		scope="request"></bean:define>
+	<bean:define id="totalRegistros" name="totalRegistros" scope="request"></bean:define>
+	<bean:define id="registrosPorPagina" name="registrosPorPagina"
+		scope="request"></bean:define>
 		<html:form action="/FAC_ConfirmarFacturacion.do" method="POST" target="submitArea">		
 			<html:hidden name="confirmarFacturacionForm" property="modo" styleId="modo" value = ""/>
 			<html:hidden name="confirmarFacturacionForm" property="fechaCargo" styleId="fechaCargo" value = ""/>
@@ -353,7 +357,6 @@
 
 			<!-- INICIO: LISTA DE VALORES -->
 			<!-- Tratamiento del tagTabla y tagFila para la formacion de la lista de cabeceras fijas -->
-	
 				<siga:Table 
 				   	name="tablaDatos"
 				   	border="1"
@@ -370,7 +373,8 @@
 				 			int i=0;  	 				 			
 							 											
 							while(en.hasMoreElements()){
-								Hashtable htData = (Hashtable)en.nextElement();
+								Row row = (Row)en.nextElement();
+								Hashtable htData = row.getRow();
 								if (htData == null) continue;	
 								fInicialProducto = UtilidadesString.mostrarDatoJSP(com.atos.utils.GstDate.getFormatedDateShort("", (String)htData.get(FacFacturacionProgramadaBean.C_FECHAINICIOPRODUCTOS)));
 								fFinalProducto = UtilidadesString.mostrarDatoJSP(com.atos.utils.GstDate.getFormatedDateShort("", (String)htData.get(FacFacturacionProgramadaBean.C_FECHAFINPRODUCTOS)));	
@@ -439,13 +443,22 @@
 						<%}
 						} // While %>
 	  		</siga:Table>  			
-					
 
+<siga:Paginador totalRegistros="${totalRegistros}"
+	registrosPorPagina="${registrosPorPagina}"
+	paginaSeleccionada="${paginaSeleccionada}" idioma="${usrBean.language}"
+	modo="buscarPor" clase="paginator" 
+	divStyle="position:absolute; width:100%; height:20; z-index:3; bottom:0px; left: 0px"
+	distanciaPaginas="" action="${pageContext.request.contextPath}${path}.do?noReset=true"
+	 />
 
 	
 <!-- INICIO: SUBMIT AREA -->
 <!-- Obligatoria en todas las páginas-->
-	<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
+	<iframe name="submitArea"
+	src="<html:rewrite page='/html/jsp/general/blank.jsp'/>"
+	style="display: none"></iframe>
+
 <!-- FIN: SUBMIT AREA -->
 
 	</body>

@@ -91,6 +91,35 @@
 			<siga:ConjCampos leyenda="facturacion.confirmarFacturacion.literal.camposBusqueda">	
 			<table class="tablaCampos" align="center">
 				<tr>				
+					
+
+					<td  class="labelText"><siga:Idioma key="facturacion.confirmarFacturacion.literal.fechaRealGeneracion"/>&nbsp;<siga:Idioma key="general.literal.desde"/>
+					</td>
+					<td >
+						<siga:Fecha nombreCampo="fechaDesdeGeneracion" valorInicial="${confirmarFacturacionForm.fechaDesdeGeneracion}" />
+					</td>
+		
+					<td class="labelText"><siga:Idioma key="facturacion.confirmarFacturacion.literal.fechaRealGeneracion"/>&nbsp;<siga:Idioma key="general.literal.hasta"/></td>
+					<td>
+						<siga:Fecha nombreCampo="fechaHastaGeneracion"  />
+					</td>
+				</tr>
+		
+				<tr>				
+
+					<td class="labelText"><siga:Idioma key="facturacion.confirmarFacturacion.literal.fechaConfirmacion"/>&nbsp;<siga:Idioma key="general.literal.desde"/></td>
+					<td>
+						<siga:Fecha nombreCampo="fechaDesdeConfirmacion" valorInicial="${confirmarFacturacionForm.fechaDesdeConfirmacion}"/>
+					</td>
+
+					<td class="labelText"><siga:Idioma key="facturacion.confirmarFacturacion.literal.fechaConfirmacion"/>&nbsp;<siga:Idioma key="general.literal.hasta"/></td>
+					<td>
+						<siga:Fecha nombreCampo="fechaHastaConfirmacion" />
+					</td>
+				</tr>
+			
+			
+				<tr>				
 					<td class="labelText"><siga:Idioma key="facturacion.confirmarFacturacion.literal.estadoConfirmacion"/> (*)</td>
 					<td>
 						<siga:ComboBD nombre = "estadoConfirmacion" tipo="cmbEstadoConfirmacion"  clase="boxCombo" obligatorio="true" parametro="<%=dato%>" elementoSel="<%=estadoConfirmacionSel%>" />						
@@ -150,7 +179,7 @@
 			sub();	
 			if (validateConfirmarFacturacionForm(document.confirmarFacturacionForm)){
 				setFilaSeleccionadaD('true');
-				document.confirmarFacturacionForm.modo.value = "buscar";
+				document.confirmarFacturacionForm.modo.value = "buscarInit";
 				document.confirmarFacturacionForm.submit();
 				setFilaSeleccionadaD('false');
 			}else{
@@ -160,6 +189,7 @@
 			
 			}
 		}
+
 
 	</script>
 	
