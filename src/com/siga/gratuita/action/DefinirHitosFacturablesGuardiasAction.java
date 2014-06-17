@@ -15,6 +15,7 @@ import org.apache.struts.action.ActionMapping;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.Row;
 import com.atos.utils.UsrBean;
+import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesMultidioma;
 import com.siga.beans.GenParametrosAdm;
 import com.siga.beans.ScsGuardiasTurnoAdm;
@@ -177,9 +178,7 @@ public class DefinirHitosFacturablesGuardiasAction extends MasterAction {
 	 * @exception ClsExceptions
 	 *                En cualquier caso de error
 	 */
-	protected String abrir(ActionMapping mapping, MasterForm formulario,
-			HttpServletRequest request, HttpServletResponse response)
-			throws SIGAException {
+	protected String abrir(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		// Controles generales
 		UsrBean usr = null;
 		ScsHitoFacturableGuardiaAdm hFact = null;
@@ -193,16 +192,14 @@ public class DefinirHitosFacturablesGuardiasAction extends MasterAction {
 			hFact = new ScsHitoFacturableGuardiaAdm(null);
 
 			// recuperando la guardia que está seleccionada desde la sesion
-			ScsGuardiasTurnoBean guardia = (ScsGuardiasTurnoBean) request
-					.getSession().getAttribute("DATABACKUPPESTANA");
+			ScsGuardiasTurnoBean guardia = (ScsGuardiasTurnoBean) request.getSession().getAttribute("DATABACKUPPESTANA");
 			Hashtable hash1 = (Hashtable) guardia.getOriginalHash();
 			request.getSession().setAttribute("ORIGINALHASH", hash1);
 
-			String consulta = "select "
-					+ UtilidadesMultidioma.getCampoMultidioma("h.descripcion",
-							this.getUserBean(request).getLanguage()) + ", "
+			String consulta = "select " + UtilidadesMultidioma.getCampoMultidioma("h.descripcion", this.getUserBean(request).getLanguage()) + ", "
 					+ "       hg.preciohito, "
-					+ "       hg.diasaplicables, " + "       hg.agrupar, "
+					+ "       hg.diasaplicables, " 
+					+ "       hg.agrupar, "
 					+ "       hg.idinstitucion IDINSTITUCION, "
 					+ "       hg.idturno IDTURNO, "
 					+ "       hg.idguardia IDGUARDIA, "
@@ -225,8 +222,7 @@ public class DefinirHitosFacturablesGuardiasAction extends MasterAction {
 				Hashtable hash = new Hashtable();
 				hash.put(c_idhito, "2");
 				hash.put(ScsHitoFacturableGuardiaBean.C_PRECIOHITO, "0");
-				hash.put(ScsHitoFacturableGuardiaBean.C_DIASAPLICABLES,
-						"LMXJVSD");
+				hash.put(ScsHitoFacturableGuardiaBean.C_DIASAPLICABLES, "LMXJVSD");
 				hash.put(ScsHitoFacturableGuardiaBean.C_AGRUPAR, "0");
 				vHitos.add(hash);
 			} else
@@ -243,29 +239,21 @@ public class DefinirHitosFacturablesGuardiasAction extends MasterAction {
 				hashElem = (Hashtable) vHitos.get(cont);
 
 				// obteniendo valores especiales: DiasAplicables y Agrupar
-				if (hashElem.get(c_idhito).equals("2")
-						|| hashElem.get(c_idhito).equals("4")) {
-					listaPagaGuardias = (String) hashElem
-							.get(ScsHitoFacturableGuardiaBean.C_DIASAPLICABLES);
-					agruparPagaGuardias = ((String) hashElem
-							.get(ScsHitoFacturableGuardiaBean.C_AGRUPAR))
-							.equals("1");
+				if (hashElem.get(c_idhito).equals("2") || hashElem.get(c_idhito).equals("4")) {
+					listaPagaGuardias = (String) hashElem.get(ScsHitoFacturableGuardiaBean.C_DIASAPLICABLES);
+					agruparPagaGuardias = ((String) hashElem.get(ScsHitoFacturableGuardiaBean.C_AGRUPAR)).equals("1");
 				}
-				if (hashElem.get(c_idhito).equals("5")
-						|| hashElem.get(c_idhito).equals("7")) {
-					listaNoPagaGuardias = (String) hashElem
-							.get(ScsHitoFacturableGuardiaBean.C_DIASAPLICABLES);
-					agruparNoPagaGuardias = ((String) hashElem
-							.get(ScsHitoFacturableGuardiaBean.C_AGRUPAR))
-							.equals("1");
+				
+				if (hashElem.get(c_idhito).equals("5") || hashElem.get(c_idhito).equals("7")) {
+					listaNoPagaGuardias = (String) hashElem.get(ScsHitoFacturableGuardiaBean.C_DIASAPLICABLES);
+					agruparNoPagaGuardias = ((String) hashElem.get(ScsHitoFacturableGuardiaBean.C_AGRUPAR)).equals("1");
 				}
 
 				// Obteniendo Maximo para Duplicar Asistencias y Actuaciones
 				hayHito45 = hayHito45 || (hashElem.get(c_idhito).equals("45"));
 				hayHito46 = hayHito46 || (hashElem.get(c_idhito).equals("46"));
 
-				hashResul.put(hashElem.get(c_idhito), hashElem
-						.get(ScsHitoFacturableGuardiaBean.C_PRECIOHITO));
+				hashResul.put(hashElem.get(c_idhito), hashElem.get(ScsHitoFacturableGuardiaBean.C_PRECIOHITO));
 			}
 
 			// definiendo el formulario
@@ -278,21 +266,23 @@ public class DefinirHitosFacturablesGuardiasAction extends MasterAction {
 				miForm.setRadioA("0");
 				miForm.setCheckB1(true);
 			}
+			
 			if (hashResul.containsKey("4")) {
 				miForm.setRadioA("1");
 				miForm.setCheckB1(true);
 			}
+			
 			if (hashResul.containsKey("5")) {
 				miForm.setRadioA("0");
 				miForm.setCheckB2(true);
 			}
+			
 			if (hashResul.containsKey("7")) {
 				miForm.setRadioA("1");
 				miForm.setCheckB2(true);
 			}
 
-			this.rellenaSeleccionDiasFormulario(miForm, listaPagaGuardias,
-					listaNoPagaGuardias);
+			this.rellenaSeleccionDiasFormulario(miForm, listaPagaGuardias, listaNoPagaGuardias);
 			miForm.setChPagaGuardiaPorDia(!agruparPagaGuardias);
 			miForm.setChNoPagaGuardiaPorDia(!agruparNoPagaGuardias);
 
@@ -302,25 +292,22 @@ public class DefinirHitosFacturablesGuardiasAction extends MasterAction {
 			miForm.setChMinActuacion(hashResul.containsKey("19"));
 			miForm.setCheckC(hashResul.containsKey("9"));
 			miForm.setChActFG(hashResul.containsKey("6"));
-			miForm.setChGuardias((hashResul.containsKey("20") || hashResul
-					.containsKey("22")));
-			miForm.setChNoGuardias((hashResul.containsKey("20") || hashResul
-					.containsKey("25")));
+			miForm.setChGuardias((hashResul.containsKey("20") || hashResul.containsKey("22")));
+			miForm.setChNoGuardias((hashResul.containsKey("20") || hashResul.containsKey("25")));
 
 			// obteniendo valores de parametros generales para los hitos de
 			// maximo para duplicar de asistencias (45) y actuciones (46)
 			String numAsist = "", numAct = "";
-			GenParametrosAdm paramAdm = new GenParametrosAdm(this
-					.getUserBean(request));
+			GenParametrosAdm paramAdm = new GenParametrosAdm(this.getUserBean(request));
 			try {
-				numAsist = paramAdm.getValor(usr.getLocation(), "FCS",
-						"NUM_ASISTENCIAS", "");
-				numAct = paramAdm.getValor(usr.getLocation(), "FCS",
-						"NUM_ACTUACIONES", "");
+				numAsist = paramAdm.getValor(usr.getLocation(), "FCS", "NUM_ASISTENCIAS", "");
+				numAct = paramAdm.getValor(usr.getLocation(), "FCS", "NUM_ACTUACIONES", "");
 			} catch (Exception e) {
 			}
+			
 			if (!hayHito45)
 				hashResul.put("45", numAsist);
+			
 			if (!hayHito46)
 				hashResul.put("46", numAct);
 
@@ -330,26 +317,71 @@ public class DefinirHitosFacturablesGuardiasAction extends MasterAction {
 			// obteniendo y pasando por sesion los nombres de turno y guardia
 			Hashtable hashTurno = new Hashtable();
 			hashTurno.put(ScsTurnoBean.C_IDINSTITUCION, usr.getLocation());
-			hashTurno
-					.put(ScsTurnoBean.C_IDTURNO, (String) hash1.get("IDTURNO"));
-			ScsTurnoBean beanTurno = (ScsTurnoBean) (new ScsTurnoAdm(usr)
-					.select(hashTurno)).get(0);
+			hashTurno.put(ScsTurnoBean.C_IDTURNO, (String) hash1.get("IDTURNO"));
+			ScsTurnoBean beanTurno = (ScsTurnoBean) (new ScsTurnoAdm(usr).select(hashTurno)).get(0);
 			request.setAttribute("NOMBRETURNO", beanTurno.getNombre());
 			Hashtable hashGuardia = new Hashtable();
-			hashGuardia.put(ScsGuardiasTurnoBean.C_IDINSTITUCION, usr
-					.getLocation());
-			hashGuardia.put(ScsGuardiasTurnoBean.C_IDTURNO, (String) hash1
-					.get("IDTURNO"));
-			hashGuardia.put(ScsGuardiasTurnoBean.C_IDGUARDIA, (String) hash1
-					.get("IDGUARDIA"));
-			ScsGuardiasTurnoBean beanGuardia = (ScsGuardiasTurnoBean) (new ScsGuardiasTurnoAdm(
-					usr).select(hashGuardia)).get(0);
+			hashGuardia.put(ScsGuardiasTurnoBean.C_IDINSTITUCION, usr.getLocation());
+			hashGuardia.put(ScsGuardiasTurnoBean.C_IDTURNO, (String) hash1.get("IDTURNO"));
+			hashGuardia.put(ScsGuardiasTurnoBean.C_IDGUARDIA, (String) hash1.get("IDGUARDIA"));
+			ScsGuardiasTurnoBean beanGuardia = (ScsGuardiasTurnoBean) (new ScsGuardiasTurnoAdm(usr).select(hashGuardia)).get(0);
 			request.setAttribute("NOMBREGUARDIA", beanGuardia.getNombre());
 
 			request.getSession().removeAttribute("pagos");
+						
+			/* Inicio facturacion controlada cantabria */
+			String checkControlado = "5";
+			String importeControlado = "0";
+			String minimoControlado = "0";
+			if (usr.getLocation().equals("2016")) {
+				if (vHitos.size() == 3 && 
+						hashResul.containsKey("5") && hashResul.containsKey("12") && hashResul.containsKey("13") &&
+						hashResul.get("5")!=null && !UtilidadesHash.getString(hashResul,"5").equals("0")) {
+					checkControlado = "1";
+					importeControlado = UtilidadesHash.getString(hashResul,"5");
+					
+				} else if (vHitos.size() == 4 && 
+						hashResul.containsKey("5") && hashResul.containsKey("10") && hashResul.containsKey("12") && hashResul.containsKey("13") &&
+						!agruparNoPagaGuardias && 
+						hashResul.get("5")!=null && !UtilidadesHash.getString(hashResul,"5").equals("0") && 
+						hashResul.get("10")!=null && !UtilidadesHash.getString(hashResul,"10").equals("0")) {
+					checkControlado = "2";
+					importeControlado = UtilidadesHash.getString(hashResul,"5");
+					minimoControlado = UtilidadesHash.getString(hashResul,"10");
+					
+				} else if (vHitos.size() == 5 && 
+						hashResul.containsKey("5") && hashResul.containsKey("10") && hashResul.containsKey("12") && hashResul.containsKey("13") && hashResul.containsKey("20") &&
+						!agruparNoPagaGuardias && 
+						hashResul.get("10")!=null && !UtilidadesHash.getString(hashResul,"10").equals("0")) {
+					checkControlado = "3";
+					importeControlado = UtilidadesHash.getString(hashResul,"5");
+					minimoControlado = UtilidadesHash.getString(hashResul,"10");
+					
+				} else if (vHitos.size() == 5 && 
+						hashResul.containsKey("1") && hashResul.containsKey("2") && hashResul.containsKey("12") && hashResul.containsKey("13") && hashResul.containsKey("45") &&
+						!agruparPagaGuardias && 
+						hashResul.get("1")!=null && !UtilidadesHash.getString(hashResul,"1").equals("0") && 
+						(UtilidadesHash.getString(hashResul,"2").equals("0") || UtilidadesHash.getString(hashResul,"2").equals(UtilidadesHash.getString(hashResul,"1")))
+						) {
+					checkControlado = "4";
+					importeControlado = UtilidadesHash.getString(hashResul,"1");
+				
+				// Este apartado es para que salgan las opciones de controlado al crear una guardia 
+				} else if (vHitos.size() == 1 && 
+						!hashResul.containsKey("1") && hashResul.containsKey("2") &&
+						!agruparPagaGuardias && 
+						(hashResul.get("2")==null || UtilidadesHash.getString(hashResul,"2").equals("0"))
+						) {
+					checkControlado = "4";				
+				}				
+			}	
+			request.setAttribute("checkControlado", checkControlado);
+			request.setAttribute("importeControlado", importeControlado);
+			request.setAttribute("minimoControlado", minimoControlado);
+			/* Fin facturacion controlada cantabria */
+
 		} catch (Exception e) {
-			throw new SIGAException("messages.general.error", e,
-					new String[] { "modulo.gratuita" });
+			throw new SIGAException("messages.general.error", e, new String[] { "modulo.gratuita" });
 		}
 
 		return "abrir";
