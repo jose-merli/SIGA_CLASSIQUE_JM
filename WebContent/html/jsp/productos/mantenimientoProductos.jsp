@@ -77,10 +77,15 @@
 		estiloCombo = "boxConsulta";
 		lectura = true;
 	}
+	
+	// Compruebo si tiene comisión
+	String tieneComision = (String) request.getAttribute("tieneComision");
+	if (tieneComision==null || tieneComision.equals("")) {
+		tieneComision = "0";
+	}
 
 	double precio = 0.00;
-	String sPrecio = null;
-
+	String sPrecio = null;	
 	// Obtener informacion para rellenar en caso de modificacion o consulta
 	if ((remitente.equalsIgnoreCase("modificar"))||(remitente.equalsIgnoreCase("consulta"))){
 		enumTemp = ((Vector)request.getAttribute("container")).elements();
@@ -88,7 +93,6 @@
 		if (enumTemp.hasMoreElements()){
           	row = (Row) enumTemp.nextElement(); 			              	
         } 
-        
          
 		//Precio
 		sPrecio = row.getString(PysProductosInstitucionBean.C_VALOR);
@@ -243,7 +247,7 @@
 			var mensaje="";
 
 			//Comprobar existencia de producto
-			if (document.forms[0].producto.value==""){
+			if (jQuery("#producto").val()==""){
 				mensaje+='<siga:Idioma key="pys.mantenimientoBusquedaProductos.literal.categoria"/> <siga:Idioma key="messages.campoObligatorio.error"/>\n';
 				envio=false;
 			}
@@ -316,6 +320,11 @@
 					mensaje+='<siga:Idioma key="pys.mantenimientoBusquedaProductos.literal.formaPago"/> <siga:Idioma key="productos.mantenimientoProductos.literal.secretaria"/> <siga:Idioma key="messages.campoObligatorio.error"/>';
 					envio=false;
 				}
+			}
+			
+			if ("<%=tieneComision%>" != "0" && jQuery("#tipoCertificadoComision")[0].checked) {
+				mensaje+='<siga:Idioma key="productos.mantenimientoProductos.error.productoComision"/>';
+				envio=false;
 			}
 
 			if (!envio){
@@ -396,7 +405,7 @@
 		
 		jQuery(function(){
 			jQuery("#momentoCargo_tagSelectDiv").hide();
-			inicio(document.getElementById('cargo'));
+			inicio(document.getElementById('cargo'));			
 		});
 	</script>		
 	<!-- FIN: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->
@@ -476,16 +485,16 @@
 <% 
 										if (remitente=="insertar") { 
 %>
-											<html:text property="precio" styleClass="boxNumber" size="10" maxlength="11" value="" />&nbsp;&euro;
+											<html:text property="precio" styleId="precio" styleClass="boxNumber" size="10" maxlength="11" value="" />&nbsp;&euro;
 <% 
 							  			} else { 
 							  				if (remitente=="modificar") { 
 %>
-												<html:text property="precio" styleClass="boxNumber" size="10" maxlength="11" value="<%=UtilidadesNumero.formatoCampo(precio)%>" />&nbsp;&euro;
+												<html:text property="precio" styleId="precio" styleClass="boxNumber" size="10" maxlength="11" value="<%=UtilidadesNumero.formatoCampo(precio)%>" />&nbsp;&euro;
 <%		
 											} else { 
 %>
-												<html:text property="precio" styleClass="boxConsultaNumber" size="10" value="<%=UtilidadesNumero.formatoCampo(precio)%>" readOnly="true" />&nbsp;&euro;
+												<html:text property="precio" styleId="precio" styleClass="boxConsultaNumber" size="10" value="<%=UtilidadesNumero.formatoCampo(precio)%>" readOnly="true" />&nbsp;&euro;
 <% 		
 											} 
 							  			} 
@@ -762,30 +771,42 @@
 												<td>
 <% 
 													if (remitente=="insertar") {
+														if (tieneComision.equals("0")) {																												
 %>
-														<input type="checkbox" name="tipoCertificadoComision" value="1">								
+															<input type="checkbox" id="tipoCertificadoComision" name="tipoCertificadoComision" value="1">
 <% 
+														} else {																												
+%>															
+															<input type="checkbox" id="tipoCertificadoComision" name="tipoCertificadoComision" value="1" disabled>								
+<% 
+														}
 													} else {
 														tipoCertificado = row.getString(PysProductosInstitucionBean.C_TIPOCERTIFICADO);
 												   		if (remitente=="modificar") {
 															if (tipoCertificado.equalsIgnoreCase(TIPO_CERTIFICADO_COMISIONBANCARIA)) {
 %>	
-									  							<input type="checkbox" name="tipoCertificadoComision" value="1" checked>
+									  							<input type="checkbox" id="tipoCertificadoComision" name="tipoCertificadoComision" value="1" checked>
 <% 
 															} else { 
-%>			  		
-																<input type="checkbox" name="tipoCertificadoComision" value="1">
+																if (tieneComision.equals("0")) {																												
+%>
+																	<input type="checkbox" id="tipoCertificadoComision" name="tipoCertificadoComision" value="1">
 <% 
+																} else {																												
+%>															
+																	<input type="checkbox" id="tipoCertificadoComision" name="tipoCertificadoComision" value="1" disabled>								
+<% 
+																}
 															} 
 
 														} else {
 															if (tipoCertificado.equalsIgnoreCase(TIPO_CERTIFICADO_COMISIONBANCARIA)) {
 %>	
-									  							<input type="checkbox" name="tipoCertificadoComision" value="1" checked disabled>
+									  							<input type="checkbox" id="tipoCertificadoComision" name="tipoCertificadoComision" value="1" checked disabled>
 <% 	
 															} else { 
 %>			  		
-																<input type="checkbox" name="tipoCertificadoComision" value="1" disabled>
+																<input type="checkbox" id="tipoCertificadoComision" name="tipoCertificadoComision" value="1" disabled>
 <% 
 															}
 														}

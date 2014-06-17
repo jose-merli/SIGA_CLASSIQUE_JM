@@ -394,52 +394,41 @@ public class PysProductosInstitucionAdm extends MasterBeanAdministrador
 		   Vector datos=new Vector();
 	       try {
 	            RowsContainer rc = new RowsContainer(); 
-	            String sql ="SELECT " +
-	            			PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_IDINSTITUCION  + "," +
-	            			PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_IDPRODUCTO + "," +
-	            			PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_IDTIPOPRODUCTO  + "," +
-	            			PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_IDPRODUCTOINSTITUCION  + "," +
-	            			PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_IDCONTADOR  + "," +
-							PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_FECHAMODIFICACION + "," +
-	            			PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_DESCRIPCION + "," +
-	            			PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_CUENTACONTABLE + "," +
-	            			PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_VALOR + "," +
-	            			PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_PORCENTAJEIVA + "," +
-	            			PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_MOMENTOCARGO + "," +
-	            			PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_FECHABAJA + "," +
-	            			PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_SOLICITARBAJA + "," +
-	            			PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_SOLICITARALTA + "," +
-	            			PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_TIPOCERTIFICADO + "," +
-	            			PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_NOFACTURABLE + "," +
-	            			PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_SUFIJO + "," +
-	            			PysProductosBean.T_NOMBRETABLA + "." + PysProductosBean.C_DESCRIPCION + " AS CATEGORIA," +
-	            			PysTipoIvaBean.T_NOMBRETABLA + "." + PysTipoIvaBean.C_VALOR + " AS VALORIVA," +
-	            			UtilidadesMultidioma.getCampoMultidiomaSimple(PysTiposProductosBean.T_NOMBRETABLA + "." + PysTiposProductosBean.C_DESCRIPCION,this.usrbean.getLanguage()) + " AS TIPO, " +
-							/*PDM: INC-2763, no se recuperaba el tipo de certificado (comisión bancaria ...)*/
-	            			PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_TIPOCERTIFICADO +
-							/**/
-							" FROM " + PysProductosInstitucionBean.T_NOMBRETABLA + "," + PysProductosBean.T_NOMBRETABLA + "," +PysTiposProductosBean.T_NOMBRETABLA +  "," +PysTipoIvaBean.T_NOMBRETABLA +
-							" WHERE " +
-							PysProductosInstitucionBean.T_NOMBRETABLA +"."+ PysProductosInstitucionBean.C_IDTIPOPRODUCTO + "=" + PysProductosBean.T_NOMBRETABLA +"."+ PysProductosBean.C_IDTIPOPRODUCTO +
-							" AND " +
-							PysProductosInstitucionBean.T_NOMBRETABLA +"."+ PysProductosInstitucionBean.C_IDPRODUCTO + "=" + PysProductosBean.T_NOMBRETABLA +"."+ PysProductosBean.C_IDPRODUCTO +
-							" AND " +							
-							PysProductosBean.T_NOMBRETABLA +"."+ PysProductosBean.C_IDTIPOPRODUCTO + "=" + PysTiposProductosBean.T_NOMBRETABLA +"."+ PysTiposProductosBean.C_IDTIPOPRODUCTO +
-
-							" AND " +							
-							PysProductosBean.T_NOMBRETABLA +"."+ PysProductosBean.C_IDINSTITUCION + "=" + PysProductosInstitucionBean.T_NOMBRETABLA +"."+ PysProductosInstitucionBean.C_IDINSTITUCION+
-							
-							" AND " +							
-							PysProductosInstitucionBean.T_NOMBRETABLA +"."+ PysProductosInstitucionBean.C_IDINSTITUCION + "=" + idInst +
-							" AND " +
-							PysProductosInstitucionBean.T_NOMBRETABLA +"."+ PysProductosInstitucionBean.C_IDTIPOPRODUCTO + "=" + idTipoProd +
-	            			" AND " +
-	            			PysProductosInstitucionBean.T_NOMBRETABLA +"."+ PysProductosInstitucionBean.C_IDPRODUCTO + "=" + idProd +
-	            			" AND " +
-	            			PysProductosInstitucionBean.T_NOMBRETABLA +"."+ PysProductosInstitucionBean.C_IDPRODUCTOINSTITUCION + "=" + idProdInst
-	            			+" AND "+PysTipoIvaBean.T_NOMBRETABLA+".IDTIPOIVA = "+ PysProductosInstitucionBean.T_NOMBRETABLA + "." +PysProductosInstitucionBean.C_PORCENTAJEIVA;
-							// Ordenado por...						
-							sql += " ORDER BY " + PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_DESCRIPCION; 
+	            String sql ="SELECT " + PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_IDINSTITUCION  + "," +
+		            			PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_IDPRODUCTO + "," +
+		            			PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_IDTIPOPRODUCTO  + "," +
+		            			PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_IDPRODUCTOINSTITUCION  + "," +
+		            			PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_IDCONTADOR  + "," +
+								PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_FECHAMODIFICACION + "," +
+		            			PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_DESCRIPCION + "," +
+		            			PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_CUENTACONTABLE + "," +
+		            			PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_VALOR + "," +
+		            			PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_PORCENTAJEIVA + "," +
+		            			PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_MOMENTOCARGO + "," +
+		            			PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_FECHABAJA + "," +
+		            			PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_SOLICITARBAJA + "," +
+		            			PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_SOLICITARALTA + "," +
+		            			PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_TIPOCERTIFICADO + "," +
+		            			PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_NOFACTURABLE + "," +
+		            			PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_SUFIJO + "," +
+		            			PysProductosBean.T_NOMBRETABLA + "." + PysProductosBean.C_DESCRIPCION + " AS CATEGORIA," +
+		            			PysTipoIvaBean.T_NOMBRETABLA + "." + PysTipoIvaBean.C_VALOR + " AS VALORIVA," +
+		            			UtilidadesMultidioma.getCampoMultidiomaSimple(PysTiposProductosBean.T_NOMBRETABLA + "." + PysTiposProductosBean.C_DESCRIPCION,this.usrbean.getLanguage()) + " AS TIPO, " +								
+		            			PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_TIPOCERTIFICADO + //PDM: INC-2763, no se recuperaba el tipo de certificado (comisión bancaria ...)
+							" FROM " + PysProductosInstitucionBean.T_NOMBRETABLA + "," + 
+	            				PysProductosBean.T_NOMBRETABLA + "," +
+	            				PysTiposProductosBean.T_NOMBRETABLA +  "," +
+	            				PysTipoIvaBean.T_NOMBRETABLA +
+							" WHERE " + PysProductosInstitucionBean.T_NOMBRETABLA +"."+ PysProductosInstitucionBean.C_IDTIPOPRODUCTO + "=" + PysProductosBean.T_NOMBRETABLA +"."+ PysProductosBean.C_IDTIPOPRODUCTO +
+								" AND " + PysProductosInstitucionBean.T_NOMBRETABLA +"."+ PysProductosInstitucionBean.C_IDPRODUCTO + "=" + PysProductosBean.T_NOMBRETABLA +"."+ PysProductosBean.C_IDPRODUCTO +
+								" AND " + PysProductosBean.T_NOMBRETABLA +"."+ PysProductosBean.C_IDTIPOPRODUCTO + "=" + PysTiposProductosBean.T_NOMBRETABLA +"."+ PysTiposProductosBean.C_IDTIPOPRODUCTO +
+								" AND " + PysProductosBean.T_NOMBRETABLA +"."+ PysProductosBean.C_IDINSTITUCION + "=" + PysProductosInstitucionBean.T_NOMBRETABLA +"."+ PysProductosInstitucionBean.C_IDINSTITUCION+							
+								" AND " + PysProductosInstitucionBean.T_NOMBRETABLA +"."+ PysProductosInstitucionBean.C_IDINSTITUCION + "=" + idInst +
+								" AND " + PysProductosInstitucionBean.T_NOMBRETABLA +"."+ PysProductosInstitucionBean.C_IDTIPOPRODUCTO + "=" + idTipoProd +
+		            			" AND " + PysProductosInstitucionBean.T_NOMBRETABLA +"."+ PysProductosInstitucionBean.C_IDPRODUCTO + "=" + idProd +
+		            			" AND " + PysProductosInstitucionBean.T_NOMBRETABLA +"."+ PysProductosInstitucionBean.C_IDPRODUCTOINSTITUCION + "=" + idProdInst +
+		            			" AND " + PysTipoIvaBean.T_NOMBRETABLA+".IDTIPOIVA = "+ PysProductosInstitucionBean.T_NOMBRETABLA + "." +PysProductosInstitucionBean.C_PORCENTAJEIVA + 
+		            		" ORDER BY " + PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_DESCRIPCION;
 							
 	            if (rc.find(sql)) {
 	               for (int i = 0; i < rc.size(); i++){
@@ -1120,5 +1109,39 @@ public class PysProductosInstitucionAdm extends MasterBeanAdministrador
 	    
 		return desc; 
 		
+	}
+	
+	public String comprobarTieneComision (String idInstitucion, String idTipoProducto, String idProducto, String idProductoInstitucion) throws ClsExceptions, SIGAException {
+		RowsContainer rc = new RowsContainer(); 
+		String retorno = "";
+		try {
+			String sql = "SELECT COUNT(*) AS TIENECOMISION" +
+					" FROM " + PysProductosInstitucionBean.T_NOMBRETABLA +
+					" WHERE " + PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_IDINSTITUCION + "=" + idInstitucion +
+						" AND " + PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_TIPOCERTIFICADO + "='B'";
+			
+			if (idTipoProducto!=null && idProducto!=null && idProductoInstitucion!=null) {
+				sql += " AND (" +
+						PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_IDTIPOPRODUCTO + "<>" + idTipoProducto +
+						" OR " + PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_IDPRODUCTO + "<>" + idProducto +
+						" OR " + PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_IDPRODUCTOINSTITUCION + "<>" + idProductoInstitucion +
+					")";
+	       }
+			
+            if (rc.find(sql) && rc.size()>0) {
+        		Row fila = (Row) rc.get(0);
+        		retorno = fila.getString("TIENECOMISION"); 
+	       }
+            
+		} catch (Exception e) {
+       		if (e instanceof SIGAException){
+       			throw (SIGAException)e;
+       		}
+       		else{
+       			throw new ClsExceptions(e,"Error al comprobar si existe la comisión en una institución");
+       		}	
+	   }
+		
+		return retorno;                        			
 	}
 }

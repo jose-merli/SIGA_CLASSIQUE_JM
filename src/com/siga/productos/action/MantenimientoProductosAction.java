@@ -15,20 +15,39 @@
 package com.siga.productos.action;
 
 
-import javax.servlet.http.*;
-import javax.transaction.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.Vector;
 
-import org.apache.struts.action.*;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.transaction.UserTransaction;
 
-import com.atos.utils.*;
+import org.apache.struts.action.ActionMapping;
+
 import com.atos.utils.ClsConstants;
+import com.atos.utils.Row;
+import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;
-import com.siga.beans.*;
-import com.siga.general.*;
+import com.siga.beans.AdmContadorAdm;
+import com.siga.beans.AdmContadorBean;
+import com.siga.beans.CerSolicitudCertificadosBean;
+import com.siga.beans.GenParametrosAdm;
+import com.siga.beans.PysFormaPagoAdm;
+import com.siga.beans.PysFormaPagoProductoAdm;
+import com.siga.beans.PysFormaPagoProductoBean;
+import com.siga.beans.PysProductosInstitucionAdm;
+import com.siga.beans.PysProductosInstitucionBean;
+import com.siga.beans.PysProductosSolicitadosAdm;
+import com.siga.beans.PysProductosSolicitadosBean;
+import com.siga.general.MasterAction;
+import com.siga.general.MasterForm;
+import com.siga.general.SIGAException;
 import com.siga.productos.form.MantenimientoProductosForm;
-import java.util.*;
 
 
 public class MantenimientoProductosAction extends MasterAction {
@@ -104,6 +123,8 @@ public class MantenimientoProductosAction extends MasterAction {
 			pagoSec=admin.obtenerFormasPago((String)ocultos.get(0),(String)ocultos.get(1),(String)ocultos.get(2),(String)ocultos.get(3),ClsConstants.TIPO_PAGO_SECRETARIA);			
 			pagoComun=admin.obtenerFormasPago((String)ocultos.get(0),(String)ocultos.get(1),(String)ocultos.get(2),(String)ocultos.get(3),ClsConstants.TIPO_PAGO_INTERNET_SECRETARIA);
 			
+			String tieneComision = admin.comprobarTieneComision((String)ocultos.get(0),(String)ocultos.get(1),(String)ocultos.get(2),(String)ocultos.get(3));
+			
 			// Paso valores originales del registro al session para tratar siempre con los mismos valores
 			// y no los de posibles modificaciones
 			request.getSession().setAttribute("DATABACKUP", infoProd);
@@ -116,11 +137,13 @@ public class MantenimientoProductosAction extends MasterAction {
 			request.setAttribute("container", infoProd);
 			request.setAttribute("container_I", pagoInt);			
 			request.setAttribute("container_S", pagoSec);
-			request.setAttribute("container_A", pagoComun);						
-		} 
-		catch (Exception e) { 
+			request.setAttribute("container_A", pagoComun);			
+			request.setAttribute("tieneComision", tieneComision);
+			
+		} catch (Exception e) { 
 			throwExcp("messages.general.error",new String[] {"modulo.productos"},e,null); 
-		}		
+		}
+		
 		return (result);
 	}
 
@@ -149,8 +172,7 @@ public class MantenimientoProductosAction extends MasterAction {
 			infoProd=admin.obtenerInfoProducto((String)ocultos.get(0),(String)ocultos.get(1),(String)ocultos.get(2),(String)ocultos.get(3));
 			pagoInt=admin.obtenerFormasPago((String)ocultos.get(0),(String)ocultos.get(1),(String)ocultos.get(2),(String)ocultos.get(3),ClsConstants.TIPO_PAGO_INTERNET);
 			pagoSec=admin.obtenerFormasPago((String)ocultos.get(0),(String)ocultos.get(1),(String)ocultos.get(2),(String)ocultos.get(3),ClsConstants.TIPO_PAGO_SECRETARIA);			
-			pagoComun=admin.obtenerFormasPago((String)ocultos.get(0),(String)ocultos.get(1),(String)ocultos.get(2),(String)ocultos.get(3),ClsConstants.TIPO_PAGO_INTERNET_SECRETARIA);			
-			
+			pagoComun=admin.obtenerFormasPago((String)ocultos.get(0),(String)ocultos.get(1),(String)ocultos.get(2),(String)ocultos.get(3),ClsConstants.TIPO_PAGO_INTERNET_SECRETARIA);								
 			
 			GenParametrosAdm paramAdm = new GenParametrosAdm(this.getUserBean(request));
 			String delimitador = paramAdm.getValor((String)ocultos.get(0),"PYS","SEPARADOR_FICHEROCOMPRAS","");
@@ -159,11 +181,12 @@ public class MantenimientoProductosAction extends MasterAction {
 			request.setAttribute("container", infoProd);
 			request.setAttribute("container_I", pagoInt);			
 			request.setAttribute("container_S", pagoSec);
-			request.setAttribute("container_A", pagoComun);						
-		} 
-		catch (Exception e) { 
+			request.setAttribute("container_A", pagoComun);					
+						
+		} catch (Exception e) { 
 			throwExcp("messages.general.error",new String[] {"modulo.productos"},e,null); 
 		}		
+		
 		return (result);
 	}
 
@@ -177,16 +200,22 @@ public class MantenimientoProductosAction extends MasterAction {
 	 * @exception  SIGAException  En cualquier caso de error
 	 */
 	protected String nuevo(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
-
-		PysFormaPagoBean bean=new PysFormaPagoBean ();
 		String result="nuevo";
-		try{						
-			Object remitente=(Object)"insertar";
-			request.setAttribute("modelo",remitente);									
-		} 
-		catch (Exception e) { 
+		try {					
+			// Obtengo el UserBean y el identificador de la institucion
+			UsrBean usuario = (UsrBean)request.getSession().getAttribute("USRBEAN");			
+			String idInstitucion = usuario.getLocation();
+			
+			PysProductosInstitucionAdm admin = new PysProductosInstitucionAdm(usuario);
+			String tieneComision = admin.comprobarTieneComision(idInstitucion, null, null, null);
+			request.setAttribute("tieneComision", tieneComision);
+			
+			request.setAttribute("modelo", "insertar");
+			
+		} catch (Exception e) { 
 			throwExcp("messages.general.error",new String[] {"modulo.productos"},e,null); 
-		}		
+		}
+		
 		return result;
 	}
 
