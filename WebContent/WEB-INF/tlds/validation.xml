@@ -3578,7 +3578,7 @@
 <!-- INICIO: GestionarFacturaForm Daniel Campos 25-04-2005 -->
  
     <form name="GestionarFacturaForm">
-	   	<field  property="datosLineaDescripcion"   depends="maxlength">   
+	   	<field  property="datosLineaDescripcion"   depends="required, maxlength">   
 		   	<arg0 key="facturacion.lineasFactura.literal.Descripcion"/>
 			<arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
 			<var>
