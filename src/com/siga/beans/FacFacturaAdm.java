@@ -23,12 +23,6 @@ import java.util.GregorianCalendar;
 import java.util.Hashtable;
 import java.util.Vector;
 
-
-
-
-
-import java.util.Date;
-
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsLogging;
@@ -42,7 +36,6 @@ import com.lowagie.text.pdf.PdfSignatureAppearance;
 import com.lowagie.text.pdf.PdfStamper;
 import com.siga.Utilidades.PaginadorBind;
 import com.siga.Utilidades.PaginadorCaseSensitiveBind;
-import com.siga.Utilidades.UtilidadesFecha;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesNumero;
 import com.siga.Utilidades.UtilidadesString;
@@ -916,7 +909,8 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
 							"PKG_SIGA_TOTALESFACTURA.TOTALNETO(" + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDINSTITUCION + ", " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDFACTURA + ") as TOTALNETO, " + 
 							"PKG_SIGA_TOTALESFACTURA.TOTALIVA(" + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDINSTITUCION + ", " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDFACTURA + ") as TOTALIVA, " +
 							"PKG_SIGA_TOTALESFACTURA.TOTAL(" + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDINSTITUCION + ", " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDFACTURA + ") as TOTAL, " +
-							"PKG_SIGA_TOTALESFACTURA.TOTALPAGADO(" + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDINSTITUCION + ", " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDFACTURA + ") as TOTALPAGADO, " + 
+							"PKG_SIGA_TOTALESFACTURA.TOTALPAGADO(" + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDINSTITUCION + ", " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDFACTURA + ") as TOTALPAGADO, " +
+							"PKG_SIGA_TOTALESFACTURA.PENDIENTEPORPAGAR(" + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDINSTITUCION + ", " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDFACTURA + ") as TOTALPENDIENTE, " +
 							FacFacturacionProgramadaBean.T_NOMBRETABLA + "." + FacFacturacionProgramadaBean.C_DESCRIPCION + " ";
  
 			String from = 	" FROM " + 
@@ -1491,7 +1485,7 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
 		    contador++;
 		    codigos.put(new Integer(contador),this.usrbean.getLocation());
 		    sql += ", F_SIGA_GETCOMFACTURA(:"+contador+",F."+FacFacturaBean.C_IDPERSONA+",F."+FacFacturaBean.C_IDFACTURA+",0)  COMUNICACIONES";
-		    sql += ",f_siga_getrecurso_etiqueta(ef.descripcion,1) ESTADO_FACTURA ";
+		    sql += ",f_siga_getrecurso_etiqueta(ef.descripcion," + this.usrbean.getLanguage() + ") ESTADO_FACTURA ";
 		    if(nComunicacionesDesde!=null && !nComunicacionesDesde.equalsIgnoreCase("") || (nComunicacionesHasta!=null && !nComunicacionesHasta.equalsIgnoreCase(""))){
 		    sql += ",(SELECT count("+EnvComunicacionMorososBean.C_IDINSTITUCION+") FROM "+EnvComunicacionMorososBean.T_NOMBRETABLA+" ECM ";
 		    sql += "WHERE ECM."+EnvComunicacionMorososBean.C_IDFACTURA+" = F."+FacFacturaBean.C_IDFACTURA;
