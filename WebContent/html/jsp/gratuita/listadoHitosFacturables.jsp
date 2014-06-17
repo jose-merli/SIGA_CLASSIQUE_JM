@@ -54,14 +54,16 @@
   //se volverá a crear en caso de que se elija el boton de editar
   
   //Modo de la pestanha:
-  String modopestanha = request.getSession().getAttribute("modo")==null ? "" : 
-    (String)request.getSession().getAttribute("modo");
+  String modopestanha = request.getSession().getAttribute("modo")==null ? "" : (String)request.getSession().getAttribute("modo");
   
   UsrBean usr=(UsrBean)request.getSession().getAttribute("USRBEAN");
   String entrada=(String)request.getSession().getAttribute("entrada");
   String acceso=usr.getAccessType();
   String accion="/JGR_DefinirHitosFacturables.do";
   String existenHitos=(String)request.getAttribute("EXISTENHITOS");
+  String checkControlado=(String)request.getAttribute("checkControlado");
+  String importeControlado=(String)request.getAttribute("importeControlado");
+  String minimoControlado=(String)request.getAttribute("minimoControlado");
 %>	
 
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
@@ -76,9 +78,184 @@
   
   	<!-------------------- FUNCIONES SCRIPT - INICIO -------------------->
   	<script>
+  		// Transforma la coma en punto, comprueba que es un numero y muestra dos decimales
+		function  convertirAFormato(numero){
+			var numeroFormateado = numero.replace(",", ".");
+			var numeroNumber = new Number(numeroFormateado);
+			
+			if (isNaN(numeroNumber)) {
+				return "";
+			}
+			
+			numeroNumber = Number(numeroNumber.toFixed(2));
+			
+			return numeroNumber;	
+		}		  	
     
 	    //////////////////// FUNCIONES DE BOTONES - INI ////////////////////
 	    function accionGuardar () {
+	    	// Requisitos necesarios para la facturación controlada
+	    	var valorControlado = jQuery("input[id=checkControlado]:checked").val();
+	    	if (valorControlado != "5") {	 
+		    	var errores = "";
+		    	var importe = "";
+		    	var importeMinimo = "";
+		    	
+		    	if (valorControlado == "1") {	    		
+		    		if (jQuery("#AsImporte").val()=="") {
+		    			errores += "<siga:Idioma key='errors.required' arg0='fcs.criteriosFacturacion.asistencia.asistencias'/>"+ '\n';
+		    		} else {
+		    			importe = convertirAFormato(jQuery("#AsImporte").val());
+		    			if (importe=="0" || importe=="0.0" || importe=="0.00") {
+		    				errores += "<siga:Idioma key='errors.invalid' arg0='fcs.criteriosFacturacion.asistencia.asistencias'/>"+ '\n';
+		    			}
+		    		}
+		    		
+	    		} else if (valorControlado == "2") {	    		
+		    		if (jQuery("#AsMinImporte").val()=="") {
+		    			errores += "<siga:Idioma key='errors.required' arg0='fcs.criteriosFacturacion.asistencia.asistencias'/>"+ '\n';
+		    		} else {
+		    			importe = convertirAFormato(jQuery("#AsMinImporte").val());
+		    			if (importe=="0" || importe=="0.0" || importe=="0.00") {
+		    				errores += "<siga:Idioma key='errors.invalid' arg0='fcs.criteriosFacturacion.asistencia.asistencias'/>"+ '\n';
+		    			}			
+		    		}
+		    		
+		    		if (jQuery("#AsMinMinimo").val()=="") {
+		    			errores += "<siga:Idioma key='errors.required' arg0='fcs.criteriosFacturacion.asistencia.minAsist'/>"+ '\n';
+		    		} else {
+		    			importeMinimo = convertirAFormato(jQuery("#AsMinMinimo").val());
+		    			if (importeMinimo=="0" || importeMinimo=="0.0" || importeMinimo=="0.00") {
+		    				errores += "<siga:Idioma key='errors.invalid' arg0='fcs.criteriosFacturacion.asistencia.minAsist'/>"+ '\n';
+		    			}			
+		    		}	
+		    		
+	    		} else if (valorControlado == "3") {
+	    			importe = convertirAFormato(jQuery("#AsTpImporte").val());
+	    			
+		    		if (jQuery("#AsTpMinimo").val()=="") {
+		    			errores += "<siga:Idioma key='errors.required' arg0='fcs.criteriosFacturacion.asistencia.minAsist'/>"+ '\n';
+		    		} else {
+		    			importeMinimo = convertirAFormato(jQuery("#AsTpMinimo").val());
+		    			if (importeMinimo=="0" || importeMinimo=="0.0" || importeMinimo=="0.00") {
+		    				errores += "<siga:Idioma key='errors.invalid' arg0='fcs.criteriosFacturacion.asistencia.minAsist'/>"+ '\n';
+		    			}			
+		    		}
+		    		
+	    		} else  if (valorControlado == "4") {	    		    		
+		    		if (jQuery("#GAsImporte").val()=="") {
+		    			errores += "<siga:Idioma key='errors.required' arg0='fcs.criteriosFacturacion.asistencia.diaGuardia'/>"+ '\n';
+		    		} else {
+		    			importe = convertirAFormato(jQuery("#GAsImporte").val());
+		    			if (importe=="0" || importe=="0.0" || importe=="0.00") {
+		    				errores += "<siga:Idioma key='errors.invalid' arg0='fcs.criteriosFacturacion.asistencia.diaGuardia'/>"+ '\n';
+		    			}			
+		    		}	    		
+	    		}	    	
+	
+				if (errores != "") {
+					alert(errores);
+					fin();
+					return false;					
+				}
+				
+				if (valorControlado == "1") {		
+					if (document.getElementById("checkB1").checked) {
+						document.getElementById("checkB1").checked = false;
+						cambiarCheckB1();
+					}
+					if (!document.getElementById("checkB2").checked) {
+						document.getElementById("checkB2").checked = true;
+						cambiarCheckB2();
+					}					
+					if (document.getElementById("chGuardias").checked) {
+						document.getElementById("chGuardias").checked = false;
+						aplicaGuardias();
+					}
+					if (document.getElementById("chMinAsist").checked) {
+						document.getElementById("chMinAsist").checked = false;
+						habilitarMinAsist();
+					}					
+					document.getElementById("hitoPrecio[1]").value = "";
+					document.getElementById("hitoPrecio[2]").value = "";
+					document.getElementById("hitoPrecio[5]").value = importe;
+					document.getElementById("hitoPrecio[10]").value = "";
+					document.getElementById("hitoPrecio[45]").value = "";
+					
+				} else if (valorControlado == "2") {
+					if (document.getElementById("checkB1").checked) {
+						document.getElementById("checkB1").checked = false;
+						cambiarCheckB1();
+					}
+					if (!document.getElementById("checkB2").checked) {
+						document.getElementById("checkB2").checked = true;
+						cambiarCheckB2();
+					}	
+					if (document.getElementById("chGuardias").checked) {
+						document.getElementById("chGuardias").checked = false;
+						aplicaGuardias();
+					}
+					if (!document.getElementById("chMinAsist").checked) {
+						document.getElementById("chMinAsist").checked = true;
+						habilitarMinAsist();
+					}					
+					document.getElementById("hitoPrecio[1]").value = "";
+					document.getElementById("hitoPrecio[2]").value = "";
+					document.getElementById("hitoPrecio[5]").value = importe;
+					document.getElementById("hitoPrecio[10]").value = importeMinimo;
+					document.getElementById("hitoPrecio[45]").value = "";
+					
+				} else if (valorControlado == "3") {
+					if (document.getElementById("checkB1").checked) {
+						document.getElementById("checkB1").checked = false;
+						cambiarCheckB1();
+					}
+					if (!document.getElementById("checkB2").checked) {
+						document.getElementById("checkB2").checked = true;
+						cambiarCheckB2();
+					}	
+					if (!document.getElementById("chGuardias").checked) {
+						document.getElementById("chGuardias").checked = true;
+						aplicaGuardias();
+					}		
+					if (!document.getElementById("chMinAsist").checked) {
+						document.getElementById("chMinAsist").checked = true;
+						habilitarMinAsist();
+					}					
+					document.getElementById("hitoPrecio[1]").value = "";
+					document.getElementById("hitoPrecio[2]").value = "";
+					document.getElementById("hitoPrecio[5]").value = importe;
+					document.getElementById("hitoPrecio[10]").value = importeMinimo;
+					document.getElementById("hitoPrecio[45]").value = "";
+					
+				} else if (valorControlado == "4") {
+					if (!document.getElementById("checkB1").checked) {
+						document.getElementById("checkB1").checked = true;
+						cambiarCheckB1();
+					}						
+					if (document.getElementById("checkB2").checked) {
+						document.getElementById("checkB2").checked = false;
+						cambiarCheckB2();
+					}	
+					if (document.getElementById("chGuardias").checked) {
+						document.getElementById("chGuardias").checked = false;
+						aplicaGuardias();
+					}
+					if (document.getElementById("chMinAsist").checked) {
+						document.getElementById("chMinAsist").checked = false;
+						habilitarMinAsist();
+					}
+					document.getElementById("hitoPrecio[1]").value = importe;
+					if (document.getElementById("hitoPrecio[2]").value != importe) {
+						document.getElementById("hitoPrecio[2]").value = "0";
+						document.getElementById("hitoPrecio[45]").value = "0";
+					}
+					document.getElementById("hitoPrecio[5]").value = "";
+					document.getElementById("hitoPrecio[10]").value = "";
+									
+				}
+	    	}				
+	    		    	
 	      	//activando selecciones de dias para poder leer desde JAVA
 	   		compruebaPagasGuardia();
 	      	activarDiasSemana ();
@@ -177,17 +354,22 @@
 	    //////////////////// FUNCIONES UTILES - FIN ////////////////////
     
 	    //////////////////// FUNCIONES DE CHECKS GENERALES - INI ////////////////////
-	    function init () {
+	    function init () {	 
 	      	initAB ();
-	      	initC ();
-	      	calcularAltura();
+	      	initC ();		      	
+	      	gestionarControlado(<%=checkControlado%>, true);
 	    } //init ()
 	    
 	    // Funcion que calcula la altura de la pagina de un div con los botones del final
-	    function calcularAltura() {		
+	    function calcularAltura(controlado) {		
 			if (document.getElementById("idBotonesAccion")) {
-				var tablaBotones = jQuery('#idBotonesAccion')[0];						
-				var divDatos = jQuery('#scrollValores')[0];
+				var tablaBotones = jQuery('#idBotonesAccion')[0];
+				
+				var divDatos;
+				if (controlado)
+					divDatos = jQuery('#divFacturacionControlada')[0];
+				else
+					divDatos = jQuery('#divFacturacionNoControlada')[0];				
 			
 				var posTablaBotones = tablaBotones.offsetTop;
 				var posDivDatos = divDatos.offsetTop;
@@ -195,6 +377,72 @@
 				jQuery('#scrollValores').height(posTablaBotones - posDivDatos);			
 			}		
 		}	
+	    
+  		function gestionarControlado(valorControlado, inicio) {
+			if (valorControlado == 1) {
+				habilitarCuadroTexto (document.getElementById("AsImporte"));				
+				inhabilitarCuadroTextoSinCero (document.getElementById("AsMinImporte"));
+				inhabilitarCuadroTextoSinCero (document.getElementById("AsMinMinimo"));
+				inhabilitarCuadroTextoSinCero (document.getElementById("AsTpImporte"));
+				inhabilitarBotonLupa (document.getElementById("AsTpTipos"));
+				inhabilitarCuadroTextoSinCero (document.getElementById("AsTpMinimo"));
+				inhabilitarCuadroTextoSinCero (document.getElementById("GAsImporte"));				
+				if (inicio) {
+					jQuery("#AsImporte").val("<%=importeControlado%>");
+					jQuery("#divFacturacionNoControlada").hide();
+					calcularAltura(true);
+				}
+
+			} else if (valorControlado == 2) {
+				inhabilitarCuadroTextoSinCero (document.getElementById("AsImporte"));
+				habilitarCuadroTexto (document.getElementById("AsMinImporte"));				
+				habilitarCuadroTexto (document.getElementById("AsMinMinimo"));
+				inhabilitarCuadroTextoSinCero (document.getElementById("AsTpImporte"));
+				inhabilitarBotonLupa (document.getElementById("AsTpTipos"));
+				inhabilitarCuadroTextoSinCero (document.getElementById("AsTpMinimo"));				
+				inhabilitarCuadroTextoSinCero (document.getElementById("GAsImporte"));				
+				if (inicio) {
+					jQuery("#AsMinImporte").val("<%=importeControlado%>");
+					jQuery("#AsMinMinimo").val("<%=minimoControlado%>");
+					jQuery("#divFacturacionNoControlada").hide();
+					calcularAltura(true);
+				}
+			
+			} else if (valorControlado == 3) {
+				inhabilitarCuadroTextoSinCero (document.getElementById("AsImporte"));
+				inhabilitarCuadroTextoSinCero (document.getElementById("AsMinImporte"));
+				inhabilitarCuadroTextoSinCero (document.getElementById("AsMinMinimo"));
+				habilitarCuadroTexto (document.getElementById("AsTpImporte"));				
+				habilitarBotonLupa (document.getElementById("AsTpTipos"));
+				habilitarCuadroTexto (document.getElementById("AsTpMinimo"));				
+				inhabilitarCuadroTextoSinCero (document.getElementById("GAsImporte"));
+				if (inicio) {
+					jQuery("#AsTpImporte").val("<%=importeControlado%>");
+					jQuery("#AsTpMinimo").val("<%=minimoControlado%>");
+					jQuery("#divFacturacionNoControlada").hide();
+					calcularAltura(true);
+				}				
+			
+			} else if (valorControlado == 4) {
+				inhabilitarCuadroTextoSinCero (document.getElementById("AsImporte"));
+				inhabilitarCuadroTextoSinCero (document.getElementById("AsMinImporte"));
+				inhabilitarCuadroTextoSinCero (document.getElementById("AsMinMinimo"));
+				inhabilitarCuadroTextoSinCero (document.getElementById("AsTpImporte"));
+				inhabilitarBotonLupa (document.getElementById("AsTpTipos"));
+				inhabilitarCuadroTextoSinCero (document.getElementById("AsTpMinimo"));				
+				habilitarCuadroTexto (document.getElementById("GAsImporte"));							
+				if (inicio) {
+					jQuery("#GAsImporte").val("<%=importeControlado%>");
+					jQuery("#divFacturacionNoControlada").hide();
+					calcularAltura(true);
+				}					
+			
+			} else if (valorControlado == 5) {
+				jQuery("#divFacturacionControlada").hide();
+				jQuery("#divFacturacionNoControlada").show();	
+				calcularAltura(false);
+			}
+		}	  	    
     
 	    /** 
 	     * CONTROLES QUE SE COMPRUEBAN EN ESTA FUNCION:
@@ -988,7 +1236,8 @@
     	<html:hidden property = "importeMax" value = ""/>
     	<html:hidden property = "actionModal" value = ""/>
     
-    	<div id="scrollValores" style="height:100%; width:100%; overflow-y: auto; overflow-x: hidden; border: white;">
+    	<div id="scrollValores" style="height:100%; width:100%; overflow-y: auto; overflow-x: hidden; border: white">    	
+    	<div id="divFacturacionNoControlada">
 <%
         	if (existenHitos.equals ("0")) {
 %>
@@ -1465,38 +1714,137 @@
                  			disabled>
           			</td>
         		</tr>
-        
-        		<!-- Fila final primera -->
-        		<tr>
-          			<td colspan="2" class="labelText" style="text-align:left; vertical-align:middle">
-            			<siga:Idioma key="fcs.criteriosFacturacion.asistencia.expedienteEJG"/>
-          			</td>
-          			<td colspan=3 class="labelTextValue" style="text-align:left; vertical-align:middle">
-            			<html:text name="DefinirHitosFacturablesGuardiasForm"
-                       		property="hitoPrecio[13]" maxlength="10" size="10"
-                       		onkeypress="filterChars(this,false,true);"
-                       		onkeyup="filterCharsUp(this);"
-                       		onblur="filterCharsNaN(this);" styleClass="box" />
-            			&euro;
-          			</td>
-        		</tr>
-        
-        		<!-- Fila final segunda -->
-        		<tr>
-          			<td colspan="2" class="labelText" style="text-align:left; vertical-align:middle">
-            			<siga:Idioma key="fcs.criteriosFacturacion.asistencia.expedienteSOJ"/>
-          			</td>
-          			<td colspan=3 class="labelTextValue" style="text-align:left; vertical-align:middle">
+      		</table>
+   		</div>  
+   		
+   		<div id="divFacturacionControlada">
+   			<siga:ConjCampos leyenda="fcs.criteriosFacturacion.facturacionGuardias">
+	   			<table width="100%" border="0" cellspacing="0" cellpadding="0">   			
+					<tr class="filaTablaImpar">
+						<td class="labelText">
+							<input id="checkControlado" name="checkControlado" TYPE="radio" VALUE="1" onchange="gestionarControlado(this.value, false);" <%if(checkControlado.equals("1")){%>checked<%}%>>
+							<siga:Idioma key="fcs.criteriosFacturacion.facturacionGuardias.controladaAs"/>
+						</td>
+						<td class="labelText"><siga:Idioma key="fcs.criteriosFacturacion.asistencia.asistencias"/></td>
+						<td class="labelTextValue">
+							<input id="AsImporte" class="box" type="text" size="10" value="" 
+								onkeypress="filterChars(this,false,true);"
+	                       		onkeyup="filterCharsUp(this);"
+	                       		onblur="filterCharsNaN(this);"/>&euro;
+						</td>
+					</tr>
+					
+					
+					<tr class="filaTablaPar">
+						<td class="labelText" rowspan="2">
+							<input id="checkControlado" name="checkControlado" TYPE="radio" VALUE="2" onchange="gestionarControlado(this.value);" <%if(checkControlado.equals("2")){%>checked<%}%>>
+							<siga:Idioma key="fcs.criteriosFacturacion.facturacionGuardias.controladaAsMin"/>
+						</td>
+						<td class="labelText"><siga:Idioma key="fcs.criteriosFacturacion.asistencia.asistencias"/></td>
+						<td class="labelTextValue">
+							<input id="AsMinImporte" class="box" type="text" size="10" value="" 
+								onkeypress="filterChars(this,false,true);"
+	                       		onkeyup="filterCharsUp(this);"
+	                       		onblur="filterCharsNaN(this);"/>&euro;
+						</td>
+					</tr>
+					<tr class="filaTablaPar">
+						<td class="labelText"><siga:Idioma key="fcs.criteriosFacturacion.asistencia.minAsist"/></td>
+						<td class="labelTextValue">
+							<input id="AsMinMinimo" class="box" type="text" size="10" value="" 
+								onkeypress="filterChars(this,false,true);"
+	                       		onkeyup="filterCharsUp(this);"
+	                       		onblur="filterCharsNaN(this);"/>&euro;
+						</td>				
+					</tr>			
+					
+					
+					<tr class="filaTablaImpar">
+						<td class="labelText" rowspan="2">
+							<input id="checkControlado" name="checkControlado" TYPE="radio" VALUE="3" onchange="gestionarControlado(this.value);" <%if(checkControlado.equals("3")){%>checked<%}%>>
+							<siga:Idioma key="fcs.criteriosFacturacion.facturacionGuardias.controladaAsTpMin"/>
+						</td>
+						<td class="labelText"><siga:Idioma key="fcs.criteriosFacturacion.asistencia.asistencias"/></td>
+						<td class="labelTextValue">
+							<input id="AsTpImporte" class="box" type="text" size="10" value="" 
+								onkeypress="filterChars(this,false,true);"
+	                       		onkeyup="filterCharsUp(this);"
+	                       		onblur="filterCharsNaN(this);"/>&euro;&nbsp;
+	              			<img src="/SIGA/html/imagenes/bconsultar_disable.gif"
+	                   			name="AsTpTipos" id="AsTpTipos" alt="Consultar"
+	                   			onclick="consultarAsist(0)" onMouseOut="" onMouseOver=""
+								border="0" style="cursor:default; vertical-align:middle"
+								disabled>
+						</td>
+					</tr>
+					<tr class="filaTablaImpar">	
+						<td class="labelText"><siga:Idioma key="fcs.criteriosFacturacion.asistencia.minAsist"/></td>
+						<td class="labelTextValue">
+							<input id="AsTpMinimo" class="box" type="text" size="10" value="" 
+								onkeypress="filterChars(this,false,true);"
+	                       		onkeyup="filterCharsUp(this);"
+	                       		onblur="filterCharsNaN(this);"/>&euro;
+						</td>
+					</tr>		
+					
+					
+					<tr class="filaTablaPar">
+						<td class="labelText">
+							<input id="checkControlado" name="checkControlado" TYPE="radio" VALUE="4" onchange="gestionarControlado(this.value);" <%if(checkControlado.equals("4")){%>checked<%}%>>
+							<siga:Idioma key="fcs.criteriosFacturacion.facturacionGuardias.controladaGAs"/>
+						</td>
+						<td class="labelText"><siga:Idioma key="fcs.criteriosFacturacion.asistencia.diaGuardia"/></td>
+						<td class="labelTextValue">
+							<input id="GAsImporte" class="box" type="text" size="10" value=""
+								onkeypress="filterChars(this,false,true);"
+	                       		onkeyup="filterCharsUp(this);"
+	                       		onblur="filterCharsNaN(this);"/>&euro;
+						</td>
+					</tr>
+										
+										
+					<tr class="filaTablaImpar">
+						<td class="labelText" colspan="3">							
+							<input id="checkControlado" name="checkControlado" TYPE="radio" VALUE="5" onchange="gestionarControlado(this.value);" <%if(checkControlado.equals("5")){%>checked<%}%>>
+							<siga:Idioma key="fcs.criteriosFacturacion.facturacionGuardias.noControlada"/>
+						</td>	
+					</tr>   							   							   							   			
+	      		</table>
+	      	</siga:ConjCampos>
+   		</div>
+   		
+   		<siga:ConjCampos leyenda="fcs.criteriosFacturacion.facturacionExpedientes">
+			<table align="center" border="0" width="100%">
+				<tr>
+					<td class="labelText">
+						<siga:Idioma key="fcs.criteriosFacturacion.asistencia.expedienteEJG"/>
+					</td>
+					
+					<td class="labelTextValue">	
+						<html:text name="DefinirHitosFacturablesGuardiasForm"
+							property="hitoPrecio[13]" maxlength="10" size="10"
+							onkeypress="filterChars(this,false,true);"
+							onkeyup="filterCharsUp(this);"
+							onblur="filterCharsNaN(this);" styleClass="box" />&euro;
+					</td>
+				</tr>
+
+				<tr>
+					<td class="labelText">
+						<siga:Idioma key="fcs.criteriosFacturacion.asistencia.expedienteSOJ"/>
+					</td>
+					
+					<td class="labelTextValue">	
             			<html:text name="DefinirHitosFacturablesGuardiasForm"
                        		property="hitoPrecio[12]" maxlength="10" size="10"
                        		onkeypress="filterChars(this,false,true);"
                        		onkeyup="filterCharsUp(this);"
-                       		onblur="filterCharsNaN(this);" styleClass="box" />
-            			&euro;
-          			</td>
-        		</tr>
-      		</table>
-   		</div>  
+                       		onblur="filterCharsNaN(this);" styleClass="box" />&euro;
+					</td>
+				</tr>
+			</table>
+   		</siga:ConjCampos>    
+   	</div>	   		    		
   </html:form>
   
   <siga:ConjBotonesAccion botones="G,V" modo="<%=modopestanha%>" clase="botonesDetalle"/>
