@@ -597,12 +597,23 @@ public class DevolucionesAction extends MasterAction {
 			    	ClsLogging.writeFileLog("Aplicando Comisiones de devolucion="+miForm.getComisiones(),8);
 			    	correcto=aplicarComisiones(miForm.getIdInstitucion(),identificador,miForm.getComisiones(),this.getUserBean(request));
 			    }*/
-			}else if(codretorno.equalsIgnoreCase(codigoError)){
+				
+			} else if(codretorno.equalsIgnoreCase(codigoError)){
 				tx.rollback();
 				request.setAttribute("mensaje","facturacion.nuevoFichero.literal.confirmarReintentar");
 				return "mostrarVentana";
 				
-			}else if(Arrays.asList(codigosErrorFormato).contains(codretorno)){
+			} else 	if (codretorno.equals("5404")) {
+				tx.rollback();		
+				request.setAttribute("mensaje", "facturacion.devolucionManual.error.fechaDevolucion");
+				return "nuevo";
+				
+			} else 	if (codretorno.equals("5405")) {
+				tx.rollback();		
+				request.setAttribute("mensaje", "facturacion.devolucionManual.error.importeDevolucion");
+				return "nuevo";				
+				
+			} else if(Arrays.asList(codigosErrorFormato).contains(codretorno)){
 				tx.rollback();		
 				request.setAttribute("mensaje","facturacion.nuevoFichero.literal.errorFormato");
 				return "nuevo";
@@ -612,7 +623,7 @@ public class DevolucionesAction extends MasterAction {
 				request.setAttribute("mensaje","facturacion.nuevoFichero.literal.errorBanco");
 				return "nuevo";
 				
-			}else{
+			} else {
 				correcto=false;
 			}
 			

@@ -276,6 +276,9 @@ public class DevolucionesManualesAction extends MasterAction{
 				} else 	if (ret.equals("5404")) {
 					throw new SIGAException("facturacion.devolucionManual.error.fechaDevolucion");
 					
+				} else 	if (ret.equals("5405")) {
+					throw new SIGAException("facturacion.devolucionManual.error.importeDevolucion");
+					
 				} else  {
 					throw new ClsExceptions("Fichero de devoluciones manuales: Error en el proceso de actualicacion de tablas de devolucion. RETORNO: "+ret);
 				}  
