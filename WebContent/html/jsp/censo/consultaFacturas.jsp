@@ -180,7 +180,7 @@
 				String tamanosCol="";
 				String nombresCol="";
 				tamanosCol="10,12,20,12,12,12,12,6,";
-				nombresCol="censo.facturacion.facturas.literal.Fecha,censo.facturacion.facturas.literal.NumeroFactura,censo.facturacion.facturas.literal.Descripcion,censo.facturacion.facturas.literal.ImporteNeto,censo.facturacion.facturas.literal.ImporteIVA,censo.facturacion.facturas.literal.ImporteTotal,censo.facturacion.facturas.literal.ImportePagado,";
+				nombresCol="censo.facturacion.facturas.literal.Fecha,censo.facturacion.facturas.literal.NumeroFactura,censo.facturacion.facturas.literal.Descripcion,censo.facturacion.facturas.literal.ImporteNeto,censo.facturacion.facturas.literal.ImporteIVA,censo.facturacion.facturas.literal.ImporteTotal,censo.facturacion.facturas.literal.ImportePendiente,";
 			%>
 			
 			<siga:Table 
@@ -212,7 +212,7 @@
 								Double totalNeto = UtilidadesHash.getDouble(factura, "TOTALNETO");
 								Double totalIva = UtilidadesHash.getDouble(factura, "TOTALIVA");
 								Double total = UtilidadesHash.getDouble(factura, "TOTAL");
-								Double totalPagado = UtilidadesHash.getDouble(factura, "TOTALPAGADO");
+								Double totalPagado = UtilidadesHash.getDouble(factura, "TOTALPENDIENTE");
    	 			%>
    	 				<siga:FilaConIconos fila='<%=""+i%>' botones="C" visibleEdicion="false" visibleBorrado="false" pintarEspacio="no" clase="listaNonEdit"> 
 						<td><!-- Datos ocultos tabla -->
