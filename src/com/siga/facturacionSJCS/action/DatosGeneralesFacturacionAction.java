@@ -521,28 +521,36 @@ public class DatosGeneralesFacturacionAction extends MasterAction {
 	 * @exception  SIGAException  En cualquier caso de error
 	 */
 	protected String ejecutarFacturacion (ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
-		
 		UserTransaction tx = null;
 		String salida = "";
 		
-		try 
-		{ 
+		try {			
 			UsrBean usr = (UsrBean)request.getSession().getAttribute("USRBEAN");
-			FcsFactEstadosFacturacionAdm admEstado = new FcsFactEstadosFacturacionAdm(usr);
-			
-			tx = usr.getTransactionPesada();
-			
 			DatosGeneralesFacturacionForm miform = (DatosGeneralesFacturacionForm)formulario;
 			String idFacturacion = miform.getIdFacturacion();
 			String idInstitucion = usr.getLocation();
-
+			
+			// CR7 - Guardamos los datos de fechas y nombre antes de ejecutar la facturacion
+			tx = usr.getTransaction();
+			tx.begin();
+			FcsFacturacionJGAdm facturacionAdm = new FcsFacturacionJGAdm(usr);
+			Hashtable datosEntrada = (Hashtable)miform.getDatos();
+			FcsFacturacionJGBean facturacionOldBean = (FcsFacturacionJGBean)request.getSession().getAttribute("DATABACKUP");
+			facturacionOldBean.setNombre((String)datosEntrada.get("NOMBRE"));
+			facturacionOldBean.setFechaDesde(GstDate.getApplicationFormatDate("",(String)datosEntrada.get("FECHADESDE")));
+			facturacionOldBean.setFechaHasta(GstDate.getApplicationFormatDate("",(String)datosEntrada.get("FECHAHASTA")));
+			facturacionAdm.update(facturacionOldBean);
+			tx.commit();
+			
+			FcsFactEstadosFacturacionAdm admEstado = new FcsFactEstadosFacturacionAdm(usr);
 			String  estado = (String) ((Hashtable) (new FcsFacturacionJGAdm(usr)).getEstadoFacturacion(idInstitucion, idFacturacion)).get(FcsEstadosFacturacionBean.C_IDESTADOFACTURACION);
 			if (estado!=null && estado.equals(String.valueOf(ESTADO_FACTURACION.ESTADO_FACTURACION_EJECUTADA.getCodigo())) && usr.getStrutsTrans().equalsIgnoreCase("CEN_MantenimientoFacturacion")){
 					volverGenerarFacturacion ( mapping,  formulario,  request,  response);
 			}
 						
 			String idOrdenEstado= admEstado.getIdordenestadoMaximo(idInstitucion, idFacturacion);		
-				
+			
+			tx = usr.getTransactionPesada();
 			tx.begin();
 			// admFac.ejecutarFacturacion(idInstitucion,idFacturacion,tx);			
 			FcsFactEstadosFacturacionBean beanEstado = null;

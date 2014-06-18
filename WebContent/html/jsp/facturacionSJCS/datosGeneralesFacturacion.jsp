@@ -162,15 +162,14 @@
 		
 		if (bYaHaSidoEjecutada) botones += ",LF";
 		
-	} else if ((idEstado!=null) && (
-			idEstado.intValue() == ESTADO_FACTURACION.ESTADO_FACTURACION_EJECUTADA.getCodigo())
+	} else if ((idEstado!=null) && (idEstado.intValue() == ESTADO_FACTURACION.ESTADO_FACTURACION_EJECUTADA.getCodigo())
 			//|| idEstado.intValue() == ESTADO_FACTURACION.ESTADO_FACTURACION_ENVIO_EN_PROCESO.getCodigo()
 			|| idEstado.intValue() == ESTADO_FACTURACION.ESTADO_FACTURACION_VALIDACION_NO_CORRECTA.getCodigo()
 			|| idEstado.intValue() == ESTADO_FACTURACION.ESTADO_FACTURACION_ENVIO_NO_DISPONIBLE.getCodigo()
 			|| idEstado.intValue() == ESTADO_FACTURACION.ESTADO_FACTURACION_ENVIO_NO_ACEPTADO.getCodigo()
 			) {
 		if (strutTrans.equalsIgnoreCase("FCS_MantenimientoPrevisiones")) {
-			botones = "EF,GM"; //en las previsiones ejecutadas se permite reejecutar y descargar el informe
+			botones = "RF,GM"; //en las previsiones ejecutadas se permite reejecutar y descargar el informe
 			
 		} else {
 			consulta = true;
@@ -207,7 +206,7 @@
 			}
 			
 			if(idEstado.intValue() == ESTADO_FACTURACION.ESTADO_FACTURACION_EJECUTADA.getCodigo() && bBorrar)
-				botones += ",EF";
+				botones += ",RF";
 		}
 		
 	} else {
@@ -302,6 +301,17 @@
 			document.forms[0].target = "submitArea2";
 			document.forms[0].submit();
 		}
+		
+		function accionRecalcularFacturacion() {
+			sub();
+			<% if (regularizacion==null) { %>
+				document.forms[0].modo.value="ejecutarFacturacion";
+			<% } else { %>
+				document.forms[0].modo.value="ejecutarRegularizacion";
+			<% } %>
+			document.forms[0].target = "submitArea2";
+			document.forms[0].submit();
+		}
 
 		function accionEjecutaFacturacion() {
 			sub();
@@ -312,9 +322,6 @@
 			<% } %>
 			document.forms[0].target = "submitArea2";
 			document.forms[0].submit();
-			//var f = document.forms[0].name;
-			// con pantalla de espera
-			//document.frames.submitArea2.location='<%=app%>/html/jsp/general/loadingWindowOpener.jsp?formName='+f+'&msg=messages.factSJCS.procesandoFacturacion';
 		}
 
 		// Funcion asociada a boton Generar Excels
