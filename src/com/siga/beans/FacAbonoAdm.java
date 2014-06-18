@@ -601,9 +601,14 @@ public class FacAbonoAdm extends MasterBeanAdministrador {
 				sql.append(" PKG_SIGA_TOTALESABONO.TOTALIVA(A.IDINSTITUCION, A.IDABONO) AS TOTALIVA, ");
 				sql.append(" PKG_SIGA_TOTALESABONO.TOTALABONADO(A.IDINSTITUCION, A.IDABONO) AS TOTALABONADO, ");
 				sql.append(" PKG_SIGA_TOTALESABONO.TOTAL(A.IDINSTITUCION, A.IDABONO) AS TOTAL, ");
+				sql.append(" PC.impret AS RET_JUDICIAL, ");
+				sql.append(" PC.impmovvar AS MOV_VARIOS, ");
+				sql.append(" (PC.impoficio + PC.impsoj + PC.impasistencia + PC.impejg) AS TOTAL_BRUTO,  ");  
+				sql.append(" PC.IMPIRPF AS IRPF, ");				
 				sql.append(" PC.IDPERORIGEN,PC.IDPERDESTINO ");
 				
 				sql.append(" FROM FAC_ABONO A, FCS_PAGO_COLEGIADO PC ");
+				
 				sql.append(" WHERE A.IDINSTITUCION = PC.IDINSTITUCION ");
 				sql.append(" AND A.IDPAGOSJG = PC.IDPAGOSJG ");
 				sql.append(" AND A.IDPERORIGEN = PC.IDPERORIGEN ");
@@ -631,9 +636,18 @@ public class FacAbonoAdm extends MasterBeanAdministrador {
 				sql.append(" PKG_SIGA_TOTALESABONO.TOTALIVA(A.IDINSTITUCION, A.IDABONO) AS TOTALIVA, ");
 				sql.append(" PKG_SIGA_TOTALESABONO.TOTALABONADO(A.IDINSTITUCION, A.IDABONO) AS TOTALABONADO, ");
 				sql.append(" PKG_SIGA_TOTALESABONO.TOTAL(A.IDINSTITUCION, A.IDABONO) AS TOTAL, ");
-				sql.append(" A.IDPERSONA IDPERORIGEN,A.IDPERSONA IDPERDESTINO ");				
-				sql.append(" FROM FAC_ABONO A ");
-				sql.append(" WHERE A.IDINSTITUCION = ");
+				sql.append(" PC.impret AS RET_JUDICIAL, ");
+				sql.append(" PC.impmovvar AS MOV_VARIOS, ");
+				sql.append(" (PC.impoficio + PC.impsoj + PC.impasistencia + PC.impejg) AS TOTAL_BRUTO,  ");  
+				sql.append(" PC.IMPIRPF AS IRPF, ");							
+				sql.append(" A.IDPERSONA IDPERORIGEN,A.IDPERSONA IDPERDESTINO ");
+				
+				sql.append(" FROM FAC_ABONO A, FCS_PAGO_COLEGIADO PC ");
+				
+				sql.append(" WHERE A.IDINSTITUCION = PC.IDINSTITUCION ");
+				sql.append(" AND A.IDPAGOSJG = PC.IDPAGOSJG ");
+				sql.append(" AND A.IDPERSONA = PC.IDPERDESTINO ");				
+				sql.append(" AND A.IDINSTITUCION = ");
 				sql.append(institucion);				
 				sql.append(" AND A.IDPERSONA = ");
 				sql.append(idPersona);

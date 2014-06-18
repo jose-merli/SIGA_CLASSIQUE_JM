@@ -54,36 +54,29 @@
 	String app = request.getContextPath();
 	HttpSession ses = request.getSession();
 	String botonesAccion = "N";
-	UsrBean usr = (UsrBean) request.getSession()
-			.getAttribute("USRBEAN");
+	UsrBean usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
 
 	// Datos del cliente a visualizar
 	Long idPersona = (Long) request.getAttribute("IDPERSONA"); // Obtengo el identificador de la persona
 	String accion = (String) request.getAttribute("ACCION"); // Obtengo la accion anterior
 	String nombre = (String) request.getAttribute("NOMBRE"); // Obtengo el nombre completo de la persona
 	String numero = (String) request.getAttribute("NUMERO"); // Obtengo el numero de colegiado de la persona	
-	String idInstitucion = (String) request
-			.getAttribute("IDINSTITUCIONPERSONA"); // Obtengo el identificador de la institucion
-	String idInstitucionPersona = Integer.valueOf(
-			request.getParameter("idInstitucion")).toString();
+	String idInstitucion = (String) request.getAttribute("IDINSTITUCIONPERSONA"); // Obtengo el identificador de la institucion
+	String idInstitucionPersona = Integer.valueOf(request.getParameter("idInstitucion")).toString();
 
-	int destinatarioAbono = ((Integer)request.getAttribute("destinatarioAbono")).intValue();
+	int destinatarioAbono = ((Integer) request.getAttribute("destinatarioAbono")).intValue();
 	Long SidPersona = (Long) request.getAttribute("idPersona");
 	if (SidPersona == null) {
-		SidPersona = (Long) request.getSession().getAttribute(
-				"idPersona");
+		SidPersona = (Long) request.getSession().getAttribute("idPersona");
 		if (SidPersona == null) {
 			SidPersona = new Long(request.getParameter("idPersona"));
 		}
 	}
-	Integer SidInstitucion = (Integer) request
-			.getAttribute("idInstitucion");
+	Integer SidInstitucion = (Integer) request.getAttribute("idInstitucion");
 	if (SidInstitucion == null) {
-		SidInstitucion = (Integer) request.getSession().getAttribute(
-				"idInstitucion");
+		SidInstitucion = (Integer) request.getSession().getAttribute("idInstitucion");
 		if (SidInstitucion == null) {
-			SidInstitucion = new Integer(
-					request.getParameter("idInstitucion"));
+			SidInstitucion = new Integer(request.getParameter("idInstitucion"));
 
 		}
 
@@ -92,8 +85,7 @@
 	Vector abonos = new Vector();
 
 	// Institucion del usuario de la aplicacion
-	String idInstUsuario = (String) request
-			.getAttribute("IDINSTITUCION"); // Obtengo el identificador de la institucion
+	String idInstUsuario = (String) request.getAttribute("IDINSTITUCION"); // Obtengo el identificador de la institucion
 
 	// Obtencion de la informacon relacionada con el abono
 	if (request.getAttribute("container") != null) {
@@ -101,8 +93,7 @@
 	}
 
 	// Gestion de Volver
-	String busquedaVolver = (String) request.getSession().getAttribute(
-			"CenBusquedaClientesTipo");
+	String busquedaVolver = (String) request.getSession().getAttribute("CenBusquedaClientesTipo");
 	if ((busquedaVolver == null) || (usr.isLetrado())) {
 		busquedaVolver = "volverNo";
 	}
@@ -122,21 +113,16 @@
 
 	String registrosPorPagina = "";
 	HashMap hm = new HashMap();
-	String atributoPaginador = (String) request
-			.getAttribute(ClsConstants.PARAM_PAGINACION);
+	String atributoPaginador = (String) request.getAttribute(ClsConstants.PARAM_PAGINACION);
 	if (ses.getAttribute(atributoPaginador) != null) {
 		hm = (HashMap) ses.getAttribute(atributoPaginador);
 
 		if (hm.get("datos") != null && !hm.get("datos").equals("")) {
 			resultado = (Vector) hm.get("datos");
-			PaginadorBind paginador = (PaginadorBind) hm
-					.get("paginador");
-			paginaSeleccionada = String.valueOf(paginador
-					.getPaginaActual());
-			totalRegistros = String.valueOf(paginador
-					.getNumeroTotalRegistros());
-			registrosPorPagina = String.valueOf(paginador
-					.getNumeroRegistrosPorPagina());
+			PaginadorBind paginador = (PaginadorBind) hm.get("paginador");
+			paginaSeleccionada = String.valueOf(paginador.getPaginaActual());
+			totalRegistros = String.valueOf(paginador.getNumeroTotalRegistros());
+			registrosPorPagina = String.valueOf(paginador.getNumeroRegistrosPorPagina());
 		} else {
 			resultado = new Vector();
 			paginaSeleccionada = "0";
@@ -150,20 +136,13 @@
 		registrosPorPagina = "0";
 	}
 	/** FIN PAGINADOR ***/
-	String informeUnico =(String) request.getAttribute("informeUnico");
-	
-	boolean bIncluirBajaLogica = UtilidadesString
-			.stringToBoolean((String) request
-					.getAttribute("bIncluirRegistrosConBajaLogica"));
-	String action = app
-			+ path
-			+ ".do?noReset=true&bIncluirRegistrosConBajaLogica="
-			+ (String) request
-					.getAttribute("bIncluirRegistrosConBajaLogica")
-			+ "&nombre=" + nombre + "&idInstitucion=" + idInstitucion
-			+ "&idPersona=" + idPersona.toString() + "&numero="
-			+ numero + "&idInstitucion=" + idInstitucion
-			+ "&idInstUsuario=" + idInstUsuario + "&accion=" + accion;
+	String informeUnico = (String) request.getAttribute("informeUnico");
+
+	boolean bIncluirBajaLogica = UtilidadesString.stringToBoolean((String) request.getAttribute("bIncluirRegistrosConBajaLogica"));
+	String action = app + path + ".do?noReset=true&bIncluirRegistrosConBajaLogica="
+			+ (String) request.getAttribute("bIncluirRegistrosConBajaLogica") + "&nombre=" + nombre + "&idInstitucion=" + idInstitucion
+			+ "&idPersona=" + idPersona.toString() + "&numero=" + numero + "&idInstitucion=" + idInstitucion + "&idInstUsuario="
+			+ idInstUsuario + "&accion=" + accion;
 %>
 
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
@@ -189,23 +168,23 @@
 		<html:javascript formName="AbonosClienteForm" staticJavascript="false" />  
 
 <%
-								if (sTipo != null && sTipo.equals("LETRADO")) {
-							%>
+  	if (sTipo != null && sTipo.equals("LETRADO")) {
+  %>
 <siga:Titulo titulo="censo.fichaCliente.facturacion.abonos.cabecera"
 	localizacion="censo.fichaLetrado.facturacion.localizacion" />
 <%
-			} else if (path.equals("/JGR_AbonosClienteSJCS")) {
-		%>
+	} else if (path.equals("/JGR_AbonosClienteSJCS")) {
+%>
 <siga:Titulo titulo="pestana.fichaCliente.justiciagratuita.pagos"
 	localizacion="censo.fichaCliente.sjcs.to.facturacion.localizacion" />
 <%
-			} else {
-		%>
+	} else {
+%>
 <siga:TituloExt titulo="censo.fichaCliente.facturacion.abonos.cabecera"
 	localizacion="censo.fichaCliente.facturacion.abonos.localizacion" />
 <%
-			}
-		%>
+	}
+%>
 <!-- FIN: TITULO Y LOCALIZACION -->
 
 </head>
@@ -256,18 +235,23 @@
 						   name="tablaDatos"
 						   border="1"
 						   columnNames="facturacion.busquedaAbonos.literal.fecha,facturacion.busquedaAbonos.literal.numeroAbono,
-						   			  facturacion.datosGenerales.literal.observaciones,facturacion.datosGeneralesAbonos.literal.importeNeto,
-						   			  facturacion.datosGeneralesAbonos.literal.importeIva,facturacion.abonosPagos.literal.importeTotalAbono,
-						   			  facturacion.abonosPagos.literal.totalAbonado,Destino,"
-						   columnSizes="8,10,30,9,9,9,9,9,7">
+						   			  facturacion.datosGenerales.literal.observaciones,
+									  factSJCS.datosFacturacion.literal.importeBruto,
+									  pestana.justiciagratuita.movimientosVarios,
+									  gratuita.retencionesJudiciales.literal.titulo,
+									  factSJCS.detalleFacturacion.literal.IRPF,
+						   			  facturacion.datosGeneralesAbonos.literal.importeNeto,
+						   			  Destino,"
+						   columnSizes="8,10,24,8,8,8,6,8,7,7">
 						<%
 							if (resultado == null || resultado.size() < 1) {
 						%>
 						 		<tr class="notFound">
 	   								<td class="titulitos"><siga:Idioma key="messages.noRecordFound"/></td>
 								</tr>					
-						<%	} else {
-						%>
+						<%
+												} else {
+											%>
 				    		<%
 				    			Enumeration en = resultado.elements();
 				    					int recordNumber = 1;
@@ -277,10 +261,9 @@
 				    						String s = row.getString(FacAbonoBean.C_IDPAGOSJG);
 				    						String abono = row.getString(FacAbonoBean.C_IDABONO);
 				    						FilaExtElement[] elemento = null;
-				    						if ((s != null && !s.trim().equals("") )||( abono != null && !abono.trim().equals(""))) {
+				    						if ((s != null && !s.trim().equals("")) || (abono != null && !abono.trim().equals(""))) {
 				    							elemento = new FilaExtElement[1];
-				    							elemento[0] = new FilaExtElement("download",
-				    									"download", SIGAConstants.ACCESS_READ);
+				    							elemento[0] = new FilaExtElement("download", "download", SIGAConstants.ACCESS_READ);
 				    						}
 				    		%>
 
@@ -308,74 +291,54 @@
 											value="<%=row.getString(FacAbonoBean.C_IDPAGOSJG)%>"> 
 										<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_1" id="oculto<%=String.valueOf(recordNumber)%>_1"  value="<%=row.getString(FacAbonoBean.C_IDABONO)%>">
 										<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_2" id="oculto<%=String.valueOf(recordNumber)%>_2" value="<%=idInstitucion%>">
-										<%=UtilidadesString.mostrarDatoJSP(GstDate
-									.getFormatedDateShort("",
-											row.getString(FacAbonoBean.C_FECHA)))%>
+										
+										
+										
+										<%=UtilidadesString.mostrarDatoJSP(GstDate.getFormatedDateShort("", row.getString(FacAbonoBean.C_FECHA)))%>
 									</td>
-									<td>
-										<%=UtilidadesString.mostrarDatoJSP(row
-									.getString(FacAbonoBean.C_NUMEROABONO))%>
-									</td>
-									<td>
-										<%=UtilidadesString.mostrarDatoJSP(row
-									.getString(FacAbonoBean.C_OBSERVACIONES))%>
-									</td>
-									<td>
-										<%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero
-									.formatoCampo(
-											UtilidadesNumero.redondea(
-													new Double(
-															row.getString("TOTALNETO"))
-															.doubleValue(), 2))
-									.toString())%>&nbsp;&euro;
-									</td>
-									<td>
-										<%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero
-									.formatoCampo(
-											UtilidadesNumero.redondea(
-													new Double(
-															row.getString("TOTALIVA"))
-															.doubleValue(), 2))
-									.toString())%>&nbsp;&euro;
-									</td>
-									<td>
-										<%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero
-									.formatoCampo(
-											UtilidadesNumero.redondea(
-													new Double(row
-															.getString("TOTAL"))
-															.doubleValue(), 2))
-									.toString())%>&nbsp;&euro;
-									</td>
-									<td>
-										<%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero
-									.formatoCampo(
-											UtilidadesNumero.redondea(
-													new Double(
-															row.getString("TOTALABONADO"))
-															.doubleValue(), 2))
-									.toString())%>&nbsp;&euro;
-									</td>
+									<td><%=UtilidadesString.mostrarDatoJSP(row.getString(FacAbonoBean.C_NUMEROABONO))%></td>
+									<td><%=UtilidadesString.mostrarDatoJSP(row.getString(FacAbonoBean.C_OBSERVACIONES))%></td>
+
+									<td style="text-align:right"><%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero.formatoCampo(
+													UtilidadesNumero.redondea(new Double(row.getString("TOTAL_BRUTO")).doubleValue(), 2)).toString())%>&nbsp;&euro;</td>
+
+									<td style="text-align:right"><%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero.formatoCampo(
+													UtilidadesNumero.redondea(new Double(row.getString("MOV_VARIOS")).doubleValue(), 2)).toString())%>&nbsp;&euro;</td>
+
+									<td style="text-align:right"><%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero.formatoCampo(
+													UtilidadesNumero.redondea(new Double(row.getString("RET_JUDICIAL")).doubleValue(), 2)).toString())%>&nbsp;&euro;</td>
+													
+									<td style="text-align:right"><%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero.formatoCampo(
+													UtilidadesNumero.redondea(new Double(row.getString("IRPF")).doubleValue(), 2)).toString())%>&nbsp;</td>													
+													
+									<td style="text-align:right"><%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero.formatoCampo(
+													UtilidadesNumero.redondea(new Double(row.getString("TOTALNETO")).doubleValue(), 2)).toString())%>&nbsp;&euro;</td>													
+													
 									<td>
 										<%
-											if (UtilidadesHash.getString(row.getRow(),"IDPERORIGEN").equals(UtilidadesHash.getString(row.getRow(),"IDPERDESTINO"))) {
-												if(destinatarioAbono==0){%>
+											if (UtilidadesHash.getString(row.getRow(), "IDPERORIGEN").equals(UtilidadesHash.getString(row.getRow(), "IDPERDESTINO"))) {
+																if (destinatarioAbono == 0) {
+										%>
 													<siga:Idioma key="facturacion.abonos.destino.sociedad"/>
-													<%}else{%>
+													<%
+														} else {
+													%>
 														<siga:Idioma key="facturacion.abonos.destino.letrado"/>		
 												<%
-												}										
-											
-										
-											} else {
-										if(destinatarioAbono==0){%>
+															}
+
+																			} else {
+																				if (destinatarioAbono == 0) {
+														%>
 													<siga:Idioma key="facturacion.abonos.destino.letrado"/>
-													<%}else{%>
+													<%
+														} else {
+													%>
 														<siga:Idioma key="facturacion.abonos.destino.sociedad"/>		
 												<%
-												}	
-											}
-										%>
+															}
+																			}
+														%>
 									</td>
 								</siga:FilaConIconos>
 								<%
