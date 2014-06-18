@@ -150,7 +150,7 @@ public class MantenimientoInformesAction extends MasterAction {
 	 */
 	protected String abrir(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		try {
-			request.setAttribute("anyoIRPF", String.valueOf(Calendar.getInstance().get(Calendar.YEAR) - 1));
+			request.setAttribute("anyoIRPF", String.valueOf(Calendar.getInstance().get(Calendar.YEAR)));
 
 		} catch (Exception e) {
 			throwExcp("messages.general.error", new String[] { "modulo.sjcs" }, e, null);
