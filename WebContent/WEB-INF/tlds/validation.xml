@@ -3459,7 +3459,7 @@
                         </var>
                 </field>
                 <field property = "abreviatura" depends = "required,maxlength">
-                        <arg0 key="factSJCS.datosPagos.literal.abreviatura"/>
+                        <arg0 key="factSJCS.datosPagos.literal.abonoBanco"/>
                         <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
                         <var>
                             <var-name>maxlength</var-name>

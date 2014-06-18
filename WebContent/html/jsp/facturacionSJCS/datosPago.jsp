@@ -540,7 +540,7 @@
 		</td>
 		<td class="labelText" colspan="2">
 			<!-- aalg: INC_06366_SIGA -->
-			<siga:Idioma key="factSJCS.datosPagos.literal.abonoBanco"/>&nbsp;(*)&nbsp;<html:text name="datosGeneralesPagoForm" property="abreviatura" style="width:325" styleClass="<%=estilo%>" readonly="<%=b_lectura%>"  value="<%=abreviatura%>" />
+			<siga:Idioma key="factSJCS.datosPagos.literal.abonoBanco"/>&nbsp;(*)&nbsp;<html:text name="datosGeneralesPagoForm" property="abreviatura" style="width:325" styleClass="<%=estilo%>" readonly="<%=b_lectura%>"  value="<%=abreviatura%>" maxlength="36"/>
 		</td>
 	</tr>
 
@@ -931,14 +931,20 @@
 					return;		
 				}	
 				porcentaje = parseFloat(importe * 100 / total);							
-			}
-			else{
+			
+			} else {
 				porcentaje = convertirANumero(document.getElementById("porcentaje"+concepto).value);
 				//si no se ha introducido un valor correcto no se actualiza nada
-				if (isNaN(porcentaje) || porcentaje < 0 || porcentaje > porcentajePendiente){
+				if (isNaN(porcentaje) || porcentaje < 0) { 
 					document.getElementById("porcentaje"+concepto).value = backupAPagar;	
 					return;
+					
+				} else if (porcentaje > porcentajePendiente){
+					alert('<siga:Idioma key="factSJCS.datosPagos.error.maxporcentaje"/>');
+					document.getElementById("porcentaje"+concepto).value = '0.00';	
+					return;
 				}
+				
 				importe = parseFloat(porcentaje * total / 100);
 			}
 
@@ -964,15 +970,17 @@
 		
 		function accionEjecutaFacturacion() 
 		{		
-				//Convierte a formato java los campos de tipo precio
-				actualizarCamposPrecio();
-				
-				var f=document.getElementById("datosGeneralesPagoForm");
-				f.modo.value = "ejecutarPago";
+			sub();
+			
+			//Convierte a formato java los campos de tipo precio
+			actualizarCamposPrecio();
+			
+			var f=document.getElementById("datosGeneralesPagoForm");
+			f.modo.value = "ejecutarPago";
 
-				var fname = document.getElementById("datosGeneralesPagoForm").name;
-				// con pantalla de espera
-				window.frames.submitArea.location='<%=app%>/html/jsp/general/loadingWindowOpener.jsp?formName='+fname+'&msg=messages.factSJCS.procesandoFacturacion';				
+			var fname = document.getElementById("datosGeneralesPagoForm").name;
+			// con pantalla de espera
+			window.frames.submitArea.location='<%=app%>/html/jsp/general/loadingWindowOpener.jsp?formName='+fname+'&msg=messages.factSJCS.procesandoFacturacion';			
 		}
 
 		/**
@@ -1073,6 +1081,8 @@
 		
 		function accionCerrarPago() 
 		{		
+			sub();
+			
 			//Convierte a formato java los campos de tipo precio
 			actualizarCamposPrecio();
 		
