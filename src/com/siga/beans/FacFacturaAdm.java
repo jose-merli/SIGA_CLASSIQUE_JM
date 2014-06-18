@@ -1509,7 +1509,7 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
 		    }
 		    
 		    
-		    sql += " FROM "+FacFacturaBean.T_NOMBRETABLA+" F, "+CenPersonaBean.T_NOMBRETABLA+" P , "+CenClienteBean.T_NOMBRETABLA+" C ,fac_estadofactura EF ";
+		    sql += " FROM "+FacFacturaBean.T_NOMBRETABLA+" F, "+CenPersonaBean.T_NOMBRETABLA+" P , "+ CenPersonaBean.T_NOMBRETABLA+" DEUDOR , "+CenClienteBean.T_NOMBRETABLA+" C ,fac_estadofactura EF ";
 		    contador++;
 		    codigos.put(new Integer(contador),this.usrbean.getLocation());
 		    sql += " WHERE F."+FacFacturaBean.C_IDINSTITUCION+"=:"+contador;
@@ -1517,10 +1517,9 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
 		    sql += " and C."+CenClienteBean.C_IDINSTITUCION+"=F."+FacFacturaBean.C_IDINSTITUCION;
 		    sql += " and C."+CenClienteBean.C_IDPERSONA+"= F."+CenPersonaBean.C_IDPERSONA+ " ";
 		    sql += " AND P."+CenPersonaBean.C_IDPERSONA+"=F."+FacFacturaBean.C_IDPERSONA+ " ";
-		   
+		    sql += " AND DEUDOR."+CenPersonaBean.C_IDPERSONA+" (+) =F."+FacFacturaBean.C_IDPERSONADEUDOR+ " ";
 		    
-		    
-		   
+		   // FILTRO CLIENTE TAG BUSQUEDA
 		    String letrado = form.getLetrado();
 		    if(letrado!=null && !letrado.equalsIgnoreCase("")){
 		        contador++;
@@ -1528,6 +1527,8 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
 			    sql += " and F."+FacFacturaBean.C_IDPERSONA;
 			    sql += " = :" + contador ;
 		    }
+		    
+		    // FILTRO CLIENTE NOMBRE Y APELLIDOS
 		    String nombre = form.getInteresadoNombre();
 		    if(nombre!=null && !nombre.equalsIgnoreCase("")){
 		        contador++;
@@ -1542,7 +1543,7 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
 			    
 		    }
 		    
-		    
+		    // FILTRO CLIENTE ESTADOCOLEGIAL
 		    String estadoColegial = form.getCmbEstadoColegial();
 		    if(estadoColegial!=null && !estadoColegial.equalsIgnoreCase("")){
 		    	//Se hace esto(grrr) para coger los dos estados colegiales
@@ -1555,16 +1556,22 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
 		    	sql += ":"+contador;
 		    	sql += ", SYSDATE)||'%'";
 		    	sql += " AND P.IDPERSONA NOT IN (SELECT IDPERSONA FROM CEN_NOCOLEGIADO  NC WHERE NC.IDPERSONA = C.IDPERSONA AND NC.IDINSTITUCION = C.IDINSTITUCION) "; 
-		    	
-			    
 		    }
+		    
+		    
+		    // FILTRO DEUDOR
+		    String denominacion = form.getDenominacionDeudor();
+		    if(denominacion!=null && !denominacion.equalsIgnoreCase("")){
+		        contador++;
+			    codigos.put(new Integer(contador),"%"+denominacion.toLowerCase()+"%");
+		    	sql += " AND lower(DEUDOR."+CenPersonaBean.C_NOMBRE+"||' '|| DEUDOR."+CenPersonaBean.C_APELLIDOS1+") like :"+contador;
+		    }
+		    
 		    if(form.getCmbEstadosFactura()!=null && !form.getCmbEstadosFactura().equalsIgnoreCase("")){
 		    	//Se hace esto(grrr) para coger los dos estados colegiales
 		        contador++;
 			    codigos.put(new Integer(contador),form.getCmbEstadosFactura());
 		    	sql += " AND EF.IDESTADO =  :"+contador+"  " ;
-		    	
-			    
 		    }
 		    
 		    String fDesde = form.getFechaDesde(); 
@@ -1601,22 +1608,6 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
 	    		sql += " ) ";
 	    	}
 		   
-		    
-		    
-		    
-//		    sql += " GROUP BY "+FacFacturaBean.C_IDINSTITUCION+", "+FacFacturaBean.C_IDPERSONA+", "+CenColegiadoBean.C_NCOLEGIADO+", "+CenPersonaBean.C_NOMBRE;
-	    	// modificado por miguel.villegas
-//		    if (form.getFacturasImpagadas()!=null && !form.getFacturasImpagadas().equals("")){
-//		    	sql += " HAVING COUNT("+FacFacturaBean.C_NUMEROFACTURA+")>='"+form.getFacturasImpagadas()+"' ";
-//			    if (form.getImporteAdeudado()!=null && !form.getImporteAdeudado().equals("")){
-//			    	sql += " AND SUM(DEUDA)>="+form.getImporteAdeudado();		    	
-//			    }
-//		    }
-//		    else{
-//			    if (form.getImporteAdeudado()!=null && !form.getImporteAdeudado().equals("")){
-//			    	sql += " HAVING SUM(DEUDA)>="+form.getImporteAdeudado();		    	
-//			    }	
-//		    }
 	    	// fin modificacion		    
 		    boolean isAnd = false;
 		    
@@ -1639,8 +1630,7 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
 			    isAnd = true;
 		    }
 		    
-		    if(isFacturasPendientes){
-		    	
+		    if(isFacturasPendientes){		    	
 		    	if(form.getFacturasImpagadasDesde()!=null && !form.getFacturasImpagadasDesde().equals("")){
 		    		if(isAnd)
 			    		sql += " AND ";
@@ -1698,6 +1688,7 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
 		    	}
 		    	
 		    }
+		    
 		    PaginadorCaseSensitiveBind paginador = new PaginadorCaseSensitiveBind(sql,codigos);				
 			int totalRegistros = paginador.getNumeroTotalRegistros();
 			
@@ -1706,18 +1697,6 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
 			}
 			return paginador;
 		    	
-		    
-		    //sql += " ORDER BY NCOLEGIADO ";
-		    //sql += " ORDER BY "+CenColegiadoBean.C_NCOLEGIADO+", NOMBRE";
-			
-			//ClsLogging.writeFileLog("FacFacturaAdm, sql: "+sql,3);
-			
-			//if (rc.queryBind(sql,codigos)) {
-				//for (int i = 0; i < rc.size(); i++)	{
-					//Row fila = (Row) rc.get(i);										
-					//datos.add(fila);					
-				//}
-			//}
 		}
 		
 		catch (Exception e) { 	

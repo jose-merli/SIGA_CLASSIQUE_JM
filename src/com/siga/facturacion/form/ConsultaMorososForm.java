@@ -45,9 +45,10 @@ public class ConsultaMorososForm extends MasterForm {
 	private Integer idInstitucion;
 	private Integer idEnvioDoc;
 	private Integer idDocumento;
-	private String pathDocumento;
+	private String  pathDocumento;
 	private String  interesadoNombre;
 	private String  interesadoApellidos;
+	private String  denominacionDeudor;
 	//private FormFile theFile;
 
 	public String getInteresadoNombre() {
@@ -281,6 +282,7 @@ public class ConsultaMorososForm extends MasterForm {
 		this.pathDocumento= null;
 		this.interesadoNombre= null;
 		this.interesadoApellidos= null;
+		this.denominacionDeudor= null;
 		
 		super.reset(mapping, request);
 		
@@ -294,4 +296,12 @@ public class ConsultaMorososForm extends MasterForm {
 		this.cmbEstadosFactura = cmbEstadosFactura;
 	}
 
+	public String getDenominacionDeudor() {
+		return denominacionDeudor;
+	}
+
+	public void setDenominacionDeudor(String denominacionDeudor) {
+		this.denominacionDeudor = denominacionDeudor;
+	}
+	
 }

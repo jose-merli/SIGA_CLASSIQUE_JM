@@ -102,40 +102,58 @@
 				</td>
 			</tr>
 
+
+
+		<tr>
+			<td>
+				<siga:ConjCampos leyenda="facturacion.consultamorosos.literal.cliente" desplegable="true" oculto="true">
+					<table class="tablaCampos" align="center" border="0">
+						<!-- OPCION 1 -->
+						<tr>
+							<td colspan="8">
+								<siga:BusquedaPersona tipo="colegiado"	idPersona="letrado" preFunction="preFunctionDeudor" postFunction="postFunctionDeudor"/>
+							</td>
+						</tr>	
+							
+						<!-- OPCION 2 -->	
+						<tr>
+							<td class="labelText" nowrap width ="10%">&nbsp;<siga:Idioma key="facturacion.consultamorosos.literal.nombre"/></td>
+							<td>
+								<html:text property="interesadoNombre" style="width:180px" maxlength="100" styleClass="box"/>
+							</td>	
+						
+							<td class="labelText" nowrap><siga:Idioma key="facturacion.consultamorosos.literal.apellidos"/></td>
+							<td>
+								<html:text property="interesadoApellidos" style="width:280px" maxlength="200" styleClass="box"/>
+							</td>	
+							
+							<td class="labelText" width ="15%"><siga:Idioma key="censo.consultaDatosColegiacion.literal.estadoCol" /></td>
+							<td>
+								<siga:ComboBD nombre = "cmbEstadoColegial" tipo="cmbTipoColegiacion" ancho="5" clase="boxCombo" obligatorio="false" elementoSel="<%=tipoColeg %>"/>				
+							</td>
+						</tr>
+					</table>
+				</siga:ConjCampos>
+			</td>
+		</tr>
 			<tr>
 				<td>
 					<siga:ConjCampos leyenda="facturacion.consultamorosos.literal.deudor" desplegable="true" oculto="true">
-						<table class="tablaCampos" align="center" border="0">
-							<tr>
-								<td><siga:BusquedaPersona tipo="colegiado"	idPersona="letrado" preFunction="preFunctionDeudor" postFunction="postFunctionDeudor"></siga:BusquedaPersona></td>
-								
-								<td class="labelText" nowrap><siga:Idioma key="censo.consultaDatosColegiacion.literal.estadoCol" /></td>
-								<td><siga:ComboBD nombre="cmbEstadoColegial" tipo="cmbTipoColegiacion" ancho="5" clase="boxCombo" obligatorio="false" elementoSel="<%=tipoColeg%>"/></td>
+					<table class="tablaCampos" align="center" border="0">
+						<tr>
+							<td class="labelText"  width ="15%">
+								<siga:Idioma key="facturacion.consultamorosos.literal.denominacion"/>
+							</td>
+							<td colspan="7">	
+								<html:text  property="denominacionDeudor" size="70" maxlength="100" styleClass="box"></html:text>
+							</td>	
 							</tr>
-						</table>		
-					</siga:ConjCampos>
-				</td>
-			</tr>
-			
-			<tr>
-				<td>
-					<siga:ConjCampos leyenda="facturacion.consultamorosos.literal.cliente" desplegable="true" oculto="true">
-						<table class="tablaCampos" align="center" border="0">
-							<tr>																
-								<td class="labelText" nowrap><siga:Idioma key="facturacion.consultamorosos.literal.nombre"/></td>
-								<td><html:text property="interesadoNombre" style="width:250px" maxlength="100" styleClass="box"/></td>	
-							
-								<td class="labelText" nowrap><siga:Idioma key="facturacion.consultamorosos.literal.apellidos"/></td>
-								<td><html:text property="interesadoApellidos" style="width:500px" maxlength="200" styleClass="box"/></td>	
-							</tr>
-						</table>
-					</siga:ConjCampos>					
-				</td>
-			</tr>
-		</table>
+					</table>
+				</siga:ConjCampos>
+			</td>
+		</tr>
+	</table>
 	</html:form>
-	<!-- FIN: CAMPOS DE BUSQUEDA-->
-
 	<!-- INICIO: BOTONES BUSQUEDA -->
 	<!-- Esto pinta los botones que le digamos de busqueda. Ademas, tienen asociado cada
 		 boton una funcion que abajo se reescribe. Los valores asociados separados por comas
