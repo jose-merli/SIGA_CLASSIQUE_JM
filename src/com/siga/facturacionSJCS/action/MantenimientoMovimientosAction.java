@@ -5,6 +5,7 @@
 package com.siga.facturacionSJCS.action;
 
 
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Vector;
 
@@ -12,12 +13,16 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.transaction.UserTransaction;
 
+import org.apache.struts.action.ActionForm;
+import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesHash;
+import com.siga.Utilidades.paginadores.Paginador;
+import com.siga.Utilidades.paginadores.PaginadorCaseSensitive;
 import com.siga.beans.CenColegiadoBean;
 import com.siga.beans.CenPersonaBean;
 import com.siga.beans.FcsAplicaMovimientosVariosBean;
@@ -32,6 +37,47 @@ import com.siga.general.SIGAException;
 
 
 public class MantenimientoMovimientosAction extends MasterAction {
+	
+	
+	/* (non-Javadoc)
+	 * @see com.siga.general.MasterAction#executeInternal(org.apache.struts.action.ActionMapping, org.apache.struts.action.ActionForm, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+	 */
+	protected ActionForward executeInternal(ActionMapping mapping, ActionForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+		String mapDestino = "exception";
+		MasterForm miForm = null;
+
+		try {
+			miForm = (MasterForm) formulario;
+			if (miForm == null) {
+				return mapping.findForward(mapDestino);
+			}
+				
+			String accion = miForm.getModo();
+			
+			if (accion!= null && accion.equalsIgnoreCase("buscarPaginador")) {
+				request.setAttribute("noFicha","0");
+				mapDestino = buscarPor(mapping, miForm, request,response);
+			} else if (accion!= null && accion.equalsIgnoreCase("buscarPor")) {
+				request.getSession().removeAttribute("DATAPAGINADOR");
+				mapDestino = buscarPor(mapping, miForm, request,response);
+			} else {
+				request.getSession().removeAttribute("DATAPAGINADOR");
+				return super.executeInternal(mapping, formulario,request, response);
+			}
+
+			// Redireccionamos el flujo a la JSP correspondiente
+			if (mapDestino == null)	{ 
+			    throw new ClsExceptions("El ActionMapping no puede ser nulo");
+			}
+			
+			return mapping.findForward(mapDestino);
+			
+		} catch (SIGAException es) { 
+			throw es;
+		} catch (Exception e) { 
+			throw new SIGAException("messages.general.error",e,new String[] {"modulo.facturacion"}); // o el recurso del modulo que sea 
+		} 
+	}
 
 	/**
 	 * Metodo que implementa el modo abrir
@@ -50,13 +96,10 @@ public class MantenimientoMovimientosAction extends MasterAction {
 		try {
 			// Si vengo desde la ficha colegial
 			
-			//String prueba =(String) mapping.getParameter().toUpperCase();
-			
-			//String prueba2 = (String) ClsConstants.PARAM_ESFICHACOLEGIAL.toUpperCase(); 
 			if (mapping.getParameter() != null && mapping.getParameter().toUpperCase().contains(ClsConstants.PARAM_ESFICHACOLEGIAL.toUpperCase())) {
 				return this.buscarPor(mapping, formulario, request,response);
 			}
-
+			
 			//Recogemos de sesion el UsrBean
 			UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");
 		}
@@ -307,70 +350,75 @@ public class MantenimientoMovimientosAction extends MasterAction {
 	 * @exception  ClsExceptions  En cualquier caso de error
 	 */
 	protected String buscarPor(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
-
 		String destino = "error";
-		try {
-		 	// obtener institucion
+
+		try {		
 			UsrBean usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
-	
-			// recoger el fomulario
+			FcsMovimientosVariosAdm movimAdm = new FcsMovimientosVariosAdm (this.getUserBean(request));
 			MantenimientoMovimientosForm miform = (MantenimientoMovimientosForm)formulario;
 			Hashtable datos = (Hashtable)miform.getDatos();
+			Vector resultado = null;
 			//falta la institucion
 			datos.put("IDINSTITUCION",(String)usr.getLocation());
 			
-			/*String checkHistoricoMovimiento = (String)request.getParameter("checkHistoricoMovimiento");
-			
-			if (checkHistoricoMovimiento != null) {
-			
-				datos.put("CHECKHISTORICO",(String)request.getParameter("checkHistoricoMovimiento"));
-			}*/
-			
-			String checkHistoricoMovimiento = miform.getCheckHistorico();
-			
+			String checkHistoricoMovimiento = miform.getCheckHistorico();	
 			String check = (String) miform.getCheckHistoricoMovimiento();
-
-			
 			if (check != null) {
 				datos.put("CHECKHISTORICO",check);
 			}
+			
+			//String prueba =(String) mapping.getParameter().toUpperCase();
+			
+			//String prueba2 = (String) ClsConstants.PARAM_ESFICHACOLEGIAL.toUpperCase(); 			
+
+			/**********  PAGINADOR ************/
+			HashMap databackup = new HashMap();
+			if (request.getSession().getAttribute("DATAPAGINADOR") != null) {
+				databackup = (HashMap) request.getSession().getAttribute("DATAPAGINADOR");
+				Paginador paginador = (Paginador) databackup.get("paginador");
+				resultado = new Vector();
+
+				// Si no es la primera llamada, obtengo la página del request y la busco con el paginador
+				String pagina = (String) request.getParameter("pagina");
+				if (paginador != null) {
+					if (pagina != null) {
+						resultado = paginador.obtenerPagina(Integer.parseInt(pagina));
+					} else {// cuando hemos editado un registro de la busqueda y volvemos a la paginacion
+						resultado = paginador.obtenerPagina((paginador.getPaginaActual()));
+					}
+				}
+
+				databackup.put("paginador", paginador);
+				databackup.put("datos", resultado);
+
+			} else {
+				databackup = new HashMap();
+				// obtengo datos de la consulta
+				Paginador movimientos = movimAdm.consultaBusqueda(datos);
+				databackup.put("paginador", movimientos);
+				if (movimientos != null) {
+					resultado = movimientos.obtenerPagina(1);
+					databackup.put("datos", resultado);
+					request.getSession().setAttribute("DATAPAGINADOR", databackup);
+				}
+			}	
 
 			// Si vengo desde la ficha colegial
 			if (mapping.getParameter() != null && mapping.getParameter().toUpperCase().contains(ClsConstants.PARAM_ESFICHACOLEGIAL.toUpperCase())) {
 				String idPersona = (String) request.getSession().getAttribute("idPersonaPestanha");
 				UtilidadesHash.set(datos, "IDPERSONA", idPersona);
-			}
-			//Si no se viene de ficha colegial y se ha pulsado el botón buscar, no se tiene 
-			//en cuenta el IDPERSONA 
-			else if ( "si".equals(request.getParameter("botonBuscarPulsado")) ){
+			
+			} else if ( "si".equals(request.getParameter("botonBuscarPulsado")) ){//Si no se viene de ficha colegial y se ha pulsado el botón buscar, no se tiene en cuenta el IDPERSONA
 				UtilidadesHash.set(datos, "IDPERSONA", "");
 			}
 
-			//consulta a BBDD
-			FcsMovimientosVariosAdm movimAdm = new FcsMovimientosVariosAdm (this.getUserBean(request));
-
-
-			// ---------------------
-			// Antes: 
-			// String consulta = (String)movimAdm.consultaBusqueda(datos);
-			// Vector resultado = (Vector)movimAdm.selectGenerico(consulta);
-			// Ahora:
-			Vector resultado = movimAdm.consultaBusqueda(datos);
-			// ---------------------
-				
-			
-			//pasar el parámetro por request
-			request.setAttribute("resultado",resultado);
-			
-			//String prueba =(String) mapping.getParameter().toUpperCase();
-			
-			//String prueba2 = (String) ClsConstants.PARAM_ESFICHACOLEGIAL.toUpperCase(); 
 			if (mapping.getParameter() != null && mapping.getParameter().toUpperCase().contains(ClsConstants.PARAM_ESFICHACOLEGIAL.toUpperCase())) {			
 				request.getSession().setAttribute("entrada","2");
 			}
 			
 			request.getSession().setAttribute("checkHistoricoMovimiento", check);
 			request.getSession().setAttribute("checkHistorico", checkHistoricoMovimiento);
+			request.getSession().setAttribute("MOSTRARMOVIMIENTOS", (String)datos.get("MOSTRARMOVIMIENTOS"));
 			
 			//el mapping correcto
 			destino = "resultado";
@@ -379,11 +427,11 @@ public class MantenimientoMovimientosAction extends MasterAction {
 			miform.setBuscar("si");
 			request.getSession().setAttribute("MantenimientoMovimientosForm",miform);
 			
-	     } 	
-		 catch (Exception e) {
+		}catch (Exception e) {
 			throwExcp("messages.general.error",new String[] {"modulo.facturacionSJCS"},e,null);
-	   	 }
-		 return destino;
+	   	}
+		
+		return destino;
 	}
 
 	/**

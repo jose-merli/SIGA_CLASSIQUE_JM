@@ -130,44 +130,52 @@
 		<html:hidden name="MantenimientoMovimientosForm" property="checkHistorico" value=""/>
 		<input type="hidden" name="limpiarFilaSeleccionada" value="">
 		<input type="hidden" name="botonBuscarPulsado" value="">
-		<input type="hidden" name="checkHistoricoMovimiento" value="">
+		<input type="hidden" name="mostrarMovimientos" value="">
 		
 	<!-- FILA -->
 	<tr>	
 		<td class="labelText">
 			<siga:Idioma key="factSJCS.datosMovimientos.literal.nifCif"/>
 		</td>			
-		<td class="labelText">
+		<td>
 			<html:text name="MantenimientoMovimientosForm" property="nif" maxlength="20" styleClass="box" readonly="false"/>
-			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;					
+		</td>			
+		
+		<td class="labelText">
 			<siga:Idioma key="factSJCS.datosMovimientos.literal.nColegiado"/>
-			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+		</td>
+		<td>
 			<html:text name="MantenimientoMovimientosForm" property="ncolegiado" maxlength="20" styleClass="box" readonly="false"/>
 		</td>
+		
 		<td class="labelText">
 			<siga:Idioma key="factSJCS.datosMovimientos.literal.descripcion"/>
 		</td>
 		<td>
-			<html:text name="MantenimientoMovimientosForm" property="nombre" maxlength="100" styleClass="box" readonly="false"/>
+			<html:text name="MantenimientoMovimientosForm" property="nombre" maxlength="100" styleClass="box" readonly="false" size="30"/>
 		</td>	
 	</tr>
+	
 	<tr>
 		<td class="labelText">
 			<siga:Idioma key="factSJCS.datosMovimientos.literal.pago"/>
 		</td>
-		<td>
-			&nbsp;	
-	 		<siga:ComboBD nombre = "pagoAsociado" tipo="cmbPagoAsociado" clase="boxCombo" obligatorio="false" parametro="<%=dato%>" elementoSel="<%=pagoA%>" accion="accionPagoAsociado(this);" />
+		
+		<td colspan="3">
+	 		<siga:ComboBD nombre = "pagoAsociado" tipo="cmbPagoAsociado" clase="boxCombo" obligatorio="false" parametro="<%=dato%>" elementoSel="<%=pagoA%>" />
 		</td>
-		<td></td>
 		<!-- Introducción del check de histórico -->
 		<td class="labelText">
-			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-			<siga:Idioma key="FactSJCS.mantRetencionesJ.literal.checkHistorico"/>		
+			<siga:Idioma key="gratuita.inicio_SaltosYCompensaciones.literal.mostrar"/>		
 		</td> 		
-		<td class="labelText">
-			<input type="checkbox" id="idCheckHistorico" onclick="comprobarCheckHistorico(this);"/>			
-		</td> 				
+		
+		<td>	
+			<Select id="mostrarMov" name="mostrarMov" class="boxCombo">
+				<option value='0' selected> <siga:Idioma key="general.todas"/></option>
+				<option value='1'> <siga:Idioma key="factSJCS.datosMovimientos.mostraraplicados"/></option>
+				<option value='2'> <siga:Idioma key="factSJCS.datosMovimientos.mostrarpendientes"/></option>
+			</Select>
+		</td>
 	</tr>
 	<!-- FILA -->
 
@@ -199,12 +207,8 @@
 		function buscar() 
 		{		
 			sub();
-			if(document.getElementById("idCheckHistorico").checked)
-				document.forms[0].checkHistorico.value = "true";
-			else
-				document.forms[0].checkHistorico.value = "false";
-				
-			
+						
+			document.forms[0].mostrarMovimientos.value=jQuery('#mostrarMov').val();
 			document.forms[0].botonBuscarPulsado.value="si";
 			document.forms[0].modo.value="buscarPor";
 			document.forms[0].target="resultado";	
@@ -234,12 +238,6 @@
 			document.forms[0].submit();
 		}
 
-		function comprobarCheckHistorico(valorCheck){
-			if (!valorCheck.checked){
-				document.forms[0].checkHistoricoMovimiento.value="false";
-			} else document.forms[0].checkHistoricoMovimiento.value="true";
-		}
-		
 	</script>
 	<!-- FIN: SCRIPTS BOTONES BUSQUEDA -->
 

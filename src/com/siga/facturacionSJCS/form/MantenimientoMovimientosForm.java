@@ -24,6 +24,7 @@ public class MantenimientoMovimientosForm extends MasterForm {
 	private String cantidadRestante = 	"CANTIDADRESTANTE";
 	private String cantidadAplicada = 	"CANTIDADAPLICADA";
 	private String fechaAlta        =   "FECHAALTA";
+	private String mostrarMovimientos        =   "MOSTRARMOVIMIENTOS";
 	
 
 	/**
@@ -189,6 +190,13 @@ public class MantenimientoMovimientosForm extends MasterForm {
 	}
 	public void setCheckHistoricoMovimiento(String checkHistoricoMovimiento) {
 		this.checkHistoricoMovimiento = checkHistoricoMovimiento;
+	}	
+	
+	public String getMostrarMovimientos() {
+		return (String)datos.get(mostrarMovimientos);
+	}
+	public void setMostrarMovimientos(String valor) {
+		this.datos.put(mostrarMovimientos, valor);
 	}	
 		
 }

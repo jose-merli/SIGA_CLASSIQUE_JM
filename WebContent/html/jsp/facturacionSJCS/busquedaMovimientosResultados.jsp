@@ -15,6 +15,8 @@
 <%@ taglib uri = "struts-html.tld" prefix="html"%>
 <%@ taglib uri = "struts-logic.tld" prefix="logic"%>
 
+<%@ page import="com.siga.Utilidades.paginadores.Paginador"%>
+<%@ page import="com.atos.utils.Row"%>
 <%@ page import="com.siga.administracion.SIGAConstants"%>
 <%@ page import="com.siga.general.*"%>
 <%@ page import="com.atos.utils.*"%>
@@ -36,8 +38,10 @@
 	String elTarget = "mainWorkArea";
 	
 	//recoger de request el vector con los registros resultado
-	Vector resultado = (Vector) request.getAttribute("resultado");
-	String esFicha = (String)request.getParameter("esFichaColegial");
+	String esFicha = "0";
+	if(request.getAttribute("noFicha")==null){
+		esFicha = (String)request.getParameter("esFichaColegial");
+	}
 	
 	//campos a mostrar en la tabla
 	String nif ="", nombre ="", pagoAsociado="", movimiento="", cantidad="", idMovimiento="", ncolegiado="";
@@ -50,6 +54,7 @@
 	String entrada = (String)ses.getAttribute("entrada");
 	
 	String checkHistoricoMovimiento = (String)ses.getAttribute("checkHistoricoMovimiento");
+	String mosMovimiento = (String)ses.getAttribute("MOSTRARMOVIMIENTOS");
 	
 	String checkHistorico = (String)ses.getAttribute("checkHistorico");
 	
@@ -57,7 +62,40 @@
 		elTarget="mainPestanas";
 	}	
 	
+	/** PAGINADOR ***/
+	String idioma=usrbean.getLanguage().toUpperCase();
+	Vector resultado=null;
+	String paginaSeleccionada ="";
+	String totalRegistros ="";
+	String registrosPorPagina = "";
+	HashMap hm=new HashMap();
+
+	if (ses.getAttribute("DATAPAGINADOR")!=null){
+		hm = (HashMap)ses.getAttribute("DATAPAGINADOR");
 	
+	 	if (hm.get("datos")!=null && !hm.get("datos").equals("")){
+	  		resultado = (Vector)hm.get("datos");
+	  		Paginador paginador = (Paginador)hm.get("paginador");
+	
+	 		paginaSeleccionada = String.valueOf(paginador.getPaginaActual());
+			totalRegistros = String.valueOf(paginador.getNumeroTotalRegistros());
+			registrosPorPagina = String.valueOf(paginador.getNumeroRegistrosPorPagina()); 
+	 	
+	 	}else{
+	  		resultado = new Vector();
+	  		paginaSeleccionada = "0";
+		 	totalRegistros = "0";
+		 	registrosPorPagina = "0";
+		}
+   
+	} else {
+    	resultado =new Vector();
+		paginaSeleccionada = "0";
+	 	totalRegistros = "0";
+	 	registrosPorPagina = "0";
+   }
+	
+	String action=app+"/JGR_MovimientosVariosLetrado.do?noReset=true";
 	
 %>
 
@@ -67,20 +105,18 @@
 
  	<script language="JavaScript">	
 	
-		function refrescarLocal() 
-		{
+		function refrescarLocal(){
 			parent.buscar2();
 		}
 
 		function comprobarCheckHistorico(valorCheck){
 			if (valorCheck.checked){
-				document.forms[0].checkHistoricoMovimiento.value="true";
+				document.forms[0].mostrarMovimientos.value = "0";
 			} else {
-				document.forms[0].checkHistoricoMovimiento.value="false";
+				document.forms[0].mostrarMovimientos.value = "1";				
 			}
 
-			document.forms[0].modo.value = "abrir";
-			
+			document.forms[0].modo.value = "abrir";			
 			document.forms[0].submit();			
 		}		
 	</script>
@@ -118,7 +154,7 @@
 	    <html:form action="${path}?noReset=true" method="POST" target="<%=elTarget%>"  style="display:none">
 			<!-- Campo obligatorio -->
 			<html:hidden property = "modo" value = "" />
-		
+			<input type="hidden" name="mostrarMovimientos" value="">
 			<input type="hidden"  id="checkHistoricoMovimiento"  name="checkHistoricoMovimiento" value="">
 		</html:form>	
 		
@@ -141,9 +177,10 @@
 <%	
 	} else { 
 
-		for (int cont=1;cont<=resultado.size();cont++) {
-			Hashtable fila = (Hashtable) resultado.get(cont-1);
-
+		for (int cont=1; cont<=resultado.size(); cont++) {
+			Row row = (Row) resultado.elementAt(cont-1);
+			Hashtable fila = (Hashtable) row.getRow();			
+			
 			nif = UtilidadesString.mostrarDatoJSP(fila.get("NIF"));
 			nombre = UtilidadesString.mostrarDatoJSP(fila.get("NOMBRE"));
 			//En la fila, en NUMERO tenemos el numero de colegiado o comunitario segun proceda:
@@ -188,7 +225,7 @@
 				<tr>
 					<td class="labelText">
 						<siga:Idioma key="censo.consultaRegistrosBajaLogica.literal"/>
-							<% if (checkHistoricoMovimiento != null && checkHistoricoMovimiento.equals("true")) { %>
+							<% if (mosMovimiento != null && mosMovimiento.equals("0")) { %>
 								<input type="checkbox" id="idCheckHistorico" name="checkHistorico" onclick="comprobarCheckHistorico(this);"checked>
 							<% } else { %>
 								<input type="checkbox" id="idCheckHistorico" name="checkHistorico" onclick="comprobarCheckHistorico(this);">
@@ -218,7 +255,8 @@
 	} else { 
 
 		for (int cont=1;cont<=resultado.size();cont++) {
-			Hashtable fila = (Hashtable) resultado.get(cont-1);
+			Row row = (Row) resultado.elementAt(cont-1);
+			Hashtable fila = (Hashtable) row.getRow();	
 
 			nif = UtilidadesString.mostrarDatoJSP(fila.get("NIF"));
 			nombre = UtilidadesString.mostrarDatoJSP(fila.get("NOMBRE"));
@@ -260,15 +298,23 @@
 		</siga:Table>
 		
 <%}%>		
-
-
 		<!-- FIN: LISTA DE VALORES -->
+		
+<!-- Metemos la paginación-->		
+	 <%if (hm.get("datos")!=null && !hm.get("datos").equals("")){%>
+			<siga:Paginador totalRegistros="<%=totalRegistros%>" 
+								registrosPorPagina="<%=registrosPorPagina%>" 
+								paginaSeleccionada="<%=paginaSeleccionada%>" 
+								idioma="<%=idioma%>"
+								modo="buscarPaginador"								
+								clase="paginator" 
+								divStyle="position:absolute; width:100%; height:20; z-index:3; bottom: 0px; left: 0px"
+								distanciaPaginas=""
+								action="<%=action%>" />
+   <%}%>			
 	
 <!-- INICIO: SUBMIT AREA -->
-<!-- Obligatoria en todas las páginas-->
-<!-- 	<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>-->  
-
-
+	<!-- Obligatoria en todas las páginas-->
 	<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
 
 <!-- FIN: SUBMIT AREA -->
