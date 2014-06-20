@@ -530,6 +530,11 @@ public class DatosGeneralesFacturacionAction extends MasterAction {
 			String idFacturacion = miform.getIdFacturacion();
 			String idInstitucion = usr.getLocation();
 			
+			//Si no se incluido ninguna agrupación
+			if(request.getSession().getAttribute("existeAgrupacion").toString().contentEquals("N")){
+				throw new SIGAException("messages.facturacionSJCS.no.incluida.agrupacion");
+			}
+			
 			// CR7 - Guardamos los datos de fechas y nombre antes de ejecutar la facturacion
 			tx = usr.getTransaction();
 			tx.begin();
@@ -567,6 +572,7 @@ public class DatosGeneralesFacturacionAction extends MasterAction {
 			SIGASvlProcesoAutomaticoRapido.NotificarAhora(SIGASvlProcesoAutomaticoRapido.procesoFacturacionSJCS);
 			
 			salida = this.exitoRefresco("messages.facturacionSJCS.programada",request);
+			request.getSession().removeAttribute("existeAgrupacion");
 		} 
 		catch (Exception e) { 
 			throwExcp("messages.general.error",new String[] {"modulo.facturacionSJCS"},e,tx); 

@@ -224,7 +224,7 @@
 					facturacion.abonosPagos.datosPagoAbono.nCuenta,
 					facturacion.pagosFactura.literal.Importe,
 					facturacion.pagosFactura.literal.Pendiente,"
-	   columnSizes = "8,18,18,30,11,11,4"
+	   columnSizes = "8,18,18,30,10,10,6"
 	   fixedHeight="70%"
 	   modal = "M">
 	

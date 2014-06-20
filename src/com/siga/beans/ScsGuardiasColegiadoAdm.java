@@ -1235,6 +1235,12 @@ public class ScsGuardiasColegiadoAdm extends MasterBeanAdministrador
 		}
 		cabeceraGuarSal.setFechaAlta("SYSDATE");
 		cabeceraGuarSal.setUsuAlta(usuModificacion);
+		
+		//Antes de insertar el registro se comprueba si el letrado ya tiene una guardia en ese turno y periodo
+		if(cabeceraGuardiasAdm.validaGuardiaLetradoPeriodo(cabeceraGuarSal.getIdInstitucion(), cabeceraGuarSal.getIdTurno(), cabeceraGuarSal.getIdGuardia(), cabeceraGuarSal.getIdPersona(), fechaInicio, fechaFin))
+			throw new ClsExceptions("gratuita.calendarios.guardias.mensaje.existe");
+		
+		
 		if(!cabeceraGuardiasAdm.insert((cabeceraGuarSal)))
 			throw new ClsExceptions(cabeceraGuardiasAdm.getError());
 		

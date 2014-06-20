@@ -391,10 +391,11 @@ public class CalendarioSJCS
 	 * @param periodoDiasGuardia
 	 * @param lDiasASeparar
 	 * @throws ClsExceptions
+	 * @throws SIGAException 
 	 */
 	public void almacenarAsignacionGuardiaLetrado(LetradoInscripcion letrado,
 			ArrayList periodoDiasGuardia,
-			List lDiasASeparar) throws ClsExceptions
+			List lDiasASeparar) throws ClsExceptions, SIGAException
 	{
 		ArrayList arrayLetrados = new ArrayList();
 		// Anhado el letrado
@@ -411,7 +412,7 @@ public class CalendarioSJCS
 	 * @param mensaje
 	 * @throws ClsExceptions
 	 */
-	private void almacenarAsignacionGuardia(Integer idCalendarioGuardias, ArrayList arrayLetrados, ArrayList periodoDiasGuardia,List lDiasASeparar, String mensaje) throws ClsExceptions {
+	private void almacenarAsignacionGuardia(Integer idCalendarioGuardias, ArrayList arrayLetrados, ArrayList periodoDiasGuardia,List lDiasASeparar, String mensaje) throws ClsExceptions, SIGAException {
 		Iterator iter;
 		Iterator iterLetrados;
 		String fechaInicioPeriodo=null, fechaFinPeriodo=null, fechaPeriodo=null;
@@ -469,6 +470,12 @@ public class CalendarioSJCS
 					if(letrado.getNumeroGrupo() != null && !letrado.getNumeroGrupo().equals("")){
 						beanCabeceraGuardias.setNumeroGrupo(Integer.parseInt(letrado.getNumeroGrupo()));
 					}
+					
+					
+					//Se comprueba si para ese periodo existe una guardia para el letrado
+					if(admCabeceraGuardias.validaGuardiaLetradoPeriodo(beanCabeceraGuardias.getIdInstitucion(), beanCabeceraGuardias.getIdTurno(), beanCabeceraGuardias.getIdGuardia(), beanCabeceraGuardias.getIdPersona(), fechaInicioPeriodo, fechaFinPeriodo))
+						throw new SIGAException("gratuita.calendarios.guardias.mensaje.existe");
+
 					admCabeceraGuardias.insert(beanCabeceraGuardias);
 
 
@@ -499,6 +506,12 @@ public class CalendarioSJCS
 					}
 				}
 			}
+		
+		
+		} catch (SIGAException e) {		
+			e.printStackTrace();
+			throw e;
+		
 		} catch (Exception e) {		
 			e.printStackTrace();
 			throw new ClsExceptions(e, "Excepcion en almacenarAsignacionGuardia.");

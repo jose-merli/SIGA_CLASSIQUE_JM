@@ -39,7 +39,6 @@
 <% 
 	String app=request.getContextPath();
 	HttpSession ses=request.getSession();
-	
 	UsrBean usr=(UsrBean)request.getSession().getAttribute("USRBEAN");
 
 	request.setAttribute("nuevoCriterio","si");
@@ -317,6 +316,7 @@
 			sub();
 			<% if (regularizacion==null) { %>
 				document.forms[0].modo.value="ejecutarFacturacion";
+				
 			<% } else { %>
 				document.forms[0].modo.value="ejecutarRegularizacion";
 			<% } %>
@@ -474,12 +474,14 @@
 		
 <% 
 		if (obj==null || obj.size()==0) {
+			request.getSession().setAttribute("existeAgrupacion","N");
 %>
 			<tr class="notFound">
 		   		<td class="titulitos"><siga:Idioma key="messages.noRecordFound"/></td>
 			</tr>
 <%
 		} else { 
+			request.getSession().setAttribute("existeAgrupacion","S");
 	    	int recordNumber=1;
 			while ((recordNumber) <= obj.size()) {	 
 				Hashtable hash = (Hashtable)obj.get(recordNumber-1);

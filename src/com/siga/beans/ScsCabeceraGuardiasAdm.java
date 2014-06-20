@@ -823,7 +823,40 @@ public class ScsCabeceraGuardiasAdm extends MasterBeanAdministrador {
 	}
 
 	
-	
+	public boolean validaGuardiaLetradoPeriodo(Integer idInstitucion, Integer idTurno, Integer idGuardia, Long idPersona, String fechaInicio, String fechaFin) throws ClsExceptions{
+		
+		boolean existeGuardiaLetrado=false;	
+		String consulta = "";
+		
+		try {
+			consulta = "SELECT NVL(COUNT(*),0) EXISTEGUARDIA ";
+			consulta += " FROM "+ScsCabeceraGuardiasBean.T_NOMBRETABLA ;					
+			consulta += " WHERE ";
+			consulta += ScsCabeceraGuardiasBean.C_IDPERSONA+"="+idPersona;
+			consulta += " AND "+ScsCabeceraGuardiasBean.C_IDINSTITUCION+"="+idInstitucion;
+			consulta += " AND "+ScsCabeceraGuardiasBean.C_IDTURNO+"="+idTurno;
+			consulta += " AND "+ScsCabeceraGuardiasBean.C_IDGUARDIA+"="+idGuardia;
+			consulta += " AND TRUNC( "+ScsCabeceraGuardiasBean.C_FECHA_INICIO+") >= '"+fechaInicio+"'";
+			consulta += " AND TRUNC( "+ScsCabeceraGuardiasBean.C_FECHA_FIN+") <= '"+fechaFin+"'";
+			
+			
+			Vector v = this.selectGenerico(consulta);
+			Hashtable cabecera = new Hashtable();
+			if (v!=null && !v.isEmpty()) {
+				cabecera = (Hashtable)v.firstElement();
+				
+				if(cabecera.get("EXISTEGUARDIA").equals("0"))
+					existeGuardiaLetrado=false;
+				else
+					existeGuardiaLetrado=true;
+			}
+		}
+		catch (Exception e){
+			throw new ClsExceptions(e,"Excepcion en ScsCabeceraGuardiasAdm.validaGuardiaLetradoPeriodo().");
+		}
+		return existeGuardiaLetrado;
+	}
+
 
 	
 	

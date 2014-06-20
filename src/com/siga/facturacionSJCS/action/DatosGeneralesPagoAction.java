@@ -213,6 +213,11 @@ public class DatosGeneralesPagoAction extends MasterAction {
 		UserTransaction tx = null;
 
 		try {
+			
+			//Si no se ha introducido importe a pagar el importe a facturar será cero
+			if (Integer.parseInt(miform.getImporteRepartir())==0)
+				throw new SIGAException("messages.facturacionSJCS.abono.sin.importe.pago");
+			
 			usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
 			tx = usr.getTransaction();
 
@@ -693,7 +698,11 @@ public class DatosGeneralesPagoAction extends MasterAction {
 			if (!criterioTurno.equals(ClsConstants.CRITERIOS_PAGO_FACTURACION))
 				return exito("messages.factSJCS.error.criterioPagoTurno",
 						request);
-
+			
+			//3. Si no se ha introducido importe a pagar el importe a facturar será cero
+			if (Integer.parseInt(miform.getImporteRepartir())==0)
+				throw new SIGAException("messages.facturacionSJCS.abono.sin.importe.pago");
+			
 			// INICIO TRANSACCION
 			tx.begin();
 
@@ -983,6 +992,7 @@ public class DatosGeneralesPagoAction extends MasterAction {
 		Vector vCriterios;
 
 		try {
+
 			usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
 			tx = usr.getTransaction();
 			String idInstitucion = miform.getIdInstitucion();
@@ -994,6 +1004,12 @@ public class DatosGeneralesPagoAction extends MasterAction {
 				forward = exito("messages.factSJCS.error.existePagoAbierto",
 						request);
 			else {
+				
+				//Si no se ha introducido importe a pagar el importe a facturar será cero
+				if (Integer.parseInt(miform.getImporteRepartir())==0)
+					throw new SIGAException("messages.facturacionSJCS.abono.sin.importe.pago");
+			
+				
 				// Consulto las fechas de la facturacion:
 				where = " WHERE " + FcsFacturacionJGBean.C_IDINSTITUCION + "="
 						+ idInstitucion + " AND "

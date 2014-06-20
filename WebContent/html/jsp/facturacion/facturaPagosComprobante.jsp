@@ -29,9 +29,9 @@
 	FacFacturaBean factura 		= (FacFacturaBean)request.getAttribute("factura");
 	FacPagosPorCajaBean pago 	= (FacPagosPorCajaBean)request.getAttribute("pago");
 	String nombreInstitucion	= (String)request.getAttribute("nombreInstitucion");
-	String nombrePersona			=	(String)request.getAttribute("nombrePersona");
+	String nombrePersona		=	(String)request.getAttribute("nombrePersona");
 	String numeroColegiado 		= (String)request.getAttribute("numeroColegiado");
-	String medioPago 					= (String)request.getAttribute("medioPago");
+	String medioPago 			= (String)request.getAttribute("medioPago");
 	
 	int altoImpresion = 275; 	// Especifica el alto para la impresion. Valor en pixeles
 %>
@@ -113,6 +113,15 @@
 				<tr>
 					<td class="labelText"><siga:Idioma key="facturacion.pagosFactura.Comprobante.literal.ImportePagado"/></td>
 					<td class="labelTextValue"><%=UtilidadesString.mostrarDatoJSP(UtilidadesString.formatoImporte(pago.getImporte().doubleValue()))%>&nbsp;&euro;</td>
+				</tr>
+				<tr>
+					<td class="labelText"><siga:Idioma key="facturacion.datosFactura.literal.Observaciones"/></td>
+					<td class="labelTextValue">
+					<html:textarea property="observaciones" 
+						style="overflow-y:auto; overflow-x:hidden; width:250px; height:50px; resize:none; "
+						value="<%=UtilidadesString.mostrarDatoJSP(pago.getObservaciones())%>" 
+						styleClass="boxConsulta" readOnly="true"></html:textarea>
+					</td>
 				</tr>
 			</table>
 		</div>
