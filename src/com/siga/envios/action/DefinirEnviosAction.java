@@ -922,10 +922,10 @@ public class DefinirEnviosAction extends MasterAction {
 					envioInformesGenericos.gestionarComunicacionJustificaciones(form,  request.getLocale(), userBean);
 					isEnvioBatch = envioInformesGenericos.isEnvioBatch();
 				}else if (form.getIdTipoInforme().equalsIgnoreCase(EnvioInformesGenericos.comunicacionesOrdenDomicializacion)){
-					envioInformesGenericos.gestionarComunicacionOrdenDomiciliacion(form,EnvioInformesGenericos.comunicacionesOrdenDomicializacion,  request.getLocale(), userBean);
+					envioInformesGenericos.gestionarComunicacionOrdenDomiciliacion(form,  request.getLocale(), userBean);
 					isEnvioBatch = envioInformesGenericos.isEnvioBatch();
 				}else if (form.getIdTipoInforme().equalsIgnoreCase(EnvioInformesGenericos.comunicacionesAnexoOrdenDomiciliacion)){
-					envioInformesGenericos.gestionarComunicacionOrdenDomiciliacion(form,  EnvioInformesGenericos.comunicacionesAnexoOrdenDomiciliacion, request.getLocale(),userBean);
+					envioInformesGenericos.gestionarComunicacionAnexosOrdenDomiciliacion(form,  request.getLocale(),userBean);
 					isEnvioBatch = envioInformesGenericos.isEnvioBatch();
 				}else if (form.getIdTipoInforme().equalsIgnoreCase(EnvioInformesGenericos.comunicacionesExpedientes)){
 					envioInformesGenericos.gestionarComunicacionExpedientes(form,  request.getLocale(), userBean);

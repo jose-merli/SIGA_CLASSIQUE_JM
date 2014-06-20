@@ -345,6 +345,45 @@
 			
 			
 		}
+	function accionComunicar()
+		{
+		datos = "";
+		
+		for (i = 0; i < ObjArray.length; i++) {
+			var refMandatoSEPA = ObjArray[i];
+			
+ 		   	datos = datos +"refMandatoSEPA=="+refMandatoSEPA + "##idInstitucion==" +<%=idInstitucionLocation%>+"%%%";
+		}
+		numElementosSeleccionados =  ObjArray.length; 
+		if (datos == '') {
+			alert('<siga:Idioma key="general.message.seleccionar"/>');
+			return;
+		}
+			if(numElementosSeleccionados>50){
+				document.forms["InformesGenericosForm"].descargar.value = '0';
+			}
+			else{
+				document.forms["InformesGenericosForm"].descargar.value = '1';
+			}
+			document.forms["InformesGenericosForm"].datosInforme.value=datos;
+			var arrayResultado = ventaModalGeneral("InformesGenericosForm","M");
+			if (arrayResultado==undefined||arrayResultado[0]==undefined){
+			   		
+		   	} 
+		   	else {
+		   		var confirmar = confirm("<siga:Idioma key='general.envios.confirmar.edicion'/>");
+		   		if(confirmar){
+		   			var idEnvio = arrayResultado[0];
+				    var idTipoEnvio = arrayResultado[1];
+				    var nombreEnvio = arrayResultado[2];				    
+				    
+				   	document.forms["DefinirEnviosForm"].tablaDatosDinamicosD.value=idEnvio + ',' + idTipoEnvio + '%' + nombreEnvio;		
+				   	document.forms["DefinirEnviosForm"].modo.value='editar';
+				   	document.forms["DefinirEnviosForm"].submit();
+		   		}
+		   	}
+			
+		}
 		
 		
 	</script>
@@ -476,6 +515,10 @@
 		&nbsp;
 		</td>
 		<td class="tdBotones">
+			<input type="button" alt="Comunicar"  id="idButton" onclick="return accionComunicar();" class="button" name="idButton" value="Comunicar">
+		</td>
+		
+		<td class="tdBotones">
 		<input type="button" alt="Firmar Mandatos"  id="idButton" onclick='firmarMandatos()' class="button" name="idButton" value="<siga:Idioma key='censo.mantenimientoMandatos.firmarMandatos'/>"/>
 		</td>
 		<td class="tdBotones">
@@ -518,9 +561,11 @@
 	/>
 
 <%}%>
+
+
 <html:form action="/INF_InformesGenericos" method="post"	target="submitArea">
 	<html:hidden property="idInstitucion" value = "<%=idInstitucionLocation%>"/>
-	<html:hidden property="idTipoInforme" value="CENSO#OSEPA#ASEPA"/>
+	<html:hidden property="idTipoInforme" value="OSEPA"/>
 	<html:hidden property="enviar" value="1"/>
 	<html:hidden property="descargar" value="1"/>
 	<html:hidden property="datosInforme"/>
@@ -531,11 +576,9 @@
 <html:form action="/ENV_DefinirEnvios.do" method="POST" target="mainWorkArea">
 	<html:hidden property = "modo" value = ""/>
 	<html:hidden property = "tablaDatosDinamicosD" value = ""/>
-	<html:hidden property="idTipoInforme" value="CENSO#OSEPA#ASEPA"/>
+	<html:hidden property="idTipoInforme" value="OSEPA"/>
 
 </html:form>
-
-
 
 <!-- INICIO: SUBMIT AREA -->
 <!-- Obligatoria en todas las páginas-->
@@ -543,7 +586,9 @@
 	style="display: none"></iframe>
 <!-- FIN: SUBMIT AREA -->
 
+
 </body>
+
 </html>
 
 <%

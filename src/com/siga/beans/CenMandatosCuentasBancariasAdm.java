@@ -296,18 +296,27 @@ public class CenMandatosCuentasBancariasAdm extends MasterBeanAdministrador {
 		sql.append(CenMandatosCuentasBancariasBean.C_IDINSTITUCION);
 		sql.append(" = ");
 		sql.append(beanMandato.getIdInstitucion());
-		sql.append(" AND  MANDATOS.");
-		sql.append(CenMandatosCuentasBancariasBean.C_IDPERSONA);
-		sql.append(" = ");
-		sql.append(beanMandato.getIdPersona());
+		if(beanMandato.getIdPersona()!=null&& !beanMandato.getIdPersona().equals("")){
+			sql.append(" AND  MANDATOS.");
+			sql.append(CenMandatosCuentasBancariasBean.C_IDPERSONA);
+			sql.append(" = ");
+			sql.append(beanMandato.getIdPersona());
+		}
+		if(beanMandato.getRefMandatoSepa()!=null && !beanMandato.getRefMandatoSepa().equals("")){
+			sql.append(" AND  MANDATOS.");
+			sql.append(CenMandatosCuentasBancariasBean.C_REFMANDATOSEPA);
+			sql.append(" = '");
+			sql.append(beanMandato.getRefMandatoSepa());
+			sql.append("'");
+		}
 		
-		if(beanMandato.getIdCuenta()!=null){
+		if(beanMandato.getIdCuenta()!=null&& !beanMandato.getIdCuenta().equals("")){
 			sql.append(" AND  MANDATOS.");
 			sql.append(CenMandatosCuentasBancariasBean.C_IDCUENTA);
 			sql.append(" = ");
 			sql.append(beanMandato.getIdCuenta());
 		}
-		if(beanMandato.getIdMandato()!=null){
+		if(beanMandato.getIdMandato()!=null&& !beanMandato.getIdMandato().equals("")){
 			sql.append(" AND  MANDATOS.");
 			sql.append(CenMandatosCuentasBancariasBean.C_IDMANDATO);
 			sql.append(" = ");
