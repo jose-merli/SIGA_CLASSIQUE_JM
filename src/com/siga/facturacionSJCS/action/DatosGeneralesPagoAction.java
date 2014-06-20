@@ -215,7 +215,7 @@ public class DatosGeneralesPagoAction extends MasterAction {
 		try {
 			
 			//Si no se ha introducido importe a pagar el importe a facturar será cero
-			if (Integer.parseInt(miform.getImporteRepartir())==0)
+			if (Double.valueOf(miform.getImporteRepartir())==0.00)
 				throw new SIGAException("messages.facturacionSJCS.abono.sin.importe.pago");
 			
 			usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
@@ -700,7 +700,7 @@ public class DatosGeneralesPagoAction extends MasterAction {
 						request);
 			
 			//3. Si no se ha introducido importe a pagar el importe a facturar será cero
-			if (Integer.parseInt(miform.getImporteRepartir())==0)
+			if (Double.valueOf(miform.getImporteRepartir())==0.00)
 				throw new SIGAException("messages.facturacionSJCS.abono.sin.importe.pago");
 			
 			// INICIO TRANSACCION
@@ -1006,7 +1006,7 @@ public class DatosGeneralesPagoAction extends MasterAction {
 			else {
 				
 				//Si no se ha introducido importe a pagar el importe a facturar será cero
-				if (Integer.parseInt(miform.getImporteRepartir())==0)
+				if (Double.valueOf(miform.getImporteRepartir())==0.00)
 					throw new SIGAException("messages.facturacionSJCS.abono.sin.importe.pago");
 			
 				
