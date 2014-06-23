@@ -4110,9 +4110,6 @@
 	    <field property = "idPersona" depends = "required">
 	        <arg0 key="gratuita.modalCambioLetradoDesigna.titulo"/>
 	    </field>
-	    <field property = "idTipoMotivo" depends = "required">
-	        <arg0 key="gratuita.cambiosProcuradoresDesigna.literal.tipoMotivo"/>
-	    </field>
 	    <field property = "observaciones" depends = "maxlength">
 	        <arg0 key="gratuita.modalConsulta_DefinirCalendarioGuardia.literal.observaciones"/>
 	        <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>

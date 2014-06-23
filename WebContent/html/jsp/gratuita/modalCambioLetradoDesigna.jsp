@@ -192,9 +192,14 @@
 				<tr>
 					<td class="labelText">
 						<siga:Idioma key="gratuita.modalConsulta_DefinirCalendarioGuardia.literal.observaciones"/>
-					</td>				
+					</td>		
+					
 					<td colspan="3">
-						<html:textarea name="CambiosLetradosDesignasForm" onKeyDown="cuenta(this,1024)" onChange="cuenta(this,1024)" rows="4" cols="150" styleClass="box" property="observaciones"/>
+						<%if (accion.equalsIgnoreCase("ver")){%>
+							<html:textarea name="CambiosLetradosDesignasForm" rows="4" cols="150" styleClass="boxConsulta" property="observaciones" style="overflow-y:auto; overflow-x:hidden;" />
+						<%} else {%>
+							<html:textarea name="CambiosLetradosDesignasForm" onKeyDown="cuenta(this,1024)" onChange="cuenta(this,1024)" rows="4" cols="150" styleClass="box" property="observaciones"/>
+						<%}%>						
 					</td>
 				</tr>				
 			</table>
@@ -325,8 +330,15 @@
 				}else if (validateCambiosLetradosDesignasForm(document.forms[0])) {
 					
 					//Se saca fuera de la validacion por struts ya que esta validacion no se hace al modificar
+					if(document.forms[0].idTipoMotivo.value == ''){
+						alert("<siga:Idioma key='errors.required' arg0='gratuita.cambiosProcuradoresDesigna.literal.tipoMotivo'/>"); 
+						fin();
+						return false;
+					}
+					
+					//Se saca fuera de la validacion por struts ya que esta validacion no se hace al modificar
 					if(document.forms[0].fechaDesigna.value == ''){
-						alert("<siga:Idioma key='gratuita.cambiosProcuradoresDesigna.literal.fechaDesigna'/> ");
+						alert("<siga:Idioma key='errors.required' arg0='gratuita.cambiosProcuradoresDesigna.literal.fechaDesigna'/>"); 
 						fin();
 						return false;
 					}
