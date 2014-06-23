@@ -178,10 +178,11 @@
 	   	name="tablaDatos"
 	   	border="1"
 	 	columnNames="facturacion.ficheroBancarioAbonos.literal.fecha,
+	 				facturacion.ficheroBancarioAbonos.literal.nAbonos.ultimoPagoIncluido,
 	 				facturacion.ficheroBancarioAbonos.literal.banco,
 	 				facturacion.ficheroBancarioAbonos.literal.nAbonos,
 	 				facturacion.ficheroBancarioPagos.literal.importeTotalRemesa,"
-		columnSizes="10,50,15,15,10"
+		columnSizes="10,20,40,8,12,10"
 		modal="M">
 		
 <%
@@ -202,6 +203,7 @@
 				int recordNumber = i + 1;
 								
 				String fecha = UtilidadesString.mostrarDatoJSP(GstDate.getFormatedDateShort("", row.getString(FacDisqueteAbonosBean.C_FECHA)));								
+				String descripcion = UtilidadesString.mostrarDatoJSP(row.getString("NOMBRE"));
 				String banco = UtilidadesString.mostrarDatoJSP(row.getString("BANCO"));
 				String recibos = UtilidadesString.mostrarDatoJSP(row.getString("NUMRECIBOS"));	
 				String importe = UtilidadesString.mostrarDatoJSP(row.getString("IMPORTE"));
@@ -220,6 +222,7 @@
 						<input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_2' value='<%=row.getString(FacDisqueteAbonosBean.C_NOMBREFICHERO)%>'>	
 						<%=fecha%>
 					</td>
+					<td><%=descripcion%></td> 
 					<td><%=banco%></td> 
 					<td align="right"><%=recibos%></td>
 					<td align="right"><%=UtilidadesString.formatoImporte(importe)%>&nbsp;&euro;</td> 								

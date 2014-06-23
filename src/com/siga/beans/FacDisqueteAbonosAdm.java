@@ -135,25 +135,58 @@ public class FacDisqueteAbonosAdm  extends MasterBeanAdministrador {
 	 */
 	public PaginadorCaseSensitive getDatosFichero(FicheroBancarioAbonosForm form, boolean abonosSJCS) throws ClsExceptions {				
 		try{
-			String sql = " SELECT " + FacDisqueteAbonosBean.C_FECHA + ", " +
+			String sql = " SELECT " + 
+							FacDisqueteAbonosBean.T_NOMBRETABLA + "." +FacDisqueteAbonosBean.C_FECHA + ", " +
 							FacBancoInstitucionBean.T_NOMBRETABLA + "." + FacBancoInstitucionBean.C_COD_BANCO + " || ' - ' || " + CenBancosBean.T_NOMBRETABLA + "." + CenBancosBean.C_NOMBRE + " AS BANCO, " + 
 							FacDisqueteAbonosBean.T_NOMBRETABLA + "." + FacDisqueteAbonosBean.C_IDDISQUETEABONO + ", " +
 							FacDisqueteAbonosBean.T_NOMBRETABLA + "." + FacDisqueteAbonosBean.C_NOMBREFICHERO + ", " +
-							" ( " +
+							
+							// CR7 - INC_06353_SIGA. Se incluye el nombre del ULTIMO pago relacionado							
+			               " (SELECT PAG.NOMBRE " +
+			               "    FROM " + FacAbonoIncluidoEnDisqueteBean.T_NOMBRETABLA + " ABOINCDIS, " + 
+									     FacAbonoBean.T_NOMBRETABLA + " ABO, "     + 
+									     FcsPagosJGBean.T_NOMBRETABLA + " PAG, "   +  
+									     FcsPagosEstadosPagosBean.T_NOMBRETABLA + " ESTPAG " + 
+				           "     WHERE FAC_DISQUETEABONOS.IDINSTITUCION =  ABOINCDIS.IDINSTITUCION " + 
+				           "       AND FAC_DISQUETEABONOS.IDDISQUETEABONO = ABOINCDIS.IDDISQUETEABONO " + 
+				           "       AND ABO.IDINSTITUCION = ABOINCDIS.IDINSTITUCION " + 
+				           "       AND ABO.IDABONO = ABOINCDIS.IDABONO " + 
+				           "       AND ABO.IDINSTITUCION = PAG.IDINSTITUCION " + 
+				           "       AND ABO.IDPAGOSJG = PAG.IDPAGOSJG " + 
+				           "       AND PAG.IDINSTITUCION = ESTPAG.IDINSTITUCION " + 
+				           "       AND PAG.IDPAGOSJG = ESTPAG.IDPAGOSJG " +  
+				           "       AND ESTPAG.FECHAESTADO = " + 
+				           "            (SELECT MAX(ESTPAG2.FECHAESTADO) " + 
+			               "    		  FROM " + FacAbonoIncluidoEnDisqueteBean.T_NOMBRETABLA + " ABOINCDIS2, " + 
+									     		   FacAbonoBean.T_NOMBRETABLA + " ABO2, "     + 
+									     		   FcsPagosJGBean.T_NOMBRETABLA + " PAG2, "   +  
+									     		   FcsPagosEstadosPagosBean.T_NOMBRETABLA + " ESTPAG2 " + 
+				           "              WHERE ABOINCDIS.IDINSTITUCION = ABOINCDIS2.IDINSTITUCION " + 
+				           "                AND ABOINCDIS.IDDISQUETEABONO = ABOINCDIS2.IDDISQUETEABONO " + 
+				           "                AND ABOINCDIS2.IDINSTITUCION = ABO2.IDINSTITUCION " + 
+				           "                AND ABOINCDIS2.IDABONO = ABO2.IDABONO " + 
+				           "                AND ABO2.IDINSTITUCION = PAG2.IDINSTITUCION " + 
+				           "                AND ABO2.IDPAGOSJG = PAG2.IDPAGOSJG " + 
+				           "                AND PAG2.IDINSTITUCION = ESTPAG2.IDINSTITUCION " + 
+				           "                AND PAG2.IDPAGOSJG = ESTPAG2.IDPAGOSJG) " + 
+				           "                AND ROWNUM = 1) " + FcsPagosJGBean.C_NOMBRE + ", " +							
+						   " ( " +
 								" SELECT COUNT (1) " +
 								" FROM " + FacAbonoIncluidoEnDisqueteBean.T_NOMBRETABLA + 
 								" WHERE " + FacAbonoIncluidoEnDisqueteBean.T_NOMBRETABLA + "." + FacAbonoIncluidoEnDisqueteBean.C_IDINSTITUCION + " = " + FacDisqueteAbonosBean.T_NOMBRETABLA + "." + FacDisqueteAbonosBean.C_IDINSTITUCION + 
 									" AND " + FacAbonoIncluidoEnDisqueteBean.T_NOMBRETABLA + "." + FacAbonoIncluidoEnDisqueteBean.C_IDDISQUETEABONO + " = " + FacDisqueteAbonosBean.T_NOMBRETABLA + "." + FacDisqueteAbonosBean.C_IDDISQUETEABONO + 
-							" ) AS NUMRECIBOS, " +
-							" ( " +
+						   " ) AS NUMRECIBOS, " +
+						   " ( " +
 								" SELECT SUM(IMPORTEABONADO) " +
 								" FROM " + FacAbonoIncluidoEnDisqueteBean.T_NOMBRETABLA + 
 								" WHERE " + FacAbonoIncluidoEnDisqueteBean.T_NOMBRETABLA + "." + FacAbonoIncluidoEnDisqueteBean.C_IDINSTITUCION + " = " + FacDisqueteAbonosBean.T_NOMBRETABLA + "." + FacDisqueteAbonosBean.C_IDINSTITUCION + 
 									" AND " + FacAbonoIncluidoEnDisqueteBean.T_NOMBRETABLA + "." + FacAbonoIncluidoEnDisqueteBean.C_IDDISQUETEABONO + " = " + FacDisqueteAbonosBean.T_NOMBRETABLA + "." + FacDisqueteAbonosBean.C_IDDISQUETEABONO + 
-							" ) AS IMPORTE " +
+						   " ) AS IMPORTE " +
+									
 						" FROM " + FacDisqueteAbonosBean.T_NOMBRETABLA + ", " + 
 							CenBancosBean.T_NOMBRETABLA + ", " + 
-							FacBancoInstitucionBean.T_NOMBRETABLA +
+							FacBancoInstitucionBean.T_NOMBRETABLA +  
+							
 						" WHERE " + FacDisqueteAbonosBean.T_NOMBRETABLA + "." + FacDisqueteAbonosBean.C_IDINSTITUCION + " = " + form.getIdInstitucion() + 
 							" AND " + FacBancoInstitucionBean.T_NOMBRETABLA + "." + FacBancoInstitucionBean.C_COD_BANCO + " = " + CenBancosBean.T_NOMBRETABLA + "." + CenBancosBean.C_CODIGO +
 							" AND " + FacDisqueteAbonosBean.T_NOMBRETABLA + "." + FacDisqueteAbonosBean.C_BANCOS_CODIGO + " = " + FacBancoInstitucionBean.T_NOMBRETABLA + "." + FacBancoInstitucionBean.C_BANCOS_CODIGO +
@@ -183,6 +216,7 @@ public class FacDisqueteAbonosAdm  extends MasterBeanAdministrador {
 									   "   FICHEROSBANCARIOS.IDDISQUETEABONO, " +
 						               "   FICHEROSBANCARIOS.NOMBREFICHERO, " +
 						               "   FICHEROSBANCARIOS.NUMRECIBOS, " +
+						               "   FICHEROSBANCARIOS.NOMBRE, " +
 						               "   FICHEROSBANCARIOS.IMPORTE " +
 						               " FROM  ( "+ sql + ") FICHEROSBANCARIOS WHERE 1=1";
 					
