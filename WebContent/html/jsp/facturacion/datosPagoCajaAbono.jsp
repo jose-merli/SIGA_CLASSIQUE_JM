@@ -76,13 +76,6 @@
 			var datos = new Array();
 			window.top.close();
 		}	
-		
-		<!-- Asociada a la tecla ENTER mediante la función registrarEnterFormularios()-->
-		function buscar(){
-			accionRealizarPago();
-			window.event.cancelBubble = true;
-			return false;
-		}	
 
 		<!-- Asociada al boton Pagar -->
 		function accionRealizarPago() {
@@ -110,10 +103,15 @@
 				fin();
 			}
 		}		
+		
+		function importeFocus() {
+			document.getElementById("importe").focus();
+		}
+		
 	</script>	
 </head>
 
-<body>
+<body onload="importeFocus()">
 	<!-- TITULO -->
 	<!-- Barra de titulo actualizable desde los mantenimientos -->
 	<table class="tablaTitulo" cellspacing="0" heigth="32">
@@ -164,7 +162,24 @@
 	<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
 <!-- FIN: SUBMIT AREA -->
 	<script>
-	registrarEnterFormularios ();
+	capturarEnter();
+	
+	function capturarEnter() {
+		document.getElementById("importe").onkeypress = submitConTeclaEnter;
+	}
+	
+	function submitConTeclaEnter(){			
+		var keycode;
+		if (window.event)  {
+			keycode = window.event.keyCode;
+		}
+		if (keycode == 13) {
+			if(checkSubmit()){
+				document.getElementById("importe").blur();
+				accionRealizarPago();
+			}
+		}
+	}
 	</script>
 </body>
 </html>

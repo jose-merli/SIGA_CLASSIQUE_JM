@@ -3719,12 +3719,28 @@ function pintaToolTipDacDegradado(onOff, texto, colorFondo, colorTexto,
 }
 
 function submitConTeclaEnter() {
-	var keycode;
+	var keycode;	
 	if (window.event) {
 		keycode = window.event.keyCode;
 	}
 	if (keycode == 13) {
-		buscar();
+		if(checkSubmit()){
+			buscar();
+		}
+	}
+}
+
+var statSend = false;
+function checkSubmit() {
+	if (!statSend) {
+		statSend = true;
+		return true;
+		
+	} else if(statSend){
+		//alertStop("El formulario ya se esta enviando...");
+		return false;
+		
+	}else{
 		return false;
 	}
 }
