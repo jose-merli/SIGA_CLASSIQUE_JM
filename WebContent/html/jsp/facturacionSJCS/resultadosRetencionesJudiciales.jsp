@@ -72,8 +72,8 @@
 	<siga:Table 		   
 	   name="listadoRetencionesJudiciales"
 	   border="2"
-	   columnNames="FactSJCS.mantRetencionesJ.literal.nColegiado,FactSJCS.mantRetencionesJ.literal.nombre,FactSJCS.mantRetencionesJ.literal.tipoRetencion,FactSJCS.mantRetencionesJ.literal.importe,FactSJCS.mantRetencionesJ.literal.fechaInicioRJ,FactSJCS.mantRetencionesJ.literal.fechaFinNotificacion,FactSJCS.mantRetencionesJ.literal.destinatario,"
-	   columnSizes="10,15,10,10,10,10,25,10"
+	   columnNames="FactSJCS.mantRetencionesJ.literal.nColegiado,FactSJCS.mantRetencionesJ.literal.nombre,FactSJCS.mantRetencionesJ.literal.tipoRetencion,FactSJCS.mantRetencionesJ.literal.importe,FactSJCS.mantRetencionesJ.literal.importeRestante,FactSJCS.mantRetencionesJ.literal.fechaInicioRJ,FactSJCS.mantRetencionesJ.literal.fechaFinNotificacion,FactSJCS.mantRetencionesJ.literal.destinatario,"
+	   columnSizes="10,15,9,8,8,8,8,24,10"
 	   modal="M">
 <%
 		if (obj.size()>0) {
@@ -116,8 +116,9 @@
 					 </td>					
 					<td><%=UtilidadesString.mostrarDatoJSP(UtilidadesHash.getString(fila, "TIPORETENCION"))%></td>
 					<td align="right"><%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero.formatoCampo(UtilidadesHash.getString(fila, "IMPORTE")))%></td>
-					<td><%=UtilidadesString.mostrarDatoJSP(GstDate.getFormatedDateShort("",UtilidadesHash.getString(fila, "FECHAINICIO")))%></td>
-					<td><%=UtilidadesString.mostrarDatoJSP(GstDate.getFormatedDateShort("",UtilidadesHash.getString(fila, "FECHAFIN")))%></td>
+					<td align="right"><%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero.formatoCampo(UtilidadesHash.getString(fila, "RESTANTE")))%></td>
+					<td align="center"><%=UtilidadesString.mostrarDatoJSP(GstDate.getFormatedDateShort("",UtilidadesHash.getString(fila, "FECHAINICIO")))%></td>
+					<td align="center"><%=UtilidadesString.mostrarDatoJSP(GstDate.getFormatedDateShort("",UtilidadesHash.getString(fila, "FECHAFIN")))%></td>
 					<td><%=UtilidadesString.mostrarDatoJSP(UtilidadesHash.getString(fila, "NOMBREDESTINATARIO"))%></td>
 				</siga:FilaConIconos>		
 <% 

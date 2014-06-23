@@ -304,8 +304,17 @@ public class MantenimientoRetencionesJudicialesAction extends MasterAction {
 							  CenPersonaBean.T_NOMBRETABLA + " PER" + " WHERE PER." + CenPersonaBean.C_IDPERSONA +  " = RETENCIONES." + CenPersonaBean.C_IDPERSONA + ") AS " + CenPersonaBean.C_NOMBRE + ", (SELECT " + FcsDestinatariosRetencionesBean.C_NOMBRE + 
 							  " FROM " + FcsDestinatariosRetencionesBean.T_NOMBRETABLA + " DES" + " WHERE DES." + FcsDestinatariosRetencionesBean.C_IDINSTITUCION + " = RETENCIONES." + FcsRetencionesJudicialesBean.C_IDINSTITUCION +
 							  " AND DES." + FcsDestinatariosRetencionesBean.C_IDDESTINATARIO + " = RETENCIONES." + FcsRetencionesJudicialesBean.C_IDDESTINATARIO + ") AS NOMBREDESTINATARIO" + ", RETENCIONES." + 
-							  FcsRetencionesJudicialesBean.C_FECHAINICIO + ", RETENCIONES." + FcsRetencionesJudicialesBean.C_FECHAFIN + ", RETENCIONES."+FcsRetencionesJudicialesBean.C_IMPORTE+", F_SIGA_APLICADARETENCION(retenciones."+FcsRetencionesJudicialesBean.C_IDINSTITUCION+",retenciones.idretencion) RETENCIONAPLICADA FROM " + FcsRetencionesJudicialesBean.T_NOMBRETABLA + " RETENCIONES, " + FcsDestinatariosRetencionesBean.T_NOMBRETABLA + " o";
-			
+							  FcsRetencionesJudicialesBean.C_FECHAINICIO + ", RETENCIONES." + FcsRetencionesJudicialesBean.C_FECHAFIN + ", RETENCIONES."+FcsRetencionesJudicialesBean.C_IMPORTE+
+							  ", F_SIGA_APLICADARETENCION(retenciones."+FcsRetencionesJudicialesBean.C_IDINSTITUCION+",retenciones.idretencion) RETENCIONAPLICADA, "+
+							
+							  //  Se muestra tambien la retencion restante
+							  " DECODE (" +FcsRetencionesJudicialesBean.C_TIPORETENCION +",'P','-',DECODE("+FcsRetencionesJudicialesBean.C_IMPORTE+", null, '-',("+FcsRetencionesJudicialesBean.C_IMPORTE+" + NVL((SELECT SUM(c.IMPORTERETENIDO)" +
+		                      " FROM FCS_COBROS_RETENCIONJUDICIAL c  where c." + FcsCobrosRetencionJudicialBean.C_IDINSTITUCION + " = retenciones." + FcsRetencionesJudicialesBean.C_IDINSTITUCION +
+		                      " and c." + FcsCobrosRetencionJudicialBean.C_IDPERSONA + " = retenciones." + FcsRetencionesJudicialesBean.C_IDPERSONA + " and c." + FcsCobrosRetencionJudicialBean.C_IDRETENCION + " = retenciones." + FcsRetencionesJudicialesBean.C_IDRETENCION+"),  0)))) RESTANTE " +
+							 
+		                      // CLAUSULA FROM
+		                      " FROM " + FcsRetencionesJudicialesBean.T_NOMBRETABLA + " RETENCIONES, " + FcsDestinatariosRetencionesBean.T_NOMBRETABLA + " o";
+                       
 			// Segunda parte de la consulta (con los criterios de búsqueda seleccionados)
 			consulta += " WHERE RETENCIONES." + FcsRetencionesJudicialesBean.C_IDINSTITUCION + " = " + user.getLocation();
 			consulta += " AND RETENCIONES." + FcsRetencionesJudicialesBean.C_IDINSTITUCION + " = O." + FcsDestinatariosRetencionesBean.C_IDINSTITUCION;
