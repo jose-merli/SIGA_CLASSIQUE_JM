@@ -431,12 +431,48 @@ public class FacPagosPorCajaAdm extends MasterBeanAdministrador {
 							" AND factura." + FacFacturaBean.C_IDINSTITUCION + " = " + idInstitucion + 
 							" AND factura."   + FacFacturaBean.C_IDFACTURA + " = '" + idFactura + "'";
 			
-			String consulta7 = select7 + from7 + where7;			
+			String consulta7 = select7 + from7 + where7;		
+			
+			//Abonos SJCS->compensaciones factura
+			String select8 = " SELECT 9 AS idtabla, " +
+							" F_SIGA_GETRECURSO_ETIQUETA('facturacion.pagosFactura.accion.compensacion'," + this.usrbean.getLanguage() + ") AS tabla, " +
+					 		 " (select F_SIGA_GETRECURSO_ETIQUETA (" + FacEstadoFacturaBean.T_NOMBRETABLA +  
+							   "." + FacEstadoFacturaBean.C_DESCRIPCION + "," + this.usrbean.getLanguage() + ") from "  + FacEstadoFacturaBean.T_NOMBRETABLA +
+							   " where " + FacEstadoFacturaBean.C_IDESTADO + " = 8) AS estado, " +		
+							 "pc." + FacPagoAbonoEfectivoBean.C_FECHA   + " AS FECHA, "   +
+					 		 "pc." + FacPagoAbonoEfectivoBean.C_FECHAMODIFICACION   + " AS FECHA_ORDEN, "   +
+				  			 "pc." + FacPagoAbonoEfectivoBean.C_IMPORTE + " AS IMPORTE, " + 
+							 "'' AS DEVUELTA, " +
+							 "'' AS TARJETA, " +
+							 "ab." + FacAbonoBean.C_IDCUENTA + " AS IDABONO_IDCUENTA, " +
+							 "ab." + FacAbonoBean.C_NUMEROABONO + " AS NUMEROABONO, " +
+							 "pc." + FacPagosPorCajaBean.C_IDPAGOABONO + " AS IDPAGO, "+
+							 "(select banco.nombre || ' nº ' || cuenta."+CenCuentasBancariasBean.C_IBAN+ 
+                             " from "+CenCuentasBancariasBean.T_NOMBRETABLA+" cuenta,"+CenBancosBean.T_NOMBRETABLA+" banco"+
+                             " where cuenta."+CenCuentasBancariasBean.C_CBO_CODIGO+"=banco."+CenBancosBean.C_CODIGO+
+                             " and  cuenta."+CenCuentasBancariasBean.C_IDINSTITUCION+"="+idInstitucion+
+                             " and  cuenta."+CenCuentasBancariasBean.C_IDPERSONA+"="+idPersona+
+                             " and cuenta."+CenCuentasBancariasBean.C_IDCUENTA + "=" + "ab."+ FacAbonoBean.C_IDCUENTA+") as NOMBREBANCO";
 
+			String from8 = 	" FROM " + FacAbonoBean.T_NOMBRETABLA + " ab,  "+
+							  FacPagosPorCajaBean.T_NOMBRETABLA + " pc,  "+
+							  FacPagoAbonoEfectivoBean.T_NOMBRETABLA + " aef ";
+
+			String where8 = " WHERE pc." + FacPagosPorCajaBean.C_IDINSTITUCION + " = aef." + FacPagoAbonoEfectivoBean.C_IDINSTITUCION + 
+							" AND  pc." + FacPagosPorCajaBean.C_IDINSTITUCION + " = ab." + FacAbonoBean.C_IDINSTITUCION + 
+							" AND  pc." + FacPagosPorCajaBean.C_IDINSTITUCION + " = " + idInstitucion + 
+							" AND  pc." + FacPagosPorCajaBean.C_IDFACTURA + " = " + idFactura + 
+							" AND  pc." + FacPagosPorCajaBean.C_IDABONO+ " = aef." + FacPagoAbonoEfectivoBean.C_IDABONO + 
+							" AND  pc." + FacPagosPorCajaBean.C_IDABONO+ " = ab." + FacAbonoBean.C_IDABONO + 
+							" AND  pc." + FacPagosPorCajaBean.C_IDPAGOABONO+ " = aef." + FacPagoAbonoEfectivoBean.C_IDPAGOABONO + 
+							" AND  ab." + FacAbonoBean.C_IDPAGOSJG + " IS NOT NULL ";
+
+			String consulta8 = select8 + from8 + where8;	
+			
 			String consulta = "SELECT idtabla, TABLA, ESTADO, FECHA, FECHA_ORDEN, IMPORTE, DEVUELTA, TARJETA, IDABONO_IDCUENTA, NUMEROABONO, IDPAGO, NOMBREBANCO FROM ( " + 
 							   consulta1 + " UNION " + consulta10 + " UNION " + consulta2 + " UNION " + consulta3 + " UNION " + consulta4 + " UNION " + consulta5 + " UNION " + consulta6 + " UNION " + consulta7 + 
-							   " ) ORDER BY idtabla ASC, TO_CHAR(FECHA, 'YYYYMMDD') ASC, FECHA_ORDEN ASC, IDPAGO ASC"; 
-
+							   " UNION " + consulta8 + ") ORDER BY idtabla ASC, TO_CHAR(FECHA, 'YYYYMMDD') ASC, FECHA_ORDEN ASC, IDPAGO ASC"; 
+			
 			RowsContainer rc = new RowsContainer(); 
 			if (rc.query(consulta)) {
 				Vector resultados = new Vector (); 
