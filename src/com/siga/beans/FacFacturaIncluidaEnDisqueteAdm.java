@@ -6,19 +6,10 @@
  */
 package com.siga.beans;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.util.ArrayList;
 import java.util.Hashtable;
-import java.util.StringTokenizer;
 import java.util.Vector;
 
-import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
-import com.atos.utils.ClsMngBBDD;
 import com.atos.utils.ComodinBusquedas;
 import com.atos.utils.GstDate;
 import com.atos.utils.Row;
@@ -26,7 +17,6 @@ import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.PaginadorCaseSensitive;
 import com.siga.Utilidades.UtilidadesHash;
-import com.siga.Utilidades.UtilidadesString;
 import com.siga.general.SIGAException;
 
 /**
@@ -332,187 +322,5 @@ public class FacFacturaIncluidaEnDisqueteAdm extends MasterBeanAdministrador {
 			throw new ClsExceptions (e, "Error en getRecibosParaDevolucion");
 		}
 	//	return v;	
-	}
-	
-	/**
-	 * Genera el fichero de devoluciones manuales segun recibos parados por parametro y datos de cabecera
-	 * @param banco
-	 * @param fechaDevolucion
-	 * @param aplicaComisiones
-	 * @param recibos String que contiene todos los registros seleccionados separados por ";" y los datos de cada registro separados por "%%" tal que "motivo%%idfactura%%idrecibo"
-	 * @return
-	 * @throws ClsExceptions 
-	 */
-	public File crearFicheroDevoluciones(
-			String banco, 
-			String fechaDevolucion, 
-			String recibos, 
-			String idInstitucion, 
-			String nombreFichero) throws ClsExceptions, SIGAException {
-		File salida = null;		
-		BufferedWriter bw = null;
-		
-		try{
-			//obtener los datos de idrecibo y motivos			
-		    StringTokenizer st = null;
-		    try {
-		    	st = new StringTokenizer(recibos, ";");
-		    } catch (java.util.NoSuchElementException nee) {
-		    	// solamente existe un token
-		    }
-		    
-		    ArrayList datos = new ArrayList();
-		    while (st.hasMoreElements()) {
-		    	ArrayList aux = new ArrayList();
-		        StringTokenizer st2 = new StringTokenizer(st.nextToken(), "%%");		        		        
-		        aux.add(st2.nextToken());
-		        aux.add(st2.nextToken());
-		        aux.add(st2.nextToken());
-		        aux.add(st2.nextToken());
-
-		        datos.add(aux);
-		    }
-
-		    salida = new File(nombreFichero);
-			bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(salida),ClsConstants.IMPRESO190_ENCODING));
-
-			String relleno= ".";
-		    // 1. CABECERAS
-			String linea = "51" + // cod reg
-							"90" + // cod dato
-							UtilidadesString.relleno(relleno,12) + // nada
-							UtilidadesString.formateaFicheros(UtilidadesString.formatoFecha(fechaDevolucion,"dd/MM/yyyy","ddMMyy"),6,false) + // fecha (6)
-							UtilidadesString.relleno(relleno,66) + // nada
-							UtilidadesString.formateaFicheros(banco,4,true) + // entidad
-							UtilidadesString.relleno(relleno,70) + // nada
-							"\r\n";	// RGG cambio para formato DOS
-			bw.write(linea); // escribo
-
-			boolean primeraVez = true;
-			
-		    // 2. LINEAS
-		    for (int i=0;i<datos.size();i++) {
-		    	ArrayList aux2 = (ArrayList) datos.get(i);
-		    	String motivo = (String) aux2.get(0);
-		    	String idFactura = (String) aux2.get(1);
-		    	String idRecibo = (String) aux2.get(2) + "00";
-		    	String importe = (String) aux2.get(3);
-		    	String idRenegociacion="";
-		    	
-		    	if (idRecibo!=null && !idRecibo.equals("")) {
-		    	    idRenegociacion=idRecibo.substring(idRecibo.length()-2);
-		    	}
-		    	
-		    	FacFacturaAdm facturaAdm =new FacFacturaAdm(this.usrbean);
-		    	Vector factura=facturaAdm.getFactura(idInstitucion,idFactura);
-		    	String numeroFactura="",  idFacturaAux="";
-		    	if (!factura.isEmpty()){
-		    		Hashtable factHash = ((Row)factura.firstElement()).getRow();
-		    	    numeroFactura=(String)factHash.get(FacFacturaBean.C_NUMEROFACTURA);
-		    	    idFacturaAux=(String)factHash.get(FacFacturaBean.C_IDFACTURA);
-		    	}
-
-		    	FacBancoInstitucionAdm bancoAdm =new FacBancoInstitucionAdm(this.usrbean);
-		    	Vector vbancos_codigo=bancoAdm.getBancosCodigoDesdeFichero(idInstitucion,idFactura, idRenegociacion);
-		    	String numerocuenta = "";
-		    	if (!vbancos_codigo.isEmpty()){
-		    		Hashtable factBancos = ((Row)vbancos_codigo.firstElement()).getRow();
-		    	    numerocuenta=(String)factBancos.get("NUMEROCUENTA");
-		    	}else{// caso extraño en el que no tengamos el codigo de banco.
-		    		throw new SIGAException("messages.devolucionesManuales.error");
-		    	}
-
-				if (!primeraVez) {
-				    // LINEA TE TOTAL ORDENANTE
-				    linea = "58" + // cod reg
-				    		"90" +  // cod dato
-				    		UtilidadesString.relleno(relleno,158) + // nada
-				    		"\r\n"; // RGG cambio para formato DOS
-					bw.write(linea); // escribo
-				}
-				primeraVez=false;
-				
-		    	// LINEA DE BANCO ORDENANTE
-				linea = "53" + // cod reg
-						"90" + // cod dato
-						UtilidadesString.relleno(relleno,64) + // nada
-						numerocuenta.substring(0,20) + // cod dato
-						UtilidadesString.relleno(relleno,74) + // nada
-						"\r\n"; // RGG cambio para formato DOS
-				bw.write(linea); // escribo
-		    	
-		    	// formateo el importe
-		    	importe = importe.replaceAll(",",".");
-		    	Double dimporte = new Double(importe);
-				Vector valor = UtilidadesString.desdoblarDouble(dimporte); 
-				String importeFormat = UtilidadesString.formatea(valor.get(1),8,true) + // entera
-										UtilidadesString.formatea(valor.get(2),2,true); // decimal
-				
-				// Obtengo el concepto para la referecia a la factura
-				String concepto = "";
-				Object[] param_in = new Object[]{idInstitucion,idFactura};
-				String resultadoPl[] = new String[4];
-				//Ejecucion del PL
-				resultadoPl = ClsMngBBDD.callPLProcedure("{call PKG_SIGA_CARGOS.PROC_CALC_SUFIJO(?,?,?,?,?,?)}", 4, param_in);
-				//Resultado del PL
-				if (resultadoPl!=null && resultadoPl[2].equals("0")) {
-					concepto=resultadoPl[1];
-					if (concepto==null || concepto.equalsIgnoreCase("null")) {
-						concepto="";
-					}
-				} else {
-					throw new ClsExceptions("Error al ejecutar PKG_SIGA_CARGOS.PROC_CALC_SUFIJO: ");
-				}
-
-				//String ref = "n.doc.:"+idFactura+concepto;
-				String ref = numeroFactura+"-"+concepto;//Se modifica el idFactura por el numero de factura
-				
-				linea = "56" + // cod reg
-						"90" + // cod dato
-						UtilidadesString.relleno(relleno,12) + // nada
-						UtilidadesString.relleno(relleno,72) + // nada
-						UtilidadesString.formateaFicheros(importeFormat,10,true) + // importe
-						UtilidadesString.relleno(relleno,6) + 
-						UtilidadesString.formateaFicheros(idRecibo,10,false) + // referencia
-						UtilidadesString.formateaFicheros(ref,40,false) + // numero factura / CONCEPTO
-						UtilidadesString.formateaFicheros(motivo,1,true) + // motivo devolucion
-						UtilidadesString.relleno(relleno,7) + // nada
-						"\r\n"; // RGG cambio para formato DOS
-				bw.write(linea); // escribo
-		    }
-
-		    // 3. TOTALES
-			linea = "58" + // cod reg
-					"90" + // cod dato
-					UtilidadesString.relleno(relleno,158) + // nada
-					"\r\n"; // RGG cambio para formato DOS
-			// escribo
-			bw.write(linea);
-
-			linea = "59" + // cod reg
-					"90" + // cod dato
-					UtilidadesString.relleno(relleno,158); // nada			
-			bw.write(linea); // escribo
-			
-			// cierro el fichero
-			bw.close();
-			
-		} catch(SIGAException e) {
-			throw e;
-			
-		} catch(Exception e) {
-			throw new ClsExceptions (e, "Error en crearFicheroDevoluciones");
-			
-		} finally {
-			if (bw != null){
-				try {
-					bw.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
-		}
-		
-		return salida;
 	}
 }

@@ -17,8 +17,6 @@ import javax.transaction.UserTransaction;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
-import org.redabogacia.sigaservices.app.util.ReadProperties;
-import org.redabogacia.sigaservices.app.util.SIGAReferences;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
@@ -26,10 +24,8 @@ import com.atos.utils.ClsLogging;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.PaginadorCaseSensitive;
 import com.siga.Utilidades.UtilidadesHash;
-import com.siga.Utilidades.UtilidadesString;
 import com.siga.beans.CenInstitucionAdm;
 import com.siga.beans.CenPersonaAdm;
-import com.siga.beans.FacDisqueteDevolucionesAdm;
 import com.siga.beans.FacFacturaAdm;
 import com.siga.beans.FacFacturaBean;
 import com.siga.beans.FacFacturaIncluidaEnDisqueteAdm;
@@ -219,86 +215,59 @@ public class DevolucionesManualesAction extends MasterAction{
 			
 			// obtengo los datos para generar el fichero
 			String aplicaComisiones = form.getAplicarComisiones();
-			String banco = form.getBanco();
 			String fechaDevolucion = form.getFechaDevolucion();
 			String recibos = form.getRecibos();
+			
+			if (fechaDevolucion != null && !fechaDevolucion.equals("") && fechaDevolucion.length()==10) {
+				try { 
+					fechaDevolucion = fechaDevolucion.substring(6,10) + fechaDevolucion.substring(3,5) + fechaDevolucion.substring(0,2); // AAAAMMDD 
+				} catch (Exception e){
+					fechaDevolucion = "";
+				}		
+			}			
 			
 			// Comienzo control de transacciones
 			tx = user.getTransactionPesada(); 			
 
 			// Comienzo la transaccion
 			tx.begin();		
+
+			// actualizo mediante el fichero. COntrol de codigos de errores segun la funcion.
+			DevolucionesAction devoluciones = new DevolucionesAction();
+			String[] retornoDevolucionManual = devoluciones.devolucionManual(
+							idInstitucion,
+							recibos,
+							fechaDevolucion,							
+							user.getLanguageInstitucion(),
+							user.getUserName());
 			
-			// genero el fichero
-	 		FacDisqueteDevolucionesAdm devolucionesAdm = new FacDisqueteDevolucionesAdm(this.getUserBean(request));
-	 		String identificador = devolucionesAdm.getNuevoID(idInstitucion).toString();
+			if (retornoDevolucionManual[0].equals("0")) {
 
-		    // Generación del fichero
-		    ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
-//			ReadProperties rp 	 = new ReadProperties("SIGA.properties");			
-		    String rutaServidor  = rp.returnProperty("facturacion.directorioFisicoDevolucionesJava") + rp.returnProperty("facturacion.directorioDevolucionesJava");
-	 		
-		    String barra 	= "";
-    		if (rutaServidor.indexOf("/") > -1) barra = "/"; 
-    		if (rutaServidor.indexOf("\\") > -1) barra = "\\";        		
-    		rutaServidor 	+= barra + idInstitucion ;
-		    
-	 		String nombreFichero = rutaServidor+ barra +"Manual-"+UtilidadesString.formatoFecha(form.getFechaDevolucion(),"dd/MM/yyyy","ddMMyy")+"-"+form.getBanco()+"-"+identificador+".d19";
-
-			FacFacturaIncluidaEnDisqueteAdm facdisq = new FacFacturaIncluidaEnDisqueteAdm(user);
-			File fichero = facdisq.crearFicheroDevoluciones(
-				banco, 
-				fechaDevolucion, 
-				recibos, 
-				idInstitucion, 
-				nombreFichero);
-	
-			if (fichero!=null) {
-				// actualizo mediante el fichero. COntrol de codigos de errores segun la funcion.
-				DevolucionesAction devoluciones = new DevolucionesAction();
-				String ret = devoluciones.actualizacionTablasDevoluciones(idInstitucion,rutaServidor,fichero.getName(),user.getLanguageInstitucion(),user.getUserName());
-				if (ret.equals("0")) {
-					// Aplicacion de comisiones
-					if (aplicaComisiones!=null && aplicaComisiones.equalsIgnoreCase(ClsConstants.DB_TRUE)){
-				    	ClsLogging.writeFileLog("Aplicando Comisiones de devolucion="+identificador,8);
+				// Aplicacion de comisiones
+				if (aplicaComisiones!=null && aplicaComisiones.equalsIgnoreCase(ClsConstants.DB_TRUE)){
+					
+					String [] aListaIdDisquetesDevolucion = retornoDevolucionManual[2].split(";");
+					for (String sIdDisquetesDevolucion : aListaIdDisquetesDevolucion) {
+				    	ClsLogging.writeFileLog("Aplicando Comisiones de devolucion=" + sIdDisquetesDevolucion, 8);
 				    	Facturacion facturacion = new Facturacion(this.getUserBean(request));
-				    	boolean ok=facturacion.aplicarComisiones(idInstitucion,identificador,aplicaComisiones,this.getUserBean(request));
+				    	boolean ok=facturacion.aplicarComisionesManuales(idInstitucion, sIdDisquetesDevolucion, aplicaComisiones, this.getUserBean(request));
 				    	if (!ok) {
 				    		throw new ClsExceptions("Fichero de devoluciones manuales: Error al aplicar devoluciones.");
 				    	}
-				    }
-				} else	if (ret.equals("5397")) {
-					throw new SIGAException("error.messages.fileNotFound");
-					
-				} else 	if (ret.equals("5402")) {
-					throw new SIGAException("facturacion.nuevoFichero.literal.errorFormato");
-					
-				} else 	if (ret.equals("5404")) {
-					throw new SIGAException("facturacion.devolucionManual.error.fechaDevolucion");
-					
-				} else 	if (ret.equals("5405")) {
-					throw new SIGAException("facturacion.devolucionManual.error.importeDevolucion");
-					
-				} else  {
-					throw new ClsExceptions("Fichero de devoluciones manuales: Error en el proceso de actualicacion de tablas de devolucion. RETORNO: "+ret);
-				}  
-			} else {
-				throw new ClsExceptions("Problemas al generar el fichero de devoluciones manuales.");
-			}
+					}				
+			    }
+				
+			} else 	if (retornoDevolucionManual.equals("5404")) {
+				throw new SIGAException("facturacion.devolucionManual.error.fechaDevolucion");
+								
+			} else  {
+				throw new ClsExceptions("Fichero de devoluciones manuales: Error en el proceso de actualicacion de tablas de devolucion. RETORNO: " + retornoDevolucionManual);
+			}  
+			
 			tx.commit();				
 
-
-			
-			// RGG 04/01/2007: Si se decide descargar el fichero ademas de procesarlo, se debe descargar fichero
-			// mediante el proceso de download parecido a lo que ocurre en las descarga de cartas a
-			// interesados de EJG. Este metodo primero muestra un mensaje en una jsp y es la jsp quien 
-			// finalmente llama mediante el nombre y path del fichero al download. Aunque en justicia 
-			// gratuita esta fallando ahora mismo no parece tener relacion con esa manera de trabajar.
 			request.setAttribute("generacionOK","1");
-			//request.setAttribute("rutaFichero",fichero.getPath());
-			//request.setAttribute("borrarFichero","false");
-			
-			// RGG 08/02/2007 Fianlmente se va a descargar los ficheros desde la ventana de devoluciones por fichero.
+
 		} catch (SIGAException e) {
 			String sms = e.getLiteral();
 			if (sms == null || sms.equals("")) {

@@ -945,5 +945,32 @@ public class DevolucionesAction extends MasterAction {
 		}
 		return "descargaFichero";
     }
+    	
+	/**
+	 * Funcion que realiza una llamada a la PL PKG_SIGA_CARGOS.DevolucionesManuales
+	 * @param institucion
+	 * @param listaFacturas
+	 * @param fechaDevolucion
+	 * @param idioma
+	 * @param usuario
+	 * @return
+	 * @throws ClsExceptions
+	 */
+	protected String[] devolucionManual(String institucion, String listaFacturas, String fechaDevolucion, String idioma, String usuario) throws ClsExceptions {	
+		String resultado[] = new String[3];
+		try	{			
+			Object[] param_in = new Object[5];
+	    	param_in[0] = institucion;
+	    	param_in[1] = listaFacturas;
+	    	param_in[2] = fechaDevolucion;
+	    	param_in[3] = idioma;
+	    	param_in[4] = usuario;
+	    	resultado = ClsMngBBDD.callPLProcedure("{call PKG_SIGA_CARGOS.DevolucionesManuales(?,?,?,?,?,?,?,?)}", 3, param_in);
+	    	
+		} catch (Exception e){
+			throw new ClsExceptions(e,"Excepcion en devolucionManual. Proc:PKG_SIGA_CARGOS.DevolucionesManuales " + resultado[2]);
+		}
+		
+		return resultado;
+	}    
 }
-

@@ -101,13 +101,16 @@
 		}
 	
 	function mensaje() {
-<% 		if (form.getHayMotivos().equals("0")) { %>
+<% 		
+		if (form.getHayMotivos().equals("0")) { 
+%>
 			// NO HAY MOTIVOS
 			var m = '<siga:Idioma key="messages.fact.error.motivosNoCargados"/>';
 			alert(m);
 			return false;
-<% 		} %>
-		
+<% 		
+		} 
+%>	
 	}
 
 </script>
@@ -210,16 +213,13 @@
 	
 	<!-- INICIO: SCRIPTS BOTONES BUSQUEDA -->
 	<script language="JavaScript">
-		<!-- Funcion asociada a boton buscarCliente -->
-
-		function refrescarLocal() 
-		{
+		// Funcion asociada a boton buscarCliente
+		function refrescarLocal() {
 			buscar();
 		}
 
-		<!-- Funcion asociada a boton buscar -->
-		function buscar() 
-		{
+		// Funcion asociada a boton buscar
+		function buscar() {
 				sub();		
 				mensaje();
 				// Rango Fechas (desde / hasta)
@@ -247,7 +247,7 @@
 					scrolling="no"
 					frameborder="0"
 					marginheight="0"
-					marginwidth="0";					 
+					marginwidth="0"					 
 					class="frameGeneral">
 	</iframe>
 	
@@ -259,9 +259,8 @@
 		<!-- Aqui se reescriben las funciones que vayamos a utilizar -->
 		<script language="JavaScript">
 
-			<!-- Asociada al boton MarcarTodos -->
-			function accionMarcarTodos() 
-			{		
+			// Asociada al boton MarcarTodos
+			function accionMarcarTodos() {		
 				if (window.frames.resultado.document.getElementById("sel")!=null){
 					var dd =  window.frames.resultado.document.getElementsByName("sel");
 					if (dd.type != 'checkbox') {
@@ -275,9 +274,8 @@
 				}	
 			}
 		
-			<!-- Asociada al boton DesmarcarTodos -->
-			function accionDesmarcarTodos() 
-			{		
+			// Asociada al boton DesmarcarTodos 
+			function accionDesmarcarTodos() {		
 				if (window.frames.resultado.document.getElementById("sel")!=null){
 					var dd =  window.frames.resultado.document.getElementsByName("sel");
 					if (dd.type != 'checkbox') {
@@ -291,34 +289,34 @@
 				}	
 			}
 		
-			<!-- Asociada al boton ProcesarDevoluciones -->
-			function accionProcesarDevoluciones() 
-			{
+			// Asociada al boton ProcesarDevoluciones
+			function accionProcesarDevoluciones() {
 				var aDatos = new Array();
 				document.DevolucionesManualesForm.recibos.value="";
 				
-				var oCheck =  window.frames.resultado.document.getElementsByName("sel");
-				var oCheck2 =  window.frames.resultado.document.getElementsByName("motivoDevolucion");
-
-				/* RGG 08/01/2007 */
-				for(i=0; i<oCheck.length; i++)
-				{
-					if (oCheck[i].checked)
-					{
-						var dato = oCheck[i].value;
-						var datoMotivo = oCheck2[i].value;
-						document.DevolucionesManualesForm.recibos.value += ";" + datoMotivo + "%%" + dato;
+				var checks =  window.frames.resultado.document.getElementsByName("sel");
+				for (var i=0; i<checks.length; i++) {
+					if (checks[i].checked) {
+						var dato = checks[i].value;
+						var num = i + 1;
+						
+						var datoFIED = jQuery("#resultado").contents().find("#devolucionManual_" + num).val();
+						var datoMotivo = jQuery("#resultado").contents().find("select[id=motivoDevolucion]")[i].value;
+						if (document.DevolucionesManualesForm.recibos.value=="") {
+							document.DevolucionesManualesForm.recibos.value += datoFIED + "%%" + datoMotivo;
+						} else {
+							document.DevolucionesManualesForm.recibos.value += ";" + datoFIED + "%%" + datoMotivo;
+						}
+							
 					}
 				}
 
-				if (document.DevolucionesManualesForm.recibos.value=="")
-				{
+				if (document.DevolucionesManualesForm.recibos.value=="") {
 					var mensaje2 = '<siga:Idioma key="messages.fact.error.noRecibos"/>'
 					alert(mensaje2);
 					return false;
-				}
-				else
-				{
+					
+				} else {
 					var aux = document.DevolucionesManualesForm.modo.value;
 					document.DevolucionesManualesForm.modo.value="modificar";
 					var datos = ventaModalGeneral("DevolucionesManualesForm","P");

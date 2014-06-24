@@ -193,6 +193,8 @@
 									String numFactura = UtilidadesHash.getString(recibo, FacFacturaBean.C_NUMEROFACTURA);
 									Double importe = UtilidadesHash.getDouble(recibo, FacFacturaIncluidaEnDisqueteBean.C_IMPORTE);
 									String idFactura = UtilidadesHash.getString(recibo, FacFacturaIncluidaEnDisqueteBean.C_IDFACTURA);
+									
+									String idFIED = UtilidadesHash.getString(recibo, FacFacturaIncluidaEnDisqueteBean.C_IDFACTURAINCLUIDAENDISQUETE);
 
 									// boton de ver factura
 									FilaExtElement[] elems = new FilaExtElement[1];
@@ -204,7 +206,7 @@
 								<td><input type="checkbox" value="<%=idFactura%>%%<%=numRecibo%>%%<%=importe%>" name="sel"></td>
 								<td>
 									<!-- Datos ocultos tabla -->
-									<input type="hidden" id="oculto<%=(i+1)%>_1" value="<%=idFactura%>">
+									<input type="hidden" id="oculto<%=(i+1)%>_1" value="<%=idFactura%>">									
 									<%=UtilidadesString.mostrarDatoJSP(numRemesa)%>
 								</td>
 								<td>
@@ -214,7 +216,8 @@
 								<td><%=UtilidadesString.mostrarDatoJSP(nom)%></td>
 								<td align="right"><%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero.formatoCampo(importe.doubleValue()))%></td>
 								<td>
-									<siga:ComboBD nombre = "motivoDevolucion" tipo="cmbTipoMotivoDevolucion" clase="boxCombo" elementoSel="<%=motivosSel %>" obligatorio="true" obligatorioSinTextoSeleccionar="true"/>						
+									<input type="hidden" id="devolucionManual_<%=(i+1)%>" value="<%=numRemesa%>%%<%=idFIED%>">
+									<siga:ComboBD nombre="motivoDevolucion" tipo="cmbTipoMotivoDevolucion" clase="boxCombo" elementoSel="<%=motivosSel %>" obligatorio="true" obligatorioSinTextoSeleccionar="true"/>						
 								</td>
 
 							</siga:FilaConIconos>

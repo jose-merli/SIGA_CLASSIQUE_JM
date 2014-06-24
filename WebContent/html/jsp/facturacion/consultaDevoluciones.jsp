@@ -149,8 +149,12 @@
 		} else { 
 			for (int i = 0; i < resultado.size(); i++) { 				
 				Row row = (Row)resultado.elementAt(i);
+				String nombreFichero = row.getString(FacDisqueteDevolucionesBean.C_NOMBREFICHERO);
+				
 				FilaExtElement[] elems = new FilaExtElement[1];
-				elems[0]=new FilaExtElement("download", "download", SIGAConstants.ACCESS_READ);
+				if (nombreFichero!=null && !nombreFichero.equals("")) {
+					elems[0]=new FilaExtElement("download", "download", SIGAConstants.ACCESS_READ);
+				}
 				int recordNumber = i + 1;
 %>
 							        
@@ -166,7 +170,7 @@
 					<td align="center">
 						<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_1" value="<%=idInstitucion%>">
 						<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_2" value="<%=row.getString(FacDisqueteDevolucionesBean.C_IDDISQUETEDEVOLUCIONES)%>">
-						<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_3" value="<%=row.getString(FacDisqueteDevolucionesBean.C_NOMBREFICHERO)%>">
+						<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_3" value="<%=nombreFichero%>">
 						<%=UtilidadesString.mostrarDatoJSP(GstDate.getFormatedDateShort("",row.getString(FacDisqueteDevolucionesBean.C_FECHAGENERACION)))%>
 					</td>
 					<td align="center"><%=UtilidadesString.mostrarDatoJSP(row.getString(FacDisqueteDevolucionesBean.C_IDDISQUETEDEVOLUCIONES))%></td>

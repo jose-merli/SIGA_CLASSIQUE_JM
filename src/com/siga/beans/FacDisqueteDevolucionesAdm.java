@@ -101,41 +101,39 @@ public class FacDisqueteDevolucionesAdm extends MasterBeanAdministrador {
 	public PaginadorCaseSensitive getDevoluciones (DevolucionesForm form) throws ClsExceptions {
 		try {
 			RowsContainer rc = new RowsContainer();
-			String sql =
-				" SELECT DIS."+FacDisqueteDevolucionesBean.C_IDINSTITUCION+", " +
-				"       DIS."+FacDisqueteDevolucionesBean.C_IDDISQUETEDEVOLUCIONES+", " +
-				"       BAN."+CenBancosBean.C_CODIGO+", " +
-				"       DIS."+FacDisqueteDevolucionesBean.C_FECHAGENERACION+"," +
-				"       DIS."+FacDisqueteDevolucionesBean.C_NOMBREFICHERO+"," +
-				"       (SELECT COUNT (*) " +
-				"          FROM "+FacLineaDevoluDisqBancoBean.T_NOMBRETABLA+" LIN " +
-				"         WHERE LIN."+FacLineaDevoluDisqBancoBean.C_IDINSTITUCION+" = " +
-				"               DIS."+FacDisqueteDevolucionesBean.C_IDINSTITUCION+" " +
-				"           AND LIN."+FacLineaDevoluDisqBancoBean.C_IDDISQUETEDEVOLUCIONES+" = " +
-				"               DIS."+FacDisqueteDevolucionesBean.C_IDDISQUETEDEVOLUCIONES+" " +
-				"       ) AS FACTURAS, " +
-				"       (SELECT COUNT (DISTINCT LIN."+FacLineaDevoluDisqBancoBean.C_CARGARCLIENTE+")+ 1" +
-				"          FROM "+FacLineaDevoluDisqBancoBean.T_NOMBRETABLA+" LIN " +
-				"         WHERE LIN."+FacLineaDevoluDisqBancoBean.C_IDINSTITUCION+" = " +
-				"               DIS."+FacDisqueteDevolucionesBean.C_IDINSTITUCION+" " +
-				"           AND LIN."+FacLineaDevoluDisqBancoBean.C_IDDISQUETEDEVOLUCIONES+" = " +
-				"               DIS."+FacDisqueteDevolucionesBean.C_IDDISQUETEDEVOLUCIONES+" " +
-				"           AND LIN."+FacLineaDevoluDisqBancoBean.C_CARGARCLIENTE+" = 'S') AS COMISION, " +
-				"       BAN."+CenBancosBean.C_NOMBRE + " " +
-				"  FROM "+FacDisqueteDevolucionesBean.T_NOMBRETABLA+" DIS, " +
-				"       "+FacBancoInstitucionBean.T_NOMBRETABLA+" BANINS, " +
-				"       "+CenBancosBean.T_NOMBRETABLA+" BAN " +
-				" WHERE DIS."+FacDisqueteDevolucionesBean.C_IDINSTITUCION+" = BANINS."+FacBancoInstitucionBean.C_IDINSTITUCION+" " +
-				"   AND DIS."+FacDisqueteDevolucionesBean.C_BANCOS_CODIGO+" = BANINS."+FacBancoInstitucionBean.C_BANCOS_CODIGO+" " +
-				"   AND BANINS."+FacBancoInstitucionBean.C_COD_BANCO+" = BAN."+CenBancosBean.C_CODIGO+" " +
-				"   AND DIS."+FacDisqueteDevolucionesBean.C_IDINSTITUCION+" = " + form.getIdInstitucion();
+			String sql = " SELECT DIS." + FacDisqueteDevolucionesBean.C_IDINSTITUCION + ", " +
+							" DIS." + FacDisqueteDevolucionesBean.C_IDDISQUETEDEVOLUCIONES + ", " +
+							" BAN." + CenBancosBean.C_CODIGO + ", " +
+							" DIS." + FacDisqueteDevolucionesBean.C_FECHAGENERACION + ", " +
+							" DIS." + FacDisqueteDevolucionesBean.C_NOMBREFICHERO + ", " +
+							" ( " +
+								" SELECT COUNT (*) " +
+								" FROM " + FacLineaDevoluDisqBancoBean.T_NOMBRETABLA + " LIN " +
+								" WHERE LIN." + FacLineaDevoluDisqBancoBean.C_IDINSTITUCION + " = DIS." + FacDisqueteDevolucionesBean.C_IDINSTITUCION +
+									" AND LIN." + FacLineaDevoluDisqBancoBean.C_IDDISQUETEDEVOLUCIONES + " = DIS." + FacDisqueteDevolucionesBean.C_IDDISQUETEDEVOLUCIONES +
+							" ) AS FACTURAS, " +
+							" ( " +
+								" SELECT COUNT (DISTINCT LIN." + FacLineaDevoluDisqBancoBean.C_CARGARCLIENTE + ") + 1 " +
+								" FROM " + FacLineaDevoluDisqBancoBean.T_NOMBRETABLA + " LIN " +
+								" WHERE LIN." + FacLineaDevoluDisqBancoBean.C_IDINSTITUCION + " = DIS." + FacDisqueteDevolucionesBean.C_IDINSTITUCION +
+									" AND LIN." + FacLineaDevoluDisqBancoBean.C_IDDISQUETEDEVOLUCIONES + " = DIS."+FacDisqueteDevolucionesBean.C_IDDISQUETEDEVOLUCIONES +
+									" AND LIN." + FacLineaDevoluDisqBancoBean.C_CARGARCLIENTE + " = 'S' " +
+							" ) AS COMISION, " +
+							" BAN."+CenBancosBean.C_NOMBRE +
+						" FROM " + FacDisqueteDevolucionesBean.T_NOMBRETABLA + " DIS, " +
+							FacBancoInstitucionBean.T_NOMBRETABLA + " BANINS, " +
+							CenBancosBean.T_NOMBRETABLA + " BAN " +
+						" WHERE DIS." + FacDisqueteDevolucionesBean.C_IDINSTITUCION + " = BANINS." + FacBancoInstitucionBean.C_IDINSTITUCION +
+							" AND DIS." + FacDisqueteDevolucionesBean.C_BANCOS_CODIGO + " = BANINS." + FacBancoInstitucionBean.C_BANCOS_CODIGO +
+							" AND BANINS." + FacBancoInstitucionBean.C_COD_BANCO + " = BAN." + CenBancosBean.C_CODIGO +
+							" AND DIS." + FacDisqueteDevolucionesBean.C_IDINSTITUCION + " = " + form.getIdInstitucion();
 			
 				//FILTRO TIPO DEVOLUCION
-				if(form.getTipoDevolucion() != null && !form.getTipoDevolucion().equals("")){					
-					if(form.getTipoDevolucion().equals("0")){
-						sql += " AND substr(DIS."+FacDisqueteDevolucionesBean.C_NOMBREFICHERO +",1,6) <> 'Manual' "; 
-					}else if(form.getTipoDevolucion().equals("1")){
-						sql += " AND substr(DIS."+FacDisqueteDevolucionesBean.C_NOMBREFICHERO +",1,6) = 'Manual' ";
+				if(form.getTipoDevolucion() != null && !form.getTipoDevolucion().equals("")) {					
+					if(form.getTipoDevolucion().equals("0")) {
+						sql += " AND SUBSTR(DIS." + FacDisqueteDevolucionesBean.C_NOMBREFICHERO + ",1,6) <> 'Manual' "; 
+					} else if(form.getTipoDevolucion().equals("1")) {
+						sql += " AND (DIS." + FacDisqueteDevolucionesBean.C_NOMBREFICHERO + " IS NULL OR SUBSTR(DIS." + FacDisqueteDevolucionesBean.C_NOMBREFICHERO + ",1,6) = 'Manual') ";
 					}
 				} 
 				
@@ -180,8 +178,8 @@ public class FacDisqueteDevolucionesAdm extends MasterBeanAdministrador {
 					sqlGrande += " AND DEVOLUCIONES.FACTURAS <= " +form.getFacturasHasta();
 				}
 								
-				sqlGrande +=" ORDER BY DEVOLUCIONES."+FacDisqueteDevolucionesBean.C_FECHAGENERACION+" DESC, " +
-				"          DEVOLUCIONES."+FacDisqueteDevolucionesBean.C_IDDISQUETEDEVOLUCIONES+" DESC";
+				sqlGrande +=" ORDER BY DEVOLUCIONES." + FacDisqueteDevolucionesBean.C_FECHAGENERACION + " DESC, " +
+								" DEVOLUCIONES." + FacDisqueteDevolucionesBean.C_IDDISQUETEDEVOLUCIONES + " DESC";
 					
 			PaginadorCaseSensitive paginador = new PaginadorCaseSensitive(sqlGrande);				
 			int totalRegistros = paginador.getNumeroTotalRegistros();
@@ -189,9 +187,10 @@ public class FacDisqueteDevolucionesAdm extends MasterBeanAdministrador {
 			if (totalRegistros==0){					
 				paginador = null;
 			}
+			
 			return paginador;
-		}
-		catch (Exception e) {
+		
+		} catch (Exception e) {
 			throw new ClsExceptions (e, "Error al obtener la informacion sobre una entrada de la tabla de abonos.");
 		}                    
 	} //getDevoluciones()
