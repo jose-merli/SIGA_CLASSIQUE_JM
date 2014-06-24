@@ -136,18 +136,18 @@
 			}
 			
 			function cargarCheck() {		
-				var casilla = document.getElementById("checkEsDeTurno");
+				var casilla = document.getElementById("checkTurno");
 				
 			  	<%if (esDeTurno != null && esDeTurno.equals("1")) {%>			  			      
 			  		casilla.checked=true;
 				  	<%if (lectura) {%>		
-				   		jQuery("#checkEsDeTurno").attr("disabled","true");
+				   		jQuery("#checkTurno").attr("disabled","true");
 				  	<%}%>
 				  	
 			  	<%} else {%>
 			  		casilla.checked=false;
 				 	<%if (lectura) {%>
-				   		jQuery("#checkEsDeTurno").attr("disabled","true");
+				   		jQuery("#checkTurno").attr("disabled","true");
 				  	<%}%>
 			  	<%}%>
 			  	
@@ -208,7 +208,7 @@
 				<html:hidden property="idRetencion" value="<%=idRetencion%>" />
 				<html:hidden property="idInstitucion" value="<%=usr.getLocation()%>" />
 				<html:hidden property="fechaAlta" value="<%=fechaAlta%>" />
-
+				<html:hidden property="checkEsDeTurno" value=""/>
 				<tr>
 					<td>
 						<!-- SUBCONJUNTO DE DATOS --> 
@@ -216,7 +216,7 @@
 							<table class="tablaCampos" align="center" border="0">
 								<tr>
 									<td class="labelText" colspan="4">
-										<html:checkbox styleid="checkEsDeTurno" property="checkEsDeTurno" onclick="activarLetrado(this);" />
+										<input type="checkBox"  id="checkTurno" onclick="activarLetrado(this);" />
 										&nbsp;&nbsp;<siga:Idioma key="FactSJCS.mantRetencionesJ.literal.aplicableLetrados" />
 									</td>
 								</tr>
@@ -423,7 +423,7 @@
 		  	if (validateMantenimientoRetencionesJudicialesForm(document.MantenimientoRetencionesJudicialesForm)){ 
 			
 				if (res != 2) {
-			 		if (!document.getElementById("checkEsDeTurno").checked && document.getElementById("idPersona").value== "" ){
+			 		if (!document.getElementById("checkTurno").checked && document.getElementById("idPersona").value== "" ){
 			  			alert('<siga:Idioma key="FactSJCS.mantRetencionesJ.literal.checkAplicable"/>');
 			  			fin();
 			  			return false;
@@ -442,7 +442,13 @@
 			  			return false;
 			  			
 			 		}else{
-			 			document.forms[1].checkEsDeTurno.value = document.getElementById("checkEsDeTurno").checked;
+// 			 			document.forms[1].checkEsDeTurno.value = document.getElementById("checkEsDeTurno").checked;
+			 			if (document.getElementById("checkTurno").checked){
+			 				document.forms[1].checkEsDeTurno.value="1";
+						}else{
+							document.forms[1].checkEsDeTurno.value="0";
+
+						}
 						document.forms[1].target = "submitArea";
 						document.forms[1].modo.value = '<%=accion%>';
 						document.forms[1].submit();				            
