@@ -323,9 +323,7 @@ public class GenerarAbonosAction extends MasterAction {
 		            numeroPagos++;
 		            importeCompensado+=pagosBean.getImporte().doubleValue();
 		        }
-		    } else {
-		        // no hay pagos que compensar, no hacemos nada.
-		    }
+		    } 
 			
 			if (numeroPagos>0) {
 			    // elimino los pagos por caja
@@ -360,9 +358,29 @@ public class GenerarAbonosAction extends MasterAction {
 				} else if (!correcto){
 					throw new ClsExceptions("Error al eliminar las compensaciones del abono (Pagos por caja de la factura): "+admPagosPorCaja.getError());
 				}
-			}
 			
-			
+			//Si no hay pagos por caja asociados al abono solamente se actualiza el estado de la factura
+			}else{
+				
+				if(bAbonoConFacturaAsociada) 
+				{
+				    FacFacturaBean facturaBean = null;					
+				    Hashtable ht = new Hashtable();
+				    ht.put(FacFacturaBean.C_IDINSTITUCION,idInstitucion);
+				    ht.put(FacFacturaBean.C_IDFACTURA,abonoBean.getIdFactura());
+				    Vector v = facturaAdm.selectByPK(ht);
+				    if (v!=null && v.size()>0) {
+				        facturaBean = (FacFacturaBean) v.get(0);
+						facturaAdm.actualizarEstadoFactura(facturaBean, this.getUserName(request));
+			        } else {
+			            throw new ClsExceptions("Error al actualizar el estado de la factura: "+facturaAdm.getError());
+			        }
+						
+			    } else {
+			        throw new ClsExceptions("No se ha encontrado la factura buscada: "+idInstitucion+ " "+abonoBean.getIdFactura());
+			    }
+			}	
+
 			htRegistro.remove(FacPagosPorCajaBean.C_TIPOAPUNTE);
 			String clavesPagoAbonoEfectivo[]= new String[]{FacPagoAbonoEfectivoBean.C_IDINSTITUCION,FacPagoAbonoEfectivoBean.C_IDABONO};
 			correcto = admPagoAbonoefectivo.deleteDirect(htRegistro, clavesPagoAbonoEfectivo);
