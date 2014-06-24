@@ -523,11 +523,8 @@ public class GenerarAbonosAction extends MasterAction {
 			//Miramos si esta contabilizado la factura o el abono
 			String contabilizado = UtilidadesHash.getString(registro, FacAbonoBean.C_CONTABILIZADA);
 			String facturaContabilizado = UtilidadesHash.getString(registro, "FACTURACONTABILIZADA");
-			boolean isContabilizado =  (contabilizado!=null && contabilizado.equals(ClsConstants.FACTURA_ABONO_CONTABILIZADA))
-				|| (facturaContabilizado!=null && facturaContabilizado.equals(ClsConstants.FACTURA_ABONO_CONTABILIZADA));
-			
-			
-			
+			boolean isContabilizado =  (contabilizado!=null && contabilizado.equals(ClsConstants.FACTURA_ABONO_CONTABILIZADA));
+
 			//Miramos si esta pagado
 			boolean isPermitidoBorrar = !isAbonoConPago && !isContabilizado;
 			registro.put("ESPERMITIDOBORRAR", new Boolean(isPermitidoBorrar));
