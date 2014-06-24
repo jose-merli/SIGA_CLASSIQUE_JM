@@ -493,6 +493,10 @@
 				}
 			}
 		}
+		
+		function copiarNombre(){
+			jQuery("#abreviatura").val(jQuery("#nombre").val());
+		}	
 				
 	</script>
 
@@ -528,261 +532,277 @@
 	<tr>				
 	<td>
 	<siga:ConjCampos leyenda="factSJCS.datosPagos.leyenda1">
-	<table class="tablaCampos" align="center" border="0">
-
-	<!-- FILA -->
-	<tr>				
-		<td class="labelText">
-			<siga:Idioma key="factSJCS.datosPagos.literal.nombre"/>&nbsp;(*)
-		</td>
-		<td class="labelText" >			
-			<html:text name="datosGeneralesPagoForm" property="nombre" style="width:325" styleClass="<%=estilo%>" readonly="<%=b_lectura%>" value="<%=nombre%>" />
-		</td>
-		<td class="labelText" colspan="2">
-			<!-- aalg: INC_06366_SIGA -->
-			<siga:Idioma key="factSJCS.datosPagos.literal.abonoBanco"/>&nbsp;(*)&nbsp;<html:text name="datosGeneralesPagoForm" property="abreviatura" style="width:325" styleClass="<%=estilo%>" readonly="<%=b_lectura%>"  value="<%=abreviatura%>" maxlength="36"/>
-		</td>
-	</tr>
-
-	<!-- FILA -->
-	<tr>
-		<td class="labelText" >
-			<siga:Idioma key="factSJCS.datosPagos.literal.facturacion"/>&nbsp;(*)
-		</td>
-		<td class="labelText" >		
-			<% if (esNuevo) { %>
-				<siga:ComboBD nombre="comboFacturacion" tipo="cmb_facturacionPagosTodos" estilo="width:325" parametro="<%=facturacionParams %>" clase="boxCombo" obligatorio="false" accion="actualizarFechas(this);"  />
-			<% } else { %>
-				<html:text name="datosGeneralesPagoForm" property="comboFacturacion" style="width:325" value='<%=nombreFacturacion%>' styleClass="boxConsulta" readOnly="true"></html:text>
-			<% } %>
-		</td>
-		<td class="labelText">
-			<siga:Idioma key="factSJCS.datosPagos.literal.estado"/>
-			&nbsp;
-			<html:text name="datosGeneralesPagoForm" property="nombreEstado" value='<%=nombreEstado%>' styleClass="boxConsulta" readOnly="true"></html:text>	
-		</td>
-		<td class="labelText">
-			<siga:Idioma key="factSJCS.datosPagos.literal.fechaEstado"/>
-			&nbsp;
-			<html:text name="datosGeneralesPagoForm" property="fechaEstado" value='<%=fechaEstado%>' styleClass="boxConsulta" readOnly="true"></html:text>	
-		</td>
-	</tr>
-
-
-	<!-- FILA -->
-	<!-- DATOS DE LA FACTURACION -->
-	<tr>				
-	  <td colspan="4">
-		<siga:ConjCampos leyenda="factSJCS.datosGenerales.cabecera">
-		<table class="tablaCampos" align="center" border="0">
-		<tr>
-			<td class="labelText">
-				<siga:Idioma key="factSJCS.datosPagos.literal.importeFacturado"/>
-			</td>
-			<%
-			if (esVerEditar) {
-			%>
-			<td class="labelText" valign="middle">
-				<html:text name="datosGeneralesPagoForm" property="importeFacturado" value="<%= (UtilidadesString.formatoImporte(UtilidadesNumero.redondea(Double.parseDouble(importeFacturado.toString()),2))) %>"
-				size="20" style="vertical-align: middle" styleClass="boxConsultaNumber" readOnly="true"/>
-				&euro;&nbsp;
-			</td>				
-			<% } else { 
-			%>
-			<td class="labelText" valign="middle">
-				<html:text name="datosGeneralesPagoForm" property="importeFacturado" value=""
-				size="20" style="vertical-align: middle" styleClass="boxConsultaNumber" readOnly="true"/>
-				&euro;&nbsp;
-			</td>			
-			<% } 
-			%>
-			
-			<td class="labelText">
-				<siga:Idioma key="factSJCS.datosPagos.literal.fechaInicio"/>
-			</td>
-			<td class="labelText">
-				<html:text name="datosGeneralesPagoForm" property="fechaDesde" value='<%=fechaDesde%>' size="10" styleClass="boxConsulta" readOnly="true" />
-			</td>
+	
+	<table class="tablaCampos" align="center" border="0" width="100%" >	
+		<!-- FILA PARA DEFINIR TAMAÑOS CELDA-->
+		<tr>	
+			<td width="20%" class="labelText"></td>
+			<td width="45%" class="labelText"></td>
+			<td width="15%" class="labelText"></td>
+			<td width="5%" class="labelText"></td>
 		</tr>
-		<tr>
-			<td class="labelText">
-				<siga:Idioma key="factSJCS.datosFacturacion.literal.totalPagado"/>
-			</td>
-			<%
-			if (esVerEditar) {
-			%>
-			<td class="labelText" valign = "middle">
-				<html:text name="datosGeneralesPagoForm" property="importePagado" value="<%= (UtilidadesString.formatoImporte(UtilidadesNumero.redondea(Double.parseDouble(importePagado.toString()),2))) %>" 
-				size="20" style="vertical-align: middle" styleClass="boxConsultaNumber" readonly="true" />
-				&euro;&nbsp;
-			</td>
-			<% } else { 
-			%>	
-			<td class="labelText" valign = "middle">
-				<html:text name="datosGeneralesPagoForm" property="importePagado" value="" 
-				size="20" style="vertical-align: middle" styleClass="boxConsultaNumber" readonly="true" />
-				&euro;&nbsp;
-			</td>			
-			<% } 
-			%>					
 		
+		<!-- FILA -->
+		<tr>
 			<td class="labelText">
-				<siga:Idioma key="factSJCS.datosPagos.literal.fechaFin"/>
+				<siga:Idioma key="factSJCS.datosPagos.literal.facturacion"/>&nbsp;(*)
+			</td>
+			<td class="labelText" colspan="4">		
+				<% if (esNuevo) { %>
+					<siga:ComboBD nombre="comboFacturacion" tipo="cmb_facturacionPagosTodos" parametro="<%=facturacionParams %>" clase="boxCombo" obligatorio="false" accion="actualizarFechas(this);" ancho="710" />
+				<% } else { %>
+					<html:text name="datosGeneralesPagoForm" property="comboFacturacion" size="112" value='<%=nombreFacturacion%>' styleClass="boxConsulta" readOnly="true"></html:text>
+				<% } %>
+			</td>
+		</tr>	
+	
+		<!-- FILA -->
+		<tr>				
+			<td class="labelText">
+				<siga:Idioma key="factSJCS.datosPagos.literal.nombre"/>&nbsp;(*)
+			</td>
+			<td class="labelText">			
+				<html:text name="datosGeneralesPagoForm" styleId="nombre" property="nombre" size="75" styleClass="<%=estilo%>" readonly="<%=b_lectura%>" value="<%=nombre%>" maxlength="100" onblur="copiarNombre()"/>
 			</td>
 			<td class="labelText">
-				<html:text name="datosGeneralesPagoForm" property="fechaHasta" value='<%=fechaHasta%>' size="10" styleClass="boxConsulta" readOnly="true"></html:text>
-			</td>				
+				<siga:Idioma key="factSJCS.datosPagos.literal.estado"/>
+			</td>
+			<td class="labelText">
+				<html:text name="datosGeneralesPagoForm" property="nombreEstado" value='<%=nombreEstado%>' styleClass="boxConsulta" readOnly="true"></html:text>	
+			</td>	
 		</tr>
-		</table>
-		</siga:ConjCampos>
-	  </td>
-	</tr>
 	
-	<tr><td>&nbsp;</td></tr>
+		<!-- FILA -->
+		<tr>
+			<td class="labelText">
+				<siga:Idioma key="factSJCS.datosPagos.literal.abonoBanco"/>&nbsp;(*)
+			</td>
+			<td class="labelText">
+				<html:text name="datosGeneralesPagoForm" styleId="abreviatura" property="abreviatura" size="75" styleClass="<%=estilo%>" readonly="<%=b_lectura%>"  value="<%=abreviatura%>" maxlength="36"/>
+			</td>
 	
-	<!-- FILA -->
-	<!-- Datos sobre el reparto -->
-	<tr>
-		<td colspan="4" id="titulo" class="titulitosDatos">
-			<siga:Idioma key="factSJCS.datosPagos.titulo.reparto"/>
-		</td>
-	</tr>
-	<tr>
-	  <td colspan="4">
-			<table id="tablaConceptos" border="1" width="100%" cellspacing='0' cellpadding='0'>	
-				<tr>	
-					<td width="13%" class="tableTitle"><siga:Idioma key="factSJCS.datosPagos.literal.concepto"/></td>
-					<td width="19%" class="tableTitle"><siga:Idioma key="factSJCS.datosPagos.literal.total"/></td>
-					<td width="19%" class="tableTitle"><siga:Idioma key="factSJCS.datosPagos.literal.pendiente"/></td>
-					<td width="30%" class="tableTitle"><siga:Idioma key="factSJCS.datosPagos.literal.aPagar"/></td>
-					<td width="19%" class="tableTitle"><siga:Idioma key="factSJCS.datosPagos.literal.restante"/></td>
-				</tr>
-				
-				<!-- OFICIO -->
-				<tr id="filaOficio">	
-					<td class="labelText">
-						<siga:Idioma key="factSJCS.datosPagos.literal.Oficio"/>
-					</td>				
-					<td class="labelTextNum">
-						<input name="txtTotalOficio" id="txtTotalOficio" size="18" class="boxConsultaNumber" readonly="true" />
-					</td>
-					<td class="labelTextNum">
-						<input name="txtPendienteOficio" id="txtPendienteOficio" size="25" class="boxConsultaNumber" readonly="true" />	
-					</td>
-					<td class="labelTextNum" valign = "middle">
-						<% if (esNuevo || (esEdicion && estadoAbierto)){ %>
-							<input name="radioAPagarOficio" id="radioImporteOficio" value="importe" type="radio" onclick="cambiar('Oficio');" Checked/>
-							<input name="importeOficio" id="importeOficio" style="width:40%"  style="vertical-align: middle" class="<%=estiloNumber%>" onblur="actualizaConcepto('Oficio', totalOficio, importePendOficio, porcentajePendOficio);" onfocus="backup('importeOficio')" />&euro;	&nbsp;						
-							
-						  	<input name="radioApagarOficio" id="radioPorcentajeOficio" value="porcentaje" type="radio" onclick="cambiar('Oficio');" />
-							<input name="porcentajeOficio" id="porcentajeOficio" style="width:25%" style="vertical-align: middle" maxlength="6" class="boxConsultaNumber" readonly="true" onblur="actualizaConcepto('Oficio', totalOficio, importePendOficio, porcentajePendOficio);"	onfocus="backup('porcentajeOficio');" />&#37;				
-							
-						<% } else {%>
-							<input name="txtAPagarOficio" id="txtAPagarOficio" style="width:100%" class="boxConsultaNumber" readonly="true"/>
-							<input type="hidden" name="importeOficio" id="importeOficio"/>
-							<input type="hidden" name="porcentajeOficio" id="porcentajeOficio"/>
-						<% } %>
-					</td>
-					<td class="labelTextNum">
-						<input name="txtRestanteOficio" id="txtRestanteOficio" size="25" style="width:100%" class="boxConsultaNumber" readonly="true" />
-					</td>
-				</tr>
-				
-				<!-- GUARDIAS -->
-				<tr id="filaGuardias">		
-					<td class="labelText">
-						<siga:Idioma key="factSJCS.datosPagos.literal.Guardias"/>
-					</td>				
-					<td class="labelTextNum">
-						<input name="txtTotalGuardias" id="txtTotalGuardias" size="18" class="boxConsultaNumber" readonly="true"/>
-					</td>
-					<td class="labelTextNum">
-						<input name="txtPendienteGuardias" id="txtPendienteGuardias" size="25" class="boxConsultaNumber" readonly="true"/>	
-					</td>
-					<td class="labelTextNum" valign = "middle">
-						<% if (esNuevo || (esEdicion && estadoAbierto)){ %>
-							<input name="radioAPagarGuardias" id="radioImporteGuardias" value="importe" type="radio" onclick="cambiar('Guardias');" Checked/>
-							<input name="importeGuardias" id="importeGuardias" style="width:40%" style="vertical-align: middle" class="<%=estiloNumber%>" onblur="actualizaConcepto('Guardias', totalGuardias, importePendGuardias, porcentajePendGuardias);" onfocus="backup('importeGuardias');" />&euro;	&nbsp;						
-							
-						  	<input name="radioAPagarGuardias" id="radioPorcentajeGuardias" value="porcentaje" type="radio" onclick="cambiar('Guardias');"/>
-							<input name="porcentajeGuardias" id="porcentajeGuardias" style="width:25%" style="vertical-align: middle" maxlength="6" class="boxConsultaNumber" readonly="true"  									
-										onblur="actualizaConcepto('Guardias', totalGuardias, importePendGuardias, porcentajePendGuardias);"
-										onfocus="backup('porcentajeGuardias');" />&#37;						
+			<td class="labelText">
+				<siga:Idioma key="factSJCS.datosPagos.literal.fechaEstado"/>
+			</td>
+			<td class="labelText">
+				<html:text name="datosGeneralesPagoForm" property="fechaEstado" value='<%=fechaEstado%>' styleClass="boxConsulta" readOnly="true"></html:text>	
+			</td>
+		</tr>
 
-						<% } else {%>
-							<input name="txtAPagarGuardias" id="txtAPagarGuardias" style="width:100%" class="boxConsultaNumber" readonly="true"/>
-							<input type="hidden" name="importeGuardias" id="importeGuardias"/>
-							<input type="hidden" name="porcentajeGuardias" id="porcentajeGuardias"/>
-						<% } %>
-					</td>
-					<td class="labelTextNum">
-						<input name="txtRestanteGuardias" id="txtRestanteGuardias" size="25" class="boxConsultaNumber" readonly="true"/>
-					</td>
-				</tr>
+		<!-- FILA -->
+		<!-- DATOS DE LA FACTURACION -->
+		<tr>				
+		  <td colspan="4">
+			<siga:ConjCampos leyenda="factSJCS.datosGenerales.cabecera">
+			<table class="tablaCampos" align="center" border="0">
+			<tr>
+				<td class="labelText">
+					<siga:Idioma key="factSJCS.datosPagos.literal.importeFacturado"/>
+				</td>
+				<%
+				if (esVerEditar) {
+				%>
+				<td class="labelText" valign="middle">
+					<html:text name="datosGeneralesPagoForm" property="importeFacturado" value="<%= (UtilidadesString.formatoImporte(UtilidadesNumero.redondea(Double.parseDouble(importeFacturado.toString()),2))) %>"
+					size="20" style="vertical-align: middle" styleClass="boxConsultaNumber" readOnly="true"/>
+					&euro;&nbsp;
+				</td>				
+				<% } else { 
+				%>
+				<td class="labelText" valign="middle">
+					<html:text name="datosGeneralesPagoForm" property="importeFacturado" value=""
+					size="20" style="vertical-align: middle" styleClass="boxConsultaNumber" readOnly="true"/>
+					&euro;&nbsp;
+				</td>			
+				<% } 
+				%>
 				
-				<!-- EJG -->
-				<tr id="filaEJG">				
-					<td class="labelText">
-						<siga:Idioma key="factSJCS.datosPagos.literal.EJG"/>
-					</td>				
-					<td class="labelTextNum">
-						<input name="txtTotalEJG" id="txtTotalEJG" size="18" class="boxConsultaNumber" readonly="true"/>
-					</td>
-					<td class="labelTextNum">
-						<input name="txtPendienteEJG" id="txtPendienteEJG" size="25" class="boxConsultaNumber" readonly="true"/>	
-					</td>
-					<td class="labelTextNum" valign = "middle">
-						<% if (esNuevo || (esEdicion && estadoAbierto)){ %>
-							<input name="radioAPagarEJG" id="radioImporteEJG" value="importe" type="radio" onclick="cambiar('EJG');" Checked/>
-							<input name="importeEJG" id="importeEJG" style="width:40%" style="vertical-align: middle" class="<%=estiloNumber%>" onblur="actualizaConcepto('EJG', totalEJG, importePendEJG, porcentajePendEJG);" onfocus="backup('importeEJG');" />&euro;	&nbsp;						
-
-						  	<input name="radioAPagarEJG" id="radioPorcentajeEJG" value="porcentaje" type="radio" onclick="cambiar('EJG');"/>
-							<input name="porcentajeEJG" id="porcentajeEJG" style="width:25%" style="vertical-align: middle" maxlength="6" class="boxConsultaNumber" readonly="true" onblur="actualizaConcepto('EJG', totalEJG, importePendEJG, porcentajePendEJG);" onfocus="backup('porcentajeEJG');" />&#37;						
-							
-						<% } else {%>
-							<input name="txtAPagarEJG" id="txtAPagarEJG" style="width:100%" class="boxConsultaNumber" readonly="true"/>
-							<input type="hidden" name="importeEJG" id="importeEJG"/>
-							<input type="hidden" name="porcentajeEJG" id="porcentajeEJG"/>
-						<% } %>
-					</td>
-					<td class="labelTextNum">
-						<input name="txtRestanteEJG" id="txtRestanteEJG" size="25" class="boxConsultaNumber" readonly="true"/>
-					</td>
-				</tr>
-				
-				<!-- SOJ -->
-				<tr id="filaSOJ">	
-					<td class="labelText">
-						<siga:Idioma key="factSJCS.datosPagos.literal.SOJ"/>
-					</td>				
-					<td class="labelTextNum">
-						<input name="txtTotalSOJ" id="txtTotalSOJ" size="18" class="boxConsultaNumber" readonly="true"/>
-					</td>
-					<td class="labelTextNum">
-						<input name="txtPendienteSOJ" id="txtPendienteSOJ" size="25" class="boxConsultaNumber" readonly="true"/>	
-					</td>
-					<td class="labelTextNum" valign = "middle">
-						<% if (esNuevo || (esEdicion && estadoAbierto)){ %>
-							<input name="radioAPagarSOJ" id="radioImporteSOJ" value="importe" type="radio" onclick="cambiar('SOJ');" Checked/>
-							<input name="importeSOJ" id="importeSOJ" style="width:40%" style="vertical-align: middle" class="<%=estiloNumber%>" onblur="actualizaConcepto('SOJ', totalSOJ, importePendSOJ, porcentajePendSOJ);" onfocus="backup('importeSOJ');" />&euro;	&nbsp;						
-							
-						  	<input name="radioAPagarSOJ" id="radioPorcentajeSOJ" value="porcentaje" type="radio" onclick="cambiar('SOJ');"/>
-							<input name="porcentajeSOJ" id="porcentajeSOJ" style="width:25%" style="vertical-align: middle" maxlength="6" class="boxConsultaNumber" readonly="true" onblur="actualizaConcepto('SOJ', totalSOJ, importePendSOJ, porcentajePendSOJ);" onfocus="backup('porcentajeSOJ');" />&#37;						
-							
-						<% } else {%>
-							<input name="txtAPagarSOJ" id="txtAPagarSOJ" style="width:100%" class="boxConsultaNumber" readonly="true"/>
-							<input type="hidden" name="importeSOJ" id="importeSOJ"/>
-							<input type="hidden" name="porcentajeSOJ" id="porcentajeSOJ"/>
-						<% } %>
-					</td>
-					<td class="labelTextNum">
-						<input name="txtRestanteSOJ" id="txtRestanteSOJ" size="25" class="boxConsultaNumber" readonly="true"/>
-					</td>
-				</tr>				
-			</table>			
-		</td>
-
-	</tr>
+				<td class="labelText">
+					<siga:Idioma key="factSJCS.datosPagos.literal.fechaInicio"/>
+				</td>
+				<td class="labelText">
+					<html:text name="datosGeneralesPagoForm" property="fechaDesde" value='<%=fechaDesde%>' size="10" styleClass="boxConsulta" readOnly="true" />
+				</td>
+			</tr>
+			<tr>
+				<td class="labelText">
+					<siga:Idioma key="factSJCS.datosFacturacion.literal.totalPagado"/>
+				</td>
+				<%
+				if (esVerEditar) {
+				%>
+				<td class="labelText" valign = "middle">
+					<html:text name="datosGeneralesPagoForm" property="importePagado" value="<%= (UtilidadesString.formatoImporte(UtilidadesNumero.redondea(Double.parseDouble(importePagado.toString()),2))) %>" 
+					size="20" style="vertical-align: middle" styleClass="boxConsultaNumber" readonly="true" />
+					&euro;&nbsp;
+				</td>
+				<% } else { 
+				%>	
+				<td class="labelText" valign = "middle">
+					<html:text name="datosGeneralesPagoForm" property="importePagado" value="" 
+					size="20" style="vertical-align: middle" styleClass="boxConsultaNumber" readonly="true" />
+					&euro;&nbsp;
+				</td>			
+				<% } 
+				%>					
+			
+				<td class="labelText">
+					<siga:Idioma key="factSJCS.datosPagos.literal.fechaFin"/>
+				</td>
+				<td class="labelText">
+					<html:text name="datosGeneralesPagoForm" property="fechaHasta" value='<%=fechaHasta%>' size="10" styleClass="boxConsulta" readOnly="true"></html:text>
+				</td>				
+			</tr>
+			</table>
+			</siga:ConjCampos>
+		  </td>
+		</tr>
+		
+		<tr><td colspan="4">&nbsp;</td></tr>
+		
+		<!-- FILA -->
+		<!-- Datos sobre el reparto -->
+		<tr>
+			<td colspan="4" id="titulo" class="titulitosDatos">
+				<siga:Idioma key="factSJCS.datosPagos.titulo.reparto"/>
+			</td>
+		</tr>
+		<tr>
+		  <td colspan="4">
+				<table id="tablaConceptos" border="1" width="100%" cellspacing='0' cellpadding='0'>	
+					<tr>	
+						<td width="13%" class="tableTitle"><siga:Idioma key="factSJCS.datosPagos.literal.concepto"/></td>
+						<td width="19%" class="tableTitle"><siga:Idioma key="factSJCS.datosPagos.literal.total"/></td>
+						<td width="19%" class="tableTitle"><siga:Idioma key="factSJCS.datosPagos.literal.pendiente"/></td>
+						<td width="30%" class="tableTitle"><siga:Idioma key="factSJCS.datosPagos.literal.aPagar"/></td>
+						<td width="19%" class="tableTitle"><siga:Idioma key="factSJCS.datosPagos.literal.restante"/></td>
+					</tr>
+					
+					<!-- OFICIO -->
+					<tr id="filaOficio">	
+						<td class="labelText">
+							<siga:Idioma key="factSJCS.datosPagos.literal.Oficio"/>
+						</td>				
+						<td class="labelTextNum">
+							<input name="txtTotalOficio" id="txtTotalOficio" size="18" class="boxConsultaNumber" readonly="true" />
+						</td>
+						<td class="labelTextNum">
+							<input name="txtPendienteOficio" id="txtPendienteOficio" size="25" class="boxConsultaNumber" readonly="true" />	
+						</td>
+						<td class="labelTextNum" valign = "middle">
+							<% if (esNuevo || (esEdicion && estadoAbierto)){ %>
+								<input name="radioAPagarOficio" id="radioImporteOficio" value="importe" type="radio" onclick="cambiar('Oficio');" Checked/>
+								<input name="importeOficio" id="importeOficio" style="width:40%"  style="vertical-align: middle" class="<%=estiloNumber%>" onblur="actualizaConcepto('Oficio', totalOficio, importePendOficio, porcentajePendOficio);" onfocus="backup('importeOficio')" />&euro;	&nbsp;						
+								
+							  	<input name="radioApagarOficio" id="radioPorcentajeOficio" value="porcentaje" type="radio" onclick="cambiar('Oficio');" />
+								<input name="porcentajeOficio" id="porcentajeOficio" style="width:25%" style="vertical-align: middle" maxlength="6" class="boxConsultaNumber" readonly="true" onblur="actualizaConcepto('Oficio', totalOficio, importePendOficio, porcentajePendOficio);"	onfocus="backup('porcentajeOficio');" />&#37;				
+								
+							<% } else {%>
+								<input name="txtAPagarOficio" id="txtAPagarOficio" style="width:100%" class="boxConsultaNumber" readonly="true"/>
+								<input type="hidden" name="importeOficio" id="importeOficio"/>
+								<input type="hidden" name="porcentajeOficio" id="porcentajeOficio"/>
+							<% } %>
+						</td>
+						<td class="labelTextNum">
+							<input name="txtRestanteOficio" id="txtRestanteOficio" size="25" style="width:100%" class="boxConsultaNumber" readonly="true" />
+						</td>
+					</tr>
+					
+					<!-- GUARDIAS -->
+					<tr id="filaGuardias">		
+						<td class="labelText">
+							<siga:Idioma key="factSJCS.datosPagos.literal.Guardias"/>
+						</td>				
+						<td class="labelTextNum">
+							<input name="txtTotalGuardias" id="txtTotalGuardias" size="18" class="boxConsultaNumber" readonly="true"/>
+						</td>
+						<td class="labelTextNum">
+							<input name="txtPendienteGuardias" id="txtPendienteGuardias" size="25" class="boxConsultaNumber" readonly="true"/>	
+						</td>
+						<td class="labelTextNum" valign = "middle">
+							<% if (esNuevo || (esEdicion && estadoAbierto)){ %>
+								<input name="radioAPagarGuardias" id="radioImporteGuardias" value="importe" type="radio" onclick="cambiar('Guardias');" Checked/>
+								<input name="importeGuardias" id="importeGuardias" style="width:40%" style="vertical-align: middle" class="<%=estiloNumber%>" onblur="actualizaConcepto('Guardias', totalGuardias, importePendGuardias, porcentajePendGuardias);" onfocus="backup('importeGuardias');" />&euro;	&nbsp;						
+								
+							  	<input name="radioAPagarGuardias" id="radioPorcentajeGuardias" value="porcentaje" type="radio" onclick="cambiar('Guardias');"/>
+								<input name="porcentajeGuardias" id="porcentajeGuardias" style="width:25%" style="vertical-align: middle" maxlength="6" class="boxConsultaNumber" readonly="true"  									
+											onblur="actualizaConcepto('Guardias', totalGuardias, importePendGuardias, porcentajePendGuardias);"
+											onfocus="backup('porcentajeGuardias');" />&#37;						
+	
+							<% } else {%>
+								<input name="txtAPagarGuardias" id="txtAPagarGuardias" style="width:100%" class="boxConsultaNumber" readonly="true"/>
+								<input type="hidden" name="importeGuardias" id="importeGuardias"/>
+								<input type="hidden" name="porcentajeGuardias" id="porcentajeGuardias"/>
+							<% } %>
+						</td>
+						<td class="labelTextNum">
+							<input name="txtRestanteGuardias" id="txtRestanteGuardias" size="25" class="boxConsultaNumber" readonly="true"/>
+						</td>
+					</tr>
+					
+					<!-- EJG -->
+					<tr id="filaEJG">				
+						<td class="labelText">
+							<siga:Idioma key="factSJCS.datosPagos.literal.EJG"/>
+						</td>				
+						<td class="labelTextNum">
+							<input name="txtTotalEJG" id="txtTotalEJG" size="18" class="boxConsultaNumber" readonly="true"/>
+						</td>
+						<td class="labelTextNum">
+							<input name="txtPendienteEJG" id="txtPendienteEJG" size="25" class="boxConsultaNumber" readonly="true"/>	
+						</td>
+						<td class="labelTextNum" valign = "middle">
+							<% if (esNuevo || (esEdicion && estadoAbierto)){ %>
+								<input name="radioAPagarEJG" id="radioImporteEJG" value="importe" type="radio" onclick="cambiar('EJG');" Checked/>
+								<input name="importeEJG" id="importeEJG" style="width:40%" style="vertical-align: middle" class="<%=estiloNumber%>" onblur="actualizaConcepto('EJG', totalEJG, importePendEJG, porcentajePendEJG);" onfocus="backup('importeEJG');" />&euro;	&nbsp;						
+	
+							  	<input name="radioAPagarEJG" id="radioPorcentajeEJG" value="porcentaje" type="radio" onclick="cambiar('EJG');"/>
+								<input name="porcentajeEJG" id="porcentajeEJG" style="width:25%" style="vertical-align: middle" maxlength="6" class="boxConsultaNumber" readonly="true" onblur="actualizaConcepto('EJG', totalEJG, importePendEJG, porcentajePendEJG);" onfocus="backup('porcentajeEJG');" />&#37;						
+								
+							<% } else {%>
+								<input name="txtAPagarEJG" id="txtAPagarEJG" style="width:100%" class="boxConsultaNumber" readonly="true"/>
+								<input type="hidden" name="importeEJG" id="importeEJG"/>
+								<input type="hidden" name="porcentajeEJG" id="porcentajeEJG"/>
+							<% } %>
+						</td>
+						<td class="labelTextNum">
+							<input name="txtRestanteEJG" id="txtRestanteEJG" size="25" class="boxConsultaNumber" readonly="true"/>
+						</td>
+					</tr>
+					
+					<!-- SOJ -->
+					<tr id="filaSOJ">	
+						<td class="labelText">
+							<siga:Idioma key="factSJCS.datosPagos.literal.SOJ"/>
+						</td>				
+						<td class="labelTextNum">
+							<input name="txtTotalSOJ" id="txtTotalSOJ" size="18" class="boxConsultaNumber" readonly="true"/>
+						</td>
+						<td class="labelTextNum">
+							<input name="txtPendienteSOJ" id="txtPendienteSOJ" size="25" class="boxConsultaNumber" readonly="true"/>	
+						</td>
+						<td class="labelTextNum" valign = "middle">
+							<% if (esNuevo || (esEdicion && estadoAbierto)){ %>
+								<input name="radioAPagarSOJ" id="radioImporteSOJ" value="importe" type="radio" onclick="cambiar('SOJ');" Checked/>
+								<input name="importeSOJ" id="importeSOJ" style="width:40%" style="vertical-align: middle" class="<%=estiloNumber%>" onblur="actualizaConcepto('SOJ', totalSOJ, importePendSOJ, porcentajePendSOJ);" onfocus="backup('importeSOJ');" />&euro;	&nbsp;						
+								
+							  	<input name="radioAPagarSOJ" id="radioPorcentajeSOJ" value="porcentaje" type="radio" onclick="cambiar('SOJ');"/>
+								<input name="porcentajeSOJ" id="porcentajeSOJ" style="width:25%" style="vertical-align: middle" maxlength="6" class="boxConsultaNumber" readonly="true" onblur="actualizaConcepto('SOJ', totalSOJ, importePendSOJ, porcentajePendSOJ);" onfocus="backup('porcentajeSOJ');" />&#37;						
+								
+							<% } else {%>
+								<input name="txtAPagarSOJ" id="txtAPagarSOJ" style="width:100%" class="boxConsultaNumber" readonly="true"/>
+								<input type="hidden" name="importeSOJ" id="importeSOJ"/>
+								<input type="hidden" name="porcentajeSOJ" id="porcentajeSOJ"/>
+							<% } %>
+						</td>
+						<td class="labelTextNum">
+							<input name="txtRestanteSOJ" id="txtRestanteSOJ" size="25" class="boxConsultaNumber" readonly="true"/>
+						</td>
+					</tr>				
+				</table>			
+			</td>
+	
+		</tr>
 
 	<!-- FILA -->	
 	</table>
