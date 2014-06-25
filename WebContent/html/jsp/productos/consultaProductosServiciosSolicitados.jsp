@@ -220,7 +220,15 @@
 			
 			<siga:Table
 	 			name="productos"
-	 			columnNames="pys.solicitudCompra.literal.fechaSolicitud,pys.solicitudCompra.literal.idPeticion,pys.solicitudCompra.literal.concepto,pys.solicitudCompra.literal.formaPago,pys.solicitudCompra.literal.nCuenta,pys.solicitudCompra.literal.cantidad,pys.solicitudCompra.literal.precio,pys.solicitudCompra.literal.estadoPago,pys.solicitarBaja.literal.estadoCompra,"
+	 			columnNames="pys.solicitudCompra.literal.fechaSolicitud,
+			 				pys.solicitudCompra.literal.idPeticion,
+			 				pys.solicitudCompra.literal.concepto,
+			 				pys.solicitudCompra.literal.formaPago,
+			 				pys.solicitudCompra.literal.nCuenta,
+			 				pys.solicitudCompra.literal.cantidad,
+			 				pys.solicitudCompra.literal.precio,
+			 				pys.solicitudCompra.literal.estadoPago,
+			 				pys.solicitarBaja.literal.estadoCompra,"
 				columnSizes="8,7,15,13,19,6,11,10,6,5"
 				fixedHeight="48%">
 <% 				
@@ -290,7 +298,7 @@
 		  						<td><%=UtilidadesString.mostrarDatoJSP(hash.get("CONCEPTO"))%></td>
 		  						<td><%=UtilidadesString.mostrarDatoJSP(hash.get("FORMAPAGO"))%></td>
 		  						<td><%=cuenta%></td>
-		  						<td><%=UtilidadesString.mostrarDatoJSP(hash.get(PysProductosSolicitadosBean.C_CANTIDAD))%></td>
+		  						<td align="right"><%=UtilidadesString.mostrarDatoJSP(hash.get(PysProductosSolicitadosBean.C_CANTIDAD))%></td>
 		  						<td align="right"><%=UtilidadesNumero.formatoCampo(precio)%>&nbsp;&euro;</td>		  								
 		  						<td><siga:Idioma key="<%=estadoPago%>"/></td>
 		  						<td>
@@ -325,7 +333,15 @@
 		
 			<siga:Table 
 	 			name="servicios"
-	 			columnNames="pys.solicitudCompra.literal.fechaSolicitud,pys.solicitudCompra.literal.idPeticion,pys.solicitudCompra.literal.concepto,pys.solicitudCompra.literal.formaPago,pys.solicitudCompra.literal.nCuenta,pys.solicitudCompra.literal.cantidad,pys.solicitudCompra.literal.precio,pys.solicitudCompra.literal.estadoPago,pys.solicitarBaja.literal.estadoCompra,"  
+	 			columnNames="pys.solicitudCompra.literal.fechaSolicitud,
+	 						pys.solicitudCompra.literal.idPeticion,
+	 						pys.solicitudCompra.literal.concepto,
+	 						pys.solicitudCompra.literal.formaPago,
+	 						pys.solicitudCompra.literal.nCuenta,
+	 						pys.solicitudCompra.literal.cantidad,
+	 						pys.solicitudCompra.literal.precio,
+	 						pys.solicitudCompra.literal.estadoPago,
+	 						pys.solicitarBaja.literal.estadoCompra,"  
 				columnSizes="8,7,15,13,19,6,11,10,6,5">
 			
 <%
@@ -395,7 +411,7 @@
 								<td><%=UtilidadesString.mostrarDatoJSP(hash.get("CONCEPTO"))%></td>			  					
 			  					<td><%=UtilidadesString.mostrarDatoJSP(hash.get("FORMAPAGO"))%></td>			  					
 			  					<td><%=cuenta%></td>			  					
-			  					<td><%=UtilidadesString.mostrarDatoJSP(hash.get(PysServiciosSolicitadosBean.C_CANTIDAD))%></td>			  					
+			  					<td align="right"><%=UtilidadesString.mostrarDatoJSP(hash.get(PysServiciosSolicitadosBean.C_CANTIDAD))%></td>			  					
 			  					<td><%=UtilidadesNumero.formato(precio)%>&nbsp;&euro;&nbsp;/&nbsp;<%=UtilidadesString.mostrarDatoJSP(hash.get("SERVICIO_DESCRIPCION_PERIODICIDAD"))%></td>			  					
 			  					<td><siga:Idioma key="<%=estadoPago%>"/></td>			  					
 			  					<td>

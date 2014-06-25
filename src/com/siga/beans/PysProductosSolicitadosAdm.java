@@ -351,115 +351,142 @@ public class PysProductosSolicitadosAdm extends MasterBeanAdministrador {
 									PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_CANTIDAD + ", " +
 									PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_VALOR 	+ ", " +
 									PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_PORCENTAJEIVA + ", " +
-									//INC_07291_SIGA Porcentajes de IVA.
-								       "PYS_TIPOIVA.VALOR VALORIVA,"+
-									
 									PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_ACEPTADO + ", " +
-									PysPeticionCompraSuscripcionBean.T_NOMBRETABLA + "." + PysPeticionCompraSuscripcionBean.C_TIPOPETICION + ", " +
-									PysPeticionCompraSuscripcionBean.T_NOMBRETABLA + "." + PysPeticionCompraSuscripcionBean.C_FECHA + ", " +
 									PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDFORMAPAGO + ", " +
 									PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDTIPOENVIOS + ", " +
 									PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_NOFACTURABLE + ", " +
 									
+									PysPeticionCompraSuscripcionBean.T_NOMBRETABLA + "." + PysPeticionCompraSuscripcionBean.C_TIPOPETICION + ", " +
+									PysPeticionCompraSuscripcionBean.T_NOMBRETABLA + "." + PysPeticionCompraSuscripcionBean.C_FECHA + ", " +
+					
+         							" CASE WHEN (" + PysPeticionCompraSuscripcionBean.T_NOMBRETABLA + "." + PysPeticionCompraSuscripcionBean.C_TIPOPETICION + " = 'B') THEN " +
+         									PysPeticionCompraSuscripcionBean.T_NOMBRETABLA + "." + PysPeticionCompraSuscripcionBean.C_IDPETICIONALTA +
+         								" ELSE ( " +
+         									" SELECT PC." + PysPeticionCompraSuscripcionBean.C_IDPETICION + 
+         									" FROM " + PysPeticionCompraSuscripcionBean.T_NOMBRETABLA + " PC, " +
+         									PysProductosSolicitadosBean.T_NOMBRETABLA + " PS " + 
+     										" WHERE PS." + PysProductosSolicitadosBean.C_IDINSTITUCION + " = PC." + PysPeticionCompraSuscripcionBean.C_IDINSTITUCION + 
+     											" AND PS." + PysProductosSolicitadosBean.C_IDPETICION + " = PC." + PysPeticionCompraSuscripcionBean.C_IDPETICION +                                   
+     											" AND PC." + PysPeticionCompraSuscripcionBean.C_IDPETICIONALTA + " = " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDPETICION +
+     											" AND PS." + PysProductosSolicitadosBean.C_IDINSTITUCION + " = " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDINSTITUCION +
+     											" AND PS." + PysProductosSolicitadosBean.C_IDTIPOPRODUCTO + " = " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDTIPOPRODUCTO +
+     											" AND PS." + PysProductosSolicitadosBean.C_IDPRODUCTO + " = " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDPRODUCTO +
+     											" AND PS." + PysProductosSolicitadosBean.C_IDPRODUCTOINSTITUCION + " = " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDPRODUCTOINSTITUCION +
+     											" AND PS." + PysProductosSolicitadosBean.C_IDPERSONA + " = " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDPERSONA +
+										" ) " +
+									" END AS IDPETICIONRELACIONADA, " +     
+										
+									
+									//INC_07291_SIGA Porcentajes de IVA
+									PysTipoIvaBean.T_NOMBRETABLA + "." + PysTipoIvaBean.C_VALOR + " AS VALORIVA, " +
+									
 									// Forma Pago
-									"(SELECT " + UtilidadesMultidioma.getCampoMultidioma(PysFormaPagoBean.T_NOMBRETABLA + "." + PysFormaPagoBean.C_DESCRIPCION,this.usrbean.getLanguage()) +
-									" FROM " + PysFormaPagoBean.T_NOMBRETABLA + 
-									" WHERE " + PysFormaPagoBean.T_NOMBRETABLA + "." + PysFormaPagoBean.C_IDFORMAPAGO + " = " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDFORMAPAGO +
+									" ( " +
+										"SELECT " + UtilidadesMultidioma.getCampoMultidioma(PysFormaPagoBean.T_NOMBRETABLA + "." + PysFormaPagoBean.C_DESCRIPCION, this.usrbean.getLanguage()) +
+										" FROM " + PysFormaPagoBean.T_NOMBRETABLA + 
+										" WHERE " + PysFormaPagoBean.T_NOMBRETABLA + "." + PysFormaPagoBean.C_IDFORMAPAGO + " = " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDFORMAPAGO +
 									") AS FORMAPAGO, " +
 									
 
 									// Fecha Efectiva:
-									"NVL((SELECT " + PysCompraBean.T_NOMBRETABLA+ "." +PysCompraBean.C_FECHA +
-									" FROM " + PysCompraBean.T_NOMBRETABLA +
-									" WHERE " + PysCompraBean.T_NOMBRETABLA+"."+PysCompraBean.C_IDINSTITUCION+ "=" +PysProductosSolicitadosBean.T_NOMBRETABLA+"."+PysProductosSolicitadosBean.C_IDINSTITUCION +
-									  " AND " + PysCompraBean.T_NOMBRETABLA+"."+PysCompraBean.C_IDPETICION+ "=" +PysProductosSolicitadosBean.T_NOMBRETABLA+"."+PysProductosSolicitadosBean.C_IDPETICION +
-									  " AND " + PysCompraBean.T_NOMBRETABLA+"."+PysCompraBean.C_IDTIPOPRODUCTO+ "=" +PysProductosSolicitadosBean.T_NOMBRETABLA+"."+PysProductosSolicitadosBean.C_IDTIPOPRODUCTO +
-									  " AND " + PysCompraBean.T_NOMBRETABLA+"."+PysCompraBean.C_IDPRODUCTO+ "=" +PysProductosSolicitadosBean.T_NOMBRETABLA+"."+PysProductosSolicitadosBean.C_IDPRODUCTO +
-									  " AND " + PysCompraBean.T_NOMBRETABLA+"."+PysCompraBean.C_IDPRODUCTOINSTITUCION+ "=" +PysProductosSolicitadosBean.T_NOMBRETABLA+"."+PysProductosSolicitadosBean.C_IDPRODUCTOINSTITUCION +
-									"),(SELECT petco.fecha" +
-									"   FROM PYS_PETICIONCOMPRASUSCRIPCION petco," +
-									"   PYS_PRODUCTOSSOLICITADOS      prodsol" +
-									"   WHERE petco.IDINSTITUCION = 2040" +
-									"   AND petco.IDPERSONA = PYS_PRODUCTOSSOLICITADOS.idPersona" +
-									"   and petco.idestadopeticion <> 10" +
-									"   AND petco.TIPOPETICION = 'B'" +
-									"   and prodsol.aceptado = 'B'" +
-									"   and petco.idpeticionalta is not null" +
-									"   AND petco.IDPETICION = prodsol.IDPETICION" +
-									"   AND prodsol.IDTIPOPRODUCTO =PYS_PRODUCTOSSOLICITADOS.Idtipoproducto" +
-									"   AND prodsol.IDPRODUCTO = PYS_PRODUCTOSSOLICITADOS.Idproducto" +
-									"   AND prodsol.IDPRODUCTOINSTITUCION =PYS_PRODUCTOSSOLICITADOS.Idproductoinstitucion" +
-									"   AND prodsol.IDINSTITUCION =PYS_PRODUCTOSSOLICITADOS.IDINSTITUCION" +
-									"   AND prodsol.IDPETICION = PYS_PRODUCTOSSOLICITADOS.IDPETICION" +
-									"   AND prodsol.IDPERSONA = petco.IDPERSONA)) AS FECHAEFEC, " +
-									
+									" NVL( " + 
+										" ( " +
+											" SELECT " + PysCompraBean.T_NOMBRETABLA + "." +PysCompraBean.C_FECHA +
+											" FROM " + PysCompraBean.T_NOMBRETABLA +
+											" WHERE " + PysCompraBean.T_NOMBRETABLA + "." + PysCompraBean.C_IDINSTITUCION + " = " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDINSTITUCION +
+												" AND " + PysCompraBean.T_NOMBRETABLA + "." + PysCompraBean.C_IDPETICION + " = " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDPETICION +
+												" AND " + PysCompraBean.T_NOMBRETABLA + "." + PysCompraBean.C_IDTIPOPRODUCTO + " = " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDTIPOPRODUCTO +
+												" AND " + PysCompraBean.T_NOMBRETABLA + "." + PysCompraBean.C_IDPRODUCTO + " = " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDPRODUCTO +
+												" AND " + PysCompraBean.T_NOMBRETABLA + "." + PysCompraBean.C_IDPRODUCTOINSTITUCION + " = " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDPRODUCTOINSTITUCION +
+										" ) , ( " +
+											" SELECT PC." + PysPeticionCompraSuscripcionBean.C_FECHA + 
+											" FROM " + PysPeticionCompraSuscripcionBean.T_NOMBRETABLA + " PC, " +
+												PysProductosSolicitadosBean.T_NOMBRETABLA + " PS " +
+											" WHERE PS." + PysProductosSolicitadosBean.C_IDINSTITUCION + " = PC." + PysPeticionCompraSuscripcionBean.C_IDINSTITUCION + 
+     											" AND PS." + PysProductosSolicitadosBean.C_IDPETICION + " = PC." + PysPeticionCompraSuscripcionBean.C_IDPETICION +
+     											" AND PS." + PysProductosSolicitadosBean.C_IDPERSONA + " = PC." + PysPeticionCompraSuscripcionBean.C_IDPERSONA +
+												" AND PC." + PysPeticionCompraSuscripcionBean.C_IDESTADOPETICION + " <> " + ClsConstants.ESTADO_PETICION_COMPRA_PENDIENTE +
+												" AND PC." + PysPeticionCompraSuscripcionBean.C_TIPOPETICION + " = 'B' " +
+												" AND PC." + PysPeticionCompraSuscripcionBean.C_IDPETICIONALTA + " IS NOT NULL " +
+												" AND PS." + PysProductosSolicitadosBean.C_ACEPTADO + " = 'B' " +	
+     											" AND PS." + PysProductosSolicitadosBean.C_IDINSTITUCION + " = " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDINSTITUCION +
+     											" AND PS." + PysProductosSolicitadosBean.C_IDTIPOPRODUCTO + " = " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDTIPOPRODUCTO +
+     											" AND PS." + PysProductosSolicitadosBean.C_IDPRODUCTO + " = " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDPRODUCTO +
+     											" AND PS." + PysProductosSolicitadosBean.C_IDPRODUCTOINSTITUCION + " = " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDPRODUCTOINSTITUCION +
+     											" AND PS." + PysProductosSolicitadosBean.C_IDPETICION + " = " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDPETICION +
+     											" AND PS." + PysProductosSolicitadosBean.C_IDPERSONA + " = " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDPERSONA +
+										" ) " +
+									" ) AS FECHAEFEC, " +									
 									
 									// Concepto
-									"(SELECT " + PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_DESCRIPCION + 
-									" FROM " + PysProductosInstitucionBean.T_NOMBRETABLA + 
-									" WHERE " + PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_IDINSTITUCION + " = " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDINSTITUCION + 
-									" AND " + PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_IDTIPOPRODUCTO + " = " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDTIPOPRODUCTO +
-									" AND " + PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_IDPRODUCTO + " = " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDPRODUCTO +
-									" AND " + PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_IDPRODUCTOINSTITUCION + " = " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDPRODUCTOINSTITUCION +
-									") AS CONCEPTO, " +
+									" ( " +
+										" SELECT " + PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_DESCRIPCION + 
+										" FROM " + PysProductosInstitucionBean.T_NOMBRETABLA + 
+										" WHERE " + PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_IDINSTITUCION + " = " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDINSTITUCION + 
+											" AND " + PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_IDTIPOPRODUCTO + " = " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDTIPOPRODUCTO +
+											" AND " + PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_IDPRODUCTO + " = " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDPRODUCTO +
+											" AND " + PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_IDPRODUCTOINSTITUCION + " = " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDPRODUCTOINSTITUCION +
+									" ) AS CONCEPTO, " +
 
 									// Solicitar Baja
-									"(SELECT " + PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_SOLICITARBAJA + 
-									" FROM " + PysProductosInstitucionBean.T_NOMBRETABLA + 
-									" WHERE " + PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_IDINSTITUCION + " = " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDINSTITUCION + 
-									" AND " + PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_IDTIPOPRODUCTO + " = " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDTIPOPRODUCTO +
-									" AND " + PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_IDPRODUCTO + " = " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDPRODUCTO +
-									" AND " + PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_IDPRODUCTOINSTITUCION + " = " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDPRODUCTOINSTITUCION +
-									") AS SOLICITARBAJA, " +
+									" ( " +
+										" SELECT " + PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_SOLICITARBAJA + 
+										" FROM " + PysProductosInstitucionBean.T_NOMBRETABLA + 
+										" WHERE " + PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_IDINSTITUCION + " = " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDINSTITUCION + 
+											" AND " + PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_IDTIPOPRODUCTO + " = " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDTIPOPRODUCTO +
+											" AND " + PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_IDPRODUCTO + " = " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDPRODUCTO +
+											" AND " + PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_IDPRODUCTOINSTITUCION + " = " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDPRODUCTOINSTITUCION +
+									" ) AS SOLICITARBAJA, " +
 
 									// Cuenta
-									"NVL((SELECT "+ CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_IBAN  +
-										" FROM " + CenCuentasBancariasBean.T_NOMBRETABLA + 
-										" WHERE " + CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_IDCUENTA + " = " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDCUENTA +
-										" AND " + CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_IDINSTITUCION + " = " + idInstitucion +
-										" AND " + CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_IDPERSONA + " = " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDPERSONA + 
-									"),'-') AS NCUENTA, " +
+									" NVL( " +
+										" ( " +
+											" SELECT " + CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_IBAN  +
+											" FROM " + CenCuentasBancariasBean.T_NOMBRETABLA + 
+											" WHERE " + CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_IDCUENTA + " = " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDCUENTA +
+												" AND " + CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_IDINSTITUCION + " = " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDINSTITUCION + 
+												" AND " + CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_IDPERSONA + " = " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDPERSONA + 
+										" ),'-' " +
+									" ) AS NCUENTA, " +
 
-									// Estado Pago
-									/*
-									" CASE " + 	
-									" WHEN (SELECT 1 FROM " + PysCompraBean.T_NOMBRETABLA +
-											  " WHERE " + PysCompraBean.T_NOMBRETABLA + "." + PysCompraBean.C_IDINSTITUCION + " = " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDINSTITUCION + " AND " +
-														  PysCompraBean.T_NOMBRETABLA + "." + PysCompraBean.C_IDPETICION + " = " + PysProductosSolicitadosBean.C_IDPETICION+ " AND " +					
-														  PysCompraBean.T_NOMBRETABLA + "." + PysCompraBean.C_IDTIPOPRODUCTO + " = " + PysProductosSolicitadosBean.C_IDTIPOPRODUCTO + " AND " +					
-														  PysCompraBean.T_NOMBRETABLA + "." + PysCompraBean.C_IDPRODUCTO + " = " + PysProductosSolicitadosBean.C_IDPRODUCTO + " AND " +					
-														  PysCompraBean.T_NOMBRETABLA + "." + PysCompraBean.C_IDPRODUCTOINSTITUCION + " = " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDPRODUCTOINSTITUCION + " AND " +					
-														  PysCompraBean.T_NOMBRETABLA + "." + PysCompraBean.C_IDFACTURA + " <> null" +					
-									") = 1 " +
-									" THEN 'ENFACTURA'" +
-									" WHEN " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDFORMAPAGO + " = 10 " +
-									" THEN 'PAGADO'" +
-									" ELSE 'PENDIENTE' " +
-									" END AS ESTADOPAGO ";
-									*/
-									" F_SIGA_ESTADOCOMPRA(PYS_PRODUCTOSSOLICITADOS.IDINSTITUCION,PYS_PRODUCTOSSOLICITADOS.IDPETICION,PYS_PRODUCTOSSOLICITADOS.IDPRODUCTO,PYS_PRODUCTOSSOLICITADOS.IDTIPOPRODUCTO,PYS_PRODUCTOSSOLICITADOS.IDPRODUCTOINSTITUCION) AS ESTADOPAGO ," +
-									" F_SIGA_COMPROBAR_ANTICIPAR(PYS_PRODUCTOSSOLICITADOS.IDINSTITUCION,"+
-							        "            PYS_PRODUCTOSSOLICITADOS.IDTIPOPRODUCTO,"+
-							        "            PYS_PRODUCTOSSOLICITADOS.IDPRODUCTO,"+
-							        "            PYS_PRODUCTOSSOLICITADOS.IDPRODUCTOINSTITUCION,"+
-							        "            'P',"+
-							        "            PYS_PRODUCTOSSOLICITADOS.IDPETICION,"+
-							        "           PYS_PRODUCTOSSOLICITADOS.IDPERSONA,"+
-							        "            PYS_PRODUCTOSSOLICITADOS.VALOR || '#' || PYS_PRODUCTOSSOLICITADOS.PORCENTAJEIVA"+
-							        "           ) AS ANTICIPAR ";
+									" F_SIGA_ESTADOCOMPRA( " + 
+										PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDINSTITUCION + ", " +
+										PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDPETICION + ", " +
+										PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDPRODUCTO + ", " +
+										PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDTIPOPRODUCTO + ", " +
+										PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDPRODUCTOINSTITUCION + 
+									" ) AS ESTADOPAGO ," +
+									
+									" F_SIGA_COMPROBAR_ANTICIPAR( " +
+										PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDINSTITUCION + ", " +
+										PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDTIPOPRODUCTO + ", " +
+										PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDPRODUCTO + ", " +
+										PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDPRODUCTOINSTITUCION + ", " +
+										" 'P', " +
+										PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDPETICION + ", " +
+										PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDPERSONA + ", " +
+										PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_VALOR +
+											" || '#' || " +
+											PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_PORCENTAJEIVA +
+							        " ) AS ANTICIPAR ";
 										
-			String from  =  " FROM " + PysProductosSolicitadosBean.T_NOMBRETABLA + ", " + PysPeticionCompraSuscripcionBean.T_NOMBRETABLA+", PYS_TIPOIVA ";
+			String from  =  " FROM " + PysProductosSolicitadosBean.T_NOMBRETABLA + ", " + 
+								PysPeticionCompraSuscripcionBean.T_NOMBRETABLA + ", " + 
+								PysTipoIvaBean.T_NOMBRETABLA;
 			
 			String where =  " WHERE " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDINSTITUCION + " = " + idInstitucion +
-							" AND " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDPETICION + " = " + PysPeticionCompraSuscripcionBean.T_NOMBRETABLA + "." + PysPeticionCompraSuscripcionBean.C_IDPETICION + 
-							" AND " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDINSTITUCION + " = " + PysPeticionCompraSuscripcionBean.T_NOMBRETABLA + "." + PysPeticionCompraSuscripcionBean.C_IDINSTITUCION+
-							" AND PYS_TIPOIVA.IDTIPOIVA = PYS_PRODUCTOSSOLICITADOS.PORCENTAJEIVA ";
+								" AND " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDPETICION + " = " + PysPeticionCompraSuscripcionBean.T_NOMBRETABLA + "." + PysPeticionCompraSuscripcionBean.C_IDPETICION + 
+								" AND " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDINSTITUCION + " = " + PysPeticionCompraSuscripcionBean.T_NOMBRETABLA + "." + PysPeticionCompraSuscripcionBean.C_IDINSTITUCION +
+								" AND " + PysTipoIvaBean.T_NOMBRETABLA + "." + PysTipoIvaBean.C_IDTIPOIVA + " = " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_PORCENTAJEIVA;
+			
 			if (idPeticion != null) {
 				where += " AND " + PysPeticionCompraSuscripcionBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDPETICION + " = " + idPeticion;
 			}
+			
 			if (idPersona != null) {
 				where += " AND " +  PysPeticionCompraSuscripcionBean.T_NOMBRETABLA + "." + PysPeticionCompraSuscripcionBean.C_IDPERSONA + " = " + idPersona;
 			}
+			
 			if (tipoPeticion != null) {
 				where += " AND " +  PysPeticionCompraSuscripcionBean.T_NOMBRETABLA + "." + PysPeticionCompraSuscripcionBean.C_TIPOPETICION + " = '" + tipoPeticion + "' ";
 			}
@@ -479,9 +506,11 @@ public class PysProductosSolicitadosAdm extends MasterBeanAdministrador {
 					where += " AND " + PysPeticionCompraSuscripcionBean.T_NOMBRETABLA + "." + PysPeticionCompraSuscripcionBean.C_FECHA + " <= " + " TO_DATE('" + fechaHasta + "', '" + ClsConstants.DATE_FORMAT_SQL + "') ";
 				}
 			}
+			
 			if (peticionBaja){
 				where += " AND " + PysPeticionCompraSuscripcionBean.T_NOMBRETABLA + "." + PysPeticionCompraSuscripcionBean.C_IDESTADOPETICION + " = " + ClsConstants.ESTADO_PETICION_COMPRA_PROCESADA;
 			}
+			
 			String orderBy = " ORDER BY " + PysPeticionCompraSuscripcionBean.T_NOMBRETABLA + "." + PysPeticionCompraSuscripcionBean.C_FECHA + " DESC ";
 			
 			String consulta = select + from + where + orderBy; 
@@ -505,33 +534,38 @@ public class PysProductosSolicitadosAdm extends MasterBeanAdministrador {
 							hashTemp.put("ESTADO_BAJA","SI");
 						else
 							hashTemp.put("ESTADO_BAJA","NO");
+						
 						String estadoPago = (String)hashTemp.get("ESTADOPAGO");
 						// JTA segun requeriemiento se puede anular siempre que no este facturado(mirar el procediemineto F_SIGA_ESTADOCOMPRA
 						//ya que cuando esta cobrado con tarjeta no tiene por que estar facturado!) 
 						if(estadoPago==null || estadoPago.equalsIgnoreCase("estados.compra.pendiente"))
 							resultados.add((Hashtable)(hashTemp));
-					}else{
+						
+					} else {
 						resultados.add((Hashtable)(hashTemp));
 					}
 				}
+				
 				return resultados;
 			}
-		}
-	    catch (Exception e) {
+			
+		} catch (Exception e) {
 	   		if (e instanceof SIGAException){
 	   			throw (SIGAException)e;
-	   		}
-	   		else{
+	   			
+	   		} else{
 	   			if (e instanceof ClsExceptions){
 	   				throw (ClsExceptions)e;
-	   			}
-	   			else {
+	   				
+	   			} else {
 	   				throw new ClsExceptions("Error al obtener productos solicitados");
 	   			}
 	   		}	
 	    }
+		
 		return null;
 	}
+	
 	public Vector getDireccionLetradoSalida(String idPersona,String idInstitucion) throws ClsExceptions  
 	{
 		try {

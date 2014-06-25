@@ -270,9 +270,10 @@
 			pys.gestionSolicitudes.literal.iva,
 			pys.gestionSolicitudes.literal.estadoPago,
 			pys.gestionSolicitudes.literal.estadoProducto,
+			pys.solicitudCompra.literal.idPeticion,
 			pys.solicitarBaja.literal.fechaEfectiva,
 			pys.gestionSolicitudes.literal.importeAnticipado,"
-		columnSizes = "10,9,16,6,8,5,9,9,10,7,7">
+		columnSizes = "17,9,15,5,7,6,7,7,6,7,7,7">
 
 	<% if ((peticion != null) && (peticion.size() > 0)){ 
 			for (int i = 0; i < peticion.size(); i++) { 
@@ -303,6 +304,7 @@
 					String nCuenta = UtilidadesHash.getString(productoServicio, "NCUENTA");
 					String concepto = UtilidadesHash.getString(productoServicio, "CONCEPTO");
 					String tipoTablaPetion 	= UtilidadesHash.getString(productoServicio, "CONSULTA");
+					String peticionRelacionada 	= UtilidadesHash.getString(productoServicio, "IDPETICIONRELACIONADA");
 					String productoOServicio = "";
 					String aceptado = "";
 					String periodicidad = "";
@@ -453,21 +455,28 @@
 				<%}%>
 			</td> 
 
-			<td>
-				<input type='text' name='cuenta<%=i+1%>' value="<%=UtilidadesString.mostrarIBANConAsteriscos(nCuenta)%>" class=listaNonEdit readOnly=true style="border:none; background-color:transparent" style="width:200">
-			</td>
+			<td><%=UtilidadesString.mostrarIBANConAsteriscos(nCuenta)%></td>
 			 
-			<td><%=cantidad%></td> 
+			<td align="right"><%=cantidad%></td> 
 		
 			<% if (UtilidadesHash.getDouble (productoServicio, "VALOR")!=null){ %>
-				<td align="right"><%=UtilidadesNumero.formatoCampo(precio)%> &euro; <%=UtilidadesString.mostrarDatoJSP(periodicidad)%></td>
+				<td align="right">
+					<%=UtilidadesNumero.formatoCampo(precio)%>&nbsp;&euro;
+<%	
+					if (!periodicidad.equals("")) { 
+%>							 
+						<%=UtilidadesString.mostrarDatoJSP(periodicidad)%>
+<%
+					}
+%>					
+				</td>
 				<td align="right"><%=UtilidadesNumero.formatoCampo(iva)%> %</td> 
 			<% }else{ %>
 				<td>- </td>
 				<td>- </td> 
 			<% } %>
 							
-			<td><siga:Idioma key="<%=estadoPago%>"/></td> 
+			<td><siga:Idioma key="<%=estadoPago%>"/></td>			
 			
 			<td>
 				<% if(idFormaPago!=null){ %>									
@@ -476,15 +485,23 @@
 					No Facturable
 				<% } %>
 			</td>
+			
+			<td><%=peticionRelacionada%></td>
 			 
 			<td><%=fechaEfectiva%></td> 
+			
 			<td align="right">
-				<%	if(importeAnticipado >= 0){ %>									
-					<%=UtilidadesNumero.formatoCampo(importeAnticipado)%>&euro;
-															
-				<%	} else { %>
+<%	
+				if (importeAnticipado >= 0) { 
+%>									
+					<%=UtilidadesNumero.formatoCampo(importeAnticipado)%>&nbsp;&euro;															
+<%	
+				} else { 
+%>
 					&nbsp;
-				<%	} %>
+<%	
+				} 
+%>
 			</td> 
 			
 			<%if (elementos == null){ %>
