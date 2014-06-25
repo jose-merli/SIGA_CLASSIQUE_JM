@@ -265,6 +265,11 @@ public class DireccionesAction extends MasterAction
 			request.setAttribute("preferenteCorreo", correo);
 			request.setAttribute("preferenteMail", mail);
 			request.setAttribute("preferenteSms", sms);
+			
+			//CR7 - Queremos saber si se trata de un Colegiadoo de un No Colegiado
+			String tipoCliente = clienteAdm.getTipoCliente(idPersona, idInstitucionPersona);
+			request.setAttribute("tipoCliente", tipoCliente);
+			
 		}
 		catch(Exception e){
 			throwExcp("messages.general.error",new String[] {"modulo.censo"},e,null);
@@ -365,6 +370,10 @@ public class DireccionesAction extends MasterAction
 			request.setAttribute("preferenteCorreo", correo);
 			request.setAttribute("preferenteMail", mail);
 			request.setAttribute("preferenteSms", sms);
+			
+			//CR7 - Queremos saber si se trata de un Colegiadoo de un No Colegiado
+			String tipoCliente = clienteAdm.getTipoCliente(idPersona, idInstitucionPersona);
+			request.setAttribute("tipoCliente", tipoCliente);			
 		}
 		catch(Exception e){
 			throwExcp("messages.general.error",new String[] {"modulo.censo"},e, null);
@@ -409,6 +418,14 @@ public class DireccionesAction extends MasterAction
    				}
    			}   
 			request.setAttribute("vTipos",vTipos);
+			
+			//CR7 - Queremos saber si se trata de un Colegiadoo de un No Colegiado
+			UsrBean user=(UsrBean)request.getSession().getAttribute("USRBEAN");		
+			Long idPersona = miForm.getIDPersona();
+			Integer idInstitucionPersona = miForm.getIDInstitucion();			
+			CenClienteAdm clienteAdm = new CenClienteAdm(this.getUserName(request), user, idInstitucionPersona.intValue(), idPersona.longValue());			
+			String tipoCliente = clienteAdm.getTipoCliente(idPersona, idInstitucionPersona);
+			request.setAttribute("tipoCliente", tipoCliente);			
 		}
 		catch(Exception e){
 			throwExcp("messages.general.error",new String[] {"modulo.censo"},e, null);
@@ -739,6 +756,11 @@ protected String insertar (ActionMapping mapping,
 			request.setAttribute("nombrePersona", request.getParameter("nombreUsuario"));
 			request.setAttribute("numero", request.getParameter("numeroUsuario"));
 			request.setAttribute("idPersona", idPersona);
+			
+			//CR7 - Queremos saber si se trata de un Colegiadoo de un No Colegiado
+			String tipoCliente = clienteAdm.getTipoCliente(idPersona, idInstitucionPersona);
+			request.setAttribute("tipoCliente", tipoCliente);			
+			
 		}
 		catch(Exception e){
 			throwExcp("messages.general.error",new String[] {"modulo.censo"},e, null);

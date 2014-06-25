@@ -38,8 +38,7 @@
 <%
 	String app = request.getContextPath();
 	HttpSession ses = request.getSession();
-	UsrBean usr = (UsrBean) request.getSession()
-			.getAttribute("USRBEAN");
+	UsrBean usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
 	boolean bOcultarHistorico = usr.getOcultarHistorico();
 
 	// Varibles que dependen del modo de la pagina (consulta, edicion, nuevo)
@@ -55,8 +54,8 @@
 	String nombreUsu = (String) request.getAttribute("nombrePersona");
 	String numero = (String) request.getAttribute("numero");
 	Vector vTipos = (Vector) request.getAttribute("vTipos");
-	Hashtable hTiposDir = (Hashtable) request
-			.getAttribute("TipoDirecciones");
+	String tipoCliente = (String) request.getAttribute("tipoCliente");
+	Hashtable hTiposDir = (Hashtable) request.getAttribute("TipoDirecciones");
 
 	Hashtable htData = null;
 	String preferente = "";
@@ -95,51 +94,33 @@
 		botones += ",GAH";
 	}
 	if (modo.equals("ver") || modo.equals("editar")) {
-		htData = (Hashtable) request.getSession().getAttribute(
-				"DATABACKUP");
+		htData = (Hashtable) request.getSession().getAttribute("DATABACKUP");
 		if (htData != null) {
-			domicilio = String.valueOf(htData
-					.get(CenDireccionesBean.C_DOMICILIO));
-			codigoPostal = String.valueOf(htData
-					.get(CenDireccionesBean.C_CODIGOPOSTAL));
+			domicilio = String.valueOf(htData.get(CenDireccionesBean.C_DOMICILIO));
+			codigoPostal = String.valueOf(htData.get(CenDireccionesBean.C_CODIGOPOSTAL));
 
-			idTipoDireccion = String.valueOf(htData
-					.get(CenTipoDireccionBean.C_DESCRIPCION));
+			idTipoDireccion = String.valueOf(htData.get(CenTipoDireccionBean.C_DESCRIPCION));
 			provincia = String.valueOf(htData.get("PROVINCIA"));
 			pais = String.valueOf(htData.get("PAIS"));
 			poblacion = String.valueOf(htData.get("POBLACION"));
-			poblacionExt = String.valueOf(htData
-					.get("POBLACIONEXTRANJERA"));
-			telefono1 = String.valueOf(htData
-					.get(CenDireccionesBean.C_TELEFONO1));
-			telefono2 = String.valueOf(htData
-					.get(CenDireccionesBean.C_TELEFONO2));
-			movil = String.valueOf(htData
-					.get(CenDireccionesBean.C_MOVIL));
-			fax1 = String
-					.valueOf(htData.get(CenDireccionesBean.C_FAX1));
-			fax2 = String
-					.valueOf(htData.get(CenDireccionesBean.C_FAX2));
-			mail = String.valueOf(htData
-					.get(CenDireccionesBean.C_CORREOELECTRONICO));
-			paginaWEB = String.valueOf(htData
-					.get(CenDireccionesBean.C_PAGINAWEB));
-			idDireccion = String.valueOf(htData
-					.get(CenDireccionesBean.C_IDDIRECCION));
-			fechaModificacion = String.valueOf(htData
-					.get(CenDireccionesBean.C_FECHAMODIFICACION));
+			poblacionExt = String.valueOf(htData.get("POBLACIONEXTRANJERA"));
+			telefono1 = String.valueOf(htData.get(CenDireccionesBean.C_TELEFONO1));
+			telefono2 = String.valueOf(htData.get(CenDireccionesBean.C_TELEFONO2));
+			movil = String.valueOf(htData.get(CenDireccionesBean.C_MOVIL));
+			fax1 = String.valueOf(htData.get(CenDireccionesBean.C_FAX1));
+			fax2 = String.valueOf(htData.get(CenDireccionesBean.C_FAX2));
+			mail = String.valueOf(htData.get(CenDireccionesBean.C_CORREOELECTRONICO));
+			paginaWEB = String.valueOf(htData.get(CenDireccionesBean.C_PAGINAWEB));
+			idDireccion = String.valueOf(htData.get(CenDireccionesBean.C_IDDIRECCION));
+			fechaModificacion = String.valueOf(htData.get(CenDireccionesBean.C_FECHAMODIFICACION));
 			if (fechaModificacion != null)
-				fechaModificacion = UtilidadesString
-						.mostrarDatoJSP(GstDate.getFormatedDateShort(
-								"", fechaModificacion));
+				fechaModificacion = UtilidadesString.mostrarDatoJSP(GstDate.getFormatedDateShort("", fechaModificacion));
 			else
 				fechaModificacion = "";
 
-			fechaBaja = String.valueOf(htData
-					.get(CenDireccionesBean.C_FECHABAJA));
+			fechaBaja = String.valueOf(htData.get(CenDireccionesBean.C_FECHABAJA));
 			if ((fechaBaja != null) && !fechaBaja.equals(""))
-				fechaBaja = UtilidadesString.mostrarDatoJSP(GstDate
-						.getFormatedDateShort("", fechaBaja));
+				fechaBaja = UtilidadesString.mostrarDatoJSP(GstDate.getFormatedDateShort("", fechaBaja));
 			else
 				fechaBaja = "";
 
@@ -157,16 +138,12 @@
 			if ((aux != null) && (aux.equals("true")))
 				preferenteSms = true;
 
-			Vector vTiposDirecciones = (Vector) htData
-					.get(CenTipoDireccionBean.C_IDTIPODIRECCION);
+			Vector vTiposDirecciones = (Vector) htData.get(CenTipoDireccionBean.C_IDTIPODIRECCION);
 			if (vTiposDirecciones != null) {
 				for (int i = 0; i < vTiposDirecciones.size(); i++) {
-					CenDireccionTipoDireccionBean tipoDirBean = (CenDireccionTipoDireccionBean) vTiposDirecciones
-							.get(i);
+					CenDireccionTipoDireccionBean tipoDirBean = (CenDireccionTipoDireccionBean) vTiposDirecciones.get(i);
 					if (tipoDirBean != null) {
-						idTipoDireccionArrayList.add(String
-								.valueOf(tipoDirBean
-										.getIdTipoDireccion()));
+						idTipoDireccionArrayList.add(String.valueOf(tipoDirBean.getIdTipoDireccion()));
 					}
 				}
 			}
@@ -179,23 +156,14 @@
 				clase = "boxConsulta";
 				desactivarCheckTipos = "disabled";
 			}
-			idPersona = String.valueOf((Long) request
-					.getAttribute("idPersona"));
-			idInstitucion = String.valueOf(htData
-					.get(CenDireccionesBean.C_IDINSTITUCION));
+			idPersona = String.valueOf((Long) request.getAttribute("idPersona"));
+			idInstitucion = String.valueOf(htData.get(CenDireccionesBean.C_IDINSTITUCION));
 
-			idProvincia.add(String.valueOf(htData
-					.get(CenDireccionesBean.C_IDPROVINCIA)));
+			idProvincia.add(String.valueOf(htData.get(CenDireccionesBean.C_IDPROVINCIA)));
 			sIdprovincia = String.valueOf(htData.get(CenDireccionesBean.C_IDPROVINCIA));
-			idPoblacion.add(String.valueOf(htData
-					.get(CenDireccionesBean.C_IDPOBLACION)));
-			ididPais = (htData.get(CenDireccionesBean.C_IDPAIS) == null || String
-					.valueOf(
-							htData.get(CenDireccionesBean.C_IDPAIS))
-					.equals(""))
-					? ClsConstants.ID_PAIS_ESPANA
-					: String.valueOf(htData
-							.get(CenDireccionesBean.C_IDPAIS));
+			idPoblacion.add(String.valueOf(htData.get(CenDireccionesBean.C_IDPOBLACION)));
+			ididPais = (htData.get(CenDireccionesBean.C_IDPAIS) == null || String.valueOf(htData.get(CenDireccionesBean.C_IDPAIS)).equals("")) ? ClsConstants.ID_PAIS_ESPANA
+					: String.valueOf(htData.get(CenDireccionesBean.C_IDPAIS));
 			idPais.add(ididPais);
 		}
 	} else {
@@ -203,10 +171,8 @@
 			idPais.add("");
 			editarCampos = true;
 			desactivado = false;
-			idPersona = String.valueOf((Long) request
-					.getAttribute("idPersona"));
-			idInstitucion = String.valueOf((Integer) request
-					.getAttribute("idInstitucion"));
+			idPersona = String.valueOf((Long) request.getAttribute("idPersona"));
+			idInstitucion = String.valueOf((Integer) request.getAttribute("idInstitucion"));
 		}
 	}
 
@@ -222,8 +188,7 @@
 			EnlaceWEb = paginaWEB;
 		}
 
-		if (!lista.equalsIgnoreCase("http://")
-				&& (!lista.equalsIgnoreCase("http:\\\\"))) {
+		if (!lista.equalsIgnoreCase("http://") && (!lista.equalsIgnoreCase("http:\\\\"))) {
 			EnlaceWEb = "http://" + paginaWEB;
 		}
 
@@ -929,33 +894,36 @@
 													<td class="labelText" align="left">
 														<%
 															String valorCheck = "";
-
-																	if ((vTipos != null) && (vTipos.size() > 0)) {
-																		for (int i = 1; i <= vTipos.size(); i++) {
-																			String activarCheck = "";
-																			CenTipoDireccionBean recurso = (CenTipoDireccionBean) vTipos
-																					.get(i - 1);
-																			Integer idTipoDireccion1 = (Integer) recurso
-																					.getIdTipoDireccion();
-																			String descripcion = (String) recurso
-																					.getDescripcion();
-
-																			if (modo.equals("editar") || modo.equals("ver")) {
-																				valorCheck = (String) hTiposDir.get(recurso
-																						.getIdTipoDireccion());
-																				if (valorCheck.equals("S")) {
-																					activarCheck = "checked";
-																				}
+															if ((vTipos != null) && (vTipos.size() > 0)) {
+																for (int i = 1; i <= vTipos.size(); i++) {
+																	String activarCheck = "";
+																	CenTipoDireccionBean recurso = (CenTipoDireccionBean) vTipos.get(i - 1);
+																	Integer idTipoDireccion1 = (Integer) recurso.getIdTipoDireccion();
+																	
+																	if(idTipoDireccion1 == ClsConstants.TIPO_DIRECCION_CENSOWEB && tipoCliente.equals(ClsConstants.TIPO_CLIENTE_NOCOLEGIADO)){
+																		//NO SE PINTA EL CHECK DE TIPO DIRECCION CENSO WEB PARA NO COLEGIADOS
+																		
+																	} else {
+																	
+																		String descripcion = (String) recurso.getDescripcion();
+	
+																		if (modo.equals("editar") || modo.equals("ver")) {
+																			valorCheck = (String) hTiposDir.get(recurso.getIdTipoDireccion());
+																			if (valorCheck.equals("S")) {
+																				activarCheck = "checked";
 																			}
-														%> 
-														<input type=checkbox name="checkTipoDireccion" id="checkTipoDireccion" value="<%=idTipoDireccion1%>"
-															<%=activarCheck%> onclick="comprobarTelefonoAsterico()"
-															<%=desactivarCheckTipos%> /> 
-														<%=UtilidadesString.mostrarDatoJSP(descripcion)%>
-														<br> <%
- 	}
- 			}
- %>
+																		}
+															%> 
+																		<input type=checkbox name="checkTipoDireccion" id="checkTipoDireccion" value="<%=idTipoDireccion1%>"
+																			<%=activarCheck%> onclick="comprobarTelefonoAsterico()"
+																			<%=desactivarCheckTipos%> /> 
+																		<%=UtilidadesString.mostrarDatoJSP(descripcion)%>
+															<br> 
+															<%
+																	}
+													 			}
+														 	}
+														 %>
 
 													</td>
 													<td class="labelText"/>
@@ -1028,7 +996,7 @@
 											readOnly="<%=desactivado%>"></html:text> 
 										<%
  											}
-	 									%>
+ 										%>
 									</td>
 								</tr>
 
@@ -1053,8 +1021,8 @@
 										<html:text name="consultaDireccionesForm" property="pais2" styleId="pais2"
 											value='<%=pais%>' size="40" styleClass="<%=clase%>"
 											readOnly="<%=desactivado%>"></html:text> <%
-											}
-										%>
+										 	}
+ 										%>
 									</td>
 								</tr>
 
@@ -1073,7 +1041,7 @@
 											tipo="provincia" clase="boxCombo" obligatorio="false"
 											elementoSel="<%=idProvincia%>" accion="Hijo:poblacion" /> <%
  											} else {
- 										%> 
+										 %> 
  										<html:text property="provincia" value="<%=provincia%>" styleId="provincia"
 											size="40" styleClass="<%=clase%>" readOnly="<%=desactivado%>">
 										</html:text>
@@ -1094,8 +1062,8 @@
 										<siga:ComboBD nombre="poblacion"
 											tipo="poblacion" clase="boxCombo"
 											elementoSel="<%=idPoblacion%>" hijo="t" /> <%
- 											} else {
- 										%> 
+										 	} else {
+										 %> 
  										<html:text property="poblacion" value="<%=poblacion%>" styleId="poblacion"
 											size="40" styleClass="<%=clase%>" readOnly="<%=desactivado%>"></html:text>
 										<%
