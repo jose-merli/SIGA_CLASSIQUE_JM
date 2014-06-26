@@ -1127,7 +1127,7 @@ public class FcsPagosJGAdm extends MasterBeanAdministrador {
 						" AND PC.IDCUENTA = CB.IDCUENTA " + 
 				" ) AS NOMBREBANCO, " + 		
 				" ( " +
-					" SELECT (CB.CBO_CODIGO || '-' || CB.CODIGOSUCURSAL || '-' || CB.DIGITOCONTROL || '-' || LPAD(SUBSTR(CB.NUMEROCUENTA, 7), 10, '*')) AS CUENTA " + 
+					" SELECT F_SIGA_FORMATOIBAN(CB.IBAN) AS CUENTA " + 
 					" FROM CEN_CUENTASBANCARIAS CB " + 
 					" WHERE PC.IDPERDESTINO = CB.IDPERSONA " + 
 						" AND PC.IDINSTITUCION = CB.IDINSTITUCION " + 
