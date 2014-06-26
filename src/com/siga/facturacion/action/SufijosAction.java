@@ -162,8 +162,8 @@ public class SufijosAction extends MasterAction {
 				      " AND "+FacSufijoBean.C_DEFECTO+"='"+ClsConstants.DB_TRUE+"'"+
 					  " AND "+FacSufijoBean.C_SUFIJO+"<>'"+miForm.getSufijo()+"'";
 					  
-				Vector existeCheckVarios=sufijoAdm.select(where);
-				if (existeCheckVarios.size()>0){
+				Vector existeCheckDefecto=sufijoAdm.select(where);
+				if (existeCheckDefecto.size()>0){
 					throw new SIGAException("facturacion.sufijos.message.checkDefecto");
 				}else{
 				  checkBox = ClsConstants.DB_TRUE;

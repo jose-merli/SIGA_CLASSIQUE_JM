@@ -9,7 +9,7 @@ public class FacSufijoBean extends MasterBean {
 	
 	/* Variables */
 	private Integer idInstitucion;
-	private String 	sufijo=null, concepto=null, varios=null, defecto=null; 
+	private String 	sufijo=null, concepto=null, defecto=null; 
 					
 	/* Nombre tabla */
 	static public String T_NOMBRETABLA = "FAC_SUFIJO";
