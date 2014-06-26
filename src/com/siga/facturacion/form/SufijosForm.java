@@ -12,7 +12,7 @@ public class SufijosForm extends MasterForm {
 
 	private String sufijo = null;
 	private String concepto = null;
-	private String varios = null;
+	private String defecto = null;
 	
 	public String getConcepto() {
 		return concepto;
@@ -26,13 +26,13 @@ public class SufijosForm extends MasterForm {
 	public void setSufijo(String sufijo) {
 		this.sufijo = sufijo;
 	}
-	public String getVarios	() {
-		if (this.varios == null)
+	public String getDefecto() {
+		if (this.defecto == null)
 			return ClsConstants.DB_FALSE;
 		else
 			return ClsConstants.DB_TRUE;	
 	}	
-	public void setVarios(String varios) {
-		this.varios = varios;
+	public void setDefecto(String defecto) {
+		this.defecto = defecto;
 	}
 }

@@ -9,7 +9,7 @@ public class FacSufijoBean extends MasterBean {
 	
 	/* Variables */
 	private Integer idInstitucion;
-	private String 	sufijo=null, concepto=null, varios=null; 
+	private String 	sufijo=null, concepto=null, varios=null, defecto=null; 
 					
 	/* Nombre tabla */
 	static public String T_NOMBRETABLA = "FAC_SUFIJO";
@@ -18,7 +18,7 @@ public class FacSufijoBean extends MasterBean {
 	static public final String C_IDINSTITUCION 		= "IDINSTITUCION";
 	static public final String C_SUFIJO				= "SUFIJO";
 	static public final String C_CONCEPTO			= "CONCEPTO";
-	static public final String C_VARIOS				= "VARIOS";
+	static public final String C_DEFECTO			= "DEFECTO";
 
 	public String getConcepto() {
 		return concepto;
@@ -38,10 +38,10 @@ public class FacSufijoBean extends MasterBean {
 	public void setSufijo(String sufijo) {
 		this.sufijo = sufijo;
 	}
-	public String getVarios() {
-		return varios;
+	public String getDefecto() {
+		return defecto;
 	}
-	public void setVarios(String varios) {
-		this.varios = varios;
+	public void setDefecto(String defecto) {
+		this.defecto = defecto;
 	}
 }

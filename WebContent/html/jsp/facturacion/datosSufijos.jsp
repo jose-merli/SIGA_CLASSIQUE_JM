@@ -32,7 +32,7 @@
 		String clase="box", claseSufijo="box";
 		String accion = "";
 		boolean lectura=false, lecturaSufijo=false;
-		String sufijo="", concepto="", varios="";
+		String sufijo="", concepto="", defecto="";
 
 		//MODO NUEVO:
 		if (modo.equalsIgnoreCase("nuevo")) {
@@ -52,10 +52,10 @@
 			if (sufijo != null) {
 				sufijo = sufijoBean.getSufijo();
 				concepto = sufijoBean.getConcepto();
-				varios = sufijoBean.getVarios();
+				defecto = sufijoBean.getDefecto();
 				//Tratamiento del CheckBox:
-				if (varios.equals(ClsConstants.DB_TRUE))
-					miForm.setVarios(varios);
+				if (defecto.equals(ClsConstants.DB_TRUE))
+					miForm.setDefecto(defecto);
 			}
 		} 
 %>
@@ -91,20 +91,37 @@
 	
 		<!-- Asociada al boton GuardarCerrar -->
 		function accionGuardarCerrar() {
-			
 			sub();
-			if (validateSufijosForm(document.sufijosForm)) {
-				while(sufijosForm.sufijo.value.length <3) {
-					sufijosForm.sufijo.value = "0"+sufijosForm.sufijo.value;
-				}
-				sufijosForm.modo.value = "<%=accion%>";
-				sufijosForm.submit();
-			}else{
-			
-				fin();
-				return false;
+			while((sufijosForm.sufijo.value.length <3)) {
+				sufijosForm.sufijo.value = "0"+sufijosForm.sufijo.value;
 			}
-		}		
+			sufijosForm.modo.value = "<%=accion%>";
+			sufijosForm.submit();
+		}	
+		
+		function soloDigitosEspacios(event)
+		{				
+			//Se valida que sean dígitos
+			var key;
+		 	if(window.event) // para navegadores IE
+		 	{
+		  		key = event.keyCode;
+		 	}
+		 	else if(event.which) // para navegadores Firefox/Opera/Netscape
+		 	{
+		  		key = event.which;
+		 	}
+		 	if (key < 48 || key > 57) 
+		 	{	
+		 		if(key!=32)
+		 			return false;
+		 	}
+
+			
+		 	return true;
+		}
+		
+		
 	</script>	
 
 </head>
@@ -135,7 +152,7 @@
 									<siga:Idioma key="facturacion.sufijos.literal.sufijo"/>&nbsp;(*)
 								</td>
 								<td class="labelText">
-									<html:text name="sufijosForm" property="sufijo" size="3" maxlength="3" onkeypress="return soloDigitos(event);" styleClass="<%=claseSufijo%>" readonly="<%=lecturaSufijo%>" value="<%=sufijo%>"/>
+									<html:text name="sufijosForm" property="sufijo" size="3" maxlength="3" onkeypress="return soloDigitosEspacios(event);" styleClass="<%=claseSufijo%>" readonly="<%=lecturaSufijo%>" value="<%=sufijo%>"/>
 								</td>
 							</tr>
 							<tr>
@@ -148,10 +165,10 @@
 							</tr>
 							<tr>
 								<td class="labelText">
-									<siga:Idioma key="facturacion.sufijos.literal.varios"/>
+									<siga:Idioma key="facturacion.sufijos.literal.defecto"/>
 								</td>
 								<td class="labelText">
-									<html:checkbox name="sufijosForm" property="varios" value="<%=ClsConstants.DB_TRUE%>" disabled="<%=lectura%>" />
+									<html:checkbox name="sufijosForm" property="defecto" value="<%=ClsConstants.DB_TRUE%>" disabled="<%=lectura%>" />
 								</td>
 							</tr>
 					</table>					

@@ -29,7 +29,7 @@ public class FacSufijoAdm extends MasterBeanAdmVisible {
 	 * @return  String[] Los campos ed la tabla   
 	 */	
 	protected String[] getCamposBean() {
-		String [] campos = {FacSufijoBean.C_IDINSTITUCION, FacSufijoBean.C_SUFIJO, FacSufijoBean.C_VARIOS,
+		String [] campos = {FacSufijoBean.C_IDINSTITUCION, FacSufijoBean.C_SUFIJO, FacSufijoBean.C_DEFECTO,
 							FacSufijoBean.C_CONCEPTO, FacSufijoBean.C_USUMODIFICACION, 
 							FacSufijoBean.C_FECHAMODIFICACION};
 		return campos;
@@ -59,7 +59,7 @@ public class FacSufijoAdm extends MasterBeanAdmVisible {
 			bean.setIdInstitucion(UtilidadesHash.getInteger(hash, FacSufijoBean.C_IDINSTITUCION));
 			bean.setConcepto(UtilidadesHash.getString(hash, FacSufijoBean.C_CONCEPTO));
 			bean.setSufijo(UtilidadesHash.getString(hash, FacSufijoBean.C_SUFIJO));
-			bean.setVarios(UtilidadesHash.getString(hash, FacSufijoBean.C_VARIOS));
+			bean.setDefecto(UtilidadesHash.getString(hash, FacSufijoBean.C_DEFECTO));
 		}
 		catch (Exception e) { 
 			bean = null;	
@@ -83,7 +83,7 @@ public class FacSufijoAdm extends MasterBeanAdmVisible {
 			htData.put(FacSufijoBean.C_IDINSTITUCION, b.getIdInstitucion());
 			htData.put(FacSufijoBean.C_CONCEPTO, b.getConcepto());
 			htData.put(FacSufijoBean.C_SUFIJO, String.valueOf(b.getSufijo()));
-			htData.put(FacSufijoBean.C_VARIOS, String.valueOf(b.getVarios()));
+			htData.put(FacSufijoBean.C_DEFECTO, String.valueOf(b.getDefecto()));
 		}
 		catch (Exception e) {
 			htData = null;
