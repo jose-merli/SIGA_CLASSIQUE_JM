@@ -76,14 +76,14 @@ public class InformePersonalizable extends MasterReport
 						listaFicheros.addAll(this.generarInformeDOC(informe, filtrosInforme, usr));	
 					} catch (SIGAException e) {
 						if(e.getLiteral().equals("noExistePlantilla")){
-							listaFicheros.addAll(this.generarInformeXLS(informe, filtrosInforme,null,null, usr));
+							listaFicheros.addAll(this.generarInformeXLS(informe, filtrosInforme,null, usr));
 						}else
-							throw e;
+							throw e; 
 							
 					}
 					
 				} else if (informe.getTipoformato().equalsIgnoreCase(AdmInformeBean.TIPOFORMATO_EXCEL)) {
-					listaFicheros.addAll(this.generarInformeXLS(informe, filtrosInforme,null,null, usr));
+					listaFicheros.addAll(this.generarInformeXLS(informe, filtrosInforme,null, usr));
 				} else if (informe.getTipoformato().equalsIgnoreCase(AdmInformeBean.TIPOFORMATO_XML)) {
 //					llamada
 					String claseJava = informe.getClaseJava();
@@ -101,7 +101,7 @@ public class InformePersonalizable extends MasterReport
 					}
 					
 				} else {
-					listaFicheros.addAll(this.generarInformeXLS(informe, filtrosInforme,null,null, usr));
+					listaFicheros.addAll(this.generarInformeXLS(informe, filtrosInforme,null, usr));
 				}
 			}
 			File ficheroSalida = getFicheroSalida(listaFicheros, tipoInformeBean, usr);
@@ -276,7 +276,7 @@ public class InformePersonalizable extends MasterReport
 	
 	public static ArrayList<File> generarInformeXLS(AdmInformeBean informe,
 								  ArrayList<HashMap<String, String>> filtrosInforme,
-								  String sRutaJava, String sRutaOracle, UsrBean usr)
+								  String sRutaJava, UsrBean usr)
 		throws ClsExceptions, SIGAException
 	{
 		// Variables
@@ -435,7 +435,6 @@ public class InformePersonalizable extends MasterReport
 					out.newLine();
 
 				}
-				
 				// cerrando el fichero
 				out.close();
 				listaFicheros.add(ficheroGenerado);
@@ -443,38 +442,6 @@ public class InformePersonalizable extends MasterReport
 				throw new SIGAException("Problema en la generacion del fichero Excel", sqle, new String[] { sqle.toString() });
 			}
 
-			// copiando el fichero a la otra ruta solo si es necesario 
-			/** @TODO Creemos que generar el fichero en la ruta anterior no seria necesario, pero no vamos a tocarlo */
-			if (sRutaOracle != null && !sRutaOracle.isEmpty()) {
-
-				try {
-					File crearOracle = new File(sRutaOracle);
-					if (!crearOracle.exists())
-						crearOracle.mkdirs();
-
-					String sBarra = "";
-					if (sRutaOracle.indexOf("/") > -1)
-						sBarra = "/";
-					if (sRutaOracle.indexOf("\\") > -1)
-						sBarra = "\\";
-
-					InputStream in = new FileInputStream(rutaAlm + ClsConstants.FILE_SEP + nombreFichero);
-					OutputStream out2 = new FileOutputStream(sRutaOracle + sBarra + nombreFichero);
-
-					byte[] buf = new byte[1024];
-					int len;
-
-					while ((len = in.read(buf)) > 0) {
-						out2.write(buf, 0, len);
-					}
-
-					in.close();
-					out.close();
-
-				} catch (Exception e2) {
-					throw new SIGAException("Problema en la generacion del fichero Excel en directorio Oracle", e2, new String[] { e2.toString() });
-				}
-			}
 		} // For
 
 		// devolviendo el fichero

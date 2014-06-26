@@ -2713,81 +2713,72 @@ public class Facturacion {
 
 				//consulto los datos de la previsión y genero el fichero
 				AdmInformeAdm datosInforme = new AdmInformeAdm(usr);
-				AdmInformeBean informe = new AdmInformeBean();
 				Hashtable hashWhere = new Hashtable();
 				
 				UtilidadesHash.set(hashWhere, AdmInformeBean.C_IDTIPOINFORME, "PREV");
 				UtilidadesHash.set(hashWhere, AdmInformeBean.C_IDINSTITUCION, "0");
 				
-				Vector v =datosInforme.select(hashWhere);
+				 ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+				String sRutaJava = rp
+						.returnProperty("facturacion.directorioPrevisionesJava");
+				String sRutaFisicaJava = rp
+						.returnProperty("facturacion.directorioFisicoPrevisionesJava");
+				sRutaJava = sRutaFisicaJava + File.separator + sRutaJava + File.separator + beanPrev.getIdInstitucion();
 				
-				Hashtable hashDatos= new Hashtable();
-				
-				if(v!=null && v.size()>0){
-					
-					informe=(AdmInformeBean)v.get(0);
-				}
-				
-				ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
 				String nombreFichero = rp
 						.returnProperty("facturacion.prefijo.ficherosPrevisiones")
 						+ beanPrev.getIdSerieFacturacion().toString() + "_" + beanPrev.getIdPrevision().toString();
-				
-				informe.setNombreSalida(nombreFichero) ;
-								
-				String sRutaJava = rp.returnProperty("facturacion.directorioPrevisionesJava")
-				+ rp.returnProperty("facturacion.directorioFisicoPrevisionesJava") + ClsConstants.FILE_SEP
-				+ beanPrev.getIdInstitucion().toString() + ClsConstants.FILE_SEP;
-				
-				
-				// Se genera el fichero de previsiones en el servidor Oracle.
-				String sRutaOracle = rp
-						.returnProperty("facturacion.directorioPrevisionesOracle");
-				// Tratamiento de la barra de la ruta para posibles cambios de
-				// servidor de BBDD
-				String sBarra = "";
-				if (sRutaOracle.indexOf("/") > -1)
-					sBarra = "/";
-				if (sRutaOracle.indexOf("\\") > -1)
-					sBarra = "\\";
-				sRutaOracle += sBarra + beanPrev.getIdInstitucion().toString();			
 
-				ArrayList<HashMap<String, String>> filtrosInforme = new ArrayList<HashMap<String, String>>();
-				HashMap<String, String> filtro;
-				
-				filtro = new HashMap<String, String>();
-				filtro.put(AdmTipoFiltroInformeBean.C_NOMBRECAMPO, "IDIOMA");
-				filtro.put("VALOR", usr.getLanguageInstitucion().toString());
-				filtrosInforme.add(filtro);	
-				
-				filtro = new HashMap<String, String>();
-				filtro.put(AdmTipoFiltroInformeBean.C_NOMBRECAMPO, "IDSERIEFACTURACION");
-				filtro.put("VALOR", beanPrev.getIdSerieFacturacion().toString());
-				filtrosInforme.add(filtro);	
-				
-				filtro = new HashMap<String, String>();
-				filtro.put(AdmTipoFiltroInformeBean.C_NOMBRECAMPO, "IDPREVISION");
-				filtro.put("VALOR", beanPrev.getIdPrevision().toString());
-				filtrosInforme.add(filtro);	
-				
-				filtro = new HashMap<String, String>();
-				filtro.put(AdmTipoFiltroInformeBean.C_NOMBRECAMPO, "IDINSTITUCION");
-				filtro.put("VALOR", beanPrev.getIdInstitucion().toString());
-				filtrosInforme.add(filtro);
-				
-				ArrayList<File> fichPrev= InformePersonalizable.generarInformeXLS(informe, filtrosInforme,sRutaJava,sRutaOracle, usr);
+				Vector v =datosInforme.select(hashWhere);
 
-				tx.rollback();
+				if(v!=null && v.size()>0){
+					
+					for (int dv = 0; dv < v.size(); dv++){
+					
+						AdmInformeBean informe = (AdmInformeBean) v.get(dv);
+						
+						ArrayList<HashMap<String, String>> filtrosInforme = new ArrayList<HashMap<String, String>>();
+						HashMap<String, String> filtro;
+						filtro = new HashMap<String, String>();
+						filtro.put(AdmTipoFiltroInformeBean.C_NOMBRECAMPO, "IDIOMA");
+						filtro.put("VALOR", usr.getLanguageInstitucion().toString());
+						filtrosInforme.add(filtro);	
+						
+						filtro = new HashMap<String, String>();
+						filtro.put(AdmTipoFiltroInformeBean.C_NOMBRECAMPO, "IDSERIEFACTURACION");
+						filtro.put("VALOR", beanPrev.getIdSerieFacturacion().toString());
+						filtrosInforme.add(filtro);	
+						
+						filtro = new HashMap<String, String>();
+						filtro.put(AdmTipoFiltroInformeBean.C_NOMBRECAMPO, "IDPREVISION");
+						filtro.put("VALOR", beanPrev.getIdPrevision().toString());
+						filtrosInforme.add(filtro);	
+						
+						filtro = new HashMap<String, String>();
+						filtro.put(AdmTipoFiltroInformeBean.C_NOMBRECAMPO, "IDINSTITUCION");
+						filtro.put("VALOR", beanPrev.getIdInstitucion().toString());
+						filtrosInforme.add(filtro);
+						
+						informe.setNombreSalida(nombreFichero) ;
+						
+						ArrayList<File> fichPrev= InformePersonalizable.generarInformeXLS(informe, filtrosInforme,sRutaJava, usr);
+		
+						tx.rollback();
+						
+						tx.begin();
+						UtilidadesHash.set(hashEstado,FacPrevisionFacturacionBean.C_IDESTADOPREVISION, FacEstadoConfirmFactBean.CONFIRM_FINALIZADA);
+						UtilidadesHash.set(hashEstado,FacPrevisionFacturacionBean.C_NOMBREFICHERO,fichPrev.get(0).getName());
+					    
+						if (!admPrev.updateDirect(hashEstado,claves,camposPrevFactura)) {
+					        throw new ClsExceptions("Error al actualizar el estado de la previsión. finalizada.");
+					    }
+						tx.commit();
+					
+					
+					}	
 
-				tx.begin();
-				UtilidadesHash.set(hashEstado,FacPrevisionFacturacionBean.C_IDESTADOPREVISION, FacEstadoConfirmFactBean.CONFIRM_FINALIZADA);
-				UtilidadesHash.set(hashEstado,FacPrevisionFacturacionBean.C_NOMBREFICHERO,fichPrev.get(0).getName());
-			    
-				if (!admPrev.updateDirect(hashEstado,claves,camposPrevFactura)) {
-			        throw new ClsExceptions("Error al actualizar el estado de la previsión. finalizada.");
-			    }
-				tx.commit();
-	
+				}
+				
 			}
 			
 		}catch (Exception e) {

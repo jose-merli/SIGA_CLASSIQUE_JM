@@ -143,13 +143,23 @@
 							String botones="";
 							boolean programada = existeProgramacion.trim().equals("1");
 							FilaExtElement[] elems=new FilaExtElement[2];
-							elems[0]=new FilaExtElement("download","download",SIGAConstants.ACCESS_READ);
-							if (!programada) {
-								elems[1]=new FilaExtElement("programacion","programacion",SIGAConstants.ACCESS_READ);
+							String idEstado = (String)miHash.get("IDESTADOPREVISION");
+							
+							//Si prev. finalizada con errores
+							if(idEstado.equals("4")){
 								botones="B";
-							} else {
-								botones="";
+							//Si prev. otro estado
+							}else{
+						
+								elems[0]=new FilaExtElement("download","download",SIGAConstants.ACCESS_READ);
+								if (!programada) {
+									elems[1]=new FilaExtElement("programacion","programacion",SIGAConstants.ACCESS_READ);
+									botones="B";
+								} else {
+									botones="";
+								}
 							}
+							
 							
 							if(htEstados!=null){
 								sEstadoPrevision =  UtilidadesString.mostrarDatoJSP(htEstados.get((String)miHash.get("IDESTADOPREVISION")));
