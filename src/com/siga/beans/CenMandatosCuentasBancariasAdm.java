@@ -46,6 +46,7 @@ public class CenMandatosCuentasBancariasAdm extends MasterBeanAdministrador {
 										" MANDATOS." + CenMandatosCuentasBancariasBean.C_DEUDOR_PROVINCIA + ", " +
 										" MANDATOS." + CenMandatosCuentasBancariasBean.C_DEUDOR_IDPOBLACION + ", " +
 										" MANDATOS." + CenMandatosCuentasBancariasBean.C_DEUDOR_POBLACION + ", " +
+										" F_SIGA_GETNCOL_NCOM(MANDATOS." + CenMandatosCuentasBancariasBean.C_IDINSTITUCION +", MANDATOS." + CenMandatosCuentasBancariasBean.C_IDPERSONA+") AS DEUDOR_NCOLEGIADO, "+
 										" TO_CHAR(MANDATOS." + CenMandatosCuentasBancariasBean.C_FIRMA_FECHA + ", 'DD/MM/YYYY') AS " + CenMandatosCuentasBancariasBean.C_FIRMA_FECHA + ", " +
 										" MANDATOS." + CenMandatosCuentasBancariasBean.C_FIRMA_LUGAR + ", " +  
 										" MANDATOS." + CenMandatosCuentasBancariasBean.C_IDFICHEROFIRMA + ", " +
