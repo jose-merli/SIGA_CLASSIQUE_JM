@@ -183,8 +183,10 @@ public class ScsOrdenacionColasAdm extends MasterBeanAdministrador {
 				orden += ", ";
 			}
 		}
-		if (orden.length() > 0)
+		if (orden.length() > 0){
 			orden = orden.substring(0, orden.length()-2);
+			orden += ", Ins.Idpersona, ins.fechasuscripcion";
+		}
 		
 		return orden;
 	} //getOrderBy()
