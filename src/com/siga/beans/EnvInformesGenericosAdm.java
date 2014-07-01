@@ -228,6 +228,8 @@ public class EnvInformesGenericosAdm extends MasterBeanAdministrador {
 					if(ht.get(AdmInformeBean.C_IDTIPOINTERCAMBIOTELEMATICO)!=null)
 						salida.setIdTipoIntercambioTelematico((String)ht.get(AdmInformeBean.C_IDTIPOINTERCAMBIOTELEMATICO));
 					salida.setDestinatarios((String)ht.get(AdmInformeBean.C_DESTINATARIOS));
+					String tipoFormato = (String)ht.get(AdmInformeBean.C_TIPOFORMATO);
+					salida.setTipoformato(tipoFormato!=null?tipoFormato:AdmInformeBean.TIPOFORMATO_WORD);
 					vSalida.add(salida);
 				}
 				
