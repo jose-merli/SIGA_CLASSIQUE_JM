@@ -311,12 +311,27 @@
 		</tr>
 		
 		<tr>
+		<td class="labelText">
+				<siga:Idioma key="gratuita.busquedaAsistencias.literal.origen"/>			
+			</td>
+			<td >	
+				<Select name="origen" class="boxCombo">
+					<option value='' ></option>
+					<option value='10' selected><siga:Idioma key="gratuita.busquedaAsistencias.origen.colegioSIGA"/></option>
+					<option value='30' ><siga:Idioma key="gratuita.busquedaAsistencias.origen.colegiadoVolanteExpresMovil"/></option>
+					<option value='20' ><siga:Idioma key="gratuita.busquedaAsistencias.origen.colegiadoSIGA"/></option>
+				
+				</Select>
+			</td>
+		
 			<td class="labelText">
 				<siga:Idioma key="gratuita.mantAsistencias.literal.estado"/>
 			</td>
-			<td colspan="3">	
+			<td >	
 				<siga:ComboBD nombre="estado" tipo="cmbEstadosAsistencia" obligatorio="false" accion="" elementoSel="<%=estadoSel%>" clase="boxCombo" obligatorioSinTextoSeleccionar="no"/>
 			</td>
+			
+			
 			<td class="labelText">
 				<siga:Idioma key="gratuita.busquedaAsistencias.literal.actuacionesValidadas"/>
 			</td>	
@@ -328,6 +343,9 @@
 						<option value='SinActuaciones' ><siga:Idioma key="gratuita.busquedaAsistencias.literal.sinActuaciones"/></option>
 				</Select>
 			</td>
+			
+		
+			
 		</tr>
 		<tr >
 			<td class="labelText" >
