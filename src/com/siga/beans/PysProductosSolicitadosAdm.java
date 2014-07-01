@@ -62,7 +62,8 @@ public class PysProductosSolicitadosAdm extends MasterBeanAdministrador {
 				PysProductosSolicitadosBean.C_NOFACTURABLE,
 				PysProductosSolicitadosBean.C_USUMODIFICACION,
 				PysProductosSolicitadosBean.C_METODOSOLICITUD,
-				PysProductosSolicitadosBean.C_FECHASOLICITUD};
+				PysProductosSolicitadosBean.C_FECHASOLICITUD,
+				PysProductosSolicitadosBean.C_ORDEN};
 		return campos;
 	}
 
@@ -116,6 +117,7 @@ public class PysProductosSolicitadosAdm extends MasterBeanAdministrador {
 			bean.setFechaSolicitud(UtilidadesHash.getString(hash,PysProductosSolicitadosBean.C_FECHASOLICITUD));
 			bean.setUsuMod(UtilidadesHash.getInteger(hash,PysProductosSolicitadosBean.C_USUMODIFICACION));
 			bean.setNoFacturable(UtilidadesHash.getString(hash,PysProductosSolicitadosBean.C_NOFACTURABLE));
+			bean.setOrden(UtilidadesHash.getInteger(hash,PysProductosSolicitadosBean.C_ORDEN));
 		}
 		catch(Exception e){
 			bean = null;
@@ -155,6 +157,7 @@ public class PysProductosSolicitadosAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(hash, PysProductosSolicitadosBean.C_FECHASOLICITUD, b.getFechaSolicitud());
 			UtilidadesHash.set(hash, PysProductosSolicitadosBean.C_USUMODIFICACION, b.getUsuMod());
 			UtilidadesHash.set(hash, PysProductosSolicitadosBean.C_NOFACTURABLE, b.getNoFacturable());
+			UtilidadesHash.set(hash, PysProductosSolicitadosBean.C_ORDEN, b.getOrden());
 		}
 		catch (Exception e){
 			hash = null;
@@ -607,7 +610,7 @@ public class PysProductosSolicitadosAdm extends MasterBeanAdministrador {
 	 * @return true si todo va bien, false si error
 	 * @throws SIGAException, ClsExceptions
 	 */
-	public boolean confirmarProducto (Integer idInstitucion, Long idPeticion, Integer idTipoProducto, Long idProducto, Long idProductoInstitucion, Double importeAnticipado,String fechaEfectiva) throws ClsExceptions, SIGAException {
+	public boolean confirmarProducto (Integer idInstitucion, Long idPeticion, Integer idTipoProducto, Long idProducto, Long idProductoInstitucion, Double importeAnticipado, String fechaEfectiva) throws ClsExceptions, SIGAException {
 
 		try {
 			
@@ -695,9 +698,9 @@ public class PysProductosSolicitadosAdm extends MasterBeanAdministrador {
 							compraBean.setImporteAnticipado(new Double(0));
 					}
 				}
-				
 
-				compraBean.setIva(productoBean.getPorcentajeIVA());
+				compraBean.setIva(productoBean.getPorcentajeIVA());				
+				
 				PysCompraAdm compraAdm = new PysCompraAdm (this.usrbean);
 				if (!compraAdm.insert(compraBean)) {
 					return false;
@@ -1006,23 +1009,21 @@ public class PysProductosSolicitadosAdm extends MasterBeanAdministrador {
 	 * @exception  SIGAException  En cualquier caso de error
 	 */
 	public Hashtable insertProducto(Articulo a, Long idPeticion, Integer idInstitucionPresentador, Long idPersona) throws Exception {
-		Hashtable hash = new Hashtable();
-		PysProductosSolicitadosAdm adm = new PysProductosSolicitadosAdm(this.usrbean);
+		Hashtable hash = new Hashtable();		
 		
 		UtilidadesHash.set(hash, PysProductosSolicitadosBean.C_IDINSTITUCION, a.getIdInstitucion());	
 		if (idInstitucionPresentador!=null && !idInstitucionPresentador.equals(new Integer(0))) {
 			UtilidadesHash.set(hash, PysProductosSolicitadosBean.C_IDINSTITUCIONORIGEN, idInstitucionPresentador);	
 			UtilidadesHash.set(hash, PysProductosSolicitadosBean.C_IDINSTITUCIONCOLEGIACION, idInstitucionPresentador);	
-		}
+		}		
 		UtilidadesHash.set(hash, PysProductosSolicitadosBean.C_IDTIPOPRODUCTO, a.getIdTipo());
 		UtilidadesHash.set(hash, PysProductosSolicitadosBean.C_IDPRODUCTO, a.getIdArticulo());			
 		UtilidadesHash.set(hash, PysProductosSolicitadosBean.C_IDPRODUCTOINSTITUCION, a.getIdArticuloInstitucion());
 		UtilidadesHash.set(hash, PysProductosSolicitadosBean.C_IDPETICION, idPeticion);
 		UtilidadesHash.set(hash, PysProductosSolicitadosBean.C_IDPERSONA, idPersona);
-		if (a.getIdFormaPago()!=null && a.getIdFormaPago().intValue()==ClsConstants.TIPO_FORMAPAGO_METALICO){
-		   
+		if (a.getIdFormaPago()!=null && a.getIdFormaPago().intValue()==ClsConstants.TIPO_FORMAPAGO_METALICO) {		   
 		    UtilidadesHash.set(hash, PysProductosSolicitadosBean.C_IDCUENTA, "");
-		}else{
+		} else {
 			UtilidadesHash.set(hash, PysProductosSolicitadosBean.C_IDCUENTA, a.getIdCuenta());
 		}
 		UtilidadesHash.set(hash, PysProductosSolicitadosBean.C_IDFORMAPAGO, a.getIdFormaPago());
@@ -1033,23 +1034,25 @@ public class PysProductosSolicitadosAdm extends MasterBeanAdministrador {
 		UtilidadesHash.set(hash, PysProductosSolicitadosBean.C_VALOR, a.getPrecio());		
 		UtilidadesHash.set(hash, PysProductosSolicitadosBean.C_IDTIPOENVIOS, a.getIdTipoEnvios());
 		UtilidadesHash.set(hash, PysProductosSolicitadosBean.C_IDDIRECCION, a.getIdDireccion());
-		if(a.getIdFormaPago()!=null){
+		if (a.getIdFormaPago()!=null) {
 			UtilidadesHash.set(hash, PysProductosSolicitadosBean.C_NOFACTURABLE, "0");
-		}else{
+		} else {
 			UtilidadesHash.set(hash, PysProductosSolicitadosBean.C_NOFACTURABLE, "1");
-		}
-		if(a.getFechaSolicitud()!=null){
+		}		
+		if (a.getFechaSolicitud()!=null) {
 			UtilidadesHash.set(hash, PysProductosSolicitadosBean.C_FECHASOLICITUD, UtilidadesString.formatoFecha(a.getFechaSolicitud(),"dd/MM/yyyy","yyyy/MM/dd hh:mm:ss"));
-		}else{
+		} else {
 			UtilidadesHash.set(hash, PysProductosSolicitadosBean.C_FECHASOLICITUD, "SYSDATE");
-		}
-		if(a.getMetodoSolicitud()!=null){
+		}		
+		if (a.getMetodoSolicitud()!=null) {
 			UtilidadesHash.set(hash, PysProductosSolicitadosBean.C_METODOSOLICITUD, a.getMetodoSolicitud());
-		}else{
+		} else {
 			UtilidadesHash.set(hash, PysProductosSolicitadosBean.C_METODOSOLICITUD, "");
-		}
+		}		
+		UtilidadesHash.set(hash, PysProductosSolicitadosBean.C_ORDEN, a.getOrden());
 	
-		try {
+		try {			
+			PysProductosSolicitadosAdm adm = new PysProductosSolicitadosAdm(this.usrbean);
 			if(adm.insert(hash)){
 				UtilidadesHash.set(hash, "DESCRIPCION_ARTICULO", a.getIdArticuloInstitucionDescripcion());	
 				UtilidadesHash.set(hash, "DESCRIPCION_FORMAPAGO", a.getFormaPago());	

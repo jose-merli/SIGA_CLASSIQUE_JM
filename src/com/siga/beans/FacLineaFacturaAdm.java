@@ -144,7 +144,11 @@ public class FacLineaFacturaAdm extends MasterBeanAdministrador {
 	 * @see com.siga.beans.MasterBeanAdministrador#getOrdenCampos()
 	 */
 	protected String[] getOrdenCampos() {
-		return this.getClavesBean();
+		String [] claves = {FacLineaFacturaBean.C_IDINSTITUCION,
+				FacLineaFacturaBean.C_IDFACTURA,
+				FacLineaFacturaBean.C_NUMEROORDEN,
+				FacLineaFacturaBean.C_NUMEROLINEA};		
+		return claves;
 	}
 	
 	/** Funcion delete masivo de registros (Hashtable hash)
@@ -233,22 +237,20 @@ public class FacLineaFacturaAdm extends MasterBeanAdministrador {
 	       try {
 	            RowsContainer rc = new RowsContainer(); 
 	            String sql ="SELECT " +
-							FacLineaFacturaBean.T_NOMBRETABLA + "." + FacLineaFacturaBean.C_IDINSTITUCION + "," +
-			    			FacLineaFacturaBean.T_NOMBRETABLA + "." + FacLineaFacturaBean.C_IDFACTURA + "," +
-			    			FacLineaFacturaBean.T_NOMBRETABLA + "." + FacLineaFacturaBean.C_NUMEROLINEA + "," +
-			    			FacLineaFacturaBean.T_NOMBRETABLA + "." + FacLineaFacturaBean.C_CANTIDAD + " CANTIDAD_LINEA, " +
-			    			FacLineaFacturaBean.T_NOMBRETABLA + "." + FacLineaFacturaBean.C_CTAPRODUCTOSERVICIO + "," +
-			    			FacLineaFacturaBean.T_NOMBRETABLA + "." + FacLineaFacturaBean.C_CTAIVA + "," +
-			    			FacLineaFacturaBean.T_NOMBRETABLA + "." + FacLineaFacturaBean.C_PRECIOUNITARIO + " PRECIO_LINEA," +
-			    			FacLineaFacturaBean.T_NOMBRETABLA + "." + FacLineaFacturaBean.C_IVA + " IVA_LINEA," +
-			    			/*FacLineaFacturaBean.T_NOMBRETABLA + "." + FacLineaFacturaBean.C_DESCRIPCION +*/
-							"F_SIGA_DESCLINEAFACT("+institucion+","+factura+","+FacLineaFacturaBean.T_NOMBRETABLA +"."+ FacLineaFacturaBean.C_NUMEROLINEA+") DESCRIPCION_LINEA"+
+							FacLineaFacturaBean.T_NOMBRETABLA + "." + FacLineaFacturaBean.C_IDINSTITUCION + ", " +
+			    			FacLineaFacturaBean.T_NOMBRETABLA + "." + FacLineaFacturaBean.C_IDFACTURA + ", " +
+			    			FacLineaFacturaBean.T_NOMBRETABLA + "." + FacLineaFacturaBean.C_NUMEROLINEA + ", " +
+			    			FacLineaFacturaBean.T_NOMBRETABLA + "." + FacLineaFacturaBean.C_CANTIDAD + " AS CANTIDAD_LINEA, " +
+			    			FacLineaFacturaBean.T_NOMBRETABLA + "." + FacLineaFacturaBean.C_CTAPRODUCTOSERVICIO + ", " +
+			    			FacLineaFacturaBean.T_NOMBRETABLA + "." + FacLineaFacturaBean.C_CTAIVA + ", " +
+			    			FacLineaFacturaBean.T_NOMBRETABLA + "." + FacLineaFacturaBean.C_PRECIOUNITARIO + " AS PRECIO_LINEA, " +
+			    			FacLineaFacturaBean.T_NOMBRETABLA + "." + FacLineaFacturaBean.C_IVA + " AS IVA_LINEA, " +
+							" F_SIGA_DESCLINEAFACT(" + institucion + "," + factura + "," + FacLineaFacturaBean.T_NOMBRETABLA + "." + FacLineaFacturaBean.C_NUMEROLINEA + ") AS DESCRIPCION_LINEA " +
 							" FROM " + FacLineaFacturaBean.T_NOMBRETABLA + 
-							" WHERE " +
-							FacLineaFacturaBean.T_NOMBRETABLA +"."+ FacLineaFacturaBean.C_IDINSTITUCION + "=" + institucion +
-							" AND " +
-							FacLineaFacturaBean.T_NOMBRETABLA +"."+ FacLineaFacturaBean.C_IDFACTURA + "=" + factura +
-							" ORDER BY " + FacLineaFacturaBean.T_NOMBRETABLA + "." + FacLineaFacturaBean.C_NUMEROLINEA + " ASC ";
+							" WHERE " + FacLineaFacturaBean.T_NOMBRETABLA + "."+ FacLineaFacturaBean.C_IDINSTITUCION + " = " + institucion +
+								" AND " + FacLineaFacturaBean.T_NOMBRETABLA + "." + FacLineaFacturaBean.C_IDFACTURA + " = " + factura +
+							" ORDER BY " + FacLineaFacturaBean.T_NOMBRETABLA + "." + FacLineaFacturaBean.C_NUMEROORDEN + " ASC, " + 
+								FacLineaFacturaBean.T_NOMBRETABLA + "." + FacLineaFacturaBean.C_NUMEROLINEA + " ASC ";
 														
 	            if (rc.find(sql)) {
 	               for (int i = 0; i < rc.size(); i++){

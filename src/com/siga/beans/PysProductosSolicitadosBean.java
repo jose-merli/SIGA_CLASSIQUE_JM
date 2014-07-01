@@ -15,7 +15,7 @@ package com.siga.beans;
 public class PysProductosSolicitadosBean extends MasterBean{
 
 	/* Variables */
-	private Integer idInstitucion, idInstitucionOrigen, idInstitucionColegiacion, idTipoProducto, idCuenta, idFormaPago, cantidad, idTipoEnvios, metodoSolicitud;
+	private Integer idInstitucion, idInstitucionOrigen, idInstitucionColegiacion, idTipoProducto, idCuenta, idFormaPago, cantidad, idTipoEnvios, metodoSolicitud, orden;
 	private Long 	idProducto, idProductoInstitucion, idPeticion, idPersona, idDireccion;
 	private String 	aceptado,noFacturable, fechaSolicitud;	
 	private Double 	valor;
@@ -45,6 +45,7 @@ public class PysProductosSolicitadosBean extends MasterBean{
 	static public final String C_NOFACTURABLE			= "NOFACTURABLE";
 	static public final String C_FECHASOLICITUD			= "FECHARECEPCIONSOLICITUD";
 	static public final String C_METODOSOLICITUD		= "METODORECEPCIONSOLICITUD";
+	static public final String C_ORDEN					= "ORDEN";
 	
 	// Metodos SET	
 	public void setNoFacturable(String noFacturable) 		{this.noFacturable = noFacturable;}
@@ -65,10 +66,10 @@ public class PysProductosSolicitadosBean extends MasterBean{
 	public void setIdDireccion(Long direccion)				{this.idDireccion = direccion;}
 	public void setMetodoSolicitud(Integer metodoSolicitud)	{this.metodoSolicitud = metodoSolicitud;}	
 	public void setFechaSolicitud(String fechaSolicitud)	{this.fechaSolicitud = fechaSolicitud;}
-	public void setIdInstitucionColegiacion(Integer idInstitucionColegiacion) {this.idInstitucionColegiacion = idInstitucionColegiacion;}	
+	public void setIdInstitucionColegiacion(Integer idInstitucionColegiacion) {this.idInstitucionColegiacion = idInstitucionColegiacion;}
+	public void setOrden(Integer orden) {this.orden = orden;}	
 
-	// Metodos GET
-	
+	// Metodos GET	
 	public String getNoFacturable() 		{return noFacturable;}
 	public String getAceptado() 			{return aceptado;}
 	public Integer getCantidad() 			{return cantidad;}
@@ -88,5 +89,5 @@ public class PysProductosSolicitadosBean extends MasterBean{
 	public String getFechaSolicitud()		{return this.fechaSolicitud;}	
 	public Integer getMetodoSolicitud()		{return this.metodoSolicitud;}
 	public Integer getIdInstitucionColegiacion() {return idInstitucionColegiacion;}
-	
+	public Integer getOrden() {return orden;}	
 }

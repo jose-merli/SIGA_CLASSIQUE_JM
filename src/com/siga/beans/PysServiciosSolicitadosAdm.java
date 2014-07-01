@@ -50,7 +50,8 @@ public class PysServiciosSolicitadosAdm extends MasterBeanAdministrador {
 				PysServiciosSolicitadosBean.C_IDPERIODICIDAD, PysServiciosSolicitadosBean.C_IDPERSONA,
 				PysServiciosSolicitadosBean.C_IDPETICION, PysServiciosSolicitadosBean.C_IDPRECIOSSERVICIOS, 
 				PysServiciosSolicitadosBean.C_IDSERVICIO, PysServiciosSolicitadosBean.C_IDSERVICIOSINSTITUCION,
-				PysServiciosSolicitadosBean.C_IDTIPOSERVICIOS, PysServiciosSolicitadosBean.C_USUMODIFICACION};
+				PysServiciosSolicitadosBean.C_IDTIPOSERVICIOS, PysServiciosSolicitadosBean.C_USUMODIFICACION,
+				PysServiciosSolicitadosBean.C_ORDEN};
 		return campos;
 	}
 
@@ -96,6 +97,7 @@ public class PysServiciosSolicitadosAdm extends MasterBeanAdministrador {
 			bean.setIdServicioInstitucion(UtilidadesHash.getLong(hash, PysServiciosSolicitadosBean.C_IDSERVICIOSINSTITUCION));
 			bean.setIdTipoServicios(UtilidadesHash.getInteger(hash, PysServiciosSolicitadosBean.C_IDTIPOSERVICIOS));
 			bean.setUsuMod(UtilidadesHash.getInteger(hash, PysServiciosSolicitadosBean.C_USUMODIFICACION));
+			bean.setOrden(UtilidadesHash.getInteger(hash, PysServiciosSolicitadosBean.C_ORDEN));
 		}
 		catch (Exception e) { 
 			bean = null;	
@@ -126,6 +128,7 @@ public class PysServiciosSolicitadosAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(htData, PysServiciosSolicitadosBean.C_IDSERVICIOSINSTITUCION , b.getIdServicioInstitucion());
 			UtilidadesHash.set(htData, PysServiciosSolicitadosBean.C_IDTIPOSERVICIOS , b.getIdTipoServicios());
 			UtilidadesHash.set(htData, PysServiciosSolicitadosBean.C_USUMODIFICACION , b.getUsuMod());
+			UtilidadesHash.set(htData, PysServiciosSolicitadosBean.C_ORDEN , b.getOrden());
 
 		}
 		catch (Exception e) {
@@ -897,6 +900,7 @@ public class PysServiciosSolicitadosAdm extends MasterBeanAdministrador {
 		UtilidadesHash.set(hash, PysServiciosSolicitadosBean.C_ACEPTADO , ClsConstants.PRODUCTO_PENDIENTE);
 		UtilidadesHash.set(hash, PysServiciosSolicitadosBean.C_IDPERIODICIDAD , a.getIdPeriodicidad());
 		UtilidadesHash.set(hash, PysServiciosSolicitadosBean.C_IDPRECIOSSERVICIOS , a.getIdPrecios());
+		UtilidadesHash.set(hash, PysServiciosSolicitadosBean.C_ORDEN, a.getOrden());
 		
 		try {
 			if(adm.insert(hash)){

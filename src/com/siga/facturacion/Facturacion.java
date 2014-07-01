@@ -35,8 +35,6 @@ import com.atos.utils.GstDate;
 import com.atos.utils.Row;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.SIGALogging;
-import com.siga.Utilidades.UtilidadesBDAdm;
-import com.siga.Utilidades.UtilidadesFecha;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.beans.AdmInformeAdm;
@@ -81,11 +79,8 @@ import com.siga.beans.FacSerieFacturacionBean;
 import com.siga.beans.FacTiposProduIncluEnFactuAdm;
 import com.siga.beans.FacTiposProduIncluEnFactuBean;
 import com.siga.beans.GenParametrosAdm;
-import com.siga.beans.MasterBeanAdministrador;
 import com.siga.beans.PysCompraAdm;
 import com.siga.beans.PysCompraBean;
-import com.siga.beans.PysFormaPagoProductoAdm;
-import com.siga.beans.PysFormaPagoProductoBean;
 import com.siga.beans.PysPeticionCompraSuscripcionAdm;
 import com.siga.beans.PysPeticionCompraSuscripcionBean;
 import com.siga.beans.PysProductosInstitucionAdm;
@@ -1758,20 +1753,6 @@ public class Facturacion {
         FacSerieFacturacionBean salida = null;
     	try {
     	    FacSerieFacturacionAdm admSerie = new FacSerieFacturacionAdm(this.usrbean);
-    	    PysCompraAdm admCompra = new PysCompraAdm(this.usrbean); 
-    	    
-    	    // ACTUALIZA EL IMPORTE ANTICIPADO PARA QUE QUEDEN PAGADAS
-    	    // RGG 05/05/2009 Cambio para que queden solo anticipadas con el dinero que estaba anticipado (ya no se pagan a la totalidad)
-//		    for (int h=0;h<compras.size();h++) {
-//		        PysCompraBean beanCompra = (PysCompraBean)compras.get(h);
-//			    double importe = (beanCompra.getCantidad().intValue() * beanCompra.getImporteUnitario().doubleValue()) * (1+(beanCompra.getIva().doubleValue()/100));
-//			    beanCompra.setImporteAnticipado(new Double(importe));
-//			    if (!admCompra.updateDirect(beanCompra)) {
-//			        throw new ClsExceptions("Error al actualizar el importe anticipado: "+admCompra.getError());
-//			    }
-//		    }
-		    
-
     	    
     	    // alta de la serie de facturacion temporal
     	    salida = admSerie.obtenerSerieTemporalDesdeOtra(beanSerieCandidata, beanPeticion);
@@ -1780,14 +1761,14 @@ public class Facturacion {
     	    }
 
     	    FacTiposProduIncluEnFactuAdm admTipoProd = new FacTiposProduIncluEnFactuAdm(this.usrbean);
-            int tipoProductoAux=0;
-            int idProductoAux = -1;
+            Hashtable<Integer, Hashtable<Long, PysCompraBean>> hListaTiposProductos = new Hashtable<Integer, Hashtable<Long, PysCompraBean>>();
+            Hashtable<Long, PysCompraBean> hListaProductos = new Hashtable<Long, PysCompraBean>();
             
             Date fechaMin=null;
             Date fechaMax=null;
                 
     	    // inserto los tipos de producto
-    	    for (int t=0;t<compras.size();t++) {
+    	    for (int t=0; t<compras.size(); t++) {
     	        PysCompraBean compra = (PysCompraBean) compras.get(t);
     	        
     	        Date fechaAux = GstDate.convertirFecha(compra.getFecha());
@@ -1803,21 +1784,28 @@ public class Facturacion {
 	    	    beanTipoProd.setIdSerieFacturacion(salida.getIdSerieFacturacion());
 	    	   //hacemos previamente la comprobacion de si los tipos de productos son el mismo
 	    	    
-	    	    //Si el idtipoproducto es diferente, se inserta
-	    	    if (tipoProductoAux!=compra.getIdTipoProducto().intValue()){
+	    	    // Si no existe idtipoproducto, se inserta
+	    	    if (hListaTiposProductos.size()==0 || !hListaTiposProductos.containsKey(compra.getIdTipoProducto())) {
 	    	    	if (!admTipoProd.insert(beanTipoProd)) {
 	    	    		throw new ClsExceptions("Error al insertar producto incluido en serie: "+admTipoProd.getError());
 	    	    	}
-	    	    } else{
-	    	    	//Si el idtipoproducto es el mismo, se inserta solo si el idprudcuto es diferente
-	    	    	if(idProductoAux!=compra.getIdProducto()){
+	    	    	    	    	
+	    	    	hListaProductos.put(compra.getIdProducto(), compra);
+	    	    	hListaTiposProductos.put(compra.getIdTipoProducto(), hListaProductos);
+	    	    	
+	    	    } else {
+	    	    	hListaProductos = (Hashtable<Long, PysCompraBean>) hListaTiposProductos.get(compra.getIdTipoProducto());
+	    	    	
+	    	    	// Si existe idtipoproducto pero no existe idproducto, se inserta
+	    	    	if (hListaProductos.size()==0 || !hListaProductos.containsKey(compra.getIdProducto())) {
 	    	    		if (!admTipoProd.insert(beanTipoProd)) {
 	    	    			throw new ClsExceptions("Error al insertar producto incluido en serie: "+admTipoProd.getError());
 	    	    		}
+	    	    		
+	    	    		hListaProductos.put(compra.getIdProducto(), compra);
+	    	    		hListaTiposProductos.put(compra.getIdTipoProducto(), hListaProductos);	    	    		
 	    	    	}
 	    	    }
-	    	    tipoProductoAux=compra.getIdTipoProducto().intValue();
-	    	    idProductoAux = compra.getIdProducto().intValue();
     	    }
     	    
     	    // inserto el destinatario individual

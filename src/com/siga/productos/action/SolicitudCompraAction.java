@@ -8,6 +8,7 @@ package com.siga.productos.action;
 
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Enumeration;
 import java.util.Hashtable;
@@ -256,8 +257,8 @@ public class SolicitudCompraAction extends MasterAction{
 				
 				if(request.getParameter("ventana") != null && request.getParameter("ventana").equals("aceptacion")){
 					// Antes de borrar tenemos que recoger los valores de la pagina y guardarlo en el carrito.
-					Vector vArticulos = carro.getListaArticulos();	
-					for(int i=1; i < vArticulos.size()+1; i++){											
+					ArrayList arrayListaArticulosOrdenada = carro.getArrayListaArticulosOrdenada();	
+					for(int i=1; i < arrayListaArticulosOrdenada.size()+1; i++){											
 						Articulo a = getOcultos(request, i);			
 					}		
 				}			
@@ -316,8 +317,8 @@ public class SolicitudCompraAction extends MasterAction{
 			
 			if(request.getParameter("ventana").equals("aceptacion")){
 				// Antes de borrar tenemos que recoger los valores de la pagina y guardarlo en el carrito.
-				Vector vArticulos = carro.getListaArticulos();	
-				for(int i=1; i < vArticulos.size()+1; i++){											
+				ArrayList arrayListaArticulosOrdenada = carro.getArrayListaArticulosOrdenada();	
+				for(int i=1; i < arrayListaArticulosOrdenada.size()+1; i++){											
 					Articulo a = getOcultos(request, i);			
 				}		
 			}						
@@ -328,7 +329,7 @@ public class SolicitudCompraAction extends MasterAction{
 			}else{
 				carro.borrarServicio(idArticulo, idArticuloInstitucion, idTipoArticulo);
 			}
-			if((carro.getListaArticulos()).size()>0){
+			if((carro.getArrayListaArticulosOrdenada()).size()>0){
 				request.setAttribute("existeCarro", "S");
 			}else{
 				request.setAttribute("existeCarro", "N");
@@ -544,8 +545,8 @@ public class SolicitudCompraAction extends MasterAction{
 					
 			PysPeticionCompraSuscripcionAdm ppcsa = new PysPeticionCompraSuscripcionAdm(this.getUserBean(request));
 				
-			Vector vArticulos = carro.getListaArticulos();			
-			if(vArticulos.size() == 0){
+			ArrayList arrayListaArticulosOrdenada = carro.getArrayListaArticulosOrdenada();			
+			if(arrayListaArticulosOrdenada.size() == 0){
 				return error("messages.pys.solicitudCompra.errorCarritoBorrado",new ClsExceptions(ppcsa.getError()),request);
 			}
 			
@@ -569,7 +570,6 @@ public class SolicitudCompraAction extends MasterAction{
 	 */
 	protected String finalizarCompra(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		PysPeticionCompraSuscripcionAdm ppcsa = new PysPeticionCompraSuscripcionAdm(this.getUserBean(request));
-		SolicitudCompraForm form = (SolicitudCompraForm) formulario;
 				
 		String modo = "comprobanteCompra";
 		String idInstitucion=null, idPersona=null, fechaActual=null, operacion=null;
@@ -612,19 +612,18 @@ public class SolicitudCompraAction extends MasterAction{
 			String aprobarSolicitud=parametrosAdm.getValor(user.getLocation(), ClsConstants.MODULO_PRODUCTOS, "APROBAR_SOLICITUD_COMPRA", "S");
 			
 			if(!user.isLetrado()&&aprobarSolicitud.equals("S")){
-				//fechaEfectiva=form.getFechaEfectivaCompra();
-				Vector vArticulos = new Vector();
 				GestionSolicitudesAction gestionSolicitudes=new GestionSolicitudesAction();
-				vArticulos = carro.getListaArticulos();
+				ArrayList arrayListaArticulosOrdenada = carro.getArrayListaArticulosOrdenada();
 				Articulo a=null;
 	
-				if (vArticulos.size()==0) modo = exito("error",request);
+				if (arrayListaArticulosOrdenada.size()==0) 
+					modo = exito("error",request);
 				else {			
 					//Recorremos los articulos del carro para confirmar la compra de cada uno de ellos					
-					for(int i=1; i < vArticulos.size()+1; i++){
+					for(int i=0; i<arrayListaArticulosOrdenada.size(); i++){
 
-						a=(Articulo)vArticulos.get(i-1);
-						a.setIdPeticion(idPeticion);
+						a=(Articulo)arrayListaArticulosOrdenada.get(i);
+						a.setIdPeticion(idPeticion);						
 						//request.setAttribute("FECHAEFECTIVA",fechaEfectiva);
 						request.setAttribute("ARTICULO",a);
 						if(a.getTipoCertificado()==null || "".equals(a.getTipoCertificado())){ //Si no es certificado
@@ -1006,7 +1005,6 @@ public class SolicitudCompraAction extends MasterAction{
 		Double subtotal;
 		Articulo articulo;
 		int claseArticulo;
-		Vector vArticulos = new Vector();
 		String pagoConTarjeta = "N";
 		String importeDecimal="", importeEntero="";
 		String claveTipo;
@@ -1017,17 +1015,18 @@ public class SolicitudCompraAction extends MasterAction{
 					
 			//Datos del carro de la compra:
 			carro = (CarroCompra)request.getSession().getAttribute(CarroCompraAdm.nombreCarro);	
-			vArticulos = carro.getListaArticulos();
+			ArrayList arrayListaArticulosOrdenada = carro.getArrayListaArticulosOrdenada();
 			
-			if (vArticulos.size()==0) modo = exito("error",request);
-			else {			
+			if (arrayListaArticulosOrdenada.size()==0) { 
+				modo = exito("error",request);
+			} else {			
 				// preparando tabla para controlar que el subtotales por cada tipo de un importe positivo
 				// control exclusivo para evitar totales negativos ya que se han de permitir cantidades negativas
 				Hashtable<String, Double> subtotalesPorTipo = new Hashtable<String, Double>();
 				
 				//Recorremos los articulos del carro para calcular el importe total del pago con tarjeta:
 				//Tambien vamos actualizando el carro con los datos que me faltan.
-				for(int i=1; i < vArticulos.size()+1; i++){
+				for(int i=1; i < arrayListaArticulosOrdenada.size()+1; i++){
 					//Recupero el articulo con los datos de la pagina y lo almaceno en el carro:
 					articulo = getOcultos(request, i);					
 					claseArticulo = Integer.parseInt(request.getParameter("oculto"+i+"_4"));
@@ -1235,19 +1234,18 @@ public class SolicitudCompraAction extends MasterAction{
 
 					if(!user.isLetrado()&&aprobarSolicitud.equals("S")){
 						//fechaEfectiva=form.getFechaEfectivaCompra();
-						Vector vArticulos = new Vector();
 						GestionSolicitudesAction gestionSolicitudes=new GestionSolicitudesAction();
-						vArticulos = carro.getListaArticulos();
+						ArrayList arrayListaArticulosOrdenada = carro.getArrayListaArticulosOrdenada();
 						Articulo a=null;
 			
-						if (vArticulos.size()==0){ 
+						if (arrayListaArticulosOrdenada.size()==0){ 
 							modo = exito("error",request);
 						}
 						else {			
 							//Recorremos los articulos del carro para confirmar la compra de cada uno de ellos	
 							//Asigna a cada artículo el id petición
-							for(int i=1; i < vArticulos.size()+1; i++){
-								a=(Articulo)vArticulos.get(i-1);
+							for(int i=0; i<arrayListaArticulosOrdenada.size(); i++){
+								a=(Articulo)arrayListaArticulosOrdenada.get(i);
 								a.setIdPeticion(peticionBean.getIdPeticion());
 								//request.setAttribute("FECHAEFECTIVA",fechaEfectiva);
 								request.setAttribute("ARTICULO",a);
@@ -1320,8 +1318,8 @@ public class SolicitudCompraAction extends MasterAction{
 			SolicitudCompraForm form = (SolicitudCompraForm) formulario;
 			CarroCompra carro = CarroCompraAdm.getCarroCompra(form.getIdPersona(), form.getIdInstitucion(), form.getIdInstitucionPresentador(), request);
 		
-			Vector vArticulos = carro.getListaArticulos();	
-				for(int i=1; i < vArticulos.size()+1; i++){											
+			ArrayList arrayListaArticulosOrdenada = carro.getArrayListaArticulosOrdenada();	
+				for(int i=1; i < arrayListaArticulosOrdenada.size()+1; i++){											
 					Articulo a = getOcultos(request, i);			
 				}		
 			
@@ -1400,14 +1398,10 @@ public class SolicitudCompraAction extends MasterAction{
 		CenPersonaAdm personaAdm = new CenPersonaAdm(this.getUserBean(request));
 		CenPersonaBean personaBean = new CenPersonaBean(); 		
 		CenColegiadoAdm colegiadoAdm = new CenColegiadoAdm(this.getUserBean(request));
-		CenColegiadoBean colegiadoBean = new CenColegiadoBean(); 
 		UsrBean user;
 		
 		Hashtable hash = new Hashtable();
 		Hashtable registros = new Hashtable();
-		Vector vProductos = new Vector();
-		Vector vServicios = new Vector();
-		Vector vArticulos = new Vector();
 		Articulo articulo;
 		int claseArticulo;
 		String where = null;
@@ -1435,11 +1429,12 @@ public class SolicitudCompraAction extends MasterAction{
 		registros.put("numeroColegiado", colegiadoAdm.getIdentificadorColegiado(bean));
 	
 		//Datos del carro de la compra:			
-		vArticulos = carro.getListaArticulos();
+		ArrayList arrayListaArticulosOrdenada = carro.getArrayListaArticulosOrdenada();
+		Vector vListaPyS = new Vector();
 		
 		int j=0, k=0;
-		for(int i=0; i < vArticulos.size(); i++){
-			articulo = (Articulo)(vArticulos.get(i)); 
+		for(int i=0; i < arrayListaArticulosOrdenada.size(); i++){
+			articulo = (Articulo)(arrayListaArticulosOrdenada.get(i)); 
 			claseArticulo = articulo.getClaseArticulo();
 						
 			if (claseArticulo == Articulo.CLASE_PRODUCTO) { 				
@@ -1475,7 +1470,7 @@ public class SolicitudCompraAction extends MasterAction{
 				UtilidadesHash.set(hash, "DESCRIPCION_ARTICULO", articulo.getIdArticuloInstitucionDescripcion());	
 				//UtilidadesHash.set(hash, "DESCRIPCION_FORMAPAGO", articulo.getFormaPago());	
 				UtilidadesHash.set(hash, "DESCRIPCION_CUENTA", articulo.getNumeroCuenta());
-				vProductos.add(hash);				
+				
 			 } else {				
 			 	hash = new Hashtable();
 				UtilidadesHash.set(hash, PysServiciosSolicitadosBean.C_IDINSTITUCION , articulo.getIdInstitucion());
@@ -1514,13 +1509,13 @@ public class SolicitudCompraAction extends MasterAction{
 				UtilidadesHash.set(hash, "PRECIOSSERVICIOS", articulo.getPrecio()); 
 				UtilidadesHash.set(hash, "IVA" , articulo.getIdIva());		
 				UtilidadesHash.set(hash, "PERIODICIDAD" , articulo.getPeriodicidad());
-				vServicios.add(hash);
-
-			}
-		}	
-		//Tenemos almacenados 2 vectores con tablas hash de los registros de ambas tablas:
-		registros.put("vProductos",vProductos);
-		registros.put("vServicios",vServicios);
+			 }
+				
+			UtilidadesHash.set(hash, "CLASE" , claseArticulo);
+			vListaPyS.add(hash);
+		}
+		
+		registros.put("vListaPyS",vListaPyS);
 		
 		return registros;
 	}
@@ -1845,11 +1840,10 @@ public class SolicitudCompraAction extends MasterAction{
 			//Recorremos los articulos del carro para obtener el importe anticipado.
 			//Solo se comprueban los articulos que al finalizar la compra se han marcado
 			//para poder anticipar importe.
-			Vector vArticulos = new Vector();
-			vArticulos = carro.getListaArticulos();	
+			ArrayList arrayListaArticulosOrdenada = carro.getArrayListaArticulosOrdenada();	
 			Articulo a = null;
-			for(int i=1; i < vArticulos.size()+1; i++){
-				a=(Articulo)vArticulos.get(i-1);
+			for(int i=0; i<arrayListaArticulosOrdenada.size(); i++){
+				a=(Articulo)arrayListaArticulosOrdenada.get(i);
 				//Si no es certificado y se puede anticipar
 				if( (a.getTipoCertificado()==null || "".equals(a.getTipoCertificado())) && 
 					a.getAnticipar() != null && a.getAnticipar().booleanValue()) {

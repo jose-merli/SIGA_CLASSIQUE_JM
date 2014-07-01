@@ -13,7 +13,7 @@ package com.siga.beans;
 public class PysServiciosSolicitadosBean extends MasterBean {
 
 	/* Variables */
-	private Integer idInstitucion, idTipoServicios, idPeriodicidad, idPreciosServicios, idCuenta, idFormaPago, cantidad;
+	private Integer idInstitucion, idTipoServicios, idPeriodicidad, idPreciosServicios, idCuenta, idFormaPago, cantidad, orden;
 	private Long 	idServicio, idServicioInstitucion, idPeticion,  idPeticionAlta, idPersona;
 	private String 	aceptado;
 	
@@ -33,8 +33,15 @@ public class PysServiciosSolicitadosBean extends MasterBean {
 	static public final String C_IDSERVICIOSINSTITUCION	= "IDSERVICIOSINSTITUCION";
 	static public final String C_IDPETICION				= "IDPETICION";
 	static public final String C_ACEPTADO				= "ACEPTADO";
+	static public final String C_ORDEN					= "ORDEN";
 
-
+	public Integer getOrden() {
+		return orden;
+	}
+	public void setOrden(Integer orden) {
+		this.orden = orden;
+	}
+	
 	/**
 	 * @return Returns the aceptado.
 	 */

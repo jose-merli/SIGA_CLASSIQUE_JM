@@ -7,6 +7,7 @@
  */
 package com.siga.beans;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Vector;
 
@@ -18,7 +19,6 @@ import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.PaginadorBind;
-import com.siga.Utilidades.UtilidadesBDAdm;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesMultidioma;
 import com.siga.general.Articulo;
@@ -464,30 +464,20 @@ public class PysPeticionCompraSuscripcionAdm extends MasterBeanAdministrador {
 	public Long insertarCarro(CarroCompra carro) throws SIGAException, ClsExceptions{
 		PysServiciosSolicitadosAdm serviciosAdm = new PysServiciosSolicitadosAdm (this.usrbean);
 		PysProductosSolicitadosAdm productosAdm = new PysProductosSolicitadosAdm (this.usrbean);
-		UsrBean userBean;
 
 		Long idPersona;			
-		Integer idTipoArticulo, idInstitucion,  idInstitucionPresentador;
-		Long idArticulo, idArticuloInstitucion, idPeticion;
-		int claseArticulo;
-		String formaPago=null, numeroCuenta=null, fecha=null;			
-		Vector vArticulos = new Vector();
-		Vector registros = new Vector();
-		Hashtable hash = new Hashtable();
-		Hashtable hArticulos = new Hashtable();
+		Integer idInstitucion,  idInstitucionPresentador;
+		Long idPeticion;
 		Articulo articulo;
 		
 		try {
-			vArticulos = carro.getListaArticulos();
-			
-			userBean = carro.getUsrBean();			
+			ArrayList arrayListaArticulosOrdenada = carro.getArrayListaArticulosOrdenada();	
 												
-			if(vArticulos.size() == 0){
+			if(arrayListaArticulosOrdenada.size() == 0){
 				throw new ClsExceptions("Error al insertar la peticion del carro de la compra.");
 			}
 			idInstitucion = carro.getIdinstitucion();
 			idInstitucionPresentador = carro.getIdinstitucionPresentador();
-			fecha = UtilidadesBDAdm.getFechaBD("");
 			idPersona = carro.getIdPersona();			
 			
 			// Petición de alta
@@ -497,21 +487,20 @@ public class PysPeticionCompraSuscripcionAdm extends MasterBeanAdministrador {
 			}	
 					
 			//Insertamos los articulos (productos y servicios), cada uno en su tabla:
-			for(int i=0; i < vArticulos.size(); i++){				
-				articulo = (Articulo)vArticulos.get(i);
-				claseArticulo = articulo.getClaseArticulo();
-				int numeroArticulos = articulo.getCantidad();
+			for (int i=0; i<arrayListaArticulosOrdenada.size(); i++) {				
+				articulo = (Articulo)arrayListaArticulosOrdenada.get(i);
+				articulo.setOrden(i+1);
 				
-				//Insertamos todos los productos:									
-				if(claseArticulo == Articulo.CLASE_PRODUCTO) {		
+				if(articulo.getClaseArticulo() == Articulo.CLASE_PRODUCTO) {		
 					productosAdm.insertProducto(articulo, idPeticion, idInstitucionPresentador, idPersona);
-				//Insertamos todos los productos:
 				} else {
 					serviciosAdm.insertServicio(articulo, idPeticion, idPersona);
 				}		
 			}
+			
 		} catch (SIGAException siga) {
 			throw siga;
+			
 		} catch (Exception e) {
 			throw new ClsExceptions(e,"Error al insertar el carro de la compra");
 		}

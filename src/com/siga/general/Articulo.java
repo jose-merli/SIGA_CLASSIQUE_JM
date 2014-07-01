@@ -10,7 +10,10 @@ import java.util.Hashtable;
 
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesHash;
-import com.siga.beans.*;
+import com.siga.beans.PysProductosInstitucionAdm;
+import com.siga.beans.PysProductosInstitucionBean;
+import com.siga.beans.PysServiciosInstitucionAdm;
+import com.siga.beans.PysServiciosInstitucionBean;
 
 /**
  * @author daniel.campos
@@ -66,6 +69,8 @@ public class Articulo
 	
 	private Boolean anticipar;
 	private Double importeAnticipado;
+	private Integer orden;
+	
 	/**
 	 * Constructor para la clase Articulo
 	 * @param claseArticulo tipo de articulo (producto o servicio)
@@ -128,6 +133,14 @@ public class Articulo
 		}
 	}
 	
+	public Integer getOrden() {
+		return orden;
+	}
+
+	public void setOrden(Integer orden) {
+		this.orden = orden;
+	}
+
 	/**
 	 * 
 	 * @return el tipo de articulo (producto o servicio)

@@ -5,7 +5,10 @@
  */
 package com.siga.general;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.Vector;
 
 import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
@@ -37,6 +40,7 @@ public class CarroCompra
 	private boolean compraCertificado;
 	private Integer idInstitucionPresentador;
 	private Hashtable listaArticulos = null;
+	private ArrayList arrayListaArticulosOrdenada; 
 	private UsrBean usrBean;//necesario para el TPV
 	private String numOperacion = null;//numero de operacion para el TPV.
 	private String importe = null;//importe para el total de pago con tarjeta con el TPV.
@@ -54,7 +58,12 @@ public class CarroCompra
 		this.usrBean = us;
 		this.idInstitucionPresentador = idInstPresentador;
 		this.listaArticulos = new Hashtable();
+		this.arrayListaArticulosOrdenada = new ArrayList();
 		this.compraCertificado= false;
+	}
+	
+	public ArrayList getArrayListaArticulosOrdenada() {
+		return this.arrayListaArticulosOrdenada;
 	}
 
 	public boolean getCompraCertificado() {
@@ -197,10 +206,19 @@ public class CarroCompra
 			Articulo b = this.buscarArticulo(a);
 			if (b == null) {
 				this.setArticulo(a);							// Si no esta lo insertamos
-			}
-			else {
+				this.arrayListaArticulosOrdenada.add(a);
+				
+			} else {
 				b.setCantidad(b.getCantidad()+1);				// Si esta incrementamos
 				this.setArticulo(b);
+				
+				for (int i=0; i<this.arrayListaArticulosOrdenada.size(); i++) {
+					Articulo articuloOrdenado = (Articulo) this.arrayListaArticulosOrdenada.get(i);
+					if (this.getClave(articuloOrdenado).equals(this.getClave(b))) {
+						this.arrayListaArticulosOrdenada.set(i, b);
+						return true;
+					}
+				}
 			}
 			return true;
 		}
@@ -264,7 +282,17 @@ public class CarroCompra
 		try {
 			if (a == null) 
 				return true;
+			
 			this.listaArticulos.remove(this.getClave(a));
+			
+			for (int i=0; i<this.arrayListaArticulosOrdenada.size(); i++) {
+				Articulo articuloOrdenado = (Articulo) this.arrayListaArticulosOrdenada.get(i);
+				if (this.getClave(articuloOrdenado).equals(this.getClave(a))) {
+					this.arrayListaArticulosOrdenada.remove(i);
+					return true;
+				}
+			}			
+			
 			return true;
 		}
 		catch (Exception e) {
