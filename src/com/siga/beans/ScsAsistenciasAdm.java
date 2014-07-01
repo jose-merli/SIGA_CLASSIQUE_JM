@@ -6,6 +6,8 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Vector;
 
+import org.redabogacia.sigaservices.app.AppConstants;
+
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ComodinBusquedas;
@@ -18,7 +20,6 @@ import com.siga.Utilidades.UtilidadesBDAdm;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.general.SIGAException;
-import com.siga.gratuita.form.ActuacionAsistenciaForm;
 import com.siga.gratuita.form.AsistenciaForm;
 import com.siga.gratuita.form.AsistenciasForm;
 import com.siga.gratuita.form.DefinirGuardiasTurnosForm;
@@ -92,7 +93,8 @@ public class ScsAsistenciasAdm extends MasterBeanAdministrador {
 				ScsAsistenciasBean.C_NIG,
 				ScsAsistenciasBean.C_IDPRETENSION,
 				ScsAsistenciasBean.C_FECHAESTADOASISTENCIA,
-				ScsAsistenciasBean.C_FECHASOLICITUD
+				ScsAsistenciasBean.C_FECHASOLICITUD,
+				ScsAsistenciasBean.C_IDORIGENASISTENCIA
 				};
 		
 		return campos;
@@ -161,6 +163,7 @@ public class ScsAsistenciasAdm extends MasterBeanAdministrador {
 			bean.setNIG(UtilidadesHash.getString(hash,ScsAsistenciasBean.C_NIG));
 			bean.setIdPretension(UtilidadesHash.getInteger(hash,ScsAsistenciasBean.C_IDPRETENSION));
 			bean.setFechaSolicitud      (UtilidadesHash.getString(hash,ScsAsistenciasBean.C_FECHASOLICITUD            ));
+			bean.setIdOrigenAsistencia(UtilidadesHash.getShort(hash,ScsAsistenciasBean.C_IDORIGENASISTENCIA));
 		}
 		catch(Exception e){
 			bean = null;
@@ -217,6 +220,7 @@ public class ScsAsistenciasAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(hash, ScsAsistenciasBean.C_EJGNUMERO, b.getEjgNumero());
 			UtilidadesHash.set(hash, ScsAsistenciasBean.C_NIG, b.getNIG());
 			UtilidadesHash.set(hash, ScsAsistenciasBean.C_IDPRETENSION, b.getIdPretension());
+			UtilidadesHash.set(hash, ScsAsistenciasBean.C_IDORIGENASISTENCIA, b.getIdOrigenAsistencia());
 			UtilidadesHash.set(hash,ScsAsistenciasBean.C_FECHASOLICITUD             , b.getFechaSolicitud());
 		
 		}
@@ -855,7 +859,7 @@ public class ScsAsistenciasAdm extends MasterBeanAdministrador {
 	       return datos;                        
 	    }
 	
-	public void insertarNuevaAsistencia(String idInstitucion, String anio, String numero, String fecha, String idTurno, String idGuardia, String idTipoAsistencia, String idTipoAsistenciaColegio, String idPersona, String estadoAsistencia, String fechaSolicitud) throws ClsExceptions
+	public void insertarNuevaAsistencia(String idInstitucion, String anio, String numero, String fecha, String idTurno, String idGuardia, String idTipoAsistencia, String idTipoAsistenciaColegio, String idPersona, String estadoAsistencia, String fechaSolicitud,short idOrigenAsistencia) throws ClsExceptions
 	{
 		
 			Hashtable hash = new Hashtable();
@@ -871,6 +875,7 @@ public class ScsAsistenciasAdm extends MasterBeanAdministrador {
 			hash.put(ScsAsistenciasBean.C_IDESTADOASISTENCIA,estadoAsistencia);
 			hash.put(ScsAsistenciasBean.C_FECHAESTADOASISTENCIA,fecha);
 			hash.put(ScsAsistenciasBean.C_FECHASOLICITUD,fechaSolicitud);
+			hash.put(ScsAsistenciasBean.C_IDORIGENASISTENCIA,idOrigenAsistencia);
 			
 			if(!this.insert(hash))
 				throw new ClsExceptions(this.getError());
@@ -1187,6 +1192,16 @@ public class ScsAsistenciasAdm extends MasterBeanAdministrador {
 			String asunto				= miForm.getAsunto();
 			// Me guardo los datos de la busqueda para el boton volver
 			
+			
+			//filtramos por el origen de la asistencia
+			if(miForm.getOrigen()!=null && !miForm.getOrigen().equalsIgnoreCase("")) 	{
+			    contador ++;
+			    codigos.put(new Integer(contador),miForm.getOrigen());
+			    if(miForm.getOrigen().equals(""+AppConstants.ORIGENASISTENCIA_SIGACOLEGIO))
+			    	sql+=" AND nvl(A.IDORIGENASISTENCIA,"+AppConstants.ORIGENASISTENCIA_SIGACOLEGIO+") = :"+contador;
+			    else
+			    	sql+=" AND A.IDORIGENASISTENCIA = :"+contador;
+			}
 			
 			
 			// Preparamos el where de la consulta.
@@ -1752,6 +1767,7 @@ public  List<ScsAsistenciasBean> getAsistenciasVolantesExpres(VolantesExpressVo 
 				String anio = truncFechaGuardia.split("/")[2];
 				asistencia.setAnio(new Integer(anio));
 				asistencia.setNumero(new Integer(this.getNumeroAsistencia(asistencia.getIdInstitucion().toString(), Integer.parseInt(anio))));
+				asistencia.setIdOrigenAsistencia(AppConstants.ORIGENASISTENCIA_SIGACOLEGIO);
 				this.insert(asistencia);
 				if(cabeceraGuardiasAdm==null)
 					cabeceraGuardiasAdm = new ScsCabeceraGuardiasAdm (volantesExpressVo.getUsrBean());

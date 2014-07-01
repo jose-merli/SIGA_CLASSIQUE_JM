@@ -27,7 +27,7 @@ public class AsistenciasForm extends MasterForm
 	String numeroProcedimientoAsistencia;
 	String comisariaAsistencia;
 	String juzgadoAsistencia;
-	
+	String origen;
 	
 	private String modoPestanha=null;
 	
@@ -44,6 +44,19 @@ public class AsistenciasForm extends MasterForm
 		this.modoPestanha = modoPestanha;
 	}
 	
+	/**
+	 * @return the origen
+	 */
+	public String getOrigen() {
+		return origen;
+	}
+	/**
+	 * @param origen the origen to set
+	 */
+	public void setOrigen(String origen) {
+		this.origen = origen;
+	}
+
 	private String asunto="asunto";
 	private String idInstitucion;
 	private String anio="anio";
