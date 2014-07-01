@@ -396,21 +396,27 @@
 		<div class="col90px labelTextValue divOrden">
 			<html:text name="InformeFormEdicion" property="orden" styleId="orden" styleClass="<%=estiloTexto%>" style="width:100%" onkeypress="return soloDigitos(event)"/>
 		</div>
-		<div class="col90px labelText" id="literalFormatoTD">
+		<div class="col90px labelText" >
 			<siga:Idioma key="administracion.informes.literal.formato"/> (*)
 		</div>
-		<div class="col90px labelTextValue" id="formatoTD">
+		<div class="col90px labelTextValue" >
 			<html:select name="InformeFormEdicion"  property="tipoFormato" styleId="tipoFormato" styleClass="<%=estiloCombo%>">
 				<html:option value="-1"><siga:Idioma key="general.combo.seleccionar" />	</html:option>
 				<html:option value="W"><siga:Idioma key="administracion.informes.formato.word"/></html:option>
-				<html:option value="E"><siga:Idioma key="administracion.informes.formato.excel"/></html:option>
+				<c:if test="${InformeFormEdicion.idTipoInforme=='CON'}">
+					<html:option value="E"><siga:Idioma key="administracion.informes.formato.excel"/></html:option>
+				</c:if>
 				<html:option value="P"><siga:Idioma key="administracion.informes.formato.pdf"/></html:option>
 			</html:select>
 		</div>
 			
 		</siga:ConjCampos>
 		
-		<siga:ConjCampos leyenda="Configuración Envío">
+		<fieldset id="configEnvios">
+			<legend>
+ 				Configuración Envío
+			</legend>
+		
 		
 		<div class="col50">
 			<div class="colIzq col220px labelText">
@@ -536,7 +542,7 @@
 			</c:otherwise>
 		</c:choose>
 					
-		</siga:ConjCampos>
+		</fieldset>
 		
 		
 			
@@ -579,12 +585,7 @@
 	</iframe>	
 
 	<script type="text/javascript">
-		jQuery(document).ready(function(){
-			if(document.InformeFormEdicion.idTipoInforme.value!='CON' && document.InformeFormEdicion.idTipoInforme.value!='REJG'){
-				jQuery("#literalFormatoTD").html("");
-				jQuery("#formatoTD").html("");
-			}
-		});
+		
 				
 		function cargarListadoArchivos(){		
 			
@@ -627,13 +628,7 @@
 			claseTipoInforme =  document.getElementById(idClaseTipoInforme).value;
 			directorioTipoInforme =  document.getElementById(idDirectorioTipoInforme).value;
 			document.InformeFormEdicion.directorio.value = directorioTipoInforme;
-			if (document.getElementById("tipoFormato") != undefined){
-				if(claseTipoInforme=='P'||claseTipoInforme=='C'||document.InformeFormEdicion.idTipoInforme.value=='REJG'){
-					campoEscritura('#tipoFormato');
-				}else{
-					campoSoloLectura('#tipoFormato');
-				}
-			}
+			
 			if(document.InformeFormEdicion.idTipoInforme.value=='CON'){
 				gestionarDatosConsultas();
 			}
@@ -642,13 +637,7 @@
 		function inicio() {			
 
 			campoSoloLectura('#directorio');
-			if (document.getElementById("tipoFormato") != undefined){
-				if(document.InformeForm.claseTipoInforme.value=='P'||document.InformeForm.claseTipoInforme.value=='C'||document.InformeFormEdicion.idTipoInforme.value=='REJG'){
-					campoEscritura('#tipoFormato');
-				}else{
-					campoSoloLectura('#tipoFormato');	
-				}
-			}
+			
 			
 			if(document.InformeForm.modo.value=='modificar'){
 				// No se pueden modificar la institucion y tipo de informe 
@@ -734,12 +723,7 @@
 				}
 				
 			} else {				
-				if(document.InformeFormEdicion.tipoFormato.value=='-1' || document.InformeFormEdicion.tipoFormato.value==''){
-					error = "<siga:Idioma key='errors.required' arg0='administracion.informes.literal.formato' />";
-					alert(error);
-					fin();		
-					return false;
-				}
+				
 				
 				if(document.getElementById("alias").value.length>50){
 					document.getElementById("alias").value = document.getElementById("alias").value.substring(0,50);
@@ -747,6 +731,12 @@
 				campoEscritura("#alias");						
 			}	
 			
+			if(document.InformeFormEdicion.tipoFormato.value=='-1' || document.InformeFormEdicion.tipoFormato.value==''){
+				error = "<siga:Idioma key='errors.required' arg0='administracion.informes.literal.formato' />";
+				alert(error);
+				fin();		
+				return false;
+			}
 
 			campoEscritura('#idTiposEnvio');
 			campoEscritura('#idTipoIntercambioTelem');
@@ -771,8 +761,6 @@
 			if(document.InformeFormEdicion.idTipoInforme.value=='-1')
 				document.InformeFormEdicion.idTipoInforme.value = '';
 			
-			if(document.InformeFormEdicion.tipoFormato != undefined && document.InformeFormEdicion.tipoFormato.value=='-1')
-				document.InformeFormEdicion.tipoFormato.value = '';
 			
 			if(document.InformeFormEdicion.preseleccionado.value=='-1')
 				document.InformeFormEdicion.preseleccionado.value = '';
@@ -798,7 +786,7 @@
 			document.InformeFormEdicion.idPlantillaEnvio.value = document.getElementById("idPlantillaEnvioDefecto").value;
 			document.InformeFormEdicion.idTipoIntercambioTelem.value = document.getElementById("idTipoIntercambioTelematico").value;
 			sub();
-			if(document.InformeFormEdicion.idTipoInforme.value=='CON'){ 				
+			if(!document.getElementById('configEnvios')||document.getElementById('configEnvios')=='undefined'){ 				
 				document.InformeFormEdicion.preseleccionado.value = 'S';
 				document.InformeFormEdicion.ASolicitantes.value = 'S';
 				document.InformeFormEdicion.aContrarios.value = 'N';				
@@ -860,11 +848,14 @@
 		{		
 			jQuery('#idTipoInforme').attr('disabled','disabled'); //document.getElementsByName("idTipoInforme")[0].disabled =  'disabled';
 			jQuery('#alias').attr('disabled','disabled'); //document.getElementById("alias").disabled =  'disabled';
-			document.getElementById("ocultarSolicitantes").style.display =  "none";
+			//document.getElementById("ocultarSolicitantes").style.display =  "none";
 			//document.getElementById("ocultarOrden").style.display =  "none";
-			document.getElementById("ocultarLabelPreseleccionado").style.display =  "none";
-			document.getElementById("ocultarSelectPreseleccionado").style.display =  "none";
-			document.getElementById("trEnvios").style.display =  "none";
+			//document.getElementById("ocultarLabelPreseleccionado").style.display =  "none";
+			//document.getElementById("ocultarSelectPreseleccionado").style.display =  "none";
+			//document.getElementById("trEnvios").style.display =  "none";
+			jQuery('#configEnvios').attr('style','display: none');
+			
+			
 		}
 		
 		function accionComboTipoEnvio(index) {
