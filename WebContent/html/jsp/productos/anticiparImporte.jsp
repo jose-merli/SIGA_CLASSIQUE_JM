@@ -26,6 +26,7 @@
 <%@ page import="com.siga.administracion.SIGAMasterTable"%>
 <%@ page import="java.lang.*"%>
 <%@ page import="com.siga.Utilidades.UtilidadesBDAdm"%>
+<%@ page import="com.siga.Utilidades.UtilidadesString"%>
 
 <!-- JSP -->
 <% 
@@ -110,24 +111,26 @@
 											<td class="labelText">
 												<siga:Idioma key="pys.mantenimientoServicios.literal.totalAnticipado"/>
 											</td>
-											<td class="labelTextNum">		
-												<%=UtilidadesNumero.formatoCampo(totalAnticipado)%>&nbsp;&euro;
+											<td class="labelTextNum" align="right">		
+												<%=UtilidadesString.formatoImporte(totalAnticipado)%>&nbsp;&euro;
 											</td>
 										</tr>
+										
 										<tr>
 											<td class="labelText">
 												<siga:Idioma key="pys.mantenimientoServicios.literal.precioSolicitud"/>
 											</td>
-											<td class="labelTextNum">	
-												<%=UtilidadesNumero.formatoCampo(precioSolicitud)%>&nbsp;&euro;
+											<td class="labelTextNum" align="right">	
+												<%=UtilidadesString.formatoImporte(precioSolicitud)%>&nbsp;&euro;
 											</td>
 										</tr>
+										
 										<tr>
 											<td class="labelText">
 												<siga:Idioma key="pys.mantenimientoServicios.literal.nuevoImporteAnticipado"/>&nbsp;(*)
 											</td>
 											<td class="labelTextNum">		
-												<input type="text" name="nuevoImporteAnticipado"  class="box" style="text-align:right"/>&nbsp;&euro;
+												<input type="text" name="nuevoImporteAnticipado"  class="box" style="text-align:right"/>&euro;
 											</td>
 										</tr>
 									</table>	

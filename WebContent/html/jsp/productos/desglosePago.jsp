@@ -39,7 +39,7 @@
 	String DB_FALSE=ClsConstants.DB_FALSE;	
 	
 	CarroCompra carro = (CarroCompra)request.getSession().getAttribute(CarroCompraAdm.nombreCarro);
-	Vector vArticulos = carro.getListaArticulos();	
+	ArrayList arrayListaArticulosOrdenada = carro.getArrayListaArticulosOrdenada();	
 	
 	int tarjeta = ClsConstants.TIPO_FORMAPAGO_TARJETA;
 		
@@ -125,8 +125,8 @@
    		fixedHeight="42%">
 <%				
 		boolean tieneArticulo = false;
-		for (int i = 0; i < vArticulos.size(); i++) {
-			Articulo a = (Articulo) vArticulos.get(i);
+		for (int i = 0; i < arrayListaArticulosOrdenada.size(); i++) {
+			Articulo a = (Articulo) arrayListaArticulosOrdenada.get(i);
 			a.getIdFormaPago();													
 			if (a.getIdFormaPago() != null && a.getIdFormaPago().intValue() == tarjeta) {			
 				double precio = (double)a.getPrecio().doubleValue();
@@ -151,7 +151,7 @@
 							<%=UtilidadesString.mostrarDatoJSP(a.getDescripcionPrecio())%>
 							</td>					  				
 							<td align="right"><%=a.getCantidad()%></td>
-							<td align="right"><%=UtilidadesNumero.formatoCampo(sPrecio)%>&nbsp;&euro;&nbsp;<%=sPeriodicidad%></td>
+							<td align="right"><%=UtilidadesString.formatoImporte(sPrecio)%>&nbsp;&euro;&nbsp;<%=sPeriodicidad%></td>
 							<td align="right"><%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero.formatoCampo(a.getValorIva().floatValue()))%>&nbsp;%</td>					  				
 			 	</tr>							
 <%						
@@ -172,13 +172,13 @@
 	varIvaTotalTarjeta = UtilidadesNumero.redondea (varIvaTotalTarjeta, 2);
 	varPrecioTotalTarjeta = UtilidadesNumero.redondea (varPrecioTotalTarjeta, 2);
 %>
-	<table>
+	<table align="center">
 		<tr>
 			<td class="labelText"><siga:Idioma key="pys.solicitudCompra.literal.totalIVA"/></td>					
-			<td class="labelText"><%=UtilidadesNumero.formatoCampo(varIvaTotalTarjeta)%>&nbsp;&euro;</td>
+			<td class="labelText"><%=UtilidadesString.formatoImporte(varIvaTotalTarjeta)%>&nbsp;&euro;</td>
 			<td>&nbsp;&nbsp;</td>
 			<td class="labelText"><siga:Idioma key="pys.solicitudCompra.literal.total"/></td>
-			<td class="labelText"><%=UtilidadesNumero.formatoCampo(varPrecioTotalTarjeta)%>&nbsp;&euro;</td>
+			<td class="labelText"><%=UtilidadesString.formatoImporte(varPrecioTotalTarjeta)%>&nbsp;&euro;</td>
 		</tr>
 	 </table>
 						 
@@ -222,8 +222,8 @@
 		fixedHeight="90%">
 <%			
 		boolean tieneArticulo = false;
-		for (int i = 0; i < vArticulos.size(); i++) {
-			Articulo a = (Articulo) vArticulos.get(i);		
+		for (int i = 0; i < arrayListaArticulosOrdenada.size(); i++) {
+			Articulo a = (Articulo) arrayListaArticulosOrdenada.get(i);		
 			a.getIdFormaPago();							
 			if (a.getIdFormaPago() == null || a.getIdFormaPago().intValue() != tarjeta) {						
 			
@@ -254,7 +254,7 @@
 	  					<%=a.getCantidad()%>
 	  				</td>
 	  				<td align="right">
-	  					<%=UtilidadesNumero.formatoCampo(sPrecio)%>&nbsp;&euro;&nbsp;<%=sPeriodicidad%>
+	  					<%=UtilidadesString.formatoImporte(sPrecio)%>&nbsp;&euro;&nbsp;<%=sPeriodicidad%>
 	  				</td>
 	  				<td align="right">
 	  					<%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero.formatoCampo(a.getValorIva().floatValue()))%>&nbsp;%  
@@ -282,10 +282,10 @@
 		<table>
 			<tr>
 				<td class="labelText"><siga:Idioma key="pys.solicitudCompra.literal.totalIVA"/></td>					
-				<td class="labelText"><%=UtilidadesNumero.formatoCampo(varIvaTotalOtro)%>&nbsp;&euro;</td>
+				<td class="labelText"><%=UtilidadesString.formatoImporte(varIvaTotalOtro)%>&nbsp;&euro;</td>
 				<td>&nbsp;&nbsp;</td>
 				<td class="labelText"><siga:Idioma key="pys.solicitudCompra.literal.total"/></td>
-				<td class="labelText"><%=UtilidadesNumero.formatoCampo(varPrecioTotalOtro)%>&nbsp;&euro;</td>
+				<td class="labelText"><%=UtilidadesString.formatoImporte(varPrecioTotalOtro)%>&nbsp;&euro;</td>
 			</tr>
 		</table>
 	</div>		

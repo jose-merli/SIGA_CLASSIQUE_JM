@@ -26,6 +26,7 @@
 <%@ page import = "com.siga.general.*"%>
 <%@ page import = "com.siga.tlds.FilaExtElement"%>
 <%@ page import = "java.util.*"%>
+<%@ page import = "com.siga.general.Articulo"%>
 
 <!-- JSP -->
 <% 
@@ -55,19 +56,16 @@
 	
 	//Datos del Action:
 	Hashtable htData = new Hashtable();
-	Vector vProductos = new Vector();
-	Vector vServicios = new Vector();
-	String idPeticion="", idPersona="", nombrePersona="", numero="", nif="", fecha="";
+	Vector vListaPyS = new Vector();
+	String idPeticion="", idPersona="", nombrePersona="", numero="", fecha="";
 	//Si no hay error recupero los datos del request:
 	if (error.equals("NO")) {
 		htData = (Hashtable)request.getAttribute("resultados");
-		vProductos = (Vector)htData.get("vProductos");
-		vServicios = (Vector)htData.get("vServicios");
+		vListaPyS = (Vector)htData.get("vListaPyS");
 		idPeticion = String.valueOf((Long)htData.get("idPeticion"));
 		idPersona=String.valueOf((Long)htData.get("idPersona"));
 		nombrePersona=(String)htData.get("nombrePersona");
 		numero=(String)htData.get("numeroColegiado");
-		nif=(String)htData.get("nif");	
 		fecha = (String)htData.get("fecha"); 	
 	}
 	
@@ -238,26 +236,55 @@
 			<siga:Table 
 				name="cabecera"
 				border="2"
-				columnNames="pys.solicitudCompra.literal.concepto,pys.solicitudCompra.literal.formaPago,pys.solicitudCompra.literal.nCuenta,pys.solicitudCompra.literal.cantidad,pys.solicitudCompra.literal.precio,pys.solicitudCompra.literal.iva,pys.solicitudCompra.literal.estadoPago,pys.solicitudCompra.literal.importeAnticipado,"  
+				columnNames="pys.solicitudCompra.literal.concepto,
+							pys.solicitudCompra.literal.formaPago,
+							pys.solicitudCompra.literal.nCuenta,
+							pys.solicitudCompra.literal.cantidad,
+							pys.solicitudCompra.literal.precio,
+							pys.solicitudCompra.literal.iva,
+							pys.solicitudCompra.literal.estadoPago,
+							pys.solicitudCompra.literal.importeAnticipado,"  
 				columnSizes="20,15,17,8,8,6,10,11,5"
 				fixedHeight="83%">
 		
-		<% 				
+<% 				
 				int i = -1;
-				if (vProductos != null && vProductos.size()>0 ) {
-		 			Enumeration en = vProductos.elements();
+				if (vListaPyS!=null && vListaPyS.size()>0) {
+		 			Enumeration en = vListaPyS.elements();
 					while(en.hasMoreElements()){
 						i++;
-						Hashtable hash = (Hashtable)en.nextElement();  
-						String cuenta=UtilidadesString.mostrarDatoJSP(UtilidadesHash.getString(hash, "DESCRIPCION_CUENTA"));
-													
-						double precio = UtilidadesHash.getDouble(hash, PysProductosSolicitadosBean.C_VALOR).doubleValue();
+						Hashtable hash = (Hashtable)en.nextElement();
 						
-						//float iva = UtilidadesHash.getFloat(hash, PysProductosSolicitadosBean.C_PORCENTAJEIVA).floatValue();
+						String cuenta = UtilidadesString.mostrarDatoJSP(UtilidadesHash.getString(hash, "DESCRIPCION_CUENTA"));						
+						Integer clase = UtilidadesHash.getInteger(hash, "CLASE");
+						String letraClase = (clase.intValue() == Articulo.CLASE_PRODUCTO ? "P" : "S");
+						String idPeticionArticulo="", idArticulo="", idArticuloInstitucion="", idTipoClave="", descripcion="", periodicidad="", idFormaPago="";
+						double precio;
+						int cantidad;
+						if (letraClase.equals("P")) {
+							precio = UtilidadesHash.getDouble(hash, PysProductosSolicitadosBean.C_VALOR).doubleValue();														
+							idPeticionArticulo = UtilidadesHash.getString(hash, PysProductosSolicitadosBean.C_IDPETICION);
+							idArticulo = UtilidadesHash.getString(hash, PysProductosSolicitadosBean.C_IDPRODUCTO);
+							idArticuloInstitucion = UtilidadesHash.getString(hash, PysProductosSolicitadosBean.C_IDPRODUCTOINSTITUCION);
+							idTipoClave = UtilidadesHash.getString(hash, PysProductosSolicitadosBean.C_IDTIPOPRODUCTO);
+							descripcion = UtilidadesString.mostrarDatoJSP(UtilidadesHash.getString(hash, "DESCRIPCION_ARTICULO"));
+							cantidad = UtilidadesHash.getInteger(hash, PysProductosSolicitadosBean.C_CANTIDAD).intValue();
+							idFormaPago = UtilidadesHash.getString(hash, PysProductosSolicitadosBean.C_IDFORMAPAGO);
+							
+						} else  {
+							precio = UtilidadesHash.getDouble(hash, "PRECIOSSERVICIOS").doubleValue();
+							idPeticionArticulo = UtilidadesHash.getString(hash, PysServiciosSolicitadosBean.C_IDPETICION);
+							idArticulo = UtilidadesHash.getString(hash, PysServiciosSolicitadosBean.C_IDSERVICIO);
+							idArticuloInstitucion = UtilidadesHash.getString(hash, PysServiciosSolicitadosBean.C_IDSERVICIOSINSTITUCION);
+							idTipoClave = UtilidadesHash.getString(hash, PysServiciosSolicitadosBean.C_IDTIPOSERVICIOS);
+							descripcion = UtilidadesString.mostrarDatoJSP(UtilidadesHash.getString(hash, "DESCRIPCION_ARTICULO")) + " " + UtilidadesString.mostrarDatoJSP(UtilidadesHash.getString(hash, "SERVICIO_DESCRIPCION_PRECIO"));
+							periodicidad = " / " + UtilidadesString.mostrarDatoJSP(UtilidadesHash.getString(hash, "PERIODICIDAD"));
+							cantidad = UtilidadesHash.getInteger(hash, PysServiciosSolicitadosBean.C_CANTIDAD).intValue();
+							idFormaPago = UtilidadesHash.getString(hash, PysServiciosSolicitadosBean.C_IDFORMAPAGO);
+						}
+						
 						float iva = UtilidadesHash.getFloat(hash,"VALORIVA").floatValue();
 						
-						
-						int cantidad = UtilidadesHash.getInteger(hash, PysProductosSolicitadosBean.C_CANTIDAD).intValue();
 		
 						if((UtilidadesHash.getString(hash, PysServiciosSolicitadosBean.C_IDFORMAPAGO))!=null){
 							varIvaTotal = varIvaTotal +  (cantidad * ((float)(precio / 100)) * iva);
@@ -269,150 +296,79 @@
 						Double aux = UtilidadesHash.getDouble(hash, "IMPORTEANTICIPADO");
 						double importeAnticipado = aux != null ? aux.doubleValue() : 0.0;
 						FilaExtElement[] elementos=new FilaExtElement[1];
-						if(anticipar){
+						if (anticipar) {
 							elementos[0]=new FilaExtElement("anticiparImporte", "anticiparImporte", SIGAConstants.ACCESS_FULL);
 						} else {
 							elementos = null;
 						}
-		%>
+%>
 						<siga:FilaConIconos fila='<%=""+(i+1)%>' botones="" clase="listaNonEdit" elementos='<%=elementos%>' visibleConsulta='no' visibleEdicion='no' visibleBorrado='no' pintarEspacio='no'>							
 							<td>
-								<input type="hidden" name="oculto<%=i+1%>_idArticulo" value="<%=UtilidadesHash.getString(hash, PysProductosSolicitadosBean.C_IDPRODUCTO)%>">
-							    <input type="hidden" name="oculto<%=i+1%>_idArticuloInstitucion" value="<%=UtilidadesHash.getString(hash, PysProductosSolicitadosBean.C_IDPRODUCTOINSTITUCION)%>">
-							    <input type="hidden" name="oculto<%=i+1%>_idPeticion" value="<%=UtilidadesHash.getString(hash, PysProductosSolicitadosBean.C_IDPETICION)%>">
-							    <input type="hidden" name="oculto<%=i+1%>_idTipoClave" value="<%=UtilidadesHash.getString(hash, PysProductosSolicitadosBean.C_IDTIPOPRODUCTO)%>">
-							    <input type="hidden" name="oculto<%=i+1%>_tipo" value="P">
-			  					<%=UtilidadesString.mostrarDatoJSP(UtilidadesHash.getString(hash, "DESCRIPCION_ARTICULO"))%>						  								
+								<input type="hidden" name="oculto<%=i+1%>_idArticulo" value="<%=idArticulo%>">
+							    <input type="hidden" name="oculto<%=i+1%>_idArticuloInstitucion" value="<%=idArticuloInstitucion%>">
+							    <input type="hidden" name="oculto<%=i+1%>_idPeticion" value="<%=idPeticionArticulo%>">
+							    <input type="hidden" name="oculto<%=i+1%>_idTipoClave" value="<%=idTipoClave%>">
+							    <input type="hidden" name="oculto<%=i+1%>_tipo" value="<%=letraClase%>">
+			  					<%=descripcion%>						  								
 			  				</td>
 			  				<td><%=UtilidadesString.mostrarDatoJSP(UtilidadesHash.getString(hash, "DESCRIPCION_FORMAPAGO"))%></td>
 			  				<td><%=UtilidadesString.mostrarIBANConAsteriscos(cuenta)%></td>
 			  				<td align="right"><%=cantidad%></td>
-			  				<td align="right"><%=UtilidadesNumero.formatoCampo(precio)%>&nbsp;&euro;</td>
+			  				<td align="right"><%=UtilidadesString.formatoImporte(precio)%>&nbsp;&euro;<%=periodicidad%></td>
 			  				<td align="right"><%=UtilidadesNumero.formatoCampo(iva)%>&nbsp;%</td>
 			  				<td>	
-		<%
+<%
 								try {
-									int estado = Integer.parseInt(UtilidadesHash.getString(hash, PysProductosSolicitadosBean.C_IDFORMAPAGO)); 
+									int estado = Integer.parseInt(idFormaPago); 
 									if(estado==tarjeta) { 
-		%>
+%>
 										<siga:Idioma key="pys.estadoPago.pagado"/>
-		<%
+<%
 									} else { 
-		%>
+%>
 										<siga:Idioma key="pys.estadoPago.pendiente"/>
-		<%
+<%
 									} 
 								} catch(Exception e) { %>
 										<siga:Idioma key="pys.estadoPago.noFacturable"/>	
-		<%
+<%
 								}
-		%>
+%>
 					  		</td>
-					  		<td align="right"><%=UtilidadesNumero.formatoCampo(importeAnticipado)%>&nbsp;&euro;</td>
-		<%
+					  		<td align="right"><%=UtilidadesString.formatoImporte(importeAnticipado)%>&nbsp;&euro;</td>
+<%
 							if (elementos == null || elementos.length <= 0){ 
-		%>
+%>
 								<td></td>
-		<%
+<%
 							} else {
 								boolean pintarCelda = true;
 								int l = 0;
 								while (pintarCelda && l < elementos.length){
-									if (elementos[l] != null)
+									if (elementos[l] != null) {
 										pintarCelda = false;
+									}
 									l++;
 								}
 								
 								if (pintarCelda) {
-		%>
-								<td></td>
-		<%
+%>
+									<td></td>
+<%
 								}
 							}
-		%>
+%>
 						</siga:FilaConIconos>
-		<%		
-					}
-			 	}
-		
-				if (vServicios != null && vServicios.size()>0) {
-					Enumeration en = vServicios.elements();	
-			
-					while(en.hasMoreElements()){
-						i++;
-						Hashtable hash = (Hashtable)en.nextElement();  
-						
-						String cuenta = UtilidadesString.mostrarDatoJSP(UtilidadesHash.getString(hash, "DESCRIPCION_CUENTA"));
-						double precio = UtilidadesHash.getDouble(hash, "PRECIOSSERVICIOS").doubleValue();
-						// Modificacion MAV 24/08/2005 muestra correctamente el IVA
-						// float iva = 1;//UtilidadesHash.getFloat(hash, "IVA").floatValue();
-						//float iva = UtilidadesHash.getFloat(hash, PysServiciosInstitucionBean.C_PORCENTAJEIVA).floatValue();
-						float iva = UtilidadesHash.getFloat(hash,"VALORIVA").floatValue();
-						int cantidad = UtilidadesHash.getInteger(hash, PysServiciosSolicitadosBean.C_CANTIDAD).intValue();
-						if((UtilidadesHash.getString(hash, PysServiciosSolicitadosBean.C_IDFORMAPAGO))!=null){
-							varIvaTotal = varIvaTotal +  (cantidad * ((float)(precio / 100)) * iva);
-							varPrecioTotal = varPrecioTotal + (cantidad * (precio * (1 + (iva / 100))));						
-						}
-						
-						//recupera el flag para mostrar/ocultar el botón de anticipar y el importe anticipado
-						boolean anticipar = UtilidadesHash.getBoolean(hash, "ANTICIPAR").booleanValue();
-						Double aux = UtilidadesHash.getDouble(hash, "IMPORTEANTICIPADO");
-						double importeAnticipado = aux != null ? aux.doubleValue() : 0.0;
-						FilaExtElement[] elementos=new FilaExtElement[1];
-						if(anticipar){
-							elementos[0]=new FilaExtElement("anticiparImporte", "anticiparImporte", SIGAConstants.ACCESS_FULL);
-						} else {
-							elementos = null;
-						}
-		%>			 				
-						<siga:FilaConIconos fila='<%=""+(i+1)%>' botones="" clase="listaNonEdit" elementos='<%=elementos%>' visibleConsulta='no' visibleEdicion='no' visibleBorrado='no' pintarEspacio='no'>
-							<td>
-								<input type="hidden" name="oculto<%=i+1%>_idArticulo" value="<%=UtilidadesHash.getString(hash, PysServiciosSolicitadosBean.C_IDSERVICIO)%>">
-							    <input type="hidden" name="oculto<%=i+1%>_idArticuloInstitucion" value="<%=UtilidadesHash.getString(hash, PysServiciosSolicitadosBean.C_IDSERVICIOSINSTITUCION)%>">
-							    <input type="hidden" name="oculto<%=i+1%>_idPeticion" value="<%=UtilidadesHash.getString(hash, PysServiciosSolicitadosBean.C_IDPETICION)%>">
-							    <input type="hidden" name="oculto<%=i+1%>_idTipoClave" value="<%=UtilidadesHash.getString(hash, PysServiciosSolicitadosBean.C_IDTIPOSERVICIOS)%>">
-							    <input type="hidden" name="oculto<%=i+1%>_tipo" value="S">
-			  					<%=UtilidadesString.mostrarDatoJSP(UtilidadesHash.getString(hash, "DESCRIPCION_ARTICULO"))%>&nbsp;
-			  					<%=UtilidadesString.mostrarDatoJSP(UtilidadesHash.getString(hash, "SERVICIO_DESCRIPCION_PRECIO"))%>				  								
-			  				</td>
-			  				<td><%=UtilidadesString.mostrarDatoJSP(UtilidadesHash.getString(hash, "DESCRIPCION_FORMAPAGO"))%></td>
-			  				<td><%=UtilidadesString.mostrarIBANConAsteriscos(cuenta)%></td>
-			  				<td align="right"><%=cantidad%></td>
-			  				<td align="right"><%=UtilidadesNumero.formatoCampo(precio)%>&nbsp;&euro;&nbsp;/&nbsp;<%=UtilidadesString.mostrarDatoJSP(UtilidadesHash.getString(hash, "PERIODICIDAD"))%></td>
-			  				<td align="right"><%=UtilidadesNumero.formatoCampo(iva)%>&nbsp;%</td>
-			  				<td>
-		<%
-								try {
-									int estado = Integer.parseInt(UtilidadesHash.getString(hash, PysServiciosSolicitadosBean.C_IDFORMAPAGO)); 								
-									if (estado==tarjeta) { 
-		%>
-										<siga:Idioma key="pys.estadoPago.pagado"/>
-		<%						
-									} else { 
-		%>
-										<siga:Idioma key="pys.estadoPago.pendiente"/>
-		<%						
-									} 
-								} catch(Exception e){ 
-		%>	
-									<siga:Idioma key="pys.estadoPago.noFacturable"/>
-		<%					
-								}
-		%>
-			  				</td>
-			  				<td align="right"><%=UtilidadesNumero.formatoCampo(importeAnticipado)%>&nbsp;&euro;</td>
-						</siga:FilaConIconos>
-		<%		
-					}
-					
-			 	} else if (vProductos == null || vProductos.size()==0 ) {
-		%>
+<%		
+					}									
+			 	} else {
+%>
 					<tr class="notFound">
 			  			<td class="titulitos"><siga:Idioma key="messages.noRecordFound"/></td>
 					</tr>			
-		<%
+<%
 			 	}
-		%>
+%>
 			</siga:Table>
 		
 			<div id="camposRegistro2" style="position:absolute; width:280; height:70; z-index:2; bottom: 70px; left: 550px" align="center">
@@ -425,13 +381,13 @@
 						<tr>
 							<td class="labelText"><siga:Idioma key="pys.solicitudCompra.literal.totalIVA"/></td>
 							<td class="labelTextValue">					
-								<input type='text' name='ivaTotal' value="<%=UtilidadesNumero.formatoCampo(varIvaTotal)%>&nbsp;&euro;" class="boxConsultaNumber" readOnly=true size="20">
+								<input type='text' name='ivaTotal' value="<%=UtilidadesString.formatoImporte(varIvaTotal)%>&nbsp;&euro;" class="boxConsultaNumber" readOnly=true size="20">
 							</td>
 						</tr>
 						<tr>
 							<td class="labelText"><siga:Idioma key="pys.solicitudCompra.literal.total"/></td>
 							<td class="labelTextValue">
-								<input type='text' name='precioTotal' value="<%=UtilidadesNumero.formatoCampo(varPrecioTotal)%>&nbsp;&euro;" class="boxConsultaNumber" readOnly=true size="20">
+								<input type='text' name='precioTotal' value="<%=UtilidadesString.formatoImporte(varPrecioTotal)%>&nbsp;&euro;" class="boxConsultaNumber" readOnly=true size="20">
 							</td>
 						</tr>
 					</table>

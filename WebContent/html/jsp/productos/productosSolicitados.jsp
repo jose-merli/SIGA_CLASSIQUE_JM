@@ -23,7 +23,7 @@
 <%@ page import = "com.atos.utils.*"%>
 <%@ page import = "com.siga.general.*"%>
 <%@ page import="java.util.Properties"%>
-<%@ page import="java.util.Vector"%>
+<%@ page import="java.util.ArrayList"%>
 
 <!-- JSP -->
 <% 
@@ -132,8 +132,8 @@
 					</tr>		 						
 <% 					
 				} else {
-					Vector vArticulos = carro.getListaArticulos();
-					if(vArticulos == null || vArticulos.size()<1 ){
+					ArrayList arrayListaArticulosOrdenada = carro.getArrayListaArticulosOrdenada();
+					if(arrayListaArticulosOrdenada == null || arrayListaArticulosOrdenada.size()<1 ){
 						botones = ""; 
 %> 	
 			  		<tr class="notFound">
@@ -142,9 +142,9 @@
 <% 
 					} else 	{ 						
  						botones="CT";
- 						for (int i = 0; i < vArticulos.size(); i++) {
+ 						for (int i = 0; i < arrayListaArticulosOrdenada.size(); i++) {
  							int fila;
-							Articulo a = (Articulo) vArticulos.get(i);
+							Articulo a = (Articulo) arrayListaArticulosOrdenada.get(i);
 							fila=i+1;
 %> 				
 								

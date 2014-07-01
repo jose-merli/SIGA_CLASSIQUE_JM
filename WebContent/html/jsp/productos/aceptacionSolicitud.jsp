@@ -46,7 +46,7 @@
 	
 	CarroCompra carro = (CarroCompra)request.getSession().getAttribute(CarroCompraAdm.nombreCarro);		
 
-	Vector vArticulos = carro.getListaArticulos();	
+	ArrayList arrayListaArticulosOrdenada = carro.getArrayListaArticulosOrdenada();	
 
 	ScsInscripcionGuardiaAdm inscripcionGuardia=new ScsInscripcionGuardiaAdm(user);
 	Hashtable cuentaelegida=inscripcionGuardia.obtenerNumCuenta((Long)carro.getIdPersona(),idInstitucion);
@@ -205,7 +205,7 @@
 			
 			f = document.solicitudCompraForm;
 			
-			for (j=1; j < <%=vArticulos.size()%>+1; j++) { 
+			for (j=1; j < <%=arrayListaArticulosOrdenada.size()%>+1; j++) { 
 				nofacturable=eval("f.oculto" + j +"_7");
 				if(nofacturable.value=="0"){ //En el caso de que sea facturable
 					cuenta=eval("f.oculto" + j +"_5");	
@@ -351,7 +351,7 @@
 		
 		function validarCantidades() {
 			f = document.solicitudCompraForm; 	
- 			for (j=1; j < <%=vArticulos.size()%>+1; j++) { 
+ 			for (j=1; j < <%=arrayListaArticulosOrdenada.size()%>+1; j++) { 
  				cantidad=eval("f.cantidad" + j);
  				
  				if (errorValidarCantidad(cantidad)) { 
@@ -366,7 +366,7 @@
 		
 		function validarPrecios() {
 			f = document.solicitudCompraForm; 	
- 			for (j=1; j < <%=vArticulos.size()%>+1; j++) { 
+ 			for (j=1; j < <%=arrayListaArticulosOrdenada.size()%>+1; j++) { 
  				precio=eval("f.precio" + j); 				
  				precio.value = precio.value.replace(/,/,".");	
  				
@@ -394,7 +394,7 @@
  	
 		function obligatorioFormaPago() {
 	 		f = document.solicitudCompraForm; 	
- 			for (j=1; j < <%=vArticulos.size()%>+1; j++) { 
+ 			for (j=1; j < <%=arrayListaArticulosOrdenada.size()%>+1; j++) { 
  				pago=eval("f.formaPago" + j);
 				if (pago.value==null || pago.value=="") { 
  					var mensaje = "<siga:Idioma key="pys.solicitudCompra.literal.formaPago"/> <siga:Idioma key="messages.campoObligatorio.error"/>";
@@ -408,7 +408,7 @@
 	 	function validarFormaPagoANTIGUO(){
 	 		f = document.solicitudCompraForm; 
 	 		auxTarjeta="N";			
- 			for (j=1; j < <%=vArticulos.size()%>+1; j++) { 
+ 			for (j=1; j < <%=arrayListaArticulosOrdenada.size()%>+1; j++) { 
  				pago=eval("f.formaPago" + j);
 				if (pago.value==null || pago.value=="") { 				
 					var mensaje = "<siga:Idioma key="pys.solicitudCompra.literal.formaPago"/> <siga:Idioma key="messages.campoObligatorio.error"/>";
@@ -435,7 +435,7 @@
 	 		auxTarjeta="N";	
 	
 			testigo=0;
- 			for (j=1; j < <%=vArticulos.size()%>+1; j++) { 
+ 			for (j=1; j < <%=arrayListaArticulosOrdenada.size()%>+1; j++) { 
  				
 				nofacturable=eval("f.oculto" + j +"_7");
 				cuentaelegida=eval("f.oculto" + j +"_8");
@@ -487,7 +487,7 @@
 	 	function validarCertificado() {
 	 		f = document.solicitudCompraForm; 	 			
 	 		salida = true;
- 			for (j=1; j < <%=vArticulos.size()%>+1; j++) { 
+ 			for (j=1; j < <%=arrayListaArticulosOrdenada.size()%>+1; j++) { 
  				certificado=eval("f.certificado" + j +"_1"); 				
  				if (certificado.value!=null && certificado.value!="") { 			
  					direccion=eval("f.certificado" + j +"_3"); 					
@@ -527,7 +527,7 @@
  			varIvaTotal=0;
  			varPrecioTotal=0;
 
- 			for (j=1; j < <%=vArticulos.size()%>+1; j++) { 
+ 			for (j=1; j < <%=arrayListaArticulosOrdenada.size()%>+1; j++) { 
  			
 	 			pago=eval("f.formaPago" + j);
 	 			
@@ -611,17 +611,30 @@
 	  	<html:hidden name="solicitudCompraForm" property = "idInstitucion" value = "<%=String.valueOf(idInstitucion)%>"/>				
 				
 <% 
+		boolean tieneBotones = false;
+		for (int i = 0; !tieneBotones && i < arrayListaArticulosOrdenada.size(); i++) {
+			Articulo a = (Articulo) arrayListaArticulosOrdenada.get(i);
+			if (a.getTipoCertificado() != null && !String.valueOf(a.getTipoCertificado()).equals("")) {	
+				tieneBotones = true;
+			}			
+		}
+
 		String nombrecol1;
 		String tamanoCol1;
 		int var=1;
 
-		if (!user.isLetrado()&&aprobarSolicitud.equals("S")) { 
-			nombrecol1="pys.solicitudCompra.literal.concepto,pys.solicitudCompra.literal.formaPago,pys.solicitudCompra.literal.nCuenta,pys.solicitudCompra.literal.cantidad,pys.solicitudCompra.literal.precio,pys.solicitudCompra.literal.periodicidad,pys.solicitudCompra.literal.iva,pys.solicitudCompra.literal.fechaEfectiva,";  
-			tamanoCol1="13,16,19,8,8,7,7,13,10";
+		if (!user.isLetrado()&&aprobarSolicitud.equals("S")) {			
+			nombrecol1="pys.solicitudCompra.literal.concepto,pys.solicitudCompra.literal.formaPago,pys.solicitudCompra.literal.nCuenta,pys.solicitudCompra.literal.cantidad,pys.solicitudCompra.literal.precio,pys.solicitudCompra.literal.periodicidad,pys.solicitudCompra.literal.iva,pys.solicitudCompra.literal.fechaEfectiva";  
+			tamanoCol1="13,16,19,8,8,7,7,13";
 			
-		}else{
-		   	nombrecol1="pys.solicitudCompra.literal.concepto,pys.solicitudCompra.literal.formaPago,pys.solicitudCompra.literal.nCuenta,pys.solicitudCompra.literal.cantidad,pys.solicitudCompra.literal.precio,pys.solicitudCompra.literal.periodicidad,pys.solicitudCompra.literal.iva,"  ;	  				
-		   	tamanoCol1="13,16,19,8,8,7,7,10";
+		} else {
+		   	nombrecol1="pys.solicitudCompra.literal.concepto,pys.solicitudCompra.literal.formaPago,pys.solicitudCompra.literal.nCuenta,pys.solicitudCompra.literal.cantidad,pys.solicitudCompra.literal.precio,pys.solicitudCompra.literal.periodicidad,pys.solicitudCompra.literal.iva";	  				
+		   	tamanoCol1="13,16,19,8,8,7,7";
+		}
+		
+		if (tieneBotones) {
+			nombrecol1 += ",";
+			tamanoCol1 += ",10";
 		}
 %>
 
@@ -633,7 +646,7 @@
 			fixedHeight="83%">
 
 <% 					
-			if(vArticulos == null || vArticulos.size()<1 ) { 	
+			if(arrayListaArticulosOrdenada == null || arrayListaArticulosOrdenada.size()<1 ) { 	
 				botones = "V"; 
 %> 	
 			  	<tr class="notFound">
@@ -646,8 +659,8 @@
 			} else {
 				botones = "V,CC";
 				int fila; 	 								
-				for (int i = 0; i < vArticulos.size(); i++) {
-					Articulo a = (Articulo) vArticulos.get(i);							
+				for (int i = 0; i < arrayListaArticulosOrdenada.size(); i++) {
+					Articulo a = (Articulo) arrayListaArticulosOrdenada.get(i);							
 
 					ArrayList sIdFormaPago = new ArrayList();	
 					sPrecio = "-";
@@ -712,14 +725,9 @@
 						nofacturable="0";
 					}
 
-					if (datos != null) {
-						if(nofacturable.equals(DB_FALSE)){
-							varIvaTotal = varIvaTotal +  (a.getCantidad() * ((float) precio * iva / 100));
-							varPrecioTotal = varPrecioTotal + (a.getCantidad() * precio) + varIvaTotal;
-						}
-					} else {
-						varIvaTotal = varIvaTotal +  (a.getCantidad() * ((float) precio * iva / 100));
-						varPrecioTotal = varPrecioTotal + (a.getCantidad() * precio) + varIvaTotal;
+					if (datos == null || (datos!=null && nofacturable.equals(DB_FALSE))) {
+						varIvaTotal = varIvaTotal + (a.getCantidad() * ((float) precio * iva / 100));
+						varPrecioTotal = varPrecioTotal + (a.getCantidad() * ((float) precio * (1 + iva / 100)));
 					}
 
 									
@@ -731,8 +739,8 @@
 					sTipoCertificado = "";
 					if (a.getTipoCertificado() != null && !String.valueOf(a.getTipoCertificado()).equals("")) {	
 						sTipoCertificado = String.valueOf(a.getTipoCertificado());		 
-								elems[0]=new FilaExtElement("editarCertificado","editarCertificado",SIGAConstants.ACCESS_READ);
-								elems[1]=new FilaExtElement("consultarCertificado","consultarCertificado",SIGAConstants.ACCESS_READ);  
+						elems[0]=new FilaExtElement("editarCertificado","editarCertificado",SIGAConstants.ACCESS_READ);
+						elems[1]=new FilaExtElement("consultarCertificado","consultarCertificado",SIGAConstants.ACCESS_READ);  
 					}
 %> 				
 					<siga:FilaConIconos fila='<%=String.valueOf(fila)%>' botones='' visibleBorrado="false" visibleConsulta="false" visibleEdicion="false" pintarEspacio="no" elementos='<%=elems%>' clase="listaNonEdit">
@@ -763,16 +771,18 @@
 							formaPago[3] = String.valueOf((Integer)a.getIdTipo());
 							formaPago[4] = String.valueOf((Long)a.getIdArticulo());
 							formaPago[5] = String.valueOf((Long)a.getIdArticuloInstitucion());	
+							
+							String tamanoFormaPago = tieneBotones ? "150" : "160";
 
 							if (datos != null) {
 								if(nofacturable.equals(DB_FALSE)){
 									if (a.getClaseArticulo() == Articulo.CLASE_PRODUCTO) {
 %>									
-										<siga:ComboBD nombre="<%=formaPagoNombre%>" tipo="cmbFormaPagoProducto" clase="boxCombo"  parametro="<%=formaPago%>" elementoSel ="<%=var%>" accion="<%=parametroFuncion%>" ancho="150"/>
+										<siga:ComboBD nombre="<%=formaPagoNombre%>" tipo="cmbFormaPagoProducto" clase="boxCombo"  parametro="<%=formaPago%>" elementoSel ="<%=var%>" accion="<%=parametroFuncion%>" ancho="<%=tamanoFormaPago%>"/>
 <%	
 									} else {	
 %>
-										<siga:ComboBD nombre="<%=formaPagoNombre%>" tipo="cmbFormaPagoServicio" clase="boxCombo"  parametro="<%=formaPago%>" elementoSel ="<%=var%>" accion="<%=parametroFuncion%>" ancho="150"/>	
+										<siga:ComboBD nombre="<%=formaPagoNombre%>" tipo="cmbFormaPagoServicio" clase="boxCombo"  parametro="<%=formaPago%>" elementoSel ="<%=var%>" accion="<%=parametroFuncion%>" ancho="<%=tamanoFormaPago%>"/>	
 
 <%								
 									}
@@ -787,6 +797,7 @@
 		  				
 						<td align="center">								
 <%							
+							String tamanoCuentaCargo = tieneBotones ? "180" : "200";
 							String parametro[] = new String[2];
    						 	parametro[0] = carro.getIdPersona().toString();
    						 	parametro[1] = idInstitucion.toString(); 
@@ -795,18 +806,18 @@
    						 		ArrayList cuentaSel   = new ArrayList();
 								cuentaSel.add(sIdCuenta);
 %>	
-								<siga:ComboBD nombre="<%=n%>" tipo="cuentaCargo" clase="boxCombo" parametro="<%=parametro%>" ancho="180" readonly="false" elementoSel="<%=cuentaSel%>" />
+								<siga:ComboBD nombre="<%=n%>" tipo="cuentaCargo" clase="boxCombo" parametro="<%=parametro%>" ancho="<%=tamanoCuentaCargo%>" readonly="false" elementoSel="<%=cuentaSel%>" />
 <%
 							} else {
 	   							if(cuentaelegida.get("IDCUENTA")!=null && !cuentaelegida.get("IDCUENTA").equals("")){ 
 	   						 		ArrayList cuentaSel = new ArrayList();
   									cuentaSel.add(cuentaelegida.get("IDCUENTA"));
 %>	
-   						 			<siga:ComboBD nombre="<%=n%>" tipo="cuentaCargo" clase="boxCombo" parametro="<%=parametro%>" ancho="180" readonly="false" elementoSel="<%=cuentaSel%>"/>
+   						 			<siga:ComboBD nombre="<%=n%>" tipo="cuentaCargo" clase="boxCombo" parametro="<%=parametro%>" ancho="<%=tamanoCuentaCargo%>" readonly="false" elementoSel="<%=cuentaSel%>"/>
 <%
 								} else { 
 %>
-   						 			<siga:ComboBD nombre="<%=n%>" tipo="cuentaCargo" clase="boxCombo" parametro="<%=parametro%>" ancho="180" readonly="false" />
+   						 			<siga:ComboBD nombre="<%=n%>" tipo="cuentaCargo" clase="boxCombo" parametro="<%=parametro%>" ancho="<%=tamanoCuentaCargo%>" readonly="false" />
 <%
 								} 
 							}
@@ -849,22 +860,24 @@
 <% 
 						}
 
-						if (elems.length <= 0) { 
-%>
-							<td></td>
-<%
-						} else {
-							boolean pintarCelda = true;
-							int l = 0;
-							while (pintarCelda && l < elems.length){
-								if (elems[l] != null)
-									pintarCelda = false;
-								l++;
-							}
-							if (pintarCelda){
+						if (tieneBotones) {
+							if (elems.length <= 0) { 
 %>
 								<td></td>
+<%
+							} else {
+								boolean pintarCelda = true;
+								int l = 0;
+								while (pintarCelda && l < elems.length){
+									if (elems[l] != null)
+										pintarCelda = false;
+									l++;
+								}
+								if (pintarCelda){
+%>
+									<td></td>
 <%	
+								}
 							}
 						}
 %>

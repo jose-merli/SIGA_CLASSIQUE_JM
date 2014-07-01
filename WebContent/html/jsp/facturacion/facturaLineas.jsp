@@ -96,8 +96,7 @@
 	<siga:Table 
 	   name = "tablaResultados"
 	   border  = "2"
-	   columnNames="facturacion.lineasFactura.literal.Orden,
-					facturacion.lineasFactura.literal.Descripcion,
+	   columnNames="facturacion.lineasFactura.literal.Descripcion,
 					facturacion.lineasFactura.literal.Cantidad,
 					facturacion.lineasFactura.literal.precioUnitario,
 					facturacion.lineasFactura.literal.importeNeto,
@@ -105,7 +104,7 @@
 					facturacion.lineasFactura.literal.importeIVA,
 					facturacion.lineasFactura.literal.importeTotal,
 					facturacion.lineasFactura.literal.Anticipado,"
-	   columnSizes = "6,20,8,10,10,6,10,10,10,10"
+	   columnSizes = "26,8,10,10,6,10,10,10,10"
 	   modal="M">
 	
 <%	 
@@ -130,13 +129,12 @@
 %>
 
 					<siga:FilaConIconos fila='<%=""+i%>' botones="<%=botones%>" visibleBorrado="false" clase="listaNonEdit"> 
-						<td align="right"><!-- Datos ocultos tabla -->
-								<input type="hidden" id="oculto<%=i%>_1" value="<%=String.valueOf(linea.getIdInstitucion())%>">
-								<input type="hidden" id="oculto<%=i%>_2" value="<%=linea.getIdFactura()%>">
-								<input type="hidden" id="oculto<%=i%>_3" value="<%=String.valueOf(linea.getNumeroLinea())%>">
-								<%=UtilidadesString.mostrarDatoJSP(linea.getNumeroOrden())%>
+						<td><!-- Datos ocultos tabla -->
+							<input type="hidden" id="oculto<%=i%>_1" value="<%=String.valueOf(linea.getIdInstitucion())%>">
+							<input type="hidden" id="oculto<%=i%>_2" value="<%=linea.getIdFactura()%>">
+							<input type="hidden" id="oculto<%=i%>_3" value="<%=String.valueOf(linea.getNumeroLinea())%>">
+							<%=UtilidadesString.mostrarDatoJSP(linea.getDescripcion())%>
 						</td>
-						<td><%=UtilidadesString.mostrarDatoJSP(linea.getDescripcion())%></td>
 						<td align="right"><%=UtilidadesString.mostrarDatoJSP(iCantidad)%></td>
 						<td align="right"><%=UtilidadesString.mostrarDatoJSP(UtilidadesString.formatoImporte(dPrecioUnitario))%>&nbsp;&euro;</td>
 						<td align="right"><%=UtilidadesString.mostrarDatoJSP(UtilidadesString.formatoImporte(dImporteNeto))%>&nbsp;&euro;</td>
@@ -150,7 +148,6 @@
 			 }  // for
 %>
 			<tr class="listaNonEditSelected" style="height:30px">
-				<td>&nbsp;</td>
 				<td><b><siga:Idioma key="facturacion.lineasFactura.literal.Total"/></b></td>
 				<td>&nbsp;</td>
 				<td>&nbsp;</td>
