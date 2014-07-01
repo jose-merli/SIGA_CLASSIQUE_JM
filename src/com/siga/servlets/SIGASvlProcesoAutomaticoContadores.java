@@ -23,6 +23,7 @@ import com.atos.utils.ClsMngBBDD;
 import com.atos.utils.Row;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesBDAdm;
+import com.siga.Utilidades.UtilidadesString;
 import com.siga.beans.AdmContadorAdm;
 import com.siga.beans.AdmContadorBean;
 import com.siga.beans.CenInstitucionBean;
@@ -158,18 +159,22 @@ public final class SIGASvlProcesoAutomaticoContadores extends SIGAContextListene
 				    		// Actualizamos la fecha de reconfiguración para el siguiente año
 				    		java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat(ClsConstants.DATE_FORMAT_JAVA);
 				    		Date fechaReconfiguracion = sdf.parse(contadorAreconfigurar.getFechaReconfiguracion());
+				    		
+				    		//Actualizamos el prefijo y el sufijo sumando uno a la última cifra encontrada (si la hay)
+				    		String sPrefijo = 	contadorAreconfigurar.getReconfiguracionPrefijo();
+				    		String sSufijo 	= 	contadorAreconfigurar.getReconfiguracionSufijo();
+				    		sPrefijo = calcularSiguienteXfijo(sPrefijo,fechaReconfiguracion);
+				    		sSufijo = calcularSiguienteXfijo(sSufijo,fechaReconfiguracion);
+				    		contadorAreconfigurar.setReconfiguracionPrefijo(sPrefijo);
+				    		contadorAreconfigurar.setReconfiguracionSufijo(sSufijo);
+				    		
+				    		
 				    		Calendar cal = Calendar.getInstance();
 				            cal.setTime(fechaReconfiguracion);
 				            cal.add(Calendar.YEAR, 1);
 				            fechaReconfiguracion = cal.getTime();
 				    		contadorAreconfigurar.setFechaReconfiguracion(sdf.format(fechaReconfiguracion));
-				    		//Actualizamos el prefijo y el sufijo sumando uno a la última cifra encontrada (si la hay)
-				    		String sPrefijo = 	contadorAreconfigurar.getReconfiguracionPrefijo();
-				    		String sSufijo 	= 	contadorAreconfigurar.getReconfiguracionSufijo();
-				    		sPrefijo = calcularSiguienteXfijo(sPrefijo);
-				    		sSufijo = calcularSiguienteXfijo(sSufijo);
-				    		contadorAreconfigurar.setReconfiguracionPrefijo(sPrefijo);
-				    		contadorAreconfigurar.setReconfiguracionSufijo(sSufijo);
+				    		
 				    		
 				    		if (admContadorAdm.update(contadorAreconfigurar))
 				    			ClsLogging.writeFileLogWithoutSession(" - OK.    >>>  CONTADOR RECONFIGURADO: "+"idInstitucion="+contadorAreconfigurar.getIdinstitucion()+ " idContador="+contadorAreconfigurar.getIdContador(), 3);
@@ -198,36 +203,14 @@ public final class SIGASvlProcesoAutomaticoContadores extends SIGAContextListene
 		}
     }
     
-    private String calcularSiguienteXfijo(String xFijo){
-    	StringBuilder sbXfijo = new StringBuilder(xFijo);
-		
-		int i = sbXfijo.length() - 1;
-		Integer startDigitIndex = 0;
-		Integer endDigitIndex = 0;
-		String sNumero = "";
-		boolean bOk = false;
-		while (i >= 0 && !bOk){
-			if (Character.isDigit(sbXfijo.charAt(i))){
-				if ("".equals(sNumero)){
-					endDigitIndex = i;
-				}
-				sNumero = String.valueOf(sbXfijo.charAt(i)) + sNumero;
-			} else if (!"".equals(sNumero)){
-				startDigitIndex = i+1;
-				bOk = true;
-			}
-			i--;
-		}
-		String sPrefijo = "";
-		sNumero = ((Integer)(Integer.valueOf(sNumero) + 1)).toString();
-		String sSufijo = "";
-		if (startDigitIndex > 0){
-			sPrefijo = sbXfijo.substring(0, startDigitIndex);
-		}
-		if (endDigitIndex < sbXfijo.length() - 1){
-			sSufijo = sbXfijo.substring(endDigitIndex + 1);
-		}
-		return sPrefijo + sNumero + sSufijo;
+    private static String calcularSiguienteXfijo(String xFijo,Date fechaReconfiguracion){
+    	Calendar cal = Calendar.getInstance();
+        cal.setTime(fechaReconfiguracion);
+        int year = cal.get(Calendar.YEAR)-2000;
+        //Buscamos si esta el año en cuantro digitos
+        xFijo = UtilidadesString .replaceAllIgnoreCase(xFijo, ""+year, ""+(year+1));
+    	return xFijo;
+    	
     }
     
 }
