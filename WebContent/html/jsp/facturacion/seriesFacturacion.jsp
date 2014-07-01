@@ -362,6 +362,7 @@
 			} else {
 				jQuery("#generarPDF").removeAttr("disabled");	
 				jQuery("#idTipoPlantillaMail").attr("disabled","disabled");
+				jQuery("#idTipoPlantillaMail").val("");
 			}
 			return false;
 		}

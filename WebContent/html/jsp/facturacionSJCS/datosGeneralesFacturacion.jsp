@@ -154,10 +154,12 @@
 	} else if ((idEstado!=null) && (idEstado.intValue() == ESTADO_FACTURACION.ESTADO_FACTURACION_ABIERTA.getCodigo())) {
 		botones = "G,R,EF";
 		
-		if (!bRegularizacion) 
+		if (!bRegularizacion){ 
 			botonesAbajo = "V,N"; 
-		else 
+		} else {
+			botones ="EF";
 			botonesAbajo = "V";
+		}
 		
 		if (bYaHaSidoEjecutada) botones += ",LF";
 		
@@ -408,14 +410,14 @@
 						<siga:Idioma key="factSJCS.datosFacturacion.literal.fechaInicio"/>&nbsp(*)
 					</td>
 					<td>
-						<siga:Fecha nombreCampo="fechaInicio" valorInicial="<%=fechaInicio%>"></siga:Fecha>
+						<siga:Fecha nombreCampo="fechaInicio" valorInicial="<%=fechaInicio%>" disabled="<%=desactivado%>"></siga:Fecha>
 					</td>
 					
 					<td class="labelText">
 						<siga:Idioma key="factSJCS.datosFacturacion.literal.fechaFin"/>&nbsp(*)
 					</td>	
 					<td>								
-						<siga:Fecha nombreCampo="fechaFin" valorInicial="<%=fechaFin%>"></siga:Fecha>
+						<siga:Fecha nombreCampo="fechaFin" valorInicial="<%=fechaFin%>" disabled="<%=desactivado%>"></siga:Fecha>
 					</td>	
 				</tr>
 				

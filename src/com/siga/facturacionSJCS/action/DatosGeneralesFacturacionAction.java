@@ -529,54 +529,70 @@ public class DatosGeneralesFacturacionAction extends MasterAction {
 			DatosGeneralesFacturacionForm miform = (DatosGeneralesFacturacionForm)formulario;
 			String idFacturacion = miform.getIdFacturacion();
 			String idInstitucion = usr.getLocation();
+			FcsFacturacionJGAdm facturacionAdm = new FcsFacturacionJGAdm(usr);
 			
 			//Si no se incluido ninguna agrupación
 			if(request.getSession().getAttribute("existeAgrupacion").toString().contentEquals("N")){
 				throw new SIGAException("messages.facturacionSJCS.no.incluida.agrupacion");
 			}
 			
-			// CR7 - Guardamos los datos de fechas y nombre antes de ejecutar la facturacion
-			tx = usr.getTransaction();
-			tx.begin();
-			FcsFacturacionJGAdm facturacionAdm = new FcsFacturacionJGAdm(usr);
-			Hashtable datosEntrada = (Hashtable)miform.getDatos();
-			FcsFacturacionJGBean facturacionOldBean = (FcsFacturacionJGBean)request.getSession().getAttribute("DATABACKUP");
-			facturacionOldBean.setNombre((String)datosEntrada.get("NOMBRE"));
-			facturacionOldBean.setFechaDesde(GstDate.getApplicationFormatDate("",(String)datosEntrada.get("FECHADESDE")));
-			facturacionOldBean.setFechaHasta(GstDate.getApplicationFormatDate("",(String)datosEntrada.get("FECHAHASTA")));
-			facturacionAdm.update(facturacionOldBean);
-			tx.commit();
+			//CR7 - Al igual que en Guardar se comprueba que la facturacion no se solape con otra ya existente
+			FcsFacturacionJGBean facturaPrueba  = new FcsFacturacionJGBean ();
+			facturaPrueba.setFechaDesde((String)miform.getFechaInicio());
+			facturaPrueba.setFechaHasta((String)miform.getFechaFin());
+			facturaPrueba.setIdInstitucion(Integer.valueOf(idInstitucion));
+			facturaPrueba.setIdFacturacion(Integer.valueOf(idFacturacion));
 			
-			FcsFactEstadosFacturacionAdm admEstado = new FcsFactEstadosFacturacionAdm(usr);
-			String  estado = (String) ((Hashtable) (new FcsFacturacionJGAdm(usr)).getEstadoFacturacion(idInstitucion, idFacturacion)).get(FcsEstadosFacturacionBean.C_IDESTADOFACTURACION);
-			if (estado!=null && estado.equals(String.valueOf(ESTADO_FACTURACION.ESTADO_FACTURACION_EJECUTADA.getCodigo())) && usr.getStrutsTrans().equalsIgnoreCase("CEN_MantenimientoFacturacion")){
-					volverGenerarFacturacion ( mapping,  formulario,  request,  response);
+			boolean solapamiento = facturacionAdm.existeFacturacionMismoPerdiodo(facturaPrueba,null);
+			
+			//Si se solapan, paramos la insercion y volvemos avisando del error sin refrescar:
+			if (solapamiento) {
+			    salida = exito("messages.factSJCS.facturacionMismoPeriodo",request);
+			
+			} else {			
+				// CR7 - Guardamos los datos de fechas y nombre antes de ejecutar la facturacion
+				tx = usr.getTransaction();
+				tx.begin();
+				Hashtable datosEntrada = (Hashtable)miform.getDatos();
+				FcsFacturacionJGBean facturacionOldBean = (FcsFacturacionJGBean)request.getSession().getAttribute("DATABACKUP");
+				facturacionOldBean.setNombre((String)datosEntrada.get("NOMBRE"));
+				facturacionOldBean.setFechaDesde(GstDate.getApplicationFormatDate("",(String)datosEntrada.get("FECHADESDE")));
+				facturacionOldBean.setFechaHasta(GstDate.getApplicationFormatDate("",(String)datosEntrada.get("FECHAHASTA")));
+				facturacionAdm.update(facturacionOldBean);
+				tx.commit();
+				
+				FcsFactEstadosFacturacionAdm admEstado = new FcsFactEstadosFacturacionAdm(usr);
+				String  estado = (String) ((Hashtable) (new FcsFacturacionJGAdm(usr)).getEstadoFacturacion(idInstitucion, idFacturacion)).get(FcsEstadosFacturacionBean.C_IDESTADOFACTURACION);
+				if (estado!=null && estado.equals(String.valueOf(ESTADO_FACTURACION.ESTADO_FACTURACION_EJECUTADA.getCodigo())) && usr.getStrutsTrans().equalsIgnoreCase("CEN_MantenimientoFacturacion")){
+						volverGenerarFacturacion ( mapping,  formulario,  request,  response);
+				}
+							
+				String idOrdenEstado= admEstado.getIdordenestadoMaximo(idInstitucion, idFacturacion);		
+				
+				tx = usr.getTransactionPesada();
+				tx.begin();
+				// admFac.ejecutarFacturacion(idInstitucion,idFacturacion,tx);			
+				FcsFactEstadosFacturacionBean beanEstado = null;
+				beanEstado = new FcsFactEstadosFacturacionBean();
+				beanEstado.setIdInstitucion(new Integer(idInstitucion));
+				beanEstado.setIdFacturacion(new Integer(idFacturacion));
+				beanEstado.setIdEstadoFacturacion(new Integer(ESTADO_FACTURACION.ESTADO_FACTURACION_PROGRAMADA.getCodigo()));
+				beanEstado.setFechaEstado("SYSDATE");
+				beanEstado.setIdOrdenEstado(new Integer(idOrdenEstado));
+				admEstado.insert(beanEstado);
+				tx.commit();
+			    // Notificación
+				request.setAttribute("modal", null);
+				SIGASvlProcesoAutomaticoRapido.NotificarAhora(SIGASvlProcesoAutomaticoRapido.procesoFacturacionSJCS);
+				
+				salida = this.exitoRefresco("messages.facturacionSJCS.programada",request);
+				request.getSession().removeAttribute("existeAgrupacion");
 			}
-						
-			String idOrdenEstado= admEstado.getIdordenestadoMaximo(idInstitucion, idFacturacion);		
 			
-			tx = usr.getTransactionPesada();
-			tx.begin();
-			// admFac.ejecutarFacturacion(idInstitucion,idFacturacion,tx);			
-			FcsFactEstadosFacturacionBean beanEstado = null;
-			beanEstado = new FcsFactEstadosFacturacionBean();
-			beanEstado.setIdInstitucion(new Integer(idInstitucion));
-			beanEstado.setIdFacturacion(new Integer(idFacturacion));
-			beanEstado.setIdEstadoFacturacion(new Integer(ESTADO_FACTURACION.ESTADO_FACTURACION_PROGRAMADA.getCodigo()));
-			beanEstado.setFechaEstado("SYSDATE");
-			beanEstado.setIdOrdenEstado(new Integer(idOrdenEstado));
-			admEstado.insert(beanEstado);
-			tx.commit();
-		    // Notificación
-			request.setAttribute("modal", null);
-			SIGASvlProcesoAutomaticoRapido.NotificarAhora(SIGASvlProcesoAutomaticoRapido.procesoFacturacionSJCS);
-			
-			salida = this.exitoRefresco("messages.facturacionSJCS.programada",request);
-			request.getSession().removeAttribute("existeAgrupacion");
-		} 
-		catch (Exception e) { 
+		} catch (Exception e) { 
 			throwExcp("messages.general.error",new String[] {"modulo.facturacionSJCS"},e,tx); 
-		}					
+		}
+		
 		return salida;
 	}
 	
