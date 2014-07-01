@@ -18,6 +18,7 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.redabogacia.sigaservices.app.AppConstants;
 import org.redabogacia.sigaservices.app.util.ReadProperties;
 import org.redabogacia.sigaservices.app.util.SIGAReferences;
 
@@ -539,7 +540,8 @@ public class MantenimientoAsistenciasAction extends MasterAction
 
 			String numero = asistencias.getNumeroAsistencia(usr.getLocation(), Integer.parseInt(anio));
 			String estadoAsistencia = "1";	// Activo
-			asistencias.insertarNuevaAsistencia(usr.getLocation(), anio,numero, fechaTotal, idTurno, idGuardia, idTipoAsistencia, idTipoAsistenciaColegio,idPersona, estadoAsistencia, fechaSolicitud);
+			
+			asistencias.insertarNuevaAsistencia(usr.getLocation(), anio,numero, fechaTotal, idTurno, idGuardia, idTipoAsistencia, idTipoAsistenciaColegio,idPersona, estadoAsistencia, fechaSolicitud,usr.isLetrado()?AppConstants.ORIGENASISTENCIA_SIGACOLEGIADO:AppConstants.ORIGENASISTENCIA_SIGACOLEGIO);
 
 			// Si estamos clonando puede que necesitemos meter el juzgado y comisaria
 			// Esto lo hacemos con un update por no modificar el insert, que podria dar problemas ya que se llama desde mas sitios
