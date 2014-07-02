@@ -240,6 +240,7 @@
 				if (compararFecha(document.forms[0].fechaIni,document.forms[0].fechaFin)==1) {
 					mensaje = '<siga:Idioma key="messages.fechas.rangoFechas"/>'
 					alert(mensaje);
+					fin();
 				} else {
 					document.forms[0].action="<%=app%>/CEN_MantenimientoFacturacion.do?noReset=true";
 					document.forms[0].modo.value="buscarInit";

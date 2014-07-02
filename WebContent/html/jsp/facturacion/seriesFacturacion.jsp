@@ -414,7 +414,7 @@
 						<% if (modoAction.equals("editar")) { %>
 							<input type ="text"  value="<%=sDescripcion%>" id="descripcionProgramacion" name="descripcionProgramacion" class="box" style="width:'300px';">
 						<% } else { %>
-							<input type ="text"  value="<%=sDescripcion%>" id="descripcionProgramacion" name="descripcionProgramacion" class="boxConsulta" style="width:'300px';">
+							<input type ="text"  value="<%=sDescripcion%>" id="descripcionProgramacion" name="descripcionProgramacion" class="boxConsulta" readOnly="true" style="width:'300px';">
 						<% } %>	
 					</td>
 				</tr>

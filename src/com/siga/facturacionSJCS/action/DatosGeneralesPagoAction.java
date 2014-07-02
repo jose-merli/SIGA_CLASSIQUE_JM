@@ -18,6 +18,11 @@ import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.transaction.HeuristicMixedException;
+import javax.transaction.HeuristicRollbackException;
+import javax.transaction.NotSupportedException;
+import javax.transaction.RollbackException;
+import javax.transaction.SystemException;
 import javax.transaction.UserTransaction;
 
 import org.apache.struts.action.ActionForm;
@@ -205,71 +210,23 @@ public class DatosGeneralesPagoAction extends MasterAction {
 			ActionMapping mapping,
 			MasterForm formulario, 
 			HttpServletRequest request,
-			HttpServletResponse response) throws SIGAException {
-		FcsPagosJGAdm pagosAdm = new FcsPagosJGAdm(this.getUserBean(request));
+			HttpServletResponse response) throws SIGAException {		
 		UsrBean usr;
 		DatosGeneralesPagoForm miform = (DatosGeneralesPagoForm) formulario;
 		String forward = "";
-		UserTransaction tx = null;
 
-		try {
-			
-			//Si no se ha introducido importe a pagar el importe a facturar será cero
-			if (Double.valueOf(miform.getImporteRepartir())==0.00)
-				throw new SIGAException("messages.facturacionSJCS.abono.sin.importe.pago");
-			
+		try {			
 			usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
-			tx = usr.getTransaction();
-
-			// obtiene el bean a actualizar de BD
-			String where = " WHERE " + FcsPagosJGBean.C_IDINSTITUCION + "=" + miform.getIdInstitucion() + 
-					" AND " + FcsPagosJGBean.C_IDPAGOSJG + "=" + miform.getIdPagosJG() + " ";
-			FcsPagosJGBean pagosBean = (FcsPagosJGBean) pagosAdm.select(where).elementAt(0);
-			pagosBean.setNombre(miform.getNombre());
-			pagosBean.setAbreviatura(miform.getAbreviatura());
-			pagosBean.setImporteEJG(Double.valueOf(miform.getImporteEJG()));
-			pagosBean.setImporteSOJ(Double.valueOf(miform.getImporteSOJ()));
-			pagosBean.setImporteOficio(Double.valueOf(miform.getImporteOficio()));
-			pagosBean.setImporteGuardia(Double.valueOf(miform.getImporteGuardias()));
-			pagosBean.setImporteGuardia(Double.valueOf(miform.getImporteGuardias()));
-			pagosBean.setImporteRepartir(Double.valueOf(miform.getImporteRepartir()));
-			pagosBean.setImportePagado(Double.valueOf(miform.getImportePagado()));
 			
-			/*
-			 * JPT: Calculo del concepto y el codigo del banco
-			 */
-			
-			String sConcepto="", sCuenta="";
-			Hashtable hash = new Hashtable();
-			hash.put(FcsPagosJGBean.C_IDINSTITUCION, pagosBean.getIdInstitucion());
-			hash.put(FcsPagosJGBean.C_IDPAGOSJG, pagosBean.getIdPagosJG());
-									
-			Vector v = pagosAdm.selectByPK(hash);
-			if (v!=null && v.size()>0){
-				FcsPagosJGBean bean = (FcsPagosJGBean)v.firstElement();
-				sConcepto = bean.getConcepto();
-	 		 	sCuenta = bean.getBancosCodigo();
-	 		 	
-			} else {
-				GenParametrosAdm paramAdm = new GenParametrosAdm(this.getUserBean(request));
-				sConcepto = paramAdm.getValor(miform.getIdInstitucion(), "FCS", "CONCEPTO_ABONO", "");
-				if (!sConcepto.equalsIgnoreCase("1") && !sConcepto.equalsIgnoreCase("8") && !sConcepto.equalsIgnoreCase("9")) {
-					throw new SIGAException("administracion.parametrosGenerales.error.conceptoAbono");
-				}
-				sCuenta = paramAdm.getValor(miform.getIdInstitucion(), "FCS", "BANCOS_CODIGO_ABONO", "");				
-			}
-			
-			pagosBean.setConcepto(sConcepto);
-			pagosBean.setBancosCodigo(sCuenta);
-
-			// actualiza la BD
-			tx.begin();
-			pagosAdm.updateDirect(pagosBean);
-			tx.commit();
+			//CR7 - Sacamos el bloque de guardar el formulario, para poder utilizarlo en la ejcucion de igual forma
+			this.guardarBloquePago(miform, usr);
 
 			// Consulta el registro modificado tal cual esta en base de datos y
 			// lo almacena en sesion:
 			Hashtable registroModificado = new Hashtable();
+			FcsPagosJGAdm pagosAdm = new FcsPagosJGAdm(usr);
+			String where = " WHERE " + FcsPagosJGBean.C_IDINSTITUCION + "=" + miform.getIdInstitucion() + 
+						   " AND " + FcsPagosJGBean.C_IDPAGOSJG + "=" + miform.getIdPagosJG() + " ";			
 			registroModificado = ((FcsPagosJGBean) pagosAdm.select(where).elementAt(0)).getOriginalHash();
 			request.getSession().setAttribute("DATABACKUP", registroModificado);
 
@@ -281,6 +238,70 @@ public class DatosGeneralesPagoAction extends MasterAction {
 		}
 		
 		return forward;
+	}
+	
+	
+	private void guardarBloquePago(DatosGeneralesPagoForm miform,UsrBean usr) throws SIGAException{
+		
+		FcsPagosJGAdm pagosAdm = new FcsPagosJGAdm(usr);
+		UserTransaction tx = null;
+		
+		try {
+			tx = usr.getTransaction();
+				//Si no se ha introducido importe a pagar el importe a facturar será cero
+				if (Double.valueOf(miform.getImporteRepartir())==0.00)
+					throw new SIGAException("messages.facturacionSJCS.abono.sin.importe.pago");
+				
+
+				// obtiene el bean a actualizar de BD
+				String where = " WHERE " + FcsPagosJGBean.C_IDINSTITUCION + "=" + miform.getIdInstitucion() + 
+						" AND " + FcsPagosJGBean.C_IDPAGOSJG + "=" + miform.getIdPagosJG() + " ";
+				FcsPagosJGBean pagosBean = (FcsPagosJGBean) pagosAdm.select(where).elementAt(0);
+				pagosBean.setNombre(miform.getNombre());
+				pagosBean.setAbreviatura(miform.getAbreviatura());
+				pagosBean.setImporteEJG(Double.valueOf(miform.getImporteEJG()));
+				pagosBean.setImporteSOJ(Double.valueOf(miform.getImporteSOJ()));
+				pagosBean.setImporteOficio(Double.valueOf(miform.getImporteOficio()));
+				pagosBean.setImporteGuardia(Double.valueOf(miform.getImporteGuardias()));
+				pagosBean.setImporteGuardia(Double.valueOf(miform.getImporteGuardias()));
+				pagosBean.setImporteRepartir(Double.valueOf(miform.getImporteRepartir()));
+				pagosBean.setImportePagado(Double.valueOf(miform.getImportePagado()));
+				
+				/*
+				 * JPT: Calculo del concepto y el codigo del banco
+				 */
+				
+				String sConcepto="", sCuenta="";
+				Hashtable hash = new Hashtable();
+				hash.put(FcsPagosJGBean.C_IDINSTITUCION, pagosBean.getIdInstitucion());
+				hash.put(FcsPagosJGBean.C_IDPAGOSJG, pagosBean.getIdPagosJG());
+										
+				Vector v = pagosAdm.selectByPK(hash);
+				if (v!=null && v.size()>0){
+					FcsPagosJGBean bean = (FcsPagosJGBean)v.firstElement();
+					sConcepto = bean.getConcepto();
+				 	sCuenta = bean.getBancosCodigo();
+				 	
+				} else {
+					GenParametrosAdm paramAdm = new GenParametrosAdm(usr);
+					sConcepto = paramAdm.getValor(miform.getIdInstitucion(), "FCS", "CONCEPTO_ABONO", "");
+					if (!sConcepto.equalsIgnoreCase("1") && !sConcepto.equalsIgnoreCase("8") && !sConcepto.equalsIgnoreCase("9")) {
+						throw new SIGAException("administracion.parametrosGenerales.error.conceptoAbono");
+					}
+					sCuenta = paramAdm.getValor(miform.getIdInstitucion(), "FCS", "BANCOS_CODIGO_ABONO", "");				
+				}
+				
+				pagosBean.setConcepto(sConcepto);
+				pagosBean.setBancosCodigo(sCuenta);
+
+				// actualiza la BD
+				tx.begin();
+				pagosAdm.updateDirect(pagosBean);
+				tx.commit();
+				
+		} catch (Exception e) {
+			throwExcp("messages.general.error",	new String[] { "modulo.facturacionSJCS" }, e, null);
+		}
 	}
 
 	/**
@@ -682,6 +703,11 @@ public class DatosGeneralesPagoAction extends MasterAction {
 
 		try {
 			usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
+			//CR7 - Antes de ejecutar simulamos el guardado
+			this.guardarBloquePago(miform, usr);
+			
+			
+			//AQUI EMPIEZA EL PROCESO DE EJCECUCION
 			tx = usr.getTransactionPesada();
 
 			// Datos del pago:

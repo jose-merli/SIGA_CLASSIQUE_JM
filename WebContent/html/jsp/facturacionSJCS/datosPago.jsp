@@ -992,15 +992,77 @@
 		{		
 			sub();
 			
-			//Convierte a formato java los campos de tipo precio
-			actualizarCamposPrecio();
-			
 			var f=document.getElementById("datosGeneralesPagoForm");
-			f.modo.value = "ejecutarPago";
 
-			var fname = document.getElementById("datosGeneralesPagoForm").name;
-			// con pantalla de espera
-			window.frames.submitArea.location='<%=app%>/html/jsp/general/loadingWindowOpener.jsp?formName='+fname+'&msg=messages.factSJCS.procesandoFacturacion';			
+			//***********************************    INICIO   BLOQUE    GUARDAR           *************************************////
+			
+			//Obtener la suma del importe a repartir 
+			var importeRepartirTotal = 0;
+
+			var restantes = new Array(4);
+			
+			for (i=0;i<4;i++){
+				var objImporte = document.getElementById("importe"+conceptos[i]);
+				
+				var importe = convertirANumeroGuardar(objImporte.value);
+			
+				
+				//Copia del importe restante para recuperarla tras enviar el formulario
+				restantes[i] = document.getElementById("txtRestante"+conceptos[i]).value;
+				
+				if (isNaN(importe) || importe == 0){
+					objImporte.value = importe;
+					document.getElementById("porcentaje"+conceptos[i]).value = 0;
+				}
+				else{
+					
+					var objPorcentaje = document.getElementById("porcentaje"+conceptos[i]);
+					var porcentaje = convertirANumero(objPorcentaje.value);
+					importeRepartirTotal = parseFloat(importeRepartirTotal) + parseFloat(importe);
+					
+				}
+			}
+			
+			// Guarda los valores de los importes a repartir y pagado
+			// para recuperarlos una vez enviados al guardar si 
+			// se esta editando el pago en el estado ABIERTO
+			var iportePagadoAux = f.importePagado.value;
+
+			document.getElementById("importeRepartir").value = importeRepartirTotal;
+			
+			f.target = "submitArea";
+			sub();	
+	
+			if (validateDatosGeneralesPagoForm(f)) {
+				//Calculo lo que le queda por pagar:
+				var importeFacturado = 0;
+				var importePagado = 0;				
+				var total = 0;
+
+				if (f.importeFacturado.value!='' && f.importePagado.value!='') {
+					var importeFacturado = parseFloat(f.importeFacturado.value.replace(/,/,"."));
+					var importePagado = parseFloat(f.importePagado.value.replace(/,/,"."));	
+					//actualiza el importe pagado 
+					f.importePagado.value = importeRepartirTotal;	
+				}
+							
+				//Convierte a formato java los campos numericos con decimales
+				actualizarCamposPrecio();
+				
+				f.modo.value = "ejecutarPago";
+
+				var fname = document.getElementById("datosGeneralesPagoForm").name;
+				// con pantalla de espera
+				window.frames.submitArea.location='<%=app%>/html/jsp/general/loadingWindowOpener.jsp?formName='+fname+'&msg=messages.factSJCS.procesandoFacturacion';					
+
+			}else{
+				fin();
+				formatearCamposprecio();				
+				return false;
+			}
+			
+			//***********************************    FIN   BLOQUE    GUARDAR           *************************************////
+			
 		}
 
 		/**

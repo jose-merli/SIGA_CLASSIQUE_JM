@@ -42,8 +42,8 @@
 	
 	
 	<!-- Incluido jquery en siga.js -->
-	
 	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js?v=${sessionScope.VERSIONJS}'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
+	<script src="<%=app%>/html/jsp/general/validacionSIGA.jsp" type="text/javascript"></script>
 	
 	<!-- INICIO: TITULO Y LOCALIZACION -->
 	<siga:Titulo
@@ -115,9 +115,16 @@
 		function buscar() 
 		{
 			sub();
-			document.forms[0].target			= "resultado";
-			document.forms[0].modo.value 		= "buscar";
-			document.forms[0].submit();
+			if (compararFecha(document.forms[0].fechaDesde,document.forms[0].fechaHasta)==1) {
+				mensaje = '<siga:Idioma key="messages.fechas.rangoFechas"/>'
+				alert(mensaje);
+				fin();
+				
+			} else {
+				document.forms[0].target			= "resultado";
+				document.forms[0].modo.value 		= "buscar";
+				document.forms[0].submit();
+			}
 		}		
 		
 		function nuevo()
