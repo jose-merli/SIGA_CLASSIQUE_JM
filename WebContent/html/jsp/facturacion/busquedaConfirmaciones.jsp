@@ -109,7 +109,7 @@
 
 					<td class="labelText"><siga:Idioma key="facturacion.confirmarFacturacion.literal.fechaConfirmacion"/>&nbsp;<siga:Idioma key="general.literal.desde"/></td>
 					<td>
-						<siga:Fecha nombreCampo="fechaDesdeConfirmacion" valorInicial="${confirmarFacturacionForm.fechaDesdeConfirmacion}"/>
+						<siga:Fecha nombreCampo="fechaDesdeConfirmacion" />
 					</td>
 
 					<td class="labelText"><siga:Idioma key="facturacion.confirmarFacturacion.literal.fechaConfirmacion"/>&nbsp;<siga:Idioma key="general.literal.hasta"/></td>
