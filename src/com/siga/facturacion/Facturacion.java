@@ -4,10 +4,12 @@
  */
 package com.siga.facturacion;
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -2682,7 +2684,7 @@ public class Facturacion {
 			    throw new ClsExceptions(UtilidadesString.getMensajeIdioma(this.usrbean.getLanguage(),"facturacion.nuevaPrevisionFacturacion.mensaje.procesoPlSQLERROR")+"Serie:" +beanPrev.getIdSerieFacturacion().toString()+ "Prev:"+beanPrev.getIdPrevision().toString()+" - Codigo error:"+ep);
 				
 			}
-        	
+
 			String codretorno = resultado[0];
 			
 			if (!codretorno.equals("0")) {
@@ -2753,16 +2755,42 @@ public class Facturacion {
 		
 						tx.rollback();
 						
-						tx.begin();
-						UtilidadesHash.set(hashEstado,FacPrevisionFacturacionBean.C_IDESTADOPREVISION, FacEstadoConfirmFactBean.CONFIRM_FINALIZADA);
-						UtilidadesHash.set(hashEstado,FacPrevisionFacturacionBean.C_NOMBREFICHERO,fichPrev.get(0).getName());
-					    
-						if (!admPrev.updateDirect(hashEstado,claves,camposPrevFactura)) {
-					        throw new ClsExceptions("Error al actualizar el estado de la previsión. finalizada.");
-					    }
-						tx.commit();
-					
-					
+						//Si la previsión está vacía
+						if((fichPrev==null)||(fichPrev.size()==0))
+						{
+							//Generamos un fichero de log
+							File ficheroGenerado = null;
+							BufferedWriter out;
+							nombreFichero = informe.getNombreSalida()+ ".xls";
+							ficheroGenerado = new File (sRutaJava + ClsConstants.FILE_SEP + nombreFichero);
+				
+							if (ficheroGenerado.exists())
+								ficheroGenerado.delete();
+							
+							ficheroGenerado.createNewFile();
+							out = new BufferedWriter(new FileWriter(ficheroGenerado));
+							out.write("No se ha podido facturar nada. Compruebe la configuracion y el periodo indicado\t");
+							out.close();
+							
+							tx.begin();
+							UtilidadesHash.set(hashEstado,FacPrevisionFacturacionBean.C_IDESTADOPREVISION, FacEstadoConfirmFactBean.CONFIRM_FINALIZADAERRORES);
+						    if (!admPrev.updateDirect(hashEstado,claves,camposPrevFactura)) {
+						        throw new ClsExceptions("Error al actualizar el estado de la previsión. finalizada con errores - Previsión Vacía. ");
+						    }
+							tx.commit();
+							
+						}else{
+							
+							tx.begin();
+							UtilidadesHash.set(hashEstado,FacPrevisionFacturacionBean.C_IDESTADOPREVISION, FacEstadoConfirmFactBean.CONFIRM_FINALIZADA);
+							UtilidadesHash.set(hashEstado,FacPrevisionFacturacionBean.C_NOMBREFICHERO,fichPrev.get(0).getName());
+						    
+							if (!admPrev.updateDirect(hashEstado,claves,camposPrevFactura)) {
+						        throw new ClsExceptions("Error al actualizar el estado de la previsión. finalizada.");
+						    }
+							tx.commit();
+						}
+	
 					}	
 
 				}
@@ -2772,9 +2800,7 @@ public class Facturacion {
 		}catch (Exception e) {
 			//le cambio el estado a error
 			try{ 
-				
 				tx.rollback();
-				
 				tx.begin(); 
 				UtilidadesHash.set(hashEstado,FacPrevisionFacturacionBean.C_IDESTADOPREVISION, FacEstadoConfirmFactBean.CONFIRM_FINALIZADAERRORES);
 			    if (!admPrev.updateDirect(hashEstado,claves,camposPrevFactura)) {

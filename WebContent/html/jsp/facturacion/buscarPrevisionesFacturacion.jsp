@@ -77,6 +77,12 @@
 				}
 			}
 			
+			function descargaLog(fila) {
+				preparaDatos(fila, 'tabladatos');
+				document.forms[0].modo.value = "download";
+				document.forms[0].submit();
+			}
+			
 			function programacion(fila)
 			{
 				if(confirm('<siga:Idioma key="facturacion.previsionesFacturacion.literal.confirmarProgramacion"/>')) 
@@ -148,8 +154,9 @@
 							//Si prev. finalizada con errores
 							if(idEstado.equals("4")){
 								botones="B";
-							//Si prev. otro estado
-							}else{
+								elems[0]=new FilaExtElement("descargaLog","descargaLog",SIGAConstants.ACCESS_READ);
+							//Si prev. otro estado que no sea procesando ni pendiente
+							}else if(!idEstado.equals("17")&&(!idEstado.equals("2"))){
 						
 								elems[0]=new FilaExtElement("download","download",SIGAConstants.ACCESS_READ);
 								if (!programada) {
