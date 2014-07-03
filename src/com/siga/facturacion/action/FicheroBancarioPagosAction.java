@@ -301,9 +301,9 @@ public class FicheroBancarioPagosAction extends MasterAction{
 	    	pathFichero += File.separator + nombreFichero + ".zip";
 	    	File filezip = SIGAServicesHelper.doZip(pathFichero, lista);		
 			request.setAttribute("nombreFichero", nombreFichero+".zip");
+			request.setAttribute("borrarFichero", "true");
     	}
-		request.setAttribute("rutaFichero", pathFichero);
-		request.setAttribute("borrarFichero", "true");		
+		request.setAttribute("rutaFichero", pathFichero);				
 		
 		return "descargaFichero";
 	}	
