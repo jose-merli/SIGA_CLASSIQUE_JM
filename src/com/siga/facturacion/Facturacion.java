@@ -2631,6 +2631,8 @@ public class Facturacion {
 
 	private void generarFicheroPrevisiones(FacPrevisionFacturacionBean beanPrev,UsrBean usr) throws SIGAException, ClsExceptions {
 		
+		ClsLogging.writeFileLog("### Inicio generarFicheroPrevisiones institución: "+beanPrev.getIdInstitucion().toString() ,7);
+		
 		UserTransaction tx = null;
 		tx = usr.getTransactionPesada(); 
 		FacPrevisionFacturacionAdm admPrev = new FacPrevisionFacturacionAdm(usr);
@@ -2651,7 +2653,9 @@ public class Facturacion {
 		    }
 			
 			tx.commit();
-
+			
+			ClsLogging.writeFileLog("### Procesando previsión: "+beanPrev.getIdPrevision().toString() ,7);
+			
 			tx.begin();
 
 			Object[] param_in = new Object[7];		
@@ -2668,9 +2672,10 @@ public class Facturacion {
         	String resultado[] = new String[2];
         	
         	try{
-        	
+        		ClsLogging.writeFileLog("### Inicio  PKG_SIGA_FACTURACION.GENERACIONFACTURACION",7);
+        		
         		resultado = ClsMngBBDD.callPLProcedure("{call PKG_SIGA_FACTURACION.GENERACIONFACTURACION(?,?,?,?,?,?,?,?,?)}", 2, param_in);
-			
+
         	}catch (Exception ep) {
 				
 				tx.rollback();
@@ -2678,16 +2683,19 @@ public class Facturacion {
 				tx.begin(); 
 				UtilidadesHash.set(hashEstado,FacPrevisionFacturacionBean.C_IDESTADOPREVISION, FacEstadoConfirmFactBean.CONFIRM_FINALIZADAERRORES);
 			    if (!admPrev.updateDirect(hashEstado,claves,camposPrevFactura)) {
-			        throw new ClsExceptions("Error al actualizar el estado de la previsión. finalizada con errores. "+ep);
+			        throw new ClsExceptions("Error al actualizar el estado de la previsión. finalizada con errores. "+ep.getMessage());
 			    }
 			    tx.commit(); 
-			    throw new ClsExceptions(UtilidadesString.getMensajeIdioma(this.usrbean.getLanguage(),"facturacion.nuevaPrevisionFacturacion.mensaje.procesoPlSQLERROR")+"Serie:" +beanPrev.getIdSerieFacturacion().toString()+ "Prev:"+beanPrev.getIdPrevision().toString()+" - Codigo error:"+ep);
+			    throw new ClsExceptions(UtilidadesString.getMensajeIdioma(this.usrbean.getLanguage(),"facturacion.nuevaPrevisionFacturacion.mensaje.procesoPlSQLERROR")+"Serie:" +beanPrev.getIdSerieFacturacion().toString()+ "Prev:"+beanPrev.getIdPrevision().toString()+" - Codigo error:"+ep.getMessage());
 				
 			}
 
 			String codretorno = resultado[0];
 			
 			if (!codretorno.equals("0")) {
+				
+				ClsLogging.writeFileLog("### Fin  PKG_SIGA_FACTURACION.GENERACIONFACTURACION con errores",7);
+				
 				tx.rollback();
 				
 				tx.begin();
@@ -2701,6 +2709,8 @@ public class Facturacion {
 	
 			} else {
 
+				ClsLogging.writeFileLog("### Fin  PKG_SIGA_FACTURACION.GENERACIONFACTURACION correctamente",7);
+				
 				//consulto los datos de la previsión y genero el fichero
 				AdmInformeAdm datosInforme = new AdmInformeAdm(usr);
 				Hashtable hashWhere = new Hashtable();
@@ -2719,6 +2729,8 @@ public class Facturacion {
 						.returnProperty("facturacion.prefijo.ficherosPrevisiones")
 						+ beanPrev.getIdSerieFacturacion().toString() + "_" + beanPrev.getIdPrevision().toString();
 
+				ClsLogging.writeFileLog("### Inicio datosInforme PREV",7);
+				
 				Vector v =datosInforme.select(hashWhere);
 
 				if(v!=null && v.size()>0){
@@ -2751,13 +2763,20 @@ public class Facturacion {
 						
 						informe.setNombreSalida(nombreFichero) ;
 						
+						ClsLogging.writeFileLog("### Inicio generación fichero excel PREV",7);
+						
 						ArrayList<File> fichPrev= InformePersonalizable.generarInformeXLS(informe, filtrosInforme,sRutaJava, usr);
+						
+						ClsLogging.writeFileLog("### Fin generación fichero excel PREV",7);
 		
 						tx.rollback();
+						
+						ClsLogging.writeFileLog("### Borrado de datos insertados de forma temporal para la previsión "+beanPrev.getIdPrevision().toString(),7);
 						
 						//Si la previsión está vacía
 						if((fichPrev==null)||(fichPrev.size()==0))
 						{
+							ClsLogging.writeFileLog("### Inicio creación fichero log previsión sin datos",7);
 							//Generamos un fichero de log
 							File ficheroGenerado = null;
 							BufferedWriter out;
@@ -2772,7 +2791,10 @@ public class Facturacion {
 							out.write("No se ha podido facturar nada. Compruebe la configuracion y el periodo indicado\t");
 							out.close();
 							
+							ClsLogging.writeFileLog("### Fin creación fichero log previsión sin datos",7);
+							
 							tx.begin();
+
 							UtilidadesHash.set(hashEstado,FacPrevisionFacturacionBean.C_IDESTADOPREVISION, FacEstadoConfirmFactBean.CONFIRM_FINALIZADAERRORES);
 						    if (!admPrev.updateDirect(hashEstado,claves,camposPrevFactura)) {
 						        throw new ClsExceptions("Error al actualizar el estado de la previsión. finalizada con errores - Previsión Vacía. ");
@@ -2780,6 +2802,8 @@ public class Facturacion {
 							tx.commit();
 							
 						}else{
+							
+							ClsLogging.writeFileLog("### Previsión finalizada correctamente con datos ",7);
 							
 							tx.begin();
 							UtilidadesHash.set(hashEstado,FacPrevisionFacturacionBean.C_IDESTADOPREVISION, FacEstadoConfirmFactBean.CONFIRM_FINALIZADA);
@@ -2804,13 +2828,13 @@ public class Facturacion {
 				tx.begin(); 
 				UtilidadesHash.set(hashEstado,FacPrevisionFacturacionBean.C_IDESTADOPREVISION, FacEstadoConfirmFactBean.CONFIRM_FINALIZADAERRORES);
 			    if (!admPrev.updateDirect(hashEstado,claves,camposPrevFactura)) {
-			        throw new ClsExceptions("Error al actualizar el estado de la previsión. finalizada con errores. "+e);
+			        throw new ClsExceptions("Error al actualizar el estado de la previsión. finalizada con errores. "+e.getMessage());
 			    }
 			    tx.commit(); 
-			    throw new ClsExceptions(UtilidadesString.getMensajeIdioma(this.usrbean.getLanguage(),"facturacion.nuevaPrevisionFacturacion.mensaje.generacionFicheroERROR")+ " - Codigo error:"+e);
+			    throw new ClsExceptions(UtilidadesString.getMensajeIdioma(this.usrbean.getLanguage(),"facturacion.nuevaPrevisionFacturacion.mensaje.generacionFicheroERROR")+ " - Codigo error:"+e.getMessage());
 
 			}catch(Exception e2){
-				throw new ClsExceptions(UtilidadesString.getMensajeIdioma(this.usrbean.getLanguage(),"facturacion.nuevaPrevisionFacturacion.mensaje.generacionFicheroERROR")+ " - Codigo error:"+e2);
+				throw new ClsExceptions(UtilidadesString.getMensajeIdioma(this.usrbean.getLanguage(),"facturacion.nuevaPrevisionFacturacion.mensaje.generacionFicheroERROR")+ " - Codigo error:"+e2.getMessage());
 			}	
 		   
 		}
