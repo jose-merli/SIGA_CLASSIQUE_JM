@@ -108,7 +108,7 @@ public class CenAnexosCuentasBancariasAdm extends MasterBeanAdministrador {
 			bean.setFechaMod(UtilidadesHash.getString(hash, CenAnexosCuentasBancariasBean.C_FECHAMODIFICACION));
 			bean.setUsuMod(UtilidadesHash.getInteger(hash, CenAnexosCuentasBancariasBean.C_USUMODIFICACION));
 			bean.setFechaUso(UtilidadesHash.getString(hash, CenMandatosCuentasBancariasBean.C_FECHAUSO));
-			bean.setEsAnexo(UtilidadesHash.getString(hash, CenAnexosCuentasBancariasBean.C_ESAUTOMATICO));
+			bean.setTipoAnexoAutomatico(UtilidadesHash.getString(hash, CenAnexosCuentasBancariasBean.C_ESAUTOMATICO));
 			
 		} catch (Exception e) {
 			bean = null;

@@ -167,7 +167,7 @@
 				if (anexoBean.getIdAnexo()!=null && !anexoBean.getIdAnexo().equals("")) {
 					sTipoAnexo = UtilidadesString.getMensajeIdioma(usuario, "censo.fichaCliente.bancos.mandatos.anexos.tipo.anexo");
 					if (modoMandato.equals("editar")) {
-						if (anexoBean.getEsAnexo()!=null && anexoBean.getEsAnexo().equals("1")) {
+						if (anexoBean.getTipoAnexoAutomatico()!=null && !anexoBean.getTipoAnexoAutomatico().equals("") && !anexoBean.getTipoAnexoAutomatico().equals("0")) {
 							botonesAnexo += ",E";
 						} else {
 							botonesAnexo += ",E,B";
