@@ -45,10 +45,6 @@
 		
 	// datos seleccionados Combo
 	ArrayList provinciaSel = new ArrayList();
-	/*if (formulario.getCodigoProvincia()!=null) {
-		provinciaSel.add(formulario.getCodigoProvincia());
-	}
-*/
 	String anioSel = "",nombreFichero="",provincia="",telefono="",nombre="",apellido1="",apellido2="";
 	String anioActual = (String)request.getAttribute("FcsAnioActual");
 
@@ -221,18 +217,7 @@
 	</td>
 
 	</tr>
-	<!-- FILA -->
-	<tr>				
 
-	<td class="labelText">
-		<siga:Idioma key="factSJCS.impreso190.literal.provincia"/>&nbsp;(*)
-	</td>
-	<td align="left">
-		<siga:ComboBD nombre = "codigoProvincia" tipo="provincia"   clase="boxCombo" obligatorio="false"  elementoSel="<%=provinciaSel %>" />						
-	</td>
-
-
-	</tr>
 	</table>
 	</siga:ConjCampos>
 

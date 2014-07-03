@@ -1012,12 +1012,14 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 			String apellido1Contacto = miform.getApellido1Contacto();
 			String apellido2Contacto = miform.getApellido2Contacto();
 			String soporte = miform.getSoporte();
-			String codigoProvincia = miform.getCodigoProvincia();
-			
 			
 			// obtengo el parametro
 			Hashtable datosInstitucion = getDatosInstitucion(idInstitucion);
-			
+
+			//CR7 - Ahora la provincia se cogerá de la direccion de facturacion del colegio.
+			CenDireccionesAdm direccionesAdm = new CenDireccionesAdm(this.usrbean);
+			CenDireccionesBean direccionesBean = direccionesAdm.obtenerDireccionTipo((String)datosInstitucion.get("IDPERSONA"), idInstitucion, String.valueOf(ClsConstants.TIPO_DIRECCION_FACTURACION));			
+			String codigoProvincia = direccionesBean.getIdProvincia();
 			
 			//select a ejecutar: obtener pagos cerrados en el anho de entrada
 			consulta1 =
@@ -1672,11 +1674,10 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 		//donde devolveremos el resultado
 		Hashtable resultado = null;
 		//select a ejecutar
-		String consulta = 	" SELECT PER."+CenPersonaBean.C_NIFCIF+" AS NIDENTIFICACION, " +  
-							//" PER."+CenPersonaBean.C_NOMBRE+" AS NOMBREINSTITUCION " +
-		                    /** INC-2569*/    
-		                    " PER."+CenInstitucionBean.C_NOMBRE+" AS NOMBREINSTITUCION " +
-							/**/
+		String consulta = 	" SELECT  PER."+CenPersonaBean.C_NIFCIF+" AS NIDENTIFICACION, " +  
+									" PER."+CenPersonaBean.C_IDPERSONA+" AS IDPERSONA, " +
+									/** INC-2569*/    
+									" PER."+CenInstitucionBean.C_NOMBRE+" AS NOMBREINSTITUCION " +
 							" FROM   "+CenInstitucionBean.T_NOMBRETABLA+" INS, "+CenPersonaBean.T_NOMBRETABLA+" PER " + 
 							" WHERE  INS."+CenInstitucionBean.C_IDPERSONA+" = PER."+CenPersonaBean.C_IDPERSONA+" " +
 							" AND    INS."+CenInstitucionBean.C_IDINSTITUCION+"=" + idInstitucion;

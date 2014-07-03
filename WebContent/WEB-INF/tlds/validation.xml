@@ -3272,10 +3272,6 @@
                 
             </field>
 
-            <field property = "codigoProvincia" depends = "required">
-                <arg0 key="factSJCS.impreso190.literal.provincia"/>
-            </field>
-            
             <field property = "soporte" depends = "required">
                 <arg0 key="factSJCS.impreso190.literal.soporte"/>
             </field>

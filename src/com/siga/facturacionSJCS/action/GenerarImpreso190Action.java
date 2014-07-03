@@ -310,7 +310,6 @@ public class GenerarImpreso190Action extends MasterAction {
 			UtilidadesHash.set(hash,GenerarImpreso190Bean.C_APELLIDO2,miform.getApellido2Contacto());
 			UtilidadesHash.set(hash,GenerarImpreso190Bean.C_NOMBREFICHERO,miform.getNombreFicheroOriginal());
 			UtilidadesHash.set(hash,GenerarImpreso190Bean.C_IDINSTITUCION,user.getLocation());
-			UtilidadesHash.set(hash,GenerarImpreso190Bean.C_IDPROVINCIA,miform.getCodigoProvincia());
 			UtilidadesHash.set(hash,GenerarImpreso190Bean.C_NOMBRE,miform.getNombreContacto());
 			UtilidadesHash.set(hash,GenerarImpreso190Bean.C_TELEFONO,miform.getTelefonoContacto());
 			

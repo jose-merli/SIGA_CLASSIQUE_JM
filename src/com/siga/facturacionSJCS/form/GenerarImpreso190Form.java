@@ -41,15 +41,6 @@ public class GenerarImpreso190Form extends MasterForm {
 		}
 	}
 
-	public void setCodigoProvincia (String dato) { 
-		try {
-			UtilidadesHash.set(this.datos,"codigoProvincia", dato);
-		} catch (Exception e) {
-			// escribimos la traza de momento
-			e.printStackTrace();
-		}
-	}
-
 	public void setSoporte (String dato) { 
 		try {
 			UtilidadesHash.set(this.datos,"soporte", dato);
@@ -107,10 +98,6 @@ public class GenerarImpreso190Form extends MasterForm {
 	}
 	public String getNombreFicheroOriginal	() 	{ 
 		return UtilidadesHash.getString(this.datos, "nombreFicheroOriginal");		
-	}
-
-	public String getCodigoProvincia() 	{ 
-		return UtilidadesHash.getString(this.datos, "codigoProvincia");		
 	}
 
 	public String getSoporte() 	{ 
