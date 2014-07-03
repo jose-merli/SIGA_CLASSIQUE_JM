@@ -334,6 +334,19 @@ public class Direccion {
 											(beanDir.getIdProvincia()!=null && !beanDir.getIdProvincia().equals(beanDir.getOriginalHash().get(CenDireccionesBean.C_IDPROVINCIA))) ||
 											(beanDir.getIdPoblacion()!=null && !beanDir.getIdPoblacion().equals(beanDir.getOriginalHash().get(CenDireccionesBean.C_IDPOBLACION))) ||
 											(beanDir.getPoblacionExtranjera()!=null && !beanDir.getPoblacionExtranjera().equals(beanDir.getOriginalHash().get(CenDireccionesBean.C_POBLACIONEXTRANJERA)));
+						
+						// JPT: Si no hay cambio, hay que mirar si antes existia el check de facturacion
+						if (!cambio) {
+							cambio = true;
+							Vector vBeanTipoDirOriginal = (Vector) beanDir.getOriginalHash().get(CenDireccionTipoDireccionBean.C_IDTIPODIRECCION);
+							for (int j=0; j<vBeanTipoDirOriginal.size(); j++) {
+								CenDireccionTipoDireccionBean objDirOriginal = (CenDireccionTipoDireccionBean) vBeanTipoDirOriginal.get(j);
+								if (objDirOriginal.getIdTipoDireccion().equals(ClsConstants.TIPO_DIRECCION_FACTURACION)) {
+									cambio = false; // Si aparece es que no ha cambiado nada
+								}
+							}							
+						}						
+						
 						if (cambio) {						
 						
 							// Se realiza el proceso de revision de anexos para SEPA
