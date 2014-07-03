@@ -186,19 +186,19 @@
 						<%if (beanMandato.getFirmaFecha()!=null && !beanMandato.getFirmaFecha().equals("")) {%> checked <%}%> 
 						<%if (bConsultaFirma) {%> disabled <%}%>>
 				</td>
-				<td class="labelText"><siga:Idioma key="censo.fichaCliente.bancos.mandatos.anexos.firmado"/>&nbsp;(*)</td>
+				<td class="labelText" nowrap><siga:Idioma key="censo.fichaCliente.bancos.mandatos.anexos.firmado"/>&nbsp;(*)</td>
 			</tr>
 			
 			<tr>
 				<td rowspan="3">&nbsp;</td>
-				<td class="labelText"><siga:Idioma key="censo.fichaCliente.bancos.mandatos.anexos.fechaFirmada"/>&nbsp;(*)</td>
+				<td class="labelText" nowrap><siga:Idioma key="censo.fichaCliente.bancos.mandatos.anexos.fechaFirmada"/>&nbsp;(*)</td>
 				<td>
 					<siga:Fecha nombreCampo="firmaFecha" styleId="firmaFecha" valorInicial="<%=beanMandato.getFirmaFecha()%>" disabled="<%=sConsultaFirma%>" />
 				</td>
 			</tr>
 			
 			<tr>
-				<td class="labelText"><siga:Idioma key="censo.fichaCliente.bancos.mandatos.anexos.lugarFirma"/>&nbsp;(*)</td>
+				<td class="labelText" nowrap><siga:Idioma key="censo.fichaCliente.bancos.mandatos.anexos.lugarFirma"/>&nbsp;(*)</td>
 				<td>
 					<html:text name="MandatosCuentasBancariasForm" property="firmaLugar" styleId="firmaLugar" 
 						value="<%=beanMandato.getFirmaLugar()%>" style='width:500px;' maxlength="100" 

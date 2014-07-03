@@ -201,7 +201,7 @@
 		<table cellpadding="5" border="0">
 			
 			<tr>
-				<td class="labelText"><siga:Idioma key="censo.fichaCliente.bancos.mandatos.anexos.origenFirma"/>&nbsp;(*)</td>
+				<td class="labelText" nowrap><siga:Idioma key="censo.fichaCliente.bancos.mandatos.anexos.origenFirma"/>&nbsp;(*)</td>
 				<td>
 					<html:textarea name="AnexosCuentasBancariasForm" property="origen" styleId="origen"
 						onkeydown="cuenta(this,1000)" onchange="cuenta(this,1000)"
@@ -212,7 +212,7 @@
 			</tr>			
 			
 			<tr>
-				<td class="labelText"><siga:Idioma key="censo.fichaCliente.bancos.mandatos.anexos.descripcionFirma"/>&nbsp;(*)</td>
+				<td class="labelText" nowrap><siga:Idioma key="censo.fichaCliente.bancos.mandatos.anexos.descripcionFirma"/>&nbsp;(*)</td>
 				<td>
 					<html:textarea name="AnexosCuentasBancariasForm" property="descripcion" styleId="descripcion"
 						onkeydown="cuenta(this,1000)" onchange="cuenta(this,1000)"
@@ -224,43 +224,45 @@
 				
 			<tr>
 				<td colspan="2" style="padding:0px">
-					<table cellpadding="5" border="0">
-						<tr>
-							<td>
-								<input type="checkbox" id="firmado" name="firmado" 
-									<%if (beanAnexo.getFirmaFecha()!=null && !beanAnexo.getFirmaFecha().equals("")) {%> checked <%}%> 
-									<%if (bConsultaFirma) {%> disabled <%}%>>
-							</td>
-							<td class="labelText"><siga:Idioma key="censo.fichaCliente.bancos.mandatos.anexos.firmado"/></td>
-						</tr>						
-					
-						<tr>
-							<td rowspan="3">&nbsp;</td>							
-							<td class="labelText" id="fechaFirmadaSinAsterisco"><siga:Idioma key="censo.fichaCliente.bancos.mandatos.anexos.fechaFirmada"/></td>
-							<td class="labelText" id="fechaFirmadaConAsterisco"><siga:Idioma key="censo.fichaCliente.bancos.mandatos.anexos.fechaFirmada"/>&nbsp;(*)</td>
-							<td>				
-								<siga:Fecha nombreCampo="firmaFecha" styleId="firmaFecha" 
-									valorInicial="<%=beanAnexo.getFirmaFecha()%>" 
-									disabled="<%=sConsultaFirma%>" />
-							</td>
-						</tr>
+					<siga:ConjCampos leyenda="censo.fichaCliente.bancos.mandatos.anexos.firmado">	
+						<table cellpadding="5" border="0">
+							<tr>
+								<td>
+									<input type="checkbox" id="firmado" name="firmado" 
+										<%if (beanAnexo.getFirmaFecha()!=null && !beanAnexo.getFirmaFecha().equals("")) {%> checked <%}%> 
+										<%if (bConsultaFirma) {%> disabled <%}%>>
+								</td>
+								<td class="labelText" nowrap><siga:Idioma key="censo.fichaCliente.bancos.mandatos.anexos.firmado"/></td>
+							</tr>						
 						
-						<tr>
-							<td class="labelText" id="lugarFirmaSinAsterisco"><siga:Idioma key="censo.fichaCliente.bancos.mandatos.anexos.lugarFirma"/></td>
-							<td class="labelText" id="lugarFirmaConAsterisco"><siga:Idioma key="censo.fichaCliente.bancos.mandatos.anexos.lugarFirma"/>&nbsp;(*)</td>
-							<td>
-								<html:text name="AnexosCuentasBancariasForm" property="firmaLugar" styleId="firmaLugar" 
-									value="<%=beanAnexo.getFirmaLugar()%>" style='width:500px;' maxlength="100" 
-									styleClass="<%=sClaseConsultaFirma%>" readonly="<%=bConsultaFirma%>" />
-							</td>				
-						</tr>				
-						
-						<tr>							
-							<td colspan="2">								
-								<%@ include file="/html/jsp/general/ficheros.jsp"%>												
-							</td>				
-						</tr>	
-					</table>
+							<tr>
+								<td rowspan="3">&nbsp;</td>							
+								<td class="labelText" id="fechaFirmadaSinAsterisco" nowrap><siga:Idioma key="censo.fichaCliente.bancos.mandatos.anexos.fechaFirmada"/></td>
+								<td class="labelText" id="fechaFirmadaConAsterisco" nowrap><siga:Idioma key="censo.fichaCliente.bancos.mandatos.anexos.fechaFirmada"/>&nbsp;(*)</td>
+								<td>				
+									<siga:Fecha nombreCampo="firmaFecha" styleId="firmaFecha" 
+										valorInicial="<%=beanAnexo.getFirmaFecha()%>" 
+										disabled="<%=sConsultaFirma%>" />
+								</td>
+							</tr>
+							
+							<tr>
+								<td class="labelText" id="lugarFirmaSinAsterisco" nowrap><siga:Idioma key="censo.fichaCliente.bancos.mandatos.anexos.lugarFirma"/></td>
+								<td class="labelText" id="lugarFirmaConAsterisco" nowrap><siga:Idioma key="censo.fichaCliente.bancos.mandatos.anexos.lugarFirma"/>&nbsp;(*)</td>
+								<td>
+									<html:text name="AnexosCuentasBancariasForm" property="firmaLugar" styleId="firmaLugar" 
+										value="<%=beanAnexo.getFirmaLugar()%>" style='width:500px;' maxlength="100" 
+										styleClass="<%=sClaseConsultaFirma%>" readonly="<%=bConsultaFirma%>" />
+								</td>				
+							</tr>				
+							
+							<tr>							
+								<td colspan="2">								
+									<%@ include file="/html/jsp/general/ficheros.jsp"%>												
+								</td>				
+							</tr>	
+						</table>
+					</siga:ConjCampos>
 				</td>
 			</tr>				
 		</table>			
