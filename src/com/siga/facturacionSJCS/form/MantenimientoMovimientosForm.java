@@ -25,8 +25,36 @@ public class MantenimientoMovimientosForm extends MasterForm {
 	private String cantidadAplicada = 	"CANTIDADAPLICADA";
 	private String fechaAlta        =   "FECHAALTA";
 	private String mostrarMovimientos        =   "MOSTRARMOVIMIENTOS";
+	private String idFacturacion = "IDFACTURACION";
+	private String idGrupoFacturacion = "IDGRUPOFACTURACION";
+	
 	
 
+	/**
+	 * @return the idFacturacion
+	 */
+	public String getIdFacturacion() {
+		return (String)datos.get(idFacturacion);
+	}
+	/**
+	 * @param idFacturacion the idFacturacion to set
+	 */
+	public void setIdFacturacion(String valor) {
+		this.datos.put(idFacturacion, valor);
+	}
+	/**
+	 * @return the idGrupoFacturacion
+	 */
+	public String getIdGrupoFacturacion() {
+		return (String)datos.get(idGrupoFacturacion);
+		
+	}
+	/**
+	 * @param idGrupoFacturacion the idGrupoFacturacion to set
+	 */
+	public void setIdGrupoFacturacion(String valor) {
+		this.datos.put(idGrupoFacturacion, valor);
+	}
 	/**
 	 * @return Returns the cantidad.
 	 */

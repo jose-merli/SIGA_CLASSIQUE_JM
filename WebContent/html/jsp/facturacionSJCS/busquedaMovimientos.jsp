@@ -162,7 +162,7 @@
 		</td>
 		
 		<td colspan="3">
-	 		<siga:ComboBD nombre = "pagoAsociado" tipo="cmbPagoAsociado" clase="boxCombo" obligatorio="false" parametro="<%=dato%>" elementoSel="<%=pagoA%>" />
+	 		<siga:ComboBD nombre = "pagoAsociado" ancho="400" tipo="cmbPagoAsociado" clase="boxCombo" obligatorio="false" parametro="<%=dato%>" elementoSel="<%=pagoA%>" />
 		</td>
 		<!-- Introducción del check de histórico -->
 		<td class="labelText">
@@ -172,11 +172,30 @@
 		<td>	
 			<Select id="mostrarMov" name="mostrarMov" class="boxCombo">
 				<option value='0' selected> <siga:Idioma key="general.todas"/></option>
-				<option value='1'> <siga:Idioma key="factSJCS.datosMovimientos.mostraraplicados"/></option>
-				<option value='2'> <siga:Idioma key="factSJCS.datosMovimientos.mostrarpendientes"/></option>
+				<option value='2'> <siga:Idioma key="factSJCS.datosMovimientos.mostraraplicados"/></option>
+				<option value='1'> <siga:Idioma key="factSJCS.datosMovimientos.mostrarpendientes"/></option>
 			</Select>
 		</td>
 	</tr>
+	
+	<tr>
+		<td class="labelText" >
+			<siga:Idioma key="factSJCS.datosPagos.literal.facturacion"/>
+		</td>				
+		<td colspan="3">
+			<siga:ComboBD nombre="idFacturacion" ancho="400" tipo="cmb_FactInformes" parametro="<%=dato%>" clase="boxCombo" obligatorio="false"/>
+		</td>
+	
+			<td class="labelText">
+				<siga:Idioma key="factSJCS.datosFacturacion.literal.gruposFacturacion"/>
+			</td>
+			<td>
+				<siga:ComboBD nombre = "idGrupoFacturacion" tipo="grupoFacturacion" clase="boxCombo" obligatorio="false" parametro="<%=dato%>"/>
+			</td>
+			
+	</tr>
+	
+	
 	<!-- FILA -->
 
 	</html:form>

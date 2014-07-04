@@ -32,7 +32,9 @@ public class FcsMovimientosVariosAdm extends MasterBeanAdministrador {
 							FcsMovimientosVariosBean.C_FECHAALTA,		FcsMovimientosVariosBean.C_FECHAMODIFICACION,
 							FcsMovimientosVariosBean.C_IDINSTITUCION,	FcsMovimientosVariosBean.C_IDMOVIMIENTO,
 							FcsMovimientosVariosBean.C_IDPERSONA,       FcsMovimientosVariosBean.C_MOTIVO,			
-							FcsMovimientosVariosBean.C_USUMODIFICACION, FcsMovimientosVariosBean.C_CONTABILIZADO};
+							FcsMovimientosVariosBean.C_USUMODIFICACION, FcsMovimientosVariosBean.C_CONTABILIZADO
+							,FcsMovimientosVariosBean.C_IDFACTURACION,	FcsMovimientosVariosBean.C_IDGRUPOFACTURACION,					
+		};
 		return campos;
 	}
 
@@ -57,6 +59,8 @@ public class FcsMovimientosVariosAdm extends MasterBeanAdministrador {
 			bean.setIdInstitucion(UtilidadesHash.getInteger(hash,FcsMovimientosVariosBean.C_IDINSTITUCION));
 			bean.setIdMovimiento(UtilidadesHash.getInteger(hash,FcsMovimientosVariosBean.C_IDMOVIMIENTO));
 			bean.setIdPersona(UtilidadesHash.getInteger(hash,FcsMovimientosVariosBean.C_IDPERSONA));
+			bean.setIdFacturacion(UtilidadesHash.getInteger(hash,FcsMovimientosVariosBean.C_IDFACTURACION));
+			bean.setIdGrupoFacturacion(UtilidadesHash.getInteger(hash,FcsMovimientosVariosBean.C_IDGRUPOFACTURACION));
 			bean.setMotivo(UtilidadesHash.getString(hash,FcsMovimientosVariosBean.C_MOTIVO));
 			bean.setUsuMod(UtilidadesHash.getInteger(hash,FcsMovimientosVariosBean.C_USUMODIFICACION));
 			bean.setContabilizado(UtilidadesHash.getString(hash,FcsMovimientosVariosBean.C_CONTABILIZADO));
@@ -80,6 +84,8 @@ public class FcsMovimientosVariosAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(htData, FcsMovimientosVariosBean.C_IDINSTITUCION , b.getIdInstitucion() );
 			UtilidadesHash.set(htData, FcsMovimientosVariosBean.C_IDMOVIMIENTO , b.getIdMovimiento() );
 			UtilidadesHash.set(htData, FcsMovimientosVariosBean.C_IDPERSONA , b.getIdPersona() );
+			UtilidadesHash.set(htData, FcsMovimientosVariosBean.C_IDFACTURACION , b.getIdFacturacion() );
+			UtilidadesHash.set(htData, FcsMovimientosVariosBean.C_IDGRUPOFACTURACION , b.getIdGrupoFacturacion() );
 			UtilidadesHash.set(htData, FcsMovimientosVariosBean.C_MOTIVO , b.getMotivo() );
 			UtilidadesHash.set(htData, FcsMovimientosVariosBean.C_USUMODIFICACION , b.getUsuMod() );
 			UtilidadesHash.set(htData, FcsMovimientosVariosBean.C_CONTABILIZADO , b.getContabilizado() );
@@ -170,6 +176,8 @@ public class FcsMovimientosVariosAdm extends MasterBeanAdministrador {
 				"        M." + FcsMovimientosVariosBean.C_DESCRIPCION + " " + FcsMovimientosVariosBean.C_DESCRIPCION + ","+
 				"        M." + FcsMovimientosVariosBean.C_IDINSTITUCION + " " + FcsMovimientosVariosBean.C_IDINSTITUCION + ","+
 				"        M." + FcsMovimientosVariosBean.C_IDMOVIMIENTO + " " + FcsMovimientosVariosBean.C_IDMOVIMIENTO + ","+
+				"        M." + FcsMovimientosVariosBean.C_IDFACTURACION + " " + FcsMovimientosVariosBean.C_IDFACTURACION + ","+
+				"        M." + FcsMovimientosVariosBean.C_IDGRUPOFACTURACION + " " + FcsMovimientosVariosBean.C_IDGRUPOFACTURACION + ","+
 				"        A." + FcsAplicaMovimientosVariosBean.C_IMPORTEAPLICADO + " CANTIDAD, "+
 				"        M." + FcsMovimientosVariosBean.C_CANTIDAD + " IMPORTEMOVIMIENTOVARIO "+
 							" FROM " + FcsMovimientosVariosBean.T_NOMBRETABLA + " M, " + FcsPagosJGBean.T_NOMBRETABLA + " P, " +
@@ -211,7 +219,7 @@ public class FcsMovimientosVariosAdm extends MasterBeanAdministrador {
 	 * @param idPersona
 	 * @return
 	 */
-	public Vector getMovimientosRW (String idInstitucion, String idPago, String idPersona) throws ClsExceptions 
+	public Vector getMovimientosRW (String idInstitucion, String idPago, String idPersona,String idFacturacion,String idGrupoFacturacion,int caso) throws ClsExceptions 
 	{
 		//donde devolveremos el resultado
 		Vector resultado = new Vector();
@@ -221,12 +229,15 @@ public class FcsMovimientosVariosAdm extends MasterBeanAdministrador {
 							" M." + FcsMovimientosVariosBean.C_IDINSTITUCION + " " + FcsMovimientosVariosBean.C_IDINSTITUCION + ","+
 							" M." + FcsMovimientosVariosBean.C_IDMOVIMIENTO + " " + FcsMovimientosVariosBean.C_IDMOVIMIENTO + ","+
 							" M." + FcsMovimientosVariosBean.C_CANTIDAD + " " +
+							
 			/*				" - nvl((select (sum (aplica." + FcsAplicaMovimientosVariosBean.C_IMPORTEAPLICADO + "))" + 
 							" from " + FcsAplicaMovimientosVariosBean.T_NOMBRETABLA + "aplica" +
 							" where m." + FcsMovimientosVariosBean.C_IDINSTITUCION + " = aplica." + FcsAplicaMovimientosVariosBean.C_IDINSTITUCION + 
 							" and m." + FcsMovimientosVariosBean.C_IDMOVIMIENTO + " = aplica." + FcsAplicaMovimientosVariosBean.C_IDMOVIMIENTO +
 							"),0) " + */ 
 							FcsMovimientosVariosBean.C_CANTIDAD + ", " +
+							" M." + FcsMovimientosVariosBean.C_IDFACTURACION + " " + FcsMovimientosVariosBean.C_IDFACTURACION + ","+
+							" M." + FcsMovimientosVariosBean.C_IDGRUPOFACTURACION + " " + FcsMovimientosVariosBean.C_IDGRUPOFACTURACION + ","+
 							" nvl(a." + FcsAplicaMovimientosVariosBean.C_IMPORTEAPLICADO + ",0) " + FcsAplicaMovimientosVariosBean.C_IMPORTEAPLICADO + ", " +
 							" M." + FcsMovimientosVariosBean.C_FECHAMODIFICACION + " " + FcsMovimientosVariosBean.C_FECHAMODIFICACION + ", "+
 							" M." + FcsMovimientosVariosBean.C_USUMODIFICACION + " " + FcsMovimientosVariosBean.C_USUMODIFICACION + " "+
@@ -235,13 +246,33 @@ public class FcsMovimientosVariosAdm extends MasterBeanAdministrador {
 							FcsMovimientosVariosBean.C_IDINSTITUCION + " = a." + FcsAplicaMovimientosVariosBean.C_IDINSTITUCION +
 							" and m." + FcsMovimientosVariosBean.C_IDMOVIMIENTO + " = a." + FcsAplicaMovimientosVariosBean.C_IDMOVIMIENTO +
 							" WHERE M." + FcsMovimientosVariosBean.C_IDINSTITUCION + "=" + idInstitucion +
-							" AND M." + FcsMovimientosVariosBean.C_IDPERSONA + "=" + idPersona +" " +
-							" group by m." + FcsMovimientosVariosBean.C_MOTIVO + ", m." + FcsMovimientosVariosBean.C_DESCRIPCION +
+							" AND M." + FcsMovimientosVariosBean.C_IDPERSONA + "=" + idPersona +" " ;
+		
+							switch (caso) {
+							case 1:
+								consulta+=" AND M." + FcsMovimientosVariosBean.C_IDFACTURACION + "=" + idFacturacion +" " ;
+								break;
+							case 2:
+								consulta+=" AND M." + FcsMovimientosVariosBean.C_IDGRUPOFACTURACION + "=" + idGrupoFacturacion +" " ;
+								consulta+=" AND M." + FcsMovimientosVariosBean.C_IDFACTURACION + "<>" + idFacturacion +" " ;
+					
+								break;
+
+							default:
+									consulta+=" AND M." + FcsMovimientosVariosBean.C_IDFACTURACION + " is null" ;
+									consulta+=" AND M." + FcsMovimientosVariosBean.C_IDGRUPOFACTURACION + " is null" ;
+								
+								break;
+							}
+							
+							consulta+=" group by m." + FcsMovimientosVariosBean.C_MOTIVO + ", m." + FcsMovimientosVariosBean.C_DESCRIPCION +
 							", m." + FcsMovimientosVariosBean.C_IDINSTITUCION + ", m." + FcsMovimientosVariosBean.C_IDMOVIMIENTO +
 							", m." + FcsMovimientosVariosBean.C_CANTIDAD + ", a." + FcsAplicaMovimientosVariosBean.C_IMPORTEAPLICADO + 
 							", m." + FcsMovimientosVariosBean.C_FECHAMODIFICACION +
 							", m." + FcsMovimientosVariosBean.C_USUMODIFICACION + ", m." + FcsMovimientosVariosBean.C_FECHAALTA +
+							", M.IDFACTURACION ,        M.IDGRUPOFACTURACION"+ 
 							" having abs(m." + FcsMovimientosVariosBean.C_CANTIDAD + ") > nvl((select abs (sum (aplica." + FcsAplicaMovimientosVariosBean.C_IMPORTEAPLICADO +
+							 
 							")) from " + FcsAplicaMovimientosVariosBean.T_NOMBRETABLA + " aplica" +
 							" where m." + FcsMovimientosVariosBean.C_IDINSTITUCION + " = aplica." + FcsAplicaMovimientosVariosBean.C_IDINSTITUCION + 
 							" and m." + FcsMovimientosVariosBean.C_IDMOVIMIENTO + " = aplica." + FcsAplicaMovimientosVariosBean.C_IDMOVIMIENTO + "),0)" +						
@@ -418,7 +449,11 @@ public class FcsMovimientosVariosAdm extends MasterBeanAdministrador {
 						" and estado." + FcsPagosEstadosPagosBean.C_IDPAGOSJG + " = " + FcsAplicaMovimientosVariosBean.T_NOMBRETABLA + "." + FcsAplicaMovimientosVariosBean.C_IDPAGOSJG + ") " +
 						" and " + FcsPagosEstadosPagosBean.T_NOMBRETABLA + "." + FcsPagosEstadosPagosBean.C_IDINSTITUCION + " = " + FcsAplicaMovimientosVariosBean.T_NOMBRETABLA + "." + FcsAplicaMovimientosVariosBean.C_IDINSTITUCION +
 						" and " + FcsPagosEstadosPagosBean.T_NOMBRETABLA + "." + FcsPagosEstadosPagosBean.C_IDPAGOSJG + " = " + FcsAplicaMovimientosVariosBean.T_NOMBRETABLA + "." + FcsAplicaMovimientosVariosBean.C_IDPAGOSJG +
-						") IDESTADOPAGOSJG";
+						") IDESTADOPAGOSJG"+
+		 				" , "+ FcsMovimientosVariosBean.T_NOMBRETABLA + "." +FcsMovimientosVariosBean.C_IDFACTURACION + " IDFACTURACION "+
+						" , "+ FcsMovimientosVariosBean.T_NOMBRETABLA + "." +FcsMovimientosVariosBean.C_IDGRUPOFACTURACION + " IDGRUPOFACTURACION "+
+						" , "+ FcsFacturacionJGBean.T_NOMBRETABLA + "." +FcsFacturacionJGBean.C_NOMBRE + " NOMBREFACTURACION "+
+						" ,F_SIGA_GETRECURSO( "+ ScsGrupoFacturacionBean.T_NOMBRETABLA + "." +ScsGrupoFacturacionBean.C_NOMBRE + ","+this.usrbean.getLanguage()+") NOMBREGRUPOFACTURACION ";
                    		
 		
 		String tablas = " from "+
@@ -440,7 +475,17 @@ public class FcsMovimientosVariosAdm extends MasterBeanAdministrador {
 							" on " + FcsAplicaMovimientosVariosBean.T_NOMBRETABLA + "." + FcsAplicaMovimientosVariosBean.C_IDINSTITUCION + " = " +
 								FcsPagosJGBean.T_NOMBRETABLA + "." + FcsPagosJGBean.C_IDINSTITUCION +
 							" and " + FcsAplicaMovimientosVariosBean.T_NOMBRETABLA + "." + FcsAplicaMovimientosVariosBean.C_IDPAGOSJG + " = " +
-								FcsPagosJGBean.T_NOMBRETABLA + "." + FcsPagosJGBean.C_IDPAGOSJG;										
+								FcsPagosJGBean.T_NOMBRETABLA + "." + FcsPagosJGBean.C_IDPAGOSJG+
+						" left join " + FcsFacturacionJGBean.T_NOMBRETABLA + 
+								" on " + FcsMovimientosVariosBean.T_NOMBRETABLA + "." + FcsMovimientosVariosBean.C_IDINSTITUCION + " = " +
+								FcsFacturacionJGBean.T_NOMBRETABLA + "." + FcsFacturacionJGBean.C_IDINSTITUCION +
+								" and " + FcsMovimientosVariosBean.T_NOMBRETABLA + "." + FcsMovimientosVariosBean.C_IDFACTURACION + " = " +
+								FcsFacturacionJGBean.T_NOMBRETABLA + "." + FcsFacturacionJGBean.C_IDFACTURACION+
+						" left join " + ScsGrupoFacturacionBean.T_NOMBRETABLA + 
+								" on " + FcsMovimientosVariosBean.T_NOMBRETABLA + "." + FcsMovimientosVariosBean.C_IDINSTITUCION + " = " +
+								ScsGrupoFacturacionBean.T_NOMBRETABLA + "." + ScsGrupoFacturacionBean.C_IDINSTITUCION +
+								" and " + FcsMovimientosVariosBean.T_NOMBRETABLA + "." + FcsMovimientosVariosBean.C_IDGRUPOFACTURACION + " = " +
+								ScsGrupoFacturacionBean.T_NOMBRETABLA + "." + ScsGrupoFacturacionBean.C_IDGRUPOFACTURACION;										
 
 		
 		String where =  " where " + FcsMovimientosVariosBean.T_NOMBRETABLA + "." + FcsMovimientosVariosBean.C_IDINSTITUCION + "=" + (String)datos.get("IDINSTITUCION");
@@ -469,6 +514,16 @@ public class FcsMovimientosVariosAdm extends MasterBeanAdministrador {
 		String idPersona = (String)datos.get("IDPERSONA");
 		if (idPersona != null && !idPersona.equals("")) {
 			where += " and "+ CenPersonaBean.T_NOMBRETABLA + "." +CenPersonaBean.C_IDPERSONA + " = " + idPersona.trim() + " ";
+		}
+		
+		String idFacturacion = (String)datos.get("IDFACTURACION");
+		if (idFacturacion != null && !idFacturacion.equals("")) {
+			where += " and "+ FcsMovimientosVariosBean.T_NOMBRETABLA + "." +FcsMovimientosVariosBean.C_IDFACTURACION + " = " + idFacturacion.trim() + " ";
+		}
+		
+		String idGrupoFacturacion = (String)datos.get("IDGRUPOFACTURACION");
+		if (idGrupoFacturacion != null && !idGrupoFacturacion.equals("")) {
+			where += " and "+ FcsMovimientosVariosBean.T_NOMBRETABLA + "." +FcsMovimientosVariosBean.C_IDGRUPOFACTURACION + " = " + idGrupoFacturacion.trim() + " ";
 		}
 		
 		consulta += campos + tablas + where;
@@ -532,9 +587,12 @@ public class FcsMovimientosVariosAdm extends MasterBeanAdministrador {
 						" and estado." + FcsPagosEstadosPagosBean.C_IDPAGOSJG + " = " + FcsAplicaMovimientosVariosBean.T_NOMBRETABLA + "." + FcsAplicaMovimientosVariosBean.C_IDPAGOSJG + ") " +
 						" and " + FcsPagosEstadosPagosBean.T_NOMBRETABLA + "." + FcsPagosEstadosPagosBean.C_IDINSTITUCION + " = " + FcsAplicaMovimientosVariosBean.T_NOMBRETABLA + "." + FcsAplicaMovimientosVariosBean.C_IDINSTITUCION +
 						" and " + FcsPagosEstadosPagosBean.T_NOMBRETABLA + "." + FcsPagosEstadosPagosBean.C_IDPAGOSJG + " = " + FcsAplicaMovimientosVariosBean.T_NOMBRETABLA + "." + FcsAplicaMovimientosVariosBean.C_IDPAGOSJG +
-						") IDESTADOPAGOSJG";	 
-
-	
+						") IDESTADOPAGOSJG"+
+						" , "+ FcsMovimientosVariosBean.T_NOMBRETABLA + "." +FcsMovimientosVariosBean.C_IDFACTURACION + " IDFACTURACION "+
+						" , "+ FcsMovimientosVariosBean.T_NOMBRETABLA + "." +FcsMovimientosVariosBean.C_IDGRUPOFACTURACION + " IDGRUPOFACTURACION "+
+			
+						" , "+ FcsFacturacionJGBean.T_NOMBRETABLA + "." +FcsFacturacionJGBean.C_NOMBRE + " NOMBREFACTURACION "+
+						" ,F_SIGA_GETRECURSO( "+ ScsGrupoFacturacionBean.T_NOMBRETABLA + "." +ScsGrupoFacturacionBean.C_NOMBRE + ","+this.usrbean.getLanguage()+") NOMBREGRUPOFACTURACION ";
 		String tablas2 = " from "+
 						" "  + FcsMovimientosVariosBean.T_NOMBRETABLA + 
 						" inner join " + CenColegiadoBean.T_NOMBRETABLA + 
@@ -554,12 +612,23 @@ public class FcsMovimientosVariosAdm extends MasterBeanAdministrador {
 							" on " + FcsAplicaMovimientosVariosBean.T_NOMBRETABLA + "." + FcsAplicaMovimientosVariosBean.C_IDINSTITUCION + " = " +
 								FcsPagosJGBean.T_NOMBRETABLA + "." + FcsPagosJGBean.C_IDINSTITUCION +
 							" and " + FcsAplicaMovimientosVariosBean.T_NOMBRETABLA + "." + FcsAplicaMovimientosVariosBean.C_IDPAGOSJG + " = " +
-								FcsPagosJGBean.T_NOMBRETABLA + "." + FcsPagosJGBean.C_IDPAGOSJG;
-					/*	" left join " + FcsPagosEstadosPagosBean.T_NOMBRETABLA + 
-							" on " + FcsAplicaMovimientosVariosBean.T_NOMBRETABLA + "." + FcsAplicaMovimientosVariosBean.C_IDINSTITUCION + " = " +
-							FcsPagosEstadosPagosBean.T_NOMBRETABLA + "." + FcsPagosEstadosPagosBean.C_IDINSTITUCION +
-							" and " + FcsAplicaMovimientosVariosBean.T_NOMBRETABLA + "." + FcsAplicaMovimientosVariosBean.C_IDPAGOSJG + " = " +
-							FcsPagosEstadosPagosBean.T_NOMBRETABLA + "." + FcsPagosEstadosPagosBean.C_IDPAGOSJG;*/		
+								FcsPagosJGBean.T_NOMBRETABLA + "." + FcsPagosJGBean.C_IDPAGOSJG+
+								" left join " + FcsFacturacionJGBean.T_NOMBRETABLA + 
+								" on " + FcsMovimientosVariosBean.T_NOMBRETABLA + "." + FcsMovimientosVariosBean.C_IDINSTITUCION + " = " +
+								FcsFacturacionJGBean.T_NOMBRETABLA + "." + FcsFacturacionJGBean.C_IDINSTITUCION +
+								" and " + FcsMovimientosVariosBean.T_NOMBRETABLA + "." + FcsMovimientosVariosBean.C_IDFACTURACION + " = " +
+								FcsFacturacionJGBean.T_NOMBRETABLA + "." + FcsFacturacionJGBean.C_IDFACTURACION+
+						" left join " + ScsGrupoFacturacionBean.T_NOMBRETABLA + 
+								" on " + FcsMovimientosVariosBean.T_NOMBRETABLA + "." + FcsMovimientosVariosBean.C_IDINSTITUCION + " = " +
+								ScsGrupoFacturacionBean.T_NOMBRETABLA + "." + ScsGrupoFacturacionBean.C_IDINSTITUCION +
+								" and " + FcsMovimientosVariosBean.T_NOMBRETABLA + "." + FcsMovimientosVariosBean.C_IDGRUPOFACTURACION + " = " +
+								ScsGrupoFacturacionBean.T_NOMBRETABLA + "." + ScsGrupoFacturacionBean.C_IDGRUPOFACTURACION;
+								
+						
+						
+						
+		
+							
 	
 		String where2 = " where " + 				
 						" (" + FcsMovimientosVariosBean.T_NOMBRETABLA + "." + FcsMovimientosVariosBean.C_CANTIDAD + " - " +
@@ -574,24 +643,34 @@ public class FcsMovimientosVariosAdm extends MasterBeanAdministrador {
 		
 		//con estos datos construir en trozo de sentencia sql correspondiente
 		if (nif != null && !nif.equals("")) {
-			where += " and "+ComodinBusquedas.prepararSentenciaCompleta(nif.trim(),CenPersonaBean.T_NOMBRETABLA + "." +CenPersonaBean.C_NIFCIF )+ " ";
+			where2 += " and "+ComodinBusquedas.prepararSentenciaCompleta(nif.trim(),CenPersonaBean.T_NOMBRETABLA + "." +CenPersonaBean.C_NIFCIF )+ " ";
 		}
 
 		if (ncolegiado != null && !ncolegiado.equals("")) {
-			where += " and "+ ComodinBusquedas.tratarNumeroColegiado(ncolegiado,CenColegiadoBean.T_NOMBRETABLA + "."+ CenColegiadoBean.C_NCOLEGIADO )+ " ";
+			where2 += " and "+ ComodinBusquedas.tratarNumeroColegiado(ncolegiado,CenColegiadoBean.T_NOMBRETABLA + "."+ CenColegiadoBean.C_NCOLEGIADO )+ " ";
 		}
 	
 		if (nombre != null && !nombre.equals("")) {
-			where += " and "+ComodinBusquedas.prepararSentenciaCompleta(nombre.trim(),FcsMovimientosVariosBean.T_NOMBRETABLA + "." + FcsMovimientosVariosBean.C_DESCRIPCION ) + " ";
+			where2 += " and "+ComodinBusquedas.prepararSentenciaCompleta(nombre.trim(),FcsMovimientosVariosBean.T_NOMBRETABLA + "." + FcsMovimientosVariosBean.C_DESCRIPCION ) + " ";
 		}
 
 		if (idPago != null && !idPago.equals("")) {
-			where += " AND " + FcsAplicaMovimientosVariosBean.T_NOMBRETABLA + "." + FcsAplicaMovimientosVariosBean.C_IDPAGOSJG + "=" + idPago; 	
+			where2 += " AND " + FcsAplicaMovimientosVariosBean.T_NOMBRETABLA + "." + FcsAplicaMovimientosVariosBean.C_IDPAGOSJG + "=" + idPago; 	
 		}
 
 		if (idPersona != null && !idPersona.equals("")) {
-			where += " and "+ CenPersonaBean.T_NOMBRETABLA + "." +CenPersonaBean.C_IDPERSONA + " = " + idPersona.trim() + " ";
+			where2 += " and "+ CenPersonaBean.T_NOMBRETABLA + "." +CenPersonaBean.C_IDPERSONA + " = " + idPersona.trim() + " ";
 		}
+		
+		if (idFacturacion != null && !idFacturacion.equals("")) {
+			where2 += " and "+ FcsMovimientosVariosBean.T_NOMBRETABLA + "." +FcsMovimientosVariosBean.C_IDFACTURACION + " = " + idFacturacion.trim() + " ";
+		}
+		
+		if (idGrupoFacturacion != null && !idGrupoFacturacion.equals("")) {
+			where2 += " and "+ FcsMovimientosVariosBean.T_NOMBRETABLA + "." +FcsMovimientosVariosBean.C_IDGRUPOFACTURACION + " = " + idGrupoFacturacion.trim() + " ";
+		}
+		
+		
 		
 		consulta2 += campos2 + tablas2 + where2;
 		
@@ -682,6 +761,30 @@ public class FcsMovimientosVariosAdm extends MasterBeanAdministrador {
 		return this.selectGenerico(consulta);
 	}
 	
+	public Hashtable getMovimientoVario(String idInstitucion, String idMovimiento) throws ClsExceptions{
+		
+		String consulta =	" select m.idmovimiento idmovimiento, m.idinstitucion idinstitucion, m.descripcion descripcion, m.motivo motivo,"+
+				" m.cantidad cantidad, m.fechaalta fechaalta, (p.nombre||' '||p.apellidos1||' '||p.apellidos2) nombre, p.nifcif nif, c.ncolegiado ncolegiado, m.idpersona idpersona, a.idpagosjg idpago, "+
+				" m.idfacturacion, m.idgrupofacturacion, "+
+				//Numero de Colegiado o Comunitario segun proceda:
+				" (CASE c."+CenColegiadoBean.C_COMUNITARIO+" WHEN '"+ClsConstants.DB_FALSE+"' THEN c."+CenColegiadoBean.C_NCOLEGIADO+" ELSE c."+CenColegiadoBean.C_NCOMUNITARIO+" END ) AS NUMERO "+
+				" from "+ FcsMovimientosVariosBean.T_NOMBRETABLA +" m,"+ CenPersonaBean.T_NOMBRETABLA +" p, "+ CenColegiadoBean.T_NOMBRETABLA +" c, " + FcsAplicaMovimientosVariosBean.T_NOMBRETABLA +" a "+
+				" where p."+ CenPersonaBean.C_IDPERSONA + " = m."+ FcsMovimientosVariosBean.C_IDPERSONA +
+				" and c."+ CenColegiadoBean.C_IDINSTITUCION + " (+) = m."+ FcsMovimientosVariosBean.C_IDINSTITUCION +
+				" and c."+ CenColegiadoBean.C_IDPERSONA + " (+) = m."+ FcsMovimientosVariosBean.C_IDPERSONA +
+				" and m."+ FcsMovimientosVariosBean.C_IDINSTITUCION + " = a."+ FcsAplicaMovimientosVariosBean.C_IDINSTITUCION + "(+)" +
+				" and m."+ FcsMovimientosVariosBean.C_IDMOVIMIENTO + " = a."+ FcsAplicaMovimientosVariosBean.C_IDMOVIMIENTO + "(+)" +								
+				" and m."+ FcsMovimientosVariosBean.C_IDINSTITUCION +" = "+idInstitucion+ 
+				" and m."+ FcsMovimientosVariosBean.C_IDMOVIMIENTO +" = "+idMovimiento+ " ";
+
+		Hashtable resultado = new Hashtable(); 
+		Vector v = (Vector) selectGenerico(consulta);
+		if (v!=null && v.size()>0)  {
+			resultado = (Hashtable)v.get(0);
+		}
+		return resultado;
+		
+	}
 	
 	/**
 	 * Actualizar el idpagojg, el importeIRPF y el porcentajeIRPF 

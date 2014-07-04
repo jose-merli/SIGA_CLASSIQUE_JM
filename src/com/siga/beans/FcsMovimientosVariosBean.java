@@ -15,6 +15,8 @@ public class FcsMovimientosVariosBean extends MasterBean {
 	private String  fechaAlta;
 	private Double  cantidad;
 	private String  contabilizado;
+	private Integer idFacturacion;
+	private Integer idGrupoFacturacion;
 
 	
 	/* Nombre tabla */
@@ -29,7 +31,9 @@ public class FcsMovimientosVariosBean extends MasterBean {
 	static public final String C_FECHAALTA 			= "FECHAALTA";
 	static public final String C_CANTIDAD 			= "CANTIDAD";
 	static public final String C_CONTABILIZADO		= "CONTABILIZADO";
+	static public final String C_IDFACTURACION 			= "IDFACTURACION";
 	
+	static public final String C_IDGRUPOFACTURACION 		= "IDGRUPOFACTURACION";
 
 	
 	public String getContabilizado() {
@@ -121,5 +125,29 @@ public class FcsMovimientosVariosBean extends MasterBean {
 	 */
 	public void setMotivo(String motivo) {
 		this.motivo = motivo;
+	}
+	/**
+	 * @return the idFacturacion
+	 */
+	public Integer getIdFacturacion() {
+		return idFacturacion;
+	}
+	/**
+	 * @param idFacturacion the idFacturacion to set
+	 */
+	public void setIdFacturacion(Integer idFacturacion) {
+		this.idFacturacion = idFacturacion;
+	}
+	/**
+	 * @return the idGrupoFacturacion
+	 */
+	public Integer getIdGrupoFacturacion() {
+		return idGrupoFacturacion;
+	}
+	/**
+	 * @param idGrupoFacturacion the idGrupoFacturacion to set
+	 */
+	public void setIdGrupoFacturacion(Integer idGrupoFacturacion) {
+		this.idGrupoFacturacion = idGrupoFacturacion;
 	}
 }

@@ -129,24 +129,7 @@ public class MantenimientoMovimientosAction extends MasterAction {
 		FcsMovimientosVariosAdm movimAdm = new FcsMovimientosVariosAdm (this.getUserBean(request));
 		try {
 			
-			String consulta =	" select m.idmovimiento idmovimiento, m.idinstitucion idinstitucion, m.descripcion descripcion, m.motivo motivo,"+
-								" m.cantidad cantidad, m.fechaalta fechaalta, (p.nombre||' '||p.apellidos1||' '||p.apellidos2) nombre, p.nifcif nif, c.ncolegiado ncolegiado, m.idpersona idpersona, a.idpagosjg idpago, "+
-								//Numero de Colegiado o Comunitario segun proceda:
-								" (CASE c."+CenColegiadoBean.C_COMUNITARIO+" WHEN '"+ClsConstants.DB_FALSE+"' THEN c."+CenColegiadoBean.C_NCOLEGIADO+" ELSE c."+CenColegiadoBean.C_NCOMUNITARIO+" END ) AS NUMERO "+
-								" from "+ FcsMovimientosVariosBean.T_NOMBRETABLA +" m,"+ CenPersonaBean.T_NOMBRETABLA +" p, "+ CenColegiadoBean.T_NOMBRETABLA +" c, " + FcsAplicaMovimientosVariosBean.T_NOMBRETABLA +" a "+
-								" where p."+ CenPersonaBean.C_IDPERSONA + " = m."+ FcsMovimientosVariosBean.C_IDPERSONA +
-								" and c."+ CenColegiadoBean.C_IDINSTITUCION + " (+) = m."+ FcsMovimientosVariosBean.C_IDINSTITUCION +
-								" and c."+ CenColegiadoBean.C_IDPERSONA + " (+) = m."+ FcsMovimientosVariosBean.C_IDPERSONA +
-								" and m."+ FcsMovimientosVariosBean.C_IDINSTITUCION + " = a."+ FcsAplicaMovimientosVariosBean.C_IDINSTITUCION + "(+)" +
-								" and m."+ FcsMovimientosVariosBean.C_IDMOVIMIENTO + " = a."+ FcsAplicaMovimientosVariosBean.C_IDMOVIMIENTO + "(+)" +								
-								" and m."+ FcsMovimientosVariosBean.C_IDINSTITUCION +" = "+usr.getLocation()+ 
-								" and m."+ FcsMovimientosVariosBean.C_IDMOVIMIENTO +" = "+(String)ocultos.get(0)+ " ";
-			
-			Hashtable resultado = new Hashtable(); 
-			Vector v = (Vector) movimAdm.selectGenerico(consulta);
-			if (v!=null && v.size()>0)  {
-				resultado = (Hashtable)v.get(0);
-			}		
+			Hashtable resultado = movimAdm.getMovimientoVario(usr.getLocation(),(String)ocultos.get(0));
 			request.getSession().setAttribute("resultado",resultado);
 			request.getSession().setAttribute("modo","edicion");
 			destino = "nuevo";
@@ -189,12 +172,15 @@ public class MantenimientoMovimientosAction extends MasterAction {
 		UtilidadesHash.set( movimientoNew, FcsMovimientosVariosBean.C_FECHAMODIFICACION, "sysdate");
 		UtilidadesHash.set( movimientoNew, FcsMovimientosVariosBean.C_USUMODIFICACION, (String)usr.getUserName());
 		UtilidadesHash.set( movimientoNew, FcsMovimientosVariosBean.C_CONTABILIZADO, "0");
+		if(!miform.getIdFacturacion().trim().equals(""))
+			UtilidadesHash.set( movimientoNew, FcsMovimientosVariosBean.C_IDFACTURACION, miform.getIdFacturacion());
+		if(!miform.getIdGrupoFacturacion().trim().equals(""))
+			UtilidadesHash.set( movimientoNew, FcsMovimientosVariosBean.C_IDGRUPOFACTURACION, miform.getIdGrupoFacturacion());
 		try {
 			//consultamos el valor que falta, el idMovimiento
 			FcsMovimientosVariosAdm movimientosAdm = new FcsMovimientosVariosAdm (this.getUserBean(request));
-			movimientoNew = movimientosAdm.prepararInsert(movimientoNew);
-		
 			tx.begin();
+			movimientoNew = movimientosAdm.prepararInsert(movimientoNew);
 			
 			//insertar el nuevo registro
 			ok = movimientosAdm.insert(movimientoNew);
@@ -255,6 +241,10 @@ public class MantenimientoMovimientosAction extends MasterAction {
 			UtilidadesHash.set( movimNew, FcsAplicaMovimientosVariosBean.C_IDPAGOSJG, (String)miform.getIdPagoJg());
 			UtilidadesHash.set( movimNew, FcsMovimientosVariosBean.C_FECHAALTA, (String)miform.getFechaAlta());
 			UtilidadesHash.set( movimNew, FcsMovimientosVariosBean.C_FECHAMODIFICACION, "sysdate");
+			//if(!miform.getIdFacturacion().trim().equals(""))
+				UtilidadesHash.set( movimNew, FcsMovimientosVariosBean.C_IDFACTURACION, miform.getIdFacturacion());
+			//if(!miform.getIdGrupoFacturacion().trim().equals(""))
+				UtilidadesHash.set( movimNew, FcsMovimientosVariosBean.C_IDGRUPOFACTURACION, miform.getIdGrupoFacturacion());
 
 			//modificamos
 			tx.begin();
@@ -293,26 +283,11 @@ public class MantenimientoMovimientosAction extends MasterAction {
 		MantenimientoMovimientosForm miform = (MantenimientoMovimientosForm)formulario;
 		Vector ocultos = (Vector)miform.getDatosTablaOcultos(0);
 		FcsMovimientosVariosAdm movimAdm = new FcsMovimientosVariosAdm (this.getUserBean(request));
-		String idMovim = (String)ocultos.get(0);
+		
 		
 		try {
 			
-			String consulta =	" select m.idmovimiento idmovimiento, m.idinstitucion idinstitucion, m.descripcion descripcion, m.motivo motivo,"+
-								" m.cantidad cantidad, m.fechaalta fechaalta, (p.nombre||' '||p.apellidos1||' '||p.apellidos2) nombre, p.nifcif nif, c.ncolegiado ncolegiado, m.idpersona idpersona, pag.nombre pago, a.idpagosjg idpago, "+
-								//Numero de Colegiado o Comunitario segun proceda:
-								" (CASE c."+CenColegiadoBean.C_COMUNITARIO+" WHEN '"+ClsConstants.DB_FALSE+"' THEN c."+CenColegiadoBean.C_NCOLEGIADO+" ELSE c."+CenColegiadoBean.C_NCOMUNITARIO+" END ) AS NUMERO "+
-								" from "+ FcsMovimientosVariosBean.T_NOMBRETABLA +" m,"+ CenPersonaBean.T_NOMBRETABLA +" p, "+ CenColegiadoBean.T_NOMBRETABLA +" c,"+ FcsPagosJGBean.T_NOMBRETABLA + " pag, " + FcsAplicaMovimientosVariosBean.T_NOMBRETABLA + " a " +
-								" where p."+ CenPersonaBean.C_IDPERSONA + " = m."+ FcsMovimientosVariosBean.C_IDPERSONA +
-								" and c."+ CenColegiadoBean.C_IDINSTITUCION + " (+) = m."+ FcsMovimientosVariosBean.C_IDINSTITUCION +
-								" and c."+ CenColegiadoBean.C_IDPERSONA + " (+) = m."+ FcsMovimientosVariosBean.C_IDPERSONA +
-								" and m." + FcsMovimientosVariosBean.C_IDINSTITUCION + "= a."+ FcsAplicaMovimientosVariosBean.C_IDINSTITUCION + "(+)" +
-								" and m." + FcsMovimientosVariosBean.C_IDMOVIMIENTO + "= a."+ FcsAplicaMovimientosVariosBean.C_IDMOVIMIENTO + "(+)" +								
-								" and pag." + FcsPagosJGBean.C_IDINSTITUCION + "(+)= a."+ FcsAplicaMovimientosVariosBean.C_IDINSTITUCION +
-								" and pag." + FcsPagosJGBean.C_IDPAGOSJG + "(+)= a."+ FcsAplicaMovimientosVariosBean.C_IDPAGOSJG +
-								" and m."+ FcsMovimientosVariosBean.C_IDINSTITUCION + " = " + usr.getLocation() + 
-								" and m."+ FcsMovimientosVariosBean.C_IDMOVIMIENTO + " = " + idMovim + " ";
-			
-			Hashtable resultado = (Hashtable)((Vector)movimAdm.selectGenerico(consulta)).get(0);
+			Hashtable resultado = movimAdm.getMovimientoVario(usr.getLocation(),(String)ocultos.get(0));
 			request.getSession().setAttribute("resultado",resultado);
 			request.getSession().setAttribute("modo","consulta");
 			destino = "nuevo";
@@ -320,6 +295,12 @@ public class MantenimientoMovimientosAction extends MasterAction {
 		catch (Exception e) {
 			throwExcp("messages.general.error",new String[] {"modulo.facturacionSJCS"},e,null);
 		}
+		
+		
+		
+		
+		
+		
 		
 		return destino;
 	}

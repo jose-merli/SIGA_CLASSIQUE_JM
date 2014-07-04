@@ -163,8 +163,8 @@
 		<siga:Table 
 		   name="tablaDatos"
 		   border="1"
-		   columnNames="factSJCS.datosMovimientos.literal.nifCif,factSJCS.busquedaRetAplicadas.literal.colegiado,factSJCS.datosMovimientos.literal.nColegiado,factSJCS.datosMovimientos.literal.pago,factSJCS.datosMovimientos.literal.descripcion,factSJCS.datosMovimientos.literal.cantidad,factSJCS.movimiento.literal.aplica,factSJCS.datosMovimientos.literal.cantidadrestante,"
-		   columnSizes="10,15,8,15,15,8,8,8"
+		   columnNames="factSJCS.datosMovimientos.literal.pago,factSJCS.datosMovimientos.literal.descripcion,factSJCS.datosPagos.literal.facturacion,factSJCS.datosFacturacion.literal.gruposFacturacion,factSJCS.datosMovimientos.literal.cantidad,factSJCS.movimiento.literal.aplica,factSJCS.datosMovimientos.literal.cantidadrestante"
+		   columnSizes="15,15,15,15,8,8,8"
 		   modal="M">
 		   
 			<!-- INICIO: ZONA DE REGISTROS -->
@@ -176,7 +176,8 @@
 	 		</tr>	 		
 <%	
 	} else { 
-
+		String nombreFacturacion ="";
+		String nombreGrupoFacturacion ="";
 		for (int cont=1; cont<=resultado.size(); cont++) {
 			Row row = (Row) resultado.elementAt(cont-1);
 			Hashtable fila = (Hashtable) row.getRow();			
@@ -191,6 +192,8 @@
 			cantidadAplicada = UtilidadesString.mostrarDatoJSP(fila.get("CANTIDADAPLICADA"));
 			cantidadRestante = UtilidadesString.mostrarDatoJSP(fila.get("CANTIDADRESTANTE"));
 			idMovimiento = UtilidadesString.mostrarDatoJSP(fila.get("IDMOVIMIENTO"));
+			nombreFacturacion = UtilidadesString.mostrarDatoJSP(fila.get("NOMBREFACTURACION"));
+			nombreGrupoFacturacion = UtilidadesString.mostrarDatoJSP(fila.get("NOMBREGRUPOFACTURACION"));
 
 %>
   			<siga:FilaConIconos fila="<%=String.valueOf(cont)%>" 
@@ -202,14 +205,14 @@
 	  			visibleBorrado = "no"
   				clase="listaNonEdit">
 			
-				<td><input type="hidden" name="oculto<%=cont%>_1" value="<%=idMovimiento%>"><%=nif%></td>
-				<td><%=nombre %></td>
-				<td><%=ncolegiado %></td>
-				<td><%=pagoAsociado %></td>
+				<td><input type="hidden" name="oculto<%=cont%>_1" value="<%=idMovimiento%>">
+				<%=pagoAsociado %></td>
 				<td><%=movimiento %></td>
-				<td><%=UtilidadesNumero.formatoCampo(cantidad)%></td>
-				<td><%=UtilidadesNumero.formatoCampo(cantidadAplicada)%></td>
-				<td><%=UtilidadesNumero.formatoCampo(cantidadRestante)%></td>
+				<td><%=nombreFacturacion %></td>
+				<td><%=nombreGrupoFacturacion %></td>
+				<td align="right"><%=UtilidadesNumero.formatoCampo(cantidad)%></td>
+				<td align="right"><%=UtilidadesNumero.formatoCampo(cantidadAplicada)%></td>
+				<td align="right"><%=UtilidadesNumero.formatoCampo(cantidadRestante)%></td>
 
 			</siga:FilaConIconos>	
 
@@ -283,9 +286,9 @@
 				<td><%=ncolegiado %></td>
 				<td><%=pagoAsociado %></td>
 				<td><%=movimiento %></td>
-				<td><%=UtilidadesNumero.formatoCampo(cantidad)%></td>
-				<td><%=UtilidadesNumero.formatoCampo(cantidadAplicada)%></td>
-				<td><%=UtilidadesNumero.formatoCampo(cantidadRestante)%></td>
+				<td align="right"><%=UtilidadesNumero.formatoCampo(cantidad)%></td>
+				<td align="right"><%=UtilidadesNumero.formatoCampo(cantidadAplicada)%></td>
+				<td align="right"><%=UtilidadesNumero.formatoCampo(cantidadRestante)%></td>
 
 			</siga:FilaConIconos>		
 

@@ -12,6 +12,7 @@ package com.siga.facturacionSJCS.action;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.List;
 import java.util.StringTokenizer;
 import java.util.TreeMap;
 import java.util.Vector;
@@ -1735,13 +1736,41 @@ public class DatosGeneralesPagoAction extends MasterAction {
 
 		try {
 
+			FcsPagosJGAdm fcsPagosJGAdm = new FcsPagosJGAdm(usr);
+			List<Hashtable> facturacionesGruposPagosList =  fcsPagosJGAdm.getFacturacionesGruposPagos(idPago,movimientosBean.getIdInstitucion().toString());
+			
 			// obtiene todos los movimientos varios del colegiado ordenados por
 			// importe y fecha de alta
 			FcsMovimientosVariosAdm movimientosAdm = new FcsMovimientosVariosAdm(
 					usr);
-			Vector movimientos = movimientosAdm.getMovimientosRW(
-					movimientosBean.getIdInstitucion().toString(), idPago,
-					movimientosBean.getIdPersona().toString());
+			//Hay que traerse el idfacturacion y el idgrupo facturacion del pago	
+			//Vamo a ir acumeulando los movimientos en orden en una lista
+			//lista lista = new Lista
+			//Priemro metemos los que traigan facturacion no nula
+			//if(idfacturacion !=null)
+			//lista.add(movimientos where idfacturacion is idfacturacion )
+			//segundo metemos los que traigan idgrupofacturacion no nula and not in la select de las facturaciones
+			//if(idgrupofacturacion!=null)
+			//lista.add(movimientos where idgrupofacturacion is idgrupofacturacion )
+			//tercero los que no esten incluidos en los anteriores
+			//lista.add movimientos where idgrupofacturacion is null and idfacturacion is not null
+			
+			Vector movimientos = new  Vector();
+			
+			String idFacturacion  = null;
+			if(facturacionesGruposPagosList!=null && facturacionesGruposPagosList.size()>0){
+				idFacturacion = (String) facturacionesGruposPagosList.get(0).get("IDFACTURACION");
+				if(idFacturacion!=null)
+					movimientos.addAll(movimientosAdm.getMovimientosRW(movimientosBean.getIdInstitucion().toString(), idPago,movimientosBean.getIdPersona().toString(),idFacturacion,null,1));
+				for (int i = 0; i < facturacionesGruposPagosList.size(); i++) {
+					Hashtable facturacionesGruposPagos = facturacionesGruposPagosList.get(i);
+					String idGrupo = (String) facturacionesGruposPagos.get("IDGRUPOFACTURACION");
+					if(idGrupo!=null)
+						movimientos.addAll(movimientosAdm.getMovimientosRW(movimientosBean.getIdInstitucion().toString(), idPago,movimientosBean.getIdPersona().toString(),idFacturacion,idGrupo,2));
+				}
+				
+			}
+			movimientos.addAll(movimientosAdm.getMovimientosRW(movimientosBean.getIdInstitucion().toString(), idPago,movimientosBean.getIdPersona().toString(),null,null,32));
 
 			for (int contador = 0; contador < movimientos.size(); contador++) {
 

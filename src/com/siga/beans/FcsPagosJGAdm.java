@@ -1519,6 +1519,43 @@ public class FcsPagosJGAdm extends MasterBeanAdministrador {
        return aPagos;		
 	}	
 	
+	public List<Hashtable> getFacturacionesGruposPagos(String idPago, String idInstitucion) throws ClsExceptions {
+		
+		StringBuffer sql = new StringBuffer();
+		sql.append(" select fcs_pagosjg.idfacturacion,FCS_FACT_GRUPOFACT_HITO.Idgrupofacturacion ");
+		sql.append(" from fcs_pagosjg, FCS_FACT_GRUPOFACT_HITO ");
+		sql.append(" where FCS_FACT_GRUPOFACT_HITO.IDINSTITUCION(+) = fcs_pagosjg.idinstitucion ");
+		sql.append(" and FCS_FACT_GRUPOFACT_HITO.IDFACTURACION(+) = fcs_pagosjg.idfacturacion ");
+		sql.append(" and fcs_pagosjg.idpagosjg = ");
+		sql.append(idPago);
+		sql.append(" and fcs_pagosjg.idinstitucion = ");
+		sql.append(idInstitucion);
+		
+		
+		
+		List<Hashtable> facturacionesGruposList = new ArrayList<Hashtable>();
+		try {
+			RowsContainer rc = new RowsContainer();
+			
+			if (rc.query(sql.toString())) {
+    			for (int i = 0; i < rc.size(); i++){
+            		Row fila = (Row) rc.get(i);
+            		Hashtable<String, Object> htFila=fila.getRow();
+            		
+            		
+            		facturacionesGruposList.add(htFila);
+            	}
+            } 
+       } catch (Exception e) {
+       		throw new ClsExceptions (e, "Error al ejecutar consulta.");
+       }
+		
+       return facturacionesGruposList;		
+	}	
+	
+	
+	
+	
 	/**aalg: INC_06787_SIGA. Para hacer la consulta con nvl en los importes 
 	 * Funcion selectNVL (String where)
 	 * @param criteros para filtrar el select con nvl en los importes, campo where 

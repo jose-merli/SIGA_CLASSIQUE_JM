@@ -32,12 +32,19 @@
 	HttpSession ses=request.getSession();
 	UsrBean usr=(UsrBean)ses.getAttribute("USRBEAN");	
 	
-
+	String[] comboParams = {usr.getLocation()};
 	//campos a mostrar
 	String nif = "", ncolegiado="", nombre ="", descripcion = "", cantidad="", motivo="", idMovimiento="", idPersona="", pago="", idPago="";
 	String fechaAlta ="";
+	String idFacturacion ="";
+	String idGrupoFacturacion ="";
 	String accionAplicacion = "consultaAplicacion";
 
+	ArrayList comboFacturacion = new ArrayList();
+	
+	ArrayList comboGrupoFacturacion = new ArrayList();
+	
+	
 	//variables para controlar el modo
 	String accion ="", modo="", readonly="false", clase="box", claseNum="boxNumber";
 
@@ -75,10 +82,16 @@
 			pago = (String)resultado.get("PAGO");
 			idPago = (String)resultado.get("IDPAGO");
 			fechaAlta = (String)resultado.get("FECHAALTA");
+			idFacturacion = (String)resultado.get("IDFACTURACION");
+			comboFacturacion.add(idFacturacion);
+			idGrupoFacturacion = (String)resultado.get("IDGRUPOFACTURACION");
+			comboGrupoFacturacion.add(idGrupoFacturacion);
 			request.getSession().removeAttribute("resultado");
 		}
 		catch(Exception e)
-		{} 		
+		{
+			e.printStackTrace();
+		} 		
 
 		if (modo.equals("consulta"))
 		{ 
@@ -230,6 +243,35 @@
 				</siga:ConjCampos>
 			</td>
 			</tr>
+			<tr>
+			<td colspan="4">
+				<siga:ConjCampos leyenda="Vinculacion">
+					<table>
+						<tr>
+						<td class="labelText" >
+							<siga:Idioma key="factSJCS.datosPagos.literal.facturacion"/>
+						</td>				
+						<td >
+							<siga:ComboBD nombre="idFacturacion" ancho="500" tipo="cmb_FactInformes" parametro="<%=comboParams%>" clase="boxCombo" obligatorio="false" elementoSel="<%=comboFacturacion%>"/>
+						</td>
+					</tr>
+						<tr>
+							<td class="labelText">
+								<siga:Idioma key="factSJCS.datosFacturacion.literal.gruposFacturacion"/>
+							</td>
+							<td>
+								<siga:ComboBD nombre = "idGrupoFacturacion" tipo="grupoFacturacion" clase="boxCombo" obligatorio="false" parametro="<%=comboParams%>" elementoSel="<%=comboGrupoFacturacion%>"/>
+							</td>
+							
+						</tr>
+					</table>
+				</siga:ConjCampos>
+			</td>
+			</tr>
+			
+			
+			
+			
 			<tr>
 				<td colspan="4">
 					&nbsp;
