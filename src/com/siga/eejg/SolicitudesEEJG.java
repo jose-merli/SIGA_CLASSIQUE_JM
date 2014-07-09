@@ -209,15 +209,21 @@ public class SolicitudesEEJG {
 	private boolean isPendiente(DatosInformacionAAPP datosInfoAAPP) {
 		boolean pendiente = false;
 		if (datosInfoAAPP != null) {
-			AdministracionInf[] administracions = datosInfoAAPP.getAdministracionInf();
-			if (administracions != null) {
-				for (AdministracionInf administracion : administracions) {
-					if (administracion.getFecha_Respuesta() == null || administracion.getFecha_Respuesta().trim().equals("")) {
-						ClsLogging.writeFileLog("No encontrada Fecha Respuesta en uno de los nodos Administracion.", 10);
-						pendiente = true;
-						break;
+			// Si tenemos CSV comprobamos si tambien estan todas las fechas
+			if(datosInfoAAPP.getCSV()!=null && !datosInfoAAPP.getCSV().equalsIgnoreCase("")){
+				AdministracionInf[] administracions = datosInfoAAPP.getAdministracionInf();
+				if (administracions != null) {
+					for (AdministracionInf administracion : administracions) {
+						if (administracion.getFecha_Respuesta() == null || administracion.getFecha_Respuesta().trim().equals("")) {
+							ClsLogging.writeFileLog("No encontrada Fecha Respuesta en uno de los nodos Administracion.", 10);
+							pendiente = true;
+							break;
+						}
 					}
 				}
+			}else{
+				ClsLogging.writeFileLog("CSV no disponible", 10);
+				pendiente = true;
 			}
 		}
 		return pendiente;
