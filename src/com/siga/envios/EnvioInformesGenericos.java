@@ -2134,8 +2134,11 @@ public class EnvioInformesGenericos extends MasterReport {
 							identificador.append("_");
 							identificador.append(numero);
 							identificador.append("_");
+							// jbd // R1406_0080 
+							/*
 							identificador.append(idTipoEJG);
 							identificador.append("_");
+							*/
 							identificador.append(i);
 							identificador.append("_");
 							identificador.append(k);
