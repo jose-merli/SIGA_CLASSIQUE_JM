@@ -89,7 +89,7 @@
 		filtrarModulos = (String)request.getAttribute("filtrarModulos");
 	}
 	
-	String comboJuzgados = "getJuzgadosJurisdiccionNuevaDesigna";
+	String comboJuzgados = "getJuzgados";
    	String comboModulos = "getProcedimientosEnVigencia";
    	String comboModulosParentQueryIds = "idjuzgado,fechadesdevigor,fechahastavigor";
    	String comboPretensionesEjis= "getPretensionesNuevaDesignaEjisModulosFiltros";
@@ -108,7 +108,8 @@
 		//request.setAttribute("idjuzgadoEJG", miform.getJuzgadoAsi()+ "," + miform.getJuzgadoInstitucionAsi());
 		String idsJuzgadoEJG[] = juzgadoEJG.split(","); 
 		idJuzgado = idsJuzgadoEJG[0];
-		elementoSelJuzgado.add(0,"{\"idjuzgado\":\""+idJuzgado+"\",\"idinstitucion\":\""+idsJuzgadoEJG[1]+"\",\"fechadesdevigor\":\""+fechaVigor+"\",\"fechahastavigor\":\""+fechaVigor+"\"}");
+		//elementoSelJuzgado.add(0,"{\"idjuzgado\":\""+idJuzgado+"\",\"idinstitucion\":\""+idsJuzgadoEJG[1]+"\",\"fechadesdevigor\":\""+fechaVigor+"\",\"fechahastavigor\":\""+fechaVigor+"\"}");
+		elementoSelJuzgado.add(0,idJuzgado+","+idsJuzgadoEJG[1]);
 	
 	}
 	
@@ -119,7 +120,8 @@
 		//request.setAttribute("juzgadoAsistencia", miform.getJuzgadoAsi()+ "," + miform.getJuzgadoInstitucionAsi());
 		String idsJuzgadoAsistencia[] = juzgadoAsistencia.split(","); 
 		idJuzgado = idsJuzgadoAsistencia[0];
-		elementoSelJuzgado.add(0,"{\"idjuzgado\":\""+idJuzgado+"\",\"idinstitucion\":\""+idsJuzgadoAsistencia[1]+"\",\"fechadesdevigor\":\""+fechaVigor+"\",\"fechahastavigor\":\""+fechaVigor+"\"}");
+		elementoSelJuzgado.add(0,idJuzgado+","+idsJuzgadoAsistencia[1]);
+		
 		
 	}
 	
@@ -357,7 +359,7 @@
 							<siga:Idioma key="gratuita.busquedaSOJ.literal.turno"/>&nbsp;(*)
 						</td>
 						<td class="labelText" colspan="3">
-							<siga:Select id="idTurno" queryId="getTurnosDesignacionVisibles" queryParamId="idturno" params="<%=paramsTurnosJSON%>" selectedIds="<%=elementoSelTurno%>" required="true" childrenIds="juzgado"  width="500"/>
+							<siga:Select id="idTurno" queryId="getTurnosDesignacionVisibles" queryParamId="idturno" params="<%=paramsTurnosJSON%>" selectedIds="<%=elementoSelTurno%>" required="true"  width="500"/>
 						
 							
 						</td>
@@ -424,13 +426,13 @@
 								</td>
 							
 								<td>
-									<siga:Select id="juzgado" queryId="<%=comboJuzgados%>" queryParamId="idjuzgado" parentQueryParamIds="idturno" params="<%=paramsJuzgadoJSON%>" selectedIds="<%=elementoSelJuzgado%>" showSearchBox="true" searchkey="CODIGOEXT2" searchBoxMaxLength="10" searchBoxWidth="8" width="515" required="true" childrenIds="idPretension,idProcedimiento"/>		
+									<siga:Select id="juzgado" queryId="<%=comboJuzgados%>" queryParamId="idjuzgado" selectedIds="<%=elementoSelJuzgado%>" showSearchBox="true" searchkey="CODIGOEXT2" searchBoxMaxLength="10" searchBoxWidth="8" width="515" required="true" />		
 								</td>
 							<%}else{%>
 								</td>
 					
 								<td>
-									<siga:Select id="juzgado" queryId="<%=comboJuzgados%>" queryParamId="idjuzgado" parentQueryParamIds="idturno" params="<%=paramsJuzgadoJSON%>" selectedIds="<%=elementoSelJuzgado%>" showSearchBox="true" searchkey="CODIGOEXT2" searchBoxMaxLength="10" searchBoxWidth="8" width="515"  childrenIds="idPretension,idProcedimiento"/>		
+									<siga:Select id="juzgado" queryId="<%=comboJuzgados%>" queryParamId="idjuzgado" selectedIds="<%=elementoSelJuzgado%>" showSearchBox="true" searchkey="CODIGOEXT2" searchBoxMaxLength="10" searchBoxWidth="8" width="515"  />		
 								</td>
 							<%}%>
 						 
@@ -443,40 +445,7 @@
 		</td>
 	</tr>
 	
-	<tr>
-		<td class="labelText">
-			<siga:Idioma key="gratuita.actuacionesDesigna.literal.modulo" />
-			<% if (obligatorioModulo) { %>
-		 		<%= asterisco %>
-		 	</td>
-			<td>
-				<siga:Select id="idProcedimiento" queryId="<%=comboModulos%>" parentQueryParamIds="<%=comboModulosParentQueryIds%>" params="<%=idProcedimientoParamsJSON%>" required="true"  width="490"/>
-			</td>
-			<%} else { %>
-		 		</td>
-			<td>
-				<siga:Select id="idProcedimiento" queryId="<%=comboModulos%>" parentQueryParamIds="<%=comboModulosParentQueryIds%>" params="<%=idProcedimientoParamsJSON%>"  width="490"/>
-			</td>
-			<% } %>
-			
-	</tr>
-	<tr>
-		<td class="labelText">	
-			<siga:Idioma key='gratuita.actuacionesDesigna.literal.pretensiones'/>
-			<% if (obligatorioProcedimiento) { %>
-		 		<%= asterisco %>
-		 		</td>				
-				<td >
-					<siga:Select id="idPretension" queryId="<%=comboPretensiones %>"  parentQueryParamIds="<%=comboPretensionesParentQueryIds %>" params="<%=idPretensionParamsJSON%>" required="true" width="490" />
-				</td>
-			<%}else { %>
-		 		</td>				
-				<td >
-					<siga:Select id="idPretension" queryId="<%=comboPretensiones%>"  parentQueryParamIds="<%=comboPretensionesParentQueryIds %>" params="<%=idPretensionParamsJSON%>"   width="490" />
-				</td>
-			<% } %>
-		
-	</tr>
+	
 
 </html:form>
 	
