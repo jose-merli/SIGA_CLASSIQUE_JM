@@ -249,7 +249,9 @@
 		}
 					
 		
-		
+		function ajusteSelectExperta(){
+			jQuery('#boxExperta').height(jQuery(document).height()-130);
+		}
 		
 		
 		
@@ -344,7 +346,7 @@
 <% } %>
 	</head>
 
-	<body>
+	<body onload="ajusteSelectExperta()">
 	
 		<html:form action="/CON_EditarConsulta.do" method="POST" target="submitArea">
 			<html:hidden property = "modo" value = ""/>
@@ -457,7 +459,7 @@ if (!bEditable){
 		<tr>
 
 			<td  align="center" width="93%">
-		    	<html:textarea style="width:800px" rows="20" property="selectExperta"  styleclass="boxExpert" value="<%=sentenciaSelect%>"></html:textarea> 
+		    	<html:textarea style="width:800px" rows="20" property="selectExperta" styleId='boxExperta' styleclass="boxExpert" value="<%=sentenciaSelect%>"></html:textarea> 
 		    </td>	
 			<td align="left">
 			   <a HREF="javascript:abrirAyuda();"><IMG border=0 src="<%=app_imagen%>help.gif"  alt="<%=help%>"></a>
