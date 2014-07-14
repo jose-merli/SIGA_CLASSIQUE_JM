@@ -23,6 +23,7 @@
 <%@ taglib uri = "struts-bean.tld" prefix="bean"%>
 <%@ taglib uri = "struts-html.tld" prefix="html"%>
 <%@ taglib uri = "struts-logic.tld" prefix="logic"%>
+<%@ taglib uri="c.tld" prefix="c"%>
 
 <!-- IMPORTS -->
 <%@ page import="com.siga.administracion.SIGAConstants"%>
@@ -74,6 +75,8 @@
 	String enviarFacturas = "";
 	String generarPDF = "";
 	String observaciones="";
+
+	
 	// Valores para combos setElement
 	ArrayList vPlantilla = new ArrayList(); // valor original Plantilla
 	String idTipoEnvioCorreoElectronico = ""+EnvEnviosAdm.TIPO_CORREO_ELECTRONICO;
@@ -147,6 +150,10 @@
 		}
 	}
 	
+	//En modo consulta se deshabilita el combo
+	boolean combodeshabilitado =false;
+	if (accion.equals("ver"))
+		combodeshabilitado=true;
 %>
 
 
@@ -251,7 +258,6 @@
 				<html:hidden property="idSerieFacturacion" value="<%=idSerieFacturacion%>"/>
 				<html:hidden property="accion" value="<%=accion%>"/>
 				<html:hidden property="ids" value=""/>
-
 				<tr>
 					<td style="width:100%">		
 						<!-- SUBCONJUNTO DE DATOS -->
@@ -552,7 +558,7 @@
 						if (chk !="checkbox") {
 							for (i = 0; i < chk.length; i++){
 								if (chk[i].checked==1){
-									datos=datos + chk[i].value + "%";						
+									datos=datos + chk[i].value +","+jQuery("#comboSufijos_" + chk[i].value).val()+"%";						
 								}	
 							}		
 						} else {
@@ -595,9 +601,9 @@
 								alert('<siga:Idioma key="Facturacion.mensajes.obligatorio.plantillaMail"/>');
 								return false;
 							}
-						}
+						}													
 
-						document.forms[0].ids.value = datos;
+ 						document.forms[0].ids.value = datos;
 						document.forms[0].submit();
 					 }
 				}
@@ -616,8 +622,8 @@
 			<siga:Table 
 				   name="tablaResultados"
 				   border="1"
-				   columnNames="facturacion.devolucionManual.seleccion,facturacion.ficheroBancarioAbonos.literal.banco,censo.consultaDatosBancarios.literal.cuentaBancaria,Facturacion.bancos.comisionPropia,Facturacion.bancos.comisionAjena,facturacion.cuentasBancarias.uso"
-				   columnSizes="5,46,25,8,8,8"
+				   columnNames="facturacion.devolucionManual.seleccion,facturacion.ficheroBancarioAbonos.literal.banco,censo.consultaDatosBancarios.literal.cuentaBancaria,facturacion.sufijos.literal.sufijo,Facturacion.bancos.comisionPropia,Facturacion.bancos.comisionAjena,facturacion.cuentasBancarias.uso"
+				   columnSizes="5,32,18,21,8,8,8"
 				   modal="P">
 				   				   
 				<%
@@ -642,6 +648,9 @@
 	            			bsel=true;
 	            		}
 	            		
+	            		
+	            		String idComboSuf= "comboSufijos_" + row.getString("BANCOS_CODIGO");
+	            		String idsufijoBancoIni=row.getString("IDSUFIJO");
 					%>
 	            		
 						<siga:FilaConIconos
@@ -659,13 +668,24 @@
 								<input type="hidden" id="oculto<%=String.valueOf(recordNumber)%>_1" name="oculto<%=String.valueOf(recordNumber)%>_1" value="<%=row.getString("IDINSTITUCION")%>">
 								<input type="hidden" id="oculto<%=String.valueOf(recordNumber)%>_2" name="oculto<%=String.valueOf(recordNumber)%>_2" value="<%=row.getString("COD_BANCO")%>">
 								<input type="hidden" id="oculto<%=String.valueOf(recordNumber)%>_3" name="oculto<%=String.valueOf(recordNumber)%>_3" value="<%=row.getString("IDSERIEFACTURACION")%>">
-								<input type="checkbox" value="<%=row.getString("BANCOS_CODIGO")%>" name="chk" <%=(accion.equals("nuevo") || bsel)?"checked":"" %> <%=(accion.equals("ver"))?"disabled":"" %> >
+								<input type="checkbox" value="<%=row.getString("BANCOS_CODIGO")%>"  id="oculto<%=String.valueOf(recordNumber)%>_4" name="chk" <%=(accion.equals("nuevo") || bsel)?"checked":"" %> <%=(accion.equals("ver"))?"disabled":"" %> >
 							</td>  	
 							<td>
 								<%=UtilidadesString.mostrarDatoJSP(row.getString("BANCO"))%>							
 							</td>  	
 							<td align="right">
 								<%=UtilidadesString.mostrarIBANConAsteriscos(row.getString("IBAN"))%>							
+							</td>  	
+							<td align="right">
+							<bean:define id="listaSufijos" name="listaSufijos" scope="request"/>
+								<html:select styleId="<%=idComboSuf%>" name = "comboSufijos" property="idSufijo" value="<%=idsufijoBancoIni%>" styleClass="boxCombo" disabled="<%=combodeshabilitado%>" style="width:200px;">
+								<% if (idsufijoBancoIni.equals("")){ %>
+									<html:option value=""><c:out value=""/></html:option>
+								<% }%>
+								<c:forEach items="${listaSufijos}" var="sufijoSerieCmb">											
+									<html:option value="${sufijoSerieCmb.idSufijo}"><c:out value="${sufijoSerieCmb.sufijo.trim().length()>0?sufijoSerieCmb.sufijo:'    '} ${sufijoSerieCmb.concepto}"/></html:option>
+								</c:forEach>
+								</html:select>							
 							</td>  	
 							<td align="right">
 								<%=row.getString("COMISIONPROPIA")%>							

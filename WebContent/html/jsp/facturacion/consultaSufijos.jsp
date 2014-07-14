@@ -71,6 +71,7 @@
 							 if (sufijoBean != null){ 
 
 									Integer idInstitucion = sufijoBean.getIdInstitucion();
+									Integer idSufijo = sufijoBean.getIdSufijo();
 									String sufijo = sufijoBean.getSufijo();
 									String concepto = sufijoBean.getConcepto();
    	 		%>
@@ -78,6 +79,7 @@
 									<td><!-- Datos ocultos tabla -->
 											<input type="hidden" id="oculto<%=String.valueOf(i)%>_1" value="<%=idInstitucion.toString()%>">
 											<input type="hidden" id="oculto<%=String.valueOf(i)%>_2" value="<%=sufijo%>">
+											<input type="hidden" id="oculto<%=String.valueOf(i)%>_3" value="<%=idSufijo.toString()%>">
 											<%=UtilidadesString.mostrarDatoJSP(sufijo)%>
 									</td>
 									<td><%=UtilidadesString.mostrarDatoJSP(concepto)%></td>

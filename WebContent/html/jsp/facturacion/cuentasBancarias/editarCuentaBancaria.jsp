@@ -20,6 +20,9 @@
 <%@ taglib uri="struts-logic.tld" prefix="logic"%>
 <%@ taglib uri="c.tld" prefix="c"%>
 
+<%@ page import="org.redabogacia.sigaservices.app.autogen.model.FacSeriefacturacion"%>
+<%@ page import="java.util.List"%>
+
 <!-- HEAD -->
 
 <link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
@@ -27,6 +30,11 @@
 <script src="<html:rewrite page='/html/js/calendarJs.jsp'/>" type="text/javascript"></script>
 <script src="<html:rewrite page='/html/jsp/general/validacionSIGA.jsp'/>" type="text/javascript"></script>
 <script src="<html:rewrite page='/html/js/validacionStruts.js'/>" type="text/javascript"></script>
+
+<% 
+	List<FacSeriefacturacion> lista = (List<FacSeriefacturacion>) request.getAttribute("seriesFacturacion");
+%>
+
 <script type="text/javascript">
 	function inicio() {
 		ajustarCabeceraTabla();
@@ -202,10 +210,35 @@
 		}
 	}
 	
+	function habilitarDeshabCombo()
+	{ 
+		if(document.CuentasBancariasForm.modo.value != 'abrir'){
+			
+			if(document.getElementById("sjcs").checked) {
+				document.getElementById("comboSufijossjcs").disabled =false;
+				
+			}else {
+				document.getElementById("comboSufijossjcs").disabled=true;
+				document.getElementById("comboSufijossjcs").value="";
+			}
+			
+			if(document.getElementById("nosjcs").checked) {
+				document.getElementById("comboSufijos").disabled =false;
+				
+			}else {
+				document.getElementById("comboSufijos").disabled=true;
+				document.getElementById("comboSufijos").value="";
+			}
+		}else{
+			document.getElementById("comboSufijossjcs").disabled=true;
+			document.getElementById("comboSufijos").disabled=true;
+			
+		}
+	}
 	</script>
 </head>
 
-<body onload="inicio();inicioCargarBancoBIC();">
+<body onload="inicio();inicioCargarBancoBIC();habilitarDeshabCombo();">
 
 <table class="tablaTitulo" cellspacing="0" heigth="32">
 	<tr>
@@ -229,6 +262,7 @@
 		<html:hidden property="sucursalBanco" value ="${CuentasBancariasForm.sucursalBanco}"/>
 		<html:hidden property="cuentaBanco" value ="${CuentasBancariasForm.cuentaBanco}"/>
 		<html:hidden property="digControlBanco" value ="${CuentasBancariasForm.digControlBanco}"/>
+		<html:hidden property="listaSeries"/>
 	</c:if>
 	
 	<c:set var="disabledFecha" value="false" />
@@ -245,9 +279,6 @@
 				<td class="labelText" nowrap><siga:Idioma key="censo.datosCuentaBancaria.literal.codigoBIC"/>&nbsp;</td>
 				<td class="labelText"><html:text size="14"  maxlength="11" name="CuentasBancariasForm" styleId="BIC" property="BIC" styleClass="boxConsulta" readonly="true" onblur="rpad();" ></html:text></td>
 				
-				<td class="labelText"><bean:message key="facturacion.cuentasBancarias.sjcs" /> </td>
-				<td align="left"><html:checkbox name="CuentasBancariasForm" property="sjcs" value="1" ></html:checkbox></td>
-				
 				<c:if test="${CuentasBancariasForm.modo != 'insertar'}">	
 					<td class="labelText"><bean:message key="facturacion.cuentasBancarias.baja" /> </td>
 					<td><siga:Fecha nombreCampo="fechaBaja" valorInicial="${CuentasBancariasForm.fechaBaja}" disabled="${disabledFecha}" readonly="${disabledFecha}"/></td>		
@@ -263,11 +294,13 @@
 			</tr>
 						
 		<tr>
-			<td class="labelText"><bean:message key="facturacion.cuentasBancarias.asientoContable" /> </td>
+			<td class="labelText"><bean:message key="facturacion.cuentasBancarias.asientoContable" /></td> 
 			<td><html:text styleId="asientoContable" property="asientoContable"	name ="CuentasBancariasForm"	size="20" maxlength="20" styleClass="box" /></td>
-			<td class="labelText"><bean:message key="facturacion.cuentasBancarias.cuentaContableTarjeta" /> </td>
+			<td class="labelText"><bean:message key="facturacion.cuentasBancarias.cuentaContableTarjeta" /> </td> 
 			<td><html:text styleId="cuentaContableTarjeta" property="cuentaContableTarjeta"	name ="CuentasBancariasForm"	size="20" maxlength="20" styleClass="box" /></td>
-	
+			<td class="labelText"><bean:message key="general.code" /> </td> 
+			<td><html:text styleId="codigo" property="idCuentaBancaria"	name ="CuentasBancariasForm" size="20" maxlength="20" styleClass="boxConsulta" readonly="true"; /></td>
+			
 		</tr>
 		<c:if test="${CuentasBancariasForm.modo != 'insertar' && CuentasBancariasForm.cuentaBanco != null &&  CuentasBancariasForm.cuentaBanco != ''}">	
 			<!-- FILA -->
@@ -308,6 +341,38 @@
 				</table>
 			</siga:ConjCampos>
 		</td></tr>	
+		<tr>
+		<td COLSPAN="8">
+			<siga:ConjCampos leyenda="Uso de Cuenta">
+			<table align="center" width="100%">
+				<td class="labelText"><bean:message key="facturacion.cuentasBancarias.uso.sjcs" /> 
+				<html:checkbox name="CuentasBancariasForm" id = "sjcs" property="sjcs" value="1" onclick="habilitarDeshabCombo()"></html:checkbox></td>
+				<td> 
+					<html:select styleId="comboSufijossjcs" property="idSufijosjcs" value="${CuentasBancariasForm.idSufijosjcs}" styleClass="boxCombo" style="width:100px;">
+					<s:if test="${empty CuentasBancariasForm.idSufijosjcs}">
+						<html:option value=""><c:out value=""/></html:option>
+					</s:if>
+					<c:forEach items="${listaSufijos}" var="sufijoCmb">
+						<html:option value="${sufijoCmb.idSufijo}"><c:out value="${sufijoCmb.sufijo.trim().length()>0?sufijoCmb.sufijo:'	'} ${sufijoCmb.concepto}"/></html:option>
+					</c:forEach>
+					</html:select>	
+				</td> 	
+				<td class="labelText"><bean:message key="facturacion.cuentasBancarias.uso.no.sjcs" /> 
+				<html:checkbox name="CuentasBancariasForm" id = "nosjcs" property="nosjcs" value="1" onclick="habilitarDeshabCombo()"></html:checkbox></td>
+				<td> 
+					<html:select styleId="comboSufijos" property="idSufijo" value="${CuentasBancariasForm.idSufijo}" styleClass="boxCombo" style="width:100px;">
+					<s:if test="${empty CuentasBancariasForm.idSufijo}">
+						<html:option value=""><c:out value=""/></html:option>
+					</s:if>
+					<c:forEach items="${listaSufijos}" var="sufijoCmb">
+						<html:option value="${sufijoCmb.idSufijo}"><c:out value="${sufijoCmb.sufijo.trim().length()>0?sufijoCmb.sufijo:'	'} ${sufijoCmb.concepto}"/></html:option>
+					</c:forEach>
+					</html:select>	
+				</td> 		
+			</table>
+			</siga:ConjCampos>
+			</td>
+		</tr>
 	</table>
 	
 		<c:if test="${CuentasBancariasForm.modo!='insertar'}">
@@ -316,19 +381,16 @@
 					<siga:Table 
 						name="listado" 
 						border="1" 
-						columnNames="Serie,Descripción" 
-						columnSizes="50,50">
-	
+						columnNames="Serie,Descripción,Sufijo" 
+						columnSizes="29,50,21">
 					<c:choose>
 		   				<c:when test="${empty seriesFacturacion}">
 			   				<tr class="notFound">
 				   				<td class="titulitos"><siga:Idioma key="messages.noRecordFound"/></td>
 							</tr>	 		
-				 			
 			   			</c:when>
 			   			<c:otherwise>
-				   			
-							<c:forEach items="${seriesFacturacion}" var="serieFacturacion" varStatus="status">									
+							<c:forEach items="${seriesFacturacion}" var="serieFacturacion" varStatus="status">															
 								<siga:FilaConIconos	fila='${status.count}'				    
 						  			pintarEspacio="no"
 						  			botones=""
@@ -336,11 +398,26 @@
 						  			visibleEdicion="N"
 						  			visibleConsulta="N"
 						  			clase="listaNonEdit">
-										<td align='left'><c:out	value="${serieFacturacion.nombreabreviado}" /></td>
-										<td align='left' style="white-space: pre-line;"><c:out value="${serieFacturacion.descripcion}" /></td>
+										<td align='left'>
+											<input type="hidden" name="idseriefacturacion_${status.count}" id="idseriefacturacion_${status.count}" value="${serieFacturacion.idseriefacturacion}">
+											<input type="hidden" name="bancos_codigo_${status.count}" id="bancos_codigo_${status.count}" value="${serieFacturacion.bancos_codigo}">
+											<c:out	value="${serieFacturacion.nombreabreviado}" />
+										</td>
+										<td align='left'>
+											<c:out value="${serieFacturacion.descripcion}" />
+										</td>
+										<td align='left'>	
+											<html:select styleId="comboSufijosSerie_${status.count}" property="idSufijoSerie" value="${serieFacturacion.idsufijo}" styleClass="boxCombo" style="width:200px;">
+												<s:if test="${empty serieFacturacion.idsufijo}">
+													<html:option value=""><c:out value=""/></html:option>
+												</s:if>
+												<c:forEach items="${listaSufijos}" var="sufijoSerieCmb">											
+													<html:option value="${sufijoSerieCmb.idSufijo}"><c:out value="${sufijoSerieCmb.sufijo.trim().length()>0?sufijoSerieCmb.sufijo:'	'} ${sufijoSerieCmb.concepto}"/></html:option>
+												</c:forEach>
+											</html:select>	
+										</td>
 								</siga:FilaConIconos>
 							</c:forEach>
-							
 						</c:otherwise>
 					</c:choose>
 	
@@ -366,7 +443,7 @@
 	
 	function accionGuardarCerrar() {
 		sub();
-		
+
 		//Se quita la mascara al guardar 
 		document.CuentasBancariasForm.IBAN.value = formateaMask(document.getElementById("IBAN").value);
 		
@@ -374,7 +451,7 @@
 			iban = document.CuentasBancariasForm.IBAN.value;
 			bic = document.CuentasBancariasForm.BIC.value;
 			banco = document.CuentasBancariasForm.bancoNombre.value;
-			
+
 			//SE VALIDA SI SE HA INTODUCIDO IBAN Y BIC
 			if (iban == ""  && bic == ""){ 
 				mensaje = "<siga:Idioma key='messages.censo.cuentasBancarias.errorCuentaBancaria'/>";
@@ -387,10 +464,63 @@
 				fin();
 				return false;
 			}
+
+		}else{
+			
 		}
 		
 		if(validateCuentasBancariasForm(document.CuentasBancariasForm)){
+			
+			//Si está marcado el check de SJCS tiene que asignarse un sufijo
+			if(document.getElementById("sjcs").checked) {
+				
+				if(document.CuentasBancariasForm.idSufijosjcs.value<1) {
+					mensaje = "<siga:Idioma key='facturacion.sufijos.message.errorCuentaBancariaSufijoSJCS'/>";
+					alert(mensaje);
+					fin();
+					return false;
+				}
+					
+					
+			}
+			
+			
+			//Si está marcado el check de no SJCS tiene que asignarse un sufijo
+			if(document.getElementById("nosjcs").checked) {
+				
+				if(document.CuentasBancariasForm.idSufijo.value<1) {
+					mensaje = "<siga:Idioma key='facturacion.sufijos.message.errorCuentaBancariaSufijoNOSJCS'/>";
+					alert(mensaje);
+					fin();
+					return false;
+				}
+					
+					
+			}
+			
+			//Se pasan los valores del idserie y el sufijo de las series de la tabla para actualizar el sufijo en bbdd
+<%
+			if (lista!=null) {
+%>			
+
+				var contadorLista = <%=lista.size()%>;
+				var datos = "";
+				
+				for(i=1; i<=contadorLista; i++) {
+					var datosFila = jQuery("#comboSufijosSerie_" + i);				
+					var datosSerie = jQuery("#idseriefacturacion_" + i);
+					var datosBanco = jQuery("#bancos_codigo_" + i);
+
+						datos = datos + datosSerie.val() + "," + datosBanco.val()+","+ datosFila.val() + ";" ;														
+				}
+				
+				document.CuentasBancariasForm.listaSeries.value=datos;
+<% 
+			}
+%>			
+				
 			document.CuentasBancariasForm.submit();
+	
 		}else{
 			fin();
 			return false; 
@@ -412,14 +542,14 @@
 	
 	function ajustarCabeceraTabla(){
 		if(document.getElementById("seriesFacturacion")){
-			if (document.getElementById("seriesFacturacion").clientHeight < document.getElementById("divListadoSeriesFacturacion").clientHeight) {
+			if (document.getElementById("seriesFacturacion").clientHeight < document.getElementById("divListadoSeriesFacturacion").clientHeight) 
+			{
 				document.getElementById("tabCuentasBancarias").width='100%';				   
-			  } else {
+			} else {
 				  document.getElementById("tabCuentasBancarias").width='98.43%';				   
 			  }
 		}
 	}
-	
 </script>
 
 </body>

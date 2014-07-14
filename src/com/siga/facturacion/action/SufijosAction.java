@@ -42,8 +42,14 @@ public class SufijosAction extends MasterAction {
 			UsrBean user=(UsrBean)request.getSession().getAttribute("USRBEAN");	
 			
 			FacSufijoAdm sufijoAdm = new FacSufijoAdm (this.getUserBean(request));
-			Vector Vsufijos = sufijoAdm.consultaBusqueda(user.getLocation(),miForm.getSufijo(), miForm.getConcepto());
-
+			Vector Vsufijos;
+			
+			//Pasamos el campo idSufijo porque es clave y por si estamos buscando un sufijo con espacios para que lo encuentre
+			if(miForm.getIdSufijo()!=null)
+				Vsufijos = sufijoAdm.consultaBusqueda(user.getLocation(),miForm.getIdSufijo().toString(),miForm.getSufijo(), miForm.getConcepto());
+			else
+				Vsufijos = sufijoAdm.consultaBusqueda(user.getLocation(),null,miForm.getSufijo(), miForm.getConcepto());
+			
 			request.setAttribute("Vsufijos", Vsufijos);
 		} 
 		catch (Exception e) { 
@@ -66,13 +72,12 @@ public class SufijosAction extends MasterAction {
 		try {
 			SufijosForm miForm = (SufijosForm) formulario;
 			UsrBean user=(UsrBean)request.getSession().getAttribute("USRBEAN");
-			
-			String sufijo = (String)miForm.getDatosTablaOcultos(0).get(1);
+			String idSufijo = (String)miForm.getDatosTablaOcultos(0).get(2).toString();
 			
 			FacSufijoAdm sufijoAdm = new FacSufijoAdm (this.getUserBean(request));
 			Hashtable claves = new Hashtable ();
 			UtilidadesHash.set (claves, FacSufijoBean.C_IDINSTITUCION, user.getLocation());
-			UtilidadesHash.set (claves, FacSufijoBean.C_SUFIJO, sufijo);
+			UtilidadesHash.set (claves, FacSufijoBean.C_IDSUFIJO, idSufijo);
 						
 			Vector Vsufijos = sufijoAdm.select(claves);
 			if (Vsufijos.size() == 1) {
@@ -152,15 +157,9 @@ public class SufijosAction extends MasterAction {
 			String checkBox = ClsConstants.DB_FALSE;
 			if (miForm.getDefecto()!=null && miForm.getDefecto().equals(ClsConstants.DB_TRUE)){
 				// Comprobamos que para la institucion en la que nos encontramos no existe ya un sufijo distinto del seleccionado con el check de conceptos varios activado
-				//Para los sufijos que solamente son espacios
-				if(miForm.getSufijo().equalsIgnoreCase(""))
-					where=" WHERE "+FacSufijoBean.C_IDINSTITUCION+"="+(String)user.getLocation()+
-				      " AND "+FacSufijoBean.C_DEFECTO+"='"+ClsConstants.DB_TRUE+"'"+
-				      " AND "+FacSufijoBean.C_SUFIJO+"<>'   '";
-				else
-					where=" WHERE "+FacSufijoBean.C_IDINSTITUCION+"="+(String)user.getLocation()+
-				      " AND "+FacSufijoBean.C_DEFECTO+"='"+ClsConstants.DB_TRUE+"'"+
-					  " AND "+FacSufijoBean.C_SUFIJO+"<>'"+miForm.getSufijo()+"'";
+				where=" WHERE "+FacSufijoBean.C_IDINSTITUCION+"="+(String)user.getLocation()+
+			      " AND "+FacSufijoBean.C_DEFECTO+"='"+ClsConstants.DB_TRUE+"'"+
+				  " AND "+FacSufijoBean.C_IDSUFIJO+"<>"+(String)miForm.getIdSufijo().toString();
 					  
 				Vector existeCheckDefecto=sufijoAdm.select(where);
 				if (existeCheckDefecto.size()>0){
@@ -228,11 +227,14 @@ public class SufijosAction extends MasterAction {
 			sufijoBean.setSufijo(miForm.getSufijo());
 			sufijoBean.setConcepto(miForm.getConcepto());
 			sufijoBean.setIdInstitucion(new Integer(user.getLocation()));
+			
+			//Se crea el nuevo idSufijo, si la institución no tiene ninguno será idSufijo=1
+			sufijoBean.setIdSufijo(sufijoAdm.idSufijoMaxInstitucion(sufijoBean.getIdInstitucion()));
+			
 			//CHECKBOX:
 			String checkBox = ClsConstants.DB_FALSE;
 			if (miForm.getDefecto()!=null && miForm.getDefecto().equals(ClsConstants.DB_TRUE)){
-				// Comprobamos que para la institucion en la que nos encontramos no existe ya un sufijo creado con el check de conceptos varios activado
-				
+				// Comprobamos que para la institucion en la que nos encontramos no existe ya un sufijo creado con el check de Por defecto activado
 				Hashtable datosConcepto=new Hashtable();
 				datosConcepto.put(FacSufijoBean.C_IDINSTITUCION,(String)user.getLocation());
 				datosConcepto.put(FacSufijoBean.C_DEFECTO,ClsConstants.DB_TRUE);
@@ -291,26 +293,16 @@ public class SufijosAction extends MasterAction {
 
 			UsrBean user=(UsrBean)request.getSession().getAttribute("USRBEAN");
 			
-			String sufijo 	= (String)miForm.getDatosTablaOcultos(0).get(1);
-			
+			String idSufijo = (String)miForm.getDatosTablaOcultos(0).get(2).toString();
 			FacSufijoAdm sufijoAdm = new FacSufijoAdm (this.getUserBean(request));
 
-			//Se permiten sufijos con tres blancos
-			if(sufijo.equalsIgnoreCase("")){
-				tx.begin();
-				String sqlDirect = " DELETE FAC_SUFIJO WHERE IDINSTITUCION = "+user.getLocation()+" AND SUFIJO= '   '";
-				sufijoAdm.deleteSQL(sqlDirect);
-				tx.commit();
-			}	
-			else
-			{
-				Hashtable claves = new Hashtable ();
-				UtilidadesHash.set (claves, FacSufijoBean.C_IDINSTITUCION, user.getLocation());
-				UtilidadesHash.set (claves, FacSufijoBean.C_SUFIJO, sufijo);
-				tx.begin();
-				sufijoAdm.delete(claves);
-				tx.commit();
-			}
+			Hashtable claves = new Hashtable ();
+			UtilidadesHash.set (claves, FacSufijoBean.C_IDINSTITUCION, user.getLocation());
+			UtilidadesHash.set (claves, FacSufijoBean.C_IDSUFIJO, idSufijo);
+			tx.begin();
+			sufijoAdm.delete(claves);
+			tx.commit();
+			
 		}
 		catch (Exception e) { 
 			throwExcp("messages.pys.mantenimientoProductos.errorBorrado", new SIGAException("messages.pys.mantenimientoProductos.errorBorrado"), tx); 

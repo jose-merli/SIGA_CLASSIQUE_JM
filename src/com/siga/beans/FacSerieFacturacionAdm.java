@@ -283,7 +283,7 @@ public class FacSerieFacturacionAdm extends MasterBeanAdministrador {
 			Vector v = admBancos.obtenerSerieFacturacionBanco(idInstitucion,general.getIdSerieFacturacion().toString());
 			for (int i=0;v!=null && i<v.size();i++) {
 			    Row h3 = (Row) v.get(i);
-                admBancos.insertaBancosSerieFacturacion(general.getIdInstitucion().toString(),nuevoId,h3.getString("BANCOS_CODIGO"));
+                admBancos.insertaBancosSerieFacturacion(general.getIdInstitucion().toString(),nuevoId,h3.getString("BANCOS_CODIGO"),null);
             }
 
 			
@@ -337,7 +337,7 @@ public class FacSerieFacturacionAdm extends MasterBeanAdministrador {
 			Vector v = admBancos.obtenerSerieFacturacionBanco(beanSerie.getIdInstitucion().toString(),beanSerie.getIdSerieFacturacion().toString());
 			for (int i=0;v!=null && i<v.size();i++) {
 			    Row h3 = (Row) v.get(i);
-                admBancos.insertaBancosSerieFacturacion(beanSerie.getIdInstitucion().toString(),nuevoId,h3.getString("BANCOS_CODIGO"));
+                admBancos.insertaBancosSerieFacturacion(beanSerie.getIdInstitucion().toString(),nuevoId,h3.getString("BANCOS_CODIGO"),null);
             }
 
 			

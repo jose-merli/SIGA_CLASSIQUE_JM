@@ -39,7 +39,7 @@
 			accion = "insertar";
 		//MODO EDITAR / CONSULTAR:
 		} else {
-			claseSufijo="boxconsulta";
+			claseSufijo="boxConsulta";
 			lecturaSufijo = true;
 			//MODO CONSULTAR O VER
 			if (modo.equalsIgnoreCase("ver")) {
@@ -152,7 +152,7 @@
 									<siga:Idioma key="facturacion.sufijos.literal.sufijo"/>&nbsp;(*)
 								</td>
 								<td class="labelText">
-									<html:text name="sufijosForm" property="sufijo" size="3" maxlength="3" onkeypress="return soloDigitosEspacios(event);" styleClass="<%=claseSufijo%>" readonly="<%=lecturaSufijo%>" value="<%=sufijo%>"/>
+									<html:text name="sufijosForm" property="sufijo" size="3" maxlength="3" styleClass="<%=claseSufijo%>" readonly="<%=lecturaSufijo%>" value="<%=sufijo%>" onkeypress="return soloDigitosEspacios(event);"/>
 								</td>
 							</tr>
 							<tr>

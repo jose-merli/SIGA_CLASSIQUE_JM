@@ -1,7 +1,9 @@
 package com.siga.facturacion.action;
 
 import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.List;
+import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -15,14 +17,18 @@ import org.redabogacia.sigaservices.app.autogen.model.CenBancos;
 import org.redabogacia.sigaservices.app.services.fac.CuentasBancariasService;
 import org.redabogacia.sigaservices.app.vo.BancoVo;
 import org.redabogacia.sigaservices.app.vo.fac.CuentaBancariaVo;
+import org.redabogacia.sigaservices.app.vo.fac.SeriesCuentaBancariaVo;
 
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.UsrBean;
+import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.beans.CenBancosAdm;
 import com.siga.beans.CenBancosBean;
 import com.siga.beans.CenPaisAdm;
 import com.siga.beans.CenPaisBean;
+import com.siga.beans.FacSufijoAdm;
+import com.siga.beans.FacSufijoBean;
 import com.siga.comun.VoUiService;
 import com.siga.facturacion.form.CuentasBancariasForm;
 import com.siga.facturacion.form.service.CuentaBancariaVoService;
@@ -168,7 +174,21 @@ public class GestionCuentasBancariasAction extends MasterAction {
 //			List<CenBancos> bancosList = (ArrayList<CenBancos>)cuentasBancariasService.getBancos( new BancoVo());
 //			request.setAttribute("listaBancos", bancosList);
 		cuentasBancariasForm.setModo("insertar");
+		//Combo sufijos
+		FacSufijoAdm sufijoAdm = new FacSufijoAdm (this.getUserBean(request));
+		Hashtable claves = new Hashtable ();
+		UtilidadesHash.set (claves, FacSufijoBean.C_IDINSTITUCION, cuentasBancariasForm.getIdInstitucion());
+		
+		Vector vsufijos = sufijoAdm.select(claves);
+		Vector vsufijosList = new Vector();
+		List <FacSufijoBean> sufijosListFinal= new ArrayList<FacSufijoBean>();
+		for (int vs = 0; vs < vsufijos.size(); vs++){
 			
+			FacSufijoBean sufijosBean = (FacSufijoBean) vsufijos.get(vs);
+			sufijosListFinal.add(sufijosBean);
+		}
+
+		request.setAttribute("listaSufijos", sufijosListFinal);
 		
 		return "editar";
 	}
@@ -190,6 +210,23 @@ public class GestionCuentasBancariasAction extends MasterAction {
 			cuentasBancariasForm.setIBAN(UtilidadesString.mostrarIBANConAsteriscos(cuentaBancariaVo.getIban()));
 			cuentasBancariasForm.setCuentaBanco(UtilidadesString.mostrarNumeroCuentaConAsteriscos(cuentaBancariaVo.getNumerocuenta()));
 			cuentasBancariasForm.setDigControlBanco("**");
+
+			//Combos sufijos
+			FacSufijoAdm sufijoAdm = new FacSufijoAdm (this.getUserBean(request));
+			Hashtable claves = new Hashtable ();
+			UtilidadesHash.set (claves, FacSufijoBean.C_IDINSTITUCION, cuentasBancariasForm.getIdInstitucion());
+			
+			Vector vsufijos = sufijoAdm.select(claves);
+			Vector vsufijosList = new Vector();
+			List <FacSufijoBean> sufijosListFinal= new ArrayList<FacSufijoBean>();
+			for (int vs = 0; vs < vsufijos.size(); vs++){
+				
+				FacSufijoBean sufijosBean = (FacSufijoBean) vsufijos.get(vs);
+				sufijosListFinal.add(sufijosBean);
+			}
+
+			request.setAttribute("listaSufijos", sufijosListFinal);
+			
 			cuentasBancariasForm.setModo("abrir");
 			request.setAttribute("CuentasBancariasForm", cuentasBancariasForm);
 			
@@ -220,6 +257,22 @@ public class GestionCuentasBancariasAction extends MasterAction {
 			cuentasBancariasForm.setModo("modificar");
 			request.setAttribute("seriesFacturacion", cuentasBancariasService.getSeriesCuentaBancaria(cuentaBancariaVo));
 			request.setAttribute("CuentasBancariasForm", cuentasBancariasForm);
+			
+			//Combo sufijos
+			FacSufijoAdm sufijoAdm = new FacSufijoAdm (this.getUserBean(request));
+			Hashtable claves = new Hashtable ();
+			UtilidadesHash.set (claves, FacSufijoBean.C_IDINSTITUCION, cuentasBancariasForm.getIdInstitucion());
+			
+			Vector vsufijos = sufijoAdm.select(claves);
+			Vector vsufijosList = new Vector();
+			List <FacSufijoBean> sufijosListFinal= new ArrayList<FacSufijoBean>();
+			for (int vs = 0; vs < vsufijos.size(); vs++){
+				
+				FacSufijoBean sufijosBean = (FacSufijoBean) vsufijos.get(vs);
+				sufijosListFinal.add(sufijosBean);
+			}
+
+			request.setAttribute("listaSufijos", sufijosListFinal);
 			
 		}catch (Exception e){
 			throwExcp("messages.general.errorExcepcion", e, null); 			
@@ -307,7 +360,7 @@ public class GestionCuentasBancariasAction extends MasterAction {
 			HttpServletRequest request, 
 			HttpServletResponse response) throws ClsExceptions, SIGAException 
 			{
-		CuentasBancariasForm cuentasBancariasForm = (CuentasBancariasForm) formulario;
+		CuentasBancariasForm cuentasBancariasForm = (CuentasBancariasForm) formulario;	
 		UsrBean usrBean = this.getUserBean(request);
 		String forward="exception";
 		
@@ -318,6 +371,48 @@ public class GestionCuentasBancariasAction extends MasterAction {
 			CuentaBancariaVo cuentaBancariaVo =  voService.getForm2Vo(cuentasBancariasForm);
 			cuentaBancariaVo.setUsumodificacion(new Integer(usrBean.getUserName()));
 			cuentasBancariasService.update(cuentaBancariaVo);
+			
+			//Modificacion del idsufijo de la serie en fac_seriefacturacion_banco
+			//listaseries tiene el formato: idserie,idsufijo;idserie,idsufijo;...;
+			SeriesCuentaBancariaVo serieBancariaVo = new SeriesCuentaBancariaVo();
+			serieBancariaVo.setUsumodificacion(new Integer(usrBean.getUserName()));
+			serieBancariaVo.setIdinstitucion((short) Integer.parseInt(cuentasBancariasForm.getIdInstitucion()));
+			
+			String listaseries=cuentasBancariasForm.getListaSeries();
+			
+			int numSeries=0;
+			String puntoComa=";";
+			Integer idserie=0;
+			Integer idsufijo=0;
+			String bancos_codigo;
+			String listaseries_aux=listaseries;
+			
+			while (listaseries_aux.indexOf(puntoComa) > -1) {
+		      listaseries_aux = listaseries_aux.substring(listaseries_aux.indexOf(puntoComa)+puntoComa.length(),listaseries_aux.length());
+		      numSeries++;  
+			}
+			
+			for(int s=0;s<numSeries;s++){
+				
+				String datosSerie= listaseries.split(";")[s];
+				
+				idserie = Integer.parseInt(datosSerie.split(",")[0]);
+				bancos_codigo = datosSerie.split(",")[1];
+				
+				//Si la serie no tiene ningún sufijo asociado
+				if(datosSerie.endsWith(","))
+					idsufijo=0;
+				else
+					idsufijo = Integer.parseInt(datosSerie.split(",")[2]);
+				
+				//Se actualiza el idsufijo de la serie asociada a la cuenta bancaria
+				serieBancariaVo.setBancos_codigo(bancos_codigo);
+				serieBancariaVo.setIdseriefacturacion(idserie.longValue());
+				serieBancariaVo.setIdsufijo(idsufijo);
+
+				cuentasBancariasService.updateSufijoSerieCuentaBancaria(serieBancariaVo);
+			}	
+			
 			forward = exitoModal("messages.updated.success",request);
 			
 			

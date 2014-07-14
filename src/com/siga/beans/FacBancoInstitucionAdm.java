@@ -254,8 +254,9 @@ public class FacBancoInstitucionAdm extends MasterBeanAdministrador {
 						    "BI.COD_BANCO, " +
 						    "(SELECT NOMBRE FROM CEN_BANCOS WHERE CODIGO=BI.COD_BANCO) AS BANCO, "+
 						    "(SELECT COUNT (1) FROM FAC_SERIEFACTURACION_BANCO WHERE IDINSTITUCION=BI.IDINSTITUCION AND BANCOS_CODIGO=BI.BANCOS_CODIGO AND IDSERIEFACTURACION="+idSerieFacturacion+" ) AS SELECCIONADO, "+ 
-						    "(SELECT COUNT (*) FROM FAC_SERIEFACTURACION_BANCO WHERE IDINSTITUCION=BI.IDINSTITUCION AND BANCOS_CODIGO=BI.BANCOS_CODIGO) AS USO "+ 
-							" FROM " + 
+						    "(SELECT COUNT (*) FROM FAC_SERIEFACTURACION_BANCO WHERE IDINSTITUCION=BI.IDINSTITUCION AND BANCOS_CODIGO=BI.BANCOS_CODIGO) AS USO, "+ 
+							"(SELECT NVL(IDSUFIJO,'') FROM FAC_SERIEFACTURACION_BANCO WHERE IDINSTITUCION=BI.IDINSTITUCION AND BANCOS_CODIGO=BI.BANCOS_CODIGO AND IDSERIEFACTURACION="+idSerieFacturacion+" ) AS IDSUFIJO "+ 
+						    " FROM " + 
 							FacBancoInstitucionBean.T_NOMBRETABLA + " BI " +
 	            			" WHERE BI."+ FacBancoInstitucionBean.C_IDINSTITUCION + "=" + idInstitucion +
 	            			" AND BI."+ FacBancoInstitucionBean.C_FECHABAJA + " IS NULL";
@@ -300,8 +301,8 @@ public class FacBancoInstitucionAdm extends MasterBeanAdministrador {
 		this.deleteSQL(sql);
 	}
 	
-	public void insertaBancosSerieFacturacion(String idInstitucion, String idSerieFacturacion, String idBanco) throws ClsExceptions {
-		String sql = "INSERT INTO FAC_SERIEFACTURACION_BANCO (IDINSTITUCION,IDSERIEFACTURACION,BANCOS_CODIGO,USUMODIFICACION,FECHAMODIFICACION) VALUES ("+idInstitucion + ","+idSerieFacturacion+",'"+idBanco+"',"+this.usuModificacion.toString()+",SYSDATE)";
+	public void insertaBancosSerieFacturacion(String idInstitucion, String idSerieFacturacion, String idBanco, String idSufijo) throws ClsExceptions {
+		String sql = "INSERT INTO FAC_SERIEFACTURACION_BANCO (IDINSTITUCION,IDSERIEFACTURACION,BANCOS_CODIGO,USUMODIFICACION,IDSUFIJO,FECHAMODIFICACION) VALUES ("+idInstitucion + ","+idSerieFacturacion+",'"+idBanco+"',"+this.usuModificacion.toString()+","+idSufijo+",SYSDATE)";
 		this.insertSQL(sql);
 	}
 	

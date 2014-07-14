@@ -1,5 +1,8 @@
 package com.siga.facturacion.form;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.siga.general.MasterForm;
 /**
  * 
@@ -65,12 +68,15 @@ public class CuentasBancariasForm extends MasterForm {
 	String impComisionPropiaAbono;
 	String impComisionAjenaCargo;
 	String impComisionAjenaAbono;
-	String sufijo;
 	String fechaBaja;
 	String baja;
 	String asientoContable;
 	String cuentaContableTarjeta;
 	String sjcs;
+	String nosjcs;
+	Integer idSufijo;
+	Integer idSufijosjcs;
+	
 	
 	String bancoNombre;
 	String bancoCuentaDescripcion;
@@ -79,6 +85,11 @@ public class CuentasBancariasForm extends MasterForm {
 	String bancoAjaxOut;
 	String IBAN;
 	String BIC;
+	
+	String listaSeries;
+	
+
+	
 //	FIXME Por prisas no hemos creado Formulario de series de facturacion. Deberia ser una lis de Forms 
 //	List<FacSeriefacturacion> seriesFacturacion;
 	
@@ -132,12 +143,6 @@ public class CuentasBancariasForm extends MasterForm {
 	public void setImpComisionAjenaAbono(String impComisionAjenaAbono) {
 		this.impComisionAjenaAbono = impComisionAjenaAbono;
 	}
-	public String getSufijo() {
-		return sufijo;
-	}
-	public void setSufijo(String sufijo) {
-		this.sufijo = sufijo;
-	}
 	public String getFechaBaja() {
 		return fechaBaja;
 	}
@@ -156,11 +161,29 @@ public class CuentasBancariasForm extends MasterForm {
 	public void setCuentaContableTarjeta(String cuentaContableTarjeta) {
 		this.cuentaContableTarjeta = cuentaContableTarjeta;
 	}
+	public String getNosjcs() {
+		return nosjcs;
+	}
+	public void setNosjcs(String nosjcs) {
+		this.nosjcs = nosjcs;
+	}
 	public String getSjcs() {
 		return sjcs;
 	}
 	public void setSjcs(String sjcs) {
 		this.sjcs = sjcs;
+	}
+	public Integer getIdSufijo() {
+		return idSufijo;
+	}
+	public void setIdSufijo(Integer idSufijo) {
+		this.idSufijo = idSufijo;
+	}
+	public Integer getIdSufijosjcs() {
+		return idSufijosjcs;
+	}
+	public void setIdSufijosjcs(Integer idSufijosjcs) {
+		this.idSufijosjcs = idSufijosjcs;
 	}
 	public String getModo() {
 		return modo;
@@ -254,6 +277,7 @@ public class CuentasBancariasForm extends MasterForm {
 	public void setBancoCuentaDescripcion(String bancoCuentaDescripcion) {
 		this.bancoCuentaDescripcion = bancoCuentaDescripcion;
 	}
+	
 //	public List<FacSeriefacturacion> getSeriesFacturacion() {
 //		return seriesFacturacion;
 //	}
@@ -262,5 +286,11 @@ public class CuentasBancariasForm extends MasterForm {
 //	}
 //	 
 	
+	public String getListaSeries() {
+		return listaSeries;
+	}
+	public void setListaSeries(String listaSeries) {
+		this.listaSeries = listaSeries;
+	}
 
 }

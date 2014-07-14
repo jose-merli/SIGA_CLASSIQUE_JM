@@ -8,7 +8,7 @@ package com.siga.beans;
 public class FacSufijoBean extends MasterBean {
 	
 	/* Variables */
-	private Integer idInstitucion;
+	private Integer idInstitucion, idSufijo;
 	private String 	sufijo=null, concepto=null, defecto=null; 
 					
 	/* Nombre tabla */
@@ -16,6 +16,7 @@ public class FacSufijoBean extends MasterBean {
 	
 	/* Nombre campos de la tabla */
 	static public final String C_IDINSTITUCION 		= "IDINSTITUCION";
+	static public final String C_IDSUFIJO 			= "IDSUFIJO";
 	static public final String C_SUFIJO				= "SUFIJO";
 	static public final String C_CONCEPTO			= "CONCEPTO";
 	static public final String C_DEFECTO			= "DEFECTO";
@@ -37,6 +38,12 @@ public class FacSufijoBean extends MasterBean {
 	}
 	public void setSufijo(String sufijo) {
 		this.sufijo = sufijo;
+	}
+	public Integer getIdSufijo() {
+		return idSufijo;
+	}
+	public void setIdSufijo(Integer idSufijo) {
+		this.idSufijo = idSufijo;
 	}
 	public String getDefecto() {
 		return defecto;

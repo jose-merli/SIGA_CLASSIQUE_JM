@@ -11,6 +11,7 @@ import com.siga.general.MasterForm;
 public class SufijosForm extends MasterForm {
 
 	private String sufijo = null;
+	private Integer idsufijo = null;
 	private String concepto = null;
 	private String defecto = null;
 	
@@ -25,6 +26,12 @@ public class SufijosForm extends MasterForm {
 	}
 	public void setSufijo(String sufijo) {
 		this.sufijo = sufijo;
+	}
+	public Integer getIdSufijo() {
+		return idsufijo;
+	}
+	public void setIdSufijo(Integer idsufijo) {
+		this.idsufijo = idsufijo;
 	}
 	public String getDefecto() {
 		if (this.defecto == null)

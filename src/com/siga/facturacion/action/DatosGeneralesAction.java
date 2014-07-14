@@ -12,12 +12,14 @@ package com.siga.facturacion.action;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.StringTokenizer;
 import java.util.Vector;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.transaction.UserTransaction;
 import org.apache.struts.action.ActionMapping;
+import org.redabogacia.sigaservices.app.vo.fac.SeriesCuentaBancariaVo;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
@@ -27,6 +29,8 @@ import com.siga.Utilidades.UtilidadesHash;
 import com.siga.beans.*;
 import com.siga.general.*;
 import com.siga.facturacion.form.DatosGeneralesForm;
+import com.siga.beans.FacSufijoAdm;
+import com.siga.beans.FacSufijoBean;
 
 public class DatosGeneralesAction extends MasterAction{
 
@@ -119,6 +123,24 @@ public class DatosGeneralesAction extends MasterAction{
 			
 			FacBancoInstitucionAdm admBancoFac = new FacBancoInstitucionAdm(this.getUserBean(request));
 			Vector datosBancos = admBancoFac.obtenerBancosSerieFacturacion(idInstitucion,idSerieFacturacion);
+			
+			//Obtener Combo sufijos
+			FacSufijoAdm sufijoAdm = new FacSufijoAdm (this.getUserBean(request));
+			Hashtable claves = new Hashtable ();
+			UtilidadesHash.set (claves, FacSufijoBean.C_IDINSTITUCION, idInstitucion);
+			
+			Vector vsufijos = sufijoAdm.select(claves);
+			Vector vsufijosList = new Vector();
+			List <FacSufijoBean> sufijosListFinal= new ArrayList<FacSufijoBean>();
+			for (int vs = 0; vs < vsufijos.size(); vs++){
+				
+				FacSufijoBean sufijosBean = (FacSufijoBean) vsufijos.get(vs);
+				sufijosListFinal.add(sufijosBean);
+			}
+	
+			request.setAttribute("listaSufijos", sufijosListFinal);
+			
+			
 			request.setAttribute("bancosInstitucion", datosBancos);
 
 			request.setAttribute("container_S", pagoSec);
@@ -232,13 +254,24 @@ public class DatosGeneralesAction extends MasterAction{
 					// RGG 05/09/2007 Inserto las relaciones con bancos
 					String ids = request.getParameter("ids");
 					FacBancoInstitucionAdm admBancos= new FacBancoInstitucionAdm(this.getUserBean(request));
-
+					String idsufijo;
+					
 					if (ids!=null && !ids.equals("")) {
 						// Inserto los recibidos
 						StringTokenizer st = new StringTokenizer(ids,"%");
 						while (st.hasMoreElements()) {
-							String idBanco = (String)st.nextElement();
-							admBancos.insertaBancosSerieFacturacion(idInstitucion, idSerieFacturacion.toString(),idBanco);
+							
+							String idBancoConSuf = (String)st.nextElement();
+							
+							String idBanco =idBancoConSuf.split(",")[0];
+										
+							//Si la serie no tiene ningún sufijo asociado
+							if(idBancoConSuf.endsWith(","))
+								idsufijo=null;
+							else
+								idsufijo = idBancoConSuf.split(",")[1];
+							
+							admBancos.insertaBancosSerieFacturacion(idInstitucion, idSerieFacturacion.toString(),idBanco,idsufijo);
 						}
 					}
 
@@ -479,13 +512,24 @@ public class DatosGeneralesAction extends MasterAction{
 
 					// borro los que hubiera (Modificacion)
 					admBancos.borrarBancosSerieFacturacion(idInstitucion, idSerieFacturacion.toString());
+					String idsufijo;
 					
 					if (ids!=null && !ids.equals("")) {
 						// Inserto los recibidos
 						StringTokenizer st = new StringTokenizer(ids,"%");
 						while (st.hasMoreElements()) {
-							String idBanco = (String)st.nextElement();
-							admBancos.insertaBancosSerieFacturacion(idInstitucion, idSerieFacturacion.toString(),idBanco);
+							
+							String idBancoConSuf = (String)st.nextElement();
+							
+							String idBanco =idBancoConSuf.split(",")[0];
+										
+							//Si la serie no tiene ningún sufijo asociado
+							if(idBancoConSuf.endsWith(","))
+								idsufijo=null;
+							else
+								idsufijo = idBancoConSuf.split(",")[1];
+
+							admBancos.insertaBancosSerieFacturacion(idInstitucion, idSerieFacturacion.toString(),idBanco,idsufijo);
 						}
 					}
 					
