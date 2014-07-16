@@ -17,11 +17,13 @@ import org.redabogacia.sigaservices.app.AppConstants;
 import org.redabogacia.sigaservices.app.AppConstants.ECOM_CEN_MAESESTADOCOLEGIAL;
 import org.redabogacia.sigaservices.app.AppConstants.ECOM_CEN_MAESTRO_INCIDENCIAS;
 import org.redabogacia.sigaservices.app.autogen.model.CenPais;
+import org.redabogacia.sigaservices.app.autogen.model.CenPoblaciones;
 import org.redabogacia.sigaservices.app.autogen.model.EcomCenColegiado;
 import org.redabogacia.sigaservices.app.autogen.model.EcomCenDatos;
 import org.redabogacia.sigaservices.app.autogen.model.EcomCenDireccion;
 import org.redabogacia.sigaservices.app.autogen.model.EcomCenMaestroIncidenc;
 import org.redabogacia.sigaservices.app.services.cen.CenPaisService;
+import org.redabogacia.sigaservices.app.services.cen.CenPoblacionService;
 import org.redabogacia.sigaservices.app.services.cen.CenWSService;
 import org.redabogacia.sigaservices.app.services.cen.ws.EcomCenColegiadoService;
 
@@ -205,7 +207,18 @@ public class EdicionColegiadoAction extends MasterAction {
 			ecomCenDireccion.setCodigopaisextranj(codigoPaisExt);
 			
 			ecomCenDireccion.setCodigoprovincia(edicionColegiadoForm.getCodigoprovincia());
-			ecomCenDireccion.setCodigopoblacion(edicionColegiadoForm.getCodigopoblacion());
+			
+			if (edicionColegiadoForm.getCodigopoblacion() != null && !edicionColegiadoForm.getCodigopoblacion().trim().equals("")) {
+				//tenemos el idpoblacion y tenemos que encontrar el codigo externo
+				CenPoblacionService cenPoblacionService = (CenPoblacionService) BusinessManager.getInstance().getService(CenPoblacionService.class);
+				CenPoblaciones cenPoblaciones = new CenPoblaciones();
+				cenPoblaciones.setIdpoblacion(edicionColegiadoForm.getCodigopoblacion());
+				cenPoblaciones = cenPoblacionService.get(cenPoblaciones);
+				if (cenPoblaciones != null && cenPoblaciones.getCodigoext() != null) {					
+					ecomCenDireccion.setCodigopoblacion(cenPoblaciones.getCodigoext());
+				}
+			}
+			
 			ecomCenDireccion.setDescripcionpoblacion(edicionColegiadoForm.getDescripcionpoblacion());
 			
 			//insertamos en el histórico y lanzamos el proceso

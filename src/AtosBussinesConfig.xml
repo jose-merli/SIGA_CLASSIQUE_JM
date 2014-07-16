@@ -100,7 +100,7 @@
 		<service interface="org.redabogacia.sigaservices.app.services.cen.CenPaisService" 				implementation="org.redabogacia.sigaservices.app.services.cen.impl.CenPaisServiceImpl"/>
 		<service interface="org.redabogacia.sigaservices.app.services.cen.MediadoresService" implementation="org.redabogacia.sigaservices.app.services.cen.impl.MediadoresServiceImpl"/>
 		<service interface="org.redabogacia.sigaservices.app.services.scs.DocumentacionDesignaService" 							implementation="org.redabogacia.sigaservices.app.services.scs.impl.DocumentacionDesignaServiceImpl"/>
-		
+		<service interface="org.redabogacia.sigaservices.app.services.cen.CenPoblacionService" 				implementation="org.redabogacia.sigaservices.app.services.cen.impl.CenPoblacionServiceImpl"/>
 	
 		
 	</context>
