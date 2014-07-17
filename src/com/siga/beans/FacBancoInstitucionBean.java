@@ -10,8 +10,8 @@ package com.siga.beans;
 public class FacBancoInstitucionBean extends MasterBean {
 
 	/* Variables */
-	private Integer idInstitucion;
-	private String 	bancosCodigo, codBanco, codSucursal, numeroCuenta, fechaBaja, asientoContable, digitoControl, sjcs, iban;	
+	private Integer idInstitucion, idsufijo, idsufijosjcs;
+	private String 	bancosCodigo, codBanco, codSucursal, numeroCuenta, fechaBaja, asientoContable, digitoControl, sjcs,nosjcs, iban;	
 	private Double 	impComisionPropiaCargo, impComisionAjenaCargo, impComisionPropiaAbono, impComisionAjenaAbono;	
 	
 	/* Nombre tabla */
@@ -31,7 +31,11 @@ public class FacBancoInstitucionBean extends MasterBean {
 	static public final String C_ASIENTOCONTABLE			= "ASIENTOCONTABLE";
 	static public final String C_DIGITOCONTROL				= "DIGITOCONTROL";
 	static public final String C_SJCS						= "SJCS";
+	static public final String C_NOSJCS 					= "NOSJCS";
+	static public final String C_IDSUFIJO					= "IDSUFIJO";
+	static public final String C_IDSUFIJOSJCS				= "IDSUFIJOSJCS";
 	static public final String C_IBAN						= "IBAN";
+	
 	
 
 	/* Métodos get */
@@ -50,6 +54,15 @@ public class FacBancoInstitucionBean extends MasterBean {
 	public Integer getIdInstitucion() {
 		return idInstitucion;
 	}
+	
+	public Integer getIdsufijo() {
+		return idsufijo;
+	}
+	
+	public Integer getIdsufijosjcs() {
+		return idsufijosjcs;
+	}
+	
 	public Double getImpComisionAjenaAbono() {
 		return impComisionAjenaAbono;
 	}
@@ -72,6 +85,10 @@ public class FacBancoInstitucionBean extends MasterBean {
 	public String getSJCS() {
 		return sjcs;
 	}
+	
+	public String getNoSJCS() {
+		return nosjcs;
+	}
 		
 	/* Métodos set */
 	
@@ -89,6 +106,12 @@ public class FacBancoInstitucionBean extends MasterBean {
 	}
 	public void setIdInstitucion(Integer idInstitucion) {
 		this.idInstitucion = idInstitucion;
+	}
+	public void setIdsufijo(Integer idsufijo) {
+		this.idsufijo = idsufijo;
+	}
+	public void setIdsufijosjcs(Integer idsufijosjcs) {
+		this.idsufijosjcs = idsufijosjcs;
 	}
 	public void setImpComisionAjenaAbono(Double impComisionAjenaAbono) {
 		this.impComisionAjenaAbono = impComisionAjenaAbono;
@@ -116,6 +139,9 @@ public class FacBancoInstitucionBean extends MasterBean {
 	}
 	public void setSJCS(String sjcs) {
 		this.sjcs = sjcs;
+	}
+	public void setNoSJCS(String nosjcs) {
+		this.nosjcs = nosjcs;
 	}
 	public String getIban() {
 		return iban;

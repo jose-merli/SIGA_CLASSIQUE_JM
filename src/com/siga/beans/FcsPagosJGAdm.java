@@ -47,8 +47,10 @@ public class FcsPagosJGAdm extends MasterBeanAdministrador {
 							FcsPagosJGBean.C_IMPORTEEJG,		FcsPagosJGBean.C_IMPORTEGUARDIA,
 							FcsPagosJGBean.C_IMPORTEMINIMO,		FcsPagosJGBean.C_IMPORTEOFICIO,
 							FcsPagosJGBean.C_IMPORTESOJ,		FcsPagosJGBean.C_CONTABILIZADO,
-							FcsPagosJGBean.C_BANCOS_CODIGO,		FcsPagosJGBean.C_CONCEPTO,
-							FcsPagosJGBean.C_FECHAMODIFICACION, FcsPagosJGBean.C_USUMODIFICACION};
+							FcsPagosJGBean.C_BANCOS_CODIGO,		FcsPagosJGBean.C_CONCEPTO, 
+							FcsPagosJGBean.C_IDPROPOTROS,		FcsPagosJGBean.C_IDPROPSEPA,
+							FcsPagosJGBean.C_FECHAMODIFICACION, FcsPagosJGBean.C_USUMODIFICACION,
+							FcsPagosJGBean.C_IDSUFIJO};
 		return campos;
 	}
 
@@ -76,6 +78,9 @@ public class FcsPagosJGAdm extends MasterBeanAdministrador {
 							"nvl(" +FcsPagosJGBean.C_IMPORTESOJ+ ", 0) "+ FcsPagosJGBean.C_IMPORTESOJ,		
 							FcsPagosJGBean.C_CONTABILIZADO,
 							FcsPagosJGBean.C_BANCOS_CODIGO,		FcsPagosJGBean.C_CONCEPTO,
+							"nvl(" +FcsPagosJGBean.C_IDPROPOTROS+ ", 0) " + FcsPagosJGBean.C_IDPROPOTROS,		
+							"nvl(" +FcsPagosJGBean.C_IDPROPSEPA+ ", 0) " + FcsPagosJGBean.C_IDPROPSEPA,		
+							"nvl(" +FcsPagosJGBean.C_IDSUFIJO+ ", 0) " + FcsPagosJGBean.C_IDSUFIJO,	
 							FcsPagosJGBean.C_FECHAMODIFICACION, FcsPagosJGBean.C_USUMODIFICACION};
 		return campos;
 	}
@@ -104,6 +109,9 @@ public class FcsPagosJGAdm extends MasterBeanAdministrador {
 			bean.setContabilizado(UtilidadesHash.getString(hash,FcsPagosJGBean.C_CONTABILIZADO));
 			bean.setConcepto(UtilidadesHash.getString(hash,FcsPagosJGBean.C_CONCEPTO));
 			bean.setBancosCodigo(UtilidadesHash.getString(hash,FcsPagosJGBean.C_BANCOS_CODIGO));
+			bean.setIdpropOtros(UtilidadesHash.getInteger(hash,FcsPagosJGBean.C_IDPROPOTROS));
+			bean.setIdpropSEPA(UtilidadesHash.getInteger(hash,FcsPagosJGBean.C_IDPROPSEPA));
+			bean.setIdsufijo(UtilidadesHash.getInteger(hash,FcsPagosJGBean.C_IDSUFIJO));
 		}
 		catch (Exception e) { 
 			bean = null;	
@@ -137,6 +145,9 @@ public class FcsPagosJGAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(htData, FcsPagosJGBean.C_CONTABILIZADO, beanJG.getContabilizado());
 			UtilidadesHash.set(htData, FcsPagosJGBean.C_CONCEPTO, beanJG.getConcepto());
 			UtilidadesHash.set(htData, FcsPagosJGBean.C_BANCOS_CODIGO, beanJG.getBancosCodigo());
+			UtilidadesHash.set(htData, FcsPagosJGBean.C_IDPROPOTROS, beanJG.getIdpropOtros());
+			UtilidadesHash.set(htData, FcsPagosJGBean.C_IDPROPSEPA, beanJG.getIdpropSEPA());
+			UtilidadesHash.set(htData, FcsPagosJGBean.C_IDSUFIJO, beanJG.getIdsufijo());
 		}
 		catch (Exception e) {
 			htData = null;
@@ -290,6 +301,9 @@ public class FcsPagosJGAdm extends MasterBeanAdministrador {
 				"       pag."+FcsPagosJGBean.C_IMPORTEREPARTIR+", " +
 				"       pag."+FcsPagosJGBean.C_CONCEPTO+", " +
 				"       pag."+FcsPagosJGBean.C_BANCOS_CODIGO+", " +
+				"       pag."+FcsPagosJGBean.C_IDPROPOTROS+", " +
+				"       pag."+FcsPagosJGBean.C_IDPROPSEPA+", " +
+				"       pag."+FcsPagosJGBean.C_IDSUFIJO+", " +
 				"       (select "+UtilidadesMultidioma.getCampoMultidioma ("estados."+FcsEstadosPagosBean.C_DESCRIPCION, this.usrbean.getLanguage())+" " +
 				"          from "+FcsEstadosPagosBean.T_NOMBRETABLA+" ESTADOS " +
 				"         where estados."+FcsEstadosPagosBean.C_IDESTADOPAGOSJG+" = est."+FcsPagosEstadosPagosBean.C_IDESTADOPAGOSJG+" " +
@@ -387,6 +401,9 @@ public class FcsPagosJGAdm extends MasterBeanAdministrador {
 				"       pag."+FcsPagosJGBean.C_IMPORTEREPARTIR+", " +
 				"       pag."+FcsPagosJGBean.C_CONCEPTO+", " +
 				"       pag."+FcsPagosJGBean.C_BANCOS_CODIGO+", " +
+				"       pag."+FcsPagosJGBean.C_IDPROPOTROS+", " +
+				"       pag."+FcsPagosJGBean.C_IDPROPSEPA+", " +
+				"       pag."+FcsPagosJGBean.C_IDSUFIJO+", " +
 				"       (select "+UtilidadesMultidioma.getCampoMultidioma ("estados."+FcsEstadosPagosBean.C_DESCRIPCION, this.usrbean.getLanguage())+" " +
 				"          from "+FcsEstadosPagosBean.T_NOMBRETABLA+" ESTADOS " +
 				"         where estados."+FcsEstadosPagosBean.C_IDESTADOPAGOSJG+" = est."+FcsPagosEstadosPagosBean.C_IDESTADOPAGOSJG+" " +

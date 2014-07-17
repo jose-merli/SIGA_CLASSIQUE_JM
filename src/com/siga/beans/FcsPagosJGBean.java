@@ -18,7 +18,7 @@ import com.siga.Utilidades.AjaxXMLBuilderValueAnnotation;
 public class FcsPagosJGBean extends MasterBean {
 	
 	/* Variables */
-	private Integer idInstitucion, idPagosJG, idFacturacion;
+	private Integer idInstitucion, idPagosJG, idFacturacion, idpropSEPA, idpropOtros, idsufijo;
 	private Double importeRepartir, importePagado, importeOficio = null, importeGuardia = null, importeSOJ = null, importeEJG = null, importeMinimo = null; 
 	private String 	nombre=null, abreviatura=null, fechaDesde=null, fechaHasta=null, criterioPagoTurno=null, contabilizado=null, concepto=null, bancosCodigo=null;
 	
@@ -37,14 +37,17 @@ public class FcsPagosJGBean extends MasterBean {
 	static public final String C_CRITERIOPAGOTURNO	= "CRITERIOPAGOTURNO";
 	static public final String C_IMPORTEREPARTIR	= "IMPORTEREPARTIR";
 	static public final String C_IMPORTEPAGADO		= "IMPORTEPAGADO";
-	static public final String C_IMPORTEOFICIO	= "IMPORTEOFICIO";			
-	static public final String C_IMPORTEGUARDIA	= "IMPORTEGUARDIA";	
-	static public final String C_IMPORTESOJ		= "IMPORTESOJ";
-	static public final String C_IMPORTEEJG		= "IMPORTEEJG";
-	static public final String C_IMPORTEMINIMO	= "IMPORTEMINIMO";
-	static public final String C_CONTABILIZADO	= "CONTABILIZADO";
-	static public final String C_CONCEPTO		= "CONCEPTO";
-	static public final String C_BANCOS_CODIGO	= "BANCOS_CODIGO";
+	static public final String C_IMPORTEOFICIO		= "IMPORTEOFICIO";			
+	static public final String C_IMPORTEGUARDIA		= "IMPORTEGUARDIA";	
+	static public final String C_IMPORTESOJ			= "IMPORTESOJ";
+	static public final String C_IMPORTEEJG			= "IMPORTEEJG";
+	static public final String C_IMPORTEMINIMO		= "IMPORTEMINIMO";
+	static public final String C_CONTABILIZADO		= "CONTABILIZADO";
+	static public final String C_CONCEPTO			= "CONCEPTO";
+	static public final String C_BANCOS_CODIGO		= "BANCOS_CODIGO";
+	static public final String C_IDPROPSEPA	   		= "IDPROPSEPA";
+	static public final String C_IDPROPOTROS		= "IDPROPOTROS";
+	static public final String C_IDSUFIJO			= "IDSUFIJO";
 
 	public String getContabilizado() {
 		return contabilizado;
@@ -255,4 +258,28 @@ public class FcsPagosJGBean extends MasterBean {
 		this.bancosCodigo = bancosCodigo;
 	}
 	
+	
+	public Integer getIdpropSEPA() {
+		return idpropSEPA;
+	}
+	
+	public void setIdpropSEPA(Integer idpropSEPA) {
+		this.idpropSEPA = idpropSEPA;
+	}
+	
+	public Integer getIdpropOtros() {
+		return idpropOtros;
+	}
+	
+	public void setIdpropOtros(Integer idpropOtros) {
+		this.idpropOtros = idpropOtros;
+	}
+	
+	public Integer getIdsufijo() {
+		return idsufijo;
+	}
+	
+	public void setIdsufijo(Integer idsufijo) {
+		this.idsufijo = idsufijo;
+	}
 }

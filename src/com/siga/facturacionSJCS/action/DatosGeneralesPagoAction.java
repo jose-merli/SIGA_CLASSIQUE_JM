@@ -50,11 +50,13 @@ import com.siga.beans.ColegiadosPagosBean;
 import com.siga.beans.CriteriosPagosBean;
 import com.siga.beans.FacAbonoAdm;
 import com.siga.beans.FacAbonoBean;
+import com.siga.beans.FacBancoInstitucionAdm;
 import com.siga.beans.FacFacturaAdm;
 import com.siga.beans.FacLineaAbonoAdm;
 import com.siga.beans.FacLineaAbonoBean;
 import com.siga.beans.FacPagoAbonoEfectivoAdm;
 import com.siga.beans.FacPagosPorCajaAdm;
+import com.siga.beans.FacPropositosAdm;
 import com.siga.beans.FcsAplicaMovimientosVariosAdm;
 import com.siga.beans.FcsAplicaMovimientosVariosBean;
 import com.siga.beans.FcsCobrosRetencionJudicialAdm;
@@ -273,6 +275,7 @@ public class DatosGeneralesPagoAction extends MasterAction {
 				 */
 				
 				String sConcepto="", sCuenta="";
+				Integer idpropSEPA= null,idpropOtros = null,idsufijo= null;
 				Hashtable hash = new Hashtable();
 				hash.put(FcsPagosJGBean.C_IDINSTITUCION, pagosBean.getIdInstitucion());
 				hash.put(FcsPagosJGBean.C_IDPAGOSJG, pagosBean.getIdPagosJG());
@@ -282,6 +285,9 @@ public class DatosGeneralesPagoAction extends MasterAction {
 					FcsPagosJGBean bean = (FcsPagosJGBean)v.firstElement();
 					sConcepto = bean.getConcepto();
 				 	sCuenta = bean.getBancosCodigo();
+				 	idpropSEPA=bean.getIdpropSEPA();
+				 	idpropOtros=bean.getIdpropOtros();
+				 	idsufijo=bean.getIdsufijo();
 				 	
 				} else {
 					GenParametrosAdm paramAdm = new GenParametrosAdm(usr);
@@ -289,11 +295,32 @@ public class DatosGeneralesPagoAction extends MasterAction {
 					if (!sConcepto.equalsIgnoreCase("1") && !sConcepto.equalsIgnoreCase("8") && !sConcepto.equalsIgnoreCase("9")) {
 						throw new SIGAException("administracion.parametrosGenerales.error.conceptoAbono");
 					}
-					sCuenta = paramAdm.getValor(miform.getIdInstitucion(), "FCS", "BANCOS_CODIGO_ABONO", "");				
+					sCuenta = paramAdm.getValor(miform.getIdInstitucion(), "FCS", "BANCOS_CODIGO_ABONO", "");
+					
+					//El concepto pasa a ser:propósitos
+					FacPropositosAdm propAdm = new FacPropositosAdm(usr);
+					
+					String paramPropSEPA = paramAdm.getValor(miform.getIdInstitucion(), "FAC",
+							"PROPOSITO_TRANSFERENCIA_SEPA", "");
+					
+					//En bbdd guardamos el idproposito
+					idpropSEPA= propAdm.selectIdPropositoPorCodigo(paramPropSEPA);
+					
+					String paramPropOtros = paramAdm.getValor(miform.getIdInstitucion(), "FAC",
+							"PROPOSITO_OTRA_TRANSFERENCIA", "");
+					
+					//En bbdd guardamos el idproposito
+					idpropOtros= propAdm.selectIdPropositoPorCodigo(paramPropOtros);
+					
+					
+					
 				}
 				
 				pagosBean.setConcepto(sConcepto);
 				pagosBean.setBancosCodigo(sCuenta);
+				pagosBean.setIdpropOtros(idpropOtros);
+				pagosBean.setIdpropSEPA(idpropSEPA);
+				pagosBean.setIdsufijo(idsufijo);
 
 				// actualiza la BD
 				tx.begin();
@@ -1075,18 +1102,39 @@ public class DatosGeneralesPagoAction extends MasterAction {
 
 				GenParametrosAdm paramAdm = new GenParametrosAdm(
 						this.getUserBean(request));
-				String paramConcepto = paramAdm.getValor(idInstitucion, "FCS",
-						"CONCEPTO_ABONO", "");
-				if (!paramConcepto.equalsIgnoreCase("1")
-						&& !paramConcepto.equalsIgnoreCase("8")
-						&& !paramConcepto.equalsIgnoreCase("9")) {
-					throw new SIGAException(
-							"administracion.parametrosGenerales.error.conceptoAbono");
-				}
-				registro.put(FcsPagosJGBean.C_CONCEPTO, paramConcepto);
+				
+//				String paramConcepto = paramAdm.getValor(idInstitucion, "FCS",
+//						"CONCEPTO_ABONO", "");
+//				if (!paramConcepto.equalsIgnoreCase("1")
+//						&& !paramConcepto.equalsIgnoreCase("8")
+//						&& !paramConcepto.equalsIgnoreCase("9")) {
+//					throw new SIGAException(
+//							"administracion.parametrosGenerales.error.conceptoAbono");
+//				}
+//				registro.put(FcsPagosJGBean.C_CONCEPTO, paramConcepto);
+				
+				registro.put(FcsPagosJGBean.C_CONCEPTO, ""); //El concepto pasa a ser:propósitos
+				
+				FacPropositosAdm propAdm = new FacPropositosAdm(usr);
+				
+				String paramPropSEPA = paramAdm.getValor(idInstitucion, "FAC",
+						"PROPOSITO_TRANSFERENCIA_SEPA", "");
+				
+				//En bbdd guardamos el idproposito
+				registro.put(FcsPagosJGBean.C_IDPROPSEPA, propAdm.selectIdPropositoPorCodigo(paramPropSEPA));
+				
+				String paramPropOtros = paramAdm.getValor(idInstitucion, "FAC",
+						"PROPOSITO_OTRA_TRANSFERENCIA", "");
+				
+				//En bbdd guardamos el idproposito
+				registro.put(FcsPagosJGBean.C_IDPROPOTROS, propAdm.selectIdPropositoPorCodigo(paramPropOtros));
+				
 				registro.put(FcsPagosJGBean.C_BANCOS_CODIGO, paramAdm.getValor(
 						idInstitucion, "FCS", "BANCOS_CODIGO_ABONO", ""));
-
+				
+				//Se inserta el campo idSufijo con el valor null cuando se configure el abono se actualizará este valor en bb.dd.			
+				registro.put(FcsPagosJGBean.C_IDSUFIJO, "");
+				
 				UtilidadesHash.set(registro, FcsPagosJGBean.C_IMPORTEMINIMO,
 						new Double(0));
 				UtilidadesHash.set(registro, FcsPagosJGBean.C_IMPORTEEJG,
@@ -1765,7 +1813,7 @@ public class DatosGeneralesPagoAction extends MasterAction {
 				for (int i = 0; i < facturacionesGruposPagosList.size(); i++) {
 					Hashtable facturacionesGruposPagos = facturacionesGruposPagosList.get(i);
 					String idGrupo = (String) facturacionesGruposPagos.get("IDGRUPOFACTURACION");
-					if(idGrupo!=null)
+					if((idGrupo!=null)&&(!idGrupo.isEmpty()))
 						movimientos.addAll(movimientosAdm.getMovimientosRW(movimientosBean.getIdInstitucion().toString(), idPago,movimientosBean.getIdPersona().toString(),idFacturacion,idGrupo,2));
 				}
 				

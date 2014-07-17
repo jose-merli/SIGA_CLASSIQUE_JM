@@ -465,8 +465,6 @@
 				return false;
 			}
 
-		}else{
-			
 		}
 		
 		if(validateCuentasBancariasForm(document.CuentasBancariasForm)){

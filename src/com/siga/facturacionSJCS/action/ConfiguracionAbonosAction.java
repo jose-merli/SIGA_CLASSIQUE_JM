@@ -5,7 +5,9 @@
  */
 package com.siga.facturacionSJCS.action;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
@@ -18,8 +20,14 @@ import org.apache.struts.action.ActionMapping;
 
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.UsrBean;
+import com.siga.Utilidades.UtilidadesHash;
+import com.siga.Utilidades.UtilidadesString;
 import com.siga.beans.CenInstitucionAdm;
 import com.siga.beans.FacBancoInstitucionAdm;
+import com.siga.beans.FacPropositosAdm;
+import com.siga.beans.FacPropositosBean;
+import com.siga.beans.FacSufijoAdm;
+import com.siga.beans.FacSufijoBean;
 import com.siga.beans.FcsEstadosPagosBean;
 import com.siga.beans.FcsPagosEstadosPagosBean;
 import com.siga.beans.FcsPagosJGAdm;
@@ -128,12 +136,58 @@ public class ConfiguracionAbonosAction extends MasterAction{
 					bean = (FcsPagosJGBean)v.firstElement();
 					request.setAttribute("concepto", bean.getConcepto());
 		 		 	request.setAttribute("cuenta", bean.getBancosCodigo());
+
+		 		 	if(bean.getIdpropSEPA()!=null)
+		 		 		miform.setIdpropSEPA(bean.getIdpropSEPA());
+		 		 	if(bean.getIdpropOtros()!=null)
+		 		 		miform.setIdpropOtros(bean.getIdpropOtros());
+		 		 	if(bean.getIdsufijo()!=null)
+		 		 		miform.setIdsufijo(bean.getIdsufijo());
+		 		 	
 				}
 			}
 			
 			GenParametrosAdm paramAdm = new GenParametrosAdm(this.getUserBean(request));
 			request.setAttribute("paramConcepto", paramAdm.getValor(idInstitucion, "FCS", "CONCEPTO_ABONO", ""));
 			request.setAttribute("paramIdCuenta", paramAdm.getValor(idInstitucion, "FCS", "BANCOS_CODIGO_ABONO", ""));
+			
+			//Combos sufijos
+			FacSufijoAdm sufijoAdm = new FacSufijoAdm (this.getUserBean(request));
+			Hashtable claves = new Hashtable ();
+			UtilidadesHash.set (claves, FacSufijoBean.C_IDINSTITUCION,Integer.parseInt(idInstitucion));
+			
+			Vector vsufijos = sufijoAdm.select(claves);
+			Vector vsufijosList = new Vector();
+			List <FacSufijoBean> sufijosListFinal= new ArrayList<FacSufijoBean>();
+			for (int vs = 0; vs < vsufijos.size(); vs++){
+				
+				FacSufijoBean sufijosBean = (FacSufijoBean) vsufijos.get(vs);
+				sufijosListFinal.add(sufijosBean);
+			}
+
+			request.setAttribute("listaSufijos", sufijosListFinal);
+			
+			//Combos propósitos (Concepto de abono)
+			FacPropositosAdm propositosAdm = new FacPropositosAdm(this.getUserBean(request));
+			Vector vpropositos = propositosAdm.selectPropositos();
+			
+			Vector vpropositosList = new Vector();
+			List <FacPropositosBean> propositosListSEPAFinal= new ArrayList<FacPropositosBean>();
+			List <FacPropositosBean> propositosListOtrosFinal= new ArrayList<FacPropositosBean>();
+			
+			for (int vs = 0; vs < vpropositos.size(); vs++){
+				
+				FacPropositosBean propositosBean = (FacPropositosBean) vpropositos.get(vs);
+				
+				if (propositosBean.getTipoSEPA()!=0)
+					propositosListSEPAFinal.add(propositosBean);
+				else
+					propositosListOtrosFinal.add(propositosBean);
+			}
+
+			request.setAttribute("listaPropositosSEPA", propositosListSEPAFinal);
+			request.setAttribute("listaPropositosOtros", propositosListOtrosFinal);
+			
 			
 		} catch (Exception e) { 
 			throwExcp("messages.general.error",new String[] {"modulo.facturacion"},e,null); 
@@ -167,6 +221,14 @@ public class ConfiguracionAbonosAction extends MasterAction{
 			bean.setBancosCodigo(miForm.getCuenta());
 			bean.setIdInstitucion(new Integer(Integer.parseInt(idInstitucion)));
 			bean.setIdPagosJG(new Integer(Integer.parseInt(idPago)));
+			
+			if(miForm.getIdpropOtros()!=null)
+				bean.setIdpropOtros(miForm.getIdpropOtros());
+			if(miForm.getIdpropSEPA()!=null)
+				bean.setIdpropSEPA(miForm.getIdpropSEPA());
+			
+			bean.setIdsufijo(miForm.getIdsufijo());
+
 			
 			adm.update(bean);
 			tx.commit();

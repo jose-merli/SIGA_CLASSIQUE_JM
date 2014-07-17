@@ -16,6 +16,10 @@ import com.siga.general.MasterForm;
  */
 public class ConfiguracionAbonosForm extends MasterForm{
 	
+	private Integer idpropSEPA;
+	private Integer idpropOtros;
+	private Integer idsufijo;
+
 	public void setIdInstitucion (String id) {
 		UtilidadesHash.set(datos, "IDINSTITUCION", id);
  	}
@@ -55,4 +59,30 @@ public class ConfiguracionAbonosForm extends MasterForm{
 	public String getCuenta() 	{ 
 		return UtilidadesHash.getString(this.datos, "cuenta");		
 	}
+	
+	
+	public void setIdpropSEPA(Integer idpropSEPA){
+		this.idpropSEPA= idpropSEPA;
+	}
+	
+	public Integer getIdpropSEPA() 	{ 
+		return idpropSEPA;		
+	}
+	
+	public void setIdpropOtros(Integer idpropOtros){
+		this.idpropOtros= idpropOtros;
+	}
+	
+	public Integer getIdpropOtros() 	{ 
+		return idpropOtros;		
+	}
+	
+	public void setIdsufijo(Integer idsufijo) 	{ 
+		this.idsufijo=idsufijo;
+	}
+	
+	public Integer getIdsufijo() 	{ 
+		return idsufijo;			
+	}
+	
 }

@@ -38,7 +38,11 @@ public class FacBancoInstitucionAdm extends MasterBeanAdministrador {
 							FacBancoInstitucionBean.C_USUMODIFICACION,
 							FacBancoInstitucionBean.C_ASIENTOCONTABLE,
 							FacBancoInstitucionBean.C_FECHAMODIFICACION,
-							FacBancoInstitucionBean.C_IBAN};
+							FacBancoInstitucionBean.C_IBAN,
+							FacBancoInstitucionBean.C_SJCS,
+							FacBancoInstitucionBean.C_NOSJCS,
+							FacBancoInstitucionBean.C_IDSUFIJO,
+							FacBancoInstitucionBean.C_IDSUFIJOSJCS};
 		return campos;
 	}
 
@@ -68,6 +72,11 @@ public class FacBancoInstitucionAdm extends MasterBeanAdministrador {
 			bean.setFechaMod					(UtilidadesHash.getString(hash, FacBancoInstitucionBean.C_FECHAMODIFICACION));
 			bean.setUsuMod						(UtilidadesHash.getInteger(hash, FacBancoInstitucionBean.C_USUMODIFICACION));
 			bean.setIban						(UtilidadesHash.getString(hash, FacBancoInstitucionBean.C_IBAN));
+			bean.setSJCS						(UtilidadesHash.getString(hash, FacBancoInstitucionBean.C_SJCS));
+			bean.setNoSJCS						(UtilidadesHash.getString(hash, FacBancoInstitucionBean.C_NOSJCS));
+			bean.setIdsufijo					(UtilidadesHash.getInteger(hash, FacBancoInstitucionBean.C_IDSUFIJO));
+			bean.setIdsufijosjcs				(UtilidadesHash.getInteger(hash, FacBancoInstitucionBean.C_IDSUFIJOSJCS));
+			
 		}
 		catch (Exception e) { 
 			bean = null;	
@@ -98,6 +107,10 @@ public class FacBancoInstitucionAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(htData, FacBancoInstitucionBean.C_DIGITOCONTROL, b.getDigitoControl());
 			UtilidadesHash.set(htData, FacBancoInstitucionBean.C_FECHAMODIFICACION, b.getFechaMod());
 			UtilidadesHash.set(htData, FacBancoInstitucionBean.C_USUMODIFICACION, b.getUsuMod());
+			UtilidadesHash.set(htData, FacBancoInstitucionBean.C_SJCS, b.getSJCS());
+			UtilidadesHash.set(htData, FacBancoInstitucionBean.C_NOSJCS, b.getNoSJCS());
+			UtilidadesHash.set(htData, FacBancoInstitucionBean.C_IDSUFIJO, b.getIdsufijo());
+			UtilidadesHash.set(htData, FacBancoInstitucionBean.C_IDSUFIJOSJCS, b.getIdsufijosjcs());
 		}
 		catch (Exception e) {
 			htData = null;
@@ -319,6 +332,9 @@ public class FacBancoInstitucionAdm extends MasterBeanAdministrador {
 	            			"BI." + FacBancoInstitucionBean.C_NUMEROCUENTA + "," +
 	            			"BI." + FacBancoInstitucionBean.C_ASIENTOCONTABLE + "," +
 	            			"BI." + FacBancoInstitucionBean.C_SJCS + "," +
+	            			"BI." + FacBancoInstitucionBean.C_NOSJCS + "," +
+	            			"BI." + FacBancoInstitucionBean.C_IDSUFIJO + "," +
+	            			"BI." + FacBancoInstitucionBean.C_IDSUFIJOSJCS + "," +
 	            			"BI.COD_BANCO || '-' || BI.COD_SUCURSAL || '-' || BI.DIGITOCONTROL || '-' ||BI.NUMEROCUENTA AS CUENTACONTABLE, "+
 							"BI.IMPCOMISIONPROPIACARGO COMISIONPROPIA, "+ 
 							"BI.IMPCOMISIONAJENACARGO COMISIONAJENA, "+		
@@ -358,6 +374,9 @@ public class FacBancoInstitucionAdm extends MasterBeanAdministrador {
 	            			"BI." + FacBancoInstitucionBean.C_NUMEROCUENTA + "," +
 	            			"BI." + FacBancoInstitucionBean.C_ASIENTOCONTABLE + "," +
 	            			"BI." + FacBancoInstitucionBean.C_SJCS + "," +
+	            			"BI." + FacBancoInstitucionBean.C_NOSJCS + "," +
+	            			"BI." + FacBancoInstitucionBean.C_IDSUFIJOSJCS + "," +
+	            			"BI." + FacBancoInstitucionBean.C_IDSUFIJO + "," +
 	            			"BI.COD_BANCO || '-' || BI.COD_SUCURSAL || '-' || BI.DIGITOCONTROL || '-' ||BI.NUMEROCUENTA AS CUENTACONTABLE, "+
 							"BI.IMPCOMISIONPROPIACARGO COMISIONPROPIA, "+ 
 							"BI.IMPCOMISIONAJENACARGO COMISIONAJENA, "+		
