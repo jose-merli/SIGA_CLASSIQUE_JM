@@ -1881,7 +1881,7 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 			 			  " P.NIFCIF AS NIF_LETRADO, DECODE(P.SEXO, null, null,'M','gratuita.personaEJG.sexo.mujer','gratuita.personaEJG.sexo.hombre') AS SEXO_LETRADO_SINTRADUCIR "+
 			 			  " , DECODE(P.SEXO,'H','o','a') AS O_A_LETRADO "+
 			 			  " , DECODE(P.SEXO,'H','el','la') AS EL_LA_LETRADO "+
-			 			  " From Scs_Designasletrado Dp, Cen_Persona p, Cen_NoColegiado c "+
+			 			  " From Scs_Designasletrado Dp, Cen_Persona p, Cen_Cliente c "+
 			 			  " Where Dp.Idinstitucion= :1 "+
 			 			  " And Dp.Idinstitucion = c.Idinstitucion "+
 			 			  " And Dp.Idpersona = c.Idpersona "+
