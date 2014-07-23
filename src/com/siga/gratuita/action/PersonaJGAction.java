@@ -1873,7 +1873,7 @@ public class PersonaJGAction extends MasterAction {
 			
 			if ((miform.getFechaNac()==null)||(miform.getFechaNac().equalsIgnoreCase(""))) {
 				UtilidadesHash.set(persona,ScsPersonaJGBean.C_FECHANACIMIENTO,"");
-				UtilidadesHash.set(persona,ScsPersonaJGBean.C_EDAD,"");				
+				UtilidadesHash.set(persona,ScsPersonaJGBean.C_EDAD,miform.getEdad());				
 			}
 			else {
 				UtilidadesHash.set(persona,ScsPersonaJGBean.C_FECHANACIMIENTO,GstDate.getApplicationFormatDate("",miform.getFechaNac()));
