@@ -37,11 +37,13 @@
 <!-- HEAD -->
 
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
-	
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/js/jquery.ui/css/smoothness/jquery-ui-1.10.3.custom.min.css'/>"/>
 	<!-- Incluido jquery en siga.js -->
 	
 	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
-
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-ui-1.10.3.custom.min.js'/>"></script>
+	
+	
 	<!-- INICIO: TITULO Y LOCALIZACION -->
 	<!-- Escribe el título y localización en la barra de título del frame principal -->
 	<% if(abonosSJCS){ %>
@@ -50,13 +52,16 @@
 		<siga:Titulo titulo="facturacion.ficheroBancarioAbonos.literal.cabecera" localizacion="facturacion.localizacion"/>
 	<% } %>
 	<!-- FIN: TITULO Y LOCALIZACION -->
+		<style type="text/css">
+		.ui-dialog-titlebar-close {
+				  visibility: hidden;
+				}
+	</style>
 	
 </head>
 
 <body onload="ajusteAlto('resultado');">
 	<!-- ******* BOTONES Y CAMPOS DE BUSQUEDA ****** -->
-
-
 	<!-- INICIO: CAMPOS DE BUSQUEDA-->
 	<!-- Zona de campos de busqueda o filtro -->
 	<table  class="tablaCentralCampos"  align="center">
@@ -68,6 +73,7 @@
 			<input type="hidden" name="sjcs" value="<%=sjcs%>">
 		<%} else { %>
 			<input type="hidden" name="sjcs" value="">
+			<html:hidden property="listaSufijoProp"/>
 		<%} %>
 
 		<tr>				
@@ -141,7 +147,6 @@
 		</tr>
 	</html:form>
 	</table>
-
 	<!-- FIN: CAMPOS DE BUSQUEDA-->
 
 
@@ -155,8 +160,6 @@
 
 
 	<!-- FIN: BOTONES BUSQUEDA -->
-
-	
 	<!-- INICIO: SCRIPTS BOTONES BUSQUEDA -->
 	<script language="JavaScript">
 		jQuery.noConflict();
@@ -176,8 +179,7 @@
 		});	
 	
 		function buscar(){
-			sub();
-			
+ 			sub();
 			if(!isNumero(document.ficheroBancarioAbonosForm.abonosDesde.value)){
 				fin();
 				alert('<siga:Idioma key="facturacion.busquedaEnvioAbonos.errorformato.abonosDesde"/>');
@@ -221,19 +223,77 @@
 		}
 		
 		function generarFichero() {
+
 			if(!confirm('<siga:Idioma key="facturacion.ficheroBancarioAbonos.literal.confirmarFicheroAbonos"/>')) {
-					return false;
-			}			
+				return false;
+			}
 			
+			<% if(!abonosSJCS){%>
+			jQuery("#dialogoConfig").dialog(
+					{
+					      height: 270,
+					      width: 525,
+					      modal: true,
+					      resizable: false,
+					      buttons: {					          	
+					            "Guardar y Cerrar": function() {
+					            	configurarFichNoSJCS();
+					            	jQuery( this ).dialog( "close" );
+					            }
+					          }
+					    }
+				);
+				jQuery(".ui-widget-overlay").css("opacity","0");
+				
+			<%} else { %>
+
+				document.all.ficheroBancarioAbonosForm.modo.value = "generarFichero";
+				document.all.ficheroBancarioAbonosForm.target = 'submitArea';
+				var f = document.all.ficheroBancarioAbonosForm.name;	
+				window.frames.submitArea.location='<%=app%>/html/jsp/general/loadingWindowOpener.jsp?formName='+f+'&msg=facturacion.ficheroBancarioAbonos.mensaje.generandoFicheros';
+			<% } %>
+			
+		}
+		
+		function configurarFichNoSJCS(){
+			
+			var sufijo = jQuery("#comboSufijos");				
+			var propositoSEPA = jQuery("#comboPropositosSEPA");
+			var propositoOtros = jQuery("#comboPropositosOtros");
+			
+			if(sufijo.val()<1) {
+				mensaje = "<siga:Idioma key='facturacion.sufijos.message.errorCuentaBancariaSufijoNOSJCS'/>";
+				alert(mensaje);
+				fin();
+				return false;
+			}
+				
+			if(propositoSEPA.val()<1) {
+				mensaje = "<siga:Idioma key='facturacion.propositos.message.errorPropSEPA'/>";
+				alert(mensaje);
+				fin();
+				return false;
+			}
+			
+			if(propositoOtros.val()<1) {
+				mensaje = "<siga:Idioma key='facturacion.propositos.message.errorPropOtros'/>";
+				alert(mensaje);
+				fin();
+				return false;
+			}
+			
+			document.ficheroBancarioAbonosForm.listaSufijoProp.value=sufijo.val()+"#"+propositoSEPA.val()+"#"+propositoOtros.val();
 			document.all.ficheroBancarioAbonosForm.modo.value = "generarFichero";
 			document.all.ficheroBancarioAbonosForm.target = 'submitArea';
 			var f = document.all.ficheroBancarioAbonosForm.name;	
 			window.frames.submitArea.location='<%=app%>/html/jsp/general/loadingWindowOpener.jsp?formName='+f+'&msg=facturacion.ficheroBancarioAbonos.mensaje.generandoFicheros';
-		}
+
+			
+		}	
+		
 			
 	</script>
 	<!-- FIN: SCRIPTS BOTONES BUSQUEDA -->
-
 	<!-- INICIO: IFRAME LISTA RESULTADOS -->
 	<iframe align="center" src="<html:rewrite page='/html/jsp/general/blank.jsp'/>"
 					id="resultado"
@@ -251,6 +311,56 @@
 	<!-- Obligatoria en todas las páginas-->
 		<iframe name="submitArea" src="<html:rewrite page='/html/jsp/general/blank.jsp'/>" style="display: none"></iframe>
 	<!-- FIN: SUBMIT AREA -->
-
+	<div id="dialogoConfig" title="Nuevo Fichero de Abonos" style="display:none">
+	<div>
+		<siga:ConjCampos>
+			<table class="tablaCampos" colspan=2>
+				<tr>
+					<td class="labelText">
+						<siga:Idioma key="facturacion.sufijos.literal.sufijo"/>
+					</td>
+					<td>
+					<bean:define id="listaSufijos" name="listaSufijos" scope="request"/> 
+					<html:select styleId="comboSufijos" property="idSufijo" value="" styleClass="boxCombo" style="width:150px;">
+					<html:option value=""><c:out value=""/></html:option>
+					<c:forEach items="${listaSufijos}" var="sufijoCmb">
+						<html:option value="${sufijoCmb.idSufijo}"><c:out value="${sufijoCmb.sufijo.trim().length()>0?sufijoCmb.sufijo:'   '} ${sufijoCmb.concepto}"/></html:option>
+					</c:forEach>
+					</html:select>	
+					</td>
+				</tr> 
+				<tr>		
+					<td class="labelText">
+						<siga:Idioma key="factSJCS.abonos.configuracion.literal.proposito.SEPA"/>
+					</td>
+					<td>
+						<bean:define id="listaPropositosSEPA" name="listaPropositosSEPA" scope="request"/>
+						<html:select styleId="comboPropositosSEPA" property="idpropSEPA" value="" styleClass="boxCombo" style="width:150px;" >
+						<html:option value=""><c:out value=""/></html:option>
+						<c:forEach items="${listaPropositosSEPA}" var="propSEPACmb">
+							<html:option value="${propSEPACmb.idProposito}"><c:out value="${propSEPACmb.codigo.trim().length()>0?propSEPACmb.codigo:'   '} ${propSEPACmb.nombre}"/></html:option>
+						</c:forEach>
+						</html:select>	
+					
+					</td>
+				</tr>
+				<tr>
+					<td class="labelText"> 
+						<siga:Idioma key="factSJCS.abonos.configuracion.literal.proposito.otras"/>
+					</td>
+					<td>
+						<bean:define id="listaPropositosOtros" name="listaPropositosOtros" scope="request"/>
+						<html:select styleId="comboPropositosOtros" property="idpropOtros" value="" styleClass="boxCombo" style="width:150px;" >
+						<html:option value=""><c:out value=""/></html:option>
+						<c:forEach items="${listaPropositosOtros}" var="propOtrosCmb">
+							<html:option value="${propOtrosCmb.idProposito}"><c:out value="${propOtrosCmb.codigo.trim().length()>0?propOtrosCmb.codigo:'   '} ${propOtrosCmb.nombre}"/></html:option>
+						</c:forEach>
+						</html:select>	
+					</td>
+				</tr>
+			</table>
+		</siga:ConjCampos>
+	</div>
+	</div>
 </body>
 </html>

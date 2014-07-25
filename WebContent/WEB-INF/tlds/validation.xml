@@ -4418,6 +4418,9 @@
         <field property = "idpropOtros" depends = "required">
         	<arg0 key="factSJCS.abonos.configuracion.literal.proposito.otras"/>
         </field>
+        <field property = "idsufijo" depends = "required">
+        	<arg0 key="facturacion.sufijos.message.errorCuentaBancariaSufijoSJCS"/>
+        </field>
 	</form>
 	<!--  -->
 	<form name="compensacionAbonosPagosForm">

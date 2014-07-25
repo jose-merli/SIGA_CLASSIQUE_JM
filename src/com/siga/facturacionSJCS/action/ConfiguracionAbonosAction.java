@@ -107,6 +107,8 @@ public class ConfiguracionAbonosAction extends MasterAction{
 			
 			ConfiguracionAbonosForm miform = (ConfiguracionAbonosForm)formulario;
 			FcsPagosJGAdm pagos = new FcsPagosJGAdm(this.getUserBean(request));
+			FacPropositosAdm propAdm = new FacPropositosAdm(this.getUserBean(request));
+			GenParametrosAdm paramAdm = new GenParametrosAdm(this.getUserBean(request));
 			String idInstitucion = miform.getIdInstitucion();
 			String accion = request.getParameter("accion");
 			String idPago = miform.getIdPagosJG();
@@ -137,18 +139,34 @@ public class ConfiguracionAbonosAction extends MasterAction{
 					request.setAttribute("concepto", bean.getConcepto());
 		 		 	request.setAttribute("cuenta", bean.getBancosCodigo());
 
-		 		 	if(bean.getIdpropSEPA()!=null)
+		 		 	if((bean.getIdpropSEPA()==null)||(bean.getIdpropSEPA()==0)){
+		 		 		String paramPropSEPA = paramAdm.getValor(idInstitucion, "FAC","PROPOSITO_TRANSFERENCIA_SEPA", "");
+		 		 		miform.setIdpropSEPA(propAdm.selectIdPropositoPorCodigo(paramPropSEPA));
+		 		 	}else{
 		 		 		miform.setIdpropSEPA(bean.getIdpropSEPA());
-		 		 	if(bean.getIdpropOtros()!=null)
+		 		 		
+					
+		 		 	}
+					
+		 		 	if((bean.getIdpropOtros()==null)||(bean.getIdpropOtros()==0)){
+		 		 		String paramPropOtros = paramAdm.getValor(idInstitucion, "FAC","PROPOSITO_OTRA_TRANSFERENCIA", "");
+		 		 		miform.setIdpropOtros(propAdm.selectIdPropositoPorCodigo(paramPropOtros)) ;
+		 		 		
+		 		 		
+		 		 	}else{
 		 		 		miform.setIdpropOtros(bean.getIdpropOtros());
-		 		 	if(bean.getIdsufijo()!=null)
+		 		 	}
+		 		 	
+		 		 	//Se guarda el sufijo "" para que en la ventana se muestre el de la cuenta bancaria si existe
+		 		 	if(bean.getIdsufijo()==null) {
+		 		 		miform.setIdsufijo(null);
+		 		 	}
+		 		 	else
 		 		 		miform.setIdsufijo(bean.getIdsufijo());
 		 		 	
 				}
 			}
-			
-			GenParametrosAdm paramAdm = new GenParametrosAdm(this.getUserBean(request));
-			request.setAttribute("paramConcepto", paramAdm.getValor(idInstitucion, "FCS", "CONCEPTO_ABONO", ""));
+//			request.setAttribute("paramConcepto", paramAdm.getValor(idInstitucion, "FCS", "CONCEPTO_ABONO", ""));
 			request.setAttribute("paramIdCuenta", paramAdm.getValor(idInstitucion, "FCS", "BANCOS_CODIGO_ABONO", ""));
 			
 			//Combos sufijos
@@ -221,7 +239,7 @@ public class ConfiguracionAbonosAction extends MasterAction{
 			bean.setBancosCodigo(miForm.getCuenta());
 			bean.setIdInstitucion(new Integer(Integer.parseInt(idInstitucion)));
 			bean.setIdPagosJG(new Integer(Integer.parseInt(idPago)));
-			
+
 			if(miForm.getIdpropOtros()!=null)
 				bean.setIdpropOtros(miForm.getIdpropOtros());
 			if(miForm.getIdpropSEPA()!=null)

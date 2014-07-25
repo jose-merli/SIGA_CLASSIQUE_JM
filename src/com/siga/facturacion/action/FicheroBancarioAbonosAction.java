@@ -32,6 +32,7 @@ import com.atos.utils.Row;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.PaginadorCaseSensitive;
 import com.siga.Utilidades.UtilidadesBDAdm;
+import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.beans.CenBancosAdm;
 import com.siga.beans.CenColegiadoAdm;
@@ -49,6 +50,10 @@ import com.siga.beans.FacBancoInstitucionAdm;
 import com.siga.beans.FacBancoInstitucionBean;
 import com.siga.beans.FacDisqueteAbonosAdm;
 import com.siga.beans.FacDisqueteAbonosBean;
+import com.siga.beans.FacPropositosAdm;
+import com.siga.beans.FacPropositosBean;
+import com.siga.beans.FacSufijoAdm;
+import com.siga.beans.FacSufijoBean;
 import com.siga.beans.FcsPagosJGBean;
 import com.siga.beans.FicheroEmisorAbonoBean;
 import com.siga.beans.FicheroReceptorAbonoBean;
@@ -144,7 +149,44 @@ public class FicheroBancarioAbonosAction extends MasterAction{
 			
 			if(request.getParameter("buscar") != null)
 				request.setAttribute("buscar", request.getParameter("buscar"));
+			
+			//Combos propósitos y sufijos
+			//Obtener Combo sufijos
+			FacSufijoAdm sufijoAdm = new FacSufijoAdm (this.getUserBean(request));
+			Hashtable claves = new Hashtable ();
+			UtilidadesHash.set (claves, FacSufijoBean.C_IDINSTITUCION, idInstitucion);
+			
+			Vector vsufijos = sufijoAdm.select(claves);
+			Vector vsufijosList = new Vector();
+			List <FacSufijoBean> sufijosListFinal= new ArrayList<FacSufijoBean>();
+			for (int vs = 0; vs < vsufijos.size(); vs++){
+				
+				FacSufijoBean sufijosBean = (FacSufijoBean) vsufijos.get(vs);
+				sufijosListFinal.add(sufijosBean);
+			}
 	
+			request.setAttribute("listaSufijos", sufijosListFinal);
+			
+			//Combos propósitos (Concepto de abono)
+			FacPropositosAdm propositosAdm = new FacPropositosAdm(this.getUserBean(request));
+			Vector vpropositos = propositosAdm.selectPropositos();
+			
+			Vector vpropositosList = new Vector();
+			List <FacPropositosBean> propositosListSEPAFinal= new ArrayList<FacPropositosBean>();
+			List <FacPropositosBean> propositosListOtrosFinal= new ArrayList<FacPropositosBean>();
+			
+			for (int vs = 0; vs < vpropositos.size(); vs++){
+				
+				FacPropositosBean propositosBean = (FacPropositosBean) vpropositos.get(vs);
+				
+				if (propositosBean.getTipoSEPA()!=0)
+					propositosListSEPAFinal.add(propositosBean);
+				else
+					propositosListOtrosFinal.add(propositosBean);
+			}
+
+			request.setAttribute("listaPropositosSEPA", propositosListSEPAFinal);
+			request.setAttribute("listaPropositosOtros", propositosListOtrosFinal);
 			
 		}  catch (Exception e) { 
 			throwExcp("messages.general.error",new String[] {"modulo.facturacion"},e,null); 
@@ -355,17 +397,47 @@ public class FicheroBancarioAbonosAction extends MasterAction{
 					listaBancos=bancos.elements();
 					while (listaBancos.hasMoreElements()){
 						banco=((Row)listaBancos.nextElement()).getRow();
+
+						//El concepto pasa a ser propósito						
+//						//conceptos=adminAbono.getConceptosAbonosBancoSjcs(idInstitucion,(String)banco.get(FacBancoInstitucionBean.C_BANCOS_CODIGO));
+//						if (conceptos.isEmpty()) continue;
+//						listaConceptos=conceptos.elements();
+//						while (listaConceptos.hasMoreElements()) {
+//							concepto = (String) ((Row)listaConceptos.nextElement()).getRow().get("CONCEPTO");
+//							if (concepto == null)
+//								concepto = "";
+//						
+//							abonosBanco=adminAbono.getAbonosBancoSjcs(idInstitucion,(String)banco.get(FacBancoInstitucionBean.C_BANCOS_CODIGO), concepto);
+//							nFicherosGenerados = prepararFichero(user, banco, abonosBanco, "000", fcs);
+//							if (nFicherosGenerados < 0) {
+//								correcto = false;
+//							} else {
+//								correcto = true;
+//								cont += nFicherosGenerados;
+//							}
+//						}
+
+						//ABONOS PENDIENTES POR PROPÓSITO. SE SEPARA CADA ABONO POR TIPO DE PROPÓSITO PORQUE CADA PROPÓSITO VA A UN FICHERO DIFERENTE Y ASÍ SE PUEDE 
+						//SEGUIR AGRUPANDO LAS LÍNEAS DE LOS FICHEROS DE FORMA SIMILAR A COMO LO HACÍA CON LOS CONCEPTOS
+						String banco_codigo=(String)banco.get(FacBancoInstitucionBean.C_BANCOS_CODIGO);
+						//Calculamos aquí el idDisquete para poner el mismo identificador en el fichero de Propósito Otras Transferencias y de Propósito SEPA. Esto: ¡¡¡REVISAR!!!
+						Long idDisqueteAbono;
+						FacDisqueteAbonosAdm admDisqueteAbonos=new FacDisqueteAbonosAdm(user);
+						idDisqueteAbono=admDisqueteAbonos.getNuevoID(idInstitucion);
 						
-						conceptos=adminAbono.getConceptosAbonosBancoSjcs(idInstitucion,(String)banco.get(FacBancoInstitucionBean.C_BANCOS_CODIGO));
-						if (conceptos.isEmpty()) continue;
-						listaConceptos=conceptos.elements();
-						while (listaConceptos.hasMoreElements()) {
-							concepto = (String) ((Row)listaConceptos.nextElement()).getRow().get("CONCEPTO");
-							if (concepto == null)
-								concepto = "";
+						//1.-Abonos pendientes con propósito Otras transferencias.
+						boolean tipoPropSEPA=false;
+						abonosBanco=null;
+						Vector propositosOtros=adminAbono.getPropositosAbonosBancosSjcs(idInstitucion,banco_codigo,tipoPropSEPA);
 						
-							abonosBanco=adminAbono.getAbonosBancoSjcs(idInstitucion,(String)banco.get(FacBancoInstitucionBean.C_BANCOS_CODIGO), concepto);
-							nFicherosGenerados = prepararFichero(user, banco, abonosBanco, "000", fcs);
+						if (propositosOtros.isEmpty()) continue;
+						Enumeration listaPropOtros=propositosOtros.elements();
+						while (listaPropOtros.hasMoreElements()) {
+							String propOtros = (String) ((Row)listaPropOtros.nextElement()).getRow().get("IDPROPOTROS");
+						
+							abonosBanco=adminAbono.getAbonosBancoSjcs(idInstitucion,banco_codigo, propOtros,tipoPropSEPA);
+							nFicherosGenerados = prepararFichero(user, banco, abonosBanco, fcs, idDisqueteAbono,tipoPropSEPA);
+
 							if (nFicherosGenerados < 0) {
 								correcto = false;
 							} else {
@@ -373,20 +445,78 @@ public class FicheroBancarioAbonosAction extends MasterAction{
 								cont += nFicherosGenerados;
 							}
 						}
+						
+						//2.-Abonos pendientes con propósito SEPA.
+						tipoPropSEPA=true;
+						Vector propositosSEPA=adminAbono.getPropositosAbonosBancosSjcs(idInstitucion,banco_codigo,tipoPropSEPA);
+						
+						if (propositosSEPA.isEmpty()) continue;
+						Enumeration listaPropSEPA=propositosSEPA.elements();
+						while (listaPropSEPA.hasMoreElements()) {
+							String propSEPA = (String) ((Row)listaPropSEPA.nextElement()).getRow().get("IDPROPSEPA");
+													
+							abonosBanco=adminAbono.getAbonosBancoSjcs(idInstitucion,banco_codigo, propSEPA,tipoPropSEPA);
+
+							nFicherosGenerados = prepararFichero(user, banco, abonosBanco, fcs,idDisqueteAbono, tipoPropSEPA);
+
+							if (nFicherosGenerados < 0) {
+								correcto = false;
+							} else {
+								correcto = true;
+								cont += nFicherosGenerados;
+							}
+						}
+						
 					}
 				}
 			} else {	
+
+				//Se recuperan los propósitos y el sufijo informados en la ventana al generar el fichero
+				String IdSufijo= miForm.getListaSufijoProp().split("#")[0];
+				String IdPropSEPA= miForm.getListaSufijoProp().split("#")[1];
+				String IdPropOtros= miForm.getListaSufijoProp().split("#")[2];
+
 				bancos=adminBancoInst.getBancoMenorComision(idInstitucion);
 				if (!bancos.isEmpty()){
 					bancoMenorComision=((Row)bancos.firstElement()).getRow();
 					abonosBanco=adminAbono.getAbonosBancosMenorComision(idInstitucion,(String)bancoMenorComision.get(FacBancoInstitucionBean.C_BANCOS_CODIGO));
-					nFicherosGenerados = prepararFichero(user, bancoMenorComision, abonosBanco, "000"/*adminParam.getValor(idInstitucion, "FCS", "CONCEPTO_ABONO", "000")*/, fcs);
+					
+					//Calculamos aquí el idDisquete para poner el mismo identificador en el fichero de Propósito Otras Transferencias y de Propósito SEPA. Esto: ¡¡¡REVISAR!!!
+					Long idDisqueteAbono;
+					FacDisqueteAbonosAdm admDisqueteAbonos=new FacDisqueteAbonosAdm(user);
+					idDisqueteAbono=admDisqueteAbonos.getNuevoID(idInstitucion);
+					
+					//1.-Abonos pendientes con propósito Otras transferencias.
+					boolean tipoPropSEPA=false;
+					bancoMenorComision.put("IDSUFIJO", IdSufijo);
+					bancoMenorComision.put("IDPROPOTROS", IdPropOtros);
+
+					nFicherosGenerados = prepararFichero(user, bancoMenorComision, abonosBanco, fcs, idDisqueteAbono,tipoPropSEPA);
+
 					if (nFicherosGenerados < 0) {
 						correcto = false;
 					} else {
 						correcto = true;
 						cont += nFicherosGenerados;
 					}
+					
+					//2.-Abonos pendientes con propósito SEPA.
+					tipoPropSEPA=true;
+					
+					bancoMenorComision.put("IDPROPSEPA", IdPropSEPA);
+					bancoMenorComision.remove("IDPROPOTROS");
+					
+					nFicherosGenerados = prepararFichero(user, bancoMenorComision, abonosBanco, fcs, idDisqueteAbono,tipoPropSEPA);
+
+					if (nFicherosGenerados < 0) {
+						correcto = false;
+					} else {
+						correcto = true;
+						cont += nFicherosGenerados;
+					}
+				
+					
+						
 				} else {
 					bancoMenorComision = new Hashtable();
 				}
@@ -397,13 +527,44 @@ public class FicheroBancarioAbonosAction extends MasterAction{
 					while (listaBancos.hasMoreElements()){
 						banco=((Row)listaBancos.nextElement()).getRow();
 						abonosBanco=adminAbono.getAbonosBanco(idInstitucion,(String)banco.get(FacBancoInstitucionBean.C_BANCOS_CODIGO));
-						nFicherosGenerados = prepararFichero(user, banco, abonosBanco, "000"/*adminParam.getValor(idInstitucion, "FCS", "CONCEPTO_ABONO", "000")*/, fcs);
+												
+						//Calculamos aquí el idDisquete para poner el mismo identificador en el fichero de Propósito Otras Transferencias y de Propósito SEPA. Esto: ¡¡¡REVISAR!!!
+						Long idDisqueteAbono;
+						FacDisqueteAbonosAdm admDisqueteAbonos=new FacDisqueteAbonosAdm(user);
+						idDisqueteAbono=admDisqueteAbonos.getNuevoID(idInstitucion);
+	
+						//1.-Abonos pendientes con propósito Otras transferencias.
+						boolean tipoPropSEPA=false;
+						banco.put("IDSUFIJO", IdSufijo);
+						banco.put("IDPROPOTROS", IdPropOtros);
+	
+						nFicherosGenerados = prepararFichero(user, banco, abonosBanco, fcs, idDisqueteAbono,tipoPropSEPA);
+	
 						if (nFicherosGenerados < 0) {
 							correcto = false;
 						} else {
 							correcto = true;
 							cont += nFicherosGenerados;
 						}
+						
+						//2.-Abonos pendientes con propósito SEPA.
+						tipoPropSEPA=true;
+						
+						banco.put("IDPROPSEPA", IdPropSEPA);
+						banco.remove("IDPROPOTROS");
+						
+						nFicherosGenerados = prepararFichero(user, banco, abonosBanco, fcs, idDisqueteAbono,tipoPropSEPA);
+	
+						if (nFicherosGenerados < 0) {
+							correcto = false;
+						} else {
+							correcto = true;
+							cont += nFicherosGenerados;
+						}
+						
+						
+						
+						
 					}
 				}
 			}
@@ -418,16 +579,27 @@ public class FicheroBancarioAbonosAction extends MasterAction{
 				request.setAttribute("mensaje",mensaje);	
 				
 				resultado = "exitoConString";				
-			}	
+			}else{
+				tx.rollback();
+			}
 		} 
 		catch (Exception e) { 
+			
 			throwExcp("messages.general.error",new String[] {"modulo.facturacion"},e,tx); 
 		}
 		return (resultado);		
 	} //generarFichero()
 	
-	private int prepararFichero (UsrBean user, Hashtable banco, Vector abonosBanco, String sufijo, String fcs) throws Exception
-	{
+	/**
+	 * @param user
+	 * @param banco
+	 * @param abonosBanco
+	 * @param fcs
+	 * @param tipoPropSEPA
+	 * @return
+	 */
+	private int prepararFichero(UsrBean user, Hashtable banco, Vector abonosBanco, String fcs,Long idDisqueteAbono, boolean tipoPropSEPA) throws Exception{
+		
 		// Controles
 		CenInstitucionAdm admInstitucion=new CenInstitucionAdm(user);
 		CenPersonaAdm admPersona=new CenPersonaAdm(user);
@@ -439,24 +611,26 @@ public class FicheroBancarioAbonosAction extends MasterAction{
 		CenDireccionesAdm admDirecciones = new CenDireccionesAdm(user);
 		FacAbonoAdm adminAbono=new FacAbonoAdm(user);
 		GenParametrosAdm paramAdm = new GenParametrosAdm(user);
+		FacSufijoAdm sufijoAdm=new FacSufijoAdm(user);
+		FacPropositosAdm propAdm = new FacPropositosAdm(user);
 		
 		String idInstitucion=user.getLocation();
 		String lenguaje = user.getLanguage();
 		
 		boolean escribirAvisoCuentasIncompletas = false;
 		int cont = 0;
-		boolean correcto;
-		Long idDisqueteAbono;
-
-	    ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+		boolean correcto=true;
+				
+		String sufijo="";
+		
+		ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
 		String prefijoFichero = rp.returnProperty("facturacion.prefijo.ficherosAbonos");
 		
 		if (abonosBanco.isEmpty())
 			return cont;
 			
 		FicheroEmisorAbonoBean emisor=new FicheroEmisorAbonoBean();
-		// Obtenemos el identificador
-		idDisqueteAbono=admDisqueteAbonos.getNuevoID(idInstitucion);
+		
 		// Los datos de la CCC
 		if (banco.get(FacBancoInstitucionBean.C_BANCOS_CODIGO) == null || ((String)banco.get(FacBancoInstitucionBean.C_BANCOS_CODIGO)).equals("") ||
 			banco.get(FacBancoInstitucionBean.C_COD_SUCURSAL) == null || ((String)banco.get(FacBancoInstitucionBean.C_COD_SUCURSAL)).equals("") ||
@@ -522,7 +696,6 @@ public class FicheroBancarioAbonosAction extends MasterAction{
 				receptor.setCodIsoPais((String)((Hashtable)direccionDespacho.get(0)).get("CODISO_PAIS_DESPACHO"));
 			}
 			
-			receptor.setConcepto((fcs.equals("1")) ? (String)datosReceptor.get(FcsPagosJGBean.C_CONCEPTO) : "9");
 			if (fcs.equals("1")) {
 				String sacarLetrado="0";
 				try {
@@ -537,91 +710,217 @@ public class FicheroBancarioAbonosAction extends MasterAction{
 						'-' + ((beanColegiado.getComunitario().equals("0")) ? beanColegiado.getNColegiado() : beanColegiado.getNComunitario()) +
 						'-' + admPersona.obtenerNombreApellidos((String)datosReceptor.get(FacAbonoBean.C_IDPERORIGEN)));
 				}
+				
+				//Si estamos tratando abonos tipo propósito SEPA
+				if(tipoPropSEPA)
+				{
+					//Si el banco es de los incluidos en SEPA
+					if(receptor.getSepa().equals(ClsConstants.DB_TRUE))
+					{
+						if(datosReceptor.get(FcsPagosJGBean.C_IDPROPSEPA)!= null)
+						{
+							Hashtable claves = new Hashtable ();
+							UtilidadesHash.set (claves,FacPropositosBean.C_IDPROPOSITO,datosReceptor.get(FcsPagosJGBean.C_IDPROPSEPA).toString());
+							UtilidadesHash.set (claves,FacPropositosBean.C_TIPOSEPA,"1");
+						
+							Vector vprop = propAdm.select(claves);
+							
+							if(vprop!=null){
+								FacPropositosBean datosProp = (FacPropositosBean) vprop.get(0);
+								receptor.setPropositoSEPA(datosProp.getCodigo());
+							}
+						}
+					//Si el banco no es de los incluidos en SEPA
+					}else{
+						receptor.setPropositoOtros("3"); //Otros Conceptos
+					}	
+				
+				}else{
+					//Si no están informados los propósitos se informan los propósitos por defecto 
+					if(datosReceptor.get(FcsPagosJGBean.C_IDPROPOTROS)!= null)
+					{
+						Hashtable claves = new Hashtable ();
+						UtilidadesHash.set (claves,FacPropositosBean.C_IDPROPOSITO,datosReceptor.get(FcsPagosJGBean.C_IDPROPOTROS).toString());
+						UtilidadesHash.set (claves,FacPropositosBean.C_TIPOSEPA,"0");
+					
+						Vector vprop = propAdm.select(claves);
+						
+						if(vprop!=null){
+							FacPropositosBean datosProp = (FacPropositosBean) vprop.get(0);
+							receptor.setPropositoOtros(datosProp.getCodigo());
+						}
+						
+					}
+				
+				}
+				
+				//Ahora se va a mostrar el sufijo asociado a la cuenta bancaria y el abono
+				if(datosReceptor.get(FacSufijoBean.C_IDSUFIJO)!=null){
+					Vector vsufijo=sufijoAdm.consultaBusqueda(idInstitucion, datosReceptor.get(FacSufijoBean.C_IDSUFIJO).toString(), null, null); 
+					
+					if (vsufijo!=null && vsufijo.size()>0){
+						FacSufijoBean bean = (FacSufijoBean)vsufijo.firstElement();
+						sufijo=bean.getSufijo();
+					}
+				}else{
+			 		 
+					sufijo="000"; //Si no existe sufijo asociado al abono, se pone el sufijo por defecto "000" (que era el que se estaba poniendo antes)
+				}
+
 			} else {
 				receptor.setNombrePago((String)datosReceptor.get(FacAbonoBean.C_MOTIVOS));
+				
+				//Si estamos tratando abonos tipo propósito SEPA
+				if(tipoPropSEPA)
+				{
+					//Si el banco es de los incluidos en SEPA
+					if(receptor.getSepa().equals(ClsConstants.DB_TRUE))
+					{
+						if(banco.get(FcsPagosJGBean.C_IDPROPSEPA)!= null)
+						{
+							Hashtable claves = new Hashtable ();
+							UtilidadesHash.set (claves,FacPropositosBean.C_IDPROPOSITO,banco.get(FcsPagosJGBean.C_IDPROPSEPA).toString());
+							UtilidadesHash.set (claves,FacPropositosBean.C_TIPOSEPA,"1");
+						
+							Vector vprop = propAdm.select(claves);
+							
+							if(vprop!=null){
+								FacPropositosBean datosProp = (FacPropositosBean) vprop.get(0);
+								receptor.setPropositoSEPA(datosProp.getCodigo());
+							}
+						}
+					//Si el banco no es de los incluidos en SEPA
+					}else{
+						receptor.setPropositoOtros("3"); //Otros Conceptos
+					}	
+				
+				}else{
+					//Si no están informados los propósitos se informan los propósitos por defecto 
+					if(banco.get(FcsPagosJGBean.C_IDPROPOTROS)!= null)
+					{
+						Hashtable claves = new Hashtable ();
+						UtilidadesHash.set (claves,FacPropositosBean.C_IDPROPOSITO,banco.get(FcsPagosJGBean.C_IDPROPOTROS).toString());
+						UtilidadesHash.set (claves,FacPropositosBean.C_TIPOSEPA,"0");
+					
+						Vector vprop = propAdm.select(claves);
+						
+						if(vprop!=null){
+							FacPropositosBean datosProp = (FacPropositosBean) vprop.get(0);
+							receptor.setPropositoOtros(datosProp.getCodigo());
+						}
+						
+					}
+				
+				}
+				
+				//Ahora se va a mostrar el sufijo que se seleccionó al generar el fichero
+				if(banco.get(FacSufijoBean.C_IDSUFIJO)!=null){
+					Vector vsufijo=sufijoAdm.consultaBusqueda(idInstitucion, banco.get(FacSufijoBean.C_IDSUFIJO).toString(), null, null); 
+					
+					if (vsufijo!=null && vsufijo.size()>0){
+						FacSufijoBean bean = (FacSufijoBean)vsufijo.firstElement();
+						sufijo=bean.getSufijo();
+					}
+				}else{
+			 		 
+					sufijo="000"; //Si no existe sufijo, se pone el sufijo por defecto "000" (que era el que se estaba poniendo antes)
+				}
+				
+				
+				
 			}
-			
-			receptores.addElement(receptor);						
+
+			receptores.addElement(receptor);
 		}
 		
-		if (sufijo == null)
-			sufijo = "";
+		// Creacion de un fichero de abonos por cada banco
+		int nlineas=0;
 		
-		// Creacion de un fichero de abonos por cada banco restante
-		int nlineas = this.crearFichero(emisor, receptores, escribirAvisoCuentasIncompletas);
-		this.crearFicheroSEPA(emisor, receptores, sufijo);
+		//Si estamos tratando abonos agrupados por propósito de transf. SEPA 
+		//Sólo se hacen aquí las actualizaciones de datos para no meter registros duplicados en bb.d.d. 
+		//REVISAR!! mjm->he puesto este número de líneas porque el letrero de la ventana al consultar la remesa es: número lineas SEPA
+		// lo que hacía antes era guardar el número de líneas del fichero calculado en crearFichero() para el fichero de otros propósitos
+		if(tipoPropSEPA){
+			
+			nlineas =this.crearFicheroSEPA(emisor, receptores, sufijo);
+			
+			// Creacion entrada FAC_DISQUETEABONO
+			Hashtable disqueteAbono=new Hashtable();
+			disqueteAbono.put(FacDisqueteAbonosBean.C_IDINSTITUCION,idInstitucion);
+			disqueteAbono.put(FacDisqueteAbonosBean.C_IDDISQUETEABONO,idDisqueteAbono.toString());
+			disqueteAbono.put(FacDisqueteAbonosBean.C_FECHA,"SYSDATE");
+			disqueteAbono.put(FacDisqueteAbonosBean.C_BANCOS_CODIGO,(String)banco.get(FacBancoInstitucionBean.C_BANCOS_CODIGO));
+			disqueteAbono.put(FacDisqueteAbonosBean.C_NOMBREFICHERO,prefijoFichero+idDisqueteAbono.toString());
+			// Sin extension ya que se emite el fichero antiguo y el nuevo. Se descargaran en un ZIP
+			disqueteAbono.put(FacDisqueteAbonosBean.C_FCS,fcs);
+			disqueteAbono.put(FacDisqueteAbonosBean.C_NUMEROLINEAS, new Integer(nlineas));
+			correcto=admDisqueteAbonos.insert(disqueteAbono);
+			
+			if (!correcto)
+				return -1;
+			
+			// Por cada abono incluido en el disquete, inserto entrada en FAC_ABONOINCLUIDODISQUETE
+			listaReceptores=abonosBanco.elements();
+			while ((correcto)&&(listaReceptores.hasMoreElements())){
+				Hashtable temporal=new Hashtable();
+				temporal=((Row)listaReceptores.nextElement()).getRow();
+				Hashtable abonoDisquete=new Hashtable();
+				abonoDisquete.put(FacAbonoIncluidoEnDisqueteBean.C_IDINSTITUCION,idInstitucion);
+				abonoDisquete.put(FacAbonoIncluidoEnDisqueteBean.C_IDABONO,(String)temporal.get(FacAbonoBean.C_IDABONO));
+				abonoDisquete.put(FacAbonoIncluidoEnDisqueteBean.C_IDDISQUETEABONO,idDisqueteAbono.toString());
+				abonoDisquete.put(FacAbonoIncluidoEnDisqueteBean.C_IMPORTEABONADO,admAbonoDisquete.getImporteAbonado(idInstitucion,(String)temporal.get(FacAbonoBean.C_IDABONO)));
+				double importeAbonado = Double.parseDouble(abonoDisquete.get(FacAbonoIncluidoEnDisqueteBean.C_IMPORTEABONADO).toString());
+				abonoDisquete.put(FacAbonoIncluidoEnDisqueteBean.C_CONTABILIZADO,"N");
+				correcto=admAbonoDisquete.insert(abonoDisquete);
+				
+				if (!correcto) {
+					new ClsExceptions("Error al insertar el abono en el disquete: "+admAbonoDisquete.getError());
+					return -1;
+				}
+					
+				// Obtengo el abono insertado
+				Hashtable htA = new Hashtable();
+				htA.put(FacAbonoBean.C_IDINSTITUCION,idInstitucion);
+				htA.put(FacAbonoBean.C_IDABONO,(String)temporal.get(FacAbonoBean.C_IDABONO));
+				Vector vAbono = adminAbono.selectByPK(htA);
+				FacAbonoBean bAbono = null;
+				if (vAbono!=null && vAbono.size()>0) {
+					bAbono = (FacAbonoBean) vAbono.get(0);
+				}
+				bAbono.setImpPendientePorAbonar(new Double(bAbono.getImpPendientePorAbonar().doubleValue()-importeAbonado));
+				bAbono.setImpTotalAbonado(new Double(bAbono.getImpTotalAbonado().doubleValue() + importeAbonado));
+				bAbono.setImpTotalAbonadoPorBanco(new Double(bAbono.getImpTotalAbonadoPorBanco().doubleValue() + importeAbonado));
+				if (bAbono.getImpPendientePorAbonar().doubleValue()<=0) {
+					// pagado
+					bAbono.setEstado(new Integer(1));
+				} else {
+					if (bAbono.getIdCuenta()!=null) {
+						// pendiente pago banco
+						bAbono.setEstado(new Integer(5));
+					} else {
+						// pendiente pago caja
+						bAbono.setEstado(new Integer(6));
+					}
+				}
+				if (!adminAbono.update(bAbono)){
+					throw new ClsExceptions("Error al actualizar estado e importes del abono: "+adminAbono.getError());
+				}
+		}
+
+		//Se crea el fichero para los abonos de propósitos Otras Transferencias y no
+		//se hacen las actualizaciones de datos para evitar registros duplicados y que se generen los 
+		//ficheros por propósito SEPA
+		}else{
+			nlineas = this.crearFichero(emisor, receptores, escribirAvisoCuentasIncompletas);
+		}
 		cont ++;
 		
 		if (nlineas == 0)
 			return cont;
 			
-		// Creacion entrada FAC_DISQUETEABONO
-		Hashtable disqueteAbono=new Hashtable();
-		disqueteAbono.put(FacDisqueteAbonosBean.C_IDINSTITUCION,idInstitucion);
-		disqueteAbono.put(FacDisqueteAbonosBean.C_IDDISQUETEABONO,idDisqueteAbono.toString());
-		disqueteAbono.put(FacDisqueteAbonosBean.C_FECHA,"SYSDATE");
-		disqueteAbono.put(FacDisqueteAbonosBean.C_BANCOS_CODIGO,(String)banco.get(FacBancoInstitucionBean.C_BANCOS_CODIGO));
-		disqueteAbono.put(FacDisqueteAbonosBean.C_NOMBREFICHERO,prefijoFichero+idDisqueteAbono.toString());
-		// Sin extension ya que se emite el fichero antiguo y el nuevo. Se descargaran en un ZIP
-		disqueteAbono.put(FacDisqueteAbonosBean.C_FCS,fcs);
-		disqueteAbono.put(FacDisqueteAbonosBean.C_NUMEROLINEAS, new Integer(nlineas));
-		correcto=admDisqueteAbonos.insert(disqueteAbono);
-		
-		if (!correcto)
-			return -1;
-		
-		// Por cada abono incluido en el disquete, inserto entrada en FAC_ABONOINCLUIDODISQUETE
-		listaReceptores=abonosBanco.elements();
-		while ((correcto)&&(listaReceptores.hasMoreElements())){
-			Hashtable temporal=new Hashtable();
-			temporal=((Row)listaReceptores.nextElement()).getRow();
-			Hashtable abonoDisquete=new Hashtable();
-			abonoDisquete.put(FacAbonoIncluidoEnDisqueteBean.C_IDINSTITUCION,idInstitucion);
-			abonoDisquete.put(FacAbonoIncluidoEnDisqueteBean.C_IDABONO,(String)temporal.get(FacAbonoBean.C_IDABONO));
-			abonoDisquete.put(FacAbonoIncluidoEnDisqueteBean.C_IDDISQUETEABONO,idDisqueteAbono.toString());
-			abonoDisquete.put(FacAbonoIncluidoEnDisqueteBean.C_IMPORTEABONADO,admAbonoDisquete.getImporteAbonado(idInstitucion,(String)temporal.get(FacAbonoBean.C_IDABONO)));
-			double importeAbonado = Double.parseDouble(abonoDisquete.get(FacAbonoIncluidoEnDisqueteBean.C_IMPORTEABONADO).toString());
-			abonoDisquete.put(FacAbonoIncluidoEnDisqueteBean.C_CONTABILIZADO,"N");
-			correcto=admAbonoDisquete.insert(abonoDisquete);
-			
-			if (!correcto) {
-				new ClsExceptions("Error al insertar el abono en el disquete: "+admAbonoDisquete.getError());
-				return -1;
-			}
-				
-			// RGG 29/05/2009 Cambio de funciones de abono
-			// Obtengo el abono insertado
-			Hashtable htA = new Hashtable();
-			htA.put(FacAbonoBean.C_IDINSTITUCION,idInstitucion);
-			htA.put(FacAbonoBean.C_IDABONO,(String)temporal.get(FacAbonoBean.C_IDABONO));
-			Vector vAbono = adminAbono.selectByPK(htA);
-			FacAbonoBean bAbono = null;
-			if (vAbono!=null && vAbono.size()>0) {
-				bAbono = (FacAbonoBean) vAbono.get(0);
-			}
-			bAbono.setImpPendientePorAbonar(new Double(bAbono.getImpPendientePorAbonar().doubleValue()-importeAbonado));
-			bAbono.setImpTotalAbonado(new Double(bAbono.getImpTotalAbonado().doubleValue() + importeAbonado));
-			bAbono.setImpTotalAbonadoPorBanco(new Double(bAbono.getImpTotalAbonadoPorBanco().doubleValue() + importeAbonado));
-			if (bAbono.getImpPendientePorAbonar().doubleValue()<=0) {
-				// pagado
-				bAbono.setEstado(new Integer(1));
-			} else {
-				if (bAbono.getIdCuenta()!=null) {
-					// pendiente pago banco
-					bAbono.setEstado(new Integer(5));
-				} else {
-					// pendiente pago caja
-					bAbono.setEstado(new Integer(6));
-				}
-			}
-			if (!adminAbono.update(bAbono)){
-				throw new ClsExceptions("Error al actualizar estado e importes del abono: "+adminAbono.getError());
-			}
-		}
-		
 		return cont;
-	} //prepararFichero()
-	
+	}	
+
 	/** 
 	 *  Funcion que genera las lineas del fichero e inserta en el fichero.
 	 * @param  bEmisor 		- bean que contiene los datos del emisor.
@@ -737,8 +1036,12 @@ public class FicheroBancarioAbonosAction extends MasterAction{
 				sPoblacionBeneficiario = completarEspacios ("Poblacion", bReceptor.getPoblacion(), "I", " ", 36, true);
 				sMotivos = completarEspacios ("NombrePago", bReceptor.getNombrePago(), "I", " ", 36, true);
 				
-				if ((bReceptor.getConcepto()!=null)&& (bReceptor.getConcepto()!="0")){
-					sConcepto = completarEspacios ("Concepto", bReceptor.getConcepto(), "I", " ", 1, true);
+//				if ((bReceptor.getConcepto()!=null)&& (bReceptor.getConcepto()!="0")){
+//					sConcepto = completarEspacios ("Concepto", bReceptor.getConcepto(), "I", " ", 1, true);
+//				}
+				
+				if ((bReceptor.getPropositoOtros()!=null)&& (bReceptor.getPropositoOtros()!="0")){
+					sConcepto = completarEspacios ("Concepto", bReceptor.getPropositoOtros(), "I", " ", 1, true);
 				}
 				
 				nlinea ++;
@@ -902,7 +1205,7 @@ public class FicheroBancarioAbonosAction extends MasterAction{
 					registrosBenefSEPA[nRegistrosBenefSEPA].append(completarEspacios("NombrePago", bReceptor.getNombrePago() + "- " + bReceptor.getConcepto(), "I", " ", 140, true)); //concepto
 					registrosBenefSEPA[nRegistrosBenefSEPA].append(rellenarEspacios(35)); //identificacion de la instruccion
 					registrosBenefSEPA[nRegistrosBenefSEPA].append("    "); //tipo de transferencia
-					registrosBenefSEPA[nRegistrosBenefSEPA].append("OTHR"); //proposito de transferencia
+					registrosBenefSEPA[nRegistrosBenefSEPA].append(bReceptor.getPropositoSEPA()); //proposito de transferencia
 					registrosBenefSEPA[nRegistrosBenefSEPA].append(rellenarEspacios(99)); //libre
 					
 					nRegistrosBenefSEPA ++;
@@ -926,9 +1229,9 @@ public class FicheroBancarioAbonosAction extends MasterAction{
 							bReceptor.getPoblacion() + "  " + 
 							bReceptor.getProvincia() + "  " + 
 							bReceptor.getPais(), "I", " ", 105, true)); //direccion completa y pais del beneficiario
-					registrosBenefOtros[nRegistrosBenefOtros].append(completarEspacios("NombrePago", bReceptor.getNombrePago() + "- " + bReceptor.getConcepto(), "I", " ", 72, true)); //concepto
+					registrosBenefOtros[nRegistrosBenefOtros].append(completarEspacios("NombrePago", bReceptor.getNombrePago() + "- " + bReceptor.getPropositoOtros(), "I", " ", 72, true)); //concepto
 					registrosBenefOtros[nRegistrosBenefOtros].append(completarEspacios("Numero abono", bReceptor.getNumeroAbono(), "I", " ", 13, false)); //referencia de la transferencia para el beneficiario
-					registrosBenefOtros[nRegistrosBenefOtros].append("3"); //proposito de transferencia
+					registrosBenefOtros[nRegistrosBenefOtros].append(bReceptor.getPropositoOtros()); //proposito de transferencia
 					registrosBenefOtros[nRegistrosBenefOtros].append(rellenarEspacios(268)); //libre
 					
 					nRegistrosBenefOtros ++;
@@ -997,7 +1300,7 @@ public class FicheroBancarioAbonosAction extends MasterAction{
 			throwExcp("messages.general.error",new String[] {"modulo.facturacion"},e,null); 
 		}
 		if (resul){
-			return nRegistrosBenefSEPA+2 + nRegistrosBenefOtros+2 +2;
+			return nRegistrosBenefSEPA+2 + nRegistrosBenefOtros+2;
 		}else{
 			return 0;
 		}
@@ -1154,7 +1457,7 @@ public class FicheroBancarioAbonosAction extends MasterAction{
 		
 		return "informeRemesa"; 
 	}
-	
+		
 }
 
 

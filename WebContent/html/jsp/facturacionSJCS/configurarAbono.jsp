@@ -54,16 +54,16 @@
 	String idEstadoPagosJG = request.getAttribute("idEstadoPagosJG")==null?"":(String)request.getAttribute("idEstadoPagosJG");
 	
 	String bdCuenta = (String)request.getAttribute("cuenta");
-	String bdConcepto = (String)request.getAttribute("concepto");
+// 	String bdConcepto = (String)request.getAttribute("concepto");
 	boolean guardable = false;
 	
 	if ((bdCuenta==null) ||(bdCuenta.equalsIgnoreCase(""))){
 		bdCuenta = (String)request.getAttribute("paramIdCuenta");
 	}
 	
-	if ((bdConcepto==null)||(bdConcepto.equalsIgnoreCase(""))){
-		bdConcepto = (String)request.getAttribute("paramConcepto");
-	}
+// 	if ((bdConcepto==null)||(bdConcepto.equalsIgnoreCase(""))){
+// 		bdConcepto = (String)request.getAttribute("paramConcepto");
+// 	}
 	
 	if (modo!=null && 
 		modo.equalsIgnoreCase("edicion") &&
@@ -116,8 +116,10 @@
 		<siga:ConjCampos leyenda="factSJCS.abonos.configuracion.literal.conceptoTitulo">
 			<table class="tablaCampos" >
 				<tr>
-					<td class="labelText"  align="right" width="200px">
+					<td class="labelText"  align="right">
 						<siga:Idioma key="factSJCS.abonos.configuracion.literal.proposito.SEPA"/>
+					</td>
+					<td>
 						<bean:define id="listaPropositosSEPA" name="listaPropositosSEPA" scope="request"/>
 						<html:select styleId="comboPropositosSEPA" property="idpropSEPA" value="${configuracionAbonosForm.idpropSEPA}" styleClass="boxCombo" style="width:200px;" disabled="<%=combodeshabilitado%>">
 						<s:if test="${empty configuracionAbonosForm.idpropSEPA}">
@@ -129,8 +131,10 @@
 						</html:select>	
 					
 					</td>
-					<td class="labelText"  align="right" width="200px">
+					<td class="labelText"  align="right">
 						<siga:Idioma key="factSJCS.abonos.configuracion.literal.proposito.otras"/>
+					</td>
+					<td>
 						<bean:define id="listaPropositosOtros" name="listaPropositosOtros" scope="request"/>
 						<html:select styleId="comboPropositosOtros" property="idpropOtros" value="${configuracionAbonosForm.idpropOtros}" styleClass="boxCombo" style="width:200px;" disabled="<%=combodeshabilitado%>">
 						<s:if test="${empty configuracionAbonosForm.idpropOtros}">
@@ -250,7 +254,7 @@
 								<bean:define id="listaSufijos" name="listaSufijos" scope="request"/>	
 								<c:set var="idsufijoBanco" value="<%=idsufijoBancoIni%>"></c:set> <!-- idsufijo informado en la cuenta bancaria sjcs -->
 								<c:set var="valorSeleccionadoCombo" value="${configuracionAbonosForm.idsufijo>0&&cuentaChecked?configuracionAbonosForm.idsufijo:idsufijoBanco}"></c:set>
-								<html:select styleId="<%=idComboSuf%>" name = "sufijoCmb" property="idSufijosjcs" value="${valorSeleccionadoCombo}" styleClass="boxCombo" disabled="<%=combodeshabilitado%>" style="width:200px;">
+								<html:select styleId="<%=idComboSuf%>" name = "sufijoCmb" property="idSufijo" value="${valorSeleccionadoCombo}" styleClass="boxCombo" disabled="<%=combodeshabilitado%>" style="width:200px;">
 								<s:if test="${empty valorSeleccionadoCombo}">
 									<html:option value=""><c:out value=""/></html:option>
 								</s:if>
@@ -302,8 +306,8 @@
 					
  					//Pasamos el sufijo de esa cuenta
  					var idSufijoSel=jQuery("#comboSufijos_" + document.configuracionAbonosForm.cuenta.value).val();
-					
- 					if(idSufijoSel<1){
+
+ 					if(!idSufijoSel){
 						mensaje = "<siga:Idioma key='facturacion.sufijos.message.errorCuentaBancariaSufijoSJCS'/>";
  						alert(mensaje);
  						fin();

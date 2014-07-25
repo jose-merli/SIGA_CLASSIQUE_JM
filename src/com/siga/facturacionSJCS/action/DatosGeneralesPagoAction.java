@@ -57,6 +57,8 @@ import com.siga.beans.FacLineaAbonoBean;
 import com.siga.beans.FacPagoAbonoEfectivoAdm;
 import com.siga.beans.FacPagosPorCajaAdm;
 import com.siga.beans.FacPropositosAdm;
+import com.siga.beans.FacSufijoAdm;
+import com.siga.beans.FacSufijoBean;
 import com.siga.beans.FcsAplicaMovimientosVariosAdm;
 import com.siga.beans.FcsAplicaMovimientosVariosBean;
 import com.siga.beans.FcsCobrosRetencionJudicialAdm;
@@ -283,7 +285,7 @@ public class DatosGeneralesPagoAction extends MasterAction {
 				Vector v = pagosAdm.selectByPK(hash);
 				if (v!=null && v.size()>0){
 					FcsPagosJGBean bean = (FcsPagosJGBean)v.firstElement();
-					sConcepto = bean.getConcepto();
+//					sConcepto = bean.getConcepto();
 				 	sCuenta = bean.getBancosCodigo();
 				 	idpropSEPA=bean.getIdpropSEPA();
 				 	idpropOtros=bean.getIdpropOtros();
@@ -291,10 +293,10 @@ public class DatosGeneralesPagoAction extends MasterAction {
 				 	
 				} else {
 					GenParametrosAdm paramAdm = new GenParametrosAdm(usr);
-					sConcepto = paramAdm.getValor(miform.getIdInstitucion(), "FCS", "CONCEPTO_ABONO", "");
-					if (!sConcepto.equalsIgnoreCase("1") && !sConcepto.equalsIgnoreCase("8") && !sConcepto.equalsIgnoreCase("9")) {
-						throw new SIGAException("administracion.parametrosGenerales.error.conceptoAbono");
-					}
+//					sConcepto = paramAdm.getValor(miform.getIdInstitucion(), "FCS", "CONCEPTO_ABONO", "");
+//					if (!sConcepto.equalsIgnoreCase("1") && !sConcepto.equalsIgnoreCase("8") && !sConcepto.equalsIgnoreCase("9")) {
+//						throw new SIGAException("administracion.parametrosGenerales.error.conceptoAbono");
+//					}
 					sCuenta = paramAdm.getValor(miform.getIdInstitucion(), "FCS", "BANCOS_CODIGO_ABONO", "");
 					
 					//El concepto pasa a ser:propósitos
@@ -312,8 +314,11 @@ public class DatosGeneralesPagoAction extends MasterAction {
 					//En bbdd guardamos el idproposito
 					idpropOtros= propAdm.selectIdPropositoPorCodigo(paramPropOtros);
 					
-					
-					
+					//Se guarda el sufijo "000" como sufijo por defecto
+		 		 	FacSufijoAdm sufAdm=new FacSufijoAdm(usr);
+		 		 	FacSufijoBean sufDef= (FacSufijoBean) sufAdm.consultaBusqueda(pagosBean.getIdInstitucion().toString(), null, "000", null).firstElement();
+		 		 	idsufijo=(Integer.parseInt(sufDef.getSufijo()));
+	
 				}
 				
 				pagosBean.setConcepto(sConcepto);
@@ -1132,7 +1137,7 @@ public class DatosGeneralesPagoAction extends MasterAction {
 				registro.put(FcsPagosJGBean.C_BANCOS_CODIGO, paramAdm.getValor(
 						idInstitucion, "FCS", "BANCOS_CODIGO_ABONO", ""));
 				
-				//Se inserta el campo idSufijo con el valor null cuando se configure el abono se actualizará este valor en bb.dd.			
+				//Se inserta el campo idSufijo con el valor "" cuando se configure el abono se actualizará este valor en bb.dd.			
 				registro.put(FcsPagosJGBean.C_IDSUFIJO, "");
 				
 				UtilidadesHash.set(registro, FcsPagosJGBean.C_IMPORTEMINIMO,

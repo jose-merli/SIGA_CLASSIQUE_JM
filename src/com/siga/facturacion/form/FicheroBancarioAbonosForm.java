@@ -31,7 +31,8 @@ public class FicheroBancarioAbonosForm extends MasterForm{
 	private String abonosHasta;
 	private String importesDesde;
 	private String importesHasta;
-
+	String listaSufijoProp;
+	
 	public String getSjcs() {
 		return sjcs;
 	}
@@ -126,5 +127,12 @@ public class FicheroBancarioAbonosForm extends MasterForm{
 			e.printStackTrace();
 		}
 	}	
+	
+	public String getListaSufijoProp() {
+		return listaSufijoProp;
+	}
+	public void setListaSufijoProp(String listaSufijoProp) {
+		this.listaSufijoProp = listaSufijoProp;
+	}
 	
 }
