@@ -32,7 +32,6 @@
 	
 	String importeTotal         = UtilidadesHash.getString(h,"IMPORTETOTAL")==null? "":UtilidadesHash.getString(h,"IMPORTETOTAL");
 	String numOrdenes           = UtilidadesHash.getString(h,"NUMORDENES")==null? "":UtilidadesHash.getString(h,"NUMORDENES");
-	String numRegistros         = UtilidadesHash.getString(h,"NUMREGISTROS")==null? "":UtilidadesHash.getString(h,"NUMREGISTROS");
 	String fechaCreacionFichero = UtilidadesHash.getString(h,"FECHACREACIONFICHERO")==null? "":UtilidadesHash.getString(h,"FECHACREACIONFICHERO");
 	String fechaEmisionOrdenes  = UtilidadesHash.getString(h,"FECHAEMISIONORDENES")==null? "":UtilidadesHash.getString(h,"FECHAEMISIONORDENES");
 	String nombreInstitucion    = UtilidadesHash.getString(h,"NOMBREINSTITUCION")==null? "":UtilidadesHash.getString(h,"NOMBREINSTITUCION");
@@ -105,14 +104,6 @@
 							</td>
 							<td class="boxConsultaNumber">
 								<%=numOrdenes%>
-							</td>
-						</tr>
-						<tr>
-							<td class="boxConsulta">
-								<siga:Idioma key="facturacion.ficheroBancarioPagos.literal.nLineasSEPA"/>:
-							</td>
-							<td class="boxConsultaNumber">
-								<%=numRegistros%>
 							</td>
 						</tr>
 						<tr>
