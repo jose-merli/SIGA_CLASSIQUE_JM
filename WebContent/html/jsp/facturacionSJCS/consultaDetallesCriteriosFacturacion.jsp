@@ -22,7 +22,7 @@
 <%@ page import="com.siga.administracion.SIGAConstants"%>
 <%@ page import="com.atos.utils.*"%>
 <%@ page import="com.siga.beans.*"%>
-<%@ page import = "com.siga.Utilidades.*"%>
+<%@ page import="com.siga.Utilidades.*"%>
 <%@ page import="java.util.Properties"%>
 <%@ page import="java.util.Vector"%>
 <%@ page import="java.util.Hashtable"%>
@@ -132,22 +132,22 @@
 %>
 			  		<tr>
 			  			<td class="labelText"><siga:Idioma key="<%=(String)hitos.get(String.valueOf(ClsConstants.HITO_GENERAL_TURNO))%>"/></td>
-						<td class="labelTextNum" style="text-align:right"><%=UtilidadesNumero.formatoCampo(importeOficio.doubleValue())%>&nbsp;&euro;</td>
+						<td class="labelTextNum" style="text-align:right"><%=UtilidadesString.formatoImporte(importeOficio.doubleValue())%>&nbsp;&euro;</td>
 					</tr>
 						
 					<tr>
 						<td class="labelText"><siga:Idioma key="<%=(String)hitos.get(String.valueOf(ClsConstants.HITO_GENERAL_GUARDIA))%>"/></td>
-						<td class="labelTextNum" style="text-align:right"><%=UtilidadesNumero.formatoCampo(importeGuardia.doubleValue())%>&nbsp;&euro;</td>
+						<td class="labelTextNum" style="text-align:right"><%=UtilidadesString.formatoImporte(importeGuardia.doubleValue())%>&nbsp;&euro;</td>
 					</tr>
 					
 					<tr>
 						<td class="labelText"><siga:Idioma key="<%=(String)hitos.get(String.valueOf(ClsConstants.HITO_GENERAL_SOJ))%>"/></td>
-						<td class="labelTextNum" style="text-align:right"><%=UtilidadesNumero.formatoCampo(importeSOJ.doubleValue())%>&nbsp;&euro;</td>
+						<td class="labelTextNum" style="text-align:right"><%=UtilidadesString.formatoImporte(importeSOJ.doubleValue())%>&nbsp;&euro;</td>
 					</tr>
 					
 					<tr>
 						<td class="labelText"><siga:Idioma key="<%=(String)hitos.get(String.valueOf(ClsConstants.HITO_GENERAL_EJG))%>"/></td>
-						<td class="labelTextNum" style="text-align:right"><%=UtilidadesNumero.formatoCampo(importeEJG.doubleValue())%>&nbsp;&euro;</td>
+						<td class="labelTextNum" style="text-align:right"><%=UtilidadesString.formatoImporte(importeEJG.doubleValue())%>&nbsp;&euro;</td>
 					</tr>			
 <%		
 				} // for
@@ -162,7 +162,7 @@
 				<table width="100%">
 					<tr>
 						<td class="labelTextNum" align="right">
-							<b><siga:Idioma key="factSJCS.datosFacturacion.literal.total"/>&nbsp;&nbsp;<%=UtilidadesNumero.formatoCampo(valorFinal)%> &euro;</b>
+							<b><siga:Idioma key="factSJCS.datosFacturacion.literal.total"/>&nbsp;&nbsp;<%=UtilidadesString.formatoImporte(valorFinal)%> &euro;</b>
 						</td>
 					</tr>
 				</table>
