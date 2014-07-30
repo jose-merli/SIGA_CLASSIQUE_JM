@@ -109,17 +109,18 @@ public class FacSufijoAdm extends MasterBeanAdmVisible {
 	 * @return
 	 * @throws ClsExceptions
 	 */
-	public Vector consultaBusqueda(String idInstitucion, String idSufijo, String sufijo, String concepto) throws ClsExceptions{
+	public Vector consultaBusqueda(FacSufijoBean datos) throws ClsExceptions{
 		Vector Vsufijos = null;
 		try {
-			String where = " WHERE "+PysProductosBean.C_IDINSTITUCION+" = "+idInstitucion;
-			if(idSufijo!=null && !idSufijo.trim().equals("")) 
-				where += " AND "+FacSufijoBean.C_IDSUFIJO+" = "+idSufijo;
-			if(sufijo!=null && !sufijo.trim().equals("")) 
-				where += " AND "+ComodinBusquedas.prepararSentenciaCompleta(sufijo.trim(),FacSufijoBean.C_SUFIJO);
-			if(concepto!=null && !concepto.trim().equals(""))
-				where += " AND "+ComodinBusquedas.prepararSentenciaCompleta(concepto.trim(),FacSufijoBean.C_CONCEPTO );
-					    				
+			String where = " WHERE "+FacSufijoBean.C_IDINSTITUCION+" = "+datos.getIdInstitucion();
+			if(datos.getIdSufijo()!=null&&(datos.getIdSufijo()>0)) 
+				where += " AND "+FacSufijoBean.C_IDSUFIJO+" = "+datos.getIdSufijo();
+			if(datos.getSufijo()!=null&&(!datos.getSufijo().isEmpty())) 
+				where += " AND "+ComodinBusquedas.prepararSentenciaCompleta(datos.getSufijo().trim(),FacSufijoBean.C_SUFIJO);
+			if((datos.getConcepto()!=null)&&(!datos.getConcepto().isEmpty()))
+				where += " AND "+ComodinBusquedas.prepararSentenciaCompleta(datos.getConcepto().trim(),FacSufijoBean.C_CONCEPTO );
+			if((datos.getDefecto()!=null)&&(!datos.getDefecto().isEmpty())) 
+				where += " AND "+FacSufijoBean.C_DEFECTO+" = "+datos.getDefecto();		    				
 			Vsufijos = this.selectNLS(where);
 		} catch (Exception e){
 			throw new ClsExceptions(e,e.getMessage());

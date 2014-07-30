@@ -253,7 +253,7 @@
 								<td align="center">
 								<bean:define id="listaSufijos" name="listaSufijos" scope="request"/>	
 								<c:set var="idsufijoBanco" value="<%=idsufijoBancoIni%>"></c:set> <!-- idsufijo informado en la cuenta bancaria sjcs -->
-								<c:set var="valorSeleccionadoCombo" value="${configuracionAbonosForm.idsufijo>0&&cuentaChecked?configuracionAbonosForm.idsufijo:idsufijoBanco}"></c:set>
+								<c:set var="valorSeleccionadoCombo" value="${configuracionAbonosForm.idsufijo!=null&&cuentaChecked?configuracionAbonosForm.idsufijo:idsufijoBanco}"></c:set>
 								<html:select styleId="<%=idComboSuf%>" name = "sufijoCmb" property="idSufijo" value="${valorSeleccionadoCombo}" styleClass="boxCombo" disabled="<%=combodeshabilitado%>" style="width:200px;">
 								<s:if test="${empty valorSeleccionadoCombo}">
 									<html:option value=""><c:out value=""/></html:option>

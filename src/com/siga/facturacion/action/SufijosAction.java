@@ -42,14 +42,24 @@ public class SufijosAction extends MasterAction {
 			UsrBean user=(UsrBean)request.getSession().getAttribute("USRBEAN");	
 			
 			FacSufijoAdm sufijoAdm = new FacSufijoAdm (this.getUserBean(request));
+			FacSufijoBean sufijoBean = new FacSufijoBean ();
 			Vector Vsufijos;
 			
 			//Pasamos el campo idSufijo porque es clave y por si estamos buscando un sufijo con espacios para que lo encuentre
+			sufijoBean.setIdInstitucion(Integer.parseInt(user.getLocation()));
+
 			if(miForm.getIdSufijo()!=null)
-				Vsufijos = sufijoAdm.consultaBusqueda(user.getLocation(),miForm.getIdSufijo().toString(),miForm.getSufijo(), miForm.getConcepto());
-			else
-				Vsufijos = sufijoAdm.consultaBusqueda(user.getLocation(),null,miForm.getSufijo(), miForm.getConcepto());
-			
+			{	
+				sufijoBean.setIdSufijo(miForm.getIdSufijo());
+				sufijoBean.setSufijo(miForm.getSufijo());
+				sufijoBean.setConcepto(miForm.getConcepto());
+				
+				Vsufijos = sufijoAdm.consultaBusqueda(sufijoBean);
+			}else{
+				sufijoBean.setSufijo(miForm.getSufijo());
+				sufijoBean.setConcepto(miForm.getConcepto());
+				Vsufijos = sufijoAdm.consultaBusqueda(sufijoBean);
+			}
 			request.setAttribute("Vsufijos", Vsufijos);
 		} 
 		catch (Exception e) { 

@@ -51,6 +51,7 @@ import com.siga.beans.CriteriosPagosBean;
 import com.siga.beans.FacAbonoAdm;
 import com.siga.beans.FacAbonoBean;
 import com.siga.beans.FacBancoInstitucionAdm;
+import com.siga.beans.FacBancoInstitucionBean;
 import com.siga.beans.FacFacturaAdm;
 import com.siga.beans.FacLineaAbonoAdm;
 import com.siga.beans.FacLineaAbonoBean;
@@ -314,11 +315,24 @@ public class DatosGeneralesPagoAction extends MasterAction {
 					//En bbdd guardamos el idproposito
 					idpropOtros= propAdm.selectIdPropositoPorCodigo(paramPropOtros);
 					
-					//Se guarda el sufijo "000" como sufijo por defecto
-		 		 	FacSufijoAdm sufAdm=new FacSufijoAdm(usr);
-		 		 	FacSufijoBean sufDef= (FacSufijoBean) sufAdm.consultaBusqueda(pagosBean.getIdInstitucion().toString(), null, "000", null).firstElement();
-		 		 	idsufijo=(Integer.parseInt(sufDef.getSufijo()));
-	
+					//Se guarda el sufijo sjcs asignado al banco por defecto
+		 		 	FacBancoInstitucionAdm facBancoInstitucionAdm= new FacBancoInstitucionAdm(usr);
+					
+				    Hashtable codigos = new Hashtable();
+		 		 	codigos.put(new Integer(1),miform.getIdInstitucion());
+					String whereBanc = " WHERE IDINSTITUCION = :1";
+					codigos.put(new Integer(2),sCuenta);
+					whereBanc +=       " AND BANCOS_CODIGO = :2"; 
+					Vector vc=(Vector)facBancoInstitucionAdm.selectBind(whereBanc,codigos);
+					
+					if(vc == null || vc.size()==0)
+					    throw new ClsExceptions("No se ha encontrado la cuenta contable");
+					
+					if(((FacBancoInstitucionBean) vc.get(0)).getIdsufijosjcs()!=null){
+						idsufijo=((FacBancoInstitucionBean) vc.get(0)).getIdsufijosjcs();
+					}else{
+						idsufijo=null;
+					}
 				}
 				
 				pagosBean.setConcepto(sConcepto);

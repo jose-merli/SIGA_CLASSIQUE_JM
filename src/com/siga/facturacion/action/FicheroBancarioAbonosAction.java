@@ -612,6 +612,7 @@ public class FicheroBancarioAbonosAction extends MasterAction{
 		FacAbonoAdm adminAbono=new FacAbonoAdm(user);
 		GenParametrosAdm paramAdm = new GenParametrosAdm(user);
 		FacSufijoAdm sufijoAdm=new FacSufijoAdm(user);
+		FacSufijoBean sufijoBean=new FacSufijoBean();
 		FacPropositosAdm propAdm = new FacPropositosAdm(user);
 		
 		String idInstitucion=user.getLocation();
@@ -755,16 +756,31 @@ public class FicheroBancarioAbonosAction extends MasterAction{
 				}
 				
 				//Ahora se va a mostrar el sufijo asociado a la cuenta bancaria y el abono
-				if(datosReceptor.get(FacSufijoBean.C_IDSUFIJO)!=null){
-					Vector vsufijo=sufijoAdm.consultaBusqueda(idInstitucion, datosReceptor.get(FacSufijoBean.C_IDSUFIJO).toString(), null, null); 
+				if(datosReceptor.get(FacBancoInstitucionBean.C_IDSUFIJO)!=null){
 					
-					if (vsufijo!=null && vsufijo.size()>0){
-						FacSufijoBean bean = (FacSufijoBean)vsufijo.firstElement();
-						sufijo=bean.getSufijo();
-					}
+					sufijoBean=null;
+					sufijoBean.setIdInstitucion(Integer.parseInt(idInstitucion));
+					sufijoBean.setIdSufijo((Integer) (datosReceptor.get(FacBancoInstitucionBean.C_IDSUFIJO)));
+
 				}else{
-			 		 
-					sufijo="000"; //Si no existe sufijo asociado al abono, se pone el sufijo por defecto "000" (que era el que se estaba poniendo antes)
+
+					sufijoBean=null;
+					//Se pone (si existe) el idsufijosjcs asociado al banco sino se seleccionó ninguno para el abono
+					if(banco.get(FacBancoInstitucionBean.C_IDSUFIJOSJCS)!=null){
+						sufijoBean.setIdSufijo((Integer) (banco.get(FacBancoInstitucionBean.C_IDSUFIJOSJCS)));
+					
+					//Si el banco no tiene sufijo sjcs se pone el que tenga la institución por defecto
+					}else{
+						sufijoBean.setDefecto("1");
+					}
+					sufijoBean.setIdInstitucion(Integer.parseInt(idInstitucion));
+				}
+				
+				Vector vsufijo=sufijoAdm.consultaBusqueda(sufijoBean); 
+					
+				if (vsufijo!=null && vsufijo.size()>0){
+					FacSufijoBean bean = (FacSufijoBean)vsufijo.firstElement();
+					sufijo=bean.getSufijo();
 				}
 
 			} else {
@@ -815,19 +831,24 @@ public class FicheroBancarioAbonosAction extends MasterAction{
 				
 				//Ahora se va a mostrar el sufijo que se seleccionó al generar el fichero
 				if(banco.get(FacSufijoBean.C_IDSUFIJO)!=null){
-					Vector vsufijo=sufijoAdm.consultaBusqueda(idInstitucion, banco.get(FacSufijoBean.C_IDSUFIJO).toString(), null, null); 
-					
-					if (vsufijo!=null && vsufijo.size()>0){
-						FacSufijoBean bean = (FacSufijoBean)vsufijo.firstElement();
-						sufijo=bean.getSufijo();
-					}
+				
+					sufijoBean=null;
+					sufijoBean.setIdInstitucion(Integer.parseInt(idInstitucion));
+					sufijoBean.setIdSufijo((Integer) (datosReceptor.get(FacBancoInstitucionBean.C_IDSUFIJO)));
+				
 				}else{
 			 		 
-					sufijo="000"; //Si no existe sufijo, se pone el sufijo por defecto "000" (que era el que se estaba poniendo antes)
+					sufijoBean=null;
+					sufijoBean.setIdInstitucion(Integer.parseInt(idInstitucion));
+					sufijoBean.setDefecto("1");
 				}
 				
-				
-				
+				Vector vsufijo=sufijoAdm.consultaBusqueda(sufijoBean); 
+					
+				if (vsufijo!=null && vsufijo.size()>0){
+					FacSufijoBean bean = (FacSufijoBean)vsufijo.firstElement();
+					sufijo=bean.getSufijo();
+				}
 			}
 
 			receptores.addElement(receptor);
