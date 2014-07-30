@@ -239,7 +239,10 @@
 					            "Guardar y Cerrar": function() {
 					            	configurarFichNoSJCS();
 					            	jQuery( this ).dialog( "close" );
-					            }
+					            },
+					            "Cerrar": function() {
+						              jQuery( this ).dialog( "close" );
+						            }
 					          }
 					    }
 				);

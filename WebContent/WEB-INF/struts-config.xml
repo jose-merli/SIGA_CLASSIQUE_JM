@@ -3464,6 +3464,7 @@
 			<forward name="inicio" path="/html/jsp/facturacion/cuentasBancarias/busquedaCuentasBancarias.jsp"/>
 			<forward name="listado" path="/html/jsp/facturacion/cuentasBancarias/listadoCuentasBancarias.jsp"/>
 			<forward name="editar" path="/html/jsp/facturacion/cuentasBancarias/editarCuentaBancaria.jsp"/>
+			<forward name="relacionarNuevaSerie" path="/html/jsp/facturacion/cuentasBancarias/nuevaAsignacionConceptos.jsp"/>
 			
 		</action>			
 		

@@ -76,6 +76,7 @@ public class CuentasBancariasForm extends MasterForm {
 	String nosjcs;
 	Integer idSufijo;
 	Integer idSufijosjcs;
+	String idSerieFacturacion;
 	
 	
 	String bancoNombre;
@@ -87,7 +88,7 @@ public class CuentasBancariasForm extends MasterForm {
 	String BIC;
 	
 	String listaSeries;
-	
+	String bancosCodigo;
 
 	
 //	FIXME Por prisas no hemos creado Formulario de series de facturacion. Deberia ser una lis de Forms 
@@ -293,4 +294,19 @@ public class CuentasBancariasForm extends MasterForm {
 		this.listaSeries = listaSeries;
 	}
 
+	
+	public String getIdSerieFacturacion() {
+		return idSerieFacturacion;
+	}
+	public void setIdSerieFacturacion(String idSerieFacturacion) {
+		this.idSerieFacturacion = idSerieFacturacion;
+	}
+	public String getBancosCodigo() {
+		return bancosCodigo;
+	}
+	public void setBancosCodigo(String bancosCodigo) {
+		this.bancosCodigo = bancosCodigo;
+	}
+	
+	
 }

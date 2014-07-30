@@ -623,7 +623,7 @@
 				   name="tablaResultados"
 				   border="1"
 				   columnNames="facturacion.devolucionManual.seleccion,facturacion.ficheroBancarioAbonos.literal.banco,censo.consultaDatosBancarios.literal.cuentaBancaria,facturacion.sufijos.literal.sufijo,Facturacion.bancos.comisionPropia,Facturacion.bancos.comisionAjena,facturacion.cuentasBancarias.uso"
-				   columnSizes="5,32,18,21,8,8,8"
+				   columnSizes="5,30,20,21,8,8,8"
 				   modal="P">
 				   				   
 				<%

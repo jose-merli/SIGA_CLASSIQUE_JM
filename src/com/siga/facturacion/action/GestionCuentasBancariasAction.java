@@ -14,6 +14,7 @@ import org.apache.struts.action.ActionMapping;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.redabogacia.sigaservices.app.autogen.model.CenBancos;
+import org.redabogacia.sigaservices.app.autogen.model.FacSeriefacturacionBanco;
 import org.redabogacia.sigaservices.app.services.fac.CuentasBancariasService;
 import org.redabogacia.sigaservices.app.vo.BancoVo;
 import org.redabogacia.sigaservices.app.vo.fac.CuentaBancariaVo;
@@ -27,6 +28,8 @@ import com.siga.beans.CenBancosAdm;
 import com.siga.beans.CenBancosBean;
 import com.siga.beans.CenPaisAdm;
 import com.siga.beans.CenPaisBean;
+import com.siga.beans.FacSerieFacturacionAdm;
+import com.siga.beans.FacSerieFacturacionBean;
 import com.siga.beans.FacSufijoAdm;
 import com.siga.beans.FacSufijoBean;
 import com.siga.comun.VoUiService;
@@ -82,11 +85,14 @@ public class GestionCuentasBancariasAction extends MasterAction {
 					}else if ( accion.equalsIgnoreCase("modificar")){
 						mapDestino = modificar(mapping, miForm, request, response);
 					}else if ( accion.equalsIgnoreCase("refrescar")){
-						mapDestino = refrescar(mapping, miForm, request, response);
-					}		
-					
-					
-					else {
+						mapDestino = refrescar(mapping, miForm, request, response);		
+					}else if ( accion.equalsIgnoreCase("seriesDisponibles")){
+						mapDestino = seriesDisponibles(mapping, miForm, request, response);
+					}else if ( accion.equalsIgnoreCase("guardarRelacionSerie")){
+						mapDestino = guardarRelacionSerie(mapping, miForm, request, response);
+					}else if ( accion.equalsIgnoreCase("borrarRelacionSerie")){
+						mapDestino = borrarRelacionSerie(mapping, miForm, request, response);
+					}else {
 						return super.executeInternal(mapping,formulario,request,response);
 					}
 				}
@@ -190,6 +196,13 @@ public class GestionCuentasBancariasAction extends MasterAction {
 
 		request.setAttribute("listaSufijos", sufijosListFinal);
 		
+		//Obtengo las series disponibles para la institución	
+		BusinessManager bm = getBusinessManager();
+		CuentasBancariasService cuentasBancariasService = (CuentasBancariasService)bm.getService(CuentasBancariasService.class);
+		VoUiService<CuentasBancariasForm, CuentaBancariaVo> voService = new CuentaBancariaVoService();
+		CuentaBancariaVo cuentaBancariaVo =cuentasBancariasService.getCuentaBancaria(voService.getForm2Vo(cuentasBancariasForm));
+		cuentasBancariasForm = voService.getVo2Form(cuentaBancariaVo);
+
 		return "editar";
 	}
 	
@@ -273,7 +286,7 @@ public class GestionCuentasBancariasAction extends MasterAction {
 			}
 
 			request.setAttribute("listaSufijos", sufijosListFinal);
-			
+
 		}catch (Exception e){
 			throwExcp("messages.general.errorExcepcion", e, null); 			
 		}
@@ -455,6 +468,91 @@ public class GestionCuentasBancariasAction extends MasterAction {
 			throwExcp("messages.general.errorExcepcion", e, null); 
 		}
 		
+	}
+	
+	
+	protected String seriesDisponibles (ActionMapping mapping, 		
+			MasterForm formulario, 
+			HttpServletRequest request, 
+			HttpServletResponse response) throws ClsExceptions, SIGAException 
+			{
+		
+		CuentasBancariasForm cuentasBancariasForm = (CuentasBancariasForm) formulario;
+		try {
+			BusinessManager bm = getBusinessManager();
+			CuentasBancariasService cuentasBancariasService = (CuentasBancariasService)bm.getService(CuentasBancariasService.class);
+			VoUiService<CuentasBancariasForm, CuentaBancariaVo> voService = new CuentaBancariaVoService();
+			CuentaBancariaVo cuentaBancariaVo =cuentasBancariasService.getCuentaBancaria(voService.getForm2Vo(cuentasBancariasForm));
+			cuentasBancariasForm = voService.getVo2Form(cuentaBancariaVo);
+			request.setAttribute("listaSeriesDisponibles", cuentasBancariasService.getSeriesDisponiblesCuentaBanc(cuentaBancariaVo));
+
+		}catch (Exception e){
+			throw new SIGAException("messages.general.error", e, null); 			
+		}
+		
+		return "relacionarNuevaSerie";
+	}
+	
+	protected String guardarRelacionSerie (ActionMapping mapping, 		
+			MasterForm formulario, 
+			HttpServletRequest request, 
+			HttpServletResponse response) throws ClsExceptions, SIGAException 
+			{
+		
+		String forward="exception";
+		
+		try {
+
+			CuentasBancariasForm cuentasBancariasForm = (CuentasBancariasForm) formulario;	
+			UsrBean usrBean = this.getUserBean(request);
+			
+			BusinessManager bm = getBusinessManager();			
+			CuentasBancariasService cuentasBancariasService = (CuentasBancariasService)bm.getService(CuentasBancariasService.class);
+			FacSeriefacturacionBanco serieFacturacionBanco = new FacSeriefacturacionBanco();
+			serieFacturacionBanco.setUsumodificacion(new Integer(usrBean.getUserName()));
+			serieFacturacionBanco.setIdinstitucion(Short.parseShort(cuentasBancariasForm.getIdInstitucion()));
+			serieFacturacionBanco.setIdseriefacturacion(Long.parseLong(cuentasBancariasForm.getIdSerieFacturacion()));
+			serieFacturacionBanco.setBancosCodigo(cuentasBancariasForm.getBancosCodigo());
+			cuentasBancariasService.insertRelacionSerie(serieFacturacionBanco);
+			
+			forward = exitoModal("messages.updated.success",request);
+			
+		}catch (Exception e){
+			throw new SIGAException("messages.general.error", e, null); 			
+		}
+		
+		return forward;
+	}
+	
+	protected String borrarRelacionSerie(ActionMapping mapping, 		
+			MasterForm formulario, 
+			HttpServletRequest request, 
+			HttpServletResponse response) throws ClsExceptions, SIGAException 
+			{
+		
+		String forward="exception";
+		
+		try {
+
+			CuentasBancariasForm cuentasBancariasForm = (CuentasBancariasForm) formulario;	
+			UsrBean usrBean = this.getUserBean(request);
+			
+			BusinessManager bm = getBusinessManager();			
+			CuentasBancariasService cuentasBancariasService = (CuentasBancariasService)bm.getService(CuentasBancariasService.class);
+			FacSeriefacturacionBanco serieFacturacionBanco = new FacSeriefacturacionBanco();
+			serieFacturacionBanco.setUsumodificacion(new Integer(usrBean.getUserName()));
+			serieFacturacionBanco.setIdinstitucion(Short.parseShort(cuentasBancariasForm.getIdInstitucion()));
+			serieFacturacionBanco.setIdseriefacturacion(Long.parseLong(cuentasBancariasForm.getIdSerieFacturacion()));
+			serieFacturacionBanco.setBancosCodigo(cuentasBancariasForm.getBancosCodigo());
+			cuentasBancariasService.deleteRelacionSerie(serieFacturacionBanco);
+			
+			forward = exitoModal("messages.delete.success",request);
+			
+		}catch (Exception e){
+			throw new SIGAException("messages.general.error", e, null); 			
+		}
+		
+		return forward;
 	}
 	
 	

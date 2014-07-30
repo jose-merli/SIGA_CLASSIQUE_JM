@@ -60,6 +60,8 @@ public class CuentaBancariaVoService implements VoUiService<CuentasBancariasForm
 			objectVo.setBancosCodigo(objectForm.getIdCuentaBancaria());
 		if(objectForm.getCodigoBanco()!=null &&!objectForm.getCodigoBanco().equals(""))
 			objectVo.setCodBanco(objectForm.getCodigoBanco());
+		if(objectForm.getBancosCodigo()!=null &&!objectForm.getBancosCodigo().equals(""))
+			objectVo.setBancosCodigo(objectForm.getBancosCodigo());
 		if(objectForm.getSucursalBanco()!=null &&!objectForm.getSucursalBanco().equals(""))
 			objectVo.setCodSucursal(objectForm.getSucursalBanco());
 		if(objectForm.getDigControlBanco()!=null &&!objectForm.getDigControlBanco().equals(""))
@@ -127,6 +129,9 @@ public class CuentaBancariaVoService implements VoUiService<CuentasBancariasForm
 			
 			if(objectVo.getCodBanco()!=null)
 				cuentasBancariasForm.setCodigoBanco(objectVo.getCodBanco());
+			
+			if(objectVo.getBancosCodigo()!=null)
+				cuentasBancariasForm.setBancosCodigo(objectVo.getBancosCodigo());
 			
 			if(objectVo.getCodSucursal()!=null)
 				cuentasBancariasForm.setSucursalBanco(objectVo.getCodSucursal());

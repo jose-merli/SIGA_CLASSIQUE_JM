@@ -252,13 +252,15 @@
 	<html:hidden property="modo" value ="${CuentasBancariasForm.modo}"  />
 	<html:hidden property="idInstitucion" value ="${CuentasBancariasForm.idInstitucion}"/>
 	<html:hidden property="idCuentaBancaria" value ="${CuentasBancariasForm.idCuentaBancaria}"/>
+	<html:hidden property="idSerieFacturacion" value =""/>
+	<html:hidden property="bancosCodigo" value ="${CuentasBancariasForm.bancosCodigo}"/>
     <input type="hidden" id="actionModal" name="actionModal" />
     <c:set var="clasePorEdicion" value="box" />
     <c:set var="disabledPorEdicion" value="false" />
 	<c:if	test="${CuentasBancariasForm.modo=='modificar'}">
 		<c:set var="clasePorEdicion" value="boxConsulta" />
 		<c:set var="disabledPorEdicion" value="true" />
-		<html:hidden property="codigoBanco" value ="${CuentasBancariasForm.codigoBanco}"/>
+		<html:hidden property="codigoBanco" value ="${CuentasBancariasFsorm.codigoBanco}"/>
 		<html:hidden property="sucursalBanco" value ="${CuentasBancariasForm.sucursalBanco}"/>
 		<html:hidden property="cuentaBanco" value ="${CuentasBancariasForm.cuentaBanco}"/>
 		<html:hidden property="digControlBanco" value ="${CuentasBancariasForm.digControlBanco}"/>
@@ -376,13 +378,18 @@
 	</table>
 	
 		<c:if test="${CuentasBancariasForm.modo!='insertar'}">
-						
+			<c:if test="${CuentasBancariasForm.modo!='abrir'}">
+  				<c:set var="botonesList" value="B"></c:set>
+  			</c:if>
+  			<c:if test="${CuentasBancariasForm.modo=='abrir'}">
+  				<c:set var="botonesList" value=""></c:set>
+  			</c:if>			
 			<div id="divListadoCuentasBancarias" style='height: 100%; position: absolute; width: 100%; overflow-y: auto'>
 					<siga:Table 
 						name="listado" 
 						border="1" 
-						columnNames="Serie,Descripción,Sufijo" 
-						columnSizes="29,50,21">
+						columnNames="Serie,Descripción,Sufijo," 
+						columnSizes="29,45,21,5">
 					<c:choose>
 		   				<c:when test="${empty seriesFacturacion}">
 			   				<tr class="notFound">
@@ -393,8 +400,8 @@
 							<c:forEach items="${seriesFacturacion}" var="serieFacturacion" varStatus="status">															
 								<siga:FilaConIconos	fila='${status.count}'				    
 						  			pintarEspacio="no"
-						  			botones=""
-						  			visibleBorrado="N"
+						  			botones="${botonesList}"
+						  			visibleBorrado="S"
 						  			visibleEdicion="N"
 						  			visibleConsulta="N"
 						  			clase="listaNonEdit">
@@ -429,7 +436,7 @@
 	</html:form>
 <c:choose>
 	<c:when test="${CuentasBancariasForm.modo!='abrir'}">
-		<siga:ConjBotonesAccion botones="Y,R,C" modal="P" />
+		<siga:ConjBotonesAccion botones="RA,Y,R,C" modal="P" />
 	</c:when>
 	<c:otherwise>
 		<siga:ConjBotonesAccion botones="C" modal="P" />
@@ -439,8 +446,7 @@
 	
 <iframe name="submitArea" src="<html:rewrite page='/html/jsp/general/blank.jsp'/>"	style="display: none"></iframe>
 
-<script type="text/javascript">
-	
+<script type="text/javascript">	
 	function accionGuardarCerrar() {
 		sub();
 
@@ -548,6 +554,42 @@
 			  }
 		}
 	}
+	
+	function accionRelacionarSerieFact(){
+		document.CuentasBancariasForm.modo.value = "seriesDisponibles";
+		var resultado=ventaModalGeneral(document.CuentasBancariasForm.name,"G");
+		if(resultado=='MODIFICADO'){
+			refrescarLocal();
+		}	
+	}
+	
+	function refrescarLocal(){
+		parent.close();
+		document.CuentasBancariasForm.modo.value="editar";
+		var resultadom = ventaModalGeneral(document.CuentasBancariasForm.name,"G");
+	}
+	
+	function borrarFila(fila) {	
+	
+		document.CuentasBancariasForm.idSerieFacturacion.value = document.getElementById("idseriefacturacion_"+fila).value;
+		document.CuentasBancariasForm.bancosCodigo.value = document.getElementById("bancos_codigo_"+fila).value;
+				
+		document.CuentasBancariasForm.modo.value="borrarRelacionSerie";
+		document.CuentasBancariasForm.target="submitArea";
+		var resultado=ventaModalGeneral(document.CuentasBancariasForm.name,"G");
+		if(resultado=='MODIFICADO'){
+			refrescarLocal();
+		}	
+	 }
+	
+	function borrar(fila){
+		if (confirm('<siga:Idioma key="messages.deleteConfirmation"/>')){
+			return borrarFila(fila);
+		}			
+	}
+	
+	
+	
 </script>
 
 </body>
