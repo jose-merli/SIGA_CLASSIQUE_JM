@@ -626,7 +626,6 @@
 						jQuery("#comboSufijos_" + chk[i].value).val(jQuery("#idsufijodefBanco_" + chk[i].value).val());
 					}else{
 						jQuery("#comboSufijos_" + chk[i].value).val("");
-						jQuery("#comboSufijos_" + chk[i].value).val("");
 					}	
 				}		
 			}
