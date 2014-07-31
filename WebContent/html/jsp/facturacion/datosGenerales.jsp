@@ -558,6 +558,14 @@
 						if (chk !="checkbox") {
 							for (i = 0; i < chk.length; i++){
 								if (chk[i].checked==1){
+									
+									if(jQuery("#comboSufijos_" + chk[i].value).val()<1) {
+										mensaje = "<siga:Idioma key='facturacion.sufijos.message.error.cuenta.serie'/>";
+										alert(mensaje);
+										fin();
+										return false;
+									}
+									
 									datos=datos + chk[i].value +","+jQuery("#comboSufijos_" + chk[i].value).val()+"%";						
 								}	
 							}		
@@ -601,12 +609,26 @@
 								alert('<siga:Idioma key="Facturacion.mensajes.obligatorio.plantillaMail"/>');
 								return false;
 							}
-						}													
+						}
 
  						document.forms[0].ids.value = datos;
 						document.forms[0].submit();
 					 }
 				}
+			}
+			
+			function recargarCombo(valorRadio){	
+						
+				var chk = document.getElementsByName("chk");
+				
+				for (i = 0; i < chk.length; i++){
+					if (chk[i].checked==1){
+						jQuery("#comboSufijos_" + chk[i].value).val(jQuery("#idsufijodefBanco_" + chk[i].value).val());
+					}else{
+						jQuery("#comboSufijos_" + chk[i].value).val("");
+						jQuery("#comboSufijos_" + chk[i].value).val("");
+					}	
+				}		
 			}
 
 		</script>
@@ -650,7 +672,9 @@
 	            		
 	            		
 	            		String idComboSuf= "comboSufijos_" + row.getString("BANCOS_CODIGO");
+	            		String  idsufijodefBanco = "idsufijodefBanco_" + row.getString("BANCOS_CODIGO");
 	            		String idsufijoBancoIni=row.getString("IDSUFIJO");
+
 					%>
 	            		
 						<siga:FilaConIconos
@@ -668,7 +692,7 @@
 								<input type="hidden" id="oculto<%=String.valueOf(recordNumber)%>_1" name="oculto<%=String.valueOf(recordNumber)%>_1" value="<%=row.getString("IDINSTITUCION")%>">
 								<input type="hidden" id="oculto<%=String.valueOf(recordNumber)%>_2" name="oculto<%=String.valueOf(recordNumber)%>_2" value="<%=row.getString("COD_BANCO")%>">
 								<input type="hidden" id="oculto<%=String.valueOf(recordNumber)%>_3" name="oculto<%=String.valueOf(recordNumber)%>_3" value="<%=row.getString("IDSERIEFACTURACION")%>">
-								<input type="checkbox" value="<%=row.getString("BANCOS_CODIGO")%>"  id="oculto<%=String.valueOf(recordNumber)%>_4" name="chk" <%=(accion.equals("nuevo") || bsel)?"checked":"" %> <%=(accion.equals("ver"))?"disabled":"" %> >
+								<input type="radio" onclick="recargarCombo(this)" value="<%=row.getString("BANCOS_CODIGO")%>"  id="oculto<%=String.valueOf(recordNumber)%>_4" name="chk" <%=(accion.equals("nuevo") || bsel)?"checked":"" %> <%=(accion.equals("ver"))?"disabled":"" %> >
 							</td>  	
 							<td>
 								<%=UtilidadesString.mostrarDatoJSP(row.getString("BANCO"))%>							
@@ -677,9 +701,10 @@
 								<%=UtilidadesString.mostrarIBANConAsteriscos(row.getString("IBAN"))%>							
 							</td>  	
 							<td align="right">
+							<input type="hidden" id="<%=idsufijodefBanco%>" value="<%=idsufijoBancoIni%>">
 							<bean:define id="listaSufijos" name="listaSufijos" scope="request"/>
 								<html:select styleId="<%=idComboSuf%>" name = "comboSufijos" property="idSufijo" value="<%=idsufijoBancoIni%>" styleClass="boxCombo" disabled="<%=combodeshabilitado%>" style="width:200px;">
-								<% if (idsufijoBancoIni.equals("")){ %>
+								<% if (idsufijoBancoIni.equals("")||(!bsel)){ %>
 									<html:option value=""><c:out value=""/></html:option>
 								<% }%>
 								<c:forEach items="${listaSufijos}" var="sufijoSerieCmb">											
