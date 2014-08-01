@@ -1315,16 +1315,20 @@ public static String[] ejecutarF_SIGA_COMPROBAR_ANTICIPAR (
 	 * @return String que indica el resultado final en SEPA
 	 * @throws ClsExceptions
 	 */
-	public static String ejecutarRevisarCaracteresSEPA (String cadena) throws ClsExceptions {
-		String resultado = "";
-		String sql = " SELECT TRIM(PKG_SIGA_CARGOS.F_RevisarCaracteresSEPA('" + cadena + "')) AS RESULTADO FROM DUAL";
+	public static String ejecutarRevisarCaracteresSEPA (String cadena) throws ClsExceptions {			
+		Object[] paramIn = new Object[1]; //Parametros de entrada del PL
+		String resultado[] = new String[1]; //Parametros de salida del PL
 		
-		RowsContainer rc = new RowsContainer(); 
-		if (rc.query(sql)) {
-			Row fila = (Row) rc.get(0);
-			resultado = UtilidadesHash.getString(fila.getRow(), "RESULTADO");
+		// Parametros de entrada del PL
+		paramIn[0] = cadena;
+
+		resultado = ClsMngBBDD.callPLFunction("{? = call PKG_SIGA_CARGOS.F_RevisarCaracteresSEPA(?)}", 0, paramIn);
+		
+		String resultadoFinal = "";
+		if (resultado!=null && resultado[0]!=null) {
+			resultadoFinal = resultado[0];
 		}
 		
-		return resultado;
+		return resultadoFinal;
 	}		
 }

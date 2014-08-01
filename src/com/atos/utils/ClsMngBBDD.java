@@ -418,7 +418,19 @@ public final class ClsMngBBDD {
         ClsLogging.writeFileLogWithoutSession("PARAM_"+i+": "+inParameters[i], 3);
         cs.setString(i+outParameters+2,(String)inParameters[i]);
       }
-      cs.execute();
+      
+		for (int intento = 1; intento <= 2; intento++) {
+			try {
+				cs.execute();
+				break;
+	
+			} catch (SQLException ex) {
+				if (ex.getErrorCode() != 4068 || intento == 2) { // JPT: 4068 es un error de descompilado (la segunda vez deberia funcionar)
+					throw ex;
+				}
+			}
+		}      
+      
       String[] result=new String[outParameters+1];
       for(int i=0;i<outParameters+1;i++){
         result[i]=cs.getString(i+1);
@@ -464,7 +476,18 @@ public final class ClsMngBBDD {
         ClsLogging.writeFileLogWithoutSession("PARAM_"+i+": "+inParameters[i], 3);
         cs.setString(i+2,(String)inParameters[i]);
       }
-      cs.execute();
+      
+		for (int intento = 1; intento <= 2; intento++) {
+			try {
+				cs.execute();
+				break;
+	
+			} catch (SQLException ex) {
+				if (ex.getErrorCode() != 4068 || intento == 2) { // JPT: 4068 es un error de descompilado (la segunda vez deberia funcionar)
+					throw ex;
+				}
+			}
+		}      
 
       result=(ResultSet)cs.getObject(1);
       // Transform ResultSet to RowsContainer
@@ -520,7 +543,18 @@ public final class ClsMngBBDD {
       for(int i=0;i<outParameters;i++){
         cs.registerOutParameter(i+size+1,Types.VARCHAR);
       }
-      cs.execute();
+      
+		for (int intento = 1; intento <= 2; intento++) {
+			try {
+				cs.execute();
+				break;
+	
+			} catch (SQLException ex) {
+				if (ex.getErrorCode() != 4068 || intento == 2) { // JPT: 4068 es un error de descompilado (la segunda vez deberia funcionar)
+					throw ex;
+				}
+			}
+		}      
 
       for(int i=0;i<outParameters;i++){
         result[i]=cs.getString(i+size+1);
