@@ -57,7 +57,6 @@ import com.siga.general.CenVisibilidad;
 import com.siga.general.SIGAException;
 import com.siga.informes.InformePersonalizable;
 import com.siga.informes.form.MantenimientoInformesForm;
-import com.siga.servlets.SIGASvlProcesoAutomaticoRapido;
 
 /**
 * Administrador de Facturacion de justicia gratuita
@@ -3974,31 +3973,7 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 		}
 		
 		return this.selectGenerico (sql);
-	} //informeFJGAsistencias
-
-	
-	private String obtenerFacturacionesIntervalo (String idInstitucion, String idFacturacionIni, String idFacturacionFin) throws ClsExceptions{
-		RowsContainer rc = null;
-		Hashtable miHash = new Hashtable();
-		Hashtable codigos = new Hashtable();
-	    codigos.put(new Integer(1),idInstitucion);
-	    codigos.put(new Integer(2),idFacturacionIni);
-	    codigos.put(new Integer(3),idFacturacionFin);
-	    String resultado = null;
-
-		String consulta = "select PKG_SIGA_FACTURACION_SJCS.FUNC_FACTURACIONES_INTERVALO(:1,:2,:3) FACTURACIONES FROM DUAL ";
-		rc = new RowsContainer(); 
-		if (rc.queryBind(consulta,codigos)) {
-			Row fila = (Row) rc.get(0);
-			miHash = fila.getRow();			
-			resultado = (String)miHash.get("FACTURACIONES");			
-		}
-		
-		return resultado;
-	}
-	
-	
-	
+	} //informeFJGAsistencias	
 
 	public void ejecutarFacturacion(String idInstitucion, String idFacturacion, UserTransaction tx) throws ClsExceptions, SIGAException {
 		//CRM: Marcha atras a la incidencia --> (aalg: INC_10717_SIGA) 

@@ -1133,48 +1133,6 @@ public class DatosGeneralesFacturacionAction extends MasterAction {
 		return "descargaFichero";		
 	}
 	
-	
-	//
-	//PL que inserta los precios en el historico para una institucion y una facturacion.
-	//	
-	private String[] ejecutarPLGuardarHistorico(DatosGeneralesFacturacionForm miform, String usuModificacion) throws ClsExceptions{
-		Object[] param_in; //Parametros de entrada del PL
-		String resultado[]; //Parametros de salida del PL
-		
-		//EXEC PROC_FCS_GUARDAR_PRECIOS_HIST
-		//Parametros de entrada del PL
-		param_in = new Object[3];
-		param_in[0] = miform.getIdInstitucion();
-		param_in[1] = miform.getIdFacturacion();
-		param_in[2] = usuModificacion;
-		resultado = new String[2];
-		//Ejecucion del PL
-		resultado = ClsMngBBDD.callPLProcedure("{call PKG_SIGA_FACT_SJCS.PROC_FCS_GUARDAR_PRECIOS_HIST (?,?,?,?,?)}", 2, param_in);
-		//Resultado del PL        
-		return resultado;
-	}
-	
-	//
-	//PL que modifica el idfacturacion de las tablas de SJCS y el estado de la facturacion a lista para consejo
-	//	
-	private String[] ejecutarPLPrepararParaConsejo(String idInstitucion, String idFacturacion, String usumodificacion) throws ClsExceptions{
-		Object[] param_in; //Parametros de entrada del PL
-		String resultado[]; //Parametros de salida del PL
-		
-		//EXEC PROC_FCS_PREPARAR_PARA_CONSEJO
-		//Parametros de entrada del PL
-		param_in = new Object[3];
-		param_in[0] = idInstitucion;
-		param_in[1] = idFacturacion;
-		param_in[2] = usumodificacion;
-		resultado = new String[2];
-		//Ejecucion del PL
-		resultado = ClsMngBBDD.callPLProcedure("{call PKG_SIGA_FACTURACION_SJCS.PROC_FCS_PREPARAR_PARA_CONSEJO (?,?,?,?,?)}", 2, param_in);
-		//Resultado del PL        
-		return resultado;
-	}
-
-	
 	/**
 	 * Genera los ficheros excel resultado de la union de los datos de las facturaciones cuyas fechas desde/hasta
 	 * están coprendidas en las fechas desde/hasta de las facturaciones inicial y final.

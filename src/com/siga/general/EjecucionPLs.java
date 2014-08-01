@@ -183,28 +183,6 @@ public class EjecucionPLs {
 	}
 
 	/**
-	 * Ejecuta el PL para calcular el IRPF al generar abonos.
-	 * @param idinstitucion
-	 * @param idpersona
-	 * @param importe
-	 * @param irpf
-	 * @return
-	 * @throws ClsExceptions
-	 */
-	public static String[] ejecutarPLCalcularIRPF(String idinstitucion, String idpersona, String importe, String irpf) throws ClsExceptions {
-		Object[] param_in = new Object[4];
-		// parametros de entrada
-		param_in[0] = idinstitucion;
-		param_in[1] = idpersona; 
-		param_in[2] = importe;
-		param_in[3] = irpf;
-		
-		String resultadoPl[] = new String[4];
-		resultadoPl = ClsMngBBDD.callPLProcedure("{call PKG_SIGA_PAGOS_SJCS_RETENCION.PROC_FCS_CALCULAR_IRPF(?,?,?,?,?,?,?,?)}", 4, param_in);
-		return resultadoPl;
-	}
-
-	/**
 	 * 
 	 * @param idinstitucion
 	 * @param idpersona
@@ -224,67 +202,6 @@ public class EjecucionPLs {
 		resultadoPl = ClsMngBBDD.callPLProcedure("{call PKG_SIGA_PAGOS_SJCS.PROC_FCS_CALCULAR_IRPF(?,?,?,?,?,?,?)}", 4, param_in);
 		return resultadoPl;
 	}
-
-	
-	/**
-	 * Ejecuta el PL de retenciones por todos los usuarios.
-	 * @param idInstitucion
-	 * @param idPago
-	 * @param fechaInicio
-	 * @param fechaFin
-	 * @param usuarioModificacion
-	 * @return
-	 * @throws ClsExceptions
-	 */
-	public static String[] ejecutarPLRetencionesVarias(String idInstitucion, String idPago, String fechaInicio, String fechaFin, String usuarioModificacion) throws ClsExceptions{
-		Object[] param_in = new Object[5]; //Parametros de entrada del PL
-		String resultado[] = new String[2]; //Parametros de salida del PL
-	
-		try {
-	 		//Parametros de entrada del PL
-	        param_in[0] = idInstitucion;			
-			param_in[1] = idPago;
-			param_in[2] = fechaInicio;
-			param_in[3] = fechaFin;
-			param_in[4] = usuarioModificacion;
-	 		//Ejecucion del PL
-			resultado = ClsMngBBDD.callPLProcedure("{call PKG_SIGA_FACT_SJCS_RETENCION.PROC_FCS_RETEN_JUDIC_VARIOS (?,?,?,?,?,?,?)}", 2, param_in);
-		} catch (Exception e) { 
-	    	resultado[0] = "1"; //ERROR P_CODRETORNO
-	    	resultado[1] = "ERROR"; //ERROR P_DATOSERROR        	
-		}
-	    //Resultado del PL        
-	    return resultado;
-	}
-	
-	/**
-	 * PL que calcula la retencion por persona usado en generar el abono del pago.
-	 * @param idInstitucion
-	 * @param idPago
-	 * @param idPersona
-	 * @return
-	 * @throws ClsExceptions
-	 */
-	public static String[] ejecutarPLRetencionPersona(String idInstitucion, String idPago, String idPersona) throws ClsExceptions{
-		Object[] param_in = new Object[3]; //Parametros de entrada del PL
-		String resultado[] = new String[2]; //Parametros de salida del PL
-	
-		try {
-	 		//Parametros de entrada del PL
-	        param_in[0] = idInstitucion;			
-			param_in[1] = idPago;
-			param_in[2] = idPersona;
-	 		//Ejecucion del PL
-			resultado = ClsMngBBDD.callPLProcedure("{call PKG_SIGA_FACT_SJCS_RETENCION.PROC_FCS_RETENCION_PERSONA (?,?,?,?,?)}", 2, param_in);
-		} catch (Exception e) { 
-	    	resultado[0] = "1"; //ERROR P_CODRETORNO
-	    	resultado[1] = "ERROR"; //ERROR P_DATOSERROR        	
-		}
-	    //Resultado del PL        
-	    return resultado;
-	}
-
-
 	
 	/**
 	 * PL que da de baja un servicio
@@ -546,10 +463,7 @@ public class EjecucionPLs {
 			param_in[6] = idioma;
 
 			// Ejecucion del PL
-			resultado = ClsMngBBDD
-					.callPLProcedure(
-							"{call PKG_SIGA_FACTURACION_SJCS.PROC_FCS_EXPORTAR_TURNOS_OFI (?,?,?,?,?,?,?,?,?)}",
-							2, param_in);
+			resultado = ClsMngBBDD.callPLProcedure("{call PKG_SIGA_FACTURACION_SJCS.PROC_FCS_EXPORTAR_TURNOS_OFI (?,?,?,?,?,?,?,?,?)}", 2, param_in);
 	    	if (!resultado[0].equalsIgnoreCase("0")) {
 	    		ClsLogging.writeFileLog("Error en PL = "+(String)resultado[1],3);
 	    	}
@@ -581,10 +495,7 @@ public class EjecucionPLs {
 			param_in[6] = idioma;
 
 			// Ejecucion del PL
-			resultado = ClsMngBBDD
-					.callPLProcedure(
-							"{call PKG_SIGA_FACTURACION_SJCS.PROC_FCS_EXPORTAR_GUARDIAS (?,?,?,?,?,?,?,?,?)}",
-							2, param_in);
+			resultado = ClsMngBBDD.callPLProcedure("{call PKG_SIGA_FACTURACION_SJCS.PROC_FCS_EXPORTAR_GUARDIAS (?,?,?,?,?,?,?,?,?)}", 2, param_in);
 	    	if (!resultado[0].equalsIgnoreCase("0")) {
 	    		ClsLogging.writeFileLog("Error en PL = "+(String)resultado[1],3);
 	    	}
@@ -596,61 +507,6 @@ public class EjecucionPLs {
 		// Resultado del PL
 		return resultado[0];
 	} // ejecutarPLExportarGuardias()
-	
-	public static String[] ejecutarPLExportarSoj(String idInstitucion, String idFacturacion,String idPago, String idPersona, String pathFichero, String fichero, String cabeceras) throws ClsExceptions{
-		Object[] param_in; //Parametros de entrada del PL
-		String resultado[] = null; //Parametros de salida del PL
-	
-		try {
-			resultado = new String[2];
-			param_in = new Object[7];
-			param_in[0] = idInstitucion;
-			param_in[1] = idFacturacion;
-			param_in[2] = (idPago == null?"":idPago); 		// IDPAGO
-			param_in[3] = (idPersona == null?"":idPersona); // IDPERSONA
-			param_in[4] = pathFichero;
-			param_in[5] = fichero;
-			param_in[6] = cabeceras;
-		        
-			//Ejecucion del PL
-		    resultado = ClsMngBBDD.callPLProcedure("{call PKG_SIGA_FACTURACION_SJCS.PROC_FCS_EXPORTAR_SOJ (?,?,?,?,?,?,?,?,?)}", 2, param_in);
-			
-		} catch (Exception e){
-			resultado[0] = "1"; //ERROR P_CODRETORNO
-	    	resultado[1] = "ERROR"; //ERROR P_DATOSERROR        	
-		}
-	    
-	    //Resultado del PL        
-	    return resultado;
-	}
-	
-	public static String[] ejecutarPLExportarEjg(String idInstitucion, String idFacturacion,String idPago, String idPersona, String pathFichero, String fichero, String cabeceras) throws ClsExceptions{
-		Object[] param_in; //Parametros de entrada del PL
-		String resultado[] = null; //Parametros de salida del PL
-	
-		try {
-			resultado = new String[2];
-			param_in = new Object[7];
-			param_in[0] = idInstitucion;
-			param_in[1] = idFacturacion;
-			param_in[2] = (idPago == null?"":idPago); 		// IDPAGO
-			param_in[3] = (idPersona == null?"":idPersona); // IDPERSONA
-			param_in[4] = pathFichero;
-			param_in[5] = fichero;
-			param_in[6] = cabeceras;
-		        
-			//Ejecucion del PL
-		    resultado = ClsMngBBDD.callPLProcedure("{call PKG_SIGA_FACTURACION_SJCS.PROC_FCS_EXPORTAR_EJG (?,?,?,?,?,?,?,?,?)}", 2, param_in);
-			
-		} catch (Exception e){
-			resultado[0] = "1"; //ERROR P_CODRETORNO
-	    	resultado[1] = "ERROR"; //ERROR P_DATOSERROR        	
-		}
-	    
-	    //Resultado del PL        
-	    return resultado;
-	}
-
 	
 	// PROC_SIGA_ACTESTADOABONO
 	public static String[] ejecutarProcPROC_SIGA_ACTESTADOABONO(String idInstitucion, String idAbono, String usu) throws ClsExceptions{
@@ -919,49 +775,46 @@ public static String[] ejecutarF_SIGA_COMPROBAR_ANTICIPAR (
 	 * @return
 	 * @throws ClsExceptions
 	 */
-	public static String ejecutarFuncFacturacionesIntervalo (String idInstitucion, String idFacturacionIni, String idFacturacionFin) throws ClsExceptions{
-		RowsContainer rc = null;
-		Hashtable miHash = new Hashtable();
-		Hashtable codigos = new Hashtable();
-		codigos.put(new Integer(1),idInstitucion);
-		codigos.put(new Integer(2),idFacturacionIni);
-		codigos.put(new Integer(3),idFacturacionFin);
-		String resultado = null;
-	
-		String consulta = "select PKG_SIGA_FACTURACION_SJCS.FUNC_FACTURACIONES_INTERVALO(:1,:2,:3) FACTURACIONES FROM DUAL ";
-		rc = new RowsContainer(); 
-		if (rc.queryBind(consulta,codigos)) {
-			Row fila = (Row) rc.get(0);
-			miHash = fila.getRow();            
-			resultado = (String)miHash.get("FACTURACIONES");            
+	public static String ejecutarFuncFacturacionesIntervalo (String idInstitucion, String idFacturacionIni, String idFacturacionFin) throws ClsExceptions {
+		Object[] paramIn = new Object[3]; //Parametros de entrada del PL
+		String resultado[] = new String[1]; //Parametros de salida del PL
+		
+		// Parametros de entrada del PL
+		paramIn[0] = idInstitucion;
+		paramIn[1] = idFacturacionIni;
+		paramIn[2] = idFacturacionFin;
+
+		resultado = ClsMngBBDD.callPLFunction("{? = call PKG_SIGA_FACTURACION_SJCS.FUNC_FACTURACIONES_INTERVALO(?,?,?)}", 0, paramIn);
+		
+		String resultadoFinal = "";
+		if (resultado!=null && resultado[0]!=null) {
+			resultadoFinal = resultado[0];
 		}
-	
-		return resultado;
+		
+		return resultadoFinal;				
 	}
 
 	
-	public static String ejecutarFuncFacturacionesIntervaloGrupos (String idInstitucion, String idFacturacionIni, String idFacturacionFin, String grupoFacturacion) throws ClsExceptions{
-		RowsContainer rc = null;
-		Hashtable miHash = new Hashtable();
-		Hashtable codigos = new Hashtable();
-		codigos.put(new Integer(1),idInstitucion);
-		codigos.put(new Integer(2),idFacturacionIni);
-		codigos.put(new Integer(3),idFacturacionFin);
-		String grupoFacturaciones = null;
-		String[] resul=grupoFacturacion.split(",");
-		grupoFacturaciones = resul[0];
-		codigos.put(new Integer(4),grupoFacturaciones);
-		String resultado = null;
-		//Func_Factura_Inter_Grupos
-		String consulta = "select PKG_SIGA_FACTURACION_SJCS.FUNC_FACTURA_INTER_GRUPOS(:1,:2,:3,:4) FACTURACIONES FROM DUAL ";
-		rc = new RowsContainer(); 
-		if (rc.queryBind(consulta,codigos)) {
-			Row fila = (Row) rc.get(0);
-			miHash = fila.getRow();            
-			resultado = (String)miHash.get("FACTURACIONES");            
+	public static String ejecutarFuncFacturacionesIntervaloGrupos (String idInstitucion, String idFacturacionIni, String idFacturacionFin, String grupoFacturacion) throws ClsExceptions {
+		Object[] paramIn = new Object[4]; //Parametros de entrada del PL
+		String resultado[] = new String[1]; //Parametros de salida del PL
+		
+		// Parametros de entrada del PL
+		paramIn[0] = idInstitucion;
+		paramIn[1] = idFacturacionIni;
+		paramIn[2] = idFacturacionFin;
+		
+		String[] resul = grupoFacturacion.split(",");
+		paramIn[3] = resul[0];
+
+		resultado = ClsMngBBDD.callPLFunction("{? = call PKG_SIGA_FACTURACION_SJCS.FUNC_FACTURA_INTER_GRUPOS(?,?,?,?)}", 0, paramIn);
+		
+		String resultadoFinal = "";
+		if (resultado!=null && resultado[0]!=null) {
+			resultadoFinal = resultado[0];
 		}
-	
-		return resultado;
+		
+		return resultadoFinal;			
 	}
 
 		/**
@@ -975,24 +828,23 @@ public static String[] ejecutarF_SIGA_COMPROBAR_ANTICIPAR (
 	 * @throws ClsExceptions
 	 */
 	public static String ejecutarFuncPagosIntervalo (String idInstitucion, String idPagosIni, String idPagosFin) throws ClsExceptions{
-		RowsContainer rc = null;
-		Hashtable miHash = new Hashtable();
-		Hashtable codigos = new Hashtable();
-		codigos.put(new Integer(1),idInstitucion);
-		codigos.put(new Integer(2),idPagosIni);
-		codigos.put(new Integer(3),idPagosFin);
-		String resultado = null;
-	
-		String consulta = "select PKG_SIGA_PAGOS_SJCS.FUNC_PAGOS_INTERVALO_GRUPOFACT(:1, :2, :3, -1) PAGOS FROM DUAL ";
-		//String consulta = "select PKG_SIGA_PAGOS_SJCS.FUNC_PAGOS_INTERVALO(:1,:2,:3) PAGOS FROM DUAL ";
-		rc = new RowsContainer(); 
-		if (rc.queryBind(consulta,codigos)) {
-			Row fila = (Row) rc.get(0);
-			miHash = fila.getRow();            
-			resultado = (String)miHash.get("PAGOS");            
+		Object[] paramIn = new Object[3]; //Parametros de entrada del PL
+		String resultado[] = new String[1]; //Parametros de salida del PL
+		
+		// Parametros de entrada del PL
+		paramIn[0] = idInstitucion;
+		paramIn[1] = idPagosIni;
+		paramIn[2] = idPagosFin;
+
+		resultado = ClsMngBBDD.callPLFunction("{? = call PKG_SIGA_PAGOS_SJCS.FUNC_PAGOS_INTERVALO_GRUPOFACT(?,?,?,-1)}", 0, paramIn);
+		//resultado = ClsMngBBDD.callPLFunction("{? = call PKG_SIGA_PAGOS_SJCS.FUNC_PAGOS_INTERVALO(?,?,?)}", 0, paramIn);
+		
+		String resultadoFinal = "";
+		if (resultado!=null && resultado[0]!=null) {
+			resultadoFinal = resultado[0];
 		}
-	
-		return resultado;
+		
+		return resultadoFinal;		
 	}
 	
 	/**
@@ -1005,25 +857,24 @@ public static String[] ejecutarF_SIGA_COMPROBAR_ANTICIPAR (
 	 * @return
 	 * @throws ClsExceptions
 	 */
-	public static String ejecutarFuncPagosIntervaloGrupoFacturacion (String idInstitucion, String idPagosIni, String idPagosFin, String grupoFacturacion) throws ClsExceptions{
-		RowsContainer rc = null;
-		Hashtable miHash = new Hashtable();
-		Hashtable codigos = new Hashtable();
-		codigos.put(new Integer(1),idInstitucion);
-		codigos.put(new Integer(2),idPagosIni);
-		codigos.put(new Integer(3),idPagosFin);
-		codigos.put(new Integer(4),grupoFacturacion);
-		String resultado = null;
-	
-		String consulta = "select PKG_SIGA_PAGOS_SJCS.FUNC_PAGOS_INTERVALO_GRUPOFACT(:1,:2,:3,:4) PAGOS FROM DUAL ";
-		rc = new RowsContainer(); 
-		if (rc.queryBind(consulta,codigos)) {
-			Row fila = (Row) rc.get(0);
-			miHash = fila.getRow();            
-			resultado = (String)miHash.get("PAGOS");            
+	public static String ejecutarFuncPagosIntervaloGrupoFacturacion (String idInstitucion, String idPagosIni, String idPagosFin, String grupoFacturacion) throws ClsExceptions {
+		Object[] paramIn = new Object[4]; //Parametros de entrada del PL
+		String resultado[] = new String[1]; //Parametros de salida del PL
+		
+		// Parametros de entrada del PL
+		paramIn[0] = idInstitucion;
+		paramIn[1] = idPagosIni;
+		paramIn[2] = idPagosFin;
+		paramIn[3] = grupoFacturacion;
+
+		resultado = ClsMngBBDD.callPLFunction("{? = call PKG_SIGA_PAGOS_SJCS.FUNC_PAGOS_INTERVALO_GRUPOFACT(?,?,?,?)}", 0, paramIn);
+		
+		String resultadoFinal = "";
+		if (resultado!=null && resultado[0]!=null) {
+			resultadoFinal = resultado[0];
 		}
-	
-		return resultado;
+		
+		return resultadoFinal;				
 	}
 	
 	public static String ejecutarFuncion (Hashtable<Integer,Object> htCodigos, 
