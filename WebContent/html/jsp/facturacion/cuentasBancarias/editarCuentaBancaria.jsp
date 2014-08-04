@@ -8,10 +8,8 @@
 <meta http-equiv="Pragma" content="no-cache">
 <%@ page pageEncoding="ISO-8859-1"%>
 <meta http-equiv="Cache-Control" content="no-cache">
-<meta http-equiv="Conte nt-Type"
-	content="text/html; charset=ISO-8859-1">
-<%@ page contentType="text/html" language="java"
-	errorPage="/html/jsp/error/errorSIGA.jsp"%>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<%@ page contentType="text/html" language="java" errorPage="/html/jsp/error/errorSIGA.jsp"%>
 
 <!-- TAGLIBS -->
 <%@ taglib uri="libreria_SIGA.tld" prefix="siga"%>
@@ -260,7 +258,7 @@
 	<c:if	test="${CuentasBancariasForm.modo=='modificar'}">
 		<c:set var="clasePorEdicion" value="boxConsulta" />
 		<c:set var="disabledPorEdicion" value="true" />
-		<html:hidden property="codigoBanco" value ="${CuentasBancariasFsorm.codigoBanco}"/>
+		<html:hidden property="codigoBanco" value ="${CuentasBancariasForm.codigoBanco}"/>
 		<html:hidden property="sucursalBanco" value ="${CuentasBancariasForm.sucursalBanco}"/>
 		<html:hidden property="cuentaBanco" value ="${CuentasBancariasForm.cuentaBanco}"/>
 		<html:hidden property="digControlBanco" value ="${CuentasBancariasForm.digControlBanco}"/>
@@ -430,19 +428,30 @@
 	
 				</siga:Table>
 			</div>
-		</c:if>
-		
-
+		</c:if>		
 	</html:form>
-<c:choose>
-	<c:when test="${CuentasBancariasForm.modo!='abrir'}">
-		<siga:ConjBotonesAccion botones="RA,Y,R,C" modal="P" />
-	</c:when>
-	<c:otherwise>
-		<siga:ConjBotonesAccion botones="C" modal="P" />
-	</c:otherwise>
-</c:choose>
 
+	<c:choose>
+		<c:when test="${CuentasBancariasForm.modo=='insertar'}">
+			<siga:ConjBotonesAccion botones="Y,R,C" modal="P" />
+		</c:when>
+		
+		<c:when test="${CuentasBancariasForm.modo=='modificar'}">
+			<c:choose>
+				<c:when test="${CuentasBancariasForm.fechaBaja.length()>0}">
+					<siga:ConjBotonesAccion botones="Y,R,C" modal="P" />
+				</c:when>
+
+				<c:otherwise>				
+					<siga:ConjBotonesAccion botones="RA,Y,R,C" modal="P" />
+				</c:otherwise>
+			</c:choose>
+		</c:when>	
+		
+		<c:otherwise>
+			<siga:ConjBotonesAccion botones="C" modal="P" />
+		</c:otherwise>
+	</c:choose>
 	
 <iframe name="submitArea" src="<html:rewrite page='/html/jsp/general/blank.jsp'/>"	style="display: none"></iframe>
 
