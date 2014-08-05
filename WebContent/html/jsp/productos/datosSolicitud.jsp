@@ -461,7 +461,7 @@
 		
 			<% if (UtilidadesHash.getDouble (productoServicio, "VALOR")!=null){ %>
 				<td align="right">
-					<%=UtilidadesNumero.formatoCampo(precio)%>&nbsp;&euro;
+					<%=UtilidadesString.formatoImporte(precio)%>&nbsp;&euro;
 <%	
 					if (!periodicidad.equals("")) { 
 %>							 
@@ -494,7 +494,7 @@
 <%	
 				if (importeAnticipado >= 0) { 
 %>									
-					<%=UtilidadesNumero.formatoCampo(importeAnticipado)%>&nbsp;&euro;															
+					<%=UtilidadesString.formatoImporte(importeAnticipado)%>&nbsp;&euro;															
 <%	
 				} else { 
 %>
@@ -529,12 +529,12 @@
 				<table>
 					<tr>
 						<td class="labelText"><siga:Idioma key="pys.gestionSolicitudes.literal.totalIVA"/></td>
-						<td class="labelTextNum"><%=UtilidadesNumero.formatoCampo(ivaTotal)%> &euro;</td>
+						<td class="labelTextNum" align="right"><%=UtilidadesString.formatoImporte(ivaTotal)%> &euro;</td>
 					</tr>
 					
 					<tr>
 						<td class="labelText"><siga:Idioma key="pys.gestionSolicitudes.literal.total"/></td>
-						<td class="labelTextNum"><%=UtilidadesNumero.formatoCampo(precioTotal)%> &euro;</td>
+						<td class="labelTextNum" align="right"><%=UtilidadesString.formatoImporte(precioTotal)%> &euro;</td>
 					</tr>
 				</table>
 			</fieldset>
