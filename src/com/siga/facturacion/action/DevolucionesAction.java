@@ -537,10 +537,7 @@ public class DevolucionesAction extends MasterAction {
 			if (codretorno.equalsIgnoreCase("0")){
 				String nuevaFormaPago 	= miForm.getDatosPagosRenegociarNuevaFormaPago();
 				
-				if(nuevaFormaPago!=null && !nuevaFormaPago.equals("noRenegociarAutomaticamente")){
-					
-					
-					
+				if(nuevaFormaPago!=null && !nuevaFormaPago.equals("noRenegociarAutomaticamente")){ // Aplica la cuenta bancaria activa
 					Vector factDevueltasVector = devolucionesAdm.getFacturasDevueltasEnDisquete(new Integer(idInstitucion), new Integer(identificador));
 					
 					for (int i = 0; i < factDevueltasVector.size(); i++) {
@@ -554,13 +551,13 @@ public class DevolucionesAction extends MasterAction {
 						try {
 							//El idCuenta modifica en este metodo asiq ue sera a esta cuenta la que se aplicara la comision
 							htCuenta = new Hashtable();
-							facturacion.insertarRenegociar(new Integer(idInstitucion), idFactura, estadoFactura, 
-									nuevaFormaPago, null,	impTotalPorPagar, miForm.getDatosPagosRenegociarObservaciones(),"",true,true,htCuenta);
+							facturacion.insertarRenegociar(new Integer(idInstitucion), idFactura, estadoFactura, nuevaFormaPago, null, impTotalPorPagar, miForm.getDatosPagosRenegociarObservaciones(), "", true, true, htCuenta);
 							
 						} catch (SIGAException e) {
 							isTodasRenegociadas = false;
 							continue;
-						}finally{
+							
+						} finally {
 							if (miForm.getComisiones()!=null && miForm.getComisiones().equalsIgnoreCase(ClsConstants.DB_TRUE)){
 								FacLineaDevoluDisqBancoAdm admLDDB= new FacLineaDevoluDisqBancoAdm(usr);
 								Hashtable filtroLineasHashtable = new Hashtable(); 
@@ -592,11 +589,6 @@ public class DevolucionesAction extends MasterAction {
 				    		
 					}
 				}
-				// Aplicacion de comisiones
-			    /*if (miForm.getComisiones()!=null && miForm.getComisiones().equalsIgnoreCase(ClsConstants.DB_TRUE)){
-			    	ClsLogging.writeFileLog("Aplicando Comisiones de devolucion="+miForm.getComisiones(),8);
-			    	correcto=aplicarComisiones(miForm.getIdInstitucion(),identificador,miForm.getComisiones(),this.getUserBean(request));
-			    }*/
 				
 			} else if(codretorno.equalsIgnoreCase(codigoError)){
 				tx.rollback();
@@ -631,31 +623,30 @@ public class DevolucionesAction extends MasterAction {
 				tx.rollback();
 				request.setAttribute("mensaje","messages.facturacion.devoluciones.noProductoComision");
 				return "nuevo";
-			}else{
-			
-				if (correcto){
-					
+				
+			} else { 			
+				if (correcto){					
 					tx.commit();
-//					tx.rollback();
 	
-					if(isTodasRenegociadas){
+					if (isTodasRenegociadas) {
 						result=exitoModal("facturacion.nuevoFichero.literal.procesoCorrecto",request);
 						
-					}else{
+					} else {
 						result=exitoModal("facturacion.renegociar.aviso.noTodasRenegociadas",request);
 					}
-				}
-				else{
+					
+				} else {
 					tx.rollback();		
 					request.setAttribute("mensaje","facturacion.nuevoFichero.literal.errorLectura");
 					return "nuevo";
 				}
 			}
+			
 		}catch (Exception e) { 
-			try{
+			try {
 				borrarFichero(identificador, idInstitucion);
-			}catch(Exception ex){
-				throwExcp("messages.general.error",new String[] {"modulo.facturacion"},ex,tx); 
+			} catch(Exception ex){
+				throwExcp("messages.general.error",new String[] {"modulo.facturacion"}, ex, tx); 
 			}
 			
 			throwExcp("messages.general.error",new String[] {"modulo.facturacion"},e,tx); 

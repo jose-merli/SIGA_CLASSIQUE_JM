@@ -2351,68 +2351,67 @@ public class Facturacion {
 		comisionesClientes=admCliente.selectForUpdate(criteriosCliente);
 		clienteBean=(CenClienteBean)comisionesClientes.firstElement();
 		
-		if (aplicaComisionesCliente!=null && 
-			aplicaComisionesCliente.equalsIgnoreCase(ClsConstants.DB_TRUE) &&
+		// Deteccion banco acreedor (colegio)
+		Vector bancos = new Vector();
+		FacDisqueteDevolucionesAdm admDD= new FacDisqueteDevolucionesAdm(userBean);
+		FacDisqueteDevolucionesBean disqueteDevolucion = new FacDisqueteDevolucionesBean();
+		bancos=admDD.selectByPKForUpdate(criteriosDevolucion);
+		disqueteDevolucion=(FacDisqueteDevolucionesBean)bancos.firstElement();		
+		
+		// Comision banco acreedor (ajena o propia)
+		Vector comisiones = new Vector();			
+		Hashtable criteriosBanco = new Hashtable();
+		FacBancoInstitucionAdm admBI= new FacBancoInstitucionAdm(userBean);
+		FacBancoInstitucionBean comision = new FacBancoInstitucionBean();
+		if(disqueteDevolucion.getIdInstitucion()!= null)
+			criteriosBanco.put(FacBancoInstitucionBean.C_IDINSTITUCION,disqueteDevolucion.getIdInstitucion().toString());
+		criteriosBanco.put(FacBancoInstitucionBean.C_BANCOS_CODIGO,disqueteDevolucion.getBancosCodigo());
+		comisiones=admBI.selectByPKForUpdate(criteriosBanco);
+		comision=(FacBancoInstitucionBean)comisiones.firstElement();		
+		
+		// Deteccion banco deudor (cliente)
+		CenCuentasBancariasAdm admCB= new CenCuentasBancariasAdm(userBean);
+		CenCuentasBancariasBean cuentaCliente = new CenCuentasBancariasBean();
+		Vector bancosCliente = new Vector();
+		Hashtable criteriosCC = new Hashtable();
+		if(facturaDisquete.getIdInstitucion()!= null)
+			criteriosCC.put(CenCuentasBancariasBean.C_IDINSTITUCION,facturaDisquete.getIdInstitucion().toString());
+		if(facturaDisquete.getIdPersona()!= null)
+			criteriosCC.put(CenCuentasBancariasBean.C_IDPERSONA,facturaDisquete.getIdPersona().toString());
+		if(facturaDisquete.getIdCuenta()!= null)
+			criteriosCC.put(CenCuentasBancariasBean.C_IDCUENTA,facturaDisquete.getIdCuenta().toString());						
+		bancosCliente=admCB.selectByPKForUpdate(criteriosCC);
+		cuentaCliente=(CenCuentasBancariasBean)bancosCliente.firstElement();	
+		
+		// Se actualiza los campos CARGARCLIENTE y GASTOSDEVOLUCION
+		Hashtable original = new Hashtable();
+		if(lineaDevolucion.getIdInstitucion()!= null)
+			original.put(FacLineaDevoluDisqBancoBean.C_IDINSTITUCION,lineaDevolucion.getIdInstitucion().toString());
+		if(lineaDevolucion.getIdDisqueteDevoluciones()!= null)
+			original.put(FacLineaDevoluDisqBancoBean.C_IDDISQUETEDEVOLUCIONES,lineaDevolucion.getIdDisqueteDevoluciones().toString());
+		original.put(FacLineaDevoluDisqBancoBean.C_IDRECIBO,lineaDevolucion.getIdRecibo());
+		if(lineaDevolucion.getIdDisqueteCargos()!= null)
+			original.put(FacLineaDevoluDisqBancoBean.C_IDDISQUETECARGOS,lineaDevolucion.getIdDisqueteCargos().toString());						
+		original.put(FacLineaDevoluDisqBancoBean.C_IDFACTURAINCLUIDAENDISQUETE,lineaDevolucion.getIdFacturaIncluidaEnDisquete()); 
+		original.put(FacLineaDevoluDisqBancoBean.C_DESCRIPCIONMOTIVOS,lineaDevolucion.getDescripcionMotivos());
+		if(lineaDevolucion.getGastosDevolucion()!= null)
+			original.put(FacLineaDevoluDisqBancoBean.C_GASTOSDEVOLUCION,lineaDevolucion.getGastosDevolucion().toString());
+		original.put(FacLineaDevoluDisqBancoBean.C_CARGARCLIENTE,lineaDevolucion.getCargarCliente());
+		if(lineaDevolucion.getContabilizada()!= null)
+			original.put(FacLineaDevoluDisqBancoBean.C_CONTABILIZADA,lineaDevolucion.getContabilizada().toString());
+		lineaDevolucion.setOriginalHash(original);		
+		if (disqueteDevolucion.getBancosCodigo().equalsIgnoreCase(cuentaCliente.getCbo_Codigo())) {
+			lineaDevolucion.setGastosDevolucion(comision.getImpComisionPropiaCargo());
+		} else {
+			lineaDevolucion.setGastosDevolucion(comision.getImpComisionAjenaCargo());
+		}		
+		
+		// RGG 15/09/2006 COMISIONES A CARGO DEL CLIENTE
+		if (aplicaComisionesCliente!=null && aplicaComisionesCliente.equalsIgnoreCase(ClsConstants.DB_TRUE) &&
 			clienteBean.getComisiones().equalsIgnoreCase(ClsConstants.DB_TRUE)){
-
-			// RGG 15/09/2006 COMISIONES A CARGO DEL CLIENTE
-			
-			// Deteccion banco CGAE
-			Vector bancos = new Vector();
-			FacDisqueteDevolucionesAdm admDD= new FacDisqueteDevolucionesAdm(userBean);
-			FacDisqueteDevolucionesBean disqueteDevolucion = new FacDisqueteDevolucionesBean();
-			bancos=admDD.selectByPKForUpdate(criteriosDevolucion);
-			disqueteDevolucion=(FacDisqueteDevolucionesBean)bancos.firstElement();
-			// Comision banco a aplicar (ajena o propia)
-			Vector comisiones = new Vector();
-			
-			Hashtable criteriosBanco = new Hashtable();
-			FacBancoInstitucionAdm admBI= new FacBancoInstitucionAdm(userBean);
-			FacBancoInstitucionBean comision = new FacBancoInstitucionBean();
-			if(disqueteDevolucion.getIdInstitucion()!= null)
-				criteriosBanco.put(FacBancoInstitucionBean.C_IDINSTITUCION,disqueteDevolucion.getIdInstitucion().toString());
-			criteriosBanco.put(FacBancoInstitucionBean.C_BANCOS_CODIGO,disqueteDevolucion.getBancosCodigo());
-			comisiones=admBI.selectByPKForUpdate(criteriosBanco);
-			comision=(FacBancoInstitucionBean)comisiones.firstElement();
-			// Deteccion banco del cliente
-			CenCuentasBancariasAdm admCB= new CenCuentasBancariasAdm(userBean);
-			CenCuentasBancariasBean cuentaCliente = new CenCuentasBancariasBean();
-			Vector bancosCliente = new Vector();
-			Hashtable criteriosCC = new Hashtable();
-			if(facturaDisquete.getIdInstitucion()!= null)
-				criteriosCC.put(CenCuentasBancariasBean.C_IDINSTITUCION,facturaDisquete.getIdInstitucion().toString());
-			if(facturaDisquete.getIdPersona()!= null)
-				criteriosCC.put(CenCuentasBancariasBean.C_IDPERSONA,facturaDisquete.getIdPersona().toString());
-			if(facturaDisquete.getIdCuenta()!= null)
-				criteriosCC.put(CenCuentasBancariasBean.C_IDCUENTA,facturaDisquete.getIdCuenta().toString());						
-			bancosCliente=admCB.selectByPKForUpdate(criteriosCC);
-			cuentaCliente=(CenCuentasBancariasBean)bancosCliente.firstElement();
 			
 			// Se actualiza los campos CARGARCLIENTE y GASTOSDEVOLUCION
-			Hashtable original = new Hashtable();
-			if(lineaDevolucion.getIdInstitucion()!= null)
-				original.put(FacLineaDevoluDisqBancoBean.C_IDINSTITUCION,lineaDevolucion.getIdInstitucion().toString());
-			if(lineaDevolucion.getIdDisqueteDevoluciones()!= null)
-				original.put(FacLineaDevoluDisqBancoBean.C_IDDISQUETEDEVOLUCIONES,lineaDevolucion.getIdDisqueteDevoluciones().toString());
-			original.put(FacLineaDevoluDisqBancoBean.C_IDRECIBO,lineaDevolucion.getIdRecibo());
-			if(lineaDevolucion.getIdDisqueteCargos()!= null)
-				original.put(FacLineaDevoluDisqBancoBean.C_IDDISQUETECARGOS,lineaDevolucion.getIdDisqueteCargos().toString());						
-			original.put(FacLineaDevoluDisqBancoBean.C_IDFACTURAINCLUIDAENDISQUETE,lineaDevolucion.getIdFacturaIncluidaEnDisquete()); 
-			original.put(FacLineaDevoluDisqBancoBean.C_DESCRIPCIONMOTIVOS,lineaDevolucion.getDescripcionMotivos());
-			if(lineaDevolucion.getGastosDevolucion()!= null)
-				original.put(FacLineaDevoluDisqBancoBean.C_GASTOSDEVOLUCION,lineaDevolucion.getGastosDevolucion().toString());
-			original.put(FacLineaDevoluDisqBancoBean.C_CARGARCLIENTE,lineaDevolucion.getCargarCliente());
-			if(lineaDevolucion.getContabilizada()!= null)
-				original.put(FacLineaDevoluDisqBancoBean.C_CONTABILIZADA,lineaDevolucion.getContabilizada().toString());
-			lineaDevolucion.setOriginalHash(original);
 			lineaDevolucion.setCargarCliente("S");
-			if (disqueteDevolucion.getBancosCodigo().equalsIgnoreCase(cuentaCliente.getCbo_Codigo())){
-				lineaDevolucion.setGastosDevolucion(comision.getImpComisionPropiaCargo());
-			}
-			else{
-				lineaDevolucion.setGastosDevolucion(comision.getImpComisionAjenaCargo());
-			}
-			
 			resultado=admLDDB.update(lineaDevolucion);
 
 			if (resultado){
@@ -2437,13 +2436,14 @@ public class Facturacion {
 //
 //				}
 
+				// Si (devolucion manual OR (devolucion AND noRenegociarAutomaticamente)) entonces idCuenta == null
 				if((idCuenta==null)||(idCuenta.isEmpty()))
 					formaPago=String.valueOf(ClsConstants.TIPO_FORMAPAGO_METALICO);
 				else
 					formaPago=String.valueOf(ClsConstants.TIPO_FORMAPAGO_FACTURA);
 				//Fin Mod MJM: INC_12175_SIGA. Se informa la misma forma de pago que la que tenga la factura
 				
-				// Insercion PYS_COMPRASUSCRIPCION						
+				// Insercion PYS_PETICIONCOMPRASUSCRIPCION						
 				PysPeticionCompraSuscripcionAdm ppcsa= new PysPeticionCompraSuscripcionAdm(userBean);
 				String idPeticion=ppcsa.getNuevoID(new Integer((String)productoComision.get(PysProductosInstitucionBean.C_IDINSTITUCION))).toString();
 
@@ -2478,17 +2478,15 @@ public class Facturacion {
 					productosSolicitados.put(PysProductosSolicitadosBean.C_CANTIDAD,"1");
 					productosSolicitados.put(PysProductosSolicitadosBean.C_ACEPTADO,"A");
 					productosSolicitados.put(PysProductosSolicitadosBean.C_VALOR,lineaDevolucion.getGastosDevolucion());
-					productosSolicitados.put(PysProductosSolicitadosBean.C_PORCENTAJEIVA,productoComision.get(PysProductosInstitucionBean.C_PORCENTAJEIVA));
-					
-					productosSolicitados.put(PysProductosSolicitadosBean.C_NOFACTURABLE,productoComision.get(PysProductosInstitucionBean.C_NOFACTURABLE));
-					
+					productosSolicitados.put(PysProductosSolicitadosBean.C_PORCENTAJEIVA,productoComision.get(PysProductosInstitucionBean.C_PORCENTAJEIVA));					
+					productosSolicitados.put(PysProductosSolicitadosBean.C_NOFACTURABLE,productoComision.get(PysProductosInstitucionBean.C_NOFACTURABLE));					
 					if(idCuenta != null)
 						productosSolicitados.put(PysProductosSolicitadosBean.C_IDCUENTA,idCuenta);
 		//			productosSolicitados.put(PysProductosSolicitadosBean.C_IDTIPOENVIOS,null);
 		//			productosSolicitados.put(PysProductosSolicitadosBean.C_IDDIRECCION,null);
 					resultado=admPS.insert(productosSolicitados);
 					
-					// Insercion PYS_PRODUCTOSSOLICITADOS
+					// Insercion PYS_COMPRA
 					if (resultado){
 						PysCompraAdm admCompra= new PysCompraAdm(userBean);
 						Hashtable compra=new Hashtable();
@@ -2507,83 +2505,27 @@ public class Facturacion {
 								UtilidadesString.getMensajeIdioma(userBean.getLanguageInstitucion(), "facturacion.comisionBancaria.literalMotivoCompra")+
 								UtilidadesString.formatoFecha(disqueteDevolucion.getFechaGeneracion(), ClsConstants.DATE_FORMAT_JAVA, ClsConstants.DATE_FORMAT_SHORT_SPANISH) );
 						compra.put(PysCompraBean.C_IMPORTEANTICIPADO,"0");
-						compra.put(PysCompraBean.C_ACEPTADO,"A");
-						
-						compra.put(PysCompraBean.C_NOFACTURABLE,productoComision.get(PysProductosInstitucionBean.C_NOFACTURABLE));
-						
+						compra.put(PysCompraBean.C_ACEPTADO,"A");						
+						compra.put(PysCompraBean.C_NOFACTURABLE,productoComision.get(PysProductosInstitucionBean.C_NOFACTURABLE));						
 		//				compra.put(PysCompraBean.C_NUMEROLINEA,null);									
 		//				compra.put(PysCompraBean.C_IDFACTURA,null);
 		//				compra.put(PysCompraBean.C_FECHABAJA,null);
-						compra.put(PysCompraBean.C_IDPERSONA,facturaDisquete.getIdPersona().toString());
+						compra.put(PysCompraBean.C_IDPERSONA,facturaDisquete.getIdPersona().toString());						
 						if(idCuenta != null)
 							compra.put(PysCompraBean.C_IDCUENTA,idCuenta);
 						resultado=admCompra.insert(compra);
 					}	
 				}
 			}
-		} else {
 			
+		} else {			
 			// RGG 15/09/2006 COMISIONES A CARGO DE LA INSTITUCION
 			
-			// Deteccion banco CGAE
-			Vector bancos = new Vector();
-			FacDisqueteDevolucionesAdm admDD= new FacDisqueteDevolucionesAdm(userBean);
-			FacDisqueteDevolucionesBean disqueteDevolucion = new FacDisqueteDevolucionesBean();
-			bancos=admDD.selectByPKForUpdate(criteriosDevolucion);
-			disqueteDevolucion=(FacDisqueteDevolucionesBean)bancos.firstElement();
-			// Comision banco a aplicar (ajena o propia)
-			Vector comisiones = new Vector();
-			Hashtable criteriosBanco = new Hashtable();
-			FacBancoInstitucionAdm admBI= new FacBancoInstitucionAdm(userBean);
-			FacBancoInstitucionBean comision = new FacBancoInstitucionBean();
-			if(disqueteDevolucion.getIdInstitucion()!= null)
-				criteriosBanco.put(FacBancoInstitucionBean.C_IDINSTITUCION,disqueteDevolucion.getIdInstitucion().toString());
-			criteriosBanco.put(FacBancoInstitucionBean.C_BANCOS_CODIGO,disqueteDevolucion.getBancosCodigo());
-			comisiones=admBI.selectByPKForUpdate(criteriosBanco);
-			comision=(FacBancoInstitucionBean)comisiones.firstElement();
-			// Deteccion banco del cliente
-			CenCuentasBancariasAdm admCB= new CenCuentasBancariasAdm(userBean);
-			CenCuentasBancariasBean cuentaCliente = new CenCuentasBancariasBean();
-			Vector bancosCliente = new Vector();
-			Hashtable criteriosCC = new Hashtable();
-			if(facturaDisquete.getIdInstitucion()!= null)
-				criteriosCC.put(CenCuentasBancariasBean.C_IDINSTITUCION,facturaDisquete.getIdInstitucion().toString());
-			if(facturaDisquete.getIdPersona()!= null)
-				criteriosCC.put(CenCuentasBancariasBean.C_IDPERSONA,facturaDisquete.getIdPersona().toString());
-			if(facturaDisquete.getIdCuenta()!= null)
-				criteriosCC.put(CenCuentasBancariasBean.C_IDCUENTA,facturaDisquete.getIdCuenta().toString());						
-			bancosCliente=admCB.selectByPKForUpdate(criteriosCC);
-			cuentaCliente=(CenCuentasBancariasBean)bancosCliente.firstElement();
-			
 			// Se actualiza los campos CARGARCLIENTE y GASTOSDEVOLUCION
-			Hashtable original = new Hashtable();
-			if(lineaDevolucion.getIdInstitucion()!= null)
-				original.put(FacLineaDevoluDisqBancoBean.C_IDINSTITUCION,lineaDevolucion.getIdInstitucion().toString());
-			if(lineaDevolucion.getIdDisqueteDevoluciones()!= null)
-				original.put(FacLineaDevoluDisqBancoBean.C_IDDISQUETEDEVOLUCIONES,lineaDevolucion.getIdDisqueteDevoluciones().toString());
-			original.put(FacLineaDevoluDisqBancoBean.C_IDRECIBO,lineaDevolucion.getIdRecibo());
-			if(lineaDevolucion.getIdDisqueteCargos()!= null)
-				original.put(FacLineaDevoluDisqBancoBean.C_IDDISQUETECARGOS,lineaDevolucion.getIdDisqueteCargos().toString());						
-			original.put(FacLineaDevoluDisqBancoBean.C_IDFACTURAINCLUIDAENDISQUETE,lineaDevolucion.getIdFacturaIncluidaEnDisquete()); 
-			original.put(FacLineaDevoluDisqBancoBean.C_DESCRIPCIONMOTIVOS,lineaDevolucion.getDescripcionMotivos());
-			if(lineaDevolucion.getGastosDevolucion()!= null)
-				original.put(FacLineaDevoluDisqBancoBean.C_GASTOSDEVOLUCION,lineaDevolucion.getGastosDevolucion().toString());
-			original.put(FacLineaDevoluDisqBancoBean.C_CARGARCLIENTE,lineaDevolucion.getCargarCliente());
-			if(lineaDevolucion.getContabilizada()!= null)
-				original.put(FacLineaDevoluDisqBancoBean.C_CONTABILIZADA,lineaDevolucion.getContabilizada().toString());
-			lineaDevolucion.setOriginalHash(original);
-			// RGG 15/09/2006 DIFERENCIA CON LO DE ARRIBA
-			lineaDevolucion.setCargarCliente("N");
-			if (disqueteDevolucion.getBancosCodigo().equalsIgnoreCase(cuentaCliente.getCbo_Codigo())){
-				lineaDevolucion.setGastosDevolucion(comision.getImpComisionPropiaCargo());
-			}
-			else{
-				lineaDevolucion.setGastosDevolucion(comision.getImpComisionAjenaCargo());
-			}
-			resultado=admLDDB.update(lineaDevolucion);
+			lineaDevolucion.setCargarCliente("N"); // RGG 15/09/2006 DIFERENCIA CON LO DE ARRIBA
+			resultado=admLDDB.update(lineaDevolucion);			
 			
-			// RGG 15/09/2006 NO DUPLICO LO SIGUIENTE PORQUE NO ES NECESARIO
-			
+			// RGG 15/09/2006 NO DUPLICO LO SIGUIENTE PORQUE NO ES NECESARIO			
 		} // ELSE
 		
 		return resultado;
