@@ -731,11 +731,12 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
 				where += " AND " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDPERSONADEUDOR + " = " + datos.getDeudor() + " "; 
 			}
 			
-			String orderBy = " ORDER BY " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_NUMEROFACTURA + " DESC, " +
+			String orderBy = " ORDER BY TO_NUMBER(" + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDFACTURA + ") DESC";
+			/*String orderBy = " ORDER BY " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_NUMEROFACTURA + " DESC, " +
 					  			CenPersonaBean.T_NOMBRETABLA + "." + CenPersonaBean.C_NOMBRE + ", " + 
 				  				CenPersonaBean.T_NOMBRETABLA + "." + CenPersonaBean.C_APELLIDOS1 + ", " +
 				  				CenPersonaBean.T_NOMBRETABLA + "." + CenPersonaBean.C_APELLIDOS2 + ", " +
-				  				FacFacturacionProgramadaBean.T_NOMBRETABLA + "." + FacFacturacionProgramadaBean.C_FECHAREALGENERACION + " DESC ";			
+				  				FacFacturacionProgramadaBean.T_NOMBRETABLA + "." + FacFacturacionProgramadaBean.C_FECHAREALGENERACION + " DESC ";*/			
 	
 			String consulta = select + from + where + orderBy;
 			selectContar+= from + where;
@@ -1687,6 +1688,8 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
 		    	}
 		    	
 		    }
+		    
+		    sql += " ORDER BY TO_NUMBER(F." + FacFacturaBean.C_IDFACTURA + ") DESC";
 		    
 		    PaginadorCaseSensitiveBind paginador = new PaginadorCaseSensitiveBind(sql,codigos);				
 			int totalRegistros = paginador.getNumeroTotalRegistros();
