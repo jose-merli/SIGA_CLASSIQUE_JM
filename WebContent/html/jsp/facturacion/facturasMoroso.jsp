@@ -182,22 +182,22 @@
 							<td class="labelText">
 								<siga:Idioma key="facturacion.consultamorosos.literal.totalneto" />:
 							</td>
-							<td class="labelTextValue">
-								<%=UtilidadesNumero.formatoCampo(UtilidadesNumero.redondea(netoFactura, 2))%>&nbsp;&euro;
+							<td class="labelTextValue" align="right">
+								<%=UtilidadesString.formatoImporte(UtilidadesNumero.redondea(netoFactura, 2))%>&nbsp;&euro;
 							</td>
 							
 							<td class="labelText">
 								<siga:Idioma key="facturacion.consultamorosos.literal.totaliva" />:
 							</td>
-							<td class="labelTextValue">
-								<%=UtilidadesNumero.formatoCampo(UtilidadesNumero.redondea(totalIvaFactura, 2))%>&nbsp;&euro;
+							<td class="labelTextValue" align="right">
+								<%=UtilidadesString.formatoImporte(UtilidadesNumero.redondea(totalIvaFactura, 2))%>&nbsp;&euro;
 							</td>
 							
 							<td class="labelText">
 								<siga:Idioma key="facturacion.consultamorosos.literal.total" />:
 							</td>
-							<td class="labelTextValue">
-								<%=UtilidadesNumero.formatoCampo(UtilidadesNumero.redondea(totalFactura, 2))%>&nbsp;&euro;
+							<td class="labelTextValue" align="right">
+								<%=UtilidadesString.formatoImporte(UtilidadesNumero.redondea(totalFactura, 2))%>&nbsp;&euro;
 							</td>
 						</tr>
 						
@@ -206,15 +206,15 @@
 							<td class="labelText">
 								<siga:Idioma key="facturacion.consultamorosos.literal.facturapagado" />
 							</td>
-							<td class="labelTextValue">
-								<%=UtilidadesNumero.formatoCampo(UtilidadesNumero.redondea(pagadoFactura, 2))%>&nbsp;&euro;
+							<td class="labelTextValue" align="right">
+								<%=UtilidadesString.formatoImporte(UtilidadesNumero.redondea(pagadoFactura, 2))%>&nbsp;&euro;
 							</td>					
 										
 							<td class="labelText">
 								<siga:Idioma key="facturacion.consultamorosos.literal.pendientepago" />
 							</td>
-							<td class="labelTextValue">
-								<%=UtilidadesNumero.formatoCampo(UtilidadesNumero.redondea(deudaFactura, 2))%>&nbsp;&euro;
+							<td class="labelTextValue" align="right">
+								<%=UtilidadesString.formatoImporte(UtilidadesNumero.redondea(deudaFactura, 2))%>&nbsp;&euro;
 							</td>
 						</tr>
 					</table>
@@ -226,14 +226,13 @@
 	<siga:Table 
 		name="tablaResultados" 
 		border="2"
-		columnNames="facturacion.lineasFactura.literal.Orden,
-  					 facturacion.lineasFactura.literal.Descripcion,
+		columnNames="facturacion.lineasFactura.literal.Descripcion,
   					 facturacion.lineasFactura.literal.Cantidad,
   					 facturacion.lineasFactura.literal.Precio,
   					 facturacion.lineasFactura.literal.IVA,
 					 facturacion.lineasFactura.literal.Total,
-  					facturacion.lineasFactura.literal.Anticipado,"
-		columnSizes="9,50,7,9,7,9,9" 
+  					facturacion.lineasFactura.literal.Anticipado"
+		columnSizes="50,7,9,7,9,9" 
 		modal="M"
 		fixedHeight="50%">
 
@@ -260,13 +259,12 @@
 						sumaTotal = sumaTotal + total.doubleValue();
 						sumaAnticipado = sumaAnticipado + anticipado.doubleValue();
 %>
-						<td><%=UtilidadesString.mostrarDatoJSP(linea.getNumeroOrden())%></td>
 						<td><%=UtilidadesString.mostrarDatoJSP(linea.getDescripcion())%></td>
 						<td align="right"><%=UtilidadesString.mostrarDatoJSP(cantidad)%></td>
-						<td align="right"><%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero.formatoCampo(importe.doubleValue()))%></td>
-						<td align="right"><%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero.formatoCampo(ivaImporte))%></td>
-						<td align="right"><%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero.formatoCampo(total.doubleValue()))%></td>
-						<td align="right"><%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero.formatoCampo(anticipado.doubleValue()))%></td>
+						<td align="right"><%=UtilidadesString.mostrarDatoJSP(UtilidadesString.formatoImporte(importe.doubleValue()))%>&nbsp;&euro;</td>
+						<td align="right"><%=UtilidadesString.mostrarDatoJSP(UtilidadesString.formatoImporte(ivaImporte))%>&nbsp;&euro;</td>
+						<td align="right"><%=UtilidadesString.mostrarDatoJSP(UtilidadesString.formatoImporte(total.doubleValue()))%>&nbsp;&euro;</td>
+						<td align="right"><%=UtilidadesString.mostrarDatoJSP(UtilidadesString.formatoImporte(anticipado.doubleValue()))%>&nbsp;&euro;</td>
 
 <%
 					} // if
@@ -275,14 +273,13 @@
 <% 
 			} //for
 %>
-			<siga:FilaConIconosExtExt nombreTablaPadre="tablaResultados" pintarEspacio='no' fila="<%=String.valueOf(i+1)%>" botones="" clase="listaNonEdit" visibleConsulta="no" visibleBorrado="no" visibleEdicion="no">
+			<siga:FilaConIconosExtExt nombreTablaPadre="tablaResultados" pintarEspacio='no' fila="<%=String.valueOf(i+1)%>" botones="" clase="listaNonEditSelected" visibleConsulta="no" visibleBorrado="no" visibleEdicion="no">
 				<td>&nbsp;</td>
 				<td>&nbsp;</td>
-				<td>&nbsp;</td>
-				<td align="right"><%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero.formatoCampo(importeTotal))%></td>
-				<td align="right"><%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero.formatoCampo(ivaTotal))%></td>
-				<td align="right"><%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero.formatoCampo(sumaTotal))%></td>
-				<td align="right"><%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero.formatoCampo(sumaAnticipado))%></td>
+				<td align="right"><b><%=UtilidadesString.mostrarDatoJSP(UtilidadesString.formatoImporte(importeTotal))%>&nbsp;&euro;</b></td>
+				<td align="right"><b><%=UtilidadesString.mostrarDatoJSP(UtilidadesString.formatoImporte(ivaTotal))%>&nbsp;&euro;</b></td>
+				<td align="right"><b><%=UtilidadesString.mostrarDatoJSP(UtilidadesString.formatoImporte(sumaTotal))%>&nbsp;&euro;</b></td>
+				<td align="right"><b><%=UtilidadesString.mostrarDatoJSP(UtilidadesString.formatoImporte(sumaAnticipado))%>&nbsp;&euro;</b></td>
 			</siga:FilaConIconosExtExt>
 <%
 		} else {

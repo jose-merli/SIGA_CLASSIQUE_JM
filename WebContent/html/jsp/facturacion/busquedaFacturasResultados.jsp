@@ -195,7 +195,7 @@ else{
 									<td><%=UtilidadesString.mostrarDatoJSP(descripcion)%></td>
 									<td><%=UtilidadesString.mostrarDatoJSP(fecha)%></td>
 									<td><%=UtilidadesString.mostrarDatoJSP(nombreCompleto)%></td>
-									<td align="right"><%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero.formatoCampo(total.doubleValue()))%>&nbsp;&euro;</td>
+									<td align="right"><%=UtilidadesString.mostrarDatoJSP(UtilidadesString.formatoImporte(total.doubleValue()))%>&nbsp;&euro;</td>
 									<td><%=sEstado%></td>
 									</siga:FilaConIconos>
 							 		

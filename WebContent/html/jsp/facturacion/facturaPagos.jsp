@@ -332,7 +332,7 @@
 			<table  align="left" border="0" width="100%">
 				<tr>				
 					<td class="labelText" nowrap><siga:Idioma key="facturacion.pagosFactura.literal.TotalFactura"/></td>
-					<td class="labelTextNum" align="right" nowrap><%=UtilidadesString.formatoImporte(total)%>&euro;</td>
+					<td class="labelTextNum" align="right" nowrap><%=UtilidadesString.formatoImporte(total)%>&nbsp;&euro;</td>
 				</tr>
 			</table>
 		</fieldset>
@@ -343,27 +343,27 @@
 			<table  align="left" border="0" width="100%">
 				<tr>				
 					<td class="labelText" nowrap><siga:Idioma key="facturacion.pagosFactura.literal.TotalAnticipado"/></td>
-					<td class="labelTextNum" align="right" nowrap><%=UtilidadesString.mostrarDatoJSP(UtilidadesString.formatoImporte(UtilidadesNumero.redondea(totalAnticipado.toString(),2)))%> &euro;</td>
+					<td class="labelTextNum" align="right" nowrap><%=UtilidadesString.mostrarDatoJSP(UtilidadesString.formatoImporte(UtilidadesNumero.redondea(totalAnticipado.toString(),2)))%>&nbsp;&euro;</td>
 				</tr>
 
 				<tr>				
 					<td class="labelText" nowrap><siga:Idioma key="facturacion.pagosFactura.literal.TotalCaja"/></td>
-					<td class="labelTextNum" align="right" nowrap><%=UtilidadesString.mostrarDatoJSP(UtilidadesString.formatoImporte(UtilidadesNumero.redondea(totalCaja.toString(),2)))%> &euro;</td>
+					<td class="labelTextNum" align="right" nowrap><%=UtilidadesString.mostrarDatoJSP(UtilidadesString.formatoImporte(UtilidadesNumero.redondea(totalCaja.toString(),2)))%>&nbsp;&euro;</td>
 				</tr>
 
 				<tr>				
 					<td class="labelText" nowrap><siga:Idioma key="facturacion.pagosFactura.literal.TotalTarjeta"/></td>
-					<td class="labelTextNum" align="right" nowrap><%=UtilidadesString.mostrarDatoJSP(UtilidadesString.formatoImporte(UtilidadesNumero.redondea(totalTarjeta.toString(),2)))%> &euro;</td>
+					<td class="labelTextNum" align="right" nowrap><%=UtilidadesString.mostrarDatoJSP(UtilidadesString.formatoImporte(UtilidadesNumero.redondea(totalTarjeta.toString(),2)))%>&nbsp;&euro;</td>
 				</tr>
 					
 				<tr>				
 					<td class="labelText" nowrap><siga:Idioma key="facturacion.pagosFactura.literal.TotalBanco"/></td>
-					<td class="labelTextNum" align="right" nowrap><%=UtilidadesString.mostrarDatoJSP(UtilidadesString.formatoImporte(UtilidadesNumero.redondea(totalBanco.toString(),2)))%> &euro;</td>
+					<td class="labelTextNum" align="right" nowrap><%=UtilidadesString.mostrarDatoJSP(UtilidadesString.formatoImporte(UtilidadesNumero.redondea(totalBanco.toString(),2)))%>&nbsp;&euro;</td>
 				</tr>
 					
 				<tr>				
 					<td class="labelText" nowrap><siga:Idioma key="facturacion.pagosFactura.literal.TotalCompensado"/></td>
-					<td class="labelTextNum" align="right" nowrap><%=UtilidadesString.mostrarDatoJSP(UtilidadesString.formatoImporte(UtilidadesNumero.redondea(totalCompensado.toString(),2)))%> &euro;</td>
+					<td class="labelTextNum" align="right" nowrap><%=UtilidadesString.mostrarDatoJSP(UtilidadesString.formatoImporte(UtilidadesNumero.redondea(totalCompensado.toString(),2)))%>&nbsp;&euro;</td>
 				</tr>
 			</table>
 		</fieldset>			

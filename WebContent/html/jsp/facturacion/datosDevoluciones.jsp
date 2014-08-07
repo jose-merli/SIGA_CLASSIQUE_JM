@@ -204,8 +204,8 @@
 										<td>
 											<%=UtilidadesString.mostrarDatoJSP(row.getString(FacLineaDevoluDisqBancoBean.C_DESCRIPCIONMOTIVOS))%>
 										</td>
-										<td align="center">
-											<%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero.formatoCampo(row.getString(FacFacturaIncluidaEnDisqueteBean.C_IMPORTE)))%>&nbsp;&nbsp;&euro;
+										<td align="right">
+											<%=UtilidadesString.mostrarDatoJSP(UtilidadesString.formatoImporte(row.getString(FacFacturaIncluidaEnDisqueteBean.C_IMPORTE)))%>&nbsp;&euro;
 										</td>
 										<td align="center">
 											<%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero.formatoCampo(row.getString(FacLineaDevoluDisqBancoBean.C_GASTOSDEVOLUCION)))%>

@@ -214,7 +214,7 @@
 								</td>
 								<td><%=UtilidadesString.mostrarDatoJSP(numFactura)%></td>
 								<td><%=UtilidadesString.mostrarDatoJSP(nom)%></td>
-								<td align="right"><%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero.formatoCampo(importe.doubleValue()))%></td>
+								<td align="right"><%=UtilidadesString.mostrarDatoJSP(UtilidadesString.formatoImporte(importe.doubleValue()))%>&nbsp;&euro;</td>
 								<td>
 									<input type="hidden" id="devolucionManual_<%=(i+1)%>" value="<%=numRemesa%>%%<%=idFIED%>">
 									<siga:ComboBD nombre="motivoDevolucion" tipo="cmbTipoMotivoDevolucion" clase="boxCombo" elementoSel="<%=motivosSel %>" obligatorio="true" obligatorioSinTextoSeleccionar="true"/>						

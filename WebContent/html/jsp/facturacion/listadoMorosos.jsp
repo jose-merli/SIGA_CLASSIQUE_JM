@@ -197,7 +197,7 @@
 					<td align="center"><%=UtilidadesString.mostrarDatoJSP(GstDate.getFormatedDateShort(userBean.getLanguage(),fila.getString(""+FacFacturaBean.C_FECHAEMISION+"")))%></td>
 					<td align="right"><%=UtilidadesString.mostrarDatoJSP(fila.getString(""+FacFacturaBean.C_NUMEROFACTURA+""))%></td>
 					<td align="left"><%=UtilidadesString.mostrarDatoJSP(fila.getString("ESTADO_FACTURA"))%></td>
-					<td align="right"><%=UtilidadesNumero.formatoCampo(UtilidadesNumero.redondea(fila.getString("DEUDA"),2))%>&nbsp;&euro;</td>
+					<td align="right"><%=UtilidadesString.formatoImporte(UtilidadesNumero.redondea(fila.getString("DEUDA"),2))%>&nbsp;&euro;</td>
 					<td><%=UtilidadesString.mostrarDatoJSP(fila.getString("COMUNICACIONES"))%></td>					
 				</siga:FilaConIconos>
 <%
