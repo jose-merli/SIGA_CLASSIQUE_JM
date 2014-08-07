@@ -293,7 +293,7 @@ public class FacFacturaIncluidaEnDisqueteAdm extends MasterBeanAdministrador {
 				
 			}
 			
-			sql += " ORDER BY " + FacFacturaIncluidaEnDisqueteBean.T_NOMBRETABLA + "." + FacFacturaIncluidaEnDisqueteBean.C_IDRECIBO + " ";
+			sql += " ORDER BY " + FacFacturaIncluidaEnDisqueteBean.T_NOMBRETABLA + "." + FacFacturaIncluidaEnDisqueteBean.C_IDRECIBO + " DESC ";
 			
 				
 				
