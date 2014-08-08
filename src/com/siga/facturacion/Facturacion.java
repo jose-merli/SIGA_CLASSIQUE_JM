@@ -1938,10 +1938,6 @@ public class Facturacion {
      * @throws ClsExceptions
      */
     public CenCuentasBancariasBean getCuentaRenegociacionAutomatica(Integer idInstitucion,String idFactura,Long idPersona,Integer idCuenta)throws SIGAException, ClsExceptions{
-    	
-			
-    	
-    	
     	CenCuentasBancariasBean cuentaBancaria = null;
     	Hashtable claves = new Hashtable();
 		UtilidadesHash.set(claves, FacFacturaBean.C_IDINSTITUCION, idInstitucion);
@@ -1952,35 +1948,41 @@ public class Facturacion {
 		FacFacturacionSuscripcionAdm facFacturacionSuscripcionAdm = new FacFacturacionSuscripcionAdm(this.usrbean);
 		int numServicios = facFacturacionSuscripcionAdm.getNumeroServiciosFactura(idInstitucion,idFactura);
 		CenCuentasBancariasAdm cuentasBancariasAdm = new CenCuentasBancariasAdm(this.usrbean);
-		if(numServicios == 0){
+		
+		if(numServicios == 0) { //Productos 		
 			
+			// Obtiene los datos de la cuenta
 			Hashtable cuentaBancariaHashtable = cuentasBancariasAdm.selectCuentas(idPersona, idInstitucion, idCuenta);
+			
+			// Compruebo que tengo cuenta
 			if (cuentaBancariaHashtable != null) {
-			String fechaBajaCuenta = (String) cuentaBancariaHashtable.get(CenCuentasBancariasBean.C_FECHABAJA);
-			if(fechaBajaCuenta!=null && !fechaBajaCuenta.equals("") ){
-				List listaCuentasCargo = cuentasBancariasAdm.getCuentasCargo(idPersona, idInstitucion);
-				if(listaCuentasCargo!=null &&listaCuentasCargo.size()==1){
-					cuentaBancaria = (CenCuentasBancariasBean) listaCuentasCargo.get(0);
-				}else{
-					//no renegociamos
-					return null;
-				}
-			}else{
-				//la cuenta es OK
-				cuentaBancaria = (CenCuentasBancariasBean) cuentasBancariasAdm.hashTableToBean(cuentaBancariaHashtable);
-				return cuentaBancaria;
 				
+				// Obtengo la fecha de baja
+				String fechaBajaCuenta = (String) cuentaBancariaHashtable.get(CenCuentasBancariasBean.C_FECHABAJA);
+				
+				// Compruebo si esta de baja
+				if(fechaBajaCuenta!=null && !fechaBajaCuenta.equals("") ){
+					
+					
+					// Consulta las cuentas de cargo
+					List listaCuentasCargo = cuentasBancariasAdm.getCuentasCargo(idPersona, idInstitucion);
+					
+					// Compruebo si solo tiene una cuenta de cargo
+					if(listaCuentasCargo!=null && listaCuentasCargo.size()==1){
+						cuentaBancaria = (CenCuentasBancariasBean) listaCuentasCargo.get(0);
+					}
+					
+				} else { // La cuenta esta activa
+					cuentaBancaria = (CenCuentasBancariasBean) cuentasBancariasAdm.hashTableToBean(cuentaBancariaHashtable);				
+				}
 			}
-		}
-		}else{
-			//Este nmetodo devuelve si no es lamisma cuenta para todos los servicios
+			
+		} else { // Servicios
+			//Este metodo devuelve si no es la misma cuenta para todos los servicios
 			cuentaBancaria = cuentasBancariasAdm.getCuentaUnicaServiciosFactura(idInstitucion, idFactura);
 		}
 		
 		return cuentaBancaria;
-    	
-		
-		
     }
     
     public void insertarRenegociar(Integer idInstitucion,String idFactura,Integer estadoFactura, String formaPago,String idCuenta,Double importePtePagar,String observaciones, String fechaRenegociar, boolean isTransaccionCreada,boolean isAutomatica,Hashtable htCuenta) throws SIGAException, Exception{
@@ -2007,6 +2009,7 @@ public class Facturacion {
     				if (formaPago.equalsIgnoreCase("porCaja")) {
     					throw new SIGAException(ClsConstants.ERROR_RENEGOCIAR_PORCAJA);
     				}
+    				
     				if (formaPago.equalsIgnoreCase("mismaCuenta")) {
     					idFormaPago = ClsConstants.TIPO_FORMAPAGO_FACTURA;
     					if (facturaBean.getIdCuenta() != null) {
@@ -2028,6 +2031,7 @@ public class Facturacion {
     					}
     					break;
     				}
+    				
     				if ((formaPago.equalsIgnoreCase("porBanco")) || (formaPago.equalsIgnoreCase("porOtroBanco"))) {
     					if ((idCuenta == null) || (idCuenta.equals(""))){
     						//throw new SIGAException(ClsConstants.ERROR_RENEGOCIAR_CUENTANOEXISTE);
@@ -2047,7 +2051,8 @@ public class Facturacion {
     						nuevoEstado = Integer.parseInt(ClsConstants.ESTADO_FACTURA_BANCO);
     					}
     					break;
-    				}    				
+    				}    
+    				
     			} else {
     				// El estado de la factura es Pendiente Cobro por Banco
 	    			if (estadoFactura.intValue() == Integer.parseInt(ClsConstants.ESTADO_FACTURA_BANCO)) {
@@ -2310,25 +2315,12 @@ public class Facturacion {
 	}
 	
 	public boolean aplicarComisionAFactura (String institucion, FacLineaDevoluDisqBancoBean lineaDevolucion, String aplicaComisionesCliente, String idCuenta, UsrBean userBean, boolean resultado) throws Exception {
-		Hashtable criteriosDevolucion = new Hashtable();
-		FacLineaDevoluDisqBancoAdm admLDDB= new FacLineaDevoluDisqBancoAdm(userBean);
-		criteriosDevolucion.put(FacLineaDevoluDisqBancoBean.C_IDINSTITUCION,institucion);
-		criteriosDevolucion.put(FacLineaDevoluDisqBancoBean.C_IDDISQUETEDEVOLUCIONES,lineaDevolucion.getIdDisqueteDevoluciones());
-		
-		Vector productos = new Vector();
-		Hashtable productoComision = new Hashtable();
-		
 		// Identificamos los productos con comisiones asociadas
-		PysProductosInstitucionAdm admPI= new PysProductosInstitucionAdm(userBean);			
-		productos=admPI.getProductosComisiones(institucion);
-		
-		// RGG por si no tiene ningun producto con conmision
-		productoComision=((Row)productos.firstElement()).getRow();		
+		PysProductosInstitucionAdm admPI= new PysProductosInstitucionAdm(userBean);
+		Vector productos = admPI.getProductosComisiones(institucion);
+		Hashtable hProductoComision = ((Row)productos.firstElement()).getRow();		
 
-		// Obtenemos el cliente al que aplicar la comision
-		FacFacturaIncluidaEnDisqueteAdm admFIED= new FacFacturaIncluidaEnDisqueteAdm(userBean);
-		FacFacturaIncluidaEnDisqueteBean facturaDisquete = new FacFacturaIncluidaEnDisqueteBean();
-		Vector clientes = new Vector();
+		// Obtenemos la factura incluida en disquete		
 		Hashtable criteriosFactura = new Hashtable();
 		if(lineaDevolucion.getIdInstitucion()!= null)
 			criteriosFactura.put(FacFacturaIncluidaEnDisqueteBean.C_IDINSTITUCION,lineaDevolucion.getIdInstitucion().toString());
@@ -2336,52 +2328,53 @@ public class Facturacion {
 			criteriosFactura.put(FacFacturaIncluidaEnDisqueteBean.C_IDDISQUETECARGOS,lineaDevolucion.getIdDisqueteCargos().toString());
 		if(lineaDevolucion.getIdFacturaIncluidaEnDisquete()!= null)
 			criteriosFactura.put(FacFacturaIncluidaEnDisqueteBean.C_IDFACTURAINCLUIDAENDISQUETE,lineaDevolucion.getIdFacturaIncluidaEnDisquete().toString());
-		clientes=admFIED.selectByPKForUpdate(criteriosFactura);
-		facturaDisquete=(FacFacturaIncluidaEnDisqueteBean)clientes.firstElement();
 		
-		// Averiguamos si se le aplica la comision a dicho cliente
-		Vector comisionesClientes = new Vector();
-		CenClienteAdm admCliente= new CenClienteAdm(userBean);
-		CenClienteBean clienteBean = new CenClienteBean();
+		FacFacturaIncluidaEnDisqueteAdm admFIED= new FacFacturaIncluidaEnDisqueteAdm(userBean);
+		Vector clientes = admFIED.selectByPK(criteriosFactura);
+		FacFacturaIncluidaEnDisqueteBean beanFacturaIncluidaEnDisquete = (FacFacturaIncluidaEnDisqueteBean) clientes.firstElement();
+		
+		// Obtenemos datos del cliente deudor
 		Hashtable criteriosCliente = new Hashtable();
-		if(facturaDisquete.getIdInstitucion()!= null)
-			criteriosCliente.put(CenClienteBean.C_IDINSTITUCION,facturaDisquete.getIdInstitucion().toString());
-		if(facturaDisquete.getIdPersona()!= null)
-			criteriosCliente.put(CenClienteBean.C_IDPERSONA,facturaDisquete.getIdPersona().toString());
-		comisionesClientes=admCliente.selectForUpdate(criteriosCliente);
-		clienteBean=(CenClienteBean)comisionesClientes.firstElement();
+		if(beanFacturaIncluidaEnDisquete.getIdInstitucion()!= null)
+			criteriosCliente.put(CenClienteBean.C_IDINSTITUCION,beanFacturaIncluidaEnDisquete.getIdInstitucion().toString());
+		if(beanFacturaIncluidaEnDisquete.getIdPersona()!= null)
+			criteriosCliente.put(CenClienteBean.C_IDPERSONA,beanFacturaIncluidaEnDisquete.getIdPersona().toString());
 		
-		// Deteccion banco acreedor (colegio)
-		Vector bancos = new Vector();
-		FacDisqueteDevolucionesAdm admDD= new FacDisqueteDevolucionesAdm(userBean);
-		FacDisqueteDevolucionesBean disqueteDevolucion = new FacDisqueteDevolucionesBean();
-		bancos=admDD.selectByPKForUpdate(criteriosDevolucion);
-		disqueteDevolucion=(FacDisqueteDevolucionesBean)bancos.firstElement();		
+		CenClienteAdm admCliente= new CenClienteAdm(userBean);
+		Vector comisionesClientes = admCliente.selectByPK(criteriosCliente);
+		CenClienteBean beanCliente = (CenClienteBean) comisionesClientes.firstElement();
 		
-		// Comision banco acreedor (ajena o propia)
-		Vector comisiones = new Vector();			
-		Hashtable criteriosBanco = new Hashtable();
+		// Obtenemos el disquete de devoluciones		
+		Hashtable criteriosDevolucion = new Hashtable();
+		criteriosDevolucion.put(FacLineaDevoluDisqBancoBean.C_IDINSTITUCION,institucion);
+		criteriosDevolucion.put(FacLineaDevoluDisqBancoBean.C_IDDISQUETEDEVOLUCIONES,lineaDevolucion.getIdDisqueteDevoluciones());
+				
+		FacDisqueteDevolucionesAdm admDD = new FacDisqueteDevolucionesAdm(userBean);
+		Vector bancos = admDD.selectByPKForUpdate(criteriosDevolucion);
+		FacDisqueteDevolucionesBean beanDisqueteDevoluciones = (FacDisqueteDevolucionesBean) bancos.firstElement();		
+		
+		// Obtenemos el banco del acreedor	
+		Hashtable criteriosBanco = new Hashtable();		
+		if(beanDisqueteDevoluciones.getIdInstitucion()!= null)
+			criteriosBanco.put(FacBancoInstitucionBean.C_IDINSTITUCION,beanDisqueteDevoluciones.getIdInstitucion().toString());
+		criteriosBanco.put(FacBancoInstitucionBean.C_BANCOS_CODIGO,beanDisqueteDevoluciones.getBancosCodigo());
+		
 		FacBancoInstitucionAdm admBI= new FacBancoInstitucionAdm(userBean);
-		FacBancoInstitucionBean comision = new FacBancoInstitucionBean();
-		if(disqueteDevolucion.getIdInstitucion()!= null)
-			criteriosBanco.put(FacBancoInstitucionBean.C_IDINSTITUCION,disqueteDevolucion.getIdInstitucion().toString());
-		criteriosBanco.put(FacBancoInstitucionBean.C_BANCOS_CODIGO,disqueteDevolucion.getBancosCodigo());
-		comisiones=admBI.selectByPKForUpdate(criteriosBanco);
-		comision=(FacBancoInstitucionBean)comisiones.firstElement();		
+		Vector comisiones = admBI.selectByPK(criteriosBanco);
+		FacBancoInstitucionBean beanBancoInstitucion = (FacBancoInstitucionBean) comisiones.firstElement();		
 		
-		// Deteccion banco deudor (cliente)
-		CenCuentasBancariasAdm admCB= new CenCuentasBancariasAdm(userBean);
-		CenCuentasBancariasBean cuentaCliente = new CenCuentasBancariasBean();
-		Vector bancosCliente = new Vector();
+		// Obtenemos el banco del deudor		
 		Hashtable criteriosCC = new Hashtable();
-		if(facturaDisquete.getIdInstitucion()!= null)
-			criteriosCC.put(CenCuentasBancariasBean.C_IDINSTITUCION,facturaDisquete.getIdInstitucion().toString());
-		if(facturaDisquete.getIdPersona()!= null)
-			criteriosCC.put(CenCuentasBancariasBean.C_IDPERSONA,facturaDisquete.getIdPersona().toString());
-		if(facturaDisquete.getIdCuenta()!= null)
-			criteriosCC.put(CenCuentasBancariasBean.C_IDCUENTA,facturaDisquete.getIdCuenta().toString());						
-		bancosCliente=admCB.selectByPKForUpdate(criteriosCC);
-		cuentaCliente=(CenCuentasBancariasBean)bancosCliente.firstElement();	
+		if(beanFacturaIncluidaEnDisquete.getIdInstitucion()!= null)
+			criteriosCC.put(CenCuentasBancariasBean.C_IDINSTITUCION,beanFacturaIncluidaEnDisquete.getIdInstitucion().toString());
+		if(beanFacturaIncluidaEnDisquete.getIdPersona()!= null)
+			criteriosCC.put(CenCuentasBancariasBean.C_IDPERSONA,beanFacturaIncluidaEnDisquete.getIdPersona().toString());
+		if(beanFacturaIncluidaEnDisquete.getIdCuenta()!= null)
+			criteriosCC.put(CenCuentasBancariasBean.C_IDCUENTA,beanFacturaIncluidaEnDisquete.getIdCuenta().toString());
+		
+		CenCuentasBancariasAdm admCB= new CenCuentasBancariasAdm(userBean);
+		Vector bancosCliente = admCB.selectByPK(criteriosCC);
+		CenCuentasBancariasBean beanCuentasBancarias = (CenCuentasBancariasBean) bancosCliente.firstElement();	
 		
 		// Se actualiza los campos CARGARCLIENTE y GASTOSDEVOLUCION
 		Hashtable original = new Hashtable();
@@ -2400,43 +2393,25 @@ public class Facturacion {
 		if(lineaDevolucion.getContabilizada()!= null)
 			original.put(FacLineaDevoluDisqBancoBean.C_CONTABILIZADA,lineaDevolucion.getContabilizada().toString());
 		lineaDevolucion.setOriginalHash(original);		
-		if (disqueteDevolucion.getBancosCodigo().equalsIgnoreCase(cuentaCliente.getCbo_Codigo())) {
-			lineaDevolucion.setGastosDevolucion(comision.getImpComisionPropiaCargo());
+		if (beanBancoInstitucion.getCodBanco().equalsIgnoreCase(beanCuentasBancarias.getCbo_Codigo())) {
+			lineaDevolucion.setGastosDevolucion(beanBancoInstitucion.getImpComisionPropiaCargo());
 		} else {
-			lineaDevolucion.setGastosDevolucion(comision.getImpComisionAjenaCargo());
+			lineaDevolucion.setGastosDevolucion(beanBancoInstitucion.getImpComisionAjenaCargo());
 		}		
 		
 		// RGG 15/09/2006 COMISIONES A CARGO DEL CLIENTE
 		if (aplicaComisionesCliente!=null && aplicaComisionesCliente.equalsIgnoreCase(ClsConstants.DB_TRUE) &&
-			clienteBean.getComisiones().equalsIgnoreCase(ClsConstants.DB_TRUE)){
+				beanCliente.getComisiones().equalsIgnoreCase(ClsConstants.DB_TRUE)){
 			
 			// Se actualiza los campos CARGARCLIENTE y GASTOSDEVOLUCION
 			lineaDevolucion.setCargarCliente("S");
+			
+			FacLineaDevoluDisqBancoAdm admLDDB= new FacLineaDevoluDisqBancoAdm(userBean);
 			resultado=admLDDB.update(lineaDevolucion);
 
-			if (resultado){
-				String formaPago="";
-				// Inserciones relacionadas previa obtencion forma de pago
-				//Ini Mod MJM: INC_12175_SIGA. Se informa la misma forma de pago que la que tenga la factura
-				//PysFormaPagoProductoAdm admFPP= new PysFormaPagoProductoAdm(userBean); 
-
-				//aalg: INC_09853_SIGA. Hay que buscar la forma de pago que tenga la comisión bancaria
-//				Vector formasPagoProductoComision = admFPP.getFormasPagoProducto((String)productoComision.get(PysProductosInstitucionBean.C_IDINSTITUCION),(String)productoComision.get(PysProductosInstitucionBean.C_IDTIPOPRODUCTO), (String)productoComision.get(PysProductosInstitucionBean.C_IDPRODUCTO), (String)productoComision.get(PysProductosInstitucionBean.C_IDPRODUCTOINSTITUCION));
-//				if (formasPagoProductoComision == null || formasPagoProductoComision.isEmpty()){
-//					// No existe forma de pago por banco para el producto comision.
-//					formaPago=String.valueOf(ClsConstants.TIPO_FORMAPAGO_FACTURA);
-//					idCuenta=facturaDisquete.getIdCuenta().toString();
-//				} else {
-//					// SI existe forma de pago por banco para el producto comision.
-//					formaPago=((Row)formasPagoProductoComision.firstElement()).getRow().get(PysFormaPagoProductoBean.C_IDFORMAPAGO).toString();
-//					if (formaPago.equalsIgnoreCase(String.valueOf(ClsConstants.TIPO_FORMAPAGO_FACTURA)))
-//						idCuenta=facturaDisquete.getIdCuenta().toString();
-//					else
-//						idCuenta = "";
-//
-//				}
-
+			if (resultado){				
 				// Si (devolucion manual OR (devolucion AND noRenegociarAutomaticamente)) entonces idCuenta == null
+				String formaPago="";
 				if((idCuenta==null)||(idCuenta.isEmpty()))
 					formaPago=String.valueOf(ClsConstants.TIPO_FORMAPAGO_METALICO);
 				else
@@ -2445,19 +2420,19 @@ public class Facturacion {
 				
 				// Insercion PYS_PETICIONCOMPRASUSCRIPCION						
 				PysPeticionCompraSuscripcionAdm ppcsa= new PysPeticionCompraSuscripcionAdm(userBean);
-				String idPeticion=ppcsa.getNuevoID(new Integer((String)productoComision.get(PysProductosInstitucionBean.C_IDINSTITUCION))).toString();
+				String idPeticion=ppcsa.getNuevoID(new Integer((String)hProductoComision.get(PysProductosInstitucionBean.C_IDINSTITUCION))).toString();
 
 				//Obtengo el numero de operacion. El codigo 1 es usado para Facturacion de Productos y Servicios
-				String idInstitucionAux = rellenarConCeros((String) productoComision.get(PysProductosInstitucionBean.C_IDINSTITUCION), 4); 
-				String idPersonaAux = rellenarConCeros(facturaDisquete.getIdPersona().toString(), 10);
+				String idInstitucionAux = rellenarConCeros((String) hProductoComision.get(PysProductosInstitucionBean.C_IDINSTITUCION), 4); 
+				String idPersonaAux = rellenarConCeros(beanFacturaIncluidaEnDisquete.getIdPersona().toString(), 10);
 				String fechaActualAux = String.valueOf(Calendar.getInstance().getTimeInMillis());;
 				String numOperacion = "1" + idInstitucionAux + idPersonaAux + fechaActualAux;							
 				
 				Hashtable compraSuscripcion=new Hashtable();
-				compraSuscripcion.put(PysPeticionCompraSuscripcionBean.C_IDINSTITUCION, productoComision.get(PysProductosInstitucionBean.C_IDINSTITUCION));
+				compraSuscripcion.put(PysPeticionCompraSuscripcionBean.C_IDINSTITUCION, hProductoComision.get(PysProductosInstitucionBean.C_IDINSTITUCION));
 				compraSuscripcion.put(PysPeticionCompraSuscripcionBean.C_IDPETICION, idPeticion);
 				compraSuscripcion.put(PysPeticionCompraSuscripcionBean.C_TIPOPETICION, ClsConstants.TIPO_PETICION_COMPRA_ALTA);
-				compraSuscripcion.put(PysPeticionCompraSuscripcionBean.C_IDPERSONA, facturaDisquete.getIdPersona().toString());
+				compraSuscripcion.put(PysPeticionCompraSuscripcionBean.C_IDPERSONA, beanFacturaIncluidaEnDisquete.getIdPersona().toString());
 				compraSuscripcion.put(PysPeticionCompraSuscripcionBean.C_FECHA, "sysdate");
 				compraSuscripcion.put(PysPeticionCompraSuscripcionBean.C_IDESTADOPETICION, new Integer(ClsConstants.ESTADO_PETICION_COMPRA_PROCESADA));
 				compraSuscripcion.put(PysPeticionCompraSuscripcionBean.C_NUM_OPERACION, numOperacion);
@@ -2468,18 +2443,18 @@ public class Facturacion {
 				if (resultado){
 					PysProductosSolicitadosAdm admPS= new PysProductosSolicitadosAdm(userBean);
 					Hashtable productosSolicitados=new Hashtable();
-					productosSolicitados.put(PysProductosSolicitadosBean.C_IDINSTITUCION,productoComision.get(PysProductosInstitucionBean.C_IDINSTITUCION));
+					productosSolicitados.put(PysProductosSolicitadosBean.C_IDINSTITUCION,hProductoComision.get(PysProductosInstitucionBean.C_IDINSTITUCION));
 					productosSolicitados.put(PysProductosSolicitadosBean.C_IDPETICION,idPeticion);
-					productosSolicitados.put(PysProductosSolicitadosBean.C_IDTIPOPRODUCTO,productoComision.get(PysProductosInstitucionBean.C_IDTIPOPRODUCTO));
-					productosSolicitados.put(PysProductosSolicitadosBean.C_IDPRODUCTO,productoComision.get(PysProductosInstitucionBean.C_IDPRODUCTO));
-					productosSolicitados.put(PysProductosSolicitadosBean.C_IDPRODUCTOINSTITUCION,productoComision.get(PysProductosInstitucionBean.C_IDPRODUCTOINSTITUCION));
-					productosSolicitados.put(PysProductosSolicitadosBean.C_IDPERSONA,facturaDisquete.getIdPersona().toString());
+					productosSolicitados.put(PysProductosSolicitadosBean.C_IDTIPOPRODUCTO,hProductoComision.get(PysProductosInstitucionBean.C_IDTIPOPRODUCTO));
+					productosSolicitados.put(PysProductosSolicitadosBean.C_IDPRODUCTO,hProductoComision.get(PysProductosInstitucionBean.C_IDPRODUCTO));
+					productosSolicitados.put(PysProductosSolicitadosBean.C_IDPRODUCTOINSTITUCION,hProductoComision.get(PysProductosInstitucionBean.C_IDPRODUCTOINSTITUCION));
+					productosSolicitados.put(PysProductosSolicitadosBean.C_IDPERSONA,beanFacturaIncluidaEnDisquete.getIdPersona().toString());
 					productosSolicitados.put(PysProductosSolicitadosBean.C_IDFORMAPAGO,formaPago);
 					productosSolicitados.put(PysProductosSolicitadosBean.C_CANTIDAD,"1");
 					productosSolicitados.put(PysProductosSolicitadosBean.C_ACEPTADO,"A");
 					productosSolicitados.put(PysProductosSolicitadosBean.C_VALOR,lineaDevolucion.getGastosDevolucion());
-					productosSolicitados.put(PysProductosSolicitadosBean.C_PORCENTAJEIVA,productoComision.get(PysProductosInstitucionBean.C_PORCENTAJEIVA));					
-					productosSolicitados.put(PysProductosSolicitadosBean.C_NOFACTURABLE,productoComision.get(PysProductosInstitucionBean.C_NOFACTURABLE));					
+					productosSolicitados.put(PysProductosSolicitadosBean.C_PORCENTAJEIVA,hProductoComision.get(PysProductosInstitucionBean.C_PORCENTAJEIVA));					
+					productosSolicitados.put(PysProductosSolicitadosBean.C_NOFACTURABLE,hProductoComision.get(PysProductosInstitucionBean.C_NOFACTURABLE));					
 					if(idCuenta != null)
 						productosSolicitados.put(PysProductosSolicitadosBean.C_IDCUENTA,idCuenta);
 		//			productosSolicitados.put(PysProductosSolicitadosBean.C_IDTIPOENVIOS,null);
@@ -2490,27 +2465,27 @@ public class Facturacion {
 					if (resultado){
 						PysCompraAdm admCompra= new PysCompraAdm(userBean);
 						Hashtable compra=new Hashtable();
-						compra.put(PysCompraBean.C_IDINSTITUCION,productoComision.get(PysProductosInstitucionBean.C_IDINSTITUCION));
+						compra.put(PysCompraBean.C_IDINSTITUCION,hProductoComision.get(PysProductosInstitucionBean.C_IDINSTITUCION));
 						compra.put(PysCompraBean.C_IDPETICION,idPeticion);
-						compra.put(PysCompraBean.C_IDTIPOPRODUCTO,productoComision.get(PysProductosInstitucionBean.C_IDTIPOPRODUCTO));
-						compra.put(PysCompraBean.C_IDPRODUCTO,productoComision.get(PysProductosInstitucionBean.C_IDPRODUCTO));
-						compra.put(PysCompraBean.C_IDPRODUCTOINSTITUCION,productoComision.get(PysProductosInstitucionBean.C_IDPRODUCTOINSTITUCION));
+						compra.put(PysCompraBean.C_IDTIPOPRODUCTO,hProductoComision.get(PysProductosInstitucionBean.C_IDTIPOPRODUCTO));
+						compra.put(PysCompraBean.C_IDPRODUCTO,hProductoComision.get(PysProductosInstitucionBean.C_IDPRODUCTO));
+						compra.put(PysCompraBean.C_IDPRODUCTOINSTITUCION,hProductoComision.get(PysProductosInstitucionBean.C_IDPRODUCTOINSTITUCION));
 						compra.put(PysCompraBean.C_FECHA,"sysdate");
 						compra.put(PysCompraBean.C_CANTIDAD,"1");
 						compra.put(PysCompraBean.C_IMPORTEUNITARIO,lineaDevolucion.getGastosDevolucion());
-						compra.put(PysCompraBean.C_PORCENTAJEIVA,productoComision.get(PysProductosInstitucionBean.C_PORCENTAJEIVA));
+						compra.put(PysCompraBean.C_PORCENTAJEIVA,hProductoComision.get(PysProductosInstitucionBean.C_PORCENTAJEIVA));
 						compra.put(PysCompraBean.C_IDFORMAPAGO,formaPago);
 						// jbd // inc12032 // Cambiamos el texto a multiidioma
 						compra.put(PysCompraBean.C_DESCRIPCION,
 								UtilidadesString.getMensajeIdioma(userBean.getLanguageInstitucion(), "facturacion.comisionBancaria.literalMotivoCompra")+
-								UtilidadesString.formatoFecha(disqueteDevolucion.getFechaGeneracion(), ClsConstants.DATE_FORMAT_JAVA, ClsConstants.DATE_FORMAT_SHORT_SPANISH) );
+								UtilidadesString.formatoFecha(beanDisqueteDevoluciones.getFechaGeneracion(), ClsConstants.DATE_FORMAT_JAVA, ClsConstants.DATE_FORMAT_SHORT_SPANISH) );
 						compra.put(PysCompraBean.C_IMPORTEANTICIPADO,"0");
 						compra.put(PysCompraBean.C_ACEPTADO,"A");						
-						compra.put(PysCompraBean.C_NOFACTURABLE,productoComision.get(PysProductosInstitucionBean.C_NOFACTURABLE));						
+						compra.put(PysCompraBean.C_NOFACTURABLE,hProductoComision.get(PysProductosInstitucionBean.C_NOFACTURABLE));						
 		//				compra.put(PysCompraBean.C_NUMEROLINEA,null);									
 		//				compra.put(PysCompraBean.C_IDFACTURA,null);
 		//				compra.put(PysCompraBean.C_FECHABAJA,null);
-						compra.put(PysCompraBean.C_IDPERSONA,facturaDisquete.getIdPersona().toString());						
+						compra.put(PysCompraBean.C_IDPERSONA,beanFacturaIncluidaEnDisquete.getIdPersona().toString());						
 						if(idCuenta != null)
 							compra.put(PysCompraBean.C_IDCUENTA,idCuenta);
 						resultado=admCompra.insert(compra);
@@ -2523,6 +2498,8 @@ public class Facturacion {
 			
 			// Se actualiza los campos CARGARCLIENTE y GASTOSDEVOLUCION
 			lineaDevolucion.setCargarCliente("N"); // RGG 15/09/2006 DIFERENCIA CON LO DE ARRIBA
+			
+			FacLineaDevoluDisqBancoAdm admLDDB= new FacLineaDevoluDisqBancoAdm(userBean);
 			resultado=admLDDB.update(lineaDevolucion);			
 			
 			// RGG 15/09/2006 NO DUPLICO LO SIGUIENTE PORQUE NO ES NECESARIO			
