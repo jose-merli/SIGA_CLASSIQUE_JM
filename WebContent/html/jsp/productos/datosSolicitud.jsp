@@ -258,21 +258,31 @@
 		<input type="hidden" name="actionModal" value="">
 		<input type="hidden" name="fechaEfectiva" value="<%=fechaEfectiva%>">
 	</html:form>	
+	
+<%
+	String sColumnNames = "pys.gestionSolicitudes.literal.concepto," +
+		"pys.gestionSolicitudes.literal.formaPago," +
+		"pys.gestionSolicitudes.literal.nCuenta," +
+		"pys.gestionSolicitudes.literal.cantidad," +
+		"pys.gestionSolicitudes.literal.precio," +
+		"pys.gestionSolicitudes.literal.iva," +
+		"pys.gestionSolicitudes.literal.estadoPago," +
+		"pys.gestionSolicitudes.literal.estadoProducto,";
+
+ 	if (tipoSolicitud.equals("BAJA")) {  
+ 		sColumnNames += "pys.solicitudCompra.literal.solicitudAlta,";		
+ 	} else {
+ 		sColumnNames += "pys.solicitudCompra.literal.solicitudBaja,";
+ 	}
+		
+	sColumnNames += "pys.solicitarBaja.literal.fechaEfectiva," +
+			"pys.gestionSolicitudes.literal.importeAnticipado,";		
+%>	
 				
 	<siga:Table 
 		name = "tablaResultados"
 		border  = "2"
-		columnNames="pys.gestionSolicitudes.literal.concepto,
-			pys.gestionSolicitudes.literal.formaPago,
-			pys.gestionSolicitudes.literal.nCuenta,
-			pys.gestionSolicitudes.literal.cantidad,
-			pys.gestionSolicitudes.literal.precio,
-			pys.gestionSolicitudes.literal.iva,
-			pys.gestionSolicitudes.literal.estadoPago,
-			pys.gestionSolicitudes.literal.estadoProducto,
-			pys.solicitudCompra.literal.idPeticion,
-			pys.solicitarBaja.literal.fechaEfectiva,
-			pys.gestionSolicitudes.literal.importeAnticipado,"
+		columnNames = "<%=sColumnNames%>"
 		columnSizes = "17,9,15,5,7,6,7,7,6,7,7,7">
 
 	<% if ((peticion != null) && (peticion.size() > 0)){ 
