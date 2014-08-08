@@ -36,7 +36,7 @@
 					document.forms[0].submit();
 				}				
 			}	
-			window.top.close();
+			//window.top.close();
 		}
 	</script>
 </head>
