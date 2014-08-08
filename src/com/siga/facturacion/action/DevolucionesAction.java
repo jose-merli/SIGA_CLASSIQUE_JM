@@ -428,49 +428,38 @@ public class DevolucionesAction extends MasterAction {
 			UsrBean usr 		 = (UsrBean) request.getSession().getAttribute("USRBEAN");//							
 			idInstitucion = usr.getLocation();	
 						
-//			 Gestion de nombres de ficheros del servidor y de oracle
-		    ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
-//			ReadProperties rp 	 = new ReadProperties("SIGA.properties");			
+			// Gestion de nombres de ficheros del servidor y de oracle
+		    ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);			
 		    String rutaServidor  = rp.returnProperty("facturacion.directorioFisicoDevolucionesJava") + rp.returnProperty("facturacion.directorioDevolucionesJava");
 		    String rutaOracle  	 = rp.returnProperty("facturacion.directorioDevolucionesOracle");
-
-//		    Comienzo control de transacciones
-			tx = usr.getTransactionPesada(); 			
-
-			// Comienzo la transaccion
-			tx.begin();		
 
 			// Obtengo los datos del formulario			
 			FacDisqueteDevolucionesAdm devolucionesAdm = new FacDisqueteDevolucionesAdm(this.getUserBean(request));
 			DevolucionesForm miForm = (DevolucionesForm)formulario;			
 
 			ClsLogging.writeFileLog("Aplicar Comisiones de devolucion="+miForm.getComisiones(),8);
-				
-			identificador	= devolucionesAdm.getNuevoID(idInstitucion).toString();	
-
-			////////////////////////////////////////////////
 			
-			// Obtenemos la ruta completa del servidor donde vamos a generar el fichero
-		    //rutaPC 			= miForm.getRuta();		
+			// Obtengo un nuevo identificador para la devolucion
+			identificador = devolucionesAdm.getNuevoID(idInstitucion).toString();	
+			
+			// Obtenemos la ruta completa del servidor donde vamos a generar el fichero	
      		rutaServidor 	+= File.separator + idInstitucion;
      		nombreFichero 	= rutaServidor + File.separator +identificador+".d19";
      		
      		// Obtenemos la ruta completa de Oracle.
      		String barra 	= "";
-    		if (rutaOracle.indexOf("/") > -1) barra = "/"; 
-    		if (rutaOracle.indexOf("\\") > -1) barra = "\\";        		
+    		if (rutaOracle.indexOf("/") > -1) 
+    			barra = "/"; 
+    		if (rutaOracle.indexOf("\\") > -1) 
+    			barra = "\\";        		
     		rutaOracle 	+= barra + idInstitucion + barra;
-   		
-     		// Control de errores y apertura de ficheros
-			//ficOrigen = new File(rutaPC);
-			//dirDestino = new File(rutaServidor);
 
     		// tratamiento del fichero de ficheroOriginalgrafia
 		    FormFile ficheroOriginal = miForm.getRuta();
 		    if(ficheroOriginal==null || ficheroOriginal.getFileSize()<1){
 		    	throw new SIGAException("messages.general.error.ficheroNoExiste");
 		    	
-		    }else{
+		    } else {
 		    	InputStream stream =null;
 	    		BufferedReader rdr = null;
 	    		BufferedWriter out = null;
@@ -480,18 +469,6 @@ public class DevolucionesAction extends MasterAction {
 		    		//write the file to the file specified
 		    		File camino = new File (rutaServidor);
 		    		camino.mkdirs();
-/*
-		    		OutputStream bos = new FileOutputStream(nombreFichero);
-		    		int bytesRead = 0;
-		    		byte[] buffer = new byte[8192];
-		    		while ((bytesRead = stream.read(buffer, 0, 8192)) != -1) {
-		    			bos.write(buffer, 0, bytesRead);
-		    		}
-*/
-
-		    		// RGG CODIFICACION DEL FICHERO DE DEVOLUCIONES ES UTF-16 ¿?
-//		    		BufferedReader rdr = new BufferedReader(new InputStreamReader(stream,"UTF-16"));
-//		    		BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("C:\\1.d19"),"ISO-8859-1"));
 
 		    		rdr = new BufferedReader(new InputStreamReader(stream));
 		    		out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(nombreFichero),"ISO-8859-1"));
@@ -503,32 +480,24 @@ public class DevolucionesAction extends MasterAction {
 			    		out.write("\n");
 			    		line = rdr.readLine();
 		    		}
-/*		    		
-		    		BufferedReader rdr = new BufferedReader(new InputStreamReader(stream));
-//		    		BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(nombreFichero),"ISO-8859-1"));
-		    		BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("c:\1.d19"),"ISO-8859-1"));
-		    		int bytesRead = 0;
-		    		char[] buffer = new char[8192];
-		    		while ((bytesRead = rdr.read(buffer, 0, 8192)) != -1) {
-		    			out.write(buffer, 0, bytesRead);
-		    		}
-		    		
-		    		out.close();
-*/		    		
-		    		//bos.close();
 		    		
 		    	} catch (FileNotFoundException fnfe) {
 					throw new SIGAException("facturacion.nuevoFichero.literal.errorAcceso");
-		    	}catch (IOException ioe) {
+					
+		    	} catch (IOException ioe) {
 					throw new SIGAException("facturacion.nuevoFichero.literal.errorLectura");
-		    	}
-		    	finally	{
+					
+		    	} finally	{
 		    		// close the stream
 		    		stream.close();
 		    		out.close();
 		    		rdr.close();
 		    	}
 		    }
+		    
+		    // Comienzo control de transacciones
+			tx = usr.getTransactionPesada();
+			tx.begin();		
 
 			// Llamada a PL     		
 			codretorno = actualizacionTablasDevoluciones(miForm.getIdInstitucion(), rutaOracle, identificador + ".d19", this.getUserBean(request).getLanguageInstitucion(), this.getUserName(request).toString());
@@ -564,7 +533,8 @@ public class DevolucionesAction extends MasterAction {
 								filtroLineasHashtable.put(FacLineaDevoluDisqBancoBean.C_IDINSTITUCION,idInstitucion);
 								filtroLineasHashtable.put(FacLineaDevoluDisqBancoBean.C_IDDISQUETEDEVOLUCIONES,identificador);
 								filtroLineasHashtable.put(FacLineaDevoluDisqBancoBean.C_IDRECIBO,recibo);
-								Vector lineasDevolucion = admLDDB.selectForUpdate(filtroLineasHashtable);				
+								Vector lineasDevolucion = admLDDB.selectByPK(filtroLineasHashtable);	
+								
 								FacLineaDevoluDisqBancoBean lineaDevolucion =(FacLineaDevoluDisqBancoBean)lineasDevolucion.get(0);
 								String idCuenta = null;
 								if(htCuenta!=null && htCuenta.get("idCuenta")!=null)
@@ -602,7 +572,7 @@ public class DevolucionesAction extends MasterAction {
 				
 			} else 	if (codretorno.equals("5405")) {
 				tx.rollback();		
-				request.setAttribute("mensaje", "facturacion.devolucionManual.error.importeDevolucion");
+				request.setAttribute("mensaje", "facturacion.devolucionManual.error.importeDevolucion"); // No tiene recurso
 				return "nuevo";				
 				
 			} else if(Arrays.asList(codigosErrorFormato).contains(codretorno)){
@@ -612,7 +582,7 @@ public class DevolucionesAction extends MasterAction {
 				
 			} else if (codretorno.equalsIgnoreCase(codigoErrorBanco)){
 				tx.rollback();	
-				request.setAttribute("mensaje","facturacion.nuevoFichero.literal.errorBanco");
+				request.setAttribute("mensaje","facturacion.nuevoFichero.literal.errorBanco"); // No tiene recurso
 				return "nuevo";
 				
 			} else {
@@ -759,65 +729,155 @@ public class DevolucionesAction extends MasterAction {
 		String identificador	= "";		
 		boolean correcto		= true;
 		
-		//String codigoError 		= "5397";	// Código de error, el fichero no se ha encontrado.
+		String codigoError = "5397";	// Código de error, el fichero no se ha encontrado.
+		String[] codigosErrorFormato = {"20000", "5399", "5402"};
+		String codigoErrorBanco = "-100"; // Código de error, EL FICHERO CARGADO ES DE UN BANCO DIFERENTE AL USADO POR EL COLEGIO PARA EMITIR SUS DOMICILIACIONES
 		String codretorno;
-		try{
-//			 Obtengo usuario y creo manejadores para acceder a las BBDD
-			UsrBean usr 		 = (UsrBean) request.getSession().getAttribute("USRBEAN");//							
+		try {
+			// Obtengo usuario y creo manejadores para acceder a las BBDD
+			UsrBean usr = (UsrBean) request.getSession().getAttribute("USRBEAN");//							
 			String idInstitucion = usr.getLocation();	
 						
-//			 Gestion del nombre del fichero de oracle
+			// Gestion del nombre del fichero de oracle
 		    ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
-//			ReadProperties rp 	 = new ReadProperties("SIGA.properties");
-		    String rutaOracle  	 = rp.returnProperty("facturacion.directorioDevolucionesOracle");
-		    
-//		    Comienzo control de transacciones
-			tx = usr.getTransaction(); 			
-			
+		    String rutaOracle = rp.returnProperty("facturacion.directorioDevolucionesOracle");
+		    			
 			// Obtengo los datos del formulario			
 			FacDisqueteDevolucionesAdm devolucionesAdm = new FacDisqueteDevolucionesAdm(this.getUserBean(request));
 			DevolucionesForm miForm = (DevolucionesForm)formulario;			
-				
-			identificador	= devolucionesAdm.getNuevoID(idInstitucion).toString();				
 			
      		// Obtenemos la ruta completa de Oracle.
      		String barra 	= "";
-    		if (rutaOracle.indexOf("/") > -1) barra = "/"; 
-    		if (rutaOracle.indexOf("\\") > -1) barra = "\\";        		
+    		if (rutaOracle.indexOf("/") > -1) 
+    			barra = "/"; 
+    		if (rutaOracle.indexOf("\\") > -1) 
+    			barra = "\\";        		
     		rutaOracle 	+= barra + idInstitucion + barra;
     		
-//     	 Comienzo la transaccion
-			tx.begin();		
-				
-			// Llamada a PL 
+    		// Comienzo la transaccion
+    		tx = usr.getTransactionPesada(); 		
+			tx.begin();
+			
+			// Obtengo un nuevo identificador para la devolucion
+			identificador = devolucionesAdm.getNuevoID(idInstitucion).toString();
+			
+			// Llamada a PL			
 			codretorno = actualizacionTablasDevoluciones(miForm.getIdInstitucion(), rutaOracle, identificador + ".d19", this.getUserBean(request).getLanguageInstitucion(), this.getUserName(request).toString());
-		    
+			
+			boolean isTodasRenegociadas = true;
+			Facturacion facturacion = new Facturacion(this.getUserBean(request));
 			if (codretorno.equalsIgnoreCase("0")){
-				// Aplicacion de comisiones
-				Facturacion facturacion = new Facturacion(this.getUserBean(request));
-			    if (miForm.getComisiones().equalsIgnoreCase(ClsConstants.DB_TRUE)){
-			    	correcto=facturacion.aplicarComisiones(miForm.getIdInstitucion(),identificador,miForm.getComisiones(),this.getUserBean(request));
-			    }			
-			}else{
+				String nuevaFormaPago 	= miForm.getDatosPagosRenegociarNuevaFormaPago();
+				
+				if(nuevaFormaPago!=null && !nuevaFormaPago.equals("noRenegociarAutomaticamente")){ // Aplica la cuenta bancaria activa
+					Vector factDevueltasVector = devolucionesAdm.getFacturasDevueltasEnDisquete(new Integer(idInstitucion), new Integer(identificador));
+					
+					for (int i = 0; i < factDevueltasVector.size(); i++) {
+						Row fila = (Row) factDevueltasVector.get(i);
+	            		Hashtable<String, Object> htFila=fila.getRow();
+	            		String idFactura = UtilidadesHash.getString(htFila, FacFacturaBean.C_IDFACTURA);
+	            		Integer estadoFactura = UtilidadesHash.getInteger(htFila, FacFacturaBean.C_ESTADO);
+	            		Double impTotalPorPagar = UtilidadesHash.getDouble(htFila, FacFacturaBean.C_IMPTOTALPORPAGAR);
+	            		String recibo = UtilidadesHash.getString(htFila, FacFacturaIncluidaEnDisqueteBean.C_IDRECIBO);
+	            		Hashtable htCuenta = null;
+						try {
+							//El idCuenta modifica en este metodo asiq ue sera a esta cuenta la que se aplicara la comision
+							htCuenta = new Hashtable();
+							facturacion.insertarRenegociar(new Integer(idInstitucion), idFactura, estadoFactura, nuevaFormaPago, null, impTotalPorPagar, miForm.getDatosPagosRenegociarObservaciones(), "", true, true, htCuenta);
+							
+						} catch (SIGAException e) {
+							isTodasRenegociadas = false;
+							continue;
+							
+						} finally {
+							if (miForm.getComisiones()!=null && miForm.getComisiones().equalsIgnoreCase(ClsConstants.DB_TRUE)){
+								FacLineaDevoluDisqBancoAdm admLDDB= new FacLineaDevoluDisqBancoAdm(usr);
+								Hashtable filtroLineasHashtable = new Hashtable(); 
+								filtroLineasHashtable.put(FacLineaDevoluDisqBancoBean.C_IDINSTITUCION,idInstitucion);
+								filtroLineasHashtable.put(FacLineaDevoluDisqBancoBean.C_IDDISQUETEDEVOLUCIONES,identificador);
+								filtroLineasHashtable.put(FacLineaDevoluDisqBancoBean.C_IDRECIBO,recibo);
+								Vector lineasDevolucion = admLDDB.select(filtroLineasHashtable);		
+								
+								FacLineaDevoluDisqBancoBean lineaDevolucion =(FacLineaDevoluDisqBancoBean)lineasDevolucion.get(0);
+								String idCuenta = null;
+								if(htCuenta!=null && htCuenta.get("idCuenta")!=null)
+									idCuenta = (String)htCuenta.get("idCuenta");
+								correcto = facturacion.aplicarComisionAFactura (idInstitucion, lineaDevolucion, miForm.getComisiones(), idCuenta, usr, true);
+								if(!correcto){
+									codretorno = "-32";
+									break;
+								}
+							}							
+						}
+					}
+				}else{
+					if (miForm.getComisiones()!=null && miForm.getComisiones().equalsIgnoreCase(ClsConstants.DB_TRUE)){
+				    	ClsLogging.writeFileLog("Aplicando Comisiones de devolucion="+miForm.getComisiones(),8);
+				    	correcto=facturacion.aplicarComisiones(miForm.getIdInstitucion(),identificador,miForm.getComisiones(),this.getUserBean(request));
+				    	if(!correcto){
+				    		codretorno = "-32";
+				    	}
+				    		
+					}
+				}	
+				
+			} else if(codretorno.equalsIgnoreCase(codigoError)){
+				tx.rollback();
+				request.setAttribute("mensaje","facturacion.nuevoFichero.literal.confirmarReintentar");
+				return "mostrarVentana";
+				
+			} else 	if (codretorno.equals("5404")) {
+				tx.rollback();		
+				request.setAttribute("mensaje", "facturacion.devolucionManual.error.fechaDevolucion");
+				return "nuevo";
+				
+			} else 	if (codretorno.equals("5405")) {
+				tx.rollback();		
+				request.setAttribute("mensaje", "facturacion.devolucionManual.error.importeDevolucion");
+				return "nuevo";				
+				
+			} else if(Arrays.asList(codigosErrorFormato).contains(codretorno)){
+				tx.rollback();		
+				request.setAttribute("mensaje","facturacion.nuevoFichero.literal.errorFormato");
+				return "nuevo";
+				
+			} else if (codretorno.equalsIgnoreCase(codigoErrorBanco)){
+				tx.rollback();	
+				request.setAttribute("mensaje","facturacion.nuevoFichero.literal.errorBanco");
+				return "nuevo";
+				
+			} else {
 				correcto=false;
 			}
 			
-			if (correcto){
-				tx.commit();				
-				result=exitoRefresco("facturacion.nuevoFichero.literal.procesoCorrecto",request);			
-			}
-			else{
+			if (codretorno.equalsIgnoreCase("-32")){
 				tx.rollback();
-				//borrarFichero(identificador, idInstitucion);
-				//result=exitoModal("facturacion.nuevoFichero.literal.errorLectura",request);
-				request.setAttribute("mensaje","facturacion.nuevoFichero.literal.confirmarReintentar");
-				return "mostrarVentana";				
+				request.setAttribute("mensaje","messages.facturacion.devoluciones.noProductoComision");
+				return "nuevo";
+				
+			} else { 			
+				if (correcto){					
+					tx.commit();
+	
+					if (isTodasRenegociadas) {
+						result=exitoRefresco("facturacion.nuevoFichero.literal.procesoCorrecto",request);
+						
+					} else {
+						result=exitoRefresco("facturacion.renegociar.aviso.noTodasRenegociadas",request);
+					}
+					
+				} else {
+					tx.rollback();		
+					request.setAttribute("mensaje","facturacion.nuevoFichero.literal.confirmarReintentar");
+					return "mostrarVentana";
+				}
 			}
-		}catch (Exception e) { 			
+			
+		} catch (Exception e) { 
 			throwExcp("messages.general.error",new String[] {"modulo.facturacion"},e,tx); 
-		}	
-		return result;  		
-     	
+		}		
+
+		return result;					     	
 	}
 
 	/** 
