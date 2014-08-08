@@ -644,8 +644,8 @@ public class CenCuentasBancariasAdm extends MasterBeanAdmVisible {
 																			 ""+beanCuentas.getIdCuenta().toString(),
 																			 ""+userName);
 		
-		if ((resultado1 == null) || ((resultado1[0].equals("0")==false)&&(resultado1[0].equals("1")==false)&& (resultado1[0].equals("2")==false))){
-			throw new ClsExceptions ("Error al ejecutar el PL PKG_SERVICIOS_AUTOMATICOS.PROCESO_ACT_CUENTA_BANCO_PEND"+resultado[1]);
+		if (resultado1 == null || !resultado1[0].equals("0")) {
+			throw new ClsExceptions ("Error al ejecutar el PL PKG_SERVICIOS_AUTOMATICOS.PROCESO_ACT_CUENTA_BANCO_PEND" + resultado[1]);
 		}
 		
 		iResult=Integer.valueOf((String)resultado1[0]);
