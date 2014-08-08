@@ -143,6 +143,13 @@ public class PysPeticionCompraSuscripcionAdm extends MasterBeanAdministrador {
 			PysPeticionCompraSuscripcionBean.T_NOMBRETABLA + "." + PysPeticionCompraSuscripcionBean.C_FECHA + ", " +
 			PysPeticionCompraSuscripcionBean.T_NOMBRETABLA + "." + PysPeticionCompraSuscripcionBean.C_TIPOPETICION + ", " +
 			PysPeticionCompraSuscripcionBean.T_NOMBRETABLA + "." + PysPeticionCompraSuscripcionBean.C_IDESTADOPETICION + ", " +
+			"(" +
+				" SELECT COUNT(*)" +
+				" FROM " + PysProductosSolicitadosBean.T_NOMBRETABLA +
+	            " WHERE " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDINSTITUCION + " = " + PysPeticionCompraSuscripcionBean.T_NOMBRETABLA + "." + PysPeticionCompraSuscripcionBean.C_IDINSTITUCION +
+		        	" AND " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDPETICION + " = " + PysPeticionCompraSuscripcionBean.T_NOMBRETABLA + "." + PysPeticionCompraSuscripcionBean.C_IDPETICION +
+	        		" AND " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_ACEPTADO + " NOT IN ('B', 'D')" +
+			") AS NUM_PRODUCTOS_FACTURALES," +            						
 			" (select count(1)" +
             " from pys_serviciossolicitados ps " +
             " where ps.idinstitucion = PYS_PETICIONCOMPRASUSCRIPCION.Idinstitucion " +
@@ -167,11 +174,9 @@ public class PysPeticionCompraSuscripcionAdm extends MasterBeanAdministrador {
 			CenPersonaBean.T_NOMBRETABLA + "." + CenPersonaBean.C_APELLIDOS1 + ", " +
 			CenPersonaBean.T_NOMBRETABLA + "." + CenPersonaBean.C_APELLIDOS2 + ", " +
 			CenPersonaBean.T_NOMBRETABLA + "." + CenPersonaBean.C_NOMBRE + " ";
-			String from = 	"FROM " + 
-			PysPeticionCompraSuscripcionBean.T_NOMBRETABLA + ", " + CenPersonaBean.T_NOMBRETABLA + " ";
-			String where = 	"WHERE " + 
-			PysPeticionCompraSuscripcionBean.T_NOMBRETABLA + "." + PysPeticionCompraSuscripcionBean.C_IDINSTITUCION + " = " + idInstitucion + " AND " +
-			CenPersonaBean.T_NOMBRETABLA + "." + CenPersonaBean.C_IDPERSONA + " = " + PysPeticionCompraSuscripcionBean.T_NOMBRETABLA + "." + PysPeticionCompraSuscripcionBean.C_IDPERSONA;
+			String from = 	"FROM " + PysPeticionCompraSuscripcionBean.T_NOMBRETABLA + ", " + CenPersonaBean.T_NOMBRETABLA + " ";
+			String where = 	"WHERE " + PysPeticionCompraSuscripcionBean.T_NOMBRETABLA + "." + PysPeticionCompraSuscripcionBean.C_IDINSTITUCION + " = " + idInstitucion + " AND " +
+					CenPersonaBean.T_NOMBRETABLA + "." + CenPersonaBean.C_IDPERSONA + " = " + PysPeticionCompraSuscripcionBean.T_NOMBRETABLA + "." + PysPeticionCompraSuscripcionBean.C_IDPERSONA;
 //			pdm INC-2955		
 			if (datos.getBuscarEstadoPeticion() != null && !datos.getBuscarEstadoPeticion().equals("")) {
 				where += " AND " + PysPeticionCompraSuscripcionBean.T_NOMBRETABLA + "." + PysPeticionCompraSuscripcionBean.C_IDESTADOPETICION + " = " + datos.getBuscarEstadoPeticion();

@@ -214,7 +214,7 @@
 					nombreCliente = nombreCliente + " " + UtilidadesHash.getString (peticion, CenPersonaBean.C_APELLIDOS1);
 					nombreCliente = nombreCliente + " " + UtilidadesHash.getString (peticion, CenPersonaBean.C_APELLIDOS2);
 					String fecha   = UtilidadesHash.getString (peticion, PysPeticionCompraSuscripcionBean.C_FECHA);
-					int numSolicitudes   = new Integer(UtilidadesHash.getString (peticion, "NUM_PENDIENTE")).intValue();
+					int numProductosFacturables = new Integer(UtilidadesHash.getString (peticion, "NUM_PRODUCTOS_FACTURALES")).intValue();
 					int numCertificados  = new Integer(UtilidadesHash.getString (peticion, "NUM_CERTIFICADOS")).intValue();
 					int hayServicios     = new Integer(UtilidadesHash.getString (peticion, "HAY_SERVICIOS")).intValue();
 			 		String tipoSol = UtilidadesHash.getString (peticion, PysPeticionCompraSuscripcionBean.C_TIPOPETICION);
@@ -246,14 +246,16 @@
 
 					// boton de envios
 					FilaExtElement[] elems = new FilaExtElement[2];
-					if ((idEstadoSol.trim().equals("10") || idEstadoSol.trim().equals("20")) && tipoSol.trim().equals("A") && numSolicitudes>0 && numCertificados==0) {
+					if ((idEstadoSol.trim().equals("10") || idEstadoSol.trim().equals("20")) && tipoSol.trim().equals("A") && numCertificados==0 && hayServicios==0 && numProductosFacturables>0) {
 						elems = new FilaExtElement[3];
 					}
 					
 					elems[0]=new FilaExtElement("editarConCertificado", "editarConCertificado", SIGAConstants.ACCESS_FULL);
 					elems[1]=new FilaExtElement("enviar", "enviar", SIGAConstants.ACCESS_FULL);
-					
-					if ((idEstadoSol.trim().equals("10") || idEstadoSol.trim().equals("20")) && tipoSol.trim().equals("A") && numSolicitudes>0  && numCertificados==0 && hayServicios==0) {
+										
+					// Si tiene certificados o servicios no se puede hacer facturacion rapida
+					// Controlamos que tenga algun producto facturable (sin estar de baja, ni devuelto)
+					if ((idEstadoSol.trim().equals("10") || idEstadoSol.trim().equals("20")) && tipoSol.trim().equals("A") && numCertificados==0 && hayServicios==0 && numProductosFacturables>0) {
 						elems[2]=new FilaExtElement("facturacionrapida", "facturacionrapida", SIGAConstants.ACCESS_READ);
 					}
 %>
