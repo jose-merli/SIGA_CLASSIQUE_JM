@@ -1406,17 +1406,12 @@ public class FacAbonoAdm extends MasterBeanAdministrador {
 	 * @return  Vector - Fila seleccionada  
 	 * @exception  ClsExceptions  En cualquier caso de error
 	 */
-	public Vector getAbonosBancoSjcs (String institucion, String codigoBanco, String proposito, boolean tipoSEPA) throws ClsExceptions,SIGAException {
+	public Vector getAbonosBancoSjcs (String institucion, String codigoBanco, String idsufijo) throws ClsExceptions,SIGAException {
 		Vector datos=new Vector();
 		Hashtable codigos = new Hashtable();
 		try {
 			
 			String idpropositoCol="";
-			
-			if(tipoSEPA)
-				idpropositoCol=FcsPagosJGBean.T_NOMBRETABLA + "." + FcsPagosJGBean.C_IDPROPSEPA;
-			else
-				idpropositoCol=FcsPagosJGBean.T_NOMBRETABLA + "." + FcsPagosJGBean.C_IDPROPOTROS;
 			
 			RowsContainer rc = new RowsContainer();
 			String sql =
@@ -1447,11 +1442,11 @@ public class FacAbonoAdm extends MasterBeanAdministrador {
             codigos.put(new Integer(4),"0.0");
 			
            
-			if (proposito == null || proposito.equals("")) {
-				sql += "AND "+idpropositoCol+ " is null";
+			if (idsufijo == null || idsufijo.equals("")) {
+				sql += "AND "+FcsPagosJGBean.T_NOMBRETABLA + "." + FcsPagosJGBean.C_IDSUFIJO+ " is null";
 			} else {
-				sql += "AND "+idpropositoCol+ " = :5";
-				codigos.put(new Integer(5),proposito);
+				sql += "AND "+FcsPagosJGBean.T_NOMBRETABLA + "." + FcsPagosJGBean.C_IDSUFIJO+ " = :5";
+				codigos.put(new Integer(5),idsufijo);
 			}
 			
 			if (rc.findBind(sql, codigos)) {
@@ -1740,30 +1735,21 @@ public class FacAbonoAdm extends MasterBeanAdministrador {
 	}
 
 	/** 
-	 * Recoge los diferentes propósitos de tipo Otras transferencias que hay para los abonos de SJCS pendientes de pagar por banco 
+	 * Recoge los diferentes sufijos que hay para los abonos de SJCS pendientes de pagar por banco 
 	 * @param  institucion - identificador de la institucion
-	 * @param  codigoBanco - identificador del banco	 	
-	 * @param  tipoSEPA    - indica si estamos obteniendo los propósitos SEPA o los de otras Transferencias	  
+	 * @param  codigoBanco - identificador del banco	 	 
 	 * @return  Vector - Fila seleccionada  
 	 * @exception  ClsExceptions  En cualquier caso de error
 	 */
-	public Vector getPropositosAbonosBancosSjcs (String institucion, String codigoBanco,boolean tipoSEPA) throws ClsExceptions,SIGAException {
+	public Vector getSufijosAbonosBancosSjcs (String institucion, String codigoBanco) throws ClsExceptions,SIGAException {
 		   Vector datos=new Vector();
 		   Hashtable codigos = new Hashtable();
-	       try {
-	            
-	    	   String idpropositoCol="";
-			
-	    	   if(tipoSEPA)
-	    		   idpropositoCol=FcsPagosJGBean.T_NOMBRETABLA + "." + FcsPagosJGBean.C_IDPROPSEPA;
-	    	   else
-	    		   idpropositoCol=FcsPagosJGBean.T_NOMBRETABLA + "." + FcsPagosJGBean.C_IDPROPOTROS;
-	    	   
+	       try {    	   
 	    	   
 	    	   RowsContainer rc = new RowsContainer(); 
-	            String sql ="SELECT "+idpropositoCol+" "+
+	            String sql ="SELECT "+FcsPagosJGBean.T_NOMBRETABLA + "." + FcsPagosJGBean.C_IDSUFIJO+" "+
 	            			baseSqlAbonosSJCSpendientes + 
-	            			" group by "+idpropositoCol;
+	            			" group by "+FcsPagosJGBean.T_NOMBRETABLA + "." + FcsPagosJGBean.C_IDSUFIJO;
 	            			
 	            codigos.put(new Integer(1),institucion);
 	            codigos.put(new Integer(2),codigoBanco);
@@ -1778,7 +1764,7 @@ public class FacAbonoAdm extends MasterBeanAdministrador {
 	            } 
 	       }
 	       catch (Exception e) {
-	       	throw new ClsExceptions (e, "Error al obtener la informacion sobre una entrada de la tabla de abonos para propósitos");
+	       	throw new ClsExceptions (e, "Error al obtener la informacion sobre una entrada de la tabla de abonos para sufijos");
 	       }
 	       return datos;                        
 	} //getPropositosAbonosBancosSjcs()

@@ -38,8 +38,7 @@ public class FicheroReceptorAbonoBean extends MasterBean{
 	private String concepto;
 	private String numeroAbono;
 	private String sufijo;
-	private String propositoSEPA;
-	private String propositoOtros;
+	private String proposito;
 	
 		/* Metodos */
 	
@@ -193,17 +192,11 @@ public class FicheroReceptorAbonoBean extends MasterBean{
 	public void setSufijo(String sufijo) {
 		this.sufijo = sufijo;
 	}
-	public String getPropositoSEPA() {
-		return propositoSEPA;
+	public String getProposito() {
+		return proposito;
 	}
-	public void setPropositoSEPA(String propositoSEPA) {
-		this.propositoSEPA = propositoSEPA;
-	}
-	public String getPropositoOtros() {
-		return propositoOtros;
-	}
-	public void setPropositoOtros(String propositoOtros) {
-		this.propositoOtros = propositoOtros;
+	public void setProposito(String proposito) {
+		this.proposito = proposito;
 	}
 	
 }
