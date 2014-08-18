@@ -31,7 +31,6 @@ import com.atos.utils.ClsConstants;
 import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
-import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.beans.AdmContadorAdm;
 import com.siga.beans.AdmContadorBean;
@@ -123,8 +122,6 @@ public class MantenimientoProductosAction extends MasterAction {
 			pagoSec=admin.obtenerFormasPago((String)ocultos.get(0),(String)ocultos.get(1),(String)ocultos.get(2),(String)ocultos.get(3),ClsConstants.TIPO_PAGO_SECRETARIA);			
 			pagoComun=admin.obtenerFormasPago((String)ocultos.get(0),(String)ocultos.get(1),(String)ocultos.get(2),(String)ocultos.get(3),ClsConstants.TIPO_PAGO_INTERNET_SECRETARIA);
 			
-			String tieneComision = admin.comprobarTieneComision((String)ocultos.get(0),(String)ocultos.get(1),(String)ocultos.get(2),(String)ocultos.get(3));
-			
 			// Paso valores originales del registro al session para tratar siempre con los mismos valores
 			// y no los de posibles modificaciones
 			request.getSession().setAttribute("DATABACKUP", infoProd);
@@ -138,7 +135,6 @@ public class MantenimientoProductosAction extends MasterAction {
 			request.setAttribute("container_I", pagoInt);			
 			request.setAttribute("container_S", pagoSec);
 			request.setAttribute("container_A", pagoComun);			
-			request.setAttribute("tieneComision", tieneComision);
 			
 		} catch (Exception e) { 
 			throwExcp("messages.general.error",new String[] {"modulo.productos"},e,null); 
@@ -200,23 +196,8 @@ public class MantenimientoProductosAction extends MasterAction {
 	 * @exception  SIGAException  En cualquier caso de error
 	 */
 	protected String nuevo(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
-		String result="nuevo";
-		try {					
-			// Obtengo el UserBean y el identificador de la institucion
-			UsrBean usuario = (UsrBean)request.getSession().getAttribute("USRBEAN");			
-			String idInstitucion = usuario.getLocation();
-			
-			PysProductosInstitucionAdm admin = new PysProductosInstitucionAdm(usuario);
-			String tieneComision = admin.comprobarTieneComision(idInstitucion, null, null, null);
-			request.setAttribute("tieneComision", tieneComision);
-			
-			request.setAttribute("modelo", "insertar");
-			
-		} catch (Exception e) { 
-			throwExcp("messages.general.error",new String[] {"modulo.productos"},e,null); 
-		}
-		
-		return result;
+		request.setAttribute("modelo", "insertar");		
+		return "nuevo";
 	}
 
 	/** 
@@ -263,20 +244,10 @@ public class MantenimientoProductosAction extends MasterAction {
 			hash.put("IDINSTITUCION",usr.getLocation());
 			hash.put("IDTIPOPRODUCTO",tipoProducto);			
 			
-			// Obtengo el IDPRODUCTOINSTITUCION y los campos SOLICITARBAJA y SOLICITARALTA si no fueron seleccionados
-			
-//			 Si se trata de TIPO_CERTIFICADO_COMISIONBANCARIA prevalece sobre los demás tipos de certificados
-			if(UtilidadesHash.getString(hash, "TIPOCERTIFICADOCOMISION")!=null && UtilidadesHash.getString(hash, "TIPOCERTIFICADOCOMISION").equalsIgnoreCase("1")){
-				UtilidadesHash.set(hash, PysProductosInstitucionBean.C_TIPOCERTIFICADO, PysProductosInstitucionAdm.TIPO_CERTIFICADO_COMISIONBANCARIA);
-			}
-			
-			
 			adminPI.prepararInsert(hash);
 
 			// Comienzo la transaccion
 			tx.begin();		
-
-			
 			
 			// RGG 05/03/2007 INC_3011 Insercion Contador certificados en caso de certificado.
 			if (!miForm.getTipoCertificado().trim().equals("")){	
@@ -499,15 +470,6 @@ public class MantenimientoProductosAction extends MasterAction {
 			if (checkNoFacturable){
 			  hash.put("NOFACTURABLE","1");
 			}
-			
-			
-			
-			// Si se trata de TIPO_CERTIFICADO_COMISIONBANCARIA prevalece sobre los demás tipos de certificados
-			if(UtilidadesHash.getString(hash, "TIPOCERTIFICADOCOMISION")!=null && UtilidadesHash.getString(hash, "TIPOCERTIFICADOCOMISION").equalsIgnoreCase("1")){
-				UtilidadesHash.set(hash, PysProductosInstitucionBean.C_TIPOCERTIFICADO, PysProductosInstitucionAdm.TIPO_CERTIFICADO_COMISIONBANCARIA);
-			}
-			
-			
 			
 			// Obtengo el IDPRODUCTOINSTITUCION y los campos SOLICITARBAJA y SOLICITARALTA si no fueron seleccionados
 			adminPI.prepararInsert(hash);

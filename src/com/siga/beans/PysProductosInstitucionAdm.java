@@ -357,7 +357,13 @@ public class PysProductosInstitucionAdm extends MasterBeanAdministrador
 	            			// Si se empleo la forma de pago como parametro de busqueda
 							if (!pago.trim().equalsIgnoreCase("")){
 								sql +=" AND " + PysFormaPagoProductoBean.T_NOMBRETABLA +"."+ PysFormaPagoProductoBean.C_IDFORMAPAGO + "=" + pago;
-							}							
+							}
+							
+							// No muestro los productos de comisión
+							sql += " AND (" + PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_TIPOCERTIFICADO + " IS NULL " +
+									 " OR " + PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_TIPOCERTIFICADO + " <> '" + PysProductosInstitucionAdm.TIPO_CERTIFICADO_COMISIONBANCARIA + "') "; 
+							
+							
 							
 	            			// Ordenado por...						
 	            			sql += " ORDER BY " + PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_DESCRIPCION; 
@@ -413,8 +419,7 @@ public class PysProductosInstitucionAdm extends MasterBeanAdministrador
 		            			PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_SUFIJO + "," +
 		            			PysProductosBean.T_NOMBRETABLA + "." + PysProductosBean.C_DESCRIPCION + " AS CATEGORIA," +
 		            			PysTipoIvaBean.T_NOMBRETABLA + "." + PysTipoIvaBean.C_VALOR + " AS VALORIVA," +
-		            			UtilidadesMultidioma.getCampoMultidiomaSimple(PysTiposProductosBean.T_NOMBRETABLA + "." + PysTiposProductosBean.C_DESCRIPCION,this.usrbean.getLanguage()) + " AS TIPO, " +								
-		            			PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_TIPOCERTIFICADO + //PDM: INC-2763, no se recuperaba el tipo de certificado (comisión bancaria ...)
+		            			UtilidadesMultidioma.getCampoMultidiomaSimple(PysTiposProductosBean.T_NOMBRETABLA + "." + PysTiposProductosBean.C_DESCRIPCION,this.usrbean.getLanguage()) + " AS TIPO " +								
 							" FROM " + PysProductosInstitucionBean.T_NOMBRETABLA + "," + 
 	            				PysProductosBean.T_NOMBRETABLA + "," +
 	            				PysTiposProductosBean.T_NOMBRETABLA +  "," +
@@ -1109,39 +1114,5 @@ public class PysProductosInstitucionAdm extends MasterBeanAdministrador
 	    
 		return desc; 
 		
-	}
-	
-	public String comprobarTieneComision (String idInstitucion, String idTipoProducto, String idProducto, String idProductoInstitucion) throws ClsExceptions, SIGAException {
-		RowsContainer rc = new RowsContainer(); 
-		String retorno = "";
-		try {
-			String sql = "SELECT COUNT(*) AS TIENECOMISION" +
-					" FROM " + PysProductosInstitucionBean.T_NOMBRETABLA +
-					" WHERE " + PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_IDINSTITUCION + "=" + idInstitucion +
-						" AND " + PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_TIPOCERTIFICADO + "='B'";
-			
-			if (idTipoProducto!=null && idProducto!=null && idProductoInstitucion!=null) {
-				sql += " AND (" +
-						PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_IDTIPOPRODUCTO + "<>" + idTipoProducto +
-						" OR " + PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_IDPRODUCTO + "<>" + idProducto +
-						" OR " + PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_IDPRODUCTOINSTITUCION + "<>" + idProductoInstitucion +
-					")";
-	       }
-			
-            if (rc.find(sql) && rc.size()>0) {
-        		Row fila = (Row) rc.get(0);
-        		retorno = fila.getString("TIENECOMISION"); 
-	       }
-            
-		} catch (Exception e) {
-       		if (e instanceof SIGAException){
-       			throw (SIGAException)e;
-       		}
-       		else{
-       			throw new ClsExceptions(e,"Error al comprobar si existe la comisión en una institución");
-       		}	
-	   }
-		
-		return retorno;                        			
 	}
 }

@@ -77,12 +77,6 @@
 		estiloCombo = "boxConsulta";
 		lectura = true;
 	}
-	
-	// Compruebo si tiene comisión
-	String tieneComision = (String) request.getAttribute("tieneComision");
-	if (tieneComision==null || tieneComision.equals("")) {
-		tieneComision = "0";
-	}
 
 	double precio = 0.00;
 	String sPrecio = null;	
@@ -145,7 +139,6 @@
 	String TIPO_CERTIFICADO_CERTIFICADO      = PysProductosInstitucionAdm.TIPO_CERTIFICADO_CERTIFICADO;      // "C";
 	String TIPO_CERTIFICADO_COMUNICACION     = PysProductosInstitucionAdm.TIPO_CERTIFICADO_COMUNICACION;     // "M";
 	String TIPO_CERTIFICADO_DILIGENCIA       = PysProductosInstitucionAdm.TIPO_CERTIFICADO_DILIGENCIA;       // "D";
-	String TIPO_CERTIFICADO_COMISIONBANCARIA = PysProductosInstitucionAdm.TIPO_CERTIFICADO_COMISIONBANCARIA; // "B";
 	String TIPO_CERTIFICADO_GRATUITO         = PysProductosInstitucionAdm.TIPO_CERTIFICADO_GRATUITO;         // "G";
 
 	String fechaBaja = row.getString(PysProductosInstitucionBean.C_FECHABAJA);
@@ -320,12 +313,7 @@
 					mensaje+='<siga:Idioma key="pys.mantenimientoBusquedaProductos.literal.formaPago"/> <siga:Idioma key="productos.mantenimientoProductos.literal.secretaria"/> <siga:Idioma key="messages.campoObligatorio.error"/>';
 					envio=false;
 				}
-			}
-			
-			if ("<%=tieneComision%>" != "0" && jQuery("#tipoCertificadoComision")[0].checked) {
-				mensaje+='<siga:Idioma key="productos.mantenimientoProductos.error.productoComision"/>';
-				envio=false;
-			}
+			}			
 
 			if (!envio){
 				alert(mensaje);
@@ -764,56 +752,7 @@
 								 	
 								 	<td class="labelText" colspan="2" nowrap>
 								 		<table>
-								 			<tr>
-								 				<td>
-													<siga:Idioma key="certificados.tipocertificado.literal.comisionBancaria"/>
-												</td>
-												<td>
-<% 
-													if (remitente=="insertar") {
-														if (tieneComision.equals("0")) {																												
-%>
-															<input type="checkbox" id="tipoCertificadoComision" name="tipoCertificadoComision" value="1">
-<% 
-														} else {																												
-%>															
-															<input type="checkbox" id="tipoCertificadoComision" name="tipoCertificadoComision" value="1" disabled>								
-<% 
-														}
-													} else {
-														tipoCertificado = row.getString(PysProductosInstitucionBean.C_TIPOCERTIFICADO);
-												   		if (remitente=="modificar") {
-															if (tipoCertificado.equalsIgnoreCase(TIPO_CERTIFICADO_COMISIONBANCARIA)) {
-%>	
-									  							<input type="checkbox" id="tipoCertificadoComision" name="tipoCertificadoComision" value="1" checked>
-<% 
-															} else { 
-																if (tieneComision.equals("0")) {																												
-%>
-																	<input type="checkbox" id="tipoCertificadoComision" name="tipoCertificadoComision" value="1">
-<% 
-																} else {																												
-%>															
-																	<input type="checkbox" id="tipoCertificadoComision" name="tipoCertificadoComision" value="1" disabled>								
-<% 
-																}
-															} 
-
-														} else {
-															if (tipoCertificado.equalsIgnoreCase(TIPO_CERTIFICADO_COMISIONBANCARIA)) {
-%>	
-									  							<input type="checkbox" id="tipoCertificadoComision" name="tipoCertificadoComision" value="1" checked disabled>
-<% 	
-															} else { 
-%>			  		
-																<input type="checkbox" id="tipoCertificadoComision" name="tipoCertificadoComision" value="1" disabled>
-<% 
-															}
-														}
-													} 
-%>
-												</td>
-												
+								 			<tr>												
 												<td>																																						
 													<siga:Idioma key="pys.mantenimientoProductos.literal.noFacturable"/>
 												</td>
