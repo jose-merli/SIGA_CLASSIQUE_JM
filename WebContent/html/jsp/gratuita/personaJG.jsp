@@ -727,12 +727,17 @@
 		 function comprobarTipoIdent(){
 			<%if (!accion.equalsIgnoreCase("ver")) {%>			
 			// Solo se genera el NIF o CIF de la persona
-			if((document.forms[0].tipoId.value== "<%=ClsConstants.TIPO_IDENTIFICACION_NIF%>")||
-				(document.forms[0].tipoId.value== "<%=ClsConstants.TIPO_IDENTIFICACION_TRESIDENTE%>")
-				|| (document.forms[0].tipoId.value== "<%=ClsConstants.TIPO_IDENTIFICACION_CIF%>")){
+			if(document.forms[0].tipoId.value== "<%=ClsConstants.TIPO_IDENTIFICACION_NIF%>"){
+				document.getElementById("textoInformativo").style.display="none";
+				jQuery("#nacionalidad").val("191");
+				jQuery("#nacionalidad").change();				
+				
+				
+			} else if ((document.forms[0].tipoId.value== "<%=ClsConstants.TIPO_IDENTIFICACION_TRESIDENTE%>") || (document.forms[0].tipoId.value== "<%=ClsConstants.TIPO_IDENTIFICACION_CIF%>")){
 				document.getElementById("textoInformativo").style.display="none";
 				//document.getElementById("textoInformativoEnBlanco").style.display="block";								
-			}	else{
+
+			} else{
 				document.getElementById("textoInformativo").style.display="block";
 				//document.getElementById("textoInformativoEnBlanco").style.display="none";											
 			}			
@@ -1794,10 +1799,10 @@
 							</td>
 							<td>
 			<%
-				if (miform.getSexo() != null) {
+						if (miform.getIdioma() != null) {
 							idioma = miform.getIdioma();
 						} else {
-							idioma = "";
+							idioma = "1";//CR7 - Por defecto si no tiene idioma se pondrá el Castellano - R1406_0062
 						}
 						ArrayList selIdioma = new ArrayList();
 						selIdioma.add(idioma);
