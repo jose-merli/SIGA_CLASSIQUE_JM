@@ -353,6 +353,8 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 					// ES UN JSON
 					HashMap<String, String> hmIdJuzgadoObtenido = new ObjectMapper().readValue(sJuzgado, HashMap.class);
 					sIdJuzgado = hmIdJuzgadoObtenido.get("idjuzgado");
+					if(sIdJuzgado == null)
+						sIdJuzgado = hmIdJuzgadoObtenido.get("idjuzgadosel");
 					sIdInstitucionJuzgado = hmIdJuzgadoObtenido.get("idinstitucion");
 				} else if (!sJuzgado.equals("")){
 					String[] juzgado =sJuzgado.split(",");

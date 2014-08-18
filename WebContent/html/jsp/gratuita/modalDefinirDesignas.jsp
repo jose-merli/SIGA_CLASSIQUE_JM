@@ -44,7 +44,6 @@
 		anioProcedimiento = (String)request.getAttribute("anioProcedimiento");
 	}
 	
-	
 	BuscarDesignasForm miform = (BuscarDesignasForm) ses.getAttribute("BuscarDesignasForm");
 	String desdeEJG = miform.getDesdeEjg();
 
@@ -70,32 +69,6 @@
 	String claseComboTurno = "boxCombo";
 	String sreadonly="false";
 	String idTurnoSeleccionado = "-1";
-	if (idTurnoAsistencia != null && !idTurnoAsistencia.equals("")) {// Cuando venimos de Asistencias
-		String idsTurnosAsi[] = idTurnoAsistencia.split(",");
-		idTurnoSeleccionado = idsTurnosAsi[1];	
-		elementoSelTurno.add(0,"{\"idturno\":\""+idTurnoSeleccionado+"\",\"idinstitucion\":\""+idsTurnosAsi[0]+"\",\"fechadesdevigor\":\""+fechaVigor+"\",\"fechahastavigor\":\""+fechaVigor+"\"}");
-	}else if (idTurnoEJG != null && !idTurnoEJG.equals("")) {// cuando venimos de EJG
-    	String idsTurnosEJG[] = idTurnoEJG.split(",");
-    	idTurnoSeleccionado = idsTurnosEJG[1];
-    	elementoSelTurno.add(0,"{\"idturno\":\""+idTurnoSeleccionado+"\",\"idinstitucion\":\""+idsTurnosEJG[0]+"\",\"fechadesdevigor\":\""+fechaVigor+"\",\"fechahastavigor\":\""+fechaVigor+"\"}");
-	}
-	
-	int pcajgActivo = 0;
-	if (request.getAttribute("PCAJG_ACTIVO")!=null){
-		pcajgActivo = Integer.parseInt(request.getAttribute("PCAJG_ACTIVO").toString());
-	}
-	String filtrarModulos = "N";
-	if (request.getAttribute("filtrarModulos") != null) {
-		filtrarModulos = (String)request.getAttribute("filtrarModulos");
-	}
-	
-	String comboJuzgados = "getJuzgados";
-   	String comboModulos = "getProcedimientosEnVigencia";
-   	String comboModulosParentQueryIds = "idjuzgado,fechadesdevigor,fechahastavigor";
-   	String comboPretensionesEjis= "getPretensionesNuevaDesignaEjisModulosFiltros";
-   	
-	
-
 	
 	ArrayList elementoSelJuzgado = new ArrayList();
 	String idJuzgado = null;
@@ -108,8 +81,7 @@
 		//request.setAttribute("idjuzgadoEJG", miform.getJuzgadoAsi()+ "," + miform.getJuzgadoInstitucionAsi());
 		String idsJuzgadoEJG[] = juzgadoEJG.split(","); 
 		idJuzgado = idsJuzgadoEJG[0];
-		//elementoSelJuzgado.add(0,"{\"idjuzgado\":\""+idJuzgado+"\",\"idinstitucion\":\""+idsJuzgadoEJG[1]+"\",\"fechadesdevigor\":\""+fechaVigor+"\",\"fechahastavigor\":\""+fechaVigor+"\"}");
-		elementoSelJuzgado.add(0,idJuzgado+","+idsJuzgadoEJG[1]);
+		elementoSelJuzgado.add(0,"{\"idjuzgadosel\":\""+idJuzgado+"\",\"idinstitucion\":\""+idsJuzgadoEJG[1]+"\",\"fechadesdevigor\":\""+fechaVigor+"\",\"fechahastavigor\":\""+fechaVigor+"\"}");
 	
 	}
 	
@@ -120,32 +92,55 @@
 		//request.setAttribute("juzgadoAsistencia", miform.getJuzgadoAsi()+ "," + miform.getJuzgadoInstitucionAsi());
 		String idsJuzgadoAsistencia[] = juzgadoAsistencia.split(","); 
 		idJuzgado = idsJuzgadoAsistencia[0];
-		elementoSelJuzgado.add(0,idJuzgado+","+idsJuzgadoAsistencia[1]);
-		
+		elementoSelJuzgado.add(0,"{\"idjuzgado\":\""+idJuzgado+"\",\"idinstitucion\":\""+idsJuzgadoAsistencia[1]+"\",\"fechadesdevigor\":\""+fechaVigor+"\",\"fechahastavigor\":\""+fechaVigor+"\"}");
 		
 	}
 	
 	if(idJuzgado==null||idJuzgado.equals("")){
 		idJuzgado = "-1";
 	}
+	
+	if (idTurnoAsistencia != null && !idTurnoAsistencia.equals("")) {// Cuando venimos de Asistencias
+		String idsTurnosAsi[] = idTurnoAsistencia.split(",");
+		idTurnoSeleccionado = idsTurnosAsi[1];	
+		elementoSelTurno.add(0,"{\"idturno\":\""+idTurnoSeleccionado+"\",\"idinstitucion\":\""+idsTurnosAsi[0]+"\",\"fechadesdevigor\":\""+fechaVigor+"\",\"fechahastavigor\":\""+fechaVigor+"\",\"idjuzgado\":\""+idJuzgado+"\"}");
+	}else if (idTurnoEJG != null && !idTurnoEJG.equals("")) {// cuando venimos de EJG
+    	String idsTurnosEJG[] = idTurnoEJG.split(",");
+    	idTurnoSeleccionado = idsTurnosEJG[1];
+    	elementoSelTurno.add(0,"{\"idturno\":\""+idTurnoSeleccionado+"\",\"idinstitucion\":\""+idsTurnosEJG[0]+"\",\"fechadesdevigor\":\""+fechaVigor+"\",\"fechahastavigor\":\""+fechaVigor+"\",\"idjuzgado\":\""+idJuzgado+"\"}");
+	}
+	int pcajgActivo = 0;
+	if (request.getAttribute("PCAJG_ACTIVO")!=null){
+		pcajgActivo = Integer.parseInt(request.getAttribute("PCAJG_ACTIVO").toString());
+	}
+	String filtrarModulos = "N";
+	if (request.getAttribute("filtrarModulos") != null) {
+		filtrarModulos = (String)request.getAttribute("filtrarModulos");
+	}
+	
+	String comboJuzgados = "getJuzgadosJurisdiccionNuevaDesigna";
+   	String comboModulos = "getProcedimientosEnVigenciaNuevaDesigna";
+   	String comboModulosParentQueryIds = "idjuzgadosel,fechadesdevigor,fechahastavigor";
+   	String comboPretensionesEjis= "getPretensionesNuevaDesignaEjisModulosFiltros";
+   	
 	String comboPretensiones = "getPretensionesNuevaDesigna";
 	String comboPretensionesParentQueryIds = null;
 	
 	String paramsTurnosJSON = "{\"idturno\":\""+idTurnoSeleccionado+"\"";
 	paramsTurnosJSON += ",\"fechadesdevigor\":\""+fechaVigor+"\"";
-	paramsTurnosJSON += ",\"fechahastavigor\":\""+fechaVigor+"\"}";
+	paramsTurnosJSON += ",\"fechahastavigor\":\""+fechaVigor+"\"";
+	paramsTurnosJSON += ",\"idjuzgado\":\""+idJuzgado+"\"}";
 	
 	String paramsJuzgadoJSON = "";
 	paramsJuzgadoJSON += "{\"idturno\":\""+idTurnoSeleccionado+"\"";
 	paramsJuzgadoJSON += ",\"fechadesdevigor\":\""+fechaVigor+"\"";
-	paramsJuzgadoJSON += ",\"fechahastavigor\":\""+fechaVigor+"\"}";
+	paramsJuzgadoJSON += ",\"fechahastavigor\":\""+fechaVigor+"\"";
+	paramsJuzgadoJSON += ",\"idjuzgado\":\""+idJuzgado+"\"}";
 	
-	String idProcedimientoParamsJSON = "{\"idprocedimiento\":\"-1\"";
-	idProcedimientoParamsJSON += ",\"idjuzgado\":\""+idJuzgado+"\"";
+	String idProcedimientoParamsJSON = "{\"idjuzgadosel\":\""+idJuzgado+"\"";
 	idProcedimientoParamsJSON += ",\"fechadesdevigor\":\""+fechaVigor+"\"";
-	idProcedimientoParamsJSON += ",\"fechahastavigor\":\""+fechaVigor+"\"}";
-	
-	
+	idProcedimientoParamsJSON += ",\"fechahastavigor\":\""+fechaVigor+"\"}";	
+
 	String idPretensionParamsJSON ="";
 	boolean obligatoriojuzgado=false;
 	
@@ -155,39 +150,25 @@
 		comboPretensionesParentQueryIds = "idjuzgado";
 		
 		idPretensionParamsJSON += "{\"idjuzgado\":\""+idJuzgado+"\"}";
-		
-		
-		
-		//obligatoriojuzgado = true;
+
 	} else {
 		comboPretensionesParentQueryIds = "";
 		idPretensionParamsJSON = "";
 	}
+	
+	ArrayList vPretension = new ArrayList();
+	String idPretension = (String)request.getAttribute("idPretension");	
+	if(idPretension==null||idPretension.equals("")){
+		idPretension = "-1";
+	}
+	vPretension.add(idPretension); 
 	
 	String asterisco = "&nbsp(*)&nbsp";
 	
 	boolean obligatorioProcedimiento = false;
 	boolean obligatorioModulo=false;
 	boolean obligatorioTipoDesigna=false;
-	
-	/*
-	if (pcajgActivo==2){
-		obligatorioProcedimiento = true;
-	}else if(pcajgActivo==3){
-		obligatorioProcedimiento = true;
-	}else if (pcajgActivo==4){
-	    obligatorioProcedimiento = true;
-		obligatorioModulo=true;
-		obligatorioTipoDesigna=true;		
-	}else if (pcajgActivo==5){
-		obligatoriojuzgado = true;
-		obligatorioProcedimiento = true;
-	}
-	*/
-	
-	
-	
-	
+
 	ArrayList elementoSelSolicitante = new ArrayList();
 	elementoSelSolicitante.add("-1");
 	
@@ -206,11 +187,6 @@
 	String nColegiadoAsistencia      = (String)request.getAttribute("nColegiadoAsistencia");
 	String nombreColegiadoAsistencia = (String)request.getAttribute("nombreColegiadoAsistencia");
 	
-	
-	
-	
-	
-	// -----------------------------------------------------------	
 %>	
 
 
@@ -278,6 +254,11 @@
 	</script>
 
 <body onload="cargarCliente()">
+
+<% if(elementoSelJuzgado!=null && elementoSelJuzgado.size()>0){	%>
+	<input type="hidden" id = "idJuzgadoSeleccionado" value = '<%=(String)elementoSelJuzgado.get(0)%>'>
+<%}%>
+
 
 <table class="tablaTitulo" cellspacing="0" heigth="32">
 	<tr>
@@ -359,7 +340,7 @@
 							<siga:Idioma key="gratuita.busquedaSOJ.literal.turno"/>&nbsp;(*)
 						</td>
 						<td class="labelText" colspan="3">
-							<siga:Select id="idTurno" queryId="getTurnosDesignacionVisibles" queryParamId="idturno" params="<%=paramsTurnosJSON%>" selectedIds="<%=elementoSelTurno%>" required="true"  width="500"/>
+							<siga:Select id="idTurno" queryId="getTurnosDesignacionVisibles" queryParamId="idturno" params="<%=paramsTurnosJSON%>" selectedIds="<%=elementoSelTurno%>"  required="true" childrenIds="juzgado"  width="500" />
 						
 							
 						</td>
@@ -426,13 +407,13 @@
 								</td>
 							
 								<td>
-									<siga:Select id="juzgado" queryId="<%=comboJuzgados%>" queryParamId="idjuzgado" selectedIds="<%=elementoSelJuzgado%>" showSearchBox="true" searchkey="CODIGOEXT2" searchBoxMaxLength="10" searchBoxWidth="8" width="515" required="true" />		
+									<siga:Select id="juzgado" queryId="<%=comboJuzgados%>" params="<%=paramsJuzgadoJSON%>" parentQueryParamIds="idjuzgado,fechadesdevigor,fechahastavigor,idturno" required="true" selectedIds="<%=elementoSelJuzgado%>"  showSearchBox="true" searchkey="CODIGOEXT2" searchBoxMaxLength="10" searchBoxWidth="8" width="515" required="true" childrenIds="idPretension,idProcedimiento"/>		
 								</td>
 							<%}else{%>
 								</td>
 					
 								<td>
-									<siga:Select id="juzgado" queryId="<%=comboJuzgados%>" queryParamId="idjuzgado" selectedIds="<%=elementoSelJuzgado%>" showSearchBox="true" searchkey="CODIGOEXT2" searchBoxMaxLength="10" searchBoxWidth="8" width="515"  />		
+									<siga:Select id="juzgado" queryId="<%=comboJuzgados%>" params="<%=paramsJuzgadoJSON%>" parentQueryParamIds="idjuzgado,fechadesdevigor,fechahastavigor,idturno" required="true" selectedIds="<%=elementoSelJuzgado%>" showSearchBox="true" searchkey="CODIGOEXT2" searchBoxMaxLength="10" searchBoxWidth="8" width="515"  childrenIds="idPretension,idProcedimiento"/>		
 								</td>
 							<%}%>
 						 
@@ -445,7 +426,40 @@
 		</td>
 	</tr>
 	
-	
+	<tr>
+		<td class="labelText">
+			<siga:Idioma key="gratuita.actuacionesDesigna.literal.modulo" />
+			<% if (obligatorioModulo) { %>
+		 		<%= asterisco %>
+		 	</td>
+			<td>
+				<siga:Select id="idProcedimiento" queryId="<%=comboModulos%>" params="<%=idProcedimientoParamsJSON%>" parentQueryParamIds="<%=comboModulosParentQueryIds%>"  required="true"  width="490"/>
+			</td>
+			<%} else { %>
+		 		</td>
+			<td>
+				<siga:Select id="idProcedimiento" queryId="<%=comboModulos%>" params="<%=idProcedimientoParamsJSON%>" parentQueryParamIds="<%=comboModulosParentQueryIds%>"   width="490"/>
+			</td>
+			<% } %>
+			
+	</tr>
+	<tr>
+		<td class="labelText">	
+			<siga:Idioma key='gratuita.actuacionesDesigna.literal.pretensiones'/>
+			<% if (obligatorioProcedimiento) { %>
+		 		<%= asterisco %>
+		 		</td>				
+				<td >
+					<siga:Select id="idPretension" queryId="<%=comboPretensiones%>"  parentQueryParamIds="<%=comboPretensionesParentQueryIds %>" params="<%=idPretensionParamsJSON%>" selectedIds="<%=vPretension%>" required="true" width="490" />
+				</td>
+			<%}else { %>
+		 		</td>				
+				<td >
+					<siga:Select id="idPretension" queryId="<%=comboPretensiones%>"  parentQueryParamIds="<%=comboPretensionesParentQueryIds %>" params="<%=idPretensionParamsJSON%>" selectedIds="<%=vPretension%>"  width="490" />
+				</td>
+			<% } %>
+		
+	</tr>
 
 </html:form>
 	
@@ -519,8 +533,7 @@
 			}				
 			
 		}
-
-				
+		
 		<!-- Asociada al boton Cerrar -->
 		function accionCerrar() 
 		{		
@@ -535,8 +548,10 @@
 			document.forms[1].reset();
 			seleccionComboSiga("juzgado",-1);
 		}
+		
 		<!-- Funcion asociada a boton buscar -->
-
+		// documen
+		
 	</script>
 	<!-- FIN: SCRIPTS BOTONES -->
 

@@ -612,7 +612,8 @@ public class BusquedaDesignasAction extends MasterAction {
 					String ejisActivo = admParametros.getValor(usr.getLocation(), "ECOM", "EJIS_ACTIVO", "0");
 					request.setAttribute("EJIS_ACTIVO", ejisActivo);			
 					request.setAttribute("anioProcedimiento",miform.getAnioProcedimiento()); 
-					request.setAttribute("numProcedimiento",miform.getNumProcedimiento()); 
+					request.setAttribute("numProcedimiento",miform.getNumProcedimiento());
+					request.setAttribute("idPretension",miform.getIdPretension());
 
 					hashAux=ejgAdm.procedeDeAsistencia((String)miform.getIdTipoEjg(),(String)miform.getNumeroEjg(),miform.getAnioEjg());
 					if (hashAux.get("ASIANIO")!=null && !((String)hashAux.get("ASIANIO")).equals("")){
@@ -1240,8 +1241,20 @@ public class BusquedaDesignasAction extends MasterAction {
 			if (datosHash.get(ScsDesignaBean.C_IDPRETENSION)!=null && !((String)datosHash.get(ScsDesignaBean.C_IDPRETENSION)).equals(""))
 				designaBean.setIdPretension(new Integer(UtilidadesHash.getString(datosHash, ScsDesignaBean.C_IDPRETENSION)));
 			
-			if (datosHash.get(ScsDesignaBean.C_IDPROCEDIMIENTO)!=null && !((String)datosHash.get(ScsDesignaBean.C_IDPROCEDIMIENTO)).equals(""))
-				designaBean.setProcedimiento(UtilidadesHash.getString(datosHash, ScsDesignaBean.C_IDPROCEDIMIENTO));
+			String procedimientoSel=(String)datosHash.get("IDPROCEDIMIENTO");
+			if (procedimientoSel!=null){							
+				String sIdprocedimiento = "";
+				if (procedimientoSel.startsWith("{")){
+					// ES UN JSON
+					HashMap<String, String> hmProcedimientoSel = new ObjectMapper().readValue(procedimientoSel, HashMap.class);
+					sIdprocedimiento = hmProcedimientoSel.get("idprocedimiento");
+				} else if (!procedimientoSel.equals("")){
+					String procedimiento[] = procedimientoSel.split(",");
+					sIdprocedimiento = procedimiento[0];
+				}
+				
+				designaBean.setProcedimiento(sIdprocedimiento);
+			}			
 			
 			designaBean.setCodigo(UtilidadesHash.getString(datosHash, ScsDesignaBean.C_CODIGO));
 
@@ -1250,11 +1263,38 @@ public class BusquedaDesignasAction extends MasterAction {
 			contrariosHash.put(ScsContrariosDesignaBean.C_ANIO,designaBean.getAnio());
 			contrariosHash.put(ScsContrariosDesignaBean.C_IDTURNO,designaBean.getIdTurno());
 			contrariosHash.put(ScsContrariosDesignaBean.C_NUMERO,designaBean.getNumero());
-
-			if (datosHash.get(ScsDesignaBean.C_IDJUZGADO)!=null && !((String)datosHash.get(ScsDesignaBean.C_IDJUZGADO)).equals(""))
-				designaBean.setIdJuzgado(new Long(UtilidadesHash.getString(datosHash, ScsDesignaBean.C_IDJUZGADO)));
-			if (datosHash.get(ScsDesignaBean.C_IDINSTITUCIONJUZGADO)!=null && !((String)datosHash.get(ScsDesignaBean.C_IDINSTITUCIONJUZGADO)).equals(""))
-				designaBean.setIdInstitucionJuzgado(new Integer(UtilidadesHash.getString(datosHash, ScsDesignaBean.C_IDINSTITUCIONJUZGADO)));			
+			
+			// Obtengo el idJuzgado y la idInstitucion del Juzgado:
+			Integer idJuzgado, idInstitucionJuzgado;
+			idJuzgado = null;
+			idInstitucionJuzgado = null;			
+			String sJuzgado=((String)datosHash.get("JUZGADO"));
+			if (sJuzgado!=null) {
+				String sIdJuzgado = "";
+				String sIdInstitucionJuzgado = "";
+				if (sJuzgado.startsWith("{")){
+					// ES UN JSON
+					HashMap<String, String> hmIdJuzgadoObtenido = new ObjectMapper().readValue(sJuzgado, HashMap.class);
+					sIdJuzgado = hmIdJuzgadoObtenido.get("idjuzgadosel");
+					sIdInstitucionJuzgado = hmIdJuzgadoObtenido.get("idinstitucion");
+				} else if (!sJuzgado.equals("")){
+					String[] juzgado =sJuzgado.split(",");
+					sIdJuzgado = juzgado[0];
+					sIdInstitucionJuzgado = juzgado[1];
+				}
+				if (sIdJuzgado!=null && !sIdJuzgado.equals("")){
+					idJuzgado = new Integer(sIdJuzgado);
+					idInstitucionJuzgado = new Integer(sIdInstitucionJuzgado);
+					designaBean.setIdJuzgado(new Long(idJuzgado));
+					designaBean.setIdInstitucionJuzgado(new Integer(idInstitucionJuzgado));
+				} else {
+					designaBean.setIdJuzgado(null);
+					designaBean.setIdInstitucionJuzgado(null);
+				}	
+			} else {
+				designaBean.setIdJuzgado(null);
+				designaBean.setIdInstitucionJuzgado(null);
+			}			
 
 			designaBean.setFechaAlta("SYSDATE");
 			if (!designaAdm.insert(designaBean)) {

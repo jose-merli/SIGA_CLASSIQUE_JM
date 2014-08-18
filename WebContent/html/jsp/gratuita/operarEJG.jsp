@@ -1009,6 +1009,7 @@
 		<html:hidden property ="anio" value = ""/>
 		<html:hidden property = "ncolegiado" value= "<%=NUMEROCOLEGIADO%>"/>		
 		<html:hidden property = "nombre" value= "<%=NOMBRELETRADO%>"/>	
+		<html:hidden property ="idPretension" value = "<%=idPretension%>"/>
 	</html:form>		
 
 	<html:form action = "/JGR_MantenimientoDesignas.do" method="POST" target="mainWorkArea">
