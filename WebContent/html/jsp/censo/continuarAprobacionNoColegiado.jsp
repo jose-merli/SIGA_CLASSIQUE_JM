@@ -96,7 +96,7 @@
 	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js?v=${sessionScope.VERSIONJS}'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
 	<script type="text/javascript">
 		function reloadPage() {
-		    var type = '<%=mensaje%>';
+		    var type = "<%=mensaje%>";
 			if (confirm(type)) {			
 				document.forms[0].continuarAprobacion.value="1";			    
 				document.forms[0].submit();
