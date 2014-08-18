@@ -163,31 +163,10 @@ public class SufijosAction extends MasterAction {
 
 			FacSufijoBean sufijoBean = (FacSufijoBean) request.getSession().getAttribute("DATABACKUP");
 			sufijoBean.setConcepto(miForm.getConcepto());
-			//CHECKBOX:
-			String checkBox = ClsConstants.DB_FALSE;
-			if (miForm.getDefecto()!=null && miForm.getDefecto().equals(ClsConstants.DB_TRUE)){
-				// Comprobamos que para la institucion en la que nos encontramos no existe ya un sufijo distinto del seleccionado con el check de conceptos varios activado
-				where=" WHERE "+FacSufijoBean.C_IDINSTITUCION+"="+(String)user.getLocation()+
-			      " AND "+FacSufijoBean.C_DEFECTO+"='"+ClsConstants.DB_TRUE+"'"+
-				  " AND "+FacSufijoBean.C_IDSUFIJO+"<>"+(String)miForm.getIdSufijo().toString();
-					  
-				Vector existeCheckDefecto=sufijoAdm.select(where);
-				if (existeCheckDefecto.size()>0){
-					throw new SIGAException("facturacion.sufijos.message.checkDefecto");
-				}else{
-				  checkBox = ClsConstants.DB_TRUE;
-				}
-				
-			}	
-			sufijoBean.setDefecto(checkBox);
-			
-			
+
 			tx.begin();
 			sufijoAdm.update(sufijoBean);
 			tx.commit();
-		}
-		catch (SIGAException e) {
-			throw e;
 		}
 		catch (Exception e) { 
 			throwExcp("messages.general.error", new String[] {"modulo.productos"}, e, tx); 
@@ -240,23 +219,7 @@ public class SufijosAction extends MasterAction {
 			
 			//Se crea el nuevo idSufijo, si la institución no tiene ninguno será idSufijo=1
 			sufijoBean.setIdSufijo(sufijoAdm.idSufijoMaxInstitucion(sufijoBean.getIdInstitucion()));
-			
-			//CHECKBOX:
-			String checkBox = ClsConstants.DB_FALSE;
-			if (miForm.getDefecto()!=null && miForm.getDefecto().equals(ClsConstants.DB_TRUE)){
-				// Comprobamos que para la institucion en la que nos encontramos no existe ya un sufijo creado con el check de Por defecto activado
-				Hashtable datosConcepto=new Hashtable();
-				datosConcepto.put(FacSufijoBean.C_IDINSTITUCION,(String)user.getLocation());
-				datosConcepto.put(FacSufijoBean.C_DEFECTO,ClsConstants.DB_TRUE);
-				Vector existeCheckDefecto=sufijoAdm.select(datosConcepto);
-				if (existeCheckDefecto.size()>0){
-					throw new SIGAException("facturacion.sufijos.message.checkDefecto");
-				}else{
-				  checkBox = ClsConstants.DB_TRUE;
-				}
-				
-			}
-			
+
 			//Se comprueba si el sufijo es numérico y de tres caracteres
 			try { 
 				
@@ -272,8 +235,6 @@ public class SufijosAction extends MasterAction {
 				throw new SIGAException("facturacion.mensajes.sufijoNuevo");
 			} 
 
-			
-			sufijoBean.setDefecto(checkBox);
 			tx.begin();
 			sufijoAdm.insert(sufijoBean);
 			tx.commit();

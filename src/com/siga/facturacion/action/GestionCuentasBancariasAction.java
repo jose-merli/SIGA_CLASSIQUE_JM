@@ -90,8 +90,6 @@ public class GestionCuentasBancariasAction extends MasterAction {
 						mapDestino = seriesDisponibles(mapping, miForm, request, response);
 					}else if ( accion.equalsIgnoreCase("guardarRelacionSerie")){
 						mapDestino = guardarRelacionSerie(mapping, miForm, request, response);
-					}else if ( accion.equalsIgnoreCase("borrarRelacionSerie")){
-						mapDestino = borrarRelacionSerie(mapping, miForm, request, response);
 					}else {
 						return super.executeInternal(mapping,formulario,request,response);
 					}
@@ -523,37 +521,5 @@ public class GestionCuentasBancariasAction extends MasterAction {
 		
 		return forward;
 	}
-	
-	protected String borrarRelacionSerie(ActionMapping mapping, 		
-			MasterForm formulario, 
-			HttpServletRequest request, 
-			HttpServletResponse response) throws ClsExceptions, SIGAException 
-			{
-		
-		String forward="exception";
-		
-		try {
 
-			CuentasBancariasForm cuentasBancariasForm = (CuentasBancariasForm) formulario;	
-			UsrBean usrBean = this.getUserBean(request);
-			
-			BusinessManager bm = getBusinessManager();			
-			CuentasBancariasService cuentasBancariasService = (CuentasBancariasService)bm.getService(CuentasBancariasService.class);
-			FacSeriefacturacionBanco serieFacturacionBanco = new FacSeriefacturacionBanco();
-			serieFacturacionBanco.setUsumodificacion(new Integer(usrBean.getUserName()));
-			serieFacturacionBanco.setIdinstitucion(Short.parseShort(cuentasBancariasForm.getIdInstitucion()));
-			serieFacturacionBanco.setIdseriefacturacion(Long.parseLong(cuentasBancariasForm.getIdSerieFacturacion()));
-			serieFacturacionBanco.setBancosCodigo(cuentasBancariasForm.getBancosCodigo());
-			cuentasBancariasService.deleteRelacionSerie(serieFacturacionBanco);
-			
-			forward = exitoModal("messages.delete.success",request);
-			
-		}catch (Exception e){
-			throw new SIGAException("messages.general.error", e, null); 			
-		}
-		
-		return forward;
-	}
-	
-	
 }

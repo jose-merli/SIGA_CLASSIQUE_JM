@@ -220,13 +220,6 @@
 				document.getElementById("comboSufijossjcs").value="";
 			}
 			
-			if(document.getElementById("nosjcs").checked) {
-				document.getElementById("comboSufijos").disabled =false;
-				
-			}else {
-				document.getElementById("comboSufijos").disabled=true;
-				document.getElementById("comboSufijos").value="";
-			}
 		}else{
 			document.getElementById("comboSufijossjcs").disabled=true;
 			document.getElementById("comboSufijos").disabled=true;
@@ -346,22 +339,9 @@
 			<siga:ConjCampos leyenda="Uso de Cuenta">
 			<table align="center" width="100%">
 				<td class="labelText"><bean:message key="facturacion.cuentasBancarias.uso.sjcs" /> 
-				<html:checkbox name="CuentasBancariasForm" id = "sjcs" property="sjcs" value="1" onclick="habilitarDeshabCombo()"></html:checkbox></td>
-				<td> 
-					<html:select styleId="comboSufijossjcs" property="idSufijosjcs" value="${CuentasBancariasForm.idSufijosjcs}" styleClass="boxCombo" style="width:100px;">
+				<html:checkbox name="CuentasBancariasForm" id = "sjcs" property="sjcs" value="1" onclick="habilitarDeshabCombo()"></html:checkbox>
+					<html:select styleId="comboSufijossjcs" property="idSufijosjcs" value="${CuentasBancariasForm.idSufijosjcs}" styleClass="boxCombo" style="width:200px;">
 					<s:if test="${empty CuentasBancariasForm.idSufijosjcs}">
-						<html:option value=""><c:out value=""/></html:option>
-					</s:if>
-					<c:forEach items="${listaSufijos}" var="sufijoCmb">
-						<html:option value="${sufijoCmb.idSufijo}"><c:out value="${sufijoCmb.sufijo.trim().length()>0?sufijoCmb.sufijo:'	'} ${sufijoCmb.concepto}"/></html:option>
-					</c:forEach>
-					</html:select>	
-				</td> 	
-				<td class="labelText"><bean:message key="facturacion.cuentasBancarias.uso.no.sjcs" /> 
-				<html:checkbox name="CuentasBancariasForm" id = "nosjcs" property="nosjcs" value="1" onclick="habilitarDeshabCombo()"></html:checkbox></td>
-				<td> 
-					<html:select styleId="comboSufijos" property="idSufijo" value="${CuentasBancariasForm.idSufijo}" styleClass="boxCombo" style="width:100px;">
-					<s:if test="${empty CuentasBancariasForm.idSufijo}">
 						<html:option value=""><c:out value=""/></html:option>
 					</s:if>
 					<c:forEach items="${listaSufijos}" var="sufijoCmb">
@@ -376,12 +356,8 @@
 	</table>
 	
 		<c:if test="${CuentasBancariasForm.modo!='insertar'}">
-			<c:if test="${CuentasBancariasForm.modo!='abrir'}">
-  				<c:set var="botonesList" value="B"></c:set>
-  			</c:if>
-  			<c:if test="${CuentasBancariasForm.modo=='abrir'}">
-  				<c:set var="botonesList" value=""></c:set>
-  			</c:if>			
+			
+  			<c:set var="botonesList" value=""></c:set>		
 			<div id="divListadoCuentasBancarias" style='height: 100%; position: absolute; width: 100%; overflow-y: auto'>
 					<siga:Table 
 						name="listado" 
@@ -399,7 +375,7 @@
 								<siga:FilaConIconos	fila='${status.count}'				    
 						  			pintarEspacio="no"
 						  			botones="${botonesList}"
-						  			visibleBorrado="S"
+						  			visibleBorrado="N"
 						  			visibleEdicion="N"
 						  			visibleConsulta="N"
 						  			clase="listaNonEdit">
@@ -497,20 +473,6 @@
 					
 			}
 			
-			
-			//Si está marcado el check de no SJCS tiene que asignarse un sufijo
-			if(document.getElementById("nosjcs").checked) {
-				
-				if(document.CuentasBancariasForm.idSufijo.value<1) {
-					mensaje = "<siga:Idioma key='facturacion.sufijos.message.errorCuentaBancariaSufijoNOSJCS'/>";
-					alert(mensaje);
-					fin();
-					return false;
-				}
-					
-					
-			}
-			
 			//Se pasan los valores del idserie y el sufijo de las series de la tabla para actualizar el sufijo en bbdd
 <%
 			if (lista!=null) {
@@ -524,7 +486,17 @@
 					var datosSerie = jQuery("#idseriefacturacion_" + i);
 					var datosBanco = jQuery("#bancos_codigo_" + i);
 
-						datos = datos + datosSerie.val() + "," + datosBanco.val()+","+ datosFila.val() + ";" ;														
+						datos = datos + datosSerie.val() + "," + datosBanco.val()+","+ datosFila.val() + ";" ;				
+						
+// 						Todas las series de la lista deben tener un sufijo asociado
+						if(!datosFila.val()){
+							mensaje = "<siga:Idioma key='facturacion.sufijos.message.error.cuenta.serie.sufijo'/>";
+							alert(mensaje);
+							fin();
+							return false;
+						}
+							
+						
 				}
 				
 				document.CuentasBancariasForm.listaSeries.value=datos;
@@ -577,27 +549,7 @@
 		document.CuentasBancariasForm.modo.value="editar";
 		var resultadom = ventaModalGeneral(document.CuentasBancariasForm.name,"G");
 	}
-	
-	function borrarFila(fila) {	
-	
-		document.CuentasBancariasForm.idSerieFacturacion.value = document.getElementById("idseriefacturacion_"+fila).value;
-		document.CuentasBancariasForm.bancosCodigo.value = document.getElementById("bancos_codigo_"+fila).value;
-				
-		document.CuentasBancariasForm.modo.value="borrarRelacionSerie";
-		document.CuentasBancariasForm.target="submitArea";
-		var resultado=ventaModalGeneral(document.CuentasBancariasForm.name,"G");
-		if(resultado=='MODIFICADO'){
-			refrescarLocal();
-		}	
-	 }
-	
-	function borrar(fila){
-		if (confirm('<siga:Idioma key="messages.deleteConfirmation"/>')){
-			return borrarFila(fila);
-		}			
-	}
-	
-	
+
 	
 </script>
 

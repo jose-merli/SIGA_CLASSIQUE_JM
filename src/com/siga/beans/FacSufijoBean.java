@@ -19,7 +19,6 @@ public class FacSufijoBean extends MasterBean {
 	static public final String C_IDSUFIJO 			= "IDSUFIJO";
 	static public final String C_SUFIJO				= "SUFIJO";
 	static public final String C_CONCEPTO			= "CONCEPTO";
-	static public final String C_DEFECTO			= "DEFECTO";
 
 	public String getConcepto() {
 		return concepto;
@@ -44,11 +43,5 @@ public class FacSufijoBean extends MasterBean {
 	}
 	public void setIdSufijo(Integer idSufijo) {
 		this.idSufijo = idSufijo;
-	}
-	public String getDefecto() {
-		return defecto;
-	}
-	public void setDefecto(String defecto) {
-		this.defecto = defecto;
 	}
 }

@@ -29,7 +29,7 @@ public class FacSufijoAdm extends MasterBeanAdmVisible {
 	 * @return  String[] Los campos ed la tabla   
 	 */	
 	protected String[] getCamposBean() {
-		String [] campos = {FacSufijoBean.C_IDSUFIJO, FacSufijoBean.C_IDINSTITUCION, FacSufijoBean.C_SUFIJO, FacSufijoBean.C_DEFECTO,
+		String [] campos = {FacSufijoBean.C_IDSUFIJO, FacSufijoBean.C_IDINSTITUCION, FacSufijoBean.C_SUFIJO,
 							FacSufijoBean.C_CONCEPTO, FacSufijoBean.C_USUMODIFICACION, 
 							FacSufijoBean.C_FECHAMODIFICACION};
 		return campos;
@@ -60,7 +60,6 @@ public class FacSufijoAdm extends MasterBeanAdmVisible {
 			bean.setIdInstitucion(UtilidadesHash.getInteger(hash, FacSufijoBean.C_IDINSTITUCION));
 			bean.setConcepto(UtilidadesHash.getString(hash, FacSufijoBean.C_CONCEPTO));
 			bean.setSufijo(UtilidadesHash.getString(hash, FacSufijoBean.C_SUFIJO));
-			bean.setDefecto(UtilidadesHash.getString(hash, FacSufijoBean.C_DEFECTO));
 		}
 		catch (Exception e) { 
 			bean = null;	
@@ -85,7 +84,6 @@ public class FacSufijoAdm extends MasterBeanAdmVisible {
 			htData.put(FacSufijoBean.C_IDINSTITUCION, b.getIdInstitucion());
 			htData.put(FacSufijoBean.C_CONCEPTO, b.getConcepto());
 			htData.put(FacSufijoBean.C_SUFIJO, String.valueOf(b.getSufijo()));
-			htData.put(FacSufijoBean.C_DEFECTO, String.valueOf(b.getDefecto()));
 		}
 		catch (Exception e) {
 			htData = null;
@@ -118,9 +116,7 @@ public class FacSufijoAdm extends MasterBeanAdmVisible {
 			if(datos.getSufijo()!=null&&(!datos.getSufijo().isEmpty())) 
 				where += " AND "+ComodinBusquedas.prepararSentenciaCompleta(datos.getSufijo().trim(),FacSufijoBean.C_SUFIJO);
 			if((datos.getConcepto()!=null)&&(!datos.getConcepto().isEmpty()))
-				where += " AND "+ComodinBusquedas.prepararSentenciaCompleta(datos.getConcepto().trim(),FacSufijoBean.C_CONCEPTO );
-			if((datos.getDefecto()!=null)&&(!datos.getDefecto().isEmpty())) 
-				where += " AND "+FacSufijoBean.C_DEFECTO+" = "+datos.getDefecto();		    				
+				where += " AND "+ComodinBusquedas.prepararSentenciaCompleta(datos.getConcepto().trim(),FacSufijoBean.C_CONCEPTO );    				
 			Vsufijos = this.selectNLS(where);
 		} catch (Exception e){
 			throw new ClsExceptions(e,e.getMessage());

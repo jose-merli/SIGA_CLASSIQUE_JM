@@ -163,14 +163,6 @@
 									<html:text name="sufijosForm" property="concepto" size="50" maxlength="100" styleClass="<%=clase%>" readonly="<%=lectura%>" value="<%=concepto%>"/>
 								</td>
 							</tr>
-							<tr>
-								<td class="labelText">
-									<siga:Idioma key="facturacion.sufijos.literal.defecto"/>
-								</td>
-								<td class="labelText">
-									<html:checkbox name="sufijosForm" property="defecto" value="<%=ClsConstants.DB_TRUE%>" disabled="<%=lectura%>" />
-								</td>
-							</tr>
 					</table>					
 				</siga:ConjCampos>	
 				</td>

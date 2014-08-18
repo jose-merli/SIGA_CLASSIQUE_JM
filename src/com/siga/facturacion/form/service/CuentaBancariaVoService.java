@@ -89,10 +89,6 @@ public class CuentaBancariaVoService implements VoUiService<CuentasBancariasForm
 			objectVo.setSjcs(objectForm.getSjcs());
 		}
 		
-		if (objectForm.getNosjcs()!=null && !objectForm.getNosjcs().equals("")){
-			objectVo.setNosjcs(objectForm.getNosjcs());
-		}
-		
 		if (objectForm.getBaja()!=null && !objectForm.getBaja().equals("")){
 			objectVo.setBaja(objectForm.getBaja());
 		}
@@ -116,9 +112,6 @@ public class CuentaBancariaVoService implements VoUiService<CuentasBancariasForm
 		
 		if (objectForm.getIBAN()!=null && !objectForm.getIBAN().equals(""))
 			objectVo.setIban(objectForm.getIBAN());
-		
-		if (objectForm.getIdSufijo()!=null && !objectForm.getIdSufijo().toString().equals("0"))
-			objectVo.setIdsufijo(objectForm.getIdSufijo());
 		
 		if (objectForm.getIdSufijosjcs()!=null && !objectForm.getIdSufijosjcs().toString().equals("0"))
 			objectVo.setIdsufijosjcs(objectForm.getIdSufijosjcs());
@@ -166,11 +159,7 @@ public class CuentaBancariaVoService implements VoUiService<CuentasBancariasForm
 			if(objectVo.getSjcs()!=null){
 				cuentasBancariasForm.setSjcs(objectVo.getSjcs());
 			} 
-			
-			if(objectVo.getNosjcs()!=null){
-				cuentasBancariasForm.setNosjcs(objectVo.getNosjcs());
-			} 
-			
+
 			if(objectVo.getFechabaja()!=null){
 				SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 				cuentasBancariasForm.setFechaBaja(sdf.format(objectVo.getFechabaja()));
@@ -188,10 +177,7 @@ public class CuentaBancariaVoService implements VoUiService<CuentasBancariasForm
 			cuentasBancariasForm.setBancoNombre(objectVo.getBancoNombre());
 			cuentasBancariasForm.setBancoCuentaDescripcion(objectVo.getBancoCuentaDescripcion());
 			cuentasBancariasForm.setUso(String.valueOf(objectVo.getUso()));
-			
-			if(objectVo.getIdsufijo()!=null&&!objectVo.getIdsufijo().toString().equals("0"))
-				cuentasBancariasForm.setIdSufijo(objectVo.getIdsufijo());
-			
+
 			if(objectVo.getIdsufijosjcs()!=null&&!objectVo.getIdsufijosjcs().toString().equals("0"))
 				cuentasBancariasForm.setIdSufijosjcs(objectVo.getIdsufijosjcs());
 			

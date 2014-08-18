@@ -73,8 +73,6 @@ public class CuentasBancariasForm extends MasterForm {
 	String asientoContable;
 	String cuentaContableTarjeta;
 	String sjcs;
-	String nosjcs;
-	Integer idSufijo;
 	Integer idSufijosjcs;
 	String idSerieFacturacion;
 	
@@ -162,23 +160,11 @@ public class CuentasBancariasForm extends MasterForm {
 	public void setCuentaContableTarjeta(String cuentaContableTarjeta) {
 		this.cuentaContableTarjeta = cuentaContableTarjeta;
 	}
-	public String getNosjcs() {
-		return nosjcs;
-	}
-	public void setNosjcs(String nosjcs) {
-		this.nosjcs = nosjcs;
-	}
 	public String getSjcs() {
 		return sjcs;
 	}
 	public void setSjcs(String sjcs) {
 		this.sjcs = sjcs;
-	}
-	public Integer getIdSufijo() {
-		return idSufijo;
-	}
-	public void setIdSufijo(Integer idSufijo) {
-		this.idSufijo = idSufijo;
 	}
 	public Integer getIdSufijosjcs() {
 		return idSufijosjcs;
