@@ -73,18 +73,6 @@ public class CuentaBancariaVoService implements VoUiService<CuentasBancariasForm
 		if (objectForm.getCuentaBanco()!=null && !objectForm.getCuentaBanco().equals(""))
 			objectVo.setNumerocuenta(objectForm.getCuentaBanco());
 		
-		if (objectForm.getImpComisionAjenaAbono()!=null && !objectForm.getImpComisionAjenaAbono().equals(""))
-			objectVo.setImpcomisionajenaabono(UtilidadesNumero.getBigDecimal(objectForm.getImpComisionAjenaAbono()));
-		
-		if (objectForm.getImpComisionAjenaCargo()!=null && !objectForm.getImpComisionAjenaCargo().equals(""))
-			objectVo.setImpcomisionajenacargo(UtilidadesNumero.getBigDecimal(objectForm.getImpComisionAjenaCargo()));
-		
-		if (objectForm.getImpComisionPropiaAbono()!=null && !objectForm.getImpComisionPropiaAbono().equals(""))
-			objectVo.setImpcomisionpropiaabono(UtilidadesNumero.getBigDecimal(objectForm.getImpComisionPropiaAbono()));
-		
-		if (objectForm.getImpComisionPropiaCargo()!=null && !objectForm.getImpComisionPropiaCargo().equals(""))
-			objectVo.setImpcomisionpropiacargo(UtilidadesNumero.getBigDecimal(objectForm.getImpComisionPropiaCargo()));
-		
 		if (objectForm.getSjcs()!=null && !objectForm.getSjcs().equals("")){
 			objectVo.setSjcs(objectForm.getSjcs());
 		}
@@ -115,10 +103,16 @@ public class CuentaBancariaVoService implements VoUiService<CuentasBancariasForm
 		
 		if (objectForm.getIdSufijosjcs()!=null && !objectForm.getIdSufijosjcs().toString().equals("0"))
 			objectVo.setIdsufijosjcs(objectForm.getIdSufijosjcs());
+		
+		// JPT (19-08-2014): Nuevos valores para la comision
+		if (objectForm.getComisionimporte()!=null && !objectForm.getComisionimporte().equals(""))
+			objectVo.setComisionimporte(UtilidadesNumero.getBigDecimal(objectForm.getComisionimporte()));
+		if (objectForm.getComisioniva()!=null && !objectForm.getComisioniva().equals(""))
+			objectVo.setComisioniva(UtilidadesNumero.getBigDecimal(objectForm.getComisioniva()));
+		if (objectForm.getComisiondescripcion()!=null && !objectForm.getComisiondescripcion().equals(""))
+			objectVo.setComisiondescripcion(objectForm.getComisiondescripcion());
 			
 		return objectVo;
-			
-		
 	}
 
 	@Override
@@ -147,15 +141,6 @@ public class CuentaBancariaVoService implements VoUiService<CuentasBancariasForm
 			if(objectVo.getIdinstitucion()!=null)
 				cuentasBancariasForm.setIdInstitucion(objectVo.getIdinstitucion().toString());
 			
-			if(objectVo.getImpcomisionajenaabono()!=null)
-				cuentasBancariasForm.setImpComisionAjenaAbono(UtilidadesString.formatoImporte(objectVo.getImpcomisionajenaabono().doubleValue()));
-			if(objectVo.getImpcomisionajenacargo()!=null)
-				cuentasBancariasForm.setImpComisionAjenaCargo(UtilidadesString.formatoImporte(objectVo.getImpcomisionajenacargo().doubleValue()));
-			if(objectVo.getImpcomisionpropiaabono()!=null)
-				cuentasBancariasForm.setImpComisionPropiaAbono(UtilidadesString.formatoImporte(objectVo.getImpcomisionpropiaabono().doubleValue()));
-			if(objectVo.getImpcomisionpropiacargo()!=null)
-				cuentasBancariasForm.setImpComisionPropiaCargo(UtilidadesString.formatoImporte(objectVo.getImpcomisionpropiacargo().doubleValue()));
-			
 			if(objectVo.getSjcs()!=null){
 				cuentasBancariasForm.setSjcs(objectVo.getSjcs());
 			} 
@@ -181,8 +166,13 @@ public class CuentaBancariaVoService implements VoUiService<CuentasBancariasForm
 			if(objectVo.getIdsufijosjcs()!=null&&!objectVo.getIdsufijosjcs().toString().equals("0"))
 				cuentasBancariasForm.setIdSufijosjcs(objectVo.getIdsufijosjcs());
 			
+			// JPT (19-08-2014): Nuevos valores para la comision
+			if (objectVo.getComisionimporte()!=null)
+				cuentasBancariasForm.setComisionimporte(UtilidadesString.formatoImporte(objectVo.getComisionimporte().doubleValue()));
+			if (objectVo.getComisioniva()!=null)
+				cuentasBancariasForm.setComisioniva(objectVo.getComisioniva().toString());
+			cuentasBancariasForm.setComisiondescripcion(objectVo.getComisiondescripcion());
+			
 		return cuentasBancariasForm;
 	}
-	
-
 }

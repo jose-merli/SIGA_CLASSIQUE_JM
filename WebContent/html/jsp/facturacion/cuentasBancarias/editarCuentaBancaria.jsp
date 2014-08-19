@@ -20,6 +20,8 @@
 
 <%@ page import="org.redabogacia.sigaservices.app.autogen.model.FacSeriefacturacion"%>
 <%@ page import="java.util.List"%>
+<%@ page import="com.siga.facturacion.form.CuentasBancariasForm"%>
+<%@ page import="java.util.ArrayList"%>
 
 <!-- HEAD -->
 
@@ -31,6 +33,12 @@
 
 <% 
 	List<FacSeriefacturacion> lista = (List<FacSeriefacturacion>) request.getAttribute("seriesFacturacion");
+
+	CuentasBancariasForm formulario = (CuentasBancariasForm) request.getAttribute("CuentasBancariasForm");
+
+	ArrayList vIva = new ArrayList(); // valores originales iva
+	// Cargo valor IVA
+    vIva.add(formulario.getComisioniva());
 %>
 
 <script type="text/javascript">
@@ -229,131 +237,199 @@
 	</script>
 </head>
 
-<body onload="inicio();inicioCargarBancoBIC();habilitarDeshabCombo();">
+<body onload="inicio(); inicioCargarBancoBIC(); habilitarDeshabCombo();">
 
-<table class="tablaTitulo" cellspacing="0" heigth="32">
-	<tr>
-		<td id="titulo" class="titulosPeq"><siga:Idioma key="menu.facturacion.gestionCuentasBancarias"/>
-		</td>
-	</tr>
-</table>
-<bean:define id="path" name="org.apache.struts.action.mapping.instance" property="path" scope="request"/>
-<html:javascript formName="CuentasBancariasForm" staticJavascript="false" /> 
-<html:form action="${path}" target="submitArea">
-	<html:hidden property="modo" value ="${CuentasBancariasForm.modo}"  />
-	<html:hidden property="idInstitucion" value ="${CuentasBancariasForm.idInstitucion}"/>
-	<html:hidden property="idCuentaBancaria" value ="${CuentasBancariasForm.idCuentaBancaria}"/>
-	<html:hidden property="idSerieFacturacion" value =""/>
-	<html:hidden property="bancosCodigo" value ="${CuentasBancariasForm.bancosCodigo}"/>
-    <input type="hidden" id="actionModal" name="actionModal" />
-    <c:set var="clasePorEdicion" value="box" />
-    <c:set var="disabledPorEdicion" value="false" />
-	<c:if	test="${CuentasBancariasForm.modo=='modificar'}">
-		<c:set var="clasePorEdicion" value="boxConsulta" />
-		<c:set var="disabledPorEdicion" value="true" />
-		<html:hidden property="codigoBanco" value ="${CuentasBancariasForm.codigoBanco}"/>
-		<html:hidden property="sucursalBanco" value ="${CuentasBancariasForm.sucursalBanco}"/>
-		<html:hidden property="cuentaBanco" value ="${CuentasBancariasForm.cuentaBanco}"/>
-		<html:hidden property="digControlBanco" value ="${CuentasBancariasForm.digControlBanco}"/>
-		<html:hidden property="listaSeries"/>
-	</c:if>
+	<table class="tablaTitulo" cellspacing="0" heigth="32">
+		<tr>
+			<td id="titulo" class="titulosPeq">
+				<siga:Idioma key="menu.facturacion.gestionCuentasBancarias"/>
+			</td>
+		</tr>
+	</table>
 	
-	<c:set var="disabledFecha" value="false" />
-	<c:if test="${CuentasBancariasForm.modo=='abrir'}">
-		<c:set var="disabledFecha" value="true" />
-	</c:if>
+	<bean:define id="path" name="org.apache.struts.action.mapping.instance" property="path" scope="request"/>
+	<html:javascript formName="CuentasBancariasForm" staticJavascript="false" />
+	 
+	<html:form action="${path}" target="submitArea">
+		<html:hidden property="modo" value ="${CuentasBancariasForm.modo}"  />
+		<html:hidden property="idInstitucion" value ="${CuentasBancariasForm.idInstitucion}"/>
+		<html:hidden property="idCuentaBancaria" value ="${CuentasBancariasForm.idCuentaBancaria}"/>
+		<html:hidden property="idSerieFacturacion" value =""/>
+		<html:hidden property="bancosCodigo" value ="${CuentasBancariasForm.bancosCodigo}"/>
+    	<input type="hidden" id="actionModal" name="actionModal" />
+    	<c:set var="clasePorEdicion" value="box" />
+    	<c:set var="disabledPorEdicion" value="false" />
+    	
+		<c:if	test="${CuentasBancariasForm.modo=='modificar'}">
+			<c:set var="clasePorEdicion" value="boxConsulta" />
+			<c:set var="disabledPorEdicion" value="true" />
+			<html:hidden property="codigoBanco" value ="${CuentasBancariasForm.codigoBanco}"/>
+			<html:hidden property="sucursalBanco" value ="${CuentasBancariasForm.sucursalBanco}"/>
+			<html:hidden property="cuentaBanco" value ="${CuentasBancariasForm.cuentaBanco}"/>
+			<html:hidden property="digControlBanco" value ="${CuentasBancariasForm.digControlBanco}"/>
+			<html:hidden property="listaSeries"/>
+		</c:if>
 	
-	<table width="100%" border="0">
+		<c:set var="disabledFecha" value="false" />
+		<c:if test="${CuentasBancariasForm.modo=='abrir'}">
+			<c:set var="disabledFecha" value="true" />
+		</c:if>
+	
+		<table width="100%" border="0">
 			<!-- FILA -->
 			<tr>						
-				<td class="labelText" nowrap><siga:Idioma key="censo.datosCuentaBancaria.literal.codigoIBAN"/>&nbsp;(*)</td>
-				<td class="labelText"><html:text size="34"  maxlength="34" name="CuentasBancariasForm" styleId="IBAN" property="IBAN" styleClass="${clasePorEdicion}" readonly="${disabledPorEdicion}" onblur="cargarBancoPorIBAN();"></html:text></td>
+				<td class="labelText" nowrap>
+					<siga:Idioma key="censo.datosCuentaBancaria.literal.codigoIBAN"/>&nbsp;(*)
+				</td>
+				<td>
+					<html:text size="34"  maxlength="34" name="CuentasBancariasForm" styleId="IBAN" property="IBAN" styleClass="${clasePorEdicion}" readonly="${disabledPorEdicion}" onblur="cargarBancoPorIBAN();" />
+				</td>
 
-				<td class="labelText" nowrap><siga:Idioma key="censo.datosCuentaBancaria.literal.codigoBIC"/>&nbsp;</td>
-				<td class="labelText"><html:text size="14"  maxlength="11" name="CuentasBancariasForm" styleId="BIC" property="BIC" styleClass="boxConsulta" readonly="true" onblur="rpad();" ></html:text></td>
+				<td class="labelText" nowrap>
+					<siga:Idioma key="censo.datosCuentaBancaria.literal.codigoBIC"/>
+				</td>
+				<td>
+					<html:text size="14"  maxlength="11" name="CuentasBancariasForm" styleId="BIC" property="BIC" styleClass="boxConsulta" readonly="true" onblur="rpad();" />
+				</td>
 				
 				<c:if test="${CuentasBancariasForm.modo != 'insertar'}">	
-					<td class="labelText"><bean:message key="facturacion.cuentasBancarias.baja" /> </td>
-					<td><siga:Fecha nombreCampo="fechaBaja" valorInicial="${CuentasBancariasForm.fechaBaja}" disabled="${disabledFecha}" readonly="${disabledFecha}"/></td>		
+					<td class="labelText">
+						<siga:Idioma key="facturacion.cuentasBancarias.tieneBaja"/> 
+					</td>
+					<td>
+						<siga:Fecha nombreCampo="fechaBaja" valorInicial="${CuentasBancariasForm.fechaBaja}" disabled="${disabledFecha}" readonly="${disabledFecha}"/>
+					</td>		
 				</c:if>	
 			</tr>
 			
 			<!-- FILA -->
 			<tr>	
-				<td class="labelText" nowrap><siga:Idioma key="censo.datosCuentaBancaria.literal.banco"/></td>
-				<td class="labelText" COLSPAN="3">
-					<html:text style="width:500px;" name="CuentasBancariasForm" property="bancoNombre" styleClass="boxConsulta"  readonly="true"/>
+				<td class="labelText" nowrap>
+					<siga:Idioma key="censo.datosCuentaBancaria.literal.banco"/>
+				</td>
+				<td colspan="5">
+					<html:text style="width:500px;" name="CuentasBancariasForm" property="bancoNombre" styleClass="boxConsulta" readonly="true"/>
 				</td>
 			</tr>
 						
-		<tr>
-			<td class="labelText"><bean:message key="facturacion.cuentasBancarias.asientoContable" /></td> 
-			<td><html:text styleId="asientoContable" property="asientoContable"	name ="CuentasBancariasForm"	size="20" maxlength="20" styleClass="box" /></td>
-			<td class="labelText"><bean:message key="facturacion.cuentasBancarias.cuentaContableTarjeta" /> </td> 
-			<td><html:text styleId="cuentaContableTarjeta" property="cuentaContableTarjeta"	name ="CuentasBancariasForm"	size="20" maxlength="20" styleClass="box" /></td>
-			<td class="labelText"><bean:message key="general.code" /> </td> 
-			<td><html:text styleId="codigo" property="idCuentaBancaria"	name ="CuentasBancariasForm" size="20" maxlength="20" styleClass="boxConsulta" readonly="true"; /></td>
-			
-		</tr>
-		<c:if test="${CuentasBancariasForm.modo != 'insertar' && CuentasBancariasForm.cuentaBanco != null &&  CuentasBancariasForm.cuentaBanco != ''}">	
-			<!-- FILA -->
-			<tr><td COLSPAN="8">
-				<siga:ConjCampos leyenda="datosCuentaBancaria.literal.formatoAntiguo">
-					<table>
-						<tr>						
-							<td class="labelText" nowrap colspan="2">C.C.C.&nbsp;(*)</td>
-							<td class="labelText">
-								<html:text size="4"  maxlength="4"  name="CuentasBancariasForm" property="codigoBanco"   	styleClass="${clasePorEdicion}" readonly="${disabledPorEdicion}"></html:text>-
-								<html:text size="4"  maxlength="4"  name="CuentasBancariasForm" property="sucursalBanco" 	styleClass="${clasePorEdicion}" readonly="${disabledPorEdicion}"></html:text>-
-								<html:text size="2"  maxlength="2"  name="CuentasBancariasForm" property="digControlBanco" 	styleClass="${clasePorEdicion}" readonly="${disabledPorEdicion}" ></html:text>-
-								<html:text size="10" maxlength="10" name="CuentasBancariasForm" property="cuentaBanco"  	styleClass="${clasePorEdicion}" readonly="${disabledPorEdicion}"></html:text>
-							</td>
-						</tr>
-					</table>
-				</siga:ConjCampos>
-			</td></tr>				
-		</c:if>	
-		<!-- FILA -->
-		<tr><td COLSPAN="8">
-			<siga:ConjCampos leyenda="Importes Comision">
-				<table align="center" width="100%">
-					<tr>
-						<td class="labelText"><bean:message key="facturacion.cuentasBancarias.impComisionPropiaCargo" />&nbsp;(*)</td>
-						<td><html:text styleId="impComisionPropiaCargo" property="impComisionPropiaCargo" name ="CuentasBancariasForm" 	size="13" maxlength="13" styleClass="box" /></td>
-						<td class="labelText"><bean:message key="facturacion.cuentasBancarias.impComisionPropiaAbono" />&nbsp;(*)</td>
-						<td><html:text styleId="impComisionPropiaAbono" property="impComisionPropiaAbono" name ="CuentasBancariasForm"	size="13" maxlength="13" styleClass="box" /></td>
-					</tr>
-					
-					<tr>
-						<td class="labelText"><bean:message key="facturacion.cuentasBancarias.impComisionAjenaCargo" />&nbsp;(*)</td>
-						<td><html:text styleId="impComisionAjenaCargo" property="impComisionAjenaCargo" name ="CuentasBancariasForm" size="13" maxlength="13" styleClass="box" /></td>
-						<td class="labelText"><bean:message key="facturacion.cuentasBancarias.impComisionAjenaAbono" />&nbsp;(*)</td>
-						<td><html:text styleId="impComisionAjenaAbono" property="impComisionAjenaAbono"	name ="CuentasBancariasForm" size="13" maxlength="13" styleClass="box" /></td>
+			<tr>
+				<td class="labelText">
+					<siga:Idioma key="facturacion.cuentasBancarias.asientoContable"/>
+				</td> 
+				<td>
+					<html:text styleId="asientoContable" property="asientoContable"	name="CuentasBancariasForm" size="20" maxlength="20" styleClass="box" />
+				</td>
 				
-					</tr>
-				</table>
-			</siga:ConjCampos>
-		</td></tr>	
-		<tr>
-		<td COLSPAN="8">
-			<siga:ConjCampos leyenda="Uso de Cuenta">
-			<table align="center" width="100%">
-				<td class="labelText"><bean:message key="facturacion.cuentasBancarias.uso.sjcs" /> 
-				<html:checkbox name="CuentasBancariasForm" id = "sjcs" property="sjcs" value="1" onclick="habilitarDeshabCombo()"></html:checkbox>
-					<html:select styleId="comboSufijossjcs" property="idSufijosjcs" value="${CuentasBancariasForm.idSufijosjcs}" styleClass="boxCombo" style="width:200px;">
-					<s:if test="${empty CuentasBancariasForm.idSufijosjcs}">
-						<html:option value=""><c:out value=""/></html:option>
-					</s:if>
-					<c:forEach items="${listaSufijos}" var="sufijoCmb">
-						<html:option value="${sufijoCmb.idSufijo}"><c:out value="${sufijoCmb.sufijo.trim().length()>0?sufijoCmb.sufijo:'	'} ${sufijoCmb.concepto}"/></html:option>
-					</c:forEach>
-					</html:select>	
-				</td> 		
-			</table>
-			</siga:ConjCampos>
-			</td>
-		</tr>
-	</table>
+				<td class="labelText">
+					<siga:Idioma key="facturacion.cuentasBancarias.cuentaContableTarjeta"/>
+				</td>				
+				<td>
+					<html:text styleId="cuentaContableTarjeta" property="cuentaContableTarjeta"	name="CuentasBancariasForm" size="20" maxlength="20" styleClass="box" />
+				</td>
+
+				<c:if test="${CuentasBancariasForm.modo != 'insertar'}">						
+					<td class="labelText">
+						<siga:Idioma key="general.code"/>
+					</td> 
+					<td>
+						<html:text styleId="codigo" property="idCuentaBancaria"	name="CuentasBancariasForm" size="20" maxlength="20" styleClass="boxConsulta" readonly="true" />
+					</td>
+				</c:if>									
+			</tr>
+			
+			<c:if test="${CuentasBancariasForm.modo != 'insertar' && CuentasBancariasForm.cuentaBanco != null &&  CuentasBancariasForm.cuentaBanco != ''}">	
+				<tr>
+					<td colspan="6">
+						<siga:ConjCampos leyenda="datosCuentaBancaria.literal.formatoAntiguo">
+							<table>
+								<tr>						
+									<td class="labelText" nowrap>C.C.C.&nbsp;(*)</td>
+									<td class="labelText">
+										<html:text size="4"  maxlength="4"  name="CuentasBancariasForm" property="codigoBanco"   	styleClass="${clasePorEdicion}" readonly="${disabledPorEdicion}"></html:text>-
+										<html:text size="4"  maxlength="4"  name="CuentasBancariasForm" property="sucursalBanco" 	styleClass="${clasePorEdicion}" readonly="${disabledPorEdicion}"></html:text>-
+										<html:text size="2"  maxlength="2"  name="CuentasBancariasForm" property="digControlBanco" 	styleClass="${clasePorEdicion}" readonly="${disabledPorEdicion}" ></html:text>-
+										<html:text size="10" maxlength="10" name="CuentasBancariasForm" property="cuentaBanco"  	styleClass="${clasePorEdicion}" readonly="${disabledPorEdicion}"></html:text>
+									</td>
+								</tr>
+							</table>
+						</siga:ConjCampos>
+					</td>
+				</tr>				
+			</c:if>
+				
+			<tr>
+				<td colspan="6">
+					<siga:ConjCampos leyenda="facturacion.cuentasBancarias.comision">
+						<table width="100%" border="0">
+							<tr>
+								<td class="labelText">
+									<siga:Idioma key="facturacion.cuentasBancarias.comision.importe"/>&nbsp;(*)
+								</td>
+								<td>
+									<html:text styleClass="boxNumber" styleId="comisionimporte" property="comisionimporte" name ="CuentasBancariasForm" size="13" maxlength="13" />&nbsp;&euro;
+								</td>
+								
+								<td class="labelText">
+									<siga:Idioma key="facturacion.cuentasBancarias.comision.IVA"/>&nbsp;(*)
+								</td>
+								<td>
+									<c:choose>
+										<c:when test="${CuentasBancariasForm.modo=='insertar'}">
+											<siga:Select queryId="getPorcentajesIva" id="comisioniva" required="true"/>
+										</c:when>
+										
+										<c:when test="${CuentasBancariasForm.modo=='modificar'}">
+											<siga:Select queryId="getPorcentajesIva" id="comisioniva" selectedIds="<%=vIva%>" required="true"/>
+										</c:when>	
+										
+										<c:otherwise>
+											<siga:Select queryId="getPorcentajesIva" id="comisioniva" selectedIds="<%=vIva%>" required="true" disabled="true" />
+										</c:otherwise>
+									</c:choose>
+								</td>								
+							</tr>
+					
+							<tr>	
+								<td class="labelText">
+									<siga:Idioma key="facturacion.cuentasBancarias.comision.descripcion"/>&nbsp;(*)
+								</td>
+								<td colspan="3">
+									<html:text styleClass="box" styleId="comisiondescripcion" property="comisiondescripcion" name ="CuentasBancariasForm" maxlength="255" style="width:850px;" />
+								</td>			
+							</tr>
+						</table>
+					</siga:ConjCampos>
+				</td>
+			</tr>
+			
+			<tr>
+				<td colspan="6">
+					<siga:ConjCampos leyenda="Uso de Cuenta">
+						<table>
+							<tr>
+								<td class="labelText">
+									<siga:Idioma key="facturacion.cuentasBancarias.uso.sjcs"/>
+								</td>								
+								<td> 
+									<html:checkbox name="CuentasBancariasForm" id = "sjcs" property="sjcs" value="1" onclick="habilitarDeshabCombo()"></html:checkbox>
+								</td>
+								<td>
+									<html:select styleId="comboSufijossjcs" property="idSufijosjcs" value="${CuentasBancariasForm.idSufijosjcs}" styleClass="boxCombo" style="width:200px;">
+										<s:if test="${empty CuentasBancariasForm.idSufijosjcs}">
+											<html:option value=""><c:out value=""/></html:option>
+										</s:if>
+						
+										<c:forEach items="${listaSufijos}" var="sufijoCmb">
+											<html:option value="${sufijoCmb.idSufijo}"><c:out value="${sufijoCmb.sufijo.trim().length()>0?sufijoCmb.sufijo:'	'} ${sufijoCmb.concepto}"/></html:option>
+										</c:forEach>
+									</html:select>	
+								</td>
+							</tr> 		
+						</table>
+					</siga:ConjCampos>
+				</td>
+			</tr>
+		</table>
 	
 		<c:if test="${CuentasBancariasForm.modo!='insertar'}">
 			

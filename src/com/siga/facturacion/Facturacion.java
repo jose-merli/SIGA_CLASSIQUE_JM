@@ -2393,11 +2393,7 @@ public class Facturacion {
 		if(lineaDevolucion.getContabilizada()!= null)
 			original.put(FacLineaDevoluDisqBancoBean.C_CONTABILIZADA,lineaDevolucion.getContabilizada().toString());
 		lineaDevolucion.setOriginalHash(original);		
-		if (beanBancoInstitucion.getCodBanco().equalsIgnoreCase(beanCuentasBancarias.getCbo_Codigo())) {
-			lineaDevolucion.setGastosDevolucion(beanBancoInstitucion.getImpComisionPropiaCargo());
-		} else {
-			lineaDevolucion.setGastosDevolucion(beanBancoInstitucion.getImpComisionAjenaCargo());
-		}		
+		lineaDevolucion.setGastosDevolucion(beanBancoInstitucion.getComisionImporte());
 		
 		// RGG 15/09/2006 COMISIONES A CARGO DEL CLIENTE
 		if (aplicaComisionesCliente!=null && aplicaComisionesCliente.equalsIgnoreCase(ClsConstants.DB_TRUE) &&

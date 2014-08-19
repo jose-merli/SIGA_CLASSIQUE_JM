@@ -4819,70 +4819,58 @@
       
 	<form name="CuentasBancariasForm">
 
-        <field property = "asientoContable" depends = "maxlength, mask">
+		<field property="asientoContable" depends="maxlength, mask">
            <arg0 key="facturacion.cuentasBancarias.asientoContable"/>
-           		<arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
-          		<var><var-name>mask</var-name> <var-value>^[0-9]*$</var-value></var>
-          		<var> <var-name>maxlength</var-name> <var-value>20</var-value></var>
-            
+			<arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+          	<var>
+          		<var-name>mask</var-name> 
+          		<var-value>^[0-9]*$</var-value>
+          	</var>
+          	<var> 
+          		<var-name>maxlength</var-name> 
+          		<var-value>20</var-value>
+          	</var>            
+		</field>
+        
+        <field property="cuentaContableTarjeta" depends="maxlength, mask">
+			<arg0 key="facturacion.cuentasBancarias.cuentaContableTarjeta"/>
+			<arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+			<var>
+				<var-name>mask</var-name> 
+				<var-value>^[0-9]*$</var-value>
+			</var>
+			<var> 
+				<var-name>maxlength</var-name> 
+				<var-value>20</var-value>
+			</var>
         </field>
         
-        <field property = "cuentaContableTarjeta" depends = "maxlength, mask">
-           <arg0 key="facturacion.cuentasBancarias.cuentaContableTarjeta"/>
-            	<arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
-          		<var><var-name>mask</var-name> <var-value>^[0-9]*$</var-value></var>
-          		<var> <var-name>maxlength</var-name> <var-value>20</var-value></var>
-        </field>
-        
-       <field property = "impComisionPropiaCargo" depends = "required,double,maxlength,mask"> 
-	        <arg0 key="facturacion.cuentasBancarias.impComisionPropiaCargo"/> 
-	        <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
-	        <var>
-	            <var-name>maxlength</var-name>
-	            <var-value>13</var-value>
-	        </var> 
-	        <var>
-	            <var-name>mask</var-name>
-	            <var-value>^([0-9]{0,8}|[0-9]{1,2}(\.[0-9]{3}){2}|[0-9]{1,3}\.[0-9]{3})((\.|\,)[0-9]{1,2})?$</var-value>
-	        </var> 
-         </field>
-          <field property = "impComisionPropiaAbono" depends = "required,double,maxlength,mask"> 
-	        <arg0 key="facturacion.cuentasBancarias.impComisionPropiaAbono"/> 
-	        <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
-	        <var>
-	            <var-name>maxlength</var-name>
-	            <var-value>13</var-value>
-	        </var> 
-	        <var>
-	            <var-name>mask</var-name>
-	            <var-value>^([0-9]{0,8}|[0-9]{1,2}(\.[0-9]{3}){2}|[0-9]{1,3}\.[0-9]{3})((\.|\,)[0-9]{1,2})?$</var-value>
-	        </var> 
-         </field>
-          <field property = "impComisionAjenaCargo" depends = "required,double,maxlength,mask"> 
-	        <arg0 key="facturacion.cuentasBancarias.impComisionAjenaCargo"/> 
-	        <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
-	        <var>
-	            <var-name>maxlength</var-name>
-	            <var-value>13</var-value>
-	        </var> 
-	        <var>
-	            <var-name>mask</var-name>
-	            <var-value>^([0-9]{0,8}|[0-9]{1,2}(\.[0-9]{3}){2}|[0-9]{1,3}\.[0-9]{3})((\.|\,)[0-9]{1,2})?$</var-value>
-	        </var> 
-         </field>
-          <field property = "impComisionAjenaAbono" depends = "required,double,maxlength,mask"> 
-	        <arg0 key="facturacion.cuentasBancarias.impComisionAjenaAbono"/> 
-	        <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
-	        <var>
-	            <var-name>maxlength</var-name>
-	            <var-value>13</var-value>
-	        </var> 
-	        <var>
-	            <var-name>mask</var-name>
-	            <var-value>^([0-9]{0,8}|[0-9]{1,2}(\.[0-9]{3}){2}|[0-9]{1,3}\.[0-9]{3})((\.|\,)[0-9]{1,2})?$</var-value>
-	        </var> 
-         </field>
-        </form>
+       <field property="comisionimporte" depends="required, double, maxlength, mask"> 
+			<arg0 key="facturacion.cuentasBancarias.comision.importe"/> 
+			<arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+			<var>
+    			<var-name>maxlength</var-name>
+    			<var-value>13</var-value>
+			</var> 
+			<var>
+    			<var-name>mask</var-name>
+    			<var-value>^([0-9]{0,8}|[0-9]{1,2}(\.[0-9]{3}){2}|[0-9]{1,3}\.[0-9]{3})((\.|\,)[0-9]{1,2})?$</var-value>
+			</var> 
+		</field>
+		
+       <field property="comisioniva" depends="required"> 
+			<arg0 key="facturacion.cuentasBancarias.comision.IVA"/> 
+		</field>				
+		
+       <field property="comisiondescripcion" depends="required, maxlength"> 
+			<arg0 key="facturacion.cuentasBancarias.comision.descripcion"/> 
+			<arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+			<var>
+    			<var-name>maxlength</var-name>
+    			<var-value>255</var-value>
+			</var> 
+		</field>		
+	</form>
         
 		<form name="MandatosCuentasBancariasForm">
 			<field property="refMandatoSepa" depends="required,maxlength"> 			

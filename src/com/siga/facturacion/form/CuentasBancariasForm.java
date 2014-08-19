@@ -1,8 +1,5 @@
 package com.siga.facturacion.form;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.siga.general.MasterForm;
 /**
  * 
@@ -17,43 +14,6 @@ public class CuentasBancariasForm extends MasterForm {
 		
 	}
 	
-//	public CuentasBancariasForm(CuentaBancariaVo cuentaBancariaVo) {
-//		this.setAsientoContable(cuentaBancariaVo.getAsientocontable());
-//		this.setIdCuentaBancaria(cuentaBancariaVo.getBancosCodigo());
-//		this.setCodigoBanco(cuentaBancariaVo.getCodBanco());
-//		this.setCodigoBanco(cuentaBancariaVo.getCodSucursal());
-//		this.setCuentaContableTarjeta(cuentaBancariaVo.getCuentacontabletarjeta());
-//		this.setDigControlBanco(cuentaBancariaVo.getDigitocontrol());
-//
-//		if(cuentaBancariaVo.getFechabaja()!=null){
-//			SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-//			this.setFechaBaja(sdf.format(cuentaBancariaVo.getFechabaja()));
-//		}
-////		this.setFechaBaja(facBancoinstitucion.getFechamodificacion());
-//		
-//		
-//		
-//		
-//		
-//		if(cuentaBancariaVo.getIdinstitucion()!=null)
-//			this.setIdInstitucion(cuentaBancariaVo.getIdinstitucion().toString());
-//		
-//		if(cuentaBancariaVo.getImpcomisionajenaabono()!=null)
-//			this.setImpComisionAjenaAbono(UtilidadesString.formatoImporte(cuentaBancariaVo.getImpcomisionajenaabono().doubleValue()));
-//		if(cuentaBancariaVo.getImpcomisionajenacargo()!=null)
-//			this.setImpComisionAjenaCargo(UtilidadesString.formatoImporte(cuentaBancariaVo.getImpcomisionajenacargo().doubleValue()));
-//		if(cuentaBancariaVo.getImpcomisionpropiaabono()!=null)
-//			this.setImpComisionPropiaAbono(UtilidadesString.formatoImporte(cuentaBancariaVo.getImpcomisionpropiaabono().doubleValue()));
-//		if(cuentaBancariaVo.getImpcomisionpropiacargo()!=null)
-//			this.setImpComisionPropiaCargo(UtilidadesString.formatoImporte(cuentaBancariaVo.getImpcomisionpropiacargo().doubleValue()));
-//
-//		this.setNif(cuentaBancariaVo.getNif());
-//		this.setCuentaBanco(cuentaBancariaVo.getNumerocuenta());
-//		this.setSufijo(cuentaBancariaVo.getSufijo());
-//		this.setBancoNombre(cuentaBancariaVo.getBancoNombre());
-//		this.setBancoCuentaDescripcion(cuentaBancariaVo.getBancoCuentaDescripcion());
-//	}
-	
 	String modo;
 	String idInstitucion;
 	
@@ -64,10 +24,6 @@ public class CuentasBancariasForm extends MasterForm {
 	String sucursalBanco;
 	String digControlBanco;
 	String cuentaBanco;
-	String impComisionPropiaCargo;
-	String impComisionPropiaAbono;
-	String impComisionAjenaCargo;
-	String impComisionAjenaAbono;
 	String fechaBaja;
 	String baja;
 	String asientoContable;
@@ -87,14 +43,33 @@ public class CuentasBancariasForm extends MasterForm {
 	
 	String listaSeries;
 	String bancosCodigo;
-
+	
+	// JPT (19-08-2014): Nuevos valores para la comision
+	String comisionimporte, comisioniva, comisiondescripcion;
 	
 //	FIXME Por prisas no hemos creado Formulario de series de facturacion. Deberia ser una lis de Forms 
-//	List<FacSeriefacturacion> seriesFacturacion;
-	
+//	List<FacSeriefacturacion> seriesFacturacion;	
 	
 	public String getNif() {
 		return nif;
+	}
+	public String getComisionimporte() {
+		return comisionimporte;
+	}
+	public void setComisionimporte(String comisionimporte) {
+		this.comisionimporte = comisionimporte;
+	}
+	public String getComisioniva() {
+		return comisioniva;
+	}
+	public void setComisioniva(String comisioniva) {
+		this.comisioniva = comisioniva;
+	}
+	public String getComisiondescripcion() {
+		return comisiondescripcion;
+	}
+	public void setComisiondescripcion(String comisiondescripcion) {
+		this.comisiondescripcion = comisiondescripcion;
 	}
 	public void setNif(String nif) {
 		this.nif = nif;
@@ -117,30 +92,6 @@ public class CuentasBancariasForm extends MasterForm {
 	}
 	public void setCuentaBanco(String cuentaBanco) {
 		this.cuentaBanco = cuentaBanco;
-	}
-	public String getImpComisionPropiaCargo() {
-		return impComisionPropiaCargo;
-	}
-	public void setImpComisionPropiaCargo(String impComisionPropiaCargo) {
-		this.impComisionPropiaCargo = impComisionPropiaCargo;
-	}
-	public String getImpComisionPropiaAbono() {
-		return impComisionPropiaAbono;
-	}
-	public void setImpComisionPropiaAbono(String impComisionPropiaAbono) {
-		this.impComisionPropiaAbono = impComisionPropiaAbono;
-	}
-	public String getImpComisionAjenaCargo() {
-		return impComisionAjenaCargo;
-	}
-	public void setImpComisionAjenaCargo(String impComisionAjenaCargo) {
-		this.impComisionAjenaCargo = impComisionAjenaCargo;
-	}
-	public String getImpComisionAjenaAbono() {
-		return impComisionAjenaAbono;
-	}
-	public void setImpComisionAjenaAbono(String impComisionAjenaAbono) {
-		this.impComisionAjenaAbono = impComisionAjenaAbono;
 	}
 	public String getFechaBaja() {
 		return fechaBaja;
@@ -293,6 +244,4 @@ public class CuentasBancariasForm extends MasterForm {
 	public void setBancosCodigo(String bancosCodigo) {
 		this.bancosCodigo = bancosCodigo;
 	}
-	
-	
 }

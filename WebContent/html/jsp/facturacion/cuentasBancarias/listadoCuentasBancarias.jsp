@@ -8,7 +8,7 @@
 	<meta http-equiv="Pragma" content="no-cache">
 	<%@ page pageEncoding="ISO-8859-15"%>
 	<meta http-equiv="Cache-Control" content="no-cache">
-	<meta http-equiv="Conte nt-Type" content="text/html; charset=ISO-8859-15">
+	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-15">
 	<%@ page contentType="text/html" language="java" errorPage="/html/jsp/error/errorSIGA.jsp"%>
 	
 	<!-- TAGLIBS -->
@@ -40,15 +40,12 @@
    	      name="tabCuentasBancarias"
    		  border="1"
    		  columnNames='facturacion.cuentasBancarias.banco,
-   		  facturacion.cuentasBancarias.cuentaBanco,
-   		  facturacion.cuentasBancarias.impComisionPropiaCargoAbrev,
-   		  facturacion.cuentasBancarias.impComisionAjenaCargoAbrev,
-   		  facturacion.cuentasBancarias.impComisionPropiaAbonoAbrev,
-   		  facturacion.cuentasBancarias.impComisionAjenaAbonoAbrev,
-   		  facturacion.cuentasBancarias.sjcs,
+   		  facturacion.cuentasBancarias.IBAN,
+   		  facturacion.cuentasBancarias.comision,
+   		  facturacion.cuentasBancarias.tieneSJCS,
    		  facturacion.cuentasBancarias.uso,
-   		  facturacion.cuentasBancarias.baja,'
-   		  columnSizes="22,22,7,7,7,6,7,4,7,10">
+   		  facturacion.cuentasBancarias.tieneBaja,'
+   		  columnSizes="44,20,8,6,4,8,10">
    		  
 	    <!-- INICIO: ZONA DE REGISTROS -->
 	    <c:choose>
@@ -74,10 +71,7 @@
 							<input type="hidden" name ="idInstitucion_${status.count}"   id ="idInstitucion_${status.count}"    value ="${cuentaBancaria.idInstitucion}"/>
 						</td>
 						<td align='left'><c:out value="${cuentaBancaria.IBAN}"/></td>
-						<td align="right"><c:out value="${cuentaBancaria.impComisionPropiaCargo}"/></td>
-						<td align="right"><c:out value="${cuentaBancaria.impComisionAjenaCargo}"/></td>
-						<td align="right"><c:out value="${cuentaBancaria.impComisionPropiaAbono}"/></td>
-						<td align="right"><c:out value="${cuentaBancaria.impComisionAjenaAbono}"/></td>
+						<td align="right"><c:out value="${cuentaBancaria.comisionimporte}"/>&nbsp;&euro;</td>
 						<td align='center'>
 						<c:choose>
 							<c:when test="${cuentaBancaria.sjcs=='0'}">
