@@ -310,11 +310,23 @@ public class GestionCuentasBancariasAction extends MasterAction {
 			CuentaBancariaVo cuentaBancariaVo =  voService.getForm2Vo(cuentasBancariasForm);
 			cuentaBancariaVo = bts.getCuentaBancaria(cuentaBancariaVo);
 			cuentaBancariaVo.setUsumodificacion(new Integer(usrBean.getUserName()));
-			bts.delete(cuentaBancariaVo);
-			request.removeAttribute("modal");
-			request.removeAttribute("sinrefresco");
-			request.setAttribute("mensaje","messages.deleted.success");
-			forward = "exito";
+			
+			//Se comprueba si la cuenta bancaria tiene alguna serie asignada, si tiene no se permite eliminar 
+			
+			List series = bts.getSeriesCuentaBancaria(cuentaBancariaVo);
+			
+			//Si no existe ninguna serie relacionada
+			if(series.isEmpty()){
+				bts.delete(cuentaBancariaVo);
+				request.removeAttribute("modal");
+				request.removeAttribute("sinrefresco");
+				request.setAttribute("mensaje","messages.deleted.success");
+				forward = "exito";
+			
+			}else{
+				throw new SIGAException(UtilidadesString.getMensajeIdioma(usrBean,"facturacion.message.error.cuenta.serie.relacionada"));
+			}
+			
 		} catch (Exception e) {
 			throwExcp("messages.general.errorExcepcion", e, null); 
 		}
