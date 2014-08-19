@@ -664,7 +664,7 @@ public class FicheroBancarioAbonosAction extends MasterAction{
 				if(receptor.getSepa().equals(ClsConstants.DB_TRUE))
 				{
 					
-					if(datosReceptor.get(FcsPagosJGBean.C_IDPROPSEPA)!= null)
+					if((datosReceptor.get(FcsPagosJGBean.C_IDPROPSEPA)!= null)&&(!datosReceptor.get(FcsPagosJGBean.C_IDPROPSEPA).toString().isEmpty()))
 					{
 						Hashtable claves = new Hashtable ();
 						UtilidadesHash.set (claves,FacPropositosBean.C_IDPROPOSITO,datosReceptor.get(FcsPagosJGBean.C_IDPROPSEPA).toString());
@@ -676,12 +676,15 @@ public class FicheroBancarioAbonosAction extends MasterAction{
 							FacPropositosBean datosProp = (FacPropositosBean) vprop.get(0);
 							receptor.setProposito(datosProp.getCodigo());
 						}
+					
+					}else{
+						receptor.setProposito(paramAdm.getValor(idInstitucion, "FAC","PROPOSITO_TRANSFERENCIA_SEPA", ""));
 					}
 					
 				
 				}else{
-					
-					if(datosReceptor.get(FcsPagosJGBean.C_IDPROPOTROS)!= null)
+				
+					if((datosReceptor.get(FcsPagosJGBean.C_IDPROPOTROS)!= null)&&(!datosReceptor.get(FcsPagosJGBean.C_IDPROPOTROS).toString().isEmpty()))
 					{
 						Hashtable claves = new Hashtable ();
 						UtilidadesHash.set (claves,FacPropositosBean.C_IDPROPOSITO,datosReceptor.get(FcsPagosJGBean.C_IDPROPOTROS).toString());
@@ -694,6 +697,8 @@ public class FicheroBancarioAbonosAction extends MasterAction{
 							receptor.setProposito(datosProp.getCodigo());
 						}
 						
+					}else{
+						receptor.setProposito(paramAdm.getValor(idInstitucion, "FAC","PROPOSITO_OTRA_TRANSFERENCIA", ""));
 					}
 				
 				}
@@ -705,7 +710,7 @@ public class FicheroBancarioAbonosAction extends MasterAction{
 					//Si el banco es de los incluidos en SEPA
 					if(receptor.getSepa().equals(ClsConstants.DB_TRUE))
 					{
-						if(banco.get(FcsPagosJGBean.C_IDPROPSEPA)!= null)
+						if((banco.get(FcsPagosJGBean.C_IDPROPSEPA)!= null)&&(!banco.get(FcsPagosJGBean.C_IDPROPSEPA).toString().isEmpty()))
 						{
 							Hashtable claves = new Hashtable ();
 							UtilidadesHash.set (claves,FacPropositosBean.C_IDPROPOSITO,banco.get(FcsPagosJGBean.C_IDPROPSEPA).toString());
@@ -717,12 +722,15 @@ public class FicheroBancarioAbonosAction extends MasterAction{
 								FacPropositosBean datosProp = (FacPropositosBean) vprop.get(0);
 								receptor.setProposito(datosProp.getCodigo());
 							}
+						
+						}else{
+							receptor.setProposito(paramAdm.getValor(idInstitucion, "FAC","PROPOSITO_TRANSFERENCIA_SEPA", ""));
 						}
 					
 				
 				}else{
 					//Si no están informados los propósitos se informan los propósitos por defecto 
-					if(banco.get(FcsPagosJGBean.C_IDPROPOTROS)!= null)
+					if((banco.get(FcsPagosJGBean.C_IDPROPOTROS)!= null)&&(!banco.get(FcsPagosJGBean.C_IDPROPOTROS).toString().isEmpty()))
 					{
 						Hashtable claves = new Hashtable ();
 						UtilidadesHash.set (claves,FacPropositosBean.C_IDPROPOSITO,banco.get(FcsPagosJGBean.C_IDPROPOTROS).toString());
@@ -735,6 +743,8 @@ public class FicheroBancarioAbonosAction extends MasterAction{
 							receptor.setProposito(datosProp.getCodigo());
 						}
 						
+					}else{
+						receptor.setProposito(paramAdm.getValor(idInstitucion, "FAC","PROPOSITO_OTRA_TRANSFERENCIA", ""));
 					}
 				
 				}
