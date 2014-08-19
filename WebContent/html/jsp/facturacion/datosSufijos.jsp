@@ -32,7 +32,7 @@
 		String clase="box", claseSufijo="box";
 		String accion = "";
 		boolean lectura=false, lecturaSufijo=false;
-		String sufijo="", concepto="", defecto="";
+		String sufijo="", concepto="";
 
 		//MODO NUEVO:
 		if (modo.equalsIgnoreCase("nuevo")) {
@@ -52,10 +52,7 @@
 			if (sufijo != null) {
 				sufijo = sufijoBean.getSufijo();
 				concepto = sufijoBean.getConcepto();
-				defecto = sufijoBean.getDefecto();
-				//Tratamiento del CheckBox:
-				if (defecto.equals(ClsConstants.DB_TRUE))
-					miForm.setDefecto(defecto);
+
 			}
 		} 
 %>
