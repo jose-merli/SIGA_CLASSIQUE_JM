@@ -645,7 +645,7 @@
 				   border="1"
 				   columnNames="facturacion.devolucionManual.seleccion,
 				   		facturacion.ficheroBancarioAbonos.literal.banco,
-				   		censo.consultaDatosBancarios.literal.cuentaBancaria,
+				   		facturacion.cuentasBancarias.IBAN,
 				   		facturacion.sufijos.literal.sufijo,
 				   		facturacion.cuentasBancarias.comision,
 				   		facturacion.cuentasBancarias.uso"
@@ -701,7 +701,7 @@
 							<td>
 								<%=UtilidadesString.mostrarDatoJSP(row.getString("BANCO"))%>							
 							</td>  	
-							<td align="right">
+							<td align='left'>
 								<%=UtilidadesString.mostrarIBANConAsteriscos(row.getString("IBAN"))%>							
 							</td>  	
 							<td align="right">
