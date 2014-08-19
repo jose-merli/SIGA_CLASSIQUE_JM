@@ -643,7 +643,12 @@
 			<siga:Table 
 				   name="tablaResultados"
 				   border="1"
-				   columnNames="facturacion.devolucionManual.seleccion,facturacion.ficheroBancarioAbonos.literal.banco,censo.consultaDatosBancarios.literal.cuentaBancaria,facturacion.sufijos.literal.sufijo,Facturacion.bancos.comisionPropia,Facturacion.bancos.comisionAjena,facturacion.cuentasBancarias.uso"
+				   columnNames="facturacion.devolucionManual.seleccion,
+				   		facturacion.ficheroBancarioAbonos.literal.banco,
+				   		censo.consultaDatosBancarios.literal.cuentaBancaria,
+				   		facturacion.sufijos.literal.sufijo,
+				   		facturacion.cuentasBancarias.comision,
+				   		facturacion.cuentasBancarias.uso"
 				   columnSizes="5,30,20,21,8,8,8"
 				   modal="P">
 				   				   
@@ -712,11 +717,8 @@
 								</html:select>							
 							</td>  	
 							<td align="right">
-								<%=row.getString("COMISIONPROPIA")%>							
-							</td>  								
-							<td align="right">
-								<%=row.getString("COMISIONAJENA")%>							
-							</td>  			
+								<%=UtilidadesString.formatoImporte(row.getString("COMISIONIMPORTE"))%>&nbsp;&euro;							
+							</td>  															
 							<td align="right">
 								<%=row.getString("USO")%>							
 							</td>  	

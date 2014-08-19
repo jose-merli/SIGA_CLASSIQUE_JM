@@ -250,8 +250,7 @@ public class FacBancoInstitucionAdm extends MasterBeanAdministrador {
 	            			"BI." + FacBancoInstitucionBean.C_ASIENTOCONTABLE + "," +
 	            			"BI." + FacBancoInstitucionBean.C_IBAN + "," +
 	            			"BI.COD_BANCO || '-' || BI.COD_SUCURSAL || '-' || BI.DIGITOCONTROL || '-' ||BI.NUMEROCUENTA AS CUENTACONTABLE, "+
-							"BI.C_COMISIONIMPORTE COMISIONPROPIA, "+ 
-							"BI.C_COMISIONIMPORTE COMISIONAJENA, "+		
+	            			"BI." + FacBancoInstitucionBean.C_COMISIONIMPORTE + "," +
 						    "BI.COD_BANCO, " +
 						    "(SELECT NOMBRE FROM CEN_BANCOS WHERE CODIGO=BI.COD_BANCO) AS BANCO, "+
 						    "(SELECT COUNT (1) FROM FAC_SERIEFACTURACION_BANCO WHERE IDINSTITUCION=BI.IDINSTITUCION AND BANCOS_CODIGO=BI.BANCOS_CODIGO AND IDSERIEFACTURACION="+idSerieFacturacion+" ) AS SELECCIONADO, "+ 
