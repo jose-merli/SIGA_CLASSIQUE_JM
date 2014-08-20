@@ -1364,40 +1364,6 @@ public class FacAbonoAdm extends MasterBeanAdministrador {
 		return nuevo;
 	}
 
-//	/** 
-//	 * Recoge los diferentes conceptos que hay para los abonos de SJCS pendientes de pagar por banco 
-//	 * @param  institucion - identificador de la institucion
-//	 * @param  codigoBanco - identificador del banco	 	  
-//	 * @return  Vector - Fila seleccionada  
-//	 * @exception  ClsExceptions  En cualquier caso de error
-//	 */
-//	public Vector getConceptosAbonosBancoSjcs (String institucion, String codigoBanco) throws ClsExceptions,SIGAException {
-//		   Vector datos=new Vector();
-//		   Hashtable codigos = new Hashtable();
-//	       try {
-//	            RowsContainer rc = new RowsContainer(); 
-//	            String sql ="SELECT "+FcsPagosJGBean.T_NOMBRETABLA+"."+FcsPagosJGBean.C_CONCEPTO+" "+
-//	            			baseSqlAbonosSJCSpendientes + 
-//	            			" group by "+FcsPagosJGBean.T_NOMBRETABLA+"."+FcsPagosJGBean.C_CONCEPTO+" ";
-//	            			
-//	            codigos.put(new Integer(1),institucion);
-//	            codigos.put(new Integer(2),codigoBanco);
-//	            codigos.put(new Integer(3),"5");
-//	            codigos.put(new Integer(4),"0.0");
-//
-//	            if (rc.findBind(sql, codigos)) {
-//	               for (int i = 0; i < rc.size(); i++){
-//	                  Row fila = (Row) rc.get(i);
-//	                  datos.add(fila);
-//	               }
-//	            } 
-//	       }
-//	       catch (Exception e) {
-//	       	throw new ClsExceptions (e, "Error al obtener la informacion sobre una entrada de la tabla de abonos.");
-//	       }
-//	       return datos;                        
-//	} //getConceptosAbonosBancoSjcs()
-	
 	/** 
 	 * Recoge los abonos de SJCS pendientes de pagar por banco
 	 * @param  institucion - identificador de la institucion
