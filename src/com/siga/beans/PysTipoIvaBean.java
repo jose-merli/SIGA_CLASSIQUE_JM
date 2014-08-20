@@ -18,6 +18,8 @@ public class PysTipoIvaBean extends MasterBean{
 	private String 	descripcion;
 	private String 	valor;
 	private String 	subCtaTipo;
+	private String descripciontipo;
+	private String codigoExt;
 	
 	/* Nombre tabla */
 	static public String T_NOMBRETABLA = "PYS_TIPOIVA";
@@ -27,19 +29,8 @@ public class PysTipoIvaBean extends MasterBean{
 	static public final String C_DESCRIPCION	= "DESCRIPCION";
 	static public final String C_VALOR			= "VALOR";
 	static public final String C_SUBCTATIPO = "SUBCTATIPO";
-	
-	/* cambio para codigo ext */
-	private String codigoExt;
+	static public final String C_DESCRIPCIONTIPO = "DESCRIPCIONTIPO";
 	static public final String C_CODIGOEXT = "CODIGOEXT";
-	public void setCodigoExt (String valor)
-	{
-		this.codigoExt = valor;
-	}
-	public String getCodigoExt ()
-	{
-		return codigoExt;
-	}
-	//////
 
 	// Metodos SET
 	public void setIdTipoIva (Integer id) 	{ this.idTipoIva = id; }
@@ -52,4 +43,20 @@ public class PysTipoIvaBean extends MasterBean{
 	public String  getDescripcion    ()	{ return this.descripcion; }
 	public String  getValor    ()	{ return this.valor; }
 	public String  getSubCtaTipo    ()	{ return this.subCtaTipo; }
+	
+	public String getDescripciontipo() {
+		return descripciontipo;
+	}
+	public void setDescripciontipo(String descripciontipo) {
+		this.descripciontipo = descripciontipo;
+	}
+	
+	public void setCodigoExt (String valor)
+	{
+		this.codigoExt = valor;
+	}
+	public String getCodigoExt ()
+	{
+		return codigoExt;
+	}	
 }

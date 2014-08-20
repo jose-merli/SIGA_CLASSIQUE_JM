@@ -42,6 +42,7 @@ public class FacFacturaBean extends MasterBean{
 	private Double impTotalPagadoSoloCaja;
 	private Double impTotalPagadoSoloTarjeta;
 	private Integer estado;
+	private String comisionIdFactura;
 	
 	
 	/* Nombre tabla */
@@ -77,6 +78,7 @@ public class FacFacturaBean extends MasterBean{
 	static public final String C_IMPTOTALPAGADOSOLOCAJA = "IMPTOTALPAGADOSOLOCAJA";
 	static public final String C_IMPTOTALPAGADOSOLOTARJETA = "IMPTOTALPAGADOSOLOTARJETA";
 	static public final String C_ESTADO = "ESTADO";
+	static public final String C_COMISIONIDFACTURA = "COMISIONIDFACTURA";
 
 	// Metodos SET
 
@@ -139,4 +141,10 @@ public class FacFacturaBean extends MasterBean{
 	public Double getImpTotalPagadoSoloTarjeta () 	{ return this.impTotalPagadoSoloTarjeta; }
 	public Integer getEstado () 	{ return this.estado;  }
 	
+	public String getComisionIdFactura() {
+		return comisionIdFactura;
+	}
+	public void setComisionIdFactura(String comisionIdFactura) {
+		this.comisionIdFactura = comisionIdFactura;
+	}	
 }

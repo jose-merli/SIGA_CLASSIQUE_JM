@@ -4,12 +4,13 @@
  */
 package com.siga.beans;
 
+
 public class FacLineaFacturaBean extends MasterBean {
 
 	/* Variables */
 	private Integer idInstitucion, cantidad, idFormaPago;	
 	private Long 	numeroLinea, numeroOrden;
-	private Double 	importeAnticipado, precioUnitario;
+	private Double 	importeAnticipado, precioUnitario, importeneto, importeiva, importe;
 	private Float 	iva;	
 	private String 	idFactura, descripcion, ctaProductoServicio, ctaIva;
 
@@ -29,6 +30,9 @@ public class FacLineaFacturaBean extends MasterBean {
 	static public final String C_CTAPRODUCTOSERVICIO	= "CTAPRODUCTOSERVICIO";
 	static public final String C_CTAIVA 				= "CTAIVA";
 	static public final String C_IDFORMAPAGO			= "IDFORMAPAGO";
+	static public final String C_IMPORTENETO			= "IMPORTENETO";
+	static public final String C_IMPORTEIVA				= "IMPORTEIVA";
+	static public final String C_IMPORTE				= "IMPORTE";
 	
 //	 	Metodos GET	
 	public Integer getCantidad() 						       {return cantidad;}	
@@ -57,4 +61,22 @@ public class FacLineaFacturaBean extends MasterBean {
 	public void setCtaProductoServicio(String valor) 		   {this.ctaProductoServicio = valor;}	
 	public void setCtaIva(String valor) 				       {this.ctaIva = valor;}	
 	public void setIdFormaPago(Integer idFormaPago) 		   {this.idFormaPago = idFormaPago;}
+	public Double getImporteneto() {
+		return importeneto;
+	}
+	public void setImporteneto(Double importeneto) {
+		this.importeneto = importeneto;
+	}
+	public Double getImporteiva() {
+		return importeiva;
+	}
+	public void setImporteiva(Double importeiva) {
+		this.importeiva = importeiva;
+	}
+	public Double getImporte() {
+		return importe;
+	}
+	public void setImporte(Double importe) {
+		this.importe = importe;
+	}
 }

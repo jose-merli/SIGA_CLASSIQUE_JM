@@ -103,7 +103,8 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
 							FacFacturaBean.C_IMPTOTALPAGADOSOLOCAJA,
 							FacFacturaBean.C_IMPTOTALPAGADOSOLOTARJETA,
 							FacFacturaBean.C_IMPTOTALPORPAGAR,
-							FacFacturaBean.C_ESTADO};
+							FacFacturaBean.C_ESTADO,
+							FacFacturaBean.C_COMISIONIDFACTURA};
 		return campos;
 	}
 	
@@ -163,6 +164,7 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
 			bean.setImpTotalPagadoSoloCaja(UtilidadesHash.getDouble(hash,FacFacturaBean.C_IMPTOTALPAGADOSOLOCAJA));			
 			bean.setImpTotalPagadoSoloTarjeta(UtilidadesHash.getDouble(hash,FacFacturaBean.C_IMPTOTALPAGADOSOLOTARJETA));			
 			bean.setEstado(UtilidadesHash.getInteger(hash,FacFacturaBean.C_ESTADO));
+			bean.setComisionIdFactura(UtilidadesHash.getString(hash,FacFacturaBean.C_COMISIONIDFACTURA));
 		}
 		catch (Exception e) { 
 			bean = null;	
@@ -212,6 +214,7 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(htData,FacFacturaBean.C_IMPTOTALPAGADOSOLOCAJA,b.getImpTotalPagadoSoloCaja());
 			UtilidadesHash.set(htData,FacFacturaBean.C_IMPTOTALPAGADOSOLOTARJETA,b.getImpTotalPagadoSoloTarjeta());
 			UtilidadesHash.set(htData,FacFacturaBean.C_ESTADO,b.getEstado());
+			UtilidadesHash.set(htData,FacFacturaBean.C_COMISIONIDFACTURA ,b.getComisionIdFactura());
 		}
 		catch (Exception e) {
 			htData = null;

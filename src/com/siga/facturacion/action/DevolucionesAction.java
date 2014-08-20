@@ -781,7 +781,7 @@ public class DevolucionesAction extends MasterAction {
 	            		String recibo = UtilidadesHash.getString(htFila, FacFacturaIncluidaEnDisqueteBean.C_IDRECIBO);
 	            		Hashtable htCuenta = null;
 						try {
-							//El idCuenta modifica en este metodo asiq ue sera a esta cuenta la que se aplicara la comision
+							//El idCuenta modifica en este metodo asi que sera a esta cuenta la que se aplicara la comision
 							htCuenta = new Hashtable();
 							facturacion.insertarRenegociar(new Integer(idInstitucion), idFactura, estadoFactura, nuevaFormaPago, null, impTotalPorPagar, miForm.getDatosPagosRenegociarObservaciones(), "", true, true, htCuenta);
 							

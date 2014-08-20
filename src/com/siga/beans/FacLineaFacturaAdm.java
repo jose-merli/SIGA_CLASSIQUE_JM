@@ -46,9 +46,10 @@ public class FacLineaFacturaAdm extends MasterBeanAdministrador {
 							FacLineaFacturaBean.C_IVA,
 							FacLineaFacturaBean.C_CTAPRODUCTOSERVICIO,
 							FacLineaFacturaBean.C_CTAIVA,
-							FacLineaFacturaBean.C_IDFORMAPAGO,
-							FacLineaFacturaBean.C_FECHAMODIFICACION,
-							FacLineaFacturaBean.C_USUMODIFICACION };
+							FacLineaFacturaBean.C_IMPORTENETO,
+							FacLineaFacturaBean.C_IMPORTEIVA,
+							FacLineaFacturaBean.C_IMPORTE,
+							FacLineaFacturaBean.C_IDFORMAPAGO};
 		return campos;
 	}
 
@@ -95,9 +96,10 @@ public class FacLineaFacturaAdm extends MasterBeanAdministrador {
 			bean.setIva(UtilidadesHash.getFloat(hash,FacLineaFacturaBean.C_IVA));	
 			bean.setCtaProductoServicio(UtilidadesHash.getString(hash,FacLineaFacturaBean.C_CTAPRODUCTOSERVICIO));	
 			bean.setCtaIva(UtilidadesHash.getString(hash,FacLineaFacturaBean.C_CTAIVA));
+			bean.setImporteneto(UtilidadesHash.getDouble(hash,FacLineaFacturaBean.C_IMPORTENETO));
+			bean.setImporteiva(UtilidadesHash.getDouble(hash,FacLineaFacturaBean.C_IMPORTEIVA));	
+			bean.setImporte(UtilidadesHash.getDouble(hash,FacLineaFacturaBean.C_IMPORTE));	
 			bean.setIdFormaPago(UtilidadesHash.getInteger(hash,FacLineaFacturaBean.C_IDFORMAPAGO));	
-			bean.setFechaMod(UtilidadesHash.getString(hash,FacLineaFacturaBean.C_FECHAMODIFICACION));	
-			bean.setUsuMod(UtilidadesHash.getInteger(hash,FacLineaFacturaBean.C_USUMODIFICACION));	
 		}
 		catch (Exception e) { 
 			bean = null;	
@@ -129,9 +131,10 @@ public class FacLineaFacturaAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(htData,FacLineaFacturaBean.C_IVA, b.getIva());
 			UtilidadesHash.set(htData,FacLineaFacturaBean.C_CTAPRODUCTOSERVICIO, b.getCtaProductoServicio());
 			UtilidadesHash.set(htData,FacLineaFacturaBean.C_CTAIVA, b.getCtaIva());
+			UtilidadesHash.set(htData,FacLineaFacturaBean.C_IMPORTENETO, b.getImporteneto());
+			UtilidadesHash.set(htData,FacLineaFacturaBean.C_IMPORTEIVA, b.getImporteiva());
+			UtilidadesHash.set(htData,FacLineaFacturaBean.C_IMPORTE, b.getImporte());
 			UtilidadesHash.set(htData,FacLineaFacturaBean.C_IDFORMAPAGO, b.getIdFormaPago());
-			UtilidadesHash.set(htData,FacLineaFacturaBean.C_FECHAMODIFICACION, b.getFechaMod());
-			UtilidadesHash.set(htData,FacLineaFacturaBean.C_USUMODIFICACION, b.getUsuMod());
 		}
 		catch (Exception e) {
 			htData = null;
