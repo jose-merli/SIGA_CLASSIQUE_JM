@@ -31,7 +31,7 @@ public class CuentasBancariasForm extends MasterForm {
 	String sjcs;
 	Integer idSufijosjcs;
 	String idSerieFacturacion;
-	
+	Integer idSufijoSerie; 
 	
 	String bancoNombre;
 	String bancoCuentaDescripcion;
@@ -122,6 +122,12 @@ public class CuentasBancariasForm extends MasterForm {
 	}
 	public void setIdSufijosjcs(Integer idSufijosjcs) {
 		this.idSufijosjcs = idSufijosjcs;
+	}
+	public Integer getIdSufijoSerie() {
+		return idSufijoSerie;
+	}
+	public void setIdSufijoSerie(Integer idSufijoSerie) {
+		this.idSufijoSerie = idSufijoSerie;
 	}
 	public String getModo() {
 		return modo;

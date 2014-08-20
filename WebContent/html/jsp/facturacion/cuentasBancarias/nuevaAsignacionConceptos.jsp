@@ -33,58 +33,72 @@
 
 <body>
 
+<!-- INI ******* CAPA DE PRESENTACION ****** -->
 <table class="tablaTitulo" cellspacing="0" heigth="32">
 	<tr>
-		<td id="titulo" class="titulosPeq"><siga:Idioma key="facturacion.previsionesFacturacion.literal.seriesFacturacion"/>
+		<td id="titulo" class="titulitosDatos">
+			<siga:Idioma key="facturacion.seleccionSerie.titulo"/>
 		</td>
 	</tr>
 </table>
+<div id="camposRegistro" class="posicionModalMedia" align="center">
 <bean:define id="path" name="org.apache.struts.action.mapping.instance" property="path" scope="request"/>
 <html:javascript formName="CuentasBancariasForm" staticJavascript="false" /> 
 <html:form action="${path}" target="submitArea">
 	<html:hidden property="modo" value ="${CuentasBancariasForm.modo}"  />
 	<html:hidden property="idInstitucion" value ="${CuentasBancariasForm.idInstitucion}"/>
 	<html:hidden property="bancosCodigo" value ="${CuentasBancariasForm.bancosCodigo}"/>
-    <input type="hidden" id="actionModal" name="actionModal" />
-	<table width="100%" border="0">
-		<siga:Table 
-			name="listado" 
-			border="1" 
-			columnNames=",Serie,Descripción" 
-			columnSizes="10,30,60"
-			 modal="P">
-		<c:choose>
-  				<c:when test="${empty listaSeriesDisponibles}">
-   				<tr class="notFound">
-	   				<td class="titulitos"><siga:Idioma key="messages.noRecordFound"/></td>
-				</tr>	 		
-   			</c:when>
+    <input type="hidden" id="actionModal" name="actionModal" />	
+    <siga:ConjCampos leyenda="Datos de la serie">
+	<table  class="tablaCentralCamposMedia"  align="center">
+	<c:choose>
+  		<c:when test="${empty listaSeriesDisponibles}">
+   			<tr class="notFound">
+	   			<td class="titulitos"><siga:Idioma key="messages.noRecordFound"/></td>
+			</tr>	 		
+   		</c:when>
    			<c:otherwise>
-				<c:forEach items="${listaSeriesDisponibles}" var="listaSeriesDisponibles" varStatus="status">															
-					<siga:FilaConIconos	fila='${status.count}'				    
-			  			pintarEspacio="no"
-			  			botones=""
-			  			visibleBorrado="N"
-			  			visibleEdicion="N"
-			  			visibleConsulta="N"
-			  			clase="listaNonEdit">
-							<td> 
-								<input type="radio" name="idSerieFacturacion" value="${listaSeriesDisponibles.idseriefacturacion}"> 
-							</td>
-							<td align='left'>
-								<input type="hidden" name="idseriefacturacion_${status.count}" id="idseriefacturacion_${status.count}" value="${listaSeriesDisponibles.idseriefacturacion}"/>
-								<c:out	value="${listaSeriesDisponibles.nombreabreviado}" />
-							</td>
-							<td align='left'>
-								<c:out value="${listaSeriesDisponibles.descripcion}" />
-							</td>
-					</siga:FilaConIconos>
-				</c:forEach>
+				<tr>		
+					<td class="labelText">
+						<siga:Idioma key="facturacion.nuevaPrevisionFacturacion.literal.serieFacturacion"/>
+					</td>
+					<td>
+						<bean:define id="listaSeriesDisponibles" name="listaSeriesDisponibles" scope="request"/>
+						<html:select styleId="comboSeries" property="idSerieFacturacion" value="" styleClass="boxCombo" style="width:200px;" >
+						<html:option value=""><c:out value=""/></html:option>
+						<c:forEach items="${listaSeriesDisponibles}" var="seriesCmb">
+							<html:option value="${seriesCmb.idseriefacturacion}"><c:out value="${seriesCmb.nombreabreviado}"/></html:option>
+						</c:forEach>
+						</html:select>	
+					
+					</td>
+				</tr>
+				<tr>
+					<td class="labelText">
+						<siga:Idioma key="facturacion.sufijos.literal.sufijo"/>
+					</td>
+					<td>
+					<bean:define id="listaSufijos" name="listaSufijos" scope="request"/> 
+					<html:select styleId="comboSufijos" property="idSufijoSerie" value="" styleClass="boxCombo" style="width:200px;">
+					<html:option value=""><c:out value=""/></html:option>
+					<c:forEach items="${listaSufijos}" var="sufijoSerieCmb">
+						<html:option value="${sufijoSerieCmb.idSufijo}">
+						<c:if	test="${sufijoSerieCmb.sufijo.trim().length()>0}">
+							<c:out value="${sufijoSerieCmb.sufijo} ${sufijoSerieCmb.concepto}"/>
+						</c:if>
+						<c:if	test="${sufijoSerieCmb.sufijo.trim().length()==0}">
+							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<c:out value="${sufijoSerieCmb.concepto}"/>
+						</c:if>
+						</html:option>
+					</c:forEach>
+					</html:select>	
+					</td>
+				</tr>	
 			</c:otherwise>
 		</c:choose>
-
-	</siga:Table>
 	</table>
+	</siga:ConjCampos>
+	
 </html:form>
 		
 	<!-- FIN: CAMPOS -->
@@ -104,7 +118,15 @@
 	}
 	
 	function accionGuardarCerrar(){
-		sub();				
+		sub();	
+
+		if(document.CuentasBancariasForm.idSufijoSerie.value<1) {
+			mensaje = "<siga:Idioma key='facturacion.sufijos.message.error.cuenta.serie.sufijo'/>";
+			alert(mensaje);
+			fin();
+			return false;
+		}
+		
 		document.CuentasBancariasForm.modo.value="guardarRelacionSerie";
 		document.CuentasBancariasForm.submit();
 		fin();

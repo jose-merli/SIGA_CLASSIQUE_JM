@@ -495,6 +495,23 @@ public class GestionCuentasBancariasAction extends MasterAction {
 			CuentaBancariaVo cuentaBancariaVo =cuentasBancariasService.getCuentaBancaria(voService.getForm2Vo(cuentasBancariasForm));
 			cuentasBancariasForm = voService.getVo2Form(cuentaBancariaVo);
 			request.setAttribute("listaSeriesDisponibles", cuentasBancariasService.getSeriesDisponiblesCuentaBanc(cuentaBancariaVo));
+			
+			//Combo sufijos
+			FacSufijoAdm sufijoAdm = new FacSufijoAdm (this.getUserBean(request));
+			Hashtable claves = new Hashtable ();
+			UtilidadesHash.set (claves, FacSufijoBean.C_IDINSTITUCION, cuentasBancariasForm.getIdInstitucion());
+			
+			Vector vsufijos = sufijoAdm.select(claves);
+			Vector vsufijosList = new Vector();
+			List <FacSufijoBean> sufijosListFinal= new ArrayList<FacSufijoBean>();
+			for (int vs = 0; vs < vsufijos.size(); vs++){
+				
+				FacSufijoBean sufijosBean = (FacSufijoBean) vsufijos.get(vs);
+				sufijosListFinal.add(sufijosBean);
+			}
+	
+			request.setAttribute("listaSufijos", sufijosListFinal);
+			
 
 		}catch (Exception e){
 			throw new SIGAException("messages.general.error", e, null); 			
@@ -523,6 +540,7 @@ public class GestionCuentasBancariasAction extends MasterAction {
 			serieFacturacionBanco.setIdinstitucion(Short.parseShort(cuentasBancariasForm.getIdInstitucion()));
 			serieFacturacionBanco.setIdseriefacturacion(Long.parseLong(cuentasBancariasForm.getIdSerieFacturacion()));
 			serieFacturacionBanco.setBancosCodigo(cuentasBancariasForm.getBancosCodigo());
+			serieFacturacionBanco.setIdsufijo(cuentasBancariasForm.getIdSufijoSerie());
 			cuentasBancariasService.insertRelacionSerie(serieFacturacionBanco);
 			
 			forward = exitoModal("messages.updated.success",request);

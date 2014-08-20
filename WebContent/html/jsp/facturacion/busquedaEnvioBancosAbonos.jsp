@@ -327,7 +327,14 @@
 					<html:select styleId="comboSufijos" property="idSufijo" value="" styleClass="boxCombo" style="width:150px;">
 					<html:option value=""><c:out value=""/></html:option>
 					<c:forEach items="${listaSufijos}" var="sufijoCmb">
-						<html:option value="${sufijoCmb.idSufijo}"><c:out value="${sufijoCmb.sufijo.trim().length()>0?sufijoCmb.sufijo:'   '} ${sufijoCmb.concepto}"/></html:option>
+						<html:option value="${sufijoCmb.idSufijo}">
+						<c:if	test="${sufijoCmb.sufijo.trim().length()>0}">
+							<c:out value="${sufijoCmb.sufijo} ${sufijoCmb.concepto}"/>
+						</c:if>
+						<c:if	test="${sufijoCmb.sufijo.trim().length()==0}">
+							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<c:out value="${sufijoCmb.concepto}"/>
+						</c:if>
+						</html:option>
 					</c:forEach>
 					</html:select>	
 					</td>

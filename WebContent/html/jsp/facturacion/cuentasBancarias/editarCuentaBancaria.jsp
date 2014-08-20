@@ -420,7 +420,14 @@
 										</s:if>
 						
 										<c:forEach items="${listaSufijos}" var="sufijoCmb">
-											<html:option value="${sufijoCmb.idSufijo}"><c:out value="${sufijoCmb.sufijo.trim().length()>0?sufijoCmb.sufijo:'	'} ${sufijoCmb.concepto}"/></html:option>
+											<html:option value="${sufijoCmb.idSufijo}">
+											<c:if	test="${sufijoCmb.sufijo.trim().length()>0}">
+												<c:out value="${sufijoCmb.sufijo} ${sufijoCmb.concepto}"/>
+											</c:if>
+											<c:if	test="${sufijoCmb.sufijo.trim().length()==0}">
+												&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<c:out value="${sufijoCmb.concepto}"/>
+											</c:if>
+											</html:option>
 										</c:forEach>
 									</html:select>	
 								</td>
@@ -434,7 +441,7 @@
 		<c:if test="${CuentasBancariasForm.modo!='insertar'}">
 			
   			<c:set var="botonesList" value=""></c:set>		
-			<div id="divListadoCuentasBancarias" style='height: 100%; position: absolute; width: 100%; overflow-y: auto'>
+ 			<div id="divListadoCuentasBancarias" style='height: 100%; position: absolute; width: 100%; overflow-y: auto'> 
 					<siga:Table 
 						name="listado" 
 						border="1" 
@@ -469,7 +476,14 @@
 													<html:option value=""><c:out value=""/></html:option>
 												</s:if>
 												<c:forEach items="${listaSufijos}" var="sufijoSerieCmb">											
-													<html:option value="${sufijoSerieCmb.idSufijo}"><c:out value="${sufijoSerieCmb.sufijo.trim().length()>0?sufijoSerieCmb.sufijo:'	'} ${sufijoSerieCmb.concepto}"/></html:option>
+													<html:option value="${sufijoSerieCmb.idSufijo}">
+													<c:if	test="${sufijoSerieCmb.sufijo.trim().length()>0}">
+														<c:out value="${sufijoSerieCmb.sufijo} ${sufijoSerieCmb.concepto}"/>
+													</c:if>
+													<c:if	test="${sufijoSerieCmb.sufijo.trim().length()==0}">
+														&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<c:out value="${sufijoSerieCmb.concepto}"/>
+													</c:if>
+													</html:option>
 												</c:forEach>
 											</html:select>	
 										</td>
@@ -479,7 +493,7 @@
 					</c:choose>
 	
 				</siga:Table>
-			</div>
+ 			</div> 
 		</c:if>		
 	</html:form>
 
@@ -614,7 +628,7 @@
 	
 	function accionRelacionarSerieFact(){
 		document.CuentasBancariasForm.modo.value = "seriesDisponibles";
-		var resultado=ventaModalGeneral(document.CuentasBancariasForm.name,"G");
+		var resultado=ventaModalGeneral(document.CuentasBancariasForm.name,"P");
 		if(resultado=='MODIFICADO'){
 			refrescarLocal();
 		}	
@@ -623,7 +637,7 @@
 	function refrescarLocal(){
 		parent.close();
 		document.CuentasBancariasForm.modo.value="editar";
-		var resultadom = ventaModalGeneral(document.CuentasBancariasForm.name,"G");
+		var resultado=ventaModalGeneral(document.CuentasBancariasForm.name,"G");
 	}
 
 	

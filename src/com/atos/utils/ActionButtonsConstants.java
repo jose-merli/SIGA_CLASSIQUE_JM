@@ -15,6 +15,7 @@ public enum ActionButtonsConstants {
 	RELACIONAR_EJG ("re","general.boton.relacionarEJG","relacionarConEJG()",7),
 	RELACIONAR_SOJ ("rs","general.boton.relacionarSOJ","relacionarConSOJ()",8),
 	RELACIONAR_DESIGNACION ("rd","general.boton.relacionarDesigna","relacionarConDesigna()",9),
+	RELACIONAR_SERIE ("RA","general.boton.relacionar.serie","accionRelacionarSerieFact()",50),
 	SOLICITAR_NUEVO ("sn","general.boton.solicitarNuevo","accionSolicitarNuevo()",10),
 	ANYADIR_EXPEDIENTES ("ae","general.boton.aniadirExpedientes","aniadirExpedientes(true)", "idButtonAniadirExpedientes",11),
 	GENERARACTA ("ga","general.boton.generarActa","generarActa()",11),
@@ -100,8 +101,8 @@ public enum ActionButtonsConstants {
 	XUNTA_ENVIO_JUSTIFICACION ("EJ","general.boton.xunta.envio_justificacion","accionXuntaEnvioJustificacion()",86),
 	ANADIR_POB ("AP","general.boton.anadirPoblaciones","anadirPob()",87),
 	BORRARDICTAMENT ("BD","general.boton.borrarDictamen","borrarDictamen()",88),
-	RECALCULAR_FACTURACION ("rf","general.boton.recalcularFacturacion","accionRecalcularFacturacion()",89),
-	RELACIONAR_SERIE ("RA","general.boton.relacionar.serie","accionRelacionarSerieFact()",90);
+	RECALCULAR_FACTURACION ("rf","general.boton.recalcularFacturacion","accionRecalcularFacturacion()",89);
+	
 
 
     private final String valor;   

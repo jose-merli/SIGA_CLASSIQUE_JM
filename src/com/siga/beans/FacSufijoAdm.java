@@ -96,7 +96,9 @@ public class FacSufijoAdm extends MasterBeanAdmVisible {
 	 * @see com.siga.beans.MasterBeanAdministrador#getOrdenCampos()
 	 */
 	protected String[] getOrdenCampos() {
-		return this.getClavesBean();
+		
+		String [] orden = {FacSufijoBean.C_IDINSTITUCION, FacSufijoBean.C_SUFIJO};
+		return orden;
 	}
 	
 	/**

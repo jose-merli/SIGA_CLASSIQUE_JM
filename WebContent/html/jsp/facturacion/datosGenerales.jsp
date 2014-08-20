@@ -645,7 +645,7 @@
 				   border="1"
 				   columnNames="facturacion.devolucionManual.seleccion,
 				   		facturacion.ficheroBancarioAbonos.literal.banco,
-				   		facturacion.cuentasBancarias.IBAN,
+				   		censo.consultaDatosBancarios.literal.cuentaBancaria,
 				   		facturacion.sufijos.literal.sufijo,
 				   		facturacion.cuentasBancarias.comision,
 				   		facturacion.cuentasBancarias.uso"
@@ -701,7 +701,7 @@
 							<td>
 								<%=UtilidadesString.mostrarDatoJSP(row.getString("BANCO"))%>							
 							</td>  	
-							<td align='left'>
+							<td align="left">
 								<%=UtilidadesString.mostrarIBANConAsteriscos(row.getString("IBAN"))%>							
 							</td>  	
 							<td align="right">
@@ -712,7 +712,14 @@
 									<html:option value=""><c:out value=""/></html:option>
 								<% }%>
 								<c:forEach items="${listaSufijos}" var="sufijoSerieCmb">											
-									<html:option value="${sufijoSerieCmb.idSufijo}"><c:out value="${sufijoSerieCmb.sufijo.trim().length()>0?sufijoSerieCmb.sufijo:'    '} ${sufijoSerieCmb.concepto}"/></html:option>
+									<html:option value="${sufijoSerieCmb.idSufijo}">										
+										<c:if	test="${sufijoSerieCmb.sufijo.trim().length()>0}">
+											<c:out value="${sufijoSerieCmb.sufijo} ${sufijoSerieCmb.concepto}"/>
+										</c:if>
+										<c:if	test="${sufijoSerieCmb.sufijo.trim().length()==0}">
+											&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<c:out value="${sufijoSerieCmb.concepto}"/>
+										</c:if>
+									</html:option>	
 								</c:forEach>
 								</html:select>							
 							</td>  	
