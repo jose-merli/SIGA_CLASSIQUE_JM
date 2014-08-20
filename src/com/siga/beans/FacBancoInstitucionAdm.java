@@ -36,7 +36,11 @@ public class FacBancoInstitucionAdm extends MasterBeanAdministrador {
 							FacBancoInstitucionBean.C_FECHAMODIFICACION,
 							FacBancoInstitucionBean.C_IBAN,
 							FacBancoInstitucionBean.C_SJCS,
-							FacBancoInstitucionBean.C_IDSUFIJOSJCS};
+							FacBancoInstitucionBean.C_IDSUFIJOSJCS,			
+							FacBancoInstitucionBean.C_COMISIONIMPORTE,
+							FacBancoInstitucionBean.C_COMISIONIVA,
+							FacBancoInstitucionBean.C_COMISIONDESCRIPCION,
+							FacBancoInstitucionBean.C_COMISIONCUENTACONTABLE};
 		return campos;
 	}
 
@@ -64,6 +68,10 @@ public class FacBancoInstitucionAdm extends MasterBeanAdministrador {
 			bean.setIban						(UtilidadesHash.getString(hash, FacBancoInstitucionBean.C_IBAN));
 			bean.setSJCS						(UtilidadesHash.getString(hash, FacBancoInstitucionBean.C_SJCS));
 			bean.setIdsufijosjcs				(UtilidadesHash.getInteger(hash, FacBancoInstitucionBean.C_IDSUFIJOSJCS));
+			bean.setComisionImporte				(UtilidadesHash.getDouble(hash, FacBancoInstitucionBean.C_COMISIONIMPORTE));
+			bean.setComisionIVA					(UtilidadesHash.getDouble(hash, FacBancoInstitucionBean.C_COMISIONIVA));
+			bean.setComisionDescripcion			(UtilidadesHash.getString(hash, FacBancoInstitucionBean.C_COMISIONDESCRIPCION));
+			bean.setComisionCuentaContable		(UtilidadesHash.getString(hash, FacBancoInstitucionBean.C_COMISIONCUENTACONTABLE));
 			
 		}
 		catch (Exception e) { 
@@ -93,8 +101,12 @@ public class FacBancoInstitucionAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(htData, FacBancoInstitucionBean.C_USUMODIFICACION, b.getUsuMod());
 			UtilidadesHash.set(htData, FacBancoInstitucionBean.C_SJCS, b.getSJCS());
 			UtilidadesHash.set(htData, FacBancoInstitucionBean.C_IDSUFIJOSJCS, b.getIdsufijosjcs());
-		}
-		catch (Exception e) {
+			UtilidadesHash.set(htData, FacBancoInstitucionBean.C_COMISIONIMPORTE, b.getComisionImporte());
+			UtilidadesHash.set(htData, FacBancoInstitucionBean.C_COMISIONIVA, b.getComisionIVA());
+			UtilidadesHash.set(htData, FacBancoInstitucionBean.C_COMISIONDESCRIPCION, b.getComisionDescripcion());
+			UtilidadesHash.set(htData, FacBancoInstitucionBean.C_COMISIONCUENTACONTABLE, b.getComisionCuentaContable());
+			
+		} catch (Exception e) {
 			htData = null;
 			throw new ClsExceptions (e, "Error al crear el hashTable a partir del bean");
 		}

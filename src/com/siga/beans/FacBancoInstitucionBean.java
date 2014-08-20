@@ -13,7 +13,7 @@ public class FacBancoInstitucionBean extends MasterBean {
 	private Integer idInstitucion, idsufijo, idsufijosjcs;
 	private String 	bancosCodigo, codBanco, codSucursal, numeroCuenta, fechaBaja, asientoContable, digitoControl, sjcs,nosjcs, iban;	
 	private Double comisionImporte, comisionIVA;
-	private String comisionDescripcion;
+	private String comisionDescripcion, comisionCuentaContable;
 	
 	/* Nombre tabla */
 	static public String T_NOMBRETABLA = "FAC_BANCOINSTITUCION";
@@ -32,7 +32,8 @@ public class FacBancoInstitucionBean extends MasterBean {
 	static public final String C_IBAN						= "IBAN";
 	static public final String C_COMISIONIMPORTE			= "COMISIONIMPORTE";
 	static public final String C_COMISIONDESCRIPCION		= "COMISIONDESCRIPCION";
-	static public final String C_COMISIONIVA				= "COMISIONIVA";		
+	static public final String C_COMISIONIVA				= "COMISIONIVA";
+	static public final String C_COMISIONCUENTACONTABLE		= "COMISIONCUENTACONTABLE";	
 
 	/* Métodos get */
 	public String getBancosCodigo() {
@@ -126,4 +127,10 @@ public class FacBancoInstitucionBean extends MasterBean {
 	public void setComisionDescripcion(String comisionDescripcion) {
 		this.comisionDescripcion = comisionDescripcion;
 	}
+	public String getComisionCuentaContable() {
+		return comisionCuentaContable;
+	}
+	public void setComisionCuentaContable(String comisionCuentaContable) {
+		this.comisionCuentaContable = comisionCuentaContable;
+	}	
 }
