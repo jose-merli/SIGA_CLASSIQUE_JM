@@ -391,10 +391,17 @@
 					
 							<tr>	
 								<td class="labelText">
+									<siga:Idioma key="facturacion.cuentasBancarias.comision.cuentaContable"/>&nbsp;(*)
+								</td>				
+								<td>
+									<html:text styleId="comisionCuentaContable" property="comisionCuentaContable" name="CuentasBancariasForm" size="20" maxlength="20" styleClass="box" />
+								</td>							
+							
+								<td class="labelText">
 									<siga:Idioma key="facturacion.cuentasBancarias.comision.descripcion"/>&nbsp;(*)
 								</td>
-								<td colspan="3">
-									<html:text styleClass="box" styleId="comisiondescripcion" property="comisiondescripcion" name ="CuentasBancariasForm" maxlength="255" style="width:850px;" />
+								<td>
+									<html:text styleClass="box" styleId="comisiondescripcion" property="comisiondescripcion" name ="CuentasBancariasForm" maxlength="255" style="width:500px;" />
 								</td>			
 							</tr>
 						</table>
