@@ -361,7 +361,9 @@ public class DatosDetallePagoAction extends MasterAction {
 			
 			ClsLogging.writeFileLog("Iniciando generacion excel", 0);
 			
-			HSSFWorkbook libro = new HSSFWorkbook();						
+			HSSFWorkbook libro = new HSSFWorkbook();
+			HSSFSheet hoja = libro.createSheet("Pago"); //lo movemos aqui arriba 
+			ClsLogging.writeFileLog("Despues de crear la hoja: a ver si hay suerte", 0);
 			HSSFDataFormat df = libro.createDataFormat();			
 
 			
@@ -421,7 +423,7 @@ public class DatosDetallePagoAction extends MasterAction {
 			ClsLogging.writeFileLog("Gestion Datos", 10);
 			
 			// GESTION DATOS
-			HSSFSheet hoja = libro.createSheet("Pago");
+			//HSSFSheet hoja = libro.createSheet("Pago");
 			//libro.setSheetName(0, "Pago");
 
 			HSSFRow filas = null;
