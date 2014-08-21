@@ -1141,15 +1141,17 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
    				htAbono.put(FacAbonoBean.C_IDFACTURA,idFacturaFila);
    				htAbono.put(FacAbonoBean.C_IDINSTITUCION, idInstitucion);
    				Vector vAbonos = admAbono.select(htAbono);
-   				//Es uniqeu key por lo que habra solo un registro
-   				FacAbonoBean beanAbono = (FacAbonoBean)vAbonos.get(0);
-   				resultado.put(FacAbonoBean.C_NUMEROABONO, beanAbono.getNumeroAbono()); 
-   				sEstado += " ("+beanAbono.getNumeroAbono()+")";
+   				
+   				// JPT: Las facturas devueltas por comision, generan facturas anuladas sin abono, porque se crea una factura nueva
+				if (vAbonos!=null && vAbonos.size()==1) {
+					//Es unique key por lo que habra solo un registro
+					FacAbonoBean beanAbono = (FacAbonoBean)vAbonos.get(0);
+					resultado.put(FacAbonoBean.C_NUMEROABONO, beanAbono.getNumeroAbono()); 
+					sEstado += " ("+beanAbono.getNumeroAbono()+")";
+				}
    			}
+   			
    			resultado.put("DESCRIPCION_ESTADO", sEstado);
-               
-               
-               
                
 			return resultado;	
 			}

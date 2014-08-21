@@ -17,18 +17,12 @@ import com.atos.utils.ClsExceptions;
 import com.atos.utils.Row;
 import com.siga.Utilidades.PaginadorCaseSensitiveBind;
 import com.siga.Utilidades.UtilidadesHash;
-import com.siga.Utilidades.UtilidadesMultidioma;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.beans.CenPersonaAdm;
 import com.siga.beans.FacAbonoAdm;
 import com.siga.beans.FacAbonoBean;
-import com.siga.beans.FacEstadoFacturaAdm;
-import com.siga.beans.FacEstadoFacturaBean;
 import com.siga.beans.FacFacturaAdm;
 import com.siga.beans.FacFacturaBean;
-import com.siga.beans.HelperInformesAdm;
-import com.siga.beans.ScsDesignaBean;
-import com.siga.beans.ScsDesignasLetradoAdm;
 import com.siga.facturacion.form.BusquedaFacturaForm;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
@@ -174,23 +168,22 @@ public class BusquedaFacturaAction extends MasterAction {
 			if(idEstado.equals("8")){
 				
 				Vector vAbonos = admAbono.select(htAbono);
-				//Es uniqeu key por lo que habra solo un registro
-				FacAbonoBean beanAbono = (FacAbonoBean)vAbonos.get(0);
+				
+				// JPT: Las facturas devueltas por comision, generan facturas anuladas sin abono, porque se crea una factura nueva
+				if (vAbonos!=null && vAbonos.size()==1) {
+					//Es unique key por lo que habra solo un registro
+					FacAbonoBean beanAbono = (FacAbonoBean)vAbonos.get(0);
 				 
-				sEstado += " ("+beanAbono.getNumeroAbono()+")";
+					sEstado += " ("+beanAbono.getNumeroAbono()+")";
+				}
 			}
+			
 			registro.put("DESCRIPCION_ESTADO", sEstado);
 			registro.put("TOTAL", ""+total);
-			
-
 		}
 		
 		return datos;
-		
-		
 	}
-	
-	
 	
 	/* (non-Javadoc)
 	 * @see com.siga.general.MasterAction#editar(org.apache.struts.action.ActionMapping, com.siga.general.MasterForm, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)

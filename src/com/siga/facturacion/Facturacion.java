@@ -2403,16 +2403,16 @@ public class Facturacion {
 				if (vFacFactura!= null && vFacFactura.size() == 1) {
 					FacFacturaBean beanFacFactura = (FacFacturaBean) vFacFactura.get(0);
 					
-					// JPT - Devoluciones 117 - Guardo el estado original de la factura porque voy a anular la original
-					Integer iEstadoFacFactura = beanFacFactura.getEstado();
-					
 					// JPT - Devoluciones 117 - Actualizo el estado de la factura actual a anulada
 					beanFacFactura.setEstado(new Integer(ClsConstants.ESTADO_FACTURA_ANULADA));
 					resultado = admFacFactura.update(beanFacFactura);
 					
 					if (resultado) {
-						// JPT - Devoluciones 117 - Recupera el estado anterior de la factura original
-						beanFacFactura.setEstado(iEstadoFacFactura);
+						// JPT - Devoluciones 117 - Calculo el estado de la factura de comision
+						if (idCuenta==null || idCuenta.isEmpty())
+							beanFacFactura.setEstado(new Integer(ClsConstants.ESTADO_FACTURA_CAJA));
+						else
+							beanFacFactura.setEstado(new Integer(ClsConstants.ESTADO_FACTURA_BANCO));
 						
 						// JPT - Devoluciones 117 - Pone en FAC_FACTURA.COMISIONIDFACTURA el identificador de la factura original  
 						beanFacFactura.setComisionIdFactura(beanFacFactura.getIdFactura());
@@ -2422,6 +2422,16 @@ public class Facturacion {
 						
 						// JPT - Devoluciones 117 - Asigna el nuevo identificador de factura
 						beanFacFactura.setIdFactura(sNuevoIdFactura);
+						
+						// JPT - Devoluciones 117 - Calcula el importe del iva
+						double importeComision = beanBancoInstitucion.getComisionImporte();
+						double importeIvaComision = UtilidadesNumero.redondea(beanBancoInstitucion.getComisionImporte() * beanBancoInstitucion.getComisionIVA() / 100, 2);						
+						
+						// JPT - Devoluciones 117 - Calcula los importes de la factura final con los importes de la comision
+						beanFacFactura.setImpTotalPorPagar(beanFacFactura.getImpTotalPorPagar() + importeComision + importeIvaComision);														
+						beanFacFactura.setImpTotalNeto(beanFacFactura.getImpTotalNeto() + importeComision);
+						beanFacFactura.setImpTotalIva(beanFacFactura.getImpTotalIva() + importeIvaComision);
+						beanFacFactura.setImpTotal(beanFacFactura.getImpTotal() + importeComision + importeIvaComision);						
 						
 						// JPT - Devoluciones 117 - Inserta la nueva factura
 						resultado = admFacFactura.insert(beanFacFactura);
@@ -2457,14 +2467,11 @@ public class Facturacion {
 								} else {
 									throw new ClsExceptions("Error porque no inserta la nueva línea de factura de devoluciones con comisión");
 								}			
-							}
+							}						
 							
 							// JPT - Devoluciones 117 - Calculo el campo CTAIVA
 							PysTipoIvaAdm admTipoIva = new PysTipoIvaAdm(userBean);
 							String sCTAIVA = admTipoIva.obtenerCTAIVA(beanFacFactura.getIdInstitucion().toString(), beanBancoInstitucion.getComisionIVA().toString());
-							
-							// JPT - Devoluciones 117 - Calcula el importe del iva
-							double importeIva=UtilidadesNumero.redondea(beanBancoInstitucion.getComisionImporte() * beanBancoInstitucion.getComisionIVA() / 100, 2);
 							
 							// JPT - Devoluciones 117 - Genero un objeto para la nueva linea con la comision
 							beanFacLineaFactura = new FacLineaFacturaBean();
@@ -2479,18 +2486,14 @@ public class Facturacion {
 							beanFacLineaFactura.setIva(beanBancoInstitucion.getComisionIVA().floatValue()); // Obtiene el iva de la comision del banco del acreedor
 							beanFacLineaFactura.setCtaProductoServicio(beanBancoInstitucion.getComisionCuentaContable()); // Obtiene la cuenta contable del banco del acreedor
 							beanFacLineaFactura.setCtaIva(sCTAIVA);
-							beanFacLineaFactura.setImporteneto(beanBancoInstitucion.getComisionImporte()); // Como cantidad es unitario, es el mismo valor que PRECIOUNITARIO														
-							beanFacLineaFactura.setImporteiva(importeIva); // IMPORTEIVA = IMPORTENETO * IVA
-							beanFacLineaFactura.setImporte(beanBancoInstitucion.getComisionImporte() + importeIva); // IMPORTE = IMPORTENETO + IMPORTEIVA
 							beanFacLineaFactura.setIdFormaPago(new Integer(formaPago)); // Indica la forma de pago de la factura	                  
 							
 							// JPT - Devoluciones 117 - Inserto la nueva linea de la factura
-							resultado = admLineaFactura.insert(beanFacLineaFactura);
+							resultado = admLineaFactura.insert(beanFacLineaFactura);							
 							
 							if (!resultado) {
 								throw new ClsExceptions("Error porque no inserta la nueva línea de factura de devoluciones con comisión");
 							}	
-							
 							
 						} else {
 							throw new ClsExceptions("Error porque no inserta la nueva factura de devoluciones con comisión");
