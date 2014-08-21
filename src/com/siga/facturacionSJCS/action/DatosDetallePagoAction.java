@@ -358,6 +358,9 @@ public class DatosDetallePagoAction extends MasterAction {
 			// ***************************
 			// * INICIO GENERACION EXCEL *
 			// ***************************
+			
+			ClsLogging.writeFileLog("Iniciando generacion excel", 0);
+			
 			HSSFWorkbook libro = new HSSFWorkbook();						
 			HSSFDataFormat df = libro.createDataFormat();			
 
@@ -414,6 +417,8 @@ public class DatosDetallePagoAction extends MasterAction {
 			estiloCeldaTitulo.setFillPattern((short) HSSFCellStyle.SOLID_FOREGROUND);
 			estiloCeldaTitulo.setFillForegroundColor(new HSSFColor.GREY_25_PERCENT().getIndex()); 						
 
+			
+			ClsLogging.writeFileLog("Gestion Datos", 10);
 			
 			// GESTION DATOS
 			HSSFSheet hoja = libro.createSheet();
@@ -484,11 +489,15 @@ public class DatosDetallePagoAction extends MasterAction {
 			celdas.setCellStyle(estiloCeldaTitulo);
 			celdas.setCellType(HSSFCell.CELL_TYPE_STRING);
 			
+			ClsLogging.writeFileLog("Cuenta Bancaria", 15);
+			
 			celdas = filas.createCell(12);
 			celdas.setCellValue(new HSSFRichTextString(UtilidadesString.getMensajeIdioma(usuario, "censo.datosCuentaBancaria.literal.cuenta")));
 			celdas.setCellStyle(estiloCeldaTitulo);
 			celdas.setCellType(HSSFCell.CELL_TYPE_STRING);
 						
+			ClsLogging.writeFileLog("Inicio For de Datos", 20);
+			
 			for (int i = 0; i < resultado.size(); i++) {										
 					Hashtable fila = (Hashtable) resultado.get(i);
 					String nombreColegiado = UtilidadesHash.getString(fila, "NOMBREPERSONA");
@@ -591,12 +600,18 @@ public class DatosDetallePagoAction extends MasterAction {
 					celdas.setCellType(HSSFCell.CELL_TYPE_STRING);
 				}
 			
+			ClsLogging.writeFileLog("AUTOSIZE", 25);
+			
 			for (short i=0; i<13; i++)
 				hoja.autoSizeColumn(i);
 
+			ClsLogging.writeFileLog("Escribimos fichero", 30);
+			
 			FileOutputStream out = new FileOutputStream(nombreFichero);
 			libro.write(out);
 			out.close();
+			
+			ClsLogging.writeFileLog("Cierre fichero", 30);
 			
 			// ************************
 			// * FIN GENERACION EXCEL *
@@ -672,6 +687,8 @@ public class DatosDetallePagoAction extends MasterAction {
 			fw.close();
 			*/
 			
+			ClsLogging.writeFileLog("Descarga fichero", 40);
+			
 			// Descargamos el fichero
 			File fichero = new File(nombreFichero);
 			if(fichero==null || !fichero.exists()){
@@ -679,6 +696,8 @@ public class DatosDetallePagoAction extends MasterAction {
 			}
 			request.setAttribute("nombreFichero", fichero.getName());
 			request.setAttribute("rutaFichero", fichero.getPath());
+			
+			ClsLogging.writeFileLog("FIN", 40);
 			
 		}
 		catch (Exception e) {
