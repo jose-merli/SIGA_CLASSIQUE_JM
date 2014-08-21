@@ -426,13 +426,17 @@ public class DatosDetallePagoAction extends MasterAction {
 
 			HSSFRow filas = null;
 			HSSFCell celdas = null;
+
+			ClsLogging.writeFileLog("Create Row", 11);
 			
 			filas = hoja.createRow(0);
-			
+			ClsLogging.writeFileLog("Create cell", 12);
 			celdas = filas.createCell(0);
 			celdas.setCellValue(new HSSFRichTextString(UtilidadesString.getMensajeIdioma(usuario, "factSJCS.detalleFacturacion.literal.nColegiado")));
 			celdas.setCellStyle(estiloCeldaTitulo);
 			celdas.setCellType(HSSFCell.CELL_TYPE_STRING);
+			
+			ClsLogging.writeFileLog("primera celda ok", 13);
 			
 			celdas = filas.createCell(1);
 			celdas.setCellValue(new HSSFRichTextString(UtilidadesString.getMensajeIdioma(usuario, "factSJCS.detalleFacturacion.literal.colegiado")));
