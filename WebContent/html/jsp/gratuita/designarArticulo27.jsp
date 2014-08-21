@@ -292,7 +292,7 @@
 						//window.setTimeout("recargarComboHijo()",500,"Javascript");	
 						//document.getElementById("poblacion").value = resultado[8];		
 					}
-					document.getElementById("checkTipoDireccion_3").checked = "checked";
+					document.getElementById("checkTipoDireccion_4").checked = "checked";
 					
 				}else{
 					limpiarDireccion();
@@ -696,7 +696,7 @@
 		//Tipo Direccion
 		jQuery("#checkTipoDireccion_1").removeAttr("disabled");
 	   	jQuery("#checkTipoDireccion_2").removeAttr("disabled");
-	   	jQuery("#checkTipoDireccion_3").removeAttr("disabled");
+// 	   	jQuery("#checkTipoDireccion_3").removeAttr("disabled");
 	   	jQuery("#checkTipoDireccion_4").removeAttr("disabled");
 	   	jQuery("#checkTipoDireccion_5").removeAttr("disabled");
 	   	jQuery("#checkTipoDireccion_6").removeAttr("disabled");
@@ -768,7 +768,7 @@
 		//Tipo Direccion
 		jQuery("#checkTipoDireccion_1").removeAttr("disabled");
 	   	jQuery("#checkTipoDireccion_2").removeAttr("disabled");
-	   	jQuery("#checkTipoDireccion_3").removeAttr("disabled");
+// 	   	jQuery("#checkTipoDireccion_3").removeAttr("disabled");
 	   	jQuery("#checkTipoDireccion_4").removeAttr("disabled");
 	   	jQuery("#checkTipoDireccion_5").removeAttr("disabled");
 	   	jQuery("#checkTipoDireccion_6").removeAttr("disabled");
@@ -923,7 +923,7 @@
 							document.getElementById("poblacion").value = datosGeneralesForm.poblacion.value;		
 						}
 						
-						document.getElementById("checkTipoDireccion_3").checked = "checked";
+ 						document.getElementById("checkTipoDireccion_4").checked = "checked";
 			
 					}else{
 						limpiarDireccion();
@@ -1576,7 +1576,7 @@
 			//Tipo Direccion
 			jQuery("#checkTipoDireccion_1").removeAttr("disabled");
 		   	jQuery("#checkTipoDireccion_2").removeAttr("disabled");
-		   	jQuery("#checkTipoDireccion_3").removeAttr("disabled");
+// 		   	jQuery("#checkTipoDireccion_3").removeAttr("disabled");
 		   	jQuery("#checkTipoDireccion_4").removeAttr("disabled");
 		   	jQuery("#checkTipoDireccion_5").removeAttr("disabled");
 		   	jQuery("#checkTipoDireccion_6").removeAttr("disabled");
@@ -1943,6 +1943,7 @@
 		jQuery(document).ready(function(){
 			jQuery('#poblacion option:gt(0)').remove();
 			defaultOptionPoblacion = jQuery('#poblacion').html();
+			jQuery("#checkTipoDireccion_3").attr("disabled","disabled");
 		});
 		var mensajeGeneralError='<%=UtilidadesString.mostrarDatoJSP(UtilidadesString.getMensajeIdioma(user, "messages.general.error"))%>';
 		capturarEnter();
