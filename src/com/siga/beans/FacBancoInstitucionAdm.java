@@ -31,9 +31,7 @@ public class FacBancoInstitucionAdm extends MasterBeanAdministrador {
 							FacBancoInstitucionBean.C_FECHABAJA,
 							FacBancoInstitucionBean.C_NUMEROCUENTA,
 							FacBancoInstitucionBean.C_DIGITOCONTROL,							
-							FacBancoInstitucionBean.C_USUMODIFICACION,
 							FacBancoInstitucionBean.C_ASIENTOCONTABLE,
-							FacBancoInstitucionBean.C_FECHAMODIFICACION,
 							FacBancoInstitucionBean.C_IBAN,
 							FacBancoInstitucionBean.C_SJCS,
 							FacBancoInstitucionBean.C_IDSUFIJOSJCS,			
@@ -65,8 +63,6 @@ public class FacBancoInstitucionAdm extends MasterBeanAdministrador {
 			bean.setNumeroCuenta				(UtilidadesHash.getString(hash, FacBancoInstitucionBean.C_NUMEROCUENTA));
 			bean.setAsientoContable				(UtilidadesHash.getString(hash, FacBancoInstitucionBean.C_ASIENTOCONTABLE));
 			bean.setDigitoControl				(UtilidadesHash.getString(hash, FacBancoInstitucionBean.C_DIGITOCONTROL));			
-			bean.setFechaMod					(UtilidadesHash.getString(hash, FacBancoInstitucionBean.C_FECHAMODIFICACION));
-			bean.setUsuMod						(UtilidadesHash.getInteger(hash, FacBancoInstitucionBean.C_USUMODIFICACION));
 			bean.setIban						(UtilidadesHash.getString(hash, FacBancoInstitucionBean.C_IBAN));
 			bean.setSJCS						(UtilidadesHash.getString(hash, FacBancoInstitucionBean.C_SJCS));
 			bean.setIdsufijosjcs				(UtilidadesHash.getInteger(hash, FacBancoInstitucionBean.C_IDSUFIJOSJCS));
@@ -100,8 +96,6 @@ public class FacBancoInstitucionAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(htData, FacBancoInstitucionBean.C_ASIENTOCONTABLE, b.getAsientoContable());			
 			UtilidadesHash.set(htData, FacBancoInstitucionBean.C_IBAN, b.getIban());
 			UtilidadesHash.set(htData, FacBancoInstitucionBean.C_DIGITOCONTROL, b.getDigitoControl());
-			UtilidadesHash.set(htData, FacBancoInstitucionBean.C_FECHAMODIFICACION, b.getFechaMod());
-			UtilidadesHash.set(htData, FacBancoInstitucionBean.C_USUMODIFICACION, b.getUsuMod());
 			UtilidadesHash.set(htData, FacBancoInstitucionBean.C_SJCS, b.getSJCS());
 			UtilidadesHash.set(htData, FacBancoInstitucionBean.C_IDSUFIJOSJCS, b.getIdsufijosjcs());
 			UtilidadesHash.set(htData, FacBancoInstitucionBean.C_COMISIONIMPORTE, b.getComisionImporte());

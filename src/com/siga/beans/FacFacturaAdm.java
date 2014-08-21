@@ -90,8 +90,6 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
 							FacFacturaBean.C_IDPERSONADEUDOR,
 							FacFacturaBean.C_IDCUENTADEUDOR,
 							FacFacturaBean.C_OBSERVINFORME,
-							FacFacturaBean.C_FECHAMODIFICACION,
-							FacFacturaBean.C_USUMODIFICACION,
 							FacFacturaBean.C_IMPTOTAL,
 							FacFacturaBean.C_IMPTOTALANTICIPADO,
 							FacFacturaBean.C_IMPTOTALCOMPENSADO,
@@ -151,9 +149,7 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
 			bean.setIdPersona (UtilidadesHash.getLong(hash,FacFacturaBean.C_IDPERSONA));
 			bean.setCtaCliente(UtilidadesHash.getString(hash,FacFacturaBean.C_CTACLIENTE));
 			bean.setIdCuentaDeudor(UtilidadesHash.getInteger(hash,FacFacturaBean.C_IDCUENTADEUDOR));
-			bean.setIdPersonaDeudor (UtilidadesHash.getLong(hash,FacFacturaBean.C_IDPERSONADEUDOR));
-			bean.setFechaMod(UtilidadesHash.getString(hash,FacFacturaBean.C_FECHAMODIFICACION));
-			bean.setUsuMod(UtilidadesHash.getInteger(hash,FacFacturaBean.C_USUMODIFICACION));			
+			bean.setIdPersonaDeudor (UtilidadesHash.getLong(hash,FacFacturaBean.C_IDPERSONADEUDOR));			
 			bean.setImpTotal(UtilidadesHash.getDouble(hash,FacFacturaBean.C_IMPTOTAL));			
 			bean.setImpTotalAnticipado(UtilidadesHash.getDouble(hash,FacFacturaBean.C_IMPTOTALANTICIPADO));			
 			bean.setImpTotalCompensado(UtilidadesHash.getDouble(hash,FacFacturaBean.C_IMPTOTALCOMPENSADO));			
@@ -202,9 +198,7 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(htData,FacFacturaBean.C_IDCUENTA ,b.getIdCuenta());
 			UtilidadesHash.set(htData,FacFacturaBean.C_IDPERSONA,b.getIdPersona ());
 			UtilidadesHash.set(htData,FacFacturaBean.C_IDCUENTADEUDOR ,b.getIdCuentaDeudor());
-			UtilidadesHash.set(htData,FacFacturaBean.C_IDPERSONADEUDOR,b.getIdPersonaDeudor());
-			UtilidadesHash.set(htData,FacFacturaBean.C_FECHAMODIFICACION,b.getFechaMod());
-			UtilidadesHash.set(htData,FacFacturaBean.C_USUMODIFICACION,b.getUsuMod());			
+			UtilidadesHash.set(htData,FacFacturaBean.C_IDPERSONADEUDOR,b.getIdPersonaDeudor());			
 			UtilidadesHash.set(htData,FacFacturaBean.C_CTACLIENTE,b.getCtaCliente());
 			UtilidadesHash.set(htData,FacFacturaBean.C_IMPTOTAL,b.getImpTotal());
 			UtilidadesHash.set(htData,FacFacturaBean.C_IMPTOTALANTICIPADO,b.getImpTotalAnticipado());
