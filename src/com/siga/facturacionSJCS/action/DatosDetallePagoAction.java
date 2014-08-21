@@ -421,8 +421,8 @@ public class DatosDetallePagoAction extends MasterAction {
 			ClsLogging.writeFileLog("Gestion Datos", 10);
 			
 			// GESTION DATOS
-			HSSFSheet hoja = libro.createSheet();
-			libro.setSheetName(0, "Pago");
+			HSSFSheet hoja = libro.createSheet("Pago");
+			//libro.setSheetName(0, "Pago");
 
 			HSSFRow filas = null;
 			HSSFCell celdas = null;
