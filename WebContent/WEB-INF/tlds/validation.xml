@@ -4862,7 +4862,7 @@
 			<arg0 key="facturacion.cuentasBancarias.comision.IVA"/> 
 		</field>	
 		
-       <field property="comisionCuentaContable" depends="required, maxlength"> 
+       <field property="comisioncuentacontable" depends="maxlength"> 
 			<arg0 key="facturacion.cuentasBancarias.comision.cuentaContable"/> 
 			<arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
 			<var>

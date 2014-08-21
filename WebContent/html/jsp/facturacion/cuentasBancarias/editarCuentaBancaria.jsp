@@ -386,22 +386,22 @@
 											<siga:Select queryId="getPorcentajesIva" id="comisioniva" selectedIds="<%=vIva%>" required="true" disabled="true" />
 										</c:otherwise>
 									</c:choose>
-								</td>								
+								</td>
+								
+								<td class="labelText">
+									<siga:Idioma key="facturacion.cuentasBancarias.comision.cuentaContable"/>
+								</td>				
+								<td>
+									<html:text styleId="comisioncuentacontable" property="comisioncuentacontable" name="CuentasBancariasForm" size="20" maxlength="20" styleClass="box" />
+								</td>																
 							</tr>
 					
 							<tr>	
 								<td class="labelText">
-									<siga:Idioma key="facturacion.cuentasBancarias.comision.cuentaContable"/>&nbsp;(*)
-								</td>				
-								<td>
-									<html:text styleId="comisionCuentaContable" property="comisionCuentaContable" name="CuentasBancariasForm" size="20" maxlength="20" styleClass="box" />
-								</td>							
-							
-								<td class="labelText">
 									<siga:Idioma key="facturacion.cuentasBancarias.comision.descripcion"/>&nbsp;(*)
 								</td>
-								<td>
-									<html:text styleClass="box" styleId="comisiondescripcion" property="comisiondescripcion" name ="CuentasBancariasForm" maxlength="255" style="width:500px;" />
+								<td colspan="5">
+									<html:text styleClass="box" styleId="comisiondescripcion" property="comisiondescripcion" name ="CuentasBancariasForm" maxlength="255" style="width:850px;" />
 								</td>			
 							</tr>
 						</table>

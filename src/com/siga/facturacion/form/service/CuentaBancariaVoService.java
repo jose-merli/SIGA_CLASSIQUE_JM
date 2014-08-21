@@ -111,6 +111,8 @@ public class CuentaBancariaVoService implements VoUiService<CuentasBancariasForm
 			objectVo.setComisioniva(UtilidadesNumero.getBigDecimal(objectForm.getComisioniva()));
 		if (objectForm.getComisiondescripcion()!=null && !objectForm.getComisiondescripcion().equals(""))
 			objectVo.setComisiondescripcion(objectForm.getComisiondescripcion());
+		if (objectForm.getComisioncuentacontable()!=null && !objectForm.getComisioncuentacontable().equals(""))
+			objectVo.setComisioncuentacontable(objectForm.getComisioncuentacontable());
 			
 		return objectVo;
 	}
@@ -171,7 +173,10 @@ public class CuentaBancariaVoService implements VoUiService<CuentasBancariasForm
 				cuentasBancariasForm.setComisionimporte(UtilidadesString.formatoImporte(objectVo.getComisionimporte().doubleValue()));
 			if (objectVo.getComisioniva()!=null)
 				cuentasBancariasForm.setComisioniva(objectVo.getComisioniva().toString());
-			cuentasBancariasForm.setComisiondescripcion(objectVo.getComisiondescripcion());
+			if (objectVo.getComisiondescripcion()!=null)
+				cuentasBancariasForm.setComisiondescripcion(objectVo.getComisiondescripcion());
+			if (objectVo.getComisioncuentacontable()!=null)
+				cuentasBancariasForm.setComisioncuentacontable(objectVo.getComisioncuentacontable());
 			
 		return cuentasBancariasForm;
 	}
