@@ -49,7 +49,9 @@ public class FacLineaFacturaAdm extends MasterBeanAdministrador {
 							FacLineaFacturaBean.C_IMPORTENETO,
 							FacLineaFacturaBean.C_IMPORTEIVA,
 							FacLineaFacturaBean.C_IMPORTE,
-							FacLineaFacturaBean.C_IDFORMAPAGO};
+							FacLineaFacturaBean.C_IDFORMAPAGO,
+							FacLineaFacturaBean.C_USUMODIFICACION,
+							FacLineaFacturaBean.C_FECHAMODIFICACION};
 		return campos;
 	}
 
@@ -99,9 +101,11 @@ public class FacLineaFacturaAdm extends MasterBeanAdministrador {
 			bean.setImporteneto(UtilidadesHash.getDouble(hash,FacLineaFacturaBean.C_IMPORTENETO));
 			bean.setImporteiva(UtilidadesHash.getDouble(hash,FacLineaFacturaBean.C_IMPORTEIVA));	
 			bean.setImporte(UtilidadesHash.getDouble(hash,FacLineaFacturaBean.C_IMPORTE));	
-			bean.setIdFormaPago(UtilidadesHash.getInteger(hash,FacLineaFacturaBean.C_IDFORMAPAGO));	
-		}
-		catch (Exception e) { 
+			bean.setIdFormaPago(UtilidadesHash.getInteger(hash,FacLineaFacturaBean.C_IDFORMAPAGO));
+			bean.setFechaMod(UtilidadesHash.getString(hash, FacLineaFacturaBean.C_FECHAMODIFICACION));
+			bean.setUsuMod(UtilidadesHash.getInteger(hash, FacLineaFacturaBean.C_USUMODIFICACION));
+			
+		} catch (Exception e) { 
 			bean = null;	
 			throw new ClsExceptions (e, "Error al construir el bean a partir del hashTable");
 		}
@@ -135,8 +139,10 @@ public class FacLineaFacturaAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(htData,FacLineaFacturaBean.C_IMPORTEIVA, b.getImporteiva());
 			UtilidadesHash.set(htData,FacLineaFacturaBean.C_IMPORTE, b.getImporte());
 			UtilidadesHash.set(htData,FacLineaFacturaBean.C_IDFORMAPAGO, b.getIdFormaPago());
-		}
-		catch (Exception e) {
+			UtilidadesHash.set(htData,FacLineaFacturaBean.C_FECHAMODIFICACION, b.getFechaMod());
+			UtilidadesHash.set(htData,FacLineaFacturaBean.C_USUMODIFICACION, b.getUsuMod());
+			
+		} catch (Exception e) {
 			htData = null;
 			throw new ClsExceptions (e, "Error al crear el hashTable a partir del bean");
 		}

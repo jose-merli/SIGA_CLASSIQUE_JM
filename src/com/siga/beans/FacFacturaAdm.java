@@ -104,7 +104,9 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
 							FacFacturaBean.C_IMPTOTALPAGADOSOLOTARJETA,
 							FacFacturaBean.C_IMPTOTALPORPAGAR,
 							FacFacturaBean.C_ESTADO,
-							FacFacturaBean.C_COMISIONIDFACTURA};
+							FacFacturaBean.C_COMISIONIDFACTURA,
+							FacFacturaBean.C_USUMODIFICACION,
+							FacFacturaBean.C_FECHAMODIFICACION};
 		return campos;
 	}
 	
@@ -165,8 +167,10 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
 			bean.setImpTotalPagadoSoloTarjeta(UtilidadesHash.getDouble(hash,FacFacturaBean.C_IMPTOTALPAGADOSOLOTARJETA));			
 			bean.setEstado(UtilidadesHash.getInteger(hash,FacFacturaBean.C_ESTADO));
 			bean.setComisionIdFactura(UtilidadesHash.getString(hash,FacFacturaBean.C_COMISIONIDFACTURA));
-		}
-		catch (Exception e) { 
+			bean.setFechaMod(UtilidadesHash.getString(hash,FacFacturaBean.C_FECHAMODIFICACION));
+			bean.setUsuMod(UtilidadesHash.getInteger(hash,FacFacturaBean.C_USUMODIFICACION));
+			
+		} catch (Exception e) { 
 			bean = null;	
 			throw new ClsExceptions (e, "Error al construir el bean a partir del hashTable");
 		}
@@ -215,8 +219,10 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(htData,FacFacturaBean.C_IMPTOTALPAGADOSOLOTARJETA,b.getImpTotalPagadoSoloTarjeta());
 			UtilidadesHash.set(htData,FacFacturaBean.C_ESTADO,b.getEstado());
 			UtilidadesHash.set(htData,FacFacturaBean.C_COMISIONIDFACTURA ,b.getComisionIdFactura());
-		}
-		catch (Exception e) {
+			UtilidadesHash.set(htData,FacFacturaBean.C_FECHAMODIFICACION, b.getFechaMod());
+			UtilidadesHash.set(htData,FacFacturaBean.C_USUMODIFICACION, b.getUsuMod());
+			
+		} catch (Exception e) {
 			htData = null;
 			throw new ClsExceptions (e, "Error al crear el hashTable a partir del bean");
 		}
@@ -238,7 +244,7 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
             RowsContainer rc = new RowsContainer();
 
 			String sql;
-			sql ="SELECT (MAX(IDFACTURA) + 1) AS IDFACTURA FROM " + nombreTabla +
+			sql ="SELECT (MAX(TO_NUMBER(IDFACTURA)) + 1) AS IDFACTURA FROM " + nombreTabla +
 				" WHERE IDINSTITUCION =" + institucion;
 		
 			if (rc.findForUpdate(sql)) {

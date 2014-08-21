@@ -35,7 +35,9 @@ public class PysTipoIvaAdm extends MasterBeanAdministrador {
 				PysTipoIvaBean.C_CODIGOEXT,
 				PysTipoIvaBean.C_VALOR,
 				PysTipoIvaBean.C_SUBCTATIPO,
-				PysTipoIvaBean.C_DESCRIPCIONTIPO};
+				PysTipoIvaBean.C_DESCRIPCIONTIPO,
+				PysTipoIvaBean.C_USUMODIFICACION,
+				PysTipoIvaBean.C_FECHAMODIFICACION};
 		return campos;
 	}
 
@@ -65,7 +67,9 @@ public class PysTipoIvaAdm extends MasterBeanAdministrador {
 			bean.setCodigoExt(UtilidadesHash.getString(hash,PysTipoIvaBean.C_CODIGOEXT));
 			bean.setValor(UtilidadesHash.getString(hash,PysTipoIvaBean.C_VALOR));
 			bean.setSubCtaTipo(UtilidadesHash.getString(hash,PysTipoIvaBean.C_SUBCTATIPO));	
-			bean.setDescripciontipo(UtilidadesHash.getString(hash,PysTipoIvaBean.C_DESCRIPCIONTIPO));	
+			bean.setDescripciontipo(UtilidadesHash.getString(hash,PysTipoIvaBean.C_DESCRIPCIONTIPO));
+			bean.setFechaMod(UtilidadesHash.getString(hash,PysTipoIvaBean.C_FECHAMODIFICACION));
+			bean.setUsuMod(UtilidadesHash.getInteger(hash,PysTipoIvaBean.C_USUMODIFICACION));
 			
 		} catch (Exception e) { 
 			bean = null;	
@@ -92,8 +96,10 @@ public class PysTipoIvaAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(htData,PysTipoIvaBean.C_VALOR, b.getValor());
 			UtilidadesHash.set(htData,PysTipoIvaBean.C_SUBCTATIPO, b.getSubCtaTipo());
 			UtilidadesHash.set(htData,PysTipoIvaBean.C_DESCRIPCIONTIPO, b.getDescripciontipo());
-		}
-		catch (Exception e) {
+			UtilidadesHash.set(htData,FacLineaFacturaBean.C_FECHAMODIFICACION, b.getFechaMod());
+			UtilidadesHash.set(htData,FacLineaFacturaBean.C_USUMODIFICACION, b.getUsuMod());
+			
+		} catch (Exception e) {
 			htData = null;
 			throw new ClsExceptions (e, "Error al crear el hashTable a partir del bean");
 		}

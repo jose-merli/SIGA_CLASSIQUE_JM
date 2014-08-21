@@ -2395,8 +2395,8 @@ public class Facturacion {
 				
 				// JPT - Devoluciones 117 - Obtenemos la factura original			
 		    	Hashtable hFacFactura = new Hashtable();
-		    	UtilidadesHash.set(hFacFactura, FacFacturaBean.C_IDINSTITUCION, lineaDevolucion.getIdInstitucion());
-		    	UtilidadesHash.set(hFacFactura, FacFacturaBean.C_IDFACTURA, lineaDevolucion.getIdFacturaIncluidaEnDisquete());		    	
+		    	UtilidadesHash.set(hFacFactura, FacFacturaBean.C_IDINSTITUCION, beanFacturaIncluidaEnDisquete.getIdInstitucion());
+		    	UtilidadesHash.set(hFacFactura, FacFacturaBean.C_IDFACTURA, beanFacturaIncluidaEnDisquete.getIdFactura());		    	
 		    	
 		    	FacFacturaAdm admFacFactura = new FacFacturaAdm(userBean);
 		    	Vector vFacFactura = admFacFactura.selectByPK(hFacFactura);
@@ -2430,16 +2430,16 @@ public class Facturacion {
 							
 							// JPT - Devoluciones 117 - Obtenemos las lineas de la factura
 							FacLineaFacturaAdm admLineaFactura = new FacLineaFacturaAdm(userBean);
-							Vector vFacLineaFactura = admFacFactura.select(hFacFactura);
+							Vector vFacLineaFactura = admLineaFactura.select(hFacFactura);
 							
 							// JPT - Devoluciones 117 - Recorro las lineas de la factura
 							FacLineaFacturaBean beanFacLineaFactura = null;
 							long maximoNumeroLinea = 0;
 							long maximoNumeroOrden = 0;
-							for (int contadorLineaFactura=0; contadorLineaFactura<vFacFactura.size(); contadorLineaFactura++) {								
+							for (int contadorLineaFactura=0; contadorLineaFactura<vFacLineaFactura.size(); contadorLineaFactura++) {								
 								
 								// JPT - Devoluciones 117 - Obtengo una linea de la factura
-								beanFacLineaFactura = (FacLineaFacturaBean) vFacFactura.get(contadorLineaFactura);
+								beanFacLineaFactura = (FacLineaFacturaBean) vFacLineaFactura.get(contadorLineaFactura);
 								
 								// JPT - Devoluciones 117 - Asigna el nuevo identificador de factura a la linea de la factura
 								beanFacLineaFactura.setIdFactura(sNuevoIdFactura);
