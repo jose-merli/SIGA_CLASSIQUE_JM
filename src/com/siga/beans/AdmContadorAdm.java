@@ -49,7 +49,7 @@ public class AdmContadorAdm extends MasterBeanAdministrador
 		return getClavesBean();
 	}
 
-	protected MasterBean hashTableToBean(Hashtable hash) throws ClsExceptions {
+	public MasterBean hashTableToBean(Hashtable hash) throws ClsExceptions {
 		AdmContadorBean bean = null;
 
 		try {

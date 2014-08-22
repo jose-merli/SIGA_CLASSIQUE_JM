@@ -3604,4 +3604,38 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
 		
 		return factDevueltasYRenegociadas;                        
 	} //getFacturasDevueltasyRenegociadas()
+	
+	/**
+	 * Calcular un nuevo numero de factura
+	 * @param idInstitucion
+	 * @param idSerieFacturacion
+	 * @return
+	 * @throws ClsExceptions
+	 */
+	public Hashtable obtenerNuevoNumeroFactura (String idInstitucion, String idSerieFacturacion) throws ClsExceptions {
+		
+		Hashtable resultado = new Hashtable();
+		
+		try {
+			String sql = "SELECT " + AdmContadorBean.T_NOMBRETABLA + ".*, " + 
+							" LPAD(" + AdmContadorBean.T_NOMBRETABLA + "." + AdmContadorBean.C_CONTADOR + " + 1, " + AdmContadorBean.T_NOMBRETABLA + "." + AdmContadorBean.C_LONGITUDCONTADOR + ", '0') AS NUEVOCONTADOR " +
+                    	" FROM " + AdmContadorBean.T_NOMBRETABLA + ", " +
+                    		FacSerieFacturacionBean.T_NOMBRETABLA +
+                    	" WHERE " + AdmContadorBean.T_NOMBRETABLA + "." + AdmContadorBean.C_IDINSTITUCION + " = " + FacSerieFacturacionBean.T_NOMBRETABLA + "." + FacSerieFacturacionBean.C_IDINSTITUCION +
+                        	" AND " + AdmContadorBean.T_NOMBRETABLA + "." + AdmContadorBean.C_IDCONTADOR + " = " + FacSerieFacturacionBean.T_NOMBRETABLA + "." + FacSerieFacturacionBean.C_IDCONTADOR +
+                        	" AND " + FacSerieFacturacionBean.T_NOMBRETABLA + "." + FacSerieFacturacionBean.C_IDINSTITUCION + " = " + idInstitucion + 
+                        	" AND " + FacSerieFacturacionBean.T_NOMBRETABLA + "." + FacSerieFacturacionBean.C_IDSERIEFACTURACION + " = " + idSerieFacturacion;
+			
+			RowsContainer rc = new RowsContainer();
+			if (rc.find(sql) && rc.size() == 1) {
+				Row fila = (Row) rc.get(0);
+				resultado = fila.getRow();
+			}
+
+		} catch (Exception e) {
+			throw new ClsExceptions (e, "Error al calcular un nuevo numero de factura");
+		}
+		
+		return resultado;                        
+	} //obtenerNuevoNumeroFactura()
 }

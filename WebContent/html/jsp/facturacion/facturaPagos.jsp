@@ -251,11 +251,11 @@
 					String nombreBanco=UtilidadesHash.getString(pago, "NOMBREBANCO");
 
 				 	String medioPago = "";
-				 	Double devolucion = new Double(0);
+				 	Double devolucion = new Double(0.0);
 
 					if (tabla.startsWith(textoEmision) ||  tabla.startsWith(textoConfirmacion)) {
 						
-						pendiente	= new Double(total.doubleValue());
+						pendiente = importe;
 						importe = new Double(0);
 						if (pendiente.doubleValue() < 0.0) {
 							pendiente = new Double(0.0);
@@ -264,8 +264,8 @@
 					} else {
 						if (tabla.startsWith(textoDevolucion)  || tabla.startsWith(textoRenegociacion)) {
 							
-							pendiente = new Double (importe.doubleValue());
-							importe = new Double(0);
+							pendiente = importe;
+							importe = new Double(0.0);
 							if (pendiente.doubleValue() < 0.0) {
 								pendiente = new Double(0.0);
 							}
