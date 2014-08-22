@@ -1694,7 +1694,7 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
 		    	
 		    }
 		    
-		    sql += " ORDER BY TO_NUMBER(F." + FacFacturaBean.C_IDFACTURA + ") DESC";
+		    sql += " ORDER BY TO_NUMBER(" + FacFacturaBean.C_IDFACTURA + ") DESC";
 		    
 		    PaginadorCaseSensitiveBind paginador = new PaginadorCaseSensitiveBind(sql,codigos);				
 			int totalRegistros = paginador.getNumeroTotalRegistros();
