@@ -97,7 +97,7 @@
 	}
 	
 	if(idJuzgado==null||idJuzgado.equals("")){
-		idJuzgado = "-1";
+		idJuzgado = "-2";
 	}
 	
 	if (idTurnoAsistencia != null && !idTurnoAsistencia.equals("")) {// Cuando venimos de Asistencias
