@@ -185,7 +185,7 @@ public class ScsOrdenacionColasAdm extends MasterBeanAdministrador {
 		}
 		if (orden.length() > 0){
 			orden = orden.substring(0, orden.length()-2);
-			orden += ", Ins.Idpersona, ins.fechasuscripcion";
+			orden += ", Ins.Idpersona, ins.fechavalidacion";
 		}
 		
 		return orden;
