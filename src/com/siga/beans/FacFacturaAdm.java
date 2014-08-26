@@ -2686,67 +2686,6 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
 		}
 		return datos;	
 	}
-	
-	/** 
-	 * Obtiene los importes apuntados en compras para una institución y factura, y la cuenta contable del producto o servicio. 
-	 * @param  institucion - identificador de la institucion
-	 * @param  idFactura - Identificador de factura	 	  
-	 * @return  Vector - Fila seleccionada  
-	 * @exception  ClsExceptions  En cualquier caso de error
-	 */
-	public Vector obtenerCuentasValorPYS (String institucion, String idFactura) throws ClsExceptions {
-		
-		   Vector datos=new Vector();
-		   Hashtable codigosBind = new Hashtable();
-		   int contador = 0;
-		   
-	       try {
-	            RowsContainer rc = new RowsContainer(); 
-	            String sql =" select NVL(ROUND(a.CANTIDAD * a.PRECIOUNITARIO, 2), 0) NETO, c.CUENTACONTABLE CUENTA "; 
-	            	sql +=" from   fac_lineafactura a, pys_compra b, pys_productosinstitucion c";
-		            sql +="  where  a.IDFACTURA = b.IDFACTURA";
-			        sql +="  and    a.NUMEROLINEA = b.NUMEROLINEA";
-				    sql +="  and    a.IDINSTITUCION = b.IDINSTITUCION";
-					sql +="  and    b.IDINSTITUCION = c.IDINSTITUCION  ";
-					sql +="  and    b.IDTIPOPRODUCTO = c.IDTIPOPRODUCTO ";
-					sql +="  and    b.IDPRODUCTO = c.IDPRODUCTO";
-					sql +="  and    b.IDPRODUCTOINSTITUCION = c.IDPRODUCTOINSTITUCION";
-					contador++;
-					codigosBind.put(new Integer(contador),idFactura);
-					sql +="  and    a.IDFACTURA=:"+contador;
-					contador++;
-					codigosBind.put(new Integer(contador), institucion);
-					sql +="  and    a.IDINSTITUCION = :"+contador;
-					sql +="  union all  ";
-					sql +="  select NVL(ROUND(a2.CANTIDAD * a2.PRECIOUNITARIO, 2), 0) NETO, c2.CUENTACONTABLE CUENTA "; 
-					sql +="  from   fac_lineafactura a2, fac_facturacionsuscripcion b2, pys_serviciosinstitucion c2";
-					sql +="  where  a2.IDFACTURA = b2.IDFACTURA";
-					sql +="  and    a2.NUMEROLINEA = b2.NUMEROLINEA";
-					sql +="  and    a2.IDINSTITUCION = b2.IDINSTITUCION";
-					sql +="  and    b2.IDINSTITUCION = c2.IDINSTITUCION  ";
-					sql +="  and    b2.IDTIPOSERVICIOS = c2.IDTIPOSERVICIOS"; 
-					sql +="  and    b2.IDSERVICIO = c2.IDSERVICIO";
-					sql +="  and    b2.IDSERVICIOSINSTITUCION = c2.IDSERVICIOSINSTITUCION";
-					contador++;
-					codigosBind.put(new Integer(contador), idFactura);
-					sql +="  and    a2.IDFACTURA= :"+contador;
-					contador++;
-					codigosBind.put(new Integer(contador), institucion);
-                    sql +="  and    a2.IDINSTITUCION = :" +contador;
-                    
-
-	            if (rc.findBind(sql, codigosBind)) {
-	               for (int i = 0; i < rc.size(); i++){
-	                  Row fila = (Row) rc.get(i);
-	                  datos.add(fila);
-	               }
-	            } 
-	       }
-	       catch (Exception e) {
-	       		throw new ClsExceptions (e, "Error al ejecutar consulta.");
-	       }
-	       return datos;                        
-	    }
 
 	public Hashtable getFacturasEmitidas (String institucion, String fechaDesde, String fechaHasta) throws ClsExceptions 
 	{

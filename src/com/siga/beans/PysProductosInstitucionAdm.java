@@ -359,7 +359,7 @@ public class PysProductosInstitucionAdm extends MasterBeanAdministrador
 								sql +=" AND " + PysFormaPagoProductoBean.T_NOMBRETABLA +"."+ PysFormaPagoProductoBean.C_IDFORMAPAGO + "=" + pago;
 							}
 							
-							// No muestro los productos de comisión
+							// JPT: No muestro los productos de la comision, ya que ahora van incluidos en la gestion de cuentas bancarias
 							sql += " AND (" + PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_TIPOCERTIFICADO + " IS NULL " +
 									 " OR " + PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_TIPOCERTIFICADO + " <> '" + PysProductosInstitucionAdm.TIPO_CERTIFICADO_COMISIONBANCARIA + "') "; 
 							

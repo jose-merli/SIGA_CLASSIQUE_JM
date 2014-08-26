@@ -568,7 +568,7 @@ public class DevolucionesAction extends MasterAction {
 			
 			if (codretorno.equalsIgnoreCase("-32")){
 				tx.rollback();
-				request.setAttribute("mensaje","messages.facturacion.devoluciones.noProductoComision");
+				request.setAttribute("mensaje","facturacion.devolucion.error.aplicarComision");
 				return "nuevo";
 				
 			} else { 			
@@ -833,7 +833,7 @@ public class DevolucionesAction extends MasterAction {
 			
 			if (codretorno.equalsIgnoreCase("-32")){
 				tx.rollback();
-				request.setAttribute("mensaje","messages.facturacion.devoluciones.noProductoComision");
+				request.setAttribute("mensaje","facturacion.devolucion.error.aplicarComision");
 				return "nuevo";
 				
 			} else { 			
