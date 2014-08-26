@@ -2417,7 +2417,7 @@ public class Facturacion {
 			AdmContadorAdm admContador = new AdmContadorAdm(userBean);
 			AdmContadorBean beanContador = (AdmContadorBean) admContador.hashTableToBean(hNuevoNumeroFactura);
 			beanContador.setContador(new Long(sContadorContador));						
-			resultado = admContador.update(beanContador);							
+			resultado = admContador.updateDirect(beanContador);							
 			if (!resultado) {
 				throw new ClsExceptions("Error porque no actualiza el contador");
 			}							
