@@ -35,7 +35,6 @@ public class ScsAsistenciasBean extends MasterBean{
 	private Integer idTipoAsistenciaColegio;
 	private Integer idTurno;
 	private Integer idGuardia;
-	private Integer idCalendarioGuardias;
 	private Integer idPersonaColegiado;
 	private Integer idPersonaJG;
 	private Integer idFacturacion;
@@ -208,18 +207,6 @@ public class ScsAsistenciasBean extends MasterBean{
 	 */
 	public void setFechaGuardia(String fechaGuardia) {
 		this.fechaGuardia = fechaGuardia;
-	}
-	/**
-	 * @return Returns the idCalendarioGuardias.
-	 */
-	public Integer getIdCalendarioGuardias() {
-		return idCalendarioGuardias;
-	}
-	/**
-	 * @param idCalendarioGuardias The idCalendarioGuardias to set.
-	 */
-	public void setIdCalendarioGuardias(Integer idCalendarioGuardias) {
-		this.idCalendarioGuardias = idCalendarioGuardias;
 	}
 	/**
 	 * @return Returns the idFacturacion.

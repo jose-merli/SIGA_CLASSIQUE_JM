@@ -119,7 +119,7 @@ public class PestanaCalendarioGuardiasAction extends MasterAction {
 			ScsGuardiasColegiadoAdm guardiasColegiadoAdm = new ScsGuardiasColegiadoAdm(this.getUserBean(request));
 			
 			
-			String mensaje = guardiasColegiadoAdm.validacionesSustitucionGuardia(usr,idInstitucion, idTurno, idGuardia, idCalendarioGuardias, fechaInicio,fechaFin,idPersonaEntrante, idPersonaSaliente);
+			String mensaje = guardiasColegiadoAdm.validacionesSustitucionGuardia(usr,idInstitucion, idTurno, idGuardia, fechaInicio,fechaFin,idPersonaEntrante, idPersonaSaliente);
 			if(!mensaje.equalsIgnoreCase("OK"))
 			{
 				return exito(mensaje,request);
@@ -379,7 +379,6 @@ public class PestanaCalendarioGuardiasAction extends MasterAction {
 			solicitanteGuardiaHash.put(ScsGuardiasColegiadoBean.C_IDINSTITUCION,miForm.getIdInstitucion());
 			solicitanteGuardiaHash.put(ScsGuardiasColegiadoBean.C_IDTURNO,miForm.getIdTurnoSolicitante());
 			solicitanteGuardiaHash.put(ScsGuardiasColegiadoBean.C_IDGUARDIA,miForm.getIdGuardiaSolicitante());
-			solicitanteGuardiaHash.put(ScsGuardiasColegiadoBean.C_IDCALENDARIOGUARDIAS,miForm.getIdCalendarioSolicitante());
 			solicitanteGuardiaHash.put(ScsGuardiasColegiadoBean.C_FECHAINICIO, sFechaInicioSolicitante);
 			solicitanteGuardiaHash.put(ScsGuardiasColegiadoBean.C_IDPERSONA,miForm.getIdPersonaSolicitante());			
 			Vector guardiasColegSolic = admGuardias.select(solicitanteGuardiaHash);
@@ -405,7 +404,6 @@ public class PestanaCalendarioGuardiasAction extends MasterAction {
 			confirmadorGuardiaHash.put(ScsGuardiasColegiadoBean.C_IDINSTITUCION,miForm.getIdInstitucion());
 			confirmadorGuardiaHash.put(ScsGuardiasColegiadoBean.C_IDTURNO,miForm.getIdTurnoConfirmador());
 			confirmadorGuardiaHash.put(ScsGuardiasColegiadoBean.C_IDGUARDIA,miForm.getIdGuardiaConfirmador());
-			confirmadorGuardiaHash.put(ScsGuardiasColegiadoBean.C_IDCALENDARIOGUARDIAS,miForm.getIdCalendarioConfirmador());
 			confirmadorGuardiaHash.put(ScsGuardiasColegiadoBean.C_FECHAINICIO, sFechaInicioConfirmador);
 			confirmadorGuardiaHash.put(ScsGuardiasColegiadoBean.C_IDPERSONA,miForm.getIdPersonaConfirmador());
 			Vector guardiasColegiadoConfirmador = admGuardias.select(confirmadorGuardiaHash);
@@ -717,7 +715,6 @@ public class PestanaCalendarioGuardiasAction extends MasterAction {
 			guardiasColSol.put(ScsGuardiasColegiadoBean.C_IDINSTITUCION,idInstitucion);
 			guardiasColSol.put(ScsGuardiasColegiadoBean.C_IDTURNO,idTurnoSolicitante);
 			guardiasColSol.put(ScsGuardiasColegiadoBean.C_IDGUARDIA,idGuardiaSolicitante);
-			guardiasColSol.put(ScsGuardiasColegiadoBean.C_IDCALENDARIOGUARDIAS,idCalendarioGuardiasSolicitante);
 			guardiasColSol.put(ScsGuardiasColegiadoBean.C_IDPERSONA,idPersonaSolicitante);
 			guardiasColSol.put(ScsGuardiasColegiadoBean.C_FECHAINICIO,fechaInicioSolicitante);
 			
@@ -726,7 +723,6 @@ public class PestanaCalendarioGuardiasAction extends MasterAction {
 			guardiasColConf.put(ScsGuardiasColegiadoBean.C_IDINSTITUCION,idInstitucion);
 			guardiasColConf.put(ScsGuardiasColegiadoBean.C_IDTURNO,idTurnoConfirmador);
 			guardiasColConf.put(ScsGuardiasColegiadoBean.C_IDGUARDIA,idGuardiaConfirmador);
-			guardiasColConf.put(ScsGuardiasColegiadoBean.C_IDCALENDARIOGUARDIAS,idCalendarioGuardiasConfirmador);
 			guardiasColConf.put(ScsGuardiasColegiadoBean.C_IDPERSONA,idPersonaConfirmador);
 			guardiasColConf.put(ScsGuardiasColegiadoBean.C_FECHAINICIO,fechaInicioConfirmador);
 			

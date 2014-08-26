@@ -375,7 +375,6 @@ public class CalendarioSJCS
 			miHash.put(ScsGuardiasColegiadoBean.C_IDTURNO, letrado.getIdTurno().toString());
 			miHash.put(ScsGuardiasColegiadoBean.C_FECHAINICIO, (String)periodoDiasGuardia.get(0));
 			miHash.put(ScsGuardiasColegiadoBean.C_FECHAFIN, (String)periodoDiasGuardia.get(periodoDiasGuardia.size()-1));
-			miHash.put(ScsGuardiasColegiadoBean.C_IDCALENDARIOGUARDIAS, this.idCalendarioGuardias.toString());
 			miHash.put(ScsGuardiasColegiadoBean.C_IDPERSONA, letrado.getIdPersona().toString());
 			
 			salida = admGuardiasColegiado.validarSeparacionGuardias(miHash);
@@ -488,7 +487,6 @@ public class CalendarioSJCS
 						beanGuardiasColegiado.setIdInstitucion(letrado.getIdInstitucion());
 						beanGuardiasColegiado.setIdTurno(letrado.getIdTurno());
 						beanGuardiasColegiado.setIdGuardia(letrado.getIdGuardia());
-						beanGuardiasColegiado.setIdCalendarioGuardias(idCalendarioGuardias);
 						beanGuardiasColegiado.setIdPersona(letrado.getIdPersona());
 						beanGuardiasColegiado.setFechaInicio(GstDate.getApplicationFormatDate(this.usrBean.getLanguage(),fechaInicioPeriodo));
 						beanGuardiasColegiado.setFechaFin(GstDate.getApplicationFormatDate(this.usrBean.getLanguage(),fechaPeriodo));
@@ -1750,7 +1748,7 @@ public class CalendarioSJCS
 	public void generarCalendario() throws ClsExceptions,
 			SIGAException {
 		ScsGuardiasTurnoAdm admGuardiaTurno = new ScsGuardiasTurnoAdm(this.usrBean);
-		ScsGuardiasColegiadoAdm admGuardiasColegiado = new ScsGuardiasColegiadoAdm(
+		ScsCabeceraGuardiasAdm admCabeceraGuardias = new ScsCabeceraGuardiasAdm(
 				this.usrBean);
 		ScsCalendarioGuardiasAdm admCalendarioGuardia = new ScsCalendarioGuardiasAdm(
 				this.usrBean);
@@ -1788,7 +1786,7 @@ public class CalendarioSJCS
 				.equals(ClsConstants.DB_TRUE));
 
 		// validando que no haya ninguna guardia realizada
-		if (!admGuardiasColegiado.validarBorradoGuardias(idInstitucion,
+		if (!admCabeceraGuardias.validarBorradoGuardias(idInstitucion,
 				idCalendarioGuardias, idTurno, idGuardia))
 			throw new SIGAException(
 					"error.messagess.borrarGuardiasGenerarCalendario");
@@ -2128,7 +2126,7 @@ public class CalendarioSJCS
 		//comprobando que sea el ultimo calendario
 		if (admCalendarioGuardia.validarBorradoCalendario(this.idInstitucion, this.idCalendarioGuardias, this.idTurno, this.idGuardia)) {
 			//comprobando que no haya ninguna guardia realizada
-			if (admGuardiasColegiado.validarBorradoGuardias(this.idInstitucion, this.idCalendarioGuardias, this.idTurno, this.idGuardia)) {
+			if (admCabeceraGuardias.validarBorradoGuardias(this.idInstitucion, this.idCalendarioGuardias, this.idTurno, this.idGuardia)) {
 				
 				//empezando transaccion
 				

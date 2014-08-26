@@ -554,7 +554,6 @@ public class ScsGuardiasTurnoAdm extends MasterBeanAdministrador
 	/** 
 	 * Devuelve un String con la consulta SQL que devuelve 1 registro que contiene los datos: Tipo Dias, Nº Letrados de<br>
 	 * Guardia, Nº Letrados de Reserva y los Días de Guardia.  
-	 * el IDCALENDARIOGUARDIAS.
 	 * 
 	 * @param String idinstitucion_pestanha de la pestanha
 	 * @param String idturno_pestanha de la pestanha
@@ -602,9 +601,6 @@ public class ScsGuardiasTurnoAdm extends MasterBeanAdministrador
 			String fechaFin,
 			String idPersona) throws ClsExceptions, SIGAException {
 		Vector datos = new Vector();
-		String idcalendarioguardias = "", idturno = "", idguardia = "", idpersona = "";
-		HelperInformesAdm helperInformes = new HelperInformesAdm();
-		TreeMap tmListaGuardias = new TreeMap();
 		try {
 			RowsContainer rc = new RowsContainer();
 
@@ -875,9 +871,6 @@ public class ScsGuardiasTurnoAdm extends MasterBeanAdministrador
 		) throws ClsExceptions, SIGAException {
 		
 		Vector datos = new Vector();
-		String idcalendarioguardias = "", idturno = "", idguardia = "", idpersona = "";
-		HelperInformesAdm helperInformes = new HelperInformesAdm();
-		TreeMap tmListaGuardias = new TreeMap();
 		
 		try {
 			RowsContainer rc = new RowsContainer();
@@ -1025,9 +1018,6 @@ public class ScsGuardiasTurnoAdm extends MasterBeanAdministrador
 			String fechaFin) throws ClsExceptions, SIGAException
 	{
 		Vector datos = new Vector();
-		String idcalendarioguardias = "", idturno = "", idguardia = "", idpersona = "";
-		HelperInformesAdm helperInformes = new HelperInformesAdm();
-		TreeMap tmListaGuardias = new TreeMap();
 		try {
 			RowsContainer rc = new RowsContainer();
 
@@ -1139,9 +1129,6 @@ public class ScsGuardiasTurnoAdm extends MasterBeanAdministrador
 			String fechaFin, Vector idPersonas) throws ClsExceptions, SIGAException
 	{
 		Vector datos = new Vector();
-		String idcalendarioguardias = "", idturno = "", idguardia = "", idpersona = "";
-		HelperInformesAdm helperInformes = new HelperInformesAdm();
-		TreeMap tmListaGuardias = new TreeMap();
 		try {
 			RowsContainer rc = new RowsContainer();
 

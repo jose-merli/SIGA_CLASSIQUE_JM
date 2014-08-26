@@ -29,7 +29,6 @@ public class FcsFactApunteBean extends MasterBean{
 	private Integer		numActuaciones;
 	private Integer		numAsistencias;
 	private Double		precioAplicado;
-	private Integer		idCalendarioGuardias;
 	private Integer		numActuacionesTotal;
 	private Integer		numAsistenciasTotal;
 	
@@ -57,7 +56,6 @@ public class FcsFactApunteBean extends MasterBean{
 	static public final String 	C_NUMACTUACIONES =			"NUMACTUACIONES";
 	static public final String 	C_NUMASISTENCIAS =			"NUMASISTENCIAS";
 	static public final String 	C_PRECIOAPLICADO = 			"PRECIOAPLICADO";
-	static public final String 	C_IDCALENDARIOGUARDIAS =	"IDCALENDARIOGUARDIAS";
 	static public final String 	C_NUMACTUACIONESTOTAL =		"NUMACTUACIONESTOTAL";
 	static public final String 	C_NUMASISTENCIASTOTAL =		"NUMASISTENCIASTOTAL";
 	
@@ -73,12 +71,6 @@ public class FcsFactApunteBean extends MasterBean{
 	}
 	public void setIdApunte(Long idApunte) {
 		this.idApunte = idApunte;
-	}
-	public Integer getIdCalendarioGuardias() {
-		return idCalendarioGuardias;
-	}
-	public void setIdCalendarioGuardias(Integer idCalendarioGuardias) {
-		this.idCalendarioGuardias = idCalendarioGuardias;
 	}
 	public Integer getIdFacturacion() {
 		return idFacturacion;

@@ -133,20 +133,20 @@ public class ValidarVolantesGuardiasAction extends MasterAction {
 				    // Si vengo de VOLANTE_EXPRES
 				    if (miForm.getDesde()!=null && miForm.getDesde().equalsIgnoreCase("VOLANTE_EXPRES")) {
 						Hashtable h = new Hashtable();
-						String fechafin = GstDate.getApplicationFormatDate("", fechainicio);
-						UtilidadesHash.set (h, ScsGuardiasColegiadoBean.C_IDPERSONA, idpersona);
-						UtilidadesHash.set (h, ScsGuardiasColegiadoBean.C_FECHAFIN, fechafin);
-						UtilidadesHash.set (h, ScsGuardiasColegiadoBean.C_IDTURNO, idturno);
-						UtilidadesHash.set (h, ScsGuardiasColegiadoBean.C_IDGUARDIA, (idguardia.split(",")[0]));
-						UtilidadesHash.set (h, ScsGuardiasColegiadoBean.C_IDINSTITUCION, idinstitucion);
-						ScsGuardiasColegiadoAdm admAux = new ScsGuardiasColegiadoAdm (this.getUserBean(request));
+						String s_fechainicio = GstDate.getApplicationFormatDate("", fechainicio);
+						UtilidadesHash.set (h, ScsCabeceraGuardiasBean.C_IDPERSONA, idpersona);
+						UtilidadesHash.set (h, ScsCabeceraGuardiasBean.C_FECHA_INICIO, s_fechainicio);
+						UtilidadesHash.set (h, ScsCabeceraGuardiasBean.C_IDTURNO, idturno);
+						UtilidadesHash.set (h, ScsCabeceraGuardiasBean.C_IDGUARDIA, (idguardia.split(",")[0]));
+						UtilidadesHash.set (h, ScsCabeceraGuardiasBean.C_IDINSTITUCION, idinstitucion);
+						ScsCabeceraGuardiasAdm admAux = new ScsCabeceraGuardiasAdm (this.getUserBean(request));
 						Vector vGuardias = admAux.select(h);
 						if (vGuardias == null && vGuardias.size() != 1) {
 				            throw new ClsExceptions("La guardia seleccionada tiene varios calendarios asociados");
 						}
 						if (vGuardias!=null && vGuardias.size()>0){
-						ScsGuardiasColegiadoBean b = (ScsGuardiasColegiadoBean) vGuardias.get(0);
-						idcalendarioguardias = ""+b.getIdCalendarioGuardias();
+							ScsCabeceraGuardiasBean b = (ScsCabeceraGuardiasBean) vGuardias.get(0);
+						idcalendarioguardias = ""+b.getIdCalendario();
 						
 						fechainicio = b.getFechaInicio();
 						}
@@ -251,7 +251,7 @@ public class ValidarVolantesGuardiasAction extends MasterAction {
 		UsrBean usr = null;
 		String forward = "buscar";
 	    ValidarVolantesGuardiasForm miForm = (ValidarVolantesGuardiasForm) formulario;
-		ScsGuardiasColegiadoAdm admGuardiaColegiado = new ScsGuardiasColegiadoAdm(this.getUserBean(request));
+		ScsCabeceraGuardiasAdm admCabeceraGuardia = new ScsCabeceraGuardiasAdm(this.getUserBean(request));
 		ScsPermutaGuardiasAdm admPermutaguardias = new ScsPermutaGuardiasAdm(this.getUserBean(request));
 		try {
 		
@@ -288,7 +288,7 @@ public class ValidarVolantesGuardiasAction extends MasterAction {
 			miHash.put("PENDIENTEVALIDAR",miForm.getPendienteValidar());
 			
 			//Busqueda de colegiados. Obtengo el nombre, numero de colegiado, observaciones y las fechas de inicio y fin
-			v_guardias = admGuardiaColegiado.selectGenerico(admGuardiaColegiado.buscarColegiados(miHash));
+			v_guardias = admCabeceraGuardia.selectGenerico(admCabeceraGuardia.buscarColegiados(miHash));
 			
 			
 			int i = 0;

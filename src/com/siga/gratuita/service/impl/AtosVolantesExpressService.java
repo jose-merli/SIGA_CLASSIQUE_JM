@@ -67,7 +67,7 @@ public class AtosVolantesExpressService extends JtaBusinessServiceTemplate
 			volantesExpressVo.setAsistencias(alAsistencias);
 			List<ScsAsistenciasBean> alAsistenciasBorrar = (List<ScsAsistenciasBean>) getAsistenciasABorrar(alAsistencias,alAsistenciasOld);
 			
-			
+			ScsCabeceraGuardiasAdm cabeceraGuardiasAdm = new ScsCabeceraGuardiasAdm(volantesExpressVo.getUsrBean());
 			ScsGuardiasColegiadoAdm guardiasColegiadoAdm = new ScsGuardiasColegiadoAdm(volantesExpressVo.getUsrBean());
 			String truncFechaGuardia = GstDate.getFormatedDateShort("", volantesExpressVo.getFechaGuardia());
 			if (volantesExpressVo.getIdColegiadoSustituido()!=null) {
@@ -79,7 +79,7 @@ public class AtosVolantesExpressService extends JtaBusinessServiceTemplate
 				
 				
 				//Si el colegiado sustituye a otro colegiado de la guardia
-				guardiasColegiadoAdm.aplicarSustitucion(volantesExpressVo.getIdInstitucion(), volantesExpressVo.getIdTurno(),
+				cabeceraGuardiasAdm.aplicarSustitucion(volantesExpressVo.getIdInstitucion(), volantesExpressVo.getIdTurno(),
 							volantesExpressVo.getIdGuardia(), volantesExpressVo.getIdColegiadoSustituido(), 
 							volantesExpressVo.getIdColegiado(), truncFechaGuardia, volantesExpressVo.getUsrBean());
 			}else{

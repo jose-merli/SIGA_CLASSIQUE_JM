@@ -356,9 +356,8 @@ public class InformeColegiadosPagos extends MasterReport {
 						+ " WHERE CAB.IDTURNO = GU.IDTURNO "
 							+ " AND CAB.IDINSTITUCION = GU.IDINSTITUCION "
 							+ " AND CAB.IDGUARDIA = GU.IDGUARDIA "
-							+ " AND CAB.IDCALENDARIOGUARDIAS = FA.IDCALENDARIOGUARDIAS "
 							+ " AND CAB.IDPERSONA = COL.IDPERORIGEN "
-						+ " GROUP BY CAB.IDINSTITUCION, CAB.IDGUARDIA, CAB.IDCALENDARIOGUARDIAS, CAB.IDPERSONA "
+						+ " GROUP BY CAB.IDINSTITUCION, CAB.IDGUARDIA, CAB.IDPERSONA "
 					+ " ) AS FECHAFIN, "
 					+ " TU.NOMBRE AS TURNO, "
 					+ " TU.ABREVIATURA AS ABREVIATURA_TURNO, "
@@ -368,7 +367,6 @@ public class InformeColegiadosPagos extends MasterReport {
 					+ " PAG.IDFACTURACION, "
 					+ " FA.IDTURNO, "
 					+ " FA.IDGUARDIA, "
-					+ " FA.IDCALENDARIOGUARDIAS, "
 					+ " FA.IDAPUNTE "
 				+ " FROM FCS_PAGO_COLEGIADO COL, "
 					+ " FCS_PAGOSJG PAG, "
@@ -413,7 +411,6 @@ public class InformeColegiadosPagos extends MasterReport {
 					
 					String idTurno = r1.getString("IDTURNO");
 					String idGuardia = r1.getString("IDGUARDIA");
-					String idCalendarioGuardias = r1.getString("IDCALENDARIOGUARDIAS");
 					String idFacturacion = r1.getString("IDFACTURACION");
 					String fechaDesde = r1.getString("FECHADESDE");
 					String idApunte = r1.getString("IDAPUNTE");
@@ -474,7 +471,6 @@ public class InformeColegiadosPagos extends MasterReport {
 								" AND FAP.IDFACTURACION = " + idFacturacion +
 								" AND FAP.IDTURNO = " + idTurno +
 								" AND FAP.IDGUARDIA = " + idGuardia +
-								" AND FAP.IDCALENDARIOGUARDIAS = " + idCalendarioGuardias +
 								" AND TRUNC(FAP.FECHAINICIO) = '" + fechaDesde + "' " +
 								" AND FAP.Idpersona = " + idPersona +
 								" AND FAP.IdApunte = " + idApunte +
@@ -558,7 +554,6 @@ public class InformeColegiadosPagos extends MasterReport {
 								" AND FAP.IDFACTURACION = " + idFacturacion +
 								" AND FAP.IDTURNO = " + idTurno +
 								" AND FAP.IDGUARDIA = " + idGuardia +
-								" AND FAP.IDCALENDARIOGUARDIAS = " + idCalendarioGuardias +
 								" AND TRUNC(FAP.FECHAINICIO) = '" + fechaDesde + "' "+
 								" AND FAP.IDPERSONA = " + idPersona +
 								" AND FAP.IDAPUNTE = " + idApunte +

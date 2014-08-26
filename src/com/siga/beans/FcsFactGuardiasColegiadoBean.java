@@ -21,7 +21,6 @@ public class FcsFactGuardiasColegiadoBean extends MasterBean{
 	private Integer		idFacturacion;
 	private Long		idApunte;
 	private Integer		idTurno;
-	private Integer		idCalendarioGuardias;
 	private Integer		idGuardia;
 	private String		fechaInicio;
 	private Long		idPersona;
@@ -42,7 +41,6 @@ public class FcsFactGuardiasColegiadoBean extends MasterBean{
 	static public final String 	C_IDINSTITUCION = 			"IDINSTITUCION";
 	static public final String 	C_IDFACTURACION = 			"IDFACTURACION";
 	static public final String 	C_IDTURNO =					"IDTURNO";
-	static public final String 	C_IDCALENDARIOGUARDIAS =	"IDCALENDARIOGUARDIAS";
 	static public final String 	C_PRECIOAPLICADO = 			"PRECIOAPLICADO";
 	static public final String 	C_IDPERSONA = 				"IDPERSONA";
 	static public final String 	C_IDGUARDIA = 				"IDGUARDIA";
@@ -120,18 +118,6 @@ public class FcsFactGuardiasColegiadoBean extends MasterBean{
 	 */
 	public void setFechaInicio(String fechaInicio) {
 		this.fechaInicio = fechaInicio;
-	}
-	/**
-	 * @return Returns the idCalendarioGuardias.
-	 */
-	public Integer getIdCalendarioGuardias() {
-		return idCalendarioGuardias;
-	}
-	/**
-	 * @param idCalendarioGuardias The idCalendarioGuardias to set.
-	 */
-	public void setIdCalendarioGuardias(Integer idCalendarioGuardias) {
-		this.idCalendarioGuardias = idCalendarioGuardias;
 	}
 	/**
 	 * @return Returns the idGuardia.

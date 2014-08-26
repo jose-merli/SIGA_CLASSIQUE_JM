@@ -313,7 +313,6 @@ public class InformeColegiadosFacturaciones extends MasterReport {
 							+ " FA.IDFACTURACION, "
 							+ " FA.IDTURNO, "
 							+ " FA.IDGUARDIA, "
-							+ " FA.IDCALENDARIOGUARDIAS, "
 							+ " FA.IDAPUNTE "
 						+ " FROM FCS_FACT_APUNTE FA, "
 							+ " SCS_TURNO TU, "
@@ -330,7 +329,6 @@ public class InformeColegiadosFacturaciones extends MasterReport {
 							+ " AND CAB.IDTURNO = FA.IDTURNO "
 							+ " AND CAB.IDINSTITUCION = FA.IDINSTITUCION "
 							+ " AND CAB.IDGUARDIA = FA.IDGUARDIA "
-							+ " AND CAB.IDCALENDARIOGUARDIAS = FA.IDCALENDARIOGUARDIAS "
 							+ " AND CAB.IDPERSONA = FA.IDPERSONA "
 							+ " AND CAB.FECHAINICIO = FA.FECHAINICIO "		
 							// Relacion FCS_FACT_APUNTE (FA) con SCS_GUARDIASTURNO (GU)
@@ -354,7 +352,6 @@ public class InformeColegiadosFacturaciones extends MasterReport {
 					
 					String idTurno = r1.getString("IDTURNO");
 					String idGuardia = r1.getString("IDGUARDIA");
-					String idCalendarioGuardias = r1.getString("IDCALENDARIOGUARDIAS");
 					String fechaDesde = r1.getString("FECHAINICIO");
 					String idApunte = r1.getString("IDAPUNTE");
 					
@@ -412,7 +409,6 @@ public class InformeColegiadosFacturaciones extends MasterReport {
 								" AND FAP.IDFACTURACION = " + idFacturacion +
 								" AND FAP.IDTURNO = " + idTurno +
 								" AND FAP.IDGUARDIA = " + idGuardia +
-								" AND FAP.IDCALENDARIOGUARDIAS = " + idCalendarioGuardias +
 								" AND TRUNC(FAP.FECHAINICIO) = '" + fechaDesde + "' " +
 								" AND FAP.Idpersona = " + idPersona +
 								" AND FAP.IdApunte = " + idApunte +
@@ -494,7 +490,6 @@ public class InformeColegiadosFacturaciones extends MasterReport {
 								" AND FAP.IDFACTURACION = " + idFacturacion +
 								" AND FAP.IDTURNO = " + idTurno +
 								" AND FAP.IDGUARDIA = " + idGuardia +
-								" AND FAP.IDCALENDARIOGUARDIAS = " + idCalendarioGuardias +
 								" AND TRUNC(FAP.FECHAINICIO) = '" + fechaDesde + "' "+
 								" AND FAP.IDPERSONA = " + idPersona +
 								" AND FAP.IDAPUNTE = " + idApunte +

@@ -169,7 +169,7 @@ public class DefinirGuardiasTurnosAction extends MasterAction {
 					
 					
 					
-					String mensaje = guardiasColegiadoAdm.validacionesSustitucionGuardia(usr, idInstitucion, idTurno, idGuardia, idCalendarioGuardias, fechaInicio,fechaFin,idPersonaEntrante,idPersonaSaliente);
+					String mensaje = guardiasColegiadoAdm.validacionesSustitucionGuardia(usr, idInstitucion, idTurno, idGuardia, fechaInicio,fechaFin,idPersonaEntrante,idPersonaSaliente);
 					if(!mensaje.equalsIgnoreCase("OK"))
 					{
 						return exito(mensaje,request);

@@ -182,57 +182,6 @@ public class ScsPermutaGuardiasAdm extends MasterBeanAdministrador {
 	}	
 	
 	/** 
-	 * Devuelve un String con la consulta SQL para obtener los datos de un solicitante. 
-	 * @param Hashtable hash: datos clave del solicitante
-	 * @return String con la consulta SQL.
-	 * @throws ClsExceptions
-	 */	
-	public String buscarDatosSolicitante(Hashtable hash) throws ClsExceptions{
-		String consulta = "";
-		String idinstitucion="", idturno="", idguardia="", idpersona="", idcalendario="", fechaInicio="";
-		try {
-			idinstitucion = (String)hash.get("IDINSTITUCION");
-			idturno = (String)hash.get("IDTURNO");
-			idguardia = (String)hash.get("IDGUARDIA");
-			idcalendario = (String)hash.get("IDCALENDARIOGUARDIAS");
-			idpersona = (String)hash.get("IDPERSONA");
-			fechaInicio = (String)hash.get("FECHAINICIO");
-			fechaInicio = GstDate.getFormatedDateShort("",fechaInicio);
-			
-			consulta = "SELECT permuta.*,";
-			consulta += " perso."+CenPersonaBean.C_NOMBRE+" || ' ' || perso."+CenPersonaBean.C_APELLIDOS1+" || ' ' || perso."+CenPersonaBean.C_APELLIDOS2+" NOMBRE,";			
-			consulta += " guard."+ScsGuardiasColegiadoBean.C_FECHAFIN+",";			
-			consulta += " coleg."+CenColegiadoBean.C_NCOLEGIADO;
-			consulta += " FROM "+ScsPermutaGuardiasBean.T_NOMBRETABLA+" permuta,";
-			consulta += ScsGuardiasColegiadoBean.T_NOMBRETABLA+" guard,";
-			consulta += CenPersonaBean.T_NOMBRETABLA+" perso,";			
-			consulta += CenColegiadoBean.T_NOMBRETABLA+" coleg";
-			consulta += " WHERE ";
-			consulta += " permuta."+ScsPermutaGuardiasBean.C_IDINSTITUCION+"="+idinstitucion;
-			consulta += " AND permuta."+ScsPermutaGuardiasBean.C_IDTURNO_SOLICITANTE+"="+idturno;
-			consulta += " AND permuta."+ScsPermutaGuardiasBean.C_IDGUARDIA_SOLICITANTE+"="+idguardia;
-			consulta += " AND permuta."+ScsPermutaGuardiasBean.C_IDPERSONA_SOLICITANTE+"="+idpersona;
-			consulta += " AND permuta."+ScsPermutaGuardiasBean.C_FECHAINICIO_SOLICITANTE+"= TO_DATE('"+fechaInicio+"','DD/MM/YYYY')";
-			consulta += " AND permuta."+ScsPermutaGuardiasBean.C_IDCALENDARIOGUARDIAS_SOLICITAN+"="+idcalendario;
-			//JOIN
-			consulta += " AND perso."+CenPersonaBean.C_IDPERSONA+"=guard."+ScsGuardiasColegiadoBean.C_IDPERSONA;
-			consulta += " AND coleg."+CenColegiadoBean.C_IDPERSONA+"=guard."+ScsGuardiasColegiadoBean.C_IDPERSONA;
-			consulta += " AND coleg."+CenColegiadoBean.C_IDINSTITUCION+"=guard."+ScsGuardiasColegiadoBean.C_IDINSTITUCION;
-			consulta += " AND guard."+ScsGuardiasColegiadoBean.C_IDINSTITUCION+"=permuta."+ScsPermutaGuardiasBean.C_IDINSTITUCION;
-			consulta += " AND guard."+ScsGuardiasColegiadoBean.C_IDCALENDARIOGUARDIAS+"=permuta."+ScsPermutaGuardiasBean.C_IDCALENDARIOGUARDIAS_SOLICITAN;
-			consulta += " AND guard."+ScsGuardiasColegiadoBean.C_IDTURNO+"=permuta."+ScsPermutaGuardiasBean.C_IDTURNO_SOLICITANTE;
-			consulta += " AND guard."+ScsGuardiasColegiadoBean.C_IDGUARDIA+"=permuta."+ScsPermutaGuardiasBean.C_IDGUARDIA_SOLICITANTE;
-			consulta += " AND guard."+ScsGuardiasColegiadoBean.C_IDPERSONA+"=permuta."+ScsPermutaGuardiasBean.C_IDPERSONA_SOLICITANTE;
-			consulta += " AND guard."+ScsGuardiasColegiadoBean.C_FECHAINICIO+"=permuta."+ScsPermutaGuardiasBean.C_FECHAINICIO_SOLICITANTE;
-		}
-		catch (Exception e){
-			throw new ClsExceptions(e,"Excepcion en ScsPermutaGuardiasAdm.buscarDatosSolicitante(). Consulta SQL:"+consulta);
-		}
-		
-		return consulta;
-	}	
-		
-	/** 
 	 * Devuelve un String con la consulta SQL para obtener los datos de un confirmador a partir de un solicitante. 
 	 * @param Hashtable hash: datos clave del solicitante
 	 * @return String con la consulta SQL.

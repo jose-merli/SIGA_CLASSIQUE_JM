@@ -430,7 +430,6 @@ public class DefinirCalendarioGuardiaAction extends MasterAction
 				//Consulto las guardias del periodo:
 				StringBuffer where = new StringBuffer();
 				where.append(" WHERE "+ScsGuardiasColegiadoBean.C_IDINSTITUCION+"="+idInstitucion);
-				where.append(" AND "+ScsGuardiasColegiadoBean.C_IDCALENDARIOGUARDIAS +"="+idCalendario);
 				where.append(" AND "+ScsGuardiasColegiadoBean.C_IDTURNO +"="+idTurno);
 				where.append(" AND "+ScsGuardiasColegiadoBean.C_IDGUARDIA +"="+idGuardia);
 				where.append(" AND "+ScsGuardiasColegiadoBean.C_FECHAINICIO+"=TO_DATE('"+fechaInicio+"','DD/MM/YYYY')");
@@ -790,7 +789,6 @@ public class DefinirCalendarioGuardiaAction extends MasterAction
 				//generando el hash para tratar la guardia del calendario
 				Hashtable miHash = new Hashtable();
 				miHash.clear();
-				miHash.put(ScsGuardiasColegiadoBean.C_IDCALENDARIOGUARDIAS, idCalendarioGuardias);
 				miHash.put(ScsGuardiasColegiadoBean.C_IDTURNO, idTurno);
 				miHash.put(ScsGuardiasColegiadoBean.C_IDGUARDIA, idGuardia);
 				miHash.put(ScsGuardiasColegiadoBean.C_IDINSTITUCION, idInstitucion);				
@@ -805,7 +803,7 @@ public class DefinirCalendarioGuardiaAction extends MasterAction
 				hashPermuta.put(ScsPermutaGuardiasBean.C_NUMERO, numero);
 
 				//comprobando que no hay ninguna guardia realizada
-				if (admGuardiasColegiado.validarBorradoGuardia(idInstitucion, idCalendarioGuardias, idTurno, idGuardia, fechaInicio, fechaFin)) {
+				if (admGuardiasColegiado.validarBorradoGuardia(idInstitucion, idTurno, idGuardia, fechaInicio, fechaFin)) {
 					//empezando transaccion
 					tx = usr.getTransaction();
 					tx.begin();
@@ -884,195 +882,10 @@ public class DefinirCalendarioGuardiaAction extends MasterAction
 		return forward;
 	} //borrar()
 	
-	protected String buscarPorOld(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
-		DefinirCalendarioGuardiaForm miForm = (DefinirCalendarioGuardiaForm) formulario;
-		ScsGuardiasColegiadoAdm admGuardiaColegiado = new ScsGuardiasColegiadoAdm(this.getUserBean(request));
-		ScsPermutaGuardiasAdm admPermutaguardias = new ScsPermutaGuardiasAdm(this.getUserBean(request));
-
-
-		Hashtable miHash = new Hashtable();
-		UsrBean usr = null;
-		String forward = "error";
-		String idcalendarioguardias="", idinstitucion="", idturno="", idguardia="";
-		String idpersona = "", fechaInicio="", fechaFin="", fechaPermuta="", numeroColegiado="";
-		String observaciones="", nombre="", fechaDesde="", fechaHasta="", diasguardia="", diasacobrar="", tipodias="";
-		String fechaInicioPermuta="", fechaFinPermuta="";
-		Vector v_resultado = new Vector ();
-		Vector v_guardias = new Vector ();
-		String numero="", modoOriginal="";
-		String buscarFechaDesde="";
-		String buscarFechaHasta="";
-		String buscarNcolegiado="";
-		String pl = ""; //Valor devuelto por el PL de Permutas
-
-		try {
-			usr = (UsrBean) request.getSession().getAttribute("USRBEAN");			
-
-			//Datos necesarios para la consulta
-			idinstitucion = miForm.getIdInstitucion();
-			idturno = miForm.getIdTurno();
-			idguardia = miForm.getIdGuardia();
-			idcalendarioguardias = miForm.getIdCalendarioGuardias();
-			fechaDesde = miForm.getFechaDesde();
-			fechaHasta = miForm.getFechaHasta();
-			diasguardia = miForm.getDiasGuardia();
-			diasacobrar = miForm.getDiasACobrar();
-			tipodias = miForm.getTipoDias();
-			modoOriginal = miForm.getModoOriginal();
-			buscarFechaDesde=miForm.getBuscarFechaDesde();
-			buscarFechaHasta=miForm.getBuscarFechaHasta();
-			buscarNcolegiado=miForm.getBuscarColegiado();
-
-			miHash.put("IDINSTITUCION",idinstitucion);
-			miHash.put("IDTURNO",idturno);
-			miHash.put("IDGUARDIA",idguardia);
-			miHash.put("IDCALENDARIOGUARDIAS",idcalendarioguardias);
-
-			if ((buscarFechaDesde==null || buscarFechaDesde.trim().equals(""))&&(buscarFechaHasta==null || buscarFechaHasta.trim().equals(""))&& (buscarNcolegiado==null || buscarNcolegiado.trim().equals("")) ){
-				//Busqueda de colegiados. Obtengo el nombre, numero de colegiado, observaciones y las fechas de inicio y fin
-				v_guardias = admGuardiaColegiado.selectGenerico(admGuardiaColegiado.buscarColegiadosOld(miHash));
-
-				int i = 0;
-				while (i < v_guardias.size()) {
-					nombre = (String)((Hashtable)v_guardias.get(i)).get(CenPersonaBean.C_NOMBRE);
-					//fechaInicio = (String)((Hashtable)v_guardias.get(i)).get(ScsCabeceraGuardiasBean.C_FECHA_INICIO);
-					fechaInicio = (String)((Hashtable)v_guardias.get(i)).get("FECHAINICIO");
-					fechaFin = (String)((Hashtable)v_guardias.get(i)).get(ScsCabeceraGuardiasBean.C_FECHA_FIN);
-					idpersona = (String)((Hashtable)v_guardias.get(i)).get(ScsCabeceraGuardiasBean.C_IDPERSONA);
-					numeroColegiado = (String)((Hashtable)v_guardias.get(i)).get(CenColegiadoBean.C_NCOLEGIADO);
-
-					fechaInicioPermuta = (String)((Hashtable)v_guardias.get(i)).get("FECHAINICIOPERMUTA");
-					fechaFinPermuta = (String)((Hashtable)v_guardias.get(i)).get("FECHAFINPERMUTA");
-					numero = (String)((Hashtable)v_guardias.get(i)).get("NUMEROPERMUTA");
-					if (numero.equals("")){
-						numero="NINGUNO";
-					}
-
-					//Ejecuto el PL de Permutas que me dice el tipo de Permuta posible:				
-					pl = admPermutaguardias.ejecutarFuncionPermutas(idinstitucion,idturno,idguardia,idpersona,GstDate.getFormatedDateShort(usr.getLanguage(),fechaInicio));
-					if (pl.equals("5")){//si buscando por la fecha de inicio (para el caso en el que todavia no se haya confirmado la solicitud de la permuta) devuelve el valor "5" (pendiente de permutar) volvemos a ejecutar
-						// el procedimiento pasando la fecha de inicio de permuta (para el caso en el que ya se haya 
-						// confirmado la permuta) por si sigue devolviendo "5" o devuelve otro
-						// valor como "3" (guardia permutada), como "2" (Permuta solicitada) o "4" (Pendiente de confirmar).
-
-						pl = admPermutaguardias.ejecutarFuncionPermutas(idinstitucion,idturno,idguardia,idpersona,GstDate.getFormatedDateShort(usr.getLanguage(),fechaInicioPermuta));
-					} 
-
-					//Inserto los datos a visualizar en el JSP
-					Hashtable nueva = new Hashtable();
-					nueva.put("FECHAINICIO",fechaInicio);
-					nueva.put("FECHAFIN",fechaFin);			
-					nueva.put("FECHAINICIOPERMUTA",fechaInicioPermuta);
-					nueva.put("FECHAFINPERMUTA",fechaFinPermuta);				
-					nueva.put("FECHAPERMUTA",fechaPermuta);
-					nueva.put("NUMEROPERMUTA",numero);
-					nueva.put("NUMEROCOLEGIADO",numeroColegiado);
-					nueva.put("NOMBRE",nombre);
-					nueva.put("IDPERSONA",idpersona);
-					nueva.put("IDINSTITUCION",idinstitucion);
-					nueva.put("IDTURNO",idturno);
-					nueva.put("IDGUARDIA",idguardia);
-					nueva.put("IDCALENDARIOGUARDIAS",idcalendarioguardias);
-					nueva.put("OBSERVACIONES",observaciones);
-					nueva.put("PL",pl);
-					v_resultado.add(i,nueva);	
-					i++;	
-				}//Fin del while
-			}else{//con criterios de búsqueda
-				if (buscarNcolegiado!=null && !buscarNcolegiado.trim().equals("")){
-					miHash.put("NUMCOLEGIADO",buscarNcolegiado);	
-				}
-				if (buscarFechaDesde!=null && !buscarFechaDesde.trim().equals("")){
-					UtilidadesHash.set(miHash, "FECHA_INICIO", buscarFechaDesde);
-				}
-				if (buscarFechaHasta!=null && !buscarFechaHasta.trim().equals("")){
-					UtilidadesHash.set(miHash, "FECHA_FIN", buscarFechaHasta);
-				}
-
-
-
-				v_guardias = admGuardiaColegiado.selectGenerico(admGuardiaColegiado.buscarColegiadosOld(miHash));
-				int i = 0;
-				while (i < v_guardias.size()) {
-					nombre = (String)((Hashtable)v_guardias.get(i)).get(CenPersonaBean.C_NOMBRE);
-					//fechaInicio = (String)((Hashtable)v_guardias.get(i)).get(ScsCabeceraGuardiasBean.C_FECHA_INICIO);
-					fechaInicio = (String)((Hashtable)v_guardias.get(i)).get("FECHAINICIO");
-					fechaFin = (String)((Hashtable)v_guardias.get(i)).get(ScsCabeceraGuardiasBean.C_FECHA_FIN);
-					idpersona = (String)((Hashtable)v_guardias.get(i)).get(ScsCabeceraGuardiasBean.C_IDPERSONA);
-					numeroColegiado = (String)((Hashtable)v_guardias.get(i)).get(CenColegiadoBean.C_NCOLEGIADO);
-
-					fechaInicioPermuta = (String)((Hashtable)v_guardias.get(i)).get("FECHAINICIOPERMUTA");
-					fechaFinPermuta = (String)((Hashtable)v_guardias.get(i)).get("FECHAFINPERMUTA");
-					numero = (String)((Hashtable)v_guardias.get(i)).get("NUMEROPERMUTA");
-					if (numero.equals("")){
-						numero="NINGUNO";
-					}
-
-					//Ejecuto el PL de Permutas que me dice el tipo de Permuta posible:				
-					pl = admPermutaguardias.ejecutarFuncionPermutas(idinstitucion,idturno,idguardia,idpersona,GstDate.getFormatedDateShort(usr.getLanguage(),fechaInicio));
-					if (pl.equals("5")){//si buscando por la fecha de inicio (para el caso en el que todavia no se haya confirmado la solicitud de la permuta) devuelve el valor "5" (pendiente de permutar) volvemos a ejecutar
-						// el procedimiento pasando la fecha de inicio de permuta (para el caso en el que ya se haya 
-						// confirmado la permuta) por si sigue devolviendo "5" o devuelve otro
-						// valor como "3" (guardia permutada), como "2" (Permuta solicitada) o "4" (Pendiente de confirmar).
-
-						pl = admPermutaguardias.ejecutarFuncionPermutas(idinstitucion,idturno,idguardia,idpersona,GstDate.getFormatedDateShort(usr.getLanguage(),fechaInicioPermuta));
-					} 
-
-					//Inserto los datos a visualizar en el JSP
-					Hashtable nueva = new Hashtable();
-					nueva.put("FECHAINICIO",fechaInicio);
-					nueva.put("FECHAFIN",fechaFin);			
-					nueva.put("FECHAINICIOPERMUTA",fechaInicioPermuta);
-					nueva.put("FECHAFINPERMUTA",fechaFinPermuta);				
-					nueva.put("FECHAPERMUTA",fechaPermuta);
-					nueva.put("NUMEROPERMUTA",numero);
-					nueva.put("NUMEROCOLEGIADO",numeroColegiado);
-					nueva.put("NOMBRE",nombre);
-					nueva.put("IDPERSONA",idpersona);
-					nueva.put("IDINSTITUCION",idinstitucion);
-					nueva.put("IDTURNO",idturno);
-					nueva.put("IDGUARDIA",idguardia);
-					nueva.put("IDCALENDARIOGUARDIAS",idcalendarioguardias);
-					nueva.put("OBSERVACIONES",observaciones);
-					nueva.put("PL",pl);
-					v_resultado.add(i,nueva);	
-					i++;	
-				}//Fin del while
-			}
-
-			//Busco los colegiado de guardias
-			forward = "buscarModalGuardia";
-
-			request.setAttribute("resultado",v_resultado);
-			request.setAttribute("MODOORIGINAL",modoOriginal);
-			request.setAttribute("OBSERVACIONES",observaciones);
-			request.setAttribute("FECHADESDE",fechaDesde);
-			request.setAttribute("FECHAHASTA",fechaHasta);
-			request.setAttribute("IDINSTITUCION",idinstitucion);
-			request.setAttribute("IDTURNO",idturno);
-			request.setAttribute("IDGUARDIA",idguardia);
-			request.setAttribute("IDCALENDARIOGUARDIAS",idcalendarioguardias);
-			request.setAttribute("DIASGUARDIA",diasguardia);
-			request.setAttribute("DIASACOBRAR",diasacobrar);
-			request.setAttribute("TIPODIAS",tipodias);
-			request.setAttribute("modo",miForm.getModo());
-			request.setAttribute("NUMEROLETRADOS",miForm.getNumeroLetrados());
-			request.setAttribute("NUMEROSUSTITUTOS",miForm.getNumeroSustitutos());
-			if (buscarNcolegiado!=null && !buscarNcolegiado.trim().equals("") && v_guardias.size()>0){
-				request.setAttribute("TIENE_COLEGIADO","1");	
-			}else{
-				request.setAttribute("TIENE_COLEGIADO","0");
-			}
-		} 
-		catch (Exception e){
-			throwExcp("messages.select.error",e,null);			
-		}
-
-		return forward;
-	}
 
 	protected String buscarPor(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		DefinirCalendarioGuardiaForm miForm = (DefinirCalendarioGuardiaForm) formulario;
+		ScsCabeceraGuardiasAdm admCabeceraGuardia = new ScsCabeceraGuardiasAdm(this.getUserBean(request));
 		ScsGuardiasColegiadoAdm admGuardiaColegiado = new ScsGuardiasColegiadoAdm(this.getUserBean(request));
 		ScsPermutaGuardiasAdm admPermutaguardias = new ScsPermutaGuardiasAdm(this.getUserBean(request));
 		FcsFactApunteAdm admApuntes = new FcsFactApunteAdm(this.getUserBean(request));
@@ -1121,7 +934,7 @@ public class DefinirCalendarioGuardiaAction extends MasterAction
 
 			if ((buscarFechaDesde==null || buscarFechaDesde.trim().equals(""))&&(buscarFechaHasta==null || buscarFechaHasta.trim().equals(""))&& (buscarNcolegiado==null || buscarNcolegiado.trim().equals("")) ){
 				//Busqueda de colegiados. Obtengo el nombre, numero de colegiado, observaciones y las fechas de inicio y fin
-				RowsContainer rc = admGuardiaColegiado.findNLS(admGuardiaColegiado.buscarColegiados(miHash));
+				RowsContainer rc = admGuardiaColegiado.findNLS(admCabeceraGuardia.buscarColegiados(miHash));
 
 				for (int i = 0; i < rc.size(); i++)	{		
 					Row fila = (Row) rc.get(i);
@@ -1260,7 +1073,7 @@ public class DefinirCalendarioGuardiaAction extends MasterAction
 					} 
 
 					
-					String guardiaFacturada = admApuntes.exiteApunteGuardia(idinstitucion,idturno,idguardia,idcalendarioguardias,idpersona,GstDate.getFormatedDateShort(usr.getLanguage(),fInicio))?"true":"false";
+					String guardiaFacturada = admApuntes.exiteApunteGuardia(idinstitucion,idturno,idguardia,idpersona,GstDate.getFormatedDateShort(usr.getLanguage(),fInicio))?"true":"false";
 
 					//Inserto los datos a visualizar en el JSP
 					Hashtable nueva = new Hashtable();
@@ -1289,7 +1102,7 @@ public class DefinirCalendarioGuardiaAction extends MasterAction
 					nueva.put("VALIDADO", validado);
 				
 					ScsGuardiasColegiadoAdm admGuardiasColegiado = new ScsGuardiasColegiadoAdm(this.getUserBean(request));
-					if (admGuardiasColegiado.validarBorradoGuardia(idinstitucion,idcalendarioguardias,idturno,idguardia,GstDate.getFormatedDateShort(usr.getLanguage(),fInicio),GstDate.getFormatedDateShort(usr.getLanguage(),fechaFin))){
+					if (admGuardiasColegiado.validarBorradoGuardia(idinstitucion,idturno,idguardia,GstDate.getFormatedDateShort(usr.getLanguage(),fInicio),GstDate.getFormatedDateShort(usr.getLanguage(),fechaFin))){
 						nueva.put("PINTARBOTONBORRAR", "1");
 
 					}else{
@@ -1311,7 +1124,7 @@ public class DefinirCalendarioGuardiaAction extends MasterAction
 
 
 
-				RowsContainer rc = admGuardiaColegiado.findNLS(admGuardiaColegiado.buscarColegiados(miHash));
+				RowsContainer rc = admGuardiaColegiado.findNLS(admCabeceraGuardia.buscarColegiados(miHash));
 
 				for (int i = 0; i < rc.size(); i++)	{		
 					Row fila = (Row) rc.get(i);
@@ -1481,7 +1294,7 @@ public class DefinirCalendarioGuardiaAction extends MasterAction
 					nueva.put("VALIDADO", validado);
 
 					ScsGuardiasColegiadoAdm admGuardiasColegiado = new ScsGuardiasColegiadoAdm(this.getUserBean(request));
-					if (admGuardiasColegiado.validarBorradoGuardia(idinstitucion,idcalendarioguardias,idturno,idguardia,GstDate.getFormatedDateShort(usr.getLanguage(),fInicio),GstDate.getFormatedDateShort(usr.getLanguage(),fechaFin))){
+					if (admGuardiasColegiado.validarBorradoGuardia(idinstitucion,idturno,idguardia,GstDate.getFormatedDateShort(usr.getLanguage(),fInicio),GstDate.getFormatedDateShort(usr.getLanguage(),fechaFin))){
 						nueva.put("PINTARBOTONBORRAR", "1");
 
 					}else{
@@ -1594,7 +1407,6 @@ public class DefinirCalendarioGuardiaAction extends MasterAction
 			//Consulto las guardias del periodo:
 			StringBuffer where = new StringBuffer();
 			where.append(" WHERE "+ScsGuardiasColegiadoBean.C_IDINSTITUCION+"="+idInstitucion);
-			where.append(" AND "+ScsGuardiasColegiadoBean.C_IDCALENDARIOGUARDIAS +"="+idCalendario);
 			where.append(" AND "+ScsGuardiasColegiadoBean.C_IDTURNO +"="+idTurno);
 			where.append(" AND "+ScsGuardiasColegiadoBean.C_IDGUARDIA +"="+idGuardia);
 			where.append(" AND "+ScsGuardiasColegiadoBean.C_FECHAINICIO+"=TO_DATE('"+fechaInicio+"','DD/MM/YYYY')");

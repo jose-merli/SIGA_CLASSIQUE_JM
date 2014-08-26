@@ -22,7 +22,6 @@ public class ScsGuardiasColegiadoBean extends MasterBean
 	static public final String C_IDINSTITUCION					= "IDINSTITUCION";
 	static public final String C_IDTURNO						= "IDTURNO";
 	static public final String C_IDGUARDIA						= "IDGUARDIA";
-	static public final String C_IDCALENDARIOGUARDIAS			= "IDCALENDARIOGUARDIAS";
 	static public final String C_IDPERSONA						= "IDPERSONA";
 	static public final String C_FECHAINICIO					= "FECHAINICIO";
 	static public final String C_FECHAFIN						= "FECHAFIN";
@@ -42,7 +41,6 @@ public class ScsGuardiasColegiadoBean extends MasterBean
 	private Integer	idInstitucion;
 	private Integer	idTurno;
 	private Integer	idGuardia;
-	private Integer	idCalendarioGuardias;
 	private Long	idPersona;
 	private String	fechaInicio;
 	private String	fechaFin;
@@ -64,7 +62,6 @@ public class ScsGuardiasColegiadoBean extends MasterBean
 	public String getFacturado() {return facturado;}
 	public String getFechaFin() {return fechaFin;}
 	public String getFechaInicio() {return fechaInicio;}
-	public Integer getIdCalendarioGuardias() {return idCalendarioGuardias;}
 	public Integer getIdFacturacion() {return idFacturacion;}
 	public Integer getIdGuardia() {return idGuardia;}
 	public Integer getIdInstitucion() {return idInstitucion;}
@@ -84,7 +81,6 @@ public class ScsGuardiasColegiadoBean extends MasterBean
 	public void setFacturado(String valor) {this.facturado = valor;}
 	public void setFechaFin(String valor) {this.fechaFin = valor;}
 	public void setFechaInicio(String valor) {this.fechaInicio = valor;}
-	public void setIdCalendarioGuardias(Integer valor) {this.idCalendarioGuardias = valor;}
 	public void setIdFacturacion(Integer valor) {this.idFacturacion = valor;}
 	public void setIdGuardia(Integer valor) {this.idGuardia = valor;}
 	public void setIdInstitucion(Integer valor) {this.idInstitucion = valor;}

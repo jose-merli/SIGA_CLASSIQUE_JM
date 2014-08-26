@@ -21,7 +21,7 @@ public class FcsFactGuardiasColegiadoAdm extends MasterBeanAdministrador {
 
 	protected String[] getCamposBean() {
 		String [] campos = {FcsFactGuardiasColegiadoBean.C_IDAPUNTE,	FcsFactGuardiasColegiadoBean.C_FECHAINICIO,
-							FcsFactGuardiasColegiadoBean.C_FECHAMODIFICACION,	FcsFactGuardiasColegiadoBean.C_IDCALENDARIOGUARDIAS,
+							FcsFactGuardiasColegiadoBean.C_FECHAMODIFICACION,	
 							FcsFactGuardiasColegiadoBean.C_IDFACTURACION,	FcsFactGuardiasColegiadoBean.C_IDGUARDIA,
 							FcsFactGuardiasColegiadoBean.C_IDINSTITUCION,	FcsFactGuardiasColegiadoBean.C_IDPERSONA,
 							FcsFactGuardiasColegiadoBean.C_IDTURNO,	FcsFactGuardiasColegiadoBean.C_PRECIOAPLICADO,
@@ -32,7 +32,7 @@ public class FcsFactGuardiasColegiadoAdm extends MasterBeanAdministrador {
 	protected String[] getClavesBean() {
 		String [] claves = {FcsFactGuardiasColegiadoBean.C_IDINSTITUCION,		FcsFactGuardiasColegiadoBean.C_IDFACTURACION,
 							FcsFactGuardiasColegiadoBean.C_IDTURNO,				FcsFactGuardiasColegiadoBean.C_IDGUARDIA,
-							FcsFactGuardiasColegiadoBean.C_IDCALENDARIOGUARDIAS,FcsFactGuardiasColegiadoBean.C_IDPERSONA,
+							FcsFactGuardiasColegiadoBean.C_IDPERSONA,
 							FcsFactGuardiasColegiadoBean.C_IDAPUNTE,				FcsFactGuardiasColegiadoBean.C_FECHAINICIO};
 		return claves;
 	}
@@ -48,7 +48,6 @@ public class FcsFactGuardiasColegiadoAdm extends MasterBeanAdministrador {
 			bean = new FcsFactGuardiasColegiadoBean();
 			bean.setFechaInicio			(UtilidadesHash.getString(hash,FcsFactGuardiasColegiadoBean.C_FECHAINICIO));
 			bean.setFechaMod			(UtilidadesHash.getString(hash,FcsFactGuardiasColegiadoBean.C_FECHAMODIFICACION));
-			bean.setIdCalendarioGuardias(UtilidadesHash.getInteger(hash,FcsFactGuardiasColegiadoBean.C_IDCALENDARIOGUARDIAS));
 			bean.setIdFacturacion		(UtilidadesHash.getInteger(hash,FcsFactGuardiasColegiadoBean.C_IDFACTURACION));
 			bean.setIdGuardia			(UtilidadesHash.getInteger(hash,FcsFactGuardiasColegiadoBean.C_IDGUARDIA));
 			bean.setIdInstitucion		(UtilidadesHash.getInteger(hash,FcsFactGuardiasColegiadoBean.C_IDINSTITUCION));
@@ -73,7 +72,6 @@ public class FcsFactGuardiasColegiadoAdm extends MasterBeanAdministrador {
 			FcsFactGuardiasColegiadoBean b = (FcsFactGuardiasColegiadoBean) bean;
 			UtilidadesHash.set(htData, FcsFactGuardiasColegiadoBean.C_FECHAINICIO, b.getFechaInicio().toString());
 			UtilidadesHash.set(htData, FcsFactGuardiasColegiadoBean.C_FECHAMODIFICACION, b.getFechaMod().toString());
-			UtilidadesHash.set(htData, FcsFactGuardiasColegiadoBean.C_IDCALENDARIOGUARDIAS, b.getIdCalendarioGuardias().toString());
 			UtilidadesHash.set(htData, FcsFactGuardiasColegiadoBean.C_IDFACTURACION, b.getIdFacturacion().toString());
 			UtilidadesHash.set(htData, FcsFactGuardiasColegiadoBean.C_IDGUARDIA, b.getIdGuardia().toString());
 			UtilidadesHash.set(htData, FcsFactGuardiasColegiadoBean.C_IDINSTITUCION, b.getIdInstitucion().toString());
@@ -184,7 +182,6 @@ public class FcsFactGuardiasColegiadoAdm extends MasterBeanAdministrador {
 							" AND C." + ScsGuardiasColegiadoBean.C_IDINSTITUCION + "= F." +FcsFactGuardiasColegiadoBean.C_IDINSTITUCION +
 							" AND C." + ScsGuardiasColegiadoBean.C_IDTURNO + "= F." +FcsFactGuardiasColegiadoBean.C_IDTURNO +
 							" AND C." + ScsGuardiasColegiadoBean.C_IDGUARDIA + "= F." +FcsFactGuardiasColegiadoBean.C_IDGUARDIA +
-							" AND C." + ScsGuardiasColegiadoBean.C_IDCALENDARIOGUARDIAS + "= F." +FcsFactGuardiasColegiadoBean.C_IDCALENDARIOGUARDIAS +
 							" AND C." + ScsGuardiasColegiadoBean.C_IDPERSONA + "= F." +FcsFactGuardiasColegiadoBean.C_IDPERSONA +
 							" AND C." + ScsGuardiasColegiadoBean.C_FECHAINICIO + "= F." +FcsFactGuardiasColegiadoBean.C_FECHAINICIO +
 							" AND F." + FcsFactGuardiasColegiadoBean.C_IDINSTITUCION + "=" + idInstitucion +

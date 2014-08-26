@@ -179,12 +179,12 @@ public class ScsCalendarioGuardiasAdm extends MasterBeanAdministrador
 		try {
 			consulta = "SELECT S.*, ";
 			consulta += " ((select count(*) ";
-			consulta += "	  from SCS_GUARDIASCOLEGIADO ";
+			consulta += "	  from SCS_CABECERAGUARDIAS ";
 			consulta += "	 where IDINSTITUCION = S.IDINSTITUCION ";
 			consulta += "	   and IDTURNO = S.IDTURNO ";
 			consulta += "	   and IDGUARDIA = S.IDGUARDIA ";
 			consulta += "      and IDCALENDARIOGUARDIAS = S.idcalendarioguardias ";
-			consulta += "	   and trunc(FECHAFIN) < trunc(sysdate))) as guardias ";
+			consulta += "	   and trunc(FECHA_FIN) < trunc(sysdate))) as guardias ";
 			consulta += " FROM "+ScsCalendarioGuardiasBean.T_NOMBRETABLA + " S ";
 			consulta += "WHERE S."+ScsCalendarioGuardiasBean.C_IDINSTITUCION+"="+idinstitucion_pestanha;
 			consulta += "  AND S."+ScsCalendarioGuardiasBean.C_IDTURNO+"="+idturno_pestanha;
@@ -525,9 +525,9 @@ public class ScsCalendarioGuardiasAdm extends MasterBeanAdministrador
 		            	Row fila = (Row) rc.get(0);
 		        		Hashtable<String, Object> htFila=fila.getRow(); 
 		            	guardiaBean = new ScsCalendarioGuardiasBean();
-		           		guardiaBean.setIdTurno(UtilidadesHash.getInteger(htFila,ScsGuardiasColegiadoBean.C_IDTURNO));
-		           		guardiaBean.setIdGuardia(UtilidadesHash.getInteger(htFila,ScsGuardiasColegiadoBean.C_IDGUARDIA));
-		           		guardiaBean.setIdCalendarioGuardias(UtilidadesHash.getInteger(htFila,ScsGuardiasColegiadoBean.C_IDCALENDARIOGUARDIAS));
+		           		guardiaBean.setIdTurno(UtilidadesHash.getInteger(htFila,ScsCalendarioGuardiasBean.C_IDTURNO));
+		           		guardiaBean.setIdGuardia(UtilidadesHash.getInteger(htFila,ScsCalendarioGuardiasBean.C_IDGUARDIA));
+		           		guardiaBean.setIdCalendarioGuardias(UtilidadesHash.getInteger(htFila,ScsCalendarioGuardiasBean.C_IDCALENDARIOGUARDIAS));
 	        		}else{
 	        			throw new SIGAException("gratuita.volantesExpres.mensaje.diaSinCalendarioGuardias");
 	        			
@@ -585,9 +585,9 @@ public class ScsCalendarioGuardiasAdm extends MasterBeanAdministrador
 	            	Row fila = (Row) rc.get(0);
 	        		Hashtable<String, Object> htFila=fila.getRow(); 
 	            	guardiaBean = new ScsCalendarioGuardiasBean();
-	           		guardiaBean.setIdTurno(UtilidadesHash.getInteger(htFila,ScsGuardiasColegiadoBean.C_IDTURNO));
-	           		guardiaBean.setIdGuardia(UtilidadesHash.getInteger(htFila,ScsGuardiasColegiadoBean.C_IDGUARDIA));
-	           		guardiaBean.setIdCalendarioGuardias(UtilidadesHash.getInteger(htFila,ScsGuardiasColegiadoBean.C_IDCALENDARIOGUARDIAS));
+	           		guardiaBean.setIdTurno(UtilidadesHash.getInteger(htFila,ScsCalendarioGuardiasBean.C_IDTURNO));
+	           		guardiaBean.setIdGuardia(UtilidadesHash.getInteger(htFila,ScsCalendarioGuardiasBean.C_IDGUARDIA));
+	           		guardiaBean.setIdCalendarioGuardias(UtilidadesHash.getInteger(htFila,ScsCalendarioGuardiasBean.C_IDCALENDARIOGUARDIAS));
         		}else{
         			throw new SIGAException("gratuita.volantesExpres.mensaje.diaSinCalendarioGuardias");
         			

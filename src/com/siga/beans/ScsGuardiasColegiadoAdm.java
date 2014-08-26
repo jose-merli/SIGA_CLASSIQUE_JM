@@ -79,7 +79,6 @@ public class ScsGuardiasColegiadoAdm extends MasterBeanAdministrador
 			ScsGuardiasColegiadoBean.C_FECHAFIN,
 			ScsGuardiasColegiadoBean.C_FECHAINICIO,
 			ScsGuardiasColegiadoBean.C_FECHAMODIFICACION,
-			ScsGuardiasColegiadoBean.C_IDCALENDARIOGUARDIAS,
 			ScsGuardiasColegiadoBean.C_RESERVA,
 			ScsGuardiasColegiadoBean.C_IDGUARDIA,
 			ScsGuardiasColegiadoBean.C_IDINSTITUCION,
@@ -105,7 +104,6 @@ public class ScsGuardiasColegiadoAdm extends MasterBeanAdministrador
 			ScsGuardiasColegiadoBean.C_IDINSTITUCION,
 			ScsGuardiasColegiadoBean.C_IDTURNO,
 			ScsGuardiasColegiadoBean.C_IDGUARDIA,
-			ScsGuardiasColegiadoBean.C_IDCALENDARIOGUARDIAS,
 			ScsGuardiasColegiadoBean.C_IDPERSONA,
 			ScsGuardiasColegiadoBean.C_FECHAINICIO,
 			ScsGuardiasColegiadoBean.C_FECHAFIN
@@ -130,7 +128,6 @@ public class ScsGuardiasColegiadoAdm extends MasterBeanAdministrador
 			bean.setFechaFin					(UtilidadesHash.getString (hash, ScsGuardiasColegiadoBean.C_FECHAFIN));
 			bean.setFechaInicio					(UtilidadesHash.getString (hash, ScsGuardiasColegiadoBean.C_FECHAINICIO));
 			bean.setFechaMod					(UtilidadesHash.getString (hash, ScsGuardiasColegiadoBean.C_FECHAMODIFICACION));
-			bean.setIdCalendarioGuardias		(UtilidadesHash.getInteger(hash, ScsGuardiasColegiadoBean.C_IDCALENDARIOGUARDIAS));
 			bean.setReserva						(UtilidadesHash.getString (hash, ScsGuardiasColegiadoBean.C_RESERVA));
 			bean.setIdGuardia					(UtilidadesHash.getInteger(hash, ScsGuardiasColegiadoBean.C_IDGUARDIA));
 			bean.setIdInstitucion				(UtilidadesHash.getInteger(hash, ScsGuardiasColegiadoBean.C_IDINSTITUCION));
@@ -169,7 +166,6 @@ public class ScsGuardiasColegiadoAdm extends MasterBeanAdministrador
 			UtilidadesHash.set(hash, ScsGuardiasColegiadoBean.C_FECHAFIN, b.getFechaFin());
 			UtilidadesHash.set(hash, ScsGuardiasColegiadoBean.C_FECHAINICIO, b.getFechaInicio());
 			UtilidadesHash.set(hash, ScsGuardiasColegiadoBean.C_FECHAMODIFICACION, b.getFechaMod());
-			UtilidadesHash.set(hash, ScsGuardiasColegiadoBean.C_IDCALENDARIOGUARDIAS, String.valueOf(b.getIdCalendarioGuardias()));
 			UtilidadesHash.set(hash, ScsGuardiasColegiadoBean.C_RESERVA, b.getReserva());
 			UtilidadesHash.set(hash, ScsGuardiasColegiadoBean.C_IDGUARDIA, String.valueOf(b.getIdGuardia()));
 			UtilidadesHash.set(hash, ScsGuardiasColegiadoBean.C_IDINSTITUCION, String.valueOf(b.getIdInstitucion()));
@@ -224,10 +220,25 @@ public class ScsGuardiasColegiadoAdm extends MasterBeanAdministrador
 			idguardia = (String)hash.get(ScsCalendarioGuardiasBean.C_IDGUARDIA);			
 
 			sql.append(" delete from "+ScsGuardiasColegiadoBean.T_NOMBRETABLA);
-			sql.append(" where "+ScsGuardiasColegiadoBean.C_IDINSTITUCION+"="+idinstitucion);
-			sql.append(" and "+ScsGuardiasColegiadoBean.C_IDCALENDARIOGUARDIAS+"="+idcalendarioguardias);
-			sql.append(" and "+ScsGuardiasColegiadoBean.C_IDTURNO+"="+idturno);
-			sql.append(" and "+ScsGuardiasColegiadoBean.C_IDGUARDIA+"="+idguardia);
+			sql.append(" where ("+ScsGuardiasColegiadoBean.C_IDINSTITUCION + ",");
+			sql.append(" "+ScsGuardiasColegiadoBean.C_IDTURNO + ",");
+			sql.append(" "+ScsGuardiasColegiadoBean.C_IDGUARDIA + ",");
+			sql.append(" "+ScsGuardiasColegiadoBean.C_IDPERSONA + ",");
+			sql.append(" "+ScsGuardiasColegiadoBean.C_FECHAINICIO);
+
+			sql.append(" ) in (select ");
+			sql.append(" "+ScsCabeceraGuardiasBean.C_IDINSTITUCION + ",");
+			sql.append(" "+ScsCabeceraGuardiasBean.C_IDTURNO + ",");
+			sql.append(" "+ScsCabeceraGuardiasBean.C_IDGUARDIA + ",");
+			sql.append(" "+ScsCabeceraGuardiasBean.C_IDPERSONA + ",");
+			sql.append(" "+ScsCabeceraGuardiasBean.C_FECHA_INICIO);
+			sql.append(" from "+ScsCabeceraGuardiasBean.T_NOMBRETABLA);
+			sql.append(" where "+ScsCabeceraGuardiasBean.C_IDINSTITUCION+"="+idinstitucion);
+			sql.append(" and "+ScsCabeceraGuardiasBean.C_IDCALENDARIOGUARDIAS+"="+idcalendarioguardias);
+			sql.append(" and "+ScsCabeceraGuardiasBean.C_IDTURNO+"="+idturno);
+			sql.append(" and "+ScsCabeceraGuardiasBean.C_IDGUARDIA+"="+idguardia);
+			sql.append(" ) ");
+
 			deleteSQL(sql.toString());		
 //			ClsMngBBDD.executeUpdate(sql.toString());
 			salida = true;
@@ -238,10 +249,9 @@ public class ScsGuardiasColegiadoAdm extends MasterBeanAdministrador
 	}
 
 	/**
-	 * Ejecuta un delete por 4 campos ID: IDINSTITUCION,IDTURNO,IDGUARDIA,IDCALENDARIOGUARDIAS
+	 * Ejecuta un delete
 	 * @param Hashtable hash: tabla hash copn los campos: 
 	 * - String idinstitucion
-	 * - String idcalendarioguardias
 	 * - String idturno
 	 * - String idguardia
 	 * - String idPersona    
@@ -249,13 +259,12 @@ public class ScsGuardiasColegiadoAdm extends MasterBeanAdministrador
 	 * @throws ClsExceptions
 	 */
 	public boolean deleteGuardiaCalendario(Hashtable hash) throws ClsExceptions {
-		String idinstitucion="", idcalendarioguardias="", idturno="", idguardia="", fechaInicio="", fechaFin="", idPersona="";
+		String idinstitucion="", idturno="", idguardia="", fechaInicio="", fechaFin="", idPersona="";
 		boolean salida = false;
 		StringBuffer sql = new StringBuffer();
 		
 		try {
 			idinstitucion = (String)hash.get(ScsCalendarioGuardiasBean.C_IDINSTITUCION);
-			idcalendarioguardias = (String)hash.get(ScsCalendarioGuardiasBean.C_IDCALENDARIOGUARDIAS);
 			idturno = (String)hash.get(ScsCalendarioGuardiasBean.C_IDTURNO);
 			idguardia = (String)hash.get(ScsCalendarioGuardiasBean.C_IDGUARDIA);
 			idPersona = (String)hash.get("IDPERSONA");
@@ -265,7 +274,6 @@ public class ScsGuardiasColegiadoAdm extends MasterBeanAdministrador
 
 			sql.append(" delete from "+ScsGuardiasColegiadoBean.T_NOMBRETABLA);
 			sql.append(" where "+ScsGuardiasColegiadoBean.C_IDINSTITUCION+"="+idinstitucion);
-			sql.append(" and "+ScsGuardiasColegiadoBean.C_IDCALENDARIOGUARDIAS+"="+idcalendarioguardias);
 			sql.append(" and "+ScsGuardiasColegiadoBean.C_IDTURNO+"="+idturno);
 			sql.append(" and "+ScsGuardiasColegiadoBean.C_IDGUARDIA+"="+idguardia);
 			sql.append(" and "+ScsGuardiasColegiadoBean.C_IDPERSONA+"="+idPersona);
@@ -278,311 +286,7 @@ public class ScsGuardiasColegiadoAdm extends MasterBeanAdministrador
 		}
 		return salida;
 	}	
-	
-	/** 
-	 * Devuelve los registros con los colegiado inscritos en un calendario excepto el registro de un colegiado del que tenemos su idpersona.
-	 * 
-	 * @param Hashtable miHash: identificadores de busqueda de la tabla SCS_GUARDIASCOLEGIADO
-	 * @return String con la consulta SQL.
-	 * @throws ClsExceptions
-	 */	
-	public String buscarOtrosColegiados(Hashtable miHash) throws ClsExceptions{
-		String consulta = "";
-		String idinstitucion="", idguardia="", idturno="", idcalendarioguardias="", reserva="", idpersona="";
-		
-		try {
-			idinstitucion = (String)miHash.get(ScsGuardiasColegiadoBean.C_IDINSTITUCION);
-			idguardia = (String)miHash.get(ScsGuardiasColegiadoBean.C_IDGUARDIA);
-			idturno = (String)miHash.get(ScsGuardiasColegiadoBean.C_IDTURNO);
-			idcalendarioguardias = (String)miHash.get(ScsGuardiasColegiadoBean.C_IDCALENDARIOGUARDIAS);
-			reserva = (String)miHash.get(ScsGuardiasColegiadoBean.C_RESERVA);
-			idpersona = (String)miHash.get(ScsGuardiasColegiadoBean.C_IDPERSONA);
 
-			consulta = "SELECT ";
-			consulta += " guard."+ScsGuardiasColegiadoBean.C_FECHAINICIO+",";
-			consulta += " guard."+ScsGuardiasColegiadoBean.C_FECHAFIN+",";
-			consulta += " guard."+ScsGuardiasColegiadoBean.C_IDCALENDARIOGUARDIAS+",";
-			consulta += " guard."+ScsGuardiasColegiadoBean.C_IDTURNO+",";
-			consulta += " guard."+ScsGuardiasColegiadoBean.C_IDGUARDIA+",";
-			consulta += " guard."+ScsGuardiasColegiadoBean.C_IDPERSONA+",";			
-			consulta += " perso."+CenPersonaBean.C_NOMBRE+" || ' ' || perso."+CenPersonaBean.C_APELLIDOS1+" || ' ' || perso."+CenPersonaBean.C_APELLIDOS2+" NOMBRE,";
-			consulta += " coleg."+CenColegiadoBean.C_NCOLEGIADO+",";
-			//FUNCION DE PERMUTAS: calculo su valor 
-			consulta += " F_SIGA_NUMEROPERMUTAGUARDIAS(";
-			consulta +=       " guard."+ScsGuardiasColegiadoBean.C_IDINSTITUCION+", guard."+ScsGuardiasColegiadoBean.C_IDTURNO+", guard."+ScsGuardiasColegiadoBean.C_IDGUARDIA+",";
-			consulta += 	  " guard."+ScsGuardiasColegiadoBean.C_IDPERSONA+", guard."+ScsGuardiasColegiadoBean.C_FECHAINICIO;
-			consulta+= 		  ") AS FUNCIONPERMUTAS";
-			consulta += " FROM "+ScsGuardiasColegiadoBean.T_NOMBRETABLA+" guard,";
-			consulta += CenPersonaBean.T_NOMBRETABLA+" perso,";
-			consulta += CenColegiadoBean.T_NOMBRETABLA+" coleg";
-			consulta += " WHERE ";			
-			consulta += " guard."+ScsGuardiasColegiadoBean.C_IDINSTITUCION+"="+idinstitucion;
-			consulta += " AND guard."+ScsGuardiasColegiadoBean.C_IDTURNO+"="+idturno;
-			consulta += " AND guard."+ScsGuardiasColegiadoBean.C_IDGUARDIA+"="+idguardia;
-			consulta += " AND guard."+ScsGuardiasColegiadoBean.C_IDCALENDARIOGUARDIAS+"="+idcalendarioguardias;
-			consulta += " AND guard."+ScsGuardiasColegiadoBean.C_RESERVA+"='"+reserva+"'";
-			consulta += " AND guard."+ScsGuardiasColegiadoBean.C_IDPERSONA+"<>'"+idpersona+"'";			
-			//JOIN
-			consulta += " AND perso."+CenPersonaBean.C_IDPERSONA+"=guard."+ScsGuardiasColegiadoBean.C_IDPERSONA;
-			consulta += " AND coleg."+CenColegiadoBean.C_IDPERSONA+"=guard."+ScsGuardiasColegiadoBean.C_IDPERSONA;
-			consulta += " AND coleg."+CenColegiadoBean.C_IDINSTITUCION+"=guard."+ScsGuardiasColegiadoBean.C_IDINSTITUCION;
-			//ORDEN
-			consulta += " ORDER BY guard."+ScsGuardiasColegiadoBean.C_FECHAINICIO;
-		}
-		catch (Exception e){
-			throw new ClsExceptions(e,"Excepcion en ScsGuardiasColegiadoAdm.buscarOtrosColegiados(). Consulta SQL:"+consulta);
-		}
-		
-		return consulta;
-	}
-	
-	/** 
-	 * Devuelve los registros con los datos del colegiado de guardia o de reserva.
-	 * 
-	 * @param Hashtable miHash: identificadores de busqueda de la tabla SCS_GUARDIASCOLEGIADO
-	 * @return String con la consulta SQL.
-	 * @throws ClsExceptions
-	 */	
-	public String buscarColegiadosOld(Hashtable miHash) throws ClsExceptions{
-		String consulta = "";
-		String idinstitucion="", idguardia="", idturno="", idcalendarioguardias="", reserva="";
-		
-		try {
-			idinstitucion = (String)miHash.get(ScsGuardiasColegiadoBean.C_IDINSTITUCION);
-			idguardia = (miHash.get(ScsGuardiasColegiadoBean.C_IDGUARDIA)==null || miHash.get(ScsGuardiasColegiadoBean.C_IDGUARDIA).equals(""))?"guard.IDGUARDIA":(String)miHash.get(ScsGuardiasColegiadoBean.C_IDGUARDIA);
-			idturno = (miHash.get(ScsGuardiasColegiadoBean.C_IDTURNO)==null || miHash.get(ScsGuardiasColegiadoBean.C_IDTURNO).equals(""))?"guard.IDTURNO":(String)miHash.get(ScsGuardiasColegiadoBean.C_IDTURNO);
-			idcalendarioguardias = (miHash.get(ScsGuardiasColegiadoBean.C_IDCALENDARIOGUARDIAS)==null || miHash.get(ScsGuardiasColegiadoBean.C_IDCALENDARIOGUARDIAS).equals(""))?"guard.IDCALENDARIOGUARDIAS":(String)miHash.get(ScsGuardiasColegiadoBean.C_IDCALENDARIOGUARDIAS);
-
-			/** PDM Modificacion de la consulta para que se muestren los resultados ordenados por fecha de inicio
-			 *  INC_02348
-			 */
-			consulta = " SELECT guard."+ScsCabeceraGuardiasBean.C_IDINSTITUCION;
-			consulta+= " ,guard."+ScsCabeceraGuardiasBean.C_VALIDADO;
-			consulta+= " ,guard."+ScsCabeceraGuardiasBean.C_IDTURNO;
-			consulta+= " ,guard."+ScsCabeceraGuardiasBean.C_IDGUARDIA;
-			consulta+= " ,guard."+ScsCabeceraGuardiasBean.C_IDCALENDARIOGUARDIAS;
-			consulta+= " ,guard."+ScsCabeceraGuardiasBean.C_IDPERSONA;
-			consulta+= " ,F_SIGA_TIENE_ACTS_VALIDADAS(guard.IDINSTITUCION,guard.IDTURNO,guard.IDGUARDIA,guard.IDCALENDARIOGUARDIAS,guard.IDPERSONA,guard.FECHAINICIO) AS ACT_VALIDADAS";
-			consulta+= " ,(SELECT T.NOMBRE FROM SCS_TURNO T WHERE T.IDINSTITUCION=guard.IDINSTITUCION AND  T.IDTURNO=guard.IDTURNO) AS NOMTURNO";
-			consulta+= " ,(SELECT G.NOMBRE FROM SCS_GUARDIASTURNO G WHERE G.IDINSTITUCION=guard.IDINSTITUCION AND  G.IDTURNO=guard.IDTURNO AND  G.IDGUARDIA=guard.IDGUARDIA) AS NOMGUARDIA";
-			consulta+= " ,decode(F_SIGA_FECHAINISOLICITANTE("+idinstitucion+","+idturno+","+idguardia+",guard."+ScsCabeceraGuardiasBean.C_IDPERSONA+",guard."+ScsCabeceraGuardiasBean.C_FECHA_INICIO+","+idcalendarioguardias+"),'',"+
-                       "  decode(F_SIGA_FECHAINICONFIRMADOR("+idinstitucion+","+idturno+","+idguardia+",guard."+ScsCabeceraGuardiasBean.C_IDPERSONA+",guard."+ScsCabeceraGuardiasBean.C_FECHA_INICIO+","+idcalendarioguardias+"),'',guard."+ScsCabeceraGuardiasBean.C_FECHA_INICIO+",F_SIGA_FECHAINICONFIRMADOR("+idinstitucion+","+idturno+","+idguardia+",guard."+ScsCabeceraGuardiasBean.C_IDPERSONA+",guard."+ScsCabeceraGuardiasBean.C_FECHA_INICIO+" ,"+idcalendarioguardias+")),F_SIGA_FECHAINISOLICITANTE("+idinstitucion+","+idturno+","+idguardia+",guard."+ScsCabeceraGuardiasBean.C_IDPERSONA+",guard."+ScsCabeceraGuardiasBean.C_FECHA_INICIO+" ,"+idcalendarioguardias+")) FECHAINICIOPERMUTA"+
-                       " ,decode(F_SIGA_FECHAFINSOLICITANTE("+idinstitucion+","+idturno+","+idguardia+",guard."+ScsCabeceraGuardiasBean.C_IDPERSONA+",guard."+ScsCabeceraGuardiasBean.C_FECHA_INICIO+","+idcalendarioguardias+"),'',"+
-                       "  decode(F_SIGA_FECHAFINCONFIRMADOR("+idinstitucion+","+idturno+","+idguardia+",guard."+ScsCabeceraGuardiasBean.C_IDPERSONA+",guard."+ScsCabeceraGuardiasBean.C_FECHA_INICIO+","+idcalendarioguardias+"),'',guard."+ScsCabeceraGuardiasBean.C_FECHA_FIN+",F_SIGA_FECHAFINCONFIRMADOR("+idinstitucion+","+idturno+","+idguardia+",guard."+ScsCabeceraGuardiasBean.C_IDPERSONA+",guard."+ScsCabeceraGuardiasBean.C_FECHA_INICIO+" ,"+idcalendarioguardias+")),F_SIGA_FECHAFINSOLICITANTE("+idinstitucion+","+idturno+","+idguardia+",guard."+ScsCabeceraGuardiasBean.C_IDPERSONA+",guard."+ScsCabeceraGuardiasBean.C_FECHA_INICIO+" ,"+idcalendarioguardias+")) FECHAFINPERMUTA"+
-                       " ,decode(F_SIGA_FECHAORIGSOLICITANTE("+idinstitucion+","+idturno+","+idguardia+",guard."+ScsCabeceraGuardiasBean.C_IDPERSONA+",guard."+ScsCabeceraGuardiasBean.C_FECHA_INICIO+","+idcalendarioguardias+"),'',"+
-                       "  decode(F_SIGA_FECHAORIGCONFIRMADOR("+idinstitucion+","+idturno+","+idguardia+",guard."+ScsCabeceraGuardiasBean.C_IDPERSONA+",guard."+ScsCabeceraGuardiasBean.C_FECHA_INICIO+","+idcalendarioguardias+"),'',guard."+ScsCabeceraGuardiasBean.C_FECHA_INICIO+",F_SIGA_FECHAORIGCONFIRMADOR("+idinstitucion+","+idturno+","+idguardia+",guard."+ScsCabeceraGuardiasBean.C_IDPERSONA+",guard."+ScsCabeceraGuardiasBean.C_FECHA_INICIO+" ,"+idcalendarioguardias+")),F_SIGA_FECHAORIGSOLICITANTE("+idinstitucion+","+idturno+","+idguardia+",guard."+ScsCabeceraGuardiasBean.C_IDPERSONA+",guard."+ScsCabeceraGuardiasBean.C_FECHA_INICIO+" ,"+idcalendarioguardias+")) FECHAINICIO"+
-                       " ,guard."+ScsCabeceraGuardiasBean.C_FECHA_INICIO+" as FECHA_INICIO_PK,guard."+ScsCabeceraGuardiasBean.C_FECHA_FIN;    
-			consulta += " ," + " perso." + CenPersonaBean.C_APELLIDOS1 + " || ' ' || perso." + CenPersonaBean.C_APELLIDOS2 + " || ', ' || perso." + CenPersonaBean.C_NOMBRE + " NOMBRE";
-			consulta += " ,F_SIGA_CALCULONCOLEGIADO(coleg."+CenColegiadoBean.C_IDINSTITUCION+","+"coleg."+CenColegiadoBean.C_IDPERSONA+") as "+CenColegiadoBean.C_NCOLEGIADO;			
-			consulta += " ,F_SIGA_ES_MODIFICABLE_GUARDIAS(guard."+ScsCabeceraGuardiasBean.C_IDINSTITUCION+",guard."+ScsCabeceraGuardiasBean.C_IDTURNO+",guard."+ScsCabeceraGuardiasBean.C_IDGUARDIA+",guard."+ScsCabeceraGuardiasBean.C_IDCALENDARIOGUARDIAS+",guard."+ScsCabeceraGuardiasBean.C_IDPERSONA+",guard."+ScsCabeceraGuardiasBean.C_FECHA_INICIO+") as ESMODIFICABLE";			
-			consulta += " ,guard."+ScsCabeceraGuardiasBean.C_IDCALENDARIOGUARDIAS;
-			consulta += " ,F_SIGA_NUMERO("+idinstitucion+","+idturno+","+idguardia+",guard."+ScsCabeceraGuardiasBean.C_IDPERSONA+",guard."+ScsCabeceraGuardiasBean.C_FECHA_INICIO+","+idcalendarioguardias+") NUMEROPERMUTA";
-			consulta += " FROM "+ScsCabeceraGuardiasBean.T_NOMBRETABLA+" guard,";
-			consulta += CenPersonaBean.T_NOMBRETABLA+" perso,";
-			consulta += CenColegiadoBean.T_NOMBRETABLA+" coleg";
-			// JOIN
-			consulta += " WHERE coleg."+CenColegiadoBean.C_IDPERSONA+"=guard."+ScsCabeceraGuardiasBean.C_IDPERSONA;
-			consulta += " AND coleg."+CenColegiadoBean.C_IDINSTITUCION+"=guard."+ScsCabeceraGuardiasBean.C_IDINSTITUCION;
-			consulta += " AND perso."+CenPersonaBean.C_IDPERSONA+"=guard."+ScsCabeceraGuardiasBean.C_IDPERSONA;
-			
-			if (miHash.get(ScsGuardiasColegiadoBean.C_IDINSTITUCION)!=null) 
-			    consulta += " AND guard."+ScsCabeceraGuardiasBean.C_IDINSTITUCION+"="+(String)miHash.get(ScsGuardiasColegiadoBean.C_IDINSTITUCION);
-			if (miHash.get(ScsGuardiasColegiadoBean.C_IDTURNO)!=null   && !((String)miHash.get(ScsGuardiasColegiadoBean.C_IDTURNO)).trim().equals(""))
-			    consulta += " AND guard."+ScsCabeceraGuardiasBean.C_IDTURNO+"="+(String)miHash.get(ScsGuardiasColegiadoBean.C_IDTURNO);
-			if (miHash.get(ScsGuardiasColegiadoBean.C_IDGUARDIA)!=null  && !((String)miHash.get(ScsGuardiasColegiadoBean.C_IDGUARDIA)).trim().equals(""))
-			    consulta += " AND guard."+ScsCabeceraGuardiasBean.C_IDGUARDIA+"="+(String)miHash.get(ScsGuardiasColegiadoBean.C_IDGUARDIA);
-			if (miHash.get(ScsGuardiasColegiadoBean.C_IDCALENDARIOGUARDIAS)!=null)
-			    consulta += " AND guard."+ScsCabeceraGuardiasBean.C_IDCALENDARIOGUARDIAS+"="+(String)miHash.get(ScsGuardiasColegiadoBean.C_IDCALENDARIOGUARDIAS);
-
-			if (miHash.get("IDPERSONA")!=null && !((String)miHash.get("IDPERSONA")).trim().equals(""))
-			    consulta += " AND guard."+ScsCabeceraGuardiasBean.C_IDPERSONA+"="+(String)miHash.get("IDPERSONA");
-			if (miHash.get("NUMCOLEGIADO")!=null && !((String)miHash.get("NUMCOLEGIADO")).trim().equals(""))
-			    consulta += " AND F_SIGA_CALCULONCOLEGIADO(coleg."+CenColegiadoBean.C_IDINSTITUCION+","+"coleg."+CenColegiadoBean.C_IDPERSONA+")='"+(String)miHash.get("NUMCOLEGIADO")+"'";
-			
-			boolean BuscarFechaDesde = (miHash.get("BUSCARFECHADESDE")!=null && 
-					!((String)miHash.get("BUSCARFECHADESDE")).trim().equals(""));
-			boolean BuscarFechaHasta = (miHash.get("BUSCARFECHAHASTA")!=null && 
-					!((String)miHash.get("BUSCARFECHAHASTA")).trim().equals(""));
-			if (BuscarFechaDesde) {
-			    consulta += " AND (guard."+ScsCabeceraGuardiasBean.C_FECHA_INICIO+">='"+(String)miHash.get("BUSCARFECHADESDE")+"'";
-			    consulta += " OR guard."+ScsCabeceraGuardiasBean.C_FECHA_FIN+">='"+(String)miHash.get("BUSCARFECHADESDE")+"')";
-			}
-			if (BuscarFechaHasta) {
-			    consulta += " AND (guard."+ScsCabeceraGuardiasBean.C_FECHA_INICIO+"<='"+(String)miHash.get("BUSCARFECHAHASTA")+"'";
-			    consulta += " OR guard."+ScsCabeceraGuardiasBean.C_FECHA_FIN+"<='"+(String)miHash.get("BUSCARFECHAHASTA")+"')";
-			}
-		
-			if ((miHash.get("FECHA_INICIO")!=null )&& (miHash.get("FECHA_FIN")==null)){
-				 consulta += " AND guard."+ScsCabeceraGuardiasBean.C_FECHA_INICIO+">='"+(String)miHash.get("FECHA_INICIO")+"'";
-			}
-			if (miHash.get("FECHA_INICIO")==null && (miHash.get("FECHA_FIN")!=null)){
-				consulta += " AND guard."+ScsCabeceraGuardiasBean.C_FECHA_FIN+"<='"+(String)miHash.get("FECHA_FIN")+"'";
-			}
-			if (((miHash.get("FECHA_INICIO")!=null)) && 
-				((miHash.get("FECHA_FIN")!=null))){
-				 consulta += " AND guard."+ScsCabeceraGuardiasBean.C_FECHA_INICIO+">='"+(String)miHash.get("FECHA_INICIO")+"'";
-				 consulta += " AND guard."+ScsCabeceraGuardiasBean.C_FECHA_FIN+"<='"+(String)miHash.get("FECHA_FIN")+"'";
-			}
-			if (miHash.get("PENDIENTEVALIDAR")!=null && !((String)miHash.get("PENDIENTEVALIDAR")).trim().equals(""))
-			    consulta += " AND guard."+ScsCabeceraGuardiasBean.C_VALIDADO+"='0'";
-
-			//ORDEN
-			consulta += " ORDER BY FECHAINICIOPERMUTA , guard.rowid"; 
-			// RGG esta tonteria del rowid es muy importante para el orden dentro de una misma guardia
-		}
-		catch (Exception e){
-			throw new ClsExceptions(e,"Excepcion en ScsGuardiasColegiadoAdm.buscarColegiados(). Consulta SQL:"+consulta);
-		}
-		
-		return consulta;
-	}
-	public String buscarColegiados(Hashtable miHash) throws ClsExceptions{
-		String consulta = "";
-		String idinstitucion="", idguardia="", idturno="", idcalendarioguardias="", reserva="";
-		
-		try {
-			idinstitucion = (String)miHash.get(ScsGuardiasColegiadoBean.C_IDINSTITUCION);
-			idguardia = (miHash.get(ScsGuardiasColegiadoBean.C_IDGUARDIA)==null || miHash.get(ScsGuardiasColegiadoBean.C_IDGUARDIA).equals(""))?"guard.IDGUARDIA":(String)miHash.get(ScsGuardiasColegiadoBean.C_IDGUARDIA);
-			idturno = (miHash.get(ScsGuardiasColegiadoBean.C_IDTURNO)==null || miHash.get(ScsGuardiasColegiadoBean.C_IDTURNO).equals(""))?"guard.IDTURNO":(String)miHash.get(ScsGuardiasColegiadoBean.C_IDTURNO);
-			idcalendarioguardias = (miHash.get(ScsGuardiasColegiadoBean.C_IDCALENDARIOGUARDIAS)==null || miHash.get(ScsGuardiasColegiadoBean.C_IDCALENDARIOGUARDIAS).equals(""))?"guard.IDCALENDARIOGUARDIAS":(String)miHash.get(ScsGuardiasColegiadoBean.C_IDCALENDARIOGUARDIAS);
-
-			/** PDM Modificacion de la consulta para que se muestren los resultados ordenados por fecha de inicio
-			 *  INC_02348
-			 */
-			consulta = " SELECT guard."+ScsCabeceraGuardiasBean.C_IDINSTITUCION;
-			consulta+= " ,guard.rowid AS ROWIND";
-			consulta+= " ,guard."+ScsCabeceraGuardiasBean.C_VALIDADO;
-			consulta+= " ,guard."+ScsCabeceraGuardiasBean.C_FECHAVALIDACION;
-			consulta+= " ,guard."+ScsCabeceraGuardiasBean.C_IDTURNO;
-			consulta+= " ,guard."+ScsCabeceraGuardiasBean.C_IDGUARDIA;
-			consulta+= " ,guard."+ScsCabeceraGuardiasBean.C_IDCALENDARIOGUARDIAS;
-			consulta+= " ,guard."+ScsCabeceraGuardiasBean.C_IDPERSONA;
-			consulta+= " ,guard."+ScsCabeceraGuardiasBean.C_POSICION;
-			consulta+= " ,guard."+ScsCabeceraGuardiasBean.C_NUMEROGRUPO;
-			//consulta+= " ,F_SIGA_TIENE_ACTS_VALIDADAS(guard.IDINSTITUCION,guard.IDTURNO,guard.IDGUARDIA,guard.IDCALENDARIOGUARDIAS,guard.IDPERSONA,guard.FECHAINICIO) AS ACT_VALIDADAS";
-			consulta+= " ,(SELECT T.NOMBRE FROM SCS_TURNO T WHERE T.IDINSTITUCION=guard.IDINSTITUCION AND  T.IDTURNO=guard.IDTURNO) AS NOMTURNO";
-			consulta+= " ,(SELECT G.NOMBRE FROM SCS_GUARDIASTURNO G WHERE G.IDINSTITUCION=guard.IDINSTITUCION AND  G.IDTURNO=guard.IDTURNO AND  G.IDGUARDIA=guard.IDGUARDIA) AS NOMGUARDIA";
-			//consulta+= " ,decode(F_SIGA_FECHAINISOLICITANTE("+idinstitucion+","+idturno+","+idguardia+",guard."+ScsCabeceraGuardiasBean.C_IDPERSONA+",guard."+ScsCabeceraGuardiasBean.C_FECHA_INICIO+","+idcalendarioguardias+"),'',";
-			//consulta+= "  decode(F_SIGA_FECHAINICONFIRMADOR("+idinstitucion+","+idturno+","+idguardia+",guard."+ScsCabeceraGuardiasBean.C_IDPERSONA+",guard."+ScsCabeceraGuardiasBean.C_FECHA_INICIO+","+idcalendarioguardias+"),'',guard."+ScsCabeceraGuardiasBean.C_FECHA_INICIO+",F_SIGA_FECHAINICONFIRMADOR("+idinstitucion+","+idturno+","+idguardia+",guard."+ScsCabeceraGuardiasBean.C_IDPERSONA+",guard."+ScsCabeceraGuardiasBean.C_FECHA_INICIO+" ,"+idcalendarioguardias+")),F_SIGA_FECHAINISOLICITANTE("+idinstitucion+","+idturno+","+idguardia+",guard."+ScsCabeceraGuardiasBean.C_IDPERSONA+",guard."+ScsCabeceraGuardiasBean.C_FECHA_INICIO+" ,"+idcalendarioguardias+")) FECHAINICIOPERMUTA";
-			//consulta+= " ,decode(F_SIGA_FECHAFINSOLICITANTE("+idinstitucion+","+idturno+","+idguardia+",guard."+ScsCabeceraGuardiasBean.C_IDPERSONA+",guard."+ScsCabeceraGuardiasBean.C_FECHA_INICIO+","+idcalendarioguardias+"),'',";
-			//consulta+= "  decode(F_SIGA_FECHAFINCONFIRMADOR("+idinstitucion+","+idturno+","+idguardia+",guard."+ScsCabeceraGuardiasBean.C_IDPERSONA+",guard."+ScsCabeceraGuardiasBean.C_FECHA_INICIO+","+idcalendarioguardias+"),'',guard."+ScsCabeceraGuardiasBean.C_FECHA_FIN+",F_SIGA_FECHAFINCONFIRMADOR("+idinstitucion+","+idturno+","+idguardia+",guard."+ScsCabeceraGuardiasBean.C_IDPERSONA+",guard."+ScsCabeceraGuardiasBean.C_FECHA_INICIO+" ,"+idcalendarioguardias+")),F_SIGA_FECHAFINSOLICITANTE("+idinstitucion+","+idturno+","+idguardia+",guard."+ScsCabeceraGuardiasBean.C_IDPERSONA+",guard."+ScsCabeceraGuardiasBean.C_FECHA_INICIO+" ,"+idcalendarioguardias+")) FECHAFINPERMUTA";
-			//consulta+= " ,decode(F_SIGA_FECHAORIGSOLICITANTE("+idinstitucion+","+idturno+","+idguardia+",guard."+ScsCabeceraGuardiasBean.C_IDPERSONA+",guard."+ScsCabeceraGuardiasBean.C_FECHA_INICIO+","+idcalendarioguardias+"),'',";
-			//consulta+= "  decode(F_SIGA_FECHAORIGCONFIRMADOR("+idinstitucion+","+idturno+","+idguardia+",guard."+ScsCabeceraGuardiasBean.C_IDPERSONA+",guard."+ScsCabeceraGuardiasBean.C_FECHA_INICIO+","+idcalendarioguardias+"),'',guard."+ScsCabeceraGuardiasBean.C_FECHA_INICIO+",F_SIGA_FECHAORIGCONFIRMADOR("+idinstitucion+","+idturno+","+idguardia+",guard."+ScsCabeceraGuardiasBean.C_IDPERSONA+",guard."+ScsCabeceraGuardiasBean.C_FECHA_INICIO+" ,"+idcalendarioguardias+")),F_SIGA_FECHAORIGSOLICITANTE("+idinstitucion+","+idturno+","+idguardia+",guard."+ScsCabeceraGuardiasBean.C_IDPERSONA+",guard."+ScsCabeceraGuardiasBean.C_FECHA_INICIO+" ,"+idcalendarioguardias+")) FECHAINICIO";
-			consulta+= " ,guard."+ScsCabeceraGuardiasBean.C_FECHA_INICIO+" as FECHA_INICIO_PK,guard."+ScsCabeceraGuardiasBean.C_FECHA_FIN;    
-			consulta += " ," + " perso." + CenPersonaBean.C_APELLIDOS1 + " || ' ' || perso." + CenPersonaBean.C_APELLIDOS2 + " || ', ' || perso." + CenPersonaBean.C_NOMBRE + " NOMBRE";
-			//consulta += " ,F_SIGA_CALCULONCOLEGIADO(coleg."+CenColegiadoBean.C_IDINSTITUCION+","+"coleg."+CenColegiadoBean.C_IDPERSONA+") as "+CenColegiadoBean.C_NCOLEGIADO;			
-			//consulta += " ,F_SIGA_ES_MODIFICABLE_GUARDIAS(guard."+ScsCabeceraGuardiasBean.C_IDINSTITUCION+",guard."+ScsCabeceraGuardiasBean.C_IDTURNO+",guard."+ScsCabeceraGuardiasBean.C_IDGUARDIA+",guard."+ScsCabeceraGuardiasBean.C_IDCALENDARIOGUARDIAS+",guard."+ScsCabeceraGuardiasBean.C_IDPERSONA+",guard."+ScsCabeceraGuardiasBean.C_FECHA_INICIO+") as ESMODIFICABLE";			
-			consulta += " ,guard."+ScsCabeceraGuardiasBean.C_IDCALENDARIOGUARDIAS;
-			//consulta += " ,F_SIGA_NUMERO("+idinstitucion+","+idturno+","+idguardia+",guard."+ScsCabeceraGuardiasBean.C_IDPERSONA+",guard."+ScsCabeceraGuardiasBean.C_FECHA_INICIO+","+idcalendarioguardias+")   ERMUTA";
-			consulta += " FROM "+ScsCabeceraGuardiasBean.T_NOMBRETABLA+" guard,";
-			consulta += CenPersonaBean.T_NOMBRETABLA+" perso,";
-			consulta += CenColegiadoBean.T_NOMBRETABLA+" coleg";
-			// JOIN
-			consulta += " WHERE coleg."+CenColegiadoBean.C_IDPERSONA+"=guard."+ScsCabeceraGuardiasBean.C_IDPERSONA;
-			consulta += " AND coleg."+CenColegiadoBean.C_IDINSTITUCION+"=guard."+ScsCabeceraGuardiasBean.C_IDINSTITUCION;
-			consulta += " AND perso."+CenPersonaBean.C_IDPERSONA+"=guard."+ScsCabeceraGuardiasBean.C_IDPERSONA;
-			consulta += " AND perso."+CenPersonaBean.C_IDPERSONA+"=coleg."+CenColegiadoBean.C_IDPERSONA;
-			   
-			if (miHash.get(ScsGuardiasColegiadoBean.C_IDINSTITUCION)!=null) 
-			    consulta += " AND guard."+ScsCabeceraGuardiasBean.C_IDINSTITUCION+"="+(String)miHash.get(ScsGuardiasColegiadoBean.C_IDINSTITUCION);
-			if (miHash.get(ScsGuardiasColegiadoBean.C_IDTURNO)!=null   && !((String)miHash.get(ScsGuardiasColegiadoBean.C_IDTURNO)).trim().equals(""))
-			    consulta += " AND guard."+ScsCabeceraGuardiasBean.C_IDTURNO+"="+(String)miHash.get(ScsGuardiasColegiadoBean.C_IDTURNO);
-			if (miHash.get(ScsGuardiasColegiadoBean.C_IDGUARDIA)!=null  && !((String)miHash.get(ScsGuardiasColegiadoBean.C_IDGUARDIA)).trim().equals(""))
-			    consulta += " AND guard."+ScsCabeceraGuardiasBean.C_IDGUARDIA+"="+(String)miHash.get(ScsGuardiasColegiadoBean.C_IDGUARDIA);
-			if (miHash.get(ScsGuardiasColegiadoBean.C_IDCALENDARIOGUARDIAS)!=null)
-			    consulta += " AND guard."+ScsCabeceraGuardiasBean.C_IDCALENDARIOGUARDIAS+"="+(String)miHash.get(ScsGuardiasColegiadoBean.C_IDCALENDARIOGUARDIAS);
-
-			if (miHash.get("IDPERSONA")!=null && !((String)miHash.get("IDPERSONA")).trim().equals(""))
-			    consulta += " AND guard."+ScsCabeceraGuardiasBean.C_IDPERSONA+"="+(String)miHash.get("IDPERSONA");
-			if (miHash.get("NUMCOLEGIADO")!=null && !((String)miHash.get("NUMCOLEGIADO")).trim().equals(""))
-			    consulta += " AND F_SIGA_CALCULONCOLEGIADO(coleg."+CenColegiadoBean.C_IDINSTITUCION+","+"coleg."+CenColegiadoBean.C_IDPERSONA+")='"+(String)miHash.get("NUMCOLEGIADO")+"'";
-			
-			boolean BuscarFechaDesde = (miHash.get("BUSCARFECHADESDE")!=null && 
-					!((String)miHash.get("BUSCARFECHADESDE")).trim().equals(""));
-			boolean BuscarFechaHasta = (miHash.get("BUSCARFECHAHASTA")!=null && 
-					!((String)miHash.get("BUSCARFECHAHASTA")).trim().equals(""));
-			if (BuscarFechaDesde) {
-			    consulta += " AND (guard."+ScsCabeceraGuardiasBean.C_FECHA_INICIO+">='"+(String)miHash.get("BUSCARFECHADESDE")+"'";
-			    consulta += " OR guard."+ScsCabeceraGuardiasBean.C_FECHA_FIN+">='"+(String)miHash.get("BUSCARFECHADESDE")+"')";
-			}
-			if (BuscarFechaHasta) {
-			    consulta += " AND (guard."+ScsCabeceraGuardiasBean.C_FECHA_INICIO+"<='"+(String)miHash.get("BUSCARFECHAHASTA")+"'";
-			    consulta += " OR guard."+ScsCabeceraGuardiasBean.C_FECHA_FIN+"<='"+(String)miHash.get("BUSCARFECHAHASTA")+"')";
-			}
-		
-			if ((miHash.get("FECHA_INICIO")!=null )&& (miHash.get("FECHA_FIN")==null)){
-				 consulta += " AND guard."+ScsCabeceraGuardiasBean.C_FECHA_INICIO+">='"+(String)miHash.get("FECHA_INICIO")+"'";
-			}
-			if (miHash.get("FECHA_INICIO")==null && (miHash.get("FECHA_FIN")!=null)){
-				consulta += " AND guard."+ScsCabeceraGuardiasBean.C_FECHA_FIN+"<='"+(String)miHash.get("FECHA_FIN")+"'";
-			}
-			if (((miHash.get("FECHA_INICIO")!=null)) && 
-				((miHash.get("FECHA_FIN")!=null))){
-				 consulta += " AND guard."+ScsCabeceraGuardiasBean.C_FECHA_INICIO+">='"+(String)miHash.get("FECHA_INICIO")+"'";
-				 consulta += " AND guard."+ScsCabeceraGuardiasBean.C_FECHA_FIN+"<='"+(String)miHash.get("FECHA_FIN")+"'";
-			}
-			if (miHash.get("PENDIENTEVALIDAR")!=null && !((String)miHash.get("PENDIENTEVALIDAR")).trim().equals(""))
-			    consulta += " AND guard."+ScsCabeceraGuardiasBean.C_VALIDADO+"='"+(String)miHash.get("PENDIENTEVALIDAR")+"'";
-
-			//ORDEN
-			consulta += " ORDER BY FECHA_INICIO_PK, POSICION"; 
-			// RGG esta tonteria del rowid es muy importante para el orden dentro de una misma guardia
-		}
-		catch (Exception e){
-			throw new ClsExceptions(e,"Excepcion en ScsGuardiasColegiadoAdm.buscarColegiados(). Consulta SQL:"+consulta);
-		}
-		
-		return consulta;
-	}
-
-	
-
-
-	/** 
-	 * Devuelve un registro con los datos del colegiado de guardia o de reserva.
-	 * 
-	 * @param Hashtable miHash: identificadores de busqueda de la tabla SCS_GUARDIASCOLEGIADO
-	 * @return String con la consulta SQL.
-	 * @throws ClsExceptions
-	 */	
-	public String getDatosColegiado(Hashtable miHash) throws ClsExceptions{
-		String consulta = "";
-		String idinstitucion="", idguardia="", idturno="", idcalendarioguardias="", reserva="", idpersona="";
-		
-		try {
-			idinstitucion = (String)miHash.get(ScsGuardiasColegiadoBean.C_IDINSTITUCION);
-			idguardia = (String)miHash.get(ScsGuardiasColegiadoBean.C_IDGUARDIA);
-			idturno = (String)miHash.get(ScsGuardiasColegiadoBean.C_IDTURNO);
-			idcalendarioguardias = (String)miHash.get(ScsGuardiasColegiadoBean.C_IDCALENDARIOGUARDIAS);
-			reserva = (String)miHash.get(ScsGuardiasColegiadoBean.C_RESERVA);
-			idpersona = (String)miHash.get(ScsGuardiasColegiadoBean.C_IDPERSONA);
-
-			consulta = "SELECT guard.* ,";
-			consulta += " perso."+CenPersonaBean.C_NOMBRE+" || ' ' || perso."+CenPersonaBean.C_APELLIDOS1+" || ' ' || perso."+CenPersonaBean.C_APELLIDOS2+" NOMBRE,";
-			consulta += " coleg."+CenColegiadoBean.C_NCOLEGIADO;
-			consulta += " FROM "+ScsGuardiasColegiadoBean.T_NOMBRETABLA+" guard,";
-			consulta += CenPersonaBean.T_NOMBRETABLA+" perso,";
-			consulta += CenColegiadoBean.T_NOMBRETABLA+" coleg";
-			consulta += " WHERE ";
-			consulta += " guard."+ScsGuardiasColegiadoBean.C_IDPERSONA+"="+idpersona;
-			consulta += " AND guard."+ScsGuardiasColegiadoBean.C_IDINSTITUCION+"="+idinstitucion;
-			consulta += " AND guard."+ScsGuardiasColegiadoBean.C_IDTURNO+"="+idturno;
-			consulta += " AND guard."+ScsGuardiasColegiadoBean.C_IDGUARDIA+"="+idguardia;
-			consulta += " AND guard."+ScsGuardiasColegiadoBean.C_IDCALENDARIOGUARDIAS+"="+idcalendarioguardias;
-			consulta += " AND guard."+ScsGuardiasColegiadoBean.C_RESERVA+"='"+reserva+"'";
-			//JOIN
-			consulta += " AND coleg."+CenColegiadoBean.C_IDPERSONA+"=guard."+ScsGuardiasColegiadoBean.C_IDPERSONA;
-			consulta += " AND coleg."+CenColegiadoBean.C_IDINSTITUCION+"=guard."+ScsGuardiasColegiadoBean.C_IDINSTITUCION;
-			consulta += " AND perso."+CenPersonaBean.C_IDPERSONA+"=guard."+ScsGuardiasColegiadoBean.C_IDPERSONA;
-			//ORDEN
-			consulta += " ORDER BY guard."+ScsGuardiasColegiadoBean.C_FECHAINICIO;
-		}
-		catch (Exception e){
-			throw new ClsExceptions(e,"Excepcion en ScsGuardiasColegiadoAdm.getDatosColegiado(). Consulta SQL:"+consulta);
-		}
-		
-		return consulta;
-	}
 	
 	/** 
 	 * Validacion: Devuelve el numero de letrados para una guardia de un turno y un dia concreto.
@@ -593,7 +297,7 @@ public class ScsGuardiasColegiadoAdm extends MasterBeanAdministrador
 	 */	
 	public String numeroLetrados(Hashtable miHash) throws ClsExceptions{
 		String consulta = "";
-		String idinstitucion="", idguardia="", idturno="", idcalendarioguardias="", fechaInicio="", fechaFin="";
+		String idinstitucion="", idguardia="", idturno="", fechaInicio="", fechaFin="";
 		
 		try {
 			idinstitucion = (String)miHash.get("IDINSTITUCION");
@@ -601,7 +305,6 @@ public class ScsGuardiasColegiadoAdm extends MasterBeanAdministrador
 			idturno = (String)miHash.get("IDTURNO");
 			fechaInicio = (String)miHash.get("FECHAINICIO");
 			fechaFin = (String)miHash.get("FECHAFIN");
-			idcalendarioguardias = (String)miHash.get("IDCALENDARIOGUARDIAS");
 				
 			consulta = "SELECT COUNT(distinct guard."+ScsGuardiasColegiadoBean.C_IDPERSONA+") AS TOTAL";
 			consulta += " FROM "+ScsGuardiasColegiadoBean.T_NOMBRETABLA+" guard";
@@ -609,7 +312,6 @@ public class ScsGuardiasColegiadoAdm extends MasterBeanAdministrador
 			consulta += " guard."+ScsGuardiasColegiadoBean.C_IDINSTITUCION+"="+idinstitucion;
 			consulta += " AND guard."+ScsGuardiasColegiadoBean.C_IDTURNO+"="+idturno;
 			consulta += " AND guard."+ScsGuardiasColegiadoBean.C_IDGUARDIA+"="+idguardia;
-			consulta += " AND guard."+ScsGuardiasColegiadoBean.C_IDCALENDARIOGUARDIAS+"="+idcalendarioguardias;
 			consulta += " AND guard."+ScsGuardiasColegiadoBean.C_FECHAINICIO+"=TO_DATE('"+fechaInicio+"','DD/MM/YYYY')";
 			consulta += " AND guard."+ScsGuardiasColegiadoBean.C_FECHAFIN+">=TO_DATE('"+fechaInicio+"','DD/MM/YYYY')";
 			consulta += " AND guard."+ScsGuardiasColegiadoBean.C_FECHAFIN+"<=TO_DATE('"+fechaFin+"','DD/MM/YYYY')";
@@ -628,7 +330,6 @@ public class ScsGuardiasColegiadoAdm extends MasterBeanAdministrador
 	 * La Hash debe tener los siguientes datos:
 	 * -String "IDPERSONA"
 	 * -String "IDINSTITUCION"
-	 * -String "IDCALENDARIOGUARDIAS"
 	 * -String "IDTURNO"
 	 * -String "IDGUARDIA"
 	 * -String "FECHAINICIO" del periodo de esta guardia
@@ -657,7 +358,6 @@ public class ScsGuardiasColegiadoAdm extends MasterBeanAdministrador
 			fechaPeriodoUltimoDia = (String)miHash.get("FECHAFIN"); //Fecha del periodo	de la ultima guardia
 			fechaPeriodoPrimerDiaOriginal = (String)miHash.get("FECHAINICIO_ORIGINAL"); //Fecha del periodo de la primera guardia
 			fechaPeriodoUltimoDiaOriginal = (String)miHash.get("FECHAFIN_ORIGINAL"); //Fecha del periodo	de la ultima guardia	
-			idcalendario = (String)miHash.get("IDCALENDARIOGUARDIAS");
 			
 			//Si tenemos fechas originales (venimos de permutas) es true.
 			boolean esPermuta = miHash.containsKey("FECHAFIN_ORIGINAL") && miHash.containsKey("FECHAINICIO_ORIGINAL");
@@ -672,7 +372,6 @@ public class ScsGuardiasColegiadoAdm extends MasterBeanAdministrador
 			sBuffer.append(" AND "+ScsGuardiasColegiadoBean.C_IDINSTITUCION+"="+idinstitucion);
 			sBuffer.append(" AND "+ScsGuardiasColegiadoBean.C_IDTURNO+"="+idturno);
 			sBuffer.append(" AND "+ScsGuardiasColegiadoBean.C_IDGUARDIA+"="+idguardia);
-			//sBuffer.append(" AND "+ScsGuardiasColegiadoBean.C_IDCALENDARIOGUARDIAS+"="+idcalendario);
 			if (esPermuta)
 				sBuffer.append(" AND trunc("+ScsGuardiasColegiadoBean.C_FECHAINICIO+") <> TO_DATE('"+fechaPeriodoPrimerDiaOriginal+"','DD/MM/YYYY')");
 			sBuffer.append(" AND trunc("+ScsGuardiasColegiadoBean.C_FECHAFIN+") <= TO_DATE('"+fechaPeriodoPrimerDia+"','DD/MM/YYYY')");
@@ -693,7 +392,6 @@ public class ScsGuardiasColegiadoAdm extends MasterBeanAdministrador
 			sBuffer.append(" AND "+ScsGuardiasColegiadoBean.C_IDINSTITUCION+"="+idinstitucion);
 			sBuffer.append(" AND "+ScsGuardiasColegiadoBean.C_IDTURNO+"="+idturno);
 			sBuffer.append(" AND "+ScsGuardiasColegiadoBean.C_IDGUARDIA+"="+idguardia);
-			//sBuffer.append(" AND "+ScsGuardiasColegiadoBean.C_IDCALENDARIOGUARDIAS+"="+idcalendario);			
 			if (esPermuta)
 				sBuffer.append(" AND trunc("+ScsGuardiasColegiadoBean.C_FECHAINICIO+") <> TO_DATE('"+fechaPeriodoPrimerDiaOriginal+"','DD/MM/YYYY')");
 			sBuffer.append(" AND trunc("+ScsGuardiasColegiadoBean.C_FECHAFIN+") >= TO_DATE('"+fechaPeriodoUltimoDia+"','DD/MM/YYYY')");
@@ -767,64 +465,12 @@ public class ScsGuardiasColegiadoAdm extends MasterBeanAdministrador
 		return salida;
 	}
 	
-	/** 
-	 * Valida el Numero de letrados: si supera el contador de letrados el permitido no puedo insertar.
-	 * 
-	 * La Hash debe tener los siguientes datos:
-	 * -String "IDPERSONA"
-	 * -String "IDINSTITUCION"
-	 * -String "IDCALENDARIOGUARDIAS"
-	 * -String "IDTURNO"
-	 * -String "IDGUARDIA"
-	 * -String "FECHAINICIO" del periodo de esta guardia
-	 * -String "FECHAFIN" del periodo de esta guardia
-	 * @return boolean: true si el número de letrados es correcto
-	 * @throws ClsExceptions
-	 */	
-	public boolean validarNumeroLetrados(Hashtable miHash) throws ClsExceptions { 
-		Vector registros = new Vector();
-		String maxLetradosGuardia = "";
-		int letradosInsertados = 0;
-		boolean salida = false;
-		StringBuffer where = new StringBuffer();		
-		Hashtable hash = new Hashtable();
-		
-		try {
-			//Consulto el numero de letrados maximo:
-			where.append(" select * from "+ScsGuardiasTurnoBean.T_NOMBRETABLA+" where ");
-			where.append(ScsGuardiasTurnoBean.C_IDINSTITUCION+"="+(String)miHash.get("IDINSTITUCION"));
-			where.append(" AND "+ScsGuardiasTurnoBean.C_IDTURNO+"="+(String)miHash.get("IDTURNO"));
-			where.append(" AND "+ScsGuardiasTurnoBean.C_IDGUARDIA+"="+(String)miHash.get("IDGUARDIA"));
-			registros = this.selectGenerico(where.toString());
-			
-			if (!registros.isEmpty()) {
-				hash = (Hashtable)registros.get(0);
-				maxLetradosGuardia = (String)hash.get(ScsGuardiasTurnoBean.C_NUMEROLETRADOSGUARDIA);
-				
-				//Consulto el numero de letrados insertados:
-				registros.clear();
-				registros = this.selectGenerico(this.numeroLetrados(miHash));
-				if (!registros.isEmpty()) {					
-					letradosInsertados = Integer.parseInt((String)((Hashtable)registros.get(0)).get("TOTAL"));
-					if (letradosInsertados < Integer.parseInt(maxLetradosGuardia)) 
-						salida = true;
-					else
-						salida = false;
-				}
-			} else
-				salida = false;
-		} catch (ClsExceptions e) {
-	        throw e;
-		}
-		return salida;
-	}
-	
+
 	/**
 	 * Valida que la separacion de dias para una guardia de un calendario es correcta.
 	 * La Hash debe tener los siguientes datos:
 	 * -String "IDPERSONA"
 	 * -String "IDINSTITUCION"
-	 * -String "IDCALENDARIOGUARDIAS"
 	 * -String "IDTURNO"
 	 * -String "IDGUARDIA"
 	 * -String "FECHAINICIO" del periodo de esta guardia
@@ -905,37 +551,9 @@ public class ScsGuardiasColegiadoAdm extends MasterBeanAdministrador
 
 	
 
-	//Comprueba antes de borrar un CALENDARIO de guardias que no exista ninguna guardia realizada. 
-	public boolean validarBorradoGuardias(Integer idInstitucion, Integer idCalendarioGuardias, Integer idTurno, Integer idGuardia) {
-		boolean correcto = false;
-		StringBuffer consulta = new StringBuffer();
-		
-		consulta.append("select count(*) AS TOTAL from "+ScsGuardiasColegiadoBean.T_NOMBRETABLA);
-		consulta.append(" where "+ScsGuardiasColegiadoBean.C_IDINSTITUCION+"="+idInstitucion);
-		consulta.append(" and "+ScsGuardiasColegiadoBean.C_IDTURNO+"="+idTurno);
-		consulta.append(" and "+ScsGuardiasColegiadoBean.C_IDGUARDIA+"="+idGuardia);
-		consulta.append(" and "+ScsGuardiasColegiadoBean.C_IDCALENDARIOGUARDIAS+"="+idCalendarioGuardias);
-		consulta.append(" and trunc("+ScsGuardiasColegiadoBean.C_FECHAFIN+") < trunc(sysdate)");
-
-		Vector vLetrados = new Vector();
-		int totalLetrados = 0;
-		try {
-			vLetrados = this.selectGenerico(consulta.toString());
-			if (!vLetrados.isEmpty()) {
-				totalLetrados = Integer.parseInt((String)((Hashtable)vLetrados.get(0)).get("TOTAL"));
-				if (totalLetrados == 0)
-					correcto = true;
-			}
-		} catch (Exception e) {
-			correcto = false;
-		}
-		return correcto;
-	}
-	
-
 	//Comprueba antes de borrar UNA guardia no este realizada.
 	//Nota: las fechas de inicio y fin son del periodo.
-	public boolean validarBorradoGuardia(String idInstitucion, String idCalendarioGuardias, String idTurno, String idGuardia, String fechaInicio, String fechaFin) {
+	public boolean validarBorradoGuardia(String idInstitucion, String idTurno, String idGuardia, String fechaInicio, String fechaFin) {
 		boolean correcto = false;
 		StringBuffer consulta = new StringBuffer();
 		
@@ -943,7 +561,6 @@ public class ScsGuardiasColegiadoAdm extends MasterBeanAdministrador
 		consulta.append(" where "+ScsGuardiasColegiadoBean.C_IDINSTITUCION+"="+idInstitucion);
 		consulta.append(" and "+ScsGuardiasColegiadoBean.C_IDTURNO+"="+idTurno);
 		consulta.append(" and "+ScsGuardiasColegiadoBean.C_IDGUARDIA+"="+idGuardia);
-		consulta.append(" and "+ScsGuardiasColegiadoBean.C_IDCALENDARIOGUARDIAS+"="+idCalendarioGuardias);
 		consulta.append(" and trunc("+ScsGuardiasColegiadoBean.C_FECHAINICIO+")=TO_DATE('"+fechaInicio+"','DD/MM/YYYY')");
 		consulta.append(" and trunc("+ScsGuardiasColegiadoBean.C_FECHAFIN+") < trunc(sysdate)");
 
@@ -1013,63 +630,7 @@ public class ScsGuardiasColegiadoAdm extends MasterBeanAdministrador
 		}
 		return !encontrado;
 	}
-	/**
-	 * Usar insertarGuardiaManual() en vez de este metodo
-	 */
-	@Deprecated public void insertarCabeceraYGuardia(Integer idInstitucion,	Integer idTurno,Integer idGuardia
-			,Integer idCalendarioGuardia,Long idPersona,String fecha,UsrBean usrBean) throws SIGAException,ClsExceptions{
-		ScsCabeceraGuardiasAdm cabeceraGuardiasAdm = new ScsCabeceraGuardiasAdm(usrBean);
-		ScsGuardiasColegiadoAdm guardiasColegiadoAdm = new ScsGuardiasColegiadoAdm(usrBean);
-		ScsCabeceraGuardiasBean cabeceraGuardiaBean = new ScsCabeceraGuardiasBean();
-		ScsGuardiasColegiadoBean guardiaColegiadoBean = new ScsGuardiasColegiadoBean();
-		
-		cabeceraGuardiaBean.setIdInstitucion(idInstitucion);
-		cabeceraGuardiaBean.setIdTurno(idTurno);
-		cabeceraGuardiaBean.setIdGuardia(idGuardia);
-		cabeceraGuardiaBean.setIdCalendario(idCalendarioGuardia);
-		cabeceraGuardiaBean.setIdPersona(idPersona);
-		
-		cabeceraGuardiaBean.setFechaInicio(fecha);
-		cabeceraGuardiaBean.setFechaFin(fecha);
-		cabeceraGuardiaBean.setSustituto("N");
-		cabeceraGuardiaBean.setFacturado("0");
-		cabeceraGuardiaBean.setPagado("0");
-		
-		//A instancias luis pedro, como a esto solo se llama desde volante expres y se esta creando una asistencia, ponemos siempre la guardia
-		//como validada
-		
-		cabeceraGuardiaBean.setValidado(ClsConstants.DB_TRUE);
-		
-		cabeceraGuardiaBean.setFechaAlta("SYSDATE");
-		cabeceraGuardiaBean.setUsuAlta(usuModificacion);
-		
-		
-		guardiaColegiadoBean.setIdInstitucion(idInstitucion);
-		guardiaColegiadoBean.setIdTurno(idTurno);
-		guardiaColegiadoBean.setIdGuardia(idGuardia);
-		guardiaColegiadoBean.setIdCalendarioGuardias(idCalendarioGuardia);
-		guardiaColegiadoBean.setIdPersona(idPersona);
-		guardiaColegiadoBean.setFechaInicio(fecha);
-		guardiaColegiadoBean.setFechaFin(fecha);
-		guardiaColegiadoBean.setDiasGuardia(new Long(1));
-		guardiaColegiadoBean.setDiasACobrar(new Long(1));
-		guardiaColegiadoBean.setReserva("N");
-		guardiaColegiadoBean.setFacturado("0");
-		guardiaColegiadoBean.setPagado("0");
-		
-		cabeceraGuardiaBean.setFechaAlta("SYSDATE");
-		try {
-			cabeceraGuardiasAdm.insert(cabeceraGuardiaBean);
-			guardiasColegiadoAdm.insert(guardiaColegiadoBean);
-			
-		} catch (Exception e) {
-			
-			throw new SIGAException("gratuita.volantesExpres.mensaje.diaSinCalendarioGuardias");
-		}
-		
-		
-		
-	}
+	
 	
 	public void sustitucionLetradoGuardiaPuntual(UsrBean usr,HttpServletRequest request,String idInstitucion, String idTurno,String idGuardia,String idCalendarioGuardias,String idPersonaSaliente,String fechaInicio,String fechaFin,String idPersonaEntrante,String salto,String compensacion,String sustituta, String comenSustitucion) throws ClsExceptions
 	{
@@ -1157,7 +718,6 @@ public class ScsGuardiasColegiadoAdm extends MasterBeanAdministrador
 		clavesGuardiaColegiado.put(ScsGuardiasColegiadoBean.C_IDINSTITUCION,idInstitucion);
 		clavesGuardiaColegiado.put(ScsGuardiasColegiadoBean.C_IDTURNO,idTurno);
 		clavesGuardiaColegiado.put(ScsGuardiasColegiadoBean.C_IDGUARDIA,idGuardia);
-		clavesGuardiaColegiado.put(ScsGuardiasColegiadoBean.C_IDCALENDARIOGUARDIAS,idCalendarioGuardias);
 		clavesGuardiaColegiado.put(ScsGuardiasColegiadoBean.C_IDPERSONA,idPersonaSaliente);
 		clavesGuardiaColegiado.put(ScsGuardiasColegiadoBean.C_FECHAINICIO,GstDate.getApplicationFormatDate(usr.getLanguage(),fechaInicio));
 		
@@ -1368,7 +928,7 @@ public class ScsGuardiasColegiadoAdm extends MasterBeanAdministrador
 		
 	}
 	
-	public String validacionesSustitucionGuardia(UsrBean usr, String idInstitucion, String idTurno, String idGuardia, String idCalendarioGuardias, String fechaInicio,String fechaFin,String idPersonaEntrante, String idPersonaSaliente) throws ClsExceptions
+	public String validacionesSustitucionGuardia(UsrBean usr, String idInstitucion, String idTurno, String idGuardia, String fechaInicio,String fechaFin,String idPersonaEntrante, String idPersonaSaliente) throws ClsExceptions
 	{
 		Hashtable temporalHash = new Hashtable();
 		Hashtable clavesGuardiaColegiado = new Hashtable();
@@ -1376,7 +936,6 @@ public class ScsGuardiasColegiadoAdm extends MasterBeanAdministrador
 		temporalHash.put(ScsGuardiasColegiadoBean.C_IDINSTITUCION,idInstitucion);
 		temporalHash.put(ScsGuardiasColegiadoBean.C_IDGUARDIA,idGuardia);
 		temporalHash.put(ScsGuardiasColegiadoBean.C_IDTURNO,idTurno);
-		temporalHash.put(ScsGuardiasColegiadoBean.C_IDCALENDARIOGUARDIAS,idCalendarioGuardias);
 		temporalHash.put(ScsGuardiasColegiadoBean.C_FECHAINICIO,fechaInicio);//DD/MM/YYYY
 		temporalHash.put(ScsGuardiasColegiadoBean.C_FECHAFIN,fechaFin);//DD/MM/YYYY
 		temporalHash.put(ScsGuardiasColegiadoBean.C_IDPERSONA,idPersonaEntrante);
@@ -1384,7 +943,6 @@ public class ScsGuardiasColegiadoAdm extends MasterBeanAdministrador
 		clavesGuardiaColegiado.put(ScsGuardiasColegiadoBean.C_IDINSTITUCION,idInstitucion);
 		clavesGuardiaColegiado.put(ScsGuardiasColegiadoBean.C_IDTURNO,idTurno);
 		clavesGuardiaColegiado.put(ScsGuardiasColegiadoBean.C_IDGUARDIA,idGuardia);
-		clavesGuardiaColegiado.put(ScsGuardiasColegiadoBean.C_IDCALENDARIOGUARDIAS,idCalendarioGuardias);
 		clavesGuardiaColegiado.put(ScsGuardiasColegiadoBean.C_IDPERSONA,idPersonaSaliente);
 		clavesGuardiaColegiado.put(ScsGuardiasColegiadoBean.C_FECHAINICIO,GstDate.getApplicationFormatDate(usr.getLanguage(),fechaInicio));
 		
@@ -1410,45 +968,15 @@ public class ScsGuardiasColegiadoAdm extends MasterBeanAdministrador
 		return "OK";
 	
 	}
-	public void validarColegiadoEntrante(UsrBean usr, String idInstitucion, String idTurno, String idGuardia, String idCalendarioGuardias, String fechaInicio,String fechaFin,String idPersonaEntrante) throws SIGAException,ClsExceptions
-	{
-		
-		Hashtable clavesGuardiaColegiado = new Hashtable();
-		
-		
-		
-		clavesGuardiaColegiado.put(ScsGuardiasColegiadoBean.C_IDINSTITUCION,idInstitucion);
-		clavesGuardiaColegiado.put(ScsGuardiasColegiadoBean.C_IDTURNO,idTurno);
-		clavesGuardiaColegiado.put(ScsGuardiasColegiadoBean.C_IDGUARDIA,idGuardia);
-		clavesGuardiaColegiado.put(ScsGuardiasColegiadoBean.C_IDCALENDARIOGUARDIAS,idCalendarioGuardias);
-		clavesGuardiaColegiado.put(ScsGuardiasColegiadoBean.C_IDPERSONA,idPersonaEntrante);
-		clavesGuardiaColegiado.put(ScsGuardiasColegiadoBean.C_FECHAINICIO,GstDate.getApplicationFormatDate(usr.getLanguage(),fechaInicio));
-		
-		
-		Vector v = this.select(clavesGuardiaColegiado);
-		if(v != null && v.size() > 0)
-		{
-			throw new SIGAException("gratuita.volantesExpres.mensaje.letradoSustituyeConGuardia");
-		}
-		
-		
-		
-
-		
-	
-	
-	}
-	
 	
 	//Borra las guardias para una cabecera de guardias y una persona
 	public boolean deleteGuardiasColegiado(Hashtable hashCabecera) throws ClsExceptions {
-		String idinstitucion="", idcalendarioguardias="", idturno="", idguardia="", fechaInicio="", fechaFin="", idPersona="";
+		String idinstitucion="", idturno="", idguardia="", fechaInicio="", fechaFin="", idPersona="";
 		boolean salida = false;
 		StringBuffer sql = new StringBuffer();
 		
 		try {
 			idinstitucion = (String)hashCabecera.get(ScsCabeceraGuardiasBean.C_IDINSTITUCION);
-			idcalendarioguardias = (String)hashCabecera.get(ScsCabeceraGuardiasBean.C_IDCALENDARIOGUARDIAS);
 			idturno = (String)hashCabecera.get(ScsCabeceraGuardiasBean.C_IDTURNO);
 			idguardia = (String)hashCabecera.get(ScsCabeceraGuardiasBean.C_IDGUARDIA);
 			
@@ -1459,7 +987,6 @@ public class ScsGuardiasColegiadoAdm extends MasterBeanAdministrador
 
 			sql.append(" delete from "+ScsGuardiasColegiadoBean.T_NOMBRETABLA);
 			sql.append(" where "+ScsGuardiasColegiadoBean.C_IDINSTITUCION+"="+idinstitucion);
-			sql.append(" and "+ScsGuardiasColegiadoBean.C_IDCALENDARIOGUARDIAS+"="+idcalendarioguardias);
 			sql.append(" and "+ScsGuardiasColegiadoBean.C_IDTURNO+"="+idturno);
 			sql.append(" and "+ScsGuardiasColegiadoBean.C_IDGUARDIA+"="+idguardia);
 			sql.append(" and "+ScsGuardiasColegiadoBean.C_IDPERSONA+"="+idPersona);
@@ -1488,7 +1015,6 @@ public class ScsGuardiasColegiadoAdm extends MasterBeanAdministrador
 		sql.append("WHERE GC.IDINSTITUCION = CG.IDINSTITUCION ");
 		sql.append("AND GC.IDTURNO = CG.IDTURNO ");
 		sql.append("AND GC.IDGUARDIA = CG.IDGUARDIA ");
-		sql.append("AND GC.IDCALENDARIOGUARDIAS = CG.IDCALENDARIOGUARDIAS ");
 		sql.append("AND GC.FECHAINICIO = CG.FECHAINICIO ");
 		sql.append("AND GC.IDPERSONA = CG.IDPERSONA ");
 		sql.append("AND GC.IDPERSONA = P.IDPERSONA ");
@@ -1558,7 +1084,6 @@ public class ScsGuardiasColegiadoAdm extends MasterBeanAdministrador
 		sql.append("GC.IDINSTITUCION = CG.IDINSTITUCION ");
 		sql.append("AND GC.IDTURNO = CG.IDTURNO ");
 		sql.append("AND GC.IDGUARDIA = CG.IDGUARDIA ");
-		sql.append("AND GC.IDCALENDARIOGUARDIAS = CG.IDCALENDARIOGUARDIAS ");
 		sql.append("AND GC.FECHAINICIO = CG.FECHAINICIO ");
 		sql.append("AND GC.IDPERSONA = CG.IDPERSONA ");
 		
@@ -1695,47 +1220,6 @@ public class ScsGuardiasColegiadoAdm extends MasterBeanAdministrador
 	   		}	
 	    }
 		return "";
-	}
-	public void aplicarSustitucion(Integer idInstitucion, Integer idTurno, 
-			Integer idGuardia, Long idPersonaSaliente, Long idPersonaEntrante, 
-			String fechaFin, UsrBean usr) throws SIGAException,ClsExceptions
-			{
-
-
-		fechaFin = GstDate.getApplicationFormatDate("", fechaFin);
-
-		// Obtenemos el idCalendario
-		Hashtable h = new Hashtable();
-		UtilidadesHash.set (h, ScsGuardiasColegiadoBean.C_IDPERSONA, idPersonaSaliente);
-		UtilidadesHash.set (h, ScsGuardiasColegiadoBean.C_FECHAFIN, fechaFin);
-		UtilidadesHash.set (h, ScsGuardiasColegiadoBean.C_IDTURNO, idTurno);
-		UtilidadesHash.set (h, ScsGuardiasColegiadoBean.C_IDGUARDIA, idGuardia);
-		UtilidadesHash.set (h, ScsGuardiasColegiadoBean.C_IDINSTITUCION, idInstitucion);
-		ScsGuardiasColegiadoAdm admAux = new ScsGuardiasColegiadoAdm (usr);
-		Vector vGuardias = admAux.select(h);
-		if (vGuardias != null && vGuardias.size() != 1) {
-			throw new SIGAException("gratuita.volantesExpres.error.guardiaConVariosCalendarios");
-		}
-		ScsGuardiasColegiadoBean b = (ScsGuardiasColegiadoBean) vGuardias.get(0);
-		String idCalendarioGuardias = ""+b.getIdCalendarioGuardias();
-		String fechaInicio = GstDate.getFormatedDateLong("", b.getFechaInicio()); 
-		String salto = null; 			// No creamos salto
-		String compensacion = null; 	// No creamos compensacion
-
-
-
-		String mensaje = validacionesSustitucionGuardia(usr,idInstitucion.toString(), idTurno.toString(), idGuardia.toString(), idCalendarioGuardias, fechaInicio,fechaFin,idPersonaEntrante.toString(), idPersonaSaliente.toString());
-
-		if(!mensaje.equalsIgnoreCase("OK")) {
-			throw new SIGAException("messages.general.errorExcepcion");
-		}
-		else {
-			validarColegiadoEntrante(usr,idInstitucion.toString(), idTurno.toString(), idGuardia.toString(), idCalendarioGuardias, fechaInicio,fechaFin,idPersonaEntrante.toString());
-			sustitucionLetradoGuardiaPuntual(usr, null, idInstitucion.toString(), idTurno.toString(),idGuardia.toString(),idCalendarioGuardias,idPersonaSaliente.toString(),fechaInicio,fechaFin,idPersonaEntrante.toString(), salto, compensacion,"si","");
-		}
-
-
-
 	}
 	
 	/**
@@ -1949,9 +1433,10 @@ public class ScsGuardiasColegiadoAdm extends MasterBeanAdministrador
 				total = Integer.valueOf((String)result.get("TOTAL"));
 			}
 		} catch (Exception e) {
-			throw new ClsExceptions(e,"Error en consulta de getColegiadosGuardiaDia");
+			throw new ClsExceptions(e,"Error en consulta de getNumeroGuardias");
 		}
 		return total;
 	}
+
 	
 }

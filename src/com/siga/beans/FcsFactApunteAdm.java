@@ -18,7 +18,7 @@ public class FcsFactApunteAdm extends MasterBeanAdministrador {
 
 	protected String[] getCamposBean() {
 		String [] campos = {FcsFactApunteBean.C_FECHAINICIO,			FcsFactApunteBean.C_FECHAMODIFICACION,
-							FcsFactApunteBean.C_IDAPUNTE,				FcsFactApunteBean.C_IDCALENDARIOGUARDIAS,
+							FcsFactApunteBean.C_IDAPUNTE,				
 							FcsFactApunteBean.C_IDFACTURACION,			FcsFactApunteBean.C_IDGUARDIA,
 							FcsFactApunteBean.C_IDHITO,					FcsFactApunteBean.C_IDINSTITUCION,
 							FcsFactApunteBean.C_IDPERSONA,				FcsFactApunteBean.C_IDTURNO,
@@ -46,7 +46,6 @@ public class FcsFactApunteAdm extends MasterBeanAdministrador {
 			bean = new FcsFactApunteBean();
 			bean.setFechaInicio			(UtilidadesHash.getString(hash,FcsFactApunteBean.C_FECHAINICIO));
 			bean.setFechaMod			(UtilidadesHash.getString(hash,FcsFactApunteBean.C_FECHAMODIFICACION));
-			bean.setIdCalendarioGuardias(UtilidadesHash.getInteger(hash,FcsFactApunteBean.C_IDCALENDARIOGUARDIAS));
 			bean.setIdFacturacion		(UtilidadesHash.getInteger(hash,FcsFactApunteBean.C_IDFACTURACION));
 			bean.setIdGuardia			(UtilidadesHash.getInteger(hash,FcsFactApunteBean.C_IDGUARDIA));
 			bean.setIdInstitucion		(UtilidadesHash.getInteger(hash,FcsFactApunteBean.C_IDINSTITUCION));
@@ -77,7 +76,6 @@ public class FcsFactApunteAdm extends MasterBeanAdministrador {
 			FcsFactApunteBean b = (FcsFactApunteBean) bean;
 			UtilidadesHash.set(htData, FcsFactApunteBean.C_FECHAINICIO, b.getFechaInicio().toString());
 			UtilidadesHash.set(htData, FcsFactApunteBean.C_FECHAMODIFICACION, b.getFechaMod().toString());
-			UtilidadesHash.set(htData, FcsFactApunteBean.C_IDCALENDARIOGUARDIAS, b.getIdCalendarioGuardias().toString());
 			UtilidadesHash.set(htData, FcsFactApunteBean.C_IDFACTURACION, b.getIdFacturacion().toString());
 			UtilidadesHash.set(htData, FcsFactApunteBean.C_IDGUARDIA, b.getIdGuardia().toString());
 			UtilidadesHash.set(htData, FcsFactApunteBean.C_IDINSTITUCION, b.getIdInstitucion().toString());
@@ -130,7 +128,7 @@ public class FcsFactApunteAdm extends MasterBeanAdministrador {
 	}
 	
 	
-	public boolean exiteApunteGuardia(String idinstitucion,String idturno,String idguardia,String idcalendarioguardias,String idpersona, String fInicio){
+	public boolean exiteApunteGuardia(String idinstitucion,String idturno,String idguardia,String idpersona, String fInicio){
 		String sql = "";	
 		Vector v = new Vector();
 		boolean salida = false;
@@ -141,12 +139,11 @@ public class FcsFactApunteAdm extends MasterBeanAdministrador {
 	    codigos.put(new Integer(1),idinstitucion);
 	    codigos.put(new Integer(2),idturno);
 	    codigos.put(new Integer(3),idguardia);
-	    codigos.put(new Integer(4),idcalendarioguardias);
-	    codigos.put(new Integer(5),idpersona);
-	    codigos.put(new Integer(6),fInicio);
+	    codigos.put(new Integer(4),idpersona);
+	    codigos.put(new Integer(5),fInicio);
 	    
 		sql = "select 1 from fcs_fact_apunte ap ";
-		sql+= " where ap.idinstitucion=:1 and ap.idturno=:2 and ap.idguardia=:3 and ap.idcalendarioguardias=:4 and ap.idpersona=:5 and ap.fechainicio=:6";
+		sql+= " where ap.idinstitucion=:1 and ap.idturno=:2 and ap.idguardia=:3 and ap.idpersona=:4 and ap.fechainicio=:5";
 
 		try {
 			v = this.selectGenericoBind(sql,codigos);

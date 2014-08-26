@@ -886,7 +886,7 @@ public class ScsAsistenciasAdm extends MasterBeanAdministrador {
 		   Vector datos=new Vector();
 		   Hashtable resultado = null;
 		   
-			String idinstitucion="", idcalendarioguardias="", idturno="", idguardia="", fechaHora="", idPersona="", fechaFin="";
+			String idinstitucion="", idturno="", idguardia="", fechaHora="", idPersona="", fechaFin="";
 			boolean salida = false;
 			StringBuffer sql = new StringBuffer();
 			
