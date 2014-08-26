@@ -259,18 +259,10 @@
 		}
 		
 		function configurarFichNoSJCS(){
-			
-			var sufijo = jQuery("#comboSufijos");				
+					
 			var propositoSEPA = jQuery("#comboPropositosSEPA");
 			var propositoOtros = jQuery("#comboPropositosOtros");
 			
-			if(sufijo.val()<1) {
-				mensaje = "<siga:Idioma key='facturacion.sufijos.message.errorCuentaBancariaSufijoNOSJCS'/>";
-				alert(mensaje);
-				fin();
-				return false;
-			}
-				
 			if(propositoSEPA.val()<1) {
 				mensaje = "<siga:Idioma key='facturacion.propositos.message.errorPropSEPA'/>";
 				alert(mensaje);
@@ -285,7 +277,7 @@
 				return false;
 			}
 			
-			document.ficheroBancarioAbonosForm.listaSufijoProp.value=sufijo.val()+"#"+propositoSEPA.val()+"#"+propositoOtros.val();
+			document.ficheroBancarioAbonosForm.listaSufijoProp.value=propositoSEPA.val()+"#"+propositoOtros.val();
 			document.all.ficheroBancarioAbonosForm.modo.value = "generarFichero";
 			document.all.ficheroBancarioAbonosForm.target = 'submitArea';
 			var f = document.all.ficheroBancarioAbonosForm.name;	
@@ -316,29 +308,8 @@
 	<!-- FIN: SUBMIT AREA -->
 	<div id="dialogoConfig" title="Nuevo Fichero de Abonos" style="display:none">
 	<div>
-		<siga:ConjCampos>
+		<siga:ConjCampos leyenda="Propósitos">
 			<table class="tablaCampos" colspan=2>
-				<tr>
-					<td class="labelText">
-						<siga:Idioma key="facturacion.sufijos.literal.sufijo"/>
-					</td>
-					<td>
-					<bean:define id="listaSufijos" name="listaSufijos" scope="request"/> 
-					<html:select styleId="comboSufijos" property="idSufijo" value="" styleClass="boxCombo" style="width:150px;">
-					<html:option value=""><c:out value=""/></html:option>
-					<c:forEach items="${listaSufijos}" var="sufijoCmb">
-						<html:option value="${sufijoCmb.idSufijo}">
-						<c:if	test="${sufijoCmb.sufijo.trim().length()>0}">
-							<c:out value="${sufijoCmb.sufijo} ${sufijoCmb.concepto}"/>
-						</c:if>
-						<c:if	test="${sufijoCmb.sufijo.trim().length()==0}">
-							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<c:out value="${sufijoCmb.concepto}"/>
-						</c:if>
-						</html:option>
-					</c:forEach>
-					</html:select>	
-					</td>
-				</tr> 
 				<tr>		
 					<td class="labelText">
 						<siga:Idioma key="factSJCS.abonos.configuracion.literal.proposito.SEPA"/>
@@ -348,7 +319,7 @@
 						<html:select styleId="comboPropositosSEPA" property="idpropSEPA" value="" styleClass="boxCombo" style="width:150px;" >
 						<html:option value=""><c:out value=""/></html:option>
 						<c:forEach items="${listaPropositosSEPA}" var="propSEPACmb">
-							<html:option value="${propSEPACmb.idProposito}"><c:out value="${propSEPACmb.codigo.trim().length()>0?propSEPACmb.codigo:'   '} ${propSEPACmb.nombre}"/></html:option>
+							<html:option value="${propSEPACmb.idProposito}"><c:out value="${propSEPACmb.codigo} ${propSEPACmb.nombre}"/></html:option>
 						</c:forEach>
 						</html:select>	
 					
@@ -363,7 +334,7 @@
 						<html:select styleId="comboPropositosOtros" property="idpropOtros" value="" styleClass="boxCombo" style="width:150px;" >
 						<html:option value=""><c:out value=""/></html:option>
 						<c:forEach items="${listaPropositosOtros}" var="propOtrosCmb">
-							<html:option value="${propOtrosCmb.idProposito}"><c:out value="${propOtrosCmb.codigo.trim().length()>0?propOtrosCmb.codigo:'   '} ${propOtrosCmb.nombre}"/></html:option>
+							<html:option value="${propOtrosCmb.idProposito}"><c:out value="${propOtrosCmb.codigo} ${propOtrosCmb.nombre}"/></html:option>
 						</c:forEach>
 						</html:select>	
 					</td>

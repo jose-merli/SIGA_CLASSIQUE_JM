@@ -116,7 +116,8 @@ public class ConfiguracionAbonosAction extends MasterAction{
 			request.setAttribute("modo", accion);
 			
 			FacBancoInstitucionAdm admBancoFac = new FacBancoInstitucionAdm(this.getUserBean(request));
-			Vector datosBancos = admBancoFac.obtenerBancosConBaja(idInstitucion);
+			Vector datosBancos = admBancoFac.obtenerBancosDispAbonosSJCS(idInstitucion,idPago);
+			
 			request.setAttribute("bancosInstitucion", datosBancos);
 			
 			CenInstitucionAdm institucionAdm = new CenInstitucionAdm(this.getUserBean(request));
@@ -156,7 +157,7 @@ public class ConfiguracionAbonosAction extends MasterAction{
 		 		 	}else{
 		 		 		miform.setIdpropOtros(bean.getIdpropOtros());
 		 		 	}
-		 		 	
+
 		 		 	//Se guarda el sufijo "" para que en la ventana se muestre el de la cuenta bancaria si existe
 		 		 	if(bean.getIdsufijo()==null) {
 		 		 		miform.setIdsufijo(null);
@@ -166,8 +167,15 @@ public class ConfiguracionAbonosAction extends MasterAction{
 		 		 	
 				}
 			}
-//			request.setAttribute("paramConcepto", paramAdm.getValor(idInstitucion, "FCS", "CONCEPTO_ABONO", ""));
-			request.setAttribute("paramIdCuenta", paramAdm.getValor(idInstitucion, "FCS", "BANCOS_CODIGO_ABONO", ""));
+			
+			//Se obtiene la cuenta SJCS más moderna
+			Vector cuentasSJCS = admBancoFac.obtenerCuentaUltimaSJCS(idInstitucion);
+			
+			if (cuentasSJCS.size()>0)
+				request.setAttribute("paramIdCuenta", cuentasSJCS.firstElement().toString());	
+			else
+				request.setAttribute("paramIdCuenta", "");
+			
 			
 			//Combos sufijos
 			FacSufijoAdm sufijoAdm = new FacSufijoAdm (this.getUserBean(request));

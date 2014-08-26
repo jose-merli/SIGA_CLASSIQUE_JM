@@ -1006,13 +1006,13 @@ public class FacAbonoAdm extends MasterBeanAdministrador {
 	    }
 	
 	/** 
-	 * Recoge los abonos que van destinados a cada banco 
+	 * Recoge los abonos que van destinados a cada banco-sufijo
 	 * @param  institucion - identificador de la institucion
 	 * @param  codigoBanco - identificador del banco	 	  
 	 * @return  Vector - Fila seleccionada  
 	 * @exception  ClsExceptions  En cualquier caso de error
 	 */
-	public Vector getAbonosBanco (String institucion, String codigoBanco) throws ClsExceptions,SIGAException {
+	public Vector getAbonosBanco (Integer institucion, String codigoBanco, Integer Idsufijo) throws ClsExceptions,SIGAException {
 		   Vector datos=new Vector();
 	       try {
 	            RowsContainer rc = new RowsContainer(); 
@@ -1031,9 +1031,22 @@ public class FacAbonoAdm extends MasterBeanAdministrador {
 							CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_DIGITOCONTROL + "," +
 							FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IMPPENDIENTEPORABONAR + " AS IMPORTE " + 
 //	            			"PKG_SIGA_TOTALESABONO.PENDIENTEPORABONAR("+ FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDINSTITUCION +","+ FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDABONO + ") AS IMPORTE" +
-							" FROM " + FacAbonoBean.T_NOMBRETABLA + "," + CenCuentasBancariasBean.T_NOMBRETABLA +
+							" FROM " + 	FacAbonoBean.T_NOMBRETABLA + "," + CenCuentasBancariasBean.T_NOMBRETABLA + "," +
+										FacFacturaBean.T_NOMBRETABLA + "," + FacSerieFacturacionBancoBean.T_NOMBRETABLA +
 							" WHERE " +
-							FacAbonoBean.T_NOMBRETABLA +"."+ FacAbonoBean.C_IDINSTITUCION + "=" + institucion +
+							FacSerieFacturacionBancoBean.T_NOMBRETABLA+ "." + FacSerieFacturacionBancoBean.C_IDINSTITUCION + "=" + institucion +
+							" AND " +
+							FacSerieFacturacionBancoBean.T_NOMBRETABLA+ "." + FacSerieFacturacionBancoBean.C_IDSUFIJO + "="  + Idsufijo +
+							" AND " +
+							FacSerieFacturacionBancoBean.T_NOMBRETABLA+ "." + FacSerieFacturacionBancoBean.C_BANCOS_CODIGO + "="  + codigoBanco +
+							" AND " +							
+							FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDSERIEFACTURACION + "=" + FacSerieFacturacionBancoBean.T_NOMBRETABLA+ "." + FacSerieFacturacionBancoBean.C_IDSERIEFACTURACION +
+							" AND " +
+							FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDINSTITUCION + "=" + FacSerieFacturacionBancoBean.T_NOMBRETABLA + "." + FacSerieFacturacionBancoBean.C_IDINSTITUCION +
+							" AND " +
+							FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDFACTURA + "=" + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDFACTURA +
+							" AND " +
+							FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDINSTITUCION + "=" + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDINSTITUCION +
 							" AND " +
 							FacAbonoBean.T_NOMBRETABLA +"."+ FacAbonoBean.C_IDPAGOSJG + " IS NULL " +
 							" AND " +
@@ -1372,13 +1385,11 @@ public class FacAbonoAdm extends MasterBeanAdministrador {
 	 * @return  Vector - Fila seleccionada  
 	 * @exception  ClsExceptions  En cualquier caso de error
 	 */
-	public Vector getAbonosBancoSjcs (String institucion, String codigoBanco, String idsufijo) throws ClsExceptions,SIGAException {
+	public Vector getAbonosBancoSjcs (String institucion, String codigoBanco, Integer idsufijo) throws ClsExceptions,SIGAException {
 		Vector datos=new Vector();
 		Hashtable codigos = new Hashtable();
 		try {
-			
-			String idpropositoCol="";
-			
+
 			RowsContainer rc = new RowsContainer();
 			String sql =
 					"SELECT " +	FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDABONO + "," +
@@ -1395,7 +1406,6 @@ public class FacAbonoAdm extends MasterBeanAdministrador {
 					"       " + CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_DIGITOCONTROL + "," +
 					"       " + FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IMPPENDIENTEPORABONAR + " AS IMPORTE," +
 					"       " + FcsPagosJGBean.T_NOMBRETABLA + "." + FcsPagosJGBean.C_CONCEPTO + " , " +
-					"       " + idpropositoCol + " , " +
 					"       " + FcsPagosJGBean.T_NOMBRETABLA + "." + FcsPagosJGBean.C_IDSUFIJO + " , " +
 					"       " + FcsPagosJGBean.T_NOMBRETABLA + "." + FcsPagosJGBean.C_ABREVIATURA + " as NOMBREPAGO, " +
 					"       " + FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDPERORIGEN + " ";
@@ -1406,14 +1416,9 @@ public class FacAbonoAdm extends MasterBeanAdministrador {
 			codigos.put(new Integer(2),codigoBanco);
             codigos.put(new Integer(3),"5");
             codigos.put(new Integer(4),"0.0");
+
+			sql += "AND "+FcsPagosJGBean.T_NOMBRETABLA + "." + FcsPagosJGBean.C_IDSUFIJO+ " = " + idsufijo;
 			
-           
-			if (idsufijo == null || idsufijo.equals("")) {
-				sql += "AND "+FcsPagosJGBean.T_NOMBRETABLA + "." + FcsPagosJGBean.C_IDSUFIJO+ " is null";
-			} else {
-				sql += "AND "+FcsPagosJGBean.T_NOMBRETABLA + "." + FcsPagosJGBean.C_IDSUFIJO+ " = :5";
-				codigos.put(new Integer(5),idsufijo);
-			}
 			
 			if (rc.findBind(sql, codigos)) {
 				for (int i = 0; i < rc.size(); i++){
@@ -1699,28 +1704,47 @@ public class FacAbonoAdm extends MasterBeanAdministrador {
 
 		return isAbonoConPago;
 	}
-
+	
 	/** 
-	 * Recoge los diferentes sufijos que hay para los abonos de SJCS pendientes de pagar por banco 
+	 * Recoge los diferentes bancos-sufijos que hay para los abonos de SJCS pendientes de pagar por banco 
 	 * @param  institucion - identificador de la institucion
-	 * @param  codigoBanco - identificador del banco	 	 
 	 * @return  Vector - Fila seleccionada  
 	 * @exception  ClsExceptions  En cualquier caso de error
 	 */
-	public Vector getSufijosAbonosBancosSjcs (String institucion, String codigoBanco) throws ClsExceptions,SIGAException {
+	public Vector getBancosSufijosSJCS (String institucion) throws ClsExceptions,SIGAException {
 		   Vector datos=new Vector();
 		   Hashtable codigos = new Hashtable();
 	       try {    	   
-	    	   
+
 	    	   RowsContainer rc = new RowsContainer(); 
-	            String sql ="SELECT "+FcsPagosJGBean.T_NOMBRETABLA + "." + FcsPagosJGBean.C_IDSUFIJO+" "+
-	            			baseSqlAbonosSJCSpendientes + 
-	            			" group by "+FcsPagosJGBean.T_NOMBRETABLA + "." + FcsPagosJGBean.C_IDSUFIJO;
-	            			
-	            codigos.put(new Integer(1),institucion);
-	            codigos.put(new Integer(2),codigoBanco);
-	            codigos.put(new Integer(3),"5");
-	            codigos.put(new Integer(4),"0.00");
+	            String sql ="SELECT DISTINCT "+FcsPagosJGBean.T_NOMBRETABLA + "." + FcsPagosJGBean.C_IDSUFIJO+","+ FacSufijoBean.T_NOMBRETABLA+"."+FacSufijoBean.C_SUFIJO +","+
+	            			FacBancoInstitucionBean.T_NOMBRETABLA + ".*, "+
+	            			FacBancoInstitucionBean.T_NOMBRETABLA + "."+FacBancoInstitucionBean.C_COD_BANCO+"|| '-' ||"+
+	            			FacBancoInstitucionBean.T_NOMBRETABLA + "."+FacBancoInstitucionBean.C_COD_SUCURSAL+ "|| '-' ||"+ 
+	            			FacBancoInstitucionBean.T_NOMBRETABLA + "."+FacBancoInstitucionBean.C_DIGITOCONTROL+"|| '-' ||"+
+	            			FacBancoInstitucionBean.T_NOMBRETABLA + "."+FacBancoInstitucionBean.C_NUMEROCUENTA+" AS CUENTACONTABLE,"+
+						    "(SELECT CEN.NOMBRE FROM CEN_BANCOS CEN WHERE CEN.CODIGO="+FacBancoInstitucionBean.T_NOMBRETABLA + "."+FacBancoInstitucionBean.C_COD_BANCO+") AS BANCO, "+
+						    "(SELECT COUNT (1) FROM FAC_SERIEFACTURACION_BANCO SFB WHERE SFB.IDINSTITUCION=" +
+						    	FacBancoInstitucionBean.T_NOMBRETABLA + "."+FacBancoInstitucionBean.C_IDINSTITUCION + " AND SFB.BANCOS_CODIGO=" + 
+						    	FacBancoInstitucionBean.T_NOMBRETABLA + "."+FacBancoInstitucionBean.C_BANCOS_CODIGO + ") AS SELECCIONADO "+
+				            " FROM " + FacAbonoBean.T_NOMBRETABLA + "," + CenCuentasBancariasBean.T_NOMBRETABLA + "," + FcsPagosJGBean.T_NOMBRETABLA + "," + FacBancoInstitucionBean.T_NOMBRETABLA + 
+				            "," + FacSufijoBean.T_NOMBRETABLA +
+							" WHERE " +		FacAbonoBean.T_NOMBRETABLA +"."+ FacAbonoBean.C_IDINSTITUCION + "=" + institucion +
+							" AND " +		FacAbonoBean.T_NOMBRETABLA +"."+ FacAbonoBean.C_IDPAGOSJG + " IS NOT NULL " +
+							" AND " +		FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDINSTITUCION + "=" + CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_IDINSTITUCION +
+							" AND " +		FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDINSTITUCION + "=" + FcsPagosJGBean.T_NOMBRETABLA + "." + FcsPagosJGBean.C_IDINSTITUCION +
+							" AND " +		FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDPAGOSJG + "=" + FcsPagosJGBean.T_NOMBRETABLA + "." + FcsPagosJGBean.C_IDPAGOSJG +
+							" AND " +		FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDCUENTA + "=" + CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_IDCUENTA +
+							" AND " +		FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDPERSONA + "=" + CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_IDPERSONA +
+							" AND " +		FcsPagosJGBean.T_NOMBRETABLA + "." + FcsPagosJGBean.C_BANCOS_CODIGO + "= "+ FacBancoInstitucionBean.T_NOMBRETABLA + "." + FacBancoInstitucionBean.C_BANCOS_CODIGO + 
+							" AND " +		FcsPagosJGBean.T_NOMBRETABLA + "." + FcsPagosJGBean.C_IDINSTITUCION + "= "+ FacBancoInstitucionBean.T_NOMBRETABLA + "." + FacBancoInstitucionBean.C_IDINSTITUCION + 
+							" AND " +		"F_SIGA_ESTADOSABONO("+ FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDINSTITUCION +","+ FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDABONO + ") = 5 " +
+							" AND " + FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IMPPENDIENTEPORABONAR +">0" +
+							" AND " + FacBancoInstitucionBean.T_NOMBRETABLA + "." + FacBancoInstitucionBean.C_IDINSTITUCION +"="+ institucion + 
+							" AND " + FacBancoInstitucionBean.T_NOMBRETABLA + "." + FacBancoInstitucionBean.C_FECHABAJA + " IS NULL" +
+							" AND " + FacSufijoBean.T_NOMBRETABLA  + "." +FacSufijoBean.C_IDSUFIJO + "=" + FcsPagosJGBean.T_NOMBRETABLA  + "." +FcsPagosJGBean.C_IDSUFIJO +
+							" AND " + FacSufijoBean.T_NOMBRETABLA  + "." +FacSufijoBean.C_IDINSTITUCION + "=" + FcsPagosJGBean.T_NOMBRETABLA  + "." +FcsPagosJGBean.C_IDINSTITUCION;
+							
 
 	            if (rc.findBind(sql, codigos)) {
 	               for (int i = 0; i < rc.size(); i++){
@@ -1733,6 +1757,6 @@ public class FacAbonoAdm extends MasterBeanAdministrador {
 	       	throw new ClsExceptions (e, "Error al obtener la informacion sobre una entrada de la tabla de abonos para sufijos");
 	       }
 	       return datos;                        
-	} //getPropositosAbonosBancosSjcs()
+	} //getSufijosAbonosBancosSjcs()
 
 }

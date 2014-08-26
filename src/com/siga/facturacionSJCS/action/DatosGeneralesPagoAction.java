@@ -250,6 +250,7 @@ public class DatosGeneralesPagoAction extends MasterAction {
 	private void guardarBloquePago(DatosGeneralesPagoForm miform,UsrBean usr) throws SIGAException{
 		
 		FcsPagosJGAdm pagosAdm = new FcsPagosJGAdm(usr);
+		FacBancoInstitucionAdm admBancoFac = new FacBancoInstitucionAdm(usr);
 		UserTransaction tx = null;
 		
 		try {
@@ -286,7 +287,6 @@ public class DatosGeneralesPagoAction extends MasterAction {
 				Vector v = pagosAdm.selectByPK(hash);
 				if (v!=null && v.size()>0){
 					FcsPagosJGBean bean = (FcsPagosJGBean)v.firstElement();
-//					sConcepto = bean.getConcepto();
 				 	sCuenta = bean.getBancosCodigo();
 				 	idpropSEPA=bean.getIdpropSEPA();
 				 	idpropOtros=bean.getIdpropOtros();
@@ -294,13 +294,16 @@ public class DatosGeneralesPagoAction extends MasterAction {
 				 	
 				} else {
 					GenParametrosAdm paramAdm = new GenParametrosAdm(usr);
-//					sConcepto = paramAdm.getValor(miform.getIdInstitucion(), "FCS", "CONCEPTO_ABONO", "");
-//					if (!sConcepto.equalsIgnoreCase("1") && !sConcepto.equalsIgnoreCase("8") && !sConcepto.equalsIgnoreCase("9")) {
-//						throw new SIGAException("administracion.parametrosGenerales.error.conceptoAbono");
-//					}
-					sCuenta = paramAdm.getValor(miform.getIdInstitucion(), "FCS", "BANCOS_CODIGO_ABONO", "");
 					
-					//El concepto pasa a ser:propósitos
+					
+					//Se obtiene la cuenta SJCS más moderna
+					Vector cuentasSJCS = admBancoFac.obtenerCuentaUltimaSJCS(miform.getIdInstitucion());
+				
+					if (cuentasSJCS.size()>0)
+						sCuenta=cuentasSJCS.firstElement().toString();	
+				
+					
+					//Propósitos
 					FacPropositosAdm propAdm = new FacPropositosAdm(usr);
 					
 					String paramPropSEPA = paramAdm.getValor(miform.getIdInstitucion(), "FAC",
@@ -1054,7 +1057,10 @@ public class DatosGeneralesPagoAction extends MasterAction {
 				this.getUserBean(request));
 		FcsFactGrupoFactHitoAdm factGrupoAdm = new FcsFactGrupoFactHitoAdm(
 				this.getUserBean(request));
-
+		
+		FacBancoInstitucionAdm admBancoFac = new FacBancoInstitucionAdm(
+				this.getUserBean(request));
+		
 		UsrBean usr;
 		String forward = "";
 		DatosGeneralesPagoForm miform = (DatosGeneralesPagoForm) formulario;
@@ -1121,17 +1127,7 @@ public class DatosGeneralesPagoAction extends MasterAction {
 
 				GenParametrosAdm paramAdm = new GenParametrosAdm(
 						this.getUserBean(request));
-				
-//				String paramConcepto = paramAdm.getValor(idInstitucion, "FCS",
-//						"CONCEPTO_ABONO", "");
-//				if (!paramConcepto.equalsIgnoreCase("1")
-//						&& !paramConcepto.equalsIgnoreCase("8")
-//						&& !paramConcepto.equalsIgnoreCase("9")) {
-//					throw new SIGAException(
-//							"administracion.parametrosGenerales.error.conceptoAbono");
-//				}
-//				registro.put(FcsPagosJGBean.C_CONCEPTO, paramConcepto);
-				
+								
 				registro.put(FcsPagosJGBean.C_CONCEPTO, ""); //El concepto pasa a ser:propósitos
 				
 				FacPropositosAdm propAdm = new FacPropositosAdm(usr);
@@ -1148,11 +1144,14 @@ public class DatosGeneralesPagoAction extends MasterAction {
 				//En bbdd guardamos el idproposito
 				registro.put(FcsPagosJGBean.C_IDPROPOTROS, propAdm.selectIdPropositoPorCodigo(paramPropOtros));
 				
-				registro.put(FcsPagosJGBean.C_BANCOS_CODIGO, paramAdm.getValor(
-						idInstitucion, "FCS", "BANCOS_CODIGO_ABONO", ""));
+				//Se obtiene la cuenta SJCS más moderna
+				Vector cuentasSJCS = admBancoFac.obtenerCuentaUltimaSJCS(miform.getIdInstitucion());
+				
+				if (cuentasSJCS.size()>0)
+					registro.put(FcsPagosJGBean.C_BANCOS_CODIGO,cuentasSJCS.firstElement().toString());	
 				
 				//Se inserta el campo idSufijo con el valor "" cuando se configure el abono se actualizará este valor en bb.dd.			
-				registro.put(FcsPagosJGBean.C_IDSUFIJO, "");
+				registro.put(FcsPagosJGBean.C_IDSUFIJO, ""); 
 				
 				UtilidadesHash.set(registro, FcsPagosJGBean.C_IMPORTEMINIMO,
 						new Double(0));

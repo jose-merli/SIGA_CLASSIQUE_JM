@@ -195,53 +195,7 @@ public class FacBancoInstitucionAdm extends MasterBeanAdministrador {
 	       }
 	       return datos;                        
 	    }
-		
-	
-	
-	/** 
-	 * Recoge los bancos restantes al de menor comision por abonos ajenos
-	 * @param  institucion - identificador de la institucion
-	 * @param  codigoBanco - identificador del banco que cobra menor comision
-	 * @return  Vector - Filas de la tabla seleccionadas  
-	 * @exception  ClsExceptions  En cualquier caso de error
-	 */	
-	public Vector getRestoBancosConComision(String institucion, String codigoBanco) throws ClsExceptions,SIGAException {
-		   Vector datos=new Vector();
-	       try {
-	            RowsContainer rc = new RowsContainer(); 
-	            String sql ="SELECT " +
-    						FacBancoInstitucionBean.T_NOMBRETABLA + "." + FacBancoInstitucionBean.C_BANCOS_CODIGO + "," +
-	            			FacBancoInstitucionBean.T_NOMBRETABLA + "." + FacBancoInstitucionBean.C_IDINSTITUCION + "," +
-	            			FacBancoInstitucionBean.T_NOMBRETABLA + "." + FacBancoInstitucionBean.C_IBAN + "," +
-	            			FacBancoInstitucionBean.T_NOMBRETABLA + "." + FacBancoInstitucionBean.C_COD_BANCO + "," +
-	            			FacBancoInstitucionBean.T_NOMBRETABLA + "." + FacBancoInstitucionBean.C_COD_SUCURSAL + "," +
-	            			FacBancoInstitucionBean.T_NOMBRETABLA + "." + FacBancoInstitucionBean.C_NUMEROCUENTA + "," +
-	            			FacBancoInstitucionBean.T_NOMBRETABLA + "." + FacBancoInstitucionBean.C_ASIENTOCONTABLE + "," +
-	            			FacBancoInstitucionBean.T_NOMBRETABLA + "." + FacBancoInstitucionBean.C_COMISIONIMPORTE + 
-							" FROM " + 
-							FacBancoInstitucionBean.T_NOMBRETABLA +
-	            			" WHERE " + 
-							FacBancoInstitucionBean.T_NOMBRETABLA +"."+ FacBancoInstitucionBean.C_IDINSTITUCION + "=" + institucion +
-							" AND " +
-							FacBancoInstitucionBean.T_NOMBRETABLA +"."+ FacBancoInstitucionBean.C_BANCOS_CODIGO + "<>" + codigoBanco +
-							" AND " +
-							FacBancoInstitucionBean.T_NOMBRETABLA +"."+ FacBancoInstitucionBean.C_SJCS + "= 0 " +
-							" AND " +
-							FacBancoInstitucionBean.T_NOMBRETABLA +"."+ FacBancoInstitucionBean.C_FECHABAJA + " IS NULL";
-							
-	            if (rc.find(sql)) {
-	               for (int i = 0; i < rc.size(); i++){
-	                  Row fila = (Row) rc.get(i);
-	                  datos.add(fila);
-	               }
-	            }
-	       }
-	       catch (Exception e) {
-	       	throw new ClsExceptions (e, "Error al obtener el banco de menor comision");
-	       }
-	       return datos;                        
-	    }
-	
+
 	public Vector obtenerBancosSerieFacturacion(String idInstitucion,String idSerieFacturacion) throws ClsExceptions,SIGAException {
 		   Vector datos=new Vector();
 	       try {
@@ -348,29 +302,50 @@ public class FacBancoInstitucionAdm extends MasterBeanAdministrador {
 	       return datos;                        
 	    }
 	
-	public Vector obtenerBancosConBaja(String idInstitucion) throws ClsExceptions,SIGAException {
+	public Vector obtenerBancosDispAbonosSJCS(String idInstitucion, String idpagosjg) throws ClsExceptions,SIGAException {
 		   Vector datos=new Vector();
 	       try {
 	            RowsContainer rc = new RowsContainer(); 
 	            String sql ="SELECT " +
 							"BI." + FacBancoInstitucionBean.C_BANCOS_CODIGO + "," +
-							"DECODE(BI." + FacBancoInstitucionBean.C_FECHABAJA + ",NULL,1,0) ACTIVA,"+ //Si esta de baja ->0, si esta activa ->1
 	            			"BI." + FacBancoInstitucionBean.C_IDINSTITUCION + "," +
 	            			"BI." + FacBancoInstitucionBean.C_IBAN + "," +
 	            			"BI." + FacBancoInstitucionBean.C_COD_BANCO + "," +
 	            			"BI." + FacBancoInstitucionBean.C_COD_SUCURSAL + "," +
 	            			"BI." + FacBancoInstitucionBean.C_NUMEROCUENTA + "," +
 	            			"BI." + FacBancoInstitucionBean.C_ASIENTOCONTABLE + "," +
-	            			"BI." + FacBancoInstitucionBean.C_SJCS + "," +
 	            			"BI." + FacBancoInstitucionBean.C_IDSUFIJOSJCS + "," +
 	            			"BI.COD_BANCO || '-' || BI.COD_SUCURSAL || '-' || BI.DIGITOCONTROL || '-' ||BI.NUMEROCUENTA AS CUENTACONTABLE, "+
-						    "BI.COD_BANCO, " +
-						    "(SELECT NOMBRE FROM CEN_BANCOS WHERE CODIGO=BI.COD_BANCO) AS BANCO, "+
-						    "(SELECT COUNT (1) FROM FAC_SERIEFACTURACION_BANCO WHERE IDINSTITUCION=BI.IDINSTITUCION AND BANCOS_CODIGO=BI.BANCOS_CODIGO ) AS SELECCIONADO "+ 
-
+						    "(SELECT NOMBRE FROM CEN_BANCOS WHERE CODIGO=BI.COD_BANCO) AS BANCO, " +
+						    "(SELECT COUNT (1) FROM FCS_PAGOSJG WHERE IDINSTITUCION=BI.IDINSTITUCION AND BANCOS_CODIGO=BI.BANCOS_CODIGO AND " + 
+						    "IDPAGOSJG = " + idpagosjg +"  ) AS SELECCIONADO " + 
 							" FROM " + 
 							FacBancoInstitucionBean.T_NOMBRETABLA + " BI " +
-	            			" WHERE BI."+ FacBancoInstitucionBean.C_IDINSTITUCION + "=" + idInstitucion;
+	            			" WHERE BI."+ FacBancoInstitucionBean.C_IDINSTITUCION + "=" + idInstitucion +
+	            			" AND " + FacBancoInstitucionBean.C_FECHABAJA + " IS NULL "  +
+	            			" AND " + FacBancoInstitucionBean.C_SJCS + "=1 "+
+	            			" UNION SELECT " + 
+	            			"BI." + FacBancoInstitucionBean.C_BANCOS_CODIGO + "," +
+	            			"BI." + FacBancoInstitucionBean.C_IDINSTITUCION + "," +
+	            			"BI." + FacBancoInstitucionBean.C_IBAN + "," +
+	            			"BI." + FacBancoInstitucionBean.C_COD_BANCO + "," +
+	            			"BI." + FacBancoInstitucionBean.C_COD_SUCURSAL + "," +
+	            			"BI." + FacBancoInstitucionBean.C_NUMEROCUENTA + "," +
+	            			"BI." + FacBancoInstitucionBean.C_ASIENTOCONTABLE + "," +
+	            			"FCS.idsufijo as idsufijosjcs, " +
+	            			"BI.COD_BANCO || '-' || BI.COD_SUCURSAL || '-' || BI.DIGITOCONTROL || '-' ||BI.NUMEROCUENTA AS CUENTACONTABLE, "+
+						    "(SELECT NOMBRE FROM CEN_BANCOS WHERE CODIGO=BI.COD_BANCO) AS BANCO, "+
+						    "(SELECT COUNT (1) FROM FCS_PAGOSJG WHERE IDINSTITUCION=BI.IDINSTITUCION AND BANCOS_CODIGO=BI.BANCOS_CODIGO AND " + 
+						    "IDPAGOSJG = " + Integer.parseInt(idpagosjg)+"  ) AS SELECCIONADO " + 
+							" FROM " + 
+							FacBancoInstitucionBean.T_NOMBRETABLA + " BI, FCS_PAGOSJG FCS " + 
+	            			" WHERE BI."+ FacBancoInstitucionBean.C_IDINSTITUCION + "=" + idInstitucion + 
+	            			" AND BI."+ FacBancoInstitucionBean.C_IDINSTITUCION + "= FCS.IDINSTITUCION "+ 
+	            			" AND FCS.IDPAGOSJG=" + idpagosjg +
+	            			" AND BI." + FacBancoInstitucionBean.C_BANCOS_CODIGO + " = FCS.BANCOS_CODIGO ";
+	            
+	            
+	            
 							
 	            if (rc.find(sql)) {
 	               for (int i = 0; i < rc.size(); i++){
@@ -384,4 +359,34 @@ public class FacBancoInstitucionAdm extends MasterBeanAdministrador {
 	       }
 	       return datos;                        
 	    }	
+	public Vector obtenerCuentaUltimaSJCS(String idInstitucion) throws ClsExceptions,SIGAException {
+		   Vector datos=new Vector();
+	       try {
+	            RowsContainer rc = new RowsContainer(); 
+	            String sql ="SELECT " +
+							"BI." + FacBancoInstitucionBean.C_BANCOS_CODIGO +
+							" FROM " + 
+							FacBancoInstitucionBean.T_NOMBRETABLA + " BI " +
+	            			" WHERE BI."+ FacBancoInstitucionBean.C_IDINSTITUCION + "=" + idInstitucion +
+	            			" AND BI."+ FacBancoInstitucionBean.C_FECHABAJA + " IS NULL" +
+	            			" AND BI." + FacBancoInstitucionBean.C_SJCS + "=1" +
+	            			" ORDER BY " + FacBancoInstitucionBean.C_FECHAMODIFICACION + " DESC";
+							
+	            if (rc.find(sql)) {
+	               for (int i = 0; i < rc.size(); i++){
+	                  Row fila = (Row) rc.get(i);
+	                  datos.add(fila);
+	               }
+	            }
+	       }
+	       catch (Exception e) {
+	       	throw new ClsExceptions (e, "Error ");
+	       }
+	       return datos;                        
+	    }
+	
+	
+	
+	
+	
 }

@@ -367,6 +367,24 @@ public class GestionCuentasBancariasAction extends MasterAction {
 				}
 			}
 			
+			//Sino está marcado el check SJCS se comprueba si existe una cuenta SJCS para la institución, sino existe 
+			//se muestra un mensaje para que se dé de alta
+			if((cuentasBancariasForm.getSjcs() == null)||(cuentasBancariasForm.getSjcs().isEmpty()))
+			{
+
+				CuentaBancariaVo cuentaBancariaSJCSVo = new CuentaBancariaVo();
+				cuentaBancariaSJCSVo.setIdinstitucion(Short.parseShort(cuentasBancariasForm.getIdInstitucion()));
+				cuentaBancariaSJCSVo.setSjcs("1");
+				
+				List<CuentaBancariaVo> cuentasBancSJCS=cuentasBancariasService.getCuentasBancarias(cuentaBancariaSJCSVo);
+				
+				
+				if(cuentasBancSJCS.isEmpty()){
+				
+					throw new SIGAException(UtilidadesString.getMensajeIdioma(usrBean,"facturacion.message.error.cuenta.SJCS.no.existe"));
+				}
+	
+			}
 			CuentaBancariaVo cuentaBancariaVo =  voService.getForm2Vo(cuentasBancariasForm);
 			cuentaBancariaVo.setUsumodificacion(new Integer(usrBean.getUserName()));
 			cuentasBancariasService.insert(cuentaBancariaVo);
@@ -391,6 +409,26 @@ public class GestionCuentasBancariasAction extends MasterAction {
 			BusinessManager bm = getBusinessManager();			
 			CuentasBancariasService cuentasBancariasService = (CuentasBancariasService)bm.getService(CuentasBancariasService.class);
 			VoUiService<CuentasBancariasForm, CuentaBancariaVo> voService = new CuentaBancariaVoService();
+			
+			
+			//Sino está marcado el check SJCS se comprueba si existe una cuenta SJCS para la institución, sino existe 
+			//se muestra un mensaje para que se dé de alta
+			if((cuentasBancariasForm.getSjcs() == null)||(cuentasBancariasForm.getSjcs().isEmpty()))
+			{
+				CuentaBancariaVo cuentaBancariaSJCSVo = new CuentaBancariaVo();
+				cuentaBancariaSJCSVo.setIdinstitucion(Short.parseShort(cuentasBancariasForm.getIdInstitucion()));
+				cuentaBancariaSJCSVo.setSjcs("1");
+				
+				List<CuentaBancariaVo> cuentasBancSJCS=cuentasBancariasService.getCuentasBancarias(cuentaBancariaSJCSVo);
+				
+				if(cuentasBancSJCS.isEmpty()){
+				
+					throw new SIGAException(UtilidadesString.getMensajeIdioma(usrBean,"facturacion.message.error.cuenta.SJCS.no.existe"));
+				}	
+	
+			}
+			
+			
 			CuentaBancariaVo cuentaBancariaVo =  voService.getForm2Vo(cuentasBancariasForm);
 			cuentaBancariaVo.setUsumodificacion(new Integer(usrBean.getUserName()));
 			cuentasBancariasService.update(cuentaBancariaVo);

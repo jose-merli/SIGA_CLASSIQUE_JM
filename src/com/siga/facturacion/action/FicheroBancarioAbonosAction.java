@@ -52,6 +52,9 @@ import com.siga.beans.FacDisqueteAbonosAdm;
 import com.siga.beans.FacDisqueteAbonosBean;
 import com.siga.beans.FacPropositosAdm;
 import com.siga.beans.FacPropositosBean;
+import com.siga.beans.FacSerieFacturacionAdm;
+import com.siga.beans.FacSerieFacturacionBancoAdm;
+import com.siga.beans.FacSerieFacturacionBancoBean;
 import com.siga.beans.FacSufijoAdm;
 import com.siga.beans.FacSufijoBean;
 import com.siga.beans.FcsPagosJGBean;
@@ -149,25 +152,8 @@ public class FicheroBancarioAbonosAction extends MasterAction{
 			
 			if(request.getParameter("buscar") != null)
 				request.setAttribute("buscar", request.getParameter("buscar"));
-			
-			//Combos propósitos y sufijos
-			//Obtener Combo sufijos
-			FacSufijoAdm sufijoAdm = new FacSufijoAdm (this.getUserBean(request));
-			Hashtable claves = new Hashtable ();
-			UtilidadesHash.set (claves, FacSufijoBean.C_IDINSTITUCION, idInstitucion);
-			
-			Vector vsufijos = sufijoAdm.select(claves);
-			Vector vsufijosList = new Vector();
-			List <FacSufijoBean> sufijosListFinal= new ArrayList<FacSufijoBean>();
-			for (int vs = 0; vs < vsufijos.size(); vs++){
-				
-				FacSufijoBean sufijosBean = (FacSufijoBean) vsufijos.get(vs);
-				sufijosListFinal.add(sufijosBean);
-			}
-	
-			request.setAttribute("listaSufijos", sufijosListFinal);
-			
-			//Combos propósitos (Concepto de abono)
+
+			//Combos propósitos
 			FacPropositosAdm propositosAdm = new FacPropositosAdm(this.getUserBean(request));
 			Vector vpropositos = propositosAdm.selectPropositos();
 			
@@ -391,136 +377,63 @@ public class FicheroBancarioAbonosAction extends MasterAction{
 			
 			tx = user.getTransactionPesada();
 			tx.begin();
+			
 			if (fcs.equals("1")){
-				bancos=adminBancoInst.obtenerBancos(idInstitucion);
-				if (!bancos.isEmpty()) {
-					listaBancos=bancos.elements();
-					while (listaBancos.hasMoreElements()){
-						banco=((Row)listaBancos.nextElement()).getRow();
+				//Se obtienen los bancos-sufijo de los diferentes abonos SJCS pendientes
+				bancos=adminAbono.getBancosSufijosSJCS(idInstitucion);
+			}else{
 
-						//El concepto pasa a ser sufijo					
-//						//conceptos=adminAbono.getConceptosAbonosBancoSjcs(idInstitucion,(String)banco.get(FacBancoInstitucionBean.C_BANCOS_CODIGO));
-//						if (conceptos.isEmpty()) continue;
-//						listaConceptos=conceptos.elements();
-//						while (listaConceptos.hasMoreElements()) {
-//							concepto = (String) ((Row)listaConceptos.nextElement()).getRow().get("CONCEPTO");
-//							if (concepto == null)
-//								concepto = "";
-//						
-//							abonosBanco=adminAbono.getAbonosBancoSjcs(idInstitucion,(String)banco.get(FacBancoInstitucionBean.C_BANCOS_CODIGO), concepto);
-//							nFicherosGenerados = prepararFichero(user, banco, abonosBanco, "000", fcs);
-//							if (nFicherosGenerados < 0) {
-//								correcto = false;
-//							} else {
-//								correcto = true;
-//								cont += nFicherosGenerados;
-//							}
-//						}
+				//Se obtienen los bancos-sufijo de las diferentes series
+				FacSerieFacturacionBancoAdm bancoSufInst=new FacSerieFacturacionBancoAdm(this.getUserBean(request));
+				bancos=bancoSufInst.getBancosSufijosSeries(Integer.parseInt(idInstitucion));
+			}
 
-						//ABONOS PENDIENTES POR SUFIJO. SE SEPARA CADA ABONO POR SUFIJO
-						FacSufijoBean sufijoBean=new FacSufijoBean();
-						sufijoBean.setIdInstitucion(Integer.parseInt(idInstitucion));
-						FacSufijoAdm sufijoAdm=new FacSufijoAdm(user);
-						String sufijo="";
-
-						String banco_codigo=(String)banco.get(FacBancoInstitucionBean.C_BANCOS_CODIGO);
-						abonosBanco=null;
-						Vector sufijos=adminAbono.getSufijosAbonosBancosSjcs(idInstitucion,banco_codigo);
-						
-						if (sufijos.isEmpty()) continue;
-						Enumeration listaSufijos=sufijos.elements();
-						while (listaSufijos.hasMoreElements()) {
-							String idsufijo = (String) ((Row)listaSufijos.nextElement()).getRow().get("IDSUFIJO");
-						
-							abonosBanco=adminAbono.getAbonosBancoSjcs(idInstitucion,banco_codigo, idsufijo);
-							
-							//Se obtiene el código del sufijo
-							sufijoBean.setIdSufijo(Integer.parseInt(idsufijo));
-							Vector vsufijo=sufijoAdm.consultaBusqueda(sufijoBean); 
+			//Se trata cada uno de los bancos
+			if (!bancos.isEmpty()) {
+				listaBancos=bancos.elements();
+				while (listaBancos.hasMoreElements()){
+					banco=((Row)listaBancos.nextElement()).getRow();
 					
-							if (vsufijo!=null && vsufijo.size()>0){
-								FacSufijoBean bean = (FacSufijoBean)vsufijo.firstElement();
-								sufijo=bean.getSufijo();
-							}
+					String banco_codigo=(String)banco.get(FacBancoInstitucionBean.C_BANCOS_CODIGO);
+					Integer idsufijo=Integer.parseInt((String)banco.get(FacSufijoBean.C_IDSUFIJO));
+	
+						//Si es de sjcs el sufijo está relacionado con el abono al configurar el abono
+						if (fcs.equals("1")){
+							
+							abonosBanco=adminAbono.getAbonosBancoSjcs(idInstitucion,banco_codigo, idsufijo);
+						
+						//Sino es de sjcs hay que buscar los abonos pendientes a través de las facturas de la serie relacionada con el banco y el sufijo que estamos tratando 
+						}else{
+
+							abonosBanco=adminAbono.getAbonosBanco(Integer.parseInt(idInstitucion),banco_codigo,idsufijo);
+							
+							//Se informan los propósitos introducidos en la ventana para generar el fichero (en el caso de SJCS los propósitos se informan al configurar el pago)
+							banco.put("IDPROPSEPA", miForm.getListaSufijoProp().split("#")[0]);
+							banco.put("IDPROPOTROS", miForm.getListaSufijoProp().split("#")[1]);
+						}
+						
+						//SE GENERA EL FICHERO CON LOS ABONOS OBTENIDOS
+						if(!abonosBanco.isEmpty()){
+							String sufijo= (String)banco.get(FacSufijoBean.C_SUFIJO);
+						
+							//Sufijo con tres espacios como código
+							if(sufijo.isEmpty())
+								sufijo="   ";
 							
 							nFicherosGenerados = prepararFichero(user, banco, abonosBanco,sufijo, fcs);
-
 							if (nFicherosGenerados < 0) {
-								correcto = false;
+									correcto = false;
 							} else {
 								correcto = true;
 								cont += nFicherosGenerados;
 							}
 						}
-					}
-				}
-			} else {	
-
-				//Se recuperan los propósitos y el sufijo informados en la ventana al generar el fichero
-				String IdSufijo= miForm.getListaSufijoProp().split("#")[0];
-				String IdPropSEPA= miForm.getListaSufijoProp().split("#")[1];
-				String IdPropOtros= miForm.getListaSufijoProp().split("#")[2];
-				
-				//Se recupera el código del sufijo
-				String sufijo="";
-				FacSufijoBean sufijoBean=new FacSufijoBean();
-				sufijoBean.setIdInstitucion(Integer.parseInt(idInstitucion));
-				FacSufijoAdm sufijoAdm=new FacSufijoAdm(user);
-				sufijoBean.setIdSufijo(Integer.parseInt(IdSufijo));
-				Vector vsufijo=sufijoAdm.consultaBusqueda(sufijoBean); 
-		
-				if (vsufijo!=null && vsufijo.size()>0){
-					FacSufijoBean bean = (FacSufijoBean)vsufijo.firstElement();
-					sufijo=bean.getSufijo();
-				}
-				
-				//Tratamiento de los bancos con menor comision
-				bancos=adminBancoInst.getBancoMenorComision(idInstitucion);
-				if (!bancos.isEmpty()){
-					bancoMenorComision=((Row)bancos.firstElement()).getRow();
-					abonosBanco=adminAbono.getAbonosBancosMenorComision(idInstitucion,(String)bancoMenorComision.get(FacBancoInstitucionBean.C_BANCOS_CODIGO));
-
-					bancoMenorComision.put("IDPROPOTROS", IdPropOtros);
-					bancoMenorComision.put("IDPROPSEPA", IdPropSEPA);
-					
-					nFicherosGenerados = prepararFichero(user, bancoMenorComision, abonosBanco, sufijo, fcs);
-
-					if (nFicherosGenerados < 0) {
-						correcto = false;
-					} else {
-						correcto = true;
-						cont += nFicherosGenerados;
-					}
 						
-				} else {
-					bancoMenorComision = new Hashtable();
-				}
-				
-				//Tratamiento del resto de bancos
-				bancos=adminBancoInst.getRestoBancosConComision(idInstitucion,(String)bancoMenorComision.get(FacBancoInstitucionBean.C_BANCOS_CODIGO));
-				if (!bancos.isEmpty()) {
-					listaBancos=bancos.elements();
-					while (listaBancos.hasMoreElements()){
-						banco=((Row)listaBancos.nextElement()).getRow();
-						abonosBanco=adminAbono.getAbonosBanco(idInstitucion,(String)banco.get(FacBancoInstitucionBean.C_BANCOS_CODIGO));
-
-						banco.put("IDPROPOTROS", IdPropOtros);
-						banco.put("IDPROPSEPA", IdPropSEPA);
-	
-						nFicherosGenerados = prepararFichero(user, banco, abonosBanco,sufijo, fcs);
-	
-						if (nFicherosGenerados < 0) {
-							correcto = false;
-						} else {
-							correcto = true;
-							cont += nFicherosGenerados;
-						}
-
+						
 					}
 				}
-			}
 			
-			if (correcto){
+			if (correcto){ 
 				tx.commit();
 				
 				String mensaje = "facturacion.ficheroBancarioAbonos.mensaje.generacionDisquetesOK";
@@ -828,175 +741,6 @@ public class FicheroBancarioAbonosAction extends MasterAction{
 		return cont;
 	}	
 
-	/** 
-	 *  Funcion que genera las lineas del fichero e inserta en el fichero.
-	 * @param  bEmisor 		- bean que contiene los datos del emisor.
-	 * @param  vReceptores	- Vector que contiene los bean de cada uno de los receptores.	 
-	 * @return  boolean		- devuelve true en el caso de que se haya generado correctamente el fichero  
-	 * @exception  SIGAException  En cualquier caso de error
-	 */
-	private int crearFichero(FicheroEmisorAbonoBean bEmisor, Vector vReceptores, boolean escribirAvisoCuentasIncompletas) throws SIGAException {
-		//int n = (vReceptores.size() * 2) + 4 + 1;
-		// (numeroReceptores * numeroCampos) + datosCabecera + datosTotales + lineaError (si es necesario)
-		int n = (vReceptores.size() * 5) + 4 + 1 + 1;
-		
-		String[] cabecera = new String[n];
-		boolean resul = false;		
-		int nlinea = 0;
-		try{	
-			
-		    ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
-//			ReadProperties rp 		= new ReadProperties("SIGA.properties");			
-			String rutaServidor 	= rp.returnProperty("facturacion.directorioFisicoAbonosBancosJava") + rp.returnProperty("facturacion.directorioAbonosBancosJava");
-			String sPrefijo 		= rp.returnProperty("facturacion.prefijo.ficherosAbonos");
-			String sExtension 		= rp.returnProperty("facturacion.extension.ficherosAbonos");
-			String nombreFichero	= "";
-			String sIdInstitucion 	= bEmisor.getIdentificador().toString();	
-			String numDisco			= bEmisor.getIdentificadorDisquete().toString();
-			
-//			Generamos el nombre del fichero.
-			String barra = "";
-			if (rutaServidor.indexOf("/") > -1){ 
-				barra = "/";
-			}
-			if (rutaServidor.indexOf("\\") > -1){ 
-				barra = "\\";
-			}
-			rutaServidor += barra + sIdInstitucion;
-			nombreFichero = barra + sPrefijo + numDisco + "." + sExtension;
-			
-			// *********************	Generamos las lineas del fichero	*********************
-			
-			// ********************************* Datos Emisor **********************************
-			String sCodRegistro			= "03";
-			String sCodOperacion		= "56"; // 56:Si es una orden de transferencia.
-			// 57:Si es ha de confecionarse un Cheque Bancario.
-			String sCodOrdenante 		= completarEspacios("Nif", bEmisor.getNif(), "I", " ", 10, false);
-			
-			String fActual 				= UtilidadesBDAdm.getFechaBD("");
-			String[] aux 				= fActual.split("/");
-			String sFechaEnvio			= aux[0].concat(aux[1]).concat(aux[2].substring(2,4));
-			String sFechaEmision		= sFechaEnvio;
-			
-			String sEntidadOrdenante	= completarEspacios("Entidad", bEmisor.getCodigoBanco(), "D", "0", 4, false);
-			String sOficinaOrdenante	= completarEspacios("Oficina", bEmisor.getCodigoSucursal(), "D", "0", 4, false);
-			String sCuentaOrdenante		= completarEspacios("Cuenta Bancaria", bEmisor.getNumeroCuenta(), "D", "0", 10, false);			
-			String sDControlOrdenante	= obtenerDigitoControl("00" + sEntidadOrdenante + sOficinaOrdenante);
-			sDControlOrdenante 			+=obtenerDigitoControl(sCuentaOrdenante);
-			
-			String sDetalleCargo		= "0"; // 0:Sin relacion
-			// 1:Con relación 
-			String sNombreOrdenante		= completarEspacios("Nombre", bEmisor.getNombre(), "I", " ", 36, true);
-			String sDomicilioOrdenante	= completarEspacios("Domicilio", bEmisor.getDomicilio() + "  " + bEmisor.getCodigopostal(), "I", " ", 36, true);	
-			String sPlazaOrdenante		= completarEspacios("Plaza", bEmisor.getPoblacion(), "I", " ", 36, true);
-			
-			String sNumDato	= "001";
-			cabecera[0] = sCodRegistro + sCodOperacion + sCodOrdenante + rellenarEspacios(12)+ sNumDato + sFechaEnvio + sFechaEmision + sEntidadOrdenante + 
-			sOficinaOrdenante +	sCuentaOrdenante + sDetalleCargo + rellenarEspacios(3) + sDControlOrdenante + rellenarEspacios(7);
-			sNumDato		= "002";
-			cabecera[1] = sCodRegistro + sCodOperacion + sCodOrdenante + rellenarEspacios(12)+ sNumDato + sNombreOrdenante + rellenarEspacios(7);
-			sNumDato		= "003";
-			cabecera[2] = sCodRegistro + sCodOperacion + sCodOrdenante + rellenarEspacios(12)+ sNumDato + sDomicilioOrdenante + rellenarEspacios(7);
-			sNumDato		= "004";
-			cabecera[3] = sCodRegistro + sCodOperacion + sCodOrdenante + rellenarEspacios(12)+ sNumDato + sPlazaOrdenante + rellenarEspacios(7);
-			
-			
-//			****************************  Datos de los receptores   *****************************
-			
-			String sGastos 		= "1";
-			String sConcepto 	= "9";			
-			int cantidad 		= 0; 
-			int importe;
-			String sRefBeneficiario;			
-			String sImporte;
-			String sEntidadBeneficiario;
-			String sOficinaBeneficiario;
-			String sCuentaBeneficiario;
-			String sDControlBeneficiario;
-			String sNombreBeneficiario;
-			String sNumRegistros;
-			String sTotalRegistros;
-			
-			String sDomicilioBeneficiario;
-			String sPoblacionBeneficiario;
-			String sMotivos;
-			
-			nlinea = 3;
-			Enumeration en = vReceptores.elements();
-			while(en.hasMoreElements()){			
-				FicheroReceptorAbonoBean bReceptor 	= (FicheroReceptorAbonoBean)en.nextElement();
-				
-				sCodRegistro			= "06";
-				sRefBeneficiario 		= completarEspacios("Identificador", bReceptor.getIdentificador().toString(), "D", " ", 12, false);
-				importe					= (int)Math.rint(bReceptor.getImporte().doubleValue()*100);
-				cantidad 				+= importe;
-				sImporte				= completarEspacios("Importe", Integer.toString(importe), "D", "0", 12, false);
-				sEntidadBeneficiario	= completarEspacios("Entidad", bReceptor.getCodigoBanco(), "D", "0", 4, true);
-				sOficinaBeneficiario	= completarEspacios("Oficina", bReceptor.getCodigoSucursal(), "D", "0", 4, false);	
-				sCuentaBeneficiario		= completarEspacios("Cuenta Bancaria", bReceptor.getNumeroCuenta(), "D", "0", 10, false);
-				sDControlBeneficiario	= obtenerDigitoControl("00" + sEntidadBeneficiario + sOficinaBeneficiario);
-				sDControlBeneficiario	+=obtenerDigitoControl(sCuentaBeneficiario);
-				sNombreBeneficiario		= completarEspacios("Nombre", bReceptor.getNombre(), "I", " ", 36, true);
-				String direccion 		= UtilidadesString.replaceAllIgnoreCase(bReceptor.getDomicilio(), "\n", " ");
-				direccion 		= UtilidadesString.replaceAllIgnoreCase(direccion, "\r", " ");
-				sDomicilioBeneficiario = completarEspacios ("Direccion", direccion, "I", " ", 36, true);
-				sPoblacionBeneficiario = completarEspacios ("Poblacion", bReceptor.getPoblacion(), "I", " ", 36, true);
-				sMotivos = completarEspacios ("NombrePago", bReceptor.getNombrePago(), "I", " ", 36, true);
-				
-				if ((bReceptor.getConcepto()!=null)&& (bReceptor.getConcepto()!="0")){
-					sConcepto = completarEspacios ("Concepto", bReceptor.getConcepto(), "I", " ", 1, true);
-				}
-
-				nlinea ++;
-				sNumDato		 = "010";				
-				cabecera[nlinea] = sCodRegistro + sCodOperacion + sCodOrdenante + sRefBeneficiario + sNumDato + sImporte + sEntidadBeneficiario + 
-				sOficinaBeneficiario +	sCuentaBeneficiario + sGastos + sConcepto + rellenarEspacios(2) + sDControlBeneficiario + rellenarEspacios(7);
-				
-				nlinea ++;
-				sNumDato		 = "011";
-				cabecera[nlinea] = sCodRegistro + sCodOperacion + sCodOrdenante + sRefBeneficiario + sNumDato + sNombreBeneficiario + rellenarEspacios(7);
-				
-				// jbd 9/12/2008 - INC_05507_SIGA >>>
-				nlinea ++;
-				sNumDato		 = "012"; // Direccion
-				cabecera[nlinea] = sCodRegistro + sCodOperacion + sCodOrdenante + sRefBeneficiario + sNumDato + sDomicilioBeneficiario + rellenarEspacios(7); 
-				
-				nlinea ++;
-				sNumDato		 = "014"; // Poblacion
-				cabecera[nlinea] = sCodRegistro + sCodOperacion + sCodOrdenante + sRefBeneficiario + sNumDato +  sPoblacionBeneficiario + rellenarEspacios(7);
-				
-				nlinea ++;
-				sNumDato		 = "016"; // Concepto
-				cabecera[nlinea] = sCodRegistro + sCodOperacion + sCodOrdenante + sRefBeneficiario + sNumDato + sMotivos + rellenarEspacios(7);
-				// <<< INC_05507_SIGA
-			}
-			
-//			****************************   Datos de los Totales   *****************************
-			
-			sCodRegistro		 = "08";
-			sImporte		 	 = completarEspacios("Importe", Integer.toString(cantidad), "D", "0", 12, false);	
-			sNumRegistros		 = completarEspacios("Numero Registros", Integer.toString(vReceptores.size()), "D", "0", 8, false);
-			sTotalRegistros		 = completarEspacios("Numero Registros",Integer.toString(nlinea+2), "D", "0", 10, false);			
-			cabecera[nlinea+1] 	 = sCodRegistro + sCodOperacion + sCodOrdenante + rellenarEspacios(15) + sImporte + sNumRegistros + sTotalRegistros + rellenarEspacios(13);
-			
-			// escribiendo linea de aviso por cuentas incompletas
-			if (escribirAvisoCuentasIncompletas)
-				cabecera[nlinea+2] = rp.returnProperty("facturacion.ficheroBancario.mensaje.avisoCuentasBancariasIncompletas");
-			else
-				cabecera[nlinea+2] = "";
-			
-			resul 				 = escribirFichero(cabecera,rutaServidor,nombreFichero);	
-			
-		} catch (Exception e) { 
-			throwExcp("messages.general.error",new String[] {"modulo.facturacion"},e,null); 
-		}
-		if (resul){
-			return nlinea+2; // Se suma 2 porque empieza en cero y no se incrementa en la ultima linea
-		}else{
-			return 0;
-		}
-	} //crearFichero()
-	
 	/** 
 	 *  Funcion que genera las lineas del fichero e inserta en el fichero SEPA.
 	 * @param  bEmisor 		- bean que contiene los datos del emisor.

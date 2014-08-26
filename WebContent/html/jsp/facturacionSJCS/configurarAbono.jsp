@@ -57,6 +57,7 @@
 // 	String bdConcepto = (String)request.getAttribute("concepto");
 	boolean guardable = false;
 	
+	//Si el abono no tiene configurada ninguna cuenta marca la cuenta SJCS más moderna
 	if ((bdCuenta==null) ||(bdCuenta.equalsIgnoreCase(""))){
 		bdCuenta = (String)request.getAttribute("paramIdCuenta");
 	}
@@ -182,32 +183,23 @@
 					int recordNumber=1;
 					while (en.hasMoreElements()) {
 	            		Row row = (Row) en.nextElement(); 
-	            		// Comprobamos que se trate de una cuenta para SJCS
-	            		String sjcs = row.getString("SJCS");
-	            		String activa = row.getString("ACTIVA");
+	            		
 	            		String iban = UtilidadesString.mostrarIBANConAsteriscos(row.getString("IBAN"));
 	            		if(modo!=null && modo.equalsIgnoreCase("consulta")){
 	            		 	iban = UtilidadesString.mostrarIBANConAsteriscos(row.getString("IBAN"));
 	            		}
-	            		
-	            		
-	            		boolean bsjcs=false;
-	            		if ((activa!=null && activa.equals("1")) && (sjcs!=null && !sjcs.equals("0"))) {
-	            			bsjcs=true;
-	            		}
-	            		
+
 	            		// Ademas comprobamos que sea la cuenta por defecto
 	            		boolean bsel=false;
-	            		if (row.getString("BANCOS_CODIGO")!=null && row.getString("BANCOS_CODIGO").equalsIgnoreCase(bdCuenta)) {
-	            			bsjcs=true;
+	            		if ((row.getString("BANCOS_CODIGO")!=null && row.getString("BANCOS_CODIGO").equalsIgnoreCase(bdCuenta))||(row.getString("SELECCIONADO").equalsIgnoreCase("1"))) {
+	            			
 	            			bsel=true;
 	            		}           		
 						
 	            		String idComboSuf= "comboSufijos_" + row.getString("BANCOS_CODIGO");
 	            		//Si el abono ya se configuró previamente se muestra el sufijo que tiene asignado, sino el que tenga la cuenta sjcs asignado
-	            		String idsufijoBancoIni=row.getString("IDSUFIJO");
-	            		
-						if (bsjcs) { 
+	            		String idsufijoBancoIni=row.getString("IDSUFIJOSJCS");
+	            		String  idsufijodefBanco = "idsufijodefBanco_" + row.getString("BANCOS_CODIGO");
 %>
 							<siga:FilaConIconos 
 								fila='<%=String.valueOf(recordNumber)%>' 
@@ -223,13 +215,13 @@
 									if (guardable) {
 										if (bsel) { 
 %>
-											<input type="radio" name="cuenta" value="<%=row.getString("BANCOS_CODIGO")%>" checked>
+											<input type="radio" name="cuenta" value="<%=row.getString("BANCOS_CODIGO")%>" onclick="recargarCombo(this)" checked>
 											<c:set var="cuentaChecked" value="true"></c:set>
 											
 <% 											
 										} else { 
 %>
-											<input type="radio" name="cuenta" value="<%=row.getString("BANCOS_CODIGO")%>">
+											<input type="radio" name="cuenta" value="<%=row.getString("BANCOS_CODIGO")%>" onclick="recargarCombo(this)">
 											<c:set var="cuentaChecked" value="false"></c:set>
 <% 
 										}
@@ -251,13 +243,15 @@
 								</td>  	
 								<td><%=UtilidadesString.mostrarDatoJSP(row.getString("BANCO"))%></td>  	
 								<td align="center">
+								<input type="hidden" id="<%=idsufijodefBanco%>" value="<%=idsufijoBancoIni%>"> <!-- para recargar el combo al seleccionar un banco -->
 								<bean:define id="listaSufijos" name="listaSufijos" scope="request"/>	
 								<c:set var="idsufijoBanco" value="<%=idsufijoBancoIni%>"></c:set> <!-- idsufijo informado en la cuenta bancaria sjcs -->
-								<c:set var="valorSeleccionadoCombo" value="${configuracionAbonosForm.idsufijo!=null&&cuentaChecked?configuracionAbonosForm.idsufijo:idsufijoBanco}"></c:set>
+								<c:set var="valorSeleccionadoComboExisteAb" value="${configuracionAbonosForm.idsufijo!=null&&cuentaChecked?configuracionAbonosForm.idsufijo:''}"></c:set>
+								<c:set var="valorSeleccionadoCombo" value="${configuracionAbonosForm.idsufijo==null&&cuentaChecked?configuracionAbonosForm.idsufijo:valorSeleccionadoComboExisteAb}"></c:set>
 								<html:select styleId="<%=idComboSuf%>" name = "sufijoCmb" property="idSufijo" value="${valorSeleccionadoCombo}" styleClass="boxCombo" disabled="<%=combodeshabilitado%>" style="width:200px;">
-								<s:if test="${empty valorSeleccionadoCombo}">
-									<html:option value=""><c:out value=""/></html:option>
-								</s:if>
+ 								<s:if test="${empty valorSeleccionadoCombo}"> 
+ 									<html:option value=""><c:out value=""/></html:option> 
+ 								</s:if> 
 								<c:forEach items="${listaSufijos}" var="sufijoCmb">											
 									<html:option value="${sufijoCmb.idSufijo}">										
 										<c:if	test="${sufijoCmb.sufijo.trim().length()>0}">
@@ -274,7 +268,6 @@
 								<td align="left"><%=iban%></td>
 							</siga:FilaConIconos>
 <% 
-						}
 						recordNumber++;
 					} 
 				} 
@@ -296,6 +289,19 @@
 	<!-- INICIO: SCRIPTS BOTONES -->
 	<script language="JavaScript">
 
+	function recargarCombo(valorRadio){	
+		
+		var chk = document.getElementsByName("cuenta");
+		
+		for (i = 0; i < chk.length; i++){
+			if (chk[i].checked==1){
+				jQuery("#comboSufijos_" + chk[i].value).val(jQuery("#idsufijodefBanco_" + chk[i].value).val());
+			}else{
+				jQuery("#comboSufijos_" + chk[i].value).val("");
+			}	
+		}		
+	}
+	
 		//Asociada al boton Volver
 		function accionVolver() {		
 			var f = document.getElementById("mantenimientoPagoForm");
