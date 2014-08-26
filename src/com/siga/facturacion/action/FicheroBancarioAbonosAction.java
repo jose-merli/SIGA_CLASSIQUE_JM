@@ -356,10 +356,9 @@ public class FicheroBancarioAbonosAction extends MasterAction{
 		UserTransaction tx = null;
 
 		Vector bancos;
-		Enumeration listaBancos, listaConceptos;
+		Enumeration listaBancos;
 		Hashtable banco, bancoMenorComision;
-		Vector abonosBanco, conceptos;
-		String concepto;
+		Vector abonosBanco;
 		int cont = 0, nFicherosGenerados = 0;
 		
 		try {		 				

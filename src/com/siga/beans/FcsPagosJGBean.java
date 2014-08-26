@@ -20,7 +20,7 @@ public class FcsPagosJGBean extends MasterBean {
 	/* Variables */
 	private Integer idInstitucion, idPagosJG, idFacturacion, idpropSEPA, idpropOtros, idsufijo;
 	private Double importeRepartir, importePagado, importeOficio = null, importeGuardia = null, importeSOJ = null, importeEJG = null, importeMinimo = null; 
-	private String 	nombre=null, abreviatura=null, fechaDesde=null, fechaHasta=null, criterioPagoTurno=null, contabilizado=null, concepto=null, bancosCodigo=null;
+	private String 	nombre=null, abreviatura=null, fechaDesde=null, fechaHasta=null, criterioPagoTurno=null, contabilizado=null, bancosCodigo=null;
 	
 
 	/* Nombre tabla */
@@ -43,7 +43,6 @@ public class FcsPagosJGBean extends MasterBean {
 	static public final String C_IMPORTEEJG			= "IMPORTEEJG";
 	static public final String C_IMPORTEMINIMO		= "IMPORTEMINIMO";
 	static public final String C_CONTABILIZADO		= "CONTABILIZADO";
-	static public final String C_CONCEPTO			= "CONCEPTO";
 	static public final String C_BANCOS_CODIGO		= "BANCOS_CODIGO";
 	static public final String C_IDPROPSEPA	   		= "IDPROPSEPA";
 	static public final String C_IDPROPOTROS		= "IDPROPOTROS";
@@ -241,15 +240,7 @@ public class FcsPagosJGBean extends MasterBean {
 	public static String getC_CONTABILIZADO() {
 		return C_CONTABILIZADO;
 	}
-	
-	public String getConcepto() {
-		return concepto;
-	}
-	
-	public void setConcepto(String concepto){
-		this.concepto = concepto;
-	}
-	
+
 	public String getBancosCodigo() {
 		return bancosCodigo;
 	}

@@ -278,7 +278,7 @@ public class DatosGeneralesPagoAction extends MasterAction {
 				 * JPT: Calculo del concepto y el codigo del banco
 				 */
 				
-				String sConcepto="", sCuenta="";
+				String sCuenta="";
 				Integer idpropSEPA= null,idpropOtros = null,idsufijo= null;
 				Hashtable hash = new Hashtable();
 				hash.put(FcsPagosJGBean.C_IDINSTITUCION, pagosBean.getIdInstitucion());
@@ -294,14 +294,23 @@ public class DatosGeneralesPagoAction extends MasterAction {
 				 	
 				} else {
 					GenParametrosAdm paramAdm = new GenParametrosAdm(usr);
-					
-					
+
 					//Se obtiene la cuenta SJCS más moderna
-					Vector cuentasSJCS = admBancoFac.obtenerCuentaUltimaSJCS(miform.getIdInstitucion());
+					Vector vcuentasSJCS = admBancoFac.obtenerCuentaUltimaSJCS(miform.getIdInstitucion());
 				
-					if (cuentasSJCS.size()>0)
-						sCuenta=cuentasSJCS.firstElement().toString();	
-				
+					if (vcuentasSJCS.size()>0){
+							Hashtable cuentasSJCS = ((Row)vcuentasSJCS.firstElement()).getRow();
+							sCuenta=cuentasSJCS.get("BANCOS_CODIGO").toString();
+							
+							//Se guarda el sufijo sjcs asignado al banco por defecto
+							if(cuentasSJCS.get("IDSUFIJOSJCS")!=null)
+								idsufijo=(Integer) cuentasSJCS.get("IDSUFIJOSJCS");
+							else
+								idsufijo=null;
+							
+					}else{
+						throw new SIGAException(UtilidadesString.getMensajeIdioma(usr,"facturacion.message.error.cuenta.SJCS.no.existe"));
+					}	
 					
 					//Propósitos
 					FacPropositosAdm propAdm = new FacPropositosAdm(usr);
@@ -318,27 +327,8 @@ public class DatosGeneralesPagoAction extends MasterAction {
 					//En bbdd guardamos el idproposito
 					idpropOtros= propAdm.selectIdPropositoPorCodigo(paramPropOtros);
 					
-					//Se guarda el sufijo sjcs asignado al banco por defecto
-		 		 	FacBancoInstitucionAdm facBancoInstitucionAdm= new FacBancoInstitucionAdm(usr);
-					
-				    Hashtable codigos = new Hashtable();
-		 		 	codigos.put(new Integer(1),miform.getIdInstitucion());
-					String whereBanc = " WHERE IDINSTITUCION = :1";
-					codigos.put(new Integer(2),sCuenta);
-					whereBanc +=       " AND BANCOS_CODIGO = :2"; 
-					Vector vc=(Vector)facBancoInstitucionAdm.selectBind(whereBanc,codigos);
-					
-					if(vc == null || vc.size()==0)
-					    throw new ClsExceptions("No se ha encontrado la cuenta contable");
-					
-					if(((FacBancoInstitucionBean) vc.get(0)).getIdsufijosjcs()!=null){
-						idsufijo=((FacBancoInstitucionBean) vc.get(0)).getIdsufijosjcs();
-					}else{
-						idsufijo=null;
-					}
 				}
 				
-				pagosBean.setConcepto(sConcepto);
 				pagosBean.setBancosCodigo(sCuenta);
 				pagosBean.setIdpropOtros(idpropOtros);
 				pagosBean.setIdpropSEPA(idpropSEPA);
@@ -1127,9 +1117,7 @@ public class DatosGeneralesPagoAction extends MasterAction {
 
 				GenParametrosAdm paramAdm = new GenParametrosAdm(
 						this.getUserBean(request));
-								
-				registro.put(FcsPagosJGBean.C_CONCEPTO, ""); //El concepto pasa a ser:propósitos
-				
+	
 				FacPropositosAdm propAdm = new FacPropositosAdm(usr);
 				
 				String paramPropSEPA = paramAdm.getValor(idInstitucion, "FAC",
@@ -1145,13 +1133,22 @@ public class DatosGeneralesPagoAction extends MasterAction {
 				registro.put(FcsPagosJGBean.C_IDPROPOTROS, propAdm.selectIdPropositoPorCodigo(paramPropOtros));
 				
 				//Se obtiene la cuenta SJCS más moderna
-				Vector cuentasSJCS = admBancoFac.obtenerCuentaUltimaSJCS(miform.getIdInstitucion());
-				
-				if (cuentasSJCS.size()>0)
-					registro.put(FcsPagosJGBean.C_BANCOS_CODIGO,cuentasSJCS.firstElement().toString());	
-				
-				//Se inserta el campo idSufijo con el valor "" cuando se configure el abono se actualizará este valor en bb.dd.			
-				registro.put(FcsPagosJGBean.C_IDSUFIJO, ""); 
+				Vector vcuentasSJCS = admBancoFac.obtenerCuentaUltimaSJCS(miform.getIdInstitucion());
+
+				if (vcuentasSJCS.size()>0){
+					Hashtable cuentasSJCS = ((Row)vcuentasSJCS.firstElement()).getRow();
+					registro.put(FcsPagosJGBean.C_BANCOS_CODIGO,cuentasSJCS.get("BANCOS_CODIGO").toString());
+					
+					//Se guarda el sufijo sjcs asignado al banco por defecto
+					if(cuentasSJCS.get("IDSUFIJOSJCS")!=null)
+						//Se inserta el campo idSufijo con el valor de la cuenta SJCS más moderna			
+						registro.put(FcsPagosJGBean.C_IDSUFIJO,cuentasSJCS.get("IDSUFIJOSJCS"));
+					else
+						//Se inserta el campo idSufijo con el valor "" cuando se configure el abono se actualizará este valor en bb.dd.			
+						registro.put(FcsPagosJGBean.C_IDSUFIJO, ""); 		
+				}else{
+					throw new SIGAException(UtilidadesString.getMensajeIdioma(usr,"facturacion.message.error.cuenta.SJCS.no.existe"));
+				}
 				
 				UtilidadesHash.set(registro, FcsPagosJGBean.C_IMPORTEMINIMO,
 						new Double(0));

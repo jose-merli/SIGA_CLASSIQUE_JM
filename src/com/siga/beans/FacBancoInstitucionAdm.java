@@ -316,33 +316,44 @@ public class FacBancoInstitucionAdm extends MasterBeanAdministrador {
 	            			"BI." + FacBancoInstitucionBean.C_ASIENTOCONTABLE + "," +
 	            			"BI." + FacBancoInstitucionBean.C_IDSUFIJOSJCS + "," +
 	            			"BI.COD_BANCO || '-' || BI.COD_SUCURSAL || '-' || BI.DIGITOCONTROL || '-' ||BI.NUMEROCUENTA AS CUENTACONTABLE, "+
-						    "(SELECT NOMBRE FROM CEN_BANCOS WHERE CODIGO=BI.COD_BANCO) AS BANCO, " +
-						    "(SELECT COUNT (1) FROM FCS_PAGOSJG WHERE IDINSTITUCION=BI.IDINSTITUCION AND BANCOS_CODIGO=BI.BANCOS_CODIGO AND " + 
-						    "IDPAGOSJG = " + idpagosjg +"  ) AS SELECCIONADO " + 
-							" FROM " + 
+						    "(SELECT NOMBRE FROM CEN_BANCOS WHERE CODIGO=BI.COD_BANCO) AS BANCO, ";
+						  
+						 if (idpagosjg.isEmpty()){
+						    sql +=" 0 AS SELECCIONADO ";
+						 }else{
+							sql +="(SELECT COUNT (1) FROM FCS_PAGOSJG WHERE IDINSTITUCION=BI.IDINSTITUCION AND BANCOS_CODIGO=BI.BANCOS_CODIGO AND " + 
+							   "IDPAGOSJG = " + idpagosjg +"  ) AS SELECCIONADO ";
+						  }   
+						    
+						sql += " FROM " + 
 							FacBancoInstitucionBean.T_NOMBRETABLA + " BI " +
 	            			" WHERE BI."+ FacBancoInstitucionBean.C_IDINSTITUCION + "=" + idInstitucion +
 	            			" AND " + FacBancoInstitucionBean.C_FECHABAJA + " IS NULL "  +
-	            			" AND " + FacBancoInstitucionBean.C_SJCS + "=1 "+
-	            			" UNION SELECT " + 
-	            			"BI." + FacBancoInstitucionBean.C_BANCOS_CODIGO + "," +
-	            			"BI." + FacBancoInstitucionBean.C_IDINSTITUCION + "," +
-	            			"BI." + FacBancoInstitucionBean.C_IBAN + "," +
-	            			"BI." + FacBancoInstitucionBean.C_COD_BANCO + "," +
-	            			"BI." + FacBancoInstitucionBean.C_COD_SUCURSAL + "," +
-	            			"BI." + FacBancoInstitucionBean.C_NUMEROCUENTA + "," +
-	            			"BI." + FacBancoInstitucionBean.C_ASIENTOCONTABLE + "," +
-	            			"FCS.idsufijo as idsufijosjcs, " +
-	            			"BI.COD_BANCO || '-' || BI.COD_SUCURSAL || '-' || BI.DIGITOCONTROL || '-' ||BI.NUMEROCUENTA AS CUENTACONTABLE, "+
-						    "(SELECT NOMBRE FROM CEN_BANCOS WHERE CODIGO=BI.COD_BANCO) AS BANCO, "+
-						    "(SELECT COUNT (1) FROM FCS_PAGOSJG WHERE IDINSTITUCION=BI.IDINSTITUCION AND BANCOS_CODIGO=BI.BANCOS_CODIGO AND " + 
-						    "IDPAGOSJG = " + Integer.parseInt(idpagosjg)+"  ) AS SELECCIONADO " + 
-							" FROM " + 
-							FacBancoInstitucionBean.T_NOMBRETABLA + " BI, FCS_PAGOSJG FCS " + 
-	            			" WHERE BI."+ FacBancoInstitucionBean.C_IDINSTITUCION + "=" + idInstitucion + 
-	            			" AND BI."+ FacBancoInstitucionBean.C_IDINSTITUCION + "= FCS.IDINSTITUCION "+ 
-	            			" AND FCS.IDPAGOSJG=" + idpagosjg +
-	            			" AND BI." + FacBancoInstitucionBean.C_BANCOS_CODIGO + " = FCS.BANCOS_CODIGO ";
+	            			" AND " + FacBancoInstitucionBean.C_SJCS + "=1 ";
+	            		
+	            		if (!idpagosjg.isEmpty()){
+	            			sql += " AND  (SELECT COUNT (1) FROM FCS_PAGOSJG WHERE IDINSTITUCION=BI.IDINSTITUCION AND BANCOS_CODIGO=BI.BANCOS_CODIGO AND IDPAGOSJG = 557) = 0 "; 
+	            			sql += " UNION SELECT " + 
+			            			"BI." + FacBancoInstitucionBean.C_BANCOS_CODIGO + "," +
+			            			"BI." + FacBancoInstitucionBean.C_IDINSTITUCION + "," +
+			            			"BI." + FacBancoInstitucionBean.C_IBAN + "," +
+			            			"BI." + FacBancoInstitucionBean.C_COD_BANCO + "," +
+			            			"BI." + FacBancoInstitucionBean.C_COD_SUCURSAL + "," +
+			            			"BI." + FacBancoInstitucionBean.C_NUMEROCUENTA + "," +
+			            			"BI." + FacBancoInstitucionBean.C_ASIENTOCONTABLE + "," +
+			            			"FCS.idsufijo as idsufijosjcs, " +
+			            			"BI.COD_BANCO || '-' || BI.COD_SUCURSAL || '-' || BI.DIGITOCONTROL || '-' ||BI.NUMEROCUENTA AS CUENTACONTABLE, "+
+								    "(SELECT NOMBRE FROM CEN_BANCOS WHERE CODIGO=BI.COD_BANCO) AS BANCO, "+
+								    "(SELECT COUNT (1) FROM FCS_PAGOSJG WHERE IDINSTITUCION=BI.IDINSTITUCION AND BANCOS_CODIGO=BI.BANCOS_CODIGO AND " + 
+								    "IDPAGOSJG = " + Integer.parseInt(idpagosjg)+"  ) AS SELECCIONADO " + 
+									" FROM " + 
+									FacBancoInstitucionBean.T_NOMBRETABLA + " BI, FCS_PAGOSJG FCS " + 
+			            			" WHERE BI."+ FacBancoInstitucionBean.C_IDINSTITUCION + "=" + idInstitucion + 
+			            			" AND BI."+ FacBancoInstitucionBean.C_IDINSTITUCION + "= FCS.IDINSTITUCION "+ 
+			            			" AND FCS.IDPAGOSJG=" + idpagosjg +
+			            			" AND BI." + FacBancoInstitucionBean.C_BANCOS_CODIGO + " = FCS.BANCOS_CODIGO ";
+	            		}	
+	            			
 	            
 	            
 	            
@@ -364,7 +375,8 @@ public class FacBancoInstitucionAdm extends MasterBeanAdministrador {
 	       try {
 	            RowsContainer rc = new RowsContainer(); 
 	            String sql ="SELECT " +
-							"BI." + FacBancoInstitucionBean.C_BANCOS_CODIGO +
+							"BI." + FacBancoInstitucionBean.C_BANCOS_CODIGO + "," +
+							"BI." + FacBancoInstitucionBean.C_IDSUFIJOSJCS + 
 							" FROM " + 
 							FacBancoInstitucionBean.T_NOMBRETABLA + " BI " +
 	            			" WHERE BI."+ FacBancoInstitucionBean.C_IDINSTITUCION + "=" + idInstitucion +

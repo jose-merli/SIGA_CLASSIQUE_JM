@@ -20,10 +20,12 @@ import org.apache.struts.action.ActionMapping;
 
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.UsrBean;
+import com.atos.utils.Row;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.beans.CenInstitucionAdm;
 import com.siga.beans.FacBancoInstitucionAdm;
+import com.siga.beans.FacBancoInstitucionBean;
 import com.siga.beans.FacPropositosAdm;
 import com.siga.beans.FacPropositosBean;
 import com.siga.beans.FacSufijoAdm;
@@ -137,7 +139,6 @@ public class ConfiguracionAbonosAction extends MasterAction{
 				if ((v!=null)&&(v.size()>0)){
 					FcsPagosJGBean bean = new FcsPagosJGBean();
 					bean = (FcsPagosJGBean)v.firstElement();
-					request.setAttribute("concepto", bean.getConcepto());
 		 		 	request.setAttribute("cuenta", bean.getBancosCodigo());
 
 		 		 	if((bean.getIdpropSEPA()==null)||(bean.getIdpropSEPA()==0)){
@@ -169,13 +170,13 @@ public class ConfiguracionAbonosAction extends MasterAction{
 			}
 			
 			//Se obtiene la cuenta SJCS más moderna
-			Vector cuentasSJCS = admBancoFac.obtenerCuentaUltimaSJCS(idInstitucion);
-			
-			if (cuentasSJCS.size()>0)
-				request.setAttribute("paramIdCuenta", cuentasSJCS.firstElement().toString());	
-			else
+			Vector vcuentasSJCS = admBancoFac.obtenerCuentaUltimaSJCS(idInstitucion);
+		
+			if (vcuentasSJCS.size()>0){
+				 Hashtable cuentasSJCS = ((Row)vcuentasSJCS.firstElement()).getRow();
+				 request.setAttribute("paramIdCuenta", cuentasSJCS.get("BANCOS_CODIGO"));	
+			}else
 				request.setAttribute("paramIdCuenta", "");
-			
 			
 			//Combos sufijos
 			FacSufijoAdm sufijoAdm = new FacSufijoAdm (this.getUserBean(request));
@@ -193,7 +194,7 @@ public class ConfiguracionAbonosAction extends MasterAction{
 
 			request.setAttribute("listaSufijos", sufijosListFinal);
 			
-			//Combos propósitos (Concepto de abono)
+			//Combos propósitos 
 			FacPropositosAdm propositosAdm = new FacPropositosAdm(this.getUserBean(request));
 			Vector vpropositos = propositosAdm.selectPropositos();
 			
@@ -243,7 +244,7 @@ public class ConfiguracionAbonosAction extends MasterAction{
 				oldBean = (FcsPagosJGBean)v.firstElement();
 				bean.setOriginalHash(oldBean.getOriginalHash());
 			}
-			bean.setConcepto(miForm.getConcepto());
+			
 			bean.setBancosCodigo(miForm.getCuenta());
 			bean.setIdInstitucion(new Integer(Integer.parseInt(idInstitucion)));
 			bean.setIdPagosJG(new Integer(Integer.parseInt(idPago)));

@@ -54,17 +54,12 @@
 	String idEstadoPagosJG = request.getAttribute("idEstadoPagosJG")==null?"":(String)request.getAttribute("idEstadoPagosJG");
 	
 	String bdCuenta = (String)request.getAttribute("cuenta");
-// 	String bdConcepto = (String)request.getAttribute("concepto");
 	boolean guardable = false;
 	
 	//Si el abono no tiene configurada ninguna cuenta marca la cuenta SJCS más moderna
 	if ((bdCuenta==null) ||(bdCuenta.equalsIgnoreCase(""))){
 		bdCuenta = (String)request.getAttribute("paramIdCuenta");
 	}
-	
-// 	if ((bdConcepto==null)||(bdConcepto.equalsIgnoreCase(""))){
-// 		bdConcepto = (String)request.getAttribute("paramConcepto");
-// 	}
 	
 	if (modo!=null && 
 		modo.equalsIgnoreCase("edicion") &&
