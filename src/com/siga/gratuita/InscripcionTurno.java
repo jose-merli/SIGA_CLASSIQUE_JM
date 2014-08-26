@@ -163,6 +163,7 @@ public class InscripcionTurno {
 			String fechaUltimo = beanTurno.getFechaSolicitudUltimo();
 			// obteniendo ordenacion de la guardia
 			String orden = ordenacionColasAdm.getOrderBy(idOrdenacionColas.toString());
+			orden += " ,ins.FECHASOLICITUD";
 			
 			ScsInscripcionTurnoBean ultimoAnterior;
 			

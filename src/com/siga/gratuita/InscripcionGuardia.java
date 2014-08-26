@@ -159,6 +159,7 @@ public class InscripcionGuardia {
 				throw new ClsExceptions("messages.general.error");
 			ScsOrdenacionColasAdm ordenacionColasAdm = new ScsOrdenacionColasAdm(usr);
 			orden = porGrupos ? " numeroGrupo, ordengrupo" : ordadm.getOrderBy(idOrdenacionColas.toString());
+			orden += " ,ins.FECHASUSCRIPCION";
 	
 			// obteniendo ultimo apuntado de la guardia
 			if (idPersonaUltimo == null)
