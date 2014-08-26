@@ -645,53 +645,6 @@ public class PysProductosInstitucionAdm extends MasterBeanAdministrador
 		return null;
 	}
 	
-	/** 
-	 * Recoge toda informacion del del registro seleccionado a partir de sus claves<br/>
-	 * @param  idInst - identificador de la institucion 
-	 * @param  idTipoProd - identificador del tipo de producto
-	 * @param  idProd - identificador del producto	 
-	 * @param  idProdInst - identificador del producto institucion	  
-	 * @return  Vector - Fila seleccionada  
-	 * @exception  ClsExceptions, SIGAException
-	 */
-	public Vector getProductosComisiones (String institucion) throws ClsExceptions, SIGAException {
-		   Vector datos=new Vector();
-		  
-	       try {
-	            RowsContainer rc = new RowsContainer(); 
-	            String sql ="SELECT " +
-	            			PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_IDINSTITUCION  + "," +
-	            			PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_IDPRODUCTO + "," +
-	            			PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_IDTIPOPRODUCTO  + "," +
-	            			PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_IDPRODUCTOINSTITUCION  + "," +
-	            			PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_IDCONTADOR  + "," +
-	            			PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_PORCENTAJEIVA +", "+ 	
-	            			PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_NOFACTURABLE + 
-							" FROM " + PysProductosInstitucionBean.T_NOMBRETABLA +  
-							" WHERE " +
-							PysProductosInstitucionBean.T_NOMBRETABLA +"."+ PysProductosInstitucionBean.C_IDINSTITUCION + "=" + institucion +
-							" AND " +
-							PysProductosInstitucionBean.T_NOMBRETABLA +"."+ PysProductosInstitucionBean.C_TIPOCERTIFICADO + "=" + "'B'" +
-							" AND ROWNUM < 2 "; 
-							
-	            if (rc.findForUpdate(sql)) {
-	               for (int i = 0; i < rc.size(); i++){
-	                  Row fila = (Row) rc.get(i);
-	                  datos.add(fila);
-	               }
-	            } 
-	       }
-		   catch (Exception e) {
-	       		if (e instanceof SIGAException){
-	       			throw (SIGAException)e;
-	       		}
-	       		else{
-	       			throw new ClsExceptions(e,"Error al obtener la informacion sobre productos con comisiones.");
-	       		}	
-		   }
-	       return datos;                        
-	    }
-	
 	public Vector getDiligenciasCGAE() throws ClsExceptions {
 	    
 	    Vector resultado = new Vector();

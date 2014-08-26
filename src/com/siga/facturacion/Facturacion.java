@@ -2263,29 +2263,6 @@ public class Facturacion {
     }
     
     /**
-     * Aplica comision correspondiente a un determinado disco de devoluciones
-     * @param institucion
-     * @param idDisqDevoluciones
-     * @param aplicaComisionesCliente
-     * @param userBean
-     * @return
-     * @throws Exception 
-     */
-    
-    public boolean aplicarComisionesManuales(String institucion, String idDisqDevoluciones, String aplicaComisionesCliente, UsrBean userBean) throws Exception {
-    	boolean resultado = false;
-    	
-		// Identificamos los disquetes devueltos asociados al fichero de devoluciones
-		FacLineaDevoluDisqBancoAdm admLDDB= new FacLineaDevoluDisqBancoAdm(userBean);
-		FacLineaDevoluDisqBancoBean beanDevolucion = admLDDB.obtenerDevolucionManual(institucion, idDisqDevoluciones);
-		
-		// Aplicamos la comision a cada devolusion
-		resultado = aplicarComisionAFactura (institucion, beanDevolucion, aplicaComisionesCliente, null, userBean, resultado);
-		
-		return resultado;
-	}    
-    
-    /**
      * Aplica comisiones correspondientes a varios discos de devoluciones
      * @param institucion
      * @param idDisqDevoluciones

@@ -353,17 +353,6 @@ public class CenInstitucionAdm extends MasterBeanAdministrador {
 		return datos;
 	}
 	
-	public boolean tieneProductoComision(String idInstitucion) throws ClsExceptions, SIGAException {
-		boolean salida = true;
-		PysProductosInstitucionAdm pi = new PysProductosInstitucionAdm(this.usrbean); 
-		Vector v = pi.getProductosComisiones(idInstitucion);
-		if (v==null || v.size()==0) {
-			salida = false;
-		}
-		return salida;
-	}
-
-	
 	public Hashtable getDatosInformeFacturasEmitidas (String idInstitucion)
 	{
 		try { 

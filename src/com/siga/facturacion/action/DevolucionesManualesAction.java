@@ -24,11 +24,12 @@ import com.atos.utils.ClsLogging;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.PaginadorCaseSensitive;
 import com.siga.Utilidades.UtilidadesHash;
-import com.siga.beans.CenInstitucionAdm;
 import com.siga.beans.CenPersonaAdm;
 import com.siga.beans.FacFacturaAdm;
 import com.siga.beans.FacFacturaBean;
 import com.siga.beans.FacFacturaIncluidaEnDisqueteAdm;
+import com.siga.beans.FacLineaDevoluDisqBancoAdm;
+import com.siga.beans.FacLineaDevoluDisqBancoBean;
 import com.siga.beans.FacMotivoDevolucionAdm;
 import com.siga.beans.GenParametrosAdm;
 import com.siga.facturacion.Facturacion;
@@ -46,10 +47,7 @@ import com.siga.informes.form.MantenimientoInformesForm;
  */
 public class DevolucionesManualesAction extends MasterAction{
 
-	protected ActionForward executeInternal (ActionMapping mapping,
-			ActionForm formulario,
-			HttpServletRequest request, 
-			HttpServletResponse response)throws SIGAException {
+	protected ActionForward executeInternal (ActionMapping mapping, ActionForm formulario, HttpServletRequest request, HttpServletResponse response)throws SIGAException {
 
 		String mapDestino = "exception";
 		MasterForm miForm = null;
@@ -64,60 +62,57 @@ public class DevolucionesManualesAction extends MasterAction{
 
 			//La primera vez que se carga el formulario 
 			// Abrir
-			if (accion == null || accion.equalsIgnoreCase("") || accion.equalsIgnoreCase("abrir")){
+			if (accion == null || accion.equalsIgnoreCase("") || accion.equalsIgnoreCase("abrir")) {
 				mapDestino = abrir(mapping, miForm, request, response);						
-			}else if (accion.equalsIgnoreCase("abrirConParametros")){
+				
+			} else if (accion.equalsIgnoreCase("abrirConParametros")) {
 				mapDestino = abrirConParametros(mapping, miForm, request, response);
-			}else if (accion.equalsIgnoreCase("buscar")){
+				
+			} else if (accion.equalsIgnoreCase("buscar")) {
 				mapDestino = buscar(mapping, miForm, request, response);
-			}else if (accion.equalsIgnoreCase("download")){
-				mapDestino = download(mapping, miForm, request, response);					
-			}else if (accion.equalsIgnoreCase("insertar")){
+				
+			} else if (accion.equalsIgnoreCase("download")) {
+				mapDestino = download(mapping, miForm, request, response);
+				
+			} else if (accion.equalsIgnoreCase("insertar")) {
 				mapDestino = insertar(mapping, miForm, request, response);
-			}else if (accion.equalsIgnoreCase("modificar")){
+				
+			} else if (accion.equalsIgnoreCase("modificar")) {
 				mapDestino = modificar(mapping, miForm, request, response);
-			}else if (accion.equalsIgnoreCase("ver")){
+				
+			} else if (accion.equalsIgnoreCase("ver")) {
 				mapDestino = ver(mapping, miForm, request, response);
-			}else {
-				return super.executeInternal(mapping,
-						formulario,
-						request, 
-						response);
+				
+			} else {
+				return super.executeInternal(mapping, formulario, request, response);
 			}
 
 			// Redireccionamos el flujo a la JSP correspondiente
-			if (mapDestino == null) 
-			{ 
-				//mapDestino = "exception";
-				if (miForm.getModal().equalsIgnoreCase("TRUE"))
-				{
+			if (mapDestino == null) { 
+				if (miForm.getModal().equalsIgnoreCase("TRUE")) {
 					request.setAttribute("exceptionTarget", "parent.modal");
 				}
 
-				//throw new ClsExceptions("El ActionMapping no puede ser nulo");
 				throw new ClsExceptions("El ActionMapping no puede ser nulo","","0","GEN00","15");
 			}
 
-		}
-		catch (SIGAException es) { 
-			throw es; 
-		} 
-		catch (Exception e) { 
+		} catch (SIGAException es) { 
+			throw es;
+			
+		} catch (Exception e) { 
 			throw new SIGAException("messages.general.error",e,new String[] {"modulo.censo"}); // o el recurso del modulo que sea 
 		} 
+		
 		return mapping.findForward(mapDestino);
 	}
 	
 	/**
 	 * Implementa la accion de mostrar el mantenimiento de devoluciones manuales, con el form inicializado  
 	 */
-	protected String abrir(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
-		
-		try
-		{
+	protected String abrir(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {		
+		try {
 			UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");		
-			String idInstitucion = user.getLocation();
-			DevolucionesManualesForm form=(DevolucionesManualesForm) formulario;
+			DevolucionesManualesForm form = (DevolucionesManualesForm) formulario;
 			
 			// inicializo el form
 			form.setAplicarComisiones("");
@@ -140,7 +135,7 @@ public class DevolucionesManualesAction extends MasterAction{
 			request.removeAttribute("buscar");
 						
 			// comprobamos la existencia de Motivos
-			FacMotivoDevolucionAdm motivosAdm = new FacMotivoDevolucionAdm(this.getUserBean(request));
+			FacMotivoDevolucionAdm motivosAdm = new FacMotivoDevolucionAdm(user);
 			Vector motivos = motivosAdm.select();
 			if (motivos==null || motivos.size()==0) {
 				form.setHayMotivos("0");
@@ -151,8 +146,7 @@ public class DevolucionesManualesAction extends MasterAction{
 			// limpio la session
 			request.getSession().removeAttribute("FacturaVolver");
 
-		} 
-		  catch (Exception e) { 
+		} catch (Exception e) { 
 		   throwExcp("messages.general.error",new String[] {"modulo.facturacion"},e,null); 
 		} 	
 
@@ -162,23 +156,19 @@ public class DevolucionesManualesAction extends MasterAction{
 	/**
 	 * Implementa la accion de mostrar el mantenimiento de devoluciones manuales  
 	 */
-	protected String abrirConParametros(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
-		
-		try
-		{
+	protected String abrirConParametros(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {		
+		try {
 			UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");		
-			String idInstitucion = user.getLocation();
-			DevolucionesManualesForm form=(DevolucionesManualesForm) formulario;
-			// DevolucionesManualesForm form = (DevolucionesManualesForm)request.getSession().getAttribute("DevolucionesManualesForm");
+			DevolucionesManualesForm form = (DevolucionesManualesForm) formulario;
 			
 			// obtenemos el nombre del titular
 			if (!form.getTitular().equals("")) {
-				CenPersonaAdm personaAdm = new CenPersonaAdm(this.getUserBean(request));
+				CenPersonaAdm personaAdm = new CenPersonaAdm(user);
 				form.setNombreTitular(personaAdm.obtenerNombreApellidos(form.getTitular()));
 			}
 
 			// comprobamos la existencia de Motivos
-			FacMotivoDevolucionAdm motivosAdm = new FacMotivoDevolucionAdm(this.getUserBean(request));
+			FacMotivoDevolucionAdm motivosAdm = new FacMotivoDevolucionAdm(user);
 			Vector motivos = motivosAdm.select();
 			if (motivos==null || motivos.size()==0) {
 				form.setHayMotivos("0");
@@ -189,13 +179,11 @@ public class DevolucionesManualesAction extends MasterAction{
 			// que SI busque directamente
 			request.setAttribute("buscar","1");
 			request.setAttribute("buscarPaginador","true");
-			
 
 			// limpio la session
 			request.getSession().removeAttribute("FacturaVolver");
 			
-		} 
-		  catch (Exception e) { 
+		} catch (Exception e) { 
 		   throwExcp("messages.general.error",new String[] {"modulo.facturacion"},e,null); 
 		} 	
 
@@ -203,7 +191,7 @@ public class DevolucionesManualesAction extends MasterAction{
 	}
 	
 	/**
-	 * Implementa la accion de crear el fichero de devoluciones manuales e insertarlo en BBDD tras obtener las cabeceras  
+	 * Implemente la accion de la devolucion manual de una factura
 	 */
 	protected String insertar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		UserTransaction tx 	= null;
@@ -211,7 +199,7 @@ public class DevolucionesManualesAction extends MasterAction{
 		try {
 			UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");		
 			String idInstitucion = user.getLocation();
-			DevolucionesManualesForm form=(DevolucionesManualesForm) formulario;
+			DevolucionesManualesForm form = (DevolucionesManualesForm) formulario;
 			
 			// obtengo los datos para generar el fichero
 			String aplicaComisiones = form.getAplicarComisiones();
@@ -234,12 +222,7 @@ public class DevolucionesManualesAction extends MasterAction{
 
 			// actualizo mediante el fichero. COntrol de codigos de errores segun la funcion.
 			DevolucionesAction devoluciones = new DevolucionesAction();
-			String[] retornoDevolucionManual = devoluciones.devolucionManual(
-							idInstitucion,
-							recibos,
-							fechaDevolucion,							
-							user.getLanguageInstitucion(),
-							user.getUserName());
+			String[] retornoDevolucionManual = devoluciones.devolucionManual(idInstitucion, recibos, fechaDevolucion, user);
 			
 			if (retornoDevolucionManual[0].equals("0")) {
 
@@ -249,9 +232,14 @@ public class DevolucionesManualesAction extends MasterAction{
 					String [] aListaIdDisquetesDevolucion = retornoDevolucionManual[2].split(";");
 					for (String sIdDisquetesDevolucion : aListaIdDisquetesDevolucion) {
 				    	ClsLogging.writeFileLog("Aplicando Comisiones de devolucion=" + sIdDisquetesDevolucion, 8);
-				    	Facturacion facturacion = new Facturacion(this.getUserBean(request));
-				    	boolean ok=facturacion.aplicarComisionesManuales(idInstitucion, sIdDisquetesDevolucion, aplicaComisiones, this.getUserBean(request));
-				    	if (!ok) {
+				    	Facturacion facturacion = new Facturacion(user);
+				    	
+						// Identificamos los disquetes devueltos asociados al fichero de devoluciones
+						FacLineaDevoluDisqBancoAdm admLDDB= new FacLineaDevoluDisqBancoAdm(user);
+						FacLineaDevoluDisqBancoBean beanDevolucion = admLDDB.obtenerDevolucionManual(idInstitucion, sIdDisquetesDevolucion);
+						
+						// Aplicamos la comision a cada devolusion
+						if (!facturacion.aplicarComisionAFactura (idInstitucion, beanDevolucion, aplicaComisiones, null, user, false)) {
 				    		throw new ClsExceptions("Fichero de devoluciones manuales: Error al aplicar devoluciones.");
 				    	}
 					}				
@@ -287,26 +275,16 @@ public class DevolucionesManualesAction extends MasterAction{
 	/**
 	 * Implementa la accion de procesar las devoluciones manuales mediante el paso previo de obtener por pantalla los datos de cabecera de devolucion.  
 	 */
-	protected String modificar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException 
-	{
-		try
-		{
-			UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");		
-			String idInstitucion = user.getLocation();
-			DevolucionesManualesForm form=(DevolucionesManualesForm) formulario;
+	protected String modificar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+		try {
+			DevolucionesManualesForm form = (DevolucionesManualesForm) formulario;
 
 			// inicializo el form para esta pantalla
 			form.setAplicarComisiones("");
 			form.setBanco("");
 			form.setFechaDevolucion("");
-			
-			// AQUI METER SI LA INSTITUCION TIENE COMISION
-			CenInstitucionAdm admIns = new CenInstitucionAdm(this.getUserBean(request));
-			String tiene = new Boolean(admIns.tieneProductoComision(idInstitucion)).toString();
-			request.setAttribute("TIENEPRODUCTOCOMISION",tiene);
 
-		} 
-		  catch (Exception e) { 
+		} catch (Exception e) { 
 		   throwExcp("messages.general.error",new String[] {"modulo.facturacion"},e,null); 
 		} 	
 
@@ -317,70 +295,50 @@ public class DevolucionesManualesAction extends MasterAction{
 	/**
 	 * Implementa la accion de buscar los recibos de banco de las facturas emitidas segun criterios de busqueda.  
 	 */
-	protected String buscar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException 
-	{
-		try
-		{
+	protected String buscar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+		try {
 			UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");		
 			String idInstitucion = user.getLocation();
-			DevolucionesManualesForm form=(DevolucionesManualesForm) formulario;
-			
-			
-			// obtengo los recibos segun busqueda
-			FacFacturaIncluidaEnDisqueteAdm recibosAdm = new FacFacturaIncluidaEnDisqueteAdm(this.getUserBean(request));
-			 HashMap databackup=new HashMap();
+			DevolucionesManualesForm form = (DevolucionesManualesForm) formulario;
 				
-				 	if (request.getSession().getAttribute("DATAPAGINADOR")!=null){ 
-				 		databackup = (HashMap)request.getSession().getAttribute("DATAPAGINADOR");
-				 		PaginadorCaseSensitive paginador = (PaginadorCaseSensitive)databackup.get("paginador");
-					     Vector datos=new Vector();
+			if (request.getSession().getAttribute("DATAPAGINADOR")!=null){ 
+				HashMap databackup = (HashMap)request.getSession().getAttribute("DATAPAGINADOR");
+				PaginadorCaseSensitive paginador = (PaginadorCaseSensitive)databackup.get("paginador");
+				Vector datos = new Vector();
 					
+				//Si no es la primera llamada, obtengo la página del request y la busco con el paginador
+				String pagina = (String)request.getParameter("pagina");
 					
-					//Si no es la primera llamada, obtengo la página del request y la busco con el paginador
-					String pagina = (String)request.getParameter("pagina");
-					
-					 
-					
-				 if (paginador!=null){	
+				if (paginador!=null){	
 					if (pagina!=null){
 						datos = paginador.obtenerPagina(Integer.parseInt(pagina));
-					}else{// cuando hemos editado un registro de la busqueda y volvemos a la paginacion
+					} else {// cuando hemos editado un registro de la busqueda y volvemos a la paginacion
 						datos = paginador.obtenerPagina((paginador.getPaginaActual()));
 					}
-				 }	
+				}	
 					
+				databackup.put("paginador", paginador);
+				databackup.put("datos", datos);
 					
-					
-					databackup.put("paginador",paginador);
+			} else {						
+				HashMap databackup = new HashMap();
+				
+				FacFacturaIncluidaEnDisqueteAdm recibosAdm = new FacFacturaIncluidaEnDisqueteAdm(user);
+				PaginadorCaseSensitive recibos = recibosAdm.getRecibosParaDevolucion(idInstitucion,form.getFechaCargoDesde(),form.getFechaCargoHasta(),form.getNumeroRecibo(),form.getTitular(),form.getNumeroRemesa(), form.getNumeroFactura(), form.getDestinatario());
+				databackup.put("paginador",recibos);
+				if (recibos!=null){ 
+					Vector datos = recibos.obtenerPagina(1);
 					databackup.put("datos",datos);
-					
-						
-					
-					
-			  }else{	
-					
-			  	    databackup=new HashMap();
-					
-					//obtengo datos de la consulta 			
-			  	  PaginadorCaseSensitive recibos = null;
-				Vector datos = null;
-			 recibos = recibosAdm.getRecibosParaDevolucion(idInstitucion,form.getFechaCargoDesde(),form.getFechaCargoHasta(),form.getNumeroRecibo(),form.getTitular(),form.getNumeroRemesa(), form.getNumeroFactura(), form.getDestinatario());
-			databackup.put("paginador",recibos);
-			if (recibos!=null){ 
-			   datos = recibos.obtenerPagina(1);
-			   databackup.put("datos",datos);
-			   request.getSession().setAttribute("DATAPAGINADOR",databackup);
-			} 
-			  }
-			//request.setAttribute("recibos",recibos);
+					request.getSession().setAttribute("DATAPAGINADOR",databackup);
+				} 
+			}
 			
 			// obtengo el motivo por defecto de parametros.
-			GenParametrosAdm param = new GenParametrosAdm(this.getUserBean(request));
+			GenParametrosAdm param = new GenParametrosAdm(user);
 			String motivo = param.getValor(idInstitucion,"FAC","MOTIVO_DEVOLUCION","8");
 			request.setAttribute("motivoDevolucion",motivo);
 			
-		} 
-		  catch (Exception e) { 
+		} catch (Exception e) { 
 		   throwExcp("messages.general.error",new String[] {"modulo.facturacion"},e,null); 
 		} 	
 
@@ -390,36 +348,32 @@ public class DevolucionesManualesAction extends MasterAction{
 	/**
 	 * Implementa la accion de ver la factura asociada  
 	 */
-	protected String ver(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException 
-	{
-		try
-		{
+	protected String ver(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+		try {
 			UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");		
 			String idInstitucion = user.getLocation();
-			DevolucionesManualesForm form=(DevolucionesManualesForm) formulario;
+			DevolucionesManualesForm form = (DevolucionesManualesForm) formulario;
 
 			// obtengo los datos OCULTOS: idfactura
 			Vector vOcultos = (Vector)form.getDatosTablaOcultos(0);
-
 			String idFactura = (String)vOcultos.get(0); 
-			String accion = "ver";
 			
 			// preparo las pestanhas
 			Hashtable datosFac = new Hashtable();
-			UtilidadesHash.set(datosFac,"accion", accion);
+			UtilidadesHash.set(datosFac,"accion", "ver");
 			UtilidadesHash.set(datosFac,"idFactura", idFactura);
 			UtilidadesHash.set(datosFac,"idInstitucion", idInstitucion);
 
 			Hashtable datos = new Hashtable();
 			UtilidadesHash.set(datos,"IDFACTURA", idFactura);
 			UtilidadesHash.set(datos,"IDINSTITUCION", idInstitucion);
-			FacFacturaAdm admf = new FacFacturaAdm(this.getUserBean(request));
+			
+			FacFacturaAdm admf = new FacFacturaAdm(user);			
 			Vector v = admf.selectByPK(datos);
 			if (v!=null && v.size()>0) {
 			    FacFacturaBean b = (FacFacturaBean) v.get(0);
-			    UtilidadesHash.set(datosFac,"idPersona", b.getIdPersona().toString());
+			    UtilidadesHash.set(datosFac, "idPersona", b.getIdPersona().toString());
 			}
-
 			
 			// Paso de parametros a las pestanhas
 			request.setAttribute("datosFacturas", datosFac);		
@@ -427,8 +381,7 @@ public class DevolucionesManualesAction extends MasterAction{
 			// pongo de donde vengo para poder volver
 			request.getSession().setAttribute("CenBusquedaClientesTipo","DEV_MANUAL");
 			
-		} 
-		  catch (Exception e) { 
+		} catch (Exception e) { 
 		   throwExcp("messages.general.error",new String[] {"modulo.facturacion"},e,null); 
 		} 	
 
@@ -439,28 +392,23 @@ public class DevolucionesManualesAction extends MasterAction{
 	/**
 	 * Implementa la accion de descargar un fichero  
 	 */
-	protected String download (ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) 
-	throws SIGAException{
-		
-		File fichero = null;
-		String rutaFichero = null;
-		MantenimientoInformesForm miform = null;
-		
+	protected String download (ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException{		
 		try {
 			//Obtenemos el formulario y sus datos:
-			miform = (MantenimientoInformesForm)formulario;
-			rutaFichero = miform.getRutaFichero();
-			fichero = new File(rutaFichero);
-			if(fichero==null || !fichero.exists()){
+			MantenimientoInformesForm miform = (MantenimientoInformesForm)formulario;
+			String rutaFichero = miform.getRutaFichero();
+			File fichero = new File(rutaFichero);
+			if (fichero==null || !fichero.exists()) {
 				throw new SIGAException("messages.general.error.ficheroNoExiste"); 
 			}
+			
 			request.setAttribute("nombreFichero", fichero.getName());
 			request.setAttribute("rutaFichero", fichero.getPath());
 			
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 			throwExcp("messages.general.error",new String[] {"modulo.facturacionSJCS"},e,null);
 		}
+		
 		return "descargaFichero";	
 	}
 	

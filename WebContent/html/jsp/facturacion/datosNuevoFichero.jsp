@@ -41,9 +41,6 @@
 	String idAbono=(String)request.getAttribute("IDABONO"); // Obtengo el identificador del abono
 	String idInstitucion=(String)request.getAttribute("IDINSTITUCION"); // Obtengo el identificador de la institucion	
 	String importePendiente=(String)request.getAttribute("PAGOPENDIENTE"); // Obtengo el importe pendiente	
-
-	// Si tiene producto comision
-	String tieneProductoComision=(String)request.getAttribute("TIENEPRODUCTOCOMISION");
 	
 	// MENSAJE = mensaje a mostrar (si no hay mensaje no muestra alert)  
 	String mensaje = (String)request.getAttribute("mensaje");
@@ -66,8 +63,6 @@
 
 	<!-- Aqui se reescriben las funciones que vayamos a utilizar -->
 	<script language="JavaScript">
-		var tieneProductoComision = <%=tieneProductoComision%>;
-		var msgNoTieneProductoComision = "<siga:Idioma key="messages.facturacion.devoluciones.noProductoComision"/>";
 		
 <%  
 		if (mensaje!=null){
@@ -91,23 +86,16 @@
 		}	
 		
 		// Asociada al boton Volver
-		function accionGuardarCerrar(){ 
-			
+		function accionGuardarCerrar(){ 			
 			if(document.getElementById('comision').checked)
 				document.forms[0].comisiones.value="1";
 			else
 				document.forms[0].comisiones.value="0";
-			
-				
-			if (document.getElementById('comision').checked && !tieneProductoComision) {
-				alert(msgNoTieneProductoComision);	
-			} else {
-				if (validateDevolucionesForm(document.DevolucionesForm)) {
-					document.forms[0].modo.value="insertar";
-					window.frames.submitArea.location="<%=app%>/html/jsp/general/loadingWindowOpener.jsp?formName=" + document.forms[0].name + "&msg=facturacion.nuevoFichero.literal.generandoDevoluciones";
-					//document.forms[0].submit();
-				}	
-			}
+
+			if (validateDevolucionesForm(document.DevolucionesForm)) {
+				document.forms[0].modo.value="insertar";
+				window.frames.submitArea.location="<%=app%>/html/jsp/general/loadingWindowOpener.jsp?formName=" + document.forms[0].name + "&msg=facturacion.nuevoFichero.literal.generandoDevoluciones";
+			}	
 		}	
 		
 	</script>	

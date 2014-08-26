@@ -30,10 +30,6 @@
 
 	String [] institucionParam = new String[1];
 	institucionParam[0] = user.getLocation();
-
-	// Si tiene producto comision
-	String tieneProductoComision=(String)request.getAttribute("TIENEPRODUCTOCOMISION");
-
 %>
 
 
@@ -59,26 +55,17 @@
 	<!-- Aqui se reescriben las funciones que vayamos a utilizar -->
 	<script language="JavaScript">
 
-		var tieneProductoComision = <%=tieneProductoComision%>;
-		var msgNoTieneProductoComision = "<siga:Idioma key="messages.facturacion.devoluciones.noProductoComision"/>";
-
-		<!-- Asociada al boton Volver -->
+		// Asociada al boton Volver
 		function accionCerrar(){ 
 			window.top.close();
 		}	
 		
-		<!-- Asociada al boton Volver -->
+		// Asociada al boton Volver
 		function accionGuardarCerrar(){ 
-			if (document.forms[0].aplicarComisiones.checked && !tieneProductoComision) {
-				alert(msgNoTieneProductoComision);	
-			} else {
-				if (validateDevolucionesManualesForm(document.DevolucionesManualesForm)){
-					document.forms[0].modo.value="insertar";
-					window.frames.submitArea.location="<%=app%>/html/jsp/general/loadingWindowOpener.jsp?formName="+
-														document.forms[0].name+
-														"&msg=facturacion.nuevoFichero.literal.generandoDevoluciones";
-				}	
-			}
+			if (validateDevolucionesManualesForm(document.DevolucionesManualesForm)){
+				document.forms[0].modo.value="insertar";
+				window.frames.submitArea.location= "<%=app%>/html/jsp/general/loadingWindowOpener.jsp?formName=" + document.forms[0].name + "&msg=facturacion.nuevoFichero.literal.generandoDevoluciones";
+			}	
 		}	
 		
 	</script>	
