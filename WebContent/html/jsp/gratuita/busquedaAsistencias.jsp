@@ -317,7 +317,7 @@
 			<td >	
 				<Select name="origen" class="boxCombo">
 					<option value='' ></option>
-					<option value='10' selected><siga:Idioma key="gratuita.busquedaAsistencias.origen.colegioSIGA"/></option>
+					<option value='10' ><siga:Idioma key="gratuita.busquedaAsistencias.origen.colegioSIGA"/></option>
 					<option value='30' ><siga:Idioma key="gratuita.busquedaAsistencias.origen.colegiadoVolanteExpresMovil"/></option>
 					<option value='20' ><siga:Idioma key="gratuita.busquedaAsistencias.origen.colegiadoSIGA"/></option>
 				
