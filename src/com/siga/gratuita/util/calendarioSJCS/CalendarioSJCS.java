@@ -204,54 +204,6 @@ public class CalendarioSJCS
 		this.log = log;
 	} // CalendarioSJCS()
 	
-	/*public CalendarioSJCS(ScsCalendarioGuardiasBean calendarioGuardiasBean,
-			 UsrBean usr, LogFileWriter log)
-	{
-		
-	
-		
-		// Controles
-		ScsGuardiasTurnoAdm admGuardiasTurno = new ScsGuardiasTurnoAdm(this.usrBean);
-		ScsCalendarioGuardiasAdm admCalendarioGuardias = new ScsCalendarioGuardiasAdm(this.usrBean);
-		ScsCalendarioLaboralAdm admCalendarioLaboral = new ScsCalendarioLaboralAdm(this.usrBean);
-		
-		// Variables
-		String where;
-		Vector<ScsGuardiasTurnoBean> vGuardias;
-		
-		// Claves
-		this.idInstitucion = calendarioGuardiasBean.getIdInstitucion();
-		this.idTurno = calendarioGuardiasBean.getIdTurno();
-		this.idGuardia = calendarioGuardiasBean.getIdGuardia();
-		this.idCalendarioGuardias = calendarioGuardiasBean.getIdCalendarioGuardias();
-
-		// UsrBean
-		this.usrBean = usr;
-
-		// obteniendo el resto de datos:
-		
-		
-		this.beanGuardiasTurno = calendarioGuardiasBean.getGuardiaTurno();
-		
-		// Calendarios vinculados (guardias vinculadas)
-		this.calendariosVinculados = calendarioGuardiasBean.getCalendariosVinculados();
-
-		// 2. CALENDARIO: Fecha de inicio y fin
-		this.fechaInicio = calendarioGuardiasBean.getFechaInicio();
-		this.fechaFin = calendarioGuardiasBean.getFechaFin();
-		
-
-		// 3. CALENDARIO FESTIVOS:
-		this.vDiasFestivos = (Vector) admCalendarioLaboral.obtenerFestivosTurno(calendarioGuardiasBean.getIdInstitucion(), calendarioGuardiasBean.getIdTurno(),
-				this.fechaInicio, this.fechaFin).clone();
-
-		// 4. INICIALIZACION DE LOS 2 ARRAYS:
-		this.arrayPeriodosDiasGuardiaSJCS = new ArrayList();
-		this.arrayPeriodosLetradosSJCS = new ArrayList();
-		this.log = log;
-	} // CalendarioSJCS()
-	
-	*/
 	public void inicializaParaObtenerLetrado(Integer idInstitucion, Integer idTurno,String fecha, UsrBean usr)
 	{
 		// Variables

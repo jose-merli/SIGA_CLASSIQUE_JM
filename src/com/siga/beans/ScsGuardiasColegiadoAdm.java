@@ -708,7 +708,6 @@ public class ScsGuardiasColegiadoAdm extends MasterBeanAdministrador
 		clavesCabecera.put(ScsCabeceraGuardiasBean.C_IDINSTITUCION,idInstitucion);
 		clavesCabecera.put(ScsCabeceraGuardiasBean.C_IDTURNO,idTurno);
 		clavesCabecera.put(ScsCabeceraGuardiasBean.C_IDGUARDIA,idGuardia);
-		clavesCabecera.put(ScsCabeceraGuardiasBean.C_IDCALENDARIOGUARDIAS,idCalendarioGuardias);
 		clavesCabecera.put(ScsCabeceraGuardiasBean.C_IDPERSONA,idPersonaSaliente);
 		clavesCabecera.put(ScsCabeceraGuardiasBean.C_FECHA_INICIO,GstDate.getApplicationFormatDate(usr.getLanguage(),fechaInicio));
 		

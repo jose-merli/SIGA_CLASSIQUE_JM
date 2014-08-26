@@ -387,7 +387,6 @@ public class PestanaCalendarioGuardiasAction extends MasterAction {
 			solicitanteCGHash.put(ScsCabeceraGuardiasBean.C_IDINSTITUCION,miForm.getIdInstitucion());
 			solicitanteCGHash.put(ScsCabeceraGuardiasBean.C_IDTURNO,miForm.getIdTurnoSolicitante());
 			solicitanteCGHash.put(ScsCabeceraGuardiasBean.C_IDGUARDIA,miForm.getIdGuardiaSolicitante());
-			solicitanteCGHash.put(ScsCabeceraGuardiasBean.C_IDCALENDARIOGUARDIAS,miForm.getIdCalendarioSolicitante());
 			solicitanteCGHash.put(ScsCabeceraGuardiasBean.C_FECHA_INICIO, sFechaInicioSolicitante);
 			solicitanteCGHash.put(ScsCabeceraGuardiasBean.C_IDPERSONA,miForm.getIdPersonaSolicitante());					
 			Vector cabeceraGuarSolicitante = admCabeceraGuardias.selectByPK(solicitanteCGHash);
@@ -412,7 +411,6 @@ public class PestanaCalendarioGuardiasAction extends MasterAction {
 			confirmadorCGHash.put(ScsCabeceraGuardiasBean.C_IDINSTITUCION,miForm.getIdInstitucion());
 			confirmadorCGHash.put(ScsCabeceraGuardiasBean.C_IDTURNO,miForm.getIdTurnoConfirmador());
 			confirmadorCGHash.put(ScsCabeceraGuardiasBean.C_IDGUARDIA,miForm.getIdGuardiaConfirmador());
-			confirmadorCGHash.put(ScsCabeceraGuardiasBean.C_IDCALENDARIOGUARDIAS,miForm.getIdCalendarioConfirmador());
 			confirmadorCGHash.put(ScsCabeceraGuardiasBean.C_FECHA_INICIO, sFechaInicioConfirmador);
 			confirmadorCGHash.put(ScsCabeceraGuardiasBean.C_IDPERSONA,miForm.getIdPersonaConfirmador());			
 			Vector cabeceraGuarConfirmador = admCabeceraGuardias.selectByPK(confirmadorCGHash);

@@ -818,13 +818,13 @@ public class DefinirCalendarioGuardiaAction extends MasterAction
 								//borrando los dias de la guardia
 								if (admGuardiasColegiado.deleteGuardiaCalendario(miHash))
 									//borrando las cabeceras de la guardia
-									if (admCabeceraGuardias.deleteCabeceraGuardiasCalendario(miHash))
+									if (admCabeceraGuardias.deleteCabeceraGuardias(miHash))
 										borradosOK = true;
 					} else {
 						//borrando los dias de la guardia
 						if (admGuardiasColegiado.deleteGuardiaCalendario(miHash))
 							//borrando las cabeceras de la guardia
-							if (admCabeceraGuardias.deleteCabeceraGuardiasCalendario(miHash))
+							if (admCabeceraGuardias.deleteCabeceraGuardias(miHash))
 								borradosOK = true;
 					}
 
@@ -961,18 +961,8 @@ public class DefinirCalendarioGuardiaAction extends MasterAction
 					htCodigo.put(new Integer(5), idpersona);
 					htCodigo.put(new Integer(6), fechaInicioPKBind);
 
-
-
-					//consulta+= " ,F_SIGA_TIENE_ACTS_VALIDADAS(guard.IDINSTITUCION,guard.IDTURNO,guard.IDGUARDIA,guard.IDCALENDARIOGUARDIAS,guard.IDPERSONA,guard.FECHAINICIO) AS ACT_VALIDADAS";
-					//ACT_VALIDADAS
 					helperInformes.completarHashSalida(registro,helperInformes.ejecutaFuncionSalida(htCodigo, "F_SIGA_TIENE_ACTS_VALIDADAS", "ACT_VALIDADAS"));
-
-					//F_SIGA_ES_MODIFICABLE_GUARDIAS(guard.IDINSTITUCION,guard.IDTURNO, guard.IDGUARDIA, guard.IDCALENDARIOGUARDIAS,
-					//      guard.IDPERSONA, guard.FECHAINICIO) as ESMODIFICABLE
 					helperInformes.completarHashSalida(registro,helperInformes.ejecutaFuncionSalida(htCodigo, "F_SIGA_ES_MODIFICABLE_GUARDIAS", "ESMODIFICABLE"));
-
-
-
 
 					htCodigo = new Hashtable();
 					htCodigo.put(new Integer(1), idinstitucion);
@@ -1152,20 +1142,8 @@ public class DefinirCalendarioGuardiaAction extends MasterAction
 					htCodigo.put(new Integer(5), idpersona);
 					htCodigo.put(new Integer(6), fechaInicioPKBind);
 
-
-
-
-
-					//consulta+= " ,F_SIGA_TIENE_ACTS_VALIDADAS(guard.IDINSTITUCION,guard.IDTURNO,guard.IDGUARDIA,guard.IDCALENDARIOGUARDIAS,guard.IDPERSONA,guard.FECHAINICIO) AS ACT_VALIDADAS";
-					//ACT_VALIDADAS
 					helperInformes.completarHashSalida(registro,helperInformes.ejecutaFuncionSalida(htCodigo, "F_SIGA_TIENE_ACTS_VALIDADAS", "ACT_VALIDADAS"));
-
-					//F_SIGA_ES_MODIFICABLE_GUARDIAS(guard.IDINSTITUCION,guard.IDTURNO, guard.IDGUARDIA, guard.IDCALENDARIOGUARDIAS,
-					//      guard.IDPERSONA, guard.FECHAINICIO) as ESMODIFICABLE
 					helperInformes.completarHashSalida(registro,helperInformes.ejecutaFuncionSalida(htCodigo, "F_SIGA_ES_MODIFICABLE_GUARDIAS", "ESMODIFICABLE"));
-
-
-
 
 					htCodigo = new Hashtable();
 					htCodigo.put(new Integer(1), idinstitucion);
@@ -1585,22 +1563,18 @@ public class DefinirCalendarioGuardiaAction extends MasterAction
 		return "modalRegistro";
 	}
 	
-	protected String anular(ActionMapping mapping,
-			MasterForm formulario,
-			HttpServletRequest request,
-			HttpServletResponse response) throws SIGAException {
-		
+	protected String anular(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException
+	{
 		UsrBean usr = (UsrBean) this.getUserBean(request);
 		DefinirCalendarioGuardiaForm miForm = (DefinirCalendarioGuardiaForm) formulario;
-		ScsCabeceraGuardiasAdm admCabeceraGuardiasAdm = new ScsCabeceraGuardiasAdm(usr);
-		String idInstitucion, idTurno, idGuardia, idCalendarioGuardias,fechaInicio, idPersona;
+		ScsCabeceraGuardiasAdm cabeceraGuardiasAdm = new ScsCabeceraGuardiasAdm(usr);
+		String idInstitucion, idTurno, idGuardia, fechaInicio, idPersona;
 		String observaciones = "";
 		
 		try {
 			idInstitucion = miForm.getIdInstitucion();
 			idTurno = miForm.getIdTurno();
 			idGuardia = miForm.getIdGuardia();
-			idCalendarioGuardias = miForm.getIdCalendarioGuardias();
 			fechaInicio = UtilidadesString.formatoFecha(miForm.getFechaInicio(), "yyyy/MM/dd hh:mm:ss", "dd/MM/yyyy");
 			idPersona = miForm.getIdPersona();
 			
@@ -1608,11 +1582,10 @@ public class DefinirCalendarioGuardiaAction extends MasterAction
 						  + " WHERE " + ScsCabeceraGuardiasBean.C_IDINSTITUCION 		+ "=" + idInstitucion 
 						  + "   AND " + ScsCabeceraGuardiasBean.C_IDTURNO 				+ "=" + idTurno
 						  + "   AND " + ScsCabeceraGuardiasBean.C_IDGUARDIA				+ "=" + idGuardia
-						  + "   AND " + ScsCabeceraGuardiasBean.C_IDCALENDARIOGUARDIAS 	+ "=" + idCalendarioGuardias
 						  + "   AND " + ScsCabeceraGuardiasBean.C_IDPERSONA 			+ "=" + idPersona
 						  +	"   AND trunc("+ScsCabeceraGuardiasBean.C_FECHA_INICIO+")=TO_DATE('"+fechaInicio+"','DD/MM/YYYY')";
 			
-			Vector result = admCabeceraGuardiasAdm.selectGenerico(select);	
+			Vector result = cabeceraGuardiasAdm.selectGenerico(select);	
 			Hashtable cabecera = new Hashtable();
 
 			if (result!=null && !result.isEmpty()) {
@@ -1640,7 +1613,6 @@ public class DefinirCalendarioGuardiaAction extends MasterAction
 			cabecera.put("IDINSTITUCION",miForm.getIdInstitucion());
 			cabecera.put("IDTURNO",miForm.getIdTurno());
 			cabecera.put("IDGUARDIA",miForm.getIdGuardia());			
-			cabecera.put("IDCALENDARIOGUARDIAS",miForm.getIdCalendarioGuardias());
 			cabecera.put("FECHAINICIO",miForm.getFechaInicio());
 			cabecera.put("IDPERSONA",miForm.getIdPersona());
 			
@@ -1649,7 +1621,7 @@ public class DefinirCalendarioGuardiaAction extends MasterAction
 			cabecera.put("FECHAVALIDACION","");
 			cabecera.put("OBSERVACIONESANULACION",miForm.getComenAnulacion());
 			
-			String claves[] = {"IDINSTITUCION","IDTURNO","IDCALENDARIOGUARDIAS","IDGUARDIA","IDPERSONA","FECHAINICIO"};
+			String claves[] = {"IDINSTITUCION","IDTURNO","IDGUARDIA","IDPERSONA","FECHAINICIO"};
 			String campos[] = {"VALIDADO", "FECHAVALIDACION", "OBSERVACIONESANULACION","USUMODIFICACION","FECHAMODIFICACION"};
 				
 			admCabeceraGuardiasAdm.updateDirect(cabecera, claves, campos);

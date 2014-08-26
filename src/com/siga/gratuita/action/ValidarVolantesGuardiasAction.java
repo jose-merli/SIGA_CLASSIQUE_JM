@@ -317,20 +317,8 @@ public class ValidarVolantesGuardiasAction extends MasterAction {
 				htCodigo.put(new Integer(5), idpersona);
 				htCodigo.put(new Integer(6), fechaInicioPKBind);
 				
-							
-				
-				
-				
-				//consulta+= " ,F_SIGA_TIENE_ACTS_VALIDADAS(guard.IDINSTITUCION,guard.IDTURNO,guard.IDGUARDIA,guard.IDCALENDARIOGUARDIAS,guard.IDPERSONA,guard.FECHAINICIO) AS ACT_VALIDADAS";
-				//ACT_VALIDADAS
 				helperInformes.completarHashSalida(registro,helperInformes.ejecutaFuncionSalida(htCodigo, "F_SIGA_TIENE_ACTS_VALIDADAS", "ACT_VALIDADAS"));
-
-				//F_SIGA_ES_MODIFICABLE_GUARDIAS(guard.IDINSTITUCION,guard.IDTURNO, guard.IDGUARDIA, guard.IDCALENDARIOGUARDIAS,
-                //      guard.IDPERSONA, guard.FECHAINICIO) as ESMODIFICABLE
 				helperInformes.completarHashSalida(registro,helperInformes.ejecutaFuncionSalida(htCodigo, "F_SIGA_ES_MODIFICABLE_GUARDIAS", "ESMODIFICABLE"));
-				
-				
-				
 				
 				htCodigo = new Hashtable();
 				htCodigo.put(new Integer(1), idinstitucion);
