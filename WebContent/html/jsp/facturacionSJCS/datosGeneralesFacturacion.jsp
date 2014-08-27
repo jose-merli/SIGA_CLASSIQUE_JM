@@ -305,25 +305,39 @@
 		
 		function accionRecalcularFacturacion() {
 			sub();
-			<% if (regularizacion==null) { %>
-				document.forms[0].modo.value="ejecutarFacturacion";
-			<% } else { %>
-				document.forms[0].modo.value="ejecutarRegularizacion";
-			<% } %>
-			document.forms[0].target = "submitArea2";
-			document.forms[0].submit();
+			if ((compararFecha(document.forms[0].fechaInicio,document.forms[0].fechaFin)==2)) {
+				<% if (regularizacion==null) { %>
+					document.forms[0].modo.value="ejecutarFacturacion";
+				<% } else { %>
+					document.forms[0].modo.value="ejecutarRegularizacion";
+				<% } %>
+				document.forms[0].target = "submitArea2";
+				document.forms[0].submit();
+			
+			} else {
+				alert('<siga:Idioma key="gratuita.altaRetencionesIRPF.literal.alert1"/>');
+				fin();
+				return false;
+			}			
 		}
 
 		function accionEjecutaFacturacion() {
 			sub();
-			<% if (regularizacion==null) { %>
-				document.forms[0].modo.value="ejecutarFacturacion";
-				
-			<% } else { %>
-				document.forms[0].modo.value="ejecutarRegularizacion";
-			<% } %>
-			document.forms[0].target = "submitArea2";
-			document.forms[0].submit();
+			if ((compararFecha(document.forms[0].fechaInicio,document.forms[0].fechaFin)==2)) {
+				<% if (regularizacion==null) { %>
+					document.forms[0].modo.value="ejecutarFacturacion";
+					
+				<% } else { %>
+					document.forms[0].modo.value="ejecutarRegularizacion";
+				<% } %>
+				document.forms[0].target = "submitArea2";
+				document.forms[0].submit();
+			
+			} else {
+				alert('<siga:Idioma key="gratuita.altaRetencionesIRPF.literal.alert1"/>');
+				fin();
+				return false;
+			}
 		}
 
 		// Funcion asociada a boton Generar Excels

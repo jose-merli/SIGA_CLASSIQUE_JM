@@ -131,6 +131,9 @@
 		nombreFacturacion = request.getAttribute("nombreFacturacion")==null?"":(String)request.getAttribute("nombreFacturacion");
 		importeFacturado = request.getAttribute("importeFacturado")==null?"":(String)request.getAttribute("importeFacturado");
 		
+		
+		nombreFacturacion = fechaDesde + "-" + fechaHasta + " - " + nombreFacturacion;
+		
 		estadoAbierto = idEstadoPagosJG.equals(ClsConstants.ESTADO_PAGO_ABIERTO);
 		scriptOnLoad = "inicializarVerEditar();";
 		if (esConsulta || !estadoAbierto){
@@ -494,8 +497,12 @@
 			}
 		}
 		
-		function copiarNombre(){
-			jQuery("#abreviatura").val(jQuery("#nombre").val());
+		function copiarNombre(){			
+			if(jQuery("#nombre").val().length <= 36){
+				jQuery("#abreviatura").val(jQuery("#nombre").val());
+			} else {
+				jQuery("#abreviatura").val(jQuery("#nombre").val().substring(0,36));
+			}
 		}	
 				
 	</script>
