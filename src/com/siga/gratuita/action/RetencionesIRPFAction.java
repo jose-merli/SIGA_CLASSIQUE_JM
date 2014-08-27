@@ -130,7 +130,7 @@ public class RetencionesIRPFAction extends MasterAction {
 			request.setAttribute("idPersona", idPersona.toString());
 			request.setAttribute("colegiado", beanCol);
 			request.setAttribute("desdeFicha", desdeFicha);
-			request.setAttribute("anyoIRPF", String.valueOf(Calendar.getInstance().get(Calendar.YEAR) - 1));
+			request.setAttribute("anyoIRPF", String.valueOf(Calendar.getInstance().get(Calendar.YEAR)));
 			
 			String informeUnico = ClsConstants.DB_TRUE;
 			AdmInformeAdm adm = new AdmInformeAdm(this.getUserBean(request));

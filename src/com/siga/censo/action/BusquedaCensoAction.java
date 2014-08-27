@@ -1238,7 +1238,7 @@ public class BusquedaCensoAction extends MasterAction {
 				miForm.setDireccion((String)direccion.get("DIR_PROFESIONAL"));
 				miForm.setCodPostal((String)direccion.get("COD_POSTAL"));
 				miForm.setPreferente ("");
-				miForm.setTipoDireccion ("3");
+				miForm.setTipoDireccion (String.valueOf(ClsConstants.TIPO_DIRECCION_PUBLICA));
 				miForm.setPoblacionExt("");
 
 			}else{
