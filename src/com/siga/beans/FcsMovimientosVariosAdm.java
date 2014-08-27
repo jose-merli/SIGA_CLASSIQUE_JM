@@ -254,7 +254,8 @@ public class FcsMovimientosVariosAdm extends MasterBeanAdministrador {
 								break;
 							case 2:
 								consulta+=" AND M." + FcsMovimientosVariosBean.C_IDGRUPOFACTURACION + "=" + idGrupoFacturacion +" " ;
-								consulta+=" AND M." + FcsMovimientosVariosBean.C_IDFACTURACION + "<>" + idFacturacion +" " ;
+								consulta+=" AND (M." + FcsMovimientosVariosBean.C_IDFACTURACION + " IS NULL " ;
+								consulta+=" OR M." + FcsMovimientosVariosBean.C_IDFACTURACION + "<>" + idFacturacion +" ) " ;
 					
 								break;
 
