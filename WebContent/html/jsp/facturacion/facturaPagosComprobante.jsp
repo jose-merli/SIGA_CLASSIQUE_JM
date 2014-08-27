@@ -119,7 +119,7 @@
 					<td class="labelTextValue">
 					<html:textarea property="observaciones" 
 						style="overflow-y:auto; overflow-x:hidden; width:250px; height:50px; resize:none; "
-						value="<%=UtilidadesString.mostrarDatoJSP(pago.getObservaciones())%>" 
+						value="<%=pago.getObservaciones().trim()%>" 
 						styleClass="boxConsulta" readOnly="true"></html:textarea>
 					</td>
 				</tr>
