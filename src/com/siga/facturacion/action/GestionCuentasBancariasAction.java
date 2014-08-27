@@ -7,6 +7,7 @@ import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.transaction.UserTransaction;
 
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
@@ -29,6 +30,8 @@ import com.siga.beans.CenBancosBean;
 import com.siga.beans.CenPaisAdm;
 import com.siga.beans.CenPaisBean;
 import com.siga.beans.FacSerieFacturacionAdm;
+import com.siga.beans.FacSerieFacturacionBancoAdm;
+import com.siga.beans.FacSerieFacturacionBancoBean;
 import com.siga.beans.FacSerieFacturacionBean;
 import com.siga.beans.FacSufijoAdm;
 import com.siga.beans.FacSufijoBean;
@@ -568,19 +571,29 @@ public class GestionCuentasBancariasAction extends MasterAction {
 		
 		try {
 
+			UserTransaction tx = null;
+			
 			CuentasBancariasForm cuentasBancariasForm = (CuentasBancariasForm) formulario;	
 			UsrBean usrBean = this.getUserBean(request);
+			FacSerieFacturacionBancoAdm serieFacBancoAdm = new FacSerieFacturacionBancoAdm(this.getUserBean(request));
+
+			//Se borra la relación con las cuentas que existan
+			tx = this.getUserBean(request).getTransaction();
+			Hashtable claves = new Hashtable ();
+			UtilidadesHash.set (claves, FacSerieFacturacionBancoBean.C_IDINSTITUCION, cuentasBancariasForm.getIdInstitucion());
+			UtilidadesHash.set (claves, FacSerieFacturacionBancoBean.C_IDSERIEFACTURACION, cuentasBancariasForm.getIdSerieFacturacion());
 			
-			BusinessManager bm = getBusinessManager();			
-			CuentasBancariasService cuentasBancariasService = (CuentasBancariasService)bm.getService(CuentasBancariasService.class);
-			FacSeriefacturacionBanco serieFacturacionBanco = new FacSeriefacturacionBanco();
-			serieFacturacionBanco.setUsumodificacion(new Integer(usrBean.getUserName()));
-			serieFacturacionBanco.setIdinstitucion(Short.parseShort(cuentasBancariasForm.getIdInstitucion()));
-			serieFacturacionBanco.setIdseriefacturacion(Long.parseLong(cuentasBancariasForm.getIdSerieFacturacion()));
-			serieFacturacionBanco.setBancosCodigo(cuentasBancariasForm.getBancosCodigo());
-			serieFacturacionBanco.setIdsufijo(cuentasBancariasForm.getIdSufijoSerie());
-			cuentasBancariasService.insertRelacionSerie(serieFacturacionBanco);
-			
+			tx.begin();
+			serieFacBancoAdm.delete(claves);
+
+			//Se inserta la nueva relacion
+			FacSerieFacturacionBancoBean serieFacturacionBancoBean = new FacSerieFacturacionBancoBean();
+			serieFacturacionBancoBean.setIdInstitucion(Integer.parseInt(cuentasBancariasForm.getIdInstitucion()));
+			serieFacturacionBancoBean.setIdSerieFacturacion(Integer.parseInt(cuentasBancariasForm.getIdSerieFacturacion()));
+			serieFacturacionBancoBean.setBancos_codigo(cuentasBancariasForm.getBancosCodigo());
+			serieFacturacionBancoBean.setIdSufijo(cuentasBancariasForm.getIdSufijoSerie());
+			serieFacBancoAdm.insert(serieFacturacionBancoBean);
+			tx.commit();
 			forward = exitoModal("messages.updated.success",request);
 			
 		}catch (Exception e){
