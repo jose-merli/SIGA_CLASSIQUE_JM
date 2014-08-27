@@ -734,12 +734,13 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
 				where += " AND " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDPERSONADEUDOR + " = " + datos.getDeudor() + " "; 
 			}
 			
-			String orderBy = " ORDER BY TO_NUMBER(" + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDFACTURA + ") DESC";
-			/*String orderBy = " ORDER BY " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_NUMEROFACTURA + " DESC, " +
-					  			CenPersonaBean.T_NOMBRETABLA + "." + CenPersonaBean.C_NOMBRE + ", " + 
-				  				CenPersonaBean.T_NOMBRETABLA + "." + CenPersonaBean.C_APELLIDOS1 + ", " +
-				  				CenPersonaBean.T_NOMBRETABLA + "." + CenPersonaBean.C_APELLIDOS2 + ", " +
-				  				FacFacturacionProgramadaBean.T_NOMBRETABLA + "." + FacFacturacionProgramadaBean.C_FECHAREALGENERACION + " DESC ";*/			
+			//String orderBy = " ORDER BY TO_NUMBER(" + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDFACTURA + ") DESC";
+			String orderBy = " ORDER BY " // + CenPersonaBean.T_NOMBRETABLA + "." + CenPersonaBean.C_IDPERSONA + ", "
+					  + CenPersonaBean.T_NOMBRETABLA + "." + CenPersonaBean.C_NOMBRE 		+ ", "
+					  + CenPersonaBean.T_NOMBRETABLA + "." + CenPersonaBean.C_APELLIDOS1 	+ ", "
+					  + CenPersonaBean.T_NOMBRETABLA + "." + CenPersonaBean.C_APELLIDOS2 	+ ", "
+					  + FacFacturacionProgramadaBean.T_NOMBRETABLA + "." + FacFacturacionProgramadaBean.C_FECHAREALGENERACION + " DESC, " 
+					  + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_NUMEROFACTURA + " DESC ";			
 	
 			String consulta = select + from + where + orderBy;
 			selectContar+= from + where;
