@@ -332,7 +332,7 @@ public class FacBancoInstitucionAdm extends MasterBeanAdministrador {
 	            			" AND " + FacBancoInstitucionBean.C_SJCS + "=1 ";
 	            		
 	            		if (!idpagosjg.isEmpty()){
-	            			sql += " AND  (SELECT COUNT (1) FROM FCS_PAGOSJG WHERE IDINSTITUCION=BI.IDINSTITUCION AND BANCOS_CODIGO=BI.BANCOS_CODIGO AND IDPAGOSJG = 557) = 0 "; 
+	            			sql += " AND  (SELECT COUNT (1) FROM FCS_PAGOSJG WHERE IDINSTITUCION=BI.IDINSTITUCION AND BANCOS_CODIGO=BI.BANCOS_CODIGO AND IDPAGOSJG = "+Integer.parseInt(idpagosjg)+" ) = 0 "; 
 	            			sql += " UNION SELECT " + 
 			            			"BI." + FacBancoInstitucionBean.C_BANCOS_CODIGO + "," +
 			            			"BI." + FacBancoInstitucionBean.C_IDINSTITUCION + "," +
