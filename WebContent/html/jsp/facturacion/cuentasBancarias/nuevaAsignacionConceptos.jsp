@@ -120,6 +120,14 @@
 	function accionGuardarCerrar(){
 		sub();	
 
+		if(document.CuentasBancariasForm.idSerieFacturacion.value<1) {
+			mensaje = "<siga:Idioma key='facturacion.message.error.cuenta.serie'/>";
+			alert(mensaje);
+			fin();
+			return false;
+		}
+		
+		
 		if(document.CuentasBancariasForm.idSufijoSerie.value<1) {
 			mensaje = "<siga:Idioma key='facturacion.sufijos.message.error.cuenta.serie.sufijo'/>";
 			alert(mensaje);
