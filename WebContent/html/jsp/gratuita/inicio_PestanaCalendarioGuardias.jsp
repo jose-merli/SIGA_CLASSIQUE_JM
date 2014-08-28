@@ -127,7 +127,6 @@
 		<html:hidden styleId="numeroColegiadoPestanha" property="numeroColegiadoPestanha" value="<%=numeroPestanha%>" />
 
 		<!-- Datos del elemento seleccionado -->
-		<html:hidden styleId="idCalendarioGuardias"  property="idCalendarioGuardias" value="" />
 		<html:hidden styleId="idTurno"  property="idTurno" value="" />
 		<html:hidden styleId="idGuardia"  property="idGuardia" value="" />
 		<html:hidden styleId="fechaInicio"  property="fechaInicio" value="" />
@@ -201,7 +200,7 @@
 				//6- ESTADO					
 				
 				 //Datos ocultos:
-				idcalendarioguardias = UtilidadesHash.getString(hash,ScsGuardiasColegiadoBean.C_IDCALENDARIOGUARDIAS);
+				idcalendarioguardias = UtilidadesHash.getString(hash,ScsCabeceraGuardiasBean.C_IDCALENDARIOGUARDIAS);
 				idturno = UtilidadesHash.getString(hash,ScsCabeceraGuardiasBean.C_IDTURNO);
 				idguardia = UtilidadesHash.getString(hash,ScsCabeceraGuardiasBean.C_IDGUARDIA);
 				fechaInicio = UtilidadesHash.getString(hash,ScsCabeceraGuardiasBean.C_FECHA_INICIO);

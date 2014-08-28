@@ -95,7 +95,6 @@
 	<% if ((obj!=null) && !obj.isEmpty()) { %>
 				<%
 				int recordNumber=1;
-				//String fechaInicio="", fechaFin="", fechaPermuta="", idcalendarioguardias="", idturno="", idguardia="", idinstitucion="";
 				String fechaInicio="", fechaFin="",  idcalendarioguardias="", idturno="", idguardia="", idinstitucion="";
 				String numerocolegiado="", nombre="", observaciones="", idpersona="", numero="", fechaInicioPermuta="", fechaFinPermuta="";
 				String pl = "";
@@ -239,17 +238,14 @@
 		    var fechafinPermuta = 'oculto' + fila + '_' + 11;
 		
 			//Datos del elemento seleccionado:
-			document.forms[0].idCalendarioGuardias.value = document.getElementById(idcalendario).value;
 			document.forms[0].idTurno.value = document.getElementById(idturno).value;
 			document.forms[0].idGuardia.value = document.getElementById(idguardia).value;
 			document.forms[0].idPersona.value = document.getElementById(idpersona).value;
-			/*document.forms[0].fechaInicio.value = document.getElementById(fechainicio).value;
-			document.forms[0].fechaFin.value = document.getElementById(fechafin).value;**/
 			document.forms[0].fechaInicio.value = document.getElementById(fechainicioPermuta).value;
 			document.forms[0].fechaFin.value = document.getElementById(fechafinPermuta).value;
 		}
 		
-		<!-- Funcion asociada a boton cambiar -->
+		// Funcion asociada a boton cambiar
 		function cambiar(fila) 
 		{		
 			//Datos del elemento seleccionado:
