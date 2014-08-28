@@ -94,12 +94,12 @@
 		if (formaPagoFactura==ClsConstants.TIPO_FORMAPAGO_TARJETA) {
 			totalTarjeta = new Double(totalTarjeta.doubleValue());
 		} else
-		if (formaPagoFactura==ClsConstants.TIPO_FORMAPAGO_FACTURA) {
-			totalBanco = new Double(totalBanco.doubleValue());
-		} else
-		if (formaPagoFactura==ClsConstants.TIPO_FORMAPAGO_METALICO) {
-			totalCaja = new Double(totalCaja.doubleValue());
-		}
+			if (formaPagoFactura==ClsConstants.TIPO_FORMAPAGO_FACTURA) {
+				totalBanco = new Double(totalBanco.doubleValue());
+			} else
+				if (formaPagoFactura==ClsConstants.TIPO_FORMAPAGO_METALICO) {
+					totalCaja = new Double(totalCaja.doubleValue());
+			}
 	
 	}
 
@@ -235,6 +235,7 @@
 			String textoConfirmacion = UtilidadesString.getMensajeIdioma(user, "facturacion.pagosFactura.accion.confirmacionFactura");
 			String textoDevolucion = UtilidadesString.getMensajeIdioma(user, "facturacion.pagosFactura.accion.devolucion");
 			String textoRenegociacion = UtilidadesString.getMensajeIdioma(user, "facturacion.pagosFactura.accion.renegociacion");
+			String textoCompensacion = UtilidadesString.getMensajeIdioma(user, "facturacion.pagosFactura.accion.compensacion");
 			
 			for (int i = 1; i <= vPagos.size(); i++) { 					
 				 Hashtable pago = (Hashtable) vPagos.get(i-1);
@@ -249,7 +250,7 @@
 					Integer idAbonoCuenta = UtilidadesHash.getInteger(pago, "IDABONO_IDCUENTA");
 					Integer idPago = UtilidadesHash.getInteger(pago, "IDPAGO");
 					String nombreBanco=UtilidadesHash.getString(pago, "NOMBREBANCO");
-
+					Integer idPagoAbono=0;
 				 	String medioPago = "";
 				 	Double devolucion = new Double(0.0);
 
@@ -277,11 +278,18 @@
 							}									
 						}
 					}
-					
+
 					Double auxPendiente = new Double (UtilidadesNumero.redondea(pendiente.doubleValue(),2));
 					
+ 					if(tabla.startsWith(textoCompensacion)){
+ 						
+ 						idPagoAbono=idPago;
+
+ 						if(auxPendiente>0)
+ 							estado=UtilidadesString.getMensajeIdioma(user,"facturacion.pagosFactura.estado.pendienteCobro");
+ 					}
 					FilaExtElement[] elementos=new FilaExtElement[1];
-					if ((idPago != null) && (idPago.intValue() > 0)){
+					if ((idPago != null) && (idPago.intValue() > 0)||(idPagoAbono != null) && (idPagoAbono.intValue() > 0)){
   						elementos[0]=new FilaExtElement("datosImpresion","datosImpresion",SIGAConstants.ACCESS_FULL);
 	  				}
 %>
@@ -299,6 +307,7 @@
 						
 						<td>
 							<input type="hidden" id="oculto<%=i%>_1" value="<%=idPago%>">
+							<input type="hidden" id="oculto<%=i%>_2" value="<%=idPagoAbono%>">
 							<%=UtilidadesString.mostrarDatoJSP(GstDate.getFormatedDateShort("", fecha))%>
 						</td>
 						<td><%=UtilidadesString.mostrarDatoJSP(tabla)%></td>

@@ -210,6 +210,11 @@ public class GestionarFacturaPagosAction extends MasterAction {
 			modo = miForm.getModo().toLowerCase();
 			Vector v = miForm.getDatosTablaOcultos(0);
 			Integer idPago = new Integer ((String)v.get(0));
+			//Si es una compensación
+			Integer idPagoAbono=0;
+			if(v.get(1)!=null)
+				idPagoAbono = new Integer ((String)v.get(1));
+			
 			Integer idInstitucion = miForm.getIdInstitucion();
 			String idFactura = miForm.getIdFactura();
 			Hashtable claves = new Hashtable();
@@ -228,7 +233,12 @@ public class GestionarFacturaPagosAction extends MasterAction {
 			claves.clear();
 			UtilidadesHash.set(claves, FacPagosPorCajaBean.C_IDINSTITUCION, idInstitucion);
 			UtilidadesHash.set(claves, FacPagosPorCajaBean.C_IDFACTURA, idFactura);
-			UtilidadesHash.set(claves, FacPagosPorCajaBean.C_IDPAGOPORCAJA, idPago);
+			
+			if(idPagoAbono>0)
+				UtilidadesHash.set(claves, FacPagosPorCajaBean.C_IDPAGOABONO, idPagoAbono);
+			else
+				UtilidadesHash.set(claves, FacPagosPorCajaBean.C_IDPAGOPORCAJA, idPago);
+			
 			FacPagosPorCajaAdm pagoAdm = new FacPagosPorCajaAdm (this.getUserBean(request));
 			v = pagoAdm.select(claves);
 			FacPagosPorCajaBean pagoBean = null;

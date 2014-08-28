@@ -486,11 +486,7 @@ public class FacPagosPorCajaAdm extends MasterBeanAdministrador {
 			//Abonos SJCS->compensaciones factura
 			String select8 = " SELECT 9 + 10 * FACTURAS_TOTAL.CONTADOR AS IDTABLA, " +
 								" F_SIGA_GETRECURSO_ETIQUETA('facturacion.pagosFactura.accion.compensacion'," + this.usrbean.getLanguage() + ") AS TABLA, " +
-								" ( " +
-									" SELECT F_SIGA_GETRECURSO_ETIQUETA (" + FacEstadoFacturaBean.T_NOMBRETABLA + "." + FacEstadoFacturaBean.C_DESCRIPCION + "," + this.usrbean.getLanguage() + ") " +
-									" FROM "  + FacEstadoFacturaBean.T_NOMBRETABLA +
-									" WHERE " + FacEstadoFacturaBean.C_IDESTADO + " = " + ClsConstants.ESTADO_FACTURA_ANULADA +
-								" ) AS ESTADO, " +					
+								" F_SIGA_GETRECURSO_ETIQUETA('facturacion.pagosFactura.estado.compensacion'," + this.usrbean.getLanguage() + ") AS ESTADO, " +					
 								" pc." + FacPagoAbonoEfectivoBean.C_FECHA + " AS FECHA, " +
 						 		" pc." + FacPagoAbonoEfectivoBean.C_FECHAMODIFICACION + " AS FECHA_ORDEN, " +
 					  			" pc." + FacPagoAbonoEfectivoBean.C_IMPORTE + " AS IMPORTE, " + 
