@@ -44,7 +44,6 @@
 	String codigoEntidad = (String) request.getAttribute("codigoEntidad");
 	String cuentaBancariaFactura = (String) request.getAttribute("cuentaBancariaFactura");	
 	String idCuentaUnica = (String) request.getAttribute("idCuentaUnica");		
-	String numerocuentaBancariaUnica = (String) request.getAttribute("numerocuentaBancariaUnica");
 	String cuentaCargo = (String) request.getAttribute("cuentaCargo");		
 
 	String idFactura = "";
@@ -68,17 +67,15 @@
 	}
 
 	String descripcionFormaPagoActual = "";
-	String radioMismaCuentaMarcado = "checked", radioPorCajaMarcado = "", radioPorBancoOtra = "", radioPorBancoUnica = "";
+	String radioMismaCuentaMarcado = "checked", radioPorCajaMarcado = "", radioPorBancoOtra = "";
 	if (estadoFactura != null) {
 		if (estadoFactura.intValue() == Integer.parseInt(ClsConstants.ESTADO_FACTURA_CAJA)) {
 			descripcionFormaPagoActual = "facturacion.pagosFactura.Renegociar.literal.FormaPagoActualCaja";
 			if (cuentaBancariaFactura == "") {
 				radioMismaCuentaMarcado = "";
 				if (idCuentaUnica == "") {
-					radioPorBancoUnica = "checked";
 					radioPorBancoOtra = "checked";
 				} else {
-					radioPorBancoUnica = "";
 					radioPorBancoOtra = "";
 				}
 			}
@@ -91,15 +88,12 @@
 						if ((idCuentaUnica == "") || (idCuentaUnica == null)) {
 						radioPorBancoOtra = "checked";
 						radioMismaCuentaMarcado = "";
-						radioPorBancoUnica = "checked";
 						} else {
 							radioPorBancoOtra = "";
 							radioMismaCuentaMarcado = "";
-							radioPorBancoUnica = "";
 						}
 					} else {
 						radioMismaCuentaMarcado = "checked";
-						radioPorBancoUnica = "checked";
 						radioPorBancoOtra = "";
 					}
 				} else {
@@ -156,44 +150,37 @@
 		function accionGuardarCerrar() {
 			// Validamos los datos
 			if(!jQuery("input[name='datosPagosRenegociarNuevaFormaPago']:checked").val()){
-				alert('<siga:Idioma key="messages.pys.pago.error"/>');
-				return false;
-			}
-			
-			var i;
-			for (i = 0; i < document.GestionarFacturaForm.datosPagosRenegociarNuevaFormaPago.length; i++) {
-				if (document.GestionarFacturaForm.datosPagosRenegociarNuevaFormaPago[i].checked)
-					break;
-			}
-			
-			if (document.GestionarFacturaForm.radio3.checked && document.GestionarFacturaForm.datosPagosRenegociarIdCuenta.value == "") {
-				var mensaje = '<siga:Idioma key="facturacion.pagosFactura.Renegociar.Obligatoria.Cuenta"/>';
+				var mensaje = '<siga:Idioma key="messages.pys.pago.error"/>';
 				alert(mensaje);
 				return 0;
-			}				
-
+			}
 			
-			<%if ((estadoFactura != null) && (estadoFactura.intValue() == Integer.parseInt(ClsConstants.ESTADO_FACTURA_CAJA))) {%>
+			<%if (estadoFactura!=null && estadoFactura.intValue()==Integer.parseInt(ClsConstants.ESTADO_FACTURA_CAJA)) {%>
 				if (jQuery("input[name='datosPagosRenegociarNuevaFormaPago']:checked").val() == "mismaCuenta") {
 					var mensaje = '<siga:Idioma key="facturacion.pagosFactura.Renegociar.Error.MismaCuenta"/>';
 					alert(mensaje);
 					return 0;
 				}
-			<%}%>
+			<%}%>			
+			
+			if (document.GestionarFacturaForm.radio2.checked && document.GestionarFacturaForm.datosPagosRenegociarIdCuenta.value == "") {
+				var mensaje = '<siga:Idioma key="facturacion.pagosFactura.Renegociar.Obligatoria.Cuenta"/>';
+				alert(mensaje);
+				return 0;
+			}				
 
 			if (document.GestionarFacturaForm.datosRenegociarFecha.value.length < 1) {
 				var mensaje = "<siga:Idioma key="facturacion.pagosFactura.Caja.literal.Fecha"/> <siga:Idioma key="messages.campoObligatorio.error"/>";
 				alert (mensaje);
-				return;
+				return 0;
 			}
 			
 			var ultimaFecha = "<%=ultimaFecha%>";
 			if (compararFecha (document.GestionarFacturaForm.datosRenegociarFecha, ultimaFecha) > 1) {
 				mensaje = 'La fecha debe ser mayor o igual que: '+ultimaFecha;
 				alert(mensaje);
-				return false;
+				return 0;
 			}			
-
 
 			document.GestionarFacturaForm.modo.value = "insertarRenegociar";
 			document.GestionarFacturaForm.target = "submitArea";	
@@ -278,31 +265,17 @@
 								</td>							
 							</tr>
 							
-							<tr>
-								<td class="labelText" >
-									<input type="radio" id="radio2" name="datosPagosRenegociarNuevaFormaPago" value="porBanco"
-										<%=radioPorBancoUnica.equals("checked") ? "disabled=disabled" : ""%>>
-								</td>
-								<td class="labelText">
-									<label for="radio2">
-										<siga:Idioma key="facturacion.facturas.cuentabancaria.unica" />
-									</label>
-								</td>								
-								<td class="labelText" style="text-align:left;">
-									<%=UtilidadesString.mostrarDatoJSP(numerocuentaBancariaUnica)%>
-								</td>	
-							</tr>
 							<c:if test="${cuentaCargo=='0' }">	
 							<tr>
 								<td class="labelText" >
-									<input type="radio" id="radio3" name="datosPagosRenegociarNuevaFormaPago" value="porOtroBanco"
+									<input type="radio" id="radio2" name="datosPagosRenegociarNuevaFormaPago" value="porOtroBanco"
 									<%=radioPorBancoOtra%>>
 								</td>
 								<td class="labelText">
 									<siga:Idioma key="facturacion.pagosFactura.Renegociar.literal.NuevaFormaPago.PorBanco" />
 								</td>									
 								<td class="labelText" style="text-align: left;">
-									<label for="radio3">
+									<label for="radio2">
 										<siga:ComboBD nombre="datosPagosRenegociarIdCuenta" tipo="cuentaCargo" clase="boxCombo" obligatorio="false" parametro="<%=parametro%>" />
 									<label>
 								</td>
@@ -311,10 +284,10 @@
 							<c:if test="${cuentaCargo=='1' }">	
 							<tr>
 								<td class="labelText" >
-									<input type="radio" id="radio3" name="datosPagosRenegociarNuevaFormaPago" value="porOtroBanco" disabled="disabled"/>
+									<input type="radio" id="radio2" name="datosPagosRenegociarNuevaFormaPago" value="porOtroBanco" disabled="disabled"/>
 								</td>
 								<td class="labelText">
-									<label for="radio3">
+									<label for="radio2">
 										<siga:Idioma key="facturacion.pagosFactura.Renegociar.literal.NuevaFormaPago.PorBanco" />
 									</label>
 								</td>									
@@ -323,10 +296,10 @@
 							
 							<tr>
 								<td class="labelText" >
-									<input type="radio" id="radio4" name="datosPagosRenegociarNuevaFormaPago" value="porCaja" <%=radioPorCajaMarcado%>>
+									<input type="radio" id="radio3" name="datosPagosRenegociarNuevaFormaPago" value="porCaja" <%=radioPorCajaMarcado%>>
 								</td>
 								<td class="labelText">
-									<label for="radio4">
+									<label for="radio3">
 										<siga:Idioma key="facturacion.pagosFactura.Renegociar.literal.NuevaFormaPago.PorCaja" />
 									</label>
 								</td>

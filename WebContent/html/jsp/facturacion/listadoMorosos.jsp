@@ -534,8 +534,9 @@
 				
 			document.DevolucionesForm.datosFacturas.value = datos;
 			
-			var resultado = ventaModalGeneral("DevolucionesForm","P");
+			var resultado = ventaModalGeneral("DevolucionesForm", "M");
 			if (resultado=="MODIFICADO") {
+				alert(unescape('<siga:Idioma key="messages.updated.success"/>'), 'success');				
 				refrescarLocal();
 			}
 		}
