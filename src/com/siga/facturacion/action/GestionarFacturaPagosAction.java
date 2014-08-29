@@ -482,23 +482,13 @@ public class GestionarFacturaPagosAction extends MasterAction {
 			}
 			
 			request.setAttribute("ultimaFecha", ultimaFechaRequest);
-			
-			CenCuentasBancariasBean cuentaBancaria = cuentasAdm.getCuentaUnicaServiciosFactura(idInstitucion, idFactura);
-			if(cuentaBancaria!=null){
-				numerocuentaBancariaUnica = cuentasAdm.getNumeroCuentaFactura(idInstitucion.toString(), cuentaBancaria.getIdPersona().toString(), cuentaBancaria.getIdCuenta().toString());
-				idCuentaUnica = cuentaBancaria.getIdCuenta().toString();
-			}else{
-				cuentaBancaria = new CenCuentasBancariasBean();	
-			}
 
 			if (estadoFactura.intValue() == Integer.parseInt(ClsConstants.ESTADO_FACTURA_CAJA)) {
 				idCuentaUnica ="";
 			}			
 			
 			request.setAttribute("idCuentaUnica",idCuentaUnica);
-			request.setAttribute("cuentaUnicaServicios",cuentaBancaria);
 			request.setAttribute("numerocuentaBancariaUnica",numerocuentaBancariaUnica);
-			
 			
 		} 
 		catch (Exception e) { 
@@ -513,8 +503,6 @@ public class GestionarFacturaPagosAction extends MasterAction {
 		String modo = "renegociar";
 		UserTransaction tx 	= null;
 		String strFacturas[]  = null;
-		String personasDiferentes = "";
-		String cuentasPersona = "";
 		Vector resultadoErrores = new Vector();
 		Vector resultadoErroresFichero = new Vector();
 		Vector resultadoNumFacturas = new Vector();
@@ -545,29 +533,40 @@ public class GestionarFacturaPagosAction extends MasterAction {
 			}
 			
 			if (datosFacturas == null) {
-				strFacturas		= miForm.getIdFactura().split("##");
+				strFacturas = miForm.getIdFactura().split("##");
 			} else { 
 				strFacturas = datosFacturas.split("##");
 			}
 			
+			String listaIdsFacturas = "(";
+			for (int i=0; i<strFacturas.length; i++) {
+				String idFactura = strFacturas[i];					
+				if (i == 0) {				
+					listaIdsFacturas += idFactura;
+				} else {
+					listaIdsFacturas += "," + idFactura;
+				}					
+			}
+			listaIdsFacturas += ")";			
+			
 			Vector factDevueltasYRenegociadas = facturaAdm.getFacturasDevueltas(idInstitucion,strFacturas);
-			personasDiferentes = facturaAdm.getSelectPersonas(idInstitucion, strFacturas);
+			Integer numeroPersonasFactura = facturaAdm.getSelectPersonas(idInstitucion, strFacturas);
 			boolean isTodasRenegociadas = true;
 			request.setAttribute("datosFacturas", datosFacturas);
-			if (Integer.parseInt(personasDiferentes) > 1) { 
+			if (numeroPersonasFactura > 1) { 
 				request.setAttribute("pagoBanco", "0");
 			
 			} else {
 				request.setAttribute("pagoBanco", "1");
-				cuentasPersona = facturaAdm.getCuentasActivasPersona(idInstitucion, strFacturas);
-				if (Integer.parseInt(cuentasPersona) > 0) {
+				Integer numeroCuentasPersona = facturaAdm.getCuentasActivasPersona(idInstitucion, listaIdsFacturas);
+				if (numeroCuentasPersona > 0) {
 					request.setAttribute("cuentaCargo", "0");
 				} else { 
 					request.setAttribute("cuentaCargo", "1");
 				}
 				
-				cuentasPersona = facturaAdm.getCuentasAnteriorActivasPersona(idInstitucion, strFacturas);
-				if (Integer.parseInt(cuentasPersona) > 0) {
+				Integer numeroFacturasPorBanco = facturaAdm.getNumeroFacturasPorBanco(idInstitucion, strFacturas);
+				if (numeroFacturasPorBanco > 0) {
 					request.setAttribute("cuentaAnterior", "0");
 				} else {
 					request.setAttribute("cuentaAnterior", "1");
@@ -584,34 +583,42 @@ public class GestionarFacturaPagosAction extends MasterAction {
         		Integer estadoFactura = UtilidadesHash.getInteger(htFila, FacFacturaBean.C_ESTADO);
         		Double impTotalPorPagar = UtilidadesHash.getDouble(htFila, FacFacturaBean.C_IMPTOTALPORPAGAR);
         		String numeroFactura = UtilidadesHash.getString(htFila, FacFacturaBean.C_NUMEROFACTURA);
-				if (factDevueltasYRenegociadas.size() == 1){
-					
-					//request.setAttribute("cuentaUnicaServicios","");
-					//request.setAttribute("numerocuentaBancariaUnica",numerocuentaBancariaUnica);
+        		
+				if (factDevueltasYRenegociadas.size() == 1){ // Solo tiene una factura a renegociar
 					try {	
 						facturacion.insertarRenegociar(
-							new Integer(idInstitucion), idFactura, estadoFactura, 
-							nuevaFormaPago, idcuenta,	impTotalPorPagar, 
-							miForm.getDatosPagosRenegociarObservaciones(),miForm.getDatosRenegociarFecha(),
-							false, null);
+							new Integer(idInstitucion), 
+							idFactura, 
+							estadoFactura, 
+							nuevaFormaPago, 
+							idcuenta,	
+							impTotalPorPagar, 
+							miForm.getDatosPagosRenegociarObservaciones(),
+							miForm.getDatosRenegociarFecha(),
+							false, 
+							null);
 						
 					} catch (SIGAException e) { 
 						tx.rollback();
 						
 						if (e.getLiteral().equals(ClsConstants.ERROR_RENEGOCIAR_CUENTABAJA)) {
-							smsError = "facturacion.renegociar.aviso.cuentaNoExiste";
+							smsError = "facturacion.renegociar.aviso.cuentasDeBaja";
 							request.setAttribute("mensaje", smsError);
 							
 						} else if (e.getLiteral().equals(ClsConstants.ERROR_RENEGOCIAR_PORCAJA)) {	
 							smsError = "facturacion.renegociar.aviso.mismaformacaja";
 							request.setAttribute("mensaje", smsError);
 							
-						}else if (e.getLiteral().equals(ClsConstants.ERROR_RENEGOCIAR_CUENTANOEXISTE)){
-							smsError = "facturacion.renegociar.aviso.mismaformacaja";
+						} else if (e.getLiteral().equals(ClsConstants.ERROR_RENEGOCIAR_CUENTANOEXISTE)){
+							smsError = "facturacion.renegociar.aviso.cuentaNoExiste";
 							request.setAttribute("mensaje", smsError);
 							
-						}else if (e.getLiteral().equals(ClsConstants.ERROR_RENEGOCIAR_FORMAPAGO)){
-							smsError = "facturacion.renegociar.aviso.mismaformacaja";
+						} else if (e.getLiteral().equals(ClsConstants.ERROR_RENEGOCIAR_FORMAPAGO)){
+							smsError = "facturacion.renegociar.aviso.formapago";
+							request.setAttribute("mensaje", smsError);
+						
+						} else if (e.getLiteral().equals(ClsConstants.ERROR_RENEGOCIAR_NORENEGOCIADAS)){
+							smsError = "facturacion.renegociar.aviso.noRenegociadas";
 							request.setAttribute("mensaje", smsError);
 						}
 						
@@ -628,9 +635,18 @@ public class GestionarFacturaPagosAction extends MasterAction {
 						
 				} else {
 					try {
-						facturacion.insertarRenegociar(new Integer(idInstitucion), idFactura, estadoFactura, 
-									nuevaFormaPago, idcuenta,	impTotalPorPagar, 
-										miForm.getDatosPagosRenegociarObservaciones(),"",true,null);
+						facturacion.insertarRenegociar(
+							new Integer(idInstitucion), 
+							idFactura, 
+							estadoFactura, 
+							nuevaFormaPago, 
+							idcuenta,	
+							impTotalPorPagar, 
+							miForm.getDatosPagosRenegociarObservaciones(),
+							miForm.getDatosRenegociarFecha(),
+							true,
+							null);
+						
 					} catch (SIGAException e) {
 						isTodasRenegociadas = false;
 						resultadoNumFacturas.add(numeroFactura);
@@ -667,17 +683,18 @@ public class GestionarFacturaPagosAction extends MasterAction {
 			
 				request.setAttribute("modo", modo);
 				request.setAttribute("datosFacturas", datosFacturas);
-				if (Integer.parseInt(personasDiferentes) > 1) 
+				if (numeroPersonasFactura > 1) 
 					request.setAttribute("pagoBanco", "0");
 				else{
 					request.setAttribute("pagoBanco", "1");
-					cuentasPersona = facturaAdm.getCuentasActivasPersona(idInstitucion, strFacturas);
-					if (Integer.parseInt(cuentasPersona) > 0) 
+					Integer numeroCuentasPersona = facturaAdm.getCuentasActivasPersona(idInstitucion, listaIdsFacturas);
+					if (numeroCuentasPersona > 0)
 						request.setAttribute("cuentaCargo", "0");
 					else 
 						request.setAttribute("cuentaCargo", "1");	
-					cuentasPersona = facturaAdm.getCuentasAnteriorActivasPersona(idInstitucion, strFacturas);
-					if (Integer.parseInt(cuentasPersona) > 0) 
+					
+					Integer numeroFacturasPorBanco = facturaAdm.getNumeroFacturasPorBanco(idInstitucion, strFacturas);
+					if (numeroFacturasPorBanco > 0) 
 						request.setAttribute("cuentaAnterior", "0");
 					else 
 						request.setAttribute("cuentaAnterior", "1");		
@@ -700,7 +717,6 @@ public class GestionarFacturaPagosAction extends MasterAction {
 				}
 				rutaServidor += barra + idInstitucion.toString();
 		
-				request.setAttribute("mensaje", "facturacion.renegociar.aviso.errorFichero");
 				forward = modo;
 				
 				// JPT: Esto hace saltar la funcion refrescarLocal() de renegociar.jsp
@@ -720,6 +736,7 @@ public class GestionarFacturaPagosAction extends MasterAction {
 					forward = "pagoRenegociar";					
 					if (smsError.equals("")) { 
 						return exitoModal("messages.updated.success",request);
+						
 					} else {
 						return exito(smsError, request);	
 					}
@@ -732,15 +749,17 @@ public class GestionarFacturaPagosAction extends MasterAction {
 					if (smsError.equals("")) {
 						request.setAttribute("mensaje", "facturacion.renegociacionMasiva.literal.procesoCorrectoRenegocia");
 						return exitoModal("messages.updated.success",request);
+						
 					} else {
 						return exito(smsError, request);	
 					}					
 				}
 			}
 
-		}catch (Exception e) { 
+		} catch (Exception e) { 
 			throwExcp("messages.general.error", new String[] {"modulo.facturacion"}, e, tx); 
-		}				
+		}
+		
 		return forward;
 	}
 
