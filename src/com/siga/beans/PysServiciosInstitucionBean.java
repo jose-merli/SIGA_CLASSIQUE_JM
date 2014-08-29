@@ -23,7 +23,7 @@ public class PysServiciosInstitucionBean extends MasterBean {
 	private Long 	idServicio, idServiciosInstitucion, idConsulta;
 	private Float 	porcentajeIva;
 	private String 	descripcion, cuentacontable, inicioFinalPonderado, momentoCargo, criterios;
-	private String 	solicitarBaja, solicitarAlta, automatico, fechaBaja, sufijo=null, facturacionPonderada;
+	private String 	solicitarBaja, solicitarAlta, automatico, fechaBaja, facturacionPonderada;
 	
 	
 	/* Nombre tabla */
@@ -43,7 +43,6 @@ public class PysServiciosInstitucionBean extends MasterBean {
 	static public final String C_SOLICITARALTA			= "SOLICITARALTA";
 	static public final String C_AUTOMATICO				= "AUTOMATICO";
 	static public final String C_FECHABAJA				= "FECHABAJA";
-	static public final String C_SUFIJO					= "SUFIJO";
 	static public final String C_IDCONSULTA				= "IDCONSULTA";
 	static public final String C_CRITERIOS				= "CRITERIOS";
 	static public final String C_FACTURACIONPONDERADA	= "FACTURACIONPONDERADA";
@@ -63,7 +62,6 @@ public class PysServiciosInstitucionBean extends MasterBean {
 	public void setSolicitarBaja(String solicitarBaja) 		{this.solicitarBaja = solicitarBaja;}
 	public void setAutomatico(String automatico) 			{this.automatico = automatico;}
 	public void setFechaBaja(String aux) 					{this.fechaBaja = aux;}
-	public void setSufijo(String sufijo) 					{this.sufijo = sufijo;}
 	public void setIdConsulta(Long d) 						{this.idConsulta = d;}
 	public void setCriterios(String d) 						{this.criterios = d;}
 	public void setFacturacionPonderada(String d) 						{this.facturacionPonderada = d;}
@@ -83,7 +81,6 @@ public class PysServiciosInstitucionBean extends MasterBean {
 	public String getSolicitarBaja() 			{return this.solicitarBaja;}
 	public String getAutomatico() 				{return this.automatico;}
 	public String getFechaBaja() 				{return this.fechaBaja;}
-	public String getSufijo() 					{return this.sufijo;}
 	public Long getIdConsulta() 				{return this.idConsulta;}
 	public String getCriterios()				{return this.criterios;}
 	public String getFacturacionPonderada()				{return this.facturacionPonderada;}

@@ -69,8 +69,7 @@
 	ArrayList vInt = new ArrayList(); // valores originales formas pago internet
 	ArrayList vSec = new ArrayList(); // valores originales formas pago secretaria
 	ArrayList vIva = new ArrayList(); // valores originales iva
-	ArrayList sufijoSel = new ArrayList(); // valores originales sufijo
-	
+		
 	String estiloCombo = "boxCombo";
 	boolean lectura = false;
 	if (remitente.equalsIgnoreCase("consulta")) {
@@ -100,10 +99,7 @@
 		
 		// Cargo valor IVA
         vIva.add(row.getString(PysProductosInstitucionBean.C_PORCENTAJEIVA));
-        
-        // Cargo el valor seleccionado del Sufijo:
-        sufijoSel.add(row.getString(PysProductosInstitucionBean.C_SUFIJO));
-        
+
 		// Informacion sobre formas de pago internet
 		enumTemp = ((Vector)request.getAttribute("container_I")).elements();
 		if (enumTemp.hasMoreElements()){
@@ -608,7 +604,6 @@
 %>
 									</td>
 								</tr>
-								
 								<tr>
 									<td class="labelText">
 										<siga:Idioma key="certificados.mantenimiento.literal.tipoCertificado"/>&nbsp;&nbsp;
@@ -664,13 +659,7 @@
 												}
 											} 
 %>
-									</td>
-									<td class="labelText">
-										<siga:Idioma key="facturacion.sufijos.literal.concepto"/>
-									</td>
-									<td class="labelText">
-										<siga:Select queryId="getSufijos" id="sufijo" selectedIds="<%=sufijoSel%>" readonly="<%=String.valueOf(lectura)%>" width="175"/>
-									</td>									
+									</td>								
 								</tr>	
 								
 								<tr>

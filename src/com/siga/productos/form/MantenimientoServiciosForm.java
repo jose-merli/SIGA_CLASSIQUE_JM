@@ -37,13 +37,6 @@ public class MantenimientoServiciosForm extends MasterForm{
 	private String fecha = "";
 	private String noPondera = "";
 
-	public String getSufijo() {
-		return (String)this.datos.get(FacSufijoBean.C_SUFIJO);
-	}
-	public void setSufijo(String sufijo) {
-		this.datos.put(FacSufijoBean.C_SUFIJO,sufijo);
-	}
-
 	
 	// Metodos set
 	

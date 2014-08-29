@@ -36,7 +36,6 @@ public class PysProductosInstitucionBean extends MasterBean {
 	private Long idPlantilla;
 	private String tipoCertificado;
 	private String 	fechaBaja;
-	private String 	sufijo;
 	private String 	nofacturable;
 	
 	private String 	idContador;
@@ -60,7 +59,6 @@ public class PysProductosInstitucionBean extends MasterBean {
 	static public final String C_IDPLANTILLA	= "IDPLANTILLA";
 	static public final String C_TIPOCERTIFICADO = "TIPOCERTIFICADO";
 	static public final String C_FECHABAJA = "FECHABAJA";
-	static public final String C_SUFIJO = "SUFIJO";
 	static public final String C_IDCONTADOR = "IDCONTADOR";
 	static public final String C_NOFACTURABLE = "NOFACTURABLE";
 
@@ -102,11 +100,4 @@ public class PysProductosInstitucionBean extends MasterBean {
 	public String getFechaBaja ()	{ return this.fechaBaja;}		
 	public String getIdContador()	{ return this.idContador;}		
 	public String getnoFacturable()	{ return this.nofacturable;}
-
-	public String getSufijo() {
-		return this.sufijo;
-	}
-	public void setSufijo(String sufijo) {
-		this.sufijo = sufijo;
-	}
 }

@@ -55,7 +55,6 @@ public class PysServiciosInstitucionAdm extends MasterBeanAdministrador {
 							PysServiciosInstitucionBean.C_SOLICITARALTA,
 							PysServiciosInstitucionBean.C_AUTOMATICO,
 							PysServiciosInstitucionBean.C_FECHABAJA,
-							PysServiciosInstitucionBean.C_SUFIJO,
 							PysServiciosInstitucionBean.C_FECHAMODIFICACION,
 							PysServiciosInstitucionBean.C_USUMODIFICACION,
 							PysServiciosInstitucionBean.C_IDCONSULTA,
@@ -101,7 +100,6 @@ public class PysServiciosInstitucionAdm extends MasterBeanAdministrador {
 			bean.setSolicitarAlta (UtilidadesHash.getString(hash,PysServiciosInstitucionBean.C_SOLICITARALTA));
 			bean.setAutomatico (UtilidadesHash.getString(hash,PysServiciosInstitucionBean.C_AUTOMATICO));
 			bean.setFechaBaja(UtilidadesHash.getString(hash,PysServiciosInstitucionBean.C_FECHABAJA));
-			bean.setSufijo(UtilidadesHash.getString(hash,PysServiciosInstitucionBean.C_SUFIJO));
 			bean.setIdConsulta(UtilidadesHash.getLong(hash,PysServiciosInstitucionBean.C_IDCONSULTA));
 			bean.setCriterios(UtilidadesHash.getString(hash,PysServiciosInstitucionBean.C_CRITERIOS));
 			bean.setFacturacionPonderada(UtilidadesHash.getString(hash,PysServiciosInstitucionBean.C_FACTURACIONPONDERADA));
@@ -141,7 +139,6 @@ public class PysServiciosInstitucionAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(htData,PysServiciosInstitucionBean.C_SOLICITARALTA,b.getSolicitarAlta());
 			UtilidadesHash.set(htData,PysServiciosInstitucionBean.C_AUTOMATICO,b.getAutomatico());
 			UtilidadesHash.set(htData,PysServiciosInstitucionBean.C_FECHABAJA, b.getFechaBaja());
-			UtilidadesHash.set(htData,PysServiciosInstitucionBean.C_SUFIJO, b.getSufijo());
 			UtilidadesHash.set(htData,PysServiciosInstitucionBean.C_IDCONSULTA, b.getIdConsulta());
 			UtilidadesHash.set(htData,PysServiciosInstitucionBean.C_CRITERIOS, b.getCriterios());
 			UtilidadesHash.set(htData,PysServiciosInstitucionBean.C_FACTURACIONPONDERADA, b.getFacturacionPonderada());
@@ -382,7 +379,6 @@ public class PysServiciosInstitucionAdm extends MasterBeanAdministrador {
 	            			PysServiciosInstitucionBean.T_NOMBRETABLA + "." + PysServiciosInstitucionBean.C_SOLICITARALTA + "," +
 							PysServiciosInstitucionBean.T_NOMBRETABLA + "." + PysServiciosInstitucionBean.C_FECHABAJA + ", " +
 	            			PysServiciosInstitucionBean.T_NOMBRETABLA + "." + PysServiciosInstitucionBean.C_AUTOMATICO + "," +
-	            			PysServiciosInstitucionBean.T_NOMBRETABLA + "." + PysServiciosInstitucionBean.C_SUFIJO + "," +
 	            			PysServiciosInstitucionBean.T_NOMBRETABLA + "." + PysServiciosInstitucionBean.C_IDCONSULTA + "," +
 	            			PysServiciosInstitucionBean.T_NOMBRETABLA + "." + PysServiciosInstitucionBean.C_CRITERIOS + "," +
 	            			PysServiciosInstitucionBean.T_NOMBRETABLA + "." + PysServiciosInstitucionBean.C_FACTURACIONPONDERADA + "," +

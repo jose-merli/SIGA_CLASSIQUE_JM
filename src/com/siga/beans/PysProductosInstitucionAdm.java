@@ -71,7 +71,6 @@ public class PysProductosInstitucionAdm extends MasterBeanAdministrador
 							PysProductosInstitucionBean.C_IDCONTADOR,
 							PysProductosInstitucionBean.C_TIPOCERTIFICADO,
 							PysProductosInstitucionBean.C_FECHABAJA,
-							PysProductosInstitucionBean.C_SUFIJO,
 							PysProductosInstitucionBean.C_FECHAMODIFICACION,
 							PysProductosInstitucionBean.C_NOFACTURABLE,
 							PysProductosInstitucionBean.C_USUMODIFICACION};
@@ -140,7 +139,6 @@ public class PysProductosInstitucionAdm extends MasterBeanAdministrador
 			bean.setIdPlantilla (UtilidadesHash.getLong(hash,PysProductosInstitucionBean.C_IDPLANTILLA ));
 			bean.setTipoCertificado (UtilidadesHash.getString(hash,PysProductosInstitucionBean.C_TIPOCERTIFICADO ));
 			bean.setFechaBaja(UtilidadesHash.getString(hash,PysProductosInstitucionBean.C_FECHABAJA));
-			bean.setSufijo(UtilidadesHash.getString(hash,PysProductosInstitucionBean.C_SUFIJO));
 			bean.setIdContador(UtilidadesHash.getString(hash,PysProductosInstitucionBean.C_IDCONTADOR));
 			bean.setFechaMod(UtilidadesHash.getString(hash,PysProductosInstitucionBean.C_FECHAMODIFICACION));
 			bean.setUsuMod(UtilidadesHash.getInteger(hash,PysProductosInstitucionBean.C_USUMODIFICACION));			
@@ -181,7 +179,6 @@ public class PysProductosInstitucionAdm extends MasterBeanAdministrador
 			UtilidadesHash.set(htData,PysProductosInstitucionBean.C_IDPLANTILLA ,b.getIdPlantilla());
 			UtilidadesHash.set(htData,PysProductosInstitucionBean.C_TIPOCERTIFICADO,b.getTipoCertificado());
 			UtilidadesHash.set(htData,PysProductosInstitucionBean.C_FECHABAJA, b.getFechaBaja());
-			UtilidadesHash.set(htData,PysProductosInstitucionBean.C_SUFIJO, b.getSufijo());
 			UtilidadesHash.set(htData,PysProductosInstitucionBean.C_IDCONTADOR, b.getIdContador());
 			UtilidadesHash.set(htData,PysProductosInstitucionBean.C_FECHAMODIFICACION, b.getFechaMod());
 			UtilidadesHash.set(htData,PysProductosInstitucionBean.C_USUMODIFICACION, b.getUsuMod());
@@ -416,7 +413,6 @@ public class PysProductosInstitucionAdm extends MasterBeanAdministrador
 		            			PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_SOLICITARALTA + "," +
 		            			PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_TIPOCERTIFICADO + "," +
 		            			PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_NOFACTURABLE + "," +
-		            			PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_SUFIJO + "," +
 		            			PysProductosBean.T_NOMBRETABLA + "." + PysProductosBean.C_DESCRIPCION + " AS CATEGORIA," +
 		            			PysTipoIvaBean.T_NOMBRETABLA + "." + PysTipoIvaBean.C_VALOR + " AS VALORIVA," +
 		            			UtilidadesMultidioma.getCampoMultidiomaSimple(PysTiposProductosBean.T_NOMBRETABLA + "." + PysTiposProductosBean.C_DESCRIPCION,this.usrbean.getLanguage()) + " AS TIPO " +								
