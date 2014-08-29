@@ -143,54 +143,17 @@ public class PysCompraAdm extends MasterBeanAdministrador {
 		return hash;
 	}
 	
-	public void eliminarFacturacionCompra(String idInstitucion, String idFactura) throws SIGAException
-	{
-		try
-		{
-			
-			String sql = " UPDATE "+PysCompraBean.T_NOMBRETABLA+
-			 " SET "+PysCompraBean.C_IDFACTURA+" = NULL,"+
-			 PysCompraBean.C_NUMEROLINEA+" = NULL " +
-			 " WHERE "+PysCompraBean.C_IDINSTITUCION+" = "+idInstitucion+
-			 " AND "+PysCompraBean.C_IDFACTURA+" = "+idFactura;
+	public void eliminarFacturacionCompra(String idInstitucion, String idFactura) throws SIGAException {
+		try {			
+			String sql = " UPDATE " + PysCompraBean.T_NOMBRETABLA +
+					" SET " + PysCompraBean.C_IDFACTURA + " = NULL," +
+						PysCompraBean.C_NUMEROLINEA + " = NULL " +
+					" WHERE " + PysCompraBean.C_IDINSTITUCION + " = " + idInstitucion +
+						" AND " + PysCompraBean.C_IDFACTURA + " = " + idFactura;
 
-			ClsMngBBDD.executeUpdate(sql);
+			ClsMngBBDD.executeUpdate(sql);	
 			
-/*
-			String sWhereCompra=" WHERE " + PysCompraBean.T_NOMBRETABLA + "." + PysCompraBean.C_IDINSTITUCION + " = " + idInstitucion;
-			sWhereCompra += " AND ";
-			sWhereCompra += PysCompraBean.T_NOMBRETABLA + "." + PysCompraBean.C_IDFACTURA + " = " + idFactura;
-
-			Vector vCompras = selectForUpdate(sWhereCompra);
-
-			Enumeration eCompras = vCompras.elements();
-			
-			while(eCompras.hasMoreElements())
-			{
-				PysCompraBean bCompra= (PysCompraBean)eCompras.nextElement();
-				
-//				 Hash de modificación con los nuevos datos.
-				Hashtable htCompra = new Hashtable();
-				
-				// Claves.
-				htCompra.put(PysCompraBean.C_IDINSTITUCION,bCompra.getIdInstitucion());
-				htCompra.put(PysCompraBean.C_IDPETICION,bCompra.getIdPeticion());
-				htCompra.put(PysCompraBean.C_IDPRODUCTO,bCompra.getIdProducto());
-				htCompra.put(PysCompraBean.C_IDPRODUCTOINSTITUCION,bCompra.getIdProductoInstitucion());
-				htCompra.put(PysCompraBean.C_IDTIPOPRODUCTO,bCompra.getIdTipoProducto());
-
-				// Nuevos valores.
-				htCompra.put(PysCompraBean.C_IDFACTURA,"");
-				htCompra.put(PysCompraBean.C_NUMEROLINEA,"");
-				
-				updateDirect(htCompra, getClavesBean(), new String[]{PysCompraBean.C_IDFACTURA, PysCompraBean.C_NUMEROLINEA});
-			
-			}
-*/			
-		}
-		
-		catch (Exception e)
-		{
+		} catch (Exception e) {
 			throw new SIGAException(getError());
 		}
 	}
@@ -198,8 +161,7 @@ public class PysCompraAdm extends MasterBeanAdministrador {
 		/** Funcion selectGenerico (String consulta). Ejecuta la consulta que se le pasa en un string 
 	 *  @return vector con los registros encontrados. El objeto es de tipo administrador del bean 
 	 * */
-	public Vector selectGenerico(String consulta) throws ClsExceptions 
-	{
+	public Vector selectGenerico(String consulta) throws ClsExceptions {
 		Vector datos = new Vector();
 		
 		// Acceso a BBDD
@@ -215,10 +177,11 @@ public class PysCompraAdm extends MasterBeanAdministrador {
 						datos.add(registro);
 				}
 			}
-		} 
-		catch (Exception e) { 	
+			
+		}  catch (Exception e) { 	
 			throw new ClsExceptions (e, "Error al ejecutar el 'select' en B.D."); 
 		}
+		
 		return datos;
 	}
 	
@@ -276,5 +239,33 @@ public class PysCompraAdm extends MasterBeanAdministrador {
 		}
 	    
 		return salida;
-	}		
+	}
+	
+    public int compruebaNumeroFacturas(PysCompraBean compra) throws ClsExceptions {
+        int salida = 0;
+    	try {
+    	    CerSolicitudCertificadosAdm adm = new CerSolicitudCertificadosAdm(this.usrbean);
+    	    
+    		String sql = " SELECT count(*) AS NUMERO " +
+    				" FROM " + PysCompraBean.T_NOMBRETABLA +
+    				" WHERE " + PysCompraBean.C_FECHABAJA + " IS NULL " +
+    					" AND TRUNC(" + PysCompraBean.C_FECHA + ") = TRUNC(SYSDATE) " +
+    					" AND " + PysCompraBean.C_IDPERSONA + " = " + compra.getIdPersona() +
+    					" AND " + PysCompraBean.C_IDTIPOPRODUCTO + " = " + compra.getIdTipoProducto() + 
+    					" AND " + PysCompraBean.C_IDPRODUCTO + " = " + compra.getIdProducto() + 
+    					" AND " + PysCompraBean.C_IDINSTITUCION + " = " + compra.getIdInstitucion() +
+    					" AND " + PysCompraBean.C_IDFACTURA + " IS NULL";
+		    	
+    		Vector v = adm.selectGenerico(sql);
+    		if (v.size()>0) {
+    			Hashtable h = (Hashtable) v.get(0);
+    			salida = new Integer(UtilidadesHash.getString(h, "NUMERO")).intValue();
+    		}
+
+    	} catch (Exception e) {
+    		throw new ClsExceptions(e,"Error al obtener Numero de facturas por compra.");
+    	}
+
+    	return salida;
+    }	
 }

@@ -2474,7 +2474,7 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 			// CONTROL DE NUMERO FACTURAS (MENSAJE)
 			if (request.getParameter("validado")==null || !request.getParameter("validado").equals("1")) {
 			    // hay que comprobar
-			    int numero = facturacion.compruebaNumeroFacturas(beanCompra);
+			    int numero = admCompra.compruebaNumeroFacturas(beanCompra);
 			    if (numero>1) {
 			        request.setAttribute("numeroFacturas",new Integer(numero));
 			        request.setAttribute("mensaje","messages.facturacionRapida.aviso.variasFacturas");

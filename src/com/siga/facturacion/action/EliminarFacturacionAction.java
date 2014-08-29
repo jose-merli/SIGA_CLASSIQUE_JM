@@ -101,83 +101,6 @@ public class EliminarFacturacionAction extends MasterAction{
 			Long numeroLinea 			= null;
 			
 			tx.begin();	
-			
-			/*
-			Hashtable hashOld 			= new Hashtable();
-			Hashtable hashNew 			= new Hashtable();
-			Hashtable hashSuscripcion	= new Hashtable();
-			Hashtable hashLinea			= new Hashtable();
-			Hashtable hashFactura		= new Hashtable();
-			
-			Vector vFacturas 			= new Vector();
-			Vector vLineasFacturas 		= new Vector();
-			Vector vCompras 			= new Vector();
-			
-			boolean noEncontrado = true;
-			
-			// Confirmar la facturación.
-			Enumeration en = ((Vector)request.getSession().getAttribute("DATABACKUP")).elements();
-			while(en.hasMoreElements() && noEncontrado){
-				hashOld = (Hashtable)en.nextElement();
-				if(((String)hashOld.get(FacFacturacionProgramadaBean.C_IDSERIEFACTURACION)).equalsIgnoreCase(idSerieFacturacion)){
-					if(((String)hashOld.get(FacFacturacionProgramadaBean.C_IDPROGRAMACION)).equalsIgnoreCase(idProgramacion)){
-						noEncontrado=false;
-					}
-				}				
-			} // While
-			if(noEncontrado){
-				// ERROR no ha encontrado el registro. No se puede dar
-				throw new SIGAException (adm.getError());
-			}else{
-//				Obtenemos todos las claves para borrar los registros.
-				
-				tx.begin();	
-				
-//				 Actualizamos FAC_FacturacionProgramada.
-				hashNew = (Hashtable)hashOld.clone();	
-				UtilidadesHash.set(hashNew, FacFacturacionProgramadaBean.C_FECHAREALGENERACION,"");
-				
-				if (((String)hashNew.get(FacFacturacionProgramadaBean.C_LOCKED)).equals("1")) {
-					throw new SIGAException("messages.facturacion.generacionEnProceso");
-				}
-
-				
-			//	hashNew.remove(FacFacturacionProgramadaBean.C_FECHAREALGENERACION);					
-				if(!adm.update(hashNew, hashOld)){
-					throw new SIGAException (adm.getError());
-	
-				}
-//				Obtenemos los idFacturas de FAC_FACTURA que vamos a borrar.
-				String sWhereFactura=" where " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDINSTITUCION + " = " + idInstitucion;
-				sWhereFactura += " and ";
-				sWhereFactura += FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDSERIEFACTURACION + " = " + idSerieFacturacion;
-				sWhereFactura += " and ";
-				sWhereFactura += FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDPROGRAMACION + " = " + idProgramacion;
-				
-				vFacturas = admFactura.selectForUpdate(sWhereFactura);	
-				
-				en = vFacturas.elements();
-				
-				while(en.hasMoreElements()){					 
-					FacFacturaBean bFactura = (FacFacturaBean)en.nextElement();
-					idFactura = bFactura.getIdFactura(); 
-					
-					UtilidadesHash.set(hashSuscripcion, FacFacturacionSuscripcionBean.C_IDINSTITUCION, idInstitucion);
-					UtilidadesHash.set(hashSuscripcion, FacFacturacionSuscripcionBean.C_IDFACTURA, idFactura);
-					
-					UtilidadesHash.set(hashLinea, FacLineaFacturaBean.C_IDINSTITUCION, idInstitucion);
-					UtilidadesHash.set(hashLinea, FacLineaFacturaBean.C_IDFACTURA, idFactura);
-					
-					UtilidadesHash.set(hashFactura, FacFacturaBean.C_IDINSTITUCION, idInstitucion);
-					UtilidadesHash.set(hashFactura, FacFacturaBean.C_IDFACTURA, idFactura);
-					
-//					 Modificamos en PYS_COMPRA		
-					// LMS 07/08/2006
-					// Se crea un método en el administrador del bean para eliminar la facturación de una compra.
-					
-					admCompra.eliminarFacturacionCompra(idInstitucion, idFactura);
-					
-*/					
 	
 				Object[] param_in = new Object[4];
 				param_in[0] = idInstitucion;
@@ -230,46 +153,7 @@ public class EliminarFacturacionAction extends MasterAction{
 				}
 					
 				tx.commit();					
-					
-					
-//					String sWhereCompra=" where " + PysCompraBean.T_NOMBRETABLA + "." + PysCompraBean.C_IDINSTITUCION + " = " + idInstitucion;
-//					sWhereCompra += " and ";
-//					sWhereCompra += PysCompraBean.T_NOMBRETABLA + "." + PysCompraBean.C_IDFACTURA + " = " + idFactura;
-//
-//					vCompras = admCompra.selectForUpdate(sWhereCompra);
-//
-//					Enumeration eCompras = vCompras.elements();
-//					while(eCompras.hasMoreElements()){
-//						PysCompraBean bCompra= (PysCompraBean)eCompras.nextElement();
-//						
-//						// LMS 07/08/2006
-//						// Ahora se va a hacer el update con un hashtable en lugar de con el bean.
-////						bCompra.setNumeroLinea(null);
-////						bCompra.setIdFactura("");
-////						if(!admCompra.update(bCompra)){
-////							throw new SIGAException (adm.getError());
-////						}
-//					}
-/*					
-// 					Borramos en Fac_FacturacionSuscripcion todas los registros pasandole el idInstitucion e idFactura 					
-					if(!admSuscripcion.deleteMasivo(hashSuscripcion)){
-						throw new SIGAException (admSuscripcion.getError());
-					}
 
-// 					Borramos en Fac_LineaFactura todas los registros pasandole el idInstitucion e idFactura 
-					if(!admLinea.deleteMasivo(hashLinea)){
-						throw new SIGAException (admLinea.getError());
-					}
-
-// 					Borramos en Fac_Factura todas los registros pasandole el idInstitucion e idFactura 
-					if(!admFactura.delete(hashFactura)){
-						throw new SIGAException (admFactura.getError());
-					}				
-				//					
-				}
-				tx.commit();	
-			}
-*/				
 		}
 		catch (Exception e) {
 			throwExcp("messages.general.error",new String[] {"modulo.facturacion"}, e, tx);

@@ -69,7 +69,6 @@ import com.siga.beans.FacFacturaIncluidaEnDisqueteAdm;
 import com.siga.beans.FacFacturaIncluidaEnDisqueteBean;
 import com.siga.beans.FacFacturacionProgramadaAdm;
 import com.siga.beans.FacFacturacionProgramadaBean;
-import com.siga.beans.FacFacturacionSuscripcionAdm;
 import com.siga.beans.FacLineaDevoluDisqBancoAdm;
 import com.siga.beans.FacLineaDevoluDisqBancoBean;
 import com.siga.beans.FacLineaFacturaAdm;
@@ -698,41 +697,6 @@ public class Facturacion {
 		}
 		
 	}
-
-	
-	
-	
-	
-    public int compruebaNumeroFacturas(PysCompraBean compra) throws ClsExceptions 
-	{
-        int salida = 0;
-    	try {
-    	    CerSolicitudCertificadosAdm adm = new CerSolicitudCertificadosAdm(this.usrbean);
-    	    
-    		String sql = " select count(*) NUMERO " +
-    		    " from pys_compra c " +
-    		    " where c.fechabaja is null " +
-    		    " and   to_char(c.fecha,'YYYY/MM/DD') = to_char(sysdate,'YYYY/MM/DD')" +
-    		    " and   c.idpersona=" + compra.getIdPersona() +
-    		    " and   c.idtipoproducto=" + compra.getIdTipoProducto() + 
-    		    " and   c.idproducto=" + compra.getIdProducto() + 
-    		    " and   c.idinstitucion=" + compra.getIdInstitucion() +
-    			" and   c.idfactura is null";
-		    	
-    		Vector v = adm.selectGenerico(sql);
-    		if (v.size()>0) {
-    			Hashtable h = (Hashtable) v.get(0);
-    			salida = new Integer(UtilidadesHash.getString(h, "NUMERO")).intValue();
-    		}
-
-    	} 
-    	catch (Exception e) {
-    		throw new ClsExceptions(e,"Error al obtener Numero de facturas por compra.");
-    	}
-
-    	return salida;
-    }
-
 
     /**
      * Genera una facturación rápida de compra de un certificado utilizando 
@@ -1891,95 +1855,64 @@ public class Facturacion {
 
     	return salida;
     }
+    
     /**
-     * Devuelve nul
+     * Comprueba que la cuenta no tenga fecha de baja o sea menor que hoy	
      * @param idInstitucion
      * @param idPersona
      * @param idCuenta
-     * @return null si no encuentra cuenta Bancaria
+     * @return cuenta bancaria mientras no tenga fecha de baja o sea menor que hoy	
      * @throws SIGAException
      * @throws ClsExceptions
      */
-    public CenCuentasBancariasBean getCuentaRenegociacionManual(Integer idInstitucion,Long idPersona,Integer idCuenta)throws SIGAException, ClsExceptions{
-    	
+    public CenCuentasBancariasBean getCuentaRenegociacionManual(Integer idInstitucion, Long idPersona, Integer idCuenta) throws SIGAException, ClsExceptions {
     	CenCuentasBancariasBean cuentaBancaria = null;
-		CenCuentasBancariasAdm cuentasBancariasAdm = new CenCuentasBancariasAdm(this.usrbean);
+    	
+		// JPT: Devuelve un Hastable con los datos de la cuenta bancarias del cliente
+    	CenCuentasBancariasAdm cuentasBancariasAdm = new CenCuentasBancariasAdm(this.usrbean);
 		Hashtable cuentaBancariaHashtable = cuentasBancariasAdm.selectCuentas(idPersona, idInstitucion, idCuenta);
 		
-		String fechaBajaCuenta = (String) cuentaBancariaHashtable.get(CenCuentasBancariasBean.C_FECHABAJA);
-		if(fechaBajaCuenta!=null && !fechaBajaCuenta.equals("") && GstDate.compararFechas(fechaBajaCuenta, GstDate.getHoyJava()) != 1 )
-			return null;
-		else
-			cuentaBancaria = (CenCuentasBancariasBean) cuentasBancariasAdm.hashTableToBean(cuentaBancariaHashtable);
-    	
-		return cuentaBancaria;
+		// JPT: Compruebo que existe la cuenta bancarias del cliente
+		if (cuentaBancariaHashtable != null) {
 		
+			// JPT: Consulta la fecha de baja de la cuneta
+			String fechaBajaCuenta = (String) cuentaBancariaHashtable.get(CenCuentasBancariasBean.C_FECHABAJA);
+			
+			// JPT: Comprueba que no tenga fecha de baja o sea menor que hoy			
+			if (fechaBajaCuenta == null || fechaBajaCuenta.equals("") || GstDate.compararFechas(fechaBajaCuenta, GstDate.getHoyJava()) == 1) {
+				cuentaBancaria = (CenCuentasBancariasBean) cuentasBancariasAdm.hashTableToBean(cuentaBancariaHashtable);
+			}
+		}
+    	
+		return cuentaBancaria;		
     }
+    
     /**
-     * 
+     * Obtiene la cuenta bancaria activa, o bien si tiene solo una cuenta de cargos activa
      * @param idInstitucion
-     * if solo productos
-		 if cuenta no baja
-			renegociamos
-		 else 
-			if solo una cuenta cargo 
-				renegociamos
-			else
-				NO renegociamos
-	 else
-		if misma cuanta todos servicios y no de baja
-			renegociamos
-		else
-			NO renegociamos
-     * @param idFactura
-     * @return null  si no encuentra cuenta Bancaria
+     * @param idPersona
+     * @param idCuenta
+     * @return
      * @throws SIGAException
      * @throws ClsExceptions
      */
-    public CenCuentasBancariasBean getCuentaRenegociacionAutomatica(Integer idInstitucion,String idFactura,Long idPersona,Integer idCuenta)throws SIGAException, ClsExceptions{
-    	CenCuentasBancariasBean cuentaBancaria = null;
-    	Hashtable claves = new Hashtable();
-		UtilidadesHash.set(claves, FacFacturaBean.C_IDINSTITUCION, idInstitucion);
-		UtilidadesHash.set(claves, FacFacturaBean.C_IDFACTURA, idFactura);
-		FacFacturaAdm facturaAdm = new FacFacturaAdm (this.usrbean);
-//		Vector vFacturas = facturaAdm.selectByPK(claves);
-//		FacFacturaBean facturaBean = (FacFacturaBean) vFacturas.get(0);
-		FacFacturacionSuscripcionAdm facFacturacionSuscripcionAdm = new FacFacturacionSuscripcionAdm(this.usrbean);
-		int numServicios = facFacturacionSuscripcionAdm.getNumeroServiciosFactura(idInstitucion,idFactura);
-		CenCuentasBancariasAdm cuentasBancariasAdm = new CenCuentasBancariasAdm(this.usrbean);
-		
-		if(numServicios == 0) { //Productos 		
+    public CenCuentasBancariasBean getCuentaRenegociacionAutomatica(Integer idInstitucion, Long idPersona, Integer idCuenta) throws SIGAException, ClsExceptions {
+    	
+    	// JPT: Comprueba que la cuenta no tenga fecha de baja o sea menor que hoy	
+    	CenCuentasBancariasBean cuentaBancaria = getCuentaRenegociacionManual(idInstitucion, idPersona, idCuenta);
+    	
+    	// JPT: Compruebo si tiene cuenta bancaria
+    	if (cuentaBancaria == null) { // JPT: La cuenta que tiene esta de baja
+    		
+    		// JPT: Consulta las cuentas de cargo
+    		CenCuentasBancariasAdm cuentasBancariasAdm = new CenCuentasBancariasAdm(this.usrbean);
+			List listaCuentasCargo = cuentasBancariasAdm.getCuentasCargo(idPersona, idInstitucion);
 			
-			// Obtiene los datos de la cuenta
-			Hashtable cuentaBancariaHashtable = cuentasBancariasAdm.selectCuentas(idPersona, idInstitucion, idCuenta);
-			
-			// Compruebo que tengo cuenta
-			if (cuentaBancariaHashtable != null) {
-				
-				// Obtengo la fecha de baja
-				String fechaBajaCuenta = (String) cuentaBancariaHashtable.get(CenCuentasBancariasBean.C_FECHABAJA);
-				
-				// Compruebo si esta de baja
-				if(fechaBajaCuenta!=null && !fechaBajaCuenta.equals("") ){
-					
-					
-					// Consulta las cuentas de cargo
-					List listaCuentasCargo = cuentasBancariasAdm.getCuentasCargo(idPersona, idInstitucion);
-					
-					// Compruebo si solo tiene una cuenta de cargo
-					if(listaCuentasCargo!=null && listaCuentasCargo.size()==1){
-						cuentaBancaria = (CenCuentasBancariasBean) listaCuentasCargo.get(0);
-					}
-					
-				} else { // La cuenta esta activa
-					cuentaBancaria = (CenCuentasBancariasBean) cuentasBancariasAdm.hashTableToBean(cuentaBancariaHashtable);				
-				}
-			}
-			
-		} else { // Servicios
-			//Este metodo devuelve si no es la misma cuenta para todos los servicios
-			cuentaBancaria = cuentasBancariasAdm.getCuentaUnicaServiciosFactura(idInstitucion, idFactura);
-		}
+			// JPT: Compruebo si solo tiene una cuenta de cargo
+			if (listaCuentasCargo != null && listaCuentasCargo.size() == 1) {
+				cuentaBancaria = (CenCuentasBancariasBean) listaCuentasCargo.get(0);
+			}    		    		
+    	}
 		
 		return cuentaBancaria;
     }
@@ -2018,182 +1951,92 @@ public class Facturacion {
 		Hashtable claves = new Hashtable();
 		UtilidadesHash.set(claves, FacFacturaBean.C_IDINSTITUCION, idInstitucion);
 		UtilidadesHash.set(claves, FacFacturaBean.C_IDFACTURA, idFactura);
+		
 		FacFacturaAdm facturaAdm = new FacFacturaAdm (this.usrbean);
-		Vector vFacturas = facturaAdm.selectByPK(claves);
+		Vector vFacturas = facturaAdm.selectByPK(claves);		
 		FacFacturaBean facturaBean = (FacFacturaBean) vFacturas.get(0);
 		
 		do {
-			// Si la factura se encuentra Pendiente Cobro por Caja
-			if (estadoFactura.intValue() == Integer.parseInt(ClsConstants.ESTADO_FACTURA_CAJA)) { // 2
-				if (formaPago.equalsIgnoreCase("porCaja")) {
-					throw new SIGAException(ClsConstants.ERROR_RENEGOCIAR_PORCAJA);
-					
-				} else if (formaPago.equalsIgnoreCase("mismaCuenta")) {
-					idFormaPago = ClsConstants.TIPO_FORMAPAGO_FACTURA;
-					if (facturaBean.getIdCuenta() != null) {
-						CenCuentasBancariasBean cuentaBancaria;
-						if (isAutomatica) {
-							cuentaBancaria = getCuentaRenegociacionAutomatica(idInstitucion,idFactura,facturaBean.getIdPersona(),facturaBean.getIdCuenta());
-							
-						} else {
-							cuentaBancaria = getCuentaRenegociacionManual(idInstitucion,facturaBean.getIdPersona(), facturaBean.getIdCuenta());
-						}
-    					 
-    					if (cuentaBancaria != null && cuentaBancaria.getIdCuenta() != null) {
-    						idCuenta = cuentaBancaria.getIdCuenta().toString();
-    						nuevoEstado = Integer.parseInt(ClsConstants.ESTADO_FACTURA_BANCO);
-    						
-    					} else {
-    						throw new SIGAException(ClsConstants.ERROR_RENEGOCIAR_CUENTABAJA);
-    					}
-    					
-					} else {
-						throw new SIGAException(ClsConstants.ERROR_RENEGOCIAR_FORMAPAGO); 
-					}
-					break;
-					
-				} else if (formaPago.equalsIgnoreCase("porBanco") || formaPago.equalsIgnoreCase("porOtroBanco")) {
-					if (idCuenta == null || idCuenta.equals("")) {
-						if (isAutomatica) {
-							idCuenta = (String) facturaAdm.getCuentaPersona(idInstitucion, facturaBean.getIdPersona()).toString();
-							if (idCuenta != null && !idCuenta.equals("0") && !idCuenta.equals("")) {
-	    						idFormaPago = ClsConstants.TIPO_FORMAPAGO_FACTURA;
-	    						nuevoEstado = Integer.parseInt(ClsConstants.ESTADO_FACTURA_BANCO);
-							}
-						} 
-						
-					} else {
-						idFormaPago = ClsConstants.TIPO_FORMAPAGO_FACTURA;
-						nuevoEstado = Integer.parseInt(ClsConstants.ESTADO_FACTURA_BANCO);
-					}
-					break;
-				}    
+			if (estadoFactura.intValue() == Integer.parseInt(ClsConstants.ESTADO_FACTURA_CAJA) ||
+				estadoFactura.intValue() == Integer.parseInt(ClsConstants.ESTADO_FACTURA_BANCO) ||
+				estadoFactura.intValue() == Integer.parseInt(ClsConstants.ESTADO_FACTURA_DEVUELTA)) {			
 				
-				// El estado de la factura es Pendiente Cobro por Banco	
-			} else if (estadoFactura.intValue() == Integer.parseInt(ClsConstants.ESTADO_FACTURA_BANCO)) { // 5
-				if (formaPago.equalsIgnoreCase("mismaCuenta")) {
-					CenCuentasBancariasBean cuentaBancaria;
-					if (isAutomatica) {
-						cuentaBancaria = getCuentaRenegociacionAutomatica(idInstitucion,idFactura,facturaBean.getIdPersona(),facturaBean.getIdCuenta());
-					} else {
-						cuentaBancaria = getCuentaRenegociacionManual(idInstitucion,facturaBean.getIdPersona(), facturaBean.getIdCuenta());
+				// JPT - Devoluciones 117 - Para devolucion de facturas con comision, se anula la factura anterior y se crea una nueva, con lo que no se actualiza FacFacturaIncluidaEnDisquete	
+				if (estadoFactura.intValue() == Integer.parseInt(ClsConstants.ESTADO_FACTURA_DEVUELTA) && 
+						(facturaBean.getComisionIdFactura() == null || facturaBean.getComisionIdFactura().equals(""))) {
+					actualizarFacturaEnDisco = true;
+				}				
+				
+				if (formaPago.equalsIgnoreCase("porCaja")) { // JPT - Devoluciones 117: Por caja
+
+					if (estadoFactura.intValue() == Integer.parseInt(ClsConstants.ESTADO_FACTURA_CAJA)) {
+						throw new SIGAException(ClsConstants.ERROR_RENEGOCIAR_PORCAJA); // No se puede renegociar dos veces por caja
 					}
 					
-					if (cuentaBancaria != null && cuentaBancaria.getIdCuenta() != null) {
-						idCuenta = cuentaBancaria.getIdCuenta().toString();
-						nuevoEstado = Integer.parseInt(ClsConstants.ESTADO_FACTURA_BANCO);
-						
+					idFormaPago = ClsConstants.TIPO_FORMAPAGO_METALICO; // JPT - Devoluciones 117: Por caja
+					nuevoEstado = Integer.parseInt(ClsConstants.ESTADO_FACTURA_CAJA);
+					idCuenta = null;														
+					break;
+					
+					
+				} else if (formaPago.equalsIgnoreCase("mismaCuenta")) { // JPT - Devoluciones 117: Domiciliar por la cuenta bancaria activa actual			
+					
+					if (facturaBean.getIdCuenta() == null) {
+						throw new SIGAException(ClsConstants.ERROR_RENEGOCIAR_FORMAPAGO); // No tenia cuenta asociada para poder renegociarla por la misma cuenta
+					}					
+					
+					idFormaPago = ClsConstants.TIPO_FORMAPAGO_FACTURA; // JPT - Devoluciones 117: Por banco
+					nuevoEstado = Integer.parseInt(ClsConstants.ESTADO_FACTURA_BANCO);
+					
+					CenCuentasBancariasBean cuentaBancaria = null;
+					if (isAutomatica) { // JPT - Devoluciones 117:  Devolucion con renegociacion automatica, o bien renegociacion de multiples facturas
+						// JPT - Devoluciones 117:  Obtiene la cuenta bancaria activa, o bien si tiene solo una cuenta de cargos activa
+						cuentaBancaria = getCuentaRenegociacionAutomatica(idInstitucion, facturaBean.getIdPersona(), facturaBean.getIdCuenta());
 					} else {
-						if (isAutomatica) {
+						// JPT - Devoluciones 117:  Comprueba que la cuenta no tenga fecha de baja o sea menor que hoy	
+						cuentaBancaria = getCuentaRenegociacionManual(idInstitucion, facturaBean.getIdPersona(), facturaBean.getIdCuenta());
+					}
+					
+					if (cuentaBancaria != null && cuentaBancaria.getIdCuenta() != null) { // JPT - Devoluciones 117: Encuentra una cuenta de renegociacion
+						idCuenta = cuentaBancaria.getIdCuenta().toString();
+						
+					} else { // JPT - Devoluciones 117: No encuentra una cuenta de renegociacion
+						if (isAutomatica) { // JPT - Devoluciones 117: Devolucion con renegociacion automatica, o bien renegociacion de multiples facturas
 							throw new SIGAException(ClsConstants.ERROR_RENEGOCIAR_NORENEGOCIADAS);
 	    					
 						} else {
 							throw new SIGAException(ClsConstants.ERROR_RENEGOCIAR_CUENTABAJA);
 						}
 					}
-					break;
+					break;						
 					
-				} else if (formaPago.equalsIgnoreCase("porCaja")) {
-					idCuenta = null;
-					idFormaPago=ClsConstants.TIPO_FORMAPAGO_METALICO;
-					nuevoEstado = Integer.parseInt(ClsConstants.ESTADO_FACTURA_CAJA);
-					break;
+				} else if (formaPago.equalsIgnoreCase("porOtroBanco")) { // JPT - Devoluciones 117: Por banco
+					idFormaPago = ClsConstants.TIPO_FORMAPAGO_FACTURA; // JPT - Devoluciones 117: Por banco
+					nuevoEstado = Integer.parseInt(ClsConstants.ESTADO_FACTURA_BANCO);
 					
-				} else if (formaPago.equalsIgnoreCase("porBanco") || formaPago.equalsIgnoreCase("porOtroBanco")) {
-					if (idCuenta == null || idCuenta.equals("")){
-						if (isAutomatica) {
-							idCuenta = (String) facturaAdm.getCuentaPersona(idInstitucion, facturaBean.getIdPersona()).toString();
-							if (idCuenta != null && !idCuenta.equals("0") && !idCuenta.equals("")) {
-	    						idFormaPago = ClsConstants.TIPO_FORMAPAGO_FACTURA;
-	    						nuevoEstado = Integer.parseInt(ClsConstants.ESTADO_FACTURA_BANCO);
-	    						
-							} else {
+					if (idCuenta == null || idCuenta.equals("")) { // JPT - Devoluciones 117: Si no tiene cuenta asociada se calcula en el caso de ser automatica (multiples facturas renegociadas pueden venir sin idCuenta)
+						if (isAutomatica) { // JPT - Devoluciones 117: Devolucion con renegociacion automatica, o bien renegociacion de multiples facturas
+							idCuenta = facturaAdm.getCuentaPersona(idInstitucion, facturaBean.getIdPersona()); // JPT - Devoluciones 117: Busca la ultima cuenta de cargos activa
+							if (idCuenta == null || idCuenta.equals("0") || idCuenta.equals("")) { // JPT - Devoluciones 117: No encuentra una cuenta automaticamente de cargos	    						
 								throw new SIGAException(ClsConstants.ERROR_RENEGOCIAR_NORENEGOCIADAS);
 							}
 							
-						} else {
+						} else { // JPT - Devoluciones 117: Para renegociacion manual de una factura siempre debe venir con el idCuenta
 							throw new SIGAException(ClsConstants.ERROR_RENEGOCIAR_CUENTANOEXISTE);
-						}
-						
-					} else {
-						idFormaPago = ClsConstants.TIPO_FORMAPAGO_FACTURA;
-						nuevoEstado = Integer.parseInt(ClsConstants.ESTADO_FACTURA_BANCO);
+						}						
 					}
 					break;
-				}
-				
-			//El estado de la factura es devuelta	
-			} else if (estadoFactura.intValue() == Integer.parseInt(ClsConstants.ESTADO_FACTURA_DEVUELTA)) { // 4
-	    				
-				// JPT - Devoluciones 117 - Para facturas con comision, se anula la factura anterior y se crea una nueva, con lo que no se actualiza FacFacturaIncluidaEnDisquete
-				if (facturaBean.getComisionIdFactura() == null || facturaBean.getComisionIdFactura().equals(""))
-					actualizarFacturaEnDisco = true;
-				
-				if (formaPago.equalsIgnoreCase("mismaCuenta")) {						
-					CenCuentasBancariasBean cuentaBancaria = null;
-					if (isAutomatica) {
-    					cuentaBancaria = getCuentaRenegociacionAutomatica(idInstitucion,idFactura,facturaBean.getIdPersona(),facturaBean.getIdCuenta());
-    					if (cuentaBancaria!=null && cuentaBancaria.getIdCuenta()!=null){
-    						idCuenta = cuentaBancaria.getIdCuenta().toString();
-    						nuevoEstado = Integer.parseInt(ClsConstants.ESTADO_FACTURA_BANCO);
-    						idFormaPago = ClsConstants.TIPO_FORMAPAGO_FACTURA;
-    					
-    					} else {
-    						throw new SIGAException(ClsConstants.ERROR_RENEGOCIAR_CUENTABAJA);
-    					}
-    					
-    				} else {	    					
-    					idFormaPago = ClsConstants.TIPO_FORMAPAGO_FACTURA;
-    					cuentaBancaria = getCuentaRenegociacionManual(idInstitucion,facturaBean.getIdPersona(), facturaBean.getIdCuenta());
-    					nuevoEstado = Integer.parseInt(ClsConstants.ESTADO_FACTURA_BANCO);
-    					if (cuentaBancaria!=null && cuentaBancaria.getIdCuenta()!=null) {
-    						idCuenta = cuentaBancaria.getIdCuenta().toString();
-    						
-    					} else {
-    						throw new SIGAException(ClsConstants.ERROR_RENEGOCIAR_CUENTABAJA);
-    					}	
-    				}
-					break;
-					
-				} else  if (formaPago.equalsIgnoreCase("porCaja")) {
-					idFormaPago = ClsConstants.TIPO_FORMAPAGO_METALICO;
-					idCuenta = null;
-					nuevoEstado = Integer.parseInt(ClsConstants.ESTADO_FACTURA_CAJA);
-					break;
-					
-				} else if (formaPago.equalsIgnoreCase("porBanco") || (formaPago.equalsIgnoreCase("porOtroBanco"))) {
-					idFormaPago = ClsConstants.TIPO_FORMAPAGO_FACTURA;
-					if (idCuenta == null) {
-						if (isAutomatica) {
-							idCuenta = (String) facturaAdm.getCuentaPersona(idInstitucion, facturaBean.getIdPersona()).toString();
-							if (idCuenta != null && !idCuenta.equals("0") && !idCuenta.equals("")) {
-	    						idFormaPago = ClsConstants.TIPO_FORMAPAGO_FACTURA;
-	    						nuevoEstado = Integer.parseInt(ClsConstants.ESTADO_FACTURA_BANCO);
-	    						
-							} else {
-								throw new SIGAException(ClsConstants.ERROR_RENEGOCIAR_NORENEGOCIADAS);
-							}
-							
-						} else {
-							throw new SIGAException(ClsConstants.ERROR_RENEGOCIAR_CUENTANOEXISTE);
-						}
-						
-					} else {
-						nuevoEstado = Integer.parseInt(ClsConstants.ESTADO_FACTURA_BANCO);
-					}
-					break;
-				}
+				}								
 			}			
-
 		} while (false);
-
-		if ((idCuenta == null || idCuenta.equals("") || idCuenta.equals("0")) && (idFormaPago!=ClsConstants.TIPO_FORMAPAGO_METALICO)) {
-			throw new SIGAException(ClsConstants.ERROR_RENEGOCIAR_CUENTANOEXISTE);
-		}
 		
 		// Insertamos un nuevo registro en Fac_Renegociacion
-		FacRenegociacionBean renegociacionBean = new FacRenegociacionBean ();
+		FacRenegociacionBean renegociacionBean = new FacRenegociacionBean();
 		renegociacionBean.setComentario(observaciones);
+		renegociacionBean.setIdFactura(idFactura);
+		renegociacionBean.setIdInstitucion(idInstitucion);
+		renegociacionBean.setIdPersona(facturaBean.getIdPersona());    		
+		renegociacionBean.setImporte(importePtePagar);
 		
 		if (fechaRenegociar == null || fechaRenegociar.equals("")) {
 			renegociacionBean.setFechaRenegociacion("sysdate");
@@ -2218,11 +2061,6 @@ public class Facturacion {
 		} else {
 			facturaBean.setIdCuenta(null);
 		}
-		
-		renegociacionBean.setIdFactura(idFactura);
-		renegociacionBean.setIdInstitucion(idInstitucion);
-		renegociacionBean.setIdPersona(facturaBean.getIdPersona());    		
-		renegociacionBean.setImporte(importePtePagar);
 
 		FacRenegociacionAdm renegociacionAdm = new FacRenegociacionAdm (this.usrbean);
 		Integer idNuevaRenegociacion = renegociacionAdm.getNuevoID(idInstitucion, idFactura);

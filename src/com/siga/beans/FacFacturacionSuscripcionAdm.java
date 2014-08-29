@@ -6,12 +6,11 @@
 package com.siga.beans;
 
 import java.util.Hashtable;
+
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.Row;
-import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesHash;
-import com.siga.beans.eejg.ScsEejgXmlBean;
 /**
 *
 * Clase que gestiona la tabla FAC_FACTURACIONSUSCRIPCION de la BBDD
@@ -162,47 +161,4 @@ public class FacFacturacionSuscripcionAdm extends MasterBeanAdministrador {
 		}
 		return true;
 	}	
-	/**
-	 * No devuelve el numero de servicios que tiene la factura asociada
-	 * @param idInstitucion
-	 * @param idFactura
-	 * @return
-	 * @throws ClsExceptions
-	 */
-	public int getNumeroServiciosFactura(Integer idInstitucion, String idFactura) throws ClsExceptions
-	{
-		Hashtable<Integer, Object> htCodigos = new Hashtable<Integer, Object>();
-		int contador = 0;
-		StringBuffer sql = new StringBuffer();
-		sql.append(" SELECT COUNT(*) NUMSERVICIOS FROM FAC_FACTURACIONSUSCRIPCION FS WHERE FS.IDINSTITUCION = :");
-		contador++;
-		sql.append(contador);
-		htCodigos.put(new Integer(contador), idInstitucion);
-		sql.append(" AND FS.IDFACTURA = :");
-		contador++;
-		sql.append(contador);
-		htCodigos.put(new Integer(contador), idFactura);
-
-	
-
-		int numServicios = 0;
-		try {
-			RowsContainer rc = new RowsContainer();
-
-			if (rc.findBind(sql.toString(), htCodigos)) {
-				if(rc.size()>0){
-					Row fila = (Row) rc.get(0);
-            		Hashtable<String, Object> htFila=fila.getRow();
-            		numServicios = UtilidadesHash.getInteger(htFila,"NUMSERVICIOS");
-				
-				}
-				
-			}
-		} catch (Exception e) {
-			throw new ClsExceptions(e, "Error al ejecutar consulta.");
-		}
-		return numServicios;
-
-	}	
-	
 }

@@ -1518,12 +1518,13 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
 		    sql += " FROM "+FacFacturaBean.T_NOMBRETABLA+" F, "+CenPersonaBean.T_NOMBRETABLA+" P , "+ CenPersonaBean.T_NOMBRETABLA+" DEUDOR , "+CenClienteBean.T_NOMBRETABLA+" C ,fac_estadofactura EF ";
 		    contador++;
 		    codigos.put(new Integer(contador),this.usrbean.getLocation());
-		    sql += " WHERE F."+FacFacturaBean.C_IDINSTITUCION+"=:"+contador;
-		    sql += " AND F."+FacFacturaBean.C_ESTADO+"=EF.IDESTADO ";
-		    sql += " and C."+CenClienteBean.C_IDINSTITUCION+"=F."+FacFacturaBean.C_IDINSTITUCION;
-		    sql += " and C."+CenClienteBean.C_IDPERSONA+"= F."+CenPersonaBean.C_IDPERSONA+ " ";
-		    sql += " AND P."+CenPersonaBean.C_IDPERSONA+"=F."+FacFacturaBean.C_IDPERSONA+ " ";
-		    sql += " AND DEUDOR."+CenPersonaBean.C_IDPERSONA+" (+) =F."+FacFacturaBean.C_IDPERSONADEUDOR+ " ";
+		    sql += " WHERE F." + FacFacturaBean.C_IDINSTITUCION + " = :" + contador + 
+	    				" AND F." + FacFacturaBean.C_ESTADO + " = EF.IDESTADO " +
+	    				" AND F." + FacFacturaBean.C_ESTADO + " <> " + ClsConstants.ESTADO_FACTURA_ANULADA + // JPT: No se muestran las facturas anuladas
+	    				" AND C." + CenClienteBean.C_IDINSTITUCION + " = F."+FacFacturaBean.C_IDINSTITUCION +
+		    			" AND C." + CenClienteBean.C_IDPERSONA + "= F."+ CenPersonaBean.C_IDPERSONA +
+		    			" AND P." + CenPersonaBean.C_IDPERSONA + " = F." + FacFacturaBean.C_IDPERSONA +
+		    			" AND DEUDOR." + CenPersonaBean.C_IDPERSONA + "(+) = F." + FacFacturaBean.C_IDPERSONADEUDOR + " ";
 		    
 		   // FILTRO CLIENTE TAG BUSQUEDA
 		    String letrado = form.getLetrado();
@@ -3219,8 +3220,7 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
 	 * @return se muestra un resultado con un numero si tiene permiso.
 	 * @throws ClsExceptions
 	 */
-	public String getSelectPersonas(Integer idInstitucion, String [] strFacturas) throws ClsExceptions,SIGAException {
-		String diferentes = "";
+	public Integer getSelectPersonas(Integer idInstitucion, String [] strFacturas) throws ClsExceptions,SIGAException {
 		RowsContainer rc = new RowsContainer();
 		try {
 		    Hashtable codigos = new Hashtable();
@@ -3249,90 +3249,58 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
 
 			if (rc.findBind(sql.toString(),codigosHashtable) && rc.size() == 1) {
 				Row fila = (Row) rc.get(0);
-				Hashtable resultado = fila.getRow();
-				return diferentes = (String) resultado.get("PERSONAS");
+				return new Integer(fila.getString("PERSONAS"));
+				
+			} else {
+				return 0;
 			}
-			else {
-				return diferentes = "0";
-			}
-		} 	    catch (Exception e) {
+			
+		} catch (Exception e) {
 	   		if (e instanceof SIGAException){
 	   			throw (SIGAException)e;
-	   		}
-	   		else {
-	   			if (e instanceof ClsExceptions){
-	   				throw (ClsExceptions)e;
-	   			}
-	   			else {
-	   				throw new ClsExceptions(e, "Error al obtener si existen diferentes personas.");
-	   			}
+	   			
+	   		} else if (e instanceof ClsExceptions){
+	   			throw (ClsExceptions)e;
+	   			
+	   		} else {
+	   			throw new ClsExceptions(e, "Error al obtener si existen diferentes personas.");
 	   		}	
 	    }
 	} // getSelectPersonas()	
 
 	/**
-	 *Comprueba si se han seleccionado personas diferentes
-	 * @param form Formulario con los criterios
-	 * @param idInstitucionAlta,usuario
-	 * @return se muestra un resultado con un numero si tiene permiso.
+	 * Consulta el numero de cuentas bancarias activas de cargos de las personas de las facturas (en principio es para una persona)
+	 * @param idInstitucion
+	 * @param listaFacturas
+	 * @return
 	 * @throws ClsExceptions
 	 */
-	public String getCuentasActivasPersona(Integer idInstitucion, String [] strFacturas) throws ClsExceptions,SIGAException {
-		String diferentes = "";
-		RowsContainer rc = new RowsContainer();
+	public Integer getCuentasActivasPersona(Integer idInstitucion, String listaFacturas) throws ClsExceptions {
+		Integer numeroCuentasActivas = 0;
 		try {
-		    Hashtable codigos = new Hashtable();
-		    codigos.put(new Integer(1),idInstitucion.toString());
-		    StringBuffer sql = new StringBuffer();
-		    Hashtable codigosHashtable = new Hashtable();
-			int contador = 0;
-		    
-			sql.append  ("Select Count(*) As numcuentas ");
-			sql.append  ("  From  " + CenCuentasBancariasBean.T_NOMBRETABLA);
-			sql.append  (" c,  " + CenBancosBean.T_NOMBRETABLA);
-			sql.append  (" b,  " + FacFacturaBean.T_NOMBRETABLA + " f ");
-			sql.append  (" Where c." + CenCuentasBancariasBean.C_CBO_CODIGO + " = b." + CenBancosBean.C_CODIGO);
-			sql.append  (" and c." + CenCuentasBancariasBean.C_IDINSTITUCION + " = f." + FacFacturaBean.C_IDINSTITUCION);
-			sql.append  (" and c." + CenCuentasBancariasBean.C_IDPERSONA + " = f." + FacFacturaBean.C_IDPERSONA);
-			sql.append  (" and c." + CenCuentasBancariasBean.C_FECHABAJA + " is null ");
-			sql.append  (" and c." + CenCuentasBancariasBean.C_ABONOCARGO + " in ('T', 'C') ");
-			sql.append  (" and f." + FacFacturaBean.C_IDINSTITUCION + " = :");
-			contador ++;
-			sql.append(contador);
-			codigosHashtable.put(new Integer(contador),idInstitucion);
-			sql.append  ("   And f." + FacFacturaBean.C_IDFACTURA + " in ( "); 
-			for (int i = 0; i < strFacturas.length; i++) {
-				String factura = strFacturas[i];
-				contador ++;
-				sql.append(":");
-				sql.append(contador);
-				if(i!=strFacturas.length-1)
-					sql.append(",");
-				codigosHashtable.put(new Integer(contador),factura);
-			}
-			sql.append(" )");
+			String sql = " SELECT COUNT(*) AS NUMEROCUENTAS " +
+						" FROM  " + CenCuentasBancariasBean.T_NOMBRETABLA +	", " + 
+							FacFacturaBean.T_NOMBRETABLA +
+						" WHERE " + CenCuentasBancariasBean.T_NOMBRETABLA +	"." + CenCuentasBancariasBean.C_IDINSTITUCION + " = " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDINSTITUCION +
+							" AND " + CenCuentasBancariasBean.T_NOMBRETABLA +	"." + CenCuentasBancariasBean.C_IDPERSONA + " = " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDPERSONA +
+							" AND " + CenCuentasBancariasBean.T_NOMBRETABLA +	"." + CenCuentasBancariasBean.C_FECHABAJA + " IS NULL " +
+							" AND " + CenCuentasBancariasBean.T_NOMBRETABLA +	"." + CenCuentasBancariasBean.C_ABONOCARGO + " IN ('C', 'T') " +
+							" AND " + FacFacturaBean.T_NOMBRETABLA +	"." + FacFacturaBean.C_IDINSTITUCION + " = " + idInstitucion +
+							" AND " + FacFacturaBean.T_NOMBRETABLA +	"." + FacFacturaBean.C_IDFACTURA + " IN " + listaFacturas;
 
-			if (rc.findBind(sql.toString(),codigosHashtable) && rc.size() == 1) {
-				Row fila = (Row) rc.get(0);
-				Hashtable resultado = fila.getRow();
-				return diferentes = (String) resultado.get("NUMCUENTAS").toString();
+			RowsContainer rc = new RowsContainer();
+			if (rc.find(sql)) {
+				for (int i=0; i<rc.size(); i++) {
+					Row fila = (Row) rc.get(i);		
+					numeroCuentasActivas = new Integer(fila.getString("NUMEROCUENTAS"));
+				}
 			}
-			else {
-				return diferentes = "0";
-			}
-		} 	    catch (Exception e) {
-	   		if (e instanceof SIGAException){
-	   			throw (SIGAException)e;
-	   		}
-	   		else {
-	   			if (e instanceof ClsExceptions){
-	   				throw (ClsExceptions)e;
-	   			}
-	   			else {
-	   				throw new ClsExceptions(e, "Error al obtener si existen diferentes personas.");
-	   			}
-	   		}	
+			
+		} catch (Exception e) {
+   			throw new ClsExceptions(e, "Error al obtener el numero de cuentas activas de las facturas");
 	    }
+		
+		return numeroCuentasActivas;
 	} // getSelectPersonas()		
 
 	
@@ -3442,13 +3410,14 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
 	
 
 	/**
-	 *Comprueba si se han seleccionado personas diferentes
-	 * @param form Formulario con los criterios
-	 * @param idInstitucionAlta,usuario
-	 * @return se muestra un resultado con un numero si tiene permiso.
+	 * JPT: Obtiene el numero de facturas por banco
+	 * @param idInstitucion
+	 * @param strFacturas
+	 * @return
 	 * @throws ClsExceptions
+	 * @throws SIGAException
 	 */
-	public String getCuentasAnteriorActivasPersona(Integer idInstitucion, String [] strFacturas) throws ClsExceptions,SIGAException {
+	public Integer getNumeroFacturasPorBanco(Integer idInstitucion, String [] strFacturas) throws ClsExceptions,SIGAException {
 		String diferentes = "";
 		RowsContainer rc = new RowsContainer();
 		try {
@@ -3479,23 +3448,19 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
 
 			if (rc.findBind(sql.toString(),codigosHashtable) && rc.size() == 1) {
 				Row fila = (Row) rc.get(0);
-				Hashtable resultado = fila.getRow();
-				return diferentes = (String) resultado.get("NUMCUENTAS").toString();
+				return new Integer(fila.getString("NUMCUENTAS"));
+				
+			} else {
+				return 0;
 			}
-			else {
-				return diferentes = "0";
-			}
-		} 	    catch (Exception e) {
+			
+		} catch (Exception e) {
 	   		if (e instanceof SIGAException){
-	   			throw (SIGAException)e;
-	   		}
-	   		else {
-	   			if (e instanceof ClsExceptions){
-	   				throw (ClsExceptions)e;
-	   			}
-	   			else {
-	   				throw new ClsExceptions(e, "Error al obtener si existen diferentes personas.");
-	   			}
+	   			throw (SIGAException)e;	   		
+	   		} else if (e instanceof ClsExceptions){
+	   			throw (ClsExceptions)e;
+	   		} else {
+	   			throw new ClsExceptions(e, "Error al obtener si existen diferentes personas.");
 	   		}	
 	    }
 	} // getSelectPersonas()			

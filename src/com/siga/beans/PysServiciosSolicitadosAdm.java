@@ -1172,19 +1172,21 @@ public class PysServiciosSolicitadosAdm extends MasterBeanAdministrador {
 	    sql.append(" = ");
 	    sql.append(PysServiciosSolicitadosBean.T_NOMBRETABLA);  sql.append("."); sql.append(PysServiciosSolicitadosBean.C_IDSERVICIOSINSTITUCION );
 	    sql.append(") AS SOLICITARBAJA, " );
-
-								// Está facturado
-	   sql.append("(SELECT 1 " );
-	   sql.append(" FROM FAC_FACTURACIONSUSCRIPCION F, PYS_SUSCRIPCION S "); 
-	   sql.append(" WHERE F.IDINSTITUCION =S.IDINSTITUCION "); 
-	   sql.append("  AND   F.IDTIPOSERVICIOS = S.IDTIPOSERVICIOS "); 
-	   sql.append(" AND   F.IDSERVICIO = S.IDSERVICIO "); 
-	   sql.append(" AND   F.IDSERVICIOSINSTITUCION = S.IDSERVICIOSINSTITUCION "); 
-	   sql.append(" AND   F.IDSUSCRIPCION = S.IDSUSCRIPCION "); 
-	   sql.append(" AND   S.IDINSTITUCION=PYS_PETICIONCOMPRASUSCRIPCION.IDINSTITUCION "); 
-	   sql.append(" AND   S.IDPETICION=PYS_PETICIONCOMPRASUSCRIPCION.IDPETICION "); 
-	   sql.append(" AND   F.NUMEROLINEA=1 "); 
-	   sql.append(" AND ROWNUM<2) AS ESTAFACTURADO, ");
+	   
+		// Está facturado
+	   sql.append(" ( " +
+			"SELECT 1 " + 
+			" FROM " + FacFacturacionSuscripcionBean.T_NOMBRETABLA + ", " + 
+				PysSuscripcionBean.T_NOMBRETABLA +
+			" WHERE " + FacFacturacionSuscripcionBean.T_NOMBRETABLA + "." + FacFacturacionSuscripcionBean.C_IDINSTITUCION + " = " + PysSuscripcionBean.T_NOMBRETABLA + "." + PysSuscripcionBean.C_IDINSTITUCION + 
+				" AND " + FacFacturacionSuscripcionBean.T_NOMBRETABLA + "." + FacFacturacionSuscripcionBean.C_IDTIPOSERVICIOS + " = " + PysSuscripcionBean.T_NOMBRETABLA + "." + PysSuscripcionBean.C_IDTIPOSERVICIOS + 
+				" AND " + FacFacturacionSuscripcionBean.T_NOMBRETABLA + "." + FacFacturacionSuscripcionBean.C_IDSERVICIO + " = " + PysSuscripcionBean.T_NOMBRETABLA + "." + PysSuscripcionBean.C_IDSERVICIO + 
+				" AND " + FacFacturacionSuscripcionBean.T_NOMBRETABLA + "." + FacFacturacionSuscripcionBean.C_IDSERVICIOSINSTITUCION + " = " + PysSuscripcionBean.T_NOMBRETABLA + "." + PysSuscripcionBean.C_IDSERVICIOSINSTITUCION + 
+				" AND " + FacFacturacionSuscripcionBean.T_NOMBRETABLA + "." + FacFacturacionSuscripcionBean.C_IDSUSCRIPCION + " = " + PysSuscripcionBean.T_NOMBRETABLA + "." + PysSuscripcionBean.C_IDSUSCRIPCION + 
+				" AND " + PysSuscripcionBean.T_NOMBRETABLA + "." + PysSuscripcionBean.C_IDINSTITUCION + " = " + PysPeticionCompraSuscripcionBean.T_NOMBRETABLA + "." + PysPeticionCompraSuscripcionBean.C_IDINSTITUCION + 
+				" AND " + PysSuscripcionBean.T_NOMBRETABLA + "." + PysSuscripcionBean.C_IDPETICION + " = " + PysPeticionCompraSuscripcionBean.T_NOMBRETABLA + "." + PysPeticionCompraSuscripcionBean.C_IDPETICION + 
+				" AND " + FacFacturacionSuscripcionBean.T_NOMBRETABLA + "." + FacFacturacionSuscripcionBean.C_NUMEROLINEA + " = 1 " + 
+				" AND ROWNUM < 2) AS ESTAFACTURADO, ");	   
 
 								// Cuenta
 	   	sql.append("NVL((SELECT "+ CenCuentasBancariasBean.T_NOMBRETABLA);  sql.append("."); sql.append(CenCuentasBancariasBean.C_IBAN); 

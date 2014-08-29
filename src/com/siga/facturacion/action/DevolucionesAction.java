@@ -49,12 +49,15 @@ import com.atos.utils.Row;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.PaginadorCaseSensitive;
 import com.siga.Utilidades.UtilidadesHash;
+import com.siga.beans.CenCuentasBancariasAdm;
+import com.siga.beans.CenCuentasBancariasBean;
 import com.siga.beans.FacDisqueteDevolucionesAdm;
 import com.siga.beans.FacFacturaAdm;
 import com.siga.beans.FacFacturaBean;
 import com.siga.beans.FacFacturaIncluidaEnDisqueteBean;
 import com.siga.beans.FacLineaDevoluDisqBancoAdm;
 import com.siga.beans.FacLineaDevoluDisqBancoBean;
+import com.siga.beans.FacPagosPorCajaAdm;
 import com.siga.facturacion.Facturacion;
 import com.siga.facturacion.form.DevolucionesForm;
 import com.siga.general.MasterAction;
@@ -316,47 +319,94 @@ public class DevolucionesAction extends MasterAction {
 		try {
 			UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");
 			DevolucionesForm form = (DevolucionesForm) formulario;
+			FacFacturaAdm facturaAdm = new FacFacturaAdm(user);
 			
-			Integer idInstitucion 	= new Integer(user.getLocation());
+			Integer idInstitucion = new Integer(user.getLocation());			
 			String datosFacturas = form.getDatosFacturas();
 			
 			if (datosFacturas != null) {
 				String strFacturas[] = datosFacturas.split("##");
-				String idFactura = strFacturas[0];
-				FacFacturaAdm facturaAdm = new FacFacturaAdm(user);
-				String personasDiferentes = facturaAdm.getSelectPersonas(idInstitucion, strFacturas);
 				
-				Hashtable claves = new Hashtable();
-				UtilidadesHash.set(claves, FacFacturaBean.C_IDINSTITUCION, idInstitucion);
-				UtilidadesHash.set(claves, FacFacturaBean.C_IDFACTURA, idFactura);
-				
-				Vector vFactura = facturaAdm.select(claves);
-				FacFacturaBean facturaBean = null;
-				if (vFactura != null) {
-					facturaBean = (FacFacturaBean) vFactura.get(0);
-					request.setAttribute("factura", facturaBean);
-				}
-				
-				if (Integer.parseInt(personasDiferentes) > 1) { 
-					request.setAttribute("pagoBanco", "0");
-				} else { 
-					request.setAttribute("pagoBanco", "1");
-					String cuentasPersona = facturaAdm.getCuentasActivasPersona(idInstitucion, strFacturas);
-					if (Integer.parseInt(cuentasPersona) > 0) {
-						request.setAttribute("cuentaCargo", "0");
-					} else {
-						request.setAttribute("cuentaCargo", "1");
-					}
+				if (strFacturas.length<1) {
+					throw new SIGAException("Error al no obtener facturas");
+				};
+												
+				// JPT: Recorre todas las facturas marcadas y calcula el listado de facturas
+				String listaIdsFacturas = "(";
+				for (int i=0; i<strFacturas.length; i++) {
+					String idFactura = strFacturas[i];					
 					
-					cuentasPersona = facturaAdm.getCuentasAnteriorActivasPersona(idInstitucion, strFacturas);
-					if (Integer.parseInt(cuentasPersona) > 0) {
-						request.setAttribute("cuentaAnterior", "0");
-					} else { 
-						request.setAttribute("cuentaAnterior", "1");
-					}
+					
+					// Solo para la primera factura indico sus datos
+					if (i == 0) {				
+						Hashtable hFactura = new Hashtable();
+						UtilidadesHash.set(hFactura, FacFacturaBean.C_IDINSTITUCION, idInstitucion);
+						UtilidadesHash.set(hFactura, FacFacturaBean.C_IDFACTURA, idFactura);
+						
+						Vector vFactura = facturaAdm.select(hFactura);
+						if (vFactura!=null && vFactura.size()>0) {
+							FacFacturaBean beanFactura = (FacFacturaBean) vFactura.get(0);
+							request.setAttribute("beanFactura", beanFactura);
+														
+							if ((beanFactura.getIdCuentaDeudor() != null && !beanFactura.getIdCuentaDeudor().equals("")) || 
+									(beanFactura.getIdCuenta() != null && !beanFactura.getIdCuenta().equals(""))) {
+							
+								// JPT: Obtiene la cuenta bancaria de la factura
+								Hashtable hCuentaBancaria = new Hashtable();
+								UtilidadesHash.set(hCuentaBancaria, CenCuentasBancariasBean.C_IDINSTITUCION, beanFactura.getIdInstitucion());
+								if (beanFactura.getIdCuentaDeudor() != null && !beanFactura.getIdCuentaDeudor().equals("")){
+									UtilidadesHash.set(hCuentaBancaria, CenCuentasBancariasBean.C_IDCUENTA, beanFactura.getIdCuentaDeudor());
+									UtilidadesHash.set(hCuentaBancaria, CenCuentasBancariasBean.C_IDPERSONA, beanFactura.getIdPersonaDeudor());
+								}else{
+									UtilidadesHash.set(hCuentaBancaria, CenCuentasBancariasBean.C_IDCUENTA, beanFactura.getIdCuenta());
+									UtilidadesHash.set(hCuentaBancaria, CenCuentasBancariasBean.C_IDPERSONA, beanFactura.getIdPersona());
+								}
+								
+								CenCuentasBancariasAdm cuentasAdm = new CenCuentasBancariasAdm (this.getUserBean(request));
+								Vector vCuentas = cuentasAdm.select(hCuentaBancaria);
+								if (vCuentas != null && vCuentas.size() == 1) {
+									CenCuentasBancariasBean beanCuentaBancaria = (CenCuentasBancariasBean) vCuentas.get(0);
+									request.setAttribute("beanCuentaBancaria", beanCuentaBancaria);
+								}
+							}
+							
+						} else {
+							throw new SIGAException("Error al no obtener datos de la factura " + idFactura);
+						}
+						
+						listaIdsFacturas += idFactura;
+						
+					} else {
+						listaIdsFacturas += "," + idFactura;
+					}					
 				}
+				listaIdsFacturas += ")";
+				
+				// JPT: Obtiene la ultima fecha de pago de una lista de facturas
+				FacPagosPorCajaAdm admPagosPorCaja = new FacPagosPorCajaAdm(user);
+				String ultimaFechaPagosFactura = admPagosPorCaja.getUltimaFechaPagosFacturas(idInstitucion, listaIdsFacturas);
+				if (ultimaFechaPagosFactura==null || ultimaFechaPagosFactura.equals("")) {
+					throw new SIGAException("Error al no obtener la última fecha de los pagos de las facturas");
+				}
+				request.setAttribute("ultimaFechaPagosFactura", ultimaFechaPagosFactura);
+				
+				// JPT: Indica el numero de facturas seleccionadas
+				request.setAttribute("numeroFacturas", new Integer(strFacturas.length));
+				
+				// JPT: Consulta las personas de la factura
+				Integer numeroPersonasFactura = facturaAdm.getSelectPersonas(idInstitucion, strFacturas);
+				request.setAttribute("numeroPersonasFactura", numeroPersonasFactura);
+				
+				if (numeroPersonasFactura == 1) { 
+					// JPT: Consulta el numero de cuentas bancarias activas de cargos de las personas de las facturas (en principio es para una persona)
+					Integer numeroCuentasPersona = facturaAdm.getCuentasActivasPersona(idInstitucion, listaIdsFacturas);
+					request.setAttribute("numeroCuentasPersona", numeroCuentasPersona);					
+				}				
+				
+				// JPT: Obtiene el numero de facturas por banco
+				Integer numeroFacturasPorBanco = facturaAdm.getNumeroFacturasPorBanco(idInstitucion, strFacturas);
+				request.setAttribute("numeroFacturasPorBanco", numeroFacturasPorBanco);				
 
-				request.setAttribute("modo", "renegociarDevolucion");				
 				request.setAttribute("datosFacturas", datosFacturas);
 				
 			} else {
@@ -367,6 +417,7 @@ public class DevolucionesAction extends MasterAction {
 		} catch (Exception e) { 
 			throwExcp("messages.general.error",new String[] {"modulo.censo"},e,null); 
 		}
+		
 		return "renegociar";
 	}
 
