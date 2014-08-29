@@ -548,7 +548,138 @@ public class FacPagosPorCajaAdm extends MasterBeanAdministrador {
 		return new Vector ();
 	}
 	
-	
+	/**
+	 * Obtiene la ultima fecha de pago de una lista de facturas
+	 * @param idInstitucion
+	 * @param listaIdsFacturas
+	 * @return
+	 * @throws ClsExceptions
+	 * @throws SIGAException
+	 */
+	public String getUltimaFechaPagosFacturas (Integer idInstitucion, String listaIdsFacturas) throws ClsExceptions, SIGAException {
+		String resultado = null;
+		
+		try {
+			// Obteneción emisión factura
+			String consulta1 = " SELECT " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_FECHAEMISION + " AS FECHA " +
+								" FROM " + FacFacturaBean.T_NOMBRETABLA +	
+								" WHERE " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDINSTITUCION + " = " + idInstitucion + 
+									" AND " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDFACTURA + " IN " + listaIdsFacturas;    
+
+			// Obteneción confirmacion factura
+			String consulta10 = " SELECT NVL(" + FacFacturacionProgramadaBean.T_NOMBRETABLA + ".FECHAREALCONFIRM, " + FacFacturacionProgramadaBean.T_NOMBRETABLA + "." + FacFacturacionProgramadaBean.C_FECHACONFIRMACION + ") AS FECHA " + 
+								" FROM " + FacFacturaBean.T_NOMBRETABLA + ", " + 
+									FacFacturacionProgramadaBean.T_NOMBRETABLA +
+								" WHERE " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDINSTITUCION + " = " + FacFacturacionProgramadaBean.T_NOMBRETABLA + "." + FacFacturacionProgramadaBean.C_IDINSTITUCION +
+									" AND " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDSERIEFACTURACION + " = " + FacFacturacionProgramadaBean.T_NOMBRETABLA + "." + FacFacturacionProgramadaBean.C_IDSERIEFACTURACION + 
+									" AND " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDPROGRAMACION + " = " + FacFacturacionProgramadaBean.T_NOMBRETABLA + "." + FacFacturacionProgramadaBean.C_IDPROGRAMACION +
+									" AND " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDINSTITUCION + " = " + idInstitucion + 
+									" AND "   + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDFACTURA + " IN " + listaIdsFacturas; 		
+			
+			// Obtención de anticipos aplicados a una factura
+			String consulta2 = " SELECT " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_FECHAEMISION + " AS FECHA " +
+								" FROM " + FacFacturaBean.T_NOMBRETABLA +
+								" WHERE " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDINSTITUCION + " = " + idInstitucion + 
+									" AND " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDFACTURA + " IN " + listaIdsFacturas +
+									" AND " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IMPTOTALANTICIPADO + " > 0 ";			
+						
+			// Obtención pagos por caja
+			String consulta3 = " SELECT " + FacPagosPorCajaBean.T_NOMBRETABLA + "." + FacPagosPorCajaBean.C_FECHA + " AS FECHA " +
+								" FROM " + FacPagosPorCajaBean.T_NOMBRETABLA + ", " + 
+									FacFacturaBean.T_NOMBRETABLA +
+								" WHERE " + FacPagosPorCajaBean.T_NOMBRETABLA + "." + FacPagosPorCajaBean.C_IDINSTITUCION + " = " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDINSTITUCION + 
+									" AND " + FacPagosPorCajaBean.T_NOMBRETABLA + "." + FacPagosPorCajaBean.C_IDFACTURA + " = " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDFACTURA +
+									" AND " + FacPagosPorCajaBean.T_NOMBRETABLA + "." + FacPagosPorCajaBean.C_IDINSTITUCION + " = " + idInstitucion + 
+									" AND " + FacPagosPorCajaBean.T_NOMBRETABLA + "." + FacPagosPorCajaBean.C_IDFACTURA + " IN " + listaIdsFacturas +
+									" AND " + FacPagosPorCajaBean.T_NOMBRETABLA + "." + FacPagosPorCajaBean.C_IDABONO + " IS NULL ";
+			
+			// Otención pagos por banco
+			String consulta4 = " SELECT cargos." +  FacDisqueteCargosBean.C_FECHACREACION + " AS FECHA " +
+								" FROM " + FacFacturaIncluidaEnDisqueteBean.T_NOMBRETABLA + " incluidadisquete, " +  
+									FacDisqueteCargosBean.T_NOMBRETABLA + " cargos, " + 
+									FacFacturaBean.T_NOMBRETABLA + " factura " +
+								" WHERE incluidadisquete." + FacFacturaIncluidaEnDisqueteBean.C_IDINSTITUCION + " = cargos." + FacDisqueteCargosBean.C_IDINSTITUCION +
+		                        	" AND incluidadisquete."+ FacFacturaIncluidaEnDisqueteBean.C_IDDISQUETECARGOS + " = cargos." + FacDisqueteCargosBean.C_IDDISQUETECARGOS +
+		                        	" AND incluidadisquete." + FacFacturaIncluidaEnDisqueteBean.C_IDINSTITUCION + " = factura." + FacFacturaBean.C_IDINSTITUCION +
+		                        	" AND incluidadisquete." + FacFacturaIncluidaEnDisqueteBean.C_IDFACTURA + " = factura." + FacFacturaBean.C_IDFACTURA +
+		                        	" AND incluidadisquete." + FacFacturaIncluidaEnDisqueteBean.C_IDINSTITUCION + " = " + idInstitucion + 
+		                        	" AND incluidadisquete." + FacFacturaIncluidaEnDisqueteBean.C_IDFACTURA + " IN " + listaIdsFacturas;
+
+			// Obtención devoluciones
+			String consulta5 = " SELECT devoluciones." + FacDisqueteDevolucionesBean.C_FECHAGENERACION + " AS FECHA " +
+								" FROM " + FacFacturaIncluidaEnDisqueteBean.T_NOMBRETABLA + " incluidadisquete, " + 
+									FacLineaDevoluDisqBancoBean.T_NOMBRETABLA + " lineadevolucion, " + 
+									FacDisqueteDevolucionesBean.T_NOMBRETABLA + " devoluciones, " + 
+									FacFacturaBean.T_NOMBRETABLA + " factura " +
+								" WHERE incluidadisquete." + FacFacturaIncluidaEnDisqueteBean.C_IDINSTITUCION + " = lineadevolucion." + FacLineaDevoluDisqBancoBean.C_IDINSTITUCION + 
+									" AND incluidadisquete." + FacFacturaIncluidaEnDisqueteBean.C_IDDISQUETECARGOS + " = lineadevolucion." + FacLineaDevoluDisqBancoBean.C_IDDISQUETECARGOS + 
+									" AND incluidadisquete." + FacFacturaIncluidaEnDisqueteBean.C_IDFACTURAINCLUIDAENDISQUETE + " = lineadevolucion." + FacLineaDevoluDisqBancoBean.C_IDFACTURAINCLUIDAENDISQUETE + 
+									" AND lineadevolucion." + FacLineaDevoluDisqBancoBean.C_IDINSTITUCION + " = devoluciones." + FacDisqueteDevolucionesBean.C_IDINSTITUCION +
+									" AND lineadevolucion." + FacLineaDevoluDisqBancoBean.C_IDDISQUETEDEVOLUCIONES + " = devoluciones." + FacDisqueteDevolucionesBean.C_IDDISQUETEDEVOLUCIONES + 
+									" AND incluidadisquete." + FacFacturaIncluidaEnDisqueteBean.C_IDINSTITUCION + " = factura." + FacFacturaBean.C_IDINSTITUCION +
+									" AND incluidadisquete." + FacFacturaIncluidaEnDisqueteBean.C_IDFACTURA + " = factura." + FacFacturaBean.C_IDFACTURA + 
+									" AND incluidadisquete." + FacFacturaIncluidaEnDisqueteBean.C_IDINSTITUCION + " = " + idInstitucion + 
+									" AND incluidadisquete." + FacFacturaIncluidaEnDisqueteBean.C_IDFACTURA + " IN " + listaIdsFacturas; 
+			
+			// Obtención renegociaciones
+			String consulta6 = " SELECT renegociacion." + FacRenegociacionBean.C_FECHARENEGOCIACION + " AS FECHA " +
+								" FROM " + FacFacturaBean.T_NOMBRETABLA + " factura," + 
+									FacRenegociacionBean.T_NOMBRETABLA + " renegociacion " + 
+								" WHERE renegociacion." + FacRenegociacionBean.C_IDINSTITUCION + " = factura." + FacFacturaBean.C_IDINSTITUCION +
+									" AND renegociacion." + FacRenegociacionBean.C_IDFACTURA + " = factura." + FacFacturaBean.C_IDFACTURA + 
+									" AND renegociacion." + FacRenegociacionBean.C_IDINSTITUCION + " = " + idInstitucion + 
+									" AND renegociacion." + FacRenegociacionBean.C_IDFACTURA + " IN " + listaIdsFacturas;	
+			
+			// Obtención devoluciones
+			String consulta7 = " SELECT abono." + FacAbonoBean.C_FECHA + " AS FECHA " +
+								" FROM " + FacFacturaBean.T_NOMBRETABLA + " factura, " + 
+									FacAbonoBean.T_NOMBRETABLA + " abono " +
+								" WHERE factura." + FacFacturaBean.C_IDINSTITUCION + " = abono." + FacAbonoBean.C_IDINSTITUCION + 
+									" AND factura." + FacFacturaBean.C_IDFACTURA + " = abono." + FacAbonoBean.C_IDFACTURA +  
+									" AND factura." + FacFacturaBean.C_IDINSTITUCION + " = " + idInstitucion + 
+									" AND factura."   + FacFacturaBean.C_IDFACTURA + " IN " + listaIdsFacturas;				
+			
+			//Abonos SJCS->compensaciones factura
+			String consulta8 = " SELECT pc." + FacPagoAbonoEfectivoBean.C_FECHA + " AS FECHA " +
+								" FROM " + FacAbonoBean.T_NOMBRETABLA + " ab, " + 
+									FacPagosPorCajaBean.T_NOMBRETABLA + " pc, " + 
+									FacPagoAbonoEfectivoBean.T_NOMBRETABLA + " aef " +
+								" WHERE pc." + FacPagosPorCajaBean.C_IDINSTITUCION + " = aef." + FacPagoAbonoEfectivoBean.C_IDINSTITUCION + 
+									" AND pc." + FacPagosPorCajaBean.C_IDINSTITUCION + " = ab." + FacAbonoBean.C_IDINSTITUCION + 
+									" AND pc." + FacPagosPorCajaBean.C_IDINSTITUCION + " = " + idInstitucion + 
+									" AND pc." + FacPagosPorCajaBean.C_IDFACTURA + " IN " + listaIdsFacturas +
+									" AND pc." + FacPagosPorCajaBean.C_IDABONO+ " = aef." + FacPagoAbonoEfectivoBean.C_IDABONO + 
+									" AND pc." + FacPagosPorCajaBean.C_IDABONO+ " = ab." + FacAbonoBean.C_IDABONO + 
+									" AND pc." + FacPagosPorCajaBean.C_IDPAGOABONO+ " = aef." + FacPagoAbonoEfectivoBean.C_IDPAGOABONO + 
+									" AND ab." + FacAbonoBean.C_IDPAGOSJG + " IS NOT NULL ";	
+			
+			String consulta = "SELECT MAX(TO_CHAR(FECHA, '" + ClsConstants.DATE_FORMAT_SHORT_SPANISH + "')) AS ULTIMAFECHA FROM ( " + 
+							   		consulta1 + " UNION " + 
+							   		consulta10 + " UNION " + 
+							   		consulta2 + " UNION " + 
+							   		consulta3 + " UNION " + 
+							   		consulta4 + " UNION " + 
+							   		consulta5 + " UNION " + 
+							   		consulta6 + " UNION " + 
+							   		consulta7 + " UNION " + 
+							   		consulta8 + 
+							   ")"; 
+			
+			RowsContainer rc = new RowsContainer(); 
+			if (rc.query(consulta)) {
+				if (rc.size()>0) {
+					Row fila = (Row) rc.get(0);
+					resultado = fila.getString("ULTIMAFECHA");
+				}
+			}
+			
+		} catch (Exception e) {
+	    	throw new ClsExceptions(e, "Error al obtener la última fecha de pago de las facturas");	    
+	    }
+		
+		return resultado;
+	}
+		
 	public Hashtable getTotalesPagos (Integer idInstitucion, String idFactura)  throws ClsExceptions,SIGAException {
 		try {
 		    
