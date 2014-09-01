@@ -85,53 +85,11 @@
 			jQuery("#idBotonesAccion").find('input:eq(0)').show();
 		}
 
-		// Asociada al boton Volver
+		// Asociada al boton Cerrar
 		function accionCerrar() { 
 			window.top.close();
 			return 0;
 		}	
-	
-		// Asociada al boton GuardarCerrar
-		function accionGuardarCerrar() {
-			if(!jQuery("input[name='datosPagosRenegociarNuevaFormaPago']:checked").val()){
-				var mensaje = '<siga:Idioma key="messages.pys.pago.error"/>';
-				alert(mensaje);
-				return 0;
-			}			
-			
-			<%if (numeroFacturasPorBanco==0) {%>
-				if (jQuery("input[name='datosPagosRenegociarNuevaFormaPago']:checked").val() == "mismaCuenta") {
-					var mensaje = '<siga:Idioma key="facturacion.pagosFactura.Renegociar.Error.MismaCuenta"/>';
-					alert(mensaje);
-					return 0;
-				}
-			<%}%>			
-
-			if (document.GestionarFacturaForm.radio2.checked && document.GestionarFacturaForm.datosPagosRenegociarIdCuenta != null) {
-				if (document.GestionarFacturaForm.datosPagosRenegociarIdCuenta.value == "") {
-					var mensaje = '<siga:Idioma key="facturacion.pagosFactura.Renegociar.Obligatoria.Cuenta"/>';
-					alert(mensaje);
-					return 0;
-				}
-			}	
-			
-			if (document.GestionarFacturaForm.datosRenegociarFecha.value.length < 1) {
-				var mensaje = "<siga:Idioma key="facturacion.pagosFactura.Caja.literal.Fecha"/> <siga:Idioma key="messages.campoObligatorio.error"/>";
-				alert (mensaje);
-				return 0;
-			}
-			
-			var ultimaFechaPagosFactura = "<%=ultimaFechaPagosFactura%>";
-			if (compararFecha (document.GestionarFacturaForm.datosRenegociarFecha, ultimaFechaPagosFactura) > 1) {
-				mensaje = 'La fecha debe ser mayor o igual que: ' + ultimaFechaPagosFactura;
-				alert(mensaje);
-				return 0;
-			}				
-			
-			jQuery("#idBotonesAccion").find('input:eq(0)').hide();
-			document.GestionarFacturaForm.target = "submitArea";	
-			document.GestionarFacturaForm.submit();
-		}			
 		
 		function onload(){		
 <%  
@@ -150,6 +108,52 @@
 %>	
 			jQuery("#idBotonesAccion").find('input:eq(0)').hide();
 		}
+		
+		// Asociada al boton GuardarCerrar
+		function accionGuardarCerrar() {
+			if(!jQuery("input[name='datosPagosRenegociarNuevaFormaPago']:checked").val()){
+				var mensaje = '<siga:Idioma key="messages.pys.pago.error"/>';
+				alert(mensaje);
+				return 0;
+			}			
+			
+<%
+			if (numeroFacturasPorBanco==0) {
+%>
+				if (jQuery("input[name='datosPagosRenegociarNuevaFormaPago']:checked").val() == "mismaCuenta") {
+					var mensaje = '<siga:Idioma key="facturacion.pagosFactura.Renegociar.Error.MismaCuenta"/>';
+					alert(mensaje);
+					return 0;
+				}
+<%
+			}
+%>			
+
+			if (document.GestionarFacturaForm.radio2.checked && document.GestionarFacturaForm.datosPagosRenegociarIdCuenta != null) {
+				if (document.GestionarFacturaForm.datosPagosRenegociarIdCuenta.value == "") {
+					var mensaje = '<siga:Idioma key="facturacion.pagosFactura.Renegociar.Obligatoria.Cuenta"/>';
+					alert(mensaje);
+					return 0;
+				}
+			}	
+			
+			if (document.GestionarFacturaForm.datosRenegociarFecha.value.length < 1) {
+				var mensaje = "<siga:Idioma key="facturacion.pagosFactura.Caja.literal.Fecha"/> <siga:Idioma key="messages.campoObligatorio.error"/>";
+				alert (mensaje);
+				return 0;
+			}
+			
+			var ultimaFechaPagosFactura = "<%=ultimaFechaPagosFactura%>";
+			if (compararFecha (document.GestionarFacturaForm.datosRenegociarFecha, ultimaFechaPagosFactura) > 1) {
+				var mensaje = 'La fecha debe ser mayor o igual que: ' + ultimaFechaPagosFactura;
+				alert(mensaje);
+				return 0;
+			}				
+			
+			jQuery("#idBotonesAccion").find('input:eq(0)').hide();
+			document.GestionarFacturaForm.target = "submitArea";	
+			document.GestionarFacturaForm.submit();
+		}			
 		
 		// Asociada al boton Descargar Fichero
 		function generarFichero() {
@@ -257,7 +261,7 @@
 										</td>
 									</tr>
 <%
-								} else { // numeroFacturasPorBanco == 0
+								} else { // numeroPersonasFactura > 1 && numeroFacturasPorBanco == 0
 %>									
 
 									<tr>
@@ -288,7 +292,8 @@
 									</tr>															
 <%
 								}
-							} else {
+								
+							} else { // numeroPersonasFactura == 1
 								if (numeroFacturasPorBanco > 0) {
 									if (numeroCuentasPersona > 0) {									
 %>								
@@ -299,6 +304,15 @@
 											<td class="labelText">
 												<siga:Idioma key="facturacion.pagosFactura.Renegociar.literal.NuevaFormaPago.MismaCuenta"/>
 											</td>
+<%
+											if (numeroFacturas == 1) {
+%>										
+											<td class="labelText">
+												<%=UtilidadesString.mostrarIBANConAsteriscos(beanCuentaBancaria.getIban())%>
+											</td>	
+<%
+											}
+%>		
 										</tr>
 											
 										<tr>
@@ -328,7 +342,7 @@
 											</td>
 										</tr>							
 <%
-									} else { // numeroCuentasPersona == 0
+									} else { // numeroPersonasFactura == 1 && numeroFacturasPorBanco > 0 && numeroCuentasPersona == 0
 %>									
 										<tr>
 											<td>
@@ -359,7 +373,7 @@
 <%
 									}			
 									
-								} else { // numeroFacturasPorBanco == 0
+								} else { // numeroPersonasFactura == 1 && numeroFacturasPorBanco == 0
 %>																	
 									<tr width="100%">
 										<td>
@@ -370,7 +384,7 @@
 										</td>
 									</tr>
 <%
-									if (numeroCuentasPersona > 0) {
+									if (numeroCuentasPersona > 0) { // numeroPersonasFactura == 1 && numeroFacturasPorBanco == 0 && numeroCuentasPersona > 0
 %>																		
 										<tr>
 											<td>
@@ -390,7 +404,7 @@
 %>	
 										</tr>
 <%
-									} else {
+									} else { // numeroPersonasFactura == 1 && numeroFacturasPorBanco == 0 && numeroCuentasPersona == 0
 %>										
 										<tr>
 											<td>

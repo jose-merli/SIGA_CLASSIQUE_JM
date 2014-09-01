@@ -1918,7 +1918,10 @@ public class Facturacion {
     }
     
     /**
-     * 
+     * Funcion que realiza la renegociacion:
+     * - Facturacion > Gestion de Cobros y Recobros
+     * - Facturacion > Facturas > Pagos
+     * - Facturacion > Fichero de Devoluciones > Gestion de Devoluciones
      * @param idInstitucion
      * @param idFactura
      * @param estadoFactura
@@ -2106,10 +2109,11 @@ public class Facturacion {
      * @param idCuenta
      * @param userBean
      * @param renegociadaAutomaticamente
+     * @param fechaDevolucion
      * @return
      * @throws Exception
      */
-	public boolean aplicarComisionAFactura (String institucion, FacLineaDevoluDisqBancoBean lineaDevolucion, String aplicaComisionesCliente, String idCuenta, UsrBean userBean, boolean renegociadaAutomaticamente) throws Exception {
+	public boolean aplicarComisionAFactura (String institucion, FacLineaDevoluDisqBancoBean lineaDevolucion, String aplicaComisionesCliente, String idCuenta, UsrBean userBean, boolean renegociadaAutomaticamente, String fechaDevolucion) throws Exception {
 		boolean resultado = true;
 		FacLineaDevoluDisqBancoAdm admLDDB= new FacLineaDevoluDisqBancoAdm(userBean);
 		
@@ -2227,6 +2231,9 @@ public class Facturacion {
 			if (!resultado) {
 				throw new ClsExceptions("Error porque no anula la factura de devoluciones actual");
 			}				
+			
+			// JPT - Devoluciones 117 - Indico la fecha de devolucion
+			beanFacFactura.setFechaEmision(fechaDevolucion);
 
 			// JPT - Devoluciones 117 - Indico el estado de la factura calculado anteriormente
 			beanFacFactura.setEstado(idEstadoFactura);

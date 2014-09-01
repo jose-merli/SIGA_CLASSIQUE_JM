@@ -3301,60 +3301,7 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
 	    }
 		
 		return numeroCuentasActivas;
-	} // getSelectPersonas()		
-
-	
-	public String getCuentasActivas(Integer idInstitucion, String idFacturas) throws ClsExceptions,SIGAException {
-		String diferentes = "";
-		RowsContainer rc = new RowsContainer();
-		try {
-		    Hashtable codigos = new Hashtable();
-		    codigos.put(new Integer(1),idInstitucion.toString());
-		    StringBuffer sql = new StringBuffer();
-		    Hashtable codigosHashtable = new Hashtable();
-			int contador = 0;
-		    
-			sql.append  ("Select Count(*) As numcuentas ");
-			sql.append  ("  From  " + CenCuentasBancariasBean.T_NOMBRETABLA);
-			sql.append  (" c,  " + CenBancosBean.T_NOMBRETABLA);
-			sql.append  (" b,  " + FacFacturaBean.T_NOMBRETABLA + " f ");
-			sql.append  (" Where c." + CenCuentasBancariasBean.C_CBO_CODIGO + " = b." + CenBancosBean.C_CODIGO);
-			sql.append  (" and c." + CenCuentasBancariasBean.C_IDINSTITUCION + " = f." + FacFacturaBean.C_IDINSTITUCION);
-			sql.append  (" and c." + CenCuentasBancariasBean.C_IDPERSONA + " = f." + FacFacturaBean.C_IDPERSONA);
-			sql.append  (" and (c." + CenCuentasBancariasBean.C_FECHABAJA + " is null ");
-			sql.append  (" or c." + CenCuentasBancariasBean.C_FECHABAJA + " > sysdate) ");
-			sql.append  (" and c." + CenCuentasBancariasBean.C_ABONOCARGO + " in ('T', 'C') ");
-			sql.append  (" and f." + FacFacturaBean.C_IDINSTITUCION + " = :");
-			contador ++;
-			sql.append(contador);
-			codigosHashtable.put(new Integer(contador),idInstitucion);
-			sql.append  ("   And f." + FacFacturaBean.C_IDFACTURA + " = :"); 
-			contador ++;
-			sql.append(contador);
-			codigosHashtable.put(new Integer(contador),idFacturas);
-
-			if (rc.findBind(sql.toString(),codigosHashtable) && rc.size() == 1) {
-				Row fila = (Row) rc.get(0);
-				Hashtable resultado = fila.getRow();
-				return diferentes = (String) resultado.get("NUMCUENTAS").toString();
-			}
-			else {
-				return diferentes = "0";
-			}
-		} 	    catch (Exception e) {
-	   		if (e instanceof SIGAException){
-	   			throw (SIGAException)e;
-	   		}
-	   		else {
-	   			if (e instanceof ClsExceptions){
-	   				throw (ClsExceptions)e;
-	   			}
-	   			else {
-	   				throw new ClsExceptions(e, "Error al obtener si existen diferentes personas.");
-	   			}
-	   		}	
-	    }
-	} // getSelectPersonas()		
+	} // getSelectPersonas()			
 	
 	/**
 	 *Comprueba si se han seleccionado personas diferentes

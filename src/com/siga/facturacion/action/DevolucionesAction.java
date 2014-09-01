@@ -315,6 +315,15 @@ public class DevolucionesAction extends MasterAction {
 		return "nuevo";
 	}
 	
+	/**
+	 * Funcion que calcula las formas de renegociacion en Facturación>Gestión de Cobros y Recobros
+	 * @param mapping
+	 * @param formulario
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws SIGAException
+	 */
 	protected String renegociar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		try {
 			UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");
@@ -348,8 +357,11 @@ public class DevolucionesAction extends MasterAction {
 							FacFacturaBean beanFactura = (FacFacturaBean) vFactura.get(0);
 							request.setAttribute("beanFactura", beanFactura);
 														
-							if ((beanFactura.getIdCuentaDeudor() != null && !beanFactura.getIdCuentaDeudor().equals("")) || 
-									(beanFactura.getIdCuenta() != null && !beanFactura.getIdCuenta().equals(""))) {
+							if (beanFactura.getEstado() != new Integer(ClsConstants.ESTADO_FACTURA_CAJA) && 
+									(
+										(beanFactura.getIdCuentaDeudor() != null && !beanFactura.getIdCuentaDeudor().equals("")) || 
+										(beanFactura.getIdCuenta() != null && !beanFactura.getIdCuenta().equals(""))
+									)) {
 							
 								// JPT: Obtiene la cuenta bancaria de la factura
 								Hashtable hCuentaBancaria = new Hashtable();
@@ -362,7 +374,7 @@ public class DevolucionesAction extends MasterAction {
 									UtilidadesHash.set(hCuentaBancaria, CenCuentasBancariasBean.C_IDPERSONA, beanFactura.getIdPersona());
 								}
 								
-								CenCuentasBancariasAdm cuentasAdm = new CenCuentasBancariasAdm (this.getUserBean(request));
+								CenCuentasBancariasAdm cuentasAdm = new CenCuentasBancariasAdm (user);
 								Vector vCuentas = cuentasAdm.select(hCuentaBancaria);
 								if (vCuentas != null && vCuentas.size() == 1) {
 									CenCuentasBancariasBean beanCuentaBancaria = (CenCuentasBancariasBean) vCuentas.get(0);
@@ -393,7 +405,7 @@ public class DevolucionesAction extends MasterAction {
 				// JPT: Indica el numero de facturas seleccionadas
 				request.setAttribute("numeroFacturas", new Integer(strFacturas.length));
 				
-				// JPT: Consulta las personas de la factura
+				// JPT: Consulta las personas de las facturas
 				Integer numeroPersonasFactura = facturaAdm.getSelectPersonas(idInstitucion, strFacturas);
 				request.setAttribute("numeroPersonasFactura", numeroPersonasFactura);
 				
@@ -422,7 +434,7 @@ public class DevolucionesAction extends MasterAction {
 	}
 
 	/** 
-	 *  Funcion que implementa la accion insertar
+	 * Funcion que realiza la devolucion (Facturacion > Fichero de Devoluciones > Gestion de Devoluciones)
 	 * @param  mapping - Mapeo de los struts
 	 * @param  formulario -  Action Form asociado a este Action
 	 * @param  request - objeto llamada HTTP 
@@ -536,10 +548,10 @@ public class DevolucionesAction extends MasterAction {
 	            		Integer estadoFactura = UtilidadesHash.getInteger(htFila, FacFacturaBean.C_ESTADO);
 	            		Double impTotalPorPagar = UtilidadesHash.getDouble(htFila, FacFacturaBean.C_IMPTOTALPORPAGAR);
 	            		String recibo = UtilidadesHash.getString(htFila, FacFacturaIncluidaEnDisqueteBean.C_IDRECIBO);
-	            		Hashtable htCuenta = new Hashtable();;
+	            		Hashtable htCuenta = new Hashtable();
 						try {
 							//El idCuenta modifica en este metodo asi que sera a esta cuenta la que se aplicara la comision
-							facturacion.insertarRenegociar(new Integer(idInstitucion), idFactura, estadoFactura, nuevaFormaPago, null, impTotalPorPagar, miForm.getDatosPagosRenegociarObservaciones(), "", true, htCuenta);
+							facturacion.insertarRenegociar(new Integer(idInstitucion), idFactura, estadoFactura, nuevaFormaPago, null, impTotalPorPagar, miForm.getDatosPagosRenegociarObservaciones(), miForm.getDatosRenegociarFecha(), true, htCuenta);
 							
 						} catch (SIGAException e) {
 							isTodasRenegociadas = false;
@@ -559,7 +571,7 @@ public class DevolucionesAction extends MasterAction {
 								if(htCuenta!=null && htCuenta.get("idCuenta")!=null)
 									idCuenta = (String)htCuenta.get("idCuenta");
 								
-								correcto = facturacion.aplicarComisionAFactura (idInstitucion, lineaDevolucion, miForm.getComisiones(), idCuenta, user, true);
+								correcto = facturacion.aplicarComisionAFactura (idInstitucion, lineaDevolucion, miForm.getComisiones(), idCuenta, user, true, miForm.getDatosRenegociarFecha());
 								if(!correcto){
 									codretorno = "-32";
 									break;
@@ -580,7 +592,7 @@ public class DevolucionesAction extends MasterAction {
 						// Aplicamos la comision a cada devolusion
 						for (int d=0; d<vDevoluciones.size(); d++) {
 							FacLineaDevoluDisqBancoBean lineaDevolucion = (FacLineaDevoluDisqBancoBean)vDevoluciones.get(d);
-							if (!facturacion.aplicarComisionAFactura (idInstitucion, lineaDevolucion, miForm.getComisiones(), null, user, false)) {
+							if (!facturacion.aplicarComisionAFactura (idInstitucion, lineaDevolucion, miForm.getComisiones(), null, user, false, miForm.getDatosRenegociarFecha())) {
 								codretorno = "-32";
 								break;			
 							}
@@ -804,7 +816,7 @@ public class DevolucionesAction extends MasterAction {
 	            		Hashtable htCuenta = new Hashtable();
 						try {
 							//El idCuenta modifica en este metodo asi que sera a esta cuenta la que se aplicara la comision
-							facturacion.insertarRenegociar(new Integer(idInstitucion), idFactura, estadoFactura, nuevaFormaPago, null, impTotalPorPagar, miForm.getDatosPagosRenegociarObservaciones(), "", true, htCuenta);
+							facturacion.insertarRenegociar(new Integer(idInstitucion), idFactura, estadoFactura, nuevaFormaPago, null, impTotalPorPagar, miForm.getDatosPagosRenegociarObservaciones(), miForm.getDatosRenegociarFecha(), true, htCuenta);
 							
 						} catch (SIGAException e) {
 							isTodasRenegociadas = false;
@@ -824,7 +836,7 @@ public class DevolucionesAction extends MasterAction {
 								if(htCuenta!=null && htCuenta.get("idCuenta")!=null)
 									idCuenta = (String)htCuenta.get("idCuenta");
 								
-								correcto = facturacion.aplicarComisionAFactura (idInstitucion, lineaDevolucion, miForm.getComisiones(), idCuenta, user, true);
+								correcto = facturacion.aplicarComisionAFactura (idInstitucion, lineaDevolucion, miForm.getComisiones(), idCuenta, user, true, miForm.getDatosRenegociarFecha());
 								if(!correcto){
 									codretorno = "-32";
 									break;
@@ -844,7 +856,7 @@ public class DevolucionesAction extends MasterAction {
 						for (int d=0; d<vDevoluciones.size(); d++) {
 							FacLineaDevoluDisqBancoBean lineaDevolucion = (FacLineaDevoluDisqBancoBean)vDevoluciones.get(d);
 							
-							correcto = facturacion.aplicarComisionAFactura (idInstitucion, lineaDevolucion, miForm.getComisiones(), null, user, false);
+							correcto = facturacion.aplicarComisionAFactura (idInstitucion, lineaDevolucion, miForm.getComisiones(), null, user, false, miForm.getDatosRenegociarFecha());
 							if(!correcto){
 								codretorno = "-32";
 								break;

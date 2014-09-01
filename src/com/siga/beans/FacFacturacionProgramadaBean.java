@@ -17,7 +17,7 @@ public class FacFacturacionProgramadaBean extends MasterBean {
 	
 	private String 	fechaInicioProductos, fechaFinProductos, fechaInicioServicios, fechaFinServicios, 
 					fechaRealGeneracion, fechaConfirmacion, fechaProgramacion, 
-					fechaRealConfirmacion, generarPDF,envio,archivarFact,fechaPrevistaConfirmacion,fechaPrevistaGeneracion, locked,
+					generarPDF,envio,archivarFact,fechaPrevistaConfirmacion,fechaPrevistaGeneracion, locked,
 					fechaCargo, confIngresos, confDeudor, ctaIngresos, ctaClientes, visible, descripcion, realizarEnvio;
 	
 	private String fechaPresentacion, fechaCargoUnica, fechaRecibosPrimeros, fechaRecibosRecurrentes, fechaRecibosCOR1, fechaRecibosB2B;
@@ -40,7 +40,6 @@ public class FacFacturacionProgramadaBean extends MasterBean {
 	static public final String C_FECHACONFIRMACION 			= "FECHACONFIRMACION";
 
 	static public final String C_FECHAPREVISTACONFIRM 		= "FECHAPREVISTACONFIRM";
-	//static public final String C_FECHAREALCONFIRM 		= "FECHAREALCONFIRM";
 	static public final String C_IDESTADOCONFIRMACION 		= "IDESTADOCONFIRMACION";
 	static public final String C_IDESTADOPDF 				= "IDESTADOPDF";
 	static public final String C_IDESTADOENVIO 				= "IDESTADOENVIO";
@@ -79,7 +78,6 @@ public class FacFacturacionProgramadaBean extends MasterBean {
 	public void setIdPrevision (Long id)				{ this.idPrevision = id; }
 	
 	public void setFechaPrevistaConfirmacion (String id)				{ this.fechaPrevistaConfirmacion = id; }
-	//public void setFechaRealConfirmacion (String id)				{ this.fechaRealConfirmacion = id; }
 	public void setIdEstadoConfirmacion (Integer id)				{ this.idEstadoConfirmacion = id; }
 	public void setIdEstadoPDF (Integer id)				{ this.idEstadoPDF = id; }
 	public void setIdEstadoEnvio (Integer id)				{ this.idEstadoEnvio = id; }
@@ -111,7 +109,6 @@ public class FacFacturacionProgramadaBean extends MasterBean {
 	public Long    getIdPrevision				()	{ return this.idPrevision; }
 	
 	public String getFechaPrevistaConfirmacion  ()				{return  this.fechaPrevistaConfirmacion;}
-	//public String getFechaRealConfirmacion 		()				{return  this.fechaRealConfirmacion;}
 	public Integer getIdEstadoConfirmacion 		()				{return  this.idEstadoConfirmacion;}
 	public Integer getIdEstadoPDF ()				{return  this.idEstadoPDF;}
 	public Integer getIdEstadoEnvio ()				{return  this.idEstadoEnvio;}

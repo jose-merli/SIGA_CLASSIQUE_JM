@@ -46,7 +46,6 @@ public class FacFacturacionProgramadaAdm extends MasterBeanAdministrador {
 							FacFacturacionProgramadaBean.C_FECHAPREVISTAGENERACION,
 							FacFacturacionProgramadaBean.C_IDPREVISION,
 							FacFacturacionProgramadaBean.C_FECHAPREVISTACONFIRM ,
-							//FacFacturacionProgramadaBean.C_FECHAREALCONFIRM ,
 							FacFacturacionProgramadaBean.C_IDESTADOCONFIRMACION ,
 							FacFacturacionProgramadaBean.C_IDESTADOPDF ,
 							FacFacturacionProgramadaBean.C_IDESTADOENVIO ,
@@ -99,7 +98,6 @@ public class FacFacturacionProgramadaAdm extends MasterBeanAdministrador {
 			bean.setIdPrevision				(UtilidadesHash.getLong(hash, FacFacturacionProgramadaBean.C_IDPREVISION));
 
 			bean.setFechaPrevistaConfirmacion(UtilidadesHash.getString(hash, FacFacturacionProgramadaBean.C_FECHAPREVISTACONFIRM));
-			//bean.setFechaRealConfirmacion(UtilidadesHash.getString(hash, FacFacturacionProgramadaBean.C_FECHAREALCONFIRM));
 			bean.setIdEstadoConfirmacion(UtilidadesHash.getInteger(hash, FacFacturacionProgramadaBean.C_IDESTADOCONFIRMACION));
 			bean.setIdEstadoPDF(UtilidadesHash.getInteger(hash, FacFacturacionProgramadaBean.C_IDESTADOPDF));
 			bean.setIdEstadoEnvio(UtilidadesHash.getInteger(hash, FacFacturacionProgramadaBean.C_IDESTADOENVIO));
@@ -156,7 +154,6 @@ public class FacFacturacionProgramadaAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(htData, FacFacturacionProgramadaBean.C_IDPREVISION, b.getIdPrevision());
 
 			UtilidadesHash.set(htData, FacFacturacionProgramadaBean.C_FECHAPREVISTACONFIRM, b.getFechaPrevistaConfirmacion());
-			//UtilidadesHash.set(htData, FacFacturacionProgramadaBean.C_FECHAREALCONFIRM, b.getFechaRealConfirmacion());
 			UtilidadesHash.set(htData, FacFacturacionProgramadaBean.C_IDESTADOCONFIRMACION, b.getIdEstadoConfirmacion());
 			UtilidadesHash.set(htData, FacFacturacionProgramadaBean.C_IDESTADOPDF, b.getIdEstadoPDF());
 			UtilidadesHash.set(htData, FacFacturacionProgramadaBean.C_IDESTADOENVIO, b.getIdEstadoEnvio());

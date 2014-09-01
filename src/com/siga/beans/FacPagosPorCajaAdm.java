@@ -178,15 +178,15 @@ public class FacPagosPorCajaAdm extends MasterBeanAdministrador {
 		try {
 			
             String fromFacturasTotal = " ( " +
-       				" SELECT FACTURAS.IDFACTURA, " +
+       				" SELECT FACTURAS." + FacFacturaBean.C_IDFACTURA + ", " +
    						" ROWNUM AS CONTADOR " +
 					" FROM ( " +
-						" SELECT DISTINCT IDFACTURA " +
-						" FROM FAC_FACTURA " +
-						" WHERE IDINSTITUCION = " + idInstitucion +
-						" START WITH IDFACTURA = " + idFactura +       
-						" CONNECT BY PRIOR COMISIONIDFACTURA = IDFACTURA " + 
-						" ORDER BY IDFACTURA ASC " +
+						" SELECT DISTINCT " + FacFacturaBean.C_IDFACTURA +
+						" FROM " + FacFacturaBean.T_NOMBRETABLA +
+						" WHERE " + FacFacturaBean.C_IDINSTITUCION + " = " + idInstitucion +
+						" START WITH " + FacFacturaBean.C_IDFACTURA + " = " + idFactura +       
+						" CONNECT BY PRIOR " + FacFacturaBean.C_COMISIONIDFACTURA + " = " + FacFacturaBean.C_IDFACTURA + 
+						" ORDER BY " + FacFacturaBean.C_IDFACTURA + " ASC " +
 					" ) FACTURAS " +
 				" ) FACTURAS_TOTAL "; 			
 			
@@ -218,7 +218,9 @@ public class FacPagosPorCajaAdm extends MasterBeanAdministrador {
 			String select10 = " SELECT 1 + 10 * FACTURAS_TOTAL.CONTADOR AS IDTABLA, " +
 							   " F_SIGA_GETRECURSO_ETIQUETA('facturacion.pagosFactura.accion.confirmacionFactura'," + this.usrbean.getLanguage() + ") AS TABLA, " +
 							   " F_SIGA_GETRECURSO_ETIQUETA('facturacion.pagosFactura.estado.pendienteCobro'," + this.usrbean.getLanguage() + ") AS ESTADO, " +
-							   " NVL(" + FacFacturacionProgramadaBean.T_NOMBRETABLA + ".FECHAREALCONFIRM, " + FacFacturacionProgramadaBean.T_NOMBRETABLA + "." + FacFacturacionProgramadaBean.C_FECHACONFIRMACION + ") AS FECHA, " +
+							   " DECODE(" + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_COMISIONIDFACTURA + ", NULL, " +
+							   		FacFacturacionProgramadaBean.T_NOMBRETABLA + "." + FacFacturacionProgramadaBean.C_FECHACONFIRMACION + ", " +
+							   		FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_FECHAEMISION + ") AS FECHA, " +
 							   FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_FECHAMODIFICACION + " AS FECHA_ORDEN, " +
 							   FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IMPTOTAL + " AS IMPORTE, " +
 							   " '' AS DEVUELTA, " +
@@ -567,7 +569,7 @@ public class FacPagosPorCajaAdm extends MasterBeanAdministrador {
 									" AND " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDFACTURA + " IN " + listaIdsFacturas;    
 
 			// Obteneción confirmacion factura
-			String consulta10 = " SELECT NVL(" + FacFacturacionProgramadaBean.T_NOMBRETABLA + ".FECHAREALCONFIRM, " + FacFacturacionProgramadaBean.T_NOMBRETABLA + "." + FacFacturacionProgramadaBean.C_FECHACONFIRMACION + ") AS FECHA " + 
+			String consulta10 = " SELECT " + FacFacturacionProgramadaBean.T_NOMBRETABLA + "." + FacFacturacionProgramadaBean.C_FECHACONFIRMACION + " AS FECHA " + 
 								" FROM " + FacFacturaBean.T_NOMBRETABLA + ", " + 
 									FacFacturacionProgramadaBean.T_NOMBRETABLA +
 								" WHERE " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDINSTITUCION + " = " + FacFacturacionProgramadaBean.T_NOMBRETABLA + "." + FacFacturacionProgramadaBean.C_IDINSTITUCION +

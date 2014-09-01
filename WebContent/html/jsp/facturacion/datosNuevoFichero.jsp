@@ -20,32 +20,26 @@
 <%@ taglib uri = "libreria_SIGA.tld" 	prefix = "siga"%>
 <%@ taglib uri = "struts-bean.tld"  	prefix = "bean"%>
 <%@ taglib uri = "struts-html.tld" 		prefix = "html"%>
-<%@ taglib uri = "struts-logic.tld" 	prefix = "logic"%>
 
 <!-- IMPORTS -->
-<%@ page import = "com.siga.administracion.SIGAConstants"%>
-<%@ page import = "com.siga.gui.processTree.SIGAPTConstants"%>
-<%@ page import = "com.siga.beans.CenDatosCVBean"%>
 <%@ page import = "com.siga.Utilidades.UtilidadesString"%>
-<%@ page import = "com.atos.utils.*"%>
-<%@ page import="com.atos.utils.UsrBean"%>
-<%@ page import="java.util.Properties"%>
+<%@ page import = "com.atos.utils.UsrBean"%>
+<%@ page import = "com.siga.Utilidades.UtilidadesBDAdm"%>
 
 <!-- JSP -->
 <% 
 	String app=request.getContextPath();
-	HttpSession ses=request.getSession();
-		
-	UsrBean userBean = ((UsrBean)ses.getAttribute(("USRBEAN")));
-	// Datos del cliente a visualizar
-	String idAbono=(String)request.getAttribute("IDABONO"); // Obtengo el identificador del abono
-	String idInstitucion=(String)request.getAttribute("IDINSTITUCION"); // Obtengo el identificador de la institucion	
-	String importePendiente=(String)request.getAttribute("PAGOPENDIENTE"); // Obtengo el importe pendiente	
+	HttpSession ses = request.getSession();	
+	UsrBean userBean = (UsrBean) ses.getAttribute("USRBEAN");
+	
+	// Obtengo el identificador de la institucion
+	String idInstitucion=(String)request.getAttribute("IDINSTITUCION"); 	
 	
 	// MENSAJE = mensaje a mostrar (si no hay mensaje no muestra alert)  
 	String mensaje = (String)request.getAttribute("mensaje");
-	// SUFIJO = Permite anhadir una cadena de texto al mensaje a mostrar
-	String sufijo = (String)request.getAttribute("sufijo");
+
+	// Carga la fecha actual
+	String fechaActual = UtilidadesBDAdm.getFechaBD("");
 %>
 
 	<!-- HEAD -->
@@ -145,25 +139,66 @@
 					<siga:ConjCampos leyenda="facturacion.pagosFactura.Renegociar.Titulo">
 						<table class="tablaCampos" border="0">
 							<tr>
-								<td class="labelText" colspan="2">
-									<input type="radio" id="radio1" name="datosPagosRenegociarNuevaFormaPago" checked="checked" value="noRenegociarAutomaticamente" >
+								<td>
+									<input type="radio" id="radio0" name="datosPagosRenegociarNuevaFormaPago" checked="checked" value="noRenegociarAutomaticamente" >
+								</td>
+								<td class="labelText">										
 									<siga:Idioma key="facturacion.pagosFactura.Renegociar.literal.noRenegociar"/>
-									<br>
+								</td>
+							</tr>
+							
+							<tr>
+								<td>								
 									<input type="radio" id="radio1" name="datosPagosRenegociarNuevaFormaPago" value="mismaCuenta" >
+								</td>
+								<td class="labelText">
 									<siga:Idioma key="facturacion.pagosFactura.Renegociar.literal.NuevaFormaPago.MismaCuenta"/>
 								</td>
 							</tr>
 							
 							<tr>
-								<td class="labelText"><siga:Idioma key="facturacion.pagosFactura.Renegociar.literal.Observaciones"/></td>
-								<td class="labelText">
-									<html:textarea property="datosPagosRenegociarObservaciones" 
-										onKeyDown="cuenta(this,4000)" onChange="cuenta(this,4000)" 
-										style="overflow-y:auto; overflow-x:hidden; width:540px; height:80px; resize:none;"
-										styleClass="box" value=""/>
+								<td>
+									<input type="radio" id="radio2" name="datosPagosRenegociarNuevaFormaPago" value="porOtroBanco"/>
 								</td>
+								<td class="labelText">
+									<siga:Idioma key="facturacion.pagosFactura.Renegociar.literal.NuevaFormaPago.PorBanco"/>
+								</td>	
 							</tr>
+							
+							<tr>
+								<td>
+									<input type="radio" id="radio3" name="datosPagosRenegociarNuevaFormaPago" value="porCaja">
+								</td>
+								<td class="labelText">
+									<siga:Idioma key="facturacion.pagosFactura.Renegociar.literal.NuevaFormaPago.PorCaja"/>
+								</td>
+							</tr>		
 						</table>
+																										
+						<fieldset>		
+							<table class="tablaCampos" border="0">
+								<tr>
+									<td class="labelText">
+										<siga:Idioma key="facturacion.pagosFactura.Caja.literal.Fecha"/>&nbsp;(*)
+									</td>
+									<td>
+										<siga:Fecha nombreCampo="datosRenegociarFecha" valorInicial="<%=fechaActual%>" posicionX="50px" posicionY="10px"/>
+									</td>
+							   	</tr>							
+							
+								<tr>
+									<td class="labelText">
+										<siga:Idioma key="facturacion.pagosFactura.Renegociar.literal.Observaciones"/>
+									</td>
+									<td>
+										<html:textarea property="datosPagosRenegociarObservaciones" 
+											onKeyDown="cuenta(this,4000)" onChange="cuenta(this,4000)" 
+											style="overflow-y:auto; overflow-x:hidden; width:540px; height:80px; resize:none;"
+											styleClass="box" value=""/>
+									</td>
+								</tr>
+							</table>
+						</fieldset>
 					</siga:ConjCampos>
 				</td>
 			</tr>

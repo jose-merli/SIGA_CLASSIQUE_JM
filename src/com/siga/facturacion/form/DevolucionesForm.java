@@ -17,6 +17,8 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.upload.FormFile;
 
+import com.atos.utils.GstDate;
+import com.siga.Utilidades.UtilidadesHash;
 import com.siga.general.MasterForm;
 
 
@@ -28,6 +30,7 @@ public class DevolucionesForm extends MasterForm{
 	private String idDisqueteDevoluciones="";
 	private String datosPagosRenegociarObservaciones;
 	private String datosPagosRenegociarNuevaFormaPago;
+	private String datosRenegociarFecha;
 	private String datosFacturas;
 	
 	//Campos Busqueda
@@ -150,7 +153,17 @@ public class DevolucionesForm extends MasterForm{
 	public void setFacturasHasta(String facturasHasta) {
 		this.facturasHasta = facturasHasta;
 	}
-	
+	public String getDatosRenegociarFecha() {
+		return datosRenegociarFecha;
+	}
+	public void setDatosRenegociarFecha(String datosRenegociarFecha) {
+		try {
+			this.datosRenegociarFecha = GstDate.getApplicationFormatDate("", datosRenegociarFecha);
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 		/**
 	 * Metodo que resetea el formulario
 	 * @param  mapping - Mapeo de los struts

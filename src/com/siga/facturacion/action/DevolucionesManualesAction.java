@@ -21,6 +21,7 @@ import org.apache.struts.action.ActionMapping;
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsLogging;
+import com.atos.utils.GstDate;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.PaginadorCaseSensitive;
 import com.siga.Utilidades.UtilidadesHash;
@@ -204,12 +205,15 @@ public class DevolucionesManualesAction extends MasterAction{
 			// obtengo los datos para generar el fichero
 			String aplicaComisiones = form.getAplicarComisiones();
 			String fechaDevolucion = form.getFechaDevolucion();
+			String fechaDevolucionHora = form.getFechaDevolucion(); 
 			String recibos = form.getRecibos();
 			
 			if (fechaDevolucion != null && !fechaDevolucion.equals("") && fechaDevolucion.length()==10) {
 				try { 
-					fechaDevolucion = fechaDevolucion.substring(6,10) + fechaDevolucion.substring(3,5) + fechaDevolucion.substring(0,2); // AAAAMMDD 
+					fechaDevolucionHora = GstDate.getApplicationFormatDate("", fechaDevolucion);
+					fechaDevolucion = fechaDevolucion.substring(6,10) + fechaDevolucion.substring(3,5) + fechaDevolucion.substring(0,2); // AAAAMMDD 					
 				} catch (Exception e){
+					fechaDevolucionHora = "";
 					fechaDevolucion = "";
 				}		
 			}			
@@ -239,7 +243,7 @@ public class DevolucionesManualesAction extends MasterAction{
 						FacLineaDevoluDisqBancoBean beanDevolucion = admLDDB.obtenerDevolucionManual(idInstitucion, sIdDisquetesDevolucion);
 						
 						// Aplicamos la comision a cada devolusion
-						if (!facturacion.aplicarComisionAFactura (idInstitucion, beanDevolucion, aplicaComisiones, null, user, false)) {
+						if (!facturacion.aplicarComisionAFactura (idInstitucion, beanDevolucion, aplicaComisiones, null, user, false, fechaDevolucionHora)) {
 				    		throw new ClsExceptions("Fichero de devoluciones manuales: Error al aplicar devoluciones.");
 				    	}
 					}				
