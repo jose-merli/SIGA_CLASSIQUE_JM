@@ -119,22 +119,34 @@ public final class SIGASvlProcesoAutomaticoContadores extends SIGAContextListene
     public void handleNotification(Notification notif, Object handback)
     {
 		String sProximaEjecucion = "Próxima ejecución dentro de " + (lIntervalo/60/1000) + " minuto(s).";
-
         ClsLogging.writeFileLogWithoutSession(" - INVOCANDO...  >>>  Ejecutando Notificación: \"" + sNombreProceso + "\".", 3);
-	
 		
 		try
 		{
+			/* TODO El siguiente metodo controla la hora de reconfiguracion de contadores. Utiliza un sistema complejo y eficaz pero debil porque 
+			 * funciona siempre que 00:00 + lIntervalo < lHoraEjecucion
+			 * Por ejemplo,     con 00:00 + 30         < 01:30
+			 * 
+			 * Creo que deberiamos cambiarlo y hacerlo mas sencillo: no usar el parametro lHoraEjecucion. 
+			 * En vez de eso ejecutar siempre la consulta existente de contadores pendientes de reconfigurar
+			 * Ademas, de esta forma, se facilitaria la reconfiguracion de contadores ya que siempre se ejecutaria cuando pongamos la fecha de hoy a un contador
+			 */
 			java.text.SimpleDateFormat sdfNew = new java.text.SimpleDateFormat("HH:mm");
 			Date dateParam= sdfNew.parse(lHoraEjecucion);	
 			
 			String horaHoy = UtilidadesBDAdm.getHoraBD();
 			Date dateNow = sdfNew.parse(horaHoy);
-			if (dateNow.before(dateParam) && reinicio == false){
+			// Se comprueba si la hora actual (cuando se esta ejecutando) es anterior a la fijada por parametro
+			// Es decir, si el parametro = 01:30 y la hora actual = 08:00 entonces no se hace nada 
+			// Solo cuando la hora actual llega a 00:00 o poco despues entonces se activa la bandera de reinicio
+			if (dateNow.before(dateParam) && reinicio == false)
+			{
 				reinicio = true;
-			}
-			
-			if (dateNow.after(dateParam) && reinicio == true ) {
+				// En la siguiente iteracion se comprueba y solo se ejecuta todo el resto del proceso pasada la hora fijada por parametro
+				// Es decir, si el parametro = 01:30 y la hora actual = 01:00, entonces no se hace nada
+				// Solo se empieza a ejecutar pasada la hora del parametro, por ejemplo, si la hora actual = 02:00
+			} else if (dateNow.after(dateParam) && reinicio == true ) 
+			{
 			    ClsLogging.writeFileLogWithoutSession(" - OK.  >>>  Es la hora de ejecución: \"" + sNombreProceso + "\" " + sProximaEjecucion, 3);
 			    //BNS INC_06950_SIGA
 			    reinicio = false;
