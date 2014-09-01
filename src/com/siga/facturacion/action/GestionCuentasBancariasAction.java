@@ -315,21 +315,24 @@ public class GestionCuentasBancariasAction extends MasterAction {
 			cuentaBancariaVo.setUsumodificacion(new Integer(usrBean.getUserName()));
 			
 			//Se comprueba si la cuenta bancaria tiene alguna serie asignada, si tiene no se permite eliminar 
-			
 			List series = bts.getSeriesCuentaBancaria(cuentaBancariaVo);
 			
 			//Si no existe ninguna serie relacionada
-			if(series.isEmpty()){
-				bts.delete(cuentaBancariaVo);
-				request.removeAttribute("modal");
-				request.removeAttribute("sinrefresco");
-				request.setAttribute("mensaje","messages.deleted.success");
-				forward = "exito";
-			
-			}else{
+			if(!series.isEmpty())
 				throw new SIGAException(UtilidadesString.getMensajeIdioma(usrBean,"facturacion.message.error.cuenta.serie.relacionada"));
-			}
 			
+			
+			//Se comprueba si la cuenta tiene relacionado algún Pago SJCS pendiente de cerrar o cerrado y que no se ha generado el fichero de transferecia bancaria todavía
+			if(bts.getPagosSJCSPendientesActuaciones(cuentasBancariasForm.getIdInstitucion(),cuentasBancariasForm.getIdCuentaBancaria())>0)		
+				throw new SIGAException(UtilidadesString.getMensajeIdioma(usrBean,"facturacion.message.error.cuenta.pagoSJCS.relacionado"));
+
+			bts.delete(cuentaBancariaVo);
+			request.removeAttribute("modal");
+			request.removeAttribute("sinrefresco");
+			request.setAttribute("mensaje","messages.deleted.success");
+			forward = "exito";
+		
+
 		} catch (Exception e) {
 			throwExcp("messages.general.errorExcepcion", e, null); 
 		}
@@ -427,8 +430,12 @@ public class GestionCuentasBancariasAction extends MasterAction {
 				if(cuentasBancSJCS.isEmpty()){
 				
 					throw new SIGAException(UtilidadesString.getMensajeIdioma(usrBean,"facturacion.message.error.cuenta.SJCS.no.existe"));
-				}	
-	
+				}
+				
+				//Se comprueba si la cuenta tiene relacionado algún Pago SJCS pendiente de cerrar o cerrado y que no se ha generado el fichero de transferecia bancaria todavía
+				if(cuentasBancariasService.getPagosSJCSPendientesActuaciones(cuentasBancariasForm.getIdInstitucion(),cuentasBancariasForm.getBancosCodigo())>0)
+					throw new SIGAException(UtilidadesString.getMensajeIdioma(usrBean,"facturacion.message.error.cuenta.pagoSJCS.relacionado"));
+
 			}
 			
 			
