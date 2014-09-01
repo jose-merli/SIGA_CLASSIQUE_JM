@@ -68,7 +68,6 @@
 	ArrayList vSec = new ArrayList(); // valores originales formas pago secretaria
 	ArrayList vIva = new ArrayList(); // valores originales iva
 	Vector precios = new Vector(); // precios asociados
-	ArrayList sufijoSel = new ArrayList(); // valores originales sufijo
 
 	// Obtener informacion para rellenar en caso de modificacion o consulta
 	if ((modo.equalsIgnoreCase("modificar"))||(modo.equalsIgnoreCase("consulta"))){
@@ -80,10 +79,7 @@
 		
 		// cambioSituacion valor IVA
         vIva.add(row.getString(PysServiciosInstitucionBean.C_PORCENTAJEIVA));
-        
-        // Cargo el valor seleccionado del Sufijo:
-        sufijoSel.add(row.getString(PysServiciosInstitucionBean.C_SUFIJO));
-        
+
 		// Informacion sobre formas de pago internet
 		enumTemp = ((Vector)request.getAttribute("container_I")).elements();
 		if (enumTemp.hasMoreElements()){
@@ -333,14 +329,7 @@
 												<siga:ComboBD nombre = "iva" tipo="porcentajeIva" clase="boxConsulta" elementoSel="<%=vIva%>" obligatorio="true" readOnly="true"/>
 											<% } %>	
 										 <% } %>
-									</td>
-									
-									<td class="labelText">
-										<siga:Idioma key="facturacion.sufijos.literal.concepto"/>
-									</td>
-									<td class="labelText">
-										<siga:ComboBD nombre = "sufijo" ancho="175" tipo="cmbSufijos" clase="<%=estiloCombo%>" elementoSel="<%=sufijoSel%>" obligatorio="false" readonly="<%=String.valueOf(lectura)%>"  parametro="<%=institucionParam %>" />
-									</td>									
+									</td>							
 								</tr>
 								
 								<tr>
