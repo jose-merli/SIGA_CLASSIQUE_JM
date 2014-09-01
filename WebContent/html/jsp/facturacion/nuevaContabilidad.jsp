@@ -44,6 +44,7 @@
 	<!-- Incluido jquery en siga.js -->
 	
 	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js?v=${sessionScope.VERSIONJS}'/>"></script>
+	<script src="<%=app%>/html/jsp/general/validacionSIGA.jsp" type="text/javascript"></script>
 	<script type="text/javascript">		
 	
 	function confirmar()
@@ -162,10 +163,19 @@
 	<!-- Asociada al boton GuardarCerrar -->
 	function accionGuardarCerrar() 
 	{ 
-		sub(parent.document);
-		document.forms[0].submit();
-//		var f = document.forms[0].name;	
-//		document.frames.submitArea.location='<%=app%>/html/jsp/general/loadingWindowOpener.jsp?formName='+f+'&msg=facturacion.nuevaContabilidad.mensaje.generandoFicheros';
+		
+		if (compararFecha(document.forms[0].fechaDesde,document.forms[0].fechaHasta)==1) {
+			mensaje = '<siga:Idioma key="messages.fechas.rangoFechas"/>'
+			alert(mensaje);
+			fin();
+			
+		}else{
+			sub(parent.document);
+			document.forms[0].submit();
+//			var f = document.forms[0].name;	
+//			document.frames.submitArea.location='<%=app%>/html/jsp/general/loadingWindowOpener.jsp?formName='+f+'&msg=facturacion.nuevaContabilidad.mensaje.generandoFicheros';
+		}
+		
 		
 	}
 </script>
