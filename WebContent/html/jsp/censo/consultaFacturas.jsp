@@ -13,7 +13,6 @@
 <%@taglib uri = "struts-html.tld" prefix="html" %>
 <%@taglib uri = "libreria_SIGA.tld" prefix="siga" %>
 
-<%@ page import="com.atos.utils.*"%>
 <%@ page import="com.siga.Utilidades.UtilidadesHash"%>
 <%@ page import="com.siga.Utilidades.UtilidadesString"%>
 <%@ page import="com.siga.Utilidades.UtilidadesNumero"%>
@@ -25,6 +24,10 @@
 <%@ page import="java.util.Hashtable"%>
 <%@ page import="java.util.HashMap"%>
 <%@ page import="com.siga.Utilidades.PaginadorBind"%>
+<%@ page import="com.atos.utils.UsrBean"%>
+<%@ page import="com.atos.utils.ClsConstants"%>
+<%@ page import="com.atos.utils.Row"%>
+<%@ page import="com.atos.utils.GstDate"%>
 
 <%
 	String app = request.getContextPath(); 
@@ -72,10 +75,10 @@
 	}
     
     /** PAGINADOR ***/
-	Vector resultado = null;
-	String paginaSeleccionada = "";
-	String totalRegistros = "";
-	String registrosPorPagina = "";
+	Vector resultado = new Vector();
+	String paginaSeleccionada = "0";
+	String totalRegistros = "0";
+	String registrosPorPagina = "0";
 	HashMap hm = new HashMap();
 	String atributoPaginador = (String) request.getAttribute(ClsConstants.PARAM_PAGINACION);
 	if (ses.getAttribute(atributoPaginador) != null) {
@@ -87,19 +90,7 @@
 			paginaSeleccionada = String.valueOf(paginador.getPaginaActual());
 			totalRegistros = String.valueOf(paginador.getNumeroTotalRegistros());
 			registrosPorPagina = String.valueOf(paginador.getNumeroRegistrosPorPagina());
-
-		} else {
-			resultado = new Vector();
-			paginaSeleccionada = "0";
-			totalRegistros = "0";
-			registrosPorPagina = "0";
 		}
-		
-	} else {
-		resultado = new Vector();
-		paginaSeleccionada = "0";
-		totalRegistros = "0";
-		registrosPorPagina = "0";
 	}
 	
 	boolean bIncluirBajaLogica = UtilidadesString.stringToBoolean((String)request.getSession().getAttribute("bIncluirRegistrosConBajaLogica"));
@@ -114,8 +105,7 @@
 	/** PAGINADOR ***/	
 %>
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-
+	<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 
 	<title><siga:Idioma key="pys.gestionSolicitudes.titulo"/></title>
 	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
@@ -176,18 +166,18 @@
 				<input type="hidden" id="accion" name="accion" value="<%=accion%>">
 			</html:form>				
 			
-			<%
-				String tamanosCol="";
-				String nombresCol="";
-				tamanosCol="10,12,20,12,12,12,12,6,";
-				nombresCol="censo.facturacion.facturas.literal.Fecha,censo.facturacion.facturas.literal.NumeroFactura,censo.facturacion.facturas.literal.Descripcion,censo.facturacion.facturas.literal.ImporteNeto,censo.facturacion.facturas.literal.ImporteIVA,censo.facturacion.facturas.literal.ImporteTotal,censo.facturacion.facturas.literal.ImportePendiente,";
-			%>
-			
 			<siga:Table 
 			   name="tablaDatos"
 			   border="1"
-			   columnNames="<%=nombresCol %>"
-			   columnSizes="<%=tamanosCol %>">
+			   columnNames="censo.facturacion.facturas.literal.Fecha,
+			   				censo.facturacion.facturas.literal.NumeroFactura,
+			   				censo.facturacion.facturas.literal.Descripcion,
+			   				censo.facturacion.facturas.literal.ImporteNeto,
+			   				censo.facturacion.facturas.literal.ImporteIVA,
+			   				censo.facturacion.facturas.literal.ImporteTotal,
+			   				censo.facturacion.facturas.literal.ImportePendiente,
+			   				censo.facturacion.facturas.literal.Estado,"
+			   columnSizes="8,13,29,8,8,8,8,12,6,">
 			
 				<% if ((resultado == null) || (resultado.size() == 0)) { %>
 					<tr class="notFound">
@@ -209,10 +199,12 @@
 								String serie = UtilidadesHash.getString(factura, FacSerieFacturacionBean.C_NOMBREABREVIADO);
 
 								String descripcion = UtilidadesHash.getString(factura, FacFacturacionProgramadaBean.C_DESCRIPCION);
-								Double totalNeto = UtilidadesHash.getDouble(factura, "TOTALNETO");
-								Double totalIva = UtilidadesHash.getDouble(factura, "TOTALIVA");
-								Double total = UtilidadesHash.getDouble(factura, "TOTAL");
-								Double totalPagado = UtilidadesHash.getDouble(factura, "TOTALPENDIENTE");
+								Double totalNeto = UtilidadesHash.getDouble(factura, FacFacturaBean.C_IMPTOTALNETO);
+								Double totalIva = UtilidadesHash.getDouble(factura, FacFacturaBean.C_IMPTOTALIVA);
+								Double total = UtilidadesHash.getDouble(factura, FacFacturaBean.C_IMPTOTAL);
+								Double totalPagado = UtilidadesHash.getDouble(factura, FacFacturaBean.C_IMPTOTALPORPAGAR);
+								
+								String sEstado = UtilidadesHash.getString(factura, "DESCRIPCION_ESTADO");
    	 			%>
    	 				<siga:FilaConIconos fila='<%=""+i%>' botones="C" visibleEdicion="false" visibleBorrado="false" pintarEspacio="no" clase="listaNonEdit"> 
 						<td><!-- Datos ocultos tabla -->
@@ -230,6 +222,7 @@
 						<td align="right"><%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero.formatoCampo(totalIva.doubleValue()))%> &euro; </td>
 						<td align="right"><%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero.formatoCampo(total.doubleValue()))%> &euro; </td>
 						<td align="right"><%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero.formatoCampo(totalPagado.doubleValue()))%> &euro; </td>
+						<td><%=sEstado%></td>
 					</siga:FilaConIconos>
 				<%	
 			 				} // if

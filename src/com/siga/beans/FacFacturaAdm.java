@@ -642,17 +642,17 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
 							CenPersonaBean.T_NOMBRETABLA + "." + CenPersonaBean.C_APELLIDOS2 	+ ", " +
 							CenPersonaBean.T_NOMBRETABLA + "." + CenPersonaBean.C_NOMBRE 		+ ", " +
 							FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_FECHAEMISION  + ", " +
-							FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IMPTOTAL  + " as IMPTOTAL, " +
-							FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_ESTADO  + ", " +
+							FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IMPTOTAL  	+ ", " +
+							FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IMPTOTALPORPAGAR + ", " +
+							FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_ESTADO  		+ ", " +
 							FacEstadoFacturaBean.T_NOMBRETABLA + "." + FacEstadoFacturaBean.C_DESCRIPCION + " as DESCRIPCION_ESTADO, " +
 							FacEstadoFacturaBean.T_NOMBRETABLA + "." + FacEstadoFacturaBean.C_DESCRIPCION + " as DESC_ESTADO_ORIGINAL, " +
-							FacFacturacionProgramadaBean.T_NOMBRETABLA + "." + FacFacturacionProgramadaBean.C_DESCRIPCION + "";
-			
-							//"F_SIGA_DESCESTADOSFACTURA(" + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDINSTITUCION + ", " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDFACTURA + ") as DESCRIPCION_ESTADO, " +
-							//"PKG_SIGA_TOTALESFACTURA.TOTAL(" + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDINSTITUCION + ", " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDFACTURA + ") as TOTAL ";
+							FacFacturacionProgramadaBean.T_NOMBRETABLA + "." + FacFacturacionProgramadaBean.C_DESCRIPCION;
 							
-			String from = " FROM " + 
-							FacFacturaBean.T_NOMBRETABLA + ", " + CenPersonaBean.T_NOMBRETABLA+ ", " + FacEstadoFacturaBean.T_NOMBRETABLA + ", " + FacFacturacionProgramadaBean.T_NOMBRETABLA;
+			String from = " FROM " + FacFacturaBean.T_NOMBRETABLA + ", " + 
+								CenPersonaBean.T_NOMBRETABLA+ ", " + 
+								FacEstadoFacturaBean.T_NOMBRETABLA + ", " + 
+								FacFacturacionProgramadaBean.T_NOMBRETABLA;
 			contador++;
 			codigosBind.put(new Integer(contador),idInstitucion.toString());
 			String where = 	" WHERE " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDINSTITUCION + " = :" +contador; 
@@ -660,14 +660,11 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
 							" AND " + FacFacturacionProgramadaBean.T_NOMBRETABLA + "." + FacFacturacionProgramadaBean.C_IDINSTITUCION + " = " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDINSTITUCION +
 							" AND " + FacFacturacionProgramadaBean.T_NOMBRETABLA + "." + FacFacturacionProgramadaBean.C_IDSERIEFACTURACION + " = " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDSERIEFACTURACION +
 							" AND " + FacFacturacionProgramadaBean.T_NOMBRETABLA + "." + FacFacturacionProgramadaBean.C_IDPROGRAMACION + " = " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDPROGRAMACION +
-							" AND " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_ESTADO+ " = " + FacEstadoFacturaBean.T_NOMBRETABLA + "." + FacEstadoFacturaBean.C_IDESTADO;
+							" AND " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_ESTADO + " = " + FacEstadoFacturaBean.T_NOMBRETABLA + "." + FacEstadoFacturaBean.C_IDESTADO;
 
 			// Numero factura OK
 			if ((datos.getBuscarNumeroFactura() != null) && !(datos.getBuscarNumeroFactura().trim().equals(""))) {
-				
 				where += " AND ("+ComodinBusquedas.prepararSentenciaCompletaUPPER(datos.getBuscarNumeroFactura().trim(),FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_NUMEROFACTURA)+")" ;
-				
-
 			}
 
 			// Fechas OK
@@ -897,6 +894,7 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
 	 * @throws SIGAException
 	 */
 	public String getConsultaFacturasClientePeriodo (Integer idInstitucion, Long idPersona, Integer dias, Hashtable codigosBind)  throws ClsExceptions,SIGAException {
+		UsrBean user = this.usrbean;
 		
 		Vector resultados = new Vector (); 
 		//Hashtable codigosBind = new Hashtable();
@@ -910,37 +908,45 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
 							FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDPERSONA 	+ ", " +
 							FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_FECHAEMISION 	+ ", " +
 							FacSerieFacturacionBean.T_NOMBRETABLA + "." + FacSerieFacturacionBean.C_NOMBREABREVIADO	+ ", " +
-							"PKG_SIGA_TOTALESFACTURA.TOTALNETO(" + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDINSTITUCION + ", " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDFACTURA + ") as TOTALNETO, " + 
-							"PKG_SIGA_TOTALESFACTURA.TOTALIVA(" + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDINSTITUCION + ", " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDFACTURA + ") as TOTALIVA, " +
-							"PKG_SIGA_TOTALESFACTURA.TOTAL(" + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDINSTITUCION + ", " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDFACTURA + ") as TOTAL, " +
-							"PKG_SIGA_TOTALESFACTURA.TOTALPAGADO(" + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDINSTITUCION + ", " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDFACTURA + ") as TOTALPAGADO, " +
-							"PKG_SIGA_TOTALESFACTURA.PENDIENTEPORPAGAR(" + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDINSTITUCION + ", " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDFACTURA + ") as TOTALPENDIENTE, " +
-							FacFacturacionProgramadaBean.T_NOMBRETABLA + "." + FacFacturacionProgramadaBean.C_DESCRIPCION + " ";
+							FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IMPTOTALNETO + ", " + 
+							FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IMPTOTALIVA + ", " +
+							FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IMPTOTAL + ", " +
+							FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IMPTOTALPORPAGAR + ", " +
+							FacFacturacionProgramadaBean.T_NOMBRETABLA + "." + FacFacturacionProgramadaBean.C_DESCRIPCION + ", " + 
+							" F_SIGA_GETRECURSO_ETIQUETA(" + FacEstadoFacturaBean.T_NOMBRETABLA + "." + FacEstadoFacturaBean.C_DESCRIPCION + "," + user.getLanguage() + ") AS DESCRIPCION_ESTADO ";
  
-			String from = 	" FROM " + 
-							FacFacturaBean.T_NOMBRETABLA + ", " + FacSerieFacturacionBean.T_NOMBRETABLA + ", " + FacFacturacionProgramadaBean.T_NOMBRETABLA;
+			String from = 	" FROM " + FacFacturaBean.T_NOMBRETABLA + ", " + 
+								FacEstadoFacturaBean.T_NOMBRETABLA + ", " +
+								FacSerieFacturacionBean.T_NOMBRETABLA + ", " + 								
+								FacFacturacionProgramadaBean.T_NOMBRETABLA;
 			
 			contador++;
 			codigosBind.put(new Integer(contador),idInstitucion.toString());
-			String where = 	" WHERE " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDINSTITUCION + " = :"+contador;
+			String where = 	" WHERE " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDINSTITUCION + " = :" + contador;
+			
 			contador++;
 			codigosBind.put(new Integer(contador),idPersona.toString());
-					 where+=" AND " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDPERSONA + " = :"+contador;
+			where += " AND " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDPERSONA + " = :" + contador;
+			
 			if (dias!=null){
 				// jbd // Cambio la forma de calcular los ultimos 2 año, restando X dias a la fecha actual en vez de hacerlo en la consulta 
 				Calendar fechaReferencia = Calendar.getInstance();
 				fechaReferencia.add(Calendar.DAY_OF_MONTH, (-1*dias));
 				contador++;
 				codigosBind.put(new Integer(contador),UtilidadesString.formatoFecha( fechaReferencia.getTime(), ClsConstants.DATE_FORMAT_SHORT_ENGLISH));
-			 where+=" AND " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_FECHAEMISION + " > :"+contador;
+				where += " AND " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_FECHAEMISION + " > :" + contador;
 			}				 
-			     	 where+=" AND " + FacSerieFacturacionBean.T_NOMBRETABLA + "." + FacSerieFacturacionBean.C_IDINSTITUCION + " = " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDINSTITUCION +
-							" AND " + FacSerieFacturacionBean.T_NOMBRETABLA + "." + FacSerieFacturacionBean.C_IDSERIEFACTURACION + " = " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDSERIEFACTURACION +
-							" AND " + FacFacturacionProgramadaBean.T_NOMBRETABLA + "." + FacFacturacionProgramadaBean.C_IDINSTITUCION + " = " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDINSTITUCION + 
-							" AND " + FacFacturacionProgramadaBean.T_NOMBRETABLA + "." + FacFacturacionProgramadaBean.C_IDSERIEFACTURACION + " = "+ FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDSERIEFACTURACION +
-							" AND " + FacFacturacionProgramadaBean.T_NOMBRETABLA + "." + FacFacturacionProgramadaBean.C_IDPROGRAMACION + " = " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDPROGRAMACION;
+			    
+			where += " AND " + FacSerieFacturacionBean.T_NOMBRETABLA + "." + FacSerieFacturacionBean.C_IDINSTITUCION + " = " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDINSTITUCION +
+					" AND " + FacSerieFacturacionBean.T_NOMBRETABLA + "." + FacSerieFacturacionBean.C_IDSERIEFACTURACION + " = " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDSERIEFACTURACION +
+					" AND " + FacFacturacionProgramadaBean.T_NOMBRETABLA + "." + FacFacturacionProgramadaBean.C_IDINSTITUCION + " = " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDINSTITUCION + 
+					" AND " + FacFacturacionProgramadaBean.T_NOMBRETABLA + "." + FacFacturacionProgramadaBean.C_IDSERIEFACTURACION + " = "+ FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDSERIEFACTURACION +
+					" AND " + FacFacturacionProgramadaBean.T_NOMBRETABLA + "." + FacFacturacionProgramadaBean.C_IDPROGRAMACION + " = " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDPROGRAMACION +
+					" AND " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_ESTADO + " = " + FacEstadoFacturaBean.T_NOMBRETABLA + "." + FacEstadoFacturaBean.C_IDESTADO;;
 	
-			String orderBy = " ORDER BY " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_FECHAEMISION + " DESC ";
+			//String orderBy = " ORDER BY TO_NUMBER(" + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDFACTURA + ") DESC";
+			String orderBy = " ORDER BY " + FacFacturacionProgramadaBean.T_NOMBRETABLA + "." + FacFacturacionProgramadaBean.C_FECHAREALGENERACION + " DESC, " 
+					  + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_NUMEROFACTURA + " DESC ";					
 	
 			String consulta = select + from + where + orderBy;
 	
