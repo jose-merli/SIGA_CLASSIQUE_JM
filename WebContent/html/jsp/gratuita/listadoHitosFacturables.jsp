@@ -1722,7 +1722,7 @@
 	   			<table width="100%" border="0" cellspacing="0" cellpadding="0">   			
 					<tr class="filaTablaImpar">
 						<td class="labelText">
-							<input id="checkControlado" name="checkControlado" TYPE="radio" VALUE="1" onchange="gestionarControlado(this.value, false);" <%if(checkControlado.equals("1")){%>checked<%}%>>
+							<input id="checkControlado" name="checkControlado" TYPE="radio" VALUE="1" onclick="gestionarControlado(this.value, false);" <%if(checkControlado.equals("1")){%>checked<%}%>>
 							<siga:Idioma key="fcs.criteriosFacturacion.facturacionGuardias.controladaAs"/>
 						</td>
 						<td class="labelText"><siga:Idioma key="fcs.criteriosFacturacion.asistencia.asistencias"/></td>
@@ -1737,7 +1737,7 @@
 					
 					<tr class="filaTablaPar">
 						<td class="labelText" rowspan="2">
-							<input id="checkControlado" name="checkControlado" TYPE="radio" VALUE="2" onchange="gestionarControlado(this.value);" <%if(checkControlado.equals("2")){%>checked<%}%>>
+							<input id="checkControlado" name="checkControlado" TYPE="radio" VALUE="2" onclick="gestionarControlado(this.value);" <%if(checkControlado.equals("2")){%>checked<%}%>>
 							<siga:Idioma key="fcs.criteriosFacturacion.facturacionGuardias.controladaAsMin"/>
 						</td>
 						<td class="labelText"><siga:Idioma key="fcs.criteriosFacturacion.asistencia.asistencias"/></td>
@@ -1761,7 +1761,7 @@
 					
 					<tr class="filaTablaImpar">
 						<td class="labelText" rowspan="2">
-							<input id="checkControlado" name="checkControlado" TYPE="radio" VALUE="3" onchange="gestionarControlado(this.value);" <%if(checkControlado.equals("3")){%>checked<%}%>>
+							<input id="checkControlado" name="checkControlado" TYPE="radio" VALUE="3" onclick="gestionarControlado(this.value);" <%if(checkControlado.equals("3")){%>checked<%}%>>
 							<siga:Idioma key="fcs.criteriosFacturacion.facturacionGuardias.controladaAsTpMin"/>
 						</td>
 						<td class="labelText"><siga:Idioma key="fcs.criteriosFacturacion.asistencia.asistencias"/></td>
@@ -1790,7 +1790,7 @@
 					
 					<tr class="filaTablaPar">
 						<td class="labelText">
-							<input id="checkControlado" name="checkControlado" TYPE="radio" VALUE="4" onchange="gestionarControlado(this.value);" <%if(checkControlado.equals("4")){%>checked<%}%>>
+							<input id="checkControlado" name="checkControlado" TYPE="radio" VALUE="4" onclick="gestionarControlado(this.value);" <%if(checkControlado.equals("4")){%>checked<%}%>>
 							<siga:Idioma key="fcs.criteriosFacturacion.facturacionGuardias.controladaGAs"/>
 						</td>
 						<td class="labelText"><siga:Idioma key="fcs.criteriosFacturacion.asistencia.diaGuardia"/></td>
@@ -1805,7 +1805,7 @@
 										
 					<tr class="filaTablaImpar">
 						<td class="labelText" colspan="3">							
-							<input id="checkControlado" name="checkControlado" TYPE="radio" VALUE="5" onchange="gestionarControlado(this.value);" <%if(checkControlado.equals("5")){%>checked<%}%>>
+							<input id="checkControlado" name="checkControlado" TYPE="radio" VALUE="5" onclick="gestionarControlado(this.value);" <%if(checkControlado.equals("5")){%>checked<%}%>>
 							<siga:Idioma key="fcs.criteriosFacturacion.facturacionGuardias.noControlada"/>
 						</td>	
 					</tr>   							   							   							   			
