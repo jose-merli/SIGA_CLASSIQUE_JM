@@ -68,7 +68,7 @@
 					<siga:Idioma key="facturacion.cuentasBancarias.banco"/>					
 				</td>
 				<td>
-					<html:select  styleId="codigoBanco" property="codigoBanco" styleClass="boxCombo" style="width:400px;">
+					<html:select  styleId="codigoBanco" property="codigoBanco" styleClass="boxCombo" style="width:350px;">
 						<html:option value=""/>
 						<c:forEach items="${listaBancos}" var="banco">
 							<html:option value="${banco.codigo}"><c:out value="${banco.nombre}"/></html:option>
