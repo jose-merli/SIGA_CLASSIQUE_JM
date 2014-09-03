@@ -117,7 +117,7 @@
 	   				facturacion.buscarFactura.literal.Total,
 	   				facturacion.buscarFactura.literal.Pendiente,
 	   				facturacion.buscarFactura.literal.Estado,"
-	   columnSizes = "25,8,13,18,8,8,12,10">		   
+	   columnSizes = "23,8,13,18,8,8,12,10">		   
 
 <%
 		if (resultado != null && resultado.size() > 0) { 
