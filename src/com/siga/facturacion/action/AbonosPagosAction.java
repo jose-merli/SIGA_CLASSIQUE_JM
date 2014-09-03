@@ -605,8 +605,8 @@ public class AbonosPagosAction extends MasterAction {
 
 							if (facturaAdm.update(facturaBean)) {
 								// AQUI VAMOS A MODIFICAR EL VALOR DE ESTADO
-								facturaAdm.actualizarEstadoFactura(facturaBean,new Integer(this.getUserBean(request)
-												.getUserName()));
+								facturaAdm.consultarActNuevoEstadoFactura(facturaBean,new Integer(this.getUserBean(request)
+												.getUserName()),true);
 							} else {
 								throw new ClsExceptions("Error al actualizar los importes de la factura: "
 												+ facturaAdm.getError());
@@ -972,7 +972,7 @@ public class AbonosPagosAction extends MasterAction {
 					        
 					        if (facturaAdm.update(facturaBean)) {
 						        // AQUI VAMOS A MODIFICAR EL VALOR DE ESTADO
-								facturaAdm.actualizarEstadoFactura(facturaBean, new Integer(userBean.getUserName()));
+								facturaAdm.consultarActNuevoEstadoFactura(facturaBean, new Integer(userBean.getUserName()),true);
 					        } else {
 					            throw new ClsExceptions("Error al actualizar los importes de la factura: "+facturaAdm.getError());
 					        }
@@ -1130,7 +1130,7 @@ public class AbonosPagosAction extends MasterAction {
 					        
 					        if (facturaAdm.update(facturaBean)) {
 						        // AQUI VAMOS A MODIFICAR EL VALOR DE ESTADO
-								facturaAdm.actualizarEstadoFactura(facturaBean, new Integer(userBean.getUserName()));
+								facturaAdm.consultarActNuevoEstadoFactura(facturaBean, new Integer(userBean.getUserName()),true);
 					        } else {
 					            throw new ClsExceptions("Error al actualizar los importes de la factura: "+facturaAdm.getError());
 					        }

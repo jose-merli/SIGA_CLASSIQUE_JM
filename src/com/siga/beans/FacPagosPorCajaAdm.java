@@ -15,6 +15,8 @@ import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesHash;
+import com.siga.Utilidades.UtilidadesNumero;
+import com.siga.Utilidades.UtilidadesString;
 import com.siga.general.SIGAException;
 
 /**
@@ -176,8 +178,8 @@ public class FacPagosPorCajaAdm extends MasterBeanAdministrador {
 	
 	public Vector getPagos (Integer idInstitucion, String idFactura, Long idPersona)  throws ClsExceptions,SIGAException {
 		try {
-			
-            String fromFacturasTotal = " ( " +
+
+			String fromFacturasTotal = " ( " +
        				" SELECT FACTURAS." + FacFacturaBean.C_IDFACTURA + ", " +
    						" ROWNUM AS CONTADOR " +
 					" FROM ( " +
@@ -554,9 +556,81 @@ public class FacPagosPorCajaAdm extends MasterBeanAdministrador {
 			RowsContainer rc = new RowsContainer(); 
 			if (rc.query(consulta)) {
 				Vector resultados = new Vector (); 
+				
+				Double pendiente=new Double(0);
+				Double devolucionReneg=new Double(0);
+				Double importePago=new Double(0);
+				Double auxPendiente=new Double(0);
+				String tabla="";
+				
 				for (int i = 0; i < rc.size(); i++)	{
 					Hashtable aux = (Hashtable)((Row) rc.get(i)).getRow();
+					
+					tabla=UtilidadesHash.getString(aux,"TABLA").trim();
+					
+					if(tabla.startsWith(UtilidadesString.getMensajeIdioma(this.usrbean, "facturacion.pagosFactura.accion.emisionFactura")) ||  
+					   tabla.startsWith((UtilidadesString.getMensajeIdioma(this.usrbean, "facturacion.pagosFactura.accion.confirmacionFactura")))){
+						
+						pendiente =  UtilidadesHash.getDouble(aux,"IMPORTE");
+						
+						if (pendiente.doubleValue() < 0.0) {
+							pendiente = new Double(0.0);
+						}
+						aux.remove("IMPORTE");
+						aux.put("IMPORTE",new Double(0.00));
+						aux.put("IMPORTEPENDIENTE", pendiente);
+	
+					} else {
+						if (tabla.startsWith(UtilidadesString.getMensajeIdioma(this.usrbean, "facturacion.pagosFactura.accion.devolucion")) ||  
+						    tabla.startsWith((UtilidadesString.getMensajeIdioma(this.usrbean, "facturacion.pagosFactura.accion.renegociacion")))) {
+							
+							pendiente =  UtilidadesHash.getDouble(aux,"IMPORTE");
+						
+							if (pendiente.doubleValue() < 0.0) {
+								pendiente = new Double(0.0);
+							}
+							aux.remove("IMPORTE");
+							aux.put("IMPORTE",new Double(0.00));
+							aux.put("IMPORTEPENDIENTE", pendiente);
+							
+						} else {
+							
+							importePago=UtilidadesHash.getDouble(aux,"IMPORTE");//formateo
+							
+							pendiente = new Double (pendiente.doubleValue() - importePago.doubleValue());	
+							if (pendiente.doubleValue() < 0.0) {
+								pendiente = new Double(0.0);
+							}
+							auxPendiente = new Double (UtilidadesNumero.redondea(pendiente.doubleValue(),2));
+							aux.put("IMPORTEPENDIENTE", auxPendiente);
+							aux.remove("IMPORTE");
+							aux.put("IMPORTE",importePago);
+						}
+					}
+
+					//Si es una compensación se calcula el estado de la misma forma que para los abonos
+					if(tabla.startsWith(UtilidadesString.getMensajeIdioma(this.usrbean, "facturacion.pagosFactura.accion.compensacion"))){
+						
+						FacFacturaBean facBean = new FacFacturaBean();
+						
+						facBean.setImpTotalPorPagar(auxPendiente);
+						
+						if(aux.get("IDABONO_IDCUENTA")!=null)
+							facBean.setIdCuenta(UtilidadesHash.getInteger(aux,"IDABONO_IDCUENTA"));		
+						
+						facBean.setIdInstitucion(idInstitucion);
+						facBean.setIdFactura(idFactura);
+						
+						FacFacturaAdm facFactAdm= new FacFacturaAdm(this.usrbean);
+						String estado=facFactAdm.consultarActNuevoEstadoFactura(facBean,Integer.parseInt(this.usrbean.getUserName()),false);						
+						aux.remove("ESTADO");
+						aux.put("ESTADO", UtilidadesString.getMensajeIdioma(this.usrbean, estado));
+
+					}
+					
 					resultados.add(aux);
+					
+					
 				}
 				return resultados;
 			}

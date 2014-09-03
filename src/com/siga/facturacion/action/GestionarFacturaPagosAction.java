@@ -367,7 +367,7 @@ public class GestionarFacturaPagosAction extends MasterAction {
 			        	if(pagosAdm.insert(pagoBean)) {				        
 			        		if (facturaAdm.update(facturaBean)) {
 			        			// Vamos a modificar el valor de estado
-			        			facturaAdm.actualizarEstadoFactura(facturaBean, this.getUserName(request));
+			        			facturaAdm.consultarActNuevoEstadoFactura(facturaBean, this.getUserName(request),true);
 			        			t.commit();
 			        			
 			        		} else {

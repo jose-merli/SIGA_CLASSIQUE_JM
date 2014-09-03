@@ -231,10 +231,6 @@
 <%	 
 		if ((vPagos != null) && (vPagos.size() > 0)){			
 			
-			String textoEmision = UtilidadesString.getMensajeIdioma(user, "facturacion.pagosFactura.accion.emisionFactura");
-			String textoConfirmacion = UtilidadesString.getMensajeIdioma(user, "facturacion.pagosFactura.accion.confirmacionFactura");
-			String textoDevolucion = UtilidadesString.getMensajeIdioma(user, "facturacion.pagosFactura.accion.devolucion");
-			String textoRenegociacion = UtilidadesString.getMensajeIdioma(user, "facturacion.pagosFactura.accion.renegociacion");
 			String textoCompensacion = UtilidadesString.getMensajeIdioma(user, "facturacion.pagosFactura.accion.compensacion");
 			
 			for (int i = 1; i <= vPagos.size(); i++) { 					
@@ -244,7 +240,8 @@
 					String tabla = UtilidadesHash.getString(pago, "TABLA").trim();
 					String estado = UtilidadesHash.getString(pago, "ESTADO");
 					String fecha = UtilidadesHash.getString(pago, "FECHA");
-					Double importe = UtilidadesHash.getDouble(pago, "IMPORTE");
+					Double importe = (Double)pago.get("IMPORTE");
+					Double importePte =(Double)pago.get("IMPORTEPENDIENTE");
 					String tarjeta = UtilidadesHash.getString(pago, "TARJETA");
 					String numAbono = UtilidadesHash.getString(pago, "NUMEROABONO");
 					Integer idAbonoCuenta = UtilidadesHash.getInteger(pago, "IDABONO_IDCUENTA");
@@ -252,41 +249,10 @@
 					String nombreBanco=UtilidadesHash.getString(pago, "NOMBREBANCO");
 					Integer idPagoAbono=0;
 				 	String medioPago = "";
-				 	Double devolucion = new Double(0.0);
-
-					if (tabla.startsWith(textoEmision) ||  tabla.startsWith(textoConfirmacion)) {
-						
-						pendiente = importe;
-						importe = new Double(0);
-						if (pendiente.doubleValue() < 0.0) {
-							pendiente = new Double(0.0);
-						}
-						
-					} else {
-						if (tabla.startsWith(textoDevolucion)  || tabla.startsWith(textoRenegociacion)) {
-							
-							pendiente = importe;
-							importe = new Double(0.0);
-							if (pendiente.doubleValue() < 0.0) {
-								pendiente = new Double(0.0);
-							}
-							
-						} else {
-							pendiente = new Double (pendiente.doubleValue() - importe.doubleValue() + devolucion.doubleValue());
-							if (pendiente.doubleValue() < 0.0) {
-								pendiente = new Double(0.0);
-							}									
-						}
-					}
-
-					Double auxPendiente = new Double (UtilidadesNumero.redondea(pendiente.doubleValue(),2));
+				 
 					
  					if(tabla.startsWith(textoCompensacion)){
- 						
  						idPagoAbono=idPago;
-
- 						if(auxPendiente>0)
- 							estado=UtilidadesString.getMensajeIdioma(user,"facturacion.pagosFactura.estado.pendienteCobro");
  					}
 					FilaExtElement[] elementos=new FilaExtElement[1];
 					if ((idPago != null) && (idPago.intValue() > 0)||(idPagoAbono != null) && (idPagoAbono.intValue() > 0)){
@@ -314,7 +280,7 @@
 						<td><%=UtilidadesString.mostrarDatoJSP(estado)%></td>
 						<td><%=UtilidadesString.mostrarDatoJSP(nombreBanco)%></td>
 						<td align="right"><%=UtilidadesString.mostrarDatoJSP(UtilidadesString.formatoImporte(importe.doubleValue()))%>&nbsp;&euro;</td>
-						<td align="right"><%=UtilidadesString.mostrarDatoJSP(UtilidadesString.formatoImporte(auxPendiente.doubleValue()))%>&nbsp;&euro;</td>
+						<td align="right"><%=UtilidadesString.mostrarDatoJSP(UtilidadesString.formatoImporte(importePte.doubleValue()))%>&nbsp;&euro;</td>
 <%						
 						if (idPago == null || idPago.intValue()<=0){
 %>						

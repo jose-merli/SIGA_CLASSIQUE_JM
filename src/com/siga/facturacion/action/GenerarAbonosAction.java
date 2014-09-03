@@ -347,7 +347,7 @@ public class GenerarAbonosAction extends MasterAction {
 				        
 				        if (facturaAdm.update(facturaBean)) {
 					        // AQUI VAMOS A MODIFICAR EL VALOR DE ESTADO
-							facturaAdm.actualizarEstadoFactura(facturaBean, this.getUserName(request));
+							facturaAdm.consultarActNuevoEstadoFactura(facturaBean, this.getUserName(request),true);
 				        } else {
 				            throw new ClsExceptions("Error al actualizar los importes de la factura: "+facturaAdm.getError());
 				        }
@@ -371,7 +371,7 @@ public class GenerarAbonosAction extends MasterAction {
 				    Vector v = facturaAdm.selectByPK(ht);
 				    if (v!=null && v.size()>0) {
 				        facturaBean = (FacFacturaBean) v.get(0);
-						facturaAdm.actualizarEstadoFactura(facturaBean, this.getUserName(request));
+						facturaAdm.consultarActNuevoEstadoFactura(facturaBean, this.getUserName(request),true);
 			        } else {
 			            throw new ClsExceptions("Error al actualizar el estado de la factura: "+facturaAdm.getError());
 			        }

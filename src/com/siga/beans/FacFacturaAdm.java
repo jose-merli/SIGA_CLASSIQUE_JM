@@ -3083,10 +3083,12 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
 	}
 
 
-	public void actualizarEstadoFactura(FacFacturaBean facturaBean, Integer usuario) throws ClsExceptions{
+	public String consultarActNuevoEstadoFactura(FacFacturaBean facturaBean, Integer usuario, boolean actualizar) throws ClsExceptions{
+		
+		String nuevoEstado="";
+		String descEstado="";
+				
 		try {
-		    String nuevoEstado="";
-
 		    double cero=0;
 		    if (facturaBean.getImpTotalPorPagar().doubleValue()<=cero) {
 	            // Está pagada
@@ -3119,21 +3121,37 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
                     }
                 }
 	        }
-		    Hashtable ht = new Hashtable();
-		    ht.put(FacFacturaBean.C_IDINSTITUCION,facturaBean.getIdInstitucion());
-		    ht.put(FacFacturaBean.C_IDFACTURA,facturaBean.getIdFactura());
-		    Vector v = this.selectByPK(ht);
-		    if (v!=null && v.size()>0) {
-		        FacFacturaBean facturaLocalBean = (FacFacturaBean) v.get(0);
-		        facturaLocalBean.setEstado(new Integer(nuevoEstado));
-		        if (!this.update(facturaLocalBean)) {
-		            throw new ClsExceptions("Error al actualizar el estado: "+this.getError());
-		        }
-		    }	        
+
+		    if(actualizar){
+		    	
+			    Hashtable ht = new Hashtable();
+			    ht.put(FacFacturaBean.C_IDINSTITUCION,facturaBean.getIdInstitucion());
+			    ht.put(FacFacturaBean.C_IDFACTURA,facturaBean.getIdFactura());
+			    Vector v = this.selectByPK(ht);
+			    if (v!=null && v.size()>0) {
+			        FacFacturaBean facturaLocalBean = (FacFacturaBean) v.get(0);
+			        facturaLocalBean.setEstado(new Integer(nuevoEstado));
+			        if (!this.update(facturaLocalBean)) {
+			            throw new ClsExceptions("Error al actualizar el estado: "+this.getError());
+			        }
+			    }
+		    }
+		   
+		    FacEstadoFacturaAdm facEstadoFacturaAdm = new FacEstadoFacturaAdm(this.usrbean);
+		    
+		    Hashtable hte = new Hashtable();
+			hte.put(FacEstadoFacturaBean.C_IDESTADO,new Integer(nuevoEstado));
+			Vector ve = facEstadoFacturaAdm.select(hte);
+			if (ve!=null && ve.size()>0){ 
+				FacEstadoFacturaBean facEstadoFacBean=(FacEstadoFacturaBean)ve.get(0);
+				descEstado=facEstadoFacBean.getDescripcion();
+			}
+		    
+		}catch (Exception e){
+			throw new ClsExceptions(e,"Excepcion en la consulta/actualización del estado de la factura.");
 		}
-		catch (Exception e){
-			throw new ClsExceptions(e,"Excepcion en la actualización del estado de la factura.");
-		}
+
+		return descEstado;
 	}
 
 	public Hashtable getRenegociacionFactura (String institucion, String factura) throws ClsExceptions 

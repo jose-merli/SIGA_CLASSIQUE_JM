@@ -338,7 +338,7 @@ public class SIGATPVControl extends HttpServlet {
 		        
 		        if (facturaAdm.update(facturaBean)) {
 			        // AQUI VAMOS A MODIFICAR EL VALOR DE ESTADO
-					facturaAdm.actualizarEstadoFactura(facturaBean, new Integer(pagoTarjeta.getUsrBean().getUserName()));
+					facturaAdm.consultarActNuevoEstadoFactura(facturaBean, new Integer(pagoTarjeta.getUsrBean().getUserName()),true);
 		        } else {
 		            throw new ClsExceptions("Error al actualizar los importes de la factura: "+facturaAdm.getError());
 		        }
