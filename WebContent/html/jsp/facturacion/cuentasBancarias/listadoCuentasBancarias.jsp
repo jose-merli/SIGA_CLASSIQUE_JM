@@ -33,6 +33,7 @@
 		<html:hidden styleId="modo" property="modo" />
 		<html:hidden styleId="idInstitucion" property="idInstitucion" />
 		<html:hidden styleId="idCuentaBancaria" property="idCuentaBancaria" />
+		<html:hidden styleId="uso" property="uso" />
 		<input type="hidden" id="actionModal" name="actionModal" />
 	</html:form>
 
@@ -69,6 +70,7 @@
 							<c:out value="${cuentaBancaria.bancoNombre}"/>
 							<input type="hidden" name="idCuentaBancaria_${status.count}" id="idCuentaBancaria_${status.count}"  value="${cuentaBancaria.idCuentaBancaria}">
 							<input type="hidden" name ="idInstitucion_${status.count}"   id ="idInstitucion_${status.count}"    value ="${cuentaBancaria.idInstitucion}"/>
+							<input type="hidden" name ="uso_${status.count}"   id ="uso_${status.count}"    value ="${cuentaBancaria.uso}"/>
 						</td>
 						<td align='left'><c:out value="${cuentaBancaria.IBAN}"/></td>
 						<td align="right"><c:out value="${cuentaBancaria.comisionimporte}"/>&nbsp;&euro;</td>
@@ -136,8 +138,14 @@
 		function editar(fila) {
 			var idCuentaBancariaFila = document.getElementById("idCuentaBancaria_"+fila).value;
 			var idInstitucion = document.getElementById("idInstitucion_"+fila).value;
+			if(document.getElementById("uso_"+fila)!=null){
+				var usoFila = document.getElementById("uso_"+fila).value;
+				document.forms['CuentasBancarias'].uso.value = usoFila;
+			}
+				
 			document.forms['CuentasBancarias'].idInstitucion.value=idInstitucion;			
 			document.forms['CuentasBancarias'].idCuentaBancaria.value = idCuentaBancariaFila;
+			
 			document.forms['CuentasBancarias'].modo.value="editar";
 		  	var resultado = ventaModalGeneral(document.forms['CuentasBancarias'].name,"G");
 		  	if(resultado && resultado=='MODIFICADO'){

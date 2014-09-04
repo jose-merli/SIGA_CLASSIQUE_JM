@@ -222,7 +222,7 @@
 			
 			if(document.getElementById("sjcs").checked) {
 				document.getElementById("comboSufijossjcs").disabled =false;
-								
+				
 			}else {
 				document.getElementById("comboSufijossjcs").disabled=true;
 				document.getElementById("comboSufijossjcs").value="";
@@ -268,6 +268,7 @@
 			<html:hidden property="cuentaBanco" value ="${CuentasBancariasForm.cuentaBanco}"/>
 			<html:hidden property="digControlBanco" value ="${CuentasBancariasForm.digControlBanco}"/>
 			<html:hidden property="listaSeries"/>
+			<html:hidden property="uso" value ="${CuentasBancariasForm.uso}"/>
 		</c:if>
 	
 		<c:set var="disabledFecha" value="false" />
@@ -325,16 +326,7 @@
 				</td>				
 				<td>
 					<html:text styleId="cuentaContableTarjeta" property="cuentaContableTarjeta"	name="CuentasBancariasForm" size="20" maxlength="20" styleClass="box" />
-				</td>
-
-				<c:if test="${CuentasBancariasForm.modo != 'insertar'}">						
-					<td class="labelText">
-						<siga:Idioma key="general.code"/>
-					</td> 
-					<td>
-						<html:text styleId="codigo" property="idCuentaBancaria"	name="CuentasBancariasForm" size="20" maxlength="20" styleClass="boxConsulta" readonly="true" />
-					</td>
-				</c:if>									
+				</td>					
 			</tr>
 			
 			<c:if test="${CuentasBancariasForm.modo != 'insertar' && CuentasBancariasForm.cuentaBanco != null &&  CuentasBancariasForm.cuentaBanco != ''}">	
@@ -422,12 +414,7 @@
 								</td>
 								<td>
 									<html:select styleId="comboSufijossjcs" property="idSufijosjcs" value="${CuentasBancariasForm.idSufijosjcs}" styleClass="boxCombo" style="width:200px;">
-										<s:if test="${empty CuentasBancariasForm.idSufijosjcs}">
-											<s:if test="${empty CuentasBancariasForm.sjcs}">
-												<html:option value=""><c:out value="--Seleccionar"/></html:option>
-											</s:if>	
-										</s:if>
-										
+										<html:option value=""><c:out value=""/></html:option>
 										<c:forEach items="${listaSufijos}" var="sufijoCmb">
 											<html:option value="${sufijoCmb.idSufijo}">
 											<c:if	test="${sufijoCmb.sufijo.trim().length()>0}">
@@ -490,7 +477,7 @@
 														<c:out value="${sufijoSerieCmb.sufijo} ${sufijoSerieCmb.concepto}"/>
 													</c:if>
 													<c:if	test="${sufijoSerieCmb.sufijo.trim().length()==0}">
-														&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<c:out value="${sufijoSerieCmb.concepto}"/>
+														&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<c:out value="${sufijoSerieCmb.concepto}"/>
 													</c:if>
 													</html:option>
 												</c:forEach>
@@ -593,16 +580,35 @@
 							alert(mensaje);
 							fin();
 							return false;
-						}
-							
-						
+					}	
 				}
-				
+
 				document.CuentasBancariasForm.listaSeries.value=datos;
 <% 
 			}
 %>			
+			//No se permite la baja si la cuenta tiene relacionadas series o abonos SJCS pendientes de actuaciones
+			if(document.CuentasBancariasForm.fechaBaja.value.length>0)
+			{
+				if(contadorLista.valueOf()>0){
+					mensaje = "<siga:Idioma key='facturacion.message.error.cuenta.serie.relacionada'/>";
+					alert(mensaje);
+					fin();
+					return false;
+				 
+				}else{
+
+					if((document.CuentasBancariasForm.uso.value!=null)&&(document.CuentasBancariasForm.uso.value!="0")&&(document.CuentasBancariasForm.uso.value!="")){
+							mensaje = "<siga:Idioma key='facturacion.message.error.cuenta.pagoSJCS.relacionado'/>";
+							alert(mensaje);
+							fin();
+							return false;
+					}
 				
+				}
+		
+			}
+			document.CuentasBancariasForm.modo.value="modificar";
 			document.CuentasBancariasForm.submit();
 	
 		}else{
@@ -651,8 +657,6 @@
  		document.forms[0].submit();
    		 		
  	}
-
-	
 </script>
 
 </body>

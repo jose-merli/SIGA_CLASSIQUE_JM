@@ -262,6 +262,9 @@ public class GestionCuentasBancariasAction extends MasterAction {
 		
 		CuentasBancariasForm cuentasBancariasForm = (CuentasBancariasForm) formulario;
 		try {
+			
+			
+			String Uso = cuentasBancariasForm.getUso();
 			BusinessManager bm = getBusinessManager();
 			CuentasBancariasService cuentasBancariasService = (CuentasBancariasService)bm.getService(CuentasBancariasService.class);
 			VoUiService<CuentasBancariasForm, CuentaBancariaVo> voService = new CuentaBancariaVoService();
@@ -269,6 +272,7 @@ public class GestionCuentasBancariasAction extends MasterAction {
 			cuentasBancariasForm = voService.getVo2Form(cuentaBancariaVo);
 			cuentasBancariasForm.setIBAN(cuentaBancariaVo.getIban());
 			cuentasBancariasForm.setModo("modificar");
+			cuentasBancariasForm.setUso(Uso);
 			request.setAttribute("seriesFacturacion", cuentasBancariasService.getSeriesCuentaBancaria(cuentaBancariaVo));
 			request.setAttribute("CuentasBancariasForm", cuentasBancariasForm);
 			
@@ -437,8 +441,7 @@ public class GestionCuentasBancariasAction extends MasterAction {
 					throw new SIGAException(UtilidadesString.getMensajeIdioma(usrBean,"facturacion.message.error.cuenta.pagoSJCS.relacionado"));
 
 			}
-			
-			
+
 			CuentaBancariaVo cuentaBancariaVo =  voService.getForm2Vo(cuentasBancariasForm);
 			cuentaBancariaVo.setUsumodificacion(new Integer(usrBean.getUserName()));
 			cuentasBancariasService.update(cuentaBancariaVo);
@@ -450,7 +453,7 @@ public class GestionCuentasBancariasAction extends MasterAction {
 			serieBancariaVo.setIdinstitucion((short) Integer.parseInt(cuentasBancariasForm.getIdInstitucion()));
 			
 			String listaseries=cuentasBancariasForm.getListaSeries();
-			
+						
 			int numSeries=0;
 			String puntoComa=";";
 			Integer idserie=0;
@@ -602,7 +605,7 @@ public class GestionCuentasBancariasAction extends MasterAction {
 			serieFacBancoAdm.insert(serieFacturacionBancoBean);
 			tx.commit();
 			forward = exitoModal("messages.updated.success",request);
-			
+						
 		}catch (Exception e){
 			throw new SIGAException("messages.general.error", e, null); 			
 		}
