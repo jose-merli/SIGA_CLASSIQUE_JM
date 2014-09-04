@@ -46,7 +46,7 @@
 	<!-- FIN: TITULO Y LOCALIZACION -->
 </head>
 
-<body onLoad="ajusteAlto('resultado');">
+<body onLoad="ajusteAlto('resultado');accionRadio();">
 
 	<!-- ******* BOTONES Y CAMPOS DE BUSQUEDA ****** -->
 	<bean:define id="path" name="org.apache.struts.action.mapping.instance"	property="path" scope="request" />
@@ -110,21 +110,36 @@
 					<table class="tablaCampos" align="center" border="0">
 						<!-- OPCION 1 -->
 						<tr>
-							<td colspan="8">
+							<td class="labelText" colspan="6">
+								<input type="radio" name='radioAccion' value="0" onclick="accionRadio()" checked="checked"/>
+								<label for="radiofechaCargo"><siga:Idioma key="facturacion.fechasficherobancario.unica"/></label>
+							</td>
+						</tr>	
+						<tr>			
+							<td class="labelText" width ="5%">&nbsp;</td>				
+							<td colspan="6" >
 								<siga:BusquedaPersona tipo="colegiado"	idPersona="letrado" preFunction="preFunctionDeudor" postFunction="postFunctionDeudor"/>
 							</td>
 						</tr>	
 							
 						<!-- OPCION 2 -->	
 						<tr>
+							<td class="labelText" colspan="6">
+								<input type="radio" id="radioMinimas" name='radioAccion' value="1" onclick="accionRadio()" />
+								<label for="radioMinimas"><siga:Idioma key="facturacion.fechasficherobancario.minimas"/></label>
+							</td>
+						</tr>
+						
+						<tr>
+							<td class="labelText" width ="5%">&nbsp;</td>
 							<td class="labelText" nowrap width ="10%">&nbsp;<siga:Idioma key="facturacion.consultamorosos.literal.nombre"/></td>
 							<td>
-								<html:text property="interesadoNombre" style="width:180px" maxlength="100" styleClass="box"/>
+								<html:text styleId="interesadoNombre" property="interesadoNombre" style="width:180px" maxlength="100" styleClass="box"/>
 							</td>	
 						
 							<td class="labelText" nowrap><siga:Idioma key="facturacion.consultamorosos.literal.apellidos"/></td>
 							<td>
-								<html:text property="interesadoApellidos" style="width:280px" maxlength="200" styleClass="box"/>
+								<html:text styleId="interesadoApellidos" property="interesadoApellidos" style="width:280px" maxlength="200" styleClass="box"/>
 							</td>	
 							
 							<td class="labelText" width ="15%"><siga:Idioma key="censo.consultaDatosColegiacion.literal.estadoCol" /></td>
@@ -145,7 +160,7 @@
 								<siga:Idioma key="facturacion.consultamorosos.literal.denominacion"/>
 							</td>
 							<td colspan="7">	
-								<html:text  property="denominacionDeudor" size="70" maxlength="100" styleClass="box"></html:text>
+								<siga:Select id="denominacionDeudor" queryId="getColegiosAbreviados" width="400"/>		
 							</td>	
 							</tr>
 					</table>
@@ -265,6 +280,36 @@
 				jQuery("#cmbEstadoColegial").removeAttr("disabled");
 			}
 		}			
+		
+		function accionRadio(){		
+			if (jQuery("input[name='radioAccion']:checked").val() == "0") {
+				jQuery('#numeroNifTagBusquedaPersonas').removeAttr('disabled').removeAttr('readonly');
+				 var bLimpiar = document.getElementsByName("limpiar"); 
+				 bLimpiar[0].disabled='';
+				 var bBuscar = document.getElementsByName("buscarCliente");
+				 bBuscar[0].disabled='';
+				
+				jQuery('#cmbEstadoColegial').attr('disabled','disabled');
+				jQuery('#interesadoApellidos').attr('disabled','disabled').attr('readonly','readonly');
+				jQuery('#interesadoNombre').attr('disabled','disabled').attr('readonly','readonly');
+				jQuery('#cmbEstadoColegial').val('');
+				jQuery('#interesadoApellidos').val('');
+				jQuery('#interesadoNombre').val('');				
+				
+			} else {
+				jQuery('#numeroNifTagBusquedaPersonas').attr('disabled','disabled').attr('readonly','readonly');
+				limpiarPersona ();
+				var bLimpiar = document.getElementsByName("limpiar"); 
+				bLimpiar[0].disabled='disabled';
+				var bBuscar = document.getElementsByName("buscarCliente");
+				bBuscar[0].disabled='disabled';
+				
+				jQuery('#cmbEstadoColegial').removeAttr('disabled');
+				jQuery('#interesadoApellidos').removeAttr('disabled').removeAttr('readonly');
+				jQuery('#interesadoNombre').removeAttr('disabled').removeAttr('readonly');
+			}
+		}		
+		
 	</script>
 	<!-- FIN: SCRIPTS BOTONES BUSQUEDA -->
 

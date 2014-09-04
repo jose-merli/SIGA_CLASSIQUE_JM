@@ -92,7 +92,7 @@
 	<!-- FIN: TITULO Y LOCALIZACION -->	
 </head>
 
-<body onload="cargarChecks();checkTodos()">	
+<body onload="cargarChecks();checkTodos();accionRadio();">	
 	<!-- INICIO: LISTA DE VALORES -->
 	<!-- Tratamiento del tagTabla y tagFila para la formacion de la lista de cabeceras fijas -->
 		 
@@ -539,6 +539,10 @@
 				alert(unescape('<siga:Idioma key="messages.updated.success"/>'), 'success');				
 				refrescarLocal();
 			}
+		}
+		
+		function accionRadio(){
+			parent.accionRadio();
 		}
 	</script>
 	

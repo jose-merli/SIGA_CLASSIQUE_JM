@@ -1576,8 +1576,9 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
 		    String denominacion = form.getDenominacionDeudor();
 		    if(denominacion!=null && !denominacion.equalsIgnoreCase("")){
 		        contador++;
-			    codigos.put(new Integer(contador),"%"+denominacion.toLowerCase()+"%");
-		    	sql += " AND lower(DEUDOR."+CenPersonaBean.C_NOMBRE+"||' '|| DEUDOR."+CenPersonaBean.C_APELLIDOS1+") like :"+contador;
+			    codigos.put(new Integer(contador),denominacion);
+			    sql += " and DEUDOR."+CenPersonaBean.C_IDPERSONA;
+			    sql += " = :" + contador ;
 		    }
 		    
 		    if(form.getCmbEstadosFactura()!=null && !form.getCmbEstadosFactura().equalsIgnoreCase("")){
