@@ -60,7 +60,7 @@
    			<c:otherwise>
 				<tr>		
 					<td class="labelText">
-						<siga:Idioma key="facturacion.nuevaPrevisionFacturacion.literal.serieFacturacion"/>
+						<siga:Idioma key="facturacion.nuevaPrevisionFacturacion.literal.serieFacturacion"/>&nbsp;(*)
 					</td>
 					<td>
 						<bean:define id="listaSeriesDisponibles" name="listaSeriesDisponibles" scope="request"/>
@@ -75,7 +75,7 @@
 				</tr>
 				<tr>
 					<td class="labelText">
-						<siga:Idioma key="facturacion.sufijos.literal.sufijo"/>
+						<siga:Idioma key="facturacion.sufijos.literal.sufijo"/>&nbsp;(*)
 					</td>
 					<td>
 					<bean:define id="listaSufijos" name="listaSufijos" scope="request"/> 

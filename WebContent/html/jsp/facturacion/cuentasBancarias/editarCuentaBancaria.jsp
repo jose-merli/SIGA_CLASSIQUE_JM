@@ -636,14 +636,19 @@
 	function accionRelacionarSerieFact(){
  		document.CuentasBancariasForm.modo.value = "seriesDisponibles";
 		var resultado=ventaModalGeneral(document.CuentasBancariasForm.name,"P");
-		refrescarLocal();	
+  		if (resultado=="MODIFICADO"){
+  			refrescarLocal();
+  		}
+				
 	}
 	
-	function refrescarLocal(){
-		parent.close();
-		document.CuentasBancariasForm.modo.value="editar";
-		var resultado=ventaModalGeneral(document.CuentasBancariasForm.name,"G");
-	}
+ 	function refrescarLocal(){
+ 		document.forms[0].target = '_self';
+ 		document.forms[0].action="FAC_CuentasBancarias.do";
+ 		document.forms[0].modo.value="editar";
+ 		document.forms[0].submit();
+   		 		
+ 	}
 
 	
 </script>
