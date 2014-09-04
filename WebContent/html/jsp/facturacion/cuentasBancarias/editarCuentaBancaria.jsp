@@ -222,7 +222,7 @@
 			
 			if(document.getElementById("sjcs").checked) {
 				document.getElementById("comboSufijossjcs").disabled =false;
-				
+								
 			}else {
 				document.getElementById("comboSufijossjcs").disabled=true;
 				document.getElementById("comboSufijossjcs").value="";
@@ -423,9 +423,11 @@
 								<td>
 									<html:select styleId="comboSufijossjcs" property="idSufijosjcs" value="${CuentasBancariasForm.idSufijosjcs}" styleClass="boxCombo" style="width:200px;">
 										<s:if test="${empty CuentasBancariasForm.idSufijosjcs}">
-											<html:option value=""><c:out value=""/></html:option>
+											<s:if test="${empty CuentasBancariasForm.sjcs}">
+												<html:option value=""><c:out value="--Seleccionar"/></html:option>
+											</s:if>	
 										</s:if>
-						
+										
 										<c:forEach items="${listaSufijos}" var="sufijoCmb">
 											<html:option value="${sufijoCmb.idSufijo}">
 											<c:if	test="${sufijoCmb.sufijo.trim().length()>0}">
@@ -480,7 +482,7 @@
 										<td align='left'>	
 											<html:select styleId="comboSufijosSerie_${status.count}" property="idSufijoSerie" value="${serieFacturacion.idsufijo}" styleClass="boxCombo" style="width:200px;">
 												<s:if test="${empty serieFacturacion.idsufijo}">
-													<html:option value=""><c:out value=""/></html:option>
+													<html:option value=""><c:out value="--Seleccionar"/></html:option>
 												</s:if>
 												<c:forEach items="${listaSufijos}" var="sufijoSerieCmb">											
 													<html:option value="${sufijoSerieCmb.idSufijo}">
