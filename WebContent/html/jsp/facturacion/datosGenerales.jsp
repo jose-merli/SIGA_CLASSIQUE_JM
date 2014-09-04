@@ -708,10 +708,8 @@
 							<input type="hidden" id="<%=idsufijodefBanco%>" value="<%=idsufijoBancoIni%>">
 							<bean:define id="listaSufijos" name="listaSufijos" scope="request"/>
 								<html:select styleId="<%=idComboSuf%>" name = "comboSufijos" property="idSufijo" value="<%=idsufijoBancoIni%>" styleClass="boxCombo" disabled="<%=combodeshabilitado%>" style="width:200px;">
-								<% if (idsufijoBancoIni.equals("")||(!bsel)){ %>
-									<html:option value=""><c:out value=""/></html:option>
-								<% }%>
-								<c:forEach items="${listaSufijos}" var="sufijoSerieCmb">											
+								<html:option value=""><c:out value=""/></html:option> 	
+								<c:forEach items="${listaSufijos}" var="sufijoSerieCmb">												
 									<html:option value="${sufijoSerieCmb.idSufijo}">										
 										<c:if	test="${sufijoSerieCmb.sufijo.trim().length()>0}">
 											<c:out value="${sufijoSerieCmb.sufijo} ${sufijoSerieCmb.concepto}"/>
