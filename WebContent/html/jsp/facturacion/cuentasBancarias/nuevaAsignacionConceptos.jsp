@@ -80,7 +80,7 @@
 					<td>
 					<bean:define id="listaSufijos" name="listaSufijos" scope="request"/> 
 					<html:select styleId="comboSufijos" property="idSufijoSerie" value="" styleClass="boxCombo" style="width:200px;">
-					<html:option value=""><c:out value=""/></html:option>
+					<html:option value=""><c:out value="--Seleccionar"/></html:option>
 					<c:forEach items="${listaSufijos}" var="sufijoSerieCmb">
 						<html:option value="${sufijoSerieCmb.idSufijo}">
 						<c:if	test="${sufijoSerieCmb.sufijo.trim().length()>0}">

@@ -37,7 +37,7 @@
 		//MODO NUEVO:
 		if (modo.equalsIgnoreCase("nuevo")) {
 			accion = "insertar";
-		//MODO EDITAR / CONSULTAR:
+		//MODO EDITAR / CONSULTAR:	
 		} else {
 			claseSufijo="boxConsulta";
 			lecturaSufijo = true;
@@ -70,25 +70,29 @@
 
 	<!-- Validaciones en Cliente -->
 	<html:javascript formName="sufijosForm" staticJavascript="false" />  
-	<script src="<%=app%>/html/js/validacionStruts.js" type="text/javascript"></script>
-	<script src="<%=app%>/html/js/validation.js" type="text/javascript"></script>
-
+	<script type="text/javascript" src="<html:rewrite page='/html/js/validacionStruts.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/jsp/general/validacionSIGA.jsp'/>"></script>	
+	<script type="text/javascript" src="<html:rewrite page='/html/js/validation.js'/>"></script>
 	<!-- Aqui se reescriben las funciones que vayamos a utilizar -->
 	<script language="JavaScript">
 
-		<!-- Asociada al boton Volver -->
+// 		Asociada al boton Volver
 		function accionCerrar(){ 
 			window.top.close();
 		}	
 
-		<!-- Asociada al boton Reset -->
+// 		Asociada al boton Reset
 		function accionRestablecer(){ 
 			sufijosForm.reset();
 		}	
 	
-		<!-- Asociada al boton GuardarCerrar -->
+// 		Asociada al boton GuardarCerrar 
 		function accionGuardarCerrar() {
 			sub();
+			if (!validateSufijosForm(document.sufijosForm)){
+				fin();
+				return false;
+			}			
 			while((sufijosForm.sufijo.value.length <3)) {
 				sufijosForm.sufijo.value = "0"+sufijosForm.sufijo.value;
 			}
