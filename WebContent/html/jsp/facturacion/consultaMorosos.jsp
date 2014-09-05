@@ -112,7 +112,7 @@
 						<tr>
 							<td class="labelText" colspan="6">
 								<input type="radio" name='radioAccion' value="0" onclick="accionRadio()" checked="checked"/>
-								<label for="radiofechaCargo"><siga:Idioma key="facturacion.fechasficherobancario.unica"/></label>
+								<label for="radiofechaCargo"><siga:Idioma key="facturacion.consultamorosos.literal.busquedaexacta"/></label>
 							</td>
 						</tr>	
 						<tr>			
@@ -126,7 +126,7 @@
 						<tr>
 							<td class="labelText" colspan="6">
 								<input type="radio" id="radioMinimas" name='radioAccion' value="1" onclick="accionRadio()" />
-								<label for="radioMinimas"><siga:Idioma key="facturacion.fechasficherobancario.minimas"/></label>
+								<label for="radioMinimas"><siga:Idioma key="facturacion.consultamorosos.literal.busquedaaproximada"/></label>
 							</td>
 						</tr>
 						
