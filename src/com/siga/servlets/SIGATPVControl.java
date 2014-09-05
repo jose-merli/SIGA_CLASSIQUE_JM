@@ -16,6 +16,7 @@ import javax.transaction.UserTransaction;
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.UsrBean;
+import com.siga.Utilidades.UtilidadesNumero;
 import com.siga.beans.FacFacturaAdm;
 import com.siga.beans.FacFacturaBean;
 import com.siga.beans.FacPagosPorCajaAdm;
@@ -331,10 +332,15 @@ public class SIGATPVControl extends HttpServlet {
 		        facturaBean = (FacFacturaBean) v.get(0);
 		        
 		        // AQUI VAMOS A MODIFICAR LOS VALORES DE IMPORTES
-		        facturaBean.setImpTotalPagadoPorCaja(new Double(facturaBean.getImpTotalPagadoPorCaja().doubleValue()+new Double(pagoTarjeta.getImporte()).doubleValue()));
-		        facturaBean.setImpTotalPagadoSoloTarjeta(new Double(facturaBean.getImpTotalPagadoSoloTarjeta().doubleValue()+new Double(pagoTarjeta.getImporte()).doubleValue()));
-		        facturaBean.setImpTotalPagado(new Double(facturaBean.getImpTotalPagado().doubleValue()+new Double(pagoTarjeta.getImporte()).doubleValue()));
-		        facturaBean.setImpTotalPorPagar(new Double(facturaBean.getImpTotalPorPagar().doubleValue()-new Double(pagoTarjeta.getImporte()).doubleValue()));
+		        Double ImpTotalPagadoPorCaja = UtilidadesNumero.redondea(facturaBean.getImpTotalPagadoPorCaja().doubleValue()+new Double(pagoTarjeta.getImporte()).doubleValue(), 2);
+		        Double ImpTotalPagadoSoloTarjeta = UtilidadesNumero.redondea(facturaBean.getImpTotalPagadoSoloTarjeta().doubleValue()+new Double(pagoTarjeta.getImporte()).doubleValue(), 2);
+		        Double ImpTotalPagado = UtilidadesNumero.redondea(facturaBean.getImpTotalPagado().doubleValue()+new Double(pagoTarjeta.getImporte()).doubleValue(), 2);
+		        Double ImpTotalPorPagar = UtilidadesNumero.redondea(facturaBean.getImpTotalPorPagar().doubleValue()-new Double(pagoTarjeta.getImporte()).doubleValue(), 2);		        
+		        
+		        facturaBean.setImpTotalPagadoPorCaja(new Double(ImpTotalPagadoPorCaja));
+		        facturaBean.setImpTotalPagadoSoloTarjeta(new Double(ImpTotalPagadoSoloTarjeta));
+		        facturaBean.setImpTotalPagado(new Double(ImpTotalPagado));
+		        facturaBean.setImpTotalPorPagar(new Double(ImpTotalPorPagar));
 		        
 		        if (facturaAdm.update(facturaBean)) {
 			        // AQUI VAMOS A MODIFICAR EL VALOR DE ESTADO

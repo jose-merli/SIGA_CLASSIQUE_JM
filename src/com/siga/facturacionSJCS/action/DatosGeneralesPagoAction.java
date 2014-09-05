@@ -1877,13 +1877,11 @@ public class DatosGeneralesPagoAction extends MasterAction {
 							importeAnteriorAplicado = aplicaMovimientosVariosAdm.getSumaMovimientosAplicados(movimientosBean.getIdInstitucion().toString(), 
 									auxIdMovimiento.toString(), movimientosBean.getIdPersona().toString());
 	
-							importeTotalMovimiento = importeTotalMovimiento
-									- importeAnteriorAplicado;
-	
+							importeTotalMovimiento = UtilidadesNumero.redondea(importeTotalMovimiento- importeAnteriorAplicado, 2);
+							
 							importeMovimientos += importeTotalMovimiento;
 	
-							importeAplicado = importeTotalMovimiento
-									- (importeSJCS + importeMovimientos);
+							importeAplicado = UtilidadesNumero.redondea(importeTotalMovimiento- (importeSJCS + importeMovimientos), 2);
 	
 							if ((importeSJCS + importeMovimientos) <= 0) {
 	
@@ -1892,8 +1890,7 @@ public class DatosGeneralesPagoAction extends MasterAction {
 								this.insertarAplicacionMovimientos(movimientosBean,
 										idPago, importeAplicado, usr);
 	
-								importeMovimientos = (importeAplicado
-										- (importeTotalMovimiento - (importeSJCS + importeMovimientos)) - importeSJCS);
+								importeMovimientos = UtilidadesNumero.redondea((importeAplicado-(importeTotalMovimiento - (importeSJCS + importeMovimientos)) - importeSJCS), 2);
 	
 								noAplica = true;
 
@@ -2499,16 +2496,22 @@ public class DatosGeneralesPagoAction extends MasterAction {
 			if (vAbono != null && vAbono.size() > 0) {
 				bAbono = (FacAbonoBean) vAbono.get(0);
 			}
-
+			
+			//Redondeo el importe porque se estaban quedando en estado pendientes por caja abonos con importe 0.00 
+			UtilidadesNumero.redondea(importeNeto,2);
+			UtilidadesNumero.redondea(importeIVA,2);
+			Double importeAbono=UtilidadesNumero.redondea((importeNeto + importeIVA),2);
+			
 			// RGG 29/05/2009 Cambio de funciones de abono
-			bAbono.setImpTotal(new Double(importeNeto + importeIVA));
-			bAbono.setImpPendientePorAbonar(new Double(importeNeto + importeIVA));
+			bAbono.setImpTotal(new Double(importeAbono));
+			bAbono.setImpPendientePorAbonar(new Double(importeAbono));
 			bAbono.setImpTotalAbonado(new Double(0));
 			bAbono.setImpTotalAbonadoEfectivo(new Double(0));
 			bAbono.setImpTotalAbonadoPorBanco(new Double(0));
 			bAbono.setImpTotalIva(new Double(importeIVA));
 			bAbono.setImpTotalNeto(new Double(importeNeto));
-			if ((importeNeto + importeIVA) <= 0) {
+
+			if (importeAbono <= 0) {
 				// pagado
 				bAbono.setEstado(new Integer(1));
 			} else {

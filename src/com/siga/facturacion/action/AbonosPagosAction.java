@@ -533,10 +533,15 @@ public class AbonosPagosAction extends MasterAction {
 				if (vAbono != null && vAbono.size() > 0) {
 					bAbono = (FacAbonoBean) vAbono.get(0);
 				}
+				
+				Double impPendientePorAbonar = UtilidadesNumero.redondea(bAbono.getImpPendientePorAbonar().doubleValue()- new Double(miForm.getImporte()).doubleValue(), 2);
+				Double impTotalAbonado = UtilidadesNumero.redondea(bAbono.getImpTotalAbonado().doubleValue()+ new Double(miForm.getImporte()).doubleValue(), 2);
+				Double impTotalAbonadoEfectivo = UtilidadesNumero.redondea(bAbono.getImpTotalAbonadoEfectivo().doubleValue()+ new Double(miForm.getImporte()).doubleValue(), 2);
 
-				bAbono.setImpPendientePorAbonar(new Double(bAbono.getImpPendientePorAbonar().doubleValue()- new Double(miForm.getImporte()).doubleValue()));
-				bAbono.setImpTotalAbonado(new Double(bAbono.getImpTotalAbonado().doubleValue()+ new Double(miForm.getImporte()).doubleValue()));
-				bAbono.setImpTotalAbonadoEfectivo(new Double(bAbono.getImpTotalAbonadoEfectivo().doubleValue()+ new Double(miForm.getImporte()).doubleValue()));
+				bAbono.setImpPendientePorAbonar(new Double(impPendientePorAbonar));
+				bAbono.setImpTotalAbonado(new Double(impTotalAbonado));
+				bAbono.setImpTotalAbonadoEfectivo(new Double(impTotalAbonadoEfectivo));
+				
 				if (bAbono.getImpPendientePorAbonar().doubleValue() <= 0) {
 					// pagado
 					bAbono.setEstado(new Integer(1));
@@ -568,7 +573,9 @@ public class AbonosPagosAction extends MasterAction {
 
 			if (vFactura != null && vFactura.size() > 0) {
 
-				if (impTotalFactura - impTotalPagadoFactura > 0) {
+				Double impPteFac = UtilidadesNumero.redondea(impTotalFactura - impTotalPagadoFactura, 2);
+
+				if (impPteFac > 0) {
 					// Cargo la tabla hash con los valores del formulario para
 					// insertar en la BBDD (pago por caja de la factura)
 					datosPagoFactura.put(FacPagosPorCajaBean.C_IDINSTITUCION,miForm.getIdInstitucion());
@@ -593,15 +600,13 @@ public class AbonosPagosAction extends MasterAction {
 							facturaBean = (FacFacturaBean) v.get(0);
 
 							// AQUI VAMOS A MODIFICAR LOS VALORES DE IMPORTES
-							facturaBean.setImpTotalCompensado(new Double(facturaBean.getImpTotalCompensado().doubleValue()
-											+ (new Double((String) datosPagoFactura.get(FacPagosPorCajaBean.C_IMPORTE))).doubleValue()));
-							facturaBean.setImpTotalPagado(new Double(facturaBean.getImpTotalPagado().doubleValue()
-													+ (new Double(
-															(String) datosPagoFactura
-																	.get(FacPagosPorCajaBean.C_IMPORTE))).doubleValue()));
-							facturaBean.setImpTotalPorPagar(new Double(facturaBean.getImpTotalPorPagar().doubleValue()
-													- (new Double((String) datosPagoFactura
-																	.get(FacPagosPorCajaBean.C_IMPORTE))).doubleValue()));
+							Double impTotalCompensadoFac = UtilidadesNumero.redondea(facturaBean.getImpTotalCompensado().doubleValue()+ (new Double((String) datosPagoFactura.get(FacPagosPorCajaBean.C_IMPORTE))).doubleValue(), 2);
+							Double impTotalPagadoFac = UtilidadesNumero.redondea(facturaBean.getImpTotalPagado().doubleValue()+ (new Double((String) datosPagoFactura.get(FacPagosPorCajaBean.C_IMPORTE))).doubleValue(), 2);
+							Double impTotalPorPagarFac = UtilidadesNumero.redondea(facturaBean.getImpTotalPorPagar().doubleValue()- (new Double((String) datosPagoFactura.get(FacPagosPorCajaBean.C_IMPORTE))).doubleValue(), 2);
+
+							facturaBean.setImpTotalCompensado(new Double(impTotalCompensadoFac));
+							facturaBean.setImpTotalPagado(new Double(impTotalPagadoFac));
+							facturaBean.setImpTotalPorPagar(new Double(impTotalPorPagarFac));
 
 							if (facturaAdm.update(facturaBean)) {
 								// AQUI VAMOS A MODIFICAR EL VALOR DE ESTADO
@@ -630,9 +635,8 @@ public class AbonosPagosAction extends MasterAction {
 						facturaBean = (FacFacturaBean) v.get(0);
 
 						// AQUI VAMOS A MODIFICAR LOS VALORES DE IMPORTES
-						facturaBean.setImpTotalCompensado(new Double(
-								facturaBean.getImpTotalCompensado().doubleValue()
-										+ (new Double((String) miForm.getImporte())).doubleValue()));
+						Double impTotalCompensadoFac = UtilidadesNumero.redondea(facturaBean.getImpTotalCompensado().doubleValue()+ (new Double((String) miForm.getImporte())).doubleValue(), 2);	
+						facturaBean.setImpTotalCompensado(new Double(impTotalCompensadoFac));
 						facturaBean.setImpTotalPagado(new Double(facturaBean.getImpTotalPagado().doubleValue()));
 						facturaBean.setImpTotalPorPagar(new Double(facturaBean.getImpTotalPorPagar().doubleValue()));
 
@@ -911,8 +915,10 @@ public class AbonosPagosAction extends MasterAction {
 						    bAbono = (FacAbonoBean) vAbono.get(0);
 						}
 						
-					    bAbono.setImpPendientePorAbonar(new Double(bAbono.getImpPendientePorAbonar().doubleValue()-importeCompensado));
-					    bAbono.setImpTotalAbonado(new Double(bAbono.getImpTotalAbonado().doubleValue()+importeCompensado));
+						Double impPendientePorAbonar= UtilidadesNumero.redondea(bAbono.getImpPendientePorAbonar().doubleValue()-importeCompensado,2);
+					    bAbono.setImpPendientePorAbonar(new Double(impPendientePorAbonar));
+					    Double impTotalAbonado= UtilidadesNumero.redondea(bAbono.getImpTotalAbonado().doubleValue()+importeCompensado,2);
+					    bAbono.setImpTotalAbonado(new Double(impTotalAbonado));
 					    if (bAbono.getImpPendientePorAbonar().doubleValue()<=0) {
 					        // pagado
 					        bAbono.setEstado(new Integer(1));
@@ -966,9 +972,13 @@ public class AbonosPagosAction extends MasterAction {
 					        facturaBean = (FacFacturaBean) v.get(0);
 					        
 					        // AQUI VAMOS A MODIFICAR LOS VALORES DE IMPORTES
-					        facturaBean.setImpTotalCompensado(new Double(facturaBean.getImpTotalCompensado().doubleValue()+(new Double((String)datosPagoFactura.get(FacPagosPorCajaBean.C_IMPORTE))).doubleValue()));
-					        facturaBean.setImpTotalPagado(new Double(facturaBean.getImpTotalPagado().doubleValue()+(new Double((String)datosPagoFactura.get(FacPagosPorCajaBean.C_IMPORTE))).doubleValue()));
-					        facturaBean.setImpTotalPorPagar(new Double(facturaBean.getImpTotalPorPagar().doubleValue()-(new Double((String)datosPagoFactura.get(FacPagosPorCajaBean.C_IMPORTE))).doubleValue()));
+					        Double impTotalCompensadoFac= UtilidadesNumero.redondea(facturaBean.getImpTotalCompensado().doubleValue()+(new Double((String)datosPagoFactura.get(FacPagosPorCajaBean.C_IMPORTE))).doubleValue(),2);
+					        Double impTotalPagadoFac= UtilidadesNumero.redondea(facturaBean.getImpTotalPagado().doubleValue()+(new Double((String)datosPagoFactura.get(FacPagosPorCajaBean.C_IMPORTE))).doubleValue(),2);
+					        Double impTotalPorPagarFac= UtilidadesNumero.redondea(facturaBean.getImpTotalPorPagar().doubleValue()-(new Double((String)datosPagoFactura.get(FacPagosPorCajaBean.C_IMPORTE))).doubleValue(),2);
+					        
+					        facturaBean.setImpTotalCompensado(new Double(impTotalCompensadoFac));
+					        facturaBean.setImpTotalPagado(new Double(impTotalPagadoFac));
+					        facturaBean.setImpTotalPorPagar(new Double(impTotalPorPagarFac));
 					        
 					        if (facturaAdm.update(facturaBean)) {
 						        // AQUI VAMOS A MODIFICAR EL VALOR DE ESTADO
@@ -990,6 +1000,7 @@ public class AbonosPagosAction extends MasterAction {
 			}
 			// calculo cuanto dinero se ha compensado
 			resultado=cantidadOriginal-cantidadPendiente;
+			UtilidadesNumero.redondea(resultado, 2);
 			
 		} 
 		catch (Exception e) { 
@@ -1023,14 +1034,7 @@ public class AbonosPagosAction extends MasterAction {
 			
 			// Obtengo factura asociada del abono si procede
 			Hashtable refAbono=((Row)adminAbono.getAbono(institucion,abono).firstElement()).getRow();
-			
-			
-			
-			
-			
-			
-			
-				
+
 				Hashtable datosPagoFactura=new Hashtable();
 				// Mientras disponga de cantidad pendiente compenso/pago facturas 
 				// Restriccion impuesta por inconsistencia de la BBDD de pruebas
@@ -1068,8 +1072,11 @@ public class AbonosPagosAction extends MasterAction {
 						    bAbono = (FacAbonoBean) vAbono.get(0);
 						}
 						
-					    bAbono.setImpPendientePorAbonar(new Double(bAbono.getImpPendientePorAbonar().doubleValue()-importeCompensado));
-					    bAbono.setImpTotalAbonado(new Double(bAbono.getImpTotalAbonado().doubleValue()+importeCompensado));
+					    Double impPendientePorAbonar= UtilidadesNumero.redondea(bAbono.getImpPendientePorAbonar().doubleValue()-importeCompensado,2);
+					    Double impTotalAbonado= UtilidadesNumero.redondea(bAbono.getImpTotalAbonado().doubleValue()+importeCompensado,2);
+
+						bAbono.setImpPendientePorAbonar(new Double(impPendientePorAbonar));
+					    bAbono.setImpTotalAbonado(new Double(impTotalAbonado));
 					    bAbono.setImpTotalAbonadoEfectivo(new Double(importeCompensado));
 					    if (bAbono.getImpPendientePorAbonar().doubleValue()<=0) {
 					        // pagado
@@ -1124,9 +1131,13 @@ public class AbonosPagosAction extends MasterAction {
 					        facturaBean = (FacFacturaBean) v.get(0);
 					        
 					        // AQUI VAMOS A MODIFICAR LOS VALORES DE IMPORTES
-					        facturaBean.setImpTotalCompensado(new Double(facturaBean.getImpTotalCompensado().doubleValue()+(new Double((String)datosPagoFactura.get(FacPagosPorCajaBean.C_IMPORTE))).doubleValue()));
-					        facturaBean.setImpTotalPagado(new Double(facturaBean.getImpTotalPagado().doubleValue()+(new Double((String)datosPagoFactura.get(FacPagosPorCajaBean.C_IMPORTE))).doubleValue()));
-					        facturaBean.setImpTotalPorPagar(new Double(facturaBean.getImpTotalPorPagar().doubleValue()-(new Double((String)datosPagoFactura.get(FacPagosPorCajaBean.C_IMPORTE))).doubleValue()));
+					        Double impTotalCompensadoFac= UtilidadesNumero.redondea(facturaBean.getImpTotalCompensado().doubleValue()+(new Double((String)datosPagoFactura.get(FacPagosPorCajaBean.C_IMPORTE))).doubleValue(),2);
+					        Double impTotalPagadoFac= UtilidadesNumero.redondea(facturaBean.getImpTotalPagado().doubleValue()+(new Double((String)datosPagoFactura.get(FacPagosPorCajaBean.C_IMPORTE))).doubleValue(),2);
+					        Double impTotalPorPagarFac= UtilidadesNumero.redondea(facturaBean.getImpTotalPorPagar().doubleValue()-(new Double((String)datosPagoFactura.get(FacPagosPorCajaBean.C_IMPORTE))).doubleValue(),2);
+
+					        facturaBean.setImpTotalCompensado(new Double(impTotalCompensadoFac));
+					        facturaBean.setImpTotalPagado(new Double(impTotalPagadoFac));
+					        facturaBean.setImpTotalPorPagar(new Double(impTotalPorPagarFac));
 					        
 					        if (facturaAdm.update(facturaBean)) {
 						        // AQUI VAMOS A MODIFICAR EL VALOR DE ESTADO

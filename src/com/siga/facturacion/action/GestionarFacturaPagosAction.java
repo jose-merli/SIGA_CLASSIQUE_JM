@@ -39,6 +39,7 @@ import com.atos.utils.Row;
 import com.atos.utils.UsrBean;
 import com.bea.common.security.xacml.IOException;
 import com.siga.Utilidades.UtilidadesHash;
+import com.siga.Utilidades.UtilidadesNumero;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.beans.CenColegiadoAdm;
 import com.siga.beans.CenCuentasBancariasAdm;
@@ -349,10 +350,15 @@ public class GestionarFacturaPagosAction extends MasterAction {
 		    	facturaBean = (FacFacturaBean) v.get(0);
 		        
 		        // AQUI VAMOS A MODIFICAR LOS VALORES DE IMPORTES
-		        facturaBean.setImpTotalPagadoPorCaja(new Double(facturaBean.getImpTotalPagadoPorCaja().doubleValue()+miForm.getDatosPagosCajaImporteCobrado().doubleValue()));
-		        facturaBean.setImpTotalPagadoSoloCaja(new Double(facturaBean.getImpTotalPagadoSoloCaja().doubleValue()+miForm.getDatosPagosCajaImporteCobrado().doubleValue()));
-		        facturaBean.setImpTotalPagado(new Double(facturaBean.getImpTotalPagado().doubleValue()+miForm.getDatosPagosCajaImporteCobrado().doubleValue()));
-		        facturaBean.setImpTotalPorPagar(new Double(facturaBean.getImpTotalPorPagar().doubleValue()-miForm.getDatosPagosCajaImporteCobrado().doubleValue()));
+		        Double impTotalPagadoPorCajaFac = UtilidadesNumero.redondea(facturaBean.getImpTotalPagadoPorCaja().doubleValue()+miForm.getDatosPagosCajaImporteCobrado().doubleValue(), 2);
+				Double impTotalPagadoSoloCajaFac = UtilidadesNumero.redondea(facturaBean.getImpTotalPagadoSoloCaja().doubleValue()+miForm.getDatosPagosCajaImporteCobrado().doubleValue(),2);
+				Double impTotalPagadoFac = UtilidadesNumero.redondea(facturaBean.getImpTotalPagado().doubleValue()+miForm.getDatosPagosCajaImporteCobrado().doubleValue(),2);
+		    	Double impTotalPorPagarFac = UtilidadesNumero.redondea(facturaBean.getImpTotalPorPagar().doubleValue()-miForm.getDatosPagosCajaImporteCobrado().doubleValue(),2);
+		    	
+		    	facturaBean.setImpTotalPagadoPorCaja(new Double(impTotalPagadoPorCajaFac));
+		        facturaBean.setImpTotalPagadoSoloCaja(new Double(impTotalPagadoSoloCajaFac));
+		        facturaBean.setImpTotalPagado(new Double(impTotalPagadoFac));
+		        facturaBean.setImpTotalPorPagar(new Double(impTotalPorPagarFac));
 		        
 		        if (facturaBean.getImpTotalPorPagar() >= 0) {			
 		        	

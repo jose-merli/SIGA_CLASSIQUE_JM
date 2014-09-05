@@ -22,6 +22,7 @@ import org.apache.struts.action.*;
 import com.atos.utils.*;
 import com.siga.Utilidades.PaginadorCaseSensitive;
 import com.siga.Utilidades.UtilidadesHash;
+import com.siga.Utilidades.UtilidadesNumero;
 import com.siga.beans.*;
 import com.siga.general.*;
 import com.siga.facturacion.form.GenerarAbonosForm;
@@ -341,9 +342,13 @@ public class GenerarAbonosAction extends MasterAction {
 				        facturaBean = (FacFacturaBean) v.get(0);
 				        
 				        // AQUI VAMOS A MODIFICAR LOS VALORES DE IMPORTES
-				        facturaBean.setImpTotalCompensado(new Double(facturaBean.getImpTotalCompensado().doubleValue()-importeCompensado));
-				        facturaBean.setImpTotalPagado(new Double(facturaBean.getImpTotalPagado().doubleValue()-importeCompensado));
-				        facturaBean.setImpTotalPorPagar(new Double(facturaBean.getImpTotalPorPagar().doubleValue()+importeCompensado));
+				        Double impTotalCompensadoFac = UtilidadesNumero.redondea(facturaBean.getImpTotalCompensado().doubleValue()-importeCompensado, 2);
+				        Double impTotalPagadoFac = UtilidadesNumero.redondea(facturaBean.getImpTotalPagado().doubleValue()-importeCompensado,2);
+				        Double impTotalPorPagarFac = UtilidadesNumero.redondea(facturaBean.getImpTotalPorPagar().doubleValue()+importeCompensado,2);
+
+				        facturaBean.setImpTotalCompensado(new Double(impTotalCompensadoFac));
+				        facturaBean.setImpTotalPagado(new Double(impTotalPagadoFac));
+				        facturaBean.setImpTotalPorPagar(new Double(impTotalPorPagarFac));
 				        
 				        if (facturaAdm.update(facturaBean)) {
 					        // AQUI VAMOS A MODIFICAR EL VALOR DE ESTADO
