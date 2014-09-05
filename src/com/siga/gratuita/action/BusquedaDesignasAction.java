@@ -1292,8 +1292,16 @@ public class BusquedaDesignasAction extends MasterAction {
 					designaBean.setIdInstitucionJuzgado(null);
 				}	
 			} else {
-				designaBean.setIdJuzgado(null);
-				designaBean.setIdInstitucionJuzgado(null);
+				if(datosHash.get("IDJUZGADO")!=null && !((String) datosHash.get("IDJUZGADO")).equals("")){
+					idJuzgado = new Integer((String) datosHash.get("IDJUZGADO"));
+					idInstitucionJuzgado = new Integer((String) datosHash.get("IDINSTITUCION_JUZG"));
+					designaBean.setIdJuzgado(new Long(idJuzgado));
+					designaBean.setIdInstitucionJuzgado(new Integer(idInstitucionJuzgado));
+					
+				}else{
+					designaBean.setIdJuzgado(null);
+					designaBean.setIdInstitucionJuzgado(null);
+				}
 			}			
 
 			designaBean.setFechaAlta("SYSDATE");

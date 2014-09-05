@@ -368,6 +368,7 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 					entrada.put(ScsDesignaBean.C_IDJUZGADO, "");
 					entrada.put(ScsDesignaBean.C_IDINSTITUCIONJUZGADO, "");
 				}	
+				entrada.remove("JUZGADO");
 			} 
 			String idPretension =  ((String)entrada.get("IDPRETENSION"));
 			if (idPretension!=null && !idPretension.equals("")) {

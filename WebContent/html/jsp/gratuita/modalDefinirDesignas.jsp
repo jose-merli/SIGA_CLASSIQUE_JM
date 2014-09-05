@@ -92,7 +92,7 @@
 		//request.setAttribute("juzgadoAsistencia", miform.getJuzgadoAsi()+ "," + miform.getJuzgadoInstitucionAsi());
 		String idsJuzgadoAsistencia[] = juzgadoAsistencia.split(","); 
 		idJuzgado = idsJuzgadoAsistencia[0];
-		elementoSelJuzgado.add(0,"{\"idjuzgado\":\""+idJuzgado+"\",\"idinstitucion\":\""+idsJuzgadoAsistencia[1]+"\",\"fechadesdevigor\":\""+fechaVigor+"\",\"fechahastavigor\":\""+fechaVigor+"\"}");
+		elementoSelJuzgado.add(0,"{\"idjuzgadosel\":\""+idJuzgado+"\",\"idinstitucion\":\""+idsJuzgadoAsistencia[1]+"\",\"fechadesdevigor\":\""+fechaVigor+"\",\"fechahastavigor\":\""+fechaVigor+"\"}");
 		
 	}
 	
@@ -119,12 +119,7 @@
 	}
 	
 	String comboJuzgados = "getJuzgadosJurisdiccionNuevaDesigna";
-   	String comboModulos = "getProcedimientosEnVigenciaNuevaDesigna";
-   	String comboModulosParentQueryIds = "idjuzgadosel,fechadesdevigor,fechahastavigor";
-   	String comboPretensionesEjis= "getPretensionesNuevaDesignaEjisModulosFiltros";
    	
-	String comboPretensiones = "getPretensionesNuevaDesigna";
-	String comboPretensionesParentQueryIds = null;
 	
 	String paramsTurnosJSON = "{\"idturno\":\""+idTurnoSeleccionado+"\"";
 	paramsTurnosJSON += ",\"fechadesdevigor\":\""+fechaVigor+"\"";
@@ -137,31 +132,15 @@
 	paramsJuzgadoJSON += ",\"fechahastavigor\":\""+fechaVigor+"\"";
 	paramsJuzgadoJSON += ",\"idjuzgado\":\""+idJuzgado+"\"}";
 	
-	String idProcedimientoParamsJSON = "{\"idjuzgadosel\":\""+idJuzgado+"\"";
-	idProcedimientoParamsJSON += ",\"fechadesdevigor\":\""+fechaVigor+"\"";
-	idProcedimientoParamsJSON += ",\"fechahastavigor\":\""+fechaVigor+"\"}";	
+		
 
-	String idPretensionParamsJSON ="";
+	
 	boolean obligatoriojuzgado=false;
 	
 	
-	if (ejisActivo>0 || pcajgActivo == 4){
-		comboPretensiones = comboPretensionesEjis;
-		comboPretensionesParentQueryIds = "idjuzgado";
-		
-		idPretensionParamsJSON += "{\"idjuzgado\":\""+idJuzgado+"\"}";
-
-	} else {
-		comboPretensionesParentQueryIds = "";
-		idPretensionParamsJSON = "";
-	}
 	
-	ArrayList vPretension = new ArrayList();
-	String idPretension = (String)request.getAttribute("idPretension");	
-	if(idPretension==null||idPretension.equals("")){
-		idPretension = "-1";
-	}
-	vPretension.add(idPretension); 
+	
+	 
 	
 	String asterisco = "&nbsp(*)&nbsp";
 	
@@ -256,7 +235,7 @@
 <body onload="cargarCliente()">
 
 <% if(elementoSelJuzgado!=null && elementoSelJuzgado.size()>0){	%>
-	<input type="hidden" id = "idJuzgadoSeleccionado" value = '<%=(String)elementoSelJuzgado.get(0)%>'>
+	<input type="hidden" id = "idJuzgadoSelected" value = '<%=(String)elementoSelJuzgado.get(0)%>'>
 <%}%>
 
 
@@ -407,13 +386,13 @@
 								</td>
 							
 								<td>
-									<siga:Select id="juzgado" queryId="<%=comboJuzgados%>" params="<%=paramsJuzgadoJSON%>" parentQueryParamIds="idjuzgado,fechadesdevigor,fechahastavigor,idturno" required="true" selectedIds="<%=elementoSelJuzgado%>"  showSearchBox="true" searchkey="CODIGOEXT2" searchBoxMaxLength="10" searchBoxWidth="8" width="515" required="true" childrenIds="idPretension,idProcedimiento"/>		
+									<siga:Select id="juzgado" onLoadCallback="seleccionarJuzgadoInicial();" queryId="<%=comboJuzgados%>" params="<%=paramsJuzgadoJSON%>" parentQueryParamIds="idjuzgado,fechadesdevigor,fechahastavigor,idturno" required="true" selectedIds="<%=elementoSelJuzgado%>"  showSearchBox="true" searchkey="CODIGOEXT2" searchBoxMaxLength="10" searchBoxWidth="8" width="515" required="true" childrenIds="idPretension,idProcedimiento"/>		
 								</td>
 							<%}else{%>
 								</td>
 					
 								<td>
-									<siga:Select id="juzgado" queryId="<%=comboJuzgados%>" params="<%=paramsJuzgadoJSON%>" parentQueryParamIds="idjuzgado,fechadesdevigor,fechahastavigor,idturno" required="true" selectedIds="<%=elementoSelJuzgado%>" showSearchBox="true" searchkey="CODIGOEXT2" searchBoxMaxLength="10" searchBoxWidth="8" width="515"  childrenIds="idPretension,idProcedimiento"/>		
+									<siga:Select id="juzgado" onLoadCallback="seleccionarJuzgadoInicial();" queryId="<%=comboJuzgados%>" params="<%=paramsJuzgadoJSON%>" parentQueryParamIds="idjuzgado,fechadesdevigor,fechahastavigor,idturno" required="true" selectedIds="<%=elementoSelJuzgado%>" showSearchBox="true" searchkey="CODIGOEXT2" searchBoxMaxLength="10" searchBoxWidth="8" width="515"  childrenIds="idPretension,idProcedimiento"/>		
 								</td>
 							<%}%>
 						 
@@ -426,40 +405,7 @@
 		</td>
 	</tr>
 	
-	<tr>
-		<td class="labelText">
-			<siga:Idioma key="gratuita.actuacionesDesigna.literal.modulo" />
-			<% if (obligatorioModulo) { %>
-		 		<%= asterisco %>
-		 	</td>
-			<td>
-				<siga:Select id="idProcedimiento" queryId="<%=comboModulos%>" params="<%=idProcedimientoParamsJSON%>" parentQueryParamIds="<%=comboModulosParentQueryIds%>"  required="true"  width="490"/>
-			</td>
-			<%} else { %>
-		 		</td>
-			<td>
-				<siga:Select id="idProcedimiento" queryId="<%=comboModulos%>" params="<%=idProcedimientoParamsJSON%>" parentQueryParamIds="<%=comboModulosParentQueryIds%>"   width="490"/>
-			</td>
-			<% } %>
-			
-	</tr>
-	<tr>
-		<td class="labelText">	
-			<siga:Idioma key='gratuita.actuacionesDesigna.literal.pretensiones'/>
-			<% if (obligatorioProcedimiento) { %>
-		 		<%= asterisco %>
-		 		</td>				
-				<td >
-					<siga:Select id="idPretension" queryId="<%=comboPretensiones%>"  parentQueryParamIds="<%=comboPretensionesParentQueryIds %>" params="<%=idPretensionParamsJSON%>" selectedIds="<%=vPretension%>" required="true" width="490" />
-				</td>
-			<%}else { %>
-		 		</td>				
-				<td >
-					<siga:Select id="idPretension" queryId="<%=comboPretensiones%>"  parentQueryParamIds="<%=comboPretensionesParentQueryIds %>" params="<%=idPretensionParamsJSON%>" selectedIds="<%=vPretension%>"  width="490" />
-				</td>
-			<% } %>
-		
-	</tr>
+	
 
 </html:form>
 	
@@ -496,11 +442,7 @@
 				if(<%=obligatoriojuzgado%> && document.getElementById("juzgado").value=="")										
 					error += "<siga:Idioma key='gratuita.editarDesigna.juzgado'/>"+ '\n';
 			
-				if (<%=obligatorioModulo%> && document.getElementById("idProcedimiento").value=="")
-					error += "<siga:Idioma key='errors.required' arg0='gratuita.actuacionesDesigna.literal.modulo'/>"+ '\n';
 				
-				if (<%=obligatorioProcedimiento%> && document.getElementById("idPretension").value=="")
-					error += "<siga:Idioma key='errors.required' arg0='gratuita.actuacionesDesigna.literal.pretensiones'/>"+ '\n';
 			
 			
 				
@@ -548,7 +490,12 @@
 			document.forms[1].reset();
 			seleccionComboSiga("juzgado",-1);
 		}
-		
+		function seleccionarJuzgadoInicial(){
+			var idJuzgadoSelected = jQuery('#idJuzgadoSelected').val();
+			jQuery('#juzgado').val(idJuzgadoSelected);
+			
+			
+		}
 		<!-- Funcion asociada a boton buscar -->
 		// documen
 		
