@@ -545,9 +545,12 @@ public class FacPagosPorCajaAdm extends MasterBeanAdministrador {
 								" AND pc." + FacPagosPorCajaBean.C_IDABONO+ " = aef." + FacPagoAbonoEfectivoBean.C_IDABONO + 
 								" AND pc." + FacPagosPorCajaBean.C_IDABONO+ " = ab." + FacAbonoBean.C_IDABONO + 
 								" AND pc." + FacPagosPorCajaBean.C_IDPAGOABONO+ " = aef." + FacPagoAbonoEfectivoBean.C_IDPAGOABONO + 
-								" AND (SELECT COUNT("+FacAbonoBean.C_IDABONO +") FROM " + FacAbonoBean.T_NOMBRETABLA +
-									    " WHERE " + FacAbonoBean.C_IDABONO + "IN(pc." + FacPagosPorCajaBean.C_IDABONO +","+ "aef." + FacPagoAbonoEfectivoBean.C_IDABONO +") "+
-									    "  AND " + FacAbonoBean.C_IDINSTITUCION + "=" +idInstitucion + ") = 0 " +
+								" AND (" +
+										" SELECT COUNT(" + FacAbonoBean.C_IDABONO + ") " +
+										" FROM " + FacAbonoBean.T_NOMBRETABLA +
+										" WHERE " + FacAbonoBean.C_IDABONO + " IN (pc." + FacPagosPorCajaBean.C_IDABONO + ", aef." + FacPagoAbonoEfectivoBean.C_IDABONO + ") " +
+										    " AND " + FacAbonoBean.C_IDINSTITUCION + " = " +idInstitucion + 
+								    ") = 0 " +
 								" AND ab." + FacAbonoBean.C_IDPAGOSJG + " IS NOT NULL ";
 			String consulta8 = select8 + from8 + where8;	
 			
