@@ -162,10 +162,23 @@
 	}
 	
 	function miSubmitFormConModo (fila, modo) {
-	   var datos;
-	   datos = document.getElementById('tablaDatosDinamicosD');
-	   datos.value = ""; 
-	   preparaDatos(fila,'tablaResultados', datos);
+		var datos;
+		datos = document.getElementById('tablaDatosDinamicosD');
+		datos.value = ""; 
+		var j;
+		var tabla;
+		tabla = document.getElementById('tablaResultados');
+		var flag = true;
+
+		j = 1;
+		while (flag) {
+		  var aux = 'oculto' + fila + '_' + j;
+		  var oculto = document.getElementById(aux);
+		  if (oculto == null)  { flag = false; }
+		  else { datos.value = datos.value + oculto.value + ','; }
+		  j++;
+		}
+		datos.value = datos.value + "%";
 	  
 	   document.forms[0].modo.value = modo;
 	   document.forms[0].submit();
