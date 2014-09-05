@@ -3758,12 +3758,8 @@
 
 	<!-- INICIO: sufijosForm david.sanchezp 27-10-2005 -->
 			<form name="sufijosForm">
-                <field property = "sufijo" depends = "required,mask">
+                <field property = "sufijo" depends = "required">
                     <arg0 key="facturacion.sufijos.literal.sufijo"/>
-                   	<var>
-			                <var-name>mask</var-name>
-			                <var-value>${sufijoFacturacion}</var-value>
-			              </var>
                 </field>
                 <field property = "concepto" depends = "required">
                     <arg0 key="facturacion.sufijos.literal.concepto"/>
