@@ -33,6 +33,7 @@ import com.atos.utils.UsrBean;
 import com.siga.Utilidades.PaginadorCaseSensitive;
 import com.siga.Utilidades.UtilidadesBDAdm;
 import com.siga.Utilidades.UtilidadesHash;
+import com.siga.Utilidades.UtilidadesNumero;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.beans.CenBancosAdm;
 import com.siga.beans.CenColegiadoAdm;
@@ -712,9 +713,15 @@ public class FicheroBancarioAbonosAction extends MasterAction{
 			if (vAbono!=null && vAbono.size()>0) {
 				bAbono = (FacAbonoBean) vAbono.get(0);
 			}
-			bAbono.setImpPendientePorAbonar(new Double(bAbono.getImpPendientePorAbonar().doubleValue()-importeAbonado));
-			bAbono.setImpTotalAbonado(new Double(bAbono.getImpTotalAbonado().doubleValue() + importeAbonado));
-			bAbono.setImpTotalAbonadoPorBanco(new Double(bAbono.getImpTotalAbonadoPorBanco().doubleValue() + importeAbonado));
+			
+			Double impPendientePorAbonar= UtilidadesNumero.redondea(bAbono.getImpPendientePorAbonar().doubleValue()-importeAbonado, 2);
+			Double impTotalAbonado= UtilidadesNumero.redondea(bAbono.getImpTotalAbonado().doubleValue() + importeAbonado, 2);
+			Double impTotalAbonadoPorBanco= UtilidadesNumero.redondea(bAbono.getImpTotalAbonadoPorBanco().doubleValue() + importeAbonado, 2);
+			
+			bAbono.setImpPendientePorAbonar(new Double(impPendientePorAbonar));
+			bAbono.setImpTotalAbonado(new Double(impTotalAbonado));
+			bAbono.setImpTotalAbonadoPorBanco(new Double(impTotalAbonadoPorBanco));
+			
 			if (bAbono.getImpPendientePorAbonar().doubleValue()<=0) {
 				// pagado
 				bAbono.setEstado(new Integer(1));
