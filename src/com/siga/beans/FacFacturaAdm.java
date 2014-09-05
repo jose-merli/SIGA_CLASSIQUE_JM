@@ -1577,7 +1577,7 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
 		    if(denominacion!=null && !denominacion.equalsIgnoreCase("")){
 		        contador++;
 			    codigos.put(new Integer(contador),denominacion);
-			    sql += " and DEUDOR."+CenPersonaBean.C_IDPERSONA;
+			    sql += " and F."+FacFacturaBean.C_IDPERSONADEUDOR;
 			    sql += " = :" + contador ;
 		    }
 		    
