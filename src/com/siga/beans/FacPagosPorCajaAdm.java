@@ -479,7 +479,7 @@ public class FacPagosPorCajaAdm extends MasterBeanAdministrador {
 			String consulta7 = select7 + from7 + where7;		
 			
 			// Obtención anulaciones de comision
-			String select71 = " SELECT 9 + 10 * (FACTURAS_TOTAL.CONTADOR - 1) AS IDTABLA, " +
+			String select71 = " SELECT 9 + 10 * FACTURAS_TOTAL.CONTADOR AS IDTABLA, " +
 					" F_SIGA_GETRECURSO_ETIQUETA('facturacion.pagosFactura.accion.anulacion'," + this.usrbean.getLanguage() + ") AS TABLA, " +
 					" ( " +
 						" SELECT F_SIGA_GETRECURSO_ETIQUETA (" + FacEstadoFacturaBean.T_NOMBRETABLA + "." + FacEstadoFacturaBean.C_DESCRIPCION + "," + this.usrbean.getLanguage() + ") " +
@@ -506,10 +506,10 @@ public class FacPagosPorCajaAdm extends MasterBeanAdministrador {
 			String from71 = 	" FROM " + FacFacturaBean.T_NOMBRETABLA + " facturaHija " + ", " + 
 							FacFacturaBean.T_NOMBRETABLA + " facturaPadre " + ", " +	
 							fromFacturasTotal;
-			String where71 = " WHERE facturaPadre." + FacFacturaBean.C_IDINSTITUCION + " = " + idInstitucion + 
-						" AND facturaPadre." + FacFacturaBean.C_IDFACTURA + " = FACTURAS_TOTAL." + FacFacturaBean.C_IDFACTURA +
-						" AND facturaHija." + FacFacturaBean.C_IDINSTITUCION + " = facturaPadre." + FacFacturaBean.C_IDINSTITUCION +
-						" AND facturaHija." + FacFacturaBean.C_IDFACTURA + " = facturaPadre." + FacFacturaBean.C_COMISIONIDFACTURA +
+			String where71 = " WHERE facturaHija." + FacFacturaBean.C_IDINSTITUCION + " = " + idInstitucion + 
+						" AND facturaHija." + FacFacturaBean.C_IDFACTURA + " = FACTURAS_TOTAL." + FacFacturaBean.C_IDFACTURA +
+						" AND facturaPadre." + FacFacturaBean.C_IDINSTITUCION + " = facturaHija." + FacFacturaBean.C_IDINSTITUCION +
+						" AND facturaPadre." + FacFacturaBean.C_COMISIONIDFACTURA + " = facturaHija." + FacFacturaBean.C_IDFACTURA +
 						" AND facturaHija." + FacFacturaBean.C_ESTADO + " = " + ClsConstants.ESTADO_FACTURA_ANULADA;			
 			String consulta71 = select71 + from71 + where71;			
 			
