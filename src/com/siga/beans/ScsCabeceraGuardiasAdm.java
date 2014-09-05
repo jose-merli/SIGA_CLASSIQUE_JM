@@ -71,7 +71,6 @@ public class ScsCabeceraGuardiasAdm extends MasterBeanAdministrador {
 				ScsCabeceraGuardiasBean.C_IDINSTITUCION, 
 				ScsCabeceraGuardiasBean.C_IDTURNO,
 				ScsCabeceraGuardiasBean.C_IDGUARDIA, 
-				ScsCabeceraGuardiasBean.C_IDCALENDARIOGUARDIAS, 
 				ScsCabeceraGuardiasBean.C_IDPERSONA, 
 				ScsCabeceraGuardiasBean.C_FECHA_INICIO};
 		return campos;
