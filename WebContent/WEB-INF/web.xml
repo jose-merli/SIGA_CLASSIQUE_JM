@@ -154,10 +154,11 @@
 	</servlet>
 
 
-		<servlet>
+	<servlet>
 		<servlet-name>SIGASvlProcesoAutomaticoFacturacion</servlet-name>
 		<servlet-class>com.siga.servlets.SIGASvlProcesoAutomaticoFacturacion</servlet-class>
-		<load-on-startup>4</load-on-startup> </servlet>
+		<load-on-startup>4</load-on-startup>
+	</servlet>
 
 	<servlet>
 		<servlet-name>SIGASvlProcesoFacturacion</servlet-name>
