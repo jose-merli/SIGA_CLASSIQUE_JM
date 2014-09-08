@@ -11,18 +11,15 @@ import java.util.Vector;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.transaction.UserTransaction;
+
 import org.apache.struts.action.ActionMapping;
 import org.redabogacia.sigaservices.app.util.ReadProperties;
 import org.redabogacia.sigaservices.app.util.SIGAReferences;
 
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsMngBBDD;
-import com.siga.beans.FacFacturaAdm;
 import com.siga.beans.FacFacturacionProgramadaAdm;
 import com.siga.beans.FacFacturacionProgramadaBean;
-import com.siga.beans.FacFacturacionSuscripcionAdm;
-import com.siga.beans.FacLineaFacturaAdm;
-import com.siga.beans.PysCompraAdm;
 import com.siga.certificados.Plantilla;
 import com.siga.facturacion.form.EliminarFacturacionForm;
 import com.siga.general.MasterAction;
@@ -85,20 +82,12 @@ public class EliminarFacturacionAction extends MasterAction{
 			tx = this.getUserBean(request).getTransactionPesada();
 			
 			EliminarFacturacionForm form 				= (EliminarFacturacionForm)formulario;
-			FacFacturacionProgramadaAdm adm 			= new FacFacturacionProgramadaAdm(this.getUserBean(request));
-			FacFacturacionProgramadaBean bean 			= new FacFacturacionProgramadaBean();
-			FacFacturaAdm admFactura 					= new FacFacturaAdm(this.getUserBean(request));
-			FacLineaFacturaAdm admLinea 				= new FacLineaFacturaAdm(this.getUserBean(request));
-			FacFacturacionSuscripcionAdm admSuscripcion = new FacFacturacionSuscripcionAdm(this.getUserBean(request));
-			PysCompraAdm admCompra 						= new PysCompraAdm(this.getUserBean(request));	
 			
 			Vector ocultos 				= (Vector)form.getDatosTablaOcultos(0);
 			
 			String idSerieFacturacion 	= (String)ocultos.elementAt(0);			
 			String idProgramacion 		= (String)ocultos.elementAt(1);
 			String idInstitucion		= this.getIDInstitucion(request).toString();
-			String idFactura 			= null;
-			Long numeroLinea 			= null;
 			
 			tx.begin();	
 	
@@ -154,14 +143,10 @@ public class EliminarFacturacionAction extends MasterAction{
 					
 				tx.commit();					
 
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 			throwExcp("messages.general.error",new String[] {"modulo.facturacion"}, e, tx);
 		}
 	
 		return exitoRefresco("messages.deleted.success", request);
 	}
-
-
-
 }
