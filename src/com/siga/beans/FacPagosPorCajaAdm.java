@@ -179,6 +179,7 @@ public class FacPagosPorCajaAdm extends MasterBeanAdministrador {
 	public Vector getPagos (Integer idInstitucion, String idFactura, Long idPersona)  throws ClsExceptions,SIGAException {
 		try {
 
+			// JPT - Comisiones: Se obtiene un listado de las facturas de una factura con comisiones
 			String fromFacturasTotal = " ( " +
        				" SELECT FACTURAS." + FacFacturaBean.C_IDFACTURA + ", " +
    						" ROWNUM AS CONTADOR " +
