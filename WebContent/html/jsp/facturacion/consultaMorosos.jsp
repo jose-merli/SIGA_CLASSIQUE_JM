@@ -28,6 +28,8 @@
 	String app = request.getContextPath();
 	HttpSession ses = request.getSession();
 	UsrBean userBean = ((UsrBean) ses.getAttribute(("USRBEAN")));
+	
+	String idInstitucion = userBean.getLocation();
 	ArrayList tipoColeg = new ArrayList();
  	tipoColeg.add(String.valueOf(ClsConstants.ESTADO_COLEGIAL_ALTA));
 %>
@@ -111,14 +113,19 @@
 						<!-- OPCION 1 -->
 						<tr>
 							<td class="labelText" colspan="6">
-								<input type="radio" name='radioAccion' value="0" onclick="accionRadio()" checked="checked"/>
+								<input type="radio" id ="radiofechaCargo" name='radioAccion' value="0" onclick="accionRadio()" checked="checked"/>
 								<label for="radiofechaCargo"><siga:Idioma key="facturacion.consultamorosos.literal.busquedaexacta"/></label>
 							</td>
 						</tr>	
 						<tr>			
 							<td class="labelText" width ="5%">&nbsp;</td>				
 							<td colspan="6" >
+							<% if(ClsConstants.esColegio(idInstitucion)){ %>
 								<siga:BusquedaPersona tipo="colegiado"	idPersona="letrado" preFunction="preFunctionDeudor" postFunction="postFunctionDeudor"/>
+							<% } else { %>													
+								<siga:BusquedaPersona tipo="personas" idPersona="letrado" preFunction="preFunctionDeudor" postFunction="postFunctionDeudor"/>
+							<% } %>
+								
 							</td>
 						</tr>	
 							
@@ -142,10 +149,14 @@
 								<html:text styleId="interesadoApellidos" property="interesadoApellidos" style="width:280px" maxlength="200" styleClass="box"/>
 							</td>	
 							
+							<% if(ClsConstants.esColegio(idInstitucion)){ %>
+							
 							<td class="labelText" width ="15%"><siga:Idioma key="censo.consultaDatosColegiacion.literal.estadoCol" /></td>
 							<td>
 								<siga:ComboBD nombre = "cmbEstadoColegial" tipo="cmbTipoColegiacion" ancho="5" clase="boxCombo" obligatorio="false" elementoSel="<%=tipoColeg %>"/>				
 							</td>
+							
+							<% } %>
 						</tr>
 					</table>
 				</siga:ConjCampos>
