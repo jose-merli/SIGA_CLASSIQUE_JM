@@ -65,7 +65,7 @@
 					<td>
 						<bean:define id="listaSeriesDisponibles" name="listaSeriesDisponibles" scope="request"/>
 						<html:select styleId="comboSeries" property="idSerieFacturacion" value="" styleClass="boxCombo" style="width:200px;" >
-						<html:option value=""><c:out value=""/></html:option>
+						<html:option value=""><c:out value="--Seleccionar"/></html:option>
 						<c:forEach items="${listaSeriesDisponibles}" var="seriesCmb">
 							<html:option value="${seriesCmb.idseriefacturacion}"><c:out value="${seriesCmb.nombreabreviado}"/></html:option>
 						</c:forEach>
