@@ -919,7 +919,7 @@ public class ScsInscripcionGuardiaAdm extends MasterBeanAdministrador {
 			
 			consulta.append(" order by " + order);
 			// Para el caso de que coincida el orden establecido, añadimos un orden que siempre deberia ser diferente: la fecha de suscripcion
-			consulta.append(", Ins.FECHASUSCRIPCION ");
+			consulta.append(", Ins.FECHASUSCRIPCION, Ins.Idpersona ");
 			
 			Vector<ScsInscripcionGuardiaBean> datos = null;
 			RowsContainer rc = new RowsContainer();

@@ -917,7 +917,7 @@ public class ScsInscripcionTurnoAdm extends MasterBeanAdministrador {
 			
 			consulta += " order by " + order;
 			// Para el caso de que coincida el orden establecido, añadimos un orden que siempre deberia ser diferente: la fecha de suscripcion
-			consulta += ", Ins.fechasolicitud ";
+			consulta += ", Ins.fechasolicitud, Ins.Idpersona ";
 			
 			Vector<ScsInscripcionTurnoBean> datos = null;
 			RowsContainer rc = new RowsContainer(); 
