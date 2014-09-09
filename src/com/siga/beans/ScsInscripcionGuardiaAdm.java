@@ -917,10 +917,9 @@ public class ScsInscripcionGuardiaAdm extends MasterBeanAdministrador {
 			consulta.append("   And Gua.Idturno = "+idturno+" ");
 			consulta.append("   And Gua.Idguardia = "+idguardia+" ");
 			
-			if (! (order == null || order.equals("")))
-				consulta.append(" order by " + order);
-			else
-				consulta.append(" order by Ins.FechaValidacion ");
+			consulta.append(" order by " + order);
+			// Para el caso de que coincida el orden establecido, añadimos un orden que siempre deberia ser diferente: la fecha de suscripcion
+			consulta.append(", Ins.FECHASUSCRIPCION ");
 			
 			Vector<ScsInscripcionGuardiaBean> datos = null;
 			RowsContainer rc = new RowsContainer();

@@ -183,10 +183,13 @@ public class ScsOrdenacionColasAdm extends MasterBeanAdministrador {
 				orden += ", ";
 			}
 		}
-		if (orden.length() > 0){
-			orden = orden.substring(0, orden.length()-2);
-			orden += ", Ins.Idpersona";
+		
+		if (orden.equals("")) { 
+			// En el caso de que no se haya establecido orden, se ordena por antiguedad en la cola
+			orden = " "+ScsOrdenacionColasBean.C_ANTIGUEDADCOLA+" ";
+			orden += ", ";
 		}
+		orden = orden.substring(0, orden.length()-2); // quitando ultima coma
 		
 		return orden;
 	} //getOrderBy()
