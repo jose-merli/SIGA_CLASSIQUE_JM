@@ -568,27 +568,16 @@ public class ScsCabeceraGuardiasAdm extends MasterBeanAdministrador {
 	 */	
 	public String getDatosColegiadoFormateadoNombre(Hashtable miHash) throws ClsExceptions{
 		String consulta = "";
-		String idinstitucion="", idguardia="", idturno="", idpersona="", fechaInicio="";
+		String idinstitucion="", idpersona="";
 		
 		try {
 			idinstitucion = (String)miHash.get(ScsCabeceraGuardiasBean.C_IDINSTITUCION);
-			idguardia = (String)miHash.get(ScsCabeceraGuardiasBean.C_IDGUARDIA);
-			idturno = (String)miHash.get(ScsCabeceraGuardiasBean.C_IDTURNO);
 			idpersona = (String)miHash.get(ScsCabeceraGuardiasBean.C_IDPERSONA);
-			fechaInicio = UtilidadesString.formatoFecha((String)miHash.get(ScsCabeceraGuardiasBean.C_FECHA_INICIO), "yyyy/MM/dd hh:mm:ss", "dd/MM/yyyy");
 
-			consulta = "SELECT guard.* ,";
-			consulta += " perso."+CenPersonaBean.C_APELLIDOS1+" || ' ' || perso."+CenPersonaBean.C_APELLIDOS2+" || ', ' || perso."+CenPersonaBean.C_NOMBRE+" NOMBRE,";
-			consulta += " F_SIGA_CALCULONCOLEGIADO(guard.IDINSTITUCION, guard.IDPERSONA) as "+CenColegiadoBean.C_NCOLEGIADO;
-			consulta += " FROM "+ScsCabeceraGuardiasBean.T_NOMBRETABLA+" guard,";
-			consulta += "      "+CenPersonaBean.T_NOMBRETABLA+" perso ";
-			consulta += " WHERE guard."+ScsCabeceraGuardiasBean.C_IDINSTITUCION+"="+idinstitucion;
-			consulta += " AND guard."+ScsCabeceraGuardiasBean.C_IDTURNO+"="+idturno;
-			consulta += " AND guard."+ScsCabeceraGuardiasBean.C_IDGUARDIA+"="+idguardia;
-			consulta += " AND guard."+ScsCabeceraGuardiasBean.C_IDPERSONA+idpersona;
-			consulta += " AND trunc(guard."+ScsCabeceraGuardiasBean.C_FECHA_INICIO+")=TO_DATE('"+fechaInicio+"','DD/MM/YYYY')";
-			consulta += " AND perso."+CenPersonaBean.C_IDPERSONA+"=guard."+ScsCabeceraGuardiasBean.C_IDPERSONA;
-			consulta += " ORDER BY guard."+ScsCabeceraGuardiasBean.C_FECHA_INICIO;
+			consulta = "SELECT perso."+CenPersonaBean.C_APELLIDOS1+" || ' ' || perso."+CenPersonaBean.C_APELLIDOS2+" || ', ' || perso."+CenPersonaBean.C_NOMBRE+" NOMBRE,";
+			consulta += " F_SIGA_CALCULONCOLEGIADO("+idinstitucion+", "+idpersona+") as "+CenColegiadoBean.C_NCOLEGIADO;
+			consulta += " FROM "+CenPersonaBean.T_NOMBRETABLA+" ";
+			consulta += " WHERE "+CenPersonaBean.C_IDPERSONA+"="+idpersona+" ";
 		}
 		catch (Exception e){
 			throw new ClsExceptions(e,"Excepcion en ScsCabeceraGuardiasAdm.getDatosColegiado(). Consulta SQL:"+consulta);
