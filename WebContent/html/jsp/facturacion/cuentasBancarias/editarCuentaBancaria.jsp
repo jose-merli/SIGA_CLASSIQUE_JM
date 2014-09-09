@@ -588,27 +588,33 @@
 			}
 %>			
 			//No se permite la baja si la cuenta tiene relacionadas series o abonos SJCS pendientes de actuaciones
-			if(document.CuentasBancariasForm.fechaBaja.value.length>0)
+			if(document.CuentasBancariasForm.modo.value!='insertar')
 			{
-				if(contadorLista.valueOf()>0){
-					mensaje = "<siga:Idioma key='facturacion.message.error.cuenta.serie.relacionada'/>";
-					alert(mensaje);
-					fin();
-					return false;
-				 
-				}else{
+				if(document.CuentasBancariasForm.fechaBaja.value.length>0)
+				{
+					if(contadorLista.valueOf()>0){
+						mensaje = "<siga:Idioma key='facturacion.message.error.cuenta.serie.relacionada'/>";
+						alert(mensaje);
+						fin();
+						return false;
+					 
+					}else{
 
-					if((document.CuentasBancariasForm.uso.value!=null)&&(document.CuentasBancariasForm.uso.value!="0")&&(document.CuentasBancariasForm.uso.value!="")){
-							mensaje = "<siga:Idioma key='facturacion.message.error.cuenta.pagoSJCS.relacionado'/>";
-							alert(mensaje);
-							fin();
-							return false;
+						if((document.CuentasBancariasForm.uso.value!=null)&&(document.CuentasBancariasForm.uso.value!="0")&&(document.CuentasBancariasForm.uso.value!="")){
+								mensaje = "<siga:Idioma key='facturacion.message.error.cuenta.pagoSJCS.relacionado'/>";
+								alert(mensaje);
+								fin();
+								return false;
+						}
+					
 					}
-				
+			
 				}
-		
+				
+				document.CuentasBancariasForm.modo.value="modificar";
 			}
-			document.CuentasBancariasForm.modo.value="modificar";
+			
+			
 			document.CuentasBancariasForm.submit();
 	
 		}else{
