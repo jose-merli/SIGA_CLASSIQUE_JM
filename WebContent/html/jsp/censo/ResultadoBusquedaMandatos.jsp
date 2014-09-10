@@ -491,7 +491,7 @@
 			<td><%=registro.get("APELLIDOS")%></td>
 			<td><%=registro.get("NOMBRE")%></td>
 			<td><%=registro.get("TIPOMANDATO")%></td>
-			<td>IBAN - <%=registro.get("IBAN")%><br>Ref - <%=registro.get("REFERENCIA")%></td>
+			<td>IBAN - <%= UtilidadesString.mostrarIBANConAsteriscos((String)registro.get("IBAN"))%><br>Ref - <%=registro.get("REFERENCIA")%></td>
 			<td><%=fechaFirma%><BR><%=registro.get("LUGARFIRMA")%></td>
 		</tr>
 

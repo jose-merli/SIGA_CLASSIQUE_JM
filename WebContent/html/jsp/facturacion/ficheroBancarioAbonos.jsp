@@ -91,9 +91,6 @@
 	<script language="JavaScript">
 		
 		function download(fila) {
-			if (!confirm('<siga:Idioma key="facturacion.ficheroBancarioAbonos.literal.confirmarDescargaFichero"/>')) {
-				return false;
-			}				
 			var datos = document.getElementById('tablaDatosDinamicosD');
 			datos.value = ""; 
 			var j;
