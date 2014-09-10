@@ -127,8 +127,8 @@ public class FacSerieFacturacionBancoAdm extends MasterBeanAdmVisible {
 		    			sql += " AND "+ FacBancoInstitucionBean.T_NOMBRETABLA + "." + FacBancoInstitucionBean.C_BANCOS_CODIGO + " = " +  FacSerieFacturacionBancoBean.T_NOMBRETABLA + "." + FacSerieFacturacionBancoBean.C_BANCOS_CODIGO;
 		    			sql += " AND " + FacBancoInstitucionBean.T_NOMBRETABLA + "." + FacBancoInstitucionBean.C_IDINSTITUCION + " = " + idInstitucion;
 		    			sql += " AND " + FacBancoInstitucionBean.T_NOMBRETABLA + "." + FacBancoInstitucionBean.C_FECHABAJA + " IS NULL ";
-		    			sql += " AND " + FacSufijoBean.T_NOMBRETABLA+"."+FacSufijoBean.C_IDSUFIJO + " = " + FacSerieFacturacionBancoBean.T_NOMBRETABLA + "." + FacSerieFacturacionBancoBean.C_IDSUFIJO;
-		    			sql += " AND " + FacSufijoBean.T_NOMBRETABLA+"."+FacSufijoBean.C_IDINSTITUCION + " = " + FacSerieFacturacionBancoBean.T_NOMBRETABLA + "." + FacSerieFacturacionBancoBean.C_IDINSTITUCION;
+		    			sql += " AND " + FacSufijoBean.T_NOMBRETABLA+"."+FacSufijoBean.C_IDSUFIJO + " (+)= " + FacSerieFacturacionBancoBean.T_NOMBRETABLA + "." + FacSerieFacturacionBancoBean.C_IDSUFIJO;
+		    			sql += " AND " + FacSufijoBean.T_NOMBRETABLA+"."+FacSufijoBean.C_IDINSTITUCION + "(+)= " + FacSerieFacturacionBancoBean.T_NOMBRETABLA + "." + FacSerieFacturacionBancoBean.C_IDINSTITUCION;
 	            					
 	            if (rc.find(sql)) {
 	               for (int i = 0; i < rc.size(); i++){

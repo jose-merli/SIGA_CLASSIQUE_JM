@@ -224,11 +224,8 @@
 		
 		function generarFichero() {
 
-			if(!confirm('<siga:Idioma key="facturacion.ficheroBancarioAbonos.literal.confirmarFicheroAbonos"/>')) {
-				return false;
-			}
-			
 			<% if(!abonosSJCS){%>
+
 			jQuery("#dialogoConfig").dialog(
 					{
 					      height: 270,
@@ -236,11 +233,11 @@
 					      modal: true,
 					      resizable: false,
 					      buttons: {					          	
-					            "Guardar y Cerrar": function() {
+					    	  '<siga:Idioma key="general.boton.guardarCerrar"/>': function() {
 					            	configurarFichNoSJCS();
 					            	jQuery( this ).dialog( "close" );
 					            },
-					            "Cerrar": function() {
+					            '<siga:Idioma key="general.boton.close"/>': function() {
 						              jQuery( this ).dialog( "close" );
 						            }
 					          }
@@ -306,9 +303,9 @@
 	<!-- Obligatoria en todas las páginas-->
 		<iframe name="submitArea" src="<html:rewrite page='/html/jsp/general/blank.jsp'/>" style="display: none"></iframe>
 	<!-- FIN: SUBMIT AREA -->
-	<div id="dialogoConfig" title="Nuevo Fichero de Abonos" style="display:none">
+	<div id="dialogoConfig" title="<siga:Idioma key='facturacion.nuevo.fichero.abonos'/>"  style="display:none">
 	<div>
-		<siga:ConjCampos leyenda="Propósitos">
+		<siga:ConjCampos leyenda="facturacion.propositos">
 			<table class="tablaCampos" colspan=2>
 				<tr>		
 					<td class="labelText">

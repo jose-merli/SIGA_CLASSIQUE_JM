@@ -56,6 +56,7 @@ import com.siga.beans.FacPropositosBean;
 import com.siga.beans.FacSerieFacturacionAdm;
 import com.siga.beans.FacSerieFacturacionBancoAdm;
 import com.siga.beans.FacSerieFacturacionBancoBean;
+import com.siga.beans.FacSerieFacturacionBean;
 import com.siga.beans.FacSufijoAdm;
 import com.siga.beans.FacSufijoBean;
 import com.siga.beans.FcsPagosJGBean;
@@ -395,43 +396,57 @@ public class FicheroBancarioAbonosAction extends MasterAction{
 					banco=((Row)listaBancos.nextElement()).getRow();
 					
 					String banco_codigo=(String)banco.get(FacBancoInstitucionBean.C_BANCOS_CODIGO);
-					Integer idsufijo=Integer.parseInt((String)banco.get(FacSufijoBean.C_IDSUFIJO));
+						
 	
-						//Si es de sjcs el sufijo está relacionado con el abono al configurar el abono
-						if (fcs.equals("1")){
-							
-							abonosBanco=adminAbono.getAbonosBancoSjcs(idInstitucion,banco_codigo, idsufijo);
-						
-						//Sino es de sjcs hay que buscar los abonos pendientes a través de las facturas de la serie relacionada con el banco y el sufijo que estamos tratando 
-						}else{
+					//Si es de sjcs el sufijo está relacionado con el abono al configurar el abono
+					if (fcs.equals("1")){
 
-							abonosBanco=adminAbono.getAbonosBanco(Integer.parseInt(idInstitucion),banco_codigo,idsufijo);
-							
-							//Se informan los propósitos introducidos en la ventana para generar el fichero (en el caso de SJCS los propósitos se informan al configurar el pago)
-							banco.put("IDPROPSEPA", miForm.getListaSufijoProp().split("#")[0]);
-							banco.put("IDPROPOTROS", miForm.getListaSufijoProp().split("#")[1]);
+						//Si el banco tiene algún abono sin sufijo no se genera el fichero hasta que todas tengan un sufijo asignado
+						if((banco.get(FcsPagosJGBean.C_IDSUFIJO)==null)||banco.get(FcsPagosJGBean.C_IDSUFIJO).toString().isEmpty()){
+							tx.rollback();
+							throw new SIGAException(UtilidadesString.getMensajeIdioma(user,"facturacion.ficheroBancarioTransferencias.errorSufijosPagosJG.mensajeCondicionesIncumplidas")+" "+(String)banco.get(FacBancoInstitucionBean.C_IBAN));
 						}
 						
-						//SE GENERA EL FICHERO CON LOS ABONOS OBTENIDOS
-						if(!abonosBanco.isEmpty()){
-							String sufijo= (String)banco.get(FacSufijoBean.C_SUFIJO);
-						
-							//Sufijo con tres espacios como código
-							if(sufijo.isEmpty())
-								sufijo="   ";
-							
-							nFicherosGenerados = prepararFichero(user, banco, abonosBanco,sufijo, fcs);
-							if (nFicherosGenerados < 0) {
-									correcto = false;
-							} else {
-								correcto = true;
-								cont += nFicherosGenerados;
-							}
+						Integer idsufijo=Integer.parseInt((String)banco.get(FacSufijoBean.C_IDSUFIJO));
+						abonosBanco=adminAbono.getAbonosBancoSjcs(idInstitucion,banco_codigo, idsufijo);
+					
+					//Sino es de sjcs hay que buscar los abonos pendientes a través de las facturas de la serie relacionada con el banco y el sufijo que estamos tratando 
+					}else{
+
+						//Si la serie no tiene sufijo no se genera el fichero hasta que todas tengan un sufijo asignado
+						if((banco.get(FacSerieFacturacionBancoBean.C_IDSUFIJO)==null)||banco.get(FacSerieFacturacionBancoBean.C_IDSUFIJO).toString().isEmpty()){
+							tx.rollback();
+							throw new SIGAException(UtilidadesString.getMensajeIdioma(user,"facturacion.ficheroBancarioTransferencias.errorSufijosSerie.mensajeCondicionesIncumplidas")+" "+(String)banco.get(FacBancoInstitucionBean.C_IBAN));
 						}
 						
+						Integer idsufijo=Integer.parseInt((String)banco.get(FacSufijoBean.C_IDSUFIJO));
+						abonosBanco=adminAbono.getAbonosBanco(Integer.parseInt(idInstitucion),banco_codigo,idsufijo);
 						
+						//Se informan los propósitos introducidos en la ventana para generar el fichero (en el caso de SJCS los propósitos se informan al configurar el pago)
+						banco.put("IDPROPSEPA", miForm.getListaSufijoProp().split("#")[0]);
+						banco.put("IDPROPOTROS", miForm.getListaSufijoProp().split("#")[1]);
 					}
+
+					//SE GENERA EL FICHERO CON LOS ABONOS OBTENIDOS
+					if(!abonosBanco.isEmpty()){
+						String sufijo= (String)banco.get(FacSufijoBean.C_SUFIJO);
+					
+						//Sufijo con tres espacios como código
+						if(sufijo.isEmpty())
+							sufijo="   ";
+						
+						nFicherosGenerados = prepararFichero(user, banco, abonosBanco,sufijo, fcs);
+						if (nFicherosGenerados < 0) {
+								correcto = false;
+						} else {
+							correcto = true;
+							cont += nFicherosGenerados;
+						}
+					}
+					
+					
 				}
+			}
 			
 			if (correcto){ 
 				tx.commit();

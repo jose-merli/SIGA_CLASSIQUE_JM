@@ -1669,6 +1669,7 @@ public class FacAbonoAdm extends MasterBeanAdministrador {
 	            			FacBancoInstitucionBean.T_NOMBRETABLA + "."+FacBancoInstitucionBean.C_COD_SUCURSAL+ "|| '-' ||"+ 
 	            			FacBancoInstitucionBean.T_NOMBRETABLA + "."+FacBancoInstitucionBean.C_DIGITOCONTROL+"|| '-' ||"+
 	            			FacBancoInstitucionBean.T_NOMBRETABLA + "."+FacBancoInstitucionBean.C_NUMEROCUENTA+" AS CUENTACONTABLE,"+
+	            			FacBancoInstitucionBean.T_NOMBRETABLA + "."+FacBancoInstitucionBean.C_IBAN+" AS IBAN,"+
 						    "(SELECT CEN.NOMBRE FROM CEN_BANCOS CEN WHERE CEN.CODIGO="+FacBancoInstitucionBean.T_NOMBRETABLA + "."+FacBancoInstitucionBean.C_COD_BANCO+") AS BANCO, "+
 						    "(SELECT COUNT (1) FROM FAC_SERIEFACTURACION_BANCO SFB WHERE SFB.IDINSTITUCION=" +
 						    	FacBancoInstitucionBean.T_NOMBRETABLA + "."+FacBancoInstitucionBean.C_IDINSTITUCION + " AND SFB.BANCOS_CODIGO=" + 
@@ -1688,8 +1689,8 @@ public class FacAbonoAdm extends MasterBeanAdministrador {
 							" AND " + FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IMPPENDIENTEPORABONAR +">0" +
 							" AND " + FacBancoInstitucionBean.T_NOMBRETABLA + "." + FacBancoInstitucionBean.C_IDINSTITUCION +"="+ institucion + 
 							" AND " + FacBancoInstitucionBean.T_NOMBRETABLA + "." + FacBancoInstitucionBean.C_FECHABAJA + " IS NULL" +
-							" AND " + FacSufijoBean.T_NOMBRETABLA  + "." +FacSufijoBean.C_IDSUFIJO + "=" + FcsPagosJGBean.T_NOMBRETABLA  + "." +FcsPagosJGBean.C_IDSUFIJO +
-							" AND " + FacSufijoBean.T_NOMBRETABLA  + "." +FacSufijoBean.C_IDINSTITUCION + "=" + FcsPagosJGBean.T_NOMBRETABLA  + "." +FcsPagosJGBean.C_IDINSTITUCION;
+							" AND " + FacSufijoBean.T_NOMBRETABLA  + "." +FacSufijoBean.C_IDSUFIJO + "(+)=" + FcsPagosJGBean.T_NOMBRETABLA  + "." +FcsPagosJGBean.C_IDSUFIJO +
+							" AND " + FacSufijoBean.T_NOMBRETABLA  + "." +FacSufijoBean.C_IDINSTITUCION +"(+)=" + FcsPagosJGBean.T_NOMBRETABLA  + "." +FcsPagosJGBean.C_IDINSTITUCION;
 							
 
 	            if (rc.findBind(sql, codigos)) {

@@ -49,7 +49,7 @@
 	<html:hidden property="idInstitucion" value ="${CuentasBancariasForm.idInstitucion}"/>
 	<html:hidden property="bancosCodigo" value ="${CuentasBancariasForm.bancosCodigo}"/>
     <input type="hidden" id="actionModal" name="actionModal" />	
-    <siga:ConjCampos leyenda="Datos de la serie">
+    <siga:ConjCampos leyenda="facturacion.datos.serie">
 	<table  class="tablaCentralCamposMedia"  align="center">
 	<c:choose>
   		<c:when test="${empty listaSeriesDisponibles}">
@@ -65,7 +65,7 @@
 					<td>
 						<bean:define id="listaSeriesDisponibles" name="listaSeriesDisponibles" scope="request"/>
 						<html:select styleId="comboSeries" property="idSerieFacturacion" value="" styleClass="boxCombo" style="width:200px;" >
-						<html:option value=""><c:out value="--Seleccionar"/></html:option>
+						<html:option value=""><siga:Idioma key="general.combo.seleccionar" /></html:option>
 						<c:forEach items="${listaSeriesDisponibles}" var="seriesCmb">
 							<html:option value="${seriesCmb.idseriefacturacion}"><c:out value="${seriesCmb.nombreabreviado}"/></html:option>
 						</c:forEach>
@@ -80,7 +80,7 @@
 					<td>
 					<bean:define id="listaSufijos" name="listaSufijos" scope="request"/> 
 					<html:select styleId="comboSufijos" property="idSufijoSerie" value="" styleClass="boxCombo" style="width:200px;">
-					<html:option value=""><c:out value="--Seleccionar"/></html:option>
+					<html:option value=""><siga:Idioma key="general.combo.seleccionar" /></html:option>
 					<c:forEach items="${listaSufijos}" var="sufijoSerieCmb">
 						<html:option value="${sufijoSerieCmb.idSufijo}">
 						<c:if	test="${sufijoSerieCmb.sufijo.trim().length()>0}">

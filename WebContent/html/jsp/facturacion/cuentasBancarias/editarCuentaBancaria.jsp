@@ -403,7 +403,7 @@
 			
 			<tr>
 				<td colspan="6">
-					<siga:ConjCampos leyenda="Uso de Cuenta">
+					<siga:ConjCampos leyenda="facturacion.uso.cuenta">
 						<table>
 							<tr>
 								<td class="labelText">
@@ -441,7 +441,7 @@
 					<siga:Table 
 						name="listado" 
 						border="1" 
-						columnNames="Serie,Descripción,Sufijo," 
+						columnNames="factSJCS.datosFacturacion.literal.serie,facturacion.busquedaSeriesFacturacion.literal.descripcion,facturacion.cuentasBancarias.sufijo," 
 						columnSizes="29,45,21,5">
 					<c:choose>
 		   				<c:when test="${empty seriesFacturacion}">
@@ -469,7 +469,7 @@
 										<td align='left'>	
 											<html:select styleId="comboSufijosSerie_${status.count}" property="idSufijoSerie" value="${serieFacturacion.idsufijo}" styleClass="boxCombo" style="width:200px;">
 												<s:if test="${empty serieFacturacion.idsufijo}">
-													<html:option value=""><c:out value="--Seleccionar"/></html:option>
+													<html:option value=""><siga:Idioma key="general.combo.seleccionar" /></html:option>
 												</s:if>
 												<c:forEach items="${listaSufijos}" var="sufijoSerieCmb">											
 													<html:option value="${sufijoSerieCmb.idSufijo}">
