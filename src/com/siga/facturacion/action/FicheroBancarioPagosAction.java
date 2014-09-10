@@ -427,7 +427,7 @@ public class FicheroBancarioPagosAction extends MasterAction{
 			resultado = ClsMngBBDD.callPLProcedure("{call PKG_SIGA_CARGOS.PRESENTACION(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}", 3, param_in_banco);
 			String codretorno = resultado[1];
 			
-			if (codretorno.equals("5412") || codretorno.equals("5413") || codretorno.equals("5414") || codretorno.equals("5415")) {
+			if (codretorno.equals("5412") || codretorno.equals("5413") || codretorno.equals("5414") || codretorno.equals("5415") || codretorno.equals("5417")) {
 				throw new SIGAException(resultado[2]);
 				
 			} else {
