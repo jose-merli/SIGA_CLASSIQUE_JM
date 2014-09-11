@@ -57,7 +57,6 @@
 				  visibility: hidden;
 				}
 	</style>
-	
 </head>
 
 <body onload="ajusteAlto('resultado');">
@@ -73,7 +72,6 @@
 			<input type="hidden" name="sjcs" value="<%=sjcs%>">
 		<%} else { %>
 			<input type="hidden" name="sjcs" value="">
-			<html:hidden property="listaSufijoProp"/>
 		<%} %>
 
 		<tr>				
@@ -226,25 +224,12 @@
 
 			<% if(!abonosSJCS){%>
 
-			jQuery("#dialogoConfig").dialog(
-					{
-					      height: 270,
-					      width: 525,
-					      modal: true,
-					      resizable: false,
-					      buttons: {					          	
-					    	  '<siga:Idioma key="general.boton.guardarCerrar"/>': function() {
-					            	configurarFichNoSJCS();
-					            	jQuery( this ).dialog( "close" );
-					            },
-					            '<siga:Idioma key="general.boton.close"/>': function() {
-						              jQuery( this ).dialog( "close" );
-						            }
-					          }
-					    }
-				);
-				jQuery(".ui-widget-overlay").css("opacity","0");
-				
+			document.ficheroBancarioAbonosForm.modo.value = "configurarFichero";
+			var resultado=ventaModalGeneral(document.ficheroBancarioAbonosForm.name,"P");
+			if (resultado!=undefined && resultado[0]!='') {								
+				alert(resultado[0]);
+			}	
+	
 			<%} else { %>
 
 				document.all.ficheroBancarioAbonosForm.modo.value = "generarFichero";
@@ -254,36 +239,7 @@
 			<% } %>
 			
 		}
-		
-		function configurarFichNoSJCS(){
-					
-			var propositoSEPA = jQuery("#comboPropositosSEPA");
-			var propositoOtros = jQuery("#comboPropositosOtros");
-			
-			if(propositoSEPA.val()<1) {
-				mensaje = "<siga:Idioma key='facturacion.propositos.message.errorPropSEPA'/>";
-				alert(mensaje);
-				fin();
-				return false;
-			}
-			
-			if(propositoOtros.val()<1) {
-				mensaje = "<siga:Idioma key='facturacion.propositos.message.errorPropOtros'/>";
-				alert(mensaje);
-				fin();
-				return false;
-			}
-			
-			document.ficheroBancarioAbonosForm.listaSufijoProp.value=propositoSEPA.val()+"#"+propositoOtros.val();
-			document.all.ficheroBancarioAbonosForm.modo.value = "generarFichero";
-			document.all.ficheroBancarioAbonosForm.target = 'submitArea';
-			var f = document.all.ficheroBancarioAbonosForm.name;	
-			window.frames.submitArea.location='<%=app%>/html/jsp/general/loadingWindowOpener.jsp?formName='+f+'&msg=facturacion.ficheroBancarioAbonos.mensaje.generandoFicheros';
-
-			
-		}	
-		
-			
+	
 	</script>
 	<!-- FIN: SCRIPTS BOTONES BUSQUEDA -->
 	<!-- INICIO: IFRAME LISTA RESULTADOS -->
@@ -303,42 +259,5 @@
 	<!-- Obligatoria en todas las páginas-->
 		<iframe name="submitArea" src="<html:rewrite page='/html/jsp/general/blank.jsp'/>" style="display: none"></iframe>
 	<!-- FIN: SUBMIT AREA -->
-	<div id="dialogoConfig" title="<siga:Idioma key='facturacion.nuevo.fichero.abonos'/>"  style="display:none">
-	<div>
-		<siga:ConjCampos leyenda="facturacion.propositos">
-			<table class="tablaCampos" colspan=2>
-				<tr>		
-					<td class="labelText">
-						<siga:Idioma key="factSJCS.abonos.configuracion.literal.proposito.SEPA"/>
-					</td>
-					<td>
-						<bean:define id="listaPropositosSEPA" name="listaPropositosSEPA" scope="request"/>
-						<html:select styleId="comboPropositosSEPA" property="idpropSEPA" value="" styleClass="boxCombo" style="width:150px;" >
-						<html:option value=""><c:out value=""/></html:option>
-						<c:forEach items="${listaPropositosSEPA}" var="propSEPACmb">
-							<html:option value="${propSEPACmb.idProposito}"><c:out value="${propSEPACmb.codigo} ${propSEPACmb.nombre}"/></html:option>
-						</c:forEach>
-						</html:select>	
-					
-					</td>
-				</tr>
-				<tr>
-					<td class="labelText"> 
-						<siga:Idioma key="factSJCS.abonos.configuracion.literal.proposito.otras"/>
-					</td>
-					<td>
-						<bean:define id="listaPropositosOtros" name="listaPropositosOtros" scope="request"/>
-						<html:select styleId="comboPropositosOtros" property="idpropOtros" value="" styleClass="boxCombo" style="width:150px;" >
-						<html:option value=""><c:out value=""/></html:option>
-						<c:forEach items="${listaPropositosOtros}" var="propOtrosCmb">
-							<html:option value="${propOtrosCmb.idProposito}"><c:out value="${propOtrosCmb.codigo} ${propOtrosCmb.nombre}"/></html:option>
-						</c:forEach>
-						</html:select>	
-					</td>
-				</tr>
-			</table>
-		</siga:ConjCampos>
-	</div>
-	</div>
 </body>
 </html>

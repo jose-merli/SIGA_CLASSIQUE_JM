@@ -117,7 +117,9 @@ public class FicheroBancarioAbonosAction extends MasterAction{
 			}else if (accion.equalsIgnoreCase("buscarInit")){
 				request.getSession().removeAttribute("DATAPAGINADOR");
 				mapDestino = buscar(mapping, miForm, request, response);
-			} else {
+			}else if (accion.equalsIgnoreCase("configurarFichero")){
+				mapDestino = configurarFichero(mapping, miForm, request, response);
+			}else {
 				return super.executeInternal(mapping, formulario, request, response);
 			}
 			
@@ -155,27 +157,6 @@ public class FicheroBancarioAbonosAction extends MasterAction{
 			if(request.getParameter("buscar") != null)
 				request.setAttribute("buscar", request.getParameter("buscar"));
 
-			//Combos propósitos
-			FacPropositosAdm propositosAdm = new FacPropositosAdm(this.getUserBean(request));
-			Vector vpropositos = propositosAdm.selectPropositos();
-			
-			Vector vpropositosList = new Vector();
-			List <FacPropositosBean> propositosListSEPAFinal= new ArrayList<FacPropositosBean>();
-			List <FacPropositosBean> propositosListOtrosFinal= new ArrayList<FacPropositosBean>();
-			
-			for (int vs = 0; vs < vpropositos.size(); vs++){
-				
-				FacPropositosBean propositosBean = (FacPropositosBean) vpropositos.get(vs);
-				
-				if (propositosBean.getTipoSEPA()!=0)
-					propositosListSEPAFinal.add(propositosBean);
-				else
-					propositosListOtrosFinal.add(propositosBean);
-			}
-
-			request.setAttribute("listaPropositosSEPA", propositosListSEPAFinal);
-			request.setAttribute("listaPropositosOtros", propositosListOtrosFinal);
-			
 		}  catch (Exception e) { 
 			throwExcp("messages.general.error",new String[] {"modulo.facturacion"},e,null); 
 		}	
@@ -258,9 +239,7 @@ public class FicheroBancarioAbonosAction extends MasterAction{
 	 * @exception  SIGAException  En cualquier caso de error
 	 */
 	protected String download(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
-		//UsrBean usr=(UsrBean)request.getSession().getAttribute("USRBEAN");
 		
-		//String keyFichero 		= "facturacion.directorioBancosJava";	
 		String directorioFisico = "facturacion.directorioFisicoAbonosBancosJava";
 		String directorio 		= "facturacion.directorioAbonosBancosJava";
 		String nombreFichero 	= "";
@@ -269,8 +248,7 @@ public class FicheroBancarioAbonosAction extends MasterAction{
 		String barra = "";
 		
 		try{		
-			//Integer usuario = this.getUserName(request);
-			
+
 			FicheroBancarioAbonosForm form 		= (FicheroBancarioAbonosForm)formulario;
 			//FacDisqueteAbonosAdm adm 			= new FacDisqueteAbonosAdm(usuario);
 			//FacDisqueteAbonosBean beanDisquete	= new FacDisqueteAbonosBean();
@@ -354,6 +332,7 @@ public class FicheroBancarioAbonosAction extends MasterAction{
 		String idInstitucion=user.getLocation();
 		
 		String resultado="";
+		String mensaje="";
 		boolean correcto=true;
 		UserTransaction tx = null;
 
@@ -413,18 +392,19 @@ public class FicheroBancarioAbonosAction extends MasterAction{
 					//Sino es de sjcs hay que buscar los abonos pendientes a través de las facturas de la serie relacionada con el banco y el sufijo que estamos tratando 
 					}else{
 
+						
 						//Si la serie no tiene sufijo no se genera el fichero hasta que todas tengan un sufijo asignado
 						if((banco.get(FacSerieFacturacionBancoBean.C_IDSUFIJO)==null)||banco.get(FacSerieFacturacionBancoBean.C_IDSUFIJO).toString().isEmpty()){
 							tx.rollback();
 							throw new SIGAException(UtilidadesString.getMensajeIdioma(user,"facturacion.ficheroBancarioTransferencias.errorSufijosSerie.mensajeCondicionesIncumplidas")+" "+(String)banco.get(FacBancoInstitucionBean.C_IBAN));
-						}
+						}	
+							Integer idsufijo=Integer.parseInt((String)banco.get(FacSufijoBean.C_IDSUFIJO));
+							abonosBanco=adminAbono.getAbonosBanco(Integer.parseInt(idInstitucion),banco_codigo,idsufijo);
+							
+							//Se informan los propósitos introducidos en la ventana para generar el fichero (en el caso de SJCS los propósitos se informan al configurar el pago)
+							banco.put("IDPROPSEPA", miForm.getListaSufijoProp().split("#")[0]);
+							banco.put("IDPROPOTROS", miForm.getListaSufijoProp().split("#")[1]);
 						
-						Integer idsufijo=Integer.parseInt((String)banco.get(FacSufijoBean.C_IDSUFIJO));
-						abonosBanco=adminAbono.getAbonosBanco(Integer.parseInt(idInstitucion),banco_codigo,idsufijo);
-						
-						//Se informan los propósitos introducidos en la ventana para generar el fichero (en el caso de SJCS los propósitos se informan al configurar el pago)
-						banco.put("IDPROPSEPA", miForm.getListaSufijoProp().split("#")[0]);
-						banco.put("IDPROPOTROS", miForm.getListaSufijoProp().split("#")[1]);
 					}
 
 					//SE GENERA EL FICHERO CON LOS ABONOS OBTENIDOS
@@ -451,16 +431,22 @@ public class FicheroBancarioAbonosAction extends MasterAction{
 			if (correcto){ 
 				tx.commit();
 				
-				String mensaje = "facturacion.ficheroBancarioAbonos.mensaje.generacionDisquetesOK";
+				mensaje = "facturacion.ficheroBancarioAbonos.mensaje.generacionDisquetesOK";
 				String[] datos = {String.valueOf(cont)};
-				
-				mensaje = UtilidadesString.getMensaje(mensaje, datos, lenguaje);				
-				request.setAttribute("mensaje",mensaje);	
-				
-				resultado = "exitoConString";				
+				mensaje = UtilidadesString.getMensaje(mensaje, datos, lenguaje);	
+				String resultadoFinal[] = new String[1];
+				resultadoFinal[0] =mensaje;
+				request.setAttribute("parametrosArray",resultadoFinal);
+				request.setAttribute("modal", "");
+				resultado= "exitoParametros";
+
 			}else{
 				tx.rollback();
 			}
+			
+			
+			
+			
 		} 
 		catch (Exception e) { 
 			
@@ -1124,6 +1110,42 @@ public class FicheroBancarioAbonosAction extends MasterAction{
 		}
 		
 		return "informeRemesa"; 
+	}
+	
+	
+	protected String configurarFichero (ActionMapping mapping, 		
+			MasterForm formulario, 
+			HttpServletRequest request, 
+			HttpServletResponse response) throws ClsExceptions, SIGAException{
+		
+	
+	try{
+			FacPropositosAdm propositosAdm = new FacPropositosAdm(this.getUserBean(request));
+			Vector vpropositos = propositosAdm.selectPropositos();
+			
+			Vector vpropositosList = new Vector();
+			List <FacPropositosBean> propositosListSEPAFinal= new ArrayList<FacPropositosBean>();
+			List <FacPropositosBean> propositosListOtrosFinal= new ArrayList<FacPropositosBean>();
+			
+			for (int vs = 0; vs < vpropositos.size(); vs++){
+				
+				FacPropositosBean propositosBean = (FacPropositosBean) vpropositos.get(vs);
+				
+				if (propositosBean.getTipoSEPA()!=0)
+					propositosListSEPAFinal.add(propositosBean);
+				else
+					propositosListOtrosFinal.add(propositosBean);
+			}
+
+			request.setAttribute("listaPropositosSEPA", propositosListSEPAFinal);
+			request.setAttribute("listaPropositosOtros", propositosListOtrosFinal);
+			
+		}  catch (Exception e) { 
+			throwExcp("messages.general.error",new String[] {"modulo.facturacion"},e,null); 
+		}	
+		
+		return "configurarFicheroBancario";
+	
 	}
 		
 }

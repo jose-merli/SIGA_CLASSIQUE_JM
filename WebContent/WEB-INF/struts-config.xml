@@ -1291,6 +1291,7 @@
 			<forward name="generarFichero" path="/html/jsp/facturacion/ficheroBancarioAbonos.jsp"/>
 			<forward name="exitoConString" path="/html/jsp/facturacion/exitoConString.jsp"/>
 			<forward name="informeRemesa" path="/html/jsp/facturacion/informeRemesa.jsp"/>
+			<forward name="configurarFicheroBancario" path="/html/jsp/facturacion/configEnvioBancosAbonos.jsp"/>
 		</action>
 
 		<!-- ***** Facturación / Gestionar Devoluciones ***** -->
