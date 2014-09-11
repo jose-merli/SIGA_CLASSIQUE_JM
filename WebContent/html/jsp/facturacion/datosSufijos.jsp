@@ -161,7 +161,7 @@
 									<siga:Idioma key="facturacion.datosGenerales.literal.descripcion"/>&nbsp;(*)
 								</td>
 								<td class="labelText">
-									<html:text name="sufijosForm" property="concepto" size="50" maxlength="100" styleClass="<%=clase%>" readonly="<%=lectura%>" value="<%=concepto%>"/>
+									<html:text name="sufijosForm" property="concepto" size="40" maxlength="100" styleClass="<%=clase%>" readonly="<%=lectura%>" value="<%=concepto%>"/>
 								</td>
 							</tr>
 					</table>					
