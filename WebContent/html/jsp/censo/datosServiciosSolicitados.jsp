@@ -39,15 +39,15 @@
 	ArrayList nCuentaSel = new ArrayList();
 
 	String formaPagoParam[] = new String[4];
-	String nCuentaParam[] = new String[2];
+	String nCuentaParam[] = new String[3];
 
 	DatosFacturacionForm formulario = (DatosFacturacionForm)request.getAttribute("datosFacturacionForm");
-	nCuentaParam[0] = formulario.getIdPersona();
-	nCuentaParam[1] = formulario.getIdInstitucion();
-
+	nCuentaParam[0] = formulario.getIdInstitucion();
+	nCuentaParam[1] = formulario.getIdPersona();	
+	nCuentaParam[2] = (String)request.getAttribute("CenDatosIdCuentaSel");
 	
 	formaPagoSel.add((String)request.getAttribute("CenDatosIdFormaPagoSel"));
-	nCuentaSel.add((String)request.getAttribute("CenDatosIdCuentaSel"));
+	nCuentaSel.add(nCuentaParam[2]);
 	String idPeticion = (String)request.getAttribute("CenDatosIdPeticion");
 
 	Vector auxFormaPago = (Vector) request.getAttribute("CenDatosFormaPagoServicios");
@@ -81,6 +81,8 @@
 	} else { 
 		busc += UtilidadesString.getMensajeIdioma(usrbean,"censo.fichaCliente.literal.NoColegiado");
 	} 
+	
+	String modo = (String)request.getAttribute("modo");	
 %>	
 
 
@@ -155,7 +157,6 @@
 			<tr>				
 				<td>
 					<siga:ConjCampos leyenda="cen.consultaServicios.leyenda">
-						<% String modo = (String)request.getAttribute("modo");	%>
 						<table class="tablaCampos" align="center">
 						<tr>				
 							<td class="labelText">
@@ -163,9 +164,9 @@
 							</td>				 
 							<td>
 								<% if (modo.equals("ver")) {%>
-								<siga:ComboBD ancho="250" nombre = "formaPago" tipo="cmbFormaPagoServicioClave" clase="boxComboConsulta" obligatorio="true" elementoSel="<%=formaPagoSel %>"  parametro="<%=formaPagoParam %>" obligatorioSinTextoSeleccionar="true" readonly="true"/>
+									<siga:ComboBD ancho="250" nombre = "formaPago" tipo="cmbFormaPagoServicioClave" clase="boxComboConsulta" obligatorio="true" elementoSel="<%=formaPagoSel %>"  parametro="<%=formaPagoParam %>" obligatorioSinTextoSeleccionar="true" readonly="true"/>
 								<%} else { %>
-								<siga:ComboBD accion="verCuentas();" nombre = "formaPago" tipo="cmbFormaPagoServicioClave" clase="box" obligatorio="true" elementoSel="<%=formaPagoSel %>"  parametro="<%=formaPagoParam %>" obligatorioSinTextoSeleccionar="true"/>
+									<siga:ComboBD accion="verCuentas();" nombre = "formaPago" tipo="cmbFormaPagoServicioClave" clase="box" obligatorio="true" elementoSel="<%=formaPagoSel %>"  parametro="<%=formaPagoParam %>" obligatorioSinTextoSeleccionar="true"/>
 								<% } %>
 							</td>
 						</tr>				
@@ -177,9 +178,9 @@
 							</td>				
 							<td>
 								<% if (modo.equals("ver")) {%>
-								<siga:ComboBD nombre = "nCuenta" ancho="250" tipo="cuentaCargo" clase="boxComboConsulta" obligatorio="true" elementoSel="<%=nCuentaSel %>"  parametro="<%=nCuentaParam %>" obligatorioSinTextoSeleccionar="true" readonly="true"/>
+									<siga:ComboBD nombre = "nCuenta" tipo="cuentaCargoYActual" obligatorio="true" elementoSel="<%=nCuentaSel%>" parametro="<%=nCuentaParam%>" obligatorioSinTextoSeleccionar="true" readonly="true" ancho="250" clase="boxComboConsulta"/>
 								<%} else { %>
-								<siga:ComboBD nombre = "nCuenta" tipo="cuentaCargo" clase="box" obligatorio="true" elementoSel="<%=nCuentaSel %>"  parametro="<%=nCuentaParam %>" obligatorioSinTextoSeleccionar="true"/>
+									<siga:ComboBD nombre = "nCuenta" tipo="cuentaCargoYActual" obligatorio="true" elementoSel="<%=nCuentaSel%>" parametro="<%=nCuentaParam%>" obligatorioSinTextoSeleccionar="true" clase="box" />
 								<% } %>
 							</td>
 						</tr>
@@ -207,7 +208,7 @@
 		 PARA POSICIONARLA EN SU SITIO NATURAL, SI NO SE POSICIONA A MANO
 		 La propiedad modal dice el tamanho de la ventana (M,P,G)
 	-->
-	<% String modo = (String)request.getAttribute("modo");	
+	<%	
 	String botones="Y,R,C";				
 	if (modo.equals("ver")) {
 		botones="C";

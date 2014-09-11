@@ -34,6 +34,7 @@
 <%@ page import="com.siga.tlds.FilaExtElement"%>
 <%@ page import="com.siga.Utilidades.UtilidadesProductosServicios"%>
 <%@ page import="com.siga.Utilidades.UtilidadesNumero"%>
+<%@ page import="com.siga.beans.PysSuscripcionBean"%>
 
 <!-- JSP -->
 <% 
@@ -383,7 +384,7 @@ String app = request.getContextPath();
 			}
 						
 			//Fecha Efectiva:
-			String fechaEfectiva = (String) registro.get("FECHAEFEC");
+			String fechaEfectiva = (String) registro.get(PysSuscripcionBean.C_FECHASUSCRIPCION);
 			if (fechaEfectiva==null || fechaEfectiva.equals("")) {
 				fechaEfectiva = "&nbsp;";
 			} else {
@@ -392,7 +393,7 @@ String app = request.getContextPath();
 			}
 			
 			//Fecha Baja
-			String fechaBaja = (String) registro.get("FECHABAJA");
+			String fechaBaja = (String) registro.get(PysSuscripcionBean.C_FECHABAJA);
 			if (fechaBaja==null || fechaBaja.equals("")) {
 				fechaBaja = "&nbsp;";
 			} else {

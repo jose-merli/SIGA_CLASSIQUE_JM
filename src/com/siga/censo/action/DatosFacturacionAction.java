@@ -1170,21 +1170,22 @@ public class DatosFacturacionAction extends MasterAction {
 
 	   return "abrirServicios";
 	}
-	protected String abrirServiciosPaginados (ActionMapping mapping, 		
-			MasterForm formulario, 
-			HttpServletRequest request, 
-			HttpServletResponse response) throws SIGAException 
-			{
+	/**
+	 * 
+	 * @param mapping
+	 * @param formulario
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws SIGAException
+	 */
+	protected String abrirServiciosPaginados (ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+		
 		request.setAttribute(ClsConstants.PARAM_PAGINACION, paginadorPenstania);
 		
 		DatosFacturacionForm miform = (DatosFacturacionForm) formulario;
 		
-		
-		
-		
-		
-		PysServiciosSolicitadosAdm serviciosAdm = new PysServiciosSolicitadosAdm(
-				this.getUserBean(request));
+		PysServiciosSolicitadosAdm serviciosAdm = new PysServiciosSolicitadosAdm(this.getUserBean(request));
 		
 		
 		try {
@@ -1192,8 +1193,7 @@ public class DatosFacturacionAction extends MasterAction {
 			if (databackup != null) {
 				String incluirBajaLogica = request.getParameter("accion");
 				
-				PaginadorBind paginador = (PaginadorBind) databackup
-						.get("paginador");
+				PaginadorBind paginador = (PaginadorBind) databackup.get("paginador");
 				Vector datos = new Vector();
 				// Si no es la primera llamada, obtengo la página del request y
 				// la busco con el paginador
@@ -1209,8 +1209,7 @@ public class DatosFacturacionAction extends MasterAction {
 						datos = paginador.obtenerPagina(Integer.parseInt(pagina));
 					} else {// cuando hemos editado un registro de la busqueda y
 							// volvemos a la paginacion
-						datos = paginador.obtenerPagina((paginador
-								.getPaginaActual()));
+						datos = paginador.obtenerPagina((paginador.getPaginaActual()));
 						
 					}
 					String idPersona = (String) request.getSession().getAttribute("IDPERSONA");
@@ -1222,8 +1221,7 @@ public class DatosFacturacionAction extends MasterAction {
 					Hashtable registro = (Hashtable) fila.getRow();
 					String estadoPago = (String) registro.get("ESTADOPAGO");
 					if(estadoPago==null)
-						datos = actualizarServiciosPaginados(serviciosAdm,new PysProductosSolicitadosAdm(
-							this.getUserBean(request)),idPersona,this.getUserBean(request),datos);
+						datos = actualizarServiciosPaginados(serviciosAdm,new PysProductosSolicitadosAdm(this.getUserBean(request)),idPersona,this.getUserBean(request),datos);
 				}
 				databackup.put("paginador", paginador);
 				databackup.put("datos", datos);
@@ -1233,11 +1231,9 @@ public class DatosFacturacionAction extends MasterAction {
 				boolean bIncluirRegistrosConBajaLogica = UtilidadesString.stringToBoolean(miform.getIncluirRegistrosConBajaLogica());
 				request.setAttribute("bIncluirRegistrosConBajaLogica", "" + bIncluirRegistrosConBajaLogica);
 				
-				
 				String idPersona = request.getParameter("idPersona");
 				String idInstitucion = request.getParameter("idInstitucion");
 				String accion = request.getParameter("accion");
-				
 				
 				request.getSession().setAttribute("IDPERSONA",idPersona);
 				request.getSession().setAttribute("IDINSTITUCION",idInstitucion);
@@ -1259,8 +1255,6 @@ public class DatosFacturacionAction extends MasterAction {
 					criterios.put(PysServiciosSolicitadosBean.C_ACEPTADO, ClsConstants.PRODUCTO_BAJA);
 				}
 				
-				
-				
 				CenPersonaAdm personaAdm = new CenPersonaAdm(this.getUserBean(request));
 				CenColegiadoAdm colegiadoAdm = new CenColegiadoAdm(this.getUserBean(request));
 				String nombre = personaAdm.obtenerNombreApellidos(String.valueOf(idPersona));
@@ -1275,10 +1269,8 @@ public class DatosFacturacionAction extends MasterAction {
 				request.getSession().setAttribute("DATOSCOLEGIADO", datosColegiado);
 				
 				databackup = new HashMap();
-
 				
-				PaginadorBind paginador = serviciosAdm.getServiciosSolicitadosPaginador(criterios,
-							new Integer(miform.getIdInstitucion()));
+				PaginadorBind paginador = serviciosAdm.getServiciosSolicitadosPaginador(criterios, new Integer(miform.getIdInstitucion()));
 								
 				// Paginador paginador = new Paginador(sql);
 				int totalRegistros = paginador.getNumeroTotalRegistros();
@@ -1289,17 +1281,18 @@ public class DatosFacturacionAction extends MasterAction {
 				databackup.put("paginador", paginador);
 				if (paginador != null) {
 					Vector datos = paginador.obtenerPagina(1);
-					datos = actualizarServiciosPaginados(serviciosAdm,new PysProductosSolicitadosAdm(
-							this.getUserBean(request)),idPersona,this.getUserBean(request),datos);
+					datos = actualizarServiciosPaginados(serviciosAdm,new PysProductosSolicitadosAdm(this.getUserBean(request)),idPersona,this.getUserBean(request),datos);
 					databackup.put("datos", datos);
 					setPaginador(request, paginadorPenstania, databackup);
 				}
 
 			}
-		}catch (SIGAException e1) {
+			
+		} catch (SIGAException e1) {
 			// Excepcion procedente de obtenerPagina cuando se han borrado datos
 			 return exitoRefresco("error.messages.obtenerPagina",request);
-		}catch (Exception e) {
+			 
+		} catch (Exception e) {
 			throw new SIGAException("messages.general.error", e,
 					new String[] { "modulo.gratuita" });
 		}
@@ -1416,31 +1409,24 @@ public class DatosFacturacionAction extends MasterAction {
 	 * @return  String  Destino del action  
 	 * @exception  ClsExceptions  En cualquier caso de error
 	 */
-	protected String modificarServicio (ActionMapping mapping, 		
-							MasterForm formulario, 
-							HttpServletRequest request, 
-							HttpServletResponse response) throws SIGAException 
-	{
+	protected String modificarServicio (ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		UserTransaction tx = null;
 		String salida = "";
 		try {
-
 			DatosFacturacionForm miform = (DatosFacturacionForm)formulario;
-			
 			UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");
 
-			PysServiciosSolicitadosAdm serviciosAdm = new PysServiciosSolicitadosAdm(this.getUserBean(request));
 			Hashtable hash= new Hashtable();
-			hash.put(PysServiciosSolicitadosBean.C_IDINSTITUCION,miform.getIdInstitucion());
-			hash.put(PysServiciosSolicitadosBean.C_IDPERSONA,miform.getIdPersona());
-			hash.put(PysServiciosSolicitadosBean.C_IDPETICION,request.getParameter("idPeticionSel"));
-			hash.put(PysServiciosSolicitadosBean.C_IDTIPOSERVICIOS,request.getParameter("idTipoServicioSel"));
-			hash.put(PysServiciosSolicitadosBean.C_IDSERVICIO,request.getParameter("idServicioSel"));
-			hash.put(PysServiciosSolicitadosBean.C_IDSERVICIOSINSTITUCION,request.getParameter("idServicioInstitucionSel"));
+			hash.put(PysSuscripcionBean.C_IDINSTITUCION, miform.getIdInstitucion());
+			hash.put(PysSuscripcionBean.C_IDPERSONA, miform.getIdPersona());
+			hash.put(PysSuscripcionBean.C_IDPETICION, request.getParameter("idPeticionSel"));
+			hash.put(PysSuscripcionBean.C_IDTIPOSERVICIOS, request.getParameter("idTipoServicioSel"));
+			hash.put(PysSuscripcionBean.C_IDSERVICIO, request.getParameter("idServicioSel"));
+			hash.put(PysSuscripcionBean.C_IDSERVICIOSINSTITUCION, request.getParameter("idServicioInstitucionSel"));
 			
 			String idFormaPagoCuenta = new Integer(ClsConstants.TIPO_FORMAPAGO_FACTURA).toString();
 			
-			// obtengo la suscripcion al servicio para modificar la forma de pago y/o la cuenta bancaria
+			// Obtengo la suscripcion al servicio para modificar la forma de pago y/o la cuenta bancaria
 			PysSuscripcionAdm admSus = new PysSuscripcionAdm(this.getUserBean(request));
 			Vector v = admSus.select(hash);
 			if (v!=null && v.size()>0) {
@@ -1457,27 +1443,26 @@ public class DatosFacturacionAction extends MasterAction {
 			        throw new ClsExceptions("Error al intentar actualizar la fecha efectiva");
 			    }
 			}
-	
-			
-			
-			hash.put(PysServiciosSolicitadosBean.C_IDFORMAPAGO,request.getParameter("formaPago"));
+						
 			if (request.getParameter("formaPago").equals(idFormaPagoCuenta)) {
-				hash.put(PysServiciosSolicitadosBean.C_IDCUENTA,request.getParameter("nCuenta"));
+				hash.put(PysSuscripcionBean.C_IDFORMAPAGO, ClsConstants.TIPO_FORMAPAGO_FACTURA);
+				hash.put(PysSuscripcionBean.C_IDCUENTA, request.getParameter("nCuenta"));
 			} else {
-				hash.put(PysServiciosSolicitadosBean.C_IDCUENTA,"");
+				hash.put(PysSuscripcionBean.C_IDFORMAPAGO, request.getParameter("formaPago"));
+				hash.put(PysSuscripcionBean.C_IDCUENTA,"");
 			}
 
-			Hashtable hashOriginal = new Hashtable();
-			
-			// Cargo una hastable con los valores originales del registro sobre el que se realizará la modificacion						
-			hashOriginal=(Hashtable)request.getSession().getAttribute("DATABACKUP");
+			// Cargo una hastable con los valores originales del registro sobre el que se realizará la modificacion
+			Hashtable hashOriginal = (Hashtable)request.getSession().getAttribute("DATABACKUP");
 			
 			tx = user.getTransaction();
 			tx.begin();	
 
+			/* JPT: No se actualizan los servicios solicitados, solo PYS_SUSCRIPCION
+			PysServiciosSolicitadosAdm serviciosAdm = new PysServiciosSolicitadosAdm(user);
 			if (!serviciosAdm.update(hash,hashOriginal)) {
 				throw new SIGAException(serviciosAdm.getError());
-			}
+			}*/
 
 			// insert unico para el historico
 			Hashtable hashHist = new Hashtable();			
@@ -1490,12 +1475,12 @@ public class DatosFacturacionAction extends MasterAction {
 			tx.commit();
 			
 			salida = this.exitoModal("messages.updated.success",request);
-	   } 	catch (Exception e) {
+			
+	   } catch (Exception e) {
 		 throwExcp("messages.general.error",new String[] {"modulo.censo"},e,tx);
    	   }
 
 		return salida;
-
 	}
 	
 	/**
