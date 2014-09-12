@@ -208,13 +208,33 @@ public class FacBancoInstitucionAdm extends MasterBeanAdministrador {
 	            			"BI." + FacBancoInstitucionBean.C_NUMEROCUENTA + "," +
 	            			"BI." + FacBancoInstitucionBean.C_ASIENTOCONTABLE + "," +
 	            			"BI." + FacBancoInstitucionBean.C_IBAN + "," +
-	            			"BI.COD_BANCO || '-' || BI.COD_SUCURSAL || '-' || BI.DIGITOCONTROL || '-' ||BI.NUMEROCUENTA AS CUENTACONTABLE, "+
+	            			"BI." + FacBancoInstitucionBean.C_COD_BANCO + "|| '-' || BI."+FacBancoInstitucionBean.C_COD_SUCURSAL+" || '-' || BI."+FacBancoInstitucionBean.C_DIGITOCONTROL+" || '-' ||BI."+FacBancoInstitucionBean.C_NUMEROCUENTA+ " AS CUENTACONTABLE, "+
 	            			"BI." + FacBancoInstitucionBean.C_COMISIONIMPORTE + "," +
-						    "BI.COD_BANCO, " +
-						    "(SELECT NOMBRE FROM CEN_BANCOS WHERE CODIGO=BI.COD_BANCO) AS BANCO, "+
-						    "(SELECT COUNT (1) FROM FAC_SERIEFACTURACION_BANCO WHERE IDINSTITUCION=BI.IDINSTITUCION AND BANCOS_CODIGO=BI.BANCOS_CODIGO AND IDSERIEFACTURACION="+idSerieFacturacion+" ) AS SELECCIONADO, "+ 
-						    "(SELECT COUNT (*) FROM FAC_SERIEFACTURACION_BANCO WHERE IDINSTITUCION=BI.IDINSTITUCION AND BANCOS_CODIGO=BI.BANCOS_CODIGO) AS USO, "+ 
-							"(SELECT NVL(IDSUFIJO,'') FROM FAC_SERIEFACTURACION_BANCO WHERE IDINSTITUCION=BI.IDINSTITUCION AND BANCOS_CODIGO=BI.BANCOS_CODIGO AND IDSERIEFACTURACION="+idSerieFacturacion+" ) AS IDSUFIJO "+ 
+						    "BI." + FacBancoInstitucionBean.C_COD_BANCO +"," +
+						    "(SELECT "+CenBancosBean.C_NOMBRE+" FROM " + CenBancosBean.T_NOMBRETABLA+ " WHERE "+ CenBancosBean.C_CODIGO +"=BI." + FacBancoInstitucionBean.C_COD_BANCO + ") AS BANCO, "+
+						    "(SELECT COUNT (1) FROM " +FacSerieFacturacionBancoBean.T_NOMBRETABLA + " WHERE " +FacSerieFacturacionBancoBean.C_IDINSTITUCION+"=BI."+FacBancoInstitucionBean.C_IDINSTITUCION+" AND " +FacSerieFacturacionBancoBean.C_BANCOS_CODIGO+ "=BI."+FacBancoInstitucionBean.C_BANCOS_CODIGO+" AND "+FacSerieFacturacionBancoBean.C_IDSERIEFACTURACION+"="+idSerieFacturacion+" ) AS SELECCIONADO, "+ 
+						    "( " +
+				            "    (SELECT NVL(COUNT(*),0) " +
+				            "      FROM " + FcsPagosJGBean.T_NOMBRETABLA +" PAG " +
+				            "     WHERE PAG."+FcsPagosJGBean.C_BANCOS_CODIGO+" = BI."+FacBancoInstitucionBean.C_BANCOS_CODIGO + 
+				            "       AND PAG."+FcsPagosJGBean.C_IDINSTITUCION+" = BI."+FacBancoInstitucionBean.C_IDINSTITUCION + 
+				            "       AND (SELECT COUNT("+FcsPagosJGBean.C_IDPAGOSJG+") " +
+				            "              FROM "+FacAbonoBean.T_NOMBRETABLA+ 
+				            "             WHERE " +FacAbonoBean.C_IDPAGOSJG +"=PAG."+FcsPagosJGBean.C_IDPAGOSJG  +
+				            "               AND "+FacAbonoBean.C_IDINSTITUCION+"=PAG."+FcsPagosJGBean.C_IDINSTITUCION+")=0) " +
+				            "       + " +
+				            "       ( SELECT NVL(COUNT(*),0)  " +
+				            "  		 FROM  "+FcsPagosJGBean.T_NOMBRETABLA +" FCS " +
+				            "  		 WHERE exists (SELECT * FROM " +FacAbonoBean.T_NOMBRETABLA+" FAC"+
+				            "		 				WHERE FAC."+FacAbonoBean.C_IDPAGOSJG +"=FCS."+FcsPagosJGBean.C_IDPAGOSJG +
+				            "  		 				  AND FAC."+FacAbonoBean.C_IDINSTITUCION +"=FCS."+FcsPagosJGBean.C_IDINSTITUCION +
+				            "  		 				  AND FAC."+FacAbonoBean.C_IMPPENDIENTEPORABONAR+" > 0) " +
+				            " 		  AND FCS."+FcsPagosJGBean.C_IDINSTITUCION+" = BI."+FacBancoInstitucionBean.C_IDINSTITUCION + 
+				            " 		  AND FCS."+FcsPagosJGBean.C_BANCOS_CODIGO+" = BI."+FacBancoInstitucionBean.C_BANCOS_CODIGO +
+				            "      )+ " +
+				            "      (SELECT COUNT (*)  FROM " +FacSerieFacturacionBancoBean.T_NOMBRETABLA +" WHERE "+FacSerieFacturacionBancoBean.C_IDINSTITUCION+"=BI."+FacBancoInstitucionBean.C_IDINSTITUCION+ " AND " +FacSerieFacturacionBancoBean.C_BANCOS_CODIGO+ "=BI."+FacBancoInstitucionBean.C_BANCOS_CODIGO+"  )  " +         
+				            "    ) AS USO, " +
+							"(SELECT NVL("+FacSerieFacturacionBancoBean.C_IDSUFIJO+",'') FROM  " +FacSerieFacturacionBancoBean.T_NOMBRETABLA +" WHERE "+FacSerieFacturacionBancoBean.C_IDINSTITUCION+"=BI."+FacBancoInstitucionBean.C_IDINSTITUCION+ " AND " +FacSerieFacturacionBancoBean.C_BANCOS_CODIGO+ "=BI."+FacBancoInstitucionBean.C_BANCOS_CODIGO+" AND "+FacSerieFacturacionBancoBean.C_IDSERIEFACTURACION+"="+idSerieFacturacion+" ) AS IDSUFIJO "+ 
 						    " FROM " + 
 							FacBancoInstitucionBean.T_NOMBRETABLA + " BI " +
 	            			" WHERE BI."+ FacBancoInstitucionBean.C_IDINSTITUCION + "=" + idInstitucion +
