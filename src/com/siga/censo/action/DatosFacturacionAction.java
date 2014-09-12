@@ -25,6 +25,7 @@ import com.atos.utils.Row;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.PaginadorBind;
 import com.siga.Utilidades.UtilidadesHash;
+import com.siga.Utilidades.UtilidadesProductosServicios;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.beans.CenClienteAdm;
 import com.siga.beans.CenColegiadoAdm;
@@ -224,11 +225,7 @@ public class DatosFacturacionAction extends MasterAction {
 	 * @return  String  Destino del action  
 	 * @exception  ClsExceptions  En cualquier caso de error
 	 */
-	protected String editar (ActionMapping mapping, 		
-							MasterForm formulario, 
-							HttpServletRequest request, 
-							HttpServletResponse response) throws SIGAException 
-	{
+	protected String editar (ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		String salida = "";
 		try {
 
@@ -247,10 +244,10 @@ public class DatosFacturacionAction extends MasterAction {
 				miform.setIdInstitucion((String)fila.get(1));			
 				miform.setIdPersona((String)fila.get(6));
 			}
-			// para saber si es colegiado
-			CenClienteAdm clienteAdm = new CenClienteAdm(this.getUserBean(request));
-			CenColegiadoAdm admCol = new CenColegiadoAdm(this.getUserBean(request));
+			// para saber si es colegiado			
+			CenColegiadoAdm admCol = new CenColegiadoAdm(user);
 			CenColegiadoBean beanCol = admCol.getDatosColegiales(new Long(miform.getIdPersona()), new Integer(miform.getIdInstitucion()));
+			CenClienteAdm clienteAdm = new CenClienteAdm(user);
 			String tipoColegiado = clienteAdm.getTipoCliente(beanCol);
 			if (!tipoColegiado.equals(ClsConstants.TIPO_CLIENTE_NOCOLEGIADO)) {
 				// es colegiado
@@ -263,13 +260,11 @@ public class DatosFacturacionAction extends MasterAction {
 
 			if (tipoColegiado.equals(ClsConstants.TIPO_CLIENTE_COLEGIADO)) {
 				tipoColegiado = "censo.tipoCliente.colegiado";
-			} else 
-			if (tipoColegiado.equals(ClsConstants.TIPO_CLIENTE_NOCOLEGIADO)) {
+			} else if (tipoColegiado.equals(ClsConstants.TIPO_CLIENTE_NOCOLEGIADO)) {
 				tipoColegiado = "censo.tipoCliente.noColegiado";
-			} else 
-			if (tipoColegiado.equals(ClsConstants.TIPO_CLIENTE_COLEGIADO_BAJA)) {
+			} else if (tipoColegiado.equals(ClsConstants.TIPO_CLIENTE_COLEGIADO_BAJA)) {
 				tipoColegiado = "censo.tipoCliente.colegiadoBaja";
-			} 
+			}
 			request.setAttribute("CenDatosGeneralesColegiado",tipoColegiado);
 
 			// nombre y apellidos
@@ -277,15 +272,19 @@ public class DatosFacturacionAction extends MasterAction {
 			Vector v = clienteAdm.getDatosPersonales(new Long(miform.getIdPersona()),new Integer(miform.getIdInstitucion()));
 			if (v!=null && v.size()>0) {
 				Hashtable registro =  (Hashtable)v.get(0);
-				if (registro.get("NOMBRE")!=null) nombreApellidos += (String) registro.get("NOMBRE") + "&nbsp;"; 
-				if (registro.get("APELLIDOS1")!=null && !registro.get("APELLIDOS1").equals("#NA")) nombreApellidos += (String) registro.get("APELLIDOS1") + "&nbsp;"; 
-				if (registro.get("APELLIDOS2")!=null) nombreApellidos += (String) registro.get("APELLIDOS2") + "&nbsp;"; 
+				if (registro.get("NOMBRE")!=null) {
+					nombreApellidos += (String) registro.get("NOMBRE") + "&nbsp;";
+				}
+				if (registro.get("APELLIDOS1")!=null && !registro.get("APELLIDOS1").equals("#NA")) { 
+					nombreApellidos += (String) registro.get("APELLIDOS1") + "&nbsp;"; 
+				}
+				if (registro.get("APELLIDOS2")!=null) {
+					nombreApellidos += (String) registro.get("APELLIDOS2") + "&nbsp;"; 
+				}
 			}
-			request.setAttribute("CenDatosGeneralesNombreApellidos",nombreApellidos);
+			request.setAttribute("CenDatosGeneralesNombreApellidos", nombreApellidos);
 			
-			if (tipo!=null && tipo.equals("P")) {
-				// productos
-
+			if (tipo!=null && tipo.equals("P")) { // productos
 				Hashtable hash= new Hashtable();
 				hash.put(PysProductosSolicitadosBean.C_IDINSTITUCION,miform.getIdInstitucion());
 				hash.put(PysProductosSolicitadosBean.C_IDPERSONA,miform.getIdPersona());
@@ -318,35 +317,34 @@ public class DatosFacturacionAction extends MasterAction {
 				}
 				request.setAttribute("CenDatosFormaPagoProductos",aux);
 				salida = "modificarProducto";
-			} else {
-				// servicios
-
+				
+			} else { // servicios
 				Hashtable hash= new Hashtable();
-				hash.put(PysServiciosSolicitadosBean.C_IDINSTITUCION,miform.getIdInstitucion());
-				hash.put(PysServiciosSolicitadosBean.C_IDPERSONA,miform.getIdPersona());
-				hash.put(PysServiciosSolicitadosBean.C_IDPETICION,(String)fila.get(5));
-				hash.put(PysServiciosSolicitadosBean.C_IDTIPOSERVICIOS,(String)fila.get(2));
-				hash.put(PysServiciosSolicitadosBean.C_IDSERVICIO,(String)fila.get(3));
-				hash.put(PysServiciosSolicitadosBean.C_IDSERVICIOSINSTITUCION,(String)fila.get(4));
-				String idFormaPagoCuenta = new Integer(ClsConstants.TIPO_FORMAPAGO_FACTURA).toString();
+				hash.put(PysSuscripcionBean.C_IDINSTITUCION, miform.getIdInstitucion());
+				hash.put(PysSuscripcionBean.C_IDPERSONA, miform.getIdPersona());
+				hash.put(PysSuscripcionBean.C_IDPETICION, (String)fila.get(5));
+				hash.put(PysSuscripcionBean.C_IDTIPOSERVICIOS, (String)fila.get(2));
+				hash.put(PysSuscripcionBean.C_IDSERVICIO, (String)fila.get(3));
+				hash.put(PysSuscripcionBean.C_IDSERVICIOSINSTITUCION, (String)fila.get(4));
+				String idFormaPagoCuenta = String.valueOf(ClsConstants.TIPO_FORMAPAGO_FACTURA);
 				String idFormaPago = (String)fila.get(7);
-				hash.put(PysServiciosSolicitadosBean.C_IDFORMAPAGO,idFormaPago);
+				hash.put(PysSuscripcionBean.C_IDFORMAPAGO, idFormaPago);
 
 				//Tratamiento por si no hay cuenta seleccionada. En sesion meto "" y al JSP la primera opcion: 0.
 				if (idFormaPago.equals(idFormaPagoCuenta)) {
 					String idcuenta = "";
-					if (fila.get(8)!=null && !((String)fila.get(8)).equals("0"))
-						idcuenta = (String)fila.get(8);
-					hash.put(PysServiciosSolicitadosBean.C_IDCUENTA,idcuenta);
+					if (fila.get(0)!=null && !((String)fila.get(0)).equals("0"))
+						idcuenta = (String)fila.get(0);
+					hash.put(PysSuscripcionBean.C_IDCUENTA,idcuenta);
 				}
 
 				// Cargo una hastable con los valores originales del registro sobre el que se realizará la modificacion						
 				request.getSession().setAttribute("DATABACKUP",hash);
 				
 				request.setAttribute("CenDatosIdFormaPagoSel",(String)fila.get(7));
-				request.setAttribute("CenDatosIdCuentaSel",(String)fila.get(8));
-				request.setAttribute("CenDatosIdPeticion",(String)fila.get(9));
-				request.setAttribute("CenFechaEfectiva",(String)fila.get(12));
+				request.setAttribute("CenDatosIdCuentaSel",(String)fila.get(0));
+				request.setAttribute("CenDatosIdPeticion",(String)fila.get(5));
+				request.setAttribute("CenFechaEfectiva",(String)fila.get(8));
 
 				Vector aux = new Vector();
 				aux.add((String)fila.get(1));
@@ -358,15 +356,12 @@ public class DatosFacturacionAction extends MasterAction {
 				salida = "modificarServicio";
 			}
 			
-	   } 	catch (Exception e) {
-
-		throwExcp("messages.general.error",new String[] {"modulo.censo"},e,null);
+	   } catch (Exception e) {
+		   throwExcp("messages.general.error",new String[] {"modulo.censo"},e,null);
    	   }
 
 		return salida;
-
 	}
-
 
 	/**
 	 * Metodo que implementa el modo editarCambiarFecha para servicios
@@ -377,11 +372,7 @@ public class DatosFacturacionAction extends MasterAction {
 	 * @return  String  Destino del action  
 	 * @exception  ClsExceptions  En cualquier caso de error
 	 */
-	protected String editarCambiarFecha (ActionMapping mapping, 		
-							MasterForm formulario, 
-							HttpServletRequest request, 
-							HttpServletResponse response) throws SIGAException 
-	{
+	protected String editarCambiarFecha (ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		String salida = "editarCambiarFecha";
 		try {
 
@@ -392,21 +383,15 @@ public class DatosFacturacionAction extends MasterAction {
 			// obtengo el identificador de cuenta
 			Vector fila = miform.getDatosTablaOcultos(0);
 
+			Long idPersona = new Long(miform.getIdPersona());
+			String idInstitucion = miform.getIdInstitucion();
+			
 			// para saber si es colegiado
-			CenClienteAdm clienteAdm = new CenClienteAdm(this.getUserBean(request));
-			CenColegiadoAdm admCol = new CenColegiadoAdm(this.getUserBean(request));
-
-			Long idPersona=new Long(miform.getIdPersona());
-//			if(idPersona==null)
-			
-//			Long idPersona=new Long(user.getIdPersona());
-			String idInstitucion=miform.getIdInstitucion();
-			
-			
-
-			
+			CenColegiadoAdm admCol = new CenColegiadoAdm(user);
 			CenColegiadoBean beanCol = admCol.getDatosColegiales(idPersona,new Integer(idInstitucion.trim()));
+			CenClienteAdm clienteAdm = new CenClienteAdm(user);
 			String tipoColegiado = clienteAdm.getTipoCliente(beanCol);
+			
 			if (!tipoColegiado.equals(ClsConstants.TIPO_CLIENTE_NOCOLEGIADO)) {
 				// es colegiado
 				// obtengo sus datos colegiales para coger el numero de colegiado
@@ -418,11 +403,9 @@ public class DatosFacturacionAction extends MasterAction {
 
 			if (tipoColegiado.equals(ClsConstants.TIPO_CLIENTE_COLEGIADO)) {
 				tipoColegiado = "censo.tipoCliente.colegiado";
-			} else 
-			if (tipoColegiado.equals(ClsConstants.TIPO_CLIENTE_NOCOLEGIADO)) {
+			} else if (tipoColegiado.equals(ClsConstants.TIPO_CLIENTE_NOCOLEGIADO)) {
 				tipoColegiado = "censo.tipoCliente.noColegiado";
-			} else 
-			if (tipoColegiado.equals(ClsConstants.TIPO_CLIENTE_COLEGIADO_BAJA)) {
+			} else if (tipoColegiado.equals(ClsConstants.TIPO_CLIENTE_COLEGIADO_BAJA)) {
 				tipoColegiado = "censo.tipoCliente.colegiadoBaja";
 			} 
 			request.setAttribute("CenDatosGeneralesColegiado",tipoColegiado);
@@ -442,8 +425,8 @@ public class DatosFacturacionAction extends MasterAction {
 				request.setAttribute("CenDatosIdTipo",(String)fila.get(2));
 				request.setAttribute("CenDatosId",(String)fila.get(3));
 				request.setAttribute("CenDatosIdPSInstitucion",(String)fila.get(4));
-				request.setAttribute("CenDatosIdPeticion",(String)fila.get(9));
-				request.setAttribute("CenFechaEfectiva",(String)fila.get(12));
+				request.setAttribute("CenDatosIdPeticion",(String)fila.get(5));
+				request.setAttribute("CenFechaEfectiva",(String)fila.get(8));
 				request.setAttribute("POS",pos);
 			}else{ //Es un producto
 				request.setAttribute("CenDatosGeneralesNombreApellidos",nombreApellidos);
@@ -455,13 +438,11 @@ public class DatosFacturacionAction extends MasterAction {
 				request.setAttribute("POS",pos);
 			}
 
-
 	   } catch (Exception e) {
 	       throwExcp("messages.general.error",new String[] {"modulo.censo"},e,null);
    	   }
 
 		return salida;
-
 	}
 
 	/**
@@ -828,38 +809,31 @@ public class DatosFacturacionAction extends MasterAction {
 		return "abrirProductos";
 
 	}
-	protected String abrirProductosPaginados(ActionMapping mapping,
-			MasterForm formulario, HttpServletRequest request,
-			HttpServletResponse response) throws SIGAException {
+	
+	/**
+	 * 
+	 * @param mapping
+	 * @param formulario
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws SIGAException
+	 */
+	protected String abrirProductosPaginados(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 
 		request.setAttribute(ClsConstants.PARAM_PAGINACION, paginadorPenstania);
-		
 		DatosFacturacionForm miform = (DatosFacturacionForm) formulario;
 		
-		
-		
-		/*Enumeration enumera = request.getSession().getAttributeNames();
-		while (enumera.hasMoreElements()) {
-			String object = (String) enumera.nextElement();
-			System.out.println(object+":"+request.getSession().getAttribute(object));
-			
-		}*/
-		
-		
-		PysProductosSolicitadosAdm productosAdm = new PysProductosSolicitadosAdm(
-				this.getUserBean(request));
+		PysProductosSolicitadosAdm productosAdm = new PysProductosSolicitadosAdm(this.getUserBean(request));
 		
 		try {
 			HashMap databackup = getPaginador(request, paginadorPenstania);
-			
 
 			if (databackup != null) {
 
-				PaginadorBind paginador = (PaginadorBind) databackup
-						.get("paginador");
+				PaginadorBind paginador = (PaginadorBind) databackup.get("paginador");
 				Vector datos = new Vector();
-				// Si no es la primera llamada, obtengo la página del request y
-				// la busco con el paginador
+				// Si no es la primera llamada, obtengo la página del request yla busco con el paginador
 				String pagina = (String) request.getParameter("pagina");
 				String bIncluirRegistrosConBajaLogica = (String) request.getParameter("bIncluirRegistrosConBajaLogica");
 				if (bIncluirRegistrosConBajaLogica == null){
@@ -872,8 +846,7 @@ public class DatosFacturacionAction extends MasterAction {
 						datos = paginador.obtenerPagina(Integer.parseInt(pagina));
 					} else {// cuando hemos editado un registro de la busqueda y
 							// volvemos a la paginacion
-						datos = paginador.obtenerPagina((paginador
-								.getPaginaActual()));
+						datos = paginador.obtenerPagina((paginador.getPaginaActual()));
 					}
 					String idPersona = (String) request.getSession().getAttribute("IDPERSONA");
 					//Miramos si es la primera vez que accede a esta pagina, ya que si es asi hay
@@ -890,10 +863,6 @@ public class DatosFacturacionAction extends MasterAction {
 				databackup.put("datos", datos);
 
 			} else {
-				
-
-				
-				
 				boolean bIncluirRegistrosConBajaLogica = UtilidadesString.stringToBoolean(miform.getIncluirRegistrosConBajaLogica());
 				String idPersona = request.getParameter("idPersona");
 				String idInstitucion = request.getParameter("idInstitucion");
@@ -905,13 +874,11 @@ public class DatosFacturacionAction extends MasterAction {
 				miform.setIdInstitucion(idInstitucion);
 				miform.setAccion(accion);
 				Hashtable criterios = new Hashtable();
-				criterios.put(PysProductosSolicitadosBean.C_IDPERSONA, miform
-						.getIdPersona());
-				criterios.put(PysPeticionCompraSuscripcionBean.C_TIPOPETICION,
-						ClsConstants.TIPO_PETICION_COMPRA_ALTA);
+				criterios.put(PysProductosSolicitadosBean.C_IDPERSONA, miform.getIdPersona());
+				criterios.put(PysPeticionCompraSuscripcionBean.C_TIPOPETICION, ClsConstants.TIPO_PETICION_COMPRA_ALTA);
 				if(!bIncluirRegistrosConBajaLogica){
-				criterios.put("FECHA_DESDE", "SYSDATE-730"); // HACE UN AÑO
-				criterios.put("FECHA_HASTA", "SYSDATE+1");
+					criterios.put("FECHA_DESDE", "SYSDATE-730"); // HACE DOS AÑO
+					criterios.put("FECHA_HASTA", "SYSDATE+1");
 				}
 				request.setAttribute("bIncluirRegistrosConBajaLogica", "" + bIncluirRegistrosConBajaLogica);
 				
@@ -933,11 +900,8 @@ public class DatosFacturacionAction extends MasterAction {
 				request.getSession().setAttribute("DATOSCOLEGIADO", datosColegiado);
 				
 				databackup = new HashMap();
-
 				
-				PaginadorBind paginador = productosAdm
-						.getProductosSolicitadosPaginador(criterios,
-								new Integer(miform.getIdInstitucion()));
+				PaginadorBind paginador = productosAdm.getProductosSolicitadosPaginador(criterios,new Integer(miform.getIdInstitucion()));
 				// Paginador paginador = new Paginador(sql);
 				int totalRegistros = paginador.getNumeroTotalRegistros();
 				if (totalRegistros == 0) {
@@ -952,17 +916,16 @@ public class DatosFacturacionAction extends MasterAction {
 					databackup.put("datos", datos);
 					setPaginador(request, paginadorPenstania, databackup);
 				}
-
 			}
-		}catch (SIGAException e1) {
+			
+		} catch (SIGAException e1) {
 			 return exitoRefresco("error.messages.obtenerPagina",request);
-		}catch (Exception e) {
-			throw new SIGAException("messages.general.error", e,
-					new String[] { "modulo.gratuita" });
+			 
+		} catch (Exception e) {
+			throw new SIGAException("messages.general.error", e, new String[] { "modulo.gratuita" });
 		}
 
 		return "abrirProductos";
-
 	}
 	/**
 	 * Metodo que nos actualiza el vector de productos paginados con 
@@ -981,25 +944,22 @@ public class DatosFacturacionAction extends MasterAction {
 			
 			Row fila = (Row)datos.get(i);
 			Hashtable registro = (Hashtable) fila.getRow();
-			String idInstitucion = (String) registro.get(PysProductosSolicitadosBean.C_IDINSTITUCION);
-			String idPeticion = (String) registro.get(PysProductosSolicitadosBean.C_IDPETICION);
-			String idTipoProducto = (String) registro.get(PysProductosSolicitadosBean.C_IDTIPOPRODUCTO);
-			String idProducto = (String) registro.get(PysProductosSolicitadosBean.C_IDPRODUCTO);
-			String idProductoInstitucion = (String) registro.get(PysProductosSolicitadosBean.C_IDPRODUCTOINSTITUCION);
-			//String idInstitucion = (String) registro.get(PysProductosSolicitadosBean.C_IDINSTITUCION);
-			
-			
+			String idInstitucion = (String) registro.get(PysCompraBean.C_IDINSTITUCION);
+			String idPeticion = (String) registro.get(PysCompraBean.C_IDPETICION);
+			String idTipoProducto = (String) registro.get(PysCompraBean.C_IDTIPOPRODUCTO);
+			String idProducto = (String) registro.get(PysCompraBean.C_IDPRODUCTO);
+			String idProductoInstitucion = (String) registro.get(PysCompraBean.C_IDPRODUCTOINSTITUCION);
 			
 			Vector vFechaEfectiva = productosAdm.getFechaEfectivaCompraProducto(idInstitucion, idTipoProducto, idProducto, idProductoInstitucion, idPeticion, idPersona);
 			registro = completarHashSalida(registro,vFechaEfectiva );
+			
 			Vector vEstadoCompra = productosAdm.getEstadoCompra(idInstitucion, idTipoProducto, idProducto, idProductoInstitucion, idPeticion);
 			registro = completarHashSalida(registro,vEstadoCompra );
 		}
 		
 		return datos;
-		
-		
 	}
+	
 	/**
 	 * Metodo que nos actualiza el vector de productos paginados con 
 	 * 1.FechaEfectiva
@@ -1008,30 +968,29 @@ public class DatosFacturacionAction extends MasterAction {
 	 * @return
 	 * @throws ClsExceptions 
 	 */
-	private Vector actualizarServiciosPaginados(PysServiciosSolicitadosAdm serviciosAdm,PysProductosSolicitadosAdm productosAdm,
-			String idPersona,UsrBean usrBean,Vector datos) throws ClsExceptions{
+	private Vector actualizarServiciosPaginados(PysServiciosSolicitadosAdm serviciosAdm, PysProductosSolicitadosAdm productosAdm, String idPersona, UsrBean usrBean, Vector datos) throws ClsExceptions {
 		
-		String concepto;
-		
-		for (int i=0;i<datos.size();i++) 
-		{
-			
+		for (int i=0; i<datos.size(); i++) {
 			Row fila = (Row)datos.get(i);
 			Hashtable registro = (Hashtable) fila.getRow();
+			
 			String idInstitucion = (String) registro.get(PysServiciosSolicitadosBean.C_IDINSTITUCION);
 			String idPeticion = (String) registro.get(PysServiciosSolicitadosBean.C_IDPETICION);
 			String idTipoServicio = (String) registro.get(PysServiciosSolicitadosBean.C_IDTIPOSERVICIOS);
 			String idServicio = (String) registro.get(PysServiciosSolicitadosBean.C_IDSERVICIO);
 			String idServicioInstitucion = (String) registro.get(PysServiciosSolicitadosBean.C_IDSERVICIOSINSTITUCION);
-			//String idInstitucion = (String) registro.get(PysProductosSolicitadosBean.C_IDINSTITUCION);
 			
-			boolean bAnticipado=PysServicioAnticipoAdm.getAnticipoLetradoActivo(idInstitucion,idPersona,idTipoServicio,idServicio,idServicioInstitucion);
+			boolean bAnticipado=PysServicioAnticipoAdm.getAnticipoLetradoActivo(idInstitucion, idPersona, idTipoServicio, idServicio, idServicioInstitucion);
 			registro.put("SERVICIO_ANTICIPADO", new Boolean(bAnticipado));
 			
-			Vector vPrecioServicios = serviciosAdm.getPrecioServicio(idInstitucion, idTipoServicio, idServicio, idServicioInstitucion,  idPersona,usrBean.getLanguageInstitucion());
-			registro = completarHashSalida(registro,vPrecioServicios);
-			String valor = UtilidadesHash.getString(registro, "PRECIO_SERVICIO");
+			Vector vPrecioServicios = serviciosAdm.getPrecioServicio(idInstitucion, idTipoServicio, idServicio, idServicioInstitucion, idPersona,usrBean.getLanguageInstitucion());
 			
+			//registro = completarHashSalida(registro, vPrecioServicios); => JPT: No lo utiliza la jsp
+			
+			String valor = "-1";
+			if (vPrecioServicios!=null && vPrecioServicios.size()>0) {
+				valor = (String) ((Hashtable) vPrecioServicios.get(0)).get("PRECIO_SERVICIO");
+			}
 			
 			// "-1" --> Error no existen datos en la tabla Pys_ServicioInstitucion
 			if (!valor.equalsIgnoreCase("-1")){
@@ -1047,34 +1006,31 @@ public class DatosFacturacionAction extends MasterAction {
 				String diezgg = datosPrecio[1];
 				diezgg = diezgg.replaceAll(",",".");
 
-				UtilidadesHash.set(registro, "PORCENTAJEIVA", new Float(diezgg));
+				//UtilidadesHash.set(registro, "PORCENTAJEIVA", new Float(diezgg)); => JPT: No lo utiliza la jsp
 				UtilidadesHash.set(registro, "VALORIVA", new Float(diezgg));
 				
-
-				UtilidadesHash.set(registro, "SERVICIO_IDPRECIOSSERVICIOS", new Integer(datosPrecio[2]));
-				UtilidadesHash.set(registro, "SERVICIO_IDPERIODICIDAD", new Integer(datosPrecio[3]));
-				
+				//UtilidadesHash.set(registro, "SERVICIO_IDPRECIOSSERVICIOS", new Integer(datosPrecio[2])); => JPT: No lo utiliza la jsp
+				//UtilidadesHash.set(registro, "SERVICIO_IDPERIODICIDAD", new Integer(datosPrecio[3])); => JPT: No lo utiliza la jsp
 				UtilidadesHash.set(registro, "SERVICIO_DESCRIPCION_PERIODICIDAD", datosPrecio[4]);
-				
+								
 				if (datosPrecio.length == 6) {
-					UtilidadesHash.set(registro, "SERVICIO_DESCRIPCION_PRECIO", datosPrecio[5]);
 					//Concatenación de la descripcion del servicio + descripcion del precio
-					UtilidadesHash.set(registro, "CONCEPTO",UtilidadesHash.getString(registro, "CONCEPTO") + ' ' + UtilidadesHash.getString(registro, "SERVICIO_DESCRIPCION_PRECIO")); 
-					
+					UtilidadesHash.set(registro, "CONCEPTO", UtilidadesHash.getString(registro, "CONCEPTO") + ' ' + datosPrecio[5]); 
 				}
 			}
 			
+			// ESTADOPAGO
+			String sEstadoSuscripcion = serviciosAdm.getEstadoSuscripcion(idInstitucion, idTipoServicio, idServicio, idServicioInstitucion, idPeticion);
+			UtilidadesHash.set(registro, "ESTADOPAGO", sEstadoSuscripcion);
 			
-			
-			Vector vEstadoCompra = serviciosAdm.getEstadoSuscripcion(idInstitucion, idTipoServicio,idServicio,idServicioInstitucion,idPeticion);
-			registro = completarHashSalida(registro,vEstadoCompra );
+			String sAceptado = UtilidadesHash.getString(registro, "ACEPTADO");
+			String sEstadoProductoServicio = UtilidadesProductosServicios.getEstadoProductoServicio(sAceptado);
+			sEstadoProductoServicio = UtilidadesString.getMensajeIdioma(usrBean, sEstadoProductoServicio);
+			UtilidadesHash.set(registro, "ESTADOSERVICIO", sEstadoProductoServicio);
 		}
 		
 		return datos;
-		
-		
 	}
-	
 	
 	public Hashtable completarHashSalida(Hashtable htSalida, Vector vParcial){
 		
@@ -1210,8 +1166,8 @@ public class DatosFacturacionAction extends MasterAction {
 					} else {// cuando hemos editado un registro de la busqueda y
 							// volvemos a la paginacion
 						datos = paginador.obtenerPagina((paginador.getPaginaActual()));
-						
 					}
+					
 					String idPersona = (String) request.getSession().getAttribute("IDPERSONA");
 					//Miramos si es la primera vez que accede a esta pagina, ya que si es asi hay
 					//que actualizar los datos pesados ,PRECIO_SERVICIO,SERVICIO_ANTICIPADO y ESTADOPAGO. 
@@ -1227,7 +1183,6 @@ public class DatosFacturacionAction extends MasterAction {
 				databackup.put("datos", datos);
 
 			} else {
-				
 				boolean bIncluirRegistrosConBajaLogica = UtilidadesString.stringToBoolean(miform.getIncluirRegistrosConBajaLogica());
 				request.setAttribute("bIncluirRegistrosConBajaLogica", "" + bIncluirRegistrosConBajaLogica);
 				
@@ -1468,9 +1423,11 @@ public class DatosFacturacionAction extends MasterAction {
 			Hashtable hashHist = new Hashtable();			
 			hashHist.put(CenHistoricoBean.C_MOTIVO, miform.getMotivo());
 			CenHistoricoAdm admHis = new CenHistoricoAdm (this.getUserBean(request));
-			if (!admHis.insertCompleto(hashHist, hash, hashOriginal, "PysServiciosSolicitadosBean", CenHistoricoAdm.ACCION_UPDATE, this.getLenguaje(request))) {
+			if (!admHis.insertCompleto(hashHist, hash, hashOriginal, "PysSuscripcionBean", CenHistoricoAdm.ACCION_UPDATE, this.getLenguaje(request))) {
 				throw new SIGAException(admHis.getError());
 			}	
+			
+			// IMPORTANTE JPT: No se modifica la factura al cambiar la forma de pago o cuenta de una suscripcion, ya que la factura puede contener varias suscripciones y todas deben tener la misma forma de pago y cuenta
 
 			tx.commit();
 			
@@ -1492,11 +1449,7 @@ public class DatosFacturacionAction extends MasterAction {
 	 * @return  String  Destino del action  
 	 * @exception  ClsExceptions  En cualquier caso de error
 	 */
-	protected String ver (ActionMapping mapping, 		
-							MasterForm formulario, 
-							HttpServletRequest request, 
-							HttpServletResponse response) throws SIGAException 
-	{
+	protected String ver (ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		String salida = "";
 		try {
 
@@ -1505,7 +1458,6 @@ public class DatosFacturacionAction extends MasterAction {
 
 			// obtengo el identificador de cuenta
 			Vector fila = miform.getDatosTablaOcultos(0);
-			
 			String tipo = miform.getPos();
 
 			if (tipo!=null && tipo.equals("P")) {
@@ -1515,10 +1467,10 @@ public class DatosFacturacionAction extends MasterAction {
 				miform.setIdInstitucion((String)fila.get(1));			
 				miform.setIdPersona((String)fila.get(6));
 			}
-			// para saber si es colegiado
-			CenClienteAdm clienteAdm = new CenClienteAdm(this.getUserBean(request));
-			CenColegiadoAdm admCol = new CenColegiadoAdm(this.getUserBean(request));
+			// para saber si es colegiado			
+			CenColegiadoAdm admCol = new CenColegiadoAdm(user);
 			CenColegiadoBean beanCol = admCol.getDatosColegiales(new Long(miform.getIdPersona()), new Integer(miform.getIdInstitucion()));
+			CenClienteAdm clienteAdm = new CenClienteAdm(user);
 			String tipoColegiado = clienteAdm.getTipoCliente(beanCol);
 			if (!tipoColegiado.equals(ClsConstants.TIPO_CLIENTE_NOCOLEGIADO)) {
 				// es colegiado
@@ -1531,11 +1483,9 @@ public class DatosFacturacionAction extends MasterAction {
 
 			if (tipoColegiado.equals(ClsConstants.TIPO_CLIENTE_COLEGIADO)) {
 				tipoColegiado = "censo.tipoCliente.colegiado";
-			} else 
-			if (tipoColegiado.equals(ClsConstants.TIPO_CLIENTE_NOCOLEGIADO)) {
+			} else if (tipoColegiado.equals(ClsConstants.TIPO_CLIENTE_NOCOLEGIADO)) {
 				tipoColegiado = "censo.tipoCliente.noColegiado";
-			} else 
-			if (tipoColegiado.equals(ClsConstants.TIPO_CLIENTE_COLEGIADO_BAJA)) {
+			} else if (tipoColegiado.equals(ClsConstants.TIPO_CLIENTE_COLEGIADO_BAJA)) {
 				tipoColegiado = "censo.tipoCliente.colegiadoBaja";
 			} 
 			request.setAttribute("CenDatosGeneralesColegiado",tipoColegiado);
@@ -1553,31 +1503,31 @@ public class DatosFacturacionAction extends MasterAction {
 
 			// servicios
 			Hashtable hash= new Hashtable();
-			hash.put(PysServiciosSolicitadosBean.C_IDINSTITUCION,miform.getIdInstitucion());
-			hash.put(PysServiciosSolicitadosBean.C_IDPERSONA,miform.getIdPersona());
-			hash.put(PysServiciosSolicitadosBean.C_IDPETICION,(String)fila.get(5));
-			hash.put(PysServiciosSolicitadosBean.C_IDTIPOSERVICIOS,(String)fila.get(2));
-			hash.put(PysServiciosSolicitadosBean.C_IDSERVICIO,(String)fila.get(3));
-			hash.put(PysServiciosSolicitadosBean.C_IDSERVICIOSINSTITUCION,(String)fila.get(4));
+			hash.put(PysSuscripcionBean.C_IDINSTITUCION,miform.getIdInstitucion());
+			hash.put(PysSuscripcionBean.C_IDPERSONA,miform.getIdPersona());
+			hash.put(PysSuscripcionBean.C_IDPETICION,(String)fila.get(5));
+			hash.put(PysSuscripcionBean.C_IDTIPOSERVICIOS,(String)fila.get(2));
+			hash.put(PysSuscripcionBean.C_IDSERVICIO,(String)fila.get(3));
+			hash.put(PysSuscripcionBean.C_IDSERVICIOSINSTITUCION,(String)fila.get(4));
 			String idFormaPagoCuenta = new Integer(ClsConstants.TIPO_FORMAPAGO_FACTURA).toString();
 			String idFormaPago = (String)fila.get(7);
-			hash.put(PysServiciosSolicitadosBean.C_IDFORMAPAGO,idFormaPago);
+			hash.put(PysSuscripcionBean.C_IDFORMAPAGO,idFormaPago);
 
 			//Tratamiento por si no hay cuenta seleccionada. En sesion meto "" y al JSP la primera opcion: 0.
 			if (idFormaPago.equals(idFormaPagoCuenta)) {
 				String idcuenta = "";
-				if (fila.get(8)!=null && !((String)fila.get(8)).equals("0"))
-					idcuenta = (String)fila.get(8);
-				hash.put(PysServiciosSolicitadosBean.C_IDCUENTA,idcuenta);
+				if (fila.get(0)!=null && !((String)fila.get(0)).equals("0"))
+					idcuenta = (String)fila.get(0);
+				hash.put(PysSuscripcionBean.C_IDCUENTA,idcuenta);
 			}
 
 			// Cargo una hastable con los valores originales del registro sobre el que se realizará la modificacion						
 			request.getSession().setAttribute("DATABACKUP",hash);
 			
 			request.setAttribute("CenDatosIdFormaPagoSel",(String)fila.get(7));
-			request.setAttribute("CenDatosIdCuentaSel",(String)fila.get(8));
-			request.setAttribute("CenDatosIdPeticion",(String)fila.get(9));
-			request.setAttribute("CenFechaEfectiva",(String)fila.get(12));
+			request.setAttribute("CenDatosIdCuentaSel",(String)fila.get(0));
+			request.setAttribute("CenDatosIdPeticion",(String)fila.get(5));
+			request.setAttribute("CenFechaEfectiva",(String)fila.get(8));
 
 			Vector aux = new Vector();
 			aux.add((String)fila.get(1));
@@ -1588,15 +1538,10 @@ public class DatosFacturacionAction extends MasterAction {
 			request.setAttribute("modo","ver");
 			salida = "verServicio";
 	
-			
-	   } 	catch (Exception e) {
-
-		throwExcp("messages.general.error",new String[] {"modulo.censo"},e,null);
+	   } catch (Exception e) {
+		   throwExcp("messages.general.error",new String[] {"modulo.censo"},e,null);
    	   }
 
 		return salida;
-
 	}
-
-
 }

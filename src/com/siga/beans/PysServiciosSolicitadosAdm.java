@@ -1028,8 +1028,8 @@ public class PysServiciosSolicitadosAdm extends MasterBeanAdministrador {
 		Integer idTipoServicios = UtilidadesHash.getInteger(datos, PysServiciosSolicitadosBean.C_IDTIPOSERVICIOS);		 
 		Long idServicio = UtilidadesHash.getLong(datos, PysServiciosSolicitadosBean.C_IDSERVICIO);						 
 		Long idServiciosInstitucion = UtilidadesHash.getLong(datos, PysServiciosSolicitadosBean.C_IDSERVICIOSINSTITUCION);
-		String fechaDesde = UtilidadesHash.getString(datos, "FECHA_DESDE");
-		String fechaHasta = UtilidadesHash.getString(datos, "FECHA_HASTA");
+		String fechaDesde = UtilidadesHash.getString(datos, "FECHA_DESDE"); // JPT: Segun la incidencia INC-6529 estos campos para servicios no deberian estar 
+		String fechaHasta = UtilidadesHash.getString(datos, "FECHA_HASTA"); // JPT: Segun la incidencia INC-6529 estos campos para servicios no deberian estar 
 		
 		String sql = "SELECT 'SERVICIO' AS CONSULTA, " + 
 						PysSuscripcionBean.T_NOMBRETABLA + "." + PysSuscripcionBean.C_IDPETICION + ", " +
@@ -1043,7 +1043,7 @@ public class PysServiciosSolicitadosAdm extends MasterBeanAdministrador {
 						PysSuscripcionBean.T_NOMBRETABLA + "." + PysSuscripcionBean.C_FECHASUSCRIPCION + ", " + 
 						PysSuscripcionBean.T_NOMBRETABLA + "." + PysSuscripcionBean.C_FECHABAJA + ", " +
 						
-						PysPeticionCompraSuscripcionBean.T_NOMBRETABLA + "." + PysPeticionCompraSuscripcionBean.C_TIPOPETICION + ", " +
+						// PysPeticionCompraSuscripcionBean.T_NOMBRETABLA + "." + PysPeticionCompraSuscripcionBean.C_TIPOPETICION + ", " +  => JPT: No lo utiliza la jsp
 						PysPeticionCompraSuscripcionBean.T_NOMBRETABLA + "." + PysPeticionCompraSuscripcionBean.C_FECHA + ", " +
 						
 						" CASE " +
@@ -1066,6 +1066,7 @@ public class PysServiciosSolicitadosAdm extends MasterBeanAdministrador {
 								" AND " + PysServiciosInstitucionBean.T_NOMBRETABLA + "." + PysServiciosInstitucionBean.C_IDSERVICIOSINSTITUCION + " = " + PysSuscripcionBean.T_NOMBRETABLA + "." + PysSuscripcionBean.C_IDSERVICIOSINSTITUCION +
 						" ) AS CONCEPTO, "  +
 								
+						/* => JPT: No lo utiliza la jsp
 						" ( " +
 							" SELECT " + PysServiciosInstitucionBean.T_NOMBRETABLA + "." + PysServiciosInstitucionBean.C_SOLICITARBAJA +
 							" FROM " + PysServiciosInstitucionBean.T_NOMBRETABLA + 
@@ -1073,7 +1074,7 @@ public class PysServiciosSolicitadosAdm extends MasterBeanAdministrador {
 								" AND " + PysServiciosInstitucionBean.T_NOMBRETABLA + "." + PysServiciosInstitucionBean.C_IDTIPOSERVICIOS + " = " + PysSuscripcionBean.T_NOMBRETABLA + "." + PysSuscripcionBean.C_IDTIPOSERVICIOS +
 								" AND " + PysServiciosInstitucionBean.T_NOMBRETABLA + "." + PysServiciosInstitucionBean.C_IDSERVICIO + " = " + PysSuscripcionBean.T_NOMBRETABLA + "." + PysSuscripcionBean.C_IDSERVICIO + 
 								" AND " + PysServiciosInstitucionBean.T_NOMBRETABLA + "." + PysServiciosInstitucionBean.C_IDSERVICIOSINSTITUCION + " = " + PysSuscripcionBean.T_NOMBRETABLA + "." + PysSuscripcionBean.C_IDSERVICIOSINSTITUCION +
-						" ) AS SOLICITARBAJA, " +
+						" ) AS SOLICITARBAJA, " +*/
 								
 						" ( " +
 							"SELECT 1 " + 
@@ -1085,8 +1086,9 @@ public class PysServiciosSolicitadosAdm extends MasterBeanAdministrador {
 								" AND " + FacFacturacionSuscripcionBean.T_NOMBRETABLA + "." + FacFacturacionSuscripcionBean.C_IDSUSCRIPCION + " = " + PysSuscripcionBean.T_NOMBRETABLA + "." + PysSuscripcionBean.C_IDSUSCRIPCION + 
 								" AND " + FacFacturacionSuscripcionBean.T_NOMBRETABLA + "." + FacFacturacionSuscripcionBean.C_NUMEROLINEA + " = 1 " + 
 								" AND ROWNUM < 2 " +
-						" ) AS ESTAFACTURADO, " + 
+						" ) AS ESTAFACTURADO " + 
 								
+						/* => JPT: No lo utiliza la jsp
 						" NVL( " + 
 							" ( " +
 								" SELECT " + CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_IBAN + 
@@ -1095,7 +1097,7 @@ public class PysServiciosSolicitadosAdm extends MasterBeanAdministrador {
 									" AND " + CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_IDPERSONA + " = " + PysSuscripcionBean.T_NOMBRETABLA + "." + PysSuscripcionBean.C_IDPERSONA +
 									" AND " + CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_IDCUENTA + " = " + PysSuscripcionBean.T_NOMBRETABLA + "." + PysSuscripcionBean.C_IDCUENTA +
 							" ) " +
-						" ,'-') AS NCUENTA " + 
+						" ,'-') AS NCUENTA " +*/ 
 							
 					" FROM " + PysServiciosSolicitadosBean.T_NOMBRETABLA + ", " + 
 						PysPeticionCompraSuscripcionBean.T_NOMBRETABLA + ", " + 
@@ -1133,7 +1135,7 @@ public class PysServiciosSolicitadosAdm extends MasterBeanAdministrador {
 			sql += " AND " + PysSuscripcionBean.T_NOMBRETABLA + "." + PysSuscripcionBean.C_IDSERVICIOSINSTITUCION + " = " + idServiciosInstitucion;
 		}																																								
 		
-		if (fechaDesde != null) {
+		if (fechaDesde != null) { // JPT: Segun la incidencia INC-6529 estos campos para servicios no deberian estar 
 			if (fechaDesde.indexOf("SYSDATE")!=-1) {
 				sql += " AND " + PysPeticionCompraSuscripcionBean.T_NOMBRETABLA + "." + PysPeticionCompraSuscripcionBean.C_FECHA + " >= " + fechaDesde;
 				
@@ -1142,7 +1144,7 @@ public class PysServiciosSolicitadosAdm extends MasterBeanAdministrador {
 			}
 		}
 		
-		if (fechaHasta != null) {
+		if (fechaHasta != null) { // JPT: Segun la incidencia INC-6529 estos campos para servicios no deberian estar 
 			if (fechaHasta.indexOf("SYSDATE")!=-1) {
 				sql += " AND " + PysPeticionCompraSuscripcionBean.T_NOMBRETABLA + "." + PysPeticionCompraSuscripcionBean.C_FECHA + " <= " + fechaHasta;
 				
@@ -1175,100 +1177,43 @@ public class PysServiciosSolicitadosAdm extends MasterBeanAdministrador {
 	 * @return
 	 * @throws ClsExceptions
 	 */
-	public Vector getPrecioServicio(String idInstitucion, String idTipoServicio,
-			String idServicio,String idServicioInstitucion,String idPersona,String idioma)
-		throws ClsExceptions  
-	{
+	public Vector getPrecioServicio(String idInstitucion, String idTipoServicio, String idServicio, String idServicioInstitucion, String idPersona, String idioma) throws ClsExceptions {
 		try {
-			int contador=0;
-			Hashtable codigos = new Hashtable();
-			
-
-			StringBuffer sql =  new StringBuffer();
-			sql.append(" select F_SIGA_CALCULOPRECIOSERVICIO( ");
-			contador++;
-			codigos.put(new Integer(contador),idInstitucion);
-			sql.append(":"+contador);
-			sql.append(",");
-			contador++;
-			codigos.put(new Integer(contador),idTipoServicio);
-			sql.append(":"+contador);
-			sql.append(",");
-			contador++;
-			codigos.put(new Integer(contador),idServicio);
-			sql.append(":"+contador);
-			sql.append(",");
-			contador++;
-			codigos.put(new Integer(contador),idServicioInstitucion);
-			sql.append(":"+contador);
-			sql.append(",");
-			contador++;
-			codigos.put(new Integer(contador),idPersona);
-			sql.append(":"+contador);
-			sql.append(",");
-			sql.append(idioma);
-			
-			sql.append(" ) AS PRECIO_SERVICIO FROM DUAL ");
-			
-
+			String sql = " SELECT F_SIGA_CALCULOPRECIOSERVICIO(" + idInstitucion + ", " + idTipoServicio + ", " + idServicio + ", " + idServicioInstitucion + ", " + idPersona + ", " + idioma + ") AS PRECIO_SERVICIO FROM DUAL";
 				
-			return this.selectGenericoBind(sql.toString(), codigos);
-		}
-		catch (Exception e) {
+			return this.selectGenerico(sql);
+			
+		} catch (Exception e) {
 			throw new ClsExceptions (e, "Error al obtener la informacion sobre getPrecioServicio");
 		}
 	}
 	
 	/**
-	 * getEstadoCompraProducto Este metodo es parte de la consulta de productos que relentiza la query.
+	 * Este metodo devuelve el estado de la suscripcion
 	 * @param idInstitucion
-	 * @param idTipoProducto
-	 * @param idProducto
-	 * @param idProductoInstitucion
+	 * @param idTipoServicio
+	 * @param idServicio
+	 * @param idServiciosInstitucion
 	 * @param idPeticionConsulta
 	 * @return
 	 * @throws ClsExceptions
 	 */
-	public Vector getEstadoSuscripcion(String idInstitucion, String idTipoServicio,
-			String idServicio,String idServiciosInstitucion,String idPeticionConsulta) throws ClsExceptions  
-	{
+	public String getEstadoSuscripcion(String idInstitucion, String idTipoServicio, String idServicio, String idServiciosInstitucion, String idPeticionConsulta) throws ClsExceptions {
+		String estadoSuscripcion = "";
 		try {
-			int contador=0;
-			Hashtable codigos = new Hashtable();
+			String sql = " SELECT F_SIGA_ESTADOSUSCRIPCION(" + idInstitucion + ", " + idPeticionConsulta + ", " + idServicio + ", " + idTipoServicio + ", " + idServiciosInstitucion + ") AS ESTADOPAGO FROM DUAL";
 			
-
-
-			StringBuffer sql =  new StringBuffer();
-			sql.append(" select F_SIGA_ESTADOSUSCRIPCION( ");
-			contador++;
-			codigos.put(new Integer(contador),idInstitucion);
-			sql.append(":"+contador);
-			sql.append(",");
-			contador++;
-			codigos.put(new Integer(contador),idPeticionConsulta);
-			sql.append(":"+contador);
-			sql.append(",");
-			contador++;
-			codigos.put(new Integer(contador),idServicio);
-			sql.append(":"+contador);
-			sql.append(",");
-			contador++;
-			codigos.put(new Integer(contador),idTipoServicio);
-			sql.append(":"+contador);
-			sql.append(",");
-			contador++;
-			codigos.put(new Integer(contador),idServiciosInstitucion);
-			sql.append(":"+contador);
+			Vector vEstados = this.selectGenerico(sql);
+			if (vEstados!=null && vEstados.size()>0) {
+				String estadoPago = (String) ((Hashtable) vEstados.get(0)).get("ESTADOPAGO");
+				estadoSuscripcion = UtilidadesString.getMensajeIdioma(this.usrbean, estadoPago); 
+			}
 			
-			sql.append(" ) AS ESTADOPAGO FROM DUAL ");
-			
-
-				
-			return this.selectGenericoBind(sql.toString(), codigos);
-		}
-		catch (Exception e) {
-			throw new ClsExceptions (e, "Error al obtener la informacion sobre getEstadoCompraProducto");
-		}
+		} catch (Exception e) {
+			throw new ClsExceptions (e, "Error al obtener la informacion sobre getEstadoSuscripcion");
+		}	
+		
+		return estadoSuscripcion;
 	}
 	
 }

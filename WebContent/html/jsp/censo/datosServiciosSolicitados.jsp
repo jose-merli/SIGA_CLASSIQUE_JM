@@ -11,22 +11,18 @@
 <%@ page contentType="text/html" language="java" errorPage="/html/jsp/error/errorSIGA.jsp"%>
 
 <!-- TAGLIBS -->
-<%@ taglib uri = "libreria_SIGA.tld" prefix="siga"%>
-<%@ taglib uri = "struts-bean.tld" prefix="bean"%>
-<%@ taglib uri = "struts-html.tld" prefix="html"%>
-<%@ taglib uri = "struts-logic.tld" prefix="logic"%>
+<%@ taglib uri="libreria_SIGA.tld" prefix="siga"%>
+<%@ taglib uri="struts-bean.tld" prefix="bean"%>
+<%@ taglib uri="struts-html.tld" prefix="html"%>
+<%@ taglib uri="struts-logic.tld" prefix="logic"%>
 
 <!-- IMPORTS -->
-<%@ page import="com.siga.administracion.SIGAConstants"%>
 <%@ page import="com.atos.utils.ClsConstants"%>
-<%@ page import="com.siga.beans.CenClienteBean"%>
-<%@ page import="com.siga.beans.CenPersonaBean"%>
 <%@ page import="com.siga.censo.form.DatosFacturacionForm"%>
 <%@ page import="com.siga.Utilidades.UtilidadesString"%>
 <%@ page import="com.atos.utils.UsrBean"%>
 <%@ page import="java.util.ArrayList"%>
 <%@ page import="java.util.Vector"%>
-<%@ page import="java.util.Properties"%>
 
 <!-- JSP -->
 <%  
@@ -85,10 +81,7 @@
 	String modo = (String)request.getAttribute("modo");	
 %>	
 
-
-
-<!-- HEAD -->
-
+	<!-- HEAD -->
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>	
 	
 	<!-- Incluido jquery en siga.js -->	
@@ -128,13 +121,12 @@
 		</tr>
 	</table>
 
-
-<!-- INICIO ******* CAPA DE PRESENTACION ****** -->
-<!-- dentro de esta capa se tienen que situar los diferentes componentes 
-	 que se van a mostrar, para que quepen dentro de la ventana.
-	 Los elementos que copieis dentro, que tengan el estilo 
-	 "tablaTitulo" se deben modificar por "tablaCentralPeque" 
--->
+	<!-- INICIO ******* CAPA DE PRESENTACION ****** -->
+	<!-- dentro de esta capa se tienen que situar los diferentes componentes 
+		 que se van a mostrar, para que quepen dentro de la ventana.
+		 Los elementos que copieis dentro, que tengan el estilo 
+		 "tablaTitulo" se deben modificar por "tablaCentralPeque" 
+	-->
 
 	<!-- INICIO: CAMPOS -->
 	<!-- Zona de campos de busqueda o filtro -->
@@ -158,42 +150,37 @@
 				<td>
 					<siga:ConjCampos leyenda="cen.consultaServicios.leyenda">
 						<table class="tablaCampos" align="center">
-						<tr>				
-							<td class="labelText">
-								<siga:Idioma key="cen.consultaProductos.literal.formaPago"/>
-							</td>				 
-							<td>
-								<% if (modo.equals("ver")) {%>
-									<siga:ComboBD ancho="250" nombre = "formaPago" tipo="cmbFormaPagoServicioClave" clase="boxComboConsulta" obligatorio="true" elementoSel="<%=formaPagoSel %>"  parametro="<%=formaPagoParam %>" obligatorioSinTextoSeleccionar="true" readonly="true"/>
-								<%} else { %>
-									<siga:ComboBD accion="verCuentas();" nombre = "formaPago" tipo="cmbFormaPagoServicioClave" clase="box" obligatorio="true" elementoSel="<%=formaPagoSel %>"  parametro="<%=formaPagoParam %>" obligatorioSinTextoSeleccionar="true"/>
-								<% } %>
-							</td>
-						</tr>				
-
-						<!-- FILA -->
-						<tr>					
-							<td class="labelText">
-								<siga:Idioma key="cen.consultaProductos.literal.nCuenta"/>
-							</td>				
-							<td>
-								<% if (modo.equals("ver")) {%>
-									<siga:ComboBD nombre = "nCuenta" tipo="cuentaCargoYActual" obligatorio="true" elementoSel="<%=nCuentaSel%>" parametro="<%=nCuentaParam%>" obligatorioSinTextoSeleccionar="true" readonly="true" ancho="250" clase="boxComboConsulta"/>
-								<%} else { %>
-									<siga:ComboBD nombre = "nCuenta" tipo="cuentaCargoYActual" obligatorio="true" elementoSel="<%=nCuentaSel%>" parametro="<%=nCuentaParam%>" obligatorioSinTextoSeleccionar="true" clase="box" />
-								<% } %>
-							</td>
-						</tr>
-					</table>
-								
-						
+							<tr>				
+								<td class="labelText">
+									<siga:Idioma key="cen.consultaProductos.literal.formaPago"/>
+								</td>				 
+								<td>
+									<% if (modo.equals("ver")) { %>
+										<siga:ComboBD nombre="formaPago" tipo="cmbFormaPagoServicioClave" obligatorio="true" elementoSel="<%=formaPagoSel%>" parametro="<%=formaPagoParam%>" obligatorioSinTextoSeleccionar="true" readonly="true" ancho="250" clase="boxComboConsulta"/>
+									<% } else { %>
+										<siga:ComboBD nombre="formaPago" tipo="cmbFormaPagoServicioClave" obligatorio="true" elementoSel="<%=formaPagoSel%>" parametro="<%=formaPagoParam%>" obligatorioSinTextoSeleccionar="true" accion="verCuentas();" clase="box"/>
+									<% } %>
+								</td>
+							</tr>				
+	
+							<tr>					
+								<td class="labelText">
+									<siga:Idioma key="cen.consultaProductos.literal.nCuenta"/>
+								</td>				
+								<td>
+									<% if (modo.equals("ver")) {%>
+										<siga:ComboBD nombre="nCuenta" tipo="cuentaCargoYActual" obligatorio="true" elementoSel="<%=nCuentaSel%>" parametro="<%=nCuentaParam%>" obligatorioSinTextoSeleccionar="true" readonly="true" ancho="250" clase="boxComboConsulta"/>
+									<%} else { %>
+										<siga:ComboBD nombre="nCuenta" tipo="cuentaCargoYActual" obligatorio="true" elementoSel="<%=nCuentaSel%>" parametro="<%=nCuentaParam%>" obligatorioSinTextoSeleccionar="true" clase="box" />
+									<% } %>
+								</td>
+							</tr>
+						</table>
 					</siga:ConjCampos>
 				</td>
 			</tr>
 		</html:form>	
 	</table>
-
-
 
 	<!-- FIN: CAMPOS -->
 
@@ -208,11 +195,12 @@
 		 PARA POSICIONARLA EN SU SITIO NATURAL, SI NO SE POSICIONA A MANO
 		 La propiedad modal dice el tamanho de la ventana (M,P,G)
 	-->
-	<%	
+<%	
 	String botones="Y,R,C";				
 	if (modo.equals("ver")) {
 		botones="C";
-	} %>
+	} 
+%>
 		
 	<siga:ConjBotonesAccion botones="<%=botones %>" modal="P" />
 	<!-- FIN: BOTONES REGISTRO -->
@@ -230,27 +218,26 @@
 				banco = true;
 
 			//Chequeo que si selecciona domiciliacion bancaria debe seleccionar una cuenta:
-			if (banco && document.forms[0].nCuenta.options[document.forms[0].nCuenta.selectedIndex].text == ''){
+			if (banco && document.forms[0].nCuenta.options[document.forms[0].nCuenta.selectedIndex].text == '') {
 				alert("<siga:Idioma key='pys.solicitudCompra.message.nCuenta'/>");
 				fin();
 				return;
 				
 			} else {
-
 				<% if (!bOcultarHistorico) { %>
-						var datos = showModalDialog("/SIGA/html/jsp/general/ventanaMotivoHistorico.jsp", "", "dialogHeight:230px; dialogWidth:520px; help:no; scroll:no; status:no;");
-						window.top.focus();
+					var datos = showModalDialog("/SIGA/html/jsp/general/ventanaMotivoHistorico.jsp", "", "dialogHeight:230px; dialogWidth:520px; help:no; scroll:no; status:no;");
+					window.top.focus();
 				<% } else { %>
-						var datos = new Array();
-						datos[0] = 1;
-						datos[1] = "";
+					var datos = new Array();
+					datos[0] = 1;
+					datos[1] = "";
 				<% } %>
 
 				if (datos[0] == 1) { // Boton Guardar
 					document.forms[0].motivo.value = datos[1];
 					document.forms[0].modo.value="modificarServicio";
 					document.forms[0].submit();
-				}else{
+				} else {
 					fin();
 					return;
 				}

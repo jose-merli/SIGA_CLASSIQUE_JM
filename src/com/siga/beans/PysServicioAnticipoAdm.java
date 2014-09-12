@@ -170,49 +170,50 @@ public class PysServicioAnticipoAdm extends MasterBeanAdministrador {
 		return salida;	
 	}
 	
-	public static boolean getAnticipoLetradoActivo(String idInstitucion, String idPersona, String idTipoServicios, String idServicio, String idServiciosInstitucion)  throws ClsExceptions{
+	/**
+	 * Funcion que indica si tiene anticipos de letrado
+	 * @param idInstitucion
+	 * @param idPersona
+	 * @param idTipoServicios
+	 * @param idServicio
+	 * @param idServiciosInstitucion
+	 * @return
+	 * @throws ClsExceptions
+	 */
+	public static boolean getAnticipoLetradoActivo(String idInstitucion, String idPersona, String idTipoServicios, String idServicio, String idServiciosInstitucion)  throws ClsExceptions {
 		boolean salida = false;
-		Hashtable codigos = new Hashtable();
-		int contador = 0;
-		try{
-			String sql = "SELECT SA.IDANTICIPO ";
-			sql += " FROM pys_servicioanticipo SA, PYS_ANTICIPOLETRADO AL " +
-				" WHERE AL.IDINSTITUCION = SA.IDINSTITUCION " +
-				" AND AL.IDPERSONA = SA.IDPERSONA " +
-				" AND AL.IDANTICIPO = SA.IDANTICIPO "+ 
-				" AND (AL.IMPORTEINICIAL - (SELECT NVL(SUM(L.IMPORTEANTICIPADO),0) "+ 
-				" 		FROM   PYS_LINEAANTICIPO L  "+
-				" 		WHERE  L.IDINSTITUCION=AL.IDINSTITUCION "+
-				" 		AND    L.IDPERSONA=AL.IDPERSONA "+
-				" 		AND    L.IDANTICIPO=AL.IDANTICIPO "+
-				" 		AND    TRUNC(L.FECHAEFECTIVA) < SYSDATE)) > 0 ";
-				contador ++;
-			codigos.put(new Integer(contador), idInstitucion);
-			sql += " AND   SA.idinstitucion=:"+ contador;
-			contador ++;
-			codigos.put(new Integer(contador), idPersona);
-			sql += " AND   SA.idpersona =:" + contador;
-			contador ++;
-			codigos.put(new Integer(contador), idTipoServicios);
-			sql += " AND   SA.idtiposervicios =:" + contador;
-			contador ++;
-			codigos.put(new Integer(contador), idServicio);
-			sql += " AND   SA.idservicio =:" + contador;	
-			contador ++;
-			codigos.put(new Integer(contador), idServiciosInstitucion);
-			sql += " AND   SA.idserviciosinstitucion =:" + contador;	
+		try {
+			String sql = "SELECT " + PysServicioAnticipoBean.T_NOMBRETABLA + "." + PysServicioAnticipoBean.C_IDANTICIPO +  
+						" FROM " + PysServicioAnticipoBean.T_NOMBRETABLA + ", " +
+							PysAnticipoLetradoBean.T_NOMBRETABLA +
+						" WHERE " + PysAnticipoLetradoBean.T_NOMBRETABLA + "." + PysAnticipoLetradoBean.C_IDINSTITUCION + " = " + PysServicioAnticipoBean.T_NOMBRETABLA + "." + PysServicioAnticipoBean.C_IDINSTITUCION +
+							" AND " + PysAnticipoLetradoBean.T_NOMBRETABLA + "." + PysAnticipoLetradoBean.C_IDPERSONA + " = " + PysServicioAnticipoBean.T_NOMBRETABLA + "." + PysServicioAnticipoBean.C_IDPERSONA +
+							" AND " + PysAnticipoLetradoBean.T_NOMBRETABLA + "." + PysAnticipoLetradoBean.C_IDANTICIPO + " = " + PysServicioAnticipoBean.T_NOMBRETABLA + "." + PysServicioAnticipoBean.C_IDANTICIPO + 
+							" AND ( " +
+								PysAnticipoLetradoBean.T_NOMBRETABLA + "." + PysAnticipoLetradoBean.C_IMPORTEINICIAL  + " - ( " +
+									" SELECT NVL(SUM(" + PysLineaAnticipoBean.T_NOMBRETABLA + "." + PysLineaAnticipoBean.C_IMPORTEANTICIPADO + "), 0) " + 
+									" FROM " + PysLineaAnticipoBean.T_NOMBRETABLA + 
+									" WHERE " + PysLineaAnticipoBean.T_NOMBRETABLA + "." + PysLineaAnticipoBean.C_IDINSTITUCION + " = " + PysAnticipoLetradoBean.T_NOMBRETABLA + "." + PysAnticipoLetradoBean.C_IDINSTITUCION +
+										" AND " + PysLineaAnticipoBean.T_NOMBRETABLA + "." + PysLineaAnticipoBean.C_IDPERSONA + " = " + PysAnticipoLetradoBean.T_NOMBRETABLA + "." + PysAnticipoLetradoBean.C_IDPERSONA +
+										" AND " + PysLineaAnticipoBean.T_NOMBRETABLA + "." + PysLineaAnticipoBean.C_IDANTICIPO + " = " + PysAnticipoLetradoBean.T_NOMBRETABLA + "." + PysAnticipoLetradoBean.C_IDANTICIPO +
+										" AND TRUNC(" + PysLineaAnticipoBean.T_NOMBRETABLA + "." + PysLineaAnticipoBean.C_FECHAEFECTIVA + ") < SYSDATE " +
+								" ) " +
+							" ) > 0 " +
+							" AND " + PysServicioAnticipoBean.T_NOMBRETABLA + "." + PysServicioAnticipoBean.C_IDINSTITUCION + " =  " + idInstitucion +
+							" AND " + PysServicioAnticipoBean.T_NOMBRETABLA + "." + PysServicioAnticipoBean.C_IDPERSONA + " = " + idPersona +
+							" AND " + PysServicioAnticipoBean.T_NOMBRETABLA + "." + PysServicioAnticipoBean.C_IDTIPOSERVICIOS + " = " + idTipoServicios +
+							" AND " + PysServicioAnticipoBean.T_NOMBRETABLA + "." + PysServicioAnticipoBean.C_IDSERVICIO + " = " + idServicio +
+							" AND " + PysServicioAnticipoBean.T_NOMBRETABLA + "." + PysServicioAnticipoBean.C_IDSERVICIOSINSTITUCION + " = " + idServiciosInstitucion;	
 			
-			RowsContainer rc= new RowsContainer();
-			if(rc.findBind(sql,codigos)){
-			    Vector v = rc.getAll();
-			    if (v!=null && v.size()>0) {
-			        salida = true;
-			    }
+			RowsContainer rc = new RowsContainer();
+			if (rc.find(sql) && rc.size()>0){
+		        salida = true;
 			}
 			
-		}catch(Exception e){ 
-				throw new ClsExceptions(e,e.toString());
+		} catch(Exception e){ 
+			throw new ClsExceptions(e,e.toString());
 		}
+		
 		return salida;
 	}
 	

@@ -166,22 +166,28 @@ public class PysProductosSolicitadosAdm extends MasterBeanAdministrador {
 		return hash;
 	}
 	
+	/**
+	 * 
+	 * @param datos
+	 * @param idInstitucion
+	 * @return
+	 * @throws ClsExceptions
+	 * @throws SIGAException
+	 */
 	public PaginadorBind getProductosSolicitadosPaginador (Hashtable datos, Integer idInstitucion) throws ClsExceptions, SIGAException {
 		PaginadorBind paginador=null;
 		try {
-			Hashtable codigos = new Hashtable();
-			String select = getQueryProductosSolicitadosBind(datos, idInstitucion, codigos);
-			paginador = new PaginadorBind(select,codigos);
+			String select = getQueryProductosSolicitadosBind(datos, idInstitucion);
+			paginador = new PaginadorBind(select, new Hashtable());
 
 
 		} catch (Exception e) {
 			throw new ClsExceptions (e, "Error al ejecutar consulta getProductosSolicitadosPaginador.");
 		}
+		
 		return paginador;  
-		
-		
-		
 	}
+	
 	/**
 	 * getFechaEfectivaCompraProducto Este metodo es parte de la consulta de productos que relentiza la query. 
 	 
@@ -1144,441 +1150,109 @@ public class PysProductosSolicitadosAdm extends MasterBeanAdministrador {
 		return salida;
 	}		
 	
-	private String getQueryProductosSolicitadosBind(Hashtable datos,
-			Integer idInstitucion,Hashtable codigos) throws ClsExceptions, SIGAException {
-
-		int contador=0;
-		
-		Long idPeticion = UtilidadesHash.getLong(datos,
-				PysProductosSolicitadosBean.C_IDPETICION);
-		Long idPersona = UtilidadesHash.getLong(datos,
-				PysPeticionCompraSuscripcionBean.C_IDPERSONA);
-		String tipoPeticion = UtilidadesHash.getString(datos,
-				PysPeticionCompraSuscripcionBean.C_TIPOPETICION);
+	/**
+	 * 
+	 * @param datos
+	 * @param idInstitucion
+	 * @return
+	 * @throws ClsExceptions
+	 * @throws SIGAException
+	 */
+	private String getQueryProductosSolicitadosBind(Hashtable datos, Integer idInstitucion) throws ClsExceptions, SIGAException {
+		Long idPeticion = UtilidadesHash.getLong(datos, PysCompraBean.C_IDPETICION);
+		Long idPersona = UtilidadesHash.getLong(datos, PysPeticionCompraSuscripcionBean.C_IDPERSONA);
+		String tipoPeticion = UtilidadesHash.getString(datos, PysPeticionCompraSuscripcionBean.C_TIPOPETICION);
 		String fechaDesde = UtilidadesHash.getString(datos, "FECHA_DESDE");
 		String fechaHasta = UtilidadesHash.getString(datos, "FECHA_HASTA");
-		String distintoCampoAceptado = UtilidadesHash.getString(datos, PysProductosSolicitadosBean.C_ACEPTADO);
-
-		StringBuffer select = new StringBuffer(
-				"SELECT 'PRODUCTO' AS CONSULTA, ");
-		select.append(PysProductosSolicitadosBean.T_NOMBRETABLA);
-		select.append(".");
-		select.append(PysProductosSolicitadosBean.C_IDPETICION);
-		select.append(", ");
-		select.append(PysProductosSolicitadosBean.T_NOMBRETABLA);
-		select.append(".");
-		select.append(PysProductosSolicitadosBean.C_IDINSTITUCION);
-		select.append(", ");
-		select.append(PysProductosSolicitadosBean.T_NOMBRETABLA);
-		select.append(".");
-		select.append(PysProductosSolicitadosBean.C_IDINSTITUCIONORIGEN);
-		select.append(", ");
-		select.append(PysProductosSolicitadosBean.T_NOMBRETABLA);
-		select.append(".");
-		select.append(PysProductosSolicitadosBean.C_IDPRODUCTO);
-		select.append(", ");
-		select.append(PysProductosSolicitadosBean.T_NOMBRETABLA);
-		select.append(".");
-		select.append(PysProductosSolicitadosBean.C_IDPRODUCTOINSTITUCION);
-		select.append(", ");
-		select.append(PysProductosSolicitadosBean.T_NOMBRETABLA);
-		select.append(".");
-		select.append(PysProductosSolicitadosBean.C_IDTIPOPRODUCTO);
-		select.append(", ");
-		select.append(PysProductosSolicitadosBean.T_NOMBRETABLA);
-		select.append(".");
-		select.append(PysProductosSolicitadosBean.C_IDCUENTA);
-		select.append(", ");
-		select.append(PysProductosSolicitadosBean.T_NOMBRETABLA);
-		select.append(".");
-		select.append(PysProductosSolicitadosBean.C_CANTIDAD);
-		select.append(", ");
-		select.append(PysProductosSolicitadosBean.T_NOMBRETABLA);
-		select.append(".");
-		select.append(PysProductosSolicitadosBean.C_VALOR);
-		select.append(", ");
-		select.append(PysProductosSolicitadosBean.T_NOMBRETABLA);
-		select.append(".");
-		select.append(PysProductosSolicitadosBean.C_PORCENTAJEIVA);
-		select.append(", ");
-		//INC_07291_SIGA Porcentajes de IVA.
-		select.append(PysTipoIvaBean.T_NOMBRETABLA);
-		select.append(".");
-		select.append(PysTipoIvaBean.C_VALOR);
-		select.append(" VALORIVA, ");
+		String distintoCampoAceptado = UtilidadesHash.getString(datos, PysCompraBean.C_ACEPTADO);
 		
-		select.append(PysProductosSolicitadosBean.T_NOMBRETABLA);
-		select.append(".");
-		select.append(PysProductosSolicitadosBean.C_ACEPTADO);
-		select.append(", ");
-		select.append(PysPeticionCompraSuscripcionBean.T_NOMBRETABLA);
-		select.append(".");
-		select.append(PysPeticionCompraSuscripcionBean.C_TIPOPETICION);
-		select.append(", ");
-		select.append(PysPeticionCompraSuscripcionBean.T_NOMBRETABLA);
-		select.append(".");
-		select.append(PysPeticionCompraSuscripcionBean.C_FECHA);
-		select.append(", ");
-		select.append(PysProductosSolicitadosBean.T_NOMBRETABLA);
-		select.append(".");
-		select.append(PysProductosSolicitadosBean.C_IDFORMAPAGO);
-		select.append(", ");
-		select.append(PysProductosSolicitadosBean.T_NOMBRETABLA);
-		select.append(".");
-		select.append(PysProductosSolicitadosBean.C_IDTIPOENVIOS);
-		select.append(", ");
-		select.append(PysProductosSolicitadosBean.T_NOMBRETABLA);
-		select.append(".");
-		select.append(PysProductosSolicitadosBean.C_NOFACTURABLE);
-		select.append(", ");
-
-		// Forma Pago
-		select.append("(SELECT ");
-		select.append(UtilidadesMultidioma.getCampoMultidioma(
-				PysFormaPagoBean.T_NOMBRETABLA + "."
-						+ PysFormaPagoBean.C_DESCRIPCION, this.usrbean
-						.getLanguage()));
-		select.append(" FROM ");
-		select.append(PysFormaPagoBean.T_NOMBRETABLA);
-		select.append(" WHERE ");
-		select.append(PysFormaPagoBean.T_NOMBRETABLA);
-		select.append(".");
-		select.append(PysFormaPagoBean.C_IDFORMAPAGO);
-		select.append(" = ");
-		select.append(PysProductosSolicitadosBean.T_NOMBRETABLA);
-		select.append(".");
-		select.append(PysProductosSolicitadosBean.C_IDFORMAPAGO);
-		select.append(") AS FORMAPAGO, ");
-
-		// Fecha Efectiva. Lo comento ya que tarda mucho. La sacare accediendo con datos
-		/*select.append("NVL((SELECT ");
-		select.append(PysCompraBean.T_NOMBRETABLA);
-		select.append(".");
-		select.append(PysCompraBean.C_FECHA);
-		select.append(" FROM ");
-		select.append(PysCompraBean.T_NOMBRETABLA);
-		select.append(" WHERE ");
-		select.append(PysCompraBean.T_NOMBRETABLA);
-		select.append(".");
-		select.append(PysCompraBean.C_IDINSTITUCION);
-		select.append("=");
-		select.append(PysProductosSolicitadosBean.T_NOMBRETABLA);
-		select.append(".");
-		select.append(PysProductosSolicitadosBean.C_IDINSTITUCION);
-		select.append(" AND ");
-		select.append(PysCompraBean.T_NOMBRETABLA);
-		select.append(".");
-		select.append(PysCompraBean.C_IDPETICION);
-		select.append("=");
-		select.append(PysProductosSolicitadosBean.T_NOMBRETABLA);
-		select.append(".");
-		select.append(PysProductosSolicitadosBean.C_IDPETICION);
-		select.append(" AND ");
-		select.append(PysCompraBean.T_NOMBRETABLA);
-		select.append(".");
-		select.append(PysCompraBean.C_IDTIPOPRODUCTO);
-		select.append("=");
-		select.append(PysProductosSolicitadosBean.T_NOMBRETABLA);
-		select.append(".");
-		select.append(PysProductosSolicitadosBean.C_IDTIPOPRODUCTO);
-		select.append(" AND ");
-		select.append(PysCompraBean.T_NOMBRETABLA);
-		select.append(".");
-		select.append(PysCompraBean.C_IDPRODUCTO);
-		select.append("=");
-		select.append(PysProductosSolicitadosBean.T_NOMBRETABLA);
-		select.append(".");
-		select.append(PysProductosSolicitadosBean.C_IDPRODUCTO);
-		select.append(" AND ");
-		select.append(PysCompraBean.T_NOMBRETABLA);
-		select.append(".");
-		select.append(PysCompraBean.C_IDPRODUCTOINSTITUCION);
-		select.append("=");
-		select.append(PysProductosSolicitadosBean.T_NOMBRETABLA);
-		select.append(".");
-		select.append(PysProductosSolicitadosBean.C_IDPRODUCTOINSTITUCION);
-		select.append("),(SELECT max(petco.fecha)");
-		select.append(" FROM PYS_PETICIONCOMPRASUSCRIPCION petco,PYS_PRODUCTOSSOLICITADOS prodsol");
-		
-		select.append(" WHERE  petco.IDINSTITUCION=");
-		contador++;
-		codigos.put(new Integer(contador),idInstitucion.toString());
-		select.append(":"+contador);
-		select.append(" AND petco.IDPERSONA=");
-		contador++;
-		codigos.put(new Integer(contador),idPersona.toString());
-		select.append(":"+contador);
-		select.append(" and petco.idestadopeticion<>10");
-		select.append(" AND petco.TIPOPETICION='B'");
-		select.append(" AND petco.IDPETICIONALTA=PYS_PETICIONCOMPRASUSCRIPCION.Idpeticion");
-		select.append(" AND prodsol.IDTIPOPRODUCTO=PYS_PRODUCTOSSOLICITADOS.IDTIPOPRODUCTO");
-		select.append(" AND prodsol.IDPRODUCTO=PYS_PRODUCTOSSOLICITADOS.Idproducto");
-		select.append(" AND prodsol.IDPRODUCTOINSTITUCION=PYS_PRODUCTOSSOLICITADOS.Idproductoinstitucion");
-		select.append(" AND prodsol.IDINSTITUCION=petco.IDINSTITUCION");
-		select.append(" AND prodsol.IDPETICION=petco.IDPETICION");
-		select.append(" AND prodsol.IDPERSONA=petco.IDPERSONA)) AS FECHAEFEC, ");
-		*/
-		// Concepto
-		select.append("(SELECT ");
-		select.append(PysProductosInstitucionBean.T_NOMBRETABLA);
-		select.append(".");
-		select.append(PysProductosInstitucionBean.C_DESCRIPCION);
-		select.append(" FROM ");
-		select.append(PysProductosInstitucionBean.T_NOMBRETABLA);
-		select.append(" WHERE ");
-		select.append(PysProductosInstitucionBean.T_NOMBRETABLA);
-		select.append(".");
-		select.append(PysProductosInstitucionBean.C_IDINSTITUCION);
-		select.append(" = ");
-		select.append(PysProductosSolicitadosBean.T_NOMBRETABLA);
-		select.append(".");
-		select.append(PysProductosSolicitadosBean.C_IDINSTITUCION);
-		select.append(" AND ");
-		select.append(PysProductosInstitucionBean.T_NOMBRETABLA);
-		select.append(".");
-		select.append(PysProductosInstitucionBean.C_IDTIPOPRODUCTO);
-		select.append(" = ");
-		select.append(PysProductosSolicitadosBean.T_NOMBRETABLA);
-		select.append(".");
-		select.append(PysProductosSolicitadosBean.C_IDTIPOPRODUCTO);
-		select.append(" AND ");
-		select.append(PysProductosInstitucionBean.T_NOMBRETABLA);
-		select.append(".");
-		select.append(PysProductosInstitucionBean.C_IDPRODUCTO);
-		select.append(" = ");
-		select.append(PysProductosSolicitadosBean.T_NOMBRETABLA);
-		select.append(".");
-		select.append(PysProductosSolicitadosBean.C_IDPRODUCTO);
-		select.append(" AND ");
-		select.append(PysProductosInstitucionBean.T_NOMBRETABLA);
-		select.append(".");
-		select.append(PysProductosInstitucionBean.C_IDPRODUCTOINSTITUCION);
-		select.append(" = ");
-		select.append(PysProductosSolicitadosBean.T_NOMBRETABLA);
-		select.append(".");
-		select.append(PysProductosSolicitadosBean.C_IDPRODUCTOINSTITUCION);
-		select.append(") AS CONCEPTO, ");
-
-		
-		// Solicitar Baja. Lo comento ya que desde aqui no se solicita la baja
-		/*
-		select.append("(SELECT ");
-		select.append(PysProductosInstitucionBean.T_NOMBRETABLA);
-		select.append(".");
-		select.append(PysProductosInstitucionBean.C_SOLICITARBAJA);
-		select.append(" FROM ");
-		select.append(PysProductosInstitucionBean.T_NOMBRETABLA);
-		select.append(" WHERE ");
-		select.append(PysProductosInstitucionBean.T_NOMBRETABLA);
-		select.append(".");
-		select.append(PysProductosInstitucionBean.C_IDINSTITUCION);
-		select.append(" = ");
-		select.append(PysProductosSolicitadosBean.T_NOMBRETABLA);
-		select.append(".");
-		select.append(PysProductosSolicitadosBean.C_IDINSTITUCION);
-		select.append(" AND ");
-		select.append(PysProductosInstitucionBean.T_NOMBRETABLA);
-		select.append(".");
-		select.append(PysProductosInstitucionBean.C_IDTIPOPRODUCTO);
-		select.append(" = ");
-		select.append(PysProductosSolicitadosBean.T_NOMBRETABLA);
-		select.append(".");
-		select.append(PysProductosSolicitadosBean.C_IDTIPOPRODUCTO);
-		select.append(" AND ");
-		select.append(PysProductosInstitucionBean.T_NOMBRETABLA);
-		select.append(".");
-		select.append(PysProductosInstitucionBean.C_IDPRODUCTO);
-		select.append(" = ");
-		select.append(PysProductosSolicitadosBean.T_NOMBRETABLA);
-		select.append(".");
-		select.append(PysProductosSolicitadosBean.C_IDPRODUCTO);
-		select.append(" AND ");
-		select.append(PysProductosInstitucionBean.T_NOMBRETABLA);
-		select.append(".");
-		select.append(PysProductosInstitucionBean.C_IDPRODUCTOINSTITUCION);
-		select.append(" = ");
-		select.append(PysProductosSolicitadosBean.T_NOMBRETABLA);
-		select.append(".");
-		select.append(PysProductosSolicitadosBean.C_IDPRODUCTOINSTITUCION);
-		select.append(") AS SOLICITARBAJA, ");
-		*/
-		// Cuenta
-		select.append("NVL((SELECT ");
-		select.append(CenCuentasBancariasBean.T_NOMBRETABLA);
-		select.append(".");
-		select.append(CenCuentasBancariasBean.C_IBAN);
-		select.append(" FROM ");
-		select.append(CenCuentasBancariasBean.T_NOMBRETABLA);
-		select.append(" WHERE ");
-		select.append(CenCuentasBancariasBean.T_NOMBRETABLA);
-		select.append(".");
-		select.append(CenCuentasBancariasBean.C_IDCUENTA);
-		select.append(" = ");
-		select.append(PysProductosSolicitadosBean.T_NOMBRETABLA);
-		select.append(".");
-		select.append(PysProductosSolicitadosBean.C_IDCUENTA);
-		select.append(" AND ");
-		select.append(CenCuentasBancariasBean.T_NOMBRETABLA);
-		select.append(".");
-		select.append(CenCuentasBancariasBean.C_IDINSTITUCION);
-		select.append(" = ");
-		select.append(idInstitucion);
-		select.append(" AND ");
-		select.append(CenCuentasBancariasBean.T_NOMBRETABLA);
-		select.append(".");
-		select.append(CenCuentasBancariasBean.C_IDPERSONA);
-		select.append(" = ");
-		select.append(PysProductosSolicitadosBean.T_NOMBRETABLA);
-		select.append(".");
-		select.append(PysProductosSolicitadosBean.C_IDPERSONA);
-		select.append("),'-') AS NCUENTA ");
-		//Estado Pago. Tarda mucho Lo comento. Accedere a ello con datos
-		//select.append(" F_SIGA_ESTADOCOMPRA(PYS_PRODUCTOSSOLICITADOS.IDINSTITUCION,PYS_PRODUCTOSSOLICITADOS.IDPETICION,PYS_PRODUCTOSSOLICITADOS.IDPRODUCTO,PYS_PRODUCTOSSOLICITADOS.IDTIPOPRODUCTO,PYS_PRODUCTOSSOLICITADOS.IDPRODUCTOINSTITUCION) AS ESTADOPAGO ");
-
-		select.append(" FROM ");
-		select.append(PysProductosSolicitadosBean.T_NOMBRETABLA);
-		select.append(", ");
-		select.append(PysPeticionCompraSuscripcionBean.T_NOMBRETABLA);
-		select.append(" ");
-		//INC_07291_SIGA Porcentajes de IVA.
-		select.append(", ");
-		select.append(PysTipoIvaBean.T_NOMBRETABLA);
-		select.append(" ");
-
-		select.append(" WHERE ");
-		select.append(PysProductosSolicitadosBean.T_NOMBRETABLA);
-		select.append(".");
-		select.append(PysProductosSolicitadosBean.C_IDINSTITUCION);
-		select.append(" = ");
-		select.append(idInstitucion);
-		select.append(" AND ");
-		select.append(PysProductosSolicitadosBean.T_NOMBRETABLA);
-		select.append(".");
-		select.append(PysProductosSolicitadosBean.C_IDPETICION);
-		select.append(" = ");
-		select.append(PysPeticionCompraSuscripcionBean.T_NOMBRETABLA);
-		select.append(".");
-		select.append(PysPeticionCompraSuscripcionBean.C_IDPETICION);
-		select.append(" AND ");
-		select.append(PysProductosSolicitadosBean.T_NOMBRETABLA);
-		select.append(".");
-		select.append(PysProductosSolicitadosBean.C_IDINSTITUCION);
-		select.append(" = ");
-		select.append(PysPeticionCompraSuscripcionBean.T_NOMBRETABLA);
-		select.append(".");
-		select.append(PysPeticionCompraSuscripcionBean.C_IDINSTITUCION);
-		
-		select.append(" AND ");
-		select.append(PysProductosSolicitadosBean.T_NOMBRETABLA);
-		select.append(".");
-		select.append(PysProductosSolicitadosBean.C_PORCENTAJEIVA);
-		select.append(" = ");
-		select.append(PysTipoIvaBean.T_NOMBRETABLA);
-		select.append(".");
-		select.append(PysTipoIvaBean.C_IDTIPOIVA);
+		String sql = "SELECT 'PRODUCTO' AS CONSULTA, " +
+						PysCompraBean.T_NOMBRETABLA + "." + PysCompraBean.C_IDINSTITUCION + ", " +
+						PysCompraBean.T_NOMBRETABLA + "." + PysCompraBean.C_IDPETICION + ", " + 
+						PysCompraBean.T_NOMBRETABLA + "." + PysCompraBean.C_IDPRODUCTO + ", " +
+						PysCompraBean.T_NOMBRETABLA + "." + PysCompraBean.C_IDPRODUCTOINSTITUCION + ", " +
+						PysCompraBean.T_NOMBRETABLA + "." + PysCompraBean.C_IDTIPOPRODUCTO + ", " +							
+						PysCompraBean.T_NOMBRETABLA + "." + PysCompraBean.C_IDFORMAPAGO + ", " +
+						PysTipoIvaBean.T_NOMBRETABLA + "." + PysTipoIvaBean.C_VALOR + " AS VALORIVA, " +											
+						PysPeticionCompraSuscripcionBean.T_NOMBRETABLA + "." + PysPeticionCompraSuscripcionBean.C_TIPOPETICION + ", " + 
+						PysPeticionCompraSuscripcionBean.T_NOMBRETABLA + "." + PysPeticionCompraSuscripcionBean.C_FECHA + ", " +						
+						PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDCUENTA + ", " +
+						PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_CANTIDAD + ", " + 
+						PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_VALOR + ", " +
+						PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_ACEPTADO + ", " + 						
+						PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_NOFACTURABLE + ", " +
+						" ( " +
+							" SELECT " + UtilidadesMultidioma.getCampoMultidioma(PysFormaPagoBean.T_NOMBRETABLA + "." + PysFormaPagoBean.C_DESCRIPCION, this.usrbean.getLanguage()) +
+							" FROM " + PysFormaPagoBean.T_NOMBRETABLA +
+							" WHERE " + PysFormaPagoBean.T_NOMBRETABLA + "." + PysFormaPagoBean.C_IDFORMAPAGO + " = " + PysCompraBean.T_NOMBRETABLA + "." + PysCompraBean.C_IDFORMAPAGO +
+						" ) AS FORMAPAGO, " + 
+						" ( " +
+							" SELECT " + PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_DESCRIPCION +
+							" FROM " + PysProductosInstitucionBean.T_NOMBRETABLA +
+							" WHERE " + PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_IDINSTITUCION + " = " + PysCompraBean.T_NOMBRETABLA + "." + PysCompraBean.C_IDINSTITUCION +
+								" AND " + PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_IDTIPOPRODUCTO + " = " + PysCompraBean.T_NOMBRETABLA + "." + PysCompraBean.C_IDTIPOPRODUCTO +
+								" AND " + PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_IDPRODUCTO + " = " + PysCompraBean.T_NOMBRETABLA + "." + PysCompraBean.C_IDPRODUCTO +
+								" AND " + PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_IDPRODUCTOINSTITUCION + " = " + PysCompraBean.T_NOMBRETABLA + "." + PysCompraBean.C_IDPRODUCTOINSTITUCION + 
+						" ) AS CONCEPTO, " +
+						" NVL( " +
+							" ( " +
+								" SELECT " + CenCuentasBancariasBean.T_NOMBRETABLA+ "." + CenCuentasBancariasBean.C_IBAN + 
+								" FROM " + CenCuentasBancariasBean.T_NOMBRETABLA + 
+								" WHERE " + CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_IDCUENTA + " = " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDCUENTA + 
+									" AND " + CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_IDINSTITUCION + " = " + PysPeticionCompraSuscripcionBean.T_NOMBRETABLA + "." + PysPeticionCompraSuscripcionBean.C_IDINSTITUCION + 
+									" AND " + CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_IDPERSONA + " = " + PysPeticionCompraSuscripcionBean.T_NOMBRETABLA + "." + PysPeticionCompraSuscripcionBean.C_IDPERSONA + 
+							" ) " +
+								" ,'-') AS NCUENTA " +
+					" FROM " + PysProductosSolicitadosBean.T_NOMBRETABLA + ", " + 
+						PysPeticionCompraSuscripcionBean.T_NOMBRETABLA + ", " +
+						PysTipoIvaBean.T_NOMBRETABLA + ", " +
+						PysCompraBean.T_NOMBRETABLA + 
+					" WHERE " + PysCompraBean.T_NOMBRETABLA + "."+ PysCompraBean.C_IDINSTITUCION + " = " + idInstitucion +
+						" AND " + PysCompraBean.T_NOMBRETABLA + "." + PysCompraBean.C_IDPETICION + " = " + PysPeticionCompraSuscripcionBean.T_NOMBRETABLA + "." + PysPeticionCompraSuscripcionBean.C_IDPETICION +
+						" AND " + PysCompraBean.T_NOMBRETABLA + "." + PysCompraBean.C_IDINSTITUCION + " = " + PysPeticionCompraSuscripcionBean.T_NOMBRETABLA + "." + PysPeticionCompraSuscripcionBean.C_IDINSTITUCION +
+						" AND " + PysCompraBean.T_NOMBRETABLA + "." + PysCompraBean.C_PORCENTAJEIVA + " = " + PysTipoIvaBean.T_NOMBRETABLA + "." + PysTipoIvaBean.C_IDTIPOIVA + 
+						" AND " + PysCompraBean.T_NOMBRETABLA + "." + PysCompraBean.C_IDINSTITUCION + " = " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDINSTITUCION +
+						" AND " + PysCompraBean.T_NOMBRETABLA + "." + PysCompraBean.C_IDTIPOPRODUCTO + " = " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDTIPOPRODUCTO +
+						" AND " + PysCompraBean.T_NOMBRETABLA + "." + PysCompraBean.C_IDPRODUCTO + " = " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDPRODUCTO +
+						" AND " + PysCompraBean.T_NOMBRETABLA + "." + PysCompraBean.C_IDPRODUCTOINSTITUCION + " = " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDPRODUCTOINSTITUCION +
+						" AND " + PysCompraBean.T_NOMBRETABLA + "." + PysCompraBean.C_IDPETICION + " = " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDPETICION;
 
 		if (idPeticion != null) {
-			select.append(" AND ");
-			select.append(PysPeticionCompraSuscripcionBean.T_NOMBRETABLA);
-			select.append(".");
-			select.append(PysProductosSolicitadosBean.C_IDPETICION);
-			select.append(" =");
-			contador++;
-			codigos.put(new Integer(contador),idPeticion.toString());
-			select.append(":"+contador);
-			
-		}
-		if (idPersona != null) {
-			select.append(" AND ");
-			select.append(PysPeticionCompraSuscripcionBean.T_NOMBRETABLA);
-			select.append(".");
-			select.append(PysPeticionCompraSuscripcionBean.C_IDPERSONA);
-			select.append(" =");
-			contador++;
-			codigos.put(new Integer(contador),idPersona.toString());
-			select.append(":"+contador);
-		}
-		if (tipoPeticion != null) {
-			select.append(" AND ");
-			select.append(PysPeticionCompraSuscripcionBean.T_NOMBRETABLA);
-			select.append(".");
-			select.append(PysPeticionCompraSuscripcionBean.C_TIPOPETICION);
-			select.append(" =");
-			contador++;
-			codigos.put(new Integer(contador),tipoPeticion);
-			select.append(":"+contador);
-		}
+			sql += " AND " + PysCompraBean.T_NOMBRETABLA + "." + PysCompraBean.C_IDPETICION + " = '" + idPeticion + "' ";
+		}			
 
 		if (distintoCampoAceptado != null) {
-			select.append( " AND ");  
-			select.append(PysProductosSolicitadosBean.T_NOMBRETABLA);
-			select.append(".");
-			select.append(PysProductosSolicitadosBean.C_ACEPTADO); select.append(" <> "); 
-			contador++;
-			codigos.put(new Integer(contador),distintoCampoAceptado);
-			select.append(":"+contador);
-			
+			sql += " AND " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_ACEPTADO + " <> '" + distintoCampoAceptado + "' ";
 		}
+		
+		if (idPersona != null) {
+			sql += " AND " + PysPeticionCompraSuscripcionBean.T_NOMBRETABLA + "." + PysPeticionCompraSuscripcionBean.C_IDPERSONA + " = " + idPersona;
+		}
+		
+		if (tipoPeticion != null) {
+			sql += " AND " + PysPeticionCompraSuscripcionBean.T_NOMBRETABLA + "." + PysPeticionCompraSuscripcionBean.C_TIPOPETICION + " = '" + tipoPeticion + "' ";
+		}		
 
-		// Fechas
 		if (fechaDesde != null) {
 			if (fechaDesde.indexOf("SYSDATE") != -1) {
-				select.append(" AND ");
-				select.append(PysPeticionCompraSuscripcionBean.T_NOMBRETABLA);
-				select.append(".");
-				select.append(PysPeticionCompraSuscripcionBean.C_FECHA);
-				select.append(" >=");
-				select.append(fechaDesde);
-				
-				
+				sql += " AND " + PysPeticionCompraSuscripcionBean.T_NOMBRETABLA + "." + PysPeticionCompraSuscripcionBean.C_FECHA + " >= " + fechaDesde;
 				
 			} else {
-				select.append(" AND ");
-				select.append(PysPeticionCompraSuscripcionBean.T_NOMBRETABLA);
-				select.append(".");
-				select.append(PysPeticionCompraSuscripcionBean.C_FECHA);
-				select.append(" >= ");
-				select.append(" TO_DATE('");
-				select.append(fechaDesde);
-				select.append("', '");
-				select.append(ClsConstants.DATE_FORMAT_SQL);
-				select.append("') ");
+				sql += " AND " + PysPeticionCompraSuscripcionBean.T_NOMBRETABLA + "." + PysPeticionCompraSuscripcionBean.C_FECHA + " >= " + " TO_DATE('" + fechaDesde + "', '" + ClsConstants.DATE_FORMAT_SQL + "') ";
 			}
 		}
+		
 		if (fechaHasta != null) {
 			if (fechaHasta.indexOf("SYSDATE") != -1) {
-				select.append(" AND ");
-				select.append(PysPeticionCompraSuscripcionBean.T_NOMBRETABLA);
-				select.append(".");
-				select.append(PysPeticionCompraSuscripcionBean.C_FECHA);
-				select.append(" <=");
-				select.append(fechaHasta);
+				sql += " AND " + PysPeticionCompraSuscripcionBean.T_NOMBRETABLA + "." + PysPeticionCompraSuscripcionBean.C_FECHA + " <= " + fechaHasta;
 				
 			} else {
-				select.append(" AND ");
-				select.append(PysPeticionCompraSuscripcionBean.T_NOMBRETABLA);
-				select.append(".");
-				select.append(PysPeticionCompraSuscripcionBean.C_FECHA);
-				select.append(" <= ");
-				select.append(" TO_DATE('");
-				select.append(fechaHasta);
-				select.append("', '");
-				select.append(ClsConstants.DATE_FORMAT_SQL);
-				select.append("') ");
+				sql += " AND " + PysPeticionCompraSuscripcionBean.T_NOMBRETABLA + "." + PysPeticionCompraSuscripcionBean.C_FECHA + " <= " + " TO_DATE('" + fechaHasta + "', '" + ClsConstants.DATE_FORMAT_SQL + "') ";
 			}
-		}
+		}		
 
-		select.append(" ORDER BY ");
-		select.append(PysPeticionCompraSuscripcionBean.T_NOMBRETABLA);
-		select.append(".");
-		select.append(PysPeticionCompraSuscripcionBean.C_FECHA);
-		select.append(" DESC ");
+		sql += " ORDER BY " + PysPeticionCompraSuscripcionBean.T_NOMBRETABLA + "." + PysPeticionCompraSuscripcionBean.C_FECHA + " DESC ";
 
-		// String consulta = select); select.append( from); select.append(
-		// where); select.append( orderBy;
-
-		return select.toString();
-		
-
+		return sql;
 	}
 }

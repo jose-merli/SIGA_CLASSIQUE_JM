@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-<!-- datosServiciosSolicitados.jsp -->
+<!-- cambioFechaEfectiva.jsp -->
+
 <!-- CABECERA JSP -->
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-1"%>
@@ -11,21 +12,18 @@
 
 <!-- TAGLIBS -->
 <%@ taglib uri="libreria_SIGA.tld" prefix="siga"%>
-<%@ taglib uri = "struts-bean.tld" prefix="bean"%>
-<%@ taglib uri = "struts-html.tld" prefix="html"%>
-<%@ taglib uri = "struts-logic.tld" prefix="logic"%>
+<%@ taglib uri="struts-bean.tld" prefix="bean"%>
+<%@ taglib uri="struts-html.tld" prefix="html"%>
+<%@ taglib uri="struts-logic.tld" prefix="logic"%>
 
 <!-- IMPORTS -->
-<%@ page import="com.siga.administracion.SIGAConstants"%>
 <%@ page import="com.atos.utils.ClsConstants"%>
-<%@ page import="com.siga.beans.CenClienteBean"%>
-<%@ page import="com.siga.beans.CenPersonaBean"%>
 <%@ page import="com.siga.censo.form.DatosFacturacionForm"%>
 <%@ page import="com.siga.Utilidades.UtilidadesString"%>
 <%@ page import="com.atos.utils.UsrBean"%>
-<%@ page import = "com.siga.Utilidades.UtilidadesBDAdm"%>
-<%@ page import="java.util.Properties"%>
+<%@ page import="com.siga.Utilidades.UtilidadesBDAdm"%>
 <!-- JSP -->
+
 <%  
 	String app=request.getContextPath();
 	HttpSession ses=request.getSession();
@@ -68,46 +66,35 @@
 	} else { 
 		busc += UtilidadesString.getMensajeIdioma(usrbean,"censo.fichaCliente.literal.NoColegiado");
 	}  
-
 %>	
 
-
-<!-- HEAD -->
-
-
+	<!-- HEAD -->
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
-	
 	<!-- Incluido jquery en siga.js -->
-	
 	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js?v=${sessionScope.VERSIONJS}'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
 	
-
-
 	<!-- Calendario -->
 	<script src="<%=app%>/html/js/calendarJs.jsp" type="text/javascript"></script>
 
 	<!-- INICIO: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->
 	<!-- Validaciones en Cliente -->
 	<!-- El nombre del formulario se obtiene del struts-config -->
-		<html:javascript formName="datosFacturacionForm" staticJavascript="false" />  
-	  	<script src="<%=app%>/html/js/validacionStruts.js" type="text/javascript"></script>
+	<html:javascript formName="datosFacturacionForm" staticJavascript="false" />  
+  	<script src="<%=app%>/html/js/validacionStruts.js" type="text/javascript"></script>
 	<!-- FIN: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->	
-	
 </head>
 
 <body>
-
 	<!-- TITULO -->
 	<!-- Barra de titulo actualizable desde los mantenimientos -->
 	<table class="tablaTitulo" cellspacing="0" heigth="32">
-	<tr>
-		<td id="titulo" class="titulosPeq">
-			<%=busc %>
-		</td>
-	</tr>
+		<tr>
+			<td id="titulo" class="titulosPeq">
+				<%=busc %>
+			</td>
+		</tr>
 	</table>
-
 
 <!-- INICIO ******* CAPA DE PRESENTACION ****** -->
 <!-- dentro de esta capa se tienen que situar los diferentes componentes 
@@ -120,55 +107,38 @@
 	<!-- Zona de campos de busqueda o filtro -->
 
 	<table  class="tablaCentralCamposPeque"  align="center">
+		<html:form action="/CEN_Facturacion.do" method="POST" target="submitArea">
+			<html:hidden name="datosFacturacionForm"  property = "modo" value = ""/>
+			<html:hidden name="datosFacturacionForm"  property = "idInstitucion" />
+			<html:hidden name="datosFacturacionForm"  property = "idPersona" />
+			<input type="hidden" name="pos" value="<%=pos %>">
 
-	<html:form action="/CEN_Facturacion.do" method="POST" target="submitArea">
-	<html:hidden name="datosFacturacionForm"  property = "modo" value = ""/>
-	<html:hidden name="datosFacturacionForm"  property = "idInstitucion" />
-	<html:hidden name="datosFacturacionForm"  property = "idPersona" />
-	<input type="hidden" name="pos" value="<%=pos %>">
+			<!-- datos modificacion -->
+			<html:hidden  name="datosFacturacionForm" property="motivo"/>
+			<input type="hidden" name="idPeticionSel" value="<%=idPeticion%>" >
+			<input type="hidden" name="idTipoServicioSel" value="<%=idTipoServicio%>" >
+			<input type="hidden" name="idServicioSel" value="<%=idServicio%>" >
+			<input type="hidden" name="idServicioInstitucionSel" value="<%=idServicioInstitucion%>" >
+			<input type="hidden" name="idPeticion" value="<%=idPeticion%>" >
 
-	<!-- datos modificacion -->
-	<html:hidden  name="datosFacturacionForm" property="motivo"/>
-	<input type="hidden" name="idPeticionSel" value="<%=idPeticion%>" >
-	<input type="hidden" name="idTipoServicioSel" value="<%=idTipoServicio%>" >
-	<input type="hidden" name="idServicioSel" value="<%=idServicio%>" >
-	<input type="hidden" name="idServicioInstitucionSel" value="<%=idServicioInstitucion%>" >
-	<input type="hidden" name="idPeticion" value="<%=idPeticion%>" >
-
-	<!-- FILA -->
-	<tr>				
-	<td>
-
-	<fieldset>
-
-	<table class="tablaCampos" align="center">
-
-	<!-- FILA -->
-	<tr>				
-
-	<td class="labelText">
-		<siga:Idioma key="pys.solicitarBaja.literal.fechaEfectiva"/> (*)
-	</td>				
-	<td>
-			<siga:Fecha  nombreCampo= "fechaEfectiva" valorInicial="<%=fechaEfectiva %>" posicionX="50" posicionY="10"/>
-	</td>
-	
-
-	</tr>
-
+			<tr>				
+				<td>
+					<fieldset>
+						<table class="tablaCampos" align="center">
+							<tr>				
+								<td class="labelText">
+									<siga:Idioma key="pys.solicitarBaja.literal.fechaEfectiva"/> (*)
+								</td>				
+								<td>
+									<siga:Fecha  nombreCampo= "fechaEfectiva" valorInicial="<%=fechaEfectiva %>" posicionX="50" posicionY="10"/>
+								</td>
+							</tr>
+						</table>
+					</fieldset>
+				</td>
+			</tr>
+		</html:form>
 	</table>
-
-	</fieldset>
-
-
-	</td>
-	</tr>
-
-	</html:form>
-	
-	</table>
-
-
 
 	<!-- FIN: CAMPOS -->
 
@@ -183,20 +153,14 @@
 		 PARA POSICIONARLA EN SU SITIO NATURAL, SI NO SE POSICIONA A MANO
 		 La propiedad modal dice el tamanho de la ventana (M,P,G)
 	-->
-
-		<siga:ConjBotonesAccion botones="Y,R,C" modal="P" />
-
+	<siga:ConjBotonesAccion botones="Y,R,C" modal="P" />
 	<!-- FIN: BOTONES REGISTRO -->
 
-	
 	<!-- INICIO: SCRIPTS BOTONES -->
 	<!-- Aqui se reescriben las funciones que vayamos a utilizar -->
 	<script language="JavaScript">
-
- 
-		<!-- Asociada al boton GuardarCerrar -->
-		function accionGuardarCerrar() 
-		{		
+		// Asociada al boton GuardarCerrar
+		function accionGuardarCerrar() {		
 			sub();
 			if (document.forms[0].fechaEfectiva.value=="") {
 				var msg="<siga:Idioma key="messages.servicios.fechaEfectivaObligatoria"/>";
@@ -209,31 +173,23 @@
 			}
 		}
 
-		<!-- Asociada al boton Cerrar -->
-		function accionCerrar() 
-		{		
+		// Asociada al boton Cerrar
+		function accionCerrar() {		
 			top.cierraConParametros("NORMAL");
 		}
 
-		<!-- Asociada al boton Restablecer -->
-		function accionRestablecer() 
-		{		
+		// Asociada al boton Restablecer
+		function accionRestablecer() {		
 			document.forms[0].reset();
 		}
-
-
 	</script>
 	<!-- FIN: SCRIPTS BOTONES -->
-
 	<!-- FIN ******* BOTONES DE ACCIONES EN REGISTRO ****** -->
+	<!-- FIN ******* CAPA DE PRESENTACION ****** -->
 
-
-<!-- FIN ******* CAPA DE PRESENTACION ****** -->
-
-<!-- INICIO: SUBMIT AREA -->
-<!-- Obligatoria en todas las páginas-->
+	<!-- INICIO: SUBMIT AREA -->
+	<!-- Obligatoria en todas las páginas-->
 	<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
-<!-- FIN: SUBMIT AREA -->
-
+	<!-- FIN: SUBMIT AREA -->
 </body>
 </html>

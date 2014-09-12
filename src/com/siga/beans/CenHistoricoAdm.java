@@ -10,8 +10,19 @@ package com.siga.beans;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Vector;
-import com.atos.utils.*;
-import com.siga.Utilidades.*;
+
+import com.atos.utils.ClsConstants;
+import com.atos.utils.ClsExceptions;
+import com.atos.utils.ComodinBusquedas;
+import com.atos.utils.GstDate;
+import com.atos.utils.Row;
+import com.atos.utils.RowsContainer;
+import com.atos.utils.UsrBean;
+import com.siga.Utilidades.Paginador;
+import com.siga.Utilidades.UtilidadesBDAdm;
+import com.siga.Utilidades.UtilidadesHash;
+import com.siga.Utilidades.UtilidadesMultidioma;
+import com.siga.Utilidades.UtilidadesString;
 import com.siga.administracion.form.AuditoriaUsuariosForm;
 import com.siga.general.SIGAException;
 
@@ -520,38 +531,43 @@ public class CenHistoricoAdm extends MasterBeanAdministrador
 		}
     }
 	
-	public boolean insertCompleto(Hashtable hHistorico, Hashtable hBeanAsociado, Hashtable hBeanAsociadoOriginal, String nombreClaseBean, int accion, String idioma) throws ClsExceptions
-	{
+	/**
+	 * Gestiona CEN_HISTORICO
+	 * @param hHistorico
+	 * @param hBeanAsociado
+	 * @param hBeanAsociadoOriginal
+	 * @param nombreClaseBean
+	 * @param accion
+	 * @param idioma
+	 * @return
+	 * @throws ClsExceptions
+	 */
+	public boolean insertCompleto(Hashtable hHistorico, Hashtable hBeanAsociado, Hashtable hBeanAsociadoOriginal, String nombreClaseBean, int accion, String idioma) throws ClsExceptions {
 		try {
-			MasterBean beanAsociado = null;
 			MasterBeanAdministrador adm = null;
 			
-			do {
-				if (nombreClaseBean.equalsIgnoreCase("CenClienteBean")) {
-					adm = new CenClienteAdm(this.usrbean);
-					break;
-				}
+			if (nombreClaseBean.equalsIgnoreCase("CenClienteBean")) {
+				adm = new CenClienteAdm(this.usrbean);
 				
-				if (nombreClaseBean.equalsIgnoreCase("CenPersonaBean")) {
-					adm = new CenPersonaAdm(this.usrbean);
-					break;
-				}
+			} else if (nombreClaseBean.equalsIgnoreCase("CenPersonaBean")) {
+				adm = new CenPersonaAdm(this.usrbean);
 				
-				if (nombreClaseBean.equalsIgnoreCase("PysServiciosSolicitadosBean")) {
-					adm = new PysServiciosSolicitadosAdm(this.usrbean);
-					break;
-				}
-
+			} else if (nombreClaseBean.equalsIgnoreCase("PysServiciosSolicitadosBean")) {
+				adm = new PysServiciosSolicitadosAdm(this.usrbean);
+			
+			} else if (nombreClaseBean.equalsIgnoreCase("PysSuscripcionBean")) {
+				adm = new PysSuscripcionAdm(this.usrbean);
+				
+			} else {
 				return false;
-				
-			} while (false);
+			}
 
-			beanAsociado = adm.hashTableToBean(hBeanAsociado);
+			MasterBean beanAsociado = adm.hashTableToBean(hBeanAsociado);
 			beanAsociado.setOriginalHash(hBeanAsociadoOriginal);
 			
 			return this.insertCompleto(hHistorico, beanAsociado, accion, idioma);
-		}
-		catch (Exception e) {
+			
+		} catch (Exception e) {
 			return false;
 		}
 	}
@@ -589,9 +605,8 @@ public class CenHistoricoAdm extends MasterBeanAdministrador
 					beanHistorico.setIdPersona(beanCliente.getIdPersona());
 					beanHistorico.setIdTipoCambio(new Integer(ClsConstants.TIPO_CAMBIO_HISTORICO_DATOS_GENERALES));
 					break;
-				}				
-				
-				if (beanAsociado instanceof CenClienteBean) {
+					
+				} else if (beanAsociado instanceof CenClienteBean) {
 					CenClienteBean beanCliente = (CenClienteBean) beanAsociado;
 					CenClienteAdm adm = new CenClienteAdm(this.usrbean);
 					hBeanAsociado = adm.beanToHashTable(beanCliente);
@@ -601,9 +616,8 @@ public class CenHistoricoAdm extends MasterBeanAdministrador
 					beanHistorico.setIdPersona(beanCliente.getIdPersona());
 					beanHistorico.setIdTipoCambio(new Integer(ClsConstants.TIPO_CAMBIO_HISTORICO_DATOS_GENERALES));
 					break;
-				}
-
-				if (beanAsociado instanceof CenColegiadoBean) {
+					
+				} else if (beanAsociado instanceof CenColegiadoBean) {
 					CenColegiadoBean beanCliente = (CenColegiadoBean) beanAsociado;
 					CenColegiadoAdm adm = new CenColegiadoAdm(this.usrbean);
 					hBeanAsociado = adm.beanToHashTable(beanCliente);
@@ -611,9 +625,8 @@ public class CenHistoricoAdm extends MasterBeanAdministrador
 
 					beanHistorico.setIdTipoCambio(new Integer(ClsConstants.TIPO_CAMBIO_HISTORICO_DATOS_COLEGIALES));			
 					break;
-				}
-			
-				if (beanAsociado instanceof CenComponentesBean) {
+					
+				} else if (beanAsociado instanceof CenComponentesBean) {
 					CenComponentesBean beanComponentes = (CenComponentesBean) beanAsociado;
 					CenComponentesAdm adm = new CenComponentesAdm(this.usrbean);
 					hBeanAsociado = adm.beanToHashTable(beanComponentes);
@@ -634,9 +647,8 @@ public class CenHistoricoAdm extends MasterBeanAdministrador
 					catch (Exception e) {}
 					
 					break;
-				}
-				
-				if (beanAsociado instanceof CenCuentasBancariasBean) {
+					
+				} else if (beanAsociado instanceof CenCuentasBancariasBean) {
 					CenCuentasBancariasBean beanCuentas = (CenCuentasBancariasBean) beanAsociado;
 					CenCuentasBancariasAdm adm = new CenCuentasBancariasAdm(this.usrbean);
 					hBeanAsociado = adm.beanToHashTable(beanCuentas);
@@ -672,9 +684,8 @@ public class CenHistoricoAdm extends MasterBeanAdministrador
 					catch (Exception e) {}
 
 					break;
-				}
-				
-				if (beanAsociado instanceof CenDatosColegialesEstadoBean) {
+					
+				} else if (beanAsociado instanceof CenDatosColegialesEstadoBean) {
 					CenDatosColegialesEstadoBean beanDatosColegiales = (CenDatosColegialesEstadoBean) beanAsociado;
 					CenDatosColegialesEstadoAdm adm = new CenDatosColegialesEstadoAdm(this.usrbean);
 					hBeanAsociado = adm.beanToHashTable(beanDatosColegiales);
@@ -699,9 +710,8 @@ public class CenHistoricoAdm extends MasterBeanAdministrador
 					catch (Exception e) {}
 					
 					break;
-				}
-
-				if (beanAsociado instanceof CenDatosCVBean) {
+					
+				} else if (beanAsociado instanceof CenDatosCVBean) {
 					CenDatosCVBean beanCV = (CenDatosCVBean) beanAsociado;
 					CenDatosCVAdm adm = new CenDatosCVAdm(this.usrbean);
 					hBeanAsociado = adm.beanToHashTable(beanCV);
@@ -721,9 +731,8 @@ public class CenHistoricoAdm extends MasterBeanAdministrador
 					catch (Exception e) {}
 
 					break;
-				}
-
-				if (beanAsociado instanceof CenDireccionesBean) {
+					
+				} else if (beanAsociado instanceof CenDireccionesBean) {
 					CenDireccionesBean beanDir = (CenDireccionesBean) beanAsociado;
 					CenDireccionesAdm adm = new CenDireccionesAdm(this.usrbean);
 					hBeanAsociado = adm.beanToHashTable(beanDir);
@@ -800,9 +809,8 @@ public class CenHistoricoAdm extends MasterBeanAdministrador
 					catch (Exception e) {}
 
 					break;
-				}
-				
-				if (beanAsociado instanceof CenDireccionTipoDireccionBean) {
+					
+				} else if (beanAsociado instanceof CenDireccionTipoDireccionBean) {
 					CenDireccionTipoDireccionBean beanTipoDir = (CenDireccionTipoDireccionBean) beanAsociado;
 					CenDireccionTipoDireccionAdm adm = new CenDireccionTipoDireccionAdm(this.usrbean);
 					hBeanAsociado = adm.beanToHashTable(beanTipoDir);
@@ -812,9 +820,8 @@ public class CenHistoricoAdm extends MasterBeanAdministrador
 					beanHistorico.setIdPersona(beanTipoDir.getIdPersona());
 					beanHistorico.setIdTipoCambio(new Integer(ClsConstants.TIPO_CAMBIO_HISTORICO_DIRECCIONES));
 					break;
-				}
-				
-				if (beanAsociado instanceof CenGruposClienteClienteBean) {
+					
+				} else if (beanAsociado instanceof CenGruposClienteClienteBean) {
 					CenGruposClienteClienteBean beanGrupo = (CenGruposClienteClienteBean) beanAsociado;
 
 					beanHistorico.setIdInstitucion(beanGrupo.getIdInstitucion());
@@ -846,8 +853,8 @@ public class CenHistoricoAdm extends MasterBeanAdministrador
 					catch (Exception e) {}
 					
 					break;
-				}
-				if (beanAsociado instanceof CenNoColegiadoActividadBean ) {
+					
+				} else if (beanAsociado instanceof CenNoColegiadoActividadBean ) {
 					CenNoColegiadoActividadBean beanGrupo = (CenNoColegiadoActividadBean) beanAsociado;
 
 					beanHistorico.setIdInstitucion(beanGrupo.getIdInstitucion());
@@ -869,10 +876,8 @@ public class CenHistoricoAdm extends MasterBeanAdministrador
 					catch (Exception e) {}
 					
 					break;
-				}
-
-
-				if (beanAsociado instanceof CenPersonaBean) {
+					
+				} else if (beanAsociado instanceof CenPersonaBean) {
 					CenPersonaBean beanPersona = (CenPersonaBean) beanAsociado;
 					CenPersonaAdm adm = new CenPersonaAdm(this.usrbean);
 					hBeanAsociado = adm.beanToHashTable(beanPersona);
@@ -882,9 +887,8 @@ public class CenHistoricoAdm extends MasterBeanAdministrador
 					beanHistorico.setIdPersona(beanPersona.getIdPersona());
 					beanHistorico.setIdTipoCambio(new Integer(ClsConstants.TIPO_CAMBIO_HISTORICO_ESTADO_ALTA_COLEGIAL));			
 					break;
-				}
-
-				if (beanAsociado instanceof ExpExpedienteBean) {
+					
+				} else if (beanAsociado instanceof ExpExpedienteBean) {
 					ExpExpedienteBean beanExp = (ExpExpedienteBean) beanAsociado;
 					ExpExpedienteAdm adm = new ExpExpedienteAdm(this.usrbean);
 					hBeanAsociado = adm.beanToHashTable(beanExp);
@@ -929,9 +933,8 @@ public class CenHistoricoAdm extends MasterBeanAdministrador
 					catch (Exception e) {}
 
 					break;
-				}
-
-				if (beanAsociado instanceof PysServiciosSolicitadosBean) {
+					
+				} else if (beanAsociado instanceof PysServiciosSolicitadosBean) {
 					PysServiciosSolicitadosBean beanFact = (PysServiciosSolicitadosBean) beanAsociado;
 					PysServiciosSolicitadosAdm adm = new PysServiciosSolicitadosAdm(this.usrbean);
 					hBeanAsociado = adm.beanToHashTable(beanFact);
@@ -941,7 +944,19 @@ public class CenHistoricoAdm extends MasterBeanAdministrador
 					beanHistorico.setIdPersona(beanFact.getIdPersona());
 					beanHistorico.setIdTipoCambio(new Integer(ClsConstants.TIPO_CAMBIO_HISTORICO_DATOS_FACTURACION));			
 					break;
+
+				} else if (beanAsociado instanceof PysSuscripcionBean) {
+					PysSuscripcionBean beanPysSuscripcion = (PysSuscripcionBean) beanAsociado;
+					PysSuscripcionAdm admPysSuscripcion = new PysSuscripcionAdm(this.usrbean);
+					hBeanAsociado = admPysSuscripcion.beanToHashTable(beanPysSuscripcion);
+					hBeanAsociadoAnterior = admPysSuscripcion.beanToHashTable(admPysSuscripcion.hashTableToBean(beanPysSuscripcion.getOriginalHash()));
+
+					beanHistorico.setIdInstitucion(beanPysSuscripcion.getIdInstitucion());
+					beanHistorico.setIdPersona(beanPysSuscripcion.getIdPersona());
+					beanHistorico.setIdTipoCambio(new Integer(ClsConstants.TIPO_CAMBIO_HISTORICO_DATOS_FACTURACION));			
+					break;
 				}
+
 
 			} while (false);
 

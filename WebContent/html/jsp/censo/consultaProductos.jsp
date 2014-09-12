@@ -39,6 +39,10 @@
 <%@ page import="java.util.HashMap"%>
 <%@ page import="com.siga.Utilidades.PaginadorBind"%>
 <%@ page import="com.atos.utils.Row"%>
+<%@ page import="com.siga.beans.PysCompraBean"%>
+<%@ page import="com.siga.beans.PysTipoIvaBean"%>
+<%@ page import="com.siga.beans.PysPeticionCompraSuscripcionBean"%>
+<%@ page import="com.siga.beans.PysProductosSolicitadosBean"%>
 
 <!-- JSP -->
 <%
@@ -225,9 +229,24 @@
 				Hashtable registro = (Hashtable) fila.getRow(); 
 				
 				String cont = new Integer(i + 1).toString();
-
-				// calculo de campos
-				String fecha = (String) registro.get("FECHA");
+				
+				String idPeticion = UtilidadesString.mostrarDatoJSP((String) registro.get(PysCompraBean.C_IDPETICION));
+				String idProducto = (String) registro.get(PysCompraBean.C_IDPRODUCTO);
+				String idProductoInstitucion = (String) registro.get(PysCompraBean.C_IDPRODUCTOINSTITUCION);
+				String idTipoProducto = (String) registro.get(PysCompraBean.C_IDTIPOPRODUCTO);							
+				String idFormaPago = (String) registro.get(PysCompraBean.C_IDFORMAPAGO);
+				String iva = UtilidadesString.mostrarDatoJSP((String) registro.get("VALORIVA"));						
+				String tipoPeticion = UtilidadesString.mostrarDatoJSP((String) registro.get(PysPeticionCompraSuscripcionBean.C_TIPOPETICION));
+				String fecha = (String) registro.get(PysPeticionCompraSuscripcionBean.C_FECHA);						
+				//PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDCUENTA + ", " +
+				String cantidad = UtilidadesString.mostrarDatoJSP((String) registro.get(PysProductosSolicitadosBean.C_CANTIDAD));
+				String precio = UtilidadesString.mostrarDatoJSP((String) registro.get(PysProductosSolicitadosBean.C_VALOR));
+				String aceptado = UtilidadesString.mostrarDatoJSP((String) registro.get(PysProductosSolicitadosBean.C_ACEPTADO)); 						
+				String nofacturable = (String) registro.get(PysProductosSolicitadosBean.C_NOFACTURABLE);
+				String formaPago = UtilidadesString.mostrarDatoJSP((String) registro.get("FORMAPAGO"));		
+				String concepto = UtilidadesString.mostrarDatoJSP((String) registro.get("CONCEPTO"));
+				String idCuenta = (String) registro.get("NCUENTA");
+				
 				if (fecha == null || fecha.equals("")) {
 					fecha = "&nbsp;";
 				} else {
@@ -235,11 +254,6 @@
 					fecha = GstDate.getFormatedDateShort(usr.getLanguage(), fecha);
 				}
 				
-				String idPeticion = UtilidadesString.mostrarDatoJSP((String) registro.get("IDPETICION"));
-				String concepto = UtilidadesString.mostrarDatoJSP((String) registro.get("CONCEPTO"));
-				String formaPago = UtilidadesString.mostrarDatoJSP((String) registro.get("FORMAPAGO"));
-				String idFormaPago = (String) registro.get("IDFORMAPAGO");
-				String idCuenta = (String) registro.get("NCUENTA");
 				if (idCuenta == null || idCuenta.equals("")) {
 					idCuenta = "&nbsp";
 				} else if (!idCuenta.equals("-")) {					
@@ -250,10 +264,6 @@
 				if (identifCuenta == null || identifCuenta.equals("")) {
 					identifCuenta = " ";
 				}
-				String cantidad = UtilidadesString.mostrarDatoJSP((String) registro.get("CANTIDAD"));
-				String precio = UtilidadesString.mostrarDatoJSP((String) registro.get("VALOR"));
-				//String iva = UtilidadesString.mostrarDatoJSP((String) registro.get("PORCENTAJEIVA"));
-				String iva = UtilidadesString.mostrarDatoJSP((String) registro.get("VALORIVA"));
 
 				//Calculo el precio con iva y lo redondeo:
 				double precioDouble = 0;
@@ -268,19 +278,13 @@
 				String estadoPago = UtilidadesString.mostrarDatoJSP((String) registro.get("ESTADOPAGO"));
 				String estadoPago2 = UtilidadesString.mostrarDatoJSP((String) registro.get("ESTADOPAGO"));
 
-				/*estadoPago = UtilidadesProductosServicios.getEstadoPago(estadoPago);*/
-
 				estadoPago = UtilidadesString.getMensajeIdioma(usr, estadoPago);
 
-				String tipoPeticion = UtilidadesString.mostrarDatoJSP((String) registro.get("TIPOPETICION"));
-				String aceptado = UtilidadesString.mostrarDatoJSP((String) registro.get("ACEPTADO"));
+				
 				String estadoProducto = UtilidadesProductosServicios.getEstadoProductoServicio(aceptado);
 				estadoProducto = UtilidadesString.getMensajeIdioma(usr, estadoProducto);
+				
 				String botones = "";
-
-				// solo los que no estan aceptados
-				//if (aceptado.equals(ClsConstants.PRODUCTO_PENDIENTE) && modo.equals("editar")) {
-					
 				if ((aceptado.equals(ClsConstants.PRODUCTO_ACEPTADO) || aceptado.equals(ClsConstants.PRODUCTO_PENDIENTE))
 						&& !estadoPago2.equals("general.literal.pagado")
 						&& !estadoPago2.equals("general.literal.renegociada")
@@ -291,11 +295,6 @@
 						&& modo.equals("editar")) {
 					botones = "E";
 				}
-
-				String idTipoProducto = (String) registro.get("IDTIPOPRODUCTO");
-				String idProducto = (String) registro.get("IDPRODUCTO");
-				String idProductoInstitucion = (String) registro.get("IDPRODUCTOINSTITUCION");
-				String nofacturable = (String) registro.get("NOFACTURABLE");
 				
 				if (modo.equals("editar") && !usr.isLetrado() && estadoProducto.equals("Aceptado")) {
 					//mhg - INC_09859_SIGA Si el producto está facturado no debe poder editar la fecha efectiva.
