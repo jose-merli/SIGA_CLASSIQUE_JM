@@ -92,7 +92,7 @@ public class FacPropositosAdm extends MasterBeanAdministrador
 
     protected String[] getOrdenCampos()
     {
-		String[] orden = {FacPropositosBean.C_NOMBRE};
+		String[] orden = {FacPropositosBean.C_CODIGO,FacPropositosBean.C_NOMBRE};
 
 		return orden;
     }
