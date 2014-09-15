@@ -95,57 +95,33 @@
 </head>
 
 <script>
-	<!-- Refrescar -->
+	// Refrescar
 	function refrescarLocal(){ 		
 		parent.buscar();
 	}	
     
-	function verfactura(fila)
-	{
-		var datos;
-	   	datos = document.getElementById('tablaDatosDinamicosD');
-	    datos.value = ""; 
-	   	var i, j;
-	   	
-	   	for (i = 0; i < 7; i++)
-	   	{
-			var tabla;
-	      	tabla = document.getElementById('tablaDatos');
-	      	
-	      	if (i == 0)
-	      	{
-	        	var flag = true;
-	        	j = 1;
-	        	
-	        	while (flag)
-	        	{
-	          		var aux = 'oculto' + fila + '_' + j;
-	          		var oculto = document.getElementById(aux);
-	          		
-	          		if (oculto == null)
-	          		{
-	          			flag = false;
-	          		}
-	          		else
-	          		{
-	          			datos.value = datos.value + oculto.value + ',';
-	          		}
-	          		j++;
-				}
-	        	datos.value = datos.value + "%"
-	      	}
-	      	else
-	      	{
-	      		j = 2;
-	      	}
-	   	}
+	function verfactura(fila) {
+		var datos = document.getElementById('tablaDatosDinamicosD');
+		datos.value = ""; 
+		var j = 1;
+		var flag = true;
+		while (flag) {
+		  	var aux = 'oculto' + fila + '_' + j;
+		  	var oculto = document.getElementById(aux);
+		  	if (oculto == null)  { 
+			  	flag = false; 
+			} else { 
+				datos.value = datos.value + oculto.value + ','; 
+			}
+		  	j++;
+		}
+		datos.value = datos.value + "%";
 	   	
 	   	var auxTarget = document.forms[0].target;
 	   	document.forms[0].target="mainWorkArea";
 	   	document.forms[0].modo.value = "ver";
 	   	document.forms[0].submit();
 	   	document.forms[0].target=auxTarget;
-			
 	}
 
 </script>
@@ -153,13 +129,13 @@
 
 <body>
 		<html:form action="/FAC_DevolucionesManual.do?noReset=true" method="POST" style="display:none">
-			<html:hidden styleId = "modo"  property = "modo" value = ""/>
-			<html:hidden styleId = "recibos" property = "recibos"/>
-			<html:hidden styleId = "numeroRecibo" property = "numeroRecibo"/>
-			<html:hidden styleId = "fechaCargoDesde" property = "fechaCargoDesde"/>
-			<html:hidden styleId = "fechaCargoHasta" property = "fechaCargoHasta"/>
-			<html:hidden styleId = "titular" property = "titular"/>
-			<input type="hidden" name="actionModal"  id="actionModal"  value="">
+			<html:hidden styleId="modo"  property="modo" value=""/>
+			<html:hidden styleId="recibos" property="recibos"/>
+			<html:hidden styleId="numeroRecibo" property="numeroRecibo"/>
+			<html:hidden styleId="fechaCargoDesde" property="fechaCargoDesde"/>
+			<html:hidden styleId="fechaCargoHasta" property="fechaCargoHasta"/>
+			<html:hidden styleId="titular" property="titular"/>
+			<input type="hidden" name="actionModal" id="actionModal"  value="">
 		</html:form>
 		
 			

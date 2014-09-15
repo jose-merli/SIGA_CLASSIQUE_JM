@@ -135,14 +135,14 @@
 			}				
 
 			if (document.GestionarFacturaForm.datosRenegociarFecha.value.length < 1) {
-				var mensaje = "<siga:Idioma key="facturacion.pagosFactura.Caja.literal.Fecha"/> <siga:Idioma key="messages.campoObligatorio.error"/>";
+				var mensaje = '<siga:Idioma key="facturacion.pagosFactura.Caja.literal.Fecha"/> <siga:Idioma key="messages.campoObligatorio.error"/>';
 				alert (mensaje);
 				return 0;
 			}
 			
 			var ultimaFecha = "<%=ultimaFecha%>";
 			if (compararFecha (document.GestionarFacturaForm.datosRenegociarFecha, ultimaFecha) > 1) {
-				var mensaje = 'La fecha debe ser mayor o igual que: '+ultimaFecha;
+				var mensaje = '<siga:Idioma key="facturacion.renegociar.error.fecha"/> ' + ultimaFecha;
 				alert(mensaje);
 				return 0;
 			}			

@@ -32,6 +32,7 @@ import com.siga.beans.FacFacturaIncluidaEnDisqueteAdm;
 import com.siga.beans.FacLineaDevoluDisqBancoAdm;
 import com.siga.beans.FacLineaDevoluDisqBancoBean;
 import com.siga.beans.FacMotivoDevolucionAdm;
+import com.siga.beans.FacPagosPorCajaAdm;
 import com.siga.beans.GenParametrosAdm;
 import com.siga.facturacion.Facturacion;
 import com.siga.facturacion.form.DevolucionesManualesForm;
@@ -280,8 +281,51 @@ public class DevolucionesManualesAction extends MasterAction{
 	 * Implementa la accion de procesar las devoluciones manuales mediante el paso previo de obtener por pantalla los datos de cabecera de devolucion.  
 	 */
 	protected String modificar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
-		try {
+		try {			
+			UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");
+			Integer idInstitucion = new Integer(user.getLocation());	
+			
 			DevolucionesManualesForm form = (DevolucionesManualesForm) formulario;
+			String datosFacturas = form.getFacturas();
+			
+			if (datosFacturas != null && !datosFacturas.equals("")) {
+				String arrayFacturas[] = datosFacturas.split(";");
+				
+				if (arrayFacturas.length<1) {
+					throw new SIGAException("Error al obtener las facturas");
+				};
+				
+				// JPT: Recorre todas las facturas marcadas y calcula el listado de facturas
+				String listaIdsFacturas = "(";
+				for (int i=0; i<arrayFacturas.length; i++) {
+					String datosFactura = arrayFacturas[i];
+					
+					if (datosFactura != null && !datosFactura.equals("")) {
+						String arrayFactura[] = datosFactura.split("%%");
+						
+						if (arrayFactura.length<1) {
+							throw new SIGAException("Error al obtener la factura");
+						};
+						
+						String idFactura = arrayFactura[0];
+						
+						if (i==0) {
+							listaIdsFacturas += idFactura;						
+						} else {
+							listaIdsFacturas += "," + idFactura;
+						}
+					}
+				}
+				listaIdsFacturas += ")";
+				
+				// JPT: Obtiene la ultima fecha de pago de una lista de facturas
+				FacPagosPorCajaAdm admPagosPorCaja = new FacPagosPorCajaAdm(user);
+				String ultimaFechaPagosFacturas = admPagosPorCaja.getUltimaFechaPagosFacturas(idInstitucion, listaIdsFacturas);
+				if (ultimaFechaPagosFacturas==null || ultimaFechaPagosFacturas.equals("")) {
+					throw new SIGAException("Error al no obtener la última fecha de los pagos de las facturas");
+				}
+				request.setAttribute("ultimaFechaPagosFacturas", ultimaFechaPagosFacturas);
+			}
 
 			// inicializo el form para esta pantalla
 			form.setAplicarComisiones("");

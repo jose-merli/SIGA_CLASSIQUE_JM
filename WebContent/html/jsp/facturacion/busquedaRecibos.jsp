@@ -2,6 +2,7 @@
 <html>
 <head>
 <!-- busquedaRecibos.jsp -->
+
 <!-- EJEMPLO DE VENTANA DE BUSQUEDA -->
 <!-- Contiene la zona de campos de busqueda o filtro y la barra  botones de
 	 busqueda, que ademas contiene el titulo de la busqueda o lista de resultados.
@@ -31,6 +32,7 @@
 <%@ page import="com.siga.facturacion.form.DevolucionesManualesForm"%>
 <%@ page import="com.siga.Utilidades.*"%>
 <%@ page import="java.util.Properties"%>
+
 <!-- JSP -->
 <%  
 	String app=request.getContextPath();
@@ -55,18 +57,13 @@
 	if (form.getHayMotivos().equals("0")) {
 		funcionBuscar = "mensaje()";
 	}
-
 %>	
-	
 
-
-<!-- HEAD -->
-
+	<!-- HEAD -->
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
 	
 	<!-- Incluido jquery en siga.js -->
-	
 	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js?v=${sessionScope.VERSIONJS}'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
 
 	<!-- INICIO: TITULO Y LOCALIZACION -->
@@ -85,20 +82,11 @@
 
 <script language="JavaScript">
 
-	<!-- Funcion asociada a boton buscar -->
-	/*function buscar()
-	{ 
-		document.DevolucionesManualesForm.modo.value="BuscarDevolucionesManuales";
-		document.DevolucionesManualesForm.submit();
-	}*/
-	
-	function buscarPaginador() 
-	
-		{		
-	        document.forms[0].modo.value="Buscar";
-			document.forms[0].target="resultado";	
-			document.forms[0].submit();	
-		}
+	function buscarPaginador() {		
+        document.forms[0].modo.value="Buscar";
+		document.forms[0].target="resultado";	
+		document.forms[0].submit();	
+	}
 	
 	function mensaje() {
 <% 		
@@ -114,6 +102,7 @@
 	}
 
 </script>
+
 <body onload="ajusteAltoBotones('resultado');<%=funcionBuscar%>">
 
 <div id="camposRegistro" class="posicionBusquedaSolo" align="center">
@@ -124,8 +113,9 @@
 	<!-- Zona de campos de busqueda o filtro -->
 
 	<html:form action="/FAC_DevolucionesManual.do?noReset=true" method="POST" target="resultado">
-		<html:hidden property = "modo" value = ""/>
-		<html:hidden property="recibos"/>		
+		<html:hidden property="modo" value = ""/>
+		<html:hidden property="recibos"/>
+		<html:hidden property="facturas" value=""/>		
 		<html:hidden property="fechaDevolucion"/>		
 		<html:hidden property="banco"/>		
 
@@ -133,44 +123,47 @@
 				
 	    <input type="hidden" name="actionModal" value="">
 		
-			<siga:ConjCampos leyenda="facturacion.devolucionManual.criterios">	
-				<table>
-					<td class="labelText"><siga:Idioma key="facturacion.devolucionManual.numeroFactura"/></td>
-					<td ><html:text styleClass="box" property="numeroFactura" maxlength="12" /></td>
-					<%
-					if (esConsejo){
-					%>	
-					<td class="labelText" >
-						<siga:BusquedaPersona tipo="personas" idPersona="titular"></siga:BusquedaPersona>
-						<html:hidden property="titular" />
-						<html:hidden property="nombreTitular" size="37"/>
-					</td>
-					<%
-					}else { 
-					%>
-					<td class="labelText" >
-						<siga:BusquedaPersona tipo="colegiado"  idPersona="titular"></siga:BusquedaPersona>
-						<html:hidden property="titular" />
-						<html:hidden property="nombreTitular"/>
-					</td>
-					<% 	
-					}
-						int idInstitucion = Integer.parseInt(user.getLocation()); 
-					
-						if (idInstitucion == 2000 || idInstitucion >= 3000) { %>
-		
-							<td class="labelText" ><siga:Idioma key="facturacion.buscarFactura.literal.Deudor"/>&nbsp;</td>
-							<td >
- 								<siga:ComboBD nombre="destinatario" tipo="cmbDeudores"  ancho="170" clase="boxCombo" obligatorio="false"/>
-							</td>
-					
-					<% 	} %>
-				</table>
+		<siga:ConjCampos leyenda="facturacion.devolucionManual.criterios">	
 			<table>
-								
-					<td  class="labelText" width="80px"><siga:Idioma key="facturacion.devolucionManual.numeroRecibo"/></td>
+				<tr>
+					<td class="labelText"><siga:Idioma key="facturacion.devolucionManual.numeroFactura"/></td>
+					<td><html:text styleClass="box" property="numeroFactura" maxlength="12" /></td>
+<%
+					if (esConsejo) {
+%>	
+						<td class="labelText" >
+							<siga:BusquedaPersona tipo="personas" idPersona="titular"></siga:BusquedaPersona>
+							<html:hidden property="titular" />
+							<html:hidden property="nombreTitular" size="37"/>
+						</td>
+<%
+					} else { 
+%>
+						<td class="labelText" >
+							<siga:BusquedaPersona tipo="colegiado"  idPersona="titular"></siga:BusquedaPersona>
+							<html:hidden property="titular" />
+							<html:hidden property="nombreTitular"/>
+						</td>
+<% 	
+					}
+
+					int idInstitucion = Integer.parseInt(user.getLocation()); 
+				
+					if (idInstitucion == 2000 || idInstitucion >= 3000) { %>
+	
+						<td class="labelText" ><siga:Idioma key="facturacion.buscarFactura.literal.Deudor"/>&nbsp;</td>
+						<td><siga:ComboBD nombre="destinatario" tipo="cmbDeudores"  ancho="170" clase="boxCombo" obligatorio="false"/></td>
+<% 	
+					} 
+%>
+				</tr>
+			</table>
+			
+			<table>
+				<tr>							
+					<td class="labelText" width="80px"><siga:Idioma key="facturacion.devolucionManual.numeroRecibo"/></td>
 					<td><html:text styleClass="box" property="numeroRecibo" maxlength="12" /></td>
-					
+				
 					<td class="labelText" width="80px"><siga:Idioma key="facturacion.devolucionManual.numeroRemesa"/></td>
 					<td><html:text styleClass="box" property="numeroRemesa" size='10' maxlength="12" /></td>
 
@@ -179,38 +172,28 @@
 
 					<td class="labelText" width="60px"><siga:Idioma key="facturacion.devolucionManual.fechaCargoHasta"/></td>
 					<td><siga:Fecha  nombreCampo="fechaCargoHasta" valorInicial="<%=form.getFechaCargoHasta()%>"/></td>
-
-				
-				</table>
-
+				</tr>
 			</table>
 		</siga:ConjCampos>	
-
 	</html:form>
-
 	<!-- FIN: CAMPOS DE BUSQUEDA-->
-
 
 	<!-- INICIO: BOTONES BUSQUEDA -->
 	<!-- Esto pinta los botones que le digamos de busqueda. Ademas, tienen asociado cada
 		 boton una funcion que abajo se reescribe. Los valores asociados separados por comas
 		 son: V Volver, B Buscar,A Avanzada ,S Simple,N Nuevo registro ,L Limpiar,R Borrar Log
 	-->
-		
-		<siga:ConjBotonesBusqueda botones="B" />
-
+	<siga:ConjBotonesBusqueda botones="B" />
 	<!-- FIN: BOTONES BUSQUEDA -->
 
 
 	<!-- FORMULARIO PARA RECOGER LOS DATOS DE LA BUSQUEDA -->
-<html:form action="/CEN_BusquedaClientesModal.do" method="POST" target="mainWorkArea" type="">
-  <input type="hidden" name="actionModal" value="">
-  <input type="hidden" name="modo" value="abrirBusquedaModal">
-  <input type="hidden" name="clientes" value="1">
+	<html:form action="/CEN_BusquedaClientesModal.do" method="POST" target="mainWorkArea" type="">
+  		<input type="hidden" name="actionModal" value="">
+  		<input type="hidden" name="modo" value="abrirBusquedaModal">
+  		<input type="hidden" name="clientes" value="1">
+ 	</html:form>
 
- </html:form>
-
-	
 	<!-- INICIO: SCRIPTS BOTONES BUSQUEDA -->
 	<script language="JavaScript">
 		// Funcion asociada a boton buscarCliente
@@ -235,110 +218,99 @@
 				}
 		}
 	</script>
-	
-	
-	
 	<!-- FIN: SCRIPTS BOTONES BUSQUEDA -->
 
 	<!-- INICIO: IFRAME LISTA RESULTADOS -->
-	<iframe align="center" src="<%=app%>/html/jsp/general/blank.jsp"
-					id="resultado"
-					name="resultado" 
-					scrolling="no"
-					frameborder="0"
-					marginheight="0"
-					marginwidth="0"					 
-					class="frameGeneral">
-	</iframe>
-	
+	<iframe align="center" src="<%=app%>/html/jsp/general/blank.jsp" id="resultado" name="resultado" scrolling="no" frameborder="0" marginheight="0" marginwidth="0" class="frameGeneral"></iframe>
 	<!-- FIN: IFRAME LISTA RESULTADOS -->
-
 	<!-- FIN  ******* BOTONES Y CAMPOS DE BUSQUEDA ****** -->
 
-		<!-- INICIO: SCRIPTS BOTONES -->
-		<!-- Aqui se reescriben las funciones que vayamos a utilizar -->
-		<script language="JavaScript">
+	<!-- INICIO: SCRIPTS BOTONES -->
+	<!-- Aqui se reescriben las funciones que vayamos a utilizar -->
+	<script language="JavaScript">
 
-			// Asociada al boton MarcarTodos
-			function accionMarcarTodos() {		
-				if (window.frames.resultado.document.getElementById("sel")!=null){
-					var dd =  window.frames.resultado.document.getElementsByName("sel");
-					if (dd.type != 'checkbox') {
-						for (i = 0; i < dd.length; i++){
-							dd[i].checked=1;		
-						}	
+		// Asociada al boton MarcarTodos
+		function accionMarcarTodos() {		
+			if (window.frames.resultado.document.getElementById("sel")!=null){
+				var dd =  window.frames.resultado.document.getElementsByName("sel");
+				if (dd.type != 'checkbox') {
+					for (i = 0; i < dd.length; i++){
+						dd[i].checked=1;		
+					}	
+				}
+				else{
+					dd.checked=1;		
+				}
+			}	
+		}
+	
+		// Asociada al boton DesmarcarTodos 
+		function accionDesmarcarTodos() {		
+			if (window.frames.resultado.document.getElementById("sel")!=null){
+				var dd =  window.frames.resultado.document.getElementsByName("sel");
+				if (dd.type != 'checkbox') {
+					for (var i = 0; i < dd.length; i++){
+						dd[i].checked=0;		
 					}
-					else{
-						dd.checked=1;		
+				}
+				else{
+					dd.checked=0;		
+				}
+			}	
+		}
+	
+		// Asociada al boton ProcesarDevoluciones
+		function accionProcesarDevoluciones() {
+			document.DevolucionesManualesForm.recibos.value="";
+			
+			var checks =  window.frames.resultado.document.getElementsByName("sel");
+			for (var i=0; i<checks.length; i++) {
+				if (checks[i].checked) {
+					var num = i + 1;
+					
+					var datoFIED = jQuery("#resultado").contents().find("#devolucionManual_" + num).val();
+					var datoMotivo = jQuery("#resultado").contents().find("select[id=motivoDevolucion]")[i].value;
+					if (document.DevolucionesManualesForm.recibos.value=="") {
+						document.DevolucionesManualesForm.recibos.value += datoFIED + "%%" + datoMotivo;
+					} else {
+						document.DevolucionesManualesForm.recibos.value += ";" + datoFIED + "%%" + datoMotivo;
 					}
-				}	
+					
+					if (document.DevolucionesManualesForm.facturas.value=="") {
+						document.DevolucionesManualesForm.facturas.value += checks[i].value;						
+					} else {
+						document.DevolucionesManualesForm.facturas.value += ";" + checks[i].value;
+					}
+				}
 			}
-		
-			// Asociada al boton DesmarcarTodos 
-			function accionDesmarcarTodos() {		
-				if (window.frames.resultado.document.getElementById("sel")!=null){
-					var dd =  window.frames.resultado.document.getElementsByName("sel");
-					if (dd.type != 'checkbox') {
-						for (i = 0; i < dd.length; i++){
-							dd[i].checked=0;		
-						}
-					}
-					else{
-						dd.checked=0;		
-					}
-				}	
-			}
-		
-			// Asociada al boton ProcesarDevoluciones
-			function accionProcesarDevoluciones() {
-				var aDatos = new Array();
-				document.DevolucionesManualesForm.recibos.value="";
+
+			if (document.DevolucionesManualesForm.recibos.value=="") {
+				var mensaje2 = '<siga:Idioma key="messages.fact.error.noRecibos"/>'
+				alert(mensaje2);
+				return false;
 				
-				var checks =  window.frames.resultado.document.getElementsByName("sel");
-				for (var i=0; i<checks.length; i++) {
-					if (checks[i].checked) {
-						var dato = checks[i].value;
-						var num = i + 1;
-						
-						var datoFIED = jQuery("#resultado").contents().find("#devolucionManual_" + num).val();
-						var datoMotivo = jQuery("#resultado").contents().find("select[id=motivoDevolucion]")[i].value;
-						if (document.DevolucionesManualesForm.recibos.value=="") {
-							document.DevolucionesManualesForm.recibos.value += datoFIED + "%%" + datoMotivo;
-						} else {
-							document.DevolucionesManualesForm.recibos.value += ";" + datoFIED + "%%" + datoMotivo;
-						}
-							
-					}
-				}
-
-				if (document.DevolucionesManualesForm.recibos.value=="") {
-					var mensaje2 = '<siga:Idioma key="messages.fact.error.noRecibos"/>'
-					alert(mensaje2);
-					return false;
-					
-				} else {
-					var aux = document.DevolucionesManualesForm.modo.value;
-					document.DevolucionesManualesForm.modo.value="modificar";
-					var datos = ventaModalGeneral("DevolucionesManualesForm","P");
-					if (datos != null) { 
-  	 	 				if (datos == "MODIFICADO") {
-			  	 	 		refrescarLocal();
-  	  					}
-  	  				}
-					
-					document.DevolucionesManualesForm.modo.value=aux;
-				}
+			} else {
+				var aux = document.DevolucionesManualesForm.modo.value;
+				document.DevolucionesManualesForm.modo.value="modificar";
+				var datos = ventaModalGeneral("DevolucionesManualesForm","P");
+				if (datos != null) { 
+ 	 	 				if (datos == "MODIFICADO") {
+		  	 	 		refrescarLocal();
+ 	  					}
+ 	  				}
+				
+				document.DevolucionesManualesForm.modo.value=aux;
 			}
+		}
 
 					
-		</script>
-		<!-- FIN: SCRIPTS BOTONES -->	 	
-	 	
-		<!-- BOTONES ACCION: MT Marcar todos, DT Desmarcar todos, PD Procesar devoluciones -->	 
-		<siga:ConjBotonesAccion botones="MT,DT,PD" />
-		<!-- FIN: BOTONES ACCION -->	 
-
-
+	</script>
+	<!-- FIN: SCRIPTS BOTONES -->	 	
+ 	
+	<!-- BOTONES ACCION: MT Marcar todos, DT Desmarcar todos, PD Procesar devoluciones -->	 
+	<siga:ConjBotonesAccion botones="MT,DT,PD" />
+	<!-- FIN: BOTONES ACCION -->	
+		 
 </div>
 			
 <!-- INICIO: SUBMIT AREA -->

@@ -7,8 +7,8 @@ package com.siga.facturacion.form;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
 
-import com.siga.general.MasterForm;
 import com.siga.Utilidades.UtilidadesHash;
+import com.siga.general.MasterForm;
 
 /**
  * Clase form de struts para el mantenimiento de devoluciones manuales
@@ -120,6 +120,13 @@ public class DevolucionesManualesForm extends MasterForm{
 	public String getRecibos () {
  		return UtilidadesHash.getString(datos, "Recibos");
  	}
+	
+	public void setFacturas (String dato) {
+		UtilidadesHash.set(datos, "facturas", dato);
+ 	}
+	public String getFacturas () {
+ 		return UtilidadesHash.getString(datos, "facturas");
+ 	}	
 	
 	
 	/**
