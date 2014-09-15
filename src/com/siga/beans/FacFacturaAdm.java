@@ -1521,7 +1521,7 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
 		    }
 		    
 		    
-		    sql += " FROM "+FacFacturaBean.T_NOMBRETABLA+" F, "+CenPersonaBean.T_NOMBRETABLA+" P , "+ CenPersonaBean.T_NOMBRETABLA+" DEUDOR , "+CenClienteBean.T_NOMBRETABLA+" C ,fac_estadofactura EF ";
+		    sql += " FROM "+FacFacturaBean.T_NOMBRETABLA+" F, "+CenPersonaBean.T_NOMBRETABLA+" P , "+ CenPersonaBean.T_NOMBRETABLA+" DEUDOR , "+CenClienteBean.T_NOMBRETABLA+" C , CEN_INSTITUCION I, fac_estadofactura EF ";
 		    contador++;
 		    codigos.put(new Integer(contador),this.usrbean.getLocation());
 		    sql += " WHERE F." + FacFacturaBean.C_IDINSTITUCION + " = :" + contador + 
@@ -1530,7 +1530,8 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
 	    				" AND C." + CenClienteBean.C_IDINSTITUCION + " = F."+FacFacturaBean.C_IDINSTITUCION +
 		    			" AND C." + CenClienteBean.C_IDPERSONA + "= F."+ CenPersonaBean.C_IDPERSONA +
 		    			" AND P." + CenPersonaBean.C_IDPERSONA + " = F." + FacFacturaBean.C_IDPERSONA +
-		    			" AND DEUDOR." + CenPersonaBean.C_IDPERSONA + "(+) = F." + FacFacturaBean.C_IDPERSONADEUDOR + " ";
+		    			" AND DEUDOR." + CenPersonaBean.C_IDPERSONA + "(+) = F." + FacFacturaBean.C_IDPERSONADEUDOR + 
+		    			" AND I. "+ CenInstitucionBean.C_IDPERSONA  + "(+) = F." + FacFacturaBean.C_IDPERSONADEUDOR + " " ;
 		    
 		   // FILTRO CLIENTE TAG BUSQUEDA
 		    String letrado = form.getLetrado();
@@ -1577,7 +1578,7 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
 		    if(denominacion!=null && !denominacion.equalsIgnoreCase("")){
 		        contador++;
 			    codigos.put(new Integer(contador),denominacion);
-			    sql += " and F."+FacFacturaBean.C_IDPERSONADEUDOR;
+			    sql += " and I."+CenInstitucionBean.C_IDINSTITUCION;
 			    sql += " = :" + contador ;
 		    }
 		    
