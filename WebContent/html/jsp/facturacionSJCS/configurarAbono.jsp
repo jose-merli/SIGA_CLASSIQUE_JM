@@ -160,7 +160,7 @@
 				columnNames="facturacion.devolucionManual.seleccion,
 					facturacion.ficheroBancarioAbonos.literal.banco,
 					facturacion.sufijos.literal.sufijo,
-					censo.consultaDatosBancarios.literal.cuentaBancaria"
+					facturacion.cuentasBancarias.IBAN"
 				columnSizes="5,35,22,38"
 				modal="g">
 				   				   
