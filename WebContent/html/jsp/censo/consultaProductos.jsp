@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-<%@page import="com.crystaldecisions.sdk.prompting.report.Util"%>
 <html>
 <head>
 <!-- consultaProductos.jsp -->
@@ -21,9 +20,8 @@
 
 <!-- TAGLIBS -->
 <%@ taglib uri="libreria_SIGA.tld" prefix="siga"%>
-<%@ taglib uri = "struts-bean.tld" prefix="bean"%>
-<%@ taglib uri = "struts-html.tld" prefix="html"%>
-<%@ taglib uri = "struts-logic.tld" prefix="logic"%>
+<%@ taglib uri="struts-bean.tld" prefix="bean"%>
+<%@ taglib uri="struts-html.tld" prefix="html"%>
 
 <%@ page import="com.siga.administracion.SIGAConstants"%>
 <%@ page import="com.atos.utils.ClsConstants"%>
@@ -32,15 +30,12 @@
 <%@ page import="java.util.Vector"%>
 <%@ page import="java.util.Hashtable"%>
 <%@ page import="com.siga.Utilidades.UtilidadesNumero"%>
-<%@ page import="com.siga.Utilidades.UtilidadesProductosServicios"%>
 <%@ page import="com.siga.tlds.FilaExtElement"%>
 <%@ page import="com.siga.Utilidades.UtilidadesString"%>
-<%@ page import="java.util.Properties"%>
 <%@ page import="java.util.HashMap"%>
 <%@ page import="com.siga.Utilidades.PaginadorBind"%>
 <%@ page import="com.atos.utils.Row"%>
 <%@ page import="com.siga.beans.PysCompraBean"%>
-<%@ page import="com.siga.beans.PysTipoIvaBean"%>
 <%@ page import="com.siga.beans.PysPeticionCompraSuscripcionBean"%>
 <%@ page import="com.siga.beans.PysProductosSolicitadosBean"%>
 
@@ -50,7 +45,6 @@
 	HttpSession ses = request.getSession();
 	UsrBean usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
 	
-	//Vector obj = (Vector) request.getAttribute("resultado");
 	ses.removeAttribute("resultado");
 	String idioma = usr.getLanguage().toUpperCase();
 	String idPersona = (String) ses.getAttribute("IDPERSONA");
@@ -69,26 +63,22 @@
 	String totalRegistros = "0";
 	String registrosPorPagina = "0";
 	HashMap hm = new HashMap();
-	String atributoPaginador = (String) request
-			.getAttribute(ClsConstants.PARAM_PAGINACION);
+	String atributoPaginador = (String) request.getAttribute(ClsConstants.PARAM_PAGINACION);
 	if (ses.getAttribute(atributoPaginador) != null) {
 		hm = (HashMap) ses.getAttribute(atributoPaginador);
 
 		if (hm.get("datos") != null && !hm.get("datos").equals("")) {
 			resultado = (Vector) hm.get("datos");
-
 			PaginadorBind paginador = (PaginadorBind) hm.get("paginador");
 			paginaSeleccionada = String.valueOf(paginador.getPaginaActual());
-
 			totalRegistros = String.valueOf(paginador.getNumeroTotalRegistros());
-
 			registrosPorPagina = String.valueOf(paginador.getNumeroRegistrosPorPagina());
 		}
 	}
 	
 	boolean bIncluirBajaLogica = UtilidadesString.stringToBoolean((String)request.getAttribute("bIncluirRegistrosConBajaLogica"));
 	String action=app+"/CEN_Facturacion.do?noReset=true&bIncluirRegistrosConBajaLogica="+(String)request.getAttribute("bIncluirRegistrosConBajaLogica");
-	String modo = 	(String)ses.getAttribute("MODO");
+	String modo = (String)ses.getAttribute("MODO");
 %>
 
 	<!-- HEAD -->
@@ -108,7 +98,6 @@
 				}
 			  	j++;
 			}
-			
 			datos.value = datos.value + "%";
 									
 	    	document.datosFacturacionForm.modo.value = "editarCambiarFecha";
@@ -130,7 +119,6 @@
 				document.datosFacturacionForm.incluirRegistrosConBajaLogica.value = "n";
 			}
 			document.datosFacturacionForm.modo.value = "abrirProductosPaginados";
-			
 			document.datosFacturacionForm.submit();
 		}
 		
@@ -153,12 +141,6 @@
 </head>
 
 <body class="tablaCentralCampos">
-
-	<!-- INICIO: TITULO OPCIONAL DE LA TABLA -->
-	<!-- Esto es muy util para el caso de ventanas modales, ya que no
-	     vamos a disponer en estos casos de la cabecera de la pagina.
-	     Nos serviria para tener conciencia de donde estamos ya que desde una
-	     ventana modal no se puede actualizar la barra de titulo y ademas queda detras -->
 
 	<table class="tablaTitulo" align="center" cellspacing="0">
 
@@ -189,29 +171,22 @@
 			</td>
 		</tr>
 	</table>
-	<!-- FIN: TITULO OPCIONAL DE LA TABLA -->
-
-	<!-- INICIO: LISTA DE VALORES --> 
-	<!-- Tratamiento del tagTabla y tagFila para la formacion de la lista de cabeceras fijas -->
-	<!-- NO HAY FORMULARIO -->
-
-<%
-	String tamanosCol = "";
-	String nombresCol = "";
-	
-	tamanosCol = "7,6,15,9,20,6";
-	nombresCol = "cen.consultaProductos.literal.fecha,cen.consultaProductos.literal.idPeticion,cen.consultaProductos.literal.concepto,cen.consultaProductos.literal.formaPago,cen.consultaProductos.literal.nCuenta,cen.consultaProductos.literal.cantidad,cen.consultaProductos.literal.precio,cen.consultaProductos.literal.estadoFactura,cen.consultaProductos.literal.estadoProducto,pys.solicitarBaja.literal.fechaEfectiva,";
-%>
 
 	<siga:Table 
 	   	name="tablaDatos"
 	   	border="1"
-	   	columnNames="<%=nombresCol %>"
-	   	columnSizes="<%=tamanosCol %>"
+	   	columnNames="cen.consultaProductos.literal.fecha,
+	   				cen.consultaProductos.literal.idPeticion,
+	   				cen.consultaProductos.literal.concepto,
+	   				cen.consultaProductos.literal.formaPago,
+	   				cen.consultaProductos.literal.nCuenta,
+	   				cen.consultaProductos.literal.cantidad,
+	   				cen.consultaProductos.literal.precio,
+	   				cen.consultaProductos.literal.estadoFactura,
+	   				cen.consultaProductos.literal.estadoProducto,
+	   				pys.solicitarBaja.literal.fechaEfectiva,"
+	   	columnSizes="8,6,17,9,18,5,8,7,7,8,7"
 	   	modal="P">
-
-		<!-- INICIO: ZONA DE REGISTROS -->
-		<!-- Aqui se iteran los diferentes registros de la lista -->
 			
 <%
 		if (resultado == null || resultado.size() == 0) {
@@ -224,33 +199,39 @@
 		
 			// recorro el resultado
 			for (int i = 0; i < resultado.size(); i++) {
-				FilaExtElement[] elems = new FilaExtElement[2];
+				String cont = String.valueOf(i + 1);
 				Row fila = (Row)resultado.elementAt(i);
 				Hashtable registro = (Hashtable) fila.getRow(); 
-				
-				String cont = new Integer(i + 1).toString();
 				
 				String idPeticion = UtilidadesString.mostrarDatoJSP((String) registro.get(PysCompraBean.C_IDPETICION));
 				String idProducto = (String) registro.get(PysCompraBean.C_IDPRODUCTO);
 				String idProductoInstitucion = (String) registro.get(PysCompraBean.C_IDPRODUCTOINSTITUCION);
-				String idTipoProducto = (String) registro.get(PysCompraBean.C_IDTIPOPRODUCTO);							
+				String idTipoProducto = (String) registro.get(PysCompraBean.C_IDTIPOPRODUCTO);	
+				
 				String idFormaPago = (String) registro.get(PysCompraBean.C_IDFORMAPAGO);
-				String iva = UtilidadesString.mostrarDatoJSP((String) registro.get("VALORIVA"));						
-				String tipoPeticion = UtilidadesString.mostrarDatoJSP((String) registro.get(PysPeticionCompraSuscripcionBean.C_TIPOPETICION));
-				String fecha = (String) registro.get(PysPeticionCompraSuscripcionBean.C_FECHA);						
-				//PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDCUENTA + ", " +
+				String identifCuenta = (String) registro.get(PysCompraBean.C_IDCUENTA);
+				String iva = ((String) registro.get("VALORIVA"))==null ? "0" : (String) registro.get("VALORIVA");
+				// PysPeticionCompraSuscripcionBean.C_TIPOPETICION
+				String fecha = (String) registro.get(PysPeticionCompraSuscripcionBean.C_FECHA);
 				String cantidad = UtilidadesString.mostrarDatoJSP((String) registro.get(PysProductosSolicitadosBean.C_CANTIDAD));
 				String precio = UtilidadesString.mostrarDatoJSP((String) registro.get(PysProductosSolicitadosBean.C_VALOR));
-				String aceptado = UtilidadesString.mostrarDatoJSP((String) registro.get(PysProductosSolicitadosBean.C_ACEPTADO)); 						
+				String aceptado = UtilidadesString.mostrarDatoJSP((String) registro.get(PysProductosSolicitadosBean.C_ACEPTADO)); 
 				String nofacturable = (String) registro.get(PysProductosSolicitadosBean.C_NOFACTURABLE);
 				String formaPago = UtilidadesString.mostrarDatoJSP((String) registro.get("FORMAPAGO"));		
 				String concepto = UtilidadesString.mostrarDatoJSP((String) registro.get("CONCEPTO"));
 				String idCuenta = (String) registro.get("NCUENTA");
+				String fechaEfectiva = (String) registro.get("FECHAEFEC");
+				String estadoCompra = UtilidadesString.mostrarDatoJSP((String) registro.get("ESTADOCOMPRA"));
+				String descripcionEstadoCompra = UtilidadesString.mostrarDatoJSP((String) registro.get("DESCRIPCIONESTADOCOMPRA"));
+				String descripcionEstadoProducto = UtilidadesString.mostrarDatoJSP((String) registro.get("DESCRIPCIONESTADOPRODUCTO"));
+				
+				if (identifCuenta == null || identifCuenta.equals("")) {
+					identifCuenta = " ";
+				}				
 				
 				if (fecha == null || fecha.equals("")) {
 					fecha = "&nbsp;";
 				} else {
-					// formateo
 					fecha = GstDate.getFormatedDateShort(usr.getLanguage(), fecha);
 				}
 				
@@ -259,133 +240,79 @@
 				} else if (!idCuenta.equals("-")) {					
 					idCuenta = UtilidadesString.mostrarIBANConAsteriscos(idCuenta);
 				}
-					
-				String identifCuenta = (String) registro.get("IDCUENTA");
-				if (identifCuenta == null || identifCuenta.equals("")) {
-					identifCuenta = " ";
-				}
-
+				
+				if (fechaEfectiva == null || fechaEfectiva.equals("")) {
+					fechaEfectiva = "&nbsp;";
+				} else {
+					fechaEfectiva = GstDate.getFormatedDateShort(usr.getLanguage(), fechaEfectiva);
+				}				
+									
 				//Calculo el precio con iva y lo redondeo:
 				double precioDouble = 0;
-				String precioConIVA = "0";
 				if (precio!=null && !precio.trim().equals("") && iva!=null && !iva.trim().equals("")) {
 					precioDouble = Double.parseDouble(precio) + (Double.parseDouble(precio) * Double.parseDouble(iva)) / 100;
 					precioDouble = UtilidadesNumero.redondea(precioDouble, 2);
 				}
-				//Redondeo:
-				precioConIVA = String.valueOf(precioDouble);
+				String precioConIVA = String.valueOf(precioDouble);
 
-				String estadoPago = UtilidadesString.mostrarDatoJSP((String) registro.get("ESTADOPAGO"));
-				String estadoPago2 = UtilidadesString.mostrarDatoJSP((String) registro.get("ESTADOPAGO"));
-
-				estadoPago = UtilidadesString.getMensajeIdioma(usr, estadoPago);
-
-				
-				String estadoProducto = UtilidadesProductosServicios.getEstadoProductoServicio(aceptado);
-				estadoProducto = UtilidadesString.getMensajeIdioma(usr, estadoProducto);
-				
+				FilaExtElement[] elems = new FilaExtElement[1];
 				String botones = "";
-				if ((aceptado.equals(ClsConstants.PRODUCTO_ACEPTADO) || aceptado.equals(ClsConstants.PRODUCTO_PENDIENTE))
-						&& !estadoPago2.equals("general.literal.pagado")
-						&& !estadoPago2.equals("general.literal.renegociada")
-						&& !estadoPago2.equals("general.literal.enRevision")
-						&& !estadoPago2.equals("general.literal.pendientecobro")
-						&& !estadoPago2.equals("general.literal.pendienteBanco")
-						&& !estadoPago2.equals("general.literal.devuelta")
-						&& modo.equals("editar")) {
-					botones = "E";
-				}
-				
-				if (modo.equals("editar") && !usr.isLetrado() && estadoProducto.equals("Aceptado")) {
-					//mhg - INC_09859_SIGA Si el producto está facturado no debe poder editar la fecha efectiva.
-					//El persimo ACCESS_SIGAENPRODUCCION tiene valor 40 y nos vale para controlar los permisos a nivel de lógica de negocio.
-					if(estadoPago2.equals("general.literal.pendientecobro") || estadoPago2.equals("general.literal.pendienteBanco")){
-						elems[1] = new FilaExtElement("cambiarFechaEfectiva", "cambiarFechaEfectiva", SIGAConstants.ACCESS_SIGAENPRODUCCION);
-					}else{
-						elems[1] = new FilaExtElement("cambiarFechaEfectiva", "cambiarFechaEfectiva", SIGAConstants.ACCESS_READ);
-					}
-				}
-				
-				//Fecha Efectiva:
-				String fechaEfectiva = (String) registro.get("FECHAEFEC");
-				if (fechaEfectiva == null || fechaEfectiva.equals("")) {
-					fechaEfectiva = "&nbsp;";
-				} else {
-					// formateo
-					fechaEfectiva = GstDate.getFormatedDateShort(usr.getLanguage(), fechaEfectiva);
-				}
-				
 				if (nofacturable.equals("1") || idFormaPago == null || idFormaPago == "") {
 					botones = "";
 					idFormaPago = " ";
-				}
+					formaPago = UtilidadesString.getMensajeIdioma(usr, "pys.estadoPago.noFacturable");  
+					descripcionEstadoCompra = UtilidadesString.getMensajeIdioma(usr, "pys.estadoPago.noFacturable");
+					
+				} else {
+					if ((aceptado.equals(ClsConstants.PRODUCTO_ACEPTADO) || aceptado.equals(ClsConstants.PRODUCTO_BAJA)) && modo.equals("editar") && !usr.isLetrado()) {							
+						if (estadoCompra.equals("estados.compra.pendiente")) {							
+							elems[0] = new FilaExtElement("cambiarFechaEfectiva", "cambiarFechaEfectiva", SIGAConstants.ACCESS_READ);	
+							botones = "E";						
+						}
+					}
+				}				
 %>	 
 			
 				<siga:FilaConIconos fila="<%=cont %>" botones="<%=botones%>" modo="<%=modo%>" elementos="<%=elems%>" visibleBorrado="no" visibleConsulta="no" pintarEspacio="no" clase="listaNonEdit">
 					<td>
 						<!-- campos hidden -->
-						<input type="hidden" id="oculto<%=cont %>_1" name="oculto<%=cont %>_1" value="<%=idInstitucion  %>"/>
-						<input type="hidden" id="oculto<%=cont %>_2" name="oculto<%=cont %>_2" value="<%=idTipoProducto  %>"/>
-						<input type="hidden" id="oculto<%=cont %>_3" name="oculto<%=cont %>_3" value="<%=idProducto  %>"/>
-						<input type="hidden" id="oculto<%=cont %>_4" name="oculto<%=cont %>_4" value="<%=idProductoInstitucion  %>"/>
-						<input type="hidden" id="oculto<%=cont %>_5" name="oculto<%=cont %>_5" value="<%=idPersona  %>"/>
-						<input type="hidden" id="oculto<%=cont %>_6" name="oculto<%=cont %>_6" value="<%=idFormaPago %>"/>
-						<input type="hidden" id="oculto<%=cont %>_7" name="oculto<%=cont %>_7" value="<%=identifCuenta %>"/>
-						<input type="hidden" id="oculto<%=cont %>_8" name="oculto<%=cont %>_8" value="<%=idPeticion %>"/>
-						<input type="hidden" id="oculto<%=cont %>_9" name="oculto<%=cont %>_9" value="<%=fechaEfectiva %>"/>
+						<input type="hidden" id="oculto<%=cont %>_1" name="oculto<%=cont %>_1" value="<%=idInstitucion%>"/>
+						<input type="hidden" id="oculto<%=cont %>_2" name="oculto<%=cont %>_2" value="<%=idTipoProducto%>"/>
+						<input type="hidden" id="oculto<%=cont %>_3" name="oculto<%=cont %>_3" value="<%=idProducto%>"/>
+						<input type="hidden" id="oculto<%=cont %>_4" name="oculto<%=cont %>_4" value="<%=idProductoInstitucion%>"/>
+						<input type="hidden" id="oculto<%=cont %>_5" name="oculto<%=cont %>_5" value="<%=idPersona%>"/>
+						<input type="hidden" id="oculto<%=cont %>_6" name="oculto<%=cont %>_6" value="<%=idFormaPago%>"/>
+						<input type="hidden" id="oculto<%=cont %>_7" name="oculto<%=cont %>_7" value="<%=identifCuenta%>"/>
+						<input type="hidden" id="oculto<%=cont %>_8" name="oculto<%=cont %>_8" value="<%=idPeticion%>"/>
+						<input type="hidden" id="oculto<%=cont %>_9" name="oculto<%=cont %>_9" value="<%=fechaEfectiva%>"/>
 						<%=fecha%>
 					</td>
-					
+
 					<td><%=idPeticion%></td>
-					
+
 					<td><%=concepto%></td>
-					
-					<td>
-<%
-						if (nofacturable.equals("1") || formaPago == null || formaPago == "") {
-%>
-							No Facturable
-<%
-						} else {
-%>
-							<%=formaPago%>
-<%
-						}
-%>
-					</td>
+
+					<td><%=formaPago%></td>
 				
 					<td><%=idCuenta%></td>
 				
 					<td align="right"><%=cantidad%></td>
 					
-					<td align="right"><%=UtilidadesNumero.formatoCampo(precioConIVA) + "&euro;"%></td>
+					<td align="right"><%=UtilidadesString.formatoImporte(precioConIVA)%>&nbsp;&euro;</td>
 					
-					<td>
-<%
-						if (nofacturable.equals("1") || formaPago == null || formaPago == "") {
-%>
-							No Facturable
-<%
-						} else {
-%>
-							<%=estadoPago%>
-<%
-						}
-%>					
-					</td>
+					<td><%=descripcionEstadoCompra%></td>
 					
-					<td><%=estadoProducto%></td>
+					<td><%=descripcionEstadoProducto%></td>
 					
 					<td><%=fechaEfectiva%></td>
 				</siga:FilaConIconos>		
-
-				<!-- FIN REGISTRO -->
 <%
 			} // del for
 		} // del if
 %>			
 
 	</siga:Table>
+	
 <%
 	if ( hm.get("datos")!=null && !hm.get("datos").equals("")){
 %>
@@ -402,20 +329,6 @@
 	}
 %>
 
-	<!-- FIN: LISTA DE VALORES -->
-
-	<!-- ******* BOTONES DE ACCIONES EN REGISTRO ****** -->
-	<!-- Aqui comienza la zona de botones de acciones -->
-
-	<!-- INICIO: BOTONES REGISTRO -->
-	<!-- Esto pinta los botones que le digamos. Ademas, tienen asociado cada
-		 boton una funcion que abajo se reescribe. Los valores asociados separados por comas
-		 son: V Volver, G Guardar,Y GuardaryCerrar,R Restablecer,N Nuevo,C Cerrar,X Cancelar
-		 LA PROPIEDAD CLASE SE CARGA CON EL ESTILO "botonesDetalle" 
-		 PARA POSICIONARLA EN SU SITIO NATURAL, SI NO SE POSICIONA A MANO
-	-->
-	
-	
 	<div style="position:absolute; left:300px;bottom:5px;z-index:99;">
 		<table align="center" border="0">
 			<tr>
@@ -433,42 +346,37 @@
 	</div>
 
 <%
-	
-String busquedaVolver = (String) request.getSession().getAttribute("CenBusquedaClientesTipo");
-if ((busquedaVolver==null)||(usr.isLetrado())) {
-	busquedaVolver = "volverNo";
-}
+	String busquedaVolver = (String) request.getSession().getAttribute("CenBusquedaClientesTipo");
+	if ((busquedaVolver==null)||(usr.isLetrado())) {
+		busquedaVolver = "volverNo";
+	}
  
 
-if (!busquedaVolver.equals("volverNo")) { 
-	if (!usr.isLetrado()) { 
+	if (!busquedaVolver.equals("volverNo")) { 
+		if (!usr.isLetrado()) { 
 %>
-	<siga:ConjBotonesAccion botones="V,BA" idBoton="1#2" idPersonaBA="<%=idPersona %>" idInstitucionBA="<%=idInstitucion%>" clase="botonesDetalle"/>
+			<siga:ConjBotonesAccion botones="V,BA" idBoton="1#2" idPersonaBA="<%=idPersona %>" idInstitucionBA="<%=idInstitucion%>" clase="botonesDetalle"/>
 <%
-	} else{
+		} else {
 %>
-	<siga:ConjBotonesAccion botones="V" clase="botonesDetalle" />
+			<siga:ConjBotonesAccion botones="V" clase="botonesDetalle" />
 <%
+		}
+	} else {
+		if (!usr.isLetrado()) { 
+%>
+			<siga:ConjBotonesAccion botones="BA"  idBoton="1#2"  idPersonaBA="<%=idPersona %>" idInstitucionBA="<%=idInstitucion%>" clase="botonesDetalle"/>
+<%
+		} else { 
+%>
+			<siga:ConjBotonesAccion botones="botonesDetalle" />
+<%
+		}
 	}
-} else {
-	if (!usr.isLetrado()) { 
 %>
-	<siga:ConjBotonesAccion botones="BA"  idBoton="1#2"  idPersonaBA="<%=idPersona %>" idInstitucionBA="<%=idInstitucion%>" clase="botonesDetalle"/>
-<%
-	} else{
-%>
-	<siga:ConjBotonesAccion botones="botonesDetalle" />
-<%
-	}
-}
-%>
-<%@ include file="/html/jsp/censo/includeVolver.jspf" %>
-	<!-- FIN: BOTONES REGISTRO -->
-	
-<!-- INICIO: SUBMIT AREA -->
-<!-- Obligatoria en todas las páginas-->
-	<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
-<!-- FIN: SUBMIT AREA -->
 
-	</body>
+	<%@ include file="/html/jsp/censo/includeVolver.jspf" %>
+	
+	<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
+</body>
 </html>

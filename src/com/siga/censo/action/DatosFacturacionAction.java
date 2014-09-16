@@ -857,7 +857,7 @@ public class DatosFacturacionAction extends MasterAction {
 					Hashtable registro = (Hashtable) fila.getRow();
 					String estadoPago = (String) registro.get("ESTADOPAGO");
 					if(estadoPago==null)
-						datos = actualizarProductosPaginados(productosAdm,idPersona,datos);
+						datos = actualizarProductosPaginados(idPersona, datos, this.getUserBean(request));
 				}
 				databackup.put("paginador", paginador);
 				databackup.put("datos", datos);
@@ -902,7 +902,6 @@ public class DatosFacturacionAction extends MasterAction {
 				databackup = new HashMap();
 				
 				PaginadorBind paginador = productosAdm.getProductosSolicitadosPaginador(criterios,new Integer(miform.getIdInstitucion()));
-				// Paginador paginador = new Paginador(sql);
 				int totalRegistros = paginador.getNumeroTotalRegistros();
 				if (totalRegistros == 0) {
 					paginador = null;
@@ -911,8 +910,7 @@ public class DatosFacturacionAction extends MasterAction {
 				databackup.put("paginador", paginador);
 				if (paginador != null) {
 					Vector datos = paginador.obtenerPagina(1);
-					 
-					datos = actualizarProductosPaginados(productosAdm,idPersona,datos);
+					datos = actualizarProductosPaginados(idPersona, datos, this.getUserBean(request));
 					databackup.put("datos", datos);
 					setPaginador(request, paginadorPenstania, databackup);
 				}
@@ -927,34 +925,41 @@ public class DatosFacturacionAction extends MasterAction {
 
 		return "abrirProductos";
 	}
+	
 	/**
-	 * Metodo que nos actualiza el vector de productos paginados con 
-	 * 1.FechaEfectiva
-	 * 2.Estado Compra
+	 * Metodo que nos actualiza el vector de productos paginados
+	 * @param idPersona
 	 * @param datos
+	 * @param usrBean
 	 * @return
-	 * @throws ClsExceptions 
+	 * @throws ClsExceptions
 	 */
-	private Vector actualizarProductosPaginados(PysProductosSolicitadosAdm productosAdm,String idPersona,Vector datos) throws ClsExceptions{
-		
-		
-		
-		for (int i=0;i<datos.size();i++) 
-		{
-			
+	private Vector actualizarProductosPaginados(String idPersona, Vector datos, UsrBean usrBean) throws ClsExceptions {
+		for (int i=0; i<datos.size(); i++) {
 			Row fila = (Row)datos.get(i);
 			Hashtable registro = (Hashtable) fila.getRow();
+			
 			String idInstitucion = (String) registro.get(PysCompraBean.C_IDINSTITUCION);
 			String idPeticion = (String) registro.get(PysCompraBean.C_IDPETICION);
 			String idTipoProducto = (String) registro.get(PysCompraBean.C_IDTIPOPRODUCTO);
 			String idProducto = (String) registro.get(PysCompraBean.C_IDPRODUCTO);
 			String idProductoInstitucion = (String) registro.get(PysCompraBean.C_IDPRODUCTOINSTITUCION);
 			
+			// Obtiene FECHAEFEC
+			PysProductosSolicitadosAdm productosAdm = new PysProductosSolicitadosAdm(usrBean);
 			Vector vFechaEfectiva = productosAdm.getFechaEfectivaCompraProducto(idInstitucion, idTipoProducto, idProducto, idProductoInstitucion, idPeticion, idPersona);
-			registro = completarHashSalida(registro,vFechaEfectiva );
+			registro = completarHashSalida(registro, vFechaEfectiva);
 			
-			Vector vEstadoCompra = productosAdm.getEstadoCompra(idInstitucion, idTipoProducto, idProducto, idProductoInstitucion, idPeticion);
-			registro = completarHashSalida(registro,vEstadoCompra );
+			// Obtiene ESTADOPAGO
+			String estadoCompra = productosAdm.getEstadoCompra(idInstitucion, idTipoProducto, idProducto, idProductoInstitucion, idPeticion);
+			String decripcionEstadoCompra = UtilidadesString.getMensajeIdioma(usrBean, estadoCompra);
+			UtilidadesHash.set(registro, "ESTADOCOMPRA", estadoCompra);
+			UtilidadesHash.set(registro, "DESCRIPCIONESTADOCOMPRA", decripcionEstadoCompra);
+			
+			String sAceptado = UtilidadesHash.getString(registro, PysProductosSolicitadosBean.C_ACEPTADO);
+			String estadoProducto = UtilidadesProductosServicios.getEstadoProductoServicio(sAceptado);
+			String descripcionEstadoProducto = UtilidadesString.getMensajeIdioma(usrBean, estadoProducto);
+			UtilidadesHash.set(registro, "DESCRIPCIONESTADOPRODUCTO", descripcionEstadoProducto);
 		}
 		
 		return datos;
@@ -964,11 +969,13 @@ public class DatosFacturacionAction extends MasterAction {
 	 * Metodo que nos actualiza el vector de productos paginados con 
 	 * 1.FechaEfectiva
 	 * 2.Estado Compra
+	 * @param idPersona
+	 * @param usrBean
 	 * @param datos
 	 * @return
-	 * @throws ClsExceptions 
+	 * @throws ClsExceptions
 	 */
-	private Vector actualizarServiciosPaginados(PysServiciosSolicitadosAdm serviciosAdm, PysProductosSolicitadosAdm productosAdm, String idPersona, UsrBean usrBean, Vector datos) throws ClsExceptions {
+	private Vector actualizarServiciosPaginados(String idPersona, UsrBean usrBean, Vector datos) throws ClsExceptions {
 		
 		for (int i=0; i<datos.size(); i++) {
 			Row fila = (Row)datos.get(i);
@@ -983,7 +990,8 @@ public class DatosFacturacionAction extends MasterAction {
 			boolean bAnticipado=PysServicioAnticipoAdm.getAnticipoLetradoActivo(idInstitucion, idPersona, idTipoServicio, idServicio, idServicioInstitucion);
 			registro.put("SERVICIO_ANTICIPADO", new Boolean(bAnticipado));
 			
-			Vector vPrecioServicios = serviciosAdm.getPrecioServicio(idInstitucion, idTipoServicio, idServicio, idServicioInstitucion, idPersona,usrBean.getLanguageInstitucion());
+			PysServiciosSolicitadosAdm serviciosAdm = new PysServiciosSolicitadosAdm(usrBean);
+			Vector vPrecioServicios = serviciosAdm.getPrecioServicio(idInstitucion, idTipoServicio, idServicio, idServicioInstitucion, idPersona, usrBean.getLanguageInstitucion());
 			
 			//registro = completarHashSalida(registro, vPrecioServicios); => JPT: No lo utiliza la jsp
 			
@@ -1177,7 +1185,7 @@ public class DatosFacturacionAction extends MasterAction {
 					Hashtable registro = (Hashtable) fila.getRow();
 					String estadoPago = (String) registro.get("ESTADOPAGO");
 					if(estadoPago==null)
-						datos = actualizarServiciosPaginados(serviciosAdm,new PysProductosSolicitadosAdm(this.getUserBean(request)),idPersona,this.getUserBean(request),datos);
+						datos = actualizarServiciosPaginados(idPersona, this.getUserBean(request), datos);
 				}
 				databackup.put("paginador", paginador);
 				databackup.put("datos", datos);
@@ -1236,7 +1244,7 @@ public class DatosFacturacionAction extends MasterAction {
 				databackup.put("paginador", paginador);
 				if (paginador != null) {
 					Vector datos = paginador.obtenerPagina(1);
-					datos = actualizarServiciosPaginados(serviciosAdm,new PysProductosSolicitadosAdm(this.getUserBean(request)),idPersona,this.getUserBean(request),datos);
+					datos = actualizarServiciosPaginados(idPersona, this.getUserBean(request), datos);
 					databackup.put("datos", datos);
 					setPaginador(request, paginadorPenstania, databackup);
 				}
@@ -1264,94 +1272,78 @@ public class DatosFacturacionAction extends MasterAction {
 	 * @return  String  Destino del action  
 	 * @exception  ClsExceptions  En cualquier caso de error
 	 */
-	protected String modificarProducto (ActionMapping mapping, 		
-							MasterForm formulario, 
-							HttpServletRequest request, 
-							HttpServletResponse response) throws SIGAException 
-	{
+	protected String modificarProducto (ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		UserTransaction tx = null;
 		String salida = "";
 		try {
-
 			DatosFacturacionForm miform = (DatosFacturacionForm)formulario;
-			
 			UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");
-
-			PysProductosSolicitadosAdm productosAdm = new PysProductosSolicitadosAdm(this.getUserBean(request));
-			Hashtable hash= new Hashtable();
-			hash.put(PysProductosSolicitadosBean.C_IDINSTITUCION,miform.getIdInstitucion());
-			hash.put(PysProductosSolicitadosBean.C_IDPERSONA,miform.getIdPersona());
-			hash.put(PysProductosSolicitadosBean.C_IDPETICION,request.getParameter("idPeticionSel"));
-			hash.put(PysProductosSolicitadosBean.C_IDTIPOPRODUCTO,request.getParameter("idTipoProductoSel"));
-			hash.put(PysProductosSolicitadosBean.C_IDPRODUCTO,request.getParameter("idProductoSel"));
-			hash.put(PysProductosSolicitadosBean.C_IDPRODUCTOINSTITUCION,request.getParameter("idProductoInstitucionSel"));
-
+			
+			// Tambien se le cambia a la compra si exite
+			Hashtable hashPysCompra = new Hashtable();			
+			hashPysCompra.put(PysCompraBean.C_IDINSTITUCION, miform.getIdInstitucion());
+			hashPysCompra.put(PysSuscripcionBean.C_IDPERSONA, miform.getIdPersona());
+			hashPysCompra.put(PysCompraBean.C_IDPETICION, request.getParameter("idPeticionSel"));
+			hashPysCompra.put(PysCompraBean.C_IDTIPOPRODUCTO, request.getParameter("idTipoProductoSel"));
+			hashPysCompra.put(PysCompraBean.C_IDPRODUCTO, request.getParameter("idProductoSel"));
+			hashPysCompra.put(PysCompraBean.C_IDPRODUCTOINSTITUCION, request.getParameter("idProductoInstitucionSel"));
+			
+			String idFormaPagoCuenta = String.valueOf(ClsConstants.TIPO_FORMAPAGO_FACTURA);
 			
 			tx = user.getTransaction();
-			tx.begin();	
+			tx.begin();			
 			
-			String idFormaPagoCuenta = new Integer(ClsConstants.TIPO_FORMAPAGO_FACTURA).toString();;
-			hash.put(PysProductosSolicitadosBean.C_IDFORMAPAGO,request.getParameter("formaPago"));
-			if (request.getParameter("formaPago").equals(idFormaPagoCuenta)) {
-				hash.put(PysProductosSolicitadosBean.C_IDCUENTA,request.getParameter("nCuenta"));
-			} else {
-				hash.put(PysProductosSolicitadosBean.C_IDCUENTA,"");
-			}	
-				// Cargo una hastable con los valores originales del registro sobre el que se realizará la modificacion						
-				Hashtable hashOriginal = new Hashtable();
-				hashOriginal=(Hashtable)request.getSession().getAttribute("DATABACKUP");
-				if (!productosAdm.update(hash,hashOriginal)) {
-					throw new SIGAException(productosAdm.getError());
+			// Obtengo la compra del producto para modificar la forma de pago y/o la cuenta bancaria
+			PysCompraAdm admPysCompra = new PysCompraAdm(user);
+			Vector vPysCompra = admPysCompra.select(hashPysCompra);
+			if (vPysCompra!=null && vPysCompra.size()>0) {
+				PysCompraBean beanPysCompra = (PysCompraBean) vPysCompra.get(0);
+			    if (request.getParameter("formaPago").equals(idFormaPagoCuenta)) {
+			    	beanPysCompra.setIdFormaPago(new Integer(ClsConstants.TIPO_FORMAPAGO_FACTURA));
+			    	beanPysCompra.setIdCuenta(new Integer(request.getParameter("nCuenta")));
+				} else {
+					beanPysCompra.setIdFormaPago(new Integer(request.getParameter("formaPago")));
+					beanPysCompra.setIdCuenta(null);
 				}
-				// tambien se le cambia a la compra si exite
-				Hashtable hashCompra = new Hashtable();
-				PysCompraAdm admcom=new PysCompraAdm(this.getUserBean(request));
-				hashCompra.put(PysCompraBean.C_IDINSTITUCION,miform.getIdInstitucion());
-				hashCompra.put(PysCompraBean.C_IDPETICION,request.getParameter("idPeticionSel"));
-				hashCompra.put(PysCompraBean.C_IDTIPOPRODUCTO,request.getParameter("idTipoProductoSel"));
-				hashCompra.put(PysCompraBean.C_IDPRODUCTO,request.getParameter("idProductoSel"));
-				hashCompra.put(PysCompraBean.C_IDPRODUCTOINSTITUCION,request.getParameter("idProductoInstitucionSel"));
-				Vector vcom = admcom.select(hashCompra);
-				
-					for (int j=0;vcom!=null && j<vcom.size();j++) {
-					    PysCompraBean bcom = (PysCompraBean) vcom.get(j);
-					    if (request.getParameter("formaPago").equals(idFormaPagoCuenta)) {
-						    bcom.setIdCuenta(new Integer((String)request.getParameter("nCuenta")));
-						    bcom.setIdFormaPago(new Integer(ClsConstants.TIPO_FORMAPAGO_FACTURA));
-					    }else{
-						    bcom.setIdCuenta(null);
-						    bcom.setIdFormaPago(new Integer(request.getParameter("formaPago")));	 
-					    }	
-					    admcom.updateDirect(bcom);
-					}
-				
-			
+			    
+			    if (!admPysCompra.updateDirect(beanPysCompra)) {
+			        throw new ClsExceptions("Error al intentar actualizar PYS_COMPRA");
+			    }
+			}			
 
-			
+			if (request.getParameter("formaPago").equals(idFormaPagoCuenta)) {
+				hashPysCompra.put(PysCompraBean.C_IDFORMAPAGO, ClsConstants.TIPO_FORMAPAGO_FACTURA);
+				hashPysCompra.put(PysCompraBean.C_IDCUENTA, request.getParameter("nCuenta"));
+			} else {
+				hashPysCompra.put(PysCompraBean.C_IDFORMAPAGO, request.getParameter("formaPago"));
+				hashPysCompra.put(PysCompraBean.C_IDCUENTA,"");
+			}
 
+			// Cargo una hastable con los valores originales del registro sobre el que se realizará la modificacion
+			Hashtable hashOriginal = (Hashtable)request.getSession().getAttribute("DATABACKUP");
 
 			// insert unico para el historico
 			Hashtable hashHist = new Hashtable();			
-			hashHist.put(CenHistoricoBean.C_IDPERSONA, miform.getIdPersona());			
-			hashHist.put(CenHistoricoBean.C_IDINSTITUCION, miform.getIdInstitucion());			
 			hashHist.put(CenHistoricoBean.C_MOTIVO, miform.getMotivo());
-			hashHist.put(CenHistoricoBean.C_IDTIPOCAMBIO, new Integer(ClsConstants.TIPO_CAMBIO_HISTORICO_DATOS_FACTURACION).toString());			
-			hashHist.put(CenHistoricoBean.C_FECHAEFECTIVA,"SYSDATE");
-			hashHist.put(CenHistoricoBean.C_FECHAENTRADA,"SYSDATE");								
 			CenHistoricoAdm admHis = new CenHistoricoAdm (this.getUserBean(request));
-			if (!admHis.insert(hashHist)) {
+			if (!admHis.insertCompleto(hashHist, hashPysCompra, hashOriginal, "PysCompraBean", CenHistoricoAdm.ACCION_UPDATE, this.getLenguaje(request))) {
 				throw new SIGAException(admHis.getError());
 			}	
-
-			tx.commit();
 			
-			salida = this.exitoModal("messages.updated.success",request);
-	   } 	catch (Exception e) {
-		 throwExcp("messages.general.error",new String[] {"modulo.censo"},e,tx);
+			/* 	IMPORTANTE JPT: 
+			 *  - No se modifica la factura al cambiar la forma de pago o cuenta de una compra, ya que la factura puede contener varios productos y todos deben tener la misma forma de pago y cuenta
+			 *  - No se actualizan los productos solicitados, solo PYS_COMPRA
+			 */			
+			
+			tx.commit();			
+			
+			salida = this.exitoModal("messages.updated.success", request);
+			
+	   } catch (Exception e) {
+		   throwExcp("messages.general.error",new String[] {"modulo.censo"},e,tx);
    	   }
 
 		return salida;
-
 	}
 
 	
@@ -1379,7 +1371,10 @@ public class DatosFacturacionAction extends MasterAction {
 			hash.put(PysSuscripcionBean.C_IDSERVICIO, request.getParameter("idServicioSel"));
 			hash.put(PysSuscripcionBean.C_IDSERVICIOSINSTITUCION, request.getParameter("idServicioInstitucionSel"));
 			
-			String idFormaPagoCuenta = new Integer(ClsConstants.TIPO_FORMAPAGO_FACTURA).toString();
+			String idFormaPagoCuenta = String.valueOf(ClsConstants.TIPO_FORMAPAGO_FACTURA);
+			
+			tx = user.getTransaction();
+			tx.begin();				
 			
 			// Obtengo la suscripcion al servicio para modificar la forma de pago y/o la cuenta bancaria
 			PysSuscripcionAdm admSus = new PysSuscripcionAdm(this.getUserBean(request));
@@ -1395,7 +1390,7 @@ public class DatosFacturacionAction extends MasterAction {
 				}
 			    
 			    if (!admSus.updateDirect(beanSus)) {
-			        throw new ClsExceptions("Error al intentar actualizar la fecha efectiva");
+			        throw new ClsExceptions("Error al intentar actualizar PYS_SUSCRIPCION");
 			    }
 			}
 						
@@ -1409,15 +1404,6 @@ public class DatosFacturacionAction extends MasterAction {
 
 			// Cargo una hastable con los valores originales del registro sobre el que se realizará la modificacion
 			Hashtable hashOriginal = (Hashtable)request.getSession().getAttribute("DATABACKUP");
-			
-			tx = user.getTransaction();
-			tx.begin();	
-
-			/* JPT: No se actualizan los servicios solicitados, solo PYS_SUSCRIPCION
-			PysServiciosSolicitadosAdm serviciosAdm = new PysServiciosSolicitadosAdm(user);
-			if (!serviciosAdm.update(hash,hashOriginal)) {
-				throw new SIGAException(serviciosAdm.getError());
-			}*/
 
 			// insert unico para el historico
 			Hashtable hashHist = new Hashtable();			
@@ -1427,7 +1413,10 @@ public class DatosFacturacionAction extends MasterAction {
 				throw new SIGAException(admHis.getError());
 			}	
 			
-			// IMPORTANTE JPT: No se modifica la factura al cambiar la forma de pago o cuenta de una suscripcion, ya que la factura puede contener varias suscripciones y todas deben tener la misma forma de pago y cuenta
+			/* 	IMPORTANTE JPT: 
+			 *  - No se modifica la factura al cambiar la forma de pago o cuenta de una suscripcion, ya que la factura puede contener varios servicios y todos deben tener la misma forma de pago y cuenta
+			 *  - No se actualizan los servicios solicitados, solo PYS_SUSCRIPCION
+			 */
 
 			tx.commit();
 			

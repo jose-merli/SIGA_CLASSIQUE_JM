@@ -558,6 +558,9 @@ public class CenHistoricoAdm extends MasterBeanAdministrador
 			} else if (nombreClaseBean.equalsIgnoreCase("PysSuscripcionBean")) {
 				adm = new PysSuscripcionAdm(this.usrbean);
 				
+			} else if (nombreClaseBean.equalsIgnoreCase("PysCompraBean")) {
+				adm = new PysCompraAdm(this.usrbean);
+				
 			} else {
 				return false;
 			}
@@ -955,6 +958,17 @@ public class CenHistoricoAdm extends MasterBeanAdministrador
 					beanHistorico.setIdPersona(beanPysSuscripcion.getIdPersona());
 					beanHistorico.setIdTipoCambio(new Integer(ClsConstants.TIPO_CAMBIO_HISTORICO_DATOS_FACTURACION));			
 					break;
+					
+				} else if (beanAsociado instanceof PysCompraBean) {
+					PysCompraBean beanPysCompra = (PysCompraBean) beanAsociado;
+					PysCompraAdm admPysCompra = new PysCompraAdm(this.usrbean);
+					hBeanAsociado = admPysCompra.beanToHashTable(beanPysCompra);
+					hBeanAsociadoAnterior = admPysCompra.beanToHashTable(admPysCompra.hashTableToBean(beanPysCompra.getOriginalHash()));
+
+					beanHistorico.setIdInstitucion(beanPysCompra.getIdInstitucion());
+					beanHistorico.setIdPersona(beanPysCompra.getIdPersona());
+					beanHistorico.setIdTipoCambio(new Integer(ClsConstants.TIPO_CAMBIO_HISTORICO_DATOS_FACTURACION));			
+					break;					
 				}
 
 

@@ -189,8 +189,7 @@ public class PysProductosSolicitadosAdm extends MasterBeanAdministrador {
 	}
 	
 	/**
-	 * getFechaEfectivaCompraProducto Este metodo es parte de la consulta de productos que relentiza la query. 
-	 
+	 * Este metodo es parte de la consulta de productos que relentiza la query. 	 
 	 * @param idInstitucion
 	 * @param idTipoProducto
 	 * @param idProducto
@@ -201,81 +200,45 @@ public class PysProductosSolicitadosAdm extends MasterBeanAdministrador {
 	 * @throws ClsExceptions
 	 */
 	//
-	public Vector getFechaEfectivaCompraProducto(String idInstitucion, String idTipoProducto,
-			String idProducto,String idProductoInstitucion,String idPeticionConsulta,String idPersona) throws ClsExceptions  
-	{
+	public Vector getFechaEfectivaCompraProducto(String idInstitucion, String idTipoProducto, String idProducto, String idProductoInstitucion, String idPeticionConsulta, String idPersona) throws ClsExceptions {
 		try {
-			int contador=0;
-			Hashtable codigos = new Hashtable();
-			StringBuffer sql =  new StringBuffer();
+			String sql = " SELECT NVL( " +
+								" ( " +
+									" SELECT NVL(" + PysCompraBean.T_NOMBRETABLA + "." + PysCompraBean.C_FECHABAJA + ", " + PysCompraBean.T_NOMBRETABLA + "." + PysCompraBean.C_FECHA + ") " +
+									" FROM " + PysCompraBean.T_NOMBRETABLA +
+									" WHERE " + PysCompraBean.T_NOMBRETABLA + "." + PysCompraBean.C_IDINSTITUCION + " = " + idInstitucion + 
+										" AND " + PysCompraBean.T_NOMBRETABLA + "." + PysCompraBean.C_IDPETICION + " = " + idPeticionConsulta + 
+										" AND " + PysCompraBean.T_NOMBRETABLA + "." + PysCompraBean.C_IDTIPOPRODUCTO + " = " +  idTipoProducto + 
+										" AND " + PysCompraBean.T_NOMBRETABLA + "." + PysCompraBean.C_IDPRODUCTO + " = " + idProducto +
+										" AND " + PysCompraBean.T_NOMBRETABLA + "." + PysCompraBean.C_IDPRODUCTOINSTITUCION + " = " + idProductoInstitucion + 
+								" ), ( " +
+									" SELECT MAX(" + PysPeticionCompraSuscripcionBean.T_NOMBRETABLA + "." + PysPeticionCompraSuscripcionBean.C_FECHA + ") " +
+									" FROM " + PysPeticionCompraSuscripcionBean.T_NOMBRETABLA + ", " +
+										PysProductosSolicitadosBean.T_NOMBRETABLA + 
+									" WHERE " + PysPeticionCompraSuscripcionBean.T_NOMBRETABLA + "." + PysPeticionCompraSuscripcionBean.C_IDINSTITUCION + " = " + idInstitucion +
+										" AND " + PysPeticionCompraSuscripcionBean.T_NOMBRETABLA + "." + PysPeticionCompraSuscripcionBean.C_IDPERSONA + " = " + idPersona +
+										" AND " + PysPeticionCompraSuscripcionBean.T_NOMBRETABLA + "." + PysPeticionCompraSuscripcionBean.C_IDESTADOPETICION + " <> 10 " +
+										" AND " + PysPeticionCompraSuscripcionBean.T_NOMBRETABLA + "." + PysPeticionCompraSuscripcionBean.C_TIPOPETICION + " = 'B' " +
+										" AND " + PysPeticionCompraSuscripcionBean.T_NOMBRETABLA + "." + PysPeticionCompraSuscripcionBean.C_IDPETICIONALTA + " = " + idPeticionConsulta +
+										" AND " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDTIPOPRODUCTO + " = " + idTipoProducto +
+										" AND " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDPRODUCTO + " = " + idProducto + 
+										" AND " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDPRODUCTOINSTITUCION + " = " + idProductoInstitucion + 
+										" AND " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDINSTITUCION + " = " + PysPeticionCompraSuscripcionBean.T_NOMBRETABLA + "." + PysPeticionCompraSuscripcionBean.C_IDINSTITUCION + 
+										" AND " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDPETICION + " = " + PysPeticionCompraSuscripcionBean.T_NOMBRETABLA + "." + PysPeticionCompraSuscripcionBean.C_IDPETICION +
+										" AND " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDPERSONA + " = " + PysPeticionCompraSuscripcionBean.T_NOMBRETABLA + "." + PysPeticionCompraSuscripcionBean.C_IDPERSONA +
+								" ) " +
+							" ) AS FECHAEFEC " +
+						" FROM  DUAL ";
 			
-			//mhg - INC_10542_SIGA Para sacar la fecha efectiva añadimos la fecha de baja.
-			sql.append(" select NVL((SELECT NVL(PYS_COMPRA.FECHABAJA, PYS_COMPRA.FECHA) ");
-			sql.append(" FROM PYS_COMPRA ");
-			sql.append(" WHERE PYS_COMPRA.IDINSTITUCION = ");
-			contador++;
-			codigos.put(new Integer(contador),idInstitucion);
-			sql.append(":"+contador);
-
-			sql.append(" AND PYS_COMPRA.IDPETICION = ");
-			contador++;
-			codigos.put(new Integer(contador),idPeticionConsulta);
-			sql.append(":"+contador);
-			sql.append(" AND PYS_COMPRA.IDTIPOPRODUCTO = ");
-			contador++;
-			codigos.put(new Integer(contador),idTipoProducto);
-			sql.append(":"+contador);
-			sql.append(" AND PYS_COMPRA.IDPRODUCTO = ");
-			contador++;
-			codigos.put(new Integer(contador),idProducto);
-			sql.append(":"+contador);
-			sql.append(" AND PYS_COMPRA.IDPRODUCTOINSTITUCION = ");
-			contador++;
-			codigos.put(new Integer(contador),idProductoInstitucion);
-			sql.append(":"+contador);
-			sql.append(" ), ");
-			sql.append(" (SELECT max(petco.fecha) ");
-			sql.append(" FROM PYS_PETICIONCOMPRASUSCRIPCION petco, ");
-			sql.append(" PYS_PRODUCTOSSOLICITADOS      prodsol ");
-			sql.append(" WHERE petco.IDINSTITUCION = "); 
-			contador++;
-			codigos.put(new Integer(contador),idInstitucion);
-			sql.append(":"+contador);
-			sql.append(" AND petco.IDPERSONA =  ");
-			contador++;
-			codigos.put(new Integer(contador),idPersona);
-			sql.append(":"+contador);
-			sql.append(" and petco.idestadopeticion <> 10 ");
-			sql.append(" AND petco.TIPOPETICION = 'B' ");
-			sql.append(" AND petco.IDPETICIONALTA = ");
-			contador++;
-			codigos.put(new Integer(contador),idPeticionConsulta);
-			sql.append(":"+contador);
-			sql.append(" AND prodsol.IDTIPOPRODUCTO = ");
-			contador++;
-			codigos.put(new Integer(contador),idTipoProducto);
-			sql.append(":"+contador);
-			sql.append(" AND prodsol.IDPRODUCTO = ");
-			contador++;
-			codigos.put(new Integer(contador),idProducto);
-			sql.append(":"+contador);
-			sql.append(" AND prodsol.IDPRODUCTOINSTITUCION = ");
-			contador++;
-			codigos.put(new Integer(contador),idProductoInstitucion);
-			sql.append(":"+contador);
-			sql.append(" AND prodsol.IDINSTITUCION = petco.IDINSTITUCION ");
-			sql.append(" AND prodsol.IDPETICION = petco.IDPETICION ");
-			sql.append(" AND prodsol.IDPERSONA = petco.IDPERSONA)) AS FECHAEFEC ");
-
-			sql.append(" FROM  DUAL ");
-			return this.selectGenericoBind(sql.toString(), codigos);
-		}
-		catch (Exception e) {
-			throw new ClsExceptions (e, "Error al obtener la informacion sobre getFechaEfectivaCompra");
+			return this.selectGenerico(sql);
+			
+		} catch (Exception e) {
+			throw new ClsExceptions (e, "Error al obtener la informacion de getFechaEfectivaCompraProducto");
 		}
 	}
+	
 	/**
-	 * getEstadoCompraProducto Este metodo es parte de la consulta de productos que relentiza la query.
+	 * Este metodo es parte de la consulta de productos que relentiza la query.
 	 * @param idInstitucion
 	 * @param idTipoProducto
 	 * @param idProducto
@@ -284,46 +247,22 @@ public class PysProductosSolicitadosAdm extends MasterBeanAdministrador {
 	 * @return
 	 * @throws ClsExceptions
 	 */
-	public Vector getEstadoCompra(String idInstitucion, String idTipoProducto,
-			String idProducto,String idProductoInstitucion,String idPeticionConsulta) throws ClsExceptions  
-	{
+	public String getEstadoCompra(String idInstitucion, String idTipoProducto, String idProducto, String idProductoInstitucion, String idPeticionConsulta) throws ClsExceptions {
+		String estadoCompra = "";
+		
 		try {
-			int contador=0;
-			Hashtable codigos = new Hashtable();
+			String sql = " SELECT F_SIGA_ESTADOCOMPRA(" + idInstitucion + ", " + idPeticionConsulta + ", " + idProducto + "," + idTipoProducto + "," + idProductoInstitucion + ") AS ESTADOPAGO FROM DUAL";
 			
-
-
-			StringBuffer sql =  new StringBuffer();
-			sql.append(" select F_SIGA_ESTADOCOMPRA( ");
-			contador++;
-			codigos.put(new Integer(contador),idInstitucion);
-			sql.append(":"+contador);
-			sql.append(",");
-			contador++;
-			codigos.put(new Integer(contador),idPeticionConsulta);
-			sql.append(":"+contador);
-			sql.append(",");
-			contador++;
-			codigos.put(new Integer(contador),idProducto);
-			sql.append(":"+contador);
-			sql.append(",");
-			contador++;
-			codigos.put(new Integer(contador),idTipoProducto);
-			sql.append(":"+contador);
-			sql.append(",");
-			contador++;
-			codigos.put(new Integer(contador),idProductoInstitucion);
-			sql.append(":"+contador);
+			Vector vEstados = this.selectGenerico(sql);
+			if (vEstados!=null && vEstados.size()>0) {
+				estadoCompra = (String) ((Hashtable) vEstados.get(0)).get("ESTADOPAGO");				
+			}			
 			
-			sql.append(" ) AS ESTADOPAGO FROM DUAL ");
-			
-
-				
-			return this.selectGenericoBind(sql.toString(), codigos);
+		} catch (Exception e) {
+			throw new ClsExceptions (e, "Error al obtener la informacion sobre getEstadoCompra");
 		}
-		catch (Exception e) {
-			throw new ClsExceptions (e, "Error al obtener la informacion sobre getEstadoCompraProducto");
-		}
+		
+		return estadoCompra;
 	}
 	
 	/**
@@ -1173,10 +1112,10 @@ public class PysProductosSolicitadosAdm extends MasterBeanAdministrador {
 						PysCompraBean.T_NOMBRETABLA + "." + PysCompraBean.C_IDPRODUCTOINSTITUCION + ", " +
 						PysCompraBean.T_NOMBRETABLA + "." + PysCompraBean.C_IDTIPOPRODUCTO + ", " +							
 						PysCompraBean.T_NOMBRETABLA + "." + PysCompraBean.C_IDFORMAPAGO + ", " +
+						" NVL(" + PysCompraBean.T_NOMBRETABLA + "." + PysCompraBean.C_IDCUENTADEUDOR + "," + PysCompraBean.T_NOMBRETABLA + "." + PysCompraBean.C_IDCUENTA + ") AS " + PysCompraBean.C_IDCUENTA + ", " +
 						PysTipoIvaBean.T_NOMBRETABLA + "." + PysTipoIvaBean.C_VALOR + " AS VALORIVA, " +											
 						PysPeticionCompraSuscripcionBean.T_NOMBRETABLA + "." + PysPeticionCompraSuscripcionBean.C_TIPOPETICION + ", " + 
 						PysPeticionCompraSuscripcionBean.T_NOMBRETABLA + "." + PysPeticionCompraSuscripcionBean.C_FECHA + ", " +						
-						PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDCUENTA + ", " +
 						PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_CANTIDAD + ", " + 
 						PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_VALOR + ", " +
 						PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_ACEPTADO + ", " + 						
@@ -1198,9 +1137,9 @@ public class PysProductosSolicitadosAdm extends MasterBeanAdministrador {
 							" ( " +
 								" SELECT " + CenCuentasBancariasBean.T_NOMBRETABLA+ "." + CenCuentasBancariasBean.C_IBAN + 
 								" FROM " + CenCuentasBancariasBean.T_NOMBRETABLA + 
-								" WHERE " + CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_IDCUENTA + " = " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDCUENTA + 
-									" AND " + CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_IDINSTITUCION + " = " + PysPeticionCompraSuscripcionBean.T_NOMBRETABLA + "." + PysPeticionCompraSuscripcionBean.C_IDINSTITUCION + 
-									" AND " + CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_IDPERSONA + " = " + PysPeticionCompraSuscripcionBean.T_NOMBRETABLA + "." + PysPeticionCompraSuscripcionBean.C_IDPERSONA + 
+								" WHERE " + CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_IDINSTITUCION + " = " + PysCompraBean.T_NOMBRETABLA + "." + PysCompraBean.C_IDINSTITUCION +									
+									" AND " + CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_IDPERSONA + " = DECODE(" + PysCompraBean.T_NOMBRETABLA + "." + PysCompraBean.C_IDCUENTADEUDOR + ", NULL, " + PysCompraBean.T_NOMBRETABLA + "." + PysCompraBean.C_IDPERSONA + ", " + PysCompraBean.T_NOMBRETABLA + "." + PysCompraBean.C_IDPERSONADEUDOR + ") " +
+									" AND " + CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_IDCUENTA + " =  NVL(" + PysCompraBean.T_NOMBRETABLA + "." + PysCompraBean.C_IDCUENTADEUDOR + "," + PysCompraBean.T_NOMBRETABLA + "." + PysCompraBean.C_IDCUENTA + ") " +
 							" ) " +
 								" ,'-') AS NCUENTA " +
 					" FROM " + PysProductosSolicitadosBean.T_NOMBRETABLA + ", " + 
@@ -1226,7 +1165,7 @@ public class PysProductosSolicitadosAdm extends MasterBeanAdministrador {
 		}
 		
 		if (idPersona != null) {
-			sql += " AND " + PysPeticionCompraSuscripcionBean.T_NOMBRETABLA + "." + PysPeticionCompraSuscripcionBean.C_IDPERSONA + " = " + idPersona;
+			sql += " AND DECODE(" + PysCompraBean.T_NOMBRETABLA + "." + PysCompraBean.C_IDCUENTADEUDOR + ", NULL, " + PysCompraBean.T_NOMBRETABLA + "." + PysCompraBean.C_IDPERSONA + ", " + PysCompraBean.T_NOMBRETABLA + "." + PysCompraBean.C_IDPERSONADEUDOR + ")  = " + idPersona;
 		}
 		
 		if (tipoPeticion != null) {

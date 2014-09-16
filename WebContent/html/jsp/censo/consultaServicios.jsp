@@ -227,7 +227,7 @@
 		   				cen.consultaProductos.literal.estadoProducto,
 		   				gratuita.listarTurnos.literal.fechaAlta,
 		   				censo.consultaDatos.literal.fechaBaja,"
-		columnSizes="7,6,24,9,6,10,7,7,7,7,10"
+		columnSizes="8,6,22,9,5,10,7,7,8,8,10"
 		modal="P">
 
 		<!-- INICIO: ZONA DE REGISTROS -->
@@ -243,11 +243,8 @@
 			</tr>
 <%	
 		} else { 
-			for (int i=0;i<resultado.size();i++) {
-				String cont = new Integer(i+1).toString();
-
-				FilaExtElement[] elems=new FilaExtElement[1];
-				
+			for (int i=0; i<resultado.size(); i++) {
+				String cont = String.valueOf(i + 1);
 				Row fila = (Row)resultado.elementAt(i);
 				Hashtable registro = (Hashtable) fila.getRow();
 
@@ -315,6 +312,7 @@
 					salidaPrecio = UtilidadesNumero.formatoCampo(precioConIVA) + "&nbsp;&euro; / " + periodicidad;	
 				}
 
+				FilaExtElement[] elems=new FilaExtElement[1];
 				String botones = "";
 				if ((aceptado.equals(ClsConstants.PRODUCTO_ACEPTADO) || aceptado.equals(ClsConstants.PRODUCTO_BAJA)) && modo.equals("editar") && !usr.isLetrado()) {
 					botones = "E";
