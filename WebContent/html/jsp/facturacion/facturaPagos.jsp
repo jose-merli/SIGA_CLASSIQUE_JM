@@ -232,6 +232,7 @@
 		if ((vPagos != null) && (vPagos.size() > 0)){			
 			
 			String textoCompensacion = UtilidadesString.getMensajeIdioma(user, "facturacion.pagosFactura.accion.compensacion");
+			boolean seleccionado = false;
 			
 			for (int i = 1; i <= vPagos.size(); i++) { 					
 				 Hashtable pago = (Hashtable) vPagos.get(i-1);
@@ -247,6 +248,8 @@
 					Integer idAbonoCuenta = UtilidadesHash.getInteger(pago, "IDABONO_IDCUENTA");
 					Integer idPago = UtilidadesHash.getInteger(pago, "IDPAGO");
 					String nombreBanco=UtilidadesHash.getString(pago, "NOMBREBANCO");
+					String idFacturaPagos = UtilidadesHash.getString(pago, "IDFACTURA");
+					String esAnulacionComision = UtilidadesHash.getString(pago, "ANULACIONCOMISION");					
 					Integer idPagoAbono=0;
 				 	String medioPago = "";
 				 
@@ -271,23 +274,35 @@
 						pintarEspacio='no' 
 						clase="listaNonEdit">
 						
-						<td>
+<%
+						String clase="", claseNumero=""; 
+						if ((esAnulacionComision!=null && esAnulacionComision.equals("1") && idFactura!=null && idFacturaPagos!=null && idFactura.equals(idFacturaPagos)) ||
+								(vPagos.size()==i && !seleccionado)) {
+							seleccionado = true;
+							clase="class='listaNonEditSelected' style='font-weight:bold'";
+							claseNumero="class='listaNonEditSelected' style='font-weight:bold; text-align:right'";
+						}
+%>						
+						
+						<td <%=clase%>>
 							<input type="hidden" id="oculto<%=i%>_1" value="<%=idPago%>">
 							<input type="hidden" id="oculto<%=i%>_2" value="<%=idPagoAbono%>">
 							<%=UtilidadesString.mostrarDatoJSP(GstDate.getFormatedDateShort("", fecha))%>
 						</td>
-						<td><%=UtilidadesString.mostrarDatoJSP(tabla)%></td>
-						<td><%=UtilidadesString.mostrarDatoJSP(estado)%></td>
-						<td><%=UtilidadesString.mostrarDatoJSP(nombreBanco)%></td>
-						<td align="right"><%=UtilidadesString.mostrarDatoJSP(UtilidadesString.formatoImporte(importe.doubleValue()))%>&nbsp;&euro;</td>
-						<td align="right"><%=UtilidadesString.mostrarDatoJSP(UtilidadesString.formatoImporte(importePte.doubleValue()))%>&nbsp;&euro;</td>
+						<td <%=clase%>><%=UtilidadesString.mostrarDatoJSP(tabla)%></td>
+						<td <%=clase%>><%=UtilidadesString.mostrarDatoJSP(estado)%></td>
+						<td <%=clase%>><%=UtilidadesString.mostrarDatoJSP(nombreBanco)%></td>
+						<td align="right" <%=claseNumero%>><%=UtilidadesString.mostrarDatoJSP(UtilidadesString.formatoImporte(importe.doubleValue()))%>&nbsp;&euro;</td>
+						<td align="right" <%=claseNumero%>><%=UtilidadesString.mostrarDatoJSP(UtilidadesString.formatoImporte(importePte.doubleValue()))%>&nbsp;&euro;</td>
 <%						
 						if (idPago == null || idPago.intValue()<=0){
 %>						
 							<td>&nbsp;</td>	
 <%
-						}
-%>
+						}		
+%>		
+
+
 					</siga:FilaConIconos>
 <%	 		 
 				} // if
