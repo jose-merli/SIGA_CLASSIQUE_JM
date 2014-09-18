@@ -61,19 +61,16 @@
 		bdCuenta = (String)request.getAttribute("paramIdCuenta");
 	}
 	
+	boolean combodeshabilitado =false;
 	if (modo!=null && 
 		modo.equalsIgnoreCase("edicion") &&
 		!idEstadoPagosJG.equals(String.valueOf(ClsConstants.ESTADO_PAGO_EJECUTADO)) &&
 		!idEstadoPagosJG.equals(String.valueOf(ClsConstants.ESTADO_PAGO_CERRADO))) {
 		guardable = true;
-	}
-	
-	boolean combodeshabilitado =false;
-	
-	if((modo!=null)&&(modo.equals("consulta")))
+		combodeshabilitado =false;
+	}else{
 		combodeshabilitado=true;
-	
-	
+	}	
 %>	
 
 	<!-- HEAD -->

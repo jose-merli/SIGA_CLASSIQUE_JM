@@ -294,23 +294,6 @@ public class DatosGeneralesPagoAction extends MasterAction {
 				 	
 				} else {
 					GenParametrosAdm paramAdm = new GenParametrosAdm(usr);
-
-					//Se obtiene la cuenta SJCS más moderna
-					Vector vcuentasSJCS = admBancoFac.obtenerCuentaUltimaSJCS(miform.getIdInstitucion());
-				
-					if (vcuentasSJCS.size()>0){
-							Hashtable cuentasSJCS = ((Row)vcuentasSJCS.firstElement()).getRow();
-							sCuenta=cuentasSJCS.get("BANCOS_CODIGO").toString();
-							
-							//Se guarda el sufijo sjcs asignado al banco por defecto
-							if(cuentasSJCS.get("IDSUFIJOSJCS")!=null)
-								idsufijo=(Integer) cuentasSJCS.get("IDSUFIJOSJCS");
-							else
-								idsufijo=null;
-							
-					}else{
-						throw new SIGAException(UtilidadesString.getMensajeIdioma(usr,"facturacion.message.error.cuenta.SJCS.no.existe"));
-					}	
 					
 					//Propósitos
 					FacPropositosAdm propAdm = new FacPropositosAdm(usr);
@@ -743,6 +726,18 @@ public class DatosGeneralesPagoAction extends MasterAction {
 
 		try {
 			usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
+			
+			
+			//Antes de ejecutar el pago comprobamos si tiene banco asociado
+			Hashtable claves = new Hashtable ();
+			UtilidadesHash.set (claves,FcsPagosJGBean.C_IDINSTITUCION,miform.getIdInstitucion());
+			UtilidadesHash.set (claves,FcsPagosJGBean.C_IDPAGOSJG,miform.getIdPagosJG());
+			Vector vdatosPago = pagosJGAdm.select(claves);
+			FcsPagosJGBean datosP = (FcsPagosJGBean) vdatosPago.get(0);
+			//Si no se ha asociado ninguna cuenta no se permite continuar
+			if((datosP.getBancosCodigo()==null)||(datosP.getBancosCodigo().isEmpty()))
+				throw new SIGAException(UtilidadesString.getMensajeIdioma(usr,"factSJCS.abonos.configuracion.literal.cuentaObligatoria"));
+
 			//CR7 - Antes de ejecutar simulamos el guardado
 			this.guardarBloquePago(miform, usr);
 			
@@ -1131,25 +1126,10 @@ public class DatosGeneralesPagoAction extends MasterAction {
 				
 				//En bbdd guardamos el idproposito
 				registro.put(FcsPagosJGBean.C_IDPROPOTROS, propAdm.selectIdPropositoPorCodigo(paramPropOtros));
-				
-				//Se obtiene la cuenta SJCS más moderna
-				Vector vcuentasSJCS = admBancoFac.obtenerCuentaUltimaSJCS(miform.getIdInstitucion());
-
-				if (vcuentasSJCS.size()>0){
-					Hashtable cuentasSJCS = ((Row)vcuentasSJCS.firstElement()).getRow();
-					registro.put(FcsPagosJGBean.C_BANCOS_CODIGO,cuentasSJCS.get("BANCOS_CODIGO").toString());
-					
-					//Se guarda el sufijo sjcs asignado al banco por defecto
-					if(cuentasSJCS.get("IDSUFIJOSJCS")!=null)
-						//Se inserta el campo idSufijo con el valor de la cuenta SJCS más moderna			
-						registro.put(FcsPagosJGBean.C_IDSUFIJO,cuentasSJCS.get("IDSUFIJOSJCS"));
-					else
-						//Se inserta el campo idSufijo con el valor "" cuando se configure el abono se actualizará este valor en bb.dd.			
-						registro.put(FcsPagosJGBean.C_IDSUFIJO, ""); 		
-				}else{
-					throw new SIGAException(UtilidadesString.getMensajeIdioma(usr,"facturacion.message.error.cuenta.SJCS.no.existe"));
-				}
-				
+				//Se insertan los campos idSufijo y bancos_codigo con el valor "", cuando se configure el abono se actualizará este valor en bb.dd.	
+				registro.put(FcsPagosJGBean.C_BANCOS_CODIGO,"");		
+				registro.put(FcsPagosJGBean.C_IDSUFIJO, ""); 		
+								
 				UtilidadesHash.set(registro, FcsPagosJGBean.C_IMPORTEMINIMO,
 						new Double(0));
 				UtilidadesHash.set(registro, FcsPagosJGBean.C_IMPORTEEJG,

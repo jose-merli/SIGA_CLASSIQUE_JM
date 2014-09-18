@@ -645,7 +645,7 @@
 				   border="1"
 				   columnNames="facturacion.devolucionManual.seleccion,
 				   		facturacion.ficheroBancarioAbonos.literal.banco,
-				   		censo.consultaDatosBancarios.literal.cuentaBancaria,
+				   		facturacion.cuentasBancarias.IBAN,
 				   		facturacion.sufijos.literal.sufijo,
 				   		facturacion.cuentasBancarias.comision,
 				   		facturacion.cuentasBancarias.uso"
