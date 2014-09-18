@@ -63,7 +63,7 @@ public class SufijosAction extends MasterAction {
 			request.setAttribute("Vsufijos", Vsufijos);
 		} 
 		catch (Exception e) { 
-			throwExcp("messages.general.error", new String[] {"modulo.productos"}, e, null);
+			throwExcp("messages.general.error", new String[] {"modulo.facturacion"}, e, null);
 		} 
 		return "resultado";
 	}
@@ -98,7 +98,7 @@ public class SufijosAction extends MasterAction {
 			
 		}
 		catch (Exception e) { 
-			throwExcp("messages.general.error", new String[] {"modulo.productos"}, e, null); 
+			throwExcp("messages.general.error", new String[] {"modulo.facturacion"}, e, null); 
 		} 
 		return "editar";
 	}
@@ -118,7 +118,7 @@ public class SufijosAction extends MasterAction {
 			request.setAttribute("modo", "editar");			
 		}
 		catch (Exception e) { 
-			throwExcp("messages.general.error", new String[] {"modulo.productos"}, e, null); 
+			throwExcp("messages.general.error", new String[] {"modulo.facturacion"}, e, null); 
 		} 
 		return this.obtenerDatos(mapping,formulario,request,response);
 	}
@@ -137,7 +137,7 @@ public class SufijosAction extends MasterAction {
 			request.setAttribute("modo", "ver");			
 		}
 		catch (Exception e) { 
-			throwExcp("messages.general.error", new String[] {"modulo.productos"}, e, null); 
+			throwExcp("messages.general.error", new String[] {"modulo.facturacion"}, e, null); 
 		} 
 		return this.obtenerDatos(mapping,formulario,request,response);
 	}	
@@ -169,7 +169,7 @@ public class SufijosAction extends MasterAction {
 			tx.commit();
 		}
 		catch (Exception e) { 
-			throwExcp("messages.general.error", new String[] {"modulo.productos"}, e, tx); 
+			throwExcp("messages.general.error", new String[] {"modulo.facturacion"}, e, tx); 
 		} 
 		return exitoModal("messages.updated.success", request);
 	}
@@ -240,7 +240,7 @@ public class SufijosAction extends MasterAction {
 			tx.commit();
 		}
 		catch (Exception e) { 
-			throwExcp("messages.general.error", new String[] {"modulo.productos"}, e, tx); 
+			throwExcp("messages.general.error", new String[] {"modulo.facturacion"}, e, tx); 
 		} 
 		return exitoModal("messages.inserted.success", request);
 	}
@@ -276,7 +276,7 @@ public class SufijosAction extends MasterAction {
 			
 		}
 		catch (Exception e) { 
-			throwExcp("messages.pys.mantenimientoProductos.errorBorrado", new SIGAException("messages.pys.mantenimientoProductos.errorBorrado"), tx); 
+			throwExcp("messages.elementoenuso.error", new SIGAException("messages.elementoenuso.error"), tx); 
 		}
 		return exitoRefresco("messages.deleted.success", request);
 	}
