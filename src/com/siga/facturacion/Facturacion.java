@@ -2209,6 +2209,9 @@ public class Facturacion {
 	    	}
 			FacFacturaBean beanFacFactura = (FacFacturaBean) vFacFactura.get(0);
 			
+			// JPT - Devoluciones 117 - Guardo el numero de factura que vamos a anular 
+			String numeroFacturaAnulada = beanFacFactura.getNumeroFactura();
+			
 			// JPT - Devoluciones 117 - Calcula la forma de pago y el estado de la factura	
 			Integer idFormaPago = beanFacFactura.getIdFormaPago(); // Inicialmente tiene la forma de pago de la factura
 			Integer idEstadoFactura = new Integer(ClsConstants.ESTADO_FACTURA_DEVUELTA); // Inicialmente tiene estado devuelta
@@ -2315,6 +2318,9 @@ public class Facturacion {
 			PysTipoIvaAdm admTipoIva = new PysTipoIvaAdm(userBean);
 			String sCTAIVA = admTipoIva.obtenerCTAIVA(beanFacFactura.getIdInstitucion().toString(), beanBancoInstitucion.getComisionIVA().toString());
 			
+			// JPT - Devoluciones 117 - Calculo la descripcion de la comision, indicando el numero de factura al que pertenece
+			String descripcionComision = beanBancoInstitucion.getComisionDescripcion() + " (" + numeroFacturaAnulada +")";
+			
 			// JPT - Devoluciones 117 - Genero un objeto para la nueva linea con la comision
 			beanFacLineaFactura = new FacLineaFacturaBean();
 			beanFacLineaFactura.setIdInstitucion(beanFacFactura.getIdInstitucion());
@@ -2322,8 +2328,8 @@ public class Facturacion {
 			beanFacLineaFactura.setNumeroLinea(maximoNumeroLinea + 1); // Asigno el siguiente numero de linea
 			beanFacLineaFactura.setNumeroOrden(maximoNumeroOrden + 1); // Asigno el siguient numero de orden
 			beanFacLineaFactura.setCantidad(1); // Se indica que es una unidad de comisión
-			beanFacLineaFactura.setImporteAnticipado(0.0); // Se indica que no tiene importe anticipado
-			beanFacLineaFactura.setDescripcion(beanBancoInstitucion.getComisionDescripcion()); // Obtiene la descripcion de la comision del banco del acreedor
+			beanFacLineaFactura.setImporteAnticipado(0.0); // Se indica que no tiene importe anticipado						
+			beanFacLineaFactura.setDescripcion(descripcionComision); // Obtiene la descripcion de la comision del banco del acreedor
 			beanFacLineaFactura.setPrecioUnitario(beanBancoInstitucion.getComisionImporte()); // Obtiene el importe de la comision del banco del acreedor
 			beanFacLineaFactura.setIva(beanBancoInstitucion.getComisionIVA().floatValue()); // Obtiene el iva de la comision del banco del acreedor
 			beanFacLineaFactura.setCtaProductoServicio(beanBancoInstitucion.getComisionCuentaContable()); // Obtiene la cuenta contable del banco del acreedor
