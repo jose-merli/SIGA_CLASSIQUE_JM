@@ -236,17 +236,13 @@
 				<fieldset>
 					<table>						
 						<tr>
-							<td class="labelText"><siga:Idioma key="pys.solicitudCompra.literal.totalIVA"/></td>
-							<td class="labelTextValue" >					
-								<input type='text' name='ivaTotal' value="<%=UtilidadesString.formatoImporte(varIvaTotal)%>&nbsp;&euro;" class="boxConsultaNumber" readOnly=true size="20">
-							</td>
+							<td class="labelText" nowrap><siga:Idioma key="pys.solicitudCompra.literal.totalIVA"/></td>
+							<td class="labelTextValue"><input type='text' name='ivaTotal' value="<%=UtilidadesString.formatoImporte(varIvaTotal)%>&nbsp;&euro;" class="boxConsultaNumber" readOnly=true size="20"></td>
 						</tr>
 						
 						<tr>
-							<td class="labelText"><siga:Idioma key="pys.solicitudCompra.literal.total"/></td>
-							<td class="labelTextValue">
-								<input type='text' name='precioTotal' value="<%=UtilidadesString.formatoImporte(varPrecioTotal)%>&nbsp;&euro;" class="boxConsultaNumber" readOnly=true size="20">
-							</td>
+							<td class="labelText" nowrap><siga:Idioma key="pys.solicitudCompra.literal.total"/></td>
+							<td class="labelTextValue"><input type='text' name='precioTotal' value="<%=UtilidadesString.formatoImporte(varPrecioTotal)%>&nbsp;&euro;" class="boxConsultaNumber" readOnly=true size="20"></td>
 						</tr>
 					</table>
 				</fieldset>

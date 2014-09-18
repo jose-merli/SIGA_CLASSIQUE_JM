@@ -371,42 +371,40 @@
 %>
 			</siga:Table>
 		
-			<div id="camposRegistro2" style="position:absolute; width:280; height:70; z-index:2; bottom: 70px; left: 550px" align="center">
-		<%
+			<div id="camposRegistro1" style="position:absolute; width:100%; height:70px; z-index:2; bottom:70px; left:0px" align="center">
+
+<%
 				varIvaTotal = UtilidadesNumero.redondea (varIvaTotal, 2);
 				varPrecioTotal = UtilidadesNumero.redondea (varPrecioTotal, 2);
-		%>
-				<fieldset>
-					<table>
-						<tr>
-							<td class="labelText"><siga:Idioma key="pys.solicitudCompra.literal.totalIVA"/></td>
-							<td class="labelTextValue">					
-								<input type='text' name='ivaTotal' value="<%=UtilidadesString.formatoImporte(varIvaTotal)%>&nbsp;&euro;" class="boxConsultaNumber" readOnly=true size="20">
-							</td>
-						</tr>
-						<tr>
-							<td class="labelText"><siga:Idioma key="pys.solicitudCompra.literal.total"/></td>
-							<td class="labelTextValue">
-								<input type='text' name='precioTotal' value="<%=UtilidadesString.formatoImporte(varPrecioTotal)%>&nbsp;&euro;" class="boxConsultaNumber" readOnly=true size="20">
-							</td>
-						</tr>
-					</table>
-				</fieldset>
-			</div>
+%>
+
+				<div id="camposRegistro2" style="width:240px" align="center">	
+					<fieldset>		
+						<table>
+							<tr>
+								<td class="labelText" nowrap><siga:Idioma key="pys.solicitudCompra.literal.totalIVA"/></td>
+								<td class="labelTextValue">	<input type='text' name='ivaTotal' value="<%=UtilidadesString.formatoImporte(varIvaTotal)%>&nbsp;&euro;" class="boxConsultaNumber" readOnly=true size="20"></td>
+							</tr>
+							<tr>
+								<td class="labelText" nowrap><siga:Idioma key="pys.solicitudCompra.literal.total"/></td>
+								<td class="labelTextValue"><input type='text' name='precioTotal' value="<%=UtilidadesString.formatoImporte(varPrecioTotal)%>&nbsp;&euro;" class="boxConsultaNumber" readOnly=true size="20"></td>
+							</tr>
+						</table>
+					</fieldset>
+				</div>
 			
-			<div id="camposRegistro2" style="position:absolute; width:100%; height:35px; z-index:2; bottom: 35px; left: 0px" align="center">
-					<table width="100%" align="center">
-						<tr>
-							<td class="labelTextCentro" colspan="2" align="center"><siga:Idioma key="messages.servicios.precioServicios"/></td>
-						</tr>
-						<!-- mhg - Mostramos el siguiente mensaje si tenemos productos no facturables -->
-						<%if (noFact){ %>
-						<tr>
-							<td class="labelTextCentro" colspan="2" align="center"><siga:Idioma key="messages.pys.solicitudCompra.compraNoFacturable"/></td>	
-						</tr>
-						<%}%>
-					</table>
-				<!-- FIN ******* BOTONES DE ACCIONES EN REGISTRO ****** -->
+				<table width="100%" align="center">
+					<tr>
+						<td class="labelTextCentro" colspan="2" align="center"><siga:Idioma key="messages.servicios.precioServicios"/></td>
+					</tr>
+					<!-- mhg - Mostramos el siguiente mensaje si tenemos productos no facturables -->
+					<%if (noFact){ %>
+					<tr>
+						<td class="labelTextCentro" colspan="2" align="center"><siga:Idioma key="messages.pys.solicitudCompra.compraNoFacturable"/></td>	
+					</tr>
+					<%}%>
+				</table>
+			<!-- FIN ******* BOTONES DE ACCIONES EN REGISTRO ****** -->
 			</div>
 		</html:form>
 	
