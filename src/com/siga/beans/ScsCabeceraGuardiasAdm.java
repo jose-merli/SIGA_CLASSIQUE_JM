@@ -576,7 +576,7 @@ public class ScsCabeceraGuardiasAdm extends MasterBeanAdministrador {
 
 			consulta = "SELECT perso."+CenPersonaBean.C_APELLIDOS1+" || ' ' || perso."+CenPersonaBean.C_APELLIDOS2+" || ', ' || perso."+CenPersonaBean.C_NOMBRE+" NOMBRE,";
 			consulta += " F_SIGA_CALCULONCOLEGIADO("+idinstitucion+", "+idpersona+") as "+CenColegiadoBean.C_NCOLEGIADO;
-			consulta += " FROM "+CenPersonaBean.T_NOMBRETABLA+" ";
+			consulta += " FROM "+CenPersonaBean.T_NOMBRETABLA+" perso ";
 			consulta += " WHERE "+CenPersonaBean.C_IDPERSONA+"="+idpersona+" ";
 		}
 		catch (Exception e){
