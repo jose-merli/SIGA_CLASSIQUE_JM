@@ -13,8 +13,13 @@ import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesHash;
+import com.siga.Utilidades.UtilidadesString;
+import com.siga.beans.FacBancoInstitucionAdm;
+import com.siga.beans.FacBancoInstitucionBean;
+import com.siga.beans.FacSerieFacturacionBancoAdm;
 import com.siga.beans.FacSufijoAdm;
 import com.siga.beans.FacSufijoBean;
+import com.siga.beans.FcsPagosJGAdm;
 import com.siga.facturacion.form.SufijosForm;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
@@ -45,7 +50,7 @@ public class SufijosAction extends MasterAction {
 			FacSufijoBean sufijoBean = new FacSufijoBean ();
 			Vector Vsufijos;
 			
-			//Pasamos el campo idSufijo porque es clave y por si estamos buscando un sufijo con espacios para que lo encuentre
+			//Pasamos el campo idSufijo porque es clave 
 			sufijoBean.setIdInstitucion(Integer.parseInt(user.getLocation()));
 
 			if(miForm.getIdSufijo()!=null)
@@ -270,11 +275,59 @@ public class SufijosAction extends MasterAction {
 			Hashtable claves = new Hashtable ();
 			UtilidadesHash.set (claves, FacSufijoBean.C_IDINSTITUCION, user.getLocation());
 			UtilidadesHash.set (claves, FacSufijoBean.C_IDSUFIJO, idSufijo);
-			tx.begin();
-			sufijoAdm.delete(claves);
-			tx.commit();
+			
+			//Se comprueba si el sudijo está ya en uso en alguna cuenta bancaria, serie o pagos
+			FacSerieFacturacionBancoAdm facseriefacbancoAdm = new FacSerieFacturacionBancoAdm (this.getUserBean(request));
+			FcsPagosJGAdm fcspagosJGAdm = new FcsPagosJGAdm (this.getUserBean(request));
+			FacBancoInstitucionAdm  bancoInstitucionAdm= new FacBancoInstitucionAdm (this.getUserBean(request));
+			
+			Vector seriesBancos=facseriefacbancoAdm.select(claves);
+			Vector pagosJG=fcspagosJGAdm.select(claves);
+			
+			Hashtable clavesCuenta = new Hashtable ();
+			UtilidadesHash.set (clavesCuenta, FacBancoInstitucionBean.C_IDINSTITUCION, user.getLocation());
+			UtilidadesHash.set (clavesCuenta, FacBancoInstitucionBean.C_IDSUFIJOSJCS, idSufijo);
+			Vector cuentasSJCS=bancoInstitucionAdm.select(clavesCuenta);
+			
+			if((seriesBancos.size()!=0)||(pagosJG.size()!=0)||(cuentasSJCS.size()!=0))
+			{
+				String mensaje=UtilidadesString.getMensajeIdioma(this.getUserBean(request),"facturacion.message.error.borrar.sufijo");
+				String mensajeR="";
+				
+				if(cuentasSJCS.size()!=0)
+					mensajeR+=UtilidadesString.getMensajeIdioma(this.getUserBean(request),"facturacion.message.error.borrar.sufijo.cuentas.relacionadas");
+				
+				if(seriesBancos.size()!=0){
+					if(!mensajeR.isEmpty()&&(pagosJG.size()!=0))
+						mensajeR+=", "+UtilidadesString.getMensajeIdioma(this.getUserBean(request),"facturacion.serios.literal.seriesFacturacion").toLowerCase();
+					else if(!mensajeR.isEmpty()&&(pagosJG.size()==0))
+						mensajeR+=" "+UtilidadesString.getMensajeIdioma(this.getUserBean(request),"gratuita.busquedaDesignas.literal.y")+" "+UtilidadesString.getMensajeIdioma(this.getUserBean(request),"facturacion.serios.literal.seriesFacturacion").toLowerCase();
+					else
+						mensajeR+=UtilidadesString.getMensajeIdioma(this.getUserBean(request),"facturacion.serios.literal.seriesFacturacion");
+				}
+				
+				if(pagosJG.size()!=0){
+					if(!mensajeR.isEmpty())
+						mensajeR+=" "+UtilidadesString.getMensajeIdioma(this.getUserBean(request),"gratuita.busquedaDesignas.literal.y")+" "+UtilidadesString.getMensajeIdioma(this.getUserBean(request),"facturacion.message.error.borrar.sufijo.pagos.relacionados");
+					else
+						mensajeR+=UtilidadesString.getMensajeIdioma(this.getUserBean(request),"facturacion.message.error.borrar.sufijo.pagos.relacionados");
+				}
+				
+				throw new SIGAException(mensaje+mensajeR); 
+			
+			}else{
+
+				tx.begin();
+				sufijoAdm.delete(claves);
+				tx.commit();
+			}
 			
 		}
+		
+		catch (SIGAException es) { 
+			throw es;
+		}
+		
 		catch (Exception e) { 
 			throwExcp("messages.elementoenuso.error", new SIGAException("messages.elementoenuso.error"), tx); 
 		}

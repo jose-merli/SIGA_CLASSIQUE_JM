@@ -112,14 +112,16 @@ public class FacSufijoAdm extends MasterBeanAdmVisible {
 	public Vector consultaBusqueda(FacSufijoBean datos) throws ClsExceptions{
 		Vector Vsufijos = null;
 		try {
+			
 			String where = " WHERE "+FacSufijoBean.C_IDINSTITUCION+" = "+datos.getIdInstitucion();
 			if(datos.getIdSufijo()!=null&&(datos.getIdSufijo()>0)) 
 				where += " AND "+FacSufijoBean.C_IDSUFIJO+" = "+datos.getIdSufijo();
-			if(datos.getSufijo()!=null&&(!datos.getSufijo().isEmpty())) 
-				where += " AND "+ComodinBusquedas.prepararSentenciaCompleta(datos.getSufijo().trim(),FacSufijoBean.C_SUFIJO);
-			if((datos.getConcepto()!=null)&&(!datos.getConcepto().isEmpty()))
-				where += " AND "+ComodinBusquedas.prepararSentenciaCompleta(datos.getConcepto().trim(),FacSufijoBean.C_CONCEPTO );    				
+			if((datos.getSufijo()!=null)&&(!datos.getSufijo().isEmpty()))	
+				where += " AND "+ComodinBusquedas.prepararSentenciaCompleta(datos.getSufijo(),FacSufijoBean.C_SUFIJO);
+			if((datos.getConcepto()!=null)&&(!datos.getConcepto().isEmpty()))	
+				where += " AND "+ComodinBusquedas.prepararSentenciaCompleta(datos.getConcepto(),FacSufijoBean.C_CONCEPTO );    				
 			Vsufijos = this.selectNLS(where);
+
 		} catch (Exception e){
 			throw new ClsExceptions(e,e.getMessage());
 		}

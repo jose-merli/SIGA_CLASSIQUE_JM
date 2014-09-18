@@ -56,11 +56,6 @@
 	String bdCuenta = (String)request.getAttribute("cuenta");
 	boolean guardable = false;
 	
-	//Si el abono no tiene configurada ninguna cuenta marca la cuenta SJCS más moderna
-	if ((bdCuenta==null) ||(bdCuenta.equalsIgnoreCase(""))){
-		bdCuenta = (String)request.getAttribute("paramIdCuenta");
-	}
-	
 	boolean combodeshabilitado =false;
 	if (modo!=null && 
 		modo.equalsIgnoreCase("edicion") &&
@@ -205,18 +200,12 @@
 								<td align="center">
 <% 
 									if (guardable) {
-										if (bsel) { 
+										
 %>
-											<input type="radio" name="cuenta" value="<%=row.getString("BANCOS_CODIGO")%>" onclick="recargarCombo(this)" checked>
-											<c:set var="cuentaChecked" value="true"></c:set>
-											
-<% 											
-										} else { 
-%>
-											<input type="radio" name="cuenta" value="<%=row.getString("BANCOS_CODIGO")%>" onclick="recargarCombo(this)">
-											<c:set var="cuentaChecked" value="false"></c:set>
+										<input type="radio" name="cuenta" value="<%=row.getString("BANCOS_CODIGO")%>" onclick="recargarCombo(this)">
+										<c:set var="cuentaChecked" value="false"></c:set>
 <% 
-										}
+
 									} else {
 										if (bsel) { 
 %>

@@ -169,15 +169,6 @@ public class ConfiguracionAbonosAction extends MasterAction{
 				}
 			}
 			
-			//Se obtiene la cuenta SJCS más moderna
-			Vector vcuentasSJCS = admBancoFac.obtenerCuentaUltimaSJCS(idInstitucion);
-		
-			if (vcuentasSJCS.size()>0){
-				 Hashtable cuentasSJCS = ((Row)vcuentasSJCS.firstElement()).getRow();
-				 request.setAttribute("paramIdCuenta", cuentasSJCS.get("BANCOS_CODIGO"));	
-			}else
-				request.setAttribute("paramIdCuenta", "");
-			
 			//Combos sufijos
 			FacSufijoAdm sufijoAdm = new FacSufijoAdm (this.getUserBean(request));
 			Hashtable claves = new Hashtable ();
