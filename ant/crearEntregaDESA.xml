@@ -30,7 +30,6 @@
 	<property name="services.home"			value="${eclipse.workspace.home}/SIGAServices"/>
 	<property name="src.java.services"		value="${services.home}/src/main/java"/>
 	<property name="src.resources.services"	value="${services.home}/src/main/resources"/>
-	<property name="src.test.services"		value="${services.home}/src/test/main"/>
 
 	<target name="E01.CrearEstructuraAplicacion">
 		<delete dir="${ant.desa}"/>
