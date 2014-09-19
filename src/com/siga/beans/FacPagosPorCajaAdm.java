@@ -732,7 +732,11 @@ public class FacPagosPorCajaAdm extends MasterBeanAdministrador {
 						String estado=facFactAdm.consultarActNuevoEstadoFactura(facBean,Integer.parseInt(this.usrbean.getUserName()),false);						
 						aux.remove("ESTADO");
 						aux.put("ESTADO", UtilidadesString.getMensajeIdioma(this.usrbean, estado));
-
+						
+						tabla=UtilidadesHash.getString(aux,"TABLA").trim()+" ("+aux.get("NUMEROABONO")+")";
+						aux.remove("TABLA");
+						aux.put("TABLA",tabla);
+						
 					}
 					
 					resultados.add(aux);
