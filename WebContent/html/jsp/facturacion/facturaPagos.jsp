@@ -250,15 +250,16 @@
 					String nombreBanco=UtilidadesHash.getString(pago, "NOMBREBANCO");
 					String idFacturaPagos = UtilidadesHash.getString(pago, "IDFACTURA");
 					String esAnulacionComision = UtilidadesHash.getString(pago, "ANULACIONCOMISION");					
-					Integer idPagoAbono=0;
 				 	String medioPago = "";
-				 
-					
+
  					if(tabla.startsWith(textoCompensacion)){
- 						idPagoAbono=idPago;
+ 						//Para que en el comprobante de pago se muestre el abono en observaciones no en medio de pago
+ 						medioPago=textoCompensacion;
+ 					}else{
+ 						medioPago=tabla;
  					}
 					FilaExtElement[] elementos=new FilaExtElement[1];
-					if ((idPago != null) && (idPago.intValue() > 0)||(idPagoAbono != null) && (idPagoAbono.intValue() > 0)){
+					if ((idPago != null) && (idPago.intValue() > 0)){
   						elementos[0]=new FilaExtElement("datosImpresion","datosImpresion",SIGAConstants.ACCESS_FULL);
 	  				}
 %>
@@ -286,7 +287,7 @@
 						
 						<td <%=clase%>>
 							<input type="hidden" id="oculto<%=i%>_1" value="<%=idPago%>">
-							<input type="hidden" id="oculto<%=i%>_2" value="<%=idPagoAbono%>">
+							<input type="hidden" id="oculto<%=i%>_2" value="<%=medioPago%>">
 							<%=UtilidadesString.mostrarDatoJSP(GstDate.getFormatedDateShort("", fecha))%>
 						</td>
 						<td <%=clase%>><%=UtilidadesString.mostrarDatoJSP(tabla)%></td>

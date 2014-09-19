@@ -211,10 +211,7 @@ public class GestionarFacturaPagosAction extends MasterAction {
 			modo = miForm.getModo().toLowerCase();
 			Vector v = miForm.getDatosTablaOcultos(0);
 			Integer idPago = new Integer ((String)v.get(0));
-			//Si es una compensación
-			Integer idPagoAbono=0;
-			if(v.get(1)!=null)
-				idPagoAbono = new Integer ((String)v.get(1));
+			String medioPago = (String)v.get(1);
 			
 			Integer idInstitucion = miForm.getIdInstitucion();
 			String idFactura = miForm.getIdFactura();
@@ -234,11 +231,7 @@ public class GestionarFacturaPagosAction extends MasterAction {
 			claves.clear();
 			UtilidadesHash.set(claves, FacPagosPorCajaBean.C_IDINSTITUCION, idInstitucion);
 			UtilidadesHash.set(claves, FacPagosPorCajaBean.C_IDFACTURA, idFactura);
-			
-			if(idPagoAbono>0)
-				UtilidadesHash.set(claves, FacPagosPorCajaBean.C_IDPAGOABONO, idPagoAbono);
-			else
-				UtilidadesHash.set(claves, FacPagosPorCajaBean.C_IDPAGOPORCAJA, idPago);
+			UtilidadesHash.set(claves, FacPagosPorCajaBean.C_IDPAGOPORCAJA, idPago);
 			
 			FacPagosPorCajaAdm pagoAdm = new FacPagosPorCajaAdm (this.getUserBean(request));
 			v = pagoAdm.select(claves);
@@ -257,10 +250,6 @@ public class GestionarFacturaPagosAction extends MasterAction {
 			// Numero Colegiado
 			CenColegiadoAdm colegiadoAdm = new CenColegiadoAdm (this.getUserBean(request));
 			String numeroColegiado = colegiadoAdm.getIdentificadorColegiado(colegiadoAdm.getDatosColegiales(facturaBean.getIdPersona(), idInstitucion));
-			
-			// Medio de pago
-			v = miForm.getDatosTablaVisibles(0);
-			String medioPago = (String) v.get(1);
 			
 			request.setAttribute("nombreInstitucion", nombreInstitucion);
 			request.setAttribute("nombrePersona", nombrePersona);

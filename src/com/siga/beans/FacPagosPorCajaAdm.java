@@ -607,7 +607,7 @@ public class FacPagosPorCajaAdm extends MasterBeanAdministrador {
 							" '' AS TARJETA, " +
 							" ab." + FacAbonoBean.C_IDCUENTA + " AS IDABONO_IDCUENTA, " +
 							" ab." + FacAbonoBean.C_NUMEROABONO + " AS NUMEROABONO, " +
-							" pc." + FacPagosPorCajaBean.C_IDPAGOABONO + " AS IDPAGO, "+
+							" pc." + FacPagosPorCajaBean.C_IDPAGOPORCAJA + " AS IDPAGO, "+
 							" ( " +
 								" SELECT banco.nombre || ' nº ' || cuenta." + CenCuentasBancariasBean.C_IBAN + 
 								" FROM " + CenCuentasBancariasBean.T_NOMBRETABLA + " cuenta," + 
