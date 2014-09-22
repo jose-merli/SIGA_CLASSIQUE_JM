@@ -27,13 +27,14 @@
 	String habilesPrimerosRecibos = (String) request.getAttribute("habilesPrimerosRecibos");
 	String habilesRecibosRecurrentes = (String) request.getAttribute("habilesRecibosRecurrentes");
 	String habilesRecibosCOR1 = (String) request.getAttribute("habilesRecibosCOR1");
-	String habilesRecibosB2B = (String) request.getAttribute("habilesRecibosB2B");	
+	String habilesRecibosB2B = (String) request.getAttribute("habilesRecibosB2B");
+	String accionRecFechas = (String) request.getAttribute("accionInit");
 %>
 
 <table class="tablaCampos" align="center" border="0" cellspacing="0" cellpadding="0">
 	<tr>
 		<td class="labelText" width="210px"><siga:Idioma key="facturacion.fechasficherobancario.fechapresentacion"/>&nbsp;(*)</td>
-		<td width="120px"><siga:Fecha nombreCampo="fechaPresentacion"	posicionX="10" posicionY="10" valorInicial="<%=fechaPresentacion%>"/></td>
+		<td width="120px"><siga:Fecha nombreCampo="fechaPresentacion"	posicionX="10" posicionY="10" valorInicial="<%=fechaPresentacion%>" postFunction="onChangeFechaPresentacion()"/></td>
 		<td><siga:ToolTip id='ayudaFechaPresentacion' imagen='/SIGA/html/imagenes/botonAyuda.gif' texto='<%=UtilidadesString.mostrarDatoJSP(UtilidadesString.getMensajeIdioma (usr, "facturacion.fechasficherobancario.ayudaFechaPresentacion"))%>'/></td>
 	</tr>
 </table>	
@@ -201,15 +202,27 @@
 			jQuery('#fechaRecibosRecurrentesConAsterisco').show();
 			jQuery('#fechaRecibosRecurrentesSinAsterisco').hide();
 			
-			jQuery('#fechaRecibosCOR1').addClass("box").removeClass("boxConsulta").removeAttr('disabled');
-			jQuery("#fechaRecibosCOR1-datepicker-trigger").show();
-			jQuery('#fechaRecibosCOR1ConAsterisco').show();
-			jQuery('#fechaRecibosCOR1SinAsterisco').hide();
+//			Piden que las fechas COR1 y B2B aparezcan deshabilitadas					
+// 			jQuery('#fechaRecibosCOR1').addClass("box").removeClass("boxConsulta").removeAttr('disabled');
+// 			jQuery("#fechaRecibosCOR1-datepicker-trigger").show();
+// 			jQuery('#fechaRecibosCOR1ConAsterisco').show();
+// 			jQuery('#fechaRecibosCOR1SinAsterisco').hide();
 						
-			jQuery('#fechaRecibosB2B').addClass("box").removeClass("boxConsulta").removeAttr('disabled');					
-			jQuery("#fechaRecibosB2B-datepicker-trigger").show();	
-			jQuery('#fechaRecibosB2BConAsterisco').show();
-			jQuery('#fechaRecibosB2BSinAsterisco').hide();	
+// 			jQuery('#fechaRecibosB2B').addClass("box").removeClass("boxConsulta").removeAttr('disabled');					
+// 			jQuery("#fechaRecibosB2B-datepicker-trigger").show();	
+// 			jQuery('#fechaRecibosB2BConAsterisco').show();
+// 			jQuery('#fechaRecibosB2BSinAsterisco').hide();	
+
+			jQuery('#fechaRecibosCOR1').addClass("boxConsulta").removeClass("box").attr('disabled','disabled');
+			jQuery("#fechaRecibosCOR1-datepicker-trigger").hide();
+			jQuery('#fechaRecibosCOR1ConAsterisco').hide();
+			jQuery('#fechaRecibosCOR1SinAsterisco').show();	
+			
+			jQuery('#fechaRecibosB2B').addClass("boxConsulta").removeClass("box").attr('disabled','disabled');
+			jQuery("#fechaRecibosB2B-datepicker-trigger").hide();
+			jQuery('#fechaRecibosB2BConAsterisco').hide();
+			jQuery('#fechaRecibosB2BSinAsterisco').show();	
+			
 		}
 	}
 	
@@ -267,5 +280,33 @@
 		}	
 		
 		return true;
+	}
+	
+	function onChangeFechaPresentacion(){
+
+ 		jQuery.ajax({ //Comunicación jQuery hacia JSP  
+ 			type: "POST",
+			url: "/SIGA/<%=accionRecFechas%>.do?modo=getAjaxFechasFicheroBancario",
+			data:"fechaPresentacion="+jQuery("#fechaPresentacion").val(),	
+			dataType: "json",
+			contentType: "application/x-www-form-urlencoded;charset=UTF-8",
+			success:  function(json) {
+				if(json!=null){
+					jQuery('#fechaCargoUnica').val(json.fechaUnicaCargos);
+					jQuery('#fechaRecibosPrimeros').val(json.fechaPrimerosRecibos);
+					jQuery('#fechaRecibosRecurrentes').val(json.fechaRecibosRecurrentes);
+					jQuery('#fechaRecibosCOR1').val(json.fechaRecibosCOR1);
+					jQuery('#fechaRecibosB2B').val(json.fechaRecibosB2B);
+				}
+	       			
+				fin();	
+		           			
+	           },
+	           error: function(xml,msg){
+	        	   alert("Error: "+msg);
+	           }
+	
+		 });
+		
 	}
 </script>
