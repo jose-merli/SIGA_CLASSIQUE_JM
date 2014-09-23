@@ -210,7 +210,7 @@ public class FacDisqueteCargosAdm extends MasterBeanAdministrador {
 					
 					//FILTRO DESCRIPCION
 					if (form.getDescripcion()!=null && !form.getDescripcion().trim().equals("")){
-						sqlGrande += " AND CARGOS.DESCRIPCION_PROGRAMACION LIKE '%"+UtilidadesBDAdm.validateChars(form.getDescripcion().trim())+"%'";
+						sqlGrande += " AND LOWER(CARGOS.DESCRIPCION_PROGRAMACION) LIKE '%" + UtilidadesBDAdm.validateChars(form.getDescripcion().toLowerCase().trim()) + "%' ";
 					}					
 					
 					//FILTRO NUMRECIBOS
