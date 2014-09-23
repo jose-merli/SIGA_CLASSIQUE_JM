@@ -28,11 +28,9 @@
 <%@ page import="java.util.Properties"%>
 <!-- JSP -->
 
-
 <% 
 	String app=request.getContextPath();
 	HttpSession ses=request.getSession();
-		
 	
 	// Institucion del usuario de la aplicacion
 	String idInstitucion=(String)request.getAttribute("IDINSTITUCION"); // Obtengo el identificador de la institucion
@@ -45,158 +43,131 @@
    String [] parametroCombo = {idInstitucion};
 %>
 
-
 	<!-- HEAD -->
-	
-
-		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
-	
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
 	<!-- Incluido jquery en siga.js -->
-	
 	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js?v=${sessionScope.VERSIONJS}'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
 		
-
-		<!-- INICIO: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->
-		<!-- Validaciones en Cliente -->
-		<!-- El nombre del formulario se obtiene del struts-config -->
-		<html:javascript formName="MantenimientoServiciosForm" staticJavascript="false" />  
-		<script src="<%=app%>/html/js/validacionStruts.js" type="text/javascript"></script>
-		<!-- FIN: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->
+	<!-- INICIO: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->
+	<!-- Validaciones en Cliente -->
+	<!-- El nombre del formulario se obtiene del struts-config -->
+	<html:javascript formName="MantenimientoServiciosForm" staticJavascript="false" />  
+	<script src="<%=app%>/html/js/validacionStruts.js" type="text/javascript"></script>
+	<!-- FIN: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->
  	
-		<!-- INICIO: TITULO Y LOCALIZACION -->
-		<!-- Escribe el título y localización en la barra de título del frame principal -->
-		<siga:Titulo 
-			  titulo="pys.busquedaServicios.cabecera" 
-			  localizacion="pys.busquedaServicios.ruta"/>
-		<!-- FIN: TITULO Y LOCALIZACION -->
-	
-	</head>
+	<!-- INICIO: TITULO Y LOCALIZACION -->
+	<!-- Escribe el título y localización en la barra de título del frame principal -->
+	<siga:Titulo titulo="pys.busquedaServicios.cabecera" localizacion="pys.busquedaServicios.ruta"/>
+	<!-- FIN: TITULO Y LOCALIZACION -->	
+</head>
 
 
-	<body onLoad="ajusteAlto('resultado');">
+<body onLoad="ajusteAlto('resultado');">
 	<bean:define id="path" name="org.apache.struts.action.mapping.instance"	property="path" scope="request" />
 
-						<siga:ConjCampos leyenda="pys.busquedaServicios.leyenda">
-						<table class="tablaCampos" align="center">	
-								<html:form action="/PYS_MantenimientoServicios.do" method="POST" target="resultado">
-									<html:hidden property = "actionModal" value=""/>
-									<html:hidden property = "modo" value = "buscarPor"/>
-									<html:hidden property = "idInstitucion" value ="<%=idInstitucion%>"/>								
-									<input type="hidden" name="limpiarFilaSeleccionada" value="">
-									<input type="hidden" name="limpiarFilaSeleccionada" value="">
+	<siga:ConjCampos leyenda="pys.busquedaServicios.leyenda">
+		<table class="tablaCampos" align="center">	
+			<html:form action="/PYS_MantenimientoServicios.do" method="POST" target="resultado">
+				<html:hidden property = "actionModal" value=""/>
+				<html:hidden property = "modo" value = "buscarPor"/>
+				<html:hidden property = "idInstitucion" value ="<%=idInstitucion%>"/>								
+				<input type="hidden" name="limpiarFilaSeleccionada" value="">
+				<input type="hidden" name="limpiarFilaSeleccionada" value="">
 
-									<tr>
-										<td class="labelText">
-											<siga:Idioma key="pys.busquedaServicios.literal.tipo"/>&nbsp;&nbsp;
-										</td>	
-										<td>
-											<siga:ComboBD nombre = "busquedaTipo" tipo="tipoServicio" ancho="455" clase="boxCombo" obligatorio="false" accion="Hijo:busquedaCategoria"/>
-										</td>
-										<td class="labelText">
-											<siga:Idioma key="pys.busquedaServicios.literal.categoria"/>&nbsp;&nbsp;
-										</td>	
-										<td>										
-											<siga:ComboBD nombre = "busquedaCategoria" ancho="250" tipo="categoriaServicio" parametro="<%=parametroCombo%>" clase="boxCombo" obligatorio="false" hijo="t"/>
-										</td>
-									</tr>
-									<tr>
-										<td class="labelText">
-											<siga:Idioma key="pys.busquedaServicios.literal.servicio"/>&nbsp;&nbsp;
-										</td>
-										<td>
-											<html:text property="busquedaServicio" styleClass="box" size="70" maxlength="100" value=""></html:text>
-										</td>
-										<td class="labelText">
-											<siga:Idioma key="pys.busquedaProductos.literal.formaPago"/>&nbsp;&nbsp;
-										</td>	
-										<td>										
-											<siga:ComboBD nombre = "busquedaPago" tipo="cmbFormaPago" clase="boxCombo" obligatorio="false"/>
-										</td>
-									</tr>
-									
-								<!-- DCG 20.01.2006 -->
-								<tr>
-									<td class="labelText">
-										<siga:Idioma key="pys.busquedaServicio.literal.estado"/>&nbsp;&nbsp;
-									</td>	
-									<td>										
-										<select name="busquedaEstado" id="busquedaEstado" class="boxCombo">
-											<option value="alta" selected><siga:Idioma key="pys.busquedaServicio.estado.suscripcionAutomaticaManual"/></option>
-											<option value="automatica"><siga:Idioma key="pys.busquedaServicio.estado.suscripcionAutomatica"/></option>
-											<option value="manual"><siga:Idioma key="pys.busquedaServicio.estado.manual"/></option>
-											<option value="baja"><siga:Idioma key="pys.busquedaservicio.estado.baja"/></option>
-										</select>
-									</td>
-								</tr>
-								<!-- DCG --> 
-
-								</html:form>	
-						</table>
-						</siga:ConjCampos>						
-<html:form action="/CON_RecuperarConsultas" method="POST" target="mainWorkArea">
-	<html:hidden property="idModulo" value="<%=com.siga.beans.ConModuloBean.IDMODULO_PRODUCTOSYSERVICIOS%>"/>
-	<html:hidden property="modo" value="inicio"/>
-	<html:hidden property="accionAnterior" value="${path}"/>
-
-</html:form>
-	
-	        <siga:ConjBotonesBusqueda botones="<%=botones%>" titulo="<%=titulo%>"/>
-			
-			<!-- FIN: BOTONES BUSQUEDA -->
-	
-		
-			<!-- INICIO: SCRIPTS BOTONES BUSQUEDA -->
-			<script language="JavaScript">
-	
-				<!-- Funcion asociada a boton nuevo -->
-				function nuevo() 
-				{							
-					document.forms[0].modo.value='nuevo';
-					document.forms[0].target='submitArea';
-					var resultado = ventaModalGeneral(document.forms[0].name,"G");
-					//if (resultado=="MODIFICADO")
-					//{
-						buscar();
-					//}
-				}
-
-				<!-- Funcion asociada a boton buscar -->
-				function buscar() 
-				{
-					sub();		
-					document.forms[0].modo.value='buscarPor';
-					document.forms[0].target='resultado';
-					document.forms[0].submit();
-				}
-				function consultas() 
-				{		
-					document.RecuperarConsultasForm.submit();
+				<tr>
+					<td class="labelText">
+						<siga:Idioma key="pys.busquedaServicios.literal.tipo"/>
+					</td>	
+					<td>
+						<siga:ComboBD nombre = "busquedaTipo" tipo="tipoServicio" ancho="455" clase="boxCombo" obligatorio="false" accion="Hijo:busquedaCategoria"/>
+					</td>
+					
+					<td class="labelText">
+						<siga:Idioma key="pys.busquedaServicios.literal.categoria"/>&nbsp;&nbsp;
+					</td>	
+					<td>										
+						<siga:ComboBD nombre = "busquedaCategoria" ancho="250" tipo="categoriaServicio" parametro="<%=parametroCombo%>" clase="boxCombo" obligatorio="false" hijo="t"/>
+					</td>
+				</tr>
 				
-				}
-			
-			</script>
-			<!-- FIN: SCRIPTS BOTONES BUSQUEDA -->
+				<tr>
+					<td class="labelText">
+						<siga:Idioma key="pys.busquedaServicios.literal.servicio"/>&nbsp;&nbsp;
+					</td>
+					<td>
+						<html:text property="busquedaServicio" styleClass="box" size="70" maxlength="100" value=""/>
+					</td>
+					
+					<td class="labelText">
+						<siga:Idioma key="pys.busquedaProductos.literal.formaPago"/>
+					</td>	
+					<td>										
+						<siga:ComboBD nombre = "busquedaPago" tipo="cmbFormaPago" clase="boxCombo" obligatorio="false"/>
+					</td>
+				</tr>
+									
+				<tr>
+					<td class="labelText">
+						<siga:Idioma key="pys.busquedaServicio.literal.estado"/>
+					</td>	
+					<td>										
+						<select name="busquedaEstado" id="busquedaEstado" class="boxCombo">
+							<option value="alta" selected><siga:Idioma key="pys.busquedaServicio.estado.suscripcionAutomaticaManual"/></option>
+							<option value="automatica"><siga:Idioma key="pys.busquedaServicio.estado.suscripcionAutomatica"/></option>
+							<option value="manual"><siga:Idioma key="pys.busquedaServicio.estado.manual"/></option>
+							<option value="baja"><siga:Idioma key="pys.busquedaservicio.estado.baja"/></option>
+						</select>
+					</td>
+				</tr>
+			</html:form>	
+		</table>
+	</siga:ConjCampos>
+							
+	<html:form action="/CON_RecuperarConsultas" method="POST" target="mainWorkArea">
+		<html:hidden property="idModulo" value="<%=com.siga.beans.ConModuloBean.IDMODULO_PRODUCTOSYSERVICIOS%>"/>
+		<html:hidden property="modo" value="inicio"/>
+		<html:hidden property="accionAnterior" value="${path}"/>
+	</html:form>
 	
-			<!-- INICIO: IFRAME LISTA RESULTADOS -->
-			<iframe align="center" src="<%=app%>/html/jsp/general/blank.jsp"
-							id="resultado"
-							name="resultado" 
-							scrolling="no"
-							frameborder="0"
-							marginheight="0"
-							marginwidth="0";					 
-					class="frameGeneral">
-	</iframe>
+	<siga:ConjBotonesBusqueda botones="<%=botones%>" titulo="<%=titulo%>"/>
+	<!-- FIN: BOTONES BUSQUEDA -->
+	
+	<!-- INICIO: SCRIPTS BOTONES BUSQUEDA -->
+	<script language="JavaScript">	
+		// Funcion asociada a boton nuevo
+		function nuevo() {							
+			document.forms[0].modo.value='nuevo';
+			document.forms[0].target='submitArea';
+			var resultado = ventaModalGeneral(document.forms[0].name,"G");
+			if (resultado=="MODIFICADO") {
+				buscar();
+			}
+		}
 
-		<!-- FIN: IFRAME LISTA RESULTADOS -->
+		// Funcion asociada a boton buscar
+		function buscar() {
+			sub();		
+			document.forms[0].modo.value='buscarPor';
+			document.forms[0].target='resultado';
+			document.forms[0].submit();
+		}
+		
+		function consultas() {		
+			document.RecuperarConsultasForm.submit();
+		}
+	</script>
+	<!-- FIN: SCRIPTS BOTONES BUSQUEDA -->
+	
+	<!-- INICIO: IFRAME LISTA RESULTADOS -->
+	<iframe align="center" src="<%=app%>/html/jsp/general/blank.jsp" id="resultado" name="resultado" scrolling="no" frameborder="0" marginheight="0" marginwidth="0" class="frameGeneral"></iframe>
+	<!-- FIN: IFRAME LISTA RESULTADOS -->
 
-		<!-- FIN  ******* BOTONES Y CAMPOS DE BUSQUEDA ****** -->
+	<!-- FIN  ******* BOTONES Y CAMPOS DE BUSQUEDA ****** -->
 
-		<!-- INICIO: SUBMIT AREA -->
-		<!-- Obligatoria en todas las páginas-->
-		<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
-		<!-- FIN: SUBMIT AREA -->
-
-	</body>
+	<!-- INICIO: SUBMIT AREA -->
+	<!-- Obligatoria en todas las páginas-->
+	<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
+	<!-- FIN: SUBMIT AREA -->
+</body>
 </html>

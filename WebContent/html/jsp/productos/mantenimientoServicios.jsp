@@ -1022,7 +1022,7 @@
 			
 			// Asociada al boton Cerrar
 			function accionCerrar() {		
-				top.cierraConParametros("MODIFICADO");
+				top.cierraConParametros("NORMAL");
 			}
 
 		</script>
