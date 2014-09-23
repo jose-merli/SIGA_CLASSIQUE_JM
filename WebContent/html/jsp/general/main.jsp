@@ -100,6 +100,8 @@
 	<script type="text/javascript" src="<html:rewrite page='/html/dropdownchecklist/ui.dropdownchecklist-1.4-min.js'/>"></script>
 	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js?v=${sessionScope.VERSIONJS}'/>"></script>
 	<script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>	
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-ui-1.10.3.custom.min.js?v=${sessionScope.VERSIONJS}'/>"></script>
+	<link rel="stylesheet" href="<html:rewrite page='/html/js/jquery.ui/css/smoothness/jquery-ui-1.10.3.custom.min.css'/>">
 	
 	<style type="text/css">
 	.notice-wrap {
@@ -256,7 +258,20 @@
 	<!-- Esto pinta el menu principal en funcion de los permisos del userBean -->
 	<script src="<%=app%>/html/js/coolmenus4.jsp" type="text/javascript"></script>
 
-
+	<div id="modalDialog" style="display:none">
+		<span>Su versión del navegador tiene inhabilitada la funcionalidad de ventanas emergentes <b>modales</b>. Esto afecta al correcto funcionamiento de este aplicativo en su navegador.
+		<br>Estamos trabajando para evitar este inconveniente.Mientras tanto le sugerimos que utilice otro navegador:
+		<ul>
+		<li>Internet Explorer</li>
+		<li>FireFox</li>
+		</ul>
+		</span>
+		<span>
+		Realizar una configuración avanzada permite volver a habilitar las ventanas emergentes en Chrome v. 37 y superiores. Podéis consultar más detalles en nuestra <a href="http://wiki.redabogacia.org/index.php/Chrome_v37" target="_new">wiki</a>.
+		<br><br>
+		Disculpe las molestias.
+		</span>
+	</div>
 	<div style="position: absolute; top: 1px; z-index: 50;">
 		<tiles:insert page="/menu.do" flush="true" />
 	</div>
@@ -358,6 +373,24 @@
 		});
 		$("#dialog-message").scrollTop(0);
 	}
+	
+	function showModal(){
+		jQuery("#modalDialog").dialog({
+	      	height: 370,
+	      	width: 600,
+	      	modal: true,
+	      	title:'Su navegador no soporta ventanas modales',
+	      	resizable: false,
+	      	buttons : {
+	      		'<siga:Idioma key="global.boton.aceptar"/>': function() {$(this).dialog("close");}
+			}
+		});	
+	}
+	
+	if (!(window.showModalDialog)){
+		showModal();
+	}
+
 	
 </script>
 <div id="main_overlay" class="overlay" style="display:none;z-index: 50;"></div>
