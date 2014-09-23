@@ -243,10 +243,8 @@ public class DevolucionesManualesAction extends MasterAction{
 						FacLineaDevoluDisqBancoAdm admLDDB= new FacLineaDevoluDisqBancoAdm(user);
 						FacLineaDevoluDisqBancoBean beanDevolucion = admLDDB.obtenerDevolucionManual(idInstitucion, sIdDisquetesDevolucion);
 						
-						// Aplicamos la comision a cada devolusion
-						if (!facturacion.aplicarComisionAFactura (idInstitucion, beanDevolucion, aplicaComisiones, null, user, false, fechaDevolucionHora)) {
-				    		throw new ClsExceptions("Fichero de devoluciones manuales: Error al aplicar devoluciones.");
-				    	}
+						// Aplicamos la comision a cada devolucion
+						facturacion.aplicarComisionAFactura (idInstitucion, beanDevolucion, aplicaComisiones, user, fechaDevolucionHora);
 					}				
 			    }
 				

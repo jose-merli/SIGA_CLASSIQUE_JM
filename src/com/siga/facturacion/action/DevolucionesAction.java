@@ -532,7 +532,10 @@ public class DevolucionesAction extends MasterAction {
 			tx.begin();		
 
 			// Llamada a PL     		
-			codretorno = actualizacionTablasDevoluciones(miForm.getIdInstitucion(), rutaOracle, identificador + ".d19", user.getLanguageInstitucion(), user.getUserName());
+			String resultado[] = actualizacionTablasDevoluciones(miForm.getIdInstitucion(), rutaOracle, identificador + ".d19", user.getLanguageInstitucion(), user.getUserName());
+			codretorno = resultado[0];
+			String fechaDevolucion = resultado[2];
+			
 			boolean isTodasRenegociadas = true;
 			Facturacion facturacion = new Facturacion(user);
 			if (codretorno.equalsIgnoreCase("0")){
@@ -543,45 +546,51 @@ public class DevolucionesAction extends MasterAction {
 					
 					for (int i = 0; i < factDevueltasVector.size(); i++) {
 						Row fila = (Row) factDevueltasVector.get(i);
-	            		Hashtable<String, Object> htFila=fila.getRow();
-	            		String idFactura = UtilidadesHash.getString(htFila, FacFacturaBean.C_IDFACTURA);
-	            		Integer estadoFactura = UtilidadesHash.getInteger(htFila, FacFacturaBean.C_ESTADO);
+	            		Hashtable<String, Object> htFila=fila.getRow();	            		
 	            		Double impTotalPorPagar = UtilidadesHash.getDouble(htFila, FacFacturaBean.C_IMPTOTALPORPAGAR);
 	            		String recibo = UtilidadesHash.getString(htFila, FacFacturaIncluidaEnDisqueteBean.C_IDRECIBO);
-	            		Hashtable htCuenta = new Hashtable();
+	            		FacFacturaBean facturaComision = null;
+	            		
+						if (miForm.getComisiones()!=null && miForm.getComisiones().equalsIgnoreCase(ClsConstants.DB_TRUE)){							
+							Hashtable filtroLineasHashtable = new Hashtable(); 
+							filtroLineasHashtable.put(FacLineaDevoluDisqBancoBean.C_IDINSTITUCION,idInstitucion);
+							filtroLineasHashtable.put(FacLineaDevoluDisqBancoBean.C_IDDISQUETEDEVOLUCIONES,identificador);
+							filtroLineasHashtable.put(FacLineaDevoluDisqBancoBean.C_IDRECIBO,recibo);
+							
+							FacLineaDevoluDisqBancoAdm admLDDB= new FacLineaDevoluDisqBancoAdm(user);
+							Vector lineasDevolucion = admLDDB.select(filtroLineasHashtable);	
+							
+							FacLineaDevoluDisqBancoBean lineaDevolucion =(FacLineaDevoluDisqBancoBean)lineasDevolucion.get(0);
+							facturaComision = facturacion.aplicarComisionAFactura (idInstitucion, lineaDevolucion, miForm.getComisiones(), user, fechaDevolucion);
+						}	            		
+	            		
 						try {
+							String idFactura = UtilidadesHash.getString(htFila, FacFacturaBean.C_IDFACTURA);
+		            		Integer estadoFactura = UtilidadesHash.getInteger(htFila, FacFacturaBean.C_ESTADO);
+							if (facturaComision != null) {								
+								idFactura = facturaComision.getIdFactura();
+			            		estadoFactura = facturaComision.getEstado();
+							}
+							
 							//El idCuenta modifica en este metodo asi que sera a esta cuenta la que se aplicara la comision
-							facturacion.insertarRenegociar(new Integer(idInstitucion), idFactura, estadoFactura, nuevaFormaPago, null, impTotalPorPagar, miForm.getDatosPagosRenegociarObservaciones(), miForm.getDatosRenegociarFecha(), true, htCuenta);
+							facturacion.insertarRenegociar(
+									new Integer(idInstitucion), 
+									idFactura, 
+									estadoFactura, 
+									nuevaFormaPago, 
+									null, 
+									impTotalPorPagar, 
+									miForm.getDatosPagosRenegociarObservaciones(), 
+									miForm.getDatosRenegociarFecha(), 
+									true);							
 							
 						} catch (SIGAException e) {
 							isTodasRenegociadas = false;
 							continue;
-							
-						} finally {
-							if (miForm.getComisiones()!=null && miForm.getComisiones().equalsIgnoreCase(ClsConstants.DB_TRUE)){
-								FacLineaDevoluDisqBancoAdm admLDDB= new FacLineaDevoluDisqBancoAdm(user);
-								Hashtable filtroLineasHashtable = new Hashtable(); 
-								filtroLineasHashtable.put(FacLineaDevoluDisqBancoBean.C_IDINSTITUCION,idInstitucion);
-								filtroLineasHashtable.put(FacLineaDevoluDisqBancoBean.C_IDDISQUETEDEVOLUCIONES,identificador);
-								filtroLineasHashtable.put(FacLineaDevoluDisqBancoBean.C_IDRECIBO,recibo);
-								Vector lineasDevolucion = admLDDB.selectByPK(filtroLineasHashtable);	
-								
-								FacLineaDevoluDisqBancoBean lineaDevolucion =(FacLineaDevoluDisqBancoBean)lineasDevolucion.get(0);
-								String idCuenta = null;
-								if(htCuenta!=null && htCuenta.get("idCuenta")!=null)
-									idCuenta = (String)htCuenta.get("idCuenta");
-								
-								correcto = facturacion.aplicarComisionAFactura (idInstitucion, lineaDevolucion, miForm.getComisiones(), idCuenta, user, true, miForm.getDatosRenegociarFecha());
-								if(!correcto){
-									codretorno = "-32";
-									break;
-								}
-							}
-							
 						}
-
 					}
-				}else{
+					
+				} else {
 					if (miForm.getComisiones()!=null && miForm.getComisiones().equalsIgnoreCase(ClsConstants.DB_TRUE)){
 				    	ClsLogging.writeFileLog("Aplicando Comisiones de devolucion="+miForm.getComisiones(),8);
 				    	
@@ -592,10 +601,7 @@ public class DevolucionesAction extends MasterAction {
 						// Aplicamos la comision a cada devolusion
 						for (int d=0; d<vDevoluciones.size(); d++) {
 							FacLineaDevoluDisqBancoBean lineaDevolucion = (FacLineaDevoluDisqBancoBean)vDevoluciones.get(d);
-							if (!facturacion.aplicarComisionAFactura (idInstitucion, lineaDevolucion, miForm.getComisiones(), null, user, false, miForm.getDatosRenegociarFecha())) {
-								codretorno = "-32";
-								break;			
-							}
+							facturacion.aplicarComisionAFactura (idInstitucion, lineaDevolucion, miForm.getComisiones(), user, fechaDevolucion);
 						}
 					}
 				}
@@ -796,7 +802,9 @@ public class DevolucionesAction extends MasterAction {
 			identificador = devolucionesAdm.getNuevoID(idInstitucion).toString();
 			
 			// Llamada a PL			
-			codretorno = actualizacionTablasDevoluciones(miForm.getIdInstitucion(), rutaOracle, identificador + ".d19", user.getLanguageInstitucion(), user.getUserName());
+			String resultado[] = actualizacionTablasDevoluciones(miForm.getIdInstitucion(), rutaOracle, identificador + ".d19", user.getLanguageInstitucion(), user.getUserName());
+			codretorno = resultado[0];
+			String fechaDevolucion = resultado[2];			
 			
 			boolean isTodasRenegociadas = true;
 			Facturacion facturacion = new Facturacion(user);
@@ -809,42 +817,50 @@ public class DevolucionesAction extends MasterAction {
 					for (int i = 0; i < factDevueltasVector.size(); i++) {
 						Row fila = (Row) factDevueltasVector.get(i);
 	            		Hashtable<String, Object> htFila=fila.getRow();
-	            		String idFactura = UtilidadesHash.getString(htFila, FacFacturaBean.C_IDFACTURA);
-	            		Integer estadoFactura = UtilidadesHash.getInteger(htFila, FacFacturaBean.C_ESTADO);
 	            		Double impTotalPorPagar = UtilidadesHash.getDouble(htFila, FacFacturaBean.C_IMPTOTALPORPAGAR);
 	            		String recibo = UtilidadesHash.getString(htFila, FacFacturaIncluidaEnDisqueteBean.C_IDRECIBO);
-	            		Hashtable htCuenta = new Hashtable();
+	            		FacFacturaBean facturaComision = null;
+	            		
+						if (miForm.getComisiones()!=null && miForm.getComisiones().equalsIgnoreCase(ClsConstants.DB_TRUE)){							
+							Hashtable filtroLineasHashtable = new Hashtable(); 
+							filtroLineasHashtable.put(FacLineaDevoluDisqBancoBean.C_IDINSTITUCION,idInstitucion);
+							filtroLineasHashtable.put(FacLineaDevoluDisqBancoBean.C_IDDISQUETEDEVOLUCIONES,identificador);
+							filtroLineasHashtable.put(FacLineaDevoluDisqBancoBean.C_IDRECIBO,recibo);
+							
+							FacLineaDevoluDisqBancoAdm admLDDB= new FacLineaDevoluDisqBancoAdm(user);
+							Vector lineasDevolucion = admLDDB.select(filtroLineasHashtable);		
+							
+							FacLineaDevoluDisqBancoBean lineaDevolucion =(FacLineaDevoluDisqBancoBean)lineasDevolucion.get(0);
+							facturaComision = facturacion.aplicarComisionAFactura (idInstitucion, lineaDevolucion, miForm.getComisiones(), user, fechaDevolucion);
+						}		            		
+	            		
 						try {
+							String idFactura = UtilidadesHash.getString(htFila, FacFacturaBean.C_IDFACTURA);
+		            		Integer estadoFactura = UtilidadesHash.getInteger(htFila, FacFacturaBean.C_ESTADO);
+							if (facturaComision != null) {								
+								idFactura = facturaComision.getIdFactura();
+			            		estadoFactura = facturaComision.getEstado();
+							}
+							
 							//El idCuenta modifica en este metodo asi que sera a esta cuenta la que se aplicara la comision
-							facturacion.insertarRenegociar(new Integer(idInstitucion), idFactura, estadoFactura, nuevaFormaPago, null, impTotalPorPagar, miForm.getDatosPagosRenegociarObservaciones(), miForm.getDatosRenegociarFecha(), true, htCuenta);
+							facturacion.insertarRenegociar(
+									new Integer(idInstitucion), 
+									idFactura, 
+									estadoFactura, 
+									nuevaFormaPago, 
+									null, 
+									impTotalPorPagar, 
+									miForm.getDatosPagosRenegociarObservaciones(), 
+									miForm.getDatosRenegociarFecha(), 
+									true);								
 							
 						} catch (SIGAException e) {
 							isTodasRenegociadas = false;
 							continue;
-							
-						} finally {
-							if (miForm.getComisiones()!=null && miForm.getComisiones().equalsIgnoreCase(ClsConstants.DB_TRUE)){
-								FacLineaDevoluDisqBancoAdm admLDDB= new FacLineaDevoluDisqBancoAdm(user);
-								Hashtable filtroLineasHashtable = new Hashtable(); 
-								filtroLineasHashtable.put(FacLineaDevoluDisqBancoBean.C_IDINSTITUCION,idInstitucion);
-								filtroLineasHashtable.put(FacLineaDevoluDisqBancoBean.C_IDDISQUETEDEVOLUCIONES,identificador);
-								filtroLineasHashtable.put(FacLineaDevoluDisqBancoBean.C_IDRECIBO,recibo);
-								Vector lineasDevolucion = admLDDB.select(filtroLineasHashtable);		
-								
-								FacLineaDevoluDisqBancoBean lineaDevolucion =(FacLineaDevoluDisqBancoBean)lineasDevolucion.get(0);
-								String idCuenta = null;
-								if(htCuenta!=null && htCuenta.get("idCuenta")!=null)
-									idCuenta = (String)htCuenta.get("idCuenta");
-								
-								correcto = facturacion.aplicarComisionAFactura (idInstitucion, lineaDevolucion, miForm.getComisiones(), idCuenta, user, true, miForm.getDatosRenegociarFecha());
-								if(!correcto){
-									codretorno = "-32";
-									break;
-								}
-							}							
 						}
 					}
-				}else{
+					
+				} else {
 					if (miForm.getComisiones()!=null && miForm.getComisiones().equalsIgnoreCase(ClsConstants.DB_TRUE)){
 				    	ClsLogging.writeFileLog("Aplicando Comisiones de devolucion="+miForm.getComisiones(),8);
 				    	
@@ -855,12 +871,7 @@ public class DevolucionesAction extends MasterAction {
 						// Aplicamos la comision a cada devolusion
 						for (int d=0; d<vDevoluciones.size(); d++) {
 							FacLineaDevoluDisqBancoBean lineaDevolucion = (FacLineaDevoluDisqBancoBean)vDevoluciones.get(d);
-							
-							correcto = facturacion.aplicarComisionAFactura (idInstitucion, lineaDevolucion, miForm.getComisiones(), null, user, false, miForm.getDatosRenegociarFecha());
-							if(!correcto){
-								codretorno = "-32";
-								break;
-							}
+							facturacion.aplicarComisionAFactura (idInstitucion, lineaDevolucion, miForm.getComisiones(), user, fechaDevolucion);
 						}				    	
 					}
 				}	
@@ -894,27 +905,20 @@ public class DevolucionesAction extends MasterAction {
 				correcto=false;
 			}
 			
-			if (codretorno.equalsIgnoreCase("-32")){
-				tx.rollback();
-				request.setAttribute("mensaje","facturacion.devolucion.error.aplicarComision");
-				return "nuevo";
-				
-			} else { 			
-				if (correcto){					
-					tx.commit();
-	
-					if (isTodasRenegociadas) {
-						result=exitoRefresco("facturacion.nuevoFichero.literal.procesoCorrecto",request);
-						
-					} else {
-						result=exitoRefresco("facturacion.renegociar.aviso.noTodasRenegociadas",request);
-					}
+			if (correcto){					
+				tx.commit();
+
+				if (isTodasRenegociadas) {
+					result=exitoRefresco("facturacion.nuevoFichero.literal.procesoCorrecto",request);
 					
 				} else {
-					tx.rollback();		
-					request.setAttribute("mensaje","facturacion.nuevoFichero.literal.confirmarReintentar");
-					return "mostrarVentana";
+					result=exitoRefresco("facturacion.renegociar.aviso.noTodasRenegociadas",request);
 				}
+				
+			} else {
+				tx.rollback();		
+				request.setAttribute("mensaje","facturacion.nuevoFichero.literal.confirmarReintentar");
+				return "mostrarVentana";
 			}
 			
 		} catch (Exception e) { 
@@ -952,18 +956,20 @@ public class DevolucionesAction extends MasterAction {
  		return "abrir";  
 	}
 
-	/** 
-	 *  Funcion que realiza una llamada a la PL PKG_SIGA_CARGOS.DEVOLUCIONES
-	 * @param  String - identificador institucion
-	 * @param  path -  ruta hasta el fichero
-	 * @param  fichero - nombre del fichero 
-	 * @param  usuario - identificador del usuario  
-	 * @exception  SIGAException  En cualquier caso de error
+	/**
+	 * Funcion que realiza una llamada a la PL PKG_SIGA_CARGOS.DEVOLUCIONES
+	 * @param institucion
+	 * @param path
+	 * @param fichero
+	 * @param idioma
+	 * @param usuario
+	 * @return
+	 * @throws ClsExceptions
 	 */
-	protected String actualizacionTablasDevoluciones(String institucion, String path, String fichero, String idioma, String usuario) throws ClsExceptions {	
-		String resultado[] = new String[2];
+	protected String[] actualizacionTablasDevoluciones(String institucion, String path, String fichero, String idioma, String usuario) throws ClsExceptions {	
+		String resultado[] = new String[3];
 		String codigoError_FicNoEncontrado = "5397";	// Código de error, el fichero no se ha encontrado.
-		String codretorno  = codigoError_FicNoEncontrado;
+		String codretorno  = codigoError_FicNoEncontrado;		
 		try	{			
 			int i=0;
 			while (i<3 && codretorno.equalsIgnoreCase(codigoError_FicNoEncontrado)){
@@ -975,15 +981,14 @@ public class DevolucionesAction extends MasterAction {
 		    	param_in[2] = fichero;
 		    	param_in[3] = idioma;
 		    	param_in[4] = usuario;
-		    	resultado = ClsMngBBDD.callPLProcedure("{call PKG_SIGA_CARGOS.DEVOLUCIONES(?,?,?,?,?,?,?)}", 2, param_in);
-		    	codretorno = resultado[0]; 
+		    	resultado = ClsMngBBDD.callPLProcedure("{call PKG_SIGA_CARGOS.DEVOLUCIONES(?,?,?,?,?,?,?,?)}", 3, param_in);
 			}
 			
 		} catch (Exception e){
 			throw new ClsExceptions(e,"Excepcion en actualizacionTableroDevoluciones.  Proc:PKG_SIGA_CARGOS.DEVOLUCIONES "+resultado[1]);
 		}
 		
-		return codretorno;
+		return resultado;
 	}
 	
 	protected void borrarFichero(String identificador, String idInstitucion) throws ClsExceptions {	

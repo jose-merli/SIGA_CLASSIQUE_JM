@@ -1943,8 +1943,7 @@ public class Facturacion {
 			Double importePtePagar,
 			String observaciones, 
 			String fechaRenegociar, 
-			boolean isAutomatica,
-			Hashtable htCuenta) throws Exception {
+			boolean isAutomatica) throws Exception {
 
 		int idFormaPago = 0;
 		int nuevoEstado = 0;
@@ -2057,10 +2056,6 @@ public class Facturacion {
 		if (idCuenta != null) {
 			renegociacionBean.setIdCuenta(new Integer(idCuenta));
 			facturaBean.setIdCuenta(new Integer(idCuenta));
-			if (htCuenta != null) {
-				htCuenta.put("idCuenta", idCuenta);
-			}
-			
 		} else {
 			facturaBean.setIdCuenta(null);
 		}
@@ -2106,15 +2101,12 @@ public class Facturacion {
      * @param institucion
      * @param lineaDevolucion
      * @param aplicaComisionesCliente
-     * @param idCuenta
      * @param userBean
-     * @param renegociadaAutomaticamente
      * @param fechaDevolucion
      * @return
      * @throws Exception
      */
-	public boolean aplicarComisionAFactura (String institucion, FacLineaDevoluDisqBancoBean lineaDevolucion, String aplicaComisionesCliente, String idCuenta, UsrBean userBean, boolean renegociadaAutomaticamente, String fechaDevolucion) throws Exception {
-		boolean resultado = true;
+	public FacFacturaBean aplicarComisionAFactura (String institucion, FacLineaDevoluDisqBancoBean lineaDevolucion, String aplicaComisionesCliente, UsrBean userBean, String fechaDevolucion) throws Exception {
 		FacLineaDevoluDisqBancoAdm admLDDB= new FacLineaDevoluDisqBancoAdm(userBean);
 		
 		// Obtenemos la factura incluida en disquete		
@@ -2191,8 +2183,7 @@ public class Facturacion {
 			// Se actualiza los campos CARGARCLIENTE y GASTOSDEVOLUCION
 			lineaDevolucion.setCargarCliente("S");
 						
-			resultado=admLDDB.update(lineaDevolucion);			
-			if (!resultado) {
+			if (!admLDDB.update(lineaDevolucion)) {
 				throw new ClsExceptions("Error porque no actualiza la línea de devoluciones");
 			}
 			
@@ -2214,24 +2205,13 @@ public class Facturacion {
 			
 			// JPT - Devoluciones 117 - Calcula la forma de pago y el estado de la factura	
 			Integer idFormaPago = beanFacFactura.getIdFormaPago(); // Inicialmente tiene la forma de pago de la factura
-			Integer idEstadoFactura = new Integer(ClsConstants.ESTADO_FACTURA_DEVUELTA); // Inicialmente tiene estado devuelta
-			if (renegociadaAutomaticamente) {
-				if (idCuenta==null || idCuenta.isEmpty()) {
-					idFormaPago = ClsConstants.TIPO_FORMAPAGO_METALICO;
-					idEstadoFactura = new Integer(ClsConstants.ESTADO_FACTURA_CAJA);
-				} else {
-					idFormaPago = ClsConstants.TIPO_FORMAPAGO_FACTURA;
-					idEstadoFactura = new Integer(ClsConstants.ESTADO_FACTURA_BANCO);
-				}
-			}		
 			beanFacFactura.setIdFormaPago(idFormaPago);
 			
 			// JPT - Devoluciones 117 - Indico que el estado de la factura actual es anulada
 			beanFacFactura.setEstado(new Integer(ClsConstants.ESTADO_FACTURA_ANULADA));
 			
-			// JPT - Devoluciones 117 - Actualizo la factura actual
-			resultado = admFacFactura.update(beanFacFactura);					
-			if (!resultado) {
+			// JPT - Devoluciones 117 - Actualizo la factura actual			
+			if (!admFacFactura.update(beanFacFactura)) {
 				throw new ClsExceptions("Error porque no anula la factura de devoluciones actual");
 			}				
 			
@@ -2239,7 +2219,7 @@ public class Facturacion {
 			beanFacFactura.setFechaEmision(fechaDevolucion);
 
 			// JPT - Devoluciones 117 - Indico el estado de la factura calculado anteriormente
-			beanFacFactura.setEstado(idEstadoFactura);
+			beanFacFactura.setEstado(new Integer(ClsConstants.ESTADO_FACTURA_DEVUELTA)); // Inicialmente tiene estado devuelta
 			
 			// JPT - Devoluciones 117 - Pone en FAC_FACTURA.COMISIONIDFACTURA el identificador de la factura original  
 			beanFacFactura.setComisionIdFactura(beanFacFactura.getIdFactura());
@@ -2263,9 +2243,8 @@ public class Facturacion {
 			AdmContadorAdm admContador = new AdmContadorAdm(userBean);
 			AdmContadorBean beanContador = (AdmContadorBean) admContador.hashTableToBean(hNuevoNumeroFactura);
 			beanContador.setOriginalHash(hNuevoNumeroFactura);
-			beanContador.setContador(new Long(sContadorContador));						
-			resultado = admContador.update(beanContador);							
-			if (!resultado) {
+			beanContador.setContador(new Long(sContadorContador));												
+			if (!admContador.update(beanContador)) {
 				throw new ClsExceptions("Error porque no actualiza el contador");
 			}							
 			
@@ -2280,8 +2259,7 @@ public class Facturacion {
 			beanFacFactura.setImpTotal(beanFacFactura.getImpTotal() + importeComision + importeIvaComision);						
 			
 			// JPT - Devoluciones 117 - Inserta la nueva factura
-			resultado = admFacFactura.insert(beanFacFactura);					
-			if (!resultado) {
+			if (!admFacFactura.insert(beanFacFactura)) {
 				throw new ClsExceptions("Error porque no inserta la nueva factura con la comisión");
 			}						
 				
@@ -2302,8 +2280,7 @@ public class Facturacion {
 				beanFacLineaFactura.setIdFactura(sNuevoIdFactura);
 				
 				// JPT - Devoluciones 117 - Inserto la nueva linea de la factura
-				resultado = admLineaFactura.insert(beanFacLineaFactura);	
-				if (!resultado) {
+				if (!admLineaFactura.insert(beanFacLineaFactura)) {
 					throw new ClsExceptions("Error porque no inserta la nueva línea de factura de devoluciones con comisión");
 				}		
 				
@@ -2337,24 +2314,27 @@ public class Facturacion {
 			beanFacLineaFactura.setIdFormaPago(idFormaPago); // Indica la forma de pago de la factura	                  
 			
 			// JPT - Devoluciones 117 - Inserto la nueva linea de la factura
-			resultado = admLineaFactura.insert(beanFacLineaFactura);														
-			if (!resultado) {
+			if (!admLineaFactura.insert(beanFacLineaFactura)) {
 				throw new ClsExceptions("Error porque no inserta la nueva línea de factura de devoluciones con comisión");
-			}						
+			}			
+			
+			// JPT: Devuelve los resultados de la nueva factura
+			return beanFacFactura; 		
 			
 		} else {			
 			// Se actualiza los campos CARGARCLIENTE y GASTOSDEVOLUCION
 			lineaDevolucion.setCargarCliente("N"); // Diferencia con lo de arriba
 			
-			resultado=admLDDB.update(lineaDevolucion);					
-			if (!resultado) {
+			if (!admLDDB.update(lineaDevolucion)) {
 				throw new ClsExceptions("Error porque no actualiza la línea de devoluciones");
 			}
 			
-			// No duplico lo siguiente porque no es necesario			
+			// No duplico lo siguiente porque no es necesario		
+			
+			// JPT: Devuelve los resultados de la nueva factura
 		}
 		
-		return resultado;
+		return null;
 	}
 
 	public void procesarPrevisionesFactPend(HttpServletRequest request, String idInstitucion, UsrBean usr) throws ClsExceptions {

@@ -561,7 +561,7 @@ public class GestionarFacturaPagosAction extends MasterAction {
         		
 				if (factDevueltasYRenegociadas.size() == 1){ // Solo tiene una factura a renegociar
 					try {	
-						facturacion.insertarRenegociar(new Integer(idInstitucion), idFactura, estadoFactura, nuevaFormaPago, idcuenta, impTotalPorPagar, miForm.getDatosPagosRenegociarObservaciones(), miForm.getDatosRenegociarFecha(), false, null);
+						facturacion.insertarRenegociar(new Integer(idInstitucion), idFactura, estadoFactura, nuevaFormaPago, idcuenta, impTotalPorPagar, miForm.getDatosPagosRenegociarObservaciones(), miForm.getDatosRenegociarFecha(), false);
 						
 					} catch (SIGAException e) { 
 						tx.rollback();
@@ -600,7 +600,7 @@ public class GestionarFacturaPagosAction extends MasterAction {
 						
 				} else {
 					try {
-						facturacion.insertarRenegociar(new Integer(idInstitucion), idFactura, estadoFactura, nuevaFormaPago, idcuenta, impTotalPorPagar, miForm.getDatosPagosRenegociarObservaciones(), miForm.getDatosRenegociarFecha(), true, null);
+						facturacion.insertarRenegociar(new Integer(idInstitucion), idFactura, estadoFactura, nuevaFormaPago, idcuenta, impTotalPorPagar, miForm.getDatosPagosRenegociarObservaciones(), miForm.getDatosRenegociarFecha(), true);
 						
 					} catch (SIGAException e) {
 						isTodasRenegociadas = false;
