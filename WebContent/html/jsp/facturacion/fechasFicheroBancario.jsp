@@ -91,7 +91,7 @@
 			<td class="labelText" width="250px" id="fechaRecibosRecurrentesSinAsterisco"><siga:Idioma key="facturacion.fechasficherobancario.fecharecibosrecurrentes"/></td>
 			<td class="labelText" width="250px" id="fechaRecibosRecurrentesConAsterisco"><siga:Idioma key="facturacion.fechasficherobancario.fecharecibosrecurrentes"/>&nbsp;(*)</td>
 
-			<td><siga:Fecha nombreCampo="fechaRecibosRecurrentes" posicionX="10" posicionY="10" valorInicial="<%=fechaRecibosRecurrentes%>"/></td>
+			<td><siga:Fecha nombreCampo="fechaRecibosRecurrentes" posicionX="10" posicionY="10" valorInicial="<%=fechaRecibosRecurrentes%>" readonly="true"/></td>
 <%
 			if (habilesRecibosRecurrentes!=null && !habilesRecibosRecurrentes.equals("")) {
 %>						
@@ -105,7 +105,7 @@
 			<td class="labelText" width="250px" id="fechaRecibosCOR1SinAsterisco"><siga:Idioma key="facturacion.fechasficherobancario.fechareciboscor1"/></td>
 			<td class="labelText" width="250px" id="fechaRecibosCOR1ConAsterisco"><siga:Idioma key="facturacion.fechasficherobancario.fechareciboscor1"/>&nbsp;(*)</td>
 
-			<td><siga:Fecha nombreCampo="fechaRecibosCOR1" posicionX="10" posicionY="10" valorInicial="<%=fechaRecibosCOR1%>"/></td>
+			<td><siga:Fecha nombreCampo="fechaRecibosCOR1" posicionX="10" posicionY="10" valorInicial="<%=fechaRecibosCOR1%>" disabled="true"/></td>
 <%
 			if (habilesRecibosCOR1!=null && !habilesRecibosCOR1.equals("")) {
 %>							
@@ -119,7 +119,7 @@
 			<td class="labelText" width="250px" id="fechaRecibosB2BSinAsterisco"><siga:Idioma key="facturacion.fechasficherobancario.fecharecibosb2b"/></td>
 			<td class="labelText" width="250px" id="fechaRecibosB2BConAsterisco"><siga:Idioma key="facturacion.fechasficherobancario.fecharecibosb2b"/>&nbsp;(*)</td>
 
-			<td><siga:Fecha nombreCampo="fechaRecibosB2B" posicionX="10" posicionY="10" valorInicial="<%=fechaRecibosB2B%>"/></td>
+			<td><siga:Fecha nombreCampo="fechaRecibosB2B" posicionX="10" posicionY="10" valorInicial="<%=fechaRecibosB2B%>" disabled="true"/></td>
 <%
 			if (habilesRecibosB2B!=null && !habilesRecibosB2B.equals("")) {
 %>								
@@ -171,20 +171,20 @@
 			jQuery('#fechaRecibosPrimerosConAsterisco').hide();
 			jQuery('#fechaRecibosPrimerosSinAsterisco').show();
 						
-			jQuery('#fechaRecibosRecurrentes').addClass("boxConsulta").removeClass("box").attr('disabled','disabled');
+//			jQuery('#fechaRecibosRecurrentes').addClass("boxConsulta").removeClass("box").attr('disabled','disabled');
 			jQuery("#fechaRecibosRecurrentes-datepicker-trigger").hide();
 			jQuery('#fechaRecibosRecurrentesConAsterisco').hide();
 			jQuery('#fechaRecibosRecurrentesSinAsterisco').show();
 						
-			jQuery('#fechaRecibosCOR1').addClass("boxConsulta").removeClass("box").attr('disabled','disabled');
-			jQuery("#fechaRecibosCOR1-datepicker-trigger").hide();
-			jQuery('#fechaRecibosCOR1ConAsterisco').hide();
-			jQuery('#fechaRecibosCOR1SinAsterisco').show();	
+// 			jQuery('#fechaRecibosCOR1').addClass("boxConsulta").removeClass("box").attr('disabled','disabled');
+ 			jQuery("#fechaRecibosCOR1-datepicker-trigger").hide();
+ 			jQuery('#fechaRecibosCOR1ConAsterisco').hide();
+ 			jQuery('#fechaRecibosCOR1SinAsterisco').show();	
 			
-			jQuery('#fechaRecibosB2B').addClass("boxConsulta").removeClass("box").attr('disabled','disabled');
-			jQuery("#fechaRecibosB2B-datepicker-trigger").hide();
-			jQuery('#fechaRecibosB2BConAsterisco').hide();
-			jQuery('#fechaRecibosB2BSinAsterisco').show();	
+// 			jQuery('#fechaRecibosB2B').addClass("boxConsulta").removeClass("box").attr('disabled','disabled');
+// 			jQuery("#fechaRecibosB2B-datepicker-trigger").hide();
+// 			jQuery('#fechaRecibosB2BConAsterisco').hide();
+// 			jQuery('#fechaRecibosB2BSinAsterisco').show();	
 			
 		} else {
 			jQuery('#fechaCargoUnica').addClass("boxConsulta").removeClass("box").attr('disabled','disabled');
@@ -202,27 +202,24 @@
 			jQuery('#fechaRecibosRecurrentesConAsterisco').show();
 			jQuery('#fechaRecibosRecurrentesSinAsterisco').hide();
 			
-//			Piden que las fechas COR1 y B2B aparezcan deshabilitadas					
-// 			jQuery('#fechaRecibosCOR1').addClass("box").removeClass("boxConsulta").removeAttr('disabled');
-// 			jQuery("#fechaRecibosCOR1-datepicker-trigger").show();
-// 			jQuery('#fechaRecibosCOR1ConAsterisco').show();
-// 			jQuery('#fechaRecibosCOR1SinAsterisco').hide();
-						
-// 			jQuery('#fechaRecibosB2B').addClass("box").removeClass("boxConsulta").removeAttr('disabled');					
-// 			jQuery("#fechaRecibosB2B-datepicker-trigger").show();	
-// 			jQuery('#fechaRecibosB2BConAsterisco').show();
-// 			jQuery('#fechaRecibosB2BSinAsterisco').hide();	
-
-			jQuery('#fechaRecibosCOR1').addClass("boxConsulta").removeClass("box").attr('disabled','disabled');
+			//Piden que las fechas COR1 y B2B aparezcan deshabilitadas					
+			//jQuery('#fechaRecibosCOR1').addClass("box").removeClass("boxConsulta").removeAttr('disabled');
+			//jQuery("#fechaRecibosCOR1-datepicker-trigger").show();
 			jQuery("#fechaRecibosCOR1-datepicker-trigger").hide();
+			//jQuery('#fechaRecibosCOR1ConAsterisco').show();
+			//jQuery('#fechaRecibosCOR1SinAsterisco').hide();
+						
+			//jQuery('#fechaRecibosB2B').addClass("box").removeClass("boxConsulta").removeAttr('disabled');					
+			//jQuery("#fechaRecibosB2B-datepicker-trigger").show();	
+			jQuery("#fechaRecibosB2B-datepicker-trigger").hide();	
+			//jQuery('#fechaRecibosB2BConAsterisco').show();
+			//jQuery('#fechaRecibosB2BSinAsterisco').hide();	
+			
 			jQuery('#fechaRecibosCOR1ConAsterisco').hide();
-			jQuery('#fechaRecibosCOR1SinAsterisco').show();	
-			
-			jQuery('#fechaRecibosB2B').addClass("boxConsulta").removeClass("box").attr('disabled','disabled');
-			jQuery("#fechaRecibosB2B-datepicker-trigger").hide();
-			jQuery('#fechaRecibosB2BConAsterisco').hide();
-			jQuery('#fechaRecibosB2BSinAsterisco').show();	
-			
+ 			jQuery('#fechaRecibosCOR1SinAsterisco').show();	
+ 			jQuery('#fechaRecibosB2BConAsterisco').hide();
+ 			jQuery('#fechaRecibosB2BSinAsterisco').show();	
+	
 		}
 	}
 	
