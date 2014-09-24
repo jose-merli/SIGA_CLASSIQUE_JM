@@ -412,21 +412,24 @@
 								<td> 
 									<html:checkbox name="CuentasBancariasForm" id = "sjcs" property="sjcs" value="1" onclick="habilitarDeshabCombo()"></html:checkbox>
 								</td>
-								<td>
-									<html:select styleId="comboSufijossjcs" property="idSufijosjcs" value="${CuentasBancariasForm.idSufijosjcs}" styleClass="boxCombo" style="width:200px;">
-										<html:option value=""><c:out value=""/></html:option>
-										<c:forEach items="${listaSufijos}" var="sufijoCmb">
-											<html:option value="${sufijoCmb.idSufijo}">
-											<c:if	test="${sufijoCmb.sufijo.trim().length()>0}">
-												<c:out value="${sufijoCmb.sufijo} ${sufijoCmb.concepto}"/>
-											</c:if>
-											<c:if	test="${sufijoCmb.sufijo.trim().length()==0}">
-												&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<c:out value="${sufijoCmb.concepto}"/>
-											</c:if>
-											</html:option>
-										</c:forEach>
-									</html:select>	
+								<td class="labelText" nowrap>
+								<siga:Idioma key="facturacion.sufijos.literal.sufijo"/>
 								</td>
+								<td>
+								<html:select styleId="comboSufijossjcs" property="idSufijosjcs" value="${CuentasBancariasForm.idSufijosjcs}" styleClass="boxCombo" style="width:200px;">
+									<html:option value=""><c:out value=""/></html:option>
+									<c:forEach items="${listaSufijos}" var="sufijoCmb">
+										<html:option value="${sufijoCmb.idSufijo}">
+										<c:if	test="${sufijoCmb.sufijo.trim().length()>0}">
+											<c:out value="${sufijoCmb.sufijo} ${sufijoCmb.concepto}"/>
+										</c:if>
+										<c:if	test="${sufijoCmb.sufijo.trim().length()==0}">
+											&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<c:out value="${sufijoCmb.concepto}"/>
+										</c:if>
+										</html:option>
+									</c:forEach>
+								</html:select>	
+							</td>
 							</tr> 		
 						</table>
 					</siga:ConjCampos>

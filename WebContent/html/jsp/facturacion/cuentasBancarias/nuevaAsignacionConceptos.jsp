@@ -20,6 +20,7 @@
 <%@ taglib uri="c.tld" prefix="c"%>
 
 <%@ page import="org.redabogacia.sigaservices.app.autogen.model.FacSeriefacturacion"%>
+<%@ page import="org.redabogacia.sigaservices.app.vo.fac.SeriesCuentaBancariaVo"%>
 <%@ page import="java.util.List"%>
 
 <!-- HEAD -->
@@ -37,7 +38,7 @@
 <table class="tablaTitulo" cellspacing="0" heigth="32">
 	<tr>
 		<td id="titulo" class="titulitosDatos">
-			<siga:Idioma key="facturacion.seleccionSerie.titulo"/>
+			<siga:Idioma key="facturacion.serios.literal.seriesFacturacion"/>
 		</td>
 	</tr>
 </table>
@@ -48,6 +49,8 @@
 	<html:hidden property="modo" value ="${CuentasBancariasForm.modo}"  />
 	<html:hidden property="idInstitucion" value ="${CuentasBancariasForm.idInstitucion}"/>
 	<html:hidden property="bancosCodigo" value ="${CuentasBancariasForm.bancosCodigo}"/>
+	<html:hidden property="idSerieFacturacion"/>
+	<html:hidden property="ibanSerie"/>
     <input type="hidden" id="actionModal" name="actionModal" />	
     <siga:ConjCampos leyenda="facturacion.datos.serie">
 	<table  class="tablaCentralCamposMedia"  align="center">
@@ -56,6 +59,7 @@
    			<tr class="notFound">
 	   			<td class="titulitos"><siga:Idioma key="messages.noRecordFound"/></td>
 			</tr>	 		
+   		
    		</c:when>
    			<c:otherwise>
 				<tr>		
@@ -64,13 +68,14 @@
 					</td>
 					<td>
 						<bean:define id="listaSeriesDisponibles" name="listaSeriesDisponibles" scope="request"/>
-						<html:select styleId="comboSeries" property="idSerieFacturacion" value="" styleClass="boxCombo" style="width:200px;" >
+						<c:set var="separador" value="#"/>
+						<html:select styleId="comboSeries" property="idSerieFacturacionIban" value="" styleClass="boxCombo" style="width:200px;">
 						<html:option value=""><siga:Idioma key="general.combo.seleccionar" /></html:option>
 						<c:forEach items="${listaSeriesDisponibles}" var="seriesCmb">
-							<html:option value="${seriesCmb.idseriefacturacion}"><c:out value="${seriesCmb.nombreabreviado}"/></html:option>
+							<html:option value="${seriesCmb.idseriefacturacion}${separador}${seriesCmb.iban}"><c:out value="${seriesCmb.nombreabreviado}"/>
+							</html:option>
 						</c:forEach>
 						</html:select>	
-					
 					</td>
 				</tr>
 				<tr>
@@ -104,7 +109,14 @@
 	<!-- FIN: CAMPOS -->
 
 	<!-- INICIO: BOTONES ACCION -->
-	<siga:ConjBotonesAccion botones="Y,C" modal="P" />
+	<c:choose>
+	<c:when test="${empty listaSeriesDisponibles}">
+   		<siga:ConjBotonesAccion botones="C" modal="P" />				
+   	</c:when>
+ 	<c:otherwise>
+ 		<siga:ConjBotonesAccion botones="Y,C" modal="P" />
+ 	</c:otherwise>
+ 	</c:choose>
 	<!-- FIN: BOTONES ACCION -->
 
 <!-- FIN ******* CAPA DE PRESENTACION ****** -->
@@ -112,14 +124,26 @@
 	
 <iframe name="submitArea" src="<html:rewrite page='/html/jsp/general/blank.jsp'/>"	style="display: none"></iframe>
 <script language="JavaScript">
+
+	jQuery("#comboSeries").change(function(){
+		
+		var idserie=jQuery("#comboSeries").find("option:selected").val().split("#")[0];
+		var ibanSerie=jQuery("#comboSeries").find("option:selected").val().split("#")[1];
+		
+		document.CuentasBancariasForm.idSerieFacturacion.value=idserie;
+		document.CuentasBancariasForm.ibanSerie.value=ibanSerie;
+			
+	});
+	
 	function accionCerrar() 
 	{		
 		top.cierraConParametros("NORMAL");
 	}
 	
-	function accionGuardarCerrar(){
+	function accionGuardarCerrar(){	
+		
 		sub();	
-
+		
 		if(document.CuentasBancariasForm.idSerieFacturacion.value<1) {
 			mensaje = "<siga:Idioma key='facturacion.message.error.cuenta.serie'/>";
 			alert(mensaje);
@@ -135,10 +159,25 @@
 			return false;
 		}
 		
-		document.CuentasBancariasForm.modo.value="guardarRelacionSerie";
-		document.CuentasBancariasForm.submit();
-		fin();
 		
+		if(document.CuentasBancariasForm.ibanSerie.value!="")
+		{
+			if(confirm("<siga:Idioma key='facturacion.serie.relacionada.cuenta' arg0='"+document.CuentasBancariasForm.ibanSerie.value+"'/>")){
+	
+				document.CuentasBancariasForm.modo.value="guardarRelacionSerie";
+				document.CuentasBancariasForm.submit();
+				fin();
+			
+			}
+			fin();
+			return false;
+		}else{
+			
+			document.CuentasBancariasForm.modo.value="guardarRelacionSerie";
+			document.CuentasBancariasForm.submit();
+			fin();
+		}
+
 	}	
 	
 </script>

@@ -42,6 +42,7 @@ public class CuentasBancariasForm extends MasterForm {
 	String BIC;
 	
 	String listaSeries;
+	String ibanSerie;
 	String bancosCodigo;
 	
 	// JPT (19-08-2014): Nuevos valores para la comision
@@ -255,5 +256,12 @@ public class CuentasBancariasForm extends MasterForm {
 	}
 	public void setComisioncuentacontable(String comisioncuentacontable) {
 		this.comisioncuentacontable = comisioncuentacontable;
-	}	
+	}
+	public String getIbanSerie() {
+		return ibanSerie;
+	}
+	public void setIbanSerie(String ibanSerie) {
+		this.ibanSerie = ibanSerie;
+	}
+	
 }
