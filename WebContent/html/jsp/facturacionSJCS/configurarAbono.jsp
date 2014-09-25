@@ -182,7 +182,9 @@
 	            		boolean bsel=false;
 	            		
 	            		//Si el colegio solo tiene una cuenta y un sufijo se mostrará la cuenta marcada
-	            		if((Vector)request.getAttribute("bancosInstitucion")).size()==1)&&((Vector)request.getAttribute("listaSufijos")).size()==1))
+	            		int numCuentas=((Vector)request.getAttribute("bancosInstitucion")).size();
+	            		int numSuf=((List)request.getAttribute("listaSufijos")).size();
+	            		if((numCuentas==1)&&(numSuf==1))
 	            			bsel=true;
 	            		
 	            		
