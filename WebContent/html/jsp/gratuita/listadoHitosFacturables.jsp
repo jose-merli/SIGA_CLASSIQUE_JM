@@ -95,7 +95,7 @@
 	    //////////////////// FUNCIONES DE BOTONES - INI ////////////////////
 	    function accionGuardar () {
 	    	// Requisitos necesarios para la facturación controlada
-	    	var valorControlado = jQuery("input[id=checkControlado]:checked").val();
+	    	var valorControlado = jQuery("input[name=checkControlado]:checked").val();
 	    	if (valorControlado != "5") {	 
 		    	var errores = "";
 		    	var importe = "";
@@ -311,18 +311,18 @@
 	    
 	    //////////////////// FUNCIONES UTILES - INI ////////////////////
 	    function habilitarCuadroTexto (elem) {
-	      	elem.className="box";
+	      	elem.className="boxNumber";
 	      	elem.disabled=false;
 	    } //habilitarCuadroTexto ()
 	    
 	    function inhabilitarCuadroTexto (elem) {
 	      	elem.value=0;
-	      	elem.className="boxDisabled";
+	      	elem.className="boxConsultaNumber";
 	      	elem.disabled=true;
 	    } //inhabilitarCuadroTexto ()
 	    
 	    function inhabilitarCuadroTextoSinCero (elem) {
-	      	elem.className="boxDisabled";
+	      	elem.className="boxConsultaNumber";
 	      	elem.disabled=true;
 	    } //inhabilitarCuadroTextoSinCero ()
 	    
@@ -1266,13 +1266,13 @@
               				<tr>
               					<td class="labelText" style="text-align:left; vertical-align:top" nowrap>
                 					<html:checkbox name="DefinirHitosFacturablesGuardiasForm" styleId="checkC" property="checkC" onclick="initC();"/>
-                					<siga:Idioma key="gratuita.confGuardia.literal.fueraguardia"/>
+                					<label for="checkC"><siga:Idioma key="gratuita.confGuardia.literal.fueraguardia"/></label>
               					</td>
               				</tr>
               				<tr>
               					<td class="labelText" style="text-align:left; vertical-align:top" nowrap>                      				
                 					<html:checkbox name="DefinirHitosFacturablesGuardiasForm" styleId="chNoGuardias" property="chNoGuardias" onclick="aplicaFueraGuardias()"/>
-                					<siga:Idioma key="gratuita.confGuardia.literal.aplicartipos"/>
+                					<label for="chNoGuardias"><siga:Idioma key="gratuita.confGuardia.literal.aplicartipos"/></label>
               					</td>
               				</tr>
             			</table>
@@ -1282,7 +1282,7 @@
 				<tr>		
 					<td class="labelText" style="text-align:left; vertical-align:top" nowrap> 
      					<html:checkbox name="DefinirHitosFacturablesGuardiasForm" styleId="checkB1" property="checkB1" value="0" onclick="cambiarCheckB1 ();" />
-     					<siga:Idioma key="gratuita.confGuardia.literal.pagaguardia"/>
+     					<label for="checkB1"><siga:Idioma key="gratuita.confGuardia.literal.pagaguardia"/></label>
    					</td>
    					   
    					<td>
@@ -1290,13 +1290,13 @@
     						<tr>
 			         			<td class="labelText" style="text-align:left; vertical-align:top" nowrap>
 									<html:checkbox name="DefinirHitosFacturablesGuardiasForm" styleId="checkB2" property="checkB2" value="1" onclick="cambiarCheckB2 ();" />
-		                 			<siga:Idioma key="gratuita.confGuardia.literal.nopagaguardia"/>
+		                 			<label for="checkB2"><siga:Idioma key="gratuita.confGuardia.literal.nopagaguardia"/></label>
 		                 		</td>
 		                 	</tr>
 		                 	<tr>
 		                 		<td class="labelText" style="text-align:left; vertical-align:top" nowrap>                      						
 		               				<html:checkbox name="DefinirHitosFacturablesGuardiasForm" styleId="chGuardias" property="chGuardias" onclick="aplicaGuardias()"/>
-		                			<siga:Idioma key="gratuita.confGuardia.literal.aplicartipos"/>
+		                			<label for="chGuardias"><siga:Idioma key="gratuita.confGuardia.literal.aplicartipos"/></label>
 		                		</td>
 		                	</tr>
 		                </table>
@@ -1307,13 +1307,13 @@
                 	<td>
 	                	<table width="100%" border="0" cellspacing="0" cellpadding="0">
 							<tr>
-								<td class="labelText" style="text-align:center"><siga:Idioma key="gratuita.checkbox.literal.Lunes"/></td>
-								<td class="labelText" style="text-align:center"><siga:Idioma key="gratuita.checkbox.literal.Martes"/></td>
-								<td class="labelText" style="text-align:center"><siga:Idioma key="gratuita.checkbox.literal.Miercoles"/></td>
-								<td class="labelText" style="text-align:center"><siga:Idioma key="gratuita.checkbox.literal.Jueves"/></td>
-								<td class="labelText" style="text-align:center"><siga:Idioma key="gratuita.checkbox.literal.Viernes"/></td>
-								<td class="labelText" style="text-align:center"><siga:Idioma key="gratuita.checkbox.literal.Sabado"/></td>
-								<td class="labelText" style="text-align:center"><siga:Idioma key="gratuita.checkbox.literal.Domingo"/></td>
+								<td class="labelText" style="text-align:center"><label for="chPagaGuardiaLunes"><siga:Idioma key="gratuita.checkbox.literal.Lunes"/></label></td>
+								<td class="labelText" style="text-align:center"><label for="chPagaGuardiaMartes"><siga:Idioma key="gratuita.checkbox.literal.Martes"/></label></td>
+								<td class="labelText" style="text-align:center"><label for="chPagaGuardiaMiercoles"><siga:Idioma key="gratuita.checkbox.literal.Miercoles"/></label></td>
+								<td class="labelText" style="text-align:center"><label for="chPagaGuardiaJueves"><siga:Idioma key="gratuita.checkbox.literal.Jueves"/></label></td>
+								<td class="labelText" style="text-align:center"><label for="chPagaGuardiaViernes"><siga:Idioma key="gratuita.checkbox.literal.Viernes"/></label></td>
+								<td class="labelText" style="text-align:center"><label for="chPagaGuardiaSabado"><siga:Idioma key="gratuita.checkbox.literal.Sabado"/></label></td>
+								<td class="labelText" style="text-align:center"><label for="chPagaGuardiaDomingo"><siga:Idioma key="gratuita.checkbox.literal.Domingo"/></label></td>
 							</tr>	 
 							
 							<tr>
@@ -1345,13 +1345,13 @@
                 	<td>
 	                	<table width="100%" border="0" cellspacing="0" cellpadding="0">
 							<tr>
-								<td class="labelText" style="text-align:center"><siga:Idioma key="gratuita.checkbox.literal.Lunes"/></td>
-								<td class="labelText" style="text-align:center"><siga:Idioma key="gratuita.checkbox.literal.Martes"/></td>
-								<td class="labelText" style="text-align:center"><siga:Idioma key="gratuita.checkbox.literal.Miercoles"/></td>
-								<td class="labelText" style="text-align:center"><siga:Idioma key="gratuita.checkbox.literal.Jueves"/></td>
-								<td class="labelText" style="text-align:center"><siga:Idioma key="gratuita.checkbox.literal.Viernes"/></td>
-								<td class="labelText" style="text-align:center"><siga:Idioma key="gratuita.checkbox.literal.Sabado"/></td>
-								<td class="labelText" style="text-align:center"><siga:Idioma key="gratuita.checkbox.literal.Domingo"/></td>
+								<td class="labelText" style="text-align:center"><label for="chNoPagaGuardiaLunes"><siga:Idioma key="gratuita.checkbox.literal.Lunes"/></label></td>
+								<td class="labelText" style="text-align:center"><label for="chNoPagaGuardiaMartes"><siga:Idioma key="gratuita.checkbox.literal.Martes"/></label></td>
+								<td class="labelText" style="text-align:center"><label for="chNoPagaGuardiaMiercoles"><siga:Idioma key="gratuita.checkbox.literal.Miercoles"/></label></td>
+								<td class="labelText" style="text-align:center"><label for="chNoPagaGuardiaJueves"><siga:Idioma key="gratuita.checkbox.literal.Jueves"/></label></td>
+								<td class="labelText" style="text-align:center"><label for="chNoPagaGuardiaViernes"><siga:Idioma key="gratuita.checkbox.literal.Viernes"/></label></td>
+								<td class="labelText" style="text-align:center"><label for="chNoPagaGuardiaSabado"><siga:Idioma key="gratuita.checkbox.literal.Sabado"/></label></td>
+								<td class="labelText" style="text-align:center"><label for="chNoPagaGuardiaDomingo"><siga:Idioma key="gratuita.checkbox.literal.Domingo"/></label></td>
 							</tr>	 
 							
 							<tr>                				
@@ -1384,12 +1384,12 @@
                 <tr>
                 	<td class="labelText" style="text-align:left; vertical-align:top" nowrap>
                   		<html:checkbox name="DefinirHitosFacturablesGuardiasForm" styleId="chPagaGuardiaPorDia" property="chPagaGuardiaPorDia"/>
-                  		<siga:Idioma key="fcs.criteriosFacturacion.guardia.porDia"/>
+                  		<label for="chPagaGuardiaPorDia"><siga:Idioma key="fcs.criteriosFacturacion.guardia.porDia"/></label>
                 	</td>          
 
 					<td class="labelText" style="text-align:left; vertical-align:top" nowrap>
-      					<html:checkbox name="DefinirHitosFacturablesGuardiasForm" property="chNoPagaGuardiaPorDia"/>
-      					<siga:Idioma key="fcs.criteriosFacturacion.guardia.porDia"/>
+      					<html:checkbox name="DefinirHitosFacturablesGuardiasForm" styleId="chNoPagaGuardiaPorDia" property="chNoPagaGuardiaPorDia"/>
+      					<label for="chNoPagaGuardiaPorDia"><siga:Idioma key="fcs.criteriosFacturacion.guardia.porDia"/></label>
     				</td>                    		
           		</tr>
        
@@ -1404,16 +1404,14 @@
           			<td class="labelTextValue" style="text-align:left; vertical-align:middle">
             			<html:text name="DefinirHitosFacturablesGuardiasForm" styleId="hitoPrecio[1]"
 	                       property="hitoPrecio[1]" maxlength="10" size="10"
-	                       onkeypress="filterChars(this,false,true);"
-	                       onkeyup="filterCharsUp(this);"
-	                       onblur="filterCharsNaN(this);" styleClass="box" />
-            			&euro;
+	                       onkeypress="filterCharsNumberEs(this,false,true);"
+	                       onblur="filterCharsNaN(this);" styleClass="box" />&nbsp;&euro;
           			</td>
           			
-          			<td class="labelTextValue" style="text-align:left; vertical-align:middle">
+          			<td class="labelTextValue" style="text-align:center; vertical-align:middle">
             			<siga:Idioma key="fcs.criteriosFacturacion.asistencia.noAplica"/>
           			</td>
-          			<td class="labelTextValue" style="text-align:left; vertical-align:middle">
+          			<td class="labelTextValue" style="text-align:center; vertical-align:middle">
             			<siga:Idioma key="fcs.criteriosFacturacion.asistencia.noAplica"/>
           			</td>
         		</tr>
@@ -1433,17 +1431,15 @@
 	                <td class="labelTextValue" style="text-align:left; vertical-align:middle">
 	                  	<html:text name="DefinirHitosFacturablesGuardiasForm"
 							property="hitoPrecio[2]" styleId="hitoPrecio[2]" maxlength="10" size="10"
-							onkeypress="filterChars(this,false,true);"
-							onkeyup="filterCharsUp(this);"
-							onblur="filterCharsNaN(this);" styleClass="box" />
-	                  	&euro;
+							onkeypress="filterCharsNumberEs(this,false,true);"
+							onblur="filterCharsNaN(this);" styleClass="box" />&nbsp;&euro;
 	                </td>
 	                
-	                <td class="labelTextValue" style="text-align:left; vertical-align:middle">
+	                <td class="labelTextValue" style="text-align:center; vertical-align:middle">
 	                  	<siga:Idioma key="fcs.criteriosFacturacion.asistencia.noAplica"/>
 	                </td>
 	                
-	                <td class="labelTextValue" style="text-align:left; vertical-align:middle">
+	                <td class="labelTextValue" style="text-align:center; vertical-align:middle">
 	                  	<siga:Idioma key="fcs.criteriosFacturacion.asistencia.noAplica"/>
 	           		</td>
 				</tr>
@@ -1453,16 +1449,14 @@
 					<td class="labelText" style="text-align:left; vertical-align:middle">
 	                  	<siga:Idioma key="fcs.criteriosFacturacion.asistencia.asistencias"/>
 	                </td>
-	                <td class="labelTextValue" style="text-align:left; vertical-align:middle">
+	                <td class="labelTextValue" style="text-align:center; vertical-align:middle">
 	                  	<siga:Idioma key="fcs.criteriosFacturacion.asistencia.noAplica"/>
 	                </td>
 	                <td class="labelTextValue" style="text-align:left; vertical-align:middle">
 	                  	<html:text name="DefinirHitosFacturablesGuardiasForm"
 		                    property="hitoPrecio[5]" styleId="hitoPrecio[5]" maxlength="10" size="10"
-		                    onkeypress="filterChars(this,false,true);"
-		                    onkeyup="filterCharsUp(this);"
-		                    onblur="filterCharsNaN(this);" styleClass="box" />
-		                  &euro;&nbsp;
+		                    onkeypress="filterCharsNumberEs(this,false,true);"
+		                    onblur="filterCharsNaN(this);" styleClass="box" />&nbsp;&euro;&nbsp;
 	                  <img src="/SIGA/html/imagenes/bconsultar_disable.gif"
 	                       name="consultar_1" id="consultar_10" alt="Consultar"
 	                       onclick="consultarAsist(0)" onMouseOut="" onMouseOver=""
@@ -1470,7 +1464,7 @@
 	                       disabled>
 	                </td>
 	                
-	                <td class="labelTextValue" style="text-align:left; vertical-align:middle">
+	                <td class="labelTextValue" style="text-align:center; vertical-align:middle">
 	                  	<siga:Idioma key="fcs.criteriosFacturacion.asistencia.noAplica"/>
 	                </td>
 	       		</tr>
@@ -1480,20 +1474,19 @@
 	            	<td class="labelText" style="text-align:left; vertical-align:middle">
 	                	<siga:Idioma key="fcs.criteriosFacturacion.asistencia.guardiaDobladaPorAsist"/>
 	                </td>
-	                <td class="labelTextValue" style="text-align:left; vertical-align:middle">
+	                <td class="labelTextValue" style="text-align:center; vertical-align:middle">
 	                  >
 	                  <html:text name="DefinirHitosFacturablesGuardiasForm"
 		                  property="hitoPrecio[45]" maxlength="3" size="3"
-		                  onkeypress="filterChars(this,false,true);"
-		                  onkeyup="filterCharsUp(this);"
+		                  onkeypress="filterCharsNumberEs(this,false,true);"
 		                  onblur="filterCharsNaN(this);"
 		                  styleClass="box"/>
 	                </td>
 	                
-	                <td class="labelTextValue" style="text-align:left; vertical-align:middle">
+	                <td class="labelTextValue" style="text-align:center; vertical-align:middle">
 	                  	<siga:Idioma key="fcs.criteriosFacturacion.asistencia.noAplica"/>
 	                </td>
-	                <td class="labelTextValue" style="text-align:left; vertical-align:middle">
+	                <td class="labelTextValue" style="text-align:center; vertical-align:middle">
 	                  	<siga:Idioma key="fcs.criteriosFacturacion.asistencia.noAplica"/>
 	                </td>
 				</tr>
@@ -1501,27 +1494,24 @@
 	            <!-- Quinta linea -->
 	            <tr>
 	            	<td class="labelText" style="text-align:left; vertical-align:middle">
-	                	<siga:Idioma key="fcs.criteriosFacturacion.asistencia.maxAsistencia"/>
-	                  	&nbsp;
-	                  	<html:checkbox name="DefinirHitosFacturablesGuardiasForm" property="chAsist" onclick="habilitarAsist();"/>
+	                	<label for="chAsist"><siga:Idioma key="fcs.criteriosFacturacion.asistencia.maxAsistencia"/></label>
+	                  	<html:checkbox name="DefinirHitosFacturablesGuardiasForm" property="chAsist" styleId="chAsist" onclick="habilitarAsist();"/>
 	                </td>
-	                <td class="labelTextValue" style="text-align:left; vertical-align:middle">
+	                <td class="labelTextValue" style="text-align:center; vertical-align:middle">
 	                  	<siga:Idioma key="fcs.criteriosFacturacion.asistencia.noAplica"/>
 	                </td>
 	                <td class="labelTextValue" style="text-align:left; vertical-align:middle">
 	                  	<html:text name="DefinirHitosFacturablesGuardiasForm"
 		                   	property="hitoPrecio[3]" maxlength="10" size="10"
-		                   	onkeypress="filterChars(this,false,true);"
-		                   	onkeyup="filterCharsUp(this);"
-							onblur="filterCharsNaN(this);" styleClass="box" />
-	                  	&euro;&nbsp;
+		                   	onkeypress="filterCharsNumberEs(this,false,true);"
+							onblur="filterCharsNaN(this);" styleClass="box" />&nbsp;&euro;&nbsp;
 	                  	<img src="/SIGA/html/imagenes/bconsultar_disable.gif"
 		                  	name="consultar_1" id="consultar_11" alt="Consultar"
 		                  	onclick="consultarAsist(1)" onMouseOut="" onMouseOver=""
 		                  	border="0" style="cursor:default; vertical-align:middle"
 		                  	disabled>
 	                </td>
-	                <td class="labelTextValue" style="text-align:left; vertical-align:middle">
+	                <td class="labelTextValue" style="text-align:center; vertical-align:middle">
 	                  	<siga:Idioma key="fcs.criteriosFacturacion.asistencia.noAplica"/>
 	                </td>
 				</tr>
@@ -1529,22 +1519,19 @@
 	            <!-- Sexta linea -->
 	            <tr>
 	            	<td class="labelText" style="text-align:left; vertical-align:middle">
-	                	<siga:Idioma key="fcs.criteriosFacturacion.asistencia.minAsist"/>
-	                  	&nbsp;
-	                  	<html:checkbox name="DefinirHitosFacturablesGuardiasForm" property="chMinAsist" onclick="habilitarMinAsist();"/>
+	                	<label for="chMinAsist"><siga:Idioma key="fcs.criteriosFacturacion.asistencia.minAsist"/></label>
+	                  	<html:checkbox name="DefinirHitosFacturablesGuardiasForm" property="chMinAsist" styleId="chMinAsist" onclick="habilitarMinAsist();"/>
 	                </td>
-	                <td class="labelTextValue" style="text-align:left; vertical-align:middle">
+	                <td class="labelTextValue" style="text-align:center; vertical-align:middle">
 	                  <siga:Idioma key="fcs.criteriosFacturacion.asistencia.noAplica"/>
 	                </td>
 	                <td class="labelTextValue" style="text-align:left; vertical-align:middle">
 						<html:text name="DefinirHitosFacturablesGuardiasForm"
 							property="hitoPrecio[10]" maxlength="10" size="10"
-							onkeypress="filterChars(this,false,true);"
-							onkeyup="filterCharsUp(this);"
-							onblur="filterCharsNaN(this);" styleClass="box" />
-	                  	&euro;
+							onkeypress="filterCharsNumberEs(this,false,true);"
+							onblur="filterCharsNaN(this);" styleClass="box" />&nbsp;&euro;
 	                </td>
-	                <td class="labelTextValue" style="text-align:left; vertical-align:middle">
+	                <td class="labelTextValue" style="text-align:center; vertical-align:middle">
 	                  	<siga:Idioma key="fcs.criteriosFacturacion.asistencia.noAplica"/>
 	                </td>
 				</tr>
@@ -1562,15 +1549,13 @@
                 	<td class="labelTextValue" style="text-align:left; vertical-align:middle">
                   		<html:text name="DefinirHitosFacturablesGuardiasForm"
                              property="hitoPrecio[4]" maxlength="10" size="10"
-                             onkeypress="filterChars(this,false,true);"
-                             onkeyup="filterCharsUp(this);"
-                             onblur="filterCharsNaN(this);" styleClass="box" />
-                  		&euro;
+                             onkeypress="filterCharsNumberEs(this,false,true);"
+                             onblur="filterCharsNaN(this);" styleClass="box" />&nbsp;&euro;
                 	</td>
-                	<td class="labelTextValue" style="text-align:left; vertical-align:middle">
+                	<td class="labelTextValue" style="text-align:center; vertical-align:middle">
                   		<siga:Idioma key="fcs.criteriosFacturacion.asistencia.noAplica"/>
                 	</td>
-                	<td class="labelTextValue" style="text-align:left; vertical-align:middle">
+                	<td class="labelTextValue" style="text-align:center; vertical-align:middle">
                   		<siga:Idioma key="fcs.criteriosFacturacion.asistencia.noAplica"/>
                		</td>
               	</tr>
@@ -1580,16 +1565,14 @@
                 	<td class="labelText" style="text-align:left; vertical-align:middle">
                   		<siga:Idioma key="fcs.criteriosFacturacion.asistencia.actuaciones"/>
                 	</td>
-                	<td class="labelTextValue" style="text-align:left; vertical-align:middle">
+                	<td class="labelTextValue" style="text-align:center; vertical-align:middle">
                   		<siga:Idioma key="fcs.criteriosFacturacion.asistencia.noAplica"/>
                 	</td>
                 	<td class="labelTextValue" style="text-align:left; vertical-align:middle">
                   		<html:text name="DefinirHitosFacturablesGuardiasForm"
                              property="hitoPrecio[7]" maxlength="10" size="10"
-                             onkeypress="filterChars(this,false,true);"
-                             onkeyup="filterCharsUp(this);"
-                             onblur="filterCharsNaN(this);" styleClass="box" />
-                  		&euro;&nbsp;
+                             onkeypress="filterCharsNumberEs(this,false,true);"
+                             onblur="filterCharsNaN(this);" styleClass="box" />&nbsp;&euro;&nbsp;
                   		<img src="/SIGA/html/imagenes/bconsultar_disable.gif"
                        		name="consultar_1" id="consultar_20" alt="Consultar"
                        		onclick="consultarAct(0)" onMouseOut="" onMouseOver=""
@@ -1599,10 +1582,8 @@
                 	<td class="labelTextValue" style="text-align:left; vertical-align:middle">
                   		<html:text name="DefinirHitosFacturablesGuardiasForm"
                              property="hitoPrecio[9]" maxlength="10" size="10"
-                             onkeypress="filterChars(this,false,true);"
-                             onkeyup="filterCharsUp(this);"
-                             onblur="filterCharsNaN(this);" styleClass="box" />
-                  		&euro;&nbsp;
+                             onkeypress="filterCharsNumberEs(this,false,true);"
+                             onblur="filterCharsNaN(this);" styleClass="box" />&nbsp;&euro;&nbsp;
                   		<img src="/SIGA/html/imagenes/bconsultar_disable.gif"
                        		name="consultar_1" id="consultar_30" alt="Consultar"
                        		onclick="consultarAct(0)" onMouseOut="" onMouseOver=""
@@ -1616,19 +1597,18 @@
                 	<td class="labelText" style="text-align:left; vertical-align:middle">
                   		<siga:Idioma key="fcs.criteriosFacturacion.asistencia.guardiaDobladaPorAct"/>
                 	</td>
-                	<td class="labelTextValue" style="text-align:left; vertical-align:middle">
+                	<td class="labelTextValue" style="text-align:center; vertical-align:middle">
                   		>
                   		<html:text name="DefinirHitosFacturablesGuardiasForm"
                              property="hitoPrecio[46]" maxlength="3" size="3"
-                             onkeypress="filterChars(this,false,true);"
-                             onkeyup="filterCharsUp(this);"
+                             onkeypress="filterCharsNumberEs(this,false,true);"
                              onblur="filterCharsNaN(this);"
                              styleClass="box"/>
                 	</td>
-                	<td class="labelTextValue" style="text-align:left; vertical-align:middle">
+                	<td class="labelTextValue" style="text-align:center; vertical-align:middle">
                   		<siga:Idioma key="fcs.criteriosFacturacion.asistencia.noAplica"/>
                 	</td>
-                	<td class="labelTextValue" style="text-align:left; vertical-align:middle">
+                	<td class="labelTextValue" style="text-align:center; vertical-align:middle">
                   		<siga:Idioma key="fcs.criteriosFacturacion.asistencia.noAplica"/>
                 	</td>
               	</tr>
@@ -1636,27 +1616,24 @@
               	<!-- Decima linea -->
               	<tr>
                 	<td class="labelText" style="text-align:left; vertical-align:middle">
-                  		<siga:Idioma key="fcs.criteriosFacturacion.asistencia.maxActuacion"/>
-                    	&nbsp;
-                    	<html:checkbox name="DefinirHitosFacturablesGuardiasForm" property="chActuacion" onclick="habilitarAct();"/>
+                  		<label for="chActuacion"><siga:Idioma key="fcs.criteriosFacturacion.asistencia.maxActuacion"/></label>
+                    	<html:checkbox name="DefinirHitosFacturablesGuardiasForm" property="chActuacion" styleId="chActuacion" onclick="habilitarAct();"/>
                 	</td>
-                	<td class="labelTextValue" style="text-align:left; vertical-align:middle">
+                	<td class="labelTextValue" style="text-align:center; vertical-align:middle">
                   		<siga:Idioma key="fcs.criteriosFacturacion.asistencia.noAplica"/>
                 	</td>
                 	<td class="labelTextValue" style="text-align:left; vertical-align:middle">
                   		<html:text name="DefinirHitosFacturablesGuardiasForm"
                              property="hitoPrecio[8]" maxlength="10" size="10"
-                             onkeypress="filterChars(this,false,true);"
-                             onkeyup="filterCharsUp(this);"
-                             onblur="filterCharsNaN(this);" styleClass="box" />
-                  		&euro;&nbsp;
+                             onkeypress="filterCharsNumberEs(this,false,true);"
+                             onblur="filterCharsNaN(this);" styleClass="box" />&nbsp;&euro;&nbsp;
                   		<img src="/SIGA/html/imagenes/bconsultar_disable.gif"
                        		name="consultar_1" id="consultar_21" alt="Consultar"
                        		onclick="consultarAct(1)" onMouseOut="" onMouseOver=""
                        		border="0" style="cursor:default; vertical-align:middle"
                        		disabled>
                 	</td>
-                	<td class="labelTextValue" style="text-align:left; vertical-align:middle">
+                	<td class="labelTextValue" style="text-align:center; vertical-align:middle">
                   		<siga:Idioma key="fcs.criteriosFacturacion.asistencia.noAplica"/>
                 	</td>
               	</tr>
@@ -1664,22 +1641,19 @@
               	<!-- Undecima linea -->
               	<tr>
                 	<td class="labelText" style="text-align:left; vertical-align:middle">
-                  		<siga:Idioma key="fcs.criteriosFacturacion.asistencia.minAct"/>
-                  		&nbsp;
-                  		<html:checkbox name="DefinirHitosFacturablesGuardiasForm" property="chMinActuacion" onclick="habilitarMinAct();"/>
+                  		<label for="chMinActuacion"><siga:Idioma key="fcs.criteriosFacturacion.asistencia.minAct"/></label>
+                  		<html:checkbox name="DefinirHitosFacturablesGuardiasForm" property="chMinActuacion" styleId="chMinActuacion" onclick="habilitarMinAct();"/>
                 	</td>
-                	<td class="labelTextValue" style="text-align:left; vertical-align:middle">
+                	<td class="labelTextValue" style="text-align:center; vertical-align:middle">
                   		<siga:Idioma key="fcs.criteriosFacturacion.asistencia.noAplica"/>
                 	</td>
                 	<td class="labelTextValue" style="text-align:left; vertical-align:middle">
                   		<html:text name="DefinirHitosFacturablesGuardiasForm"
                              property="hitoPrecio[19]" maxlength="10" size="10"
-                             onkeypress="filterChars(this,false,true);"
-                             onkeyup="filterCharsUp(this);"
-                             onblur="filterCharsNaN(this);" styleClass="box" />
-                  		&euro;
+                             onkeypress="filterCharsNumberEs(this,false,true);"
+                             onblur="filterCharsNaN(this);" styleClass="box" />&nbsp;&euro;
                 	</td>
-                	<td class="labelTextValue" style="text-align:left; vertical-align:middle">
+                	<td class="labelTextValue" style="text-align:center; vertical-align:middle">
                   		<siga:Idioma key="fcs.criteriosFacturacion.asistencia.noAplica"/>
                 	</td>
               	</tr>
@@ -1690,23 +1664,20 @@
             			&nbsp;
           			</td>
           			<td class="labelText" style="text-align:left; vertical-align:middle">
-            			<siga:Idioma key="fcs.criteriosFacturacion.asistencia.maxActuacionFueraGuardia"/>
-            			&nbsp;
+            			<label for="chActFG"><siga:Idioma key="fcs.criteriosFacturacion.asistencia.maxActuacionFueraGuardia"/></label>
             			<html:checkbox name="DefinirHitosFacturablesGuardiasForm" styleId="chActFG" property="chActFG" onclick="habilitarFG();"/>
           			</td>
-          			<td class="labelTextValue" style="text-align:left; vertical-align:middle">
+          			<td class="labelTextValue" style="text-align:center; vertical-align:middle">
             			<siga:Idioma key="fcs.criteriosFacturacion.asistencia.noAplica"/>
           			</td>
-          			<td class="labelTextValue" style="text-align:left; vertical-align:middle">
+          			<td class="labelTextValue" style="text-align:center; vertical-align:middle">
             			<siga:Idioma key="fcs.criteriosFacturacion.asistencia.noAplica"/>
           			</td>
           			<td class="labelTextValue" style="text-align:left; vertical-align:middle">
             			<html:text name="DefinirHitosFacturablesGuardiasForm"
                        		property="hitoPrecio[6]" maxlength="10" size="10"
-                       		onkeypress="filterChars(this,false,true);"
-                       		onkeyup="filterCharsUp(this);"
-                       		onblur="filterCharsNaN(this);" styleClass="box" />
-            			&euro;&nbsp;
+                       		onkeypress="filterCharsNumberEs(this,false,true);"
+                       		onblur="filterCharsNaN(this);" styleClass="box" />&nbsp;&euro;&nbsp;
             			<img src="/SIGA/html/imagenes/bconsultar_disable.gif"
                  			name="consultar_1" id="consultar_31" alt="Consultar"
                  			onclick="consultarAct(1)" onMouseOut="" onMouseOver=""
@@ -1722,54 +1693,50 @@
 	   			<table width="100%" border="0" cellspacing="0" cellpadding="0">   			
 					<tr class="filaTablaImpar">
 						<td class="labelText">
-							<input id="checkControlado" name="checkControlado" TYPE="radio" VALUE="1" onclick="gestionarControlado(this.value, false);" <%if(checkControlado.equals("1")){%>checked<%}%>>
-							<siga:Idioma key="fcs.criteriosFacturacion.facturacionGuardias.controladaAs"/>
+							<input id="checkControlado1" name="checkControlado" TYPE="radio" VALUE="1" onclick="gestionarControlado(this.value, false);" <%if(checkControlado.equals("1")){%>checked<%}%>>
+							<label for="checkControlado1"><siga:Idioma key="fcs.criteriosFacturacion.facturacionGuardias.controladaAs"/></label>
 						</td>
 						<td class="labelText"><siga:Idioma key="fcs.criteriosFacturacion.asistencia.asistencias"/></td>
 						<td class="labelTextValue">
-							<input id="AsImporte" class="box" type="text" size="10" value="" 
-								onkeypress="filterChars(this,false,true);"
-	                       		onkeyup="filterCharsUp(this);"
-	                       		onblur="filterCharsNaN(this);"/>&euro;
+							<input id="AsImporte" class="boxNumber" type="text" maxlength="10" size="10" value="" 
+								onkeypress="filterCharsNumberEs(this,false,true);"
+	                       		onblur="filterCharsNaN(this);"/>&nbsp;&euro;
 						</td>
 					</tr>
 					
 					
 					<tr class="filaTablaPar">
 						<td class="labelText" rowspan="2">
-							<input id="checkControlado" name="checkControlado" TYPE="radio" VALUE="2" onclick="gestionarControlado(this.value);" <%if(checkControlado.equals("2")){%>checked<%}%>>
-							<siga:Idioma key="fcs.criteriosFacturacion.facturacionGuardias.controladaAsMin"/>
+							<input id="checkControlado2" name="checkControlado" TYPE="radio" VALUE="2" onclick="gestionarControlado(this.value);" <%if(checkControlado.equals("2")){%>checked<%}%>>
+							<label for="checkControlado2"><siga:Idioma key="fcs.criteriosFacturacion.facturacionGuardias.controladaAsMin"/></label>
 						</td>
 						<td class="labelText"><siga:Idioma key="fcs.criteriosFacturacion.asistencia.asistencias"/></td>
 						<td class="labelTextValue">
-							<input id="AsMinImporte" class="box" type="text" size="10" value="" 
-								onkeypress="filterChars(this,false,true);"
-	                       		onkeyup="filterCharsUp(this);"
-	                       		onblur="filterCharsNaN(this);"/>&euro;
+							<input id="AsMinImporte" class="boxNumber" type="text" maxlength="10" size="10" value="" 
+								onkeypress="filterCharsNumberEs(this,false,true);"
+	                       		onblur="filterCharsNaN(this);"/>&nbsp;&euro;
 						</td>
 					</tr>
 					<tr class="filaTablaPar">
 						<td class="labelText"><siga:Idioma key="fcs.criteriosFacturacion.asistencia.minAsist"/></td>
 						<td class="labelTextValue">
-							<input id="AsMinMinimo" class="box" type="text" size="10" value="" 
-								onkeypress="filterChars(this,false,true);"
-	                       		onkeyup="filterCharsUp(this);"
-	                       		onblur="filterCharsNaN(this);"/>&euro;
+							<input id="AsMinMinimo" class="boxNumber" type="text" maxlength="10" size="10" value="" 
+								onkeypress="filterCharsNumberEs(this,false,true);"
+	                       		onblur="filterCharsNaN(this);"/>&nbsp;&euro;
 						</td>				
 					</tr>			
 					
 					
 					<tr class="filaTablaImpar">
 						<td class="labelText" rowspan="2">
-							<input id="checkControlado" name="checkControlado" TYPE="radio" VALUE="3" onclick="gestionarControlado(this.value);" <%if(checkControlado.equals("3")){%>checked<%}%>>
-							<siga:Idioma key="fcs.criteriosFacturacion.facturacionGuardias.controladaAsTpMin"/>
+							<input id="checkControlado3" name="checkControlado" TYPE="radio" VALUE="3" onclick="gestionarControlado(this.value);" <%if(checkControlado.equals("3")){%>checked<%}%>>
+							<label for="checkControlado3"><siga:Idioma key="fcs.criteriosFacturacion.facturacionGuardias.controladaAsTpMin"/></label>
 						</td>
 						<td class="labelText"><siga:Idioma key="fcs.criteriosFacturacion.asistencia.asistencias"/></td>
 						<td class="labelTextValue">
-							<input id="AsTpImporte" class="box" type="text" size="10" value="" 
-								onkeypress="filterChars(this,false,true);"
-	                       		onkeyup="filterCharsUp(this);"
-	                       		onblur="filterCharsNaN(this);"/>&euro;&nbsp;
+							<input id="AsTpImporte" class="boxNumber" type="text" maxlength="10" size="10" value="" 
+								onkeypress="filterCharsNumberEs(this,false,true);"
+	                       		onblur="filterCharsNaN(this);"/>&nbsp;&euro;&nbsp;
 	              			<img src="/SIGA/html/imagenes/bconsultar_disable.gif"
 	                   			name="AsTpTipos" id="AsTpTipos" alt="Consultar"
 	                   			onclick="consultarAsist(0)" onMouseOut="" onMouseOver=""
@@ -1780,33 +1747,31 @@
 					<tr class="filaTablaImpar">	
 						<td class="labelText"><siga:Idioma key="fcs.criteriosFacturacion.asistencia.minAsist"/></td>
 						<td class="labelTextValue">
-							<input id="AsTpMinimo" class="box" type="text" size="10" value="" 
-								onkeypress="filterChars(this,false,true);"
-	                       		onkeyup="filterCharsUp(this);"
-	                       		onblur="filterCharsNaN(this);"/>&euro;
+							<input id="AsTpMinimo" class="boxNumber" type="text" maxlength="10" size="10" value="" 
+								onkeypress="filterCharsNumberEs(this,false,true);"
+	                       		onblur="filterCharsNaN(this);"/>&nbsp;&euro;
 						</td>
 					</tr>		
 					
 					
 					<tr class="filaTablaPar">
 						<td class="labelText">
-							<input id="checkControlado" name="checkControlado" TYPE="radio" VALUE="4" onclick="gestionarControlado(this.value);" <%if(checkControlado.equals("4")){%>checked<%}%>>
-							<siga:Idioma key="fcs.criteriosFacturacion.facturacionGuardias.controladaGAs"/>
+							<input id="checkControlado4" name="checkControlado" TYPE="radio" VALUE="4" onclick="gestionarControlado(this.value);" <%if(checkControlado.equals("4")){%>checked<%}%>>
+							<label for="checkControlado4"><siga:Idioma key="fcs.criteriosFacturacion.facturacionGuardias.controladaGAs"/></label>
 						</td>
 						<td class="labelText"><siga:Idioma key="fcs.criteriosFacturacion.asistencia.diaGuardia"/></td>
 						<td class="labelTextValue">
-							<input id="GAsImporte" class="box" type="text" size="10" value=""
-								onkeypress="filterChars(this,false,true);"
-	                       		onkeyup="filterCharsUp(this);"
-	                       		onblur="filterCharsNaN(this);"/>&euro;
+							<input id="GAsImporte" class="boxNumber" type="text" maxlength="10" size="10" value=""
+								onkeypress="filterCharsNumberEs(this,false,true);"
+	                       		onblur="filterCharsNaN(this);"/>&nbsp;&euro;
 						</td>
 					</tr>
 										
 										
 					<tr class="filaTablaImpar">
 						<td class="labelText" colspan="3">							
-							<input id="checkControlado" name="checkControlado" TYPE="radio" VALUE="5" onclick="gestionarControlado(this.value);" <%if(checkControlado.equals("5")){%>checked<%}%>>
-							<siga:Idioma key="fcs.criteriosFacturacion.facturacionGuardias.noControlada"/>
+							<input id="checkControlado5" name="checkControlado" TYPE="radio" VALUE="5" onclick="gestionarControlado(this.value);" <%if(checkControlado.equals("5")){%>checked<%}%>>
+							<label for="checkControlado5"><siga:Idioma key="fcs.criteriosFacturacion.facturacionGuardias.noControlada"/></label>
 						</td>	
 					</tr>   							   							   							   			
 	      		</table>
@@ -1823,9 +1788,8 @@
 					<td class="labelTextValue">	
 						<html:text name="DefinirHitosFacturablesGuardiasForm"
 							property="hitoPrecio[13]" maxlength="10" size="10"
-							onkeypress="filterChars(this,false,true);"
-							onkeyup="filterCharsUp(this);"
-							onblur="filterCharsNaN(this);" styleClass="box" />&euro;
+							onkeypress="filterCharsNumberEs(this,false,true);"
+							onblur="filterCharsNaN(this);" styleClass="boxNumber" />&nbsp;&euro;
 					</td>
 				</tr>
 
@@ -1837,9 +1801,8 @@
 					<td class="labelTextValue">	
             			<html:text name="DefinirHitosFacturablesGuardiasForm"
                        		property="hitoPrecio[12]" maxlength="10" size="10"
-                       		onkeypress="filterChars(this,false,true);"
-                       		onkeyup="filterCharsUp(this);"
-                       		onblur="filterCharsNaN(this);" styleClass="box" />&euro;
+                       		onkeypress="filterCharsNumberEs(this,false,true);"
+                       		onblur="filterCharsNaN(this);" styleClass="boxNumber" />&nbsp;&euro;
 					</td>
 				</tr>
 			</table>
