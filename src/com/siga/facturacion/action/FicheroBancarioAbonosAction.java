@@ -402,9 +402,20 @@ public class FicheroBancarioAbonosAction extends MasterAction{
 							abonosBanco=adminAbono.getAbonosBanco(Integer.parseInt(idInstitucion),banco_codigo,idsufijo);
 							
 							//Se informan los propósitos introducidos en la ventana para generar el fichero (en el caso de SJCS los propósitos se informan al configurar el pago)
-							banco.put("IDPROPSEPA", miForm.getListaSufijoProp().split("#")[0]);
-							banco.put("IDPROPOTROS", miForm.getListaSufijoProp().split("#")[1]);
-						
+							if((miForm.getListaSufijoProp()!=null)&&(!miForm.getListaSufijoProp().isEmpty()))
+							{
+								if((miForm.getListaSufijoProp().split("#")[0]!=null)&&(!miForm.getListaSufijoProp().split("#")[0].isEmpty())){
+									banco.put("IDPROPSEPA", miForm.getListaSufijoProp().split("#")[0]);
+									
+								}
+								
+								if((miForm.getListaSufijoProp().split("#")[1]!=null)&&(!miForm.getListaSufijoProp().split("#")[1].isEmpty())){
+									banco.put("IDPROPOTROS", miForm.getListaSufijoProp().split("#")[1]);
+									
+								}
+
+							}	
+					
 					}
 
 					//SE GENERA EL FICHERO CON LOS ABONOS OBTENIDOS
@@ -434,11 +445,19 @@ public class FicheroBancarioAbonosAction extends MasterAction{
 				mensaje = "facturacion.ficheroBancarioAbonos.mensaje.generacionDisquetesOK";
 				String[] datos = {String.valueOf(cont)};
 				mensaje = UtilidadesString.getMensaje(mensaje, datos, lenguaje);	
-				String resultadoFinal[] = new String[1];
-				resultadoFinal[0] =mensaje;
-				request.setAttribute("parametrosArray",resultadoFinal);
-				request.setAttribute("modal", "");
-				resultado= "exitoParametros";
+				
+				if(fcs.equals("1"))
+				{
+					request.setAttribute("mensaje",mensaje);	
+					resultado= "exitoConString";
+				
+				}else{
+					String resultadoFinal[] = new String[1];
+					resultadoFinal[0] =mensaje;
+					request.setAttribute("parametrosArray",resultadoFinal);
+					request.setAttribute("modal", "");
+					resultado= "exitoParametros";
+				}
 
 			}else{
 				tx.rollback();
@@ -592,9 +611,8 @@ public class FicheroBancarioAbonosAction extends MasterAction{
 						}
 					
 					}else{
-						receptor.setProposito(paramAdm.getValor(idInstitucion, "FAC","PROPOSITO_TRANSFERENCIA_SEPA", ""));
+						receptor.setProposito("");
 					}
-					
 				
 				}else{
 				
@@ -612,7 +630,7 @@ public class FicheroBancarioAbonosAction extends MasterAction{
 						}
 						
 					}else{
-						receptor.setProposito(paramAdm.getValor(idInstitucion, "FAC","PROPOSITO_OTRA_TRANSFERENCIA", ""));
+						receptor.setProposito("");
 					}
 				
 				}
@@ -638,7 +656,7 @@ public class FicheroBancarioAbonosAction extends MasterAction{
 							}
 						
 						}else{
-							receptor.setProposito(paramAdm.getValor(idInstitucion, "FAC","PROPOSITO_TRANSFERENCIA_SEPA", ""));
+							receptor.setProposito("");
 						}
 					
 				
@@ -658,7 +676,7 @@ public class FicheroBancarioAbonosAction extends MasterAction{
 						}
 						
 					}else{
-						receptor.setProposito(paramAdm.getValor(idInstitucion, "FAC","PROPOSITO_OTRA_TRANSFERENCIA", ""));
+						receptor.setProposito("");
 					}
 				
 				}
@@ -859,7 +877,7 @@ public class FicheroBancarioAbonosAction extends MasterAction{
 					registrosBenefSEPA[nRegistrosBenefSEPA].append(completarEspacios("NombrePago", bReceptor.getNombrePago(), "I", " ", 140, true)); //concepto
 					registrosBenefSEPA[nRegistrosBenefSEPA].append(rellenarEspacios(35)); //identificacion de la instruccion
 					registrosBenefSEPA[nRegistrosBenefSEPA].append("    "); //tipo de transferencia
-					registrosBenefSEPA[nRegistrosBenefSEPA].append(bReceptor.getProposito()); //proposito de transferencia
+					registrosBenefSEPA[nRegistrosBenefSEPA].append(completarEspacios("PropositoSEPA",bReceptor.getProposito(),"I"," ",3,false)); //proposito de transferencia (no es obligatorio puede estar vacío)
 					registrosBenefSEPA[nRegistrosBenefSEPA].append(rellenarEspacios(99)); //libre
 					
 					nRegistrosBenefSEPA ++;
@@ -885,7 +903,7 @@ public class FicheroBancarioAbonosAction extends MasterAction{
 							bReceptor.getPais(), "I", " ", 105, true)); //direccion completa y pais del beneficiario
 					registrosBenefOtros[nRegistrosBenefOtros].append(completarEspacios("NombrePago", bReceptor.getNombrePago(), "I", " ", 72, true)); //concepto
 					registrosBenefOtros[nRegistrosBenefOtros].append(completarEspacios("Numero abono", bReceptor.getNumeroAbono(), "I", " ", 13, false)); //referencia de la transferencia para el beneficiario
-					registrosBenefOtros[nRegistrosBenefOtros].append(bReceptor.getProposito()); //proposito de transferencia
+					registrosBenefOtros[nRegistrosBenefOtros].append(completarEspacios("PropositoOtros",bReceptor.getProposito(),"I"," ",3,false)); //proposito de transferencia (no es obligatorio puede estar vacío)
 					registrosBenefOtros[nRegistrosBenefOtros].append(rellenarEspacios(268)); //libre
 					
 					nRegistrosBenefOtros ++;
@@ -1120,7 +1138,20 @@ public class FicheroBancarioAbonosAction extends MasterAction{
 		
 	
 	try{
+			
+			GenParametrosAdm paramAdm = new GenParametrosAdm(this.getUserBean(request));
+			
+			String paramPropSEPA="";
+			String paramPropOtros="";
+			
+			paramPropSEPA = paramAdm.getValor(this.getUserBean(request).getLocation(), "FAC","PROPOSITO_TRANSFERENCIA_SEPA", "");
+			paramPropOtros = paramAdm.getValor(this.getUserBean(request).getLocation(), "FAC","PROPOSITO_OTRA_TRANSFERENCIA", "");
+			
 			FacPropositosAdm propositosAdm = new FacPropositosAdm(this.getUserBean(request));
+			
+			Integer idpropDefSEPA=propositosAdm.selectIdPropositoPorCodigo(paramPropSEPA);
+			Integer idpropDefOtros=propositosAdm.selectIdPropositoPorCodigo(paramPropOtros);
+			
 			Vector vpropositos = propositosAdm.selectPropositos();
 			
 			Vector vpropositosList = new Vector();
@@ -1139,6 +1170,10 @@ public class FicheroBancarioAbonosAction extends MasterAction{
 
 			request.setAttribute("listaPropositosSEPA", propositosListSEPAFinal);
 			request.setAttribute("listaPropositosOtros", propositosListOtrosFinal);
+
+			request.setAttribute("idpropDefSEPA", idpropDefSEPA);
+			request.setAttribute("idpropDefOtros", idpropDefOtros);
+			
 			
 		}  catch (Exception e) { 
 			throwExcp("messages.general.error",new String[] {"modulo.facturacion"},e,null); 

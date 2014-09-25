@@ -57,7 +57,6 @@ import com.siga.beans.FacLineaAbonoAdm;
 import com.siga.beans.FacLineaAbonoBean;
 import com.siga.beans.FacPagoAbonoEfectivoAdm;
 import com.siga.beans.FacPagosPorCajaAdm;
-import com.siga.beans.FacPropositosAdm;
 import com.siga.beans.FacSufijoAdm;
 import com.siga.beans.FacSufijoBean;
 import com.siga.beans.FcsAplicaMovimientosVariosAdm;
@@ -292,29 +291,15 @@ public class DatosGeneralesPagoAction extends MasterAction {
 				 	idpropOtros=bean.getIdpropOtros();
 				 	idsufijo=bean.getIdsufijo();
 				 	
-				} else {
-					GenParametrosAdm paramAdm = new GenParametrosAdm(usr);
-					
-					//Propósitos
-					FacPropositosAdm propAdm = new FacPropositosAdm(usr);
-					
-					String paramPropSEPA = paramAdm.getValor(miform.getIdInstitucion(), "FAC",
-							"PROPOSITO_TRANSFERENCIA_SEPA", "");
-					
-					//En bbdd guardamos el idproposito
-					idpropSEPA= propAdm.selectIdPropositoPorCodigo(paramPropSEPA);
-					
-					String paramPropOtros = paramAdm.getValor(miform.getIdInstitucion(), "FAC",
-							"PROPOSITO_OTRA_TRANSFERENCIA", "");
-					
-					//En bbdd guardamos el idproposito
-					idpropOtros= propAdm.selectIdPropositoPorCodigo(paramPropOtros);
-					
 				}
-				
+								
 				pagosBean.setBancosCodigo(sCuenta);
-				pagosBean.setIdpropOtros(idpropOtros);
-				pagosBean.setIdpropSEPA(idpropSEPA);
+				
+				if(idpropOtros!=null)
+					pagosBean.setIdpropOtros(idpropOtros);
+				if(idpropSEPA!=null)
+					pagosBean.setIdpropSEPA(idpropSEPA);
+				
 				pagosBean.setIdsufijo(idsufijo);
 
 				// actualiza la BD
@@ -1110,26 +1095,10 @@ public class DatosGeneralesPagoAction extends MasterAction {
 						miform.getImportePagado());
 				registro.put(FcsPagosJGBean.C_CONTABILIZADO, "0");
 
-				GenParametrosAdm paramAdm = new GenParametrosAdm(
-						this.getUserBean(request));
-	
-				FacPropositosAdm propAdm = new FacPropositosAdm(usr);
-				
-				String paramPropSEPA = paramAdm.getValor(idInstitucion, "FAC",
-						"PROPOSITO_TRANSFERENCIA_SEPA", "");
-				
-				//En bbdd guardamos el idproposito
-				registro.put(FcsPagosJGBean.C_IDPROPSEPA, propAdm.selectIdPropositoPorCodigo(paramPropSEPA));
-				
-				String paramPropOtros = paramAdm.getValor(idInstitucion, "FAC",
-						"PROPOSITO_OTRA_TRANSFERENCIA", "");
-				
-				//En bbdd guardamos el idproposito
-				registro.put(FcsPagosJGBean.C_IDPROPOTROS, propAdm.selectIdPropositoPorCodigo(paramPropOtros));
 				//Se insertan los campos idSufijo y bancos_codigo con el valor "", cuando se configure el abono se actualizará este valor en bb.dd.	
 				registro.put(FcsPagosJGBean.C_BANCOS_CODIGO,"");		
-				registro.put(FcsPagosJGBean.C_IDSUFIJO, ""); 		
-								
+				registro.put(FcsPagosJGBean.C_IDSUFIJO, ""); 
+				
 				UtilidadesHash.set(registro, FcsPagosJGBean.C_IMPORTEMINIMO,
 						new Double(0));
 				UtilidadesHash.set(registro, FcsPagosJGBean.C_IMPORTEEJG,

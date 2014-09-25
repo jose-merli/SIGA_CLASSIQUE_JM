@@ -141,24 +141,32 @@ public class ConfiguracionAbonosAction extends MasterAction{
 					bean = (FcsPagosJGBean)v.firstElement();
 		 		 	request.setAttribute("cuenta", bean.getBancosCodigo());
 
-		 		 	if((bean.getIdpropSEPA()==null)||(bean.getIdpropSEPA()==0)){
+		 		 	//Si la cuenta no ha sido todavía configurada se muestran los propósitos parámetros
+		 		 	if((bean.getBancosCodigo()==null)||(bean.getBancosCodigo().isEmpty())){
+		 		 		
+		 		 		if((bean.getIdpropSEPA()==null)||(bean.getIdpropSEPA()==0)){
 		 		 		String paramPropSEPA = paramAdm.getValor(idInstitucion, "FAC","PROPOSITO_TRANSFERENCIA_SEPA", "");
-		 		 		miform.setIdpropSEPA(propAdm.selectIdPropositoPorCodigo(paramPropSEPA));
+			 		 		miform.setIdpropSEPA(propAdm.selectIdPropositoPorCodigo(paramPropSEPA));
+			 		 	}else{
+			 		 		miform.setIdpropSEPA(bean.getIdpropSEPA());
+			 		 		
+						
+			 		 	}
+					
+			 		 	if((bean.getIdpropOtros()==null)||(bean.getIdpropOtros()==0)){
+			 		 		String paramPropOtros = paramAdm.getValor(idInstitucion, "FAC","PROPOSITO_OTRA_TRANSFERENCIA", "");
+			 		 		miform.setIdpropOtros(propAdm.selectIdPropositoPorCodigo(paramPropOtros)) ;
+			 		 		
+			 		 		
+			 		 	}else{
+			 		 		miform.setIdpropOtros(bean.getIdpropOtros());
+			 		 	}
+			 		//Porque se ha podido configurar con propósitos vacíos
 		 		 	}else{
 		 		 		miform.setIdpropSEPA(bean.getIdpropSEPA());
-		 		 		
-					
-		 		 	}
-					
-		 		 	if((bean.getIdpropOtros()==null)||(bean.getIdpropOtros()==0)){
-		 		 		String paramPropOtros = paramAdm.getValor(idInstitucion, "FAC","PROPOSITO_OTRA_TRANSFERENCIA", "");
-		 		 		miform.setIdpropOtros(propAdm.selectIdPropositoPorCodigo(paramPropOtros)) ;
-		 		 		
-		 		 		
-		 		 	}else{
 		 		 		miform.setIdpropOtros(bean.getIdpropOtros());
 		 		 	}
-
+		 		 	
 		 		 	//Se guarda el sufijo "" para que en la ventana se muestre el de la cuenta bancaria si existe
 		 		 	if(bean.getIdsufijo()==null) {
 		 		 		miform.setIdsufijo(null);

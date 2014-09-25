@@ -110,7 +110,7 @@
 					<td>
 						<bean:define id="listaPropositosSEPA" name="listaPropositosSEPA" scope="request"/>
 						<html:select styleId="comboPropositosSEPA" property="idpropSEPA" value="${configuracionAbonosForm.idpropSEPA}" styleClass="boxCombo" style="width:200px;" disabled="<%=combodeshabilitado%>">
-						<s:if test="${empty configuracionAbonosForm.idpropSEPA}">
+						<s:if test="${configuracionAbonosForm.idpropSEPA eq 0}">
 							<html:option value=""><c:out value=""/></html:option>
 						</s:if>
 						<c:forEach items="${listaPropositosSEPA}" var="propSEPACmb">
@@ -125,7 +125,7 @@
 					<td>
 						<bean:define id="listaPropositosOtros" name="listaPropositosOtros" scope="request"/>
 						<html:select styleId="comboPropositosOtros" property="idpropOtros" value="${configuracionAbonosForm.idpropOtros}" styleClass="boxCombo" style="width:200px;" disabled="<%=combodeshabilitado%>">
-						<s:if test="${empty configuracionAbonosForm.idpropOtros}">
+						<s:if test="${configuracionAbonosForm.idpropOtros eq 0}">
 							<html:option value=""><c:out value=""/></html:option>
 						</s:if>
 						<c:forEach items="${listaPropositosOtros}" var="propOtrosCmb">
@@ -145,7 +145,6 @@
 					<siga:Idioma key="factSJCS.abonos.configuracion.literal.cuentas"/>
 				</td>
 			</tr>
-	
 			<siga:Table 
 				name="tablaResultados"
 				border="1"
@@ -166,7 +165,10 @@
 					</tr>
 <%
 		    	} else { 
-		    		Enumeration en = ((Vector)request.getAttribute("bancosInstitucion")).elements();					
+
+		    		Enumeration en = ((Vector)request.getAttribute("bancosInstitucion")).elements();
+		    	
+		    				
 					int recordNumber=1;
 					while (en.hasMoreElements()) {
 	            		Row row = (Row) en.nextElement(); 
@@ -178,6 +180,12 @@
 
 	            		// Ademas comprobamos que sea la cuenta por defecto
 	            		boolean bsel=false;
+	            		
+	            		//Si el colegio solo tiene una cuenta y un sufijo se mostrará la cuenta marcada
+	            		if((Vector)request.getAttribute("bancosInstitucion")).size()==1)&&((Vector)request.getAttribute("listaSufijos")).size()==1))
+	            			bsel=true;
+	            		
+	            		
 	            		if ((row.getString("BANCOS_CODIGO")!=null && row.getString("BANCOS_CODIGO").equalsIgnoreCase(bdCuenta))||(row.getString("SELECCIONADO").equalsIgnoreCase("1"))) {
 	            			
 	            			bsel=true;
@@ -293,29 +301,37 @@
 		// Asociada al boton GuardarCerrar
 		function accionGuardar() {	
 			sub();
-			if(document.configuracionAbonosForm.cuenta!=null){
-				if (validateConfiguracionAbonosForm(document.configuracionAbonosForm)){
-					document.configuracionAbonosForm.target = "submitArea";
-					document.configuracionAbonosForm.modo.value = "modificar";
-					
- 					//Pasamos el sufijo de esa cuenta
- 					var idSufijoSel=jQuery("#comboSufijos_" + document.configuracionAbonosForm.cuenta.value).val();
+			
+			
+			var chk = document.getElementsByName("cuenta");
+			var cuentaSel=false;
+			for (i = 0; i < chk.length; i++){
+				if (chk[i].checked==1){
+					cuentaSel=true;
+				}	
+			}	
+			
+			if(cuentaSel){
+				
+				document.configuracionAbonosForm.target = "submitArea";
+				document.configuracionAbonosForm.modo.value = "modificar";
+			
+				//Pasamos el sufijo de esa cuenta
+				var idSufijoSel=jQuery("#comboSufijos_" + document.configuracionAbonosForm.cuenta.value).val();
 
- 					if(!idSufijoSel){
-						mensaje = "<siga:Idioma key='facturacion.sufijos.message.errorCuentaBancariaSufijoSJCS'/>";
- 						alert(mensaje);
- 						fin();
- 						return false;	
- 					}
- 					document.configuracionAbonosForm.idsufijo.value=idSufijoSel;
-					document.configuracionAbonosForm.submit();
-				} else {
+				if(!idSufijoSel){
+					mensaje = "<siga:Idioma key='facturacion.sufijos.message.errorCuentaBancariaSufijoSJCS'/>";
+					alert(mensaje);
 					fin();
-					return false;
+					return false;	
 				}
+				document.configuracionAbonosForm.idsufijo.value=idSufijoSel;
+				document.configuracionAbonosForm.submit();
+				
 			} else {
 				fin();
-				alert("<siga:Idioma key="factSJCS.abonos.configuracion.literal.cuentaObligatoria"/>");
+				alert("<siga:Idioma key='factSJCS.abonos.configuracion.literal.cuentaObligatoria'/>");
+				return false;	
 			}
 		}
 

@@ -57,7 +57,8 @@
 					</td>
 					<td>
 						<bean:define id="listaPropositosSEPA" name="listaPropositosSEPA" scope="request"/>
-						<html:select styleId="comboPropositosSEPA" property="idpropSEPA" value="" styleClass="boxCombo" style="width:150px;" >
+						<bean:define id="idpropDefSEPA" name="idpropDefSEPA" scope="request"/>
+						<html:select styleId="comboPropositosSEPA" property="idpropSEPA" value="${idpropDefSEPA}" styleClass="boxCombo" style="width:150px;" >
 						<html:option value=""><c:out value=""/></html:option>
 						<c:forEach items="${listaPropositosSEPA}" var="propSEPACmb">
 							<html:option value="${propSEPACmb.idProposito}"><c:out value="${propSEPACmb.codigo} ${propSEPACmb.nombre}"/></html:option>
@@ -72,7 +73,8 @@
 					</td>
 					<td>
 						<bean:define id="listaPropositosOtros" name="listaPropositosOtros" scope="request"/>
-						<html:select styleId="comboPropositosOtros" property="idpropOtros" value="" styleClass="boxCombo" style="width:150px;" >
+						<bean:define id="idpropDefOtros" name="idpropDefOtros" scope="request"/>
+						<html:select styleId="comboPropositosOtros" property="idpropOtros" value="${idpropDefOtros}" styleClass="boxCombo" style="width:150px;" >
 						<html:option value=""><c:out value=""/></html:option>
 						<c:forEach items="${listaPropositosOtros}" var="propOtrosCmb">
 							<html:option value="${propOtrosCmb.idProposito}"><c:out value="${propOtrosCmb.codigo} ${propOtrosCmb.nombre}"/></html:option>
@@ -106,19 +108,11 @@
 		var propositoSEPA = jQuery("#comboPropositosSEPA");
 		var propositoOtros = jQuery("#comboPropositosOtros");
 		
-		if(propositoSEPA.val()<1) {
-			mensaje = "<siga:Idioma key='facturacion.propositos.message.errorPropSEPA'/>";
-			alert(mensaje);
-			fin();
-			return false;
-		}
+		if(propositoSEPA.val()==null)
+			propositoSEPA="";
 		
-		if(propositoOtros.val()<1) {
-			mensaje = "<siga:Idioma key='facturacion.propositos.message.errorPropOtros'/>";
-			alert(mensaje);
-			fin();
-			return false;
-		}
+		if(propositoOtros.val()==null)
+			propositoOtros="";
 		
 		document.ficheroBancarioAbonosForm.listaSufijoProp.value=propositoSEPA.val()+"#"+propositoOtros.val();
 		document.ficheroBancarioAbonosForm.modo.value = "generarFichero";
