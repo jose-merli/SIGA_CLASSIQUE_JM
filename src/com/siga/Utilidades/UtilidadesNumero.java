@@ -24,8 +24,7 @@ public class UtilidadesNumero {
 	{
 	    double aux = Math.pow(10, precision);
 	    double entero = Math.round(numero * aux);
-// RGG cambio para redondeo correcto	    return entero/aux;
-	    return Math.rint(entero)/aux;
+	    return entero/aux;
 	}
 	 
 	static public float redondea (float numero, int precision) 
