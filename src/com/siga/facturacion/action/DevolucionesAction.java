@@ -982,6 +982,7 @@ public class DevolucionesAction extends MasterAction {
 		    	param_in[3] = idioma;
 		    	param_in[4] = usuario;
 		    	resultado = ClsMngBBDD.callPLProcedure("{call PKG_SIGA_CARGOS.DEVOLUCIONES(?,?,?,?,?,?,?,?)}", 3, param_in);
+		    	codretorno = resultado[0];
 			}
 			
 		} catch (Exception e){
