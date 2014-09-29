@@ -34,11 +34,16 @@
 	
 	String sConsultaFirma = "false";
 	boolean bConsultaFirma = false;
-	String sClaseConsultaFirma = "box";
+	boolean bConsultaFirmaLugar = false;
+	String sClaseConsultaFirmaLugar = "box";
 	if (bConsulta || (beanMandato.getFirmaFecha()!=null && !beanMandato.getFirmaFecha().equals("") && beanMandato.getFechaUso()!=null && !beanMandato.getFechaUso().equals(""))) {
 		sConsultaFirma = "true";
-		bConsultaFirma = true;
-		sClaseConsultaFirma = "boxConsulta";
+		bConsultaFirma = true;		
+		
+		if (beanMandato.getFirmaLugar()!=null && !beanMandato.getFirmaLugar().equals("")) {
+			sClaseConsultaFirmaLugar = "boxConsulta";
+			bConsultaFirmaLugar = true;
+		}
 	}
 	
 	// JPT: Gestion de Volver y botones
@@ -202,7 +207,7 @@
 				<td>
 					<html:text name="MandatosCuentasBancariasForm" property="firmaLugar" styleId="firmaLugar" 
 						value="<%=beanMandato.getFirmaLugar()%>" style='width:500px;' maxlength="100" 
-						styleClass="<%=sClaseConsultaFirma%>" readonly="<%=bConsultaFirma%>" />
+						styleClass="<%=sClaseConsultaFirmaLugar%>" readonly="<%=bConsultaFirmaLugar%>" />
 				</td>				
 			</tr>
 			
