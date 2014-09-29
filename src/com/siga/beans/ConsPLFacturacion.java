@@ -86,10 +86,10 @@ public class ConsPLFacturacion {
 					} else if(estado== Integer.parseInt(ClsConstants.ESTADO_FACTURA_CAJA)) {
 					    //where = where +" AND IDRECURSO ='"+TX_PENDIENTE_COBRO+"'";
 						htRecurso.put("IDRECURSO",ClsConstants.TX_PENDIENTE_CAJA);
-					} else if(estado== Integer.parseInt(ClsConstants.ESTADO_FACTURA_BANCO)) {
+					} else if(estado== Integer.parseInt(ClsConstants.ESTADO_FACTURA_BANCO)&&(cons.equals(FACTURA))) {
 					    //where = where +" AND IDRECURSO ='"+TX_PENDIENTE_COBRO+"'";
 						htRecurso.put("IDRECURSO",ClsConstants.TX_PENDIENTE_BANCO);						
-					} else if(estado== Integer.parseInt(ClsConstants.ESTADO_ABONO_BANCO)) {
+					} else if(estado== Integer.parseInt(ClsConstants.ESTADO_ABONO_BANCO)&&(!cons.equals(FACTURA))) {
 					    //where = where +" AND IDRECURSO ='"+TX_PENDIENTE_ABONO_BANCO+"'";
 						htRecurso.put("IDRECURSO",ClsConstants.TX_PENDIENTE_ABONO_BANCO);
 					} else if(estado==Integer.parseInt(ClsConstants.ESTADO_ABONO_CAJA)) {

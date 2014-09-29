@@ -217,7 +217,7 @@ public class ClsConstants {
 	
 	public static final String TX_PAGADO 				 	= "general.literal.pagado";
 	public static final String TX_PENDIENTE_CAJA 			= "general.literal.pendientecobro";
-	public static final String TX_PENDIENTE_BANCO 			= "general.literal.pendientecobrobanco";
+	public static final String TX_PENDIENTE_BANCO 			= "general.literal.pendienteBanco";
 	public static final String TX_PENDIENTE_ABONO_BANCO 	= "general.literal.pendienteabonobanco";
 	public static final String TX_PENDIENTE_ABONO_CAJA  	= "general.literal.pendienteabonocaja";
 	public static final String TX_EN_REVISION  				= "general.literal.enRevision";
