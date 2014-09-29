@@ -953,9 +953,13 @@
 				importe = convertirANumero(document.getElementById("importe"+concepto).value);
 				
 				//si no se ha introducido un valor correcto no se actualiza nada
-				if (isNaN(importe) || importe < 0 || importe > importePendiente){
+				if (isNaN(importe) || importe < 0){
 					document.getElementById("importe"+concepto).value = backupAPagar;				
 					return;		
+				} else if (importe > importePendiente){
+					alert('<siga:Idioma key="factSJCS.datosPagos.error.maximporte"/>');
+					document.getElementById("importe"+concepto).value = '0.00';	
+					return;
 				}	
 				porcentaje = parseFloat(importe * 100 / total);							
 			
