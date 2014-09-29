@@ -55,7 +55,7 @@
 	<table class="tablaTitulo" cellspacing="0" heigth="32">
 		<tr>
 			<td id="titulo" class="titulitosDatos">
-				<siga:Idioma key="informes.seleccionSerie.titulo"/>
+				<siga:Idioma key="facturacion.serios.literal.seriesFacturacion"/>
 			</td>
 		</tr>
 
