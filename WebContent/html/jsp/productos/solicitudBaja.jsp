@@ -94,16 +94,27 @@
 				document.all.solicitudBajaForm.submit();											
 			}			 	
 		}
+		
+		// JPT: No entiendo el motivo pero llama dos veces a buscarProductosYServicios, la primera siempre mal, hay que mirar si llega dos veces mal para recargar
+		var intentos = 0;
+		function inicializarIntentos(){
+			intentos = 0;
+		}		
 	
+		// JPT: No entiendo el motivo pero llama dos veces a buscarProductosYServicios, la primera siempre mal, hay que mirar si llega dos veces mal para recargar
 		function buscarProductosYServicios(){
 			var idPersona = document.all.solicitudBajaForm.idPersona;
 			
-			if (idPersona!=undefined && idPersona.value!="") {
+ 			if (idPersona!=undefined && idPersona.value!="") {
 				document.all.solicitudBajaForm.target="resultado";
 				document.all.solicitudBajaForm.modo.value = "buscarArticulos";						
-				document.all.solicitudBajaForm.submit();				
+				document.all.solicitudBajaForm.submit();
+				
 			} else {
-				document.location.reload();
+				intentos = intentos + 1;
+				if (intentos > 1) {
+					document.location.reload();
+				}
 			}
 		}
 	</script>	
@@ -127,7 +138,7 @@
 %>	
 						<tr>								
 							<td>
-								<siga:BusquedaPersona tipo="personas" idPersona="idPersona" postFunction="buscarProductosYServicios"></siga:BusquedaPersona>
+								<siga:BusquedaPersona tipo="personas" idPersona="idPersona" preFunction="inicializarIntentos" postFunction="buscarProductosYServicios"></siga:BusquedaPersona>
 							</td>
 						</tr>
 <%
