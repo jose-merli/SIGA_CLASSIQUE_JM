@@ -402,16 +402,16 @@ public class FicheroBancarioAbonosAction extends MasterAction{
 							abonosBanco=adminAbono.getAbonosBanco(Integer.parseInt(idInstitucion),banco_codigo,idsufijo);
 							
 							//Se informan los propósitos introducidos en la ventana para generar el fichero (en el caso de SJCS los propósitos se informan al configurar el pago)
-							if((miForm.getListaSufijoProp()!=null)&&(!miForm.getListaSufijoProp().isEmpty()))
-							{
+							if(miForm.getListaSufijoProp().length()>1)
+							{	
 								if((miForm.getListaSufijoProp().split("#")[0]!=null)&&(!miForm.getListaSufijoProp().split("#")[0].isEmpty())){
-									banco.put("IDPROPSEPA", miForm.getListaSufijoProp().split("#")[0]);
-									
+										banco.put("IDPROPSEPA", miForm.getListaSufijoProp().split("#")[0]);
+										
 								}
-								
-								if((miForm.getListaSufijoProp().split("#")[1]!=null)&&(!miForm.getListaSufijoProp().split("#")[1].isEmpty())){
-									banco.put("IDPROPOTROS", miForm.getListaSufijoProp().split("#")[1]);
 									
+								if((miForm.getListaSufijoProp().split("#")[1]!=null)&&(!miForm.getListaSufijoProp().split("#")[1].isEmpty())){
+										banco.put("IDPROPOTROS", miForm.getListaSufijoProp().split("#")[1]);
+										
 								}
 
 							}	

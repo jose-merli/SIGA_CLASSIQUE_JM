@@ -108,12 +108,6 @@
 		var propositoSEPA = jQuery("#comboPropositosSEPA");
 		var propositoOtros = jQuery("#comboPropositosOtros");
 		
-		if(propositoSEPA.val()==null)
-			propositoSEPA="";
-		
-		if(propositoOtros.val()==null)
-			propositoOtros="";
-		
 		document.ficheroBancarioAbonosForm.listaSufijoProp.value=propositoSEPA.val()+"#"+propositoOtros.val();
 		document.ficheroBancarioAbonosForm.modo.value = "generarFichero";
 		document.ficheroBancarioAbonosForm.submit();
