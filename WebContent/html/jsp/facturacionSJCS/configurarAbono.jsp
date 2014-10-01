@@ -64,7 +64,9 @@
 		guardable = true;
 		combodeshabilitado =false;
 	}else{
-		combodeshabilitado=true;
+		
+		combodeshabilitado =true;
+
 	}	
 %>	
 
@@ -72,7 +74,7 @@
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
 	<!-- Incluido jquery en siga.js -->
-	
+
 	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js?v=${sessionScope.VERSIONJS}'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
 
 	<html:javascript formName="configuracionAbonosForm" staticJavascript="false" />  
@@ -211,10 +213,19 @@
 <% 
 									if (guardable) {
 										
+										if (bsel) { 
 %>
-										<input type="radio" name="cuenta" value="<%=row.getString("BANCOS_CODIGO")%>" onclick="recargarCombo(this)">
-										<c:set var="cuentaChecked" value="false"></c:set>
-<% 
+										<input type="radio" name="cuenta" value="<%=row.getString("BANCOS_CODIGO")%>" checked onclick="recargarCombo(this)">
+										<c:set var="cuentaChecked" value="true"></c:set>
+										
+<%										}else{								
+%>		
+											<input type="radio" name="cuenta" value="<%=row.getString("BANCOS_CODIGO")%>" onclick="recargarCombo(this)">
+											<c:set var="cuentaChecked" value="false"></c:set>
+
+	
+<%										}									
+ 
 
 									} else {
 										if (bsel) { 
@@ -232,7 +243,7 @@
 									} 
 %>
 								</td>  	
-								<td><%=UtilidadesString.mostrarDatoJSP(row.getString("BANCO"))%></td>  	
+ 								<td><%=UtilidadesString.mostrarDatoJSP(row.getString("BANCO"))%></td>  	 
 								<td align="center">
 								<input type="hidden" id="<%=idsufijodefBanco%>" value="<%=idsufijoBancoIni%>"> <!-- para recargar el combo al seleccionar un banco -->
 								<bean:define id="listaSufijos" name="listaSufijos" scope="request"/>	
@@ -306,29 +317,33 @@
 			
 			
 			var chk = document.getElementsByName("cuenta");
-			var cuentaSel=false;
+			var cuentaSel="";
 			for (i = 0; i < chk.length; i++){
 				if (chk[i].checked==1){
-					cuentaSel=true;
+					cuentaSel=chk[i].value;
+					document.configuracionAbonosForm.cuenta.value=cuentaSel;
 				}	
 			}	
 			
-			if(cuentaSel){
+			if(cuentaSel.length>0){
 				
 				document.configuracionAbonosForm.target = "submitArea";
 				document.configuracionAbonosForm.modo.value = "modificar";
 			
 				//Pasamos el sufijo de esa cuenta
-				var idSufijoSel=jQuery("#comboSufijos_" + document.configuracionAbonosForm.cuenta.value).val();
+				var idSufijoSel="";
+				idSufijoSel=jQuery("#comboSufijos_" + cuentaSel).find("option:selected").val();
 
-				if(!idSufijoSel){
+				if(idSufijoSel.length==0){
+					fin();
 					mensaje = "<siga:Idioma key='facturacion.sufijos.message.errorCuentaBancariaSufijoSJCS'/>";
 					alert(mensaje);
-					fin();
 					return false;	
+				}else{
+					document.configuracionAbonosForm.idsufijo.value=idSufijoSel;
+					document.configuracionAbonosForm.submit();
 				}
-				document.configuracionAbonosForm.idsufijo.value=idSufijoSel;
-				document.configuracionAbonosForm.submit();
+				
 				
 			} else {
 				fin();
