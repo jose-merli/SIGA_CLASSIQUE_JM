@@ -25,9 +25,7 @@
 
 <!-- JSP -->
 <% 
-	String app=request.getContextPath();
-	HttpSession ses=request.getSession();
-	UsrBean usr=(UsrBean)request.getSession().getAttribute("USRBEAN");
+	String appPrincipal=request.getContextPath();
 	
 	String idDisqueteCargo = (String) request.getAttribute("idDisqueteCargo");
 	String nombreFichero = (String) request.getAttribute("nombreFichero");
@@ -35,7 +33,6 @@
 	String idSerieFacturacion = (String) request.getAttribute("idSerieFacturacion");
 	String idProgramacion = (String) request.getAttribute("idProgramacion");
 	
-	String modoAction = ""; //NO BORRAR
 %>
 
 	<!-- HEAD -->
@@ -43,11 +40,11 @@
 	
 	<!-- Incluido jquery en siga.js -->	
 	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js?v=${sessionScope.VERSIONJS}'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
-  	<script src="<%=app%>/html/jsp/general/validacionSIGA.jsp" type="text/javascript"></script>
+  	<script src="<%=appPrincipal%>/html/jsp/general/validacionSIGA.jsp" type="text/javascript"></script>
 
 	<!-- INICIO: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->
 	<!-- Validaciones en Cliente -->
-	<script src="<%=app%>/html/js/validacionStruts.js" type="text/javascript"></script>
+	<script src="<%=appPrincipal%>/html/js/validacionStruts.js" type="text/javascript"></script>
 		
 	<!-- FIN: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->
 	<!-- Aqui se reescriben las funciones que vayamos a utilizar -->
@@ -99,15 +96,6 @@
 
 <body>
 
-	<!-- Barra de titulo actualizable desde los mantenimientos -->
-	<table class="tablaTitulo" cellspacing="0" heigth="32">
-		<tr>
-			<td id="titulo" class="titulosPeq">
-				<siga:Idioma key="facturacion.fechasficherobancario.titulo.cambiarFechasCargo"/>
-			</td>
-		</tr>
-	</table>
-
 	<!-- INICIO ******* CAPA DE PRESENTACION ****** -->	
 	<html:form action="/FAC_ConfirmarFacturacion.do" method="POST" target="submitArea">
 		<html:hidden name="confirmarFacturacionForm" property="fechaEntrega" value=""/>
@@ -121,10 +109,7 @@
 		<html:hidden name="confirmarFacturacionForm" property="idSerieFacturacion" value="<%=idSerieFacturacion%>"/>
 		<html:hidden name="confirmarFacturacionForm" property="idProgramacion" value="<%=idProgramacion%>"/>
 		<html:hidden name="confirmarFacturacionForm" property="modo" value = ""/>		
-		
-		<siga:ConjCampos leyenda="facturacion.fechasficherobancario.fechas" >
-			<%@ include file="/html/jsp/facturacion/fechasFicheroBancario.jsp"%>
-		</siga:ConjCampos>
+		<%@ include file="/html/jsp/facturacion/seriesFacturacion.jsp"%>
 	</html:form>
 			
 	<siga:ConjBotonesAccion botones="C,Y,R" modal="M"/>	
@@ -132,7 +117,7 @@
 		
 	<!-- INICIO: SUBMIT AREA -->
 	<!-- Obligatoria en todas las páginas-->
-	<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
+	<iframe name="submitArea" src="<%=appPrincipal%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
 	<!-- FIN: SUBMIT AREA -->	
 </body>
 </html>			

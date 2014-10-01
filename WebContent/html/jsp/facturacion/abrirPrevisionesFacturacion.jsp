@@ -92,7 +92,7 @@
 		 	PARA POSICIONARLA EN SU SITIO NATURAL, SI NO SE POSICIONA A MANO
 			-->
 
-			<siga:ConjBotonesAccion botones="N" clase="botonesDetalle"/>
+			<siga:ConjBotonesAccion botones="" clase="botonesDetalle"/>
 	
 			<!-- FIN: BOTONES REGISTRO -->
 

@@ -22,6 +22,8 @@ public class FacFacturacionProgramadaBean extends MasterBean {
 	
 	private String fechaPresentacion, fechaCargoUnica, fechaRecibosPrimeros, fechaRecibosRecurrentes, fechaRecibosCOR1, fechaRecibosB2B;
 
+	private String logerror, nombrefichero;
+	
 	/* Nombre tabla */
 	static public String T_NOMBRETABLA = "FAC_FACTURACIONPROGRAMADA";
 	
@@ -62,6 +64,8 @@ public class FacFacturacionProgramadaBean extends MasterBean {
 	static public final String C_FECHARECIBOSRECURRENTES	= "FECHARECIBOSRECURRENTES";
 	static public final String C_FECHARECIBOSCOR1			= "FECHARECIBOSCOR1";
 	static public final String C_FECHARECIBOSB2B			= "FECHARECIBOSB2B";
+	static public final String C_NOMBREFICHERO				= "NOMBREFICHERO";
+	static public final String C_LOGERROR					= "LOGERROR";
 
 	// Metodos SET
 	public void setIdInstitucion (Integer id)			{ this.idInstitucion = id; }
@@ -185,6 +189,18 @@ public class FacFacturacionProgramadaBean extends MasterBean {
 	}
 	public void setFechaRecibosPrimeros(String fechaRecibosPrimeros) {
 		this.fechaRecibosPrimeros = fechaRecibosPrimeros;
+	}
+	public String getLogerror() {
+		return logerror;
+	}
+	public void setLogerror(String logerror) {
+		this.logerror = logerror;
+	}
+	public String getNombrefichero() {
+		return nombrefichero;
+	}
+	public void setNombrefichero(String nombrefichero) {
+		this.nombrefichero = nombrefichero;
 	}
 	
 }

@@ -55,6 +55,8 @@
 	String enviarFacturas 	= "";
 	String idTipoPlantilla = "";
 	String generarPDF 	= "";
+	String idProgramacion 	= "";
+	String idEstadoConfirmacion="";
 	boolean bEditableConfirmacion = true;
 	boolean bEditableGeneracion = true;
 	boolean bEditable = true;
@@ -67,6 +69,7 @@
 	ArrayList plantillaSeleccionada = new ArrayList();
 	
 	String modoAction=(String) ses.getAttribute("ModoAction");
+	String desplegar = "true";
 
 	if(request.getSession().getAttribute("DATABACKUP")!= null){		
 		// Se trata de modificacion
@@ -74,6 +77,7 @@
 		Hashtable hash = (Hashtable)en.nextElement();
 		
 		sDescripcion = UtilidadesHash.getString(hash, FacFacturacionProgramadaBean.C_DESCRIPCION);
+		idProgramacion = UtilidadesHash.getString(hash, FacFacturacionProgramadaBean.C_IDPROGRAMACION);
 		LSerieFacturacion = UtilidadesHash.getLong(hash, FacFacturacionProgramadaBean.C_IDSERIEFACTURACION);
 		sSerieFacturacionDesc = UtilidadesHash.getString(hash, FacSerieFacturacionBean.C_NOMBREABREVIADO);
 		sFInicialProducto = com.atos.utils.GstDate.getFormatedDateShort("", UtilidadesHash.getString(hash, FacFacturacionProgramadaBean.C_FECHAINICIOPRODUCTOS));
@@ -82,6 +86,7 @@
 		sFFinalServicio = com.atos.utils.GstDate.getFormatedDateShort("", UtilidadesHash.getString(hash, FacFacturacionProgramadaBean.C_FECHAFINSERVICIOS));
 		sFProgramacion = com.atos.utils.GstDate.getFormatedDateShort("", UtilidadesHash.getString(hash, FacFacturacionProgramadaBean.C_FECHAPROGRAMACION));
 		sFRealGeneracion = UtilidadesHash.getString(hash, FacFacturacionProgramadaBean.C_FECHAREALGENERACION);
+		idEstadoConfirmacion = UtilidadesHash.getString(hash, FacFacturacionProgramadaBean.C_IDESTADOCONFIRMACION);
 
 		sFPrevistaGeneracion = com.atos.utils.GstDate.getFormatedDateShort("", UtilidadesHash.getString(hash, FacFacturacionProgramadaBean.C_FECHAPREVISTAGENERACION));
 		String aux = UtilidadesHash.getString(hash, FacFacturacionProgramadaBean.C_FECHAPREVISTAGENERACION);
@@ -120,6 +125,16 @@
 			bEditableGeneracion=false;
 		}
 		
+		if (modoAction.equals("ver")){
+			desplegar = "false";
+		}else{
+			if(hash.get(FacFacturacionProgramadaBean.C_IDESTADOCONFIRMACION) != null &&
+					(idEstadoConfirmacion.equals(FacEstadoConfirmFactBean.CONFIRM_FINALIZADA.toString()) ||	idEstadoConfirmacion.equals(FacEstadoConfirmFactBean.CONFIRM_PROGRAMADA.toString()) ||
+					idEstadoConfirmacion.equals(FacEstadoConfirmFactBean.GENERADA.toString()))){
+				desplegar = "false";
+			}
+		}
+		
 	} else {		
 		if (sFProgramacion.trim().equals("")) {
 			sFProgramacion = UtilidadesString.formatoFecha(new Date(),"dd/MM/yyyy");
@@ -141,7 +156,7 @@
 	<!-- INICIO: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->
 	<!-- Validaciones en Cliente -->
 	<!-- El nombre del formulario se obtiene del struts-config -->
-	<html:javascript formName="programarFacturacionForm" staticJavascript="false" />  
+	<html:javascript formName="confirmarFacturacionForm" staticJavascript="false" />  
 	<script src="<%=app%>/html/js/validacionStruts.js" type="text/javascript"></script>
 		
 	<!-- FIN: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->
@@ -186,31 +201,32 @@
 		}  // end IsNum
 
 
-		// Asociada al boton Volver
-		function accionCerrar() { 			
-			window.top.close();
-		}			
+		function refrescarLocal() {		
+			document.confirmarFacturacionForm.modo.value="editarFechas";
+			document.confirmarFacturacionForm.target = "mainWorkArea";
+			document.confirmarFacturacionForm.submit();
+		}
 		
 		// Asociada al boton GuardarCerrar
-		function accionGuardarCerrar() {	
+		function accionGuardar() {	
 
-			var fechaConf = trim(document.programarFacturacionForm.fechaPrevistaConfirmacion.value);
-			var fechaGen = trim(document.programarFacturacionForm.fechaPrevistaGeneracion.value);
-			var fechaCargo = trim(document.programarFacturacionForm.fechaCargoUnica.value);
-			f=document.programarFacturacionForm;			
+			var fechaConf = trim(document.confirmarFacturacionForm.fechaPrevistaConfirmacion.value);
+			var fechaGen = trim(document.confirmarFacturacionForm.fechaPrevistaGeneracion.value);
+			var fechaCargo = trim(document.confirmarFacturacionForm.fechaCargoUnica.value);
+			f=document.confirmarFacturacionForm;			
 				
 			sub();
 			
 			if (trim(fechaGen)!="") {
 				//Para la validacion no tengo en cuenta si empieza por 0 y tiene 2 digitos (tanto hora como minuto)
-				var horas = trim(document.programarFacturacionForm.horasGeneracion.value);
-				var minutos = trim(document.programarFacturacionForm.minutosGeneracion.value);
+				var horas = trim(document.confirmarFacturacionForm.horasGeneracion.value);
+				var minutos = trim(document.confirmarFacturacionForm.minutosGeneracion.value);
 
 				if (horas.length==1) {
-					document.programarFacturacionForm.horasGeneracion.value = "0" + horas;
+					document.confirmarFacturacionForm.horasGeneracion.value = "0" + horas;
 				}
 				if (minutos.length==1) {
-					document.programarFacturacionForm.minutosGeneracion.value = "0" + minutos;
+					document.confirmarFacturacionForm.minutosGeneracion.value = "0" + minutos;
 				}
 				if (horas!="" && (horas>23 || horas<0)) {
 					
@@ -223,16 +239,28 @@
 					fin();
 					return false;
 				}
+				
+				<% if (bEditable) { %>
+					 
+					fechaActual = getFechaActualDDMMYYYY();
+					// LA FECHA COBRO ES OBLIGATORIA SI ESTA MARCADO EL CHECK DE COBRO
+					if(compararFecha(trim(fechaGen),fechaActual) == 2){
+						alert("La Fecha Prevista de Generacíon no puede ser anterior al día actual");
+						fin();
+					 	return false;
+					 }						
+				
+				<% } %>
 			}	
 			
 			if (trim(fechaConf)!="") {
-				horas = trim(document.programarFacturacionForm.horasConfirmacion.value);
-				minutos = trim(document.programarFacturacionForm.minutosConfirmacion.value);
+				horas = trim(document.confirmarFacturacionForm.horasConfirmacion.value);
+				minutos = trim(document.confirmarFacturacionForm.minutosConfirmacion.value);
 				if (horas.length==1) {
-					document.programarFacturacionForm.horasConfirmacion.value = "0" + horas;
+					document.confirmarFacturacionForm.horasConfirmacion.value = "0" + horas;
 				}
 				if (minutos.length==1) {
-					document.programarFacturacionForm.minutosConfirmacion.value = "0" + minutos;
+					document.confirmarFacturacionForm.minutosConfirmacion.value = "0" + minutos;
 				}
 				if (horas!="" && (horas>23 || horas<0)) {
 					alert('<siga:Idioma key="messages.programarFacturacionForm.mensajeHoras"/>');
@@ -279,7 +307,7 @@
 				}
 			}
 
-			if (!validateProgramarFacturacionForm(document.programarFacturacionForm)){	
+			if (!validateConfirmarFacturacionForm(document.confirmarFacturacionForm)){	
 				fin();
 				return false;
 			}
@@ -307,10 +335,10 @@
 			} else {
 				if (iguales==0) {
 					// son iguales, comparamos las horas
-					var horasConf = trim(document.programarFacturacionForm.horasConfirmacion.value);
-					var minutosConf = trim(document.programarFacturacionForm.minutosConfirmacion.value);
-					var horasGen = trim(document.programarFacturacionForm.horasGeneracion.value);
-					var minutosGen = trim(document.programarFacturacionForm.minutosGeneracion.value);
+					var horasConf = trim(document.confirmarFacturacionForm.horasConfirmacion.value);
+					var minutosConf = trim(document.confirmarFacturacionForm.minutosConfirmacion.value);
+					var horasGen = trim(document.confirmarFacturacionForm.horasGeneracion.value);
+					var minutosGen = trim(document.confirmarFacturacionForm.minutosGeneracion.value);
 					if (parseInt(horasConf)<parseInt(horasGen)) {
 						alert ("<siga:Idioma key='messages.fechas.rangoHorasPrevistas'/>");
 						fin();
@@ -325,33 +353,63 @@
 				}
 			}
 
-			if(document.programarFacturacionForm.enviarFacturas.checked){
-				if(document.programarFacturacionForm.idTipoPlantillaMail.value == ""){
+			if(document.confirmarFacturacionForm.enviarFacturas.checked){
+				if(document.confirmarFacturacionForm.idTipoPlantillaMail.value == ""){
 					alert('<siga:Idioma key="Facturacion.mensajes.obligatorio.plantillaMail"/>');
 					fin();
 					return false;
 				}
 			}
 			
-			//CR7 - Validacion de las fehas nuevas SEPA
-			if(!validarFechasSEPA()){
-				fin();
-				return false;
-			}
+			<%	if(modoAction!= null && !modoAction.trim().equals("nuevaPrevision")) { %>
+			
+				//CR7 - Validacion de las fehas nuevas SEPA. Para nuevas previsiones no es obligatorio
+				if(!validarFechasSEPA()){
+					fin();
+					return false;
+				}
+			
+			<% } %>
 			
 			if (jQuery("input[name='radioAccion']:checked").val() == "0") { //Checkeado Unica
-				document.programarFacturacionForm.fechaTipoUnica.value = "1";	
-			} else {
-				document.programarFacturacionForm.fechaTipoUnica.value = "0";
+				document.confirmarFacturacionForm.fechaTipoUnica.value = "1";	
+			} else if (jQuery("input[name='radioAccion']:checked").val() == "1") {
+				document.confirmarFacturacionForm.fechaTipoUnica.value = "0";
+			} else { //No seleccionado
+				document.confirmarFacturacionForm.fechaTipoUnica.value = "-1";
 			}
 			
-			if(<%=nuevo%>){
-				f.modo.value = "insertar";
+			if(<%=nuevo%>){				
+				if (trim(fechaConf)!="") {
+					var type = "NO ES RECOMENDABLE programar una confirmación antes de revisar el resultado de la generación. ¿Desea continuar con la programación de la confirmación?";
+					if(confirm(type)){
+						f.modo.value = "insertar";
+					}
+					fin();
+					
+				}else{
+					f.modo.value = "insertar";
+				}
+				
+			} else{
+				
+				if(<%=desplegar%>){				
+					if (trim(fechaConf)!="") {
+						var type = "NO ES RECOMENDABLE programar una confirmación antes de revisar el resultado de la generación. ¿Desea continuar con la programación de la confirmación?";
+						if(confirm(type)){
+							f.modo.value = "modificar";
+						}
+						fin();
+					} else {
+						f.modo.value = "modificar";
+					}
+
+				} else{
+					f.modo.value = "modificar";
+				}				
 			}
-			else{
-				f.modo.value = "modificar";
-			}							
-			document.all.programarFacturacionForm.submit();						
+			
+			document.all.confirmarFacturacionForm.submit();					
 		}			
 	
 		function actualiza() {
@@ -386,6 +444,31 @@
 			document.forms[0].fechaCargo.value =document.forms[0].fechaPrevistaConfirmacion.value;
 		} 
 		
+		function actualizarHoraFechaGeneracion(){
+			var fechaGen = trim(document.confirmarFacturacionForm.fechaPrevistaGeneracion.value)
+			fechaActual = getFechaActualDDMMYYYY();			  
+			if(compararFecha(trim(fechaGen),fechaActual) == 0){
+				var date = new Date();
+				hora = date.getHours();
+				min = date.getMinutes()
+				if (hora.toString().length==1) {
+					hora = "0" + hora;
+				}
+				if (min.toString().length==1) {
+					min = "0" + min;
+				}
+				jQuery("#horasGeneracion").val(hora);					
+				jQuery("#minutosGeneracion").val(min);
+			}
+		}
+		
+		function accionVolver() 
+		{		
+			document.confirmarFacturacionForm.modo.value="abrirVolver";
+			document.confirmarFacturacionForm.target = "mainWorkArea";
+			document.confirmarFacturacionForm.submit();
+		}
+		
 	</script>
 </head>
 
@@ -400,10 +483,13 @@
 	</table>
 
 	<!-- INICIO ******* CAPA DE PRESENTACION ****** -->	
-	<html:form action="/FAC_ProgramarFacturacion.do" method="POST" target="submitArea">
+	<html:form action="/FAC_ConfirmarFacturacion.do" method="POST" target="submitArea">
 		<!-- INICIO: CAMPOS -->
-		<html:hidden property="modo" value="cerrar"/>			
+		<html:hidden property="modo" value=""/>			
 		<html:hidden property="fechaTipoUnica" value=""/>
+		<html:hidden property="idProgramacion" value='<%=idProgramacion%>'/>
+		<html:hidden property="estadoConfirmacion" value='<%=idEstadoConfirmacion%>'/>
+		
 		<siga:ConjCampos leyenda="facturacion.asignacionDeConceptosFacturables.titulo">
 			<table class="tablaCampos" align="center" border="0" cellspacing="0" cellpadding="0">						
 				<tr align="center"> 
@@ -411,7 +497,7 @@
 						<siga:Idioma key="facturacion.seriesFacturacion.literal.descripcion"/>&nbsp;(*)
 					</td>
 					<td align="left">
-						<% if (modoAction.equals("editar")) { %>
+						<% if (modoAction.equals("editar") || modoAction.equals("nuevaPrevision")) { %>
 							<input type ="text"  value="<%=sDescripcion%>" id="descripcionProgramacion" name="descripcionProgramacion" class="box" style="width:'300px';">
 						<% } else { %>
 							<input type ="text"  value="<%=sDescripcion%>" id="descripcionProgramacion" name="descripcionProgramacion" class="boxConsulta" readOnly="true" style="width:'300px';">
@@ -427,9 +513,9 @@
 						<% if(nuevo) {
 								dato[0] = usr.getLocation().toString();
 						%>
-				    		<siga:ComboBD nombre="serieFacturacion" tipo="cmbSerieFacturacion" parametro="<%=dato%>" clase="boxCombo" accion="cambiaSerie();" obligatorio="true"/>
+				    		<siga:ComboBD nombre="idSerieFacturacion" tipo="cmbSerieFacturacion" parametro="<%=dato%>" clase="boxCombo" accion="cambiaSerie();" obligatorio="true"/>
 						<% } else { %>
-							<html:hidden property="serieFacturacion" value='<%=LSerieFacturacion.toString()%>'/>
+							<html:hidden property="idSerieFacturacion" value='<%=LSerieFacturacion.toString()%>'/>
 							<html:text property="serieFacturacionDes" value='<%=sSerieFacturacionDesc%>' size="60" styleClass="boxConsulta" readOnly="true" />
 						<%}%>								
 					</td>
@@ -440,7 +526,7 @@
 						<siga:Idioma key="facturacion.seriesFacturacion.literal.fechaProgramacion"/>&nbsp;(*)
 					</td>
 					<td>
-						<html:text name="programarFacturacionForm" property="fechaProgramacion" value="<%=sFProgramacion%>" size="10" styleClass="boxConsulta" readonly="true" />									
+						<html:text name="confirmarFacturacionForm" property="fechaProgramacion" value="<%=sFProgramacion%>" size="10" styleClass="boxConsulta" readonly="true" />									
 					</td>
 				</tr>
 			</table>
@@ -511,7 +597,7 @@
 					</td>
 					<td width="120px">
 						<% if (bEditable) { %>
-							<siga:Fecha  nombreCampo="fechaPrevistaGeneracion" valorInicial="<%=sFPrevistaGeneracion%>"/>
+							<siga:Fecha  nombreCampo="fechaPrevistaGeneracion" valorInicial="<%=sFPrevistaGeneracion%>" postFunction="actualizarHoraFechaGeneracion();"/>
 						<% } else { %>
 							<siga:Fecha  nombreCampo="fechaPrevistaGeneracion" valorInicial="<%=sFPrevistaGeneracion%>" disabled="true" readOnly="true"/>
 						<% }  %>
@@ -522,27 +608,27 @@
 					</td>
 					<td>
 						<% if (bEditableGeneracion) { %>
-							<html:text name="programarFacturacionForm" property="horasGeneracion"  value="<%=sHorasGeneracion%>" size="1" maxlength="2" styleClass="box" readonly="<%=!bEditableGeneracion%>" />					
+							<html:text name="confirmarFacturacionForm" styleId="horasGeneracion" property="horasGeneracion"  value="<%=sHorasGeneracion%>" size="1" maxlength="2" styleClass="box" readonly="<%=!bEditableGeneracion%>" />					
 							:
-							<html:text name="programarFacturacionForm" property="minutosGeneracion"  value="<%=sMinutosGeneracion%>" size="1" maxlength="2" styleClass="box" readonly="<%=!bEditableGeneracion%>" />	
+							<html:text name="confirmarFacturacionForm" styleId="minutosGeneracion" property="minutosGeneracion" value="<%=sMinutosGeneracion%>" size="1" maxlength="2" styleClass="box" readonly="<%=!bEditableGeneracion%>" />	
 						<% } else {%>
-							<html:text name="programarFacturacionForm" property="horasGeneracion"  value="<%=sHorasGeneracion%>" size="1" maxlength="2" styleClass="boxConsulta" readonly="<%=!bEditableGeneracion%>" />					
+							<html:text name="confirmarFacturacionForm" property="horasGeneracion"  value="<%=sHorasGeneracion%>" size="1" maxlength="2" styleClass="boxConsulta" readonly="<%=!bEditableGeneracion%>" />					
 							:
-							<html:text name="programarFacturacionForm" property="minutosGeneracion"  value="<%=sMinutosGeneracion%>" size="1" maxlength="2" styleClass="boxConsulta" readonly="<%=!bEditableGeneracion%>" />	
+							<html:text name="confirmarFacturacionForm" property="minutosGeneracion"  value="<%=sMinutosGeneracion%>" size="1" maxlength="2" styleClass="boxConsulta" readonly="<%=!bEditableGeneracion%>" />	
 						<% } %>
 					</td>					
 				</tr>
 			</table>
 		</siga:ConjCampos>
 		
-		<siga:ConjCampos leyenda="facturacion.seriesFacturacion.literal.programacionConfirmacion">
+		<siga:ConjCampos leyenda="facturacion.seriesFacturacion.literal.programacionConfirmacion" oculto="<%=desplegar%>" desplegable="<%=desplegar%>">
 			<table class="tablaCampos" align="center" border="0" cellspacing="0" cellpadding="0">
 				<tr>
 					<td class="labelText" width="210px">
 						<siga:Idioma key="facturacion.seriesFacturacion.literal.fechaPrevistaConfirmacion"/>
 					</td>
 					<td width="120px">
-						<% if (modoAction.equals("editar")) { %>
+						<% if (modoAction.equals("editar") || modoAction.equals("nuevaPrevision")) { %>
 							<siga:Fecha nombreCampo="fechaPrevistaConfirmacion" valorInicial="<%=sFPrevistaConfirmacion%>"/>
 						<% } else { %>
 							<siga:Fecha nombreCampo="fechaPrevistaConfirmacion" valorInicial="<%=sFPrevistaConfirmacion%>" disabled="true" readOnly="true"/>
@@ -552,14 +638,14 @@
 					<td class="labelText" >
 						<siga:Idioma key="facturacion.seriesFacturacion.literal.hora"/>&nbsp;&nbsp;&nbsp;
 
-						<% if (modoAction.equals("editar")) { %>
-							<html:text name="programarFacturacionForm" property="horasConfirmacion"  value="<%=sHorasConfirmacion%>" size="1" maxlength="2" styleClass="box" readonly="false" />					
+						<% if (modoAction.equals("editar") || modoAction.equals("nuevaPrevision")) { %>
+							<html:text name="confirmarFacturacionForm" styleId="horasConfirmacion" property="horasConfirmacion"  value="<%=sHorasConfirmacion%>" size="1" maxlength="2" styleClass="box" readonly="false" />					
 							:
-							<html:text name="programarFacturacionForm" property="minutosConfirmacion"   value="<%=sMinutosConfirmacion%>" size="1" maxlength="2" styleClass="box" readonly="false" />	
+							<html:text name="confirmarFacturacionForm" styleId="minutosConfirmacion" property="minutosConfirmacion"   value="<%=sMinutosConfirmacion%>" size="1" maxlength="2" styleClass="box" readonly="false" />	
 						<% } else {%>
-							<html:text name="programarFacturacionForm" property="horasConfirmacion"  value="<%=sHorasConfirmacion%>" size="1" maxlength="2" styleClass="boxConsulta" readonly="true" />					
+							<html:text name="confirmarFacturacionForm" property="horasConfirmacion"  value="<%=sHorasConfirmacion%>" size="1" maxlength="2" styleClass="boxConsulta" readonly="true" />					
 							:
-							<html:text name="programarFacturacionForm" property="minutosConfirmacion"   value="<%=sMinutosConfirmacion%>" size="1" maxlength="2" styleClass="boxConsulta" readonly="true" />	
+							<html:text name="confirmarFacturacionForm" property="minutosConfirmacion"   value="<%=sMinutosConfirmacion%>" size="1" maxlength="2" styleClass="boxConsulta" readonly="true" />	
 						<% } %>
 					</td>									
 				</tr>
@@ -568,12 +654,12 @@
 			<%@ include file="/html/jsp/facturacion/fechasFicheroBancario.jsp"%>
 		</siga:ConjCampos>
 
-		<siga:ConjCampos leyenda="facturacion.seriesFacturacion.literal.configuracionCheck">
+		<siga:ConjCampos leyenda="facturacion.seriesFacturacion.literal.configuracionCheck" oculto="<%=desplegar%>" desplegable="<%=desplegar%>">
 			<table class="tablaCampos" align="center" border="0" cellspacing="0" cellpadding="0">
 				<tr>
 					<td class="labelText" style="text-align:left">
 						<siga:Idioma key="facturacion.datosGenerales.literal.generaPDF"/>&nbsp;
-						<% if (modoAction.equals("editar")) { %>
+						<% if (modoAction.equals("editar") || modoAction.equals("nuevaPrevision")) { %>
 							<% if ((enviarFacturas != null) && (enviarFacturas.equals("1"))) { %>
 								<input type="checkbox" id="generarPDF" name="generarPDF" checked disabled>
 							<% } else if ((generarPDF != null) && (generarPDF.equals("1"))) { %>
@@ -597,7 +683,7 @@
 						<siga:Idioma key="envios.plantillas.literal.plantilla"/> 
 					</td>
 					<td rowspan="2">
-						<% if (modoAction.equals("editar")) { %>
+						<% if (modoAction.equals("editar") || modoAction.equals("nuevaPrevision")) { %>
 							<siga:ComboBD nombre = "idTipoPlantillaMail" tipo="cmbPlantillaEnvios3" clase="boxCombo" elementoSel="<%=plantillaEnviosSeleccionada%>" ancho="300" obligatorio="false" pestana="true" parametro="<%=parametrosCmbPlantillaEnvios%>"/>
 						<% } else{ %>
 							<siga:ComboBD nombre = "idTipoPlantillaMail" tipo="cmbPlantillaEnvios3" clase="boxCombo" elementoSel="<%=plantillaEnviosSeleccionada%>" ancho="300" obligatorio="false" pestana="true" parametro="<%=parametrosCmbPlantillaEnvios%>" readonly="true"/>
@@ -607,7 +693,7 @@
 				<tr>					
 					<td class="labelText" style="text-align:left">
 						<siga:Idioma key="facturacion.datosGenerales.literal.envioFacturas"/>&nbsp;
-						<% if (modoAction.equals("editar")) { %>
+						<% if (modoAction.equals("editar") || modoAction.equals("nuevaPrevision")) { %>
 							<%  if ((enviarFacturas != null) && (enviarFacturas.equals("1"))) { %>
 									<input type="checkbox" id="enviarFacturas" name="enviarFacturas" onclick="actualiza();" checked>
 							<% } else { %>
@@ -627,10 +713,10 @@
 		</siga:ConjCampos>
 	
 		<!-- ******* BOTONES DE ACCIONES EN REGISTRO ****** -->
-		<% if (modoAction.equals("editar")) { %>
-			<siga:ConjBotonesAccion botones="C,Y" modal="M"/>	
+		<% if (modoAction.equals("editar") ||  modoAction.equals("nuevaPrevision")) { %>
+			<siga:ConjBotonesAccion botones="V,G" clase="botonesDetalle"  />
 		<% } else { %>
-			<siga:ConjBotonesAccion botones="C" modal="M"/>
+			<siga:ConjBotonesAccion botones="V" clase="botonesDetalle"  />
 		<% } %>
 		<!-- FIN ******* CAPA DE PRESENTACION ****** -->
 			

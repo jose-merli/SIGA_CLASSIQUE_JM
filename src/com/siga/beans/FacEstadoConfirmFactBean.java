@@ -22,9 +22,9 @@ public class FacEstadoConfirmFactBean extends MasterBean{
 
 	/* COnstantes */
 	
-	static public final Integer CONFIRM_PROGRAMADA = new Integer(1);  
-	static public final Integer CONFIRM_PENDIENTE = new Integer(2);  
-	static public final Integer CONFIRM_FINALIZADA = new Integer(3);  
+	static public final Integer CONFIRM_PROGRAMADA = new Integer(1);	// CONFIRMACION PROGRAMADA
+	static public final Integer GENERADA = new Integer(2); 	// GENERADA
+	static public final Integer CONFIRM_FINALIZADA = new Integer(3);	// CONFIRMADA
 	static public final Integer CONFIRM_FINALIZADAERRORES = new Integer(4);  
 	
 	static public final Integer PDF_NOAPLICA = new Integer(5);  
@@ -39,10 +39,11 @@ public class FacEstadoConfirmFactBean extends MasterBean{
 	static public final Integer ENVIO_PENDIENTE = new Integer(13);  
 	static public final Integer ENVIO_PROCESANDO = new Integer(14);  
 	static public final Integer ENVIO_FINALIZADA = new Integer(15);  
-	static public final Integer ENVIO_FINALIZADAERRORES = new Integer(16);  
+	static public final Integer ENVIO_FINALIZADAERRORES = new Integer(16);
+	static public final Integer EJECUTANDO_CONFIRMACION = new Integer(17);
+	static public final Integer GENERACION_PROGRAMADA = new Integer(18);  
+	static public final Integer EJECUTANDO_GENERACION = new Integer(19); 
 	
-	static public final Integer CONFIRM_PROCESANDO = new Integer(17); 
-
 	/* Nombre tabla */
 	static public String T_NOMBRETABLA = "FAC_ESTADOCONFIRMFACT";
 	

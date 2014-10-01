@@ -2989,15 +2989,14 @@
 
 <!-- FIN: AbonosLineasForm miguel.villegas 15-03-2005 -->
 
-<!-- INICIO: programarFacturacionForm nuria.rodriguezg 15-03-2005 -->
+<!-- INICIO: confirmarFacturacionForm RGG 01/02/2007 -->
 
-    <form name="programarFacturacionForm">
+    <form name="confirmarFacturacionForm">
     
         <field property = "descripcionProgramacion" depends = "required">
             <arg0 key="facturacion.seriesFacturacion.literal.descripcion"/>
-        </field>
-    
-        <field property = "serieFacturacion" depends = "required">
+        </field>    
+        <field property = "idSerieFacturacion" depends = "required">
             <arg0 key="facturacion.seriesFacturacion.literal.serieFacturacion"/>
         </field>
         <field property = "fechaInicialProducto" depends = "required">
@@ -3018,19 +3017,17 @@
         <field property = "fechaPrevistaGeneracion" depends = "required">
             <arg0 key="facturacion.seriesFacturacion.literal.fechaPrevistaGeneracion"/>
         </field>
-        
-        
     </form>
-
-<!-- FIN: programarFacturacionForm nuria.rodriguezg 15-03-2005 -->
-
+    
 <!-- INICIO: confirmarFacturacionForm RGG 01/02/2007 -->
 
-    <form name="confirmarFacturacionForm">
+    <form name="confirmarFacturacion1Form">
         <field property = "estadoConfirmacion" depends = "required">
-            <arg0 key="facturacion.confirmarFacturacion.literal.estadoConfirmacion"/>
+            <arg0 key="facturacion.estado"/>
         </field>
     </form>
+
+<!-- INICIO: DatosGeneralesFacturacionForm ruben.fernandez 15-03-2005 -->    
 
 <!-- INICIO: DatosGeneralesFacturacionForm ruben.fernandez 15-03-2005 -->
 

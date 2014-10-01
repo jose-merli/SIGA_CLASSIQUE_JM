@@ -935,7 +935,10 @@ MDB Microsoft Access Database
 
    public static  boolean esConsejoColegio(Object idInstitucion){
 	  boolean esConsejoColegio = false;
-	  String strInstitucion = idInstitucion.toString().substring(2);
+	  String strInstitucion = idInstitucion.toString();
+	  if(strInstitucion.length()==6){
+		  strInstitucion = strInstitucion.substring(2);
+	  }
 	  int institucionNumber = Integer.parseInt(strInstitucion); 
 	  
 	  if (institucionNumber > INSTITUCION_CONSEJO){ // Consejo de Colegio
@@ -947,7 +950,10 @@ MDB Microsoft Access Database
    
    public static  boolean esColegio(Object idInstitucion){
 	  boolean esColegio = false;
-	  String strInstitucion = idInstitucion.toString().substring(2);
+	  String strInstitucion = idInstitucion.toString();
+	  if(strInstitucion.length()==6){
+		  strInstitucion = strInstitucion.substring(2);
+	  }
 	  int institucionNumber = Integer.parseInt(strInstitucion); 
 	  
 	  if (institucionNumber > INSTITUCION_CONSEJOGENERAL && institucionNumber < INSTITUCION_CONSEJO){ 

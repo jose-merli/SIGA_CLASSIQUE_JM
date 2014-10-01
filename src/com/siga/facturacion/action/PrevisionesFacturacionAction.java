@@ -395,7 +395,7 @@ or	 * @param request -
 				miHash.put(FacPrevisionFacturacionBean.C_DESCRIPCION, formPrev.getDescripcionPrevision());
 				
 				//Se pone estado de previsión pendiente para que la trate el proceso automático
-				miHash.put(FacPrevisionFacturacionBean.C_IDESTADOPREVISION,FacEstadoConfirmFactBean.CONFIRM_PENDIENTE);
+				miHash.put(FacPrevisionFacturacionBean.C_IDESTADOPREVISION,FacEstadoConfirmFactBean.GENERADA);
 				// Insertamos el registro.
 				result = admPrev.insert(miHash);
 

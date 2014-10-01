@@ -369,7 +369,7 @@ public class InformePersonalizable extends MasterReport
 			consulta = iterConsultas.next();
 
 			// sustituyendo los filtros en la consulta por los datos del informe
-			if ((sentencia = consultaAdm.sustituirFiltrosConsulta(consulta, filtrosInforme)) == null)
+			if ((sentencia = consultaAdm.sustituirFiltrosConsulta(consulta, filtrosInforme)) == null)  //CR7 - CAMBIAR LA CONSULTA 1027 - Datos previsiones facturación
 				// falla si la consulta no tiene los filtros obligatorios
 				throw new SIGAException(
 						"informes.personalizable.error.configuracion.filtros");

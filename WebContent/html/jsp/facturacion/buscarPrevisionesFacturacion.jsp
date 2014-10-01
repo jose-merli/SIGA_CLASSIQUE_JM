@@ -160,7 +160,6 @@
 						
 								elems[0]=new FilaExtElement("download","download",SIGAConstants.ACCESS_READ);
 								if (!programada) {
-									elems[1]=new FilaExtElement("programacion","programacion",SIGAConstants.ACCESS_READ);
 									botones="B";
 								} else {
 									botones="";

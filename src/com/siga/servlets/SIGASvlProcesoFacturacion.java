@@ -77,7 +77,7 @@ public class SIGASvlProcesoFacturacion extends HttpServlet {
    	   					
    						Date ini = new Date();
    						
-   	   					Facturacion.procesarFacturas(""+beanInstitucion.getIdInstitucion(),usr);
+   	   					Facturacion.procesarFacturas(beanInstitucion.getIdInstitucion().toString(),usr);
    						
    						Date fin = new Date();
    						// Control de transacciones largas
@@ -92,7 +92,6 @@ public class SIGASvlProcesoFacturacion extends HttpServlet {
 
    	   					fac = new Facturacion(usr);
    	   					fac.confirmarProgramacionesFacturasInstitucion(request,""+beanInstitucion.getIdInstitucion(),usr);
-   	   					//Facturacion.confirmarFacturasPartes(request,""+beanInstitucion.getIdInstitucion(),UsrBean.UsrBeanAutomatico(beanInstitucion.getIdInstitucion().toString()));
    	   					
    	   					ClsLogging.writeFileLogWithoutSession(" ---------- INICIO REEENVIO DE FACTURAS ", 3);
    	   					fac.generarPDFsYenviarFacturasProgramacion(request,""+beanInstitucion.getIdInstitucion(),usr);
@@ -104,38 +103,6 @@ public class SIGASvlProcesoFacturacion extends HttpServlet {
 							ClsLogging.writeFileLogWithoutSession(" ---------- ERROR GENERACION DE FACTURAS. INSTITUCION: "+beanInstitucion.getIdInstitucion(), 3);
 						else
 							ClsLogging.writeFileLogWithoutSession(" ---------- ERROR GENERACION DE FACTURAS.", 3);
-					}
-   					
-   					//MJM PROCESO DE PREVISIÓN FACTURACIÓN
-					try {
-						
-						beanInstitucion = (CenInstitucionBean)vInstituciones.elementAt(i);
-   	   					UsrBean usr			= UsrBean.UsrBeanAutomatico(beanInstitucion.getIdInstitucion().toString());
-   	   					
-						ClsLogging
-								.writeFileLogWithoutSession(
-										" ---------- INICIO PREVISIÓN FACTURACIÓN",
-										10);
-						fac = new Facturacion(usr); 
-						fac.procesarPrevisionesFactPend(request, ""
-								+ beanInstitucion.getIdInstitucion(), usr);
-						ClsLogging.writeFileLogWithoutSession(
-								" ---------- OK PREVISIÓN FACTURACIÓN. INSTITUCION: "
-										+ beanInstitucion
-												.getIdInstitucion(), 10);
-					} catch (Exception e) {
-						if (beanInstitucion != null
-								&& beanInstitucion.getIdInstitucion() != null)
-							ClsLogging.writeFileLogError(
-									" ---------- ERROR PREVISIÓN FACTURACIÓN. INSTITUCION: "
-											+ beanInstitucion
-													.getIdInstitucion(), e,
-									3);
-						else
-							ClsLogging
-									.writeFileLogError(
-											" ---------- ERROR PREVISIÓN FACTURACIÓN.",
-											e, 3);
 					}
 
    				}

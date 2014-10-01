@@ -33,7 +33,7 @@
 <%@ page import = "com.siga.tlds.FilaExtElement"%>
 
 <!-- JSP -->
-<%  
+<%
 	String app=request.getContextPath();
 	HttpSession ses=request.getSession();
 	
@@ -43,9 +43,19 @@
 	String dato[] = new String[1];
 	dato[0] = user.getLanguage().toUpperCase();
 	ArrayList estadoConfirmacionSel = new ArrayList();
-	estadoConfirmacionSel.add(FacEstadoConfirmFactBean.CONFIRM_PENDIENTE.toString());
-
-
+	boolean volver = false;
+	
+	if (request.getAttribute("volver") != null && request.getAttribute("volver").equals("s")) {
+		volver = true;
+		if(request.getAttribute("estadoConfirmacion") != null && !((String)request.getAttribute("estadoConfirmacion")).equals("")){
+			estadoConfirmacionSel.add((String)request.getAttribute("estadoConfirmacion"));
+		}else{
+			estadoConfirmacionSel.add(FacEstadoConfirmFactBean.GENERADA.toString());
+		}		
+	}else{
+		//La priemra vez que se carga la página
+		estadoConfirmacionSel.add(FacEstadoConfirmFactBean.GENERADA.toString());	
+	}
 %>	
 	
 
@@ -61,13 +71,11 @@
 
 	<!-- INICIO: TITULO Y LOCALIZACION -->
 	<!-- Escribe el título y localización en la barra de título del frame principal -->
-	<siga:TituloExt 
-		titulo="facturacion.confirmarFacturacion.literal.cabecera" 
-		localizacion="facturacion.confirmarFacturacion.ruta"/>
+	<siga:TituloExt titulo="facturacion.confirmarFacturacion.literal.cabecera" 	localizacion="facturacion.confirmarFacturacion.ruta"/>
 	<!-- FIN: TITULO Y LOCALIZACION -->
 
 	<!-- Validaciones en Cliente -->
-	<html:javascript formName="confirmarFacturacionForm" staticJavascript="false" />  
+	<html:javascript formName="confirmarFacturacion1Form" staticJavascript="false" />  
 	<script src="<%=app%>/html/js/validacionStruts.js" type="text/javascript"></script>
 	<script src="<%=app%>/html/jsp/general/validacionSIGA.jsp" type="text/javascript"></script>
 </head>
@@ -85,6 +93,7 @@
 
 	<html:form action="/FAC_ConfirmarFacturacion.do" method="POST" target="resultado">
 		<html:hidden property = "modo" value = ""/>
+		<html:hidden property="actionModal" value=""/>
 		<input type="hidden" name="limpiarFilaSeleccionada" value="">
 		
 		<tr><td>
@@ -96,7 +105,7 @@
 					<td  class="labelText"><siga:Idioma key="facturacion.confirmarFacturacion.literal.fechaRealGeneracion"/>&nbsp;<siga:Idioma key="general.literal.desde"/>
 					</td>
 					<td >
-						<siga:Fecha nombreCampo="fechaDesdeGeneracion" valorInicial="${confirmarFacturacionForm.fechaDesdeGeneracion}" />
+						<siga:Fecha nombreCampo="fechaDesdeGeneracion" />
 					</td>
 		
 					<td class="labelText"><siga:Idioma key="facturacion.confirmarFacturacion.literal.fechaRealGeneracion"/>&nbsp;<siga:Idioma key="general.literal.hasta"/></td>
@@ -120,7 +129,7 @@
 			
 			
 				<tr>				
-					<td class="labelText"><siga:Idioma key="facturacion.confirmarFacturacion.literal.estadoConfirmacion"/> (*)</td>
+					<td class="labelText"><siga:Idioma key="facturacion.estado"/> (*)</td>
 					<td>
 						<siga:ComboBD nombre = "estadoConfirmacion" tipo="cmbEstadoConfirmacion"  clase="boxCombo" obligatorio="true" parametro="<%=dato%>" elementoSel="<%=estadoConfirmacionSel%>" />						
 					</td>
@@ -160,7 +169,7 @@
 		 son: V Volver, B Buscar,A Avanzada ,S Simple,N Nuevo registro ,L Limpiar,R Borrar Log
 	-->
 		
-		<siga:ConjBotonesBusqueda botones="B" titulo=""/>
+		<siga:ConjBotonesBusqueda botones="B,N" titulo=""/>
 
 	<!-- FIN: BOTONES BUSQUEDA -->
 
@@ -168,7 +177,14 @@
 	
 	<!-- INICIO: SCRIPTS BOTONES BUSQUEDA -->
 	<script language="JavaScript">
-
+	
+		<%	if(volver) { %>	
+				jQuery(document).ready(function () {		
+					buscar();
+				});		
+		<% } %>
+		
+		
 		function refrescarLocal() {
 			buscar();
 		}
@@ -177,7 +193,7 @@
 		function buscar() 
 		{
 			sub();	
-			if (validateConfirmarFacturacionForm(document.confirmarFacturacionForm)){
+			if (validateConfirmarFacturacion1Form(document.confirmarFacturacionForm)){
 				setFilaSeleccionadaD('true');
 				document.confirmarFacturacionForm.modo.value = "buscarInit";
 				document.confirmarFacturacionForm.submit();
@@ -189,6 +205,14 @@
 			
 			}
 		}
+		
+		//Asociada al boton Nuevo -->
+		function nuevo() 
+		{		
+			document.confirmarFacturacionForm.target="mainWorkArea";
+			document.confirmarFacturacionForm.modo.value = "nuevo";
+			document.confirmarFacturacionForm.submit();
+		}		
 
 
 	</script>

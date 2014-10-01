@@ -9,6 +9,7 @@ import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Vector;
@@ -28,6 +29,7 @@ import org.redabogacia.sigaservices.app.util.SIGAReferences;
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsLogging;
+import com.atos.utils.ClsMngBBDD;
 import com.atos.utils.GstDate;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesHash;
@@ -40,8 +42,10 @@ import com.siga.beans.FacFacturaAdm;
 import com.siga.beans.FacFacturaBean;
 import com.siga.beans.FacFacturacionProgramadaAdm;
 import com.siga.beans.FacFacturacionProgramadaBean;
+import com.siga.beans.FacSerieFacturacionAdm;
 import com.siga.beans.FacSerieFacturacionBean;
 import com.siga.beans.GenParametrosAdm;
+import com.siga.certificados.Plantilla;
 import com.siga.facturacion.Facturacion;
 import com.siga.facturacion.form.ConfirmarFacturacionForm;
 import com.siga.general.EjecucionPLs;
@@ -84,10 +88,17 @@ public class ConfirmarFacturacionAction extends MasterAction{
 				// Abrir
 				if (accion == null || accion.equalsIgnoreCase("") || accion.equalsIgnoreCase("abrir")){
 					mapDestino = abrir(mapping, miForm, request, response);						
+				}else if (accion.equalsIgnoreCase("abrirVolver")){
+					request.setAttribute("volver","s");			
+					ConfirmarFacturacionForm confirmarFacturacionForm = (ConfirmarFacturacionForm) miForm;
+					request.setAttribute("estadoConfirmacion", confirmarFacturacionForm.getEstadoConfirmacion());
+					mapDestino = abrir(mapping, miForm, request, response);
 				}else if (accion.equalsIgnoreCase("confirmarFactura")){
 					mapDestino = confirmarFactura(mapping, miForm, request, response);
 				} else if (accion.equalsIgnoreCase("descargaLog")){
 					mapDestino = descargaLog(mapping, miForm, request, response);
+				} else if (accion.equalsIgnoreCase("descargarInformeGeneracion")){
+					mapDestino = descargarInformeGeneracion(mapping, miForm, request, response);					
 				} else if (accion.equalsIgnoreCase("archivarFactura")){
 					mapDestino = archivarFactura(mapping, miForm, request, response);
 				} else if (accion.equalsIgnoreCase("confirmacionInmediata")){
@@ -104,7 +115,13 @@ public class ConfirmarFacturacionAction extends MasterAction{
 					borrarPaginador(request, paginador);
 					mapDestino = buscarPor(mapping, miForm, request, response);
 				}else if (accion.equalsIgnoreCase("buscarPor")){
-					mapDestino = buscarPor(mapping, miForm, request, response);	
+					mapDestino = buscarPor(mapping, miForm, request, response);
+				}else if (accion.equalsIgnoreCase("borrar")){
+					mapDestino = borrar(mapping, miForm, request, response);						
+				}else if (accion.equalsIgnoreCase("getAjaxFechasFicheroBancario")){
+					getAjaxFechasFicheroBancario (mapping, miForm, request, response);
+					return null;
+					
 				}else if (accion.equalsIgnoreCase("getAjaxFechasFicheroBancario")){
 					getAjaxFechasFicheroBancario (mapping, miForm, request, response);
 					return null;
@@ -251,7 +268,7 @@ public class ConfirmarFacturacionAction extends MasterAction{
 							" AND facProg."+FacFacturacionProgramadaBean.C_IDINSTITUCION+"= serieFac."+FacSerieFacturacionBean.C_IDINSTITUCION+
 							" AND facProg."+FacFacturacionProgramadaBean.C_IDSERIEFACTURACION+"= serieFac."+FacSerieFacturacionBean.C_IDSERIEFACTURACION;
 							
-			// filtros
+			// filtros CONFIRMACION
 			if (!miForm.getEstadoConfirmacion().trim().equals("")) {
 				select+=" AND facProg."+FacFacturacionProgramadaBean.C_IDESTADOCONFIRMACION+"="+miForm.getEstadoConfirmacion();
 			}
@@ -266,7 +283,7 @@ public class ConfirmarFacturacionAction extends MasterAction{
 			} else {
 				select+=" AND facProg."+FacFacturacionProgramadaBean.C_ARCHIVARFACT+"='0'";
 			} 
-
+			
 			select += " ORDER BY "+FacFacturacionProgramadaBean.C_FECHAREALGENERACION+" DESC";
 			
 			Vector vDatos = adm.selectGenerico(select);
@@ -327,11 +344,6 @@ public class ConfirmarFacturacionAction extends MasterAction{
 			String idProgramacion=(String) vOcultos.elementAt(1);
 
 		    ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
-//			ReadProperties rp = new ReadProperties("SIGA.properties");
-		    
-		    
-		    
-		    
 		    sRutaTemporal = rp.returnProperty("facturacion.directorioFisicoFacturaPDFJava") +
 			rp.returnProperty("facturacion.directorioFacturaPDFJava");
 
@@ -620,6 +632,11 @@ public class ConfirmarFacturacionAction extends MasterAction{
 			request.setAttribute("habilesRecibosB2B",fechas.get("habilesRecibosB2B").toString());
 			
 			request.setAttribute("accionInit","FAC_ConfirmarFacturacion");
+			
+			/* Añadido tal y como prpgramacion */
+			HttpSession ses = request.getSession();
+			request.getSession().setAttribute("DATABACKUP", null);	
+			ses.setAttribute("ModoAction","nuevaPrevision");
 		
 		}catch (Exception e) {
 			throw new SIGAException("messages.general.error");
@@ -642,12 +659,11 @@ public class ConfirmarFacturacionAction extends MasterAction{
 		
 		try {
 		    ReadProperties p= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
-//			ReadProperties p = new ReadProperties ("SIGA.properties");
 			String pathFichero 		= p.returnProperty("facturacion.directorioFisicoLogProgramacion");
     		String sBarra = "";
     		if (pathFichero.indexOf("/") > -1) sBarra = "/"; 
     		if (pathFichero.indexOf("\\") > -1) sBarra = "\\";        		
-			String nombreFichero = "";
+			
 			ConfirmarFacturacionForm form 	= (ConfirmarFacturacionForm)formulario;
 			
 			Vector ocultos = new Vector();		
@@ -656,10 +672,9 @@ public class ConfirmarFacturacionAction extends MasterAction{
 			String idSerieFacturacion = (String)ocultos.elementAt(0);			
 			String idProgramacion 	= (String)ocultos.elementAt(1);
 			String idInstitucion	= this.getIDInstitucion(request).toString();
-
-			nombreFichero = "LOG_CONFIRM_FAC_"+idInstitucion+"_"+idSerieFacturacion+"_"+idProgramacion+".log.xls"; 
+			String logFichero = (String)ocultos.elementAt(5); 
 			
-			File fichero = new File(pathFichero+sBarra+idInstitucion+sBarra+nombreFichero);
+			File fichero = new File(pathFichero+sBarra+idInstitucion+sBarra+logFichero);
 			if (!fichero.exists()) {
 				throw new SIGAException("messages.general.error.ficheroNoErrores");
 			}
@@ -953,7 +968,6 @@ public class ConfirmarFacturacionAction extends MasterAction{
 			request.setAttribute("accionInit","FAC_ConfirmarFacturacion");
 			
 			request.getSession().setAttribute("DATABACKUP", vDatos);	
-
 			ses.setAttribute("ModoAction","ver");
 			
 		} catch (Exception e) { 
@@ -967,8 +981,8 @@ public class ConfirmarFacturacionAction extends MasterAction{
 		String result="editarFechas";
 		try{
 			
-			String idInstitucion = this.getIDInstitucion(request).toString();
-			
+			HttpSession ses = request.getSession();
+			String idInstitucion = this.getIDInstitucion(request).toString();			
 			ConfirmarFacturacionForm form = (ConfirmarFacturacionForm)formulario;
 			Vector ocultos = (Vector)form.getDatosTablaOcultos(0);			
 			String idSerieFacturacion, idProgramacion;
@@ -979,6 +993,10 @@ public class ConfirmarFacturacionAction extends MasterAction{
 			} else {
 				idSerieFacturacion = form.getIdSerieFacturacion();			
 				idProgramacion 	= form.getIdProgramacion();
+				if(idProgramacion.equals("")){//Veimos despues de realizar una insercion
+					idProgramacion = String.valueOf(ses.getAttribute("idProgramacion"));
+					ses.removeAttribute("idProgramacion");
+				}
 			}
 			
 			String sWhere=" WHERE " + FacFacturacionProgramadaBean.T_NOMBRETABLA + "." + FacFacturacionProgramadaBean.C_IDINSTITUCION + " = " + idInstitucion + 	
@@ -1055,13 +1073,475 @@ public class ConfirmarFacturacionAction extends MasterAction{
 			
 			request.setAttribute("idSerieFacturacion",idSerieFacturacion);
 			request.setAttribute("idProgramacion",idProgramacion);
-			request.setAttribute("accionInit","FAC_ConfirmarFacturacion");
+			request.getSession().setAttribute("DATABACKUP", vDatos);
+			ses.setAttribute("ModoAction","editar");
+			request.setAttribute("accionInit","FAC_ConfirmarFacturacion");			
 			
 		}  catch (Exception e) { 
 			throwExcp("messages.general.error",new String[] {"modulo.facturacion"},e,null); 
 		}	
 		
 		return result;
+	}
+	
+	/** 
+	 *  Funcion que atiende la accion insertar
+	 * @param  mapping - Mapeo de los struts
+	 * @param  formulario -  Action Form asociado a este Action
+	 * @param  request - objeto llamada HTTP 
+	 * @param  response - objeto respuesta HTTP
+	 * @return  String  Destino del action  
+	 * @exception  SIGAException  Errores de aplicación
+	 */
+	protected String insertar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+		UserTransaction tx = null;	
+		ConfirmarFacturacionForm form = (ConfirmarFacturacionForm)formulario;
+		String salida = "";
+		HttpSession ses = request.getSession();
+		
+		try
+		{	
+			tx = this.getUserBean(request).getTransaction();			
+			FacFacturacionProgramadaAdm adm = new FacFacturacionProgramadaAdm(this.getUserBean(request));
+			
+			{	// Comprobamos si existe ese nombre para la institucion. Debe ser unico
+				Hashtable h = new Hashtable();
+				UtilidadesHash.set(h, FacFacturacionProgramadaBean.C_IDINSTITUCION, this.getIDInstitucion(request));
+				UtilidadesHash.set(h, FacFacturacionProgramadaBean.C_DESCRIPCION,   form.getDescripcionProgramacion());
+				Vector v = adm.select(h);
+				if ((v != null) && (v.size() > 0)) {
+					throw new SIGAException(UtilidadesString.getMensajeIdioma(this.getLenguaje(request), "facturacion.seriesFacturacion.error.descripcionDuplicada"));
+				}
+			}
+			
+			tx.begin();	
+
+			FacFacturacionProgramadaBean bean = getDatos(form, request);
+
+			// Obtenemos el idProgramacion
+			bean.setIdProgramacion(adm.getNuevoID(bean));
+			form.setIdProgramacion(bean.getIdProgramacion().toString());
+			
+			// tratamiento de estados de la programacion 
+			bean.setIdEstadoConfirmacion(FacEstadoConfirmFactBean.GENERACION_PROGRAMADA);
+			
+			/** JPT - Control de fechas de presentación y cargo en ficheros SEPA **/
+			String fechaPrevistaConfirmacion = form.getFechaPrevistaConfirmacion();			
+			if (fechaPrevistaConfirmacion!=null && !fechaPrevistaConfirmacion.equals("")) {
+				// yyyy/MM/dd HH:mm:ss
+				Date dFechaPrevistaConfirmacion = GstDate.convertirFechaHora(fechaPrevistaConfirmacion);
+				SimpleDateFormat sdf = new SimpleDateFormat(ClsConstants.DATE_FORMAT_SHORT_SPANISH);
+				fechaPrevistaConfirmacion = sdf.format(dFechaPrevistaConfirmacion); // Fecha con formato dd/MM/yyyy	
+			}
+			
+			String idInstitucion = this.getIDInstitucion(request).toString();
+			String fechaEntrega = form.getFechaPresentacion();
+			bean.setFechaPresentacion(GstDate.getApplicationFormatDate("en", fechaEntrega));
+			
+			String fechaUnica="", fechaRecibosPrimeros="", fechaRecibosRecurrentes="", fechaRecibosCOR1="", fechaRecibosB2B="";
+			if (form.getFechaTipoUnica().equals("1")) {
+				fechaUnica = form.getFechaCargoUnica();
+				bean.setFechaCargoUnica(GstDate.getApplicationFormatDate("en", fechaUnica));
+				
+			} else { 
+				fechaRecibosPrimeros = form.getFechaRecibosPrimeros();
+				fechaRecibosRecurrentes = form.getFechaRecibosRecurrentes();
+				fechaRecibosCOR1 = form.getFechaRecibosCOR1();
+				fechaRecibosB2B = form.getFechaRecibosB2B();
+				bean.setFechaRecibosPrimeros(GstDate.getApplicationFormatDate("en", fechaRecibosPrimeros));
+				bean.setFechaRecibosRecurrentes(GstDate.getApplicationFormatDate("en", fechaRecibosRecurrentes));
+				bean.setFechaRecibosCOR1(GstDate.getApplicationFormatDate("en", fechaRecibosCOR1));
+				bean.setFechaRecibosB2B(GstDate.getApplicationFormatDate("en", fechaRecibosB2B));
+			}			
+			
+			if(form.getFechaTipoUnica() != null && !form.getFechaTipoUnica().equals("-1")){
+				// Controlar que las fechas cumplen los dias habiles introducidos en parametros generales			
+				FacDisqueteCargosAdm admDisqueteCargos = new FacDisqueteCargosAdm(this.getUserBean(request));	
+				if (!admDisqueteCargos.controlarFechasFicheroBancario(idInstitucion, fechaEntrega, fechaUnica, fechaRecibosPrimeros, fechaRecibosRecurrentes, fechaRecibosCOR1, fechaRecibosB2B, form.getFechaTipoUnica(), fechaPrevistaConfirmacion)) {
+					throw new SIGAException("facturacion.ficheroBancarioPagos.errorMandatos.mensajeFechas");
+				}			
+			}
+			
+			// Comprobaciones antes de confirmacion 
+			Vector ret = adm.comprobarRecursosProgramacion(bean);
+			
+			// tratamiento del mensaje
+			String mensaje = "messages.inserted.success"; 			
+			if (ret.size()>0) {
+				mensaje = UtilidadesString.getMensajeIdioma(this.getUserBean(request),"messages.facturacion.comprueba.avisos");
+				for (int i=0;i<ret.size();i++) {
+					mensaje += "\n" + UtilidadesString.getMensajeIdioma(this.getUserBean(request),(String)ret.get(i));
+				}
+			} 
+			
+			salida = exitoRefresco(mensaje,request);
+
+			// RGG 20/11/2007 añadimos los campos nuevos de contabilidad
+			FacSerieFacturacionAdm admS = new FacSerieFacturacionAdm(this.getUserBean(request));
+			Hashtable ht = new Hashtable();
+			ht.put(FacFacturacionProgramadaBean.C_IDINSTITUCION, bean.getIdInstitucion());
+			ht.put(FacFacturacionProgramadaBean.C_IDSERIEFACTURACION, bean.getIdSerieFacturacion());
+			Vector v = admS.selectByPK(ht);
+			if (v!=null && v.size()>0) {
+			    FacSerieFacturacionBean bSF = (FacSerieFacturacionBean) v.get(0);
+			    bean.setConfDeudor(bSF.getConfigDeudor());
+			    bean.setConfIngresos(bSF.getConfigIngresos());
+			    bean.setCtaClientes(bSF.getCuentaClientes());
+			    bean.setCtaIngresos(bSF.getCuentaIngresos());
+			}
+
+			
+			// Insertamos el nuevo registro.
+			if(!adm.insert(bean)){
+				throw new SIGAException (adm.getError());
+			}			
+			tx.commit();
+			ses.setAttribute("ModoAction","editar");
+			ses.setAttribute("idProgramacion",bean.getIdProgramacion());
+			
+		} catch (SIGAException e) {
+			String sms = e.getLiteral();
+			if (sms == null || sms.equals("")) {
+				sms = "messages.general.error";
+			}
+			
+			throwExcp(sms, new String[] {"modulo.facturacion"}, e, tx);				
+
+		} catch (Exception e) {
+			throwExcp("messages.general.error",new String[] {"modulo.facturacion"}, e, tx);
+		}
+		return salida;				
+	}
+
+	/**
+	 * Funcion para obtener los datos a insertar en BD
+	 * @param form -  Action Form asociado a este Action
+	 * @param request - objeto llamada HTTP 
+	 * @return FacFacturacionProgramadaBean contiene los datos a insertar en BD
+	 * @throws SIGAException
+	 */
+	protected FacFacturacionProgramadaBean getDatos(ConfirmarFacturacionForm form, HttpServletRequest request) throws SIGAException {
+		FacFacturacionProgramadaBean bean = null;
+		String idTipoPlantillaMail = "";
+		try {
+			bean = new FacFacturacionProgramadaBean();
+			FacFacturacionProgramadaAdm adm = new FacFacturacionProgramadaAdm(this.getUserBean(request));
+			
+			bean.setIdInstitucion(this.getIDInstitucion(request));
+			bean.setIdSerieFacturacion(new Long(form.getIdSerieFacturacion()));
+			bean.setFechaInicioProductos(form.getFechaInicialProducto());
+			bean.setFechaFinProductos(form.getFechaFinalProducto());
+			bean.setFechaInicioServicios(form.getFechaInicialServicio());
+			bean.setFechaFinServicios(form.getFechaFinalServicio());
+			String sFechaProgramacion = UtilidadesString.formatoFecha(new Date(),"yyyy/MM/dd HH:mm:ss"); 
+			bean.setFechaProgramacion(sFechaProgramacion);
+			bean.setArchivarFact("0");
+			bean.setLocked("0");
+			
+			bean.setVisible("S");
+			
+			// tratamos las fechas con minutos y segundos
+			String aux = "";
+			String auxfechaCargo="";
+
+			aux = form.getFechaPrevistaGeneracion().substring(0,form.getFechaPrevistaGeneracion().length()-9) + " " + ((form.getHorasGeneracion().trim().equals(""))?"00":form.getHorasGeneracion())+":"+((form.getMinutosGeneracion().trim().equals(""))?"00":form.getMinutosGeneracion())+":00";
+			bean.setFechaPrevistaGeneracion(aux);			
+
+			if (form.getFechaPrevistaConfirmacion()!=null && !form.getFechaPrevistaConfirmacion().equals("")) {
+				aux = form.getFechaPrevistaConfirmacion().substring(0,form.getFechaPrevistaConfirmacion().length()-9) + " " + ((form.getHorasConfirmacion().trim().equals(""))?"00":form.getHorasConfirmacion())+":"+((form.getMinutosConfirmacion().trim().equals(""))?"00":form.getMinutosConfirmacion())+":00";
+				bean.setFechaPrevistaConfirmacion(aux);			
+			}else{
+				bean.setFechaPrevistaConfirmacion("");		
+			}
+			
+			if (form.getFechaCargo()!=null && !form.getFechaCargo().equals("")) {							
+				bean.setFechaCargo(form.getFechaCargo());
+			}else{
+				bean.setFechaCargo("");
+			}
+
+			
+			bean.setGenerarPDF((form.getGenerarPDF()!=null)?"1":"0");			
+			bean.setEnvio((form.getEnviarFacturas()!=null)?"1":"0");
+
+			if(form.getIdTipoPlantillaMail()!=null && !form.getIdTipoPlantillaMail().equals("")){
+				idTipoPlantillaMail = form.getIdTipoPlantillaMail().split(",")[0];
+				bean.setIdTipoPlantillaMail(Integer.parseInt(idTipoPlantillaMail));
+				bean.setIdTipoEnvios(1);
+			} else{
+				bean.setIdTipoPlantillaMail(null);
+				bean.setIdTipoEnvios(null);
+			}
+			
+			if (bean.getEnvio().equals("1"))
+				bean.setGenerarPDF("1");
+			bean.setDescripcion(form.getDescripcionProgramacion());
+			
+		}
+		catch (Exception e) {
+			throwExcp("messages.general.error",new String[] {"modulo.facturacion"}, e, null);
+		}
+		return bean;
+	}	
+
+	/** 
+	 *  Funcion que atiende la accion modificarr. Permiote modificar los datos del registro seleccionado 
+	 * @param  mapping - Mapeo de los struts
+	 * @param  formulario -  Action Form asociado a este Action
+	 * @param  request - objeto llamada HTTP 
+	 * @param  response - objeto respuesta HTTP
+	 * @return  String  Destino del action  
+	 * @exception  SIGAException  En cualquier caso de error
+	 */
+	protected String modificar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+		UserTransaction tx = null;	
+		ConfirmarFacturacionForm form = (ConfirmarFacturacionForm)formulario;
+		String salida="";
+		
+		try
+		{	
+			tx = this.getUserBean(request).getTransaction();			
+			FacFacturacionProgramadaAdm adm = new FacFacturacionProgramadaAdm(this.getUserBean(request));
+			FacFacturacionProgramadaBean bean = getDatos(form, request);
+			Enumeration en = ((Vector)request.getSession().getAttribute("DATABACKUP")).elements();
+			Hashtable hash = (Hashtable)en.nextElement();
+			
+			{	// Comprobamos si existe ese nombre para la institucion. Debe ser unico
+				String where="";
+				where =" where "+FacFacturacionProgramadaBean.C_IDINSTITUCION+"="+this.getIDInstitucion(request)+
+			       " and "+ FacFacturacionProgramadaBean.C_DESCRIPCION+"='"+form.getDescripcionProgramacion()+"'"+
+				   " and "+FacFacturacionProgramadaBean.C_IDPROGRAMACION +" not in (select "+FacFacturacionProgramadaBean.C_IDPROGRAMACION +
+                       "																from "+FacFacturacionProgramadaBean.T_NOMBRETABLA+
+					   "																where "+FacFacturacionProgramadaBean.C_IDINSTITUCION+"="+this.getIDInstitucion(request)+
+				       "                                                                  and "+ FacFacturacionProgramadaBean.C_IDSERIEFACTURACION+"="+bean.getIdSerieFacturacion()+
+					   " 															      and "+FacFacturacionProgramadaBean.C_IDPROGRAMACION+"="+UtilidadesHash.getLong(hash, FacFacturacionProgramadaBean.C_IDPROGRAMACION)+")";																																		                                                                      
+				
+				Vector v = adm.select(where);
+				if ((v != null) && (v.size() > 0)) {
+					throw new SIGAException(UtilidadesString.getMensajeIdioma(this.getLenguaje(request), "facturacion.seriesFacturacion.error.descripcionDuplicada"));
+				}
+			}
+			
+			tx.begin();			
+			
+			// Recogemos la hashOriginal							
+			bean.setOriginalHash(hash);
+			bean.setIdProgramacion(UtilidadesHash.getLong(hash, FacFacturacionProgramadaBean.C_IDPROGRAMACION));
+			bean.setNombrefichero(UtilidadesHash.getString(hash, FacFacturacionProgramadaBean.C_NOMBREFICHERO));
+			bean.setLogerror(UtilidadesHash.getString(hash, FacFacturacionProgramadaBean.C_LOGERROR));
+
+			// para que no se pierda la hora de programacion (Creacion)
+			bean.setFechaProgramacion(null);
+			
+			/** JPT - Control de fechas de presentación y cargo en ficheros SEPA **/
+			String fechaPrevistaConfirmacion = form.getFechaPrevistaConfirmacion();			
+			if (fechaPrevistaConfirmacion!=null && !fechaPrevistaConfirmacion.equals("")) {
+				// yyyy/MM/dd HH:mm:ss
+				Date dFechaPrevistaConfirmacion = GstDate.convertirFechaHora(fechaPrevistaConfirmacion);
+				SimpleDateFormat sdf = new SimpleDateFormat(ClsConstants.DATE_FORMAT_SHORT_SPANISH);
+				fechaPrevistaConfirmacion = sdf.format(dFechaPrevistaConfirmacion); // Fecha con formato dd/MM/yyyy	
+			}	
+			
+			String idInstitucion = this.getIDInstitucion(request).toString();
+			String fechaEntrega = form.getFechaPresentacion();
+			bean.setFechaPresentacion(GstDate.getApplicationFormatDate("en", fechaEntrega));
+			
+			String fechaUnica="", fechaRecibosPrimeros="", fechaRecibosRecurrentes="", fechaRecibosCOR1="", fechaRecibosB2B="";
+			if (form.getFechaTipoUnica().equals("1")) {
+				fechaUnica = form.getFechaCargoUnica();
+				bean.setFechaCargoUnica(GstDate.getApplicationFormatDate("en", fechaUnica));
+				
+			} else { 
+				fechaRecibosPrimeros = form.getFechaRecibosPrimeros();
+				fechaRecibosRecurrentes = form.getFechaRecibosRecurrentes();
+				fechaRecibosCOR1 = form.getFechaRecibosCOR1();
+				fechaRecibosB2B = form.getFechaRecibosB2B();
+				bean.setFechaRecibosPrimeros(GstDate.getApplicationFormatDate("en", fechaRecibosPrimeros));
+				bean.setFechaRecibosRecurrentes(GstDate.getApplicationFormatDate("en", fechaRecibosRecurrentes));
+				bean.setFechaRecibosCOR1(GstDate.getApplicationFormatDate("en", fechaRecibosCOR1));
+				bean.setFechaRecibosB2B(GstDate.getApplicationFormatDate("en", fechaRecibosB2B));
+			}			
+			
+			// Controlar que las fechas cumplen los dias habiles introducidos en parametros generales
+			FacDisqueteCargosAdm admDisqueteCargos = new FacDisqueteCargosAdm(this.getUserBean(request));	
+			if (!admDisqueteCargos.controlarFechasFicheroBancario(idInstitucion, fechaEntrega, fechaUnica, fechaRecibosPrimeros, fechaRecibosRecurrentes, fechaRecibosCOR1, fechaRecibosB2B, form.getFechaTipoUnica(), fechaPrevistaConfirmacion)) {
+				throw new SIGAException("facturacion.ficheroBancarioPagos.errorMandatos.mensajeFechas");
+			}					
+			
+			// tratamiento de estados de la programacion 
+			bean = adm.tratamientoEstadosProgramacion(bean);
+			
+			// Comprobaciones antes de confirmacion 
+			Vector ret = adm.comprobarRecursosProgramacion(bean);
+			
+			// tratamiento del mensaje
+			String mensaje = "messages.updated.success"; 			
+			if (ret.size()>0) {
+				mensaje = UtilidadesString.getMensajeIdioma(this.getUserBean(request),"messages.facturacion.comprueba.avisos");
+				for (int i=0;i<ret.size();i++) {
+					mensaje += "\n" + UtilidadesString.getMensajeIdioma(this.getUserBean(request),(String)ret.get(i));
+				}
+			} 
+			
+			// Modificamos el registro.
+			if(!adm.update(bean)){
+				throw new SIGAException (adm.getError());
+			}			
+			tx.commit();
+			
+			
+			salida = exitoRefresco(mensaje,request);
+			
+		} catch (SIGAException e) {
+			String sms = e.getLiteral();
+			if (sms == null || sms.equals("")) {
+				sms = "messages.general.error";
+			}
+			
+			throwExcp(sms, new String[] {"modulo.facturacion"}, e, tx);					
+			
+		} catch (Exception e) {
+			throwExcp("messages.general.error",new String[] {"modulo.facturacion"}, e, tx);
+		}
+		return salida;		
+	}		
+	
+	/**
+	 * Se va a realizar la descarga del fichero (DOWNLOAD).
+	 * 
+	 * @param ActionMapping
+	 *            mapping Mapeador de las acciones.
+	 * @param MasterForm
+	 *            formulario: formulario del que se recoge la información.
+	 * @param HttpServletRequest
+	 *            request: información de entrada de la pagina original.
+	 * @param HttpServletResponse
+	 *            response: información de salida para la pagina destino.
+	 * 
+	 * @return String que indicará la siguiente acción a llevar a cabo.
+	 * 
+	 * @exception ClsExceptions
+	 *                En cualquier caso de error
+	 */
+	protected String descargarInformeGeneracion(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response)	throws SIGAException {
+		String sRutaJava = "";
+		try {
+			UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");
+			ConfirmarFacturacionForm form = (ConfirmarFacturacionForm) formulario;
+			Vector vOcultos = (Vector)form.getDatosTablaOcultos(0);
+			String idSerieFacturacion = (String)vOcultos.elementAt(0);			
+			String idProgramacion 	= (String)vOcultos.elementAt(1);
+			String idInstitucion	= this.getIDInstitucion(request).toString();
+			String nombreFichero = (String)vOcultos.elementAt(4);
+
+		    ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+			sRutaJava = rp.returnProperty("facturacion.directorioPrevisionesJava");
+			String sRutaFisicaJava = rp.returnProperty("facturacion.directorioFisicoPrevisionesJava");
+			sRutaJava = sRutaFisicaJava + File.separator + sRutaJava;
+
+			sRutaJava += File.separator + idInstitucion	+ File.separator + nombreFichero;
+
+			//Control de que no exista el fichero a descargar:
+			File tmp = new File(sRutaJava);
+			if(tmp==null || !tmp.exists()){
+				throw new SIGAException("messages.general.error.ficheroNoExiste"); 
+			}
+			
+			request.setAttribute("nombreFichero", nombreFichero);
+			request.setAttribute("rutaFichero", sRutaJava);
+			
+		} catch (Exception e) {
+			throwExcp("messages.general.error",	new String[] { "modulo.facturacion.previsionesFacturacion" }, e, null);
+		}
+
+		return "descargaFichero";
+	}	
+
+	/** 
+	 *  Funcion que atiende la accion borrar. Genera las facturas programadas 
+	 * @param  mapping - Mapeo de los struts
+	 * @param  formulario -  Action Form asociado a este Action
+	 * @param  request - objeto llamada HTTP 
+	 * @param  response - objeto respuesta HTTP
+	 * @return  String  Destino del action  
+	 * @exception  SIGAException  En cualquier caso de error
+	 */
+	protected String borrar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+		
+		UserTransaction tx = null;	
+		try{
+			tx = this.getUserBean(request).getTransactionPesada();
+			
+			ConfirmarFacturacionForm form 				= (ConfirmarFacturacionForm)formulario;
+			FacFacturacionProgramadaAdm adm 			= new FacFacturacionProgramadaAdm(this.getUserBean(request));
+			FacFacturacionProgramadaBean bean 			= new FacFacturacionProgramadaBean();
+			Vector ocultos 				= (Vector)form.getDatosTablaOcultos(0);			
+			String idSerieFacturacion 	= (String)ocultos.elementAt(0);			
+			String idProgramacion 		= (String)ocultos.elementAt(1);
+			String idInstitucion		= this.getIDInstitucion(request).toString();
+			
+            Hashtable ht = new Hashtable();
+			ht.put(FacFacturacionProgramadaBean.C_IDINSTITUCION, idInstitucion);
+			ht.put(FacFacturacionProgramadaBean.C_IDSERIEFACTURACION, idSerieFacturacion);
+			ht.put(FacFacturacionProgramadaBean.C_IDPROGRAMACION, idProgramacion);
+			Vector v = adm.selectByPK(ht);
+			bean = (FacFacturacionProgramadaBean) v.get(0);
+			String logError = bean.getLogerror(); 
+			
+			tx.begin();	
+	
+			Object[] param_in = new Object[4];
+			param_in[0] = idInstitucion;
+			param_in[1] = idSerieFacturacion;
+			param_in[2] = idProgramacion;
+			param_in[3] = this.getUserName(request).toString();
+			String resultado[] = new String[2];
+			resultado = ClsMngBBDD.callPLProcedure("{call PKG_SIGA_FACTURACION.ELIMINARFACTURACION(?,?,?,?,?,?)}",2, param_in);
+			String codretorno = resultado[0];
+			if (!codretorno.equals("0")) {
+				
+				if (codretorno.equals("-1")) {
+					// No existe la facturacion
+					throw new SIGAException("messages.facturacion.facturacionNoExiste");
+				} else
+				if (codretorno.equals("-2")) {
+					// La facturacion está bloqueada
+					throw new SIGAException("messages.facturacion.generacionEnProceso");
+				} else {
+					// Error general
+					throw new ClsExceptions("Error en ejecución del PL PKG_SIGA_FACTURACION.ELIMINARFACTURACION. Cod:ORA-"+codretorno+" Desc:"+resultado[1]);
+				}
+				
+			} else {
+				
+		 		// RGG 05/02/2007 ELIMINAMOS LOS FICHERO DE LOG ASOCIADOS A LA PROGRAMACION
+			    ReadProperties p= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+				String pathFichero 		= p.returnProperty("facturacion.directorioFisicoLogProgramacion");
+	    		String sBarra = "";
+	    		if (pathFichero.indexOf("/") > -1) sBarra = "/"; 
+	    		if (pathFichero.indexOf("\\") > -1) sBarra = "\\";        		
+				
+				File fichero = new File(pathFichero+sBarra+idInstitucion+sBarra+logError);
+				if (fichero.exists()) {
+					fichero.delete();
+				}	
+				//Borramos los PDFs en caso de que los haya	
+				String pathFicheroPDF = p.returnProperty("facturacion.directorioFisicoFacturaPDFJava")+p.returnProperty("facturacion.directorioFacturaPDFJava");
+				String idserieidprogramacion = idSerieFacturacion+"_" + idProgramacion;
+				pathFicheroPDF += sBarra+idInstitucion+sBarra+idserieidprogramacion;
+				File ficheroPDF = new File(pathFicheroPDF);
+				if (ficheroPDF.exists()) {
+					Plantilla.borrarDirectorio(ficheroPDF);
+				}
+			}
+				
+			tx.commit();					
+		}
+		catch (Exception e) {
+			throwExcp("messages.general.error",new String[] {"modulo.facturacion"}, e, tx);
+		}
+	
+		return exitoRefresco("messages.deleted.success", request);
 	}
 	
 	/**

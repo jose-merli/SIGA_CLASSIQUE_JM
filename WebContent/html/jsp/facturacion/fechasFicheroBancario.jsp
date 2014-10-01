@@ -33,7 +33,8 @@
 
 <table class="tablaCampos" align="center" border="0" cellspacing="0" cellpadding="0">
 	<tr>
-		<td class="labelText" width="210px"><siga:Idioma key="facturacion.fechasficherobancario.fechapresentacion"/>&nbsp;(*)</td>
+		<td class="labelText" width="210px" id="fechaPresentacionConAsterisco"><siga:Idioma key="facturacion.fechasficherobancario.fechapresentacion"/>&nbsp;(*)</td>
+		<td class="labelText" width="210px" id="fechaPresentacionSinAsterisco"><siga:Idioma key="facturacion.fechasficherobancario.fechapresentacion"/>&nbsp;</td>
 		<td width="120px"><siga:Fecha nombreCampo="fechaPresentacion"	posicionX="10" posicionY="10" valorInicial="<%=fechaPresentacion%>" postFunction="onChangeFechaPresentacion()"/></td>
 		<td><siga:ToolTip id='ayudaFechaPresentacion' imagen='/SIGA/html/imagenes/botonAyuda.gif' texto='<%=UtilidadesString.mostrarDatoJSP(UtilidadesString.getMensajeIdioma (usr, "facturacion.fechasficherobancario.ayudaFechaPresentacion"))%>'/></td>
 	</tr>
@@ -153,10 +154,26 @@
 <%
 		} else {
 %>
-			accionRadio();			
+			accionRadio();
+			jQuery('#fechaPresentacionSinAsterisco').hide();
+			jQuery('#fechaPresentacionConAsterisco').show();
 <%
 		}
 %>		
+
+
+<%	if(modoAction.trim().equals("nuevaPrevision")) { %>
+
+		jQuery('#fechaPresentacionSinAsterisco').show();
+		jQuery('#fechaPresentacionConAsterisco').hide();
+		jQuery('#fechaCargoUnicaConAsterisco').hide();
+		jQuery('#fechaCargoUnicaSinAsterisco').show();	
+		
+		jQuery('#radioMinimas').removeAttr("checked");	
+		jQuery('#radiofechaCargo').removeAttr("checked");
+
+<%	} %>
+
 	});	
 
 	function accionRadio(){		
@@ -182,9 +199,9 @@
  			jQuery('#fechaRecibosCOR1SinAsterisco').show();	
 			
 // 			jQuery('#fechaRecibosB2B').addClass("boxConsulta").removeClass("box").attr('disabled','disabled');
- 			jQuery("#fechaRecibosB2B-datepicker-trigger").hide();
- 			jQuery('#fechaRecibosB2BConAsterisco').hide();
- 			jQuery('#fechaRecibosB2BSinAsterisco').show();	
+// 			jQuery("#fechaRecibosB2B-datepicker-trigger").hide();
+// 			jQuery('#fechaRecibosB2BConAsterisco').hide();
+// 			jQuery('#fechaRecibosB2BSinAsterisco').show();	
 			
 		} else {
 			jQuery('#fechaCargoUnica').addClass("boxConsulta").removeClass("box").attr('disabled','disabled');
@@ -226,6 +243,8 @@
 	function deshabilitar(){
 		jQuery('#fechaPresentacion').addClass("boxConsulta").removeClass("box").attr('disabled','disabled');
 		jQuery("#fechaPresentacion-datepicker-trigger").hide();
+		jQuery('#fechaPresentacionConAsterisco').hide();
+		jQuery('#fechaPresentacionSinAsterisco').show();	
 		
 		jQuery('#fechaCargoUnica').addClass("boxConsulta").removeClass("box").attr('disabled','disabled');
 		jQuery("#fechaCargoUnica-datepicker-trigger").hide();

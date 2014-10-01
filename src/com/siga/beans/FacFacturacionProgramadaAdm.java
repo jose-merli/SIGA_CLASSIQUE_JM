@@ -69,7 +69,9 @@ public class FacFacturacionProgramadaAdm extends MasterBeanAdministrador {
 							FacFacturacionProgramadaBean.C_FECHARECIBOSPRIMEROS,
 							FacFacturacionProgramadaBean.C_FECHARECIBOSRECURRENTES,
 							FacFacturacionProgramadaBean.C_FECHARECIBOSCOR1,
-							FacFacturacionProgramadaBean.C_FECHARECIBOSB2B};
+							FacFacturacionProgramadaBean.C_FECHARECIBOSB2B,
+							FacFacturacionProgramadaBean.C_LOGERROR,
+							FacFacturacionProgramadaBean.C_NOMBREFICHERO};
 		return campos;
 	}
 
@@ -124,6 +126,8 @@ public class FacFacturacionProgramadaAdm extends MasterBeanAdministrador {
 			bean.setFechaRecibosRecurrentes	(UtilidadesHash.getString(hash, FacFacturacionProgramadaBean.C_FECHARECIBOSRECURRENTES));
 			bean.setFechaRecibosCOR1		(UtilidadesHash.getString(hash, FacFacturacionProgramadaBean.C_FECHARECIBOSCOR1));
 			bean.setFechaRecibosB2B			(UtilidadesHash.getString(hash, FacFacturacionProgramadaBean.C_FECHARECIBOSB2B));
+			bean.setLogerror				(UtilidadesHash.getString(hash, FacFacturacionProgramadaBean.C_LOGERROR));
+			bean.setNombrefichero			(UtilidadesHash.getString(hash, FacFacturacionProgramadaBean.C_NOMBREFICHERO));			
 
 		}
 		catch (Exception e) { 
@@ -185,6 +189,8 @@ public class FacFacturacionProgramadaAdm extends MasterBeanAdministrador {
 			UtilidadesHash.setForCompare(htData, FacFacturacionProgramadaBean.C_FECHARECIBOSPRIMEROS, b.getFechaRecibosPrimeros());
 			UtilidadesHash.setForCompare(htData, FacFacturacionProgramadaBean.C_FECHARECIBOSCOR1, b.getFechaRecibosCOR1());
 			UtilidadesHash.setForCompare(htData, FacFacturacionProgramadaBean.C_FECHARECIBOSB2B, b.getFechaRecibosB2B());
+			UtilidadesHash.setForCompare(htData, FacFacturacionProgramadaBean.C_LOGERROR, b.getLogerror());
+			UtilidadesHash.setForCompare(htData, FacFacturacionProgramadaBean.C_NOMBREFICHERO, b.getNombrefichero());			
 		}
 		catch (Exception e) {
 			htData = null;
@@ -416,11 +422,18 @@ public class FacFacturacionProgramadaAdm extends MasterBeanAdministrador {
 		
 		FacFacturacionProgramadaBean aux = bean;
 		try { 
+			
+			Integer idTratamientoActual = UtilidadesHash.getInteger(bean.getOriginalHash(), FacFacturacionProgramadaBean.C_IDESTADOCONFIRMACION);
+			
 			// confirmacion
 			if (bean.getFechaPrevistaConfirmacion()!=null && !bean.getFechaPrevistaConfirmacion().trim().equals("")) {
-				bean.setIdEstadoConfirmacion(FacEstadoConfirmFactBean.CONFIRM_PROGRAMADA);
+				if(idTratamientoActual.intValue() == FacEstadoConfirmFactBean.GENERADA.intValue()){
+					bean.setIdEstadoConfirmacion(FacEstadoConfirmFactBean.CONFIRM_PROGRAMADA);
+				}else{
+					bean.setIdEstadoConfirmacion(idTratamientoActual);
+				}
 			} else {
-				bean.setIdEstadoConfirmacion(FacEstadoConfirmFactBean.CONFIRM_PENDIENTE);
+				bean.setIdEstadoConfirmacion(idTratamientoActual);
 			}
 			// PDF
 			if (bean.getFechaPrevistaConfirmacion()!=null && !bean.getFechaPrevistaConfirmacion().trim().equals("")) {
@@ -704,30 +717,34 @@ public class FacFacturacionProgramadaAdm extends MasterBeanAdministrador {
 		
 		select.append(",facProg.");
 		select.append(FacFacturacionProgramadaBean.C_USUMODIFICACION);
+		
+		select.append(",facProg.");
+		select.append(FacFacturacionProgramadaBean.C_NOMBREFICHERO);
+		
+		select.append(",facProg.");
+		select.append(FacFacturacionProgramadaBean.C_LOGERROR);		
+		
+		select.append(",facProg.");
+		select.append(FacFacturacionProgramadaBean.C_DESCRIPCION);
 		select.append(",");
 		
-		
-		
-		
-
 		select.append(" ("+selectInterno+") AS FECHACARGO, ");
 		select.append(" serieFac."+FacSerieFacturacionBean.C_NOMBREABREVIADO);
-			select.append(" FROM "+FacFacturacionProgramadaBean.T_NOMBRETABLA+" facProg, ");
+		select.append(" FROM "+FacFacturacionProgramadaBean.T_NOMBRETABLA+" facProg, ");
 		select.append(FacSerieFacturacionBean.T_NOMBRETABLA+" serieFac");
 		select.append(" WHERE facProg." + FacFacturacionProgramadaBean.C_IDINSTITUCION + " = " + idInstitucion);
-//		select.append(" and facProg."+FacFacturacionProgramadaBean.C_FECHAREALGENERACION + " IS NOT NULL ");
-//		select.append(" and facProg."+FacFacturacionProgramadaBean.C_FECHAREALGENERACION + ">= TO_DATE ('" + fechaInicial + "', 'DD/MM/YYYY')");
 		select.append(" AND facProg."+FacFacturacionProgramadaBean.C_IDINSTITUCION+"= serieFac."+FacSerieFacturacionBean.C_IDINSTITUCION);
 		select.append(" AND facProg."+FacFacturacionProgramadaBean.C_IDSERIEFACTURACION+"= serieFac."+FacSerieFacturacionBean.C_IDSERIEFACTURACION);
+		select.append(" AND NVL(facProg."+FacFacturacionProgramadaBean.C_VISIBLE+", 'N') = 'S' ");
 						
 		// filtros
-		if (!confirmarFacturacionForm.getEstadoConfirmacion().trim().equals("")) {
+		if (confirmarFacturacionForm.getEstadoConfirmacion()!= null && !confirmarFacturacionForm.getEstadoConfirmacion().trim().equals("")) {
 			select.append(" AND facProg."+FacFacturacionProgramadaBean.C_IDESTADOCONFIRMACION+"="+confirmarFacturacionForm.getEstadoConfirmacion());
 		}
-		if (!confirmarFacturacionForm.getEstadoPDF().trim().equals("")) {
+		if (confirmarFacturacionForm.getEstadoPDF()!= null && !confirmarFacturacionForm.getEstadoPDF().trim().equals("")) {
 			select.append(" AND facProg."+FacFacturacionProgramadaBean.C_IDESTADOPDF+"="+confirmarFacturacionForm.getEstadoPDF());
 		}
-		if (!confirmarFacturacionForm.getEstadoEnvios().trim().equals("")) {
+		if (confirmarFacturacionForm.getEstadoEnvios()!= null && !confirmarFacturacionForm.getEstadoEnvios().trim().equals("")) {
 			select.append(" AND facProg."+FacFacturacionProgramadaBean.C_IDESTADOENVIO+"="+confirmarFacturacionForm.getEstadoEnvios());
 		}
 		if (confirmarFacturacionForm.getArchivadas()!=null && confirmarFacturacionForm.getArchivadas().trim().equals("1")) {
@@ -748,12 +765,7 @@ public class FacFacturacionProgramadaAdm extends MasterBeanAdministrador {
 			select.append(" AND facProg."+FacFacturacionProgramadaBean.C_FECHAREALGENERACION+"<TO_DATE ('" + confirmarFacturacionForm.getFechaHastaGeneracion() + "', 'DD/MM/YYYY')");
 		}
 
-		
-		
-		
-		
 		select.append( " ORDER BY "+FacFacturacionProgramadaBean.C_FECHAREALGENERACION+" DESC");
-    	
     	Paginador paginador= new Paginador(select.toString());
 		
 		return paginador;                        
