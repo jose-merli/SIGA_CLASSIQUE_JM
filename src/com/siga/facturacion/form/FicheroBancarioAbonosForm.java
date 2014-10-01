@@ -31,7 +31,8 @@ public class FicheroBancarioAbonosForm extends MasterForm{
 	private String abonosHasta;
 	private String importesDesde;
 	private String importesHasta;
-	String listaSufijoProp;
+	private Integer idpropOtros; 
+	private Integer idpropSEPA; 
 	
 	public String getSjcs() {
 		return sjcs;
@@ -127,12 +128,22 @@ public class FicheroBancarioAbonosForm extends MasterForm{
 			e.printStackTrace();
 		}
 	}	
+
+	public Integer getIdpropOtros() {
+		return idpropOtros;
+	}
+
+	public void setIdpropOtros(Integer idpropOtros) {
+		this.idpropOtros = idpropOtros;
+	}
+
+	public Integer getIdpropSEPA() {
+		return idpropSEPA;
+	}
+
+	public void setIdpropSEPA(Integer idpropSEPA) {
+		this.idpropSEPA = idpropSEPA;
+	}
 	
-	public String getListaSufijoProp() {
-		return listaSufijoProp;
-	}
-	public void setListaSufijoProp(String listaSufijoProp) {
-		this.listaSufijoProp = listaSufijoProp;
-	}
 	
 }

@@ -105,10 +105,7 @@
 	
 	function accionGuardarCerrar(){
 		sub();
-		var propositoSEPA = jQuery("#comboPropositosSEPA");
-		var propositoOtros = jQuery("#comboPropositosOtros");
 		
-		document.ficheroBancarioAbonosForm.listaSufijoProp.value=propositoSEPA.val()+"#"+propositoOtros.val();
 		document.ficheroBancarioAbonosForm.modo.value = "generarFichero";
 		document.ficheroBancarioAbonosForm.submit();
 		fin();
