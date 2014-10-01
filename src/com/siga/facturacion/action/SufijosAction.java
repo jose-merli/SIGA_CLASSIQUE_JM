@@ -234,6 +234,19 @@ public class SufijosAction extends MasterAction {
 				
 				if(miForm.getSufijo().length()!=3)
 					throw new SIGAException("facturacion.mensajes.sufijoNuevo");
+				
+				//se comprueba si el código del sufijo ya existe en bbdd
+				Hashtable clavesSuf = new Hashtable ();
+				UtilidadesHash.set (clavesSuf, sufijoBean.C_IDINSTITUCION, user.getLocation());
+				UtilidadesHash.set (clavesSuf, sufijoBean.C_SUFIJO, miForm.getSufijo());
+			
+				Vector vSuf=sufijoAdm.select(clavesSuf);
+				
+				if ((vSuf!=null)&&((vSuf.size()>0))){
+					throw new SIGAException("facturacion.mensajes.sufijoNuevo.codigoYaExiste");
+				}
+				
+				
 	
 			} catch (NumberFormatException exc) {
 
