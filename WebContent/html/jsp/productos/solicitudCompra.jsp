@@ -511,21 +511,22 @@
 			  		<input type="hidden" id="modo" name="modo" value="abrirBusquedaModal">
 			  		<input type="hidden" id="ventana"  name="ventana" 		value="solicitud">
 					<input type="hidden" id="deCertificado" name="deCertificado"	value="<%=deCertificado%>">
-					<input type="hidden" id="clientes" name="clientes"	value="1">
-					<html:hidden name="busquedaClientesModalForm" property="numeroColegiado" styleId="numeroColegiado"  value="<%=numero%>" size="10" ></html:hidden>
-					<html:hidden name="busquedaClientesModalForm" property="nif" value="<%=nif%>" styleId="nif"></html:hidden>
+					<input type="hidden" id="clientes" name="clientes"	value="1">					
+					<html:hidden name="busquedaClientesModalForm" property="numeroColegiado" styleId="numeroColegiado"  value="<%=numero%>" size="10" />
+					<html:hidden name="busquedaClientesModalForm" property="nif" value="<%=nif%>" styleId="nif" />
+					
 					<tr>	
 	<%
 						if (esConsejo){						 		
 	%>							
 							<td>
-								<siga:BusquedaPersona tipo="personas" idPersona="idPersona" ></siga:BusquedaPersona>
+								<siga:BusquedaPersona tipo="personas" idPersona="idPersona" tipoClientes="1" />
 							</td>
 	<%
 						} else if (!esLetrado) { 
 	%>						 
 							<td>
-								<siga:BusquedaPersona tipo="colegiado" idPersona="idPersona"></siga:BusquedaPersona>
+								<siga:BusquedaPersona tipo="colegiado" idPersona="idPersona" tipoClientes="1" />
 							</td>
 	<%
 					 	} else { 

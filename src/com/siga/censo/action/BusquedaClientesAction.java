@@ -1176,11 +1176,7 @@ public class BusquedaClientesAction extends MasterAction {
 	 * @return  String  Destino del action  
 	 * @exception  ClsExceptions  En cualquier caso de error
 	 */
-	protected String abrirBusquedaModal (ActionMapping mapping, 		
-							MasterForm formulario, 
-							HttpServletRequest request, 
-							HttpServletResponse response) throws SIGAException 
-	{
+	protected String abrirBusquedaModal (ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		try {
 			
 			// borro el formulario en session de Avanzada
@@ -1188,34 +1184,43 @@ public class BusquedaClientesAction extends MasterAction {
 			if (miformSession!=null) {
 				miformSession.reset(mapping,request);
 			}
+			
 			BusquedaClientesForm miformSession2 = (BusquedaClientesForm)request.getSession().getAttribute("busquedaClientesForm");
 			if (miformSession2!=null) {
 				miformSession2.reset(mapping,request);
 			}
-			BusquedaClientesForm miform = (BusquedaClientesForm)formulario;
-	        		
-			String obtenerColegiados = (String)miform.getObtenerColegiados();	        
 			
+			/* JPT: No obtenia bien "clientes" en Chrome
+			 * - He puesto un atributo nuevo en TagBusquedaPersona (tipoClientes)
+			 * - Si no obtiene el atributo, toma el dato igual que antiguamente
+			 */
+			
+			BusquedaClientesForm miform = (BusquedaClientesForm)formulario;
+			String sTipoCliente = miform.getTipoCliente();	    
+			if (sTipoCliente==null && !sTipoCliente.equals("1")) {
+				sTipoCliente = (String) request.getParameter("clientes");
+			}
+			
+			String obtenerColegiados = miform.getObtenerColegiados();	        
+			String idInstitucionCargo = miform.getIdInstitucionCargo();
 			miform.reset(mapping,request);
-			String idInstitucionCargo = (String)miform.getIdInstitucionCargo();
+			
 			String visibilidad ="";
 			// obtengo la visibilidad para el user
 			if(idInstitucionCargo!=null && !idInstitucionCargo.equals(""))
 				visibilidad = obtenerVisibilidadUsuarioPorInstitucion(idInstitucionCargo); 
 			else
-				visibilidad =obtenerVisibilidadUsuario(request);
-			
+				visibilidad = obtenerVisibilidadUsuario(request);
 				 
 			request.setAttribute("CenInstitucionesVisibles",visibilidad);
-			request.setAttribute("clientes",request.getParameter("clientes"));
+			request.setAttribute("clientes", sTipoCliente);
 			request.setAttribute("deudor",request.getParameter("deudor"));
 			request.setAttribute("obtenerColegiados",obtenerColegiados);
 	        if (request.getParameter("busquedaSancion")!=null && request.getParameter("busquedaSancion").equals("1")){
 	        	request.setAttribute("busquedaSancion","1");
 	        }
 	                
-	     } 	
-		 catch (Exception e) {
+	     } catch (Exception e) {
 			throwExcp("messages.general.error",new String[] {"modulo.censo"},e,null);
 	   	 }
 

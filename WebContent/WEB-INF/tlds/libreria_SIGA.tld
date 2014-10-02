@@ -1362,6 +1362,11 @@
       <rtexprvalue>true</rtexprvalue>
     </attribute>
     <attribute>
+      <name>tipoClientes</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>    
+    <attribute>
       <name>idPersona</name>
       <required>true</required>
       <rtexprvalue>true</rtexprvalue>

@@ -13,21 +13,13 @@ import com.siga.general.MasterForm;
  * @version 30/01/2006 (david.sanchezp): modificacion de las busquedas por el tipo
  */
  public class BusquedaClientesForm extends MasterForm {	
-	private String codigo="";
-	private String estadoFormulario="0"; 
-	private String fechaAltaDesde="";
-	private String fechaAltaHasta=""; 
-	private String fechaIncorporacionDesde="";
-	private String fechaIncorporacionHasta="";
-	private String fechaNacimientoDesde="";
-	private String fechaNacimientoHasta="";
-	private String idInstitucion;
-	private String idInstitucionCargo;
-	private String idPersona= null;
-	private String obtenerColegiados;
-	private String permitirAniadirNuevo= "N";
-	private String solBusqueda="";
-	private String verFichaLetrado;
+		private String codigo="";
+		private String idInstitucion;
+		private String idInstitucionCargo;
+		private String idPersona= null;
+		private String obtenerColegiados;
+		private String permitirAniadirNuevo= "N";
+		private String verFichaLetrado;
 
 	// BLOQUE PARA EL FORMULARIO DE BUSQUEDA AVANZADA 
  	public void setGrupoClientes (String dato) { 
@@ -212,10 +204,6 @@ import com.siga.general.MasterForm;
 
  	public String getNumeroColegiado	() 	{ 
  		return UtilidadesHash.getString(this.datos, "NumeroColegiado");		
- 	}
-
- 	public String getTipoCliente () 	{ 
- 		return UtilidadesHash.getString(this.datos, "TipoCliente");		
  	}
 
  	public String getNif	() 	{ 
@@ -491,6 +479,14 @@ import com.siga.general.MasterForm;
 		this.datos.put("NUMERONIF", numeroNif);
 	}
 	
+	public String getTipoCliente() { 
+		return (this.datos.get("tipoCliente")!=null) ? this.datos.get("tipoCliente").toString() : "";				
+	}
+	
+	public void setTipoCliente (String tipoBus) { 
+		this.datos.put("tipoCliente", tipoBus);
+	}	
+	
 	// Getters
 	public String getChkBusqueda(){
  		return UtilidadesHash.getString(this.datos, "ChkBusqueda");
@@ -556,13 +552,6 @@ import com.siga.general.MasterForm;
  			e.printStackTrace();
  		}
  	} 	 	
- 	public void setTipoCliente (String dato) {
- 		try {
- 			UtilidadesHash.set(this.datos,"TipoCliente", dato);
- 		} catch (Exception e) {
- 			e.printStackTrace();
- 		}
- 	} 	
 	public void setValorCheck(String valor){
 	 	try {
  			UtilidadesHash.set(this.datos, "ValorCheck", valor);

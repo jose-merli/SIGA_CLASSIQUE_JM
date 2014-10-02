@@ -7,15 +7,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.tagext.TagSupport;
 
-import org.apache.struts.util.RequestUtils;
-
 import com.atos.utils.ClsConstants;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesString;
 
-public class TagBusquedaPersona extends TagSupport  
-{
+public class TagBusquedaPersona extends TagSupport {
 	String tipo = "";
+	String tipoClientes = "";
 	String titulo = "";
 	String accion = "";
 	String idPersona = "";
@@ -26,42 +24,54 @@ public class TagBusquedaPersona extends TagSupport
 	private String preFunction;
 	private String postFunction;
 
-//	public String getNumeroColegiado() {
-//		return numeroColegiado;
-//	}
-//	public void setNumeroColegiado(String numeroColegiado) {
-//		this.numeroColegiado = numeroColegiado;
-//	}
 	public String getTipo() {
 		return tipo;
 	}
 	public void setTipo(String tipo) {
 		this.tipo = tipo;
 	}
+	
+	
+	public String getTipoClientes() {
+		return tipoClientes;
+	}
+	public void setTipoClientes(String tipoClientes) {
+		this.tipoClientes = tipoClientes;
+	}
+	
+	
 	public String getAnchoDesc() {
 		return anchoDesc;
 	}
 	public void setAnchoDesc(String anchoDesc) {
 		this.anchoDesc = anchoDesc;
 	}
+	
+	
 	public String getAnchoNum() {
 		return anchoNum;
 	}
 	public void setAnchoNum(String anchoNum) {
 		this.anchoNum = anchoNum;
 	}
+	
+	
 	public String getIdPersona() {
 		return idPersona;
 	}
 	public void setIdPersona(String idPersona) {
 		this.idPersona = idPersona;
 	}
+	
+	
 	public String getTitulo() {
 		return titulo;
 	}
 	public void setTitulo(String titulo) {
 		this.titulo = titulo;
 	}
+	
+	
 	public String getAccion() {
 		return accion;
 	}
@@ -69,24 +79,30 @@ public class TagBusquedaPersona extends TagSupport
 		this.accion = accion;
 	}
 	
+	
 	public String getPreFunction() {
 		return preFunction==null?"":preFunction+"();";
 	}
-
 	public void setPreFunction(String preFunction) {
 		this.preFunction = preFunction;
 	}
 
+	
 	public String getPostFunction() {
 		return postFunction==null?"":postFunction+"();";
 	}
-
 	public void setPostFunction(String postFunction) {
 		this.postFunction = postFunction;
 	}
+	
+	public String getCampoObligatorio() {
+		return campoObligatorio;
+	}	
+	public void setCampoObligatorio(String campoObligatorio) {
+		this.campoObligatorio = campoObligatorio;
+	}	
 
-	public int doStartTag() 
-	{
+	public int doStartTag() {
 		try {
 			HttpSession session = pageContext.getSession();
 			
@@ -112,55 +128,56 @@ public class TagBusquedaPersona extends TagSupport
 			out.println("<table align=\"left\">");
 			
 			
-			if (tipo.equals("colegiado")){
+			if (tipo.equals("colegiado")) {
 				out.println("			<tr>");	
 				out.println("				<td class=\"labelText\">");
 				out.println("					"+UtilidadesString.getMensajeIdioma(usrbean,"gratuita.busquedaSOJ.literal.colegiado"));
 				if(campoObligatorio!=null && campoObligatorio.equals("true"))
 					out.println("(*)");
 				out.println("				</td>");
-			}
-			else if(tipo.equals("personas")){
+				
+			} else if (tipo.equals("personas")) {
 				out.println("			<tr>");
 				out.println("				<td class=\"labelText\">");
 				out.println("					"+UtilidadesString.getMensajeIdioma(usrbean,"gratuita.busquedaSOJ.literal.nif"));
 				if(campoObligatorio!=null && campoObligatorio.equals("true"))
 					out.println("(*)");
 				out.println("				</td>");
-			}
-
-			else if(tipo.equalsIgnoreCase("personasJG")){
+				
+			} else if (tipo.equalsIgnoreCase("personasJG")) {
 				out.println("			<tr>");
 				out.println("				<td class=\"labelText\">");
 				out.println("					"+UtilidadesString.getMensajeIdioma(usrbean,"gratuita.busquedaSOJ.literal.nif"));
-				if(campoObligatorio!=null && campoObligatorio.equals("true"))
+				if (campoObligatorio!=null && campoObligatorio.equals("true"))
 					out.println("(*)");
 				out.println("				</td>");
 			}
+			
 			out.println("<td>");
 			out.println("	<input type=\"text\" id=\"numeroNifTagBusquedaPersonas\" name=\"numeroNifTagBusquedaPersonas\" size="+this.anchoNum+" maxlength=\"9\" class=\"box\" onBlur=\""+ getPreFunction()+"obtenerPersonas();"+ getPostFunction()+"\"/>");				
 			out.println("</td>");
+			
 			out.println("<td>");
 			out.println("	<input type=\"text\" id=\"nombrePersona\" name=\"nombrePersona\" size="+this.anchoDesc+" maxlength=\"50\" class=\"box\" readonly=\"true\"/>");							
 			out.println("</td>");
-			out.println("<td>");
-									
+			
+			out.println("<td>");								
 			if(tipo.equals("personas")){
 				out.println("	<!-- Boton buscar -->");
 				out.println("	<input type=\"button\" class=\"button\" id=\"idButton\" name=\"buscarCliente\" value='"+UtilidadesString.getMensajeIdioma(usrbean,"gratuita.inicio_SaltosYCompensaciones.literal.buscar")+"' onClick=\""+ getPreFunction()+"buscarPersonaDni();"+ getPostFunction()+"\">");
-			}else{
+			} else {
 				out.println("	<!-- Boton buscar -->");
 				out.println("	<input type=\"button\" class=\"button\" id=\"idButton\" name=\"buscarCliente\" value='"+UtilidadesString.getMensajeIdioma(usrbean,"gratuita.inicio_SaltosYCompensaciones.literal.buscar")+"' onClick=\""+ getPreFunction()+"buscarPersona();"+ getPostFunction()+"\">");
 			}				
 			out.println("	<!-- Boton limpiar -->");
-			out.println("	&nbsp;<input type=\"button\" class=\"button\" id=\"idButton\" name=\"limpiar\" value='"+UtilidadesString.getMensajeIdioma(usrbean,"gratuita.inicio_SaltosYCompensaciones.literal.limpiar")+"' onClick=\"limpiarPersona();\">");
-			
+			out.println("	&nbsp;<input type=\"button\" class=\"button\" id=\"idButton\" name=\"limpiar\" value='"+UtilidadesString.getMensajeIdioma(usrbean,"gratuita.inicio_SaltosYCompensaciones.literal.limpiar")+"' onClick=\"limpiarPersona();\">");			
 			out.println("</td>");
 			out.println("</tr>");
-			out.println("</table>");
+			out.println("</table>");			
 			if (this.titulo!=null && !this.titulo.equals("")) { 
 				out.println("</fieldset>");
 			}
+			
 			//request
 			out.println("<script language=\"JavaScript\">	");
 			out.println("");
@@ -171,9 +188,7 @@ public class TagBusquedaPersona extends TagSupport
 			out.println("				app=app.substring(0,app.substr(1).indexOf('/')+1);");
 //			////////////////////////////////////////////////////////////////////////////////////////////////////////
 			
-			
 			//out.println("				var formu=document.createElement(\"<form name='busquedaClientesModalForm' action='\"+app+\"/CEN_BusquedaClientesModal.do'>\");");
-			
 			out.println("var formu = document.createElement('form'); ");
 			out.println("formu.setAttribute('name', 'busquedaClientesModalForm');");
 			out.println("formu.setAttribute('id', 'busquedaClientesModalForm');");
@@ -182,8 +197,6 @@ public class TagBusquedaPersona extends TagSupport
 			String contextPath = ((HttpServletRequest)pageContext.getRequest()).getContextPath();
 			
 			out.println("formu.setAttribute('action', '"+contextPath+"/CEN_BusquedaClientesModal.do');");
-			
-			
 			
 			// out.println("				formu.appendChild(document.createElement(\"<input type='hidden' name='actionModal' value=''>\"));");
 			out.println("                var myinput =document.createElement('input');");
@@ -194,8 +207,6 @@ public class TagBusquedaPersona extends TagSupport
             out.println("  formu.appendChild(myinput);");
             out.println(""); 
 			
-			
-			
 			//out.println("				formu.appendChild(document.createElement(\"<input type='hidden' name='modo' value=''>\"));");
             out.println("                var myinput2 =document.createElement('input');");
             out.println("  myinput2.setAttribute('type','hidden');");
@@ -205,7 +216,6 @@ public class TagBusquedaPersona extends TagSupport
             out.println("  formu.appendChild(myinput2);");
             out.println(""); 
             
-            
 			//out.println("				formu.appendChild(document.createElement(\"<input type='hidden' name='tipoBus' value='"+this.tipo+"'>\"));");
             out.println("                var myinput3 =document.createElement('input');");
             out.println("  myinput3.setAttribute('type','hidden');");
@@ -213,7 +223,6 @@ public class TagBusquedaPersona extends TagSupport
             out.println("  myinput3.setAttribute('name','tipoBus');");
             out.println("  myinput3.setAttribute('value','"+this.tipo+"');");
             out.println("  formu.appendChild(myinput3);");
-            
             
 			//out.println("				formu.appendChild(document.createElement(\"<input type='hidden' name='numeroNif' value=''>\"));");
             out.println("");
@@ -224,7 +233,14 @@ public class TagBusquedaPersona extends TagSupport
             out.println("  myinput4.setAttribute('value','');"); 
             out.println("  formu.appendChild(myinput4);"); 
             
-			
+            if (this.tipoClientes!=null && !this.tipoClientes.equals("")) {
+            	out.println("  var myinput5 =document.createElement('input');");
+                out.println("  myinput5.setAttribute('type','hidden');");
+                out.println("  myinput5.setAttribute('id','tipoCliente');");
+                out.println("  myinput5.setAttribute('name','tipoCliente');");
+                out.println("  myinput5.setAttribute('value','" + this.tipoClientes + "');"); 
+                out.println("  formu.appendChild(myinput5);");
+            }
 			
 //			////////////////////////////////////////////////////////////////////////////////////////////////////////
             out.println("  document.body.appendChild(formu);");
@@ -343,19 +359,11 @@ public class TagBusquedaPersona extends TagSupport
 		return EVAL_BODY_INCLUDE;	 	 	
 	}
 	
-	public int doEndTag() 
-	{
+	public int doEndTag() {
 		try { }
 		catch (Exception e) {
 			e.printStackTrace();
 		}
 		return EVAL_PAGE;
 	}
-	public String getCampoObligatorio() {
-		return campoObligatorio;
-	}
-	public void setCampoObligatorio(String campoObligatorio) {
-		this.campoObligatorio = campoObligatorio;
-	}
-
 }

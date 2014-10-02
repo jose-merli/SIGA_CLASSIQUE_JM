@@ -138,7 +138,7 @@
 %>	
 						<tr>								
 							<td>
-								<siga:BusquedaPersona tipo="personas" idPersona="idPersona" preFunction="inicializarIntentos" postFunction="buscarProductosYServicios"></siga:BusquedaPersona>
+								<siga:BusquedaPersona tipo="personas" idPersona="idPersona" tipoClientes="1" preFunction="inicializarIntentos" postFunction="buscarProductosYServicios"></siga:BusquedaPersona>
 							</td>
 						</tr>
 <%
@@ -147,7 +147,7 @@
 %>
 							<tr>
 								<td>
-									<siga:BusquedaPersona tipo="colegiado" idPersona="idPersona" postFunction="buscarProductosYServicios"></siga:BusquedaPersona>
+									<siga:BusquedaPersona tipo="colegiado" idPersona="idPersona" tipoClientes="1" postFunction="buscarProductosYServicios"></siga:BusquedaPersona>
 								</td>
 							</tr>
 	
