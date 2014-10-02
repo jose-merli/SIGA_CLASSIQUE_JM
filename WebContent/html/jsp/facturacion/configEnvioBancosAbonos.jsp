@@ -46,7 +46,6 @@
 <html:javascript formName="ficheroBancarioAbonosForm" staticJavascript="false" /> 
 <html:form action="${path}" target="submitArea">
 <html:hidden property="modo" value ="${ficheroBancarioAbonosForm.modo}"  />
-<html:hidden property="listaSufijoProp"/>
 	<div>
 		<siga:ConjCampos leyenda="facturacion.propositos">
 			<input type="hidden" name="sjcs" value="">
