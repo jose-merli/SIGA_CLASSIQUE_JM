@@ -127,6 +127,7 @@
 		<html:hidden styleId="numeroColegiadoPestanha" property="numeroColegiadoPestanha" value="<%=numeroPestanha%>" />
 
 		<!-- Datos del elemento seleccionado -->
+		<html:hidden styleId="idCalendarioGuardias"  property="idCalendarioGuardias" value="" />
 		<html:hidden styleId="idTurno"  property="idTurno" value="" />
 		<html:hidden styleId="idGuardia"  property="idGuardia" value="" />
 		<html:hidden styleId="fechaInicio"  property="fechaInicio" value="" />
@@ -441,10 +442,7 @@
 			//Datos del elemento seleccionado:
 			seleccionarFila(fila);
 			
-			//Submito
 			document.forms[0].modo.value = "buscarPor";
-			//document.forms[0].target = "_blank";
-			//document.forms[0].submit();
 			var salida = ventaModalGeneral(document.forms[0].name,"M"); 			
 			if (salida == "MODIFICADO"){
 				refrescarLocal();
@@ -468,8 +466,6 @@
 			seleccionarFila(fila);
 
 			document.forms[0].modo.value = "sustituir";
-			//document.forms[0].target = "_blank";
-			//document.forms[0].submit();
 			var salida = ventaModalGeneral(document.forms[0].name,"M"); 			
 			if (salida == "MODIFICADO") {
 				refrescarLocal();			
