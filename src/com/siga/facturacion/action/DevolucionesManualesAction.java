@@ -316,13 +316,15 @@ public class DevolucionesManualesAction extends MasterAction{
 				}
 				listaIdsFacturas += ")";
 				
+				/*
 				// JPT: Obtiene la ultima fecha de pago de una lista de facturas
 				FacPagosPorCajaAdm admPagosPorCaja = new FacPagosPorCajaAdm(user);
 				String ultimaFechaPagosFacturas = admPagosPorCaja.getUltimaFechaPagosFacturas(idInstitucion, listaIdsFacturas);
 				if (ultimaFechaPagosFacturas==null || ultimaFechaPagosFacturas.equals("")) {
 					throw new SIGAException("Error al no obtener la última fecha de los pagos de las facturas");
 				}
-				request.setAttribute("ultimaFechaPagosFacturas", ultimaFechaPagosFacturas);
+				request.setAttribute("ultimaFechaPagosFacturas", ultimaFechaPagosFacturas);*/
+				request.setAttribute("ultimaFechaPagosFacturas", GstDate.getHoyJsp());
 			}
 
 			// inicializo el form para esta pantalla

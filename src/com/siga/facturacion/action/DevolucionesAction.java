@@ -45,6 +45,7 @@ import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsLogging;
 import com.atos.utils.ClsMngBBDD;
+import com.atos.utils.GstDate;
 import com.atos.utils.Row;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.PaginadorCaseSensitive;
@@ -395,12 +396,13 @@ public class DevolucionesAction extends MasterAction {
 				listaIdsFacturas += ")";
 				
 				// JPT: Obtiene la ultima fecha de pago de una lista de facturas
-				FacPagosPorCajaAdm admPagosPorCaja = new FacPagosPorCajaAdm(user);
+				/*FacPagosPorCajaAdm admPagosPorCaja = new FacPagosPorCajaAdm(user);
 				String ultimaFechaPagosFactura = admPagosPorCaja.getUltimaFechaPagosFacturas(idInstitucion, listaIdsFacturas);
 				if (ultimaFechaPagosFactura==null || ultimaFechaPagosFactura.equals("")) {
 					throw new SIGAException("Error al no obtener la última fecha de los pagos de las facturas");
 				}
-				request.setAttribute("ultimaFechaPagosFactura", ultimaFechaPagosFactura);
+				request.setAttribute("ultimaFechaPagosFactura", ultimaFechaPagosFactura);*/
+				request.setAttribute("ultimaFechaPagosFactura", GstDate.getHoyJsp());
 				
 				// JPT: Indica el numero de facturas seleccionadas
 				request.setAttribute("numeroFacturas", new Integer(strFacturas.length));
