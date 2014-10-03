@@ -700,7 +700,6 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
 			if ((datos.getBuscarIdEstado() != null) && (datos.getBuscarIdEstado().intValue() != 0)){
 				// RGG 26/05/2009 Cambio funciones facturacion 
 			    where += " AND " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_ESTADO + " = " + datos.getBuscarIdEstado();
-				// where += " AND F_SIGA_ESTADOSFACTURA(" + idInstitucion + "," + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDFACTURA + ") = " + datos.getBuscarIdEstado();
 			}
 			
 			// Forma pago OK
@@ -2138,10 +2137,6 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
 							sql += " AND " + FacFacturaBean.T_NOMBRETABLA +"."+ FacFacturaBean.C_ESTADO + " NOT IN (1,7,8)  ";
 							sql += " AND " + FacFacturaBean.T_NOMBRETABLA +"."+ FacFacturaBean.C_IMPTOTALPORPAGAR + " > 0  ";
 
-							
-							//sql += " AND " + "F_SIGA_ESTADOSFACTURA("+ FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDINSTITUCION +","+ FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDFACTURA + ") <> 1" +
-							//" AND " +
-							//"F_SIGA_ESTADOSFACTURA("+ FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDINSTITUCION +","+ FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDFACTURA + ") <> 7" +
 							sql += " ORDER BY " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_FECHAEMISION + " ASC";
 							
 	            if (rc.findBind(sql,codigos)) {

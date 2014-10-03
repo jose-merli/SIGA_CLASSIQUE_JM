@@ -32,9 +32,7 @@ import com.atos.utils.GstDate;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.PaginadorCaseSensitive;
 import com.siga.beans.FacDisqueteCargosAdm;
-import com.siga.beans.GenParametrosAdm;
 import com.siga.facturacion.form.FicheroBancarioPagosForm;
-import com.siga.general.EjecucionPLs;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
@@ -205,15 +203,6 @@ public class FicheroBancarioPagosAction extends MasterAction{
 			// ACG: no hacemos esta consulta que ralentiza enormemente la ejecucion de esta funcion. De esta forma en la jsp se
 			// solicitará siempre la fecha de cargo con lo que en el fichero generado el campo fecha aparecerá siempre relleno
 			String tieneFechaCargo = "SI";
-			/*	String select = " SELECT "+FacFacturaBean.C_IDINSTITUCION+","+FacFacturaBean.C_IDFACTURA+
-			" FROM "+FacFacturaBean.T_NOMBRETABLA+
-			" WHERE "+FacFacturaBean.C_IDINSTITUCION+"="+usr.getLocation()+
-			" AND f_siga_estadosfactura ("+FacFacturaBean.C_IDINSTITUCION+","+FacFacturaBean.C_IDFACTURA+") = 3";
-			
-			FacFacturaAdm facturaAdm = new FacFacturaAdm(usuario);
-			
-			Vector v = facturaAdm.selectGenerico(select);
-			*/
 			
 			/*	
 			 String tieneFechaCargo = "NO";
