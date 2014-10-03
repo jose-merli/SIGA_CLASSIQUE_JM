@@ -261,6 +261,7 @@
 				datosGeneralesForm.nombre.value          = resultado[4];
 				datosGeneralesForm.apellido1.value       = resultado[5];
 				datosGeneralesForm.apellido2.value = resultado[6]; 
+				
 				datosGeneralesForm.tipoIdentificacion.value = resultado[21]; 
 
 				//Informacion adicional
@@ -270,7 +271,6 @@
 
 				//Datos direcciones
 				if(resultado[1] != "<%=idInstitucionActual%>"){
-					
 					limpiarDireccion();
 					jQuery("#direcciones").append("<option selected value='-1'>-- Nueva</option>");
 					jQuery("#direcciones").attr("disabled","disabled");
@@ -281,17 +281,16 @@
 					document.getElementById("domicilio").value 			= resultado[7].replace(/\r\n|\r|\n/g, " ");
 					document.getElementById("pais").value 				= resultado[10];
 					selPais(resultado[10]);
-			
 					if (resultado[10] != "" && resultado[10] != idEspana) {
 						datosGeneralesForm.poblacionExt.value=resultado[8];
-					}else{
-						document.getElementById("provincia").value = resultado[9];
+					}else{	
 						poblacionSeleccionada = resultado[8];
 						document.busquedaCensoModalForm.poblacionValue.value = resultado[8];
+						document.getElementById("poblacion").value = resultado[8];
+						document.getElementById("provincia").value = resultado[9];
 						document.getElementById("provincia").onchange();
-						//window.setTimeout("recargarComboHijo()",500,"Javascript");	
-						//document.getElementById("poblacion").value = resultado[8];		
 					}
+					
 					document.getElementById("checkTipoDireccion_4").checked = "checked";
 					
 				}else{
@@ -917,7 +916,7 @@
 						if (datosGeneralesForm.pais.value != "" && datosGeneralesForm.pais.value != idEspana){
 							datosGeneralesForm.poblacionExt.value=datosGeneralesForm.poblacionExt.value;
 							
-						}else{							
+						}else{					
 							poblacionSeleccionada = document.busquedaCensoModalForm.poblacionValue.value;
 							document.getElementById("provincia").onchange();
 							document.getElementById("poblacion").value = datosGeneralesForm.poblacion.value;		
@@ -1846,10 +1845,10 @@
 				}
 
 				//////////////////////////////////////  FIN VALIDACION TIPO DIRECCION  //////////////////////////////
-
+				
 		 		//Validamos que haya algun campo metido y en ese caso pasamos las otras validadciones si no devolvemos true. Como no hemos metido idTipoDireccion no insertara
 			 	if(trim(document.datosGeneralesForm.telefono1.value)!='' ||	trim(document.datosGeneralesForm.telefono2.value)!='' || trim(document.datosGeneralesForm.domicilio.value)!='' ||
-			 			trim(document.datosGeneralesForm.codigoPostal.value)!='' ||	trim(document.datosGeneralesForm.poblacion.value)!='' || trim(document.datosGeneralesForm.provincia.value)!='' ||
+			 			trim(document.datosGeneralesForm.codigoPostal.value)!='' ||	trim(jQuery('#poblacion').val())!='' || trim(document.datosGeneralesForm.provincia.value)!='' ||
 			 			trim(document.datosGeneralesForm.poblacionExt.value)!='' ||	trim(document.datosGeneralesForm.movil.value)!='' || trim(document.datosGeneralesForm.fax1.value)!='' ||
 			 			trim(document.datosGeneralesForm.fax2.value)!='' ||	document.datosGeneralesForm.preferenteFax.checked||document.datosGeneralesForm.preferenteSms.checked ||
 			 			document.datosGeneralesForm.preferenteMail.checked||document.datosGeneralesForm.preferenteCorreo.checked){
@@ -1891,9 +1890,9 @@
 		 				 alert (mensaje);	 				
 						 return false;
 					}
-	
+					
 					if((trim(document.datosGeneralesForm.domicilio.value)!="") && (trim(document.datosGeneralesForm.pais.value)==idEspana ||trim(document.datosGeneralesForm.pais.value)=="") && 
-							(jQuery('#poblacion').val()=="")) {						
+							((jQuery('#poblacion').val()==null) || (jQuery('#poblacion').val()==""))) {						
 		 				 var mensaje = "<siga:Idioma key="censo.datosDireccion.literal.poblacion"/> <siga:Idioma key="messages.campoObligatorio.error"/>";
 		 				 alert (mensaje);	 				
 						 return false;
@@ -1972,7 +1971,6 @@
 			if (idPais == idEspana || idPais == ""){
 				restablecerComboPoblacion();
 				jQuery("#provincia").removeAttr("disabled");
-// 				jQuery("#provincia").val("-1");
 				jQuery("#poblacionEspanola").show();
 				jQuery("#poblacionExtranjera").hide();
 			} else {
@@ -1987,6 +1985,7 @@
 		var comboPoblacionHTML = '<select name="'+html_idPoblacion+'" class="boxCombo" id="'+html_idPoblacion+'" style="width:180"></select>';
 		
 		function cargarPoblaciones(comboProvincia){
+			jQuery('#poblacion').val(null);
 			var idProvincia = jQuery("#provincia").val();			
 			jQuery("#poblacionEspanola").show();
 			jQuery("#poblacionExtranjera").hide();

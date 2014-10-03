@@ -947,7 +947,7 @@
 			var porcentaje = 0;
 			var importeRestante = 0;
 			var porcentajeRestante = 0;
-			//alert( total + " - " + importePendiente + " - " + porcentajePendiente);
+			
 			//calcula el importe y el porcenaje restante
 			if (document.getElementsByName("radioAPagar"+concepto)[0].checked){
 				importe = convertirANumero(document.getElementById("importe"+concepto).value);
@@ -957,10 +957,13 @@
 					document.getElementById("importe"+concepto).value = backupAPagar;				
 					return;		
 				} else if (importe > importePendiente){
-					alert('<siga:Idioma key="factSJCS.datosPagos.error.maximporte"/>');
-					document.getElementById("importe"+concepto).value = '0.00';	
+					alert('<siga:Idioma key="factSJCS.datosPagos.error.maxporcentaje"/>');
+					document.getElementById("porcentaje"+concepto).value = '0.00';
+					document.getElementById("importe"+concepto).value = '0.00';
+					document.getElementById("txtRestante"+concepto).value = convertirAFormato(new String(importePendiente)) + "\u20AC (" + convertirAFormato(new String(porcentajePendiente)) + "%)";
 					return;
-				}	
+				}
+				
 				porcentaje = parseFloat(importe * 100 / total);							
 			
 			} else {
@@ -972,7 +975,9 @@
 					
 				} else if (porcentaje > porcentajePendiente){
 					alert('<siga:Idioma key="factSJCS.datosPagos.error.maxporcentaje"/>');
-					document.getElementById("porcentaje"+concepto).value = '0.00';	
+					document.getElementById("porcentaje"+concepto).value = '0.00';
+					document.getElementById("importe"+concepto).value = '0.00';
+					document.getElementById("txtRestante"+concepto).value = convertirAFormato(new String(importePendiente)) + "\u20AC (" + convertirAFormato(new String(porcentajePendiente)) + "%)";
 					return;
 				}
 				

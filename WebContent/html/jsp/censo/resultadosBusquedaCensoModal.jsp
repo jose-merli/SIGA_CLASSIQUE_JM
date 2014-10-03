@@ -276,7 +276,7 @@
 					String pais = UtilidadesString.mostrarDatoJSP(registro.get("PAIS"));
 					
 					String poblacion = ""; 
-					if(pais.equalsIgnoreCase(ClsConstants.ID_PAIS_ESPANA)){
+					if(pais.equalsIgnoreCase(ClsConstants.ID_PAIS_ESPANA) || ((String)registro.get("PAIS")).equals("")){
 						poblacion = UtilidadesString.mostrarDatoJSP(registro.get("IDPOBLACION"));
 					}else{
 						poblacion = UtilidadesString.mostrarDatoJSP(registro.get("POBLACION"));
@@ -295,7 +295,7 @@
 					
 					String telefono = UtilidadesString.mostrarDatoJSP(registro.get("TELEFONO"));
 					String sexo = UtilidadesString.mostrarDatoJSP(registro.get("SEXO"));
-					String tratamiento = UtilidadesString.mostrarDatoJSP(registro.get("IDTRATAMIENTO"));
+					String tratamiento = UtilidadesString.mostrarDatoJSP(registro.get("TRATAMIENTO"));
 					String fax1 = UtilidadesString.mostrarDatoJSP(registro.get("FAX"));
 					
 			 		%>
