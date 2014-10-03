@@ -195,13 +195,13 @@
 						
  			jQuery('#fechaRecibosCOR1').addClass("boxConsulta").removeClass("box").attr('disabled','disabled');
 //  		jQuery("#fechaRecibosCOR1-datepicker-trigger").hide();
-//  		jQuery('#fechaRecibosCOR1ConAsterisco').hide();
-//  		jQuery('#fechaRecibosCOR1SinAsterisco').show();	
+  			jQuery('#fechaRecibosCOR1ConAsterisco').hide();
+  			jQuery('#fechaRecibosCOR1SinAsterisco').show();	
 			
  			jQuery('#fechaRecibosB2B').addClass("boxConsulta").removeClass("box").attr('disabled','disabled');
 // 			jQuery("#fechaRecibosB2B-datepicker-trigger").hide();
-// 			jQuery('#fechaRecibosB2BConAsterisco').hide();
-// 			jQuery('#fechaRecibosB2BSinAsterisco').show();	
+ 			jQuery('#fechaRecibosB2BConAsterisco').hide();
+ 			jQuery('#fechaRecibosB2BSinAsterisco').show();	
 			
 		} else {
 			jQuery('#fechaCargoUnica').addClass("boxConsulta").removeClass("box").attr('disabled','disabled');
