@@ -632,20 +632,201 @@ public class CenHistoricoAdm extends MasterBeanAdministrador
 				} else if (beanAsociado instanceof CenComponentesBean) {
 					CenComponentesBean beanComponentes = (CenComponentesBean) beanAsociado;
 					CenComponentesAdm adm = new CenComponentesAdm(this.usrbean);
-					hBeanAsociado = adm.beanToHashTable(beanComponentes);
-					hBeanAsociadoAnterior = adm.beanToHashTable(adm.hashTableToBean(beanComponentes.getOriginalHash()));
-
+					
 					beanHistorico.setIdInstitucion(beanComponentes.getIdInstitucion());
 					beanHistorico.setIdPersona(beanComponentes.getIdPersona());
 					beanHistorico.setIdTipoCambio(new Integer(ClsConstants.TIPO_CAMBIO_HISTORICO_DATOS_COMPONENTES));
 					
-					// Sustituimos id's por descripciones
+					//Datos de los campos a mostrar 
 					try {
+
+						hBeanAsociado = adm.beanToHashTable(beanComponentes);
+						
+						//Persona
 						CenPersonaAdm pAdm = new CenPersonaAdm(this.usrbean);
-						CenPersonaBean pBean = (CenPersonaBean)pAdm.selectByPK(hBeanAsociado).get(0);
-						UtilidadesHash.set(hBeanAsociado, CenComponentesBean.C_CEN_CLIENTE_IDPERSONA, pBean.getApellido1() + " "+ pBean.getApellido2() + ", "+ pBean.getNombre());
-						pBean = (CenPersonaBean)pAdm.selectByPK(hBeanAsociadoAnterior).get(0);
-						UtilidadesHash.set(hBeanAsociadoAnterior, CenComponentesBean.C_CEN_CLIENTE_IDPERSONA, pBean.getApellido1() + " "+ pBean.getApellido2() + ", "+ pBean.getNombre());
+						Hashtable hClaveP=new Hashtable();
+						hClaveP.put("IDPERSONA", beanComponentes.getCen_Cliente_IdPersona());
+						CenPersonaBean pBean =(CenPersonaBean)pAdm.selectByPK(hClaveP).get(0);
+						UtilidadesHash.set(hBeanAsociado, CenComponentesBean.C_CEN_CLIENTE_IDPERSONA, pBean.getApellido1() + " "+ pBean.getApellido2() + ", "+ pBean.getNombre()+" NIF/CIF "+pBean.getNIFCIF());
+						
+						//Cuenta
+						if((beanComponentes.getIdCuenta()!=null)&&(beanComponentes.getIdCuenta()>0))
+						{
+							CenCuentasBancariasAdm cAdm = new CenCuentasBancariasAdm(this.usrbean);
+							Hashtable hClaveC=new Hashtable();
+							hClaveC.put("IDPERSONA", beanComponentes.getCen_Cliente_IdPersona());	
+							hClaveC.put("IDCUENTA", beanComponentes.getIdCuenta());
+							hClaveC.put("IDINSTITUCION", beanComponentes.getCen_Cliente_IdInstitucion());	
+							
+							CenCuentasBancariasBean cBean =(CenCuentasBancariasBean)cAdm.selectByPK(hClaveC).get(0);
+							UtilidadesHash.set(hBeanAsociado, CenComponentesBean.C_IDCUENTA,UtilidadesString.mostrarIBANConAsteriscos(cBean.getIban()));
+							
+						}	
+						
+						//Tipo de Colegio
+						if((beanComponentes.getIdTipoColegio()!=null)&&(!beanComponentes.getIdTipoColegio().isEmpty()))
+						{
+																				
+							String sql=" SELECT f_siga_getrecurso(DESCRIPCION,"+this.usrbean.getLanguageInstitucion()+") AS DESCRIPCION FROM CEN_ACTIVIDADPROFESIONAL WHERE IDACTIVIDADPROFESIONAL="+beanComponentes.getIdTipoColegio();
+							
+							Vector vDescTipoColegio=adm.selectGenericoNLS(sql);
+							
+							if((vDescTipoColegio!=null)&&(vDescTipoColegio.size()>0)){
+								Hashtable hdesc=(Hashtable)vDescTipoColegio.get(0);
+								UtilidadesHash.set(hBeanAsociado, CenComponentesBean.C_IDTIPOCOLEGIO, hdesc.get("DESCRIPCION").toString());
+							}
+							
+						}	
+						
+						//Cargo
+						if((beanComponentes.getIdCargo()!=null)&&(!beanComponentes.getIdCargo().isEmpty()))
+						{
+																				
+							String sql=" SELECT f_siga_getrecurso(DESCRIPCION,"+this.usrbean.getLanguageInstitucion()+") AS DESCRIPCION FROM CEN_CARGO WHERE IDCARGO="+beanComponentes.getIdCargo();
+							
+							Vector vDescCargo=adm.selectGenericoNLS(sql);
+							
+							if((vDescCargo!=null)&&(vDescCargo.size()>0)){
+								Hashtable hdesc=(Hashtable)vDescCargo.get(0);
+								UtilidadesHash.set(hBeanAsociado, CenComponentesBean.C_CARGO, hdesc.get("DESCRIPCION").toString());
+							}
+							
+						}	
+						
+						//Provincia
+						if((beanComponentes.getIdProvincia()!=null)&&(!beanComponentes.getIdProvincia().isEmpty()))
+						{
+																				
+							String sql=" SELECT f_siga_getrecurso(DESCRIPCION,"+this.usrbean.getLanguageInstitucion()+") AS DESCRIPCION FROM CEN_PROVINCIAS WHERE IDPROVINCIA="+beanComponentes.getIdProvincia();
+							
+							Vector vDescProv=adm.selectGenericoNLS(sql);
+							
+							if((vDescProv!=null)&&(vDescProv.size()>0)){
+								Hashtable hdesc=(Hashtable) vDescProv.get(0);
+								UtilidadesHash.set(hBeanAsociado, CenComponentesBean.C_IDPROVINCIA, hdesc.get("DESCRIPCION").toString());
+							}
+							
+						//Si la Provincia está vacía se muestra la de la persona
+						}else{
+																					
+							String sql=" SELECT ABREVIATURA FROM CEN_INSTITUCION WHERE IDINSTITUCION="+beanComponentes.getCen_Cliente_IdInstitucion();
+							
+							Vector vDescProv=adm.selectGenericoNLS(sql);
+							
+							if((vDescProv!=null)&&(vDescProv.size()>0)){
+								Hashtable hdesc=(Hashtable)vDescProv.get(0);
+								UtilidadesHash.set(hBeanAsociado, CenComponentesBean.C_IDPROVINCIA, hdesc.get("ABREVIATURA").toString());
+							}
+	
+						}	
+						
+						//Sino está informado el colegiado mostramos el de la persona
+						if((beanComponentes.getNumColegiado()==null)||(beanComponentes.getNumColegiado().isEmpty())){
+							String sql=" SELECT DECODE(COMUNITARIO, 1, NCOMUNITARIO, NCOLEGIADO) NCOLEGIADO FROM CEN_COLEGIADO WHERE IDINSTITUCION="+beanComponentes.getCen_Cliente_IdInstitucion()+" AND IDPERSONA="+beanComponentes.getCen_Cliente_IdPersona();
+							
+							Vector vNumCol=adm.selectGenericoNLS(sql);
+							
+							if((vNumCol!=null)&&(vNumCol.size()>0)){
+								Hashtable hdesc=(Hashtable)vNumCol.get(0);
+								UtilidadesHash.set(hBeanAsociado, CenComponentesBean.C_NUMCOLEGIADO, hdesc.get("NCOLEGIADO").toString());
+							}
+						}
+
+						//Si se han actualizado los datos del elemento hay que insertar otro registro con los datos modificados
+						CenComponentesBean beanAsociadoAnterior = (CenComponentesBean) adm.hashTableToBean(beanComponentes.getOriginalHash());
+						hBeanAsociadoAnterior = adm.beanToHashTable(beanAsociadoAnterior);
+						
+						//Persona
+						Hashtable hClavePU=new Hashtable();
+						hClavePU.put("IDPERSONA", beanAsociadoAnterior.getCen_Cliente_IdPersona());
+						CenPersonaBean pUBean =(CenPersonaBean)pAdm.selectByPK(hClavePU).get(0);
+						UtilidadesHash.set(hBeanAsociadoAnterior, CenComponentesBean.C_CEN_CLIENTE_IDPERSONA, pUBean.getApellido1() + " "+ pUBean.getApellido2() + ", "+ pUBean.getNombre()+" NIF/CIF "+pBean.getNIFCIF());
+					
+						//Cuenta
+						if((beanAsociadoAnterior.getIdCuenta()!=null)&&(beanAsociadoAnterior.getIdCuenta()>0))
+						{
+							CenCuentasBancariasAdm cUAdm = new CenCuentasBancariasAdm(this.usrbean);
+							Hashtable hClaveCU=new Hashtable();
+							hClaveCU.put("IDPERSONA", beanComponentes.getCen_Cliente_IdPersona());	
+							hClaveCU.put("IDCUENTA", beanComponentes.getIdCuenta());
+							hClaveCU.put("IDINSTITUCION", beanComponentes.getCen_Cliente_IdInstitucion());	
+							
+							CenCuentasBancariasBean cUBean =(CenCuentasBancariasBean)cUAdm.selectByPK(hClaveCU).get(0);
+							UtilidadesHash.set(hBeanAsociadoAnterior, CenComponentesBean.C_IDCUENTA,UtilidadesString.mostrarIBANConAsteriscos(cUBean.getIban()));
+						
+						}
+						
+						//Tipo de Colegio
+						if((beanAsociadoAnterior.getIdTipoColegio()!=null)&&(!beanAsociadoAnterior.getIdTipoColegio().isEmpty()))
+						{
+																				
+							String sql=" SELECT f_siga_getrecurso(DESCRIPCION,"+this.usrbean.getLanguageInstitucion()+") AS DESCRIPCION FROM CEN_ACTIVIDADPROFESIONAL WHERE IDACTIVIDADPROFESIONAL="+beanAsociadoAnterior.getIdTipoColegio();
+							
+							Vector vDescTipoColegio=adm.selectGenericoNLS(sql);
+							
+							if((vDescTipoColegio!=null)&&(vDescTipoColegio.size()>0)){
+								Hashtable hdesc=(Hashtable)vDescTipoColegio.get(0);
+								UtilidadesHash.set(hBeanAsociadoAnterior, CenComponentesBean.C_IDTIPOCOLEGIO, hdesc.get("DESCRIPCION").toString());
+							}
+							
+						}
+						
+						//Cargo
+						if((beanAsociadoAnterior.getIdCargo()!=null)&&(!beanAsociadoAnterior.getIdCargo().isEmpty()))
+						{
+																				
+							String sql=" SELECT f_siga_getrecurso(DESCRIPCION,"+this.usrbean.getLanguageInstitucion()+") AS DESCRIPCION FROM CEN_CARGO WHERE IDCARGO="+beanAsociadoAnterior.getIdCargo();
+							
+							Vector vDescCargo=adm.selectGenericoNLS(sql);
+							
+							if((vDescCargo!=null)&&(vDescCargo.size()>0)){
+								Hashtable hdesc=(Hashtable)vDescCargo.get(0);
+								UtilidadesHash.set(hBeanAsociadoAnterior, CenComponentesBean.C_CARGO, hdesc.get("DESCRIPCION").toString());
+							}
+							
+						}	
+						
+						//Provincia
+						if((beanAsociadoAnterior.getIdProvincia()!=null)&&(!beanAsociadoAnterior.getIdProvincia().isEmpty()))
+						{
+																				
+							String sql=" SELECT f_siga_getrecurso(DESCRIPCION,"+this.usrbean.getLanguageInstitucion()+") AS DESCRIPCION FROM CEN_PROVINCIAS WHERE IDPROVINCIA="+beanAsociadoAnterior.getIdProvincia();
+							
+							Vector vDescProv=adm.selectGenericoNLS(sql);
+							
+							if((vDescProv!=null)&&(vDescProv.size()>0)){
+								Hashtable hdesc=(Hashtable)vDescProv.get(0);
+								UtilidadesHash.set(hBeanAsociadoAnterior, CenComponentesBean.C_IDPROVINCIA, hdesc.get("DESCRIPCION").toString());
+							}
+							
+						
+						//Si la Provincia está vacía se muestra la de la persona
+						}else{
+																				
+							String sql=" SELECT ABREVIATURA FROM CEN_INSTITUCION WHERE IDINSTITUCION="+beanAsociadoAnterior.getCen_Cliente_IdInstitucion();
+							
+							Vector vDescProv=adm.selectGenericoNLS(sql);
+							
+							if((vDescProv!=null)&&(vDescProv.size()>0)){
+								Hashtable hdesc=(Hashtable)vDescProv.get(0);
+								UtilidadesHash.set(hBeanAsociadoAnterior, CenComponentesBean.C_IDPROVINCIA, hdesc.get("ABREVIATURA").toString());
+							}
+							
+							
+						}
+						
+						//Sino está informado el colegiado mostramos el de la persona
+						if((beanAsociadoAnterior.getNumColegiado()==null)||(beanAsociadoAnterior.getNumColegiado().isEmpty())){
+							String sql=" SELECT DECODE(COMUNITARIO, 1, NCOMUNITARIO, NCOLEGIADO) NCOLEGIADO FROM CEN_COLEGIADO WHERE IDINSTITUCION="+beanAsociadoAnterior.getCen_Cliente_IdInstitucion()+" AND IDPERSONA="+beanAsociadoAnterior.getCen_Cliente_IdPersona();
+							
+							Vector vNumCol=adm.selectGenericoNLS(sql);
+							
+							if((vNumCol!=null)&&(vNumCol.size()>0)){
+								Hashtable hdesc=(Hashtable)vNumCol.get(0);
+								UtilidadesHash.set(hBeanAsociadoAnterior, CenComponentesBean.C_NUMCOLEGIADO, hdesc.get("NCOLEGIADO").toString());
+							}
+						}
+
 					} 
 					catch (Exception e) {}
 					
@@ -1053,7 +1234,8 @@ public class CenHistoricoAdm extends MasterBeanAdministrador
 		String [] camposOmitir = {"IDPERSONA", "IDINSTITUCION", "FECHABAJA", MasterBean.C_FECHAMODIFICACION, MasterBean.C_USUMODIFICACION, 
 								  CenDireccionesBean.C_IDDIRECCION,  CenCuentasBancariasBean.C_IDCUENTA, CenDatosCVBean.C_IDCV, 
 								  ExpExpedienteBean.C_IDINSTITUCION_JUZGADO, ExpExpedienteBean.C_IDINSTITUCION_PROCEDIMIENTO, ExpExpedienteBean.C_IDINSTITUCION_TIPOEXPEDIENTE,
-								  CenComponentesBean.C_CEN_CLIENTE_IDINSTITUCION, CenComponentesBean.C_IDCOMPONENTE};
+								  CenComponentesBean.C_CEN_CLIENTE_IDINSTITUCION,
+								  CenComponentesBean.C_IDCARGO};
 
 		for (int k = 0; k < camposOmitir.length; k++) {
 			if (s.equalsIgnoreCase(camposOmitir[k])) {
@@ -1068,6 +1250,7 @@ public class CenHistoricoAdm extends MasterBeanAdministrador
 	{
 		// Pareja: original --> final
 		String [][] camposReemplazar = { { CenComponentesBean.C_CEN_CLIENTE_IDPERSONA, "PERSONA" },
+										 { CenComponentesBean.C_IDTIPOCOLEGIO, "TIPO COLEGIO" },
 										 { CenDireccionesBean.C_IDPAIS, "PAIS" },
 										 { CenDireccionesBean.C_IDPOBLACION, "POBLACION" },
 										 { CenDireccionesBean.C_IDPROVINCIA, "PROVINCIA" },
