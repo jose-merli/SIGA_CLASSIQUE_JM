@@ -229,12 +229,12 @@ public class FacPagosPorCajaAdm extends MasterBeanAdministrador {
 		// Obteneción confirmacion factura
 		String consulta10 = "";    
 		if (esProcesoMasivo) {		
-			consulta10 = " SELECT DECODE(facturaActual." + FacFacturaBean.C_COMISIONIDFACTURA + ", NULL, " +
+			consulta10 = " UNION SELECT DECODE(facturaActual." + FacFacturaBean.C_COMISIONIDFACTURA + ", NULL, " +
 					   			FacFacturacionProgramadaBean.T_NOMBRETABLA + "." + FacFacturacionProgramadaBean.C_FECHACONFIRMACION + ", " +
 					   			" facturaActual." + FacFacturaBean.C_FECHAEMISION + ") AS FECHA ";
 			
 		} else {
-			consulta10 = " SELECT 1 AS IDTABLA, " +
+			consulta10 = " UNION SELECT 1 AS IDTABLA, " +
 						   " F_SIGA_GETRECURSO_ETIQUETA('facturacion.pagosFactura.accion.confirmacionFactura'," + this.usrbean.getLanguage() + ") AS TABLA, " +
 						   " F_SIGA_GETRECURSO_ETIQUETA('facturacion.pagosFactura.estado.pendienteCobro'," + this.usrbean.getLanguage() + ") AS ESTADO, " +
 						   " DECODE(facturaActual." + FacFacturaBean.C_COMISIONIDFACTURA + ", NULL, " +
@@ -265,10 +265,10 @@ public class FacPagosPorCajaAdm extends MasterBeanAdministrador {
 		// Obtención de anticipos aplicados a una factura
 		String consulta2 = "";    
 		if (esProcesoMasivo) {
-			consulta2 = " SELECT " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_FECHAEMISION + " AS FECHA ";			
+			consulta2 = " UNION SELECT " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_FECHAEMISION + " AS FECHA ";			
 		
 		} else {
-			consulta2 = " SELECT 2 AS IDTABLA, " +
+			consulta2 = " UNION SELECT 2 AS IDTABLA, " +
 						 	" F_SIGA_GETRECURSO_ETIQUETA('facturacion.pagosFactura.accion.aplicarAnticipo'," + this.usrbean.getLanguage() + ") AS TABLA, " +
 						 	" CASE " +
 						 		" WHEN (" + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IMPTOTAL + " > " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IMPTOTALANTICIPADO + ") THEN " + 
@@ -300,10 +300,10 @@ public class FacPagosPorCajaAdm extends MasterBeanAdministrador {
 		// Obtención pagos por caja
 		String consulta3 = "";    
 		if (esProcesoMasivo) {
-			consulta3 = " SELECT " + FacPagosPorCajaBean.T_NOMBRETABLA + "." + FacPagosPorCajaBean.C_FECHA + " AS FECHA ";
+			consulta3 = " UNION SELECT " + FacPagosPorCajaBean.T_NOMBRETABLA + "." + FacPagosPorCajaBean.C_FECHA + " AS FECHA ";
 			
 		} else  {
-			consulta3 = " SELECT 4 AS IDTABLA, " +
+			consulta3 = " UNION SELECT 4 AS IDTABLA, " +
 				 		 	" F_SIGA_GETRECURSO_ETIQUETA('facturacion.pagosFactura.accion.pagosCaja'," + this.usrbean.getLanguage() + ") AS TABLA, " +
 				 		 	" CASE " +
 				 		 		" WHEN ( " +
@@ -356,9 +356,9 @@ public class FacPagosPorCajaAdm extends MasterBeanAdministrador {
 		// Otención pagos por banco
 		String consulta4 = "";    
 		if (esProcesoMasivo) {
-			consulta4 = " SELECT cargos." +  FacDisqueteCargosBean.C_FECHACREACION + " AS FECHA ";			
+			consulta4 = " UNION SELECT cargos." +  FacDisqueteCargosBean.C_FECHACREACION + " AS FECHA ";			
 		} else  {
-			consulta4 = " SELECT 4 AS IDTABLA, " +
+			consulta4 = " UNION SELECT 4 AS IDTABLA, " +
 							" F_SIGA_GETRECURSO_ETIQUETA('facturacion.pagosFactura.accion.pagoBanco'," + this.usrbean.getLanguage() + ") AS TABLA, " +
 							" ( " +
 								" SELECT F_SIGA_GETRECURSO_ETIQUETA (" + FacEstadoFacturaBean.T_NOMBRETABLA + "." + FacEstadoFacturaBean.C_DESCRIPCION + "," + this.usrbean.getLanguage() + ") " +
@@ -398,9 +398,9 @@ public class FacPagosPorCajaAdm extends MasterBeanAdministrador {
 		// Obtención devoluciones
 		String consulta5 = "";    
 		if (esProcesoMasivo) {
-			consulta5 = " SELECT devoluciones." + FacDisqueteDevolucionesBean.C_FECHAGENERACION + " AS FECHA ";					
+			consulta5 = " UNION SELECT devoluciones." + FacDisqueteDevolucionesBean.C_FECHAGENERACION + " AS FECHA ";					
 		} else {
-			consulta5 = " SELECT 4 AS IDTABLA, " +
+			consulta5 = " UNION SELECT 4 AS IDTABLA, " +
 							" F_SIGA_GETRECURSO_ETIQUETA('facturacion.pagosFactura.accion.devolucion'," + this.usrbean.getLanguage() + ") || ' (' || lineadevolucion.DESCRIPCIONMOTIVOS || ')' AS TABLA, " +
 							" ( " +
 								" SELECT F_SIGA_GETRECURSO_ETIQUETA (" + FacEstadoFacturaBean.T_NOMBRETABLA + "." + FacEstadoFacturaBean.C_DESCRIPCION + "," + this.usrbean.getLanguage() + ") " +
@@ -444,9 +444,9 @@ public class FacPagosPorCajaAdm extends MasterBeanAdministrador {
 		// Obtención renegociaciones
 		String consulta6 = "";    
 		if (esProcesoMasivo) {
-			consulta6 = " SELECT renegociacion." + FacRenegociacionBean.C_FECHARENEGOCIACION + " AS FECHA ";			
+			consulta6 = " UNION SELECT renegociacion." + FacRenegociacionBean.C_FECHARENEGOCIACION + " AS FECHA ";			
 		} else {
-			consulta6 = " SELECT 4 AS IDTABLA, " +
+			consulta6 = " UNION SELECT 4 AS IDTABLA, " +
 							" F_SIGA_GETRECURSO_ETIQUETA('facturacion.pagosFactura.accion.renegociacion'," + this.usrbean.getLanguage() + ") || ' ' || renegociacion.comentario AS TABLA, " +
 							" CASE " +
 								" WHEN (renegociacion." + FacRenegociacionBean.C_IDCUENTA + " is null) THEN " +
@@ -494,10 +494,8 @@ public class FacPagosPorCajaAdm extends MasterBeanAdministrador {
 		
 		// Obtención anulaciones
 		String consulta7 = "";    
-		if (esProcesoMasivo) {
-			consulta7 = " SELECT abono." + FacAbonoBean.C_FECHA + " AS FECHA ";
-		} else {
-			consulta7 = " SELECT 4 AS IDTABLA, " +
+		if (!esProcesoMasivo) { // JPT: Si esta anulada no se puede renegociar, ni devolver (ganamos rendimiento)
+			consulta7 = " UNION SELECT 4 AS IDTABLA, " +
 							" F_SIGA_GETRECURSO_ETIQUETA('facturacion.pagosFactura.accion.anulacion'," + this.usrbean.getLanguage() + ") AS TABLA, " +
 							" ( " +
 								" SELECT F_SIGA_GETRECURSO_ETIQUETA (" + FacEstadoFacturaBean.T_NOMBRETABLA + "." + FacEstadoFacturaBean.C_DESCRIPCION + "," + this.usrbean.getLanguage() + ") " +
@@ -533,10 +531,8 @@ public class FacPagosPorCajaAdm extends MasterBeanAdministrador {
 		
 		// Obtención anulaciones de comision (si la encuentra siempre es la ultima linea de la factura)
 		String consulta71 = "";    
-		if (esProcesoMasivo) {
-			consulta71 = " SELECT facturaPosterior." + FacFacturaBean.C_FECHAEMISION + " AS FECHA ";				
-		} else {
-			consulta71 = " SELECT 5 AS IDTABLA, " +
+		if (!esProcesoMasivo) { // JPT: Si esta anulada no se puede renegociar, ni devolver (ganamos rendimiento)
+			consulta71 = " UNION SELECT 5 AS IDTABLA, " +
 				" F_SIGA_GETRECURSO_ETIQUETA('facturacion.pagosFactura.accion.anulacion'," + this.usrbean.getLanguage() + ") || " +
 					" ' (' || F_SIGA_GETRECURSO_ETIQUETA('facturacion.pagosFactura.accion.anulacionComision'," + this.usrbean.getLanguage() + ") || ')' AS TABLA, " +
 				" ( " +
@@ -574,10 +570,10 @@ public class FacPagosPorCajaAdm extends MasterBeanAdministrador {
 		
 		//Abonos SJCS->compensaciones factura
 		String consulta8 = "";    
-		if (esProcesoMasivo) {
-			consulta8 = " SELECT pc." + FacPagoAbonoEfectivoBean.C_FECHA + " AS FECHA ";			
+		if (esProcesoMasivo) { 
+			consulta8 = " UNION SELECT pc." + FacPagoAbonoEfectivoBean.C_FECHA + " AS FECHA ";			
 		} else {
-			consulta8 = " SELECT 4 AS IDTABLA, " +
+			consulta8 = " UNION SELECT 4 AS IDTABLA, " +
 							" F_SIGA_GETRECURSO_ETIQUETA('facturacion.pagosFactura.accion.compensacion'," + this.usrbean.getLanguage() + ") AS TABLA, " +
 							" F_SIGA_GETRECURSO_ETIQUETA('facturacion.pagosFactura.estado.compensacion'," + this.usrbean.getLanguage() + ") AS ESTADO, " +					
 							" pc." + FacPagoAbonoEfectivoBean.C_FECHA + " AS FECHA, " +
@@ -613,15 +609,14 @@ public class FacPagosPorCajaAdm extends MasterBeanAdministrador {
 							" AND (ab." +FacAbonoBean.C_IDFACTURA + " <> pc." + FacPagosPorCajaBean.C_IDFACTURA + " OR ab." + FacAbonoBean.C_IDFACTURA + " is null) " +
 							" AND ab." + FacAbonoBean.C_IDPAGOSJG + " IS NOT NULL ";
 		
-		String consultaFinal = consulta1 + " UNION " + consulta10 + " UNION " + consulta2 + " UNION " + consulta3 + " UNION " + consulta4 + " UNION " + 
-				   consulta5 + " UNION " + consulta6 + " UNION " + consulta7 + " UNION " +  consulta71 + " UNION " + consulta8;
+		String consultaFinal = consulta1 + consulta10 + consulta2 + consulta3 + consulta4 + consulta5 + consulta6 + consulta7 + consulta71 + consulta8;
 		
 		if (esProcesoMasivo) {
 			consultaFinal = "SELECT TO_CHAR(MAX(FECHA), '" + ClsConstants.DATE_FORMAT_SHORT_SPANISH + "') AS ULTIMAFECHA FROM ( " + consultaFinal + " ) ";			
 		} else {
 			consultaFinal = "SELECT IDTABLA, TABLA, ESTADO, FECHA, FECHA_ORDEN, IMPORTE, IDFACTURA, ANULACIONCOMISION, DEVUELTA, TARJETA, IDABONO_IDCUENTA, NUMEROABONO, IDPAGO, NOMBREBANCO FROM ( " +
-					consultaFinal +					
-				   " ) ORDER BY IDFACTURA ASC, IDTABLA ASC, TO_CHAR(FECHA, 'YYYYMMDD') ASC, FECHA_ORDEN ASC, IDPAGO ASC";						
+								consultaFinal +					
+							" ) ORDER BY IDFACTURA ASC, IDTABLA ASC, TO_CHAR(FECHA, 'YYYYMMDD') ASC, FECHA_ORDEN ASC, IDPAGO ASC";						
 		}
 		
 		return consultaFinal;
