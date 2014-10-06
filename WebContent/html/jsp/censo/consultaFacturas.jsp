@@ -202,7 +202,8 @@
 								Double totalNeto = UtilidadesHash.getDouble(factura, FacFacturaBean.C_IMPTOTALNETO);
 								Double totalIva = UtilidadesHash.getDouble(factura, FacFacturaBean.C_IMPTOTALIVA);
 								Double total = UtilidadesHash.getDouble(factura, FacFacturaBean.C_IMPTOTAL);
-								Double totalPagado = UtilidadesHash.getDouble(factura, FacFacturaBean.C_IMPTOTALPORPAGAR);
+								Double totalPendiente = UtilidadesHash.getDouble(factura, FacFacturaBean.C_IMPTOTALPORPAGAR);
+								Double totalPagado = UtilidadesHash.getDouble(factura, FacFacturaBean.C_IMPTOTALPAGADO);
 								
 								String sEstado = UtilidadesHash.getString(factura, "DESCRIPCION_ESTADO");
    	 			%>
@@ -218,10 +219,10 @@
 						</td>
 						<td><%=UtilidadesString.mostrarDatoJSP(numFactura)%></td>
 						<td><%=UtilidadesString.mostrarDatoJSP(descripcion)%></td>
-						<td align="right"><%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero.formatoCampo(totalNeto.doubleValue()))%> &euro; </td>
-						<td align="right"><%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero.formatoCampo(totalIva.doubleValue()))%> &euro; </td>
-						<td align="right"><%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero.formatoCampo(total.doubleValue()))%> &euro; </td>
-						<td align="right"><%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero.formatoCampo(totalPagado.doubleValue()))%> &euro; </td>
+						<td align="right"><%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero.formatoCampo(totalNeto.doubleValue()))%>&nbsp;&euro; </td>
+						<td align="right"><%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero.formatoCampo(totalIva.doubleValue()))%>&nbsp;&euro; </td>
+						<td align="right"><%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero.formatoCampo(total.doubleValue()))%>&nbsp;&euro; </td>
+						<td align="right"><%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero.formatoCampo(totalPendiente.doubleValue()))%>&nbsp;&euro; </td>
 						<td><%=sEstado%></td>
 					</siga:FilaConIconos>
 				<%	
