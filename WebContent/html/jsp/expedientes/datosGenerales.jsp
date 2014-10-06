@@ -983,12 +983,12 @@
 			var numExpediente =document.ExpDatosGeneralesForm.numExpediente.value;
 			var anioExpediente =document.ExpDatosGeneralesForm.anioExpediente.value;
 			var tioExpedienteAnt ='<%=tipoExp%>';
-					
+	
 			document.ExpDatosGeneralesForm.copia.value="s";	
 			document.ExpDatosGeneralesForm.accion.value="nuevo";
 			
 			if (document.ExpDatosGeneralesForm.relacionExpediente.value != ""){
-				document.forms[1].action = "<%=app%>/EXP_AuditoriaExpedientes.do?noReset=true&idInst=<%=idinstitucion_tipoexpediente%>"+"&idTipo="+rel+"&idNombreTipo="+nombrerel+"&numExp="+numExpediente+"&anioExp="+anioExpediente+"&tipoExpAnt="+tioExpedienteAnt+"&nombreTipo="+'<%=form.getTipoExpediente()%>';
+				document.forms[1].action = "<%=app%>/EXP_AuditoriaExpedientes.do?noReset=true&idInst=<%=idinstitucion_tipoexpediente%>&nombreTipo=<%=form.getTipoExpediente()%>"+"&idTipo="+rel+"&idNombreTipo="+nombrerel+"&numExp="+numExpediente+"&anioExp="+anioExpediente+"&tipoExpAnt="+tioExpedienteAnt;
 				document.forms[1].modo.value="nuevoCopia";
 				document.forms[1].copia.value="s";					
 				document.forms[1].avanzada.value="<%=ClsConstants.DB_FALSE%>";
