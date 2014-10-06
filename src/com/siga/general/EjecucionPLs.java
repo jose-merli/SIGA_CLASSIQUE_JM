@@ -1181,5 +1181,25 @@ public static String[] ejecutarF_SIGA_COMPROBAR_ANTICIPAR (
 		}
 		
 		return resultadoFinal;
+	}
+	
+	/**
+	 * Obtiene las facturas relacionadas por comision de la factura actual
+	 * @param idInstitucion
+	 * @param idFactura
+	 * @return
+	 * @throws ClsExceptions
+	 */
+	public static String obtenerListaFacturasComision (String idInstitucion, String idFactura) throws ClsExceptions {
+		String resultado = idFactura;
+		String sql = " SELECT F_SIGA_GETLISTFACTCOMISION(" + idInstitucion + ", '" + idFactura + "', 1) AS LISTFACTCOMISION FROM DUAL";
+		
+		RowsContainer rc = new RowsContainer(); 
+		if (rc.query(sql)) {
+			Row fila = (Row) rc.get(0);
+			resultado = fila.getString("LISTFACTCOMISION");
+		}
+		
+		return resultado;
 	}		
 }

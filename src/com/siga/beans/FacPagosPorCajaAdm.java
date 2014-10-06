@@ -17,6 +17,7 @@ import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesNumero;
 import com.siga.Utilidades.UtilidadesString;
+import com.siga.general.EjecucionPLs;
 import com.siga.general.SIGAException;
 
 /**
@@ -185,36 +186,20 @@ public class FacPagosPorCajaAdm extends MasterBeanAdministrador {
 	 * @return
 	 * @throws SIGAException
 	 */
-	public String getQueryPagos (Integer idInstitucion, String idFactura, Long idPersona, boolean esProcesoMasivo)  throws SIGAException {
-		// JPT: Puede venir una factura suelta o una lista de facturas
-		String condicionFactura = (esProcesoMasivo ? " IN " : " = ") + idFactura;    
+	public String getQueryPagos (Integer idInstitucion, String idFactura, Long idPersona, boolean esProcesoMasivo)  throws ClsExceptions, SIGAException {
 		
-		// JPT - Comisiones: Se obtiene un listado de las facturas de una factura con comisiones
-		String fromFacturasTotal = " ( " +
-   				" SELECT FACTURAS." + FacFacturaBean.C_IDFACTURA + ", " +
-					" ROWNUM AS CONTADOR " +
-				" FROM ( " +
-					" SELECT DISTINCT TO_NUMBER(" + FacFacturaBean.C_IDFACTURA + ") AS " + FacFacturaBean.C_IDFACTURA + // JPT Busca facturas anteriores
-					" FROM " + FacFacturaBean.T_NOMBRETABLA +
-					" WHERE " + FacFacturaBean.C_IDINSTITUCION + " = " + idInstitucion +
-					" START WITH " + FacFacturaBean.C_IDFACTURA + condicionFactura +       
-					" CONNECT BY PRIOR " + FacFacturaBean.C_COMISIONIDFACTURA + " = " + FacFacturaBean.C_IDFACTURA + 
-					" UNION " +
-					" SELECT DISTINCT TO_NUMBER(" + FacFacturaBean.C_IDFACTURA + ") AS " + FacFacturaBean.C_IDFACTURA + // JPT: Busca facturas posteriores
-					" FROM " + FacFacturaBean.T_NOMBRETABLA +
-					" WHERE " + FacFacturaBean.C_IDINSTITUCION + " = " + idInstitucion +
-					" START WITH " + FacFacturaBean.C_IDFACTURA + condicionFactura +       
-					" CONNECT BY PRIOR " + FacFacturaBean.C_IDFACTURA + " = " + FacFacturaBean.C_COMISIONIDFACTURA +
-					" ORDER BY 1 ASC " +
-				" ) FACTURAS " +
-			" ) FACTURAS_TOTAL "; 			
+		/* JPT: Cambios al aplicar comisiones en facturas (anula la anterior y crea una nueva con la comision)
+		 * - Si es masivo ya tiene el listado final de facturas
+		 * - En otro caso (pestaña de pagos de una factura), hay que obtener una lista con las facturas relacionadas por comision de la factura actual
+		 */
+		String listaFacturasComision = (esProcesoMasivo ? idFactura : EjecucionPLs.obtenerListaFacturasComision(idInstitucion.toString(), idFactura));
 		
 		// Obteneción emisión factura
 		String consulta1 = "";    
 		if (esProcesoMasivo) {
 			consulta1 = " SELECT facturaActual." + FacFacturaBean.C_FECHAEMISION + " AS FECHA ";			
 		} else {
-			consulta1 = " SELECT 0 + 10 * FACTURAS_TOTAL.CONTADOR AS IDTABLA, " +
+			consulta1 = " SELECT 0 AS IDTABLA, " +
 				   	" F_SIGA_GETRECURSO_ETIQUETA('facturacion.pagosFactura.accion.emisionFactura'," + this.usrbean.getLanguage() + ") " +
 				   		" || ' (' || facturaActual." + FacFacturaBean.C_NUMEROFACTURA + " || ') ' AS TABLA, " +
 				   	" ( " + 
@@ -235,10 +220,9 @@ public class FacPagosPorCajaAdm extends MasterBeanAdministrador {
 				   " '' AS NOMBREBANCO ";
 		}
 		consulta1 += " FROM " + FacFacturaBean.T_NOMBRETABLA + " facturaActual, " +
-						FacFacturaBean.T_NOMBRETABLA + " facturaAnterior, " +
-						fromFacturasTotal +
+						FacFacturaBean.T_NOMBRETABLA + " facturaAnterior " +
 					" WHERE facturaActual." + FacFacturaBean.C_IDINSTITUCION + " = " + idInstitucion + 
-						" AND facturaActual." + FacFacturaBean.C_IDFACTURA + " = FACTURAS_TOTAL." + FacFacturaBean.C_IDFACTURA +
+						" AND facturaActual." + FacFacturaBean.C_IDFACTURA + " IN (" + listaFacturasComision + ") " +
 						" AND facturaAnterior." + FacFacturaBean.C_IDINSTITUCION + "(+) = facturaActual." + FacFacturaBean.C_IDINSTITUCION +
 						" AND facturaAnterior." + FacFacturaBean.C_IDFACTURA + "(+) = facturaActual." + FacFacturaBean.C_COMISIONIDFACTURA;    
 
@@ -250,7 +234,7 @@ public class FacPagosPorCajaAdm extends MasterBeanAdministrador {
 					   			" facturaActual." + FacFacturaBean.C_FECHAEMISION + ") AS FECHA ";
 			
 		} else {
-			consulta10 = " SELECT 1 + 10 * FACTURAS_TOTAL.CONTADOR AS IDTABLA, " +
+			consulta10 = " SELECT 1 AS IDTABLA, " +
 						   " F_SIGA_GETRECURSO_ETIQUETA('facturacion.pagosFactura.accion.confirmacionFactura'," + this.usrbean.getLanguage() + ") AS TABLA, " +
 						   " F_SIGA_GETRECURSO_ETIQUETA('facturacion.pagosFactura.estado.pendienteCobro'," + this.usrbean.getLanguage() + ") AS ESTADO, " +
 						   " DECODE(facturaActual." + FacFacturaBean.C_COMISIONIDFACTURA + ", NULL, " +
@@ -269,13 +253,12 @@ public class FacPagosPorCajaAdm extends MasterBeanAdministrador {
 		}
 		consulta10 += " FROM " + FacFacturaBean.T_NOMBRETABLA + " facturaActual, " + 
 							FacFacturaBean.T_NOMBRETABLA + " facturaAnterior, " +
-							FacFacturacionProgramadaBean.T_NOMBRETABLA + ", " + 
-							fromFacturasTotal +
+							FacFacturacionProgramadaBean.T_NOMBRETABLA + 
 						" WHERE facturaActual." + FacFacturaBean.C_IDINSTITUCION + " = " + FacFacturacionProgramadaBean.T_NOMBRETABLA + "." + FacFacturacionProgramadaBean.C_IDINSTITUCION +
 							" AND facturaActual." + FacFacturaBean.C_IDSERIEFACTURACION + " = " + FacFacturacionProgramadaBean.T_NOMBRETABLA + "." + FacFacturacionProgramadaBean.C_IDSERIEFACTURACION + 
 							" AND facturaActual." + FacFacturaBean.C_IDPROGRAMACION + " = " + FacFacturacionProgramadaBean.T_NOMBRETABLA + "." + FacFacturacionProgramadaBean.C_IDPROGRAMACION +
 							" AND facturaActual." + FacFacturaBean.C_IDINSTITUCION + " = " + idInstitucion + 
-							" AND facturaActual." + FacFacturaBean.C_IDFACTURA + " = FACTURAS_TOTAL." + FacFacturaBean.C_IDFACTURA +
+							" AND facturaActual." + FacFacturaBean.C_IDFACTURA + " IN (" + listaFacturasComision + ") " +
 							" AND facturaAnterior." + FacFacturaBean.C_IDINSTITUCION + "(+) = facturaActual." + FacFacturaBean.C_IDINSTITUCION +
 							" AND facturaAnterior." + FacFacturaBean.C_IDFACTURA + "(+) = facturaActual." + FacFacturaBean.C_COMISIONIDFACTURA;   			
 		
@@ -285,7 +268,7 @@ public class FacPagosPorCajaAdm extends MasterBeanAdministrador {
 			consulta2 = " SELECT " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_FECHAEMISION + " AS FECHA ";			
 		
 		} else {
-			consulta2 = " SELECT 2 + 10 * FACTURAS_TOTAL.CONTADOR AS IDTABLA, " +
+			consulta2 = " SELECT 2 AS IDTABLA, " +
 						 	" F_SIGA_GETRECURSO_ETIQUETA('facturacion.pagosFactura.accion.aplicarAnticipo'," + this.usrbean.getLanguage() + ") AS TABLA, " +
 						 	" CASE " +
 						 		" WHEN (" + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IMPTOTAL + " > " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IMPTOTALANTICIPADO + ") THEN " + 
@@ -309,10 +292,9 @@ public class FacPagosPorCajaAdm extends MasterBeanAdministrador {
 							   " 0 AS IDPAGO, " +
 							   " '' AS NOMBREBANCO ";
 		}
-		consulta2 += " FROM " + FacFacturaBean.T_NOMBRETABLA + ", " + 
-						fromFacturasTotal + 
+		consulta2 += " FROM " + FacFacturaBean.T_NOMBRETABLA + 
 					" WHERE " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDINSTITUCION + " = " + idInstitucion + 
-						" AND " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDFACTURA + " = FACTURAS_TOTAL." + FacFacturaBean.C_IDFACTURA +
+						" AND " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDFACTURA + " IN (" + listaFacturasComision + ") " +
 						" AND " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IMPTOTALANTICIPADO + " > 0 ";
 					
 		// Obtención pagos por caja
@@ -321,7 +303,7 @@ public class FacPagosPorCajaAdm extends MasterBeanAdministrador {
 			consulta3 = " SELECT " + FacPagosPorCajaBean.T_NOMBRETABLA + "." + FacPagosPorCajaBean.C_FECHA + " AS FECHA ";
 			
 		} else  {
-			consulta3 = " SELECT 4 + 10 * FACTURAS_TOTAL.CONTADOR AS IDTABLA, " +
+			consulta3 = " SELECT 4 AS IDTABLA, " +
 				 		 	" F_SIGA_GETRECURSO_ETIQUETA('facturacion.pagosFactura.accion.pagosCaja'," + this.usrbean.getLanguage() + ") AS TABLA, " +
 				 		 	" CASE " +
 				 		 		" WHEN ( " +
@@ -330,7 +312,7 @@ public class FacPagosPorCajaAdm extends MasterBeanAdministrador {
 			 		 					" SELECT SUM(pagocaja2." + FacPagosPorCajaBean.C_IMPORTE + ") " +
 			 		 					" FROM " + FacPagosPorCajaBean.T_NOMBRETABLA + " pagocaja2 " + 
 			 		 					" WHERE pagocaja2." + FacPagosPorCajaBean.C_IDINSTITUCION + " = " + idInstitucion + 
-			 		 						" AND pagocaja2." + FacPagosPorCajaBean.C_IDFACTURA + " = FACTURAS_TOTAL." + FacFacturaBean.C_IDFACTURA +
+			 		 						" AND pagocaja2." + FacPagosPorCajaBean.C_IDFACTURA + " = " + FacPagosPorCajaBean.T_NOMBRETABLA  + "." + FacFacturaBean.C_IDFACTURA +
 			 		 						" AND pagocaja2." + FacPagosPorCajaBean.C_IDPAGOPORCAJA + " <= " + FacPagosPorCajaBean.T_NOMBRETABLA  + "." + FacPagosPorCajaBean.C_IDPAGOPORCAJA +
 	 		 						" ) " + 
  		 						" ) THEN " +
@@ -364,12 +346,11 @@ public class FacPagosPorCajaAdm extends MasterBeanAdministrador {
 	 		 					"'' AS NOMBREBANCO ";
 		}
 		consulta3 += " FROM " + FacPagosPorCajaBean.T_NOMBRETABLA + ", " + 
-							FacFacturaBean.T_NOMBRETABLA + ", " + 
-							fromFacturasTotal +
+							FacFacturaBean.T_NOMBRETABLA +
 						" WHERE " + FacPagosPorCajaBean.T_NOMBRETABLA + "." + FacPagosPorCajaBean.C_IDINSTITUCION + " = " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDINSTITUCION + 
 							" AND " + FacPagosPorCajaBean.T_NOMBRETABLA + "." + FacPagosPorCajaBean.C_IDFACTURA + " = " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDFACTURA +
 							" AND " + FacPagosPorCajaBean.T_NOMBRETABLA + "." + FacPagosPorCajaBean.C_IDINSTITUCION + " = " + idInstitucion + 
-							" AND " + FacPagosPorCajaBean.T_NOMBRETABLA + "." + FacPagosPorCajaBean.C_IDFACTURA + " = FACTURAS_TOTAL." + FacFacturaBean.C_IDFACTURA +
+							" AND " + FacPagosPorCajaBean.T_NOMBRETABLA + "." + FacPagosPorCajaBean.C_IDFACTURA + " IN (" + listaFacturasComision + ") " +
 							" AND " + FacPagosPorCajaBean.T_NOMBRETABLA + "." + FacPagosPorCajaBean.C_IDABONO + " IS NULL ";
 		
 		// Otención pagos por banco
@@ -377,7 +358,7 @@ public class FacPagosPorCajaAdm extends MasterBeanAdministrador {
 		if (esProcesoMasivo) {
 			consulta4 = " SELECT cargos." +  FacDisqueteCargosBean.C_FECHACREACION + " AS FECHA ";			
 		} else  {
-			consulta4 = " SELECT 4 + 10 * FACTURAS_TOTAL.CONTADOR AS IDTABLA, " +
+			consulta4 = " SELECT 4 AS IDTABLA, " +
 							" F_SIGA_GETRECURSO_ETIQUETA('facturacion.pagosFactura.accion.pagoBanco'," + this.usrbean.getLanguage() + ") AS TABLA, " +
 							" ( " +
 								" SELECT F_SIGA_GETRECURSO_ETIQUETA (" + FacEstadoFacturaBean.T_NOMBRETABLA + "." + FacEstadoFacturaBean.C_DESCRIPCION + "," + this.usrbean.getLanguage() + ") " +
@@ -406,21 +387,20 @@ public class FacPagosPorCajaAdm extends MasterBeanAdministrador {
 		}
 		consulta4 += " FROM " + FacFacturaIncluidaEnDisqueteBean.T_NOMBRETABLA + " incluidadisquete, " +  
 							FacDisqueteCargosBean.T_NOMBRETABLA + " cargos, " + 
-							FacFacturaBean.T_NOMBRETABLA + " factura, " + 
-							fromFacturasTotal + 
+							FacFacturaBean.T_NOMBRETABLA + " factura " + 
 						" WHERE incluidadisquete." + FacFacturaIncluidaEnDisqueteBean.C_IDINSTITUCION + " = cargos." + FacDisqueteCargosBean.C_IDINSTITUCION +
                         	" AND incluidadisquete."+ FacFacturaIncluidaEnDisqueteBean.C_IDDISQUETECARGOS + " = cargos." + FacDisqueteCargosBean.C_IDDISQUETECARGOS +
                         	" AND incluidadisquete." + FacFacturaIncluidaEnDisqueteBean.C_IDINSTITUCION + " = factura." + FacFacturaBean.C_IDINSTITUCION +
                         	" AND incluidadisquete." + FacFacturaIncluidaEnDisqueteBean.C_IDFACTURA + " = factura." + FacFacturaBean.C_IDFACTURA +
                         	" AND incluidadisquete." + FacFacturaIncluidaEnDisqueteBean.C_IDINSTITUCION + " = " + idInstitucion + 
-                        	" AND incluidadisquete." + FacFacturaIncluidaEnDisqueteBean.C_IDFACTURA + " = FACTURAS_TOTAL." + FacFacturaBean.C_IDFACTURA;   
+                        	" AND incluidadisquete." + FacFacturaIncluidaEnDisqueteBean.C_IDFACTURA + " IN (" + listaFacturasComision + ") ";   
 
 		// Obtención devoluciones
 		String consulta5 = "";    
 		if (esProcesoMasivo) {
 			consulta5 = " SELECT devoluciones." + FacDisqueteDevolucionesBean.C_FECHAGENERACION + " AS FECHA ";					
 		} else {
-			consulta5 = " SELECT 4 + 10 * FACTURAS_TOTAL.CONTADOR AS IDTABLA, " +
+			consulta5 = " SELECT 4 AS IDTABLA, " +
 							" F_SIGA_GETRECURSO_ETIQUETA('facturacion.pagosFactura.accion.devolucion'," + this.usrbean.getLanguage() + ") || ' (' || lineadevolucion.DESCRIPCIONMOTIVOS || ')' AS TABLA, " +
 							" ( " +
 								" SELECT F_SIGA_GETRECURSO_ETIQUETA (" + FacEstadoFacturaBean.T_NOMBRETABLA + "." + FacEstadoFacturaBean.C_DESCRIPCION + "," + this.usrbean.getLanguage() + ") " +
@@ -450,8 +430,7 @@ public class FacPagosPorCajaAdm extends MasterBeanAdministrador {
 		consulta5 += " FROM " + FacFacturaIncluidaEnDisqueteBean.T_NOMBRETABLA + " incluidadisquete, " + 
 							FacLineaDevoluDisqBancoBean.T_NOMBRETABLA + " lineadevolucion, " + 
 							FacDisqueteDevolucionesBean.T_NOMBRETABLA + " devoluciones, " + 
-							FacFacturaBean.T_NOMBRETABLA + " factura, " + 
-							fromFacturasTotal + 
+							FacFacturaBean.T_NOMBRETABLA + " factura " + 
 						" WHERE incluidadisquete." + FacFacturaIncluidaEnDisqueteBean.C_IDINSTITUCION + " = lineadevolucion." + FacLineaDevoluDisqBancoBean.C_IDINSTITUCION + 
 							" AND incluidadisquete." + FacFacturaIncluidaEnDisqueteBean.C_IDDISQUETECARGOS + " = lineadevolucion." + FacLineaDevoluDisqBancoBean.C_IDDISQUETECARGOS + 
 							" AND incluidadisquete." + FacFacturaIncluidaEnDisqueteBean.C_IDFACTURAINCLUIDAENDISQUETE + " = lineadevolucion." + FacLineaDevoluDisqBancoBean.C_IDFACTURAINCLUIDAENDISQUETE + 
@@ -460,14 +439,14 @@ public class FacPagosPorCajaAdm extends MasterBeanAdministrador {
 							" AND incluidadisquete." + FacFacturaIncluidaEnDisqueteBean.C_IDINSTITUCION + " = factura." + FacFacturaBean.C_IDINSTITUCION +
 							" AND incluidadisquete." + FacFacturaIncluidaEnDisqueteBean.C_IDFACTURA + " = factura." + FacFacturaBean.C_IDFACTURA + 
 							" AND incluidadisquete." + FacFacturaIncluidaEnDisqueteBean.C_IDINSTITUCION + " = " + idInstitucion + 
-							" AND incluidadisquete." + FacFacturaIncluidaEnDisqueteBean.C_IDFACTURA + " = FACTURAS_TOTAL." + FacFacturaBean.C_IDFACTURA;   			
+							" AND incluidadisquete." + FacFacturaIncluidaEnDisqueteBean.C_IDFACTURA + " IN (" + listaFacturasComision + ") ";   			
 		
 		// Obtención renegociaciones
 		String consulta6 = "";    
 		if (esProcesoMasivo) {
 			consulta6 = " SELECT renegociacion." + FacRenegociacionBean.C_FECHARENEGOCIACION + " AS FECHA ";			
 		} else {
-			consulta6 = " SELECT 4 + 10 * FACTURAS_TOTAL.CONTADOR AS IDTABLA, " +
+			consulta6 = " SELECT 4 AS IDTABLA, " +
 							" F_SIGA_GETRECURSO_ETIQUETA('facturacion.pagosFactura.accion.renegociacion'," + this.usrbean.getLanguage() + ") || ' ' || renegociacion.comentario AS TABLA, " +
 							" CASE " +
 								" WHEN (renegociacion." + FacRenegociacionBean.C_IDCUENTA + " is null) THEN " +
@@ -507,19 +486,18 @@ public class FacPagosPorCajaAdm extends MasterBeanAdministrador {
 							") as NOMBREBANCO";
 		}
 		consulta6 += " FROM " + FacFacturaBean.T_NOMBRETABLA + " factura," + 
-							FacRenegociacionBean.T_NOMBRETABLA + " renegociacion, " + 
-							fromFacturasTotal + 
+							FacRenegociacionBean.T_NOMBRETABLA + " renegociacion " + 
 						" WHERE renegociacion." + FacRenegociacionBean.C_IDINSTITUCION + " = factura." + FacFacturaBean.C_IDINSTITUCION +
 							" AND renegociacion." + FacRenegociacionBean.C_IDFACTURA + " = factura." + FacFacturaBean.C_IDFACTURA + 
 							" AND renegociacion." + FacRenegociacionBean.C_IDINSTITUCION + " = " + idInstitucion + 
-							" AND renegociacion." + FacRenegociacionBean.C_IDFACTURA + " = FACTURAS_TOTAL." + FacFacturaBean.C_IDFACTURA;   	
+							" AND renegociacion." + FacRenegociacionBean.C_IDFACTURA + " IN (" + listaFacturasComision + ") ";   	
 		
 		// Obtención anulaciones
 		String consulta7 = "";    
 		if (esProcesoMasivo) {
 			consulta7 = " SELECT abono." + FacAbonoBean.C_FECHA + " AS FECHA ";
 		} else {
-			consulta7 = " SELECT 4 + 10 * FACTURAS_TOTAL.CONTADOR AS IDTABLA, " +
+			consulta7 = " SELECT 4 AS IDTABLA, " +
 							" F_SIGA_GETRECURSO_ETIQUETA('facturacion.pagosFactura.accion.anulacion'," + this.usrbean.getLanguage() + ") AS TABLA, " +
 							" ( " +
 								" SELECT F_SIGA_GETRECURSO_ETIQUETA (" + FacEstadoFacturaBean.T_NOMBRETABLA + "." + FacEstadoFacturaBean.C_DESCRIPCION + "," + this.usrbean.getLanguage() + ") " +
@@ -547,19 +525,18 @@ public class FacPagosPorCajaAdm extends MasterBeanAdministrador {
 							" ) as NOMBREBANCO";			
 		}
 		consulta7 += " FROM " + FacFacturaBean.T_NOMBRETABLA + " factura, " + 
-							FacAbonoBean.T_NOMBRETABLA + " abono, " + 
-							fromFacturasTotal + 
+							FacAbonoBean.T_NOMBRETABLA + " abono " + 
 						" WHERE factura." + FacFacturaBean.C_IDINSTITUCION + " = abono." + FacAbonoBean.C_IDINSTITUCION + 
 							" AND factura." + FacFacturaBean.C_IDFACTURA + " = abono." + FacAbonoBean.C_IDFACTURA +  
 							" AND factura." + FacFacturaBean.C_IDINSTITUCION + " = " + idInstitucion + 
-							" AND factura."   + FacFacturaBean.C_IDFACTURA + " = FACTURAS_TOTAL." + FacFacturaBean.C_IDFACTURA;   				
+							" AND factura."   + FacFacturaBean.C_IDFACTURA + " IN (" + listaFacturasComision + ") ";   				
 		
 		// Obtención anulaciones de comision (si la encuentra siempre es la ultima linea de la factura)
 		String consulta71 = "";    
 		if (esProcesoMasivo) {
 			consulta71 = " SELECT facturaPosterior." + FacFacturaBean.C_FECHAEMISION + " AS FECHA ";				
 		} else {
-			consulta71 = " SELECT 5 + 10 * FACTURAS_TOTAL.CONTADOR AS IDTABLA, " +
+			consulta71 = " SELECT 5 AS IDTABLA, " +
 				" F_SIGA_GETRECURSO_ETIQUETA('facturacion.pagosFactura.accion.anulacion'," + this.usrbean.getLanguage() + ") || " +
 					" ' (' || F_SIGA_GETRECURSO_ETIQUETA('facturacion.pagosFactura.accion.anulacionComision'," + this.usrbean.getLanguage() + ") || ')' AS TABLA, " +
 				" ( " +
@@ -588,10 +565,9 @@ public class FacPagosPorCajaAdm extends MasterBeanAdministrador {
 				" ) as NOMBREBANCO";		
 		}
 		consulta71 += " FROM " + FacFacturaBean.T_NOMBRETABLA + " facturaActual, " + 
-							FacFacturaBean.T_NOMBRETABLA + " facturaPosterior, " +	
-							fromFacturasTotal + 
+							FacFacturaBean.T_NOMBRETABLA + " facturaPosterior " +	
 						" WHERE facturaActual." + FacFacturaBean.C_IDINSTITUCION + " = " + idInstitucion + 
-							" AND facturaActual." + FacFacturaBean.C_IDFACTURA + " = FACTURAS_TOTAL." + FacFacturaBean.C_IDFACTURA +
+							" AND facturaActual." + FacFacturaBean.C_IDFACTURA + " IN (" + listaFacturasComision + ") " +
 							" AND facturaPosterior." + FacFacturaBean.C_IDINSTITUCION + " = facturaActual." + FacFacturaBean.C_IDINSTITUCION +
 							" AND facturaPosterior." + FacFacturaBean.C_COMISIONIDFACTURA + " = facturaActual." + FacFacturaBean.C_IDFACTURA +
 							" AND facturaActual." + FacFacturaBean.C_ESTADO + " = " + ClsConstants.ESTADO_FACTURA_ANULADA;			
@@ -601,7 +577,7 @@ public class FacPagosPorCajaAdm extends MasterBeanAdministrador {
 		if (esProcesoMasivo) {
 			consulta8 = " SELECT pc." + FacPagoAbonoEfectivoBean.C_FECHA + " AS FECHA ";			
 		} else {
-			consulta8 = " SELECT 4 + 10 * FACTURAS_TOTAL.CONTADOR AS IDTABLA, " +
+			consulta8 = " SELECT 4 AS IDTABLA, " +
 							" F_SIGA_GETRECURSO_ETIQUETA('facturacion.pagosFactura.accion.compensacion'," + this.usrbean.getLanguage() + ") AS TABLA, " +
 							" F_SIGA_GETRECURSO_ETIQUETA('facturacion.pagosFactura.estado.compensacion'," + this.usrbean.getLanguage() + ") AS ESTADO, " +					
 							" pc." + FacPagoAbonoEfectivoBean.C_FECHA + " AS FECHA, " +
@@ -626,16 +602,15 @@ public class FacPagosPorCajaAdm extends MasterBeanAdministrador {
 		}
 		consulta8 += " FROM " + FacAbonoBean.T_NOMBRETABLA + " ab, " + 
 							FacPagosPorCajaBean.T_NOMBRETABLA + " pc, " + 
-							FacPagoAbonoEfectivoBean.T_NOMBRETABLA + " aef, " + 
-							fromFacturasTotal + 
+							FacPagoAbonoEfectivoBean.T_NOMBRETABLA + " aef " + 
 						" WHERE pc." + FacPagosPorCajaBean.C_IDINSTITUCION + " = aef." + FacPagoAbonoEfectivoBean.C_IDINSTITUCION + 
 							" AND pc." + FacPagosPorCajaBean.C_IDINSTITUCION + " = ab." + FacAbonoBean.C_IDINSTITUCION + 
 							" AND pc." + FacPagosPorCajaBean.C_IDINSTITUCION + " = " + idInstitucion + 
-							" AND pc." + FacPagosPorCajaBean.C_IDFACTURA + " = FACTURAS_TOTAL." + FacFacturaBean.C_IDFACTURA +
+							" AND pc." + FacPagosPorCajaBean.C_IDFACTURA + " IN (" + listaFacturasComision + ") " +
 							" AND pc." + FacPagosPorCajaBean.C_IDABONO + " = aef." + FacPagoAbonoEfectivoBean.C_IDABONO + 
 							" AND pc." + FacPagosPorCajaBean.C_IDABONO + " = ab." + FacAbonoBean.C_IDABONO + 
 							" AND pc." + FacPagosPorCajaBean.C_IDPAGOABONO + " = aef." + FacPagoAbonoEfectivoBean.C_IDPAGOABONO + 
-							" AND (ab." +FacAbonoBean.C_IDFACTURA + " <> FACTURAS_TOTAL." + FacFacturaBean.C_IDFACTURA + " OR ab." + FacAbonoBean.C_IDFACTURA + " is null) " +
+							" AND (ab." +FacAbonoBean.C_IDFACTURA + " <> pc." + FacPagosPorCajaBean.C_IDFACTURA + " OR ab." + FacAbonoBean.C_IDFACTURA + " is null) " +
 							" AND ab." + FacAbonoBean.C_IDPAGOSJG + " IS NOT NULL ";
 		
 		String consultaFinal = consulta1 + " UNION " + consulta10 + " UNION " + consulta2 + " UNION " + consulta3 + " UNION " + consulta4 + " UNION " + 
@@ -646,7 +621,7 @@ public class FacPagosPorCajaAdm extends MasterBeanAdministrador {
 		} else {
 			consultaFinal = "SELECT IDTABLA, TABLA, ESTADO, FECHA, FECHA_ORDEN, IMPORTE, IDFACTURA, ANULACIONCOMISION, DEVUELTA, TARJETA, IDABONO_IDCUENTA, NUMEROABONO, IDPAGO, NOMBREBANCO FROM ( " +
 					consultaFinal +					
-				   " ) ORDER BY idtabla ASC, TO_CHAR(FECHA, 'YYYYMMDD') ASC, FECHA_ORDEN ASC, IDPAGO ASC";						
+				   " ) ORDER BY IDFACTURA ASC, IDTABLA ASC, TO_CHAR(FECHA, 'YYYYMMDD') ASC, FECHA_ORDEN ASC, IDPAGO ASC";						
 		}
 		
 		return consultaFinal;
