@@ -770,53 +770,39 @@ public class FacPagosPorCajaAdm extends MasterBeanAdministrador {
 		
 	public Hashtable getTotalesPagos (Integer idInstitucion, String idFactura)  throws ClsExceptions,SIGAException {
 		try {
-		    
-		    Hashtable codigos = new Hashtable();
-
-
-		    codigos.put(new Integer(1),idInstitucion.toString());
-		    codigos.put(new Integer(2),idFactura);
-		    codigos.put(new Integer(3),idInstitucion.toString());
-		    codigos.put(new Integer(4),idFactura);
-
-		    String consulta =	"SELECT FAC_FACTURA.IMPTOTAL as TOTAL_FACTURA, " +
-			   "FAC_FACTURA.IMPTOTALPAGADOPORBANCO as TOTAL_PAGADOPORBANCO, " +
-			   "FAC_FACTURA.IMPTOTALCOMPENSADO as TOTAL_COMPENSADO, " +
-			   "FAC_FACTURA.IMPTOTALPAGADOSOLOCAJA as TOTALPAGADOSOLOCAJA, " +
-			   "FAC_FACTURA.IMPTOTALPAGADOPORCAJA as TOTALPAGADOPORCAJA, " +
-			   "FAC_FACTURA.IMPTOTALPAGADOSOLOTARJETA as TOTALPAGADOPORTARJETA, " +
-			   "FAC_FACTURA.IMPTOTALANTICIPADO as TOTAL_ANTICIPADO, ";
-		    consulta+= " (SELECT " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDFORMAPAGO + 
-			" FROM " + FacFacturaBean.T_NOMBRETABLA +
-			" WHERE " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDINSTITUCION + "=:1"+
-			" AND " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDFACTURA + "=:2"+
-			") AS FORMAPAGOFACTURA";
-			consulta += " FROM FAC_FACTURA ";
-			consulta += " WHERE FAC_FACTURA.IDINSTITUCION=:1";
-			consulta += " AND FAC_FACTURA.IDFACTURA=:2";
+		    String consulta = "SELECT " + FacFacturaBean.C_IMPTOTAL + " AS TOTAL_FACTURA, " +
+					    		FacFacturaBean.C_IMPTOTALPAGADOPORBANCO + " AS TOTAL_PAGADOPORBANCO, " +
+					    		FacFacturaBean.C_IMPTOTALCOMPENSADO + " AS TOTAL_COMPENSADO, " +
+					    		FacFacturaBean.C_IMPTOTALPAGADOSOLOCAJA + " AS TOTALPAGADOSOLOCAJA, " +
+					    		FacFacturaBean.C_IMPTOTALPAGADOPORCAJA + " AS TOTALPAGADOPORCAJA, " +
+					    		FacFacturaBean.C_IMPTOTALPAGADOSOLOTARJETA + " AS TOTALPAGADOPORTARJETA, " +
+					    		FacFacturaBean.C_IMPTOTALANTICIPADO + " AS TOTAL_ANTICIPADO, " +
+					    		FacFacturaBean.C_IDFORMAPAGO + " AS FORMAPAGOFACTURA " +
+					    	" FROM " + FacFacturaBean.T_NOMBRETABLA +
+					    	" WHERE " + FacFacturaBean.C_IDINSTITUCION + " = " + idInstitucion +
+					    		" AND " + FacFacturaBean.C_IDFACTURA + " =  " + idFactura;
 	
 			RowsContainer rc = new RowsContainer(); 
-			if (rc.queryBind(consulta,codigos)) {
-				if (rc.size() > 1) return null;
+			if (rc.query(consulta) && rc.size() == 1) {
 				Hashtable aux = (Hashtable)((Row) rc.get(0)).getRow();
 				return aux;
 			}
-		}
-	    catch (Exception e) {
+			
+		} catch (Exception e) {
 	   		if (e instanceof SIGAException){
 	   			throw (SIGAException)e;
-	   		}
-	   		else {
-	   			if (e instanceof ClsExceptions){
-	   				throw (ClsExceptions)e;
-	   			}
-	   			else {
-	   				throw new ClsExceptions(e, "Error al obtener los datos de las facturas.");
-	   			}
-	   		}	
+	   			
+	   		} else if (e instanceof ClsExceptions){
+   				throw (ClsExceptions)e;
+   				
+   			} else {
+   				throw new ClsExceptions(e, "Error al obtener los datos de las facturas.");
+   			}	
 	    }
+		
 		return null;
 	}
+	
 	/** Funcion ejecutaSelect(String select)
 	 *	@param select sentencia "select" sql valida, sin terminar en ";"
 	 *  @return Vector todos los registros que se seleccionen 
