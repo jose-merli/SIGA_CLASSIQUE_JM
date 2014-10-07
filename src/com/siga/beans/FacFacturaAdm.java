@@ -913,8 +913,13 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
 							FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IMPTOTALPORPAGAR + ", " +
 							FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IMPTOTALPAGADO + ", " +
 							FacFacturacionProgramadaBean.T_NOMBRETABLA + "." + FacFacturacionProgramadaBean.C_DESCRIPCION + ", " + 
-							" F_SIGA_GETRECURSO_ETIQUETA(" + FacEstadoFacturaBean.T_NOMBRETABLA + "." + FacEstadoFacturaBean.C_DESCRIPCION + "," + user.getLanguage() + ") AS DESCRIPCION_ESTADO ";
- 
+							" ( " +
+								" SELECT " + GenRecursosBean.C_DESCRIPCION +							
+								" FROM " + GenRecursosBean.T_NOMBRETABLA +
+								" WHERE " + GenRecursosBean.C_IDRECURSO + " = " + FacEstadoFacturaBean.T_NOMBRETABLA + "." + FacEstadoFacturaBean.C_DESCRIPCION +
+									" AND " + GenRecursosBean.C_IDLENGUAJE + " = " + user.getLanguage() +
+							" ) AS DESCRIPCION_ESTADO ";
+			
 			String from = 	" FROM " + FacFacturaBean.T_NOMBRETABLA + ", " + 
 								FacEstadoFacturaBean.T_NOMBRETABLA + ", " +
 								FacSerieFacturacionBean.T_NOMBRETABLA + ", " + 								
