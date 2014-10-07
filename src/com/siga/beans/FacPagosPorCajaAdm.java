@@ -495,7 +495,7 @@ public class FacPagosPorCajaAdm extends MasterBeanAdministrador {
 		// Obtención anulaciones
 		String consulta7 = "";    
 		if (!esProcesoMasivo) { // JPT: Si esta anulada no se puede renegociar, ni devolver (ganamos rendimiento)
-			consulta7 = " UNION SELECT 4 AS IDTABLA, " +
+			consulta7 = " UNION SELECT 5 AS IDTABLA, " +
 							" F_SIGA_GETRECURSO_ETIQUETA('facturacion.pagosFactura.accion.anulacion'," + this.usrbean.getLanguage() + ") AS TABLA, " +
 							" ( " +
 								" SELECT F_SIGA_GETRECURSO_ETIQUETA (" + FacEstadoFacturaBean.T_NOMBRETABLA + "." + FacEstadoFacturaBean.C_DESCRIPCION + "," + this.usrbean.getLanguage() + ") " +
@@ -579,7 +579,7 @@ public class FacPagosPorCajaAdm extends MasterBeanAdministrador {
 							" pc." + FacPagoAbonoEfectivoBean.C_FECHA + " AS FECHA, " +
 					 		" pc." + FacPagoAbonoEfectivoBean.C_FECHAMODIFICACION + " AS FECHA_ORDEN, " +
 				  			" pc." + FacPagoAbonoEfectivoBean.C_IMPORTE + " AS IMPORTE, " + 
-				  			" ab." + FacAbonoBean.C_IDFACTURA + " AS IDFACTURA, " +
+				  			" pc." + FacAbonoBean.C_IDFACTURA + " AS IDFACTURA, " +
 				  			" '' AS ANULACIONCOMISION, " +
 							" '' AS DEVUELTA, " +
 							" '' AS TARJETA, " +
