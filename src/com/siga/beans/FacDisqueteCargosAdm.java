@@ -347,12 +347,14 @@ public class FacDisqueteCargosAdm extends MasterBeanAdministrador {
 			if (EjecucionPLs.ejecutarEsDiaHabil(fechaRecibosRecurrentes) == 0) {
 				return false;
 			}
-			if (EjecucionPLs.ejecutarEsDiaHabil(fechaRecibosCOR1) == 0) {
-				return false;
-			}
-			if (EjecucionPLs.ejecutarEsDiaHabil(fechaRecibosB2B) == 0) {
-				return false;
-			}			
+			//Estas fechas vienen nulas porque están deshabilitadas en la ventana, cuando se vayan a habilitar
+			//descomentar esto
+//			if (EjecucionPLs.ejecutarEsDiaHabil(fechaRecibosCOR1) == 0) {
+//				return false;
+//			}
+//			if (EjecucionPLs.ejecutarEsDiaHabil(fechaRecibosB2B) == 0) {
+//				return false;
+//			}			
 		}
 		
 		GenParametrosAdm admParametros = new GenParametrosAdm(this.usrbean);		
@@ -396,12 +398,14 @@ public class FacDisqueteCargosAdm extends MasterBeanAdministrador {
 			if (GstDate.compararFechas(fechaRecibosRecurrentes, fechaMinimaRecibosRecurrentes) < 0) {
 				return false;
 			}
-			if (GstDate.compararFechas(fechaRecibosCOR1, fechaMinimaRecibosCOR1) < 0) {
-				return false;
-			}
-			if (GstDate.compararFechas(fechaRecibosB2B, fechaMinimaRecibosB2B) < 0) {
-				return false;
-			}
+			//Estas fechas vienen nulas porque están deshabilitadas en la ventana, cuando se vayan a habilitar
+			//descomentar esto
+//			if (GstDate.compararFechas(fechaRecibosCOR1, fechaMinimaRecibosCOR1) < 0) {
+//				return false;
+//			}
+//			if (GstDate.compararFechas(fechaRecibosB2B, fechaMinimaRecibosB2B) < 0) {
+//				return false;
+//			}
 		}
 		
 		return true;
