@@ -288,14 +288,11 @@ public class AltaAbonosAction extends MasterAction {
 					totalPendientePagar = totalPendientePagar.trim();
 					importeCompensado = new Double(totalPendientePagar).doubleValue();
 				}
-//				String totalConIva = UtilidadesHash.getString(hashFactura,"TOTAL_FACTURA");
-//				if (totalConIva !=null){
-//					totalConIva = totalConIva.trim();
-//					importeTotal = new Double(totalConIva).doubleValue();
-//				}
-				
-				//Se crea el abono por el importe pendiente de la factura no por el importe total (R1408_0030)
-				importeTotal = new Double(totalPendientePagar).doubleValue();
+				String totalConIva = UtilidadesHash.getString(hashFactura,"TOTAL_FACTURA");
+				if (totalConIva !=null){
+					totalConIva = totalConIva.trim();
+					importeTotal = new Double(totalConIva).doubleValue();
+				}
 				
 			}
 			
