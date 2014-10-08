@@ -408,6 +408,12 @@ public class FacDisqueteCargosAdm extends MasterBeanAdministrador {
 //			}
 		}
 		
+		//CR - PARCHE DEBIDO A UN ERROR EN LA 117_001. SE VA A SIGNAR A LAS FECHAS COR1 Y B2B EL VALOR DE FECHA PREVISTA
+		fechaRecibosCOR1 = fechaPrevista;
+		fechaRecibosB2B  = fechaPrevista;
+		// FIN DEL PARCHE PROVISIONAL
+		
+		
 		return true;
 	}
 	

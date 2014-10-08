@@ -385,8 +385,8 @@ public class ProgramarFacturacionAction extends MasterAction{
 				fechaRecibosB2B = form.getFechaRecibosB2B();
 				bean.setFechaRecibosPrimeros(GstDate.getApplicationFormatDate("en", fechaRecibosPrimeros));
 				bean.setFechaRecibosRecurrentes(GstDate.getApplicationFormatDate("en", fechaRecibosRecurrentes));
-				bean.setFechaRecibosCOR1(GstDate.getApplicationFormatDate("en", fechaRecibosCOR1));
-				bean.setFechaRecibosB2B(GstDate.getApplicationFormatDate("en", fechaRecibosB2B));
+				bean.setFechaRecibosCOR1(GstDate.getApplicationFormatDate("en", fechaPrevistaConfirmacion));
+				bean.setFechaRecibosB2B(GstDate.getApplicationFormatDate("en", fechaPrevistaConfirmacion));
 			}			
 			
 			// Controlar que las fechas cumplen los dias habiles introducidos en parametros generales			
@@ -517,8 +517,8 @@ public class ProgramarFacturacionAction extends MasterAction{
 				fechaRecibosB2B = form.getFechaRecibosB2B();
 				bean.setFechaRecibosPrimeros(GstDate.getApplicationFormatDate("en", fechaRecibosPrimeros));
 				bean.setFechaRecibosRecurrentes(GstDate.getApplicationFormatDate("en", fechaRecibosRecurrentes));
-				bean.setFechaRecibosCOR1(GstDate.getApplicationFormatDate("en", fechaRecibosCOR1));
-				bean.setFechaRecibosB2B(GstDate.getApplicationFormatDate("en", fechaRecibosB2B));
+				bean.setFechaRecibosCOR1(GstDate.getApplicationFormatDate("en", fechaPrevistaConfirmacion));
+				bean.setFechaRecibosB2B(GstDate.getApplicationFormatDate("en", fechaPrevistaConfirmacion));
 			}			
 			
 			// Controlar que las fechas cumplen los dias habiles introducidos en parametros generales
