@@ -268,7 +268,9 @@ public class DireccionesAction extends MasterAction
 			
 			//CR7 - Queremos saber si se trata de un Colegiadoo de un No Colegiado
 			String tipoCliente = clienteAdm.getTipoCliente(idPersona, idInstitucionPersona);
-			request.setAttribute("tipoCliente", tipoCliente);
+//			request.setAttribute("tipoCliente", tipoCliente);
+			//CR - Parche para contemplar correctamente los casos donde el menu es la busqueda de letrados
+			request.setAttribute("tipoCliente", user.getStrutsTrans());
 			
 		}
 		catch(Exception e){
@@ -373,7 +375,9 @@ public class DireccionesAction extends MasterAction
 			
 			//CR7 - Queremos saber si se trata de un Colegiadoo de un No Colegiado
 			String tipoCliente = clienteAdm.getTipoCliente(idPersona, idInstitucionPersona);
-			request.setAttribute("tipoCliente", tipoCliente);			
+//			request.setAttribute("tipoCliente", tipoCliente);
+			//CR - Parche para contemplar correctamente los casos donde el menu es la busqueda de letrados
+			request.setAttribute("tipoCliente", user.getStrutsTrans());			
 		}
 		catch(Exception e){
 			throwExcp("messages.general.error",new String[] {"modulo.censo"},e, null);
@@ -425,7 +429,9 @@ public class DireccionesAction extends MasterAction
 			Integer idInstitucionPersona = miForm.getIDInstitucion();			
 			CenClienteAdm clienteAdm = new CenClienteAdm(this.getUserName(request), user, idInstitucionPersona.intValue(), idPersona.longValue());			
 			String tipoCliente = clienteAdm.getTipoCliente(idPersona, idInstitucionPersona);
-			request.setAttribute("tipoCliente", tipoCliente);			
+//			request.setAttribute("tipoCliente", tipoCliente);
+			//CR - Parche para contemplar correctamente los casos donde el menu es la busqueda de letrados
+			request.setAttribute("tipoCliente", user.getStrutsTrans());			
 		}
 		catch(Exception e){
 			throwExcp("messages.general.error",new String[] {"modulo.censo"},e, null);
@@ -759,7 +765,9 @@ protected String insertar (ActionMapping mapping,
 			
 			//CR7 - Queremos saber si se trata de un Colegiadoo de un No Colegiado
 			String tipoCliente = clienteAdm.getTipoCliente(idPersona, idInstitucionPersona);
-			request.setAttribute("tipoCliente", tipoCliente);			
+//			request.setAttribute("tipoCliente", tipoCliente);
+			//CR - Parche para contemplar correctamente los casos donde el menu es la busqueda de letrados
+			request.setAttribute("tipoCliente", user.getStrutsTrans());			
 			
 		}
 		catch(Exception e){

@@ -900,7 +900,7 @@
 																	CenTipoDireccionBean recurso = (CenTipoDireccionBean) vTipos.get(i - 1);
 																	Integer idTipoDireccion1 = (Integer) recurso.getIdTipoDireccion();
 																	
-																	if(idTipoDireccion1 == ClsConstants.TIPO_DIRECCION_CENSOWEB && tipoCliente.equals(ClsConstants.TIPO_CLIENTE_NOCOLEGIADO)){
+																	if(idTipoDireccion1 == ClsConstants.TIPO_DIRECCION_CENSOWEB && tipoCliente.equals("CEN_BusquedaClientesNoColegiados")){
 																		//NO SE PINTA EL CHECK DE TIPO DIRECCION CENSO WEB PARA NO COLEGIADOS
 																		
 																	} else {
