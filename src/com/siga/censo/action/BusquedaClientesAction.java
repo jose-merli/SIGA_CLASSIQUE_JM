@@ -1197,7 +1197,7 @@ public class BusquedaClientesAction extends MasterAction {
 			
 			BusquedaClientesForm miform = (BusquedaClientesForm)formulario;
 			String sTipoCliente = miform.getTipoCliente();	    
-			if (sTipoCliente==null && !sTipoCliente.equals("1")) {
+			if (sTipoCliente==null || !sTipoCliente.equals("1")) {
 				sTipoCliente = (String) request.getParameter("clientes");
 			}
 			
