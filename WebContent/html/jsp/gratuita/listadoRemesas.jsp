@@ -164,6 +164,20 @@
 				document.DefinicionRemesas_CAJG_Form.submit();
 			}		
 		}
+		function borrarOviedoTemporal(fila){
+			if (confirm('<siga:Idioma key="messages.deleteConfirmation"/>')) { 
+				var auxRemesa = 'oculto' + fila + '_1';
+		    	var idReme = document.getElementById(auxRemesa);			          		
+		    
+		    	document.DefinicionRemesas_CAJG_Form.idRemesa.value=idReme.value;
+				document.DefinicionRemesas_CAJG_Form.modo.value='borrarOviedoTemporal';		   	
+		   
+		   		document.DefinicionRemesas_CAJG_Form.target="submitArea";
+				document.DefinicionRemesas_CAJG_Form.submit();
+			}		
+		}
+		
+		
 		
 		function descargar(fila){
 			descarga = true;
@@ -228,7 +242,8 @@
 			
 	    	
 	    	botones="C,E";
-	    	FilaExtElement[] elems = new FilaExtElement[2];
+	    	
+	    	FilaExtElement[] elems = new FilaExtElement[3];
 	    	
 	    	if (Integer.parseInt((String)registro.get("IDESTADO"))<2){
 	    		elems[0] =new FilaExtElement("borrar", "borrarRemesa", SIGAConstants.ACCESS_FULL);
@@ -244,7 +259,10 @@
 	    	if (cajgConfig != 0 && cajgConfig < 2 && DefinirRemesasCAJGAction.getFichero(usr.getLocation(), (String)registro.get("IDREMESA")) != null) {
 	    		elems[1]=new FilaExtElement("download", "descargar", SIGAConstants.ACCESS_FULL);
 	    	}
-	    		    	
+	    		    
+	    	if(idInstitucion==2053)
+	    		elems[0] =new FilaExtElement("borrar", "borrarOviedoTemporal", SIGAConstants.ACCESS_FULL);
+	    	
 	    	String incidencias = "";
 	    	if (!((String)registro.get("CUENTA_INCIDENCIAS")).trim().equals("")) {
 	    		incidencias = registro.get("CUENTA_INCIDENCIAS") + " / " + registro.get("CUENTA_EXPEDIENTES");
