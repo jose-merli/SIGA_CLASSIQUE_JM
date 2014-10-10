@@ -58,8 +58,7 @@ function informeGenerico(){
 	if(fichaColegial=='true'){
 		document.InformesGenericosForm.enviar.value ='0';
 		activarRestriccionesFicha = 'true';
-	}
-	else{
+	}else{
 		document.InformesGenericosForm.enviar.value ='1';
 	}
 	
@@ -67,15 +66,13 @@ function informeGenerico(){
 	document.InformesGenericosForm.idInstitucion.value = document.InformeJustificacionMasivaForm.idInstitucion.value;
 	document.InformesGenericosForm.datosInforme.value=datos;
 
-	if(document.getElementById("informeUnico").value=='1'){
+	if(document.getElementById("informeUnico").value=='1' && fichaColegial=='true'){
 		document.InformesGenericosForm.submit();
 	}else{
-	
 		var arrayResultado = ventaModalGeneral("InformesGenericosForm","M");
 		if (arrayResultado==undefined||arrayResultado[0]==undefined){
 		   		
-	   	} 
-	   	else {
+	   	} else {
 	   		var confirmar = confirm("<siga:Idioma key='general.envios.confirmar.edicion'/>");
 	   		if(confirmar){
 	   			var idEnvio = arrayResultado[0];
@@ -669,13 +666,16 @@ function downloadResolucionCAJG(idInstitucion,anio,idTipo,numero) {
 
 function downloadInformesOficio(idInstitucion,anio,idTurno,numero) {			
 	
-	
+
 	var datos = "idInstitucion=="+idInstitucion + "##idTurno==" +idTurno+"##anio=="+anio +"##numero==" +numero+"##destinatarios==C%%%";
 	document.Informe.datosInforme.value=datos;
 	document.Informe.idTipoInforme.value='OFICI';
 	document.Informe.destinatarios.value='C';
 	if(document.getElementById("informeUnicoOficio").value=='1'){
 		document.Informe.submit();
+		
+		
+		
 	}else{
 	
 		var arrayResultado = ventaModalGeneral("Informe","M");
@@ -1946,7 +1946,9 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 		<html:hidden property="destinatarios"/>
 		<html:hidden property="modo" value = "preSeleccionInformes"/>
 		<input type='hidden' name='actionModal'>
-</html:form><html:form action="/JGR_DocumentacionActuacionLetrado" method="post" target="mainPestanas" style="display:none">
+</html:form>
+
+<html:form action="/JGR_DocumentacionActuacionLetrado" method="post" target="mainPestanas" style="display:none">
 	<html:hidden property = "modo" value = ""/>	
 	<html:hidden styleId="idInstitucion" property = "idInstitucion" />
 	<html:hidden styleId="anio" property = "anio"/>
