@@ -243,29 +243,28 @@
 		conceptos[2] = 'EJG';
 		conceptos[3] = 'SOJ';
 	
-		function convertirAFormato(n){
-			if (n.toString().indexOf(".", 0) != -1  && n.toString().indexOf(",", 0) != -1){
-				var d = n.replace(".","");
-				for (;d.toString().indexOf(".", 0) != -1;)
-				{
-					d = d.replace(".","");
-				}				
-				d = d.replace(",",".");
-				d = new Number(d);
-				d = Number(d.toFixed(2));
-				d = d.toString();
-			}else{
-				var d = n.replace(",",".");
-				d = new Number(d);
-				d = Number(d.toFixed(2));
-				d = d.toLocaleString();
-				//d = d.replace(".","");
-				if(String(d).indexOf(',') < 0){
-					d += ',00'; // aqui puede variar segun la cantidad de decimales que desees;
-				}				
+		function  convertirAFormato(numero){
+			var numeroFormateado = numero.replace(",", ".");
+			var numeroNumber = new Number(numeroFormateado);
+			
+			if (isNaN(numeroNumber)) {
+				return "";
 			}
-			return d;	
-		}
+			
+			numeroNumber = Number(numeroNumber.toFixed(2));
+			numeroNumber = numeroNumber.toLocaleString();
+			
+			//Tratamiento decimales
+			if (numeroNumber.indexOf(',') < 0) {
+				numeroNumber += ',00'; // Si no tiene decimales le pongo dos ceros
+			} else {
+				if (numeroNumber.indexOf(',') + 3 > numeroNumber.length){
+					numeroNumber += '0'; // Si tiene un decimal le pongo otro decimal
+				}
+			}
+			
+			return numeroNumber;	
+		}		
 
 		function convertirANumero2(n){
 			return convertirAFormato(n).replace(",",".");
@@ -606,23 +605,23 @@
 				<td class="labelText">
 					<siga:Idioma key="factSJCS.datosPagos.literal.importeFacturado"/>
 				</td>
-				<%
+<%
 				if (esVerEditar) {
-				%>
-				<td class="labelText" valign="middle">
-					<html:text name="datosGeneralesPagoForm" property="importeFacturado" value="<%= (UtilidadesString.formatoImporte(UtilidadesNumero.redondea(Double.parseDouble(importeFacturado.toString()),2))) %>"
-					size="20" style="vertical-align: middle" styleClass="boxConsultaNumber" readOnly="true"/>
-					&euro;&nbsp;
-				</td>				
-				<% } else { 
-				%>
-				<td class="labelText" valign="middle">
-					<html:text name="datosGeneralesPagoForm" property="importeFacturado" value=""
-					size="20" style="vertical-align: middle" styleClass="boxConsultaNumber" readOnly="true"/>
-					&euro;&nbsp;
-				</td>			
-				<% } 
-				%>
+%>
+					<td class="labelText" valign="middle">
+						<html:text name="datosGeneralesPagoForm" property="importeFacturado" value="<%= (UtilidadesString.formatoImporte(UtilidadesNumero.redondea(Double.parseDouble(importeFacturado.toString()),2))) %>"
+						size="20" style="vertical-align: middle" styleClass="boxConsultaNumber" readOnly="true"/>&nbsp;&euro;
+					</td>				
+<% 
+				} else { 
+%>
+					<td class="labelText" valign="middle">
+						<html:text name="datosGeneralesPagoForm" property="importeFacturado" value=""
+						size="20" style="vertical-align: middle" styleClass="boxConsultaNumber" readOnly="true"/>&nbsp;&euro;
+					</td>			
+<% 
+				} 
+%>
 				
 				<td class="labelText">
 					<siga:Idioma key="factSJCS.datosPagos.literal.fechaInicio"/>
@@ -635,23 +634,23 @@
 				<td class="labelText">
 					<siga:Idioma key="factSJCS.datosFacturacion.literal.totalPagado"/>
 				</td>
-				<%
+<%
 				if (esVerEditar) {
-				%>
-				<td class="labelText" valign = "middle">
-					<html:text name="datosGeneralesPagoForm" property="importePagado" value="<%= (UtilidadesString.formatoImporte(UtilidadesNumero.redondea(Double.parseDouble(importePagado.toString()),2))) %>" 
-					size="20" style="vertical-align: middle" styleClass="boxConsultaNumber" readonly="true" />
-					&euro;&nbsp;
-				</td>
-				<% } else { 
-				%>	
-				<td class="labelText" valign = "middle">
-					<html:text name="datosGeneralesPagoForm" property="importePagado" value="" 
-					size="20" style="vertical-align: middle" styleClass="boxConsultaNumber" readonly="true" />
-					&euro;&nbsp;
-				</td>			
-				<% } 
-				%>					
+%>
+					<td class="labelText" valign = "middle">
+						<html:text name="datosGeneralesPagoForm" property="importePagado" value="<%= (UtilidadesString.formatoImporte(UtilidadesNumero.redondea(Double.parseDouble(importePagado.toString()),2))) %>" 
+						size="20" style="vertical-align: middle" styleClass="boxConsultaNumber" readonly="true" />&nbsp;&euro;
+					</td>
+<% 
+				} else { 
+%>	
+					<td class="labelText" valign = "middle">
+						<html:text name="datosGeneralesPagoForm" property="importePagado" value="" 
+						size="20" style="vertical-align: middle" styleClass="boxConsultaNumber" readonly="true" />&nbsp;&euro;
+					</td>			
+<% 
+				} 
+%>					
 			
 				<td class="labelText">
 					<siga:Idioma key="factSJCS.datosPagos.literal.fechaFin"/>
