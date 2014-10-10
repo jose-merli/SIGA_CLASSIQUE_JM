@@ -72,14 +72,14 @@
 		
 		function accionDownload() 
 		{
+			sub();
 			RecuperarConsultasForm.modo.value = "download";
 			RecuperarConsultasForm.target = "submitArea";
 			RecuperarConsultasForm.submit();
 		}
 		
 		function accionImprimir() 
-		{
-			window.print();
+		{			window.print();
 		}
 		
 	</script>
