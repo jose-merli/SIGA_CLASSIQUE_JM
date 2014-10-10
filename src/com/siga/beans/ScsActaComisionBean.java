@@ -43,6 +43,7 @@ public class ScsActaComisionBean extends MasterBean{
 	static public final String C_PENDIENTES = "PENDIENTES";
 	static public final String C_FECHAMODIFICACION = "FECHAMODIFICACION";
 	static public final String C_USUMODIFICACION = "USUMODIFICACION";
+	static public final String C_FECHAINTERCAMBIO = "FECHAINTERCAMBIO";
 
 	/* Getters */
 	public Integer getIdActa () {return idActa;}

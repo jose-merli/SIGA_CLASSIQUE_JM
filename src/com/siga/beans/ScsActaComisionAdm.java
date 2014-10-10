@@ -294,6 +294,7 @@ public class ScsActaComisionAdm extends MasterBeanAdministrador {
 		consulta.append(", act."+ScsActaComisionBean.C_OBSERVACIONES);
 		consulta.append(", act."+ScsActaComisionBean.C_MIEMBROSCOMISION);
 		consulta.append(", act."+ScsActaComisionBean.C_PENDIENTES);
+		consulta.append(", act."+ScsActaComisionBean.C_FECHAINTERCAMBIO);
 		consulta.append(" from " + ScsActaComisionBean.T_NOMBRETABLA +" act");
 		consulta.append(" where act." + ScsActaComisionBean.C_IDINSTITUCION + " = " + idInstitucion);
 		consulta.append(" and act." + ScsActaComisionBean.C_ANIOACTA+ " = " + anioActa);
