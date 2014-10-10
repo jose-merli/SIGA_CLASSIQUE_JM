@@ -1198,7 +1198,10 @@
 			<%}else{%>
 				f.target="submitArea";
 				var resultado=ventaModalGeneral(fname,"G");
-				if(resultado=='MODIFICADO') refrescarLocal();
+				if(resultado=='MODIFICADO') 
+					refrescarLocal();
+				else
+					fin();
 			<%}%>
 			
 			//Dejo el formato con los 2 decimales y la coma:
