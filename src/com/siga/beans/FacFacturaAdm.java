@@ -1442,17 +1442,13 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
 	 * @return vector con los registros encontrados.  
 	 * @exception ClsExceptions 
 	 * */
-	public PaginadorCaseSensitiveBind  selectMorosos (UsrBean user, ConsultaMorososForm form) throws ClsExceptions 
-	{
-
+	public PaginadorCaseSensitiveBind  selectMorosos (ConsultaMorososForm form) throws ClsExceptions {
 		
 		// Acceso a BBDD
 		boolean isFacturasPendientes = (form.getFacturasImpagadasDesde()!=null && !form.getFacturasImpagadasDesde().equals(""))
 										||(form.getFacturasImpagadasHasta()!=null && !form.getFacturasImpagadasHasta().equals("")); 
-		RowsContainer rc = null;
-		
 		try { 
-			rc = new RowsContainer(); 				        
+			RowsContainer rc = new RowsContainer(); 				        
 	        
 			int contador=0;
 			Hashtable codigos = new Hashtable();
@@ -1460,268 +1456,223 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
 			 String nComunicacionesHasta = form.getNumeroComunicacionesHasta();
 			 String sql="";
 			 
-			 if((nComunicacionesDesde!=null && !nComunicacionesDesde.equalsIgnoreCase("")) || ((nComunicacionesHasta!=null && !nComunicacionesHasta.equalsIgnoreCase(""))) || 
-					 (isFacturasPendientes)||(form.getImporteAdeudadoDesde()!=null && !form.getImporteAdeudadoDesde().equals(""))
-						||(form.getImporteAdeudadoHasta()!=null && !form.getImporteAdeudadoHasta().equals(""))){
-			         sql = "SELECT ";
-			        
-				    sql += FacFacturaBean.C_IDINSTITUCION+", ";	
-				    sql += FacFacturaBean.C_IDPERSONA+", ";
-				    sql += " NCOLEGIADO AS "+CenColegiadoBean.C_NCOLEGIADO+", ";
-				    sql += "NOMBRE, ";
-				    
-				    
-		//		    sql += "MIN("+FacFacturaBean.C_FECHAEMISION+"), ";
-		//		    sql += "MAX("+FacFacturaBean.C_FECHAEMISION+"), ";
-		//		    sql += "COUNT("+FacFacturaBean.C_NUMEROFACTURA+"), ";
-		//		    sql += "SUM(DEUDA) FROM ";
-				    //sql += FacFacturaBean.C_FECHAEMISION+", ";
-				    sql += "trunc("+FacFacturaBean.C_FECHAEMISION+") "+FacFacturaBean.C_FECHAEMISION+", ";
-				   // sql += FacFacturaBean.C_FECHAEMISION+", ";
-				    sql += FacFacturaBean.C_NUMEROFACTURA+", ";
-				    sql += "DEUDA,"+FacFacturaBean.C_IDFACTURA+", COMUNICACIONES" ;
-				    sql += ",ESTADO_FACTURA ";
-				    if(isFacturasPendientes)
-				    	sql +=" ,FACTURASPENDIENTES ";
-				    
-				    sql +=" FROM ";
-				    sql += "( ";
+			 if ((nComunicacionesDesde!=null && !nComunicacionesDesde.equalsIgnoreCase("")) || 
+				 (nComunicacionesHasta!=null && !nComunicacionesHasta.equalsIgnoreCase("")) || 
+				 (isFacturasPendientes) ||
+				 (form.getImporteAdeudadoDesde()!=null && !form.getImporteAdeudadoDesde().equals("")) ||
+				 (form.getImporteAdeudadoHasta()!=null && !form.getImporteAdeudadoHasta().equals(""))) {
+		         sql = "SELECT " + FacFacturaBean.C_IDINSTITUCION + ", " + 
+			        		 FacFacturaBean.C_IDPERSONA + ", " +
+			        		 FacFacturaBean.C_IDFACTURA + ", " +
+			        		 FacFacturaBean.C_NUMEROFACTURA + ", " +
+			        		 " TRUNC(" + FacFacturaBean.C_FECHAEMISION + ") AS " + FacFacturaBean.C_FECHAEMISION + ", " +
+			        		 " DEUDA, " +			        		 
+			        		 " NCOLEGIADO AS " + CenColegiadoBean.C_NCOLEGIADO + ", " +			        		 
+			        		 " NOMBRE, " +
+			        		 " ORDEN_APELLIDOS, " +
+			        		 " ORDEN_NOMBRE, " +
+			        		 " COMUNICACIONES, " +			        		 
+			        		 " ESTADO_FACTURA " +
+			        		 (isFacturasPendientes ? ", FACTURASPENDIENTES " : "") +
+		        		 " FROM ( ";
 			 }
-		    sql+=" SELECT F."+FacFacturaBean.C_IDINSTITUCION+", ";
-		    sql += "F."+FacFacturaBean.C_NUMEROFACTURA+", ";
-		    sql += "F."+FacFacturaBean.C_IDFACTURA+", ";
-		    sql += "F."+FacFacturaBean.C_FECHAEMISION+", ";
-		    sql += "F."+FacFacturaBean.C_IDPERSONA+", ";
-		    sql += "F."+FacFacturaBean.C_IMPTOTALPORPAGAR+" DEUDA, ";
-		   // sql += "C."+CenColegiadoBean.C_NCOLEGIADO+", ";
-		    contador++;
-		    codigos.put(new Integer(contador),this.usrbean.getLocation());
-		    sql += "f_siga_calculoncolegiado(:"+contador+",F."+FacFacturaBean.C_IDPERSONA+") as "+CenColegiadoBean.C_NCOLEGIADO+", ";
-		    //sql += "DECODE(C.COMUNITARIO,'1',C.NCOMUNITARIO,C.NCOLEGIADO) as NUMCOLEGIADO, ";
-		    sql += "P."+CenPersonaBean.C_NOMBRE+" || ' ' || P."+CenPersonaBean.C_APELLIDOS1+ " || ' ' || P."+CenPersonaBean.C_APELLIDOS2+" NOMBRE ";
-		    contador++;
-		    codigos.put(new Integer(contador),this.usrbean.getLocation());
-		    sql += ", F_SIGA_GETCOMFACTURA(:"+contador+",F."+FacFacturaBean.C_IDPERSONA+",F."+FacFacturaBean.C_IDFACTURA+",0)  COMUNICACIONES";
-		    sql += ",f_siga_getrecurso_etiqueta(ef.descripcion," + this.usrbean.getLanguage() + ") ESTADO_FACTURA ";
-		    if(nComunicacionesDesde!=null && !nComunicacionesDesde.equalsIgnoreCase("") || (nComunicacionesHasta!=null && !nComunicacionesHasta.equalsIgnoreCase(""))){
-		    sql += ",(SELECT count("+EnvComunicacionMorososBean.C_IDINSTITUCION+") FROM "+EnvComunicacionMorososBean.T_NOMBRETABLA+" ECM ";
-		    sql += "WHERE ECM."+EnvComunicacionMorososBean.C_IDFACTURA+" = F."+FacFacturaBean.C_IDFACTURA;
-		    contador++;
-		    codigos.put(new Integer(contador),this.usrbean.getLocation());
-		    sql += " AND ECM."+EnvComunicacionMorososBean.C_IDINSTITUCION+" = :"+contador+" ";
-		    sql += "AND ECM."+EnvComunicacionMorososBean.C_IDPERSONA+" = F."+FacFacturaBean.C_IDPERSONA+") NCOMUNICACIONES ";
+			 
+		    sql += " SELECT F." + FacFacturaBean.C_IDINSTITUCION + ", " +
+		    			" F." + FacFacturaBean.C_IDPERSONA + ", " +
+		    			" F." + FacFacturaBean.C_IDFACTURA + ", " +
+		    			" F." + FacFacturaBean.C_NUMEROFACTURA + ", " +		    			
+		    			" F." + FacFacturaBean.C_FECHAEMISION + ", " +		    			
+		    			" F." + FacFacturaBean.C_IMPTOTALPORPAGAR + " AS DEUDA, " +
+		    			" F_SIGA_CALCULONCOLEGIADO(F." + FacFacturaBean.C_IDINSTITUCION + ", F." + FacFacturaBean.C_IDPERSONA + ") AS " + CenColegiadoBean.C_NCOLEGIADO + ", " +
+		    			" P." + CenPersonaBean.C_NOMBRE + " || ' ' || P." + CenPersonaBean.C_APELLIDOS1 + " || ' ' || P." + CenPersonaBean.C_APELLIDOS2 + " AS NOMBRE, " +
+		    			" P." + CenPersonaBean.C_APELLIDOS1 + " || ' ' || P." + CenPersonaBean.C_APELLIDOS2 + " AS ORDEN_APELLIDOS, " +
+		    			" P." + CenPersonaBean.C_NOMBRE + " AS ORDEN_NOMBRE, " +
+		    			" F_SIGA_GETCOMFACTURA(F." + FacFacturaBean.C_IDINSTITUCION + ", F." + FacFacturaBean.C_IDPERSONA + ", F." + FacFacturaBean.C_IDFACTURA + ", 0) AS COMUNICACIONES, " +
+		    			" F_SIGA_GETRECURSO_ETIQUETA(ef." + FacEstadoFacturaBean.C_DESCRIPCION + ", " + this.usrbean.getLanguage() + ") AS ESTADO_FACTURA ";
 		    
+		    if ((nComunicacionesDesde!=null && !nComunicacionesDesde.equalsIgnoreCase("")) || 
+		    		(nComunicacionesHasta!=null && !nComunicacionesHasta.equalsIgnoreCase(""))) {
+		    	sql += ", ( " +
+			    			" SELECT COUNT(" + EnvComunicacionMorososBean.C_IDINSTITUCION + ") " +
+			    			" FROM " + EnvComunicacionMorososBean.T_NOMBRETABLA + " ECM " + 
+			    			" WHERE ECM." + EnvComunicacionMorososBean.C_IDINSTITUCION + " = F." + FacFacturaBean.C_IDINSTITUCION +
+			    				" AND ECM." + EnvComunicacionMorososBean.C_IDPERSONA + " = F." + FacFacturaBean.C_IDPERSONA +
+			    				" AND ECM." + EnvComunicacionMorososBean.C_IDFACTURA + " = F." + FacFacturaBean.C_IDFACTURA +
+		    			") AS NCOMUNICACIONES ";		    
 		    }
+		    
 		    if(isFacturasPendientes){
-		    	sql += ",(SELECT count(F2."+FacFacturaBean.C_IDINSTITUCION+") ";
-				sql += "FROM "+FacFacturaBean.T_NOMBRETABLA+" F2 ";
-				sql += "WHERE  ";
-				contador++;
-			    codigos.put(new Integer(contador),this.usrbean.getLocation());
-			    sql += "F2."+FacFacturaBean.C_IDINSTITUCION+" = :"+contador+" ";
-				sql += "AND F2."+EnvComunicacionMorososBean.C_IDPERSONA+" = F."+EnvComunicacionMorososBean.C_IDPERSONA;
-				sql += " AND F2."+FacFacturaBean.C_NUMEROFACTURA+">'0'";
-			    sql += " AND F2."+FacFacturaBean.C_IMPTOTALPORPAGAR+" > 0 ";
-				sql += ") FACTURASPENDIENTES ";
+		    	sql += ", ( " +
+		    				" SELECT count(F2." + FacFacturaBean.C_IDINSTITUCION + ") " +
+		    				" FROM " + FacFacturaBean.T_NOMBRETABLA + " F2 " +
+		    				" WHERE F2." + FacFacturaBean.C_IDINSTITUCION + " = F." + FacFacturaBean.C_IDINSTITUCION +
+		    					" AND F2." + FacFacturaBean.C_IDPERSONA + " = F." + FacFacturaBean.C_IDPERSONA +
+								" AND F2." + FacFacturaBean.C_NUMEROFACTURA + " IS NOT NULL " +
+			    				" AND F2." + FacFacturaBean.C_IMPTOTALPORPAGAR + " > 0 " +
+	    				") AS FACTURASPENDIENTES ";
 		    }
 		    
-		    
-		    sql += " FROM "+FacFacturaBean.T_NOMBRETABLA+" F, "+CenPersonaBean.T_NOMBRETABLA+" P , "+ CenPersonaBean.T_NOMBRETABLA+" DEUDOR , "+CenClienteBean.T_NOMBRETABLA+" C , CEN_INSTITUCION I, fac_estadofactura EF ";
 		    contador++;
 		    codigos.put(new Integer(contador),this.usrbean.getLocation());
-		    sql += " WHERE F." + FacFacturaBean.C_IDINSTITUCION + " = :" + contador + 
-	    				" AND F." + FacFacturaBean.C_ESTADO + " = EF.IDESTADO " +
+		    sql += " FROM " + FacFacturaBean.T_NOMBRETABLA + " F, " +
+		    			CenClienteBean.T_NOMBRETABLA + " C, " +
+		    			CenPersonaBean.T_NOMBRETABLA + " P, " + 
+		    			CenPersonaBean.T_NOMBRETABLA + " DEUDOR, " +		    			
+		    			CenInstitucionBean.T_NOMBRETABLA + " I, " +
+		    			FacEstadoFacturaBean.T_NOMBRETABLA + " EF " +
+		    		" WHERE F." + FacFacturaBean.C_IDINSTITUCION + " = :" + contador + 	    				
 	    				" AND F." + FacFacturaBean.C_ESTADO + " <> " + ClsConstants.ESTADO_FACTURA_ANULADA + // JPT: No se muestran las facturas anuladas
-	    				" AND C." + CenClienteBean.C_IDINSTITUCION + " = F."+FacFacturaBean.C_IDINSTITUCION +
-		    			" AND C." + CenClienteBean.C_IDPERSONA + "= F."+ CenPersonaBean.C_IDPERSONA +
+	    				" AND F." + FacFacturaBean.C_IMPTOTALPORPAGAR + " > 0 " +
+	    				" AND C." + CenClienteBean.C_IDINSTITUCION + " = F." + FacFacturaBean.C_IDINSTITUCION +
+		    			" AND C." + CenClienteBean.C_IDPERSONA + "= F." + CenPersonaBean.C_IDPERSONA +
 		    			" AND P." + CenPersonaBean.C_IDPERSONA + " = F." + FacFacturaBean.C_IDPERSONA +
 		    			" AND DEUDOR." + CenPersonaBean.C_IDPERSONA + "(+) = F." + FacFacturaBean.C_IDPERSONADEUDOR + 
-		    			" AND I. "+ CenInstitucionBean.C_IDPERSONA  + "(+) = F." + FacFacturaBean.C_IDPERSONADEUDOR + " " ;
+		    			" AND I." + CenInstitucionBean.C_IDPERSONA  + "(+) = F." + FacFacturaBean.C_IDPERSONADEUDOR +
+		    			" AND EF." + FacEstadoFacturaBean.C_IDESTADO + " = F." + FacFacturaBean.C_ESTADO;
+		    
+		    //Comento por ordenes de LP
+		    //sql += " AND F." + FacFacturaBean.C_ESTADO + " <> " + FacFacturaAdm.IDESTADO_FACTURA_ANULADA;
 		    
 		   // FILTRO CLIENTE TAG BUSQUEDA
 		    String letrado = form.getLetrado();
 		    if(letrado!=null && !letrado.equalsIgnoreCase("")){
 		        contador++;
 			    codigos.put(new Integer(contador),letrado);
-			    sql += " and F."+FacFacturaBean.C_IDPERSONA;
-			    sql += " = :" + contador ;
+			    sql += " AND F." + FacFacturaBean.C_IDPERSONA + " = :" + contador;
 		    }
 		    
 		    // FILTRO CLIENTE NOMBRE Y APELLIDOS
 		    String nombre = form.getInteresadoNombre();
 		    if(nombre!=null && !nombre.equalsIgnoreCase("")){
 		        contador++;
-			    codigos.put(new Integer(contador),"%"+nombre.toLowerCase()+"%");
-			    sql += " AND lower(P."+CenPersonaBean.C_NOMBRE+") like :" + contador ;
+			    codigos.put(new Integer(contador), "%" + nombre.toLowerCase() + "%");
+			    sql += " AND LOWER(P." + CenPersonaBean.C_NOMBRE + ") LIKE :" + contador;
 		    }
+		    
 		    String apellidos = form.getInteresadoApellidos();
 		    if(apellidos!=null && !apellidos.equalsIgnoreCase("")){
 		        contador++;
-			    codigos.put(new Integer(contador),"%"+apellidos.toLowerCase()+"%");
-		    	sql += " AND lower(P."+CenPersonaBean.C_APELLIDOS1+"||' '||P."+CenPersonaBean.C_APELLIDOS2+") like :"+contador;
-			    
+			    codigos.put(new Integer(contador), "%" + apellidos.toLowerCase() + "%");
+		    	sql += " AND LOWER(P." + CenPersonaBean.C_APELLIDOS1 + " || ' ' || P." + CenPersonaBean.C_APELLIDOS2 + ") LIKE :" + contador;
 		    }
 		    
 		    // FILTRO CLIENTE ESTADOCOLEGIAL
 		    String estadoColegial = form.getCmbEstadoColegial();
-		    if(estadoColegial!=null && !estadoColegial.equalsIgnoreCase("")){
+		    if (estadoColegial!=null && !estadoColegial.equalsIgnoreCase("")) {
 		    	//Se hace esto(grrr) para coger los dos estados colegiales
 		        contador++;
-			    codigos.put(new Integer(contador),estadoColegial);
-		    	sql += " AND :"+contador+" like " ;
-		    	sql += "'%'||F_SIGA_GETTIPOCLIENTE(P."+CenPersonaBean.C_IDPERSONA+", " ;
-		        contador++;
-			    codigos.put(new Integer(contador),user.getLocation());
-		    	sql += ":"+contador;
-		    	sql += ", SYSDATE)||'%'";
-		    	sql += " AND P.IDPERSONA NOT IN (SELECT IDPERSONA FROM CEN_NOCOLEGIADO  NC WHERE NC.IDPERSONA = C.IDPERSONA AND NC.IDINSTITUCION = C.IDINSTITUCION) "; 
+			    codigos.put(new Integer(contador), estadoColegial);
+		    	sql += " AND :" + contador +" LIKE '%' || F_SIGA_GETTIPOCLIENTE(C." + CenClienteBean.C_IDPERSONA + ", C." + CenClienteBean.C_IDINSTITUCION + ", SYSDATE) || '%' " +
+		    			" AND NOT EXISTS ( " +
+		    				" SELECT 1 " +
+		    				" FROM " + CenNoColegiadoBean.T_NOMBRETABLA + " NC " +
+		    				" WHERE NC." + CenNoColegiadoBean.C_IDINSTITUCION + " = C." + CenClienteBean.C_IDINSTITUCION + 
+		    					" AND NC." + CenNoColegiadoBean.C_IDPERSONA + " = C." + CenClienteBean.C_IDPERSONA + 
+		    			" ) "; 
 		    }
-		    
 		    
 		    // FILTRO DEUDOR
 		    String denominacion = form.getDenominacionDeudor();
-		    if(denominacion!=null && !denominacion.equalsIgnoreCase("")){
+		    if (denominacion!=null && !denominacion.equalsIgnoreCase("")) {
 		        contador++;
-			    codigos.put(new Integer(contador),denominacion);
-			    sql += " and I."+CenInstitucionBean.C_IDINSTITUCION;
-			    sql += " = :" + contador ;
+			    codigos.put(new Integer(contador), denominacion);
+			    sql += " AND I." + CenInstitucionBean.C_IDINSTITUCION + " = :" + contador;
 		    }
 		    
-		    if(form.getCmbEstadosFactura()!=null && !form.getCmbEstadosFactura().equalsIgnoreCase("")){
+		    if (form.getCmbEstadosFactura()!=null && !form.getCmbEstadosFactura().equalsIgnoreCase("")) {
 		    	//Se hace esto(grrr) para coger los dos estados colegiales
 		        contador++;
-			    codigos.put(new Integer(contador),form.getCmbEstadosFactura());
-		    	sql += " AND EF.IDESTADO =  :"+contador+"  " ;
+			    codigos.put(new Integer(contador), form.getCmbEstadosFactura());
+		    	sql += " AND EF." + FacEstadoFacturaBean.C_IDESTADO + " = :" + contador;
 		    }
 		    
 		    String fDesde = form.getFechaDesde(); 
 			String fHasta = form.getFechaHasta();
-		    if ((fDesde!= null && !fDesde.trim().equals("")) || (fHasta != null && !fHasta.trim().equals(""))) {
-					if (!fDesde.equals(""))
-						fDesde = GstDate.getApplicationFormatDate("", fDesde); 
-					if (!fHasta.equals(""))
-						fHasta = GstDate.getApplicationFormatDate("", fHasta);
+		    if ((fDesde!=null && !fDesde.trim().equals("")) || (fHasta!=null && !fHasta.trim().equals(""))) {
+				if (!fDesde.equals(""))
+					fDesde = GstDate.getApplicationFormatDate("", fDesde); 
+				if (!fHasta.equals(""))
+					fHasta = GstDate.getApplicationFormatDate("", fHasta);
 					
-			         // -------------- dateBetweenDesdeAndHastaBind
-			         Vector v = GstDate.dateBetweenDesdeAndHastaBind("F."+FacFacturaBean.C_FECHAEMISION, fDesde, fHasta, contador, codigos);
-			         Integer in = (Integer)v.get(0);
-			         String st = (String)v.get(1);
-			         contador = in.intValue();
-			         // --------------
+			    Vector v = GstDate.dateBetweenDesdeAndHastaBind("F." + FacFacturaBean.C_FECHAEMISION, fDesde, fHasta, contador, codigos);
+			    Integer in = (Integer)v.get(0);
+			    String st = (String)v.get(1);
+			    contador = in.intValue();
 
-					sql += " AND " + st;
+				sql += " AND " + st;
 			}
+		    
 		    String numeroFactura = form.getNumeroFactura();
-		    if(numeroFactura!=null && !numeroFactura.equalsIgnoreCase("")){
+		    if (numeroFactura!=null && !numeroFactura.equalsIgnoreCase("")) {
 		        contador++;
-			    codigos.put(new Integer(contador),numeroFactura);
-		    	sql += " AND F."+FacFacturaBean.C_NUMEROFACTURA+"=:"+contador;
-		    }else{
-		    	sql += " AND F."+FacFacturaBean.C_NUMEROFACTURA+">'0'";
+			    codigos.put(new Integer(contador), numeroFactura);
+		    	sql += " AND F." + FacFacturaBean.C_NUMEROFACTURA + " = :" + contador;
+		    } else {
+		    	sql += " AND F." + FacFacturaBean.C_NUMEROFACTURA + " IS NOT NULL ";
 		    }
-		    //Comento por ordenes de LP
-		    //sql += " AND F."+FacFacturaBean.C_ESTADO + " <> "+FacFacturaAdm.IDESTADO_FACTURA_ANULADA;
-	    	sql += " AND F."+FacFacturaBean.C_IMPTOTALPORPAGAR + " > 0";
-	    	if((nComunicacionesDesde!=null && !nComunicacionesDesde.equalsIgnoreCase("")) || ((nComunicacionesHasta!=null && !nComunicacionesHasta.equalsIgnoreCase(""))) || 
-					 (isFacturasPendientes)||(form.getImporteAdeudadoDesde()!=null && !form.getImporteAdeudadoDesde().equals(""))
-						||(form.getImporteAdeudadoHasta()!=null && !form.getImporteAdeudadoHasta().equals(""))){
-	    		sql += " ) ";
+	    	
+	    	if ((nComunicacionesDesde!=null && !nComunicacionesDesde.equalsIgnoreCase("")) || 
+	    		(nComunicacionesHasta!=null && !nComunicacionesHasta.equalsIgnoreCase("")) || 
+				(isFacturasPendientes) ||
+				(form.getImporteAdeudadoDesde()!=null && !form.getImporteAdeudadoDesde().equals("")) ||
+				(form.getImporteAdeudadoHasta()!=null && !form.getImporteAdeudadoHasta().equals(""))) {
+	    		sql += " ) WHERE 1 = 1 ";
+	    		
+		    	// fin modificacion			   	   
+			    if (nComunicacionesDesde!=null && !nComunicacionesDesde.equalsIgnoreCase("")) {
+			        contador++;
+				    codigos.put(new Integer(contador), nComunicacionesDesde);
+			    	sql += " AND NCOMUNICACIONES >= :"+contador;
+			    }
+
+			    if (nComunicacionesHasta!=null && !nComunicacionesHasta.equalsIgnoreCase("")) {
+			    	contador++;
+				    codigos.put(new Integer(contador), nComunicacionesHasta);
+			    	sql += " AND NCOMUNICACIONES <= :" + contador;
+			    }
+
+			    if(isFacturasPendientes){		    	
+			    	if(form.getFacturasImpagadasDesde()!=null && !form.getFacturasImpagadasDesde().equals("")){
+			    		contador++;
+					    codigos.put(new Integer(contador), form.getFacturasImpagadasDesde());
+				    	sql += " AND FACTURASPENDIENTES >= :" + contador;
+			    	}
+			    	
+			    	if(form.getFacturasImpagadasHasta()!=null && !form.getFacturasImpagadasHasta().equals("")){
+			    		contador++;
+					    codigos.put(new Integer(contador), form.getFacturasImpagadasHasta());
+				    	sql += " AND FACTURASPENDIENTES <= :" + contador;
+			    	}
+			    }
+			    
+			    if ((form.getImporteAdeudadoDesde()!=null && !form.getImporteAdeudadoDesde().equals("")) ||
+				    	(form.getImporteAdeudadoHasta()!=null && !form.getImporteAdeudadoHasta().equals(""))) {
+			    	if (form.getImporteAdeudadoDesde()!=null && !form.getImporteAdeudadoDesde().equals("")) {
+			    		contador++;
+					    codigos.put(new Integer(contador), form.getImporteAdeudadoDesde());
+				    	sql += " AND DEUDA >= :" + contador;
+			    	}
+			    	
+			    	if (form.getImporteAdeudadoHasta()!=null && !form.getImporteAdeudadoHasta().equals("")) {
+			    		contador++;
+					    codigos.put(new Integer(contador), form.getImporteAdeudadoHasta());
+				    	sql += " AND DEUDA <= :" + contador;
+			    	}
+			    }
 	    	}
-		   
-	    	// fin modificacion		    
-		    boolean isAnd = false;
 		    
-		    if(nComunicacionesDesde!=null && !nComunicacionesDesde.equalsIgnoreCase("")){
-		        contador++;
-			    codigos.put(new Integer(contador),nComunicacionesDesde);
-		    	sql += " WHERE NCOMUNICACIONES >= :"+contador;
-			    isAnd = true;
-		    }
-		    
-		    if(nComunicacionesHasta!=null && !nComunicacionesHasta.equalsIgnoreCase("")){
-		    	if(isAnd)
-		    		sql += " AND ";
-		    	else
-		    		sql += " WHERE ";
-		    	
-		    	contador++;
-			    codigos.put(new Integer(contador),nComunicacionesHasta);
-		    	sql += " NCOMUNICACIONES <= :"+contador;
-			    isAnd = true;
-		    }
-		    
-		    if(isFacturasPendientes){		    	
-		    	if(form.getFacturasImpagadasDesde()!=null && !form.getFacturasImpagadasDesde().equals("")){
-		    		if(isAnd)
-			    		sql += " AND ";
-			    	else
-			    		sql += " WHERE ";
-
-		    		contador++;
-				    codigos.put(new Integer(contador),form.getFacturasImpagadasDesde());
-			    	sql += " FACTURASPENDIENTES >= :"+contador;
-				    isAnd = true;
-		    	}
-		    	
-		    	if(form.getFacturasImpagadasHasta()!=null && !form.getFacturasImpagadasHasta().equals("")){
-		    		if(isAnd)
-			    		sql += " AND ";
-			    	else
-			    		sql += " WHERE ";
-			    	
-		    		contador++;
-				    codigos.put(new Integer(contador),form.getFacturasImpagadasHasta());
-			    	sql += " FACTURASPENDIENTES <= :"+contador;
-
-				    isAnd = true;
-		    	}
-		    	 
-		    	
-		    }
-		    if ((form.getImporteAdeudadoDesde()!=null && !form.getImporteAdeudadoDesde().equals(""))
-					||(form.getImporteAdeudadoHasta()!=null && !form.getImporteAdeudadoHasta().equals(""))){
-		    	
-		    	if(form.getImporteAdeudadoDesde()!=null && !form.getImporteAdeudadoDesde().equals("")){
-		    		if(isAnd)
-			    		sql += " AND ";
-			    	else
-			    		sql += " WHERE ";
-		    		
-		    		contador++;
-				    codigos.put(new Integer(contador),form.getImporteAdeudadoDesde());
-			    	sql += " DEUDA>= :"+contador;
-
-				    isAnd = true;
-		    	}
-		    	
-		    	if(form.getImporteAdeudadoHasta()!=null && !form.getImporteAdeudadoHasta().equals("")){
-		    		if(isAnd)
-			    		sql += " AND ";
-			    	else
-			    		sql += " WHERE ";
-			    	
-		    		contador++;
-				    codigos.put(new Integer(contador),form.getImporteAdeudadoHasta());
-			    	sql += " DEUDA<= :"+contador;
-
-				    isAnd = true;
-		    	}
-		    	
-		    }
-		    
-		    sql += " ORDER BY TO_NUMBER(" + FacFacturaBean.C_IDFACTURA + ") DESC";
+		    sql += " ORDER BY TO_NUMBER(" + FacFacturaBean.C_IDFACTURA + ") DESC";   		 
 		    
 		    PaginadorCaseSensitiveBind paginador = new PaginadorCaseSensitiveBind(sql,codigos);				
 			int totalRegistros = paginador.getNumeroTotalRegistros();
 			
 			if (totalRegistros==0){					
-				paginador =null;
+				paginador = null;
 			}
+			
 			return paginador;
-		    	
-		}
-		
-		catch (Exception e) { 	
+			
+		} catch (Exception e) { 	
 			throw new ClsExceptions (e, "Error al ejecutar el 'select' en B.D."); 
 		}
 		
@@ -1737,161 +1688,133 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
 	 * @throws ClsExceptions
 	 * @throws SIGAException
 	 */
-	public Vector selectFacturasMoroso(String idInstitucion, String idPersona, 
-			String fechaDesde, String fechaHasta,ArrayList alFacturas,
-			String idFactura,boolean isComunicacionLarga, boolean isInforme, String lenguaje)  
-		throws ClsExceptions,SIGAException {
+	public Vector selectFacturasMoroso(String idInstitucion, String idPersona, String fechaDesde, String fechaHasta,ArrayList alFacturas,
+			String idFactura,boolean isComunicacionLarga, boolean isInforme, String lenguaje) throws ClsExceptions, SIGAException {
 		
 	    Vector datos = new Vector();
-	    int contador=0;
-	    Hashtable codigos =new Hashtable();
+	    int contador = 0;
+	    Hashtable codigos = new Hashtable();
 	    
 	    try {
-		    
-			String select = "SELECT " +
-				"to_char(FECHA_EMISION,'DD/MM/RRRR') AS "+FacFacturaBean.C_FECHAEMISION+", "+
-				"PKG_SIGA_FECHA_EN_LETRA.F_SIGA_FECHACOMPLETAENLETRA(to_char(FECHA_EMISION,'DD/MM/RRRR'),'m',"+lenguaje+") AS FECHAEMISIONMESLETRA, "+
-					
-					FacFacturaBean.C_NUMEROFACTURA	+ ", " +
-					FacFacturaBean.C_IDFACTURA	+ ", " +
-					"NETO,TOTALIVA,TOTAL,PAGADO,DEUDA,COMUNICACIONES,COMUNICACIONESMESLETRA,"+
-					" ( SELECT DECODE(NUMCUENTA,NULL,'',CODBANCO || ' ' || CODSUCURSAL || ' ' || DIGCONTROL || ' ' || NUMCUENTA) FROM DUAL) AS NUM_CUENTA_BANCARIA, "+
-					" NOMBANCO AS NOMBRE_BANCO, "+
-					" CODBANCO AS CODIGO_BANCO, "+
-					" CODSUCURSAL AS CODIGO_SUCURSAL, "+
-					" DIGCONTROL AS DIGITO_CONTROL, "+
-					" NUMCUENTA AS NUMERO_CUENTA, "+
-					CenColegiadoBean.C_NCOLEGIADO+",NOMBRE,"+CenPersonaBean.C_NIFCIF+", CONCEPTO_DESCSERIEFACT, DESCRIPCION_PROGRAMACION" ;
-					if(isInforme)
-						select+=", MOTIVO_DEVOLUCION";
-					select+=" FROM (SELECT " + 
-							"F." + FacFacturaBean.C_FECHAEMISION + " AS FECHA_EMISION, " +
-							"F." + FacFacturaBean.C_NUMEROFACTURA	+ ", " +
-							"F." + FacFacturaBean.C_IDFACTURA	+ ", " +
-							"F." + FacFacturaBean.C_IMPTOTALNETO	+ " AS NETO, " +
-							"F." + FacFacturaBean.C_IMPTOTALIVA	+ " AS TOTALIVA, " +
-							"F." + FacFacturaBean.C_IMPTOTAL	+ " AS TOTAL, " +
-							"F." + FacFacturaBean.C_IMPTOTALPAGADO	+ " AS PAGADO, " +
-							"F." + FacFacturaBean.C_IMPTOTALPORPAGAR	+ " AS DEUDA, " +
-							
-//							"PKG_SIGA_TOTALESFACTURA.TOTALNETO(F." + FacFacturaBean.C_IDINSTITUCION + ", F." + FacFacturaBean.C_IDFACTURA + ") as NETO, " +
-//							"PKG_SIGA_TOTALESFACTURA.TOTALIVA(F." + FacFacturaBean.C_IDINSTITUCION + ", F." + FacFacturaBean.C_IDFACTURA + ") as TOTALIVA, " +
-//							"PKG_SIGA_TOTALESFACTURA.TOTAL(F." + FacFacturaBean.C_IDINSTITUCION + ", F." + FacFacturaBean.C_IDFACTURA + ") as TOTAL, " +
-//							"PKG_SIGA_TOTALESFACTURA.TOTALPAGADO(F." + FacFacturaBean.C_IDINSTITUCION + ", F." + FacFacturaBean.C_IDFACTURA + ") as PAGADO, " +
-//							"PKG_SIGA_TOTALESFACTURA.PENDIENTEPORPAGAR(F." + FacFacturaBean.C_IDINSTITUCION + ", F." + FacFacturaBean.C_IDFACTURA + ") as DEUDA" +
-							
-							/**
-							 * inc6770 (jbd) se añade el numero de cuenta asociado a la factura.
-							 * Sacamos los datos y luego se recompone 
-							 */
-                            "C." + CenCuentasBancariasBean.C_IBAN			+ " AS IBAN , " +
-							"C." + CenCuentasBancariasBean.C_CBO_CODIGO	+ " AS CODBANCO , " +
-                            "C." + CenCuentasBancariasBean.C_CODIGOSUCURSAL	+ " AS CODSUCURSAL, " +
-                            "C." + CenCuentasBancariasBean.C_DIGITOCONTROL	+ " AS DIGCONTROL, " +
-                            "C." + CenCuentasBancariasBean.C_NUMEROCUENTA	+ " AS NUMCUENTA, " +
-                            "B." + CenBancosBean.C_NOMBRE	+ " AS NOMBANCO , " +
-							"F_SIGA_GETCOMFACTURA(F."+FacFacturaBean.C_IDINSTITUCION+",F."+FacFacturaBean.C_IDPERSONA+",F."+FacFacturaBean.C_IDFACTURA;
-							if(isComunicacionLarga)
-								select+=",1";
-							else
-								select+=",0";
-							
-							select+=") as COMUNICACIONES,"+
-							
-							" F_SIGA_GETCOMFACTURAFECHALETRA(F."+FacFacturaBean.C_IDINSTITUCION+",F."+FacFacturaBean.C_IDPERSONA+",F."+FacFacturaBean.C_IDFACTURA;
-							if(isComunicacionLarga)
-								select+=",1";
-							else
-								select+=",0";
-							
-							select+=","+lenguaje+") as COMUNICACIONESMESLETRA,";
-							contador++;
-							codigos.put(new Integer(contador),idInstitucion);				
-							select+=" f_siga_calculoncolegiado(:"+contador+",F."+FacFacturaBean.C_IDPERSONA+") as "+CenColegiadoBean.C_NCOLEGIADO+", "+
-							"P."+CenPersonaBean.C_NOMBRE+" || ' ' || P."+CenPersonaBean.C_APELLIDOS1+ " || ' ' || P."+CenPersonaBean.C_APELLIDOS2+" NOMBRE,P."+CenPersonaBean.C_NIFCIF+" "+CenPersonaBean.C_NIFCIF+", ";
-							
-							select+= " (select s.descripcion " +
-						                 " from  " + FacSerieFacturacionBean.T_NOMBRETABLA + " S, " +
-						                 		     FacFacturacionProgramadaBean.T_NOMBRETABLA + " N " +
-						                " where S." + FacSerieFacturacionBean.C_IDINSTITUCION + " = N." + FacFacturacionProgramadaBean.C_IDINSTITUCION +
-						                  " and N." + FacFacturacionProgramadaBean.C_IDINSTITUCION + " = F." + FacFacturaBean.C_IDINSTITUCION +
-						                  " and N." + FacFacturacionProgramadaBean.C_IDPROGRAMACION + " = F." + FacFacturaBean.C_IDPROGRAMACION +
-						                  " and S." + FacSerieFacturacionBean.C_IDSERIEFACTURACION + " = F." + FacFacturaBean.C_IDSERIEFACTURACION +
-						                  " and F." + FacFacturaBean.C_IDSERIEFACTURACION + " = N." + FacFacturacionProgramadaBean.C_IDSERIEFACTURACION +
-						                  ") as CONCEPTO_DESCSERIEFACT, "+
-										  " FP."+FacFacturacionProgramadaBean.C_DESCRIPCION+"  As DESCRIPCION_PROGRAMACION";
-							if(isInforme)
-								select+= " ,F_SIGA_GETULTIMOMOTIVODEVFACT(F.IDINSTITUCION,F.idfactura,F.IDPERSONA) as MOTIVO_DEVOLUCION ";
-							
-							 
-							
-							
-			String from = 	" FROM " + 
-							FacFacturaBean.T_NOMBRETABLA +" F, "+ CenPersonaBean.T_NOMBRETABLA+" P," +
-							CenCuentasBancariasBean.T_NOMBRETABLA+" C, "+CenBancosBean.T_NOMBRETABLA+" B,"+
-							FacFacturacionProgramadaBean.T_NOMBRETABLA+" FP ";
-
-			contador++;
-			codigos.put(new Integer(contador),idInstitucion);
-				
-			String where = 	" WHERE F." + FacFacturaBean.C_IDINSTITUCION + " =:" + contador;
-			where+=	" AND P."+CenPersonaBean.C_IDPERSONA+"=F."+FacFacturaBean.C_IDPERSONA+" ";
+			String select = "SELECT to_char(FECHA_EMISION,'DD/MM/RRRR') AS " + FacFacturaBean.C_FECHAEMISION + ", " +
+								" PKG_SIGA_FECHA_EN_LETRA.F_SIGA_FECHACOMPLETAENLETRA(to_char(FECHA_EMISION,'DD/MM/RRRR'),'m',"+lenguaje+") AS FECHAEMISIONMESLETRA, " +					
+								FacFacturaBean.C_NUMEROFACTURA	+ ", " +
+								FacFacturaBean.C_IDFACTURA	+ ", " +
+								" NETO, " +
+								" TOTALIVA, " +
+								" TOTAL, " +
+								" PAGADO, " +
+								" DEUDA, " +
+								" DECODE(NUMCUENTA, NULL, '', CODBANCO || ' ' || CODSUCURSAL || ' ' || DIGCONTROL || ' ' || NUMCUENTA) AS NUM_CUENTA_BANCARIA, " +								
+								" CODBANCO AS CODIGO_BANCO, " +
+								" CODSUCURSAL AS CODIGO_SUCURSAL, " +
+								" DIGCONTROL AS DIGITO_CONTROL, " +
+								" NUMCUENTA AS NUMERO_CUENTA, " +
+								" NOMBANCO AS NOMBRE_BANCO, " +
+								" COMUNICACIONES, " +
+								" COMUNICACIONESMESLETRA, " +								
+								CenColegiadoBean.C_NCOLEGIADO + ", " +
+								" NOMBRE, " +
+								CenPersonaBean.C_NIFCIF + ", " +
+								" CONCEPTO_DESCSERIEFACT, " +
+								" DESCRIPCION_PROGRAMACION "
+								+ (isInforme ? ", MOTIVO_DEVOLUCION" : "") +
+							" FROM ( " +
+								" SELECT F." + FacFacturaBean.C_FECHAEMISION + " AS FECHA_EMISION, " +
+									" F." + FacFacturaBean.C_NUMEROFACTURA + ", " +
+									" F." + FacFacturaBean.C_IDFACTURA + ", " +
+									" F." + FacFacturaBean.C_IMPTOTALNETO + " AS NETO, " +
+									" F." + FacFacturaBean.C_IMPTOTALIVA + " AS TOTALIVA, " +
+									" F." + FacFacturaBean.C_IMPTOTAL + " AS TOTAL, " +
+									" F." + FacFacturaBean.C_IMPTOTALPAGADO + " AS PAGADO, " +
+									" F." + FacFacturaBean.C_IMPTOTALPORPAGAR + " AS DEUDA, " +
+		                            " C." + CenCuentasBancariasBean.C_IBAN + " AS IBAN , " +
+									" C." + CenCuentasBancariasBean.C_CBO_CODIGO + " AS CODBANCO , " +
+		                            " C." + CenCuentasBancariasBean.C_CODIGOSUCURSAL + " AS CODSUCURSAL, " +
+		                            " C." + CenCuentasBancariasBean.C_DIGITOCONTROL + " AS DIGCONTROL, " +
+		                            " C." + CenCuentasBancariasBean.C_NUMEROCUENTA + " AS NUMCUENTA, " +
+		                            " B." + CenBancosBean.C_NOMBRE	+ " AS NOMBANCO , " +
+									" F_SIGA_GETCOMFACTURA( " + 
+		                            	" F." + FacFacturaBean.C_IDINSTITUCION + ", " +
+		                            	" F."+FacFacturaBean.C_IDPERSONA + ", " +
+		                            	" F." + FacFacturaBean.C_IDFACTURA + ", " + 
+		                            	(isComunicacionLarga ? "1" : "0") +
+		                            " ) AS COMUNICACIONES, " +							
+		                            " F_SIGA_GETCOMFACTURAFECHALETRA( " +
+		                            	" F." + FacFacturaBean.C_IDINSTITUCION + ", "+
+		                            	" F." + FacFacturaBean.C_IDPERSONA + ", " +
+		                            	" F." + FacFacturaBean.C_IDFACTURA + ", " +
+		                            	(isComunicacionLarga ? "1" : "0") + ", " +
+		                            	lenguaje + 
+		                            " ) AS COMUNICACIONESMESLETRA, " +
+		                            " F_SIGA_CALCULONCOLEGIADO(F." + FacFacturaBean.C_IDINSTITUCION + ", F." + FacFacturaBean.C_IDPERSONA + ") AS " + CenColegiadoBean.C_NCOLEGIADO + ", " +
+		                            " P." + CenPersonaBean.C_NOMBRE + " || ' ' || P." + CenPersonaBean.C_APELLIDOS1 + " || ' ' || P." + CenPersonaBean.C_APELLIDOS2 + " AS NOMBRE, " +
+		                            " P." + CenPersonaBean.C_NIFCIF + ", " +
+		                            " ( " +
+		                            	" SELECT s.descripcion " +
+		                            	" FROM " + FacSerieFacturacionBean.T_NOMBRETABLA + " S, " +
+						                 	FacFacturacionProgramadaBean.T_NOMBRETABLA + " N " +
+						                " WHERE S." + FacSerieFacturacionBean.C_IDINSTITUCION + " = N." + FacFacturacionProgramadaBean.C_IDINSTITUCION +
+						                  " AND N." + FacFacturacionProgramadaBean.C_IDINSTITUCION + " = F." + FacFacturaBean.C_IDINSTITUCION +
+						                  " AND N." + FacFacturacionProgramadaBean.C_IDPROGRAMACION + " = F." + FacFacturaBean.C_IDPROGRAMACION +
+						                  " AND S." + FacSerieFacturacionBean.C_IDSERIEFACTURACION + " = F." + FacFacturaBean.C_IDSERIEFACTURACION +
+						                  " AND F." + FacFacturaBean.C_IDSERIEFACTURACION + " = N." + FacFacturacionProgramadaBean.C_IDSERIEFACTURACION +
+				                  	" ) AS CONCEPTO_DESCSERIEFACT, " +
+				                  	" FP." + FacFacturacionProgramadaBean.C_DESCRIPCION + " AS DESCRIPCION_PROGRAMACION" +
+				                  	(isInforme ? ", F_SIGA_GETULTIMOMOTIVODEVFACT(" +
+				                  						" F." + FacFacturaBean.C_IDINSTITUCION + ", " +
+				                  						" F." + FacFacturaBean.C_IDPERSONA + ", " +				                  			
+				                  						" F." + FacFacturaBean.C_IDFACTURA + ", " +				                  						
+				                  						" F." + FacFacturaBean.C_COMISIONIDFACTURA + 
+			                  						") AS MOTIVO_DEVOLUCION " : "") +
+			                  	" FROM " + FacFacturaBean.T_NOMBRETABLA + " F, " + 
+				                  	CenPersonaBean.T_NOMBRETABLA + " P, " +
+				                  	CenCuentasBancariasBean.T_NOMBRETABLA + " C, " +
+				                  	CenBancosBean.T_NOMBRETABLA + " B, " +
+				                  	FacFacturacionProgramadaBean.T_NOMBRETABLA + " FP " +
+			                  	" WHERE F." + FacFacturaBean.C_IDINSTITUCION + " = " + idInstitucion +
+			                  		" AND P." + CenPersonaBean.C_IDPERSONA + " = F." + FacFacturaBean.C_IDPERSONA +
+			                  		" AND F." + FacFacturaBean.C_IDINSTITUCION + " = C." + CenCuentasBancariasBean.C_IDINSTITUCION + "(+) " +
+			                  		" AND F." + FacFacturaBean.C_IDCUENTA + " = C." + CenCuentasBancariasBean.C_IDCUENTA + "(+) " +
+			                  		" AND F." + FacFacturaBean.C_IDPERSONA + " = C." + CenCuentasBancariasBean.C_IDPERSONA + "(+) " +
+			                  		" AND C." + CenCuentasBancariasBean.C_CBO_CODIGO + " = B." + CenBancosBean.C_CODIGO + "(+) " +
+			                  		" AND F." + FacFacturaBean.C_IDINSTITUCION + " = FP." + FacFacturacionProgramadaBean.C_IDINSTITUCION + 
+			                  		" AND F." + FacFacturaBean.C_IDSERIEFACTURACION + " = FP." + FacFacturacionProgramadaBean.C_IDSERIEFACTURACION + 
+			                  		" AND F." + FacFacturaBean.C_IDPROGRAMACION + " = FP." + FacFacturacionProgramadaBean.C_IDPROGRAMACION;
 			
-	
-			where+= " AND F."+FacFacturaBean.C_IDINSTITUCION+" = C."+CenCuentasBancariasBean.C_IDINSTITUCION+"(+) ";
-			where+= " AND F."+FacFacturaBean.C_IDCUENTA+" = C."+CenCuentasBancariasBean.C_IDCUENTA+"(+) ";
-			where+= " AND F."+FacFacturaBean.C_IDPERSONA+" = C."+CenCuentasBancariasBean.C_IDPERSONA+"(+) ";
-			where+= " AND C."+CenCuentasBancariasBean.C_CBO_CODIGO+"=B."+CenBancosBean.C_CODIGO+" (+)";
-			where+= " And  F."+FacFacturaBean.C_IDINSTITUCION+" = FP."+FacFacturacionProgramadaBean.C_IDINSTITUCION;
-            where+= " AND  F."+FacFacturaBean.C_IDSERIEFACTURACION+" = FP."+FacFacturacionProgramadaBean.C_IDSERIEFACTURACION;
-            where+= " AND  F."+FacFacturaBean.C_IDPROGRAMACION+" = FP."+FacFacturacionProgramadaBean.C_IDPROGRAMACION;
-			
-			if(idPersona!=null){
+			if (idPersona!=null) {
 				contador++;
-				codigos.put(new Integer(contador),idPersona);
-				where += " AND F." + FacFacturaBean.C_IDPERSONA + " =:" + contador;
+				codigos.put(new Integer(contador), idPersona);
+				select += " AND F." + FacFacturaBean.C_IDPERSONA + " = :" + contador;
 			}
-			/*if (fechaDesde!=null && !fechaDesde.equals("")){
-							where += " AND F." + FacFacturaBean.C_FECHAEMISION + " >= TO_DATE('" + GstDate.getApplicationFormatDate("",fechaDesde) + "', '" + ClsConstants.DATE_FORMAT_SQL + "') ";
-			}
-			if (fechaHasta!=null && !fechaHasta.equals("")){
-							where += " AND F." + FacFacturaBean.C_FECHAEMISION + " <= TO_DATE('" + GstDate.getApplicationFormatDate("",fechaHasta) + "', '" + ClsConstants.DATE_FORMAT_SQL + "') ";
-			}*/
 			
-		       String fDesdeInc = fechaDesde; 
-			   String fHastaInc = fechaHasta;
-				if ((fDesdeInc != null && !fDesdeInc.trim().equals("")) || (fHastaInc != null && !fHastaInc.trim().equals(""))) {
+	       String fDesdeInc = fechaDesde; 
+		   String fHastaInc = fechaHasta;
+		   if ((fDesdeInc!=null && !fDesdeInc.trim().equals("")) || (fHastaInc!=null && !fHastaInc.trim().equals(""))) {					
+				if (!fDesdeInc.equals(""))
+					fDesdeInc = GstDate.getApplicationFormatDate("", fDesdeInc); 
+				if (!fHastaInc.equals(""))
+					fHastaInc = GstDate.getApplicationFormatDate("", fHastaInc);
+				Vector vCondicion = GstDate.dateBetweenDesdeAndHastaBind("F." + FacFacturaBean.C_FECHAEMISION, fDesdeInc, fHastaInc, contador, codigos);
 					
-					if (!fDesdeInc.equals(""))
-						fDesdeInc = GstDate.getApplicationFormatDate("", fDesdeInc); 
-					if (!fHastaInc.equals(""))
-						fHastaInc = GstDate.getApplicationFormatDate("", fHastaInc);
-					Vector vCondicion=GstDate.dateBetweenDesdeAndHastaBind("F." + FacFacturaBean.C_FECHAEMISION, fDesdeInc, fHastaInc,contador,codigos);
-					
-					contador=new Integer(vCondicion.get(0).toString()).intValue();
-					where +=" and " + vCondicion.get(1) ;
-					
-				}
+				contador=new Integer(vCondicion.get(0).toString()).intValue();
+				select += " AND " + vCondicion.get(1) ;					
+			}
+		   
 			//Si no viene filtrado por factura metemos en la calusula que el numero de factura no sea vacio
-			if(idFactura!=null){
+			if (idFactura!=null) {
 				contador++;
-				codigos.put(new Integer(contador),idFactura);
-				where +=" AND F." + FacFacturaBean.C_IDFACTURA+ " =:"+contador+" )";
-			}else{
-				where +=" AND F." + FacFacturaBean.C_NUMEROFACTURA + " > '0')";
+				codigos.put(new Integer(contador), idFactura);
+				select += " AND F." + FacFacturaBean.C_IDFACTURA + " = :" + contador;
+			} else {
+				select += " AND F." + FacFacturaBean.C_NUMEROFACTURA + " > '0'";
 			}				
 				
-			
-			where += " WHERE DEUDA > 0";
-			
-			String orderBy = " ORDER BY FECHA_EMISION DESC";
-	
-			String consulta = select + from + where + orderBy;
+			select += " ) WHERE DEUDA > 0 " + 
+						" ORDER BY FECHA_EMISION DESC";
 	
 			RowsContainer rc = new RowsContainer();			
-		
-			
-			if (rc.queryBind(consulta,codigos)) {
+			if (rc.queryBind(select,codigos)) {
 				for (int i = 0; i < rc.size(); i++)	{
 					Row fila = (Row) rc.get(i);	
 					if(alFacturas==null || alFacturas.contains(fila.getString(FacFacturaBean.C_IDFACTURA))){
@@ -1900,7 +1823,6 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
 						else
 							datos.add(fila);
 					}
-					
 				}
 			}
 		} 
@@ -1908,12 +1830,12 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
 	    catch (Exception e) {
 	   		if (e instanceof SIGAException){
 	   			throw (SIGAException)e;
-	   		}
-	   		else {
+	   			
+	   		} else {
 	   			if (e instanceof ClsExceptions){
 	   				throw (ClsExceptions)e;
-	   			}
-	   			else {
+	   				
+	   			} else {
 	   				throw new ClsExceptions(e, "Error al obtener las facturas de colegiado moroso.");
 	   			}
 	   		}	

@@ -211,23 +211,18 @@ public class ConsultaMorososAction extends MasterAction {
 	/* (non-Javadoc)
 	 * @see com.siga.general.MasterAction#buscar(org.apache.struts.action.ActionMapping, com.siga.general.MasterForm, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
 	 */
-	protected String buscarPor(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException
-	{
-		try{
-			
+	protected String buscarPor(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+		try {
 			//Si se viene de un proceso de envio de cartas de morosos, se eliminan los documentos generados
-    		eliminarInformesCobros(request);
-	        
-	        ConsultaMorososForm miFormulario = (ConsultaMorososForm)formulario;        
-	        FacFacturaAdm facAdm = new FacFacturaAdm (this.getUserBean(request));
-
-			
-			UsrBean user = ((UsrBean)request.getSession().getAttribute(("USRBEAN")));
+    		eliminarInformesCobros(request);	        
+	                			
 			
 			//Si es seleccionar todos esta variable no vandra nula y ademas nos traera el numero de pagina 
 			//donde nos han marcado el seleccionar todos(asi evitamos meter otra variable)
+    		ConsultaMorososForm miFormulario = (ConsultaMorososForm)formulario;
 			boolean isSeleccionarTodos = miFormulario.getSeleccionarTodos()!=null 
 				&& !miFormulario.getSeleccionarTodos().equals("");
+			
 			//si no es seleccionar todos los cambios van a fectar a los datos que se han mostrado en 
 			//la jsp por lo que parseamos los datos dento dela variable Registro seleccionados. Cuando hay modificacion
 			//habra que actualizar estos datos
@@ -235,9 +230,8 @@ public class ConsultaMorososAction extends MasterAction {
 				ArrayList clavesRegSeleccinados = (ArrayList) miFormulario.getRegistrosSeleccionados();
 				String seleccionados = request.getParameter("Seleccion");
 				
-				
 				if (seleccionados != null ) {
-					ArrayList alRegistros = actualizarSelecionados(this.clavesBusqueda,seleccionados, clavesRegSeleccinados);
+					ArrayList alRegistros = actualizarSelecionados(this.clavesBusqueda, seleccionados, clavesRegSeleccinados);
 					if (alRegistros != null) {
 						clavesRegSeleccinados = alRegistros;
 						miFormulario.setRegistrosSeleccionados(clavesRegSeleccinados);
@@ -245,17 +239,13 @@ public class ConsultaMorososAction extends MasterAction {
 				}
 			}
 			
-			
 			HashMap databackup = (HashMap) miFormulario.getDatosPaginador();
 			if (databackup!=null && databackup.get("paginador")!=null&&!isSeleccionarTodos){ 
 				PaginadorCaseSensitiveBind paginador = (PaginadorCaseSensitiveBind)databackup.get("paginador");
 				Vector datos=new Vector();
 	
-	
 				//Si no es la primera llamada, obtengo la página del request y la busco con el paginador
 				String pagina = (String)request.getParameter("pagina");
-	
-	
 	
 				if (paginador!=null){	
 					int paginaInt;
@@ -266,37 +256,29 @@ public class ConsultaMorososAction extends MasterAction {
 						// cargamos la primera y no evitamos mostrar un error
 						paginaInt = 1;
 					}
+					
 					if (pagina!=null){
 						datos = paginador.obtenerPagina(paginaInt);
-					}else{// cuando hemos editado un registro de la busqueda y volvemos a la paginacion
+					} else {// cuando hemos editado un registro de la busqueda y volvemos a la paginacion
 						datos = paginador.obtenerPagina((paginador.getPaginaActual()));
 					}
 				}	
 	
+				databackup.put("paginador", paginador);
+				databackup.put("datos", datos);
 	
-	
-				databackup.put("paginador",paginador);
-				databackup.put("datos",datos);
-	
-	
-	
-	
-			}else{
-				
+			} else {				
 				databackup=new HashMap();
-	
-				//obtengo datos de la consulta 			
-				PaginadorCaseSensitiveBind resultado = null;
 				Vector datos = null;
 	
-				resultado = facAdm.selectMorosos(user,miFormulario);
+				//obtengo datos de la consulta 		
+				UsrBean user = ((UsrBean)request.getSession().getAttribute(("USRBEAN")));
+				FacFacturaAdm facAdm = new FacFacturaAdm (user);
+				PaginadorCaseSensitiveBind resultado = facAdm.selectMorosos(miFormulario);
 				// Paso de parametros empleando la sesion
 				databackup.put("paginador",resultado);
 				
-				
 				if (resultado!=null){ 
-					
-					
 					if(isSeleccionarTodos){
 						//Si hay que seleccionar todos hacemos la query completa.
 						ArrayList clavesRegSeleccinados = new ArrayList((Collection)facAdm.selectGenericoNLSBind(resultado.getQueryInicio(), resultado.getCodigosInicio()));
@@ -309,37 +291,28 @@ public class ConsultaMorososAction extends MasterAction {
 						}
 						miFormulario.setSeleccionarTodos("");
 						
-					}else{
+					} else {
 //					
 						miFormulario.setRegistrosSeleccionados(new ArrayList());
 						datos = resultado.obtenerPagina(1);
 					}
 					databackup.put("datos",datos);
-						
 					
-					
-				}else{
+				} else {
 					miFormulario.setRegistrosSeleccionados(new ArrayList());
 				}  
 				miFormulario.setDatosPaginador(databackup);
 				
-				
-	
-				//request.setAttribute("datos", datos);
 				request.setAttribute("fechaDesde",miFormulario.getFechaDesde());
 				request.setAttribute("fechaHasta",miFormulario.getFechaHasta());
 			}
 	
-		}catch(Exception e){
+		} catch(Exception e) {
 			throwExcp("messages.general.error",new String[] {"modulo.facturacion"},e,null); 
 		}
 
 		return "resultado";
 	}
-	
-	
-	
-	
     
         /**
      * Elimina los ficheros generados en el proceso de envios
