@@ -32,8 +32,10 @@ import org.apache.struts.action.ActionMapping;
 import org.apache.struts.upload.FormFile;
 import org.redabogacia.sigaservices.app.AppConstants;
 import org.redabogacia.sigaservices.app.AppConstants.ESTADOS_EJG;
+import org.redabogacia.sigaservices.app.autogen.model.CajgRemesa;
 import org.redabogacia.sigaservices.app.autogen.model.EcomCola;
 import org.redabogacia.sigaservices.app.helper.SIGAServicesHelper;
+import org.redabogacia.sigaservices.app.services.caj.CajgRemesaService;
 import org.redabogacia.sigaservices.app.services.ecom.EcomColaService;
 import org.redabogacia.sigaservices.app.util.ReadProperties;
 import org.redabogacia.sigaservices.app.util.SIGAReferences;
@@ -166,6 +168,8 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 				mapDestino = descargarLog(mapping, miForm, request, response);	
 			} else if (accion.equalsIgnoreCase("generaXML")) {
 				mapDestino = generaXML(mapping, miForm, request, response);			
+			} else if (accion.equalsIgnoreCase("borrarOviedoTemporal")) {
+				mapDestino = borrarOviedoTemporal(mapping, miForm, request, response);			
 			} else {
 				return super.executeInternal(mapping, formulario, request, response);
 			}
@@ -760,6 +764,33 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 		return exitoRefresco("messages.deleted.success", request);
 	}
 
+	
+	protected String borrarOviedoTemporal(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+
+		UsrBean usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
+
+		DefinicionRemesas_CAJG_Form miForm = (DefinicionRemesas_CAJG_Form) formulario;
+		
+		try {
+
+			BusinessManager bm = getBusinessManager();
+			String idRemesa =  miForm.getIdRemesa();
+			String idInstitucion = this.getIDInstitucion(request).toString();
+			CajgRemesaService cajgRemesaService = (CajgRemesaService)bm.getService(CajgRemesaService.class);
+			CajgRemesa cajgRemesa = new CajgRemesa();
+			cajgRemesa.setIdinstitucion(Short.valueOf(idInstitucion));
+			cajgRemesa.setIdremesa(Long.valueOf(idRemesa));
+			cajgRemesaService.borrarOviedoTemporal(cajgRemesa);
+		} catch (Exception e) {
+			throw new SIGAException("No se puede borrar la remesa"+e.toString());
+		}
+
+		request.setAttribute("hiddenFrame", "1");
+
+		return exitoRefresco("messages.deleted.success", request);
+	}
+	
+	
 	protected String borrarRemesa(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 
 		UsrBean usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
