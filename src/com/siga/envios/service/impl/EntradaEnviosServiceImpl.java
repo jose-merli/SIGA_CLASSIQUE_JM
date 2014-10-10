@@ -41,6 +41,7 @@ import org.redabogacia.sigaservices.app.autogen.model.ScsComunicaciones;
 import org.redabogacia.sigaservices.app.autogen.model.ScsDesigna;
 import org.redabogacia.sigaservices.app.autogen.model.ScsEjg;
 import org.redabogacia.sigaservices.app.autogen.model.ScsEjgKey;
+import org.redabogacia.sigaservices.app.autogen.model.ScsEjgWithBLOBs;
 import org.redabogacia.sigaservices.app.log4j.SatecLogger;
 import org.redabogacia.sigaservices.app.mapper.EnvEntradaEnviosExtendsMapper;
 import org.redabogacia.sigaservices.app.services.ecom.EcomColaService;
@@ -718,7 +719,7 @@ public  class EntradaEnviosServiceImpl extends MyBatisBusinessServiceTemplate im
 				//Se borra el registro del EJG
 				if(entradaEnviosForm.getAnioEJGNew()!=null && !entradaEnviosForm.getAnioEJGNew().equals("")){
 					ScsEjgService ejgService = (ScsEjgService) BusinessManager.getInstance().getService(ScsEjgService.class);
-					ScsEjg obj = new ScsEjg();
+					ScsEjgWithBLOBs obj = new ScsEjgWithBLOBs();
 					obj.setAnio(new Short(entradaEnviosForm.getAnioEJGNew()));
 					obj.setIdinstitucion(new Short(entradaEnviosForm.getIdInstitucion()));
 					obj.setNumero(new Long(entradaEnviosForm.getNumeroEJGNew()));
