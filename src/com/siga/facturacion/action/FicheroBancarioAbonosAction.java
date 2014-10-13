@@ -875,7 +875,7 @@ public class FicheroBancarioAbonosAction extends MasterAction{
 					registrosBenefSEPA[nRegistrosBenefSEPA].append(completarEspacios("NombrePago", bReceptor.getNombrePago(), "I", " ", 140, true)); //concepto
 					registrosBenefSEPA[nRegistrosBenefSEPA].append(rellenarEspacios(35)); //identificacion de la instruccion
 					registrosBenefSEPA[nRegistrosBenefSEPA].append("    "); //tipo de transferencia
-					registrosBenefSEPA[nRegistrosBenefSEPA].append(completarEspacios("PropositoSEPA",bReceptor.getProposito(),"I"," ",3,false)); //proposito de transferencia (no es obligatorio puede estar vacío)
+					registrosBenefSEPA[nRegistrosBenefSEPA].append(completarEspacios("PropositoSEPA",bReceptor.getProposito(),"I"," ",4,false)); //proposito de transferencia (no es obligatorio puede estar vacío)
 					registrosBenefSEPA[nRegistrosBenefSEPA].append(rellenarEspacios(99)); //libre
 					
 					nRegistrosBenefSEPA ++;
