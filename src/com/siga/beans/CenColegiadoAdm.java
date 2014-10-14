@@ -1669,4 +1669,46 @@ public class CenColegiadoAdm extends MasterBeanAdmVisible
        }       
        return true;                        
     }	
+	
+	/**
+	 * Obtiene el numero de colegiado de la persona. 	 
+	 * @param   String idPersona: id persona 
+	 * @param   Integer idInstitucion: identificador de la institucion 
+	 * @return  String el numero de colegiado de la persona 
+	 */
+	public String getNumColegiado (Integer idInstitucion, String idPersona)  throws ClsExceptions{
+		
+		String sql = null;
+		String numColegiado=null;
+		
+		if (idPersona == null || idInstitucion == null) 
+			return "";
+		
+		try {
+			
+			RowsContainer rc = new RowsContainer();
+			
+			sql="  SELECT DECODE("+CenColegiadoBean.C_COMUNITARIO+", 1, "+CenColegiadoBean.C_NCOMUNITARIO+", "+CenColegiadoBean.C_NCOLEGIADO+") AS "+CenColegiadoBean.C_NCOLEGIADO+
+					   "  FROM "+ CenColegiadoBean.T_NOMBRETABLA+
+			           " WHERE "+CenColegiadoBean.C_IDINSTITUCION+"="+idInstitucion+
+			           "   AND "+CenColegiadoBean.C_IDPERSONA+"="+idPersona;
+									
+			if (rc.findForUpdate(sql)) {
+				Row fila = (Row) rc.get(0);
+				Hashtable datos = fila.getRow();			
+				if (datos.get(CenColegiadoBean.C_NCOLEGIADO).equals("")) {
+					numColegiado="";
+				}
+				else 
+					numColegiado=UtilidadesHash.getString(datos, CenColegiadoBean.C_NCOLEGIADO);								
+			}
+			
+		}catch (Exception e) {
+			throw new ClsExceptions (e, "Error al recuperar el número de colegiado de la persona: "+idPersona);
+       }     
+		return numColegiado;
+		
+	}
+	
+	
 }

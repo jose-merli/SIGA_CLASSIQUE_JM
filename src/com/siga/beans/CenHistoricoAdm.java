@@ -646,7 +646,7 @@ public class CenHistoricoAdm extends MasterBeanAdministrador
 						if(beanComponentes.getCen_Cliente_IdPersona()!=null){
 							CenPersonaAdm pAdm = new CenPersonaAdm(this.usrbean);
 							Hashtable hClaveP=new Hashtable();
-							hClaveP.put("IDPERSONA", beanComponentes.getCen_Cliente_IdPersona());
+							hClaveP.put(CenPersonaBean.C_IDPERSONA, beanComponentes.getCen_Cliente_IdPersona());
 							CenPersonaBean pBean =(CenPersonaBean)pAdm.selectByPK(hClaveP).get(0);
 							UtilidadesHash.set(hBeanAsociado, CenComponentesBean.C_CEN_CLIENTE_IDPERSONA, pBean.getApellido1() + " "+ pBean.getApellido2() + ", "+ pBean.getNombre()+" NIF/CIF "+pBean.getNIFCIF());
 						}else{
@@ -657,9 +657,9 @@ public class CenHistoricoAdm extends MasterBeanAdministrador
 						{
 							CenCuentasBancariasAdm cAdm = new CenCuentasBancariasAdm(this.usrbean);
 							Hashtable hClaveC=new Hashtable();
-							hClaveC.put("IDPERSONA", beanComponentes.getCen_Cliente_IdPersona());	
-							hClaveC.put("IDCUENTA", beanComponentes.getIdCuenta());
-							hClaveC.put("IDINSTITUCION", beanComponentes.getCen_Cliente_IdInstitucion());	
+							hClaveC.put(CenCuentasBancariasBean.C_IDPERSONA, beanComponentes.getCen_Cliente_IdPersona());	
+							hClaveC.put(CenCuentasBancariasBean.C_IDCUENTA, beanComponentes.getIdCuenta());
+							hClaveC.put(CenCuentasBancariasBean.C_IDINSTITUCION, beanComponentes.getCen_Cliente_IdInstitucion());	
 							
 							CenCuentasBancariasBean cBean =(CenCuentasBancariasBean)cAdm.selectByPK(hClaveC).get(0);
 							UtilidadesHash.set(hBeanAsociado, CenComponentesBean.C_IDCUENTA,UtilidadesString.mostrarIBANConAsteriscos(cBean.getIban()));
@@ -672,13 +672,18 @@ public class CenHistoricoAdm extends MasterBeanAdministrador
 						if((beanComponentes.getIdTipoColegio()!=null)&&(!beanComponentes.getIdTipoColegio().isEmpty()))
 						{
 																				
-							String sql=" SELECT f_siga_getrecurso(DESCRIPCION,"+this.usrbean.getLanguageInstitucion()+") AS DESCRIPCION FROM CEN_ACTIVIDADPROFESIONAL WHERE IDACTIVIDADPROFESIONAL="+beanComponentes.getIdTipoColegio();
-							
-							Vector vDescTipoColegio=adm.selectGenericoNLS(sql);
-							
+							CenActividadProfesionalAdm actpAdm = new CenActividadProfesionalAdm(this.usrbean);
+																						
+							String sql= "SELECT "+UtilidadesMultidioma.getCampoMultidiomaSimple(CenActividadProfesionalBean.C_DESCRIPCION,this.usrbean.getLanguage())+ " AS DESCRIPCION " +
+							            "  FROM "+CenActividadProfesionalBean.T_NOMBRETABLA+
+							            " WHERE "+CenActividadProfesionalBean.C_IDACTIVIDADPROFESIONAL+"="+beanComponentes.getIdTipoColegio();
+
+							Vector vDescTipoColegio=actpAdm.selectSQL(sql);
+								
+													
 							if((vDescTipoColegio!=null)&&(vDescTipoColegio.size()>0)){
-								Hashtable hdesc=(Hashtable)vDescTipoColegio.get(0);
-								UtilidadesHash.set(hBeanAsociado, CenComponentesBean.C_IDTIPOCOLEGIO, hdesc.get("DESCRIPCION").toString());
+								CenActividadProfesionalBean actBean =(CenActividadProfesionalBean)vDescTipoColegio.get(0);
+								UtilidadesHash.set(hBeanAsociado, CenComponentesBean.C_IDTIPOCOLEGIO, actBean.getDescripcion());
 							}
 							
 						}else{
@@ -689,13 +694,17 @@ public class CenHistoricoAdm extends MasterBeanAdministrador
 						if((beanComponentes.getIdCargo()!=null)&&(!beanComponentes.getIdCargo().isEmpty()))
 						{
 																				
-							String sql=" SELECT f_siga_getrecurso(DESCRIPCION,"+this.usrbean.getLanguageInstitucion()+") AS DESCRIPCION FROM CEN_CARGO WHERE IDCARGO="+beanComponentes.getIdCargo();
-							
-							Vector vDescCargo=adm.selectGenericoNLS(sql);
-							
+							CenCargoAdm cargoAdm=new CenCargoAdm(this.usrbean);
+														
+							String sql= "SELECT "+UtilidadesMultidioma.getCampoMultidiomaSimple(CenCargoBean.C_DESCRIPCION,this.usrbean.getLanguage())+ " AS DESCRIPCION " +
+							            "  FROM "+CenCargoBean.T_NOMBRETABLA+
+							            " WHERE "+CenCargoBean.C_IDCARGO+"="+beanComponentes.getIdCargo();
+
+							Vector vDescCargo=cargoAdm.selectSQL(sql);
+														
 							if((vDescCargo!=null)&&(vDescCargo.size()>0)){
-								Hashtable hdesc=(Hashtable)vDescCargo.get(0);
-								UtilidadesHash.set(hBeanAsociado, CenComponentesBean.C_CARGO, hdesc.get("DESCRIPCION").toString());
+								CenCargoBean cargoBean=(CenCargoBean)vDescCargo.get(0);
+								UtilidadesHash.set(hBeanAsociado, CenComponentesBean.C_CARGO, cargoBean.getDescripcion());
 							}
 							
 						}else{
@@ -705,14 +714,16 @@ public class CenHistoricoAdm extends MasterBeanAdministrador
 						//Provincia
 						if((beanComponentes.getIdProvincia()!=null)&&(!beanComponentes.getIdProvincia().isEmpty()))
 						{
-																				
-							String sql=" SELECT NOMBRE AS DESCRIPCION FROM CEN_PROVINCIAS WHERE IDPROVINCIA="+beanComponentes.getIdProvincia();
+					
+							CenProvinciaAdm provAdm=new CenProvinciaAdm(this.usrbean);
+							Hashtable hClaveProv=new Hashtable();
+							hClaveProv.put(CenProvinciaBean.C_IDPROVINCIA, beanComponentes.getIdProvincia());
 							
-							Vector vDescProv=adm.selectGenericoNLS(sql);
+							Vector vDescProv=provAdm.selectByPK(hClaveProv);
 							
 							if((vDescProv!=null)&&(vDescProv.size()>0)){
-								Hashtable hdesc=(Hashtable) vDescProv.get(0);
-								UtilidadesHash.set(hBeanAsociado, CenComponentesBean.C_IDPROVINCIA, hdesc.get("DESCRIPCION").toString());
+								CenProvinciaBean provBean=(CenProvinciaBean) vDescProv.get(0);
+								UtilidadesHash.set(hBeanAsociado, CenComponentesBean.C_IDPROVINCIA, provBean.getNombre());
 							}else{
 								UtilidadesHash.set(hBeanAsociado,CenComponentesBean.C_IDPROVINCIA,"");
 							}
@@ -722,13 +733,16 @@ public class CenHistoricoAdm extends MasterBeanAdministrador
 																					
 							if(beanComponentes.getCen_Cliente_IdInstitucion()!=null)
 							{
-								String sql=" SELECT ABREVIATURA FROM CEN_INSTITUCION WHERE IDINSTITUCION="+beanComponentes.getCen_Cliente_IdInstitucion();
 								
-								Vector vDescProv=adm.selectGenericoNLS(sql);
-								
+								CenInstitucionAdm insAdm=new CenInstitucionAdm(this.usrbean);
+								Hashtable hClaveIns=new Hashtable();
+								hClaveIns.put(CenInstitucionBean.C_IDINSTITUCION, beanComponentes.getCen_Cliente_IdInstitucion());
+							
+								Vector vDescProv=insAdm.selectByPK(hClaveIns);
+
 								if((vDescProv!=null)&&(vDescProv.size()>0)){
-									Hashtable hdesc=(Hashtable)vDescProv.get(0);
-									UtilidadesHash.set(hBeanAsociado, CenComponentesBean.C_IDPROVINCIA, hdesc.get("ABREVIATURA").toString());
+									CenInstitucionBean insBean=(CenInstitucionBean)vDescProv.get(0);
+									UtilidadesHash.set(hBeanAsociado, CenComponentesBean.C_IDPROVINCIA, insBean.getAbreviatura());
 								
 								}else{
 									UtilidadesHash.set(hBeanAsociado, CenComponentesBean.C_IDPROVINCIA,"");
@@ -745,34 +759,33 @@ public class CenHistoricoAdm extends MasterBeanAdministrador
 							
 							if((beanComponentes.getCen_Cliente_IdInstitucion()!=null)&&(beanComponentes.getCen_Cliente_IdPersona()!=null))
 							{
-								String sql=" SELECT DECODE(COMUNITARIO, 1, NCOMUNITARIO, NCOLEGIADO) NCOLEGIADO FROM CEN_COLEGIADO WHERE IDINSTITUCION="+beanComponentes.getCen_Cliente_IdInstitucion()+" AND IDPERSONA="+beanComponentes.getCen_Cliente_IdPersona();
 								
-								Vector vNumCol=adm.selectGenericoNLS(sql);
+								CenColegiadoAdm colAdm=new CenColegiadoAdm(this.usrbean);
+									
+								String numCol=colAdm.getNumColegiado(beanComponentes.getCen_Cliente_IdInstitucion(),beanComponentes.getCen_Cliente_IdPersona());
 								
-								if((vNumCol!=null)&&(vNumCol.size()>0)){
-									Hashtable hdesc=(Hashtable)vNumCol.get(0);
-									UtilidadesHash.set(hBeanAsociado, CenComponentesBean.C_NUMCOLEGIADO, hdesc.get("NCOLEGIADO").toString());
+								if((numCol!=null)&&(!numCol.isEmpty())){
+									UtilidadesHash.set(hBeanAsociado, CenComponentesBean.C_NUMCOLEGIADO, numCol);
 								}else{
 									UtilidadesHash.set(hBeanAsociado, CenComponentesBean.C_NUMCOLEGIADO,"");
 								}
+
 							}else{
 								UtilidadesHash.set(hBeanAsociado, CenComponentesBean.C_NUMCOLEGIADO,"");
 							}
 						}	
 
 						//Si se han actualizado los datos del elemento hay que insertar otro registro con los datos modificados
-						
+						CenComponentesBean beanAsociadoAnterior = (CenComponentesBean) adm.hashTableToBean(beanComponentes.getOriginalHash());
+						hBeanAsociadoAnterior = adm.beanToHashTable(beanAsociadoAnterior);
 						//Si es null es nuevo componente y no hay registro anterior
 						if(beanComponentes.getOriginalHash() != null){
-							
-							CenComponentesBean beanAsociadoAnterior = (CenComponentesBean) adm.hashTableToBean(beanComponentes.getOriginalHash());
-							hBeanAsociadoAnterior = adm.beanToHashTable(beanAsociadoAnterior);
-							
+
 							//Persona
 							if(beanAsociadoAnterior.getCen_Cliente_IdPersona()!=null){
 								
 								Hashtable hClavePU=new Hashtable();
-								hClavePU.put("IDPERSONA", beanAsociadoAnterior.getCen_Cliente_IdPersona());
+								hClavePU.put(CenPersonaBean.C_IDPERSONA, beanAsociadoAnterior.getCen_Cliente_IdPersona());
 								CenPersonaAdm pAdm = new CenPersonaAdm(this.usrbean);
 								CenPersonaBean pUBean =(CenPersonaBean)pAdm.selectByPK(hClavePU).get(0);
 								UtilidadesHash.set(hBeanAsociadoAnterior, CenComponentesBean.C_CEN_CLIENTE_IDPERSONA, pUBean.getApellido1() + " "+ pUBean.getApellido2() + ", "+ pUBean.getNombre()+" NIF/CIF "+pUBean.getNIFCIF());
@@ -784,9 +797,9 @@ public class CenHistoricoAdm extends MasterBeanAdministrador
 							{
 								CenCuentasBancariasAdm cUAdm = new CenCuentasBancariasAdm(this.usrbean);
 								Hashtable hClaveCU=new Hashtable();
-								hClaveCU.put("IDPERSONA", beanAsociadoAnterior.getCen_Cliente_IdPersona());	
-								hClaveCU.put("IDCUENTA", beanAsociadoAnterior.getIdCuenta());
-								hClaveCU.put("IDINSTITUCION", beanAsociadoAnterior.getCen_Cliente_IdInstitucion());	
+								hClaveCU.put(CenCuentasBancariasBean.C_IDPERSONA, beanAsociadoAnterior.getCen_Cliente_IdPersona());	
+								hClaveCU.put(CenCuentasBancariasBean.C_IDCUENTA, beanAsociadoAnterior.getIdCuenta());
+								hClaveCU.put(CenCuentasBancariasBean.C_IDINSTITUCION, beanAsociadoAnterior.getCen_Cliente_IdInstitucion());	
 								
 								CenCuentasBancariasBean cUBean =(CenCuentasBancariasBean)cUAdm.selectByPK(hClaveCU).get(0);
 								UtilidadesHash.set(hBeanAsociadoAnterior, CenComponentesBean.C_IDCUENTA,UtilidadesString.mostrarIBANConAsteriscos(cUBean.getIban()));
@@ -798,14 +811,17 @@ public class CenHistoricoAdm extends MasterBeanAdministrador
 							//Tipo de Colegio
 							if((beanAsociadoAnterior.getIdTipoColegio()!=null)&&(!beanAsociadoAnterior.getIdTipoColegio().isEmpty()))
 							{
-																					
-								String sql=" SELECT f_siga_getrecurso(DESCRIPCION,"+this.usrbean.getLanguageInstitucion()+") AS DESCRIPCION FROM CEN_ACTIVIDADPROFESIONAL WHERE IDACTIVIDADPROFESIONAL="+beanAsociadoAnterior.getIdTipoColegio();
-								
-								Vector vDescTipoColegio=adm.selectGenericoNLS(sql);
+								CenActividadProfesionalAdm actpAdm = new CenActividadProfesionalAdm(this.usrbean);
+															
+								String sql= "SELECT "+UtilidadesMultidioma.getCampoMultidiomaSimple(CenActividadProfesionalBean.C_DESCRIPCION,this.usrbean.getLanguage())+ " AS DESCRIPCION " +
+								            "  FROM "+CenActividadProfesionalBean.T_NOMBRETABLA+
+								            " WHERE "+CenActividadProfesionalBean.C_IDACTIVIDADPROFESIONAL+"="+beanAsociadoAnterior.getIdTipoColegio();
+
+								Vector vDescTipoColegio=actpAdm.selectSQL(sql);
 								
 								if((vDescTipoColegio!=null)&&(vDescTipoColegio.size()>0)){
-									Hashtable hdesc=(Hashtable)vDescTipoColegio.get(0);
-									UtilidadesHash.set(hBeanAsociadoAnterior, CenComponentesBean.C_IDTIPOCOLEGIO, hdesc.get("DESCRIPCION").toString());
+									CenActividadProfesionalBean actBean =(CenActividadProfesionalBean)vDescTipoColegio.get(0);
+									UtilidadesHash.set(hBeanAsociadoAnterior, CenComponentesBean.C_IDTIPOCOLEGIO, actBean.getDescripcion());
 								}
 								
 							}else{
@@ -816,13 +832,17 @@ public class CenHistoricoAdm extends MasterBeanAdministrador
 							if((beanAsociadoAnterior.getIdCargo()!=null)&&(!beanAsociadoAnterior.getIdCargo().isEmpty()))
 							{
 																					
-								String sql=" SELECT f_siga_getrecurso(DESCRIPCION,"+this.usrbean.getLanguageInstitucion()+") AS DESCRIPCION FROM CEN_CARGO WHERE IDCARGO="+beanAsociadoAnterior.getIdCargo();
-								
-								Vector vDescCargo=adm.selectGenericoNLS(sql);
-								
+								CenCargoAdm cargoAdm=new CenCargoAdm(this.usrbean);
+														
+								String sql= "SELECT "+UtilidadesMultidioma.getCampoMultidiomaSimple(CenCargoBean.C_DESCRIPCION,this.usrbean.getLanguage())+ " AS DESCRIPCION " +
+								            "  FROM "+CenCargoBean.T_NOMBRETABLA+
+								            " WHERE "+CenCargoBean.C_IDCARGO+"="+beanAsociadoAnterior.getIdCargo();
+	
+								Vector vDescCargo=cargoAdm.selectSQL(sql);
+															
 								if((vDescCargo!=null)&&(vDescCargo.size()>0)){
-									Hashtable hdesc=(Hashtable)vDescCargo.get(0);
-									UtilidadesHash.set(hBeanAsociadoAnterior, CenComponentesBean.C_CARGO, hdesc.get("DESCRIPCION").toString());
+									CenCargoBean cargoBean=(CenCargoBean)vDescCargo.get(0);
+									UtilidadesHash.set(hBeanAsociadoAnterior, CenComponentesBean.C_CARGO, cargoBean.getDescripcion());
 								}
 								
 							}else{
@@ -833,13 +853,15 @@ public class CenHistoricoAdm extends MasterBeanAdministrador
 							if((beanAsociadoAnterior.getIdProvincia()!=null)&&(!beanAsociadoAnterior.getIdProvincia().isEmpty()))
 							{
 																					
-								String sql=" SELECT NOMBRE AS DESCRIPCION FROM CEN_PROVINCIAS WHERE IDPROVINCIA="+beanAsociadoAnterior.getIdProvincia();
+								CenProvinciaAdm provAdm=new CenProvinciaAdm(this.usrbean);
+								Hashtable hClaveProv=new Hashtable();
+								hClaveProv.put(CenProvinciaBean.C_IDPROVINCIA, beanAsociadoAnterior.getIdProvincia());
 								
-								Vector vDescProv=adm.selectGenericoNLS(sql);
+								Vector vDescProv=provAdm.selectByPK(hClaveProv);
 								
 								if((vDescProv!=null)&&(vDescProv.size()>0)){
-									Hashtable hdesc=(Hashtable)vDescProv.get(0);
-									UtilidadesHash.set(hBeanAsociadoAnterior, CenComponentesBean.C_IDPROVINCIA, hdesc.get("DESCRIPCION").toString());
+									CenProvinciaBean provBean=(CenProvinciaBean)vDescProv.get(0);
+									UtilidadesHash.set(hBeanAsociadoAnterior, CenComponentesBean.C_IDPROVINCIA, provBean.getNombre());
 								}else{
 									UtilidadesHash.set(hBeanAsociadoAnterior, CenComponentesBean.C_IDPROVINCIA, "");
 								}
@@ -849,14 +871,16 @@ public class CenHistoricoAdm extends MasterBeanAdministrador
 							}else{
 																					
 								if(beanAsociadoAnterior.getCen_Cliente_IdInstitucion()!=null){
-	
-									String sql=" SELECT ABREVIATURA FROM CEN_INSTITUCION WHERE IDINSTITUCION="+beanAsociadoAnterior.getCen_Cliente_IdInstitucion();
-									
-									Vector vDescProv=adm.selectGenericoNLS(sql);
-									
+
+									CenInstitucionAdm insAdm=new CenInstitucionAdm(this.usrbean);
+									Hashtable hClaveIns=new Hashtable();
+									hClaveIns.put(CenInstitucionBean.C_IDINSTITUCION, beanAsociadoAnterior.getCen_Cliente_IdInstitucion());
+							
+									Vector vDescProv=insAdm.selectByPK(hClaveIns);
+																		
 									if((vDescProv!=null)&&(vDescProv.size()>0)){
-										Hashtable hdesc=(Hashtable)vDescProv.get(0);
-										UtilidadesHash.set(hBeanAsociadoAnterior, CenComponentesBean.C_IDPROVINCIA, hdesc.get("ABREVIATURA").toString());
+										CenInstitucionBean insBean=(CenInstitucionBean)vDescProv.get(0);
+										UtilidadesHash.set(hBeanAsociadoAnterior, CenComponentesBean.C_IDPROVINCIA, insBean.getAbreviatura());
 									}else{
 										UtilidadesHash.set(hBeanAsociadoAnterior, CenComponentesBean.C_IDPROVINCIA,"");
 									}
@@ -872,13 +896,12 @@ public class CenHistoricoAdm extends MasterBeanAdministrador
 								
 								if((beanAsociadoAnterior.getCen_Cliente_IdInstitucion()!=null)&&(beanAsociadoAnterior.getCen_Cliente_IdPersona()!=null)){
 									
-									String sql=" SELECT DECODE(COMUNITARIO, 1, NCOMUNITARIO, NCOLEGIADO) NCOLEGIADO FROM CEN_COLEGIADO WHERE IDINSTITUCION="+beanAsociadoAnterior.getCen_Cliente_IdInstitucion()+" AND IDPERSONA="+beanAsociadoAnterior.getCen_Cliente_IdPersona();
+									CenColegiadoAdm colAdm=new CenColegiadoAdm(this.usrbean);
 									
-									Vector vNumCol=adm.selectGenericoNLS(sql);
+									String numCol=colAdm.getNumColegiado(beanAsociadoAnterior.getCen_Cliente_IdInstitucion(),beanAsociadoAnterior.getCen_Cliente_IdPersona());
 									
-									if((vNumCol!=null)&&(vNumCol.size()>0)){
-										Hashtable hdesc=(Hashtable)vNumCol.get(0);
-										UtilidadesHash.set(hBeanAsociadoAnterior, CenComponentesBean.C_NUMCOLEGIADO, hdesc.get("NCOLEGIADO").toString());
+									if((numCol!=null)&&(!numCol.isEmpty())){
+										UtilidadesHash.set(hBeanAsociadoAnterior, CenComponentesBean.C_NUMCOLEGIADO, numCol);
 									}else{
 										UtilidadesHash.set(hBeanAsociadoAnterior, CenComponentesBean.C_NUMCOLEGIADO,"");
 									}
