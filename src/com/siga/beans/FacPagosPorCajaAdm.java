@@ -504,7 +504,8 @@ public class FacPagosPorCajaAdm extends MasterBeanAdministrador {
 							" ) AS ESTADO, " +					
 							" abono." + FacAbonoBean.C_FECHA + " AS FECHA, " +
 							" abono." + FacAbonoBean.C_FECHAMODIFICACION + " AS FECHA_ORDEN, " +
-							" abono." + FacAbonoBean.C_IMPTOTALABONADO + " AS IMPORTE, " + 
+							 //Tiene que salir el importe por el que se anuló la fac (si hay compensaciones previas no se corresponde con el imp. total abonado)
+							" pgCaja." + FacPagosPorCajaBean.C_IMPORTE + " AS IMPORTE, " +
 							" factura." + FacFacturaBean.C_IDFACTURA + " AS IDFACTURA, " +
 							" '' AS ANULACIONCOMISION, " +
 							" '' AS DEVUELTA, " +
@@ -523,11 +524,15 @@ public class FacPagosPorCajaAdm extends MasterBeanAdministrador {
 							" ) as NOMBREBANCO";			
 		}
 		consulta7 += " FROM " + FacFacturaBean.T_NOMBRETABLA + " factura, " + 
-							FacAbonoBean.T_NOMBRETABLA + " abono " + 
+							FacAbonoBean.T_NOMBRETABLA + " abono, " + 
+							FacPagosPorCajaBean.T_NOMBRETABLA + " pgCaja " + 
 						" WHERE factura." + FacFacturaBean.C_IDINSTITUCION + " = abono." + FacAbonoBean.C_IDINSTITUCION + 
 							" AND factura." + FacFacturaBean.C_IDFACTURA + " = abono." + FacAbonoBean.C_IDFACTURA +  
 							" AND factura." + FacFacturaBean.C_IDINSTITUCION + " = " + idInstitucion + 
-							" AND factura."   + FacFacturaBean.C_IDFACTURA + " IN (" + listaFacturasComision + ") ";   				
+							" AND factura."   + FacFacturaBean.C_IDFACTURA + " IN (" + listaFacturasComision + ") "+
+							" AND pgCaja."+ FacPagosPorCajaBean.C_IDFACTURA+ " = factura."   + FacFacturaBean.C_IDFACTURA+ 
+							" AND pgCaja."+ FacPagosPorCajaBean.C_IDABONO+ " = abono."   + FacAbonoBean.C_IDABONO+ 
+							" AND pgCaja."+ FacPagosPorCajaBean.C_IDINSTITUCION+ " = abono."   + FacFacturaBean.C_IDINSTITUCION;
 		
 		// Obtención anulaciones de comision (si la encuentra siempre es la ultima linea de la factura)
 		String consulta71 = "";    
@@ -616,7 +621,7 @@ public class FacPagosPorCajaAdm extends MasterBeanAdministrador {
 		} else {
 			consultaFinal = "SELECT IDTABLA, TABLA, ESTADO, FECHA, FECHA_ORDEN, IMPORTE, IDFACTURA, ANULACIONCOMISION, DEVUELTA, TARJETA, IDABONO_IDCUENTA, NUMEROABONO, IDPAGO, NOMBREBANCO FROM ( " +
 								consultaFinal +					
-							" ) ORDER BY IDFACTURA ASC, IDTABLA ASC, TO_CHAR(FECHA, 'YYYYMMDD') ASC, FECHA_ORDEN ASC, IDPAGO ASC";						
+							" ) ORDER BY IDFACTURA ASC, IDTABLA ASC, TO_CHAR(FECHA, 'YYYYMMDD') ASC, TO_CHAR(FECHA_ORDEN, 'YYYYMMDD') ASC, IDPAGO ASC";						
 		}
 		
 		return consultaFinal;
