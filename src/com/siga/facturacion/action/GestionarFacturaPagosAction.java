@@ -513,6 +513,11 @@ public class GestionarFacturaPagosAction extends MasterAction {
 				strFacturas = datosFacturas.split("##");
 			}
 			
+			// JPT: Oracle no admite listas de más de mil elementos
+			if (strFacturas.length>1000) {
+				throw new SIGAException("facturacion.consultamorosos.error.renegociarMilFacturas");
+			};			
+			
 			// JPT: Pone las facturas en formato de lista
 			String listaIdsFacturas = "(";
 			for (int i=0; i<strFacturas.length; i++) {

@@ -208,7 +208,7 @@
 				// Rango Fechas (desde / hasta)
 				document.DevolucionesManualesForm.nombreTitular.value=document.getElementById('nombrePersona').value;
 				if (compararFecha (document.DevolucionesManualesForm.fechaCargoDesde, document.DevolucionesManualesForm.fechaCargoHasta) == 1) {
-					mensaje = '<siga:Idioma key="messages.fechas.rangoFechas"/>'
+					mensaje = '<siga:Idioma key="messages.fechas.rangoFechas"/>';
 					alert(mensaje);
 					return false;
 				}
@@ -234,7 +234,7 @@
 			if (window.frames.resultado.document.getElementById("sel")!=null){
 				var dd =  window.frames.resultado.document.getElementsByName("sel");
 				if (dd.type != 'checkbox') {
-					for (i = 0; i < dd.length; i++){
+					for (var i = 0; i < dd.length; i++){
 						dd[i].checked=1;		
 					}	
 				}
@@ -264,6 +264,12 @@
 			document.DevolucionesManualesForm.recibos.value="";
 			
 			var checks =  window.frames.resultado.document.getElementsByName("sel");
+			
+			if (checks.length>1000) {
+				alert ('<siga:Idioma key="facturacion.devolucionManual.error.devolverMilFacturas"/>');
+				return false;
+			}
+			
 			for (var i=0; i<checks.length; i++) {
 				if (checks[i].checked) {
 					var num = i + 1;
@@ -285,7 +291,7 @@
 			}
 
 			if (document.DevolucionesManualesForm.recibos.value=="") {
-				var mensaje2 = '<siga:Idioma key="messages.fact.error.noRecibos"/>'
+				var mensaje2 = '<siga:Idioma key="messages.fact.error.noRecibos"/>';
 				alert(mensaje2);
 				return false;
 				

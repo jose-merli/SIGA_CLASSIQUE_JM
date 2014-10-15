@@ -251,9 +251,9 @@
 		ObjArray = new Array();
 		
 		Array.prototype.indexOf = function(s) {
-		for (var x=0;x<this.length;x++) 
-			if(this[x] == s) return x;
-				return false;
+			for (var x=0;x<this.length;x++) 
+				if(this[x] == s) return x;
+					return false;
 		}
  
 	   
@@ -314,7 +314,7 @@
 						document.forms[0].registrosSeleccionados.value=seleccionados1;
 						var ele = document.getElementsByName("chkPersona");
 							
-						for (i = 0; i < ele.length; i++) {
+						for (var i = 0; i < ele.length; i++) {
 							if(!ele[i].disabled)	
 								ele[i].checked = false; 							
 						}		
@@ -360,7 +360,7 @@
 		function checkTodos() {	
 		 	var ele = document.getElementsByName("chkPersona");
 			var todos=1;	
-		  	for (i = 0; i < ele.length; i++) {
+		  	for (var i = 0; i < ele.length; i++) {
 	   			if(!ele[i].checked){
 	   				todos=0;
 	   				break;
@@ -405,7 +405,7 @@
 			//sub();
 			var datos = "";
 			
-			for (i = 0; i < ObjArray.length; i++) {
+			for (var i = 0; i < ObjArray.length; i++) {
 				var idRegistros = ObjArray[i];
 				index = idRegistros.indexOf('||');
 				
@@ -452,7 +452,7 @@
 	   		sub();
 			
 			datos = "";
-			for (i = 0; i < ObjArray.length; i++) {
+			for (var i = 0; i < ObjArray.length; i++) {
 				var idRegistros = ObjArray[i];
 				index = idRegistros.indexOf('||');
 				//alert("index"+index);
@@ -505,7 +505,7 @@
 		function consultar(fila) {		
 			//Datos del elemento seleccionado:
 				
-			seleccionarFila(fila)			
+			seleccionarFila(fila);			
 				
 			//Submito
 			document.forms[0].modo.value = "consultaMoroso";
@@ -516,9 +516,15 @@
 			window.top.close();
 		}
 		
-		function renegociar() {
+		function renegociar() { 
+			if (ObjArray.length > 1000) {
+				alert ('<siga:Idioma key="facturacion.consultamorosos.error.renegociarMilFacturas"/>');
+				fin();
+				return;
+			}			
+			
 			datos = "";
-			for (i = 0; i < ObjArray.length; i++) {
+			for (var i = 0; i < ObjArray.length; i++) {
 				var idRegistros = ObjArray[i];
 				index = idRegistros.indexOf('||');
 				//alert("index"+index);

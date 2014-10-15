@@ -58,7 +58,6 @@ import com.siga.beans.FacFacturaBean;
 import com.siga.beans.FacFacturaIncluidaEnDisqueteBean;
 import com.siga.beans.FacLineaDevoluDisqBancoAdm;
 import com.siga.beans.FacLineaDevoluDisqBancoBean;
-import com.siga.beans.FacPagosPorCajaAdm;
 import com.siga.facturacion.Facturacion;
 import com.siga.facturacion.form.DevolucionesForm;
 import com.siga.general.MasterAction;
@@ -339,6 +338,11 @@ public class DevolucionesAction extends MasterAction {
 				
 				if (strFacturas.length<1) {
 					throw new SIGAException("Error al no obtener facturas");
+				};
+				
+				// JPT: Oracle no admite listas de más de mil elementos
+				if (strFacturas.length>1000) {
+					throw new SIGAException("facturacion.consultamorosos.error.renegociarMilFacturas");
 				};
 												
 				// JPT: Recorre todas las facturas marcadas y calcula el listado de facturas
