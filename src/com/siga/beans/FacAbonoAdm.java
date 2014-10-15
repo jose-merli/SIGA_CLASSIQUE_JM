@@ -1354,6 +1354,8 @@ public class FacAbonoAdm extends MasterBeanAdministrador {
 					"       " + FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IMPPENDIENTEPORABONAR + " AS IMPORTE," +
 					"       " + FcsPagosJGBean.T_NOMBRETABLA + "." + FcsPagosJGBean.C_IDSUFIJO + " , " +
 					"       " + FcsPagosJGBean.T_NOMBRETABLA + "." + FcsPagosJGBean.C_ABREVIATURA + " as NOMBREPAGO, " +
+					"       NVL(" + FcsPagosJGBean.T_NOMBRETABLA + "." + FcsPagosJGBean.C_IDPROPSEPA + " , '')," +
+					"       NVL(" + FcsPagosJGBean.T_NOMBRETABLA + "." + FcsPagosJGBean.C_IDPROPOTROS + ", '')," +
 					"       " + FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDPERORIGEN + " ";
 							
 			sql = sql +baseSqlAbonosSJCSpendientes;
