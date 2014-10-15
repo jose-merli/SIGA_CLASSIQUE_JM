@@ -1693,7 +1693,8 @@ public class CenColegiadoAdm extends MasterBeanAdmVisible
 			           " WHERE "+CenColegiadoBean.C_IDINSTITUCION+"="+idInstitucion+
 			           "   AND "+CenColegiadoBean.C_IDPERSONA+"="+idPersona;
 									
-			if (rc.findForUpdate(sql)) {
+			
+			if (rc.find(sql)) {
 				Row fila = (Row) rc.get(0);
 				Hashtable datos = fila.getRow();			
 				if (datos.get(CenColegiadoBean.C_NCOLEGIADO).equals("")) {
