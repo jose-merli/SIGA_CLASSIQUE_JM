@@ -100,7 +100,25 @@
 		<service interface="org.redabogacia.sigaservices.app.services.cen.CenPaisService" 				implementation="org.redabogacia.sigaservices.app.services.cen.impl.CenPaisServiceImpl"/>
 		<service interface="org.redabogacia.sigaservices.app.services.cen.MediadoresService" implementation="org.redabogacia.sigaservices.app.services.cen.impl.MediadoresServiceImpl"/>
 		<service interface="org.redabogacia.sigaservices.app.services.scs.DocumentacionDesignaService" 							implementation="org.redabogacia.sigaservices.app.services.scs.impl.DocumentacionDesignaServiceImpl"/>
+		
 		<service interface="org.redabogacia.sigaservices.app.services.cen.CenPoblacionService" 				implementation="org.redabogacia.sigaservices.app.services.cen.impl.CenPoblacionServiceImpl"/>
+		<service interface="org.redabogacia.sigaservices.app.services.caj.CajgRemesaService" 				implementation="org.redabogacia.sigaservices.app.services.caj.impl.CajgRemesaServiceImpl"/>
+		<service interface="org.redabogacia.sigaservices.app.services.caj.CajgEjgRemesaService" 				implementation="org.redabogacia.sigaservices.app.services.caj.impl.CajgEjgRemesaServiceImpl"/>
+		<service interface="org.redabogacia.sigaservices.app.services.caj.CajgRemesaEstadosService" 				implementation="org.redabogacia.sigaservices.app.services.caj.impl.CajgRemesaEstadosServiceImpl"/>
+		<service interface="org.redabogacia.sigaservices.app.services.scs.ScsEjgDesignaService" 				implementation="org.redabogacia.sigaservices.app.services.scs.impl.ScsEjgDesignaServiceImpl"/>
+		<service interface="org.redabogacia.sigaservices.app.services.scs.ScsEstadoEjgService" 				implementation="org.redabogacia.sigaservices.app.services.scs.impl.ScsEstadoEjgServiceImpl"/>
+		<service interface="org.redabogacia.sigaservices.app.services.scs.ScsUnidadFamiliarService" 				implementation="org.redabogacia.sigaservices.app.services.scs.impl.ScsUnidadFamiliarServiceImpl"/>
+		<service interface="org.redabogacia.sigaservices.app.services.scs.ScsContrariosEJGService" 				implementation="org.redabogacia.sigaservices.app.services.scs.impl.ScsContrariosEJGServiceImpl"/>
+		<service interface="org.redabogacia.sigaservices.app.services.cen.CenColegiadoService" 				implementation="org.redabogacia.sigaservices.app.services.cen.impl.CenColegiadoServiceImpl"/>
+		<service interface="org.redabogacia.sigaservices.app.services.cen.CenProvinciaService" 				implementation="org.redabogacia.sigaservices.app.services.cen.impl.CenProvinciaServiceImpl"/>
+		
+		<service interface="org.redabogacia.sigaservices.app.services.scs.ScsDesignaProcuradorService" 				implementation="org.redabogacia.sigaservices.app.services.scs.impl.ScsDesignaProcuradorServiceImpl"/>
+		
+		
+		
+		
+		
+		
 	
 		
 	</context>
