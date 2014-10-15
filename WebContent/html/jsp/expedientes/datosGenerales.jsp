@@ -988,7 +988,7 @@
 			document.ExpDatosGeneralesForm.accion.value="nuevo";
 			
 			if (document.ExpDatosGeneralesForm.relacionExpediente.value != ""){
-				document.forms[1].action = "<%=app%>/EXP_AuditoriaExpedientes.do?noReset=true&idInst=<%=idinstitucion_tipoexpediente%>&nombreTipo=<%=form.getTipoExpediente()%>"+"&idTipo="+rel+"&idNombreTipo="+nombrerel+"&numExp="+numExpediente+"&anioExp="+anioExpediente+"&tipoExpAnt="+tioExpedienteAnt;
+				document.forms[1].action = "<%=app%>/EXP_AuditoriaExpedientes.do?noReset=true&idInst=<%=idinstitucion_tipoexpediente%>&nombreTipo=<%=UtilidadesString.cambiarDoblesComillas(form.getTipoExpediente())%>"+"&idTipo="+rel+"&idNombreTipo="+nombrerel+"&numExp="+numExpediente+"&anioExp="+anioExpediente+"&tipoExpAnt="+tioExpedienteAnt;
 				document.forms[1].modo.value="nuevoCopia";
 				document.forms[1].copia.value="s";					
 				document.forms[1].avanzada.value="<%=ClsConstants.DB_FALSE%>";
