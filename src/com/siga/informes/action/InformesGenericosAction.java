@@ -473,8 +473,12 @@ public class InformesGenericosAction extends MasterAction {
 						doc=words.sustituyeRegionDocumento(doc,"Region",datosconsulta);
 						doc = words.sustituyeDocumento(doc,datoscomunes);
 					}
+					String identificador=idintitucionactual+"_"+idTipoEJG+"_"+numero;
+					if(b.getTipoformato()!=null && b.getTipoformato().equals("P"))
+						identificador= identificador + ".pdf";
+					else
+						identificador = identificador + ".doc";
 					
-					String identificador=idintitucionactual+"_"+idTipoEJG+"_"+numero+".doc";
 					File archivo = words.grabaDocumento(doc,rutaAlm,b.getNombreSalida()+"_"+identificador);
 					informesRes.add(archivo);
 				}			
@@ -639,8 +643,14 @@ public class InformesGenericosAction extends MasterAction {
 											
 
 											String idinstitucion = ""+this.getIDInstitucion(request);
-
-											String identificador=idinstitucion+"_"+idTipoSOJ+"_"+numero+"_"+i+"_"+z+".doc";
+											
+											String identificador=idinstitucion+"_"+idTipoSOJ+"_"+numero+"_"+i+"_"+z;
+											if(beanInforme.getTipoformato()!=null && beanInforme.getTipoformato().equals("P"))
+												identificador= identificador + ".pdf";
+											else
+												identificador = identificador + ".doc";
+											
+											
 											File archivo = words.grabaDocumento(doc,rutaAlm,beanInforme.getNombreSalida()+"_"+identificador);
 											informesRes.add(archivo);
 

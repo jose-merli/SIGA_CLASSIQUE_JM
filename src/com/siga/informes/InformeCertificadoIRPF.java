@@ -241,10 +241,15 @@ public class InformeCertificadoIRPF extends MasterReport
 		// Si solo hay una persona ponemos el idpersona en el titulo
 		boolean isPersonaUnica = idPersona != null;
 		if (isPersonaUnica) {
-			identificador = idInstitucion + "_" + idPersona + "_" + periodo + "_" + anyoInformeIRPF + ".doc";
+			identificador = idInstitucion + "_" + idPersona + "_" + periodo + "_" + anyoInformeIRPF ;
 		} else {
-			identificador = idInstitucion + "_" + periodo + "_" + anyoInformeIRPF + ".doc";
+			identificador = idInstitucion + "_" + periodo + "_" + anyoInformeIRPF;
 		}
+		
+		if(beanInforme.getTipoformato()!=null && beanInforme.getTipoformato().equals("P"))
+			identificador= identificador + ".pdf";
+		else
+			identificador = identificador + ".doc";
 
 		Hashtable htRowDatosInforme = null;
 		for (int i = 0; i < vDatosInforme.size(); i++) {
