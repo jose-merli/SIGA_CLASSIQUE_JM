@@ -59,12 +59,12 @@
 		
 		// Asociada al boton Guardar y Cerrar
 		function accionGuardarCerrar(){ 
-			var ultimaFechaPagosFacturas = "<%=ultimaFechaPagosFacturas%>";
+			/*var ultimaFechaPagosFacturas = "<%=ultimaFechaPagosFacturas%>";
 			if (compararFecha (document.DevolucionesManualesForm.fechaDevolucion, ultimaFechaPagosFacturas) > 1) {
 				var mensaje = '<siga:Idioma key="facturacion.devolucionManual.error.fecha"/> ' + ultimaFechaPagosFacturas;
 				alert(mensaje);
 				return 0;
-			}						
+			}*/						
 			
 			if (validateDevolucionesManualesForm(document.DevolucionesManualesForm)){
 				document.forms[0].modo.value="insertar";

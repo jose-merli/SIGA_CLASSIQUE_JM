@@ -247,7 +247,7 @@ public class DevolucionesManualesAction extends MasterAction{
 					}				
 			    }
 				
-			} else 	if (retornoDevolucionManual.equals("5404")) {
+			} else 	if (retornoDevolucionManual[0].equals("5404")) {
 				throw new SIGAException("facturacion.devolucionManual.error.fechaDevolucion");
 								
 			} else  {
