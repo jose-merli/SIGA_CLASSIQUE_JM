@@ -174,11 +174,11 @@
 			String fax2 =UtilidadesString.mostrarDatoJSP((String) (direccion.get(EnvDestinatariosBean.C_FAX2)));
 			String correoElectronico =UtilidadesString.mostrarDatoJSP((String) (direccion.get(EnvDestinatariosBean.C_CORREOELECTRONICO)));
 
-			String idPais = UtilidadesString.mostrarDatoJSP((String) (direccion.get(EnvDestinatariosBean.C_IDPAIS)));
-			String idProvincia = UtilidadesString.mostrarDatoJSP((String) (direccion.get(EnvDestinatariosBean.C_IDPROVINCIA)));
-			String idPoblacion = UtilidadesString.mostrarDatoJSP((String) (direccion.get(EnvDestinatariosBean.C_IDPOBLACION)));
+			String idPais = (String) (direccion.get(EnvDestinatariosBean.C_IDPAIS));
+			String idProvincia = (String) (direccion.get(EnvDestinatariosBean.C_IDPROVINCIA));
+			String idPoblacion = (String) (direccion.get(EnvDestinatariosBean.C_IDPOBLACION));
 			
-			String idDireccion = UtilidadesString.mostrarDatoJSP((String) (direccion.get(CenDireccionesBean.C_IDDIRECCION)));
+			String idDireccion = (String) (direccion.get(CenDireccionesBean.C_IDDIRECCION));
 			String telefono1   = UtilidadesString.mostrarDatoJSP((String) (direccion.get(CenDireccionesBean.C_TELEFONO1)));
 			String movil       = UtilidadesString.mostrarDatoJSP((String) (direccion.get(CenDireccionesBean.C_MOVIL)));
 

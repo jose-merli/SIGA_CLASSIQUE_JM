@@ -258,7 +258,7 @@ public class DestinatarioManualAction extends MasterAction {
 			    destinatario.setMovil(form.getMovil());
 			    destinatario.setIdPoblacion(form.getIdPoblacion());			    
 		        destinatario.setIdProvincia(form.getIdProvincia());
-			    destinatario.setIdPais(form.getIdPais());
+			    destinatario.setIdPais(form.getIdPais().trim());
 			    if (destinatario.getIdPais()==null || destinatario.getIdPais().equals("")) 
 			    	destinatario.setIdPais(ClsConstants.ID_PAIS_ESPANA);
 
