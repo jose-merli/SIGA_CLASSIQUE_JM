@@ -4456,7 +4456,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 		}
 	}
 
-	public Vector getDatosInformeEjg (String idInstitucion, String tipoEjg, String anioEjg, String numeroEjg, boolean isSolicitantes,boolean isAcontrarios, String idDestinatario,String tipoDestinatario,boolean generarInformeSinDireccion, String tipoDestinatarioInforme, boolean agregarEtiqDesigna) throws ClsExceptions {	 
+	public Vector getDatosInformeEjg (String idInstitucion, String tipoEjg, String anioEjg, String numeroEjg, boolean isSolicitantes,boolean isAcontrarios, String idDestinatario,String tipoDestinatario,boolean generarInformeSinDireccion, String tipoDestinatarioInforme, boolean agregarEtiqDesigna) throws ClsExceptions, SIGAException {	 
 		Vector vSalida = null;		
 		Hashtable htFuncion = new Hashtable();
 		HelperInformesAdm helperInformes = new HelperInformesAdm();
@@ -5308,8 +5308,10 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 				}
 
 			}//fin del for.
-		}
-		catch (Exception e) {
+			
+		} catch (SIGAException se) {
+			throw se;			
+		} catch (Exception e) {
 			throw new ClsExceptions (e, "Error al obtener la informacion en getDatosInformeEjg");
 		}
 		if(vSalida!=null && vSalida.size()>0){
@@ -5321,7 +5323,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 
 		return vSalida;
 	}
-	private void actualizarDefendidos(String idInstitucion,String tipoEjg,String anioEjg,String numeroEjg,String idPersonaJG,Vector vDefendidos, String idioma, String idiomaInforme, Hashtable registro) throws ClsExceptions{
+	private void actualizarDefendidos(String idInstitucion,String tipoEjg,String anioEjg,String numeroEjg,String idPersonaJG,Vector vDefendidos, String idioma, String idiomaInforme, Hashtable registro) throws ClsExceptions, SIGAException{
 
 		if(vDefendidos!=null && vDefendidos.size()>0){
 			for (int k = 0; k < vDefendidos.size(); k++) {
@@ -5628,7 +5630,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 	}
 
 	public Hashtable getregistrodatosEjg(String idInstitucion, String tipoEjg,
-		String anioEjg, String numeroEjg,String idioma,String idPersonaJG, Hashtable registro, boolean agregarEtiqDesigna) throws ClsExceptions {
+		String anioEjg, String numeroEjg,String idioma,String idPersonaJG, Hashtable registro, boolean agregarEtiqDesigna) throws ClsExceptions, SIGAException {
 	
 		Hashtable vsalida=new Hashtable();		
 		Hashtable htFuncion = new Hashtable();
@@ -6536,6 +6538,9 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			}				
 			//registro.put("PARRAFO_PROCURADOR", parrafoProcurador);								
 			registro.put("PARRAFO_LETRADO_PROCURADOR", parrafoLetrado+"\r"+parrafoProcurador);
+			
+		} catch (SIGAException se) {
+			throw se;
 			
 		}catch (Exception e) {
 			throw new ClsExceptions (e, "Error al obtener la informacion en getregistrodatosEjg");

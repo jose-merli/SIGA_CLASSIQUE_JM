@@ -538,7 +538,7 @@ public class ScsUnidadFamiliarEJGAdm extends MasterBeanAdministrador {
 	 * Se ha creado para recuperar los datos postales en caso de ser destinatario de un EJG
 	 */
 	public Vector getDatosInteresadoEjg(String idInstitucion, String tipoEjg,
-			String anio, String numero,String idioma, String idPersonaJG) throws ClsExceptions  
+			String anio, String numero,String idioma, String idPersonaJG) throws Exception  
 	{
 		try {
 			Hashtable htCodigos = new Hashtable();
@@ -609,9 +609,11 @@ public class ScsUnidadFamiliarEJGAdm extends MasterBeanAdministrador {
 			HelperInformesAdm helperInformes = new HelperInformesAdm();	
 			return helperInformes.ejecutaConsultaBind(sql.toString(), htCodigos);
 			
-		}
-		catch (Exception e) {
-			throw new ClsExceptions (e, "Error ScsEJGAdm.getInteresadosEjgSalida.");
+		} catch (ClsExceptions e) {
+			throw new SIGAException("No se ha podido generar la plantilla por no existir solicitante");
+		
+		} catch (Exception e) {
+			throw new Exception ("Error ScsEJGAdm.getInteresadosEjgSalida.");
 		}
 	}
 	public Vector getSolicitantesEjg(Integer idInstitucion, Integer idTipoEJG, Integer anio, Integer numero) throws ClsExceptions,SIGAException {
