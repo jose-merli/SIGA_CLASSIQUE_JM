@@ -539,7 +539,7 @@ public class DefinirMantenimientoEJGAction extends MasterAction
 					ScsProcuradorAdm procuradorAdm = new ScsProcuradorAdm(usr);
 					ScsDesignasProcuradorAdm designasProcuradorAdm = new ScsDesignasProcuradorAdm(usr);
 					Vector designasProcuradorRelacionadas = procuradorAdm.getProcuradoresRelacionadosPorDesigna (idInstitucionSJCS, miForm.getIdTipoEJG(), miForm.getAnio(), miForm.getNumero());
-					designasProcuradorAdm.actualizarProcuradoresDesignas(designasProcuradorRelacionadas,miForm.getIdProcurador(),miForm.getIdInstitucionProcurador());
+					designasProcuradorAdm.actualizarProcuradoresDesignas(designasProcuradorRelacionadas,miForm.getIdProcurador(),miForm.getIdInstitucionProcurador(),miForm.getNumeroDesignaProc());
 				}
 				
 			}

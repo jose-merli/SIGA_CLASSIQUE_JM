@@ -477,6 +477,8 @@ public class ScsProcuradorAdm extends MasterBeanAdministrador {
 			select += " , d."+ScsDesignaBean.C_IDTURNO;
 			select += " , d."+ScsDesignaBean.C_IDINSTITUCION;
 			select += " , d."+ScsDesignaBean.C_CODIGO;
+			select += " , p."+ScsProcuradorBean.C_IDINSTITUCION +" IDINSTITUCION_PROC";
+			select += " , p."+ScsProcuradorBean.C_IDPROCURADOR;			
 			
 			//FROM
 			select += " FROM "+ ScsProcuradorBean.T_NOMBRETABLA+" p ";
