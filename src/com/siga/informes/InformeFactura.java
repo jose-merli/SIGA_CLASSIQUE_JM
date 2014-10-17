@@ -353,9 +353,11 @@ public class InformeFactura extends MasterReport {
 				//Fichero de log
 				String nombreFichero = "LOG_COMPRARAPIDA_FAC_"+ institucion+"_"+idserieidprogramacion+".log.xls"; 
 				SIGALogging	log = new SIGALogging(rutaAlmacen+ClsConstants.FILE_SEP+nombreFichero);
+				//No se tiene que generar el fichero .xls de log, sino que hay que mostrar un mensaje en la ventana con el mensaje
+				boolean generarLog=false;
 				
 				Facturacion facturacion = new Facturacion(usrbean);
-				facturacion.generaryEnviarProgramacionFactura (request, usrbean, Integer.parseInt(institucion), Long.valueOf(ht.get(FacFacturaBean.C_IDSERIEFACTURACION).toString()),Long.valueOf(ht.get(FacFacturaBean.C_IDPROGRAMACION).toString()), false, log, null);
+				facturacion.generaryEnviarProgramacionFactura (request, usrbean, Integer.parseInt(institucion), Long.valueOf(ht.get(FacFacturaBean.C_IDSERIEFACTURACION).toString()),Long.valueOf(ht.get(FacFacturaBean.C_IDPROGRAMACION).toString()), false, log, null,generarLog);
 				ClsLogging.writeFileLog("DESPUES DE GENERAR EL INFORME EN  "+rutaAlmacen,10);			
     		} else {
     			ClsLogging.writeFileLog("SE DEVUELVE EL ZIP PREVIAMENTE GENERADO EN CONFIRMACION",10);

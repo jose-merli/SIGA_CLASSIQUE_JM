@@ -1186,7 +1186,8 @@ public class Facturacion {
 			//////////// TRANSACCION ////////////////
 	
 			//////////// ALMACENAR RAPIDA ////////////////
-			int errorAlmacenar = this.generaryEnviarProgramacionFactura(req,this.usrbean,beanP.getIdInstitucion(),Long.valueOf(idSerieFacturacion), Long.valueOf(idProgramacion),isGenerarEnvio,log,tx);
+			boolean generarLog=true; //En facturaciones rápidas, en compra de PYS no hay que generar el excel con el log
+			int errorAlmacenar = this.generaryEnviarProgramacionFactura(req,this.usrbean,beanP.getIdInstitucion(),Long.valueOf(idSerieFacturacion), Long.valueOf(idProgramacion),isGenerarEnvio,log,tx,generarLog);
 			
 			switch (errorAlmacenar) {
 				case 0:
@@ -1347,6 +1348,7 @@ public class Facturacion {
 	 * @param usuario - identificador del usuario
 	 * @param bGenerarEnvios: indica si se enviaran de forma automatica las facturas
 	 * @param log Clase de log para mensajes
+	 * @param generarLog 
 	 * @return int - Devuelve: - 0 si todo está correcto.
 	 * 						   - 1 si ha existido un error en el procesado de la factura.
 	 * 						   - 2 si ha existido un error en el procesado del envío. 
@@ -1354,7 +1356,7 @@ public class Facturacion {
 	 * @throws SIGAException
 	 */
 	public int generaryEnviarProgramacionFactura (HttpServletRequest request, UsrBean userbean, Integer institucion, Long serieFacturacion, 
-			              Long idProgramacion, boolean bGenerarEnvios, SIGALogging log,UserTransaction tx)  throws ClsExceptions,SIGAException {
+			              Long idProgramacion, boolean bGenerarEnvios, SIGALogging log,UserTransaction tx, boolean generarLog)  throws ClsExceptions,SIGAException {
 
 		
 		Vector facturas=new Vector();
@@ -1486,7 +1488,7 @@ public class Facturacion {
 
 	    				if (filePDF==null) {
 	    					correcto = false;
-	    				    throw new ClsExceptions("Error al generar la factura. Fichero devuelto es nulo.");				
+	    				    throw new ClsExceptions("message.facturacion.error.fichero.nulo");				
 	    				} else {
 	    					correcto = true;
 	    				}
@@ -1499,8 +1501,14 @@ public class Facturacion {
     					ClsLogging.writeFileLog("ALMACENAR "+idFactura+" >> ERROR EN PROCESO DE FOP A PDF: "+ee.getLiteral(userbean.getLanguage()),10);
 	    				
 	    				// ESCRIBO EN EL LOG
-						log.writeLogFactura("PDF",idPersona,numFactura,"Error en el proceso de generación de facturas PDF: "+ee.getLiteral(userbean.getLanguage()));
-	    	    		salida=1;
+						
+    					if(generarLog)
+    						log.writeLogFactura("PDF",idPersona,numFactura,"Error en el proceso de generación de facturas PDF: "+ee.getLiteral(userbean.getLanguage()));
+    					else{
+    						String msj=UtilidadesString.getMensajeIdioma(userbean.getLanguage(), "message.facturacion.error.generacion.factura.pdf")+ee.getLiteral(userbean.getLanguage());
+    						throw new SIGAException(msj);
+    					}
+    					salida=1;
 	    	    		//Aunque nos ha fallado esta factura es posible que la siguiente, no.
 	    	    		//POR LO TANTO no cazamos la excepcion
 	    	    		//throw ee;
@@ -1511,8 +1519,13 @@ public class Facturacion {
 	    				ClsLogging.writeFileLog("ALMACENAR "+idFactura+" >> ERROR EN PROCESO DE FOP A PDF: "+ee.toString(),10);
 	    				
 	    				// ESCRIBO EN EL LOG
-						log.writeLogFactura("PDF",idPersona,numFactura,"Error en el proceso de generación de facturas PDF: "+ee.toString());
-	    	    		salida=1;
+						if(generarLog)
+							log.writeLogFactura("PDF",idPersona,numFactura,"message.facturacion.error.generacion.factura.pdf"+ee.toString());
+						else{
+							String msj=UtilidadesString.getMensajeIdioma(userbean.getLanguage(),"message.facturacion.error.generacion.factura.pdf")+ee.toString();
+							throw new SIGAException(msj);
+						}
+						salida=1;
 	    	    		//Aunque nos ha fallado esta factura es posible que la siguiente, no.
 	    	    		//POR LO TANTO no cazamos la excepcion
 	    	    		//throw ee;
@@ -1600,7 +1613,12 @@ public class Facturacion {
 	    		    		
 		    				ClsLogging.writeFileLog("ALMACENAR "+idFactura+" >> ERROR EN PROCESO DE ENVIO: "+eee.getLiteral(userbean.getLanguage()),10);
 	    		    		// ESCRIBO EN EL LOG
-	    					log.writeLogFactura("ENVIO",idPersona,numFactura,"Error en el proceso de envío de facturas: "+eee.getLiteral(userbean.getLanguage()));
+	    					if(generarLog)
+	    						log.writeLogFactura("ENVIO",idPersona,numFactura,"message.facturacion.error.envio.factura"+eee.getLiteral(userbean.getLanguage()));
+	    					else{
+	    						String msj=UtilidadesString.getMensajeIdioma(userbean.getLanguage(),"message.facturacion.error.envio.factura")+eee.getLiteral(userbean.getLanguage());
+	    						throw new SIGAException(msj);
+	    					}
 	    					salida=2;
 	    					//Aunque nos ha fallado esta factura es posible que la siguiente, no.
 		    	    		//POR LO TANTO no cazamos la excepcion
@@ -1611,7 +1629,12 @@ public class Facturacion {
 	    		    		
 		    				ClsLogging.writeFileLog("ALMACENAR "+idFactura+" >> ERROR EN PROCESO DE ENVIO: "+eee.toString(),10);
 	    		    		// ESCRIBO EN EL LOG
-	    					log.writeLogFactura("ENVIO",idPersona,numFactura,"Error en el proceso de envío de facturas: "+eee.toString());
+	    					if(generarLog)
+	    						log.writeLogFactura("ENVIO",idPersona,numFactura,"message.facturacion.error.envio.factura"+eee.toString());
+	    					else{
+	    						String msj=UtilidadesString.getMensajeIdioma(userbean.getLanguage(),"message.facturacion.error.envio.factura")+eee.toString();
+	    						throw new SIGAException(msj);
+	    					}
 	    					salida=2;
 	    					//Aunque nos ha fallado esta factura es posible que la siguiente, no.
 		    	    		//POR LO TANTO no cazamos la excepcion
@@ -1624,6 +1647,8 @@ public class Facturacion {
 	    				tx.commit();
 	    			}
 
+    			}catch (SIGAException se){
+    				throw se;
     			} catch (Exception tot) {
     				ClsLogging.writeFileLog("ALMACENAR "+idFactura+" >> CATCH GENERAL",10);
     				if (tx!=null) {
@@ -1688,7 +1713,7 @@ public class Facturacion {
 					//Si la previsión está vacía
 					if(fichPrev==null || fichPrev.size()==0) {
 						ClsLogging.writeFileLog("### Error al generar el informe de la confirmacion. Inicio creación fichero log CONFIRMACION sin datos",7);
-						throw new ClsExceptions("Error al generar el informe de la confirmacion. Fichero devuelto es nulo.");
+						throw new ClsExceptions("message.facturacion.error.fichero.nulo");
 					
 					} 
 				}	
@@ -1704,8 +1729,10 @@ public class Facturacion {
 			ClsLogging.writeFileLog("ALMACENAR >> ERROR GENERAL EN LA FUNCION ALMACENAR: "+e.getLiteral(userbean.getLanguage()),10);
 
 			// ESCRIBO EN EL LOG un mensaje general con la descripcion de la excepcion
-			log.writeLogFactura("PDF/ENVIO","N/A","N/A","Error general en el proceso de generación/envío de facturas PDF: "+e.getLiteral(userbean.getLanguage()));
-
+			if(generarLog)
+				log.writeLogFactura("PDF/ENVIO","N/A","N/A","message.facturacion.error.generacion.envio.factura"+e.getLiteral(userbean.getLanguage()));
+			else
+				throw e;
 			
 			if (ficFOP!=null && ficFOP.exists()){
 				ficFOP.delete();
@@ -1718,9 +1745,13 @@ public class Facturacion {
 			ClsLogging.writeFileLog("ALMACENAR >> ERROR GENERAL EN LA FUNCION ALMACENAR: "+e.toString(),10);
 
 			// ESCRIBO EN EL LOG un mensaje general con la descripcion de la excepcion
-			log.writeLogFactura("PDF/ENVIO","N/A","N/A","Error general en el proceso de generación/envío de facturas PDF: "+e.toString());
-
+			if(generarLog)
+				log.writeLogFactura("PDF/ENVIO","N/A","N/A","message.facturacion.error.generacion.envio.factura"+e.toString());
+			else{
+				String msj=UtilidadesString.getMensajeIdioma(userbean.getLanguage(),"message.facturacion.error.generacion.envio.factura")+e.toString();
+				throw new SIGAException(msj);
 			
+			}
 			if (ficFOP!=null && ficFOP.exists()){
 				ficFOP.delete();
 			}

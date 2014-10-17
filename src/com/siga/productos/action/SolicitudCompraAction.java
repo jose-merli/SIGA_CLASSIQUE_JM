@@ -1692,7 +1692,8 @@ public class SolicitudCompraAction extends MasterAction{
 			salida = "descarga";
 				
 		} catch (SIGAException es) {
-			throwExcp (es.getLiteral(), new String[] {"modulo.censo"}, es, tx);
+			//throwExcp (es.getLiteral(), new String[] {"modulo.censo"}, es, tx);
+			throw es;
 		} catch (ArrayIndexOutOfBoundsException e){
 			throwExcp("messages.facturacionRapida.error.Array",new String[] {"modulo.certificados"},e,tx);
 		} catch (ClsExceptions es) {
@@ -1764,8 +1765,9 @@ public class SolicitudCompraAction extends MasterAction{
 			// llamada con peticion
 			salida=facturacionRapidaPeticionInterna(mapping,formulario,request,response);
 			
-		} 
-		catch (Exception e) { 
+		} catch (SIGAException se){
+			throw se;
+		}catch (Exception e) { 
 			throwExcp("messages.general.error",new String[] {"modulo.certificados"},e,tx); 
 		}
 		return salida;
