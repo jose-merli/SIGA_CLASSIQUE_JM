@@ -3726,6 +3726,7 @@ function submitConTeclaEnter() {
 	if (keycode == 13) {
 		if(checkSubmit()){
 			buscar();
+			statSend = false;
 		}
 	}
 }
