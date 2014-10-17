@@ -158,6 +158,7 @@ function habilitarCampos(isHabilitar) {
 								document.getElementById("swift").value=bic;
 								document.getElementById("swift").readOnly = true;
 								document.getElementById("swift").className = "boxConsulta";
+								document.MutualidadForm.cboCodigo.value = iban.substring(4,8);
 							
 							} else {
 								alert(mensaje);
