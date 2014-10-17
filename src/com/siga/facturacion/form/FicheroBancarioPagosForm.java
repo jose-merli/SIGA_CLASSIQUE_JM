@@ -19,7 +19,7 @@ import com.siga.general.MasterForm;
  */
 public class FicheroBancarioPagosForm extends MasterForm{
 	
-	private String fechaEntrega="", fechaUnica="", fechaFRST="", fechaRCUR="", fechaCOR1="", fechaB2B="", idDisqueteCargo="", nombreFichero="", fechaTipoUnica="";
+	private String fechaEntrega="", fechaFRST="", fechaRCUR="", fechaCOR1="", fechaB2B="", idDisqueteCargo="", nombreFichero="";
 
 	private String fechaCargo = "";
 	private String idInstitucion;
@@ -36,12 +36,6 @@ public class FicheroBancarioPagosForm extends MasterForm{
 	private String origen;
 	private String idSerieFacturacion;
 	
-	public String getFechaTipoUnica() {
-		return fechaTipoUnica;
-	}
-	public void setFechaTipoUnica(String fechaTipoUnica) {
-		this.fechaTipoUnica = fechaTipoUnica;
-	}
 	public String getIdDisqueteCargo() {
 		return idDisqueteCargo;
 	}
@@ -62,12 +56,6 @@ public class FicheroBancarioPagosForm extends MasterForm{
 	}
 	public void setFechaEntrega(String fechaEntrega) {
 		this.fechaEntrega = fechaEntrega;
-	}
-	public String getFechaUnica() {
-		return fechaUnica;
-	}
-	public void setFechaUnica(String fechaUnica) {
-		this.fechaUnica = fechaUnica;
 	}
 	public void setFechaFRST(String fechaFRST) {
 		this.fechaFRST = fechaFRST;

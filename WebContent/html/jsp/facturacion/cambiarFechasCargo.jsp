@@ -62,21 +62,17 @@
 			
 			if(validarFechasSEPA()){
 				document.ficheroBancarioPagosForm.fechaEntrega.value = jQuery("#fechaPresentacion").val();
-				
-				if (jQuery("input[name='radioAccion']:checked").val() == "0") { //Checkeado Unica
-					document.ficheroBancarioPagosForm.fechaTipoUnica.value = "1";
-					document.ficheroBancarioPagosForm.fechaUnica.value = jQuery("#fechaCargoUnica").val();	
-				} else {
-					document.ficheroBancarioPagosForm.fechaTipoUnica.value = "0";
-					document.ficheroBancarioPagosForm.fechaFRST.value = jQuery("#fechaRecibosPrimeros").val();
-					document.ficheroBancarioPagosForm.fechaRCUR.value = jQuery("#fechaRecibosRecurrentes").val();
-					document.ficheroBancarioPagosForm.fechaCOR1.value = jQuery("#fechaRecibosCOR1").val();
-					document.ficheroBancarioPagosForm.fechaB2B.value = jQuery("#fechaRecibosB2B").val();	
-				}
+				document.ficheroBancarioPagosForm.fechaFRST.value = jQuery("#fechaRecibosPrimeros").val();
+				document.ficheroBancarioPagosForm.fechaRCUR.value = jQuery("#fechaRecibosRecurrentes").val();
+				document.ficheroBancarioPagosForm.fechaCOR1.value = jQuery("#fechaRecibosCOR1").val();
+				document.ficheroBancarioPagosForm.fechaB2B.value = jQuery("#fechaRecibosB2B").val();	
 				
 				document.ficheroBancarioPagosForm.modo.value = "cambiarFechasFichero";
 				document.ficheroBancarioPagosForm.target = 'submitArea';
 				document.ficheroBancarioPagosForm.submit();
+				
+			} else {
+				fin();				
 			}			
 		}			
 		
@@ -107,23 +103,15 @@
 		<html:hidden name="ficheroBancarioPagosForm" property="idDisqueteCargo" value="<%=idDisqueteCargo%>"/>
 		<html:hidden name="ficheroBancarioPagosForm" property="nombreFichero" value="<%=nombreFichero%>"/>
 		<html:hidden name="ficheroBancarioPagosForm" property="fechaEntrega" value=""/>
-		<html:hidden name="ficheroBancarioPagosForm" property="fechaUnica" value=""/>
 		<html:hidden name="ficheroBancarioPagosForm" property="fechaFRST" value=""/>
 		<html:hidden name="ficheroBancarioPagosForm" property="fechaRCUR" value=""/>
 		<html:hidden name="ficheroBancarioPagosForm" property="fechaCOR1" value=""/>
 		<html:hidden name="ficheroBancarioPagosForm" property="fechaB2B" value=""/>
-		<html:hidden name="ficheroBancarioPagosForm" property="fechaTipoUnica" value=""/>
 		<html:hidden name="ficheroBancarioPagosForm" property="modo" value=""/>
 	
 		<!-- INICIO: CAMPOS -->
 		<siga:ConjCampos leyenda="Fechas" >
-			<table class="tablaCampos" align="center" border="0" cellspacing="0" cellpadding="0">	
-				<tr>
-					<td class="labelText" >
-						<%@ include file="/html/jsp/facturacion/fechasFicheroBancario.jsp"%>
-					</td>
-				</tr>	
-			</table>
+			<%@ include file="/html/jsp/facturacion/fechasFicheroBancario.jsp"%>
 		</siga:ConjCampos>
 	</html:form>
 			

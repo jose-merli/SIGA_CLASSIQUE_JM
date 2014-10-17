@@ -338,24 +338,19 @@ public class FicheroBancarioPagosAction extends MasterAction{
 			FicheroBancarioPagosForm form = (FicheroBancarioPagosForm)formulario;
 			String fechaEntrega = form.getFechaEntrega();
 			
-			String fechaUnica="", fechaRecibosPrimeros="", fechaRecibosRecurrentes="", fechaRecibosCOR1="", fechaRecibosB2B="";
-			if (form.getFechaTipoUnica().equals("1")) {
-				fechaUnica = form.getFechaUnica();
-			} else { 
-				fechaRecibosPrimeros = form.getFechaFRST();
-				fechaRecibosRecurrentes = form.getFechaRCUR();
-				fechaRecibosCOR1 = form.getFechaCOR1();
-				fechaRecibosB2B = form.getFechaB2B();
-			}			
+			String fechaRecibosPrimeros = form.getFechaFRST();
+			String fechaRecibosRecurrentes = form.getFechaRCUR();
+			String fechaRecibosCOR1 = form.getFechaCOR1();
+			String fechaRecibosB2B = form.getFechaB2B();
 			
 			// Controlar que las fechas cumplen los dias habiles introducidos en parametros generales
-			FacDisqueteCargosAdm adm = new FacDisqueteCargosAdm(this.getUserBean(request));	
-			if (!adm.controlarFechasFicheroBancario(idInstitucion, fechaEntrega, fechaUnica, fechaRecibosPrimeros, fechaRecibosRecurrentes, fechaRecibosCOR1, fechaRecibosB2B, form.getFechaTipoUnica(), null)) {
+			FacDisqueteCargosAdm adm = new FacDisqueteCargosAdm(usr);	
+			if (!adm.controlarFechasFicheroBancario(idInstitucion, fechaEntrega, fechaRecibosPrimeros, fechaRecibosRecurrentes, fechaRecibosCOR1, fechaRecibosB2B, null)) {
 				throw new SIGAException("facturacion.ficheroBancarioPagos.errorMandatos.mensajeFechas");
 			}				
 			
 			// Se envían a banco para su renegociación
-			Object[] param_in_banco = new Object[12];
+			Object[] param_in_banco = new Object[11];
 			param_in_banco[0] = idInstitucion;
 			param_in_banco[1] = "";
 			param_in_banco[2] = "";
@@ -369,14 +364,6 @@ public class FicheroBancarioPagosAction extends MasterAction{
 			}
 			param_in_banco[3] = fechaEntrega;		
 			
-			if (fechaUnica != null && !fechaUnica.equals("") && fechaUnica.length()==10) {
-				try { 
-					fechaUnica = fechaUnica.substring(6,10) + fechaUnica.substring(3,5) + fechaUnica.substring(0,2); // AAAAMMDD 
-				} catch (Exception e){
-					fechaUnica = "";
-				}
-			}
-			param_in_banco[4] = fechaUnica;			
 			
 			if (fechaRecibosPrimeros != null && !fechaRecibosPrimeros.equals("") && fechaRecibosPrimeros.length()==10) {
 				try { 
@@ -385,7 +372,7 @@ public class FicheroBancarioPagosAction extends MasterAction{
 					fechaRecibosPrimeros = "";
 				}		
 			}
-			param_in_banco[5] = fechaRecibosPrimeros;
+			param_in_banco[4] = fechaRecibosPrimeros;
 			
 			if (fechaRecibosRecurrentes != null && !fechaRecibosRecurrentes.equals("") && fechaRecibosRecurrentes.length()==10) {
 				try { 
@@ -394,7 +381,7 @@ public class FicheroBancarioPagosAction extends MasterAction{
 					fechaRecibosRecurrentes = "";
 				}
 			}
-			param_in_banco[6] = fechaRecibosRecurrentes;
+			param_in_banco[5] = fechaRecibosRecurrentes;
 			
 			if (fechaRecibosCOR1 != null && !fechaRecibosCOR1.equals("") && fechaRecibosCOR1.length()==10) {
 				try { 
@@ -403,7 +390,7 @@ public class FicheroBancarioPagosAction extends MasterAction{
 					fechaRecibosCOR1 = "";
 				}	
 			}
-			param_in_banco[7] = fechaRecibosCOR1;
+			param_in_banco[6] = fechaRecibosCOR1;
 			
 			if (fechaRecibosB2B != null && !fechaRecibosB2B.equals("") && fechaRecibosB2B.length()==10) {
 				try { 
@@ -412,14 +399,14 @@ public class FicheroBancarioPagosAction extends MasterAction{
 					fechaRecibosB2B = "";
 				}		
 			}
-			param_in_banco[8] = fechaRecibosB2B;
+			param_in_banco[7] = fechaRecibosB2B;
 			
-			param_in_banco[9] = pathFichero;
-			param_in_banco[10] = usuario.toString();
-			param_in_banco[11] =this.getUserBean(request).getLanguage();
+			param_in_banco[8] = pathFichero;
+			param_in_banco[9] = usuario.toString();
+			param_in_banco[10] = usr.getLanguage();
 						
 			String resultado[] = new String[3];
-			resultado = ClsMngBBDD.callPLProcedure("{call PKG_SIGA_CARGOS.PRESENTACION(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}", 3, param_in_banco);
+			resultado = ClsMngBBDD.callPLProcedure("{call PKG_SIGA_CARGOS.PRESENTACION(?,?,?,?,?,?,?,?,?,?,?,?,?,?)}", 3, param_in_banco);
 			String codretorno = resultado[1];
 			
 			if (codretorno.equals("5412") || codretorno.equals("5413") || codretorno.equals("5414") || codretorno.equals("5415") || codretorno.equals("5417")) {
@@ -512,28 +499,22 @@ public class FicheroBancarioPagosAction extends MasterAction{
 
 		try{
 			FicheroBancarioPagosForm form 	= (FicheroBancarioPagosForm)formulario;
-			// Obtengo el UserBean y el identificador de la institucion
 			UsrBean user=(UsrBean)request.getSession().getAttribute("USRBEAN");						
-			String idInstitucion=user.getLocation();							
+			String idInstitucion = user.getLocation();							
 			
 			/** CR7 - Control de fechas de presentación y cargo en ficheros SEPA **/
-			String fechaActual = GstDate.getHoyJsp(); // Obtengo la fecha actual
-			// String fechaPresentacion = EjecucionPLs.ejecutarSumarDiasHabiles(fechaActual, "1"); // Fecha actual + 1
-			String fechaPresentacion = fechaActual; // INC_12343_SIGA y INC_12345_SIGA solicitan la fecha actual como permitida 
+			String fechaPresentacion = GstDate.getHoyJsp(); // Obtengo la fecha actual
 			
 			FacDisqueteCargosAdm admDisqueteCargos = new FacDisqueteCargosAdm(user);	
-			HashMap fechas=admDisqueteCargos.getFechasCargo (idInstitucion,fechaPresentacion,this.getUserBean(request));
-			
-			request.setAttribute("radio","0"); // El radio seleccionado será Mínimas
+			HashMap fechas=admDisqueteCargos.getFechasCargo (idInstitucion, fechaPresentacion);
 			
 			request.setAttribute("fechaPresentacion",fechaPresentacion);
-			request.setAttribute("fechaUnicaCargos",fechas.get("fechaUnicaCargos").toString());
+			
 			request.setAttribute("fechaPrimerosRecibos",fechas.get("fechaPrimerosRecibos").toString());
 			request.setAttribute("fechaRecibosRecurrentes",fechas.get("fechaRecibosRecurrentes").toString());
 			request.setAttribute("fechaRecibosCOR1",fechas.get("fechaRecibosCOR1").toString());
 			request.setAttribute("fechaRecibosB2B",fechas.get("fechaRecibosB2B").toString());
 			
-			request.setAttribute("habilesUnicaCargos",fechas.get("habilesUnicaCargos").toString());
 			request.setAttribute("habilesPrimerosRecibos",fechas.get("habilesPrimerosRecibos").toString());
 			request.setAttribute("habilesRecibosRecurrentes",fechas.get("habilesRecibosRecurrentes").toString());
 			request.setAttribute("habilesRecibosCOR1",fechas.get("habilesRecibosCOR1").toString());
@@ -594,24 +575,19 @@ public class FicheroBancarioPagosAction extends MasterAction{
 			FicheroBancarioPagosForm form = (FicheroBancarioPagosForm)formulario;
 			String fechaEntrega = form.getFechaEntrega();
 			
-			String fechaUnica="", fechaRecibosPrimeros="", fechaRecibosRecurrentes="", fechaRecibosCOR1="", fechaRecibosB2B="";
-			if (form.getFechaTipoUnica().equals("1")) {
-				fechaUnica = form.getFechaUnica();
-			} else { 
-				fechaRecibosPrimeros = form.getFechaFRST();
-				fechaRecibosRecurrentes = form.getFechaRCUR();
-				fechaRecibosCOR1 = form.getFechaCOR1();
-				fechaRecibosB2B = form.getFechaB2B();
-			}
+			String fechaRecibosPrimeros = form.getFechaFRST();
+			String fechaRecibosRecurrentes = form.getFechaRCUR();
+			String fechaRecibosCOR1 = form.getFechaCOR1();
+			String fechaRecibosB2B = form.getFechaB2B();
 			
 			// Controlar que las fechas cumplen los dias habiles introducidos en parametros generales
 			FacDisqueteCargosAdm adm = new FacDisqueteCargosAdm(this.getUserBean(request));	
-			if (!adm.controlarFechasFicheroBancario(idInstitucion, fechaEntrega, fechaUnica, fechaRecibosPrimeros, fechaRecibosRecurrentes, fechaRecibosCOR1, fechaRecibosB2B, form.getFechaTipoUnica(), null)) {
+			if (!adm.controlarFechasFicheroBancario(idInstitucion, fechaEntrega, fechaRecibosPrimeros, fechaRecibosRecurrentes, fechaRecibosCOR1, fechaRecibosB2B, null)) {
 				throw new SIGAException("facturacion.ficheroBancarioPagos.errorMandatos.mensajeFechas");
 			}			
 			
 			// Se envían los parametros para modificar las fechas del fichero
-			Object[] param_in_banco = new Object[11];
+			Object[] param_in_banco = new Object[10];
 			param_in_banco[0] = idInstitucion;
 			param_in_banco[1] = form.getIdDisqueteCargo();
 			
@@ -624,15 +600,6 @@ public class FicheroBancarioPagosAction extends MasterAction{
 			}
 			param_in_banco[2] = fechaEntrega;
 			
-			if (fechaUnica != null && !fechaUnica.equals("") && fechaUnica.length()==10) {
-				try { 
-					fechaUnica = fechaUnica.substring(6,10) + fechaUnica.substring(3,5) + fechaUnica.substring(0,2); // AAAAMMDD 
-				} catch (Exception e){
-					fechaUnica = "";
-				}
-			}
-			param_in_banco[3] = fechaUnica;
-			
 			if (fechaRecibosPrimeros != null && !fechaRecibosPrimeros.equals("") && fechaRecibosPrimeros.length()==10) {
 				try { 
 					fechaRecibosPrimeros = fechaRecibosPrimeros.substring(6,10) + fechaRecibosPrimeros.substring(3,5) + fechaRecibosPrimeros.substring(0,2); // AAAAMMDD 
@@ -640,7 +607,7 @@ public class FicheroBancarioPagosAction extends MasterAction{
 					fechaRecibosPrimeros = "";
 				}		
 			}
-			param_in_banco[4] = fechaRecibosPrimeros;
+			param_in_banco[3] = fechaRecibosPrimeros;
 			
 			if (fechaRecibosRecurrentes != null && !fechaRecibosRecurrentes.equals("") && fechaRecibosRecurrentes.length()==10) {
 				try { 
@@ -649,7 +616,7 @@ public class FicheroBancarioPagosAction extends MasterAction{
 					fechaRecibosRecurrentes = "";
 				}
 			}
-			param_in_banco[5] = fechaRecibosRecurrentes;
+			param_in_banco[4] = fechaRecibosRecurrentes;
 			
 			if (fechaRecibosCOR1 != null && !fechaRecibosCOR1.equals("") && fechaRecibosCOR1.length()==10) {
 				try { 
@@ -658,7 +625,7 @@ public class FicheroBancarioPagosAction extends MasterAction{
 					fechaRecibosCOR1 = "";
 				}	
 			}
-			param_in_banco[6] = fechaRecibosCOR1;
+			param_in_banco[5] = fechaRecibosCOR1;
 			
 			if (fechaRecibosB2B != null && !fechaRecibosB2B.equals("") && fechaRecibosB2B.length()==10) {
 				try { 
@@ -667,14 +634,14 @@ public class FicheroBancarioPagosAction extends MasterAction{
 					fechaRecibosB2B = "";
 				}		
 			}
-			param_in_banco[7] = fechaRecibosB2B;
+			param_in_banco[6] = fechaRecibosB2B;
 			
-			param_in_banco[8] = usuario.toString();
-			param_in_banco[9] = pathFichero;			
-			param_in_banco[10] = form.getNombreFichero();
+			param_in_banco[7] = usuario.toString();
+			param_in_banco[8] = pathFichero;			
+			param_in_banco[9] = form.getNombreFichero();
 			
 			String resultado[] = new String[2];
-			resultado = ClsMngBBDD.callPLProcedure("{call PKG_SIGA_CARGOS.CambiarFechasPresentacion(?,?,?,?,?,?,?,?,?,?,?,?,?)}", 2, param_in_banco);			
+			resultado = ClsMngBBDD.callPLProcedure("{call PKG_SIGA_CARGOS.CambiarFechasPresentacion(?,?,?,?,?,?,?,?,?,?,?,?)}", 2, param_in_banco);			
 			if (resultado == null || !resultado[0].equals("0")) {
 				throw new SIGAException("messages.updated.error");
 			}							
@@ -705,17 +672,13 @@ public class FicheroBancarioPagosAction extends MasterAction{
 	 * @throws SIGAException
 	 * @throws Exception
 	 */
-	protected void getAjaxFechasFicheroBancario(ActionMapping mapping, 		
-			MasterForm formulario, 
-			HttpServletRequest request, 
-			HttpServletResponse response) throws SIGAException ,Exception {
+	protected void getAjaxFechasFicheroBancario(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException, Exception {
 
 		FacDisqueteCargosAdm admDisqueteCargos = new FacDisqueteCargosAdm(this.getUserBean(request));	
-		HashMap fechas=admDisqueteCargos.getFechasCargo (this.getUserBean(request).getLocation(),(String)request.getParameter("fechaPresentacion"),this.getUserBean(request));
+		HashMap fechas = admDisqueteCargos.getFechasCargo (this.getUserBean(request).getLocation(), (String)request.getParameter("fechaPresentacion"));
 
 		JSONObject json = new JSONObject();	
 		
-		json.put("fechaUnicaCargos", fechas.get("fechaUnicaCargos").toString());
 		json.put("fechaPrimerosRecibos", fechas.get("fechaPrimerosRecibos").toString());
 		json.put("fechaRecibosRecurrentes", fechas.get("fechaRecibosRecurrentes").toString());
 		json.put("fechaRecibosCOR1", fechas.get("fechaRecibosCOR1").toString());
@@ -728,5 +691,4 @@ public class FicheroBancarioPagosAction extends MasterAction{
 	    response.setHeader("X-JSON", json.toString());
 		response.getWriter().write(json.toString()); 
 	}	
-
 }

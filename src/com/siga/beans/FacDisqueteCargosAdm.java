@@ -302,12 +302,10 @@ public class FacDisqueteCargosAdm extends MasterBeanAdministrador {
 	 * Controlar que las fechas cumplen los dias habiles introducidos en parametros generales
 	 * @param idInstitucion
 	 * @param fechaEntrega
-	 * @param fechaUnica
 	 * @param fechaRecibosPrimeros
 	 * @param fechaRecibosRecurrentes
 	 * @param fechaRecibosCOR1
 	 * @param fechaRecibosB2B
-	 * @param fechaTipoUnica
 	 * @param fechaPreviaPresentacion
 	 * @return
 	 * @throws ClsExceptions
@@ -315,50 +313,30 @@ public class FacDisqueteCargosAdm extends MasterBeanAdministrador {
 	public boolean controlarFechasFicheroBancario (
 				String idInstitucion,
 				String fechaEntrega,
-				String fechaUnica,
 				String fechaRecibosPrimeros,
 				String fechaRecibosRecurrentes,
 				String fechaRecibosCOR1,
 				String fechaRecibosB2B,
-				String fechaTipoUnica,
 				String fechaPreviaPresentacion
 			) throws ClsExceptions {
 		
 		/* Control de fechas:
-		 * 1º. Comprueba que los dias introducidos sean habiles
+		 * 1º. Comprueba que los dias introducidos sean habiles bancarios
 		 * 2º. Obtiene los parametros de los dias habiles
 		 * 3º. Obtiene las fechas minimas para el fichero
 		 * 4º. Control de fechas (si alguna fecha es menor que su minimo, entonces es un error)
 		 */
 
-		if (EjecucionPLs.ejecutarEsDiaHabil(fechaEntrega) == 0) {
+		// Comprueba que los dias introducidos son habiles bancarios
+		if (EjecucionPLs.ejecutarEsDiaHabil(fechaEntrega) == 0 ||
+			EjecucionPLs.ejecutarEsDiaHabil(fechaRecibosPrimeros) == 0 ||
+			EjecucionPLs.ejecutarEsDiaHabil(fechaRecibosRecurrentes) == 0 ||
+			EjecucionPLs.ejecutarEsDiaHabil(fechaRecibosCOR1) == 0 ||
+			EjecucionPLs.ejecutarEsDiaHabil(fechaRecibosB2B) == 0) {
 			return false;
-		}
+		}			
 		
-		if (fechaTipoUnica.equals("1")) {
-			if (EjecucionPLs.ejecutarEsDiaHabil(fechaUnica) == 0) {
-				return false;
-			}
-			
-		} else {
-			if (EjecucionPLs.ejecutarEsDiaHabil(fechaRecibosPrimeros) == 0) {
-				return false;
-			}
-			if (EjecucionPLs.ejecutarEsDiaHabil(fechaRecibosRecurrentes) == 0) {
-				return false;
-			}
-			//Estas fechas vienen nulas porque están deshabilitadas en la ventana, cuando se vayan a habilitar
-			//descomentar esto
-//			if (EjecucionPLs.ejecutarEsDiaHabil(fechaRecibosCOR1) == 0) {
-//				return false;
-//			}
-//			if (EjecucionPLs.ejecutarEsDiaHabil(fechaRecibosB2B) == 0) {
-//				return false;
-//			}			
-		}
-		
-		GenParametrosAdm admParametros = new GenParametrosAdm(this.usrbean);		
-		
+		// Obtengo la fecha de presentacion
 		String fechaPrevista;
 		if (fechaPreviaPresentacion!=null && !fechaPreviaPresentacion.equals("")) {
 			fechaPrevista = fechaPreviaPresentacion;
@@ -366,112 +344,83 @@ public class FacDisqueteCargosAdm extends MasterBeanAdministrador {
 			fechaPrevista = GstDate.getHoyJsp(); // Obtengo la fecha actual
 		}
 		
-		/*String fechaMinimaEntrega = EjecucionPLs.ejecutarSumarDiasHabiles(fechaPrevista, "1"); // fechaPrevista + 1						
-		if (GstDate.compararFechas(fechaEntrega, fechaMinimaEntrega) < 0) {*/
-		if (GstDate.compararFechas(fechaEntrega, fechaPrevista) < 0) { // INC_12343_SIGA y INC_12345_SIGA solicitan la fecha actual como permitida 	
+		if (GstDate.compararFechas(fechaEntrega, fechaPrevista) < 0) { 	
 			return false;
 		}
 		
-		if (fechaTipoUnica.equals("1")) {
-			String habilesUnicaCargos = admParametros.getValor(idInstitucion, "FAC", "DIAS_HABILES_UNICA_CARGOS", "7");
-			
-			String fechaMinimaUnica = EjecucionPLs.ejecutarSumarDiasHabiles(fechaEntrega, habilesUnicaCargos);
-
-			if (GstDate.compararFechas(fechaUnica, fechaMinimaUnica) < 0) {
-				return false;
-			}
-			
-		} else {
-			String habilesPrimerosRecibos = admParametros.getValor(idInstitucion, "FAC", "DIAS_HABILES_PRIMEROS_RECIBOS", "7");
-			String habilesRecibosRecurrentes = admParametros.getValor(idInstitucion, "FAC", "DIAS_HABILES_RECIBOS_RECURRENTES", "4");
-			String habilesRecibosCOR1 = admParametros.getValor(idInstitucion, "FAC", "DIAS_HABILES_RECIBOS_COR1", "3");
-			String habilesRecibosB2B = admParametros.getValor(idInstitucion, "FAC", "DIAS_HABILES_RECIBOS_B2B", "3");
-			
-			String fechaMinimaPrimerosRecibos = EjecucionPLs.ejecutarSumarDiasHabiles( fechaEntrega, habilesPrimerosRecibos);
-			String fechaMinimaRecibosRecurrentes = EjecucionPLs.ejecutarSumarDiasHabiles(fechaEntrega, habilesRecibosRecurrentes);
-			String fechaMinimaRecibosCOR1 = EjecucionPLs.ejecutarSumarDiasHabiles(fechaEntrega, habilesRecibosCOR1);
-			String fechaMinimaRecibosB2B = EjecucionPLs.ejecutarSumarDiasHabiles(fechaEntrega, habilesRecibosB2B);			
-			
-			if (GstDate.compararFechas(fechaRecibosPrimeros, fechaMinimaPrimerosRecibos) < 0) {
-				return false;
-			}
-			if (GstDate.compararFechas(fechaRecibosRecurrentes, fechaMinimaRecibosRecurrentes) < 0) {
-				return false;
-			}
-			//Estas fechas vienen nulas porque están deshabilitadas en la ventana, cuando se vayan a habilitar
-			//descomentar esto
-//			if (GstDate.compararFechas(fechaRecibosCOR1, fechaMinimaRecibosCOR1) < 0) {
-//				return false;
-//			}
-//			if (GstDate.compararFechas(fechaRecibosB2B, fechaMinimaRecibosB2B) < 0) {
-//				return false;
-//			}
+		// Obtengo los parametros de los dias habiles
+		GenParametrosAdm admParametros = new GenParametrosAdm(this.usrbean);
+		String habilesPrimerosRecibos = admParametros.getValor(idInstitucion, "FAC", "DIAS_HABILES_PRIMEROS_RECIBOS", "7");
+		String habilesRecibosRecurrentes = admParametros.getValor(idInstitucion, "FAC", "DIAS_HABILES_RECIBOS_RECURRENTES", "4");
+		String habilesRecibosCOR1 = admParametros.getValor(idInstitucion, "FAC", "DIAS_HABILES_RECIBOS_COR1", "3");
+		String habilesRecibosB2B = admParametros.getValor(idInstitucion, "FAC", "DIAS_HABILES_RECIBOS_B2B", "3");
+		
+		// Obtengo las fechas minimas para el fichero
+		String fechaMinimaPrimerosRecibos = EjecucionPLs.ejecutarSumarDiasHabiles( fechaEntrega, habilesPrimerosRecibos);
+		String fechaMinimaRecibosRecurrentes = EjecucionPLs.ejecutarSumarDiasHabiles(fechaEntrega, habilesRecibosRecurrentes);
+		String fechaMinimaRecibosCOR1 = EjecucionPLs.ejecutarSumarDiasHabiles(fechaEntrega, habilesRecibosCOR1);
+		String fechaMinimaRecibosB2B = EjecucionPLs.ejecutarSumarDiasHabiles(fechaEntrega, habilesRecibosB2B);			
+		
+		// Compruebo que las fechas son posterior o igual que la fecha minima
+		if (GstDate.compararFechas(fechaRecibosPrimeros, fechaMinimaPrimerosRecibos) < 0 ||
+			GstDate.compararFechas(fechaRecibosRecurrentes, fechaMinimaRecibosRecurrentes) < 0 ||
+			GstDate.compararFechas(fechaRecibosCOR1, fechaMinimaRecibosCOR1) < 0 ||
+			GstDate.compararFechas(fechaRecibosB2B, fechaMinimaRecibosB2B) < 0) {
+			return false;
 		}
-		
-		//CR - PARCHE DEBIDO A UN ERROR EN LA 117_001. SE VA A SIGNAR A LAS FECHAS COR1 Y B2B EL VALOR DE FECHA PREVISTA
-		fechaRecibosCOR1 = fechaPrevista;
-		fechaRecibosB2B  = fechaPrevista;
-		// FIN DEL PARCHE PROVISIONAL
-		
 		
 		return true;
 	}
-	
 	
 	/**
 	 * Calcula las fechas para el fichero bancario a partir de la fecha de presentación. 
 	 * Devuelve un HashMap con las fechas calculadas y los días hábiles
 	 * @param idInstitucion
 	 * @param fechaPresentacion
-	 * @param usr
-	 * @return tabla con las fechas: fechaUnicaCargos, fechaPrimerosRecibos, fechaRecibosRecurrentes, fechaRecibosCOR1, fechaRecibosB2B 
+	 * @return tabla con las fechas: fechaPrimerosRecibos, fechaRecibosRecurrentes, fechaRecibosCOR1, fechaRecibosB2B 
 	 * @throws ClsExceptions
 	 * @throws SIGAException
 	 */
-	public HashMap getFechasCargo (String idInstitucion,String fechaPresentacion,UsrBean usr) throws ClsExceptions,SIGAException {
-		
+	public HashMap getFechasCargo (String idInstitucion, String fechaPresentacion) throws ClsExceptions, SIGAException {
 		HashMap fechas = new HashMap();
 		
 		try{
-				
-			GenParametrosAdm admParametros = new GenParametrosAdm(usr);
+			GenParametrosAdm admParametros = new GenParametrosAdm(this.usrbean);
 			
-			String habilesUnicaCargos = admParametros.getValor(idInstitucion.toString(), "FAC", "DIAS_HABILES_UNICA_CARGOS", "7");
 			String habilesPrimerosRecibos = admParametros.getValor(idInstitucion, "FAC", "DIAS_HABILES_PRIMEROS_RECIBOS", "7");
 			String habilesRecibosRecurrentes = admParametros.getValor(idInstitucion, "FAC", "DIAS_HABILES_RECIBOS_RECURRENTES", "4");
 			String habilesRecibosCOR1 = admParametros.getValor(idInstitucion, "FAC", "DIAS_HABILES_RECIBOS_COR1", "3");
 			String habilesRecibosB2B = admParametros.getValor(idInstitucion, "FAC", "DIAS_HABILES_RECIBOS_B2B", "3");
 			
-			fechas.put("habilesUnicaCargos", habilesUnicaCargos);
 			fechas.put("habilesPrimerosRecibos", habilesPrimerosRecibos);
 			fechas.put("habilesRecibosRecurrentes", habilesRecibosRecurrentes);
 			fechas.put("habilesRecibosCOR1", habilesRecibosCOR1);
 			fechas.put("habilesRecibosB2B", habilesRecibosB2B);
-					
-			fechas.put("fechaUnicaCargos", EjecucionPLs.ejecutarSumarDiasHabiles(fechaPresentacion,habilesUnicaCargos));
-			fechas.put("fechaPrimerosRecibos", EjecucionPLs.ejecutarSumarDiasHabiles(fechaPresentacion,habilesPrimerosRecibos));
-			fechas.put("fechaRecibosRecurrentes", EjecucionPLs.ejecutarSumarDiasHabiles(fechaPresentacion,habilesRecibosRecurrentes));
-			fechas.put("fechaRecibosCOR1", EjecucionPLs.ejecutarSumarDiasHabiles(fechaPresentacion,habilesRecibosCOR1));
-			fechas.put("fechaRecibosB2B", EjecucionPLs.ejecutarSumarDiasHabiles(fechaPresentacion,habilesRecibosB2B));
 			
+			if (fechaPresentacion!=null && !fechaPresentacion.equals("")) {
+				fechas.put("fechaPrimerosRecibos", EjecucionPLs.ejecutarSumarDiasHabiles(fechaPresentacion,habilesPrimerosRecibos));
+				fechas.put("fechaRecibosRecurrentes", EjecucionPLs.ejecutarSumarDiasHabiles(fechaPresentacion,habilesRecibosRecurrentes));
+				fechas.put("fechaRecibosCOR1", EjecucionPLs.ejecutarSumarDiasHabiles(fechaPresentacion,habilesRecibosCOR1));
+				fechas.put("fechaRecibosB2B", EjecucionPLs.ejecutarSumarDiasHabiles(fechaPresentacion,habilesRecibosB2B));
+			} else {
+				fechas.put("fechaPrimerosRecibos", "");
+				fechas.put("fechaRecibosRecurrentes", "");
+				fechas.put("fechaRecibosCOR1", "");
+				fechas.put("fechaRecibosB2B", "");
+			}
 			
-			
-			
-		}catch (Exception e) {
+		} catch (Exception e) {
 	   		if (e instanceof SIGAException){
 	   			throw (SIGAException)e;
-	   		}
-	   		else {
-	   			if (e instanceof ClsExceptions){
+	   			
+	   		} else if (e instanceof ClsExceptions){
 	   				throw (ClsExceptions)e;
-	   			}
-	   			else {
+
+   			} else {
 	   				throw new ClsExceptions(e, "Error al obtener las fechas del fichero bancario.");
-	   			}
 	   		}	
 	    }
 		
 		return fechas;
 	}
-	
 }

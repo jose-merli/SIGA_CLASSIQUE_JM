@@ -211,7 +211,6 @@
 
 			var fechaConf = trim(document.confirmarFacturacionForm.fechaPrevistaConfirmacion.value);
 			var fechaGen = trim(document.confirmarFacturacionForm.fechaPrevistaGeneracion.value);
-			var fechaCargo = trim(document.confirmarFacturacionForm.fechaCargoUnica.value);
 			f=document.confirmarFacturacionForm;			
 				
 			sub();
@@ -370,14 +369,6 @@
 			
 			<% } %>
 			
-			if (jQuery("input[name='radioAccion']:checked").val() == "0") { //Checkeado Unica
-				document.confirmarFacturacionForm.fechaTipoUnica.value = "1";	
-			} else if (jQuery("input[name='radioAccion']:checked").val() == "1") {
-				document.confirmarFacturacionForm.fechaTipoUnica.value = "0";
-			} else { //No seleccionado
-				document.confirmarFacturacionForm.fechaTipoUnica.value = "-1";
-			}
-			
 			if(<%=nuevo%>){				
 				if (trim(fechaConf)!="") {
 					var type = '<siga:Idioma key="facturacion.mantenimientoFacturacion.mensaje.alertaConfirmacion"/>';
@@ -485,7 +476,6 @@
 	<html:form action="/FAC_ConfirmarFacturacion.do" method="POST" target="submitArea">
 		<!-- INICIO: CAMPOS -->
 		<html:hidden property="modo" value=""/>			
-		<html:hidden property="fechaTipoUnica" value=""/>
 		<html:hidden property="idProgramacion" value='<%=idProgramacion%>'/>
 		<html:hidden property="estadoConfirmacion" value='<%=idEstadoConfirmacion%>'/>
 		

@@ -7,22 +7,24 @@
 package com.siga.beans;
 
 import java.io.File;
-import java.util.*;
+import java.util.Hashtable;
+import java.util.Vector;
 
 import org.redabogacia.sigaservices.app.util.ReadProperties;
 import org.redabogacia.sigaservices.app.util.SIGAReferences;
 
-import com.atos.utils.*;
+import com.atos.utils.ClsConstants;
+import com.atos.utils.ClsExceptions;
+import com.atos.utils.Row;
+import com.atos.utils.RowsContainer;
+import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesBDAdm;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.paginadores.Paginador;
-import com.siga.Utilidades.paginadores.PaginadorBind;
 import com.siga.certificados.Plantilla;
 import com.siga.envios.Envio;
 import com.siga.facturacion.form.ConfirmarFacturacionForm;
 import com.siga.general.SIGAException;
-import com.siga.gratuita.form.DesignaForm;
-import com.siga.gratuita.form.InformeJustificacionMasivaForm;
 
 
 
@@ -65,7 +67,6 @@ public class FacFacturacionProgramadaAdm extends MasterBeanAdministrador {
 							FacFacturacionProgramadaBean.C_FECHAMODIFICACION,
 							FacFacturacionProgramadaBean.C_USUMODIFICACION,
 							FacFacturacionProgramadaBean.C_FECHAPRESENTACION,
-							FacFacturacionProgramadaBean.C_FECHACARGOUNICA,
 							FacFacturacionProgramadaBean.C_FECHARECIBOSPRIMEROS,
 							FacFacturacionProgramadaBean.C_FECHARECIBOSRECURRENTES,
 							FacFacturacionProgramadaBean.C_FECHARECIBOSCOR1,
@@ -121,7 +122,6 @@ public class FacFacturacionProgramadaAdm extends MasterBeanAdministrador {
 			bean.setUsuMod					(UtilidadesHash.getInteger(hash, FacFacturacionProgramadaBean.C_USUMODIFICACION));
 			
 			bean.setFechaPresentacion		(UtilidadesHash.getString(hash, FacFacturacionProgramadaBean.C_FECHAPRESENTACION));
-			bean.setFechaCargoUnica			(UtilidadesHash.getString(hash, FacFacturacionProgramadaBean.C_FECHACARGOUNICA));
 			bean.setFechaRecibosPrimeros	(UtilidadesHash.getString(hash, FacFacturacionProgramadaBean.C_FECHARECIBOSPRIMEROS));
 			bean.setFechaRecibosRecurrentes	(UtilidadesHash.getString(hash, FacFacturacionProgramadaBean.C_FECHARECIBOSRECURRENTES));
 			bean.setFechaRecibosCOR1		(UtilidadesHash.getString(hash, FacFacturacionProgramadaBean.C_FECHARECIBOSCOR1));
@@ -184,7 +184,6 @@ public class FacFacturacionProgramadaAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(htData, FacFacturacionProgramadaBean.C_USUMODIFICACION, b.getUsuMod());
 
 			UtilidadesHash.set(htData, FacFacturacionProgramadaBean.C_FECHAPRESENTACION, b.getFechaPresentacion());
-			UtilidadesHash.setForCompare(htData, FacFacturacionProgramadaBean.C_FECHACARGOUNICA, b.getFechaCargoUnica());
 			UtilidadesHash.setForCompare(htData, FacFacturacionProgramadaBean.C_FECHARECIBOSRECURRENTES, b.getFechaRecibosRecurrentes());
 			UtilidadesHash.setForCompare(htData, FacFacturacionProgramadaBean.C_FECHARECIBOSPRIMEROS, b.getFechaRecibosPrimeros());
 			UtilidadesHash.setForCompare(htData, FacFacturacionProgramadaBean.C_FECHARECIBOSCOR1, b.getFechaRecibosCOR1());

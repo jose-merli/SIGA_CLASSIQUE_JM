@@ -266,7 +266,7 @@ String action=app+"/FAC_DisqueteCargos.do?noReset=true";
 	<!-- FIN: IFRAME LISTA RESULTADOS -->
 	
 	<html:form action="/FAC_ConfirmarFacturacion.do" method="POST" target="submitArea">		
-		<html:hidden name="confirmarFacturacionForm" property="modo" value = "nuevo"/>
+		<html:hidden name="confirmarFacturacionForm" property="modo" value="generarNuevoFicheroAdeudo"/>
 		<html:hidden name="confirmarFacturacionForm" property="actionModal" value = ""/>
 	</html:form>
 

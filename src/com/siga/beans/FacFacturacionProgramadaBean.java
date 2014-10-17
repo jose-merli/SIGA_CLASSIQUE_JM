@@ -20,7 +20,7 @@ public class FacFacturacionProgramadaBean extends MasterBean {
 					generarPDF,envio,archivarFact,fechaPrevistaConfirmacion,fechaPrevistaGeneracion, locked,
 					fechaCargo, confIngresos, confDeudor, ctaIngresos, ctaClientes, visible, descripcion, realizarEnvio;
 	
-	private String fechaPresentacion, fechaCargoUnica, fechaRecibosPrimeros, fechaRecibosRecurrentes, fechaRecibosCOR1, fechaRecibosB2B;
+	private String fechaPresentacion, fechaRecibosPrimeros, fechaRecibosRecurrentes, fechaRecibosCOR1, fechaRecibosB2B;
 
 	private String logerror, nombrefichero;
 	
@@ -58,7 +58,6 @@ public class FacFacturacionProgramadaBean extends MasterBean {
 	static public final String C_DESCRIPCION 		    	= "DESCRIPCION";
 	static public final String C_IDTIPOPLANTILLAMAIL 		= "IDTIPOPLANTILLAMAIL";
 	static public final String C_IDTIPOENVIOS		 		= "IDTIPOENVIOS";
-	static public final String C_FECHACARGOUNICA			= "FECHACARGOUNICA"; 
 	static public final String C_FECHAPRESENTACION			= "FECHAPRESENTACION";
 	static public final String C_FECHARECIBOSPRIMEROS		= "FECHARECIBOSPRIMEROS";
 	static public final String C_FECHARECIBOSRECURRENTES	= "FECHARECIBOSRECURRENTES";
@@ -177,12 +176,6 @@ public class FacFacturacionProgramadaBean extends MasterBean {
 	}
 	public void setFechaRecibosB2B(String fechaRecibosB2B) {
 		this.fechaRecibosB2B = fechaRecibosB2B;
-	}
-	public String getFechaCargoUnica() {
-		return fechaCargoUnica;
-	}
-	public void setFechaCargoUnica(String fechaCargoUnica) {
-		this.fechaCargoUnica = fechaCargoUnica;
 	}
 	public String getFechaRecibosPrimeros() {
 		return fechaRecibosPrimeros;

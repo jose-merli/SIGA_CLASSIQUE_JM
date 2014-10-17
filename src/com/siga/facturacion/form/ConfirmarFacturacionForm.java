@@ -8,7 +8,6 @@ package com.siga.facturacion.form;
 import com.atos.utils.GstDate;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.beans.FacFacturacionProgramadaBean;
-import com.siga.beans.FacSerieFacturacionBean;
 import com.siga.general.MasterForm;
 
 /**
@@ -20,10 +19,9 @@ import com.siga.general.MasterForm;
 public class ConfirmarFacturacionForm extends MasterForm{
 	private String fechaCargo, estadoConfirmacion, estadoPDF, estadoEnvios, archivadas;
 	private String facturacionRapida, idSerieFacturacion, idProgramacion;
-	private String fechaEntrega="", fechaUnica="", fechaFRST="", fechaRCUR="", fechaCOR1="", fechaB2B="", fechaTipoUnica="";
+	private String fechaEntrega="", fechaFRST="", fechaRCUR="", fechaCOR1="", fechaB2B="";
 	private String fechaDesdeConfirmacion,fechaHastaConfirmacion,fechaDesdeGeneracion,fechaHastaGeneracion;
 	private String idTipoPlantillaMail;
-	private String fechaCargoUnica;
 	private String fechaPresentacion;
 	private String fechaRecibosPrimeros;
 	private String fechaRecibosRecurrentes;
@@ -134,12 +132,6 @@ public class ConfirmarFacturacionForm extends MasterForm{
 	public void setFechaEntrega(String fechaEntrega) {
 		this.fechaEntrega = fechaEntrega;
 	}
-	public String getFechaUnica() {
-		return fechaUnica;
-	}
-	public void setFechaUnica(String fechaUnica) {
-		this.fechaUnica = fechaUnica;
-	}
 	public String getFechaFRST() {
 		return fechaFRST;
 	}
@@ -163,12 +155,6 @@ public class ConfirmarFacturacionForm extends MasterForm{
 	}
 	public void setFechaB2B(String fechaB2B) {
 		this.fechaB2B = fechaB2B;
-	}
-	public String getFechaTipoUnica() {
-		return fechaTipoUnica;
-	}
-	public void setFechaTipoUnica(String fechaTipoUnica) {
-		this.fechaTipoUnica = fechaTipoUnica;
 	}
 	
 	/**
@@ -435,12 +421,6 @@ public class ConfirmarFacturacionForm extends MasterForm{
 
 	public void setIdTipoPlantillaMail(String idTipoPlantillaMail) {
 		this.idTipoPlantillaMail = idTipoPlantillaMail;
-	}
-	public String getFechaCargoUnica() {
-		return fechaCargoUnica;
-	}
-	public void setFechaCargoUnica(String fechaCargoUnica) {
-		this.fechaCargoUnica = fechaCargoUnica;
 	}
 	public String getFechaPresentacion() {
 		return fechaPresentacion;

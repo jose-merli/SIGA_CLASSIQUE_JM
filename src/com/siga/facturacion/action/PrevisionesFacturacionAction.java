@@ -29,7 +29,6 @@ import org.redabogacia.sigaservices.app.util.SIGAReferences;
 
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsLogging;
-import com.atos.utils.ClsMngBBDD;
 import com.atos.utils.GstDate;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesHash;
@@ -895,15 +894,26 @@ or	 * @param request -
 				
 				/** CR7 - Insercion de Fechas SEPA segun el algoritmo empleado en la ventana de Programacion **/
 				String fechaActual = GstDate.getHoyJsp(); // Obtengo la fecha actual
-				// String fechaPresentacion = EjecucionPLs.ejecutarSumarDiasHabiles(fechaActual, "1"); // Fecha actual + 1
-				String fechaPresentacion = fechaActual; // INC_12343_SIGA y INC_12345_SIGA solicitan la fecha actual como permitida 
+				String fechaPresentacion = fechaActual; 
 				
+				// Obtengo los parametros de los dias habiles
 				GenParametrosAdm admParametros = new GenParametrosAdm(user);
-				String habilesUnicaCargos = admParametros.getValor(idInstitucion.toString(), "FAC", "DIAS_HABILES_UNICA_CARGOS", "7");
-				String fechaUnicaCargos = EjecucionPLs.ejecutarSumarDiasHabiles(fechaPresentacion, habilesUnicaCargos);
+				String habilesPrimerosRecibos = admParametros.getValor(idInstitucion, "FAC", "DIAS_HABILES_PRIMEROS_RECIBOS", "7");
+				String habilesRecibosRecurrentes = admParametros.getValor(idInstitucion, "FAC", "DIAS_HABILES_RECIBOS_RECURRENTES", "4");
+				String habilesRecibosCOR1 = admParametros.getValor(idInstitucion, "FAC", "DIAS_HABILES_RECIBOS_COR1", "3");
+				String habilesRecibosB2B = admParametros.getValor(idInstitucion, "FAC", "DIAS_HABILES_RECIBOS_B2B", "3");				
 				
-				bean.setFechaPresentacion		(GstDate.getApplicationFormatDate("en",fechaPresentacion));
-				bean.setFechaCargoUnica			(GstDate.getApplicationFormatDate("en",fechaUnicaCargos));
+				// Obtengo las fechas minimas para el fichero
+				String fechaMinimaPrimerosRecibos = EjecucionPLs.ejecutarSumarDiasHabiles(fechaPresentacion, habilesPrimerosRecibos);
+				String fechaMinimaRecibosRecurrentes = EjecucionPLs.ejecutarSumarDiasHabiles(fechaPresentacion, habilesRecibosRecurrentes);
+				String fechaMinimaRecibosCOR1 = EjecucionPLs.ejecutarSumarDiasHabiles(fechaPresentacion, habilesRecibosCOR1);
+				String fechaMinimaRecibosB2B = EjecucionPLs.ejecutarSumarDiasHabiles(fechaPresentacion, habilesRecibosB2B);				
+				
+				bean.setFechaPresentacion (GstDate.getApplicationFormatDate("en",fechaPresentacion));
+				bean.setFechaRecibosPrimeros(GstDate.getApplicationFormatDate("en", fechaMinimaPrimerosRecibos));
+				bean.setFechaRecibosRecurrentes(GstDate.getApplicationFormatDate("en", fechaMinimaRecibosRecurrentes));
+				bean.setFechaRecibosCOR1(GstDate.getApplicationFormatDate("en", fechaMinimaRecibosCOR1));
+				bean.setFechaRecibosB2B(GstDate.getApplicationFormatDate("en", fechaMinimaRecibosB2B));				
 
 				// se obtienen de la serie de facturacion
 				FacSerieFacturacionAdm sfAdm = new FacSerieFacturacionAdm(this.getUserBean(request)); 

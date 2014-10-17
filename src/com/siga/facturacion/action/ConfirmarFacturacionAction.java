@@ -48,7 +48,6 @@ import com.siga.beans.GenParametrosAdm;
 import com.siga.certificados.Plantilla;
 import com.siga.facturacion.Facturacion;
 import com.siga.facturacion.form.ConfirmarFacturacionForm;
-import com.siga.general.EjecucionPLs;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
@@ -117,15 +116,15 @@ public class ConfirmarFacturacionAction extends MasterAction{
 				}else if (accion.equalsIgnoreCase("buscarPor")){
 					mapDestino = buscarPor(mapping, miForm, request, response);
 				}else if (accion.equalsIgnoreCase("borrar")){
-					mapDestino = borrar(mapping, miForm, request, response);						
+					mapDestino = borrar(mapping, miForm, request, response);
+				}else if (accion.equalsIgnoreCase("generarNuevoFicheroAdeudo")){
+					mapDestino = generarNuevoFicheroAdeudo (mapping, miForm, request, response);	
+				}else if (accion.equalsIgnoreCase("getAjaxFechasFicheroBancario")){
+					getAjaxFechasFicheroBancario (mapping, miForm, request, response);
+					return null;				
 				}else if (accion.equalsIgnoreCase("getAjaxFechasFicheroBancario")){
 					getAjaxFechasFicheroBancario (mapping, miForm, request, response);
 					return null;
-					
-				}else if (accion.equalsIgnoreCase("getAjaxFechasFicheroBancario")){
-					getAjaxFechasFicheroBancario (mapping, miForm, request, response);
-					return null;
-					
 				}else {
 					return super.executeInternal(mapping, formulario, request, response);
 				}
@@ -433,20 +432,14 @@ public class ConfirmarFacturacionAction extends MasterAction{
 			/** JPT - Control de fechas de presentación y cargo en ficheros SEPA **/
 			String fechaEntrega = form.getFechaEntrega();
 			
-			String fechaUnica="", fechaRecibosPrimeros="", fechaRecibosRecurrentes="", fechaRecibosCOR1="", fechaRecibosB2B="";
-			if (form.getFechaTipoUnica().equals("1")) {
-				fechaUnica = form.getFechaUnica();
-				
-			} else { 
-				fechaRecibosPrimeros = form.getFechaFRST();
-				fechaRecibosRecurrentes = form.getFechaRCUR();
-				fechaRecibosCOR1 = form.getFechaCOR1();
-				fechaRecibosB2B = form.getFechaB2B();
-			}			
+			String fechaRecibosPrimeros = form.getFechaFRST();
+			String fechaRecibosRecurrentes = form.getFechaRCUR();
+			String fechaRecibosCOR1 = form.getFechaCOR1();
+			String fechaRecibosB2B = form.getFechaB2B();
 			
 			// Controlar que las fechas cumplen los dias habiles introducidos en parametros generales
 			FacDisqueteCargosAdm admDisqueteCargos = new FacDisqueteCargosAdm(this.getUserBean(request));	
-			if (!admDisqueteCargos.controlarFechasFicheroBancario(idInstitucion, fechaEntrega, fechaUnica, fechaRecibosPrimeros, fechaRecibosRecurrentes, fechaRecibosCOR1, fechaRecibosB2B, form.getFechaTipoUnica(), null)) {
+			if (!admDisqueteCargos.controlarFechasFicheroBancario(idInstitucion, fechaEntrega, fechaRecibosPrimeros, fechaRecibosRecurrentes, fechaRecibosCOR1, fechaRecibosB2B, null)) {
 				throw new SIGAException("facturacion.ficheroBancarioPagos.errorMandatos.mensajeFechas");
 			}		
 
@@ -483,10 +476,7 @@ public class ConfirmarFacturacionAction extends MasterAction{
 				// Control de fechas
 				if (fechaEntrega!=null && !fechaEntrega.equals("")) { 
 					beanP.setFechaPresentacion(GstDate.getApplicationFormatDate("en", fechaEntrega));
-				}				
-				if (fechaUnica!=null && !fechaUnica.equals("")) { 
-					beanP.setFechaCargoUnica(GstDate.getApplicationFormatDate("en", fechaUnica));
-				}				
+				}							
 				if (fechaRecibosPrimeros!=null && !fechaRecibosPrimeros.equals("")) { 
 					beanP.setFechaRecibosPrimeros(GstDate.getApplicationFormatDate("en", fechaRecibosPrimeros));
 				}				
@@ -606,39 +596,66 @@ public class ConfirmarFacturacionAction extends MasterAction{
 	 * @return  String  Destino del action  
 	 * @exception  SIGAException  En cualquier caso de error
 	 */
-	protected String nuevo(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
-		
+	protected String generarNuevoFicheroAdeudo(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		try {
 			String idInstitucion	 = this.getIDInstitucion(request).toString();
-			/** CR7 - Control de fechas de presentación y cargo en ficheros SEPA **/
 			String fechaActual = GstDate.getHoyJsp(); // Obtengo la fecha actual
-			// String fechaPresentacion = EjecucionPLs.ejecutarSumarDiasHabiles(fechaActual, "1"); // Fecha actual + 1
-			String fechaPresentacion = fechaActual; // INC_12343_SIGA y INC_12345_SIGA solicitan la fecha actual como permitida 				
-			FacDisqueteCargosAdm admDisqueteCargos = new FacDisqueteCargosAdm(this.getUserBean(request));	
-			HashMap fechas=admDisqueteCargos.getFechasCargo (idInstitucion,fechaPresentacion,this.getUserBean(request));
+			String fechaPresentacion = fechaActual;		
 			
-			request.setAttribute("radio","0"); // El radio seleccionado será Mínimas
+			// Calcula las fechas para el fichero bancario a partir de la fecha de presentación
+			FacDisqueteCargosAdm admDisqueteCargos = new FacDisqueteCargosAdm(this.getUserBean(request));	
+			HashMap fechas=admDisqueteCargos.getFechasCargo (idInstitucion, fechaPresentacion);
+			
+			// Carga las fechas en la request
 			request.setAttribute("fechaPresentacion",fechaPresentacion);
-			request.setAttribute("fechaUnicaCargos",fechas.get("fechaUnicaCargos").toString());
 			request.setAttribute("fechaPrimerosRecibos",fechas.get("fechaPrimerosRecibos").toString());
 			request.setAttribute("fechaRecibosRecurrentes",fechas.get("fechaRecibosRecurrentes").toString());
 			request.setAttribute("fechaRecibosCOR1",fechas.get("fechaRecibosCOR1").toString());
 			request.setAttribute("fechaRecibosB2B",fechas.get("fechaRecibosB2B").toString());
 			
-			request.setAttribute("habilesUnicaCargos",fechas.get("habilesUnicaCargos").toString());
 			request.setAttribute("habilesPrimerosRecibos",fechas.get("habilesPrimerosRecibos").toString());
 			request.setAttribute("habilesRecibosRecurrentes",fechas.get("habilesRecibosRecurrentes").toString());
 			request.setAttribute("habilesRecibosCOR1",fechas.get("habilesRecibosCOR1").toString());
 			request.setAttribute("habilesRecibosB2B",fechas.get("habilesRecibosB2B").toString());
 			
-			request.setAttribute("accionInit","FAC_ConfirmarFacturacion");
+			// Esto sirve para indicar el action que se ha utilizado para utilizar AJAX posteriormente
+			request.setAttribute("accionInit", "FAC_ConfirmarFacturacion");
+		
+		} catch (Exception e) {
+			throw new SIGAException("messages.general.error");
+		}
+	
+		return "abrirFechaCargo";
+	}	
+	
+	/** 
+	 * Abre la ventana para crear un nuevo mantenimiento de facturación. 
+	 * @param  mapping - Mapeo de los struts
+	 * @param  formulario -  Action Form asociado a este Action
+	 * @param  request - objeto llamada HTTP 
+	 * @param  response - objeto respuesta HTTP
+	 * @return  String  Destino del action  
+	 * @exception  SIGAException  En cualquier caso de error
+	 */
+	protected String nuevo(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+		
+		try {
+			String idInstitucion	 = this.getIDInstitucion(request).toString();
+			UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");
 			
-			/* Añadido tal y como prpgramacion */
+			// Calcula las fechas para el fichero bancario a partir de la fecha de presentación
+			FacDisqueteCargosAdm admDisqueteCargos = new FacDisqueteCargosAdm(user);	
+			admDisqueteCargos.getFechasCargo (idInstitucion, null);
+			
+			// Esto sirve para indicar el action que se ha utilizado para utilizar AJAX posteriormente
+			request.setAttribute("accionInit", "FAC_ConfirmarFacturacion");
+			
+			// Igual que programacion
 			HttpSession ses = request.getSession();
 			request.getSession().setAttribute("DATABACKUP", null);	
-			ses.setAttribute("ModoAction","nuevaPrevision");
+			ses.setAttribute("ModoAction", "nuevaPrevision");
 		
-		}catch (Exception e) {
+		} catch (Exception e) {
 			throw new SIGAException("messages.general.error");
 		}
 	
@@ -910,9 +927,7 @@ public class ConfirmarFacturacionAction extends MasterAction{
 	}
 	
 	protected String consultarFacturas(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
-		try
-		{				
-			Integer usuario = this.getUserName(request);		
+		try {				
 			ConfirmarFacturacionForm form 	= (ConfirmarFacturacionForm)formulario;
 			FacFacturacionProgramadaAdm adm = new FacFacturacionProgramadaAdm(this.getUserBean(request));
 			HttpSession ses = request.getSession();
@@ -924,11 +939,9 @@ public class ConfirmarFacturacionAction extends MasterAction{
 			Long idProgramacion 	= Long.valueOf((String)ocultos.elementAt(1));	
 			Integer idInstitucion	= this.getIDInstitucion(request);
 									
-			String sWhere=" where " + FacFacturacionProgramadaBean.T_NOMBRETABLA + "." + FacFacturacionProgramadaBean.C_IDINSTITUCION + " = " + idInstitucion;
-			sWhere += " and ";
-			sWhere += FacFacturacionProgramadaBean.T_NOMBRETABLA + "." + FacFacturacionProgramadaBean.C_IDSERIEFACTURACION + " = " + idSerieFacturacion;
-			sWhere += " and ";
-			sWhere += FacFacturacionProgramadaBean.T_NOMBRETABLA + "." + FacFacturacionProgramadaBean.C_IDPROGRAMACION + " = " + idProgramacion;
+			String sWhere=" WHERE " + FacFacturacionProgramadaBean.T_NOMBRETABLA + "." + FacFacturacionProgramadaBean.C_IDINSTITUCION + " = " + idInstitucion + 
+							" AND " + FacFacturacionProgramadaBean.T_NOMBRETABLA + "." + FacFacturacionProgramadaBean.C_IDSERIEFACTURACION + " = " + idSerieFacturacion + 	
+							" AND " + FacFacturacionProgramadaBean.T_NOMBRETABLA + "." + FacFacturacionProgramadaBean.C_IDPROGRAMACION + " = " + idProgramacion;
 			
 			String[] orden = {FacFacturacionProgramadaBean.C_FECHAPREVISTAGENERACION};
 			
@@ -937,30 +950,13 @@ public class ConfirmarFacturacionAction extends MasterAction{
 			
 			/** CR7 - Control de fechas de presentación y cargo en ficheros SEPA **/
 			Hashtable hash = (Hashtable) vDatos.get(0);			
-			String fechaPresentacion = GstDate.getFormatedDateShort("es",(String)hash.get("FECHAPRESENTACION"));
-			String fechaUnicaCargos = "";
-			String fechaPrimerosRecibos = "";
-			String fechaRecibosRecurrentes = "";
-			String fechaRecibosCOR1 = "";
-			String fechaRecibosB2B = "";
-			
-			if(hash.get("FECHACARGOUNICA") != null && !((String)hash.get("FECHACARGOUNICA")).equals("")){  //El radio button seleccionado es Unica
-				fechaUnicaCargos = GstDate.getFormatedDateShort("es",(String)hash.get("FECHACARGOUNICA"));
-				request.setAttribute("radio","1"); // El radio seleccionado será Unica
-				
-			} else if(hash.get("FECHARECIBOSPRIMEROS") != null && !((String)hash.get("FECHARECIBOSPRIMEROS")).equals("")){ //El radio button seleccionado es Minimas
-				fechaPrimerosRecibos = GstDate.getFormatedDateShort("es",(String)hash.get("FECHARECIBOSPRIMEROS"));
-				fechaRecibosRecurrentes = GstDate.getFormatedDateShort("es",(String)hash.get("FECHARECIBOSRECURRENTES"));
-				fechaRecibosCOR1 = GstDate.getFormatedDateShort("es",(String)hash.get("FECHARECIBOSCOR1"));
-				fechaRecibosB2B = GstDate.getFormatedDateShort("es",(String)hash.get("FECHARECIBOSB2B"));
-				request.setAttribute("radio","0"); // El radio seleccionado será Minimas
-			
-			} else { //Son las programacioens antiguas, por tanto no tienen ni fecha de presentacion ni ningun tipo de fecha SEPA
-				request.setAttribute("radio","1"); // El radio seleccionado será Unica
-			}
+			String fechaPresentacion = GstDate.getFormatedDateShort("es",(String)hash.get("FECHAPRESENTACION"));			
+			String fechaPrimerosRecibos = GstDate.getFormatedDateShort("es",(String)hash.get("FECHARECIBOSPRIMEROS"));
+			String fechaRecibosRecurrentes = GstDate.getFormatedDateShort("es",(String)hash.get("FECHARECIBOSRECURRENTES"));
+			String fechaRecibosCOR1 = GstDate.getFormatedDateShort("es",(String)hash.get("FECHARECIBOSCOR1"));
+			String fechaRecibosB2B = GstDate.getFormatedDateShort("es",(String)hash.get("FECHARECIBOSB2B"));
 			
 			request.setAttribute("fechaPresentacion",fechaPresentacion);
-			request.setAttribute("fechaUnicaCargos",fechaUnicaCargos);
 			request.setAttribute("fechaPrimerosRecibos",fechaPrimerosRecibos);
 			request.setAttribute("fechaRecibosRecurrentes",fechaRecibosRecurrentes);
 			request.setAttribute("fechaRecibosCOR1",fechaRecibosCOR1);
@@ -1012,7 +1008,6 @@ public class ConfirmarFacturacionAction extends MasterAction{
 			Hashtable hash = (Hashtable) vDatos.get(0);
 			GenParametrosAdm admParametros = new GenParametrosAdm(this.getUserBean(request));
 			String fechaPresentacion = GstDate.getFormatedDateShort("es",(String)hash.get("FECHAPRESENTACION"));
-			String fechaUnicaCargos = "";
 			String fechaPrimerosRecibos = "";
 			String fechaRecibosRecurrentes = "";
 			String fechaRecibosCOR1 = "";
@@ -1023,49 +1018,34 @@ public class ConfirmarFacturacionAction extends MasterAction{
 			HashMap fechas=new HashMap();
 			
 			if((fechaPresentacion!=null)&&(!fechaPresentacion.isEmpty()))
-				fechas=admDisqueteCargos.getFechasCargo (idInstitucion,fechaPresentacion,this.getUserBean(request));
+				fechas=admDisqueteCargos.getFechasCargo (idInstitucion,fechaPresentacion);
+			
 			//Son las programacioens antiguas, por tanto no tienen ni fecha de presentacion ni ningun tipo de fecha SEPA
 			else{
-				String fechaActual = GstDate.getHoyJsp(); // Obtengo la fecha actual
-				fechaPresentacion = fechaActual; // INC_12343_SIGA y INC_12345_SIGA solicitan la fecha actual como permitida 
-				fechas=admDisqueteCargos.getFechasCargo (idInstitucion,fechaPresentacion,this.getUserBean(request));
+				fechaPresentacion = GstDate.getHoyJsp(); // Obtengo la fecha actual
+				fechas=admDisqueteCargos.getFechasCargo (idInstitucion,fechaPresentacion);
 			}
 			
 			
-			if(hash.get("FECHACARGOUNICA") != null && !((String)hash.get("FECHACARGOUNICA")).equals("")){  //El radio button seleccionado es Unica
-				fechaUnicaCargos = GstDate.getFormatedDateShort("es",(String)hash.get("FECHACARGOUNICA"));
-				fechaPrimerosRecibos =fechas.get("fechaPrimerosRecibos").toString();
-				fechaRecibosRecurrentes =fechas.get("fechaRecibosRecurrentes").toString();
-				fechaRecibosCOR1 =fechas.get("fechaRecibosCOR1").toString();
-				fechaRecibosB2B = fechas.get("fechaRecibosB2B").toString();
-				request.setAttribute("radio","1"); // El radio seleccionado será Unica
-
-			} else if(hash.get("FECHARECIBOSPRIMEROS") != null && !((String)hash.get("FECHARECIBOSPRIMEROS")).equals("")){ //El radio button seleccionado es Minimas
-				fechaUnicaCargos = fechas.get("fechaUnicaCargos").toString();
+			if (hash.get("FECHARECIBOSPRIMEROS")!=null && !((String)hash.get("FECHARECIBOSPRIMEROS")).equals("")) {
 				fechaPrimerosRecibos = GstDate.getFormatedDateShort("es",(String)hash.get("FECHARECIBOSPRIMEROS"));
 				fechaRecibosRecurrentes = GstDate.getFormatedDateShort("es",(String)hash.get("FECHARECIBOSRECURRENTES"));
 				fechaRecibosCOR1 = GstDate.getFormatedDateShort("es",(String)hash.get("FECHARECIBOSCOR1"));
 				fechaRecibosB2B = GstDate.getFormatedDateShort("es",(String)hash.get("FECHARECIBOSB2B"));
-				request.setAttribute("radio","0"); // El radio seleccionado será Minimas
 			
 			} else { //Son las programacioens antiguas, por tanto no tienen ni fecha de presentacion ni ningun tipo de fecha SEPA		
-				
-				fechaUnicaCargos = fechas.get("fechaUnicaCargos").toString();
 				fechaPrimerosRecibos = fechas.get("fechaPrimerosRecibos").toString();
 				fechaRecibosRecurrentes = fechas.get("fechaRecibosRecurrentes").toString();
 				fechaRecibosCOR1 = fechas.get("fechaRecibosCOR1").toString();
 				fechaRecibosB2B = fechas.get("fechaRecibosB2B").toString();
-				request.setAttribute("radio","1"); // El radio seleccionado será Unica
 			}						
 			
 			request.setAttribute("fechaPresentacion",fechaPresentacion);
-			request.setAttribute("fechaUnicaCargos",fechaUnicaCargos);
 			request.setAttribute("fechaPrimerosRecibos",fechaPrimerosRecibos);
 			request.setAttribute("fechaRecibosRecurrentes",fechaRecibosRecurrentes);
 			request.setAttribute("fechaRecibosCOR1",fechaRecibosCOR1);
 			request.setAttribute("fechaRecibosB2B",fechaRecibosB2B);
 
-			request.setAttribute("habilesUnicaCargos",fechas.get("habilesUnicaCargos").toString());
 			request.setAttribute("habilesPrimerosRecibos",fechas.get("habilesPrimerosRecibos").toString());
 			request.setAttribute("habilesRecibosRecurrentes",fechas.get("habilesRecibosRecurrentes").toString());
 			request.setAttribute("habilesRecibosCOR1",fechas.get("habilesRecibosCOR1").toString());
@@ -1138,28 +1118,21 @@ public class ConfirmarFacturacionAction extends MasterAction{
 			String fechaEntrega = form.getFechaPresentacion();
 			bean.setFechaPresentacion(GstDate.getApplicationFormatDate("en", fechaEntrega));
 			
-			String fechaUnica="", fechaRecibosPrimeros="", fechaRecibosRecurrentes="", fechaRecibosCOR1="", fechaRecibosB2B="";
-			if (form.getFechaTipoUnica().equals("1")) {
-				fechaUnica = form.getFechaCargoUnica();
-				bean.setFechaCargoUnica(GstDate.getApplicationFormatDate("en", fechaUnica));
-				
-			} else { 
-				fechaRecibosPrimeros = form.getFechaRecibosPrimeros();
-				fechaRecibosRecurrentes = form.getFechaRecibosRecurrentes();
-				fechaRecibosCOR1 = form.getFechaRecibosCOR1();
-				fechaRecibosB2B = form.getFechaRecibosB2B();
-				bean.setFechaRecibosPrimeros(GstDate.getApplicationFormatDate("en", fechaRecibosPrimeros));
-				bean.setFechaRecibosRecurrentes(GstDate.getApplicationFormatDate("en", fechaRecibosRecurrentes));
-				bean.setFechaRecibosCOR1(GstDate.getApplicationFormatDate("en", fechaRecibosCOR1));
-				bean.setFechaRecibosB2B(GstDate.getApplicationFormatDate("en", fechaRecibosB2B));
-			}			
+			String fechaRecibosPrimeros = form.getFechaRecibosPrimeros();
+			String fechaRecibosRecurrentes = form.getFechaRecibosRecurrentes();
+			String fechaRecibosCOR1 = form.getFechaRecibosCOR1();
+			String fechaRecibosB2B = form.getFechaRecibosB2B();
+			bean.setFechaRecibosPrimeros(GstDate.getApplicationFormatDate("en", fechaRecibosPrimeros));
+			bean.setFechaRecibosRecurrentes(GstDate.getApplicationFormatDate("en", fechaRecibosRecurrentes));
+			bean.setFechaRecibosCOR1(GstDate.getApplicationFormatDate("en", fechaRecibosCOR1));
+			bean.setFechaRecibosB2B(GstDate.getApplicationFormatDate("en", fechaRecibosB2B));
 			
-			if(form.getFechaTipoUnica() != null && !form.getFechaTipoUnica().equals("-1")){
+			if (fechaEntrega!=null && !fechaEntrega.equals("")) {
 				// Controlar que las fechas cumplen los dias habiles introducidos en parametros generales			
 				FacDisqueteCargosAdm admDisqueteCargos = new FacDisqueteCargosAdm(this.getUserBean(request));	
-				if (!admDisqueteCargos.controlarFechasFicheroBancario(idInstitucion, fechaEntrega, fechaUnica, fechaRecibosPrimeros, fechaRecibosRecurrentes, fechaRecibosCOR1, fechaRecibosB2B, form.getFechaTipoUnica(), fechaPrevistaConfirmacion)) {
+				if (!admDisqueteCargos.controlarFechasFicheroBancario(idInstitucion, fechaEntrega, fechaRecibosPrimeros, fechaRecibosRecurrentes, fechaRecibosCOR1, fechaRecibosB2B, fechaPrevistaConfirmacion)) {
 					throw new SIGAException("facturacion.ficheroBancarioPagos.errorMandatos.mensajeFechas");
-				}			
+				}
 			}
 			
 			// Comprobaciones antes de confirmacion 
@@ -1346,25 +1319,18 @@ public class ConfirmarFacturacionAction extends MasterAction{
 			String fechaEntrega = form.getFechaPresentacion();
 			bean.setFechaPresentacion(GstDate.getApplicationFormatDate("en", fechaEntrega));
 			
-			String fechaUnica="", fechaRecibosPrimeros="", fechaRecibosRecurrentes="", fechaRecibosCOR1="", fechaRecibosB2B="";
-			if (form.getFechaTipoUnica().equals("1")) {
-				fechaUnica = form.getFechaCargoUnica();
-				bean.setFechaCargoUnica(GstDate.getApplicationFormatDate("en", fechaUnica));
-				
-			} else { 
-				fechaRecibosPrimeros = form.getFechaRecibosPrimeros();
-				fechaRecibosRecurrentes = form.getFechaRecibosRecurrentes();
-				fechaRecibosCOR1 = form.getFechaRecibosCOR1();
-				fechaRecibosB2B = form.getFechaRecibosB2B();
-				bean.setFechaRecibosPrimeros(GstDate.getApplicationFormatDate("en", fechaRecibosPrimeros));
-				bean.setFechaRecibosRecurrentes(GstDate.getApplicationFormatDate("en", fechaRecibosRecurrentes));
-				bean.setFechaRecibosCOR1(GstDate.getApplicationFormatDate("en", fechaRecibosCOR1));
-				bean.setFechaRecibosB2B(GstDate.getApplicationFormatDate("en", fechaRecibosB2B));
-			}			
+			String fechaRecibosPrimeros = form.getFechaRecibosPrimeros();
+			String fechaRecibosRecurrentes = form.getFechaRecibosRecurrentes();
+			String fechaRecibosCOR1 = form.getFechaRecibosCOR1();
+			String fechaRecibosB2B = form.getFechaRecibosB2B();
+			bean.setFechaRecibosPrimeros(GstDate.getApplicationFormatDate("en", fechaRecibosPrimeros));
+			bean.setFechaRecibosRecurrentes(GstDate.getApplicationFormatDate("en", fechaRecibosRecurrentes));
+			bean.setFechaRecibosCOR1(GstDate.getApplicationFormatDate("en", fechaRecibosCOR1));
+			bean.setFechaRecibosB2B(GstDate.getApplicationFormatDate("en", fechaRecibosB2B));
 			
 			// Controlar que las fechas cumplen los dias habiles introducidos en parametros generales
 			FacDisqueteCargosAdm admDisqueteCargos = new FacDisqueteCargosAdm(this.getUserBean(request));	
-			if (!admDisqueteCargos.controlarFechasFicheroBancario(idInstitucion, fechaEntrega, fechaUnica, fechaRecibosPrimeros, fechaRecibosRecurrentes, fechaRecibosCOR1, fechaRecibosB2B, form.getFechaTipoUnica(), fechaPrevistaConfirmacion)) {
+			if (!admDisqueteCargos.controlarFechasFicheroBancario(idInstitucion, fechaEntrega, fechaRecibosPrimeros, fechaRecibosRecurrentes, fechaRecibosCOR1, fechaRecibosB2B, fechaPrevistaConfirmacion)) {
 				throw new SIGAException("facturacion.ficheroBancarioPagos.errorMandatos.mensajeFechas");
 			}					
 			
@@ -1553,17 +1519,12 @@ public class ConfirmarFacturacionAction extends MasterAction{
 	 * @throws SIGAException
 	 * @throws Exception
 	 */
-	protected void getAjaxFechasFicheroBancario(ActionMapping mapping, 		
-			MasterForm formulario, 
-			HttpServletRequest request, 
-			HttpServletResponse response) throws SIGAException ,Exception {
-
+	protected void getAjaxFechasFicheroBancario(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException ,Exception {
 		FacDisqueteCargosAdm admDisqueteCargos = new FacDisqueteCargosAdm(this.getUserBean(request));	
-		HashMap fechas=admDisqueteCargos.getFechasCargo (this.getUserBean(request).getLocation(),(String)request.getParameter("fechaPresentacion"),this.getUserBean(request));
+		HashMap fechas=admDisqueteCargos.getFechasCargo (this.getUserBean(request).getLocation(), (String)request.getParameter("fechaPresentacion"));
 
 		JSONObject json = new JSONObject();	
 		
-		json.put("fechaUnicaCargos", fechas.get("fechaUnicaCargos").toString());
 		json.put("fechaPrimerosRecibos", fechas.get("fechaPrimerosRecibos").toString());
 		json.put("fechaRecibosRecurrentes", fechas.get("fechaRecibosRecurrentes").toString());
 		json.put("fechaRecibosCOR1", fechas.get("fechaRecibosCOR1").toString());
@@ -1576,5 +1537,4 @@ public class ConfirmarFacturacionAction extends MasterAction{
 	    response.setHeader("X-JSON", json.toString());
 		response.getWriter().write(json.toString()); 
 	}	
-	
 }

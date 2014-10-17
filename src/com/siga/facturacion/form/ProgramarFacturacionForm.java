@@ -20,13 +20,11 @@ import com.siga.general.MasterForm;
 public class ProgramarFacturacionForm extends MasterForm{
 	
 	private String idTipoPlantillaMail;
-	private String fechaCargoUnica;
 	private String fechaPresentacion;
 	private String fechaRecibosPrimeros;
 	private String fechaRecibosRecurrentes;
 	private String fechaRecibosCOR1;
 	private String fechaRecibosB2B;
-	private String fechaTipoUnica;
 	
 	/**
 	 * @param finalProducto The fFinalProducto to set.
@@ -319,12 +317,6 @@ public class ProgramarFacturacionForm extends MasterForm{
 	public void setIdTipoPlantillaMail(String idTipoPlantillaMail) {
 		this.idTipoPlantillaMail = idTipoPlantillaMail;
 	}
-	public String getFechaCargoUnica() {
-		return fechaCargoUnica;
-	}
-	public void setFechaCargoUnica(String fechaCargoUnica) {
-		this.fechaCargoUnica = fechaCargoUnica;
-	}
 	public String getFechaPresentacion() {
 		return fechaPresentacion;
 	}
@@ -355,10 +347,4 @@ public class ProgramarFacturacionForm extends MasterForm{
 	public void setFechaRecibosB2B(String fechaRecibosB2B) {
 		this.fechaRecibosB2B = fechaRecibosB2B;
 	}
-	public String getFechaTipoUnica() {
-		return fechaTipoUnica;
-	}
-	public void setFechaTipoUnica(String fechaTipoUnica) {
-		this.fechaTipoUnica = fechaTipoUnica;
-	}	
 }

@@ -52,28 +52,21 @@
 			if(validarFechasSEPA()){		
 				if (confirm('<siga:Idioma key="facturacion.ficheroBancarioPagos.literal.confirmarFicheroRenegociaciones"/>')) {
 					document.ficheroBancarioPagosForm.fechaEntrega.value = jQuery("#fechaPresentacion").val();
-					
-					if (jQuery("input[name='radioAccion']:checked").val() == "0") { //Checkeado Unica
-						document.ficheroBancarioPagosForm.fechaTipoUnica.value = "1";
-						document.ficheroBancarioPagosForm.fechaUnica.value = jQuery("#fechaCargoUnica").val();	
-					} else {
-						document.ficheroBancarioPagosForm.fechaTipoUnica.value = "0";
-						document.ficheroBancarioPagosForm.fechaFRST.value = jQuery("#fechaRecibosPrimeros").val();
-						document.ficheroBancarioPagosForm.fechaRCUR.value = jQuery("#fechaRecibosRecurrentes").val();
-						document.ficheroBancarioPagosForm.fechaCOR1.value = jQuery("#fechaRecibosCOR1").val();
-						document.ficheroBancarioPagosForm.fechaB2B.value = jQuery("#fechaRecibosB2B").val();	
-					}
+					document.ficheroBancarioPagosForm.fechaFRST.value = jQuery("#fechaRecibosPrimeros").val();
+					document.ficheroBancarioPagosForm.fechaRCUR.value = jQuery("#fechaRecibosRecurrentes").val();
+					document.ficheroBancarioPagosForm.fechaCOR1.value = jQuery("#fechaRecibosCOR1").val();
+					document.ficheroBancarioPagosForm.fechaB2B.value = jQuery("#fechaRecibosB2B").val();	
 					
 					document.ficheroBancarioPagosForm.modo.value = "generarFichero";
 					document.ficheroBancarioPagosForm.target = 'submitArea';					
 					
 					var nombreFormulario = document.ficheroBancarioPagosForm.name;	
 					window.frames.submitArea.location='<%=app%>/html/jsp/general/loadingWindowOpener.jsp?formName=' + nombreFormulario + '&msg=facturacion.ficheroBancarioPagos.mensaje.generandoFicheros';
-					//document.ficheroBancarioPagosForm.submit();
 					
 				} else {
 					fin();
 				}
+				
 			} else {
 				fin();
 			}
@@ -102,12 +95,10 @@
 	
 	<html:form action="/FAC_DisqueteCargos.do" method="POST" target="submitArea">
 		<html:hidden name="ficheroBancarioPagosForm" property="fechaEntrega" value=""/>
-		<html:hidden name="ficheroBancarioPagosForm" property="fechaUnica" value=""/>
 		<html:hidden name="ficheroBancarioPagosForm" property="fechaFRST" value=""/>
 		<html:hidden name="ficheroBancarioPagosForm" property="fechaRCUR" value=""/>
 		<html:hidden name="ficheroBancarioPagosForm" property="fechaCOR1" value=""/>
 		<html:hidden name="ficheroBancarioPagosForm" property="fechaB2B" value=""/>
-		<html:hidden name="ficheroBancarioPagosForm" property="fechaTipoUnica" value=""/>
 		<html:hidden name="ficheroBancarioPagosForm" property="modo" value=""/>	
 	</html:form>		
 		
