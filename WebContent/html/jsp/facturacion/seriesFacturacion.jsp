@@ -129,8 +129,7 @@
 			desplegar = "false";
 		}else{
 			if(hash.get(FacFacturacionProgramadaBean.C_IDESTADOCONFIRMACION) != null &&
-					(idEstadoConfirmacion.equals(FacEstadoConfirmFactBean.CONFIRM_FINALIZADA.toString()) ||	idEstadoConfirmacion.equals(FacEstadoConfirmFactBean.CONFIRM_PROGRAMADA.toString()) ||
-					idEstadoConfirmacion.equals(FacEstadoConfirmFactBean.GENERADA.toString()))){
+					(idEstadoConfirmacion.equals(FacEstadoConfirmFactBean.CONFIRM_FINALIZADA.toString()) ||	idEstadoConfirmacion.equals(FacEstadoConfirmFactBean.CONFIRM_PROGRAMADA.toString()))){
 				desplegar = "false";
 			}
 		}
@@ -381,7 +380,7 @@
 			
 			if(<%=nuevo%>){				
 				if (trim(fechaConf)!="") {
-					var type = "NO ES RECOMENDABLE programar una confirmación antes de revisar el resultado de la generación. ¿Desea continuar con la programación de la confirmación?";
+					var type = '<siga:Idioma key="facturacion.mantenimientoFacturacion.mensaje.alertaConfirmacion"/>';
 					if(confirm(type)){
 						f.modo.value = "insertar";
 					}
@@ -395,7 +394,7 @@
 				
 				if(<%=desplegar%>){				
 					if (trim(fechaConf)!="") {
-						var type = "NO ES RECOMENDABLE programar una confirmación antes de revisar el resultado de la generación. ¿Desea continuar con la programación de la confirmación?";
+						var type = '<siga:Idioma key="facturacion.mantenimientoFacturacion.mensaje.alertaConfirmacion"/>';
 						if(confirm(type)){
 							f.modo.value = "modificar";
 						}

@@ -100,52 +100,47 @@
 			<siga:ConjCampos leyenda="facturacion.confirmarFacturacion.literal.camposBusqueda">	
 			<table class="tablaCampos" align="center">
 				<tr>				
-					
-
 					<td  class="labelText"><siga:Idioma key="facturacion.confirmarFacturacion.literal.fechaRealGeneracion"/>&nbsp;<siga:Idioma key="general.literal.desde"/>
 					</td>
-					<td >
-						<siga:Fecha nombreCampo="fechaDesdeGeneracion" />
+					<td>
+						<siga:Fecha styleId="fechaDesdeGeneracion" nombreCampo="fechaDesdeGeneracion" valorInicial="${confirmarFacturacionForm.fechaDesdeGeneracion}" />
 					</td>
 		
 					<td class="labelText"><siga:Idioma key="facturacion.confirmarFacturacion.literal.fechaRealGeneracion"/>&nbsp;<siga:Idioma key="general.literal.hasta"/></td>
 					<td>
-						<siga:Fecha nombreCampo="fechaHastaGeneracion"  />
+						<siga:Fecha styleId="fechaHastaGeneracion" nombreCampo="fechaHastaGeneracion"  />
 					</td>
 				</tr>
 		
 				<tr>				
-
 					<td class="labelText"><siga:Idioma key="facturacion.confirmarFacturacion.literal.fechaConfirmacion"/>&nbsp;<siga:Idioma key="general.literal.desde"/></td>
 					<td>
-						<siga:Fecha nombreCampo="fechaDesdeConfirmacion" />
+						<siga:Fecha styleId="fechaDesdeConfirmacion" nombreCampo="fechaDesdeConfirmacion" />
 					</td>
 
 					<td class="labelText"><siga:Idioma key="facturacion.confirmarFacturacion.literal.fechaConfirmacion"/>&nbsp;<siga:Idioma key="general.literal.hasta"/></td>
 					<td>
-						<siga:Fecha nombreCampo="fechaHastaConfirmacion" />
+						<siga:Fecha styleId="fechaHastaConfirmacion" nombreCampo="fechaHastaConfirmacion" />
 					</td>
 				</tr>
-			
 			
 				<tr>				
 					<td class="labelText"><siga:Idioma key="facturacion.estado"/> (*)</td>
 					<td>
-						<siga:ComboBD nombre = "estadoConfirmacion" tipo="cmbEstadoConfirmacion"  clase="boxCombo" obligatorio="true" parametro="<%=dato%>" elementoSel="<%=estadoConfirmacionSel%>" />						
+						<siga:ComboBD nombre = "estadoConfirmacion" tipo="cmbEstadoConfirmacion"  clase="boxCombo" obligatorio="true" parametro="<%=dato%>" elementoSel="<%=estadoConfirmacionSel%>" accion="accionEstado()"/>						
 					</td>
 
 					<td class="labelText"><siga:Idioma key="facturacion.confirmarFacturacion.literal.estadoPDF"/></td>
 					<td>
 						<siga:ComboBD nombre = "estadoPDF" tipo="cmbEstadoPDF"  clase="boxCombo" obligatorio="false" parametro="<%=dato%>" />						
 					</td>
-		
 				</tr>
+				
 				<tr>				
 					<td class="labelText"><siga:Idioma key="facturacion.confirmarFacturacion.literal.estadoEnvio"/></td>
 					<td>
 						<siga:ComboBD nombre = "estadoEnvios" tipo="cmbEstadoEnvios"  clase="boxCombo" obligatorio="false" parametro="<%=dato%>"/>						
 					</td>
-
 					<td class="labelText"><siga:Idioma key="facturacion.confirmarFacturacion.literal.archivadas"/></td>
 					<td >
 						<input type="checkbox" value="1" name="archivadas">
@@ -194,15 +189,21 @@
 		{
 			sub();	
 			if (validateConfirmarFacturacion1Form(document.confirmarFacturacionForm)){
+				
+				if((jQuery("#estadoConfirmacion").val() != 18 && jQuery("#estadoConfirmacion").val() != 19) && (jQuery("#fechaDesdeGeneracion").val() == "")){
+					alert("Es obligatorio rellenar la Fecha Real de Generacion Desde");
+					fin();
+					return false;
+				}
+				
 				setFilaSeleccionadaD('true');
 				document.confirmarFacturacionForm.modo.value = "buscarInit";
 				document.confirmarFacturacionForm.submit();
 				setFilaSeleccionadaD('false');
-			}else{
-			
+				
+			}else{			
 				fin();
 				return false;
-			
 			}
 		}
 		
@@ -214,6 +215,16 @@
 			document.confirmarFacturacionForm.submit();
 		}		
 
+		function accionEstado() {
+			if(jQuery("#estadoConfirmacion").val() == 18 || jQuery("#estadoConfirmacion").val() == 19){
+				jQuery("#fechaDesdeGeneracion").val(null);
+				jQuery("#fechaHastaGeneracion").val(null);
+				jQuery("#fechaDesdeConfirmacion").val(null);
+				jQuery("#fechaHastaConfirmacion").val(null);
+			} else{
+				jQuery("#fechaDesdeGeneracion").val("${confirmarFacturacionForm.fechaDesdeGeneracion}");
+			}
+		}
 
 	</script>
 	
