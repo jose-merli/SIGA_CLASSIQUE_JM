@@ -81,7 +81,7 @@
 </head>
 
 
-<body onLoad="ajusteAlto('resultado');">
+<body onLoad="ajusteAlto('resultado');accionEstado();">
 
 
 	<!-- ******* BOTONES Y CAMPOS DE BUSQUEDA ****** -->
@@ -100,8 +100,8 @@
 			<siga:ConjCampos leyenda="facturacion.confirmarFacturacion.literal.camposBusqueda">	
 			<table class="tablaCampos" align="center">
 				<tr>				
-					<td  class="labelText"><siga:Idioma key="facturacion.confirmarFacturacion.literal.fechaRealGeneracion"/>&nbsp;<siga:Idioma key="general.literal.desde"/>
-					</td>
+					<td  class="labelText"  width="210px" id="fechaRealGeneracionSinAsterisco"><siga:Idioma key="facturacion.confirmarFacturacion.literal.fechaRealGeneracion"/>&nbsp;<siga:Idioma key="general.literal.desde"/></td>
+					<td  class="labelText"  width="210px" id="fechaRealGeneracionConAsterisco"><siga:Idioma key="facturacion.confirmarFacturacion.literal.fechaRealGeneracion"/>&nbsp;<siga:Idioma key="general.literal.desde"/>&nbsp;(*)</td>
 					<td>
 						<siga:Fecha styleId="fechaDesdeGeneracion" nombreCampo="fechaDesdeGeneracion" valorInicial="${confirmarFacturacionForm.fechaDesdeGeneracion}" />
 					</td>
@@ -217,11 +217,15 @@
 
 		function accionEstado() {
 			if(jQuery("#estadoConfirmacion").val() == 18 || jQuery("#estadoConfirmacion").val() == 19){
+				jQuery('#fechaRealGeneracionConAsterisco').hide();
+				jQuery('#fechaRealGeneracionSinAsterisco').show();
 				jQuery("#fechaDesdeGeneracion").val(null);
 				jQuery("#fechaHastaGeneracion").val(null);
 				jQuery("#fechaDesdeConfirmacion").val(null);
 				jQuery("#fechaHastaConfirmacion").val(null);
 			} else{
+				jQuery('#fechaRealGeneracionSinAsterisco').hide();
+				jQuery('#fechaRealGeneracionConAsterisco').show();
 				jQuery("#fechaDesdeGeneracion").val("${confirmarFacturacionForm.fechaDesdeGeneracion}");
 			}
 		}
