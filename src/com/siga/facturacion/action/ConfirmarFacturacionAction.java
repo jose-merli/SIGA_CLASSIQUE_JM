@@ -642,7 +642,7 @@ public class ConfirmarFacturacionAction extends MasterAction{
 			throw new SIGAException("messages.general.error");
 		}
 	
-		return "abrirFechaCargo";
+		return "editarFechas";
 	}
 
 	/** 
