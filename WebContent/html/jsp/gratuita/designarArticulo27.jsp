@@ -939,6 +939,7 @@
 						jQuery("#nombre").attr("disabled","disabled");
 						jQuery("#apellido1").attr("disabled","disabled");
 						jQuery("#apellido2").attr("disabled","disabled");
+						
 					}
 	
 					//Aparecen los menus de abajo
@@ -1080,7 +1081,7 @@
 						<siga:Idioma key="censo.consultaDatosGenerales.literal.nIdentificacion"/>&nbsp;(*)
 					</td>				
 					<td colspan="3">
-  				        <html:text name="datosGeneralesForm" property="numIdentificacion" size="20" maxlength="20" styleClass="<%=estiloCajaNif%>" value="<%=nIdentificacion%>" onblur="rellenarComboIden()" onmousedown="bloquearBuscar()"></html:text>
+  				        <html:text name="datosGeneralesForm" property="numIdentificacion" styleId="numIdentificacion" size="20" maxlength="20" styleClass="<%=estiloCajaNif%>" value="<%=nIdentificacion%>" onblur="rellenarComboIden()" onmousedown="bloquearBuscar()"></html:text>
   				        <siga:ComboBD nombre = "tipoIdentificacion" tipo="cmbTipoIdentificacionSinCIF" clase="box" obligatorio="true" elementoSel="<%=tipoIdentificacionSel%>" />
   				        <img id="info_existe" src="/SIGA/html/imagenes/nuevo.gif" alt="<siga:Idioma key="gratuita.volantesExpres.mensaje.esNuevaPersonaJG"/>"/>		
 					</td>
