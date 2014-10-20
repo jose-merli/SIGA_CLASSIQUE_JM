@@ -139,6 +139,12 @@
 			sFProgramacion = UtilidadesString.formatoFecha(new Date(),"dd/MM/yyyy");
 		}	
 	}
+	
+	boolean bObligatorioFechasSEPA = true; // Esta variable es necesaria para fechasFicheroBancario.jsp
+	if ((modoAction!=null && modoAction.trim().equals("nuevaPrevision")) ||
+		(modoAction!=null && modoAction.trim().equals("editar") && idEstadoConfirmacion.equals(FacEstadoConfirmFactBean.GENERACION_PROGRAMADA.toString()))) {
+		bObligatorioFechasSEPA = false;
+	}
 		
 	String iconos="E,B";
 	String botones="N"; 
@@ -358,16 +364,12 @@
 					return false;
 				}
 			}
-			
-			<%	if(modoAction!= null && !modoAction.trim().equals("nuevaPrevision")) { %>
-			
-				//CR7 - Validacion de las fehas nuevas SEPA. Para nuevas previsiones no es obligatorio
-				if(!validarFechasSEPA()){
-					fin();
-					return false;
-				}
-			
-			<% } %>
+						
+			//CR7 - Validacion de las fehas nuevas SEPA. Para nuevas previsiones no es obligatorio
+			if(!validarFechasSEPA()) {
+				fin();
+				return false;
+			}
 			
 			if(<%=nuevo%>){				
 				if (trim(fechaConf)!="") {

@@ -156,7 +156,7 @@
 %>
 			deshabilitar();
 <%
-		} else if(modoAction!=null && modoAction.trim().equals("nuevaPrevision")) { 
+		} else if (!bObligatorioFechasSEPA) { 
 %>
 			jQuery('#fechaPresentacionConAsterisco').hide();
 			jQuery('#fechaRecibosPrimerosConAsterisco').hide();
@@ -206,17 +206,27 @@
 		jQuery('#fechaRecibosB2BSinAsterisco').show();	
 	}
 	
-	function validarFechasSEPA(){		
-		// La fecha de presentacion es obligatoria
-		if(jQuery('#fechaPresentacion').val() == ""){
-			alert('<siga:Idioma key="facturacion.fechasficherobancario.msgerror.fechapresentacion"/>');
-			return false;
-		}
-		
-		if(jQuery('#fechaRecibosRecurrentes').val() == "" || jQuery('#fechaRecibosPrimeros').val() == "" || jQuery('#fechaRecibosCOR1').val() == "" || jQuery('#fechaRecibosB2B').val() == ""){
-			alert('<siga:Idioma key="facturacion.fechasficherobancario.msgerror.fechasminimas"/>');
-			return false;
-		}
+	function validarFechasSEPA(){
+		if (<%=bObligatorioFechasSEPA%>) {
+			// La fecha de presentacion es obligatoria
+			if(jQuery('#fechaPresentacion').val() == ""){
+				alert('<siga:Idioma key="facturacion.fechasficherobancario.msgerror.fechapresentacion"/>');
+				return false;
+			}
+			
+			if(jQuery('#fechaRecibosRecurrentes').val() == "" || jQuery('#fechaRecibosPrimeros').val() == "" || jQuery('#fechaRecibosCOR1').val() == "" || jQuery('#fechaRecibosB2B').val() == ""){
+				alert('<siga:Idioma key="facturacion.fechasficherobancario.msgerror.fechasminimas"/>');
+				return false;
+			}
+			
+		} else {
+			// Si hay alguna fecha indicada, deben venir todas indicadas
+			if ((jQuery('#fechaPresentacion').val() != "" || jQuery('#fechaRecibosRecurrentes').val() != "" || jQuery('#fechaRecibosPrimeros').val() != "" || jQuery('#fechaRecibosCOR1').val() != "" || jQuery('#fechaRecibosB2B').val() != "") &&
+				(jQuery('#fechaPresentacion').val() == "" || jQuery('#fechaRecibosRecurrentes').val() == "" || jQuery('#fechaRecibosPrimeros').val() == "" || jQuery('#fechaRecibosCOR1').val() == "" || jQuery('#fechaRecibosB2B').val() == "")) {
+					alert('<siga:Idioma key="facturacion.fechasficherobancario.msgerror.fechasminimas"/>');
+					return false;
+			}
+		}			
 		
 		return true;
 	}

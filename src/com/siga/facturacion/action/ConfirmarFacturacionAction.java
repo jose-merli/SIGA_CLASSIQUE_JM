@@ -640,12 +640,17 @@ public class ConfirmarFacturacionAction extends MasterAction{
 	protected String nuevo(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		
 		try {
-			String idInstitucion	 = this.getIDInstitucion(request).toString();
 			UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");
+			String idInstitucion = user.getLocation();
 			
-			// Calcula las fechas para el fichero bancario a partir de la fecha de presentación
+			// Obtiene los parametros necesarios para la configuracion de las fechas del fichero bancario 
 			FacDisqueteCargosAdm admDisqueteCargos = new FacDisqueteCargosAdm(user);	
-			admDisqueteCargos.getFechasCargo (idInstitucion, null);
+			HashMap fechas = admDisqueteCargos.getParametrosFechasCargo(idInstitucion);
+			
+			request.setAttribute("habilesPrimerosRecibos",fechas.get("habilesPrimerosRecibos").toString());
+			request.setAttribute("habilesRecibosRecurrentes",fechas.get("habilesRecibosRecurrentes").toString());
+			request.setAttribute("habilesRecibosCOR1",fechas.get("habilesRecibosCOR1").toString());
+			request.setAttribute("habilesRecibosB2B",fechas.get("habilesRecibosB2B").toString());			
 			
 			// Esto sirve para indicar el action que se ha utilizado para utilizar AJAX posteriormente
 			request.setAttribute("accionInit", "FAC_ConfirmarFacturacion");
@@ -976,9 +981,10 @@ public class ConfirmarFacturacionAction extends MasterAction{
 	protected String editarFechas(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		String result="editarFechas";
 		try{
-			
 			HttpSession ses = request.getSession();
-			String idInstitucion = this.getIDInstitucion(request).toString();			
+			UsrBean user = (UsrBean) ses.getAttribute("USRBEAN");
+			String idInstitucion = user.getLocation();
+
 			ConfirmarFacturacionForm form = (ConfirmarFacturacionForm)formulario;
 			Vector ocultos = (Vector)form.getDatosTablaOcultos(0);			
 			String idSerieFacturacion, idProgramacion;
@@ -1001,44 +1007,29 @@ public class ConfirmarFacturacionAction extends MasterAction{
 			
 			String[] orden = {FacFacturacionProgramadaBean.C_FECHAPREVISTAGENERACION};
 
-			FacFacturacionProgramadaAdm admFacturacionProgramada = new FacFacturacionProgramadaAdm(this.getUserBean(request));
+			FacFacturacionProgramadaAdm admFacturacionProgramada = new FacFacturacionProgramadaAdm(user);
 			Vector vDatos = admFacturacionProgramada.selectDatosFacturacion(sWhere, orden);			
 			
 			/** CR7 - Control de fechas de presentación y cargo en ficheros SEPA **/
 			Hashtable hash = (Hashtable) vDatos.get(0);
-			GenParametrosAdm admParametros = new GenParametrosAdm(this.getUserBean(request));
+			GenParametrosAdm admParametros = new GenParametrosAdm(user);
 			String fechaPresentacion = GstDate.getFormatedDateShort("es",(String)hash.get("FECHAPRESENTACION"));
 			String fechaPrimerosRecibos = "";
 			String fechaRecibosRecurrentes = "";
 			String fechaRecibosCOR1 = "";
 			String fechaRecibosB2B = "";
 					
-			FacDisqueteCargosAdm admDisqueteCargos = new FacDisqueteCargosAdm(this.getUserBean(request));	
+			FacDisqueteCargosAdm admDisqueteCargos = new FacDisqueteCargosAdm(user);	
 
-			HashMap fechas=new HashMap();
+			// Obtiene los parametros necesarios para la configuracion de las fechas del fichero bancario
+			HashMap fechas = admDisqueteCargos.getParametrosFechasCargo(idInstitucion);
 			
-			if((fechaPresentacion!=null)&&(!fechaPresentacion.isEmpty()))
-				fechas=admDisqueteCargos.getFechasCargo (idInstitucion,fechaPresentacion);
-			
-			//Son las programacioens antiguas, por tanto no tienen ni fecha de presentacion ni ningun tipo de fecha SEPA
-			else{
-				fechaPresentacion = GstDate.getHoyJsp(); // Obtengo la fecha actual
-				fechas=admDisqueteCargos.getFechasCargo (idInstitucion,fechaPresentacion);
-			}
-			
-			
-			if (hash.get("FECHARECIBOSPRIMEROS")!=null && !((String)hash.get("FECHARECIBOSPRIMEROS")).equals("")) {
+			if (fechaPresentacion!=null && !fechaPresentacion.isEmpty()) {
 				fechaPrimerosRecibos = GstDate.getFormatedDateShort("es",(String)hash.get("FECHARECIBOSPRIMEROS"));
 				fechaRecibosRecurrentes = GstDate.getFormatedDateShort("es",(String)hash.get("FECHARECIBOSRECURRENTES"));
 				fechaRecibosCOR1 = GstDate.getFormatedDateShort("es",(String)hash.get("FECHARECIBOSCOR1"));
 				fechaRecibosB2B = GstDate.getFormatedDateShort("es",(String)hash.get("FECHARECIBOSB2B"));
-			
-			} else { //Son las programacioens antiguas, por tanto no tienen ni fecha de presentacion ni ningun tipo de fecha SEPA		
-				fechaPrimerosRecibos = fechas.get("fechaPrimerosRecibos").toString();
-				fechaRecibosRecurrentes = fechas.get("fechaRecibosRecurrentes").toString();
-				fechaRecibosCOR1 = fechas.get("fechaRecibosCOR1").toString();
-				fechaRecibosB2B = fechas.get("fechaRecibosB2B").toString();
-			}						
+			}
 			
 			request.setAttribute("fechaPresentacion",fechaPresentacion);
 			request.setAttribute("fechaPrimerosRecibos",fechaPrimerosRecibos);
@@ -1328,11 +1319,13 @@ public class ConfirmarFacturacionAction extends MasterAction{
 			bean.setFechaRecibosCOR1(GstDate.getApplicationFormatDate("en", fechaRecibosCOR1));
 			bean.setFechaRecibosB2B(GstDate.getApplicationFormatDate("en", fechaRecibosB2B));
 			
-			// Controlar que las fechas cumplen los dias habiles introducidos en parametros generales
-			FacDisqueteCargosAdm admDisqueteCargos = new FacDisqueteCargosAdm(this.getUserBean(request));	
-			if (!admDisqueteCargos.controlarFechasFicheroBancario(idInstitucion, fechaEntrega, fechaRecibosPrimeros, fechaRecibosRecurrentes, fechaRecibosCOR1, fechaRecibosB2B, fechaPrevistaConfirmacion)) {
-				throw new SIGAException("facturacion.ficheroBancarioPagos.errorMandatos.mensajeFechas");
-			}					
+			if (fechaEntrega!=null && !fechaEntrega.equals("")) {
+				// Controlar que las fechas cumplen los dias habiles introducidos en parametros generales
+				FacDisqueteCargosAdm admDisqueteCargos = new FacDisqueteCargosAdm(this.getUserBean(request));	
+				if (!admDisqueteCargos.controlarFechasFicheroBancario(idInstitucion, fechaEntrega, fechaRecibosPrimeros, fechaRecibosRecurrentes, fechaRecibosCOR1, fechaRecibosB2B, fechaPrevistaConfirmacion)) {
+					throw new SIGAException("facturacion.ficheroBancarioPagos.errorMandatos.mensajeFechas");
+				}
+			}
 			
 			// tratamiento de estados de la programacion 
 			bean = adm.tratamientoEstadosProgramacion(bean);
@@ -1520,8 +1513,11 @@ public class ConfirmarFacturacionAction extends MasterAction{
 	 * @throws Exception
 	 */
 	protected void getAjaxFechasFicheroBancario(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException ,Exception {
-		FacDisqueteCargosAdm admDisqueteCargos = new FacDisqueteCargosAdm(this.getUserBean(request));	
-		HashMap fechas=admDisqueteCargos.getFechasCargo (this.getUserBean(request).getLocation(), (String)request.getParameter("fechaPresentacion"));
+		UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");
+		String idInstitucion = user.getLocation();
+		
+		FacDisqueteCargosAdm admDisqueteCargos = new FacDisqueteCargosAdm(user);	
+		HashMap fechas=admDisqueteCargos.getFechasCargo (idInstitucion, (String)request.getParameter("fechaPresentacion"));
 
 		JSONObject json = new JSONObject();	
 		

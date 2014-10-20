@@ -33,6 +33,7 @@
 	String nombreFichero = (String) request.getAttribute("nombreFichero");
 
 	String modoAction = ""; //NO BORRAR
+	boolean bObligatorioFechasSEPA = true; // Esta variable es necesaria para fechasFicheroBancario.jsp
 %>
 
 	<!-- HEAD -->

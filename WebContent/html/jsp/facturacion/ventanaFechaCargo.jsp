@@ -26,6 +26,7 @@
 	String app = request.getContextPath();
 	UsrBean usr=(UsrBean)request.getSession().getAttribute("USRBEAN");
 	String modoAction = ""; //NO BORRAR
+	boolean bObligatorioFechasSEPA = true; // Esta variable es necesaria para fechasFicheroBancario.jsp
 %>
 
 

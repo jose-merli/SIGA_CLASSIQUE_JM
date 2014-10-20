@@ -385,28 +385,19 @@ public class FacDisqueteCargosAdm extends MasterBeanAdministrador {
 		HashMap fechas = new HashMap();
 		
 		try{
-			GenParametrosAdm admParametros = new GenParametrosAdm(this.usrbean);
-			
-			String habilesPrimerosRecibos = admParametros.getValor(idInstitucion, "FAC", "DIAS_HABILES_PRIMEROS_RECIBOS", "7");
-			String habilesRecibosRecurrentes = admParametros.getValor(idInstitucion, "FAC", "DIAS_HABILES_RECIBOS_RECURRENTES", "4");
-			String habilesRecibosCOR1 = admParametros.getValor(idInstitucion, "FAC", "DIAS_HABILES_RECIBOS_COR1", "3");
-			String habilesRecibosB2B = admParametros.getValor(idInstitucion, "FAC", "DIAS_HABILES_RECIBOS_B2B", "3");
-			
-			fechas.put("habilesPrimerosRecibos", habilesPrimerosRecibos);
-			fechas.put("habilesRecibosRecurrentes", habilesRecibosRecurrentes);
-			fechas.put("habilesRecibosCOR1", habilesRecibosCOR1);
-			fechas.put("habilesRecibosB2B", habilesRecibosB2B);
+			// Obtiene los parametros necesarios para la configuracion de las fechas del fichero bancario 
+			fechas = this.getParametrosFechasCargo(idInstitucion);		
 			
 			if (fechaPresentacion!=null && !fechaPresentacion.equals("")) {
-				fechas.put("fechaPrimerosRecibos", EjecucionPLs.ejecutarSumarDiasHabiles(fechaPresentacion,habilesPrimerosRecibos));
-				fechas.put("fechaRecibosRecurrentes", EjecucionPLs.ejecutarSumarDiasHabiles(fechaPresentacion,habilesRecibosRecurrentes));
-				fechas.put("fechaRecibosCOR1", EjecucionPLs.ejecutarSumarDiasHabiles(fechaPresentacion,habilesRecibosCOR1));
-				fechas.put("fechaRecibosB2B", EjecucionPLs.ejecutarSumarDiasHabiles(fechaPresentacion,habilesRecibosB2B));
-			} else {
-				fechas.put("fechaPrimerosRecibos", "");
-				fechas.put("fechaRecibosRecurrentes", "");
-				fechas.put("fechaRecibosCOR1", "");
-				fechas.put("fechaRecibosB2B", "");
+				String habilesPrimerosRecibos = fechas.get("habilesPrimerosRecibos").toString();
+				String habilesRecibosRecurrentes = fechas.get("habilesRecibosRecurrentes").toString();
+				String habilesRecibosCOR1 = fechas.get("habilesRecibosCOR1").toString();
+				String habilesRecibosB2B = fechas.get("habilesRecibosB2B").toString();				
+				
+				fechas.put("fechaPrimerosRecibos", EjecucionPLs.ejecutarSumarDiasHabiles(fechaPresentacion, habilesPrimerosRecibos));
+				fechas.put("fechaRecibosRecurrentes", EjecucionPLs.ejecutarSumarDiasHabiles(fechaPresentacion, habilesRecibosRecurrentes));
+				fechas.put("fechaRecibosCOR1", EjecucionPLs.ejecutarSumarDiasHabiles(fechaPresentacion, habilesRecibosCOR1));
+				fechas.put("fechaRecibosB2B", EjecucionPLs.ejecutarSumarDiasHabiles(fechaPresentacion, habilesRecibosB2B));
 			}
 			
 		} catch (Exception e) {
@@ -423,4 +414,49 @@ public class FacDisqueteCargosAdm extends MasterBeanAdministrador {
 		
 		return fechas;
 	}
+	
+	/**
+	 * Obtiene los parametros necesarios para la configuracion de las fechas del fichero bancario 
+	 * Devuelve un HashMap con las fechas calculadas y los días hábiles
+	 * @param idInstitucion
+	 * @param fechaPresentacion
+	 * @return tabla con las fechas: fechaPrimerosRecibos, fechaRecibosRecurrentes, fechaRecibosCOR1, fechaRecibosB2B 
+	 * @throws ClsExceptions
+	 * @throws SIGAException
+	 */
+	public HashMap getParametrosFechasCargo (String idInstitucion) throws ClsExceptions, SIGAException {
+		HashMap fechas = new HashMap();
+		
+		try{
+			GenParametrosAdm admParametros = new GenParametrosAdm(this.usrbean);
+			
+			String habilesPrimerosRecibos = admParametros.getValor(idInstitucion, "FAC", "DIAS_HABILES_PRIMEROS_RECIBOS", "7");
+			String habilesRecibosRecurrentes = admParametros.getValor(idInstitucion, "FAC", "DIAS_HABILES_RECIBOS_RECURRENTES", "4");
+			String habilesRecibosCOR1 = admParametros.getValor(idInstitucion, "FAC", "DIAS_HABILES_RECIBOS_COR1", "3");
+			String habilesRecibosB2B = admParametros.getValor(idInstitucion, "FAC", "DIAS_HABILES_RECIBOS_B2B", "3");
+			
+			fechas.put("habilesPrimerosRecibos", habilesPrimerosRecibos);
+			fechas.put("habilesRecibosRecurrentes", habilesRecibosRecurrentes);
+			fechas.put("habilesRecibosCOR1", habilesRecibosCOR1);
+			fechas.put("habilesRecibosB2B", habilesRecibosB2B);
+			
+			fechas.put("fechaPrimerosRecibos", "");
+			fechas.put("fechaRecibosRecurrentes", "");
+			fechas.put("fechaRecibosCOR1", "");
+			fechas.put("fechaRecibosB2B", "");
+			
+		} catch (Exception e) {
+	   		if (e instanceof SIGAException){
+	   			throw (SIGAException)e;
+	   			
+	   		} else if (e instanceof ClsExceptions){
+	   				throw (ClsExceptions)e;
+
+   			} else {
+	   				throw new ClsExceptions(e, "Error al obtener las fechas del fichero bancario.");
+	   		}	
+	    }
+		
+		return fechas;
+	}	
 }

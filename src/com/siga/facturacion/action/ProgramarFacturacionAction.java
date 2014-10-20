@@ -28,6 +28,7 @@ import org.redabogacia.sigaservices.app.util.SIGAReferences;
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.GstDate;
+import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.beans.FacDisqueteCargosAdm;
@@ -172,7 +173,8 @@ public class ProgramarFacturacionAction extends MasterAction{
 			HashMap fechas=new HashMap();
 			
 			if (fechaPresentacion!=null && !fechaPresentacion.isEmpty()) {
-				fechas = admDisqueteCargos.getFechasCargo (idInstitucion.toString(), fechaPresentacion);
+				// Obtiene los parametros necesarios para la configuracion de las fechas del fichero bancario 
+				fechas = admDisqueteCargos.getParametrosFechasCargo(idInstitucion.toString());
 				
 				fechaPrimerosRecibos = GstDate.getFormatedDateShort("es",(String)hash.get("FECHARECIBOSPRIMEROS"));
 				fechaRecibosRecurrentes = GstDate.getFormatedDateShort("es",(String)hash.get("FECHARECIBOSRECURRENTES"));
@@ -183,7 +185,7 @@ public class ProgramarFacturacionAction extends MasterAction{
 			//Son las programaciones antiguas, por tanto no tienen ni fecha de presentacion ni ningun tipo de fecha SEPA
 			} else {
 				fechaPresentacion = GstDate.getHoyJsp(); // Obtengo la fecha actual
-				fechas=admDisqueteCargos.getFechasCargo (idInstitucion.toString(), fechaPresentacion);
+				fechas=admDisqueteCargos.getFechasCargo(idInstitucion.toString(), fechaPresentacion);
 				
 				fechaPrimerosRecibos = fechas.get("fechaPrimerosRecibos").toString();
 				fechaRecibosRecurrentes = fechas.get("fechaRecibosRecurrentes").toString();
@@ -192,12 +194,12 @@ public class ProgramarFacturacionAction extends MasterAction{
 			}
 			
 			request.setAttribute("fechaPresentacion",fechaPresentacion);
+			
 			request.setAttribute("fechaPrimerosRecibos",fechaPrimerosRecibos);
 			request.setAttribute("fechaRecibosRecurrentes",fechaRecibosRecurrentes);
 			request.setAttribute("fechaRecibosCOR1",fechaRecibosCOR1);
 			request.setAttribute("fechaRecibosB2B",fechaRecibosB2B);
 			
-			request.setAttribute("habilesUnicaCargos",fechas.get("habilesUnicaCargos").toString());
 			request.setAttribute("habilesPrimerosRecibos",fechas.get("habilesPrimerosRecibos").toString());
 			request.setAttribute("habilesRecibosRecurrentes",fechas.get("habilesRecibosRecurrentes").toString());
 			request.setAttribute("habilesRecibosCOR1",fechas.get("habilesRecibosCOR1").toString());
@@ -262,14 +264,16 @@ public class ProgramarFacturacionAction extends MasterAction{
 	protected String nuevo(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		try{
 			HttpSession ses = request.getSession();
-			request.getSession().setAttribute("DATABACKUP", null);	
+			ses.setAttribute("DATABACKUP", null);	
 			ses.setAttribute("ModoAction","editar");
+			UsrBean user = (UsrBean) ses.getAttribute("USRBEAN");
+			String idInstitucion = user.getLocation();
 			
 			/** CR7 - Control de fechas de presentación y cargo en ficheros SEPA **/
 			String fechaPresentacion = GstDate.getHoyJsp(); // Obtengo la fecha actual
 			
-			FacDisqueteCargosAdm admDisqueteCargos = new FacDisqueteCargosAdm(this.getUserBean(request));	
-			HashMap fechas=admDisqueteCargos.getFechasCargo (this.getUserBean(request).getLocation(), fechaPresentacion);
+			FacDisqueteCargosAdm admDisqueteCargos = new FacDisqueteCargosAdm(user);	
+			HashMap fechas=admDisqueteCargos.getFechasCargo (idInstitucion, fechaPresentacion);
 
 			request.setAttribute("fechaPresentacion",fechaPresentacion);
 			
@@ -727,9 +731,11 @@ public class ProgramarFacturacionAction extends MasterAction{
 	 * @throws Exception
 	 */
 	protected void getAjaxFechasFicheroBancario(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException ,Exception {
+		UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");
+		String idInstitucion = user.getLocation();
 
-		FacDisqueteCargosAdm admDisqueteCargos = new FacDisqueteCargosAdm(this.getUserBean(request));	
-		HashMap fechas=admDisqueteCargos.getFechasCargo(this.getUserBean(request).getLocation(), (String)request.getParameter("fechaPresentacion"));
+		FacDisqueteCargosAdm admDisqueteCargos = new FacDisqueteCargosAdm(user);	
+		HashMap fechas=admDisqueteCargos.getFechasCargo(idInstitucion, (String)request.getParameter("fechaPresentacion"));
 
 		JSONObject json = new JSONObject();	
 		

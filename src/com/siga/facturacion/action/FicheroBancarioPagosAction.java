@@ -673,9 +673,11 @@ public class FicheroBancarioPagosAction extends MasterAction{
 	 * @throws Exception
 	 */
 	protected void getAjaxFechasFicheroBancario(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException, Exception {
+		UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");
+		String idInstitucion = user.getLocation();
 
-		FacDisqueteCargosAdm admDisqueteCargos = new FacDisqueteCargosAdm(this.getUserBean(request));	
-		HashMap fechas = admDisqueteCargos.getFechasCargo (this.getUserBean(request).getLocation(), (String)request.getParameter("fechaPresentacion"));
+		FacDisqueteCargosAdm admDisqueteCargos = new FacDisqueteCargosAdm(user);	
+		HashMap fechas = admDisqueteCargos.getFechasCargo (idInstitucion, (String)request.getParameter("fechaPresentacion"));
 
 		JSONObject json = new JSONObject();	
 		
