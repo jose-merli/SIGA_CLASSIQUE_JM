@@ -101,8 +101,8 @@ public class SigaWSUploadDocResRem {
 			cajgRemesaResolucionBean.setPrefijo(contadorTablaHashRemesa.get(CajgRemesaResolucionBean.C_PREFIJO).toString());
 			cajgRemesaResolucionBean.setSufijo(contadorTablaHashRemesa.get(CajgRemesaResolucionBean.C_SUFIJO).toString());
 			cajgRemesaResolucionBean.setNumero(siguiente);
-			cajgRemesaResolucionBean.setFechaCarga(GstDate.getApplicationFormatDate("", fechaResolucion));
-			cajgRemesaResolucionBean.setFechaResolucion(GstDate.getApplicationFormatDate("", fechaCarga));
+			cajgRemesaResolucionBean.setFechaCarga(GstDate.getApplicationFormatDate("", fechaCarga));
+			cajgRemesaResolucionBean.setFechaResolucion(GstDate.getApplicationFormatDate("", fechaResolucion));
 	
 			gcRemesa.setContador(contadorTablaHashRemesa, siguiente);
 	

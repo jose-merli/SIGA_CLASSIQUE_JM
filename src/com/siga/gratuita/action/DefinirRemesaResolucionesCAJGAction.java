@@ -590,8 +590,8 @@ public class DefinirRemesaResolucionesCAJGAction extends MasterAction {
 				obj.setTipoEjecucion("online");
 				obj.execute();
 				
-				if(obj.getMensajeOut().isEmpty()) 
-					mensaje = "messages.inserted.success";
+				if((obj.getMensajeOut()==null)||(obj.getMensajeOut().isEmpty()))
+					mensaje = UtilidadesString.getMensajeIdioma(usr,"messages.inserted.success");
 				else
 					mensaje =obj.getMensajeOut();
 
