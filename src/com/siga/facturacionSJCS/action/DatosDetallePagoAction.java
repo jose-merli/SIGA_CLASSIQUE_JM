@@ -752,42 +752,30 @@ public class DatosDetallePagoAction extends MasterAction {
 	protected Hashtable getTotalesDetallePago (Vector pagos, HttpServletRequest request) throws ClsExceptions
 	{
 		Hashtable totales = new Hashtable();
-//		BigDecimal 
 		Double total = 0.0, totalIrpf = 0.0, totalBrutos = 0.0, totalRetencion=0.0, totalTotal=0.0;
-		Double importeIrpf=0.0, importeTotalSJCS=0.0, importeRetenciones=0.0, importeTotalMovimientoVarios=0.0,importeTotalTotal=0.0;
-		boolean existeMV=false;
+		Double importeTotalTotal=0.0;
 		Hashtable fila;
 		
 		try {
 			
 			// Obtenemos los datos de los detalles de los pagos
-			FcsPagosJGAdm pagoAdm = new FcsPagosJGAdm (this.getUserBean(request));
-			//Vector pagos = pagoAdm.getDetallePago(new Integer(idInstitucion), new Integer(idPago), this.getUserBean(request).getLanguage());			
-			
-			// Obtenemos el nombre de las personas del pago
-			FcsFacturacionJGAdm facturacionAdm = new FcsFacturacionJGAdm (this.getUserBean(request));
 			if (pagos != null) {
 				for (int i = 0; i < pagos.size(); i++) {
 					fila = (Hashtable) pagos.get(i);
-			
-					importeIrpf        = UtilidadesNumero.redondea(UtilidadesHash.getDouble(fila, "TOTALIMPORTEIRPF"),2);
-					importeRetenciones = UtilidadesNumero.redondea(UtilidadesHash.getDouble(fila, "IMPORTETOTALRETENCIONES"),2);
-					importeTotalSJCS   = UtilidadesNumero.redondea(UtilidadesHash.getDouble(fila, "TOTALIMPORTESJCS"),2);
-					importeTotalMovimientoVarios = UtilidadesNumero.redondea(UtilidadesHash.getDouble(fila, "IMPORTETOTALMOVIMIENTOS"),2);
-					if (!existeMV && importeTotalMovimientoVarios!=0){
-						existeMV=true;
-					}
-		
-					double aux = Double.parseDouble(UtilidadesHash.getString(fila, "TOTALIMPORTESJCS")) + Double.parseDouble(UtilidadesHash.getString(fila, "IMPORTETOTALMOVIMIENTOS")) + Double.parseDouble(UtilidadesHash.getString(fila, "TOTALIMPORTEIRPF"))  + Double.parseDouble(UtilidadesHash.getString(fila, "IMPORTETOTALRETENCIONES"));
-					importeTotalTotal = UtilidadesNumero.redondea((new Double(aux)),2);
-		
-					totalBrutos = importeTotalSJCS + importeTotalMovimientoVarios;
+
+					totalBrutos =Double.parseDouble(UtilidadesHash.getString(fila, "TOTALIMPORTESJCS")) + Double.parseDouble(UtilidadesHash.getString(fila, "IMPORTETOTALMOVIMIENTOS"));
+					
 					if (totalBrutos<0) totalBrutos=0.0;
-					total      += totalBrutos;
-					totalIrpf  += importeIrpf;
-					totalRetencion  += importeRetenciones;
+
+					total+=totalBrutos;
+					totalIrpf  +=Double.parseDouble(UtilidadesHash.getString(fila, "TOTALIMPORTEIRPF"));
+					totalRetencion  +=Double.parseDouble(UtilidadesHash.getString(fila, "IMPORTETOTALRETENCIONES"));
+							
+					importeTotalTotal = Double.parseDouble(UtilidadesHash.getString(fila, "TOTALIMPORTESJCS")) + Double.parseDouble(UtilidadesHash.getString(fila, "IMPORTETOTALMOVIMIENTOS")) + Double.parseDouble(UtilidadesHash.getString(fila, "TOTALIMPORTEIRPF"))  + Double.parseDouble(UtilidadesHash.getString(fila, "IMPORTETOTALRETENCIONES"));
+					
 					if ( importeTotalTotal<0) importeTotalTotal=0.0;
-					totalTotal  += importeTotalTotal;
+						totalTotal  += importeTotalTotal;
+					
 					
 				}
 			}
