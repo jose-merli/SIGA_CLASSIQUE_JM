@@ -1928,9 +1928,11 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 					" E.NUMEROEXPEDIENTE,  "+
 					" E.FECHA,  "+
 					" T.TIEMPOCADUCIDAD, "+
-					//" E.FECHA + T.TIEMPOCADUCIDAD AS  FECHACADUCIDAD,  "+
-					" E.FECHACADUCIDAD AS  FECHACADUCIDAD,  "+
-					//" E.FECHA + T.TIEMPOCADUCIDAD - nvl(T.DIASANTELACIONCAD,0) AS  FECHAAVISO,  "+
+					
+					/*CR - R1410_0030: Hasta ahora se cogía la FECHACADUCIDAD del expediente para calcular los "dias", pero la FECHACADUCIDAD está vacia antes de checkear la alarma (se rellena despues de lanzar el aviso).
+						Ahora la FECHACADUCIDAD será el calculo de la fecha de apertura del expediente + plazo de caducidad del tipo de expediente (E.FECHA + T.TIEMPOCADUCIDAD)*/
+					" NVL(E.FECHACADUCIDAD,(E.FECHA + T.TIEMPOCADUCIDAD)) AS  FECHACADUCIDAD,  "+
+						
 					" E.FECHACADUCIDAD - nvl(T.DIASANTELACIONCAD,0) AS  FECHAAVISO,  "+
 					" nvl(T.DIASANTELACIONCAD,0) AS DIASANTELACION "+ 
 					" FROM   EXP_EXPEDIENTE E, EXP_TIPOEXPEDIENTE T "+
