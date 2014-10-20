@@ -81,7 +81,7 @@
 </head>
 
 
-<body onLoad="ajusteAlto('resultado');accionEstado();">
+<body onLoad="ajusteAlto('resultado');">
 
 
 	<!-- ******* BOTONES Y CAMPOS DE BUSQUEDA ****** -->
@@ -172,13 +172,13 @@
 	
 	<!-- INICIO: SCRIPTS BOTONES BUSQUEDA -->
 	<script language="JavaScript">
-	
-		<%	if(volver) { %>	
-				jQuery(document).ready(function () {		
-					buscar();
-				});		
-		<% } %>
 		
+		jQuery(document).ready(function () {		
+			accionEstado();
+			<%	if(volver) { %>	
+				buscar();
+			<% } %>
+		});		
 		
 		function refrescarLocal() {
 			buscar();
