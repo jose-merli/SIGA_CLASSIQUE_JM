@@ -901,7 +901,7 @@ public class FicheroBancarioAbonosAction extends MasterAction{
 							bReceptor.getPais(), "I", " ", 105, true)); //direccion completa y pais del beneficiario
 					registrosBenefOtros[nRegistrosBenefOtros].append(completarEspacios("NombrePago", bReceptor.getNombrePago(), "I", " ", 72, true)); //concepto
 					registrosBenefOtros[nRegistrosBenefOtros].append(completarEspacios("Numero abono", bReceptor.getNumeroAbono(), "I", " ", 13, false)); //referencia de la transferencia para el beneficiario
-					registrosBenefOtros[nRegistrosBenefOtros].append(completarEspacios("PropositoOtros",bReceptor.getProposito(),"I"," ",4,false)); //proposito de transferencia (no es obligatorio puede estar vacío)
+					registrosBenefOtros[nRegistrosBenefOtros].append(completarEspacios("PropositoOtros",bReceptor.getProposito(),"I"," ",1,false)); //proposito de transferencia (no es obligatorio puede estar vacío)
 					registrosBenefOtros[nRegistrosBenefOtros].append(rellenarEspacios(268)); //libre
 					
 					nRegistrosBenefOtros ++;
