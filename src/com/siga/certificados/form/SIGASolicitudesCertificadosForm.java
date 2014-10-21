@@ -55,6 +55,8 @@ public class SIGASolicitudesCertificadosForm extends MasterForm
     private String codigoBanco;
     private String sucursalBanco;
     private String bancoNombre;
+    
+    private String aceptaCesionMutualidad;
         
 	public String getIdTipoProducto() {
 		return idTipoProducto;
@@ -126,6 +128,7 @@ public class SIGASolicitudesCertificadosForm extends MasterForm
 	    this.buscarIdSolicitudCertif="";
 	    this.comentario="";
 	    this.observaciones="";
+	    this.aceptaCesionMutualidad="";
 	
 	}
 //    public String getModo() 
@@ -468,5 +471,12 @@ public class SIGASolicitudesCertificadosForm extends MasterForm
 	public void setBancoNombre(String bancoNombre) {
 		this.bancoNombre = bancoNombre;
 	}
+	public String getAceptaCesionMutualidad() {
+		return aceptaCesionMutualidad;
+	}
+	public void setAceptaCesionMutualidad(String aceptaCesionMutualidad) {
+		this.aceptaCesionMutualidad = aceptaCesionMutualidad;
+	}
+	
 	
 }

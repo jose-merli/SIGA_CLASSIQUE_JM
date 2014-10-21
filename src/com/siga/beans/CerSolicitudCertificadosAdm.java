@@ -85,6 +85,7 @@ public class CerSolicitudCertificadosAdm extends MasterBeanAdministrador
 		        		   CerSolicitudCertificadosBean.C_IDMETODOSOLICITUD,
 		        		   CerSolicitudCertificadosBean.C_USUMODIFICACION,
 		        		   CerSolicitudCertificadosBean.C_CBO_CODIGO,
+		        		   CerSolicitudCertificadosBean.C_ACEPTACESIONMUTUALIDAD,
 		        		   CerSolicitudCertificadosBean.C_CODIGO_SUCURSAL};
 
 		return campos;
@@ -125,6 +126,7 @@ public class CerSolicitudCertificadosAdm extends MasterBeanAdministrador
 		        		   CerSolicitudCertificadosBean.C_FECHACREACION,
 		        		   CerSolicitudCertificadosBean.C_USUCREACION,
 		        		   CerSolicitudCertificadosBean.C_CBO_CODIGO,
+		        		   CerSolicitudCertificadosBean.C_ACEPTACESIONMUTUALIDAD,
 		        		   CerSolicitudCertificadosBean.C_CODIGO_SUCURSAL};
 
 		return campos;
@@ -182,6 +184,7 @@ public class CerSolicitudCertificadosAdm extends MasterBeanAdministrador
 			bean.setUsuCreacion(UtilidadesHash.getInteger(hash, CerSolicitudCertificadosBean.C_USUCREACION));
 			bean.setCbo_codigo(UtilidadesHash.getString(hash, CerSolicitudCertificadosBean.C_CBO_CODIGO));
 			bean.setCodigo_sucursal(UtilidadesHash.getString(hash, CerSolicitudCertificadosBean.C_CODIGO_SUCURSAL));
+			bean.setAceptaCesionMutualidad(UtilidadesHash.getString(hash, CerSolicitudCertificadosBean.C_ACEPTACESIONMUTUALIDAD));
 		}
 
 		catch (Exception e)
@@ -242,6 +245,7 @@ public class CerSolicitudCertificadosAdm extends MasterBeanAdministrador
 			
 			UtilidadesHash.set(htData, CerSolicitudCertificadosBean.C_CBO_CODIGO, b.getCbo_codigo());
 			UtilidadesHash.set(htData, CerSolicitudCertificadosBean.C_CODIGO_SUCURSAL, b.getCodigo_sucursal());				
+			UtilidadesHash.set(htData, CerSolicitudCertificadosBean.C_ACEPTACESIONMUTUALIDAD, b.getAceptaCesionMutualidad());				
 		}
 		catch (Exception e)
 		{
@@ -785,7 +789,17 @@ public class CerSolicitudCertificadosAdm extends MasterBeanAdministrador
 				solicConsejoBean.setIdEstadoCertificado(Integer.valueOf(CerSolicitudCertificadosAdm.K_ESTADO_CER_INICIAL));
 
 				solicConsejoBean.setFechaCreacion("SYSDATE");
-				solicConsejoBean.setUsuCreacion(new Integer(user.getUserName()));				
+				solicConsejoBean.setUsuCreacion(new Integer(user.getUserName()));		
+				
+				// jbd // Por defecto se acepta las condiciones de la mutualidad para las nuevas incorporaciones
+				if(solicConsejoBean.getIdInstitucion()==2000 
+						&& solicConsejoBean.getPpn_IdProducto() == 1 
+						&& solicConsejoBean.getPpn_IdTipoProducto()==11
+						&& (solicConsejoBean.getPpn_IdProductoInstitucion()==2
+							||solicConsejoBean.getPpn_IdProductoInstitucion()==9
+							||solicConsejoBean.getPpn_IdProductoInstitucion()==10)){
+					solicConsejoBean.setAceptaCesionMutualidad("1");
+				}
 				
 				this.insertCertificado(this.beanToHashTable(solicConsejoBean));
 

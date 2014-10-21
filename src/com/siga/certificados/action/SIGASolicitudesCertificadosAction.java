@@ -659,6 +659,17 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
     		String idtipop=beanSolicitud.getPpn_IdTipoProducto().toString();
     		String idp=beanSolicitud.getPpn_IdProducto().toString();
     		String idpi=beanSolicitud.getPpn_IdProductoInstitucion().toString();
+    		boolean pintarCheckMutualidad = false;
+    		// jbd // Tratamiento para los certificados que pasan informacion a la mutualidad
+    		if (beanSolicitud.getPpn_IdTipoProducto()==11 
+    				&& beanSolicitud.getPpn_IdProducto()==1 
+    				&& (beanSolicitud.getPpn_IdProductoInstitucion()==2
+    				|| beanSolicitud.getPpn_IdProductoInstitucion()==9
+    				|| beanSolicitud.getPpn_IdProductoInstitucion()==10)){
+    			// hay que tratarlo de forma especial
+    			pintarCheckMutualidad = true;
+    		}
+    		request.setAttribute("pintarCheckMutualidad", pintarCheckMutualidad);
 
     		if (numContador!=null && !numContador.equals("")) {
     			// obtengo el objeto contador
@@ -1897,6 +1908,12 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 		    	bean.setMetodoSolicitud(form.getMetodoSolicitud());
 		    } else {
 		    	bean.setMetodoSolicitud(null);
+		    }
+		    
+		    if(form.getAceptaCesionMutualidad().equalsIgnoreCase("on")){
+		    	bean.setAceptaCesionMutualidad("1");
+		    }else{
+		    	bean.setAceptaCesionMutualidad("");
 		    }
 
 		    bean.setFechaMod("sysdate");

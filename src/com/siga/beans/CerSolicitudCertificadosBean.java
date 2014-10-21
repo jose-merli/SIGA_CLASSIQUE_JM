@@ -38,6 +38,8 @@ public class CerSolicitudCertificadosBean extends MasterBean
 	
 	private String cbo_codigo;
 	private String codigo_sucursal;
+	
+	private String aceptaCesionMutualidad;
 
 	/* Nombre campos de la tabla */
 	static public final String C_IDINSTITUCION = "IDINSTITUCION";
@@ -76,7 +78,9 @@ public class CerSolicitudCertificadosBean extends MasterBean
     static public final String C_USUCREACION   = "USUCREACION";
     
 	static public final String C_CODIGO_SUCURSAL = "CODIGO_SUCURSAL";
-    static public final String C_CBO_CODIGO   = "CBO_CODIGO";    
+    static public final String C_CBO_CODIGO   = "CBO_CODIGO"; 
+    
+    static public final String C_ACEPTACESIONMUTUALIDAD   = "ACEPTACESIONMUTUALIDAD";   
 
 	static public final String T_NOMBRETABLA = "CER_SOLICITUDCERTIFICADOS";
 
@@ -365,5 +369,13 @@ public class CerSolicitudCertificadosBean extends MasterBean
 	public void setCodigo_sucursal(String codigo_sucursal) {
 		this.codigo_sucursal = codigo_sucursal;
 	}
-	
+
+	public String getAceptaCesionMutualidad() {
+		return aceptaCesionMutualidad;
+	}
+
+	public void setAceptaCesionMutualidad(String check) {
+		this.aceptaCesionMutualidad = check;
+	}
+
 }

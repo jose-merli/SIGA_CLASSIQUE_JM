@@ -43,7 +43,13 @@
 	String comboInstituciones = "getInstitucionesAbreviadas";
 	String comboInstitucionesDest = "getInstitucionesAbreviadas";
 	String consultaOrigen, consultaDestino = "";
-
+	
+	boolean pintarCheckMutualidad = (Boolean)request.getAttribute("pintarCheckMutualidad");
+	System.out.println(pintarCheckMutualidad);
+	
+	String aceptaCesion = beanSolicitud.getAceptaCesionMutualidad().equals("1")?"checked":"";
+	
+	
 	if (institucion == 2000){ // General
 		consultaOrigen = "getColegiosAbreviados";
 		consultaDestino = "getColegiosAbreviados";
@@ -625,6 +631,7 @@
 							</script>
 
 				<table class="tablaCampos" align="center" border="0">	
+
 					<tr>
 						<td class="labelText" width="90px" ><siga:Idioma key="certificados.solicitudes.literal.descargado" /></td>
 						<td width="110px">
@@ -659,6 +666,13 @@
 							
 						<td colspan="2">&nbsp; </td>	
 					</tr>
+					<%if(pintarCheckMutualidad){ %>
+						<tr>
+							<td class="labelText" colspan="10">
+							<div style="float:left"><input type=checkbox name="aceptaCesionMutualidad" <%=aceptaCesion %>/></div>
+							<siga:Idioma key="certificados.solicitudes.literal.textoConformidad" /></td>					
+						</tr>
+					<%} %>
 					<tr>
 						<td class="labelText" colspan="4">
 							<siga:Idioma key="certificados.solicitudes.literal.ultimoUsuMod" />
