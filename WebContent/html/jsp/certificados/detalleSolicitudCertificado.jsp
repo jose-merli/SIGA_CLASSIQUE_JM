@@ -45,7 +45,6 @@
 	String consultaOrigen, consultaDestino = "";
 	
 	boolean pintarCheckMutualidad = (Boolean)request.getAttribute("pintarCheckMutualidad");
-	System.out.println(pintarCheckMutualidad);
 	
 	String aceptaCesion = beanSolicitud.getAceptaCesionMutualidad().equals("1")?"checked":"";
 	
