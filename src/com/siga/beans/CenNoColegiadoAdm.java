@@ -393,4 +393,27 @@ public class CenNoColegiadoAdm extends MasterBeanAdministrador {
 		}
 	} //existeNoColegiado ()
 	
+		/**
+	 * Comprueba si existe un colegiado
+	 * 
+	 * @param idPersona Long
+	 * @param idInstitucion Integer
+	 * @return CenColegiadoBean o null
+	 */
+	public CenNoColegiadoBean existeNoColegiadoInstitucion (Long idPersona, Integer idInstitucion) throws ClsExceptions, SIGAException {
+		try	{
+			
+			CenNoColegiadoBean salida = null;
+			Hashtable hash = new Hashtable();
+            hash.put(CenNoColegiadoBean.C_IDPERSONA,idPersona.toString());
+            hash.put(CenNoColegiadoBean.C_IDINSTITUCION,idInstitucion.toString());
+            Vector v = this.select(hash);
+			if (v != null && v.size () > 0)
+				salida = (CenNoColegiadoBean) v.get(0);
+			return salida;
+		} catch (Exception e) {
+			throw new ClsExceptions (e, "Error al consultar datos en B.D.");
+		}
+	} //existeNoColegiado ()	
+	
 }

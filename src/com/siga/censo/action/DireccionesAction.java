@@ -28,6 +28,8 @@ import com.siga.beans.CenDireccionTipoDireccionBean;
 import com.siga.beans.CenDireccionesAdm;
 import com.siga.beans.CenDireccionesBean;
 import com.siga.beans.CenHistoricoBean;
+import com.siga.beans.CenNoColegiadoAdm;
+import com.siga.beans.CenNoColegiadoBean;
 import com.siga.beans.CenPersonaAdm;
 import com.siga.beans.CenSoliModiDireccionesAdm;
 import com.siga.beans.CenSoliModiDireccionesBean;
@@ -266,11 +268,14 @@ public class DireccionesAction extends MasterAction
 			request.setAttribute("preferenteMail", mail);
 			request.setAttribute("preferenteSms", sms);
 			
-			//CR7 - Queremos saber si se trata de un Colegiadoo de un No Colegiado
-			String tipoCliente = clienteAdm.getTipoCliente(idPersona, idInstitucionPersona);
-//			request.setAttribute("tipoCliente", tipoCliente);
-			//CR - Parche para contemplar correctamente los casos donde el menu es la busqueda de letrados
-			request.setAttribute("tipoCliente", user.getStrutsTrans());
+			//CR - Queremos saber si se trata de un Colegiadoo de un No Colegiado. Y si es No colegiado si es tipo Personal (1) o Sociedad (0).
+			String tipoCliente = "";
+			CenNoColegiadoAdm noColAdm = new CenNoColegiadoAdm(user);
+			CenNoColegiadoBean noColBean = noColAdm.existeNoColegiadoInstitucion(idPersona, idInstitucionPersona);
+			if(noColBean!=null){
+				tipoCliente = noColBean.getTipo();
+			}
+			request.setAttribute("tipoCliente", tipoCliente);
 			
 		}
 		catch(Exception e){
@@ -373,13 +378,16 @@ public class DireccionesAction extends MasterAction
 			request.setAttribute("preferenteMail", mail);
 			request.setAttribute("preferenteSms", sms);
 			
-			//CR7 - Queremos saber si se trata de un Colegiadoo de un No Colegiado
-			String tipoCliente = clienteAdm.getTipoCliente(idPersona, idInstitucionPersona);
-//			request.setAttribute("tipoCliente", tipoCliente);
-			//CR - Parche para contemplar correctamente los casos donde el menu es la busqueda de letrados
-			request.setAttribute("tipoCliente", user.getStrutsTrans());			
-		}
-		catch(Exception e){
+			//CR - Queremos saber si se trata de un Colegiadoo de un No Colegiado. Y si es No colegiado si es tipo Personal (1) o Sociedad (0).
+			String tipoCliente = "";
+			CenNoColegiadoAdm noColAdm = new CenNoColegiadoAdm(user);
+			CenNoColegiadoBean noColBean = noColAdm.existeNoColegiadoInstitucion(idPersona, idInstitucionPersona);
+			if(noColBean!=null){
+				tipoCliente = noColBean.getTipo();
+			}
+			request.setAttribute("tipoCliente", tipoCliente);
+
+		} catch(Exception e) {
 			throwExcp("messages.general.error",new String[] {"modulo.censo"},e, null);
 		}
 		return modo;
@@ -428,10 +436,14 @@ public class DireccionesAction extends MasterAction
 			Long idPersona = miForm.getIDPersona();
 			Integer idInstitucionPersona = miForm.getIDInstitucion();			
 			CenClienteAdm clienteAdm = new CenClienteAdm(this.getUserName(request), user, idInstitucionPersona.intValue(), idPersona.longValue());			
-			String tipoCliente = clienteAdm.getTipoCliente(idPersona, idInstitucionPersona);
-//			request.setAttribute("tipoCliente", tipoCliente);
-			//CR - Parche para contemplar correctamente los casos donde el menu es la busqueda de letrados
-			request.setAttribute("tipoCliente", user.getStrutsTrans());			
+			//CR - Queremos saber si se trata de un Colegiadoo de un No Colegiado. Y si es No colegiado si es tipo Personal (1) o Sociedad (0).
+			String tipoCliente = "";
+			CenNoColegiadoAdm noColAdm = new CenNoColegiadoAdm(user);
+			CenNoColegiadoBean noColBean = noColAdm.existeNoColegiadoInstitucion(idPersona, idInstitucionPersona);
+			if(noColBean!=null){
+				tipoCliente = noColBean.getTipo();
+			}
+			request.setAttribute("tipoCliente", tipoCliente);
 		}
 		catch(Exception e){
 			throwExcp("messages.general.error",new String[] {"modulo.censo"},e, null);
@@ -763,11 +775,14 @@ protected String insertar (ActionMapping mapping,
 			request.setAttribute("numero", request.getParameter("numeroUsuario"));
 			request.setAttribute("idPersona", idPersona);
 			
-			//CR7 - Queremos saber si se trata de un Colegiadoo de un No Colegiado
-			String tipoCliente = clienteAdm.getTipoCliente(idPersona, idInstitucionPersona);
-//			request.setAttribute("tipoCliente", tipoCliente);
-			//CR - Parche para contemplar correctamente los casos donde el menu es la busqueda de letrados
-			request.setAttribute("tipoCliente", user.getStrutsTrans());			
+			//CR - Queremos saber si se trata de un Colegiadoo de un No Colegiado. Y si es No colegiado si es tipo Personal (1) o Sociedad (0).
+			String tipoCliente = "";
+			CenNoColegiadoAdm noColAdm = new CenNoColegiadoAdm(user);
+			CenNoColegiadoBean noColBean = noColAdm.existeNoColegiadoInstitucion(idPersona, idInstitucionPersona);
+			if(noColBean!=null){
+				tipoCliente = noColBean.getTipo();
+			}
+			request.setAttribute("tipoCliente", tipoCliente);		
 			
 		}
 		catch(Exception e){
