@@ -1178,7 +1178,7 @@ public class AbonosPagosAction extends MasterAction {
 			String idPersonaAbono =  form.getIdPersona();
 			if (!form.getNumFacturaCompensadora().equalsIgnoreCase("")){
 				FacFacturaAdm facturaAdm =new FacFacturaAdm(this.getUserBean(request)); 
-				facturas=facturaAdm.getFacturaPorNumero(form.getIdInstitucion(),form.getNumFacturaCompensadora(),false);
+				facturas=facturaAdm.getFacturaPorNumero(form.getIdInstitucion(),form.getNumFacturaCompensadora().trim().toUpperCase(),false);
 				if (!facturas.isEmpty()){
 					
 					/*facturas=facturaAdm.getFacturaPorNumero(form.getIdInstitucion(),form.getNumFacturaCompensadora(),true);

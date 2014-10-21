@@ -454,8 +454,8 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
 							" AND ";
 	            contador++;
 	            codigosBind.put(new Integer(contador), factura);
-	            		sql += ComodinBusquedas.prepararSentenciaCompletaUPPERBind(":"+contador,FacFacturaBean.T_NOMBRETABLA +"."+ FacFacturaBean.C_NUMEROFACTURA);
-						//sql+=FacFacturaBean.T_NOMBRETABLA +"."+ FacFacturaBean.C_NUMEROFACTURA + "= :"+contador;
+	            		//sql += ComodinBusquedas.prepararSentenciaCompletaUPPERBind(":"+contador,FacFacturaBean.T_NOMBRETABLA +"."+ FacFacturaBean.C_NUMEROFACTURA);
+						sql+="UPPER("+FacFacturaBean.T_NOMBRETABLA +"."+ FacFacturaBean.C_NUMEROFACTURA + ")= :"+contador;
 						sql+=" AND " ;
 				contador++;
 				codigosBind.put(new Integer(contador),institucion);
