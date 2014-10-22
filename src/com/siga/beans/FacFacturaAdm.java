@@ -74,7 +74,7 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
 	 *  Funcion que devuelve los campos dela tabla.
 	 * @return  String[] Los campos ed la tabla   
 	 */
-	protected String[] getCamposBean() {
+	public String[] getCamposBean() {
 		String [] campos = {FacFacturaBean.C_IDFACTURA,
 							FacFacturaBean.C_IDINSTITUCION,
 							FacFacturaBean.C_FECHAEMISION,
@@ -129,7 +129,7 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
 	 * @return  PysFormaPagoBean  Bean de retorno  
 	 * @exception  ClsExceptions  En cualquier caso de error
 	 */
-	protected MasterBean hashTableToBean(Hashtable hash) throws ClsExceptions {
+	public MasterBean hashTableToBean(Hashtable hash) throws ClsExceptions {
 
 		FacFacturaBean bean = null;
 		
@@ -3215,41 +3215,6 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
 	   			throw new ClsExceptions(e, "Error al obtener si existen diferentes personas.");
 	   		}	
 	    }
-	} // getSelectPersonas()	
-
-	/**
-	 * Consulta el numero de cuentas bancarias activas de cargos de las personas de las facturas (en principio es para una persona)
-	 * @param idInstitucion
-	 * @param listaFacturas
-	 * @return
-	 * @throws ClsExceptions
-	 */
-	public Integer getCuentasActivasPersona(Integer idInstitucion, String listaFacturas) throws ClsExceptions {
-		Integer numeroCuentasActivas = 0;
-		try {
-			String sql = " SELECT COUNT(*) AS NUMEROCUENTAS " +
-						" FROM  " + CenCuentasBancariasBean.T_NOMBRETABLA +	", " + 
-							FacFacturaBean.T_NOMBRETABLA +
-						" WHERE " + CenCuentasBancariasBean.T_NOMBRETABLA +	"." + CenCuentasBancariasBean.C_IDINSTITUCION + " = " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDINSTITUCION +
-							" AND " + CenCuentasBancariasBean.T_NOMBRETABLA +	"." + CenCuentasBancariasBean.C_IDPERSONA + " = " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDPERSONA +
-							" AND " + CenCuentasBancariasBean.T_NOMBRETABLA +	"." + CenCuentasBancariasBean.C_FECHABAJA + " IS NULL " +
-							" AND " + CenCuentasBancariasBean.T_NOMBRETABLA +	"." + CenCuentasBancariasBean.C_ABONOCARGO + " IN ('C', 'T') " +
-							" AND " + FacFacturaBean.T_NOMBRETABLA +	"." + FacFacturaBean.C_IDINSTITUCION + " = " + idInstitucion +
-							" AND " + FacFacturaBean.T_NOMBRETABLA +	"." + FacFacturaBean.C_IDFACTURA + " IN " + listaFacturas;
-
-			RowsContainer rc = new RowsContainer();
-			if (rc.find(sql)) {
-				for (int i=0; i<rc.size(); i++) {
-					Row fila = (Row) rc.get(i);		
-					numeroCuentasActivas = new Integer(fila.getString("NUMEROCUENTAS"));
-				}
-			}
-			
-		} catch (Exception e) {
-   			throw new ClsExceptions(e, "Error al obtener el numero de cuentas activas de las facturas");
-	    }
-		
-		return numeroCuentasActivas;
 	} // getSelectPersonas()			
 	
 	/**
@@ -3302,109 +3267,32 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
 	   			}
 	   		}	
 	    }
-	} // getSelectPersonas()	
+	} // getSelectPersonas()		
 	
-
 	/**
-	 * JPT: Obtiene el numero de facturas por banco
+	 * Obtiene las facturas a renegociar
 	 * @param idInstitucion
 	 * @param strFacturas
 	 * @return
 	 * @throws ClsExceptions
 	 * @throws SIGAException
 	 */
-	public Integer getNumeroFacturasPorBanco(Integer idInstitucion, String [] strFacturas) throws ClsExceptions,SIGAException {
-		String diferentes = "";
-		RowsContainer rc = new RowsContainer();
+	public Vector getFacturasRenegociar (Integer idInstitucion, String listaFacturas) throws ClsExceptions {
+		Vector vFacturas = new Vector();
+		
 		try {
-		    Hashtable codigos = new Hashtable();
-		    codigos.put(new Integer(1),idInstitucion.toString());
-		    StringBuffer sql = new StringBuffer();
-		    Hashtable codigosHashtable = new Hashtable();
-			int contador = 0;
-		    
-			sql.append  ("Select Count(*) As numcuentas ");
-			sql.append  ("  From  " +FacFacturaBean.T_NOMBRETABLA + " f ");
-			sql.append  (" Where f." + FacFacturaBean.C_IDCUENTA + " IS NOT NULL");
-			sql.append  (" and f." + FacFacturaBean.C_IDINSTITUCION + " = :");
-			contador ++;
-			sql.append(contador);
-			codigosHashtable.put(new Integer(contador),idInstitucion);
-			sql.append  ("   And f." + FacFacturaBean.C_IDFACTURA + " in ( "); 
-			for (int i = 0; i < strFacturas.length; i++) {
-				String factura = strFacturas[i];
-				contador ++;
-				sql.append(":");
-				sql.append(contador);
-				if(i!=strFacturas.length-1)
-					sql.append(",");
-				codigosHashtable.put(new Integer(contador),factura);
-			}
-			sql.append(" )");
-
-			if (rc.findBind(sql.toString(),codigosHashtable) && rc.size() == 1) {
-				Row fila = (Row) rc.get(0);
-				return new Integer(fila.getString("NUMCUENTAS"));
-				
-			} else {
-				return 0;
-			}
+			String where = " WHERE " + FacFacturaBean.C_ESTADO + " IN ( "+ ClsConstants.ESTADO_FACTURA_CAJA + ", " + ClsConstants.ESTADO_FACTURA_BANCO + ", " + ClsConstants.ESTADO_FACTURA_DEVUELTA  + ") " +
+								" AND " + FacFacturaBean.C_IDINSTITUCION + " = " + idInstitucion + 
+								" AND " + FacFacturaBean.C_IDFACTURA + " IN " + listaFacturas;  
+		
+			vFacturas = this.select(where);
 			
 		} catch (Exception e) {
-	   		if (e instanceof SIGAException){
-	   			throw (SIGAException)e;	   		
-	   		} else if (e instanceof ClsExceptions){
-	   			throw (ClsExceptions)e;
-	   		} else {
-	   			throw new ClsExceptions(e, "Error al obtener si existen diferentes personas.");
-	   		}	
-	    }
-	} // getSelectPersonas()			
-	
-	public Vector getFacturasDevueltas (Integer idInstitucion,String [] strFacturas) throws ClsExceptions,SIGAException
-	{
-		Vector factDevueltasYRenegociadas=new Vector();
-		
-		try {
-			Hashtable codigosHashtable = new Hashtable();
-			int contador = 0;
-			RowsContainer rc = new RowsContainer();
-			StringBuffer sql = new StringBuffer();
-			sql.append(" ");
-			
-			sql.append(" SELECT FAC.NUMEROFACTURA,FAC.IDFACTURA,FAC.IDINSTITUCION,FAC.ESTADO,FAC.IMPTOTALPORPAGAR "); 
-			sql.append(" from FAC_FACTURA FAC ");
-			sql.append(" WHERE FAC.ESTADO IN ( "+ ClsConstants.ESTADO_FACTURA_CAJA + ", " + ClsConstants.ESTADO_FACTURA_BANCO + ", " + ClsConstants.ESTADO_FACTURA_DEVUELTA  + ")");
-			sql.append(" AND IDINSTITUCION = :");
-			contador ++;
-			sql.append(contador);
-			codigosHashtable.put(new Integer(contador),idInstitucion);
-			sql.append(" AND FAC.IDFACTURA IN ( ");
-			for (int i = 0; i < strFacturas.length; i++) {
-				String factura = strFacturas[i];
-				contador ++;
-				sql.append(":");
-				sql.append(contador);
-				if(i!=strFacturas.length-1)
-					sql.append(",");
-				codigosHashtable.put(new Integer(contador),factura);
-			}
-			sql.append(" )");
-			
-			
-			if (rc.findBind(sql.toString(),codigosHashtable)) {
-				for (int i = 0; i < rc.size(); i++){
-					Row fila = (Row) rc.get(i);
-					factDevueltasYRenegociadas.add(fila);
-				}
-			}
-		}
-		catch (Exception e) {
-			throw new ClsExceptions (e, "Error al obtener la informacion sobre del disquete de devoluciones.");
+			throw new ClsExceptions (e, "Error al obtener las facturas a renegociar.");
 		}
 		
-		return factDevueltasYRenegociadas;                        
-	} //getFacturasDevueltasyRenegociadas()
+		return vFacturas;                        
+	} //getFacturasRenegociar()
 	
 	/**
 	 * Calcular un nuevo numero de factura

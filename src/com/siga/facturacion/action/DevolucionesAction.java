@@ -117,7 +117,7 @@ public class DevolucionesAction extends MasterAction {
 				mapDestino = anular(mapping, miForm, request, response);
 			
 			} else if (accion.equalsIgnoreCase("renegociarCobrosRecobros")) {
-				mapDestino = renegociar(mapping, miForm, request, response);
+				mapDestino = renegociarCobrosRecobros(mapping, miForm, request, response);
 			
 			} else if (accion.equalsIgnoreCase("buscarInit")) {
 				request.getSession().removeAttribute("DATAPAGINADOR");
@@ -324,7 +324,7 @@ public class DevolucionesAction extends MasterAction {
 	 * @return
 	 * @throws SIGAException
 	 */
-	protected String renegociar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+	protected String renegociarCobrosRecobros(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		try {
 			UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");
 			DevolucionesForm form = (DevolucionesForm) formulario;
@@ -344,60 +344,63 @@ public class DevolucionesAction extends MasterAction {
 				if (strFacturas.length>1000) {
 					throw new SIGAException("facturacion.consultamorosos.error.renegociarMilFacturas");
 				};
-												
-				// JPT: Recorre todas las facturas marcadas y calcula el listado de facturas
-				String listaIdsFacturas = "(";
-				for (int i=0; i<strFacturas.length; i++) {
-					String idFactura = strFacturas[i];					
-					
-					
-					// Solo para la primera factura indico sus datos
-					if (i == 0) {				
-						Hashtable hFactura = new Hashtable();
-						UtilidadesHash.set(hFactura, FacFacturaBean.C_IDINSTITUCION, idInstitucion);
-						UtilidadesHash.set(hFactura, FacFacturaBean.C_IDFACTURA, idFactura);
-						
-						Vector vFactura = facturaAdm.select(hFactura);
-						if (vFactura!=null && vFactura.size()>0) {
-							FacFacturaBean beanFactura = (FacFacturaBean) vFactura.get(0);
-							request.setAttribute("beanFactura", beanFactura);
-														
-							if (beanFactura.getEstado() != new Integer(ClsConstants.ESTADO_FACTURA_CAJA) && 
-									(
-										(beanFactura.getIdCuentaDeudor() != null && !beanFactura.getIdCuentaDeudor().equals("")) || 
-										(beanFactura.getIdCuenta() != null && !beanFactura.getIdCuenta().equals(""))
-									)) {
-							
-								// JPT: Obtiene la cuenta bancaria de la factura
-								Hashtable hCuentaBancaria = new Hashtable();
-								UtilidadesHash.set(hCuentaBancaria, CenCuentasBancariasBean.C_IDINSTITUCION, beanFactura.getIdInstitucion());
-								if (beanFactura.getIdCuentaDeudor() != null && !beanFactura.getIdCuentaDeudor().equals("")){
-									UtilidadesHash.set(hCuentaBancaria, CenCuentasBancariasBean.C_IDCUENTA, beanFactura.getIdCuentaDeudor());
-									UtilidadesHash.set(hCuentaBancaria, CenCuentasBancariasBean.C_IDPERSONA, beanFactura.getIdPersonaDeudor());
-								}else{
-									UtilidadesHash.set(hCuentaBancaria, CenCuentasBancariasBean.C_IDCUENTA, beanFactura.getIdCuenta());
-									UtilidadesHash.set(hCuentaBancaria, CenCuentasBancariasBean.C_IDPERSONA, beanFactura.getIdPersona());
-								}
 								
-								CenCuentasBancariasAdm cuentasAdm = new CenCuentasBancariasAdm (user);
-								Vector vCuentas = cuentasAdm.select(hCuentaBancaria);
-								if (vCuentas != null && vCuentas.size() == 1) {
-									CenCuentasBancariasBean beanCuentaBancaria = (CenCuentasBancariasBean) vCuentas.get(0);
-									request.setAttribute("beanCuentaBancaria", beanCuentaBancaria);
-								}
-							}
-							
-						} else {
-							throw new SIGAException("Error al no obtener datos de la factura " + idFactura);
+				// Obtiene los datos de la primera factura
+				Hashtable hFactura = new Hashtable();
+				UtilidadesHash.set(hFactura, FacFacturaBean.C_IDINSTITUCION, idInstitucion);
+				UtilidadesHash.set(hFactura, FacFacturaBean.C_IDFACTURA, strFacturas[0]);		
+				
+				Vector vFactura = facturaAdm.selectByPK(hFactura);
+				
+				if (vFactura==null || vFactura.size()<1) {
+					throw new SIGAException("Error al no obtener datos de la factura " + strFacturas[0]);				
+				}
+				
+				// JPT: Encuentra la factura
+				FacFacturaBean beanFactura = (FacFacturaBean) vFactura.get(0);
+				request.setAttribute("beanFactura", beanFactura);
+				
+				Integer numeroPersonasFactura = 0;				
+				if (strFacturas.length==1) {
+					Integer numeroFacturasPorBanco = 0;
+					
+					// JPT: Comprueba si es una factura por banco y tiene cuenta
+					if (beanFactura.getEstado() != new Integer(ClsConstants.ESTADO_FACTURA_CAJA) && 
+							(
+								(beanFactura.getIdCuentaDeudor() != null && !beanFactura.getIdCuentaDeudor().equals("")) || 
+								(beanFactura.getIdCuenta() != null && !beanFactura.getIdCuenta().equals(""))
+							)) {
+					
+						// JPT: Obtiene la cuenta bancaria de la factura
+						Hashtable hCuentaBancaria = new Hashtable();
+						UtilidadesHash.set(hCuentaBancaria, CenCuentasBancariasBean.C_IDINSTITUCION, beanFactura.getIdInstitucion());
+						if (beanFactura.getIdCuentaDeudor() != null && !beanFactura.getIdCuentaDeudor().equals("")){
+							UtilidadesHash.set(hCuentaBancaria, CenCuentasBancariasBean.C_IDCUENTA, beanFactura.getIdCuentaDeudor());
+							UtilidadesHash.set(hCuentaBancaria, CenCuentasBancariasBean.C_IDPERSONA, beanFactura.getIdPersonaDeudor());
+						}else{
+							UtilidadesHash.set(hCuentaBancaria, CenCuentasBancariasBean.C_IDCUENTA, beanFactura.getIdCuenta());
+							UtilidadesHash.set(hCuentaBancaria, CenCuentasBancariasBean.C_IDPERSONA, beanFactura.getIdPersona());
 						}
 						
-						listaIdsFacturas += idFactura;
+						CenCuentasBancariasAdm cuentasAdm = new CenCuentasBancariasAdm (user);
+						Vector vCuentas = cuentasAdm.selectByPK(hCuentaBancaria);
+						if (vCuentas != null && vCuentas.size() == 1) {
+							CenCuentasBancariasBean beanCuentaBancaria = (CenCuentasBancariasBean) vCuentas.get(0);
+							request.setAttribute("beanCuentaBancaria", beanCuentaBancaria);										
+						}
 						
-					} else {
-						listaIdsFacturas += "," + idFactura;
-					}					
+						numeroFacturasPorBanco = 1;
+					}
+										
+					numeroPersonasFactura = 1;
+					
+					// JPT: Indica el numero de facturas por banco en caso de ser una sola factura
+					request.setAttribute("numeroFacturasPorBanco", numeroFacturasPorBanco);
+					
+				} else {
+					// JPT: Consulta las personas de las facturas
+					numeroPersonasFactura = facturaAdm.getSelectPersonas(idInstitucion, strFacturas);									
 				}
-				listaIdsFacturas += ")";
 				
 				// JPT: Obtiene la ultima fecha de pago de una lista de facturas
 				/*FacPagosPorCajaAdm admPagosPorCaja = new FacPagosPorCajaAdm(user);
@@ -411,20 +414,19 @@ public class DevolucionesAction extends MasterAction {
 				// JPT: Indica el numero de facturas seleccionadas
 				request.setAttribute("numeroFacturas", new Integer(strFacturas.length));
 				
-				// JPT: Consulta las personas de las facturas
-				Integer numeroPersonasFactura = facturaAdm.getSelectPersonas(idInstitucion, strFacturas);
+				// JPT: Indica el numero de personas en las facturas
 				request.setAttribute("numeroPersonasFactura", numeroPersonasFactura);
 				
 				if (numeroPersonasFactura == 1) { 
-					// JPT: Consulta el numero de cuentas bancarias activas de cargos de las personas de las facturas (en principio es para una persona)
-					Integer numeroCuentasPersona = facturaAdm.getCuentasActivasPersona(idInstitucion, listaIdsFacturas);
-					request.setAttribute("numeroCuentasPersona", numeroCuentasPersona);					
+					// JPT - Renegociacion 118: Obtiene el identificador de la persona
+					Long idPersona = (beanFactura.getIdCuentaDeudor()!=null && !beanFactura.getIdCuentaDeudor().equals("")) ? beanFactura.getIdPersonaDeudor() : beanFactura.getIdPersona();
+					
+					// JPT - Renegociacion 118: Consulta las cuentas bancarias activas de cargos de la persona
+					CenCuentasBancariasAdm cuentasBancariasAdm = new CenCuentasBancariasAdm(user);
+					List listaCuentasCargoActivas = cuentasBancariasAdm.getCuentasCargo(idPersona, idInstitucion);
+					request.setAttribute("numeroCuentasPersona", listaCuentasCargoActivas.size());
 				}				
 				
-				// JPT: Obtiene el numero de facturas por banco
-				Integer numeroFacturasPorBanco = facturaAdm.getNumeroFacturasPorBanco(idInstitucion, strFacturas);
-				request.setAttribute("numeroFacturasPorBanco", numeroFacturasPorBanco);				
-
 				request.setAttribute("datosFacturas", datosFacturas);
 				
 			} else {
@@ -548,15 +550,14 @@ public class DevolucionesAction extends MasterAction {
 				String nuevaFormaPago 	= miForm.getDatosPagosRenegociarNuevaFormaPago();
 				
 				if(nuevaFormaPago!=null && !nuevaFormaPago.equals("noRenegociarAutomaticamente")){ // Aplica la cuenta bancaria activa
-					Vector factDevueltasVector = devolucionesAdm.getFacturasDevueltasEnDisquete(new Integer(idInstitucion), new Integer(identificador));
+					Vector factDevueltasVector = devolucionesAdm.getFacturasDevueltasEnDisquete(idInstitucion, identificador);
 					
 					for (int i = 0; i < factDevueltasVector.size(); i++) {
 						Row fila = (Row) factDevueltasVector.get(i);
-	            		Hashtable<String, Object> htFila=fila.getRow();	            		
-	            		Double impTotalPorPagar = UtilidadesHash.getDouble(htFila, FacFacturaBean.C_IMPTOTALPORPAGAR);
+	            		Hashtable<String, Object> htFila = fila.getRow();	            		
 	            		String recibo = UtilidadesHash.getString(htFila, FacFacturaIncluidaEnDisqueteBean.C_IDRECIBO);
-	            		FacFacturaBean facturaComision = null;
 	            		
+	            		FacFacturaBean facturaBean = null;	            		
 						if (miForm.getComisiones()!=null && miForm.getComisiones().equalsIgnoreCase(ClsConstants.DB_TRUE)){							
 							Hashtable filtroLineasHashtable = new Hashtable(); 
 							filtroLineasHashtable.put(FacLineaDevoluDisqBancoBean.C_IDINSTITUCION,idInstitucion);
@@ -567,32 +568,23 @@ public class DevolucionesAction extends MasterAction {
 							Vector lineasDevolucion = admLDDB.select(filtroLineasHashtable);	
 							
 							FacLineaDevoluDisqBancoBean lineaDevolucion =(FacLineaDevoluDisqBancoBean)lineasDevolucion.get(0);
-							facturaComision = facturacion.aplicarComisionAFactura (idInstitucion, lineaDevolucion, miForm.getComisiones(), user, fechaDevolucion);
-						}	            		
+							facturaBean = facturacion.aplicarComisionAFactura (idInstitucion, lineaDevolucion, miForm.getComisiones(), user, fechaDevolucion);
+							
+						} else {
+							FacFacturaAdm facturaAdm = new FacFacturaAdm(user);
+		            		facturaBean = (FacFacturaBean) facturaAdm.hashTableToBean(htFila);
+						}
 	            		
-						try {
-							String idFactura = UtilidadesHash.getString(htFila, FacFacturaBean.C_IDFACTURA);
-		            		Integer estadoFactura = UtilidadesHash.getInteger(htFila, FacFacturaBean.C_ESTADO);
-							if (facturaComision != null) {								
-								idFactura = facturaComision.getIdFactura();
-			            		estadoFactura = facturaComision.getEstado();
-							}
-							
-							//El idCuenta modifica en este metodo asi que sera a esta cuenta la que se aplicara la comision
-							facturacion.insertarRenegociar(
-									new Integer(idInstitucion), 
-									idFactura, 
-									estadoFactura, 
-									nuevaFormaPago, 
-									null, 
-									impTotalPorPagar, 
-									miForm.getDatosPagosRenegociarObservaciones(), 
-									miForm.getDatosRenegociarFecha(), 
-									true);							
-							
-						} catch (SIGAException e) {
+						int resultadoRenegociacion = facturacion.insertarRenegociar(
+								facturaBean, 
+								nuevaFormaPago, 
+								null, 
+								miForm.getDatosPagosRenegociarObservaciones(), 
+								miForm.getDatosRenegociarFecha(), 
+								true);
+						
+						if (resultadoRenegociacion > 0) {
 							isTodasRenegociadas = false;
-							continue;
 						}
 					}
 					
@@ -818,14 +810,15 @@ public class DevolucionesAction extends MasterAction {
 				String nuevaFormaPago 	= miForm.getDatosPagosRenegociarNuevaFormaPago();
 				
 				if(nuevaFormaPago!=null && !nuevaFormaPago.equals("noRenegociarAutomaticamente")){ // Aplica la cuenta bancaria activa
-					Vector factDevueltasVector = devolucionesAdm.getFacturasDevueltasEnDisquete(new Integer(idInstitucion), new Integer(identificador));
+					Vector factDevueltasVector = devolucionesAdm.getFacturasDevueltasEnDisquete(idInstitucion, identificador);
 					
 					for (int i = 0; i < factDevueltasVector.size(); i++) {
 						Row fila = (Row) factDevueltasVector.get(i);
 	            		Hashtable<String, Object> htFila=fila.getRow();
-	            		Double impTotalPorPagar = UtilidadesHash.getDouble(htFila, FacFacturaBean.C_IMPTOTALPORPAGAR);
 	            		String recibo = UtilidadesHash.getString(htFila, FacFacturaIncluidaEnDisqueteBean.C_IDRECIBO);
-	            		FacFacturaBean facturaComision = null;
+	            		
+	            		FacFacturaAdm facturaAdm = new FacFacturaAdm(user);
+	            		FacFacturaBean facturaBean = (FacFacturaBean) facturaAdm.hashTableToBean(htFila);
 	            		
 						if (miForm.getComisiones()!=null && miForm.getComisiones().equalsIgnoreCase(ClsConstants.DB_TRUE)){							
 							Hashtable filtroLineasHashtable = new Hashtable(); 
@@ -837,34 +830,21 @@ public class DevolucionesAction extends MasterAction {
 							Vector lineasDevolucion = admLDDB.select(filtroLineasHashtable);		
 							
 							FacLineaDevoluDisqBancoBean lineaDevolucion =(FacLineaDevoluDisqBancoBean)lineasDevolucion.get(0);
-							facturaComision = facturacion.aplicarComisionAFactura (idInstitucion, lineaDevolucion, miForm.getComisiones(), user, fechaDevolucion);
-						}		            		
-	            		
-						try {
-							String idFactura = UtilidadesHash.getString(htFila, FacFacturaBean.C_IDFACTURA);
-		            		Integer estadoFactura = UtilidadesHash.getInteger(htFila, FacFacturaBean.C_ESTADO);
-							if (facturaComision != null) {								
-								idFactura = facturaComision.getIdFactura();
-			            		estadoFactura = facturaComision.getEstado();
-							}
-							
-							//El idCuenta modifica en este metodo asi que sera a esta cuenta la que se aplicara la comision
-							facturacion.insertarRenegociar(
-									new Integer(idInstitucion), 
-									idFactura, 
-									estadoFactura, 
-									nuevaFormaPago, 
-									null, 
-									impTotalPorPagar, 
-									miForm.getDatosPagosRenegociarObservaciones(), 
-									miForm.getDatosRenegociarFecha(), 
-									true);								
-							
-						} catch (SIGAException e) {
+							facturaBean = facturacion.aplicarComisionAFactura (idInstitucion, lineaDevolucion, miForm.getComisiones(), user, fechaDevolucion);
+						}		      
+						
+						int resultadoRenegociacion = facturacion.insertarRenegociar(
+								facturaBean, 
+								nuevaFormaPago, 
+								null, 
+								miForm.getDatosPagosRenegociarObservaciones(), 
+								miForm.getDatosRenegociarFecha(), 
+								true);
+						
+						if (resultadoRenegociacion > 0) {
 							isTodasRenegociadas = false;
-							continue;
 						}
-					}
+					}				
 					
 				} else {
 					if (miForm.getComisiones()!=null && miForm.getComisiones().equalsIgnoreCase(ClsConstants.DB_TRUE)){

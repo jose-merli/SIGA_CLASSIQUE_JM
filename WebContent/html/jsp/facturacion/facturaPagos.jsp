@@ -138,6 +138,7 @@
 	}
 	
  	Double pendiente = new Double(total.doubleValue());
+	String mensaje = (String) request.getAttribute("mensaje");	
 %>
 
 	<!-- HEAD -->
@@ -148,9 +149,9 @@
 
 	<!-- Aqui se reescriben las funciones que vayamos a utilizar -->
 	<script language="JavaScript">
-		function refrescarLocal(){ 		
-			window.location.reload();
-		}
+		function refrescarLocal(){ 	
+			window.location.reload();			
+		}	
 
 		//Asociada al boton Pago por caja 
 		function pagoPorCaja() {
@@ -159,8 +160,10 @@
 			document.GestionarFacturaForm.modo.value = "pagoPorCaja";
 			rc = ventaModalGeneral(document.GestionarFacturaForm.name, "P");
 			fin();
-			if (rc == "MODIFICADO") 
+			if (rc == "MODIFICADO") {
+				alert(unescape('<siga:Idioma key="messages.updated.success"/>'), 'success');
 				refrescarLocal();
+			}
 		}	
 
 		//Asociada al boton Pago por tarjeta
@@ -178,8 +181,10 @@
 			document.GestionarFacturaForm.modo.value = "pagoRenegociar";
 			rc = ventaModalGeneral(document.GestionarFacturaForm.name, "M");
 			fin();
-			if (rc == "MODIFICADO") 
+			if (rc == "MODIFICADO") {
+				alert(unescape('<siga:Idioma key="messages.updated.success"/>'), 'success');
 				refrescarLocal();
+			}
 		}	
 		
 		function datosImpresion(fila) {
@@ -203,7 +208,7 @@
 	<!-- FIN: TITULO Y LOCALIZACION -->	
 </head>
 
-<body>
+<body onload="onload();">
 
 	<!-- INICIO: CAMPOS -->
 	<html:form action="<%=path%>" method="POST" target="submitArea" style="display:none">

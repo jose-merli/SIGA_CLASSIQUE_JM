@@ -74,12 +74,12 @@
 		} 
 %>
 
-		// Asociada al boton Volver
+		// Asociada al boton Cerrar
 		function accionCerrar() {  
 			window.top.close();
 		}	
 		
-		// Asociada al boton Volver
+		// Asociada al boton Guardar y Cerrar
 		function accionGuardarCerrar(){ 			
 			if(document.getElementById('comision').checked)
 				document.forms[0].comisiones.value="1";
@@ -143,25 +143,25 @@
 									<input type="radio" id="radio0" name="datosPagosRenegociarNuevaFormaPago" checked="checked" value="noRenegociarAutomaticamente" >
 								</td>
 								<td class="labelText">										
-									<siga:Idioma key="facturacion.pagosFactura.Renegociar.literal.noRenegociar"/>
+									<label for="radio0"><siga:Idioma key="facturacion.pagosFactura.Renegociar.literal.noRenegociar"/></label>
 								</td>
 							</tr>
 							
 							<tr>
 								<td>								
-									<input type="radio" id="radio1" name="datosPagosRenegociarNuevaFormaPago" value="mismaCuenta" >
+									<input type="radio" id="radio1" name="datosPagosRenegociarNuevaFormaPago" value="cuentaFactura" >
 								</td>
 								<td class="labelText">
-									<siga:Idioma key="facturacion.pagosFactura.Renegociar.literal.NuevaFormaPago.MismaCuenta"/>
+									<label for="radio1"><siga:Idioma key="facturacion.pagosFactura.renegociar.literal.nuevaFormaPago.cuentaFactura"/></label>
 								</td>
 							</tr>
 							
 							<tr>
 								<td>
-									<input type="radio" id="radio2" name="datosPagosRenegociarNuevaFormaPago" value="porOtroBanco"/>
+									<input type="radio" id="radio2" name="datosPagosRenegociarNuevaFormaPago" value="cuentaFactura_cuentaUnica_cuentaServicios"/>
 								</td>
 								<td class="labelText">
-									<siga:Idioma key="facturacion.pagosFactura.Renegociar.literal.NuevaFormaPago.PorBanco"/>
+									<label for="radio2"><siga:Idioma key="facturacion.pagosFactura.renegociar.literal.nuevaFormaPago.cuentaFactura_cuentaUnica_cuentaServicios"/></label>
 								</td>	
 							</tr>
 							
@@ -170,7 +170,7 @@
 									<input type="radio" id="radio3" name="datosPagosRenegociarNuevaFormaPago" value="porCaja">
 								</td>
 								<td class="labelText">
-									<siga:Idioma key="facturacion.pagosFactura.Renegociar.literal.NuevaFormaPago.PorCaja"/>
+									<label for="radio3"><siga:Idioma key="facturacion.pagosFactura.renegociar.literal.nuevaFormaPago.todasCaja"/></label>
 								</td>
 							</tr>		
 						</table>
@@ -193,7 +193,7 @@
 									<td>
 										<html:textarea property="datosPagosRenegociarObservaciones" 
 											onKeyDown="cuenta(this,4000)" onChange="cuenta(this,4000)" 
-											style="overflow-y:auto; overflow-x:hidden; width:540px; height:80px; resize:none;"
+											style="overflow-y:auto; overflow-x:hidden; width:540px; height:50px; resize:none;"
 											styleClass="box" value=""/>
 									</td>
 								</tr>

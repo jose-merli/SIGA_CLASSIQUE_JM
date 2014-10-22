@@ -233,56 +233,54 @@ public class FacDisqueteDevolucionesAdm extends MasterBeanAdministrador {
 		return resultado;
 	}
 	
-	public Vector getFacturasDevueltasEnDisquete (Integer idInstitucion,Integer idDisquete)
-	throws ClsExceptions,SIGAException
-{
-	Vector factDevueltasVector=new Vector();
+	/**
+	 * Obtiene las facturas devueltas en disquete
+	 * @param idInstitucion
+	 * @param idDisquete
+	 * @return
+	 * @throws ClsExceptions
+	 * @throws SIGAException
+	 */
+	public Vector getFacturasDevueltasEnDisquete (String idInstitucion, String idDisquete) throws ClsExceptions,SIGAException {
+		Vector factDevueltasVector = new Vector();
 	
-	try {
-		Hashtable codigosHashtable = new Hashtable();
-		int contador = 0;
-		RowsContainer rc = new RowsContainer();
-		StringBuffer sql = new StringBuffer();
-		sql.append(" ");
-		sql.append(" SELECT FAC.NUMEROFACTURA,FAC.IDFACTURA,FAC.IDINSTITUCION,FAC.ESTADO,FAC.IMPTOTALPORPAGAR ");
-		sql.append(" , LD.IDRECIBO ");
-		sql.append(" FROM FAC_DISQUETEDEVOLUCIONES      DD, ");
-		sql.append(" FAC_LINEADEVOLUDISQBANCO      LD, ");
-		sql.append(" FAC_FACTURAINCLUIDAENDISQUETE FID, ");
-		sql.append(" FAC_FACTURA                   FAC ");
-
-		sql.append(" WHERE FAC.IDFACTURA = FID.IDFACTURA ");
-		sql.append(" AND FAC.IDINSTITUCION = FID.IDINSTITUCION ");
-		sql.append(" AND FID.IDINSTITUCION = LD.IDINSTITUCION ");
-		sql.append(" AND FID.IDFACTURAINCLUIDAENDISQUETE = LD.IDFACTURAINCLUIDAENDISQUETE ");
-		sql.append(" AND FID.IDDISQUETECARGOS = LD.IDDISQUETECARGOS ");
-		sql.append(" AND LD.IDINSTITUCION = DD.IDINSTITUCION ");
-		sql.append(" AND LD.IDDISQUETEDEVOLUCIONES = DD.IDDISQUETEDEVOLUCIONES ");
-		sql.append(" AND DD.IDINSTITUCION = :");
-		contador ++;
-		sql.append(contador);
-		codigosHashtable.put(new Integer(contador),idInstitucion);
-		sql.append(" AND DD.IDDISQUETEDEVOLUCIONES = :");
-		contador ++;
-		sql.append(contador);
-		codigosHashtable.put(new Integer(contador),idDisquete);
-		
-		if (rc.findBind(sql.toString(),codigosHashtable)) {
-			for (int i = 0; i < rc.size(); i++){
-				Row fila = (Row) rc.get(i);
-				factDevueltasVector.add(fila);
+		try {
+			FacFacturaAdm admFacFactura = new FacFacturaAdm(this.usrbean);
+			String[] camposFactura = admFacFactura.getCamposBean();
+			
+			String sql = "SELECT ";
+			
+			for (int i=0; i<camposFactura.length; i++) {
+				sql += " FAC." + camposFactura[i] + ", ";
+			}			
+			
+			sql += " LD.IDRECIBO " +
+					" FROM FAC_DISQUETEDEVOLUCIONES DD, " + 
+						" FAC_LINEADEVOLUDISQBANCO LD, " +
+						" FAC_FACTURAINCLUIDAENDISQUETE FID, " + 
+						" FAC_FACTURA FAC " + 
+					" WHERE FAC.IDINSTITUCION = FID.IDINSTITUCION " +
+						" AND FAC.IDFACTURA = FID.IDFACTURA " +
+						" AND FID.IDINSTITUCION = LD.IDINSTITUCION " + 
+						" AND FID.IDFACTURAINCLUIDAENDISQUETE = LD.IDFACTURAINCLUIDAENDISQUETE " + 
+						" AND FID.IDDISQUETECARGOS = LD.IDDISQUETECARGOS " +
+						" AND LD.IDINSTITUCION = DD.IDINSTITUCION " +
+						" AND LD.IDDISQUETEDEVOLUCIONES = DD.IDDISQUETEDEVOLUCIONES " +
+						" AND DD.IDINSTITUCION = " + idInstitucion +
+						" AND DD.IDDISQUETEDEVOLUCIONES = " + idDisquete;
+			
+			RowsContainer rc = new RowsContainer();
+			if (rc.find(sql)) {
+				for (int i = 0; i < rc.size(); i++){
+					Row fila = (Row) rc.get(i);
+					factDevueltasVector.add(fila);
+				}
 			}
+	
+		} catch (Exception e) {
+			throw new ClsExceptions (e, "Error al obtener la informacion sobre del disquete de devoluciones.");
 		}
-	}
-	catch (Exception e) {
-		throw new ClsExceptions (e, "Error al obtener la informacion sobre del disquete de devoluciones.");
-	}
 	
-	return factDevueltasVector;                        
-} //getFacturasDevueltasEnDisquete()
-
-	
-	
-
-	
+		return factDevueltasVector;                        
+	} //getFacturasDevueltasEnDisquete()
 }

@@ -328,15 +328,21 @@ public class CenCuentasBancariasAdm extends MasterBeanAdmVisible {
 		return alCuentasAbono;
 	}
 	
-	public ArrayList getCuentasCargo(Long idPersona, Integer idInstitucion) throws ClsExceptions, SIGAException{
+	/**
+	 * Consulta las cuentas bancarias activas de cargos de la persona
+	 * @param idPersona
+	 * @param idInstitucion
+	 * @return
+	 * @throws ClsExceptions
+	 * @throws SIGAException
+	 */
+	public ArrayList getCuentasCargo (Long idPersona, Integer idInstitucion) throws ClsExceptions, SIGAException {
 		ArrayList alCuentasCargo = null;
 		try{			
-			RowsContainer rc = null;
 			String where = " WHERE " + CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_IDPERSONA + " = " + idPersona +
-			" AND " + CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_IDINSTITUCION + " = " + idInstitucion + 
-			" AND " + CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_FECHABAJA+ " IS NULL " + 
-			" AND " + CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_ABONOCARGO + " in ('T','C')" ;
-			//" AND ROWNUM<2 ";
+					" AND " + CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_IDINSTITUCION + " = " + idInstitucion + 
+					" AND " + CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_FECHABAJA + " IS NULL " + 
+					" AND " + CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_ABONOCARGO + " in ('T','C')" ;
 		
 			Vector vCuentasCargo = this.select(where);
 			alCuentasCargo = new ArrayList();
@@ -345,46 +351,41 @@ public class CenCuentasBancariasAdm extends MasterBeanAdmVisible {
 				alCuentasCargo.add(salida);
 			}
 			
-		}
-		catch(Exception e){			
+		} catch(Exception e){			
 			throw new ClsExceptions (e, e.toString());
 		}
+		
 		return alCuentasCargo;
 	}
 	
 	/**
-	 * Devuelve un Hastable con los datos de la cuenta bancarias del cliente pasado como parámetro.
-	 * @author nuria.rgonzalez 18-01-05
-	 * @version 2	 
-	 * @param idPersona, es el identificador de la persona de al que vamos a obtener los datos. 
-	 * @param idInstitucion, es el identificador de la institucion de la persona de al que vamos a obtener los datos.
-	 * @param idCuenta, es el identificador de la cuenta de la ue queremos obtener los datos.  
+	 * Devuelve un Hastable con los datos de la cuenta bancaria del cliente
+	 * @param idPersona
+	 * @param idInstitucion
+	 * @param idCuenta
+	 * @return
+	 * @throws ClsExceptions
+	 * @throws SIGAException
 	 */
-	public Hashtable selectCuentas(Long idPersona, Integer idInstitucion, Integer idCuenta) throws ClsExceptions, SIGAException{
+	public Hashtable selectCuentas (Long idPersona, Integer idInstitucion, Integer idCuenta) throws ClsExceptions, SIGAException{
 		Hashtable registro = null;
 		try{			
-			RowsContainer rc = null;
-			String where = " WHERE " + CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_IDPERSONA + " = " + idPersona +
-			" AND " + CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_IDINSTITUCION + " = " + idInstitucion +
-			" AND " + CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_IDCUENTA + " = " + idCuenta;
-		
-			//rc = new RowsContainer(); 
 			String sql = UtilidadesBDAdm.sqlSelect(CenCuentasBancariasBean.T_NOMBRETABLA, this.getCamposCuentas());
 			
-			sql += where;		
+			sql += " WHERE " + CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_IDPERSONA + " = " + idPersona +
+					" AND " + CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_IDINSTITUCION + " = " + idInstitucion +
+					" AND " + CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_IDCUENTA + " = " + idCuenta;	
 			
-			// RGG cambio visibilidad
-			rc = this.find(sql);
-			if (rc!=null) {
-				if(rc.size()>0){
-					Row fila = (Row) rc.get(0);
-					registro = (Hashtable)fila.getRow(); 					
-				}
+			RowsContainer rc = this.find(sql);
+			if (rc!=null && rc.size() == 1) {
+				Row fila = (Row) rc.get(0);
+				registro = (Hashtable)fila.getRow(); 					
 			}
-		}		
-		catch(Exception e){			
+			
+		} catch(Exception e) {			
 			throw new ClsExceptions (e, "Error al ejecutar el 'select' en B.D.");
 		}
+		
 		return registro;
 	}
 	
@@ -1181,4 +1182,49 @@ public class CenCuentasBancariasAdm extends MasterBeanAdmVisible {
 		return cuentaBancaria;
 	}	
 	
+	/**
+	 * Obtiene la cuenta bancaria activa de cargo de la persona mas utilizada para los servicios
+	 * @param idInstitucion
+	 * @param idPersona
+	 * @return
+	 * @throws ClsExceptions
+	 */
+	public String getCuentaActivaServiciosActivos (Integer idInstitucion, Long idPersona) throws ClsExceptions {
+		String idCuenta = null;
+		
+		try {
+			String sql = "SELECT TABLA." + CenCuentasBancariasBean.C_IDCUENTA + 
+						" FROM ( " +
+							"SELECT " + CenCuentasBancariasBean.C_IDCUENTA + ", " +
+								CenCuentasBancariasBean.C_FECHAMODIFICACION + ", " +
+								" ( " + // Obtiene el numero de servicios en los que esta actualmente asociada la cuenta
+									" SELECT COUNT(*) " +
+									" FROM " + PysSuscripcionBean.T_NOMBRETABLA +
+									" WHERE " + PysSuscripcionBean.T_NOMBRETABLA + "." + PysSuscripcionBean.C_IDINSTITUCION + " = " + CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_IDINSTITUCION +
+										" AND " + PysSuscripcionBean.T_NOMBRETABLA + "." + PysSuscripcionBean.C_IDPERSONA + " = " + CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_IDPERSONA +
+										" AND " + PysSuscripcionBean.T_NOMBRETABLA + "." + PysSuscripcionBean.C_IDCUENTA + " = " + CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_IDCUENTA +
+										" AND " + PysSuscripcionBean.T_NOMBRETABLA + "." + PysSuscripcionBean.C_FECHABAJA + " IS NULL " +
+								" ) AS NUM_SERVICIOS_ASOCIADOS " +						
+							" FROM " + CenCuentasBancariasBean.T_NOMBRETABLA +
+							" WHERE " + CenCuentasBancariasBean.C_IDINSTITUCION + " = " + idInstitucion +
+								" AND " + CenCuentasBancariasBean.C_IDPERSONA + " = " + idPersona +
+								" AND " + CenCuentasBancariasBean.C_FECHABAJA + " IS NULL " + 
+								" AND " + CenCuentasBancariasBean.C_ABONOCARGO + " in ('T','C')" +							
+						" ) TABLA " +
+						" WHERE TABLA.NUM_SERVICIOS_ASOCIADOS > 0 " + // Solo obtengo las cuentas con servicios asociados
+						" ORDER BY TABLA.NUM_SERVICIOS_ASOCIADOS DESC, " + // Ordeno por el numero de servicios para obtener la cuenta con mas servicios asociados
+							" TABLA." + CenCuentasBancariasBean.C_FECHAMODIFICACION + " DESC"; // En caso de tener el mismo numero de servicios, obtengo la mas actual
+			
+			RowsContainer rc = this.find(sql);
+	        if (rc!=null && rc.size()>0) {
+	        	Row fila = (Row) rc.get(0);
+	        	idCuenta = (String) fila.getString(CenCuentasBancariasBean.C_IDCUENTA);
+	        } 
+			
+		} catch (Exception e) {
+	       	throw new ClsExceptions (e, "Error al obtener la cuenta bancaria activa de cargo de la persona mas utilizada para los servicios.");
+	    }
+	
+		return idCuenta;
+	}	
 }

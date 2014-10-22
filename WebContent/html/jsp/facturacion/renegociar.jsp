@@ -30,30 +30,23 @@
 	UsrBean userBean = (UsrBean) request.getSession().getAttribute("USRBEAN");	
 
 	FacFacturaBean beanFactura = (FacFacturaBean) request.getAttribute("beanFactura");
-	CenCuentasBancariasBean beanCuentaBancaria = (CenCuentasBancariasBean) request.getAttribute("beanCuentaBancaria");
 	String ultimaFechaPagosFactura = (String) request.getAttribute("ultimaFechaPagosFactura");
 	Integer numeroFacturas = (Integer) request.getAttribute("numeroFacturas");
-	Integer numeroPersonasFactura = (Integer) request.getAttribute("numeroPersonasFactura");	
-	Integer numeroFacturasPorBanco = (Integer) request.getAttribute("numeroFacturasPorBanco");
+	Integer numeroPersonasFactura = (Integer) request.getAttribute("numeroPersonasFactura");		
 	
 	Integer numeroCuentasPersona = 0;
-	if (numeroPersonasFactura == 1) {
-		numeroCuentasPersona = (Integer) request.getAttribute("numeroCuentasPersona");				
-	}
-			
-	String mensaje = (String) request.getAttribute("mensaje");	
-	String fechaActual = UtilidadesBDAdm.getFechaBD("");	
-	
-	String parametro[] = new String[2];
+	String parametrosCuentasBancariasActivasPersona[] = new String[2];
 	String descripcionFormaPagoActual = "";
-	if (beanFactura != null) {
+	if (numeroPersonasFactura == 1) {
+		numeroCuentasPersona = (Integer) request.getAttribute("numeroCuentasPersona");
+		
 		if (beanFactura.getIdCuentaDeudor() != null) {
-			parametro[0] = String.valueOf(beanFactura.getIdPersonaDeudor());
+			parametrosCuentasBancariasActivasPersona[0] = String.valueOf(beanFactura.getIdPersonaDeudor());
 		} else {
-			parametro[0] = String.valueOf(beanFactura.getIdPersona());
+			parametrosCuentasBancariasActivasPersona[0] = String.valueOf(beanFactura.getIdPersona());
 		}
 
-		parametro[1] = String.valueOf(beanFactura.getIdInstitucion());
+		parametrosCuentasBancariasActivasPersona[1] = String.valueOf(beanFactura.getIdInstitucion());
 		
 		if (beanFactura.getEstado() != null) {
 			if (beanFactura.getEstado().equals(new Integer(ClsConstants.ESTADO_FACTURA_CAJA))) {
@@ -71,6 +64,9 @@
 			}
 		}			
 	}
+			
+	String mensaje = (String) request.getAttribute("mensaje");	
+	String fechaActual = UtilidadesBDAdm.getFechaBD("");		
 %>
 
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
@@ -109,40 +105,30 @@
 			jQuery("#idBotonesAccion").find('input:eq(0)').hide();
 		}
 		
-		// Asociada al boton GuardarCerrar
+		// Asociada al boton Guardar y Cerrar
 		function accionGuardarCerrar() {
+			// Validamos que ha marcado alguna opcion
 			if(!jQuery("input[name='datosPagosRenegociarNuevaFormaPago']:checked").val()){
 				var mensaje = '<siga:Idioma key="messages.pys.pago.error"/>';
 				alert(mensaje);
 				return 0;
 			}			
-			
-<%
-			if (numeroFacturasPorBanco==0) {
-%>
-				if (jQuery("input[name='datosPagosRenegociarNuevaFormaPago']:checked").val() == "mismaCuenta") {
-					var mensaje = '<siga:Idioma key="facturacion.pagosFactura.Renegociar.Error.MismaCuenta"/>';
-					alert(mensaje);
-					return 0;
-				}
-<%
-			}
-%>			
 
-			if (document.GestionarFacturaForm.radio2.checked && document.GestionarFacturaForm.datosPagosRenegociarIdCuenta != null) {
-				if (document.GestionarFacturaForm.datosPagosRenegociarIdCuenta.value == "") {
-					var mensaje = '<siga:Idioma key="facturacion.pagosFactura.Renegociar.Obligatoria.Cuenta"/>';
-					alert(mensaje);
-					return 0;
-				}
+			// Validamos que si ha marcado por otro banco, ha indicado el banco
+			if (document.GestionarFacturaForm.radio2 != undefined && document.GestionarFacturaForm.radio2.checked && document.GestionarFacturaForm.datosPagosRenegociarIdCuenta.value == "") {
+				var mensaje = '<siga:Idioma key="facturacion.pagosFactura.Renegociar.Obligatoria.Cuenta"/>';
+				alert(mensaje);
+				return 0;
 			}	
 			
+			// Validamos que ha introducido la fecha de la renegociacion
 			if (document.GestionarFacturaForm.datosRenegociarFecha.value.length < 1) {
 				var mensaje = '<siga:Idioma key="facturacion.pagosFactura.Caja.literal.Fecha"/> <siga:Idioma key="messages.campoObligatorio.error"/>';
 				alert (mensaje);
 				return 0;
 			}
 			
+			// Validamos que la fecha de renegociacion es mayor o igual a la ultima fecha
 			var ultimaFechaPagosFactura = "<%=ultimaFechaPagosFactura%>";
 			if (compararFecha (document.GestionarFacturaForm.datosRenegociarFecha, ultimaFechaPagosFactura) > 1) {
 				var mensaje = '<siga:Idioma key="facturacion.renegociar.error.fecha"/> ' + ultimaFechaPagosFactura;
@@ -151,6 +137,8 @@
 			}				
 			
 			jQuery("#idBotonesAccion").find('input:eq(0)').hide();
+			
+			document.GestionarFacturaForm.modo.value = "renegociar";
 			document.GestionarFacturaForm.target = "submitArea";	
 			document.GestionarFacturaForm.submit();
 		}			
@@ -187,7 +175,9 @@
 		
 		<table class="tablaCentralCamposMedia" align="center">
 <%
-			if (numeroFacturas == 1) {
+			if (numeroFacturas == 1) { // numeroPersonasFactura=1; 
+				CenCuentasBancariasBean beanCuentaBancaria = (CenCuentasBancariasBean) request.getAttribute("beanCuentaBancaria");
+				Integer numeroFacturasPorBanco = (Integer) request.getAttribute("numeroFacturasPorBanco");
 %>		
 				<tr>
 					<td>
@@ -222,97 +212,25 @@
 						</fieldset>
 					</td>
 				</tr>	
+
+				<tr>
+					<td>
+						<siga:ConjCampos leyenda="facturacion.pagosFactura.Renegociar.literal.NuevaFormaPago">
+							<table border="0" cellpadding="5" cellspacing="0">	
 <%
-			}
-%>	
-		
-			<tr>
-				<td>
-					<siga:ConjCampos leyenda="facturacion.pagosFactura.Renegociar.literal.NuevaFormaPago">
-						<table border="0" cellpadding="5" cellspacing="0">	
-<%
-							if (numeroPersonasFactura > 1) {
-								if (numeroFacturasPorBanco > 0) {
-%>								
-									<tr>
-										<td>
-											<input type="radio" id="radio1" name="datosPagosRenegociarNuevaFormaPago" value="mismaCuenta" checked="checked" />
-										</td>
-										<td class="labelText">
-											<siga:Idioma key="facturacion.pagosFactura.Renegociar.literal.NuevaFormaPago.MismaCuenta"/>
-										</td>
-									</tr>
-
-									<tr>						
-										<td>
-											<input type="radio" id="radio2" name="datosPagosRenegociarNuevaFormaPago" value="porOtroBanco" />
-										</td>
-										<td class="labelText">
-											<siga:Idioma key="facturacion.pagosFactura.Renegociar.literal.NuevaFormaPago.PorBanco"/>
-										</td>									
-									</tr>
-
-									<tr>
-										<td>
-											<input type="radio" id="radio3" name="datosPagosRenegociarNuevaFormaPago" value="porCaja" />
-										</td>
-										<td class="labelText">
-											<siga:Idioma key="facturacion.pagosFactura.Renegociar.literal.NuevaFormaPago.PorCaja"/>								
-										</td>
-									</tr>
-<%
-								} else { // numeroPersonasFactura > 1 && numeroFacturasPorBanco == 0
-%>									
-
-									<tr>
-										<td>
-											<input type="radio" id="radio1" name="datosPagosRenegociarNuevaFormaPago" value="mismaCuenta" checked="checked" disabled="disabled" />
-										</td>
-										<td class="labelText">
-											<siga:Idioma key="facturacion.pagosFactura.Renegociar.literal.NuevaFormaPago.MismaCuenta"/>
-										</td>
-									</tr>
-
-									<tr>						
-										<td>
-											<input type="radio" id="radio2" name="datosPagosRenegociarNuevaFormaPago" value="porOtroBanco" checked="checked" />
-										</td>
-										<td class="labelText">
-											<siga:Idioma key="facturacion.pagosFactura.Renegociar.literal.NuevaFormaPago.PorBanco"/>
-										</td>									
-									</tr>
-
-									<tr>
-										<td>
-											<input type="radio" id="radio3" name="datosPagosRenegociarNuevaFormaPago" value="porCaja" disabled="disabled" />
-										</td>
-										<td class="labelText">
-											<siga:Idioma key="facturacion.pagosFactura.Renegociar.literal.NuevaFormaPago.PorCaja"/>								
-										</td>
-									</tr>															
-<%
-								}
-								
-							} else { // numeroPersonasFactura == 1
-								if (numeroFacturasPorBanco > 0) {
-									if (numeroCuentasPersona > 0) {									
+								if (numeroFacturasPorBanco == 1) { // numeroPersonasFactura=1; numeroFacturas=1;
+									if (numeroCuentasPersona > 0) {	// numeroPersonasFactura=1; numeroFacturas=1; numeroFacturasPorBanco=1;								
 %>								
 										<tr>
 											<td>
-												<input type="radio" id="radio1" name="datosPagosRenegociarNuevaFormaPago" value="mismaCuenta" checked="checked"/>
+												<input type="radio" id="radio1" name="datosPagosRenegociarNuevaFormaPago" value="cuentaFactura" checked="checked"/>
 											</td>
 											<td class="labelText">
-												<siga:Idioma key="facturacion.pagosFactura.Renegociar.literal.NuevaFormaPago.MismaCuenta"/>
+												<label for="radio1"><siga:Idioma key="facturacion.pagosFactura.Renegociar.literal.NuevaFormaPago.MismaCuenta"/></label>
 											</td>
-<%
-											if (numeroFacturas == 1) {
-%>										
 											<td class="labelText">
 												<%=UtilidadesString.mostrarIBANConAsteriscos(beanCuentaBancaria.getIban())%>
 											</td>	
-<%
-											}
-%>		
 										</tr>
 											
 										<tr>
@@ -320,17 +238,11 @@
 												<input type="radio" id="radio2" name="datosPagosRenegociarNuevaFormaPago" value="porOtroBanco"/>
 											</td>
 											<td class="labelText">
-												<siga:Idioma key="facturacion.pagosFactura.Renegociar.literal.NuevaFormaPago.PorBanco"/>
+												<label for="radio2"><siga:Idioma key="facturacion.pagosFactura.Renegociar.literal.NuevaFormaPago.PorBanco"/></label>
 											</td>	
-<%
-											if (beanFactura!=null) {
-%>											
-												<td class="labelText" style="text-align: left;" >
-													<siga:ComboBD nombre="datosPagosRenegociarIdCuenta" tipo="cuentaCargo" clase="boxCombo" obligatorio="false" parametro="<%=parametro%>" />
-												</td>
-<%
-											}
-%>
+											<td>
+												<siga:ComboBD nombre="datosPagosRenegociarIdCuenta" tipo="cuentaCargo" clase="boxCombo" obligatorio="false" parametro="<%=parametrosCuentasBancariasActivasPersona%>" />
+											</td>
 										</tr>
 											
 										<tr>
@@ -338,18 +250,18 @@
 												<input type="radio" id="radio3" name="datosPagosRenegociarNuevaFormaPago" value="porCaja">
 											</td>
 											<td class="labelText">
-												<siga:Idioma key="facturacion.pagosFactura.Renegociar.literal.NuevaFormaPago.PorCaja"/>
+												<label for="radio3"><siga:Idioma key="facturacion.pagosFactura.Renegociar.literal.NuevaFormaPago.PorCaja"/></label>
 											</td>
 										</tr>							
 <%
-									} else { // numeroPersonasFactura == 1 && numeroFacturasPorBanco > 0 && numeroCuentasPersona == 0
+									} else { // numeroPersonasFactura=1; numeroFacturas=1; numeroFacturasPorBanco=1; numeroCuentasPersona=0;
 %>									
 										<tr>
 											<td>
-												<input type="radio" id="radio1" name="datosPagosRenegociarNuevaFormaPago" value="mismaCuenta" disabled="disabled" />
+												<input type="radio" id="radio1" name="datosPagosRenegociarNuevaFormaPago" value="cuentaFactura" disabled="disabled" />
 											</td>
 											<td class="labelText">
-												<siga:Idioma key="facturacion.pagosFactura.Renegociar.literal.NuevaFormaPago.MismaCuenta"/>
+												<label for="radio1"><siga:Idioma key="facturacion.pagosFactura.Renegociar.literal.NuevaFormaPago.MismaCuenta"/></label>
 											</td>
 										</tr>	
 																		
@@ -358,7 +270,7 @@
 												<input type="radio" id="radio2" name="datosPagosRenegociarNuevaFormaPago" value="porOtroBanco" disabled="disabled" />
 											</td>
 											<td class="labelText">
-												<siga:Idioma key="facturacion.pagosFactura.Renegociar.literal.NuevaFormaPago.PorBanco"/>
+												<label for="radio2"><siga:Idioma key="facturacion.pagosFactura.Renegociar.literal.NuevaFormaPago.PorBanco"/></label>
 											</td>									
 										</tr>
 											
@@ -367,51 +279,45 @@
 												<input type="radio" id="radio3" name="datosPagosRenegociarNuevaFormaPago" value="porCaja" checked="checked" />
 											</td>
 											<td class="labelText">
-												<siga:Idioma key="facturacion.pagosFactura.Renegociar.literal.NuevaFormaPago.PorCaja"/>
+												<label for="radio3"><siga:Idioma key="facturacion.pagosFactura.Renegociar.literal.NuevaFormaPago.PorCaja"/></label>
 											</td>
 										</tr>																
 <%
 									}			
 									
-								} else { // numeroPersonasFactura == 1 && numeroFacturasPorBanco == 0
+								} else { // numeroPersonasFactura=1; numeroFacturas=1; numeroFacturasPorBanco=0;
 %>																	
 									<tr width="100%">
 										<td>
-											<input type="radio" id="radio1" name="datosPagosRenegociarNuevaFormaPago" value="mismaCuenta" disabled="disabled"/>
+											<input type="radio" id="radio1" name="datosPagosRenegociarNuevaFormaPago" value="cuentaFactura" disabled="disabled"/>
 										</td>
 										<td class="labelText" >
-											<siga:Idioma key="facturacion.pagosFactura.Renegociar.literal.NuevaFormaPago.MismaCuenta"/>
+											<label for="radio1"><siga:Idioma key="facturacion.pagosFactura.Renegociar.literal.NuevaFormaPago.MismaCuenta"/></label>
 										</td>
 									</tr>
 <%
-									if (numeroCuentasPersona > 0) { // numeroPersonasFactura == 1 && numeroFacturasPorBanco == 0 && numeroCuentasPersona > 0
+									if (numeroCuentasPersona > 0) { // numeroPersonasFactura=1; numeroFacturas=1; numeroFacturasPorBanco=0;
 %>																		
 										<tr>
 											<td>
 												<input type="radio" id="radio2" name="datosPagosRenegociarNuevaFormaPago" value="porOtroBanco" checked="checked"/>
 											</td>
-											<td class="labelText" >
-												<siga:Idioma key="facturacion.pagosFactura.Renegociar.literal.NuevaFormaPago.PorBanco"  />
+											<td class="labelText">
+												<label for="radio2"><siga:Idioma key="facturacion.pagosFactura.Renegociar.literal.NuevaFormaPago.PorBanco"/></label>
 											</td>	
-<%
-											if (beanFactura!=null) {
-%>												
-												<td class="labelText" style="text-align: left;" >
-													<siga:ComboBD nombre="datosPagosRenegociarIdCuenta" tipo="cuentaCargo" clase="boxCombo" obligatorio="false" parametro="<%=parametro%>" />
-												</td>
-<%
-											}
-%>	
+											<td>
+												<siga:ComboBD nombre="datosPagosRenegociarIdCuenta" tipo="cuentaCargo" clase="boxCombo" obligatorio="false" parametro="<%=parametrosCuentasBancariasActivasPersona%>" />
+											</td>
 										</tr>
 <%
-									} else { // numeroPersonasFactura == 1 && numeroFacturasPorBanco == 0 && numeroCuentasPersona == 0
+									} else { // numeroPersonasFactura=1; numeroFacturas=1; numeroFacturasPorBanco=0; numeroCuentasPersona=0;
 %>										
 										<tr>
 											<td>
 												<input type="radio" id="radio2" name="datosPagosRenegociarNuevaFormaPago" value="porOtroBanco" disabled="disabled" />
 											</td>
 											<td class="labelText">
-												<siga:Idioma key="facturacion.pagosFactura.Renegociar.literal.NuevaFormaPago.PorBanco"/>
+												<label for="radio2"><siga:Idioma key="facturacion.pagosFactura.Renegociar.literal.NuevaFormaPago.PorBanco"/></label>
 											</td>									
 										</tr>															
 <%
@@ -422,17 +328,73 @@
 											<input type="radio" id="radio3" name="datosPagosRenegociarNuevaFormaPago" value="porCaja" disabled="disabled" />
 										</td>
 										<td class="labelText">
-											<siga:Idioma key="facturacion.pagosFactura.Renegociar.literal.NuevaFormaPago.PorCaja"/>
+											<label for="radio3"><siga:Idioma key="facturacion.pagosFactura.Renegociar.literal.NuevaFormaPago.PorCaja"/></label>
 										</td>
 									</tr>
 <%
 								}
-							}
 %>							
-						</table>
-					</siga:ConjCampos>
-				</td>
-			</tr>
+							</table>
+						</siga:ConjCampos>
+					</td>
+				</tr>
+<%
+			} else { // numeroFacturas>1 					
+%>	
+		
+				<tr>
+					<td>
+						<siga:ConjCampos leyenda="facturacion.pagosFactura.Renegociar.literal.NuevaFormaPago">
+							<table border="0" cellpadding="5" cellspacing="0">	
+								<tr>
+									<td>
+										<input type="radio" id="radio1" name="datosPagosRenegociarNuevaFormaPago" value="cuentaFactura" checked="checked" />
+									</td>
+									<td class="labelText" colspan="2">
+										<label for="radio1"><siga:Idioma key="facturacion.pagosFactura.renegociar.literal.nuevaFormaPago.cuentaFactura"/></label>
+									</td>
+								</tr>
+
+								<tr>						
+									<td>
+										<input type="radio" id="radio4" name="datosPagosRenegociarNuevaFormaPago" value="cuentaFactura_cuentaUnica_cuentaServicios" />
+									</td>
+									<td class="labelText" colspan="2">
+										<label for="radio4"><siga:Idioma key="facturacion.pagosFactura.renegociar.literal.nuevaFormaPago.cuentaFactura_cuentaUnica_cuentaServicios"/></label>
+									</td>									
+								</tr>								
+<%								
+								if (numeroPersonasFactura == 1 && numeroCuentasPersona > 0) { // numeroFacturas>1								
+%>																	
+									<tr>
+										<td>
+											<input type="radio" id="radio2" name="datosPagosRenegociarNuevaFormaPago" value="porOtroBanco"/>
+										</td>
+										<td class="labelText">
+											<label for="radio2"><siga:Idioma key="facturacion.pagosFactura.Renegociar.literal.NuevaFormaPago.PorBanco"/></label>	
+										</td>	
+										<td>
+											<siga:ComboBD nombre="datosPagosRenegociarIdCuenta" tipo="cuentaCargo" clase="boxCombo" obligatorio="false" parametro="<%=parametrosCuentasBancariasActivasPersona%>" />
+										</td>
+									</tr>
+<%
+								}
+%>															
+								<tr>
+									<td>
+										<input type="radio" id="radio3" name="datosPagosRenegociarNuevaFormaPago" value="porCaja" />
+									</td>
+									<td class="labelText" colspan="2">
+										<label for="radio3"><siga:Idioma key="facturacion.pagosFactura.Renegociar.literal.NuevaFormaPago.PorCaja"/></label>								
+									</td>
+								</tr>
+							</table>
+						</siga:ConjCampos>
+					</td>
+				</tr>
+<%
+			}
+%>				
 		
 			<tr>
 				<td>
