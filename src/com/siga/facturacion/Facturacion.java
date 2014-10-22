@@ -1035,7 +1035,7 @@ public class Facturacion {
     				throw new ClsExceptions ("Error al generar números de facturación: "+resultadoConfirmar[1]);
     			}
     			// Se envían a banco para su cobro
-    			Object[] param_in_banco = new Object[12];
+    			Object[] param_in_banco = new Object[11];
     			param_in_banco[0] = beanP.getIdInstitucion().toString();
     			param_in_banco[1] = idSerieFacturacion;
     			param_in_banco[2] = idProgramacion;
