@@ -1049,13 +1049,12 @@ public class Facturacion {
 	    			param_in_banco[5] = "";
 	    			param_in_banco[6] = "";
 	    			param_in_banco[7] = "";
-	    			param_in_banco[8] = "";
-	    			param_in_banco[9] = pathFichero;
-	    			param_in_banco[10] = usuMod;
-	    			param_in_banco[11] = this.usrbean.getLanguage();
+	    			param_in_banco[8] = pathFichero;
+	    			param_in_banco[9] = usuMod;
+	    			param_in_banco[10] = this.usrbean.getLanguage();
 	
 	    			String resultado[] = new String[3];
-	    			resultado = ClsMngBBDD.callPLProcedure("{call PKG_SIGA_CARGOS.PRESENTACION(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}", 3, param_in_banco);
+	    			resultado = ClsMngBBDD.callPLProcedure("{call PKG_SIGA_CARGOS.PRESENTACION(?,?,?,?,?,?,?,?,?,?,?,?,?,?)}", 3, param_in_banco);
 	    			codretorno = resultado[1];
 	    			if (!codretorno.equals("0")){
 	    				throw new ClsExceptions ("Error al generar disquetes bancarios: " + resultado[2]);
