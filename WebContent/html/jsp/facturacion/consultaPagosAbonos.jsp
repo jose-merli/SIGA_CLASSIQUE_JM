@@ -171,7 +171,6 @@
 			String textoCompensacion = UtilidadesString.getMensajeIdioma(usr, "facturacion.pagosAbonos.accion.compensacion");			
 			String textoPendienteCaja = UtilidadesString.getMensajeIdioma(usr, "facturacion.pagosAbonos.accion.pendienteCaja");
 			String textoPendienteBanco = UtilidadesString.getMensajeIdioma(usr, "facturacion.pagosAbonos.accion.pendienteBanco");
-			
 			String sEstadoRevision = UtilidadesString.getMensajeIdioma(usr, "facturacion.pagosAbonos.estado.revision");
 			String sEstadoPagado = UtilidadesString.getMensajeIdioma(usr, "general.literal.pagado");
 			String sEstadoPendienteBanco = UtilidadesString.getMensajeIdioma(usr, "general.literal.pendienteabonobanco");
@@ -204,23 +203,27 @@
 				} else if (sModo.equals(textoPendienteCaja)) {
 					sEstado = sEstadoPendienteCaja;
 					
+				//Si aún no se ha incluido el abono en fichero de transferencias se muestra el estado pendiente de pago por banco
+				//y en el importe el importe pendiente de pago por banco
 				} else if (sModo.equals(textoPendienteBanco)) {
 					sEstado = sEstadoPendienteBanco;
+					dImporteFinal = dImporte;
+					dTotal=dImporte;
 				
 				} else {
 					dImporteFinal = dImporte;
-					dTotal = dTotal - dImporte;
+					dTotal = dTotal - dImporte; 
 					
 					if (sModo.equals(textoPagoCaja) || sModo.startsWith(textoCompensacion)) {
 						sEstado = sEstadoPendienteCaja;	
 						
-					} else if (sModo.equals(textoPagoBanco)) {
-						sEstado = sEstadoPendienteBanco;	
-					}
+					} 
 				}				
 				
 				if (dTotal <= 0) {
 					sEstado = sEstadoPagado;
+					dTotal=Math.abs(dTotal);
+					
 				}
 %>
 

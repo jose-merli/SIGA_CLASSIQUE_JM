@@ -766,7 +766,7 @@ public class FacAbonoAdm extends MasterBeanAdministrador {
 								FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDPERSONA + " AS IDENTIFICADOR, " +
 								" SYSDATE AS FECHA, " +
 								" SYSDATE AS FECHA_ORDEN, " +
-								" F_SIGA_GETRECURSO_ETIQUETA('facturacion.pagosAbonos.accion.cambioBanco'," + this.usrbean.getLanguage() + ") AS MODO, " +
+								" F_SIGA_GETRECURSO_ETIQUETA('facturacion.pagosAbonos.accion.pendienteBanco'," + this.usrbean.getLanguage() + ") AS MODO, " +
 								FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IMPPENDIENTEPORABONAR + " AS IMPORTE, " +
 								"(SELECT " + CenBancosBean.T_NOMBRETABLA + "." + CenBancosBean.C_NOMBRE + 
 									" || ' nº ' || " + CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_IBAN + 
