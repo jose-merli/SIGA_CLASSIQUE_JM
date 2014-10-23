@@ -10,6 +10,7 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.redabogacia.sigaservices.app.AppConstants;
+import org.redabogacia.sigaservices.app.helper.SIGAServicesHelper;
 import org.redabogacia.sigaservices.app.services.gen.FicherosService;
 import org.redabogacia.sigaservices.app.util.ReadProperties;
 import org.redabogacia.sigaservices.app.util.SIGAReferences;
@@ -304,6 +305,7 @@ public class AnexosCuentasBancariasAction extends MasterAction{
 		ficheroVo.setUsumodificacion(Integer.valueOf(usrBean.getUserName()));
 		ficheroVo.setFechamodificacion(new Date());
 		ficherosService.insert(ficheroVo);
+		SIGAServicesHelper.uploadFichero(ficheroVo.getDirectorio(),ficheroVo.getNombre(),ficheroVo.getFichero());
 		formAnexosMandato.setIdFichero(ficheroVo.getIdfichero().toString());
 	
    	}
