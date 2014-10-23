@@ -554,10 +554,11 @@ public class DevolucionesAction extends MasterAction {
 					
 					for (int i = 0; i < factDevueltasVector.size(); i++) {
 						Row fila = (Row) factDevueltasVector.get(i);
-	            		Hashtable<String, Object> htFila = fila.getRow();	            		
+	            		Hashtable htFila = fila.getRow();	            		
 	            		String recibo = UtilidadesHash.getString(htFila, FacFacturaIncluidaEnDisqueteBean.C_IDRECIBO);
 	            		
-	            		FacFacturaBean facturaBean = null;	            		
+	            		FacFacturaBean facturaBean = null;
+	            		FacFacturaBean facturaBeanComision = null;
 						if (miForm.getComisiones()!=null && miForm.getComisiones().equalsIgnoreCase(ClsConstants.DB_TRUE)){							
 							Hashtable filtroLineasHashtable = new Hashtable(); 
 							filtroLineasHashtable.put(FacLineaDevoluDisqBancoBean.C_IDINSTITUCION,idInstitucion);
@@ -568,10 +569,14 @@ public class DevolucionesAction extends MasterAction {
 							Vector lineasDevolucion = admLDDB.select(filtroLineasHashtable);	
 							
 							FacLineaDevoluDisqBancoBean lineaDevolucion =(FacLineaDevoluDisqBancoBean)lineasDevolucion.get(0);
-							facturaBean = facturacion.aplicarComisionAFactura (idInstitucion, lineaDevolucion, miForm.getComisiones(), user, fechaDevolucion);
-							
-						} else {
-							FacFacturaAdm facturaAdm = new FacFacturaAdm(user);
+							facturaBeanComision = facturacion.aplicarComisionAFactura (idInstitucion, lineaDevolucion, miForm.getComisiones(), user, fechaDevolucion);							
+						}
+						
+						// Obtiene el bean de la factura a renegociar
+						FacFacturaAdm facturaAdm = new FacFacturaAdm(user);
+						if (facturaBeanComision!=null) {
+							facturaBean = facturaBeanComision;
+						} else {							
 		            		facturaBean = (FacFacturaBean) facturaAdm.hashTableToBean(htFila);
 						}
 	            		
@@ -814,12 +819,11 @@ public class DevolucionesAction extends MasterAction {
 					
 					for (int i = 0; i < factDevueltasVector.size(); i++) {
 						Row fila = (Row) factDevueltasVector.get(i);
-	            		Hashtable<String, Object> htFila=fila.getRow();
+	            		Hashtable htFila = fila.getRow();
 	            		String recibo = UtilidadesHash.getString(htFila, FacFacturaIncluidaEnDisqueteBean.C_IDRECIBO);
 	            		
-	            		FacFacturaAdm facturaAdm = new FacFacturaAdm(user);
-	            		FacFacturaBean facturaBean = (FacFacturaBean) facturaAdm.hashTableToBean(htFila);
-	            		
+	            		FacFacturaBean facturaBean = null;
+	            		FacFacturaBean facturaBeanComision = null;
 						if (miForm.getComisiones()!=null && miForm.getComisiones().equalsIgnoreCase(ClsConstants.DB_TRUE)){							
 							Hashtable filtroLineasHashtable = new Hashtable(); 
 							filtroLineasHashtable.put(FacLineaDevoluDisqBancoBean.C_IDINSTITUCION,idInstitucion);
@@ -830,8 +834,16 @@ public class DevolucionesAction extends MasterAction {
 							Vector lineasDevolucion = admLDDB.select(filtroLineasHashtable);		
 							
 							FacLineaDevoluDisqBancoBean lineaDevolucion =(FacLineaDevoluDisqBancoBean)lineasDevolucion.get(0);
-							facturaBean = facturacion.aplicarComisionAFactura (idInstitucion, lineaDevolucion, miForm.getComisiones(), user, fechaDevolucion);
-						}		      
+							facturaBeanComision = facturacion.aplicarComisionAFactura (idInstitucion, lineaDevolucion, miForm.getComisiones(), user, fechaDevolucion);
+						}
+						
+						// Obtiene el bean de la factura a renegociar
+						FacFacturaAdm facturaAdm = new FacFacturaAdm(user);
+						if (facturaBeanComision!=null) {
+							facturaBean = facturaBeanComision;
+						} else {							
+		            		facturaBean = (FacFacturaBean) facturaAdm.hashTableToBean(htFila);
+						}
 						
 						int resultadoRenegociacion = facturacion.insertarRenegociar(
 								facturaBean, 

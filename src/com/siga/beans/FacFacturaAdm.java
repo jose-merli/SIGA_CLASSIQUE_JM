@@ -3327,4 +3327,28 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
 		
 		return resultado;                        
 	} //obtenerNuevoNumeroFactura()
+	
+	/**
+	 * Actualiza la factura renegociada
+	 * @param facturaBean
+	 * @return
+	 * @throws ClsExceptions
+	 */
+	public boolean actualizarFacturaRenegociacion (FacFacturaBean facturaBean) throws ClsExceptions {
+		try {
+			String sql = "UPDATE " + facturaBean.T_NOMBRETABLA +
+						" SET " + facturaBean.C_IDCUENTA + " = " + facturaBean.getIdCuenta() + ", " +
+							facturaBean.C_ESTADO + " = " + facturaBean.getEstado() + ", " +
+							facturaBean.C_IDFORMAPAGO + " = " + facturaBean.getIdFormaPago() + ", " +
+							facturaBean.C_FECHAMODIFICACION + " = SYSDATE, " +
+							facturaBean.C_USUMODIFICACION + " = " + this.usrbean.getUserName() +
+						" WHERE " + facturaBean.C_IDINSTITUCION + " = " + facturaBean.getIdInstitucion() + 
+							" AND " + facturaBean.C_IDFACTURA + " = " + facturaBean.getIdFactura();
+			
+			return this.insertSQL(sql);					
+
+		} catch (Exception e) {
+			throw new ClsExceptions (e, "Error al actualizar la factura renegociada");
+		}                        
+	} //actualizarFacturaRenegociacion()		
 }

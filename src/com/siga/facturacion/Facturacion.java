@@ -2157,22 +2157,10 @@ public class Facturacion {
 
 		// Actualizamos el estado y forma de pago de la factura
 		facturaBean.setEstado(new Integer(nuevoEstado));
-		if (idFormaPago != 0) {
-			facturaBean.setIdFormaPago(new Integer(idFormaPago)); 
-		}
-
-		if (facturaAdm.update(facturaBean)) {
-			// Por un problema de la capa basica, los valores nulos no se actualizan
-			if (idCuenta == null) {
-				// Atencion, por un problema de la capa basica, los valores nulos no se actualizan
-				// Actualizo la cuenta
-				if (!facturaAdm.insertSQL("UPDATE FAC_FACTURA SET IDCUENTA = NULL WHERE IDINSTITUCION = " + facturaBean.getIdInstitucion() + " AND IDFACTURA = " + facturaBean.getIdFactura())) {
-					throw new ClsExceptions("Error al actualizar la cuenta a nulo: "+facturaAdm.getError());        
-				}
-			}
-
-		} else {
-			throw new ClsExceptions("Error al actualizar los importes de la factura: "+facturaAdm.getError());
+		facturaBean.setIdFormaPago(new Integer(idFormaPago)); 
+		
+		if (!facturaAdm.actualizarFacturaRenegociacion(facturaBean)) {
+			throw new ClsExceptions("Error al actualizar la factura renegociada: " + facturaAdm.getError());        
 		}
 		
 		return 0;
@@ -2641,6 +2629,4 @@ public class Facturacion {
 			throw e;
 		} 
 	}
-	
-	
 }
