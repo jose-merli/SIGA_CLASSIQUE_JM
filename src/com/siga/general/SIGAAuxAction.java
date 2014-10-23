@@ -120,7 +120,8 @@ public abstract class SIGAAuxAction extends SIGAActionBase{
 			AuxForm miForm = (AuxForm) formulario;
 			if (miForm != null) {
 				aux = miForm.getAccion() + "/" + miForm.getModo();
-				sali = " URL:" +request.getRequestURL() + "?" + aux + " +  usuario:" + usrbean.getUserName()  + " " + usrbean.getUserDescription() + " + idPersona:" + usrbean.getIdPersona() + " +  Transaccion:" + usrbean.getStrutsTrans() + " + sesionID:" +request.getSession().getId();
+				String url =  request.getRequestURL()!=null && !request.getRequestURL().toString().equals("null")?request.getRequestURL().toString():request.getRequestURI();
+				sali = " URL:" +url + "?" + aux + " +  usuario:" + usrbean.getUserName()  + " " + usrbean.getUserDescription() + " + idPersona:" + usrbean.getIdPersona() + " +  Transaccion:" + usrbean.getStrutsTrans() + " + sesionID:" +request.getSession().getId();
 				ClsLogging.writeFileLog("++++++TRANSACCION++++++++  " + sali,10);
 				// RGG 21/09/2007 Muestra la informacion de la session
 				// SOLAMENTE CUANDO DEGUB LEVEL DE clog.properties A 11
