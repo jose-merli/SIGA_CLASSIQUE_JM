@@ -15,7 +15,7 @@
 
 <!-- JSP -->
 <% 
-	/** CR7 - Control de fechas de presentación y cargo en ficheros SEPA **/
+	/** JPT - Control de fechas de presentación y cargo en ficheros SEPA **/
 	String fechaPresentacion = (String) request.getAttribute("fechaPresentacion");
 	String fechaPrimerosRecibos = (String) request.getAttribute("fechaPrimerosRecibos");
 	String fechaRecibosRecurrentes = (String) request.getAttribute("fechaRecibosRecurrentes");

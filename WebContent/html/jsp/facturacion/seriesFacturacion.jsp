@@ -70,6 +70,8 @@
 	
 	String modoAction=(String) ses.getAttribute("ModoAction");
 	String desplegar = "true";
+	String ocultarProgramacionConfirmacion = "true";
+	String sFechaPresentacion = (String) request.getAttribute("fechaPresentacion");
 
 	if(request.getSession().getAttribute("DATABACKUP")!= null){		
 		// Se trata de modificacion
@@ -93,7 +95,7 @@
 		sHorasGeneracion = aux.substring(11,13);
 		sMinutosGeneracion = aux.substring(14,16);		
 
-		sFPrevistaConfirmacion = com.atos.utils.GstDate.getFormatedDateShort("", UtilidadesHash.getString(hash, FacFacturacionProgramadaBean.C_FECHAPREVISTACONFIRM));
+		sFPrevistaConfirmacion = com.atos.utils.GstDate.getFormatedDateShort("", UtilidadesHash.getString(hash, FacFacturacionProgramadaBean.C_FECHAPREVISTACONFIRM));		
 		aux = UtilidadesHash.getString(hash, FacFacturacionProgramadaBean.C_FECHAPREVISTACONFIRM);
 		if (!aux.equals("")) {
 			sHorasConfirmacion = aux.substring(11,13);
@@ -132,17 +134,25 @@
 					(idEstadoConfirmacion.equals(FacEstadoConfirmFactBean.CONFIRM_FINALIZADA.toString()) ||	idEstadoConfirmacion.equals(FacEstadoConfirmFactBean.CONFIRM_PROGRAMADA.toString()))){
 				desplegar = "false";
 			}
-		}
+		}		
 		
 	} else {		
 		if (sFProgramacion.trim().equals("")) {
 			sFProgramacion = UtilidadesString.formatoFecha(new Date(),"dd/MM/yyyy");
 		}	
 	}
+		
+	if ((sFPrevistaConfirmacion!=null && !sFPrevistaConfirmacion.equals("")) || (sFechaPresentacion!=null && !sFechaPresentacion.equals(""))) {
+		ocultarProgramacionConfirmacion = "false";
+	}	
 	
 	boolean bObligatorioFechasSEPA = true; // Esta variable es necesaria para fechasFicheroBancario.jsp
 	if ((modoAction!=null && modoAction.trim().equals("nuevaPrevision")) ||
-		(modoAction!=null && modoAction.trim().equals("editar") && idEstadoConfirmacion.equals(FacEstadoConfirmFactBean.GENERACION_PROGRAMADA.toString()))) {
+		(modoAction!=null && modoAction.trim().equals("editar") && (
+				idEstadoConfirmacion.equals(FacEstadoConfirmFactBean.GENERACION_PROGRAMADA.toString()) ||
+				idEstadoConfirmacion.equals(FacEstadoConfirmFactBean.GENERADA.toString()) ||
+				idEstadoConfirmacion.equals(FacEstadoConfirmFactBean.CONFIRM_PROGRAMADA.toString())				
+		))) {
 		bObligatorioFechasSEPA = false;
 	}
 		
@@ -184,7 +194,7 @@
 			// character is not a number, return a false result.
 		 	// Include special cases for negative numbers (first char == '-')
 			// and a single decimal point (any one char in string == '.').   
-			for (i = 0; i < numstr.length; i++) {
+			for (var i = 0; i < numstr.length; i++) {
 				// track number of decimal points
 				if (numstr.charAt(i) == ".")
 					decCount++;
@@ -364,9 +374,23 @@
 					return false;
 				}
 			}
+			
+			// JPT: Si se ha introducido 'F. Prevista Confirm.', se deben introducir las fechas de SEPA
+			if (jQuery('#fechaPrevistaConfirmacion').val()!="" && jQuery('#fechaPresentacion').val()=="") {
+				alert ('<siga:Idioma key="messages.campos.required"/> <siga:Idioma key="facturacion.fechasficherobancario.fechapresentacion"/>');
+				fin();
+				return false;
+			}
+			
+			// JPT: Si se han introducido las fechas de SEPA, se deben introducir 'F. Prevista Confirm.' 
+			if (jQuery('#fechaPresentacion').val()!="" && jQuery('#fechaPrevistaConfirmacion').val()=="") {
+				alert ('<siga:Idioma key="messages.campos.required"/> <siga:Idioma key="facturacion.seriesFacturacion.literal.fechaPrevistaConfirmacion"/>');
+				fin();
+				return false;
+			}			
 						
-			//CR7 - Validacion de las fehas nuevas SEPA. Para nuevas previsiones no es obligatorio
-			if(!validarFechasSEPA()) {
+			// JPT - Validacion de las fehas nuevas SEPA. Para nuevas previsiones no es obligatorio introducir las fechas
+			if (!validarFechasSEPA()) {
 				fin();
 				return false;
 			}
@@ -436,21 +460,21 @@
 			document.forms[0].fechaCargo.value =document.forms[0].fechaPrevistaConfirmacion.value;
 		} 
 		
-		function actualizarHoraFechaGeneracion(){
-			var fechaGen = trim(document.confirmarFacturacionForm.fechaPrevistaGeneracion.value)
-			fechaActual = getFechaActualDDMMYYYY();			  
-			if(compararFecha(trim(fechaGen),fechaActual) == 0){
+		// JPT: Indica la hora y minuto actual en caso de indicar hoy
+		function actualizarHoraFecha(fecha, idHorasFecha, idMinutosFecha){
+			var fechaActual = getFechaActualDDMMYYYY();			  
+			if (compararFecha(trim(fecha.value), fechaActual) == 0){
 				var date = new Date();
 				hora = date.getHours();
-				min = date.getMinutes()
+				min = date.getMinutes();
 				if (hora.toString().length==1) {
 					hora = "0" + hora;
 				}
 				if (min.toString().length==1) {
 					min = "0" + min;
 				}
-				jQuery("#horasGeneracion").val(hora);					
-				jQuery("#minutosGeneracion").val(min);
+				jQuery("#"+idHorasFecha).val(hora);					
+				jQuery("#"+idMinutosFecha).val(min);
 			}
 		}
 		
@@ -588,7 +612,7 @@
 					</td>
 					<td width="120px">
 						<% if (bEditable) { %>
-							<siga:Fecha  nombreCampo="fechaPrevistaGeneracion" valorInicial="<%=sFPrevistaGeneracion%>" postFunction="actualizarHoraFechaGeneracion();"/>
+							<siga:Fecha  nombreCampo="fechaPrevistaGeneracion" valorInicial="<%=sFPrevistaGeneracion%>" postFunction="actualizarHoraFecha(this,'horasGeneracion','minutosGeneracion');"/>
 						<% } else { %>
 							<siga:Fecha  nombreCampo="fechaPrevistaGeneracion" valorInicial="<%=sFPrevistaGeneracion%>" disabled="true" readOnly="true"/>
 						<% }  %>
@@ -612,7 +636,7 @@
 			</table>
 		</siga:ConjCampos>
 		
-		<siga:ConjCampos leyenda="facturacion.seriesFacturacion.literal.programacionConfirmacion" oculto="<%=desplegar%>" desplegable="<%=desplegar%>">
+		<siga:ConjCampos leyenda="facturacion.seriesFacturacion.literal.programacionConfirmacion" oculto="<%=ocultarProgramacionConfirmacion%>" desplegable="<%=desplegar%>">
 			<table class="tablaCampos" align="center" border="0" cellspacing="0" cellpadding="0">
 				<tr>
 					<td class="labelText" width="210px">
@@ -620,7 +644,7 @@
 					</td>
 					<td width="120px">
 						<% if (modoAction.equals("editar") || modoAction.equals("nuevaPrevision")) { %>
-							<siga:Fecha nombreCampo="fechaPrevistaConfirmacion" valorInicial="<%=sFPrevistaConfirmacion%>"/>
+							<siga:Fecha nombreCampo="fechaPrevistaConfirmacion" valorInicial="<%=sFPrevistaConfirmacion%>" postFunction="actualizarHoraFecha(this,'horasConfirmacion','minutosConfirmacion');"/>
 						<% } else { %>
 							<siga:Fecha nombreCampo="fechaPrevistaConfirmacion" valorInicial="<%=sFPrevistaConfirmacion%>" disabled="true" readOnly="true"/>
 						<% } %>
