@@ -502,7 +502,7 @@ public class FicheroBancarioPagosAction extends MasterAction{
 			UsrBean user=(UsrBean)request.getSession().getAttribute("USRBEAN");						
 			String idInstitucion = user.getLocation();							
 			
-			/** CR7 - Control de fechas de presentación y cargo en ficheros SEPA **/
+			/** JPT - Control de fechas de presentación y cargo en ficheros SEPA **/
 			String fechaPresentacion = GstDate.getHoyJsp(); // Obtengo la fecha actual
 			
 			FacDisqueteCargosAdm admDisqueteCargos = new FacDisqueteCargosAdm(user);	

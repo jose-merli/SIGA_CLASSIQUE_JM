@@ -953,7 +953,7 @@ public class ConfirmarFacturacionAction extends MasterAction{
 			Vector vDatos = adm.selectDatosFacturacion(sWhere, orden);
 			
 			
-			/** CR7 - Control de fechas de presentación y cargo en ficheros SEPA **/
+			/** JPT - Control de fechas de presentación y cargo en ficheros SEPA **/
 			Hashtable hash = (Hashtable) vDatos.get(0);			
 			String fechaPresentacion = GstDate.getFormatedDateShort("es",(String)hash.get("FECHAPRESENTACION"));			
 			String fechaPrimerosRecibos = GstDate.getFormatedDateShort("es",(String)hash.get("FECHARECIBOSPRIMEROS"));
@@ -1010,7 +1010,7 @@ public class ConfirmarFacturacionAction extends MasterAction{
 			FacFacturacionProgramadaAdm admFacturacionProgramada = new FacFacturacionProgramadaAdm(user);
 			Vector vDatos = admFacturacionProgramada.selectDatosFacturacion(sWhere, orden);			
 			
-			/** CR7 - Control de fechas de presentación y cargo en ficheros SEPA **/
+			/** JPT - Control de fechas de presentación y cargo en ficheros SEPA **/
 			Hashtable hash = (Hashtable) vDatos.get(0);
 			GenParametrosAdm admParametros = new GenParametrosAdm(user);
 			String fechaPresentacion = GstDate.getFormatedDateShort("es",(String)hash.get("FECHAPRESENTACION"));

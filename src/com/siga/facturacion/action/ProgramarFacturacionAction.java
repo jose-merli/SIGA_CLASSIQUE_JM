@@ -161,7 +161,7 @@ public class ProgramarFacturacionAction extends MasterAction{
 			
 			ses.setAttribute("ModoAction","editar");
 			
-			/** CR7 - Control de fechas de presentación y cargo en ficheros SEPA **/
+			/** JPT - Control de fechas de presentación y cargo en ficheros SEPA **/
 			Hashtable hash = (Hashtable) vDatos.get(0);
 			String fechaPresentacion = GstDate.getFormatedDateShort("es",(String)hash.get("FECHAPRESENTACION"));
 			String fechaPrimerosRecibos = "";
@@ -269,7 +269,7 @@ public class ProgramarFacturacionAction extends MasterAction{
 			UsrBean user = (UsrBean) ses.getAttribute("USRBEAN");
 			String idInstitucion = user.getLocation();
 			
-			/** CR7 - Control de fechas de presentación y cargo en ficheros SEPA **/
+			/** JPT - Control de fechas de presentación y cargo en ficheros SEPA **/
 			String fechaPresentacion = GstDate.getHoyJsp(); // Obtengo la fecha actual
 			
 			FacDisqueteCargosAdm admDisqueteCargos = new FacDisqueteCargosAdm(user);	
@@ -681,7 +681,7 @@ public class ProgramarFacturacionAction extends MasterAction{
 			
 			Vector vDatos = adm.selectDatosFacturacion(sWhere, orden);
 			
-			/** CR7 - Control de fechas de presentación y cargo en ficheros SEPA **/
+			/** JPT - Control de fechas de presentación y cargo en ficheros SEPA **/
 			Hashtable hash = (Hashtable) vDatos.get(0);
 			
 			String fechaPresentacion = GstDate.getFormatedDateShort("es",(String)hash.get("FECHAPRESENTACION"));

@@ -183,7 +183,7 @@ public class FacFacturacionProgramadaAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(htData, FacFacturacionProgramadaBean.C_FECHAMODIFICACION, b.getFechaMod());
 			UtilidadesHash.set(htData, FacFacturacionProgramadaBean.C_USUMODIFICACION, b.getUsuMod());
 
-			UtilidadesHash.set(htData, FacFacturacionProgramadaBean.C_FECHAPRESENTACION, b.getFechaPresentacion());
+			UtilidadesHash.setForCompare(htData, FacFacturacionProgramadaBean.C_FECHAPRESENTACION, b.getFechaPresentacion());
 			UtilidadesHash.setForCompare(htData, FacFacturacionProgramadaBean.C_FECHARECIBOSRECURRENTES, b.getFechaRecibosRecurrentes());
 			UtilidadesHash.setForCompare(htData, FacFacturacionProgramadaBean.C_FECHARECIBOSPRIMEROS, b.getFechaRecibosPrimeros());
 			UtilidadesHash.setForCompare(htData, FacFacturacionProgramadaBean.C_FECHARECIBOSCOR1, b.getFechaRecibosCOR1());
