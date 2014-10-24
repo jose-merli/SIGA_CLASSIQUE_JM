@@ -113,6 +113,7 @@
 		<service interface="org.redabogacia.sigaservices.app.services.cen.CenProvinciaService" 				implementation="org.redabogacia.sigaservices.app.services.cen.impl.CenProvinciaServiceImpl"/>
 		
 		<service interface="org.redabogacia.sigaservices.app.services.scs.ScsDesignaProcuradorService" 				implementation="org.redabogacia.sigaservices.app.services.scs.impl.ScsDesignaProcuradorServiceImpl"/>
+		<service interface="org.redabogacia.sigaservices.app.services.mutualidad.MutualidadService" 				implementation="org.redabogacia.sigaservices.app.services.mutualidad.impl.MutualidadServiceImpl"/>
 		
 		
 		

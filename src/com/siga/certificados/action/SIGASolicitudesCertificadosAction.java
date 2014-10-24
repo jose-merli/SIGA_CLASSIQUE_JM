@@ -19,6 +19,7 @@ import org.apache.struts.action.ActionMapping;
 import org.redabogacia.sigaservices.app.autogen.model.CerSolicitudcertificadostexto;
 import org.redabogacia.sigaservices.app.autogen.model.CerSolicitudcertificadostextoExample;
 import org.redabogacia.sigaservices.app.services.cer.CerSolicitudCertificadosTextoService;
+import org.redabogacia.sigaservices.app.services.mutualidad.MutualidadService;
 import org.redabogacia.sigaservices.app.util.ReadProperties;
 import org.redabogacia.sigaservices.app.util.SIGAReferences;
 
@@ -77,6 +78,8 @@ import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
 import com.siga.informes.InformeFactura;
+
+import es.satec.businessManager.BusinessManager;
 
 
 
@@ -2136,12 +2139,10 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 			    Hashtable htNew = (Hashtable)htOld.clone();
 			    htNew.put(CerSolicitudCertificadosBean.C_FECHAMODIFICACION,"sysdate");
 			    htNew.put(CerSolicitudCertificadosBean.C_FECHAESTADO,"sysdate");
-			    
 			    htNew.put(CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO, CerSolicitudCertificadosAdm.K_ESTADO_SOL_FINALIZADO);
 			    
 			    tx.begin();
-			    if (admSolicitud.update(htNew, htOld))
-			    {
+			    if (admSolicitud.update(htNew, htOld)) {
 			        request.setAttribute("mensaje", "messages.updated.success");
 			        
 			        // YGE 07/09/2005 Si todo ha ido bien insertamos el registro en la tabla PysCompra
@@ -2166,8 +2167,8 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 					if (productosInstitucion.isEmpty()){
 				    	tx.rollback();
 				        throw new SIGAException("messages.certificado.error.noFinalizacion");
-					}
-					else{
+					
+					}else{
 						PysProductosInstitucionBean productoBean = (PysProductosInstitucionBean) productosInstitucion.get(0);
 						if (productoBean.getTipoCertificado().equalsIgnoreCase("C")){
 							claves.clear();
@@ -2274,16 +2275,14 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 										compraBean.setIdPersonaDeudor(null);
 										compraBean.setIdCuentaDeudor(null);	
 										compraBean.setIdCuenta(null);
-										compraBean.setIdFormaPago(new Integer(ClsConstants.TIPO_FORMAPAGO_FACTURA));
+											compraBean.setIdFormaPago(new Integer(ClsConstants.TIPO_FORMAPAGO_FACTURA));
+										}
 									}
-										
-										}	
-								}
-								 else {
-										compraBean.setIdPersonaDeudor(null);
-										compraBean.setIdCuentaDeudor(null);
-										compraBean.setIdCuenta(null);// cuando el check de cobrado esta activado el cobro se le hace al cliente
-										                             // en metalico luego no rellenamos el idcuenta. 
+									
+								} else {
+									compraBean.setIdPersonaDeudor(null);
+									compraBean.setIdCuentaDeudor(null);
+									compraBean.setIdCuenta(null);// cuando el check de cobrado esta activado el cobro se le hace al cliente en metalico luego no rellenamos el idcuenta. 
 								 }
 
 								//compraBean.setIdPersona(productoSolicitadoBean.getIdPersona());
@@ -2322,30 +2321,31 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 								compraBean.setImporteAnticipado(new Double(0));
 								
 								compraBean.setIva(productoSolicitadoBean.getPorcentajeIVA());
-								PysCompraAdm compraAdm = new PysCompraAdm (this.getUserBean(request));
-								try{
-								if (!compraAdm.insert(compraBean)) {
-									tx.rollback();
-									request.setAttribute("mensaje", "messages.inserted.error");
-								}
-								else{
-									tx.commit();
-								}
-								}catch (Exception e){
+								PysCompraAdm compraAdm = new PysCompraAdm(this.getUserBean(request));
+								try {
+									if (!compraAdm.insert(compraBean)) {
+										tx.rollback();
+										request.setAttribute("mensaje", "messages.inserted.error");
+									} else {
+										tx.commit();
+										
+										//*********************  FIN CERTIFICADO     **********************//
+										MutualidadService service = (MutualidadService) BusinessManager.getInstance().getService(MutualidadService.class);
+										service.insertarFinalizacionCertificado(productoSolicitadoBean.getIdPersona(),beanSolicitud.getIdInstitucionOrigen());
+									}
+								} catch (Exception e) {
 									tx.rollback();
 									throw e;
 								}
-							}						
-						}
-						else{
+							}
+						} else {
 							tx.commit();
 						}
 					}
-			    }
-			    else
-			    {   tx.rollback();
-			        request.setAttribute("mensaje", "messages.updated.error");
-			    }
+				} else {
+					tx.rollback();
+					request.setAttribute("mensaje", "messages.updated.error");
+				}
 			}
         ////////////////////////////////////////////////
         }catch(Exception e){
