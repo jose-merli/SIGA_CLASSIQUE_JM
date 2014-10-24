@@ -42,6 +42,7 @@ public class MutualidadEnvioCertificadosFnalizadosListener extends SIGAListenerA
 	@Override
 	protected void execute(Short idInstitucion) {
 		try {
+			log.info("Ejecutando el Listener de Envio Certificados Finalizados a la Mutualidad");
 			EcomColaService ecomColaService = (EcomColaService) BusinessManager.getInstance().getService(EcomColaService.class);
 			if (ecomColaService.insertaColaMutualidadCertificadosFinalizados(idInstitucion) != 1) {
 				throw new Exception("No se ha podido insertar correctamente en la cola de envio de certificados finalizados para el colegio " + idInstitucion);
