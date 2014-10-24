@@ -366,7 +366,12 @@ public class ScsCabeceraGuardiasAdm extends MasterBeanAdministrador {
 			idturno = (String)hashCabecera.get(ScsCabeceraGuardiasBean.C_IDTURNO);
 			idguardia = (String)hashCabecera.get(ScsCabeceraGuardiasBean.C_IDGUARDIA);
 			idPersona = (String)hashCabecera.get(ScsCabeceraGuardiasBean.C_IDPERSONA);
-			fechaInicio = UtilidadesString.formatoFecha((String)hashCabecera.get(ScsCabeceraGuardiasBean.C_FECHA_INICIO), "yyyy/MM/dd hh:mm:ss", "dd/MM/yyyy");
+			
+			// jbd // R1410_0089 // La fecha llega como dd/mm/yyyy, verificamos que esté bien antes de hacer el cambio
+			fechaInicio = (String)hashCabecera.get(ScsCabeceraGuardiasBean.C_FECHA_INICIO);
+			if(!fechaInicio.matches("([0-9]{2})/([0-9]{2})/([0-9]{4})")){
+				UtilidadesString.formatoFecha((String)hashCabecera.get(ScsCabeceraGuardiasBean.C_FECHA_INICIO), "yyyy/MM/dd hh:mm:ss", "dd/MM/yyyy");
+			}
 
 			sql.append(" delete from "+ScsCabeceraGuardiasBean.T_NOMBRETABLA);
 			sql.append(" where "+ScsCabeceraGuardiasBean.C_IDINSTITUCION+"="+idinstitucion);
