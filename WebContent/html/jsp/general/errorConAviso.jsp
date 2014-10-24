@@ -21,13 +21,13 @@
 	
 %>
 
-	
+	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js?v=${sessionScope.VERSIONJS}'/>"></script>
 	<script type="text/javascript">
 	function reloadPage() {
 		var type = unescape('<%=mensaje%>');
-		alert(type,"error");
-		parent.refrescarLocal();
-	
+		alertStop(type,"error");
+		//parent.refrescarLocal();
+		fin();
 	return false;
 
 }

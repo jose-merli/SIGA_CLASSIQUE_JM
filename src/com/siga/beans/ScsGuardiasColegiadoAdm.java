@@ -632,7 +632,7 @@ public class ScsGuardiasColegiadoAdm extends MasterBeanAdministrador
 	}
 	
 	
-	public void sustitucionLetradoGuardiaPuntual(UsrBean usr,HttpServletRequest request,String idInstitucion, String idTurno,String idGuardia,String idCalendarioGuardias,String idPersonaSaliente,String fechaInicio,String fechaFin,String idPersonaEntrante,String salto,String compensacion,String sustituta, String comenSustitucion) throws ClsExceptions
+	public void sustitucionLetradoGuardiaPuntual(UsrBean usr,HttpServletRequest request,String idInstitucion, String idTurno,String idGuardia,String idCalendarioGuardias,String idPersonaSaliente,String fechaInicio,String fechaFin,String idPersonaEntrante,String salto,String compensacion,String sustituta, String comenSustitucion) throws ClsExceptions, SIGAException
 	{
 		String mensaje = "OK";
 				 
@@ -797,7 +797,7 @@ public class ScsGuardiasColegiadoAdm extends MasterBeanAdministrador
 		
 		//Antes de insertar el registro se comprueba si el letrado ya tiene una guardia en ese turno y periodo
 		if(cabeceraGuardiasAdm.validaGuardiaLetradoPeriodo(cabeceraGuarSal.getIdInstitucion(), cabeceraGuarSal.getIdTurno(), cabeceraGuarSal.getIdGuardia(), cabeceraGuarSal.getIdPersona(), fechaInicio, fechaFin))
-			throw new ClsExceptions("gratuita.calendarios.guardias.mensaje.existe");
+			throw new SIGAException("gratuita.calendarios.guardias.mensaje.existe");
 		
 		
 		if(!cabeceraGuardiasAdm.insert((cabeceraGuarSal)))
