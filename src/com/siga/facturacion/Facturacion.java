@@ -299,18 +299,18 @@ public class Facturacion {
 	    }
 	}
 	
-
-	
-	
+	/**
+	 * Notas Jorge PT 118:
+	 * @param request
+	 * @param idInstitucion
+	 * @param userBean
+	 */
 	public void confirmarProgramacionesFacturasInstitucion(HttpServletRequest request, String idInstitucion, UsrBean userBean) {
-		
-		
 		try {
 			ClsLogging.writeFileLog("CONFIRMAR PROGRAMACIONES FACTURAS INSTITUCION: "+idInstitucion,10);
 			
    			// fichero de log
 		    ReadProperties p= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
-//			ReadProperties p = new ReadProperties ("SIGA.properties");
 			
 	    	// ficheros de log
 			String pathFichero2 = p.returnProperty("facturacion.directorioFisicoLogProgramacion");
@@ -354,30 +354,22 @@ public class Facturacion {
 				nombreFichero = "LOG_FAC_CONFIRMACION_" + factBean.getIdSerieFacturacion() +"_"+ factBean.getIdProgramacion() +".log.xls"; 
 				log = new SIGALogging(pathFichero2+sBarra2+factBean.getIdInstitucion()+sBarra2+nombreFichero);
 				try {
-					confirmarProgramacionFactura(factBean,request,false,log,true,true);	
+					confirmarProgramacionFactura(factBean, request, false, log, true, true, null);	
 				} catch (ClsExceptions e) {
 					ClsLogging.writeFileLogError("@@@ Error controlado al confirmar facturas (Proceso automático):"+e.getMsg(),e,3);
 				} catch (Exception e) {
 					ClsLogging.writeFileLogError("@@@ Error al confirmar facturas (Proceso automático) Programación:" ,e,3);
 				}
-				
-				
-				
-     		        	
 		    }// del for
-		    
-
 
 		} catch (Exception e) {
 			// Error general (No hacemos nada, para que continue con la siguiente institucion
 			ClsLogging.writeFileLogError("@@@ Error general al confirmar facturas (Proceso automático) INSTITUCION:"+idInstitucion ,e,3);
 		}
-		
-
 	}
-	
 
 	/**
+	 * Notas Jorge PT 118:
 	 * Genera el zip con los pdf de las facturas de las series de facturación programadas para la institucion
 	 * <code>idinstitucion</code>. Se buscan series de facturación con los siguientes criterios:
 	 * <ul>
@@ -392,14 +384,11 @@ public class Facturacion {
 	 * @param userBean
 	 */
 	public void generarZipFacturasSolo(HttpServletRequest request, String idInstitucion, UsrBean userBean) {
-		
-		
 		try {
 			ClsLogging.writeFileLog("GENERAR PDF DE FACTURAS POR INSTITUCION: "+idInstitucion,10);
 			
    			// fichero de log
 		    ReadProperties p= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
-//			ReadProperties p = new ReadProperties ("SIGA.properties");
 			
 	    	// ficheros de log
 			String pathFichero2 = p.returnProperty("facturacion.directorioFisicoLogProgramacion");
@@ -432,7 +421,7 @@ public class Facturacion {
 			
 			Vector vDatos = factAdm.selectDatosFacturacionBean(sWhere, codigos, orden);
 			
-		    for (int i=0;i<vDatos.size();i++){
+		    for (int i=0; i<vDatos.size(); i++){
 
 				// PROCESO PARA CADA FACTURACION PROGRAMADA
 		    	FacFacturacionProgramadaBean factBean = (FacFacturacionProgramadaBean)vDatos.elementAt(i);
@@ -443,33 +432,23 @@ public class Facturacion {
 				nombreFichero = "LOG_FAC_CONFIRMACION_" + factBean.getIdSerieFacturacion() +"_"+ factBean.getIdProgramacion() +".log.xls"; 
 				log = new SIGALogging(pathFichero2+sBarra2+factBean.getIdInstitucion()+sBarra2+nombreFichero);
 				try {
-					confirmarProgramacionFactura(factBean,request,false,log,true,true);
+					confirmarProgramacionFactura(factBean, request, false, log, true, true, null);
 					generarZip(
 							factBean.getIdInstitucion().toString(),
 							factBean.getIdSerieFacturacion().toString(),
 							factBean.getIdProgramacion().toString());
 				} catch (ClsExceptions e) {
 					ClsLogging.writeFileLogError("@@@ Error controlado al confirmar facturas (Proceso automático):"+e.getMsg(),e,3);
-				} catch (Exception e) {
-											
-					ClsLogging.writeFileLogError("@@@ Error al confirmar facturas (Proceso automático) Programación:" ,e,3);
-
 					
+				} catch (Exception e) {
+					ClsLogging.writeFileLogError("@@@ Error al confirmar facturas (Proceso automático) Programación:" ,e,3);
 				}
-				
-				
-				
-     		        	
 		    }// del for
-		    
-
 
 		} catch (Exception e) {
 			// Error general (No hacemos nada, para que continue con la siguiente institucion
 			ClsLogging.writeFileLogError("@@@ Error general al confirmar facturas (Proceso automático) INSTITUCION:"+idInstitucion ,e,3);
 		}
-		
-
 	}
 	
 	public void generarPDFsYenviarFacturasProgramacion(HttpServletRequest request, String idInstitucion, UsrBean userBean){
@@ -941,13 +920,24 @@ public class Facturacion {
     		throw new ClsExceptions(e,"Error al restaurar relaciones de serie de facturacion temporales.");
     	}
     }
- 
-    public void confirmarProgramacionFactura(FacFacturacionProgramadaBean beanP, HttpServletRequest req, boolean archivarFacturacion, SIGALogging log, boolean isTransacionPesada, boolean generarPagosBanco) throws ClsExceptions, SIGAException {
-    	confirmarProgramacionFactura(beanP, req, archivarFacturacion, log, isTransacionPesada, generarPagosBanco, null);
-    }
     
-    public void confirmarProgramacionFactura(FacFacturacionProgramadaBean beanP, HttpServletRequest req, boolean archivarFacturacion, SIGALogging log, boolean isTransacionPesada, boolean generarPagosBanco, UserTransaction tx) throws ClsExceptions, SIGAException 
-    {
+    /**
+     * Notas Jorge PT 118:
+     * - Productos y Servicios > Solicitudes > Compra/Subscripción (facturacion rapida)
+     * - Productos y Servicios > Gestión Solicitudes (facturacion rapida)
+     * - Certificados > Gestión de solicitudes (facturacion rapida)
+     * 
+     * @param beanP
+     * @param req
+     * @param archivarFacturacion
+     * @param log
+     * @param isTransacionPesada
+     * @param generarPagosBanco
+     * @param tx
+     * @throws ClsExceptions
+     * @throws SIGAException
+     */
+    public void confirmarProgramacionFactura(FacFacturacionProgramadaBean beanP, HttpServletRequest req, boolean archivarFacturacion, SIGALogging log, boolean isTransacionPesada, boolean generarPagosBanco, UserTransaction tx) throws ClsExceptions, SIGAException {
     	boolean bTransaccionInterna = tx == null;
     	boolean isFacturadoOk = true;
     	String msjAviso = null; 
@@ -1777,8 +1767,7 @@ public class Facturacion {
         return procesarFacturacionRapidaCompras(beanPeticion, admCompra.obtenerComprasPorPeticion(beanPeticion), beanSerieCandidata);
 	}
     
-    public FacSerieFacturacionBean procesarFacturacionRapidaCompras(PysPeticionCompraSuscripcionBean beanPeticion, Vector compras, FacSerieFacturacionBean beanSerieCandidata) throws ClsExceptions 
-	{
+    public FacSerieFacturacionBean procesarFacturacionRapidaCompras(PysPeticionCompraSuscripcionBean beanPeticion, Vector compras, FacSerieFacturacionBean beanSerieCandidata) throws ClsExceptions {
         FacSerieFacturacionBean salida = null;
     	try {
     	    FacSerieFacturacionAdm admSerie = new FacSerieFacturacionAdm(this.usrbean);

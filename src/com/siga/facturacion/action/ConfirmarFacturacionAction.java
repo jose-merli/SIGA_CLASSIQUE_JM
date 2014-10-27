@@ -46,7 +46,6 @@ import com.siga.beans.FacSerieFacturacionAdm;
 import com.siga.beans.FacSerieFacturacionBean;
 import com.siga.beans.GenParametrosAdm;
 import com.siga.certificados.Plantilla;
-import com.siga.facturacion.Facturacion;
 import com.siga.facturacion.form.ConfirmarFacturacionForm;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
@@ -100,8 +99,6 @@ public class ConfirmarFacturacionAction extends MasterAction{
 					mapDestino = descargarInformeGeneracion(mapping, miForm, request, response);					
 				} else if (accion.equalsIgnoreCase("archivarFactura")){
 					mapDestino = archivarFactura(mapping, miForm, request, response);
-				} else if (accion.equalsIgnoreCase("confirmacionInmediata")){
-					mapDestino = confirmacionInmediata(mapping, miForm, request, response);
 				} else if (accion.equalsIgnoreCase("generarFacturaSolo")){
 					mapDestino = generarFacturaSolo(mapping, miForm, request, response);
 				} else if (accion.equalsIgnoreCase("enviar")){
@@ -708,47 +705,6 @@ public class ConfirmarFacturacionAction extends MasterAction{
 		}
 
 		return "descargaFichero"; 
-	}
-	
-	protected String confirmacionInmediata(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException 
-	{
-		//String mensaje = "";
-		
-		//UserTransaction tx = null;	
-		
-		try {
-			ConfirmarFacturacionForm form = (ConfirmarFacturacionForm)formulario;
-			
-			Vector ocultos = (Vector)form.getDatosTablaOcultos(0);
-			
-			String idSerieFacturacion = (String)ocultos.elementAt(0);			
-			String idProgramacion 	= (String)ocultos.elementAt(1);
-			String idInstitucion	= this.getIDInstitucion(request).toString();
-
-			Hashtable h = new Hashtable();
-			UtilidadesHash.set(h, FacFacturacionProgramadaBean.C_IDINSTITUCION, idInstitucion); 
-			UtilidadesHash.set(h, FacFacturacionProgramadaBean.C_IDSERIEFACTURACION, idSerieFacturacion); 
-			UtilidadesHash.set(h, FacFacturacionProgramadaBean.C_IDPROGRAMACION, idProgramacion); 
-
-			FacFacturacionProgramadaAdm adm = new FacFacturacionProgramadaAdm(this.getUserBean(request));
-			Vector v = adm.selectByPK(h);
-			if (v == null || v.size() != 1) {
-				throw new ClsExceptions("Facturacion programada no encontrada");
-			}
-			
-			FacFacturacionProgramadaBean bean = (FacFacturacionProgramadaBean) v.get(0);
-			if (bean.getFechaConfirmacion()==null||bean.getFechaConfirmacion().equals("")){//Así nos aseguramos de que si ya se ha confirmado la facturacion, no se vuelva a lanzar.
-				Facturacion facturacion = new Facturacion(this.getUserBean(request));
-				facturacion.confirmarProgramacionFactura(bean, request,false,null,false,true);
-			}
-		}
-		catch (ClsExceptions e) {
-			return this.exitoRefresco(e.getMsg(),request);
-		}
-		catch (Exception e) {
-			return this.error("messages.general.error",new ClsExceptions(e.getMessage()),request);
-		}
-		return this.exitoRefresco("messages.facturacion.confirmada", request); 
 	}
 	
 	/**

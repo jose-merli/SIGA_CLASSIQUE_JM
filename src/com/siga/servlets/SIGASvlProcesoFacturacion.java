@@ -12,13 +12,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-//RGG import weblogic.management.timer.Timer;
-
 import com.atos.utils.ClsLogging;
 import com.atos.utils.UsrBean;
 import com.siga.beans.CenInstitucionAdm;
 import com.siga.beans.CenInstitucionBean;
-
 import com.siga.facturacion.Facturacion;
 
 
@@ -32,18 +29,16 @@ import com.siga.facturacion.Facturacion;
  */
 
 public class SIGASvlProcesoFacturacion extends HttpServlet {
-
-	
-	
-  // RGG   private Timer timer;
-    private Integer idNotificacion;
-    private long lIntervalo = 1;
+	private static final long serialVersionUID = 1L;
     private String sNombreProceso = "ProcesoAutomaticoFacturacion";
-
     
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     	doPost(request,response);
     }
+    
+    /**
+     * Notas Jorge PT 118:
+     */
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         //ClsLogging.writeFileLogWithoutSession("", 3);
     	//ClsLogging.writeFileLogWithoutSession("", 3);
@@ -54,20 +49,16 @@ public class SIGASvlProcesoFacturacion extends HttpServlet {
     	//ClsLogging.writeFileLogWithoutSession(" ", 3);
         //ClsLogging.writeFileLogWithoutSession(" - INVOCANDO... >>>  Ejecutando Notificación: \"" + sNombreProceso + "\".", 3);
 
-   		try
-   		{
+   		try {
    			CenInstitucionAdm admInstitucion = new CenInstitucionAdm(new UsrBean()); // Este usrbean esta controlado que no se necesita el valor
-               
-   			
 
    			Vector vInstituciones = admInstitucion.obtenerInstitucionesAlta();
    			
    			Facturacion fac = null;
-   			if (vInstituciones!=null)
-   			{
+   			if (vInstituciones!=null) {
+   				
    				CenInstitucionBean beanInstitucion = null;
-   				for (int i=0; i<vInstituciones.size(); i++)
-   				{
+   				for (int i=0; i<vInstituciones.size(); i++) {
    					
    					try {
    						beanInstitucion = (CenInstitucionBean)vInstituciones.elementAt(i);
@@ -114,24 +105,14 @@ public class SIGASvlProcesoFacturacion extends HttpServlet {
    	        out.println("OK proceso facturación automática");
    	        out.close();
 
-   		}
-
-   		catch(Exception e)
-   		{
+   		} catch(Exception e) {
    	        response.setContentType("text/html");
    	        java.io.PrintWriter out = response.getWriter();
    	        out.println("ERROR en proceso facturación automática");
    	        out.close();
-
    			
    			ClsLogging.writeFileLogWithoutSession(" - Notificación \"" + sNombreProceso + "\" ejecutada ERROR. : " + e.toString() , 3);
    		    e.printStackTrace();
    		}
-
-
-    
     }
-
 }
-
-

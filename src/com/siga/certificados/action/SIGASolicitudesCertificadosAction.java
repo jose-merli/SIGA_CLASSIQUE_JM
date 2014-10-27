@@ -2356,8 +2356,19 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
         }
         
 	}
-	protected String facturacionRapida(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, SIGAException
-	{
+	
+	/**
+	 * Notas Jorge PT 118:
+     * - Certificados > Gestión de solicitudes (facturacion rapida)
+	 * @param mapping
+	 * @param formulario
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws ClsExceptions
+	 * @throws SIGAException
+	 */
+	protected String facturacionRapida(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, SIGAException {
 	    UserTransaction tx = null;
 	    String mensaje="";
 	    String salida = "";
@@ -2399,7 +2410,7 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 		    		if (fechaConfirmacion == null || fechaConfirmacion.equals("") || b.getIdEstadoPDF().intValue() != FacEstadoConfirmFactBean.PDF_FINALIZADA.intValue()) {
 					    try {
 					    	b.setGenerarPDF("1");// Si se entramos por facturacion rapida se obliga siempre al generarPDF
-					        facturacion.confirmarProgramacionFactura(b, request,true,null,false,true);
+					        facturacion.confirmarProgramacionFactura(b, request, true, null, false, true, null);
 						} 
 						catch (Exception e) {
 							mensaje="messages.facturacionRapida.errorConfirmacion";

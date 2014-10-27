@@ -1520,9 +1520,11 @@ public class SolicitudCompraAction extends MasterAction{
 		return registros;
 	}
 	
-
-	
-	/** 
+	/**
+	 * Notas Jorge PT 118:
+     * - Productos y Servicios > Solicitudes > Compra/Subscripción (facturacion rapida)
+     * - Productos y Servicios > Gestión Solicitudes (facturacion rapida)
+	 *  
 	 * Funcion que atiende la accion facturacionRapidaCompraInterna. 
 	 * Este proceso va a realizar la aprobación de la peticion (Creacion de compra) 
 	 * si no esta hecho ya y posteriormente va a facturar de manera rapida buscando 
@@ -1535,10 +1537,8 @@ public class SolicitudCompraAction extends MasterAction{
 	 * @return  String  Destino del action o error en caso de no completar con exito.
 	 * @exception  SIGAException  En cualquier caso de error
 	 */	
-	protected String facturacionRapidaPeticionInterna(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, SIGAException
-	{
+	protected String facturacionRapidaPeticionInterna(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, SIGAException {
 	    UserTransaction tx = null;
-	    String mensaje="";
 	    String salida = "";
 	    try {
 			UsrBean usr = this.getUserBean(request);
@@ -1548,8 +1548,6 @@ public class SolicitudCompraAction extends MasterAction{
 			String idFactura = "";
 			Long idPeticion = (Long)request.getAttribute("factRapidaIdPeticion");
 		    ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
-			
-		    
 		    
 		    // administradores
 			PysCompraAdm admCompra = new PysCompraAdm(this.getUserBean(request));
@@ -1643,7 +1641,7 @@ public class SolicitudCompraAction extends MasterAction{
 			    programacion = facturacion.restaurarSerieFacturacion(serieFacturacionCandidata, serieFacturacionTemporal);
 		        
 			    //BNS INCLUIMOS LA CONFIRMACIÓN EN LA MISMA TRANSACCIÓN
-			    facturacion.confirmarProgramacionFactura(programacion, request,false,null,false,false,tx);
+			    facturacion.confirmarProgramacionFactura(programacion, request, false, null, false, false, tx);
 			    
 			    if (Status.STATUS_ACTIVE  == tx.getStatus())
 			    	tx.commit();
@@ -1693,17 +1691,19 @@ public class SolicitudCompraAction extends MasterAction{
 				
 		} catch (SIGAException es) {
 			throwExcp (es.getLiteral(), new String[] {"modulo.certificados"}, es, tx);
+			
 		} catch (ArrayIndexOutOfBoundsException e){
 			throwExcp("messages.facturacionRapida.error.Array",new String[] {"modulo.certificados"},e,tx);
+			
 		} catch (ClsExceptions es) {
 			throwExcp (es.getMessage(), new String[] {"modulo.certificados"}, es, tx);	
+			
 		}catch (Exception e) { 
 			throwExcp("messages.general.error",new String[] {"modulo.certificados"},e,tx); 
 		}
 		
 		return salida;
 	}
-	
 	
 	/** 
 	 * Funcion que atiende la accion facturacionRapidaCompra. Este proceso va a realizar la 
