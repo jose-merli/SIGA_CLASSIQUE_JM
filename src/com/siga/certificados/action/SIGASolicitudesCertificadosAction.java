@@ -2330,8 +2330,10 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 										tx.commit();
 										
 										//*********************  FIN CERTIFICADO     **********************//
-										MutualidadService service = (MutualidadService) BusinessManager.getInstance().getService(MutualidadService.class);
-										service.insertarFinalizacionCertificado(productoSolicitadoBean.getIdPersona(),beanSolicitud.getIdInstitucionOrigen());
+										if(beanSolicitud.getAceptaCesionMutualidad() != null && beanSolicitud.getAceptaCesionMutualidad().equals("1")){
+											MutualidadService service = (MutualidadService) BusinessManager.getInstance().getService(MutualidadService.class);
+											service.insertarFinalizacionCertificado(productoSolicitadoBean.getIdPersona(),beanSolicitud.getIdInstitucionOrigen());
+										}
 									}
 								} catch (Exception e) {
 									tx.rollback();
