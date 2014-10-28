@@ -702,12 +702,10 @@ public class DefinirEnviosAction extends MasterAction {
 		String desc = form.getDescEnvio();
 		String subModo = form.getSubModo();
 		String datosEnvios = form.getDatosEnvios();
-		String descargar = form.getDescargar();
 
 		String nombreyapellidos = "";
-		String idEnvio=null;
+		//String idEnvio=null;
 		String idTipoEnvio=form.getIdTipoEnvio();
-		boolean isEnvioSMS = idTipoEnvio!=null && !idTipoEnvio.equals("") && (Integer.parseInt(idTipoEnvio)==EnvEnviosAdm.TIPO_SMS || Integer.parseInt(idTipoEnvio)==EnvEnviosAdm.TIPO_BUROSMS);
 
 		try {
 			//SOLICITUD CERTIFICADO:
@@ -765,7 +763,7 @@ public class DefinirEnviosAction extends MasterAction {
 				}
 			}
 			//obtener idEnvio
-			EnvEnviosAdm envAdm = new EnvEnviosAdm(this.getUserBean(request));
+			//EnvEnviosAdm envAdm = new EnvEnviosAdm(this.getUserBean(request));
 			//idEnvio = String.valueOf(envAdm.getNewIdEnvio(idInstitucion));
 
 
@@ -820,10 +818,7 @@ public class DefinirEnviosAction extends MasterAction {
 			request.setAttribute("datosEnvios",datosEnvios);
 			GenParametrosAdm param = new GenParametrosAdm(userBean);
 			request.setAttribute("smsHabilitado",param.getValor(idInstitucion, "ENV", "HABILITAR_SMS_BUROSMS", "N"));
-		
-		
-		} catch (SIGAException e) {
-			throwExcp(e.getLiteral(),new String[] {},e,null);
+			
 		} catch (Exception ex) {
 			throwExcp("messages.general.error",new String[] {"modulo.envios"},ex,null);
 		}
@@ -870,26 +865,10 @@ public class DefinirEnviosAction extends MasterAction {
 		boolean isEnvioBatch = false;
 		
 		try {
-			String fechaProgramada = null;
 			String fechaProg = form.getFechaProgramada();
-			//fechaProg = GstDate.anyadeHora(fechaProg);
 			if (fechaProg != null && fechaProg.length() == 10)
 				fechaProg += " " + new Date().getHours() + ":" + new Date().getMinutes() + ":" + new Date().getSeconds();
 
-
-			String language = userBean.getLanguage();
-			String format = language.equalsIgnoreCase("EN")?ClsConstants.DATE_FORMAT_LONG_ENGLISH:ClsConstants.DATE_FORMAT_LONG_SPANISH;		    
-			GstDate gstDate = new GstDate();
-			if (fechaProg != null && !fechaProg.equals("")) {
-				Date date = gstDate.parseStringToDate(fechaProg,format,request.getLocale());
-				//A peticion de Luis pedro retraso 15 minutos el envio
-				date.setTime(date.getTime()+900000);
-				//date.
-				SimpleDateFormat sdf = new SimpleDateFormat(ClsConstants.DATE_FORMAT_JAVA);
-				fechaProgramada = sdf.format(date);
-			} else{
-				fechaProgramada = null;
-			}
 				tx.begin();
 				EnvioInformesGenericos envioInformesGenericos = new EnvioInformesGenericos();
 				if (form.getIdTipoInforme().equalsIgnoreCase(EnvioInformesGenericos.comunicacionesDesigna)){
@@ -1231,7 +1210,6 @@ public class DefinirEnviosAction extends MasterAction {
 				vDocs = new Vector(); 
 				// Obtiene del campo idInforme los ids separados por ## y devuelve sus beans
 				InformeAbono informeAbono = new InformeAbono(userBean);
-				EnvioInformesGenericos envioInformesGenericos = new EnvioInformesGenericos();
 				AdmInformeAdm adm = new AdmInformeAdm(userBean);
 				// mostramos la ventana con la pregunta
 				Vector plantillas=adm.obtenerInformesTipo(idInstitucion,"ABONO",null, null);

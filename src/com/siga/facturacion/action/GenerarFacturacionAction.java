@@ -15,13 +15,13 @@ import javax.transaction.UserTransaction;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsMngBBDD;
 import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesString;
-import com.siga.beans.FacFacturaAdm;
 import com.siga.beans.FacFacturaBean;
 import com.siga.beans.FacFacturacionProgramadaAdm;
 import com.siga.beans.FacFacturacionProgramadaBean;
@@ -117,6 +117,13 @@ public class GenerarFacturacionAction extends MasterAction{
 	}
 
 	/** 
+	 * Notas Jorge PT 118:
+	 * - Genera facturacion
+	 * 
+	 * 1. Bloquea facturacion programada
+	 * 2. Genera facturacion
+	 * 3. Desbloquea facturacion programada
+	 * 
 	 *  Funcion que atiende la accion generarFactura. Genera las facturas programadas 
 	 * @param  mapping - Mapeo de los struts
 	 * @param  formulario -  Action Form asociado a este Action
@@ -126,76 +133,78 @@ public class GenerarFacturacionAction extends MasterAction{
 	 * @exception  SIGAException  En cualquier caso de error
 	 */
 	protected String generarFactura(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
-		String cont = "";
-		String idFactura;
-		String sCantidad 	= "0";
-		float fCantidad 	= 0;
-		float fCantidadAux 	= 0;
-		UsrBean usr			= (UsrBean)request.getSession().getAttribute("USRBEAN");
-		String lenguaje 	= usr.getLanguage();		
-		UserTransaction tx	= null;
+		UsrBean usr = (UsrBean)request.getSession().getAttribute("USRBEAN");
+		String lenguaje = usr.getLanguage();
+		String idInstitucion = usr.getLocation();
+		UserTransaction tx = null;
 		
 		try {
-			GenerarFacturacionForm form  = (GenerarFacturacionForm)formulario;
-			FacFacturaAdm admFactura = new FacFacturaAdm(this.getUserBean(request));
-			FacFacturacionProgramadaAdm prgFactura = new FacFacturacionProgramadaAdm(this.getUserBean(request));
+			// Obtiene el formulario
+			GenerarFacturacionForm form  = (GenerarFacturacionForm) formulario;			
 			
-			Vector ocultos = new Vector();		
-			ocultos = (Vector)form.getDatosTablaOcultos(0);
-			
+			// Obtiene los valores ocultos del formulario
+			Vector ocultos = (Vector)form.getDatosTablaOcultos(0);			
 			String idSerieFacturacion = (String)ocultos.elementAt(0);			
-			String idProgramacion 	= (String)ocultos.elementAt(1);
-			String usuMod			= (String)ocultos.elementAt(2);
-			String idInstitucion	= this.getIDInstitucion(request).toString();	
-			Object[] param_in = new Object[7];
-
-			// BLOQUEAMOS LA PROGRAMACION
-			tx = usr.getTransactionPesada(); 
-			tx.begin();
-			Hashtable ht = new Hashtable();
-			ht.put(FacFacturacionProgramadaBean.C_IDINSTITUCION,idInstitucion);
-			ht.put(FacFacturacionProgramadaBean.C_IDSERIEFACTURACION,idSerieFacturacion);
-			ht.put(FacFacturacionProgramadaBean.C_IDPROGRAMACION,idProgramacion);
-			Vector v = prgFactura.selectByPK(ht);
-			FacFacturacionProgramadaBean b = null;
-			if (v!=null && v.size()>0) {
-				b = (FacFacturacionProgramadaBean) v.get(0);
-				if (b.getLocked().equals("1")) {
+			String idProgramacion = (String)ocultos.elementAt(1);
+			String usuMod = (String)ocultos.elementAt(2);
+			
+			// Carga los parametros para obtener la facturacion programada
+			Hashtable hFacturacionProgramada = new Hashtable();
+			hFacturacionProgramada.put(FacFacturacionProgramadaBean.C_IDINSTITUCION, idInstitucion);
+			hFacturacionProgramada.put(FacFacturacionProgramadaBean.C_IDSERIEFACTURACION, idSerieFacturacion);
+			hFacturacionProgramada.put(FacFacturacionProgramadaBean.C_IDPROGRAMACION, idProgramacion);
+			
+			// Obtiene la facturacion programada
+			FacFacturacionProgramadaAdm prgFactura = new FacFacturacionProgramadaAdm(usr);
+			Vector vFacturacionProgramada = prgFactura.selectByPK(hFacturacionProgramada);			
+									
+			// Comprobamos que existe la facturacion programada
+			FacFacturacionProgramadaBean beanFacturacionProgramada = null;
+			if (vFacturacionProgramada!=null && vFacturacionProgramada.size()>0) {
+				beanFacturacionProgramada = (FacFacturacionProgramadaBean) vFacturacionProgramada.get(0);
+				if (beanFacturacionProgramada.getLocked().equals("1")) {
 					throw new SIGAException("messages.facturacion.generacionEnProceso");
-				}
-				b.setLocked("1");
-				prgFactura.updateDirect(b);
-			}
-			tx.commit();
+				}				
+				
+				// Bloquea la facturacion programada
+				beanFacturacionProgramada.setLocked("1");
+				prgFactura.updateDirect(beanFacturacionProgramada);
+			}			
 			
 			try {
-				//tx = usr.getTransaction(); 
-				tx.begin();
-				String idPrevision="0"; 
+				// Carga los parametros
+				String resultado[] = new String[2];
+				Object[] param_in = new Object[7];
 	        	param_in[0] = idInstitucion;
 	        	param_in[1] = idSerieFacturacion;
 	        	param_in[2] = idProgramacion;
-	        	param_in[3] = this.getUserBean(request).getLanguageInstitucion();		// idioma
-	        	param_in[4] = "";		// IDPETICION
+	        	param_in[3] = usr.getLanguageInstitucion();	// Idioma
+	        	param_in[4] = ""; // IdPeticion
 	        	param_in[5] = usuMod;
-	        	param_in[6] = idPrevision;
-	        	String resultado[] = new String[2];
+	        	param_in[6] = "0"; // IdPrevision
+	        	
+				// Inicia la transaccion
+	        	tx = usr.getTransactionPesada();
+				tx.begin();
+
+				// Genera la facturacion
 	        	resultado = ClsMngBBDD.callPLProcedure("{call PKG_SIGA_FACTURACION.GENERACIONFACTURACION(?,?,?,?,?,?,?,?,?)}", 2, param_in);
+	        	
+	        	// Compruebo que ha finalizado correctamente
 	        	String codretorno = resultado[0];
 	        	if (!codretorno.equals("0")){
 	        		 throw new ClsExceptions ("Error al generar la Facturación: " + resultado[0] + " - "+ resultado[1]);
 	        	}
 
-				ht = new Hashtable();
-				ht.put(FacFacturacionProgramadaBean.C_IDINSTITUCION,idInstitucion);
-				ht.put(FacFacturacionProgramadaBean.C_IDSERIEFACTURACION,idSerieFacturacion);
-				ht.put(FacFacturacionProgramadaBean.C_IDPROGRAMACION,idProgramacion);
-				v = prgFactura.selectByPK(ht);
-				b = null;
-				if (v!=null && v.size()>0) {
-					b = (FacFacturacionProgramadaBean) v.get(0);
-					b.setLocked("0");
-					prgFactura.updateDirect(b);
+	        	// Obtiene la facturacion programada (se puede haber modificado)
+	        	vFacturacionProgramada = prgFactura.selectByPK(hFacturacionProgramada);
+	        	beanFacturacionProgramada = null;
+				if (vFacturacionProgramada!=null && vFacturacionProgramada.size()>0) {
+					beanFacturacionProgramada = (FacFacturacionProgramadaBean) vFacturacionProgramada.get(0);
+					
+					// Desbloquea la facturacion programada
+					beanFacturacionProgramada.setLocked("0");
+					prgFactura.updateDirect(beanFacturacionProgramada);
 				}
 
 	        	tx.commit();
@@ -203,54 +212,45 @@ public class GenerarFacturacionAction extends MasterAction{
 			} catch (Exception in) {
 				tx.rollback();
 				
-				// DESBLOQUEAMOS LA PROGRAMACION
-				//tx = usr.getTransaction(); 
-				tx.begin();
-				ht = new Hashtable();
-				ht.put(FacFacturacionProgramadaBean.C_IDINSTITUCION,idInstitucion);
-				ht.put(FacFacturacionProgramadaBean.C_IDSERIEFACTURACION,idSerieFacturacion);
-				ht.put(FacFacturacionProgramadaBean.C_IDPROGRAMACION,idProgramacion);
-				v = prgFactura.selectByPK(ht);
-				b = null;
-				if (v!=null && v.size()>0) {
-					b = (FacFacturacionProgramadaBean) v.get(0);
-					b.setLocked("0");
-					prgFactura.updateDirect(b);
+				// Obtiene la facturacion programada (se puede haber modificado)
+	        	vFacturacionProgramada = prgFactura.selectByPK(hFacturacionProgramada);
+	        	if (vFacturacionProgramada!=null && vFacturacionProgramada.size()>0) {
+					beanFacturacionProgramada = (FacFacturacionProgramadaBean) vFacturacionProgramada.get(0);
+					
+					// Desbloquea la factura
+					beanFacturacionProgramada.setLocked("0");
+					prgFactura.updateDirect(beanFacturacionProgramada);
 				}
-				tx.commit();
 				
 				throw in;
 			}
-
-
 			
 			// Obtenemos el numero de facturas actualizadas y el importe .
-//			String select =	"SELECT count(*) CUENTA, sum(PKG_SIGA_TOTALESFACTURA.TOTAL(IDINSTITUCION, IDFACTURA)) as IMPORTE " + 
-			String select =	"SELECT count(*) CUENTA, sum(IMPTOTAL) as IMPORTE " + 
-			" from  " +FacFacturaBean.T_NOMBRETABLA+
-			" where " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDINSTITUCION + " = " + idInstitucion;
-			select += " and ";
-			select += FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDSERIEFACTURACION + " = " + idSerieFacturacion;
-			select += " and ";
-			select += FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDPROGRAMACION + " = " + idProgramacion;
+			String sql = "SELECT COUNT(*) AS CUENTA, " +
+						 	" SUM(IMPTOTAL) AS IMPORTE " + 
+						 " FROM " + FacFacturaBean.T_NOMBRETABLA +
+						 " WHERE " + FacFacturaBean.C_IDINSTITUCION + " = " + idInstitucion + 
+						 	" AND " + FacFacturaBean.C_IDSERIEFACTURACION + " = " + idSerieFacturacion +	
+						 	" AND " + FacFacturaBean.C_IDPROGRAMACION + " = " + idProgramacion;
 			
+			String cont = "";
+			String sCantidad = "0";
 			RowsContainer rc = new RowsContainer(); 
-			if (rc.query(select)) {
-				Hashtable aux = (Hashtable)((Row) rc.get(0)).getRow();
-				cont = (String) aux.get("CUENTA");
-				sCantidad = (String) aux.get("IMPORTE");
+			if (rc.query(sql)) {
+				Row fila = (Row) rc.get(0);
+				cont = fila.getString("CUENTA");
+				sCantidad = fila.getString("IMPORTE");
 			}
 			
-			String mensaje = "facturacion.generarFacturacion.mensaje.generacionFacturacionOK";
-	
-			//Simbolo de Euro al final:
+			// Simbolo de Euro al final
 			String[] datos = {cont, sCantidad.concat(" Euros ")};
-			mensaje = UtilidadesString.getMensaje(mensaje, datos, lenguaje);
+			String mensaje = UtilidadesString.getMensaje("facturacion.generarFacturacion.mensaje.generacionFacturacionOK", datos, lenguaje);
 			request.setAttribute("mensaje",mensaje);	
-		} 
-		catch (Exception e) { 
+			
+		} catch (Exception e) { 
 			throwExcp("messages.general.error",new String[] {"modulo.facturacion"},e,tx); 
 		}
+		
 		return "exitoConString"; 
 	}
 }

@@ -464,7 +464,6 @@ public class CenPersonaAdm extends MasterBeanAdmVisible {
 		try {
 			
 			CenPersonaBean perBean = null;
-			Hashtable codigos = new Hashtable();
 			Vector personas = select("WHERE ltrim(UPPER(" +CenPersonaBean.C_NIFCIF+"),'0') = '" +UtilidadesString.LTrim(nifcif.toUpperCase(),"0")+"' ");	
 			
 			if (personas != null) {
@@ -482,39 +481,37 @@ public class CenPersonaAdm extends MasterBeanAdmVisible {
 	}	
 
 	/**
-	 * Devuelve un cadena con el nombre y apellidos de una persona. 
-	 * @author nuria.rgonzalez 14-12-04
-	 * @version 1	 
-	 * @param idPersona, es el identificador de la persona de al que vamos a obtener los datos. 
-	 */	
-	public String obtenerNombreApellidos(String idPersona) throws ClsExceptions, SIGAException{
-		CenPersonaBean personaBean;	
-		Vector vPersonas = null;
-		String nombre = "";
-		Hashtable codigos = new Hashtable();
-		codigos.put(new Integer(1),idPersona);
-		String sWhere = " where " + CenPersonaBean.C_IDPERSONA + "=:1";
-		try{
-			vPersonas = selectBind(sWhere,codigos);
-			Enumeration enumer = vPersonas.elements();
-		// Comprobamos que exista alguna persona con ese idPersona
-			if(vPersonas.size()>0){
-				personaBean = (CenPersonaBean)enumer.nextElement();
-				nombre = personaBean.getNombre() + " " ;
-				if (!personaBean.getApellido1().equals("#NA")){
-					nombre=nombre+personaBean.getApellido1()+ " ";
+	 * Notas Jorge PT 118: Devuelve un cadena con el nombre y apellidos de una persona. 
+	 * @param idPersona
+	 * @return
+	 * @throws ClsExceptions
+	 */
+	public String obtenerNombreApellidos(String idPersona) throws ClsExceptions {
+		String nombre = "";		
+		
+		try {
+			// Obtiene la persona
+			Hashtable hPersona = new Hashtable();
+			hPersona.put(CenPersonaBean.C_IDPERSONA, idPersona);			
+			Vector vPersonas = this.selectByPK(hPersona);
+			
+			if (vPersonas!=null && vPersonas.size()>0) {
+				CenPersonaBean personaBean = (CenPersonaBean) vPersonas.get(0);
+
+				nombre = personaBean.getNombre();
+				if (personaBean.getApellido1()!=null && !personaBean.getApellido1().equals("#NA")){
+					nombre += " " + personaBean.getApellido1();
 				}
-				if (!personaBean.getApellido2().equals("#NA")){
-					nombre=nombre+personaBean.getApellido2();
+				
+				if (personaBean.getApellido2()!=null && !personaBean.getApellido2().equals("#NA")){
+					nombre += " " + personaBean.getApellido2();
 				}
 			}
-		}
-//		catch (SIGAException e) {
-//			throw e;
-//		}
-		catch(Exception e) {
+			
+		} catch(Exception e) {
 			throw new ClsExceptions (e, "Error al obtener el nombre y apellidos");
 		}
+		
 		return nombre;
 	}
 
@@ -659,8 +656,6 @@ public class CenPersonaAdm extends MasterBeanAdmVisible {
 		return nif;
 	}
 	public String obtenerUltiIdenHistorico(String idInstitucion) throws ClsExceptions, SIGAException{
-		CenPersonaBean personaBean;	
-		Vector v = null;
 		String nif = null;
 	    
 		try{
@@ -689,8 +684,6 @@ public class CenPersonaAdm extends MasterBeanAdmVisible {
 	public String obtenerUltiIdNotario(String idInstitucion) throws ClsExceptions, SIGAException
 	{
 		// Variables y Controles generales
-		CenPersonaBean personaBean;
-		Vector v = null;
 		String nif = null;
 
 		// preparando consulta
@@ -942,24 +935,14 @@ public class CenPersonaAdm extends MasterBeanAdmVisible {
 	 * @return java.util.Vector Vector de tablas hash  
 	 */
 	public Paginador getPersonas(String idInstitucion, BusquedaClientesForm formulario) throws ClsExceptions, SIGAException {
-
-		Vector salida = null;
-		String sqlClientes = "";
-	  	
-	  	// Acceso a BBDD
-		RowsContainer rcClientes = null;
 		try { 
 		    
 		    boolean bBusqueda  = UtilidadesString.stringToBoolean(formulario.getChkBusqueda());
 			
 			String nombre = formulario.getNombrePersona();
-			String apellido1 = formulario.getApellido1();
-			String apellido2 = formulario.getApellido2();
 			String nif = formulario.getNif();
 			
 			//Tabla cen_persona
-			String P_APELLIDOS1=CenPersonaBean.C_APELLIDOS1;
-			String P_APELLIDOS2=CenPersonaBean.C_APELLIDOS2;
 			String P_NOMBRE=CenPersonaBean.C_NOMBRE;
 			String P_NIF=CenPersonaBean.C_NIFCIF;
 			
@@ -1041,8 +1024,8 @@ public class CenPersonaAdm extends MasterBeanAdmVisible {
 			if (totalRegistros==0){					
 				paginador =null;
 			}else{
-				int registrosPorPagina = paginador.getNumeroRegistrosPorPagina();	    		
-	    		Vector datos = paginador.obtenerPagina(1);
+				paginador.getNumeroRegistrosPorPagina();
+	    		paginador.obtenerPagina(1);
 	    	
 			}
 		
@@ -1067,24 +1050,14 @@ public class CenPersonaAdm extends MasterBeanAdmVisible {
 	 * @return java.util.Vector Vector de tablas hash  
 	 */
 	public Paginador getClientesConsejo(String idInstitucion, BusquedaClientesForm formulario) throws ClsExceptions, SIGAException {
-
-		Vector salida = null;
-		String sqlClientes = "";
-	  	
-	  	// Acceso a BBDD
-		RowsContainer rcClientes = null;
 		try { 
 		    
 		    boolean bBusqueda  = UtilidadesString.stringToBoolean(formulario.getChkBusqueda());
 			
 			String nombre = formulario.getNombrePersona();
-			String apellido1 = formulario.getApellido1();
-			String apellido2 = formulario.getApellido2();
 			String nif = formulario.getNif();
 			
 			//Tabla cen_persona
-			String P_APELLIDOS1=CenPersonaBean.C_APELLIDOS1;
-			String P_APELLIDOS2=CenPersonaBean.C_APELLIDOS2;
 			String P_NOMBRE=CenPersonaBean.C_NOMBRE;
 			String P_NIF=CenPersonaBean.C_NIFCIF;
 			
@@ -1236,11 +1209,10 @@ public class CenPersonaAdm extends MasterBeanAdmVisible {
 			int totalRegistros = paginador.getNumeroTotalRegistros();
 			
 			if (totalRegistros==0){					
-				paginador =null;
-			}else{
-				int registrosPorPagina = paginador.getNumeroRegistrosPorPagina();	    		
-	    		Vector datos = paginador.obtenerPagina(1);
-	    	
+				paginador = null;
+			} else {
+				paginador.getNumeroRegistrosPorPagina();
+	    		paginador.obtenerPagina(1);
 			}
 		
 			

@@ -21,7 +21,6 @@ import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesBDAdm;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.paginadores.Paginador;
-import com.siga.certificados.Plantilla;
 import com.siga.envios.Envio;
 import com.siga.facturacion.form.ConfirmarFacturacionForm;
 import com.siga.general.SIGAException;
@@ -138,7 +137,7 @@ public class FacFacturacionProgramadaAdm extends MasterBeanAdministrador {
 		return bean;
 	}
 
-	protected Hashtable beanToHashTable(MasterBean bean) throws ClsExceptions {
+	public Hashtable beanToHashTable(MasterBean bean) throws ClsExceptions {
 		
 		Hashtable htData = null;
 		try {
@@ -249,17 +248,10 @@ public class FacFacturacionProgramadaAdm extends MasterBeanAdministrador {
 	 * @author nuria.rgonzalez 10-03-05
 	 */
 	protected String getTablasFacturacion(){
-		
-		String campos = FacFacturacionProgramadaBean.T_NOMBRETABLA 
-			+ " LEFT JOIN "+ 
-			 FacSerieFacturacionBean.T_NOMBRETABLA +
-			 " ON "+
-			 FacFacturacionProgramadaBean.T_NOMBRETABLA +"."+ FacFacturacionProgramadaBean.C_IDINSTITUCION + "=" +
-			 FacSerieFacturacionBean.T_NOMBRETABLA + "." + FacSerieFacturacionBean.C_IDINSTITUCION +
-			 " AND "+
-			 FacFacturacionProgramadaBean.T_NOMBRETABLA +"."+ FacFacturacionProgramadaBean.C_IDSERIEFACTURACION + "=" +
-			 FacSerieFacturacionBean.T_NOMBRETABLA + "." + FacSerieFacturacionBean.C_IDSERIEFACTURACION;
-		 		
+		String campos = FacFacturacionProgramadaBean.T_NOMBRETABLA + 
+						" LEFT JOIN " + FacSerieFacturacionBean.T_NOMBRETABLA +
+							" ON " + FacFacturacionProgramadaBean.T_NOMBRETABLA + "." + FacFacturacionProgramadaBean.C_IDINSTITUCION + " = " + FacSerieFacturacionBean.T_NOMBRETABLA + "." + FacSerieFacturacionBean.C_IDINSTITUCION +
+							" AND " + FacFacturacionProgramadaBean.T_NOMBRETABLA + "." + FacFacturacionProgramadaBean.C_IDSERIEFACTURACION + " = " + FacSerieFacturacionBean.T_NOMBRETABLA + "." + FacSerieFacturacionBean.C_IDSERIEFACTURACION;		 		
 		return campos;
 	}
 	
@@ -300,85 +292,77 @@ public class FacFacturacionProgramadaAdm extends MasterBeanAdministrador {
 		return v;
 	}
 
-	
 	/**
-	 * Devuelve un Vector con los datos de la Facturacion Programada  del cliente pasado como parámetro.
-	 * @author nuria.rgonzalez 10-03-05
-	 * @version 1	 
-	 * @param sWhere, string que contiene la sentencia where
-	 * @param orden, array que contiene los campos por los que queremos ordenar los resultados
-	 * @exception  SIGAException  En cualquier caso de error
+	 * Devuelve un Vector con los datos de la Facturacion Programada  del cliente pasado como parámetro
+	 * @param sWhereBind
+	 * @param codigos
+	 * @param orden
+	 * @return
+	 * @throws ClsExceptions
 	 */
-	public Vector selectDatosFacturacionBean(String sWhereBind,Hashtable codigos, String[] orden) throws ClsExceptions, SIGAException{
-		
-		Vector v = null;		
-		RowsContainer rc = null;
-		String where = sWhereBind;
-		try{
-			rc = new RowsContainer(); 
-			String sql = UtilidadesBDAdm.sqlSelect(this.getTablasFacturacion(), this.getCamposFacturacion());
-			sql += where;
-			sql += UtilidadesBDAdm.sqlOrderBy(orden);  
-			sql += "asc";
+	public Vector selectDatosFacturacionBean(String sWhereBind, Hashtable codigos, String[] orden) throws ClsExceptions {
+		Vector vResultado = null;		
+		try{			
+			String sql = UtilidadesBDAdm.sqlSelect(this.getTablasFacturacion(), this.getCamposFacturacion()) +
+					sWhereBind +
+					UtilidadesBDAdm.sqlOrderBy(orden) + " ASC";
+			
+			RowsContainer rc = new RowsContainer();
             rc = this.findBind(sql,codigos);
             if (rc!=null) {
- 				v = new Vector();
+            	vResultado = new Vector();
 				for (int i = 0; i < rc.size(); i++)	{
 					Row fila = (Row) rc.get(i);
-					Hashtable registro = (Hashtable)fila.getRow(); 
-					MasterBean registro1=(MasterBean)this.hashTableToBean(registro); 
-					if (registro1 != null) 
-						v.add(registro1);
+					Hashtable hRegistro = (Hashtable) fila.getRow(); 
+					MasterBean bRegistro = (MasterBean) this.hashTableToBean(hRegistro); 
+					if (bRegistro != null) 
+						vResultado.add(bRegistro);
 				}
 			}
-		}
-
-		catch(Exception e) {
+            
+		} catch(Exception e) {
 			throw new ClsExceptions (e, "Error en selectDatosFacturacion");
 		}
-		return v;
+		
+		return vResultado;
 	}
 
 	/**
-	 * Obtiene un nuevo ID de Fac_FacturacionProgramada de una institucion  e idSerieFacturacion determinada
-	 * @author nuria.rgonzalez 10-03-05
-	 * @version 1	 
-	 * @param Bean datos de la factura.
-	 * @return nuevo ID.
-	 * @exception ClsExceptions En cualquier caso de error
+	 * Notas Jorge PT 118: Obtiene un nuevo identificador de facturacion programada
+	 * @param bean
+	 * @return
+	 * @throws ClsExceptions
 	 */
-	public Long getNuevoID(FacFacturacionProgramadaBean bean) throws SIGAException, ClsExceptions 
-	{
-		return getNuevoID(bean.getIdInstitucion().toString(),bean.getIdSerieFacturacion().toString());
+	public Long getNuevoID(FacFacturacionProgramadaBean bean) throws ClsExceptions {
+		return this.getNuevoID(bean.getIdInstitucion().toString(), bean.getIdSerieFacturacion().toString());
 	}	
 
-	public Long getNuevoID(String idInstitucion, String idSerieFacturacion) throws SIGAException, ClsExceptions 
-	{
-		RowsContainer rc = null;
-		
-		try { rc = new RowsContainer(); }
-		catch(Exception e) { e.printStackTrace(); }
-		
+	/**
+	 * Notas Jorge PT 118: Obtiene un nuevo identificador de facturacion programada
+	 * @param idInstitucion
+	 * @param idSerieFacturacion
+	 * @return
+	 * @throws SIGAException
+	 * @throws ClsExceptions
+	 */
+	public Long getNuevoID(String idInstitucion, String idSerieFacturacion) throws ClsExceptions {
 		try {		
-			String sql = " SELECT NVL((MAX(" + FacFacturacionProgramadaBean.C_IDPROGRAMACION + ") + 1),1) AS " + FacFacturacionProgramadaBean.C_IDPROGRAMACION + 
+			String sql = " SELECT NVL(MAX(" + FacFacturacionProgramadaBean.C_IDPROGRAMACION + "), 0) + 1 AS " + FacFacturacionProgramadaBean.C_IDPROGRAMACION + 
 			  			 " FROM " + FacFacturacionProgramadaBean.T_NOMBRETABLA +
 						 " WHERE " + FacFacturacionProgramadaBean.T_NOMBRETABLA + "." + FacFacturacionProgramadaBean.C_IDINSTITUCION + " = " + idInstitucion +
 						 " AND " + FacFacturacionProgramadaBean.T_NOMBRETABLA + "." + FacFacturacionProgramadaBean.C_IDSERIEFACTURACION + " = " + idSerieFacturacion;
-
-			rc = this.findForUpdate(sql);
-			if (rc!=null && rc.size()>0) {
+			
+			RowsContainer rc = new RowsContainer();
+			if (rc.query(sql) && rc.size()>0)	{
 				Row fila = (Row) rc.get(0);
-				Hashtable prueba = fila.getRow();
-				Long idProgramacion = UtilidadesHash.getLong(prueba, FacFacturacionProgramadaBean.C_IDPROGRAMACION);
-				if (idProgramacion == null) {
-					return new Long(1);
-				}
-				else return idProgramacion;								
+				String id = fila.getString(FacFacturacionProgramadaBean.C_IDPROGRAMACION);
+				return Long.valueOf(id);
 			}
+			
+		} catch (Exception e) {		
+			throw new ClsExceptions (e, "Error al obtener un nuevo identificador de facturación programada");		
 		}
-		catch (Exception e) {		
-			throw new ClsExceptions (e, "Error al ejecutar el 'getNuevoID' en B.D.");		
-		}
+		
 		return null;
 	}	
 
@@ -479,7 +463,7 @@ public class FacFacturacionProgramadaAdm extends MasterBeanAdministrador {
 		
 		Vector v = new Vector();
 		try { 
-			String idserieidprogramacion = bean.getIdSerieFacturacion().toString()+"_" + bean.getIdProgramacion().toString();
+			//String idserieidprogramacion = bean.getIdSerieFacturacion().toString()+"_" + bean.getIdProgramacion().toString();
 			String institucion = bean.getIdInstitucion().toString();
 		    ReadProperties p= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
 			//ReadProperties p = new ReadProperties ("SIGA.properties");
@@ -505,12 +489,10 @@ public class FacFacturacionProgramadaAdm extends MasterBeanAdministrador {
 				v.add("messages.facturacion.comprueba.plantillaFacturaNoConfigurada"); // No esta configurada una plantilla de factura.
 			} else { 
 				String plantilla=plantillas.firstElement().toString();
-				Plantilla plantillaMng = new Plantilla(this.usrbean);
 
 				// Obtencion de la ruta donde se almacenan temporalmente los ficheros formato FOP			
 			    String rutaTemporal = p.returnProperty("facturacion.directorioFisicoTemporalFacturasJava")+p.returnProperty("facturacion.directorioTemporalFacturasJava");
 	    		String barraTemporal = "";
-	    		String nombreFicheroTemporal = "";
 	    		if (rutaTemporal.indexOf("/") > -1){ 
 	    			barraTemporal = "/";
 	    		}
@@ -650,8 +632,12 @@ public class FacFacturacionProgramadaAdm extends MasterBeanAdministrador {
     	return null;
     }
 	
-    public String getDescripcionPorDefecto (FacFacturacionProgramadaBean b) 
-    { 
+    /**
+     * Notas Jorge PT 118: Descripcion por defecto
+     * @param b
+     * @return
+     */
+    public String getDescripcionPorDefecto (FacFacturacionProgramadaBean b) { 
     	try {
 	    	FacSerieFacturacionAdm adm = new FacSerieFacturacionAdm (this.usrbean);
 	    	Hashtable h = new Hashtable ();
@@ -674,11 +660,6 @@ public class FacFacturacionProgramadaAdm extends MasterBeanAdministrador {
     public Paginador getProgramacioneFacturacionPaginador(ConfirmarFacturacionForm confirmarFacturacionForm) throws ClsExceptions, SIGAException{
 		
     	Integer idInstitucion	=  Integer.valueOf(this.usrbean.getLocation());	
-		String fechaInicial 	= "01/01/2000";
-		
-		FacFacturacionProgramadaAdm adm = new FacFacturacionProgramadaAdm(this.usrbean);
-		
-		
 		
 		//Este select interno si devuelve un numero > 0 querra decir que debo pedir la fecha de cargo
 		String selectInterno = "SELECT count(*) FROM "+FacFacturaBean.T_NOMBRETABLA+" fac "+

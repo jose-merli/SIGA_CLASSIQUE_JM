@@ -5,9 +5,13 @@
 
 package com.siga.beans;
 
-import java.util.*;
+import java.util.Hashtable;
+import java.util.Vector;
 
-import com.atos.utils.*;
+import com.atos.utils.ClsExceptions;
+import com.atos.utils.Row;
+import com.atos.utils.RowsContainer;
+import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesBDAdm;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.general.SIGAException;
@@ -240,69 +244,95 @@ public class FacSerieFacturacionAdm extends MasterBeanAdministrador {
 		return salida;
 	}
 	
+	/**
+	 * Notas Jorge PT 118: Obtiene la serie de facturacion generica de la institucion
+	 * @param idInstitucion
+	 * @return
+	 * @throws ClsExceptions
+	 */
     public FacSerieFacturacionBean obtenerSerieGenerica(String idInstitucion) throws ClsExceptions {
         FacSerieFacturacionBean salida=null;
     	try {
     		Hashtable ht = new Hashtable();
     		ht.put(FacSerieFacturacionBean.C_IDINSTITUCION,idInstitucion);
     		ht.put(FacSerieFacturacionBean.C_TIPOSERIE,"G");
+    		
+    		// Obtiene las series de facturacion de la institucion genericas
     		Vector v = this.select(ht);
     		if (v!=null && v.size()>0) {
     			salida = (FacSerieFacturacionBean) v.get(0);
     		} else {
-    		    throw new ClsExceptions("No esta creada la serie de facturacion genérica para facturaciones rápidas.");
+    		    throw new ClsExceptions("No existe la serie de facturacion genérica para la facturación rápida.");
     		}
 			
     	} catch (Exception e) {
-    		throw new ClsExceptions(e,"Error al obtener id SOlicitud desde la compra.");
+    		throw new ClsExceptions(e,"Error al obtener la serie de facturacion genérica para la facturación rápida.");
     	}
+    	
 		return salida;
     }
     
-    public FacSerieFacturacionBean obtenerSerieTemporalDesdeGenerica(String idInstitucion, PysCompraBean compra) throws ClsExceptions {
-        FacSerieFacturacionBean salida=null;
+    /**
+     * Notas Jorge PT 118: Obtiene una nueva serie de facturacion desde la generica
+     * @param compra
+     * @return
+     * @throws ClsExceptions
+     */
+    public FacSerieFacturacionBean obtenerSerieTemporalDesdeGenerica(PysCompraBean compra) throws ClsExceptions {
+    	 FacSerieFacturacionBean beanSerieFacturacionGenerica = null;
     	try {
-    	    FacSerieFacturacionBean general = this.obtenerSerieGenerica(idInstitucion);
-    	    CenPersonaAdm admPer = new CenPersonaAdm(this.usrbean);
-
-    	    String nuevoId = this.getNuevoId(idInstitucion);
+    		String idInstitucion = compra.getIdInstitucion().toString();
+    		
+    		// Obtiene la serie de facturacion generica de la institucion
+    	    beanSerieFacturacionGenerica = this.obtenerSerieGenerica(idInstitucion);
+    	    String idSerieFacturacion = beanSerieFacturacionGenerica.getIdSerieFacturacion().toString();
     	    
-    	    // En lugar de clonarlo lo obtengo de nuevo y lo modifico
-    	    salida = this.obtenerSerieGenerica(idInstitucion);
-    	    salida.setTipoSerie("T");
-    	    salida.setIdSerieFacturacion(new Long(nuevoId));
-    	    salida.setDescripcion("Fact. Autom. "+admPer.obtenerNombreApellidos(compra.getIdPersona().toString()));
-    	    salida.setNombreAbreviado("AUTOM_"+compra.getIdPersona().toString()+"_"+salida.getIdSerieFacturacion().toString());
-    	    if (!this.insert(salida)) {
-    	        throw new ClsExceptions("Error al crear la serie de facturacion temporal");
+    	    // Obtiene un nuevo identidicador de serie de facturacion
+    	    String nuevoidSerieFacturacion = this.getNuevoId(idInstitucion);
+    	    beanSerieFacturacionGenerica.setIdSerieFacturacion(new Long(nuevoidSerieFacturacion));
+    	        	    
+       	    // Modifico los valores del bean de la serie de facturacion generica    	    
+    	    CenPersonaAdm admPer = new CenPersonaAdm(this.usrbean);
+    	    String sNombrePersona = admPer.obtenerNombreApellidos(compra.getIdPersona().toString());
+    	    String descripcion = "Fact. Autom. " + sNombrePersona;    	 
+    	    if (descripcion.length()>100) { // La descripcion no puede superar los 100 caracteres
+    	    	beanSerieFacturacionGenerica.setDescripcion(descripcion.substring(0, 100));
+    	    } else {
+    	    	beanSerieFacturacionGenerica.setDescripcion(descripcion);
     	    }
-
+    	    
+    	    beanSerieFacturacionGenerica.setTipoSerie("T");
+    	    beanSerieFacturacionGenerica.setNombreAbreviado("AUTOM_" + compra.getIdPersona().toString() + "_" + nuevoidSerieFacturacion);
+    	    if (!this.insert(beanSerieFacturacionGenerica)) {
+    	        throw new ClsExceptions("Error al crear la serie de facturacion");
+    	    }
                 	    
-    	    // crear fac_seriefacturacion_bancos
-			FacBancoInstitucionAdm admBancos= new FacBancoInstitucionAdm(this.usrbean);
-			Vector v = admBancos.obtenerSerieFacturacionBanco(idInstitucion,general.getIdSerieFacturacion().toString());
-			for (int i=0;v!=null && i<v.size();i++) {
-			    Row h3 = (Row) v.get(i);
-                admBancos.insertaBancosSerieFacturacion(general.getIdInstitucion().toString(),nuevoId,h3.getString("BANCOS_CODIGO"),null);
-            }
-
+    	    // Copia FAC_SERIEFACTURACION_BANCOS			
+    	    FacSerieFacturacionBancoAdm admSerieFacturacionBanco = new FacSerieFacturacionBancoAdm(this.usrbean);
+    	    admSerieFacturacionBanco.copiarBancosSerieFacturacion(idInstitucion, idSerieFacturacion, nuevoidSerieFacturacion);
 			
     	} catch (Exception e) {
-    		throw new ClsExceptions(e,"Error al obtener id SOlicitud desde la compra.");
+    		throw new ClsExceptions(e,"Error al obtener una nueva serie de facturacion desde la generica.");
     	}
-		return salida;
+    	
+		return beanSerieFacturacionGenerica;
     }
 
+    /**
+     * Notas Jorge PT 118: Obtiene una nueva serie de facturacion desde otra existente
+     * @param beanSerie
+     * @param peticion
+     * @return
+     * @throws ClsExceptions
+     */
     public FacSerieFacturacionBean obtenerSerieTemporalDesdeOtra(FacSerieFacturacionBean beanSerie, PysPeticionCompraSuscripcionBean peticion) throws ClsExceptions {
         FacSerieFacturacionBean salida=new FacSerieFacturacionBean();
     	try {
-    	    CenPersonaAdm admPer = new CenPersonaAdm(this.usrbean);
-
-    	    String nuevoId = this.getNuevoId(beanSerie.getIdInstitucion().toString());
+    		String idInstitucion = beanSerie.getIdInstitucion().toString();
+    		
+    	    String nuevoidSerieFacturacion = this.getNuevoId(idInstitucion);
     	    
-    	    // En lugar de clonarlo lo obtengo de nuevo y lo modifico
-    	    
-    	    // campos comunes
+    	    // Campos comunes
     	    salida.setConfigDeudor(beanSerie.getConfigDeudor());
     	    salida.setConfigIngresos(beanSerie.getConfigIngresos());
     	    salida.setCuentaClientes(beanSerie.getCuentaClientes());
@@ -315,58 +345,57 @@ public class FacSerieFacturacionAdm extends MasterBeanAdministrador {
     	    salida.setObservaciones(beanSerie.getObservaciones());
     	    salida.setIdTipoPlantillaMail(beanSerie.getIdTipoPlantillaMail());
     	    
-    	    // campos diferentes
+    	    // Campos diferentes
     	    salida.setTipoSerie("T");
-    	    salida.setIdSerieFacturacion(new Long(nuevoId));
-    	    //mhg - Da error al insertar porque el campo descripción es mas grande que lo definido en bbdd.
-    	    String descripcion = "Fact. Autom. "+admPer.obtenerNombreApellidos(peticion.getIdPersona().toString());
-    	    if(descripcion.length()>100){
+    	    salida.setIdSerieFacturacion(new Long(nuevoidSerieFacturacion));
+    	    
+    	    CenPersonaAdm admPer = new CenPersonaAdm(this.usrbean);
+    	    String sNombrePersona = admPer.obtenerNombreApellidos(peticion.getIdPersona().toString());
+    	    String descripcion = "Fact. Autom. " + sNombrePersona;    	        	   
+    	    if (descripcion.length()>100) { // La descripcion no puede superar los 100 caracteres
     	    	salida.setDescripcion(descripcion.substring(0, 100));
-    	    }else{
+    	    } else {
     	    	salida.setDescripcion(descripcion);
     	    }
     	    
-    	    salida.setNombreAbreviado("AUTOM_"+peticion.getIdPersona().toString()+"_"+salida.getIdSerieFacturacion().toString());
+    	    salida.setNombreAbreviado("AUTOM_" + peticion.getIdPersona().toString() + "_" + nuevoidSerieFacturacion);
     	    if (!this.insert(salida)) {
-    	        throw new ClsExceptions("Error al crear la serie de facturacion temporal");
+    	    	throw new ClsExceptions("Error al crear la serie de facturacion");
     	    }
-
-                	    
-    	    // crear fac_seriefacturacion_bancos
-			FacBancoInstitucionAdm admBancos= new FacBancoInstitucionAdm(this.usrbean);
-			Vector v = admBancos.obtenerSerieFacturacionBanco(beanSerie.getIdInstitucion().toString(),beanSerie.getIdSerieFacturacion().toString());
-			for (int i=0;v!=null && i<v.size();i++) {
-			    Row h3 = (Row) v.get(i);
-                admBancos.insertaBancosSerieFacturacion(beanSerie.getIdInstitucion().toString(),nuevoId,h3.getString("BANCOS_CODIGO"),null);
-            }
-
+    	    
+    	    // Copia FAC_SERIEFACTURACION_BANCOS			
+    	    FacSerieFacturacionBancoAdm admSerieFacturacionBanco = new FacSerieFacturacionBancoAdm(this.usrbean);
+    	    admSerieFacturacionBanco.copiarBancosSerieFacturacion(idInstitucion, beanSerie.getIdSerieFacturacion().toString(), nuevoidSerieFacturacion);
 			
     	} catch (Exception e) {
-    		throw new ClsExceptions(e,"Error al obtener id SOlicitud desde la compra.");
+    		throw new ClsExceptions(e,"Error al obtener una nueva serie de facturacion desde otra existente.");
     	}
+    	
 		return salida;
     }
 
-	public String getNuevoId(String IdInstitucion){
-		RowsContainer rc = null;
+    /**
+     * Notas Jorge PT 118: Obtiene un nuevo identidicador de serie de facturacion
+     * @param IdInstitucion
+     * @return
+     */
+	public String getNuevoId(String IdInstitucion) throws ClsExceptions {
 		String salida = "";
-		try{
-			rc = new RowsContainer(); 
-			String sql = "Select Nvl(Max("+FacSerieFacturacionBean.T_NOMBRETABLA+"."+FacSerieFacturacionBean.C_IDSERIEFACTURACION+"), 0) + 1 IDSERIEFACTURACION";
-			sql += " From "+FacSerieFacturacionBean.T_NOMBRETABLA;
-			sql += " where idinstitucion="+IdInstitucion;
+		try {
+			RowsContainer rc = new RowsContainer(); 
+			String sql = "SELECT NVL(MAX(" + FacSerieFacturacionBean.C_IDSERIEFACTURACION + "), 0) + 1 AS " + FacSerieFacturacionBean.C_IDSERIEFACTURACION + 
+						" FROM " + FacSerieFacturacionBean.T_NOMBRETABLA + 
+						" WHERE " + FacSerieFacturacionBean.C_IDINSTITUCION + " = " +IdInstitucion;
 			
-			if (rc.query(sql)) {
-				for (int i = 0; i < rc.size(); i++)	{
-					Row fila = (Row) rc.get(i);
-					Hashtable registro = (Hashtable)fila.getRow();
-					salida = (String)registro.get("IDSERIEFACTURACION");
-				}
+			if (rc.query(sql) && rc.size()>0)	{
+				Row fila = (Row) rc.get(0);
+				salida = fila.getString(FacSerieFacturacionBean.C_IDSERIEFACTURACION);
 			}
-		}
-		catch(ClsExceptions e){
-			e.printStackTrace();
-		}
+			
+		} catch (Exception e) {		
+			throw new ClsExceptions (e, "Error al obtener un nuevo identificador de serie de facturación");		
+		}			
+		
 		return salida;
 	}
 	
@@ -384,22 +413,14 @@ public class FacSerieFacturacionAdm extends MasterBeanAdministrador {
 	            throw new ClsExceptions("Error: No se han recibido compras.");
 	        }
 	        
-	        int contador = 0;
 	        String aux = "";
 	        String idInstitucion="";
 	        
-	        int tipoProductoAux=0;
 	        for (int i=0;i<compras.size();i++) {
 	            PysCompraBean b = (PysCompraBean) compras.get(i);
-	            contador++;
 	            
 	            aux+="'"+b.getIdProducto().toString()+"__"+b.getIdTipoProducto().toString()+"',";
 	            idInstitucion= b.getIdInstitucion().toString();
-	            if (tipoProductoAux==b.getIdTipoProducto().intValue()){
-	            	contador--;
-	            	
-	            }
-	            tipoProductoAux=b.getIdTipoProducto().intValue();
 	            
 	        }
 	        aux = aux.substring(0,aux.length()-1);

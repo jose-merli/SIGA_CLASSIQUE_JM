@@ -68,7 +68,7 @@ public class SIGASvlProcesoFacturacion extends HttpServlet {
    	   					
    						Date ini = new Date();
    						
-   	   					Facturacion.procesarFacturas(beanInstitucion.getIdInstitucion().toString(),usr);
+   	   					Facturacion.procesarFacturas(beanInstitucion.getIdInstitucion().toString(), usr);
    						
    						Date fin = new Date();
    						// Control de transacciones largas

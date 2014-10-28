@@ -253,28 +253,6 @@ public class FacBancoInstitucionAdm extends MasterBeanAdministrador {
 	       return datos;                        
 	    }
 
-	public Vector obtenerSerieFacturacionBanco(String idInstitucion,String idSerieFacturacion) throws ClsExceptions,SIGAException {
-		   Vector datos=new Vector();
-	       try {
-	            RowsContainer rc = new RowsContainer(); 
-	            String sql ="SELECT IDINSTITUCION, IDSERIEFACTURACION, BANCOS_CODIGO " +
-							" FROM FAC_SERIEFACTURACION_BANCO" + 
-	            			" WHERE IDINSTITUCION=" + idInstitucion +
-	            			" AND IDSERIEFACTURACION=" + idSerieFacturacion;
-							
-	            if (rc.find(sql)) {
-	               for (int i = 0; i < rc.size(); i++){
-	                  Row fila = (Row) rc.get(i);
-	                  datos.add(fila);
-	               }
-	            }
-	       }
-	       catch (Exception e) {
-	       	throw new ClsExceptions (e, "Error ");
-	       }
-	       return datos;                        
-	    }
-
 	public void borrarBancosSerieFacturacion(String idInstitucion, String idSerieFacturacion) throws ClsExceptions {
 		String sql = "DELETE FROM FAC_SERIEFACTURACION_BANCO WHERE IDINSTITUCION="+idInstitucion + " AND IDSERIEFACTURACION="+idSerieFacturacion;
 		this.deleteSQL(sql);
@@ -390,6 +368,7 @@ public class FacBancoInstitucionAdm extends MasterBeanAdministrador {
 	       }
 	       return datos;                        
 	    }	
+	
 	public Vector obtenerCuentaUltimaSJCS(String idInstitucion) throws ClsExceptions,SIGAException {
 		   Vector datos=new Vector();
 	       try {
@@ -415,10 +394,5 @@ public class FacBancoInstitucionAdm extends MasterBeanAdministrador {
 	       	throw new ClsExceptions (e, "Error ");
 	       }
 	       return datos;                        
-	    }
-	
-	
-	
-	
-	
+	    }	
 }
