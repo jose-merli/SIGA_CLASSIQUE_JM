@@ -140,47 +140,54 @@ public class Facturacion {
 	 * @param idUsuario
 	 * @throws SIGAException
 	 */
-	public static void procesarFacturas(String idInstitucion, UsrBean userBean) throws SIGAException, ClsExceptions {	    		
+	public static void procesarFacturas(String idInstitucion, UsrBean userBean) {	    		
 		UserTransaction tx = (UserTransaction) userBean.getTransactionPesada();		
 		Facturacion facturacion = new Facturacion(userBean);
 		
-		Hashtable codigos = new Hashtable();
-		codigos.put(new Integer("1"), idInstitucion);
-				
-		String sWhere=" WHERE " + FacFacturacionProgramadaBean.T_NOMBRETABLA + "." + FacFacturacionProgramadaBean.C_IDINSTITUCION + " = :1 " +
-						" AND " + FacFacturacionProgramadaBean.C_FECHAREALGENERACION + " IS NULL " +
-						" AND " + FacFacturacionProgramadaBean.C_FECHAPREVISTAGENERACION + " IS NOT NULL " +
-						" AND " + FacFacturacionProgramadaBean.C_FECHAPREVISTAGENERACION + " <= SYSDATE " +
-						" AND " + FacFacturacionProgramadaBean.C_LOCKED + " = '0' ";
-		
-		String[] orden = {FacFacturacionProgramadaBean.C_FECHAPREVISTAGENERACION};
-		
-		FacFacturacionProgramadaAdm admFacturacionProgramada = new FacFacturacionProgramadaAdm(userBean);
-		Vector vDatos = admFacturacionProgramada.selectDatosFacturacionBean(sWhere,codigos, orden);
-		
-	    for (int i=0; i<vDatos.size(); i++){
-	    	FacFacturacionProgramadaBean beanFacturacionProgramada = (FacFacturacionProgramadaBean) vDatos.get(i);
-	    	
-	    	try {
-	    		// Compruebo que no esta bloqueada
-	    		if (beanFacturacionProgramada.getLocked().equals("1")) {
-					throw new Exception("bloqueado");
-				}
+		try {				
+			Hashtable<Integer,Object> codigos = new Hashtable<Integer,Object>();
+			codigos.put(new Integer("1"), idInstitucion);
+					
+			String sWhere=" WHERE " + FacFacturacionProgramadaBean.T_NOMBRETABLA + "." + FacFacturacionProgramadaBean.C_IDINSTITUCION + " = :1 " +
+							" AND " + FacFacturacionProgramadaBean.C_FECHAREALGENERACION + " IS NULL " +
+							" AND " + FacFacturacionProgramadaBean.C_FECHAPREVISTAGENERACION + " IS NOT NULL " +
+							" AND " + FacFacturacionProgramadaBean.C_FECHAPREVISTAGENERACION + " <= SYSDATE " +
+							" AND " + FacFacturacionProgramadaBean.C_LOCKED + " = '0' ";
+			
+			String[] orden = {FacFacturacionProgramadaBean.C_FECHAPREVISTAGENERACION};
+			
+			FacFacturacionProgramadaAdm admFacturacionProgramada = new FacFacturacionProgramadaAdm(userBean);
+			Vector<?> vDatos = admFacturacionProgramada.selectDatosFacturacionBean(sWhere,codigos, orden);
+			
+		    for (int i=0; i<vDatos.size(); i++){
+		    	FacFacturacionProgramadaBean beanFacturacionProgramada = (FacFacturacionProgramadaBean) vDatos.get(i);
+		    	
+		    	try {
+		    		// Compruebo que no esta bloqueada
+		    		if (beanFacturacionProgramada.getLocked().equals("1")) {
+						throw new Exception("bloqueado");
+					}
+	
+					// Bloqueamos la facturacion
+		    		beanFacturacionProgramada.setLocked("1");
+		    		beanFacturacionProgramada.setIdEstadoConfirmacion(FacEstadoConfirmFactBean.EJECUTANDO_GENERACION); //Ponemos la factura a estado EJECUTANDO GENERACION
+		    		
+		    		tx.begin();
+					admFacturacionProgramada.updateDirect(beanFacturacionProgramada);
+					tx.commit();
+	
+		    		// Generamos la Facturacion (LA TRANSACCION VA DENTRO DEL METODO)				
+					facturacion.generandoFacturacion(idInstitucion, beanFacturacionProgramada.getIdSerieFacturacion().toString(), beanFacturacionProgramada.getIdProgramacion().toString());
 
-				// Bloqueamos la facturacion
-	    		beanFacturacionProgramada.setLocked("1");
-	    		beanFacturacionProgramada.setIdEstadoConfirmacion(FacEstadoConfirmFactBean.EJECUTANDO_GENERACION); //Ponemos la factura a estado EJECUTANDO GENERACION
-	    		
-	    		tx.begin();
-				admFacturacionProgramada.updateDirect(beanFacturacionProgramada);
-				tx.commit();
-
-	    		// Generamos la Facturacion (LA TRANSACCION VA DENTRO DEL METODO)				
-				facturacion.generandoFacturacion(idInstitucion, beanFacturacionProgramada.getIdSerieFacturacion().toString(), beanFacturacionProgramada.getIdProgramacion().toString());
-	    		
+					ClsLogging.writeFileLog("### PROCESADO facturación AUTOMATICA " ,7);
+		    		
+		    	} catch (Exception e) {
+		    		ClsLogging.writeFileLogError("### Error procesando facturación AUTOMATICA " ,e,3);
+		    	}
+		    	
 	    		// Obtiene la facturacion programada (se puede haber modificado)
-				Hashtable hFacturacionProgramada = admFacturacionProgramada.beanToHashTable(beanFacturacionProgramada);
-				Vector vFacturacionProgramada = admFacturacionProgramada.selectByPK(hFacturacionProgramada);
+				Hashtable<?, ?> hFacturacionProgramada = admFacturacionProgramada.beanToHashTable(beanFacturacionProgramada);
+				Vector<?> vFacturacionProgramada = admFacturacionProgramada.selectByPK(hFacturacionProgramada);
 				
 				if (vFacturacionProgramada!=null && vFacturacionProgramada.size()>0) {
 					beanFacturacionProgramada = (FacFacturacionProgramadaBean) vFacturacionProgramada.get(0);
@@ -190,20 +197,12 @@ public class Facturacion {
 					tx.begin();
 					admFacturacionProgramada.updateDirect(beanFacturacionProgramada);
 					tx.commit();
-				}
-
-	    		ClsLogging.writeFileLog("### PROCESADO facturación AUTOMATICA " ,7);
-	    		
-	    	} catch (Exception e) {
-    			beanFacturacionProgramada.setLocked("0");
-    			
-    			try {tx.begin();} catch (Exception ee) {}
-    			admFacturacionProgramada.updateDirect(beanFacturacionProgramada);
-    			try {tx.commit();} catch (Exception ee) {}
-
-	    		ClsLogging.writeFileLogError("Error procesando facturación AUTOMATICA " ,e,3);
-	    	}
-	    }
+				}		    	
+		    }
+		    
+		} catch (Exception e) { 
+			ClsLogging.writeFileLogError("### Error general al procesar facturas (INSTITUCION:" + idInstitucion + ")", e, 3);
+		}
 	}
 	
 	/**
@@ -228,7 +227,7 @@ public class Facturacion {
 			SIGALogging log=null;
 			// obtención de las facturaciones programadas y pendientes con fecha de prevista confirmacion pasada a ahora
 			FacFacturacionProgramadaAdm factAdm = new FacFacturacionProgramadaAdm(userBean);
-			Hashtable codigos = new Hashtable();
+			Hashtable<Integer, Object> codigos = new Hashtable<Integer, Object>();
 			codigos.put(new Integer("1"), idInstitucion);
 			String sWhere=" WHERE " + FacFacturacionProgramadaBean.T_NOMBRETABLA + "." + FacFacturacionProgramadaBean.C_IDINSTITUCION + " = :1 " +
 							" AND " + FacFacturacionProgramadaBean.C_FECHAPREVISTACONFIRM + " IS NOT NULL " +
@@ -238,7 +237,7 @@ public class Facturacion {
 			
 			String[] orden = {FacFacturacionProgramadaBean.C_FECHAPREVISTACONFIRM};
 			
-			Vector vDatos = factAdm.selectDatosFacturacionBean(sWhere, codigos, orden);
+			Vector<?> vDatos = factAdm.selectDatosFacturacionBean(sWhere, codigos, orden);
 			
 		    for (int i=0; i<vDatos.size(); i++){
 
@@ -296,7 +295,7 @@ public class Facturacion {
 			SIGALogging log=null;
 			// obtención de las facturaciones programadas y pendientes con fecha de prevista confirmacion pasada a ahora
 			FacFacturacionProgramadaAdm factAdm = new FacFacturacionProgramadaAdm(userBean);
-			Hashtable codigos = new Hashtable();
+			Hashtable<Integer,Object> codigos = new Hashtable<Integer,Object>();
 			codigos.put(new Integer("1"), idInstitucion);
 			String sWhere=" WHERE " + FacFacturacionProgramadaBean.T_NOMBRETABLA + "." + FacFacturacionProgramadaBean.C_IDINSTITUCION + " = :1 " +
 							" AND " + FacFacturacionProgramadaBean.C_FECHAPREVISTACONFIRM + " IS NOT NULL " +
@@ -307,7 +306,7 @@ public class Facturacion {
 			
 			String[] orden = {FacFacturacionProgramadaBean.C_FECHAPREVISTACONFIRM};
 			
-			Vector vDatos = factAdm.selectDatosFacturacionBean(sWhere, codigos, orden);
+			Vector<?> vDatos = factAdm.selectDatosFacturacionBean(sWhere, codigos, orden);
 			
 		    for (int i=0; i<vDatos.size(); i++){
 
@@ -353,7 +352,7 @@ public class Facturacion {
 			SIGALogging log=null;
 			// obtención de las facturaciones programadas y pendientes con fecha de prevista confirmacion pasada a ahora
 			FacFacturacionProgramadaAdm factAdm = new FacFacturacionProgramadaAdm(userBean);
-			Hashtable codigos = new Hashtable();
+			Hashtable<Integer,Object> codigos = new Hashtable<Integer,Object>();
 			codigos.put(new Integer("1"), idInstitucion);
 			String sWhere=" where " + FacFacturacionProgramadaBean.T_NOMBRETABLA + "." + FacFacturacionProgramadaBean.C_IDINSTITUCION + " = :1 ";
 			// para fechas previstas de confirmacion adecuadas 
@@ -373,7 +372,7 @@ public class Facturacion {
 			
 			String[] orden = {FacFacturacionProgramadaBean.C_FECHAPREVISTAGENERACION};
 			
-			Vector vDatos = factAdm.selectDatosFacturacionBean(sWhere, codigos, orden);
+			Vector<?> vDatos = factAdm.selectDatosFacturacionBean(sWhere, codigos, orden);
 			
 		    for (int i=0;i<vDatos.size();i++){
 
@@ -394,7 +393,7 @@ public class Facturacion {
 		    		String [] claves = {FacFacturacionProgramadaBean.C_IDINSTITUCION,FacFacturacionProgramadaBean.C_IDPROGRAMACION,FacFacturacionProgramadaBean.C_IDSERIEFACTURACION};
 		    		String [] camposFactura = {FacFacturacionProgramadaBean.C_FECHACONFIRMACION,FacFacturacionProgramadaBean.C_FECHAPREVISTACONFIRM,
 		    				FacFacturacionProgramadaBean.C_ARCHIVARFACT,FacFacturacionProgramadaBean.C_IDESTADOCONFIRMACION};
-		    		Hashtable hashNew = new Hashtable();	
+		    		Hashtable<String,Object> hashNew = new Hashtable<String,Object>();	
 		    		UtilidadesHash.set(hashNew, FacFacturacionProgramadaBean.C_IDINSTITUCION, factBean.getIdInstitucion());
 		    		UtilidadesHash.set(hashNew, FacFacturacionProgramadaBean.C_IDPROGRAMACION, factBean.getIdProgramacion());
 		    		UtilidadesHash.set(hashNew, FacFacturacionProgramadaBean.C_IDSERIEFACTURACION,factBean.getIdSerieFacturacion() );
@@ -446,7 +445,7 @@ public class Facturacion {
 
 		sRutaJava = sRutaFisicaJava +  sRutaJava;
 
-		ArrayList lista=new ArrayList();
+		ArrayList<File> lista=new ArrayList<File>();
 
 		//String sNombreFichero = idSerieFacturacion + "_" + idProgramacion + ".zip";
 		sRutaJava += File.separator + idInstitucion	+ File.separator+ idSerieFacturacion+"_"+idProgramacion+ File.separator/*+ sNombreFichero*/;
@@ -480,7 +479,7 @@ public class Facturacion {
 	}
 	
 	
-	private void doZip(String rutaServidorDescargasZip, String nombreFicheroPDF, ArrayList ficherosPDF) throws ClsExceptions	{
+	private void doZip(String rutaServidorDescargasZip, String nombreFicheroPDF, ArrayList<File> ficherosPDF) throws ClsExceptions	{
 		// Generar Zip
 		File ficZip=null;
 		byte[] buffer = new byte[8192];
@@ -544,7 +543,7 @@ public class Facturacion {
 	}
 
     /**
-     * Notas Jorge PT 118: Genera la facturación rápida de un certificado
+     * Notas Jorge PT 118: Genera la facturación rápida de un certificado (SIGASolicitudesCertificadosAction)
      * 
      * Genera una facturación rápida de compra de un certificado utilizando 
      * como modelo la serie de facturacion genérica.
@@ -689,13 +688,13 @@ public class Facturacion {
                 // utilizamos la generica
                 serieCandidata = admSerie.obtenerSerieGenerica(serieTemporal.getIdInstitucion().toString());
             }
-            Hashtable ht = new Hashtable();
+            Hashtable<String,Object> ht = new Hashtable<String,Object>();
             ht.put(FacFacturaBean.C_IDINSTITUCION, serieTemporal.getIdInstitucion());
             ht.put(FacFacturaBean.C_IDSERIEFACTURACION, serieTemporal.getIdSerieFacturacion());
 
             // Obtengo la programacion para que apunte a la temporal
             FacFacturacionProgramadaAdm admPr=new FacFacturacionProgramadaAdm(this.usrbean);
-            Vector v4 = admPr.select(ht);
+            Vector<?> v4 = admPr.select(ht);
             Long idProgAnt = null;
             
             for (int i=0;v4!=null && i<v4.size();i++) {
@@ -749,7 +748,7 @@ public class Facturacion {
     	    
             // restauro programacion nueva en las facturas 
             FacFacturaAdm admFac=new FacFacturaAdm(this.usrbean);
-            Vector v = admFac.select(ht);
+            Vector<?> v = admFac.select(ht);
             for (int i=0;v!=null && i<v.size();i++) {
                 FacFacturaBean b = (FacFacturaBean) v.get(i);
                 b.setIdSerieFacturacion(serieCandidata.getIdSerieFacturacion());
@@ -761,7 +760,7 @@ public class Facturacion {
     	    
             // restauro programacion nueva en disquete cargos
             FacDisqueteCargosAdm admDis=new FacDisqueteCargosAdm(this.usrbean);
-            Vector v2 = admDis.select(ht);
+            Vector<?> v2 = admDis.select(ht);
             for (int i=0;v2!=null && i<v2.size();i++) {
                 FacDisqueteCargosBean b2 = (FacDisqueteCargosBean) v2.get(i);
                 b2.setIdSerieFacturacion(serieCandidata.getIdSerieFacturacion());
@@ -774,7 +773,7 @@ public class Facturacion {
             // Elimino la serie temporal y relaciones
             // cliente
             FacClienIncluidoEnSerieFacturAdm admClis=new FacClienIncluidoEnSerieFacturAdm(this.usrbean);
-            Vector v3 = admClis.select(ht);
+            Vector<?> v3 = admClis.select(ht);
             for (int i=0;v3!=null && i<v3.size();i++) {
                 FacClienIncluidoEnSerieFacturBean b3 = (FacClienIncluidoEnSerieFacturBean) v3.get(i);
                 if (!admClis.delete(b3)) {
@@ -861,7 +860,7 @@ public class Facturacion {
 
     		// Se confirma la facturación
     		FacFacturacionProgramadaAdm facadm = new FacFacturacionProgramadaAdm(this.usrbean);
-    		Hashtable hashNew = new Hashtable();				
+    		Hashtable<String,Object> hashNew = new Hashtable<String,Object>();				
     		UtilidadesHash.set(hashNew, FacFacturacionProgramadaBean.C_IDINSTITUCION, beanP.getIdInstitucion());
     		UtilidadesHash.set(hashNew, FacFacturacionProgramadaBean.C_IDPROGRAMACION, idProgramacion);
     		UtilidadesHash.set(hashNew, FacFacturacionProgramadaBean.C_IDSERIEFACTURACION,idSerieFacturacion );
@@ -1029,7 +1028,7 @@ public class Facturacion {
     }
     
     private String generarPdfEnvioProgramacionFactura(UserTransaction tx,FacFacturacionProgramadaAdm facadm,FacFacturacionProgramadaBean beanP,	HttpServletRequest req,SIGALogging log,
-    		String idSerieFacturacion, String idProgramacion,String [] claves, String [] camposFactura,	Hashtable hashFactura,boolean isGenerarEnvio)throws ClsExceptions, SIGAException,Exception{
+    		String idSerieFacturacion, String idProgramacion,String [] claves, String [] camposFactura,	Hashtable<String,Object> hashFactura,boolean isGenerarEnvio)throws ClsExceptions, SIGAException,Exception{
     	
     	String msjAviso = null;
 		String [] camposPDF = {FacFacturacionProgramadaBean.C_IDESTADOPDF};
@@ -1227,8 +1226,8 @@ public class Facturacion {
 			              Long idProgramacion, boolean bGenerarEnvios, SIGALogging log,UserTransaction tx, boolean generarLog)  throws ClsExceptions,SIGAException {
 
 		
-		Vector facturas=new Vector();
-		Vector plantillas=new Vector();
+		Vector<?> facturas=new Vector<Object>();
+		Vector<?> plantillas=new Vector<Object>();
 		String plantilla="";
 		File ficFOP=null;
 		int salida = 0;
@@ -1313,7 +1312,7 @@ public class Facturacion {
 			ClsLogging.writeFileLog("ALMACENAR >> TERMINA DE OBTENER PLANTILLAS Y DATOS GENERALES",10);
 
 			// recorro todas las facturas para ir creando lo sinformes pertinentes
-    		Enumeration listaFacturas = facturas.elements();
+    		Enumeration<?> listaFacturas = facturas.elements();
     		    		
 			ClsLogging.writeFileLog("ALMACENAR >> NUMERO DE FACTURAS: "+facturas.size(),10);
     		
@@ -1330,14 +1329,14 @@ public class Facturacion {
 	    				tx.begin();
 	    			}
 	    			
-	    			Hashtable facturaHash=(Hashtable)listaFacturas.nextElement();
+	    			Hashtable<?,?> facturaHash=(Hashtable<?,?>)listaFacturas.nextElement();
 	    			idFactura=(String)facturaHash.get(FacFacturaBean.C_IDFACTURA);
 	    			String idPersona=(String)facturaHash.get(FacFacturaBean.C_IDPERSONA);
 	    			// Obtenemos el lenguaje del cliente 
 	    			String lenguaje = cliAdm.getLenguaje(institucion.toString(),idPersona); 
 	    			String numFactura=(String)facturaHash.get(FacFacturaBean.C_NUMEROFACTURA);
 		   			CenColegiadoAdm admCol = new CenColegiadoAdm(userbean);
-		  			Hashtable htCol = admCol.obtenerDatosColegiado(this.usrbean.getLocation(),idPersona,this.usrbean.getLanguage());
+		  			Hashtable<?,?> htCol = admCol.obtenerDatosColegiado(this.usrbean.getLocation(),idPersona,this.usrbean.getLanguage());
 		  			String nColegiado = "";
 		  			if (htCol!=null && htCol.size()>0) {
 		  			    nColegiado = UtilidadesHash.getString(htCol,"NCOLEGIADO_LETRADO");
@@ -1426,7 +1425,7 @@ public class Facturacion {
 		
 		    				// Preferencia del tipo de envio si el usuario tiene uno:
 		    				CenDireccionesAdm direccionAdm = new CenDireccionesAdm(this.usrbean);
-		    				Hashtable direccion=direccionAdm.getEntradaDireccionEspecifica((String)facturaHash.get(FacFacturaBean.C_IDPERSONA),(String)facturaHash.get(FacFacturaBean.C_IDINSTITUCION),preferencia);
+		    				Hashtable<?,?> direccion=direccionAdm.getEntradaDireccionEspecifica((String)facturaHash.get(FacFacturaBean.C_IDPERSONA),(String)facturaHash.get(FacFacturaBean.C_IDINSTITUCION),preferencia);
 		    				
 		    				if (direccion==null || direccion.size()==0) {
 		    					 direccion=direccionAdm.getEntradaDireccionEspecifica((String)facturaHash.get(FacFacturaBean.C_IDPERSONA),(String)facturaHash.get(FacFacturaBean.C_IDINSTITUCION),"3");// si no hay direccion preferente mail, buscamos la de correo
@@ -1445,11 +1444,11 @@ public class Facturacion {
 		    				
 		    				//SE SELECCIONA LA PLANTILLA MAIL
 		    				FacFacturacionProgramadaAdm facProgAdm = new FacFacturacionProgramadaAdm(userbean);
-		    				Hashtable hashProg = new Hashtable();
+		    				Hashtable<String,Object> hashProg = new Hashtable<String,Object>();
 		    				hashProg.put(FacFacturacionProgramadaBean.C_IDINSTITUCION, institucion);
 		    				hashProg.put(FacFacturacionProgramadaBean.C_IDSERIEFACTURACION, serieFacturacion);
 		    				hashProg.put(FacFacturacionProgramadaBean.C_IDPROGRAMACION, idProgramacion);
-		    				Vector vFacProg = facProgAdm.select(hashProg);
+		    				Vector<?> vFacProg = facProgAdm.select(hashProg);
 		    				if(vFacProg != null && vFacProg.size()>0){
 		    					FacFacturacionProgramadaBean facProgBean = (FacFacturacionProgramadaBean) vFacProg.get(0);
 		    					if(facProgBean.getIdTipoPlantillaMail() != null){
@@ -1461,7 +1460,7 @@ public class Facturacion {
 			        				if(UtilidadesHash.getString(facturaHash,FacFacturaBean.C_NUMEROFACTURA)==null ||UtilidadesHash.getString(facturaHash,FacFacturaBean.C_NUMEROFACTURA).equals("")){
 			        					documento = new Documento(rutaAlmacen+barraAlmacen+nColegiado+"-"+(String)facturaHash.get(FacFacturaBean.C_IDFACTURA)+".pdf","Factura "+nColegiado+"-"+(String)facturaHash.get(FacFacturaBean.C_IDFACTURA)+".pdf");	
 			        				}
-			        				Vector documentos = new Vector(1);
+			        				Vector<Documento> documentos = new Vector<Documento>(1);
 			        				documentos.add(documento);
 			        				
 			        				// Genera el envio:
@@ -1535,13 +1534,13 @@ public class Facturacion {
     		
     		/**************  CREAMOS EL INFORME DE CONFIRMACION DE FACTURA QUE SE AÑADIRÁ AL ZIP DE FACTURAS EMITIDAS    ****************/
 			AdmInformeAdm datosInforme = new AdmInformeAdm(this.usrbean);
-			Hashtable hashWhere = new Hashtable();			
+			Hashtable<String,Object> hashWhere = new Hashtable<String,Object>();			
 			UtilidadesHash.set(hashWhere, AdmInformeBean.C_IDTIPOINFORME, "FACT");
 			UtilidadesHash.set(hashWhere, AdmInformeBean.C_IDINSTITUCION, "0");
 			
 			ClsLogging.writeFileLog("### Inicio datosInforme CONFIRMACION",7);
 			
-			Vector v =datosInforme.select(hashWhere);
+			Vector<?> v =datosInforme.select(hashWhere);
 
 			if(v!=null && v.size()>0){				
 				for (int dv = 0; dv < v.size(); dv++){				
@@ -1619,9 +1618,9 @@ public class Facturacion {
 				throw new SIGAException(msj);
 			
 			}
-			if (ficFOP!=null && ficFOP.exists()){
+			if (ficFOP!=null && ficFOP.exists())
 				ficFOP.delete();
-			}
+			
 			
 			existeAlgunErrorEnvio = true;
 			existeAlgunErrorPdf = true;
@@ -1646,14 +1645,14 @@ public class Facturacion {
 	}
     
     /**
-     * Notas Jorge PT 118: Generacion de la facturacion rapida de compras
+     * Notas Jorge PT 118: Generacion de la facturacion rapida de compras (SolicitudCompraAction)
      * @param beanPeticion
      * @param compras
      * @param beanSerieCandidata
      * @return
      * @throws ClsExceptions
      */
-    public FacSerieFacturacionBean procesarFacturacionRapidaCompras(PysPeticionCompraSuscripcionBean beanPeticion, Vector compras, FacSerieFacturacionBean beanSerieCandidata) throws ClsExceptions {
+    public FacSerieFacturacionBean procesarFacturacionRapidaCompras(PysPeticionCompraSuscripcionBean beanPeticion, Vector<?> compras, FacSerieFacturacionBean beanSerieCandidata) throws ClsExceptions {
         FacSerieFacturacionBean beanSerieFacturacion = null;
     	try {
     	    FacSerieFacturacionAdm admSerieFacturacion = new FacSerieFacturacionAdm(this.usrbean);
@@ -1822,7 +1821,7 @@ public class Facturacion {
     	
 		// JPT - Renegociacion 118: Devuelve un Hastable con los datos de la cuenta bancaria del cliente
     	CenCuentasBancariasAdm cuentasBancariasAdm = new CenCuentasBancariasAdm(this.usrbean);
-		Hashtable cuentaBancariaHashtable = cuentasBancariasAdm.selectCuentas(idPersona, idInstitucion, idCuenta);
+		Hashtable<?, ?> cuentaBancariaHashtable = cuentasBancariasAdm.selectCuentas(idPersona, idInstitucion, idCuenta);
 		
 		// JPT - Renegociacion 118: Compruebo que existe la cuenta bancaria del cliente
 		if (cuentaBancariaHashtable != null) {
@@ -1853,7 +1852,7 @@ public class Facturacion {
     		
 		// JPT - Renegociacion 118: Consulta las cuentas bancarias activas de cargos de la persona
 		CenCuentasBancariasAdm cuentasBancariasAdm = new CenCuentasBancariasAdm(this.usrbean);
-		List listaCuentasCargo = cuentasBancariasAdm.getCuentasCargo(idPersona, idInstitucion);
+		List<?> listaCuentasCargo = cuentasBancariasAdm.getCuentasCargo(idPersona, idInstitucion);
 		
 		// JPT - Renegociacion 118: Compruebo si solo tiene una cuenta de cargo
 		if (listaCuentasCargo != null && listaCuentasCargo.size() == 1) {
@@ -2068,7 +2067,7 @@ public class Facturacion {
 		FacLineaDevoluDisqBancoAdm admLDDB= new FacLineaDevoluDisqBancoAdm(userBean);
 		
 		// Obtenemos la factura incluida en disquete		
-		Hashtable criteriosFactura = new Hashtable();
+		Hashtable<String,Object> criteriosFactura = new Hashtable<String,Object>();
 		if(lineaDevolucion.getIdInstitucion()!= null)
 			criteriosFactura.put(FacFacturaIncluidaEnDisqueteBean.C_IDINSTITUCION,lineaDevolucion.getIdInstitucion().toString());
 		if(lineaDevolucion.getIdDisqueteCargos()!= null)
@@ -2077,41 +2076,41 @@ public class Facturacion {
 			criteriosFactura.put(FacFacturaIncluidaEnDisqueteBean.C_IDFACTURAINCLUIDAENDISQUETE,lineaDevolucion.getIdFacturaIncluidaEnDisquete().toString());
 		
 		FacFacturaIncluidaEnDisqueteAdm admFIED= new FacFacturaIncluidaEnDisqueteAdm(userBean);
-		Vector clientes = admFIED.selectByPK(criteriosFactura);
+		Vector<?> clientes = admFIED.selectByPK(criteriosFactura);
 		FacFacturaIncluidaEnDisqueteBean beanFacturaIncluidaEnDisquete = (FacFacturaIncluidaEnDisqueteBean) clientes.firstElement();
 		
 		// Obtenemos datos del cliente deudor
-		Hashtable criteriosCliente = new Hashtable();
+		Hashtable<String,Object> criteriosCliente = new Hashtable<String,Object>();
 		if(beanFacturaIncluidaEnDisquete.getIdInstitucion()!= null)
 			criteriosCliente.put(CenClienteBean.C_IDINSTITUCION,beanFacturaIncluidaEnDisquete.getIdInstitucion().toString());
 		if(beanFacturaIncluidaEnDisquete.getIdPersona()!= null)
 			criteriosCliente.put(CenClienteBean.C_IDPERSONA,beanFacturaIncluidaEnDisquete.getIdPersona().toString());
 		
 		CenClienteAdm admCliente= new CenClienteAdm(userBean);
-		Vector comisionesClientes = admCliente.selectByPK(criteriosCliente);
+		Vector<?> comisionesClientes = admCliente.selectByPK(criteriosCliente);
 		CenClienteBean beanCliente = (CenClienteBean) comisionesClientes.firstElement();
 		
 		// Obtenemos el disquete de devoluciones		
-		Hashtable criteriosDevolucion = new Hashtable();
+		Hashtable<String,Object> criteriosDevolucion = new Hashtable<String,Object>();
 		criteriosDevolucion.put(FacLineaDevoluDisqBancoBean.C_IDINSTITUCION,institucion);
 		criteriosDevolucion.put(FacLineaDevoluDisqBancoBean.C_IDDISQUETEDEVOLUCIONES,lineaDevolucion.getIdDisqueteDevoluciones());
 				
 		FacDisqueteDevolucionesAdm admDD = new FacDisqueteDevolucionesAdm(userBean);
-		Vector bancos = admDD.selectByPKForUpdate(criteriosDevolucion);
+		Vector<?> bancos = admDD.selectByPKForUpdate(criteriosDevolucion);
 		FacDisqueteDevolucionesBean beanDisqueteDevoluciones = (FacDisqueteDevolucionesBean) bancos.firstElement();		
 		
 		// Obtenemos el banco del acreedor	
-		Hashtable criteriosBanco = new Hashtable();		
+		Hashtable<String,Object> criteriosBanco = new Hashtable<String,Object>();		
 		if(beanDisqueteDevoluciones.getIdInstitucion()!= null)
 			criteriosBanco.put(FacBancoInstitucionBean.C_IDINSTITUCION,beanDisqueteDevoluciones.getIdInstitucion().toString());
 		criteriosBanco.put(FacBancoInstitucionBean.C_BANCOS_CODIGO,beanDisqueteDevoluciones.getBancosCodigo());
 		
 		FacBancoInstitucionAdm admBI= new FacBancoInstitucionAdm(userBean);
-		Vector comisiones = admBI.selectByPK(criteriosBanco);
+		Vector<?> comisiones = admBI.selectByPK(criteriosBanco);
 		FacBancoInstitucionBean beanBancoInstitucion = (FacBancoInstitucionBean) comisiones.firstElement();		
 		
 		// Se actualiza los campos CARGARCLIENTE y GASTOSDEVOLUCION
-		Hashtable original = new Hashtable();
+		Hashtable<String,Object> original = new Hashtable<String,Object>();
 		if(lineaDevolucion.getIdInstitucion()!= null)
 			original.put(FacLineaDevoluDisqBancoBean.C_IDINSTITUCION,lineaDevolucion.getIdInstitucion().toString());
 		if(lineaDevolucion.getIdDisqueteDevoluciones()!= null)
@@ -2146,12 +2145,12 @@ public class Facturacion {
 			}
 			
 			// JPT - Devoluciones 117 - Obtenemos la factura original			
-	    	Hashtable hFacFactura = new Hashtable();
+	    	Hashtable<String,Object> hFacFactura = new Hashtable<String,Object>();
 	    	UtilidadesHash.set(hFacFactura, FacFacturaBean.C_IDINSTITUCION, beanFacturaIncluidaEnDisquete.getIdInstitucion());
 	    	UtilidadesHash.set(hFacFactura, FacFacturaBean.C_IDFACTURA, beanFacturaIncluidaEnDisquete.getIdFactura());		    	
 	    	
 	    	FacFacturaAdm admFacFactura = new FacFacturaAdm(userBean);
-	    	Vector vFacFactura = admFacFactura.selectByPK(hFacFactura);
+	    	Vector<?> vFacFactura = admFacFactura.selectByPK(hFacFactura);
 	    	
 	    	if (vFacFactura== null || vFacFactura.size() != 1) {
 	    		throw new ClsExceptions("Error porque no encuentra la factura a devolver: " + lineaDevolucion.getIdFacturaIncluidaEnDisquete());
@@ -2186,7 +2185,7 @@ public class Facturacion {
 			beanFacFactura.setIdFactura(sNuevoIdFactura);
 			
 			// JPT - Devoluciones 117 - Obtiene nuevo numero de factura
-			Hashtable hNuevoNumeroFactura = admFacFactura.obtenerNuevoNumeroFactura(beanFacFactura.getIdInstitucion().toString(), beanFacFactura.getIdSerieFacturacion().toString());
+			Hashtable<String, Object> hNuevoNumeroFactura = admFacFactura.obtenerNuevoNumeroFactura(beanFacFactura.getIdInstitucion().toString(), beanFacFactura.getIdSerieFacturacion().toString());
 			String sContadorPrefijo = (String) hNuevoNumeroFactura.get(AdmContadorBean.C_PREFIJO);
 			String sContadorContador = (String) hNuevoNumeroFactura.get("NUEVOCONTADOR");
 			String sContadorSufijo = (String) hNuevoNumeroFactura.get(AdmContadorBean.C_SUFIJO);
@@ -2220,7 +2219,7 @@ public class Facturacion {
 				
 			// JPT - Devoluciones 117 - Obtenemos las lineas de la factura
 			FacLineaFacturaAdm admLineaFactura = new FacLineaFacturaAdm(userBean);
-			Vector vFacLineaFactura = admLineaFactura.select(hFacFactura);
+			Vector<?> vFacLineaFactura = admLineaFactura.select(hFacFactura);
 			
 			// JPT - Devoluciones 117 - Recorro las lineas de la factura
 			FacLineaFacturaBean beanFacLineaFactura = null;
@@ -2290,7 +2289,7 @@ public class Facturacion {
 	}
 
 	/**
-	 * 
+	 * Genera facturas (SIGASvlProcesoFacturacion)
 	 * @param idInstitucion
 	 * @param idSerieFacturacion
 	 * @param idProgramacion
@@ -2306,7 +2305,7 @@ public class Facturacion {
 		
 		String [] claves = {FacFacturacionProgramadaBean.C_IDINSTITUCION, FacFacturacionProgramadaBean.C_IDSERIEFACTURACION, FacFacturacionProgramadaBean.C_IDPROGRAMACION};
 		
-		Hashtable hashEstado = new Hashtable();
+		Hashtable<String,Object> hashEstado = new Hashtable<String,Object>();
 		UtilidadesHash.set(hashEstado, FacFacturacionProgramadaBean.C_IDINSTITUCION, idInstitucion);
     	UtilidadesHash.set(hashEstado, FacFacturacionProgramadaBean.C_IDPROGRAMACION, idProgramacion);
     	UtilidadesHash.set(hashEstado, FacFacturacionProgramadaBean.C_IDSERIEFACTURACION, idSerieFacturacion);
@@ -2319,8 +2318,6 @@ public class Facturacion {
 		String nombreFichero = "GENERACION_" + idSerieFacturacion + "_" + idProgramacion;    	
 		
 		try {			
-			tx.begin();
-			
 			ClsLogging.writeFileLog("### Procesando GENERACION (Serie:" + idSerieFacturacion + "; IdProgramacion:" + idProgramacion + ")", 7);
 			
 			// Carga los parametros
@@ -2335,7 +2332,8 @@ public class Facturacion {
         	param_in[6] = "0"; // IdPrevision	
         	
         	try{
-        		ClsLogging.writeFileLog("### Inicio GENERACION (Serie:" + idSerieFacturacion + "; IdProgramacion:" + idProgramacion + ")",7);        		
+        		ClsLogging.writeFileLog("### Inicio GENERACION (Serie:" + idSerieFacturacion + "; IdProgramacion:" + idProgramacion + ")",7);  
+        		tx.begin();
         		resultado = ClsMngBBDD.callPLProcedure("{call PKG_SIGA_FACTURACION.GENERACIONFACTURACION(?,?,?,?,?,?,?,?,?)}", 2, param_in);
 
         	} catch (Exception ep) {
@@ -2348,23 +2346,24 @@ public class Facturacion {
 			String codretorno = resultado[0];
 			
 			if (!codretorno.equals("0")) {				
-				ClsLogging.writeFileLog("### Fin GENERACION (Serie:" + idSerieFacturacion + "; IdProgramacion:" + idProgramacion + "), finalizada con errores", 7);
 				tx.rollback();
+				ClsLogging.writeFileLog("### Fin GENERACION (Serie:" + idSerieFacturacion + "; IdProgramacion:" + idProgramacion + "), finalizada con errores", 7);				
 				controlarEstadoErrorGeneracion(tx, admFacturacionProgramada, claves, hashEstado, nombreFichero);							
 				throw new ClsExceptions(UtilidadesString.getMensajeIdioma(this.usrbean.getLanguage(),"facturacion.nuevaPrevisionFacturacion.mensaje.generacionFicheroERROR") + 
 			    		"(Serie:" + idSerieFacturacion + "; IdProgramacion:" + idProgramacion + "; CodigoError:" + codretorno + ")");
 			} else {
-
+				tx.commit();
 				ClsLogging.writeFileLog("### Fin GENERACION (Serie:" + idSerieFacturacion + "; IdProgramacion:" + idProgramacion + "), finalizada correctamente",7);
+				
 				ClsLogging.writeFileLog("### Inicio datosInforme GENERACION",7);
 				
 				// Consulto los datos de la prevision y genero el fichero				
-				Hashtable hashWhere = new Hashtable();				
+				Hashtable<String,Object> hashWhere = new Hashtable<String,Object>();				
 				UtilidadesHash.set(hashWhere, AdmInformeBean.C_IDTIPOINFORME, "PREV");
 				UtilidadesHash.set(hashWhere, AdmInformeBean.C_IDINSTITUCION, "0");							
 				
 				AdmInformeAdm admInforme = new AdmInformeAdm(this.usrbean);
-				Vector vInforme = admInforme.select(hashWhere);
+				Vector<?> vInforme = admInforme.select(hashWhere);
 
 				if (vInforme!=null){
 					for (int dv = 0; dv < vInforme.size(); dv++){
@@ -2407,7 +2406,6 @@ public class Facturacion {
 						
 						//Si la previsión está vacía
 						if(fichPrev==null || fichPrev.size()==0) {
-							tx.rollback();
 							ClsLogging.writeFileLog("### Inicio creación fichero log GENERACION sin datos",7);
 							controlarEstadoErrorGeneracion(tx,admFacturacionProgramada,claves,hashEstado,nombreFichero);	
 							ClsLogging.writeFileLog("### Fin creación fichero log GENERACION sin datos",7);
@@ -2419,10 +2417,10 @@ public class Facturacion {
 							UtilidadesHash.set(hashEstado,FacFacturacionProgramadaBean.C_NOMBREFICHERO,fichPrev.get(0).getName());
 							UtilidadesHash.setForCompare(hashEstado,FacFacturacionProgramadaBean.C_LOGERROR,"");
 							
+							tx.begin();
 							if (!admFacturacionProgramada.updateDirect(hashEstado,claves,campos)) {
-						        throw new ClsExceptions("Error al actualizar el estado de la GENERACION. finalizada.");
-						    }
-							
+						        throw new ClsExceptions("### Error al actualizar el estado de la GENERACION. finalizada.");
+						    }							
 							tx.commit();
 						}	
 					}	
@@ -2432,7 +2430,6 @@ public class Facturacion {
 		}catch (Exception e) {
 			//le cambio el estado a error
 			try{ 
-				tx.rollback();
 				controlarEstadoErrorGeneracion(tx,admFacturacionProgramada,claves,hashEstado,nombreFichero);	
 			    throw new ClsExceptions(UtilidadesString.getMensajeIdioma(this.usrbean.getLanguage(),"facturacion.nuevaPrevisionFacturacion.mensaje.generacionFicheroERROR") +
 			    		"(Serie:" + idSerieFacturacion + "; IdProgramacion:" + idProgramacion + "; CodigoError:" + e.getMessage() + ")");
@@ -2450,7 +2447,7 @@ public class Facturacion {
 	 * @throws Exception 
 	 * 
 	 */
-	private void controlarEstadoErrorGeneracion(UserTransaction tx, FacFacturacionProgramadaAdm admProg,String [] claves,Hashtable hashEstado, String nombreFichero) throws Exception {
+	private void controlarEstadoErrorGeneracion(UserTransaction tx, FacFacturacionProgramadaAdm admProg,String [] claves,Hashtable<String,Object> hashEstado, String nombreFichero) throws Exception {
 		try {
 			String [] campos = {FacFacturacionProgramadaBean.C_IDESTADOCONFIRMACION,FacFacturacionProgramadaBean.C_FECHAPREVISTAGENERACION,FacFacturacionProgramadaBean.C_LOGERROR};
 			UtilidadesHash.set(hashEstado,FacFacturacionProgramadaBean.C_IDESTADOCONFIRMACION, FacEstadoConfirmFactBean.GENERACION_PROGRAMADA); //ESTADO ERROR SERIA GENERACION PROGRAMADA CON LOG

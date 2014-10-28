@@ -106,7 +106,7 @@ public class GenerarFacturacionAction extends MasterAction{
 			sWhere += FacFacturacionProgramadaBean.C_FECHAREALGENERACION + " IS NULL";
 			String[] orden = {FacFacturacionProgramadaBean.C_FECHAPREVISTAGENERACION};
 			
-			Vector vDatos = adm.selectDatosFacturacion(sWhere, orden);
+			Vector<?> vDatos = adm.selectDatosFacturacion(sWhere, orden);
 			request.getSession().setAttribute("DATABACKUP", vDatos);	
 
 			
@@ -136,27 +136,27 @@ public class GenerarFacturacionAction extends MasterAction{
 		UsrBean usr = (UsrBean)request.getSession().getAttribute("USRBEAN");
 		String lenguaje = usr.getLanguage();
 		String idInstitucion = usr.getLocation();
-		UserTransaction tx = null;
+		UserTransaction tx = usr.getTransactionPesada();				
 		
 		try {
 			// Obtiene el formulario
 			GenerarFacturacionForm form  = (GenerarFacturacionForm) formulario;			
 			
 			// Obtiene los valores ocultos del formulario
-			Vector ocultos = (Vector)form.getDatosTablaOcultos(0);			
+			Vector<?> ocultos = (Vector<?>)form.getDatosTablaOcultos(0);			
 			String idSerieFacturacion = (String)ocultos.elementAt(0);			
 			String idProgramacion = (String)ocultos.elementAt(1);
 			String usuMod = (String)ocultos.elementAt(2);
 			
 			// Carga los parametros para obtener la facturacion programada
-			Hashtable hFacturacionProgramada = new Hashtable();
+			Hashtable<String, String> hFacturacionProgramada = new Hashtable<String, String>();
 			hFacturacionProgramada.put(FacFacturacionProgramadaBean.C_IDINSTITUCION, idInstitucion);
 			hFacturacionProgramada.put(FacFacturacionProgramadaBean.C_IDSERIEFACTURACION, idSerieFacturacion);
 			hFacturacionProgramada.put(FacFacturacionProgramadaBean.C_IDPROGRAMACION, idProgramacion);
 			
 			// Obtiene la facturacion programada
 			FacFacturacionProgramadaAdm prgFactura = new FacFacturacionProgramadaAdm(usr);
-			Vector vFacturacionProgramada = prgFactura.selectByPK(hFacturacionProgramada);			
+			Vector<?> vFacturacionProgramada = prgFactura.selectByPK(hFacturacionProgramada);			
 									
 			// Comprobamos que existe la facturacion programada
 			FacFacturacionProgramadaBean beanFacturacionProgramada = null;
@@ -168,62 +168,58 @@ public class GenerarFacturacionAction extends MasterAction{
 				
 				// Bloquea la facturacion programada
 				beanFacturacionProgramada.setLocked("1");
+				
+				tx.begin();
 				prgFactura.updateDirect(beanFacturacionProgramada);
+				tx.commit();
 			}			
 			
-			try {
-				// Carga los parametros
-				String resultado[] = new String[2];
-				Object[] param_in = new Object[7];
-	        	param_in[0] = idInstitucion;
-	        	param_in[1] = idSerieFacturacion;
-	        	param_in[2] = idProgramacion;
-	        	param_in[3] = usr.getLanguageInstitucion();	// Idioma
-	        	param_in[4] = ""; // IdPeticion
-	        	param_in[5] = usuMod;
-	        	param_in[6] = "0"; // IdPrevision
-	        	
-				// Inicia la transaccion
-	        	tx = usr.getTransactionPesada();
-				tx.begin();
-
-				// Genera la facturacion
+			Exception excepcion = null;
+			
+			// Carga los parametros
+			String resultado[] = new String[2];
+			Object[] param_in = new Object[7];
+        	param_in[0] = idInstitucion;
+        	param_in[1] = idSerieFacturacion;
+        	param_in[2] = idProgramacion;
+        	param_in[3] = usr.getLanguageInstitucion();	// Idioma
+        	param_in[4] = ""; // IdPeticion
+        	param_in[5] = usuMod;
+        	param_in[6] = "0"; // IdPrevision
+				
+	        try {
+	        	// Genera la facturacion
+	        	tx.begin();
 	        	resultado = ClsMngBBDD.callPLProcedure("{call PKG_SIGA_FACTURACION.GENERACIONFACTURACION(?,?,?,?,?,?,?,?,?)}", 2, param_in);
 	        	
 	        	// Compruebo que ha finalizado correctamente
 	        	String codretorno = resultado[0];
 	        	if (!codretorno.equals("0")){
-	        		 throw new ClsExceptions ("Error al generar la Facturación: " + resultado[0] + " - "+ resultado[1]);
+	        		throw new ClsExceptions ("Error al generar la Facturación: " + resultado[0] + " - " + resultado[1]);
+	        	} else {
+	        		tx.commit();
 	        	}
 
-	        	// Obtiene la facturacion programada (se puede haber modificado)
-	        	vFacturacionProgramada = prgFactura.selectByPK(hFacturacionProgramada);
-	        	beanFacturacionProgramada = null;
-				if (vFacturacionProgramada!=null && vFacturacionProgramada.size()>0) {
-					beanFacturacionProgramada = (FacFacturacionProgramadaBean) vFacturacionProgramada.get(0);
-					
-					// Desbloquea la facturacion programada
-					beanFacturacionProgramada.setLocked("0");
-					prgFactura.updateDirect(beanFacturacionProgramada);
-				}
-
-	        	tx.commit();
-
 			} catch (Exception in) {
-				tx.rollback();
-				
-				// Obtiene la facturacion programada (se puede haber modificado)
-	        	vFacturacionProgramada = prgFactura.selectByPK(hFacturacionProgramada);
-	        	if (vFacturacionProgramada!=null && vFacturacionProgramada.size()>0) {
-					beanFacturacionProgramada = (FacFacturacionProgramadaBean) vFacturacionProgramada.get(0);
-					
-					// Desbloquea la factura
-					beanFacturacionProgramada.setLocked("0");
-					prgFactura.updateDirect(beanFacturacionProgramada);
-				}
-				
-				throw in;
+				tx.rollback();				
+				excepcion = in;
 			}
+			
+			// Obtiene la facturacion programada (se puede haber modificado)
+        	vFacturacionProgramada = prgFactura.selectByPK(hFacturacionProgramada);
+        	if (vFacturacionProgramada!=null && vFacturacionProgramada.size()>0) {
+				beanFacturacionProgramada = (FacFacturacionProgramadaBean) vFacturacionProgramada.get(0);
+				
+				// Desbloquea la factura
+				beanFacturacionProgramada.setLocked("0");
+				tx.begin();
+				prgFactura.updateDirect(beanFacturacionProgramada);
+				tx.commit();
+			}
+        	
+        	if (excepcion != null) {
+        		throw excepcion;
+        	}
 			
 			// Obtenemos el numero de facturas actualizadas y el importe .
 			String sql = "SELECT COUNT(*) AS CUENTA, " +

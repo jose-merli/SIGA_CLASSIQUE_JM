@@ -3301,9 +3301,9 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
 	 * @return
 	 * @throws ClsExceptions
 	 */
-	public Hashtable obtenerNuevoNumeroFactura (String idInstitucion, String idSerieFacturacion) throws ClsExceptions {
+	public Hashtable<String,Object> obtenerNuevoNumeroFactura (String idInstitucion, String idSerieFacturacion) throws ClsExceptions {
 		
-		Hashtable resultado = new Hashtable();
+		Hashtable<String,Object> resultado = new Hashtable<String,Object>();
 		
 		try {
 			String sql = "SELECT " + AdmContadorBean.T_NOMBRETABLA + ".*, " + 
