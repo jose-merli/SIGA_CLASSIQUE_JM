@@ -161,7 +161,7 @@ public class FacSerieFacturacionBancoAdm extends MasterBeanAdmVisible {
 						FacSerieFacturacionBancoBean.C_IDSUFIJO + ", " +
 						FacSerieFacturacionBancoBean.C_USUMODIFICACION + ", " + 
 						FacSerieFacturacionBancoBean.C_FECHAMODIFICACION + 
-					" ) VALUES ( " +
+					" ) ( " +
 						" SELECT " + FacSerieFacturacionBancoBean.C_IDINSTITUCION + ", " +
 							nuevoidSerieFacturacion + ", " + 
 							FacSerieFacturacionBancoBean.C_BANCOS_CODIGO + ", " +

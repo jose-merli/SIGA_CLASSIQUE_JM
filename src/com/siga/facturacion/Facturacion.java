@@ -134,7 +134,7 @@ public class Facturacion {
     }    	
 	
 	/**
-	 * Método estático para el procesado automático de facturacion
+	 * Método estático para el procesado automático de facturacion (SIGASvlProcesoFacturacion)
 	 * 
 	 * @param idInstitucion
 	 * @param idUsuario
@@ -543,7 +543,7 @@ public class Facturacion {
 	}
 
     /**
-     * Notas Jorge PT 118: Genera la facturación rápida de un certificado (SIGASolicitudesCertificadosAction)
+     * Notas Jorge PT 118: Genera la facturación rápida de un certificado (SIGASolicitudesCertificadosAction - Certificados > Gestión de solicitudes)
      * 
      * Genera una facturación rápida de compra de un certificado utilizando 
      * como modelo la serie de facturacion genérica.
@@ -1645,7 +1645,10 @@ public class Facturacion {
 	}
     
     /**
-     * Notas Jorge PT 118: Generacion de la facturacion rapida de compras (SolicitudCompraAction)
+     * Notas Jorge PT 118: Generacion de la facturacion rapida de compras (SolicitudCompraAction):
+     * - Productos y Servicios > Solicitudes > Compra/Subscripción
+     * - Productos y Servicios > Gestión Solicitudes
+     * 
      * @param beanPeticion
      * @param compras
      * @param beanSerieCandidata
@@ -2289,7 +2292,7 @@ public class Facturacion {
 	}
 
 	/**
-	 * Genera facturas (SIGASvlProcesoFacturacion)
+	 * Genera facturas mediante el proceso automatico (SIGASvlProcesoFacturacion)
 	 * @param idInstitucion
 	 * @param idSerieFacturacion
 	 * @param idProgramacion
