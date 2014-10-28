@@ -218,7 +218,7 @@
 				
 				<td>
 					<input type="hidden" name="indice" id="${status.count}"/>
-					<input type="checkbox"	id="${status.count}_${informe.idPlantilla}_${informe.idInstitucion}_${informe.idTipoInforme}" name="chkPL" ${preseleccionado} onclick='onclickchkPL()' />
+					<input type="checkbox"	id="${status.count}_${informe.idPlantilla}_${informe.idInstitucion}_${informe.idTipoInforme}" name="chkPL" ${preseleccionado} onclick='cargarComboTipoEnvios(${status.count});onclickchkPL();' />
 				</td>
 				<td>
 					<c:out value="${informe.descripcion}" />
@@ -430,6 +430,63 @@
 		}
 		
 	}
+	
+	function cargarComboTipoEnvios(index){
+		var oCheck = document.getElementsByName("chkPL");
+		var comboTiposEnvio = document.getElementById('idTipoEnvio_'+index);
+		if (oCheck[index-1].checked){
+			ids = oCheck[index-1].id.split("_");
+			document.getElementById("idTipoEnvio_"+index).disabled = false;
+			document.getElementById("idPlantillaEnvio_"+index).disabled = false;
+			//Recupero los datos de los combos del registro
+			jQuery.ajax({ //Comunicación jQuery hacia JSP  
+		           type: "POST",
+		           url: "/SIGA/ENV_DefinirEnvios.do?modo=getJQueryTiposEnvioPermitido",
+		           data: "idPlantilla="+ids[1]+"&idInstitucion="+ids[2],
+				   contentType: "application/x-www-form-urlencoded;charset=UTF-8",
+		           dataType: "json",
+		           success:  function(json) {
+	           			var tiposEnvioPermitidos = json.tiposEnvioPermitidos;
+	           			var optionComboTiposEnvio = comboTiposEnvio.options;
+	           			//Si tiene opciones el valor es el que iene que estar seleccioando
+	           			if(optionComboTiposEnvio){
+	           				var valueComboTiposEnvio = optionComboTiposEnvio[0].value;
+	           				//vaciamos la listas
+							optionComboTiposEnvio.length = 0;
+							jQuery("#idTipoEnvio_"+index).append("<option  value=''>&nbsp;</option>");
+	           				jQuery.each(tiposEnvioPermitidos, function(i,item2){
+ 		           				var selected = "";
+								//Si el tipo de envio es el envio por defecto se selecciona su valor
+	 		           			if(item2.defecto=="1"){
+		           					selected = "selected";
+		           					jQuery("#idTipoEnvioDefecto_"+index).val(item2.idTipoEnvios);
+	           					}
+ 		           				 		           				
+		                        jQuery("#idTipoEnvio_"+index).append("<option "+selected+" value='"+item2.idTipoEnvios+"'>"+item2.nombre+"</option>");
+		                        //Se carga la combo de plantillas disponibles
+		                        onChangeTipoenvio(index); 		                     	
+		                    });
+	           			}
+			           			
+		           	},
+		           error: function(xml,msg){
+		        	   alert("Error: "+msg);//$("span#ap").text(" Error");
+		           }     	
+		    });
+		}else{
+ 			var optionComboTiposEnvio = comboTiposEnvio.options;
+ 			optionComboTiposEnvio.length = 0;
+			jQuery("#idTipoEnvio_"+index).append("<option  value=''>&nbsp;</option>");
+			document.getElementById("idTipoEnvio_"+index).disabled = true;
+			var comboPlantilla = document.getElementById('idPlantillaEnvio_'+index);
+			var optionComboPlantilla = comboPlantilla.options;
+			optionComboPlantilla.length = 0;
+			jQuery("#idPlantillaEnvio_"+index).append("<option  value=''>&nbsp;</option>");
+			document.getElementById("idPlantillaEnvio_"+index).disabled = true;
+		}	
+	}
+	
+	
 	function onclickchkPL() {
 		var oCheck = document.getElementsByName("chkPL");
 		var idTiposInforme = "";

@@ -57,6 +57,8 @@ public class EnvTipoEnviosBean extends MasterBean {
         try {
             obj.put("idTipoEnvios", this.idTipoEnvios);
             obj.put("nombre", this.nombre);
+            obj.put("idPlantillaDefecto", this.idPlantillaDefecto==null||this.idPlantillaDefecto.equals("")?"0":this.idPlantillaDefecto);
+            obj.put("defecto", this.defecto==null||this.defecto.equals("")?"0":this.defecto);
         } catch (JSONException e) {
         }
         return obj;

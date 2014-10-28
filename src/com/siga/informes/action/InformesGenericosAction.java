@@ -1821,17 +1821,16 @@ public class InformesGenericosAction extends MasterAction {
 			for (int i = 0; i < informeBeans.size(); i++) {
 				AdmInformeBean informeBean = (AdmInformeBean)informeBeans.get(i);
 				InformeForm informe = informeBean.getInforme(); 
-				if(miForm.getEnviar()!=null && miForm.getEnviar().equals(ClsConstants.DB_TRUE) ){
+				//Solo buscamos los tipos de envío para los informes preseleccionados para evitar que se hagan muchas consultas a bbdd al abrir la ventana
+				if(miForm.getEnviar()!=null && miForm.getEnviar().equals(ClsConstants.DB_TRUE) &&(informeBean.getPreseleccionado()).equals("S")){
 					List<EnvTipoEnviosBean> tipoEnviosBeans = informeService.getTiposEnvioPermitidos(informeBean,usr);
 					informe.setTiposEnvioPermitidos(tipoEnviosBeans);
 				}
 				informeForms.add(informe);
 
 			}
+		
 			request.setAttribute("informeForms",informeForms);
-			
-			
-			
 			
 			String asunto = "";
 			if(idTipoInforme.equals(EnvioInformesGenericos.comunicacionesDesigna)){
@@ -2529,9 +2528,5 @@ public class InformesGenericosAction extends MasterAction {
 
 		
 	}
-	
-
-
-
 
 }
