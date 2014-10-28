@@ -10,9 +10,14 @@ import java.security.PrivateKey;
 import java.security.cert.Certificate;
 import java.util.GregorianCalendar;
 import java.util.Hashtable;
+import java.util.Properties;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
+import org.redabogacia.sigaservices.app.util.PropertyReader;
+import org.redabogacia.sigaservices.app.util.SIGAReferences;
+
+import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsLogging;
 import com.atos.utils.ComodinBusquedas;
@@ -27,6 +32,7 @@ import com.siga.Utilidades.PaginadorBind;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesMultidioma;
 import com.siga.Utilidades.UtilidadesString;
+import com.siga.administracion.SIGAConstants;
 import com.siga.general.SIGAException;
 
 public class CerSolicitudCertificadosAdm extends MasterBeanAdministrador
@@ -792,14 +798,13 @@ public class CerSolicitudCertificadosAdm extends MasterBeanAdministrador
 				solicConsejoBean.setUsuCreacion(new Integer(user.getUserName()));		
 				
 				// jbd // Por defecto se acepta las condiciones de la mutualidad para las nuevas incorporaciones
-				if(solicConsejoBean.getIdInstitucion()==2000 
-						&& solicConsejoBean.getPpn_IdProducto() == 1 
-						&& solicConsejoBean.getPpn_IdTipoProducto()==11
-						&& (solicConsejoBean.getPpn_IdProductoInstitucion()==2
-							||solicConsejoBean.getPpn_IdProductoInstitucion()==9
-							||solicConsejoBean.getPpn_IdProductoInstitucion()==10)){
+				if(isCertNuevaIncorporacion(solicConsejoBean.getIdInstitucion().toString(), 
+						solicConsejoBean.getPpn_IdProducto().toString(), 
+						solicConsejoBean.getPpn_IdTipoProducto().toString(), 
+						solicConsejoBean.getPpn_IdProductoInstitucion().toString())){
 					solicConsejoBean.setAceptaCesionMutualidad("1");
 				}
+
 				
 				this.insertCertificado(this.beanToHashTable(solicConsejoBean));
 
@@ -1755,6 +1760,26 @@ public class CerSolicitudCertificadosAdm extends MasterBeanAdministrador
 		return idcontador;  
     }
 	
+	
+	public boolean isCertNuevaIncorporacion(String idInstitucion, String idProducto, String idTipoProducto, String idProductoInstitucion){
+		boolean isCNI=false;
+		Properties props = PropertyReader.getProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+		String cniProducto = props.getProperty(SIGAConstants.CNI_PRODUCTO);
+		String cniTipoProducto = props.getProperty(SIGAConstants.CNI_TIPOPRODUCTO);
+		String cniCambioAbogado = props.getProperty(SIGAConstants.CNI_CAMBIOABOGADO);
+		String cniNoEjerciente = props.getProperty(SIGAConstants.CNI_NOEJERCIENTE);
+		String cniNuevaIncorporacion = props.getProperty(SIGAConstants.CNI_NUEVAINCORPORACION);
+		
+		if(idInstitucion.equalsIgnoreCase(String.valueOf(ClsConstants.INSTITUCION_CGAE))
+			&&	idProducto.equalsIgnoreCase(cniProducto)
+			&& idTipoProducto.equalsIgnoreCase(cniTipoProducto)
+			&& (idProductoInstitucion.equalsIgnoreCase(cniCambioAbogado)
+				|| idProductoInstitucion.equalsIgnoreCase(cniNoEjerciente)
+				|| idProductoInstitucion.equalsIgnoreCase(cniNuevaIncorporacion))){
+			isCNI=true;
+		}
+		return isCNI;
+	}
 	
 	
 }

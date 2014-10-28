@@ -55,5 +55,12 @@ public interface SIGAConstants
 	public static final String TYPE_ALPHANUMERIC     = "A"; 
 	public static final String TYPE_LONG	         = "L";
 	public static final String TYPE_DATE	         = "D"; 
-	public static final String TYPE_MULTIVALOR       = "MV"; 
+	public static final String TYPE_MULTIVALOR       = "MV";
+	
+
+	public static final String CNI_TIPOPRODUCTO       	= "CNI_TIPOPRODUCTO"; 
+	public static final String CNI_PRODUCTO       		= "CNI_PRODUCTO"; 
+	public static final String CNI_NUEVAINCORPORACION   = "CNI_NUEVAINCORPORACION"; 
+	public static final String CNI_NOEJERCIENTE       	= "CNI_NOEJERCIENTE"; 
+	public static final String CNI_CAMBIOABOGADO       	= "CNI_CAMBIOABOGADO"; 
 }

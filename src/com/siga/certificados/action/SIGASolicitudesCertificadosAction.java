@@ -663,15 +663,15 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
     		String idp=beanSolicitud.getPpn_IdProducto().toString();
     		String idpi=beanSolicitud.getPpn_IdProductoInstitucion().toString();
     		boolean pintarCheckMutualidad = false;
+    		
     		// jbd // Tratamiento para los certificados que pasan informacion a la mutualidad
-    		if (beanSolicitud.getPpn_IdTipoProducto()==11 
-    				&& beanSolicitud.getPpn_IdProducto()==1 
-    				&& (beanSolicitud.getPpn_IdProductoInstitucion()==2
-    				|| beanSolicitud.getPpn_IdProductoInstitucion()==9
-    				|| beanSolicitud.getPpn_IdProductoInstitucion()==10)){
-    			// hay que tratarlo de forma especial
-    			pintarCheckMutualidad = true;
-    		}
+			if(admSolicitud.isCertNuevaIncorporacion(beanSolicitud.getIdInstitucion().toString(), 
+					beanSolicitud.getPpn_IdProducto().toString(), 
+					beanSolicitud.getPpn_IdTipoProducto().toString(), 
+					beanSolicitud.getPpn_IdProductoInstitucion().toString())){
+				pintarCheckMutualidad = true;
+			}
+
     		request.setAttribute("pintarCheckMutualidad", pintarCheckMutualidad);
 
     		if (numContador!=null && !numContador.equals("")) {
