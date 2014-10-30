@@ -61,6 +61,7 @@
 			  <include name="**/*"/>
 			</fileset>
 			</copy>
+			<!-- Deshabilitado hasta que tengamos acceso al IIS en Desarrollo
 			<copy todir="${destinoCSS}" includeEmptyDirs="yes"  overwrite="yes">
 				<fileset dir="${html.home}/css">
 				  <include name="**/*.css"/>
@@ -68,6 +69,7 @@
 				  <include name="**/*.gif"/>
 				</fileset>
 			</copy>
+			-->
 		</target>
 
 	
