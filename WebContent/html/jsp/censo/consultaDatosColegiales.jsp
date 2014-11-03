@@ -814,6 +814,7 @@
 							<input type="hidden" id='oculto<%=String.valueOf(recordNumber)%>_3' name="oculto<%=String.valueOf(recordNumber)%>_3" value="<%=row.getString(CenDatosColegialesEstadoBean.C_FECHAESTADO)%>">
 							<input type="hidden" id='oculto<%=String.valueOf(recordNumber)%>_4' name="oculto<%=String.valueOf(recordNumber)%>_4" value="<%=nombre%>">
 					  		<input type="hidden" id='oculto<%=String.valueOf(recordNumber)%>_5' name="oculto<%=String.valueOf(recordNumber)%>_5" value="<%=numero%>">
+							<input type="hidden" id='oculto<%=String.valueOf(recordNumber)%>_6' name="oculto<%=String.valueOf(recordNumber)%>_6" value="<%=row.getString(CenDatosColegialesEstadoBean.C_IDESTADO)%>">
 							<%=UtilidadesString.mostrarDatoJSP(GstDate.getFormatedDateShort("",row.getString(CenDatosColegialesEstadoBean.C_FECHAESTADO)))%>
 						</td>
 						<td>
@@ -905,7 +906,36 @@
 
 	<!-- INICIO: SCRIPTS BOTONES -->
 	<!-- Aqui se reescriben las funciones que vayamos a utilizar -->
-	<script language="JavaScript">
+	<script language="JavaScript">		
+		function borrar(fila, id) {
+			if (typeof id == 'undefined')
+				id='tablaResultados';
+		  	
+			var datos;
+					
+			if((document.getElementById('oculto'+fila+'_6').value!=10)&&(document.getElementById('oculto'+fila+'_6').value!=20))
+			{
+				preparaDatos(fila, id);
+			   	var auxTarget = document.forms[0].target;
+			   	document.forms[0].target="submitArea";
+			   	document.forms[0].modo.value = "Borrar";
+			   	document.forms[0].submit();
+			   	document.forms[0].target=auxTarget;
+			}else{
+				
+			   if(confirm('<siga:Idioma key="messages.censo.estadosColegiales.aviso.inscripciones.baja"/>')) {
+					preparaDatos(fila, id);
+			   		var auxTarget = document.forms[0].target;
+			   		document.forms[0].target="submitArea";
+			   		document.forms[0].modo.value = "Borrar";
+			   		document.forms[0].submit();
+			   		document.forms[0].target=auxTarget;
+			 	}
+			}
+
+		 }
+
+		
 		// Asociada al boton Nuevo
 		function accionNuevo() {		
 			document.forms[0].modo.value='nuevo';

@@ -1531,10 +1531,20 @@ public class ScsInscripcionTurnoAdm extends MasterBeanAdministrador {
 		    		ScsInscripcionTurnoBean insTurno = (ScsInscripcionTurnoBean) listaInscripcionesTurno.get(i);
 		    		
 		    		// Calculo la fecha de baja para las inscripciones de turno
-		    		String fechaBajaInscripciones = this.calcularFechaBajaInscripcionTurno(insTurno);
+		    		String fechaMinimaBajaInscripciones = this.calcularFechaBajaInscripcionTurno(insTurno);
 				    							
 					// Creo el objeto inscripcion con idInstitucion + idTurno + idPersona + fechaSolicitud 
 					InscripcionTurno inscripcion = new InscripcionTurno(insTurno);	
+					
+					//Se compara la fecha mínima de baja para las inscripciones con la fecha de estado y la fecha de baja será la mayor
+					String fechaBajaInscripciones=""; 
+					// Si la fecha mínima de baja para las inscripciones es menor o igual que la fecha estado la fecha de baja será la de estado
+					if (GstDate.compararFechas(fechaMinimaBajaInscripciones, fechaEstado) < 0) {							
+						fechaBajaInscripciones=fechaEstado;
+					}else{
+						fechaBajaInscripciones=fechaMinimaBajaInscripciones;
+					}
+					
 					
 					if (insTurno.getFechaSolicitudBaja() != null && !insTurno.getFechaSolicitudBaja().equals("")) {
 						inscripcion.validarBaja(
@@ -1544,24 +1554,22 @@ public class ScsInscripcionTurnoAdm extends MasterBeanAdministrador {
 							null, 
 							this.usrbean);
 						
-					} else {
-						if(!fechaEstado.equalsIgnoreCase("sysdate") && fechaEstado.length()==10) {
-							try {
-								// jbd // inc7718 //Esta fecha tiene que ser larga
-								fechaEstado = UtilidadesString.formatoFecha(fechaEstado, ClsConstants.DATE_FORMAT_SHORT_SPANISH, ClsConstants.DATE_FORMAT_JAVA);						
-							} catch (Exception e) {
-								// Si ha fallado será porque el formato ya es el adecuado DATE_FORMAT_JAVA  
-							}
-						}
-						
+					} else {						
+		
+						//Se necesita en formato largo por:  // jbd // inc7718 //Esta fecha tiene que ser larga
+						SimpleDateFormat sdf = new SimpleDateFormat(ClsConstants.DATE_FORMAT_JAVA);
+						Date dFechaHoy = new Date(); 										
+						String sfechaHoy = sdf.format(dFechaHoy); // Fecha con formato yyyy/MM/dd HH:mm:ss	
+											
 						inscripcion.solicitarBaja(
-							fechaEstado,
+							sfechaHoy,
 							motivo,
-							fechaBajaInscripciones,
+							fechaBajaInscripciones, 
 							motivo,
 							insTurno.getFechaValidacion(),
 							null, 
-							this.usrbean);	
+							this.usrbean);
+						
 					}						
 		    	}		    
 			}
@@ -2188,5 +2196,44 @@ public class ScsInscripcionTurnoAdm extends MasterBeanAdministrador {
 		} catch (Exception e) {
 			throw new ClsExceptions (e, "Error al ejecutar calcularFechaBajaInscripcionTurno()");
 		}				
-	}	
+	}
+	
+	
+	/**
+	 * Obtiene el número de inscripciones de Turnos con fecha de baja igual a la pasada como parámetro para la persona pasada como parámetro.
+	 * @param idInstitucion
+	 * @param idPersona
+	 * @param fecha
+	 * @retur número de inscripciones de turno dadas de baja a la fecha indicada para la persona.
+	 * @throws ClsExceptions
+	 */
+	public Integer getInscripcionesTurnoBajaAFecha(String idInstitucion, String idPersona, String fecha) throws ClsExceptions{
+		Integer numInscrip=0;
+		
+		try {
+		
+			String sql= " SELECT " + camposSelect +
+					      " FROM " + ScsInscripcionTurnoBean.T_NOMBRETABLA +
+					     " WHERE "+ScsInscripcionTurnoBean.C_IDINSTITUCION + " = " + idInstitucion +
+						   " AND "+ScsInscripcionTurnoBean.C_IDPERSONA +" = " + idPersona +
+						  " AND TRUNC("+ScsInscripcionTurnoBean.C_FECHABAJA +")= TRUNC(TO_DATE('" + fecha + "', '" + ClsConstants.DATE_FORMAT_SQL + "')) ";
+							
+			RowsContainer rc = new RowsContainer(); 			
+			
+			if (rc.find(sql)) {
+				
+				Vector<ScsInscripcionTurnoBean> datos = new Vector<ScsInscripcionTurnoBean>();
+				for (int i = 0; i < rc.size(); i++){
+					numInscrip++;
+				}
+	        }
+		
+		} catch (Exception e) {
+			throw new ClsExceptions (e, "Error al ejecutar getInscripcionesTurnoBajaAFecha()");
+		}
+		
+		return numInscrip;
+	}
+	
+	
 }

@@ -37,7 +37,9 @@ import com.siga.beans.CenHistoricoAdm;
 import com.siga.beans.CenHistoricoBean;
 import com.siga.beans.CenPersonaAdm;
 import com.siga.beans.CenTiposSeguroAdm;
+import com.siga.beans.ScsInscripcionGuardiaAdm;
 import com.siga.beans.ScsInscripcionTurnoAdm;
+import com.siga.beans.ScsInscripcionTurnoBean;
 import com.siga.censo.form.DatosColegialesForm;
 import com.siga.censo.form.HistoricoForm;
 import com.siga.general.EjecucionPLs;
@@ -896,6 +898,22 @@ public class DatosColegialesAction extends MasterAction {
 			hashHist.put(CenHistoricoBean.C_IDTIPOCAMBIO, new Integer(
 					ClsConstants.TIPO_CAMBIO_HISTORICO_DATOS_COLEGIALES).toString());
 			hashHist.put(CenHistoricoBean.C_IDHISTORICO, admHistorico.getNuevoID(hash).toString());
+
+			//b. Si el estado que se está borrando no es Ejerciente/No Ejerciente 
+			//	 Se comprueba que no existan inscripciones en turnos/guardias que tengan fecha de baja=fecha del estado que se está borrando
+			Integer idEstadoB=Integer.parseInt((String) camposOcultos.get(5));
+			String fechaEstadoB=(String) camposOcultos.get(2);
+			
+			if((idEstadoB!=ClsConstants.ESTADO_COLEGIAL_SINEJERCER)&&(idEstadoB!=ClsConstants.ESTADO_COLEGIAL_EJERCIENTE)){
+				
+				ScsInscripcionTurnoAdm admInscTurno = new ScsInscripcionTurnoAdm(usr);
+				ScsInscripcionGuardiaAdm admInscGuardia = new ScsInscripcionGuardiaAdm(usr);
+			
+				if((admInscTurno.getInscripcionesTurnoBajaAFecha(idinstitucion,idpersona,fechaEstadoB)>0)||(admInscGuardia.getInscripcionesGuardiaBajaAFecha(idinstitucion,idpersona,fechaEstadoB)>0))
+				{
+					throw new SIGAException (UtilidadesString.getMensajeIdioma(usr,"messages.censo.estadosColegiales.error.inscripciones.baja.fecha"));
+				}	
+			}
 			
 			// iniciando transaccion
 			tx = usr.getTransaction();

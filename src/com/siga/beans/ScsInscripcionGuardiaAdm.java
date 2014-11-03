@@ -1571,5 +1571,41 @@ public class ScsInscripcionGuardiaAdm extends MasterBeanAdministrador {
 		} catch (Exception e) {
 			throw new ClsExceptions (e, "Error al ejecutar getInscripcionesGuardiaPendientesValidar()");
 		}		       
-	}		
+	}	
+	
+	/**
+	 * Obtiene el número de inscripciones de guardias con fecha de baja igual a la pasada como parámetro para la persona pasada como parámetro.
+	 * @param idInstitucion
+	 * @param idPersona
+	 * @param fecha
+	 * @retur número de inscripciones de guardia dadas de baja a la fecha indicada para la persona.
+	 * @throws ClsExceptions
+	 */
+	public Integer getInscripcionesGuardiaBajaAFecha(String idInstitucion, String idPersona, String fecha) throws ClsExceptions{
+		Integer numInscrip=0;
+		
+		try {
+		
+			String sql= " SELECT " + camposSelect +
+					      " FROM " + ScsInscripcionGuardiaBean.T_NOMBRETABLA +
+					     " WHERE "+ScsInscripcionGuardiaBean.C_IDINSTITUCION + " = " + idInstitucion +
+						   " AND "+ScsInscripcionGuardiaBean.C_IDPERSONA +" = " + idPersona + 
+						   " AND TRUNC("+ScsInscripcionGuardiaBean.C_FECHABAJA +")= TRUNC(TO_DATE('" + fecha + "', '" + ClsConstants.DATE_FORMAT_SQL + "')) ";
+			RowsContainer rc = new RowsContainer(); 			
+			
+			if (rc.find(sql)) {
+				
+				Vector<ScsInscripcionGuardiaBean> datos = new Vector<ScsInscripcionGuardiaBean>();
+				for (int i = 0; i < rc.size(); i++){
+					numInscrip++;
+				}
+	        }
+		
+		} catch (Exception e) {
+			throw new ClsExceptions (e, "Error al ejecutar getInscripcionesGuardiaBajaAFecha()");
+		}
+		
+		return numInscrip;
+	}
+	
 }
