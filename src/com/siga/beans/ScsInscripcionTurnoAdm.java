@@ -2212,7 +2212,7 @@ public class ScsInscripcionTurnoAdm extends MasterBeanAdministrador {
 		
 		try {
 		
-			String sql= " SELECT " + camposSelect +
+			String sql= " SELECT COUNT(*) AS INS " + 
 					      " FROM " + ScsInscripcionTurnoBean.T_NOMBRETABLA +
 					     " WHERE "+ScsInscripcionTurnoBean.C_IDINSTITUCION + " = " + idInstitucion +
 						   " AND "+ScsInscripcionTurnoBean.C_IDPERSONA +" = " + idPersona +
@@ -2221,11 +2221,9 @@ public class ScsInscripcionTurnoAdm extends MasterBeanAdministrador {
 			RowsContainer rc = new RowsContainer(); 			
 			
 			if (rc.find(sql)) {
-				
-				Vector<ScsInscripcionTurnoBean> datos = new Vector<ScsInscripcionTurnoBean>();
-				for (int i = 0; i < rc.size(); i++){
-					numInscrip++;
-				}
+				Row fila = (Row) rc.get(0);
+				Hashtable numInsc = fila.getRow();
+				numInscrip=Integer.parseInt(numInsc.get("INS").toString());
 	        }
 		
 		} catch (Exception e) {

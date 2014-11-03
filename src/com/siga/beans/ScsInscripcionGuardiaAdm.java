@@ -1586,19 +1586,18 @@ public class ScsInscripcionGuardiaAdm extends MasterBeanAdministrador {
 		
 		try {
 		
-			String sql= " SELECT " + camposSelect +
+			String sql= " SELECT COUNT(*) AS INS " +
 					      " FROM " + ScsInscripcionGuardiaBean.T_NOMBRETABLA +
 					     " WHERE "+ScsInscripcionGuardiaBean.C_IDINSTITUCION + " = " + idInstitucion +
 						   " AND "+ScsInscripcionGuardiaBean.C_IDPERSONA +" = " + idPersona + 
 						   " AND TRUNC("+ScsInscripcionGuardiaBean.C_FECHABAJA +")= TRUNC(TO_DATE('" + fecha + "', '" + ClsConstants.DATE_FORMAT_SQL + "')) ";
+			
 			RowsContainer rc = new RowsContainer(); 			
 			
 			if (rc.find(sql)) {
-				
-				Vector<ScsInscripcionGuardiaBean> datos = new Vector<ScsInscripcionGuardiaBean>();
-				for (int i = 0; i < rc.size(); i++){
-					numInscrip++;
-				}
+				Row fila = (Row) rc.get(0);
+				Hashtable numInsc = fila.getRow();
+				numInscrip=Integer.parseInt(numInsc.get("INS").toString());
 	        }
 		
 		} catch (Exception e) {
