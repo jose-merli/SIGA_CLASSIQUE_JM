@@ -966,7 +966,7 @@ public class Facturacion {
     			tx2.begin();
 
     			// C_IDESTADOCONFIRMACION(CONFIRM_FINALIZADAERRORES),C_FECHACONFIRMACION(""),C_FECHAPREVISTACONFIRM(sysdate),C_ARCHIVARFACT(0 ó 1)};
-    			UtilidadesHash.set(hashNew, FacFacturacionProgramadaBean.C_IDESTADOCONFIRMACION, FacEstadoConfirmFactBean.CONFIRM_PROGRAMADA);
+    			UtilidadesHash.set(hashNew, FacFacturacionProgramadaBean.C_IDESTADOCONFIRMACION, FacEstadoConfirmFactBean.ERROR_CONFIRMACION);
     			UtilidadesHash.set(hashNew, FacFacturacionProgramadaBean.C_FECHAPREVISTACONFIRM, "sysdate");
     			UtilidadesHash.set(hashNew, FacFacturacionProgramadaBean.C_FECHACONFIRMACION, "");
     			UtilidadesHash.set(hashNew,FacFacturacionProgramadaBean.C_LOGERROR,nombreFichero);
@@ -2307,19 +2307,12 @@ public class Facturacion {
 		FacFacturacionProgramadaAdm admFacturacionProgramada = new FacFacturacionProgramadaAdm(this.usrbean);		
 		
 		String [] claves = {FacFacturacionProgramadaBean.C_IDINSTITUCION, FacFacturacionProgramadaBean.C_IDSERIEFACTURACION, FacFacturacionProgramadaBean.C_IDPROGRAMACION};
-		
+		String nombreFichero = "GENERACION_" + idSerieFacturacion + "_" + idProgramacion;    
 		Hashtable<String,Object> hashEstado = new Hashtable<String,Object>();
 		UtilidadesHash.set(hashEstado, FacFacturacionProgramadaBean.C_IDINSTITUCION, idInstitucion);
     	UtilidadesHash.set(hashEstado, FacFacturacionProgramadaBean.C_IDPROGRAMACION, idProgramacion);
     	UtilidadesHash.set(hashEstado, FacFacturacionProgramadaBean.C_IDSERIEFACTURACION, idSerieFacturacion);
     	
-		ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
-		String sRutaJava = rp.returnProperty("facturacion.directorioPrevisionesJava");
-		String sRutaFisicaJava = rp.returnProperty("facturacion.directorioFisicoPrevisionesJava");
-		sRutaJava = sRutaFisicaJava + File.separator + sRutaJava + File.separator + idInstitucion;
-		
-		String nombreFichero = "GENERACION_" + idSerieFacturacion + "_" + idProgramacion;    	
-		
 		try {			
 			ClsLogging.writeFileLog("### Procesando GENERACION (Serie:" + idSerieFacturacion + "; IdProgramacion:" + idProgramacion + ")", 7);
 			
@@ -2358,76 +2351,40 @@ public class Facturacion {
 				tx.commit();
 				ClsLogging.writeFileLog("### Fin GENERACION (Serie:" + idSerieFacturacion + "; IdProgramacion:" + idProgramacion + "), finalizada correctamente",7);
 				
+				/** ACTUALIZAMOS ESTADO A GENERADA **/
+				ClsLogging.writeFileLog("### CAMBIANDO A ESTADO GENERADA ",7);
+				String [] campos = {FacFacturacionProgramadaBean.C_IDESTADOCONFIRMACION,FacFacturacionProgramadaBean.C_LOGERROR};
+				UtilidadesHash.set(hashEstado,FacFacturacionProgramadaBean.C_IDESTADOCONFIRMACION, FacEstadoConfirmFactBean.GENERADA); //Si todo finaliza correctamente, se pasa a estado GENERADO
+				UtilidadesHash.setForCompare(hashEstado,FacFacturacionProgramadaBean.C_LOGERROR,"");				
+				tx.begin();
+				if (!admFacturacionProgramada.updateDirect(hashEstado,claves,campos)) {
+			        throw new ClsExceptions("### Error al actualizar el estado de la GENERACION. finalizada.");
+			    }							
+				tx.commit();				
+				
+				
+				/****** INICIAMOS LA GENERACION DEL INFORME *******/
 				ClsLogging.writeFileLog("### Inicio datosInforme GENERACION",7);
-				
-				// Consulto los datos de la prevision y genero el fichero				
-				Hashtable<String,Object> hashWhere = new Hashtable<String,Object>();				
-				UtilidadesHash.set(hashWhere, AdmInformeBean.C_IDTIPOINFORME, "PREV");
-				UtilidadesHash.set(hashWhere, AdmInformeBean.C_IDINSTITUCION, "0");							
-				
-				AdmInformeAdm admInforme = new AdmInformeAdm(this.usrbean);
-				Vector<?> vInforme = admInforme.select(hashWhere);
+				String nameFile = generarInformeGeneracion(idInstitucion, idSerieFacturacion, idProgramacion);
+				// Si la previsión está vacía
+				if (nameFile == null || nameFile.length() == 0) {
+					ClsLogging.writeFileLog("### Inicio creación fichero log GENERACION sin datos", 7);
+					controlarEstadoErrorGeneracion(tx, admFacturacionProgramada, claves, hashEstado, nombreFichero);
+					ClsLogging.writeFileLog("### Fin creación fichero log GENERACION sin datos", 7);
 
-				if (vInforme!=null){
-					for (int dv = 0; dv < vInforme.size(); dv++){
-					
-						AdmInformeBean beanInforme = (AdmInformeBean) vInforme.get(dv);
-						
-						ArrayList<HashMap<String, String>> filtrosInforme = new ArrayList<HashMap<String, String>>();
-						
-						HashMap<String, String> filtro = new HashMap<String, String>();
-						filtro.put(AdmTipoFiltroInformeBean.C_NOMBRECAMPO, "IDIOMA");
-						filtro.put("VALOR", this.usrbean.getLanguageInstitucion().toString());
-						filtrosInforme.add(filtro);	
-						
-						filtro = new HashMap<String, String>();
-						filtro.put(AdmTipoFiltroInformeBean.C_NOMBRECAMPO, "IDSERIEFACTURACION");
-						filtro.put("VALOR", idSerieFacturacion);
-						filtrosInforme.add(filtro);	
-						
-						filtro = new HashMap<String, String>();
-						filtro.put(AdmTipoFiltroInformeBean.C_NOMBRECAMPO, "IDPROGRAMACION"); 
-						filtro.put("VALOR", idProgramacion);
-						filtrosInforme.add(filtro);	
-						
-						filtro = new HashMap<String, String>();
-						filtro.put(AdmTipoFiltroInformeBean.C_NOMBRECAMPO, "IDINSTITUCION");
-						filtro.put("VALOR", idInstitucion);
-						filtrosInforme.add(filtro);
-						
-						beanInforme.setNombreSalida(nombreFichero) ;
-						
-						ClsLogging.writeFileLog("### Inicio generación fichero excel GENERACION",7);
-						
-						ArrayList<File> fichPrev= InformePersonalizable.generarInformeXLS(beanInforme, filtrosInforme,sRutaJava, this.usrbean);
-						
-						ClsLogging.writeFileLog("### Fin generación fichero excel GENERACION",7);
-		
-						// CR7 - Al eliminar las previsiones se se elimina la opcion de rollback
-						
-						ClsLogging.writeFileLog("### Borrado de datos insertados de forma temporal para la idProgramacion "+idProgramacion,7);
-						
-						//Si la previsión está vacía
-						if(fichPrev==null || fichPrev.size()==0) {
-							ClsLogging.writeFileLog("### Inicio creación fichero log GENERACION sin datos",7);
-							controlarEstadoErrorGeneracion(tx,admFacturacionProgramada,claves,hashEstado,nombreFichero);	
-							ClsLogging.writeFileLog("### Fin creación fichero log GENERACION sin datos",7);
-							
-						} else {							
-							ClsLogging.writeFileLog("### GENERACION finalizada correctamente con datos ",7);
-							String [] campos = {FacFacturacionProgramadaBean.C_IDESTADOCONFIRMACION,FacFacturacionProgramadaBean.C_NOMBREFICHERO,FacFacturacionProgramadaBean.C_LOGERROR};
-							UtilidadesHash.set(hashEstado,FacFacturacionProgramadaBean.C_IDESTADOCONFIRMACION, FacEstadoConfirmFactBean.GENERADA); //Si todo finaliza correctamente, se pasa a estado GENERADO
-							UtilidadesHash.set(hashEstado,FacFacturacionProgramadaBean.C_NOMBREFICHERO,fichPrev.get(0).getName());
-							UtilidadesHash.setForCompare(hashEstado,FacFacturacionProgramadaBean.C_LOGERROR,"");
-							
-							tx.begin();
-							if (!admFacturacionProgramada.updateDirect(hashEstado,claves,campos)) {
-						        throw new ClsExceptions("### Error al actualizar el estado de la GENERACION. finalizada.");
-						    }							
-							tx.commit();
-						}	
-					}	
+				} else {
+					ClsLogging.writeFileLog("### GENERACION finalizada correctamente con datos ", 7);
+					String[] camposInforme = {FacFacturacionProgramadaBean.C_NOMBREFICHERO, FacFacturacionProgramadaBean.C_LOGERROR};
+					UtilidadesHash.set(hashEstado, FacFacturacionProgramadaBean.C_NOMBREFICHERO, nameFile);
+					UtilidadesHash.setForCompare(hashEstado, FacFacturacionProgramadaBean.C_LOGERROR, "");
+
+					tx.begin();
+					if (!admFacturacionProgramada.updateDirect(hashEstado, claves, camposInforme)) {
+						throw new ClsExceptions("### Error al actualizar el estado de la GENERACION. finalizada.");
+					}
+					tx.commit();
 				}
+
 			}
 			
 		}catch (Exception e) {
@@ -2443,6 +2400,71 @@ public class Facturacion {
 			}	
 		}
 	}
+	
+	public String generarInformeGeneracion(String idInstitucion, String idSerieFacturacion, String idProgramacion) throws Exception {
+		String nameFile = null;		
+		ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+		String sRutaJava = rp.returnProperty("facturacion.directorioPrevisionesJava");
+		String sRutaFisicaJava = rp.returnProperty("facturacion.directorioFisicoPrevisionesJava");
+		sRutaJava = sRutaFisicaJava + File.separator + sRutaJava + File.separator + idInstitucion;		
+		String nombreFichero = "GENERACION_" + idSerieFacturacion + "_" + idProgramacion;    
+		
+		// Consulto los datos de la prevision y genero el fichero
+		Hashtable<String, Object> hashWhere = new Hashtable<String, Object>();
+		UtilidadesHash.set(hashWhere, AdmInformeBean.C_IDTIPOINFORME, "PREV");
+		UtilidadesHash.set(hashWhere, AdmInformeBean.C_IDINSTITUCION, "0");
+
+		try {
+			AdmInformeAdm admInforme = new AdmInformeAdm(this.usrbean);
+			Vector<?> vInforme = admInforme.select(hashWhere);
+
+			if (vInforme != null) {
+				for (int dv = 0; dv < vInforme.size(); dv++) {
+
+					AdmInformeBean beanInforme = (AdmInformeBean) vInforme.get(dv);
+
+					ArrayList<HashMap<String, String>> filtrosInforme = new ArrayList<HashMap<String, String>>();
+
+					HashMap<String, String> filtro = new HashMap<String, String>();
+					filtro.put(AdmTipoFiltroInformeBean.C_NOMBRECAMPO, "IDIOMA");
+					filtro.put("VALOR", this.usrbean.getLanguageInstitucion().toString());
+					filtrosInforme.add(filtro);
+
+					filtro = new HashMap<String, String>();
+					filtro.put(AdmTipoFiltroInformeBean.C_NOMBRECAMPO, "IDSERIEFACTURACION");
+					filtro.put("VALOR", idSerieFacturacion);
+					filtrosInforme.add(filtro);
+
+					filtro = new HashMap<String, String>();
+					filtro.put(AdmTipoFiltroInformeBean.C_NOMBRECAMPO, "IDPROGRAMACION");
+					filtro.put("VALOR", idProgramacion);
+					filtrosInforme.add(filtro);
+
+					filtro = new HashMap<String, String>();
+					filtro.put(AdmTipoFiltroInformeBean.C_NOMBRECAMPO, "IDINSTITUCION");
+					filtro.put("VALOR", idInstitucion);
+					filtrosInforme.add(filtro);
+
+					beanInforme.setNombreSalida(nombreFichero);
+
+					ClsLogging.writeFileLog("### Inicio generación fichero excel GENERACION", 7);
+
+					ArrayList<File> fichPrev = InformePersonalizable.generarInformeXLS(beanInforme, filtrosInforme, sRutaJava, this.usrbean);
+
+					ClsLogging.writeFileLog("### Fin generación fichero excel GENERACION", 7);
+
+					if (fichPrev != null && fichPrev.size() > 0) {
+						nameFile = fichPrev.get(0).getName();
+					}
+				}
+			}
+
+		} catch (Exception e) {
+			throw e;
+		}
+		
+		return nameFile;
+	}
 
 	/**
 	 * @param sRutaJava 
@@ -2453,7 +2475,7 @@ public class Facturacion {
 	private void controlarEstadoErrorGeneracion(UserTransaction tx, FacFacturacionProgramadaAdm admProg,String [] claves,Hashtable<String,Object> hashEstado, String nombreFichero) throws Exception {
 		try {
 			String [] campos = {FacFacturacionProgramadaBean.C_IDESTADOCONFIRMACION,FacFacturacionProgramadaBean.C_FECHAPREVISTAGENERACION,FacFacturacionProgramadaBean.C_LOGERROR};
-			UtilidadesHash.set(hashEstado,FacFacturacionProgramadaBean.C_IDESTADOCONFIRMACION, FacEstadoConfirmFactBean.GENERACION_PROGRAMADA); //ESTADO ERROR SERIA GENERACION PROGRAMADA CON LOG
+			UtilidadesHash.set(hashEstado,FacFacturacionProgramadaBean.C_IDESTADOCONFIRMACION, FacEstadoConfirmFactBean.ERROR_GENERACION); //ESTADO ERROR GENERAION 
 			UtilidadesHash.set(hashEstado,FacFacturacionProgramadaBean.C_FECHAPREVISTAGENERACION, GstDate.dateSumaDiasJava(GstDate.getHoyJava(),1)); //PONEMOS LA FECHA DE PREVISION GENERACION UN DIA MAS
 			UtilidadesHash.set(hashEstado,FacFacturacionProgramadaBean.C_LOGERROR,"LOG_FAC_" + nombreFichero + ".log.xls");
 			

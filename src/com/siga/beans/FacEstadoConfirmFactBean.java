@@ -43,6 +43,8 @@ public class FacEstadoConfirmFactBean extends MasterBean{
 	static public final Integer EJECUTANDO_CONFIRMACION = new Integer(17);
 	static public final Integer GENERACION_PROGRAMADA = new Integer(18);  
 	static public final Integer EJECUTANDO_GENERACION = new Integer(19); 
+	static public final Integer ERROR_GENERACION = new Integer(20);  
+	static public final Integer ERROR_CONFIRMACION = new Integer(21); 	
 	
 	/* Nombre tabla */
 	static public String T_NOMBRETABLA = "FAC_ESTADOCONFIRMFACT";

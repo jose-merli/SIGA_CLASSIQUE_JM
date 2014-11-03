@@ -46,6 +46,7 @@ import com.siga.beans.FacSerieFacturacionAdm;
 import com.siga.beans.FacSerieFacturacionBean;
 import com.siga.beans.GenParametrosAdm;
 import com.siga.certificados.Plantilla;
+import com.siga.facturacion.Facturacion;
 import com.siga.facturacion.form.ConfirmarFacturacionForm;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
@@ -1359,7 +1360,24 @@ public class ConfirmarFacturacionAction extends MasterAction{
 			//Control de que no exista el fichero a descargar:
 			File tmp = new File(sRutaJava);
 			if(tmp==null || !tmp.exists()){
-				throw new SIGAException("messages.general.error.ficheroNoExiste"); 
+				Facturacion facturacion = new Facturacion(user);
+				nombreFichero = facturacion.generarInformeGeneracion(idInstitucion, idSerieFacturacion, idProgramacion);
+				if (nombreFichero == null ||nombreFichero.length() == 0) {
+					throw new SIGAException("messages.general.error.ficheroNoExiste"); 
+				} else {
+					// GUARDAMOS EL NOMBRE EN BBDD PARA NO VOLVER A GENERAR EL INFORME DE ESTA FACTURA
+					FacFacturacionProgramadaAdm adm = new FacFacturacionProgramadaAdm(this.getUserBean(request));
+					Hashtable<String,Object> hashEstado = new Hashtable<String,Object>();
+					UtilidadesHash.set(hashEstado, FacFacturacionProgramadaBean.C_IDINSTITUCION, idInstitucion);
+			    	UtilidadesHash.set(hashEstado, FacFacturacionProgramadaBean.C_IDPROGRAMACION, idProgramacion);
+			    	UtilidadesHash.set(hashEstado, FacFacturacionProgramadaBean.C_IDSERIEFACTURACION, idSerieFacturacion);
+					String [] claves = {FacFacturacionProgramadaBean.C_IDINSTITUCION, FacFacturacionProgramadaBean.C_IDSERIEFACTURACION, FacFacturacionProgramadaBean.C_IDPROGRAMACION};
+			    	String[] camposInforme = {FacFacturacionProgramadaBean.C_NOMBREFICHERO};
+					UtilidadesHash.set(hashEstado, FacFacturacionProgramadaBean.C_NOMBREFICHERO, nombreFichero);
+					if (!adm.updateDirect(hashEstado, claves, camposInforme)) {
+						throw new Exception("Error al actualizar el registro en FacFacturacionProgramadaAdm");
+					}					
+				}
 			}
 			
 			request.setAttribute("nombreFichero", nombreFichero);

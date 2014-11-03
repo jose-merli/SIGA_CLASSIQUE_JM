@@ -410,13 +410,25 @@ public class FacFacturacionProgramadaAdm extends MasterBeanAdministrador {
 			
 			// confirmacion
 			if (bean.getFechaPrevistaConfirmacion()!=null && !bean.getFechaPrevistaConfirmacion().trim().equals("")) {
-				if(idTratamientoActual.intValue() == FacEstadoConfirmFactBean.GENERADA.intValue()){
+				// Se ha programado la confirmacion
+				if(idTratamientoActual.intValue() == FacEstadoConfirmFactBean.GENERADA.intValue() || idTratamientoActual.intValue() == FacEstadoConfirmFactBean.ERROR_CONFIRMACION.intValue()){
 					bean.setIdEstadoConfirmacion(FacEstadoConfirmFactBean.CONFIRM_PROGRAMADA);
+				
+				}else if(idTratamientoActual.intValue() == FacEstadoConfirmFactBean.ERROR_GENERACION.intValue()){
+					//Pasamos de estado error a estado generado porgramacion
+					bean.setIdEstadoConfirmacion(FacEstadoConfirmFactBean.GENERACION_PROGRAMADA);
+				
 				}else{
 					bean.setIdEstadoConfirmacion(idTratamientoActual);
 				}
 			} else {
-				bean.setIdEstadoConfirmacion(idTratamientoActual);
+				//No hay fecha programada de confirmacion.
+				if(idTratamientoActual.intValue() == FacEstadoConfirmFactBean.ERROR_GENERACION.intValue()){
+					//Pasamos de estado error a estado generado porgramacion
+					bean.setIdEstadoConfirmacion(FacEstadoConfirmFactBean.GENERACION_PROGRAMADA);
+				}else{
+					bean.setIdEstadoConfirmacion(idTratamientoActual);
+				}					
 			}
 			// PDF
 			if (bean.getFechaPrevistaConfirmacion()!=null && !bean.getFechaPrevistaConfirmacion().trim().equals("")) {

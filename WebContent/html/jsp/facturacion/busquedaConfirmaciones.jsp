@@ -190,7 +190,7 @@
 			sub();	
 			if (validateConfirmarFacturacion1Form(document.confirmarFacturacionForm)){
 				
-				if((jQuery("#estadoConfirmacion").val() != 18 && jQuery("#estadoConfirmacion").val() != 19) && (jQuery("#fechaDesdeGeneracion").val() == "")){
+				if((jQuery("#estadoConfirmacion").val() != 18 && jQuery("#estadoConfirmacion").val() != 19 && jQuery("#estadoConfirmacion").val() != 20) && (jQuery("#fechaDesdeGeneracion").val() == "")){
 					alert("Es obligatorio rellenar la Fecha Real de Generacion Desde");
 					fin();
 					return false;
@@ -216,7 +216,7 @@
 		}		
 
 		function accionEstado() {
-			if(jQuery("#estadoConfirmacion").val() == 18 || jQuery("#estadoConfirmacion").val() == 19){
+			if(jQuery("#estadoConfirmacion").val() == 18 || jQuery("#estadoConfirmacion").val() == 19|| jQuery("#estadoConfirmacion").val() == 20){
 				jQuery('#fechaRealGeneracionConAsterisco').hide();
 				jQuery('#fechaRealGeneracionSinAsterisco').show();
 				jQuery("#fechaDesdeGeneracion").val(null);

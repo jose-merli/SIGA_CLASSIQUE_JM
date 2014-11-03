@@ -433,14 +433,8 @@
 								//TODOS LOS ESTADOS
 								elems[0]=new FilaExtElement("consultar","consultarfactura",SIGAConstants.ACCESS_READ);
 								
-								if (idEstadoConfirmacion.equals(FacEstadoConfirmFactBean.GENERACION_PROGRAMADA) || idEstadoConfirmacion.equals(FacEstadoConfirmFactBean.GENERADA) || idEstadoConfirmacion.equals(FacEstadoConfirmFactBean.CONFIRM_PROGRAMADA)) {									
+								if (idEstadoConfirmacion.equals(FacEstadoConfirmFactBean.GENERACION_PROGRAMADA) || idEstadoConfirmacion.equals(FacEstadoConfirmFactBean.GENERADA) || idEstadoConfirmacion.equals(FacEstadoConfirmFactBean.CONFIRM_PROGRAMADA) || idEstadoConfirmacion.equals(FacEstadoConfirmFactBean.ERROR_GENERACION) || idEstadoConfirmacion.equals(FacEstadoConfirmFactBean.ERROR_CONFIRMACION)) {									
 									elems[1]=new FilaExtElement("editar",  "editarFacturacion", SIGAConstants.ACCESS_READ);
-								}
-								
-								//ESTADO DE GENERACION PROGRAMADA (LOG ERROR SI HUBIERA ALGO FALLIDO)
-								if (idEstadoConfirmacion.equals(FacEstadoConfirmFactBean.GENERACION_PROGRAMADA)) {
-									if(logError != null && !logError.equals("0"))
-										elems[2]=new FilaExtElement("descargaLog","descargaLog",SIGAConstants.ACCESS_READ); 
 								}
 								
 								//ESTADO GENERADA
@@ -448,11 +442,14 @@
 									elems[2]=new FilaExtElement("download","descargarInformeGeneracion",SIGAConstants.ACCESS_READ); 
 								}			
 								
+								//ESTADO DE ERROR CON LOG ERROR 
+								if (idEstadoConfirmacion.equals(FacEstadoConfirmFactBean.ERROR_GENERACION) || idEstadoConfirmacion.equals(FacEstadoConfirmFactBean.ERROR_CONFIRMACION)) {
+									elems[2]=new FilaExtElement("descargaLog","descargaLog",SIGAConstants.ACCESS_READ); 
+								}							
+								
 								//ESTADO CONFIRMACION PROGRAMADA (PUEDE TENER INFORME GENERACION Y LOGERROR DE CONFIRMACION)
 								if (idEstadoConfirmacion.equals(FacEstadoConfirmFactBean.CONFIRM_PROGRAMADA)) {									
-									elems[2]=new FilaExtElement("download","descargarInformeGeneracion",SIGAConstants.ACCESS_READ);
-									if(logError != null && !logError.equals("0"))
-										elems[3]=new FilaExtElement("descargaLog","descargaLog",SIGAConstants.ACCESS_READ);								
+									elems[2]=new FilaExtElement("download","descargarInformeGeneracion",SIGAConstants.ACCESS_READ);					
 								}	
 								
 								if (idEstadoConfirmacion.equals(FacEstadoConfirmFactBean.GENERACION_PROGRAMADA) || idEstadoConfirmacion.equals(FacEstadoConfirmFactBean.GENERADA) || idEstadoConfirmacion.equals(FacEstadoConfirmFactBean.CONFIRM_PROGRAMADA)) {									
