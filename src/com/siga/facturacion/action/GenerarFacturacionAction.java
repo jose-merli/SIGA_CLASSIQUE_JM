@@ -117,8 +117,7 @@ public class GenerarFacturacionAction extends MasterAction{
 	}
 
 	/** 
-	 * Notas Jorge PT 118:
-	 * - Genera facturacion
+	 * Notas Jorge PT 118: Para esta version ya no se utiliza generar facturacion
 	 * 
 	 * 1. Bloquea facturacion programada
 	 * 2. Genera facturacion

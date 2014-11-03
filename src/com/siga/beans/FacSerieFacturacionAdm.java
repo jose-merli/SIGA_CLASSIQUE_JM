@@ -174,8 +174,8 @@ public class FacSerieFacturacionAdm extends MasterBeanAdministrador {
 		return campos;
 	}
 	
-	public Vector selectTabla(String tipoProducto, String tipoServicio, String grupoClienteFijo, String grupoClientesDinamico, String where){
-		Vector v = new Vector();
+	public Vector<Hashtable<String, Object>> selectTabla(String tipoProducto, String tipoServicio, String grupoClienteFijo, String grupoClientesDinamico, String where){
+		Vector<Hashtable<String, Object>> v = new Vector<Hashtable<String, Object>>();
 		RowsContainer rc = null;
 		try{
 			rc = new RowsContainer(); 
@@ -186,7 +186,7 @@ public class FacSerieFacturacionAdm extends MasterBeanAdministrador {
 			if (rc.queryNLS(sql)) {
 				for (int i = 0; i < rc.size(); i++)	{
 					Row fila = (Row) rc.get(i);
-					Hashtable registro = (Hashtable)fila.getRow(); 
+					Hashtable<String, Object> registro = (Hashtable<String, Object>)fila.getRow(); 
 					if (registro != null) 
 						v.add(registro);
 				}
@@ -198,8 +198,8 @@ public class FacSerieFacturacionAdm extends MasterBeanAdministrador {
 		return v;
 	}
 	
-	public Vector selectTabla_2(String where){
-		Vector v = new Vector();
+	public Vector<Hashtable<String, Object>> selectTabla_2(String where){
+		Vector<Hashtable<String, Object>> v = new Vector<Hashtable<String, Object>>();
 		RowsContainer rc = null;
 		try{
 			rc = new RowsContainer(); 
@@ -210,7 +210,7 @@ public class FacSerieFacturacionAdm extends MasterBeanAdministrador {
 			if (rc.query(sql)) {
 				for (int i = 0; i < rc.size(); i++)	{
 					Row fila = (Row) rc.get(i);
-					Hashtable registro = (Hashtable)fila.getRow(); 
+					Hashtable<String, Object> registro = (Hashtable<String, Object>)fila.getRow(); 
 					if (registro != null) 
 						v.add(registro);
 				}
@@ -222,14 +222,14 @@ public class FacSerieFacturacionAdm extends MasterBeanAdministrador {
 		return v;
 	}
 	
-	public AdmContadorBean obtenerContador(Hashtable miHash) throws ClsExceptions {
+	public AdmContadorBean obtenerContador(Hashtable<String, Comparable> miHash) throws ClsExceptions {
 		AdmContadorBean salida = null;
 		Vector v = null;
 		Vector v2 = null;
 		v = this.selectByPK(miHash);
 		if (v!=null && v.size()>0) {
 			FacSerieFacturacionBean b = (FacSerieFacturacionBean) v.get(0);
-			Hashtable miHash2 = new Hashtable();
+			Hashtable<String, Comparable> miHash2 = new Hashtable<String, Comparable>();
 			miHash2.put(AdmContadorBean.C_IDINSTITUCION,b.getIdInstitucion());
 			miHash2.put(AdmContadorBean.C_IDCONTADOR,b.getIdContador());
 			AdmContadorAdm admC = new AdmContadorAdm(this.usrbean);
@@ -253,7 +253,7 @@ public class FacSerieFacturacionAdm extends MasterBeanAdministrador {
     public FacSerieFacturacionBean obtenerSerieGenerica(String idInstitucion) throws ClsExceptions {
         FacSerieFacturacionBean salida=null;
     	try {
-    		Hashtable ht = new Hashtable();
+    		Hashtable<String, String> ht = new Hashtable<String, String>();
     		ht.put(FacSerieFacturacionBean.C_IDINSTITUCION,idInstitucion);
     		ht.put(FacSerieFacturacionBean.C_TIPOSERIE,"G");
     		
@@ -452,8 +452,8 @@ public class FacSerieFacturacionAdm extends MasterBeanAdministrador {
 	 * @return  Vector - Filas seleccionadas  
 	 * @exception  ClsExceptions, SIGAException
 	 */
-	public Vector obtenerFormasPago (String idInstitucion, String idSerieFacturacion) throws ClsExceptions, SIGAException {
-		   Vector datos=new Vector();
+	public Vector<Row> obtenerFormasPago (String idInstitucion, String idSerieFacturacion) throws ClsExceptions, SIGAException {
+		   Vector<Row> datos=new Vector<Row>();
 	       try {
 	            RowsContainer rc = new RowsContainer(); 
 	            String sql ="SELECT " +
@@ -502,40 +502,74 @@ public class FacSerieFacturacionAdm extends MasterBeanAdministrador {
 	 * @return  Vector - Filas seleccionadas  
 	 * @exception  ClsExceptions, SIGAException
 	 */
-	public Vector obtenerIdPago (String idInstitucion, String idSerieFacturacion) throws ClsExceptions, SIGAException {
-		   Vector datos=new Vector();
-	       try {
-	            RowsContainer rc = new RowsContainer(); 
-	            String sql ="SELECT " +
-		    			FacSerieFacturacionBean.T_NOMBRETABLA + "." + FacSerieFacturacionBean.C_IDINSTITUCION  + "," +
-		    			FacSerieFacturacionBean.T_NOMBRETABLA + "." + FacSerieFacturacionBean.C_IDSERIEFACTURACION + "," +
-		    			FacFormaPagoSerieBean.T_NOMBRETABLA + "." + FacFormaPagoSerieBean.C_IDFORMAPAGO + 				
-							" FROM " + FacSerieFacturacionBean.T_NOMBRETABLA + ", " + FacFormaPagoSerieBean.T_NOMBRETABLA + 
-							" WHERE " +
-							FacSerieFacturacionBean.T_NOMBRETABLA +"."+ FacSerieFacturacionBean.C_IDINSTITUCION + "=" + idInstitucion +
-							" AND " +
-							FacSerieFacturacionBean.T_NOMBRETABLA +"."+ FacSerieFacturacionBean.C_IDSERIEFACTURACION + "=" + idSerieFacturacion +
-	            			" AND " +							
-	            			FacSerieFacturacionBean.T_NOMBRETABLA +"."+ FacSerieFacturacionBean.C_IDINSTITUCION + "=" + FacFormaPagoSerieBean.T_NOMBRETABLA + "." + PysFormaPagoProductoBean.C_IDINSTITUCION + "(+)" +
-							" AND " +
-							FacSerieFacturacionBean.T_NOMBRETABLA +"."+ FacSerieFacturacionBean.C_IDSERIEFACTURACION + "=" + FacFormaPagoSerieBean.T_NOMBRETABLA + "." + FacFormaPagoSerieBean.C_IDSERIEFACTURACION  + "(+)";
-					
-							
-	            if (rc.find(sql)) {
-	               for (int i = 0; i < rc.size(); i++){
-	                  Row fila = (Row) rc.get(i);
-	                  datos.add(fila);
-	               }
-	            } 
-	       }
-		   catch (Exception e) {
-	       		if (e instanceof SIGAException){
-	       			throw (SIGAException)e;
-	       		}
-	       		else{
-	       			throw new ClsExceptions(e,"Error al obtener las formas de pago relacionadas.");
-	       		}	
-		   }
-	       return datos;                        
-	    }		
+	public Vector<Row> obtenerIdPago (String idInstitucion, String idSerieFacturacion) throws ClsExceptions, SIGAException {
+	   Vector<Row> datos=new Vector<Row>();
+       try {
+            RowsContainer rc = new RowsContainer(); 
+            String sql ="SELECT " +
+	    			FacSerieFacturacionBean.T_NOMBRETABLA + "." + FacSerieFacturacionBean.C_IDINSTITUCION  + "," +
+	    			FacSerieFacturacionBean.T_NOMBRETABLA + "." + FacSerieFacturacionBean.C_IDSERIEFACTURACION + "," +
+	    			FacFormaPagoSerieBean.T_NOMBRETABLA + "." + FacFormaPagoSerieBean.C_IDFORMAPAGO + 				
+						" FROM " + FacSerieFacturacionBean.T_NOMBRETABLA + ", " + FacFormaPagoSerieBean.T_NOMBRETABLA + 
+						" WHERE " +
+						FacSerieFacturacionBean.T_NOMBRETABLA +"."+ FacSerieFacturacionBean.C_IDINSTITUCION + "=" + idInstitucion +
+						" AND " +
+						FacSerieFacturacionBean.T_NOMBRETABLA +"."+ FacSerieFacturacionBean.C_IDSERIEFACTURACION + "=" + idSerieFacturacion +
+            			" AND " +							
+            			FacSerieFacturacionBean.T_NOMBRETABLA +"."+ FacSerieFacturacionBean.C_IDINSTITUCION + "=" + FacFormaPagoSerieBean.T_NOMBRETABLA + "." + PysFormaPagoProductoBean.C_IDINSTITUCION + "(+)" +
+						" AND " +
+						FacSerieFacturacionBean.T_NOMBRETABLA +"."+ FacSerieFacturacionBean.C_IDSERIEFACTURACION + "=" + FacFormaPagoSerieBean.T_NOMBRETABLA + "." + FacFormaPagoSerieBean.C_IDSERIEFACTURACION  + "(+)";
+				
+						
+            if (rc.find(sql)) {
+               for (int i = 0; i < rc.size(); i++){
+                  Row fila = (Row) rc.get(i);
+                  datos.add(fila);
+               }
+            } 
+       }
+	   catch (Exception e) {
+       		if (e instanceof SIGAException){
+       			throw (SIGAException)e;
+       		}
+       		else{
+       			throw new ClsExceptions(e,"Error al obtener las formas de pago relacionadas.");
+       		}	
+	   }
+       return datos;                        
+    }
+	
+	/**
+	 * Obtiene la poblacion de la serie de facturacion
+	 * @param idInstitucion
+	 * @param idSerieFacturacion
+	 * @return
+	 * @throws ClsExceptions
+	 */
+	public Vector<Hashtable<String,Object>> obtenerPoblacionSerieFacturacion(String idInstitucion, String idSerieFacturacion) throws ClsExceptions {
+		Vector<Hashtable<String,Object>> resultado = new Vector<Hashtable<String,Object>>();
+		try{			
+			String sql = "SELECT NVL(F_SIGA_CALCULONCOLEGIADO(PoblSF.IDINSTITUCION, PoblSF.IDPERSONA), ' ') AS NCOLEGIADO, " +
+							CenPersonaBean.T_NOMBRETABLA + "." + CenPersonaBean.C_NOMBRE + " AS NOMBRE, " +
+							CenPersonaBean.T_NOMBRETABLA + "." + CenPersonaBean.C_APELLIDOS1 + " AS APELLIDOS1, " +
+							CenPersonaBean.T_NOMBRETABLA + "." + CenPersonaBean.C_APELLIDOS2 + " AS APELLIDOS2 " + 
+						" FROM " + CenPersonaBean.T_NOMBRETABLA + ", " +
+							" TABLE(PKG_SIGA_FACTURACION.OBTENCIONPOBLACIONCLIENTES(" + idInstitucion + ", " + idSerieFacturacion + ")) PoblSF " +
+						" WHERE " + CenPersonaBean.T_NOMBRETABLA + "." + CenPersonaBean.C_IDPERSONA + " = PoblSF.IDPERSONA "+
+						" ORDER BY NCOLEGIADO, APELLIDOS1, APELLIDOS2, NOMBRE";
+			
+			RowsContainer rc = new RowsContainer();
+			if (rc.query(sql)) {
+				for (int i = 0; i < rc.size(); i++)	{
+					Row fila = (Row) rc.get(i);
+					resultado.add(fila.getRow()); 
+				}
+			}
+		
+		} catch(ClsExceptions e){
+			throw new ClsExceptions (e, "Error al obtener la población de la serie de facturación.");
+		}
+		
+		return resultado;
+	}	
 }

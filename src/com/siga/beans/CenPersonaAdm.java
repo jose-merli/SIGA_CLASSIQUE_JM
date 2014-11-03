@@ -772,38 +772,6 @@ public class CenPersonaAdm extends MasterBeanAdmVisible {
 		return v;
 	}
 	
-	public Vector selectTabla1(String where) throws ClsExceptions, SIGAException {
-		Vector v = new Vector();
-		RowsContainer rc = null;
-		try{
-			rc = new RowsContainer(); 
-			String sql = "Select Nvl(f_siga_calculoncolegiado(GEN_CLIENTESTEMPORAL.IDINSTITUCION ,"+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_IDPERSONA+") , ' ') NCOLEGIADO, "+
-	         					 CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_NOMBRE+" NOMBRE, "+
-								 CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_APELLIDOS1+" APELLIDOS1, "+
-								 CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_APELLIDOS2+" APELLIDOS2 ";
-			sql += " From "+CenPersonaBean.T_NOMBRETABLA+", GEN_CLIENTESTEMPORAL";
-			sql += where;
-
-			// RGG cambio visibilidad
-			rc = this.find(sql);
-//			if (rc.query(sql)) {
-			if (rc!=null) {
-				for (int i = 0; i < rc.size(); i++)	{
-					Row fila = (Row) rc.get(i);
-					Hashtable registro = (Hashtable)fila.getRow(); 
-					if (registro != null) 
-						v.add(registro);
-				}
-			}
-		}
-//		catch (SIGAException e) {
-//			throw e;
-//		}
-		catch(ClsExceptions e){
-			throw new ClsExceptions (e, "Error al consultar datos.");
-		}
-		return v;
-	}
 	/**
 	 * Devuelve una persona a partir de un idPersona  
 	 * @version 1	 
