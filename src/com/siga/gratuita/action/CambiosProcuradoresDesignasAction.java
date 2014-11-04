@@ -390,7 +390,7 @@ public class CambiosProcuradoresDesignasAction extends MasterAction {
 				ScsDesignaAdm desAdm = new ScsDesignaAdm(usr);
 				ScsEJGAdm ejgAdm = new ScsEJGAdm(usr);
 				Vector datosProcuradoresEJGRel = desAdm.getDatosProcuradoresEJGRelacionados(instit, numero, turno, anio);	
-				ejgAdm.actualizarProcuradoresEJG(datosProcuradoresEJGRel,miform.getAplIdProcurador(),miform.getAplInstitProcurador());
+				ejgAdm.actualizarProcuradoresEJG(datosProcuradoresEJGRel,miform.getAplIdProcurador(),miform.getAplInstitProcurador(),fCambio,numeroDesigna);
 			}			
 			
 		

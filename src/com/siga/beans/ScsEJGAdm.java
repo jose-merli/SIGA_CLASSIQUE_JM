@@ -6716,7 +6716,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 		return salida;
 	}	
 	
-	public boolean actualizarProcuradoresEJG(Vector ejs, String idProcurador, String idInstProcurador) throws ClsExceptions {
+	public boolean actualizarProcuradoresEJG(Vector ejs, String idProcurador, String idInstProcurador, String fCambio, String numeroDesigna) throws ClsExceptions {
 		boolean ok = true;
 		try {			
 			for (int  j = 0; j < ejs.size(); j++){				
@@ -6730,8 +6730,10 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 				hash.put(ScsEJGBean.C_IDTIPOEJG,ejgProc.get(ScsEJGBean.C_IDTIPOEJG));
 				hash.put(ScsEJGBean.C_IDPROCURADOR,idProcurador);
 				hash.put(ScsEJGBean.C_IDINSTITUCIONPROCURADOR,idInstProcurador);
+				hash.put(ScsEJGBean.C_NUMERODESIGNAPROC,numeroDesigna);
+				hash.put(ScsEJGBean.C_FECHADESIGPROC,fCambio);
 				
-				String[] campos= {ScsEJGBean.C_IDPROCURADOR, ScsEJGBean.C_IDINSTITUCIONPROCURADOR};
+				String[] campos= {ScsEJGBean.C_IDPROCURADOR, ScsEJGBean.C_IDINSTITUCIONPROCURADOR,ScsEJGBean.C_NUMERODESIGNAPROC,ScsEJGBean.C_FECHADESIGPROC};
 				
 				ok= this.updateDirect(hash, this.getClavesBean(), campos);
 				if (!ok) throw new ClsExceptions(this.getError());			
