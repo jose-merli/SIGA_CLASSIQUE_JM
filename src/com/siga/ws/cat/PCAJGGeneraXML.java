@@ -443,9 +443,9 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 		if (cal != null) {
 			procuradorDesignado.setFechaDesignacionProcurador(cal);
 		}
-		Long valueLong = SIGAServicesHelper.getLong("número designación procurador", (String)htEJGs.get(PD_PD_NUMDESIGNACIONPROCURADOR));
-		if (valueLong != null) {
-			procuradorDesignado.setNumDesignacionProcurador(valueLong);
+		valueInt = SIGAServicesHelper.getInteger("número designación procurador", (String)htEJGs.get(PD_PD_NUMDESIGNACIONPROCURADOR));
+		if (valueInt != null) {
+			procuradorDesignado.setNumDesignacionProcurador(valueInt);
 		}
 		return profesionalesDesignados;
 	}
@@ -614,9 +614,9 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 		if (cal != null) {
 			abogadoDesignado.setFechaDesignacionAbogado(cal);
 		}
-		Long valueLong = SIGAServicesHelper.getLong("número designación abogado", (String)ht.get(PD_AD_AD_NUMDESIGNACIONABOGADO));
-		if (valueLong != null) {
-			abogadoDesignado.setNumDesignacionAbogado(valueLong.longValue());
+		valueInt = SIGAServicesHelper.getInteger("número designación abogado", (String)ht.get(PD_AD_AD_NUMDESIGNACIONABOGADO));
+		if (valueInt != null) {
+			abogadoDesignado.setNumDesignacionAbogado(valueInt);
 		}
 		String nombreAbo  = getString((String)ht.get(PD_AD_AD_NOMBREABO));
 		String apellido1Abo = getString((String)ht.get(PD_AD_AD_APELLIDO1ABO));

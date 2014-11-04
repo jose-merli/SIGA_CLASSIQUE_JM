@@ -189,12 +189,15 @@
 	boolean obligatorioSituacion = false;
 	boolean obligatoriojuzgado=false;
 	boolean obligatorioAsunto=false;
+	boolean obligatorioNumDesignaProcurador=false;
+	
 	if (pcajgActivo==1){
 		
 	}else if (pcajgActivo==2){
 		obligatorioPreceptivo = true;
 		obligatorioPretension = true;
 		maximaLongitud = "15";		
+		obligatorioNumDesignaProcurador = true;
 	}else if (pcajgActivo==3){
 		obligatorioPreceptivo = true;
 		obligatorioPretension = true;
@@ -349,6 +352,10 @@
 			}
 			jQuery("#nig2").mask("AAAAA AA A AAAA AAAAAAA");
 			jQuery("#nig2").keyup();	
+			
+			<%if (pcajgActivo==2) { %>
+			jQuery("#numDesignaProc").mask("999999");
+			<%}%>
 		});	
 		
 		function mostrarProcuradoresDES(){
@@ -361,6 +368,8 @@
 			jQuery("#botonToggleProc").html("<img src=\"<html:rewrite page='/html/imagenes/iconoDesplegar.gif'/>\" onclick=\"mostrarProcuradoresDES();\" class=\"botonDesplegar\"/>");
 
 		}		
+		
+		
 		
 	</script>	
 </head>
@@ -848,7 +857,7 @@
 	<%
 								} else {
 	%>
-								  	<input type="text" name="numDesignaProc" class="box" size="5" maxlength="20" value="<%=numeroDesignaProc%>">
+								  	<input type="text" id="numDesignaProc" name="numDesignaProc" class="box" size="5" maxlength="20" value="<%=numeroDesignaProc%>">
 	<%
 								}
 	%>
@@ -1030,6 +1039,9 @@
 				
 			if (<%=obligatorioProcurador%> && document.getElementById("nColegiadoProcurador").value=="")
 				error += "<siga:Idioma key='errors.required' arg0='gratuita.datosProcurador.literal.procurador'/>"+ '\n';
+				
+			if (<%=obligatorioNumDesignaProcurador%> && document.getElementById("numDesignaProc").value=="" && document.getElementById("idProcurador").value != null && document.getElementById("idProcurador").value != '')
+				error += "<siga:Idioma key='errors.required' arg0='gratuita.operarEJG.literal.numDesigProc'/>"+ '\n';
 					
 <%
 			if (ejisActivo==0) {

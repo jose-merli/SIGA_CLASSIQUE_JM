@@ -35,7 +35,9 @@
 		pcajgActivo = Integer.parseInt(request.getAttribute("PCAJG_ACTIVO").toString());
 	}
 	boolean obligatorioDesignacion = false;
-	if (pcajgActivo==5){
+	if (pcajgActivo==2){
+		obligatorioDesignacion = true;
+	} else if (pcajgActivo==5){
 		obligatorioDesignacion = true;
 	}
 	%>
@@ -128,7 +130,7 @@
 		<%if (accion.equalsIgnoreCase("ver")){%>
 			<html:text name="CambiosProcuradoresDesignasForm" property="numeroDesigna" size="13" maxlength="10" styleClass="boxConsulta" readonly="true"></html:text>
 		<%} else {%>
-			<html:text name="CambiosProcuradoresDesignasForm" property="numeroDesigna" size="13" maxlength="10" styleClass="box"></html:text>
+			<html:text name="CambiosProcuradoresDesignasForm" styleId="numeroDesigna" property="numeroDesigna" size="13" maxlength="10" styleClass="box"></html:text>
 		<%}%>
 		</td>
 		<td class="labelText">
@@ -221,7 +223,6 @@
 	<!-- Aqui se reescriben las funciones que vayamos a utilizar -->
 	<script language="JavaScript">
 
-
 		//Asociada al boton GuardarCerrar -->
 		function accionGuardarCerrar() 
 		{	
@@ -271,6 +272,12 @@
 		{		
 			document.forms[0].reset();
 		}
+		
+		jQuery(function($){
+			<%if (pcajgActivo==2) { %>
+			jQuery("#numeroDesigna").mask("999999");
+			<%}%>
+		});	
 		
 		
 
