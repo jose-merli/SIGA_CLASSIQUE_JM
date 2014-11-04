@@ -58,6 +58,7 @@ import com.siga.beans.FacFacturaAdm;
 import com.siga.beans.FacFacturaBean;
 import com.siga.beans.FacFacturacionProgramadaAdm;
 import com.siga.beans.FacFacturacionProgramadaBean;
+import com.siga.beans.FacSerieFacturacionAdm;
 import com.siga.beans.FacSerieFacturacionBean;
 import com.siga.beans.GenParametrosAdm;
 import com.siga.beans.PysCompraAdm;
@@ -897,8 +898,6 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 					usarIdInstitucion=true;
 				}
 		        
-		        String sEstadoCertificado = null;
-	
 		        if (colegiadoEnOrigen) {
 		        
 		        	// Obtenemos cada vez los paraemtros por si cambia la institucion (Que no creo que lo haga, pero bueno...)
@@ -944,14 +943,6 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 			        	ClsLogging.writeFileLog("----- ERROR APROBAR Y GENERAR PDF -----",4);
 			    		ClsLogging.writeFileLogError("ERROR EN APROBAR Y GENERAR PDF MASIVO. SOLICITUD:" +nombreSolicitud+ " Error:" + e.getLiteral(userBean.getLanguage()),e, 3);
 			        	contadorErrores++;
-		        		
-			        	//tx.rollback();
-		        	    
-				       /* if (contadorReg==1) {
-			        	    throw e;
-			        	} else {*/
-			        		sEstadoCertificado = CerSolicitudCertificadosAdm.K_ESTADO_CER_ERRORGENERANDO;
-			        	//}
 		            }
 		
 			        fIn.delete();
@@ -966,16 +957,12 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 		        	if (contadorReg==1) {
 	
 		        		String mensaje = "messages.error.solicitud.clienteEsColegiado";
-		        		if (mensaje==null) mensaje = "";
 		        		String[] datos = {""+contador};
 		        		mensaje = UtilidadesString.getMensaje(mensaje, datos, userBean.getLanguage());
 		        		
 		        		request.setAttribute("mensaje",mensaje);	
 
 		        	    return "exitoConString";
-		        	} 
-		        	else {
-		        		sEstadoCertificado = CerSolicitudCertificadosAdm.K_ESTADO_CER_ERRORGENERANDO;
 		        	}
 		        }
 		    } // WHILE 
@@ -1017,7 +1004,6 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 			//tx = usr.getTransactionPesada();
 			
 		    SIGASolicitudesCertificadosForm form = (SIGASolicitudesCertificadosForm)formulario;
-		    CerSolicitudCertificadosAdm admSolicitud = new CerSolicitudCertificadosAdm(this.getUserBean(request));
 		    UsrBean userBean = ((UsrBean)request.getSession().getAttribute(("USRBEAN")));
 		    
 		    int contador=0;
@@ -1041,7 +1027,7 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 		    {
 		        StringTokenizer st2 = new StringTokenizer(st.nextToken(), "%%");
 	
-		        String fechaSolicitud = st2.nextToken();
+				st2.nextToken();
 		        String idSolicitud = st2.nextToken();
 		        
 		        st2.nextToken();
@@ -1100,9 +1086,6 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 					}
 				}
 	
-		        
-		        String sEstadoCertificado = null;
-	
 		        if (colegiadoEnOrigen) {
 		        
 			        GenParametrosAdm admParametros = new GenParametrosAdm(this.getUserBean(request));
@@ -1152,23 +1135,6 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 			        } catch (SIGAException e) {
 				        ClsLogging.writeFileLogError("Error GENERAL al aprobar y generar el certificado PDF: " + e.getLiteral(userBean.getLanguage()),e, 3);
 				        contadorErrores++;
-		        		//tx.rollback();
-		        		
-			        	/*if (contadorReg==1) {
-	
-			        		String mensaje = e.getLiteral(userBean.getLanguage());
-			        		if (mensaje==null) mensaje = "";
-			        		String[] datos = {""+contador};
-			        		mensaje = UtilidadesString.getMensaje(mensaje, datos, userBean.getLanguage());
-			        		
-			        		request.setAttribute("mensaje",mensaje);	
-			        		
-			        	    //return "exitoConString";
-			        		throw e;
-	
-			        	} else {*/
-			        		sEstadoCertificado = CerSolicitudCertificadosAdm.K_ESTADO_CER_ERRORGENERANDO;
-			        	//}
 		            }
 		
 			        fIn.delete();
@@ -1184,16 +1150,12 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 		        	if (contadorReg==1) {
 	
 		        		String mensaje = "messages.error.solicitud.clienteEsColegiado";
-		        		if (mensaje==null) mensaje = "";
 		        		String[] datos = {""+contador};
 		        		mensaje = UtilidadesString.getMensaje(mensaje, datos, userBean.getLanguage());
 		        		
 		        		request.setAttribute("mensaje",mensaje);	
 		        	    
 		        		return "exitoConString";
-	
-		        	} else {
-		        		sEstadoCertificado = CerSolicitudCertificadosAdm.K_ESTADO_CER_ERRORGENERANDO;
 		        	}
 		        	
 		        }
@@ -1243,7 +1205,6 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 			//tx = usr.getTransactionPesada();
 			
 		  //  SIGASolicitudesCertificadosForm form = (SIGASolicitudesCertificadosForm)formulario;
-		    CerSolicitudCertificadosAdm admSolicitud = new CerSolicitudCertificadosAdm(this.getUserBean(request));
 		    UsrBean userBean = ((UsrBean)request.getSession().getAttribute(("USRBEAN")));
 		    
 		    int contador=0;
@@ -1266,7 +1227,7 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 		    {
 		        StringTokenizer st2 = new StringTokenizer(st.nextToken(), "%%");
 	
-		        String fechaSolicitud = st2.nextToken();
+				st2.nextToken();
 		        String idSolicitud = st2.nextToken();
 		        
 		        st2.nextToken();
@@ -1326,8 +1287,6 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 					}
 				}
 		        
-		        String sEstadoCertificado = null;
-	
 		        if (colegiadoEnOrigen) {
 		        
 			        GenParametrosAdm admParametros = new GenParametrosAdm(this.getUserBean(request));
@@ -1368,7 +1327,6 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 			        } catch (SIGAException e) {
 				        ClsLogging.writeFileLogError("Error GENERAL al aprobar y generar el certificado PDF: " + e.getLiteral(userBean.getLanguage()),e, 3);
 				        contadorErrores++;
-		        		sEstadoCertificado = CerSolicitudCertificadosAdm.K_ESTADO_CER_ERRORGENERANDO;
 		            }
 		
 			        fIn.delete();
@@ -1383,16 +1341,12 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 		        	if (contadorReg==1) {
 	
 		        		String mensaje = "messages.error.solicitud.clienteEsColegiado";
-		        		if (mensaje==null) mensaje = "";
 		        		String[] datos = {""+contador};
 		        		mensaje = UtilidadesString.getMensaje(mensaje, datos, userBean.getLanguage());
 		        		
 		        		request.setAttribute("mensaje",mensaje);	
 		        	    
 		        		return "exitoConString";
-	
-		        	} else {
-		        		sEstadoCertificado = CerSolicitudCertificadosAdm.K_ESTADO_CER_ERRORGENERANDO;
 		        	}
 		        	
 		        }
@@ -1595,7 +1549,6 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 		//UserTransaction tx=null;
 		try{
 			// Obtengo usuario 
-			UsrBean usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
 			SIGASolicitudesCertificadosForm form = (SIGASolicitudesCertificadosForm)formulario;
 			int contError = 0;
 			
@@ -2375,38 +2328,44 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 	    String mensaje="";
 	    String salida = "";
 	    try {						
+	    	UsrBean usr = this.getUserBean(request);
+	    	
 		    // datos llamada
 			SIGASolicitudesCertificadosForm form = (SIGASolicitudesCertificadosForm)formulario;
 		    Vector vOcultos = form.getDatosTablaOcultos(0);
 		    String idInstitucion = ((String)vOcultos.elementAt(0)).trim();
 		    String idSolicitudCertificado = ((String)vOcultos.elementAt(1)).trim();
 		    
-		    // Transacción
-		    UsrBean usr = this.getUserBean(request);
+		    // administradores
+		    CenClienteAdm admCliente = new CenClienteAdm(usr);
+		    CenColegiadoAdm admCol = new CenColegiadoAdm(usr);
+		    CerSolicitudCertificadosAdm admSolicitudCertificados = new CerSolicitudCertificadosAdm(usr);		    		   
+		    FacFacturaAdm admFactura = new FacFacturaAdm(usr);
+		    FacFacturacionProgramadaAdm admFacturacionProgramada = new FacFacturacionProgramadaAdm (usr);
+		    FacSerieFacturacionAdm admSerieFacturacion = new FacSerieFacturacionAdm(usr);
+		    PysCompraAdm admCompra = new PysCompraAdm(usr);		    
+		    PysPeticionCompraSuscripcionAdm admPeticionCompraSuscripcion = new PysPeticionCompraSuscripcionAdm(usr);
+		    Facturacion facturacion = new Facturacion(usr);
+		    InformeFactura inf = new InformeFactura(usr);	     		    
+		    
+		    // Transaccion
 			tx=usr.getTransaction();
 			tx.begin();
-		    
-		    // administradores
-		    CerSolicitudCertificadosAdm admSolicitud = new CerSolicitudCertificadosAdm(this.getUserBean(request));
-		    PysCompraAdm admCompra = new PysCompraAdm(this.getUserBean(request));
-		    Facturacion facturacion = new Facturacion(this.getUserBean(request));
-		    FacFacturaAdm admFactura = new FacFacturaAdm(this.getUserBean(request));
 		    
 		    // Bloqueamos las tablas de factura y compra
 		    admFactura.lockTable();
 		    admCompra.lockTable();
 		    
 		    // Obtengo la peticion de compra
-		    PysCompraBean beanCompra = admSolicitud.obtenerCompra(idInstitucion, idSolicitudCertificado);
+		    PysCompraBean beanCompra = admSolicitudCertificados.obtenerCompra(idInstitucion, idSolicitudCertificado);
 		    
 		    // Compruebo SI esta facturada la compra
 		    if (beanCompra.getIdFactura()!=null && !beanCompra.getIdFactura().trim().equals("")) {
 		    	// YA ESTÁ FACTURADA
 		    	// LIBERAMOS EL BLOQUEO EN LAS TABLAS Y LA TRANSACCIÓN
 		    	tx.rollback();
-		    	// Comprobamos si no esta confirmada la facturacion, la confirmamos
-	    		FacFacturacionProgramadaAdm adm = new FacFacturacionProgramadaAdm (this.getUserBean(request));
-		    	FacFacturacionProgramadaBean b = adm.getFacturacionProgramadaDesdeCompra(beanCompra);
+		    	// Comprobamos si no esta confirmada la facturacion, la confirmamos	    		
+		    	FacFacturacionProgramadaBean b = admFacturacionProgramada.getFacturacionProgramadaDesdeCompra(beanCompra);
 		    	if (b != null) {
 			    	String fechaConfirmacion = b.getFechaConfirmacion(); 
 		    		if (fechaConfirmacion == null || fechaConfirmacion.equals("") || b.getIdEstadoPDF().intValue() != FacEstadoConfirmFactBean.PDF_FINALIZADA.intValue()) {
@@ -2420,70 +2379,41 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 					    }
 		    		}
 		    	}
-		   
-		        //throw new SIGAException("messages.facturacionRapida.error.facturado");
-//			    ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
-//		        ReadProperties rp = new ReadProperties("SIGA.properties");
-//		        String rutaAlmacen = rp.returnProperty("facturacion.directorioFisicoFacturaPDFJava")+rp.returnProperty("facturacion.directorioFacturaPDFJava");
-//		        String barraAlmacen = "";
-//		        String nombreFicheroAlmacen = "";
-//		        if (rutaAlmacen.indexOf("/") > -1){ 
-//		        	barraAlmacen = "/";
-//		        }
-//		        if (rutaAlmacen.indexOf("\\") > -1){ 
-//		        	barraAlmacen = "\\";
-//		        }
-		        
-		        ////////////////////////////
-		        // Antes:
-				//	 nombreFicheroAlmacen = beanCompra.getIdFactura() +".pdf";
-				//   rutaAlmacen += barraAlmacen + idInstitucion + barraAlmacen + nombreFicheroAlmacen;
-		        // Ahora:
-	        	FacFacturaAdm admFac = new FacFacturaAdm (this.getUserBean(request));
-	        	/**********/
-	        	InformeFactura inf = new InformeFactura(this.getUserBean(request));
-		        CenClienteAdm cliAdm = new CenClienteAdm(this.getUserBean(request));
-		        /**********/
-	        	Hashtable h = new Hashtable ();
-	        	UtilidadesHash.set(h,FacFacturaBean.C_IDINSTITUCION, beanCompra.getIdInstitucion());
-	        	UtilidadesHash.set(h,FacFacturaBean.C_IDFACTURA, beanCompra.getIdFactura());
-	        	boolean correcto=true;
-	        	Vector v = admFac.selectByPK(h);
+
+		    	Hashtable<String,Object> hFactura = new Hashtable<String,Object>();
+	        	UtilidadesHash.set(hFactura,FacFacturaBean.C_IDINSTITUCION, beanCompra.getIdInstitucion());
+	        	UtilidadesHash.set(hFactura,FacFacturaBean.C_IDFACTURA, beanCompra.getIdFactura());
 	        	
-	        	if (v != null && v.size() == 1) {
-	        		FacFacturaBean fac = (FacFacturaBean) v.get(0);
-	        		/***********/
-	        		String idPersona=fac.getIdPersona().toString();
-	    			// Obtenemos el lenguaje del cliente 
-	    			String lenguaje = cliAdm.getLenguaje(fac.getIdInstitucion().toString(),idPersona); 
-	        		/**********/
+	        	boolean correcto=true;
+	        	Vector vFactura = admFactura.selectByPK(hFactura);
+	        	
+	        	if (vFactura!=null && vFactura.size() == 1) {
+	        		FacFacturaBean beanFactura = (FacFacturaBean) vFactura.get(0);
+	        		String idPersona = beanFactura.getIdPersona().toString();	    			
+	    			String lenguaje = admCliente.getLenguaje(beanFactura.getIdInstitucion().toString(),idPersona); // Obtenemos el lenguaje del cliente  
 	        		String nombreFactura="";
-	        		if (fac.getNumeroFactura()!=null && !fac.getNumeroFactura().equals("")){
-	        			nombreFactura=fac.getNumeroFactura();
+	        		if (beanFactura.getNumeroFactura()!=null && !beanFactura.getNumeroFactura().equals("")){
+	        			nombreFactura=beanFactura.getNumeroFactura();
 	        		}else{
-	        			nombreFactura=fac.getIdFactura();
+	        			nombreFactura=beanFactura.getIdFactura();
 	        		}
-	        		CenColegiadoAdm admCol = new CenColegiadoAdm(this.getUserBean(request));
-					Hashtable htCol = admCol.obtenerDatosColegiado(this.getUserBean(request).getLocation(),fac.getIdPersona().toString(),this.getUserBean(request).getLanguage());
+	        		
+					Hashtable htCol = admCol.obtenerDatosColegiado(usr.getLocation(), beanFactura.getIdPersona().toString(), usr.getLanguage());
 		  			String nColegiado = "";
 		  			if (htCol!=null && htCol.size()>0) {
 		  			    nColegiado = (String)htCol.get("NCOLEGIADO_LETRADO");
 		  			}	
-//				        nombreFicheroAlmacen = UtilidadesString.validarNombreFichero(nColegiado+"-"+nombreFactura +".pdf");
-//				        rutaAlmacen += barraAlmacen + idInstitucion + barraAlmacen + fac.getIdSerieFacturacion() + "_" + fac.getIdProgramacion() + barraAlmacen + nombreFicheroAlmacen;
-			        
-			        /**********************/
-//				        File directorio1 = new File(rutaAlmacen);// Si el fichero no existe en el directorio sRutaJava se genera
-//			  			if (directorio1==null || !directorio1.exists()){
-					 File filePDF = inf.generarFactura(request,lenguaje.toUpperCase(),this.getUserBean(request).getLocation(),fac.getIdFactura(),nColegiado);
-						 if (filePDF==null) {
-						    throw new ClsExceptions("Error al generar la factura. Fichero devuelto es nulo.");				
-						} else {
-							request.setAttribute("nombreFichero", filePDF.getName());
-							request.setAttribute("rutaFichero", filePDF.getAbsolutePath());
-							request.setAttribute("borrarFichero", "true");
-							correcto = true;
-						}
+
+		  			File filePDF = inf.generarFactura(request, lenguaje.toUpperCase(), usr.getLocation(), beanFactura.getIdFactura(), nColegiado);
+		  			if (filePDF==null) {
+					    throw new ClsExceptions("Error al generar la factura. Fichero devuelto es nulo.");				
+		  			} else {
+						request.setAttribute("nombreFichero", filePDF.getName());
+						request.setAttribute("rutaFichero", filePDF.getAbsolutePath());
+						request.setAttribute("borrarFichero", "true");
+						correcto = true;
+					}
+		  			
 					if (!filePDF.exists()){
 						throw new SIGAException("messages.general.error.ficheroNoExisteReintentar");
 					}
@@ -2491,13 +2421,7 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 		  			/*****************/
 	        	} else {
 	        		throw new SIGAException("messages.abonos.compensacionManual.noExisteFactura");
-	        	}
-		        ////////////////////////////
-		        
-//				File fileFAC = new File(rutaAlmacen);
-//			    if (!fileFAC.exists())  {
-//			        throw new SIGAException("messages.general.error.ficheroNoExiste");
-//			    }		        							
+	        	}	        							
 		    }
 		   
 		    
@@ -2508,18 +2432,15 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 			    if (numero>1) {
 			        request.setAttribute("numeroFacturas",new Integer(numero));
 			        request.setAttribute("mensaje","messages.facturacionRapida.aviso.variasFacturas");
-			        salida =  "preguntaNumeroFacturas";
+			        salida = "preguntaNumeroFacturas";
 			        // LIBERAMOS EL BLOQUEO DE LAS TABLAS Y LA TRANSACCIÓN
 			        tx.rollback();
 			        return salida;
 			    }
 			}
 			
-			FacSerieFacturacionBean serieFacturacionTemporal = null;
 			FacFacturacionProgramadaBean programacion = null;
-			Vector facts = null;
-		    try {
-			    
+		    try {			    
 			    // PASO 0: ANTES DE FACTURAR APUNTO EL IMPORTE TOTAL COMO IMPORTE ANTICIPADO
 			    double importe = (beanCompra.getCantidad().intValue() * beanCompra.getImporteUnitario().doubleValue()) * (1+(beanCompra.getIva().doubleValue()/100));
 			    beanCompra.setImporteAnticipado(new Double(importe));
@@ -2528,18 +2449,63 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 			    }
 			    
 			    // PASO 1: FACTURACION RAPIDA (GENERACION)
-			    serieFacturacionTemporal =  facturacion.procesarFacturacionRapidaCompraCertificado(beanCompra);
+			    Vector<PysCompraBean> vCompras = new Vector<PysCompraBean>();
+			    vCompras.add(beanCompra);
 			    
-			    // Aqui obtengo las facturas implicadas
-			    FacFacturaAdm admF = new FacFacturaAdm(this.getUserBean(request));
-			    //facts = admF.getFacturasSerieFacturacion(serieFacturacionTemporal);
+			    // Obtengo la peticion de compra
+			    Hashtable<String, Object> hPeticionCompraSuscripcion = new Hashtable<String, Object>(); 
+			    hPeticionCompraSuscripcion.put("IDINSTITUCION", beanCompra.getIdInstitucion());
+			    hPeticionCompraSuscripcion.put("IDPETICION", beanCompra.getIdPeticion());
+			    
+			    Vector<?> vPeticionCompraSuscripcion = admPeticionCompraSuscripcion.selectByPK(hPeticionCompraSuscripcion);		    
+			    PysPeticionCompraSuscripcionBean beanPeticionCompraSuscripcion = null;
+			    if (vPeticionCompraSuscripcion!=null && vPeticionCompraSuscripcion.size()>0) {
+			    	beanPeticionCompraSuscripcion = (PysPeticionCompraSuscripcionBean) vPeticionCompraSuscripcion.get(0);
+			    }				    
+			    
+	        	FacSerieFacturacionBean beanSerieCandidata = null;
+	        	
+	        	// Obtiene la serie candidata	
+	        	String serieSeleccionada = request.getParameter("serieSeleccionada");
+	        	if (serieSeleccionada==null || serieSeleccionada.equals("")) {
+				    Vector<?> series =  admSerieFacturacion.obtenerSeriesAdecuadas(vCompras);
+				    if (series==null || series.size()==0) {
+				        throw new SIGAException("messages.facturacionRapidaCompra.noSerieAdecuada");
+				        
+				    } else if (series.size()==1) {
+				    	beanSerieCandidata = (FacSerieFacturacionBean)series.get(0);
+				        
+				    } else {
+				        // existen varias series candidatas
+				        tx.rollback();				        
+				        
+				        // PREGUNTA
+				        request.setAttribute("idPeticionSeleccion", beanCompra.getIdPeticion().toString());
+				        request.getSession().setAttribute("seriesCandidatas",series);
+				        return "seleccionSerie";
+				    }
+				    
+		        } else { // Se ha seleccionado una serie		            
+			        request.getSession().removeAttribute("seriesCandidatas");
+
+			        Hashtable<String,String> hSerieFacturacion = new Hashtable<String,String>();
+			        hSerieFacturacion.put("IDINSTITUCION",idInstitucion);
+			        hSerieFacturacion.put("IDSERIEFACTURACION",serieSeleccionada);
+			        
+		            Vector<?> vSerieFacturacion = admSerieFacturacion.selectByPK(hSerieFacturacion);
+		            if (vSerieFacturacion!=null && vSerieFacturacion.size()>0) {
+		            	beanSerieCandidata = (FacSerieFacturacionBean)vSerieFacturacion.get(0);
+		            }
+		        }			    
+			    
+			    FacSerieFacturacionBean serieFacturacionTemporal = facturacion.procesarFacturacionRapidaCompras(beanPeticionCompraSuscripcion, vCompras, beanSerieCandidata);
 			    
 			    // PASO 2: DESHACER RELACIONES TEMPORALES
 			    programacion = facturacion.restaurarSerieFacturacionGenerica(serieFacturacionTemporal);
 		        
 			    // PASO 3: FACTURACION RAPIDA (CONFIRMACION)
 				// BNS INCLUYO LA CONFIRMACIÓN EN LA TRANSACCIÓN
-			    facturacion.confirmarProgramacionFactura(programacion, request,true,null,false,true, tx);
+			    facturacion.confirmarProgramacionFactura(programacion, request, true, null, false, true, tx);
 			    
 			    if (Status.STATUS_ACTIVE  == tx.getStatus())
 			    	tx.commit();
@@ -2553,107 +2519,104 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 		    }		    
 			
 			/*********************pdm***********/
-		 if (programacion.getGenerarPDF().trim().equals("1")) {
-			// Volvemos a hacer la consulta sobre la tabla pyscompra para recuperar el idfactura
-			  beanCompra = admSolicitud.obtenerCompra(idInstitucion, idSolicitudCertificado);
-			  FacFacturaAdm admFac = new FacFacturaAdm (this.getUserBean(request));
-			  FacFacturaBean fac=new FacFacturaBean();
-			  Hashtable h = new Hashtable ();
-	        	UtilidadesHash.set(h,FacFacturaBean.C_IDINSTITUCION, beanCompra.getIdInstitucion());
-	        	UtilidadesHash.set(h,FacFacturaBean.C_IDFACTURA, beanCompra.getIdFactura());
-	        	String nombreFicheroAlmacen="";
-	        	 facts= admFac.selectByPK(h);
-	        	
-			 /*************************************/
-			// devolver factura
-     	    ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
-//			ReadProperties rp = new ReadProperties("SIGA.properties");	
-			String rutaAlmacen = rp.returnProperty("facturacion.directorioFisicoFacturaPDFJava")+rp.returnProperty("facturacion.directorioFacturaPDFJava");
-    		rutaAlmacen += ClsConstants.FILE_SEP+idInstitucion;
-			rutaAlmacen+=ClsConstants.FILE_SEP;
-		    String rutaServidor =
-		    	Plantilla.obtenerPathNormalizado(rp.returnProperty("sjcs.directorioFisicoSJCSJava")+rp.returnProperty("sjcs.directorioSJCSJava"))+
-		    	ClsConstants.FILE_SEP+idInstitucion;
-
-			if (facts==null || facts.size()==0) {
-			    throw new SIGAException("messages.facturacionRapida.noFactura");
-			} else{
-				CenColegiadoAdm admCol = new CenColegiadoAdm(this.getUserBean(request));
-					
-			if (facts.size()==1) {
-			    /*FacFacturaBean bf = (FacFacturaBean) facts.get(0);
-			    rutaAlmacen += bf.getIdFactura()+".pdf";*/
-				
-	  					 
-
-				/*********************pdm***********/
-				 fac = (FacFacturaBean) facts.get(0);
-				 String nombreFactura="";
-				 if (fac.getNumeroFactura()!=null && !fac.getNumeroFactura().equals("")){
-        			nombreFactura=fac.getNumeroFactura();
-        		}else{
-        			nombreFactura=fac.getIdFactura();
-        		}
-				 Hashtable htCol = admCol.obtenerDatosColegiado(this.getUserBean(request).getLocation(),fac.getIdPersona().toString(),this.getUserBean(request).getLanguage());
-		  			String nColegiado = "";
-		  			if (htCol!=null && htCol.size()>0) {
-		  			    nColegiado = (String)htCol.get("NCOLEGIADO_LETRADO");
-		  			}	
-		         nombreFicheroAlmacen = UtilidadesString.validarNombreFichero(nColegiado+"-"+nombreFactura +".pdf");
-			       // String nombreFicheroAlmacen = UtilidadesString.validarNombreFichero(bf.getNumeroFactura() +".pdf");
-			       // rutaAlmacen += ClsConstants.FILE_SEP + bf.getIdSerieFacturacion() + "_" + bf.getIdProgramacion() + ClsConstants.FILE_SEP + nombreFicheroAlmacen;
-				    rutaAlmacen += ClsConstants.FILE_SEP + fac.getIdSerieFacturacion()+ "_" + fac.getIdProgramacion() + ClsConstants.FILE_SEP;
-				/******************************************************************************************/
+			 if (programacion.getGenerarPDF().trim().equals("1")) {
+				 // Volvemos a hacer la consulta sobre la tabla pyscompra para recuperar el idfactura
+				 beanCompra = admSolicitudCertificados.obtenerCompra(idInstitucion, idSolicitudCertificado);
+				 
+				 Hashtable<String,Object> hFactura = new Hashtable<String,Object>();
+				 UtilidadesHash.set(hFactura,FacFacturaBean.C_IDINSTITUCION, beanCompra.getIdInstitucion());
+				 UtilidadesHash.set(hFactura,FacFacturaBean.C_IDFACTURA, beanCompra.getIdFactura());
+				 Vector<?> vFacturas = admFactura.selectByPK(hFactura);
+		        	
+				/*************************************/
+				// devolver factura
+	     	    ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+				String rutaAlmacen = rp.returnProperty("facturacion.directorioFisicoFacturaPDFJava")+rp.returnProperty("facturacion.directorioFacturaPDFJava") +
+										ClsConstants.FILE_SEP + idInstitucion + ClsConstants.FILE_SEP;
+			    String rutaServidor = Plantilla.obtenerPathNormalizado(rp.returnProperty("sjcs.directorioFisicoSJCSJava") + 
+		    							rp.returnProperty("sjcs.directorioSJCSJava")) + ClsConstants.FILE_SEP + idInstitucion;
+	
+				if (vFacturas==null || vFacturas.size()==0) {
+				    throw new SIGAException("messages.facturacionRapida.noFactura");
 				    
-			    File filePDF = new File(rutaAlmacen+ nombreFicheroAlmacen);
-			    if (!filePDF.exists())  {
-			        return exito("messages.facturacionRapida.aviso.esperaDescarga",request);
-			    }
-			    request.setAttribute("nombreFichero", filePDF.getName());
-				request.setAttribute("rutaFichero", filePDF.getPath());			
-				request.setAttribute("borrarFichero", "true");
-				salida = "descargaFichero";
-			} else {
-			    ArrayList ficherosPDF= new ArrayList();
-			    String nombreFactura="";
-			    for (int i=0;i<facts.size();i++) {
-				    FacFacturaBean bf = (FacFacturaBean) facts.get(i);
-				   
-					 if (bf.getNumeroFactura()!=null && !bf.getNumeroFactura().equals("")){
-	        			nombreFactura=bf.getNumeroFactura();
-	        		}else{
-	        			nombreFactura=bf.getIdFactura();
-	        		}
-				    Hashtable htCol = admCol.obtenerDatosColegiado(this.getUserBean(request).getLocation(),bf.getIdPersona().toString(),this.getUserBean(request).getLanguage());
-		  			String nColegiado = "";
-		  			if (htCol!=null && htCol.size()>0) {
-		  			    nColegiado = (String)htCol.get("NCOLEGIADO_LETRADO");
-		  			}	
-				    String ruta = rutaAlmacen + UtilidadesString.validarNombreFichero(nColegiado+"-"+nombreFactura +".pdf");
-				    File filePDF = new File(ruta);
-				    ficherosPDF.add(filePDF);
-			    }
-				String nombreFicheroZIP="facturasGeneradas_" +UtilidadesBDAdm.getFechaCompletaBD("").replaceAll("/","").replaceAll(":","").replaceAll(" ","");
-				String rutaServidorDescargasZip=rutaServidor + File.separator;
+				} else {					
+					if (vFacturas.size()==1) {
+						/*********************pdm***********/
+						FacFacturaBean fac = (FacFacturaBean) vFacturas.get(0);
+						
+						String nombreFactura="";
+						if (fac.getNumeroFactura()!=null && !fac.getNumeroFactura().equals("")){
+							nombreFactura=fac.getNumeroFactura();
+						} else {
+							nombreFactura=fac.getIdFactura();
+						}
+						
+						Hashtable htCol = admCol.obtenerDatosColegiado(this.getUserBean(request).getLocation(),fac.getIdPersona().toString(),this.getUserBean(request).getLanguage());
+						
+			  			String nColegiado = "";
+			  			if (htCol!=null && htCol.size()>0) {
+			  			    nColegiado = (String)htCol.get("NCOLEGIADO_LETRADO");
+			  			}
+			  			
+			  			String nombreFicheroAlmacen = UtilidadesString.validarNombreFichero(nColegiado+"-"+nombreFactura +".pdf");
+					    rutaAlmacen += ClsConstants.FILE_SEP + fac.getIdSerieFacturacion()+ "_" + fac.getIdProgramacion() + ClsConstants.FILE_SEP;
+					    /******************************************************************************************/
+					    
+					    File filePDF = new File(rutaAlmacen+ nombreFicheroAlmacen);
+					    if (!filePDF.exists())  {
+					    	return exito("messages.facturacionRapida.aviso.esperaDescarga",request);
+					    }
+					    request.setAttribute("nombreFichero", filePDF.getName());
+					    request.setAttribute("rutaFichero", filePDF.getPath());			
+					    request.setAttribute("borrarFichero", "true");
+					    salida = "descargaFichero";
+					    
+					} else {
+					    ArrayList ficherosPDF = new ArrayList();
+					    String nombreFactura="";
+					    for (int i=0;i<vFacturas.size();i++) {
+						    FacFacturaBean beanFactura = (FacFacturaBean) vFacturas.get(i);
+						   
+							 if (beanFactura.getNumeroFactura()!=null && !beanFactura.getNumeroFactura().equals("")){
+			        			nombreFactura=beanFactura.getNumeroFactura();
+			        		}else{
+			        			nombreFactura=beanFactura.getIdFactura();
+			        		}
+							 
+						    Hashtable htCol = admCol.obtenerDatosColegiado(usr.getLocation(), beanFactura.getIdPersona().toString(), usr.getLanguage());
+				  			String nColegiado = "";
+				  			if (htCol!=null && htCol.size()>0) {
+				  			    nColegiado = (String)htCol.get("NCOLEGIADO_LETRADO");
+				  			}	
+				  			
+						    String ruta = rutaAlmacen + UtilidadesString.validarNombreFichero(nColegiado+"-"+nombreFactura +".pdf");
+						    File filePDF = new File(ruta);
+						    ficherosPDF.add(filePDF);
+					    }
+					    
+						String nombreFicheroZIP="facturasGeneradas_" +UtilidadesBDAdm.getFechaCompletaBD("").replaceAll("/","").replaceAll(":","").replaceAll(" ","");
+						String rutaServidorDescargasZip=rutaServidor + File.separator;
+						
+						Plantilla.doZip(rutaServidorDescargasZip,nombreFicheroZIP,ficherosPDF);
+						File fileZIP = new File(rutaServidorDescargasZip+nombreFicheroZIP + ".zip");
+					    if (!fileZIP.exists())  {
+					        throw new SIGAException("messages.general.error.ficheroNoExiste");
+					    }
+					    request.setAttribute("nombreFichero", nombreFicheroZIP + ".zip");
+						request.setAttribute("rutaFichero", rutaServidorDescargasZip+nombreFicheroZIP + ".zip");			
+						request.setAttribute("borrarFichero", "true");			
+						salida = "descargaFichero";
+					}
+				}
 				
-				Plantilla.doZip(rutaServidorDescargasZip,nombreFicheroZIP,ficherosPDF);
-				File fileZIP = new File(rutaServidorDescargasZip+nombreFicheroZIP + ".zip");
-			    if (!fileZIP.exists())  {
-			        throw new SIGAException("messages.general.error.ficheroNoExiste");
-			    }
-			    request.setAttribute("nombreFichero", nombreFicheroZIP + ".zip");
-				request.setAttribute("rutaFichero", rutaServidorDescargasZip+nombreFicheroZIP + ".zip");			
-				request.setAttribute("borrarFichero", "true");			
-				salida = "descargaFichero";
+			} else{
+			 	throw new SIGAException("No se ha generado el PDF");
 			}
-		 }
-		 }else{
-		 	throw new SIGAException("No se ha generado el PDF");
-		 }
-		} 
-		catch (Exception e) { 
+		
+	    } catch (Exception e) { 
 			throwExcp("messages.general.error",new String[] {"modulo.certificados"},e,null); 
 		}
+	    
 		return salida;
 	}
 	
