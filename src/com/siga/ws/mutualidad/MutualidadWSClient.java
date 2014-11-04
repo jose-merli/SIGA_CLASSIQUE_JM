@@ -89,7 +89,7 @@ public class MutualidadWSClient extends SIGAWSClientAbstract {
             }
            
         } catch (Exception e) {
-            escribeLog("Error en llamada a getPosibilidadSolicitudAlta: " + e.getMessage());
+            escribeLog("Error en llamada a getPosibilidadSolicitudAlta: " + e);
             e.printStackTrace();
             respuesta.setCorrecto(false);
             respuesta.setPosibleAlta(false);
@@ -124,7 +124,7 @@ public class MutualidadWSClient extends SIGAWSClientAbstract {
             }
            
         } catch (Exception e) {
-            escribeLog("Error en llamada a getPosibilidadSolicitudAlta: " + e.getMessage());
+            escribeLog("Error en llamada a getPosibilidadSolicitudAlta: " + e);
             e.printStackTrace();
             respuesta.setCorrecto(false);
             respuesta.setMensajeError("Imposible comunicar con la mutualidad en estos momentos. Inténtelo de nuevo en unos minutos.");
@@ -159,7 +159,7 @@ public class MutualidadWSClient extends SIGAWSClientAbstract {
 			respuesta.setCuota(response.getCuota());
 
 		}catch (Exception e) {
-			escribeLog("Error en llamada a getCuotaYCapital: " + e.getMessage());
+			escribeLog("Error en llamada a getCuotaYCapital: " + e);
 			respuesta.setCorrecto(false);
 			respuesta.setMensajeError("Imposible comunicar con la mutualidad en estos momentos. Inténtelo de nuevo en unos minutos.");
 			throw new SIGAException("Imposible comunicar con la mutualidad en estos momentos. Inténtelo de nuevo en unos minutos");
@@ -185,7 +185,7 @@ public class MutualidadWSClient extends SIGAWSClientAbstract {
             respuesta.setRutaPDF(this.getRutaPDF(response.getPDF(),idSolicitud.toString(), super.getUsrBean().getLocation()));
             respuesta.setCorrecto(true);
         } catch (Exception e) {
-            escribeLog("Error en llamada a getEstadoSolicitud: " + e.getMessage());
+            escribeLog("Error en llamada a getEstadoSolicitud: " + e);
             respuesta.setCorrecto(false);
             respuesta.setMensajeError("Imposible comunicar con la mutualidad en estos momentos. Inténtelo de nuevo en unos minutos.");
             throw new SIGAException("Imposible comunicar con la mutualidad en estos momentos. Inténtelo de nuevo en unos minutos");
@@ -220,10 +220,10 @@ public class MutualidadWSClient extends SIGAWSClientAbstract {
 			respuesta.setCorrecto(true);
 			
 		}catch (Exception e) {
-			escribeLog("Error en llamada al recuperar enumerados: " + e.getMessage());
+			escribeLog("Error en llamada al recuperar enumerados: " + e);
 			respuesta.setCorrecto(false);
 			respuesta.setMensajeError("Imposible comunicar con la mutualidad en estos momentos. Inténtelo de nuevo en unos minutos.");
-			throw new SIGAException("Imposible comunicar con la mutualidad en estos momentos. Inténtelo de nuevo en unos minutos");
+			throw new SIGAException("Imposible comunicar con la mutualidad en estos momentos. Inténtelo de nuevo en unos minutosz");
 		}
 		return respuesta;
 		
@@ -271,7 +271,7 @@ public class MutualidadWSClient extends SIGAWSClientAbstract {
 			}
 			
 		}catch (Exception e) {
-			escribeLog("Error en llamada al solicitar el alta en el seguro gratuito: " + e.getMessage());
+			escribeLog("Error en llamada al solicitar el alta en el seguro gratuito: " + e);
 			respuesta.setCorrecto(false);
 			respuesta.setMensajeError("Imposible comunicar con la mutualidad en estos momentos. Inténtelo de nuevo en unos minutos.");
 			throw new SIGAException("Imposible comunicar con la mutualidad en estos momentos. Inténtelo de nuevo en unos minutos");
@@ -327,7 +327,7 @@ public class MutualidadWSClient extends SIGAWSClientAbstract {
 			}
 
 		}catch (Exception e) {
-			escribeLog("Error en llamada al solicitar alta en el plan profesional: " + e.getMessage());
+			escribeLog("Error en llamada al solicitar alta en el plan profesional: " + e);
 			respuesta.setCorrecto(false);
 			respuesta.setMensajeError("Imposible comunicar con la mutualidad en estos momentos. Inténtelo de nuevo en unos minutos.");
 			throw new SIGAException("Imposible comunicar con la mutualidad en estos momentos. Inténtelo de nuevo en unos minutos");
