@@ -623,9 +623,10 @@
 		function onChangeIdTipoInforme() 
 		{	
 			indiceTipoInforme = document.getElementById("idTipoInforme").selectedIndex;
-			idClaseTipoInforme = 'claseTipoInforme_'+indiceTipoInforme;
+			//idClaseTipoInforme = 'claseTipoInforme_'+indiceTipoInforme;
 			idDirectorioTipoInforme = 'directorioTipoInforme_'+indiceTipoInforme;
-			claseTipoInforme =  document.getElementById(idClaseTipoInforme).value;
+			
+			//claseTipoInforme =  document.getElementById(idClaseTipoInforme).value;
 			directorioTipoInforme =  document.getElementById(idDirectorioTipoInforme).value;
 			document.InformeFormEdicion.directorio.value = directorioTipoInforme;
 			

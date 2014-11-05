@@ -359,7 +359,7 @@ public class ActaComisionAction extends MasterAction{
 		miHash.put(ScsActaComisionBean.C_FECHAREUNION, actaForm.getFechaReunion());
 		miHash.put(ScsActaComisionBean.C_IDPRESIDENTE, actaForm.getIdPresidente());
 		miHash.put(ScsActaComisionBean.C_IDSECRETARIO, actaForm.getIdSecretario());
-		miHash.put(ScsActaComisionBean.C_IDINSTITUCION, usr.getLocation());
+		miHash.put(ScsActaComisionBean.C_IDINSTITUCION, usr.getIdInstitucionComision());
 		
 		String consulta= "";
 		Vector datos = new Vector();
@@ -388,7 +388,7 @@ public class ActaComisionAction extends MasterAction{
 				databackup=new HashMap();
 
 				Paginador resultado = null;
-				resultado=actaAdm.getBusquedaActas((String)usr.getLocation(), miHash);
+				resultado=actaAdm.getBusquedaActas( miHash);
 				if (resultado!=null){ 
 					//Si no es la primera llamada, obtengo la página del request y la busco con el paginador
 					String pagina = request.getParameter("pagina");
@@ -695,8 +695,10 @@ public class ActaComisionAction extends MasterAction{
 		String idActa 		= actaForm.getIdActa().equalsIgnoreCase("")?"null":actaForm.getIdActa();
 		String idPonente 	= actaForm.getIdPonente().equalsIgnoreCase("")?"null":actaForm.getIdPonente();
 		
+		
 		String idInstitucion 	= actaForm.getIdInstitucion().equalsIgnoreCase("")?"null":actaForm.getIdInstitucion();
 		String idFundamentoJuridico 	= actaForm.getIdFundamentoJuridico().equalsIgnoreCase("")?"null":actaForm.getIdFundamentoJuridico();
+		
 		String idTipoRatificacionEJG 	= actaForm.getIdTipoRatificacionEJG().equalsIgnoreCase("")?"null":actaForm.getIdTipoRatificacionEJG();
 		String[] seleccionados = actaForm.getSeleccionados().split("%%%");
 		
@@ -719,6 +721,8 @@ public class ActaComisionAction extends MasterAction{
 		}
 		if(actaForm.getGuardaPonente()){
 			update.append(ScsEJGBean.C_IDPONENTE + "=" + idPonente + " , ");
+			update.append(ScsEJGBean.C_IDINSTITUCIONPONENTE + "=" + idInstitucion + " , ");
+			
 			if(actaForm.getFechaPresentacionPonente()!=null && !actaForm.getFechaPresentacionPonente().equalsIgnoreCase(""))
 				update.append(ScsEJGBean.C_FECHAPRESENTACIONPONENTE + "='" + actaForm.getFechaPresentacionPonente() + "' , ");
 			else
@@ -729,6 +733,7 @@ public class ActaComisionAction extends MasterAction{
 		}
 		if(actaForm.getGuardaFundamento()){
 			update.append(ScsEJGBean.C_IDFUNDAMENTOJURIDICO + "=" + idFundamentoJuridico + " , ");
+			
 		}
 		update.deleteCharAt(update.lastIndexOf(","));
 		

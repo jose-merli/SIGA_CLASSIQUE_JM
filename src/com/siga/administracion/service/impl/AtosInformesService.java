@@ -52,7 +52,7 @@ import es.satec.businessManager.template.JtaBusinessServiceTemplate;
 
 public class AtosInformesService extends JtaBusinessServiceTemplate 
 	implements InformesService {
-	private static Logger log = Logger.getLogger(AtosInformesService.class);
+//	private static Logger log = Logger.getLogger(AtosInformesService.class);
 	public AtosInformesService(BusinessManager businessManager) {
 		super(businessManager);
 	}
@@ -703,6 +703,30 @@ public class AtosInformesService extends JtaBusinessServiceTemplate
 		}
 		List<EnvPlantillasEnviosBean> plantillasEnviosBeans = plantillasEnviosAdm.getPlantillasEnvio(idTipoEnvio,idInstitucion, idPlantillaEnvioDefecto);
 		return plantillasEnviosBeans;
+	}
+	/* (non-Javadoc)
+	 * @see com.siga.administracion.service.InformesService#getTiposInformeComision(com.atos.utils.UsrBean)
+	 */
+	@Override
+	public List<AdmTipoInformeBean> getTiposInformeComisionMultiple(UsrBean usrBean)
+			throws ClsExceptions {
+		AdmTipoInformeAdm admTipoInforme = new AdmTipoInformeAdm(usrBean);
+		List<AdmTipoInformeBean> tiposInformeList = admTipoInforme.getTiposInformeComisionMultiple(false);
+		if(tiposInformeList==null){
+			tiposInformeList = new Vector<AdmTipoInformeBean>();
+		
+		}
+		return tiposInformeList;
+	}
+	public List<AdmTipoInformeBean> getTiposInformeIntitucionComisionMultiple(UsrBean usrBean)
+			throws ClsExceptions {
+		AdmTipoInformeAdm admTipoInforme = new AdmTipoInformeAdm(usrBean);
+		List<AdmTipoInformeBean> tiposInformeList = admTipoInforme.getTiposInformeIntitucionComisionMultiple(true);
+		if(tiposInformeList==null){
+			tiposInformeList = new Vector<AdmTipoInformeBean>();
+		
+		}
+		return tiposInformeList;
 	}
 	
 

@@ -5,6 +5,7 @@ package com.siga.general;
 //import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Properties;
 import java.util.Vector;
 
@@ -13,7 +14,8 @@ import javax.servlet.http.HttpSession;
 import javax.transaction.UserTransaction;
 
 import org.apache.struts.action.ActionServlet;
-import org.redabogacia.sigaservices.app.services.gen.GenParametrosService;
+import org.redabogacia.sigaservices.app.autogen.model.CenInstitucion;
+import org.redabogacia.sigaservices.app.services.cen.CenInstitucionService;
 import org.redabogacia.sigaservices.app.util.PropertyReader;
 import org.redabogacia.sigaservices.app.util.ReadProperties;
 import org.redabogacia.sigaservices.app.util.SIGAReferences;
@@ -51,6 +53,8 @@ import com.siga.beans.CenInstitucionLenguajesBean;
 import com.siga.beans.CenPersonaAdm;
 import com.siga.beans.CenPersonaBean;
 import com.siga.beans.GenParametrosAdm;
+
+import es.satec.businessManager.BusinessManager;
 
 
 /**
@@ -263,6 +267,28 @@ System.setProperties(properties);
 		     * metemos el bean del usuario
 		     */
 			setProfiles(rolId,bean);
+			
+			BusinessManager bm = BusinessManager.getInstance();
+			CenInstitucionService cenInstitucionService = (CenInstitucionService)bm.getService(CenInstitucionService.class);
+			CenInstitucion cenInstitucion = new CenInstitucion();
+			cenInstitucion.setIdinstitucion(Short.valueOf(bean.getLocation()));
+			CenInstitucion comision =  cenInstitucionService.getComision(cenInstitucion);
+			bean.setIdInstitucionComision(comision.getIdinstitucion());
+			if(bean.isComision()){
+				List<CenInstitucion> instituciones =  cenInstitucionService.getInstitucionesComision(comision);
+				if( instituciones!=null && instituciones.size()>0 ){
+					Short[] institucionesComision  = new Short[instituciones.size()];
+					for (int i = 0; i < instituciones.size(); i++) {
+						institucionesComision[i]= instituciones.get(i).getIdinstitucion();
+					}
+					bean.setInstitucionesComision(institucionesComision);
+				}else{
+					bean.setInstitucionesComision(new Short[]{Short.parseShort(bean.getLocation())});
+				}
+				bean.setLocation(""+comision.getIdinstitucion());
+			}
+			
+			
 			/* Obtenemos idPersona que corresponde al nif y lo mentemos en el bean del
 			 * usuario.
 			*/

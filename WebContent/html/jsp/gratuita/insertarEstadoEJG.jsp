@@ -38,7 +38,7 @@
 	
 	
 	ArrayList vSel = new ArrayList(); // 
-	String anio= "", numero="", idTipoEJG = "", idEstadoPorEJG="", observaciones="", automatico="" ;	
+	String anio= "", numero="", idTipoEJG = "", idEstadoPorEJG="", observaciones="", automatico="", idInstitucion="" ;	
 	ScsEstadoEJGBean resultado = new ScsEstadoEJGBean();
 	Vector v=(Vector)request.getAttribute("resultado");
 	String fechaInicio=fechaHoy;
@@ -50,6 +50,7 @@
 		anio = miHash.get("ANIO").toString();
 		numero = miHash.get("NUMERO").toString();
 		idTipoEJG = miHash.get("IDTIPOEJG").toString();
+		idInstitucion =miHash.get("IDINSTITUCION").toString();
 		idEstadoPorEJG=miHash.get("IDESTADOPOREJG").toString();
 		
 		
@@ -68,8 +69,11 @@
 	      bReadOnly=true;
 		  }
 	}
-	catch(Exception e){};
-	String dato[] = {(String)usr.getLocation()};	
+	catch(Exception e){
+		//System.out.println("Error"+e.toString());
+		
+	};
+	String dato[] = {idInstitucion};	
 %>
 
 
@@ -112,7 +116,7 @@
 	
 	<html:form action="/JGR_EstadosEJG" method="POST" target="submitArea">
 	<html:hidden property = "modo" value = "Insertar"/>
-	<html:hidden property = "idInstitucion" value ="<%=usr.getLocation()%>"/>
+	<html:hidden property = "idInstitucion" value ="<%=idInstitucion%>"/>
 	<html:hidden property = "idTipoEJG" value ="<%=idTipoEJG%>"/>
 	<html:hidden property = "anio" value ="<%=anio%>"/>
 	<html:hidden property = "numero" value ="<%=numero%>"/>

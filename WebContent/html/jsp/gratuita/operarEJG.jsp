@@ -16,6 +16,7 @@
 <%@ taglib uri="struts-html.tld" prefix="html"%>
 <%@ taglib uri="struts-bean.tld" prefix="bean"%>
 <%@ taglib uri="struts-logic.tld" prefix="logic"%>
+<%@ taglib uri = "c.tld" 				prefix="c"%>
 
 <!-- IMPORTS -->
 <%@ page import="com.siga.administracion.SIGAConstants"%>
@@ -28,7 +29,7 @@
 <%
 	HttpSession ses = request.getSession(true);
 	UsrBean usr = (UsrBean) ses.getAttribute("USRBEAN");
-
+	String idInstitucionLocation = usr.getLocation();
 	int ejisActivo = 0;
 	if (request.getAttribute("EJIS_ACTIVO") != null) {
 		ejisActivo = Integer.parseInt(request.getAttribute(
@@ -51,8 +52,7 @@
 	if (usr.getAccessType().equals(SIGAConstants.ACCESS_READ))
 		modo = "ver";
 	String NOMBREESTADO = (String) request.getAttribute("NOMBREESTADO");
-	String[] dato = { usr.getLocation() };
-	String idInstitucion = usr.getLocation();
+	
 	if (usr.isComision())
 		modo = "ver";
 
@@ -60,7 +60,7 @@
 	String nombretramidesig = "";
 	boolean designaExiste = false;
 	// Obtenemos el resultado
-	String ANIO = "", CODIGO = "", NUMERO = "", TIPOEJG = "", IDTIPOEJG = "", IDTIPOEJGCOLEGIO = "", TURNO = "", GUARDIA = "", NIFASISTIDO = "", NOMBREASISTIDO = "", APELLIDO1ASISTIDO = "", APELLIDO2ASISTIDO = "", NUMEROCOLEGIADO = "", NOMBRELETRADO = "", APELLIDO1LETRADO = "", APELLIDO2LETRADO = "", ANIOSOJ = "", NUMEROSOJ = "", TIPOSOJ = "", IDTIPOSOJ = "", FECHAAPERTURA = "", DESIGNA_ANIO = "", DESIGNA_NUMERO = "", DESIGNA_TURNO_NOMBRE = "", NOMBRETURNO = "", FECHAAPERTURASOJ = "", TIPOASISTENCIA = "", NUMEROASISTENCIA = "", FECHAPRESENTACION = "", FECHALIMITEPRESENTACION = "", OBSERVACIONES = "", DELITOS = "", TIPOEJGCOLEGIO = "", IDGUARDIA = "", CREADODESDE = "", ASISTENCIA_ANIO = "", ASISTENCIA_NUMERO = "", ASISTENCIAFECHA = "", FECHAENTRADADESIGNA = "", FECHARATIFICACION = "", PROCURADORNECESARIO = "", idProcurador = "", idInstitucionProcurador = "", numeroCAJG = "", anioCAJG = "", calidad = "", DESIGNA_CODIGO = "", CODIGOSOJ = "", IDPERSONA = "", procuradorNombreCompleto = "";
+	String ANIO = "", CODIGO = "", NUMERO = "", TIPOEJG = "", IDTIPOEJG = "", IDTIPOEJGCOLEGIO = "", TURNO = "", GUARDIA = "", NIFASISTIDO = "", NOMBREASISTIDO = "", APELLIDO1ASISTIDO = "", APELLIDO2ASISTIDO = "", NUMEROCOLEGIADO = "", NOMBRELETRADO = "", APELLIDO1LETRADO = "", APELLIDO2LETRADO = "", ANIOSOJ = "", NUMEROSOJ = "", TIPOSOJ = "", IDTIPOSOJ = "", FECHAAPERTURA = "", DESIGNA_ANIO = "", DESIGNA_NUMERO = "", DESIGNA_TURNO_NOMBRE = "", NOMBRETURNO = "", FECHAAPERTURASOJ = "", TIPOASISTENCIA = "", NUMEROASISTENCIA = "", FECHAPRESENTACION = "", FECHALIMITEPRESENTACION = "", OBSERVACIONES = "", DELITOS = "", TIPOEJGCOLEGIO = "", IDGUARDIA = "", CREADODESDE = "", ASISTENCIA_ANIO = "", ASISTENCIA_NUMERO = "", ASISTENCIAFECHA = "", FECHAENTRADADESIGNA = "", FECHARATIFICACION = "", PROCURADORNECESARIO = "", idProcurador = "", idInstitucionProcurador = "", numeroCAJG = "", anioCAJG = "", calidad = "", DESIGNA_CODIGO = "", CODIGOSOJ = "", IDPERSONA = "", procuradorNombreCompleto = "",idInstitucion = "";
 	String procuradorNumColegiado = "", procuradorSel = "", nombreCompleto = "", ESTADO = "", SUFIJO = "", NIG = "";
 	String idPretension = "", pretension = "";
 
@@ -79,6 +79,7 @@
 	try {
 		ESTADO = hash.get("ESTADO").toString();
 		ANIO = hash.get("ANIO").toString();
+		idInstitucion = hash.get("IDINSTITUCION").toString();
 		CODIGO = hash.get("NUMEJG").toString();
 		NUMERO = hash.get("NUMERO").toString();
 		SUFIJO = hash.get("SUFIJO").toString();
@@ -219,7 +220,7 @@
 					.getAttribute("PROCURADOR_NOMBRE_COMPLETO");
 	} catch (Exception e) {
 	}
-	;
+	String[] dato = { idInstitucion };
 
 	// Datos de la designa
 	String designaAnio = hash.get("DESIGNA_ANIO").toString();
@@ -229,7 +230,7 @@
 	if(designaAnio!= null && !designaAnio.equals("")){
 		designaExiste = true;
 		ScsDesignaAdm admD = new ScsDesignaAdm(usr);		
-		Hashtable hTituloD = admD.obtenerLetradoDesigna(usr.getLocation(), designaIdTurno, designaAnio,	designaNumero);
+		Hashtable hTituloD = admD.obtenerLetradoDesigna(idInstitucion, designaIdTurno, designaAnio,	designaNumero);
 		if (hTituloD != null) {
 			t_nombreD = (String) hTituloD.get(CenPersonaBean.C_NOMBRE);
 			t_apellido1D = (String) hTituloD.get(CenPersonaBean.C_APELLIDOS1);
@@ -264,8 +265,8 @@
 	String idTurno = (String) hash.get("IDTURNO");
 	if (idTurno == null)
 		idTurno = new String("");
-	String[] datosJuz = { usr.getLocation(), idTurno, "-1" };
-	String[] parametroComisarias = { usr.getLocation(), "-1" };
+	String[] datosJuz = { idInstitucion, idTurno, "-1" };
+	String[] parametroComisarias = { idInstitucion, "-1" };
 
 	ArrayList estadoSel = new ArrayList();
 	ArrayList juzgadoSel = new ArrayList();
@@ -321,19 +322,19 @@
 		vOrigenCAJGSel.add(0, vOrigenCAJG);
 	}
 
-	String[] datos = { usr.getLocation(), idTurno };
+	String[] datos = {idInstitucion, idTurno };
 	//String[] datos2 = { usr.getLocation(), usr.getLanguage() };
 
 	//datos2 es para idPresentacion
-	String[] datos2 = { usr.getLocation(), "-1", "-1", "-1" };
+	String[] datos2 = { idInstitucion, "-1", "-1", "-1" };
 
 	if (ejisActivo > 0 || PCAJG_ACTIVADO.intValue() == 4) {
 
 		if (!juzgadoAsi.equals(""))
 			datos2[0] = juzgadoAsi;
 
-		datos2[1] = usr.getLocation();
-		datos2[2] = usr.getLocation();
+		datos2[1] = idInstitucion;
+		datos2[2] = idInstitucion;
 
 		if (idPretension != null && (!idPretension.equals("")))
 			datos2[3] = idPretension;
@@ -470,13 +471,13 @@
 	
 		<html:hidden property = "modo" value = ""/>	
 		<html:hidden property = "idTipoEJG" value = "<%=IDTIPOEJG%>"/>
-		<html:hidden property = "idInstitucion" value = "<%=usr.getLocation()%>"/>
+		<html:hidden property = "idInstitucion" value = "<%=idInstitucion%>"/>
 		<html:hidden property = "numero" value = "<%=NUMERO%>"/>
 		<html:hidden property = "anio" value = "<%=ANIO%>"/>		
 		<html:hidden property = "designa_anio"    		value= "<%=designaAnio%>"/>
 		<html:hidden property = "designa_numero"  		value= "<%=designaNumero%>"/>
 		<html:hidden property = "designa_turno" 		value= "<%=designaIdTurno%>"/>
-		<html:hidden property = "designa_idInstitucion" value= "<%=usr.getLocation()%>"/>
+		<html:hidden property = "designa_idInstitucion" value= "<%=idInstitucion%>"/>
 		<html:hidden property = "idPersona" value= "<%=IDPERSONA%>"/>
 		<html:hidden property = "flagSalto" value=""/>
 		<html:hidden property = "flagCompensacion" value=""/>	
@@ -494,7 +495,7 @@
 								<%
 									String t_nombre = "", t_apellido1 = "", t_apellido2 = "", t_anio = "", t_numero = "", t_tipoEJG = "", t_sufijo = "";
 										ScsEJGAdm adm = new ScsEJGAdm(usr);
-										Hashtable hTitulo = adm.getTituloPantallaEJG(usr.getLocation(),
+										Hashtable hTitulo = adm.getTituloPantallaEJG(idInstitucion,
 												ANIO, NUMERO, IDTIPOEJG);
 
 										if (hTitulo != null) {
@@ -513,7 +514,7 @@
 											t_tipoEJG = (String) hTitulo.get("TIPOEJG");
 										}
 								%> 
-								<%=UtilidadesString.mostrarDatoJSP(t_anio)%>/<%=UtilidadesString.mostrarDatoJSP(t_numero)%>
+								<c:out value="${PREFIJOEXPEDIENTECAJG}" />&nbsp;<%=UtilidadesString.mostrarDatoJSP(t_anio)%>/<%=UtilidadesString.mostrarDatoJSP(t_numero)%>
 								- <%=UtilidadesString.mostrarDatoJSP(t_nombre)%> <%=UtilidadesString.mostrarDatoJSP(t_apellido1)%>
 								<%=UtilidadesString.mostrarDatoJSP(t_apellido2)%>
 							</td>
@@ -569,10 +570,9 @@
 												codigoEjg = CODIGO;
 											}
 								%>
-								<td class="labelText" width="200"><input type="text"
-									class="boxConsulta" value="<%=ANIO%>" readOnly="true" size="4">
-									/ <input size="4" type="text" class="boxConsulta"
-									value="<%=codigoEjg%>" readOnly="true"></td>
+								<td class="labelTextValor" width="200">
+									<c:out value="${PREFIJOEXPEDIENTECAJG}" />&nbsp;<c:out  value="<%=ANIO%>" />/<c:out  value="<%=codigoEjg%>" />
+								</td>
 
 								<td class="labelText">	
 									<siga:Idioma key='gratuita.operarEJG.literal.interesado'/>
@@ -905,9 +905,9 @@
 								<logic:equal name="designa" property="ESTADO" value="A"><span class="labelTextValue red estadoDesigna"><siga:Idioma key="gratuita.designa.estado.anulado"/></span></logic:equal>
 								<span class="labelTextValue tramitadorDesigna">${designa.TRAMITADOR} </span>
 								<span class="labelTextValue botonera">
-									<img src="<html:rewrite page='/html/imagenes/bconsultar_off.gif'/>" style="cursor:pointer;" alt="<siga:Idioma key='gratuita.operarEJG.boton.ConsultarDesigna'/>" name="consultarDesigna" border="0" onclick="abrirDesigna('ver','${designa.DESIGNA_ANIO}','${designa.DESIGNA_NUMERO}','${designa.DESIGNA_IDTURNO}')"/>
-									<img src="<html:rewrite page='/html/imagenes/beditar_off.gif'/>" style="cursor:pointer;display:none" alt="<siga:Idioma key='gratuita.boton.EditarDesigna'/>" class="botonEditarDesigna" border="0" onclick="abrirDesigna('<%=modo%>','${designa.DESIGNA_ANIO}','${designa.DESIGNA_NUMERO}','${designa.DESIGNA_IDTURNO}')"/>
-									<img src="<html:rewrite page='/html/imagenes/bborrar_off.gif'/>" style="cursor:pointer;display:none" alt="<siga:Idioma key='gratuita.boton.BorrarDesigna'/>" class="botonBorrarDesigna" border="0" onclick="borrarRelacionDesigna('${designa.DESIGNA_ANIO}','${designa.DESIGNA_NUMERO}','${designa.DESIGNA_IDTURNO}')"/>
+									<img src="<html:rewrite page='/html/imagenes/bconsultar_off.gif'/>" style="cursor:pointer;" alt="<siga:Idioma key='gratuita.operarEJG.boton.ConsultarDesigna'/>" name="consultarDesigna" border="0" onclick="abrirDesigna('ver','${designa.DESIGNA_ANIO}','${designa.DESIGNA_NUMERO}','${designa.DESIGNA_IDTURNO}','${designa.DES_IDINSTITUCION}')"/>
+									<img src="<html:rewrite page='/html/imagenes/beditar_off.gif'/>" style="cursor:pointer;display:none" alt="<siga:Idioma key='gratuita.boton.EditarDesigna'/>" class="botonEditarDesigna" border="0" onclick="abrirDesigna('<%=modo%>','${designa.DESIGNA_ANIO}','${designa.DESIGNA_NUMERO}','${designa.DESIGNA_IDTURNO}','${designa.DES_IDINSTITUCION}')"/>
+									<img src="<html:rewrite page='/html/imagenes/bborrar_off.gif'/>" style="cursor:pointer;display:none" alt="<siga:Idioma key='gratuita.boton.BorrarDesigna'/>" class="botonBorrarDesigna" border="0" onclick="borrarRelacionDesigna('${designa.DESIGNA_ANIO}','${designa.DESIGNA_NUMERO}','${designa.DESIGNA_IDTURNO}','${designa.DESIGNA_IDTURNO}','${designa.DES_IDINSTITUCION}')"/>
 								</span>
 							</div>
 							</logic:iterate>
@@ -935,7 +935,7 @@
 									<%
 										} else {
 													ArrayList lista = new ArrayList();
-													String cadena = usr.getLocation() + "," + idTurno;
+													String cadena = idInstitucion + "," + idTurno;
 													lista.add(cadena);
 									%>
 										<siga:ComboBD nombre = "identificador" tipo="turnos" clase="boxCombo" ancho="400" obligatorio="false" pestana="t" accion="Hijo:identificador2;" elementoSel="<%=lista%>" parametro="<%=dato%>"/>
@@ -954,7 +954,7 @@
 									<%
 															} else {
 																		ArrayList lista = new ArrayList();
-																		String cadena = usr.getLocation() + "," + IDGUARDIA;
+																		String cadena = idInstitucion + "," + IDGUARDIA;
 																		lista.add(cadena);
 														%>
 										<siga:ComboBD nombre = "identificador2" tipo="guardias" clase="boxCombo" pestana="t" ancho="400" obligatorio="false" hijo="t" parametro="<%=datos%>" elementoSel="<%=lista%>"/>									
@@ -1014,6 +1014,7 @@
 
 	<html:form action = "/JGR_MantenimientoDesignas.do" method="POST" target="mainWorkArea">
 		<html:hidden property ="modo" 	  value= "<%=modo%>"/>
+		<html:hidden property ="idInstitucion"     value= "<%=DESIGNA_IDINSTITUCION%>"/>
 		<html:hidden property ="anio"     value= "<%=designaAnio%>"/>
 		<html:hidden property ="numero"   value= "<%=designaNumero%>"/>
 		<html:hidden property ="idTurno"  value= "<%=designaIdTurno%>"/>
@@ -1032,7 +1033,7 @@
 		<html:hidden property ="anio"          value= "<%=ANIOSOJ%>"/>
 		<html:hidden property ="numero"  	   value= "<%=NUMEROSOJ%>"/>
 		<html:hidden property ="idTipoSOJ"     value= "<%=IDTIPOSOJ%>"/>
-		<html:hidden property ="idInstitucion" value= "<%=usr.getLocation()%>"/>
+		<html:hidden property ="idInstitucion" value= "<%=idInstitucion%>"/>
 		<html:hidden property ="desdeEJG"      value= "si"/>
 	</html:form>		
 
@@ -1080,7 +1081,7 @@
 		<html:hidden property ="anioEjg"     value = "<%=ANIO%>"/>
 		<html:hidden property ="nifSolicitante"     value = "<%=NIFASISTIDO%>" />
 		<html:hidden property ="nombreSolicitante"     value = "<%=NOMBRECOMPLETOASISTIDO%>" />
-		<html:hidden property ="idInstitucion_TipoExpediente" value= "<%=usr.getLocation()%>"/>	
+		<html:hidden property ="idInstitucion_TipoExpediente" value= "<%=idInstitucion%>"/>	
 		<html:hidden property ="numeroProcedimiento"   value = "<%=DESIGNA_NUMPROCEDIMIENTO%>"/>
 		<html:hidden property ="anioProcedimiento"   value = "<%=DESIGNA_ANIOPROCEDIMIENTO%>"/>
 		<html:hidden property ="procedimiento"   value = "<%=DESIGNA_IDPROCEDIMIENTO%>"/>		
@@ -1113,6 +1114,7 @@
 			<%String modoVolverSOJ = (String) request.getSession().getAttribute(
 					"modoVolverSOJ");
 			if (modoVolverSOJ == null) {%>
+					document.forms[0].idInstitucion.value = "<%=idInstitucionLocation%>";
 					document.forms[0].action="./JGR_EJG.do";	
 					document.forms[0].modo.value="buscar";
 					document.forms[0].target="mainWorkArea"; 
@@ -1224,18 +1226,20 @@
 	 	}
 		
 		//Asociada al boton Consultar Designa
-		function abrirDesigna(modo, anio, numero, turno) {
+		function abrirDesigna(modo, anio, numero, turno,institucion) {
 			document.MaestroDesignasForm.modo.value= modo;
+			document.MaestroDesignasForm.idInstitucion.value= institucion;
 			document.MaestroDesignasForm.anio.value= anio;
 			document.MaestroDesignasForm.numero.value= numero;
-			document.MaestroDesignasForm.idTurno.value= turno;
 			document.MaestroDesignasForm.desdeEjg.value= "si";
 			document.MaestroDesignasForm.submit();
 	 	}
 		
-		function borrarRelacionDesigna(anio, numero, turno) {
+		function borrarRelacionDesigna(anio, numero, turno,institucion) {
 			if (confirm("<siga:Idioma key='messages.deleteConfirmation'/>")) {
 				document.DefinirMantenimientoEJGForm.modo.value="borrarRelacionConDesigna";
+				
+				document.DefinirMantenimientoEJGForm.designa_idInstitucion.value= institucion;
 				document.DefinirMantenimientoEJGForm.designa_anio.value= anio;
 				document.DefinirMantenimientoEJGForm.designa_numero.value= numero;
 				document.DefinirMantenimientoEJGForm.designa_turno.value= turno;
@@ -1350,7 +1354,7 @@
 	<!-- FIN: BOTONES BUSQUEDA -->
 	
 	<html:form action="/INF_InformesGenericos" method="post"	target="submitArea">
-		<html:hidden property="idInstitucion" value = "<%=idInstitucion%>"/>
+		<html:hidden property="idInstitucion" value = "<%=idInstitucionLocation%>"/>
 		<html:hidden property="idTipoInforme" value='<%=usr.isComision() ? "CAJG" : "EJG"%>'/>
 		<html:hidden property="enviar" value = "1"/>
 		<html:hidden property="descargar" value="1"/>

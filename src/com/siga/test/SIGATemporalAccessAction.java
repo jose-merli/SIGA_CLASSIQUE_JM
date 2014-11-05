@@ -3,6 +3,7 @@ package com.siga.test;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Properties;
 import java.util.Vector;
 
@@ -16,6 +17,8 @@ import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.redabogacia.sigaservices.app.autogen.model.CenInstitucion;
+import org.redabogacia.sigaservices.app.services.cen.CenInstitucionService;
 import org.redabogacia.sigaservices.app.util.PropertyReader;
 import org.redabogacia.sigaservices.app.util.SIGAReferences;
 
@@ -44,6 +47,8 @@ import com.siga.beans.CenPersonaAdm;
 import com.siga.beans.CenPersonaBean;
 import com.siga.beans.GenParametrosAdm;
 import com.siga.general.SIGAException;
+
+import es.satec.businessManager.BusinessManager;
 
 public class SIGATemporalAccessAction extends Action
 {
@@ -131,10 +136,34 @@ public class SIGATemporalAccessAction extends Action
 //		usrbean.setUserName(user);
 
 		usrbean.setProfile(profileArray);
-		usrbean.setLocation(location);
+		
+		//Comprobamos si es comision multiple
+		//Comprobamos si es comision multiple
+		BusinessManager bm = BusinessManager.getInstance();
+		CenInstitucionService cenInstitucionService = (CenInstitucionService)bm.getService(CenInstitucionService.class);
+		CenInstitucion cenInstitucion = new CenInstitucion();
+		cenInstitucion.setIdinstitucion(Short.valueOf(location));
+		CenInstitucion comision =  cenInstitucionService.getComision(cenInstitucion);
+		usrbean.setIdInstitucionComision(comision.getIdinstitucion());
+		if(usrbean.isComision()){
+			List<CenInstitucion> instituciones =  cenInstitucionService.getInstitucionesComision(comision);
+			if( instituciones!=null && instituciones.size()>0 ){
+				Short[] institucionesComision  = new Short[instituciones.size()];
+				for (int i = 0; i < instituciones.size(); i++) {
+					institucionesComision[i]= instituciones.get(i).getIdinstitucion();
+				}
+				usrbean.setInstitucionesComision(institucionesComision);
+			}else{
+				usrbean.setInstitucionesComision(new Short[]{Short.parseShort(location)});
+			}
+			usrbean.setLocation(""+comision.getIdinstitucion());
+		}else{
+			
+			usrbean.setLocation(location);
+		}
 		usrbean.setLetrado(letrado.equals("S")?true:false);
 		//usrbean.setComision(profile.equalsIgnoreCase("CJG")?true:false); //Con la nueva forma de entrar se debe hacer un contains
-		usrbean.setComision(profile.contains("CJG")?true:false);
+		//usrbean.setComision(profile.contains("CJG")?true:false);
 		
 		// obtengo el idioma de la institucion
 		String idLenguajeInstitucion = "1";

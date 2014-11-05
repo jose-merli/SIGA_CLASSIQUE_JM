@@ -15,6 +15,7 @@ import org.apache.struts.action.ActionMapping;
 import com.atos.utils.*;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesMultidioma;
+import com.siga.beans.GenParametrosAdm;
 import com.siga.beans.ScsEstadoEJGAdm;
 import com.siga.beans.ScsEstadoEJGBean;
 import com.siga.general.MasterAction;
@@ -76,7 +77,7 @@ public class DefinirEstadosEJGAction extends MasterAction
 		miHash.put (ScsEstadoEJGBean.C_IDTIPOEJG, miForm.getIdTipoEJG ());
 		miHash.put (ScsEstadoEJGBean.C_ANIO, miForm.getAnio ());
 		miHash.put (ScsEstadoEJGBean.C_NUMERO, miForm.getNumero ());
-		miHash.put (ScsEstadoEJGBean.C_IDINSTITUCION, this.getUserBean(request).getLocation ());
+		miHash.put (ScsEstadoEJGBean.C_IDINSTITUCION, miForm.getIdInstitucion());
 		ScsEstadoEJGAdm  estadoEJGAdm=new ScsEstadoEJGAdm(this.getUserBean(request));
 		v=estadoEJGAdm.selectByPK(miHash);
 		request.getSession ().setAttribute ("EJG", miHash);
@@ -106,7 +107,7 @@ public class DefinirEstadosEJGAction extends MasterAction
 		miHash.put (ScsEstadoEJGBean.C_IDTIPOEJG, miForm.getIdTipoEJG ());
 		miHash.put (ScsEstadoEJGBean.C_ANIO, miForm.getAnio ());
 		miHash.put (ScsEstadoEJGBean.C_NUMERO, miForm.getNumero ());
-		miHash.put (ScsEstadoEJGBean.C_IDINSTITUCION, this.getUserBean(request).getLocation ());
+		miHash.put (ScsEstadoEJGBean.C_IDINSTITUCION, miForm.getIdInstitucion());
 		ScsEstadoEJGAdm  estadoEJGAdm=new ScsEstadoEJGAdm(this.getUserBean(request));
 		v=estadoEJGAdm.selectByPK(miHash);
 		request.getSession ().setAttribute ("EJG", miHash);
@@ -134,6 +135,7 @@ public class DefinirEstadosEJGAction extends MasterAction
 		miHash.put ("ANIO", formulario.getDatos ().get ("ANIO"));
 		miHash.put ("NUMERO", formulario.getDatos ().get ("NUMERO"));
 		miHash.put ("IDTIPOEJG", formulario.getDatos ().get ("IDTIPOEJG"));
+		miHash.put ("IDINSTITUCION", formulario.getDatos ().get ("IDINSTITUCION"));
 		
 		request.getSession ().setAttribute ("EJG", miHash);
 
@@ -237,7 +239,7 @@ public class DefinirEstadosEJGAction extends MasterAction
 			miHash.put (ScsEstadoEJGBean.C_IDTIPOEJG, miForm.getIdTipoEJG ());
 			miHash.put (ScsEstadoEJGBean.C_ANIO, miForm.getAnio ());
 			miHash.put (ScsEstadoEJGBean.C_NUMERO, miForm.getNumero ());
-			miHash.put (ScsEstadoEJGBean.C_IDINSTITUCION, usr.getLocation ());
+			miHash.put (ScsEstadoEJGBean.C_IDINSTITUCION, miForm.getIdInstitucion());
 			
 			tx = usr.getTransaction ();
 			tx.begin ();
@@ -303,6 +305,12 @@ public class DefinirEstadosEJGAction extends MasterAction
 			" ORDER BY ESTADO.FECHAINICIO asc, ESTADO.IDESTADOPOREJG asc";
 		
 		try {
+			GenParametrosAdm paramAdm = new GenParametrosAdm (usr);
+			
+			
+			String prefijoExpedienteCajg = paramAdm.getValor (request.getParameter("IDINSTITUCION").toString(), ClsConstants.MODULO_SJCS, ClsConstants.GEN_PARAM_PREFIJO_EXPEDIENTES_CAJG, " ");
+			request.setAttribute("PREFIJOEXPEDIENTECAJG",prefijoExpedienteCajg);
+			
 			v = admBean.selectGenerico (consulta);
 			request.setAttribute ("resultado", v);
 			request.getSession ().setAttribute ("accion", accion);
@@ -333,7 +341,7 @@ public class DefinirEstadosEJGAction extends MasterAction
 		miHash.put ("ANIO", miForm.getAnio ());
 		miHash.put ("NUMERO", miForm.getNumero ());
 		miHash.put ("IDTIPOEJG", miForm.getIdTipoEJG ());
-		miHash.put ("IDINSTITUCION", usr.getLocation ());
+		miHash.put (ScsEstadoEJGBean.C_IDINSTITUCION, miForm.getIdInstitucion());
 		
 		request.setAttribute ("DATOSEJG", miHash);
 		

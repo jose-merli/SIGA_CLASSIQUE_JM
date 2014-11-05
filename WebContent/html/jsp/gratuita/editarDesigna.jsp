@@ -35,7 +35,7 @@
 	String modo = (String) ses.getAttribute("Modo");
 	String modoAction=(String) ses.getAttribute("ModoAction");
 	String idInstitucionLocation = usr.getLocation();
-	String[] dato = { usr.getLocation() };
+	
 
 	String tipo = "", estado = "", fecha = "", procurador = "", asunto = "", observaciones = "", delitos = "", fechaAnulacion = "", fechaEstado = "";
 	String fechaApertura = "", fechaOficioJuzgado = "", fechaRecepcionColegio = "", modo1="";
@@ -90,7 +90,7 @@
 	ArrayList pretensionesSel = new ArrayList();
 	String idJuzgado = "-1", idInstitucionJuzgado = null, idProcedimiento = "-1";
 
-	String idTurno = "", anio = "", numero = "", codigo = "", numeroProcedimiento = "",anioProcedimiento = "", sufijo="";
+	String idTurno = "", anio = "", numero = "", codigo = "", numeroProcedimiento = "",anioProcedimiento = "", sufijo="",idInstitucion = null;
 	boolean anulada = false;
 
 	// Designa consultada:
@@ -176,6 +176,7 @@
 		//Otros datos:
 		if (beanDesigna != null) {
 			idTurno = beanDesigna.getIdTurno().toString();
+			idInstitucion = beanDesigna.getIdInstitucion().toString();
 			anio = beanDesigna.getAnio().toString();
 			numero = beanDesigna.getNumero().toString();
 			codigo = beanDesigna.getCodigo().toString();
@@ -197,7 +198,7 @@
 			if (beanDesigna.getAnioProcedimiento() != null)
 				anioProcedimiento = beanDesigna.getAnioProcedimiento().toString();						
 			
-			procedimientoSel.add(0,"{\"idprocedimiento\":\""+idProcedimiento+"\",\"idinstitucion\":\""+usr.getLocation()+"\"}");
+			procedimientoSel.add(0,"{\"idprocedimiento\":\""+idProcedimiento+"\",\"idinstitucion\":\""+idInstitucion+"\"}");
 		}
 
 		// obteniendo juzgados y juzgado seleccionado
@@ -251,6 +252,7 @@
 		
 	} catch (Exception e) {
 		idTurno = (String) resultado.get(ScsDesignaBean.C_IDTURNO);
+		idInstitucion = (String) resultado.get(ScsDesignaBean.C_IDINSTITUCION);
 		anio = (String) resultado.get(ScsDesignaBean.C_ANIO);
 		numero = (String) resultado.get(ScsDesignaBean.C_NUMERO);
 		codigo = (String) resultado.get(ScsDesignaBean.C_CODIGO);
@@ -385,11 +387,12 @@
 		<%}%>
 				
 		// Asociada al boton Volver
-		function accionVolver() {		
-			document.BuscarDesignasForm.action="JGR_Designas.do";
-			document.BuscarDesignasForm.modo.value="volverBusqueda";
+		function accionVolver() {	
+			document.forms[0].idInstitucion.value = "<%=usr.getLocation()%>";
+			document.forms[0].action="./JGR_Designas.do";
+			document.forms[0].modo.value="volverBusqueda";
 
-			document.BuscarDesignasForm.submit();
+			document.forms[0].submit();
 		}
 
 		
@@ -597,7 +600,7 @@
 			//sub();
 			
 			//idInstitucion  = document.MaestroDesignasForm.idInstitucion;
-			idInstitucion  = <%=idInstitucionLocation%>;
+			idInstitucion  = <%=idInstitucion%>;
 			
 			anio  = <%=anio%>;
 			idTurno  = <%=idTurno%>;
@@ -690,7 +693,7 @@
 			<%
 				String t_nombre = "", t_apellido1 = "", t_apellido2 = "", t_anio = "", t_numero = "", t_sufijo="";
 				ScsDesignaAdm adm = new ScsDesignaAdm(usr);
-				Hashtable hTitulo = adm.getTituloPantallaDesigna(usr.getLocation(),	anio, numero, idTurno);
+				Hashtable hTitulo = adm.getTituloPantallaDesigna(idInstitucion,	anio, numero, idTurno);
 	
 				if (hTitulo != null) {
 					t_nombre = (String) hTitulo.get(ScsPersonaJGBean.C_NOMBRE);
@@ -724,6 +727,7 @@
 <table class="tablaCentralCampos" height="420" align="center" >
 	<html:form action="JGR_Designas.do" method="POST" target="mainWorkArea">
 		<html:hidden name="MaestroDesignasForm" property="modo"  styleId="modo" />
+		<html:hidden name="MaestroDesignasForm" property="idInstitucion"  styleId="idInstitucion" value="<%=idInstitucion%>"/>
 		<html:hidden name="MaestroDesignasForm" property="idTurno" styleId="idTurno"  value="<%=idTurno%>" />
 		<html:hidden name="BuscarDesignasForm" property="calidad" styleId="calidad" value="<%=calidad%>" />	
 		<input type="hidden" name="modificarDesigna" id="modificarDesigna"  value="0">
@@ -901,16 +905,16 @@
 								<table align="center" cellpadding="0" cellpadding="0" width="100%" border="0">
 									<tr>
 										 <%if (ejisActivo>0){%>																				
-												<td style="vertical-align: middle;">						
+												<td style="vertical-align: middle;" class="labelText">						
 													<% if (!modo.equalsIgnoreCase("ver")) { %> 
-														<html:text name="MaestroDesignasForm" property="numeroProcedimiento" size="7" maxlength="7" styleClass="box" value="<%=numeroProcedimiento%>" />
-														/
-														<html:text name="MaestroDesignasForm" property="anioProcedimiento" size="4" maxlength="4" styleClass="box" value="<%=anioProcedimiento%>" />
+														<html:text name="MaestroDesignasForm" 
+														property="numeroProcedimiento" size="7" maxlength="7" styleClass="box" value="<%=numeroProcedimiento%>" />/<html:text
+														 name="MaestroDesignasForm" property="anioProcedimiento" size="4" maxlength="4" styleClass="box" value="<%=anioProcedimiento%>" />
 														 
 													<% } else { %> 
-														<html:text name="MaestroDesignasForm" property="numeroProcedimiento"  size="7" maxlength="7" styleClass="boxConsulta" value="<%=numeroProcedimiento%>" readonly="true" />
-														/
-														<html:text name="MaestroDesignasForm" property="anioProcedimiento" size="4" maxlength="4" styleClass="boxConsulta" value="<%=anioProcedimiento%>"  readonly="true" />
+														<html:text
+														 name="MaestroDesignasForm" property="numeroProcedimiento"  size="7" maxlength="7" 
+														 styleClass="boxConsulta" value="<%=numeroProcedimiento%>" readonly="true" />/<html:text name="MaestroDesignasForm" property="anioProcedimiento" size="4" maxlength="4" styleClass="boxConsulta" value="<%=anioProcedimiento%>"  readonly="true" />
 													<% } %>	
 												</td>
 												

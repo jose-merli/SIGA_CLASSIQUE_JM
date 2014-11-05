@@ -56,6 +56,36 @@ public class UsrBean implements Serializable {
 	private Boolean ocultarHistorico = null;
 	private boolean aplicarLOPD = false;
 	private static final String ROL_COMISION ="CJG"; // Es el rol que corresponde a la comision
+	private Short[] institucionesComision;
+	private Short idInstitucionComision;
+
+	/**
+	 * @return the idInstitucionComision
+	 */
+	public Short getIdInstitucionComision() {
+		return idInstitucionComision;
+	}
+
+	/**
+	 * @param idInstitucionComision the idInstitucionComision to set
+	 */
+	public void setIdInstitucionComision(Short idInstitucionComision) {
+		this.idInstitucionComision = idInstitucionComision;
+	}
+
+	/**
+	 * @return the institucionesComision
+	 */
+	public Short[] getInstitucionesComision() {
+		return institucionesComision;
+	}
+
+	/**
+	 * @param institucionesComision the institucionesComision to set
+	 */
+	public void setInstitucionesComision(Short[] institucionesComision) {
+		this.institucionesComision = institucionesComision;
+	}
 
 	public UsrBean() {
 	    ReadProperties ldapProperties= new ReadProperties(SIGAReferences.RESOURCE_FILES.JNDI);

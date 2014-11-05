@@ -1,9 +1,6 @@
 package com.siga.beans;
 import java.util.Enumeration;
 import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
 import java.util.Vector;
 
 import org.redabogacia.sigaservices.app.AppConstants.ESTADOS_EJG;
@@ -15,7 +12,6 @@ import com.atos.utils.GstDate;
 import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
-import com.octetstring.vde.EntrySet;
 import com.siga.Utilidades.PaginadorBind;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesMultidioma;
@@ -409,7 +405,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 							ScsEJGBean.C_SITUACION,					ScsEJGBean.C_IDTIPOENCALIDAD,
 							ScsEJGBean.C_CALIDADIDINSTITUCION,		ScsEJGBean.C_NUMERODESIGNAPROC,
 							ScsEJGBean.C_DOCRESOLUCION,				ScsEJGBean.C_NIG,
-							ScsEJGBean.C_IDPONENTE,					ScsEJGBean.C_IDORIGENCAJG,
+							ScsEJGBean.C_IDPONENTE,ScsEJGBean.C_IDINSTITUCIONPONENTE,						ScsEJGBean.C_IDORIGENCAJG,
 							ScsEJGBean.C_OBSERVACIONIMPUGNACION,	ScsEJGBean.C_FECHAPUBLICACION,
 							ScsEJGBean.C_NUMERORESOLUCION,			ScsEJGBean.C_ANIORESOLUCION,
 							ScsEJGBean.C_BISRESOLUCION,				ScsEJGBean.C_IDACTA,
@@ -454,7 +450,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 							ScsEJGBean.C_SITUACION,					ScsEJGBean.C_IDTIPOENCALIDAD,
 							ScsEJGBean.C_CALIDADIDINSTITUCION,		ScsEJGBean.C_NUMERODESIGNAPROC,
 							ScsEJGBean.C_DOCRESOLUCION,				ScsEJGBean.C_NIG,
-							ScsEJGBean.C_IDPONENTE,					ScsEJGBean.C_IDORIGENCAJG,
+							ScsEJGBean.C_IDPONENTE,	ScsEJGBean.C_IDINSTITUCIONPONENTE,										ScsEJGBean.C_IDORIGENCAJG,
 							ScsEJGBean.C_OBSERVACIONIMPUGNACION,	ScsEJGBean.C_FECHAPUBLICACION,
 							ScsEJGBean.C_NUMERORESOLUCION,			ScsEJGBean.C_ANIORESOLUCION,
 							ScsEJGBean.C_BISRESOLUCION,				ScsEJGBean.C_IDACTA,
@@ -558,6 +554,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			bean.setNIG(UtilidadesHash.getString(hash,ScsEJGBean.C_NIG));
 			bean.setIdOrigenCAJG(UtilidadesHash.getString(hash,ScsEJGBean.C_IDORIGENCAJG));
 			bean.setIdPonente(UtilidadesHash.getLong(hash,ScsEJGBean.C_IDPONENTE));
+			bean.setIdInstitucionPonente(UtilidadesHash.getInteger(hash,ScsEJGBean.C_IDINSTITUCIONPONENTE));
 			//David
 			bean.setObservacionImpugnacion(UtilidadesHash.getString(hash,ScsEJGBean.C_OBSERVACIONIMPUGNACION));
 			bean.setFechaPublicacion(UtilidadesHash.getString(hash,ScsEJGBean.C_FECHAPUBLICACION));
@@ -659,6 +656,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(htData,ScsEJGBean.C_NIG, b.getNIG());
 			UtilidadesHash.set(htData,ScsEJGBean.C_IDORIGENCAJG, b.getIdOrigenCAJG());
 			UtilidadesHash.set(htData,ScsEJGBean.C_IDPONENTE, b.getIdPonente());
+			UtilidadesHash.set(htData,ScsEJGBean.C_IDINSTITUCIONPONENTE, b.getIdInstitucionPonente());
 			//David
 			UtilidadesHash.set(htData,ScsEJGBean.C_OBSERVACIONIMPUGNACION, b.getObservacionImpugnacion());
 			UtilidadesHash.set(htData,ScsEJGBean.C_FECHAPUBLICACION, b.getFechaPublicacion());
@@ -2064,7 +2062,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 		int contador=0;
 		
 		boolean esComision=(miHash.containsKey("ESCOMISION") && UtilidadesString.stringToBoolean(miHash.get("ESCOMISION").toString()));
-		
+		Short[] idInstitucionesComision = usrbean.getInstitucionesComision();
 		//aalg: INC_0644_SIGA. Modificación de la query por los estados ejg
 		// Estos son los campos que devuelve la select
 		String consulta = "SELECT EJG." + ScsEJGBean.C_ANIO + ", " + 
@@ -2083,7 +2081,10 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			" EJG." + ScsEJGBean.C_NUMERO + ", " +
 			" EJG." + ScsEJGBean.C_FECHAMODIFICACION + ", " +
 			" EJG." + ScsEJGBean.C_SUFIJO;
-
+		if(idInstitucionesComision!=null && idInstitucionesComision.length>0){
+			consulta +=  ",(SELECT INT.ABREVIATURA FROM CEN_INSTITUCION INT WHERE INT.IDINSTITUCION = EJG.IDINSTITUCION) INST_ABREV ";
+		}
+		
 		// Metemos las tablas implicadas en la select 
 		consulta += " FROM " + ScsEJGBean.T_NOMBRETABLA + " EJG, "  + 
 			ScsTipoEJGBean.T_NOMBRETABLA + " TIPOEJG, " + 
@@ -2092,10 +2093,10 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			ScsMaestroEstadosEJGBean.T_NOMBRETABLA + " MEE ";
 		
 		// Si se filtra por acta necesitamos la tabla
-		if (((miHash.containsKey("NUMEROACTA")) && (!miHash.get("NUMEROACTA").toString().equals(""))) || 
-			((miHash.containsKey("ANIOACTA")) && (!miHash.get("ANIOACTA").toString().equals("")))){
-			consulta += "," +  ScsActaComisionBean.T_NOMBRETABLA + " ACTA "; 
-		}
+//		if (((miHash.containsKey("NUMEROACTA")) && (!miHash.get("NUMEROACTA").toString().equals(""))) || 
+//			((miHash.containsKey("ANIOACTA")) && (!miHash.get("ANIOACTA").toString().equals("")))){
+//			consulta += "," +  ScsActaComisionBean.T_NOMBRETABLA + " ACTA "; 
+//		}
 
 		// Se filtra por renuncia
 		if (miForm.getIdRenuncia()!=null && !miForm.getIdRenuncia().trim().equalsIgnoreCase("")) {
@@ -2115,7 +2116,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 				" AND EJG." + ScsEJGBean.C_IDPERSONA + " = COLEGIADO." + CenColegiadoBean.C_IDPERSONA + "(+) ";   
 		}
 		
-		if(esComision){
+		if(esComision ){
 			// jbd // La consulta es la misma para comision y no comision, pero en la comision forzamos a que exista un estado
 			consulta += " AND EJG." + ScsEJGBean.C_IDINSTITUCION + " = ESTADO." + ScsEstadoEJGBean.C_IDINSTITUCION +
 			" AND EJG." + ScsEJGBean.C_IDTIPOEJG + " = ESTADO." + ScsEstadoEJGBean.C_IDTIPOEJG +
@@ -2134,6 +2135,42 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 		   		" ) ";
 			//aalg: INC_0644_SIGA. Modificación de la query por los estados ejg
 			consulta += " and MEE."+ ScsMaestroEstadosEJGBean.C_IDESTADOEJG +"= ESTADO."+ ScsEstadoEJGBean.C_IDESTADOEJG;
+			
+			
+			if(miForm.getIdInstitucionComision()!=null && !miForm.getIdInstitucionComision().equals("")){
+				contador++;
+				codigos.put(new Integer(contador),miForm.getIdInstitucionComision());
+				consulta += " AND EJG.IDINSTITUCION = :"+ contador;
+			}else if(idInstitucionesComision!=null && idInstitucionesComision.length>0){
+				consulta += " AND EJG.IDINSTITUCION IN (";
+				for (int i = 0; i < idInstitucionesComision.length; i++) {
+					contador++;
+					codigos.put(new Integer(contador),idInstitucionesComision[i]);
+					consulta += "  :"+ contador;
+					consulta += ",";
+				}
+				consulta = consulta.substring(0,consulta.length()-1);
+				consulta += ")";
+			}else{
+//				Esto por asi acaso para qu efuncione como antes
+				if ((miHash.containsKey("IDINSTITUCION")) && (!miHash.get("IDINSTITUCION").toString().equals(""))) {
+					contador++;
+					codigos.put(new Integer(contador),UtilidadesHash.getString(miHash, "IDINSTITUCION"));
+					consulta += " AND EJG.IDINSTITUCION = :"+ contador;
+					
+				}else{	
+					idInstitucion="";
+					if (idInstitucion.equals("")){			
+					  throw new ClsExceptions("messages.comprueba.noidInstitucion");
+					  
+					} else {			
+						consulta += " AND EJG.IDINSTITUCION =" + idInstitucion;
+					}
+				}		
+				
+			}
+			
+			
 		}else{
 			//aalg: INC_0644_SIGA. Modificación de la query por los estados ejg
 			consulta += " AND EJG." + ScsEJGBean.C_IDINSTITUCION + " = ESTADO." + ScsEstadoEJGBean.C_IDINSTITUCION + "(+) " +
@@ -2153,6 +2190,24 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 					" ) ";
 			//aalg: INC_0644_SIGA. Modificación de la query por los estados ejg
 			consulta += " and MEE."+ ScsMaestroEstadosEJGBean.C_IDESTADOEJG +"(+) = ESTADO."+ ScsEstadoEJGBean.C_IDESTADOEJG;
+			
+			
+			if ((miHash.containsKey("IDINSTITUCION")) && (!miHash.get("IDINSTITUCION").toString().equals(""))) {
+				contador++;
+				codigos.put(new Integer(contador),UtilidadesHash.getString(miHash, "IDINSTITUCION"));
+				consulta += " AND EJG.IDINSTITUCION = :"+ contador;
+				
+			}else{	
+				idInstitucion="";
+				if (idInstitucion.equals("")){			
+				  throw new ClsExceptions("messages.comprueba.noidInstitucion");
+				  
+				} else {			
+					consulta += " AND EJG.IDINSTITUCION =" + idInstitucion;
+				}
+			}				
+			
+			
 		}
 		// Parametros para poder reutilizar la busqueda EJG para busquedas CAJG
 		if(TipoVentana.BUSQUEDA_PREPARACION_CAJG.equals(tipoVentana)){
@@ -2222,21 +2277,26 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			((miHash.containsKey("ANIOACTA")) && (!miHash.get("ANIOACTA").toString().equals("")))){
 			
 			// Cruzamos la tabla de actas
-			consulta += " AND ACTA." + ScsActaComisionBean.C_ANIOACTA + " = EJG." + ScsEJGBean.C_ANIOACTA;
-			consulta += " AND ACTA." + ScsActaComisionBean.C_IDACTA + " = EJG." + ScsEJGBean.C_IDACTA;
-			consulta += " AND ACTA." + ScsActaComisionBean.C_IDINSTITUCION + " = EJG." + ScsEJGBean.C_IDINSTITUCIONACTA;
+//			consulta += " AND ACTA." + ScsActaComisionBean.C_ANIOACTA + " = EJG." + ScsEJGBean.C_ANIOACTA;
+//			consulta += " AND ACTA." + ScsActaComisionBean.C_IDACTA + " = EJG." + ScsEJGBean.C_IDACTA;
+//			consulta += " AND ACTA." + ScsActaComisionBean.C_IDINSTITUCION + " = EJG." + ScsEJGBean.C_IDINSTITUCIONACTA;
 			
 			if ((miHash.containsKey("ANIOACTA")) && (!miHash.get("ANIOACTA").toString().equals(""))) {
 				contador++;
 				codigos.put(new Integer(contador),UtilidadesHash.getString(miHash,"ANIOACTA"));
-				consulta += " AND ACTA." + ScsActaComisionBean.C_ANIOACTA + " = :" + contador;
+				consulta += " AND EJG." + ScsEJGBean.C_ANIOACTA + " = :" + contador;
 			}
 			
 			if ((miHash.containsKey("NUMEROACTA")) && (!miHash.get("NUMEROACTA").toString().equals(""))) {
 				contador++;
 				codigos.put(new Integer(contador),UtilidadesHash.getString(miHash,"NUMEROACTA"));
-				consulta += " AND ACTA." + ScsActaComisionBean.C_NUMEROACTA+ " = :"+contador;
+				consulta += " AND EJG." + ScsEJGBean.C_IDACTA+ " = :"+contador;
 			}
+			contador++;
+			codigos.put(new Integer(contador),usrbean.getIdInstitucionComision());
+			consulta += " AND EJG." + ScsEJGBean.C_IDINSTITUCIONACTA+ " = :"+contador;
+			
+			
 		}
 
 		if ((miHash.containsKey("CREADODESDE")) && (!miHash.get("CREADODESDE").toString().equals(""))) {
@@ -2334,6 +2394,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 				codigos.put(new Integer(contador),miForm.getIdTipoFundamento());
 				consulta += " AND EJG.IDFUNDAMENTOJURIDICO = :" + contador;
 				
+				
 			}
 			
 		}else{
@@ -2348,6 +2409,8 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 					contador++;
 					codigos.put(new Integer(contador),UtilidadesHash.getString(miHash, "IDFUNDAMENTOJURIDICO"));
 					consulta += " AND EJG.IDFUNDAMENTOJURIDICO = :" + contador;
+					
+					
 				}
 			}
 			
@@ -2371,20 +2434,6 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			consulta += " AND EJG.IDTIPOEJGCOLEGIO = :" + contador;
 		}
 				
-		if ((miHash.containsKey("IDINSTITUCION")) && (!miHash.get("IDINSTITUCION").toString().equals(""))) {
-			contador++;
-			codigos.put(new Integer(contador),UtilidadesHash.getString(miHash, "IDINSTITUCION"));
-			consulta += " AND EJG.IDINSTITUCION = :"+ contador;
-			
-		}else{	
-			idInstitucion="";
-			if (idInstitucion.equals("")){			
-			  throw new ClsExceptions("messages.comprueba.noidInstitucion");
-			  
-			} else {			
-				consulta += " AND EJG.IDINSTITUCION =" + idInstitucion;
-			}
-		}				
 		
 		// jbd // Consulta para el interesado
 		// Hasta ahora se estaba haciendo una consulta independiente para cada campo del nombre
@@ -2484,7 +2533,12 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 		if ((miHash.containsKey("IDPONENTE")) && (!miHash.get("IDPONENTE").toString().equals(""))){
 			contador++;
 			codigos.put(new Integer(contador), miHash.get("IDPONENTE").toString());
-			consulta += " AND " +  ScsEJGBean.C_IDPONENTE + " = :" + contador; 
+			consulta += " AND " +  ScsEJGBean.C_IDPONENTE + " = :" + contador;
+			contador++;
+			codigos.put(new Integer(contador), usrbean.getIdInstitucionComision());
+			consulta += " AND " +  ScsEJGBean.C_IDINSTITUCIONPONENTE + " = :" + contador;
+			
+			
 		}
 		
 		//aalg: INC_0644_SIGA. Modificación de la query por los estados ejg 
@@ -2977,10 +3031,32 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			sql.append("  Where Poblacion.Idprovincia = Provincia.Idprovincia ");
 			sql.append("  And Pro.Idprovincia = Poblacion.Idprovincia ");
 			sql.append(" And Pro.Idpoblacion = Poblacion.Idpoblacion) As PROCURADOR_POBLACION_D_J ");
+			sql.append(" ,CP.NOMBRE AS COLPROCURADORES_NOMBRE, ");
+			sql.append(" CP.DIRECCION AS COLPROCURADORES_DIRECCION, ");
+			sql.append(" (SELECT F_SIGA_GETRECURSO(TIPOVIA.DESCRIPCION, 1) ");
+			sql.append(" FROM CEN_TIPOVIA TIPOVIA ");
+			sql.append(" WHERE TIPOVIA.IDTIPOVIA = CP.IDTIPOVIA ");
+			sql.append(" AND TIPOVIA.IDINSTITUCION = 2000) AS COLPROCURADORES_TIPOVIA, ");
+			sql.append(" CP.NUMERODIR AS COLPROCURADORES_NUMERODIR, ");
+			sql.append(" CP.ESCALERADIR AS COLPROCURADORES_ESCALERADIR, ");
+			
+			sql.append(" CP.PISODIR AS COLPROCURADORES_PISODIR, ");
+			sql.append(" CP.PUERTADIR AS COLPROCURADORES_PUERTADIR, ");
+			sql.append(" CP.CODIGOPOSTAL AS COLPROCURADORES_CODPOSTAL, ");
+			sql.append(" (SELECT POBLACION.NOMBRE ");
+			sql.append(" FROM CEN_POBLACIONES POBLACION, CEN_PROVINCIAS PROVINCIA ");
+			sql.append(" WHERE POBLACION.IDPROVINCIA = PROVINCIA.IDPROVINCIA ");
+			sql.append(" AND CP.IDPROVINCIA = POBLACION.IDPROVINCIA ");
+			sql.append(" AND CP.IDPOBLACION = POBLACION.IDPOBLACION) AS COLPROCURADORES_POBLACION, ");
+			sql.append(" (SELECT PROVINCIA.NOMBRE ");
+			sql.append(" FROM CEN_PROVINCIAS PROVINCIA ");
+			sql.append(" WHERE PROVINCIA.IDPROVINCIA = CP.IDPROVINCIA) AS COLPROCURADORES_PROVINCIA ");
+			
 			sql.append(" from  ");
 			sql.append(" scs_procurador          pro ");
+			sql.append(" , CEN_COLEGIOPROCURADOR CP ");
 			sql.append(" WHERE ");
-			
+			sql.append("  PRO.IDCOLPROCURADOR = CP.IDCOLPROCURADOR(+) AND ");
 			keyContador++;
 			htCodigos.put(new Integer(keyContador), idInstitucion);
 			sql.append(" pro.idinstitucion = :");
@@ -3511,7 +3587,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 				" TO_CHAR(EJG.fechaauto,'dd-mm-yyyy') AS fechaauto, " +
 				" EJG.idtiporesolauto, " +
 				" EJG.idtiposentidoauto, " + 
-				" (SELECT pon.nombre FROM SCS_PONENTE pon WHERE pon.idPonente = EJG.idPONENTE AND pon.idInstitucion = EJG.IDINSTITUCION) as PONENTE, " + 			
+				" (SELECT pon.nombre FROM SCS_PONENTE pon WHERE pon.idPonente = EJG.idPONENTE AND pon.idInstitucion = EJG.IDINSTITUCIONPONENTE) as PONENTE, " + 			
 				" (SELECT DESCRIPCION FROM SCS_TIPOEJGCOLEGIO TEC WHERE tec.IDINSTITUCION = EJG.IDINSTITUCION AND TEC.IDTIPOEJGCOLEGIO=EJG.IDTIPOEJGCOLEGIO) AS DESCRIPCIONTIPOEJGCOL, " +			
 				" TO_CHAR(EJG.Fecharatificacion, 'dd-mm-yyyy') AS Fecharatificacion, " +			
 				" TO_CHAR(EJG.FECHAPRESENTACION, 'dd-mm-yyyy') as FECHAPRESENTACION, " +
@@ -3556,14 +3632,24 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			
 	       try{    	   	    	   			
 				 rc = this.find(sql);
-	 			if (rc!=null){
-					for (int i = 0; i < rc.size(); i++)	{
-						Row fila = (Row) rc.get(i);
-						Hashtable registro = (Hashtable)fila.getRow(); 
-						if (registro != null) 
-							datos.add(registro);
-					}
-				}		       
+				 if (rc!=null){
+		 				GenParametrosAdm paramAdm = new GenParametrosAdm (usrbean);
+		 				CenInstitucionAdm cenInstitucionAdm = new CenInstitucionAdm (usrbean);
+						for (int i = 0; i < rc.size(); i++)	{
+							Row fila = (Row) rc.get(i);
+							Hashtable registro = (Hashtable)fila.getRow(); 
+							
+							if (registro != null){
+									String prefijoExpedienteCajg =  paramAdm.getValor (idInstitucion, ClsConstants.MODULO_SJCS, ClsConstants.GEN_PARAM_PREFIJO_EXPEDIENTES_CAJG, " ");
+									registro.put(CenInstitucionBean.C_IDINSTITUCION, idInstitucion);
+									Vector institucionVector =  cenInstitucionAdm.selectByPK(registro);
+									String abreviaturaColegio =  ((CenInstitucionBean)institucionVector.get(0)).getAbreviatura();
+									registro.put("PREFIJO_EXPEDIENTES_CAJG", prefijoExpedienteCajg);
+									registro.put("ABREVIATURA_COLEGIO", UtilidadesString.getPrimeraMayuscula(abreviaturaColegio));
+									datos.add(registro);
+							}
+						}
+					}		           
 			} catch (Exception e) {
 				throw new ClsExceptions (e, "Error ScsEJGAdm.getEjgSalida.");	
 			} 
@@ -3648,7 +3734,19 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			sql.append(" PROC.Provincia AS PROCURADOR_PROVINCIA, ");
 			sql.append(" PROC.Poblacion AS PROCURADOR_POBLACION, ");
 			sql.append(" PROC.Idpretencion AS IDPRETENCION, ");
-			sql.append(" PROC.TELEFONO1 AS PROCURADOR_TELEFONO1 ");
+			sql.append(" PROC.TELEFONO1 AS PROCURADOR_TELEFONO1, ");
+			sql.append(" COLPROCURADORES_NOMBRE, ");
+			sql.append(" COLPROCURADORES_DIRECCION, ");
+			sql.append(" COLPROCURADORES_TIPOVIA, ");
+			sql.append(" COLPROCURADORES_NUMERODIR, ");
+			sql.append(" COLPROCURADORES_ESCALERADIR, ");
+			
+			sql.append(" COLPROCURADORES_PISODIR, ");
+			sql.append(" COLPROCURADORES_PUERTADIR, ");
+			sql.append(" COLPROCURADORES_CODPOSTAL, ");
+			sql.append(" COLPROCURADORES_POBLACION, ");
+			sql.append(" COLPROCURADORES_PROVINCIA ");
+			
 			sql.append(" FROM V_SIGA_PROCURADOR_EJG PROC ");					
 			sql.append(" WHERE "); 	
 			keyContador++;
@@ -6065,6 +6163,21 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 					registro.put("PROCURADOR_TELEFONO1", telefonoProcurador);
 				else
 					UtilidadesHash.set(registro, "PROCURADOR_TELEFONO1", "");
+				
+				UtilidadesHash.set(registro,"PROCURADOR_COL_NOMBRE", registroprocurador.get("COLPROCURADORES_NOMBRE")!=null?UtilidadesHash.getString(registroprocurador,"COLPROCURADORES_NOMBRE" ):"");
+				UtilidadesHash.set(registro,"PROCURADOR_COL_DIRECCION", registroprocurador.get("COLPROCURADORES_DIRECCION")!=null?UtilidadesHash.getString(registroprocurador,"COLPROCURADORES_DIRECCION" ):"");
+				UtilidadesHash.set(registro,"PROCURADOR_COL_TIPOVIA", registroprocurador.get("COLPROCURADORES_TIPOVIA")!=null?UtilidadesHash.getString(registroprocurador,"COLPROCURADORES_TIPOVIA" ):"");
+				UtilidadesHash.set(registro,"PROCURADOR_COL_NUMERODIR", registroprocurador.get("COLPROCURADORES_NUMERODIR")!=null?UtilidadesHash.getString(registroprocurador,"COLPROCURADORES_ESCALERADIR" ):"");
+				UtilidadesHash.set(registro,"PROCURADOR_COL_ESCALERADIR", registroprocurador.get("COLPROCURADORES_ESCALERADIR")!=null?UtilidadesHash.getString(registroprocurador,"COLPROCURADORES_NUMERODIR" ):"");
+				
+				UtilidadesHash.set(registro,"PROCURADOR_COL_PISODIR", registroprocurador.get("COLPROCURADORES_PISODIR")!=null?UtilidadesHash.getString(registroprocurador,"COLPROCURADORES_PISODIR" ):"");
+				UtilidadesHash.set(registro,"PROCURADOR_COL_PUERTADIR", registroprocurador.get("COLPROCURADORES_PUERTADIR")!=null?UtilidadesHash.getString(registroprocurador,"COLPROCURADORES_PUERTADIR" ):"");
+				UtilidadesHash.set(registro,"PROCURADOR_COL_CODPOSTAL", registroprocurador.get("COLPROCURADORES_CODPOSTAL")!=null?UtilidadesHash.getString(registroprocurador,"COLPROCURADORES_CODPOSTAL" ):"");
+				UtilidadesHash.set(registro,"PROCURADOR_COL_POBLACION", registroprocurador.get("COLPROCURADORES_POBLACION")!=null?UtilidadesHash.getString(registroprocurador,"COLPROCURADORES_POBLACION" ):"");
+				UtilidadesHash.set(registro,"PROCURADOR_COL_PROVINCIA", registroprocurador.get("COLPROCURADORES_PROVINCIA")!=null?UtilidadesHash.getString(registroprocurador,"COLPROCURADORES_PROVINCIA" ):"");
+	
+				
+				
 			}//Fin for procurador de la designa relacionada con Ejg
 	
 	      	//Aniadimos los datos del procurador del ejg
@@ -6130,6 +6243,19 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 					registro.put("PROCURADOR_POBLACION_D_J", poblacion);
 				else
 					UtilidadesHash.set(registro, "PROCURADOR_POBLACION_D_J", "");
+				
+				UtilidadesHash.set(registro,"PROCURADOR_DJ_COL_NOMBRE", registroprocuradorDJ.get("COLPROCURADORES_NOMBRE")!=null?UtilidadesHash.getString(registroprocuradorDJ,"COLPROCURADORES_NOMBRE" ):"");
+				UtilidadesHash.set(registro,"PROCURADOR_DJ_COL_DIRECCION", registroprocuradorDJ.get("COLPROCURADORES_DIRECCION")!=null?UtilidadesHash.getString(registroprocuradorDJ,"COLPROCURADORES_DIRECCION" ):"");
+				UtilidadesHash.set(registro,"PROCURADOR_DJ_COL_TIPOVIA", registroprocuradorDJ.get("COLPROCURADORES_TIPOVIA")!=null?UtilidadesHash.getString(registroprocuradorDJ,"COLPROCURADORES_TIPOVIA" ):"");
+				UtilidadesHash.set(registro,"PROCURADOR_DJ_COL_NUMERODIR", registroprocuradorDJ.get("COLPROCURADORES_NUMERODIR")!=null?UtilidadesHash.getString(registroprocuradorDJ,"COLPROCURADORES_NUMERODIR" ):"");
+				UtilidadesHash.set(registro,"PROCURADOR_DJ_COL_ESCALERADIR", registroprocuradorDJ.get("COLPROCURADORES_ESCALERADIR")!=null?UtilidadesHash.getString(registroprocuradorDJ,"COLPROCURADORES_ESCALERADIR" ):"");
+				
+				UtilidadesHash.set(registro,"PROCURADOR_DJ_COL_PISODIR", registroprocuradorDJ.get("COLPROCURADORES_PISODIR")!=null?UtilidadesHash.getString(registroprocuradorDJ,"COLPROCURADORES_PISODIR" ):"");
+				UtilidadesHash.set(registro,"PROCURADOR_DJ_COL_PUERTADIR", registroprocuradorDJ.get("COLPROCURADORES_PUERTADIR")!=null?UtilidadesHash.getString(registroprocuradorDJ,"COLPROCURADORES_PUERTADIR" ):"");
+				UtilidadesHash.set(registro,"PROCURADOR_DJ_COL_CODPOSTAL", registroprocuradorDJ.get("COLPROCURADORES_CODPOSTAL")!=null?UtilidadesHash.getString(registroprocuradorDJ,"COLPROCURADORES_CODPOSTAL" ):"");
+				UtilidadesHash.set(registro,"PROCURADOR_DJ_COL_POBLACION", registroprocuradorDJ.get("COLPROCURADORES_POBLACION")!=null?UtilidadesHash.getString(registroprocuradorDJ,"COLPROCURADORES_POBLACION" ):"");
+				UtilidadesHash.set(registro,"PROCURADOR_DJ_COL_PROVINCIA", registroprocuradorDJ.get("COLPROCURADORES_PROVINCIA")!=null?UtilidadesHash.getString(registroprocuradorDJ,"COLPROCURADORES_PROVINCIA" ):"");
+				
 			}//Fin del for donde recuperamos los datos del procurador del ejg
 			
 			// Aniadimos el fundamento del ejg

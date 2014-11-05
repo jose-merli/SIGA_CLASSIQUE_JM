@@ -46,7 +46,7 @@
 <table class="tablaTitulo" cellspacing="0" heigth="38">
 	<tr>
 		<td id="titulo" class="titulitosDatos">
-			<c:out value="${PrestacionRechazadaEjgForm.ejgAnio}"/>/<c:out
+			<c:out value="${PREFIJOEXPEDIENTECAJG}" />&nbsp;<c:out value="${PrestacionRechazadaEjgForm.ejgAnio}"/>/<c:out
 			 	value="${PrestacionRechazadaEjgForm.ejgNumEjg}"/>&nbsp;-&nbsp;<c:out 
 			 	value="${PrestacionRechazadaEjgForm.solicitante}"/>
 		</td>

@@ -11,8 +11,21 @@ public class PestanaDelitoDesignaForm extends MasterForm {
 	
 
 	private Integer idDelito, anio, numero, idTurno;
+	private String idInstitucion;
 	
 	
+	/**
+	 * @return the idInstitucion
+	 */
+	public String getIdInstitucion() {
+		return idInstitucion;
+	}
+	/**
+	 * @param idInstitucion the idInstitucion to set
+	 */
+	public void setIdInstitucion(String idInstitucion) {
+		this.idInstitucion = idInstitucion;
+	}
 	/**
 	 * @return Returns the idDelito.
 	 */

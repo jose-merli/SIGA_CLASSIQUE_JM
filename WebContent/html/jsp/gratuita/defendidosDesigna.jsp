@@ -40,10 +40,11 @@
 	UsrBean usr = (UsrBean) ses.getAttribute("USRBEAN");
 	Hashtable designaActual = (Hashtable)ses.getAttribute("designaActual");
 	
-	String anio="",numero="", idturno="";	
+	String anio="",numero="", idturno="",idInstitucion="";	
 	anio = (String)designaActual.get("ANIO");
 	numero = (String)designaActual.get("NUMERO");
 	idturno = (String)designaActual.get("IDTURNO");	
+	idInstitucion = (String)designaActual.get("IDINSTITUCION");
 	
 	String idInstitucionLocation = usr.getLocation();
 %>	
@@ -70,10 +71,10 @@
 	<html:form action="/JGR_DefendidosDesignasPerJG.do" method="post" target="submitArea" style="display:none">
 			<input type="hidden" id="modo"  name="modo" value="abrirPestana">
 			
-			<input type="hidden" id="idInstitucionJG" value="<%=usr.getLocation() %>">
+			<input type="hidden" id="idInstitucionJG" value="<%=idInstitucion %>">
 			<input type="hidden" id="idInstitucionJG" name="idPersonaJG" value="">
 	
-			<input type="hidden" id="idInstitucionDES" name="idInstitucionDES" value="<%=usr.getLocation() %>">
+			<input type="hidden" id="idInstitucionDES" name="idInstitucionDES" value="<%=idInstitucion %>">
 			<input type="hidden" id="idTurnoDES" name="idTurnoDES" value="<%=idturno %>">
 			<input type="hidden" id="anioDES" name="anioDES" value="<%=anio %>">
 			<input type="hidden" id="numeroDES"  name="numeroDES" value="<%=numero %>">
@@ -91,7 +92,7 @@
 			<td id="titulo" class="titulitosDatos">
 				<%  String t_nombre = "", t_apellido1 = "", t_apellido2 = "", t_anio = "", t_numero = "";
 					ScsDesignaAdm adm = new ScsDesignaAdm (usr);
-					Hashtable hTitulo = adm.getTituloPantallaDesigna(usr.getLocation(), anio, numero,idturno);
+					Hashtable hTitulo = adm.getTituloPantallaDesigna(idInstitucion, anio, numero,idturno);
 
 					if (hTitulo != null) {
 						t_nombre    = (String)hTitulo.get(ScsPersonaJGBean.C_NOMBRE);
@@ -141,9 +142,9 @@
 						<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_2" value="gratuita.contrariosDesigna.literal.titulo">
 						<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_3" value="gratuita.contrariosDesigna.literal.titulo">
 						<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_4" value="editar">
-						<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_5" value="<%=usr.getLocation()%>">
+						<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_5" value="<%=idInstitucion%>">
 						<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_6" value="<%=hash.get("IDPERSONA")%>">
-						<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_7" value="<%=usr.getLocation()%>">
+						<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_7" value="<%=idInstitucion%>">
 						<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_8" value="<%=idturno %>">
 						<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_9" value="<%=anio %>">
 						<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_10" value="<%=numero %>">
@@ -166,10 +167,10 @@
 		<input type="hidden" name="modo" value="abrirPestana">
 		<input type="hidden" name="actionModal" value="">
 		
-		<input type="hidden" name="idInstitucionJG" value="<%=usr.getLocation() %>">
+		<input type="hidden" name="idInstitucionJG" value="<%=idInstitucion %>">
 		<input type="hidden" name="idPersonaJG" value="">
 
-		<input type="hidden" name="idInstitucionDES" value="<%=usr.getLocation() %>">
+		<input type="hidden" name="idInstitucionDES" value="<%=idInstitucion%>">
 		<input type="hidden" name="idTurnoDES" value="<%=idturno %>">
 		<input type="hidden" name="anioDES" value="<%=anio %>">
 		<input type="hidden" name="numeroDES" value="<%=numero %>">
@@ -253,11 +254,10 @@
 	<html:form action="/JGR_DefendidosDesignasPerJG.do" method="post" target="submitArea">
 		<input type="hidden" name="modo" value="abrirPestana">
 		<input type="hidden" name="actionModal" value="">
-		
-		<input type="hidden" name="idInstitucionJG" value="<%=usr.getLocation() %>">
+		<input type="hidden" name="idInstitucionJG" value="<%=idInstitucion%>">
 		<input type="hidden" name="idPersonaJG" value="">
 
-		<input type="hidden" name="idInstitucionDES" value="<%=usr.getLocation() %>">
+		<input type="hidden" name="idInstitucionDES" value="<%=idInstitucion %>">
 		<input type="hidden" name="idTurnoDES" value="<%=idturno %>">
 		<input type="hidden" name="anioDES" value="<%=anio %>">
 		<input type="hidden" name="numeroDES" value="<%=numero %>">

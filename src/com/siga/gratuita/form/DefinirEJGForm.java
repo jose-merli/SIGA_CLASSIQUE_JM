@@ -38,11 +38,29 @@ import com.siga.censo.form.DatosRegTelForm;
 	 String idTipoResolucion;
 	 String idTipoFundamento;
 	 
+	 String idInstitucionComision;
+	 
 	 //String bisResolucion;
 	 
 	 
- 	public void setRefAuto 					(String refAuto)					{ this.datos.put(ScsEJGBean.C_REFAUTO, refAuto);									} 	
  	
+
+	public void setRefAuto 					(String refAuto)					{ this.datos.put(ScsEJGBean.C_REFAUTO, refAuto);									} 	
+ 	
+	/**
+	 * @return the idInstitucionComision
+	 */
+	public String getIdInstitucionComision() {
+		return idInstitucionComision;
+	}
+
+	/**
+	 * @param idInstitucionComision the idInstitucionComision to set
+	 */
+	public void setIdInstitucionComision(String idInstitucionComision) {
+		this.idInstitucionComision = idInstitucionComision;
+	}
+
 	/**
 	 * Almacena en la Hashtable el anho del EJG 
 	 * 

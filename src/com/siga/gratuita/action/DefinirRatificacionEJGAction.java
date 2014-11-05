@@ -20,9 +20,6 @@ import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.GstDate;
 import com.atos.utils.UsrBean;
-import com.siga.Utilidades.UtilidadesBDAdm;
-import com.siga.Utilidades.UtilidadesString;
-import com.siga.administracion.SIGAConstants;
 import com.siga.beans.GenParametrosAdm;
 import com.siga.beans.ScsEJGAdm;
 import com.siga.beans.ScsEJGBean;
@@ -95,6 +92,10 @@ public class DefinirRatificacionEJGAction extends MasterAction {
 			
 			nuevos.put("TURNADORATIFICACION",(nuevos.containsKey("TURNADORATIFICACION")?nuevos.get("TURNADORATIFICACION"):ClsConstants.DB_FALSE));
 			nuevos.put("REQUIERENOTIFICARPROC",(nuevos.containsKey("REQUIERENOTIFICARPROC")?nuevos.get("REQUIERENOTIFICARPROC"):ClsConstants.DB_FALSE));
+			
+			if (nuevos.get("IDPONENTE")!=null && !nuevos.get("IDPONENTE").equals(""))
+				nuevos.put("IDINSTITUCIONPONENTE", usr.getIdInstitucionComision());
+			
 			// Actualizamos en la base de datos
 			tx=usr.getTransaction();
 			tx.begin();
@@ -115,37 +116,43 @@ public class DefinirRatificacionEJGAction extends MasterAction {
 		/* "DATABACKUP" se usa habitualmente así que en primer lugar borramos esta variable */		
 		request.getSession().removeAttribute("DATABACKUP");
 		UsrBean usr=(UsrBean)request.getSession().getAttribute("USRBEAN");
-		GenParametrosAdm paramAdm = new GenParametrosAdm (usr);
-		try {
-			String accesoActaSt = paramAdm.getValor(usr.getLocation(), "SCS", "HABILITA_ACTAS_COMISION", "N");
-			request.setAttribute("accesoActa", accesoActaSt.equalsIgnoreCase("S")?"true":"false");
-			String validarObligatoriedadResolucion = paramAdm.getValor (usr.getLocation (), ClsConstants.MODULO_SJCS, ClsConstants.GEN_PARAM_VALIDAR_OBLIGATORIEDAD_RESOLUCION, "0");
-			request.setAttribute("ISOBLIGATORIORESOLUCION",validarObligatoriedadResolucion.equals(ClsConstants.DB_TRUE)?true:false);
-		} catch (Exception e) {
-			throwExcp("Error al recuperar el parametro HABILITA_ACTAS_COMISION y VALIDAR_OBLIGATORIEDAD_RESOLUCION",e,null);
-		}
 		
 		
 		
 		DefinirEJGForm miForm = (DefinirEJGForm)formulario;
 		Vector v = new Vector ();
 		Hashtable miHash = new Hashtable();		
-				
+		String idInstitucion = null;		
 		if(request.getParameter("ANIO")!=null){
 			miHash.put("ANIO",request.getParameter("ANIO").toString());
 			miHash.put("NUMERO",request.getParameter("NUMERO").toString());
 			miHash.put("IDTIPOEJG",request.getParameter("IDTIPOEJG").toString());
-			miHash.put("IDINSTITUCION",usr.getLocation().toString());
+			idInstitucion = request.getParameter("IDINSTITUCION").toString();
+			miHash.put("IDINSTITUCION",idInstitucion);
 			if(request.getParameter("modoActa")!=null)
 				request.setAttribute("modoActa", request.getParameter("modoActa").toString());
 		}else{
 			miHash.put("ANIO",miForm.getAnio());
 			miHash.put("NUMERO",miForm.getNumero());
 			miHash.put("IDTIPOEJG",miForm.getIdTipoEJG());
-			miHash.put("IDINSTITUCION",miForm.getIdInstitucion());
+			idInstitucion = miForm.getIdInstitucion().toString();
+			miHash.put("IDINSTITUCION",idInstitucion);
 			request.setAttribute("modoActa", miForm.getModoActa());
 			
 		}
+		GenParametrosAdm paramAdm = new GenParametrosAdm (usr);
+		try {
+			String accesoActaSt = paramAdm.getValor(idInstitucion, "SCS", "HABILITA_ACTAS_COMISION", "N");
+			request.setAttribute("accesoActa", accesoActaSt.equalsIgnoreCase("S")?"true":"false");
+			String validarObligatoriedadResolucion = paramAdm.getValor (idInstitucion, ClsConstants.MODULO_SJCS, ClsConstants.GEN_PARAM_VALIDAR_OBLIGATORIEDAD_RESOLUCION, "0");
+			request.setAttribute("ISOBLIGATORIORESOLUCION",validarObligatoriedadResolucion.equals(ClsConstants.DB_TRUE)?true:false);
+			String prefijoExpedienteCajg = paramAdm.getValor (idInstitucion, ClsConstants.MODULO_SJCS, ClsConstants.GEN_PARAM_PREFIJO_EXPEDIENTES_CAJG, " ");
+			request.setAttribute("PREFIJOEXPEDIENTECAJG",prefijoExpedienteCajg);
+			
+		} catch (Exception e) {
+			throwExcp("Error al recuperar el parametro HABILITA_ACTAS_COMISION y VALIDAR_OBLIGATORIEDAD_RESOLUCION",e,null);
+		}
+		
 		
 		// Comprobamos que el usuario tenga acceso a las actas de la comision
 		// Si no lo tiene habra que mostrar la fechaResolucionCAJG

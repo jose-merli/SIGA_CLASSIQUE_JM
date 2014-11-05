@@ -13,8 +13,9 @@ import com.siga.general.MasterForm;
 
 public class ContrariosEjgForm extends MasterForm {
 			
-	private Integer idDelito, anio, numero, idTipoEJG;
-	private String idPersona;
+	private Integer anio, numero, idTipoEJG;
+	private String idPersona,idInstitucion;
+	
 	private String nif="nif";
 	private String nombre="nombre";
 	private String apellido1="apellido1";
@@ -29,7 +30,18 @@ public class ContrariosEjgForm extends MasterForm {
 	private String observaciones="observaciones";
 	private String nuevo 			="nuevo";
 	private String modoPestanha=null;
-	
+	/**
+	 * @return the idInstitucion
+	 */
+	public String getIdInstitucion() {
+		return idInstitucion;
+	}
+	/**
+	 * @param idInstitucion the idInstitucion to set
+	 */
+	public void setIdInstitucion(String idInstitucion) {
+		this.idInstitucion = idInstitucion;
+	}
 	public String getModoPestanha() {
 		return modoPestanha;
 	}

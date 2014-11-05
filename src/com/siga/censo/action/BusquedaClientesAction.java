@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
@@ -21,6 +22,8 @@ import javax.transaction.UserTransaction;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.redabogacia.sigaservices.app.autogen.model.CenInstitucion;
+import org.redabogacia.sigaservices.app.services.cen.CenInstitucionService;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
@@ -29,6 +32,7 @@ import com.atos.utils.UsrBean;
 import com.siga.Utilidades.Paginador;
 import com.siga.Utilidades.PaginadorBind;
 import com.siga.Utilidades.UtilidadesString;
+import com.siga.beans.AdmTipoInformeBean;
 import com.siga.beans.CenClienteAdm;
 import com.siga.beans.CenClienteBean;
 import com.siga.beans.CenColegiadoAdm;
@@ -1776,9 +1780,28 @@ public class BusquedaClientesAction extends MasterAction {
 					" from cen_colegiado c, cen_cliente cl, cen_persona p"+
 					" where cl.idpersona = p.idpersona"+
 					" and cl.idpersona = c.idpersona"+
-					" and cl.idinstitucion = c.idinstitucion"+
-					" and c.idinstitucion="+user.getLocation()+ 
-					" and f_siga_calculoncolegiado(cl.idinstitucion,cl.idpersona) ='"+nif+"'"+ 
+					" and cl.idinstitucion = c.idinstitucion";
+					boolean esComision = user.isComision();
+					boolean esComisionMultiple = user.getInstitucionesComision()!=null &&user.getInstitucionesComision().length>1;
+				
+					if(esComision && esComisionMultiple){
+						select += " and c.idinstitucion in (";
+						for (int i = 0; i < user.getInstitucionesComision().length; i++) {
+							select += user.getInstitucionesComision()[i];
+							if(i!=user.getInstitucionesComision().length-1)
+								select += ", ";
+							
+						}
+						select += " )";
+						
+					}else{
+						select += " and c.idinstitucion="+user.getLocation();
+					}
+				
+			
+					
+					
+					select += " and f_siga_calculoncolegiado(cl.idinstitucion,cl.idpersona) ='"+nif+"'"+ 
 					" and rownum<2"+
 					" order by residente desc, ejerciente desc";
 		}else if(tipo.equals("personas")){

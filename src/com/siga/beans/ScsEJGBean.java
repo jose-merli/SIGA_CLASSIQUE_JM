@@ -96,6 +96,7 @@ public class ScsEJGBean extends MasterBean{
 	private String docResolucion;
     private String NIG;
     private Long idPonente;
+    private Integer idInstitucionPonente; 
     
     //Nuevos campos David
     private String observacionImpugnacion;
@@ -119,7 +120,10 @@ public class ScsEJGBean extends MasterBean{
     
 	private ScsMaestroEstadosEJGBean maestroEstadoEJG;
 	
-    public String getDescripcionOrigen() {
+	
+   
+	
+	public String getDescripcionOrigen() {
 		return descripcionOrigen;
 	}
 	public void setDescripcionOrigen(String descripcionOrigen) {
@@ -210,6 +214,7 @@ public class ScsEJGBean extends MasterBean{
 	static public final String C_FECHANOTIFICACION= 			"FECHANOTIFICACION";
 	static public final String C_FECHARESOLUCIONCAJG= 			"FECHARESOLUCIONCAJG";
 	static public final String C_IDFUNDAMENTOJURIDICO= 			"IDFUNDAMENTOJURIDICO";
+	
 	static public final String C_IDTIPORESOLAUTO= 				"IDTIPORESOLAUTO";
 	static public final String C_IDTIPOSENTIDOAUTO= 			"IDTIPOSENTIDOAUTO";
 	static public final String C_TURNADOAUTO= 					"TURNADOAUTO";
@@ -240,7 +245,20 @@ public class ScsEJGBean extends MasterBean{
     static public final String C_USUCREACION   = "USUCREACION";
     static public final String C_NIG   = "NIG";
     static public final String C_IDPONENTE   = "IDPONENTE";
-    //Crear nuevos campos en la pestaña de impugnaciones del EJG
+    static public final String C_IDINSTITUCIONPONENTE   = "IDINSTITUCIONPONENTE";
+    /**
+	 * @return the idInstitucionPonente
+	 */
+	public Integer getIdInstitucionPonente() {
+		return idInstitucionPonente;
+	}
+	/**
+	 * @param idInstitucionPonente the idInstitucionPonente to set
+	 */
+	public void setIdInstitucionPonente(Integer idInstitucionPonente) {
+		this.idInstitucionPonente = idInstitucionPonente;
+	}
+	//Crear nuevos campos en la pestaña de impugnaciones del EJG
     static public final String C_OBSERVACIONIMPUGNACION = "OBSERVACIONIMPUGNACION";
     static public final String C_FECHAPUBLICACION ="FECHAPUBLICACION";
     static public final String C_NUMERORESOLUCION = "NUMERORESOLUCION";

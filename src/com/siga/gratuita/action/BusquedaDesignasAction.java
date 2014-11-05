@@ -184,6 +184,8 @@ public class BusquedaDesignasAction extends MasterAction {
 			{
 		//si el usuario logado es letrado consultar en BBDD el nColegiado para mostrar en la jsp
 		UsrBean usr = (UsrBean)request.getSession().getAttribute("USRBEAN");
+		BuscarDesignasForm miForm =(BuscarDesignasForm)formulario;
+		miForm.setIdInstitucion(usr.getLocation().toString());
 		request.getSession().removeAttribute("DATOSFORMULARIO");
 		request.getSession().removeAttribute("BUSQUEDAREALIZADA");
 		if (usr.isLetrado()){
@@ -1547,7 +1549,8 @@ public class BusquedaDesignasAction extends MasterAction {
 	protected String buscarPor(ActionMapping mapping, MasterForm formulario,
 			HttpServletRequest request, HttpServletResponse response)
 	throws ClsExceptions,SIGAException  {
-
+		
+		
 		ScsDesignaAdm desigAdm=new ScsDesignaAdm(this.getUserBean(request));
 		UsrBean usr = (UsrBean)request.getSession().getAttribute("USRBEAN");
 		BuscarDesignasForm miFormulario =(BuscarDesignasForm)formulario;
@@ -1557,6 +1560,11 @@ public class BusquedaDesignasAction extends MasterAction {
 			String[] turnoEJG = miFormulario.getIdTurno().split(",");
 			miHash.put("IDTURNO",turnoEJG[1]);
 		}
+		miHash.put("ESCOMISION", this.getUserBean(request).isComision());
+		if(miFormulario.getIdInstitucionComision()!=null && !miFormulario.getIdInstitucionComision().equals("")){
+			miHash.put("IDINSTITUCION", miFormulario.getIdInstitucionComision());
+		}
+		
 		
 		String consulta= "";
 
@@ -1615,7 +1623,7 @@ public class BusquedaDesignasAction extends MasterAction {
 				//obtengo datos de la consulta 			
 				PaginadorBind resultado = null;
 				
-				resultado=desigAdm.getBusquedaDesigna((String)usr.getLocation(),miHash);
+				resultado=desigAdm.getBusquedaDesigna(miFormulario.getIdInstitucion(),miHash);
 				Vector datos = null;
 
 

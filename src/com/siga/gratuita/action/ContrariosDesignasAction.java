@@ -79,20 +79,26 @@ public class ContrariosDesignasAction extends MasterAction {
 		ses.removeAttribute("DATOSSOJ");
 		//Recogemos de la pestanha la designa insertada o la que se quiere consultar
 		//y los usamos para la consulta y además hacemos una hashtable y lo guardamos en session
+		
 		Hashtable designaActual = new Hashtable();
 		UtilidadesHash.set(designaActual,ScsDesignaBean.C_ANIO, 				(String)request.getParameter("ANIO"));
 		UtilidadesHash.set(designaActual,ScsDesignaBean.C_NUMERO, 				(String)request.getParameter("NUMERO"));
-		UtilidadesHash.set(designaActual,ScsDesignaBean.C_IDINSTITUCION,		(String)usr.getLocation());
+		UtilidadesHash.set(designaActual,ScsDesignaBean.C_IDINSTITUCION,		(String)request.getParameter("IDINSTITUCION"));
 		UtilidadesHash.set(designaActual,ScsDesignaBean.C_IDTURNO,				(String)request.getParameter("IDTURNO"));			
 		
-		String anio="",numero="", idturno="";
-		boolean hayDatos= true;
+		String anio="",numero="", idturno="",idInstitucion="";
 		if((String)request.getParameter("ANIO")==null){
-			hayDatos = false;
 			designaActual = (Hashtable)ses.getAttribute("designaActual");
 			anio = (String)designaActual.get("ANIO");
 			numero = (String)designaActual.get("NUMERO");
 			idturno = (String)designaActual.get("IDTURNO");
+			idInstitucion = (String)designaActual.get("IDINSTITUCION");
+		}else{
+			anio = (String)request.getParameter("ANIO");
+			numero = (String)request.getParameter("NUMERO");
+			idturno =(String)request.getParameter("IDTURNO");
+			idInstitucion = (String)request.getParameter("IDINSTITUCION");
+			
 		}
 		
 		ScsContrariosDesignaAdm contrariosAdm = new ScsContrariosDesignaAdm(this.getUserBean(request));
@@ -101,11 +107,12 @@ public class ContrariosDesignasAction extends MasterAction {
 		 							"(select  pro.nombre || ' ' || pro.apellidos1 || ' ' || pro.apellidos2  from "+ ScsProcuradorBean.T_NOMBRETABLA+  " pro"+
 		 								" where  pro."+ScsProcuradorBean.C_IDINSTITUCION+"= def."+ScsContrariosDesignaBean.C_IDINSTITUCIONPROCURADOR+
 		 								" and pro."+ScsProcuradorBean.C_IDPROCURADOR+"= def."+ScsContrariosDesignaBean.C_IDPROCURADOR+") PROCURADOR"+
+		 								",def.idinstitucion "+
 									" from "+ScsContrariosDesignaBean.T_NOMBRETABLA+" def, scs_personajg per "+
-									" where def." + ScsContrariosDesignaBean.C_ANIO +"="+ ((hayDatos)?(String)request.getParameter("ANIO"):anio)+
-									" and def." + ScsContrariosDesignaBean.C_NUMERO + " = " + ((hayDatos)?(String)request.getParameter("NUMERO"):numero)+
-									" and def." + ScsContrariosDesignaBean.C_IDINSTITUCION + " = " + (String)usr.getLocation()+
-									" and def." + ScsContrariosDesignaBean.C_IDTURNO + " = " + ((hayDatos)?(String)request.getParameter("IDTURNO"):idturno)+
+									" where def." + ScsContrariosDesignaBean.C_ANIO +"="+ anio+
+									" and def." + ScsContrariosDesignaBean.C_NUMERO + " = " + numero+
+									" and def." + ScsContrariosDesignaBean.C_IDINSTITUCION + " = " + idInstitucion+
+									" and def." + ScsContrariosDesignaBean.C_IDTURNO + " = " + idturno+
 									" and def.idinstitucion = per.idinstitucion and def.idpersona = per.idpersona ";
 		
 		Vector resultado = (Vector)contrariosAdm.ejecutaSelect(consultaContrarios);

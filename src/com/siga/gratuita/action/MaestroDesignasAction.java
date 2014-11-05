@@ -123,6 +123,7 @@ public class MaestroDesignasAction extends MasterAction {
 		String idJuzgado = "" ;
 		MaestroDesignasForm miform = (MaestroDesignasForm)formulario;
 		String idtipoencalidad="";
+		String idInstitucion = null;
 		try {
 			turno = new ScsTurnoAdm(this.getUserBean(request));
 			guardia = new ScsGuardiasTurnoAdm(this.getUserBean(request));
@@ -131,34 +132,36 @@ public class MaestroDesignasAction extends MasterAction {
 
 			//Recogemos de la pestanha la designa insertada o la que se quiere consultar
 			//y los metemos en un hashtable para el jsp		
+			
 			if(miform.getAnio()!=null && !miform.getAnio().equals("")&&
 					miform.getIdTurno()!=null && !miform.getIdTurno().equals("")&&
 					miform.getNumero()!=null && !miform.getNumero().equals("")){
 				UtilidadesHash.set(resultado,ScsDesignaBean.C_ANIO, 				miform.getAnio());
 				UtilidadesHash.set(resultado,ScsDesignaBean.C_NUMERO, 				miform.getNumero());
-				UtilidadesHash.set(resultado,ScsDesignaBean.C_IDINSTITUCION,		(String)usr.getLocation());
+				idInstitucion = miform.getIdInstitucion();
+				UtilidadesHash.set(resultado,ScsDesignaBean.C_IDINSTITUCION,		idInstitucion);
 				UtilidadesHash.set(resultado,ScsDesignaBean.C_IDTURNO,				miform.getIdTurno());
 					
 			}else{
-			
+				idInstitucion = (String)request.getParameter("IDINSTITUCION");
 				UtilidadesHash.set(resultado,ScsDesignaBean.C_ANIO, 				(String)request.getParameter("ANIO"));
 				UtilidadesHash.set(resultado,ScsDesignaBean.C_NUMERO, 				(String)request.getParameter("NUMERO"));
-				UtilidadesHash.set(resultado,ScsDesignaBean.C_IDINSTITUCION,		(String)usr.getLocation());
+				UtilidadesHash.set(resultado,ScsDesignaBean.C_IDINSTITUCION,	idInstitucion	);
 				UtilidadesHash.set(resultado,ScsDesignaBean.C_IDTURNO,				(String)request.getParameter("IDTURNO"));
 			}
 			
 			
 			// jbd 01/02/2010 Pasamos el valor del pcajg del colegio
-			int valorPcajgActivo=CajgConfiguracion.getTipoCAJG(new Integer(usr.getLocation()));
+			int valorPcajgActivo=CajgConfiguracion.getTipoCAJG(new Integer(idInstitucion));
 			request.setAttribute("PCAJG_ACTIVO", new Integer(valorPcajgActivo));
 			
 			//TEMPORAL!!!
 			GenParametrosAdm admParametros = new GenParametrosAdm(usr);		
-			String ejisActivo = admParametros.getValor(usr.getLocation(), "ECOM", "EJIS_ACTIVO", "0");
+			String ejisActivo = admParametros.getValor(idInstitucion, "ECOM", "EJIS_ACTIVO", "0");
 			request.setAttribute("EJIS_ACTIVO", ejisActivo);			
 			
 			GenParametrosAdm adm = new GenParametrosAdm (this.getUserBean(request));
-			String filtrarModulos = adm.getValor((String)usr.getLocation(),"SCS","FILTRAR_MODULOS_PORFECHA_DESIGNACION", "");
+			String filtrarModulos = adm.getValor(idInstitucion,"SCS","FILTRAR_MODULOS_PORFECHA_DESIGNACION", "");
 			request.setAttribute("filtrarModulos", filtrarModulos);
 			
 			// Consulto la designa:					
@@ -166,7 +169,7 @@ public class MaestroDesignasAction extends MasterAction {
 			beanDesigna = (ScsDesignaBean)vDesignas.get(0);
 			request.setAttribute("beanDesigna",beanDesigna);
 			if ((beanDesigna.getIdTurno()!=null)&&(!(beanDesigna.getIdTurno()).equals(""))){
-				consultaTurno=" where idTurno = " + beanDesigna.getIdTurno() + " and idinstitucion="+usr.getLocation()+" ";
+				consultaTurno=" where idTurno = " + beanDesigna.getIdTurno() + " and idinstitucion="+idInstitucion+" ";
 				nombreTurno = ((ScsTurnoBean)((Vector)turno.select(consultaTurno)).get(0)).getAbreviatura();
 			}
 				
@@ -182,12 +185,12 @@ public class MaestroDesignasAction extends MasterAction {
 			}
 			
 			if ((beanDesigna.getIdTipoDesignaColegio()!=null)&&(!(beanDesigna.getIdTipoDesignaColegio()).equals(""))){
-				consultaTipoDesigna = " where "+ScsTipoDesignaColegioBean.C_IDTIPODESIGNACOLEGIADO +" = " + beanDesigna.getIdTipoDesignaColegio() + " and idinstitucion ="+ usr.getLocation()+" ";
+				consultaTipoDesigna = " where "+ScsTipoDesignaColegioBean.C_IDTIPODESIGNACOLEGIADO +" = " + beanDesigna.getIdTipoDesignaColegio() + " and idinstitucion ="+ idInstitucion+" ";
 				nombreTipoDesigna = ((ScsTipoDesignaColegioBean)((Vector)tipodesigna.select(consultaTipoDesigna)).get(0)).getDescripcion();
 			}
 		} catch(Exception e){
 			if ((beanDesigna.getIdTipoDesignaColegio()!=null)&&(!(beanDesigna.getIdTipoDesignaColegio()).equals(""))){
-				consultaTipoDesigna = " where "+ScsTipoDesignaColegioBean.C_IDTIPODESIGNACOLEGIADO +" = " + beanDesigna.getIdTipoDesignaColegio() + " and idinstitucion ="+ usr.getLocation()+" ";
+				consultaTipoDesigna = " where "+ScsTipoDesignaColegioBean.C_IDTIPODESIGNACOLEGIADO +" = " + beanDesigna.getIdTipoDesignaColegio() + " and idinstitucion ="+ idInstitucion+" ";
 				nombreTipoDesigna = ((ScsTipoDesignaColegioBean)((Vector)tipodesigna.select(consultaTipoDesigna)).get(0)).getDescripcion();
 			}
 		}
@@ -212,7 +215,7 @@ public class MaestroDesignasAction extends MasterAction {
 				String miWhere = " WHERE " + ScsAsistenciasBean.C_DESIGNA_ANIO + " = " + beanDesigna.getAnio() +
 								   " AND " + ScsAsistenciasBean.C_DESIGNA_NUMERO + " = " + beanDesigna.getNumero() +
 								   " AND " + ScsAsistenciasBean.C_DESIGNA_TURNO + " = " + beanDesigna.getIdTurno() +
-								   " AND " + ScsAsistenciasBean.C_IDINSTITUCION + " = " + usr.getLocation();
+								   " AND " + ScsAsistenciasBean.C_IDINSTITUCION + " = " + idInstitucion;
 				ScsAsistenciasAdm asistenciaAdm = new ScsAsistenciasAdm (this.getUserBean(request));
 				Vector vA = asistenciaAdm.select(miWhere);
 				if ((vA != null) && (vA.size() == 1)) {
@@ -221,8 +224,8 @@ public class MaestroDesignasAction extends MasterAction {
 				}
 			}
 			if (asistenciaBean!=null) {
-				consultaTurnoAsistencia=" where idTurno = " + asistenciaBean.getIdTurno() + " and idinstitucion="+usr.getLocation()+" ";
-				consultaGuardiaAsistencia=" where idTurno = " + asistenciaBean.getIdTurno() + " and idGuardia = " + asistenciaBean.getIdGuardia() + " and idinstitucion="+usr.getLocation()+" ";
+				consultaTurnoAsistencia=" where idTurno = " + asistenciaBean.getIdTurno() + " and idinstitucion="+idInstitucion+" ";
+				consultaGuardiaAsistencia=" where idTurno = " + asistenciaBean.getIdTurno() + " and idGuardia = " + asistenciaBean.getIdGuardia() + " and idinstitucion="+idInstitucion+" ";
 	
 				nombreTurnoAsistencia = ((ScsTurnoBean)((Vector)turno.select(consultaTurnoAsistencia)).get(0)).getNombre();
 				nombreGuardiaAsistencia = ((ScsGuardiasTurnoBean)((Vector)guardia.select(consultaGuardiaAsistencia)).get(0)).getNombre();
@@ -423,12 +426,12 @@ public class MaestroDesignasAction extends MasterAction {
 		
 		try {
 			if ((miform.getDesdeEjg() != null) && (miform.getDesdeEjg().equalsIgnoreCase("si"))) {				
-				idInstitucion = this.getIDInstitucion(request).toString();
+				idInstitucion = miform.getIdInstitucion();
 				idTurno = miform.getIdTurno();
 				anio = miform.getAnio();
 				numero = ((ocultos == null)?miform.getNumero():(String)ocultos.get(2));			
 			} else {
-				idInstitucion = (String)usr.getLocation();
+				idInstitucion = (String)ocultos.get(4);
 				idTurno = (String)ocultos.get(0);
 				anio = (String)ocultos.get(3);
 				numero = ((ocultos == null)?miform.getNumero():(String)ocultos.get(2));			
@@ -442,7 +445,7 @@ public class MaestroDesignasAction extends MasterAction {
 			
 			String t_nombre = "", t_apellido1 = "", t_apellido2 = "", t_anio = "", t_numero = "", t_sufijo="";
 			ScsDesignaAdm adm = new ScsDesignaAdm(usr);
-			Hashtable hTitulo = adm.getTituloPantallaDesigna(usr.getLocation(),
+			Hashtable hTitulo = adm.getTituloPantallaDesigna(idInstitucion,
 					(String)elegido.get(ScsDesignaBean.C_ANIO), (String)elegido.get(ScsDesignaBean.C_NUMERO), (String)elegido.get(ScsDesignaBean.C_IDTURNO));
 
 			if (hTitulo != null) {

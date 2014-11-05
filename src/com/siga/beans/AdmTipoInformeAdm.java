@@ -146,6 +146,70 @@ import com.siga.Utilidades.UtilidadesString;
 			
 			
 		} 
+		public List<AdmTipoInformeBean> getTiposInformeComisionMultiple(boolean isCombo)throws ClsExceptions{
+
+			StringBuffer sql = new StringBuffer();
+			sql.append("SELECT * FROM ADM_TIPOINFORME WHERE ADM_TIPOINFORME.CLASE in ('G','C') AND IDTIPOINFORME IN ('ACTAC','CAJG') ORDER BY DESCRIPCION ");			
+			List<AdmTipoInformeBean> tipoInformeList = null;
+			try {
+				RowsContainer rc = new RowsContainer(); 
+													
+	            if (rc.find(sql.toString())) {
+	            	tipoInformeList = new ArrayList<AdmTipoInformeBean>();
+	            	AdmTipoInformeBean tipoInformeBean = null;
+	            	if(isCombo){
+		            	if(rc.size()>1){
+		            		tipoInformeBean = new AdmTipoInformeBean();
+		            		tipoInformeBean.setIdTipoInforme("-1");
+		            		tipoInformeBean.setDescripcion("");
+		            		tipoInformeList.add(tipoInformeBean);
+		            	}
+	            	}
+	            	for (int i = 0; i < rc.size(); i++){
+	            		Row fila = (Row) rc.get(i);
+	            		Hashtable<String, Object> htFila=fila.getRow();
+	            		tipoInformeBean = (AdmTipoInformeBean) this.hashTableToBean(htFila);
+	            		tipoInformeList.add(tipoInformeBean);
+	            	}
+	            } 
+	       } catch (Exception e) {
+	       		throw new ClsExceptions (e, "Error al ejecutar consulta.");
+	       }
+	       return tipoInformeList;
+		}
+		public List<AdmTipoInformeBean> getTiposInformeIntitucionComisionMultiple(boolean isCombo)throws ClsExceptions{
+
+			StringBuffer sql = new StringBuffer();
+			sql.append("SELECT * FROM ADM_TIPOINFORME WHERE ADM_TIPOINFORME.CLASE in ('G','C') AND IDTIPOINFORME NOT IN ('ACTAC','CAJG') ORDER BY DESCRIPCION ");			
+			List<AdmTipoInformeBean> tipoInformeList = null;
+			try {
+				RowsContainer rc = new RowsContainer(); 
+													
+	            if (rc.find(sql.toString())) {
+	            	tipoInformeList = new ArrayList<AdmTipoInformeBean>();
+	            	AdmTipoInformeBean tipoInformeBean = null;
+	            	if(isCombo){
+		            	if(rc.size()>1){
+		            		tipoInformeBean = new AdmTipoInformeBean();
+		            		tipoInformeBean.setIdTipoInforme("-1");
+		            		tipoInformeBean.setDescripcion("");
+		            		tipoInformeList.add(tipoInformeBean);
+		            	}
+	            	}
+	            	for (int i = 0; i < rc.size(); i++){
+	            		Row fila = (Row) rc.get(i);
+	            		Hashtable<String, Object> htFila=fila.getRow();
+	            		tipoInformeBean = (AdmTipoInformeBean) this.hashTableToBean(htFila);
+	            		tipoInformeList.add(tipoInformeBean);
+	            	}
+	            } 
+	       } catch (Exception e) {
+	       		throw new ClsExceptions (e, "Error al ejecutar consulta.");
+	       }
+	       return tipoInformeList;
+			
+			
+		} 
 		
 		
 		

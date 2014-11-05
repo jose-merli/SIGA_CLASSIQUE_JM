@@ -10326,6 +10326,7 @@ public class EnvioInformesGenericos extends MasterReport {
 		}
 		String anio = (String) datosInforme.get("anio");
 		String numero = (String) datosInforme.get("numero");
+		String idInstitucion = (String) datosInforme.get("idinstitucion");
 
 		String idPersona = null;
 		String tipoDestinatario = null;
@@ -10350,7 +10351,7 @@ public class EnvioInformesGenericos extends MasterReport {
 		//quitar el idioma de la siguiente consulta, sacarlo abajo
 		boolean agregarEtiqDesigna=true;
 		Vector datosconsulta = ejgAdm.getDatosInformeEjg(
-				usrBean.getLocation(), idTipoEJG, anio, numero, isSolicitantes, isAcontrarios, 
+				idInstitucion, idTipoEJG, anio, numero, isSolicitantes, isAcontrarios, 
 				idPersona,tipoDestinatario,isGenerarInformeSinDireccion,tipoDestinatarioInforme,agregarEtiqDesigna);
 		Hashtable<String,Vector> htIdiomasUF = new Hashtable<String, Vector>();
 		Hashtable<String,Vector> htIdiomasConyuge = new Hashtable<String,Vector>();
@@ -10370,10 +10371,10 @@ public class EnvioInformesGenericos extends MasterReport {
 					regionUF =   htIdiomasUF.get(idioma);
 					regionConyuge =   htIdiomasConyuge.get(idioma);
 				}else{
-					regionUF = ejgAdm.getDatosRegionUF(usrBean.getLocation(),
+					regionUF = ejgAdm.getDatosRegionUF(idInstitucion,
 							idTipoEJG, anio, numero,idioma);
 					regionConyuge = ejgAdm.getDatosRegionConyuge(
-							usrBean.getLocation(), idTipoEJG, anio, numero,idioma);
+							idInstitucion, idTipoEJG, anio, numero,idioma);
 					htIdiomasUF.put(idioma,regionUF);
 					htIdiomasConyuge.put(idioma,regionConyuge);
 				}

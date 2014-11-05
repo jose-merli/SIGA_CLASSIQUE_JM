@@ -1,7 +1,5 @@
 package com.siga.administracion.service;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.List;
 
 import com.atos.utils.ClsExceptions;
@@ -29,6 +27,8 @@ public interface InformesService extends BusinessService{
 	public AdmInformeBean getInforme(InformeForm informeForm,UsrBean usrBean)throws ClsExceptions ;
 	public void modificarInforme(InformeForm informeForm,UsrBean usrBean)throws ClsExceptions, SIGAException;
 	public List<AdmTipoInformeBean> getTiposInforme(UsrBean usrBean) throws ClsExceptions ;
+	public List<AdmTipoInformeBean> getTiposInformeComisionMultiple(UsrBean usrBean) throws ClsExceptions ;
+	public List<AdmTipoInformeBean> getTiposInformeIntitucionComisionMultiple(UsrBean usrBean)		throws ClsExceptions;
 	public List<CenInstitucionBean> getInstitucionesInformes(Integer idInstitucion,UsrBean usrBean) throws ClsExceptions ;
 	public FileInforme getFileDirectorio(InformeForm informeForm,boolean permisoBorrado)	throws ClsExceptions, SIGAException ;
 	public List<AdmLenguajesBean> getLenguajes(UsrBean usrBean) throws ClsExceptions;

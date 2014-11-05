@@ -29,6 +29,7 @@ import com.atos.utils.ClsExceptions;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.beans.AdmInformeAdm;
+import com.siga.beans.GenParametrosAdm;
 import com.siga.beans.ScsDocumentacionEJGAdm;
 import com.siga.beans.ScsEJGAdm;
 import com.siga.beans.ScsEJGBean;
@@ -246,7 +247,7 @@ public class DefinirDocumentacionEJGAction extends MasterAction {
 			miHash.put("ANIO", miForm.getAnio());
 			miHash.put("NUMERO", miForm.getNumero());
 			miHash.put("IDTIPOEJG", miForm.getIdTipoEJG());
-			miHash.put("IDINSTITUCION", usr.getLocation());
+			miHash.put("IDINSTITUCION", miForm.getIdInstitucion());
 			ScsEJGAdm admEjg = new ScsEJGAdm(this.getUserBean(request));
 			Vector v3 = admEjg.selectByPK(miHash);
 			if (v3 != null && v3.size() > 0) {
@@ -475,6 +476,15 @@ public class DefinirDocumentacionEJGAction extends MasterAction {
 		miForm.setNumEjg(request.getParameter("codigoDesignaNumEJG"));
 		miForm.setSolicitante(request.getParameter("solicitante").toString());
 		
+		GenParametrosAdm paramAdm = new GenParametrosAdm (this.getUserBean(request));
+		
+		String prefijoExpedienteCajg;
+		try {
+			prefijoExpedienteCajg = paramAdm.getValor (miForm.getIdInstitucion(), ClsConstants.MODULO_SJCS, ClsConstants.GEN_PARAM_PREFIJO_EXPEDIENTES_CAJG, " ");
+			request.setAttribute("PREFIJOEXPEDIENTECAJG",prefijoExpedienteCajg);
+		} catch (ClsExceptions e) {
+			throw new SIGAException(e.getMessage());
+		}
 		
 		
 		

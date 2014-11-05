@@ -13,6 +13,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.redabogacia.sigaservices.app.autogen.model.CenInstitucion;
+import org.redabogacia.sigaservices.app.services.cen.CenInstitucionService;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
@@ -183,9 +185,25 @@ public class GestionInformesAction extends MasterAction {
 
 		UsrBean usrBean = this.getUserBean(request);
 		informeForm.setIdInstitucion(usrBean.getLocation());
-		BusinessManager bm = getBusinessManager();
-		InformesService informeService = (InformesService)bm.getService(InformesService.class);
-		List<AdmTipoInformeBean> tiposInformeList = informeService.getTiposInforme(usrBean);
+		InformesService informeService = (InformesService)getBusinessManager().getService(InformesService.class);
+		
+		boolean esComision = usrBean.isComision();
+		boolean esComisionMultiple = usrBean.getInstitucionesComision()!=null &&usrBean.getInstitucionesComision().length>1;
+		List<AdmTipoInformeBean> tiposInformeList = null;
+		if(esComision && esComisionMultiple){
+			tiposInformeList = informeService.getTiposInformeComisionMultiple(usrBean);
+		}else{
+			//sin o es comision vamos aver si su comision es multiple, con lo que tendremos que ocultar ciertos tipos de informe
+			CenInstitucionService cenInstitucionService = (CenInstitucionService)getBusinessManager().getService(CenInstitucionService.class);
+			CenInstitucion cenInstitucion = new CenInstitucion();
+			cenInstitucion.setIdinstitucion(usrBean.getIdInstitucionComision());
+			List<CenInstitucion> instituciones =  cenInstitucionService.getInstitucionesComision(cenInstitucion);
+			if( instituciones!=null && instituciones.size()>1 ){
+				tiposInformeList = informeService.getTiposInformeIntitucionComisionMultiple(usrBean);
+			}else{
+				tiposInformeList = informeService.getTiposInforme(usrBean);	
+			}
+		}
 		informeForm.setTiposInforme(tiposInformeList);
 		List<CenInstitucionBean> institucionesList = informeService.getInstitucionesInformes(new Integer(usrBean.getLocation()),usrBean);
 		informeForm.setInstituciones(institucionesList);

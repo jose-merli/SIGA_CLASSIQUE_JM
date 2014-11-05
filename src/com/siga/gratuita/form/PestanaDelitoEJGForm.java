@@ -12,7 +12,19 @@ public class PestanaDelitoEJGForm extends MasterForm {
 
 	private Integer idDelito, anio, numero, idTipoEJG;
 	
-	
+	private String idInstitucion;
+	/**
+	 * @return the idInstitucion
+	 */
+	public String getIdInstitucion() {
+		return idInstitucion;
+	}
+	/**
+	 * @param idInstitucion the idInstitucion to set
+	 */
+	public void setIdInstitucion(String idInstitucion) {
+		this.idInstitucion = idInstitucion;
+	}
 	/**
 	 * @return Returns the idTipoEJG.
 	 */

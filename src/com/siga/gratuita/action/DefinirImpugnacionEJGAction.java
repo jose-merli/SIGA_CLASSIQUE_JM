@@ -100,11 +100,14 @@ public class DefinirImpugnacionEJGAction extends MasterAction {
 		miHash.put("ANIO",request.getParameter("ANIO").toString());
 		miHash.put("NUMERO",request.getParameter("NUMERO").toString());
 		miHash.put("IDTIPOEJG",request.getParameter("IDTIPOEJG").toString());
-		miHash.put("IDINSTITUCION",usr.getLocation().toString());	
+		miHash.put("IDINSTITUCION",request.getParameter("IDINSTITUCION").toString());	
 		
 		ScsEJGAdm admEJG = new ScsEJGAdm(this.getUserBean(request));
 		
-		try {			
+		try {
+			GenParametrosAdm paramAdm = new GenParametrosAdm (usr);
+			String prefijoExpedienteCajg = paramAdm.getValor ((String)request.getParameter("IDINSTITUCION"), ClsConstants.MODULO_SJCS, ClsConstants.GEN_PARAM_PREFIJO_EXPEDIENTES_CAJG, " ");
+			request.setAttribute("PREFIJOEXPEDIENTECAJG",prefijoExpedienteCajg);
 			v = admEJG.selectPorClave(miHash);
 			try{
 				request.getSession().setAttribute("DATABACKUP",admEJG.beanToHashTable((ScsEJGBean)v.get(0)));

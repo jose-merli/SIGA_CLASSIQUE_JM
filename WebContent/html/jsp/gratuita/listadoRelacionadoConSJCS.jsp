@@ -15,6 +15,7 @@
 <%@ taglib uri = "struts-bean.tld"   prefix="bean"%>
 <%@ taglib uri = "struts-html.tld"   prefix="html"%>
 <%@ taglib uri = "struts-logic.tld"  prefix="logic"%>
+<%@ taglib uri="c.tld" prefix="c"%>
 
 <%@ page import="com.siga.administracion.SIGAConstants"%>
 <%@ page import="com.atos.utils.*"%>
@@ -41,7 +42,7 @@
 		botones += ",E,B";
 	}
 	
-	String anio = "", numero = "", idTipoTurno = "";
+	String anio = "", numero = "", idTipoTurno = "",idInstitucion = usr.getLocation();
 	String relacionesDe = (String)request.getParameter("conceptoE");
 %>	
 											
@@ -92,9 +93,10 @@
 							anio          = request.getParameter("ANIO");
 							numero        = request.getParameter("NUMERO");
 							idTipoTurno   = request.getParameter("IDTURNO");
+							idInstitucion = request.getParameter("IDINSTITUCION");
 
 							ScsDesignaAdm adm = new ScsDesignaAdm (usr);
-							hTitulo = adm.getTituloPantallaDesigna(usr.getLocation(), anio, numero, idTipoTurno);
+							hTitulo = adm.getTituloPantallaDesigna(idInstitucion, anio, numero, idTipoTurno);
 
 							if (hTitulo != null) {
 								t_anio      = (String)hTitulo.get(ScsDesignaBean.C_ANIO);
@@ -107,8 +109,9 @@
 							anio          = request.getParameter("anioEJG");
 							numero        = request.getParameter("numeroEJG");
 							idTipoTurno   = request.getParameter("idTipoEJG");
+							idInstitucion = request.getParameter("IDINSTITUCION");
 							ScsEJGAdm adm = new ScsEJGAdm (usr);
-							hTitulo = adm.getTituloPantallaEJG(usr.getLocation(), anio, numero, idTipoTurno);
+							hTitulo = adm.getTituloPantallaEJG(idInstitucion, anio, numero, idTipoTurno);
 
 							if (hTitulo != null) {
 								t_anio      = (String)hTitulo.get(ScsEJGBean.C_ANIO);
@@ -125,7 +128,7 @@
 					catch (Exception e) {}
 				%>
 				
-				<%=UtilidadesString.mostrarDatoJSP(t_anio)%>/<%=UtilidadesString.mostrarDatoJSP(t_numero)%>
+				<c:out value="${PREFIJOEXPEDIENTECAJG}" />&nbsp;<%=UtilidadesString.mostrarDatoJSP(t_anio)%>/<%=UtilidadesString.mostrarDatoJSP(t_numero)%>
 				- <%=UtilidadesString.mostrarDatoJSP(t_nombre)%> <%=UtilidadesString.mostrarDatoJSP(t_apellido1)%> <%=UtilidadesString.mostrarDatoJSP(t_apellido2)%>
 			</td>
 		</tr>
@@ -140,6 +143,7 @@
 		<input type="hidden" name="anio"      value="<%=anio%>"        />
 		<input type="hidden" name="numero"    value="<%=numero%>"      />
 		<input type="hidden" name="idTipo"    value="<%=idTipoTurno%>" />
+		<input type="hidden" name="idInstitucion"    value="<%=idInstitucion%>" />
 
 		<siga:Table 
 			   name="tablaDatos"
@@ -234,6 +238,7 @@
 	<html:form action = "/JGR_MantenimientoDesignas.do" method="POST" target="mainWorkArea">
 		<html:hidden property ="modo" 	  value= ""/>
 		<html:hidden property ="anio"     value= ""/>
+		<html:hidden property ="idInstitucion"    value="<%=idInstitucion%>"/>
 		<html:hidden property ="numero"   value= ""/>
 		<html:hidden property ="idTurno"  value= ""/>
 		<html:hidden property ="desdeEjg" value= "si"/>
@@ -261,6 +266,7 @@
 	<!-- ASISTENCIA -->	
 	<html:form action = "/JGR_Asistencia.do" method="POST" target="mainWorkArea">
 		<html:hidden property ="modo" 	  value= ""/>
+		<html:hidden property ="idInstitucion"    value="<%=idInstitucion%>"/>
 		<html:hidden property ="anio"     value= ""/>
 		<html:hidden property ="numero"   value= ""/>
 		<html:hidden property ="desdeEJG" value= "si"/>
@@ -277,6 +283,7 @@
 		<html:hidden property ="institucion" value=""/>	
 		<html:hidden property ="soloSeguimiento" value="false"/>
 		<html:hidden property ="editable" value="1"/>			
+		<html:hidden property ="idInstitucion"     value="<%=idInstitucion%>"/>
 	
 					
 		<input type="hidden" name="idTipoExpediente" value="">
@@ -340,7 +347,7 @@
 				formulario.idTipoExpediente.value          = datos[4];
 				formulario.institucion.value        = datos[1];
 				formulario.tipoExpediente.value          = datos[8];
-				formulario.idInstitucion_TipoExpediente.value          =<%=usr.getLocation()%> ;
+				formulario.idInstitucion_TipoExpediente.value          =<%=idInstitucion%> ;
 				//document.getElementById("anioExpediente").value = datos[2];
 				//document.getElementById("numExpediente").value        = datos[8];
 				//document.getElementById("tipoExpediente").value     = datos[7];
@@ -374,11 +381,13 @@
 		function accionVolver() 
 		{		
 			<% if(relacionesDe!=null && relacionesDe.equalsIgnoreCase("EJG")) {	%>
+				document.forms[2].idInstitucion.value = "<%=usr.getLocation()%>";
 				document.forms[2].action="./JGR_EJG.do";
 				document.forms[2].modo.value="buscar";
 				document.forms[2].target="mainWorkArea"; 				
 				document.forms[2].submit();
 			<% } else {	%>
+				document.forms[0].idInstitucion.value = "<%=usr.getLocation()%>";
 				document.forms[0].action="JGR_Designas.do";
 				document.forms[0].modo.value="volverBusqueda";
 				document.forms[0].target="mainWorkArea"; 

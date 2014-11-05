@@ -165,7 +165,8 @@
 			}		
 		}
 		function borrarOviedoTemporal(fila){
-			if (confirm('<siga:Idioma key="messages.deleteConfirmation"/>')) { 
+			if (confirm('<siga:Idioma key="messages.deleteConfirmation"/>')) {
+				sub();
 				var auxRemesa = 'oculto' + fila + '_1';
 		    	var idReme = document.getElementById(auxRemesa);			          		
 		    
@@ -260,8 +261,10 @@
 	    		elems[1]=new FilaExtElement("download", "descargar", SIGAConstants.ACCESS_FULL);
 	    	}
 	    		    
-	    	if(idInstitucion==2053)
+	    	if(idInstitucion==2053){
+	    		botones="C";
 	    		elems[0] =new FilaExtElement("borrar", "borrarOviedoTemporal", SIGAConstants.ACCESS_FULL);
+	    	}
 	    	
 	    	String incidencias = "";
 	    	if (!((String)registro.get("CUENTA_INCIDENCIAS")).trim().equals("")) {

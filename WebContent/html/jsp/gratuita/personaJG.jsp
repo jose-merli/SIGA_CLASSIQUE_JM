@@ -18,6 +18,7 @@
 
 <!-- AJAX -->
 <%@ taglib uri="ajaxtags.tld" prefix="ajax" %>
+<%@ taglib uri = "c.tld" 				prefix="c"%>
 
 <!-- IMPORTS -->
 <%@ page import="com.siga.gratuita.action.PersonaJGAction"%>
@@ -38,13 +39,7 @@
 	String app = request.getContextPath();
 	HttpSession ses = request.getSession();
 	UsrBean usr = (UsrBean) ses.getAttribute("USRBEAN");
-	String dato[] = {(String) usr.getLocation()};
-	boolean esFichaColegial = false;
-
-	String sEsFichaColegial = (String) request.getAttribute("esFichaColegial");
-	if ((sEsFichaColegial != null) && ((sEsFichaColegial.equalsIgnoreCase("1")) || (sEsFichaColegial.equalsIgnoreCase("true")))) {
-		esFichaColegial = true;
-	}
+	
 
 	int pcajgActivo = 0;
 	String minusDefecto=null;
@@ -58,6 +53,18 @@
 	// RGG 23-03-2006  cambios de personaJG
 
 	PersonaJGForm miform = (PersonaJGForm) request.getAttribute("PersonaJGForm");
+	String idInstitucion = miform.getIdInstitucionJG();
+	if(idInstitucion==null)
+		idInstitucion = usr.getLocation();
+	
+	String dato[] = {idInstitucion};
+	boolean esFichaColegial = false;
+
+	String sEsFichaColegial = (String) request.getAttribute("esFichaColegial");
+	if ((sEsFichaColegial != null) && ((sEsFichaColegial.equalsIgnoreCase("1")) || (sEsFichaColegial.equalsIgnoreCase("true")))) {
+		esFichaColegial = true;
+	}
+	
 	String importeBienesInmuebles = miform.getImporteBienesInmuebles();
 	String importeOtrosBienes = miform.getImporteOtrosBienes();
 	String importeIngresosAnuales = miform.getImporteIngresosAnuales();
@@ -215,7 +222,7 @@
 	}
 
 	ArrayList calidadSel = new ArrayList();
-	String[] datos2= {usr.getLocation(),usr.getLanguage()};
+	String[] datos2= {idInstitucion,usr.getLanguage()};
 	String idcalidad = miform.getIdTipoenCalidad();
 	if (idcalidad!=null&&!idcalidad.equals("")){
 		calidadSel.add(0,idcalidad);
@@ -675,12 +682,12 @@
 
 				if (resultado!=null && resultado[1]!="") {
 					var p1 = document.getElementById("resultado");					
-					p1.src = "JGR_TelefonosPersonasJG.do?accion=<%=accion%>&idPersona="+resultado[1]+"&idInstitucion=<%=usr.getLocation()%>";
+					p1.src = "JGR_TelefonosPersonasJG.do?accion=<%=accion%>&idPersona="+resultado[1]+"&idInstitucion=<%=idInstitucion%>";
 					document.forms[0].target="mainPestanas";				
 					document.forms[0].modo.value="editar";
 				} else {
 					var p1 = document.getElementById("resultado");					
-					p1.src = "JGR_TelefonosPersonasJG.do?accion=<%=accion%>&idPersona=&idInstitucion=<%=usr.getLocation()%>";
+					p1.src = "JGR_TelefonosPersonasJG.do?accion=<%=accion%>&idPersona=&idInstitucion=<%=idInstitucion%>";
 					document.forms[0].target="mainPestanas";				
 					document.forms[0].modo.value="editar";
 				}
@@ -1263,8 +1270,7 @@
 								t_tipoEJG = (String) hTitulo.get("TIPOEJG");
 							}
 %>
-							<%=UtilidadesString.mostrarDatoJSP(t_anio)%>
-							/<%=UtilidadesString.mostrarDatoJSP(t_numero)%>  
+							<c:out value="${PREFIJOEXPEDIENTECAJG}" />&nbsp;<%=UtilidadesString.mostrarDatoJSP(t_anio)%>/<%=UtilidadesString.mostrarDatoJSP(t_numero)%>  
 							<%=UtilidadesString.mostrarDatoJSP(t_tipoEJG)%>
 							- <%=UtilidadesString.mostrarDatoJSP(t_nombre)%> 
 							<%=UtilidadesString.mostrarDatoJSP(t_apellido1)%> 
@@ -1421,7 +1427,7 @@
 					ArrayList selTipoVia = new ArrayList();
 						if (miform.getTipoVia() != null)
 							selTipoVia.add(miform.getTipoVia());
-						String paramTipoVia[] = { usr.getLocation() };
+						String paramTipoVia[] = { idInstitucion };
 				%>	
 				<siga:ComboBD nombre = "tipoVia" tipo="comboTipoVia" clase="<%=classCombo%>" elementoSel="<%=selTipoVia%>" parametro="<%=paramTipoVia%>" readOnly="<%=sreadonly%>" estilo="width:120" />
 			</td>
@@ -1878,7 +1884,7 @@
 			ArrayList selParentesco = new ArrayList();
 						if (miform.getParentesco() != null)
 							selParentesco.add(miform.getParentesco());
-						String paramParentesco[] = {usr.getLocation()};
+						String paramParentesco[] = {idInstitucion};
 		%>
 			<siga:ComboBD  nombre="parentesco" tipo="cmbParentesco" elementoSel="<%=selParentesco %>" parametro="<%=paramParentesco%>" clase="<%=classCombo %>" obligatorio="false" readOnly="<%=sreadonly%>" obligatorioSinTextoSeleccionar="false"/>
 		</td>
@@ -2135,7 +2141,7 @@
 								ArrayList selProcu = new ArrayList();
 								if (miform.getIdProcurador() != null)
 									selProcu.add(miform.getIdProcurador());
-								String paramProcu[] = { usr.getLocation() };
+								String paramProcu[] = { idInstitucion };
 								
 								if (!accion.equalsIgnoreCase("ver")) {
 %>
@@ -2214,7 +2220,7 @@
 									<td rowspan=2>
 										<siga:ConjCampos leyenda="gratuita.personaJG.literal.telefonos">
 											<iframe align="top" 
-												src="<%=app%>/JGR_TelefonosPersonasJG.do?accion=<%=accion%>&idPersona=<%=idPersona%>&idInstitucion=<%=usr.getLocation()%>&esFichaColegial=<%=sEsFichaColegial%>"
+												src="<%=app%>/JGR_TelefonosPersonasJG.do?accion=<%=accion%>&idPersona=<%=idPersona%>&idInstitucion=<%=idInstitucion%>&esFichaColegial=<%=sEsFichaColegial%>"
 												id="resultado" 
 												name="resultado" 
 												scrolling="no" 
@@ -2314,7 +2320,7 @@
 				ArrayList selProcu = new ArrayList();
 							if (miform.getIdProcurador() != null)
 								selProcu.add(miform.getIdProcurador());
-							String paramProcu[] = { usr.getLocation() };
+							String paramProcu[] = { idInstitucion };
 			%>	
 			<%
 				if (!accion.equalsIgnoreCase("ver")) {%>
@@ -2497,7 +2503,7 @@
 						<tr>
 							<td colspan="2">
 								<siga:ConjCampos leyenda="gratuita.personaJG.literal.telefonos">
-									<iframe src="<%=app%>/JGR_TelefonosPersonasJG.do?accion=<%=accion%>&idPersona=<%=idPersona%>&idInstitucion=<%=usr.getLocation()%>&esFichaColegial=<%=sEsFichaColegial%>"
+									<iframe src="<%=app%>/JGR_TelefonosPersonasJG.do?accion=<%=accion%>&idPersona=<%=idPersona%>&idInstitucion=<%=idInstitucion%>&esFichaColegial=<%=sEsFichaColegial%>"
 										id="resultado" 
 										name="resultado" 
 										scrolling="no" 
@@ -3879,9 +3885,9 @@ function accionRestablecer()
 	<form id="representanteTutor" name="representanteTutor" action="<%=app + actionE%>" method="post">
 		<input type="hidden" id="actionModal"      name="actionModal" value="">
 		<input type="hidden" id="modo"      name="modo" value="abrirPestana">
-		<input type="hidden" id="idInstitucionJG"     name="idInstitucionJG" value="<%=usr.getLocation()%>">
+		<input type="hidden" id="idInstitucionJG"     name="idInstitucionJG" value="<%=idInstitucion%>">
 		<input type="hidden" id="idPersonaJG"      name="idPersonaJG" value="<%=miform.getIdRepresentanteJG()%>">
-		<input type="hidden" id="idInstitucionPER"     name="idInstitucionPER" value="<%=usr.getLocation()%>">
+		<input type="hidden" id="idInstitucionPER"     name="idInstitucionPER" value="<%=idInstitucion%>">
 		<input type="hidden" id="idPersonaPER"     name="idPersonaPER" value="<%=miform.getIdPersonaJG()%>">
 		<input type="hidden" id="conceptoE"      name="conceptoE" value="<%=PersonaJGAction.PERSONAJG%>">
 		<input type="hidden" id="tituloE"      name="tituloE" value="gratuita.personaJG.literal.representante">

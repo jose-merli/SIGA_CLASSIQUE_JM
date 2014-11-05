@@ -44,6 +44,7 @@
 	String anio = hash.get("ANIO").toString();
 	String numero = hash.get("NUMERO").toString();
 	String idTipoEJG = hash.get("IDTIPOEJG").toString();
+	String idInstitucion = hash.get("IDINSTITUCION").toString();
 	
 	String modopestanha = request.getSession().getAttribute("accion")==null?"":(String)request.getSession().getAttribute("accion");
 	boolean esFichaColegial = false;
@@ -83,10 +84,10 @@
 	<html:form action="<%=sAction%>" method="post" target="submitArea" style="display:none">
 		<input type="hidden" name="modo" value="abrirPestana">
 		
-		<input type="hidden" name="idInstitucionJG" value="<%=usr.getLocation() %>">
+		<input type="hidden" name="idInstitucionJG" value="<%=idInstitucion%>">
 		<input type="hidden" name="idPersonaJG" value="">
 
-		<input type="hidden" name="idInstitucionEJG" value="<%=usr.getLocation() %>">
+		<input type="hidden" name="idInstitucionEJG" value="<%=idInstitucion%>">
 		<input type="hidden" name="anioEJG" value="<%=anio %>">
 		<input type="hidden" name="numeroEJG" value="<%=numero %>">
 		<input type="hidden" name="idTipoEJG" value="<%=idTipoEJG %>">
@@ -141,9 +142,9 @@
 						<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_2" value="gratuita.contrariosAsistencia.literal.titulo">
 						<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_3" value="gratuita.contrariosAsistencia.literal.titulo">
 						<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_4" value="editar">
-						<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_5" value="<%=usr.getLocation()%>">
+						<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_5" value="<%=idInstitucion%>">
 						<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_6" value="<%=idPersona%>">
-						<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_7" value="<%=usr.getLocation()%>">
+						<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_7" value="<%=idInstitucion%>">
 						<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_8" value="<%=anio %>">
 						<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_9" value="<%=numero %>">
 						<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_10" value="<%=idTipoEJG %>">

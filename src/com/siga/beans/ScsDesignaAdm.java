@@ -1291,12 +1291,15 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 	  	
 	  	// Acceso a BBDD
 		int totalRegistros=0;
-		
+		boolean esComision=(miHash.containsKey("ESCOMISION") && UtilidadesString.stringToBoolean(miHash.get("ESCOMISION").toString()));
+		Short[] idInstitucionesComision = usrbean.getInstitucionesComision();
 		
 		//aalg. INC_06694_SIGA. Se modifica la query para hacerla más eficiente
 		try {
 			consulta=" select distinct des.estado estado, des.anio anio, des.numero numero, des.fechaentrada fechaentrada,des.idturno idturno, des.codigo||'' codigo, des.sufijo sufijo,des.idinstitucion idinstitucion ";
-			
+			if(idInstitucionesComision!=null && idInstitucionesComision.length>0){
+				consulta +=  ",(SELECT INT.ABREVIATURA FROM CEN_INSTITUCION INT WHERE INT.IDINSTITUCION = des.IDINSTITUCION) INST_ABREV ";
+			}
 			consulta+=" from scs_designa des ";
 			
 			if(UtilidadesHash.getString(miHash,"NCOLEGIADO")!=null && !((String)UtilidadesHash.getString(miHash,"NCOLEGIADO")).equals("") ){
@@ -1328,9 +1331,32 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 				consulta += ", SCS_DEFENDIDOSDESIGNA DED, SCS_PERSONAJG PER ";
 			}
 			
-			contador++;
-			codigosBind.put(new Integer(contador),idInstitucion);
-			consulta+=" where des.idinstitucion =:"+contador;
+			if(esComision){
+				if(miHash.get("IDINSTITUCION")!=null && !miHash.get("IDINSTITUCION").toString().equals("")){
+					contador++;
+					codigosBind.put(new Integer(contador),miHash.get("IDINSTITUCION").toString());
+					consulta += " where des.IDINSTITUCION = :"+ contador;
+				}else if(idInstitucionesComision!=null && idInstitucionesComision.length>0){
+					consulta += " where des.IDINSTITUCION IN (";
+					for (int i = 0; i < idInstitucionesComision.length; i++) {
+						contador++;
+						codigosBind.put(new Integer(contador),idInstitucionesComision[i]);
+						consulta += "  :"+ contador;
+						consulta += ",";
+					}
+					consulta = consulta.substring(0,consulta.length()-1);
+					consulta += ")";
+				}else{
+					contador++;
+					codigosBind.put(new Integer(contador),idInstitucion);
+					consulta+=" where des.idinstitucion =:"+contador;
+				}
+			}else{
+				
+				contador++;
+				codigosBind.put(new Integer(contador),idInstitucion);
+				consulta+=" where des.idinstitucion =:"+contador;
+			}
 			
 			if(UtilidadesHash.getString(miHash,"NCOLEGIADO")!=null && !((String)UtilidadesHash.getString(miHash,"NCOLEGIADO")).equals("") ){
 				consulta += " and l.idinstitucion =des.idinstitucion ";
@@ -1833,8 +1859,32 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 			" PROC.TELEFONO1 as TELEFONO1_PROCURADOR,"+
 			" TO_CHAR(DESPROC.FECHADESIGNA,'dd-mm-yyyy') as FECHADESIGNA_PROCURADOR,"+
 			" PROC.IDPROCURADOR AS IDPROCURADORDESIGNA"+
+			" ,CP.NOMBRE AS PROCURADOR_COL_NOMBRE, "+
+			" CP.DIRECCION AS PROCURADOR_COL_DIRECCION, "+
+			" (SELECT F_SIGA_GETRECURSO(TIPOVIA.DESCRIPCION, 1) "+
+			" FROM CEN_TIPOVIA TIPOVIA "+
+			" WHERE TIPOVIA.IDTIPOVIA = CP.IDTIPOVIA "+
+			" AND TIPOVIA.IDINSTITUCION = 2000) AS PROCURADOR_COL_TIPOVIA, "+
+			" CP.NUMERODIR AS PROCURADOR_COL_NUMERODIR, "+
+			" CP.ESCALERADIR AS PROCURADOR_COL_ESCALERADIR, "+
+			" CP.PISODIR AS PROCURADOR_COL_PISODIR, "+
+			" CP.PUERTADIR AS PROCURADOR_COL_PUERTADIR, "+
+			" CP.CODIGOPOSTAL AS PROCURADOR_COL_CODPOSTAL, "+
+			" (SELECT POBLACION.NOMBRE "+
+			" FROM CEN_POBLACIONES POBLACION, CEN_PROVINCIAS PROVINCIA "+
+			" WHERE POBLACION.IDPROVINCIA = PROVINCIA.IDPROVINCIA "+
+			" AND CP.IDPROVINCIA = POBLACION.IDPROVINCIA "+
+			" AND CP.IDPOBLACION = POBLACION.IDPOBLACION) AS PROCURADOR_COL_POBLACION, "+
+			" (SELECT PROVINCIA.NOMBRE "+
+			" FROM CEN_PROVINCIAS PROVINCIA "+
+			" WHERE PROVINCIA.IDPROVINCIA = CP.IDPROVINCIA) AS PROCURADOR_COL_PROVINCIA "+
+			
+			
 			" FROM SCS_DESIGNAPROCURADOR DESPROC, SCS_PROCURADOR PROC"+
-			" WHERE DESPROC.IDINSTITUCION_PROC = PROC.IDINSTITUCION"+
+			" , CEN_COLEGIOPROCURADOR CP "+
+			" WHERE " +
+			"  PROC.IDCOLPROCURADOR = CP.IDCOLPROCURADOR(+) "+
+			" AND DESPROC.IDINSTITUCION_PROC = PROC.IDINSTITUCION"+
 			" AND DESPROC.IDPROCURADOR = PROC.IDPROCURADOR"+
 			" AND TRUNC(DESPROC.FECHADESIGNA) <= SYSDATE"+
 			" AND (DESPROC.FECHARENUNCIA IS NULL OR"+

@@ -565,24 +565,27 @@ public class DefinirUnidadFamiliarEJGAction extends MasterAction {
 			
 			String accion = (String)request.getSession().getAttribute("accion");
 			miForm.setModo(accion);
-			
+			String idInstitucion = "";
 			if(request.getParameter("ANIO")!=null){
 				miHash.put("ANIO",request.getParameter("ANIO").toString());
 				miHash.put("NUMERO",request.getParameter("NUMERO").toString());
 				miHash.put("IDTIPOEJG",request.getParameter("IDTIPOEJG").toString());
-				miHash.put("IDINSTITUCION",usr.getLocation().toString());
+				idInstitucion = request.getParameter("IDINSTITUCION").toString();
+				miHash.put("IDINSTITUCION",idInstitucion);
 				miForm.setAnio(request.getParameter("ANIO"));
 				miForm.setNumero(request.getParameter("NUMERO"));
 				miForm.setIdTipoEJG(request.getParameter("IDTIPOEJG"));
-				miForm.setIdInstitucion(request.getParameter("IDINSTITUCION"));
+				miForm.setIdInstitucion(idInstitucion);
 			}else{
 				miHash.put("ANIO",miForm.getAnio());
 				miHash.put("NUMERO",miForm.getNumero());
 				miHash.put("IDTIPOEJG",miForm.getIdTipoEJG());
-				miHash.put("IDINSTITUCION",usr.getLocation());				
+				idInstitucion = miForm.getIdInstitucion();
+				miHash.put("IDINSTITUCION",idInstitucion);		
+				
 			}
 			GenParametrosAdm paramAdm = new GenParametrosAdm (usr);
-			String eejg = paramAdm.getValor (usr.getLocation (), ClsConstants.MODULO_SJCS, ClsConstants.GEN_PARAM_EEJG, "");
+			String eejg = paramAdm.getValor (idInstitucion, ClsConstants.MODULO_SJCS, ClsConstants.GEN_PARAM_EEJG, "");
 			String accesoEEJGSt=usr.getPermisoProceso("JGR_UnidadFamiliarEEJG");
 			boolean accesoEEJG = accesoEEJGSt!=null && (accesoEEJGSt.equalsIgnoreCase(SIGAConstants.ACCESS_FULL));
 			Boolean isPermisoEejg = new Boolean((eejg!=null && eejg.equalsIgnoreCase(ClsConstants.DB_TRUE)));
@@ -636,6 +639,8 @@ public class DefinirUnidadFamiliarEJGAction extends MasterAction {
 			List<ScsEejgPeticionesBean> peticionesEejgBeans = eEjgS.getPeticionesEejg(ejg, usr);
 			miForm.setPeticionesEejg(peticionesEejgBeans);
 			request.setAttribute("EJG_UNIDADFAMILIAR", PersonaJGAction.EJG_UNIDADFAMILIAR);
+			String prefijoExpedienteCajg = paramAdm.getValor (idInstitucion, ClsConstants.MODULO_SJCS, ClsConstants.GEN_PARAM_PREFIJO_EXPEDIENTES_CAJG, " ");
+			request.setAttribute("PREFIJOEXPEDIENTECAJG",prefijoExpedienteCajg);
 		} catch (Exception e) {
 			   throwExcp("messages.general.error",e,null);
 		}

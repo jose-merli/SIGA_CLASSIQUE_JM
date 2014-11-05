@@ -39,6 +39,8 @@
 	String idTurno=(String)request.getSession().getAttribute("DESIGNA_IDTURNO");
 	String anio=(String)request.getSession().getAttribute("DESIGNA_ANIO");
 	String numero=(String)request.getSession().getAttribute("DESIGNA_NUMERO");
+	String idInstitucion=(String)request.getSession().getAttribute("DESIGNA_IDINSTITUCION");
+	
 	boolean botonNuevo = (Boolean)request.getSession().getAttribute("botonNuevo");
 	
 	
@@ -84,7 +86,7 @@
 					<%
 					    String t_nombre = "", t_apellido1 = "", t_apellido2 = "", t_anio = "", t_numero = "";
 						ScsDesignaAdm adm = new ScsDesignaAdm (usr);
-						Hashtable hTitulo = adm.getTituloPantallaDesigna(usr.getLocation(), anio, numero,idTurno);
+						Hashtable hTitulo = adm.getTituloPantallaDesigna(idInstitucion, anio, numero,idTurno);
 
 						if (hTitulo != null) {
 							t_nombre    = (String)hTitulo.get(ScsPersonaJGBean.C_NOMBRE);

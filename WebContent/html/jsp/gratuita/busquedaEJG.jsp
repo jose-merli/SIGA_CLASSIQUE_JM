@@ -34,12 +34,15 @@
 <%
 	UsrBean usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
 	boolean esComision = usr.isComision();
+	boolean esComisionMultiple = usr.getInstitucionesComision()!=null &&usr.getInstitucionesComision().length>1;
+	String idInstitucionComision = usr.getIdInstitucionComision().toString();
 	HttpSession ses = request.getSession();
 	
 	
 	String accion="", anioActa="", apellido1="", apellido2="", asunto="", busquedaRealizada="", cajgAnio="", cajgNumero="", calidad="", calidadidinstitucion="", formulario="", idcalidad="", idPersona="", idPersonaDefensa="", idRenuncia="", idremesa="", nif="", nombre="", numActa="", numEJG="", procedimiento="", sNig=""; 
 	String creadoDesde="", fechaApertura="", fechaAperturaHasta="", fechaDictamenDesde="", fechaDictamenHasta="", fechaEstadoDesde="", fechaEstadoHasta="",  fechaLimiteDesde="", fechaLimiteHasta="", fechaPonenteDesde="", fechaPonenteHasta="";
 	ArrayList calidadSel=new ArrayList(), idEstado=new ArrayList(), idGuardia=new ArrayList(), idResolucion=new ArrayList(), idTipoDictamen=new ArrayList(), idTipoEJG=new ArrayList(), idTipoEJGColegio=new ArrayList(), idTurno=new ArrayList(), juzgado=new ArrayList(), juzgadoSel = new ArrayList(), renunciaSel=new ArrayList(), vPonente=new ArrayList(), vFundamentoJuridico= new ArrayList(), vTipoRatificacion= new ArrayList(), idPreceptivo = new ArrayList();
+	ArrayList idInstitucionSelected = new ArrayList();
 	Hashtable miHash = new Hashtable();
 	
 	boolean permisoEejg = false;
@@ -50,14 +53,11 @@
 	String nColegiado = request.getAttribute("nColegiado") == null ? "" : (String) request.getAttribute("nColegiado");
 	String nombreColegiado = request.getAttribute("nombreColegiado") == null ? "" : (String) request.getAttribute("nombreColegiado");
 	String ventanaCajg = request.getParameter("ventanaCajg");
-	String idInstitucion = usr.getLocation();	
+
 	ReadProperties rp=new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
 	String idordinario = rp.returnProperty("codigo.general.scstipoejg.ordinarios");
 	String datoTipoOrdinario[] = { idordinario, idordinario };
-	String datos[] = { (String) usr.getLocation() };
-	String dato[] = { (String) usr.getLocation() };
-	String datoIdioma[] = {(String)usr.getLocation(),(String)usr.getLocation()};	
-	String idioma[] = { (String) usr.getLanguage() };
+
 	String sDictaminado = "I";
 	
 	if(request.getAttribute("permisoEejg")!=null)
@@ -68,6 +68,10 @@
 		idremesa = (String) request.getAttribute("idremesa");	
 	String idTipoRatificacionEjg = "";
 	String tiposResolucionBusqueda = "";
+	String paramsInstitucionComision = "{\"idinstitucioncomision\":\""+idInstitucionComision+"\"}";
+	String datoPonente[] = {idInstitucionComision,idInstitucionComision};
+	
+	
 	if (ses.getAttribute("DATOSFORMULARIO") instanceof Hashtable) {
 		miHash = (Hashtable) ses.getAttribute("DATOSFORMULARIO");
 		ses.removeAttribute("DATOSFORMULARIO");    
@@ -144,7 +148,7 @@
 					}
 				} else { 
 					if (!calidad.equals("")&& calidad!=null)
-						calidadSel.add(0,calidad+","+idInstitucion);
+						calidadSel.add(0,calidad+","+miHash.get(ScsEJGBean.C_IDINSTITUCION));
 				}
 				
 				if (miHash.get("ESTADOEJG") != null) 
@@ -171,7 +175,7 @@
 					String identificadorTurno = miHash.get("GUARDIATURNO_IDTURNO").toString();
 					//idTurno.add(identificadorTurno.equals("")? "0": (String)usr.getLocation() + "," + identificadorTurno);
 					if (!identificadorTurno.equals("")){
-						idTurno.add("{\"idinstitucion\":\""+(String)usr.getLocation()+"\",\"idturno\":\"" +identificadorTurno+"\"}");
+						idTurno.add("{\"idinstitucion\":\""+(String)miHash.get(ScsEJGBean.C_IDINSTITUCION)+"\",\"idturno\":\"" +identificadorTurno+"\"}");
 					}
 				}
 		
@@ -227,13 +231,16 @@
 				
 				if (miHash.get(ScsEJGBean.C_PRECEPTIVO) != null) 
 					idPreceptivo.add(miHash.get(ScsEJGBean.C_PRECEPTIVO).toString());
+				if (miHash.get(ScsEJGBean.C_IDINSTITUCION) != null){
+					idInstitucionSelected.add(miHash.get(ScsEJGBean.C_IDINSTITUCION).toString());
+				}
 				
 			} else {
 				if (miHash.get(ScsEstadoEJGBean.C_IDESTADOEJG) != null)
 					idEstado.add(miHash.get(ScsEstadoEJGBean.C_IDESTADOEJG).toString());
 				
 				if (miHash.get(ScsTurnoBean.C_IDTURNO) != null){
-					idTurno.add("{\"idinstitucion\":\""+(String)usr.getLocation()+"\",\"idturno\":\"" +miHash.get(ScsTurnoBean.C_IDTURNO).toString()+"\"}");
+					idTurno.add("{\"idinstitucion\":\""+(String)miHash.get(ScsEJGBean.C_IDINSTITUCION)+"\",\"idturno\":\"" +miHash.get(ScsTurnoBean.C_IDTURNO).toString()+"\"}");
 				}
 		
 				if (miHash.get(ScsGuardiasTurnoBean.C_IDGUARDIA) != null)
@@ -247,6 +254,7 @@
 			}
 		} 
 		catch (Exception e) {
+			System.out.println("pepe"+e.toString());
 		}
 	}
 %>
@@ -346,14 +354,15 @@ dd { padding-bottom: 15px }
 			} else
 				seleccionComboSiga("juzgado",resultado[0]);				 
 		}	
-		
+	
 	function onchangeTipoResolucion() {
 		comboTipoResolucion = document.getElementById('idTipoResolucionEJG');
-		//document.forms[0].idTipoFundamento.value = document.getElementById("idFundamentoJuridico").value;
-		
+		var idInstitucion = document.forms['DefinirEJGForm'].idInstitucion.value;
 		if(document.getElementById('idFundamentoJuridico')){
 			elementsTipoResolucion =  jQuery(comboTipoResolucion).val();
 			var comboFundamentos = document.getElementById('idFundamentoJuridico');
+			
+			
 			var optioncomboFundamentos = comboFundamentos.options;
 			//if(elementsTipoResolucion  && jQuery(comboTipoResolucion).val().toString()!='-1'){
 			if(elementsTipoResolucion && jQuery(comboTipoResolucion).val().toString()!='-1'){
@@ -361,7 +370,7 @@ dd { padding-bottom: 15px }
 					jQuery.ajax({ //Comunicación jQuery hacia JSP  
 			   			type: "POST",
 						url: "/SIGA/GEN_Juzgados.do?modo=getAjaxTiposFundamento",
-						data: "idCombo="+elementsTipoResolucion,
+						data: "idCombo="+elementsTipoResolucion+"##"+idInstitucion,
 						dataType: "json",
 						success: function(json){		
 							var fundamentos = json.fundamentos;
@@ -455,7 +464,22 @@ if(usr.isComision()){
 		
 
 	<siga:ConjCampos leyenda="gratuita.busquedaEJG.literal.EJG">
+	
+	
+	
 		<table align="center" width="100%" border="0" cellpadding="5" cellspacing="0">
+		<%if(esComisionMultiple){ %>
+			<tr>				
+				<td class="labelText">
+					<siga:Idioma key="censo.busquedaClientes.literal.colegio"/>
+					
+				</td>				
+				<td colspan="5">
+				<siga:Select id="idInstitucionComision" queryParamId="idInstitucion" params="<%=paramsInstitucionComision%>"  queryId="getInstitucionesComision" selectedIds="<%=idInstitucionSelected %>" childrenIds="idTipoEJGColegio,juzgado,calidad,identificador"/>
+				</td>
+			</tr>			
+		<%}%>
+		
 			<tr>
 				<td class="labelText" style="vertical-align:middle" width="100px">
 					<siga:Idioma key="gratuita.busquedaEJG.literal.anyo" />/<siga:Idioma key="gratuita.busquedaEJG.literal.codigo" />
@@ -480,9 +504,11 @@ if(usr.isComision()){
 							<td class="labelText" style="vertical-align:middle">
 								<siga:Idioma key="gratuita.busquedaEJG.literal.EJGColegio" />
 							</td>
+							
 							<td style="vertical-align:middle">
-								<siga:Select id="idTipoEJGColegio" queryId="getTiposEjgColegio" width="200" selectedIds="<%=idTipoEJGColegio %>"/>
-							</td>						
+								<siga:Select id="idTipoEJGColegio" queryId="getTiposEjgColegio" width="200" selectedIds="<%=idTipoEJGColegio %>" />
+							</td>				
+							
 						</tr>
 					</table>
 				</td>
@@ -589,6 +615,8 @@ if(usr.isComision()){
 					<td class="labelText">
 						<siga:Idioma key="gratuita.operarRatificacion.literal.fundamentoJuridico"/>
 					</td>
+					
+					
 					<td colspan="4">
 						<select style="width:700px;" id="idFundamentoJuridico" class="boxCombo">
 								<option value="">&nbsp;</option>
@@ -642,8 +670,9 @@ if(usr.isComision()){
 				<td class="labelText" style="vertical-align:middle" width="100px">
 					<siga:Idioma key="gratuita.busquedaEJG.literal.ponente"/>
 				</td>
-				<td style="vertical-align:middle"> 
-					<siga:Select id="idPonente" queryId="getPonentes" selectedIds="<%=vPonente%>" width="375" /> 
+
+				<td style="vertical-align:middle">
+					<siga:ComboBD nombre="idPonente"  ancho="375" tipo="tipoPonente" clase="boxCombo"  	  filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=datoPonente%>" elementoSel="<%=vPonente%>"  />
 				</td>
 				
 				<td class="labelText" style="vertical-align:middle" width="160px">
@@ -730,7 +759,7 @@ if(usr.isComision()){
 					<siga:Idioma key='gratuita.operarEJG.literal.Preceptivo'/>
 				</td>
 				<td >
-					<siga:ComboBD nombre="idPreceptivo" tipo="comboPreceptivo" ancho="200" elementoSel="<%=idPreceptivo%>"/>
+					<siga:ComboBD nombre="idPreceptivo" tipo="comboPreceptivo" ancho="200" elementoSel="<%=idPreceptivo%>" clase="boxCombo"/>
 				</td>
 				
 				<td class="labelText" style="vertical-align:middle">
@@ -746,7 +775,9 @@ if(usr.isComision()){
 					<siga:Idioma key="gratuita.mantAsistencias.literal.juzgado" />
 				</td>				
 				<td colspan="6">
+				
 					<siga:Select id="juzgado" queryId="getJuzgados" selectedIds="<%=juzgado%>" width="500" showSearchBox="true" searchkey="CODIGOEXT2" searchBoxMaxLength="10" searchBoxWidth="10" />
+				
 				</td>
 			</tr>
 			
@@ -1095,6 +1126,7 @@ if(usr.isComision()){
 				}
 			}
 		}
+		
 	</script>
 <!-- FIN: SCRIPTS BOTONES BUSQUEDA -->
 <!-- FIN  ******* BOTONES Y CAMPOS DE BUSQUEDA ****** -->

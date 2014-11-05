@@ -15,8 +15,22 @@ import com.siga.general.MasterForm;
 
 
 public class BuscarDesignasForm extends MasterForm {
+	String idInstitucionComision;
+	String idInstitucion;
 	
 	
+	/**
+	 * @return the idInstitucion
+	 */
+	public String getIdInstitucion() {
+		return idInstitucion;
+	}
+	/**
+	 * @param idInstitucion the idInstitucion to set
+	 */
+	public void setIdInstitucion(String idInstitucion) {
+		this.idInstitucion = idInstitucion;
+	}
 	public String getModulo	()	{
 		return UtilidadesHash.getString(datos,"MODULO");
 	}
@@ -659,6 +673,20 @@ public class BuscarDesignasForm extends MasterForm {
 	}	
 	public String getNig2()	{
 		return UtilidadesHash.getString(datos,"NIG2");
+	}
+	/**
+	 * @return the idInstitucionComision
+	 */
+	public String getIdInstitucionComision() {
+		return idInstitucionComision;
+	}
+	/**
+	 * @param idInstitucionComision the idInstitucionComision to set
+	 */
+	public void setIdInstitucionComision(String idInstitucionComision) {
+		this.idInstitucionComision = idInstitucionComision;
 	}	
+	
+	
 	
 }

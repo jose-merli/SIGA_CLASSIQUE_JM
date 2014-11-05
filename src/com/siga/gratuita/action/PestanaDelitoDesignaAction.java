@@ -39,11 +39,13 @@ public class PestanaDelitoDesignaAction extends MasterAction {
 			numero = (String)request.getParameter("NUMERO");
 			anio = (String)request.getParameter("ANIO");
 			idTurno = (String)request.getParameter("IDTURNO");
+			idInstitucion = (String)request.getParameter("IDINSTITUCION");
 			
 			// Almaceno los parametros en el formulario:			
 			miForm.setIdTurno(new Integer(idTurno));
 			miForm.setNumero(new Integer(numero));
 			miForm.setAnio(new Integer(anio));
+			miForm.setIdInstitucion(idInstitucion);
 			
 		} catch (Exception e){
 			throwExcp("messages.general.error",e,null);
@@ -64,7 +66,7 @@ public class PestanaDelitoDesignaAction extends MasterAction {
 			ScsDelitosDesignaAdm admDelitoDesigna = new ScsDelitosDesignaAdm(this.getUserBean(request));
 			
 			// Obtengo los datos seleccionados:
-			idInstitucion = new Integer(usr.getLocation());
+			idInstitucion = Integer.valueOf(miForm.getIdInstitucion());
 			numero = miForm.getNumero();
 			anio = miForm.getAnio();
 			idTurno = miForm.getIdTurno();			

@@ -72,7 +72,7 @@
 	<table class="tablaTitulo" cellspacing="0" heigth="38">
 		<tr>
 			<td id="titulo" class="titulitosDatos">
-				<c:out value="${DefinirUnidadFamiliarEJGForm.ejg.anio}"></c:out>/<c:out value="${DefinirUnidadFamiliarEJGForm.ejg.numEJG}"></c:out>-<c:out value="${DefinirUnidadFamiliarEJGForm.personaJG.nombre}"></c:out>&nbsp;<c:out value="${DefinirUnidadFamiliarEJGForm.personaJG.apellido1}"></c:out>&nbsp;<c:out value="${DefinirUnidadFamiliarEJGForm.personaJG.apellido2}"></c:out>
+				<c:out value="${PREFIJOEXPEDIENTECAJG}" />&nbsp;<c:out value="${DefinirUnidadFamiliarEJGForm.ejg.anio}"></c:out>/<c:out value="${DefinirUnidadFamiliarEJGForm.ejg.numEJG}"></c:out>&nbsp;-&nbsp;<c:out value="${DefinirUnidadFamiliarEJGForm.personaJG.nombre}"></c:out>&nbsp;<c:out value="${DefinirUnidadFamiliarEJGForm.personaJG.apellido1}"></c:out>&nbsp;<c:out value="${DefinirUnidadFamiliarEJGForm.personaJG.apellido2}"></c:out>
 			</td>
 		</tr>
 	</table>
@@ -410,7 +410,7 @@
 	</c:choose>
 	
 	<html:form action="/INF_InformesGenericos" method="post"	target="submitArea">
-		<html:hidden property="idInstitucion" value = "${DefinirUnidadFamiliarEJGForm.idInstitucion}"/>
+		<html:hidden property="idInstitucion" value = "<%=usrBean.getLocation()%>"/>
 		<html:hidden property="idTipoInforme" value='<%=usrBean.isComision() ?"CAJG":"EJG"%>'/>
 		<html:hidden property="enviar" value="0"/ />
 		<html:hidden property="descargar" value="1"/>
@@ -433,6 +433,7 @@
 				
 	//Asociada al boton Cerrar
 	function accionVolver() {
+		document.DefinirUnidadFamiliarEJGForm.idInstitucion.value = "<%=usrBean.getLocation()%>";
 		document.DefinirUnidadFamiliarEJGForm.action="./JGR_EJG.do";	
 		document.DefinirUnidadFamiliarEJGForm.modo.value="buscar";
 		document.DefinirUnidadFamiliarEJGForm.target="mainWorkArea"; 

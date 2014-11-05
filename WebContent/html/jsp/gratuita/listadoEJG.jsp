@@ -39,6 +39,7 @@
 	UsrBean usr=(UsrBean)request.getSession().getAttribute("USRBEAN");
 	String idInstitucion = usr.getLocation();
 	boolean esComision = usr.isComision();
+	boolean esComisionMultiple = usr.getInstitucionesComision()!=null &&usr.getInstitucionesComision().length>1;
 	
 	String idioma=usr.getLanguage().toUpperCase();
 	
@@ -101,13 +102,34 @@
 		<html:hidden property="registrosSeleccionados"  styleId="registrosSeleccionados"/>
 		<html:hidden property="datosPaginador"  styleId="datosPaginador" />
 		<html:hidden property="seleccionarTodos"  styleId="seleccionarTodos" />
-	</html:form>	
+	</html:form>
+	<%
+		
+		StringBuffer  nombreColumnas = new StringBuffer("<input type='checkbox' name='chkGeneral'  id='chkGeneral' onclick='cargarChecksTodos(this)'/>");
+		StringBuffer tamanioColumnas =  new StringBuffer("5");
+		if(esComisionMultiple){
+			nombreColumnas.append(",ICA");
+			tamanioColumnas.append(",6");
+			tamanioColumnas.append(",12,13,5,6,13,9,9,12,10");
+			
+		}else{
+			tamanioColumnas.append(",13,13,5,6,15,9,10,14,10");
+			
+		}
+		nombreColumnas.append(" ,gratuita.busquedaEJG.literal.turnoGuardiaEJG, gratuita.busquedaEJG.literal.turnoDesignacion, gratuita.busquedaEJG.literal.anyo, gratuita.busquedaEJG.literal.codigo, gratuita.busquedaEJG.literal.letradoDesignacion, gratuita.listadoActuacionesAsistencia.literal.fecha, gratuita.busquedaEJG.literal.estadoEJG, gratuita.busquedaEJG.literal.solicitante,");
+		
+	%>
+
+
+	
+		
+	
 		
 	<siga:Table 		   
 		   name="listadoEJG"
 		   border="1"
-		   columnNames="<input type='checkbox' name='chkGeneral'  id='chkGeneral' onclick='cargarChecksTodos(this)'/> ,gratuita.busquedaEJG.literal.turnoGuardiaEJG, gratuita.busquedaEJG.literal.turnoDesignacion, gratuita.busquedaEJG.literal.anyo, gratuita.busquedaEJG.literal.codigo, gratuita.busquedaEJG.literal.letradoDesignacion, gratuita.listadoActuacionesAsistencia.literal.fecha, gratuita.busquedaEJG.literal.estadoEJG, gratuita.busquedaEJG.literal.solicitante,"
-		   columnSizes="5,13,13,5,6,15,9,10,14,10">
+		   columnNames="<%=nombreColumnas.toString() %>"
+		   columnSizes="<%=tamanioColumnas.toString() %>">
 
 	<%if (resultado.size()>0){%>
   			<%
@@ -128,8 +150,8 @@
 	    	ScsEJGAdm scsEJGAdm = new ScsEJGAdm(usr);
 				
 			// Creamos el Turno/Guardia EJG
-			String turno = ScsTurnoAdm.getNombreTurnoJSP(usr.getLocation(),(String)registro.get("GUARDIATURNO_IDTURNO"));
-			String guardia = ScsGuardiasTurnoAdm.getNombreGuardiaJSP(usr.getLocation(),(String)registro.get("GUARDIATURNO_IDTURNO"),(String)registro.get("GUARDIATURNO_IDGUARDIA")) ;
+			String turno = ScsTurnoAdm.getNombreTurnoJSP((String)registro.get("IDINSTITUCION"),(String)registro.get("GUARDIATURNO_IDTURNO"));
+			String guardia = ScsGuardiasTurnoAdm.getNombreGuardiaJSP((String)registro.get("IDINSTITUCION"),(String)registro.get("GUARDIATURNO_IDTURNO"),(String)registro.get("GUARDIATURNO_IDGUARDIA")) ;
 			String turnoGuardia = " ";
 			if ((turno!="")||(guardia!="")){
 				turnoGuardia = turno + "/ " + guardia ;
@@ -174,13 +196,15 @@
 								<input type="checkbox" value="<%=valorCheck%>"  name="chkPersona" onclick="pulsarCheck(this)" >
 						<%}%>
 						</td>
-					
+						<% if(esComisionMultiple){%>
+							<td><%=(String)registro.get("INST_ABREV")%></td>
+						<%}%>
 					<td><%=turnoGuardia%>&nbsp;</td>
 					<td><input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_1" id="oculto<%=String.valueOf(recordNumber)%>_1" value="<%=registro.get(ScsEJGBean.C_IDTIPOEJG)%>">
-					<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_2" id="oculto<%=String.valueOf(recordNumber)%>_2" value="<%=usr.getLocation()%>">
+					<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_2" id="oculto<%=String.valueOf(recordNumber)%>_2" value="<%=(String)registro.get(ScsEJGBean.C_IDINSTITUCION)%>">
 					<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_3" id="oculto<%=String.valueOf(recordNumber)%>_3" value="<%=registro.get(ScsEJGBean.C_ANIO)%>">
 					<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_4" id="oculto<%=String.valueOf(recordNumber)%>_4" value="<%=registro.get(ScsEJGBean.C_NUMERO)%>">
-					<input type='hidden' name='datosCarta' value='idinstitucion==<%=usr.getLocation()%>##idtipo==<%=registro.get(ScsEJGBean.C_IDTIPOEJG)%>##anio==<%=registro.get(ScsEJGBean.C_ANIO)%>##numero==<%=registro.get(ScsEJGBean.C_NUMERO)%>'><%=registro.get("TURNODESIGNA")%></td>
+					<input type='hidden' name='datosCarta' value='idinstitucion==<%=(String)registro.get(ScsEJGBean.C_IDINSTITUCION)%>##idtipo==<%=registro.get(ScsEJGBean.C_IDTIPOEJG)%>##anio==<%=registro.get(ScsEJGBean.C_ANIO)%>##numero==<%=registro.get(ScsEJGBean.C_NUMERO)%>'><%=registro.get("TURNODESIGNA")%></td>
 					
 					<td><%=registro.get(ScsEJGBean.C_ANIO)%></td>
 					 <% if (registro.get("SUFIJO")!=null && !registro.get("SUFIJO").equals("")){ %>
@@ -192,7 +216,7 @@
 					<td><%=registro.get("LETRADODESIGNA")%></td>
 					<td><%=GstDate.getFormatedDateShort("",registro.get(ScsEJGBean.C_FECHAAPERTURA))%>&nbsp;</td>
 					<td><%=UtilidadesMultidioma.getDatoMaestroIdioma((String)registro.get("DESC_ESTADO"), usr) %>&nbsp;</td>
-					<td><%=ScsEJGAdm.getUnidadEJG(usr.getLocation(),(String)registro.get(ScsEJGBean.C_IDTIPOEJG),(String)registro.get(ScsEJGBean.C_ANIO),(String)registro.get(ScsEJGBean.C_NUMERO)) %>&nbsp;</td>
+					<td><%=ScsEJGAdm.getUnidadEJG((String)registro.get(ScsEJGBean.C_IDINSTITUCION),(String)registro.get(ScsEJGBean.C_IDTIPOEJG),(String)registro.get(ScsEJGBean.C_ANIO),(String)registro.get(ScsEJGBean.C_NUMERO)) %>&nbsp;</td>
 				</siga:FilaConIconos>		
 			<% 	recordNumber++;		   
 			} %>

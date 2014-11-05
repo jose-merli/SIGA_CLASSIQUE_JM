@@ -34,11 +34,12 @@
 	UsrBean usr = (UsrBean)request.getSession().getAttribute("USRBEAN");
 	String boton="";
 	String modo = (String) ses.getAttribute("Modo");
-	String anio="",numero="", idTurno="";
+	String anio="",numero="", idTurno="",idInstitucion ="";
 	Hashtable designaActual = (Hashtable)ses.getAttribute("designaActual");
 	anio = (String)designaActual.get("ANIO");
 	numero = (String)designaActual.get("NUMERO");
 	idTurno = (String)designaActual.get("IDTURNO");
+	idInstitucion = (String)designaActual.get("IDINSTITUCION");
 	
 %>	
 
@@ -80,7 +81,7 @@
 					<%
 					    String t_nombre = "", t_apellido1 = "", t_apellido2 = "", t_anio = "", t_numero = "";
 						ScsDesignaAdm adm = new ScsDesignaAdm (usr);
-						Hashtable hTitulo = adm.getTituloPantallaDesigna(usr.getLocation(), anio, numero,idTurno);
+						Hashtable hTitulo = adm.getTituloPantallaDesigna(idInstitucion, anio, numero,idTurno);
 
 						if (hTitulo != null) {
 							t_nombre    = (String)hTitulo.get(ScsPersonaJGBean.C_NOMBRE);

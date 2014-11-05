@@ -33,13 +33,6 @@
 	UsrBean usr=(UsrBean)request.getSession().getAttribute("USRBEAN");
 	
 	String profile[]=usr.getProfile();
-	
-	Hashtable hash = (Hashtable)ses.getAttribute("DATABACKUP");
-	
-	String anio = hash.get("ANIO").toString();
-	String numero = hash.get("NUMERO").toString();
-	String idTipoEJG = hash.get("IDTIPOEJG").toString();
-	
 	String modopestanha = request.getSession().getAttribute("accion")==null?"":(String)request.getSession().getAttribute("accion");
 
 	//Datos propios del jsp:	
@@ -83,6 +76,7 @@
 	<html:form action="/JGR_DelitosEJG.do" method="post" target="resultado" style="display:none">
 		<html:hidden property = "modo" value = ""/>
 		<!-- Datos de la pestanha -->
+		<html:hidden name="pestanaDelitoEJGForm" property="idInstitucion" />
 		<html:hidden name="pestanaDelitoEJGForm" property="anio" />
 		<html:hidden name="pestanaDelitoEJGForm" property="numero" />
 		<html:hidden name="pestanaDelitoEJGForm" property="idTipoEJG" />

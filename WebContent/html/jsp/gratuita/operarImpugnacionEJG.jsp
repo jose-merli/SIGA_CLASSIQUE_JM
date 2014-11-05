@@ -14,6 +14,7 @@
 <%@ taglib uri = "struts-bean.tld"   prefix="bean"%>
 <%@ taglib uri = "struts-html.tld"   prefix="html"%>
 <%@ taglib uri = "struts-logic.tld"  prefix="logic"%>
+<%@ taglib uri="c.tld" prefix="c"%>
 
 <!-- IMPORTS -->
 <%@ page import="java.util.*"%>
@@ -36,9 +37,9 @@
 	Hashtable miHash = (Hashtable) ses.getAttribute("DATABACKUP");
 	String accion = (String) ses.getAttribute("accion");
 	if(usr.getAccessType().equals(SIGAConstants.ACCESS_READ)) accion="ver";
-	String dato[] = { (String) usr.getLocation() };
+	
 
-	String anio = "", numero = "", idTipoEJG = "", observaciones = "";
+	String anio = "", numero = "", idTipoEJG = "", observaciones = "",idInstitucion="";
 	String fechaRatificacion = "", fechaResolucionCAJG = "", fechaNotificacion = "";
 	String fechaAuto = "";
 	//Nuevas cadenas para las nueas cajas de la ventana
@@ -50,6 +51,7 @@
 		anio = miHash.get("ANIO").toString();
 		numero = miHash.get("NUMERO").toString();
 		idTipoEJG = miHash.get("IDTIPOEJG").toString();
+		idInstitucion = miHash.get("IDINSTITUCION").toString();
 
 		if (miHash.containsKey("TURNADORATIFICACION"))
 			requiereTurnado = !miHash.get("TURNADORATIFICACION")
@@ -87,7 +89,7 @@
 	} catch (Exception e) {
 		e.printStackTrace();
 	}
-	;
+	String dato[] = { idInstitucion};
 %>
 
 
@@ -134,7 +136,7 @@
 							;
 							ScsEJGAdm adm = new ScsEJGAdm(usr);
 
-							Hashtable hTitulo = adm.getTituloPantallaEJG(usr.getLocation(),
+							Hashtable hTitulo = adm.getTituloPantallaEJG(idInstitucion,
 									anio, numero, idTipoEJG);
 
 							if (hTitulo != null) {
@@ -148,7 +150,7 @@
 								t_tipoEJG = (String) hTitulo.get("TIPOEJG");
 							}
 						%>
-					<%=UtilidadesString.mostrarDatoJSP(t_anio)%>/<%=UtilidadesString.mostrarDatoJSP(t_numero)%>
+					<c:out value="${PREFIJOEXPEDIENTECAJG}" />&nbsp;<%=UtilidadesString.mostrarDatoJSP(t_anio)%>/<%=UtilidadesString.mostrarDatoJSP(t_numero)%>
 					- <%=UtilidadesString.mostrarDatoJSP(t_nombre)%> <%=UtilidadesString.mostrarDatoJSP(t_apellido1)%> <%=UtilidadesString.mostrarDatoJSP(t_apellido2)%>
 			</td>
 		</tr>
@@ -161,7 +163,7 @@
 	
 	<html:form action="/JGR_ImpugnacionEJG" method="POST" target="submitArea">
 	<html:hidden property = "modo" value = "Modificar"/>
-	<html:hidden property = "idInstitucion" value ="<%=usr.getLocation()%>"/>
+	<html:hidden property = "idInstitucion" value ="<%=idInstitucion%>"/>
 	<html:hidden property = "idTipoEJG" value ="<%=idTipoEJG%>"/>
 	<html:hidden property = "anio" value ="<%=anio%>"/>
 	<html:hidden property = "numero" value ="<%=numero%>"/>
@@ -298,6 +300,7 @@
 		//Asociada al boton Volver
 		function accionVolver()
 		{
+			document.forms[0].idInstitucion.value = "<%=usr.getLocation()%>";
 			document.forms[0].action="./JGR_EJG.do";	
 			document.forms[0].modo.value="buscar";
 			document.forms[0].target="mainWorkArea"; 

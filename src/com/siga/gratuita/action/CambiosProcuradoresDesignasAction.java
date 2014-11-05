@@ -78,7 +78,7 @@ public class CambiosProcuradoresDesignasAction extends MasterAction {
 			if((String)request.getParameter("ANIO")!=null){
 				UtilidadesHash.set(designaActual,ScsDesignaBean.C_ANIO, 		(String)request.getParameter("ANIO"));
 				UtilidadesHash.set(designaActual,ScsDesignaBean.C_NUMERO, 		(String)request.getParameter("NUMERO"));
-				UtilidadesHash.set(designaActual,ScsDesignaBean.C_IDINSTITUCION,(String)usr.getLocation());
+				UtilidadesHash.set(designaActual,ScsDesignaBean.C_IDINSTITUCION,(String)request.getParameter("IDINSTITUCION"));
 				UtilidadesHash.set(designaActual,ScsDesignaBean.C_IDTURNO,		(String)request.getParameter("IDTURNO"));
 			}else{
 				designaActual = (Hashtable)ses.getAttribute("designaActual");
@@ -171,7 +171,7 @@ public class CambiosProcuradoresDesignasAction extends MasterAction {
 		HttpSession ses = request.getSession();
 		Hashtable hash = (Hashtable)ses.getAttribute("designaActual");
 		Vector ocultos = (Vector)miform.getDatosTablaOcultos(0);
-		String instit=usr.getLocation();
+		String instit=(String)hash.get("IDINSTITUCION");
 		String anio=(String)hash.get("ANIO");
 		String numero=(String)hash.get("NUMERO");
 		String turno=(String)hash.get("IDTURNO");
@@ -207,6 +207,7 @@ public class CambiosProcuradoresDesignasAction extends MasterAction {
 				" and dp."+ScsDesignasProcuradorBean.C_ANIO+"="+anio+
 				" and dp."+ScsDesignasProcuradorBean.C_NUMERO+"="+numero+
 				" and dp."+ScsDesignasProcuradorBean.C_IDTURNO+"="+turno+
+				" and dp."+ScsDesignasProcuradorBean.C_IDINSTITUCION+"="+instit+
 				" and dp."+ScsDesignasProcuradorBean.C_FECHADESIGNA+" = to_date('"+fechaDesigna+"','" + ClsConstants.DATE_FORMAT_SQL + "')";
 			
 			ScsDesignasProcuradorAdm designaAdm = new ScsDesignasProcuradorAdm (this.getUserBean(request));

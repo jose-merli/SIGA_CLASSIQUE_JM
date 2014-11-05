@@ -1,6 +1,7 @@
 package com.siga.general;
 
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Properties;
 import java.util.Vector;
 
@@ -13,6 +14,8 @@ import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.redabogacia.sigaservices.app.autogen.model.CenInstitucion;
+import org.redabogacia.sigaservices.app.services.cen.CenInstitucionService;
 import org.redabogacia.sigaservices.app.util.PropertyReader;
 import org.redabogacia.sigaservices.app.util.SIGAReferences;
 
@@ -40,6 +43,8 @@ import com.siga.beans.CenInstitucionLenguajesBean;
 import com.siga.beans.CenPersonaAdm;
 import com.siga.beans.CenPersonaBean;
 import com.siga.beans.GenParametrosAdm;
+
+import es.satec.businessManager.BusinessManager;
 
 public class SIGAAuthItcgaeAction extends Action
 {
@@ -118,7 +123,31 @@ public class SIGAAuthItcgaeAction extends Action
 		//		 rgg cambio de codigos
 		usrbean.setIdRol("2");		
 		usrbean.setProfile(profileArray);
-		usrbean.setLocation(location);
+
+		//Comprobamos si es comision multiple
+		BusinessManager bm = BusinessManager.getInstance();
+		CenInstitucionService cenInstitucionService = (CenInstitucionService)bm.getService(CenInstitucionService.class);
+		CenInstitucion cenInstitucion = new CenInstitucion();
+		cenInstitucion.setIdinstitucion(Short.valueOf(location));
+		CenInstitucion comision =  cenInstitucionService.getComision(cenInstitucion);
+		usrbean.setIdInstitucionComision(comision.getIdinstitucion());
+		if(usrbean.isComision()){
+			List<CenInstitucion> instituciones =  cenInstitucionService.getInstitucionesComision(comision);
+			if( instituciones!=null && instituciones.size()>0 ){
+				Short[] institucionesComision  = new Short[instituciones.size()];
+				for (int i = 0; i < instituciones.size(); i++) {
+					institucionesComision[i]= instituciones.get(i).getIdinstitucion();
+				}
+				usrbean.setInstitucionesComision(institucionesComision);
+			}else{
+				usrbean.setInstitucionesComision(new Short[]{Short.parseShort(location)});
+			}
+			usrbean.setLocation(""+comision.getIdinstitucion());
+		}else{
+			
+			usrbean.setLocation(location);
+		}
+		
 		usrbean.setLetrado(letrado.equals("S")?true:false);
 
 		//		 obtengo el idioma de la institucion

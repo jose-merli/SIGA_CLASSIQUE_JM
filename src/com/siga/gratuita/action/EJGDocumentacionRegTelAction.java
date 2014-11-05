@@ -47,7 +47,7 @@ public class EJGDocumentacionRegTelAction extends DocumentacionRegTelAction {
 		miHash.put("ANIO", request.getParameter("ANIO").toString());
 		miHash.put("NUMERO", request.getParameter("NUMERO").toString());
 		miHash.put("IDTIPOEJG", request.getParameter("IDTIPOEJG").toString());
-		miHash.put("IDINSTITUCION", usr.getLocation().toString());
+		miHash.put("IDINSTITUCION", request.getParameter("IDINSTITUCION").toString());
 
 		ScsEJGAdm admEJG = new ScsEJGAdm(this.getUserBean(request));
 
@@ -59,7 +59,7 @@ public class EJGDocumentacionRegTelAction extends DocumentacionRegTelAction {
 			}
 			ScsEJGBean scsEJGBean = (ScsEJGBean) v.get(0);
 			
-			short idInstitucion = getIDInstitucion(request).shortValue();
+			short idInstitucion = scsEJGBean.getIdInstitucion().shortValue();
 
 			DocuShareHelper docuShareHelper = new DocuShareHelper(idInstitucion);
 
@@ -103,7 +103,7 @@ public class EJGDocumentacionRegTelAction extends DocumentacionRegTelAction {
 		Hashtable hashtable = (Hashtable)request.getSession().getAttribute("DATABACKUP");
 		
 		String title = DocuShareHelper.getTitleEJG(hashtable.get(ScsEJGBean.C_ANIO).toString(), hashtable.get(ScsEJGBean.C_NUMEJG).toString());
-		short idInstitucion = getIDInstitucion(request).shortValue();
+		short idInstitucion = Short.valueOf((String)hashtable.get(ScsEJGBean.C_IDINSTITUCION));
 		DocuShareHelper docuShareHelper = new DocuShareHelper(idInstitucion);
 		String idDS = docuShareHelper.createCollectionEJG(title);
 		hashtable.put(ScsEJGBean.C_IDENTIFICADORDS, idDS);

@@ -47,32 +47,36 @@ public class PestanaDelitoEJGAction extends MasterAction {
 			UsrBean usr=(UsrBean)request.getSession().getAttribute("USRBEAN");
 			ScsEJGAdm admBean =  new ScsEJGAdm(this.getUserBean(request));
 			ScsProcuradorAdm procuradorAdm = new ScsProcuradorAdm(this.getUserBean(request));
-			request.getSession().removeAttribute("DATABACKUP");
-			int valorPcajgActivo=CajgConfiguracion.getTipoCAJG(new Integer(usr.getLocation()));
-			request.setAttribute("PCAJG_ACTIVO", new Integer(valorPcajgActivo));
+//			request.getSession().removeAttribute("DATABACKUP");
 			
-			//TEMPORAL!!!
-			GenParametrosAdm admParametros = new GenParametrosAdm(usr);		
-			String ejisActivo = admParametros.getValor(usr.getLocation(), "ECOM", "EJIS_ACTIVO", "0");
-			request.setAttribute("EJIS_ACTIVO", ejisActivo);
 			
-			Vector v = new Vector ();
+//			Vector v = new Vector ();
 			Hashtable miHash = new Hashtable();		
-				
+			idInstitucion = 	request.getParameter("IDINSTITUCION").toString();
 			
 			miHash.put("ANIO",request.getParameter("ANIO").toString());
 			miHash.put("NUMERO",request.getParameter("NUMERO").toString());
 			miHash.put("IDTIPOEJG",request.getParameter("IDTIPOEJG").toString());
-			miHash.put("IDINSTITUCION",usr.getLocation().toString());	
+			miHash.put("IDINSTITUCION",idInstitucion);	
 			
-			ScsEJGAdm admEJG = new ScsEJGAdm(this.getUserBean(request));
+			int valorPcajgActivo=CajgConfiguracion.getTipoCAJG(new Integer(idInstitucion));
+			request.setAttribute("PCAJG_ACTIVO", new Integer(valorPcajgActivo));
 			
-			try {			
-				v = admEJG.selectPorClave(miHash);
-				request.getSession().setAttribute("DATABACKUP",admEJG.beanToHashTable((ScsEJGBean)v.get(0)));			
-			} catch (Exception e) {
-				   throwExcp("error.general.yanoexiste",e,null);
-			}
+			//TEMPORAL!!!
+			GenParametrosAdm admParametros = new GenParametrosAdm(usr);		
+			String ejisActivo = admParametros.getValor(idInstitucion, "ECOM", "EJIS_ACTIVO", "0");
+			request.setAttribute("EJIS_ACTIVO", ejisActivo);
+			String prefijoExpedienteCajg = admParametros.getValor (idInstitucion, ClsConstants.MODULO_SJCS, ClsConstants.GEN_PARAM_PREFIJO_EXPEDIENTES_CAJG, " ");
+			request.setAttribute("PREFIJOEXPEDIENTECAJG",prefijoExpedienteCajg);
+			
+//			ScsEJGAdm admEJG = new ScsEJGAdm(this.getUserBean(request));
+			
+//			try {			
+////				v = admEJG.selectPorClave(miHash);
+//				request.getSession().setAttribute("DATABACKUP",admEJG.beanToHashTable((ScsEJGBean)v.get(0)));			
+//			} catch (Exception e) {
+//				   throwExcp("error.general.yanoexiste",e,null);
+//			}
 			// Obtengo de la pestanha el anio, numero, idTipoEJG:			
 			numero = (String)request.getParameter("NUMERO");
 			anio = (String)request.getParameter("ANIO");
@@ -88,7 +92,7 @@ public class PestanaDelitoEJGAction extends MasterAction {
 					        " ejg.FECHA_DES_PROC,ejg.IDPRECEPTIVO, ejg.IDSITUACION, ejg.IDRENUNCIA "+
 					        "  from scs_ejg Ejg " ;
 			consulta += " where "+
-			"ejg.idtipoejg = " + idTipoEJG + " and ejg.idinstitucion = " + usr.getLocation() + " and ejg.anio = " + anio + " and ejg.numero = " + numero;	
+			"ejg.idtipoejg = " + idTipoEJG + " and ejg.idinstitucion = " + idInstitucion + " and ejg.anio = " + anio + " and ejg.numero = " + numero;	
             
 			
 			Vector resultado = admBean.selectGenerico(consulta);
@@ -98,6 +102,7 @@ public class PestanaDelitoEJGAction extends MasterAction {
 			UtilidadesHash.set(ejg,"NUMERO",numero);
 			UtilidadesHash.set(ejg,"ANIO",anio);			
 			UtilidadesHash.set(ejg,"IDTIPOEJG",idTipoEJG);
+			UtilidadesHash.set(ejg,"IDINSTITUCION",idInstitucion);
 			
 			try {				
 				Hashtable h = new Hashtable();
@@ -114,7 +119,7 @@ public class PestanaDelitoEJGAction extends MasterAction {
 			request.getSession().setAttribute("DATABACKUP",ejg);
 			
 			//CR7 - PROCURADORES DE DESIGNA RELACIONADA				
-			Vector procuradoresDES = procuradorAdm.getProcuradoresRelacionadosPorDesigna(usr.getLocation(), idTipoEJG, anio, numero);
+			Vector procuradoresDES = procuradorAdm.getProcuradoresRelacionadosPorDesigna(idInstitucion, idTipoEJG, anio, numero);
 			if(procuradoresDES!=null && procuradoresDES.size() > 0){
 				request.setAttribute("ProcuradoresDES", procuradoresDES);
 			}else{
@@ -125,6 +130,7 @@ public class PestanaDelitoEJGAction extends MasterAction {
 			miForm.setIdTipoEJG(new Integer(idTipoEJG));
 			miForm.setNumero(new Integer(numero));
 			miForm.setAnio(new Integer(anio));
+			miForm.setIdInstitucion(idInstitucion);
 		} catch (Exception e){
 			throwExcp("messages.general.error",e,null);
 		}
@@ -137,7 +143,8 @@ public class PestanaDelitoEJGAction extends MasterAction {
 	 */
 	protected String buscar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		PestanaDelitoEJGForm miForm = (PestanaDelitoEJGForm)formulario;		
-		Integer anio, numero, idInstitucion, idTipoEJG;
+		Integer anio, numero,  idTipoEJG;
+		String idInstitucion = null;
 		String idProcurador=null, idInstitucionProcurador=null;
 
 		try {			
@@ -145,12 +152,12 @@ public class PestanaDelitoEJGAction extends MasterAction {
 			ScsDelitosEJGAdm admDelitoEJG = new ScsDelitosEJGAdm(this.getUserBean(request));
 			ScsEJGAdm admBean =  new ScsEJGAdm(this.getUserBean(request));
 			// Obtengo los datos seleccionados:
-			idInstitucion = new Integer(usr.getLocation());
+			idInstitucion = miForm.getIdInstitucion();
 			numero = miForm.getNumero();
 			anio = miForm.getAnio();
 			idTipoEJG = miForm.getIdTipoEJG();			
 			
-			Vector vDelitosEJG = admDelitoEJG.getDelitosEJG(idInstitucion,anio,numero,idTipoEJG, usr.getLanguage());
+			Vector vDelitosEJG = admDelitoEJG.getDelitosEJG(Integer.valueOf(idInstitucion),anio,numero,idTipoEJG, usr.getLanguage());
 			request.setAttribute("vDelitosEJG",vDelitosEJG);
 			
 			String consulta="select (Select Decode(Ejg.Idtipoencalidad, Null,'', f_Siga_Getrecurso(Tipcal.Descripcion,"+ usr.getLanguage()+")) "+
@@ -162,7 +169,7 @@ public class PestanaDelitoEJGAction extends MasterAction {
 			" ejg.JUZGADOIDINSTITUCION JUZGADOIDINSTITUCION, ejg.COMISARIA COMISARIA, ejg.COMISARIAIDINSTITUCION COMISARIAIDINSTITUCION" +
 			"  from scs_ejg            ejg" ;
 			consulta += " where "+
-			"ejg.idtipoejg = " + idTipoEJG + " and ejg.idinstitucion = " + usr.getLocation() + " and ejg.anio = " + anio + " and ejg.numero = " + numero;			
+			"ejg.idtipoejg = " + idTipoEJG + " and ejg.idinstitucion = " + idInstitucion + " and ejg.anio = " + anio + " and ejg.numero = " + numero;			
 		
 			Vector resultado = admBean.selectGenerico(consulta);
 			Hashtable ejg = (Hashtable)resultado.get(0);
@@ -224,7 +231,7 @@ public class PestanaDelitoEJGAction extends MasterAction {
 			ScsDelitosEJGAdm admDelitoEJG = new ScsDelitosEJGAdm(this.getUserBean(request));
 			
 			// Obtengo los datos seleccionados:
-			idInstitucion = new Integer(usr.getLocation());
+			idInstitucion = new Integer(miForm.getIdInstitucion());
 			numero = miForm.getNumero();
 			anio = miForm.getAnio();
 			idTipoEJG = miForm.getIdTipoEJG();
@@ -268,7 +275,7 @@ public class PestanaDelitoEJGAction extends MasterAction {
 			Vector vOcultos = miForm.getDatosTablaOcultos(0);
 			
 			// Obtengo los datos seleccionados:
-			idInstitucion = new Integer(usr.getLocation());
+			idInstitucion = new Integer(miForm.getIdInstitucion());
 			idDelito = new Integer((String)vOcultos.get(0));
 			
 			numero = miForm.getNumero();

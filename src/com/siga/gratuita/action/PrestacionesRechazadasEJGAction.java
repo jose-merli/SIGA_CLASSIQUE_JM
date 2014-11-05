@@ -13,7 +13,9 @@ import org.redabogacia.sigaservices.app.services.scs.ScsPrestacionService;
 import org.redabogacia.sigaservices.app.vo.scs.PrestacionRechazadaEjgVo;
 import org.redabogacia.sigaservices.app.vo.scs.PrestacionVo;
 
+import com.atos.utils.ClsConstants;
 import com.atos.utils.UsrBean;
+import com.siga.beans.GenParametrosAdm;
 import com.siga.comun.VoUiService;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
@@ -86,9 +88,11 @@ public class PrestacionesRechazadasEJGAction extends MasterAction {
 		
 		UsrBean usrBean = this.getUserBean(request);
 		PrestacionRechazadaEjgForm prestacionesEJGForm = (PrestacionRechazadaEjgForm)formulario;
+		String idInstitucion = "";
 		if(request.getParameter("ANIO")!=null && !request.getParameter("ANIO").toString().equals("")){
 			prestacionesEJGForm.setEjgAnio(request.getParameter("ANIO").toString());
-			prestacionesEJGForm.setEjgIdInstitucion(usrBean.getLocation().toString());
+			idInstitucion = request.getParameter("IDINSTITUCION").toString();
+			prestacionesEJGForm.setEjgIdInstitucion(idInstitucion);
 			prestacionesEJGForm.setEjgIdTipo(request.getParameter("IDTIPOEJG").toString());
 			prestacionesEJGForm.setEjgNumero(request.getParameter("NUMERO").toString());
 			prestacionesEJGForm.setSolicitante(request.getParameter("solicitante").toString());
@@ -101,7 +105,7 @@ public class PrestacionesRechazadasEJGAction extends MasterAction {
 			BusinessManager bm = getBusinessManager();
 			ScsPrestacionService prestacionService = (ScsPrestacionService)bm.getService(ScsPrestacionService.class);
 			PrestacionVo prestacionVo = new PrestacionVo();
-			prestacionVo.setIdinstitucion(Short.valueOf(usrBean.getLocation().toString()));
+			prestacionVo.setIdinstitucion(Short.valueOf(prestacionesEJGForm.getEjgIdInstitucion()));
 			prestacionVo.setIdioma(usrBean.getLanguage());
 			request.setAttribute("prestaciones", prestacionService.getList(prestacionVo));
 			
@@ -111,6 +115,9 @@ public class PrestacionesRechazadasEJGAction extends MasterAction {
 			List<PrestacionRechazadaEjgForm> prestacionesRechazadas = voService.getVo2FormList(prestacionRechazadaVos);
 			prestacionesEJGForm.setModo("modificar");
 			request.setAttribute("prestacionesRechazadas", prestacionesRechazadas);
+			GenParametrosAdm paramAdm = new GenParametrosAdm (this.getUserBean(request));
+			String prefijoExpedienteCajg = paramAdm.getValor (idInstitucion, ClsConstants.MODULO_SJCS, ClsConstants.GEN_PARAM_PREFIJO_EXPEDIENTES_CAJG, " ");
+			request.setAttribute("PREFIJOEXPEDIENTECAJG",prefijoExpedienteCajg);
 			
 			
 		} catch (Exception e){

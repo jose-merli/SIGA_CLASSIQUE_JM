@@ -23,8 +23,20 @@
 	String app=request.getContextPath();
 	HttpSession ses=request.getSession();
 	UsrBean userBean = (UsrBean)request.getSession().getAttribute("USRBEAN");
+	boolean esComision = userBean.isComision();
+	boolean esComisionMultiple = userBean.getInstitucionesComision()!=null &&userBean.getInstitucionesComision().length>1;
+	
 	String sTipoCombo = CenVisibilidad.getNivelInstitucion(userBean.getLocation());
-	sTipoCombo = sTipoCombo!=null && sTipoCombo.equals("1") ? "getTablasMaestrasAdmin" : "getTablasMaestras";
+	if(esComision && esComisionMultiple){
+		sTipoCombo = "getTablasMaestrasComisionMultiple";
+	}else{
+		String intitucionComisionMultiple = (String)request.getAttribute("intitucionComisionMultiple");
+		if(intitucionComisionMultiple.equals(ClsConstants.DB_TRUE)){
+			sTipoCombo = "getTablasMaestrasInstitucionComisionMultiple";
+		}else{
+			sTipoCombo = sTipoCombo!=null && sTipoCombo.equals("1") ? "getTablasMaestrasAdmin" : "getTablasMaestras";
+		}
+	}
 %>	
 	
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>

@@ -36,6 +36,7 @@ import com.siga.beans.CenPoblacionesAdm;
 import com.siga.beans.CenPoblacionesBean;
 import com.siga.beans.CenTipoIdentificacionAdm;
 import com.siga.beans.CenTipoIdentificacionBean;
+import com.siga.beans.GenParametrosAdm;
 import com.siga.beans.ScsAsistenciasAdm;
 import com.siga.beans.ScsAsistenciasBean;
 import com.siga.beans.ScsBeneficiarioSOJAdm;
@@ -728,6 +729,12 @@ public class PersonaJGAction extends MasterAction {
 			// obtener Persona
 			idInstitucionJG = request.getParameter("idInstitucionJG");
 			idPersonaJG = request.getParameter("idPersonaJG");
+			String idInstitucion = null;
+			if(request.getParameter("IDINSTITUCION")!=null)
+				idInstitucion = request.getParameter("IDINSTITUCION").toString();
+			else
+				idInstitucion = idInstitucionJG;
+	     	request.setAttribute("idInstitucion", idInstitucion);
 			
 			//Obtener el tipo PCAJG
 			int tipoCAJG = CajgConfiguracion.getTipoCAJG(new Integer(idInstitucionJG));					
@@ -749,8 +756,7 @@ public class PersonaJGAction extends MasterAction {
 					numeroDesigna=request.getParameter("numeroDES");
 					// No busco si se ha actualizado el valor de idpersona
 					// porque es de tipo modal
-				} else
-					if (concepto.equals(PersonaJGAction.DESIGNACION_INTERESADO) ) {
+				} else	if (concepto.equals(PersonaJGAction.DESIGNACION_INTERESADO) ) {
 						idInstitucionDesigna=request.getParameter("idInstitucionDES");
 						idTurnoDesigna=request.getParameter("idTurnoDES");
 						anioDesigna=request.getParameter("anioDES");
@@ -966,7 +972,9 @@ public class PersonaJGAction extends MasterAction {
 							}
 							miform.setIdentificadores(alTipoIdentificaciones);
 			}
-			
+			GenParametrosAdm paramAdm = new GenParametrosAdm (user);
+			String prefijoExpedienteCajg = paramAdm.getValor (idInstitucion, ClsConstants.MODULO_SJCS, ClsConstants.GEN_PARAM_PREFIJO_EXPEDIENTES_CAJG, " ");
+			request.setAttribute("PREFIJOEXPEDIENTECAJG",prefijoExpedienteCajg);
 		}catch (Exception e) {
 			throwExcp("messages.general.error",new String[] {"modulo.gratuita"},e,null);
 		}

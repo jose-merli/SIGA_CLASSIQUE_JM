@@ -560,20 +560,14 @@ public class DefinirMantenimientoEJGAction extends MasterAction
 			UsrBean usr=(UsrBean)request.getSession().getAttribute("USRBEAN");
 			String nombreTurnoAsistencia="", nombreGuardiaAsistencia="", consultaTurnoAsistencia="", consultaGuardiaAsistencia="";
 			ScsEJGAdm admBean =  new ScsEJGAdm(this.getUserBean(request));
-			String anio="", numero="", idtipoEjg="";
+			String anio="", numero="", idtipoEjg="",idInstitucion ="";
 			
-			int valorPcajgActivo=CajgConfiguracion.getTipoCAJG(new Integer(usr.getLocation()));
-			request.setAttribute("PCAJG_ACTIVO", new Integer(valorPcajgActivo));
-			
-			//TEMPORAL!!!
-			GenParametrosAdm admParametros = new GenParametrosAdm(usr);		
-			String ejisActivo = admParametros.getValor(usr.getLocation(), "ECOM", "EJIS_ACTIVO", "0");
-			request.setAttribute("EJIS_ACTIVO", ejisActivo);				
 			
 			
 			// Recuperamos los datos de la clave del EJG. Pueden venir de la request si accedemos por primera vez a esa pestanha
 			try {
-				miHash.put(ScsEJGBean.C_IDINSTITUCION,usr.getLocation());
+				idInstitucion = (String)request.getParameter("IDINSTITUCION");
+				miHash.put(ScsEJGBean.C_IDINSTITUCION,idInstitucion);
 				miHash.put(ScsEJGBean.C_NUMERO,(String)request.getParameter("NUMERO"));
 				miHash.put(ScsEJGBean.C_ANIO,(String)request.getParameter("ANIO"));
 				miHash.put(ScsEJGBean.C_IDTIPOEJG,(String)request.getParameter("IDTIPOEJG"));
@@ -583,7 +577,8 @@ public class DefinirMantenimientoEJGAction extends MasterAction
 			}
 			// O si venimos al recargar la página después de modificarla habrá que recuperarlo del formulario
 			catch (Exception e){
-				miHash.put(ScsEJGBean.C_IDINSTITUCION,usr.getLocation());
+				idInstitucion = ((DefinirMantenimientoEJGForm)formulario).getIdInstitucion();
+				miHash.put(ScsEJGBean.C_IDINSTITUCION,idInstitucion);
 				miHash.put(ScsEJGBean.C_NUMERO,((DefinirMantenimientoEJGForm)formulario).getNumero());
 				miHash.put(ScsEJGBean.C_ANIO,((DefinirMantenimientoEJGForm)formulario).getAnio());
 				miHash.put(ScsEJGBean.C_IDTIPOEJG,((DefinirMantenimientoEJGForm)formulario).getIdTipoEJG());
@@ -591,6 +586,15 @@ public class DefinirMantenimientoEJGAction extends MasterAction
 				numero=((DefinirMantenimientoEJGForm)formulario).getNumero();
 				idtipoEjg=((DefinirMantenimientoEJGForm)formulario).getIdTipoEJG();
 			}
+			
+			int valorPcajgActivo=CajgConfiguracion.getTipoCAJG(new Integer(idInstitucion));
+			request.setAttribute("PCAJG_ACTIVO", new Integer(valorPcajgActivo));
+			
+			//TEMPORAL!!!
+			GenParametrosAdm admParametros = new GenParametrosAdm(usr);		
+			String ejisActivo = admParametros.getValor(idInstitucion, "ECOM", "EJIS_ACTIVO", "0");
+			request.setAttribute("EJIS_ACTIVO", ejisActivo);				
+			
 			
 			// Ahora realizamos la consulta. Primero cogemos los campos que queremos recuperar 
 			String consulta = "select ejg.ANIO, ejg.NUMEJG,ejg.IDTIPOEJG AS IDTIPOEJG,ejg.NUMERO_CAJG AS NUMERO_CAJG, ejg.NUMERO, turno.ABREVIATURA AS NOMBRETURNO, guardia.NOMBRE AS NOMBREGUARDIA, guardia.IDGUARDIA AS IDGUARDIA, " + UtilidadesMultidioma.getCampoMultidiomaSimple("tipoejg.DESCRIPCION",this.getUserBean(request).getLanguage()) + " AS TIPOEJG, ejg.IDTIPOEJGCOLEGIO AS IDTIPOEJGCOLEGIO," +
@@ -752,6 +756,9 @@ public class DefinirMantenimientoEJGAction extends MasterAction
 				ScsProcuradorBean b = (ScsProcuradorBean)(procuradorAdm.select(h)).get(0);
 				request.setAttribute("PROCURADOR_NUM_COLEGIADO", b.getNColegiado());
 				request.setAttribute("PROCURADOR_NOMBRE_COMPLETO", b.getNombre() + " " + b.getApellido1() + " " + b.getApellido2());
+				GenParametrosAdm paramAdm = new GenParametrosAdm (this.getUserBean(request));
+				String prefijoExpedienteCajg = paramAdm.getValor (idInstitucion, ClsConstants.MODULO_SJCS, ClsConstants.GEN_PARAM_PREFIJO_EXPEDIENTES_CAJG, " ");
+				request.setAttribute("PREFIJOEXPEDIENTECAJG",prefijoExpedienteCajg);
 			}
 			catch (Exception e) {}
 			
@@ -766,14 +773,14 @@ public class DefinirMantenimientoEJGAction extends MasterAction
 			if (ejg!=null) {
 				
 				if (!((String)ejg.get("ANIOASISTENCIA")).trim().equals("")) {
-					String consultaAsistencia=" where anio = " + ejg.get("ANIOASISTENCIA") + " and numero = " + ejg.get("ASISTENCIANUMERO") + " and idinstitucion="+usr.getLocation()+" ";
+					String consultaAsistencia=" where anio = " + ejg.get("ANIOASISTENCIA") + " and numero = " + ejg.get("ASISTENCIANUMERO") + " and idinstitucion="+idInstitucion+" ";
 					ScsAsistenciasAdm asistenciaAdm = new ScsAsistenciasAdm(this.getUserBean(request)); 				
 					ScsTurnoAdm turno = new ScsTurnoAdm(this.getUserBean(request)); 				
 					ScsGuardiasTurnoAdm guardia = new ScsGuardiasTurnoAdm(this.getUserBean(request)); 				
 					ScsAsistenciasBean asistenciaBean = (ScsAsistenciasBean)((Vector)asistenciaAdm.select(consultaAsistencia)).get(0);
 					
-					consultaTurnoAsistencia=" where idTurno = " + asistenciaBean.getIdTurno() + " and idinstitucion="+usr.getLocation()+" ";
-					consultaGuardiaAsistencia=" where idTurno = " + asistenciaBean.getIdTurno() + " and idGuardia = " + asistenciaBean.getIdGuardia() + " and idinstitucion="+usr.getLocation()+" ";
+					consultaTurnoAsistencia=" where idTurno = " + asistenciaBean.getIdTurno() + " and idinstitucion="+idInstitucion+" ";
+					consultaGuardiaAsistencia=" where idTurno = " + asistenciaBean.getIdTurno() + " and idGuardia = " + asistenciaBean.getIdGuardia() + " and idinstitucion="+idInstitucion+" ";
 		
 					nombreTurnoAsistencia = ((ScsTurnoBean)((Vector)turno.select(consultaTurnoAsistencia)).get(0)).getNombre();
 					nombreGuardiaAsistencia = ((ScsGuardiasTurnoBean)((Vector)guardia.select(consultaGuardiaAsistencia)).get(0)).getNombre();
@@ -782,7 +789,7 @@ public class DefinirMantenimientoEJGAction extends MasterAction
 				}
 			}
 			
-			existeExpediente( request,  anio,  numero,  idtipoEjg);
+			existeExpediente( request,  anio,  numero,  idtipoEjg,idInstitucion);
 			
 			request.setAttribute("MODO",request.getSession().getAttribute("accion"));
 		} catch (Exception e) {
@@ -790,12 +797,12 @@ public class DefinirMantenimientoEJGAction extends MasterAction
 		}			
 		return "inicio";	
 	}
-	protected void existeExpediente( HttpServletRequest request,String anio,String numero,String idtipoEjg) throws SIGAException {
+	protected void existeExpediente( HttpServletRequest request,String anio,String numero,String idtipoEjg,String idInstitucion) throws SIGAException {
 			
 		try {
 			UsrBean usr=(UsrBean)request.getSession().getAttribute("USRBEAN");			
 			ExpExpedienteAdm exp = new ExpExpedienteAdm (this.getUserBean(request));
-			Integer idTipoExpediente = exp.selectTipoExpedienteEJG(usr.getLocation());
+			Integer idTipoExpediente = exp.selectTipoExpedienteEJG(idInstitucion);
 			request.setAttribute("tipoExpedienteRepetido", Boolean.FALSE);
 			if(idTipoExpediente==null)
 				request.setAttribute("tipoExpedienteRepetido", Boolean.TRUE);
@@ -806,10 +813,10 @@ public class DefinirMantenimientoEJGAction extends MasterAction
 			request.setAttribute("idtipoExpe","");
 			request.setAttribute("idInstiExpe", "");
 			request.setAttribute("tienePermisos", Boolean.FALSE);
-			boolean tienepermisos = exp.tienePermisos (usr.getLocation(), perfiles[0], idTipoExpediente);
+			boolean tienepermisos = exp.tienePermisos (idInstitucion, perfiles[0], idTipoExpediente);
 			if(tienepermisos){
 				request.setAttribute("tienePermisos", Boolean.TRUE);
-				Vector v2 = exp.getRelacionadoConEjg(usr.getLocation(), anio, numero, idtipoEjg);
+				Vector v2 = exp.getRelacionadoConEjg(idInstitucion, anio, numero, idtipoEjg);
 				if(v2.size()!=0)
 					tienepermisos=false;
 				for (int  j = 0; j < v2.size(); j++){

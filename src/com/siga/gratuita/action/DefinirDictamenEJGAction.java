@@ -161,16 +161,19 @@ public class DefinirDictamenEJGAction extends MasterAction {
 		Hashtable miHash = new Hashtable();		
 		UsrBean usr=(UsrBean)request.getSession().getAttribute("USRBEAN");		
 		DefinirDictamenEJGForm miForm = (DefinirDictamenEJGForm)formulario;
+		String idInstitucion = null;
 		if(request.getParameter("ANIO")!=null){
 			miHash.put("ANIO",request.getParameter("ANIO").toString());
 			miHash.put("NUMERO",request.getParameter("NUMERO").toString());
 			miHash.put("IDTIPOEJG",request.getParameter("IDTIPOEJG").toString());
-			miHash.put("IDINSTITUCION",usr.getLocation().toString());
+			idInstitucion = request.getParameter("IDINSTITUCION").toString();
+			miHash.put("IDINSTITUCION",idInstitucion);
 		}else{
 			miHash.put("ANIO",miForm.getAnio());
 			miHash.put("NUMERO",miForm.getNumero());
 			miHash.put("IDTIPOEJG",miForm.getIdTipoEJG());
-			miHash.put("IDINSTITUCION",miForm.getIdInstitucion());
+			idInstitucion = miForm.getIdInstitucion();
+			miHash.put("IDINSTITUCION",idInstitucion);
 			
 		}
 		
@@ -185,7 +188,7 @@ public class DefinirDictamenEJGAction extends MasterAction {
 				ScsEJGBean ejgBean= (ScsEJGBean)v.get(0);
 				
 				request.getSession().setAttribute("DATABACKUPDICT",admEJG.beanToHashTable(ejgBean));
-				int valorPcajgActivo=CajgConfiguracion.getTipoCAJG(new Integer(usr.getLocation()));
+				int valorPcajgActivo=CajgConfiguracion.getTipoCAJG(new Integer(idInstitucion));
 				request.setAttribute("PCAJG_ACTIVO", new Integer(valorPcajgActivo));
 				String informeUnico = ClsConstants.DB_TRUE;
 				
@@ -206,8 +209,9 @@ public class DefinirDictamenEJGAction extends MasterAction {
 					
 				}
 					
-					
-				
+				GenParametrosAdm paramAdm = new GenParametrosAdm (usr);
+				String prefijoExpedienteCajg = paramAdm.getValor (idInstitucion, ClsConstants.MODULO_SJCS, ClsConstants.GEN_PARAM_PREFIJO_EXPEDIENTES_CAJG, " ");
+				request.setAttribute("PREFIJOEXPEDIENTECAJG",prefijoExpedienteCajg);
 				request.setAttribute("informeUnico", informeUnico);
 			}catch (Exception e) {
 				throwExcp("error.general.yanoexiste",e,null);

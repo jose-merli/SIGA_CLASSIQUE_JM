@@ -13,10 +13,12 @@ import org.redabogacia.sigaservices.app.AppConstants.TipoIntercambioEnum;
 import org.redabogacia.sigaservices.app.autogen.model.EnvEntradaEnvios;
 import org.redabogacia.sigaservices.app.autogen.model.EnvEnvios;
 
+import com.atos.utils.ClsConstants;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.TransformBeanToForm;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesMultidioma;
+import com.siga.beans.GenParametrosAdm;
 import com.siga.beans.ScsDesignaBean;
 import com.siga.envios.form.DefinirEnviosForm;
 import com.siga.envios.form.EntradaEnviosForm;
@@ -78,7 +80,7 @@ public class ComunicacionesAction extends MasterAction {
 		
 		if(request.getParameter("ANIO")!=null && !request.getParameter("ANIO").toString().equals("")){
 			comunicacionesForm.setEjgAnio(request.getParameter("ANIO").toString());
-			comunicacionesForm.setEjgIdInstitucion(usrBean.getLocation().toString());
+			comunicacionesForm.setEjgIdInstitucion(request.getParameter("IDINSTITUCION").toString());
 			comunicacionesForm.setEjgIdTipo(request.getParameter("IDTIPOEJG").toString());
 			comunicacionesForm.setEjgNumero(request.getParameter("NUMERO").toString());
 			comunicacionesForm.setSolicitante(request.getParameter("solicitante").toString());
@@ -126,7 +128,9 @@ public class ComunicacionesAction extends MasterAction {
 				salidaEnviosForm.setModo(comunicacionesForm.getModo());
 				comunicacionesSalida.add(salidaEnviosForm);
 			}
-			
+			GenParametrosAdm paramAdm = new GenParametrosAdm (userBean);
+			String prefijoExpedienteCajg = paramAdm.getValor (comunicacionesForm.getEjgIdInstitucion(), ClsConstants.MODULO_SJCS, ClsConstants.GEN_PARAM_PREFIJO_EXPEDIENTES_CAJG, " ");
+			request.setAttribute("PREFIJOEXPEDIENTECAJG",prefijoExpedienteCajg);
 			
 			
 			
@@ -157,7 +161,7 @@ public class ComunicacionesAction extends MasterAction {
 				UtilidadesHash.set(resultado,ScsDesignaBean.C_IDTURNO,				(String)request.getParameter("IDTURNO"));*/
 		if(request.getParameter("ANIO")!=null && !request.getParameter("ANIO").toString().equals("")){
 			comunicacionesForm.setDesignaAnio(request.getParameter("ANIO").toString());
-			comunicacionesForm.setDesignaIdInstitucion(usrBean.getLocation().toString());
+			comunicacionesForm.setDesignaIdInstitucion(request.getParameter("IDINSTITUCION").toString());
 			comunicacionesForm.setDesignaIdTurno(request.getParameter("IDTURNO").toString());
 			comunicacionesForm.setDesignaNumero(request.getParameter("NUMERO").toString());
 			comunicacionesForm.setAnio(comunicacionesForm.getDesignaAnio());
@@ -205,8 +209,10 @@ public class ComunicacionesAction extends MasterAction {
 				comunicacionesSalida.add(salidaEnviosForm);
 			}
 			
-			
-			
+//			GenParametrosAdm paramAdm = new GenParametrosAdm (userBean);
+//			String prefijoExpedienteCajg = paramAdm.getValor (comunicacionesForm.getDesignaIdInstitucion(), ClsConstants.MODULO_SJCS, ClsConstants.GEN_PARAM_PREFIJO_EXPEDIENTES_CAJG, " ");
+//			request.setAttribute("PREFIJOEXPEDIENTECAJG",prefijoExpedienteCajg);
+//			
 			
 
 		} catch (Exception e) {

@@ -38,6 +38,7 @@
 	String idTurno=miForm.getIdTurno().toString();
 	String anio=miForm.getAnio().toString();
 	String numero=miForm.getNumero().toString();
+	String idInstitucion=miForm.getIdInstitucion().toString();
 	
 	
 %>
@@ -72,6 +73,7 @@
 		<html:hidden name="pestanaDelitoDesignaForm" property="anio" />
 		<html:hidden name="pestanaDelitoDesignaForm" property="numero" />
 		<html:hidden name="pestanaDelitoDesignaForm" property="idTurno" />
+		<html:hidden name="pestanaDelitoDesignaForm" property="idInstitucion" />
 	</html:form>
 	<table class="tablaTitulo" cellspacing="0" heigth="38">
 		<tr>
@@ -79,7 +81,7 @@
 	
 					<%  String t_nombre = "", t_apellido1 = "", t_apellido2 = "", t_anio = "", t_numero = "";
 						ScsDesignaAdm adm = new ScsDesignaAdm (usr);
-						Hashtable hTitulo = adm.getTituloPantallaDesigna(usr.getLocation(), anio, numero,idTurno);
+						Hashtable hTitulo = adm.getTituloPantallaDesigna(idInstitucion, anio, numero,idTurno);
 
 						if (hTitulo != null) {
 							t_nombre    = (String)hTitulo.get(ScsPersonaJGBean.C_NOMBRE);
@@ -116,6 +118,7 @@
 		//Asociada al boton Volver -->
 		function accionVolver() 
 		{	
+			document.forms[0].idIsntitucion = '<%=usr.getLocation()%>';
 			document.forms[0].target = "mainWorkArea";	
 			document.forms[0].action="JGR_Designas.do";
 			document.forms[0].modo.value="volverBusqueda";

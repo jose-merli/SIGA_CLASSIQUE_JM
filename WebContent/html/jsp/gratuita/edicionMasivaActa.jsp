@@ -20,8 +20,12 @@
 	String app=request.getContextPath();
 	HttpSession ses=request.getSession();
 	UsrBean usr=(UsrBean)ses.getAttribute("USRBEAN");
-	String dato[] = {(String)usr.getLocation()};
+	Short idInstitucionComision = usr.getIdInstitucionComision();
+	String  idInstitucionLocation = (String)usr.getLocation(); 
+	String 	datoComision[] = {idInstitucionLocation,idInstitucionLocation,idInstitucionLocation,idInstitucionLocation};
+	String dato[] = {idInstitucionLocation};
 	String seleccionados = (String)request.getParameter("seleccionados");
+	boolean esComisionMultiple = usr.getInstitucionesComision()!=null &&usr.getInstitucionesComision().length>1;
 	
 %>
 
@@ -40,7 +44,7 @@
 	<html:form action="/JGR_ActasComision.do" method="POST" target="submitArea">
 		<input type="hidden" name="modo" value="updateMasivo">
 		<input type="hidden" name="seleccionados" 	value="<%=seleccionados%>">
-		<input type="hidden" name="idInstitucion" 	value="">
+		<input type="hidden" name="idInstitucion" 	value="<%=idInstitucionComision%>">
 		<input type="hidden" name="idActa" 			value="">
 		<input type="hidden" name="anioActa" 		value="">
 		<input type="hidden" name="idTipoRatificacionEJG" >
@@ -104,7 +108,7 @@
 				
 				<tr>
 					<td style="vertical-align:middle" width="20px">
-						<html:checkbox property="guardaFundamento" onclick="marcaCheckFundamento()" styleid="guardaFundamento"/>
+						<html:checkbox property="guardaFundamento" styleid="guardaFundamento"/>
 					</td>
 					<td class="labelText" style="vertical-align:middle" width="110px">
 						<label for="guardaFundamento">
@@ -112,7 +116,11 @@
 						</label>
 					</td>
 					<td style="vertical-align:middle" width="90px">
-						<siga:ComboBD nombre="idFundamentoJuridico" tipo="tipoFundamentosActivos" clase="boxCombo" ancho="500" filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=dato%>" hijo="t" accion="window.parent.actualizaCheckFundamento();"/>
+					  <% if(esComisionMultiple){%>  
+							<siga:ComboBD nombre="idFundamentoJuridico" tipo="tipoFundamentosActivosComision" clase="boxCombo" ancho="500" filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=datoComision%>" hijo="t" accion="window.parent.actualizaCheckFundamento();"/>
+						<%}else{ %>
+							<siga:ComboBD nombre="idFundamentoJuridico" tipo="tipoFundamentosActivos" clase="boxCombo" ancho="500" filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=dato%>" hijo="t" accion="window.parent.actualizaCheckFundamento();"/>
+						<%} %>
 					</td>
 				</tr>
 			</table>
@@ -195,7 +203,9 @@
 			
 		}
 		 
-		jQuery('#idActaComp').on('change', function (e) {jQuery('#guardaActa').attr('checked',jQuery('#idActaComp option:selected').text()!="");});
+		jQuery('#idActaComp').on('change', function (e) {
+			jQuery('#guardaActa').attr('checked',jQuery('#idActaComp option:selected').text()!="");
+		});
 		jQuery('#idPonente').on('change', function (e) {
 			jQuery('#guardaPonente').attr('checked',jQuery('#idPonente option:selected').text()!="");
 				if(jQuery('#idPonente').val()!=''){
@@ -208,7 +218,10 @@
 				}
 			}
 		);
-		jQuery('#idTipoResolucion').on('change', function (e) {jQuery('#guardaRatificacion').attr('checked',jQuery('#idTipoResolucion option:selected').text()!="");});
+		jQuery('#idTipoResolucion').on('change', function (e) {
+			jQuery('#guardaRatificacion').attr('checked',jQuery('#idTipoResolucion option:selected').text()!="");
+		});
+		
 		function actualizaCheckFundamento(){
 			jQuery('#guardaFundamento').attr('checked',jQuery('#idFundamentoJuridico').val()!="");
 		}

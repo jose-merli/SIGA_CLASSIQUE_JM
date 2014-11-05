@@ -23,7 +23,7 @@
 <% 
 	String app=request.getContextPath();
 	HttpSession ses=request.getSession();
-		
+	UsrBean usr=(UsrBean)ses.getAttribute("USRBEAN");
 	Vector obj = (Vector)request.getAttribute("resultado");
 	request.getSession().setAttribute("resultado",obj);
 	String accion = (String)request.getAttribute("accion");
@@ -57,6 +57,7 @@
 <body onLoad="ajusteAltoBotones('resultado');" class="tablaCentralCampos">
 	<html:form action="JGR_CambioProcuradorDesigna.do" method="POST" target="mainPestanas" style="display:none">
 		<html:hidden property = "modo" value = ""/>
+		<html:hidden property = "idInstitucion" value = ""/>
 		<html:hidden property = "actionModal" value = ""/>
 	</html:form>	
 
@@ -79,6 +80,7 @@
 		//Asociada al boton Volver -->
 		function accionVolver() 
 		{	
+			document.forms[0].idInstitucion.value = "<%=usr.getLocation() %>";
 			document.forms[0].target = "mainWorkArea";	
 			document.forms[0].action="JGR_Designas.do";
 			document.forms[0].modo.value="volverBusqueda";

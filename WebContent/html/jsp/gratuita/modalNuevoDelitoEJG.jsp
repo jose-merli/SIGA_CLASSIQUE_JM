@@ -35,7 +35,8 @@
 	String anio = formulario.getAnio().toString();
 	String numero = formulario.getNumero().toString();
 	String idTipoEJG = formulario.getIdTipoEJG().toString();
-	String parametro[] = {usr.getLocation(), usr.getLocation(), numero, anio, idTipoEJG};
+	String idInstitucion = formulario.getIdInstitucion().toString();
+	String parametro[] = {idInstitucion, idInstitucion, numero, anio, idTipoEJG};
 %>
 
 	<!-- HEAD -->
@@ -77,6 +78,7 @@
 				<html:hidden name="pestanaDelitoEJGForm" property="anio" />
 				<html:hidden name="pestanaDelitoEJGForm" property="numero" />
 				<html:hidden name="pestanaDelitoEJGForm" property="idTipoEJG" />
+				<html:hidden name="pestanaDelitoEJGForm" property="idInstitucion" />
 
 				<!-- INICIO: CAMPOS DEL REGISTRO -->
 				<tr>			
@@ -93,6 +95,7 @@
 										hmDeligosparams.put("numero", numero);
 										hmDeligosparams.put("anio", anio);
 										hmDeligosparams.put("idtipoejg", idTipoEJG);
+										hmDeligosparams.put("idinstitucion", idInstitucion);
 										String deligosparamsJSON = UtilidadesString.createJsonString(hmDeligosparams);
 %>
 										<siga:Select queryId="getDelitosEJG" id="idDelito" params="<%=deligosparamsJSON%>" required="true" width="520"/>

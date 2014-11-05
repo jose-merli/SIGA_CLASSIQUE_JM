@@ -80,8 +80,10 @@
 			{
 				var datos;
 				datos = document.getElementById('tablaDatosDinamicosD');
-				datos.value = ""; 
-				preparaDatos(fila, 'tabladatos', datos);
+				//datos.value = ""; 
+				preparaDatos(fila, 'tabladatos');
+
+				//preparaDatos(fila, 'tabladatos', datos);
 				document.forms[0].target="submitArea";
 				document.forms[0].modo.value = "download";
 				document.forms[0].submit();
@@ -91,9 +93,10 @@
 			{
 				sub();
 				var datos;
-				datos = document.getElementById('tablaDatosDinamicosD');
-				datos.value = "";
-				preparaDatos(fila, 'tabladatos', datos);
+				//datos = document.getElementById('tablaDatosDinamicosD');
+				//datos.value = "";
+				//preparaDatos(fila, 'tabladatos', datos);
+				preparaDatos(fila, 'tabladatos');
 				document.forms[0].target="submitArea";
 				document.forms[0].modo.value = "descargar";
 				document.forms[0].submit();
@@ -121,6 +124,7 @@
 			
 			<html:hidden property="descripcionPlantilla" value="<%=descripcionPlantilla%>"/>
 			<html:hidden property="idTipoEnvios" value="<%=idTipoEnvios%>"/>
+			
 		</html:form>
 
 	<table class="tablaTitulo" align="center" height="20" cellpadding="0" cellspacing="0">

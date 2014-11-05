@@ -2241,10 +2241,27 @@ public class CenClienteAdm extends MasterBeanAdmVisible
                             "                   where "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_IDPERSONA+">1000),'3',3,4) )) AS COLEGIACION "+
                             " ,  "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_NOAPARECERREDABOGACIA+"  " +
 // RGG cambio porque solo saca colegiados				" FROM  (("+CenPersonaBean.T_NOMBRETABLA+" LEFT JOIN  "+CenClienteBean.T_NOMBRETABLA+" ON "+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_IDPERSONA+" = "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_IDPERSONA+") RIGHT JOIN "+CenColegiadoBean.T_NOMBRETABLA+" ON "+CenColegiadoBean.T_NOMBRETABLA+"."+CenColegiadoBean.C_IDPERSONA+" = "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_IDPERSONA+" AND "+CenColegiadoBean.T_NOMBRETABLA+"."+CenColegiadoBean.C_IDINSTITUCION+" = "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_IDINSTITUCION+") " +
-				" FROM  (("+CenPersonaBean.T_NOMBRETABLA+" INNER JOIN  "+CenClienteBean.T_NOMBRETABLA+" ON "+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_IDPERSONA+" = "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_IDPERSONA+") RIGHT JOIN "+CenColegiadoBean.T_NOMBRETABLA+" ON "+CenColegiadoBean.T_NOMBRETABLA+"."+CenColegiadoBean.C_IDPERSONA+" = "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_IDPERSONA+" AND "+CenColegiadoBean.T_NOMBRETABLA+"."+CenColegiadoBean.C_IDINSTITUCION+" = "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_IDINSTITUCION+") " +
-//				" where rownum<20 "; // esto es de prueba
+				" FROM  (("+CenPersonaBean.T_NOMBRETABLA+" INNER JOIN  "+CenClienteBean.T_NOMBRETABLA+" ON "+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_IDPERSONA+" = "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_IDPERSONA+") RIGHT JOIN "+CenColegiadoBean.T_NOMBRETABLA+" ON "+CenColegiadoBean.T_NOMBRETABLA+"."+CenColegiadoBean.C_IDPERSONA+" = "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_IDPERSONA+" AND "+CenColegiadoBean.T_NOMBRETABLA+"."+CenColegiadoBean.C_IDINSTITUCION+" = "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_IDINSTITUCION+") " ;
 
-				" WHERE "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_IDINSTITUCION+" = " + idInstitucion;
+				
+			boolean esComision = usrbean.isComision();
+			boolean esComisionMultiple = usrbean.getInstitucionesComision()!=null &&usrbean.getInstitucionesComision().length>1;
+		
+			if(esComision && esComisionMultiple){
+				sqlClientes += " WHERE "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_IDINSTITUCION+" in ( ";
+				for (int i = 0; i < usrbean.getInstitucionesComision().length; i++) {
+					sqlClientes += usrbean.getInstitucionesComision()[i];
+					if(i!=usrbean.getInstitucionesComision().length-1)
+						sqlClientes += ", ";
+					
+				}
+				sqlClientes += " )";
+				
+			}else{
+				sqlClientes += " WHERE "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_IDINSTITUCION+" = " + idInstitucion;
+				
+			}
+			
 				
 			boolean bBusqueda  = UtilidadesString.stringToBoolean(formulario.getChkBusqueda());	
 //	 2     

@@ -24,21 +24,19 @@
 </head>
 
 <body onload="iniciarTitulo();">
-
+	<bean:define id="usrBean" name="USRBEAN" scope="session" type="com.atos.utils.UsrBean" />
 	<bean:define id="path" name="org.apache.struts.action.mapping.instance" property="path" scope="request"/>			
-
+<div>
 	<table class="tablaTitulo" cellspacing="0" heigth="38">
 		<tr>
-			<td class="titulitosDatos">
-				<c:out value="${ComunicacionesForm.anio}"/>
-				/
-				<c:out value="${ComunicacionesForm.codigoDesignaNumEJG}"/>
+			<td id="titulo"  class="titulitosDatos" style="font:normal" >
+				<c:out value="${PREFIJOEXPEDIENTECAJG}" />&nbsp;<c:out value="${ComunicacionesForm.anio}"/>/<c:out value="${ComunicacionesForm.codigoDesignaNumEJG}"/>
 				&nbsp;-&nbsp;
 				<c:out value="${ComunicacionesForm.solicitante}"/>
 			</td>
 		</tr>
 	</table>
-
+</div>
 	<html:form action="${path}" target="mainWorkArea">
 		<html:hidden styleId = "modo" property="modo"  />
 		<html:hidden styleId = "solicitante" property="solicitante" />
@@ -102,6 +100,7 @@
 
 	<table class="tablaTitulo" cellspacing="0" heigth="38">
 		<tr>
+		
 			<td id="titulo" class="titulitosDatos">
 				<siga:Idioma key="envios.definir.literal.titulo"/>
 			</td>

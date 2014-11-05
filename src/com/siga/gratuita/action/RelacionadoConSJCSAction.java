@@ -14,11 +14,13 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
+import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.beans.CenPersonaAdm;
 import com.siga.beans.ExpCampoTipoExpedienteAdm;
 import com.siga.beans.ExpExpedienteAdm;
+import com.siga.beans.GenParametrosAdm;
 import com.siga.beans.ScsAsistenciasAdm;
 import com.siga.beans.ScsAsistenciasBean;
 import com.siga.beans.ExpExpedienteBean;
@@ -177,6 +179,9 @@ public class RelacionadoConSJCSAction extends MasterAction
 				// << JBD INC_CAT_5
 
 				modo = (String)request.getSession().getAttribute("accion");
+				GenParametrosAdm paramAdm = new GenParametrosAdm (this.getUserBean(request));
+				String prefijoExpedienteCajg = paramAdm.getValor (idInstitucion, ClsConstants.MODULO_SJCS, ClsConstants.GEN_PARAM_PREFIJO_EXPEDIENTES_CAJG, " ");
+				request.setAttribute("PREFIJOEXPEDIENTECAJG",prefijoExpedienteCajg);
 			}
 			
 			request.setAttribute("modo", modo);			

@@ -26,7 +26,7 @@
 	String app = request.getContextPath();
 	UsrBean usr = (UsrBean)ses.getAttribute("USRBEAN");
 	String 	dato[] = {(String)usr.getLocation()};
-	
+	boolean esComisionMultiple = usr.getInstitucionesComision()!=null &&usr.getInstitucionesComision().length>1;
 	Hashtable datosActa = (Hashtable)request.getAttribute("datosActa");
 	Vector ejgs = (Vector)request.getAttribute("ejgsRelacionados");
 	
@@ -110,7 +110,7 @@
 							<siga:Fecha nombreCampo="fechaResolucion" valorInicial="<%=fechaResolucionCAJG%>"/> 
 						<% } %>					
 					</td>
-					<%if(idInstitucion.equals("2500")){%>
+					<%if(esComisionMultiple){%>
 					
 					
 						
@@ -121,6 +121,7 @@
 											
 					</td>
 					<%} %>
+					
 				</tr>
 			
 				<tr>
@@ -177,11 +178,29 @@
 		</siga:ConjCampos>	
 		
 		<div id="listadoEJGs" style="height:100%">
+		
+		<%
+		
+		StringBuffer  nombreColumnas = new StringBuffer("");
+		StringBuffer tamanioColumnas =  new StringBuffer("");
+		if(esComisionMultiple){
+			nombreColumnas.append("ICA,");
+			tamanioColumnas.append("6,");
+			
+		}
+		nombreColumnas.append("gratuita.busquedaEJG.literal.expedientesEJG, gratuita.busquedaEJG.literal.turnoGuardiaEJG, gratuita.listadoActuacionesAsistencia.literal.fecha, gratuita.busquedaEJG.literal.solicitante,gratuita.busquedaEJG.literal.resolucion,");
+		tamanioColumnas.append("10,30,8,18,18,");
+		
+	%>
+
+
+		
+		
 			<siga:Table 		   
 			   name="listadoActas"
 			   border="1"
-			   columnNames="gratuita.busquedaEJG.literal.expedientesEJG, gratuita.busquedaEJG.literal.turnoGuardiaEJG, gratuita.listadoActuacionesAsistencia.literal.fecha, gratuita.busquedaEJG.literal.solicitante,gratuita.busquedaEJG.literal.resolucion,"
-			   columnSizes="10,32,8,20,20,">
+			   columnNames="<%=nombreColumnas.toString() %>"
+		   	columnSizes="<%=tamanioColumnas.toString() %>">
 			   
 <%
 				if (ejgs!=null && ejgs.size()>0) {
@@ -194,7 +213,10 @@
 				   		fila=(Row)ejgs.get(i);
 				   		hash=(Hashtable)fila.getRow();
 %>			   		
-				   		<siga:FilaConIconos fila="<%=filaSt%>" botones="<%=botones%>" clase="listaNonEdit" visibleBorrado="no" >		   		
+				   		<siga:FilaConIconos fila="<%=filaSt%>" botones="<%=botones%>" clase="listaNonEdit" visibleBorrado="no" >	
+				   		<% if(esComisionMultiple){%>
+				   			<td><%=hash.get("INST_ABREV")%></td>
+					   		<%}%>
 							<td>
 							   	<input type="hidden" name="oculto<%=filaSt%>_1" id="oculto<%=filaSt%>_1" value="<%=hash.get("IDTIPOEJG")%>">
 								<input type="hidden" name="oculto<%=filaSt%>_2" id="oculto<%=filaSt%>_2" value="<%=hash.get("IDINSTITUCION")%>">

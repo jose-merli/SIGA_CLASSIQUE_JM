@@ -38,9 +38,8 @@
 	String modo = (String)request.getAttribute("MODO");
 	String dato[] = new String[2];
 	
-	String datos[] = new String[3];
-	dato[1] = (String)usr.getLocation();
-	String anio= "", numero="", idTipoEJG = "", dictamen = "", fechaDictamen = "";
+	
+	String anio= "", numero="", idTipoEJG = "", dictamen = "", fechaDictamen = "",idInstitucion = "";
 	ArrayList vIntFDict = new ArrayList();
 	ArrayList vIntFCalf = new ArrayList();
 	Object obj=null;
@@ -48,16 +47,20 @@
 		anio = miHash.get("ANIO").toString();
 		numero = miHash.get("NUMERO").toString();
 		idTipoEJG = miHash.get("IDTIPOEJG").toString();
+		idInstitucion =miHash.get("IDINSTITUCION").toString();
 		if (miHash.containsKey("DICTAMEN")) dictamen = miHash.get("DICTAMEN").toString();
 		if (miHash.containsKey("FECHADICTAMEN")) fechaDictamen = GstDate.getFormatedDateShort("",miHash.get("FECHADICTAMEN").toString()).toString();
 	}catch(Exception e){};
 	
+	String datos[] = new String[3];
+	dato[1] = idInstitucion;
+	
 	if (miHash.containsKey("IDTIPODICTAMENEJG")){
 		try {
 			obj=miHash.get("IDTIPODICTAMENEJG");
-			vIntFDict.add(obj.equals("")? "0":obj.toString() + "," + (String)usr.getLocation());
+			vIntFDict.add(obj.equals("")? "0":obj.toString() + "," + idInstitucion);
 			datos[0]=(String) obj.toString();
-			datos[1]=(String)usr.getLocation();
+			datos[1]=idInstitucion;
 		} catch (Exception e) {}
 	}
 	if (miHash.containsKey("IDFUNDAMENTOCALIF")){
@@ -138,7 +141,7 @@
 				;
 				ScsEJGAdm adm = new ScsEJGAdm(usr);
 
-				Hashtable hTitulo = adm.getTituloPantallaEJG(usr.getLocation(),
+				Hashtable hTitulo = adm.getTituloPantallaEJG(idInstitucion,
 						anio, numero, idTipoEJG);
 
 				if (hTitulo != null) {
@@ -152,7 +155,7 @@
 					t_tipoEJG = (String) hTitulo.get("TIPOEJG");
 				}
 			%>
-			 <%=UtilidadesString.mostrarDatoJSP(t_anio)%>/<%=UtilidadesString.mostrarDatoJSP(t_numero)%>
+			 <c:out value="${PREFIJOEXPEDIENTECAJG}" />&nbsp;<%=UtilidadesString.mostrarDatoJSP(t_anio)%>/<%=UtilidadesString.mostrarDatoJSP(t_numero)%>
 			- <%=UtilidadesString.mostrarDatoJSP(t_nombre)%> <%=UtilidadesString.mostrarDatoJSP(t_apellido1)%>
 			<%=UtilidadesString.mostrarDatoJSP(t_apellido2)%></td>
 			<td> 
@@ -179,8 +182,7 @@
 					<html:form action="/JGR_DictamenEJG" method="POST"
 						target="submitArea">
 						<html:hidden property="modo" value="Modificar" />
-						<html:hidden property="idInstitucion"
-							value="<%=usr.getLocation()%>" />
+						<html:hidden property="idInstitucion"	value="<%=idInstitucion%>" />
 						<html:hidden property="idTipoEJG" value="<%=idTipoEJG%>" />
 						<html:hidden property="anio" value="<%=anio%>" />
 						<html:hidden property="numero" value="<%=numero%>" />
@@ -310,6 +312,7 @@
 		//Asociada al boton Volver
 		function accionVolver()
 		{
+			document.forms[0].idInstitucion.value = "<%=usr.getLocation()%>";
 			document.forms[0].action="./JGR_EJG.do";	
 			document.forms[0].modo.value="buscar";
 			document.forms[0].target="mainWorkArea"; 

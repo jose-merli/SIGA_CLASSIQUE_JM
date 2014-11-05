@@ -291,7 +291,7 @@ public class DefinirEJGAction extends MasterAction
 		}
 		miHash.put("ESCOMISION", this.getUserBean(request).isComision());
 		String consulta= "";
-		String idInstitucion= usr.getLocation();	
+			
 		try {
 
 			//Si es seleccionar todos esta variable no vandra nula y ademas nos traera el numero de pagina 
@@ -346,7 +346,7 @@ public class DefinirEJGAction extends MasterAction
 
 				//obtengo datos de la consulta 			
 				PaginadorBind resultado = null;
-				resultado = admBean.getPaginadorBusquedaMantenimientoEJG(miHash, miFormulario,idInstitucion);
+				resultado = admBean.getPaginadorBusquedaMantenimientoEJG(miHash, miFormulario,miFormulario.getIdInstitucion());
 //				resultado=desigAdm.getBusquedaDesigna((String)usr.getLocation(),miHash);
 				Vector datos = null;
 
@@ -406,6 +406,15 @@ public class DefinirEJGAction extends MasterAction
 			miHash.put(ScsEJGBean.C_FECHAPRESENTACIONPONENTE,miFormulario.getFechaPresentacionPonenteDesde());
 			miHash.put(ScsEJGBean.C_FECHAPRESENTACIONPONENTE+"_HASTA",miFormulario.getFechaPresentacionPonenteHasta());
 			miHash.put(ScsEJGBean.C_IDRENUNCIA,miFormulario.getIdRenuncia());
+			if(miFormulario.getIdInstitucionComision()!=null && !miFormulario.getIdInstitucionComision().equals("")){
+				miHash.put(ScsEJGBean.C_IDINSTITUCION,miFormulario.getIdInstitucionComision());
+				
+			}
+			miHash.put(ScsEJGBean.C_IDFUNDAMENTOJURIDICO,miFormulario.getIdTipoFundamento());
+			miHash.put(ScsEJGBean.C_IDPONENTE,miFormulario.getIdPonente());
+			if(miFormulario.getIdPonente()!=null && !miFormulario.getIdPonente().equals("")){
+				miHash.put(ScsEJGBean.C_IDINSTITUCIONPONENTE,miFormulario.getIdInstitucionComision());
+			}
 		
 			// En "DATOSFORMULARIO" almacenamos el identificador del letrado			
 			miHash.put("BUSQUEDAREALIZADA","1");
@@ -449,13 +458,15 @@ public class DefinirEJGAction extends MasterAction
 			Vector ocultos = miForm.getDatosTablaOcultos(0);
 			Vector visibles = miForm.getDatosTablaVisibles(0);
 			Hashtable miHash = new Hashtable();
+			String idInstitucion = null;
 			if ((request.getParameter("desdeEjg")!=null && request.getParameter("desdeEjg").equalsIgnoreCase("si"))||(request.getParameter("desdeDesigna")!=null && request.getParameter("desdeDesigna").equalsIgnoreCase("si"))){
 				session.removeAttribute("DATAPAGINADOR");
 			}
 			
 			if ((ocultos != null && visibles != null) || ((ocultos != null && miForm.getDesdeDesigna() != null) && (miForm.getDesdeDesigna().equalsIgnoreCase("si")))) {
 				miHash.put(ScsEJGBean.C_IDTIPOEJG,ocultos.get(0));
-				miHash.put(ScsEJGBean.C_IDINSTITUCION,ocultos.get(1));
+				idInstitucion = (String)ocultos.get(1);
+				miHash.put(ScsEJGBean.C_IDINSTITUCION,idInstitucion);
 				miHash.put(ScsEJGBean.C_ANIO,ocultos.get(2));
 				miHash.put(ScsEJGBean.C_NUMERO,ocultos.get(3));
 				miForm.setOrigen("");
@@ -464,7 +475,8 @@ public class DefinirEJGAction extends MasterAction
 			else {
 				session.removeAttribute("DATAPAGINADOR");
 				miHash.put(ScsEJGBean.C_IDTIPOEJG,miForm.getIdTipoEJG());
-				miHash.put(ScsEJGBean.C_IDINSTITUCION,miForm.getIdInstitucion());
+				idInstitucion = miForm.getIdInstitucion();
+				miHash.put(ScsEJGBean.C_IDINSTITUCION,idInstitucion);
 				miHash.put(ScsEJGBean.C_ANIO,miForm.getAnio());
 				miHash.put(ScsEJGBean.C_NUMERO,miForm.getNumero());
 			}
@@ -517,7 +529,7 @@ public class DefinirEJGAction extends MasterAction
 			miHash.put("actionE","/JGR_InteresadoEJG.do");
 			
 			GenParametrosAdm parametrosAdm = new GenParametrosAdm(this.getUserBean(request));
-	 		String valor = parametrosAdm.getValor(this.getUserBean(request).getLocation(), ClsConstants.MODULO_GENERAL, "REGTEL", "0");
+	 		String valor = parametrosAdm.getValor(idInstitucion, ClsConstants.MODULO_GENERAL, "REGTEL", "0");
 	 		if (valor!=null && valor.equals(ClsConstants.DB_FALSE)){
 			  String[] pestanasOcultas=new String [1];
 			  pestanasOcultas[0]=ClsConstants.IDPROCESO_REGTEL_EJG;
@@ -555,10 +567,11 @@ public class DefinirEJGAction extends MasterAction
 			Vector ocultos = formulario.getDatosTablaOcultos(0);
 			Vector visibles = formulario.getDatosTablaVisibles(0);
 			Hashtable miHash = new Hashtable();
-			
+			String idInstitucion =null;
 			if ((ocultos != null && visibles != null) || ((ocultos != null && miForm.getDesdeDesigna() != null) && (miForm.getDesdeDesigna().equalsIgnoreCase("si")))) {
 				miHash.put(ScsEJGBean.C_IDTIPOEJG,ocultos.get(0));
-				miHash.put(ScsEJGBean.C_IDINSTITUCION,ocultos.get(1));
+				idInstitucion = (String)ocultos.get(1);
+				miHash.put(ScsEJGBean.C_IDINSTITUCION,idInstitucion);
 				miHash.put(ScsEJGBean.C_ANIO,ocultos.get(2));
 				miHash.put(ScsEJGBean.C_NUMERO,ocultos.get(3));
 				miForm.setOrigen("");
@@ -567,7 +580,8 @@ public class DefinirEJGAction extends MasterAction
 			} else {
 				session.removeAttribute("DATAPAGINADOR");
 				miHash.put(ScsEJGBean.C_IDTIPOEJG,miForm.getIdTipoEJG());
-				miHash.put(ScsEJGBean.C_IDINSTITUCION,miForm.getIdInstitucion());
+				idInstitucion = miForm.getIdInstitucion();
+				miHash.put(ScsEJGBean.C_IDINSTITUCION,idInstitucion);
 				miHash.put(ScsEJGBean.C_ANIO,miForm.getAnio());
 				miHash.put(ScsEJGBean.C_NUMERO,miForm.getNumero());
 				String origen=request.getParameter("origen");
@@ -639,7 +653,7 @@ public class DefinirEJGAction extends MasterAction
 			
 			
 			GenParametrosAdm parametrosAdm = new GenParametrosAdm(this.getUserBean(request));
-	 		String valor = parametrosAdm.getValor(this.getUserBean(request).getLocation(), ClsConstants.MODULO_GENERAL, "REGTEL", "0");
+	 		String valor = parametrosAdm.getValor(miForm.getIdInstitucion(), ClsConstants.MODULO_GENERAL, "REGTEL", "0");
 	 		if (valor!=null && valor.equals(ClsConstants.DB_FALSE)){
 			  String[] pestanasOcultas=new String [1];
 			  pestanasOcultas[0]=ClsConstants.IDPROCESO_REGTEL_EJG;

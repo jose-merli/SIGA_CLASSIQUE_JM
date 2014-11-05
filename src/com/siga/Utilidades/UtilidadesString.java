@@ -1732,5 +1732,12 @@ public class UtilidadesString {
 	
 	    return true;  
 	} 
+	public static String getPrimeraMayuscula(String cadena){
+		if(cadena!=null)
+			return cadena.substring(0,1).toUpperCase() + cadena.substring(1).toLowerCase(); 
+		else 
+			return "";
+		
+	}
 		 
 }

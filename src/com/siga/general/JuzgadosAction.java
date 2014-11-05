@@ -168,14 +168,24 @@ public class JuzgadosAction extends MasterAction{
 		BusinessManager bm = getBusinessManager();
 		UsrBean usrBean = this.getUserBean(request);
 		ScsTipoFundamentosService tipoFundamentosService = (ScsTipoFundamentosService)bm.getService(ScsTipoFundamentosService.class);
-		String[] tiposResolucion =  idCombo.split(",");
+		String[] idsCombo =  idCombo.split("##");
 		
-
+		String[] tiposResolucion =  idsCombo[0].split(",");
+		String idInstitucion = idsCombo[1];
+		
+		
 		
 		List<ScsTipofundamentos> tiposFundamentos = new ArrayList<ScsTipofundamentos>();
 		for (int i = 0; i < tiposResolucion.length; i++) {
-			List<ScsTipofundamentos> tiposFundamentosResolucion = (ArrayList<ScsTipofundamentos>) tipoFundamentosService.getTiposFundamento(Integer.parseInt(usrBean.getLanguage()),new  Short(tiposResolucion[i]),new Integer(usrBean.getLocation()));
-			 tiposFundamentos.addAll(tiposFundamentosResolucion);
+			List<ScsTipofundamentos> tiposFundamentosResolucion = null;
+			if(usrBean.getInstitucionesComision()!=null && usrBean.getInstitucionesComision().length>1){
+				tiposFundamentosResolucion = (ArrayList<ScsTipofundamentos>) tipoFundamentosService.getTiposFundamentoComisionMultiple(Integer.parseInt(usrBean.getLanguage()),new  Short(tiposResolucion[i]),new Integer(idInstitucion));
+			}else{
+				tiposFundamentosResolucion = (ArrayList<ScsTipofundamentos>) tipoFundamentosService.getTiposFundamento(Integer.parseInt(usrBean.getLanguage()),new  Short(tiposResolucion[i]),new Integer(idInstitucion));
+			}
+			
+			if(tiposFundamentosResolucion!=null)
+				tiposFundamentos.addAll(tiposFundamentosResolucion);
 		}
 		//Esto de abajo seria lo optimo pero no tengo tiempo para ver porque da error cuando hay mas de un registro(me puedo imaginar que la capa de mybatis trate el dato como un short y cumo se le pasauna cadena...)
 //		List<ScsTipofundamentos> tiposFundamentos = (ArrayList<ScsTipofundamentos>) tipoFundamentosService.getTiposFundamentoResolucionesMultiples(Integer.parseInt(usrBean.getLanguage()),idCombo,new Integer(usrBean.getLocation()));

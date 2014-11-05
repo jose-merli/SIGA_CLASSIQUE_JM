@@ -1,4 +1,6 @@
 <!-- includeVolver.inc -->
+
+<%@page import="com.atos.utils.UsrBean"%>
 <%
 	// includeVolver.inc
 	// juan.grau 05-05-2005 Creacion
@@ -134,6 +136,7 @@
 						document.forms['DefinirEJGForm'].submit();
 						
 					}else{
+						document.forms['DefinirEnviosForm'].action="<%=((UsrBean) request.getSession().getAttribute("USRBEAN")).getLocation()%>";
 						document.forms['DefinirEnviosForm'].action="./JGR_EJG.do";	
 						document.forms['DefinirEnviosForm'].modo.value="buscar";
 						document.forms['DefinirEnviosForm'].target="mainWorkArea"; 

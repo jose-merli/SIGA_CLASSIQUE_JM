@@ -34,7 +34,7 @@
 	String idInstitucionLocation = usr.getLocation();
 	String idioma=usr.getLanguage().toUpperCase();
 	//Vector obj = (Vector)request.getAttribute("resultado");
-	
+	boolean esComisionMultiple = usr.getInstitucionesComision()!=null &&usr.getInstitucionesComision().length>1;
 	ses.removeAttribute("resultado");
 	
 	
@@ -111,13 +111,29 @@
 			<html:hidden property="datosPaginador"  styleId="datosPaginador" />
 			<html:hidden property="seleccionarTodos"  styleId="seleccionarTodos" />
 		</html:form>	
+			<%
 		
+				StringBuffer  nombreColumnas = new StringBuffer("<input type='checkbox' name='chkGeneral'  id='chkGeneral' onclick='cargarChecksTodos(this)'/>");
+				StringBuffer tamanioColumnas =  new StringBuffer("5");
+				if(esComisionMultiple){
+					nombreColumnas.append(",ICA");
+					nombreColumnas.append(" ,gratuita.listarGuardias.literal.turno,facturacion.ano,gratuita.busquedaDesignas.literal.codigo,gratuita.listadoCalendario.literal.fecha,gratuita.listadoCalendario.literal.estado,gratuita.listarDesignasTurno.literal.nColegiado,expedientes.auditoria.literal.nombreyapellidos,pestana.justiciagratuitaejg.interesado,");
+					tamanioColumnas.append(",6");
+					tamanioColumnas.append(",11,4,5,7,5,10,13,14,9");
+					
+				}else{
+					nombreColumnas.append(" ,gratuita.listarGuardias.literal.turno,facturacion.ano,gratuita.busquedaDesignas.literal.codigo,gratuita.listadoCalendario.literal.fecha,gratuita.listadoCalendario.literal.estado,gratuita.listarDesignasTurno.literal.nColegiado,expedientes.auditoria.literal.nombreyapellidos,pestana.justiciagratuitaejg.interesado,gratuita.busquedaDesignas.literal.validada,");
+					tamanioColumnas.append(",11,4,5,7,5,10,13,14,6,9");
+					
+				}
+				
+				
+			%>
 			<siga:Table 
 			   name="tablaDatos"
 			   border="1"
-			   columnNames="<input type='checkbox' name='chkGeneral'  id='chkGeneral' onclick='cargarChecksTodos(this)'/> ,
-			   gratuita.listarGuardias.literal.turno,facturacion.ano,gratuita.busquedaDesignas.literal.codigo,gratuita.listadoCalendario.literal.fecha,gratuita.listadoCalendario.literal.estado,gratuita.listarDesignasTurno.literal.nColegiado,expedientes.auditoria.literal.nombreyapellidos,pestana.justiciagratuitaejg.interesado,gratuita.busquedaDesignas.literal.validada,"
-			   columnSizes="5,11,4,5,7,5,10,13,14,6,9" >
+			      columnNames="<%=nombreColumnas.toString() %>"
+		   columnSizes="<%=tamanioColumnas.toString() %>">
 				
 		<%if (resultado.size()<1){%>
 	 		<tr class="notFound">
@@ -132,7 +148,7 @@
 				{	
 					Row fila = (Row)resultado.elementAt(recordNumber-1);
 					Hashtable registro = (Hashtable) fila.getRow();
-
+					String idInstitucion =  (String) registro.get("IDINSTITUCION");
 					defendidos =    (String) registro.get("DEFENDIDOS");
 					
 					estado = (String) registro.get("ESTADO");
@@ -163,13 +179,19 @@
 								<input type="checkbox" value="<%=valorCheck%>"  id="chkPersona"  name="chkPersona" onclick="pulsarCheck(this)" >
 						<%}%>
 						</td>
+						<% if(esComisionMultiple){%>
+							<td><%=(String)registro.get("INST_ABREV")%></td>
+						<%}%>
+						
 						<td>
 							<input type='hidden' id='oculto<%=String.valueOf(contadorFila)%>_1' name='oculto<%=String.valueOf(contadorFila)%>_1' value='<%=registro.get("IDTURNO")%>'>
 							<input type='hidden' id='oculto<%=String.valueOf(contadorFila)%>_2' name='oculto<%=String.valueOf(contadorFila)%>_2' value='<%=registro.get("IDLETRADODESIG")%>'>
 							<input type='hidden' id='oculto<%=String.valueOf(contadorFila)%>_3' name='oculto<%=String.valueOf(contadorFila)%>_3' value='<%=registro.get("NUMERO")%>'>
 							
-							<input type='hidden' id='datosCarta' name='datosCarta' value='idinstitucion==<%=usr.getLocation()%>##idturno==<%=registro.get("IDTURNO")%>##anio==<%=registro.get("ANIO")%>##numero==<%=registro.get("NUMERO")%>##ncolegiado==<%=registro.get("NCOLEGIADO")%>##codigo==<%=registro.get("CODIGO")%>'>
+							<input type='hidden' id='datosCarta' name='datosCarta' value='idinstitucion==<%=idInstitucion%>##idturno==<%=registro.get("IDTURNO")%>##anio==<%=registro.get("ANIO")%>##numero==<%=registro.get("NUMERO")%>##ncolegiado==<%=registro.get("NCOLEGIADO")%>##codigo==<%=registro.get("CODIGO")%>'>
 							<input type='hidden' id='oculto<%=String.valueOf(contadorFila)%>_4'  name='oculto<%=String.valueOf(contadorFila)%>_4' value='<%=registro.get("ANIO")%>'>
+							<input type='hidden' id='oculto<%=String.valueOf(contadorFila)%>_5' name='oculto<%=String.valueOf(contadorFila)%>_5' value='<%=registro.get("IDINSTITUCION")%>'>
+							
 							<%=registro.get("TURNODESIG")%>&nbsp;
 						</td>
 						<td><%=registro.get("ANIO")%>&nbsp;</td>
@@ -184,7 +206,10 @@
 						<td><%=registro.get("NCOLEGIADO")%>&nbsp;</td>
 						<td><%=registro.get("LETRADODESIG")%>&nbsp;</td>
 						<td><%=UtilidadesString.mostrarDatoJSP(defendidos)%>&nbsp;</td>
-						<td><%=registro.get("ACTNOVALIDA")%>&nbsp;</td>
+						<% if(!esComisionMultiple){%>
+							<td><%=registro.get("ACTNOVALIDA")%>&nbsp;</td>
+						<%}%>
+						
 					</siga:FilaConIconos>	
 					
 				<% contadorFila++;

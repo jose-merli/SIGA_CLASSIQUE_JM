@@ -37,18 +37,20 @@ import com.siga.gratuita.form.ContrariosEjgForm;
 public class ContrariosEjgAction extends MasterAction {
 	
 	protected String abrir(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, SIGAException {
-		String anio=null, numero=null, modoPestanha=null, idTipoEJG=null;
+		String anio=null, numero=null, modoPestanha=null, idTipoEJG=null, idInstitucion;
 		ContrariosEjgForm miForm = (ContrariosEjgForm)formulario;
 		//Tomo los datos de la pestanha:
 		numero = miForm.getNumero().toString();
 		anio = miForm.getAnio().toString();
 		idTipoEJG = miForm.getIdTipoEJG().toString();
+		idInstitucion = miForm.getIdInstitucion().toString();
 		modoPestanha	= request.getParameter("MODO");
 		
 		// Mandamos estos datos en el request:
 		request.setAttribute("anio", anio);
 		request.setAttribute("numero", numero);
 		request.setAttribute("idTipoEJG", idTipoEJG);
+		request.setAttribute("idInstitucion", idInstitucion);
 		request.setAttribute("modoPestanha", modoPestanha);
 		
 		return "inicio";
@@ -65,10 +67,9 @@ public class ContrariosEjgAction extends MasterAction {
 		try {			
 			UsrBean usr=(UsrBean)request.getSession().getAttribute("USRBEAN");
 			ScsContrariosEJGAdm admContrarosEJG = new ScsContrariosEJGAdm(this.getUserBean(request));
-			ScsEJGAdm admBean =  new ScsEJGAdm(this.getUserBean(request));
 			// Obtengo los datos seleccionados:
 			
-			idInstitucion =usr.getLocation();
+			idInstitucion = miForm.getIdInstitucion().toString();
 			numero = miForm.getNumero().toString();
 			anio = miForm.getAnio().toString();
 			idTipoEJG = miForm.getIdTipoEJG().toString();	
@@ -80,10 +81,12 @@ public class ContrariosEjgAction extends MasterAction {
 			miForm.setIdTipoEJG(new Integer(idTipoEJG));
 			miForm.setNumero(new Integer(numero));
 			miForm.setAnio(new Integer(anio));
+			miForm.setIdInstitucion(idInstitucion);
 			Hashtable ejg = new Hashtable();
 			UtilidadesHash.set(ejg,"NUMERO",numero);
 			UtilidadesHash.set(ejg,"ANIO",anio);			
 			UtilidadesHash.set(ejg,"IDTIPOEJG",idTipoEJG);
+			UtilidadesHash.set(ejg,"IDINSTITUCION",idInstitucion);
 			request.getSession().setAttribute("DATABACKUP",ejg);
 				
 		} catch (Exception e){
@@ -143,9 +146,9 @@ public class ContrariosEjgAction extends MasterAction {
 			Vector vOcultos = miForm.getDatosTablaOcultos(0);
 			
 			// Obtengo los datos seleccionados:
-			idInstitucion = new Integer(usr.getLocation());
-			idPersona = new Integer((String)vOcultos.get(5));
 			
+			idPersona = new Integer((String)vOcultos.get(5));
+			idInstitucion = new Integer((String)vOcultos.get(6));
 			numero = new Integer((String)vOcultos.get(8));
 			anio = new Integer((String)vOcultos.get(7));
 			idTipoEJG = new Integer((String)vOcultos.get(9));

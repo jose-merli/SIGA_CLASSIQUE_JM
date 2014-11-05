@@ -79,7 +79,7 @@
 		<table class="tablaTitulo" cellspacing="0" heigth="38">
 	<tr>
 		<td id="titulo" class="titulitosDatos">
-			<c:out value="${DefinirDocumentacionEJGForm.anio}"/>/<c:out
+		<c:out value="${PREFIJOEXPEDIENTECAJG}" />&nbsp;<c:out value="${DefinirDocumentacionEJGForm.anio}"/>/<c:out
 			 	value="${DefinirDocumentacionEJGForm.numEjg}"/>&nbsp;-&nbsp;<c:out 
 			 	value="${DefinirDocumentacionEJGForm.solicitante}"/>
 		</td>

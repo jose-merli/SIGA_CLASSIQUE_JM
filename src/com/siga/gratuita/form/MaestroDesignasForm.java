@@ -43,10 +43,23 @@ public class MaestroDesignasForm extends MasterForm {
 	private String letrado;
 	private String nig;
 	private List<ScsJuzgadoBean> juzgados;  
+	/**
+	 * @return the idInstitucion
+	 */
+	public String getIdInstitucion() {
+		return idInstitucion;
+	}
+	/**
+	 * @param idInstitucion the idInstitucion to set
+	 */
+	public void setIdInstitucion(String idInstitucion) {
+		this.idInstitucion = idInstitucion;
+	}
 	private String idJuzgado;
 	private List<ScsProcedimientosBean> modulos;
 	private List<ScsEJGBean> ejgs;  	
 	String origen; 
+	private String idInstitucion;
 	private boolean fichaColegial = false;
 	public boolean getFichaColegial() {
 		return fichaColegial;

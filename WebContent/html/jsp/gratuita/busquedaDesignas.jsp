@@ -27,9 +27,10 @@
 	String app=request.getContextPath(); 
 	HttpSession ses=request.getSession(true);
 	UsrBean usr=(UsrBean)ses.getAttribute("USRBEAN");
-	String idInstitucion = usr.getLocation();
 	
-	String[] dato = {usr.getLocation()};
+	boolean esComisionMultiple = usr.getInstitucionesComision()!=null &&usr.getInstitucionesComision().length>1;
+	
+	
 
 	String nColegiado =  request.getAttribute("nColegiado")==null?"":(String)request.getAttribute("nColegiado");
 	String nombreUserBean =  request.getAttribute("nombreUserBean")==null?"":(String)request.getAttribute("nombreUserBean");
@@ -43,17 +44,20 @@
 	ArrayList juzgadoActu   = new ArrayList();
 	ArrayList acreditacion   = new ArrayList();
 	ArrayList modulo   = new ArrayList();
+	ArrayList idInstitucionSelected   = new ArrayList();
+	
 	anio = UtilidadesBDAdm.getYearBD("");
 		String calidadidinstitucion="";
 	String idcalidad="";
 	ArrayList calidadSel = new ArrayList();
-String[] getdatos = { usr.getLocation() };
+	ArrayList idTurnoSelected = new ArrayList();
+	ArrayList idtipoDesignaSelected = new ArrayList();
 	
 	// inc6845 // fechaAperturaInicio=UtilidadesBDAdm.getFechaBD("");
 	fechaAperturaInicio="";
-	
+	String paramsInstitucionComision = "{\"idinstitucioncomision\":\""+usr.getLocation()+"\"}";
 	String BUSQUEDAREALIZADA = (String)request.getSession().getAttribute("BUSQUEDAREALIZADA");
-		
+	String idInstitucion = null;
 		if (BUSQUEDAREALIZADA!=null && datos!=null){
 		 
 			anio=(String)datos.get("ANIO");
@@ -73,6 +77,18 @@ String[] getdatos = { usr.getLocation() };
 			modulo.add((String)datos.get("MODULO"));			
 			juzgadoActu.add((String)datos.get("JUZGADOACTU"));
 			acreditacion.add((String)datos.get("ACREDITACION"));						
+			
+			
+			if (datos.get("IDINSTITUCION") != null){
+				idInstitucion = datos.get("IDINSTITUCION").toString();
+				idInstitucionSelected.add(idInstitucion);
+			}
+			if (datos.get("IDTURNO") != null)
+				idTurnoSelected.add(idInstitucion+","+datos.get("IDTURNO").toString());
+			if (tipoDesigna != null)
+				idtipoDesignaSelected.add("tipoDesigna");
+			
+				
 			
 			if (datos.get("NCOLEGIADO")!=null)
 			nColegiado=(String)datos.get("NCOLEGIADO");
@@ -131,31 +147,9 @@ String[] getdatos = { usr.getLocation() };
 	
 		//Selecciona datos de la busqueda ultima antes de editar un registro
 		function seleccionDatos(){
-			var turnoSel = "<%=usr.getLocation()%>,<%=idTurno%>";
-			var tipoDesignaSel = "<%=tipoDesigna%>";
 			var f = document.forms[0];
-			
-			//Seleccion combo turno
-			for (var i=1; i<f.idTurno.length; i++) {
-				if (f.idTurno.options[i].value==turnoSel){
-					f.idTurno.options[i].selected=true;
-					break;
-				}
-			}
-
-			//Seleccion combo tipo designa
-			for (var i=1; i<f.tipoDesigna.length; i++) {
-				if (f.tipoDesigna.options[i].value==tipoDesignaSel){
-					f.tipoDesigna.options[i].selected=true;
-					break;
-				}
-			}
-			
 			//Seleccion del letrado
 			f.ncolegiado.value = "<%=nColegiado%>";
-			//f.nombreMostrado.value = "<%=nombreMostrado%>";
-			
-			
 			//Seleccion del interesado:
 			f.nombre.value = "<%=nombre%>";
 			f.apellido1.value = "<%=apellido1%>";
@@ -189,11 +183,24 @@ String[] getdatos = { usr.getLocation() };
 		<html:hidden property = "modo" value = "inicio"/>
 		<html:hidden property ="actionModal" value = ""/>
 		<input type="hidden" name="limpiarFilaSeleccionada" value="">
+		<html:hidden name="BuscarDesignasForm" property="idInstitucion" />
 		<html:hidden name="BuscarDesignasForm" property="ncolegiado" value=""/>
 		<html:hidden property="seleccionarTodos" />
 
 	<siga:ConjCampos leyenda="gratuita.busquedaDesignas.literal.datosDesigna">
 	<table width="100%" border="0" >
+		<%if(esComisionMultiple){ %>
+			<tr>				
+				<td class="labelText">
+					<siga:Idioma key="censo.busquedaClientes.literal.colegio"/>
+					
+				</td>				
+				<td colspan="7">
+					<siga:Select id="idInstitucionComision" queryParamId="idInstitucion" params="<%=paramsInstitucionComision%>"  queryId="getInstitucionesComision" selectedIds="<%=idInstitucionSelected %>" childrenIds="idTurno,tipoDesigna,juzgado,juzgadoActu,calidad,modulo"/>
+				</td>
+			</tr>			
+		<%}%>
+	
 	<tr>
 		<td class="labelText">
 			<siga:Idioma key="gratuita.busquedaSOJ.literal.anyo"/> / <siga:Idioma key="gratuita.busquedaSOJ.literal.codigo"/>
@@ -228,13 +235,13 @@ String[] getdatos = { usr.getLocation() };
 			<siga:Idioma key="gratuita.busquedaSOJ.literal.turno"/>
 		</td>
 		<td colspan="3">
-			<siga:Select id="idTurno" queryId="getTurnosDesignacion" width="380"/>
+			<siga:Select id="idTurno" queryId="getTurnosDesignacion" selectedIds="<%=idTurnoSelected %>" width="380"/>
 		</td>	
 		<td class="labelText">
 			<siga:Idioma key="gratuita.busquedaDesignas.literal.tipoDesigna"/>
 		</td>
 		<td colspan="3">	
-			<siga:Select queryId="getTiposDesignaDeColegio" id="tipoDesigna" width="250"/>
+			<siga:Select queryId="getTiposDesignaDeColegio" id="tipoDesigna" selectedIds="<%=idtipoDesignaSelected%>" width="250"/>
 		</td>	
 		
 	</tr>

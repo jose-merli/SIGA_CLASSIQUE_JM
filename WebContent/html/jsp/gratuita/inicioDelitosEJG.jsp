@@ -16,6 +16,7 @@
 <%@ taglib uri = "struts-bean.tld"  	prefix="bean"%>
 <%@ taglib uri = "struts-html.tld"   	prefix="html"%>
 <%@ taglib uri = "struts-logic.tld"   	prefix="logic"%>
+<%@ taglib uri="c.tld" prefix="c"%>
 
 <!-- IMPORTS -->
 <%@ page import="com.atos.utils.UsrBean"%>
@@ -41,7 +42,7 @@
 		pintarAsterisco="&nbsp;(*)";
 		
 	}*/
-	String idInstitucion = usr.getLocation();
+	
 	
 	String modopestanha = request.getSession().getAttribute("accion")==null?"":(String)request.getSession().getAttribute("accion");
 	//aalg: INC_10624
@@ -64,14 +65,13 @@
    	String idPretension    = "", pretension="", idPreceptivo="", idSituacion="", numeroDesignaProc="";
    	
    	String idRenuncia="", nig = "";
-   	String idInstintucion="";
    	String calidadidinstitucion="";
 	Hashtable hash = (Hashtable)ses.getAttribute("DATABACKUP");
 	
 	String anio = hash.get("ANIO").toString();
 	String numero = hash.get("NUMERO").toString();
 	String idTipoEJG = hash.get("IDTIPOEJG").toString();
-	
+	String idInstitucion = hash.get("IDINSTITUCION").toString();
 	//Hashtable hash = (Hashtable) request.getSession().getAttribute("DATABACKUP");
 
 	try {
@@ -82,9 +82,6 @@
 		if (hash.containsKey("IDSITUACION")) idSituacion			  				=  hash.get("IDSITUACION").toString();
 		if (hash.containsKey("IDRENUNCIA")) idRenuncia			  				=  hash.get("IDRENUNCIA").toString(); 	
 		
-		if (hash.containsKey("IDINSTITUCION")) idInstintucion			  				=  hash.get("IDINSTITUCION").toString(); 	
-
-
 		if (hash.containsKey("IDTURNO")) idTurno					  			=  hash.get("IDTURNO").toString(); 		
 //		if (hash.containsKey("CALIDAD")) calidad					  			=  hash.get("CALIDAD").toString();
 		if (hash.containsKey("IDTIPOENCALIDAD")) idcalidad					  			=  hash.get("IDTIPOENCALIDAD").toString();
@@ -126,16 +123,16 @@
 	}
   catch (Exception e) {};
 
-	String[] parametroJuzgado = {usr.getLocation(), idTurno};
-	String[] datosCom={usr.getLocation(), "-1"};	
-	String[] datos={usr.getLocation(),idTurno};
-	String[] datosJuz={usr.getLocation(),idTurno,"-1"};
+	String[] parametroJuzgado = {idInstitucion, idTurno};
+	String[] datosCom={idInstitucion, "-1"};	
+	String[] datos={idInstitucion,idTurno};
+	String[] datosJuz={idInstitucion,idTurno,"-1"};
 
 	if (idPretension!=null && idInstitucion!=null)
 		pretensionesSel.add(0,idPretension+","+idInstitucion);	
 	
 	if (idcalidad!=null)
-		calidadSel.add(0,idcalidad+","+idInstintucion);	
+		calidadSel.add(0,idcalidad+","+idInstitucion);	
 
 	if (juzgadoAsi!=null && juzgadoInstitucionAsi!=null){
 		juzgadoSel.add(0,juzgadoAsi+","+juzgadoInstitucionAsi);	
@@ -161,10 +158,10 @@
 
 	String estilo = "box", readOnly="false", estiloCombo="boxCombo";
 		
-	String[] datos2={usr.getLocation(),usr.getLanguage()};	
+	String[] datos2={idInstitucion,usr.getLanguage()};	
 	String maximaLongitud = "20";
 		
-	String[] paramPretension = {usr.getLocation(), "-1"};
+	String[] paramPretension = {idInstitucion, "-1"};
 	
 	if( idPretension != null && (!idPretension.equals("")))
 		paramPretension[1]= idPretension;
@@ -385,13 +382,14 @@
 		<html:hidden name="pestanaDelitoEJGForm" property="anio" />
 		<html:hidden name="pestanaDelitoEJGForm" property="numero" />
 		<html:hidden name="pestanaDelitoEJGForm" property="idTipoEJG" />
+		<html:hidden name="pestanaDelitoEJGForm" property="idInstitucion" />
 	</html:form>
 	
 	<html:form action = "/JGR_MantenimientoEJG.do" method="POST" target="submitArea"  style="display:none">
 		<input type="hidden" name="modo"        value="buscarJuzgado"> 
 		<html:hidden property = "idTurnoEJG" value = "<%=idTurno%>"/>
 		<html:hidden property = "idTipoEJG" value = "<%=idTipoEJG%>"/>		
-		<html:hidden property = "idInstitucion" value = "<%=usr.getLocation()%>"/>
+		<html:hidden property = "idInstitucion" value = "<%=idInstitucion%>"/>
 		<html:hidden property = "numero" value = "<%=numero%>"/>
 		<html:hidden property = "anio" value = "<%=anio%>"/>		
 		<html:hidden property = "idProcurador" value="<%=idProcurador%>"/>
@@ -427,6 +425,7 @@
 		<html:hidden name="ContrariosEjgForm" property="anio" value = "<%=anio%>" />
 		<html:hidden name="ContrariosEjgForm" property="numero" value = "<%=numero%>" />
 		<html:hidden name="ContrariosEjgForm" property="idTipoEJG" value = "<%=idTipoEJG%>"/>
+		<html:hidden name="ContrariosEjgForm" property="idInstitucion" value = "<%=idInstitucion%>"/>
 	</html:form>
 	
 	<html:form action="/JGR_MantenimientoJuzgados.do" method="POST" target="submitArea">
@@ -446,7 +445,7 @@
 		String t_nombre = "", t_apellido1 = "", t_apellido2 = "", t_anio = "", t_numero = "", t_tipoEJG="";;
 		ScsEJGAdm adm = new ScsEJGAdm (usr);
 						
-		Hashtable hTitulo = adm.getTituloPantallaEJG(usr.getLocation(), anio, numero,idTipoEJG);
+		Hashtable hTitulo = adm.getTituloPantallaEJG(idInstitucion, anio, numero,idTipoEJG);
 		if (hTitulo != null) {
 			t_nombre    = (String)hTitulo.get(ScsPersonaJGBean.C_NOMBRE);
 			t_apellido1 = (String)hTitulo.get(ScsPersonaJGBean.C_APELLIDO1);
@@ -457,7 +456,7 @@
 		}		
 %>
 		<td id="titulo" class="titulitosDatos">
-			<%=UtilidadesString.mostrarDatoJSP(t_anio)%>/<%=UtilidadesString.mostrarDatoJSP(t_numero)%>
+			<c:out value="${PREFIJOEXPEDIENTECAJG}" />&nbsp;<%=UtilidadesString.mostrarDatoJSP(t_anio)%>/<%=UtilidadesString.mostrarDatoJSP(t_numero)%>
 			- <%=UtilidadesString.mostrarDatoJSP(t_nombre)%> <%=UtilidadesString.mostrarDatoJSP(t_apellido1)%> <%=UtilidadesString.mostrarDatoJSP(t_apellido2)%>
 		</td>
 	</tr>
@@ -943,17 +942,7 @@
 	</tr>
 </table>
 
-<%
-	if(modopestanha.equals("editar")) {
-%>
-		<siga:ConjBotonesAccion botones="G"  modo="editar" clase="botonesSeguido"/> 
-<%
-	} else {
-%>
-		<siga:ConjBotonesAccion botones=""  modo="editar" clase="botonesSeguido"/> 
-<%
-	}
-%>
+
 
 <div id="divResultados">
 	<div style="position:relative;height:50%;width:100%;">
@@ -978,8 +967,17 @@
 			style="position:relative;height:100%;width:100%;"></iframe>	
 	</div>
 </div>
-
-<siga:ConjBotonesAccion botones="V"  clase="botonesDetalle" modo="<%=modopestanha%>"/>	
+<%
+	if(modopestanha.equals("editar")) {
+%>
+		<siga:ConjBotonesAccion botones="G,V"  clase="botonesDetalle" modo="<%=modopestanha%>"/> 
+<%
+	} else {
+%>
+		<siga:ConjBotonesAccion botones="V"   clase="botonesDetalle" modo="<%=modopestanha%>"/> 
+<%
+	}
+%>
 		
 <!-- INICIO: SCRIPTS BOTONES ACCION -->
 <script language="JavaScript">
@@ -1012,6 +1010,7 @@
 		
 	// Asociada al boton Volver 
 	function accionVolver() {
+		document.forms[0].idInstitucion.value="<%=idInstitucion%>";
 		document.forms[0].action="./JGR_EJG.do";	
 		document.forms[0].modo.value="buscar";
 		document.forms[0].target="mainWorkArea"; 

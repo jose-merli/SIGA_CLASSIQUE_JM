@@ -11,11 +11,13 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Vector;
 
+import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesHash;
+import com.siga.Utilidades.UtilidadesString;
 import com.siga.Utilidades.paginadores.Paginador;
 import com.siga.general.SIGAException;
 import com.siga.ws.PCAJGConstantes;
@@ -228,9 +230,7 @@ public class ScsActaComisionAdm extends MasterBeanAdministrador {
 	 * @throws Exception 
 	 *
 	 */
-	public Paginador getBusquedaActas(String idInstitucion, HashMap filtros) throws Exception{
-		
-		String anio, numero, fecharesolucion, fechareunion, idpresidente, idsecretario;
+	public Paginador getBusquedaActas(HashMap filtros) throws Exception{
 		StringBuffer consulta = new StringBuffer();
 		consulta.append("select ");
 		consulta.append(" act."+ScsActaComisionBean.C_IDACTA);
@@ -295,6 +295,7 @@ public class ScsActaComisionAdm extends MasterBeanAdministrador {
 		consulta.append(", act."+ScsActaComisionBean.C_MIEMBROSCOMISION);
 		consulta.append(", act."+ScsActaComisionBean.C_PENDIENTES);
 		consulta.append(", act."+ScsActaComisionBean.C_FECHAINTERCAMBIO);
+		
 		consulta.append(" from " + ScsActaComisionBean.T_NOMBRETABLA +" act");
 		consulta.append(" where act." + ScsActaComisionBean.C_IDINSTITUCION + " = " + idInstitucion);
 		consulta.append(" and act." + ScsActaComisionBean.C_ANIOACTA+ " = " + anioActa);
@@ -340,14 +341,14 @@ public class ScsActaComisionAdm extends MasterBeanAdministrador {
 		consulta.append(", ejg."+ScsEJGBean.C_IDTIPOEJG + " as IDTIPOEJG");
 		consulta.append(", ejg.IDTIPORATIFICACIONEJG,ejg.IDFUNDAMENTOJURIDICO ");
 		consulta.append(", f_siga_getrecurso(r.descripcion,"+usrbean.getLanguage()+") resolucion ");
-		
+		consulta.append(", (SELECT INT.ABREVIATURA FROM CEN_INSTITUCION INT WHERE INT.IDINSTITUCION = EJG.IDINSTITUCION) INST_ABREV "); 
 		consulta.append(" from " + ScsEJGBean.T_NOMBRETABLA +" ejg");
 		consulta.append(" , " + ScsTurnoBean.T_NOMBRETABLA +" tur");
 		consulta.append(" , " + ScsPersonaJGBean.T_NOMBRETABLA +" sol");
 		consulta.append(" , " + ScsGuardiasTurnoBean.T_NOMBRETABLA +" gua");
 		consulta.append(", scs_tiporesolucion r");
 
-		consulta.append(" where ejg." + ScsEJGBean.C_IDINSTITUCION + " = " + idInstitucion);
+		consulta.append(" where ejg." + ScsEJGBean.C_IDINSTITUCIONACTA + " = " + idInstitucion);
 		consulta.append(" and ejg." + ScsEJGBean.C_ANIOACTA+ " = " + anioActa);
 		consulta.append(" and ejg." + ScsEJGBean.C_IDACTA+ " = " + idActa);
 		consulta.append(" and tur." + ScsTurnoBean.C_IDINSTITUCION+ "(+) = ejg." + ScsEJGBean.C_IDINSTITUCION);
@@ -485,7 +486,7 @@ public class ScsActaComisionAdm extends MasterBeanAdministrador {
 				" AND SOL." + ScsPersonaJGBean.C_IDINSTITUCION + "(+) = EJG." + ScsEJGBean.C_IDINSTITUCION +
 				" AND SOL." + ScsPersonaJGBean.C_IDPERSONA + "(+) = EJG." + ScsEJGBean.C_IDPERSONAJG +
 				" AND PON." + ScsPonenteBean.C_IDPONENTE + "(+) = EJG." + ScsEJGBean.C_IDPONENTE +
-				" AND PON." + ScsPonenteBean.C_IDINSTITUCION + "(+) = EJG." + ScsEJGBean.C_IDINSTITUCION +
+				" AND PON." + ScsPonenteBean.C_IDINSTITUCION + "(+) = EJG." + ScsEJGBean.C_IDINSTITUCIONPONENTE +
 				" AND EJG." + ScsEJGBean.C_IDTIPORATIFICACIONEJG + " <> 0" + 
 				" AND FUN." + ScsTipoFundamentosBean.C_IDFUNDAMENTO + "(+) = EJG." + ScsEJGBean.C_IDFUNDAMENTOJURIDICO +
 				" AND FUN.IDINSTITUCION(+) = EJG." + ScsEJGBean.C_IDINSTITUCION + 
@@ -499,14 +500,35 @@ public class ScsActaComisionAdm extends MasterBeanAdministrador {
 				" EJG." + ScsEJGBean.C_NUMEJG + " ASC " + 
 			") DATOS";
 		
-       try{    	   	    	   			
+       try{    	   	   
+    	   
 			 rc = this.find(sql);
+			 
  			if (rc!=null){
+ 				GenParametrosAdm paramAdm = new GenParametrosAdm (usrbean);
+ 				CenInstitucionAdm cenInstitucionAdm = new CenInstitucionAdm (usrbean);
+ 				Hashtable<String, String[]> etiquetasRepetidas =  new Hashtable<String, String[]>(); 
+ 				String [] etiquetas = null;
 				for (int i = 0; i < rc.size(); i++)	{
 					Row fila = (Row) rc.get(i);
 					Hashtable registro = (Hashtable)fila.getRow(); 
-					if (registro != null) 
+					
+					if (registro != null){
+						String idInstitucionEJG = (String) registro.get("IDINSTITUCION");
+						if(!etiquetasRepetidas.containsKey(idInstitucionEJG)){
+							String prefijoExpedienteCajg =  paramAdm.getValor (idInstitucionEJG, ClsConstants.MODULO_SJCS, ClsConstants.GEN_PARAM_PREFIJO_EXPEDIENTES_CAJG, " ");
+							Vector institucionVector =  cenInstitucionAdm.selectByPK(registro);
+							String abreviaturaColegio =  ((CenInstitucionBean)institucionVector.get(0)).getAbreviatura();
+							etiquetas = new String[]{prefijoExpedienteCajg,UtilidadesString.getPrimeraMayuscula(abreviaturaColegio)};
+							etiquetasRepetidas.put(idInstitucionEJG, etiquetas);
+						}else{
+							etiquetas = etiquetasRepetidas.get(idInstitucionEJG);
+							
+						}
+						registro.put("PREFIJO_EXPEDIENTES_CAJG", etiquetas[0]);
+						registro.put("ABREVIATURA_COLEGIO", etiquetas[1]);
 						datos.add(registro);
+					}
 				}
 			}		       
 		} catch (Exception e) {
@@ -563,8 +585,8 @@ public class ScsActaComisionAdm extends MasterBeanAdministrador {
 				" AND SOL." + ScsPersonaJGBean.C_IDINSTITUCION + "(+) = EJG." + ScsEJGBean.C_IDINSTITUCION +
 				" AND SOL." + ScsPersonaJGBean.C_IDPERSONA + "(+) = EJG." + ScsEJGBean.C_IDPERSONAJG +
 				" AND PON." + ScsPonenteBean.C_IDPONENTE + "(+) = EJG." + ScsEJGBean.C_IDPONENTE +
-				" AND PON." + ScsPonenteBean.C_IDINSTITUCION + "(+) = EJG." + ScsEJGBean.C_IDINSTITUCION +
-				" AND EJG." + ScsEJGBean.C_IDTIPORATIFICACIONEJG + " = 0 " + 
+				" AND PON." + ScsPonenteBean.C_IDINSTITUCION + "(+) = EJG." + ScsEJGBean.C_IDINSTITUCIONPONENTE +
+				" AND EJG." + ScsEJGBean.C_IDTIPORATIFICACIONEJG + " is null" + 
 				" AND FUN." + ScsTipoFundamentosBean.C_IDFUNDAMENTO + "(+) = EJG." + ScsEJGBean.C_IDFUNDAMENTOJURIDICO +
 				" AND FUN.IDINSTITUCION(+) = EJG." + ScsEJGBean.C_IDINSTITUCION + 
 				" AND RES.idtiporesolucion(+) = EJG." + ScsEJGBean.C_IDTIPORATIFICACIONEJG +
@@ -579,14 +601,33 @@ public class ScsActaComisionAdm extends MasterBeanAdministrador {
 		
        try{    	   	    	   			
 			 rc = this.find(sql);
- 			if (rc!=null){
-				for (int i = 0; i < rc.size(); i++)	{
-					Row fila = (Row) rc.get(i);
-					Hashtable registro = (Hashtable)fila.getRow(); 
-					if (registro != null) 
-						datos.add(registro);
-				}
-			}		       
+			 if (rc!=null){
+	 				GenParametrosAdm paramAdm = new GenParametrosAdm (usrbean);
+	 				CenInstitucionAdm cenInstitucionAdm = new CenInstitucionAdm (usrbean);
+	 				Hashtable<String, String[]> etiquetasRepetidas =  new Hashtable<String, String[]>(); 
+	 				String [] etiquetas = null;
+					for (int i = 0; i < rc.size(); i++)	{
+						Row fila = (Row) rc.get(i);
+						Hashtable registro = (Hashtable)fila.getRow(); 
+						
+						if (registro != null){
+							String idInstitucionEJG = (String) registro.get("IDINSTITUCION");
+							if(!etiquetasRepetidas.containsKey(idInstitucionEJG)){
+								String prefijoExpedienteCajg =  paramAdm.getValor (idInstitucionEJG, ClsConstants.MODULO_SJCS, ClsConstants.GEN_PARAM_PREFIJO_EXPEDIENTES_CAJG, " ");
+								Vector institucionVector =  cenInstitucionAdm.selectByPK(registro);
+								String abreviaturaColegio =  ((CenInstitucionBean)institucionVector.get(0)).getAbreviatura();
+								etiquetas = new String[]{prefijoExpedienteCajg,UtilidadesString.getPrimeraMayuscula(abreviaturaColegio)};
+								etiquetasRepetidas.put(idInstitucionEJG, etiquetas);
+							}else{
+								etiquetas = etiquetasRepetidas.get(idInstitucionEJG);
+								
+							}
+							registro.put("PREFIJO_EXPEDIENTES_CAJG", etiquetas[0]);
+							registro.put("ABREVIATURA_COLEGIO", etiquetas[1]);
+							datos.add(registro);
+						}
+					}
+				}		       
 		} catch (Exception e) {
 			throw new ClsExceptions (e, "Error ScsActaComisionAdm.getEJGsPendientes.");	
 		} 
@@ -609,26 +650,46 @@ public class ScsActaComisionAdm extends MasterBeanAdministrador {
 		
 		String sql = "SELECT F_SIGA_GETRECURSO(PON." + ScsPonenteBean.C_NOMBRE + ", 1) as PONENTE, " +
 				" REPLACE(WM_CONCAT(EJG." + ScsEJGBean.C_ANIO + " || '/' || EJG." + ScsEJGBean.C_NUMEJG + "), ',', ', ') as LISTAEJG " +
+				" ,EJG." + ScsEJGBean.C_IDINSTITUCION +" " +
 			" FROM " + ScsEJGBean.T_NOMBRETABLA + " EJG, " + 
 				ScsPonenteBean.T_NOMBRETABLA +" PON " +
 			" WHERE PON." + ScsPonenteBean.C_IDPONENTE + "(+) = EJG." + ScsEJGBean.C_IDPONENTE + 
-				" AND PON." + ScsPonenteBean.C_IDINSTITUCION + "(+) = EJG." + ScsEJGBean.C_IDINSTITUCION + 
-				" AND EJG." + ScsEJGBean.C_IDTIPORATIFICACIONEJG + " = 0 " + 
+				" AND PON." + ScsPonenteBean.C_IDINSTITUCION + "(+) = EJG." + ScsEJGBean.C_IDINSTITUCIONPONENTE + 
+				" AND EJG." + ScsEJGBean.C_IDTIPORATIFICACIONEJG + " is null " + 
 				" AND EJG." + ScsEJGBean.C_IDINSTITUCIONACTA + " = " + idInstitucion +
 				" AND EJG." + ScsEJGBean.C_ANIOACTA + " = " + anioActa +
 				" AND EJG." + ScsEJGBean.C_IDACTA + " = " + idActa +
-			" GROUP BY PON." + ScsPonenteBean.C_NOMBRE;
+			" GROUP BY PON." + ScsPonenteBean.C_NOMBRE+" ,EJG." + ScsEJGBean.C_IDINSTITUCION;
 		
 		try{    	   	    	   			
 			rc = this.find(sql);
- 			if (rc!=null){
+			if (rc!=null){
+ 				GenParametrosAdm paramAdm = new GenParametrosAdm (usrbean);
+ 				CenInstitucionAdm cenInstitucionAdm = new CenInstitucionAdm (usrbean);
+ 				Hashtable<String, String[]> etiquetasRepetidas =  new Hashtable<String, String[]>(); 
+ 				String [] etiquetas = null;
 				for (int i = 0; i < rc.size(); i++)	{
 					Row fila = (Row) rc.get(i);
 					Hashtable registro = (Hashtable)fila.getRow(); 
-					if (registro != null) 
+					
+					if (registro != null){
+						String idInstitucionEJG = (String) registro.get("IDINSTITUCION");
+						if(!etiquetasRepetidas.containsKey(idInstitucionEJG)){
+							String prefijoExpedienteCajg =  paramAdm.getValor (idInstitucionEJG, ClsConstants.MODULO_SJCS, ClsConstants.GEN_PARAM_PREFIJO_EXPEDIENTES_CAJG, " ");
+							Vector institucionVector =  cenInstitucionAdm.selectByPK(registro);
+							String abreviaturaColegio =  ((CenInstitucionBean)institucionVector.get(0)).getAbreviatura();
+							etiquetas = new String[]{prefijoExpedienteCajg,UtilidadesString.getPrimeraMayuscula(abreviaturaColegio)};
+							etiquetasRepetidas.put(idInstitucionEJG, etiquetas);
+						}else{
+							etiquetas = etiquetasRepetidas.get(idInstitucionEJG);
+							
+						}
+						registro.put("PREFIJO_EXPEDIENTES_CAJG", etiquetas[0]);
+						registro.put("ABREVIATURA_COLEGIO", etiquetas[1]);
 						datos.add(registro);
+					}
 				}
-			}		       
+			}		           
 		} catch (Exception e) {
 			throw new ClsExceptions (e, "Error ScsActaComisionAdm.getEJGsPendientesPonentes.");	
 		} 

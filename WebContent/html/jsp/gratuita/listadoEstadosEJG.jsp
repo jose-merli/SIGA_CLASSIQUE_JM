@@ -27,6 +27,7 @@
 <%@taglib uri = "struts-html.tld" 	prefix="html"%>
 <%@taglib uri = "libreria_SIGA.tld" prefix="siga"%>
 <%@taglib uri = "struts-logic.tld" 	prefix="logic"%>
+<%@ taglib uri="c.tld" prefix="c"%>
 
 <!-- JSP -->
 <% 
@@ -37,7 +38,7 @@
 	Vector obj = (Vector) request.getAttribute("resultado");
 	String accion = (String)request.getSession().getAttribute("accion");	
 		
-	String botonesPie="", botones="",anio= "", numero="", idTipoEJG = "" ;
+	String botonesPie="", botones="",anio= "", numero="", idTipoEJG = "",idInstitucion = "";
 	
 	if (accion.equalsIgnoreCase("ver")){
 		botonesPie = "V";
@@ -52,11 +53,13 @@
 		anio = request.getParameter("ANIO").toString();
 		numero = request.getParameter("NUMERO").toString();
 		idTipoEJG = request.getParameter("IDTIPOEJG").toString();
+		idInstitucion = request.getParameter("IDINSTITUCION").toString();
 	} catch(Exception e){
 		Hashtable miHash = (Hashtable)request.getAttribute("DATOSEJG");
 		anio = miHash.get("ANIO").toString();
 		numero = miHash.get("NUMERO").toString();
 		idTipoEJG = miHash.get("IDTIPOEJG").toString();
+		idInstitucion =  miHash.get("IDINSTITUCION").toString();
 	}
 %>
 
@@ -82,6 +85,7 @@
 		<input type="hidden" name="idTipoEJG" value="<%=idTipoEJG%>">
 		<input type="hidden" name="anio" value="<%=anio%>">
 		<input type="hidden" name="numero" value="<%=numero%>">
+		<input type="hidden" name="idInstitucion" value="<%=idInstitucion%>">
 	</html:form>
 		
 	<table class="tablaTitulo" cellspacing="0" heigth="38">
@@ -92,7 +96,7 @@
 				String t_nombre = "", t_apellido1 = "", t_apellido2 = "", t_anio = "", t_numero = "", t_tipoEJG="";;
 				ScsEJGAdm adm = new ScsEJGAdm (usr);
 					
-				Hashtable hTitulo = adm.getTituloPantallaEJG(usr.getLocation(), anio, numero,idTipoEJG);
+				Hashtable hTitulo = adm.getTituloPantallaEJG(idInstitucion, anio, numero,idTipoEJG);
 
 				if (hTitulo != null) {
 					t_nombre    = (String)hTitulo.get(ScsPersonaJGBean.C_NOMBRE);
@@ -108,7 +112,7 @@
 				}
 					
 %>
-				<%=UtilidadesString.mostrarDatoJSP(t_anio)%>/<%=UtilidadesString.mostrarDatoJSP(t_numero)%>
+				<c:out value="${PREFIJOEXPEDIENTECAJG}" />&nbsp;<%=UtilidadesString.mostrarDatoJSP(t_anio)%>/<%=UtilidadesString.mostrarDatoJSP(t_numero)%>
 				- <%=UtilidadesString.mostrarDatoJSP(t_nombre)%> <%=UtilidadesString.mostrarDatoJSP(t_apellido1)%> <%=UtilidadesString.mostrarDatoJSP(t_apellido2)%>
 			</td>
 		</tr>
@@ -198,6 +202,7 @@
 	<script type="text/javascript">			
 		//Asociada al boton Cerrar
 		function accionVolver() {
+			document.forms[0].idInstitucion.value = "<%=usr.getLocation()%>";
 			document.forms[0].action="./JGR_EJG.do";	
 			document.forms[0].modo.value="buscar";
 			document.forms[0].target="mainWorkArea"; 

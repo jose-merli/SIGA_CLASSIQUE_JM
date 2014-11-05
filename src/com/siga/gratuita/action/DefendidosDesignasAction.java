@@ -83,27 +83,32 @@ public class DefendidosDesignasAction extends MasterAction {
 		Hashtable designaActual = new Hashtable();
 		UtilidadesHash.set(designaActual,ScsDesignaBean.C_ANIO, 				(String)request.getParameter("ANIO"));
 		UtilidadesHash.set(designaActual,ScsDesignaBean.C_NUMERO, 				(String)request.getParameter("NUMERO"));
-		UtilidadesHash.set(designaActual,ScsDesignaBean.C_IDINSTITUCION,		(String)usr.getLocation());
+		UtilidadesHash.set(designaActual,ScsDesignaBean.C_IDINSTITUCION,		(String)request.getParameter("IDINSTITUCION"));
 		UtilidadesHash.set(designaActual,ScsDesignaBean.C_IDTURNO,				(String)request.getParameter("IDTURNO"));			
 		
-		String anio="",numero="", idturno="";
-		boolean hayDatos= true;
+		String anio="",numero="", idturno="",idInstitucion="";
 		if((String)request.getParameter("ANIO")==null){
-			hayDatos = false;
 			designaActual = (Hashtable)ses.getAttribute("designaActual");
 			anio = (String)designaActual.get("ANIO");
 			numero = (String)designaActual.get("NUMERO");
 			idturno = (String)designaActual.get("IDTURNO");
+			idInstitucion = (String)designaActual.get("IDINSTITUCION");
+		}else{
+			anio = (String)request.getParameter("ANIO");
+			numero = (String)request.getParameter("NUMERO");
+			idturno =(String)request.getParameter("IDTURNO");
+			idInstitucion = (String)request.getParameter("IDINSTITUCION");
+			
 		}
 		
 		ScsDefendidosDesignaAdm defendidosAdm = new ScsDefendidosDesignaAdm(this.getUserBean(request));
 		String consultaDefendidos = " select def.idpersona idpersona, per.nif nif, (per.nombre||' '|| per.apellido1 ||' '|| per.apellido2) nombre, "+
 									"  (perRepresentante.nombre || ' ' || perRepresentante.apellido1 || ' ' || perRepresentante.apellido2) representante " +
 									" from "+ScsDefendidosDesignaBean.T_NOMBRETABLA+" def, scs_personajg per, scs_personajg perRepresentante "+
-									" where def." + ScsDefendidosDesignaBean.C_ANIO +"="+ ((hayDatos)?(String)request.getParameter("ANIO"):anio)+
-									" and def." + ScsDefendidosDesignaBean.C_NUMERO + " = " + ((hayDatos)?(String)request.getParameter("NUMERO"):numero)+
-									" and def." + ScsDefendidosDesignaBean.C_IDINSTITUCION + " = " + (String)usr.getLocation()+
-									" and def." + ScsDefendidosDesignaBean.C_IDTURNO + " = " + ((hayDatos)?(String)request.getParameter("IDTURNO"):idturno)+
+									" where def." + ScsDefendidosDesignaBean.C_ANIO +"="+anio+
+									" and def." + ScsDefendidosDesignaBean.C_NUMERO + " = " +numero+
+									" and def." + ScsDefendidosDesignaBean.C_IDINSTITUCION + " = " + idInstitucion+
+									" and def." + ScsDefendidosDesignaBean.C_IDTURNO + " = " + idturno+
 									" and def.idinstitucion = per.idinstitucion and def.idpersona = per.idpersona and "+
 									" per.idrepresentantejg = perRepresentante.idpersona(+) and "+  
 									" per.idinstitucion = perRepresentante.Idinstitucion(+)  ";		

@@ -30,17 +30,19 @@
 <!-- JSP -->
 <% 	String app=request.getContextPath();
 	HttpSession ses=request.getSession();
-	UsrBean usr=(UsrBean)ses.getAttribute("USRBEAN");	
-	
+	UsrBean usr=(UsrBean)ses.getAttribute("USRBEAN");
+	boolean esComision = usr.isComision();
+	String idInstitucionLocation = usr.getLocation();
+	String idInstitucionComision = usr.getIdInstitucionComision().toString();
 	Hashtable miHash = (Hashtable)ses.getAttribute("DATABACKUP");
 	String accion = (String)ses.getAttribute("accion");
 	String modoActa = request.getAttribute("modoActa")!=null?(String)request.getAttribute("modoActa"):"";
 	//aalg: INC_10624
 	if(usr.getAccessType().equals(SIGAConstants.ACCESS_READ)) accion="ver";
-	String dato[] = {(String)usr.getLocation(),(String)usr.getLocation()};	
+		
 	String datoTipoResolucion[] = new String[3];
 	String datoFundamentosResolucion[] = new String[3];		
-	String anio= "", numero="", idTipoEJG = "", observaciones = "",refA="",docResolucion="";
+	String anio= "", numero="", idTipoEJG = "", observaciones = "",refA="",docResolucion="",idInstitucion="";
 	String fechaRatificacion = "", fechaResolucionCAJG= "", fechaNotificacion= "", fechaPresentacionPonente="";
 	String numeroCAJG="", anioCAJG="";
 	boolean requiereTurnado= false,requiereNotificarProc=false;
@@ -57,6 +59,7 @@
 		anio = miHash.get("ANIO").toString();
 		numero = miHash.get("NUMERO").toString();
 		idTipoEJG = miHash.get("IDTIPOEJG").toString();
+		idInstitucion = miHash.get("IDINSTITUCION").toString();
 		if (miHash.containsKey("RATIFICACIONDICTAMEN")) observaciones = miHash.get("RATIFICACIONDICTAMEN").toString();
 		if (miHash.containsKey("REFAUTO")) refA = miHash.get("REFAUTO").toString();
 
@@ -77,7 +80,7 @@
 		 }
 		} 
 		
-		datoTipoResolucion[0]=(String) usr.getLocation();
+		datoTipoResolucion[0]=idInstitucion;
 		if (miHash.containsKey("IDFUNDAMENTOJURIDICO")) {
 			String idFundamentoJuridico=miHash.get("IDFUNDAMENTOJURIDICO").toString();
 			vFundamentoJuridico.add(idFundamentoJuridico.equals("")? "-1": idFundamentoJuridico);
@@ -93,11 +96,11 @@
 		String resolucionSel = "";
 		if (miHash.containsKey("IDTIPORATIFICACIONEJG")) {
 			String idTipoRatificacionEjg = miHash.get("IDTIPORATIFICACIONEJG").toString();
-			resolucionSel = idTipoRatificacionEjg.equals("")? "-1": idTipoRatificacionEjg + "," + (String)usr.getLocation()+ ","+datoTipoResolucion[1];
+			resolucionSel = idTipoRatificacionEjg.equals("")? "-1": idTipoRatificacionEjg + "," + idInstitucion+ ","+datoTipoResolucion[1];
 			vTipoRatificacion.add(resolucionSel);
 			datoTipoResolucion[2]=idTipoRatificacionEjg;
 			datoFundamentosResolucion[0]=idTipoRatificacionEjg;
-			datoFundamentosResolucion[1]=(String) usr.getLocation();
+			datoFundamentosResolucion[1]=idInstitucion;
 			
 		}else{
 			datoTipoResolucion[2]="-1";
@@ -125,7 +128,11 @@
 			vActa.add(idActa);
 		}
 		
-	}catch(Exception e){e.printStackTrace();};
+	}catch(Exception e){
+		e.printStackTrace();
+	}
+	String datoActas[] = {idInstitucionComision,idInstitucionComision};
+	String datoPonente[] = {idInstitucionComision,idInstitucionComision};
 %>
 
 
@@ -189,7 +196,7 @@
 					<%  String t_nombre = "", t_apellido1 = "", t_apellido2 = "", t_anio = "", t_numero = "", t_tipoEJG="";;
 						ScsEJGAdm adm = new ScsEJGAdm (usr);
 							
-						Hashtable hTitulo = adm.getTituloPantallaEJG(usr.getLocation(), anio, numero,idTipoEJG);
+						Hashtable hTitulo = adm.getTituloPantallaEJG(idInstitucion, anio, numero,idTipoEJG);
 
 						if (hTitulo != null) {
 							t_nombre    = (String)hTitulo.get(ScsPersonaJGBean.C_NOMBRE);
@@ -201,7 +208,7 @@
 						}
 					
 					%>
-					<%=UtilidadesString.mostrarDatoJSP(t_anio)%>/<%=UtilidadesString.mostrarDatoJSP(t_numero)%>
+					<c:out value="${PREFIJOEXPEDIENTECAJG}" />&nbsp;<%=UtilidadesString.mostrarDatoJSP(t_anio)%>/<%=UtilidadesString.mostrarDatoJSP(t_numero)%>
 					- <%=UtilidadesString.mostrarDatoJSP(t_nombre)%> <%=UtilidadesString.mostrarDatoJSP(t_apellido1)%> <%=UtilidadesString.mostrarDatoJSP(t_apellido2)%>
 			</td>
 			
@@ -232,7 +239,7 @@
 		<table align="center" class="fixed" width="100%" border="0">	
 			<html:form action="/JGR_RatificacionEJG" method="POST" target="submitArea">
 				<html:hidden property = "modo" value = "Modificar"/>
-				<html:hidden property = "idInstitucion" value ="<%=usr.getLocation()%>"/>
+				<html:hidden property = "idInstitucion" value ="<%=idInstitucion%>"/>
 				<html:hidden property = "idTipoEJG" value ="<%=idTipoEJG%>"/>
 				<html:hidden property = "anio" value ="<%=anio%>"/>
 				<html:hidden property = "numero" value ="<%=numero%>"/>
@@ -240,6 +247,8 @@
 				<html:hidden property = "anioActa" value =""/>
 				<html:hidden property = "idActa" value =""/>
 				<html:hidden property = "idInstitucionActa" value =""/>
+				<html:hidden property = "idInstitucionComision" value ="<%=idInstitucionComision%>"/>
+				
 	
 				<!-- FILA -->
 				<tr style="align:left" width="100%" >
@@ -247,7 +256,7 @@
 						<siga:Idioma key='gratuita.operarEJG.literal.CAJG'/> <siga:Idioma key='gratuita.operarEJG.literal.anio'/> / <siga:Idioma key='gratuita.busquedaEJG.literal.codigo'/>
 					</td>
 				   	<td class="labelTextValue" width="230px">	
-				   		<%if(usr.getLocation().equalsIgnoreCase("2027")){%>G<%} %>
+				   		<c:out value="${PREFIJOEXPEDIENTECAJG}" />
 						<% if (accion.equalsIgnoreCase("ver")) {%>
 						  	<html:text name="DefinirEJGForm"  onkeypress="filterChars(this,false,true);" onkeyup="filterCharsUp(this);"  onblur="filterCharsNaN(this);" property="anioCAJG" size="4" maxlength="4" styleClass="boxConsulta"  value="<%=anioCAJG%>" readonly="true"></html:text> / 
 			                <html:text name="DefinirEJGForm" property="numeroCAJG" size="10" maxlength="20" styleClass="boxConsulta" value="<%=numeroCAJG%>" readonly="true"></html:text>
@@ -281,11 +290,13 @@
 										</td>
 										<td width="300px">
 											<%if (accion.equalsIgnoreCase("ver")){%>
-												<siga:ComboBD nombre="idActaComp"  tipo="cmbActaComision" clase="boxConsulta" ancho="200" filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=dato%>" elementoSel="<%=vActa %>" readonly="true"/>
+												<siga:ComboBD nombre="idActaComp"  tipo="cmbActaComision" clase="boxConsulta" ancho="200" filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=datoActas%>" elementoSel="<%=vActa %>" readonly="true"/>
 											<%}else{%>
-												<siga:ComboBD nombre="idActaComp"  tipo="cmbActaComision" clase="boxCombo" ancho="200" filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=dato%>" elementoSel="<%=vActa %>" accion="setFechaResolucionCAJG();"/>
+												<siga:ComboBD nombre="idActaComp"  tipo="cmbActaComision" clase="boxCombo" ancho="200" filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=datoActas%>" elementoSel="<%=vActa %>" accion="setFechaResolucionCAJG();"/>
 											<%}%>
-											<input type="button" alt="abrir"  id="botonAbrirActa" onclick="return abrirActa();" class="button" name="idButton" value='<%=UtilidadesString.getMensajeIdioma(usr,"general.boton.abrirActa")%>' />
+											<%if(esComision){%>
+												<input type="button" alt="abrir"  id="botonAbrirActa" onclick="return abrirActa();" class="button" name="idButton" value='<%=UtilidadesString.getMensajeIdioma(usr,"general.boton.abrirActa")%>' />
+											<%}%>
 											
 										</td>
 									<%} else {%>
@@ -324,9 +335,9 @@
 					</td>
 					<td colspan="3">
 						<%if (accion.equalsIgnoreCase("ver")){%>
-							<siga:ComboBD nombre="idPonente"  ancho="700" tipo="tipoPonente" clase="boxConsulta"  filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=dato%>" elementoSel="<%=vPonente%>" readOnly="true"/>
+							<siga:ComboBD nombre="idPonente"  ancho="700" tipo="tipoPonente" clase="boxConsulta"  filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=datoPonente%>" elementoSel="<%=vPonente%>" readOnly="true"/>
 						<%} else {%>
-							<siga:ComboBD nombre="idPonente"  ancho="700" tipo="tipoPonente" clase="boxCombo"  	  filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=dato%>" elementoSel="<%=vPonente%>" accion="return accionComboTipoPonente(this);" />
+							<siga:ComboBD nombre="idPonente"  ancho="700" tipo="tipoPonente" clase="boxCombo"  	  filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=datoPonente%>" elementoSel="<%=vPonente%>" accion="return accionComboTipoPonente(this);" />
 						<%}%>
 					</td>
 					
@@ -464,7 +475,7 @@
 	<siga:ConjBotonesAccion botones="V,R,G" modo="<%=accion%>"/>
 	
 	<html:form action="/INF_InformesGenericos" method="post"	target="submitArea">
-		<html:hidden property="idInstitucion" value = "<%=usr.getLocation()%>"/>
+		<html:hidden property="idInstitucion" value = "<%=idInstitucionLocation%>"/>
 		<html:hidden property="idTipoInforme" value='<%= usr.isComision() ?"CAJG":"EJG"%>'/>
 		<html:hidden property="enviar"  value="1"/>
 		<html:hidden property="descargar" value="1"/>
@@ -485,7 +496,7 @@
 		<html:hidden property="anioActa"/>
 		<html:hidden property="idActa"/>
 		<input type='hidden' name='oculto0_1' value='<%=idActa%>'>
-		<input type='hidden' name='oculto0_2' value='<%=usr.getLocation()%>'>
+		<input type='hidden' name='oculto0_2' value='<%=idInstitucionLocation%>'>
 		<input type='hidden' name='oculto0_3' value='<%=anio%>'>
 	</html:form>
 	
@@ -503,8 +514,11 @@
 		{
 			document.forms[0].reset();
 			document.forms[0].numeroCAJG.value = "";
-			document.forms[0].idPonente.value = "";
-			document.forms[0].idTipoRatificacionEJG.value = "";
+			if(document.getElementById("idPonente"))
+				document.forms[0].idPonente.value = "";
+			if(document.getElementById("idTipoRatificacionEJG"))
+				document.forms[0].idTipoRatificacionEJG.value = "";
+			document.forms[0].idInstitucion.value = "<%=idInstitucion%>";
 			document.forms[0].idFundamentoJuridico.value = "";
 			document.forms[0].fechaResolucionCAJG.value = "";
 			document.forms[0].action="./JGR_EJG.do";	
@@ -558,7 +572,7 @@
 		function generarCarta() {
 		
 			//idInstitucion  = document.MaestroDesignasForm.idInstitucion;
-			var idInstitucion  = <%=usr.getLocation()%>;
+			var idInstitucion  = <%=idInstitucion%>;
 			
 			var anio  = <%=anio%>;
 			var idTipo  = <%=idTipoEJG%>;

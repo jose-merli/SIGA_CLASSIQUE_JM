@@ -2,6 +2,7 @@ package com.siga.administracion.action;
 
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
@@ -9,8 +10,11 @@ import javax.servlet.http.HttpServletResponse;
 import javax.transaction.UserTransaction;
 
 import org.apache.struts.action.ActionMapping;
+import org.redabogacia.sigaservices.app.autogen.model.CenInstitucion;
+import org.redabogacia.sigaservices.app.services.cen.CenInstitucionService;
 
 import com.atos.utils.CLSAdminLog;
+import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ComodinBusquedas;
 import com.atos.utils.Row;
@@ -30,7 +34,24 @@ import com.siga.general.SIGAException;
 public class SIGAListadoTablasMaestrasAction extends MasterAction
 {
 	protected String abrir(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException
+	
 	{
+		
+		UsrBean userBean = ((UsrBean)request.getSession().getAttribute(("USRBEAN")));
+		boolean esComision = userBean.isComision();
+		request.setAttribute("intitucionComisionMultiple", ClsConstants.DB_FALSE);
+		if(!esComision){
+			//sin o es comision vamos aver si su comision es multiple, con lo que tendremos que ocultar ciertos tipos de informe
+			CenInstitucionService cenInstitucionService = (CenInstitucionService)getBusinessManager().getService(CenInstitucionService.class);
+			CenInstitucion cenInstitucion = new CenInstitucion();
+			cenInstitucion.setIdinstitucion(userBean.getIdInstitucionComision());
+			List<CenInstitucion> instituciones =  cenInstitucionService.getInstitucionesComision(cenInstitucion);
+			if(instituciones!=null && instituciones.size()>1 ){
+				request.setAttribute("intitucionComisionMultiple", ClsConstants.DB_TRUE);
+			}
+		}
+		
+		
 		return "abrir";
 	}
 
@@ -68,7 +89,7 @@ public class SIGAListadoTablasMaestrasAction extends MasterAction
 			String idTabla = form.getNombreTablaMaestra();
 	        
 	        GenTablasMaestrasAdm tablasMaestrasAdm = new GenTablasMaestrasAdm(this.getUserBean(request));
-	
+	        /**/
 	        Vector datosTablaMaestra=tablasMaestrasAdm.select(" WHERE " + GenTablasMaestrasBean.C_IDTABLAMAESTRA + " = '" + idTabla + "'");
 	
 	        GenTablasMaestrasBean beanTablaMaestra = (GenTablasMaestrasBean)datosTablaMaestra.elementAt(0);
@@ -108,7 +129,7 @@ public class SIGAListadoTablasMaestrasAction extends MasterAction
 	        String idTabla = form.getNombreTablaMaestra();
 	        
 	        GenTablasMaestrasAdm tablasMaestrasAdm = new GenTablasMaestrasAdm(this.getUserBean(request));
-	
+	        /*SELECT IDTABLAMAESTRA, IDCAMPOCODIGO, IDCAMPOCODIGOEXT, LONGITUDCODIGOEXT, TIPOCODIGOEXT, IDTABLATRADUCCION, IDCAMPODESCRIPCION, PATHACCION, ALIASTABLA, FLAGBORRADOLOGICO, FLAGUSALENGUAJE, LONGITUDCODIGO, LONGITUDDESCRIPCION, IDRECURSO, IDLENGUAJE, TIPOCODIGO, LOCAL, FECHAMODIFICACION, USUMODIFICACION, ACEPTABAJA, IDTABLAREL, IDCAMPOCODIGOREL, DESCRIPCIONREL, QUERYTABLAREL, NUMEROTEXTOPLANTILLAS   FROM GEN_TABLAS_MAESTRAS  WHERE IDTABLAMAESTRA = 'SCS_TIPOFUNDAMENTOS' ORDER BY ALIASTABLA  */
 	        Vector datosTablaMaestra=tablasMaestrasAdm.select(" WHERE " + GenTablasMaestrasBean.C_IDTABLAMAESTRA + " = '" + idTabla + "'");
 	
 	        GenTablasMaestrasBean beanTablaMaestra = (GenTablasMaestrasBean)datosTablaMaestra.elementAt(0);
@@ -134,9 +155,16 @@ public class SIGAListadoTablasMaestrasAction extends MasterAction
 	        
 	        RowsContainer rc = new RowsContainer();
 	        
-	        String sSQL = "SELECT " + sCampoCodigoExt + " AS CODIGOEXTERNO," + sCampoCodigo + " AS CODIGO, " +
-	        		              " F_SIGA_GETRECURSO(" + sCampoDescripcion + ", " + this.getUserBean(request).getLanguage() +") AS DESCRIPCION" +
-	                       ",BLOQUEADO AS BLOQUEADO ";
+	        boolean esComision = userBean.isComision();
+			boolean esComisionMultiple = userBean.getInstitucionesComision()!=null && userBean.getInstitucionesComision().length>1;
+	        
+	        String sSQL = "SELECT " + sCampoCodigoExt + " AS CODIGOEXTERNO," + sCampoCodigo + " AS CODIGO " ;
+	        if(esComision && esComisionMultiple && beanTablaMaestra.getIdTablaMaestra().equals("SCS_TIPOFUNDAMENTOS")){
+	        	sSQL+= " ,DESCRIPCION " ;
+	        }else{
+	        	sSQL+= " ,F_SIGA_GETRECURSO(" + sCampoDescripcion + ", " + this.getUserBean(request).getLanguage() +") AS DESCRIPCION" ;
+	        }
+	        sSQL+=",BLOQUEADO AS BLOQUEADO ";
 	        
 	        if(beanTablaMaestra.getAceptabaja()==1)
 	        	sSQL += " ,FECHABAJA ";/*
@@ -155,14 +183,57 @@ public class SIGAListadoTablasMaestrasAction extends MasterAction
 	        		sSQL += " TEXTOPLANTILLAS ";
 	        }*/
 	        
-	        sSQL += " FROM " + idTabla +  " WHERE 1 = 1 "; 
+	        
 	                      
 	        //sSQL += (sCodigoBusqueda!=null && !sCodigoBusqueda.equals("")) ? " AND " + sCampoCodigoExt + " = '" + sCodigoBusqueda + "'" : "";
-	        sSQL += (sCodigoBusqueda!=null && !sCodigoBusqueda.equals("")) ? " AND "+ComodinBusquedas.prepararSentenciaCompleta(sCodigoBusqueda.trim(),sCampoCodigoExt): "";
-	        sSQL += (sDescripcionBusqueda!=null && !sDescripcionBusqueda.equals("")) ? " AND " + ComodinBusquedas.prepararSentenciaCompleta(sDescripcionBusqueda.trim(), "F_SIGA_GETRECURSO(" + sCampoDescripcion + ", " + this.getUserBean(request).getLanguage() +")"): "";
-	        sSQL += (sLocal!=null && sLocal.equals("S")) ? " AND IDINSTITUCION = " + userBean.getLocation() : "";
 	        
-	        sSQL += " ORDER BY " + sCampoDescripcion;
+			if(esComision && esComisionMultiple && beanTablaMaestra.getIdTablaMaestra().equals("SCS_TIPOFUNDAMENTOS")){
+				sSQL += " FROM (SELECT CODIGO ,IDFUNDAMENTO ,  F_SIGA_GETRECURSO(DESCRIPCION, " + this.getUserBean(request).getLanguage() +") AS DESCRIPCION,BLOQUEADO ";
+				 if(beanTablaMaestra.getAceptabaja()==1)
+			        	sSQL += " ,FECHABAJA ";
+				sSQL += " from SCS_TIPOFUNDAMENTOS ";
+				sSQL += " where ";
+				
+				sSQL += " IDINSTITUCION IN ";
+				sSQL += " (select idinstitucion ";
+				sSQL += " from cen_institucion int ";
+				sSQL += " where int.idcomision in ";
+				sSQL += " (select intcom.idcomision ";
+				sSQL += " from cen_institucion intcom ";
+				sSQL += " where intcom.idinstitucion = idInstitucion ";
+				sSQL += " and intcom.idinstitucion =  ";
+				sSQL += userBean.getLocation();
+				sSQL += " ) and idinstitucion <>  ";
+				sSQL += userBean.getLocation();
+				sSQL += " )) GROUP BY CODIGO,IDFUNDAMENTO,DESCRIPCION,BLOQUEADO ";
+				 if(beanTablaMaestra.getAceptabaja()==1)
+			        	sSQL += " ,FECHABAJA ";
+				 sSQL += " HAVING COUNT(1) = "+userBean.getInstitucionesComision().length+" ";
+				 
+				/*sSQL += " HAVING COUNT(*) = (select COUNT(*) ";
+				sSQL += " from cen_institucion int ";
+				sSQL += " where int.idcomision in ";
+				sSQL += " (select intcom.idcomision ";
+				sSQL += " from cen_institucion intcom ";
+				sSQL += " where intcom.idinstitucion = idInstitucion ";
+				sSQL += " and intcom.idinstitucion =  ";
+				sSQL += userBean.getLocation();
+				sSQL += " ) and idinstitucion <>  ";
+				sSQL += userBean.getLocation();
+				sSQL += " ) ";*/
+				sSQL += (sCodigoBusqueda!=null && !sCodigoBusqueda.equals("")) ? " AND "+ComodinBusquedas.prepararSentenciaCompleta(sCodigoBusqueda.trim(),sCampoCodigoExt): "";
+		        sSQL += (sDescripcionBusqueda!=null && !sDescripcionBusqueda.equals("")) ? " AND " + ComodinBusquedas.prepararSentenciaCompleta(sDescripcionBusqueda.trim(), "F_SIGA_GETRECURSO(" + sCampoDescripcion + ", " + this.getUserBean(request).getLanguage() +")"): "";
+				sSQL += " ORDER BY DESCRIPCION ";
+				
+				
+			}else{
+				sSQL += " FROM " + idTabla +  " WHERE 1 = 1 ";
+		        sSQL += (sCodigoBusqueda!=null && !sCodigoBusqueda.equals("")) ? " AND "+ComodinBusquedas.prepararSentenciaCompleta(sCodigoBusqueda.trim(),sCampoCodigoExt): "";
+		        sSQL += (sDescripcionBusqueda!=null && !sDescripcionBusqueda.equals("")) ? " AND " + ComodinBusquedas.prepararSentenciaCompleta(sDescripcionBusqueda.trim(), "F_SIGA_GETRECURSO(" + sCampoDescripcion + ", " + this.getUserBean(request).getLanguage() +")"): "";
+		        sSQL += (sLocal!=null && sLocal.equals("S")) ? " AND IDINSTITUCION = " + userBean.getLocation() : "";
+		        
+		        sSQL += " ORDER BY " + sCampoDescripcion;
+			}
 	        
 	       /*** PAGINACION ***/ 
 	        paginador = new Paginador(sSQL);				
@@ -226,118 +297,43 @@ public class SIGAListadoTablasMaestrasAction extends MasterAction
 	        SIGAListadoTablasMaestrasForm form = (SIGAListadoTablasMaestrasForm)formulario;
 	        userBean = ((UsrBean)request.getSession().getAttribute(("USRBEAN")));
 	        tx = userBean.getTransaction();
-	        String strTextoPlantillas =  form.getNumeroTextoPlantillas();
-	        int tamañoTexto = 0;
 	        
-	        String [] textoPlantillasArray = null;
-	        if(strTextoPlantillas!=null &&!strTextoPlantillas.equals("")){
-	        	textoPlantillasArray = strTextoPlantillas.split("%%");
-	        	tamañoTexto = textoPlantillasArray.length;
-	        }
-	        String sNombreTabla = form.getNombreTablaMaestra();
-	        String sNombreCampoCodigo = form.getNombreCampoCodigo();
-	        String sNombreCampoCodigoExt = form.getNombreCampoCodigoExt();
-	        String sNombreCampoDescripcion = form.getNombreCampoDescripcion();
 	        
-	        String sCodigoExt = form.getCodigoRegistroExt();
-	        String sDescripcion = form.getDescripcionRegistro();
-	        String sLocal = form.getLocal();
-	        String sLongitudCodigo = form.getLongitudCodigo();
-	        String sLongitudCodigoExt = form.getLongitudCodigoExt();
-	        String sTipoCodigo = form.getTipoCodigo();
-	        String sTipoCodigoExt = form.getTipoCodigoExt();
-	    	
-	        Object[] fields  = new Object[]{};
-	        Vector   vFields = new Vector();
 	        
-	        Row row = new Row();
-
-	        String codigoNuevo = this.getNuevoID(userBean.getLocation(), sNombreCampoCodigo, sNombreTabla, sLocal, sLongitudCodigo, sTipoCodigo);
-	        
-			String idRecurso = GenRecursosCatalogosAdm.getNombreIdRecurso(sNombreTabla, sNombreCampoDescripcion, (sLocal.equalsIgnoreCase("S")?this.getIDInstitucion(request):null), codigoNuevo);
-
-	        row.setValue(sNombreCampoCodigo, codigoNuevo);
-	        row.setValue(sNombreCampoCodigoExt, sCodigoExt);
-	        row.setValue(sNombreCampoDescripcion, (idRecurso!=null)?""+idRecurso:sDescripcion);
-	        row.setValue(MasterBean.C_USUMODIFICACION, userBean.getUserName());
-	        row.setValue(MasterBean.C_FECHAMODIFICACION, "SYSDATE");	    
-	
-	        vFields.add(sNombreCampoCodigo);
-	        vFields.add(sNombreCampoCodigoExt);
-	        vFields.add(sNombreCampoDescripcion);
-	        vFields.add(MasterBean.C_USUMODIFICACION);
-	        vFields.add(MasterBean.C_FECHAMODIFICACION);
-	        
-	        if(form.getIdTablaRel()!=null && !form.getIdTablaRel().equals("") && form.getIdCampoCodigoRel()!=null && !form.getIdCampoCodigoRel().equals("") && form.getIdRelacionado()!=null && !form.getIdRelacionado().equals("")){
-	        	row.setValue(form.getIdCampoCodigoRel(), new Integer(form.getIdRelacionado().split(",")[0]));
-	    		vFields.add(form.getIdCampoCodigoRel());
-	        }
-	        
-	        if(textoPlantillasArray!=null){
-	    		 for (int i = 0; i < textoPlantillasArray.length; i++) {
-	    			 row.setValue(i==0?GenTablasMaestrasBean.C_TEXTOPLANTILLA:GenTablasMaestrasBean.C_TEXTOPLANTILLA+(i+1), textoPlantillasArray[i].trim());
-	    			 vFields.add(i==0?GenTablasMaestrasBean.C_TEXTOPLANTILLA:GenTablasMaestrasBean.C_TEXTOPLANTILLA+(i+1));
-	    			 
-	 				
-	 			}
-	    		
-	    	}
-	        
-	
-	        if (sLocal.equals("S"))
-	        {
-	            row.setValue("IDINSTITUCION", userBean.getLocation());
-	            vFields.add("IDINSTITUCION");
-	        }
-	
-	        fields = vFields.toArray();
-	        
-	        //Chequeo si existe una descripcion igual:
-	        if (this.existeDescripcion(userBean.getLocation(),sDescripcion,sNombreCampoDescripcion,sNombreCampoCodigo,sNombreTabla,sLocal,codigoNuevo,sTipoCodigo,userBean.getLanguage())){
-	        	return error("messages.inserted.descDuplicated", new ClsExceptions("messages.inserted.descDuplicated"), request);
-	        } else if (!sCodigoExt.trim().equals("") && !sNombreTabla.equals("SCS_PRETENSION") && this.existeCodigoExterno(userBean.getLocation(),sCodigoExt,sNombreCampoCodigoExt,sNombreCampoCodigo,sNombreTabla,sLocal,codigoNuevo,sTipoCodigo,sTipoCodigoExt) ) {  
-//	        	request.setAttribute("mensaje","messages.inserted.codDuplicated");
-	        	return error("messages.inserted.codDuplicated", new ClsExceptions("messages.inserted.codDuplicated"), request);
-	        } else {
-	        	//if (true) {
-	        	tx.begin();
-		        if (row.add(sNombreTabla, fields)>0)
-		        {
-		        	///////////////////////////////////////////
-		        	// Multiidioma: Insertamos los recursos en gen_recursos_catalogos
-	        		if (idRecurso != null) {
-		    			String idRecursoAlias = GenRecursosCatalogosAdm.getNombreIdRecursoAlias(sNombreTabla, sNombreCampoDescripcion, (sLocal.equalsIgnoreCase("S")?this.getIDInstitucion(request):null), codigoNuevo);
-			        	GenRecursosCatalogosAdm admRecCatalogos = new GenRecursosCatalogosAdm (this.getUserBean(request));
-			        	GenRecursosCatalogosBean recCatalogoBean = new GenRecursosCatalogosBean ();
-			        	recCatalogoBean.setCampoTabla(sNombreCampoDescripcion);
-			        	recCatalogoBean.setDescripcion(sDescripcion);
-				        if (sLocal.equalsIgnoreCase("S")) {
-				        	recCatalogoBean.setIdInstitucion(this.getIDInstitucion(request));
-				        }
-			        	recCatalogoBean.setIdRecurso(idRecurso);
-			        	recCatalogoBean.setIdRecursoAlias(idRecursoAlias);
-			        	recCatalogoBean.setNombreTabla(sNombreTabla);
-			        	if(!admRecCatalogos.insert(recCatalogoBean, userBean.getLanguageInstitucion())) 
-			        		throw new SIGAException ("messages.inserted.error");
-		        	}
-		        	///////////////////////////////////////////
-		        	
-		        	tx.commit();
-		            request.setAttribute("mensaje","messages.inserted.success");
-		            
-		            String mensaje = "El registro de la tabla [" + form.getAliasTabla() + "] con CÓDIGO EXTERNO=\"" + sCodigoExt + 
-		            				 "\" y DESCRIPCIÓN=\"" + sDescripcion + "\" ha sido insertado";	
-		            
-		            CLSAdminLog.escribirLogAdmin(request, mensaje);
-		        }
-		        else {
-		        	tx.rollback();
-		            request.setAttribute("mensaje","messages.inserted.error");
-		        }
-	        }
-
+	        boolean esComision = userBean.isComision();
+			boolean esComisionMultiple = userBean.getInstitucionesComision()!=null && userBean.getInstitucionesComision().length>1;
+			tx.begin();
+			if(esComision && esComisionMultiple && form.getNombreTablaMaestra().equals("SCS_TIPOFUNDAMENTOS")){
+				for (int i = 0; i < userBean.getInstitucionesComision().length; i++) {
+					insertarRegistroMaestro(userBean.getInstitucionesComision()[i].toString(), form, userBean);
+				}
+				
+			}else{
+				insertarRegistroMaestro(userBean.getLocation(), form, userBean);
+		        
+			}
+			tx.commit();
+			request.setAttribute("mensaje","messages.inserted.success");
+			String mensaje = "El registro de la tabla [" + form.getAliasTabla() + "] con CÓDIGO EXTERNO=\"" + form.getCodigoRegistroExt() + 
+	 				 "\" y DESCRIPCIÓN=\"" + form.getDescripcionRegistro() + "\" ha sido insertado";	
+			CLSAdminLog.escribirLogAdmin(request, mensaje);
+			
 		} 
+		catch (SIGAException e){
+			try {
+				tx.rollback();
+			} catch (Exception e1) {
+				e1.printStackTrace();
+			} 
+			return error(e.getLiteral(), new ClsExceptions(e.getLiteral()), request);
+		}
 		catch (Exception e){
+			try {
+				tx.rollback();
+			} catch (Exception e1) {
+				e1.printStackTrace();
+			} 
+			request.setAttribute("mensaje","messages.inserted.error");
 			if(e.getMessage().indexOf("ORA-01438") != -1) {
 				return error("messages.inserted.maxLongitud", new ClsExceptions("messages.inserted.maxLongitud"), request);
 			}else{
@@ -346,6 +342,102 @@ public class SIGAListadoTablasMaestrasAction extends MasterAction
 		}
         request.setAttribute("modal","1");
 	    return "exito";
+	}
+	private void insertarRegistroMaestro(String idInstitucion,SIGAListadoTablasMaestrasForm form,UsrBean userBean) throws ClsExceptions, SIGAException{
+		String strTextoPlantillas =  form.getNumeroTextoPlantillas();
+        int tamañoTexto = 0;
+        
+        String [] textoPlantillasArray = null;
+        if(strTextoPlantillas!=null &&!strTextoPlantillas.equals("")){
+        	textoPlantillasArray = strTextoPlantillas.split("%%");
+        	tamañoTexto = textoPlantillasArray.length;
+        }
+        String sNombreTabla = form.getNombreTablaMaestra();
+        String sNombreCampoCodigo = form.getNombreCampoCodigo();
+        String sNombreCampoCodigoExt = form.getNombreCampoCodigoExt();
+        String sNombreCampoDescripcion = form.getNombreCampoDescripcion();
+        
+        String sCodigoExt = form.getCodigoRegistroExt();
+        String sDescripcion = form.getDescripcionRegistro();
+        String sLocal = form.getLocal();
+        String sLongitudCodigo = form.getLongitudCodigo();
+        String sLongitudCodigoExt = form.getLongitudCodigoExt();
+        String sTipoCodigo = form.getTipoCodigo();
+        String sTipoCodigoExt = form.getTipoCodigoExt();
+    	
+        Object[] fields  = new Object[]{};
+        Vector   vFields = new Vector();
+		
+		Row row = new Row();
+		
+        String codigoNuevo = this.getNuevoID(idInstitucion, sNombreCampoCodigo, sNombreTabla, sLocal, sLongitudCodigo, sTipoCodigo);
+        
+		String idRecurso = GenRecursosCatalogosAdm.getNombreIdRecurso(sNombreTabla, sNombreCampoDescripcion, (sLocal.equalsIgnoreCase("S")?Integer.valueOf(idInstitucion):null), codigoNuevo);
+
+        row.setValue(sNombreCampoCodigo, codigoNuevo);
+        row.setValue(sNombreCampoCodigoExt, sCodigoExt);
+        row.setValue(sNombreCampoDescripcion, (idRecurso!=null)?""+idRecurso:sDescripcion);
+        row.setValue(MasterBean.C_USUMODIFICACION, userBean.getUserName());
+        row.setValue(MasterBean.C_FECHAMODIFICACION, "SYSDATE");	    
+
+        vFields.add(sNombreCampoCodigo);
+        vFields.add(sNombreCampoCodigoExt);
+        vFields.add(sNombreCampoDescripcion);
+        vFields.add(MasterBean.C_USUMODIFICACION);
+        vFields.add(MasterBean.C_FECHAMODIFICACION);
+        
+        if(form.getIdTablaRel()!=null && !form.getIdTablaRel().equals("") && form.getIdCampoCodigoRel()!=null && !form.getIdCampoCodigoRel().equals("") && form.getIdRelacionado()!=null && !form.getIdRelacionado().equals("")){
+        	row.setValue(form.getIdCampoCodigoRel(), new Integer(form.getIdRelacionado().split(",")[0]));
+    		vFields.add(form.getIdCampoCodigoRel());
+        }
+        if(textoPlantillasArray!=null){
+    		 for (int i = 0; i < textoPlantillasArray.length; i++) {
+    			 row.setValue(i==0?GenTablasMaestrasBean.C_TEXTOPLANTILLA:GenTablasMaestrasBean.C_TEXTOPLANTILLA+(i+1), textoPlantillasArray[i].trim());
+    			 vFields.add(i==0?GenTablasMaestrasBean.C_TEXTOPLANTILLA:GenTablasMaestrasBean.C_TEXTOPLANTILLA+(i+1));
+ 			}
+    	}
+
+        if (sLocal.equals("S"))
+        {
+            row.setValue("IDINSTITUCION", idInstitucion);
+            vFields.add("IDINSTITUCION");
+        }
+
+        fields = vFields.toArray();
+        
+        //Chequeo si existe una descripcion igual:
+        if (this.existeDescripcion(idInstitucion,sDescripcion,sNombreCampoDescripcion,sNombreCampoCodigo,sNombreTabla,sLocal,codigoNuevo,sTipoCodigo,userBean.getLanguage())){
+        	throw new SIGAException("messages.inserted.descDuplicated");
+        } else if (!sCodigoExt.trim().equals("") && !sNombreTabla.equals("SCS_PRETENSION") && this.existeCodigoExterno(idInstitucion,sCodigoExt,sNombreCampoCodigoExt,sNombreCampoCodigo,sNombreTabla,sLocal,codigoNuevo,sTipoCodigo,sTipoCodigoExt) ) {
+        	throw new SIGAException("messages.inserted.codDuplicated");
+        } else {
+        	//if (true) {
+        	
+	        if (row.add(sNombreTabla, fields)>0)
+	        {
+	        	///////////////////////////////////////////
+	        	// Multiidioma: Insertamos los recursos en gen_recursos_catalogos
+        		if (idRecurso != null) {
+	    			String idRecursoAlias = GenRecursosCatalogosAdm.getNombreIdRecursoAlias(sNombreTabla, sNombreCampoDescripcion, (sLocal.equalsIgnoreCase("S")?Integer.valueOf(idInstitucion):null), codigoNuevo);
+		        	GenRecursosCatalogosAdm admRecCatalogos = new GenRecursosCatalogosAdm (userBean);
+		        	GenRecursosCatalogosBean recCatalogoBean = new GenRecursosCatalogosBean ();
+		        	recCatalogoBean.setCampoTabla(sNombreCampoDescripcion);
+		        	recCatalogoBean.setDescripcion(sDescripcion);
+			        if (sLocal.equalsIgnoreCase("S")) {
+			        	recCatalogoBean.setIdInstitucion(Integer.valueOf(idInstitucion));
+			        }
+		        	recCatalogoBean.setIdRecurso(idRecurso);
+		        	recCatalogoBean.setIdRecursoAlias(idRecursoAlias);
+		        	recCatalogoBean.setNombreTabla(sNombreTabla);
+		        	if(!admRecCatalogos.insert(recCatalogoBean, userBean.getLanguageInstitucion())) 
+		        		throw new SIGAException ("messages.inserted.error");
+	        	}
+	        	///////////////////////////////////////////
+	        }
+	        
+        }
+        
+
 	}
 
 	protected String modificar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException 
@@ -356,8 +448,43 @@ public class SIGAListadoTablasMaestrasAction extends MasterAction
 		try {
 	        SIGAListadoTablasMaestrasForm form = (SIGAListadoTablasMaestrasForm)formulario;
 	        userBean = ((UsrBean)request.getSession().getAttribute(("USRBEAN")));
+	        int aceptaBaja = (Integer)request.getSession().getAttribute("aceptaBaja");
 	        tx = userBean.getTransaction();
-	        String strTextoPlantillas =  form.getNumeroTextoPlantillas();
+	        boolean esComision = userBean.isComision();
+			boolean esComisionMultiple = userBean.getInstitucionesComision()!=null && userBean.getInstitucionesComision().length>1;
+			tx.begin();
+			if(esComision && esComisionMultiple && form.getNombreTablaMaestra().equals("SCS_TIPOFUNDAMENTOS")){
+				for (int i = 0; i < userBean.getInstitucionesComision().length; i++) {
+					modificarRegistroMaestro(userBean.getInstitucionesComision()[i].toString(), form,aceptaBaja, userBean);
+				}
+				
+			}else{
+				modificarRegistroMaestro(userBean.getLocation(), form,aceptaBaja, userBean);
+		        
+			}
+			tx.commit();
+	        
+	        
+	        request.setAttribute("mensaje","messages.updated.success");
+            String mensaje = "El registro de la tabla [" + form.getAliasTabla() + "] con CÓDIGO EXTERNO=\"" + form.getCodigoRegistroExt() + "\" ha sido modificado";	
+            CLSAdminLog.escribirLogAdmin(request, mensaje);
+	        
+		}catch (SIGAException e){
+			try {
+				tx.rollback();
+			} catch (Exception e1) {
+				e1.printStackTrace();
+			} 
+			return error(e.getLiteral(), new ClsExceptions(e.getLiteral()), request);
+		} 
+		catch (Exception e){
+			throwExcp("messages.updated.error",e,tx);
+		}
+
+		return this.exitoModal("messages.updated.success", request);
+	}
+	private void modificarRegistroMaestro(String idInstitucion,SIGAListadoTablasMaestrasForm form,int aceptaBaja,UsrBean userBean) throws ClsExceptions, SIGAException{
+		 String strTextoPlantillas =  form.getNumeroTextoPlantillas();
 	        int tamañoTexto = 0;
 	        
 	        String [] textoPlantillasArray = null;
@@ -384,7 +511,7 @@ public class SIGAListadoTablasMaestrasAction extends MasterAction
 	        String sTipoCodigo = form.getTipoCodigo();
 	        String sTipoCodigoExt = form.getTipoCodigoExt();
 	        String sDarDeBaja = form.getPonerBajaLogica();
-	        int aceptaBaja = (Integer)request.getSession().getAttribute("aceptaBaja");
+	        
 	       
 	        String sFechaModificacion =MasterBean.C_FECHAMODIFICACION;
 	        String sUsuModif = MasterBean.C_USUMODIFICACION;
@@ -398,7 +525,7 @@ public class SIGAListadoTablasMaestrasAction extends MasterAction
 		    sSQL += " FROM " + sNombreTabla + " WHERE " + sNombreCampoCodigo + " = '" + sCodigo + "'";
 	
 		    if (sLocal.equals("S")) {
-		        sSQL += " AND IDINSTITUCION = " + userBean.getLocation();
+		        sSQL += " AND IDINSTITUCION = " + idInstitucion;
 		    }
 		    		    
 		    RowsContainer rc = new RowsContainer();
@@ -480,14 +607,13 @@ public class SIGAListadoTablasMaestrasAction extends MasterAction
 	        }
 		    
 	        //Chequeo si existe una descripcion igual:
-	        if (this.existeDescripcion(userBean.getLocation(),sDescripcion,sNombreCampoDescripcion, sNombreCampoCodigo,sNombreTabla,sLocal,sCodigo, sTipoCodigo, userBean.getLanguage())) {
-	        	return error("messages.inserted.descDuplicated", new ClsExceptions("messages.inserted.descDuplicated"), request);
+	        if (this.existeDescripcion(idInstitucion,sDescripcion,sNombreCampoDescripcion, sNombreCampoCodigo,sNombreTabla,sLocal,sCodigo, sTipoCodigo, userBean.getLanguage())) {
+	        	throw new SIGAException("messages.inserted.descDuplicated");
 	        } 
-	        else if (!sCodigoExt.trim().equals("") && !sNombreTabla.equals("SCS_PRETENSION") && this.existeCodigoExterno(userBean.getLocation(),sCodigoExt,sNombreCampoCodigoExt,sNombreCampoCodigo,sNombreTabla,sLocal,sCodigo,sTipoCodigo,sTipoCodigoExt)) {  
-	        	return error("messages.inserted.codDuplicated", new ClsExceptions("messages.inserted.codDuplicated"), request);
+	        else if (!sCodigoExt.trim().equals("")  && !sNombreTabla.equals("SCS_TIPOFUNDAMENTOS") && !sNombreTabla.equals("SCS_PRETENSION") && this.existeCodigoExterno(idInstitucion,sCodigoExt,sNombreCampoCodigoExt,sNombreCampoCodigo,sNombreTabla,sLocal,sCodigo,sTipoCodigo,sTipoCodigoExt)) {  
+	        	throw new SIGAException("messages.inserted.codDuplicated");
 	        } 
 	        else {
-	        	tx.begin();
 	        	if (rc.findForUpdate(sSQL)) {
 
 			        Row row = (Row)rc.get(0);
@@ -495,7 +621,7 @@ public class SIGAListadoTablasMaestrasAction extends MasterAction
 			        Hashtable htNew = (Hashtable)row.getRow().clone();
 			        htNew.put(sNombreCampoCodigoExt, sCodigoExt);
 
-	    			String idRecurso = GenRecursosCatalogosAdm.getNombreIdRecurso(sNombreTabla, sNombreCampoDescripcion, (sLocal.equalsIgnoreCase("S")?this.getIDInstitucion(request):null), sCodigo);
+	    			String idRecurso = GenRecursosCatalogosAdm.getNombreIdRecurso(sNombreTabla, sNombreCampoDescripcion, (sLocal.equalsIgnoreCase("S")?Integer.valueOf(idInstitucion):null), sCodigo);
 	    			if (idRecurso == null) {
 	    				htNew.put(sNombreCampoDescripcion, sDescripcion);
 	    			}
@@ -503,7 +629,7 @@ public class SIGAListadoTablasMaestrasAction extends MasterAction
 	    			htNew.put(sUsuModif, userBean.getUserName());
 	    			if(aceptaBaja == 1){
 	    				if(sDarDeBaja.equals("S")){
-	    					if(!this.existeFechaBaja(userBean.getLocation(), sNombreCampoCodigoExt, sNombreTabla, sLocal,sTipoCodigo, sCodigo)){
+	    					if(!this.existeFechaBaja(idInstitucion, sNombreCampoCodigoExt, sNombreTabla, sLocal,sTipoCodigo, sCodigo)){
 	    						htNew.put(sNombreCampoFechaBaja, "SYSDATE");
 	    					}
 	    				}else{
@@ -540,121 +666,132 @@ public class SIGAListadoTablasMaestrasAction extends MasterAction
 		        	// Multiidioma: Actualizamos los recursos en gen_recursos_catalogos
 	    			// Long idRecurso = GenRecursosCatalogosAdm.getNombreIdRecurso(sNombreTabla, sNombreCampoDescripcion, (sLocal.equalsIgnoreCase("S")?this.getIDInstitucion(request):null), sCodigo);
 	    			if (idRecurso != null) {
-		    			String idRecursoAlias = GenRecursosCatalogosAdm.getNombreIdRecursoAlias(sNombreTabla, sNombreCampoDescripcion, (sLocal.equalsIgnoreCase("S")?this.getIDInstitucion(request):null), sCodigo);
-		    			GenRecursosCatalogosAdm admRecCatalogos = new GenRecursosCatalogosAdm(this.getUserBean(request));
+		    			String idRecursoAlias = GenRecursosCatalogosAdm.getNombreIdRecursoAlias(sNombreTabla, sNombreCampoDescripcion, (sLocal.equalsIgnoreCase("S")?Integer.valueOf(idInstitucion):null), sCodigo);
+		    			GenRecursosCatalogosAdm admRecCatalogos = new GenRecursosCatalogosAdm(userBean);
 			        	GenRecursosCatalogosBean recCatalogoBean = new GenRecursosCatalogosBean ();
 			        	recCatalogoBean.setDescripcion(sDescripcion);
 			        	recCatalogoBean.setIdRecurso(idRecurso);
 			        	recCatalogoBean.setIdRecursoAlias(idRecursoAlias);
-			        	if(!admRecCatalogos.update(recCatalogoBean, this.getUserBean(request))) { 
+			        	if(!admRecCatalogos.update(recCatalogoBean, userBean)) { 
 			        		throw new SIGAException ("messages.updated.error");
 			        	}
 	    			}
 		        	///////////////////////////////////////////
 			        
-			    	tx.commit();
-		            request.setAttribute("mensaje","messages.updated.success");
-		            String mensaje = "El registro de la tabla [" + form.getAliasTabla() + "] con CÓDIGO EXTERNO=\"" + sCodigoExt + "\" ha sido modificado";	
-		            CLSAdminLog.escribirLogAdmin(request, mensaje);
+		            
 			    }
 			    else {
-			    	tx.rollback();
-			    	request.setAttribute("mensaje", "error.messages.deleted");			    	
+			    	throw new SIGAException("messages.updated.error");
+			    	
+			    				    	
 			    }
 	        }
-		} 
-		catch (Exception e){
-			throwExcp("messages.updated.error",e,tx);
-		}
-//      request.setAttribute("modal","1");
-//    	request.setAttribute("sinrefresco", "1");			    	
-//      return "exito";
-		return this.exitoModal("messages.updated.success", request);
+		
 	}
-
+	
+	
 	protected String borrar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException, SIGAException
 	{
+		UsrBean userBean = ((UsrBean)request.getSession().getAttribute(("USRBEAN")));
+		UserTransaction tx = userBean.getTransaction();
+	    
 	    try
 	    {
-		    UsrBean userBean = ((UsrBean)request.getSession().getAttribute(("USRBEAN")));
+		    
 		    SIGAListadoTablasMaestrasForm form = (SIGAListadoTablasMaestrasForm)formulario;
 		    form.setModal("false");
 		    Vector vOcultos = form.getDatosTablaOcultos(0);
 		    String sCodigo = (String)vOcultos.elementAt(0);
 		    String sDescripcion = (String)vOcultos.elementAt(1);
-		    String sNombreTabla = form.getNombreTablaMaestra();
-		    String sNombreCampoCodigo = form.getNombreCampoCodigo();
-		    String sNombreCampoCodigoExt = form.getNombreCampoCodigoExt();
-		    String sNombreCampoDescripcion = form.getNombreCampoDescripcion();
-		    String sLocal = form.getLocal();
+		    boolean esComision = userBean.isComision();
+			boolean esComisionMultiple = userBean.getInstitucionesComision()!=null && userBean.getInstitucionesComision().length>1;
+			tx.begin();
+			if(esComision && esComisionMultiple && form.getNombreTablaMaestra().equals("SCS_TIPOFUNDAMENTOS")){
+				for (int i = 0; i < userBean.getInstitucionesComision().length; i++) {
+					borrarRegistroMaestro(userBean.getInstitucionesComision()[i].toString(),form,sCodigo,sDescripcion,  userBean);
+				}
+				
+			}else{
+				borrarRegistroMaestro(userBean.getLocation(),form,sCodigo,sDescripcion,  userBean);
+		        
+			}
+	        request.setAttribute("mensaje","messages.deleted.success");
+            String mensaje = "El registro de la tabla [" + form.getAliasTabla() + "] con DESCRIPCIÓN=\"" + sDescripcion + "\" ha sido borrado";	
+            CLSAdminLog.escribirLogAdmin(request, mensaje);
+		    tx.commit();
 		    
-		    String sSQL = "SELECT " + sNombreCampoCodigo + ", " + sNombreCampoCodigoExt + ", " + sNombreCampoDescripcion;
-		    
-		    if (sLocal.equals("S")) {
-		        sSQL += ", IDINSTITUCION";
-		    }
-    	    
-		    sSQL += " FROM " + sNombreTabla + " WHERE " + sNombreCampoCodigo + " = '" + sCodigo + "'";
-		    
-		    if (sLocal.equals("S"))  {
-		        sSQL += " AND IDINSTITUCION = " + userBean.getLocation();
-		    }
-
-		    RowsContainer rc = new RowsContainer();
-		    UserTransaction tx = userBean.getTransaction();
-		    tx.begin();
-		    
-		    if (rc.findForUpdate(sSQL))
-		    {
-			    Row row = (Row)rc.get(0);
-			    
-			    String codigoExterno= row.getString(sNombreCampoCodigoExt);
-			    
-			    Object[] claves = null;
-			    
-			    if (sLocal.equals("S")) {
-			        claves = new Object[2];
-			        claves[0] = sNombreCampoCodigo;
-			        claves[1] = "IDINSTITUCION";
-			    }
-			    else {
-			        claves = new Object[1];
-			        claves[0] = sNombreCampoCodigo;
-			    }
-			    
-			    if (row.delete(sNombreTabla, claves) <= 0) {
-			    	throw new SIGAException ("error.messages.deleted");
-			    }
-
-	        	///////////////////////////////////////////
-	        	// Multiidioma: Borramos los recursos en gen_recursos_catalogos
-    			String idRecurso = GenRecursosCatalogosAdm.getNombreIdRecurso(sNombreTabla, sNombreCampoDescripcion, (sLocal.equalsIgnoreCase("S")?this.getIDInstitucion(request):null), sCodigo);
-    			if (idRecurso != null) {
-	    			GenRecursosCatalogosAdm admRecCatalogos = new GenRecursosCatalogosAdm (this.getUserBean(request));
-		        	GenRecursosCatalogosBean recCatalogoBean = new GenRecursosCatalogosBean ();
-		        	recCatalogoBean.setIdRecurso(idRecurso);
-		        	if(!admRecCatalogos.delete(recCatalogoBean)) { 
-		        		throw new SIGAException ("error.messages.deleted");
-		        	}
-    			}
-	        	///////////////////////////////////////////
-			    
-			    tx.commit();
-		        request.setAttribute("mensaje","messages.deleted.success");
-	            String mensaje = "El registro de la tabla [" + form.getAliasTabla() + "] con CÓDIGO EXTERNO =\"" + codigoExterno +  "\" y DESCRIPCIÓN=\"" + sDescripcion + "\" ha sido borrado";	
-	            CLSAdminLog.escribirLogAdmin(request, mensaje);
-		    }
-		    else  {
-		    	tx.rollback();
-		        request.setAttribute("mensaje", "error.messages.deleted");
-		    }
         } 
+	   
 	    catch (Exception e) {
-        	this.throwExcp("error.messages.application",e,null);
+        	this.throwExcp("error.messages.application",e,tx);
         }
 	    return "exito";
 	}
+	private void borrarRegistroMaestro(String idInstitucion,SIGAListadoTablasMaestrasForm form, String sCodigo,String sDescripcion,UsrBean userBean) throws ClsExceptions, SIGAException{
+		String sNombreTabla = form.getNombreTablaMaestra();
+	    String sNombreCampoCodigo = form.getNombreCampoCodigo();
+	    String sNombreCampoCodigoExt = form.getNombreCampoCodigoExt();
+	    String sNombreCampoDescripcion = form.getNombreCampoDescripcion();
+	    String sLocal = form.getLocal();
+	    
+	    String sSQL = "SELECT " + sNombreCampoCodigo + ", " + sNombreCampoCodigoExt + ", " + sNombreCampoDescripcion;
+	    
+	    if (sLocal.equals("S")) {
+	        sSQL += ", IDINSTITUCION";
+	    }
+	    
+	    sSQL += " FROM " + sNombreTabla + " WHERE " + sNombreCampoCodigo + " = '" + sCodigo + "'";
+	    
+	    if (sLocal.equals("S"))  {
+	        sSQL += " AND IDINSTITUCION = " + idInstitucion;
+	    }
 
+	    RowsContainer rc = new RowsContainer();
+	    
+	    
+	    if (rc.findForUpdate(sSQL))
+	    {
+		    Row row = (Row)rc.get(0);
+		    
+		    String codigoExterno= row.getString(sNombreCampoCodigoExt);
+		    
+		    Object[] claves = null;
+		    
+		    if (sLocal.equals("S")) {
+		        claves = new Object[2];
+		        claves[0] = sNombreCampoCodigo;
+		        claves[1] = "IDINSTITUCION";
+		    }
+		    else {
+		        claves = new Object[1];
+		        claves[0] = sNombreCampoCodigo;
+		    }
+		    
+		    if (row.delete(sNombreTabla, claves) <= 0) {
+		    	throw new SIGAException ("error.messages.deleted");
+		    }
+
+        	///////////////////////////////////////////
+        	// Multiidioma: Borramos los recursos en gen_recursos_catalogos
+			String idRecurso = GenRecursosCatalogosAdm.getNombreIdRecurso(sNombreTabla, sNombreCampoDescripcion, (sLocal.equalsIgnoreCase("S")?Integer.valueOf(idInstitucion):null), sCodigo);
+			if (idRecurso != null) {
+    			GenRecursosCatalogosAdm admRecCatalogos = new GenRecursosCatalogosAdm (userBean);
+	        	GenRecursosCatalogosBean recCatalogoBean = new GenRecursosCatalogosBean ();
+	        	recCatalogoBean.setIdRecurso(idRecurso);
+	        	if(!admRecCatalogos.delete(recCatalogoBean)) { 
+	        		throw new SIGAException ("error.messages.deleted");
+	        	}
+			}
+        	///////////////////////////////////////////
+		    
+
+	    }
+	    else  {
+	    	throw new SIGAException ("error.messages.deleted");
+	        
+	    }
+		
+	}
 	protected String mostrarRegistro(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response, boolean bEditable, boolean bNuevo) throws ClsExceptions {
 			SIGAListadoTablasMaestrasForm form = (SIGAListadoTablasMaestrasForm)formulario;
 	        UsrBean userBean = ((UsrBean)request.getSession().getAttribute(("USRBEAN")));
@@ -735,11 +872,17 @@ public class SIGAListadoTablasMaestrasAction extends MasterAction
 			    sSQL += "  FROM " + sNombreTabla +
 			    	   " WHERE " + sNombreCampoCodigo + " = '" + sCodigoExt + "'";
 			    
-			    
-			    if (sLocal.equals("S"))
-			    {
-			        sSQL += " AND IDINSTITUCION = " + userBean.getLocation();
-			    }
+			    boolean esComision = userBean.isComision();
+				boolean esComisionMultiple = userBean.getInstitucionesComision()!=null && userBean.getInstitucionesComision().length>1;
+				if(esComision && esComisionMultiple && sNombreTabla.equals("SCS_TIPOFUNDAMENTOS")){
+					//como las instituciones de las comisiones tienen los mismos fundamento cogemos el primero...
+					sSQL += " AND IDINSTITUCION = " + userBean.getInstitucionesComision()[0];
+				}else{
+				    if (sLocal.equals("S"))
+				    {
+				        sSQL += " AND IDINSTITUCION = " + userBean.getLocation();
+				    }
+				}
 			    
 			    RowsContainer rc = new RowsContainer();
 			    
