@@ -928,10 +928,31 @@ public class ConfirmarFacturacionAction extends MasterAction{
 			request.getSession().setAttribute("DATABACKUP", vDatos);	
 			ses.setAttribute("ModoAction","ver");
 			
+			
+			/** CR - Obtener informacion de factura en estado confirmada para mostrarselo en la ventan de consulta **/
+			Vector datosInformeFac = null;
+			if(hash.get("IDESTADOCONFIRMACION") != null && ((String)hash.get("IDESTADOCONFIRMACION")).equals(FacEstadoConfirmFactBean.CONFIRM_FINALIZADA.toString())){			
+				String sql = "	SELECT f_siga_getrecurso(FP.DESCRIPCION, 1)	AS FORMA_PAGO,   	"+
+							 "     F_SIGA_CALCULAFORMATO(SUM(fac.imptotal)) AS IMPORTE,			"+
+							 "      COUNT(*) AS NUM_FACTURAS									"+
+							 " 	FROM PYS_FORMAPAGO FP, FAC_FACTURA FAC, FAC_FACTURACIONPROGRAMADA PROG	"+
+							 " 	WHERE FP.IDFORMAPAGO = FAC.IDFORMAPAGO						"+
+							 "  	AND FAC.IDINSTITUCION = PROG.IDINSTITUCION				"+
+							 " 		AND FAC.IDSERIEFACTURACION = PROG.IDSERIEFACTURACION	"+
+							 "		AND FAC.IDPROGRAMACION = PROG.IDPROGRAMACION			"+
+							 "		AND PROG.IDSERIEFACTURACION = " + idSerieFacturacion     +
+							 "		AND PROG.IDPROGRAMACION = 	  " + idProgramacion		 +
+							 " 		AND PROG.IDINSTITUCION =      " + idInstitucion			 +
+							 " GROUP BY FP.DESCRIPCION	";
+				datosInformeFac = adm.selectGenerico(sql);
+			}
+			request.setAttribute("datosInformeFac",datosInformeFac);
+			
 		} catch (Exception e) { 
 			throwExcp("messages.general.error",new String[] {"modulo.facturacion"},e,null); 
 		} 	
-	return "ver";
+		
+		return "ver";
 
 	}
 	

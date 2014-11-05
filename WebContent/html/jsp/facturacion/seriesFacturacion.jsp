@@ -72,6 +72,7 @@
 	String desplegar = "true";
 	String ocultarProgramacionConfirmacion = "true";
 	String sFechaPresentacion = (String) request.getAttribute("fechaPresentacion");
+	Vector datosInformeFac = (Vector) request.getAttribute("datosInformeFac");
 
 	if(request.getSession().getAttribute("DATABACKUP")!= null){		
 		// Se trata de modificacion
@@ -150,9 +151,7 @@
 	if ((modoAction!=null && modoAction.trim().equals("nuevaPrevision")) ||
 		(modoAction!=null && modoAction.trim().equals("editar") && (
 				idEstadoConfirmacion.equals(FacEstadoConfirmFactBean.GENERACION_PROGRAMADA.toString()) ||
-				idEstadoConfirmacion.equals(FacEstadoConfirmFactBean.GENERADA.toString()) ||
-				idEstadoConfirmacion.equals(FacEstadoConfirmFactBean.CONFIRM_PROGRAMADA.toString())				
-		))) {
+				idEstadoConfirmacion.equals(FacEstadoConfirmFactBean.GENERADA.toString())))) {
 		bObligatorioFechasSEPA = false;
 	}
 		
@@ -475,6 +474,10 @@
 				}
 				jQuery("#"+idHorasFecha).val(hora);					
 				jQuery("#"+idMinutosFecha).val(min);
+			} else{
+				jQuery("#"+idHorasFecha).val("00");					
+				jQuery("#"+idMinutosFecha).val("00");				
+				
 			}
 		}
 		
@@ -726,6 +729,44 @@
 				</tr>
 			</table>
 		</siga:ConjCampos>
+		
+		<% if(idEstadoConfirmacion.equals(FacEstadoConfirmFactBean.CONFIRM_FINALIZADA.toString())){ %>		
+			<siga:ConjCampos leyenda="facturacion.mantenimnientoFacturacion.literal.informeConfirmacion">
+			<div align="center">
+				<table width="50%"  border ="0"><tr><td>
+				<!-- Campo obligatorio -->
+				<% if (datosInformeFac==null || datosInformeFac.size()==0){%>
+				 		<tr class="notFound">
+							<td class="titulitos"><siga:Idioma key="messages.noRecordFound"/></td>
+						</tr>
+				<%}else{%>
+						<tr class='tableTitle'>
+							<th style='text-align:center; width: 50%;'><siga:Idioma key="pys.solicitudCompra.literal.formaPago"/></th>
+							<th style='text-align:center; width: 25%;'><siga:Idioma key="facturacion.consultamorosos.literal.nfacturas"/></th>
+							<th style='text-align:center; width: 25%;'><siga:Idioma key="facturacion.lineasFactura.literal.importeTotal"/></th>
+						</tr>
+					<%	int recordNumber=1;
+						while ((recordNumber) <= datosInformeFac.size()){	 
+							Hashtable hash = (Hashtable)datosInformeFac.get(recordNumber-1);
+							String formapago=(String)hash.get("FORMA_PAGO");
+							String importe=(String)hash.get("IMPORTE");
+							String numfac=(String)hash.get("NUM_FACTURAS");
+						%>	
+							  	
+						<tbody style='text-align:center; overflow-y: scroll; overflow-x: hidden; margin:0px;'>
+							<tr class="listaNonEdit filaTablaImpar">
+								<td>&nbsp;<%=formapago%></td>
+								<td align="right">&nbsp;<%=numfac%></td>
+								<td align="right">&nbsp;<%=UtilidadesNumero.formato(importe)%>&nbsp;&euro;</td>
+							</tr>
+						</tbody>		
+						<%recordNumber++;%>
+						<%	}
+					}%>	
+				</td></tr></table>
+				</div>
+			</siga:ConjCampos>		
+		<% } %>
 	
 		<!-- ******* BOTONES DE ACCIONES EN REGISTRO ****** -->
 		<% if (modoAction.equals("editar") ||  modoAction.equals("nuevaPrevision")) { %>
