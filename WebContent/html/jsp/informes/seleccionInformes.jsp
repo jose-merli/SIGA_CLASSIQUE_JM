@@ -218,7 +218,12 @@
 				
 				<td>
 					<input type="hidden" name="indice" id="${status.count}"/>
-					<input type="checkbox"	id="${status.count}_${informe.idPlantilla}_${informe.idInstitucion}_${informe.idTipoInforme}" name="chkPL" ${preseleccionado} onclick='cargarComboTipoEnvios(${status.count});onclickchkPL();' />
+					<c:if test="${InformesGenericosForm.enviar=='1'}">	
+						<input type="checkbox"	id="${status.count}_${informe.idPlantilla}_${informe.idInstitucion}_${informe.idTipoInforme}" name="chkPL" ${preseleccionado} onclick='cargarComboTipoEnvios(${status.count});onclickchkPL();' />
+					</c:if>
+					<c:if test="${InformesGenericosForm.enviar!='1'}">	
+						<input type="checkbox"	id="${status.count}_${informe.idPlantilla}_${informe.idInstitucion}_${informe.idTipoInforme}" name="chkPL" ${preseleccionado} onclick='onclickchkPL()' />
+					</c:if>
 				</td>
 				<td>
 					<c:out value="${informe.descripcion}" />
