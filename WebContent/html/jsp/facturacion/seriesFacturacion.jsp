@@ -731,39 +731,40 @@
 		</siga:ConjCampos>
 		
 		<% if(idEstadoConfirmacion.equals(FacEstadoConfirmFactBean.CONFIRM_FINALIZADA.toString())){ %>		
-			<siga:ConjCampos leyenda="facturacion.mantenimnientoFacturacion.literal.informeConfirmacion">
-			<div align="center">
-				<table width="50%"  border ="0"><tr><td>
-				<!-- Campo obligatorio -->
-				<% if (datosInformeFac==null || datosInformeFac.size()==0){%>
-				 		<tr class="notFound">
-							<td class="titulitos"><siga:Idioma key="messages.noRecordFound"/></td>
-						</tr>
-				<%}else{%>
-						<tr class='tableTitle'>
-							<th style='text-align:center; width: 50%;'><siga:Idioma key="pys.solicitudCompra.literal.formaPago"/></th>
-							<th style='text-align:center; width: 25%;'><siga:Idioma key="facturacion.consultamorosos.literal.nfacturas"/></th>
-							<th style='text-align:center; width: 25%;'><siga:Idioma key="facturacion.lineasFactura.literal.importeTotal"/></th>
-						</tr>
-					<%	int recordNumber=1;
-						while ((recordNumber) <= datosInformeFac.size()){	 
-							Hashtable hash = (Hashtable)datosInformeFac.get(recordNumber-1);
-							String formapago=(String)hash.get("FORMA_PAGO");
-							String importe=(String)hash.get("IMPORTE");
-							String numfac=(String)hash.get("NUM_FACTURAS");
-						%>	
-							  	
-						<tbody style='text-align:center; overflow-y: scroll; overflow-x: hidden; margin:0px;'>
-							<tr class="listaNonEdit filaTablaImpar">
-								<td>&nbsp;<%=formapago%></td>
-								<td align="right">&nbsp;<%=numfac%></td>
-								<td align="right">&nbsp;<%=UtilidadesNumero.formato(importe)%>&nbsp;&euro;</td>
-							</tr>
-						</tbody>		
-						<%recordNumber++;%>
-						<%	}
-					}%>	
-				</td></tr></table>
+			<siga:ConjCampos leyenda="facturacion.mantenimnientoFacturacion.literal.informeConfirmacion" >
+				<div align="center" >
+					<table width="50%"  border="0" ><tr><td>
+						<siga:Table 
+							name="tablaDatos"
+							border="1"
+							columnNames="pys.solicitudCompra.literal.formaPago, facturacion.consultamorosos.literal.nfacturas, facturacion.lineasFactura.literal.importeTotal"
+							columnSizes="50,25,25"
+							fixedHeight="10">
+							   
+						<!-- Campo obligatorio -->
+						<% if (datosInformeFac==null || datosInformeFac.size()==0){%>
+						 		<tr class="notFound">
+									<td class="titulitos"><siga:Idioma key="messages.noRecordFound"/></td>
+								</tr>
+						<%}else{%>
+							<%	int recordNumber=1;
+								while ((recordNumber) <= datosInformeFac.size()){	 
+									Hashtable hash = (Hashtable)datosInformeFac.get(recordNumber-1);
+									String formapago=(String)hash.get("FORMA_PAGO");
+									String importe=(String)hash.get("IMPORTE");
+									String numfac=(String)hash.get("NUM_FACTURAS");
+								%>	
+									  	
+							  	<siga:FilaConIconos fila="1" botones="" visibleEdicion="no" visibleConsulta="no" visibleBorrado="no" pintarEspacio="no" clase="listaNonEdit">
+									<td>&nbsp;<%=formapago%></td>
+									<td align="right">&nbsp;<%=numfac%></td>
+									<td align="right">&nbsp;<%=UtilidadesNumero.formato(importe)%>&nbsp;&euro;</td>
+								</siga:FilaConIconos>	
+								<%recordNumber++;%>
+								<%	}
+							}%>	
+						</siga:Table>
+					</td></tr></table>
 				</div>
 			</siga:ConjCampos>		
 		<% } %>
