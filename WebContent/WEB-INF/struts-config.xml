@@ -1890,6 +1890,7 @@
 			<forward name="descargarEnvioTelematico" path="/html/jsp/general/exitoTelematicoSinEJIS.jsp"/>
 		<!--  	<forward name="finalizar" path="/ENV_EntradaEnvios.do"/> -->
 		</action>
+		<action path="/ENV_Enviar" type="com.siga.envios.action.DefinirEnviosAction" name="DefinirEnviosForm" scope="session"/>
 		
 				<!-- ***** Envíos a Grupos / Bandeja de Entrada ***** -->
 		<action path="/ENV_EntradaEnvios" type="com.siga.envios.action.EntradaEnviosAction" name="EntradaEnviosForm" scope="session">

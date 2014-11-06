@@ -107,44 +107,79 @@
 		</tr>
 	</table> 
 
-	<siga:Table	
-		name="comunicacionesSalida"
-		border="1"
-		columnNames="envios.definir.literal.identificador, 
+
+
+	<c:set var="columnNames" value="envios.definir.literal.identificador, 
 					envios.definir.literal.nombre,
 				  	envios.definir.literal.fechacreacion,
 				  	envios.definir.literal.fechaprogramada,
 				  	envios.definir.literal.estado,
-				  	envios.definir.literal.tipoenvio,"
-		columnSizes="10,28,10,10,12,12,18"
-		fixedHeight="50%">
+				  	envios.definir.literal.tipoenvio," />
+	<c:set var="columnSizes" value="10,28,10,10,12,12,18" />
+	<c:if test="${PERMISOENVIOS=='1'}">
+		<c:set var="columnNames" value="envios.definir.literal.identificador, 
+			envios.definir.literal.nombre,
+		  	envios.definir.literal.fechacreacion,
+		  	envios.definir.literal.fechaprogramada,
+		  	envios.definir.literal.estado,
+		  	envios.definir.literal.tipoenvio" />
+		<c:set var="columnSizes" value="10,28,10,10,12,12" />
+	</c:if>
+	<siga:Table	
+			name="comunicacionesSalida"
+			border="1"
+			columnNames="${columnNames}"
+			columnSizes="${columnSizes}"
+			fixedHeight="50%">
 
 		<c:choose>
+			
 			<c:when test="${empty comunicacionesSalida}">
 				<tr class="notFound">
 		   			<td class="titulitos"><siga:Idioma key="messages.noRecordFound"/></td>
 				</tr>				
 			</c:when>
-			
 			<c:otherwise>
 					<c:forEach items="${comunicacionesSalida}" var="comunicacionSalida" varStatus="status">
-						<siga:FilaConIconosExtExt fila='${status.count}' botones="${comunicacionSalida.botones}" elementos="${comunicacionSalida.elementosFila}" nombreTablaPadre="comunicacionesSalida"  clase="listaNonEdit">
-							<td>
-								<input type="hidden" id="idEnvio_${status.count}" value = "${comunicacionSalida.idEnvio}"/> 
-								<input type="hidden" id="idTipoEnvio_${status.count}" value = "${comunicacionSalida.idTipoEnvio}"/>
-								<input type="hidden" id="idIntercambio_${status.count}" value = "${comunicacionSalida.idIntercambio}"/>
-								<c:out value="${comunicacionSalida.idEnvio}"/>
-							</td>
-							<td><c:out value="${comunicacionSalida.nombre}"/></td>
-							<td align="center"><c:out value="${comunicacionSalida.fecha}"/></td>
-							<td align="center"><c:out value="${comunicacionSalida.fechaProgramada}"/></td>
-							<td ><siga:Idioma key="${comunicacionSalida.estado}" /></td>
-							<td><siga:Idioma key="${comunicacionSalida.tipoEnvio}" /></td>
-						</siga:FilaConIconosExtExt>
+						<c:choose>
+							<c:when test="${PERMISOENVIOS=='1'}">
+								<siga:FilaConIconosExtExt fila='${status.count}' botones="${comunicacionSalida.botones}" elementos="${comunicacionSalida.elementosFila}" nombreTablaPadre="comunicacionesSalida"  clase="listaNonEdit">
+									<td>
+										<input type="hidden" id="idEnvio_${status.count}" value = "${comunicacionSalida.idEnvio}"/> 
+										<input type="hidden" id="idTipoEnvio_${status.count}" value = "${comunicacionSalida.idTipoEnvio}"/>
+										<input type="hidden" id="idIntercambio_${status.count}" value = "${comunicacionSalida.idIntercambio}"/>
+										<c:out value="${comunicacionSalida.idEnvio}"/>
+									</td>
+									<td><c:out value="${comunicacionSalida.nombre}"/></td>
+									<td align="center"><c:out value="${comunicacionSalida.fecha}"/></td>
+									<td align="center"><c:out value="${comunicacionSalida.fechaProgramada}"/></td>
+									<td ><siga:Idioma key="${comunicacionSalida.estado}" /></td>
+									<td><siga:Idioma key="${comunicacionSalida.tipoEnvio}" /></td>
+								</siga:FilaConIconosExtExt>			
+							</c:when>
+							<c:otherwise>
+								<siga:FilaConIconosExtExt fila='${status.count}' botones = "" pintarEspacio="no" visibleBorrado="false" visibleEdicion="false" visibleConsulta="false"   nombreTablaPadre="comunicacionesSalida"  clase="listaNonEdit">
+									<td>
+										<input type="hidden" id="idEnvio_${status.count}" value = "${comunicacionSalida.idEnvio}"/> 
+										<input type="hidden" id="idTipoEnvio_${status.count}" value = "${comunicacionSalida.idTipoEnvio}"/>
+										<input type="hidden" id="idIntercambio_${status.count}" value = "${comunicacionSalida.idIntercambio}"/>
+										<c:out value="${comunicacionSalida.idEnvio}"/>
+									</td>
+									<td><c:out value="${comunicacionSalida.nombre}"/></td>
+									<td align="center"><c:out value="${comunicacionSalida.fecha}"/></td>
+									<td align="center"><c:out value="${comunicacionSalida.fechaProgramada}"/></td>
+									<td ><siga:Idioma key="${comunicacionSalida.estado}" /></td>
+									<td><siga:Idioma key="${comunicacionSalida.tipoEnvio}" /></td>
+								</siga:FilaConIconosExtExt>
+							</c:otherwise>
+						</c:choose>
+
 					</c:forEach>
+				
 			</c:otherwise>
-		</c:choose>	    
-	</siga:Table>
+		</c:choose>
+	</siga:Table>	    
+	
 
 	<table class="tablaTitulo" cellspacing="0" heigth="38">
 		<tr>
