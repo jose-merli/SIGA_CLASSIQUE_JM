@@ -14,12 +14,15 @@ import org.redabogacia.sigaservices.app.autogen.model.EnvEntradaEnvios;
 import org.redabogacia.sigaservices.app.autogen.model.EnvEnvios;
 
 import com.atos.utils.ClsConstants;
+import com.atos.utils.ClsLogging;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.TransformBeanToForm;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesMultidioma;
+import com.siga.administracion.SIGAConstants;
 import com.siga.beans.GenParametrosAdm;
 import com.siga.beans.ScsDesignaBean;
+import com.siga.envios.EnvioInformesGenericos;
 import com.siga.envios.form.DefinirEnviosForm;
 import com.siga.envios.form.EntradaEnviosForm;
 import com.siga.envios.service.EntradaEnviosService;
@@ -131,8 +134,16 @@ public class ComunicacionesAction extends MasterAction {
 			GenParametrosAdm paramAdm = new GenParametrosAdm (userBean);
 			String prefijoExpedienteCajg = paramAdm.getValor (comunicacionesForm.getEjgIdInstitucion(), ClsConstants.MODULO_SJCS, ClsConstants.GEN_PARAM_PREFIJO_EXPEDIENTES_CAJG, " ");
 			request.setAttribute("PREFIJOEXPEDIENTECAJG",prefijoExpedienteCajg);
-			
-			
+			//Miramos si tienem permiso de envio sya que si no tiene no le vamos a mostrar los iconos de envios
+			request.setAttribute("PERMISOENVIOS",ClsConstants.DB_TRUE);
+			String accessEnvio = testAccess(request.getContextPath()+"/ENV_DefinirEnvios.do",null,request);
+			if (!accessEnvio.equals(SIGAConstants.ACCESS_READ) && !accessEnvio.equals(SIGAConstants.ACCESS_FULL)) {
+				//Miramos si tienen acceso a las comunicaciones de designaiones o ejgs, en tal caso se les permite enviar
+				request.setAttribute("PERMISOENVIOS",ClsConstants.DB_FALSE);
+
+			}
+			//hacemos lo siguiente para setear el permiso de esta accion
+			testAccess(request.getContextPath()+mapping.getPath()+".do",null,request);
 			
 
 		} catch (Exception e) {
@@ -209,10 +220,16 @@ public class ComunicacionesAction extends MasterAction {
 				comunicacionesSalida.add(salidaEnviosForm);
 			}
 			
-//			GenParametrosAdm paramAdm = new GenParametrosAdm (userBean);
-//			String prefijoExpedienteCajg = paramAdm.getValor (comunicacionesForm.getDesignaIdInstitucion(), ClsConstants.MODULO_SJCS, ClsConstants.GEN_PARAM_PREFIJO_EXPEDIENTES_CAJG, " ");
-//			request.setAttribute("PREFIJOEXPEDIENTECAJG",prefijoExpedienteCajg);
-//			
+			//Miramos si tienem permiso de envio sya que si no tiene no le vamos a mostrar los iconos de envios
+			request.setAttribute("PERMISOENVIOS",ClsConstants.DB_TRUE);
+			String accessEnvio = testAccess(request.getContextPath()+"/ENV_DefinirEnvios.do",null,request);
+			if (!accessEnvio.equals(SIGAConstants.ACCESS_READ) && !accessEnvio.equals(SIGAConstants.ACCESS_FULL)) {
+				//Miramos si tienen acceso a las comunicaciones de designaiones o ejgs, en tal caso se les permite enviar
+				request.setAttribute("PERMISOENVIOS",ClsConstants.DB_FALSE);
+
+			}
+			//hacemos lo siguiente para setear el permiso de esta accion
+			testAccess(request.getContextPath()+mapping.getPath()+".do",null,request);			
 			
 
 		} catch (Exception e) {

@@ -42,6 +42,7 @@ import com.atos.utils.UsrBean;
 import com.siga.Utilidades.Paginador;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;
+import com.siga.administracion.SIGAConstants;
 import com.siga.administracion.service.InformesService;
 import com.siga.beans.AdmInformeAdm;
 import com.siga.beans.AdmInformeBean;
@@ -938,15 +939,30 @@ public class DefinirEnviosAction extends MasterAction {
 					}
 				
 				}else{
+					
+					
 					if(form.getIdEnvio()!=null&&!form.getIdEnvio().equals("")){
-						Hashtable htEnvio = new Hashtable();
-						htEnvio.put(EnvEnviosBean.C_IDTIPOENVIOS,form.getIdTipoEnvio());
-						htEnvio.put(EnvEnviosBean.C_IDENVIO,form.getIdEnvio());
-						htEnvio.put(EnvEnviosBean.C_DESCRIPCION,form.getNombre());
-						request.getSession().removeAttribute("EnvEdicionEnvio");
-						request.setAttribute("envio",htEnvio);
-						ClsLogging.writeFileLog("DefinirEnviosAction:fin insertarEnvioGenerico.seleccionEnvio. IdInstitucion:" + userBean.getLocation(), 10);
-						return "seleccionEnvio";
+						
+						String accessEnvio = testAccess(request.getContextPath()+"/ENV_DefinirEnvios.do",null,request);
+						if (!accessEnvio.equals(SIGAConstants.ACCESS_READ) && !accessEnvio.equals(SIGAConstants.ACCESS_FULL)) {
+							testAccess(request.getContextPath()+mapping.getPath()+".do",null,request);
+							ClsLogging.writeFileLog("Acceso denegado al modulo de envios, cerramos la seleccion de plantillas",request,3);
+							return exitoModal("messages.inserted.success",request);
+						}else{
+							testAccess(request.getContextPath()+mapping.getPath()+".do",null,request);
+							Hashtable htEnvio = new Hashtable();
+							htEnvio.put(EnvEnviosBean.C_IDTIPOENVIOS,form.getIdTipoEnvio());
+							htEnvio.put(EnvEnviosBean.C_IDENVIO,form.getIdEnvio());
+							htEnvio.put(EnvEnviosBean.C_DESCRIPCION,form.getNombre());
+							request.getSession().removeAttribute("EnvEdicionEnvio");
+							request.setAttribute("envio",htEnvio);
+							ClsLogging.writeFileLog("DefinirEnviosAction:fin insertarEnvioGenerico.seleccionEnvio. IdInstitucion:" + userBean.getLocation(), 10);
+							return "seleccionEnvio";
+						}
+						//hacemos lo siguiente para setear el permiso de esta accion
+						
+						
+						
 					}else{
 						ClsLogging.writeFileLog("DefinirEnviosAction:fin insertarEnvioGenerico.errorNoDireccion. IdInstitucion:" + userBean.getLocation(), 10);
 						return exitoModal("messages.envio.errorNoDireccion",request);

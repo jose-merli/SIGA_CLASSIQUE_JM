@@ -1807,8 +1807,24 @@ public class InformesGenericosAction extends MasterAction {
 			if(miForm.getEnviar()!=null && miForm.getEnviar().equals(ClsConstants.DB_TRUE) ){
 				String accessEnvio = testAccess(request.getContextPath()+"/ENV_DefinirEnvios.do",null,request);
 				if (!accessEnvio.equals(SIGAConstants.ACCESS_READ) && !accessEnvio.equals(SIGAConstants.ACCESS_FULL)) {
+					//Miramos si tienen acceso a las comunicaciones de designaiones o ejgs, en tal caso se les permite enviar
+					if(idTipoInforme.equals(EnvioInformesGenericos.comunicacionesDesigna)){
+						accessEnvio = testAccess(request.getContextPath()+"/JGR_ComunicacionDesigna.do",null,request);
+						if (!accessEnvio.equals(SIGAConstants.ACCESS_READ) && !accessEnvio.equals(SIGAConstants.ACCESS_FULL)) {
+							miForm.setEnviar(ClsConstants.DB_FALSE);
+							ClsLogging.writeFileLog("Acceso denegado al modulo de envios, descargamos el informe",request,3);
+						}	
+					}else if(idTipoInforme.equals(EnvioInformesGenericos.comunicacionesEjg)){
+						accessEnvio = testAccess(request.getContextPath()+"/JGR_ComunicacionEJG.do",null,request);
+						if (!accessEnvio.equals(SIGAConstants.ACCESS_READ) && !accessEnvio.equals(SIGAConstants.ACCESS_FULL)) {
+							miForm.setEnviar(ClsConstants.DB_FALSE);
+							ClsLogging.writeFileLog("Acceso denegado al modulo de envios, descargamos el informe",request,3);
+						}
+					}else{
 						miForm.setEnviar(ClsConstants.DB_FALSE);
 						ClsLogging.writeFileLog("Acceso denegado al modulo de envios, descargamos el informe",request,3);
+					}
+					
 				}
 				//hacemos lo siguiente para setear el permiso de esta accion
 				testAccess(request.getContextPath()+mapping.getPath()+".do",null,request);
