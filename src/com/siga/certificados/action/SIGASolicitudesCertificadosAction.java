@@ -16,6 +16,7 @@ import javax.transaction.UserTransaction;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.json.JSONObject;
 import org.redabogacia.sigaservices.app.autogen.model.CerSolicitudcertificadostexto;
 import org.redabogacia.sigaservices.app.autogen.model.CerSolicitudcertificadostextoExample;
 import org.redabogacia.sigaservices.app.services.cer.CerSolicitudCertificadosTextoService;
@@ -105,80 +106,54 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 	            if (accion == null || accion.equalsIgnoreCase("") || accion.equalsIgnoreCase("abrir"))
 	            {
 	                mapDestino = abrir(mapping, miForm, request, response);
-	            } 
-
-	            else if (accion.equalsIgnoreCase("generarVariosPDF"))
-	            {
+	                
+	            } else if (accion.equalsIgnoreCase("generarVariosPDF")) {
 	                mapDestino = generarVariosPDF(mapping, miForm, request, response);
-	            } 
-
-	            else if (accion.equalsIgnoreCase("generarPDF"))
-	            {
+	                
+	            } else if (accion.equalsIgnoreCase("generarPDF")) {
 	                mapDestino = generarPDF(mapping, miForm, request, response);
-	            } 
-
-	            else if (accion.equalsIgnoreCase("enviar"))
-	            {
-	                mapDestino = enviar(mapping, miForm, request, response);
-	            } 
-	            
-	            else if (accion.equalsIgnoreCase("ver")){
-	            	// Para no repetir un metodo igual que editar usamos el mismo
+	                
+	            } else if (accion.equalsIgnoreCase("enviar") || accion.equalsIgnoreCase("ver")) {
 	                mapDestino = editar(mapping, miForm, request, response);
-	            }
-	            
-	            else if (accion.equalsIgnoreCase("denegar"))
-	            {
+	                
+	            } else if (accion.equalsIgnoreCase("denegar")) {
 	                mapDestino = denegar(mapping, miForm, request, response);
-	            } 
-	            else if (accion.equalsIgnoreCase("anular"))
-	            {
+	                
+	            } else if (accion.equalsIgnoreCase("anular")) {
 	                mapDestino = anular(mapping, miForm, request, response);
-	            } 
-
-	            else if (accion.equalsIgnoreCase("finalizar"))
-	            {
+	                
+	            } else if (accion.equalsIgnoreCase("finalizar")) {
 	                mapDestino = finalizar(mapping, miForm, request, response);
-	            } 
-
-	            else if (accion.equalsIgnoreCase("facturacionRapida"))
-	            {
+	                
+	            } else if (accion.equalsIgnoreCase("facturacionRapida")) {
 	                mapDestino = facturacionRapida(mapping, miForm, request, response);
-	            } 
-
-	            else if (accion.equalsIgnoreCase("finalizarCertificados"))
-	            {
+	                
+	            } else if (accion.equalsIgnoreCase("finalizarCertificados")) {
 	                mapDestino = finalizarCertificados(mapping, miForm, request, response);
-	            } 
-
-	            else if (accion.equalsIgnoreCase("descargar"))
-	            {
+	                
+	            } else if (accion.equalsIgnoreCase("descargar")) {
 	                mapDestino = descargar(mapping, miForm, request, response);
-	            } 
-
-	            else if (accion.equalsIgnoreCase("asignarPlantillaCertificado"))
-	            {
+	                
+	            } else if (accion.equalsIgnoreCase("asignarPlantillaCertificado")) {
 	                mapDestino = asignarPlantillaCertificado(mapping, miForm, request, response);
-	            } 
-
-	            else if (accion.equalsIgnoreCase("copiarSanciones"))
-	            {
+	                
+	            } else if (accion.equalsIgnoreCase("copiarSanciones")) {
 	                mapDestino = copiarSanciones(mapping, miForm, request, response);
-	            } 
-	            else if (accion.equalsIgnoreCase("copiarHistorico"))
-	            {
+	                
+	            } else if (accion.equalsIgnoreCase("copiarHistorico")) {
 	                mapDestino = copiarHistorico(mapping, miForm, request, response);
-	            }
-	            else if (accion.equalsIgnoreCase("historicoObservaciones"))
-	            {
+	                
+	            } else if (accion.equalsIgnoreCase("historicoObservaciones")) {
 	                mapDestino = historicoObservaciones(mapping, miForm, request, response);
-	            }
-	            else if (accion.equalsIgnoreCase("comprobarNumPlantillas"))
-	            {
+	                
+	            } else if (accion.equalsIgnoreCase("comprobarNumPlantillas")) {
 	                mapDestino = comprobarNumPlantillas(mapping, miForm, request, response);
-	            }   
-	            else 
-	            {
+	                
+				} else if (accion.equalsIgnoreCase("getAjaxSeleccionSerieFacturacion")) {
+					getAjaxSeleccionSerieFacturacion(request, response);	     
+					return null;
+	                
+	            } else {
 	                return super.executeInternal(mapping,formulario,request,response);
 	            }
 	        }
@@ -279,64 +254,50 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
         return true;
 	}
 	
-    protected String buscar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, SIGAException
-	{
-		
-    	
-    	
-    	try{
-			HashMap databackup=new HashMap();
-	        SIGASolicitudesCertificadosForm form = (SIGASolicitudesCertificadosForm)formulario;
-	        UsrBean userBean = ((UsrBean)request.getSession().getAttribute(("USRBEAN")));
-	        
-	        GenParametrosAdm paramAdm = new GenParametrosAdm (userBean);
-			//Haria falta meter los parametros en con ClsConstants
-	        String permitir_factura_certificado = paramAdm.getValor (userBean.getLocation (), "CER", ClsConstants.PERMITIR_FACTURA_CERTIFICADO, "");
-	        
-	        request.setAttribute("isPermitirFacturaCertificado", new Boolean(permitir_factura_certificado.equals(ClsConstants.DB_TRUE)));
-	        
-	        
-	        CerSolicitudCertificadosAdm admSolicitud = new CerSolicitudCertificadosAdm(this.getUserBean(request));
+    protected String buscar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, SIGAException {
+    	try {			
+	        SIGASolicitudesCertificadosForm form = (SIGASolicitudesCertificadosForm) formulario;
+	        UsrBean userBean = (UsrBean) request.getSession().getAttribute("USRBEAN");
 	        
 	        String idInstitucion = userBean.getLocation();
 	        
+	        GenParametrosAdm paramAdm = new GenParametrosAdm (userBean);
+	        CerSolicitudCertificadosAdm admSolicitud = new CerSolicitudCertificadosAdm(userBean);
+	        
+			//Haria falta meter los parametros en con ClsConstants
+	        String permitir_factura_certificado = paramAdm.getValor (idInstitucion, "CER", ClsConstants.PERMITIR_FACTURA_CERTIFICADO, "");
+	        
+	        request.setAttribute("isPermitirFacturaCertificado", new Boolean(permitir_factura_certificado.equals(ClsConstants.DB_TRUE)));	        
+	        
+	        HashMap databackup = new HashMap();
+	        Vector datos = new Vector();
+	        PaginadorBind paginador = null;
+	        
 	        if (request.getSession().getAttribute("DATAPAGINADOR")!=null){ 
-		 		databackup = (HashMap)request.getSession().getAttribute("DATAPAGINADOR");
-			     PaginadorBind paginador = (PaginadorBind)databackup.get("paginador");
-			     Vector datos=new Vector();
+	        	databackup = (HashMap)request.getSession().getAttribute("DATAPAGINADOR");
+	        	paginador = (PaginadorBind) databackup.get("paginador");			    
 			
 			
-			//Si no es la primera llamada, obtengo la página del request y la busco con el paginador
-			String pagina = (String)request.getParameter("pagina");
+			    //Si no es la primera llamada, obtengo la página del request y la busco con el paginador
+			    String pagina = (String)request.getParameter("pagina");
 			
-			 
-			
-		 if (paginador!=null){	
-			if (pagina!=null){
-				datos = paginador.obtenerPagina(Integer.parseInt(pagina));
-			}else{// cuando hemos editado un registro de la busqueda y volvemos a la paginacion
-				datos = paginador.obtenerPagina((paginador.getPaginaActual()));
-			}
-		 }	
+			    if (paginador!=null) {	
+		    		if (pagina!=null ){
+	    				datos = paginador.obtenerPagina(Integer.parseInt(pagina));
+		    		} else {// cuando hemos editado un registro de la busqueda y volvemos a la paginacion
+		    			datos = paginador.obtenerPagina(paginador.getPaginaActual());
+		    		}
+			    }	
 
-			databackup.put("paginador",paginador);
-			databackup.put("datos",datos);
+			    databackup.put("paginador",paginador);
+			    databackup.put("datos",datos);
 			
-				
-			
-			
-	  }else{	
-			
-	  	    databackup=new HashMap();
-			
-			//obtengo datos de la consulta 			
-		    PaginadorBind resultado = null;
-		    
-		    if (!isNumber(form.getBuscarIdSolicitudCertif())){
-		    	form.setBuscarIdSolicitudCertif(null);
-		    }
+	        } else { //obtengo datos de la consulta								        	 			
+	        	if (!isNumber(form.getBuscarIdSolicitudCertif())){
+	        		form.setBuscarIdSolicitudCertif(null);
+	        	}
 	
-	         resultado = admSolicitud.buscarSolicitudes(idInstitucion,
+	        	paginador = admSolicitud.buscarSolicitudes(idInstitucion,
 	                									  form.getFechaDesde(),
 	                									  form.getFechaHasta(),
 	                									  form.getFechaEmisionDesde(),
@@ -352,47 +313,34 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 														  form.getBuscarIdSolicitudCertif(),
 														  form.getBuscarNumCertificadoCompra());  
 
-	        
-		    ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
-//	        ReadProperties rp = new ReadProperties("SIGA.properties");
-	        String numMaxReg = rp.returnProperty("certificados.numMaxRegistros");
-	        
-	       
-		        
-		        Vector datos = null;
+	        	ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+	        	String numMaxReg = rp.returnProperty("certificados.numMaxRegistros");
 				
-					
-				
-				databackup.put("paginador",resultado);
-				if (resultado!=null){ 
-				   datos = resultado.obtenerPagina(1);
+				databackup.put("paginador",paginador);
+				if (paginador!=null){ 
+				   datos = paginador.obtenerPagina(1);
 				   databackup.put("datos",datos);
 				   request.getSession().setAttribute("DATAPAGINADOR",databackup);
 				   
-				   // en el caso de que el numero de registros recuperados en la busqueda supere el numero de registros
-			        // configurado en SIGA.properties se muestra un mensaje de error
-			         
-				        if ( resultado.getNumeroTotalRegistros()>new Integer(numMaxReg).intValue()){
-				        	
-				        	return exito("messages.certificados.numMaxReg",request);
-				        }
-			        //
+				   // en el caso de que el numero de registros recuperados en la busqueda supere el numero de registros configurado en SIGA.properties se muestra un mensaje de error
+				   if ( paginador.getNumeroTotalRegistros()>new Integer(numMaxReg).intValue()){				        
+					   return exito("messages.certificados.numMaxReg",request);
+				   }
 				} 
-	  }
-	       // request.setAttribute("datos", datos);
+        	}
 	        
 	        //Comprobamos si estamos en CGAE y lo pasamos a la jsp
-	        String esCGAE = CenVisibilidad.getNivelInstitucion(idInstitucion).equalsIgnoreCase(String.valueOf(ClsConstants.TIPO_INTITUCION_CGAE))?"true":"false";
+	        String esCGAE = CenVisibilidad.getNivelInstitucion(idInstitucion).equalsIgnoreCase(String.valueOf(ClsConstants.TIPO_INTITUCION_CGAE)) ? "true" : "false";
 	        request.setAttribute("esCGAE",esCGAE);
 	        
-	        request.getSession().setAttribute("DATABACKUP",form);
+	        request.getSession().setAttribute("DATABACKUP", form);
 	        
 	        //Para volver correctamente desde envios:
 	        request.getSession().setAttribute("EnvEdicionEnvio","GS");
 	        
-		} catch (SIGAException e1) {
-			// Excepcion procedente de obtenerPagina cuando se han borrado datos
+		} catch (SIGAException e1) { // Excepcion procedente de obtenerPagina cuando se han borrado datos			
 			 return exitoRefresco("error.messages.obtenerPagina",request);
+			 
 		} catch (Exception e) { 
 			throwExcp("messages.general.error",new String[] {"modulo.certificados"},e,null); 
 		}
@@ -2331,10 +2279,11 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 	    	UsrBean usr = this.getUserBean(request);
 	    	
 		    // datos llamada
-			SIGASolicitudesCertificadosForm form = (SIGASolicitudesCertificadosForm)formulario;
-		    Vector vOcultos = form.getDatosTablaOcultos(0);
+			SIGASolicitudesCertificadosForm formSolicitudesCertificados = (SIGASolicitudesCertificadosForm)formulario;
+		    Vector vOcultos = formSolicitudesCertificados.getDatosTablaOcultos(0);
 		    String idInstitucion = ((String)vOcultos.elementAt(0)).trim();
-		    String idSolicitudCertificado = ((String)vOcultos.elementAt(1)).trim();
+	    	String idSolicitudCertificado = ((String)vOcultos.elementAt(1)).trim();
+	    	String idSerieSeleccionada = ((String)vOcultos.elementAt(2)).trim();
 		    
 		    // administradores
 		    CenClienteAdm admCliente = new CenClienteAdm(usr);
@@ -2445,6 +2394,8 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 			    double importe = (beanCompra.getCantidad().intValue() * beanCompra.getImporteUnitario().doubleValue()) * (1+(beanCompra.getIva().doubleValue()/100));
 			    beanCompra.setImporteAnticipado(new Double(importe));
 			    if (!admCompra.updateDirect(beanCompra)) {
+			    	// LIBERAMOS EL BLOQUEO DE LAS TABLAS Y LA TRANSACCIÓN
+			        tx.rollback();
 			        throw new ClsExceptions("Error al actualizar el importe anticipado: "+admCompra.getError());
 			    }
 			    
@@ -2465,32 +2416,22 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 			    
 	        	FacSerieFacturacionBean beanSerieCandidata = null;
 	        	
-	        	// Obtiene la serie candidata	
-	        	String serieSeleccionada = request.getParameter("serieSeleccionada");
-	        	if (serieSeleccionada==null || serieSeleccionada.equals("")) {
+	        	// Obtiene la serie candidata		        	
+	        	if (idSerieSeleccionada==null || idSerieSeleccionada.equals("")) {
 				    Vector<?> series =  admSerieFacturacion.obtenerSeriesAdecuadas(vCompras);
-				    if (series==null || series.size()==0) {
+				    if (series==null || series.size()!=1) {
+				    	// LIBERAMOS EL BLOQUEO DE LAS TABLAS Y LA TRANSACCIÓN
+				        tx.rollback();
 				        throw new SIGAException("messages.facturacionRapidaCompra.noSerieAdecuada");
 				        
 				    } else if (series.size()==1) {
 				    	beanSerieCandidata = (FacSerieFacturacionBean)series.get(0);
-				        
-				    } else {
-				        // existen varias series candidatas
-				        tx.rollback();				        
-				        
-				        // PREGUNTA
-				        request.setAttribute("idPeticionSeleccion", beanCompra.getIdPeticion().toString());
-				        request.getSession().setAttribute("seriesCandidatas",series);
-				        return "seleccionSerie";
 				    }
 				    
-		        } else { // Se ha seleccionado una serie		            
-			        request.getSession().removeAttribute("seriesCandidatas");
-
+		        } else { // Se ha seleccionado una serie			        			           
 			        Hashtable<String,String> hSerieFacturacion = new Hashtable<String,String>();
-			        hSerieFacturacion.put("IDINSTITUCION",idInstitucion);
-			        hSerieFacturacion.put("IDSERIEFACTURACION",serieSeleccionada);
+			        hSerieFacturacion.put("IDINSTITUCION", idInstitucion);
+			        hSerieFacturacion.put("IDSERIEFACTURACION", idSerieSeleccionada);
 			        
 		            Vector<?> vSerieFacturacion = admSerieFacturacion.selectByPK(hSerieFacturacion);
 		            if (vSerieFacturacion!=null && vSerieFacturacion.size()>0) {
@@ -2690,5 +2631,80 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 		}
 		
 	}
-
+	
+	/**
+	 * 
+	 * @param request
+	 * @param response
+	 * @throws Exception
+	 */
+	protected void getAjaxSeleccionSerieFacturacion (HttpServletRequest request, HttpServletResponse response) throws Exception {			
+		
+		String idInstitucion = request.getParameter("idInstitucion");
+		if (idInstitucion==null || idInstitucion.trim().equalsIgnoreCase(""))
+			throw new SIGAException("Falta el identificador de la institución");
+		
+		String idTipoProducto = request.getParameter("idTipoProducto");
+		if (idTipoProducto==null || idTipoProducto.trim().equalsIgnoreCase(""))
+			throw new SIGAException("Falta el identificador del tipo de producto");
+		
+		String idProducto = request.getParameter("idProducto");
+		if (idProducto==null || idProducto.trim().equalsIgnoreCase(""))
+			throw new SIGAException("Falta el identificador del producto");
+		
+		String idSolicitud = request.getParameter("idSolicitud");
+		if (idSolicitud==null || idSolicitud.trim().equalsIgnoreCase(""))
+			throw new SIGAException("Falta el identificador de la solicitud");		
+		
+		JSONObject json = new JSONObject();
+		UsrBean usr = this.getUserBean(request);
+		FacSerieFacturacionAdm admSerieFacturacion = new FacSerieFacturacionAdm(usr);
+		CerSolicitudCertificadosAdm admSolicitudCertificados = new CerSolicitudCertificadosAdm(usr);
+		String idSerieFacturacion = "";	
+		
+	    // Obtengo la peticion de compra
+	    PysCompraBean beanCompra = admSolicitudCertificados.obtenerCompra(idInstitucion, idSolicitud);
+	    
+	    // Compruebo si esta facturada la compra
+	    if (beanCompra.getIdFactura()!=null && !beanCompra.getIdFactura().trim().equals("")) {	
+	    	idSerieFacturacion = "Facturado"; // JPT: Esto sirve para indicar que ya esta facturado
+	    	
+	    } else {
+		
+			// Busca las series de facturacion del producto
+			Vector<FacSerieFacturacionBean> vSeriesFacturacion =  admSerieFacturacion.obtenerSeriesFacturacionProducto(idInstitucion, idTipoProducto, idProducto);
+			    		
+		    // Compruebo que tiene una serie de facturacion
+		    if (vSeriesFacturacion.size()==1) {
+		    	FacSerieFacturacionBean beanSerieFacturacion = (FacSerieFacturacionBean) vSeriesFacturacion.get(0);
+		    	idSerieFacturacion = beanSerieFacturacion.getIdSerieFacturacion().toString();
+		    		    
+		    } else { // Tiene varias series de facturacion asociadas al producto
+		    	
+		    	// Indico la primera opcion del seleccionable
+		    	String sOptionsSerieFacturacion = "<option value=''>" + UtilidadesString.getMensajeIdioma(usr, "general.combo.seleccionar") + "</option>";
+		    	
+		    	// Cargo el resto de opciones del seleccionable
+		    	for (int i = 0; i < vSeriesFacturacion.size(); i++)	{
+		    		FacSerieFacturacionBean beanSerieFacturacion = (FacSerieFacturacionBean) vSeriesFacturacion.get(i);
+		    		sOptionsSerieFacturacion +="<option value='" +  beanSerieFacturacion.getIdSerieFacturacion() + "'>" + beanSerieFacturacion.getNombreAbreviado() + "</option>";
+		    	}
+		    	
+		    	// Devuelvo la lista de series de facturacion
+		    	ArrayList aOptionsSeriesFacturacion = new ArrayList();
+		    	aOptionsSeriesFacturacion.add(sOptionsSerieFacturacion);
+		    	json.put("aOptionsSeriesFacturacion", aOptionsSeriesFacturacion);
+		    }
+	    }
+		
+    	// Deuelve el identificador de la serie de facturacion
+		json.put("idSerieFacturacion", idSerieFacturacion);
+		
+		// json.
+		response.setContentType("text/x-json;charset=UTF-8");
+		response.setHeader("Cache-Control", "no-cache");
+		response.setHeader("Content-Type", "application/json");
+	    response.setHeader("X-JSON", json.toString());
+		response.getWriter().write(json.toString()); 		
+	}			
 }

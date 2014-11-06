@@ -83,18 +83,19 @@
 		String action=app+"/CER_GestionSolicitudes.do?noReset=true";
     /**************/
 %>
-
-
-	
-		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
-	
-	
+	<!-- HEAD -->
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
+	<link rel="stylesheet" href="<html:rewrite page='/html/js/jquery.ui/css/smoothness/jquery-ui-1.10.3.custom.min.css'/>">
+		
 	<!-- Incluido jquery en siga.js -->
-	
-	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js?v=${sessionScope.VERSIONJS}'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
-		<script src="<%=app%>/html/js/validacionStruts.js" type="text/javascript"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-1.9.1.js?v=${sessionScope.VERSIONJS}'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js?v=${sessionScope.VERSIONJS}'/>"></script>		
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-ui-1.10.3.custom.min.js?v=${sessionScope.VERSIONJS}'/>"></script>	  	
+	<script src="<%=app%>/html/js/validacionStruts.js" type="text/javascript"></script>
 
 		<script>
+			var mensajeGeneralError='<%=UtilidadesString.mostrarDatoJSP(UtilidadesString.getMensajeIdioma(userBean, "messages.general.error"))%>';
+		
 			function refrescarLocal()
 			{
 				parent.buscar();
@@ -238,25 +239,6 @@
 			   	document.forms[1].submit();			   	
 			}
 			
-			function facturacionrapida(fila)
-			{
-				subicono('iconoboton_facturacionrapida'+fila);
-				var auxIns = 'oculto' + fila + '_1';
-			    var idInst = document.getElementById(auxIns);			          		
-			   				   	
-			   	var auxSol = 'oculto' + fila + '_2';
-			    var idSol = document.getElementById(auxSol);			    
-				document.forms[0].target="submitArea";
-				document.forms[0].tablaDatosDinamicosD.value=idInst.value + ',' + idSol.value + '%';		
-				document.forms[0].modo.value="facturacionRapida";
-
-			   	document.forms[0].submit();		
-			   	finsubicono('iconoboton_facturacionrapida'+fila);
-			   	window.setTimeout("fin()",5000,"Javascript");
-			   	   	
- 			}
-			
-			
            function versolicitud(fila){
 		   var aux = 'oculto' + fila + '_6'; 
 	       var oculto = document.getElementById(aux);
@@ -278,11 +260,91 @@
 	          document.forms[0].modo.value="";
 	          document.forms[0].submit();
 		   }
+           
+			function facturacionrapida(fila) {
+				subicono('iconoboton_facturacionrapida' + fila);
+				
+			    var idInstitucion = document.getElementById('oculto' + fila + '_1');			          		
+			    var idSolicitud = document.getElementById('oculto' + fila + '_2');
+			    var idProducto = document.getElementById('oculto' + fila + '_7');
+			    var idTipoProducto = document.getElementById('oculto' + fila + '_8');		    
+			    
+			    jQuery.ajax({ 
+					type: "POST",
+					url: "/SIGA/CER_GestionSolicitudes.do?modo=getAjaxSeleccionSerieFacturacion",				
+					data: "idInstitucion=" + idInstitucion.value + "&idTipoProducto=" + idTipoProducto.value + "&idProducto=" + idProducto.value + "&idSolicitud=" + idSolicitud.value,
+					dataType: "json",
+					contentType: "application/x-www-form-urlencoded;charset=UTF-8",
+					success: function(json){							
+							
+						// Recupera el identificador de la serie de facturacion
+						var idSerieFacturacion = json.idSerieFacturacion;		
+						
+						if (idSerieFacturacion==null || idSerieFacturacion=='') {
+							jQuery("#selectSeleccionSerieFacturacion")[0].innerHTML = json.aOptionsSeriesFacturacion[0];
+							
+							jQuery("#divSeleccionSerieFacturacion").dialog(
+								{
+									height: 150,
+									width: 500,
+									modal: true,
+									resizable: false,
+									buttons: {
+										"Seleccionar": function() {
+											idSerieFacturacion = jQuery("#selectSeleccionSerieFacturacion").val();
+											if (idSerieFacturacion==null || idSerieFacturacion=='') {
+												alert('<siga:Idioma key="messages.facturacion.seleccionSerie.noSeleccion"/>');
+												
+											} else {
+												jQuery(this).dialog("close");
+												document.forms[0].target = "submitArea";
+												document.forms[0].tablaDatosDinamicosD.value = idInstitucion.value + ',' + idSolicitud.value + ',' + idSerieFacturacion;
+												document.forms[0].modo.value = "facturacionRapida";
+											   	document.forms[0].submit();	
+											}
+										},
+										"Cerrar": function() {
+											jQuery(this).dialog("close");
+										}
+									}
+								}
+							);
+							jQuery(".ui-widget-overlay").css("opacity","0");														
+							
+						} else {
+							document.forms[0].target = "submitArea";
+							document.forms[0].tablaDatosDinamicosD.value = idInstitucion.value + ',' + idSolicitud.value + ',' + idSerieFacturacion;	
+							document.forms[0].modo.value = "facturacionRapida";
+						   	document.forms[0].submit();							
+						}							
+						
+					   	finsubicono('iconoboton_facturacionrapida'+fila);
+					   	window.setTimeout("fin()",5000,"Javascript");								
+					},
+					
+					error: function(e){
+						alert(mensajeGeneralError);
+						fin();
+					}
+				});			    
+ 			}           
 		</script>
 	</head>
 
 	<body class="tablaCentralCampos">
-	
+		<div id="divSeleccionSerieFacturacion" title="<siga:Idioma key='facturacion.seleccionSerie.titulo'/>" style="display:none">
+			<table align="left">
+				<tr>		
+					<td class="labelText" nowrap>
+						<siga:Idioma key="facturacion.nuevaPrevisionFacturacion.literal.serieFacturacion"/>&nbsp;(*)
+					</td>
+					<td>
+						<select class='box' style='width:270px' id='selectSeleccionSerieFacturacion'>
+						</select>
+					</td>
+				</tr>				
+			</table>			
+		</div>
 	
 		<html:form action="/CER_GestionSolicitudes.do?noReset=true" method="POST" target="resultado">
 			<html:hidden styleId = "modo"  property = "modo"  value = ""/>
@@ -303,6 +365,7 @@
 			<html:hidden styleId = "filaSelD"  property = "filaSelD"/>
 			<html:hidden styleId = "tablaDatosDinamicosD"  property = "tablaDatosDinamicosD" value = "ver"/>
 		</html:form>
+		
 		<!-- Formulario para la creacion de envio -->
 		<html:form action="/ENV_DefinirEnvios.do" method="POST" target="mainWorkArea">
 			<html:hidden styleId = "actionModal"  property = "actionModal"  value = ""/>
@@ -313,6 +376,8 @@
 			<html:hidden styleId = "descEnvio"  property = "descEnvio" value = ""/>
 			<html:hidden styleId = "filaSelD"  property = "filaSelD" value = "ver"/>
 		</html:form>
+
+		
 			<siga:Table
 		   	      name="tablaDatos"
 		   		  border="1"

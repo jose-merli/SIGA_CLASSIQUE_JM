@@ -543,124 +543,6 @@ public class Facturacion {
 	}
 
     /**
-     * Notas Jorge PT 118: Genera la facturación rápida de un certificado (SIGASolicitudesCertificadosAction - Certificados > Gestión de solicitudes)
-     * 
-     * Genera una facturación rápida de compra de un certificado utilizando 
-     * como modelo la serie de facturacion genérica.
-     * @param compra
-     * @return serie de facturación temporal para la operacion
-     * @throws ClsExceptions
-     */
-    public FacSerieFacturacionBean procesarFacturacionRapidaCompraCertificado(PysCompraBean compra) throws ClsExceptions {
-        FacSerieFacturacionBean beanSerieFacturacionGenerica = null;
-    	try {    	        	    
-    	    // Obtiene una nueva serie de facturacion desde la generica
-    		FacSerieFacturacionAdm admSerieFacturacion = new FacSerieFacturacionAdm(this.usrbean);
-    		beanSerieFacturacionGenerica = admSerieFacturacion.obtenerSerieTemporalDesdeGenerica(compra);
-    	    if (beanSerieFacturacionGenerica==null) {
-    	        throw new ClsExceptions("No se ha podido crear la serie de facturacion temporal");
-    	    }
-
-    	    // Inserto el tipo de producto (FAC_TIPOSPRODUINCLUENFACTU)   	    
-    	    FacTiposProduIncluEnFactuBean beanTiposProduIncluEnFactu = new FacTiposProduIncluEnFactuBean();
-    	    beanTiposProduIncluEnFactu.setIdInstitucion(compra.getIdInstitucion());
-    	    beanTiposProduIncluEnFactu.setIdProducto(new Integer(compra.getIdProducto().toString()));
-    	    beanTiposProduIncluEnFactu.setIdTipoProducto(compra.getIdTipoProducto());
-    	    beanTiposProduIncluEnFactu.setIdSerieFacturacion(beanSerieFacturacionGenerica.getIdSerieFacturacion());
-    	    
-    	    FacTiposProduIncluEnFactuAdm admTiposProduIncluEnFact = new FacTiposProduIncluEnFactuAdm(this.usrbean);
-    	    if (!admTiposProduIncluEnFact.insert(beanTiposProduIncluEnFactu)) {
-    	        throw new ClsExceptions("Error al insertar producto incluido en serie: " + admTiposProduIncluEnFact.getError());
-    	    }
-    	    
-    	    // Inserto el destinatario individual (FAC_CLIENINCLUIDOENSERIEFACTUR)    	    
-    	    FacClienIncluidoEnSerieFacturBean beanClienIncluidoEnSerieFactur = new FacClienIncluidoEnSerieFacturBean();
-    	    beanClienIncluidoEnSerieFactur.setIdInstitucion(compra.getIdInstitucion());
-    	    beanClienIncluidoEnSerieFactur.setIdPersona(compra.getIdPersona());
-    	    beanClienIncluidoEnSerieFactur.setIdSerieFacturacion(beanSerieFacturacionGenerica.getIdSerieFacturacion());
-    	    
-    	    FacClienIncluidoEnSerieFacturAdm admClienIncluidoEnSerieFactur = new FacClienIncluidoEnSerieFacturAdm(this.usrbean);
-    	    if (!admClienIncluidoEnSerieFactur.insert(beanClienIncluidoEnSerieFactur)) {
-    	        throw new ClsExceptions("Error al insertar cliente incluido en serie: " + admClienIncluidoEnSerieFactur.getError());
-    	    }
-    	        	    
-    	    // Creo la programacion de la facturacion
-    	    String fecha = GstDate.quitaHora(compra.getFecha());    	    
-    	    FacFacturacionProgramadaBean beanFacturacionProgramada = new FacFacturacionProgramadaBean();
-    	    beanFacturacionProgramada.setIdInstitucion(compra.getIdInstitucion());
-    	    beanFacturacionProgramada.setArchivarFact("0");
-    	    beanFacturacionProgramada.setConfDeudor(beanSerieFacturacionGenerica.getConfigDeudor());
-    	    beanFacturacionProgramada.setConfIngresos(beanSerieFacturacionGenerica.getConfigIngresos());
-    	    beanFacturacionProgramada.setCtaClientes(beanSerieFacturacionGenerica.getCuentaClientes());
-    	    beanFacturacionProgramada.setCtaIngresos(beanSerieFacturacionGenerica.getCuentaIngresos());
-    	    beanFacturacionProgramada.setFechaCargo("sysdate");
-    	    beanFacturacionProgramada.setFechaFinProductos(fecha);
-    	    beanFacturacionProgramada.setFechaFinServicios(fecha);
-    	    beanFacturacionProgramada.setFechaInicioProductos(fecha);
-    	    beanFacturacionProgramada.setFechaInicioServicios(fecha);
-    	    beanFacturacionProgramada.setFechaProgramacion("sysdate");
-    	    beanFacturacionProgramada.setFechaPrevistaGeneracion("sysdate");
-    	    beanFacturacionProgramada.setFechaRealGeneracion("sysdate");
-    	    beanFacturacionProgramada.setFechaPrevistaConfirmacion(null);
-    	    beanFacturacionProgramada.setFechaConfirmacion(null);
-    	    beanFacturacionProgramada.setGenerarPDF("1"); 
-    	    beanFacturacionProgramada.setEnvio(beanSerieFacturacionGenerica.getEnvioFactura());
-    	    beanFacturacionProgramada.setIdEstadoConfirmacion(FacEstadoConfirmFactBean.GENERADA);
-    	    beanFacturacionProgramada.setIdEstadoEnvio(FacEstadoConfirmFactBean.ENVIO_NOAPLICA);
-    	    beanFacturacionProgramada.setIdEstadoPDF(FacEstadoConfirmFactBean.PDF_NOAPLICA);
-    	    beanFacturacionProgramada.setIdPrevision(null);
-    	    beanFacturacionProgramada.setIdSerieFacturacion(beanSerieFacturacionGenerica.getIdSerieFacturacion());
-    	    
-    	    // Bloquea la facturacion programada
-    	    beanFacturacionProgramada.setLocked("1");
-    	    
-    	    // Obtiene un nuevo identidicador de serie de facturacion
-    	    FacFacturacionProgramadaAdm admFacturacionProgramada = new FacFacturacionProgramadaAdm(this.usrbean);
-    	    Long idFacturacionProgramada = admFacturacionProgramada.getNuevoID(beanFacturacionProgramada);
-    	    beanFacturacionProgramada.setIdProgramacion(idFacturacionProgramada);
-    	    
-    	    // Obtiene la descripcion
-    	    String descripcion = beanSerieFacturacionGenerica.getNombreAbreviado() + " [" + idFacturacionProgramada + "]";
-    	    beanFacturacionProgramada.setDescripcion(descripcion);
-    	    
-    	    if (!admFacturacionProgramada.insert(beanFacturacionProgramada)) {
-    	        throw new ClsExceptions("Error al insertar cliente incluido en serie: " + admFacturacionProgramada.getError());
-    	    }
-    	    
-    	    // Carga los parametros
-    	    String resultado[] = new String[2];
-			Object[] param_in = new Object[7];
-			param_in[0] = beanFacturacionProgramada.getIdInstitucion().toString();
-        	param_in[1] = beanFacturacionProgramada.getIdSerieFacturacion().toString();
-        	param_in[2] = beanFacturacionProgramada.getIdProgramacion().toString();
-        	param_in[3] = this.usrbean.getLanguageInstitucion(); // Idioma
-        	param_in[4] = ""; // IdPeticion
-        	param_in[5] = this.usrbean.getUserName();
-        	param_in[6] = "0"; // IdPrevision
-        	
-        	// Genera la facturacion
-        	resultado = ClsMngBBDD.callPLProcedure("{call PKG_SIGA_FACTURACION.GENERACIONFACTURACION(?,?,?,?,?,?,?,?,?)}", 2, param_in);
-        	
-        	// Compruebo que ha finalizado correctamente
-        	String codretorno = resultado[0];
-        	if (!codretorno.equals("0")){
-        		 throw new ClsExceptions ("Error al generar la Facturación rapida: "+resultado[1]);
-        	}
-        	
-        	// Desbloquea la facturacion programada
-        	beanFacturacionProgramada.setLocked("0");
-			if (!admFacturacionProgramada.updateDirect(beanFacturacionProgramada)) {
-    	        throw new ClsExceptions("Error al actualizar locked de programacion: " + admFacturacionProgramada.getError());
-    	    }
-    	    
-    	} catch (Exception e) {
-    		throw new ClsExceptions(e,"Error al realizar generacion de facturacion rápida.");
-    	}
-
-    	return beanSerieFacturacionGenerica;
-    }
-
-    /**
      * Restaura los objetos implicados en la facturación temporal, dejando estos relacionados a la serie Genérica
      * y eliminando los objetos no necesarios, incluida la serie temporal. Devuelve la programación debidamente relacionada
      * @param serieTemporal
@@ -1645,9 +1527,10 @@ public class Facturacion {
 	}
     
     /**
-     * Notas Jorge PT 118: Generacion de la facturacion rapida de compras (SolicitudCompraAction):
+     * Notas Jorge PT 118: Generacion de la facturacion rapida de compras y certificados (SolicitudCompraAction y SIGASolicitudesCertificadosAction):
      * - Productos y Servicios > Solicitudes > Compra/Subscripción
      * - Productos y Servicios > Gestión Solicitudes
+     * - Certificados > Gestión de solicitudes
      * 
      * @param beanPeticion
      * @param compras
@@ -1655,7 +1538,7 @@ public class Facturacion {
      * @return
      * @throws ClsExceptions
      */
-    public FacSerieFacturacionBean procesarFacturacionRapidaCompras(PysPeticionCompraSuscripcionBean beanPeticion, Vector<?> compras, FacSerieFacturacionBean beanSerieCandidata) throws ClsExceptions {
+    public FacSerieFacturacionBean procesarFacturacionRapidaCompras(PysPeticionCompraSuscripcionBean beanPeticionCompraSuscripcion, Vector<PysCompraBean> compras, FacSerieFacturacionBean beanSerieCandidata) throws ClsExceptions {
         FacSerieFacturacionBean beanSerieFacturacion = null;
     	try {
     	    FacSerieFacturacionAdm admSerieFacturacion = new FacSerieFacturacionAdm(this.usrbean);
@@ -1664,7 +1547,7 @@ public class Facturacion {
     	    FacFacturacionProgramadaAdm admFacturacionProgramada = new FacFacturacionProgramadaAdm(this.usrbean);
     	    
     	    // Obtiene una nueva serie de facturacion desde otra existente
-    	    beanSerieFacturacion = admSerieFacturacion.obtenerSerieTemporalDesdeOtra(beanSerieCandidata, beanPeticion);
+    	    beanSerieFacturacion = admSerieFacturacion.obtenerSerieTemporalDesdeOtra(beanSerieCandidata, beanPeticionCompraSuscripcion);
     	    if (beanSerieFacturacion==null) {
     	        throw new ClsExceptions("No se ha podido crear la serie de facturacion temporal");
     	    }
@@ -1697,7 +1580,7 @@ public class Facturacion {
     	        beanTiposProduIncluEnFactu.setIdTipoProducto(compra.getIdTipoProducto());
     	        beanTiposProduIncluEnFactu.setIdSerieFacturacion(beanSerieFacturacion.getIdSerieFacturacion());
 	    	    
-	    	    // Si no existe el tipo de producto se inserta
+	    	    // Si no existe el tipo de producto se inserta  (FAC_TIPOSPRODUINCLUENFACTU)
 	    	    if (hListaTiposProductos.size()==0 || !hListaTiposProductos.containsKey(compra.getIdTipoProducto())) {
 	    	    	if (!admTiposProduIncluEnFactu.insert(beanTiposProduIncluEnFactu)) {
 	    	    		throw new ClsExceptions("Error al insertar producto incluido en serie: " + admTiposProduIncluEnFactu.getError());
@@ -1721,10 +1604,10 @@ public class Facturacion {
 	    	    }
     	    }
     	    
-    	    // Inserto el destinatario individual    	    
+    	    // Inserto el destinatario individual (FAC_CLIENINCLUIDOENSERIEFACTUR)      	    
     	    FacClienIncluidoEnSerieFacturBean beanClienIncluidoEnSerieFactur = new FacClienIncluidoEnSerieFacturBean();
-    	    beanClienIncluidoEnSerieFactur.setIdInstitucion(beanPeticion.getIdInstitucion());
-    	    beanClienIncluidoEnSerieFactur.setIdPersona(beanPeticion.getIdPersona());
+    	    beanClienIncluidoEnSerieFactur.setIdInstitucion(beanPeticionCompraSuscripcion.getIdInstitucion());
+    	    beanClienIncluidoEnSerieFactur.setIdPersona(beanPeticionCompraSuscripcion.getIdPersona());
     	    beanClienIncluidoEnSerieFactur.setIdSerieFacturacion(beanSerieFacturacion.getIdSerieFacturacion());
     	    
     	    if (!admClienIncluidoEnSerieFactur.insert(beanClienIncluidoEnSerieFactur)) {
@@ -1737,7 +1620,7 @@ public class Facturacion {
 
     	    // Creo la programacion de la facturacion  	    
     	    FacFacturacionProgramadaBean beanFacturacionProgramada = new FacFacturacionProgramadaBean();
-    	    beanFacturacionProgramada.setIdInstitucion(beanPeticion.getIdInstitucion());
+    	    beanFacturacionProgramada.setIdInstitucion(beanPeticionCompraSuscripcion.getIdInstitucion());
     	    beanFacturacionProgramada.setArchivarFact("0");
     	    beanFacturacionProgramada.setConfDeudor(beanSerieFacturacion.getConfigDeudor());
     	    beanFacturacionProgramada.setConfIngresos(beanSerieFacturacion.getConfigIngresos());
@@ -1784,7 +1667,7 @@ public class Facturacion {
         	param_in[1] = beanFacturacionProgramada.getIdSerieFacturacion().toString();
         	param_in[2] = beanFacturacionProgramada.getIdProgramacion().toString();
         	param_in[3] = this.usrbean.getLanguageInstitucion(); // Idioma
-        	param_in[4] = beanPeticion.getIdPeticion().toString();
+        	param_in[4] = beanPeticionCompraSuscripcion.getIdPeticion().toString();
         	param_in[5] = this.usrbean.getUserName();
         	param_in[6] = "0"; // IdPrevision
         	

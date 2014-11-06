@@ -271,52 +271,6 @@ public class FacSerieFacturacionAdm extends MasterBeanAdministrador {
     	
 		return salida;
     }
-    
-    /**
-     * Notas Jorge PT 118: Obtiene una nueva serie de facturacion desde la generica
-     * @param compra
-     * @return
-     * @throws ClsExceptions
-     */
-    public FacSerieFacturacionBean obtenerSerieTemporalDesdeGenerica(PysCompraBean compra) throws ClsExceptions {
-    	 FacSerieFacturacionBean beanSerieFacturacionGenerica = null;
-    	try {
-    		String idInstitucion = compra.getIdInstitucion().toString();
-    		
-    		// Obtiene la serie de facturacion generica de la institucion
-    	    beanSerieFacturacionGenerica = this.obtenerSerieGenerica(idInstitucion);
-    	    String idSerieFacturacion = beanSerieFacturacionGenerica.getIdSerieFacturacion().toString();
-    	    
-    	    // Obtiene un nuevo identidicador de serie de facturacion
-    	    String nuevoidSerieFacturacion = this.getNuevoId(idInstitucion);
-    	    beanSerieFacturacionGenerica.setIdSerieFacturacion(new Long(nuevoidSerieFacturacion));
-    	        	    
-       	    // Modifico los valores del bean de la serie de facturacion generica    	    
-    	    CenPersonaAdm admPer = new CenPersonaAdm(this.usrbean);
-    	    String sNombrePersona = admPer.obtenerNombreApellidos(compra.getIdPersona().toString());
-    	    String descripcion = "Fact. Autom. " + sNombrePersona;    	 
-    	    if (descripcion.length()>100) { // La descripcion no puede superar los 100 caracteres
-    	    	beanSerieFacturacionGenerica.setDescripcion(descripcion.substring(0, 100));
-    	    } else {
-    	    	beanSerieFacturacionGenerica.setDescripcion(descripcion);
-    	    }
-    	    
-    	    beanSerieFacturacionGenerica.setTipoSerie("T");
-    	    beanSerieFacturacionGenerica.setNombreAbreviado("AUTOM_" + compra.getIdPersona().toString() + "_" + nuevoidSerieFacturacion);
-    	    if (!this.insert(beanSerieFacturacionGenerica)) {
-    	        throw new ClsExceptions("Error al crear la serie de facturacion");
-    	    }
-                	    
-    	    // Copia FAC_SERIEFACTURACION_BANCOS			
-    	    FacSerieFacturacionBancoAdm admSerieFacturacionBanco = new FacSerieFacturacionBancoAdm(this.usrbean);
-    	    admSerieFacturacionBanco.copiarBancosSerieFacturacion(idInstitucion, idSerieFacturacion, nuevoidSerieFacturacion);
-			
-    	} catch (Exception e) {
-    		throw new ClsExceptions(e,"Error al obtener una nueva serie de facturacion desde la generica.");
-    	}
-    	
-		return beanSerieFacturacionGenerica;
-    }
 
     /**
      * Notas Jorge PT 118: Obtiene una nueva serie de facturacion desde otra existente
@@ -419,24 +373,29 @@ public class FacSerieFacturacionAdm extends MasterBeanAdministrador {
 	        for (int i=0;i<compras.size();i++) {
 	            PysCompraBean b = (PysCompraBean) compras.get(i);
 	            
-	            aux+="'"+b.getIdProducto().toString()+"__"+b.getIdTipoProducto().toString()+"',";
-	            idInstitucion= b.getIdInstitucion().toString();
-	            
+	            aux += "'" + b.getIdProducto().toString() + "_" + b.getIdTipoProducto().toString() + "',";
+	            idInstitucion = b.getIdInstitucion().toString();	            
 	        }
 	        aux = aux.substring(0,aux.length()-1);
 	        
-	        String where = "where (idinstitucion, idseriefacturacion) in ( " +
-	                " select idinstitucion, idseriefacturacion " +
-	            	" from fac_tiposproduincluenfactu  " +
-	            	" where idproducto||'__'||idtipoproducto in ("+aux+") " +
-	            	" and idinstitucion=" +idInstitucion +")";
+	        String sql = UtilidadesBDAdm.sqlSelect(this.nombreTabla, this.getCamposBean()) + 
+	        		" WHERE (" + FacSerieFacturacionBean.C_IDINSTITUCION + ", " + FacSerieFacturacionBean.C_IDSERIEFACTURACION + ") IN (" +
+	                	" SELECT " + FacTiposProduIncluEnFactuBean.T_NOMBRETABLA + "." + FacTiposProduIncluEnFactuBean.C_IDINSTITUCION + ", " +
+                			FacTiposProduIncluEnFactuBean.T_NOMBRETABLA + "." + FacTiposProduIncluEnFactuBean.C_IDSERIEFACTURACION +
+	                	" FROM " + FacTiposProduIncluEnFactuBean.T_NOMBRETABLA +
+	                	" WHERE " + FacTiposProduIncluEnFactuBean.T_NOMBRETABLA + "." + FacTiposProduIncluEnFactuBean.C_IDPRODUCTO + 
+	                			" || '_' || " + FacTiposProduIncluEnFactuBean.T_NOMBRETABLA + "." + FacTiposProduIncluEnFactuBean.C_IDTIPOPRODUCTO + " IN (" + aux + ") " +
+	            			" AND " + FacTiposProduIncluEnFactuBean.T_NOMBRETABLA + "." + FacTiposProduIncluEnFactuBean.C_IDINSTITUCION + " = " + idInstitucion + 
+	            	" ) " + 
+	            	" ORDER BY " + FacSerieFacturacionBean.C_DESCRIPCION;
 	        
-	        salida = this.select(where);
+	        salida = this.selectSQL(sql);
 	        
-		}
-		catch(Exception e){
+	        
+		} catch(Exception e) {
 			throw new ClsExceptions(e,"Error al buscar las series de facturacion candidatas.");
 		}
+	    
 		return salida;
 	}	
 	
@@ -572,4 +531,37 @@ public class FacSerieFacturacionAdm extends MasterBeanAdministrador {
 		
 		return resultado;
 	}	
+	
+	/**
+	 * Busca las series de facturacion del producto
+	 * @param idInstitucion
+	 * @param idTipoProducto
+	 * @param idProducto
+	 * @return
+	 * @throws ClsExceptions
+	 */
+	public Vector<FacSerieFacturacionBean> obtenerSeriesFacturacionProducto(String idInstitucion, String idTipoProducto, String idProducto) throws ClsExceptions {
+	    Vector<FacSerieFacturacionBean> salida = new Vector<FacSerieFacturacionBean>();
+	    try{	        
+	        String sql = UtilidadesBDAdm.sqlSelect(this.nombreTabla, this.getCamposBean()) + 
+	        		" WHERE (" + FacSerieFacturacionBean.C_IDINSTITUCION + ", " + FacSerieFacturacionBean.C_IDSERIEFACTURACION + ") IN (" +
+	                	" SELECT " + FacTiposProduIncluEnFactuBean.T_NOMBRETABLA + "." + FacTiposProduIncluEnFactuBean.C_IDINSTITUCION + ", " +
+                			FacTiposProduIncluEnFactuBean.T_NOMBRETABLA + "." + FacTiposProduIncluEnFactuBean.C_IDSERIEFACTURACION +
+	                	" FROM " + FacTiposProduIncluEnFactuBean.T_NOMBRETABLA +
+	                	" WHERE " + FacTiposProduIncluEnFactuBean.T_NOMBRETABLA + "." + FacTiposProduIncluEnFactuBean.C_IDINSTITUCION + " = " + idInstitucion +
+	                		" AND " + FacTiposProduIncluEnFactuBean.T_NOMBRETABLA + "." + FacTiposProduIncluEnFactuBean.C_IDTIPOPRODUCTO + " = " + idTipoProducto +
+	                		" AND " + FacTiposProduIncluEnFactuBean.T_NOMBRETABLA + "." + FacTiposProduIncluEnFactuBean.C_IDPRODUCTO + " = " + idProducto +	                		
+	            	" ) " + 
+	            	" ORDER BY " + FacSerieFacturacionBean.C_DESCRIPCION;
+	        
+	        salida = this.selectSQL(sql);
+	        
+	        
+		} catch(Exception e) {
+			throw new ClsExceptions(e,"Error al buscar las series de facturacion del producto.");
+		}
+	    
+		return salida;
+	}	
+		
 }
