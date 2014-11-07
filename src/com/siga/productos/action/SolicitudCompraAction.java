@@ -1583,7 +1583,6 @@ public class SolicitudCompraAction extends MasterAction{
 	        		        	
 	        	        	
 	        	FacSerieFacturacionBean serieFacturacionCandidata = null;
-	        	FacSerieFacturacionBean serieFacturacionTemporal = null;
 	        	FacFacturacionProgramadaBean programacion = null;
 	        	
 	        	// PASO 1: OBTENER SERIE CANDIDATA	
@@ -1621,35 +1620,19 @@ public class SolicitudCompraAction extends MasterAction{
 		        }
 
 			    // PASO 2: FACTURACION RAPIDA DESDE SERIE CANDIDATA (GENERACION)
-			    serieFacturacionTemporal =  facturacion.procesarFacturacionRapidaCompras(beanPeticionCompraSuscripcion, compras, serieFacturacionCandidata);
+	        	programacion = facturacion.procesarFacturacionRapidaCompras(beanPeticionCompraSuscripcion, compras, serieFacturacionCandidata);
 			    
 			    // Aqui obtengo las facturas implicadas
-			    Vector<?> facts = admFactura.getFacturasSerieFacturacion(serieFacturacionTemporal);
+			    Vector<?> facts = admFactura.getFacturasSerieFacturacion(serieFacturacionCandidata);
 			    FacFacturaBean factBean = (FacFacturaBean)facts.get(0);
 			    idFactura = factBean.getIdFactura();
-
-			    // Deshacer relaciones temporales
-			    programacion = facturacion.restaurarSerieFacturacion(serieFacturacionCandidata, serieFacturacionTemporal);
 		        
-			    //BNS INCLUIMOS LA CONFIRMACIÓN EN LA MISMA TRANSACCIÓN
+			    // PASO 3: CONFIRMACION RAPIDA (en este caso la transacción se gestiona dentro la transaccion)
 			    facturacion.confirmarProgramacionFactura(programacion, request, false, null, false, false, tx);
 			    
 			    if (Status.STATUS_ACTIVE  == tx.getStatus())
 			    	tx.commit();
 			    
-			    /*
-			    // PASO 3: CONFIRMACION RAPIDA (en este caso la transacción se gestiona dentro la transaccion)
-			    try {
-			        facturacion.confirmarProgramacionFactura(programacion, request,false,null,false,false);
-			        
-				} catch (SIGAException ee) {
-					mensaje="messages.facturacionRapida.errorConfirmacion";
-					return exito(mensaje,request);
-				} catch (Exception e) {
-					mensaje="messages.facturacionRapida.errorConfirmacion";
-					return exito(mensaje,request);
-			    }
-			    */
 			} else {
 				// YA FACTURADA, SE DESCARGA LA FACTURA
 				tx.commit();

@@ -145,33 +145,4 @@ public class FacSerieFacturacionBancoAdm extends MasterBeanAdmVisible {
 		   }
 	       return datos;                        
 	    }		
-
-	/**
-	 * Notas Jorge PT 118: Copia los bancos de una serie de facturacion a otra nueva
-	 * @param idInstitucion
-	 * @param idSerieFacturacion
-	 * @param nuevoidSerieFacturacion
-	 * @throws ClsExceptions
-	 */
-	public void copiarBancosSerieFacturacion(String idInstitucion, String idSerieFacturacion, String nuevoidSerieFacturacion) throws ClsExceptions {
-		String sql = "INSERT INTO " + FacSerieFacturacionBancoBean.T_NOMBRETABLA + " ( " +
-						FacSerieFacturacionBancoBean.C_IDINSTITUCION + ", " +
-						FacSerieFacturacionBancoBean.C_IDSERIEFACTURACION + ", " + 
-						FacSerieFacturacionBancoBean.C_BANCOS_CODIGO + ", " +
-						FacSerieFacturacionBancoBean.C_IDSUFIJO + ", " +
-						FacSerieFacturacionBancoBean.C_USUMODIFICACION + ", " + 
-						FacSerieFacturacionBancoBean.C_FECHAMODIFICACION + 
-					" ) ( " +
-						" SELECT " + FacSerieFacturacionBancoBean.C_IDINSTITUCION + ", " +
-							nuevoidSerieFacturacion + ", " + 
-							FacSerieFacturacionBancoBean.C_BANCOS_CODIGO + ", " +
-							" NULL, " +
-							FacSerieFacturacionBancoBean.C_USUMODIFICACION + ", " + 
-							FacSerieFacturacionBancoBean.C_FECHAMODIFICACION + 
-							" FROM " + FacSerieFacturacionBancoBean.T_NOMBRETABLA + 
-							" WHERE " + FacSerieFacturacionBancoBean.C_IDINSTITUCION + " = " + idInstitucion +
-								" AND " + FacSerieFacturacionBancoBean.C_IDSERIEFACTURACION + " = " + idSerieFacturacion +
-					" ) ";
-		this.insertSQL(sql);
-	}
 }

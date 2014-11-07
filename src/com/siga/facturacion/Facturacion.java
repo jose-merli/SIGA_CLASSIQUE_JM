@@ -54,10 +54,6 @@ import com.siga.beans.EnvDestinatariosBean;
 import com.siga.beans.EnvEnviosBean;
 import com.siga.beans.FacBancoInstitucionAdm;
 import com.siga.beans.FacBancoInstitucionBean;
-import com.siga.beans.FacClienIncluidoEnSerieFacturAdm;
-import com.siga.beans.FacClienIncluidoEnSerieFacturBean;
-import com.siga.beans.FacDisqueteCargosAdm;
-import com.siga.beans.FacDisqueteCargosBean;
 import com.siga.beans.FacDisqueteDevolucionesAdm;
 import com.siga.beans.FacDisqueteDevolucionesBean;
 import com.siga.beans.FacEstadoConfirmFactBean;
@@ -74,10 +70,7 @@ import com.siga.beans.FacLineaFacturaBean;
 import com.siga.beans.FacPlantillaFacturacionAdm;
 import com.siga.beans.FacRenegociacionAdm;
 import com.siga.beans.FacRenegociacionBean;
-import com.siga.beans.FacSerieFacturacionAdm;
 import com.siga.beans.FacSerieFacturacionBean;
-import com.siga.beans.FacTiposProduIncluEnFactuAdm;
-import com.siga.beans.FacTiposProduIncluEnFactuBean;
 import com.siga.beans.GenParametrosAdm;
 import com.siga.beans.PysCompraBean;
 import com.siga.beans.PysPeticionCompraSuscripcionBean;
@@ -541,151 +534,6 @@ public class Facturacion {
 		}
 		
 	}
-
-    /**
-     * Restaura los objetos implicados en la facturación temporal, dejando estos relacionados a la serie Genérica
-     * y eliminando los objetos no necesarios, incluida la serie temporal. Devuelve la programación debidamente relacionada
-     * @param serieTemporal
-     * @return
-     * @throws ClsExceptions
-     */
-    public FacFacturacionProgramadaBean restaurarSerieFacturacionGenerica(FacSerieFacturacionBean serieTemporal) throws ClsExceptions {
-        return restaurarSerieFacturacion(null,serieTemporal);
-	}
-    
-    /**
-     * Restaura los objetos implicados en la facturación temporal, dejando estos relacionados a la serie pasada como 
-     * parámetro (serieCandidata) y eliminando los objetos no necesarios, incluida la serie temporal. Devuelve la programación debidamente relacionada
-     * @param serieCandidata
-     * @param serieTemporal
-     * @return
-     * @throws ClsExceptions
-     */
-    public FacFacturacionProgramadaBean restaurarSerieFacturacion(FacSerieFacturacionBean serieCandidata, FacSerieFacturacionBean serieTemporal) throws ClsExceptions {
-        FacFacturacionProgramadaBean salida = null;
-        FacFacturacionProgramadaBean aux = null;
-        try {
-            FacSerieFacturacionAdm admSerie=new FacSerieFacturacionAdm(this.usrbean);
-            if (serieCandidata==null) {
-                // utilizamos la generica
-                serieCandidata = admSerie.obtenerSerieGenerica(serieTemporal.getIdInstitucion().toString());
-            }
-            Hashtable<String,Object> ht = new Hashtable<String,Object>();
-            ht.put(FacFacturaBean.C_IDINSTITUCION, serieTemporal.getIdInstitucion());
-            ht.put(FacFacturaBean.C_IDSERIEFACTURACION, serieTemporal.getIdSerieFacturacion());
-
-            // Obtengo la programacion para que apunte a la temporal
-            FacFacturacionProgramadaAdm admPr=new FacFacturacionProgramadaAdm(this.usrbean);
-            Vector<?> v4 = admPr.select(ht);
-            Long idProgAnt = null;
-            
-            for (int i=0;v4!=null && i<v4.size();i++) {
-                aux = (FacFacturacionProgramadaBean) v4.get(i);
-                
-                idProgAnt = aux.getIdProgramacion();
-                Long nuevoIdP= admPr.getNuevoID(aux.getIdInstitucion().toString(),serieCandidata.getIdSerieFacturacion().toString());
-                
-                salida = new FacFacturacionProgramadaBean();
-                // campos comunes
-                salida.setArchivarFact(aux.getArchivarFact());
-                salida.setConfDeudor(aux.getConfDeudor());
-                salida.setConfIngresos(aux.getConfIngresos());
-                salida.setCtaClientes(aux.getCtaClientes());
-                salida.setCtaIngresos(aux.getCtaIngresos());
-                salida.setEnvio(aux.getEnvio());
-                salida.setFechaCargo(aux.getFechaCargo());
-                salida.setFechaConfirmacion(aux.getFechaConfirmacion());
-                salida.setFechaFinProductos(aux.getFechaFinProductos());
-                salida.setFechaFinServicios(aux.getFechaFinServicios());
-                salida.setFechaInicioProductos(aux.getFechaInicioProductos());
-                salida.setFechaInicioServicios(aux.getFechaInicioServicios());
-                salida.setFechaPrevistaConfirmacion(aux.getFechaPrevistaConfirmacion());
-                salida.setFechaPrevistaGeneracion(aux.getFechaPrevistaGeneracion());
-                salida.setFechaProgramacion(aux.getFechaProgramacion());
-                salida.setFechaRealGeneracion(aux.getFechaRealGeneracion());
-                salida.setGenerarPDF(aux.getGenerarPDF());
-                salida.setIdEstadoConfirmacion(aux.getIdEstadoConfirmacion());
-                salida.setIdEstadoEnvio(aux.getIdEstadoEnvio());
-                salida.setIdEstadoPDF(aux.getIdEstadoPDF());
-                salida.setIdInstitucion(aux.getIdInstitucion());
-                salida.setIdPrevision(aux.getIdPrevision());
-                salida.setLocked(aux.getLocked());
-                salida.setVisible(aux.getVisible());
-                if (salida.getEnvio().equals(ClsConstants.ENVIO)) {
-                	salida.setIdTipoPlantillaMail(aux.getIdTipoPlantillaMail());
-                }
-
-                // campos nuevos
-                salida.setIdProgramacion(nuevoIdP);
-                salida.setIdSerieFacturacion(serieCandidata.getIdSerieFacturacion());
-                
-                // Ultimo campo a setear necesita idprogramacion, idinstitucion, idseriefacturacion
-                salida.setDescripcion(admPr.getDescripcionPorDefecto(salida));			
-
-                // insertamos el nuevo
-                if (!admPr.insert(salida)) {
-                    throw new ClsExceptions("Error al insertar la nueva programacion: "+admPr.getError());
-                }
-            }
-    	    
-            // restauro programacion nueva en las facturas 
-            FacFacturaAdm admFac=new FacFacturaAdm(this.usrbean);
-            Vector<?> v = admFac.select(ht);
-            for (int i=0;v!=null && i<v.size();i++) {
-                FacFacturaBean b = (FacFacturaBean) v.get(i);
-                b.setIdSerieFacturacion(serieCandidata.getIdSerieFacturacion());
-                b.setIdProgramacion(salida.getIdProgramacion());
-                if (!admFac.updateDirect(b)) {
-                    throw new ClsExceptions("Error al actualizar la serie en la factura: "+admFac.getError());
-                }
-            }
-    	    
-            // restauro programacion nueva en disquete cargos
-            FacDisqueteCargosAdm admDis=new FacDisqueteCargosAdm(this.usrbean);
-            Vector<?> v2 = admDis.select(ht);
-            for (int i=0;v2!=null && i<v2.size();i++) {
-                FacDisqueteCargosBean b2 = (FacDisqueteCargosBean) v2.get(i);
-                b2.setIdSerieFacturacion(serieCandidata.getIdSerieFacturacion());
-                b2.setIdProgramacion(salida.getIdProgramacion());
-                if (!admDis.updateDirect(b2)) {
-                    throw new ClsExceptions("Error al actualizar la serie en la factura: "+admDis.getError());
-                }
-            }
-    	    
-            // Elimino la serie temporal y relaciones
-            // cliente
-            FacClienIncluidoEnSerieFacturAdm admClis=new FacClienIncluidoEnSerieFacturAdm(this.usrbean);
-            Vector<?> v3 = admClis.select(ht);
-            for (int i=0;v3!=null && i<v3.size();i++) {
-                FacClienIncluidoEnSerieFacturBean b3 = (FacClienIncluidoEnSerieFacturBean) v3.get(i);
-                if (!admClis.delete(b3)) {
-                    throw new ClsExceptions("Error al eliminar clientes de la serie temporal: "+admClis.getError());
-                }
-            }
-            // bancos
-            if (!admClis.deleteSQL("delete from fac_seriefacturacion_banco where idinstitucion="+serieTemporal.getIdInstitucion()+ " and idseriefacturacion="+serieTemporal.getIdSerieFacturacion())) {
-                throw new ClsExceptions("Error al eliminar bancos de la serie temporal: "+admClis.getError());
-            }
-            // tipo producto
-            if (!admClis.deleteSQL("delete from fac_tiposproduincluenfactu where idinstitucion="+serieTemporal.getIdInstitucion()+ " and idseriefacturacion="+serieTemporal.getIdSerieFacturacion())) {
-                throw new ClsExceptions("Error al eliminar tipos de producto de la serie temporal: "+admClis.getError());
-            }
-            // la programacion inicial
-            if (!admPr.deleteSQL("DELETE FROM FAC_FACTURACIONPROGRAMADA WHERE  idinstitucion="+serieTemporal.getIdInstitucion()+ " and idseriefacturacion="+serieTemporal.getIdSerieFacturacion()+ " and idprogramacion="+idProgAnt.toString())) {
-                throw new ClsExceptions("Error al eliminar la serie temporal: "+admSerie.getError());
-            }
-            // la serie de facturacion
-            if (!admSerie.delete(serieTemporal)) {
-                throw new ClsExceptions("Error al eliminar la serie temporal: "+admSerie.getError());
-            }
-
-            // OKIS
-            return salida;
-    	} 
-    	catch (Exception e) {
-    		throw new ClsExceptions(e,"Error al restaurar relaciones de serie de facturacion temporales.");
-    	}
-    }
     
     /**
      * Notas Jorge PT 118:
@@ -1532,28 +1380,17 @@ public class Facturacion {
      * - Productos y Servicios > Gestión Solicitudes
      * - Certificados > Gestión de solicitudes
      * 
-     * @param beanPeticion
+     * @param beanPeticionCompraSuscripcion
      * @param compras
      * @param beanSerieCandidata
      * @return
      * @throws ClsExceptions
      */
-    public FacSerieFacturacionBean procesarFacturacionRapidaCompras(PysPeticionCompraSuscripcionBean beanPeticionCompraSuscripcion, Vector<PysCompraBean> compras, FacSerieFacturacionBean beanSerieCandidata) throws ClsExceptions {
-        FacSerieFacturacionBean beanSerieFacturacion = null;
+    public FacFacturacionProgramadaBean procesarFacturacionRapidaCompras(PysPeticionCompraSuscripcionBean beanPeticionCompraSuscripcion, Vector<PysCompraBean> compras, FacSerieFacturacionBean beanSerieCandidata) throws ClsExceptions {
+    	FacFacturacionProgramadaBean beanFacturacionProgramada = new FacFacturacionProgramadaBean();
+    	
     	try {
-    	    FacSerieFacturacionAdm admSerieFacturacion = new FacSerieFacturacionAdm(this.usrbean);
-    	    FacTiposProduIncluEnFactuAdm admTiposProduIncluEnFactu = new FacTiposProduIncluEnFactuAdm(this.usrbean);
-    	    FacClienIncluidoEnSerieFacturAdm admClienIncluidoEnSerieFactur = new FacClienIncluidoEnSerieFacturAdm(this.usrbean);
     	    FacFacturacionProgramadaAdm admFacturacionProgramada = new FacFacturacionProgramadaAdm(this.usrbean);
-    	    
-    	    // Obtiene una nueva serie de facturacion desde otra existente
-    	    beanSerieFacturacion = admSerieFacturacion.obtenerSerieTemporalDesdeOtra(beanSerieCandidata, beanPeticionCompraSuscripcion);
-    	    if (beanSerieFacturacion==null) {
-    	        throw new ClsExceptions("No se ha podido crear la serie de facturacion temporal");
-    	    }
-    	    
-            Hashtable<Integer, Hashtable<Long, PysCompraBean>> hListaTiposProductos = new Hashtable<Integer, Hashtable<Long, PysCompraBean>>();
-            Hashtable<Long, PysCompraBean> hListaProductos = new Hashtable<Long, PysCompraBean>();            
             Date fechaMin=null, fechaMax=null;
                 
     	    // Recorro la lista de compras, para insertar las compras
@@ -1571,61 +1408,20 @@ public class Facturacion {
     	        }    	        
     	        if (fechaMax==null || fechaAux.after(fechaMax)) {
     	        	fechaMax=fechaAux;
-    	        }
-        	        
-    	        // Genero el objeto del tipo del producto
-    	        FacTiposProduIncluEnFactuBean beanTiposProduIncluEnFactu = new FacTiposProduIncluEnFactuBean();
-    	        beanTiposProduIncluEnFactu.setIdInstitucion(compra.getIdInstitucion());
-    	        beanTiposProduIncluEnFactu.setIdProducto(new Integer(compra.getIdProducto().toString()));
-    	        beanTiposProduIncluEnFactu.setIdTipoProducto(compra.getIdTipoProducto());
-    	        beanTiposProduIncluEnFactu.setIdSerieFacturacion(beanSerieFacturacion.getIdSerieFacturacion());
-	    	    
-	    	    // Si no existe el tipo de producto se inserta  (FAC_TIPOSPRODUINCLUENFACTU)
-	    	    if (hListaTiposProductos.size()==0 || !hListaTiposProductos.containsKey(compra.getIdTipoProducto())) {
-	    	    	if (!admTiposProduIncluEnFactu.insert(beanTiposProduIncluEnFactu)) {
-	    	    		throw new ClsExceptions("Error al insertar producto incluido en serie: " + admTiposProduIncluEnFactu.getError());
-	    	    	}
-	    	    	    	    	
-	    	    	hListaProductos.put(compra.getIdProducto(), compra);
-	    	    	hListaTiposProductos.put(compra.getIdTipoProducto(), hListaProductos);
-	    	    	
-	    	    } else { // Existe el tipo de producto
-	    	    	hListaProductos = (Hashtable<Long, PysCompraBean>) hListaTiposProductos.get(compra.getIdTipoProducto());
-	    	    	
-	    	    	// Si no existe el producto se inserta
-	    	    	if (hListaProductos.size()==0 || !hListaProductos.containsKey(compra.getIdProducto())) {
-	    	    		if (!admTiposProduIncluEnFactu.insert(beanTiposProduIncluEnFactu)) {
-	    	    			throw new ClsExceptions("Error al insertar producto incluido en serie: " + admTiposProduIncluEnFactu.getError());
-	    	    		}
-	    	    		
-	    	    		hListaProductos.put(compra.getIdProducto(), compra);
-	    	    		hListaTiposProductos.put(compra.getIdTipoProducto(), hListaProductos);	    	    		
-	    	    	}
-	    	    }
-    	    }
-    	    
-    	    // Inserto el destinatario individual (FAC_CLIENINCLUIDOENSERIEFACTUR)      	    
-    	    FacClienIncluidoEnSerieFacturBean beanClienIncluidoEnSerieFactur = new FacClienIncluidoEnSerieFacturBean();
-    	    beanClienIncluidoEnSerieFactur.setIdInstitucion(beanPeticionCompraSuscripcion.getIdInstitucion());
-    	    beanClienIncluidoEnSerieFactur.setIdPersona(beanPeticionCompraSuscripcion.getIdPersona());
-    	    beanClienIncluidoEnSerieFactur.setIdSerieFacturacion(beanSerieFacturacion.getIdSerieFacturacion());
-    	    
-    	    if (!admClienIncluidoEnSerieFactur.insert(beanClienIncluidoEnSerieFactur)) {
-    	        throw new ClsExceptions("Error al insertar cliente incluido en serie: "+admClienIncluidoEnSerieFactur.getError());
+    	        }         
     	    }
     	    
     	    // Obtiene la fecha minima y maxima en el formato con hora
     	    String fechaini = GstDate.convertirFechaHora(fechaMin);
     	    String fechafin = GstDate.convertirFechaHora(fechaMax);
 
-    	    // Creo la programacion de la facturacion  	    
-    	    FacFacturacionProgramadaBean beanFacturacionProgramada = new FacFacturacionProgramadaBean();
+    	    // Creo la programacion de la facturacion  	        	    
     	    beanFacturacionProgramada.setIdInstitucion(beanPeticionCompraSuscripcion.getIdInstitucion());
     	    beanFacturacionProgramada.setArchivarFact("0");
-    	    beanFacturacionProgramada.setConfDeudor(beanSerieFacturacion.getConfigDeudor());
-    	    beanFacturacionProgramada.setConfIngresos(beanSerieFacturacion.getConfigIngresos());
-    	    beanFacturacionProgramada.setCtaClientes(beanSerieFacturacion.getCuentaClientes());
-    	    beanFacturacionProgramada.setCtaIngresos(beanSerieFacturacion.getCuentaIngresos());
+    	    beanFacturacionProgramada.setConfDeudor(beanSerieCandidata.getConfigDeudor());
+    	    beanFacturacionProgramada.setConfIngresos(beanSerieCandidata.getConfigIngresos());
+    	    beanFacturacionProgramada.setCtaClientes(beanSerieCandidata.getCuentaClientes());
+    	    beanFacturacionProgramada.setCtaIngresos(beanSerieCandidata.getCuentaIngresos());
     	    beanFacturacionProgramada.setFechaCargo("sysdate");
     	    beanFacturacionProgramada.setFechaInicioProductos(fechaini);
     	    beanFacturacionProgramada.setFechaFinProductos(fechafin);
@@ -1642,8 +1438,8 @@ public class Facturacion {
     	    beanFacturacionProgramada.setIdEstadoEnvio(FacEstadoConfirmFactBean.ENVIO_NOAPLICA);
     	    beanFacturacionProgramada.setIdEstadoPDF(FacEstadoConfirmFactBean.PDF_NOAPLICA);
     	    beanFacturacionProgramada.setIdPrevision(null);
-    	    beanFacturacionProgramada.setIdSerieFacturacion(beanSerieFacturacion.getIdSerieFacturacion());
-    	    beanFacturacionProgramada.setIdTipoPlantillaMail(beanSerieFacturacion.getIdTipoPlantillaMail());
+    	    beanFacturacionProgramada.setIdSerieFacturacion(beanSerieCandidata.getIdSerieFacturacion());
+    	    beanFacturacionProgramada.setIdTipoPlantillaMail(beanSerieCandidata.getIdTipoPlantillaMail());
     	    
     	    // Bloquea la facturacion programada
     	    beanFacturacionProgramada.setLocked("1");
@@ -1653,7 +1449,7 @@ public class Facturacion {
     	    beanFacturacionProgramada.setIdProgramacion(idFacturacionProgramada);
     	    
     	    // Obtiene la descripcion
-    	    String descripcion = beanSerieFacturacion.getNombreAbreviado() + " [" + idFacturacionProgramada + "]";
+    	    String descripcion = beanSerieCandidata.getNombreAbreviado() + " [" + idFacturacionProgramada + "]";
     	    beanFacturacionProgramada.setDescripcion(descripcion);
     	    
     	    if (!admFacturacionProgramada.insert(beanFacturacionProgramada)) {
@@ -1689,8 +1485,8 @@ public class Facturacion {
     	} catch (Exception e) {
     		throw new ClsExceptions(e,"Error al realizar generacion de facturacion rápida.");
     	}
-
-    	return beanSerieFacturacion;
+    	
+    	return beanFacturacionProgramada;
     }
     
     /**

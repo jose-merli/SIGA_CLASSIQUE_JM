@@ -10,27 +10,39 @@
 package com.siga.facturacion.action;
 
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.StringTokenizer;
 import java.util.Vector;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.transaction.UserTransaction;
+
 import org.apache.struts.action.ActionMapping;
-import org.redabogacia.sigaservices.app.vo.fac.SeriesCuentaBancariaVo;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.Row;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesHash;
-import com.siga.beans.*;
-import com.siga.general.*;
-import com.siga.facturacion.form.DatosGeneralesForm;
+import com.siga.beans.AdmContadorAdm;
+import com.siga.beans.AdmContadorBean;
+import com.siga.beans.ConCriterioConsultaBean;
+import com.siga.beans.FacBancoInstitucionAdm;
+import com.siga.beans.FacFormaPagoSerieAdm;
+import com.siga.beans.FacFormaPagoSerieBean;
+import com.siga.beans.FacPlantillaFacturacionAdm;
+import com.siga.beans.FacPlantillaFacturacionBean;
+import com.siga.beans.FacSerieFacturacionAdm;
+import com.siga.beans.FacSerieFacturacionBean;
 import com.siga.beans.FacSufijoAdm;
 import com.siga.beans.FacSufijoBean;
+import com.siga.beans.GenParametrosAdm;
+import com.siga.facturacion.form.DatosGeneralesForm;
+import com.siga.general.MasterAction;
+import com.siga.general.MasterForm;
+import com.siga.general.SIGAException;
 
 public class DatosGeneralesAction extends MasterAction{
 
@@ -166,94 +178,85 @@ public class DatosGeneralesAction extends MasterAction{
 	   *   
 	   * @exception  ClsExceptions  En cualquier caso de error
 	   */
-	protected String insertar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException 
-	{
-		try
-		{
+	protected String insertar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+		try {
+			DatosGeneralesForm formDatosGenerales = (DatosGeneralesForm) formulario;
 			UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");		
 			String idInstitucion = user.getLocation();
-			String idTipoPlantillaMail = "";
-			DatosGeneralesForm formDGen = (DatosGeneralesForm) formulario;
-			String nombreAbreviado = formDGen.getNombreAbreviado();
+								
+			AdmContadorAdm admContador = new AdmContadorAdm(user);
+			FacBancoInstitucionAdm admBancoInstitucion = new FacBancoInstitucionAdm(user);
+			FacFormaPagoSerieAdm admFormaPagoSerie = new FacFormaPagoSerieAdm(user);			
+			FacSerieFacturacionAdm admSerieFacturacion =  new FacSerieFacturacionAdm(user);
+			FacSerieFacturacionBean beanSerieFacturacion = new FacSerieFacturacionBean();
+			GenParametrosAdm admParametros = new GenParametrosAdm(user);
+			
+			String idTipoPlantillaMail = "";		
+			String nombreAbreviado = formDatosGenerales.getNombreAbreviado();
 			String[] pagoSec;
 			ArrayList formaPago=new ArrayList();
 			Hashtable hashAux = new Hashtable();
-		
 			
-			FacFormaPagoSerieAdm admSerie = new FacFormaPagoSerieAdm(this.getUserBean(request));
-			FacSerieFacturacionAdm admFac =  new FacSerieFacturacionAdm(this.getUserBean(request));
-			FacSerieFacturacionBean beanFac = new FacSerieFacturacionBean();
-			FacFormaPagoSerieBean beanForma = new FacFormaPagoSerieBean();
+			String where1 = " WHERE " + FacSerieFacturacionBean.T_NOMBRETABLA + "." +  FacSerieFacturacionBean.C_IDINSTITUCION + " = " + idInstitucion +
+				 				" AND " + FacSerieFacturacionBean.T_NOMBRETABLA + "." + FacSerieFacturacionBean.C_NOMBREABREVIADO + " = '" + nombreAbreviado + "'";
+			Vector datosNomAbr = admSerieFacturacion.select(where1);
 			
-			String where1 = " Where ";
-			where1 += FacSerieFacturacionBean.T_NOMBRETABLA+"."+ FacSerieFacturacionBean.C_IDINSTITUCION+"="+idInstitucion+
-				 	" and "+
-					FacSerieFacturacionBean.T_NOMBRETABLA+"."+ FacSerieFacturacionBean.C_NOMBREABREVIADO+"='"+nombreAbreviado+"'";
-			Vector datosNomAbr = admFac.select(where1);
-			
-			if (datosNomAbr==null || datosNomAbr.size()==0)
-			{
+			if (datosNomAbr==null || datosNomAbr.size()==0) {
 				UserTransaction tx = null;
-				tx = ((UsrBean)request.getSession().getAttribute("USRBEAN")).getTransaction();
-							
-				String where2 = 	" Where ";
-				where2 += FacSerieFacturacionBean.T_NOMBRETABLA+"."+ FacSerieFacturacionBean.C_IDINSTITUCION+"="+idInstitucion;
-				Vector vec = admFac.selectTabla_2(where2);
-				Hashtable hashMaximo = (Hashtable)vec.get(0);
-				Long idSerieFacturacion = UtilidadesHash.getLong(hashMaximo, FacSerieFacturacionBean.C_IDSERIEFACTURACION);
+				tx = user.getTransaction();
 				
-				Integer idPlantilla = formDGen.getIdPlantilla();
-				String descripcion = formDGen.getDescripcion();
-				String observaciones = formDGen.getObservaciones();
+				// Obtiene un nuevo identificador de serie de facturacion
+				String nuevoidSerieFacturacion = admSerieFacturacion.getNuevoId(idInstitucion);
+				Long idSerieFacturacion = Long.valueOf(nuevoidSerieFacturacion);
+				
+				Integer idPlantilla = formDatosGenerales.getIdPlantilla();
+				String descripcion = formDatosGenerales.getDescripcion();
+				String observaciones = formDatosGenerales.getObservaciones();
 														
-				// RGG 10/09/2007 obtenemos el contador genérico
-				AdmContadorAdm admCont = new AdmContadorAdm(this.getUserBean(request));
+				// RGG 10/09/2007 obtenemos el contador genérico				
 				Hashtable ht1 = new Hashtable();
 				ht1.put(AdmContadorBean.C_IDINSTITUCION,idInstitucion);
 				ht1.put(AdmContadorBean.C_GENERAL,"1");
-				Vector v1 = admCont.select(ht1);
+				Vector v1 = admContador.select(ht1);
 				if (v1!=null && v1.size()>0) {
 					AdmContadorBean b1 = (AdmContadorBean) v1.get(0);
-					beanFac.setIdContador(b1.getIdContador());
+					beanSerieFacturacion.setIdContador(b1.getIdContador());
 				} else if (v1!=null && v1.size()>1) {
 					throw new SIGAException("Messages.Facturacion.NoContadorGenerico");
 				} else {
 					throw new SIGAException("Messages.Facturacion.MasDeUnContadorGenerico");
 				}
 				
-				beanFac.setIdInstitucion(Integer.valueOf(idInstitucion));
-				beanFac.setIdSerieFacturacion(idSerieFacturacion);
-				beanFac.setIdPlantilla(idPlantilla);
-				beanFac.setDescripcion(descripcion);
-				beanFac.setObservaciones(observaciones);
-				beanFac.setNombreAbreviado(nombreAbreviado);
-				String envioFacturas = formDGen.getEnvioFacturas(); 
-				beanFac.setEnvioFactura((((envioFacturas != null) && (!envioFacturas.equals("")))?"1":"0"));
-				String generarPDF = formDGen.getGenerarPDF(); 
-				beanFac.setGenerarPDF((((generarPDF != null) && (!generarPDF.equals("")))?"1":"0"));
-				if (beanFac.getEnvioFactura().equals("1")) beanFac.setGenerarPDF("1");
+				beanSerieFacturacion.setIdInstitucion(Integer.valueOf(idInstitucion));
+				beanSerieFacturacion.setIdSerieFacturacion(idSerieFacturacion);
+				beanSerieFacturacion.setIdPlantilla(idPlantilla);
+				beanSerieFacturacion.setDescripcion(descripcion);
+				beanSerieFacturacion.setObservaciones(observaciones);
+				beanSerieFacturacion.setNombreAbreviado(nombreAbreviado);
+				String envioFacturas = formDatosGenerales.getEnvioFacturas(); 
+				beanSerieFacturacion.setEnvioFactura((envioFacturas!=null && !envioFacturas.equals("")) ? "1" : "0");
+				String generarPDF = formDatosGenerales.getGenerarPDF(); 
+				beanSerieFacturacion.setGenerarPDF((generarPDF!=null && !generarPDF.equals("")) ? "1" : "0");
+				if (beanSerieFacturacion.getEnvioFactura().equals("1")) beanSerieFacturacion.setGenerarPDF("1");
 
-				beanFac.setConfigDeudor(ClsConstants.ASIGNACION_CONCEPTOS_CONTABILIDAD_CONFIGURACION_FIJO);
-				beanFac.setConfigIngresos(ClsConstants.ASIGNACION_CONCEPTOS_CONTABILIDAD_CONFIGURACION_FIJO);
+				beanSerieFacturacion.setConfigDeudor(ClsConstants.ASIGNACION_CONCEPTOS_CONTABILIDAD_CONFIGURACION_FIJO);
+				beanSerieFacturacion.setConfigIngresos(ClsConstants.ASIGNACION_CONCEPTOS_CONTABILIDAD_CONFIGURACION_FIJO);
+								
+				beanSerieFacturacion.setCuentaClientes(admParametros.getValor(idInstitucion, "FAC", "CONTABILIDAD_CLIENTES", ""));
+				beanSerieFacturacion.setCuentaIngresos(admParametros.getValor(idInstitucion, "FAC", "CONTABILIDAD_VENTAS", ""));
 				
-				GenParametrosAdm paramAdm = new GenParametrosAdm(this.getUserBean(request));
-				beanFac.setCuentaClientes(paramAdm.getValor(idInstitucion, "FAC", "CONTABILIDAD_CLIENTES", ""));
-				beanFac.setCuentaIngresos(paramAdm.getValor(idInstitucion, "FAC", "CONTABILIDAD_VENTAS", ""));
-				
-				if(formDGen.getIdTipoPlantillaMail()!=null && !formDGen.getIdTipoPlantillaMail().equals("")){
-					idTipoPlantillaMail = formDGen.getIdTipoPlantillaMail().split(",")[0];
-					beanFac.setIdTipoPlantillaMail(Integer.parseInt(idTipoPlantillaMail));
-					beanFac.setIdTipoEnvios(1);
+				if(formDatosGenerales.getIdTipoPlantillaMail()!=null && !formDatosGenerales.getIdTipoPlantillaMail().equals("")){
+					idTipoPlantillaMail = formDatosGenerales.getIdTipoPlantillaMail().split(",")[0];
+					beanSerieFacturacion.setIdTipoPlantillaMail(Integer.parseInt(idTipoPlantillaMail));
+					beanSerieFacturacion.setIdTipoEnvios(1);
 				} 			
 				
 				tx.begin();
-				boolean result = admFac.insert(beanFac);
-				if (result)
-				{
+				boolean result = admSerieFacturacion.insert(beanSerieFacturacion);
+				if (result) {
 
 					// RGG 05/09/2007 Inserto las relaciones con bancos
-					String ids = request.getParameter("ids");
-					FacBancoInstitucionAdm admBancos= new FacBancoInstitucionAdm(this.getUserBean(request));
+					String ids = request.getParameter("ids");					
 					String idsufijo;
 					
 					if (ids!=null && !ids.equals("")) {
@@ -271,7 +274,7 @@ public class DatosGeneralesAction extends MasterAction{
 							else
 								idsufijo = idBancoConSuf.split(",")[1];
 							
-							admBancos.insertaBancosSerieFacturacion(idInstitucion, idSerieFacturacion.toString(),idBanco,idsufijo);
+							admBancoInstitucion.insertaBancosSerieFacturacion(idInstitucion, idSerieFacturacion.toString(),idBanco,idsufijo);
 						}
 					}
 
@@ -280,61 +283,59 @@ public class DatosGeneralesAction extends MasterAction{
 					request.setAttribute("mensaje","messages.inserted.success");
 					request.setAttribute("idSerieFacturacion", idSerieFacturacion.toString());
 					
-					pagoSec=formDGen.getFormaPagoAutomática();
+					pagoSec=formDatosGenerales.getFormaPagoAutomática();
 					
 					if (pagoSec != null) {
-					for (int i=1;i<pagoSec.length;i++) {
-						if (!pagoSec[i].equals("")){
-						formaPago.add(pagoSec[i]);
-						}
-					}	
+						for (int i=1;i<pagoSec.length;i++) {
+							if (!pagoSec[i].equals("")){
+								formaPago.add(pagoSec[i]);
+							}
+						}	
 					
 					
-					if (!formaPago.isEmpty()){	
-						int i=0;
-						while(i<formaPago.size()){
-							if (((String)formaPago.get(i)).compareToIgnoreCase("-1")!=0){							
-								hashAux.put(beanFac.C_IDINSTITUCION,idInstitucion);																					
-								hashAux.put(beanFac.C_IDSERIEFACTURACION,idSerieFacturacion.toString());				
-								hashAux.put(beanForma.C_IDFORMAPAGO,(String)formaPago.get(i));
-								hashAux.put(ConCriterioConsultaBean.C_USUMODIFICACION, (String)user.getUserName());
-								hashAux.put(ConCriterioConsultaBean.C_FECHAMODIFICACION, "sysdate");
-								boolean correcto=admSerie.insert(hashAux);					
-							}	
-							i++;							
-						}
-					}					
+						if (!formaPago.isEmpty()){	
+							int i=0;
+							while(i<formaPago.size()){
+								if (((String)formaPago.get(i)).compareToIgnoreCase("-1")!=0){							
+									hashAux.put(FacFormaPagoSerieBean.C_IDINSTITUCION,idInstitucion);																					
+									hashAux.put(FacFormaPagoSerieBean.C_IDSERIEFACTURACION,idSerieFacturacion.toString());				
+									hashAux.put(FacFormaPagoSerieBean.C_IDFORMAPAGO,(String)formaPago.get(i));
+									hashAux.put(FacFormaPagoSerieBean.C_USUMODIFICACION, (String)user.getUserName());
+									hashAux.put(FacFormaPagoSerieBean.C_FECHAMODIFICACION, "sysdate");
+									boolean correcto=admFormaPagoSerie.insert(hashAux);					
+								}	
+								i++;							
+							}
+						}					
 					
-					request.setAttribute("container_S", formaPago);
+						request.setAttribute("container_S", formaPago);
+						
+						tx.commit();
+						
+					} else {	
+						request.setAttribute("idInstitucion",idInstitucion);
+						request.setAttribute("mensaje","messages.inserted.error");
+						request.setAttribute("idSerieFacturacion", idSerieFacturacion.toString());
+						tx.rollback();
+					}
+						
+					// Almacenamos en sesion el registro de la serie de facturación
+					Hashtable backupSerFac = new Hashtable();
+					backupSerFac.put("IDINSTITUCION",idInstitucion);
+					backupSerFac.put("IDSERIEFACTURACION",idSerieFacturacion);
+					backupSerFac.put("IDPLANTILLA",formDatosGenerales.getIdPlantilla());
+					backupSerFac.put("DESCRIPCION",formDatosGenerales.getDescripcion());
+					backupSerFac.put("NOMBREABREVIADO",formDatosGenerales.getNombreAbreviado());
+					backupSerFac.put("OBSERVACIONES",formDatosGenerales.getObservaciones());
 					
-					tx.commit();
+					request.getSession().setAttribute("DATABACKUP",backupSerFac);					
+					request.getSession().setAttribute("idSerieFacturacion", idSerieFacturacion.toString());
+					
+				} else {
+					return exito("facturacion.datosGenerales.literal.mensajeExisteNombreAbreviadoSerFac", request);
 				}
-				else
-				{	
-					request.setAttribute("idInstitucion",idInstitucion);
-					request.setAttribute("mensaje","messages.inserted.error");
-					request.setAttribute("idSerieFacturacion", idSerieFacturacion.toString());
-					tx.rollback();
-				}
-					
-				// Almacenamos en sesion el registro de la serie de facturación
-				Hashtable backupSerFac = new Hashtable();
-				backupSerFac.put("IDINSTITUCION",idInstitucion);
-				backupSerFac.put("IDSERIEFACTURACION",idSerieFacturacion);
-				backupSerFac.put("IDPLANTILLA",formDGen.getIdPlantilla());
-				backupSerFac.put("DESCRIPCION",formDGen.getDescripcion());
-				backupSerFac.put("NOMBREABREVIADO",formDGen.getNombreAbreviado());
-				backupSerFac.put("OBSERVACIONES",formDGen.getObservaciones());
-				request.getSession().setAttribute("DATABACKUP",backupSerFac);
-				
-				request.getSession().setAttribute("idSerieFacturacion", idSerieFacturacion.toString());
-			}
-			else
-			{
-//				request.setAttribute("mensaje","facturacion.datosGenerales.literal.mensajeExisteNombreAbreviadoSerFac");
-				return exito("facturacion.datosGenerales.literal.mensajeExisteNombreAbreviadoSerFac", request);
-			}
-		} 
+			} 
+			
 		} catch (Exception e) { 
 		   throwExcp("messages.general.error",new String[] {"modulo.facturacion.asignacionConceptos"},e,null); 
 		} 
@@ -342,7 +343,6 @@ public class DatosGeneralesAction extends MasterAction{
 		// Refrescamos la pantalla con los valores insertados
 		request.setAttribute("sinrefresco","sinrefresco");
 		return "exitoInsercion";
-//		return "exito";
 	}
 
 	/**

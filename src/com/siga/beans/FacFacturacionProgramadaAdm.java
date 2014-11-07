@@ -643,31 +643,6 @@ public class FacFacturacionProgramadaAdm extends MasterBeanAdministrador {
 		catch (ClsExceptions e) {}
     	return null;
     }
-	
-    /**
-     * Notas Jorge PT 118: Descripcion por defecto
-     * @param b
-     * @return
-     */
-    public String getDescripcionPorDefecto (FacFacturacionProgramadaBean b) { 
-    	try {
-	    	FacSerieFacturacionAdm adm = new FacSerieFacturacionAdm (this.usrbean);
-	    	Hashtable h = new Hashtable ();
-	    	UtilidadesHash.set (h, FacSerieFacturacionBean.C_IDINSTITUCION, b.getIdInstitucion());
-	    	UtilidadesHash.set (h, FacSerieFacturacionBean.C_IDSERIEFACTURACION, b.getIdSerieFacturacion());
-	    	
-	    	Vector v = adm.select(h);
-	    	if (v != null && v.size() == 1) {
-	    		FacSerieFacturacionBean bSerie = (FacSerieFacturacionBean)v.get(0);
-	    		String nombre = bSerie.getNombreAbreviado() + " [" + b.getIdProgramacion() + "]";
-	    		return nombre;
-	    	}
-    		return "";
-    	}
-    	catch (Exception e) {
-    		return "";
-    	}
-    }
    
     public Paginador getProgramacioneFacturacionPaginador(ConfirmarFacturacionForm confirmarFacturacionForm) throws ClsExceptions, SIGAException{
 		

@@ -2439,13 +2439,9 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 		            }
 		        }			    
 			    
-			    FacSerieFacturacionBean serieFacturacionTemporal = facturacion.procesarFacturacionRapidaCompras(beanPeticionCompraSuscripcion, vCompras, beanSerieCandidata);
-			    
-			    // PASO 2: DESHACER RELACIONES TEMPORALES
-			    programacion = facturacion.restaurarSerieFacturacionGenerica(serieFacturacionTemporal);
+	        	programacion = facturacion.procesarFacturacionRapidaCompras(beanPeticionCompraSuscripcion, vCompras, beanSerieCandidata);
 		        
-			    // PASO 3: FACTURACION RAPIDA (CONFIRMACION)
-				// BNS INCLUYO LA CONFIRMACIÓN EN LA TRANSACCIÓN
+	        	// PASO 3: CONFIRMACION RAPIDA (en este caso la transacción se gestiona dentro la transaccion)
 			    facturacion.confirmarProgramacionFactura(programacion, request, true, null, false, true, tx);
 			    
 			    if (Status.STATUS_ACTIVE  == tx.getStatus())
