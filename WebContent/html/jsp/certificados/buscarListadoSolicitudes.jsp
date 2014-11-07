@@ -82,6 +82,10 @@
 }	 
 		String action=app+"/CER_GestionSolicitudes.do?noReset=true";
     /**************/
+    
+	String sError= UtilidadesString.mostrarDatoJSP(UtilidadesString.getMensajeIdioma(userBean, "messages.general.error"));
+	String sBotonCerrar = UtilidadesString.mostrarDatoJSP(UtilidadesString.getMensajeIdioma(userBean, "general.boton.close"));
+	String sBotonGuardarCerrar = UtilidadesString.mostrarDatoJSP(UtilidadesString.getMensajeIdioma(userBean, "general.boton.guardarCerrar")); 
 %>
 	<!-- HEAD -->
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
@@ -93,9 +97,7 @@
 	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-ui-1.10.3.custom.min.js?v=${sessionScope.VERSIONJS}'/>"></script>	  	
 	<script src="<%=app%>/html/js/validacionStruts.js" type="text/javascript"></script>
 
-		<script>
-			var mensajeGeneralError='<%=UtilidadesString.mostrarDatoJSP(UtilidadesString.getMensajeIdioma(userBean, "messages.general.error"))%>';
-		
+		<script>					
 			function refrescarLocal()
 			{
 				parent.buscar();
@@ -290,7 +292,7 @@
 									modal: true,
 									resizable: false,
 									buttons: {
-										"Seleccionar": function() {
+										"<%=sBotonGuardarCerrar%>": function() {
 											idSerieFacturacion = jQuery("#selectSeleccionSerieFacturacion").val();
 											if (idSerieFacturacion==null || idSerieFacturacion=='') {
 												alert('<siga:Idioma key="messages.facturacion.seleccionSerie.noSeleccion"/>');
@@ -303,7 +305,7 @@
 											   	document.forms[0].submit();	
 											}
 										},
-										"Cerrar": function() {
+										"<%=sBotonCerrar%>": function() {
 											jQuery(this).dialog("close");
 										}
 									}
@@ -323,7 +325,7 @@
 					},
 					
 					error: function(e){
-						alert(mensajeGeneralError);
+						alert("<%=sError%>");
 						fin();
 					}
 				});			    
