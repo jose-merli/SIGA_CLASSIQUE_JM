@@ -58,6 +58,7 @@ import com.siga.beans.FacFacturaBean;
 import com.siga.beans.FacFacturaIncluidaEnDisqueteBean;
 import com.siga.beans.FacLineaDevoluDisqBancoAdm;
 import com.siga.beans.FacLineaDevoluDisqBancoBean;
+import com.siga.beans.FacPagosPorCajaAdm;
 import com.siga.facturacion.Facturacion;
 import com.siga.facturacion.form.DevolucionesForm;
 import com.siga.general.MasterAction;
@@ -332,6 +333,7 @@ public class DevolucionesAction extends MasterAction {
 			
 			Integer idInstitucion = new Integer(user.getLocation());			
 			String datosFacturas = form.getDatosFacturas();
+			String ultimaFechaPagosFacturas = "";
 			
 			if (datosFacturas != null) {
 				String strFacturas[] = datosFacturas.split("##");
@@ -402,14 +404,40 @@ public class DevolucionesAction extends MasterAction {
 					numeroPersonasFactura = facturaAdm.getSelectPersonas(idInstitucion, strFacturas);									
 				}
 				
-				// JPT: Obtiene la ultima fecha de pago de una lista de facturas
-				/*FacPagosPorCajaAdm admPagosPorCaja = new FacPagosPorCajaAdm(user);
-				String ultimaFechaPagosFactura = admPagosPorCaja.getUltimaFechaPagosFacturas(idInstitucion, listaIdsFacturas);
-				if (ultimaFechaPagosFactura==null || ultimaFechaPagosFactura.equals("")) {
-					throw new SIGAException("Error al no obtener la última fecha de los pagos de las facturas");
-				}
-				request.setAttribute("ultimaFechaPagosFactura", ultimaFechaPagosFactura);*/
-				request.setAttribute("ultimaFechaPagosFactura", GstDate.getHoyJsp());
+				// Solo se comprueba para una factura a renegociar
+				if (strFacturas.length==1) {		
+					
+					// JPT: Recorre todas las facturas marcadas y calcula el listado de facturas
+					String listaIdsFacturas = "";
+					for (int i=0; i<strFacturas.length; i++) {
+						String datosFactura = strFacturas[i];
+						
+						if (datosFactura != null && !datosFactura.equals("")) {
+							String arrayFactura[] = datosFactura.split("%%");
+							
+							if (arrayFactura.length<1) {
+								throw new SIGAException("Error al obtener la factura");
+							};
+							
+							String idFactura = arrayFactura[0];
+							
+							if (i==0) {
+								listaIdsFacturas += idFactura;						
+							} else {
+								listaIdsFacturas += "," + idFactura;
+							}
+						}
+					}				
+					
+					// JPT: Obtiene la ultima fecha de pago de una lista de facturas
+					FacPagosPorCajaAdm admPagosPorCaja = new FacPagosPorCajaAdm(user);
+					ultimaFechaPagosFacturas = admPagosPorCaja.getUltimaFechaPagosFacturas(idInstitucion, listaIdsFacturas);
+					if (ultimaFechaPagosFacturas==null || ultimaFechaPagosFacturas.equals("")) {
+						throw new SIGAException("Error al no obtener la última fecha de los pagos de las facturas");
+					}										
+				}					
+				
+				request.setAttribute("ultimaFechaPagosFacturas", ultimaFechaPagosFacturas);
 				
 				// JPT: Indica el numero de facturas seleccionadas
 				request.setAttribute("numeroFacturas", new Integer(strFacturas.length));

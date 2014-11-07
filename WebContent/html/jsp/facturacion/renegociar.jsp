@@ -30,7 +30,7 @@
 	UsrBean userBean = (UsrBean) request.getSession().getAttribute("USRBEAN");	
 
 	FacFacturaBean beanFactura = (FacFacturaBean) request.getAttribute("beanFactura");
-	String ultimaFechaPagosFactura = (String) request.getAttribute("ultimaFechaPagosFactura");
+	String ultimaFechaPagosFacturas = (String) request.getAttribute("ultimaFechaPagosFacturas");
 	Integer numeroFacturas = (Integer) request.getAttribute("numeroFacturas");
 	Integer numeroPersonasFactura = (Integer) request.getAttribute("numeroPersonasFactura");		
 	
@@ -129,9 +129,9 @@
 			}
 			
 			// Validamos que la fecha de renegociacion es mayor o igual a la ultima fecha
-			var ultimaFechaPagosFactura = "<%=ultimaFechaPagosFactura%>";
-			if (compararFecha (document.GestionarFacturaForm.datosRenegociarFecha, ultimaFechaPagosFactura) > 1) {
-				var mensaje = '<siga:Idioma key="facturacion.renegociar.error.fecha"/> ' + ultimaFechaPagosFactura;
+			var ultimaFechaPagosFacturas = "<%=ultimaFechaPagosFacturas%>";
+			if (ultimaFechaPagosFacturas!=null && ultimaFechaPagosFacturas!='' && compararFecha (document.GestionarFacturaForm.datosRenegociarFecha, ultimaFechaPagosFacturas) > 1) {
+				var mensaje = '<siga:Idioma key="facturacion.renegociar.error.fecha"/> ' + ultimaFechaPagosFacturas;
 				alert(mensaje);
 				return 0;
 			}				
