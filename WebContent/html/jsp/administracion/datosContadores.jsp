@@ -73,6 +73,16 @@
 			function accionGuardarCerrar() 
 			{
 				sub();	
+				if(document.gestionContadoresForm.fechaReconfiguracion && document.gestionContadoresForm.fechaReconfiguracion.value!=''){
+					var res = document.gestionContadoresForm.fechaReconfiguracion.value.substring(0, 5);
+					if(res!='1/1' && res!='01/01'){
+						if(!confirm('<siga:Idioma key="administracion.contador.confirmar.fechaNo1del1"/>')){
+							fin();
+							return;
+						}
+					}
+				}
+				
 			   if (!validateGestionContadoresForm(document.gestionContadoresForm)){
 			   	 fin();	 
 			     return false;
