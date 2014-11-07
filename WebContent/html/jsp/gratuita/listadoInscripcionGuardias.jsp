@@ -31,7 +31,7 @@
 	<siga:Table 		   
 	   name="listadoInicial"
 	   border="1"
-	   columnNames="<input type='checkbox' name='chkGeneral' onclick='marcarDesmarcarTodos(this);'/>,gratuita.listaTurnosLetrados.literal.numeroletrado,gratuita.listaTurnosLetrados.literal.numeroletrado,gratuita.listaTurnosLetrados.literal.nombreletrado,gratuita.listaTurnosLetrados.literal.turno,gratuita.listarTurnos.literal.guardias,gratuita.gestionInscripciones.fecha.solicitud.alta,gratuita.gestionInscripciones.fecha.estado.alta,gratuita.gestionInscripciones.solicitud.baja,gratuita.gestionInscripciones.estado.baja,gratuita.gestionInscripciones.estado,"
+	   columnNames="<input type='checkbox' name='chkGeneral' onclick='marcarDesmarcarTodos(this);'/>,gratuita.listaTurnosLetrados.literal.numeroletrado,gratuita.listaTurnosLetrados.literal.nombreletrado,gratuita.listaTurnosLetrados.literal.turno,gratuita.listarTurnos.literal.guardias,gratuita.gestionInscripciones.fecha.solicitud.alta,gratuita.gestionInscripciones.fecha.estado.alta,gratuita.gestionInscripciones.solicitud.baja,gratuita.gestionInscripciones.estado.baja,gratuita.gestionInscripciones.estado,"
 	   columnSizes="4,8,14,12,12,8,8,8,8,10,8">
 
 		<logic:notEmpty name="InscripcionTGForm"	property="inscripcionesGuardia">
