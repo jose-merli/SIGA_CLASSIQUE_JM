@@ -1808,7 +1808,7 @@
 						if (miform.getIdioma() != null) {
 							idioma = miform.getIdioma();
 						} else {
-							idioma = "1";//CR7 - Por defecto si no tiene idioma se pondrá el Castellano - R1406_0062
+							idioma = usr.getLanguageInstitucion();// Por defecto si no tiene idioma se pondrá el de la institucion - R1406_0062
 						}
 						ArrayList selIdioma = new ArrayList();
 						selIdioma.add(idioma);
