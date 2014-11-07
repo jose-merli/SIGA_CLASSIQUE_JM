@@ -262,6 +262,7 @@
 		// Asociada al boton ProcesarDevoluciones
 		function accionProcesarDevoluciones() {
 			document.DevolucionesManualesForm.recibos.value="";
+			document.DevolucionesManualesForm.facturas.value="";
 			
 			var checks =  window.frames.resultado.document.getElementsByName("sel");
 			

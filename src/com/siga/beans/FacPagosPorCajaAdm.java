@@ -521,9 +521,8 @@ public class FacPagosPorCajaAdm extends MasterBeanAdministrador {
 									" AND cuenta." + CenCuentasBancariasBean.C_IDINSTITUCION + " = " + idInstitucion +
 									" AND cuenta." + CenCuentasBancariasBean.C_IDPERSONA + " = " + idPersona +
 									" AND cuenta." + CenCuentasBancariasBean.C_IDCUENTA + " = factura." + FacFacturaBean.C_IDCUENTA +
-							" ) as NOMBREBANCO";			
-		}
-		consulta7 += " FROM " + FacFacturaBean.T_NOMBRETABLA + " factura, " + 
+							" ) as NOMBREBANCO" +
+						" FROM " + FacFacturaBean.T_NOMBRETABLA + " factura, " + 
 							FacAbonoBean.T_NOMBRETABLA + " abono, " + 
 							FacPagosPorCajaBean.T_NOMBRETABLA + " pgCaja " + 
 						" WHERE factura." + FacFacturaBean.C_IDINSTITUCION + " = abono." + FacAbonoBean.C_IDINSTITUCION + 
@@ -533,45 +532,46 @@ public class FacPagosPorCajaAdm extends MasterBeanAdministrador {
 							" AND pgCaja."+ FacPagosPorCajaBean.C_IDFACTURA+ " = factura."   + FacFacturaBean.C_IDFACTURA+ 
 							" AND pgCaja."+ FacPagosPorCajaBean.C_IDABONO+ " = abono."   + FacAbonoBean.C_IDABONO+ 
 							" AND pgCaja."+ FacPagosPorCajaBean.C_IDINSTITUCION+ " = abono."   + FacFacturaBean.C_IDINSTITUCION;
+		}
 		
 		// Obtención anulaciones de comision (si la encuentra siempre es la ultima linea de la factura)
 		String consulta71 = "";    
 		if (!esProcesoMasivo) { // JPT: Si esta anulada no se puede renegociar, ni devolver (ganamos rendimiento)
 			consulta71 = " UNION SELECT 5 AS IDTABLA, " +
-				" F_SIGA_GETRECURSO_ETIQUETA('facturacion.pagosFactura.accion.anulacion'," + this.usrbean.getLanguage() + ") || " +
-					" ' (' || F_SIGA_GETRECURSO_ETIQUETA('facturacion.pagosFactura.accion.anulacionComision'," + this.usrbean.getLanguage() + ") || ')' AS TABLA, " +
-				" ( " +
-					" SELECT F_SIGA_GETRECURSO_ETIQUETA (" + FacEstadoFacturaBean.T_NOMBRETABLA + "." + FacEstadoFacturaBean.C_DESCRIPCION + "," + this.usrbean.getLanguage() + ") " +
-					" FROM "  + FacEstadoFacturaBean.T_NOMBRETABLA +
-					" WHERE " + FacEstadoFacturaBean.C_IDESTADO + " = " + ClsConstants.ESTADO_FACTURA_ANULADA +
-				" ) AS ESTADO, " +					
-				" facturaPosterior." + FacFacturaBean.C_FECHAEMISION + " AS FECHA, " +
-				" facturaActual." + FacFacturaBean.C_FECHAMODIFICACION + " AS FECHA_ORDEN, " +
-				" facturaActual." + FacFacturaBean.C_IMPTOTALPORPAGAR + " AS IMPORTE, " + 
-				" facturaActual." + FacFacturaBean.C_IDFACTURA + " AS IDFACTURA, " +
-				" '1' AS ANULACIONCOMISION, " +
-				" '' AS DEVUELTA, " +
-				" '' AS TARJETA, " +
-				" facturaActual." + FacFacturaBean.C_IDCUENTA + " AS IDABONO_IDCUENTA, " +
-				" '' AS NUMEROABONO, " + 
-				" 0 AS IDPAGO, "+
-				" ( " +
-					" SELECT banco.nombre || ' nº ' || cuenta." + CenCuentasBancariasBean.C_IBAN + 
-					" FROM " + CenCuentasBancariasBean.T_NOMBRETABLA + " cuenta," + 
-						CenBancosBean.T_NOMBRETABLA + " banco" +
-					" WHERE cuenta." + CenCuentasBancariasBean.C_CBO_CODIGO + " = banco." + CenBancosBean.C_CODIGO +
-						" AND cuenta." + CenCuentasBancariasBean.C_IDINSTITUCION + " = " + idInstitucion +
-						" AND cuenta." + CenCuentasBancariasBean.C_IDPERSONA + " = " + idPersona +
-						" AND cuenta." + CenCuentasBancariasBean.C_IDCUENTA + " = facturaActual." + FacFacturaBean.C_IDCUENTA +
-				" ) as NOMBREBANCO";		
-		}
-		consulta71 += " FROM " + FacFacturaBean.T_NOMBRETABLA + " facturaActual, " + 
+							" F_SIGA_GETRECURSO_ETIQUETA('facturacion.pagosFactura.accion.anulacion'," + this.usrbean.getLanguage() + ") || " +
+								" ' (' || F_SIGA_GETRECURSO_ETIQUETA('facturacion.pagosFactura.accion.anulacionComision'," + this.usrbean.getLanguage() + ") || ')' AS TABLA, " +
+							" ( " +
+								" SELECT F_SIGA_GETRECURSO_ETIQUETA (" + FacEstadoFacturaBean.T_NOMBRETABLA + "." + FacEstadoFacturaBean.C_DESCRIPCION + "," + this.usrbean.getLanguage() + ") " +
+								" FROM "  + FacEstadoFacturaBean.T_NOMBRETABLA +
+								" WHERE " + FacEstadoFacturaBean.C_IDESTADO + " = " + ClsConstants.ESTADO_FACTURA_ANULADA +
+							" ) AS ESTADO, " +					
+							" facturaPosterior." + FacFacturaBean.C_FECHAEMISION + " AS FECHA, " +
+							" facturaActual." + FacFacturaBean.C_FECHAMODIFICACION + " AS FECHA_ORDEN, " +
+							" facturaActual." + FacFacturaBean.C_IMPTOTALPORPAGAR + " AS IMPORTE, " + 
+							" facturaActual." + FacFacturaBean.C_IDFACTURA + " AS IDFACTURA, " +
+							" '1' AS ANULACIONCOMISION, " +
+							" '' AS DEVUELTA, " +
+							" '' AS TARJETA, " +
+							" facturaActual." + FacFacturaBean.C_IDCUENTA + " AS IDABONO_IDCUENTA, " +
+							" '' AS NUMEROABONO, " + 
+							" 0 AS IDPAGO, "+
+							" ( " +
+								" SELECT banco.nombre || ' nº ' || cuenta." + CenCuentasBancariasBean.C_IBAN + 
+								" FROM " + CenCuentasBancariasBean.T_NOMBRETABLA + " cuenta," + 
+									CenBancosBean.T_NOMBRETABLA + " banco" +
+								" WHERE cuenta." + CenCuentasBancariasBean.C_CBO_CODIGO + " = banco." + CenBancosBean.C_CODIGO +
+									" AND cuenta." + CenCuentasBancariasBean.C_IDINSTITUCION + " = " + idInstitucion +
+									" AND cuenta." + CenCuentasBancariasBean.C_IDPERSONA + " = " + idPersona +
+									" AND cuenta." + CenCuentasBancariasBean.C_IDCUENTA + " = facturaActual." + FacFacturaBean.C_IDCUENTA +
+							" ) as NOMBREBANCO" +
+						" FROM " + FacFacturaBean.T_NOMBRETABLA + " facturaActual, " + 
 							FacFacturaBean.T_NOMBRETABLA + " facturaPosterior " +	
 						" WHERE facturaActual." + FacFacturaBean.C_IDINSTITUCION + " = " + idInstitucion + 
 							" AND facturaActual." + FacFacturaBean.C_IDFACTURA + " IN (" + listaFacturasComision + ") " +
 							" AND facturaPosterior." + FacFacturaBean.C_IDINSTITUCION + " = facturaActual." + FacFacturaBean.C_IDINSTITUCION +
 							" AND facturaPosterior." + FacFacturaBean.C_COMISIONIDFACTURA + " = facturaActual." + FacFacturaBean.C_IDFACTURA +
-							" AND facturaActual." + FacFacturaBean.C_ESTADO + " = " + ClsConstants.ESTADO_FACTURA_ANULADA;			
+							" AND facturaActual." + FacFacturaBean.C_ESTADO + " = " + ClsConstants.ESTADO_FACTURA_ANULADA;
+		}
 		
 		//Abonos SJCS->compensaciones factura
 		String consulta8 = "";    
