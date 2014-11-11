@@ -191,48 +191,49 @@ public class PysCompraAdm extends MasterBeanAdministrador {
 	 * @return
 	 * @throws ClsExceptions
 	 */
-	public Vector obtenerComprasPorPeticion(PysPeticionCompraSuscripcionBean beanPeticion) throws ClsExceptions {
-	    Vector salida = new Vector();
+	public Vector<PysCompraBean> obtenerComprasPorPeticion(PysPeticionCompraSuscripcionBean beanPeticion) throws ClsExceptions {
+	    Vector<PysCompraBean> salida = new Vector<PysCompraBean>();
 	    try {
-	        salida = this.selectGenerico(
-        			"SELECT PC." + PysCompraBean.C_ACEPTADO + ", " +
-    					" PC." + PysCompraBean.C_CANTIDAD + ", " +
-        				" PC." + PysCompraBean.C_DESCRIPCION + ", " +
-    					" PC." + PysCompraBean.C_FECHA + ", " +
-        				" PC." + PysCompraBean.C_FECHABAJA + ", " +
-    					" PC." + PysCompraBean.C_FECHAMODIFICACION + ", " +
-        				" PC." + PysCompraBean.C_IDFACTURA + ", " +
-    					" PC." + PysCompraBean.C_IDFORMAPAGO + ", " + 
-        				" PC." + PysCompraBean.C_IDINSTITUCION + ", " +
-    					" PC." + PysCompraBean.C_IDPETICION + ", " +
-        				" PC." + PysCompraBean.C_IDPRODUCTO + ", " +
-    					" PC." + PysCompraBean.C_IDPRODUCTOINSTITUCION + ", " +
-    					" PC." + PysCompraBean.C_IDTIPOPRODUCTO + ", " +
-    					" PC." + PysCompraBean.C_IMPORTEUNITARIO + ", " +
-    					" PC." + PysCompraBean.C_IMPORTEANTICIPADO + ", " +
-    					" PC." + PysCompraBean.C_NUMEROLINEA + ", " +
-    					" PC." + PysCompraBean.C_PORCENTAJEIVA + ", "+
-    					" PC." + PysCompraBean.C_IDCUENTA + ", " +
-    					" PC." + PysCompraBean.C_IDPERSONA + ", " + 
-    					" PC." + PysCompraBean.C_IDCUENTADEUDOR + ", " +
-    					" PC." + PysCompraBean.C_IDPERSONADEUDOR + ", " +
-    					" PC." + PysCompraBean.C_USUMODIFICACION + ", " +
-    					" PC." + PysCompraBean.C_NOFACTURABLE + 
-					" FROM " + PysCompraBean.T_NOMBRETABLA + " PC, " +
-						PysProductosSolicitadosBean.T_NOMBRETABLA + " PPS " +
-	        		" WHERE PC." + PysCompraBean.C_IDINSTITUCION + " = " + beanPeticion.getIdInstitucion().toString() +
-	        			" AND PC." + PysCompraBean.C_IDPETICION + " = " + beanPeticion.getIdPeticion().toString() +
-	        			" AND PPS." + PysProductosSolicitadosBean.C_IDINSTITUCION + " = PC." + PysCompraBean.C_IDINSTITUCION + 
-	        			" AND PPS." + PysProductosSolicitadosBean.C_IDPETICION + " = PC." + PysCompraBean.C_IDPETICION +  
-	        			" AND PPS." + PysProductosSolicitadosBean.C_IDPRODUCTO + " = PC." + PysCompraBean.C_IDPRODUCTO +  
-	        			" AND PPS." + PysProductosSolicitadosBean.C_IDTIPOPRODUCTO + " = PC." + PysCompraBean.C_IDTIPOPRODUCTO +  
-	        			" AND PPS." + PysProductosSolicitadosBean.C_IDPRODUCTOINSTITUCION + " = PC." + PysCompraBean.C_IDPRODUCTOINSTITUCION +  
-	        		" ORDER BY PC." + PysCompraBean.C_IDINSTITUCION + ", " +
-	        			" PC." + PysCompraBean.C_IDPETICION + ", " +
-	        			" PPS." + PysProductosSolicitadosBean.C_ORDEN + ", " +
-	        			" PC." + PysCompraBean.C_IDTIPOPRODUCTO + ", " +
-	        			" PC." + PysCompraBean.C_IDPRODUCTO + ", " +
-	        			" PC." + PysCompraBean.C_IDPRODUCTOINSTITUCION);
+	    	String sql = "SELECT PC." + PysCompraBean.C_ACEPTADO + ", " +
+					" PC." + PysCompraBean.C_CANTIDAD + ", " +
+    				" PC." + PysCompraBean.C_DESCRIPCION + ", " +
+					" PC." + PysCompraBean.C_FECHA + ", " +
+    				" PC." + PysCompraBean.C_FECHABAJA + ", " +
+					" PC." + PysCompraBean.C_FECHAMODIFICACION + ", " +
+    				" PC." + PysCompraBean.C_IDFACTURA + ", " +
+					" PC." + PysCompraBean.C_IDFORMAPAGO + ", " + 
+    				" PC." + PysCompraBean.C_IDINSTITUCION + ", " +
+					" PC." + PysCompraBean.C_IDPETICION + ", " +
+    				" PC." + PysCompraBean.C_IDPRODUCTO + ", " +
+					" PC." + PysCompraBean.C_IDPRODUCTOINSTITUCION + ", " +
+					" PC." + PysCompraBean.C_IDTIPOPRODUCTO + ", " +
+					" PC." + PysCompraBean.C_IMPORTEUNITARIO + ", " +
+					" PC." + PysCompraBean.C_IMPORTEANTICIPADO + ", " +
+					" PC." + PysCompraBean.C_NUMEROLINEA + ", " +
+					" PC." + PysCompraBean.C_PORCENTAJEIVA + ", "+
+					" PC." + PysCompraBean.C_IDCUENTA + ", " +
+					" PC." + PysCompraBean.C_IDPERSONA + ", " + 
+					" PC." + PysCompraBean.C_IDCUENTADEUDOR + ", " +
+					" PC." + PysCompraBean.C_IDPERSONADEUDOR + ", " +
+					" PC." + PysCompraBean.C_USUMODIFICACION + ", " +
+					" PC." + PysCompraBean.C_NOFACTURABLE + 
+				" FROM " + PysCompraBean.T_NOMBRETABLA + " PC, " +
+					PysProductosSolicitadosBean.T_NOMBRETABLA + " PPS " +
+        		" WHERE PC." + PysCompraBean.C_IDINSTITUCION + " = " + beanPeticion.getIdInstitucion().toString() +
+        			" AND PC." + PysCompraBean.C_IDPETICION + " = " + beanPeticion.getIdPeticion().toString() +
+        			" AND PPS." + PysProductosSolicitadosBean.C_IDINSTITUCION + " = PC." + PysCompraBean.C_IDINSTITUCION + 
+        			" AND PPS." + PysProductosSolicitadosBean.C_IDPETICION + " = PC." + PysCompraBean.C_IDPETICION +  
+        			" AND PPS." + PysProductosSolicitadosBean.C_IDPRODUCTO + " = PC." + PysCompraBean.C_IDPRODUCTO +  
+        			" AND PPS." + PysProductosSolicitadosBean.C_IDTIPOPRODUCTO + " = PC." + PysCompraBean.C_IDTIPOPRODUCTO +  
+        			" AND PPS." + PysProductosSolicitadosBean.C_IDPRODUCTOINSTITUCION + " = PC." + PysCompraBean.C_IDPRODUCTOINSTITUCION +  
+        		" ORDER BY PC." + PysCompraBean.C_IDINSTITUCION + ", " +
+        			" PC." + PysCompraBean.C_IDPETICION + ", " +
+        			" PPS." + PysProductosSolicitadosBean.C_ORDEN + ", " +
+        			" PC." + PysCompraBean.C_IDTIPOPRODUCTO + ", " +
+        			" PC." + PysCompraBean.C_IDPRODUCTO + ", " +
+        			" PC." + PysCompraBean.C_IDPRODUCTOINSTITUCION;
+	    	
+	        salida = this.selectGenerico(sql);
 	        
 		} catch(Exception e) {
 			throw new ClsExceptions(e,"Error al buscar las series de facturacion candidatas.");

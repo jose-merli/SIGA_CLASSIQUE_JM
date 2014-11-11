@@ -230,8 +230,8 @@ public class FacSerieFacturacionAdm extends MasterBeanAdministrador {
 	 * @return
 	 * @throws ClsExceptions
 	 */
-	public Vector obtenerSeriesAdecuadas(Vector compras) throws ClsExceptions {
-	    Vector salida = new Vector();
+	public Vector<FacSerieFacturacionBean> obtenerSeriesAdecuadas(Vector<PysCompraBean> compras) throws ClsExceptions {
+	    Vector<FacSerieFacturacionBean> salida = new Vector<FacSerieFacturacionBean>();
 	    try{
 	        if (compras==null || compras.size()==0) {
 	            throw new ClsExceptions("Error: No se han recibido compras.");

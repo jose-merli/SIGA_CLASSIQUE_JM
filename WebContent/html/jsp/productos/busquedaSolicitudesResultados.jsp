@@ -70,14 +70,23 @@
 	
 	String action=app+"/PYS_GestionarSolicitudes.do?noReset=true";
 	request.getSession().setAttribute("EnvEdicionEnvio","GPS");
+	
+	// Textos del dialog
+	String sDialogError= UtilidadesString.mostrarDatoJSP(UtilidadesString.getMensajeIdioma(usr, "messages.general.error"));
+	String sDialogBotonCerrar = UtilidadesString.mostrarDatoJSP(UtilidadesString.getMensajeIdioma(usr, "general.boton.close"));
+	String sDialogBotonGuardarCerrar = UtilidadesString.mostrarDatoJSP(UtilidadesString.getMensajeIdioma(usr, "general.boton.guardarCerrar")); 	
 %>
 
 	<title><siga:Idioma key="pys.gestionSolicitudes.titulo"/></title>
 
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
+	<link rel="stylesheet" href="<html:rewrite page='/html/js/jquery.ui/css/smoothness/jquery-ui-1.10.3.custom.min.css'/>">	
 	
 	<!-- Incluido jquery en siga.js -->
-	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js?v=${sessionScope.VERSIONJS}'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-1.9.1.js?v=${sessionScope.VERSIONJS}'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js?v=${sessionScope.VERSIONJS}'/>"></script>		
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-ui-1.10.3.custom.min.js?v=${sessionScope.VERSIONJS}'/>"></script>
+	<script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
 </head>
 
 <script>
@@ -151,23 +160,72 @@
 			}
    		}
  	}
-
+ 	
 	function facturacionrapida(fila) {
-		subicono('iconoboton_facturacionrapida'+fila);
+		subicono('iconoboton_facturacionrapida' + fila);
 		
-		var auxPet = 'oculto' + fila + '_1';
-	    var idPet = document.getElementById(auxPet);			          		
-		
-		document.solicitudCompraForm.idPeticionParametro.value=idPet.value;		
-
-		document.solicitudCompraForm.target="submitArea";
-		document.solicitudCompraForm.modo.value="facturacionRapidaCompra";
-
-	   	document.solicitudCompraForm.submit();		
-	   	
-	   	finsubicono('iconoboton_facturacionrapida'+fila);
-	   	window.setTimeout("fin()",5000,"Javascript");
-	}
+		var idPeticion = document.getElementById('oculto' + fila + '_1');
+	    var idInstitucion = document.getElementById('oculto' + fila + '_2');			          			    
+	    
+	    jQuery.ajax({ 
+			type: "POST",
+			url: "/SIGA/PYS_GenerarSolicitudes.do?modo=getAjaxSeleccionSerieFacturacion",				
+			data: "idInstitucion=" + idInstitucion.value + "&idPeticion=" + idPeticion.value,
+			dataType: "json",
+			contentType: "application/x-www-form-urlencoded;charset=UTF-8",
+			success: function(json){							
+					
+				// Recupera el identificador de la serie de facturacion
+				var idSerieFacturacion = json.idSerieFacturacion;		
+				
+				if (idSerieFacturacion==null || idSerieFacturacion=='') {
+					jQuery("#selectSeleccionSerieFacturacion")[0].innerHTML = json.aOptionsSeriesFacturacion[0];
+					
+					jQuery("#divSeleccionSerieFacturacion").dialog(
+						{
+							height: 150,
+							width: 500,
+							modal: true,
+							resizable: false,
+							buttons: {
+								"<%=sDialogBotonGuardarCerrar%>": function() {
+									idSerieFacturacion = jQuery("#selectSeleccionSerieFacturacion").val();
+									if (idSerieFacturacion==null || idSerieFacturacion=='') {
+										alert('<siga:Idioma key="messages.facturacion.seleccionSerie.noSeleccion"/>');
+										
+									} else {
+										jQuery(this).dialog("close");
+										document.solicitudCompraForm.target = "submitArea";
+										document.solicitudCompraForm.tablaDatosDinamicosD.value = idInstitucion.value + ',' + idPeticion.value + ',' + idSerieFacturacion;
+										document.solicitudCompraForm.modo.value = "facturacionRapidaCompra";
+										document.solicitudCompraForm.submit();	
+									}
+								},
+								"<%=sDialogBotonCerrar%>": function() {
+									jQuery(this).dialog("close");
+								}
+							}
+						}
+					);
+					jQuery(".ui-widget-overlay").css("opacity","0");														
+					
+				} else {
+					document.solicitudCompraForm.target = "submitArea";
+					document.solicitudCompraForm.tablaDatosDinamicosD.value = idInstitucion.value + ',' + idPeticion.value + ',' + idSerieFacturacion;	
+					document.solicitudCompraForm.modo.value = "facturacionRapidaCompra";
+					document.solicitudCompraForm.submit();							
+				}							
+				
+			   	finsubicono('iconoboton_facturacionrapida'+fila);
+			   	window.setTimeout("fin()",5000,"Javascript");								
+			},
+			
+			error: function(e){
+				alert("<%=sDialogError%>");
+				fin();
+			}
+		});			    
+	}            	
 </script>
 
 <body>
@@ -180,6 +238,20 @@
 		<input type="hidden" name="idTipoProducto"  id="idTipoProducto" value="">
 		<input type="hidden" name="actionModal"  id="actionModal" value="">
 	</html:form>	
+
+	<div id="divSeleccionSerieFacturacion" title="<siga:Idioma key='facturacion.seleccionSerie.titulo'/>" style="display:none">
+		<table align="left">
+			<tr>		
+				<td class="labelText" nowrap>
+					<siga:Idioma key="facturacion.nuevaPrevisionFacturacion.literal.serieFacturacion"/>&nbsp;(*)
+				</td>
+				<td>
+					<select class='box' style='width:270px' id='selectSeleccionSerieFacturacion'>
+					</select>
+				</td>
+			</tr>				
+		</table>			
+	</div>
 		
 	<siga:Table 
 		name = "tablaResultados"
@@ -321,7 +393,7 @@
 	<html:form action="/PYS_GenerarSolicitudes.do" method="POST" target="_blank" type=""> 
 		<input type="hidden" name="modo" value=""> 
 		<input type="hidden" name="actionModal" value=""> 
-		<html:hidden property = "idPeticionParametro" value = ""/>
+		<html:hidden styleId = "tablaDatosDinamicosD"  property = "tablaDatosDinamicosD" value=""/>
 	</html:form>
 </body>
 </html>

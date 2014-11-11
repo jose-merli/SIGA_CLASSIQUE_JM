@@ -1500,8 +1500,6 @@
 			<forward name="cargaTarjeta" path="/html/jsp/productos/pagoTPV.jsp"/>
 			<forward name="consultarCertificado" path="/html/jsp/productos/datosEnvio.jsp"/>
 			<forward name="buscarProducto" path="/html/jsp/productos/productosEncontrados.jsp"/>
-			<forward name="seleccionSerie" path="/html/jsp/productos/seleccionSerie.jsp"/>
-			<forward name="seleccionSerieModal" path="/html/jsp/productos/seleccionSerieModal.jsp"/>
 		</action>
 
 		<action path="/PYS_SolicitarCertificado" forward="/PYS_GenerarSolicitudes.do?certificado=1">

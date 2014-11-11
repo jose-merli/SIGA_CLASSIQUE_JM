@@ -2413,10 +2413,9 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 			    if (vPeticionCompraSuscripcion!=null && vPeticionCompraSuscripcion.size()>0) {
 			    	beanPeticionCompraSuscripcion = (PysPeticionCompraSuscripcionBean) vPeticionCompraSuscripcion.get(0);
 			    }				    
-			    
-	        	FacSerieFacturacionBean beanSerieCandidata = null;
-	        	
-	        	// Obtiene la serie candidata		        	
+			    	        	
+	        	// Obtiene la serie candidata
+			    FacSerieFacturacionBean beanSerieCandidata = null;
 	        	if (idSerieSeleccionada==null || idSerieSeleccionada.equals("")) {
 				    Vector<?> series =  admSerieFacturacion.obtenerSeriesAdecuadas(vCompras);
 				    if (series==null || series.size()!=1) {
@@ -2629,7 +2628,7 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 	}
 	
 	/**
-	 * 
+	 * Obtiene las series de facturacion que estan asociadas al tipo de producto del certificado
 	 * @param request
 	 * @param response
 	 * @throws Exception
@@ -2687,7 +2686,7 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 		    	}
 		    	
 		    	// Devuelvo la lista de series de facturacion
-		    	ArrayList aOptionsSeriesFacturacion = new ArrayList();
+		    	ArrayList<String> aOptionsSeriesFacturacion = new ArrayList<String>();
 		    	aOptionsSeriesFacturacion.add(sOptionsSerieFacturacion);
 		    	json.put("aOptionsSeriesFacturacion", aOptionsSeriesFacturacion);
 		    }

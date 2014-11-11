@@ -74,23 +74,25 @@
 		noFact = Boolean.FALSE;
 	}
 	
+	// Textos del dialog
+	String sDialogError= UtilidadesString.mostrarDatoJSP(UtilidadesString.getMensajeIdioma(usrbean, "messages.general.error"));
+	String sDialogBotonCerrar = UtilidadesString.mostrarDatoJSP(UtilidadesString.getMensajeIdioma(usrbean, "general.boton.close"));
+	String sDialogBotonGuardarCerrar = UtilidadesString.mostrarDatoJSP(UtilidadesString.getMensajeIdioma(usrbean, "general.boton.guardarCerrar"));	
 %>
 
-
-<!-- HEAD -->
-
-
+	<!-- HEAD -->
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
-	
+	<link rel="stylesheet" href="<html:rewrite page='/html/js/jquery.ui/css/smoothness/jquery-ui-1.10.3.custom.min.css'/>">	
 	
 	<!-- Incluido jquery en siga.js -->
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-1.9.1.js?v=${sessionScope.VERSIONJS}'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js?v=${sessionScope.VERSIONJS}'/>"></script>		
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-ui-1.10.3.custom.min.js?v=${sessionScope.VERSIONJS}'/>"></script>
+	<script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
 	
-	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js?v=${sessionScope.VERSIONJS}'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
 	<!-- INICIO: TITULO Y LOCALIZACION -->
 	<!-- Escribe el título y localización en la barra de título del frame principal -->
-	<siga:Titulo 
-		titulo="pys.solicitudCompra.cabecera" 
-		localizacion="pys.solicitudCompra.ruta"/>
+	<siga:Titulo titulo="pys.solicitudCompra.cabecera" localizacion="pys.solicitudCompra.ruta"/>
 	<!-- FIN: TITULO Y LOCALIZACION -->
 
 	<!-- Aqui se reescriben las funciones que vayamos a utilizar -->
@@ -114,28 +116,85 @@
  		
  		function accionImprimirApaisado(){
 			document.solicitudCompraForm.modo.value = "imprimirCompra";
-		 	var resultado = ventaModalGeneralScrollAuto("solicitudCompraForm","G");			
+		 	ventaModalGeneralScrollAuto("solicitudCompraForm","G");			
 		 	//document.solicitudCompraForm.submit();
  		}
  		
  		function accionFacturacionRapida(){
- 			sub();
-			document.solicitudCompraForm.modo.value = "facturacionRapidaCompra";
-		 	document.solicitudCompraForm.target="submitArea";
-		 	tableCabecera = document.getElementById("cabecera");
-		 	filas = tableCabecera.rows.length;
-		 	numColumnas = tableCabecera.rows[0].cells.length - 1;
+ 			sub();			
+ 			
+		 	var tableCabecera = document.getElementById("cabecera");
+		 	var filas = tableCabecera.rows.length;
+		 	var numColumnas = tableCabecera.rows[0].cells.length - 1;
 		 	
-		 	for (a = 1; a < filas ; a++) {
+		 	for (var a = 1; a < filas ; a++) {
 		 		tableCabecera.rows[a].cells[numColumnas].innerHTML = "";
 		 	}
 
 			var divAsistencias = document.getElementById("divAsistencias");
 			if(divAsistencias) 
 				 divAsistencias.innerHTML="";
-		 	
-		 	document.solicitudCompraForm.submit();
-		 	window.setTimeout("fin()",5000,"Javascript");
+						
+		    var idInstitucion = document.getElementById('oculto1_idInstitucion');
+		    var idPeticion = document.getElementById('oculto1_idPeticion');
+		    
+		    jQuery.ajax({ 
+				type: "POST",
+				url: "/SIGA/PYS_GenerarSolicitudes.do?modo=getAjaxSeleccionSerieFacturacion",				
+				data: "idInstitucion=" + idInstitucion.value + "&idPeticion=" + idPeticion.value,
+				dataType: "json",
+				contentType: "application/x-www-form-urlencoded;charset=UTF-8",
+				success: function(json){							
+						
+					// Recupera el identificador de la serie de facturacion
+					var idSerieFacturacion = json.idSerieFacturacion;		
+					
+					if (idSerieFacturacion==null || idSerieFacturacion=='') {
+						jQuery("#selectSeleccionSerieFacturacion")[0].innerHTML = json.aOptionsSeriesFacturacion[0];
+						
+						jQuery("#divSeleccionSerieFacturacion").dialog(
+							{
+								height: 150,
+								width: 500,
+								modal: true,
+								resizable: false,
+								buttons: {
+									"<%=sDialogBotonGuardarCerrar%>": function() {
+										idSerieFacturacion = jQuery("#selectSeleccionSerieFacturacion").val();
+										if (idSerieFacturacion==null || idSerieFacturacion=='') {
+											alert('<siga:Idioma key="messages.facturacion.seleccionSerie.noSeleccion"/>');
+											
+										} else {
+											jQuery(this).dialog("close");
+											document.solicitudCompraForm.target = "submitArea";
+											document.solicitudCompraForm.modo.value = "facturacionRapidaCompra";
+											document.solicitudCompraForm.tablaDatosDinamicosD.value = idInstitucion.value + ',' + idPeticion.value + ',' + idSerieFacturacion;											
+											document.solicitudCompraForm.submit();	
+										}
+									},
+									"<%=sDialogBotonCerrar%>": function() {
+										jQuery(this).dialog("close");
+									}
+								}
+							}
+						);
+						jQuery(".ui-widget-overlay").css("opacity","0");														
+						
+					} else {
+						document.solicitudCompraForm.target = "submitArea";
+						document.solicitudCompraForm.modo.value = "facturacionRapidaCompra";
+						document.solicitudCompraForm.tablaDatosDinamicosD.value = idInstitucion.value + ',' + idPeticion.value + ',' + idSerieFacturacion;							
+						document.solicitudCompraForm.submit();							
+					}							
+					
+					fin();							
+				},
+				
+				error: function(e){
+					alert("<%=sDialogError%>");
+					fin();
+				}
+			});			    
  		}
  		
  		function anticiparImporte (fila) {
@@ -180,6 +239,20 @@
 </head>
 
 <body onLoad="resultado();">
+	<div id="divSeleccionSerieFacturacion" title="<siga:Idioma key='facturacion.seleccionSerie.titulo'/>" style="display:none">
+		<table align="left">
+			<tr>		
+				<td class="labelText" nowrap>
+					<siga:Idioma key="facturacion.nuevaPrevisionFacturacion.literal.serieFacturacion"/>&nbsp;(*)
+				</td>
+				<td>
+					<select class='box' style='width:270px' id='selectSeleccionSerieFacturacion'>
+					</select>
+				</td>
+			</tr>				
+		</table>			
+	</div>
+
 <%  //INICIO DE LA PARTE DE ERROR O KO
 	if (!error.equals("NO")) { %>
 		<div id="titulo" style="width:100%; z-index: 5">
@@ -212,7 +285,7 @@
 		
 		<html:form action="/PYS_GenerarSolicitudes.do" method="POST" target="_blank" type=""> 
 			<input type="hidden" name="modo" value=""> 
-			<input type="hidden" name="actionModal" value=""> 
+			<input type="hidden" name="actionModal" value=""> 			
 		
 			<siga:ConjCampos leyenda="pys.solicitudCompra.literal.datosSolicitud">	
 				<table class="tablaCampos" align="center">	
@@ -258,11 +331,12 @@
 						String cuenta = UtilidadesString.mostrarDatoJSP(UtilidadesHash.getString(hash, "DESCRIPCION_CUENTA"));						
 						Integer clase = UtilidadesHash.getInteger(hash, "CLASE");
 						String letraClase = (clase.intValue() == Articulo.CLASE_PRODUCTO ? "P" : "S");
-						String idPeticionArticulo="", idArticulo="", idArticuloInstitucion="", idTipoClave="", descripcion="", periodicidad="", idFormaPago="";
+						String idInstitucion="", idPeticionArticulo="", idArticulo="", idArticuloInstitucion="", idTipoClave="", descripcion="", periodicidad="", idFormaPago="";
 						double precio;
 						int cantidad;
 						if (letraClase.equals("P")) {
-							precio = UtilidadesHash.getDouble(hash, PysProductosSolicitadosBean.C_VALOR).doubleValue();														
+							precio = UtilidadesHash.getDouble(hash, PysProductosSolicitadosBean.C_VALOR).doubleValue();
+							idInstitucion = UtilidadesHash.getString(hash, PysProductosSolicitadosBean.C_IDINSTITUCION);
 							idPeticionArticulo = UtilidadesHash.getString(hash, PysProductosSolicitadosBean.C_IDPETICION);
 							idArticulo = UtilidadesHash.getString(hash, PysProductosSolicitadosBean.C_IDPRODUCTO);
 							idArticuloInstitucion = UtilidadesHash.getString(hash, PysProductosSolicitadosBean.C_IDPRODUCTOINSTITUCION);
@@ -273,6 +347,7 @@
 							
 						} else  {
 							precio = UtilidadesHash.getDouble(hash, "PRECIOSSERVICIOS").doubleValue();
+							idInstitucion = UtilidadesHash.getString(hash, PysServiciosSolicitadosBean.C_IDINSTITUCION);
 							idPeticionArticulo = UtilidadesHash.getString(hash, PysServiciosSolicitadosBean.C_IDPETICION);
 							idArticulo = UtilidadesHash.getString(hash, PysServiciosSolicitadosBean.C_IDSERVICIO);
 							idArticuloInstitucion = UtilidadesHash.getString(hash, PysServiciosSolicitadosBean.C_IDSERVICIOSINSTITUCION);
@@ -309,6 +384,7 @@
 							    <input type="hidden" name="oculto<%=i+1%>_idPeticion" value="<%=idPeticionArticulo%>">
 							    <input type="hidden" name="oculto<%=i+1%>_idTipoClave" value="<%=idTipoClave%>">
 							    <input type="hidden" name="oculto<%=i+1%>_tipo" value="<%=letraClase%>">
+							    <input type="hidden" name="oculto<%=i+1%>_idInstitucion" value="<%=idInstitucion%>">
 			  					<%=descripcion%>						  								
 			  				</td>
 			  				<td><%=UtilidadesString.mostrarDatoJSP(UtilidadesHash.getString(hash, "DESCRIPCION_FORMAPAGO"))%></td>
@@ -418,8 +494,8 @@
 			<input type="hidden" name="tipo" value=""> 
 			<input type="hidden" name="modo" value="mostrarAnticipos"> 
 			<input type="hidden" name="actionModal" value="">
+			<html:hidden styleId = "tablaDatosDinamicosD"  property = "tablaDatosDinamicosD" value=""/>
 		</html:form>	
-		
 		
 <% 
 		if (usrbean.isLetrado() || cer_nofactura) { 

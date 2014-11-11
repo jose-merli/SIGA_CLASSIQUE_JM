@@ -22,6 +22,7 @@ import javax.transaction.UserTransaction;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.json.JSONObject;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
@@ -104,50 +105,69 @@ public class SolicitudCompraAction extends MasterAction{
 				
 				String accion = miForm.getModo();
 				
-				// La primera vez que se carga el formulario 
-				// Abrir
+				// La primera vez que se carga el formulario Abrir
 				if (accion == null || accion.equalsIgnoreCase("") || accion.equalsIgnoreCase("abrir")){
 					request.getSession().removeAttribute("resultBusqueda");
 					request.getSession().removeAttribute("auxSolicitudCompraForm");
-					mapDestino = abrir(mapping, miForm, request, response);						
+					mapDestino = abrir(mapping, miForm, request, response);
+					
 				}else if (accion.equalsIgnoreCase("abrirAlVolver")){
 					request.getSession().setAttribute("volver","s");
 					mapDestino = abrir(mapping, miForm, request, response);
+					
 				}else if (accion.equalsIgnoreCase("abrirAlVolverConf")){
 					request.getSession().setAttribute("volver","s");
 					mapDestino = continuar(mapping, miForm, request, response);
+					
 				}else if (accion.equalsIgnoreCase("solicitar")){
 					mapDestino = solicitar(mapping, miForm, request, response);
+					
 				}else if (accion.equalsIgnoreCase("borrarCarrito")){
 					mapDestino = borrarCarrito(mapping, miForm, request, response);
+					
 				}else if (accion.equalsIgnoreCase("continuar")){
 					mapDestino = continuar(mapping, miForm, request, response);
+					
 				}else if (accion.equalsIgnoreCase("modificarCuenta")){
 					mapDestino = modificarCuenta(mapping, miForm, request, response);
+					
 				}else if (accion.equalsIgnoreCase("finalizarCompra")){
 					mapDestino = finalizarCompra(mapping, miForm, request, response);
+					
 				}else if (accion.equalsIgnoreCase("confirmarCompra")){
 					mapDestino = confirmarCompra(mapping, miForm, request, response);
+					
 				}else if (accion.equalsIgnoreCase("pagarConTarjeta")){
 					mapDestino = pagarConTarjeta(mapping, miForm, request, response);
+					
 				}else if (accion.equalsIgnoreCase("okCompraTPV")){
-					mapDestino = okCompraTPV(mapping, miForm, request, response);				 
+					mapDestino = okCompraTPV(mapping, miForm, request, response);
+					
 				}else if (accion.equalsIgnoreCase("guardarCertificado")){
 					mapDestino = guardarCertificado(mapping, miForm, request, response);
+					
 				}else if (accion.equalsIgnoreCase("consultarCertificado")){
 					mapDestino = consultarCertificado(mapping, miForm, request, response);
+					
 				}else if (accion.equalsIgnoreCase("actualizarCliente")){
 					mapDestino = actualizarCliente(mapping, miForm, request, response);
+					
 				}else if (accion.equalsIgnoreCase("imprimirCompra")){
 					mapDestino = imprimirCompra(mapping, miForm, request, response);
+					
 				}else if (accion.equalsIgnoreCase("buscarProducto")){
-					mapDestino = buscarProducto(mapping, miForm, request, response); 
+					mapDestino = buscarProducto(mapping, miForm, request, response);
+					
 				}else if (accion.equalsIgnoreCase("facturacionRapidaCompra")){
-					mapDestino = facturacionRapidaCompra(mapping, miForm, request, response); 
-				}else if (accion.equalsIgnoreCase("seleccionSerie")){
-					mapDestino = seleccionSerie(mapping, miForm, request, response); 
+					mapDestino = facturacionRapidaCompra(mapping, miForm, request, response);
+					
 				}else if (accion.equalsIgnoreCase("mostrarCompra")){
-					mapDestino = mostrarCompra(mapping, miForm, request, response); 
+					mapDestino = mostrarCompra(mapping, miForm, request, response);
+					
+				} else if (accion.equalsIgnoreCase("getAjaxSeleccionSerieFacturacion")) {
+					getAjaxSeleccionSerieFacturacion(request, response);	     
+					return null;
+					
 				}else {
 					return super.executeInternal(mapping, formulario, request, response);
 				}
@@ -988,7 +1008,6 @@ public class SolicitudCompraAction extends MasterAction{
 	 */
 	protected String confirmarCompra(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {		
 		String modo = "desglosePago";
-		UsrBean user = null;		
 		CarroCompra carro;		
 		double varPrecioTotalTarjeta=0, precio=0, importe=0, iva=0, varIvaTotalTarjeta=0;
 		Double subtotal;
@@ -1000,8 +1019,6 @@ public class SolicitudCompraAction extends MasterAction{
 		SolicitudCompraForm form =  (SolicitudCompraForm) formulario;
 		
 		try {
-			user=(UsrBean)request.getSession().getAttribute("USRBEAN");							
-					
 			//Datos del carro de la compra:
 			carro = (CarroCompra)request.getSession().getAttribute(CarroCompraAdm.nombreCarro);	
 			ArrayList arrayListaArticulosOrdenada = carro.getArrayListaArticulosOrdenada();
@@ -1512,27 +1529,30 @@ public class SolicitudCompraAction extends MasterAction{
      * - Productos y Servicios > Solicitudes > Compra/Subscripción (facturacion rapida)
      * - Productos y Servicios > Gestión Solicitudes (facturacion rapida)
 	 *  
-	 * Funcion que atiende la accion facturacionRapidaCompraInterna. 
-	 * Este proceso va a realizar la aprobación de la peticion (Creacion de compra) 
-	 * si no esta hecho ya y posteriormente va a facturar de manera rapida buscando 
-	 * la serie de facturacion adecuada si existe.
-	 * RECIBE ATRIBUTOS: IDINSTITUCION, IDPETICION
+	 * Funcion que atiende la accion facturacionRapidaCompra. Este proceso va a realizar la 
+	 * aprobación de la peticion (Creacion de compra) si no esta hecho ya y posteriormente 
+	 * va a facturar de manera rapida buscando la serie de facturacion adecuada si existe.
+	 * RECIBE CARRO DE LA COMPRA
 	 * @param  mapping - Mapeo de los struts
 	 * @param  formulario -  Action Form asociado a este Action
 	 * @param  request - objeto llamada HTTP 
 	 * @param  response - objeto respuesta HTTP
 	 * @return  String  Destino del action o error en caso de no completar con exito.
 	 * @exception  SIGAException  En cualquier caso de error
-	 */	
-	protected String facturacionRapidaPeticionInterna(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, SIGAException {
+	 */					
+	protected String facturacionRapidaCompra(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, SIGAException {	
 	    UserTransaction tx = null;
 	    String salida = "";
 	    try {
 			UsrBean usr = this.getUserBean(request);
 			tx = usr.getTransaction();
 			
-			String idInstitucion=(String)request.getAttribute("factRapidaIdInstitucion");			
-			Long idPeticion = (Long)request.getAttribute("factRapidaIdPeticion");
+		    // datos llamada
+			SolicitudCompraForm formSolicitudCompra = (SolicitudCompraForm)formulario;
+		    Vector vOcultos = formSolicitudCompra.getDatosTablaOcultos(0);
+		    String idInstitucion = ((String)vOcultos.elementAt(0)).trim();
+	    	String idPeticion = ((String)vOcultos.elementAt(1)).trim();
+	    	String idSerieSeleccionada = ((String)vOcultos.elementAt(2)).trim();			
 		    
 		    // administradores
 			PysCompraAdm admCompra = new PysCompraAdm(usr);
@@ -1550,7 +1570,7 @@ public class SolicitudCompraAction extends MasterAction{
 		    // Obtengo la peticion de compra
 		    Hashtable<String, Object> hPeticionCompraSuscripcion = new Hashtable<String, Object>(); 
 		    hPeticionCompraSuscripcion.put("IDINSTITUCION",idInstitucion);
-		    hPeticionCompraSuscripcion.put("IDPETICION",idPeticion.toString());
+		    hPeticionCompraSuscripcion.put("IDPETICION",idPeticion);
 		    
 		    Vector<?> vPeticionCompraSuscripcion = admPeticionCompraSuscripcion.selectByPK(hPeticionCompraSuscripcion);		    
 		    PysPeticionCompraSuscripcionBean beanPeticionCompraSuscripcion = null;
@@ -1581,49 +1601,35 @@ public class SolicitudCompraAction extends MasterAction{
 	        PysCompraBean pysCompraBean = (PysCompraBean) compras.get(0);
 	        if (pysCompraBean.getIdFactura()==null || pysCompraBean.getIdFactura().equals("")){// Si despues de hacer la facturacion se vuelve a pulsar el boton, mostrará la factura asociada
 	        		        	
-	        	        	
-	        	FacSerieFacturacionBean serieFacturacionCandidata = null;
-	        	FacFacturacionProgramadaBean programacion = null;
-	        	
-	        	// PASO 1: OBTENER SERIE CANDIDATA	
-	        	String serieSeleccionada = request.getParameter("serieSeleccionada");
-	        	if (serieSeleccionada==null || serieSeleccionada.equals("")) {
+	        	// Obtiene la serie candidata
+			    FacSerieFacturacionBean beanSerieCandidata = null;
+	        	if (idSerieSeleccionada==null || idSerieSeleccionada.equals("")) {
 				    Vector<?> series =  admSerieFacturacion.obtenerSeriesAdecuadas(compras);
-				    if (series==null || series.size()==0) {
+				    if (series==null || series.size()!=1) {
+				    	// LIBERAMOS EL BLOQUEO DE LAS TABLAS Y LA TRANSACCIÓN
+				        tx.rollback();
 				        throw new SIGAException("messages.facturacionRapidaCompra.noSerieAdecuada");
 				        
 				    } else if (series.size()==1) {
-				        serieFacturacionCandidata = (FacSerieFacturacionBean)series.get(0);
-				        
-				    } else {
-				        // existen varias series candidatas
-				        tx.rollback();				        
-				        
-				        // PREGUNTA
-				        request.setAttribute("idPeticionSeleccion",idPeticion.toString());
-				        request.getSession().setAttribute("seriesCandidatas",series);
-				        return "seleccionSerie";
+				    	beanSerieCandidata = (FacSerieFacturacionBean)series.get(0);
 				    }
 				    
-		        } else {
-		            // han seleccionado una serie
-			        request.getSession().removeAttribute("seriesCandidatas");
-
+		        } else { // Se ha seleccionado una serie			        			           
 			        Hashtable<String,String> hSerieFacturacion = new Hashtable<String,String>();
-			        hSerieFacturacion.put("IDINSTITUCION",idInstitucion);
-			        hSerieFacturacion.put("IDSERIEFACTURACION",serieSeleccionada);
+			        hSerieFacturacion.put("IDINSTITUCION", idInstitucion);
+			        hSerieFacturacion.put("IDSERIEFACTURACION", idSerieSeleccionada);
 			        
 		            Vector<?> vSerieFacturacion = admSerieFacturacion.selectByPK(hSerieFacturacion);
 		            if (vSerieFacturacion!=null && vSerieFacturacion.size()>0) {
-		                serieFacturacionCandidata = (FacSerieFacturacionBean)vSerieFacturacion.get(0);
+		            	beanSerieCandidata = (FacSerieFacturacionBean)vSerieFacturacion.get(0);
 		            }
-		        }
+		        }		        	
 
 			    // PASO 2: FACTURACION RAPIDA DESDE SERIE CANDIDATA (GENERACION)
-	        	programacion = facturacion.procesarFacturacionRapidaCompras(beanPeticionCompraSuscripcion, compras, serieFacturacionCandidata);
+	        	FacFacturacionProgramadaBean programacion = facturacion.procesarFacturacionRapidaCompras(beanPeticionCompraSuscripcion, compras, beanSerieCandidata);
 			    
 			    // Aqui obtengo las facturas implicadas
-			    Vector<?> facts = admFactura.getFacturasSerieFacturacion(serieFacturacionCandidata);
+			    Vector<?> facts = admFactura.getFacturasSerieFacturacion(beanSerieCandidata);
 			    FacFacturaBean factBean = (FacFacturaBean)facts.get(0);
 			    idFactura = factBean.getIdFactura();
 		        
@@ -1675,115 +1681,6 @@ public class SolicitudCompraAction extends MasterAction{
 		
 		return salida;
 	}
-	
-	/** 
-	 * Funcion que atiende la accion facturacionRapidaCompra. Este proceso va a realizar la 
-	 * aprobación de la peticion (Creacion de compra) si no esta hecho ya y posteriormente 
-	 * va a facturar de manera rapida buscando la serie de facturacion adecuada si existe.
-	 * @param  mapping - Mapeo de los struts
-	 * @param  formulario -  Action Form asociado a este Action
-	 * @param  request - objeto llamada HTTP 
-	 * @param  response - objeto respuesta HTTP
-	 * @return  String  Destino del action o error en caso de no completar con exito.
-	 * @exception  SIGAException  En cualquier caso de error
-	 */	
-	protected String seleccionSerie(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, SIGAException
-	{
-		return "seleccionSerieModal";
-	}
-
-	/** 
-	 * Funcion que atiende la accion facturacionRapidaCompra. Este proceso va a realizar la 
-	 * aprobación de la peticion (Creacion de compra) si no esta hecho ya y posteriormente 
-	 * va a facturar de manera rapida buscando la serie de facturacion adecuada si existe.
-	 * RECIBE CARRO DE LA COMPRA
-	 * @param  mapping - Mapeo de los struts
-	 * @param  formulario -  Action Form asociado a este Action
-	 * @param  request - objeto llamada HTTP 
-	 * @param  response - objeto respuesta HTTP
-	 * @return  String  Destino del action o error en caso de no completar con exito.
-	 * @exception  SIGAException  En cualquier caso de error
-	 */					
-	protected String facturacionRapidaCompra(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, SIGAException
-	{
-	    UserTransaction tx = null;
-	    String salida = "";
-	    try {
-			UsrBean usr = this.getUserBean(request);
-			Long idPeticion=null; 
-			String idInstitucion=usr.getLocation();
-			
-			String idPeticionParametro=request.getParameter("idPeticionParametro");
-			if (idPeticionParametro!=null && !idPeticionParametro.equals("")) {
-			    idPeticion = new Long(idPeticionParametro);   
-			
-			} else { //Se busca en la sesion para los tipos de producto en lso que hay que seleccionar una serie porque está en mas de una
-				SolicitudCompraForm form = (SolicitudCompraForm)request.getSession().getAttribute("solicitudCompraForm");
-				if(form.getIdPeticion()!=null && !form.getIdPeticion().equals("")) {
-					idPeticion = new Long(form.getIdPeticion());
-			
-				}else{
-					CarroCompra carro = (CarroCompra)request.getSession().getAttribute(CarroCompraAdm.nombreCarro);
-					idPeticion = carro.getIdPeticion();
-				}
-			}			
-			
-			request.setAttribute("factRapidaIdInstitucion",idInstitucion);
-			request.setAttribute("factRapidaIdPeticion",idPeticion);
-			
-			// llamada con peticion
-			salida=facturacionRapidaPeticionInterna(mapping,formulario,request,response);
-			
-		} catch (SIGAException se){
-			throw se;
-		}catch (Exception e) { 
-			throwExcp("messages.general.error",new String[] {"modulo.certificados"},e,tx); 
-		}
-		return salida;
-	}
-
-
-	/** 
-	 * Funcion que atiende la accion facturacionRapidaPeticion. Este proceso va a realizar la 
-	 * aprobación de la peticion (Creacion de compra) si no esta hecho ya y posteriormente 
-	 * va a facturar de manera rapida buscando la serie de facturacion adecuada si existe.
-	 * RECIBE PARAMETROS: IDINSTITUCION, IDPETICION
-	 * @param  mapping - Mapeo de los struts
-	 * @param  formulario -  Action Form asociado a este Action
-	 * @param  request - objeto llamada HTTP 
-	 * @param  response - objeto respuesta HTTP
-	 * @return  String  Destino del action o error en caso de no completar con exito.
-	 * @exception  SIGAException  En cualquier caso de error
-	 */	
-	protected String facturacionRapidaPeticion(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, SIGAException
-	{
-	    UserTransaction tx = null;
-	    String salida = "";
-	    try {
-			UsrBean usr = this.getUserBean(request);
-			tx=usr.getTransaction();
-			
-			String idInstitucion=usr.getLocation();
-			Long idPeticion = new Long(request.getParameter("idPeticion"));
-			
-			
-			request.setAttribute("factRapidaIdInstitucion",idInstitucion);
-			request.setAttribute("factRapidaIdPeticion",idPeticion);
-			
-			// llamada con peticion
-			salida=facturacionRapidaPeticionInterna(mapping,formulario,request,response);
-			
-			
-		} 
-		catch (Exception e) { 
-			throwExcp("messages.general.error",new String[] {"modulo.certificados"},e,tx); 
-		}
-		return salida;
-	}
-	
-	
-	
-	
 	
 	/** 
 	 * Recupera los datos de la compra, incluyendo el importe anticipado si corresponde. 
@@ -1847,5 +1744,77 @@ public class SolicitudCompraAction extends MasterAction{
 		return modo;	
 	} 
 
-
+	/**
+	 * Obtiene las series de facturacion que estan asociadas a los pys de la peticion
+	 * @param request
+	 * @param response
+	 * @throws Exception
+	 */
+	protected void getAjaxSeleccionSerieFacturacion (HttpServletRequest request, HttpServletResponse response) throws Exception {			
+		
+		String idInstitucion = request.getParameter("idInstitucion");
+		if (idInstitucion==null || idInstitucion.trim().equalsIgnoreCase(""))
+			throw new SIGAException("Falta el identificador de la institución");
+		
+		String idPeticion = request.getParameter("idPeticion");
+		if (idPeticion==null || idPeticion.trim().equalsIgnoreCase(""))
+			throw new SIGAException("Falta el identificador de la petición");
+		
+		JSONObject json = new JSONObject();
+		UsrBean usr = this.getUserBean(request);		
+		String idSerieFacturacion = "";	
+		
+		// Crea el bean de la peticion
+		PysPeticionCompraSuscripcionBean beanPeticionCompraSuscripcion = new PysPeticionCompraSuscripcionBean();
+		beanPeticionCompraSuscripcion.setIdInstitucion(Integer.valueOf(idInstitucion));
+		beanPeticionCompraSuscripcion.setIdPeticion(Long.valueOf(idPeticion));
+		
+		// Obtiene las compras de la peticion
+		PysCompraAdm admCompra = new PysCompraAdm(usr);
+		Vector<PysCompraBean> vCompras = admCompra.obtenerComprasPorPeticion(beanPeticionCompraSuscripcion);
+	    
+	    // Compruebo si esta facturada la compra
+		PysCompraBean beanCompra = (PysCompraBean) vCompras.get(0);
+	    if (beanCompra.getIdFactura()!=null && !beanCompra.getIdFactura().trim().equals("")) {	
+	    	idSerieFacturacion = "Facturado"; // JPT: Esto sirve para indicar que ya esta facturado
+	    	
+	    } else {
+		
+			// Busca las series de facturacion del producto
+	    	FacSerieFacturacionAdm admSerieFacturacion = new FacSerieFacturacionAdm(usr);
+			Vector<FacSerieFacturacionBean> vSeriesFacturacion =  admSerieFacturacion.obtenerSeriesAdecuadas(vCompras);
+			    		
+		    // Compruebo que tiene una serie de facturacion
+		    if (vSeriesFacturacion.size()==1) {
+		    	FacSerieFacturacionBean beanSerieFacturacion = (FacSerieFacturacionBean) vSeriesFacturacion.get(0);
+		    	idSerieFacturacion = beanSerieFacturacion.getIdSerieFacturacion().toString();
+		    		    
+		    } else { // Tiene varias series de facturacion asociadas al producto
+		    	
+		    	// Indico la primera opcion del seleccionable
+		    	String sOptionsSerieFacturacion = "<option value=''>" + UtilidadesString.getMensajeIdioma(usr, "general.combo.seleccionar") + "</option>";
+		    	
+		    	// Cargo el resto de opciones del seleccionable
+		    	for (int i = 0; i < vSeriesFacturacion.size(); i++)	{
+		    		FacSerieFacturacionBean beanSerieFacturacion = (FacSerieFacturacionBean) vSeriesFacturacion.get(i);
+		    		sOptionsSerieFacturacion +="<option value='" +  beanSerieFacturacion.getIdSerieFacturacion() + "'>" + beanSerieFacturacion.getNombreAbreviado() + "</option>";
+		    	}
+		    	
+		    	// Devuelvo la lista de series de facturacion
+		    	ArrayList<String> aOptionsSeriesFacturacion = new ArrayList<String>();
+		    	aOptionsSeriesFacturacion.add(sOptionsSerieFacturacion);
+		    	json.put("aOptionsSeriesFacturacion", aOptionsSeriesFacturacion);
+		    }
+	    }
+		
+    	// Deuelve el identificador de la serie de facturacion
+		json.put("idSerieFacturacion", idSerieFacturacion);
+		
+		// json.
+		response.setContentType("text/x-json;charset=UTF-8");
+		response.setHeader("Cache-Control", "no-cache");
+		response.setHeader("Content-Type", "application/json");
+	    response.setHeader("X-JSON", json.toString());
+		response.getWriter().write(json.toString()); 		
+	}			
 }
