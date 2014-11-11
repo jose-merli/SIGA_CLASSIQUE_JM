@@ -127,7 +127,7 @@
 			}				
 
 			// Validamos que ha introducido la fecha de la renegociacion
-			if (document.GestionarFacturaForm.datosRenegociarFecha.value = "") {
+			if (document.GestionarFacturaForm.datosRenegociarFecha.value.length < 1) {
 				var mensaje = '<siga:Idioma key="facturacion.pagosFactura.Caja.literal.Fecha"/> <siga:Idioma key="messages.campoObligatorio.error"/>';
 				alert (mensaje);
 				return 0;
