@@ -208,7 +208,7 @@
 	<!-- FIN: TITULO Y LOCALIZACION -->	
 </head>
 
-<body onload="onload();">
+<body>
 
 	<!-- INICIO: CAMPOS -->
 	<html:form action="<%=path%>" method="POST" target="submitArea" style="display:none">
