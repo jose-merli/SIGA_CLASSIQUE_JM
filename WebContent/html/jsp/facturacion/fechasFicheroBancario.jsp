@@ -39,7 +39,7 @@
 		</td>
 		
 		<td width="120px">
-			<siga:Fecha nombreCampo="fechaPresentacion"	posicionX="10" posicionY="10" valorInicial="<%=fechaPresentacion%>" postFunction="onChangeFechaPresentacion()"/>
+			<siga:Fecha nombreCampo="fechaPresentacion"	posicionX="10" posicionY="10" valorInicial="<%=fechaPresentacion%>" postFunction="onChangeFechaPresentacion(this)"/>
 		</td>
 		
 		<td>
@@ -150,6 +150,8 @@
 
 <script type="text/javascript">
 
+	var valorFechaPresentacion = "<%=fechaPresentacion%>";
+
 	jQuery(document).ready(function () {		
 <%
 		if(modoAction!=null && modoAction.trim().equals("ver")) { 
@@ -207,50 +209,70 @@
 	}
 	
 	function validarFechasSEPA(){
-		if (<%=bObligatorioFechasSEPA%>) {
-			// La fecha de presentacion es obligatoria
+		
+		// Si es obligatorio o ha introducido alguna fecha, deben venir todas indicadas
+		if (<%=bObligatorioFechasSEPA%> || (jQuery('#fechaPresentacion').val() != "" || jQuery('#fechaRecibosRecurrentes').val() != "" || jQuery('#fechaRecibosPrimeros').val() != "" || jQuery('#fechaRecibosCOR1').val() != "" || jQuery('#fechaRecibosB2B').val() != "")) {
+
 			if(jQuery('#fechaPresentacion').val() == ""){
 				alert('<siga:Idioma key="facturacion.fechasficherobancario.msgerror.fechapresentacion"/>');
 				return false;
 			}
 			
-			if(jQuery('#fechaRecibosRecurrentes').val() == "" || jQuery('#fechaRecibosPrimeros').val() == "" || jQuery('#fechaRecibosCOR1').val() == "" || jQuery('#fechaRecibosB2B').val() == ""){
-				alert('<siga:Idioma key="facturacion.fechasficherobancario.msgerror.fechasminimas"/>');
+			if (jQuery('#fechaRecibosPrimeros').val() == "") {
+				alert ('<siga:Idioma key="messages.campos.required"/> <siga:Idioma key="facturacion.fechasficherobancario.fechaprimerosrecibos"/>');
 				return false;
 			}
 			
-		} else {
-			// Si hay alguna fecha indicada, deben venir todas indicadas
-			if ((jQuery('#fechaPresentacion').val() != "" || jQuery('#fechaRecibosRecurrentes').val() != "" || jQuery('#fechaRecibosPrimeros').val() != "" || jQuery('#fechaRecibosCOR1').val() != "" || jQuery('#fechaRecibosB2B').val() != "") &&
-				(jQuery('#fechaPresentacion').val() == "" || jQuery('#fechaRecibosRecurrentes').val() == "" || jQuery('#fechaRecibosPrimeros').val() == "" || jQuery('#fechaRecibosCOR1').val() == "" || jQuery('#fechaRecibosB2B').val() == "")) {
-					alert('<siga:Idioma key="facturacion.fechasficherobancario.msgerror.fechasminimas"/>');
-					return false;
-			}
+			if (jQuery('#fechaRecibosRecurrentes').val() == "") {
+				alert ('<siga:Idioma key="messages.campos.required"/> <siga:Idioma key="facturacion.fechasficherobancario.fecharecibosrecurrentes"/>');
+				return false;
+			}		
+			
+			/*if (jQuery('#fechaRecibosCOR1').val() == "") {
+				alert ('<siga:Idioma key="messages.campos.required"/> <siga:Idioma key="facturacion.fechasficherobancario.fechareciboscor1"/>');
+				return false;
+			}		
+			
+			if (jQuery('#fechaRecibosB2B').val() == "") {
+				alert ('<siga:Idioma key="messages.campos.required"/> <siga:Idioma key="facturacion.fechasficherobancario.fecharecibosb2b"/>');
+				return false;
+			}		
+			
+			if(jQuery('#fechaRecibosRecurrentes').val() == "" || jQuery('#fechaRecibosPrimeros').val() == "" || jQuery('#fechaRecibosCOR1').val() == "" || jQuery('#fechaRecibosB2B').val() == ""){
+				alert('<siga:Idioma key="facturacion.fechasficherobancario.msgerror.fechasminimas"/>');
+				return false;
+			}*/
 		}			
 		
 		return true;
 	}
 	
-	function onChangeFechaPresentacion(){
- 		jQuery.ajax({ //Comunicación jQuery hacia JSP  
- 			type: "POST",
-			url: "/SIGA/<%=accionRecFechas%>.do?modo=getAjaxFechasFicheroBancario",
-			data:"fechaPresentacion="+jQuery("#fechaPresentacion").val(),	
-			dataType: "json",
-			contentType: "application/x-www-form-urlencoded;charset=UTF-8",
-			success:  function(json) {
-				if(json!=null){
-					jQuery('#fechaRecibosPrimeros').val(json.fechaPrimerosRecibos);
-					jQuery('#fechaRecibosRecurrentes').val(json.fechaRecibosRecurrentes);
-					jQuery('#fechaRecibosCOR1').val(json.fechaRecibosCOR1);
-					jQuery('#fechaRecibosB2B').val(json.fechaRecibosB2B);
-				}
-	       			
-				fin();	
-		           			
-	           }, error: function(xml,msg){
-	        	   alert("Error: "+msg);
-	           }
-		});
+	function onChangeFechaPresentacion(fechaPresentacion){
+		
+		// Variable que sirve para saber si ha cambiado el valor de la fecha de presentacion
+		if (valorFechaPresentacion != fechaPresentacion.value) {
+			valorFechaPresentacion = fechaPresentacion.value;
+		
+	 		jQuery.ajax({ //Comunicación jQuery hacia JSP  
+	 			type: "POST",
+				url: "/SIGA/<%=accionRecFechas%>.do?modo=getAjaxFechasFicheroBancario",
+				data:"fechaPresentacion="+jQuery("#fechaPresentacion").val(),	
+				dataType: "json",
+				contentType: "application/x-www-form-urlencoded;charset=UTF-8",
+				success:  function(json) {
+					if(json!=null){
+						jQuery('#fechaRecibosPrimeros').val(json.fechaPrimerosRecibos);
+						jQuery('#fechaRecibosRecurrentes').val(json.fechaRecibosRecurrentes);
+						jQuery('#fechaRecibosCOR1').val(json.fechaRecibosCOR1);
+						jQuery('#fechaRecibosB2B').val(json.fechaRecibosB2B);
+					}
+		       			
+					fin();	
+			           			
+		           }, error: function(xml,msg){
+		        	   alert("Error: "+msg);
+		           }
+			});
+		}
 	}
 </script>

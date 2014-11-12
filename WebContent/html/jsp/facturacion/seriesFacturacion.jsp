@@ -461,23 +461,29 @@
 		
 		// JPT: Indica la hora y minuto actual en caso de indicar hoy
 		function actualizarHoraFecha(fecha, idHorasFecha, idMinutosFecha){
-			var fechaActual = getFechaActualDDMMYYYY();			  
-			if (compararFecha(trim(fecha.value), fechaActual) == 0){
-				var date = new Date();
-				hora = date.getHours();
-				min = date.getMinutes();
-				if (hora.toString().length==1) {
-					hora = "0" + hora;
-				}
-				if (min.toString().length==1) {
-					min = "0" + min;
-				}
-				jQuery("#"+idHorasFecha).val(hora);					
-				jQuery("#"+idMinutosFecha).val(min);
-			} else{
-				jQuery("#"+idHorasFecha).val("00");					
-				jQuery("#"+idMinutosFecha).val("00");				
+			if (trim(fecha.value)=="") {
+				jQuery("#"+idHorasFecha).val("");					
+				jQuery("#"+idMinutosFecha).val("");
 				
+			} else {
+				var fechaActual = getFechaActualDDMMYYYY();			  
+				if (compararFecha(trim(fecha.value), fechaActual) == 0){
+					var date = new Date();
+					hora = date.getHours();
+					min = date.getMinutes();
+					if (hora.toString().length==1) {
+						hora = "0" + hora;
+					}
+					if (min.toString().length==1) {
+						min = "0" + min;
+					}
+					jQuery("#"+idHorasFecha).val(hora);					
+					jQuery("#"+idMinutosFecha).val(min);
+					
+				} else {
+					jQuery("#"+idHorasFecha).val("00");					
+					jQuery("#"+idMinutosFecha).val("00");									
+				}
 			}
 		}
 		
