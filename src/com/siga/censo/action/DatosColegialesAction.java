@@ -15,6 +15,7 @@ import javax.transaction.UserTransaction;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.json.JSONObject;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
@@ -95,7 +96,10 @@ public class DatosColegialesAction extends MasterAction {
 					mapDestino = abrir(mapping, miForm, request, response);						
 				}else if (accion.equalsIgnoreCase("modificardatos")){
 					mapDestino = modificarDatos(mapping, miForm, request, response);
-				} else {
+				}else if ( accion.equalsIgnoreCase("getAjaxInscripciones")){
+						getAjaxInscripciones (request, response);
+						return null;
+				}else {
 					return super.executeInternal(mapping,
 							      formulario,
 							      request, 
@@ -904,7 +908,7 @@ public class DatosColegialesAction extends MasterAction {
 			Integer idEstadoB=Integer.parseInt((String) camposOcultos.get(5));
 			String fechaEstadoB=(String) camposOcultos.get(2);
 			
-			if((idEstadoB!=ClsConstants.ESTADO_COLEGIAL_SINEJERCER)&&(idEstadoB!=ClsConstants.ESTADO_COLEGIAL_EJERCIENTE)){
+			if(idEstadoB!=ClsConstants.ESTADO_COLEGIAL_EJERCIENTE){
 				
 				ScsInscripcionTurnoAdm admInscTurno = new ScsInscripcionTurnoAdm(usr);
 				ScsInscripcionGuardiaAdm admInscGuardia = new ScsInscripcionGuardiaAdm(usr);
@@ -1051,6 +1055,38 @@ public class DatosColegialesAction extends MasterAction {
 			throwExcp("messages.general.error",new String[] {"modulo.censo"},e,null); 
 		}
 		return (result);
+	}
+	
+	protected void getAjaxInscripciones (HttpServletRequest request, HttpServletResponse response) 
+										throws SIGAException ,Exception{
+		
+		try {
+			
+			JSONObject json = new JSONObject();	
+			Integer inscripciones=0;	
+			
+			String idPersona = request.getParameter("idPersona");	
+			String idInstitucion = request.getParameter("idInstitucion");	
+			ScsInscripcionTurnoAdm insTurnoAdm= new ScsInscripcionTurnoAdm(this.getUserBean(request));
+			ScsInscripcionGuardiaAdm insGuardiaAdm= new ScsInscripcionGuardiaAdm(this.getUserBean(request));
+			
+			Vector<ScsInscripcionTurnoBean> listaInscripcionesTurno = insTurnoAdm.getInscripcionesTurnosSinBajaPersona(idInstitucion, idPersona);
+			
+			if(listaInscripcionesTurno!=null)
+				inscripciones=listaInscripcionesTurno.size();
+
+			json.put("inscripciones", inscripciones);
+			response.setContentType("text/x-json;charset=UTF-8");
+			response.setHeader("Cache-Control", "no-cache");
+			response.setHeader("Content-Type", "application/json");
+			response.setHeader("X-JSON", json.toString());
+			response.getWriter().write(json.toString()); 		
+			
+			
+		} catch (Exception e) {
+			throwExcp("messages.general.errorExcepcion", e, null); 
+		}
+		
 	}
 
 }

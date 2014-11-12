@@ -51,7 +51,10 @@
 	String idInstitucion=(String)request.getAttribute("IDINSTITUCIONPERSONA"); // Obtengo el identificador de la institucion	
 	String residencia=(String)request.getAttribute("RESIDENTE"); // Obtengo si es editable la residencia o no
 	String botonesAccion="N";
-
+	boolean ejerciente=false;
+	if(estadoColegial.equals("Ejerciente"))
+		ejerciente=true;
+	
 	// Institucion del usuario de la aplicacion
 	String idInstUsuario=(String)request.getAttribute("IDINSTITUCION"); // Obtengo el identificador de la institucion
 
@@ -907,43 +910,110 @@
 	<!-- INICIO: SCRIPTS BOTONES -->
 	<!-- Aqui se reescriben las funciones que vayamos a utilizar -->
 	<script language="JavaScript">		
-		function borrar(fila, id) {
-			if (typeof id == 'undefined')
-				id='tablaResultados';
-		  	
-			var datos;
+	
+	function borrar(fila, id) {
+		if (typeof id == 'undefined')
+			id='tablaResultados';
+	  	
+		var datos;
 					
-			if((document.getElementById('oculto'+fila+'_6').value!=10)&&(document.getElementById('oculto'+fila+'_6').value!=20))
-			{
-				preparaDatos(fila, id);
-			   	var auxTarget = document.forms[0].target;
-			   	document.forms[0].target="submitArea";
-			   	document.forms[0].modo.value = "Borrar";
-			   	document.forms[0].submit();
-			   	document.forms[0].target=auxTarget;
-			}else{
-				
-			   if(confirm('<siga:Idioma key="messages.censo.estadosColegiales.aviso.inscripciones.baja"/>')) {
+		if(document.getElementById('oculto'+fila+'_6').value!=20)
+		{
+			preparaDatos(fila, id);
+		   	var auxTarget = document.forms[0].target;
+		   	document.forms[0].target="submitArea";
+		   	document.forms[0].modo.value = "Borrar";
+		   	document.forms[0].submit();
+		   	document.forms[0].target=auxTarget;
+		
+		//Si estamos borrando un estado Ejerciente
+		}else{
+						
+			jQuery.ajax({ //Comunicacion jQuery hacia JSP  
+				type: "POST",
+			url: "/SIGA/CEN_DatosColegiales.do?modo=getAjaxInscripciones",
+			data: "idPersona="+<%=idPersona%>+"&idInstitucion="+<%=idInstitucion%>,
+			dataType: "json",
+			contentType: "application/x-www-form-urlencoded;charset=UTF-8",
+			success: function(json){	
+				//Si tiene inscripciones
+				if(json.inscripciones!=null && json.inscripciones >0){
+					
+					if(confirm('<siga:Idioma key="messages.censo.estadosColegiales.aviso.inscripciones.baja"/>')) {
+						preparaDatos(fila, id);
+				   		var auxTarget = document.forms[0].target;
+				   		document.forms[0].target="submitArea";
+				   		document.forms[0].modo.value = "Borrar";
+				   		document.forms[0].submit();
+				   		document.forms[0].target=auxTarget;
+					}else{
+						fin();
+					}
+				}else{
 					preparaDatos(fila, id);
 			   		var auxTarget = document.forms[0].target;
 			   		document.forms[0].target="submitArea";
 			   		document.forms[0].modo.value = "Borrar";
 			   		document.forms[0].submit();
 			   		document.forms[0].target=auxTarget;
-			 	}
+				}
+				
+			},
+			error: function(e){
+				alert(mensaje);
+				fin();
 			}
+			});	
 
-		 }
+		}
+
+	 }
 
 		
-		// Asociada al boton Nuevo
-		function accionNuevo() {		
-			document.forms[0].modo.value='nuevo';
+	// Asociada al boton Nuevo
+	function accionNuevo() {		
+		document.forms[0].modo.value='nuevo';
+		var modo='nuevo';
+		
+		if(<%=ejerciente%>==true){
+		
+				jQuery.ajax({ //Comunicacion jQuery hacia JSP  
+					type: "POST",
+				url: "/SIGA/CEN_DatosColegiales.do?modo=getAjaxInscripciones",
+				data: "idPersona="+<%=idPersona%>+"&idInstitucion="+<%=idInstitucion%>,
+				dataType: "json",
+				contentType: "application/x-www-form-urlencoded;charset=UTF-8",
+				success: function(json){	
+					//Si tiene inscripciones
+					if(json.inscripciones!=null && json.inscripciones >0){
+						
+						if(confirm('<siga:Idioma key="messages.censo.estadosColegiales.aviso.inscripciones.baja"/>')) {
+							var resultado = ventaModalGeneral(document.forms[0].name,"P");
+							if (resultado=="MODIFICADO") {
+								refrescarLocal();
+							}
+						}else{
+							fin();
+						}
+					}else{
+						var resultado = ventaModalGeneral(document.forms[0].name,"P");
+						if (resultado=="MODIFICADO") {
+							refrescarLocal();
+						}
+					}
+				},
+				error: function(e){
+					alert(mensaje);
+					fin();
+				}
+			});	
+		}else{
 			var resultado = ventaModalGeneral(document.forms[0].name,"P");
 			if (resultado=="MODIFICADO") {
 				refrescarLocal();
 			}
 		}
+	}
 		
 		function accionCerrar() {		
 			// esta funcion cierra la ventana y devuelve 
