@@ -42,6 +42,7 @@
 	
 				
 	String dato[] = {(String)usr.getLocation(),(String)usr.getLocation(),designaIdTurno,anioDesigna,numeroDesigna,(String)usr.getLocation(),designaIdTurno,anioDesigna,numeroDesigna};
+	String datoTurno[] = {(String)usr.getLocation()};
 	
 	String fecha = UtilidadesBDAdm.getFechaBD("");
 	String procedimientoDesi = (String)request.getAttribute("procedimiento");
@@ -75,27 +76,6 @@
 			}
 		}
 		
-/*		function busquedaAutomatica ()
-		{
-			var idTurno = document.forms[2].identificador.value;
-			var idGuardia = document.forms[2].identificador2.value;
-			var posicion = 0;
-					
-			if ((idTurno != "") && ( idGuardia !=""))
-			{
-				// Se recorre hasta encontrar el separador, que es ","									
-				posicion = idTurno.indexOf(',') + 1;
-				// El substring que queda a partir de ahí es el identificador del turno 
-				document.forms[1].guardiaTurnoIdTurno.value = idTurno.substring(posicion);
-				document.forms[1].guardiaTurnoIdGuardia.value = idGuardia;
-				document.forms[1].target="submitArea";
-				document.forms[1].modo.value="AbrirAvanzada";
-				document.forms[2].tipoLetrado.value="P";
-				document.forms[1].submit();
-			}
-			else alert("Seleccione turno y guardia");
-		}
-*/		
 		//Modif Carlos
 		function busquedaAutomatica ()
 		{
@@ -196,18 +176,6 @@
 			</tr>
 				
 			<tr>
-		<!--	
-				<td class="labelText">
-					<siga:Idioma key="gratuita.insertarSOJ.literal.letradoTramitador"/>
-				</td>	
-				<td class="labelText">
-					<% if (!usr.isLetrado() ) {%>
-						<html:text name="DefinirEJGForm" property="NColegiado" size="10" maxlength="10" styleClass="box" value="<%=nColegiado%>"></html:text>
-					<% } else { %>
-						<html:text name="DefinirEJGForm" property="NColegiado" size="10" maxlength="10" styleClass="boxConsulta" value="<%=nColegiado%>" readOnly="true"></html:text>			
-					<% } %>
-				</td>
-		-->	
 				<html:hidden name="DefinirEJGForm" property="NColegiado" value="<%=nColegiado%>"></html:hidden>
 				<td class="labelText">
 					<siga:Idioma key="gratuita.ejgDesigna.literal.beneficiario"/>
@@ -224,21 +192,7 @@
 				<td class="labelText">		
 					<siga:Fecha nombreCampo="fechaApertura" valorInicial="<%=fecha%>" readOnly="true" posicionX="10"  posicionY="10" postFunction="actualizarFecha();rellenarComboGuardia();"></siga:Fecha>
 				</td>
-			<!--	
-				<td class="labelText" colspan="2">
-					<siga:Idioma key="gratuita.insertarSOJ.literal.demandante"/>
-					<input type="radio" name="calidad" value="D" checked>
-					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-					<siga:Idioma key="gratuita.insertarSOJ.literal.demandado"/>
-					<input type="radio" name="calidad" value="O">
-				</td>
-		-->	
 			</tr>
-			<tr>
-			
-			</tr>
-			
-				
 		</table>
 	</siga:ConjCampos>	
 	</td>
@@ -251,7 +205,7 @@
 					<siga:Idioma key="gratuita.busquedaEJG.literal.turno"/>&nbsp;
 				</td>
 				<td class="labelText" colspan="4">
-					<siga:ComboBD nombre = "identificador" tipo="turnos" clase="boxCombo" obligatorio="false" accion="Hijo:identificador2" ancho="550" parametro="<%=dato%>"/>
+					<siga:ComboBD nombre = "identificador" tipo="turnosTramitacionAlta" clase="boxCombo" obligatorio="false" accion="Hijo:identificador2" ancho="550" parametro="<%=datoTurno%>"/>
 				</td>
 			</tr>
 			<tr>
@@ -328,16 +282,12 @@
 			document.forms[1].guardiaTurnoIdTurno.value = id.substring(posicion);
 			document.forms[1].guardiaTurnoIdGuardia.value = document.forms[1].identificador2.value;
 			
-			//if (document.forms[1].idPersonaJG.selectedIndex > 0) {// Suprimimos la comprobación porque por defecto siempre aparecerá seleccionado un Beneficiario
-				if (validateDefinirEJGForm(document.forms[1])){
-					document.forms[1].submit();
-				}else{
-				
-					fin();
-					return false;
-				
-				}
-			//} else alert("Debe seleccionar un beneficiario");
+			if (validateDefinirEJGForm(document.forms[1])){
+				document.forms[1].submit();
+			}else{
+				fin();
+				return false;
+			}
 		}
 		
 		//Asociada al boton Cerrar
