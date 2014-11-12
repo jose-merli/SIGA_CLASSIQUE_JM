@@ -4,24 +4,24 @@
 			<property name="TransactionTimeOut">1000</property>
 			<property name="TransactionContext">javax.transaction.UserTransaction</property>
 		</transactionManager>
-		<service interface="com.siga.gratuita.service.VolantesExpressService" implementation="com.siga.gratuita.service.impl.AtosVolantesExpressService"/>
-		<service interface="com.siga.gratuita.service.EejgService" implementation="com.siga.gratuita.service.impl.AtosEejgService"/>		
-		<service interface="com.siga.censo.service.BajasTemporalesService" implementation="com.siga.censo.service.impl.AtosBajasTemporalesService"/>
-		<service interface="com.siga.administracion.service.InformesService" implementation="com.siga.administracion.service.impl.AtosInformesService"/>
-		<service interface="com.siga.gratuita.service.ProgramacionCalendariosService" implementation="com.siga.gratuita.service.impl.AtosProgramacionCalendariosService"/>
-		<service interface="com.siga.gratuita.service.AsistenciasService" implementation="com.siga.gratuita.service.impl.AtosAsistenciasService"/>
-		<service interface="com.siga.censo.service.MutualidadService" implementation="com.siga.censo.service.impl.AtosMutualidadService"/>
-		<service interface="com.siga.expedientes.service.ExpedientesService" implementation="com.siga.expedientes.service.impl.AtosExpedientesService"/>
-		<service interface="com.siga.censo.service.AlterMutuaService" implementation="com.siga.censo.service.impl.AtosAlterMutuaService"/>
-		<service interface="com.siga.facturacionSJCS.service.FacturacionSJCSService" implementation="com.siga.facturacionSJCS.service.impl.AtosFacturacionSJCSServiceImpl"/>
 		
-		<!--  <service interface="com.siga.envios.service.AtosEnviosService" implementation="com.siga.envios.service.impl.SolSusProcedimientoService"/>-->
+		<service interface="com.siga.gratuita.service.VolantesExpressService" 			implementation="com.siga.gratuita.service.impl.AtosVolantesExpressService"/>
+		<service interface="com.siga.gratuita.service.EejgService" 						implementation="com.siga.gratuita.service.impl.AtosEejgService"/>		
+		<service interface="com.siga.censo.service.BajasTemporalesService" 				implementation="com.siga.censo.service.impl.AtosBajasTemporalesService"/>
+		<service interface="com.siga.administracion.service.InformesService" 			implementation="com.siga.administracion.service.impl.AtosInformesService"/>
+		<service interface="com.siga.gratuita.service.ProgramacionCalendariosService" 	implementation="com.siga.gratuita.service.impl.AtosProgramacionCalendariosService"/>
+		<service interface="com.siga.gratuita.service.AsistenciasService" 				implementation="com.siga.gratuita.service.impl.AtosAsistenciasService"/>
+		<service interface="com.siga.censo.service.MutualidadService" 					implementation="com.siga.censo.service.impl.AtosMutualidadService"/>
+		<service interface="com.siga.expedientes.service.ExpedientesService" 			implementation="com.siga.expedientes.service.impl.AtosExpedientesService"/>
+		<service interface="com.siga.censo.service.AlterMutuaService" 					implementation="com.siga.censo.service.impl.AtosAlterMutuaService"/>
+		<service interface="com.siga.facturacionSJCS.service.FacturacionSJCSService"	implementation="com.siga.facturacionSJCS.service.impl.AtosFacturacionSJCSServiceImpl"/>
 	</context>
 	
 	<context id="letrados">
 		<transactionManager type="DAO">
 			<property name="DaoConfigURL">/DaoConfig.xml</property>
 		</transactionManager>
+   		
    		<service interface="com.siga.censo.service.LetradoService" 	 implementation="com.siga.censo.service.impl.SIGALetradoService"/>
    		<service interface="com.siga.censo.service.ColegiadoService" implementation="com.siga.censo.service.impl.SIGAColegiadoService"/>
    		<service interface="com.siga.censo.service.CensoService" 	 implementation="com.siga.censo.service.impl.SIGACensoService"/>
@@ -32,21 +32,18 @@
 			<property name="MybatisConfigURL">/SqlMyBatisConfig.xml</property>
 		</transactionManager>
    				
-		<service interface="org.redabogacia.sigaservices.app.services.SigaLog4jService" 	 implementation="org.redabogacia.sigaservices.app.services.impl.SigaLog4jServiceImpl"/>
-		<service interface="org.redabogacia.sigaservices.app.services.gen.GenParametrosService" 	 implementation="org.redabogacia.sigaservices.app.services.gen.impl.GenParametrosServiceImpl"/>
-		<service interface="org.redabogacia.sigaservices.app.services.gen.GenPropertiesService" 	 implementation="org.redabogacia.sigaservices.app.services.gen.impl.GenPropertiesServiceImpl"/>
-		<service interface="org.redabogacia.sigaservices.app.services.gen.SelectDataService"	implementation="org.redabogacia.sigaservices.app.services.gen.impl.SelectDataServiceImpl"/>
-		
-		<service interface="org.redabogacia.sigaservices.app.services.caj.AsignaConsultaNumeracionService" 	 implementation="org.redabogacia.sigaservices.app.services.caj.impl.AsignaConsultaNumeracionServiceImpl"/>
-		<service interface="org.redabogacia.sigaservices.app.services.caj.XuntaEnviosJEService" 	 implementation="org.redabogacia.sigaservices.app.services.caj.impl.XuntaEnviosJEServiceImpl"/>
-		
-		<service interface="org.redabogacia.sigaservices.app.services.cen.ws.EcomCenColegiadoService" 				 				implementation="org.redabogacia.sigaservices.app.services.cen.ws.impl.EcomCenColegiadoServiceImpl"/>
-		<service interface="org.redabogacia.sigaservices.app.services.cen.ws.DecisorService" 	 									implementation="org.redabogacia.sigaservices.app.services.cen.ws.impl.DecisorServiceImpl"/>
-		<service interface="org.redabogacia.sigaservices.app.services.cen.ws.ColegiadoService" 	 									implementation="org.redabogacia.sigaservices.app.services.cen.ws.impl.ColegiadoServiceImpl"/>
-		<service interface="org.redabogacia.sigaservices.app.services.ecom.EcomCenTipoIdentificacionService" 	 implementation="org.redabogacia.sigaservices.app.services.ecom.impl.EcomCenTipoIdentificacionServiceImpl"/>
-		<service interface="org.redabogacia.sigaservices.app.services.ecom.EcomCenSituacionEjercienteService" 	 implementation="org.redabogacia.sigaservices.app.services.ecom.impl.EcomCenSituacionEjercienteServiceImpl"/>
-		<service interface="org.redabogacia.sigaservices.app.services.cen.ws.CensoSinonimosPoblacionService" 	 					implementation="org.redabogacia.sigaservices.app.services.cen.ws.impl.CensoSinonimosPoblacionServiceImpl"/>
-		
+		<service interface="org.redabogacia.sigaservices.app.services.SigaLog4jService" 	 					implementation="org.redabogacia.sigaservices.app.services.impl.SigaLog4jServiceImpl"/>
+		<service interface="org.redabogacia.sigaservices.app.services.gen.GenParametrosService" 	 			implementation="org.redabogacia.sigaservices.app.services.gen.impl.GenParametrosServiceImpl"/>
+		<service interface="org.redabogacia.sigaservices.app.services.gen.GenPropertiesService" 	 			implementation="org.redabogacia.sigaservices.app.services.gen.impl.GenPropertiesServiceImpl"/>
+		<service interface="org.redabogacia.sigaservices.app.services.gen.SelectDataService"					implementation="org.redabogacia.sigaservices.app.services.gen.impl.SelectDataServiceImpl"/>
+		<service interface="org.redabogacia.sigaservices.app.services.caj.AsignaConsultaNumeracionService" 	 	implementation="org.redabogacia.sigaservices.app.services.caj.impl.AsignaConsultaNumeracionServiceImpl"/>
+		<service interface="org.redabogacia.sigaservices.app.services.caj.XuntaEnviosJEService" 	 			implementation="org.redabogacia.sigaservices.app.services.caj.impl.XuntaEnviosJEServiceImpl"/>
+		<service interface="org.redabogacia.sigaservices.app.services.cen.ws.EcomCenColegiadoService" 			implementation="org.redabogacia.sigaservices.app.services.cen.ws.impl.EcomCenColegiadoServiceImpl"/>
+		<service interface="org.redabogacia.sigaservices.app.services.cen.ws.DecisorService" 	 				implementation="org.redabogacia.sigaservices.app.services.cen.ws.impl.DecisorServiceImpl"/>
+		<service interface="org.redabogacia.sigaservices.app.services.cen.ws.ColegiadoService" 	 				implementation="org.redabogacia.sigaservices.app.services.cen.ws.impl.ColegiadoServiceImpl"/>
+		<service interface="org.redabogacia.sigaservices.app.services.ecom.EcomCenTipoIdentificacionService" 	implementation="org.redabogacia.sigaservices.app.services.ecom.impl.EcomCenTipoIdentificacionServiceImpl"/>
+		<service interface="org.redabogacia.sigaservices.app.services.ecom.EcomCenSituacionEjercienteService" 	implementation="org.redabogacia.sigaservices.app.services.ecom.impl.EcomCenSituacionEjercienteServiceImpl"/>
+		<service interface="org.redabogacia.sigaservices.app.services.cen.ws.CensoSinonimosPoblacionService" 	implementation="org.redabogacia.sigaservices.app.services.cen.ws.impl.CensoSinonimosPoblacionServiceImpl"/>
 		
 		<service interface="com.siga.envios.service.EntradaEnviosService" 							implementation="com.siga.envios.service.impl.EntradaEnviosServiceImpl"/>
 		<service interface="com.siga.envios.service.sigp_ca.RespuestaSolSusProcedimientoService" 	implementation="com.siga.envios.service.sigp_ca.impl.RespuestaSolSusProcedimientoServiceImpl"/>
@@ -55,14 +52,13 @@
    		<service interface="com.siga.envios.service.ca_sigp.SolSusProcedimientoService" 			implementation="com.siga.envios.service.ca_sigp.impl.SolSusProcedimientoServiceImpl"/>
    		<service interface="com.siga.envios.service.ca_sigp.SolImpugnacionResolucionAJGService" 	implementation="com.siga.envios.service.ca_sigp.impl.SolImpugnacionResolucionAJGServiceImpl"/>
    		<service interface="com.siga.envios.service.ca_sigp.ComResolucionAJGService" 				implementation="com.siga.envios.service.ca_sigp.impl.ComResolucionAJGServiceImpl"/>
-   		
-		<service interface="org.redabogacia.sigaservices.app.services.ecom.EcomColaService" 	 implementation="org.redabogacia.sigaservices.app.services.ecom.impl.EcomColaServiceImpl"/>
-				
-		<service interface="org.redabogacia.sigaservices.app.services.scs.ScsEjgService" 	 			implementation="org.redabogacia.sigaservices.app.services.scs.impl.ScsEjgServiceImpl"/>
-		<service interface="org.redabogacia.sigaservices.app.services.scs.ScsDesignasLetradoService" 	implementation="org.redabogacia.sigaservices.app.services.scs.impl.ScsDesignasLetradoServiceImpl"/>	
-		<service interface="org.redabogacia.sigaservices.app.services.scs.ScsDesignaService" 			implementation="org.redabogacia.sigaservices.app.services.scs.impl.ScsDesignaServiceImpl"/>			
-		<service interface="org.redabogacia.sigaservices.app.services.scs.ScsJuzgadoService" 			implementation="org.redabogacia.sigaservices.app.services.scs.impl.ScsJuzgadoServiceImpl"/>		
-				
+   		<service interface="com.siga.envios.service.SalidaEnviosService" 							implementation="com.siga.envios.service.impl.SalidaEnviosServiceImpl"/>
+   		   		
+		<service interface="org.redabogacia.sigaservices.app.services.ecom.EcomColaService" 	 											implementation="org.redabogacia.sigaservices.app.services.ecom.impl.EcomColaServiceImpl"/>
+		<service interface="org.redabogacia.sigaservices.app.services.scs.ScsEjgService" 	 												implementation="org.redabogacia.sigaservices.app.services.scs.impl.ScsEjgServiceImpl"/>
+		<service interface="org.redabogacia.sigaservices.app.services.scs.ScsDesignasLetradoService" 										implementation="org.redabogacia.sigaservices.app.services.scs.impl.ScsDesignasLetradoServiceImpl"/>	
+		<service interface="org.redabogacia.sigaservices.app.services.scs.ScsDesignaService" 												implementation="org.redabogacia.sigaservices.app.services.scs.impl.ScsDesignaServiceImpl"/>			
+		<service interface="org.redabogacia.sigaservices.app.services.scs.ScsJuzgadoService" 												implementation="org.redabogacia.sigaservices.app.services.scs.impl.ScsJuzgadoServiceImpl"/>		
 		<service interface="org.redabogacia.sigaservices.app.services.scs.ScsEjgDatosEconomicosBienesInmueblesService"						implementation="org.redabogacia.sigaservices.app.services.scs.impl.ScsEjgDatosEconomicosBienesInmueblesServiceImpl"/>
 		<service interface="org.redabogacia.sigaservices.app.services.scs.ScsEjgDatosEconomicosBienesMueblesService"						implementation="org.redabogacia.sigaservices.app.services.scs.impl.ScsEjgDatosEconomicosBienesMueblesServiceImpl"/>
 		<service interface="org.redabogacia.sigaservices.app.services.scs.ScsEjgDatosEconomicosCargaEconomicaService"						implementation="org.redabogacia.sigaservices.app.services.scs.impl.ScsEjgDatosEconomicosCargaEconomicaServiceImpl"/>
@@ -79,51 +75,36 @@
 		<service interface="org.redabogacia.sigaservices.app.services.scs.ScsEjgDatosEconomicosTiposRendimientosService"					implementation="org.redabogacia.sigaservices.app.services.scs.impl.ScsEjgDatosEconomicosTiposRendimientosServiceImpl"/>
 		<service interface="org.redabogacia.sigaservices.app.services.scs.ScsEjgDatosEconomicosTiposViviendasService"						implementation="org.redabogacia.sigaservices.app.services.scs.impl.ScsEjgDatosEconomicosTiposViviendasServiceImpl"/>
 		<service interface="org.redabogacia.sigaservices.app.services.scs.ScsEjgUnidadesFamiliaresService"									implementation="org.redabogacia.sigaservices.app.services.scs.impl.ScsEjgUnidadesFamiliaresServiceImpl"/>
-		<service interface="org.redabogacia.sigaservices.app.services.cer.CerSolicitudCertificadosTextoService"									implementation="org.redabogacia.sigaservices.app.services.cer.impl.CerSolicitudCertificadosTextoServiceImpl"/>
-		<service interface="org.redabogacia.sigaservices.app.services.fac.CuentasBancariasService"									implementation="org.redabogacia.sigaservices.app.services.fac.impl.CuentasBancariasServiceImpl"/>
+		<service interface="org.redabogacia.sigaservices.app.services.cer.CerSolicitudCertificadosTextoService"								implementation="org.redabogacia.sigaservices.app.services.cer.impl.CerSolicitudCertificadosTextoServiceImpl"/>
+		<service interface="org.redabogacia.sigaservices.app.services.fac.CuentasBancariasService"											implementation="org.redabogacia.sigaservices.app.services.fac.impl.CuentasBancariasServiceImpl"/>
 		
 		<service interface="org.redabogacia.sigaservices.app.services.scs.ScsPreceptivoService" 			implementation="org.redabogacia.sigaservices.app.services.scs.impl.ScsPreceptivoServiceImpl"/>
-		<service interface="org.redabogacia.sigaservices.app.services.scs.ScsTiposGuardiasService" implementation="org.redabogacia.sigaservices.app.services.scs.impl.ScsTiposGuardiasServiceImpl"/>
-		
-		<service interface="org.redabogacia.sigaservices.app.services.scs.ScsTipoResolucionService" implementation="org.redabogacia.sigaservices.app.services.scs.impl.ScsTipoResolucionServiceImpl"/>
-		<service interface="org.redabogacia.sigaservices.app.services.scs.ScsTipoFundamentosService" implementation="org.redabogacia.sigaservices.app.services.scs.impl.ScsTipoFundamentosServiceImpl"/>
-		
+		<service interface="org.redabogacia.sigaservices.app.services.scs.ScsTiposGuardiasService" 			implementation="org.redabogacia.sigaservices.app.services.scs.impl.ScsTiposGuardiasServiceImpl"/>
+		<service interface="org.redabogacia.sigaservices.app.services.scs.ScsTipoResolucionService" 		implementation="org.redabogacia.sigaservices.app.services.scs.impl.ScsTipoResolucionServiceImpl"/>
+		<service interface="org.redabogacia.sigaservices.app.services.scs.ScsTipoFundamentosService" 		implementation="org.redabogacia.sigaservices.app.services.scs.impl.ScsTipoFundamentosServiceImpl"/>
 		<service interface="org.redabogacia.sigaservices.app.services.scs.ScsEjgPrestacionRechazadaService" implementation="org.redabogacia.sigaservices.app.services.scs.impl.ScsEjgPrestacionRechazadaServiceImpl"/>
-		<service interface="org.redabogacia.sigaservices.app.services.scs.ScsPrestacionService" implementation="org.redabogacia.sigaservices.app.services.scs.impl.ScsPrestacionServiceImpl"/>
-		
-		<service interface="com.siga.envios.service.SalidaEnviosService" 							implementation="com.siga.envios.service.impl.SalidaEnviosServiceImpl"/>
-		<service interface="org.redabogacia.sigaservices.app.services.cen.CenWSService" implementation="org.redabogacia.sigaservices.app.services.cen.impl.CenWSServiceImpl"/>
-		<service interface="org.redabogacia.sigaservices.app.services.scs.ComunicacionesService" 							implementation="org.redabogacia.sigaservices.app.services.scs.impl.ComunicacionesServiceImpl"/>
-		<service interface="org.redabogacia.sigaservices.app.services.scs.DocumentacionEjgService" 							implementation="org.redabogacia.sigaservices.app.services.scs.impl.DocumentacionEjgServiceImpl"/>
-		<service interface="org.redabogacia.sigaservices.app.services.gen.FicherosService" 							implementation="org.redabogacia.sigaservices.app.services.gen.impl.FicherosServiceImpl"/>
-		<service interface="org.redabogacia.sigaservices.app.services.scs.DocumentacionAsistenciaService" 							implementation="org.redabogacia.sigaservices.app.services.scs.impl.DocumentacionAsistenciaServiceImpl"/>
-		<service interface="org.redabogacia.sigaservices.app.services.cen.CenPaisService" 				implementation="org.redabogacia.sigaservices.app.services.cen.impl.CenPaisServiceImpl"/>
-		<service interface="org.redabogacia.sigaservices.app.services.cen.MediadoresService" implementation="org.redabogacia.sigaservices.app.services.cen.impl.MediadoresServiceImpl"/>
-		<service interface="org.redabogacia.sigaservices.app.services.scs.DocumentacionDesignaService" 							implementation="org.redabogacia.sigaservices.app.services.scs.impl.DocumentacionDesignaServiceImpl"/>
-		
+		<service interface="org.redabogacia.sigaservices.app.services.scs.ScsPrestacionService" 			implementation="org.redabogacia.sigaservices.app.services.scs.impl.ScsPrestacionServiceImpl"/>
+		<service interface="org.redabogacia.sigaservices.app.services.cen.CenWSService" 					implementation="org.redabogacia.sigaservices.app.services.cen.impl.CenWSServiceImpl"/>
+		<service interface="org.redabogacia.sigaservices.app.services.scs.ComunicacionesService" 			implementation="org.redabogacia.sigaservices.app.services.scs.impl.ComunicacionesServiceImpl"/>
+		<service interface="org.redabogacia.sigaservices.app.services.scs.DocumentacionEjgService" 			implementation="org.redabogacia.sigaservices.app.services.scs.impl.DocumentacionEjgServiceImpl"/>
+		<service interface="org.redabogacia.sigaservices.app.services.gen.FicherosService" 					implementation="org.redabogacia.sigaservices.app.services.gen.impl.FicherosServiceImpl"/>
+		<service interface="org.redabogacia.sigaservices.app.services.scs.DocumentacionAsistenciaService" 	implementation="org.redabogacia.sigaservices.app.services.scs.impl.DocumentacionAsistenciaServiceImpl"/>
+		<service interface="org.redabogacia.sigaservices.app.services.cen.CenPaisService" 					implementation="org.redabogacia.sigaservices.app.services.cen.impl.CenPaisServiceImpl"/>
+		<service interface="org.redabogacia.sigaservices.app.services.cen.MediadoresService" 				implementation="org.redabogacia.sigaservices.app.services.cen.impl.MediadoresServiceImpl"/>
+		<service interface="org.redabogacia.sigaservices.app.services.scs.DocumentacionDesignaService" 		implementation="org.redabogacia.sigaservices.app.services.scs.impl.DocumentacionDesignaServiceImpl"/>
 		<service interface="org.redabogacia.sigaservices.app.services.cen.CenPoblacionService" 				implementation="org.redabogacia.sigaservices.app.services.cen.impl.CenPoblacionServiceImpl"/>
 		<service interface="org.redabogacia.sigaservices.app.services.caj.CajgRemesaService" 				implementation="org.redabogacia.sigaservices.app.services.caj.impl.CajgRemesaServiceImpl"/>
-		<service interface="org.redabogacia.sigaservices.app.services.caj.CajgEjgRemesaService" 				implementation="org.redabogacia.sigaservices.app.services.caj.impl.CajgEjgRemesaServiceImpl"/>
-		<service interface="org.redabogacia.sigaservices.app.services.caj.CajgRemesaEstadosService" 				implementation="org.redabogacia.sigaservices.app.services.caj.impl.CajgRemesaEstadosServiceImpl"/>
-		<service interface="org.redabogacia.sigaservices.app.services.scs.ScsEjgDesignaService" 				implementation="org.redabogacia.sigaservices.app.services.scs.impl.ScsEjgDesignaServiceImpl"/>
+		<service interface="org.redabogacia.sigaservices.app.services.caj.CajgEjgRemesaService" 			implementation="org.redabogacia.sigaservices.app.services.caj.impl.CajgEjgRemesaServiceImpl"/>
+		<service interface="org.redabogacia.sigaservices.app.services.caj.CajgRemesaEstadosService" 		implementation="org.redabogacia.sigaservices.app.services.caj.impl.CajgRemesaEstadosServiceImpl"/>
+		<service interface="org.redabogacia.sigaservices.app.services.scs.ScsEjgDesignaService" 			implementation="org.redabogacia.sigaservices.app.services.scs.impl.ScsEjgDesignaServiceImpl"/>
 		<service interface="org.redabogacia.sigaservices.app.services.scs.ScsEstadoEjgService" 				implementation="org.redabogacia.sigaservices.app.services.scs.impl.ScsEstadoEjgServiceImpl"/>
-		<service interface="org.redabogacia.sigaservices.app.services.scs.ScsUnidadFamiliarService" 				implementation="org.redabogacia.sigaservices.app.services.scs.impl.ScsUnidadFamiliarServiceImpl"/>
-		<service interface="org.redabogacia.sigaservices.app.services.scs.ScsContrariosEJGService" 				implementation="org.redabogacia.sigaservices.app.services.scs.impl.ScsContrariosEJGServiceImpl"/>
+		<service interface="org.redabogacia.sigaservices.app.services.scs.ScsUnidadFamiliarService" 		implementation="org.redabogacia.sigaservices.app.services.scs.impl.ScsUnidadFamiliarServiceImpl"/>
+		<service interface="org.redabogacia.sigaservices.app.services.scs.ScsContrariosEJGService" 			implementation="org.redabogacia.sigaservices.app.services.scs.impl.ScsContrariosEJGServiceImpl"/>
 		<service interface="org.redabogacia.sigaservices.app.services.cen.CenColegiadoService" 				implementation="org.redabogacia.sigaservices.app.services.cen.impl.CenColegiadoServiceImpl"/>
 		<service interface="org.redabogacia.sigaservices.app.services.cen.CenProvinciaService" 				implementation="org.redabogacia.sigaservices.app.services.cen.impl.CenProvinciaServiceImpl"/>
-		
-		<service interface="org.redabogacia.sigaservices.app.services.scs.ScsDesignaProcuradorService" 				implementation="org.redabogacia.sigaservices.app.services.scs.impl.ScsDesignaProcuradorServiceImpl"/>
-		<service interface="org.redabogacia.sigaservices.app.services.mutualidad.MutualidadService" 				implementation="org.redabogacia.sigaservices.app.services.mutualidad.impl.MutualidadServiceImpl"/>
-
-		<service interface="org.redabogacia.sigaservices.app.services.cen.CenInstitucionService" 				implementation="org.redabogacia.sigaservices.app.services.cen.impl.CenInstitucionServiceImpl"/>
-		
-		 
-		
-		
-		
-		
-	
-		
+		<service interface="org.redabogacia.sigaservices.app.services.scs.ScsDesignaProcuradorService" 		implementation="org.redabogacia.sigaservices.app.services.scs.impl.ScsDesignaProcuradorServiceImpl"/>
+		<service interface="org.redabogacia.sigaservices.app.services.mutualidad.MutualidadService" 		implementation="org.redabogacia.sigaservices.app.services.mutualidad.impl.MutualidadServiceImpl"/>
+		<service interface="org.redabogacia.sigaservices.app.services.cen.CenInstitucionService" 			implementation="org.redabogacia.sigaservices.app.services.cen.impl.CenInstitucionServiceImpl"/>
 	</context>
 </configuration> 
 	
