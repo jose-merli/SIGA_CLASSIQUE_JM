@@ -384,30 +384,16 @@ public class Facturacion {
 					
 					FacFacturacionProgramadaAdm facadm = new FacFacturacionProgramadaAdm(this.usrbean);
 		    		String [] claves = {FacFacturacionProgramadaBean.C_IDINSTITUCION,FacFacturacionProgramadaBean.C_IDPROGRAMACION,FacFacturacionProgramadaBean.C_IDSERIEFACTURACION};
-		    		String [] camposFactura = {FacFacturacionProgramadaBean.C_FECHACONFIRMACION,FacFacturacionProgramadaBean.C_FECHAPREVISTACONFIRM,
-		    				FacFacturacionProgramadaBean.C_ARCHIVARFACT,FacFacturacionProgramadaBean.C_IDESTADOCONFIRMACION};
+		    		String [] camposFactura = {FacFacturacionProgramadaBean.C_FECHACONFIRMACION,FacFacturacionProgramadaBean.C_ARCHIVARFACT,FacFacturacionProgramadaBean.C_IDESTADOCONFIRMACION};
 		    		Hashtable<String,Object> hashNew = new Hashtable<String,Object>();	
 		    		UtilidadesHash.set(hashNew, FacFacturacionProgramadaBean.C_IDINSTITUCION, factBean.getIdInstitucion());
 		    		UtilidadesHash.set(hashNew, FacFacturacionProgramadaBean.C_IDPROGRAMACION, factBean.getIdProgramacion());
 		    		UtilidadesHash.set(hashNew, FacFacturacionProgramadaBean.C_IDSERIEFACTURACION,factBean.getIdSerieFacturacion() );
-		    		//UtilidadesHash.set(hashNew, FacFacturacionProgramadaBean.C_FECHAPREVISTACONFIRM, "sysdate");
 		    		UtilidadesHash.set(hashNew, FacFacturacionProgramadaBean.C_FECHACONFIRMACION, "sysdate");
 		    		UtilidadesHash.set(hashNew, FacFacturacionProgramadaBean.C_IDESTADOCONFIRMACION, FacEstadoConfirmFactBean.CONFIRM_FINALIZADA);
 
-					
-					/*generaryEnviarProgramacionFactura(request, userBean, 
-							factBean.getIdInstitucion(), 
-							factBean.getIdSerieFacturacion(), 
-							factBean.getIdProgramacion(), envio, log, tx);*/
-					generarPdfEnvioProgramacionFactura(tx, facadm, factBean, request, log,  
-							factBean.getIdSerieFacturacion().toString(), factBean.getIdProgramacion().toString(), claves,
-							camposFactura, hashNew, true);
-					/*
-					confirmarProgramacionFactura(factBean,request,false,log,true,true);
-					generarZip(
-							factBean.getIdInstitucion().toString(),
-							factBean.getIdSerieFacturacion().toString(),
-							factBean.getIdProgramacion().toString());*/
+					generarPdfEnvioProgramacionFactura(tx, facadm, factBean, request, log,factBean.getIdSerieFacturacion().toString(), factBean.getIdProgramacion().toString(), claves,	hashNew, true);
+				
 				} catch (ClsExceptions e) {
 					ClsLogging.writeFileLogError("@@@ Error controlado al confirmar facturas (Proceso automático):"+e.getMsg(),e,3);
 				} catch (Exception e) {
@@ -602,7 +588,7 @@ public class Facturacion {
     		}
 
     		String [] claves = {FacFacturacionProgramadaBean.C_IDINSTITUCION,FacFacturacionProgramadaBean.C_IDPROGRAMACION,FacFacturacionProgramadaBean.C_IDSERIEFACTURACION};
-    		String [] camposFactura = {FacFacturacionProgramadaBean.C_FECHACONFIRMACION,FacFacturacionProgramadaBean.C_FECHAPREVISTACONFIRM, FacFacturacionProgramadaBean.C_ARCHIVARFACT,FacFacturacionProgramadaBean.C_IDESTADOCONFIRMACION,FacFacturacionProgramadaBean.C_LOGERROR};
+    		String [] camposFactura = {FacFacturacionProgramadaBean.C_FECHACONFIRMACION, FacFacturacionProgramadaBean.C_ARCHIVARFACT,FacFacturacionProgramadaBean.C_IDESTADOCONFIRMACION,FacFacturacionProgramadaBean.C_LOGERROR};
 
     		try {
 
@@ -695,9 +681,7 @@ public class Facturacion {
     			UserTransaction tx2 = this.usrbean.getTransaction();
     			tx2.begin();
 
-    			// C_IDESTADOCONFIRMACION(CONFIRM_FINALIZADAERRORES),C_FECHACONFIRMACION(""),C_FECHAPREVISTACONFIRM(sysdate),C_ARCHIVARFACT(0 ó 1)};
     			UtilidadesHash.set(hashNew, FacFacturacionProgramadaBean.C_IDESTADOCONFIRMACION, FacEstadoConfirmFactBean.ERROR_CONFIRMACION);
-    			UtilidadesHash.set(hashNew, FacFacturacionProgramadaBean.C_FECHAPREVISTACONFIRM, "sysdate");
     			UtilidadesHash.set(hashNew, FacFacturacionProgramadaBean.C_FECHACONFIRMACION, "");
     			UtilidadesHash.set(hashNew,FacFacturacionProgramadaBean.C_LOGERROR,nombreFichero);
     			facadm.updateDirect(hashNew, claves, camposFactura);
@@ -716,7 +700,7 @@ public class Facturacion {
     		boolean isGenerarEnvio = beanP.getEnvio() != null && beanP.getEnvio().trim().equals("1") && (beanP.getRealizarEnvio()==null || beanP.getRealizarEnvio().toString().equalsIgnoreCase("1"));
     		//aqui
     		if(isGenerarPdf){
-    			msjAviso = generarPdfEnvioProgramacionFactura(tx,facadm,beanP,req,log,idSerieFacturacion, idProgramacion, claves, camposFactura, hashNew, isGenerarEnvio);
+    			msjAviso = generarPdfEnvioProgramacionFactura(tx,facadm,beanP,req,log,idSerieFacturacion, idProgramacion, claves, hashNew, isGenerarEnvio);
     		}
 			
     	} catch (ClsExceptions e) {
@@ -758,7 +742,7 @@ public class Facturacion {
     }
     
     private String generarPdfEnvioProgramacionFactura(UserTransaction tx,FacFacturacionProgramadaAdm facadm,FacFacturacionProgramadaBean beanP,	HttpServletRequest req,SIGALogging log,
-    		String idSerieFacturacion, String idProgramacion,String [] claves, String [] camposFactura,	Hashtable<String,Object> hashFactura,boolean isGenerarEnvio)throws ClsExceptions, SIGAException,Exception{
+    		String idSerieFacturacion, String idProgramacion,String [] claves,	Hashtable<String,Object> hashFactura,boolean isGenerarEnvio)throws ClsExceptions, SIGAException,Exception{
     	
     	String msjAviso = null;
 		String [] camposPDF = {FacFacturacionProgramadaBean.C_IDESTADOPDF};
@@ -2013,7 +1997,7 @@ public class Facturacion {
 
         	} catch (Exception ep) {
 				tx.rollback();
-				controlarEstadoErrorGeneracion(tx, admFacturacionProgramada, claves, hashEstado, nombreFichero);	
+				controlarEstadoErrorGeneracion(tx, admFacturacionProgramada, claves, hashEstado, nombreFichero, FacEstadoConfirmFactBean.ERROR_GENERACION);	
 			    throw new ClsExceptions(UtilidadesString.getMensajeIdioma(this.usrbean.getLanguage(),"facturacion.nuevaPrevisionFacturacion.mensaje.procesoPlSQLERROR") + 
 			    		"(Serie:" + idSerieFacturacion + "; IdProgramacion:" + idProgramacion + "; CodigoError:" + ep.getMessage() + ")");
 			}
@@ -2023,7 +2007,7 @@ public class Facturacion {
 			if (!codretorno.equals("0")) {				
 				tx.rollback();
 				ClsLogging.writeFileLog("### Fin GENERACION (Serie:" + idSerieFacturacion + "; IdProgramacion:" + idProgramacion + "), finalizada con errores", 7);				
-				controlarEstadoErrorGeneracion(tx, admFacturacionProgramada, claves, hashEstado, nombreFichero);							
+				controlarEstadoErrorGeneracion(tx, admFacturacionProgramada, claves, hashEstado, nombreFichero, FacEstadoConfirmFactBean.ERROR_GENERACION);							
 				throw new ClsExceptions(UtilidadesString.getMensajeIdioma(this.usrbean.getLanguage(),"facturacion.nuevaPrevisionFacturacion.mensaje.generacionFicheroERROR") + 
 			    		"(Serie:" + idSerieFacturacion + "; IdProgramacion:" + idProgramacion + "; CodigoError:" + codretorno + ")");
 			} else {
@@ -2048,7 +2032,7 @@ public class Facturacion {
 				// Si la previsión está vacía
 				if (nameFile == null || nameFile.length() == 0) {
 					ClsLogging.writeFileLog("### Inicio creación fichero log GENERACION sin datos", 7);
-					controlarEstadoErrorGeneracion(tx, admFacturacionProgramada, claves, hashEstado, nombreFichero);
+					controlarEstadoErrorGeneracion(tx, admFacturacionProgramada, claves, hashEstado, nombreFichero, FacEstadoConfirmFactBean.GENERADA);
 					ClsLogging.writeFileLog("### Fin creación fichero log GENERACION sin datos", 7);
 
 				} else {
@@ -2069,7 +2053,7 @@ public class Facturacion {
 		}catch (Exception e) {
 			//le cambio el estado a error
 			try{ 
-				controlarEstadoErrorGeneracion(tx,admFacturacionProgramada,claves,hashEstado,nombreFichero);	
+				controlarEstadoErrorGeneracion(tx,admFacturacionProgramada,claves,hashEstado,nombreFichero, FacEstadoConfirmFactBean.ERROR_GENERACION);	
 			    throw new ClsExceptions(UtilidadesString.getMensajeIdioma(this.usrbean.getLanguage(),"facturacion.nuevaPrevisionFacturacion.mensaje.generacionFicheroERROR") +
 			    		"(Serie:" + idSerieFacturacion + "; IdProgramacion:" + idProgramacion + "; CodigoError:" + e.getMessage() + ")");
 
@@ -2151,11 +2135,10 @@ public class Facturacion {
 	 * @throws Exception 
 	 * 
 	 */
-	private void controlarEstadoErrorGeneracion(UserTransaction tx, FacFacturacionProgramadaAdm admProg,String [] claves,Hashtable<String,Object> hashEstado, String nombreFichero) throws Exception {
+	private void controlarEstadoErrorGeneracion(UserTransaction tx, FacFacturacionProgramadaAdm admProg,String [] claves,Hashtable<String,Object> hashEstado, String nombreFichero, Integer estadoFin) throws Exception {
 		try {
-			String [] campos = {FacFacturacionProgramadaBean.C_IDESTADOCONFIRMACION,FacFacturacionProgramadaBean.C_FECHAPREVISTAGENERACION,FacFacturacionProgramadaBean.C_LOGERROR};
-			UtilidadesHash.set(hashEstado,FacFacturacionProgramadaBean.C_IDESTADOCONFIRMACION, FacEstadoConfirmFactBean.ERROR_GENERACION); //ESTADO ERROR GENERAION 
-			UtilidadesHash.set(hashEstado,FacFacturacionProgramadaBean.C_FECHAPREVISTAGENERACION, GstDate.dateSumaDiasJava(GstDate.getHoyJava(),1)); //PONEMOS LA FECHA DE PREVISION GENERACION UN DIA MAS
+			String [] campos = {FacFacturacionProgramadaBean.C_IDESTADOCONFIRMACION,FacFacturacionProgramadaBean.C_LOGERROR};
+			UtilidadesHash.set(hashEstado,FacFacturacionProgramadaBean.C_IDESTADOCONFIRMACION, estadoFin); //ESTADO ERROR GENERAION 
 			UtilidadesHash.set(hashEstado,FacFacturacionProgramadaBean.C_LOGERROR,"LOG_FAC_" + nombreFichero + ".log.xls");
 			
 			if (Status.STATUS_NO_TRANSACTION == tx.getStatus())
