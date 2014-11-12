@@ -63,11 +63,7 @@
 	String idPersonaAsi = (String)request.getAttribute("idTurnoAsistencia");	
 	String idTurnoAsistencia = (String)request.getAttribute("idTurnoAsistencia");
 	String idTurnoEJG        = (String)request.getAttribute("turnoEJG");
-	
-	String comboTurnos = "getTurnosDesignacionVisibles";
-	if(desdeEJG != null && desdeEJG.equals("si")){
-		comboTurnos = "getTurnosTramitacionVisibles";
-	}
+
 	String[] dato = {usr.getLocation()};
 	ArrayList elementoSelTurno = new ArrayList();
 	String claseComboTurno = "boxCombo";
@@ -123,6 +119,7 @@
 	}
 	
 	String comboJuzgados = "getJuzgadosJurisdiccionNuevaDesigna";
+   	
 	
 	String paramsTurnosJSON = "{\"idturno\":\""+idTurnoSeleccionado+"\"";
 	paramsTurnosJSON += ",\"fechadesdevigor\":\""+fechaVigor+"\"";
@@ -135,7 +132,16 @@
 	paramsJuzgadoJSON += ",\"fechahastavigor\":\""+fechaVigor+"\"";
 	paramsJuzgadoJSON += ",\"idjuzgado\":\""+idJuzgado+"\"}";
 	
+		
+
+	
 	boolean obligatoriojuzgado=false;
+	
+	
+	
+	
+	 
+	
 	String asterisco = "&nbsp(*)&nbsp";
 	
 	boolean obligatorioProcedimiento = false;
@@ -313,7 +319,7 @@
 							<siga:Idioma key="gratuita.busquedaSOJ.literal.turno"/>&nbsp;(*)
 						</td>
 						<td class="labelText" colspan="3">
-							<siga:Select id="idTurno" queryId="<%=comboTurnos%>" queryParamId="idturno" params="<%=paramsTurnosJSON%>" selectedIds="<%=elementoSelTurno%>"  required="true" childrenIds="juzgado"  width="500" />
+							<siga:Select id="idTurno" queryId="getTurnosDesignacionVisibles" queryParamId="idturno" params="<%=paramsTurnosJSON%>" selectedIds="<%=elementoSelTurno%>"  required="true" childrenIds="juzgado"  width="500" />
 						
 							
 						</td>
