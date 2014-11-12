@@ -57,14 +57,16 @@
 			margin-top:3px;
 		}
 		
-		.botonAccesoDenegado{background:none; border:0 none !important;  background-repeat:no-repeat; background-image: url(./html/imagenes/accessDeny.gif);height: 30px; width:30px;}
-		.botonAccesoTotal{background:none; border:0 none !important; background-repeat:no-repeat; background-image: url(./html/imagenes/accessFull.gif);height: 30px; width:30px;}
-		.botonSinAcceso{background:none; border:0 none !important; background-repeat:no-repeat; background-image: url(./html/imagenes/accessNone.gif);height: 30px; width:30px;}
-		.botonSoloLectura{background:none; border:0 none !important; background-repeat:no-repeat; background-image: url(./html/imagenes/accessRead.gif);height: 30px; width:30px;}
-		.botonRestablecer{background:none; padding:5px; vertical-align: middle;background-repeat:no-repeat; border:0 none !important;  background-image: url(./html/imagenes/reload.png);height: 25px; width:25px;}
-		.botonCollapse{background:none; padding:5px; vertical-align: middle;background-repeat:no-repeat; border:0 none !important; background-image: url(./html/imagenes/collapseall.png);height: 15px; width:15px;}
-		.botonExpand{background:none; padding:5px; vertical-align: middle;background-repeat:no-repeat;border:0 none !important; background-image: url(./html/imagenes/expandall.png);height: 15px; width:15px;}
+		.miBoton{background:none; padding:5px; vertical-align: middle; background-repeat:no-repeat; border:0 none !important; cursor: pointer;}
+		
+		.botonAccesoDenegado{background-image: url(./html/imagenes/accessDeny.gif);height: 30px; width:30px;}
+		.botonAccesoTotal{background-image: url(./html/imagenes/accessFull.gif);height: 30px; width:30px;}
+		.botonSinAcceso{background-image: url(./html/imagenes/accessNone.gif);height: 30px; width:30px;}
+		.botonSoloLectura{background-image: url(./html/imagenes/accessRead.gif);height: 30px; width:30px;}
+		
+		.botonRestablecer{background-image: url(./html/imagenes/reload.png);height: 25px; width:25px;}
 
+		
 		</style>
 		<script language="JavaScript">
 		
@@ -381,16 +383,16 @@
 		<div id='botonera' style="text-align:right;background-color:#eeeeee;height:30px;">
 		
 		<div style="float:left;padding-left:50px;">
-			<input type="button" id='darAcceso' class='botonAccesoTotal' title='Acceso Total' onclick="aplicarPermiso('accesoTotal')"/>
-			<input type="button" id='darSoloLectura' class='botonSoloLectura' title='Solo Lectura' onclick="aplicarPermiso('soloLectura')"/>
-			<input type="button" id='darDenegado' class='botonAccesoDenegado' title='Acceso Denegado' onclick="aplicarPermiso('accesoDenegado')"/>
-			<input type="button" id='darSinAcceso' class='botonSinAcceso' title='Sin Acceso' onclick="aplicarPermiso('sinAcceso')"/>
+			<input type="button" id='darAcceso' class='miBoton botonAccesoTotal' title='Acceso Total' onclick="aplicarPermiso('accesoTotal')"/>
+			<input type="button" id='darSoloLectura' class='miBoton botonSoloLectura' title='Solo Lectura' onclick="aplicarPermiso('soloLectura')"/>
+			<input type="button" id='darDenegado' class='miBoton botonAccesoDenegado' title='Acceso Denegado' onclick="aplicarPermiso('accesoDenegado')"/>
+			<input type="button" id='darSinAcceso' class='miBoton botonSinAcceso' title='Sin Acceso' onclick="aplicarPermiso('sinAcceso')"/>
 		</div>
 		
 		<div style="vertical-align: middle; padding-right:10px;padding-top:4px">
 			<span class="labelText" style="vertical-align: middle;">Selección:</span><span id='nSeleccionados'>0</span>/<span id='nTotal'>0</span>
 			<span class="labelText" style="vertical-align: middle;">Cambios:</span><span id='nCambios'>0</span>/<span id='nTotalCambios'>0</span>
-			<input type="button" id='botonRestablecer' class='botonRestablecer ' title='Restablecer' onclick="restablecerCambios()"/>
+			<input type="button" id='botonRestablecer' class='miBoton botonRestablecer' title='Restablecer' onclick="restablecerCambios()"/>
 			<input type="button" id='botonGuardar' class='button' value='Guardar' onclick="guardarCambios()"/>
 		</div>
 		</div>

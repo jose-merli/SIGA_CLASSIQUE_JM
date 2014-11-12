@@ -2105,9 +2105,8 @@
 		<!--action path="/ADM_ConfigurarPermisosAplicacion" forward="/html/jsp/administracion/permisosAplicacion.jsp"/-->
 
 		<!--action path="/administrarPermisos" forward="/html/jsp/administracion/administrarPermisos.jsp"/-->
-		<action path="/ADM_ConfigurarPermisosAplicacion" type="com.siga.administracion.action.SIGAConfigurarPermisosAplicacionAction" name="configurarPermisosAplicacionForm" scope="session">
+		<action path="/ADM_ConfigurarPermisosAplicacion" type="com.siga.administracion.action.SIGAConfigurarPermisosAplicacionAction" name="configurarPermisosAplicacionForm" scope="request">
 			<forward name="abrir" path="/html/jsp/administracion/permisosAplicacion.jsp"/>
-			<forward name="buscar" path="/html/jsp/administracion/administrarPermisos.jsp"/>
 		</action>
 
 		<!-- ***** Administración / Gestionar Permisos Datos ***** -->
