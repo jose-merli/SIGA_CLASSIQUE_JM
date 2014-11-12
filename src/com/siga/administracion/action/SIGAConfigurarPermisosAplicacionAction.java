@@ -1,28 +1,25 @@
 package com.siga.administracion.action;
 
-import java.io.IOException;
-import java.util.Iterator;
 import java.util.Vector;
 
-import com.atos.utils.*;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParser;
-import com.siga.general.*;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
-import javax.servlet.http.*;
-
-import org.apache.struts.action.*;
-import org.json.JSONException;
+import org.apache.struts.action.ActionForm;
+import org.apache.struts.action.ActionForward;
+import org.apache.struts.action.ActionMapping;
 import org.json.JSONObject;
 
+import com.atos.utils.ClsExceptions;
+import com.atos.utils.UsrBean;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonParser;
 import com.siga.Utilidades.UtilidadesString;
-import com.siga.administracion.form.*;
+import com.siga.administracion.form.SIGAConfigurarPermisosAplicacionForm;
 import com.siga.beans.AdmGestionPermisosAdm;
-import com.siga.censo.form.AlterMutuaForm;
-import com.siga.censo.service.AlterMutuaService;
-
-import es.satec.businessManager.BusinessManager;
+import com.siga.general.MasterAction;
+import com.siga.general.MasterForm;
+import com.siga.general.SIGAException;
 
 public class SIGAConfigurarPermisosAplicacionAction extends MasterAction
 {
@@ -46,7 +43,6 @@ public class SIGAConfigurarPermisosAplicacionAction extends MasterAction
 			if (accion == null || accion.equalsIgnoreCase("") || accion.equalsIgnoreCase("abrir")) {
 				mapDestino = abrir(mapping, miForm, request, response);						
 			}else if(accion.equalsIgnoreCase(ACCION_GET_PROCESOS)){
-				getProcesos(mapping, miForm, request, response);
 				return null;
 			}else if(accion.equalsIgnoreCase(ACCION_GET_PERMISOS)){
 				getPermisos(mapping, miForm, request, response);
@@ -62,8 +58,9 @@ public class SIGAConfigurarPermisosAplicacionAction extends MasterAction
 		}
 	}
 	
-	protected String abrir(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions
+	protected String abrir(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, SIGAException
 	{
+		request.setAttribute("procesos", getProcesos(this.getUserBean(request)));
 		return "abrir";
 	}
 
@@ -76,29 +73,20 @@ public class SIGAConfigurarPermisosAplicacionAction extends MasterAction
         return "buscar";
 	}
     
-    private void getProcesos(ActionMapping mapping, MasterForm form,
-			HttpServletRequest request, HttpServletResponse response) throws SIGAException {
-		UsrBean usrBean = this.getUserBean(request);
+    private String getProcesos(UsrBean usrBean) throws SIGAException {
 		String forward="exception";
+		Vector procesos = null;
+		JSONObject json = new JSONObject();
 		try {
 			
 			AdmGestionPermisosAdm permisosAdm = new AdmGestionPermisosAdm(usrBean);
-			Vector procesos = permisosAdm.getProcesos();
-			
-			JSONObject json = new JSONObject();
+			procesos = permisosAdm.getProcesos();
 			
 			json.put("procesos", procesos);
-			
-			response.setContentType("application/x-www-form-urlencoded;charset=UTF-8");
-			response.setHeader("Cache-Control", "no-cache");
-			response.setHeader("Content-Type", "application/json");
-			response.setHeader("X-JSON", json.toString());
-			response.getWriter().write(json.toString()); 
-			
 		} catch (Exception e) {
 			throwExcp("messages.general.errorExcepcion", e, null); 
 		}
-		return;
+		return json.toString(); 
 	}
     
     private void getPermisos(ActionMapping mapping, MasterForm form,
@@ -125,7 +113,6 @@ public class SIGAConfigurarPermisosAplicacionAction extends MasterAction
 		} catch (Exception e) {
 			throwExcp("messages.general.errorExcepcion", e, null); 
 		}
-		return;
 	}
     
     private void setPermisos(ActionMapping mapping, MasterForm form,
@@ -161,7 +148,5 @@ public class SIGAConfigurarPermisosAplicacionAction extends MasterAction
 		response.setHeader("Content-Type", "application/json");
 		response.setHeader("X-JSON", json.toString());
 		response.getWriter().write(json.toString()); 
-
-		return;
 	}
 }

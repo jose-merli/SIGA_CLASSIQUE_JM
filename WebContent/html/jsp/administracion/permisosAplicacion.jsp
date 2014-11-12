@@ -12,10 +12,7 @@
 <%@ taglib uri = "struts-html.tld" prefix="html"%>
 <%@ taglib uri = "struts-tiles.tld" prefix="tiles"%>
 <%@ taglib uri = "libreria_SIGA.tld" prefix="siga"%>
-
 <%@ page import="com.atos.utils.*"%>
-
-<% String app=request.getContextPath(); %>
 
 
 	
@@ -27,9 +24,6 @@
 		<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js?v=${sessionScope.VERSIONJS}'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
 		<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-ui.min.js?v=${sessionScope.VERSIONJS}'/>"></script>
 		
-		<script type="text/javascript" src="<html:rewrite page='/html/js/jstree/jstree.js?v=${sessionScope.VERSIONJS}'/>"></script>
-		<link rel="stylesheet" href="<html:rewrite page='/html/js/jstree/themes/default/style.min.css?v=${sessionScope.VERSIONJS}'/>"/>
-
 		<siga:Titulo titulo="administracion.permisos.titulo" localizacion="menu.administracion"/>
 
 		<style>
@@ -63,95 +57,105 @@
 			margin-top:3px;
 		}
 		
-		.botonAccesoDenegado{background-repeat:no-repeat; background-image: url(./html/imagenes/accessDeny.gif);height: 30px; width:30px;}
-		.botonAccesoTotal{background-repeat:no-repeat; background-image: url(./html/imagenes/accessFull.gif);height: 30px; width:30px;}
-		.botonSinAcceso{background-repeat:no-repeat; background-image: url(./html/imagenes/accessNone.gif);height: 30px; width:30px;}
-		.botonSoloLectura{background-repeat:no-repeat; background-image: url(./html/imagenes/accessRead.gif);height: 30px; width:30px;}
-		.botonRestablecer{background-repeat:no-repeat; background-image: url(./html/imagenes/bcambiar_on.gif);height: 30px; width:30px;}
+		.botonAccesoDenegado{background:none; border:0 none !important;  background-repeat:no-repeat; background-image: url(./html/imagenes/accessDeny.gif);height: 30px; width:30px;}
+		.botonAccesoTotal{background:none; border:0 none !important; background-repeat:no-repeat; background-image: url(./html/imagenes/accessFull.gif);height: 30px; width:30px;}
+		.botonSinAcceso{background:none; border:0 none !important; background-repeat:no-repeat; background-image: url(./html/imagenes/accessNone.gif);height: 30px; width:30px;}
+		.botonSoloLectura{background:none; border:0 none !important; background-repeat:no-repeat; background-image: url(./html/imagenes/accessRead.gif);height: 30px; width:30px;}
+		.botonRestablecer{background:none; padding:5px; vertical-align: middle;background-repeat:no-repeat; border:0 none !important;  background-image: url(./html/imagenes/reload.png);height: 25px; width:25px;}
+		.botonCollapse{background:none; padding:5px; vertical-align: middle;background-repeat:no-repeat; border:0 none !important; background-image: url(./html/imagenes/collapseall.png);height: 15px; width:15px;}
+		.botonExpand{background:none; padding:5px; vertical-align: middle;background-repeat:no-repeat;border:0 none !important; background-image: url(./html/imagenes/expandall.png);height: 15px; width:15px;}
 
 		</style>
 		<script language="JavaScript">
 		
 		jQuery.noConflict();
+
 		var data;
 		var permisos;
 		var nuevosPermisos=[];
+		
 		var debug = true;
 
-	 		function getProcesos(){
+		function getProcesos(){
+			json = jQuery.parseJSON('${procesos}');
+			pintaArbol(json.procesos);
+			alert("Carga finalizada","success");
+			fin();
+		}
+
+		/*
+		function getProcesos(){
 	 			sub();
+				console.clear();
 				jQuery.ajax({ 
-					type: "POST",
+					type: "GET",
 					url: "/SIGA/ADM_ConfigurarPermisosAplicacion.do?modo=GETPROCESOS",
 					dataType: "json",
-					contentType: "application/x-www-form-urlencoded;charset=UTF-8",
+					contentType: "application/json;charset=UTF-8",
 					success: function(json){
-						console.clear();
 						pintaArbol(json.procesos);
-						fin();
 					},
 					error: function(e){
 						alert("No se ha conseguido recuperar los procesos");
-						fin();
 					}
 				});
+				fin();
 			}
-			
+			*/
 	 		
 			function getPermisosPerfil(perfil){
 				sub();
+				jQuery('#container').show();
+				jQuery('#mensajeSeleccionarGrupo').hide();
+				
 				jQuery.ajax({ 
-					type: "POST",
+					type: "GET",
 					url: "/SIGA/ADM_ConfigurarPermisosAplicacion.do?modo=GETPERMISOS",
 					data: "idPerfil="+perfil,
 					dataType: "json",
 					contentType: "application/x-www-form-urlencoded;charset=UTF-8",
 					success: function(json){
-						permisos=json.permisos;
-						pintaPermisosPerfil(permisos);
-						fin();
+						pintaPermisosPerfil(json.permisos);
 					},
 					error: function(e){
 						alert("No se ha conseguido recuperar los permisos");
-						fin();
 					}
 				});
+				fin();
 			}
 			
 			function guardarCambios(){
-				sub();
-				perfil=jQuery("#idPerfil").val();
-				jQuery.ajax({ 
-					type: "POST",
-					url: "/SIGA/ADM_ConfigurarPermisosAplicacion.do?modo=SETPERMISOS",
-					dataType: "json",
-					data: {'perfil': perfil,'permisos':JSON.stringify(nuevosPermisos)},
-					contentType: "application/x-www-form-urlencoded;charset=UTF-8",
-					success: function(json){
-						console.clear();
-						nuevosPermisos=[];
-						alert(json.msg);
-						getPermisosPerfil(jQuery("#idPerfil").val());
-						fin();
-					},
-					error: function(e){
-						alert(e+":error de comunicacion con el servidor");
-						fin();
-					}
-				});
-				pintaSeleccion();
-			}
-			
-			function buscar(){
-				texto=jQuery('#textoBusqueda').val();
-				if(texto.length>3){
-					console.log(texto);
-					jQuery("#arbolProcesos").scrollTop(jQuery("*:contains('" + texto + "'):last").offset().top);
+				
+				if(jQuery("#idPerfil").val().length==3 && nuevosPermisos.length>0){
+				
+					sub();
+					perfil=jQuery("#idPerfil").val();
+					jQuery.ajax({ 
+						type: "POST",
+						url: "/SIGA/ADM_ConfigurarPermisosAplicacion.do?modo=SETPERMISOS",
+						dataType: "json",
+						data: {'perfil': perfil,'permisos':JSON.stringify(nuevosPermisos)},
+						contentType: "application/x-www-form-urlencoded;charset=UTF-8",
+						success: function(json){
+							console.clear();
+							nuevosPermisos=[];
+							alert(json.msg);
+							getPermisosPerfil(jQuery("#idPerfil").val());
+						},
+						error: function(e){
+							alert(e+":error de comunicacion con el servidor");
+						}
+					});
+					pintaSeleccion();
+					pintaCambios();
+					fin();
+				}else{
+					alert("No hay cambios pendientes");
 				}
 			}
-			
+						
 			function pintaPermisosPerfil(data){
-				jQuery("#arbol").find('label').removeClass('accesoDenegado sinAcceso accesoTotal soloLectura').addClass('sinAcceso');
+				jQuery("#arbol").find('label').removeClass('accesoDenegado sinAcceso accesoTotal soloLectura cambiado').addClass('sinAcceso');
 				for ( var i = 0; i < data.length; i++) {
 					permiso=data[i];
 					acceso=permiso.DERECHOACCESO;
@@ -168,7 +172,6 @@
 				var descolocadosAnterior=0;
 				var ultimo=nodos.length-1;
 
-				console.log(nodos[ultimo]);
 				// Colocamos el último, que será el nodo raiz
 				insertaNodo(nodos[ultimo]);
 				// Lo quitamos de la lista
@@ -248,9 +251,9 @@
 				//jQuery(".padre").click();
 				//Y mostramos el primero
 				jQuery("#arbol").find('.padre').first().click();
-				
-				jQuery(".padre").click(function(event){ 
-				});
+				//jQuery("#arbol").find('.padre').click();
+				jQuery("#arbol").find('.padre').click();
+
 				
 				// Añadimos las acciones de seleccionar/deseleccionar para jugar con la clase y el check
 				jQuery(".nodo label").click(function(event){ 
@@ -306,7 +309,6 @@
 					id=jQuery(this).parent().prop('id');
 					access=getIdClase(clase);
 					nuevosPermisos.push([id,access]);
-					//console.log(id,getIdClase(access));
 				});
 				
 				// Desmarca los checks
@@ -336,6 +338,8 @@
 			
 			function restablecerCambios(){
 				jQuery('#idPerfil').change();
+				jQuery('.selected').removeClass('selected');
+				jQuery('.checkNodo').prop('checked', false);
 				nuevosPermisos=[];
 				pintaSeleccion();
 				pintaCambios();
@@ -362,8 +366,10 @@
 					<tr>				
 						<td class="labelText">
 							<siga:Idioma key="administracion.permisos.literal.grupo"/>&nbsp;(*)
-
 	        				<siga:Select queryId="getPerfiles" id="idPerfil" required="true" />
+						</td>
+						<td class="labelText" id="mensajeSeleccionarGrupo">
+							<siga:Idioma key="Seleccione un grupo de usuarios para comenzar a administrar sus permisos"/>
 						</td>
 	       			</tr>	   
 				</html:form>
@@ -371,25 +377,25 @@
 		</fieldset>
 
 		<!--siga:ConjBotonesBusqueda botones="B" titulo=""/-->
-		<div id='container'>
-		<div id='botonera' style="text-align:right;background-color:#eeeeee">
-		<div style="float:left;padding:3px;">
+		<div id='container' style="display:none;background-color:white;">
+		<div id='botonera' style="text-align:right;background-color:#eeeeee;height:30px;">
+		
+		<div style="float:left;padding-left:50px;">
 			<input type="button" id='darAcceso' class='botonAccesoTotal' title='Acceso Total' onclick="aplicarPermiso('accesoTotal')"/>
 			<input type="button" id='darSoloLectura' class='botonSoloLectura' title='Solo Lectura' onclick="aplicarPermiso('soloLectura')"/>
 			<input type="button" id='darDenegado' class='botonAccesoDenegado' title='Acceso Denegado' onclick="aplicarPermiso('accesoDenegado')"/>
 			<input type="button" id='darSinAcceso' class='botonSinAcceso' title='Sin Acceso' onclick="aplicarPermiso('sinAcceso')"/>
 		</div>
 		
-		<div style="vertical-align: middle;">
-			<span class="labelText" style="vertical-align: middle;">Selección:</span><span id='nSeleccionados'>0</span>/<span id='nTotal'>0</span>	
-			<input type="button" id='botonRestablecer' class='botonRestablecer ' title='Restablecer' onclick="restablecerCambios()"/>
-			
+		<div style="vertical-align: middle; padding-right:10px;padding-top:4px">
+			<span class="labelText" style="vertical-align: middle;">Selección:</span><span id='nSeleccionados'>0</span>/<span id='nTotal'>0</span>
 			<span class="labelText" style="vertical-align: middle;">Cambios:</span><span id='nCambios'>0</span>/<span id='nTotalCambios'>0</span>
-			<input type="button" id='botonGuardar' class='button boton ' value='Guardar' onclick="guardarCambios()"/>
+			<input type="button" id='botonRestablecer' class='botonRestablecer ' title='Restablecer' onclick="restablecerCambios()"/>
+			<input type="button" id='botonGuardar' class='button' value='Guardar' onclick="guardarCambios()"/>
 		</div>
 		</div>
 		<br>
-		<div id="arbolProcesos"  style="overflow-y:auto;">
+		<div id="arbolProcesos"  style="overflow-y:auto;background-color:white">	
 			<div id="arbolDiv">
 				<div id='arbol'>
 				</div>
@@ -422,10 +428,15 @@
 				//printSelected();
 			});
 
-		getProcesos();
-
-		jQuery('#container').height(jQuery(document).height()-90);
-		jQuery('#arbolProcesos').height(jQuery('#container').height());
-
+		jQuery(document).ready(function(){		
+			jQuery('#container').height(jQuery(document).height()-90);
+			jQuery('#arbolProcesos').height(jQuery('#container').height());
+			alert("Se está cargando el arbol de procesos de la aplicación.\nPuede tardar varios segundos dependiendo de su equipo.");
+			sub();
+			setTimeout(function(){
+				getProcesos();
+			    },700); 
+			
+		});
 	</script>
 </html>
