@@ -339,15 +339,13 @@ public class TipoExpedienteAction extends MasterAction {
         	///////////////////////////////////////////
 		    
 	        tx.commit();
-	        request.setAttribute("descOperation","messages.inserted.success");
-	              
+	        	              
         } catch (Exception e) {
             throwExcp("messages.general.error",new String[] {"modulo.expediente"},e,tx);
         }
-        //"retorno"contiene el valor que devolverá la ventana modal, el este caso el id
-        request.setAttribute("retorno",String.valueOf(id.intValue())+","+userBean.getLocation()+",% "+form.getNombre()+",");
-	    request.setAttribute("modal","1");
-	    return "refresh";
+         request.setAttribute("modal","1");
+	    String forward = exitoModal("messages.inserted.success",request);
+	    return forward;
 	}
 
 	/* (non-Javadoc)

@@ -50,7 +50,6 @@
 				TipoExpedienteForm.modo.value="buscar";
 				TipoExpedienteForm.submit();
 			}
-	
 
 		</script>
 		<!-- FIN: SCRIPTS BOTONES BUSQUEDA -->
@@ -63,12 +62,14 @@
 			{		
 				document.forms[0].modo.value = "nuevo";
    				var resultado=ventaModalGeneral(document.forms[0].name,"P");
-   				
-   				if(resultado!=null&&resultado.indexOf('%')!=-1) {
-   					TipoExpedienteForm.tablaDatosDinamicosD.value=resultado;
-   					TipoExpedienteForm.modo.value="editar";
-					TipoExpedienteForm.submit();
-				}
+
+   				if (resultado=="MODIFICADO"){
+   					document.forms[0].target = '_self';
+   			 		document.forms[0].action="EXP_MantenerTiposExpedientes.do";
+   			 		document.forms[0].modo.value="abrir";
+   			 		document.forms[0].submit();
+   				}
+
 			}	
 
 		</script>
