@@ -602,8 +602,8 @@ public class Facturacion {
     			//Se genera numero de factura definitivo
     			Object[] param_in_confirmacion = new Object[4];
     			param_in_confirmacion[0] = beanP.getIdInstitucion().toString();
-    			param_in_confirmacion[1] = idSerieFacturacion;
-    			param_in_confirmacion[2] = idProgramacion;
+    			param_in_confirmacion[1] = idSerieFacturacion.toString();
+    			param_in_confirmacion[2] = idProgramacion.toString();
     			param_in_confirmacion[3] = usuMod;
 
     			String resultadoConfirmar[] = new String[2];
@@ -618,8 +618,8 @@ public class Facturacion {
     			// Se envían a banco para su cobro
     			Object[] param_in_banco = new Object[11];
     			param_in_banco[0] = beanP.getIdInstitucion().toString();
-    			param_in_banco[1] = idSerieFacturacion;
-    			param_in_banco[2] = idProgramacion;
+    			param_in_banco[1] = idSerieFacturacion.toString();
+    			param_in_banco[2] = idProgramacion.toString();
     			////////////////////////////////////////////////
 
     			// RGG 05/05/2009 Cambio (solo se generan los pagos por banco cuando se indica por parámetro)
