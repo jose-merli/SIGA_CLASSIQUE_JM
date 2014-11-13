@@ -210,7 +210,7 @@
 		<c:forEach items="${informeForms}" var="informe" varStatus="status">
 			<c:set var="preseleccionado" value="" />
 			<c:if test="${informe.preseleccionado=='S'}">
-				<c:set var="preseleccionado" value="checked" />
+				<c:set var="preseleccionado" value="checked" />		
 			</c:if>
 			<siga:FilaConIconos fila='${status.count}' botones=""
 				visibleConsulta="false" visibleEdicion="false" 
@@ -226,7 +226,7 @@
 					</c:if>
 				</td>
 				<td>
-					<c:out value="${informe.descripcion}" />
+					<label for="${status.count}_${informe.idPlantilla}_${informe.idInstitucion}_${informe.idTipoInforme}"><c:out value="${informe.descripcion}" /></label>
 				</td>
 				<c:choose>
 					<c:when test="${InformesGenericosForm.enviar=='1'}">	
@@ -234,7 +234,11 @@
 							<c:out value="${informe.destinatarios}" />
 						</td>				
 						<td>
-							<select style="width:132px;" name="tipoEnvio" id="idTipoEnvio_${status.count}"  onchange="onChangeTipoenvio(${status.count});">
+							<c:set var="disabledCombo" value="" />
+							<c:if test="${informe.preseleccionado!='S'}">
+								<c:set var="disabledCombo" value="disabled" />
+							</c:if>
+							<select style="width:132px;" name="tipoEnvio" id="idTipoEnvio_${status.count}" ${disabledCombo} onchange="onChangeTipoenvio(${status.count});actCheck(${status.count})" >
 								<option value=""></option>
 								<c:set var="idPlantillaDefecto" value="" />
 								<c:set var="idTipoEnvioDefecto" value="" />
@@ -253,7 +257,7 @@
 						</td>
 				
 						<td>
-							<select style="width:202px;" id="idPlantillaEnvio_${status.count}">
+							<select style="width:202px;" id="idPlantillaEnvio_${status.count}" ${disabledCombo}>
 								<option value="${idPlantillaDefecto}"><c:out value="${idPlantillaDefecto}" /></option>
 							</select>
 						</td>
@@ -314,6 +318,16 @@
 </body>
 
 <script language="JavaScript">
+	
+	function actCheck(index){
+		var idTipoEnvio = document.getElementById("idTipoEnvio_"+index).value;
+		if(idTipoEnvio==''){
+			var oCheck = document.getElementsByName("chkPL");
+			oCheck[index-1].checked='';
+			document.getElementById("idTipoEnvio_"+index).disabled = true;
+		}
+	}
+	
 	function accionDownload() {	
 		sub();
 		var oCheck = document.getElementsByName("chkPL");
@@ -439,7 +453,7 @@
 	function cargarComboTipoEnvios(index){
 		var oCheck = document.getElementsByName("chkPL");
 		var comboTiposEnvio = document.getElementById('idTipoEnvio_'+index);
-		if (oCheck[index-1].checked){
+ 		if (oCheck[index-1].checked){
 			ids = oCheck[index-1].id.split("_");
 			document.getElementById("idTipoEnvio_"+index).disabled = false;
 			document.getElementById("idPlantillaEnvio_"+index).disabled = false;
@@ -482,7 +496,7 @@
  			var optionComboTiposEnvio = comboTiposEnvio.options;
  			optionComboTiposEnvio.length = 0;
 			jQuery("#idTipoEnvio_"+index).append("<option  value=''>&nbsp;</option>");
-			document.getElementById("idTipoEnvio_"+index).disabled = true;
+ 			document.getElementById("idTipoEnvio_"+index).disabled = true;
 			var comboPlantilla = document.getElementById('idPlantillaEnvio_'+index);
 			var optionComboPlantilla = comboPlantilla.options;
 			optionComboPlantilla.length = 0;
