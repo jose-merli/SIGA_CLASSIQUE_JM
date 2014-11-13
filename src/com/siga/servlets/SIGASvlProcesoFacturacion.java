@@ -62,7 +62,7 @@ public class SIGASvlProcesoFacturacion extends HttpServlet {
    					
    					try {
    						beanInstitucion = (CenInstitucionBean)vInstituciones.elementAt(i);
-   	   					UsrBean usr			= UsrBean.UsrBeanAutomatico(beanInstitucion.getIdInstitucion().toString());
+   	   					UsrBean usr = UsrBean.UsrBeanAutomatico(beanInstitucion.getIdInstitucion().toString());
    	   					
    	   					ClsLogging.writeFileLogWithoutSession(" ---------- GENERACION DE FACTURAS. INSTITUCION: "+beanInstitucion.getIdInstitucion(), 3);
    	   					
@@ -82,10 +82,10 @@ public class SIGASvlProcesoFacturacion extends HttpServlet {
    	   					ClsLogging.writeFileLogWithoutSession(" ---------- INICIO CONFIRMACION DE FACTURAS (PDF Y ENVIOS) ", 3);
 
    	   					fac = new Facturacion(usr);
-   	   					fac.confirmarProgramacionesFacturasInstitucion(request,""+beanInstitucion.getIdInstitucion(),usr);
+   	   					fac.confirmarProgramacionesFacturasInstitucion(request,beanInstitucion.getIdInstitucion().toString(),usr);
    	   					
    	   					ClsLogging.writeFileLogWithoutSession(" ---------- INICIO REEENVIO DE FACTURAS ", 3);
-   	   					fac.generarPDFsYenviarFacturasProgramacion(request,""+beanInstitucion.getIdInstitucion(),usr);
+   	   					fac.generarPDFsYenviarFacturasProgramacion(request,""+beanInstitucion.getIdInstitucion());
    	   					
    	   					ClsLogging.writeFileLogWithoutSession(" ---------- OK GENERACION Y CONFIRMACION DE FACTURAS. INSTITUCION: "+beanInstitucion.getIdInstitucion(), 3);
    	   					

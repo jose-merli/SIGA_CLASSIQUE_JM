@@ -2975,19 +2975,25 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
 	}
 	
 	
-	
-	public Vector getFacturasSerieFacturacion(FacSerieFacturacionBean serieFacturacion)   throws ClsExceptions 
-	{
+	/**
+	 * 
+	 * @param beanFacturacionProgramada
+	 * @return
+	 * @throws ClsExceptions
+	 */
+	public Vector getFacturasProgramadas(FacFacturacionProgramadaBean beanFacturacionProgramada) throws ClsExceptions {
 	    Vector salida = new Vector();
 	    try {
 	        Hashtable ht = new Hashtable();
-	        UtilidadesHash.set(ht, FacFacturaBean.C_IDINSTITUCION,serieFacturacion.getIdInstitucion());
-	        UtilidadesHash.set(ht, FacFacturaBean.C_IDSERIEFACTURACION,serieFacturacion.getIdSerieFacturacion());
+	        UtilidadesHash.set(ht, FacFacturaBean.C_IDINSTITUCION, beanFacturacionProgramada.getIdInstitucion());
+	        UtilidadesHash.set(ht, FacFacturaBean.C_IDSERIEFACTURACION, beanFacturacionProgramada.getIdSerieFacturacion());
+	        UtilidadesHash.set(ht, FacFacturaBean.C_IDPROGRAMACION, beanFacturacionProgramada.getIdProgramacion());
 	        salida = this.select(ht);
-		} 
-	    catch (Exception e) {
+	        
+		} catch (Exception e) {
 		    throw new ClsExceptions(e.toString());
 	    }
+	    
 		return salida;
 	}
 	

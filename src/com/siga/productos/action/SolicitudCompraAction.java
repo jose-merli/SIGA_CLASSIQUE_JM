@@ -1628,10 +1628,14 @@ public class SolicitudCompraAction extends MasterAction{
 			    // PASO 2: FACTURACION RAPIDA DESDE SERIE CANDIDATA (GENERACION)
 	        	FacFacturacionProgramadaBean programacion = facturacion.procesarFacturacionRapidaCompras(beanPeticionCompraSuscripcion, compras, beanSerieCandidata);
 			    
-			    // Aqui obtengo las facturas implicadas
-			    Vector<?> facts = admFactura.getFacturasSerieFacturacion(beanSerieCandidata);
-			    FacFacturaBean factBean = (FacFacturaBean)facts.get(0);
-			    idFactura = factBean.getIdFactura();
+			    // Aqui obtengo las facturas programadas
+			    Vector<?> vFacturas = admFactura.getFacturasProgramadas(programacion);
+				if (vFacturas==null || vFacturas.size()==0) { // Control extra de existencia de factura				
+				    throw new SIGAException("messages.facturacionRapida.noFactura");
+				} 			    
+			    
+			    FacFacturaBean beanFactura = (FacFacturaBean)vFacturas.get(0);
+			    idFactura = beanFactura.getIdFactura();
 		        
 			    // PASO 3: CONFIRMACION RAPIDA (en este caso la transacción se gestiona dentro la transaccion)
 			    facturacion.confirmarProgramacionFactura(programacion, request, false, null, false, false, tx);
@@ -1643,18 +1647,19 @@ public class SolicitudCompraAction extends MasterAction{
 				// YA FACTURADA, SE DESCARGA LA FACTURA
 				tx.commit();
 				idFactura = pysCompraBean.getIdFactura();
+				
+				// Compruebo que existe la factura
+				Hashtable<String,String> hFactura=new Hashtable<String,String>();
+				hFactura.put(FacFacturaBean.C_IDINSTITUCION, pysCompraBean.getIdInstitucion().toString());
+				hFactura.put(FacFacturaBean.C_IDFACTURA, idFactura);
+				
+	  			Vector<?> vFactura = admFactura.selectByPK(hFactura);
+				if (vFactura==null || vFactura.size()==0) { // Control extra de existencia de factura				
+				    throw new SIGAException("messages.facturacionRapida.noFactura");
+				} 				
 			}
 				
-			// PASO 4: GENERAR PDF
-			Hashtable<String,String> hFactura=new Hashtable<String,String>();
-			hFactura.put(FacFacturaBean.C_IDINSTITUCION, pysCompraBean.getIdInstitucion().toString());
-			hFactura.put(FacFacturaBean.C_IDFACTURA, idFactura);
-			
-  			Vector<?> vFactura = admFactura.selectByPK(hFactura);
-			if (vFactura==null || vFactura.size()==0) { // Control extra de existencia de factura				
-			    throw new SIGAException("messages.facturacionRapida.noFactura");
-			} 
-						
+	        // PASO 4: GENERAR PDF			
 			File filePDF = informe.generarFacturaRapida(request, idInstitucion, idFactura);
 			if (filePDF == null) {
 				throw new ClsExceptions("Error al generar la factura. Fichero devuelto es nulo.");

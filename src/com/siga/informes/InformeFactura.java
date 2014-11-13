@@ -357,7 +357,7 @@ public class InformeFactura extends MasterReport {
 				boolean generarLog=false;
 				
 				Facturacion facturacion = new Facturacion(usrbean);
-				facturacion.generaryEnviarProgramacionFactura (request, usrbean, Integer.parseInt(institucion), Long.valueOf(ht.get(FacFacturaBean.C_IDSERIEFACTURACION).toString()),Long.valueOf(ht.get(FacFacturaBean.C_IDPROGRAMACION).toString()), false, log, null,generarLog);
+				facturacion.generaryEnviarProgramacionFactura (request, Integer.parseInt(institucion), Long.valueOf(ht.get(FacFacturaBean.C_IDSERIEFACTURACION).toString()),Long.valueOf(ht.get(FacFacturaBean.C_IDPROGRAMACION).toString()), false, log, generarLog);
 				ClsLogging.writeFileLog("DESPUES DE GENERAR EL INFORME EN  "+rutaAlmacen,10);			
     		} else {
     			ClsLogging.writeFileLog("SE DEVUELVE EL ZIP PREVIAMENTE GENERADO EN CONFIRMACION",10);
