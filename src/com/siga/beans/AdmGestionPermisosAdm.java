@@ -35,7 +35,7 @@ public class AdmGestionPermisosAdm extends MasterBeanAdministrador{
 	 * @throws ClsExceptions 
 	 */
 	public Vector getPermisos(String location, String perfil) throws ClsExceptions, SIGAException {
-		String query = "select * From adm_tiposacceso where idinstitucion="+location+" and idperfil='"+perfil+"'";
+		String query = "select DERECHOACCESO,IDPROCESO From adm_tiposacceso where idinstitucion="+location+" and idperfil='"+perfil+"'";
 		Vector result = this.selectGenerico(query);
 		return result;
 	}

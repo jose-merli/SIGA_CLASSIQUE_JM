@@ -133,11 +133,8 @@ public class SIGAConfigurarPermisosAplicacionAction extends MasterAction
 				permiso = arrayPermisos.get(i).getAsJsonArray();
 				permisosAdm.setPermiso(usrBean.getLocation(), perfil, permiso.get(0).getAsString(), permiso.get(1).toString());
 			}
-			
-			
 			json.put("msg", UtilidadesString.getMensajeIdioma(usrBean.getLanguage(), "messages.updated.success"));
 
-			
 		} catch (Exception e) {
 			
 			json.put("msg", UtilidadesString.getMensajeIdioma(usrBean.getLanguage(), "messages.updated.error"));

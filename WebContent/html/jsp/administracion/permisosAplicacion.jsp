@@ -22,8 +22,9 @@
 		<!-- Incluido jquery en siga.js -->
 		
 		<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js?v=${sessionScope.VERSIONJS}'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
-		<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-ui.min.js?v=${sessionScope.VERSIONJS}'/>"></script>
-		
+		<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-ui-1.10.3.custom.min.js?v=${sessionScope.VERSIONJS}'/>"></script>
+		<link rel="stylesheet" href="//code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css">
+  
 		<siga:Titulo titulo="administracion.permisos.titulo" localizacion="menu.administracion"/>
 
 		<style>
@@ -80,30 +81,9 @@
 
 		function getProcesos(){
 			json = jQuery.parseJSON('${procesos}');
+			sub();
 			pintaArbol(json.procesos);
-			alert("Carga finalizada","success");
-			fin();
 		}
-
-		/*
-		function getProcesos(){
-	 			sub();
-				console.clear();
-				jQuery.ajax({ 
-					type: "GET",
-					url: "/SIGA/ADM_ConfigurarPermisosAplicacion.do?modo=GETPROCESOS",
-					dataType: "json",
-					contentType: "application/json;charset=UTF-8",
-					success: function(json){
-						pintaArbol(json.procesos);
-					},
-					error: function(e){
-						alert("No se ha conseguido recuperar los procesos");
-					}
-				});
-				fin();
-			}
-			*/
 	 		
 			function getPermisosPerfil(perfil){
 				sub();
@@ -166,56 +146,45 @@
 				
 			}
 			
+			function pintaPausa(nodos,numeroNodos){
+				if(nodos.length==0){
+					creaArbol();
+					alert("Carga finalizada","success");
+					jQuery( "#progressbar" ).hide();
+					fin();
+				}else{
+					if(!debug && nodos[0].text.lastIndexOf("HIDDEN_", 0)===0){
+						// En modo normal no pintamos los nodos ocultos, en debug si los pintamos
+						nodos.splice(0,1);
+					}else{
+						insertaNodo(nodos[0]);
+						if(!jQuery("#"+nodos[0].ID).exists()){
+							nodos.push(nodos[0]);
+						}
+						nodos.splice(0,1);	
+					}
+					progreso=100*(nodos.length/numeroNodos)					
+					jQuery( "#progressbar" ).progressbar({value: progreso});
+					window.setTimeout(function(){
+						pintaPausa(nodos,numeroNodos);
+					},0);
+				}
+			}
+			
 			function pintaArbol(data){
-				
 				var nodos = data;
 				var i;
 				var descolocados=0;
 				var descolocadosAnterior=0;
 				var ultimo=nodos.length-1;
-
+				var numeroNodos=ultimo;
 				// Colocamos el último, que será el nodo raiz
 				insertaNodo(nodos[ultimo]);
 				// Lo quitamos de la lista
 				nodos.splice(ultimo,1);
-				
-				 do{ // Recorre la lista
-					i=0;
-				 	descolocadosAnterior=descolocados;
-					descolocados=0;
-					do{ // Colocamos todo lo posible
-						if(!debug && nodos[i].text.lastIndexOf("HIDDEN_", 0)===0){
-							// En modo normal no pintamos los nodos ocultos, en debug si los pintamos
-							nodos.splice(i,1);
-						}else{
-							insertaNodo(nodos[i]);
-						}
-						if(jQuery("#"+nodos[i].ID).exists()){
-							// Si hemos colocado el nodo lo quitamos de la lista
-							nodos.splice(i,1);	
-						}else{
-							// Si no lo colocamos aumentamos los descolocados
-							descolocados++;
-							// Y pasamos al siguiente nodo
-							i++;
-						}
-						
-						
-					} while(i < nodos.length) // Para cuando se queda sin cola
-					
-				 } while(descolocados!=descolocadosAnterior) 
-				 // El bucle exterior se para cuando no se puedan colocar mas
-				 // Si se cumple la condicion significa que en la ultima Vuelta no se ha colocado nadie (igualito quel Tour oiga)
-				 
-				 // Los descolocados los dejamos bajo el proceso principal (esto lleva el sello JTA, preguntar a JBD)
-				 for ( var r= 0; r < nodos.length; r++) {
-					 nodo=nodos[r];
-					 nodo.PARENT='0';
-					 insertaNodo(nodo);
-				 }
-				 creaArbol();
+				pintaPausa(nodos,nodos.length);
 			}
-			
+
 			function insertaNodo(nodo){
 				jQuery("#"+nodo.PARENT).append("<div style='padding-left:50px'id='"+nodo.ID+"' class='nodo'><span class='boton'>o </span><input type='checkBox' class='checkNodo'/><label>"+nodo.TEXT+" ("+nodo.ID+"/"+nodo.PARENT+")</label></div>");
 				// Añadimos la clase padre al padre (para que sea desplegable)
@@ -254,7 +223,7 @@
 				//Y mostramos el primero
 				jQuery("#arbol").find('.padre').first().click();
 				//jQuery("#arbol").find('.padre').click();
-				jQuery("#arbol").find('.padre').click();
+				//jQuery("#arbol").find('.padre').click();
 
 				
 				// Añadimos las acciones de seleccionar/deseleccionar para jugar con la clase y el check
@@ -376,6 +345,7 @@
 	       			</tr>	   
 				</html:form>
 			</table>
+			<div id="progressbar" style="width:990px;height:15px;"></div>
 		</fieldset>
 
 		<!--siga:ConjBotonesBusqueda botones="B" titulo=""/-->
@@ -405,6 +375,8 @@
 		</div>
 		
 	</div>
+	
+	
 		
 	</body>
 	<script type="text/javascript">
@@ -434,8 +406,7 @@
 			jQuery('#container').height(jQuery(document).height()-90);
 			jQuery('#arbolProcesos').height(jQuery('#container').height());
 			alert("Se está cargando el arbol de procesos de la aplicación.\nPuede tardar varios segundos dependiendo de su equipo.");
-			sub();
-			setTimeout(function(){
+			window.setTimeout(function(){
 				getProcesos();
 			    },700); 
 			
