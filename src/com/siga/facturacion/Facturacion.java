@@ -779,7 +779,7 @@ public class Facturacion {
 	
 			//////////// ALMACENAR RAPIDA ////////////////
 			//En facturaciones rápidas, en compra de PYS no hay que generar el excel con el log
-			int errorAlmacenar = this.generaryEnviarProgramacionFactura(req, beanP.getIdInstitucion(), idSerieFacturacion, idProgramacion, isGenerarEnvio, log, true);
+			int errorAlmacenar = this.generaryEnviarProgramacionFactura(req, beanP.getIdInstitucion(), idSerieFacturacion, idProgramacion, isGenerarEnvio, log, tx, true);
 			
 			switch (errorAlmacenar) {
 				case 0: //NO HAY ERROR. SE HA GENERADO CORRECTAMENTE Y SE PROCESADO EL ENVIO
@@ -912,11 +912,11 @@ public class Facturacion {
 			Long idProgramacion, 
 			boolean bGenerarEnvios, 
 			SIGALogging log,
+			UserTransaction tx,
 			boolean generarLog
 		)  throws ClsExceptions, SIGAException {
 		
 		UsrBean userbean = this.usrbean;
-		UserTransaction tx = (UserTransaction) this.usrbean.getTransactionPesada();
 		
 		File ficFOP=null;
 		int salida = 0;
