@@ -179,12 +179,14 @@
 				var idSerieFacturacion = json.idSerieFacturacion;		
 				
 				if (idSerieFacturacion==null || idSerieFacturacion=='') {
-					jQuery("#selectSeleccionSerieFacturacion")[0].innerHTML = json.aOptionsSeriesFacturacion[0];
+					//jQuery("#selectSeleccionSerieFacturacion")[0].innerHTML = json.aOptionsSeriesFacturacion[0];
+					jQuery("#selectSeleccionSerieFacturacion").find("option").detach();
+					jQuery("#selectSeleccionSerieFacturacion").append(json.aOptionsSeriesFacturacion[0]);
 					
 					jQuery("#divSeleccionSerieFacturacion").dialog(
 						{
 							height: 150,
-							width: 500,
+							width: 550,
 							modal: true,
 							resizable: false,
 							buttons: {
