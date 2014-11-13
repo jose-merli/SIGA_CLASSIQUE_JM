@@ -237,27 +237,39 @@ public class FacSerieFacturacionAdm extends MasterBeanAdministrador {
 	            throw new ClsExceptions("Error: No se han recibido compras.");
 	        }
 	        
-	        String aux = "";
-	        String idInstitucion="";
+	        String aux="", idInstitucion="", idPersona="";
 	        
-	        for (int i=0;i<compras.size();i++) {
+	        for (int i=0; i<compras.size(); i++) {
 	            PysCompraBean b = (PysCompraBean) compras.get(i);
 	            
-	            aux += "'" + b.getIdProducto().toString() + "_" + b.getIdTipoProducto().toString() + "',";
-	            idInstitucion = b.getIdInstitucion().toString();	            
+	            if (aux.length()>0) {
+	            	aux += ",";
+	            } else {
+	            	idInstitucion = b.getIdInstitucion().toString();
+	            	idPersona = b.getIdPersonaDeudor()!=null && !b.getIdPersonaDeudor().toString().equals("") ? b.getIdPersonaDeudor().toString() : b.getIdPersona().toString();
+	            }
+	            	
+	            aux += "('" + b.getIdProducto() + "','" + b.getIdTipoProducto() + "')";	            	            
 	        }
-	        aux = aux.substring(0,aux.length()-1);
 	        
 	        String sql = UtilidadesBDAdm.sqlSelect(this.nombreTabla, this.getCamposBean()) + 
-	        		" WHERE (" + FacSerieFacturacionBean.C_IDINSTITUCION + ", " + FacSerieFacturacionBean.C_IDSERIEFACTURACION + ") IN (" +
-	                	" SELECT " + FacTiposProduIncluEnFactuBean.T_NOMBRETABLA + "." + FacTiposProduIncluEnFactuBean.C_IDINSTITUCION + ", " +
-                			FacTiposProduIncluEnFactuBean.T_NOMBRETABLA + "." + FacTiposProduIncluEnFactuBean.C_IDSERIEFACTURACION +
-	                	" FROM " + FacTiposProduIncluEnFactuBean.T_NOMBRETABLA +
-	                	" WHERE " + FacTiposProduIncluEnFactuBean.T_NOMBRETABLA + "." + FacTiposProduIncluEnFactuBean.C_IDPRODUCTO + 
-	                			" || '_' || " + FacTiposProduIncluEnFactuBean.T_NOMBRETABLA + "." + FacTiposProduIncluEnFactuBean.C_IDTIPOPRODUCTO + " IN (" + aux + ") " +
-	            			" AND " + FacTiposProduIncluEnFactuBean.T_NOMBRETABLA + "." + FacTiposProduIncluEnFactuBean.C_IDINSTITUCION + " = " + idInstitucion + 
-	            	" ) " + 
-	            	" ORDER BY " + FacSerieFacturacionBean.C_DESCRIPCION;
+	        				" WHERE " + FacSerieFacturacionBean.C_IDINSTITUCION + " = " + idInstitucion + 
+		            			" AND EXISTS ( " +
+		            				" SELECT 1 " +
+		            				" FROM TABLE(PKG_SIGA_FACTURACION.OBTENCIONPOBLACIONCLIENTES(" + FacSerieFacturacionBean.C_IDINSTITUCION + ", " + FacSerieFacturacionBean.C_IDSERIEFACTURACION + ")) PoblSF " +
+	        						" WHERE PoblSF.IDPERSONA = " + idPersona +
+        						" ) " +         
+	        					" AND EXISTS (" +
+	        						" SELECT 1 " +
+	        						" FROM " + FacTiposProduIncluEnFactuBean.T_NOMBRETABLA +
+	        						" WHERE (" + 
+		                						FacTiposProduIncluEnFactuBean.T_NOMBRETABLA + "." + FacTiposProduIncluEnFactuBean.C_IDPRODUCTO + ", " + 
+		                						FacTiposProduIncluEnFactuBean.T_NOMBRETABLA + "." + FacTiposProduIncluEnFactuBean.C_IDTIPOPRODUCTO + 
+		                					") IN (" + aux + ") " +
+		                				" AND " + FacTiposProduIncluEnFactuBean.T_NOMBRETABLA + "." + FacTiposProduIncluEnFactuBean.C_IDINSTITUCION + " = " + FacSerieFacturacionBean.T_NOMBRETABLA + "." + FacSerieFacturacionBean.C_IDINSTITUCION +
+		                				" AND " + FacTiposProduIncluEnFactuBean.T_NOMBRETABLA + "." + FacTiposProduIncluEnFactuBean.C_IDSERIEFACTURACION + " = " + FacSerieFacturacionBean.T_NOMBRETABLA + "." + FacSerieFacturacionBean.C_IDSERIEFACTURACION +
+                				" ) " + 		            	
+            				" ORDER BY " + FacSerieFacturacionBean.C_DESCRIPCION;
 	        
 	        salida = this.selectSQL(sql);
 	        
