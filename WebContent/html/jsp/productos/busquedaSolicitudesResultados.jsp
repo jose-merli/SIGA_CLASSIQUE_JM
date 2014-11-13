@@ -185,7 +185,7 @@
 					
 					jQuery("#divSeleccionSerieFacturacion").dialog(
 						{
-							height: 150,
+							height: 200,
 							width: 550,
 							modal: true,
 							resizable: false,
