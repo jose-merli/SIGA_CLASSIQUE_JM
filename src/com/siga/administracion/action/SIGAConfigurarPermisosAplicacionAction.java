@@ -98,8 +98,11 @@ public class SIGAConfigurarPermisosAplicacionAction extends MasterAction
 		try {
 			perfil=miForm.getIdPerfil();
 			AdmGestionPermisosAdm permisosAdm = new AdmGestionPermisosAdm(usrBean);
-			Vector permisos = permisosAdm.getPermisos(usrBean.getLocation(), perfil);
 			
+			String inicio=(String)request.getParameter("inicio");
+			String cantidad=(String)request.getParameter("cantidad");
+			
+			Vector permisos = permisosAdm.getPermisosPagina(usrBean.getLocation(), perfil, inicio, cantidad);
 			JSONObject json = new JSONObject();
 			
 			json.put("permisos", permisos);

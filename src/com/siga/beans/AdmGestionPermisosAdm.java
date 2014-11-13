@@ -40,6 +40,24 @@ public class AdmGestionPermisosAdm extends MasterBeanAdministrador{
 		return result;
 	}
 	
+	/**
+	 * Devuelve los permisos para un perfil
+	 * @param location
+	 * @param perfil 
+	 * @return
+	 * @throws SIGAException 
+	 * @throws ClsExceptions 
+	 */
+	public Vector getPermisosPagina(String location, String perfil, String inicio, String cantidad) throws ClsExceptions, SIGAException {
+		int ini=Integer.parseInt(inicio);
+		int can=Integer.parseInt(cantidad);
+		String query = "select IDPROCESO, DERECHOACCESO from (select a.*, rownum r from (select DERECHOACCESO, IDPROCESO From adm_tiposacceso"
+                 +" where idinstitucion="+location+" and idperfil='"+perfil+"' order by idproceso) a"
+                + " where rownum <= "+ (inicio+cantidad)+" )"
+                + " where r >="+inicio; 
+		Vector result = this.selectGenerico(query);
+		return result;
+	}
 	
 	/**
 	 * Actualiza el permiso que se indique en los parametros

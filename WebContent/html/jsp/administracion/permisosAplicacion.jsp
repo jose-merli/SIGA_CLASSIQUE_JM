@@ -85,16 +85,20 @@
 			pintaArbol(json.procesos);
 		}
 	 		
-			function getPermisosPerfil(perfil){
-				sub();
-				jQuery('#container').show();
-				jQuery('#mensajeSeleccionarGrupo').hide();
-				
+		function getPermisosPerfil(perfil){
+			sub();
+			jQuery('#container').show();
+			jQuery('#mensajeSeleccionarGrupo').hide();
+			numeroProcesos=jQuery('.nodo').length;
+			paginas=(numeroProcesos/50)+1;
+			//data: {idPerfil:perfil,inicio:0,datos:numeroProcesos},
+			jQuery("#arbol").find('label').removeClass('accesoDenegado sinAcceso accesoTotal soloLectura cambiado').addClass('sinAcceso');
+			for ( i = 0; i < paginas; i++) {
 				jQuery.ajax({ 
-					type: "GET",
+					type: "POST",
 					url: "/SIGA/ADM_ConfigurarPermisosAplicacion.do?modo=GETPERMISOS",
-					data: "idPerfil="+perfil,
 					dataType: "json",
+					data: {'idPerfil':perfil,'inicio':i*50,'cantidad':((i+1)*50)},
 					contentType: "application/x-www-form-urlencoded;charset=UTF-8",
 					success: function(json){
 						pintaPermisosPerfil(json.permisos);
@@ -103,8 +107,9 @@
 						alert("No se ha conseguido recuperar los permisos");
 					}
 				});
-				fin();
 			}
+			fin();
+		}
 			
 			function guardarCambios(){
 				
@@ -128,8 +133,7 @@
 							alert(e+":error de comunicacion con el servidor");
 						}
 					});
-					pintaSeleccion();
-					pintaCambios();
+					restablecerCambios();
 					fin();
 				}else{
 					alert("No hay cambios pendientes");
@@ -137,7 +141,7 @@
 			}
 						
 			function pintaPermisosPerfil(data){
-				jQuery("#arbol").find('label').removeClass('accesoDenegado sinAcceso accesoTotal soloLectura cambiado').addClass('sinAcceso');
+				//jQuery("#arbol").find('label').removeClass('accesoDenegado sinAcceso accesoTotal soloLectura cambiado').addClass('sinAcceso');
 				for ( var i = 0; i < data.length; i++) {
 					permiso=data[i];
 					acceso=permiso.DERECHOACCESO;
@@ -150,7 +154,7 @@
 				if(nodos.length==0){
 					creaArbol();
 					alert("Carga finalizada","success");
-					jQuery( "#progressbar" ).hide();
+					jQuery( "#progressbar" ).hide(300);
 					fin();
 				}else{
 					if(!debug && nodos[0].text.lastIndexOf("HIDDEN_", 0)===0){
@@ -163,7 +167,7 @@
 						}
 						nodos.splice(0,1);	
 					}
-					progreso=100*(nodos.length/numeroNodos)					
+					progreso=100-100*(nodos.length/numeroNodos)					
 					jQuery( "#progressbar" ).progressbar({value: progreso});
 					window.setTimeout(function(){
 						pintaPausa(nodos,numeroNodos);
@@ -186,7 +190,7 @@
 			}
 
 			function insertaNodo(nodo){
-				jQuery("#"+nodo.PARENT).append("<div style='padding-left:50px'id='"+nodo.ID+"' class='nodo'><span class='boton'>o </span><input type='checkBox' class='checkNodo'/><label>"+nodo.TEXT+" ("+nodo.ID+"/"+nodo.PARENT+")</label></div>");
+				jQuery("#"+nodo.PARENT).append("<div style='padding-left:50px'id='"+nodo.ID+"' class='nodo'><span class='boton'><img class='flecha' src='./html/imagenes/none.png'/></span><input type='checkBox' class='checkNodo'/><label>"+nodo.TEXT+" ("+nodo.ID+"/"+nodo.PARENT+")</label></div>");
 				// Añadimos la clase padre al padre (para que sea desplegable)
 				jQuery("#"+nodo.PARENT+' .boton').addClass("padre");
 				// Marcamos los HIDDEN_ para ocultarlos
@@ -221,7 +225,7 @@
 				//Ocultamos todos
 				//jQuery(".padre").click();
 				//Y mostramos el primero
-				jQuery("#arbol").find('.padre').first().click();
+				//jQuery("#arbol").find('.padre').first().click();
 				//jQuery("#arbol").find('.padre').click();
 				//jQuery("#arbol").find('.padre').click();
 
@@ -349,7 +353,7 @@
 		</fieldset>
 
 		<!--siga:ConjBotonesBusqueda botones="B" titulo=""/-->
-		<div id='container' style="display:none;background-color:white;">
+		<div id='container' style="background-color:white;">
 		<div id='botonera' style="text-align:right;background-color:#eeeeee;height:30px;">
 		
 		<div style="float:left;padding-left:50px;">
