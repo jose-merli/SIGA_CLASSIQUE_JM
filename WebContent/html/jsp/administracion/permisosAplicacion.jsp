@@ -207,7 +207,7 @@
 				// Ponemos el boton de flecha para desplegar los 'hijos'
 				jQuery(".padre.boton").each(
 						function(){ 
-							if(jQuery(this).parent().children('.nodo').length<1){
+							if(jQuery(this).parent().find('.nodo').length<1){
 								jQuery(this).html("<img class='flecha' src='./html/imagenes/none.png'/>");
 							}else{
 								jQuery(this).html("<img class='flecha' src='./html/imagenes/simboloMenos.gif'/>");
@@ -216,19 +216,12 @@
 				// Le damos la accion de ocultar/mostrar al darle al padre
 				jQuery(".padre").click(function(event){ 
 					jQuery(this).parent().find('.nodo').toggle();
-					if(jQuery(this).find('.flecha').first().attr("src")=="./html/imagenes/simboloMas.gif"){
+					if(jQuery(this).find('.flecha').first().attr("src").indexOf("simboloMas.gif")>0){
 						jQuery(this).find('.flecha').first().attr("src", "./html/imagenes/simboloMenos.gif");
-					}else if(jQuery(this).find('.flecha').first().attr("src")=="./html/imagenes/simboloMenos.gif"){
+					}else{
 						jQuery(this).find('.flecha').first().attr("src", "./html/imagenes/simboloMas.gif");
 					}
 				});
-				//Ocultamos todos
-				//jQuery(".padre").click();
-				//Y mostramos el primero
-				//jQuery("#arbol").find('.padre').first().click();
-				//jQuery("#arbol").find('.padre').click();
-				//jQuery("#arbol").find('.padre').click();
-
 				
 				// Añadimos las acciones de seleccionar/deseleccionar para jugar con la clase y el check
 				jQuery(".nodo label").click(function(event){ 
