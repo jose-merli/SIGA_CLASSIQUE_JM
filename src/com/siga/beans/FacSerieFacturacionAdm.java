@@ -253,12 +253,7 @@ public class FacSerieFacturacionAdm extends MasterBeanAdministrador {
 	        }
 	        
 	        String sql = UtilidadesBDAdm.sqlSelect(this.nombreTabla, this.getCamposBean()) + 
-	        				" WHERE " + FacSerieFacturacionBean.C_IDINSTITUCION + " = " + idInstitucion + 
-		            			" AND EXISTS ( " +
-		            				" SELECT 1 " +
-		            				" FROM TABLE(PKG_SIGA_FACTURACION.OBTENCIONPOBLACIONCLIENTES(" + FacSerieFacturacionBean.C_IDINSTITUCION + ", " + FacSerieFacturacionBean.C_IDSERIEFACTURACION + ")) PoblSF " +
-	        						" WHERE PoblSF.IDPERSONA = " + idPersona +
-        						" ) " +         
+	        				" WHERE " + FacSerieFacturacionBean.C_IDINSTITUCION + " = " + idInstitucion +         
 	        					" AND EXISTS (" +
 	        						" SELECT 1 " +
 	        						" FROM " + FacTiposProduIncluEnFactuBean.T_NOMBRETABLA +
@@ -268,6 +263,13 @@ public class FacSerieFacturacionAdm extends MasterBeanAdministrador {
 		                					") IN (" + aux + ") " +
 		                				" AND " + FacTiposProduIncluEnFactuBean.T_NOMBRETABLA + "." + FacTiposProduIncluEnFactuBean.C_IDINSTITUCION + " = " + FacSerieFacturacionBean.T_NOMBRETABLA + "." + FacSerieFacturacionBean.C_IDINSTITUCION +
 		                				" AND " + FacTiposProduIncluEnFactuBean.T_NOMBRETABLA + "." + FacTiposProduIncluEnFactuBean.C_IDSERIEFACTURACION + " = " + FacSerieFacturacionBean.T_NOMBRETABLA + "." + FacSerieFacturacionBean.C_IDSERIEFACTURACION +
+	                					" AND EXISTS ( " +
+				            				" SELECT 1 " +
+				            				" FROM TABLE(PKG_SIGA_FACTURACION.OBTENCIONPOBLACIONCLIENTES(" + 
+				            					FacTiposProduIncluEnFactuBean.T_NOMBRETABLA + "." + FacTiposProduIncluEnFactuBean.C_IDINSTITUCION + ", " + 
+				            					FacTiposProduIncluEnFactuBean.T_NOMBRETABLA + "." + FacTiposProduIncluEnFactuBean.C_IDSERIEFACTURACION + ")) PoblSF " +
+			        						" WHERE PoblSF.IDPERSONA = " + idPersona +
+		        						" ) " + 
                 				" ) " + 		            	
             				" ORDER BY " + FacSerieFacturacionBean.C_DESCRIPCION;
 	        
