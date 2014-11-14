@@ -58,6 +58,7 @@ public class UsrBean implements Serializable {
 	private static final String ROL_COMISION ="CJG"; // Es el rol que corresponde a la comision
 	private Short[] institucionesComision;
 	private Short idInstitucionComision;
+	private boolean entradaCombos=false;
 
 	/**
 	 * @return the idInstitucionComision
@@ -408,4 +409,14 @@ public class UsrBean implements Serializable {
 			return SIGAConstants.ACCESS_DENY;
 		}
 	}
+
+	public boolean isEntradaCombos() {
+		return entradaCombos;
+	}
+
+	public void setEntradaCombos(boolean entradaCombos) {
+		this.entradaCombos = entradaCombos;
+	}
+	
+	
 }

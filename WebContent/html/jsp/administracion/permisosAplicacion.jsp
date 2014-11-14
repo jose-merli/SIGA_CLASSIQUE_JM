@@ -23,7 +23,8 @@
 		
 		<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js?v=${sessionScope.VERSIONJS}'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
 		<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-ui-1.10.3.custom.min.js?v=${sessionScope.VERSIONJS}'/>"></script>
-		<link rel="stylesheet" href="//code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css">
+		
+		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page="/html/css/jquery-ui.css"/>">
   
 		<siga:Titulo titulo="administracion.permisos.titulo" localizacion="menu.administracion"/>
 
@@ -66,7 +67,6 @@
 		.botonSoloLectura{background-image: url(./html/imagenes/accessRead.gif);height: 30px; width:30px;}
 		
 		.botonRestablecer{background-image: url(./html/imagenes/reload.png);height: 25px; width:25px;}
-
 		
 		</style>
 		<script language="JavaScript">
@@ -76,8 +76,9 @@
 		var data;
 		var permisos;
 		var nuevosPermisos=[];
+		var totalPermisos;
 		
-		var debug = true;
+		var debug = '${debug}';
 
 		function getProcesos(){
 			json = jQuery.parseJSON('${procesos}');
@@ -90,26 +91,39 @@
 			limpiarSeleccion();
 			jQuery('#container').show();
 			jQuery('#mensajeSeleccionarGrupo').hide();
-			numeroProcesos=jQuery('.nodo').length;
-			paginas=(numeroProcesos/20)+1;
+			paginas=parseInt((totalPermisos/20)+1,10);
 			//data: {idPerfil:perfil,inicio:0,datos:numeroProcesos},
 			jQuery("#arbol").find('label').removeClass('accesoDenegado sinAcceso accesoTotal soloLectura cambiado').addClass('sinAcceso');
-			for ( i = 0; i < paginas; i++) {
+			jQuery( "#progressbar" ).show();
+			llamaPermisos(perfil, paginas, paginas);
+			
+		}
+		
+		function llamaPermisos(perfil, pagina, totalPaginas){
+			if(pagina>0){
 				jQuery.ajax({ 
 					type: "POST",
 					url: "/SIGA/ADM_ConfigurarPermisosAplicacion.do?modo=GETPERMISOS",
 					dataType: "json",
-					data: {'idPerfil':perfil,'inicio':i*20,'cantidad':20},
+					data: {'idPerfil':perfil,'inicio':(pagina-1)*20,'cantidad':20},
 					contentType: "application/x-www-form-urlencoded;charset=UTF-8",
 					success: function(json){
 						pintaPermisosPerfil(json.permisos);
+						progreso=100-100*(pagina/totalPaginas)					
+						jQuery( "#progressbar" ).progressbar({value: progreso});
+						window.setTimeout(function(){
+							llamaPermisos(perfil, pagina-1, totalPaginas)
+						},0);
 					},
 					error: function(e){
 						alert("No se ha conseguido recuperar los permisos");
 					}
 				});
+			}else{
+				fin();
+				alert("Permisos de "+jQuery("#idPerfil :selected").text()+" cargados correctamente","success");
+				jQuery( "#progressbar" ).hide(300);
 			}
-			fin();
 		}
 			
 			function guardarCambios(){
@@ -135,7 +149,7 @@
 								alert(e+":error de comunicacion con el servidor");
 							}
 						});
-						restablecerCambios();
+						limpiarSeleccion();
 						fin();
 					}
 				}else{
@@ -160,7 +174,7 @@
 					jQuery( "#progressbar" ).hide(300);
 					fin();
 				}else{
-					if(!debug && nodos[0].text.lastIndexOf("HIDDEN_", 0)===0){
+					if(!debug && nodos[0].TEXT.lastIndexOf("HIDDEN_", 0)===0){
 						// En modo normal no pintamos los nodos ocultos, en debug si los pintamos
 						nodos.splice(0,1);
 					}else{
@@ -184,7 +198,7 @@
 				var descolocados=0;
 				var descolocadosAnterior=0;
 				var ultimo=nodos.length-1;
-				var numeroNodos=ultimo;
+				totalPermisos=ultimo;
 				// Colocamos el último, que será el nodo raiz
 				insertaNodo(nodos[ultimo]);
 				// Lo quitamos de la lista
@@ -193,7 +207,11 @@
 			}
 
 			function insertaNodo(nodo){
-				jQuery("#"+nodo.PARENT).append("<div style='padding-left:50px'id='"+nodo.ID+"' class='nodo'><span class='boton'><img class='flecha' src='./html/imagenes/none.png'/></span><input type='checkBox' class='checkNodo'/><label>"+nodo.TEXT+" ("+nodo.ID+"/"+nodo.PARENT+")</label></div>");
+				if(debug){
+					jQuery("#"+nodo.PARENT).append("<div style='padding-left:50px'id='"+nodo.ID+"' class='nodo'><span class='boton'><img class='flecha' src='./html/imagenes/none.png'/></span><input type='checkBox' class='checkNodo'/><label>"+nodo.TEXT+" ("+nodo.ID+"/"+nodo.PARENT+")</label></div>");
+				}else{
+					jQuery("#"+nodo.PARENT).append("<div style='padding-left:50px'id='"+nodo.ID+"' class='nodo'><span class='boton'><img class='flecha' src='./html/imagenes/none.png'/></span><input type='checkBox' class='checkNodo'/><label>"+nodo.TEXT+"</label></div>");
+				}
 				// Añadimos la clase padre al padre (para que sea desplegable)
 				jQuery("#"+nodo.PARENT+' .boton').addClass("padre");
 				// Marcamos los HIDDEN_ para ocultarlos
@@ -205,7 +223,6 @@
 			function creaArbol(){
 				// Ocultamos los HIDDEN_
 				if(!debug){ jQuery('.ocultar').hide(); }
-
 
 				// Ponemos el boton de flecha para desplegar los 'hijos'
 				jQuery(".padre.boton").each(
@@ -221,7 +238,7 @@
 					jQuery(this).parent().find('.nodo').toggle();
 					if(jQuery(this).find('.flecha').first().attr("src").indexOf("simboloMas.gif")>0){
 						jQuery(this).find('.flecha').first().attr("src", "./html/imagenes/simboloMenos.gif");
-					}else{
+					}else if(jQuery(this).find('.flecha').first().attr("src").indexOf("simboloMenos.gif")>0){
 						jQuery(this).find('.flecha').first().attr("src", "./html/imagenes/simboloMas.gif");
 					}
 				});
@@ -291,16 +308,16 @@
 			}
 			
 			function getIdClase(clase){
-				if(clase==='accesoDenegado')return 0;
-				else if(clase==='sinAcceso')return 1;
+				if(clase==='sinAcceso')return 0;
+				else if(clase==='accesoDenegado')return 1;
 				else if(clase==='soloLectura')return 2;
 				else if(clase==='accesoTotal')return 3;
 			}
 			
 			function getClaseId(id){
 				switch (id) {
-					case "0":return 'accesoDenegado';
-					case "1":return 'sinAcceso'
+					case "0":return 'sinAcceso'
+					case "1":return 'accesoDenegado';
 					case "2":return 'soloLectura';
 					case "3":return 'accesoTotal'
 					default:return 'sinAcceso'
@@ -333,7 +350,7 @@
 				pendientes=nuevosPermisos.length;
 				jQuery('#nCambios').text(pendientes);
 			}
-			
+
 
 		</script>
 	</head>
@@ -361,7 +378,7 @@
 		<div id='container' style="background-color:white;">
 		<div id='botonera' style="text-align:right;background-color:#eeeeee;height:30px;">
 		
-		<div style="float:left;padding-left:50px;">
+		<div style="vertical-align: middle; float:left;padding-left:50px;">
 			<input type="button" id='darAcceso' class='miBoton botonAccesoTotal' title='Acceso Total' onclick="aplicarPermiso('accesoTotal')"/>
 			<input type="button" id='darSoloLectura' class='miBoton botonSoloLectura' title='Solo Lectura' onclick="aplicarPermiso('soloLectura')"/>
 			<input type="button" id='darDenegado' class='miBoton botonAccesoDenegado' title='Acceso Denegado' onclick="aplicarPermiso('accesoDenegado')"/>
@@ -412,12 +429,10 @@
 			});
 
 		jQuery(document).ready(function(){		
-			jQuery('#container').height(jQuery(document).height()-90);
-			jQuery('#arbolProcesos').height(jQuery('#container').height());
+			jQuery('#container').height(jQuery(document).height()-80);
+			jQuery('#arbolProcesos').height(jQuery('#container').height()-5);
 			alert("Se está cargando el arbol de procesos de la aplicación.\nPuede tardar varios segundos dependiendo de su equipo.");
-			window.setTimeout(function(){
-				getProcesos();
-			    },700); 
+			getProcesos();
 			
 		});
 	</script>

@@ -61,6 +61,8 @@ public class SIGAConfigurarPermisosAplicacionAction extends MasterAction
 	protected String abrir(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, SIGAException
 	{
 		request.setAttribute("procesos", getProcesos(this.getUserBean(request)));
+		// Ponemos modo debug para los administradores
+		request.setAttribute("debug", this.getUserBean(request).isEntradaCombos());
 		return "abrir";
 	}
 
