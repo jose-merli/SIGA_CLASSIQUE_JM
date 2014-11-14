@@ -320,9 +320,7 @@ public class FicheroBancarioPagosAction extends MasterAction{
 		UserTransaction tx			= null;		
 		String resultadoFinal[] = new String[1];
 		
-		try{	
-			tx = usr.getTransactionPesada(); 
-			tx.begin();
+		try{				
 			Integer usuario = this.getUserName(request);						
 			
 		    ReadProperties p= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
@@ -406,6 +404,9 @@ public class FicheroBancarioPagosAction extends MasterAction{
 			param_in_banco[10] = usr.getLanguage();
 						
 			String resultado[] = new String[3];
+			
+			tx = usr.getTransactionPesada(); 
+			tx.begin();
 			resultado = ClsMngBBDD.callPLProcedure("{call PKG_SIGA_CARGOS.PRESENTACION(?,?,?,?,?,?,?,?,?,?,?,?,?,?)}", 3, param_in_banco);
 			String codretorno = resultado[1];
 			
@@ -417,34 +418,6 @@ public class FicheroBancarioPagosAction extends MasterAction{
 					throw new SIGAException("censo.fichaCliente.bancos.mandatos.error.generacionFicheros");
 				}							
 			}	
-			
-			/*// Da error cuando no obtiene el mandato (5412) 
-			if (codretorno.equals("5412")) {
-				throw new SIGAException("censo.fichaCliente.bancos.mandatos.error.sinMandato");
-				
-			} else {
-				// Da error cuando el mandato no viene firmado (5413) 
-				if (codretorno.equals("5413")) {
-					throw new SIGAException("censo.fichaCliente.bancos.mandatos.error.sinFirma");
-					
-				} else {
-					// Da error cuando la direccion de facturacion del acreedor no existe (5414) 
-					if (codretorno.equals("5414")) {
-						throw new SIGAException("censo.fichaCliente.bancos.mandatos.error.direccionFacturacionAcreedor");
-						
-					} else {
-						// Da error cuando la direccion de facturacion del deudor no existe (5415) 
-						if (codretorno.equals("5415")) {
-							throw new SIGAException("censo.fichaCliente.bancos.mandatos.error.direccionFacturacionDeudor");
-							
-						} else {
-							if (!codretorno.equals("0")){
-								throw new SIGAException("censo.fichaCliente.bancos.mandatos.error.generacionFicheros");
-							}							
-						}						
-					}					
-				}				
-			}*/			
 
 			tx.commit();
 			resultadoFinal[0] = resultado[0];
