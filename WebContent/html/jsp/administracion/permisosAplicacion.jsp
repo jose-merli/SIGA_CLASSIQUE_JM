@@ -79,10 +79,13 @@
 		var totalPermisos;
 		
 		var debug = '${debug}';
+		
+		var startTime;
 
 		function getProcesos(){
 			json = jQuery.parseJSON('${procesos}');
 			sub();
+			startTime = new Date().getTime();
 			pintaArbol(json.procesos);
 		}
 	 		
@@ -170,7 +173,8 @@
 			function pintaPausa(nodos,numeroNodos){
 				if(nodos.length==0){
 					creaArbol();
-					alert("Carga finalizada","success");
+					stopTime = new Date().getTime();
+					alert("Carga finalizada en "+parseInt((stopTime-startTime)/1000,10)+" segundos","success");
 					jQuery( "#progressbar" ).hide(300);
 					fin();
 				}else{
