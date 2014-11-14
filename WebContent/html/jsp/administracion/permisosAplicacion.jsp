@@ -87,6 +87,7 @@
 	 		
 		function getPermisosPerfil(perfil){
 			sub();
+			limpiarSeleccion();
 			jQuery('#container').show();
 			jQuery('#mensajeSeleccionarGrupo').hide();
 			numeroProcesos=jQuery('.nodo').length;
@@ -114,27 +115,29 @@
 			function guardarCambios(){
 				
 				if(jQuery("#idPerfil").val().length==3 && nuevosPermisos.length>0){
-				
-					sub();
-					perfil=jQuery("#idPerfil").val();
-					jQuery.ajax({ 
-						type: "POST",
-						url: "/SIGA/ADM_ConfigurarPermisosAplicacion.do?modo=SETPERMISOS",
-						dataType: "json",
-						data: {'perfil': perfil,'permisos':JSON.stringify(nuevosPermisos)},
-						contentType: "application/x-www-form-urlencoded;charset=UTF-8",
-						success: function(json){
-							console.clear();
-							nuevosPermisos=[];
-							alert(json.msg);
-							getPermisosPerfil(jQuery("#idPerfil").val());
-						},
-						error: function(e){
-							alert(e+":error de comunicacion con el servidor");
-						}
-					});
-					restablecerCambios();
-					fin();
+					
+					if(confirm("Se van a realizar "+nuevosPermisos.length+" cambios de permisos sobre el perfil "+jQuery("#idPerfil :selected").text())){
+						sub();
+						perfil=jQuery("#idPerfil").val();
+						jQuery.ajax({ 
+							type: "POST",
+							url: "/SIGA/ADM_ConfigurarPermisosAplicacion.do?modo=SETPERMISOS",
+							dataType: "json",
+							data: {'perfil': perfil,'permisos':JSON.stringify(nuevosPermisos)},
+							contentType: "application/x-www-form-urlencoded;charset=UTF-8",
+							success: function(json){
+								console.clear();
+								nuevosPermisos=[];
+								alert(json.msg);
+								getPermisosPerfil(jQuery("#idPerfil").val());
+							},
+							error: function(e){
+								alert(e+":error de comunicacion con el servidor");
+							}
+						});
+						restablecerCambios();
+						fin();
+					}
 				}else{
 					alert("No hay cambios pendientes");
 				}
@@ -313,13 +316,31 @@
 				pintaCambios();
 			}
 			
+			function limpiarSeleccion(){
+				jQuery('.selected').removeClass('selected');
+				jQuery('.checkNodo').prop('checked', false);
+				nuevosPermisos=[];
+				pintaSeleccion();
+				pintaCambios();
+			}
+			
 			function pintaSeleccion(){
 				seleccionado=jQuery('.selected').length;
 				jQuery('#nSeleccionados').text(seleccionado);
 			}
+			
 			function pintaCambios(){
 				pendientes=nuevosPermisos.length;
 				jQuery('#nCambios').text(pendientes);
+			}
+			
+			function expandAll(){
+				jQuery(".padre").parent().find('.nodo').show();
+				
+			}
+			
+			function collapseAll(){
+				jQuery(".padre").parent().find('.nodo').hide();
 			}
 			
 
@@ -350,6 +371,9 @@
 		<div id='botonera' style="text-align:right;background-color:#eeeeee;height:30px;">
 		
 		<div style="float:left;padding-left:50px;">
+			<input type="button" id='darAcceso' class='miBoton botonAccesoTotal' title='Acceso Total' onclick="expandAll()"/>
+			<input type="button" id='darAcceso' class='miBoton botonAccesoTotal' title='Acceso Total' onclick="collapseAll()"/>
+			-
 			<input type="button" id='darAcceso' class='miBoton botonAccesoTotal' title='Acceso Total' onclick="aplicarPermiso('accesoTotal')"/>
 			<input type="button" id='darSoloLectura' class='miBoton botonSoloLectura' title='Solo Lectura' onclick="aplicarPermiso('soloLectura')"/>
 			<input type="button" id='darDenegado' class='miBoton botonAccesoDenegado' title='Acceso Denegado' onclick="aplicarPermiso('accesoDenegado')"/>
