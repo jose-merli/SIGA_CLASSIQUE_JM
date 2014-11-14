@@ -91,7 +91,7 @@
 			jQuery('#container').show();
 			jQuery('#mensajeSeleccionarGrupo').hide();
 			numeroProcesos=jQuery('.nodo').length;
-			paginas=(numeroProcesos/50)+1;
+			paginas=(numeroProcesos/20)+1;
 			//data: {idPerfil:perfil,inicio:0,datos:numeroProcesos},
 			jQuery("#arbol").find('label').removeClass('accesoDenegado sinAcceso accesoTotal soloLectura cambiado').addClass('sinAcceso');
 			for ( i = 0; i < paginas; i++) {
@@ -99,7 +99,7 @@
 					type: "POST",
 					url: "/SIGA/ADM_ConfigurarPermisosAplicacion.do?modo=GETPERMISOS",
 					dataType: "json",
-					data: {'idPerfil':perfil,'inicio':i*50,'cantidad':((i+1)*50)},
+					data: {'idPerfil':perfil,'inicio':i*20,'cantidad':20},
 					contentType: "application/x-www-form-urlencoded;charset=UTF-8",
 					success: function(json){
 						pintaPermisosPerfil(json.permisos);
@@ -334,15 +334,6 @@
 				jQuery('#nCambios').text(pendientes);
 			}
 			
-			function expandAll(){
-				jQuery(".padre").parent().find('.nodo').show();
-				
-			}
-			
-			function collapseAll(){
-				jQuery(".padre").parent().find('.nodo').hide();
-			}
-			
 
 		</script>
 	</head>
@@ -371,9 +362,6 @@
 		<div id='botonera' style="text-align:right;background-color:#eeeeee;height:30px;">
 		
 		<div style="float:left;padding-left:50px;">
-			<input type="button" id='darAcceso' class='miBoton botonAccesoTotal' title='Acceso Total' onclick="expandAll()"/>
-			<input type="button" id='darAcceso' class='miBoton botonAccesoTotal' title='Acceso Total' onclick="collapseAll()"/>
-			-
 			<input type="button" id='darAcceso' class='miBoton botonAccesoTotal' title='Acceso Total' onclick="aplicarPermiso('accesoTotal')"/>
 			<input type="button" id='darSoloLectura' class='miBoton botonSoloLectura' title='Solo Lectura' onclick="aplicarPermiso('soloLectura')"/>
 			<input type="button" id='darDenegado' class='miBoton botonAccesoDenegado' title='Acceso Denegado' onclick="aplicarPermiso('accesoDenegado')"/>

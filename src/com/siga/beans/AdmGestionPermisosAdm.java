@@ -53,8 +53,8 @@ public class AdmGestionPermisosAdm extends MasterBeanAdministrador{
 		int can=Integer.parseInt(cantidad);
 		String query = "select IDPROCESO, DERECHOACCESO from (select a.*, rownum r from (select DERECHOACCESO, IDPROCESO From adm_tiposacceso"
                  +" where idinstitucion="+location+" and idperfil='"+perfil+"' order by idproceso) a"
-                + " where rownum <= "+ (inicio+cantidad)+" )"
-                + " where r >="+inicio; 
+                + " where rownum <= "+ (ini+can)+" )"
+                + " where r >="+ini; 
 		Vector result = this.selectGenerico(query);
 		return result;
 	}
