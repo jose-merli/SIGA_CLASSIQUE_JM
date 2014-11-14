@@ -175,6 +175,8 @@ public class SIGATemporalAccessAction extends Action
 			CenInstitucionBean in = (CenInstitucionBean) v4.get(0);
 			idLenguajeInstitucion=in.getIdLenguaje();
 		}
+		// Marcamos que ha entrado por combos (superusuarios)
+		usrbean.setEntradaCombos(true);
 		
 		// obtengo el idioma del usuario
 		String sInsti="";
