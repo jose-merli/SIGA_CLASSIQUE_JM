@@ -39,8 +39,8 @@
 		
 		.found{background: pink}
 		
-  		 .selected { font-style:italic; font-weight:bold; }
-  		 .cambiado { font-style:italic;}
+  		 .selected { font-style:italic; font-weight:bold;}
+  		 .cambiado { font-weight:bold;}
   		 
   		 .ocultar { font-size:0.7em;}
   		 
@@ -78,7 +78,7 @@
 		var nuevosPermisos=[];
 		var totalPermisos;
 		
-		var debug = '${debug}';
+		var debug = ${debug};
 
 
 		function getProcesos(){
