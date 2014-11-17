@@ -907,7 +907,7 @@
 								<span class="labelTextValue botonera">
 									<img src="<html:rewrite page='/html/imagenes/bconsultar_off.gif'/>" style="cursor:pointer;" alt="<siga:Idioma key='gratuita.operarEJG.boton.ConsultarDesigna'/>" name="consultarDesigna" border="0" onclick="abrirDesigna('ver','${designa.DESIGNA_ANIO}','${designa.DESIGNA_NUMERO}','${designa.DESIGNA_IDTURNO}','${designa.DES_IDINSTITUCION}')"/>
 									<img src="<html:rewrite page='/html/imagenes/beditar_off.gif'/>" style="cursor:pointer;display:none" alt="<siga:Idioma key='gratuita.boton.EditarDesigna'/>" class="botonEditarDesigna" border="0" onclick="abrirDesigna('<%=modo%>','${designa.DESIGNA_ANIO}','${designa.DESIGNA_NUMERO}','${designa.DESIGNA_IDTURNO}','${designa.DES_IDINSTITUCION}')"/>
-									<img src="<html:rewrite page='/html/imagenes/bborrar_off.gif'/>" style="cursor:pointer;display:none" alt="<siga:Idioma key='gratuita.boton.BorrarDesigna'/>" class="botonBorrarDesigna" border="0" onclick="borrarRelacionDesigna('${designa.DESIGNA_ANIO}','${designa.DESIGNA_NUMERO}','${designa.DESIGNA_IDTURNO}','${designa.DESIGNA_IDTURNO}','${designa.DES_IDINSTITUCION}')"/>
+									<img src="<html:rewrite page='/html/imagenes/bborrar_off.gif'/>" style="cursor:pointer;display:none" alt="<siga:Idioma key='gratuita.boton.BorrarDesigna'/>" class="botonBorrarDesigna" border="0" onclick="borrarRelacionDesigna('${designa.DESIGNA_ANIO}','${designa.DESIGNA_NUMERO}','${designa.DESIGNA_IDTURNO}','${designa.DES_IDINSTITUCION}')"/>
 								</span>
 							</div>
 							</logic:iterate>
@@ -1231,6 +1231,7 @@
 			document.MaestroDesignasForm.idInstitucion.value= institucion;
 			document.MaestroDesignasForm.anio.value= anio;
 			document.MaestroDesignasForm.numero.value= numero;
+			document.MaestroDesignasForm.idTurno.value= turno;
 			document.MaestroDesignasForm.desdeEjg.value= "si";
 			document.MaestroDesignasForm.submit();
 	 	}
