@@ -478,6 +478,8 @@ if(usr.isComision()){
 				<siga:Select id="idInstitucionComision" queryParamId="idInstitucion" params="<%=paramsInstitucionComision%>"  queryId="getInstitucionesComision" selectedIds="<%=idInstitucionSelected %>" childrenIds="idTipoEJGColegio,juzgado,calidad,identificador"/>
 				</td>
 			</tr>			
+		<%}else{%>
+			<html:hidden property="idInstitucionComision" value="<%=idInstitucionComision %>"/>
 		<%}%>
 		
 			<tr>
