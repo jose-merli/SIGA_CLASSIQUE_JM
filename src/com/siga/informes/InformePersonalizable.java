@@ -264,8 +264,13 @@ public class InformePersonalizable extends MasterReport
 		 *       descriptivo ¿?
 		 */
 		String nombreFichero = informe.getNombreSalida() + "_" + idinstitucion + "_" + usr.getUserName() + "_"
-				+ UtilidadesBDAdm.getFechaCompletaBD("").replaceAll("/", "").replaceAll(":", "").replaceAll(" ", "")
-				+ ".doc";
+				+ UtilidadesBDAdm.getFechaCompletaBD("").replaceAll("/", "").replaceAll(":", "").replaceAll(" ", "");
+				
+		if(informe.getTipoformato()!=null && informe.getTipoformato().equals("P"))
+			nombreFichero= nombreFichero + ".pdf";
+		else
+			nombreFichero = nombreFichero + ".doc";
+		
 		File ficheroGenerado = words.grabaDocumento(doc, rutaAlm, nombreFichero);
 
 		// devolviendo el fichero

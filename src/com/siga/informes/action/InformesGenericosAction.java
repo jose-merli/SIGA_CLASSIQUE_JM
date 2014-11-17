@@ -939,11 +939,18 @@ public class InformesGenericosAction extends MasterAction {
 				String nombreFichAlmacen;
 				if (multiple){
 					nombreFichAlmacen = infBean.getNombreSalida() + "_" +
-					idinstitucion + "_" + idfacturacionIni+ "_" + idfacturacionFin+".doc";
+					idinstitucion + "_" + idfacturacionIni+ "_" + idfacturacionFin;
 				}else{
 					nombreFichAlmacen = infBean.getNombreSalida() + "_" +
-					idinstitucion + "_" + facturaciones+".doc";
+					idinstitucion + "_" + facturaciones;
 				}
+				if(infBean.getTipoformato()!=null && infBean.getTipoformato().equals("P"))
+					nombreFichAlmacen= nombreFichAlmacen + ".pdf";
+				else
+					nombreFichAlmacen = nombreFichAlmacen + ".doc";
+				
+				
+				
 				informesRes.add (words.grabaDocumento 
 						(doc, rutaAlmacen, nombreFichAlmacen));
 			} //for
