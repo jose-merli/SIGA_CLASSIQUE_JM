@@ -79,13 +79,11 @@
 		var totalPermisos;
 		
 		var debug = '${debug}';
-		
-		var startTime;
+
 
 		function getProcesos(){
 			json = jQuery.parseJSON('${procesos}');
 			sub();
-			startTime = new Date().getTime();
 			pintaArbol(json.procesos);
 		}
 	 		
@@ -133,8 +131,8 @@
 				
 				if(jQuery("#idPerfil").val().length==3 && nuevosPermisos.length>0){
 					
+					sub();
 					if(confirm("Se van a realizar "+nuevosPermisos.length+" cambios de permisos sobre el perfil "+jQuery("#idPerfil :selected").text())){
-						sub();
 						perfil=jQuery("#idPerfil").val();
 						jQuery.ajax({ 
 							type: "POST",
@@ -143,6 +141,7 @@
 							data: {'perfil': perfil,'permisos':JSON.stringify(nuevosPermisos)},
 							contentType: "application/x-www-form-urlencoded;charset=UTF-8",
 							success: function(json){
+								sub();
 								console.clear();
 								nuevosPermisos=[];
 								alert(json.msg);
@@ -153,7 +152,6 @@
 							}
 						});
 						limpiarSeleccion();
-						fin();
 					}
 				}else{
 					alert("No hay cambios pendientes");
@@ -173,8 +171,7 @@
 			function pintaPausa(nodos,numeroNodos){
 				if(nodos.length==0){
 					creaArbol();
-					stopTime = new Date().getTime();
-					alert("Carga finalizada en "+parseInt((stopTime-startTime)/1000,10)+" segundos","success");
+					alert("Carga finalizada","success");
 					jQuery( "#progressbar" ).hide(300);
 					fin();
 				}else{
