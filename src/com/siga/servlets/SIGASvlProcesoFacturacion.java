@@ -113,6 +113,9 @@ public class SIGASvlProcesoFacturacion extends HttpServlet {
    			
    			ClsLogging.writeFileLogWithoutSession(" - Notificación \"" + sNombreProceso + "\" ejecutada ERROR. : " + e.toString() , 3);
    		    e.printStackTrace();
+   		} finally {
+   	        // reiniciar el timer para que se vuelva a ejecutar el proceso automatico de facturacion pasado un tiempo
+   	        new SIGASvlProcesoAutomaticoFacturacion().iniciarTimer();
    		}
     }
 }
