@@ -215,9 +215,6 @@ public class InformeFactura extends MasterReport {
 
 		String resultado="exito";
 		File fPdf = null;
-		
-		
-		
 		ArrayList ficherosPDF= new ArrayList();
 		File rutaFin=null;
 		File rutaTmp=null;
@@ -225,13 +222,8 @@ public class InformeFactura extends MasterReport {
 			
 		try {
 		    HttpSession ses = request.getSession();
-			
-		    // UsrBean usr = (UsrBean)ses.getAttribute("USRBEAN");
-		   
-			
 			GenParametrosAdm admParametros = new GenParametrosAdm(usrbean);
 		    ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
-//			ReadProperties rp = new ReadProperties("SIGA.properties");	
 			
 			// RGG 26/02/2007 cambio en los codigos de lenguajes
 			AdmLenguajesAdm a = new AdmLenguajesAdm(usrbean);
@@ -356,7 +348,7 @@ public class InformeFactura extends MasterReport {
 				boolean generarLog=false;
 				
 				Facturacion facturacion = new Facturacion(usrbean);
-				facturacion.generaryEnviarProgramacionFactura (request, Integer.parseInt(institucion), Long.valueOf(ht.get(FacFacturaBean.C_IDSERIEFACTURACION).toString()),Long.valueOf(ht.get(FacFacturaBean.C_IDPROGRAMACION).toString()), false, log, null, generarLog);
+				facturacion.generaryEnviarProgramacionFactura (request, Integer.parseInt(institucion), Long.valueOf(ht.get(FacFacturaBean.C_IDSERIEFACTURACION).toString()),Long.valueOf(ht.get(FacFacturaBean.C_IDPROGRAMACION).toString()), false, log, generarLog);
 				ClsLogging.writeFileLog("DESPUES DE GENERAR EL INFORME EN  "+rutaAlmacen,10);			
     		} else {
     			ClsLogging.writeFileLog("SE DEVUELVE EL ZIP PREVIAMENTE GENERADO EN CONFIRMACION",10);

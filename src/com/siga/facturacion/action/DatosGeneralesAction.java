@@ -251,6 +251,10 @@ public class DatosGeneralesAction extends MasterAction{
 					beanSerieFacturacion.setIdTipoEnvios(1);
 				} 			
 				
+				if(formDatosGenerales.getIdSerieFacturacionPrevia()!=null && !formDatosGenerales.getIdSerieFacturacionPrevia().equals("")){
+					beanSerieFacturacion.setIdSerieFacturacionPrevia(Long.valueOf(formDatosGenerales.getIdSerieFacturacionPrevia()));
+				}
+				
 				tx.begin();
 				boolean result = admSerieFacturacion.insert(beanSerieFacturacion);
 				if (result) {
@@ -438,6 +442,12 @@ public class DatosGeneralesAction extends MasterAction{
 				} else{
 					hashNew.put(FacSerieFacturacionBean.C_IDTIPOPLANTILLAMAIL, "");
 					hashNew.put(FacSerieFacturacionBean.C_IDTIPOENVIOS, "");
+				}
+				
+				if(formDGen.getIdSerieFacturacionPrevia()!=null && !formDGen.getIdSerieFacturacionPrevia().equals("")){
+					hashNew.put(FacSerieFacturacionBean.C_IDSERIEFACTURACIONPREVIA,formDGen.getIdSerieFacturacionPrevia());
+				}else{
+					hashNew.put(FacSerieFacturacionBean.C_IDSERIEFACTURACIONPREVIA, "");
 				}
 				
 				boolean eliminarContador = false;

@@ -17,7 +17,7 @@ import com.siga.beans.*;
 
 public class DatosGeneralesForm extends MasterForm {
 	
-	private String idPlantillaMail, idTipoPlantillaMail;
+	private String idPlantillaMail, idTipoPlantillaMail, idSerieFacturacionPrevia;
 	private String[] formaPagoAutomática;
 
 	// Metodos Set (Formulario (*.jsp))
@@ -208,6 +208,13 @@ public class DatosGeneralesForm extends MasterForm {
 	public void setFormaPagoAutomática(String[] formaPagoAutomática) {
 		this.formaPagoAutomática = formaPagoAutomática;
 	}
+
+	public String getIdSerieFacturacionPrevia() {
+		return idSerieFacturacionPrevia;
+	}
+
+	public void setIdSerieFacturacionPrevia(String idSerieFacturacionPrevia) {
+		this.idSerieFacturacionPrevia = idSerieFacturacionPrevia;
+	}
  
-	
 }

@@ -17,7 +17,7 @@ public class FacFacturacionProgramadaBean extends MasterBean {
 	
 	private String 	fechaInicioProductos, fechaFinProductos, fechaInicioServicios, fechaFinServicios, 
 					fechaRealGeneracion, fechaConfirmacion, fechaProgramacion, 
-					generarPDF,envio,archivarFact,fechaPrevistaConfirmacion,fechaPrevistaGeneracion, locked,
+					generarPDF,envio,archivarFact,fechaPrevistaConfirmacion,fechaPrevistaGeneracion,
 					fechaCargo, confIngresos, confDeudor, ctaIngresos, ctaClientes, visible, descripcion, realizarEnvio;
 	
 	private String fechaPresentacion, fechaRecibosPrimeros, fechaRecibosRecurrentes, fechaRecibosCOR1, fechaRecibosB2B;
@@ -87,7 +87,6 @@ public class FacFacturacionProgramadaBean extends MasterBean {
 	public void setGenerarPDF (String id)				{ this.generarPDF = id; }
 	public void setEnvio (String id)				{ this.envio = id; }
 	public void setArchivarFact (String id)				{ this.archivarFact = id; }
-	public void setLocked (String id)				{ this.locked = id; }
 
 	public void setConfDeudor (String id)				{ this.confDeudor = id; }
 	public void setConfIngresos (String id)				{ this.confIngresos = id; }
@@ -118,7 +117,6 @@ public class FacFacturacionProgramadaBean extends MasterBean {
 	public String getGenerarPDF ()				{return  this.generarPDF;}
 	public String getEnvio ()				{return  this.envio;}
 	public String getArchivarFact ()				{return  this.archivarFact; }
-	public String    getLocked				()	{ return this.locked; }
 
 	public String    getConfDeudor				()	{ return this.confDeudor; }
 	public String    getConfIngresos				()	{ return this.confIngresos; }
@@ -195,5 +193,4 @@ public class FacFacturacionProgramadaBean extends MasterBean {
 	public void setNombrefichero(String nombrefichero) {
 		this.nombrefichero = nombrefichero;
 	}
-	
 }

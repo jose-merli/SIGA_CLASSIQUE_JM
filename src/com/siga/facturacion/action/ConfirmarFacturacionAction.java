@@ -314,8 +314,8 @@ public class ConfirmarFacturacionAction extends MasterAction{
 				calendar.set(Calendar.YEAR, calendar.get(Calendar.YEAR)-1);	
 			}
 			String fechaAnioPasado = 	formateo.format(calendar.getTime());
+			form.setFechaDesdePrevistaGeneracion(fechaAnioPasado);
 			form.setFechaDesdeGeneracion(fechaAnioPasado);
-			form.setFechaDesdeConfirmacion(fechaAnioPasado);
 			
 		} catch (Exception e) { 
 			throwExcp("messages.general.error",new String[] {"modulo.facturacion"},e,null); 
@@ -1131,7 +1131,6 @@ public class ConfirmarFacturacionAction extends MasterAction{
 			    bean.setCtaClientes(bSF.getCuentaClientes());
 			    bean.setCtaIngresos(bSF.getCuentaIngresos());
 			}
-
 			
 			// Insertamos el nuevo registro.
 			if(!adm.insert(bean)){
@@ -1178,8 +1177,6 @@ public class ConfirmarFacturacionAction extends MasterAction{
 			String sFechaProgramacion = UtilidadesString.formatoFecha(new Date(),"yyyy/MM/dd HH:mm:ss"); 
 			bean.setFechaProgramacion(sFechaProgramacion);
 			bean.setArchivarFact("0");
-			bean.setLocked("0");
-			
 			bean.setVisible("S");
 			
 			// tratamos las fechas con minutos y segundos

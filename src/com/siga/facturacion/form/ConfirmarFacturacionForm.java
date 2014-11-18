@@ -20,7 +20,7 @@ public class ConfirmarFacturacionForm extends MasterForm{
 	private String fechaCargo, estadoConfirmacion, estadoPDF, estadoEnvios, archivadas;
 	private String facturacionRapida, idSerieFacturacion, idProgramacion;
 	private String fechaEntrega="", fechaFRST="", fechaRCUR="", fechaCOR1="", fechaB2B="";
-	private String fechaDesdeConfirmacion,fechaHastaConfirmacion,fechaDesdeGeneracion,fechaHastaGeneracion;
+	private String fechaDesdeConfirmacion,fechaHastaConfirmacion,fechaDesdeGeneracion,fechaHastaGeneracion,fechaDesdePrevistaGeneracion,fechaHastaPrevistaGeneracion;
 	private String idTipoPlantillaMail;
 	private String fechaPresentacion;
 	private String fechaRecibosPrimeros;
@@ -452,5 +452,17 @@ public class ConfirmarFacturacionForm extends MasterForm{
 	public void setFechaRecibosB2B(String fechaRecibosB2B) {
 		this.fechaRecibosB2B = fechaRecibosB2B;
 	}
-	
+	public String getFechaDesdePrevistaGeneracion() {
+		return fechaDesdePrevistaGeneracion;
+	}
+	public void setFechaDesdePrevistaGeneracion(String fechaDesdePrevistaGeneracion) {
+		this.fechaDesdePrevistaGeneracion = fechaDesdePrevistaGeneracion;
+	}
+	public String getFechaHastaPrevistaGeneracion() {
+		return fechaHastaPrevistaGeneracion;
+	}
+	public void setFechaHastaPrevistaGeneracion(String fechaHastaPrevistaGeneracion) {
+		this.fechaHastaPrevistaGeneracion = fechaHastaPrevistaGeneracion;
+	}
+
 }

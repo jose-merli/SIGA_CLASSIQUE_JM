@@ -108,7 +108,6 @@ public class FacFacturacionProgramadaAdm extends MasterBeanAdministrador {
 			bean.setIdTipoEnvios(UtilidadesHash.getInteger(hash, FacFacturacionProgramadaBean.C_IDTIPOENVIOS));
 			bean.setIdTipoPlantillaMail(UtilidadesHash.getInteger(hash, FacFacturacionProgramadaBean.C_IDTIPOPLANTILLAMAIL));
 			bean.setArchivarFact(UtilidadesHash.getString(hash, FacFacturacionProgramadaBean.C_ARCHIVARFACT));
-			bean.setLocked(UtilidadesHash.getString(hash, FacFacturacionProgramadaBean.C_LOCKED));
 
 			bean.setConfDeudor(UtilidadesHash.getString(hash, FacFacturacionProgramadaBean.C_CONFDEUDOR));
 			bean.setConfIngresos(UtilidadesHash.getString(hash, FacFacturacionProgramadaBean.C_CONFINGRESOS));
@@ -126,7 +125,7 @@ public class FacFacturacionProgramadaAdm extends MasterBeanAdministrador {
 			bean.setFechaRecibosCOR1		(UtilidadesHash.getString(hash, FacFacturacionProgramadaBean.C_FECHARECIBOSCOR1));
 			bean.setFechaRecibosB2B			(UtilidadesHash.getString(hash, FacFacturacionProgramadaBean.C_FECHARECIBOSB2B));
 			bean.setLogerror				(UtilidadesHash.getString(hash, FacFacturacionProgramadaBean.C_LOGERROR));
-			bean.setNombrefichero			(UtilidadesHash.getString(hash, FacFacturacionProgramadaBean.C_NOMBREFICHERO));			
+			bean.setNombrefichero			(UtilidadesHash.getString(hash, FacFacturacionProgramadaBean.C_NOMBREFICHERO));		
 
 		}
 		catch (Exception e) { 
@@ -146,10 +145,10 @@ public class FacFacturacionProgramadaAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(htData, FacFacturacionProgramadaBean.C_IDINSTITUCION, b.getIdInstitucion());
 			UtilidadesHash.set(htData, FacFacturacionProgramadaBean.C_IDSERIEFACTURACION, b.getIdSerieFacturacion());
 			UtilidadesHash.set(htData, FacFacturacionProgramadaBean.C_IDPROGRAMACION, b.getIdProgramacion());
-			UtilidadesHash.set(htData, FacFacturacionProgramadaBean.C_FECHAINICIOPRODUCTOS, b.getFechaInicioProductos());
-			UtilidadesHash.set(htData, FacFacturacionProgramadaBean.C_FECHAFINPRODUCTOS, b.getFechaFinProductos());
-			UtilidadesHash.set(htData, FacFacturacionProgramadaBean.C_FECHAINICIOSERVICIOS, b.getFechaInicioServicios());
-			UtilidadesHash.set(htData, FacFacturacionProgramadaBean.C_FECHAFINSERVICIOS, b.getFechaFinServicios());
+			UtilidadesHash.setForCompare(htData, FacFacturacionProgramadaBean.C_FECHAINICIOPRODUCTOS, b.getFechaInicioProductos());
+			UtilidadesHash.setForCompare(htData, FacFacturacionProgramadaBean.C_FECHAFINPRODUCTOS, b.getFechaFinProductos());
+			UtilidadesHash.setForCompare(htData, FacFacturacionProgramadaBean.C_FECHAINICIOSERVICIOS, b.getFechaInicioServicios());
+			UtilidadesHash.setForCompare(htData, FacFacturacionProgramadaBean.C_FECHAFINSERVICIOS, b.getFechaFinServicios());
 			UtilidadesHash.set(htData, FacFacturacionProgramadaBean.C_FECHAREALGENERACION, b.getFechaRealGeneracion());
 			UtilidadesHash.set(htData, FacFacturacionProgramadaBean.C_FECHACONFIRMACION, b.getFechaConfirmacion());
 			UtilidadesHash.set(htData, FacFacturacionProgramadaBean.C_FECHAPROGRAMACION, b.getFechaProgramacion());
@@ -169,7 +168,6 @@ public class FacFacturacionProgramadaAdm extends MasterBeanAdministrador {
 			}
 			UtilidadesHash.set(htData, FacFacturacionProgramadaBean.C_IDTIPOENVIOS, b.getIdTipoEnvios());
 			UtilidadesHash.set(htData, FacFacturacionProgramadaBean.C_ARCHIVARFACT, b.getArchivarFact());
-			UtilidadesHash.set(htData, FacFacturacionProgramadaBean.C_LOCKED, b.getLocked());
 			UtilidadesHash.set(htData, FacFacturacionProgramadaBean.C_FECHACARGO, b.getFechaCargo());
 
 			UtilidadesHash.set(htData, FacFacturacionProgramadaBean.C_CONFDEUDOR, b.getConfDeudor());
@@ -188,7 +186,7 @@ public class FacFacturacionProgramadaAdm extends MasterBeanAdministrador {
 			UtilidadesHash.setForCompare(htData, FacFacturacionProgramadaBean.C_FECHARECIBOSCOR1, b.getFechaRecibosCOR1());
 			UtilidadesHash.setForCompare(htData, FacFacturacionProgramadaBean.C_FECHARECIBOSB2B, b.getFechaRecibosB2B());
 			UtilidadesHash.setForCompare(htData, FacFacturacionProgramadaBean.C_LOGERROR, b.getLogerror());
-			UtilidadesHash.setForCompare(htData, FacFacturacionProgramadaBean.C_NOMBREFICHERO, b.getNombrefichero());			
+			UtilidadesHash.setForCompare(htData, FacFacturacionProgramadaBean.C_NOMBREFICHERO, b.getNombrefichero());	
 		}
 		catch (Exception e) {
 			htData = null;
@@ -248,10 +246,7 @@ public class FacFacturacionProgramadaAdm extends MasterBeanAdministrador {
 	 * @author nuria.rgonzalez 10-03-05
 	 */
 	protected String getTablasFacturacion(){
-		String campos = FacFacturacionProgramadaBean.T_NOMBRETABLA + 
-						" LEFT JOIN " + FacSerieFacturacionBean.T_NOMBRETABLA +
-							" ON " + FacFacturacionProgramadaBean.T_NOMBRETABLA + "." + FacFacturacionProgramadaBean.C_IDINSTITUCION + " = " + FacSerieFacturacionBean.T_NOMBRETABLA + "." + FacSerieFacturacionBean.C_IDINSTITUCION +
-							" AND " + FacFacturacionProgramadaBean.T_NOMBRETABLA + "." + FacFacturacionProgramadaBean.C_IDSERIEFACTURACION + " = " + FacSerieFacturacionBean.T_NOMBRETABLA + "." + FacSerieFacturacionBean.C_IDSERIEFACTURACION;		 		
+		String campos = FacFacturacionProgramadaBean.T_NOMBRETABLA + " , " + FacSerieFacturacionBean.T_NOMBRETABLA;
 		return campos;
 	}
 	
@@ -731,6 +726,12 @@ public class FacFacturacionProgramadaAdm extends MasterBeanAdministrador {
 		if (confirmarFacturacionForm.getFechaHastaGeneracion()!=null && !confirmarFacturacionForm.getFechaHastaGeneracion().trim().equals("")) {
 			select.append(" AND facProg."+FacFacturacionProgramadaBean.C_FECHAREALGENERACION+"<TO_DATE ('" + confirmarFacturacionForm.getFechaHastaGeneracion() + "', 'DD/MM/YYYY')");
 		}
+		if (confirmarFacturacionForm.getFechaDesdePrevistaGeneracion()!=null && !confirmarFacturacionForm.getFechaDesdePrevistaGeneracion().trim().equals("")) {
+			select.append(" AND facProg."+FacFacturacionProgramadaBean.C_FECHAPREVISTAGENERACION+">=TO_DATE ('" + confirmarFacturacionForm.getFechaDesdePrevistaGeneracion() + "', 'DD/MM/YYYY')");
+		}
+		if (confirmarFacturacionForm.getFechaHastaPrevistaGeneracion()!=null && !confirmarFacturacionForm.getFechaHastaPrevistaGeneracion().trim().equals("")) {
+			select.append(" AND facProg."+FacFacturacionProgramadaBean.C_FECHAPREVISTAGENERACION+"<TO_DATE ('" + confirmarFacturacionForm.getFechaHastaPrevistaGeneracion() + "', 'DD/MM/YYYY')");
+		}		
 
 		select.append( " ORDER BY "+FacFacturacionProgramadaBean.C_FECHAREALGENERACION+" DESC");
     	Paginador paginador= new Paginador(select.toString());

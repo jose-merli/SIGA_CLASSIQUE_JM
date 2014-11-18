@@ -41,7 +41,8 @@ public class FacSerieFacturacionAdm extends MasterBeanAdministrador {
 							FacSerieFacturacionBean.C_FECHAMODIFICACION,
 							FacSerieFacturacionBean.C_USUMODIFICACION,
 							FacSerieFacturacionBean.C_IDTIPOPLANTILLAMAIL,
-							FacSerieFacturacionBean.C_IDTIPOENVIOS};
+							FacSerieFacturacionBean.C_IDTIPOENVIOS,
+							FacSerieFacturacionBean.C_IDSERIEFACTURACIONPREVIA};
 		return campos;
 	}
 
@@ -74,6 +75,7 @@ public class FacSerieFacturacionAdm extends MasterBeanAdministrador {
 			bean.setUsuMod				(UtilidadesHash.getInteger(hash,FacSerieFacturacionBean.C_USUMODIFICACION));
 			bean.setIdTipoPlantillaMail	(UtilidadesHash.getInteger(hash,FacSerieFacturacionBean.C_IDTIPOPLANTILLAMAIL));
 			bean.setIdTipoEnvios		(UtilidadesHash.getInteger(hash,FacSerieFacturacionBean.C_IDTIPOENVIOS));
+			bean.setIdSerieFacturacionPrevia	(UtilidadesHash.getLong(hash, FacSerieFacturacionBean.C_IDSERIEFACTURACIONPREVIA));
 		}
 		catch (Exception e) { 
 			bean = null;	
@@ -100,16 +102,13 @@ public class FacSerieFacturacionAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(htData, FacSerieFacturacionBean.C_CONFINGRESOS, b.getConfigIngresos());
 			UtilidadesHash.set(htData, FacSerieFacturacionBean.C_CTACLIENTES, b.getCuentaClientes());
 			UtilidadesHash.set(htData, FacSerieFacturacionBean.C_CTAINGRESOS, b.getCuentaIngresos());
-
 			UtilidadesHash.set(htData, FacSerieFacturacionBean.C_OBSERVACIONES, b.getObservaciones());
-
 			UtilidadesHash.set(htData, FacSerieFacturacionBean.C_TIPOSERIE, b.getTipoSerie());
-
 			UtilidadesHash.set(htData, FacSerieFacturacionBean.C_FECHAMODIFICACION, b.getFechaMod());
-			UtilidadesHash.set(htData, FacSerieFacturacionBean.C_USUMODIFICACION, b.getUsuMod());
-			
+			UtilidadesHash.set(htData, FacSerieFacturacionBean.C_USUMODIFICACION, b.getUsuMod());			
 			UtilidadesHash.set(htData, FacSerieFacturacionBean.C_IDTIPOPLANTILLAMAIL, b.getIdTipoPlantillaMail());
 			UtilidadesHash.set(htData, FacSerieFacturacionBean.C_IDTIPOENVIOS, b.getIdTipoEnvios());
+			UtilidadesHash.set(htData, FacSerieFacturacionBean.C_IDSERIEFACTURACIONPREVIA, b.getIdSerieFacturacionPrevia());
 		}
 		catch (Exception e) {
 			htData = null;
@@ -135,7 +134,8 @@ public class FacSerieFacturacionAdm extends MasterBeanAdministrador {
 							FacSerieFacturacionBean.T_NOMBRETABLA+"."+FacSerieFacturacionBean.C_TIPOSERIE+" TIPOSERIE",	
 							FacSerieFacturacionBean.T_NOMBRETABLA+"."+FacSerieFacturacionBean.C_IDCONTADOR+" IDCONTADOR",	
 							FacSerieFacturacionBean.T_NOMBRETABLA+"."+FacSerieFacturacionBean.C_FECHAMODIFICACION+" FECHAMODIFICACION",
-							FacSerieFacturacionBean.T_NOMBRETABLA+"."+FacSerieFacturacionBean.C_USUMODIFICACION+" USUMODIFICACION"};
+							FacSerieFacturacionBean.T_NOMBRETABLA+"."+FacSerieFacturacionBean.C_USUMODIFICACION+" USUMODIFICACION",
+							FacSerieFacturacionBean.T_NOMBRETABLA+"."+FacSerieFacturacionBean.C_IDSERIEFACTURACIONPREVIA+" IDSERIEFACTURACIONPREVIA"};
 		return campos;
 	}
 	

@@ -11,7 +11,7 @@ public class FacSerieFacturacionBean extends MasterBean {
 	/* Variables */
 	private Integer idInstitucion, idPlantilla, idTipoPlantillaMail, idTipoEnvios;
 	
-	private Long idSerieFacturacion;
+	private Long idSerieFacturacion,idSerieFacturacionPrevia;
 	
 	private String 	descripcion, nombreAbreviado, envioFactura,generarPDF, idContador, 
 
@@ -41,6 +41,7 @@ public class FacSerieFacturacionBean extends MasterBean {
 	static public final String C_IDTIPOPLANTILLAMAIL = "IDTIPOPLANTILLAMAIL";
 	static public final String C_IDTIPOENVIOS		 = "IDTIPOENVIOS";
 	static public final String C_IDFORMAPAGO	     = "IDFORMAPAGO";
+	static public final String C_IDSERIEFACTURACIONPREVIA  = "IDSERIEFACTURACIONPREVIA";
 	
 	// Metodos SET
 	public void setIdInstitucion (Integer id)		{ this.idInstitucion = id; }
@@ -97,6 +98,12 @@ public class FacSerieFacturacionBean extends MasterBean {
 			return formaPagoAutomática[0].split(",");
 		}		
 		return formaPagoAutomática;
+	}
+	public Long getIdSerieFacturacionPrevia() {
+		return idSerieFacturacionPrevia;
+	}
+	public void setIdSerieFacturacionPrevia(Long idSerieFacturacionPrevia) {
+		this.idSerieFacturacionPrevia = idSerieFacturacionPrevia;
 	}	
 	
 }
