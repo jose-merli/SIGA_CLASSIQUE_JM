@@ -193,7 +193,7 @@ public class Facturacion {
 	}
 	
 	/**
-	 * Notas Jorge PT 118:
+	 * Notas Jorge PT 118: Confirmación automática de facturacion programada (SIGASvlProcesoFacturacion)
 	 * @param request
 	 * @param idInstitucion
 	 * @param userBean
@@ -218,20 +218,19 @@ public class Facturacion {
 			Hashtable<Integer, Object> codigos = new Hashtable<Integer, Object>();
 			codigos.put(new Integer("1"), idInstitucion);
 			String sWhere=" WHERE " + FacFacturacionProgramadaBean.T_NOMBRETABLA + "." + FacFacturacionProgramadaBean.C_IDINSTITUCION + " = :1 " +
-							" AND " + FacFacturacionProgramadaBean.C_FECHAPREVISTACONFIRM + " IS NOT NULL " +
-							" AND " + FacFacturacionProgramadaBean.C_FECHAPREVISTACONFIRM + " <= SYSDATE " +
-							" AND " + FacFacturacionProgramadaBean.C_FECHAREALGENERACION + " IS NOT NULL " +
-							" AND " + FacFacturacionProgramadaBean.C_VISIBLE + " = 'S' " +
-							" AND " + FacFacturacionProgramadaBean.C_IDESTADOCONFIRMACION + " IN (" + FacEstadoConfirmFactBean.GENERADA + ", " + FacEstadoConfirmFactBean.CONFIRM_PROGRAMADA + ") " +
-   							" AND " + FacFacturacionProgramadaBean.T_NOMBRETABLA + "." +FacFacturacionProgramadaBean.C_IDINSTITUCION+" = FAC_SERIEFACTURACION." + FacSerieFacturacionBean.C_IDINSTITUCION +
-   							" AND " + FacFacturacionProgramadaBean.T_NOMBRETABLA + "." +FacFacturacionProgramadaBean.C_IDSERIEFACTURACION+" =  FAC_SERIEFACTURACION." + FacSerieFacturacionBean.C_IDSERIEFACTURACION +							
-   							"  AND NOT EXISTS (SELECT 1 " +
-						         " FROM FAC_FACTURACIONPROGRAMADA PREVIA " +
-						         " WHERE PREVIA.IDINSTITUCION = " + idInstitucion +
-						           " AND PREVIA.IDSERIEFACTURACION = FAC_SERIEFACTURACION." + FacSerieFacturacionBean.C_IDSERIEFACTURACIONPREVIA +
-						           " AND PREVIA.VISIBLE = 'S' "+
-						           " AND PREVIA.IDESTADOCONFIRMACION <> 3)	"+
-						           " AND ROWNUM = 1 ";
+							" AND " + FacFacturacionProgramadaBean.T_NOMBRETABLA + "." + FacFacturacionProgramadaBean.C_FECHAPREVISTACONFIRM + " IS NOT NULL " +
+							" AND " + FacFacturacionProgramadaBean.T_NOMBRETABLA + "." + FacFacturacionProgramadaBean.C_FECHAPREVISTACONFIRM + " <= SYSDATE " +
+							" AND " + FacFacturacionProgramadaBean.T_NOMBRETABLA + "." + FacFacturacionProgramadaBean.C_FECHAREALGENERACION + " IS NOT NULL " +
+							" AND " + FacFacturacionProgramadaBean.T_NOMBRETABLA + "." + FacFacturacionProgramadaBean.C_VISIBLE + " = 'S' " +
+							" AND " + FacFacturacionProgramadaBean.T_NOMBRETABLA + "." + FacFacturacionProgramadaBean.C_IDESTADOCONFIRMACION + " IN (" + FacEstadoConfirmFactBean.GENERADA + ", " + FacEstadoConfirmFactBean.CONFIRM_PROGRAMADA + ") " +
+   							" AND " + FacFacturacionProgramadaBean.T_NOMBRETABLA + "." + FacFacturacionProgramadaBean.C_IDINSTITUCION + " = " + FacSerieFacturacionBean.T_NOMBRETABLA + "." + FacSerieFacturacionBean.C_IDINSTITUCION +
+   							" AND " + FacFacturacionProgramadaBean.T_NOMBRETABLA + "." + FacFacturacionProgramadaBean.C_IDSERIEFACTURACION + " = " + FacSerieFacturacionBean.T_NOMBRETABLA + "." + FacSerieFacturacionBean.C_IDSERIEFACTURACION +							
+   							" AND NOT EXISTS (SELECT 1 " +
+						         " FROM " + FacFacturacionProgramadaBean.T_NOMBRETABLA + " PREVIA " +
+						         " WHERE PREVIA." + FacFacturacionProgramadaBean.C_IDINSTITUCION + " = " + idInstitucion +
+						           " AND PREVIA." + FacFacturacionProgramadaBean.C_IDSERIEFACTURACION + " = " + FacSerieFacturacionBean.T_NOMBRETABLA + "." + FacSerieFacturacionBean.C_IDSERIEFACTURACIONPREVIA +
+						           " AND PREVIA." + FacFacturacionProgramadaBean.C_VISIBLE + " = 'S' " +
+						           " AND PREVIA." + FacFacturacionProgramadaBean.C_IDESTADOCONFIRMACION + " <> " + FacEstadoConfirmFactBean.CONFIRM_FINALIZADA + ") ";
 			String[] orden = {FacFacturacionProgramadaBean.C_FECHAPREVISTACONFIRM};
 			Vector<?> vDatos = factAdm.selectDatosFacturacionBean(sWhere, codigos, orden);
 			
@@ -246,15 +245,16 @@ public class Facturacion {
 				nombreFichero = "LOG_FAC_CONFIRMACION_" + beanFacturacionProgramada.getIdSerieFacturacion() + "_" + beanFacturacionProgramada.getIdProgramacion() + ".log.xls"; 
 				log = new SIGALogging(pathFichero2 + sBarra2 + beanFacturacionProgramada.getIdInstitucion() + sBarra2 + nombreFichero);
 				try {
-					this.confirmarProgramacionFactura(beanFacturacionProgramada, request, false, log, true, true, null);	
+					this.confirmarProgramacionFactura(beanFacturacionProgramada, request, false, log, true, true, null);
+					
 				} catch (ClsExceptions e) {
 					ClsLogging.writeFileLogError("@@@ Error controlado al confirmar facturas (Proceso automático):" + e.getMsg(), e, 3);
+					
 				} catch (Exception e) {
 					ClsLogging.writeFileLogError("@@@ Error al confirmar facturas (Proceso automático) Programación:", e, 3);
 				}
 				
 				vDatos = factAdm.selectDatosFacturacionBean(sWhere, codigos, orden);
-				
 		    }// del WHILE
 
 		} catch (Exception e) {
@@ -526,6 +526,7 @@ public class Facturacion {
      * - Productos y Servicios > Solicitudes > Compra/Subscripción (facturacion rapida)
      * - Productos y Servicios > Gestión Solicitudes (facturacion rapida)
      * - Certificados > Gestión de solicitudes (facturacion rapida)
+     * - Confirmación automática de facturacion programada (SIGASvlProcesoFacturacion)
      * 
      * @param beanP
      * @param req
@@ -538,7 +539,7 @@ public class Facturacion {
      * @throws SIGAException
      */
     public void confirmarProgramacionFactura(FacFacturacionProgramadaBean beanP, HttpServletRequest req, boolean archivarFacturacion, SIGALogging log, boolean isTransacionPesada, boolean generarPagosBanco, UserTransaction tx) throws ClsExceptions, SIGAException {
-    	boolean bTransaccionInterna = tx == null;
+    	boolean bTransaccionInterna = (tx == null);
     	boolean isFacturadoOk = true;
     	String msjAviso = null; 
     	try {
@@ -591,21 +592,19 @@ public class Facturacion {
     		String [] camposFactura = {FacFacturacionProgramadaBean.C_FECHACONFIRMACION, FacFacturacionProgramadaBean.C_ARCHIVARFACT,FacFacturacionProgramadaBean.C_IDESTADOCONFIRMACION,FacFacturacionProgramadaBean.C_LOGERROR};
 
     		try {
-
-    			//////////// TRANSACCION ////////////////
+    			//////////// INICIO TRANSACCION ////////////////
     			if (Status.STATUS_NO_TRANSACTION == tx.getStatus())
     				tx.begin();
     			
-    			//////////// TRANSACCION ////////////////
-    			
     			// Lo primero que se hace es poner la facturacion en estado EJECUTANDO CONFIRMACION
     			UtilidadesHash.set(hashNew, FacFacturacionProgramadaBean.C_IDESTADOCONFIRMACION, FacEstadoConfirmFactBean.EJECUTANDO_CONFIRMACION);
-    			facadm.updateDirect(hashNew, claves, camposFactura);
-    			
+    			facadm.updateDirect(hashNew, claves, camposFactura);    			
     			tx.commit();
+    			//////////// FIN TRANSACCION ////////////////
 			
     			ClsLogging.writeFileLog("### Procesando CONFIRMACION: "+idProgramacion ,7);
 			
+    			//////////// INICIO TRANSACCION ////////////////
 				tx.begin();
 
     			//Se genera numero de factura definitivo
@@ -614,26 +613,26 @@ public class Facturacion {
     			param_in_confirmacion[1] = idSerieFacturacion.toString();
     			param_in_confirmacion[2] = idProgramacion.toString();
     			param_in_confirmacion[3] = usuMod;
-
     			String resultadoConfirmar[] = new String[2];
+    			
     			resultadoConfirmar = ClsMngBBDD.callPLProcedure("{call PKG_SIGA_FACTURACION.CONFIRMACIONFACTURACION(?,?,?,?,?,?)}", 2, param_in_confirmacion);
     			String codretorno = resultadoConfirmar[0];
+    			
     			if (codretorno.equals("-33")){
     				throw new SIGAException ("messages.facturacion.confirmar.contadorRepetido");
     			}
     			if (!codretorno.equals("0")){
     				throw new ClsExceptions ("Error al generar números de facturación: "+resultadoConfirmar[1]);
     			}
-    			// Se envían a banco para su cobro
-    			Object[] param_in_banco = new Object[11];
-    			param_in_banco[0] = beanP.getIdInstitucion().toString();
-    			param_in_banco[1] = idSerieFacturacion.toString();
-    			param_in_banco[2] = idProgramacion.toString();
-    			////////////////////////////////////////////////
 
     			// RGG 05/05/2009 Cambio (solo se generan los pagos por banco cuando se indica por parámetro)
     			if (generarPagosBanco) {
-	    			    
+	    		
+    				// Se envían a banco para su cobro
+        			Object[] param_in_banco = new Object[11];
+        			param_in_banco[0] = beanP.getIdInstitucion().toString();
+        			param_in_banco[1] = idSerieFacturacion.toString();
+        			param_in_banco[2] = idProgramacion.toString();
 	    			param_in_banco[3] = "";
 	    			param_in_banco[4] = "";
 	    			param_in_banco[5] = "";
@@ -645,52 +644,51 @@ public class Facturacion {
 	
 	    			String resultado[] = new String[3];
 	    			resultado = ClsMngBBDD.callPLProcedure("{call PKG_SIGA_CARGOS.PRESENTACION(?,?,?,?,?,?,?,?,?,?,?,?,?,?)}", 3, param_in_banco);
+	    			
 	    			codretorno = resultado[1];
 	    			if (!codretorno.equals("0")){
 	    				throw new ClsExceptions ("Error al generar disquetes bancarios: " + resultado[2]);
 	    			}
     			}
     			
-    			//AÑADIMOS C_IDESTADOCONFIRMACION(CONFIRM_FINALIZADA),C_FECHACONFIRMACION(current),C_ARCHIVARFACT(0 ó 1)};
     			UtilidadesHash.set(hashNew, FacFacturacionProgramadaBean.C_IDESTADOCONFIRMACION, FacEstadoConfirmFactBean.CONFIRM_FINALIZADA);
     			UtilidadesHash.set(hashNew,FacFacturacionProgramadaBean.C_LOGERROR,"");
     			facadm.updateDirect(hashNew, claves, camposFactura);
-
-    			//////////// TRANSACCION ////////////////
     			tx.commit();
-    			//////////// TRANSACCION ////////////////
+    			//////////// FIN TRANSACCION ////////////////
+    			
     			isFacturadoOk = true;
     			ClsLogging.writeFileLog("CONFIRMAR Y PRESENTAR OK ",10);
 
-    		} catch (Exception ee) {
+    		} catch (Exception e) {    			
+				try { // Tratamiento rollback
+					if (Status.STATUS_ACTIVE  == tx.getStatus()){
+						tx.rollback();
+					}
+				} catch (Exception e2) {}	    			
 
-    			//////////// TRANSACCION ////////////////
-    			tx.rollback();
-    			//////////// TRANSACCION ////////////////
-
-    			if(ee instanceof SIGAException) {
-    				SIGAException e2=(SIGAException)ee;
+    			if (e instanceof SIGAException) {
+    				SIGAException e2 = (SIGAException) e;
     				ClsLogging.writeFileLog("ERROR AL CONFIRMAR Y PRESENTAR: "+UtilidadesString.getMensajeIdioma(this.usrbean.getLanguage(),e2.getLiteral()),10);
     				log.writeLogFactura("CONFIRMACION","N/A","N/A","Error en proceso de confirmación: "+UtilidadesString.getMensajeIdioma(this.usrbean.getLanguage(),e2.getLiteral()));
+    				
     			} else {
-    				ClsLogging.writeFileLog("ERROR AL CONFIRMAR Y PRESENTAR: "+ee.toString(),10);
-    				log.writeLogFactura("CONFIRMACION","N/A","N/A","Error en proceso de confirmación: "+ee.toString());
+    				ClsLogging.writeFileLog("ERROR AL CONFIRMAR Y PRESENTAR: " + e.toString(),10);
+    				log.writeLogFactura("CONFIRMACION","N/A","N/A","Error en proceso de confirmación: "+ e.toString());
     			}
 
-    			//----- cambio de estado confirmacion a FINALIZADA CON ERRORES -------//
-    			UserTransaction tx2 = this.usrbean.getTransaction();
-    			tx2.begin();
-
+    			//////////// INICIO TRANSACCION ////////////////
+    			tx.begin();
     			UtilidadesHash.set(hashNew, FacFacturacionProgramadaBean.C_IDESTADOCONFIRMACION, FacEstadoConfirmFactBean.ERROR_CONFIRMACION);
     			UtilidadesHash.set(hashNew, FacFacturacionProgramadaBean.C_FECHACONFIRMACION, "");
     			UtilidadesHash.set(hashNew,FacFacturacionProgramadaBean.C_LOGERROR,nombreFichero);
     			facadm.updateDirect(hashNew, claves, camposFactura);
-
-    			tx2.commit();
+    			tx.commit();
+    			//////////// FIN TRANSACCION ////////////////
 
     			ClsLogging.writeFileLog("CAMBIA ESTADO A FINALIZADA ERRORES.",10);
     			isFacturadoOk =false;
-    			throw new ClsExceptions("Error al confirmar facturacion rápida. " + ee.toString());
+    			throw new ClsExceptions("Error al confirmar facturacion rápida. " + e.toString());
     		}
 
 
@@ -698,42 +696,29 @@ public class Facturacion {
     		
     		boolean isGenerarPdf = beanP.getGenerarPDF() != null && beanP.getGenerarPDF().trim().equals("1");
     		boolean isGenerarEnvio = beanP.getEnvio() != null && beanP.getEnvio().trim().equals("1") && (beanP.getRealizarEnvio()==null || beanP.getRealizarEnvio().toString().equalsIgnoreCase("1"));
-    		//aqui
     		if(isGenerarPdf){
     			msjAviso = generarPdfEnvioProgramacionFactura(beanP,req,log,idSerieFacturacion, idProgramacion, claves, hashNew, isGenerarEnvio);
     		}
 			
-    	} catch (ClsExceptions e) {
-    		try { 
-    			if(tx != null)
-    				tx.rollback(); 
-    		} catch (Exception e3) {
-
-    		}
-    		if(!isFacturadoOk){
-    			throw new ClsExceptions(e,"messages.facturacion.confirmacion.error");
-    		}else{
-    			throw e;
-    		}
-
-    	} 
-    	catch (SIGAException e) {
-    		try { 
-    			if(tx!=null)
-    				tx.rollback(); 
-    		} catch (Exception e3) {
-
-    		}
-    		throw e;
-    	} 
-    	catch (Exception e) {
-    		try { 
-    			if(tx!=null)
-    				tx.rollback(); 
-    		} 
-    		catch (Exception e3) {
-
-    		}
+    	} catch (Exception e) {
+			try { // Tratamiento rollback
+				if (Status.STATUS_ACTIVE  == tx.getStatus()){
+					tx.rollback();
+				}
+			} catch (Exception e2) {}	
+			
+			if (e instanceof SIGAException) {
+				throw (SIGAException) e;
+				
+			} else if (e instanceof ClsExceptions) {
+	    		if(!isFacturadoOk){
+	    			throw new ClsExceptions(e,"messages.facturacion.confirmacion.error");
+	    		}else{
+	    			throw (ClsExceptions) e;
+	    		}				
+				
+			}
+			
     		throw new SIGAException("Error al confirmar facturacion rápida.");
     	}
 

@@ -2309,10 +2309,10 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 		    PysCompraBean beanCompra = admSolicitudCertificados.obtenerCompra(idInstitucion, idSolicitudCertificado);
 		    
 		    // Compruebo SI esta facturada la compra
-		    if (beanCompra.getIdFactura()!=null && !beanCompra.getIdFactura().trim().equals("")) {
-		    	// YA ESTÁ FACTURADA
+		    if (beanCompra.getIdFactura()!=null && !beanCompra.getIdFactura().trim().equals("")) { // YA ESTÁ FACTURADA		    	
 		    	// LIBERAMOS EL BLOQUEO EN LAS TABLAS Y LA TRANSACCIÓN
 		    	tx.rollback();
+		    	
 		    	// Comprobamos si no esta confirmada la facturacion, la confirmamos	    		
 		    	FacFacturacionProgramadaBean b = admFacturacionProgramada.getFacturacionProgramadaDesdeCompra(beanCompra);
 		    	if (b != null) {
@@ -2321,23 +2321,14 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 					    try {
 					    	b.setGenerarPDF("1");// Si se entramos por facturacion rapida se obliga siempre al generarPDF
 					        facturacion.confirmarProgramacionFactura(b, request, true, null, false, true, null);
-						} 
-					    catch (SIGAException se) {
-							if (Status.STATUS_ACTIVE  == tx.getStatus()){
-								try {tx.rollback();}catch (Exception e) {}
-							}
+					        
+						} catch (SIGAException se) {
 							throw se;
-					    }
-					    catch (ClsExceptions ce) {
-							if (Status.STATUS_ACTIVE  == tx.getStatus()){
-								try {tx.rollback();}catch (Exception e) {}
-							}
+							
+					    } catch (ClsExceptions ce) {
 							throw ce;
-					    }
-						catch (Exception e) {
-							if (Status.STATUS_ACTIVE  == tx.getStatus()){
-								try {tx.rollback();}catch (Exception e1) {}
-							}
+							
+					    } catch (Exception e) {
 							mensaje="messages.facturacionRapida.errorConfirmacion";
 							return exitoRefresco(mensaje,request);
 					    }
@@ -2346,13 +2337,12 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 
 		    	Hashtable<String,Object> hFactura = new Hashtable<String,Object>();
 	        	UtilidadesHash.set(hFactura,FacFacturaBean.C_IDINSTITUCION, beanCompra.getIdInstitucion());
-	        	UtilidadesHash.set(hFactura,FacFacturaBean.C_IDFACTURA, beanCompra.getIdFactura());
-	        	
-	        	boolean correcto=true;
+	        	UtilidadesHash.set(hFactura,FacFacturaBean.C_IDFACTURA, beanCompra.getIdFactura());	        	
 	        	Vector vFactura = admFactura.selectByPK(hFactura);
 	        	
-	        	if (vFactura!=null && vFactura.size() == 1) {
+	        	if (vFactura!=null && vFactura.size()==1) {
 	        		FacFacturaBean beanFactura = (FacFacturaBean) vFactura.get(0);
+	        		
 	        		String idPersona = beanFactura.getIdPersona().toString();	    			
 	    			String lenguaje = admCliente.getLenguaje(beanFactura.getIdInstitucion().toString(),idPersona); // Obtenemos el lenguaje del cliente  
 	        		String nombreFactura="";
@@ -2375,7 +2365,6 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 						request.setAttribute("nombreFichero", filePDF.getName());
 						request.setAttribute("rutaFichero", filePDF.getAbsolutePath());
 						request.setAttribute("borrarFichero", "true");
-						correcto = true;
 					}
 		  			
 					if (!filePDF.exists()){
@@ -2404,61 +2393,58 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 			}
 			
 			FacFacturacionProgramadaBean programacion = null;			    
-			    // PASO 0: ANTES DE FACTURAR APUNTO EL IMPORTE TOTAL COMO IMPORTE ANTICIPADO
-			    double importe = (beanCompra.getCantidad().intValue() * beanCompra.getImporteUnitario().doubleValue()) * (1+(beanCompra.getIva().doubleValue()/100));
-			    beanCompra.setImporteAnticipado(new Double(importe));
-			    if (!admCompra.updateDirect(beanCompra)) {
+		    // PASO 0: ANTES DE FACTURAR APUNTO EL IMPORTE TOTAL COMO IMPORTE ANTICIPADO
+		    double importe = (beanCompra.getCantidad().intValue() * beanCompra.getImporteUnitario().doubleValue()) * (1+(beanCompra.getIva().doubleValue()/100));
+		    beanCompra.setImporteAnticipado(new Double(importe));
+		    if (!admCompra.updateDirect(beanCompra)) {
+		    	// LIBERAMOS EL BLOQUEO DE LAS TABLAS Y LA TRANSACCIÓN
+		        tx.rollback();
+		        throw new ClsExceptions("Error al actualizar el importe anticipado: "+admCompra.getError());
+		    }
+		    
+		    // PASO 1: FACTURACION RAPIDA (GENERACION)
+		    Vector<PysCompraBean> vCompras = new Vector<PysCompraBean>();
+		    vCompras.add(beanCompra);
+		    
+		    // Obtengo la peticion de compra
+		    Hashtable<String, Object> hPeticionCompraSuscripcion = new Hashtable<String, Object>(); 
+		    hPeticionCompraSuscripcion.put("IDINSTITUCION", beanCompra.getIdInstitucion());
+		    hPeticionCompraSuscripcion.put("IDPETICION", beanCompra.getIdPeticion());
+		    
+		    Vector<?> vPeticionCompraSuscripcion = admPeticionCompraSuscripcion.selectByPK(hPeticionCompraSuscripcion);		    
+		    PysPeticionCompraSuscripcionBean beanPeticionCompraSuscripcion = null;
+		    if (vPeticionCompraSuscripcion!=null && vPeticionCompraSuscripcion.size()>0) {
+		    	beanPeticionCompraSuscripcion = (PysPeticionCompraSuscripcionBean) vPeticionCompraSuscripcion.get(0);
+		    }				    
+		    	        	
+        	// Obtiene la serie candidata
+		    FacSerieFacturacionBean beanSerieCandidata = null;
+        	if (idSerieSeleccionada==null || idSerieSeleccionada.equals("")) {
+			    Vector<?> series =  admSerieFacturacion.obtenerSeriesAdecuadas(vCompras);
+			    if (series==null || series.size()!=1) {
 			    	// LIBERAMOS EL BLOQUEO DE LAS TABLAS Y LA TRANSACCIÓN
 			        tx.rollback();
-			        throw new ClsExceptions("Error al actualizar el importe anticipado: "+admCompra.getError());
+			        throw new SIGAException("messages.facturacionRapidaCompra.noSerieAdecuada");
+			        
+			    } else if (series.size()==1) {
+			    	beanSerieCandidata = (FacSerieFacturacionBean)series.get(0);
 			    }
 			    
-			    // PASO 1: FACTURACION RAPIDA (GENERACION)
-			    Vector<PysCompraBean> vCompras = new Vector<PysCompraBean>();
-			    vCompras.add(beanCompra);
-			    
-			    // Obtengo la peticion de compra
-			    Hashtable<String, Object> hPeticionCompraSuscripcion = new Hashtable<String, Object>(); 
-			    hPeticionCompraSuscripcion.put("IDINSTITUCION", beanCompra.getIdInstitucion());
-			    hPeticionCompraSuscripcion.put("IDPETICION", beanCompra.getIdPeticion());
-			    
-			    Vector<?> vPeticionCompraSuscripcion = admPeticionCompraSuscripcion.selectByPK(hPeticionCompraSuscripcion);		    
-			    PysPeticionCompraSuscripcionBean beanPeticionCompraSuscripcion = null;
-			    if (vPeticionCompraSuscripcion!=null && vPeticionCompraSuscripcion.size()>0) {
-			    	beanPeticionCompraSuscripcion = (PysPeticionCompraSuscripcionBean) vPeticionCompraSuscripcion.get(0);
-			    }				    
-			    	        	
-	        	// Obtiene la serie candidata
-			    FacSerieFacturacionBean beanSerieCandidata = null;
-	        	if (idSerieSeleccionada==null || idSerieSeleccionada.equals("")) {
-				    Vector<?> series =  admSerieFacturacion.obtenerSeriesAdecuadas(vCompras);
-				    if (series==null || series.size()!=1) {
-				    	// LIBERAMOS EL BLOQUEO DE LAS TABLAS Y LA TRANSACCIÓN
-				        tx.rollback();
-				        throw new SIGAException("messages.facturacionRapidaCompra.noSerieAdecuada");
-				        
-				    } else if (series.size()==1) {
-				    	beanSerieCandidata = (FacSerieFacturacionBean)series.get(0);
-				    }
-				    
-		        } else { // Se ha seleccionado una serie			        			           
-			        Hashtable<String,String> hSerieFacturacion = new Hashtable<String,String>();
-			        hSerieFacturacion.put("IDINSTITUCION", idInstitucion);
-			        hSerieFacturacion.put("IDSERIEFACTURACION", idSerieSeleccionada);
-			        
-		            Vector<?> vSerieFacturacion = admSerieFacturacion.selectByPK(hSerieFacturacion);
-		            if (vSerieFacturacion!=null && vSerieFacturacion.size()>0) {
-		            	beanSerieCandidata = (FacSerieFacturacionBean)vSerieFacturacion.get(0);
-		            }
-		        }			    
-			    
-	        	programacion = facturacion.procesarFacturacionRapidaCompras(beanPeticionCompraSuscripcion, vCompras, beanSerieCandidata);
+	        } else { // Se ha seleccionado una serie			        			           
+		        Hashtable<String,String> hSerieFacturacion = new Hashtable<String,String>();
+		        hSerieFacturacion.put("IDINSTITUCION", idInstitucion);
+		        hSerieFacturacion.put("IDSERIEFACTURACION", idSerieSeleccionada);
 		        
-	        	// PASO 3: CONFIRMACION RAPIDA (en este caso la transacción se gestiona dentro la transaccion)
-			    facturacion.confirmarProgramacionFactura(programacion, request, true, null, false, true, tx);
-			    
-			    if (Status.STATUS_ACTIVE  == tx.getStatus())
-			    	tx.commit();	    
+	            Vector<?> vSerieFacturacion = admSerieFacturacion.selectByPK(hSerieFacturacion);
+	            if (vSerieFacturacion!=null && vSerieFacturacion.size()>0) {
+	            	beanSerieCandidata = (FacSerieFacturacionBean)vSerieFacturacion.get(0);
+	            }
+	        }			    
+		    
+        	programacion = facturacion.procesarFacturacionRapidaCompras(beanPeticionCompraSuscripcion, vCompras, beanSerieCandidata);
+	        
+        	// PASO 3: CONFIRMACION RAPIDA (en este caso la transacción se gestiona dentro la transaccion)
+		    facturacion.confirmarProgramacionFactura(programacion, request, true, null, false, true, tx);    
 			
 			/*********************pdm***********/
 			 if (programacion.getGenerarPDF().trim().equals("1")) {
@@ -2551,15 +2537,15 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 					}
 				}
 				
-			} else{
+			} else {
 			 	throw new SIGAException("No se ha generado el PDF");
 			}
 		
 		} catch (Exception e) { 
-			if((e instanceof SIGAException)||(e instanceof ClsExceptions))
-					throwExcp (e.getMessage(),new String[] {"modulo.certificados"},e,null); 
-				else
-					throwExcp("messages.general.error",new String[] {"modulo.certificados"},e,null); 
+			if (e instanceof SIGAException || e instanceof ClsExceptions)
+				throwExcp (e.getMessage(),new String[] {"modulo.certificados"},e,null); 
+			else
+				throwExcp("messages.general.error",new String[] {"modulo.certificados"},e,null); 
 		}
 	    
 		return salida;
