@@ -165,7 +165,6 @@ public class Facturacion {
 		    	FacFacturacionProgramadaBean beanFacturacionProgramada = (FacFacturacionProgramadaBean) vDatos.get(i);
 		    	
 		    	try {
-	
 					// Pasamos a estado ejecutando
 		    		beanFacturacionProgramada.setIdEstadoConfirmacion(FacEstadoConfirmFactBean.EJECUTANDO_GENERACION); //Ponemos la factura a estado EJECUTANDO GENERACION
 		    		
@@ -179,9 +178,11 @@ public class Facturacion {
 					ClsLogging.writeFileLog("### PROCESADO facturación AUTOMATICA " ,7);
 		    		
 		    	} catch (Exception e) {
-		    		if (tx!=null) {
-						tx.rollback();
-					}
+					try { // Tratamiento rollback
+						if (Status.STATUS_ACTIVE  == tx.getStatus()){
+							tx.rollback();
+						}
+					} catch (Exception e2) {}		
 		    		ClsLogging.writeFileLogError("### Error procesando facturación AUTOMATICA " ,e,3);
 		    	}
 		    }
@@ -1968,24 +1969,24 @@ public class Facturacion {
         	param_in[5] = this.usrbean.getUserName();
         	param_in[6] = "0"; // IdPrevision	
         	
-        	try{
+        	try {
         		ClsLogging.writeFileLog("### Inicio GENERACION (Serie:" + idSerieFacturacion + "; IdProgramacion:" + idProgramacion + ")",7);  
         		tx.begin();
         		resultado = ClsMngBBDD.callPLProcedure("{call PKG_SIGA_FACTURACION.GENERACIONFACTURACION(?,?,?,?,?,?,?,?,?)}", 2, param_in);
 
-        	} catch (Exception ep) {
-				tx.rollback();
+        	} catch (Exception e) {
+        		ClsLogging.writeFileLog("### Fin GENERACION (Serie:" + idSerieFacturacion + "; IdProgramacion:" + idProgramacion + "), excepcion " + e.getMessage(), 7);	     		
 			    throw new ClsExceptions(UtilidadesString.getMensajeIdioma(this.usrbean.getLanguage(),"facturacion.nuevaPrevisionFacturacion.mensaje.procesoPlSQLERROR") + 
-			    		"(Serie:" + idSerieFacturacion + "; IdProgramacion:" + idProgramacion + "; CodigoError:" + ep.getMessage() + ")");
+			    		"(Serie:" + idSerieFacturacion + "; IdProgramacion:" + idProgramacion + "; CodigoError:" + e.getMessage() + ")");
 			}
 
 			String codretorno = resultado[0];
 			
 			if (!codretorno.equals("0")) {				
-				tx.rollback();
 				ClsLogging.writeFileLog("### Fin GENERACION (Serie:" + idSerieFacturacion + "; IdProgramacion:" + idProgramacion + "), finalizada con errores", 7);				
 				throw new ClsExceptions(UtilidadesString.getMensajeIdioma(this.usrbean.getLanguage(),"facturacion.nuevaPrevisionFacturacion.mensaje.generacionFicheroERROR") + 
 			    		"(Serie:" + idSerieFacturacion + "; IdProgramacion:" + idProgramacion + "; CodigoError:" + codretorno + ")");
+				
 			} else {
 				ClsLogging.writeFileLog("### Fin GENERACION (Serie:" + idSerieFacturacion + "; IdProgramacion:" + idProgramacion + "), finalizada correctamente",7);
 				
@@ -2024,7 +2025,13 @@ public class Facturacion {
 
 			}
 			
-		}catch (Exception e) {
+		} catch (Exception e) {
+			try { // Tratamiento rollback
+				if (Status.STATUS_ACTIVE  == tx.getStatus()){
+					tx.rollback();
+				}
+			} catch (Exception e2) {}		
+			
 			//le cambio el estado a error
 			try{ 
 				controlarEstadoErrorGeneracion(tx,admFacturacionProgramada,claves,hashEstado,nombreFichero, FacEstadoConfirmFactBean.ERROR_GENERACION);	
@@ -2032,6 +2039,11 @@ public class Facturacion {
 			    		"(Serie:" + idSerieFacturacion + "; IdProgramacion:" + idProgramacion + "; CodigoError:" + e.getMessage() + ")");
 
 			} catch(Exception e2){
+				try { // Tratamiento rollback
+					if (Status.STATUS_ACTIVE  == tx.getStatus()){
+						tx.rollback();
+					}
+				} catch (Exception e3) {}						
 				throw new ClsExceptions(UtilidadesString.getMensajeIdioma(this.usrbean.getLanguage(),"facturacion.nuevaPrevisionFacturacion.mensaje.generacionFicheroERROR") +
 						"(Serie:" + idSerieFacturacion + "; IdProgramacion:" + idProgramacion + "; CodigoError:" + e2.getMessage() + ")");
 			}	
@@ -2123,8 +2135,8 @@ public class Facturacion {
 			}
 			
 			//COMPONEMOS LA RUTA DONDE SE GUARDARAN LOS LOG DE ERROR
-		    ReadProperties p= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
-			String pathFichero 		= p.returnProperty("facturacion.directorioFisicoLogProgramacion");
+		    ReadProperties p = new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+			String pathFichero = p.returnProperty("facturacion.directorioFisicoLogProgramacion");
     		String sBarra = "";
     		if (pathFichero.indexOf("/") > -1) sBarra = "/"; 
     		if (pathFichero.indexOf("\\") > -1) sBarra = "\\"; 
