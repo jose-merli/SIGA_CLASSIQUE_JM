@@ -1938,10 +1938,9 @@ public class Facturacion {
 	 * @param idInstitucion
 	 * @param idSerieFacturacion
 	 * @param idProgramacion
-	 * @throws SIGAException
-	 * @throws ClsExceptions
+	 * @throws Exception
 	 */
-	private void generandoFacturacion(String idInstitucion, String idSerieFacturacion, String idProgramacion) throws SIGAException, ClsExceptions {
+	private void generandoFacturacion(String idInstitucion, String idSerieFacturacion, String idProgramacion) throws Exception {
 		
 		ClsLogging.writeFileLog("### Inicio generarFicheroPrevisiones institución: " + idInstitucion, 7);
 		
@@ -2002,27 +2001,32 @@ public class Facturacion {
 				
 				
 				/****** INICIAMOS LA GENERACION DEL INFORME *******/
-				ClsLogging.writeFileLog("### Inicio datosInforme GENERACION",7);
-				String nameFile = generarInformeGeneracion(idInstitucion, idSerieFacturacion, idProgramacion);
-				// Si la previsión está vacía
-				if (nameFile == null || nameFile.length() == 0) {
-					ClsLogging.writeFileLog("### Inicio creación fichero log GENERACION sin datos", 7);
-					controlarEstadoErrorGeneracion(tx, admFacturacionProgramada, claves, hashEstado, nombreFichero, FacEstadoConfirmFactBean.GENERADA);
-					ClsLogging.writeFileLog("### Fin creación fichero log GENERACION sin datos", 7);
-
-				} else {
-					ClsLogging.writeFileLog("### GENERACION finalizada correctamente con datos ", 7);
-					String[] camposInforme = {FacFacturacionProgramadaBean.C_NOMBREFICHERO, FacFacturacionProgramadaBean.C_LOGERROR};
-					UtilidadesHash.set(hashEstado, FacFacturacionProgramadaBean.C_NOMBREFICHERO, nameFile);
-					UtilidadesHash.setForCompare(hashEstado, FacFacturacionProgramadaBean.C_LOGERROR, "");
-
-					tx.begin();
-					if (!admFacturacionProgramada.updateDirect(hashEstado, claves, camposInforme)) {
-						throw new ClsExceptions("### Error al actualizar el estado de la GENERACION.");
+				try {
+					ClsLogging.writeFileLog("### Inicio datosInforme GENERACION",7);
+					String nameFile = generarInformeGeneracion(idInstitucion, idSerieFacturacion, idProgramacion);
+					// Si la previsión está vacía
+					if (nameFile == null || nameFile.length() == 0) {
+						ClsLogging.writeFileLog("### Inicio creación fichero log GENERACION sin datos", 7);
+						controlarEstadoErrorGeneracion(tx, admFacturacionProgramada, claves, hashEstado, nombreFichero, FacEstadoConfirmFactBean.GENERADA);
+						ClsLogging.writeFileLog("### Fin creación fichero log GENERACION sin datos", 7);
+	
+					} else {
+						ClsLogging.writeFileLog("### GENERACION finalizada correctamente con datos ", 7);
+						String[] camposInforme = {FacFacturacionProgramadaBean.C_NOMBREFICHERO, FacFacturacionProgramadaBean.C_LOGERROR};
+						UtilidadesHash.set(hashEstado, FacFacturacionProgramadaBean.C_NOMBREFICHERO, nameFile);
+						UtilidadesHash.setForCompare(hashEstado, FacFacturacionProgramadaBean.C_LOGERROR, "");
+	
+						tx.begin();
+						if (!admFacturacionProgramada.updateDirect(hashEstado, claves, camposInforme)) {
+							throw new ClsExceptions("### Error al actualizar el nombre del fichero de la GENERACION.");
+						}
+						tx.commit();
 					}
-					tx.commit();
-				}
-
+	        	} catch (Exception e) {
+	        		ClsLogging.writeFileLog("### Excepcion " + e.getMessage(), 7);	     		
+	        		throw new ClsExceptions(UtilidadesString.getMensajeIdioma(this.usrbean.getLanguage(),"facturacion.nuevaPrevisionFacturacion.mensaje.generacionFicheroERROR") +
+	    					"(Serie:" + idSerieFacturacion + "; IdProgramacion:" + idProgramacion + "; CodigoError:" + e.getMessage() + ")");
+				}					
 			}
 			
 		} catch (Exception e) {
@@ -2032,21 +2036,19 @@ public class Facturacion {
 				}
 			} catch (Exception e2) {}		
 			
-			//le cambio el estado a error
-			try{ 
+			// Le cambio el estado a error
+			try { 
 				controlarEstadoErrorGeneracion(tx,admFacturacionProgramada,claves,hashEstado,nombreFichero, FacEstadoConfirmFactBean.ERROR_GENERACION);	
-			    throw new ClsExceptions(UtilidadesString.getMensajeIdioma(this.usrbean.getLanguage(),"facturacion.nuevaPrevisionFacturacion.mensaje.generacionFicheroERROR") +
-			    		"(Serie:" + idSerieFacturacion + "; IdProgramacion:" + idProgramacion + "; CodigoError:" + e.getMessage() + ")");
-
+				
 			} catch(Exception e2){
 				try { // Tratamiento rollback
 					if (Status.STATUS_ACTIVE  == tx.getStatus()){
 						tx.rollback();
 					}
 				} catch (Exception e3) {}						
-				throw new ClsExceptions(UtilidadesString.getMensajeIdioma(this.usrbean.getLanguage(),"facturacion.nuevaPrevisionFacturacion.mensaje.generacionFicheroERROR") +
-						"(Serie:" + idSerieFacturacion + "; IdProgramacion:" + idProgramacion + "; CodigoError:" + e2.getMessage() + ")");
-			}	
+			}
+			
+			throw e;			
 		}
 	}
 	
