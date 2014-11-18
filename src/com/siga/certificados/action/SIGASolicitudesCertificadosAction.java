@@ -2445,6 +2445,9 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 	        
         	// PASO 3: CONFIRMACION RAPIDA (en este caso la transacción se gestiona dentro la transaccion)
 		    facturacion.confirmarProgramacionFactura(programacion, request, true, null, false, true, tx);    
+		    
+		    if (Status.STATUS_ACTIVE  == tx.getStatus())
+		    	tx.commit();		    
 			
 			/*********************pdm***********/
 			 if (programacion.getGenerarPDF().trim().equals("1")) {

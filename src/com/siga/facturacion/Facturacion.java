@@ -598,14 +598,17 @@ public class Facturacion {
     			
     			// Lo primero que se hace es poner la facturacion en estado EJECUTANDO CONFIRMACION
     			UtilidadesHash.set(hashNew, FacFacturacionProgramadaBean.C_IDESTADOCONFIRMACION, FacEstadoConfirmFactBean.EJECUTANDO_CONFIRMACION);
-    			facadm.updateDirect(hashNew, claves, camposFactura);    			
-    			tx.commit();
+    			facadm.updateDirect(hashNew, claves, camposFactura);
+    			
+    			if (bTransaccionInterna)
+    				tx.commit();
     			//////////// FIN TRANSACCION ////////////////
 			
     			ClsLogging.writeFileLog("### Procesando CONFIRMACION: "+idProgramacion ,7);
 			
     			//////////// INICIO TRANSACCION ////////////////
-				tx.begin();
+    			if (bTransaccionInterna)
+    				tx.begin();
 
     			//Se genera numero de factura definitivo
     			Object[] param_in_confirmacion = new Object[4];
@@ -654,18 +657,22 @@ public class Facturacion {
     			UtilidadesHash.set(hashNew, FacFacturacionProgramadaBean.C_IDESTADOCONFIRMACION, FacEstadoConfirmFactBean.CONFIRM_FINALIZADA);
     			UtilidadesHash.set(hashNew,FacFacturacionProgramadaBean.C_LOGERROR,"");
     			facadm.updateDirect(hashNew, claves, camposFactura);
-    			tx.commit();
+    			
+    			if (bTransaccionInterna)
+    				tx.commit();
     			//////////// FIN TRANSACCION ////////////////
     			
     			isFacturadoOk = true;
     			ClsLogging.writeFileLog("CONFIRMAR Y PRESENTAR OK ",10);
 
-    		} catch (Exception e) {    			
-				try { // Tratamiento rollback
-					if (Status.STATUS_ACTIVE  == tx.getStatus()){
-						tx.rollback();
-					}
-				} catch (Exception e2) {}	    			
+    		} catch (Exception e) {    		
+    			if (bTransaccionInterna) {
+    				try { // Tratamiento rollback
+    					if (Status.STATUS_ACTIVE  == tx.getStatus()){
+    						tx.rollback();
+    					}
+    				} catch (Exception e2) {}
+    			} 			
 
     			if (e instanceof SIGAException) {
     				SIGAException e2 = (SIGAException) e;
@@ -678,12 +685,14 @@ public class Facturacion {
     			}
 
     			//////////// INICIO TRANSACCION ////////////////
-    			tx.begin();
+    			if (bTransaccionInterna)
+    				tx.begin();
     			UtilidadesHash.set(hashNew, FacFacturacionProgramadaBean.C_IDESTADOCONFIRMACION, FacEstadoConfirmFactBean.ERROR_CONFIRMACION);
     			UtilidadesHash.set(hashNew, FacFacturacionProgramadaBean.C_FECHACONFIRMACION, "");
     			UtilidadesHash.set(hashNew,FacFacturacionProgramadaBean.C_LOGERROR,nombreFichero);
     			facadm.updateDirect(hashNew, claves, camposFactura);
-    			tx.commit();
+    			if (bTransaccionInterna)
+    				tx.commit();
     			//////////// FIN TRANSACCION ////////////////
 
     			ClsLogging.writeFileLog("CAMBIA ESTADO A FINALIZADA ERRORES.",10);
@@ -701,11 +710,13 @@ public class Facturacion {
     		}
 			
     	} catch (Exception e) {
-			try { // Tratamiento rollback
-				if (Status.STATUS_ACTIVE  == tx.getStatus()){
-					tx.rollback();
-				}
-			} catch (Exception e2) {}	
+			if (bTransaccionInterna) {
+				try { // Tratamiento rollback
+					if (Status.STATUS_ACTIVE  == tx.getStatus()){
+						tx.rollback();
+					}
+				} catch (Exception e2) {}
+			}
 			
 			if (e instanceof SIGAException) {
 				throw (SIGAException) e;
