@@ -26,7 +26,6 @@ public class SIGASvlProcesoAutomaticoFacturacion extends SIGAServletAdapter impl
 	private Integer idNotificacion;
 	private long lIntervalo = 1;
 	private String sNombreProceso = "ProcesoAutomaticoFacturacion";
-	private String urlSiga = "";
 
 	/**
 	 * Inicializacion del servidor: se ejecuta cuando se inicia/arranca el servidor
@@ -40,7 +39,7 @@ public class SIGASvlProcesoAutomaticoFacturacion extends SIGAServletAdapter impl
 		ClsLogging.writeFileLogWithoutSession("<<<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>", 3);
 		ClsLogging.writeFileLogWithoutSession(" Arrancando Notificaciones JMX.", 3);
 		ReadProperties properties = new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
-		urlSiga = properties.returnProperty("general.urlSIGA");
+		String urlSiga = properties.returnProperty("general.urlSIGA");
 
 		iniciarTimer();
 		
@@ -93,6 +92,9 @@ public class SIGASvlProcesoAutomaticoFacturacion extends SIGAServletAdapter impl
 		ClsLogging.writeFileLogWithoutSession(" - INVOCANDO...  >>>  Ejecutando Notificación: \"" + sNombreProceso + ".", 3);
 
 		try {
+			ReadProperties properties = new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+			String urlSiga = properties.returnProperty("general.urlSIGA");
+			
 			// invocando al servlet
 			URL url = new URL(urlSiga + "SIGASvlProcesoFacturacion.svrl");
 			url.getContent();
