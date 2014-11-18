@@ -70,7 +70,7 @@
 	String sAbreviatura="";
 	String sDescripcion="";
 	Integer iPlantilla=new Integer(-1);
-	String sPlantilla="";
+	String sPlantilla="",idSeriePrevia="";
 	String idSerieFacturacion="";
 	String enviarFacturas = "";
 	String generarPDF = "";
@@ -84,6 +84,7 @@
 	String parametrosPlantillasMail [] = {"-1",user.getLocation(),"1"};
 	ArrayList plantillaEnviosSeleccionada = new ArrayList();
 	ArrayList plantillaSeleccionada = new ArrayList();
+	ArrayList vSerieSeleccionada = new ArrayList();
 
 	if (datosSerie!=null && datosSerie.size()>0) {
 		FacSerieFacturacionBean beanSerie = (FacSerieFacturacionBean)datosSerie.elementAt(0);
@@ -95,6 +96,10 @@
 		enviarFacturas = beanSerie.getEnvioFactura();
 		generarPDF = beanSerie.getGenerarPDF();
 		observaciones = beanSerie.getObservaciones();
+		if(beanSerie.getIdSerieFacturacionPrevia()!=null){
+			idSeriePrevia = beanSerie.getIdSerieFacturacionPrevia().toString();
+			vSerieSeleccionada.add(idSeriePrevia.toString());				
+		}
 		
 		if (datosPlantilla!=null && datosPlantilla.size()>0) {
 			FacPlantillaFacturacionBean beanPlantilla = (FacPlantillaFacturacionBean)datosPlantilla.elementAt(0);
@@ -131,6 +136,9 @@
 	String parametro[] = new String[1];
 	parametro[0] = user.getLocation();
 	
+	String datoSerie[] = new String[2];
+	datoSerie[0] = idInstitucion;
+	datoSerie[1] = idSerieFacturacion;
 	
 	// Informacion sobre formas de pago automática
 	// Obtener informacion para rellenar en caso de modificacion o consulta
@@ -310,7 +318,7 @@
 								</table>
 								<table border="0">
 									<tr>
-										<td class="labelText" style="text-align:left" >
+										<td class="labelText" style="text-align:left" colspan="4">
 											<siga:Idioma key="facturacion.datosGenerales.literal.generaPDF"/>&nbsp;&nbsp;
 											<% if ((enviarFacturas != null) && (enviarFacturas.equals("1"))) { %>
 													<input type="checkbox"  id="generarPDF"  name="generarPDF" checked disabled>
@@ -332,23 +340,32 @@
 											<siga:Idioma key="envios.plantillas.literal.plantilla"/> 
 										</td>
 										<td>
-											<siga:ComboBD  nombre = "idTipoPlantillaMail" tipo="cmbPlantillaEnvios3" clase="boxCombo" elementoSel="<%=plantillaEnviosSeleccionada%>" ancho="300" obligatorio="false" pestana="true" parametro="<%=parametrosCmbPlantillaEnvios%>" />
+											<siga:ComboBD  nombre = "idTipoPlantillaMail" tipo="cmbPlantillaEnvios3" clase="boxCombo" elementoSel="<%=plantillaEnviosSeleccionada%>" ancho="280" obligatorio="false" pestana="true" parametro="<%=parametrosCmbPlantillaEnvios%>" />
 										</td>									
 									</tr>
-								</table>
-								<table align="center" border="0">
+
 								<tr>
 								    <td class="labelText" width="10%" style="text-align:left" >
 										<siga:Idioma key="facturacion.datosGenerales.literal.observaciones"/>
 									</td>
-									<td colspan="4">
+									<td colspan="3">
 										<%if (!bEditable){%>
-											<html:textarea name="DatosGeneralesForm" onKeyDown="cuenta(this,4000)" onChange="cuenta(this,4000)" styleId="observaciones" property="observaciones" style="width:630px;"  rows="3" onkeydown="cuenta(this,4000);" styleClass="boxConsulta" value="<%=observaciones%>" readonly="true"/>
+											<html:textarea name="DatosGeneralesForm" onKeyDown="cuenta(this,4000)" onChange="cuenta(this,4000)" styleId="observaciones" property="observaciones" style="width:350px;"  rows="3" onkeydown="cuenta(this,4000);" styleClass="boxConsulta" value="<%=observaciones%>" readonly="true"/>
 										<%} else {%>
-											<html:textarea name="DatosGeneralesForm" property="observaciones"  styleId="observaciones"  style="width:630px;"  rows="3" onkeydown="cuenta(this,4000)" onChange="cuenta(this,4000)" styleClass="box" value="<%=observaciones%>" readonly="false"/>
+											<html:textarea name="DatosGeneralesForm" property="observaciones"  styleId="observaciones"  style="width:350px;"  rows="3" onkeydown="cuenta(this,4000)" onChange="cuenta(this,4000)" styleClass="box" value="<%=observaciones%>" readonly="false"/>
 										<%}%>
 									</td>
-								
+									
+									<td id="titulo" class="labelText">
+										Planificar posteriormente a
+									</td>
+									<td>
+										<%if (!bEditable){%>
+											<siga:ComboBD nombre = "idSerieFacturacionPrevia" tipo="cmbSerieFacturacionPrevias" elementoSel ="<%=vSerieSeleccionada%>" clase="boxCombo" ancho="280" parametro="<%=datoSerie%>" readonly="true"/>
+										<%} else { %>
+											<siga:ComboBD nombre = "idSerieFacturacionPrevia" tipo="cmbSerieFacturacionPrevias" elementoSel ="<%=vSerieSeleccionada%>" clase="boxCombo" ancho="280" parametro="<%=datoSerie%>"/>
+										<%}%>									
+									</td>									
 								</tr>
 							</table>
 						</siga:ConjCampos>

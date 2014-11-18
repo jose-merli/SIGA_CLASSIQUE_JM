@@ -2999,18 +2999,6 @@
         <field property = "idSerieFacturacion" depends = "required">
             <arg0 key="facturacion.seriesFacturacion.literal.serieFacturacion"/>
         </field>
-        <field property = "fechaInicialProducto" depends = "required">
-            <arg0 key="facturacion.seriesFacturacion.literal.fechasProducto"/>
-        </field>
-        <field property = "fechaFinalProducto" depends = "required">
-            <arg0 key="facturacion.seriesFacturacion.literal.fechasProducto"/>
-        </field>
-        <field property = "fechaInicialServicio" depends = "required">
-            <arg0 key="facturacion.seriesFacturacion.literal.fechasServicio"/>
-        </field>
-        <field property = "fechaFinalServicio" depends = "required">
-            <arg0 key="facturacion.seriesFacturacion.literal.fechasServicio"/>
-        </field>
         <field property = "fechaProgramacion" depends = "required">
             <arg0 key="facturacion.seriesFacturacion.literal.fechaProgramacion"/>
         </field>
@@ -3022,8 +3010,9 @@
 <!-- INICIO: confirmarFacturacionForm RGG 01/02/2007 -->
 
     <form name="confirmarFacturacion1Form">
-        <field property = "estadoConfirmacion" depends = "required">
-            <arg0 key="facturacion.estado"/>
+        <field property = "fechaDesdePrevistaGeneracion" depends = "required">
+            <arg0 key="facturacion.seriesFacturacion.literal.fechaPrevistaGeneracion"/>
+            <arg1 key="general.literal.desde"/>
         </field>
     </form>
 

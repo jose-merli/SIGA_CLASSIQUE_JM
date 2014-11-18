@@ -1181,22 +1181,6 @@
 			<forward name="onLoadDescargas" path="/html/jsp/facturacionSJCS/muestraModalFicheros.jsp"/>
 		</action>
 
-		<!-- ***** Facturación / Programar Facturación ***** -->
-		<action path="/FAC_ProgramarFacturacion" type="com.siga.facturacion.action.ProgramarFacturacionAction" name="programarFacturacionForm" scope="request">
-			<forward name="abrir" path="/html/jsp/facturacion/consultaProgramarFacturacion.jsp"/>
-			<forward name="borrar" path="/html/jsp/facturacion/consultaProgramarFacturacion.jsp"/>
-			<forward name="editar" path="/html/jsp/facturacion/seriesFacturacion.jsp"/>
-			<forward name="actualizaDatos" path="/html/jsp/facturacion/actualizaDatos.jsp"/>
-			<forward name="nuevo" path="/html/jsp/facturacion/seriesFacturacion.jsp"/>
-			<forward name="ver" path="/html/jsp/facturacion/seriesFacturacion.jsp"/>			
-		</action>
-
-		<!-- ***** Facturación / Generar Facturación ***** -->
-		<action path="/FAC_GenerarFacturacion" type="com.siga.facturacion.action.GenerarFacturacionAction" name="generarFacturacionForm" scope="request">
-			<forward name="abrir" path="/html/jsp/facturacion/consultaGenerarFacturacion.jsp"/>
-			<forward name="exitoConString" path="/html/jsp/facturacion/exitoConString.jsp"/>
-		</action>
-
 		<!-- ***** Facturación / Eliminar Facturación ***** -->
 		<action path="/FAC_EliminarFacturacion" type="com.siga.facturacion.action.EliminarFacturacionAction" name="eliminarFacturacionForm" scope="request">
 			<forward name="abrir" path="/html/jsp/facturacion/consultaEliminarFacturacion.jsp"/>

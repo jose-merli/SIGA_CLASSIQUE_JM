@@ -146,26 +146,17 @@
 							
 							String idprevision=(String)miHash.get("IDPREVISION");
 							String existeProgramacion=(String)miHash.get("EXISTEPROGRAMACION");
-							String botones="";
 							boolean programada = existeProgramacion.trim().equals("1");
 							FilaExtElement[] elems=new FilaExtElement[2];
 							String idEstado = (String)miHash.get("IDESTADOPREVISION");
 							
 							//Si prev. finalizada con errores
 							if(idEstado.equals("4")){
-								botones="B";
 								elems[0]=new FilaExtElement("descargaLog","descargaLog",SIGAConstants.ACCESS_READ);
 							//Si prev. otro estado que no sea procesando ni pendiente
 							}else if(!idEstado.equals("17")&&(!idEstado.equals("2"))){
-						
 								elems[0]=new FilaExtElement("download","download",SIGAConstants.ACCESS_READ);
-								if (!programada) {
-									botones="B";
-								} else {
-									botones="";
-								}
 							}
-							
 							
 							if(htEstados!=null){
 								sEstadoPrevision =  UtilidadesString.mostrarDatoJSP(htEstados.get((String)miHash.get("IDESTADOPREVISION")));
@@ -175,7 +166,7 @@
 							
 							%>
 							
-							<siga:FilaConIconos fila='<%=""+(i+1)%>' botones="<%=botones%>" elementos='<%=elems%>' visibleConsulta="false" pintarEspacio="false" visibleEdicion="false" clase="listaNonEdit">
+							<siga:FilaConIconos fila='<%=""+(i+1)%>' botones="" elementos='<%=elems%>' visibleBorrado="false" visibleConsulta="false"  pintarEspacio="false" visibleEdicion="false" clase="listaNonEdit">
 								<td>
 									<input type="hidden" name="oculto<%=""+(i+1)%>_1" value="<%=miHash.get("IDSERIEFACTURACION")%>">
 									<input type="hidden" name="oculto<%=""+(i+1)%>_2" value="<%=miHash.get("IDPREVISION")%>">

@@ -151,6 +151,7 @@
 	if ((modoAction!=null && modoAction.trim().equals("nuevaPrevision")) ||
 		(modoAction!=null && modoAction.trim().equals("editar") && (
 				idEstadoConfirmacion.equals(FacEstadoConfirmFactBean.GENERACION_PROGRAMADA.toString()) ||
+				idEstadoConfirmacion.equals(FacEstadoConfirmFactBean.ERROR_GENERACION.toString()) ||
 				idEstadoConfirmacion.equals(FacEstadoConfirmFactBean.GENERADA.toString())))) {
 		bObligatorioFechasSEPA = false;
 	}
@@ -324,20 +325,26 @@
 				fin();
 				return false;
 			}
-
-
-			// Comprobamos las fechas
-			if (compararFecha (f.fechaInicialProducto, f.fechaFinalProducto) == 1) {
-				alert ("<siga:Idioma key='messages.fechas.rangoFechas'/>");
-				fin();
-				return false;
-			}
 			
-			if (compararFecha (f.fechaInicialServicio, f.fechaFinalServicio) == 1) {
-				alert ("<siga:Idioma key='messages.fechas.rangoFechas'/>");
-				fin();
-				return false;
-			}	
+			if((f.fechaInicialProducto.value!= '' && f.fechaFinalProducto.value!= '') || (f.fechaInicialServicio.value!= '' && f.fechaFinalServicio.value!= '')){ 
+				// Comprobamos las fechas
+				if (compararFechaRuano (f.fechaInicialProducto, f.fechaFinalProducto) == -1 || compararFechaRuano (f.fechaInicialProducto, f.fechaFinalProducto) == 1) {
+					alert ("<siga:Idioma key='messages.fechas.rangoFechas'/>");
+					fin();
+					return false;
+				}
+				
+				if (compararFechaRuano (f.fechaInicialServicio, f.fechaFinalServicio) == -1 || compararFechaRuano (f.fechaInicialServicio, f.fechaFinalServicio) == 1) {
+					alert ("<siga:Idioma key='messages.fechas.rangoFechas'/>");
+					fin();
+					return false;
+				}
+				
+			}else{	
+				alert ('<siga:Idioma key="messages.campos.required"/> <siga:Idioma key="facturacion.seriesFacturacion.literal.fechasProducto"/> o <siga:Idioma key="facturacion.seriesFacturacion.literal.fechasServicio"/>');
+            	fin();
+            	return false;
+			}
 			
 			var iguales = compararFecha (f.fechaPrevistaGeneracion, f.fechaPrevistaConfirmacion);
 			if (iguales==1) {

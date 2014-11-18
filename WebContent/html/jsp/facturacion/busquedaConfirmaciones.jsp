@@ -100,13 +100,21 @@
 			<siga:ConjCampos leyenda="facturacion.confirmarFacturacion.literal.camposBusqueda">	
 			<table class="tablaCampos" align="center">
 				<tr>				
-					<td  class="labelText"  width="210px" id="fechaRealGeneracionSinAsterisco"><siga:Idioma key="facturacion.confirmarFacturacion.literal.fechaRealGeneracion"/>&nbsp;<siga:Idioma key="general.literal.desde"/></td>
-					<td  class="labelText"  width="210px" id="fechaRealGeneracionConAsterisco"><siga:Idioma key="facturacion.confirmarFacturacion.literal.fechaRealGeneracion"/>&nbsp;<siga:Idioma key="general.literal.desde"/>&nbsp;(*)</td>
+					<td  class="labelText" width="220px"><siga:Idioma key="facturacion.mantenimnientoFacturacion.literal.fPrevistaGeneracion"/>&nbsp;<siga:Idioma key="general.literal.desde"/>&nbsp;(*)</td>
 					<td>
-						<siga:Fecha styleId="fechaDesdeGeneracion" nombreCampo="fechaDesdeGeneracion" valorInicial="${confirmarFacturacionForm.fechaDesdeGeneracion}" />
+						<siga:Fecha styleId="fechaDesdePrevistaGeneracion" nombreCampo="fechaDesdePrevistaGeneracion" valorInicial="${confirmarFacturacionForm.fechaDesdePrevistaGeneracion}" />
 					</td>
 		
-					<td class="labelText"><siga:Idioma key="facturacion.confirmarFacturacion.literal.fechaRealGeneracion"/>&nbsp;<siga:Idioma key="general.literal.hasta"/></td>
+					<td class="labelText" width="90px"><siga:Idioma key="general.literal.hasta"/></td>
+					<td>
+						<siga:Fecha styleId="fechaHastaPrevistaGeneracion" nombreCampo="fechaHastaPrevistaGeneracion" />
+					</td>
+					<td  class="labelText" width="170px"><siga:Idioma key="facturacion.confirmarFacturacion.literal.fechaRealGeneracion"/>&nbsp;<siga:Idioma key="general.literal.desde"/></td>
+					<td>
+						<siga:Fecha styleId="fechaDesdeGeneracion" nombreCampo="fechaDesdeGeneracion" />
+					</td>
+		
+					<td class="labelText" width="40px"><siga:Idioma key="general.literal.hasta"/></td>
 					<td>
 						<siga:Fecha styleId="fechaHastaGeneracion" nombreCampo="fechaHastaGeneracion"  />
 					</td>
@@ -118,34 +126,31 @@
 						<siga:Fecha styleId="fechaDesdeConfirmacion" nombreCampo="fechaDesdeConfirmacion" />
 					</td>
 
-					<td class="labelText"><siga:Idioma key="facturacion.confirmarFacturacion.literal.fechaConfirmacion"/>&nbsp;<siga:Idioma key="general.literal.hasta"/></td>
+					<td class="labelText"><siga:Idioma key="general.literal.hasta"/></td>
 					<td>
 						<siga:Fecha styleId="fechaHastaConfirmacion" nombreCampo="fechaHastaConfirmacion" />
 					</td>
+					<td colspan="4">&nbsp;</td>
 				</tr>
-			
 				<tr>				
-					<td class="labelText"><siga:Idioma key="facturacion.estado"/> (*)</td>
+					<td class="labelText"><siga:Idioma key="facturacion.estado"/></td>
 					<td>
-						<siga:ComboBD nombre = "estadoConfirmacion" tipo="cmbEstadoConfirmacion"  clase="boxCombo" obligatorio="true" parametro="<%=dato%>" elementoSel="<%=estadoConfirmacionSel%>" accion="accionEstado()"/>						
+						<siga:ComboBD nombre = "estadoConfirmacion" tipo="cmbEstadoConfirmacion" ancho="100" clase="boxCombo" obligatorio="false" parametro="<%=dato%>" elementoSel="<%=estadoConfirmacionSel%>" accion="accionEstado()"/>						
 					</td>
 
 					<td class="labelText"><siga:Idioma key="facturacion.confirmarFacturacion.literal.estadoPDF"/></td>
 					<td>
-						<siga:ComboBD nombre = "estadoPDF" tipo="cmbEstadoPDF"  clase="boxCombo" obligatorio="false" parametro="<%=dato%>" />						
+						<siga:ComboBD nombre = "estadoPDF" tipo="cmbEstadoPDF"  clase="boxCombo" ancho="100" obligatorio="false" parametro="<%=dato%>" />						
 					</td>
-				</tr>
-				
-				<tr>				
+
 					<td class="labelText"><siga:Idioma key="facturacion.confirmarFacturacion.literal.estadoEnvio"/></td>
 					<td>
-						<siga:ComboBD nombre = "estadoEnvios" tipo="cmbEstadoEnvios"  clase="boxCombo" obligatorio="false" parametro="<%=dato%>"/>						
+						<siga:ComboBD nombre = "estadoEnvios" tipo="cmbEstadoEnvios"  ancho="100"  clase="boxCombo" obligatorio="false" parametro="<%=dato%>"/>						
 					</td>
-					<td class="labelText"><siga:Idioma key="facturacion.confirmarFacturacion.literal.archivadas"/></td>
-					<td >
-						<input type="checkbox" value="1" name="archivadas">
+					<td class="labelText" colspan="2"><siga:Idioma key="gratuita.BusquedaSancionesLetrado.literal.archivadas"/>&nbsp;<input type="checkbox" value="1" name="archivadas">
 					</td>
-				</tr>
+				</tr>			
+
 		
 			</table>
 		</siga:ConjCampos>	
@@ -189,13 +194,6 @@
 		{
 			sub();	
 			if (validateConfirmarFacturacion1Form(document.confirmarFacturacionForm)){
-				
-				if((jQuery("#estadoConfirmacion").val() != 18 && jQuery("#estadoConfirmacion").val() != 19 && jQuery("#estadoConfirmacion").val() != 20) && (jQuery("#fechaDesdeGeneracion").val() == "")){
-					alert("Es obligatorio rellenar la Fecha Real de Generacion Desde");
-					fin();
-					return false;
-				}
-				
 				setFilaSeleccionadaD('true');
 				document.confirmarFacturacionForm.modo.value = "buscarInit";
 				document.confirmarFacturacionForm.submit();
@@ -226,7 +224,6 @@
 			} else{
 				jQuery('#fechaRealGeneracionSinAsterisco').hide();
 				jQuery('#fechaRealGeneracionConAsterisco').show();
-				jQuery("#fechaDesdeGeneracion").val("${confirmarFacturacionForm.fechaDesdeGeneracion}");
 			}
 		}
 
