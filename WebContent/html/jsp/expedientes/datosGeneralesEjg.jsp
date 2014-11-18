@@ -726,7 +726,7 @@
 <td class="labelTextValue">			
 				
 				
-				<bean:write name="ExpDatosGeneralesForm"  property="anioExpDisciplinario"></bean:write>&nbsp;/&nbsp;<bean:write name="ExpDatosGeneralesForm" property="numExpDisciplinario"/>
+				<bean:write name="ExpDatosGeneralesForm"  property="anioExpDisciplinario"></bean:write>&nbsp;/&nbsp;<bean:write name="ExpDatosGeneralesForm" property="numEJGDisciplinario"/>
 			</td>
 <%}else{%>						
 			<html:hidden name="ExpDatosGeneralesForm" property="numExpDisciplinario"/>

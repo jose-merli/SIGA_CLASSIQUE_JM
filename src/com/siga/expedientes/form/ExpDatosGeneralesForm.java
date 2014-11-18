@@ -24,8 +24,11 @@ public class ExpDatosGeneralesForm extends MasterForm {
 	private String numExpediente="";
     private String anioExpediente="";
     private String numExpDisciplinario="";
-    private String anioExpDisciplinario="";
+    private String numEJGDisciplinario;
+    
+	private String anioExpDisciplinario="";
     private String numExpDisciplinarioCalc="";
+    
     private String tipoExpDisciplinario="";
 	private String fecha="";
     private String institucion="";
@@ -746,6 +749,18 @@ public class ExpDatosGeneralesForm extends MasterForm {
 	}
 	public void setIdTipoIdentificacionDenunciante(String idTipoIdentificacionDenunciante) {
 		this.idTipoIdentificacionDenunciante = idTipoIdentificacionDenunciante;
+	}
+	/**
+	 * @return the numEJGDisciplinario
+	 */
+	public String getNumEJGDisciplinario() {
+		return numEJGDisciplinario;
+	}
+	/**
+	 * @param numEJGDisciplinario the numEJGDisciplinario to set
+	 */
+	public void setNumEJGDisciplinario(String numEJGDisciplinario) {
+		this.numEJGDisciplinario = numEJGDisciplinario;
 	}
 	
 }

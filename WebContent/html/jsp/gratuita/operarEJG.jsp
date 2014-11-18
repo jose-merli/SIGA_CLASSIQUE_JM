@@ -1077,6 +1077,9 @@
 		<html:hidden property = "avanzada" value = ""/>
 		<html:hidden property = "metodo" value = "abrirNuevoEjg"/>
 		<html:hidden property ="numeroEjg"   value = "<%=NUMERO%>"/>
+		<html:hidden property ="numEJGDisciplinario"   value = "<%=CODIGO%>"/>
+		
+		
 		<html:hidden property ="idTipoEjg"   value = "<%=IDTIPOEJG%>"/>
 		<html:hidden property ="anioEjg"     value = "<%=ANIO%>"/>
 		<html:hidden property ="nifSolicitante"     value = "<%=NIFASISTIDO%>" />
