@@ -1,7 +1,6 @@
 package com.siga.informes;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Vector;
 
@@ -24,7 +23,6 @@ import com.siga.beans.FacFacturaAdm;
 import com.siga.beans.FacFacturaBean;
 import com.siga.beans.FacLineaFacturaAdm;
 import com.siga.beans.FacPlantillaFacturacionAdm;
-import com.siga.beans.GenParametrosAdm;
 import com.siga.certificados.Plantilla;
 import com.siga.facturacion.Facturacion;
 import com.siga.general.SIGAException;
@@ -213,16 +211,10 @@ public class InformeFactura extends MasterReport {
 	 */
 	public File generarFactura (HttpServletRequest request, String idioma, String institucion, String idFactura, String nColegiado) throws ClsExceptions,SIGAException {
 
-		String resultado="exito";
 		File fPdf = null;
-		ArrayList ficherosPDF= new ArrayList();
-		File rutaFin=null;
 		File rutaTmp=null;
-		int numeroCarta=0;
 			
 		try {
-		    HttpSession ses = request.getSession();
-			GenParametrosAdm admParametros = new GenParametrosAdm(usrbean);
 		    ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
 			
 			// RGG 26/02/2007 cambio en los codigos de lenguajes
@@ -308,62 +300,64 @@ public class InformeFactura extends MasterReport {
 	 * @exception  ClsExceptions  En cualquier caso de error
 	 */
 	public File generarFacturaRapida (HttpServletRequest request,String institucion, String idFactura) throws ClsExceptions,SIGAException {
-		String resultado="exito";
 		File rutaZIP = null;
 			
 		try {
-		    HttpSession ses = request.getSession();
-			GenParametrosAdm admParametros = new GenParametrosAdm(usrbean);
 		    ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
 		    
 			// necesario para que lo pueda obtener la otra funcion
 			request.setAttribute("IDFACTURA_INFORME",idFactura);
 			
 			//obtener plantilla
-			FacFacturaAdm facAdm= new FacFacturaAdm(usrbean);
-			Vector v = facAdm.getFactura(institucion,idFactura);
-			Hashtable ht =null;
-			if (v!=null && v.size()>0) {
-				ht = ((Row) v.get(0)).getRow(); 
-				FacPlantillaFacturacionAdm plAdm= new FacPlantillaFacturacionAdm(usrbean);
+			FacFacturaAdm admFactura= new FacFacturaAdm(usrbean);
+			Vector vFacturas = admFactura.getFactura(institucion, idFactura);
+			Hashtable hFactura =null;
+			if (vFacturas!=null && vFacturas.size()>0) {
+				hFactura = ((Row) vFacturas.get(0)).getRow(); 
 			}
 			
 			// obtener ruta almacen
-			String idserieidprogramacion = ht.get(FacFacturaBean.C_IDSERIEFACTURACION).toString()+"_" + ht.get(FacFacturaBean.C_IDPROGRAMACION).toString();
-			String rutaAlmacen = rp.returnProperty("facturacion.directorioFisicoFacturaPDFJava")+rp.returnProperty("facturacion.directorioFacturaPDFJava");
-    		rutaAlmacen += ClsConstants.FILE_SEP+institucion.toString()+ClsConstants.FILE_SEP+idserieidprogramacion;
+			String idserieidprogramacion = hFactura.get(FacFacturaBean.C_IDSERIEFACTURACION).toString() + "_" + hFactura.get(FacFacturaBean.C_IDPROGRAMACION).toString();
+			String rutaAlmacen = rp.returnProperty("facturacion.directorioFisicoFacturaPDFJava") + rp.returnProperty("facturacion.directorioFacturaPDFJava");
+    		rutaAlmacen += ClsConstants.FILE_SEP + institucion.toString() + ClsConstants.FILE_SEP + idserieidprogramacion;
     		
     		//Si existe ya el fichero ZIP (porque se ha generado en la confirmacion) se le devuelve, si no se genera y se devuelve
-    		String rutaFileZipAux = rutaAlmacen +".zip";
-    		rutaZIP =new File(rutaFileZipAux);
+    		String rutaFileZipAux = rutaAlmacen + ".zip";
+    		rutaZIP = new File(rutaFileZipAux);
     		
     		if(!rutaZIP.exists()){   	
     			//No se generó xq en la serie no estaba configurado que se generara el fichero .zip. AQUI LO CREAMOS    			
 				ClsLogging.writeFileLog("ANTES DE GENERAR EL INFORME ZIP. ",10);
 				
 				//Fichero de log
-				String nombreFichero = "LOG_COMPRARAPIDA_FAC_"+ institucion+"_"+idserieidprogramacion+".log.xls"; 
-				SIGALogging	log = new SIGALogging(rutaAlmacen+ClsConstants.FILE_SEP+nombreFichero);
-				//No se tiene que generar el fichero .xls de log, sino que hay que mostrar un mensaje en la ventana con el mensaje
-				boolean generarLog=false;
+				String nombreFichero = "LOG_COMPRARAPIDA_FAC_" +  institucion + "_" + idserieidprogramacion + ".log.xls"; 
+				SIGALogging	log = new SIGALogging(rutaAlmacen + ClsConstants.FILE_SEP + nombreFichero);
 				
+				//No se tiene que generar el fichero .xls de log, sino que hay que mostrar un mensaje en la ventana con el mensaje
 				Facturacion facturacion = new Facturacion(usrbean);
-				facturacion.generaryEnviarProgramacionFactura (request, Integer.parseInt(institucion), Long.valueOf(ht.get(FacFacturaBean.C_IDSERIEFACTURACION).toString()),Long.valueOf(ht.get(FacFacturaBean.C_IDPROGRAMACION).toString()), false, log, generarLog);
+				facturacion.generaryEnviarProgramacionFactura (
+						request, 
+						Integer.valueOf(institucion), 
+						Long.valueOf(hFactura.get(FacFacturaBean.C_IDSERIEFACTURACION).toString()),
+						Long.valueOf(hFactura.get(FacFacturaBean.C_IDPROGRAMACION).toString()), 
+						false, 
+						log, 
+						false);
 				ClsLogging.writeFileLog("DESPUES DE GENERAR EL INFORME EN  "+rutaAlmacen,10);			
     		} else {
     			ClsLogging.writeFileLog("SE DEVUELVE EL ZIP PREVIAMENTE GENERADO EN CONFIRMACION",10);
     		}
     		
-		}catch (SIGAException se) {
+		} catch (SIGAException se) {
 			throw se;
-		}catch (ClsExceptions ex) {
+			
+		} catch (ClsExceptions ex) {
 			throw ex;
-		}catch (Exception e) {
+			
+		} catch (Exception e) {
 			throw new ClsExceptions(e,"Error a l generar el informe: "+e.getLocalizedMessage());
 		} 
 		
         return rutaZIP;
 	}
-	
-	
 }
