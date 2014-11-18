@@ -2322,7 +2322,22 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 					    	b.setGenerarPDF("1");// Si se entramos por facturacion rapida se obliga siempre al generarPDF
 					        facturacion.confirmarProgramacionFactura(b, request, true, null, false, true, null);
 						} 
+					    catch (SIGAException se) {
+							if (Status.STATUS_ACTIVE  == tx.getStatus()){
+								try {tx.rollback();}catch (Exception e) {}
+							}
+							throw se;
+					    }
+					    catch (ClsExceptions ce) {
+							if (Status.STATUS_ACTIVE  == tx.getStatus()){
+								try {tx.rollback();}catch (Exception e) {}
+							}
+							throw ce;
+					    }
 						catch (Exception e) {
+							if (Status.STATUS_ACTIVE  == tx.getStatus()){
+								try {tx.rollback();}catch (Exception e1) {}
+							}
 							mensaje="messages.facturacionRapida.errorConfirmacion";
 							return exitoRefresco(mensaje,request);
 					    }
@@ -2388,8 +2403,7 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 			    }
 			}
 			
-			FacFacturacionProgramadaBean programacion = null;
-		    try {			    
+			FacFacturacionProgramadaBean programacion = null;			    
 			    // PASO 0: ANTES DE FACTURAR APUNTO EL IMPORTE TOTAL COMO IMPORTE ANTICIPADO
 			    double importe = (beanCompra.getCantidad().intValue() * beanCompra.getImporteUnitario().doubleValue()) * (1+(beanCompra.getIva().doubleValue()/100));
 			    beanCompra.setImporteAnticipado(new Double(importe));
@@ -2444,15 +2458,7 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 			    facturacion.confirmarProgramacionFactura(programacion, request, true, null, false, true, tx);
 			    
 			    if (Status.STATUS_ACTIVE  == tx.getStatus())
-			    	tx.commit();
-
-		    } catch (Exception e) {
-			    try {
-			    	tx.rollback();
-			    } catch (Exception ee) {}
-
-			    throw e;
-		    }		    
+			    	tx.commit();	    
 			
 			/*********************pdm***********/
 			 if (programacion.getGenerarPDF().trim().equals("1")) {
@@ -2549,8 +2555,11 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 			 	throw new SIGAException("No se ha generado el PDF");
 			}
 		
-	    } catch (Exception e) { 
-			throwExcp("messages.general.error",new String[] {"modulo.certificados"},e,null); 
+		} catch (Exception e) { 
+			if((e instanceof SIGAException)||(e instanceof ClsExceptions))
+					throwExcp (e.getMessage(),new String[] {"modulo.certificados"},e,null); 
+				else
+					throwExcp("messages.general.error",new String[] {"modulo.certificados"},e,null); 
 		}
 	    
 		return salida;
