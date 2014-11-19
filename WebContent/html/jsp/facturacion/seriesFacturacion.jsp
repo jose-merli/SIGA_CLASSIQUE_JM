@@ -567,7 +567,7 @@
 			<table class="tablaCampos" align="center" border="0" cellspacing="0" cellpadding="0">
 				<tr>
 					<td class="labelText" width="350px">
-						<siga:Idioma key="facturacion.seriesFacturacion.literal.fechasProducto"/>&nbsp;(*)
+						<siga:Idioma key="facturacion.seriesFacturacion.literal.fechasProducto"/>
 					</td>
 					<td class="labelText" width="100px">
 						<siga:Idioma key="facturacion.seriesFacturacion.literal.fInicio"/>
@@ -594,7 +594,7 @@
 
 				<tr>
 					<td class="labelText" width="350px">
-						<siga:Idioma key="facturacion.seriesFacturacion.literal.fechasServicio"/>&nbsp;(*)
+						<siga:Idioma key="facturacion.seriesFacturacion.literal.fechasServicio"/>
 					</td>
 					<td class="labelText">
 						<siga:Idioma key="facturacion.seriesFacturacion.literal.fInicio"/>
@@ -710,16 +710,6 @@
 						<%}%>
 					</td>
 					
-					<td id="titulo" class="labelText" rowspan="2">
-						<siga:Idioma key="envios.plantillas.literal.plantilla"/> 
-					</td>
-					<td rowspan="2">
-						<% if (modoAction.equals("editar") || modoAction.equals("nuevaPrevision")) { %>
-							<siga:ComboBD nombre = "idTipoPlantillaMail" tipo="cmbPlantillaEnvios3" clase="boxCombo" elementoSel="<%=plantillaEnviosSeleccionada%>" ancho="300" obligatorio="false" pestana="true" parametro="<%=parametrosCmbPlantillaEnvios%>"/>
-						<% } else{ %>
-							<siga:ComboBD nombre = "idTipoPlantillaMail" tipo="cmbPlantillaEnvios3" clase="boxCombo" elementoSel="<%=plantillaEnviosSeleccionada%>" ancho="300" obligatorio="false" pestana="true" parametro="<%=parametrosCmbPlantillaEnvios%>" readonly="true"/>
-						<% } %>
-					</td>					
 				</tr>
 				<tr>					
 					<td class="labelText" style="text-align:left">
@@ -739,6 +729,17 @@
 							<% } %>
 						<% } %>
 					</td>
+					
+					<td id="titulo" class="labelText" rowspan="2">
+						<siga:Idioma key="envios.plantillas.literal.plantilla"/> 
+					</td>
+					<td rowspan="2">
+						<% if (modoAction.equals("editar") || modoAction.equals("nuevaPrevision")) { %>
+							<siga:ComboBD nombre = "idTipoPlantillaMail" tipo="cmbPlantillaEnvios3" clase="boxCombo" elementoSel="<%=plantillaEnviosSeleccionada%>" ancho="300" obligatorio="false" pestana="true" parametro="<%=parametrosCmbPlantillaEnvios%>"/>
+						<% } else{ %>
+							<siga:ComboBD nombre = "idTipoPlantillaMail" tipo="cmbPlantillaEnvios3" clase="boxCombo" elementoSel="<%=plantillaEnviosSeleccionada%>" ancho="300" obligatorio="false" pestana="true" parametro="<%=parametrosCmbPlantillaEnvios%>" readonly="true"/>
+						<% } %>
+					</td>						
 				</tr>
 			</table>
 		</siga:ConjCampos>

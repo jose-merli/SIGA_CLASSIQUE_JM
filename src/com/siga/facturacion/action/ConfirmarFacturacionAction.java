@@ -92,16 +92,12 @@ public class ConfirmarFacturacionAction extends MasterAction{
 					ConfirmarFacturacionForm confirmarFacturacionForm = (ConfirmarFacturacionForm) miForm;
 					request.setAttribute("estadoConfirmacion", confirmarFacturacionForm.getEstadoConfirmacion());
 					mapDestino = abrir(mapping, miForm, request, response);
-				}else if (accion.equalsIgnoreCase("confirmarFactura")){
-					mapDestino = confirmarFactura(mapping, miForm, request, response);
 				} else if (accion.equalsIgnoreCase("descargaLog")){
 					mapDestino = descargaLog(mapping, miForm, request, response);
 				} else if (accion.equalsIgnoreCase("descargarInformeGeneracion")){
 					mapDestino = descargarInformeGeneracion(mapping, miForm, request, response);					
 				} else if (accion.equalsIgnoreCase("archivarFactura")){
 					mapDestino = archivarFactura(mapping, miForm, request, response);
-				} else if (accion.equalsIgnoreCase("generarFacturaSolo")){
-					mapDestino = generarFacturaSolo(mapping, miForm, request, response);
 				} else if (accion.equalsIgnoreCase("enviar")){
 					mapDestino = enviarFacturas(mapping, miForm, request, response);
 				} else if (accion.equalsIgnoreCase("consultarfactura")){
@@ -355,9 +351,7 @@ public class ConfirmarFacturacionAction extends MasterAction{
 				FacFacturaAdm facturas = new FacFacturaAdm(user);
 				Vector resultado = facturas.getSerieFacturacionConfirmada(idInstitucion, idSerieFacturacion, idProgramacion);
 				if(!resultado.isEmpty()){
-					//Se accede por clave referenciada de la tabla que hace join por lo 
-					//que todos los registro tienen el mismo estado de generacion de pdf.
-					//Cogemos por tanto el estado del priemr registro
+					//Se accede por clave referenciada de la tabla que hace join por lo que todos los registro tienen el mismo estado de generacion de pdf. Cogemos por tanto el estado del priemr registro
 					Hashtable hashPrimeraFacturaSerieProgramacion = (Hashtable)resultado.get(0); 
 					String estadoPDF  = UtilidadesHash.getString(hashPrimeraFacturaSerieProgramacion,FacFacturacionProgramadaBean.C_IDESTADOPDF);
 					if(estadoPDF.equals(FacEstadoConfirmFactBean.PDF_PROGRAMADA.toString())||estadoPDF.equals(FacEstadoConfirmFactBean.PDF_PROCESANDO.toString())){
@@ -399,130 +393,6 @@ public class ConfirmarFacturacionAction extends MasterAction{
 		}
 
 		return "descargaFichero";
-	}
-	
-	
-	
-	
-	/** 
-	 * Atiende la accion confirmarFactura.  
-	 * @param  mapping - Mapeo de los struts
-	 * @param  formulario -  Action Form asociado a este Action
-	 * @param  request - objeto llamada HTTP 
-	 * @param  response - objeto respuesta HTTP
-	 * @return  String  Destino del action  
-	 * @exception  SIGAException  En cualquier caso de error
-	 */
-	protected String confirmarFactura(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {	
-		String resultadoFinal[] = new String[1];
-		UserTransaction tx = null;	
-		
-		try {
-			tx = this.getUserBean(request).getTransaction();
-			
-			ConfirmarFacturacionForm form = (ConfirmarFacturacionForm)formulario;
-			FacFacturacionProgramadaAdm adm = new FacFacturacionProgramadaAdm(this.getUserBean(request));
-			
-			String idSerieFacturacion = form.getIdSerieFacturacion();			
-			String idProgramacion = form.getIdProgramacion();
-			String idInstitucion = this.getIDInstitucion(request).toString();
-			
-			/** JPT - Control de fechas de presentación y cargo en ficheros SEPA **/
-			String fechaEntrega = form.getFechaEntrega();
-			
-			String fechaRecibosPrimeros = form.getFechaFRST();
-			String fechaRecibosRecurrentes = form.getFechaRCUR();
-			String fechaRecibosCOR1 = form.getFechaCOR1();
-			String fechaRecibosB2B = form.getFechaB2B();
-			
-			// Controlar que las fechas cumplen los dias habiles introducidos en parametros generales
-			FacDisqueteCargosAdm admDisqueteCargos = new FacDisqueteCargosAdm(this.getUserBean(request));	
-			if (!admDisqueteCargos.controlarFechasFicheroBancario(idInstitucion, fechaEntrega, fechaRecibosPrimeros, fechaRecibosRecurrentes, fechaRecibosCOR1, fechaRecibosB2B, null)) {
-				throw new SIGAException("facturacion.ficheroBancarioPagos.errorMandatos.mensajeFechas");
-			}		
-
-			tx.begin();
-			
-			Hashtable ht = new Hashtable();
-			ht.put(FacFacturacionProgramadaBean.C_IDINSTITUCION,idInstitucion);
-			ht.put(FacFacturacionProgramadaBean.C_IDSERIEFACTURACION,idSerieFacturacion);
-			ht.put(FacFacturacionProgramadaBean.C_IDPROGRAMACION,idProgramacion);			
-			Vector v = adm.selectByPK(ht);
-			
-			FacFacturacionProgramadaBean beanP = null; 
-			if (v!=null && v.size()>0) {
-				beanP = (FacFacturacionProgramadaBean) v.get(0);
-			}
-			
-			if (beanP!=null) {
-				beanP.setIdEstadoConfirmacion(FacEstadoConfirmFactBean.CONFIRM_PROGRAMADA);
-				
-				beanP.setFechaPrevistaConfirmacion("sysdate");
-				
-				if (beanP.getGenerarPDF().equals("1")) {
-					beanP.setIdEstadoPDF(FacEstadoConfirmFactBean.PDF_PROGRAMADA);
-				} else {
-					beanP.setIdEstadoPDF(FacEstadoConfirmFactBean.PDF_NOAPLICA);
-				}
-				
-				if (beanP.getEnvio().equals("1")) {
-					beanP.setIdEstadoEnvio(FacEstadoConfirmFactBean.ENVIO_PROGRAMADA);
-				} else {
-					beanP.setIdEstadoEnvio(FacEstadoConfirmFactBean.ENVIO_NOAPLICA);
-				}
-				
-				// Control de fechas
-				if (fechaEntrega!=null && !fechaEntrega.equals("")) { 
-					beanP.setFechaPresentacion(GstDate.getApplicationFormatDate("en", fechaEntrega));
-				}							
-				if (fechaRecibosPrimeros!=null && !fechaRecibosPrimeros.equals("")) { 
-					beanP.setFechaRecibosPrimeros(GstDate.getApplicationFormatDate("en", fechaRecibosPrimeros));
-				}				
-				if (fechaRecibosRecurrentes!=null && !fechaRecibosRecurrentes.equals("")) { 
-					beanP.setFechaRecibosRecurrentes(GstDate.getApplicationFormatDate("en", fechaRecibosRecurrentes));
-				}				
-				if (fechaRecibosCOR1!=null && !fechaRecibosCOR1.equals("")) { 
-					beanP.setFechaRecibosCOR1(GstDate.getApplicationFormatDate("en", fechaRecibosCOR1));
-				}				
-				if (fechaRecibosB2B!=null && !fechaRecibosB2B.equals("")) { 
-					beanP.setFechaRecibosB2B(GstDate.getApplicationFormatDate("en", fechaRecibosB2B));
-				}
-				
-				if (!adm.updateDirect(beanP)) {
-					throw new ClsExceptions("Error al actualizar estados de la programación: "+adm.getError());
-				}
-			}
-
-			tx.commit();
-			
-			// Comprobaciones antes de confirmacion 
-			Vector ret = adm.comprobarRecursosProgramacion(beanP);
-			
-			// tratamiento del mensaje
-			resultadoFinal[0] = UtilidadesString.getMensajeIdioma(this.getUserBean(request),"messages.facturacion.comprueba.okConfirmacion"); 			
-			if (ret.size()>0) {
-				resultadoFinal[0] = UtilidadesString.getMensajeIdioma(this.getUserBean(request),"messages.facturacion.comprueba.avisosConfirmacion");
-				for (int i=0;i<ret.size();i++) {
-					resultadoFinal[0] += "\\n" + UtilidadesString.getMensajeIdioma(this.getUserBean(request),(String)ret.get(i));
-				}
-			} 
-			
-		} catch (SIGAException e) {
-			String sms = e.getLiteral();
-			if (sms == null || sms.equals("")) {
-				sms = "messages.general.error";
-			}
-			
-			throwExcp(sms, new String[] {"modulo.facturacion"}, e, tx);					
-			
-		}catch (Exception e) {
-			throwExcp("messages.general.error",new String[] {"modulo.facturacion"}, e, tx);
-		}
-		
-		request.setAttribute("parametrosArray", resultadoFinal);
-		request.setAttribute("modal","");
-				 
-		return "exitoParametros";
 	}
 	
 	/** 
@@ -720,10 +590,6 @@ public class ConfirmarFacturacionAction extends MasterAction{
 	 */
 	protected String generarFacturaSolo(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException 
 	{
-		//String mensaje = "";
-		
-		//UserTransaction tx = null;	
-		
 		try {
 			ConfirmarFacturacionForm form = (ConfirmarFacturacionForm)formulario;
 			
@@ -747,7 +613,6 @@ public class ConfirmarFacturacionAction extends MasterAction{
 			
 			FacFacturacionProgramadaBean bean = (FacFacturacionProgramadaBean) v.get(0);
 			bean.setIdEstadoPDF(FacEstadoConfirmFactBean.PDF_PROGRAMADA);
-			bean.setFechaPrevistaConfirmacion("SYSDATE");
 			bean.setGenerarPDF("1");
 			bean.setRealizarEnvio("0");
 			
@@ -826,68 +691,6 @@ public class ConfirmarFacturacionAction extends MasterAction{
 		
 	}
 	
-	
-	/**
-	 * Metodo que recupera el ZIP generado con las facturas pdf
-	 * Si no existe lo deberia crear en un proceso background
-	 */
-	protected File getZipFactura(ActionMapping mapping, MasterForm formulario,
-			HttpServletRequest request, HttpServletResponse response)
-	throws SIGAException {
-		String sNombreFichero = "";
-		String sRutaTemporal = "";
-		File ficheroZip = null;
-		try {
-			UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");
-			ConfirmarFacturacionForm form = (ConfirmarFacturacionForm) formulario;
-			Vector vOcultos = form.getDatosTablaOcultos(0);
-			String idInstitucion = user.getLocation();
-			String idSerieFacturacion = (String) vOcultos.elementAt(0);
-			String idProgramacion=(String) vOcultos.elementAt(1);
-
-		    ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
-//			ReadProperties rp = new ReadProperties("SIGA.properties");
-			sRutaTemporal = rp.returnProperty("sjcs.directorioFisicoTemporalSJCSJava") +
-			rp.returnProperty("facturacion.directorioTemporalFacturasJava");
-
-			sNombreFichero = idSerieFacturacion+"_"+idProgramacion;
-			String sExtension = ".zip";
-			sNombreFichero += sExtension;
-			sRutaTemporal += File.separator + idInstitucion+ File.separator;
-
-			//Control de que no exista el fichero a descargar:
-			ficheroZip = new File(sRutaTemporal+sNombreFichero);
-			if (!ficheroZip.exists()){
-				FacFacturaAdm facturas = new FacFacturaAdm(user);
-				Vector resultado = facturas.getSerieFacturacionConfirmada(idInstitucion, idSerieFacturacion, idProgramacion);
-				if(!resultado.isEmpty()){
-					//Se accede por clave referenciada de la tabla que hace join por lo 
-					//que todos los registro tienen el mismo estado de generacion de pdf.
-					//Cogemos por tanto el estado del priemr registro
-					Hashtable hashPrimeraFacturaSerieProgramacion = (Hashtable)resultado.get(0); 
-					String estadoPDF  = UtilidadesHash.getString(hashPrimeraFacturaSerieProgramacion,FacFacturacionProgramadaBean.C_IDESTADOPDF);
-					if(estadoPDF.equals(FacEstadoConfirmFactBean.PDF_PROGRAMADA.toString())||estadoPDF.equals(FacEstadoConfirmFactBean.PDF_PROCESANDO.toString())){
-						String mensaje = UtilidadesString.getMensajeIdioma(user,"messages.facturacion.PDFFacturaYaProgramada");
-					}else{
-
-						ClsLogging.writeFileLog("NO EXISTE EL ZIP, SE PASA A PROGRAMAR SU GENERACION",10);
-						generarFacturaSolo(mapping, formulario, request, response);
-						SIGASvlProcesoAutomaticoRapido.NotificarAhora(SIGASvlProcesoAutomaticoRapido.procesoRapidoFacturacion);
-						String mensaje = UtilidadesString.getMensajeIdioma(user,"messages.facturacion.generacionPDFFacturaProgramada"); 			
-
-					}
-				}
-			}
-
-		}catch(SIGAException e){	
-			throw e;
-		} catch (Exception e) {
-			throw new SIGAException("messages.general.error");
-		}
-
-		return ficheroZip;
-	}
-	
 	protected String consultarFacturas(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		try {				
 			ConfirmarFacturacionForm form 	= (ConfirmarFacturacionForm)formulario;
@@ -901,7 +704,10 @@ public class ConfirmarFacturacionAction extends MasterAction{
 			Long idProgramacion 	= Long.valueOf((String)ocultos.elementAt(1));	
 			Integer idInstitucion	= this.getIDInstitucion(request);
 									
-			String sWhere=" WHERE " + FacFacturacionProgramadaBean.T_NOMBRETABLA + "." + FacFacturacionProgramadaBean.C_IDINSTITUCION + " = " + idInstitucion + 
+			String sWhere=" WHERE " + FacFacturacionProgramadaBean.T_NOMBRETABLA + "." + FacFacturacionProgramadaBean.C_IDINSTITUCION + " = " + FacSerieFacturacionBean.T_NOMBRETABLA + "." + FacSerieFacturacionBean.C_IDINSTITUCION +
+   							" AND " + FacFacturacionProgramadaBean.T_NOMBRETABLA + "." + FacFacturacionProgramadaBean.C_IDSERIEFACTURACION + " = " + FacSerieFacturacionBean.T_NOMBRETABLA + "." + FacSerieFacturacionBean.C_IDSERIEFACTURACION +							
+ 
+							" AND " + FacFacturacionProgramadaBean.T_NOMBRETABLA + "." + FacFacturacionProgramadaBean.C_IDINSTITUCION + " = " + idInstitucion + 
 							" AND " + FacFacturacionProgramadaBean.T_NOMBRETABLA + "." + FacFacturacionProgramadaBean.C_IDSERIEFACTURACION + " = " + idSerieFacturacion + 	
 							" AND " + FacFacturacionProgramadaBean.T_NOMBRETABLA + "." + FacFacturacionProgramadaBean.C_IDPROGRAMACION + " = " + idProgramacion;
 			
@@ -979,8 +785,11 @@ public class ConfirmarFacturacionAction extends MasterAction{
 				}
 			}
 			
-			String sWhere=" WHERE " + FacFacturacionProgramadaBean.T_NOMBRETABLA + "." + FacFacturacionProgramadaBean.C_IDINSTITUCION + " = " + idInstitucion + 	
-							" AND " + FacFacturacionProgramadaBean.T_NOMBRETABLA + "." + FacFacturacionProgramadaBean.C_IDSERIEFACTURACION + " = " + idSerieFacturacion +
+			String sWhere=" WHERE " + FacFacturacionProgramadaBean.T_NOMBRETABLA + "." + FacFacturacionProgramadaBean.C_IDINSTITUCION + " = " + FacSerieFacturacionBean.T_NOMBRETABLA + "." + FacSerieFacturacionBean.C_IDINSTITUCION +
+   							" AND " + FacFacturacionProgramadaBean.T_NOMBRETABLA + "." + FacFacturacionProgramadaBean.C_IDSERIEFACTURACION + " = " + FacSerieFacturacionBean.T_NOMBRETABLA + "." + FacSerieFacturacionBean.C_IDSERIEFACTURACION +							
+ 
+							" AND " + FacFacturacionProgramadaBean.T_NOMBRETABLA + "." + FacFacturacionProgramadaBean.C_IDINSTITUCION + " = " + idInstitucion + 
+							" AND " + FacFacturacionProgramadaBean.T_NOMBRETABLA + "." + FacFacturacionProgramadaBean.C_IDSERIEFACTURACION + " = " + idSerieFacturacion + 	
 							" AND " + FacFacturacionProgramadaBean.T_NOMBRETABLA + "." + FacFacturacionProgramadaBean.C_IDPROGRAMACION + " = " + idProgramacion;
 			
 			String[] orden = {FacFacturacionProgramadaBean.C_FECHAPREVISTAGENERACION};
