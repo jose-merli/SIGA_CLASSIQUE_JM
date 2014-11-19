@@ -59,29 +59,18 @@ public class SIGASvlProcesoAutomaticoFacturacion extends SIGAServletAdapter impl
 			ClsLogging.writeFileLogWithoutSession("    - Intervalo de ejecución: Erróneo (" + sIntervalo + ").", 3);
 
 		} else {
-			try {
-				if (timer != null) {
-					// desactivando notificacion anterior
-					if (timer.isActive())
-						timer.stop();
-					timer.removeNotification(idNotificacion);
-				}
-			} catch (InstanceNotFoundException e) {
-				e.printStackTrace();
-			} finally { // aunque falle la desactivacion de la notificacion anterior, creamos la nueva notificacion
-				timer = new Timer();
-				timer.addNotificationListener(this, null, sNombreProceso);
-	
-				long lIntervalo = Long.parseLong(sIntervalo) * 60 * 1000;
-				Date timerTriggerAt = new Date();
-				timerTriggerAt = new Date(timerTriggerAt.getTime() + lIntervalo);
-				idNotificacion = timer.addNotification(sNombreProceso, sNombreProceso, this, timerTriggerAt);
-	
-				timer.start();
-	
-				ClsLogging.writeFileLogWithoutSession("    - Notificación \"" + sNombreProceso + "\" arrancada.", 3);
-				ClsLogging.writeFileLogWithoutSession("    - Intervalo de ejecución: " + sIntervalo + " minuto(s).", 3);
-			}
+			timer = new Timer();
+			timer.addNotificationListener(this, null, sNombreProceso);
+
+			long lIntervalo = Long.parseLong(sIntervalo) * 60 * 1000;
+			Date timerTriggerAt = new Date();
+			timerTriggerAt = new Date(timerTriggerAt.getTime() + lIntervalo);
+			idNotificacion = timer.addNotification(sNombreProceso, sNombreProceso, this, timerTriggerAt);
+
+			timer.start();
+
+			ClsLogging.writeFileLogWithoutSession("    - Notificación \"" + sNombreProceso + "\" arrancada.", 3);
+			ClsLogging.writeFileLogWithoutSession("    - Intervalo de ejecución: " + sIntervalo + " minuto(s).", 3);
 		}
 	}
 
@@ -93,22 +82,33 @@ public class SIGASvlProcesoAutomaticoFacturacion extends SIGAServletAdapter impl
 	 */
 	public void handleNotification(Notification notif, Object handback)
 	{
-		ClsLogging.writeFileLogWithoutSession(" - INVOCANDO...  >>>  Ejecutando Notificación: \"" + sNombreProceso + ".", 3);
-
 		try {
-			// invocando al servlet
-			ReadProperties properties = new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
-			String urlSiga = properties.returnProperty("general.urlSIGA");
-			URL url = new URL(urlSiga + "SIGASvlProcesoFacturacion.svrl");
-			url.getContent();
-			
-			// registrando el exito en la invocacion
-			ClsLogging.writeFileLogWithoutSession(" - OK.  >>>  Ejecutando Notificación: \"" + sNombreProceso + "\".", 3);
-
-		} catch (Exception e) {
-			// registrando el error en la invocacion
-			ClsLogging.writeFileLogWithoutSession(" - Notificación \"" + sNombreProceso + "\" ejecutada ERROR. ", 3);
+			if (timer != null) {
+				// desactivando notificacion anterior
+				if (timer.isActive())
+					timer.stop();
+				timer.removeNotification(idNotificacion);
+			}
+		} catch (InstanceNotFoundException e) {
 			e.printStackTrace();
+		} finally { // aunque falle la desactivacion de la notificacion anterior, seguimos con la notificacion
+			ClsLogging.writeFileLogWithoutSession(" - INVOCANDO...  >>>  Ejecutando Notificación: \"" + sNombreProceso + ".", 3);
+	
+			try {
+				// invocando al servlet
+				ReadProperties properties = new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+				String urlSiga = properties.returnProperty("general.urlSIGA");
+				URL url = new URL(urlSiga + "SIGASvlProcesoFacturacion.svrl");
+				url.getContent();
+				
+				// registrando el exito en la invocacion
+				ClsLogging.writeFileLogWithoutSession(" - OK.  >>>  Ejecutando Notificación: \"" + sNombreProceso + "\".", 3);
+	
+			} catch (Exception e) {
+				// registrando el error en la invocacion
+				ClsLogging.writeFileLogWithoutSession(" - Notificación \"" + sNombreProceso + "\" ejecutada ERROR. ", 3);
+				e.printStackTrace();
+			}
 		}
 	}
 
