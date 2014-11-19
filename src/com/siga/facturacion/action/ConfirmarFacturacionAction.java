@@ -103,7 +103,9 @@ public class ConfirmarFacturacionAction extends MasterAction{
 				} else if (accion.equalsIgnoreCase("consultarfactura")){
 					mapDestino = consultarFacturas(mapping, miForm, request, response);
 				} else if (accion.equalsIgnoreCase("editarFechas")){
-					mapDestino = editarFechas(mapping, miForm, request, response);					
+					mapDestino = editarFechas(mapping, miForm, request, response);	
+				} else if (accion.equalsIgnoreCase("actualizarDatosSerieFacturacion")){
+					mapDestino = actualizarDatosSerieFacturacion(mapping, miForm, request, response);						
 				}else if (accion.equalsIgnoreCase("buscarInit")){
 					borrarPaginador(request, paginador);
 					mapDestino = buscarPor(mapping, miForm, request, response);
@@ -377,8 +379,8 @@ public class ConfirmarFacturacionAction extends MasterAction{
 						
 						return exitoRefresco(mensaje,request);
 					}
-				}
-				else{
+				
+				} else{
 					String mensaje = UtilidadesString.getMensajeIdioma(user,"messages.facturacion.descargaFacturas"); 			
 					return exitoRefresco(mensaje,request);					
 				}
@@ -639,11 +641,7 @@ public class ConfirmarFacturacionAction extends MasterAction{
 	 * @return
 	 * @throws SIGAException
 	 */
-	protected String enviarFacturas(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException 
-	{
-		
-		String sNombreFichero = "";
-		String sRutaTemporal = "";
+	protected String enviarFacturas(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		try {
 			UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");
 			ConfirmarFacturacionForm form = (ConfirmarFacturacionForm) formulario;
@@ -654,32 +652,37 @@ public class ConfirmarFacturacionAction extends MasterAction{
 			FacFacturaAdm facturas = new FacFacturaAdm(user);
 			Vector resultado = facturas.getSerieFacturacionConfirmada(idInstitucion, idSerieFacturacion, idProgramacion);
 			if(!resultado.isEmpty()){
-				//Se accede por clave referenciada de la tabla que hace join por lo 
-				//que todos los registro tienen el mismo estado de generacion de pdf.
-				//Cogemos por tanto el estado del priemr registro
-				Hashtable hashPrimeraFacturaSerieProgramacion = (Hashtable)resultado.get(0); 
-				String estadoPDF  = UtilidadesHash.getString(hashPrimeraFacturaSerieProgramacion,FacFacturacionProgramadaBean.C_IDESTADOPDF);
-				if(estadoPDF.equals(FacEstadoConfirmFactBean.PDF_PROGRAMADA.toString())||estadoPDF.equals(FacEstadoConfirmFactBean.PDF_PROCESANDO.toString())){
-					String mensaje = UtilidadesString.getMensajeIdioma(user,"messages.facturacion.PDFFacturaYaProgramada");
-					return exitoRefresco(mensaje,request);
+				Hashtable hash = new Hashtable();
+				FacFacturacionProgramadaAdm adm = new FacFacturacionProgramadaAdm(this.getUserBean(request));
+				hash.put(FacFacturacionProgramadaBean.C_IDINSTITUCION,idInstitucion);
+				hash.put(FacFacturacionProgramadaBean.C_IDSERIEFACTURACION,idSerieFacturacion);
+				hash.put(FacFacturacionProgramadaBean.C_IDPROGRAMACION,idProgramacion);
+				Vector v = adm.selectByPK(hash);
+				FacFacturacionProgramadaBean bean = (FacFacturacionProgramadaBean) v.get(0);
+				
+				if (bean.getIdTipoPlantillaMail() != null && !bean.getIdTipoPlantillaMail().equals("")){
+					Hashtable datosHashtable = new Hashtable();
+					datosHashtable.put("idInstitucion",idInstitucion);
+					datosHashtable.put("idSerieFacturacion",idSerieFacturacion);
+					datosHashtable.put("idProgramacion",idProgramacion);
+					
+					//ME GENERO MI PROGRAMACION DE ENVIO
+					
+					
+					Hashtable datosProceso = new Hashtable();
+					datosProceso.put(SIGASvlProcesoAutomaticoRapido.htNombreProceso,SIGASvlProcesoAutomaticoRapido.procesoGeneracionEnvio);
+					datosProceso.put(SIGASvlProcesoAutomaticoRapido.htNombreDatosHashtable, datosHashtable);
+
+					ClsLogging.writeFileLog("SE PROCEDE A INVOCAR EL PROCESO AUTOMATICO DE GENERACION DE ENVIOS",10);
+					SIGASvlProcesoAutomaticoRapido.NotificarAhora(datosProceso);
+				
 				}else{
-					ClsLogging.writeFileLog("NO EXISTE EL ZIP, SE PASA A PROGRAMAR SU GENERACION",10);
-					generarFacturaSolo(mapping, formulario, request, response);
-					
-					FacFacturacionProgramadaBean factBean = new FacFacturacionProgramadaBean();
-					factBean.setIdInstitucion(Integer.valueOf(idInstitucion));
-					factBean.setIdSerieFacturacion(Long.valueOf(idSerieFacturacion));
-					factBean.setIdProgramacion(Long.valueOf(idProgramacion));
-					factBean.setRealizarEnvio("1");
-					factBean.setGenerarPDF("1");
-					factBean.setEnvio("1");
-					Hashtable hash = new Hashtable();
-					hash.put("REQUEST", request);
-					hash.put("proceso", factBean);
-					
-					SIGASvlProcesoAutomaticoRapido.NotificarAhora(hash);
-				}
-			}else{
+		    		throw new SIGAException("messages.facturacion.almacenar.plantillasEnvioMal");		
+		    	}
+
+			} else{
+				String mensaje = UtilidadesString.getMensajeIdioma(user,"messages.facturacion.descargaFacturas"); 			
+				return exitoRefresco(mensaje,request);					
 			}
 			
 		}catch(SIGAException e){	
@@ -687,8 +690,8 @@ public class ConfirmarFacturacionAction extends MasterAction{
 		} catch (Exception e) {
 			throw new SIGAException("messages.general.error");
 		}
-		return this.exitoRefresco("messages.envioRealizado.success", request);
 		
+		return this.exitoRefresco("messages.envioRealizado.success", request);
 	}
 	
 	protected String consultarFacturas(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
@@ -1334,4 +1337,39 @@ public class ConfirmarFacturacionAction extends MasterAction{
 	    response.setHeader("X-JSON", json.toString());
 		response.getWriter().write(json.toString()); 
 	}	
+	
+	/**
+     *  Funcion que busca los valores de generar PDF y Envio facturas en la serie de facturacion
+     * @param  mapping - Mapeo de los struts
+     * @param  formulario -  Action Form asociado a este Action
+     * @param  request - objeto llamada HTTP
+     * @param  response - objeto respuesta HTTP
+     * @return  String  Destino del action    
+     * @exception  SIGAException  Errores de aplicación
+     */
+    protected String actualizarDatosSerieFacturacion(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+        try {              
+            ConfirmarFacturacionForm form     = (ConfirmarFacturacionForm)formulario;
+            FacSerieFacturacionAdm adm = new FacSerieFacturacionAdm(this.getUserBean(request));
+            String idSerieFacturacion = form.getIdSerieFacturacion();           
+            Integer idInstitucion    = this.getIDInstitucion(request);
+                                   
+            String sWhere=" WHERE " + FacSerieFacturacionBean.T_NOMBRETABLA + "." + FacSerieFacturacionBean.C_IDINSTITUCION + " = " + idInstitucion;
+            sWhere += " 	  AND " + FacSerieFacturacionBean.T_NOMBRETABLA + "." + FacSerieFacturacionBean.C_IDSERIEFACTURACION + " = " + idSerieFacturacion;
+           
+            Vector vDatos = adm.select(sWhere);
+            if (vDatos!=null && vDatos.size()>0) {
+                FacSerieFacturacionBean b = (FacSerieFacturacionBean) vDatos.get(0);
+                request.setAttribute("generarPDF",b.getGenerarPDF());   
+                request.setAttribute("envioFactura",b.getEnvioFactura());
+                request.setAttribute("idTipoPlantilla",b.getIdTipoPlantillaMail());
+                request.setAttribute("idInstitucionSerie",b.getIdInstitucion());
+            }
+           
+        } catch (Exception e) {
+            throwExcp("messages.general.error",new String[] {"modulo.facturacion"},e,null);
+        }    
+        
+        return "actualizaDatos";
+    }
 }

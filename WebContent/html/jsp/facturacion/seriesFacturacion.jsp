@@ -458,7 +458,7 @@
 		}
 		
 		function cambiaSerie() {
-			document.forms[0].modo.value="buscarPor";
+			document.forms[0].modo.value="actualizarDatosSerieFacturacion";
 			document.forms[0].submit();
 		}
 

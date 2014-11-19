@@ -1193,7 +1193,8 @@
 			<forward name="exitoConString" path="/html/jsp/facturacion/exitoConString.jsp"/>
 			<forward name="abrirFechaCargo" path="/html/jsp/facturacion/ventanaFechaCargo.jsp"/>
 			<forward name="ver" path="/html/jsp/facturacion/seriesFacturacion.jsp"/>	
-			<forward name="editarFechas"	path="/html/jsp/facturacion/seriesFacturacion.jsp"/>			
+			<forward name="editarFechas"	path="/html/jsp/facturacion/seriesFacturacion.jsp"/>		
+			<forward name="actualizaDatos" path="/html/jsp/facturacion/actualizaDatos.jsp"/>	
 		</action>
 
 		<!-- ***** Facturación / Buscar Factura ***** -->
