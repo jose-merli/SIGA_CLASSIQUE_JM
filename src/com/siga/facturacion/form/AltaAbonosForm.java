@@ -27,6 +27,7 @@ public class AltaAbonosForm extends MasterForm{
 	private String fechaFactura="";
 	private String idPersona="";
 	private String motivos="";
+	private String facturas="";
 	
 	// Metodos set
 	
@@ -63,6 +64,10 @@ public class AltaAbonosForm extends MasterForm{
 	public void setMotivos(String motivo){
 		this.motivos=motivo;		
 	}
+	
+	public void setFacturas(String facturas){
+		this.facturas=facturas;		
+	}
 			
 	// Metodos get	
 	
@@ -98,6 +103,10 @@ public class AltaAbonosForm extends MasterForm{
 		
 	public String getMotivos(){
 		return this.motivos;		
+	}
+	
+	public String getFacturas(){
+		return this.facturas;		
 	}
 				
 }

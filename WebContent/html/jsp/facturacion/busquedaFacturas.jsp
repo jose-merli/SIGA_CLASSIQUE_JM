@@ -88,6 +88,9 @@
 	Integer idInstitucion = (Integer)request.getAttribute("idInstitucion");
 	if (idInstitucion!= null) 
 		sSerieFacturacion[0] = idInstitucion.toString();
+	
+	String fechaActual = UtilidadesBDAdm.getFechaBD("");
+	
 %>	
 	
 <%@page import="java.util.ArrayList"%>
@@ -104,6 +107,9 @@
 	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js?v=${sessionScope.VERSIONJS}'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
 	<script src="<%=app%>/html/js/validation.js" type="text/javascript"></script>
 
+	<link rel="stylesheet" href="<html:rewrite page='/html/js/jquery.ui/css/smoothness/jquery-ui-1.10.3.custom.min.css'/>">
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-ui-1.10.3.custom.min.js?v=${sessionScope.VERSIONJS}'/>"></script>	  	
+
 	<!-- INICIO: TITULO Y LOCALIZACION -->
 	<!-- Escribe el título y localización en la barra de título del frame principal -->
 	<siga:Titulo 
@@ -118,7 +124,7 @@
 </head>
 
 
-<body onload="ajusteAlto('resultado');<%=buscar%>">
+<body onload="ajusteAltoBotones('resultado');<%=buscar%>">
 <bean:define id="path" name="org.apache.struts.action.mapping.instance"	property="path" scope="request" />
 <table class="tablaCentralCampos" align="center">
 
@@ -226,7 +232,7 @@
 	
 	</table>
 	<!-- FIN: CAMPOS DE BUSQUEDA-->
-
+	
 
 	<!-- INICIO: BOTONES BUSQUEDA -->
 	<!-- Esto pinta los botones que le digamos de busqueda. Ademas, tienen asociado cada
@@ -237,7 +243,6 @@
 		<siga:ConjBotonesBusqueda botones="B,L,CON" titulo="facturacion.buscarFactura.cabecera"/>
 
 	<!-- FIN: BOTONES BUSQUEDA -->
-
 
 	<!-- FORMULARIO PARA RECOGER LOS DATOS DE LA BUSQUEDA -->
 <html:form action="/CEN_BusquedaClientesModal.do" method="POST" target="mainWorkArea" type="">
@@ -252,8 +257,12 @@
 	<html:hidden property="accionAnterior" value="${path}"/>
 
 </html:form>
-
-	
+<html:form action="/FAC_AltaAbonos.do" method="POST" target="mainWorkArea">
+	<html:hidden property="facturas" value=""/>
+	<html:hidden property="motivos" value=""/>
+	<html:hidden property="fecha" value="<%=fechaActual%>"/>
+	<html:hidden property="modo" value=""/>
+</html:form>	
 	<!-- INICIO: SCRIPTS BOTONES BUSQUEDA -->
 	<script language="JavaScript">
 		//Funcion asociada a boton buscarCliente -->
@@ -344,9 +353,130 @@
 			document.RecuperarConsultasForm.submit();
 			
 		}
+		
+		// Asociada al boton Anular -> abonos masivos
+		function accionAnular() {
+			var checks =  window.frames.resultado.document.getElementsByName("sel");
+			var seleccionado=false;
+			if(checks.length>0){
+				
+				for (var i=0; i<checks.length; i++) {
+					if (checks[i].checked) {
+						seleccionado=true;
+					}
+				}
+			if(seleccionado){
+				jQuery("#dialogoAnular").dialog(
+						{
+						      height: 250,
+						      width: 525,
+						      modal: true,
+						      resizable: false,
+						      buttons: {					          	
+						            "Guardar y Cerrar": function() {
+						            
+						            if(window.frames.document.getElementsByName("motivos")[1].value==""){
+						            	fin();
+										var mensaje = '<siga:Idioma key="gratuita.literal.sustitucionLetradoGuardia.Motivos"/>';
+										alert(mensaje);
+										return false;
+						            }
+						            	
+						            anularFacturas();						            	
+						            jQuery( this ).dialog( "close" );
+						            document.AltaAbonosForm.facturas.value="";
+						            document.AltaAbonosForm.fecha.value="";
+						            document.AltaAbonosForm.motivos.value="";
+						            
+						            },
+						            "Cerrar": function() {
+							              jQuery( this ).dialog( "close" );
+							              document.AltaAbonosForm.facturas.value="";
+								          document.AltaAbonosForm.fecha.value="";
+								          document.AltaAbonosForm.motivos.value="";
+							            }
+						          }
+						    }
+					);
+				jQuery(".ui-widget-overlay").css("opacity","0");
+			}else{
+				fin();
+				var mensaje = '<siga:Idioma key="general.message.seleccionar"/>';
+				alert(mensaje);
+				return false;
+			}	
+			
+		
+		}else{
+			fin();
+			var mensaje = '<siga:Idioma key="general.message.seleccionar"/>';
+			alert(mensaje);
+			return false;
+		}
+		
+		
+		}
+		
+	function anularFacturas(){
+		
+		sub();
+		var checks =  window.frames.resultado.document.getElementsByName("sel");
+		
+		if (checks.length>1000) {
+			alert ('<siga:Idioma key="facturacion.anulacion.error.anularMilFacturas"/>');
+			fin();
+			return false;
+		}
+		
+		for (var i=0; i<checks.length; i++) {
+			if (checks[i].checked) {
+								
+				if (document.AltaAbonosForm.facturas.value=="") {
+					document.AltaAbonosForm.facturas.value += checks[i].value;						
+				} else {
+					document.AltaAbonosForm.facturas.value += ";" + checks[i].value;
+				}	
+			}
+		}
+		//estos dos campos están dentro del jdialog
+		document.AltaAbonosForm.motivos.value=window.frames.document.getElementsByName("motivos")[1].value;
+		document.AltaAbonosForm.fecha.value=window.frames.document.getElementsByName("fecha")[1].value;
+		document.AltaAbonosForm.target = "submitArea";
+		document.AltaAbonosForm.modo.value="anularFacturas";
+		document.AltaAbonosForm.submit();
+		fin();
+
+	}
+		
 	</script>
 	
 	<!-- FIN: SCRIPTS BOTONES BUSQUEDA -->
+
+
+	<div id="dialogoAnular" title="<siga:Idioma key='facturacion.altaAbonos.literal.cabeceraDevolucion'/>" style="display:none">
+	<div>
+		<siga:ConjCampos leyenda="facturacion.altaAbonos.literal.datosAbono">
+			<table>
+			<tr>
+			<td class="labelText">
+					<siga:Idioma key="facturacion.busquedaAbonos.literal.fecha"/>
+				</td>	
+				<td >
+					<html:text id="fecha" property="fecha" size="10" maxlength="10"  readOnly="true" value="<%=fechaActual%>"></html:text>
+				</td>
+			</tr>
+			<tr>
+				<td class="labelText">
+					<siga:Idioma key="facturacion.altaAbonos.literal.motivos"/>&nbsp;(*)
+				</td>
+				<td >
+					<html:textarea id="motivos" property="motivos" onKeyDown="cuenta(this,255)" onChange="cuenta(this,255)" rows="4" size="100" value="" style="overflow-y:auto; overflow-x:hidden; width:300px; height:50px; resize:none;"></html:textarea>
+				</td>
+			</tr>
+			</table>
+		</siga:ConjCampos>
+	</div>
+	</div>
 
 	<!-- INICIO: IFRAME LISTA RESULTADOS -->
 	<iframe align="center" src="<%=app%>/html/jsp/general/blank.jsp"
@@ -358,10 +488,11 @@
 					marginwidth="0";					 
 					class="frameGeneral">
 	</iframe>
-			
+	<!-- BOTONES ACCION: an: "Anular" -->	 
+	<siga:ConjBotonesAccion botones="an" />
+	<!-- FIN: BOTONES ACCION -->		
 <!-- INICIO: SUBMIT AREA -->
 <iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
 <!-- FIN: SUBMIT AREA -->
-
 </body>
 </html>
