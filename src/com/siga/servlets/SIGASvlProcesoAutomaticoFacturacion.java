@@ -22,8 +22,8 @@ public class SIGASvlProcesoAutomaticoFacturacion extends SIGAServletAdapter impl
 {
 	private static final long serialVersionUID = 1L;
 	
-	private static Timer timer;
-	private static Integer idNotificacion;
+	private Timer timer;
+	private Integer idNotificacion;
 	private static String sNombreProceso = "ProcesoAutomaticoFacturacion";
 
 	/**
