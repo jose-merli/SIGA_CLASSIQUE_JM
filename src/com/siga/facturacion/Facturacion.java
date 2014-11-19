@@ -395,7 +395,7 @@ public class Facturacion {
 		    		UtilidadesHash.set(hashNew, FacFacturacionProgramadaBean.C_FECHACONFIRMACION, "sysdate");
 		    		UtilidadesHash.set(hashNew, FacFacturacionProgramadaBean.C_IDESTADOCONFIRMACION, FacEstadoConfirmFactBean.CONFIRM_FINALIZADA);
 
-					this.generarPdfEnvioProgramacionFactura(factBean, request, log, factBean.getIdSerieFacturacion(), factBean.getIdProgramacion(), claves, hashNew, true);
+					this.generarPdfEnvioProgramacionFactura(factBean, request, log, factBean.getIdSerieFacturacion(), factBean.getIdProgramacion(), claves, hashNew, true, null);
 				
 				} catch (ClsExceptions e) {
 					ClsLogging.writeFileLogError("@@@ Error controlado al confirmar facturas (Proceso automático):"+e.getMsg(),e,3);
@@ -706,7 +706,7 @@ public class Facturacion {
     		boolean isGenerarPdf = beanP.getGenerarPDF() != null && beanP.getGenerarPDF().trim().equals("1");
     		boolean isGenerarEnvio = beanP.getEnvio() != null && beanP.getEnvio().trim().equals("1") && (beanP.getRealizarEnvio()==null || beanP.getRealizarEnvio().toString().equalsIgnoreCase("1"));
     		if(isGenerarPdf){
-    			msjAviso = generarPdfEnvioProgramacionFactura(beanP,req,log,idSerieFacturacion, idProgramacion, claves, hashNew, isGenerarEnvio);
+    			msjAviso = generarPdfEnvioProgramacionFactura(beanP,req,log,idSerieFacturacion, idProgramacion, claves, hashNew, isGenerarEnvio, tx);
     		}
 			
     	} catch (Exception e) {
@@ -747,6 +747,7 @@ public class Facturacion {
      * @param claves
      * @param hashFactura
      * @param isGenerarEnvio
+     * @param tx
      * @return
      * @throws ClsExceptions
      * @throws SIGAException
@@ -760,10 +761,13 @@ public class Facturacion {
 	    		Long idProgramacion,
 	    		String [] claves,	
 	    		Hashtable<String,Object> hashFactura,
-	    		boolean isGenerarEnvio
+	    		boolean isGenerarEnvio,
+	    		UserTransaction tx
     		)throws ClsExceptions, SIGAException, Exception {
     	
-    	UserTransaction tx = (UserTransaction) this.usrbean.getTransactionPesada();
+		if (tx == null)
+			tx = (UserTransaction) this.usrbean.getTransactionPesada();
+    	
     	FacFacturacionProgramadaAdm facadm = new FacFacturacionProgramadaAdm(this.usrbean);
     	
     	String msjAviso = null;
