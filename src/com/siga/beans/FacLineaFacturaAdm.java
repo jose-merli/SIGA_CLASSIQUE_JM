@@ -256,13 +256,9 @@ public class FacLineaFacturaAdm extends MasterBeanAdministrador {
 	               for (int i = 0; i < rc.size(); i++){
 	                  Row fila = (Row) rc.get(i);
 	                  Hashtable resultado=fila.getRow();	                  
-	                  double importeNeto=UtilidadesNumero.redondea(new Double((String)resultado.get("CANTIDAD_LINEA")).doubleValue() * new Double((String)resultado.get("PRECIO_LINEA")).doubleValue(),2);
-	                  double importeIva=UtilidadesNumero.redondea((importeNeto * new Double((String)resultado.get("IVA_LINEA")).doubleValue())/100,2);
-	                  double importeTotal=UtilidadesNumero.redondea(importeNeto+importeIva,2);
-	                  
-//	                  resultado.put("NETO_LINEA",new Double(importeNeto).toString());
-//	                  resultado.put("IMPORTE_IVA_LINEA",new Double(importeIva).toString());
-//	                  resultado.put("TOTAL_LINEA",new Double(importeTotal).toString());
+	                  double importeNeto = new Double((String)resultado.get("CANTIDAD_LINEA")).doubleValue() * UtilidadesNumero.redondea(new Double((String)resultado.get("PRECIO_LINEA")).doubleValue(), 2);
+	                  double importeIva = new Double((String)resultado.get("CANTIDAD_LINEA")).doubleValue() * UtilidadesNumero.redondea(new Double((String)resultado.get("PRECIO_LINEA")).doubleValue() * new Double((String)resultado.get("IVA_LINEA")).doubleValue() /100, 2);
+	                  double importeTotal = importeNeto + importeIva;
 	                  
 	                  resultado.put("NETO_LINEA",        UtilidadesNumero.formato(new Double(importeNeto).toString()));
 	                  resultado.put("IMPORTE_IVA_LINEA", UtilidadesNumero.formato(new Double(importeIva).toString()));

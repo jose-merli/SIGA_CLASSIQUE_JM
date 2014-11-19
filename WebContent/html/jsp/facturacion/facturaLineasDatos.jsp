@@ -150,8 +150,7 @@
 					document.GestionarFacturaForm.datosLineaTotal.value = "";
 				
 				} else {						
-					var calculoTotalNeto = eval(precio) * eval(cantidad);
-					calculoTotalNeto =  Math.abs(calculoTotalNeto * 100) / 100;
+					var calculoTotalNeto = eval(cantidad) * roundNumber(eval(precio), 2);
 					document.GestionarFacturaForm.datosLineaTotalNeto.value = calculoTotalNeto;
 					document.GestionarFacturaForm.datosLineaTotalNeto.value = convertirAFormato(document.GestionarFacturaForm.datosLineaTotalNeto.value);
 					
@@ -162,8 +161,7 @@
 						document.GestionarFacturaForm.datosLineaTotal.value = "";
 					
 					} else {
-						var calculoTotalIva = calculoTotalNeto * eval(iva) / 100;
-						calculoTotalIva =  Math.abs(calculoTotalIva * 100) / 100;
+						var calculoTotalIva = eval(cantidad) * roundNumber(eval(precio) * eval(iva) / 100, 2);
 						document.GestionarFacturaForm.datosLineaTotalIVA.value = calculoTotalIva;
 						document.GestionarFacturaForm.datosLineaTotalIVA.value = convertirAFormato(document.GestionarFacturaForm.datosLineaTotalIVA.value);
 						

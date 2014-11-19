@@ -115,10 +115,10 @@
 				 FacLineaFacturaBean linea = (FacLineaFacturaBean) vLineas.get(i-1);
 				 if (linea != null) {
 					int iCantidad = linea.getCantidad().intValue();
-					double dPrecioUnitario = linea.getPrecioUnitario();					
-					double dImporteNeto =  dPrecioUnitario * iCantidad;
+					double dPrecioUnitario = linea.getPrecioUnitario();
+					double dImporteNeto = iCantidad * UtilidadesNumero.redondea(dPrecioUnitario, 2);
 					double dIVA = linea.getIva().doubleValue();
-					double dImporteIVA = dImporteNeto * dIVA / 100;
+					double dImporteIVA = iCantidad * UtilidadesNumero.redondea(dPrecioUnitario * dIVA / 100, 2);
 					double dImporteTotal = dImporteIVA + dImporteNeto;
 					double dAnticipado = linea.getImporteAnticipado().doubleValue();
 					

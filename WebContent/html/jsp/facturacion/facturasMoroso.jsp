@@ -249,9 +249,9 @@
 						Integer cantidad = linea.getCantidad();
 						Float iva = linea.getIva();
 						Double anticipado = linea.getImporteAnticipado();
-						double imp = cantidad.intValue()* importe.doubleValue();
-						double ivaImporte = imp * iva.floatValue()/100;
-						double aux = imp * (1 + iva.floatValue() / 100);
+						double imp = cantidad.intValue() * UtilidadesNumero.redondea(importe.doubleValue(), 2);
+						double ivaImporte = cantidad.intValue() * UtilidadesNumero.redondea(importe.doubleValue() * iva.floatValue() / 100, 2);
+						double aux = imp + ivaImporte;
 						Double total = new Double(UtilidadesNumero.redondea(aux, 2));
 	
 						importeTotal = importeTotal + imp;
