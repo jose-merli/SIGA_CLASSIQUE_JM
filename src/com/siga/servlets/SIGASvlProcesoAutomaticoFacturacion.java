@@ -60,10 +60,7 @@ public class SIGASvlProcesoAutomaticoFacturacion extends SIGAServletAdapter impl
 
 		} else {
 			try {
-				if (timer == null) {
-					// creando timer la primera vez
-					timer = new Timer();
-				} else {
+				if (timer != null) {
 					// desactivando notificacion anterior
 					if (timer.isActive())
 						timer.stop();
@@ -72,10 +69,12 @@ public class SIGASvlProcesoAutomaticoFacturacion extends SIGAServletAdapter impl
 			} catch (InstanceNotFoundException e) {
 				e.printStackTrace();
 			} finally { // aunque falle la desactivacion de la notificacion anterior, creamos la nueva notificacion
+				timer = new Timer();
 				timer.addNotificationListener(this, null, sNombreProceso);
 	
 				long lIntervalo = Long.parseLong(sIntervalo) * 60 * 1000;
-				Date timerTriggerAt = new Date((new Date()).getTime() + lIntervalo);
+				Date timerTriggerAt = new Date();
+				timerTriggerAt = new Date(timerTriggerAt.getTime() + lIntervalo);
 				idNotificacion = timer.addNotification(sNombreProceso, sNombreProceso, this, timerTriggerAt);
 	
 				timer.start();
