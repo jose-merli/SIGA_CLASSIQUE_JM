@@ -245,7 +245,7 @@ public class Facturacion {
 				nombreFichero = "LOG_FAC_CONFIRMACION_" + beanFacturacionProgramada.getIdSerieFacturacion() + "_" + beanFacturacionProgramada.getIdProgramacion() + ".log.xls"; 
 				log = new SIGALogging(pathFichero2 + sBarra2 + beanFacturacionProgramada.getIdInstitucion() + sBarra2 + nombreFichero);
 				try {
-					this.confirmarProgramacionFactura(beanFacturacionProgramada, request, false, log, true, true, null, false);
+					this.confirmarProgramacionFactura(beanFacturacionProgramada, request, false, log, true, false, 1);
 					
 				} catch (ClsExceptions e) {
 					ClsLogging.writeFileLogError("@@@ Error controlado al confirmar facturas (Proceso automático):" + e.getMsg(), e, 3);
@@ -320,7 +320,7 @@ public class Facturacion {
 				nombreFichero = "LOG_FAC_CONFIRMACION_" + factBean.getIdSerieFacturacion() +"_"+ factBean.getIdProgramacion() +".log.xls"; 
 				log = new SIGALogging(pathFichero2+sBarra2+factBean.getIdInstitucion()+sBarra2+nombreFichero);
 				try {
-					confirmarProgramacionFactura(factBean, request, false, log, true, true, null, true);
+					confirmarProgramacionFactura(factBean, request, false, log, true, true, 1);
 					generarZip(factBean.getIdInstitucion().toString(), factBean.getIdSerieFacturacion().toString(), factBean.getIdProgramacion().toString());
 				} catch (ClsExceptions e) {
 					ClsLogging.writeFileLogError("@@@ Error controlado al confirmar facturas (Proceso automático):"+e.getMsg(),e,3);
@@ -395,7 +395,8 @@ public class Facturacion {
 		    		UtilidadesHash.set(hashNew, FacFacturacionProgramadaBean.C_FECHACONFIRMACION, "sysdate");
 		    		UtilidadesHash.set(hashNew, FacFacturacionProgramadaBean.C_IDESTADOCONFIRMACION, FacEstadoConfirmFactBean.CONFIRM_FINALIZADA);
 
-					this.generarPdfEnvioProgramacionFactura(factBean, request, log, factBean.getIdSerieFacturacion(), factBean.getIdProgramacion(), claves, hashNew, true, null);
+		    		UserTransaction tx = (UserTransaction) this.usrbean.getTransactionPesada();
+					this.generarPdfEnvioProgramacionFactura(factBean, request, log, factBean.getIdSerieFacturacion(), factBean.getIdProgramacion(), claves, hashNew, true, tx);
 				
 				} catch (ClsExceptions e) {
 					ClsLogging.writeFileLogError("@@@ Error controlado al confirmar facturas (Proceso automático):"+e.getMsg(),e,3);
@@ -532,18 +533,31 @@ public class Facturacion {
      * @param req
      * @param archivarFacturacion
      * @param log
-     * @param isTransacionPesada
      * @param generarPagosBanco
-     * @param tx
+     * @param soloGenerarFactura
+     * @param iTransaccionInterna = 0:TransaccionPadre; 1:TransaccionPesada; 2:TransaccionLigera
      * @throws ClsExceptions
      * @throws SIGAException
      */
-    public void confirmarProgramacionFactura(FacFacturacionProgramadaBean beanP, HttpServletRequest req, boolean archivarFacturacion, SIGALogging log, boolean isTransacionPesada, boolean generarPagosBanco, UserTransaction tx, boolean soloGenerarFactura) throws ClsExceptions, SIGAException {
-    	boolean bTransaccionInterna = (tx == null);
+    public void confirmarProgramacionFactura(
+    		FacFacturacionProgramadaBean beanP, 
+    		HttpServletRequest req, 
+    		boolean archivarFacturacion, 
+    		SIGALogging log, 
+    		boolean generarPagosBanco, 
+    		boolean soloGenerarFactura, 
+    		int iTransaccionInterna) throws ClsExceptions, SIGAException {
+    	
+		UserTransaction tx = null;
+		if (iTransaccionInterna == 1) {
+			tx = (UserTransaction) this.usrbean.getTransactionPesada();
+		} else if (iTransaccionInterna == 2) { 
+			tx = this.usrbean.getTransaction();
+		}
+    	
     	boolean isFacturadoOk = true;
     	String msjAviso = null; 
     	try {
-
     		// fichero de log
 		    ReadProperties p= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
     		String pathFichero2 = p.returnProperty("facturacion.directorioFisicoLogProgramacion");
@@ -585,32 +599,24 @@ public class Facturacion {
     		String [] claves = {FacFacturacionProgramadaBean.C_IDINSTITUCION,FacFacturacionProgramadaBean.C_IDPROGRAMACION,FacFacturacionProgramadaBean.C_IDSERIEFACTURACION};
     		String [] camposFactura = {FacFacturacionProgramadaBean.C_FECHACONFIRMACION, FacFacturacionProgramadaBean.C_ARCHIVARFACT,FacFacturacionProgramadaBean.C_IDESTADOCONFIRMACION,FacFacturacionProgramadaBean.C_LOGERROR};
 
-    		if(!soloGenerarFactura){
-    			
-	    		if (bTransaccionInterna){
-		    		if(isTransacionPesada)
-		    			tx = (UserTransaction) this.usrbean.getTransactionPesada();
-		    		else
-		    			tx = this.usrbean.getTransaction();
-	    		}
-    		
+    		if(!soloGenerarFactura){    		
 	    		try {
 	    			//////////// INICIO TRANSACCION ////////////////
-	    			if (Status.STATUS_NO_TRANSACTION == tx.getStatus())
-	    				tx.begin();
+	    			if (tx!=null && Status.STATUS_NO_TRANSACTION == tx.getStatus())
+	    				tx.begin();	    		
 	    			
 	    			// Lo primero que se hace es poner la facturacion en estado EJECUTANDO CONFIRMACION
 	    			UtilidadesHash.set(hashNew, FacFacturacionProgramadaBean.C_IDESTADOCONFIRMACION, FacEstadoConfirmFactBean.EJECUTANDO_CONFIRMACION);
-	    			facadm.updateDirect(hashNew, claves, camposFactura);
+	    			facadm.updateDirect(hashNew, claves, camposFactura);	    
 	    			
-	    			if (bTransaccionInterna)
+	    			if (tx!=null)
 	    				tx.commit();
 	    			//////////// FIN TRANSACCION ////////////////
 				
 	    			ClsLogging.writeFileLog("### Procesando CONFIRMACION: "+idProgramacion ,7);
 				
 	    			//////////// INICIO TRANSACCION ////////////////
-	    			if (bTransaccionInterna)
+	    			if (tx!=null)
 	    				tx.begin();
 	
 	    			//Se genera numero de factura definitivo
@@ -661,7 +667,7 @@ public class Facturacion {
 	    			UtilidadesHash.set(hashNew,FacFacturacionProgramadaBean.C_LOGERROR,"");
 	    			facadm.updateDirect(hashNew, claves, camposFactura);
 	    			
-	    			if (bTransaccionInterna)
+	    			if (tx!=null)
 	    				tx.commit();
 	    			//////////// FIN TRANSACCION ////////////////
 	    			
@@ -669,7 +675,7 @@ public class Facturacion {
 	    			ClsLogging.writeFileLog("CONFIRMAR Y PRESENTAR OK ",10);
 	
 	    		} catch (Exception e) {    		
-	    			if (bTransaccionInterna) {
+	    			if (tx!=null) {
 	    				try { // Tratamiento rollback
 	    					if (Status.STATUS_ACTIVE  == tx.getStatus()){
 	    						tx.rollback();
@@ -688,13 +694,15 @@ public class Facturacion {
 	    			}
 	
 	    			//////////// INICIO TRANSACCION ////////////////
-	    			if (bTransaccionInterna)
+	    			if (tx!=null)
 	    				tx.begin();
+	    			
 	    			UtilidadesHash.set(hashNew, FacFacturacionProgramadaBean.C_IDESTADOCONFIRMACION, FacEstadoConfirmFactBean.ERROR_CONFIRMACION);
 	    			UtilidadesHash.set(hashNew, FacFacturacionProgramadaBean.C_FECHACONFIRMACION, "");
 	    			UtilidadesHash.set(hashNew,FacFacturacionProgramadaBean.C_LOGERROR,nombreFichero);
 	    			facadm.updateDirect(hashNew, claves, camposFactura);
-	    			if (bTransaccionInterna)
+	    			
+	    			if (tx!=null)
 	    				tx.commit();
 	    			//////////// FIN TRANSACCION ////////////////
 	
@@ -716,13 +724,11 @@ public class Facturacion {
     		}
 			
     	} catch (Exception e) {
-			if (bTransaccionInterna) {
-				try { // Tratamiento rollback
-					if (Status.STATUS_ACTIVE  == tx.getStatus()){
-						tx.rollback();
-					}
-				} catch (Exception e2) {}
-			}
+			try { // Tratamiento rollback
+				if (tx!=null && Status.STATUS_ACTIVE  == tx.getStatus()){
+					tx.rollback();
+				}
+			} catch (Exception e2) {}
 			
 			if (e instanceof SIGAException) {
 				throw (SIGAException) e;
@@ -771,9 +777,6 @@ public class Facturacion {
 	    		UserTransaction tx
     		)throws ClsExceptions, SIGAException, Exception {
     	
-		if (tx == null)
-			tx = (UserTransaction) this.usrbean.getTransactionPesada();
-    	
     	FacFacturacionProgramadaAdm facadm = new FacFacturacionProgramadaAdm(this.usrbean);
     	
     	String msjAviso = null;
@@ -786,20 +789,25 @@ public class Facturacion {
 			ClsLogging.writeFileLog("TIENE QUE GENERAR PDF",10);
 	
 			//////////// INICIO TRANSACCION ////////////////
-			tx.begin();
+			if (tx!=null) 
+				tx.begin();
+			
 			UtilidadesHash.set(hashFactura, FacFacturacionProgramadaBean.C_IDESTADOPDF, FacEstadoConfirmFactBean.PDF_PROCESANDO); // cambio de estado PDF a PROCESANDO
 			facadm.updateDirect(hashFactura, claves, camposPDF);
-			tx.commit();
+			
+			if (tx!=null) 
+				tx.commit();
 			//////////// FIN TRANSACCION ////////////////
 	
 			//////////// ALMACENAR RAPIDA ////////////////
 			//En facturaciones rápidas, en compra de PYS no hay que generar el excel con el log
 			int errorAlmacenar = this.generaryEnviarProgramacionFactura(req, beanP.getIdInstitucion(), idSerieFacturacion, idProgramacion, isGenerarEnvio, log, true);
 			
+			////////////INICIO TRANSACCION ////////////////
+			if (tx!=null) 
+				tx.begin();	
 			switch (errorAlmacenar) {
-				case 0: //NO HAY ERROR. SE HA GENERADO CORRECTAMENTE Y SE PROCESADO EL ENVIO
-					//////////// INICIO TRANSACCION ////////////////
-					tx.begin();							
+				case 0: //NO HAY ERROR. SE HA GENERADO CORRECTAMENTE Y SE PROCESADO EL ENVIO										
 					if (isGenerarEnvio) {
 						UtilidadesHash.set(hashFactura, FacFacturacionProgramadaBean.C_IDESTADOPDF, FacEstadoConfirmFactBean.PDF_FINALIZADA); // cambio de estado PDF a FINALIZADA
 						UtilidadesHash.set(hashFactura, FacFacturacionProgramadaBean.C_IDESTADOENVIO, FacEstadoConfirmFactBean.ENVIO_FINALIZADA); // cambio de estado ENVIO a FINALIZADO
@@ -808,17 +816,13 @@ public class Facturacion {
 					} else{
 						UtilidadesHash.set(hashFactura, FacFacturacionProgramadaBean.C_IDESTADOPDF, FacEstadoConfirmFactBean.PDF_FINALIZADA); // cambio de estado PDF a FINALIZADA
 						facadm.updateDirect(hashFactura, claves, camposPDF);
-					}					
-					tx.commit();
-					//////////// FIN TRANSACCION ////////////////
-		
+					}		
+					
 					ClsLogging.writeFileLog("OK TODO. CAMBIO DE ESTADOS",10);
 					break;
 					
 				case 1: // ERROR EN GENERAR PDF
 					ClsLogging.writeFileLog("ERROR AL ALMACENAR FACTURA. RETORNO=" + errorAlmacenar, 3);
-					//////////// INICIO TRANSACCION ////////////////
-					tx.begin();
 					msjAviso = "messages.facturacion.confirmacion.errorPdf";
 					if (isGenerarEnvio) {
 						UtilidadesHash.set(hashFactura, FacFacturacionProgramadaBean.C_IDESTADOPDF, FacEstadoConfirmFactBean.PDF_FINALIZADAERRORES); // cambio de estado PDF a FINALIZADA CON ERRRORES
@@ -828,14 +832,10 @@ public class Facturacion {
 						UtilidadesHash.set(hashFactura, FacFacturacionProgramadaBean.C_IDESTADOPDF, FacEstadoConfirmFactBean.PDF_FINALIZADAERRORES); // cambio de estado PDF a FINALIZADA CON ERRRORES
 					}
 					facadm.updateDirect(hashFactura, claves, camposPDF);
-					tx.commit();
-					//////////// FIN TRANSACCION ////////////////
 					break;
 					
 				case 2: // ERROR EN ENVIO FACTURA
 					ClsLogging.writeFileLog("ERROR AL ALMACENAR FACTURA. RETORNO="+errorAlmacenar,3);					
-					//////////// INICIO TRANSACCION ////////////////
-					tx.begin();
 					msjAviso = "messages.facturacion.confirmacion.errorEnvio";
 					if (isGenerarEnvio) {
 						UtilidadesHash.set(hashFactura, FacFacturacionProgramadaBean.C_IDESTADOPDF, FacEstadoConfirmFactBean.PDF_FINALIZADA); // cambio de estado PDF a FINALIZADA
@@ -845,15 +845,11 @@ public class Facturacion {
 						UtilidadesHash.set(hashFactura, FacFacturacionProgramadaBean.C_IDESTADOPDF, FacEstadoConfirmFactBean.PDF_FINALIZADA); // cambio de estado PDF a FINALIZADA
 						facadm.updateDirect(hashFactura, claves, camposPDF);
 					}
-					tx.commit();
-					//////////// FIN TRANSACCION ////////////////
 		
 					ClsLogging.writeFileLog("ERROR ENVIAR FACTURA. CAMBIO DE ESTADOS",10);
 					break;
 					
 				default:
-					//////////// INICIO TRANSACCION ////////////////
-					tx.begin();
 					msjAviso = "messages.facturacion.confirmacion.errorPdf";
 					if (isGenerarEnvio) {
 						UtilidadesHash.set(hashFactura, FacFacturacionProgramadaBean.C_IDESTADOPDF, FacEstadoConfirmFactBean.PDF_FINALIZADAERRORES); // cambio de estado PDF a FINALIZADA CON ERRRORES
@@ -863,30 +859,27 @@ public class Facturacion {
 						UtilidadesHash.set(hashFactura, FacFacturacionProgramadaBean.C_IDESTADOPDF, FacEstadoConfirmFactBean.PDF_FINALIZADAERRORES); // cambio de estado PDF a FINALIZADA CON ERRRORES
 						facadm.updateDirect(hashFactura, claves, camposPDF);
 					}
-					tx.commit();
-					//////////// FIN TRANSACCION ////////////////
 		
 					ClsLogging.writeFileLog("ERROR GENERAL GENERAR/ENVIAR FACTURA. CAMBIO DE ESTADOS",10);
 					break;
 			}
+			if (tx!=null)
+				tx.commit();
+			//////////// FIN TRANSACCION ////////////////
 
-
-		} catch (Exception ee) {
+		} catch (Exception e) {
 
 			ClsLogging.writeFileLog("ERROR GENERAL EN TRY GENERAR/ENVIAR.",10);
-
-			try {
-				if(tx != null)
-					tx.rollback();
-			} catch (Exception ex) {
-
-			}
+			if(tx!=null)
+				tx.rollback();
 
 			// ESCRIBO EN EL LOG mensaje general ??
-			log.writeLogFactura("PDF/ENVIO","N/A","N/A","Error general en el proceso de generación o envío de facturas PDF: "+ee.toString());
+			log.writeLogFactura("PDF/ENVIO","N/A","N/A","Error general en el proceso de generación o envío de facturas PDF: "+e.toString());
 
 			//////////// INICIO TRANSACCION ////////////////
-			tx.begin();
+			if (tx!=null)
+				tx.begin();
+			
 			if (isGenerarEnvio) {
 				UtilidadesHash.set(hashFactura, FacFacturacionProgramadaBean.C_IDESTADOPDF, FacEstadoConfirmFactBean.PDF_FINALIZADAERRORES); // cambio de estado PDF a FINALIZADA CON ERRRORES
 				UtilidadesHash.set(hashFactura, FacFacturacionProgramadaBean.C_IDESTADOENVIO, FacEstadoConfirmFactBean.ENVIO_FINALIZADAERRORES); // cambio de estado ENVIO a FINALIZADO CON ERRRORES
@@ -896,10 +889,12 @@ public class Facturacion {
 				UtilidadesHash.set(hashFactura, FacFacturacionProgramadaBean.C_IDESTADOPDF, FacEstadoConfirmFactBean.PDF_FINALIZADAERRORES); // cambio de estado PDF a FINALIZADA CON ERRRORES
 				facadm.updateDirect(hashFactura, claves, camposPDF);
 			}
-			tx.commit();
+			
+			if (tx!=null)
+				tx.commit();
 			//////////// FIN TRANSACCION ////////////////
 
-			throw ee;
+			throw e;
 		}
 		
 		return msjAviso;

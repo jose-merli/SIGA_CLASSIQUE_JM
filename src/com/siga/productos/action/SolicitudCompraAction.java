@@ -1638,7 +1638,7 @@ public class SolicitudCompraAction extends MasterAction{
 			    idFactura = beanFactura.getIdFactura();
 		        
 			    // PASO 3: CONFIRMACION RAPIDA (en este caso la transacción se gestiona dentro la transaccion)
-			    facturacion.confirmarProgramacionFactura(programacion, request, false, null, false, false, tx, false);
+			    facturacion.confirmarProgramacionFactura(programacion, request, false, null, false, false, 0);
 			    
 			    if (Status.STATUS_ACTIVE  == tx.getStatus())
 			    	tx.commit();
