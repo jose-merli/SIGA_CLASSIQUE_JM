@@ -35,10 +35,10 @@ import com.lowagie.text.pdf.PdfReader;
 import com.lowagie.text.pdf.PdfSignatureAppearance;
 import com.lowagie.text.pdf.PdfStamper;
 import com.siga.Utilidades.PaginadorBind;
-import com.siga.Utilidades.PaginadorCaseSensitiveBind;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesNumero;
 import com.siga.Utilidades.UtilidadesString;
+import com.siga.Utilidades.PaginadorCaseSensitiveBind;
 import com.siga.facturacion.form.BusquedaFacturaForm;
 import com.siga.facturacion.form.ConsultaMorososForm;
 import com.siga.general.SIGAException;
@@ -626,7 +626,7 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
 	 * @throws ClsExceptions
 	 * @throws SIGAException
 	 */
-	public PaginadorCaseSensitiveBind getFacturas (BusquedaFacturaForm datos, Integer idInstitucion, String idioma)  throws ClsExceptions,SIGAException {
+	public PaginadorBind getFacturas (BusquedaFacturaForm datos, Integer idInstitucion, String idioma)  throws ClsExceptions,SIGAException {
 		
 		Hashtable codigosBind = new Hashtable();
 		int contador = 0;
@@ -740,7 +740,7 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
 	
 			String consulta = select + from + where + orderBy;
 			selectContar+= from + where;
-			PaginadorCaseSensitiveBind paginador = new PaginadorCaseSensitiveBind(consulta,selectContar,codigosBind);				
+			PaginadorBind paginador = new PaginadorBind(consulta,selectContar,codigosBind);				
 			int totalRegistros = paginador.getNumeroTotalRegistros();
 			
 			if (totalRegistros==0){					

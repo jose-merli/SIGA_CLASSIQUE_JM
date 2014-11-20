@@ -4,6 +4,8 @@
  */
 package com.siga.facturacion.action;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Vector;
@@ -11,6 +13,8 @@ import java.util.Vector;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.struts.action.ActionForm;
+import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
 import com.atos.utils.ClsExceptions;
@@ -18,6 +22,7 @@ import com.atos.utils.Row;
 import com.siga.Utilidades.PaginadorCaseSensitiveBind;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;
+import com.siga.Utilidades.PaginadorBind;
 import com.siga.beans.CenPersonaAdm;
 import com.siga.beans.FacAbonoAdm;
 import com.siga.beans.FacAbonoBean;
@@ -34,6 +39,63 @@ import com.siga.general.SIGAException;
  */
 public class BusquedaFacturaAction extends MasterAction {
 
+	final String[] clavesBusqueda={FacFacturaBean.C_IDFACTURA,FacFacturaBean.C_NUMEROFACTURA};
+	
+		protected ActionForward executeInternal (ActionMapping mapping,
+							      ActionForm formulario,
+							      HttpServletRequest request, 
+							      HttpServletResponse response)throws SIGAException {
+		
+		String mapDestino = "exception";
+		MasterForm miForm = null;
+		
+		try {
+			miForm = (MasterForm) formulario;
+			if (miForm == null) {
+					return mapping.findForward(mapDestino);
+				}
+				
+				String accion = miForm.getModo();
+				if (accion == null || accion.equalsIgnoreCase("") || accion.equalsIgnoreCase("abrir")){
+					miForm.reset(new String[]{"registrosSeleccionados","datosPaginador","seleccionarTodos"});
+					miForm.reset(mapping,request);
+					request.getSession().removeAttribute("DATAPAGINADOR");
+					mapDestino = abrir(mapping, miForm, request, response);						
+				}else if (accion.equalsIgnoreCase("buscarInit")){
+					miForm.reset(new String[]{"registrosSeleccionados","datosPaginador","seleccionarTodos"});
+					request.getSession().removeAttribute("DATAPAGINADOR");
+					mapDestino = buscarPor(mapping, miForm, request, response); 
+				} else {
+					return super.executeInternal(mapping,
+							      formulario,
+							      request, 
+							      response);
+				}
+
+			// Redireccionamos el flujo a la JSP correspondiente
+			if (mapDestino == null) 
+			{ 
+				//mapDestino = "exception";
+			    if (miForm.getModal().equalsIgnoreCase("TRUE"))
+			    {
+			        request.setAttribute("exceptionTarget", "parent.modal");
+			    }
+			    
+			    //throw new ClsExceptions("El ActionMapping no puede ser nulo");
+			    throw new ClsExceptions("El ActionMapping no puede ser nulo","","0","GEN00","15");
+			}
+			
+		}
+		catch (SIGAException es) { 
+			throw es; 
+		} 
+		catch (Exception e) { 
+			throw new SIGAException("messages.general.error",e,new String[] {"modulo.facturacion"}); 
+		} 
+		return mapping.findForward(mapDestino);
+	}
+	
+	
 	
 	/* (non-Javadoc)
 	 * @see com.siga.general.MasterAction#abrir(org.apache.struts.action.ActionMapping, com.siga.general.MasterForm, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
@@ -90,54 +152,97 @@ public class BusquedaFacturaAction extends MasterAction {
 			FacFacturaAdm admFactura = new FacFacturaAdm(this.getUserBean(request));
 			FacAbonoAdm abonoAdm = new FacAbonoAdm(this.getUserBean(request));
 			
-			 HashMap databackup=new HashMap();
+			//Si es seleccionar todos esta variable no vandra nula y ademas nos traera el numero de pagina 
+			//donde nos han marcado el seleccionar todos(asi evitamos meter otra variable)
+			boolean isSeleccionarTodos = miForm.getSeleccionarTodos()!=null 
+				&& !miForm.getSeleccionarTodos().equals("");
+			//si no es seleccionar todos los cambios van a fectar a los datos que se han mostrado en 
+			//la jsp por lo que parseamos los datos dento dela variable Registro seleccionados. Cuando hay modificacion
+			//habra que actualizar estos datos
+			if(!isSeleccionarTodos){
+				ArrayList clavesRegSeleccinados = (ArrayList) miForm.getRegistrosSeleccionados();
+				String seleccionados = request.getParameter("Seleccion");
 				
-				 	if (request.getSession().getAttribute("DATAPAGINADOR")!=null){ 
-				 		databackup = (HashMap)request.getSession().getAttribute("DATAPAGINADOR");
-					     PaginadorCaseSensitiveBind paginador = (PaginadorCaseSensitiveBind)databackup.get("paginador");
-					     Vector datos=new Vector();
-					
-					
-					//Si no es la primera llamada, obtengo la página del request y la busco con el paginador
-					String pagina = (String)request.getParameter("pagina");
-					
-					 
-					
-				 if (paginador!=null){	
+				
+				if (seleccionados != null ) {
+					ArrayList alRegistros = actualizarSelecionados(this.clavesBusqueda,seleccionados, clavesRegSeleccinados);
+					if (alRegistros != null) {
+						clavesRegSeleccinados = alRegistros;
+						miForm.setRegistrosSeleccionados(clavesRegSeleccinados);
+					}
+				}
+			}
+			
+			HashMap databackup = (HashMap) miForm.getDatosPaginador();
+			if (databackup!=null && databackup.get("paginador")!=null&&!isSeleccionarTodos){
+				PaginadorBind paginador = (PaginadorBind)databackup.get("paginador");
+				Vector datos=new Vector();
+
+				//Si no es la primera llamada, obtengo la página del request y la busco con el paginador
+				String pagina = (String)request.getParameter("pagina");
+
+				if (paginador!=null){	
 					if (pagina!=null){
 						datos = paginador.obtenerPagina(Integer.parseInt(pagina));
 					}else{// cuando hemos editado un registro de la busqueda y volvemos a la paginacion
 						datos = paginador.obtenerPagina((paginador.getPaginaActual()));
 					}
-				 }	
-					
-					
-				 datos = actualizarFacturaciones(admFactura,abonoAdm, this.getIDInstitucion(request),this.getUserBean(request).getLanguage(), datos);
-					databackup.put("paginador",paginador);
-					databackup.put("datos",datos);
-					
-						
-					
-					
-			  }else{	
-					
-			  	    databackup=new HashMap();
-					
-					//obtengo datos de la consulta 			
-			  	  PaginadorCaseSensitiveBind resultado = null;
-				Vector datos = null;
+				}	
 				
-			resultado = admFactura.getFacturas (miForm, this.getIDInstitucion(request),this.getLenguaje(request));
-			databackup.put("paginador",resultado);
-			if (resultado!=null){ 
-			   datos = resultado.obtenerPagina(1);
-			   datos = actualizarFacturaciones(admFactura, abonoAdm, this.getIDInstitucion(request), this.getUserBean(request).getLanguage(), datos);
-			   databackup.put("datos",datos);
-			   request.getSession().setAttribute("DATAPAGINADOR",databackup);
-			} 
-		  }
-			//request.setAttribute("facturas", vFacturas);
-		}
+				datos = actualizarFacturaciones(admFactura,abonoAdm, this.getIDInstitucion(request),this.getUserBean(request).getLanguage(), datos);
+				databackup.put("paginador",paginador);
+				databackup.put("datos",datos);
+
+			}else{	
+				
+				databackup=new HashMap();
+
+				//obtengo datos de la consulta 			
+				PaginadorBind resultado = null;
+				resultado = admFactura.getFacturas (miForm, this.getIDInstitucion(request),this.getLenguaje(request));
+				Vector datos = null;
+
+				databackup.put("paginador",resultado);
+				
+				if (resultado!=null && resultado.getNumeroTotalRegistros()>0){ 
+							
+					
+					if(isSeleccionarTodos){
+						//Si hay que seleccionar todos hacemos la query completa.
+						ArrayList clavesRegSeleccinados = new ArrayList((Collection)admFactura.selectGenericoNLSBind(resultado.getQueryInicio(), resultado.getCodigosInicio()));
+						aniadeClavesBusqueda(this.clavesBusqueda,clavesRegSeleccinados);
+						miForm.setRegistrosSeleccionados(clavesRegSeleccinados);
+						int pagina;
+						try{
+							pagina = Integer.parseInt(miForm.getSeleccionarTodos());
+						}catch (Exception e) {
+							// Con esto evitamos un error cuando se recupera una pagina y hemos "perdido" la pagina actual
+							// cargamos la primera y no evitamos mostrar un error
+							pagina = 1;
+						}
+						datos = resultado.obtenerPagina(pagina);
+						miForm.setSeleccionarTodos("");
+						
+					}else{				
+						miForm.setRegistrosSeleccionados(new ArrayList());
+						datos = resultado.obtenerPagina(1);
+					}
+
+					datos = actualizarFacturaciones(admFactura,abonoAdm, this.getIDInstitucion(request),this.getUserBean(request).getLanguage(), datos);
+					databackup.put("datos",datos);
+
+				}else{
+					resultado = null;
+					miForm.setRegistrosSeleccionados(new ArrayList());
+				}  
+				miForm.setDatosPaginador(databackup);
+
+			}			
+
+		}catch (SIGAException e1) {
+			// Excepcion procedente de obtenerPagina cuando se han borrado datos
+			return exitoRefresco("error.messages.obtenerPagina",request);
+		}	
 		catch (Exception e) {
 			throwExcp("messages.general.error",new String[] {"modulo.facturacion"}, e, null); 
 		}
@@ -241,4 +346,5 @@ public class BusquedaFacturaAction extends MasterAction {
 		}
 		return "administrarPestanas";
 	}
+
 }

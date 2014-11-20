@@ -382,10 +382,10 @@ public class AltaAbonosAction extends MasterAction {
 			for (int i=0; i<arrayFacturas.length; i++) {
 			
 				String datosFactura = arrayFacturas[i];
-				String arrayFactura[] = datosFactura.split("%%");
 				
-				String idFactura = arrayFactura[0];
-				String numfactura = arrayFactura[1].trim().toUpperCase();
+				String idFactura= datosFactura.substring(0, datosFactura.indexOf("||"));
+				String numfactura= datosFactura.substring(datosFactura.indexOf("||")+2, datosFactura.length()).trim().toUpperCase();
+
 				//comprobaciones si solamente hay marcada una factura se muestra el error, sino se procesan todas y se muestra el contador 
 				//de las que no se han actualizado
 				//Se comprueba si existe la factura

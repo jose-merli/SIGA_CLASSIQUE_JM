@@ -132,7 +132,7 @@
 		<html:hidden property = "modo" 						value = ""/>
 		<html:hidden property = "buscarIdPersona" value = "<%=idPersonaAnterior.toString()%>"/>
 		<input type="hidden" name="limpiarFilaSeleccionada" value="">
-		
+		<html:hidden property="seleccionarTodos" value=""/>
 		<tr><td>
 			<siga:ConjCampos leyenda="facturacion.buscarFactura.leyenda">	
 			<table class="tablaCampos" align="center"  cellspacing=0 cellpadding=0>
@@ -356,16 +356,7 @@
 		
 		// Asociada al boton Anular -> abonos masivos
 		function accionAnular() {
-			var checks =  window.frames.resultado.document.getElementsByName("sel");
-			var seleccionado=false;
-			if(checks.length>0){
-				
-				for (var i=0; i<checks.length; i++) {
-					if (checks[i].checked) {
-						seleccionado=true;
-					}
-				}
-			if(seleccionado){
+			if(window.frames.resultado.ObjArray){
 				jQuery("#dialogoAnular").dialog(
 						{
 						      height: 250,
@@ -405,38 +396,28 @@
 				alert(mensaje);
 				return false;
 			}	
-			
-		
-		}else{
-			fin();
-			var mensaje = '<siga:Idioma key="general.message.seleccionar"/>';
-			alert(mensaje);
-			return false;
-		}
-		
 		
 		}
 		
 	function anularFacturas(){
 		
 		sub();
-		var checks =  window.frames.resultado.document.getElementsByName("sel");
+		 
 		
-		if (checks.length>1000) {
+		if (window.frames.resultado.ObjArray.length>1000) {
 			alert ('<siga:Idioma key="facturacion.anulacion.error.anularMilFacturas"/>');
 			fin();
 			return false;
 		}
 		
-		for (var i=0; i<checks.length; i++) {
-			if (checks[i].checked) {
-								
-				if (document.AltaAbonosForm.facturas.value=="") {
-					document.AltaAbonosForm.facturas.value += checks[i].value;						
-				} else {
-					document.AltaAbonosForm.facturas.value += ";" + checks[i].value;
-				}	
-			}
+		for (var i=0; i<window.frames.resultado.ObjArray.length; i++) {
+				
+			if (document.AltaAbonosForm.facturas.value=="") {
+				document.AltaAbonosForm.facturas.value += window.frames.resultado.ObjArray[i];						
+			} else {
+				document.AltaAbonosForm.facturas.value += ";" +  window.frames.resultado.ObjArray[i];
+			}	
+			
 		}
 		//estos dos campos están dentro del jdialog
 		document.AltaAbonosForm.motivos.value=window.frames.document.getElementsByName("motivos")[1].value;
@@ -446,6 +427,11 @@
 		document.AltaAbonosForm.submit();
 		fin();
 
+	}
+	
+	function seleccionarTodos(pagina) {
+		document.forms[0].seleccionarTodos.value = pagina;
+		buscar('buscarPor');				
 	}
 		
 	</script>
