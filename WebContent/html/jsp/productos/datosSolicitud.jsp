@@ -29,7 +29,7 @@
 	Vector peticion = (Vector) request.getAttribute("peticion");
 	UsrBean usrbean = (UsrBean)session.getAttribute(ClsConstants.USERBEAN);
 	
-	float ivaTotal = 0;
+	double ivaTotal = 0;
 	double precioTotal = 0;
 	String tipoPeticion = "";
 	
@@ -79,8 +79,6 @@
 	}	
 	
 	function confirmarSolicitudCompra (fila) {
-	
-	  	var productoOservicio = document.getElementById('oculto' + fila + '_1');
 	  	sub();
    		// if (!letrado){ 
    			
@@ -166,8 +164,6 @@
 		datos = document.getElementById('tablaDatosDinamicosD');
 		datos.value = ""; 
 		var j;
-		var tabla;
-		tabla = document.getElementById('tablaResultados');
 		var flag = true;
 
 		j = 1;
@@ -221,7 +217,7 @@
  			tipo = 'S';
  		}
  		else{
- 			tipo = 'P'
+ 			tipo = 'P';
  		}
  			
  		//actualizar los datos del formulario de mostrar anticipos
@@ -318,7 +314,7 @@
 					String estado;
 					int cantidad;
 					double precio, importeUnitario;
-					float iva = 0;
+					double iva = 0;
 				
 					//String estadoPago 			= UtilidadesProductosServicios.getEstadoPago(UtilidadesHash.getString(productoServicio, "ESTADOPAGO"));
 					String estadoPago = UtilidadesString.getMensajeIdioma(usrbean,UtilidadesHash.getString(productoServicio, "ESTADOPAGO"));
@@ -376,9 +372,8 @@
 						idCuenta = UtilidadesHash.getInteger (productoServicio, PysProductosSolicitadosBean.C_IDCUENTA);
 						cantidad = UtilidadesHash.getInteger (productoServicio, PysProductosSolicitadosBean.C_CANTIDAD).intValue();
 						if (UtilidadesHash.getDouble (productoServicio, PysProductosSolicitadosBean.C_VALOR)!=null){
-							precio = UtilidadesHash.getDouble (productoServicio, PysProductosSolicitadosBean.C_VALOR).doubleValue();
-							//iva = UtilidadesHash.getFloat (productoServicio, PysProductosSolicitadosBean.C_PORCENTAJEIVA).floatValue();
-							iva = UtilidadesHash.getFloat (productoServicio, "VALORIVA").floatValue();
+							precio = UtilidadesHash.getDouble(productoServicio, PysProductosSolicitadosBean.C_VALOR).doubleValue();
+							iva = UtilidadesHash.getFloat(productoServicio, "VALORIVA").doubleValue();
 							existePrecio="1";
 							
 						} else {
@@ -414,7 +409,7 @@
 						cantidad = UtilidadesHash.getInteger (productoServicio, PysServiciosSolicitadosBean.C_CANTIDAD).intValue();
 						if (UtilidadesHash.getDouble (productoServicio, "VALOR")!=null){
 							precio = UtilidadesHash.getDouble (productoServicio, "VALOR").doubleValue();
-							iva = UtilidadesHash.getFloat (productoServicio, "PORCENTAJEIVA").floatValue();
+							iva = UtilidadesHash.getFloat (productoServicio, "PORCENTAJEIVA").doubleValue();
 							periodicidad = " / " + UtilidadesHash.getString(productoServicio, "SERVICIO_DESCRIPCION_PERIODICIDAD");
 							existePrecio="1";							
 						} else {
@@ -428,10 +423,10 @@
 					
 				
 					// Calculamos el precio total y el total del iva
-					importeUnitario = (cantidad * (precio * (1 + (iva / 100))));
+					importeUnitario = cantidad * UtilidadesNumero.redondea(precio * (1 + (iva / 100)), 2);
 					
 					if(idFormaPago!=null){
-						ivaTotal = ivaTotal +  (cantidad * ((float)(precio / 100)) * iva);
+						ivaTotal = ivaTotal + (cantidad * UtilidadesNumero.redondea(precio * iva / 100, 2));
 						precioTotal = precioTotal + importeUnitario;
 					}
 				

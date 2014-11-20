@@ -82,7 +82,7 @@
 */		
 	int factura = ClsConstants.TIPO_FORMAPAGO_FACTURA;
 	int tarjeta = ClsConstants.TIPO_FORMAPAGO_TARJETA;
-	float varIvaTotal = 0;
+	double varIvaTotal = 0;
 	double varPrecioTotal = 0;	
 	String parametroFuncion;
 	String formaPagoNombre;
@@ -175,8 +175,6 @@
 			datos = document.getElementById('tablaDatosDinamicosD');
 			datos.value = ""; 
 			var j;
-			var tabla;
-			tabla = document.getElementById('cabecera');
 			var flag = true;
 			j = 1;
 			while (flag) {
@@ -189,7 +187,7 @@
 				}
 			  	j++;
 			}
-			datos.value = datos.value + "%"
+			datos.value = datos.value + "%";
 		  	f.modo.value = "consultarCertificado";
 		 	ventaModalGeneral(document.forms[0].name,"M");	  
 		 	f.modo.value = "guardarCertificado";
@@ -205,7 +203,7 @@
 			
 			f = document.solicitudCompraForm;
 			
-			for (j=1; j < <%=arrayListaArticulosOrdenada.size()%>+1; j++) { 
+			for (var j=1; j < <%=arrayListaArticulosOrdenada.size()%>+1; j++) { 
 				nofacturable=eval("f.oculto" + j +"_7");
 				if(nofacturable.value=="0"){ //En el caso de que sea facturable
 					cuenta=eval("f.oculto" + j +"_5");	
@@ -351,7 +349,7 @@
 		
 		function validarCantidades() {
 			f = document.solicitudCompraForm; 	
- 			for (j=1; j < <%=arrayListaArticulosOrdenada.size()%>+1; j++) { 
+ 			for (var j=1; j < <%=arrayListaArticulosOrdenada.size()%>+1; j++) { 
  				cantidad=eval("f.cantidad" + j);
  				
  				if (errorValidarCantidad(cantidad)) { 
@@ -366,7 +364,7 @@
 		
 		function validarPrecios() {
 			f = document.solicitudCompraForm; 	
- 			for (j=1; j < <%=arrayListaArticulosOrdenada.size()%>+1; j++) { 
+ 			for (var j=1; j < <%=arrayListaArticulosOrdenada.size()%>+1; j++) { 
  				precio=eval("f.precio" + j); 				
  				precio.value = precio.value.replace(/,/,".");	
  				
@@ -394,7 +392,7 @@
  	
 		function obligatorioFormaPago() {
 	 		f = document.solicitudCompraForm; 	
- 			for (j=1; j < <%=arrayListaArticulosOrdenada.size()%>+1; j++) { 
+ 			for (var j=1; j < <%=arrayListaArticulosOrdenada.size()%>+1; j++) { 
  				pago=eval("f.formaPago" + j);
 				if (pago.value==null || pago.value=="") { 
  					var mensaje = "<siga:Idioma key="pys.solicitudCompra.literal.formaPago"/> <siga:Idioma key="messages.campoObligatorio.error"/>";
@@ -408,7 +406,7 @@
 	 	function validarFormaPagoANTIGUO(){
 	 		f = document.solicitudCompraForm; 
 	 		auxTarjeta="N";			
- 			for (j=1; j < <%=arrayListaArticulosOrdenada.size()%>+1; j++) { 
+ 			for (var j=1; j < <%=arrayListaArticulosOrdenada.size()%>+1; j++) { 
  				pago=eval("f.formaPago" + j);
 				if (pago.value==null || pago.value=="") { 				
 					var mensaje = "<siga:Idioma key="pys.solicitudCompra.literal.formaPago"/> <siga:Idioma key="messages.campoObligatorio.error"/>";
@@ -435,7 +433,7 @@
 	 		auxTarjeta="N";	
 	
 			testigo=0;
- 			for (j=1; j < <%=arrayListaArticulosOrdenada.size()%>+1; j++) { 
+ 			for (var j=1; j < <%=arrayListaArticulosOrdenada.size()%>+1; j++) { 
  				
 				nofacturable=eval("f.oculto" + j +"_7");
 				cuentaelegida=eval("f.oculto" + j +"_8");
@@ -465,7 +463,7 @@
 							//alert("cuentaelegida2="+cuentaelegida.value);
 
 							actual=eval("f.cuenta"+j);
-							primero=eval("f.cuenta"+testigo)
+							primero=eval("f.cuenta"+testigo);
 							actual.value=primero.value;
 
 							actualidcuenta=eval("f.oculto" + j +"_5");
@@ -487,7 +485,7 @@
 	 	function validarCertificado() {
 	 		f = document.solicitudCompraForm; 	 			
 	 		salida = true;
- 			for (j=1; j < <%=arrayListaArticulosOrdenada.size()%>+1; j++) { 
+ 			for (var j=1; j < <%=arrayListaArticulosOrdenada.size()%>+1; j++) { 
  				certificado=eval("f.certificado" + j +"_1"); 				
  				if (certificado.value!=null && certificado.value!="") { 			
  					direccion=eval("f.certificado" + j +"_3"); 					
@@ -527,7 +525,7 @@
  			varIvaTotal=0;
  			varPrecioTotal=0;
 
- 			for (j=1; j < <%=arrayListaArticulosOrdenada.size()%>+1; j++) { 
+ 			for (var j=1; j < <%=arrayListaArticulosOrdenada.size()%>+1; j++) { 
  			
 	 			pago=eval("f.formaPago" + j);
 	 			
@@ -538,17 +536,14 @@
 	 				precio.value = precio.value.replace(/,/,".");
 					iva.value = iva.value.replace(/,/,".");
 					if (!isNaN(parseFloat(precio.value))) {			
-						varIvaTotal = varIvaTotal +  (cantidad.value * parseFloat(precio.value) * (iva.value/100));
-						varPrecioTotal = varPrecioTotal + (cantidad.value * (parseFloat(precio.value) * (1 + (iva.value/100))));
+						varIvaTotal = varIvaTotal + (cantidad.value * roundNumber(precio.value * iva.value / 100, 2));
+						varPrecioTotal = varPrecioTotal + (cantidad.value * roundNumber(precio.value * (1 + (iva.value / 100)), 2));
 					}					
 	 			}
 
  			}
- 			f.ivaTotal.value 	= (Math.round(varIvaTotal * 100))/100; 
- 			f.precioTotal.value = (Math.round(varPrecioTotal * 100))/100; 
- 			
- 			f.ivaTotal.value = convertirAFormato(f.ivaTotal.value);
- 			f.precioTotal.value = convertirAFormato(f.precioTotal.value); 			
+ 			f.ivaTotal.value = convertirAFormato(varIvaTotal);
+ 			f.precioTotal.value = convertirAFormato(varPrecioTotal); 			
  		}
 
 		//Debe llamarse accionConfirmarCompra
@@ -568,7 +563,7 @@
  			f = document.solicitudCompraForm; 			
  			if(obligatorioFormaPago()){
  				f.modo.value = "desglosePago"; 				
-				var resultado = ventaModalGeneral("solicitudCompraForm","G");			
+				ventaModalGeneral("solicitudCompraForm","G");			
 			}	
  		}
  		
@@ -668,7 +663,7 @@
 					desactivado = "readOnly";					
 
 					double precio=0;							
-					float iva=0;
+					double iva=0;
 
 					sIdCuenta = "";								
 					if (a.getIdCuenta()!= null) {
@@ -702,13 +697,13 @@
 					sCantidad = Integer.toString(a.getCantidad());						
 					sPeriodicidad = UtilidadesString.mostrarDatoJSP(a.getPeriodicidad());
 					if (a.getPrecio()!= null) {
-						precio = (double)a.getPrecio().doubleValue();
+						precio = a.getPrecio().doubleValue();
 						sPrecio = a.getPrecio().toString();
 						desactivado = "";
 					}
 
 					if (a.getValorIva()!=null) {
-						iva = (float)a.getValorIva().floatValue();
+						iva = a.getValorIva().doubleValue();
 						sIva = a.getValorIva().toString();
 					}
 						
@@ -726,9 +721,9 @@
 					}
 
 					if (datos == null || (datos!=null && nofacturable.equals(DB_FALSE))) {
-						varIvaTotal = varIvaTotal + (a.getCantidad() * ((float) precio * iva / 100));
-						varPrecioTotal = varPrecioTotal + (a.getCantidad() * ((float) precio * (1 + iva / 100)));
-					}
+						varIvaTotal = varIvaTotal + (a.getCantidad() * UtilidadesNumero.redondea(precio * iva / 100, 2));
+						varPrecioTotal = varPrecioTotal + (a.getCantidad() * UtilidadesNumero.redondea(precio * (1 + (iva / 100)), 2));	
+					}				
 
 									
 					fila=i+1;	

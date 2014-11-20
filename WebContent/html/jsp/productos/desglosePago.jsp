@@ -43,10 +43,10 @@
 	
 	int tarjeta = ClsConstants.TIPO_FORMAPAGO_TARJETA;
 		
-	float varIvaTotalTarjeta = 0;
+	double varIvaTotalTarjeta = 0;
 	double varPrecioTotalTarjeta = 0;
 	
-	float varIvaTotalOtro = 0;
+	double varIvaTotalOtro = 0;
 	double varPrecioTotalOtro = 0;
 	
 	String sPrecio;
@@ -129,10 +129,11 @@
 			Articulo a = (Articulo) arrayListaArticulosOrdenada.get(i);
 			a.getIdFormaPago();													
 			if (a.getIdFormaPago() != null && a.getIdFormaPago().intValue() == tarjeta) {			
-				double precio = (double)a.getPrecio().doubleValue();
-				float iva = (float)a.getValorIva().floatValue();
-				varIvaTotalTarjeta = varIvaTotalTarjeta +  (a.getCantidad() * ((float)(precio / 100)) * iva);
-				varPrecioTotalTarjeta = varPrecioTotalTarjeta + (a.getCantidad() * (precio * (1 + (iva / 100))));
+				double precio = a.getPrecio().doubleValue();
+				double iva = a.getValorIva().doubleValue();
+				varIvaTotalTarjeta = varIvaTotalTarjeta + (a.getCantidad() * UtilidadesNumero.redondea(precio * iva / 100, 2));
+				varPrecioTotalTarjeta = varPrecioTotalTarjeta + (a.getCantidad() * UtilidadesNumero.redondea(precio * (1 + (iva / 100)), 2));
+				
 				sPeriodicidad = "";
 				sPrecio = "-";
 				if(a.getPrecio()!= null) {										
@@ -152,7 +153,7 @@
 							</td>					  				
 							<td align="right"><%=a.getCantidad()%></td>
 							<td align="right"><%=UtilidadesString.formatoImporte(sPrecio)%>&nbsp;&euro;&nbsp;<%=sPeriodicidad%></td>
-							<td align="right"><%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero.formatoCampo(a.getValorIva().floatValue()))%>&nbsp;%</td>					  				
+							<td align="right"><%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero.formatoCampo(iva))%>&nbsp;%</td>					  				
 			 	</tr>							
 <%						
 			}
@@ -227,12 +228,13 @@
 			a.getIdFormaPago();							
 			if (a.getIdFormaPago() == null || a.getIdFormaPago().intValue() != tarjeta) {						
 			
-				double precio = (double)a.getPrecio().doubleValue();
-				float iva = (float)a.getValorIva().floatValue();
+				double precio = a.getPrecio().doubleValue();
+				double iva = a.getValorIva().doubleValue();
 				if(a.getIdFormaPago() != null){
-					varIvaTotalOtro = varIvaTotalOtro +  (a.getCantidad() * ((float)(precio / 100)) * iva);
-					varPrecioTotalOtro = varPrecioTotalOtro + (a.getCantidad() * (precio * (1 + (iva / 100))));
+					varIvaTotalOtro = varIvaTotalOtro + (a.getCantidad() * UtilidadesNumero.redondea(precio * iva / 100, 2));
+					varPrecioTotalOtro = varPrecioTotalOtro + (a.getCantidad() * UtilidadesNumero.redondea(precio * (1 + (iva / 100)), 2));
 				}
+				
 				sPeriodicidad = "";
 				sPrecio = "-";
 				if(a.getPrecio()!= null) {										
@@ -257,7 +259,7 @@
 	  					<%=UtilidadesString.formatoImporte(sPrecio)%>&nbsp;&euro;&nbsp;<%=sPeriodicidad%>
 	  				</td>
 	  				<td align="right">
-	  					<%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero.formatoCampo(a.getValorIva().floatValue()))%>&nbsp;%  
+	  					<%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero.formatoCampo(iva))%>&nbsp;%  
 	  				</td>					  				
  				</tr>								
 <%							

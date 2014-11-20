@@ -150,7 +150,7 @@
 					document.GestionarFacturaForm.datosLineaTotal.value = "";
 				
 				} else {						
-					var calculoTotalNeto = eval(cantidad) * roundNumber(eval(precio), 2);
+					var calculoTotalNeto = eval(cantidad) * eval(precio);
 					document.GestionarFacturaForm.datosLineaTotalNeto.value = calculoTotalNeto;
 					document.GestionarFacturaForm.datosLineaTotalNeto.value = convertirAFormato(document.GestionarFacturaForm.datosLineaTotalNeto.value);
 					

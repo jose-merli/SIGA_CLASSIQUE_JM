@@ -116,7 +116,7 @@
 				 if (linea != null) {
 					int iCantidad = linea.getCantidad().intValue();
 					double dPrecioUnitario = linea.getPrecioUnitario();
-					double dImporteNeto = iCantidad * UtilidadesNumero.redondea(dPrecioUnitario, 2);
+					double dImporteNeto = iCantidad * dPrecioUnitario;
 					double dIVA = linea.getIva().doubleValue();
 					double dImporteIVA = iCantidad * UtilidadesNumero.redondea(dPrecioUnitario * dIVA / 100, 2);
 					double dImporteTotal = dImporteIVA + dImporteNeto;

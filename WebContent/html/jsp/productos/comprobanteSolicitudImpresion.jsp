@@ -41,7 +41,7 @@
 	String DB_TRUE=ClsConstants.DB_TRUE;
 	String DB_FALSE=ClsConstants.DB_FALSE;	
 	int tarjeta = ClsConstants.TIPO_FORMAPAGO_TARJETA;
-	float varIvaTotal = 0;
+	double varIvaTotal = 0;
 	double varPrecioTotal = 0;
 	
 	//Datos del Action:
@@ -166,12 +166,12 @@
 					idFormaPago = UtilidadesHash.getString(hash, PysServiciosSolicitadosBean.C_IDFORMAPAGO);
 				}
 				
-				float iva = UtilidadesHash.getFloat(hash,"VALORIVA").floatValue();
+				double iva = UtilidadesHash.getFloat(hash,"VALORIVA").doubleValue();
 				
 
 				if((UtilidadesHash.getString(hash, PysServiciosSolicitadosBean.C_IDFORMAPAGO))!=null){
-					varIvaTotal = varIvaTotal +  (cantidad * ((float)(precio / 100)) * iva);
-					varPrecioTotal = varPrecioTotal + (cantidad * (precio * (1 + (iva / 100))));
+					varIvaTotal = varIvaTotal + (cantidad * UtilidadesNumero.redondea(precio * iva / 100, 2));
+					varPrecioTotal = varPrecioTotal + (cantidad * UtilidadesNumero.redondea(precio * (1 + (iva / 100)), 2));					
 				}
 
 				//recupera el flag para mostrar/ocultar el botón de anticipar y el importe anticipado
