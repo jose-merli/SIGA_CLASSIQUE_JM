@@ -1014,6 +1014,22 @@ public class Facturacion {
 			ClsLogging.writeFileLog("ALMACENAR >> NUMERO DE FACTURAS: "+vFacturas.size(),10);
     		
 			String idFactura="";
+			Integer plantillaMail = null;
+			
+			/** CR7 - Se saca fuera ya que siempre se usa la misma plantilla para tdas las facturas **/
+			//SE SELECCIONA LA PLANTILLA MAIL
+			FacFacturacionProgramadaAdm facProgAdm = new FacFacturacionProgramadaAdm(userbean);
+			Hashtable<String,Object> hashProg = new Hashtable<String,Object>();
+			hashProg.put(FacFacturacionProgramadaBean.C_IDINSTITUCION, institucion);
+			hashProg.put(FacFacturacionProgramadaBean.C_IDSERIEFACTURACION, serieFacturacion);
+			hashProg.put(FacFacturacionProgramadaBean.C_IDPROGRAMACION, idProgramacion);
+			Vector<?> vFacProg = facProgAdm.select(hashProg);
+			if(vFacProg != null && vFacProg.size()>0){
+				FacFacturacionProgramadaBean facProgBean = (FacFacturacionProgramadaBean) vFacProg.get(0);
+				if(facProgBean.getIdTipoPlantillaMail() != null){
+					plantillaMail = facProgBean.getIdTipoPlantillaMail();
+				}
+			}
 			
 			//Aunque nos ha fallado esta factura es posible que la siguiente, no.
     		//POR LO TANTO no COMPROBAMOS QUE HAYA SIDO CORRECTO EL CAMBIO ANTERIOR
@@ -1099,124 +1115,11 @@ public class Facturacion {
     				ClsLogging.writeFileLog("ALMACENAR "+idFactura+" >> VAMOS A VER SI ENVIARMOS: ENVIAR:"+bGenerarEnvios+" CORRECTO:"+correcto,10);
 
 		    	    	
-	    			// Envio de facturas
+	    			/***************    ENVIO FACTURAS *****************/
 	    			if (bGenerarEnvios && correcto){
-	    				
-	    				UserTransaction tx = this.usrbean.getTransaction();
-	    				
-	    				try {
-	    					
-		    				ClsLogging.writeFileLog("ALMACENAR "+idFactura+" >> PROCESO DE ENVIO",10);
-
-		    				//Obtenemos el bean del envio: 
-		    				CenPersonaAdm admPersona = new CenPersonaAdm(this.usrbean);
-		    				String descripcion = "Envio facturas - " + admPersona.obtenerNombreApellidos((String)facturaHash.get(FacFacturaBean.C_IDPERSONA));
-		    				Envio envio = new Envio(userbean,descripcion);
-		
-		    				// Bean envio
-		    				EnvEnviosBean enviosBean = envio.enviosBean;
-		    				
-		    				// RGG
-		    				GenParametrosAdm paramAdm = new GenParametrosAdm(this.usrbean);
-		    				String preferencia = paramAdm.getValor(institucion.toString(),"ENV","TIPO_ENVIO_PREFERENTE","1");
-		    				Integer valorPreferencia = Envio.calculaTipoEnvio(preferencia);
-		    	            enviosBean.setIdTipoEnvios(valorPreferencia);
-		
-		    				// Preferencia del tipo de envio si el usuario tiene uno:
-		    				CenDireccionesAdm direccionAdm = new CenDireccionesAdm(this.usrbean);
-		    				Hashtable<?,?> direccion=direccionAdm.getEntradaDireccionEspecifica((String)facturaHash.get(FacFacturaBean.C_IDPERSONA),(String)facturaHash.get(FacFacturaBean.C_IDINSTITUCION),preferencia);
-		    				
-		    				if (direccion==null || direccion.size()==0) {
-		    					 direccion=direccionAdm.getEntradaDireccionEspecifica((String)facturaHash.get(FacFacturaBean.C_IDPERSONA),(String)facturaHash.get(FacFacturaBean.C_IDINSTITUCION),"3");// si no hay direccion preferente mail, buscamos la de correo
-		    					 if (direccion==null || direccion.size()==0) {
-		    					 	direccion=direccionAdm.getEntradaDireccionEspecifica((String)facturaHash.get(FacFacturaBean.C_IDPERSONA),(String)facturaHash.get(FacFacturaBean.C_IDINSTITUCION),"2");// si no hay direccion de despacho, buscamos la de despacho
-		    					 	if (direccion==null || direccion.size()==0) {
-		    					 		direccion=direccionAdm.getEntradaDireccionEspecifica((String)facturaHash.get(FacFacturaBean.C_IDPERSONA),(String)facturaHash.get(FacFacturaBean.C_IDINSTITUCION),"");// si no hay direccion de despacho, buscamos cualquier dirección.
-		    					 		if (direccion==null || direccion.size()==0) {
-		    					 			ClsLogging.writeFileLog("ALMACENAR "+idFactura+" >> NO TIENE DIRECCION PREFERENTE "+preferencia,10);
-		    		    					throw new ClsExceptions("No se ha encontrado dirección de la persona para el tipo de envio preferente: "+preferencia); 			
-		    					 		}
-		    					 	}
-		    					 }
-		    					
-		    				}
-		    				
-		    				//SE SELECCIONA LA PLANTILLA MAIL
-		    				FacFacturacionProgramadaAdm facProgAdm = new FacFacturacionProgramadaAdm(userbean);
-		    				Hashtable<String,Object> hashProg = new Hashtable<String,Object>();
-		    				hashProg.put(FacFacturacionProgramadaBean.C_IDINSTITUCION, institucion);
-		    				hashProg.put(FacFacturacionProgramadaBean.C_IDSERIEFACTURACION, serieFacturacion);
-		    				hashProg.put(FacFacturacionProgramadaBean.C_IDPROGRAMACION, idProgramacion);
-		    				Vector<?> vFacProg = facProgAdm.select(hashProg);
-		    				if(vFacProg != null && vFacProg.size()>0){
-		    					FacFacturacionProgramadaBean facProgBean = (FacFacturacionProgramadaBean) vFacProg.get(0);
-		    					if(facProgBean.getIdTipoPlantillaMail() != null){
-		    						int plantillaMail = facProgBean.getIdTipoPlantillaMail();
-		    						enviosBean.setIdPlantillaEnvios(plantillaMail);
-		    						
-			        				// Creacion documentos
-			         				Documento documento = new Documento(rutaAlmacen+barraAlmacen+nColegiado+"-"+UtilidadesString.validarNombreFichero((String)facturaHash.get(FacFacturaBean.C_NUMEROFACTURA))+".pdf","Factura "+nColegiado+"-"+UtilidadesString.validarNombreFichero((String)facturaHash.get(FacFacturaBean.C_NUMEROFACTURA))+".pdf");
-			        				if(UtilidadesHash.getString(facturaHash,FacFacturaBean.C_NUMEROFACTURA)==null ||UtilidadesHash.getString(facturaHash,FacFacturaBean.C_NUMEROFACTURA).equals("")){
-			        					documento = new Documento(rutaAlmacen+barraAlmacen+nColegiado+"-"+(String)facturaHash.get(FacFacturaBean.C_IDFACTURA)+".pdf","Factura "+nColegiado+"-"+(String)facturaHash.get(FacFacturaBean.C_IDFACTURA)+".pdf");	
-			        				}
-			        				Vector<Documento> documentos = new Vector<Documento>(1);
-			        				documentos.add(documento);
-			        				
-			        				/*************** INICIO TRANSACCION ***************/
-			        				tx.begin();
-			        				
-			        				// Genera el envio:
-		        					envio.generarEnvio((String)facturaHash.get(FacFacturaBean.C_IDPERSONA), EnvDestinatariosBean.TIPODESTINATARIO_CENPERSONA,documentos);
-		        					tx.commit();
-		    	    				ClsLogging.writeFileLog("ALMACENAR "+idFactura+" >> ENVIO GENERADO OK",10);
-		    	    				/*************** FIN TRANSACCION ***************/
-	
-			    					}else{
-			    						throw new SIGAException("messages.facturacion.almacenar.plantillasEnvioMal");		
-			    					}
-			    					
-		    				}else{
-		    					throw new SIGAException("messages.facturacion.almacenar.plantillasEnvioMal");		
-		    				}
-	
-	    				} catch (SIGAException eee) {
-	    		    		
-	    					try {tx.rollback();} catch (Exception ee) {}
-	    					
-		    				ClsLogging.writeFileLog("ALMACENAR "+idFactura+" >> ERROR EN PROCESO DE ENVIO: "+eee.getLiteral(userbean.getLanguage()),10);
-	    		    		// ESCRIBO EN EL LOG
-	    					if(generarLog)
-	    						log.writeLogFactura("ENVIO",idPersona,numFactura,"message.facturacion.error.envio.factura"+eee.getLiteral(userbean.getLanguage()));
-	    					else{
-	    						String msj=UtilidadesString.getMensajeIdioma(userbean.getLanguage(),"message.facturacion.error.envio.factura")+eee.getLiteral(userbean.getLanguage());
-	    						throw new SIGAException(msj);
-	    					}
-	    					salida=2;
-	    					//Aunque nos ha fallado esta factura es posible que la siguiente, no.
-		    	    		//POR LO TANTO no cazamos la excepcion
-	    					//throw eee;
-	    					existeAlgunErrorEnvio = true;
-	        	    		
-	    				} catch (Exception eee) {
-	    					
-	    					try {tx.rollback();} catch (Exception ee) {}
-	    		    		
-		    				ClsLogging.writeFileLog("ALMACENAR "+idFactura+" >> ERROR EN PROCESO DE ENVIO: "+eee.toString(),10);
-	    		    		// ESCRIBO EN EL LOG
-	    					if(generarLog)
-	    						log.writeLogFactura("ENVIO",idPersona,numFactura,"message.facturacion.error.envio.factura"+eee.toString());
-	    					else{
-	    						String msj=UtilidadesString.getMensajeIdioma(userbean.getLanguage(),"message.facturacion.error.envio.factura")+eee.toString();
-	    						throw new SIGAException(msj);
-	    					}
-	    					salida=2;
-	    					//Aunque nos ha fallado esta factura es posible que la siguiente, no.
-		    	    		//POR LO TANTO no cazamos la excepcion
-	    					//throw eee;
-	    					existeAlgunErrorEnvio = true;
-	        	    		
-	    				}
+	    				enviarProgramacionFactura(idPersona, institucion.toString(), idFactura, plantillaMail, nColegiado, numFactura,rutaAlmacen,log,generarLog, salida, existeAlgunErrorEnvio);
 	    			}
+
 
     			}catch (SIGAException se){
     				throw se;
@@ -1343,6 +1246,125 @@ public class Facturacion {
 	}
     
     /**
+     * @param nColegiado 
+     * @param numeroFactura 
+     * @param salida 
+     * @param existeAlgunErrorEnvio 
+     * @throws SIGAException 
+	 * 
+	 */
+	public void enviarProgramacionFactura(String idPersona, String idInstitucion, String idFactura, Integer plantillaMail, String nColegiado, String numeroFactura, String rutaAlmacen,
+			SIGALogging log,boolean generarLog, int salida, boolean existeAlgunErrorEnvio) throws SIGAException {	    				
+		UserTransaction tx = this.usrbean.getTransaction();
+		UsrBean userbean = this.usrbean;
+		
+		try {			
+			ClsLogging.writeFileLog("ALMACENAR "+idFactura+" >> PROCESO DE ENVIO",10);
+			
+			//Obtenemos el bean del envio: 
+			CenPersonaAdm admPersona = new CenPersonaAdm(userbean);
+			String descripcion = "Envio facturas - " + admPersona.obtenerNombreApellidos(idPersona);
+			Envio envio = new Envio(userbean,descripcion);
+
+			// Bean envio
+			EnvEnviosBean enviosBean = envio.enviosBean;
+			
+			// RGG
+			GenParametrosAdm paramAdm = new GenParametrosAdm(userbean);
+			String preferencia = paramAdm.getValor(idInstitucion,"ENV","TIPO_ENVIO_PREFERENTE","1");
+			Integer valorPreferencia = Envio.calculaTipoEnvio(preferencia);
+            enviosBean.setIdTipoEnvios(valorPreferencia);
+
+			// Preferencia del tipo de envio si el usuario tiene uno:
+			CenDireccionesAdm direccionAdm = new CenDireccionesAdm(userbean);
+			Hashtable<?,?> direccion=direccionAdm.getEntradaDireccionEspecifica(idPersona,idInstitucion,preferencia);
+			
+			if (direccion==null || direccion.size()==0) {
+				 direccion=direccionAdm.getEntradaDireccionEspecifica(idPersona,idInstitucion,"3");// si no hay direccion preferente mail, buscamos la de correo
+				 if (direccion==null || direccion.size()==0) {
+				 	direccion=direccionAdm.getEntradaDireccionEspecifica(idPersona,idInstitucion,"2");// si no hay direccion de despacho, buscamos la de despacho
+				 	if (direccion==null || direccion.size()==0) {
+				 		direccion=direccionAdm.getEntradaDireccionEspecifica(idPersona,idInstitucion,"");// si no hay direccion de despacho, buscamos cualquier dirección.
+				 		if (direccion==null || direccion.size()==0) {
+				 			ClsLogging.writeFileLog("ALMACENAR "+idFactura+" >> NO TIENE DIRECCION PREFERENTE "+preferencia,10);
+	    					throw new ClsExceptions("No se ha encontrado dirección de la persona para el tipo de envio preferente: "+preferencia); 			
+				 		}
+				 	}
+				 }
+				
+			}
+			
+			if(plantillaMail != null){
+				enviosBean.setIdPlantillaEnvios(plantillaMail);
+				String barraAlmacen = "";
+	     		if (rutaAlmacen.indexOf("/") > -1){ 
+	    			barraAlmacen = "/";
+	    		}
+	    		if (rutaAlmacen.indexOf("\\") > -1){ 
+	    			barraAlmacen = "\\";
+	    		}
+				// Creacion documentos
+ 				Documento documento = new Documento(rutaAlmacen+barraAlmacen+nColegiado+"-"+UtilidadesString.validarNombreFichero(numeroFactura)+".pdf","Factura "+nColegiado+"-"+UtilidadesString.validarNombreFichero(numeroFactura)+".pdf");
+				if(numeroFactura==null ||numeroFactura.equals("")){
+					documento = new Documento(rutaAlmacen+barraAlmacen+nColegiado+"-"+idFactura+".pdf","Factura "+nColegiado+"-"+idFactura+".pdf");	
+				}
+				Vector<Documento> documentos = new Vector<Documento>(1);
+				documentos.add(documento);
+				
+				/*************** INICIO TRANSACCION ***************/
+				tx.begin();
+				
+				// Genera el envio:
+				envio.generarEnvio(idPersona, EnvDestinatariosBean.TIPODESTINATARIO_CENPERSONA,documentos);
+				tx.commit();
+				ClsLogging.writeFileLog("ALMACENAR "+idFactura+" >> ENVIO GENERADO OK",10);
+				/*************** FIN TRANSACCION ***************/
+					
+			}else{
+				throw new SIGAException("messages.facturacion.almacenar.plantillasEnvioMal");		
+			}
+
+		} catch (SIGAException eee) {
+    		
+			try {tx.rollback();} catch (Exception ee) {}
+			
+			ClsLogging.writeFileLog("ALMACENAR "+idFactura+" >> ERROR EN PROCESO DE ENVIO: "+eee.getLiteral(userbean.getLanguage()),10);
+    		// ESCRIBO EN EL LOG
+			if(generarLog)
+				log.writeLogFactura("ENVIO",idPersona,numeroFactura,"message.facturacion.error.envio.factura"+eee.getLiteral(userbean.getLanguage()));
+			else{
+				String msj=UtilidadesString.getMensajeIdioma(userbean.getLanguage(),"message.facturacion.error.envio.factura")+eee.getLiteral(userbean.getLanguage());
+				throw new SIGAException(msj);
+			}
+			salida=2;
+			//Aunque nos ha fallado esta factura es posible que la siguiente, no.
+    		//POR LO TANTO no cazamos la excepcion
+			//throw eee;
+			existeAlgunErrorEnvio = true;
+    		
+		} catch (Exception eee) {
+			
+			try {tx.rollback();} catch (Exception ee) {}
+    		
+			ClsLogging.writeFileLog("ALMACENAR "+idFactura+" >> ERROR EN PROCESO DE ENVIO: "+eee.toString(),10);
+    		// ESCRIBO EN EL LOG
+			if(generarLog)
+				log.writeLogFactura("ENVIO",idPersona,numeroFactura,"message.facturacion.error.envio.factura"+eee.toString());
+			else{
+				String msj=UtilidadesString.getMensajeIdioma(userbean.getLanguage(),"message.facturacion.error.envio.factura")+eee.toString();
+				throw new SIGAException(msj);
+			}
+			salida=2;
+			//Aunque nos ha fallado esta factura es posible que la siguiente, no.
+    		//POR LO TANTO no cazamos la excepcion
+			//throw eee;
+			existeAlgunErrorEnvio = true;
+    		
+		}
+		
+	}
+
+	/**
      * Notas Jorge PT 118: Generacion de la facturacion rapida de compras y certificados (SolicitudCompraAction y SIGASolicitudesCertificadosAction):
      * - Productos y Servicios > Solicitudes > Compra/Subscripción
      * - Productos y Servicios > Gestión Solicitudes
