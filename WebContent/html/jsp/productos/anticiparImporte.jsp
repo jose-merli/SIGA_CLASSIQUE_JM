@@ -32,10 +32,8 @@
 <% 
 	String app=request.getContextPath();
 	HttpSession ses=request.getSession();
-		
 	
 	String totalAnticipado = (String) request.getAttribute("totalAnticipado");
-	//String precioSolicitud = UtilidadesNumero.formato(UtilidadesNumero.redondea( (String) request.getAttribute("precioSolicitud"),2));//.replace(',','.');
 	String precioSolicitud = (String) request.getAttribute("precioSolicitud");
 	String idTipoClave = (String) request.getAttribute("idTipoClave");
 	String idClave = (String) request.getAttribute("idClave");
@@ -43,7 +41,6 @@
 	String tipo = (String) request.getAttribute("tipo");
 	String idPeticion = (String) request.getAttribute("idPeticion");
 	String idPersona = (String) request.getAttribute("idPersona");
-
 	
 	//Botón de "guardar y cerrar"
 	String	botones="Y";
@@ -174,22 +171,23 @@
 			//validar que el importe ya anticipado y el importe a anticipar introducido
 			//no superan el precio del producto
 			function validar(){
-				var totalAnticipado =  parseFloat('<%=totalAnticipado%>');
-				document.forms[0].nuevoImporteAnticipado.value=document.forms[0].nuevoImporteAnticipado.value.replace(/,/,".");
-				var nuevoImporteAnticipado = document.forms[0].nuevoImporteAnticipado.value;
-				var precioSolicitud =  parseFloat('<%=precioSolicitud%>');
+				var totalAnticipado = parseFloat('<%=totalAnticipado%>');
+				document.forms[0].nuevoImporteAnticipado.value = document.forms[0].nuevoImporteAnticipado.value.replace(/,/,".");
+				var nuevoImporteAnticipado = parseFloat(document.forms[0].nuevoImporteAnticipado.value);
+				var precioSolicitud = parseFloat('<%=precioSolicitud%>');
 			
 				//valida que el nuevo importe sea un número positivo
 				if (isNaN(nuevoImporteAnticipado) || nuevoImporteAnticipado <= 0 ){
 					alert('<siga:Idioma key="messages.pys.solicitudCompra.errorAnticiparImporteNoValido"/>');
 					return false;
 				}
+				
 				var total = totalAnticipado + nuevoImporteAnticipado;
 				if (precioSolicitud < total){
-					alert(document.forms[0].nuevoImporteAnticipado.value);
+					alert('<siga:Idioma key="messages.pys.solicitudCompra.errorAnticiparImporteSuperior"/>');
 					return false;
 				}
-
+				
 				return true;
 			}
 						
