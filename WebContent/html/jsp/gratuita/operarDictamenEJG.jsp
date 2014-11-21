@@ -270,7 +270,7 @@
 	</table>
 	
 	<html:form action="/INF_InformesGenericos" method="post"	target="submitArea">
-	<html:hidden property="idInstitucion" value = "<%=usr.getLocation()%>"/>
+	<html:hidden property="idInstitucion" value = "<%=idInstitucion%>"/>
 	<html:hidden property="idTipoInforme" value='EJGCA'/>
 	<html:hidden property="enviar" value = "0"/>
 	<html:hidden property="descargar" value="1"/>
