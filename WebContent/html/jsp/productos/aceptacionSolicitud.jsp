@@ -129,8 +129,8 @@
 	<!-- Aqui se reescriben las funciones que vayamos a utilizar -->	
 	<script language="JavaScript">	
 		// JPT: Funcion que pone muestra un numero con punto en los millares, coma en el simbolo decimal y dos decimales
-		function  convertirAFormato(numero){
-			var numeroFormateado = numero.replace(",", ".");
+		function convertirAFormato(numero){
+			var numeroFormateado = numero.toString().replace(",", ".");
 			var numeroNumber = new Number(numeroFormateado);
 			
 			if (isNaN(numeroNumber)) {
