@@ -85,6 +85,7 @@ public class SIGASvlProcesoFacturacion extends HttpServlet {
    	   					fac.confirmarProgramacionesFacturasInstitucion(request,beanInstitucion.getIdInstitucion().toString(),usr);
    	   					
    	   					ClsLogging.writeFileLogWithoutSession(" ---------- INICIO REEENVIO DE FACTURAS ", 3);
+   	   					//No deberia hacerse por que ya existe un proceso indivdual de confirmacion que realiza la generacion de pdf y los envios no se hacen en background
    	   					fac.generarPDFsYenviarFacturasProgramacion(request,""+beanInstitucion.getIdInstitucion());
    	   					
    	   					ClsLogging.writeFileLogWithoutSession(" ---------- OK GENERACION Y CONFIRMACION DE FACTURAS. INSTITUCION: "+beanInstitucion.getIdInstitucion(), 3);
