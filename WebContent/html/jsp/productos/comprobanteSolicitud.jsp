@@ -27,6 +27,7 @@
 <%@ page import = "com.siga.tlds.FilaExtElement"%>
 <%@ page import = "java.util.*"%>
 <%@ page import = "com.siga.general.Articulo"%>
+<%@ page import = "com.siga.beans.GenParametrosAdm"%>
 
 <!-- JSP -->
 <% 
@@ -78,6 +79,9 @@
 	String sDialogError= UtilidadesString.mostrarDatoJSP(UtilidadesString.getMensajeIdioma(usrbean, "messages.general.error"));
 	String sDialogBotonCerrar = UtilidadesString.mostrarDatoJSP(UtilidadesString.getMensajeIdioma(usrbean, "general.boton.close"));
 	String sDialogBotonGuardarCerrar = UtilidadesString.mostrarDatoJSP(UtilidadesString.getMensajeIdioma(usrbean, "general.boton.guardarCerrar"));	
+	
+	GenParametrosAdm admParametros = new GenParametrosAdm(usrbean);
+	String aprobarSolicitud = admParametros.getValor(usrbean.getLocation(), ClsConstants.MODULO_PRODUCTOS, "APROBAR_SOLICITUD_COMPRA", "S");
 %>
 
 	<!-- HEAD -->
@@ -501,7 +505,7 @@
 		</html:form>	
 		
 <% 
-		if (usrbean.isLetrado() || cer_nofactura) { 
+		if (usrbean.isLetrado() || cer_nofactura || !aprobarSolicitud.equals("S")) { 
 %>
 			<siga:ConjBotonesAccion botones="IA" clase="botonesDetalle"/>			
 <% 

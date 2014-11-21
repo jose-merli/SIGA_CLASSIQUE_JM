@@ -1397,130 +1397,122 @@ public class SolicitudCompraAction extends MasterAction{
 		return salida; 
 	}
 	
-	private Hashtable prepararComprobante(CarroCompra carro, HttpServletRequest request) throws SIGAException, ClsExceptions {
-		PysPeticionCompraSuscripcionAdm ppcsa = new PysPeticionCompraSuscripcionAdm(this.getUserBean(request));
-		PysPeticionCompraSuscripcionBean peticionBean = new PysPeticionCompraSuscripcionBean();
-		CenPersonaAdm personaAdm = new CenPersonaAdm(this.getUserBean(request));
-		CenPersonaBean personaBean = new CenPersonaBean(); 		
-		CenColegiadoAdm colegiadoAdm = new CenColegiadoAdm(this.getUserBean(request));
-		UsrBean user;
+	/**
+	 * Prepara el comprobante
+	 * @param carro
+	 * @param request
+	 * @return
+	 * @throws SIGAException
+	 * @throws ClsExceptions
+	 */
+	private Hashtable<String, Object> prepararComprobante(CarroCompra carro, HttpServletRequest request) throws SIGAException, ClsExceptions {
+		UsrBean user = (UsrBean)request.getSession().getAttribute("USRBEAN");
 		
-		Hashtable hash = new Hashtable();
-		Hashtable registros = new Hashtable();
-		Articulo articulo;
-		int claseArticulo;
-		String where = null;
+		PysPeticionCompraSuscripcionAdm admPeticionCompraSuscripcion = new PysPeticionCompraSuscripcionAdm(user);		
+		CenPersonaAdm admPersona = new CenPersonaAdm(user);
+		CenColegiadoAdm admColegiado = new CenColegiadoAdm(user);
+		PysFormaPagoAdm admFormaPago = new PysFormaPagoAdm(user);
 		
-		user=(UsrBean)request.getSession().getAttribute("USRBEAN");
-		
-		//IdPersona:
+		Hashtable<String, Object> registros = new Hashtable<String, Object>();
 		registros.put("idPersona",carro.getIdPersona());
 		
 		//Obtengo el idPeticion y la fecha:		
-		where = "WHERE "+PysPeticionCompraSuscripcionBean.C_NUM_OPERACION+"='"+carro.getNumOperacion()+"'";
-		where += " AND "+PysPeticionCompraSuscripcionBean.C_IDINSTITUCION+"="+carro.getIdinstitucion();		
-		peticionBean = (PysPeticionCompraSuscripcionBean)(ppcsa.select(where).get(0));		
-		registros.put("idPeticion",peticionBean.getIdPeticion());
-		registros.put("fecha",GstDate.getFormatedDateShort(user.getLanguage(),peticionBean.getFecha()));
+		String where = " WHERE " + PysPeticionCompraSuscripcionBean.C_NUM_OPERACION + " = '" + carro.getNumOperacion() + "'" +
+					" AND " + PysPeticionCompraSuscripcionBean.C_IDINSTITUCION + " = " + carro.getIdinstitucion();	
+		Vector<PysPeticionCompraSuscripcionBean> vPeticionCompraSuscripcion = admPeticionCompraSuscripcion.select(where);		
+		
+		PysPeticionCompraSuscripcionBean beanPeticionCompraSuscripcion = (PysPeticionCompraSuscripcionBean) vPeticionCompraSuscripcion.get(0);
+		registros.put("idPeticion",beanPeticionCompraSuscripcion.getIdPeticion());
+		registros.put("fecha",GstDate.getFormatedDateShort(user.getLanguage(),beanPeticionCompraSuscripcion.getFecha()));
 			
 		//Obtengo el nombre, nif:
-		where = "WHERE "+CenPersonaBean.C_IDPERSONA+"="+carro.getIdPersona();			
-		personaBean = (CenPersonaBean)(personaAdm.select(where).get(0));		
-		registros.put("nombrePersona",personaBean.getNombre()+" "+personaBean.getApellido1()+" "+personaBean.getApellido2());		
-		registros.put("nif",personaBean.getNIFCIF());		
+		where = " WHERE " + CenPersonaBean.C_IDPERSONA + " = " + carro.getIdPersona();			
+		Vector<CenPersonaBean> vPersona = admPersona.select(where);
+		
+		CenPersonaBean beanPersona = (CenPersonaBean) vPersona.get(0);
+		registros.put("nombrePersona",beanPersona.getNombre() + " " + beanPersona.getApellido1() + " " + beanPersona.getApellido2());		
+		registros.put("nif",beanPersona.getNIFCIF());		
 		
 		//Obtengo el numero de colegiado de la persona
-		CenColegiadoBean bean = colegiadoAdm.getDatosColegiales(carro.getIdPersona(), carro.getIdinstitucion());			
-		registros.put("numeroColegiado", colegiadoAdm.getIdentificadorColegiado(bean));
+		CenColegiadoBean bean = admColegiado.getDatosColegiales(carro.getIdPersona(), carro.getIdinstitucion());			
+		registros.put("numeroColegiado", admColegiado.getIdentificadorColegiado(bean));
 	
 		//Datos del carro de la compra:			
 		ArrayList arrayListaArticulosOrdenada = carro.getArrayListaArticulosOrdenada();
-		Vector vListaPyS = new Vector();
+		Vector<Hashtable<String, Object>> vListaPyS = new Vector<Hashtable<String, Object>>();
 		
 		for(int i=0; i < arrayListaArticulosOrdenada.size(); i++){
-			articulo = (Articulo)(arrayListaArticulosOrdenada.get(i)); 
-			claseArticulo = articulo.getClaseArticulo();
+			Articulo articulo = (Articulo)(arrayListaArticulosOrdenada.get(i)); 
+			int claseArticulo = articulo.getClaseArticulo();
+			Hashtable<String, Object> hash = new Hashtable<String, Object>();
+			Hashtable<String, Object> hFormaPago = new Hashtable<String, Object>();
+			UtilidadesHash.set(hFormaPago,PysFormaPagoBean.C_IDFORMAPAGO,articulo.getIdFormaPago());
 						
 			if (claseArticulo == Articulo.CLASE_PRODUCTO) { 				
-				hash = new Hashtable();
 				UtilidadesHash.set(hash, PysProductosSolicitadosBean.C_IDINSTITUCION, articulo.getIdInstitucion());	
 				UtilidadesHash.set(hash, PysProductosSolicitadosBean.C_IDTIPOPRODUCTO, articulo.getIdTipo());
 				UtilidadesHash.set(hash, PysProductosSolicitadosBean.C_IDPRODUCTO, articulo.getIdArticulo());			
 				UtilidadesHash.set(hash, PysProductosSolicitadosBean.C_IDPRODUCTOINSTITUCION, articulo.getIdArticuloInstitucion());
-				UtilidadesHash.set(hash, PysProductosSolicitadosBean.C_IDPETICION, peticionBean.getIdPeticion());
+				UtilidadesHash.set(hash, PysProductosSolicitadosBean.C_IDPETICION, beanPeticionCompraSuscripcion.getIdPeticion());
 				UtilidadesHash.set(hash, PysProductosSolicitadosBean.C_IDPERSONA, carro.getIdPersona());
 				UtilidadesHash.set(hash, PysProductosSolicitadosBean.C_IDCUENTA, articulo.getIdCuenta());
 				UtilidadesHash.set(hash, PysProductosSolicitadosBean.C_IDFORMAPAGO, articulo.getIdFormaPago());
-				UtilidadesHash.set(hash, PysProductosSolicitadosBean.C_PORCENTAJEIVA, articulo.getIdIva());
-				UtilidadesHash.set(hash, "VALORIVA", articulo.getValorIva());
+				UtilidadesHash.set(hash, PysProductosSolicitadosBean.C_PORCENTAJEIVA, articulo.getIdIva());				
 				UtilidadesHash.set(hash, PysProductosSolicitadosBean.C_CANTIDAD, new Integer(articulo.getCantidad()));
 				UtilidadesHash.set(hash, PysProductosSolicitadosBean.C_ACEPTADO, ClsConstants.PRODUCTO_PENDIENTE);
-				UtilidadesHash.set(hash, PysProductosSolicitadosBean.C_VALOR, articulo.getPrecio());
-				UtilidadesHash.set(hash, "ANTICIPAR", articulo.getAnticipar());
+				UtilidadesHash.set(hash, PysProductosSolicitadosBean.C_VALOR, articulo.getPrecio());							
+				UtilidadesHash.set(hash, "ANTICIPAR", articulo.getAnticipar());				
+				UtilidadesHash.set(hash, "DESCRIPCION_ARTICULO", articulo.getIdArticuloInstitucionDescripcion());				
+				UtilidadesHash.set(hash, "DESCRIPCION_CUENTA", articulo.getNumeroCuenta());			
 				UtilidadesHash.set(hash, "IMPORTEANTICIPADO", articulo.getImporteAnticipado());
-				//Otros datos:
-				PysFormaPagoAdm formaPagoAdm = new PysFormaPagoAdm(this.getUserBean(request));
-			     Hashtable hFormaPago =new Hashtable();
-			     UtilidadesHash.set(hFormaPago,PysFormaPagoBean.C_IDFORMAPAGO,articulo.getIdFormaPago());
-			     if (hFormaPago.get(PysFormaPagoBean.C_IDFORMAPAGO)!=null){
-			         Vector v_formaPago=formaPagoAdm.selectByPK(hFormaPago);
-				     if (v_formaPago!=null && v_formaPago.size()>0){
-				       PysFormaPagoBean formaPagoBean=(PysFormaPagoBean)v_formaPago.get(0);
-				       UtilidadesHash.set(hash, "DESCRIPCION_FORMAPAGO", UtilidadesMultidioma.getDatoMaestroIdioma(formaPagoBean.getDescripcion(),this.getUserBean(request)));	
-				     }
-			     }else{
-			     	UtilidadesHash.set(hash, "DESCRIPCION_FORMAPAGO", UtilidadesString.getMensajeIdioma(this.getUserBean(request),"estados.compra.noFacturable"));
-			     }
-				UtilidadesHash.set(hash, "DESCRIPCION_ARTICULO", articulo.getIdArticuloInstitucionDescripcion());	
-				//UtilidadesHash.set(hash, "DESCRIPCION_FORMAPAGO", articulo.getFormaPago());	
-				UtilidadesHash.set(hash, "DESCRIPCION_CUENTA", articulo.getNumeroCuenta());
+				UtilidadesHash.set(hash, "VALORIVA", articulo.getValorIva());
 				
-			 } else {				
-			 	hash = new Hashtable();
+			    if (hFormaPago.get(PysFormaPagoBean.C_IDFORMAPAGO)!=null){
+			         Vector<PysFormaPagoBean> vFormaPago = admFormaPago.selectByPK(hFormaPago);
+				     if (vFormaPago!=null && vFormaPago.size()>0){
+				    	 PysFormaPagoBean formaPagoBean = (PysFormaPagoBean) vFormaPago.get(0);
+				    	 UtilidadesHash.set(hash, "DESCRIPCION_FORMAPAGO", UtilidadesMultidioma.getDatoMaestroIdioma(formaPagoBean.getDescripcion(),user));	
+				     }
+			     } else {
+			     	UtilidadesHash.set(hash, "DESCRIPCION_FORMAPAGO", UtilidadesString.getMensajeIdioma(user,"estados.compra.noFacturable"));
+			     }
+				
+			} else {				
 				UtilidadesHash.set(hash, PysServiciosSolicitadosBean.C_IDINSTITUCION , articulo.getIdInstitucion());
 				UtilidadesHash.set(hash, PysServiciosSolicitadosBean.C_IDTIPOSERVICIOS , articulo.getIdTipo());
 				UtilidadesHash.set(hash, PysServiciosSolicitadosBean.C_IDSERVICIO , articulo.getIdArticulo());
 				UtilidadesHash.set(hash, PysServiciosSolicitadosBean.C_IDSERVICIOSINSTITUCION, articulo.getIdArticuloInstitucion());
-				UtilidadesHash.set(hash, PysServiciosSolicitadosBean.C_IDPETICION, peticionBean.getIdPeticion());
+				UtilidadesHash.set(hash, PysServiciosSolicitadosBean.C_IDPETICION, beanPeticionCompraSuscripcion.getIdPeticion());
 				UtilidadesHash.set(hash, PysServiciosSolicitadosBean.C_IDPERSONA, carro.getIdPersona());
 				UtilidadesHash.set(hash, PysServiciosSolicitadosBean.C_IDCUENTA, articulo.getIdCuenta());
 				UtilidadesHash.set(hash, PysServiciosSolicitadosBean.C_IDFORMAPAGO, articulo.getIdFormaPago());
+				UtilidadesHash.set(hash, PysServiciosInstitucionBean.C_PORCENTAJEIVA , articulo.getIdIva());
 				UtilidadesHash.set(hash, PysServiciosSolicitadosBean.C_CANTIDAD , new Integer(articulo.getCantidad()));
 				UtilidadesHash.set(hash, PysServiciosSolicitadosBean.C_ACEPTADO , ClsConstants.PRODUCTO_PENDIENTE);
 				UtilidadesHash.set(hash, PysServiciosSolicitadosBean.C_IDPERIODICIDAD , articulo.getIdPeriodicidad());
 				UtilidadesHash.set(hash, PysServiciosSolicitadosBean.C_IDPRECIOSSERVICIOS , articulo.getIdPrecios());
 				UtilidadesHash.set(hash, "ANTICIPAR", articulo.getAnticipar());
-				UtilidadesHash.set(hash, "IMPORTEANTICIPADO", articulo.getImporteAnticipado());
-
-				// MAV 24/08/2005 Obtención del IVA para mostrar en comprobante
-				UtilidadesHash.set(hash, PysServiciosInstitucionBean.C_PORCENTAJEIVA , articulo.getIdIva());
-				UtilidadesHash.set(hash, "VALORIVA", articulo.getValorIva());
-				//Otros datos:
 				UtilidadesHash.set(hash, "DESCRIPCION_ARTICULO", articulo.getIdArticuloInstitucionDescripcion());
-				
-				UtilidadesHash.set(hash, "SERVICIO_DESCRIPCION_PRECIO", articulo.getDescripcionPrecio());
-				
-				PysFormaPagoAdm formaPagoAdm = new PysFormaPagoAdm(this.getUserBean(request));
-			     Hashtable hFormaPago =new Hashtable();
-			     hFormaPago.put(PysFormaPagoBean.C_IDFORMAPAGO,articulo.getIdFormaPago());
-			     Vector v_formaPago=formaPagoAdm.selectByPK(hFormaPago);
-			     if (v_formaPago!=null && v_formaPago.size()>0){
-			       PysFormaPagoBean formaPagoBean=(PysFormaPagoBean)v_formaPago.get(0);
-			       UtilidadesHash.set(hash, "DESCRIPCION_FORMAPAGO", UtilidadesMultidioma.getDatoMaestroIdioma(formaPagoBean.getDescripcion(),this.getUserBean(request)));	
-			     }
-				//UtilidadesHash.set(hash, "DESCRIPCION_FORMAPAGO", articulo.getFormaPago());	
-				UtilidadesHash.set(hash, "DESCRIPCION_CUENTA", articulo.getNumeroCuenta());									     
-				UtilidadesHash.set(hash, "PRECIOSSERVICIOS", articulo.getPrecio()); 
-				UtilidadesHash.set(hash, "IVA" , articulo.getIdIva());		
+				UtilidadesHash.set(hash, "DESCRIPCION_CUENTA", articulo.getNumeroCuenta());
+				UtilidadesHash.set(hash, "IMPORTEANTICIPADO", articulo.getImporteAnticipado());
+				UtilidadesHash.set(hash, "IVA" , articulo.getIdIva());
 				UtilidadesHash.set(hash, "PERIODICIDAD" , articulo.getPeriodicidad());
-			 }
+				UtilidadesHash.set(hash, "PRECIOSSERVICIOS", articulo.getPrecio());
+				UtilidadesHash.set(hash, "SERVICIO_DESCRIPCION_PRECIO", articulo.getDescripcionPrecio());
+				UtilidadesHash.set(hash, "VALORIVA", articulo.getValorIva());							
+				
+				Vector<PysFormaPagoBean> vFormaPago = admFormaPago.selectByPK(hFormaPago);
+			    if (vFormaPago!=null && vFormaPago.size()>0){
+			    	PysFormaPagoBean formaPagoBean = (PysFormaPagoBean) vFormaPago.get(0);
+			    	UtilidadesHash.set(hash, "DESCRIPCION_FORMAPAGO", UtilidadesMultidioma.getDatoMaestroIdioma(formaPagoBean.getDescripcion(),user));	
+			    }
+			}
 				
 			UtilidadesHash.set(hash, "CLASE" , claseArticulo);
 			vListaPyS.add(hash);
 		}
 		
-		registros.put("vListaPyS",vListaPyS);
-		
+		registros.put("vListaPyS", vListaPyS);		
 		return registros;
 	}
 	
@@ -1777,6 +1769,10 @@ public class SolicitudCompraAction extends MasterAction{
 		// Obtiene las compras de la peticion
 		PysCompraAdm admCompra = new PysCompraAdm(usr);
 		Vector<PysCompraBean> vCompras = admCompra.obtenerComprasPorPeticion(beanPeticionCompraSuscripcion);
+		
+		if (vCompras==null || vCompras.size()==0) {
+			throw new SIGAException("messages.facturacionRapidaCompra.noElementosFacturables");
+		}
 	    
 	    // Compruebo si esta facturada la compra
 		PysCompraBean beanCompra = (PysCompraBean) vCompras.get(0);
