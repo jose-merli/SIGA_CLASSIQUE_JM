@@ -395,7 +395,7 @@ public class InformesGenericosAction extends MasterAction {
 			String idioma=usr.getLanguageInstitucion();
 			Hashtable datoscomunes=new Hashtable();
 			String codigoext="";
-			String idintitucionactual=""+this.getIDInstitucion(request);			
+			String idintitucionactual=miform.getIdInstitucion();			
 			Vector vSalida = null;	
 			String idPersonaJG="";
 			Vector infosolicitante=new Vector();
