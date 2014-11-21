@@ -161,8 +161,8 @@ public class Facturacion {
 			FacFacturacionProgramadaAdm admFacturacionProgramada = new FacFacturacionProgramadaAdm(userBean);
 			Vector<?> vDatos = admFacturacionProgramada.selectDatosFacturacionBean(sWhere,codigos, orden);
 			
-		    for (int i=0; i<vDatos.size(); i++){
-		    	FacFacturacionProgramadaBean beanFacturacionProgramada = (FacFacturacionProgramadaBean) vDatos.get(i);
+		    while(vDatos != null && vDatos.size()>0){
+		    	FacFacturacionProgramadaBean beanFacturacionProgramada = (FacFacturacionProgramadaBean) vDatos.get(0);
 		    	
 		    	try {
 					// Pasamos a estado ejecutando
@@ -185,7 +185,9 @@ public class Facturacion {
 					} catch (Exception e2) {}		
 		    		ClsLogging.writeFileLogError("### Error procesando facturación AUTOMATICA " ,e,3);
 		    	}
-		    }
+				
+		    	vDatos = admFacturacionProgramada.selectDatosFacturacionBean(sWhere,codigos, orden);
+		    }// del WHILE		
 		    
 		} catch (Exception e) { 
 			ClsLogging.writeFileLogError("### Error general al procesar facturas (INSTITUCION:" + idInstitucion + ")", e, 3);
@@ -1133,63 +1135,66 @@ public class Facturacion {
     		} // bucle
     		 
     		
-    		/**************  CREAMOS EL INFORME DE CONFIRMACION DE FACTURA QUE SE AÑADIRÁ AL ZIP DE FACTURAS EMITIDAS    ****************/
-			AdmInformeAdm datosInforme = new AdmInformeAdm(this.usrbean);
-			Hashtable<String,Object> hashWhere = new Hashtable<String,Object>();			
-			UtilidadesHash.set(hashWhere, AdmInformeBean.C_IDTIPOINFORME, "FACT");
-			UtilidadesHash.set(hashWhere, AdmInformeBean.C_IDINSTITUCION, "0");
-			
-			ClsLogging.writeFileLog("### Inicio datosInforme CONFIRMACION",7);
-			
-			Vector<?> v =datosInforme.select(hashWhere);
-
-			if(v!=null && v.size()>0){				
-				for (int dv = 0; dv < v.size(); dv++){				
-					AdmInformeBean informe = (AdmInformeBean) v.get(dv);
-					
-					ArrayList<HashMap<String, String>> filtrosInforme = new ArrayList<HashMap<String, String>>();
-					HashMap<String, String> filtro;
-					filtro = new HashMap<String, String>();
-					filtro.put(AdmTipoFiltroInformeBean.C_NOMBRECAMPO, "IDIOMA");
-					filtro.put("VALOR", this.usrbean.getLanguageInstitucion().toString());
-					filtrosInforme.add(filtro);	
-					
-					filtro = new HashMap<String, String>();
-					filtro.put(AdmTipoFiltroInformeBean.C_NOMBRECAMPO, "IDSERIEFACTURACION");
-					filtro.put("VALOR", serieFacturacion.toString());
-					filtrosInforme.add(filtro);	
-					
-					filtro = new HashMap<String, String>();
-					filtro.put(AdmTipoFiltroInformeBean.C_NOMBRECAMPO, "IDPROGRAMACION"); 
-					filtro.put("VALOR", idProgramacion.toString());
-					filtrosInforme.add(filtro);	
-					
-					filtro = new HashMap<String, String>();
-					filtro.put(AdmTipoFiltroInformeBean.C_NOMBRECAMPO, "IDINSTITUCION");
-					filtro.put("VALOR", institucion.toString());
-					filtrosInforme.add(filtro);
-					
-					informe.setNombreSalida("CONFIRMACION_" + serieFacturacion + "_" + idProgramacion); 
-					
-					ClsLogging.writeFileLog("### Inicio generación fichero excel CONFIRMACION",7);
-					
-					ArrayList<File> fichPrev= InformePersonalizable.generarInformeXLS(informe, filtrosInforme,rutaAlmacen, this.usrbean);
-					
-					ClsLogging.writeFileLog("### Fin generación fichero excel CONFIRMACION",7);
+    		if(!existeAlgunErrorPdf){
+    		
+	    		/**************  CREAMOS EL INFORME DE CONFIRMACION DE FACTURA QUE SE AÑADIRÁ AL ZIP DE FACTURAS EMITIDAS    ****************/
+				AdmInformeAdm datosInforme = new AdmInformeAdm(this.usrbean);
+				Hashtable<String,Object> hashWhere = new Hashtable<String,Object>();			
+				UtilidadesHash.set(hashWhere, AdmInformeBean.C_IDTIPOINFORME, "FACT");
+				UtilidadesHash.set(hashWhere, AdmInformeBean.C_IDINSTITUCION, "0");
+				
+				ClsLogging.writeFileLog("### Inicio datosInforme CONFIRMACION",7);
+				
+				Vector<?> v =datosInforme.select(hashWhere);
 	
-					//Si la previsión está vacía
-					if(fichPrev==null || fichPrev.size()==0) {
-						ClsLogging.writeFileLog("### Error al generar el informe de la confirmacion. Inicio creación fichero log CONFIRMACION sin datos",7);
-						throw new ClsExceptions("message.facturacion.error.fichero.nulo");
-					
-					} 
-				}	
-			}
-    		
-    		/********************************************************************************************************/
-    		
-    		// inc6666 - Si es correcto generamos el ZIP con todas las facturas
-			generarZip(institucion.toString(), serieFacturacion.toString(), idProgramacion.toString());
+				if(v!=null && v.size()>0){				
+					for (int dv = 0; dv < v.size(); dv++){				
+						AdmInformeBean informe = (AdmInformeBean) v.get(dv);
+						
+						ArrayList<HashMap<String, String>> filtrosInforme = new ArrayList<HashMap<String, String>>();
+						HashMap<String, String> filtro;
+						filtro = new HashMap<String, String>();
+						filtro.put(AdmTipoFiltroInformeBean.C_NOMBRECAMPO, "IDIOMA");
+						filtro.put("VALOR", this.usrbean.getLanguageInstitucion().toString());
+						filtrosInforme.add(filtro);	
+						
+						filtro = new HashMap<String, String>();
+						filtro.put(AdmTipoFiltroInformeBean.C_NOMBRECAMPO, "IDSERIEFACTURACION");
+						filtro.put("VALOR", serieFacturacion.toString());
+						filtrosInforme.add(filtro);	
+						
+						filtro = new HashMap<String, String>();
+						filtro.put(AdmTipoFiltroInformeBean.C_NOMBRECAMPO, "IDPROGRAMACION"); 
+						filtro.put("VALOR", idProgramacion.toString());
+						filtrosInforme.add(filtro);	
+						
+						filtro = new HashMap<String, String>();
+						filtro.put(AdmTipoFiltroInformeBean.C_NOMBRECAMPO, "IDINSTITUCION");
+						filtro.put("VALOR", institucion.toString());
+						filtrosInforme.add(filtro);
+						
+						informe.setNombreSalida("CONFIRMACION_" + serieFacturacion + "_" + idProgramacion); 
+						
+						ClsLogging.writeFileLog("### Inicio generación fichero excel CONFIRMACION",7);
+						
+						ArrayList<File> fichPrev= InformePersonalizable.generarInformeXLS(informe, filtrosInforme,rutaAlmacen, this.usrbean);
+						
+						ClsLogging.writeFileLog("### Fin generación fichero excel CONFIRMACION",7);
+		
+						//Si la previsión está vacía
+						if(fichPrev==null || fichPrev.size()==0) {
+							ClsLogging.writeFileLog("### Error al generar el informe de la confirmacion. Inicio creación fichero log CONFIRMACION sin datos",7);
+							throw new ClsExceptions("message.facturacion.error.fichero.nulo");
+						
+						} 
+					}	
+				}
+	    		
+	    		/********************************************************************************************************/
+	    		
+	    		// inc6666 - Si es correcto generamos el ZIP con todas las facturas
+				generarZip(institucion.toString(), serieFacturacion.toString(), idProgramacion.toString());
+    		}
     				
 		}catch (SIGAException e) {
 			
@@ -1263,7 +1268,7 @@ public class Facturacion {
 			
 			//Obtenemos el bean del envio: 
 			CenPersonaAdm admPersona = new CenPersonaAdm(userbean);
-			String descripcion = "Envio facturas - " + admPersona.obtenerNombreApellidos(idPersona);
+			String descripcion = "Envio factura " + numeroFactura + " - " + admPersona.obtenerNombreApellidos(idPersona);
 			Envio envio = new Envio(userbean,descripcion);
 
 			// Bean envio
