@@ -53,7 +53,7 @@
 			estadoConfirmacionSel.add(FacEstadoConfirmFactBean.GENERADA.toString());
 		}		
 	}else{
-		//La priemra vez que se carga la página
+		//La primera vez que se carga la página
 		estadoConfirmacionSel.add(FacEstadoConfirmFactBean.GENERADA.toString());	
 	}
 %>	
@@ -100,35 +100,35 @@
 			<siga:ConjCampos leyenda="facturacion.confirmarFacturacion.literal.camposBusqueda">	
 			<table class="tablaCampos" align="center">
 				<tr>				
-					<td  class="labelText" width="220px"><siga:Idioma key="facturacion.mantenimnientoFacturacion.literal.fPrevistaGeneracion"/>&nbsp;<siga:Idioma key="general.literal.desde"/>&nbsp;(*)</td>
+					<td  class="labelText" width="190px"><siga:Idioma key="facturacion.mantenimnientoFacturacion.literal.fPrevistaGeneracion"/>&nbsp;<siga:Idioma key="general.literal.desde"/>&nbsp;(*)</td>
 					<td>
-						<siga:Fecha styleId="fechaDesdePrevistaGeneracion" nombreCampo="fechaDesdePrevistaGeneracion" valorInicial="${confirmarFacturacionForm.fechaDesdePrevistaGeneracion}" />
+						<siga:Fecha styleId="fechaDesdePrevistaGeneracion" nombreCampo="fechaDesdePrevistaGeneracion" valorInicial="${confirmarFacturacionForm.fechaDesdePrevistaGeneracion}" anchoTextField="8"/>
 					</td>
 		
-					<td class="labelText" width="90px"><siga:Idioma key="general.literal.hasta"/></td>
+					<td class="labelText" width="80px"><siga:Idioma key="general.literal.hasta"/></td>
 					<td>
-						<siga:Fecha styleId="fechaHastaPrevistaGeneracion" nombreCampo="fechaHastaPrevistaGeneracion" />
+						<siga:Fecha styleId="fechaHastaPrevistaGeneracion" nombreCampo="fechaHastaPrevistaGeneracion" anchoTextField="8"/>
 					</td>
-					<td  class="labelText" width="170px"><siga:Idioma key="facturacion.confirmarFacturacion.literal.fechaRealGeneracion"/>&nbsp;<siga:Idioma key="general.literal.desde"/></td>
+					<td  class="labelText" width="150px"><siga:Idioma key="facturacion.confirmarFacturacion.literal.fechaRealGeneracion"/>&nbsp;<siga:Idioma key="general.literal.desde"/></td>
 					<td>
-						<siga:Fecha styleId="fechaDesdeGeneracion" nombreCampo="fechaDesdeGeneracion" />
+						<siga:Fecha styleId="fechaDesdeGeneracion" nombreCampo="fechaDesdeGeneracion" anchoTextField="8" />
 					</td>
 		
 					<td class="labelText" width="40px"><siga:Idioma key="general.literal.hasta"/></td>
 					<td>
-						<siga:Fecha styleId="fechaHastaGeneracion" nombreCampo="fechaHastaGeneracion"  />
+						<siga:Fecha styleId="fechaHastaGeneracion" nombreCampo="fechaHastaGeneracion"  anchoTextField="8"/>
 					</td>
 				</tr>
 		
 				<tr>				
 					<td class="labelText"><siga:Idioma key="facturacion.confirmarFacturacion.literal.fechaConfirmacion"/>&nbsp;<siga:Idioma key="general.literal.desde"/></td>
 					<td>
-						<siga:Fecha styleId="fechaDesdeConfirmacion" nombreCampo="fechaDesdeConfirmacion" />
+						<siga:Fecha styleId="fechaDesdeConfirmacion" nombreCampo="fechaDesdeConfirmacion" anchoTextField="8"/>
 					</td>
 
 					<td class="labelText"><siga:Idioma key="general.literal.hasta"/></td>
 					<td>
-						<siga:Fecha styleId="fechaHastaConfirmacion" nombreCampo="fechaHastaConfirmacion" />
+						<siga:Fecha styleId="fechaHastaConfirmacion" nombreCampo="fechaHastaConfirmacion" anchoTextField="8"/>
 					</td>
 					<td colspan="4">&nbsp;</td>
 				</tr>
@@ -150,8 +150,6 @@
 					<td class="labelText" colspan="2"><siga:Idioma key="gratuita.BusquedaSancionesLetrado.literal.archivadas"/>&nbsp;<input type="checkbox" value="1" name="archivadas">
 					</td>
 				</tr>			
-
-		
 			</table>
 		</siga:ConjCampos>	
 

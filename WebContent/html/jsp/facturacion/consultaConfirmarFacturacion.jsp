@@ -198,68 +198,67 @@
 					datos = document.getElementById('tablaDatosDinamicosD');
 					datos.value = ""; 
 					var i, j;
-  						var tabla;
-  						tabla = document.getElementById('tablaDatos');
-    						var flag = true;
-    						j = 1;
-    						while (flag) 
-    						{
-      							var aux = 'oculto' + fila + '_' + j;
-      							var oculto = document.getElementById(aux);
-      							if (oculto == null)  
-      							{ 
-      								flag = false; 
-      							}
-     							else 
-     							{ 
-     								datos.value = datos.value + oculto.value + ','; 
-     							}
-      							j++;
-    						}
-    						datos.value = datos.value + "%";
-    						
-    						var auxTarget = document.confirmarFacturacionForm.target;
-    					    document.confirmarFacturacionForm.target="submitArea";
-    					    document.confirmarFacturacionForm.modo.value = "download";
-    					    document.confirmarFacturacionForm.submit();
-    					    document.confirmarFacturacionForm.target=auxTarget;	    						
+					var tabla;
+					tabla = document.getElementById('tablaDatos');
+					var flag = true;
+					j = 1;
+					while (flag) 
+					{
+						var aux = 'oculto' + fila + '_' + j;
+						var oculto = document.getElementById(aux);
+						if (oculto == null)  
+						{ 
+							flag = false; 
+						}
+						else 
+						{ 
+							datos.value = datos.value + oculto.value + ','; 
+						}
+						j++;
+					}
+					datos.value = datos.value + "%";
+					
+					var auxTarget = document.confirmarFacturacionForm.target;
+				    document.confirmarFacturacionForm.target="submitArea";
+				    document.confirmarFacturacionForm.modo.value = "download";
+				    document.confirmarFacturacionForm.submit();
+				    document.confirmarFacturacionForm.target=auxTarget;	    						
 			}
 		}
 		
 		function descargarInformeGeneracion(fila)
-		{
-			
+		{			
 			if(confirm('<siga:Idioma key="facturacion.generacionFacturacion.literal.confirmarDescargaFichero"/>')) 
 			{
 				var datos;
 				datos = document.getElementById('tablaDatosDinamicosD');
 				datos.value = ""; 
 				var i, j;
-						var tabla;
-						tabla = document.getElementById('tablaDatos');
-						var flag = true;
-						j = 1;
-						while (flag) 
-						{
-  							var aux = 'oculto' + fila + '_' + j;
-  							var oculto = document.getElementById(aux);
-  							if (oculto == null)  
-  							{ 
-  								flag = false; 
-  							}
- 							else 
- 							{ 
- 								datos.value = datos.value + oculto.value + ','; 
- 							}
-  							j++;
+				var tabla;
+				tabla = document.getElementById('tablaDatos');
+				var flag = true;
+				j = 1;
+				while (flag) 
+				{
+							var aux = 'oculto' + fila + '_' + j;
+							var oculto = document.getElementById(aux);
+							if (oculto == null)  
+							{ 
+								flag = false; 
+							}
+						else 
+						{ 
+							datos.value = datos.value + oculto.value + ','; 
 						}
-						datos.value = datos.value + "%";
-	
-						var auxTarget = document.confirmarFacturacionForm.target;
-					    document.confirmarFacturacionForm.target="submitArea";
-					    document.confirmarFacturacionForm.modo.value = "descargarInformeGeneracion";
-					    document.confirmarFacturacionForm.submit();
-					    document.confirmarFacturacionForm.target=auxTarget;							
+							j++;
+				}
+				datos.value = datos.value + "%";
+
+				var auxTarget = document.confirmarFacturacionForm.target;
+			    document.confirmarFacturacionForm.target="submitArea";
+			    document.confirmarFacturacionForm.modo.value = "descargarInformeGeneracion";
+			    document.confirmarFacturacionForm.submit();
+			    document.confirmarFacturacionForm.target=auxTarget;							
 			}			
 			
 		}		
@@ -379,10 +378,10 @@
 				<siga:Table 
 				   	name="tablaDatos"
 				   	border="1"
-				  	columnNames="facturacion.confirmarFacturacion.literal.sel,facturacion.confirmarFacturacion.literal.conceptosFacturables,general.description,
-				  				facturacion.programarFacturacion.literal.fechaInicioProductos,facturacion.programarFacturacion.literal.fechaInicioServicios,facturacion.confirmarFacturacion.literal.fechaRealGeneracion,
+				  	columnNames="facturacion.confirmarFacturacion.literal.conceptosFacturables,general.description,facturacion.programarFacturacion.literal.fechaInicioProductos,
+				  				facturacion.programarFacturacion.literal.fechaInicioServicios,facturacion.confirmarFacturacion.literal.fechaRealGeneracion,
 				  				facturacion.confirmarFacturacion.literal.fechaConfirmacion,facturacion.estado,"
-				  	columnSizes="4,19,20,9,9,7,7,9,16"
+				  	columnSizes="20,20,9,9,8,8,10,16"
 				    modal="M">	 	
 					<%if(vDatos == null || vDatos.size()<1 ) { %>
 		 					<tr class="notFound">
@@ -463,24 +462,35 @@
 									if(logError != null && !logError.equals("0"))
 										elems[3]=new FilaExtElement("descargaLog","descargaLog",SIGAConstants.ACCESS_READ);
 									elems[4]=new FilaExtElement("enviar","enviar",SIGAConstants.ACCESS_READ);
-								}
 								
-								if(htData.get("IDESTADOPDF")!= null && ((String)htData.get("IDESTADOPDF")).equals(String.valueOf(FacEstadoConfirmFactBean.PDF_FINALIZADAERRORES.intValue()))){
-									sEstadoConfirmacion +=  UtilidadesString.mostrarDatoJSP("\nErrores PDF");
-								}
-									
-								if(htData.get("IDESTADOENVIO")!= null && ((String)htData.get("IDESTADOENVIO")).equals(String.valueOf(FacEstadoConfirmFactBean.ENVIO_FINALIZADAERRORES.intValue()))){  
-									sEstadoConfirmacion +=  UtilidadesString.mostrarDatoJSP("\nErrores Envio");								
+									if(htData.get("IDESTADOPDF")!= null){ 
+										if(((String)htData.get("IDESTADOPDF")).equals(String.valueOf(FacEstadoConfirmFactBean.PDF_FINALIZADAERRORES.intValue()))){
+											sEstadoConfirmacion +=  UtilidadesString.mostrarDatoJSP("\nErrores PDF");
+										}else if(((String)htData.get("IDESTADOPDF")).equals(String.valueOf(FacEstadoConfirmFactBean.PDF_FINALIZADA.intValue()))){
+											sEstadoConfirmacion +=  UtilidadesString.mostrarDatoJSP("\nPDF Finalizado");
+										}else if(((String)htData.get("IDESTADOPDF")).equals(String.valueOf(FacEstadoConfirmFactBean.PDF_PROCESANDO.intValue()))){
+											sEstadoConfirmacion +=  UtilidadesString.mostrarDatoJSP("\nGenerando PDF");
+										}else if(((String)htData.get("IDESTADOPDF")).equals(String.valueOf(FacEstadoConfirmFactBean.PDF_PROGRAMADA.intValue()))){
+											sEstadoConfirmacion +=  UtilidadesString.mostrarDatoJSP("\nGenerando PDF");
+										}
+									}
+										
+									if(htData.get("IDESTADOENVIO")!= null){
+										if(((String)htData.get("IDESTADOENVIO")).equals(String.valueOf(FacEstadoConfirmFactBean.ENVIO_FINALIZADAERRORES.intValue()))){  
+											sEstadoConfirmacion +=  UtilidadesString.mostrarDatoJSP("\nErrores Envío");
+										}else if(((String)htData.get("IDESTADOENVIO")).equals(String.valueOf(FacEstadoConfirmFactBean.ENVIO_FINALIZADA.intValue()))){
+											sEstadoConfirmacion +=  UtilidadesString.mostrarDatoJSP("\nEnvio Finalizado");
+										}else if(((String)htData.get("IDESTADOENVIO")).equals(String.valueOf(FacEstadoConfirmFactBean.ENVIO_PROCESANDO.intValue()))){
+											sEstadoConfirmacion +=  UtilidadesString.mostrarDatoJSP("\nGenerando Envío");
+										}else if(((String)htData.get("IDESTADOENVIO")).equals(String.valueOf(FacEstadoConfirmFactBean.ENVIO_PROGRAMADA.intValue()))){
+											sEstadoConfirmacion +=  UtilidadesString.mostrarDatoJSP("\nGenerando Envío");
+										}										
+									}
 								}
 								
 								i++;
 								%> 							
 								<siga:FilaConIconos fila='<%=String.valueOf(i)%>' botones='' visibleConsulta='false' visibleEdicion='false' visibleBorrado='false' elementos='<%=elems%>' pintarEspacio="no" clase="listaNonEdit">
-								<% if (sCheckArchivado.trim().equals("1")) { %>
-									<td><center><input type=checkbox name="sel" value="1" checked disabled></center></td> 
-								<% } else { %>
-									<td><center><input type=checkbox name="sel" value="1" disabled></center></td> 
-								<% } %>
 									<td>
 										<input type='hidden' id='oculto<%=String.valueOf(i)%>_1' name='oculto<%=String.valueOf(i)%>_1' value='<%=htData.get(FacFacturacionProgramadaBean.C_IDSERIEFACTURACION)%>'>
 										<input type='hidden' id='oculto<%=String.valueOf(i)%>_2' name='oculto<%=String.valueOf(i)%>_2' value='<%=htData.get(FacFacturacionProgramadaBean.C_IDPROGRAMACION)%>'>	
