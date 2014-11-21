@@ -203,7 +203,7 @@ public class DefinirDictamenEJGAction extends MasterAction {
 				AdmInformeAdm adm = new AdmInformeAdm(this.getUserBean(request));
 				// mostramos la ventana con la pregunta
 				
-				Vector informeBeans=adm.obtenerInformesTipo(usr.getLocation().toString(),"EJGCA",null, null);
+				Vector informeBeans=adm.obtenerInformesTipo(idInstitucion,"EJGCA",null, null);
 				if(informeBeans!=null && informeBeans.size()>1){
 					informeUnico = ClsConstants.DB_FALSE;
 					
