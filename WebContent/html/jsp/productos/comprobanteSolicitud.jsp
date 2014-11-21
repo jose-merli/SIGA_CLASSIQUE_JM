@@ -101,6 +101,7 @@
 		var error = '<%=error%>';
 		
  		function resultado(){
+ 			fin(); // Finaliza el bloqueo de la accion accionFacturacionRapida()
  			if (error == 'NO') {
 	 			f = document.solicitudCompraForm; 
 	 			if ("S" != "<%=mostrarCompra%>"){
@@ -121,8 +122,7 @@
  		}
  		
  		function accionFacturacionRapida(){
- 			sub();			
- 			
+ 			sub();
 		 	var tableCabecera = document.getElementById("cabecera");
 		 	var filas = tableCabecera.rows.length;
 		 	var numColumnas = tableCabecera.rows[0].cells.length - 1;
@@ -144,7 +144,8 @@
 				data: "idInstitucion=" + idInstitucion.value + "&idPeticion=" + idPeticion.value,
 				dataType: "json",
 				contentType: "application/x-www-form-urlencoded;charset=UTF-8",
-				success: function(json){							
+				success: function(json){
+					fin(); // finaliza el sub de accionFacturacionRapida()
 						
 					// Recupera el identificador de la serie de facturacion
 					var idSerieFacturacion = json.idSerieFacturacion;		
@@ -168,6 +169,7 @@
 											
 										} else {
 											jQuery(this).dialog("close");
+											sub(); // Inicia el bloqueo hasta que haya realizado la accion
 											document.solicitudCompraForm.target = "submitArea";
 											document.solicitudCompraForm.modo.value = "facturacionRapidaCompra";
 											document.solicitudCompraForm.tablaDatosDinamicosD.value = idInstitucion.value + ',' + idPeticion.value + ',' + idSerieFacturacion;											
@@ -183,18 +185,17 @@
 						jQuery(".ui-widget-overlay").css("opacity","0");														
 						
 					} else {
+						sub(); // Inicia el bloqueo hasta que haya realizado la accion
 						document.solicitudCompraForm.target = "submitArea";
 						document.solicitudCompraForm.modo.value = "facturacionRapidaCompra";
 						document.solicitudCompraForm.tablaDatosDinamicosD.value = idInstitucion.value + ',' + idPeticion.value + ',' + idSerieFacturacion;							
 						document.solicitudCompraForm.submit();							
-					}							
-					
-					fin();							
+					}													
 				},
 				
 				error: function(e){
-					alert("<%=sDialogError%>");
-					fin();
+					fin(); // finaliza el sub de accionFacturacionRapida()
+					alert("<%=sDialogError%>");					
 				}
 			});			    
  		}
