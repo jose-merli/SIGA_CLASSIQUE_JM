@@ -405,8 +405,8 @@
 		<div id='botonera' style="text-align:right;background-color:#eeeeee;height:30px;">
 		
 		<div style="vertical-align: middle; float:left; padding-left:10px;">
-			<input type="button" class='botonCollapse' title='Acceso Total' onclick="collapse()"/>
-			<input type="button" class='botonExpand' title='Acceso Total' onclick="expand()"/>
+			<input type="button" class='botonCollapse' title='Contraer todos' onclick="collapse()"/>
+			<input type="button" class='botonExpand' title='Expandir todos' onclick="expand()"/>
 			-
 			<input type="button" id='darAcceso' class='miBoton botonAccesoTotal' title='Acceso Total' onclick="aplicarPermiso('accesoTotal')"/>
 			<input type="button" id='darSoloLectura' class='miBoton botonSoloLectura' title='Solo Lectura' onclick="aplicarPermiso('soloLectura')"/>
