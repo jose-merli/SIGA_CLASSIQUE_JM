@@ -30,10 +30,10 @@
 
 		<style>
 		
-		.accesoDenegado{color: red}
-		.accesoTotal{color: green}
-		.sinAcceso{color: blue}
-		.soloLectura{color: orange}
+		.accesoDenegado{color:#d42828}
+		.accesoTotal{color:#3dac1a}
+		.sinAcceso{color:#5e4f83}
+		.soloLectura{color:#e0ac38}
 		
 		.flecha{padding-right:4px;width:9px;padding-bottom:2px}
 		
@@ -67,6 +67,9 @@
 		.botonSoloLectura{background-image: url(./html/imagenes/accessRead.gif);height: 30px; width:30px;}
 		
 		.botonRestablecer{background-image: url(./html/imagenes/reload.png);height: 25px; width:25px;}
+		
+		.botonCollapse{background:none; vertical-align: bottom; background-repeat:no-repeat; border:0 none !important; cursor: pointer;background-image: url(./html/imagenes/collapseall.png);height: 25px; width:25px;}
+		.botonExpand{background:none; vertical-align: bottom; background-repeat:no-repeat; border:0 none !important; cursor: pointer;background-image: url(./html/imagenes/expandall.png);height: 25px; width:25px;}
 		
 		</style>
 		<script language="JavaScript">
@@ -234,13 +237,17 @@
 								jQuery(this).html("<img class='flecha' src='./html/imagenes/simboloMenos.gif'/>");
 							}
 					});
+				// Por defecto todos los padres aparecen desplegados
+				jQuery('.padre').addClass("desplegado");
 				// Le damos la accion de ocultar/mostrar al darle al padre
 				jQuery(".padre").click(function(event){ 
 					jQuery(this).parent().find('.nodo').toggle();
 					if(jQuery(this).find('.flecha').first().attr("src").indexOf("simboloMas.gif")>0){
 						jQuery(this).find('.flecha').first().attr("src", "./html/imagenes/simboloMenos.gif");
+						jQuery(this).addClass('desplegado').removeClass('plegado');		
 					}else if(jQuery(this).find('.flecha').first().attr("src").indexOf("simboloMenos.gif")>0){
 						jQuery(this).find('.flecha').first().attr("src", "./html/imagenes/simboloMas.gif");
+						jQuery(this).addClass('plegado').removeClass('desplegado');	;
 					}
 				});
 				
@@ -353,6 +360,24 @@
 			}
 
 
+			function collapse(){
+				jQuery('.padre').each(
+						function(){
+							if(jQuery(this).hasClass('desplegado')){
+								jQuery(this).click();
+							}
+						});
+				jQuery('.padre').first().click();
+			}
+
+			function expand(){
+				jQuery('.padre').each(
+						function(){
+							if(jQuery(this).hasClass('plegado')){
+								jQuery(this).click();
+							}
+						});
+			}
 		</script>
 	</head>
 	
@@ -379,7 +404,10 @@
 		<div id='container' style="background-color:white;">
 		<div id='botonera' style="text-align:right;background-color:#eeeeee;height:30px;">
 		
-		<div style="vertical-align: middle; float:left;padding-left:50px;">
+		<div style="vertical-align: middle; float:left; padding-left:10px;">
+			<input type="button" class='botonCollapse' title='Acceso Total' onclick="collapse()"/>
+			<input type="button" class='botonExpand' title='Acceso Total' onclick="expand()"/>
+			-
 			<input type="button" id='darAcceso' class='miBoton botonAccesoTotal' title='Acceso Total' onclick="aplicarPermiso('accesoTotal')"/>
 			<input type="button" id='darSoloLectura' class='miBoton botonSoloLectura' title='Solo Lectura' onclick="aplicarPermiso('soloLectura')"/>
 			<input type="button" id='darDenegado' class='miBoton botonAccesoDenegado' title='Acceso Denegado' onclick="aplicarPermiso('accesoDenegado')"/>

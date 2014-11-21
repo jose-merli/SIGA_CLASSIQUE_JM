@@ -66,9 +66,8 @@ public class AdmGestionPermisosAdm extends MasterBeanAdministrador{
 	 * @param idProceso
 	 * @param permiso
 	 * @throws ClsExceptions
-	 * @throws SIGAException 
 	 */
-	public void setPermiso(String idInstitucion, String idPerfil, String idProceso, String permiso) throws ClsExceptions, SIGAException{
+	public void setPermiso(String idInstitucion, String idPerfil, String idProceso, String permiso) throws ClsExceptions{
 		String sqlInsert = "insert into adm_tiposacceso (idproceso, idperfil, fechamodificacion, usumodificacion, derechoacceso, idinstitucion)"
 			+ "values ('"+idProceso+"', '"+idPerfil+"', sysdate, "+usrbean.getUserName()+", "+permiso+", "+idInstitucion+")";
 		
@@ -82,16 +81,11 @@ public class AdmGestionPermisosAdm extends MasterBeanAdministrador{
 			+"  and idperfil = '"+ idPerfil+"'";
 		
 		try {
-			// Actualizamos el permiso
-			if(this.updateOnlyOneSQL(sqlUpdate)){
-				// Si se actualiza metemos el historico
-				this.insertSQL(sqlInsertHistorico);
-			}else{
-				// Si no se actualiza (porque no existe previamente) se inserta uno nuevo 
-				this.insertSQL(sqlInsert);
-			}
+			this.insertSQL(sqlInsert);
 		} catch (ClsExceptions e) {
-			throw new SIGAException("No se ha podido actualizar el permiso");
+			// Capturamos la excepcion, porque ya exista el elemento
+			this.insertSQL(sqlInsertHistorico);
+			this.updateSQL(sqlUpdate);
 		}
 	}
 
