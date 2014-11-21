@@ -148,7 +148,7 @@ public class PysPeticionCompraSuscripcionAdm extends MasterBeanAdministrador {
 				" FROM " + PysProductosSolicitadosBean.T_NOMBRETABLA +
 	            " WHERE " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDINSTITUCION + " = " + PysPeticionCompraSuscripcionBean.T_NOMBRETABLA + "." + PysPeticionCompraSuscripcionBean.C_IDINSTITUCION +
 		        	" AND " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDPETICION + " = " + PysPeticionCompraSuscripcionBean.T_NOMBRETABLA + "." + PysPeticionCompraSuscripcionBean.C_IDPETICION +
-	        		" AND " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_ACEPTADO + " NOT IN ('B', 'D')" +
+	        		" AND " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_ACEPTADO + " NOT IN ('B', 'D', 'P')" +
 			") AS NUM_PRODUCTOS_FACTURALES," +            						
 			" (select count(1)" +
             " from pys_serviciossolicitados ps " +
