@@ -133,9 +133,10 @@ public class Facturacion {
 	 * @param idUsuario
 	 * @throws SIGAException
 	 */
-	public static void procesarFacturas(String idInstitucion, UsrBean userBean) {	    		
+	public boolean procesarFacturas(String idInstitucion, UsrBean userBean) {	    		
 		UserTransaction tx = (UserTransaction) userBean.getTransactionPesada();		
 		Facturacion facturacion = new Facturacion(userBean);
+		boolean alMenosUnafacturacionProgramadaEncontrada = false;
 		
 		try {				
 			Hashtable<Integer,Object> codigos = new Hashtable<Integer,Object>();
@@ -161,7 +162,8 @@ public class Facturacion {
 			FacFacturacionProgramadaAdm admFacturacionProgramada = new FacFacturacionProgramadaAdm(userBean);
 			Vector<?> vDatos = admFacturacionProgramada.selectDatosFacturacionBean(sWhere,codigos, orden);
 			
-		    while(vDatos != null && vDatos.size()>0){
+		    if(vDatos != null && vDatos.size()>0){
+				alMenosUnafacturacionProgramadaEncontrada = true;
 		    	FacFacturacionProgramadaBean beanFacturacionProgramada = (FacFacturacionProgramadaBean) vDatos.get(0);
 		    	
 		    	try {
@@ -192,15 +194,21 @@ public class Facturacion {
 		} catch (Exception e) { 
 			ClsLogging.writeFileLogError("### Error general al procesar facturas (INSTITUCION:" + idInstitucion + ")", e, 3);
 		}
+		
+		return alMenosUnafacturacionProgramadaEncontrada;
 	}
 	
 	/**
-	 * Notas Jorge PT 118: Confirmación automática de facturacion programada (SIGASvlProcesoFacturacion)
+	 * Confirmación automática de facturacion programada (SIGASvlProcesoFacturacion)
+	 * Solo ejecuta una facturacion. El proceso que llama es el que se encargara de pedir varias veces
 	 * @param request
 	 * @param idInstitucion
 	 * @param userBean
+	 * @return boolean: true si se ha ejecutado una facturacion; false si no se ha encontrado ninguna facturacion para ejecutar
 	 */
-	public void confirmarProgramacionesFacturasInstitucion(HttpServletRequest request, String idInstitucion, UsrBean userBean) {
+	public boolean confirmarProgramacionesFacturasInstitucion(HttpServletRequest request, String idInstitucion, UsrBean userBean) {
+		boolean alMenosUnafacturacionProgramadaEncontrada = false;
+		
 		try {
 			ClsLogging.writeFileLog("CONFIRMAR PROGRAMACIONES FACTURAS INSTITUCION: "+idInstitucion,10);
 			
@@ -236,7 +244,8 @@ public class Facturacion {
 			String[] orden = {FacFacturacionProgramadaBean.C_FECHAPREVISTACONFIRM};
 			Vector<?> vDatos = factAdm.selectDatosFacturacionBean(sWhere, codigos, orden);
 			
-			while(vDatos != null && vDatos.size()>0){
+			if(vDatos != null && vDatos.size()>0){
+				alMenosUnafacturacionProgramadaEncontrada = true;
 			
 				// PROCESO PARA CADA FACTURACION PROGRAMADA
 		    	FacFacturacionProgramadaBean beanFacturacionProgramada = (FacFacturacionProgramadaBean)vDatos.get(0);
@@ -263,6 +272,8 @@ public class Facturacion {
 			// Error general (No hacemos nada, para que continue con la siguiente institucion
 			ClsLogging.writeFileLogError("@@@ Error general al confirmar facturas (Proceso automático) INSTITUCION:"+idInstitucion ,e,3);
 		}
+		
+		return alMenosUnafacturacionProgramadaEncontrada;
 	}
 
 	/**

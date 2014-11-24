@@ -1,12 +1,16 @@
 package com.siga.servlets;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.Vector;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.redabogacia.sigaservices.app.util.ReadProperties;
+import org.redabogacia.sigaservices.app.util.SIGAReferences;
 
 import com.atos.utils.ClsLogging;
 import com.atos.utils.UsrBean;
@@ -36,14 +40,28 @@ public class SIGASvlProcesoFacturacion extends HttpServlet
 		CenInstitucionBean beanInstitucion = null;
 		String idinstitucion = "";
 		Vector vInstituciones;
+		Date momentoInicio, momentoActual;
+		long minutosTranscurridos, minutosQueFaltanAntesDeSiguienteAutomaticoFacturacion, minutosEntreCadaProcesoAutomaticoFacturacion;
+		boolean alMenosUnafacturacionProgramadaEncontrada;
 
 		try {
+			// obteniendo el parametro que guarda el tiempo entre cada proceso automatico de facturacion
+			ReadProperties properties = new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+			String sIntervalo = properties.returnProperty("facturacion.programacionAutomatica.tiempo.ciclo");
+			if (sIntervalo == null || sIntervalo.trim().equals("")) {
+				sIntervalo = "0";
+			}
+			minutosEntreCadaProcesoAutomaticoFacturacion = Long.parseLong(sIntervalo) * 60 * 1000;
+
 			usr = new UsrBean();
 			CenInstitucionAdm admInstitucion = new CenInstitucionAdm(usr); // Esta controlado que no necesita usrbean
 			vInstituciones = admInstitucion.obtenerInstitucionesAlta();
 			if (vInstituciones == null) {
 				vInstituciones = new Vector();
 			}
+
+			// guardando el momento de inicio
+			momentoInicio = new Date();
 
 			// Para cada colegio
 			for (int i = 0; i < vInstituciones.size(); i++) {
@@ -55,14 +73,28 @@ public class SIGASvlProcesoFacturacion extends HttpServlet
 					fac = new Facturacion(usr);
 					
 					// Para cada proceso comprobamos que no termina el plazo de tiempo de esta ejecucion.
-					// Si el plazo va a llegar o ha llegado, terminamos el proceso por completo pq un nuevo proceso se encargara
+					// Si el plazo va a llegar pronto o ha llegado, terminamos el proceso por completo pq un nuevo proceso se encargara
 
 					ClsLogging.writeFileLogWithoutSession(" ---------- INICIO GENERACION DE FACTURAS. INSTITUCION: " + idinstitucion, 3);
-					fac.procesarFacturas(idinstitucion, usr);
+					do {
+						alMenosUnafacturacionProgramadaEncontrada = fac.procesarFacturas(idinstitucion, usr);
+						momentoActual = new Date();
+						minutosTranscurridos = (momentoActual.getTime() - momentoInicio.getTime()) / (1000 * 60);
+						minutosQueFaltanAntesDeSiguienteAutomaticoFacturacion = minutosEntreCadaProcesoAutomaticoFacturacion - minutosTranscurridos;
+					} while (alMenosUnafacturacionProgramadaEncontrada && 
+							minutosTranscurridos < minutosEntreCadaProcesoAutomaticoFacturacion && 
+							minutosQueFaltanAntesDeSiguienteAutomaticoFacturacion > 5); 
 					ClsLogging.writeFileLogWithoutSession(" ---------- OK GENERACION DE FACTURAS. INSTITUCION: " + idinstitucion, 3);
 
 					ClsLogging.writeFileLogWithoutSession(" ---------- INICIO CONFIRMACION DE FACTURAS. INSTITUCION: " + idinstitucion, 3);
-					fac.confirmarProgramacionesFacturasInstitucion(request, idinstitucion, usr);
+					while (alMenosUnafacturacionProgramadaEncontrada && 
+							minutosTranscurridos < minutosEntreCadaProcesoAutomaticoFacturacion && 
+							minutosQueFaltanAntesDeSiguienteAutomaticoFacturacion > 5) {
+						alMenosUnafacturacionProgramadaEncontrada = fac.confirmarProgramacionesFacturasInstitucion(request, idinstitucion, usr);
+						momentoActual = new Date();
+						minutosTranscurridos = (momentoActual.getTime() - momentoInicio.getTime()) / (1000 * 60);
+						minutosQueFaltanAntesDeSiguienteAutomaticoFacturacion = minutosEntreCadaProcesoAutomaticoFacturacion - minutosTranscurridos;
+					} ; 
 					ClsLogging.writeFileLogWithoutSession(" ---------- OK CONFIRMACION DE FACTURAS. INSTITUCION: " + idinstitucion, 3);
 
 					ClsLogging.writeFileLogWithoutSession(" ---------- INICIO REEENVIO DE FACTURAS. INSTITUCION: " + idinstitucion, 3);
