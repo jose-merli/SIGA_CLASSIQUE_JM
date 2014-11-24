@@ -2320,7 +2320,8 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 		    		if (fechaConfirmacion == null || fechaConfirmacion.equals("") || b.getIdEstadoPDF().intValue() != FacEstadoConfirmFactBean.PDF_FINALIZADA.intValue()) {
 					    try {
 					    	b.setGenerarPDF("1");// Si se entramos por facturacion rapida se obliga siempre al generarPDF
-					        facturacion.confirmarProgramacionFactura(b, request, true, null, true, true, 1);
+					        boolean esfacturacionRapida = true;
+					    	facturacion.confirmarProgramacionFactura(b, request, true, null, true, true, 1,esfacturacionRapida);
 					        
 						} catch (SIGAException se) {
 							throw se;
@@ -2444,7 +2445,8 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
         	programacion = facturacion.procesarFacturacionRapidaCompras(beanPeticionCompraSuscripcion, vCompras, beanSerieCandidata);
 	        
         	// PASO 3: CONFIRMACION RAPIDA (en este caso la transacción se gestiona dentro la transaccion)
-		    facturacion.confirmarProgramacionFactura(programacion, request, true, null, true, false, 0);    
+		    boolean esfacturacionRapida = true;
+        	facturacion.confirmarProgramacionFactura(programacion, request, true, null, true, false, 0,esfacturacionRapida);    
 		    
 		    if (Status.STATUS_ACTIVE  == tx.getStatus())
 		    	tx.commit();		    

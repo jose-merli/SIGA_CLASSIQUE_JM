@@ -256,7 +256,8 @@ public class Facturacion {
 				nombreFichero = "LOG_FAC_CONFIRMACION_" + beanFacturacionProgramada.getIdSerieFacturacion() + "_" + beanFacturacionProgramada.getIdProgramacion() + ".log.xls"; 
 				log = new SIGALogging(pathFichero2 + sBarra2 + beanFacturacionProgramada.getIdInstitucion() + sBarra2 + nombreFichero);
 				try {
-					this.confirmarProgramacionFactura(beanFacturacionProgramada, request, false, log, true, false, 1);
+					boolean esfacturacionRapida=false;
+					this.confirmarProgramacionFactura(beanFacturacionProgramada, request, false, log, true, false, 1,esfacturacionRapida);
 					
 				} catch (ClsExceptions e) {
 					ClsLogging.writeFileLogError("@@@ Error controlado al confirmar facturas (Proceso automático):" + e.getMsg(), e, 3);
@@ -333,7 +334,8 @@ public class Facturacion {
 				nombreFichero = "LOG_FAC_CONFIRMACION_" + factBean.getIdSerieFacturacion() +"_"+ factBean.getIdProgramacion() +".log.xls"; 
 				log = new SIGALogging(pathFichero2+sBarra2+factBean.getIdInstitucion()+sBarra2+nombreFichero);
 				try {
-					confirmarProgramacionFactura(factBean, request, false, log, true, true, 1);
+					boolean esFacturacionRapida=false;
+					confirmarProgramacionFactura(factBean, request, false, log, true, true, 1,esFacturacionRapida);
 					generarZip(factBean.getIdInstitucion().toString(), factBean.getIdSerieFacturacion().toString(), factBean.getIdProgramacion().toString());
 				} catch (ClsExceptions e) {
 					ClsLogging.writeFileLogError("@@@ Error controlado al confirmar facturas (Proceso automático):"+e.getMsg(),e,3);
@@ -409,7 +411,8 @@ public class Facturacion {
 		    		UtilidadesHash.set(hashNew, FacFacturacionProgramadaBean.C_IDESTADOCONFIRMACION, FacEstadoConfirmFactBean.CONFIRM_FINALIZADA);
 
 		    		UserTransaction tx = (UserTransaction) this.usrbean.getTransactionPesada();
-					this.generarPdfEnvioProgramacionFactura(factBean, request, log, factBean.getIdSerieFacturacion(), factBean.getIdProgramacion(), claves, hashNew, true, tx);
+					boolean esFacturacionRapida=false;
+		    		this.generarPdfEnvioProgramacionFactura(factBean, request, log, factBean.getIdSerieFacturacion(), factBean.getIdProgramacion(), claves, hashNew, true, tx,esFacturacionRapida);
 				
 				} catch (ClsExceptions e) {
 					ClsLogging.writeFileLogError("@@@ Error controlado al confirmar facturas (Proceso automático):"+e.getMsg(),e,3);
@@ -559,7 +562,7 @@ public class Facturacion {
     		SIGALogging log, 
     		boolean generarPagosBanco, 
     		boolean soloGenerarFactura, 
-    		int iTransaccionInterna) throws ClsExceptions, SIGAException {
+    		int iTransaccionInterna, boolean esFacturacionRapida) throws ClsExceptions, SIGAException {
     	
 		UserTransaction tx = null;
 		if (iTransaccionInterna == 1) {
@@ -733,7 +736,7 @@ public class Facturacion {
     		boolean isGenerarPdf = beanP.getGenerarPDF() != null && beanP.getGenerarPDF().trim().equals("1");
     		boolean isGenerarEnvio = beanP.getEnvio() != null && beanP.getEnvio().trim().equals("1") && (beanP.getRealizarEnvio()==null || beanP.getRealizarEnvio().toString().equalsIgnoreCase("1"));
     		if(isGenerarPdf){
-    			msjAviso = generarPdfEnvioProgramacionFactura(beanP,req,log,idSerieFacturacion, idProgramacion, claves, hashNew, isGenerarEnvio, tx);
+    			msjAviso = generarPdfEnvioProgramacionFactura(beanP,req,log,idSerieFacturacion, idProgramacion, claves, hashNew, isGenerarEnvio, tx,esFacturacionRapida);
     		}
 			
     	} catch (Exception e) {
@@ -787,8 +790,8 @@ public class Facturacion {
 	    		String [] claves,	
 	    		Hashtable<String,Object> hashFactura,
 	    		boolean isGenerarEnvio,
-	    		UserTransaction tx
-    		)throws ClsExceptions, SIGAException, Exception {
+	    		UserTransaction tx,
+    		boolean esFacturacionRapida)throws ClsExceptions, SIGAException, Exception {
     	
     	FacFacturacionProgramadaAdm facadm = new FacFacturacionProgramadaAdm(this.usrbean);
     	
@@ -814,7 +817,7 @@ public class Facturacion {
 	
 			//////////// ALMACENAR RAPIDA ////////////////
 			//En facturaciones rápidas, en compra de PYS no hay que generar el excel con el log
-			int errorAlmacenar = this.generaryEnviarProgramacionFactura(req, beanP.getIdInstitucion(), idSerieFacturacion, idProgramacion, isGenerarEnvio, log, true);
+			int errorAlmacenar = this.generaryEnviarProgramacionFactura(req, beanP.getIdInstitucion(), idSerieFacturacion, idProgramacion, isGenerarEnvio, log, esFacturacionRapida);
 			
 			////////////INICIO TRANSACCION ////////////////
 			if (tx!=null) 
@@ -921,7 +924,7 @@ public class Facturacion {
      * @param idProgramacion
      * @param bGenerarEnvios
      * @param log
-     * @param generarLog
+     * @param esFacturacionRapida
 	 * @return int - Devuelve: - 0 si todo está correcto.
 	 * 						   - 1 si ha existido un error en el procesado de la factura.
 	 * 						   - 2 si ha existido un error en el procesado del envío. 
@@ -935,7 +938,7 @@ public class Facturacion {
 			Long idProgramacion, 
 			boolean bGenerarEnvios, 
 			SIGALogging log,
-			boolean generarLog
+			boolean esFacturacionRapida
 		)  throws ClsExceptions, SIGAException {
 		
 		UsrBean userbean = this.usrbean;
@@ -1095,7 +1098,7 @@ public class Facturacion {
 	    				
 	    				// ESCRIBO EN EL LOG
 						
-    					if(generarLog)
+    					if(!esFacturacionRapida)
     						log.writeLogFactura("PDF",idPersona,numFactura,"Error en el proceso de generación de facturas PDF: "+ee.getLiteral(userbean.getLanguage()));
     					else{
     						String msj=UtilidadesString.getMensajeIdioma(userbean.getLanguage(), "message.facturacion.error.generacion.factura.pdf")+ee.getLiteral(userbean.getLanguage());
@@ -1112,7 +1115,7 @@ public class Facturacion {
 	    				ClsLogging.writeFileLog("ALMACENAR "+idFactura+" >> ERROR EN PROCESO DE FOP A PDF: "+ee.toString(),10);
 	    				
 	    				// ESCRIBO EN EL LOG
-						if(generarLog)
+						if(!esFacturacionRapida)
 							log.writeLogFactura("PDF",idPersona,numFactura,"message.facturacion.error.generacion.factura.pdf"+ee.toString());
 						else{
 							String msj=UtilidadesString.getMensajeIdioma(userbean.getLanguage(),"message.facturacion.error.generacion.factura.pdf")+ee.toString();
@@ -1130,7 +1133,7 @@ public class Facturacion {
 		    	    	
 	    			/***************    ENVIO FACTURAS *****************/
 	    			if (bGenerarEnvios && correcto){
-	    				enviarProgramacionFactura(idPersona, institucion.toString(), idFactura, plantillaMail, nColegiado, numFactura,rutaAlmacen,log,generarLog, salida, existeAlgunErrorEnvio);
+	    				enviarProgramacionFactura(idPersona, institucion.toString(), idFactura, plantillaMail, nColegiado, numFactura,rutaAlmacen,log,esFacturacionRapida, salida, existeAlgunErrorEnvio);
 	    			}
 
 
@@ -1212,7 +1215,7 @@ public class Facturacion {
 			ClsLogging.writeFileLog("ALMACENAR >> ERROR GENERAL EN LA FUNCION ALMACENAR: "+e.getLiteral(userbean.getLanguage()),10);
 
 			// ESCRIBO EN EL LOG un mensaje general con la descripcion de la excepcion
-			if(generarLog)
+			if(!esFacturacionRapida)
 				log.writeLogFactura("PDF/ENVIO","N/A","N/A","message.facturacion.error.generacion.envio.factura"+e.getLiteral(userbean.getLanguage()));
 			else
 				throw e;
@@ -1228,7 +1231,7 @@ public class Facturacion {
 			ClsLogging.writeFileLog("ALMACENAR >> ERROR GENERAL EN LA FUNCION ALMACENAR: "+e.toString(),10);
 
 			// ESCRIBO EN EL LOG un mensaje general con la descripcion de la excepcion
-			if(generarLog)
+			if(!esFacturacionRapida)
 				log.writeLogFactura("PDF/ENVIO","N/A","N/A","message.facturacion.error.generacion.envio.factura"+e.toString());
 			else{
 				String msj=UtilidadesString.getMensajeIdioma(userbean.getLanguage(),"message.facturacion.error.generacion.envio.factura")+e.toString();
