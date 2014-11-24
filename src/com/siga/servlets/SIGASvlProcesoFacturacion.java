@@ -9,9 +9,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.redabogacia.sigaservices.app.util.ReadProperties;
-import org.redabogacia.sigaservices.app.util.SIGAReferences;
-
 import com.atos.utils.ClsLogging;
 import com.atos.utils.UsrBean;
 import com.siga.beans.CenInstitucionAdm;
@@ -42,16 +39,15 @@ public class SIGASvlProcesoFacturacion extends HttpServlet
 		Vector vInstituciones;
 		Date momentoInicio, momentoActual;
 		long minutosTranscurridos, minutosQueFaltanAntesDeSiguienteAutomaticoFacturacion, minutosEntreCadaProcesoAutomaticoFacturacion;
+		long duracionMediaFacturacion = 5;
 		boolean alMenosUnafacturacionProgramadaEncontrada;
 
 		try {
 			// obteniendo el parametro que guarda el tiempo entre cada proceso automatico de facturacion
-			ReadProperties properties = new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
-			String sIntervalo = properties.returnProperty("facturacion.programacionAutomatica.tiempo.ciclo");
-			if (sIntervalo == null || sIntervalo.trim().equals("")) {
-				sIntervalo = "0";
-			}
-			minutosEntreCadaProcesoAutomaticoFacturacion = Long.parseLong(sIntervalo);
+			minutosEntreCadaProcesoAutomaticoFacturacion = SIGASvlProcesoAutomaticoFacturacion.getDuracionIntervaloEnminutos();
+			duracionMediaFacturacion = SIGASvlProcesoAutomaticoFacturacion.getDuracionMediaFacturacionEnminutos();
+			minutosQueFaltanAntesDeSiguienteAutomaticoFacturacion = minutosEntreCadaProcesoAutomaticoFacturacion;
+			minutosTranscurridos = 0;
 
 			usr = new UsrBean();
 			CenInstitucionAdm admInstitucion = new CenInstitucionAdm(usr); // Esta controlado que no necesita usrbean
@@ -64,7 +60,8 @@ public class SIGASvlProcesoFacturacion extends HttpServlet
 			momentoInicio = new Date();
 
 			// Para cada colegio
-			for (int i = 0; i < vInstituciones.size(); i++) {
+			for (int i = 0; minutosQueFaltanAntesDeSiguienteAutomaticoFacturacion > duracionMediaFacturacion && 
+					i < vInstituciones.size(); i++) {
 
 				try {
 					beanInstitucion = (CenInstitucionBean) vInstituciones.elementAt(i);
@@ -83,12 +80,10 @@ public class SIGASvlProcesoFacturacion extends HttpServlet
 						minutosTranscurridos = (momentoActual.getTime() - momentoInicio.getTime()) / (1000 * 60);
 						minutosQueFaltanAntesDeSiguienteAutomaticoFacturacion = minutosEntreCadaProcesoAutomaticoFacturacion - minutosTranscurridos;
 					} while (alMenosUnafacturacionProgramadaEncontrada && 
-							minutosTranscurridos < minutosEntreCadaProcesoAutomaticoFacturacion && 
-							minutosQueFaltanAntesDeSiguienteAutomaticoFacturacion > 5); 
+							minutosQueFaltanAntesDeSiguienteAutomaticoFacturacion > duracionMediaFacturacion); 
 					ClsLogging.writeFileLogWithoutSession(" ---------- OK GENERACION DE FACTURAS. INSTITUCION: " + idinstitucion, 3);
 
-					if (minutosTranscurridos < minutosEntreCadaProcesoAutomaticoFacturacion && 
-							minutosQueFaltanAntesDeSiguienteAutomaticoFacturacion > 5) {
+					if (minutosQueFaltanAntesDeSiguienteAutomaticoFacturacion > duracionMediaFacturacion) {
 						
 						ClsLogging.writeFileLogWithoutSession(" ---------- INICIO CONFIRMACION DE FACTURAS. INSTITUCION: " + idinstitucion, 3);
 						do {
@@ -98,13 +93,11 @@ public class SIGASvlProcesoFacturacion extends HttpServlet
 							minutosTranscurridos = (momentoActual.getTime() - momentoInicio.getTime()) / (1000 * 60);
 							minutosQueFaltanAntesDeSiguienteAutomaticoFacturacion = minutosEntreCadaProcesoAutomaticoFacturacion - minutosTranscurridos;
 						} while (alMenosUnafacturacionProgramadaEncontrada && 
-								minutosTranscurridos < minutosEntreCadaProcesoAutomaticoFacturacion && 
-								minutosQueFaltanAntesDeSiguienteAutomaticoFacturacion > 5); 
+								minutosQueFaltanAntesDeSiguienteAutomaticoFacturacion > duracionMediaFacturacion); 
 						ClsLogging.writeFileLogWithoutSession(" ---------- OK CONFIRMACION DE FACTURAS. INSTITUCION: " + idinstitucion, 3);
 					}
 
-					if (minutosTranscurridos < minutosEntreCadaProcesoAutomaticoFacturacion && 
-							minutosQueFaltanAntesDeSiguienteAutomaticoFacturacion > 5) {
+					if (minutosQueFaltanAntesDeSiguienteAutomaticoFacturacion > duracionMediaFacturacion) {
 						
 						ClsLogging.writeFileLogWithoutSession(" ---------- INICIO REEENVIO DE FACTURAS. INSTITUCION: " + idinstitucion, 3);
 						// Este proceso no deberia ejecutarse ya que se ejecuta en el mismo momento en que lo pide el usuario (proceso individual)
