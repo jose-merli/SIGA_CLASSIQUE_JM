@@ -51,7 +51,7 @@ public class SIGASvlProcesoFacturacion extends HttpServlet
 			if (sIntervalo == null || sIntervalo.trim().equals("")) {
 				sIntervalo = "0";
 			}
-			minutosEntreCadaProcesoAutomaticoFacturacion = Long.parseLong(sIntervalo) * 60 * 1000;
+			minutosEntreCadaProcesoAutomaticoFacturacion = Long.parseLong(sIntervalo);
 
 			usr = new UsrBean();
 			CenInstitucionAdm admInstitucion = new CenInstitucionAdm(usr); // Esta controlado que no necesita usrbean
@@ -78,6 +78,7 @@ public class SIGASvlProcesoFacturacion extends HttpServlet
 					ClsLogging.writeFileLogWithoutSession(" ---------- INICIO GENERACION DE FACTURAS. INSTITUCION: " + idinstitucion, 3);
 					do {
 						alMenosUnafacturacionProgramadaEncontrada = fac.procesarFacturas(idinstitucion, usr);
+						
 						momentoActual = new Date();
 						minutosTranscurridos = (momentoActual.getTime() - momentoInicio.getTime()) / (1000 * 60);
 						minutosQueFaltanAntesDeSiguienteAutomaticoFacturacion = minutosEntreCadaProcesoAutomaticoFacturacion - minutosTranscurridos;
@@ -89,6 +90,7 @@ public class SIGASvlProcesoFacturacion extends HttpServlet
 					ClsLogging.writeFileLogWithoutSession(" ---------- INICIO CONFIRMACION DE FACTURAS. INSTITUCION: " + idinstitucion, 3);
 					do {
 						alMenosUnafacturacionProgramadaEncontrada = fac.confirmarProgramacionesFacturasInstitucion(request, idinstitucion, usr);
+						
 						momentoActual = new Date();
 						minutosTranscurridos = (momentoActual.getTime() - momentoInicio.getTime()) / (1000 * 60);
 						minutosQueFaltanAntesDeSiguienteAutomaticoFacturacion = minutosEntreCadaProcesoAutomaticoFacturacion - minutosTranscurridos;
@@ -102,6 +104,7 @@ public class SIGASvlProcesoFacturacion extends HttpServlet
 						ClsLogging.writeFileLogWithoutSession(" ---------- INICIO REEENVIO DE FACTURAS. INSTITUCION: " + idinstitucion, 3);
 						// Este proceso no deberia ejecutarse ya que se ejecuta en el mismo momento en que lo pide el usuario (proceso individual)
 						fac.generarPDFsYenviarFacturasProgramacion(request, "" + idinstitucion);
+						
 						ClsLogging.writeFileLogWithoutSession(" ---------- OK REEENVIO DE FACTURAS. INSTITUCION: " + idinstitucion, 3);
 					}
 
