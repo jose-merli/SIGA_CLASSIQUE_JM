@@ -9,6 +9,8 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.json.JSONObject;
+import org.redabogacia.sigaservices.app.autogen.model.CenInstitucion;
+import org.redabogacia.sigaservices.app.services.cen.CenInstitucionService;
 
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.UsrBean;
@@ -20,6 +22,8 @@ import com.siga.beans.AdmGestionPermisosAdm;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
+
+import es.satec.businessManager.BusinessManager;
 
 public class SIGAConfigurarPermisosAplicacionAction extends MasterAction
 {
@@ -99,12 +103,24 @@ public class SIGAConfigurarPermisosAplicacionAction extends MasterAction
 		SIGAConfigurarPermisosAplicacionForm miForm = (SIGAConfigurarPermisosAplicacionForm)form;
 		try {
 			perfil=miForm.getIdPerfil();
+			String idInstitucion = usrBean.getLocation();
+			if(perfil.equals("CJG")){
+				BusinessManager bm = BusinessManager.getInstance();
+				CenInstitucionService cenInstitucionService = (CenInstitucionService)bm.getService(CenInstitucionService.class);
+				CenInstitucion cenInstitucion = new CenInstitucion();
+				cenInstitucion.setIdinstitucion(Short.valueOf(idInstitucion));
+				CenInstitucion comision =  cenInstitucionService.getComision(cenInstitucion);
+				if(comision!=null && comision.getIdinstitucion()!=null && !comision.getIdinstitucion().equals(idInstitucion)){
+					idInstitucion = comision.getIdinstitucion().toString();
+				}
+				
+			}
 			AdmGestionPermisosAdm permisosAdm = new AdmGestionPermisosAdm(usrBean);
 			
 			String inicio=(String)request.getParameter("inicio");
 			String cantidad=(String)request.getParameter("cantidad");
 			
-			Vector permisos = permisosAdm.getPermisosPagina(usrBean.getLocation(), perfil, inicio, cantidad);
+			Vector permisos = permisosAdm.getPermisosPagina(idInstitucion, perfil, inicio, cantidad);
 			JSONObject json = new JSONObject();
 			
 			json.put("permisos", permisos);
@@ -129,6 +145,19 @@ public class SIGAConfigurarPermisosAplicacionAction extends MasterAction
 		JSONObject json = new JSONObject();
 		try {
 			perfil=(String)request.getParameter("perfil");
+			String idInstitucion = usrBean.getLocation();
+			if(perfil.equals("CJG")){
+				BusinessManager bm = BusinessManager.getInstance();
+				CenInstitucionService cenInstitucionService = (CenInstitucionService)bm.getService(CenInstitucionService.class);
+				CenInstitucion cenInstitucion = new CenInstitucion();
+				cenInstitucion.setIdinstitucion(Short.valueOf(idInstitucion));
+				CenInstitucion comision =  cenInstitucionService.getComision(cenInstitucion);
+				if(comision!=null && comision.getIdinstitucion()!=null && !comision.getIdinstitucion().equals(idInstitucion)){
+					idInstitucion = comision.getIdinstitucion().toString();
+				}
+				
+			}
+			
 			String permisos=(String)request.getParameter("permisos");
 			JsonParser parser = new JsonParser();
 			JsonArray arrayPermisos = parser.parse(permisos).getAsJsonArray();
@@ -136,7 +165,7 @@ public class SIGAConfigurarPermisosAplicacionAction extends MasterAction
 			for (int i = 0; i < arrayPermisos.size(); i++) {
 				// Cada permiso viene como [idproceso,permiso]
 				permiso = arrayPermisos.get(i).getAsJsonArray();
-				permisosAdm.setPermiso(usrBean.getLocation(), perfil, permiso.get(0).getAsString(), permiso.get(1).toString());
+				permisosAdm.setPermiso(idInstitucion, perfil, permiso.get(0).getAsString(), permiso.get(1).toString());
 			}
 			json.put("msg", UtilidadesString.getMensajeIdioma(usrBean.getLanguage(), "messages.updated.success"));
 
