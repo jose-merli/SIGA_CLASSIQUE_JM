@@ -623,11 +623,12 @@
 		function onChangeIdTipoInforme() 
 		{	
 			indiceTipoInforme = document.getElementById("idTipoInforme").selectedIndex;
-			//idClaseTipoInforme = 'claseTipoInforme_'+indiceTipoInforme;
+			idClaseTipoInforme = 'claseTipoInforme_'+indiceTipoInforme;
 			idDirectorioTipoInforme = 'directorioTipoInforme_'+indiceTipoInforme;
 			
-			//claseTipoInforme =  document.getElementById(idClaseTipoInforme).value;
+			claseTipoInforme =  document.getElementById(idClaseTipoInforme).value;
 			directorioTipoInforme =  document.getElementById(idDirectorioTipoInforme).value;
+			document.InformeFormEdicion.claseTipoInforme.value = claseTipoInforme;
 			document.InformeFormEdicion.directorio.value = directorioTipoInforme;
 			
 			if(document.InformeFormEdicion.idTipoInforme.value=='CON'){
@@ -971,7 +972,10 @@
 				jQuery(campo).addClass('box');
 			}
 		}
-		
+		if (document.InformeForm.modo.value=='insertar'){
+			document.getElementById("idTipoInforme").selectedIndex=0;
+			onChangeIdTipoInforme();
+		}
 	</script>
 </body>
 </html>
