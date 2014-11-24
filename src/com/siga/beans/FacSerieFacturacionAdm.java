@@ -237,30 +237,37 @@ public class FacSerieFacturacionAdm extends MasterBeanAdministrador {
 	            throw new ClsExceptions("Error: No se han recibido compras.");
 	        }
 	        
-	        String aux="", idInstitucion="", idPersona="";
+	        String listadoProductos="", idInstitucion="", idPersona="";
+	        int numeroTipos=0;
 	        
+	        // Obtiene un listado de los tipos de productos y un contador
 	        for (int i=0; i<compras.size(); i++) {
 	            PysCompraBean b = (PysCompraBean) compras.get(i);
+	            String sTipoProducto = "('" + b.getIdProducto() + "','" + b.getIdTipoProducto() + "')";
 	            
-	            if (aux.length()>0) {
-	            	aux += ",";
+	            if (listadoProductos.length()>0) {
+	            	if (listadoProductos.indexOf(sTipoProducto) == -1) {
+	            		numeroTipos++;
+	            		listadoProductos += "," + sTipoProducto;
+	            	}
+
 	            } else {
+	            	numeroTipos++;
+	            	listadoProductos = sTipoProducto;
 	            	idInstitucion = b.getIdInstitucion().toString();
 	            	idPersona = b.getIdPersonaDeudor()!=null && !b.getIdPersonaDeudor().toString().equals("") ? b.getIdPersonaDeudor().toString() : b.getIdPersona().toString();
 	            }
-	            	
-	            aux += "('" + b.getIdProducto() + "','" + b.getIdTipoProducto() + "')";	            	            
 	        }
 	        
 	        String sql = UtilidadesBDAdm.sqlSelect(this.nombreTabla, this.getCamposBean()) + 
 	        				" WHERE " + FacSerieFacturacionBean.C_IDINSTITUCION + " = " + idInstitucion +         
-	        					" AND EXISTS (" +
-	        						" SELECT 1 " +
+	        					" AND " + numeroTipos + " = (" +
+	        						" SELECT COUNT(*) " +
 	        						" FROM " + FacTiposProduIncluEnFactuBean.T_NOMBRETABLA +
 	        						" WHERE (" + 
 		                						FacTiposProduIncluEnFactuBean.T_NOMBRETABLA + "." + FacTiposProduIncluEnFactuBean.C_IDPRODUCTO + ", " + 
 		                						FacTiposProduIncluEnFactuBean.T_NOMBRETABLA + "." + FacTiposProduIncluEnFactuBean.C_IDTIPOPRODUCTO + 
-		                					") IN (" + aux + ") " +
+		                					") IN (" + listadoProductos + ") " +
 		                				" AND " + FacTiposProduIncluEnFactuBean.T_NOMBRETABLA + "." + FacTiposProduIncluEnFactuBean.C_IDINSTITUCION + " = " + FacSerieFacturacionBean.T_NOMBRETABLA + "." + FacSerieFacturacionBean.C_IDINSTITUCION +
 		                				" AND " + FacTiposProduIncluEnFactuBean.T_NOMBRETABLA + "." + FacTiposProduIncluEnFactuBean.C_IDSERIEFACTURACION + " = " + FacSerieFacturacionBean.T_NOMBRETABLA + "." + FacSerieFacturacionBean.C_IDSERIEFACTURACION +
 	                					" AND EXISTS ( " +
