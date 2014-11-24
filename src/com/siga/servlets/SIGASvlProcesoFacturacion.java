@@ -87,20 +87,23 @@ public class SIGASvlProcesoFacturacion extends HttpServlet
 					ClsLogging.writeFileLogWithoutSession(" ---------- OK GENERACION DE FACTURAS. INSTITUCION: " + idinstitucion, 3);
 
 					ClsLogging.writeFileLogWithoutSession(" ---------- INICIO CONFIRMACION DE FACTURAS. INSTITUCION: " + idinstitucion, 3);
-					while (alMenosUnafacturacionProgramadaEncontrada && 
-							minutosTranscurridos < minutosEntreCadaProcesoAutomaticoFacturacion && 
-							minutosQueFaltanAntesDeSiguienteAutomaticoFacturacion > 5) {
+					do {
 						alMenosUnafacturacionProgramadaEncontrada = fac.confirmarProgramacionesFacturasInstitucion(request, idinstitucion, usr);
 						momentoActual = new Date();
 						minutosTranscurridos = (momentoActual.getTime() - momentoInicio.getTime()) / (1000 * 60);
 						minutosQueFaltanAntesDeSiguienteAutomaticoFacturacion = minutosEntreCadaProcesoAutomaticoFacturacion - minutosTranscurridos;
-					} ; 
+					} while (alMenosUnafacturacionProgramadaEncontrada && 
+							minutosTranscurridos < minutosEntreCadaProcesoAutomaticoFacturacion && 
+							minutosQueFaltanAntesDeSiguienteAutomaticoFacturacion > 5); 
 					ClsLogging.writeFileLogWithoutSession(" ---------- OK CONFIRMACION DE FACTURAS. INSTITUCION: " + idinstitucion, 3);
 
-					ClsLogging.writeFileLogWithoutSession(" ---------- INICIO REEENVIO DE FACTURAS. INSTITUCION: " + idinstitucion, 3);
-					// Este proceso no deberia ejecutarse ya que se ejecuta en el mismo momento en que lo pide el usuario (proceso individual)
-					fac.generarPDFsYenviarFacturasProgramacion(request, "" + idinstitucion);
-					ClsLogging.writeFileLogWithoutSession(" ---------- OK REEENVIO DE FACTURAS. INSTITUCION: " + idinstitucion, 3);
+					if (minutosTranscurridos < minutosEntreCadaProcesoAutomaticoFacturacion && 
+							minutosQueFaltanAntesDeSiguienteAutomaticoFacturacion > 5) { 
+						ClsLogging.writeFileLogWithoutSession(" ---------- INICIO REEENVIO DE FACTURAS. INSTITUCION: " + idinstitucion, 3);
+						// Este proceso no deberia ejecutarse ya que se ejecuta en el mismo momento en que lo pide el usuario (proceso individual)
+						fac.generarPDFsYenviarFacturasProgramacion(request, "" + idinstitucion);
+						ClsLogging.writeFileLogWithoutSession(" ---------- OK REEENVIO DE FACTURAS. INSTITUCION: " + idinstitucion, 3);
+					}
 
 				} catch (Exception e) {
 					ClsLogging.writeFileLogWithoutSession(" ---------- ERROR GENERACION DE FACTURAS. INSTITUCION: "	+ idinstitucion, 3);
