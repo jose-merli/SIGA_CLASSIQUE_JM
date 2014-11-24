@@ -750,12 +750,7 @@ public class Facturacion {
 				throw (SIGAException) e;
 				
 			} else if (e instanceof ClsExceptions) {
-	    		if(!isFacturadoOk){
-	    			throw new ClsExceptions(e,"messages.facturacion.confirmacion.error");
-	    		}else{
-	    			throw (ClsExceptions) e;
-	    		}				
-				
+    			throw (ClsExceptions) e;
 			}
 			
     		throw new SIGAException("Error al confirmar facturacion rápida.");
