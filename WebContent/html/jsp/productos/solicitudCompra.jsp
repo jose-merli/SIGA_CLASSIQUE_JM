@@ -567,13 +567,10 @@
 									//cmbCatalogo= Select trim('P') AS ID, 'PRODUCTO' AS DESCRIPCION FROM DUAL UNION select trim('S') AS ID,'SERVICIO' AS DESCRIPCION FROM DUAL UNION select trim('C') AS ID,'CERTIFICADO' AS DESCRIPCION FROM DUAL
 									// CAMBIAMOS ESTE COMBO POR JSON (NO HACE FALTA IR A BASE DE DATOS)
 									List<KeyValue> catalogoOptions = new ArrayList<KeyValue>();
-									catalogoOptions.add(new KeyValue("C", "CERTIFICADO"));
-									catalogoOptions.add(new KeyValue("P", "PRODUCTO"));
-									catalogoOptions.add(new KeyValue("S", "SERVICIO"));
-									
 									String catalogoDisabled = "false";
 									String catalogoSelected = valorCatalog;
 									if (deCertificado.equals("1")){
+										catalogoOptions.add(new KeyValue("C", "CERTIFICADO"));
 										catalogoDisabled = "true";
 										catalogoSelected = "C";
 									}
@@ -584,6 +581,9 @@
 										productoStyle = "display:none;";
 										servicioStyle = "";
 									}
+									
+									catalogoOptions.add(new KeyValue("P", "PRODUCTO"));
+									catalogoOptions.add(new KeyValue("S", "SERVICIO"));
 	%>
 									<siga:Select id="catalogo"
 										queryId="JSON" 
