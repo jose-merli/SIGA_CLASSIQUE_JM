@@ -721,7 +721,7 @@ public class Facturacion {
 	    			//////////// FIN TRANSACCION ////////////////
 	
 	    			ClsLogging.writeFileLog("CAMBIA ESTADO A FINALIZADA ERRORES.",10);
-	    			throw new ClsExceptions("Error al confirmar facturacion rápida. " + e.toString());
+	    			throw new ClsExceptions("Error al confirmar facturacion rápida. " + e.getMessage());
 	    		}
 
     		} else {
