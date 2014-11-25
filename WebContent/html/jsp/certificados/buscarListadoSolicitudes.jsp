@@ -289,7 +289,7 @@
 							
 							jQuery("#divSeleccionSerieFacturacion").dialog(
 								{
-									height: 200,
+									height: 220,
 									width: 550,
 									modal: true,
 									resizable: false,
@@ -347,6 +347,12 @@
 						</select>
 					</td>
 				</tr>				
+								
+				<tr>
+					<td class="labelTextValue" colspan="2">
+						<siga:Idioma key="pys.gestionSolicitudes.aviso.seriesFacturacionMostradas"/>
+					</td>
+				</tr>					
 			</table>			
 		</div>
 	

@@ -571,7 +571,6 @@ public class Facturacion {
 			tx = this.usrbean.getTransaction();
 		}
     	
-    	boolean isFacturadoOk = true;
     	String msjAviso = null; 
     	try {
     		// fichero de log
@@ -687,7 +686,6 @@ public class Facturacion {
 	    				tx.commit();
 	    			//////////// FIN TRANSACCION ////////////////
 	    			
-	    			isFacturadoOk = true;
 	    			ClsLogging.writeFileLog("CONFIRMAR Y PRESENTAR OK ",10);
 	
 	    		} catch (Exception e) {    		
@@ -723,7 +721,6 @@ public class Facturacion {
 	    			//////////// FIN TRANSACCION ////////////////
 	
 	    			ClsLogging.writeFileLog("CAMBIA ESTADO A FINALIZADA ERRORES.",10);
-	    			isFacturadoOk =false;
 	    			throw new ClsExceptions("Error al confirmar facturacion rápida. " + e.toString());
 	    		}
 
@@ -881,7 +878,7 @@ public class Facturacion {
 		} catch (Exception e) {
 
 			ClsLogging.writeFileLog("ERROR GENERAL EN TRY GENERAR/ENVIAR.",10);
-			if(tx!=null)
+			if (tx!=null && Status.STATUS_ACTIVE  == tx.getStatus())
 				tx.rollback();
 
 			// ESCRIBO EN EL LOG mensaje general ??
