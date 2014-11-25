@@ -6,7 +6,6 @@
  */
 package com.siga.Utilidades;
 
-import java.lang.Math;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -20,23 +19,18 @@ import java.text.NumberFormat;
  */
 public class UtilidadesNumero {
 
-	static public double redondea (double numero, int precision)
-	{
-	    double aux = Math.pow(10, precision);
-	    double entero = Math.round(numero * aux);
-	    return entero/aux;
+	static public double redondea (double numero, int precision) {
+	    return Math.round(Math.round(numero * Math.pow(10, precision + 1)) / Math.pow(10, 1)) / Math.pow(10, precision);
 	}
 	 
-	static public float redondea (float numero, int precision) 
-	{
+	static public float redondea (float numero, int precision) {
 	    double d = numero;
-	    return (float) UtilidadesNumero.redondea(d, precision);
+	    return (float) redondea(d, precision);
 	}
 	
-	static public String redondea (String numero, int precision)
-	{
+	static public String redondea (String numero, int precision) {
 	    double d =  Double.parseDouble(numero);
-	    return String.valueOf(UtilidadesNumero.redondea(d,precision));
+	    return String.valueOf(redondea(d,precision));
 	}
 		
 
