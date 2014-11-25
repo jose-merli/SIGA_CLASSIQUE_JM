@@ -1291,14 +1291,12 @@ public class ConfirmarFacturacionAction extends MasterAction{
 			String idSerieFacturacion 	= (String)ocultos.elementAt(0);			
 			String idProgramacion 		= (String)ocultos.elementAt(1);
 			String idInstitucion		= this.getIDInstitucion(request).toString();
-			
             Hashtable ht = new Hashtable();
 			ht.put(FacFacturacionProgramadaBean.C_IDINSTITUCION, idInstitucion);
 			ht.put(FacFacturacionProgramadaBean.C_IDSERIEFACTURACION, idSerieFacturacion);
 			ht.put(FacFacturacionProgramadaBean.C_IDPROGRAMACION, idProgramacion);
 			Vector v = adm.selectByPK(ht);
-			bean = (FacFacturacionProgramadaBean) v.get(0);
-			String logError = bean.getLogerror(); 
+			bean = (FacFacturacionProgramadaBean) v.get(0);			
 			
 			tx.begin();	
 	
@@ -1326,20 +1324,42 @@ public class ConfirmarFacturacionAction extends MasterAction{
 				
 			} else {
 				
-		 		// RGG 05/02/2007 ELIMINAMOS LOS FICHERO DE LOG ASOCIADOS A LA PROGRAMACION
-			    ReadProperties p= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
-				String pathFichero 		= p.returnProperty("facturacion.directorioFisicoLogProgramacion");
-	    		String sBarra = "";
-	    		if (pathFichero.indexOf("/") > -1) sBarra = "/"; 
-	    		if (pathFichero.indexOf("\\") > -1) sBarra = "\\";        		
+				ReadProperties p= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
 				
-				File fichero = new File(pathFichero+sBarra+idInstitucion+sBarra+logError);
-				if (fichero.exists()) {
-					fichero.delete();
-				}	
-				//Borramos los PDFs en caso de que los haya	
+				// 1. SE ELIMINA EL FICHERO DE LOG SI EXISTIESE
+				String logError = bean.getLogerror(); 				
+				if(logError!= null & !logError.equals("")){		 		
+					String pathFichero 		= p.returnProperty("facturacion.directorioFisicoLogProgramacion");
+		    		String sBarra = "";
+		    		if (pathFichero.indexOf("/") > -1) sBarra = "/"; 
+		    		if (pathFichero.indexOf("\\") > -1) sBarra = "\\";        		
+					
+					File fichero = new File(pathFichero+sBarra+idInstitucion+sBarra+logError);
+					if (fichero.exists()) {
+						fichero.delete();
+					}	
+				}
+				
+				// 2. SE ELIMINA EL INFORME DE GENERACION SI EXISTIESE
+				String nombreFichero = bean.getNombrefichero();				
+				if(nombreFichero!= null & !nombreFichero.equals("")){		 		
+					String pathFichero 		= p.returnProperty("facturacion.directorioFisicoPrevisionesJava")+p.returnProperty("facturacion.directorioPrevisionesJava");
+		    		String sBarra = "";
+		    		if (pathFichero.indexOf("/") > -1) sBarra = "/"; 
+		    		if (pathFichero.indexOf("\\") > -1) sBarra = "\\";        		
+					
+					File fichero = new File(pathFichero+sBarra+idInstitucion+sBarra+nombreFichero);
+					if (fichero.exists()) {
+						fichero.delete();
+					}	
+				}
+				
+				//  3. SE ELIMINAN LOS FICHEROS PDF EN CASO DE QUE SE HAYAN CREADO	
 				String pathFicheroPDF = p.returnProperty("facturacion.directorioFisicoFacturaPDFJava")+p.returnProperty("facturacion.directorioFacturaPDFJava");
 				String idserieidprogramacion = idSerieFacturacion+"_" + idProgramacion;
+	    		String sBarra = "";
+	    		if (pathFicheroPDF.indexOf("/") > -1) sBarra = "/"; 
+	    		if (pathFicheroPDF.indexOf("\\") > -1) sBarra = "\\";  				
 				pathFicheroPDF += sBarra+idInstitucion+sBarra+idserieidprogramacion;
 				File ficheroPDF = new File(pathFicheroPDF);
 				if (ficheroPDF.exists()) {

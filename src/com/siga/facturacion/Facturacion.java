@@ -2140,6 +2140,20 @@ public class Facturacion {
 
 					if (fichPrev != null && fichPrev.size() > 0) {
 						nameFile = fichPrev.get(0).getName();
+					
+					} else{
+						//Generamos un fichero de Error
+						File ficheroGenerado = null;
+						BufferedWriter out;
+						ficheroGenerado = new File (sRutaJava + File.separator + nombreFichero + ".xls");
+						if (ficheroGenerado.exists())
+							ficheroGenerado.delete();
+						ficheroGenerado.createNewFile();
+						out = new BufferedWriter(new FileWriter(ficheroGenerado));
+						out.write("No se ha podido facturar nada. Compruebe la configuracion y el periodo indicado\t");
+						out.close();	
+						
+						nameFile = ficheroGenerado.getName();
 					}
 				}
 			}
