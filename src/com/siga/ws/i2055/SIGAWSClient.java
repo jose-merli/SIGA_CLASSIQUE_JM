@@ -116,7 +116,7 @@ public class SIGAWSClient extends SIGAWSClientAbstract {
 		CajgRespuestaEJGRemesaAdm cajgRespuestaEJGRemesaAdm = new CajgRespuestaEJGRemesaAdm(getUsrBean());
 		
 		int correctos = 0;
-		UserTransaction tx = getUsrBean().getTransaction();
+		UserTransaction tx = getUsrBean().getTransactionPesada();
 					
 		tx.begin();
 		log.debug("Eliminando errores anteriores para el colegio " + getIdInstitucion());

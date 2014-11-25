@@ -217,7 +217,7 @@ public class PCAJGxmlResponse extends SIGAWSClientAbstract implements PCAJGConst
 				String intervaloIngresosRecursos = null;
 				StringBuffer tipoPrestacion = null;
 				
-				tx = getUsrBean().getTransaction();
+				tx = getUsrBean().getTransactionPesada();
 				tx.begin();
 				
 				for (Expediente expediente : expedientes) {					
@@ -504,7 +504,7 @@ public class PCAJGxmlResponse extends SIGAWSClientAbstract implements PCAJGConst
 				ScsEJGAdm scsEJGAdm = new ScsEJGAdm(getUsrBean());
 				CajgRespuestaEJGRemesaAdm cajgRespuestaEJGRemesaAdm = new CajgRespuestaEJGRemesaAdm(getUsrBean());
 				
-				tx = getUsrBean().getTransaction();
+				tx = getUsrBean().getTransactionPesada();
 				tx.begin();
 				
 				//cajgRespuestaEJGRemesaAdm.eliminaAnterioresErrores(getIdInstitucion(), getIdRemesa());

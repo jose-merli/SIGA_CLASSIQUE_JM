@@ -1541,7 +1541,7 @@ public class PCAJGAragon extends SIGAWSClientAbstract implements PCAJGConstantes
 		UsrBean usr = getUsrBean();
 		
 		String dirFicheros = getDirXML(getIdInstitucion(), getIdRemesa());
-		UserTransaction tx = usr.getTransaction();
+		UserTransaction tx = usr.getTransactionPesada();
 		
 		//si no queremos generar el fichero txt ademas del xml hay que cometar solamente esta línea
 		if (isGeneraTXT()) {

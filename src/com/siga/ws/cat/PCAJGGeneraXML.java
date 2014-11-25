@@ -1206,7 +1206,7 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 		String dirFicheros = pathFichero + File.separator + getIdInstitucion()  + File.separator + getIdRemesa();
 		String dirPlantillas = pathPlantillas + File.separator + getIdInstitucion();
 
-		UserTransaction tx = usr.getTransaction();
+		UserTransaction tx = usr.getTransactionPesada();
 		dirFicheros = dirFicheros + File.separator + "xml";
 		
 		//si se ha hecho una remesa txt previa hay que borrarla previamente
