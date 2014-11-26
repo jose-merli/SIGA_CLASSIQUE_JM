@@ -48,7 +48,6 @@ public class FacFacturacionProgramadaBean extends MasterBean {
 	static public final String C_GENERAPDF 					= "GENERAPDF";
 	static public final String C_ENVIO 						= "ENVIO";
 	static public final String C_ARCHIVARFACT 				= "ARCHIVARFACT";
-	static public final String C_LOCKED 					= "LOCKED";
 	static public final String C_FECHACARGO					= "FECHACARGO";
 	static public final String C_CONFDEUDOR					= "CONFDEUDOR";
 	static public final String C_CONFINGRESOS				= "CONFINGRESOS";

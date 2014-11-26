@@ -53,7 +53,6 @@ public class FacFacturacionProgramadaAdm extends MasterBeanAdministrador {
 							FacFacturacionProgramadaBean.C_GENERAPDF ,
 							FacFacturacionProgramadaBean.C_ENVIO ,
 							FacFacturacionProgramadaBean.C_ARCHIVARFACT ,
-							FacFacturacionProgramadaBean.C_LOCKED ,
 							FacFacturacionProgramadaBean.C_FECHACARGO,
 							FacFacturacionProgramadaBean.C_CONFDEUDOR,
 							FacFacturacionProgramadaBean.C_CONFINGRESOS,

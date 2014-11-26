@@ -1476,7 +1476,7 @@ public class Facturacion {
         	
         	// Desbloquea la facturacion programada
 			if (!admFacturacionProgramada.updateDirect(beanFacturacionProgramada)) {
-    	        throw new ClsExceptions("Error al actualizar locked de programacion: " + admFacturacionProgramada.getError());
+    	        throw new ClsExceptions("Error al actualizar la programacion: " + admFacturacionProgramada.getError());
     	    }
     	    
     	} catch (Exception e) {

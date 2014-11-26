@@ -931,7 +931,6 @@ or	 * @param request -
 				
 				bean.setFechaPrevistaConfirmacion(null);			
 				bean.setArchivarFact("0");			
-//				bean.setLocked("0");
 				
 				// tratamiento de estados de la programacion 
 				bean = admFacProg.tratamientoEstadosProgramacion(bean);
