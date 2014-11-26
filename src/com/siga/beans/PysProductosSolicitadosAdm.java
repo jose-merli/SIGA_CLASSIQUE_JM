@@ -310,9 +310,9 @@ public class PysProductosSolicitadosAdm extends MasterBeanAdministrador {
          							" CASE WHEN (" + PysPeticionCompraSuscripcionBean.T_NOMBRETABLA + "." + PysPeticionCompraSuscripcionBean.C_TIPOPETICION + " = 'B') THEN " +
          									PysPeticionCompraSuscripcionBean.T_NOMBRETABLA + "." + PysPeticionCompraSuscripcionBean.C_IDPETICIONALTA +
          								" ELSE ( " +
-         									" SELECT PC." + PysPeticionCompraSuscripcionBean.C_IDPETICION + 
+     										" SELECT PC." + PysPeticionCompraSuscripcionBean.C_IDPETICION +
          									" FROM " + PysPeticionCompraSuscripcionBean.T_NOMBRETABLA + " PC, " +
-         									PysProductosSolicitadosBean.T_NOMBRETABLA + " PS " + 
+         										PysProductosSolicitadosBean.T_NOMBRETABLA + " PS " + 
      										" WHERE PS." + PysProductosSolicitadosBean.C_IDINSTITUCION + " = PC." + PysPeticionCompraSuscripcionBean.C_IDINSTITUCION + 
      											" AND PS." + PysProductosSolicitadosBean.C_IDPETICION + " = PC." + PysPeticionCompraSuscripcionBean.C_IDPETICION +                                   
      											" AND PC." + PysPeticionCompraSuscripcionBean.C_IDPETICIONALTA + " = " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDPETICION +
@@ -321,6 +321,8 @@ public class PysProductosSolicitadosAdm extends MasterBeanAdministrador {
      											" AND PS." + PysProductosSolicitadosBean.C_IDPRODUCTO + " = " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDPRODUCTO +
      											" AND PS." + PysProductosSolicitadosBean.C_IDPRODUCTOINSTITUCION + " = " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDPRODUCTOINSTITUCION +
      											" AND PS." + PysProductosSolicitadosBean.C_IDPERSONA + " = " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDPERSONA +
+     											" AND PC." + PysPeticionCompraSuscripcionBean.C_IDESTADOPETICION + " = " + ClsConstants.ESTADO_PETICION_COMPRA_PROCESADA +
+     											" AND ROWNUM = 1 " + // En principio solo deberia haber una baja procesada
 										" ) " +
 									" END AS IDPETICIONRELACIONADA, " +     
 										
