@@ -1124,7 +1124,7 @@ public class Facturacion {
 
 		    	    	
 	    			/***************    ENVIO FACTURAS *****************/
-	    			if (bGenerarEnvios && correcto){
+	    			if (bGenerarEnvios && correcto && !esFacturacionRapida){
 	    				enviarProgramacionFactura(idPersona, institucion.toString(), idFactura, plantillaMail, nColegiado, numFactura,rutaAlmacen,log,esFacturacionRapida, salida, existeAlgunErrorEnvio);
 	    			}
 
@@ -1265,7 +1265,8 @@ public class Facturacion {
 	 * 
 	 */
 	public void enviarProgramacionFactura(String idPersona, String idInstitucion, String idFactura, Integer plantillaMail, String nColegiado, String numeroFactura, String rutaAlmacen,
-			SIGALogging log,boolean generarLog, int salida, boolean existeAlgunErrorEnvio) throws SIGAException {	    				
+			SIGALogging log,boolean esFacturacionRapida, int salida, boolean existeAlgunErrorEnvio) throws SIGAException {	  
+		
 		UserTransaction tx = this.usrbean.getTransaction();
 		UsrBean userbean = this.usrbean;
 		
@@ -1341,7 +1342,7 @@ public class Facturacion {
 			
 			ClsLogging.writeFileLog("ALMACENAR "+idFactura+" >> ERROR EN PROCESO DE ENVIO: "+eee.getLiteral(userbean.getLanguage()),10);
     		// ESCRIBO EN EL LOG
-			if(generarLog)
+			if(!esFacturacionRapida)
 				log.writeLogFactura("ENVIO",idPersona,numeroFactura,"message.facturacion.error.envio.factura"+eee.getLiteral(userbean.getLanguage()));
 			else{
 				String msj=UtilidadesString.getMensajeIdioma(userbean.getLanguage(),"message.facturacion.error.envio.factura")+eee.getLiteral(userbean.getLanguage());
@@ -1359,7 +1360,7 @@ public class Facturacion {
     		
 			ClsLogging.writeFileLog("ALMACENAR "+idFactura+" >> ERROR EN PROCESO DE ENVIO: "+eee.toString(),10);
     		// ESCRIBO EN EL LOG
-			if(generarLog)
+			if(!esFacturacionRapida)
 				log.writeLogFactura("ENVIO",idPersona,numeroFactura,"message.facturacion.error.envio.factura"+eee.toString());
 			else{
 				String msj=UtilidadesString.getMensajeIdioma(userbean.getLanguage(),"message.facturacion.error.envio.factura")+eee.toString();
