@@ -1234,10 +1234,10 @@ public class ConfirmarFacturacionAction extends MasterAction{
 			String sRutaFisicaJava = rp.returnProperty("facturacion.directorioFisicoPrevisionesJava");
 			sRutaJava = sRutaFisicaJava + File.separator + sRutaJava;
 
-			sRutaJava += File.separator + idInstitucion	+ File.separator + nombreFichero;
+			sRutaJava += File.separator + idInstitucion	+ File.separator;
 
 			//Control de que no exista el fichero a descargar:
-			File tmp = new File(sRutaJava);
+			File tmp = new File(sRutaJava + nombreFichero);
 			if(tmp==null || !tmp.exists()){
 				Facturacion facturacion = new Facturacion(user);
 				nombreFichero = facturacion.generarInformeGeneracion(idInstitucion, idSerieFacturacion, idProgramacion);
@@ -1260,7 +1260,7 @@ public class ConfirmarFacturacionAction extends MasterAction{
 			}
 			
 			request.setAttribute("nombreFichero", nombreFichero);
-			request.setAttribute("rutaFichero", sRutaJava);
+			request.setAttribute("rutaFichero", sRutaJava+nombreFichero);
 			
 		} catch (Exception e) {
 			throwExcp("messages.general.error",	new String[] { "modulo.facturacion.previsionesFacturacion" }, e, null);
