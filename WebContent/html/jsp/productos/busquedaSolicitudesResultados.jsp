@@ -294,7 +294,8 @@
 					nombreCliente = nombreCliente + " " + UtilidadesHash.getString (peticion, CenPersonaBean.C_APELLIDOS1);
 					nombreCliente = nombreCliente + " " + UtilidadesHash.getString (peticion, CenPersonaBean.C_APELLIDOS2);
 					String fecha   = UtilidadesHash.getString (peticion, PysPeticionCompraSuscripcionBean.C_FECHA);
-					int numProductosFacturables = new Integer(UtilidadesHash.getString (peticion, "NUM_PRODUCTOS_FACTURALES")).intValue();
+					int numProgramada = new Integer(UtilidadesHash.getString (peticion, "NUM_PROGRAMADA")).intValue();
+					int numProductosFacturables = new Integer(UtilidadesHash.getString (peticion, "NUM_PRODUCTOS_FACTURABLES")).intValue();
 					int numCertificados  = new Integer(UtilidadesHash.getString (peticion, "NUM_CERTIFICADOS")).intValue();
 					int hayServicios     = new Integer(UtilidadesHash.getString (peticion, "HAY_SERVICIOS")).intValue();
 			 		String tipoSol = UtilidadesHash.getString (peticion, PysPeticionCompraSuscripcionBean.C_TIPOPETICION);
@@ -324,19 +325,25 @@
 				 		}
 					}
 
-					// boton de envios
-					FilaExtElement[] elems = new FilaExtElement[2];
-					if ((idEstadoSol.trim().equals("10") || idEstadoSol.trim().equals("20")) && tipoSol.trim().equals("A") && numCertificados==0 && hayServicios==0 && numProductosFacturables>0) {
+					// 1. Compruebo que no tenga la peticion de compra de baja
+					// 2. Compruebo que tenga la solicitud aceptada
+					// 3. Compruebo que no sea facturacion programada
+					// 4. Compruebo que no tenga certificados
+					// 5. Compruebo que no tenga servicios
+					// 6. Compruebo que tiene productos facturables
+					FilaExtElement[] elems;					
+					if ((idEstadoSol.trim().equals(String.valueOf(ClsConstants.ESTADO_PETICION_COMPRA_PENDIENTE)) || idEstadoSol.trim().equals(String.valueOf(ClsConstants.ESTADO_PETICION_COMPRA_PROCESADA))) && 
+							tipoSol.trim().equals("A") && 
+							numProgramada==0 && numCertificados==0 && hayServicios==0 && numProductosFacturables>0) {
 						elems = new FilaExtElement[3];
-					}
-					
-					elems[0]=new FilaExtElement("editarConCertificado", "editarConCertificado", SIGAConstants.ACCESS_FULL);
-					elems[1]=new FilaExtElement("enviar", "enviar", SIGAConstants.ACCESS_FULL);
-										
-					// Si tiene certificados o servicios no se puede hacer facturacion rapida
-					// Controlamos que tenga algun producto facturable (sin estar de baja, ni devuelto)
-					if ((idEstadoSol.trim().equals("10") || idEstadoSol.trim().equals("20")) && tipoSol.trim().equals("A") && numCertificados==0 && hayServicios==0 && numProductosFacturables>0) {
+						elems[0]=new FilaExtElement("editarConCertificado", "editarConCertificado", SIGAConstants.ACCESS_FULL);
+						elems[1]=new FilaExtElement("enviar", "enviar", SIGAConstants.ACCESS_FULL);
 						elems[2]=new FilaExtElement("facturacionrapida", "facturacionrapida", SIGAConstants.ACCESS_READ);
+						
+					} else {
+						elems = new FilaExtElement[2];
+						elems[0]=new FilaExtElement("editarConCertificado", "editarConCertificado", SIGAConstants.ACCESS_FULL);
+						elems[1]=new FilaExtElement("enviar", "enviar", SIGAConstants.ACCESS_FULL);
 					}
 %>
 							 		
