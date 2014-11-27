@@ -355,17 +355,18 @@
 											<html:textarea name="DatosGeneralesForm" property="observaciones"  styleId="observaciones"  style="width:350px;"  rows="3" onkeydown="cuenta(this,4000)" onChange="cuenta(this,4000)" styleClass="box" value="<%=observaciones%>" readonly="false"/>
 										<%}%>
 									</td>
-									
-									<td id="titulo" class="labelText">
-										Planificar posteriormente a
-									</td>
-									<td>
-										<%if (!bEditable){%>
-											<siga:ComboBD nombre = "idSerieFacturacionPrevia" tipo="cmbSerieFacturacionPrevias" elementoSel ="<%=vSerieSeleccionada%>" clase="boxCombo" ancho="280" parametro="<%=datoSerie%>" readonly="true"/>
-										<%} else { %>
-											<siga:ComboBD nombre = "idSerieFacturacionPrevia" tipo="cmbSerieFacturacionPrevias" elementoSel ="<%=vSerieSeleccionada%>" clase="boxCombo" ancho="280" parametro="<%=datoSerie%>"/>
-										<%}%>									
-									</td>									
+									<%if (ClsConstants.esConsejoGeneral(idInstitucion)){%>
+										<td id="titulo" class="labelText">
+											Planificar posteriormente a
+										</td>
+										<td>
+											<%if (!bEditable){%>
+												<siga:ComboBD nombre = "idSerieFacturacionPrevia" tipo="cmbSerieFacturacionPrevias" elementoSel ="<%=vSerieSeleccionada%>" clase="boxCombo" ancho="280" parametro="<%=datoSerie%>" readonly="true"/>
+											<%} else { %>
+												<siga:ComboBD nombre = "idSerieFacturacionPrevia" tipo="cmbSerieFacturacionPrevias" elementoSel ="<%=vSerieSeleccionada%>" clase="boxCombo" ancho="280" parametro="<%=datoSerie%>"/>
+											<%}%>									
+										</td>
+									<% } %>									
 								</tr>
 							</table>
 						</siga:ConjCampos>

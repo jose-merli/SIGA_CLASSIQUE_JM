@@ -455,6 +455,12 @@
 				if(document.forms[0].idTipoPlantillaMail)
 				   	jQuery("#idTipoPlantillaMail").attr("disabled","disabled");
 			}
+			
+			<% if (modoAction.equals("nuevaPrevision")) { %>
+				var fechaActual = getFechaActualDDMMYYYY();	
+				jQuery('#fechaPrevistaGeneracion').val(fechaActual);	
+				actualizarHoraFecha(fechaActual,'horasGeneracion','minutosGeneracion');
+			<% } %>
 		}
 		
 		function cambiaSerie() {
@@ -468,13 +474,13 @@
 		
 		// JPT: Indica la hora y minuto actual en caso de indicar hoy
 		function actualizarHoraFecha(fecha, idHorasFecha, idMinutosFecha){
-			if (trim(fecha.value)=="") {
+			if (trim(fecha)=="") {
 				jQuery("#"+idHorasFecha).val("");					
 				jQuery("#"+idMinutosFecha).val("");
 				
 			} else {
-				var fechaActual = getFechaActualDDMMYYYY();			  
-				if (compararFecha(trim(fecha.value), fechaActual) == 0){
+				var fechaActual = getFechaActualDDMMYYYY();	
+				if (compararFecha(trim(fecha), fechaActual) == 0){
 					var date = new Date();
 					hora = date.getHours();
 					min = date.getMinutes();
@@ -628,7 +634,7 @@
 					</td>
 					<td width="120px">
 						<% if (bEditable) { %>
-							<siga:Fecha  nombreCampo="fechaPrevistaGeneracion" valorInicial="<%=sFPrevistaGeneracion%>" postFunction="actualizarHoraFecha(this,'horasGeneracion','minutosGeneracion');"/>
+							<siga:Fecha  nombreCampo="fechaPrevistaGeneracion" valorInicial="<%=sFPrevistaGeneracion%>" postFunction="actualizarHoraFecha(this.value,'horasGeneracion','minutosGeneracion');"/>
 						<% } else { %>
 							<siga:Fecha  nombreCampo="fechaPrevistaGeneracion" valorInicial="<%=sFPrevistaGeneracion%>" disabled="true" readOnly="true"/>
 						<% }  %>
@@ -660,7 +666,7 @@
 					</td>
 					<td width="120px">
 						<% if (modoAction.equals("editar") || modoAction.equals("nuevaPrevision")) { %>
-							<siga:Fecha nombreCampo="fechaPrevistaConfirmacion" valorInicial="<%=sFPrevistaConfirmacion%>" postFunction="actualizarHoraFecha(this,'horasConfirmacion','minutosConfirmacion');"/>
+							<siga:Fecha nombreCampo="fechaPrevistaConfirmacion" valorInicial="<%=sFPrevistaConfirmacion%>" postFunction="actualizarHoraFecha(this.value,'horasConfirmacion','minutosConfirmacion');"/>
 						<% } else { %>
 							<siga:Fecha nombreCampo="fechaPrevistaConfirmacion" valorInicial="<%=sFPrevistaConfirmacion%>" disabled="true" readOnly="true"/>
 						<% } %>
@@ -737,7 +743,7 @@
 						<% if (modoAction.equals("editar") || modoAction.equals("nuevaPrevision")) { %>
 							<siga:ComboBD nombre = "idTipoPlantillaMail" tipo="cmbPlantillaEnvios3" clase="boxCombo" elementoSel="<%=plantillaEnviosSeleccionada%>" ancho="300" obligatorio="false" pestana="true" parametro="<%=parametrosCmbPlantillaEnvios%>"/>
 						<% } else{ %>
-							<siga:ComboBD nombre = "idTipoPlantillaMail" tipo="cmbPlantillaEnvios3" clase="boxCombo" elementoSel="<%=plantillaEnviosSeleccionada%>" ancho="300" obligatorio="false" pestana="true" parametro="<%=parametrosCmbPlantillaEnvios%>" readonly="true"/>
+							<siga:ComboBD nombre = "idTipoPlantillaMail" tipo="cmbPlantillaEnvios3" clase="boxComboConsulta" elementoSel="<%=plantillaEnviosSeleccionada%>" ancho="300" obligatorio="false" pestana="true" parametro="<%=parametrosCmbPlantillaEnvios%>" readonly="true"/>
 						<% } %>
 					</td>						
 				</tr>
