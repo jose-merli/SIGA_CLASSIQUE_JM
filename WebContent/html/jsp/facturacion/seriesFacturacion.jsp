@@ -769,8 +769,8 @@
 						<siga:Table 
 							name="tablaDatos"
 							border="1"
-							columnNames="pys.solicitudCompra.literal.formaPago, facturacion.consultamorosos.literal.nfacturas, facturacion.lineasFactura.literal.importeTotal"
-							columnSizes="50,25,25"
+							columnNames="pys.solicitudCompra.literal.formaPago, facturacion.consultamorosos.literal.nfacturas,facturacion.datosFactura.literal.PagosAnticipado, facturacion.lineasFactura.literal.importeTotal"
+							columnSizes="40,20,20,20"
 							fixedHeight="10">
 							   
 						<!-- Campo obligatorio -->
@@ -785,11 +785,13 @@
 									String formapago=(String)hash.get("FORMA_PAGO");
 									String importe=(String)hash.get("IMPORTE");
 									String numfac=(String)hash.get("NUM_FACTURAS");
+									String anticipado=(String)hash.get("ANTICIPADO");
 								%>	
 									  	
 							  	<siga:FilaConIconos fila="1" botones="" visibleEdicion="no" visibleConsulta="no" visibleBorrado="no" pintarEspacio="no" clase="listaNonEdit">
 									<td>&nbsp;<%=formapago%></td>
 									<td align="right">&nbsp;<%=numfac%></td>
+									<td align="right">&nbsp;<%=UtilidadesNumero.formato(anticipado)%>&nbsp;&euro;</td>
 									<td align="right">&nbsp;<%=UtilidadesNumero.formato(importe)%>&nbsp;&euro;</td>
 								</siga:FilaConIconos>	
 								<%recordNumber++;%>

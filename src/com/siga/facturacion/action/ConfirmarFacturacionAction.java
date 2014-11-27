@@ -778,7 +778,8 @@ public class ConfirmarFacturacionAction extends MasterAction{
 			Vector datosInformeFac = null;
 			if(hash.get("IDESTADOCONFIRMACION") != null && ((String)hash.get("IDESTADOCONFIRMACION")).equals(FacEstadoConfirmFactBean.CONFIRM_FINALIZADA.toString())){			
 				String sql = "	SELECT f_siga_getrecurso(FP.DESCRIPCION, 1)	AS FORMA_PAGO,   	"+
-							 "     F_SIGA_CALCULAFORMATO(SUM(fac.imptotal)) AS IMPORTE,			"+
+							 "      F_SIGA_CALCULAFORMATO(SUM(fac.imptotal - fac.imptotalanticipado)) AS IMPORTE, "+
+							 "      F_SIGA_CALCULAFORMATO(SUM(fac.imptotalanticipado)) AS ANTICIPADO, "+
 							 "      COUNT(*) AS NUM_FACTURAS									"+
 							 " 	FROM PYS_FORMAPAGO FP, FAC_FACTURA FAC, FAC_FACTURACIONPROGRAMADA PROG	"+
 							 " 	WHERE FP.IDFORMAPAGO = FAC.IDFORMAPAGO						"+
