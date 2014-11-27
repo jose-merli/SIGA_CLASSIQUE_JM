@@ -68,6 +68,11 @@
 	ArrayList plantillaEnviosSeleccionada = new ArrayList();
 	ArrayList plantillaSeleccionada = new ArrayList();
 	
+	// parametro para consultas de estados (Combo)
+	String datoEstado[] = new String[1];
+	datoEstado[0] = usr.getLanguage().toUpperCase();
+	ArrayList estadoConfirmacionSel = new ArrayList();
+	
 	String modoAction=(String) ses.getAttribute("ModoAction");
 	String desplegar = "true";
 	String ocultarProgramacionConfirmacion = "true";
@@ -90,6 +95,7 @@
 		sFProgramacion = com.atos.utils.GstDate.getFormatedDateShort("", UtilidadesHash.getString(hash, FacFacturacionProgramadaBean.C_FECHAPROGRAMACION));
 		sFRealGeneracion = UtilidadesHash.getString(hash, FacFacturacionProgramadaBean.C_FECHAREALGENERACION);
 		idEstadoConfirmacion = UtilidadesHash.getString(hash, FacFacturacionProgramadaBean.C_IDESTADOCONFIRMACION);
+		estadoConfirmacionSel.add(idEstadoConfirmacion);
 
 		sFPrevistaGeneracion = com.atos.utils.GstDate.getFormatedDateShort("", UtilidadesHash.getString(hash, FacFacturacionProgramadaBean.C_FECHAPREVISTAGENERACION));
 		String aux = UtilidadesHash.getString(hash, FacFacturacionProgramadaBean.C_FECHAPREVISTAGENERACION);
@@ -540,6 +546,12 @@
 							<html:text name="confirmarFacturacionForm" styleId="descripcionProgramacion" property="descripcionProgramacion" value="<%=sDescripcion%>" size="50" styleClass="boxConsulta" readOnly="true" />
 						<% } %>	
 					</td>
+					<% if (!modoAction.equals("nuevaPrevision")) { %>
+						<td class="labelText"><siga:Idioma key="facturacion.estado"/></td>
+						<td>
+							<siga:ComboBD nombre = "estadoConfirmacion" tipo="cmbEstadoConfirmacion" ancho="100" parametro="<%=datoEstado%>" elementoSel="<%=estadoConfirmacionSel%>" clase="boxConsulta" readOnly="true" />					
+						</td>		
+					<% } %>				
 				</tr>
 						
 				<tr>
