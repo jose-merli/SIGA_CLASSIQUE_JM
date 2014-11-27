@@ -839,6 +839,9 @@ public class UtilidadesString {
 				}
 				if (importe.indexOf('.')!=-1){
 					parteEntera = importe.substring(0,importe.indexOf('.'));
+					if (parteEntera.equals(""))
+						parteEntera = "0";
+					
 					parteDecimal = importe.substring(importe.indexOf('.')+1);
 					if(parteDecimal.length()==1)
 						parteDecimal+="0";
