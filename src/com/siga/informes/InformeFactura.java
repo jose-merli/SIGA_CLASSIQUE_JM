@@ -6,6 +6,7 @@ import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import javax.transaction.UserTransaction;
 
 import org.redabogacia.sigaservices.app.util.ReadProperties;
 import org.redabogacia.sigaservices.app.util.SIGAReferences;
@@ -296,10 +297,11 @@ public class InformeFactura extends MasterReport {
 	 * @param  request - objeto llamada HTTP 
 	 * @param  response - objeto respuesta HTTP
 	 * @param  idFactura - 
+	 * @param tx
 	 * @return  File - fichero PDF generado  
 	 * @exception  ClsExceptions  En cualquier caso de error
 	 */
-	public File generarFacturaRapida (HttpServletRequest request,String institucion, String idFactura) throws ClsExceptions,SIGAException {
+	public File generarFacturaRapida (HttpServletRequest request, String institucion, String idFactura, UserTransaction tx) throws ClsExceptions,SIGAException {
 		File rutaZIP = null;
 			
 		try {
@@ -342,7 +344,8 @@ public class InformeFactura extends MasterReport {
 						Long.valueOf(hFactura.get(FacFacturaBean.C_IDPROGRAMACION).toString()), 
 						false, 
 						log, 
-						false);
+						false,
+						tx);
 				ClsLogging.writeFileLog("DESPUES DE GENERAR EL INFORME EN  "+rutaAlmacen,10);			
     		} else {
     			ClsLogging.writeFileLog("SE DEVUELVE EL ZIP PREVIAMENTE GENERADO EN CONFIRMACION",10);

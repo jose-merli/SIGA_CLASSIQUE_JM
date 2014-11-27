@@ -809,7 +809,7 @@ public class Facturacion {
 	
 			//////////// ALMACENAR RAPIDA ////////////////
 			//En facturaciones rápidas, en compra de PYS no hay que generar el excel con el log
-			int errorAlmacenar = this.generaryEnviarProgramacionFactura(req, beanP.getIdInstitucion(), idSerieFacturacion, idProgramacion, isGenerarEnvio, log, esFacturacionRapida);
+			int errorAlmacenar = this.generaryEnviarProgramacionFactura(req, beanP.getIdInstitucion(), idSerieFacturacion, idProgramacion, isGenerarEnvio, log, esFacturacionRapida, tx);
 			
 			////////////INICIO TRANSACCION ////////////////
 			if (tx!=null) 
@@ -917,6 +917,7 @@ public class Facturacion {
      * @param bGenerarEnvios
      * @param log
      * @param esFacturacionRapida
+     * @param tx
 	 * @return int - Devuelve: - 0 si todo está correcto.
 	 * 						   - 1 si ha existido un error en el procesado de la factura.
 	 * 						   - 2 si ha existido un error en el procesado del envío. 
@@ -930,7 +931,8 @@ public class Facturacion {
 			Long idProgramacion, 
 			boolean bGenerarEnvios, 
 			SIGALogging log,
-			boolean esFacturacionRapida
+			boolean esFacturacionRapida,
+			UserTransaction tx
 		)  throws ClsExceptions, SIGAException {
 		
 		UsrBean userbean = this.usrbean;
@@ -1125,7 +1127,7 @@ public class Facturacion {
 		    	    	
 	    			/***************    ENVIO FACTURAS *****************/
 	    			if (bGenerarEnvios && correcto && !esFacturacionRapida){
-	    				enviarProgramacionFactura(idPersona, institucion.toString(), idFactura, plantillaMail, nColegiado, numFactura,rutaAlmacen,log,esFacturacionRapida, salida, existeAlgunErrorEnvio);
+	    				enviarProgramacionFactura(idPersona, institucion.toString(), idFactura, plantillaMail, nColegiado, numFactura,rutaAlmacen,log,esFacturacionRapida, salida, existeAlgunErrorEnvio, tx);
 	    			}
 
 
@@ -1256,18 +1258,35 @@ public class Facturacion {
 		return salida;
 	}
     
-    /**
-     * @param nColegiado 
-     * @param numeroFactura 
-     * @param salida 
-     * @param existeAlgunErrorEnvio 
-     * @throws SIGAException 
+	/**
 	 * 
+	 * @param idPersona
+	 * @param idInstitucion
+	 * @param idFactura
+	 * @param plantillaMail
+	 * @param nColegiado
+	 * @param numeroFactura
+	 * @param rutaAlmacen
+	 * @param log
+	 * @param esFacturacionRapida
+	 * @param salida
+	 * @param existeAlgunErrorEnvio
 	 */
-	public void enviarProgramacionFactura(String idPersona, String idInstitucion, String idFactura, Integer plantillaMail, String nColegiado, String numeroFactura, String rutaAlmacen,
-			SIGALogging log,boolean esFacturacionRapida, int salida, boolean existeAlgunErrorEnvio) throws SIGAException {	  
-		
-		UserTransaction tx = this.usrbean.getTransaction();
+	public void enviarProgramacionFactura(
+			String idPersona, 
+			String idInstitucion, 
+			String idFactura, 
+			Integer plantillaMail, 
+			String nColegiado, 
+			String numeroFactura, 
+			String rutaAlmacen,
+			SIGALogging log,
+			boolean esFacturacionRapida, 
+			int salida, 
+			boolean existeAlgunErrorEnvio,
+			UserTransaction tx
+		) throws SIGAException {	  
+
 		UsrBean userbean = this.usrbean;
 		
 		try {			
@@ -1324,11 +1343,13 @@ public class Facturacion {
 				documentos.add(documento);
 				
 				/*************** INICIO TRANSACCION ***************/
-				tx.begin();
+				if (tx!=null)
+					tx.begin();
 				
 				// Genera el envio:
 				envio.generarEnvio(idPersona, EnvDestinatariosBean.TIPODESTINATARIO_CENPERSONA,documentos);
-				tx.commit();
+				if (tx!=null)
+					tx.commit();
 				ClsLogging.writeFileLog("ALMACENAR "+idFactura+" >> ENVIO GENERADO OK",10);
 				/*************** FIN TRANSACCION ***************/
 					
@@ -1337,8 +1358,11 @@ public class Facturacion {
 			}
 
 		} catch (SIGAException eee) {
-    		
-			try {tx.rollback();} catch (Exception ee) {}
+			try { // Tratamiento rollback
+				if (tx!=null && Status.STATUS_ACTIVE  == tx.getStatus()){
+					tx.rollback();
+				}
+			} catch (Exception e2) {}
 			
 			ClsLogging.writeFileLog("ALMACENAR "+idFactura+" >> ERROR EN PROCESO DE ENVIO: "+eee.getLiteral(userbean.getLanguage()),10);
     		// ESCRIBO EN EL LOG
@@ -1355,8 +1379,11 @@ public class Facturacion {
 			existeAlgunErrorEnvio = true;
     		
 		} catch (Exception eee) {
-			
-			try {tx.rollback();} catch (Exception ee) {}
+			try { // Tratamiento rollback
+				if (tx!=null && Status.STATUS_ACTIVE  == tx.getStatus()){
+					tx.rollback();
+				}
+			} catch (Exception e2) {}
     		
 			ClsLogging.writeFileLog("ALMACENAR "+idFactura+" >> ERROR EN PROCESO DE ENVIO: "+eee.toString(),10);
     		// ESCRIBO EN EL LOG

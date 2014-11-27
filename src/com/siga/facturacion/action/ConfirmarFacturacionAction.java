@@ -35,19 +35,6 @@ import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.Utilidades.paginadores.Paginador;
-import com.siga.beans.AdmInformeBean;
-import com.siga.beans.CenClienteAdm;
-import com.siga.beans.CenColegiadoAdm;
-import com.siga.beans.CenDireccionesAdm;
-import com.siga.beans.CenPersonaAdm;
-import com.siga.beans.EnvDestProgramInformesAdm;
-import com.siga.beans.EnvDestProgramInformesBean;
-import com.siga.beans.EnvEnvioProgramadoAdm;
-import com.siga.beans.EnvEnvioProgramadoBean;
-import com.siga.beans.EnvInformesGenericosAdm;
-import com.siga.beans.EnvInformesGenericosBean;
-import com.siga.beans.EnvProgramInformesAdm;
-import com.siga.beans.EnvProgramInformesBean;
 import com.siga.beans.FacDisqueteCargosAdm;
 import com.siga.beans.FacEstadoConfirmFactAdm;
 import com.siga.beans.FacEstadoConfirmFactBean;
@@ -64,7 +51,6 @@ import com.siga.facturacion.form.ConfirmarFacturacionForm;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
-import com.siga.informes.InformeFactura;
 import com.siga.servlets.SIGASvlProcesoAutomaticoRapido;
 
 
@@ -679,7 +665,8 @@ public class ConfirmarFacturacionAction extends MasterAction{
 				FacFacturacionProgramadaBean bean = (FacFacturacionProgramadaBean) v.get(0);				
 				if (bean.getIdTipoPlantillaMail() != null && !bean.getIdTipoPlantillaMail().equals("")){
 				  	Facturacion facturacion = new Facturacion(userBean);
-				  	int resultadoEnvioFacturacion = facturacion.generaryEnviarProgramacionFactura(request, bean.getIdInstitucion(), bean.getIdSerieFacturacion(), bean.getIdProgramacion(), true, null, false);	
+				  	UserTransaction tx = userBean.getTransaction();
+				  	int resultadoEnvioFacturacion = facturacion.generaryEnviarProgramacionFactura(request, bean.getIdInstitucion(), bean.getIdSerieFacturacion(), bean.getIdProgramacion(), true, null, false, tx);	
 				  	String msjAviso = null;
 					switch (resultadoEnvioFacturacion) {
 						case 0: //NO HAY ERROR. SE HA GENERADO CORRECTAMENTE Y SE PROCESADO EL ENVIO

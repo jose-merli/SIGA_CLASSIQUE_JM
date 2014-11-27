@@ -1653,7 +1653,7 @@ public class SolicitudCompraAction extends MasterAction{
 			}
 				
 	        // PASO 4: GENERAR PDF			
-			File filePDF = informe.generarFacturaRapida(request, idInstitucion, idFactura);
+			File filePDF = informe.generarFacturaRapida(request, idInstitucion, idFactura, tx);
 			if (filePDF == null) {
 				throw new ClsExceptions("Error al generar la factura. Fichero devuelto es nulo.");
 			}
