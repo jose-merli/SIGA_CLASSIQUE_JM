@@ -381,7 +381,7 @@
 				  	columnNames="facturacion.confirmarFacturacion.literal.conceptosFacturables,general.description,facturacion.programarFacturacion.literal.fechaInicioProductos,
 				  				facturacion.programarFacturacion.literal.fechaInicioServicios,facturacion.confirmarFacturacion.literal.fechaRealGeneracion,
 				  				facturacion.confirmarFacturacion.literal.fechaConfirmacion,facturacion.estado,"
-				  	columnSizes="20,20,9,9,8,8,10,16"
+				  	columnSizes="20,21,9,9,8,8,11,14"
 				    modal="M">	 	
 					<%if(vDatos == null || vDatos.size()<1 ) { %>
 		 					<tr class="notFound">
@@ -459,9 +459,7 @@
 								if (idEstadoConfirmacion.equals(FacEstadoConfirmFactBean.CONFIRM_FINALIZADA)) {
 									elems[1]=new FilaExtElement("archivar","archivar",SIGAConstants.ACCESS_READ); 				
 									elems[2]=new FilaExtElement("download","download",SIGAConstants.ACCESS_READ); 				
-									if(logError != null && !logError.equals("0"))
-										elems[3]=new FilaExtElement("descargaLog","descargaLog",SIGAConstants.ACCESS_READ);
-									elems[4]=new FilaExtElement("enviar","enviar",SIGAConstants.ACCESS_READ);
+									elems[3]=new FilaExtElement("enviar","enviar",SIGAConstants.ACCESS_READ);
 								
 									if(htData.get("IDESTADOPDF")!= null){ 
 										if(((String)htData.get("IDESTADOPDF")).equals(String.valueOf(FacEstadoConfirmFactBean.PDF_FINALIZADAERRORES.intValue()))){
