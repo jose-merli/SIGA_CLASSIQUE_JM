@@ -35,6 +35,7 @@ import com.siga.Utilidades.GestorContadores;
 import com.siga.Utilidades.PaginadorBind;
 import com.siga.Utilidades.UtilidadesBDAdm;
 import com.siga.Utilidades.UtilidadesHash;
+import com.siga.Utilidades.UtilidadesNumero;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.beans.AdmUsuariosAdm;
 import com.siga.beans.AdmUsuariosBean;
@@ -2395,7 +2396,7 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 			
 			FacFacturacionProgramadaBean programacion = null;			    
 		    // PASO 0: ANTES DE FACTURAR APUNTO EL IMPORTE TOTAL COMO IMPORTE ANTICIPADO
-		    double importe = (beanCompra.getCantidad().intValue() * beanCompra.getImporteUnitario().doubleValue()) * (1+(beanCompra.getIva().doubleValue()/100));
+		    double importe = beanCompra.getCantidad().intValue() * UtilidadesNumero.redondea(beanCompra.getImporteUnitario().doubleValue() * (1 + (beanCompra.getIva().doubleValue() / 100)), 2);
 		    beanCompra.setImporteAnticipado(new Double(importe));
 		    if (!admCompra.updateDirect(beanCompra)) {
 		    	// LIBERAMOS EL BLOQUEO DE LAS TABLAS Y LA TRANSACCIÓN
