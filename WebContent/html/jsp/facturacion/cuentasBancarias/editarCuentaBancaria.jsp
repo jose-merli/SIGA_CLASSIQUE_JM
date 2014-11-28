@@ -38,7 +38,11 @@
 
 	ArrayList vIva = new ArrayList(); // valores originales iva
 	// Cargo valor IVA
-    vIva.add(formulario.getComisioniva());
+	
+	if (formulario.getComisioniva().startsWith("0."))	
+    	vIva.add(formulario.getComisioniva().substring(1));
+	else
+		vIva.add(formulario.getComisioniva());
 %>
 
 <script type="text/javascript">

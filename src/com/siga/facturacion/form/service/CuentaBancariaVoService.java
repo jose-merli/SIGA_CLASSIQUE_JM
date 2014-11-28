@@ -1,5 +1,6 @@
 package com.siga.facturacion.form.service;
 
+import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -108,7 +109,7 @@ public class CuentaBancariaVoService implements VoUiService<CuentasBancariasForm
 		if (objectForm.getComisionimporte()!=null && !objectForm.getComisionimporte().equals(""))
 			objectVo.setComisionimporte(UtilidadesNumero.getBigDecimal(objectForm.getComisionimporte()));
 		if (objectForm.getComisioniva()!=null && !objectForm.getComisioniva().equals(""))
-			objectVo.setComisioniva(UtilidadesNumero.getBigDecimal(objectForm.getComisioniva()));
+			objectVo.setComisioniva(new BigDecimal(objectForm.getComisioniva()));
 		if (objectForm.getComisiondescripcion()!=null && !objectForm.getComisiondescripcion().equals(""))
 			objectVo.setComisiondescripcion(objectForm.getComisiondescripcion());
 		if (objectForm.getComisioncuentacontable()!=null && !objectForm.getComisioncuentacontable().equals(""))
