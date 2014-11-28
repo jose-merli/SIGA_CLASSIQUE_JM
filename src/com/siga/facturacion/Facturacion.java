@@ -75,6 +75,7 @@ import com.siga.beans.GenParametrosAdm;
 import com.siga.beans.PysCompraBean;
 import com.siga.beans.PysPeticionCompraSuscripcionBean;
 import com.siga.beans.PysTipoIvaAdm;
+import com.siga.beans.PysTipoIvaBean;
 import com.siga.envios.Documento;
 import com.siga.envios.Envio;
 import com.siga.general.SIGAException;
@@ -1815,6 +1816,13 @@ public class Facturacion {
 		FacBancoInstitucionAdm admBI= new FacBancoInstitucionAdm(userBean);
 		Vector<?> comisiones = admBI.selectByPK(criteriosBanco);
 		FacBancoInstitucionBean beanBancoInstitucion = (FacBancoInstitucionBean) comisiones.firstElement();		
+				
+		Hashtable<String,Object> hTipoIva = new Hashtable<String,Object>();
+		hTipoIva.put(PysTipoIvaBean.C_IDTIPOIVA, beanBancoInstitucion.getComisionIVA());
+		
+		PysTipoIvaAdm admTipoIva = new PysTipoIvaAdm(userBean);
+		Vector<?> vTipoIva = admTipoIva.selectByPK(hTipoIva);
+		PysTipoIvaBean beanTipoIva = (PysTipoIvaBean) vTipoIva.firstElement();
 		
 		// Se actualiza los campos CARGARCLIENTE y GASTOSDEVOLUCION
 		Hashtable<String,Object> original = new Hashtable<String,Object>();
@@ -1911,7 +1919,7 @@ public class Facturacion {
 			
 			// JPT - Devoluciones 117 - Calcula el importe del iva
 			double importeComision = beanBancoInstitucion.getComisionImporte();
-			double importeIvaComision = UtilidadesNumero.redondea(beanBancoInstitucion.getComisionImporte() * beanBancoInstitucion.getComisionIVA() / 100, 2);						
+			double importeIvaComision = UtilidadesNumero.redondea(beanBancoInstitucion.getComisionImporte() * Float.valueOf(beanTipoIva.getValor()) / 100, 2);						
 			
 			// JPT - Devoluciones 117 - Calcula los importes de la factura final con los importes de la comision
 			beanFacFactura.setImpTotalPorPagar(beanFacFactura.getImpTotalPorPagar() + importeComision + importeIvaComision);														
@@ -1953,7 +1961,6 @@ public class Facturacion {
 			}						
 			
 			// JPT - Devoluciones 117 - Calculo el campo CTAIVA
-			PysTipoIvaAdm admTipoIva = new PysTipoIvaAdm(userBean);
 			String sCTAIVA = admTipoIva.obtenerCTAIVA(beanFacFactura.getIdInstitucion().toString(), beanBancoInstitucion.getComisionIVA().toString());
 			
 			// JPT - Devoluciones 117 - Genero un objeto para la nueva linea con la comision
@@ -1966,7 +1973,7 @@ public class Facturacion {
 			beanFacLineaFactura.setImporteAnticipado(0.0); // Se indica que no tiene importe anticipado
 			beanFacLineaFactura.setDescripcion(beanBancoInstitucion.getComisionDescripcion()); // Obtiene la descripcion de la comision del banco del acreedor
 			beanFacLineaFactura.setPrecioUnitario(beanBancoInstitucion.getComisionImporte()); // Obtiene el importe de la comision del banco del acreedor
-			beanFacLineaFactura.setIva(beanBancoInstitucion.getComisionIVA().floatValue()); // Obtiene el iva de la comision del banco del acreedor
+			beanFacLineaFactura.setIva(Float.valueOf(beanTipoIva.getValor())); // Obtiene el iva de la comision del banco del acreedor
 			beanFacLineaFactura.setCtaProductoServicio(beanBancoInstitucion.getComisionCuentaContable()); // Obtiene la cuenta contable del banco del acreedor
 			beanFacLineaFactura.setCtaIva(sCTAIVA);
 			beanFacLineaFactura.setIdFormaPago(idFormaPago); // Indica la forma de pago de la factura	                  
