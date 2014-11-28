@@ -30,7 +30,7 @@ import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.GstDate;
 import com.atos.utils.UsrBean;
-import com.siga.Utilidades.PaginadorBind;
+import com.siga.Utilidades.paginadores.PaginadorBind;
 import com.siga.Utilidades.PaginadorCaseSensitiveBind;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesNumero;

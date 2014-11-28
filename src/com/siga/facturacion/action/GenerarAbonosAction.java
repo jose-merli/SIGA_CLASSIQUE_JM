@@ -20,7 +20,7 @@ import javax.transaction.*;
 import org.apache.struts.action.*;
 
 import com.atos.utils.*;
-import com.siga.Utilidades.PaginadorCaseSensitive;
+import com.siga.Utilidades.paginadores.PaginadorBind;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesNumero;
 import com.siga.beans.*;
@@ -31,6 +31,61 @@ import java.util.*;
 
 public class GenerarAbonosAction extends MasterAction {
 
+	final String[] clavesBusqueda={FacAbonoBean.C_IDABONO};
+	
+	protected ActionForward executeInternal (ActionMapping mapping,
+							      ActionForm formulario,
+							      HttpServletRequest request, 
+							      HttpServletResponse response)throws SIGAException {
+		
+		String mapDestino = "exception";
+		MasterForm miForm = null;
+		
+		try {
+			miForm = (MasterForm) formulario;
+			if (miForm == null) {
+					return mapping.findForward(mapDestino);
+				}
+				
+				String accion = miForm.getModo();
+				if (accion == null || accion.equalsIgnoreCase("") || accion.equalsIgnoreCase("abrir")){
+					miForm.reset(new String[]{"registrosSeleccionados","datosPaginador","seleccionarTodos"});
+					miForm.reset(mapping,request);
+					request.getSession().removeAttribute("DATAPAGINADOR");
+					mapDestino = abrir(mapping, miForm, request, response);						
+				}else if (accion.equalsIgnoreCase("buscarInit")){
+					miForm.reset(new String[]{"registrosSeleccionados","datosPaginador","seleccionarTodos"});
+					request.getSession().removeAttribute("DATAPAGINADOR");
+					mapDestino = buscarPor(mapping, miForm, request, response); 
+				} else {
+					return super.executeInternal(mapping,
+							      formulario,
+							      request, 
+							      response);
+				}
+
+			// Redireccionamos el flujo a la JSP correspondiente
+			if (mapDestino == null) 
+			{ 
+				//mapDestino = "exception";
+			    if (miForm.getModal().equalsIgnoreCase("TRUE"))
+			    {
+			        request.setAttribute("exceptionTarget", "parent.modal");
+			    }
+			    
+			    //throw new ClsExceptions("El ActionMapping no puede ser nulo");
+			    throw new ClsExceptions("El ActionMapping no puede ser nulo","","0","GEN00","15");
+			}
+			
+		}
+		catch (SIGAException es) { 
+			throw es; 
+		} 
+		catch (Exception e) { 
+			throw new SIGAException("messages.general.error",e,new String[] {"modulo.facturacion"}); 
+		} 
+		return mapping.findForward(mapDestino);
+	}
 	/** 
 	 *  Funcion que atiende la accion abrir.
 	 * @param  mapping - Mapeo de los struts
@@ -451,60 +506,93 @@ public class GenerarAbonosAction extends MasterAction {
 			criterios.put(FacAbonoBean.C_CONTABILIZADA,form.getContabilizadoBusqueda());
 			criterios.put(FacAbonoBean.C_IDPAGOSJG,form.getTipoAbonoBusqueda());
 			
-			 HashMap databackup=new HashMap();
+			//Si es seleccionar todos esta variable no vandra nula y ademas nos traera el numero de pagina 
+			//donde nos han marcado el seleccionar todos(asi evitamos meter otra variable)
+			boolean isSeleccionarTodos = form.getSeleccionarTodos()!=null 
+				&& !form.getSeleccionarTodos().equals("");
+			//si no es seleccionar todos los cambios van a fectar a los datos que se han mostrado en 
+			//la jsp por lo que parseamos los datos dento dela variable Registro seleccionados. Cuando hay modificacion
+			//habra que actualizar estos datos
+			if(!isSeleccionarTodos){
+				ArrayList clavesRegSeleccinados = (ArrayList) form.getRegistrosSeleccionados();
+				String seleccionados = request.getParameter("Seleccion");
 				
-			 	if (request.getSession().getAttribute("DATAPAGINADOR")!=null){ 
-			 		databackup = (HashMap)request.getSession().getAttribute("DATAPAGINADOR");
-			 		PaginadorCaseSensitive paginador = (PaginadorCaseSensitive)databackup.get("paginador");
-				     Vector datos=new Vector();
 				
-				
+				if (seleccionados != null ) {
+					ArrayList alRegistros = actualizarSelecionados(this.clavesBusqueda,seleccionados, clavesRegSeleccinados);
+					if (alRegistros != null) {
+						clavesRegSeleccinados = alRegistros;
+						form.setRegistrosSeleccionados(clavesRegSeleccinados);
+					}
+				}
+			}
+			
+			HashMap databackup = (HashMap) form.getDatosPaginador();
+			if (databackup!=null && databackup.get("paginador")!=null&&!isSeleccionarTodos){
+				PaginadorBind paginador = (PaginadorBind)databackup.get("paginador");
+				Vector datos=new Vector();
+
 				//Si no es la primera llamada, obtengo la página del request y la busco con el paginador
 				String pagina = (String)request.getParameter("pagina");
+
+				if (paginador!=null){	
+					if (pagina!=null){
+						datos = paginador.obtenerPagina(Integer.parseInt(pagina));
+					}else{// cuando hemos editado un registro de la busqueda y volvemos a la paginacion
+						datos = paginador.obtenerPagina((paginador.getPaginaActual()));
+					}
+				}	
 				
-				 
-				
-			 if (paginador!=null){	
-				if (pagina!=null){
-					datos = paginador.obtenerPagina(Integer.parseInt(pagina));
-				}else{// cuando hemos editado un registro de la busqueda y volvemos a la paginacion
-					datos = paginador.obtenerPagina((paginador.getPaginaActual()));
-				}
-			 }	
-			 
-				
-			 datos  = actualizarAbonos(admin,new Integer(idInstitucion),datos);
-				
+				datos  = actualizarAbonos(admin,new Integer(idInstitucion),datos);
 				databackup.put("paginador",paginador);
 				databackup.put("datos",datos);
+
+			}else{	
 				
-					
-				
-				
-		  }else{	
-				
-		  	    databackup=new HashMap();
-				
+				databackup=new HashMap();
+
 				//obtengo datos de la consulta 			
-		  	PaginadorCaseSensitive abonos = null;
-			Vector datos = null;
-		
-		// Realizo la busqueda
-			abonos=admin.getAbonos(criterios);
-		databackup.put("paginador",abonos);
-		if (abonos!=null){ 
-		   datos = abonos.obtenerPagina(1);
-		   datos  = actualizarAbonos(admin,new Integer(idInstitucion),datos);
-		   databackup.put("datos",datos);
-		   request.getSession().setAttribute("DATAPAGINADOR",databackup);
-		} 
-		  }
-	//	request.setAttribute("container", vector);
-		
-		/*// Obtengo el maximo identificador 
-		maxId=admin.getMaxID(idInstitucion).toString();
-		request.setAttribute("maximo", maxId);*/
-		
+				PaginadorBind resultado = null;
+				resultado=admin.getAbonos(criterios);
+				Vector datos = null;
+
+				databackup.put("paginador",resultado);
+				
+				if (resultado!=null && resultado.getNumeroTotalRegistros()>0){ 
+							
+					
+					if(isSeleccionarTodos){
+						//Si hay que seleccionar todos hacemos la query completa.
+						ArrayList clavesRegSeleccinados = new ArrayList((Collection)admin.selectGenericoNLSBind(resultado.getQueryInicio(), resultado.getCodigosInicio()));
+						aniadeClavesBusqueda(this.clavesBusqueda,clavesRegSeleccinados);
+						form.setRegistrosSeleccionados(clavesRegSeleccinados);
+						int pagina;
+						try{
+							pagina = Integer.parseInt(form.getSeleccionarTodos());
+						}catch (Exception e) {
+							// Con esto evitamos un error cuando se recupera una pagina y hemos "perdido" la pagina actual
+							// cargamos la primera y no evitamos mostrar un error
+							pagina = 1;
+						}
+						datos = resultado.obtenerPagina(pagina);
+						form.setSeleccionarTodos("");
+						
+					}else{				
+						form.setRegistrosSeleccionados(new ArrayList());
+						datos = resultado.obtenerPagina(1);
+					}
+
+					datos  = actualizarAbonos(admin,new Integer(idInstitucion),datos);
+					databackup.put("datos",datos);
+
+				}else{
+					resultado = null;
+					form.setRegistrosSeleccionados(new ArrayList());
+				}  
+				form.setDatosPaginador(databackup);
+
+			}			
+
 	} 
 	catch (Exception e) { 
 		throwExcp("messages.general.error",new String[] {"modulo.facturacion"},e,null); 

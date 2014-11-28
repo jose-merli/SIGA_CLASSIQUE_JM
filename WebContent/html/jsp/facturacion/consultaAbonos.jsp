@@ -23,19 +23,17 @@
 
 <%@ page import="com.siga.administracion.SIGAConstants"%>
 <%@ page import="com.atos.utils.*"%>
+<%@page import="com.siga.Utilidades.*"%>
+<%@ page import="com.siga.Utilidades.paginadores.PaginadorBind"%>
 <%@ page import="com.siga.gui.processTree.SIGAPTConstants"%>
 <%@ page import="javax.servlet.http.*"%>
 <%@ page import="java.util.*"%>
-<%@ page import="com.atos.utils.Row"%>
 <%@ page import="com.siga.beans.*"%>
-<%@ page import="com.siga.Utilidades.UtilidadesString"%>
-<%@ page import="com.siga.Utilidades.UtilidadesNumero"%>
 <%@ page import="com.siga.administracion.SIGAMasterTable"%>
 <%@ page import="com.siga.tlds.FilaExtElement"%>
-<%@ page import="com.siga.Utilidades.UtilidadesNumero"%>
-<%@ page import="com.atos.utils.Row"%>
-<%@ page import="com.siga.Utilidades.PaginadorCaseSensitive"%>
-
+<%@ page import="com.atos.utils.*"%>
+<bean:define id="registrosSeleccionados" name="GenerarAbonosForm" property="registrosSeleccionados" type="java.util.ArrayList"/>
+<bean:define id="datosPaginador" name="GenerarAbonosForm" property="datosPaginador" type="java.util.HashMap"/>
 
 <!-- JSP -->
 <%
@@ -52,39 +50,34 @@
 	String botonesFila = "";
 	//String maximo=(String)request.getAttribute("maximo");
 
-	request.getSession().setAttribute("EnvEdicionEnvio","GAF");
-	
-	Vector resultado=null;
-	/** PAGINADOR ***/
+	request.getSession().setAttribute("EnvEdicionEnvio","GAF");   
+    /** PAGINADOR ***/
+	Vector resultado = new Vector();
 	String paginaSeleccionada ="";
-	
 	String totalRegistros ="";
-	
 	String registrosPorPagina = "";
-	HashMap hm=new HashMap();
-    if (ses.getAttribute("DATAPAGINADOR")!=null){
-	 hm = (HashMap)ses.getAttribute("DATAPAGINADOR");
-	
-	 if ( hm.get("datos")!=null && !hm.get("datos").equals("")){
-	  resultado = (Vector)hm.get("datos");
-	  PaginadorCaseSensitive paginador = (PaginadorCaseSensitive)hm.get("paginador");
-	
-	 	paginaSeleccionada = String.valueOf(paginador.getPaginaActual());
-		totalRegistros = String.valueOf(paginador.getNumeroTotalRegistros());
-		registrosPorPagina = String.valueOf(paginador.getNumeroRegistrosPorPagina()); 
-		
+	String valorCheckAbono = "";
+	if (datosPaginador!=null) {
+	 if ( datosPaginador.get("datos")!=null && !datosPaginador.get("datos").equals("")){
+	  	resultado = (Vector)datosPaginador.get("datos");
+	    PaginadorBind paginador = (PaginadorBind)datosPaginador.get("paginador");
+		paginaSeleccionada = String.valueOf(paginador.getPaginaActual());
+	 	totalRegistros = String.valueOf(paginador.getNumeroTotalRegistros());
+	 	registrosPorPagina = String.valueOf(paginador.getNumeroRegistrosPorPagina()); 
 	 }else{
-	  resultado =new Vector();
-	  paginaSeleccionada = "0";
-	 	totalRegistros = "0";
-	 	registrosPorPagina = "0";
+		resultado =new Vector();
+		paginaSeleccionada = "0";
+		totalRegistros = "0";
+		registrosPorPagina = "0";
 	 }
-   }else{
-      resultado =new Vector();
-	  paginaSeleccionada = "0";
-	 	totalRegistros = "0";
-	 	registrosPorPagina = "0";
-   }	 
+	}else{
+      	resultado =new Vector();
+	  	paginaSeleccionada = "0";
+		totalRegistros = "0";
+		registrosPorPagina = "0";
+	}	 
+    
+    
 	String action=app+"/FAC_GenerarAbonos.do?noReset=true";
 
 %>	
@@ -179,19 +172,23 @@
 
 	</head>
 
-	<body class="tablaCentralCampos">
+	<body class="tablaCentralCampos" onload="cargarChecks();checkTodos()">
 		<html:form action="/FAC_GenerarAbonos.do?noReset=true" method="post" target="mainWorkArea" style="display:none">
 			<html:hidden property="modo" value=""/>				
 			<input type="hidden" name="actionModal"  name="actionModal" value="">
+			<html:hidden property="registrosSeleccionados"  styleId="registrosSeleccionados"/>
+			<html:hidden property="datosPaginador"  styleId="datosPaginador" />
+			<html:hidden property="seleccionarTodos"  styleId="seleccionarTodos" />
 		</html:form>
 		
 			<siga:Table 
 			   name="tablaDatos"
 			   border="1"
-			   columnNames="facturacion.busquedaAbonos.literal.numAbono,facturacion.busquedaAbonos.literal.fecha,
+			   columnNames="<input type='checkbox' name='chkGeneral'  id='chkGeneral' onclick='cargarChecksTodos(this)'/>,
+			   			  facturacion.busquedaAbonos.literal.numAbono,facturacion.busquedaAbonos.literal.fecha,
 			   			  facturacion.busquedaAbonos.literal.cliente,gratuita.modalRegistro_DefinirCalendarioGuardia.literal.observaciones,facturacion.busquedaAbonos.literal.estado,
 			   			  facturacion.busquedaAbonos.literal.totalAbono,facturacion.busquedaAbonos.literal.numFacturaAsociada,"
-			   columnSizes="10,8,18,23,12,7,9,15">		       
+			   columnSizes="4,10,8,15,23,12,7,9,13">		       
 			<%
 	    	if (resultado == null || resultado.size() < 1 )
 		    {
@@ -244,7 +241,26 @@
  						  elementos="<%=elems%>" 
 						  pintarEspacio="no" 							  					  							  
 						  clase="listaNonEdit">
-						  
+						 
+						 
+						<td align="center">
+						<%String valorCheck = row.getString(FacAbonoBean.C_IDABONO);
+						boolean isChecked = false;
+						for (int z = 0; z < registrosSeleccionados.size(); z++) {
+							Hashtable clavesRegistro = (Hashtable) registrosSeleccionados.get(z);
+							String clave = (String)clavesRegistro.get("CLAVE");
+							if (valorCheck.equals(clave)) {
+								isChecked = true;
+								break;
+							}
+						}
+						
+						if (isChecked) {%>
+								<input type="checkbox" value="<%=valorCheck%>"  name="sel" checked onclick="pulsarCheck(this)">
+						<%} else {%>
+								<input type="checkbox" value="<%=valorCheck%>"   name="sel" onclick="pulsarCheck(this)" >
+						<%}%>
+						</td>
 						<td>
 							<input type="hidden" name="oculto<%=(i+1)%>_1" value="<%=row.getString(FacAbonoBean.C_IDABONO)%>">
 							<input type="hidden" name="oculto<%=(i+1)%>_2" value="<%=row.getString(FacAbonoBean.C_IDINSTITUCION)%>">
@@ -282,18 +298,29 @@
 			} %>
 			</siga:Table>
 			
-			<!-- Metemos la paginación-->		
-	 <%if ( hm.get("datos")!=null && !hm.get("datos").equals("")){%>
-			<siga:Paginador totalRegistros="<%=totalRegistros%>" 
+			<!-- Metemos la paginación-->		    
+    <%
+	
+	String regSeleccionados = ("" + ((registrosSeleccionados == null) ? 0
+			: registrosSeleccionados.size()));
+	
+	if (  datosPaginador!=null && datosPaginador.get("datos")!=null && !datosPaginador.get("datos").equals("")){%>
+	  
+	  						
+					<siga:Paginador totalRegistros="<%=totalRegistros%>" 
 								registrosPorPagina="<%=registrosPorPagina%>" 
 								paginaSeleccionada="<%=paginaSeleccionada%>" 
+								registrosSeleccionados="<%=regSeleccionados%>"
 								idioma="<%=idioma%>"
 								modo="buscarPor"								
 								clase="paginator" 
-								divStyle="position:absolute; width:100%; height:20; z-index:3; bottom: 0px; left: 0px"
+								divStyle="position:absolute; width:100%; height:20; z-index:3; bottom:0px; left: 0px"
 								distanciaPaginas=""
 								action="<%=action%>" />
-    <%}%>	
+															
+	
+	 <%}%>	
+    	
 		<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
 
 
@@ -318,6 +345,151 @@
 		<html:hidden property="modo"  styleId="modo" value = "preSeleccionInformes"/>
 		<input type='hidden' name='actionModal' id='actionModal'>
 	</html:form>
+	<script languaje="javascript">
+ObjArray = new Array();
 
+Array.prototype.indexOf = function(s) {
+for (var x=0;x<this.length;x++) if(this[x] == s) return x;
+	return false;
+}
+
+   
+function pulsarCheck(obj){
+	
+	if (!obj.checked ){
+	   		
+		ObjArray.splice(ObjArray.indexOf(obj.value),1);
+		seleccionados1=ObjArray;
+	}else{
+		ObjArray.push(obj.value);
+	   	seleccionados1=ObjArray;
+	}
+	  	
+	  	
+	document.forms[0].registrosSeleccionados.value=seleccionados1;
+	
+	document.getElementById('registrosSeleccionadosPaginador').value =ObjArray.length;
+	checkTodos();
+	
+	   
+}
+function cargarChecks(){
+   		
+   	 	
+	<%if (registrosSeleccionados!=null){
+		
+   		for (int p=0;p<registrosSeleccionados.size();p++){
+   		 	
+	   		Hashtable clavesAb= (Hashtable) registrosSeleccionados.get(p);
+	   		
+	   		
+			valorCheckAbono=(String)clavesAb.get("CLAVE");
+			
+					
+			%>
+				var aux='<%=valorCheckAbono%>';
+				ObjArray.push(aux);
+			<%
+		} 
+   	}%>
+   	
+	ObjArray.toString();
+	seleccionados1=ObjArray;
+		
+	document.forms[0].registrosSeleccionados.value=seleccionados1;
+	
+	if(document.getElementById('registrosSeleccionadosPaginador'))
+		document.getElementById('registrosSeleccionadosPaginador').value =ObjArray.length;
+		
+}
+function cargarChecksTodos(o){
+	   if (document.getElementById('registrosSeleccionadosPaginador')){ 	
+		var conf = confirm("<siga:Idioma key='paginador.message.marcarDesmarcar'/>"); 
+   	 
+   	if (conf){
+		ObjArray = new Array();
+	   	if (o.checked){
+	   		parent.seleccionarTodos('<%=paginaSeleccionada%>');
+	   	 		
+			
+		}else{
+			ObjArray1= new Array();
+		 	ObjArray=ObjArray1;
+		 	seleccionados1=ObjArray;
+		 	if(seleccionados1){
+			document.forms[0].registrosSeleccionados.value=seleccionados1;
+			var ele = document.getElementsByName("sel");
+				
+			for (i = 0; i < ele.length; i++) {
+				if(!ele[i].disabled)	
+					ele[i].checked = false; 
+					
+					
+			}
+			}
+
+		 }
+   	  
+   	  }else{
+   	  	if (!o.checked ){
+	   	  		var ele = document.getElementsByName("sel");
+					
+			  	for (i = 0; i < ele.length; i++) {
+			  		if(!ele[i].disabled){
+			  			if(ele[i].checked){	
+	     					ele[i].checked = false;
+	     				
+							ObjArray.splice(ObjArray.indexOf(ele[i].value),1);
+						}
+					}
+			   	}
+			   	
+			   	seleccionados1=ObjArray;
+		   }else{
+			   	var ele = document.getElementsByName("sel");
+						
+			  	for (i = 0; i < ele.length; i++) {
+			  		if(!ele[i].disabled){
+						if(!ele[i].checked){				  		
+		    				ele[i].checked = true;
+							ObjArray.push(ele[i].value);
+						}
+					}
+			   	}
+			   		
+		   		seleccionados1=ObjArray;
+		   }
+		   document.forms[0].registrosSeleccionados.value=seleccionados1;
+	   		
+   	  }
+   	 if (document.getElementById('registrosSeleccionadosPaginador')){ 		 
+	  document.getElementById('registrosSeleccionadosPaginador').value =ObjArray.length;
+	 }
+	} 
+ }
+   
+function checkTodos(){
+
+ 	var ele = document.getElementsByName("sel");
+	var todos=1;	
+  	for (i = 0; i < ele.length; i++) {
+			if(!ele[i].checked){
+				todos=0;
+				break;
+			} 
+		}
+   
+   if (todos==1){
+		document.getElementById("chkGeneral").checked=true;
+	}else{
+		document.getElementById("chkGeneral").checked=false;
+	}
+   
+			
+		
+		
+	}
+
+</script>
 	</body>
 </html>

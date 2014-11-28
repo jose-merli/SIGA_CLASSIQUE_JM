@@ -28,6 +28,8 @@
 <%@ page import="com.siga.beans.CenPersonaAdm"%>
 <%@ page import="javax.servlet.http.*"%>
 <%@ page import="java.util.Properties"%>
+<%@page import="java.util.ArrayList"%>
+<%@ page import="com.siga.Utilidades.*"%>
 
 <!-- JSP -->
 <% 
@@ -76,7 +78,9 @@
 		nifCliente = admPersona.obtenerNIF(idPersonaBusqueda);
 		funcionBuscar = "buscarPaginador()";
 	}
-
+	String campo = UtilidadesString.getMensajeIdioma(user.getLanguage(),"facturacion.abonosPagos.datosPagoAbono.importePago");
+	String[] campos = {campo};
+	String mensajeInvalido = UtilidadesString.getMensajeIdioma(user.getLanguage(),"errors.invalid", campos );
     // Botones a mostrar
 	String botones = "B,N,L";
 %>
@@ -86,7 +90,9 @@
 	
 	<!-- Incluido jquery en siga.js -->	
 	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js?v=${sessionScope.VERSIONJS}'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
-		
+	<link rel="stylesheet" href="<html:rewrite page='/html/js/jquery.ui/css/smoothness/jquery-ui-1.10.3.custom.min.css'/>">
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-ui-1.10.3.custom.min.js?v=${sessionScope.VERSIONJS}'/>"></script>	  	
+	
 	<!-- INICIO: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->
 	<!-- Validaciones en Cliente -->
 	<!-- El nombre del formulario se obtiene del struts-config -->
@@ -100,7 +106,7 @@
 	<!-- FIN: TITULO Y LOCALIZACION -->	
 </head>
 
-<body onLoad="ajusteAlto('resultado');desahabilitaBonotesLetrado();inicio();<%=funcionBuscar %>">	
+<body onLoad="ajusteAltoBotones('resultado');desahabilitaBonotesLetrado();inicio();<%=funcionBuscar %>">	
 	<div id="camposRegistro" class="posicionBusquedaSolo" align="center">	
 
 		<!-- INICIO: CAMPOS DE BUSQUEDA-->
@@ -116,6 +122,7 @@
 								<html:hidden property = "idInstitucion" value ="<%=idInstitucion%>"/>
 								<html:hidden property = "idPersonaBusqueda" value="<%=idPersonaBusqueda%>"/>
 								<input type="hidden" name="limpiarFilaSeleccionada" value="">
+								<html:hidden property="seleccionarTodos" value=""/>
 								<html:hidden property = "busquedaIdAbono" value="<%=busquedaIdAbono%>"/>
 								
 								<tr>
@@ -227,7 +234,12 @@
 			</tr>
 		</table>
 		<!-- FIN: CAMPOS DE BUSQUEDA-->									
-										
+		<html:form action="/FAC_AbonosPagos.do" method="POST" target="mainWorkArea">
+			<html:hidden property="abonos" value=""/>
+			<html:hidden property="modo" value=""/>
+			<html:hidden property="importe" value=""/>
+			<html:hidden property="tipoPago" value=""/>
+		</html:form>							
 		<!-- INICIO: BOTONES BUSQUEDA -->
 		<!-- Esto pinta los botones que le digamos de busqueda. Ademas, tienen asociado cada
 			 boton una funcion que abajo se reescribe. Los valores asociados separados por comas
@@ -320,7 +332,131 @@
 					document.all.GenerarAbonosForm.busquedaCliente.value = resultado[4] + " " + resultado[5] +  " " + resultado[6];	
 					//document.location.reload();
 				}
-			}		
+			}	
+			function seleccionarTodos(pagina) {
+				document.forms[0].seleccionarTodos.value = pagina;
+				buscar('buscarPor');				
+			}
+			
+			function accionPagarBanco(){
+				
+					if(window.frames.resultado.ObjArray){
+					
+						sub();
+						if (window.frames.resultado.ObjArray.length>1000) {
+							alert ('<siga:Idioma key="facturacion.anulacion.error.pagarMilAbonos"/>');
+							fin();
+							return false;
+						}
+						
+						for (var i=0; i<window.frames.resultado.ObjArray.length; i++) {
+								
+							if (document.AbonosPagosForm.abonos.value=="") {
+								document.AbonosPagosForm.abonos.value += window.frames.resultado.ObjArray[i];						
+							} else {
+								document.AbonosPagosForm.abonos.value += ";" +  window.frames.resultado.ObjArray[i];
+							}	
+							
+						}
+						//estos dos campos están dentro del jdialog
+						document.AbonosPagosForm.target = "submitArea";
+						document.AbonosPagosForm.modo.value="pagarVariosAbonos";
+						document.AbonosPagosForm.importe.value="";
+						document.AbonosPagosForm.tipoPago.value="banco";
+						document.AbonosPagosForm.submit();
+						fin();
+
+				}else{
+					fin();
+					var mensaje = '<siga:Idioma key="general.message.seleccionar"/>';
+					alert(mensaje);
+					return false;
+				}
+				
+			}
+			
+			function accionPagarCaja() {
+				if(window.frames.resultado.ObjArray.length>0){
+					//Si se ha seleccionado solo un registro se abre la ventana de pago por caja para introducir el importe,
+					//si hay más registros no se abre, se realizará el pago por el importe pendiente que tenga el abono
+					if(window.frames.resultado.ObjArray.length==1){
+						jQuery("#dialogoPagarCaja").dialog(
+								{
+								      height: 250,
+								      width: 525,
+								      modal: true,
+								      resizable: false,
+								      buttons: {					          	
+								            "Guardar y Cerrar": function() {
+								            
+								            if(isNaN(window.frames.document.getElementsByName("importe")[1].value)|| (parseFloat(window.frames.document.getElementsByName("importe")[1].value) == 0) || (window.frames.document.getElementsByName("importe")[1].value == "")){
+								            	fin();
+												var mensaje = '<%=mensajeInvalido%>';
+												alert(mensaje);
+												return false;
+								            }
+								            	
+								            pagarCaja();	
+								            document.AbonosPagosForm.abonos.value="";
+								            document.AbonosPagosForm.importe.value="";
+								            jQuery( this ).dialog( "close" );						            
+								            },
+								            "Cerrar": function() {
+								            	document.AbonosPagosForm.abonos.value="";
+										        document.AbonosPagosForm.importe.value="";  
+								            	jQuery( this ).dialog( "close" );
+									              
+									            }
+								          }
+								    }
+							);
+						jQuery(".ui-widget-overlay").css("opacity","0");
+					}else{
+						pagarCaja();
+						document.AbonosPagosForm.abonos.value="";
+			            document.AbonosPagosForm.importe.value="";
+					}
+				}else{
+					fin();
+					var mensaje = '<siga:Idioma key="general.message.seleccionar"/>';
+					alert(mensaje);
+					return false;
+				}	
+			
+			}
+	
+			function pagarCaja(){
+				sub();
+
+				if (window.frames.resultado.ObjArray.length>1000) {
+					alert ('<siga:Idioma key="facturacion.abonos.error.pagarMilAbonos"/>');
+					fin();
+					return false;
+				}
+				
+				for (var i=0; i<window.frames.resultado.ObjArray.length; i++) {
+						
+					if (document.AbonosPagosForm.abonos.value=="") {
+						document.AbonosPagosForm.abonos.value += window.frames.resultado.ObjArray[i];						
+					} else {
+						document.AbonosPagosForm.abonos.value += ";" +  window.frames.resultado.ObjArray[i];
+					}	
+					
+				}
+				
+				document.AbonosPagosForm.target = "submitArea";
+				document.AbonosPagosForm.modo.value="pagarVariosAbonos";
+				document.AbonosPagosForm.tipoPago.value="caja";
+				//si se está pagando solo un abono se permite elegir el importe
+				if(window.frames.resultado.ObjArray.length==1)
+					document.AbonosPagosForm.importe.value=window.frames.document.getElementsByName("importe")[1].value.replace(/,/,".");
+				else
+					document.AbonosPagosForm.importe.value="";
+				
+				document.AbonosPagosForm.submit();
+				fin();
+			}
+			
 		</script>
 		<!-- FIN: SCRIPTS BOTONES BUSQUEDA -->
 	
@@ -335,9 +471,27 @@
 			class="frameGeneral"></iframe>
 	</div>
 	<!-- FIN: IFRAME LISTA RESULTADOS -->
-
+	<!-- BOTONES ACCION: pg: "Pagar" -->	 
+	<siga:ConjBotonesAccion botones="pgban,pgcaj" />
+	<!-- FIN: BOTONES ACCION -->	
 	<!-- FIN  ******* BOTONES Y CAMPOS DE BUSQUEDA ****** -->
-
+	<div id="dialogoPagarCaja" title="<siga:Idioma key='facturacion.abonosPagos.datosPagoAbono.abonoCaja'/>" style="display:none">
+	<siga:ConjCampos leyenda="facturacion.abonosPagos.datosPagoAbono.datosPago">
+			<table>
+			<tr>
+				<td class="labelText">
+					<siga:Idioma key="facturacion.abonosPagos.datosPagoAbono.importePago"/>
+				</td>	
+				<td >
+					<html:text property="importe" size="11" maxlength="11" styleClass="box" value=""></html:text>&nbsp;&euro;
+				</td>
+			</tr>
+			</table>
+		</siga:ConjCampos>
+	<div>
+	
+	</div>
+	</div>
 	<!-- INICIO: SUBMIT AREA -->
 	<!-- Obligatoria en todas las páginas-->
 	<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>

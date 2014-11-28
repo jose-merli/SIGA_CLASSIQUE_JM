@@ -82,6 +82,8 @@ public class AbonosPagosAction extends MasterAction {
 					mapDestino = compensarFacturaManual(mapping, miForm, request, response);
 				}else if (accion.equalsIgnoreCase("validarFacturaCompensacionManual")){
 					mapDestino = validarFacturaCompensacionManual(mapping, miForm, request, response);
+				}else if (accion.equalsIgnoreCase("pagarVariosAbonos")){
+					mapDestino = pagarVariosAbonos(mapping, miForm, request, response);
 				}
 				else {
 					return super.executeInternal(mapping,
@@ -361,7 +363,41 @@ public class AbonosPagosAction extends MasterAction {
 			request.setAttribute("IDINSTITUCION", form.getIdInstitucion());
 			request.setAttribute("PAGOPENDIENTE", form.getPagoPendiente());
 			request.setAttribute("IDPERSONA", registro.get(FacAbonoBean.C_IDPERSONA));
-			request.setAttribute("IDCUENTA", registro.get(FacAbonoBean.C_IDCUENTA));
+			
+			//Se recupera la cuenta bancaria del colegiado porque en el alta no se inserta después de la incidencia INC_11904_SIGA
+			//request.setAttribute("IDCUENTA", registro.get(FacAbonoBean.C_IDCUENTA));
+			//Los abonos SJCS se pagarán a la cuenta SJCS 
+			//Los abonos no SJCS se pagarán a la cuenta no SJCS
+			Integer idpagosJG=0;
+			if((registro.get(FacAbonoBean.C_IDPAGOSJG)!=null)&&(!registro.get(FacAbonoBean.C_IDPAGOSJG).toString().isEmpty()))
+			{
+				idpagosJG=Integer.parseInt(registro.get(FacAbonoBean.C_IDPAGOSJG).toString());
+			}
+			
+			String  select = "SELECT "+CenCuentasBancariasBean.C_IDCUENTA+" AS ID ,";
+			        select +=" F_SIGA_FORMATOIBAN("+CenCuentasBancariasBean.C_IBAN+") as DESCRIPCION ";
+			        select +=" FROM "+CenCuentasBancariasBean.T_NOMBRETABLA;
+			        select +=" WHERE ";
+					select +=CenCuentasBancariasBean.C_IDINSTITUCION+"="+form.getIdInstitucion();
+					select +=" AND "+CenCuentasBancariasBean.C_IDPERSONA+"="+registro.get(FacAbonoBean.C_IDPERSONA);
+					select +=" AND "+CenCuentasBancariasBean.C_ABONOSJCS+"="+idpagosJG;
+					select +=" AND "+CenCuentasBancariasBean.C_FECHABAJA+" IS NULL";
+					select +=" AND "+CenCuentasBancariasBean.C_ABONOCARGO+" IN('A','T')";
+					select +=" ORDER BY DESCRIPCION";
+					
+			CenCuentasBancariasAdm cuentasAdm=new CenCuentasBancariasAdm(this.getUserBean(request));
+			Vector vCuentas=cuentasAdm.selectGenerico(select);
+			
+			List cuentasListFinal= new ArrayList();
+			Hashtable cuentash=new Hashtable();
+			for (int c = 0; c < vCuentas.size(); c++){
+				cuentash = (Hashtable) vCuentas.get(c);
+				cuentasListFinal.add(cuentash);
+			}
+	
+			request.setAttribute("listaCuentas", cuentasListFinal);
+			Hashtable cuentaSelh= (Hashtable) vCuentas.get(0);
+			request.setAttribute("idCuentaSel", cuentaSelh.get("ID"));
 			
 		} 
 		catch (Exception e) { 
@@ -431,47 +467,25 @@ public class AbonosPagosAction extends MasterAction {
 	protected String realizarPagoBanco(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		
 		String result="error";
-		UserTransaction tx = null;
-		Hashtable hash = new Hashtable();
-		Hashtable hashOriginal = new Hashtable();
+		boolean pagoVariosAbonos=false;
 		
 		try {		 				
 
 			// Obtengo usuario y creo manejadores para acceder a las BBDD
 			UsrBean usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
-			FacAbonoAdm admin=new FacAbonoAdm(this.getUserBean(request));			
- 			
 			// Obtengo los datos del formulario
-			AbonosPagosForm miForm = (AbonosPagosForm)formulario;
-
-			// Cargo una hastable con los valores originales del registro sobre el que se realizará la modificacion						
-			hashOriginal=((Row)(admin.getAbono(miForm.getIdInstitucion(),miForm.getIdAbono()).firstElement())).getRow();
-			hash=(Hashtable)hashOriginal.clone();
+			AbonosPagosForm miForm = (AbonosPagosForm) formulario;
 			
-			// Cargo la tabla hash con los valores del formulario para insertar en la BBDD
-			hash.put(FacAbonoBean.C_IDCUENTA, miForm.getNumeroCuenta());
-			
-			// RGG 29/06/2009 Cambio de funciones de abonos
-			if (miForm.getNumeroCuenta()==null || miForm.getNumeroCuenta().trim().equals("")) {
-				hash.put(FacAbonoBean.C_ESTADO, "6"); // pendiente pagar por caja 
-			} else {
-			    hash.put(FacAbonoBean.C_ESTADO, "5"); // pendiente pagar por banco
-			}
-
-			// Comienzo control de transacciones
-			tx = usr.getTransaction();
-			tx.begin();	
-			
-			if (!admin.update(hash,hashOriginal)){
-			    throw new ClsExceptions("Error al actualizar el abono: "+admin.getError());
-			}
-			
-			tx.commit();
+			//Inserto el pago por banco
+			boolean abonoPagado=this.insertarPagoBanco(miForm,usr,pagoVariosAbonos);
 
 			result=exitoModal("facturacion.abonosPagos.datosPagoAbono.abonoRealizado",request);
 		} 
 		catch (Exception e) { 
-			throwExcp("facturacion.abonosPagos.datosPagoAbono.errorAbono",new String[] {"modulo.facturacion"},e,tx); 
+			if((e instanceof SIGAException)||(e instanceof ClsExceptions))
+				throwExcp (e.getMessage(),new String[] {"modulo.facturacion"},e,null); 
+			else
+				throwExcp("messages.general.error",new String[] {"modulo.facturacion"},e,null); 	
 		}
 		return (result);		
 	}
@@ -490,180 +504,29 @@ public class AbonosPagosAction extends MasterAction {
 			HttpServletResponse response) throws SIGAException {
 
 		String result = "insertar";
-		UserTransaction tx = null;
-		Hashtable hash = new Hashtable();
-		Hashtable datosPagoFactura = new Hashtable();
-		Double impTotalFactura = null;
-		Double impTotalPagadoFactura = null;
+		boolean pagoVariosAbonos=false;
 
 		try {
 
 			// Obtengo usuario y creo manejadores para acceder a las BBDD
 			UsrBean usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
-			FacPagoAbonoEfectivoAdm admin = new FacPagoAbonoEfectivoAdm(this.getUserBean(request));
-			FacPagosPorCajaAdm adminPPC = new FacPagosPorCajaAdm(this.getUserBean(request));
-			FacFacturaAdm adminFactura = new FacFacturaAdm(this.getUserBean(request));
-			FacAbonoAdm adminAbono = new FacAbonoAdm(this.getUserBean(request));
-
+			
 			// Obtengo los datos del formulario
 			AbonosPagosForm miForm = (AbonosPagosForm) formulario;
 
-			// Cargo la tabla hash con los valores del formulario para insertar
-			// en la BBDD
-			hash.put(FacPagoAbonoEfectivoBean.C_IDINSTITUCION,miForm.getIdInstitucion());
-			hash.put(FacPagoAbonoEfectivoBean.C_IDABONO, miForm.getIdAbono());
-			hash.put(FacPagoAbonoEfectivoBean.C_IDPAGOABONO,admin.getNuevoID(miForm.getIdInstitucion(),miForm.getIdAbono()));
-			hash.put(FacPagoAbonoEfectivoBean.C_IMPORTE, miForm.getImporte());
-			hash.put(FacPagoAbonoEfectivoBean.C_FECHA, "sysdate");
-			hash.put(FacPagoAbonoEfectivoBean.C_CONTABILIZADO,ClsConstants.FACTURA_ABONO_NO_CONTABILIZADA);
-
-			// Comienzo control de transacciones
-			tx = usr.getTransaction();
-			tx.begin();
-
-			if (admin.insert(hash)) {
-				// RGG 29/05/2009 Cambio de funciones de abono
-				// Obtengo el abono insertado
-				FacAbonoAdm adminA = new FacAbonoAdm(this.getUserBean(request));
-				Hashtable htA = new Hashtable();
-				htA.put(FacAbonoBean.C_IDINSTITUCION, miForm.getIdInstitucion());
-				htA.put(FacAbonoBean.C_IDABONO, miForm.getIdAbono());
-				Vector vAbono = adminA.selectByPK(htA);
-				FacAbonoBean bAbono = null;
-				if (vAbono != null && vAbono.size() > 0) {
-					bAbono = (FacAbonoBean) vAbono.get(0);
-				}
-				
-				Double impPendientePorAbonar = UtilidadesNumero.redondea(bAbono.getImpPendientePorAbonar().doubleValue()- new Double(miForm.getImporte()).doubleValue(), 2);
-				Double impTotalAbonado = UtilidadesNumero.redondea(bAbono.getImpTotalAbonado().doubleValue()+ new Double(miForm.getImporte()).doubleValue(), 2);
-				Double impTotalAbonadoEfectivo = UtilidadesNumero.redondea(bAbono.getImpTotalAbonadoEfectivo().doubleValue()+ new Double(miForm.getImporte()).doubleValue(), 2);
-
-				bAbono.setImpPendientePorAbonar(new Double(impPendientePorAbonar));
-				bAbono.setImpTotalAbonado(new Double(impTotalAbonado));
-				bAbono.setImpTotalAbonadoEfectivo(new Double(impTotalAbonadoEfectivo));
-				
-				if (bAbono.getImpPendientePorAbonar().doubleValue() <= 0) {
-					// pagado
-					bAbono.setEstado(new Integer(1));
-				} else {
-					if (bAbono.getIdCuenta() != null) {
-						// pendiente pago banco
-						bAbono.setEstado(new Integer(5));
-					} else {
-						// pendiente pago caja
-						bAbono.setEstado(new Integer(6));
-					}
-				}
-				if (!adminA.update(bAbono)) {
-					throw new ClsExceptions("Error al actualizar estado e importes del abono: "+ adminA.getError());
-				}
-
-			} else {
-				throw new ClsExceptions("Error al actualizar el pago efectivo del abono: "+ admin.getError());
-			}
-
-			Vector vFactura = (Vector) adminFactura.getImpFactura(miForm.getIdInstitucion().toString(), miForm.getIdFactura().toString());
-
-			FacFacturaBean bAFactura = null;
-
-			if (vFactura != null && vFactura.size() > 0) {
-				impTotalFactura = Double.valueOf((String) ((Row) vFactura.firstElement()).getRow().get(FacFacturaBean.C_IMPTOTAL));
-				impTotalPagadoFactura = Double.valueOf((String) ((Row) vFactura.firstElement()).getRow().get(FacFacturaBean.C_IMPTOTALPAGADO));
-			}
-
-			if (vFactura != null && vFactura.size() > 0) {
-
-				Double impPteFac = UtilidadesNumero.redondea(impTotalFactura - impTotalPagadoFactura, 2);
-
-				if (impPteFac > 0) {
-					// Cargo la tabla hash con los valores del formulario para
-					// insertar en la BBDD (pago por caja de la factura)
-					datosPagoFactura.put(FacPagosPorCajaBean.C_IDINSTITUCION,miForm.getIdInstitucion());
-					datosPagoFactura.put(FacPagosPorCajaBean.C_IDFACTURA,miForm.getIdFactura());
-					datosPagoFactura.put(FacPagosPorCajaBean.C_IDPAGOPORCAJA,adminPPC.getNuevoID(new Integer(miForm.getIdInstitucion()),miForm.getIdFactura()));
-					datosPagoFactura.put(FacPagosPorCajaBean.C_FECHA, "sysdate");
-					datosPagoFactura.put(FacPagosPorCajaBean.C_TARJETA, "N");
-					datosPagoFactura.put(FacPagosPorCajaBean.C_CONTABILIZADO,ClsConstants.FACTURA_ABONO_NO_CONTABILIZADA);
-					datosPagoFactura.put(FacPagosPorCajaBean.C_IMPORTE,miForm.getImporte());
-
-					datosPagoFactura.put(FacPagosPorCajaBean.C_IDABONO,miForm.getIdAbono());
-					datosPagoFactura.put(FacPagosPorCajaBean.C_IDPAGOABONO,hash.get(FacPagoAbonoEfectivoBean.C_IDPAGOABONO));
-
-					if (adminPPC.insert(datosPagoFactura)) {
-						FacFacturaBean facturaBean = null;
-						FacFacturaAdm facturaAdm = new FacFacturaAdm(this.getUserBean(request));
-						Hashtable ht = new Hashtable();
-						ht.put(FacFacturaBean.C_IDINSTITUCION,miForm.getIdInstitucion());
-						ht.put(FacFacturaBean.C_IDFACTURA,miForm.getIdFactura());
-						Vector v = facturaAdm.selectByPK(ht);
-						if (v != null && v.size() > 0) {
-							facturaBean = (FacFacturaBean) v.get(0);
-
-							// AQUI VAMOS A MODIFICAR LOS VALORES DE IMPORTES
-							Double impTotalCompensadoFac = UtilidadesNumero.redondea(facturaBean.getImpTotalCompensado().doubleValue()+ (new Double((String) datosPagoFactura.get(FacPagosPorCajaBean.C_IMPORTE))).doubleValue(), 2);
-							Double impTotalPagadoFac = UtilidadesNumero.redondea(facturaBean.getImpTotalPagado().doubleValue()+ (new Double((String) datosPagoFactura.get(FacPagosPorCajaBean.C_IMPORTE))).doubleValue(), 2);
-							Double impTotalPorPagarFac = UtilidadesNumero.redondea(facturaBean.getImpTotalPorPagar().doubleValue()- (new Double((String) datosPagoFactura.get(FacPagosPorCajaBean.C_IMPORTE))).doubleValue(), 2);
-
-							facturaBean.setImpTotalCompensado(new Double(impTotalCompensadoFac));
-							facturaBean.setImpTotalPagado(new Double(impTotalPagadoFac));
-							facturaBean.setImpTotalPorPagar(new Double(impTotalPorPagarFac));
-
-							if (facturaAdm.update(facturaBean)) {
-								// AQUI VAMOS A MODIFICAR EL VALOR DE ESTADO
-								facturaAdm.consultarActNuevoEstadoFactura(facturaBean,new Integer(this.getUserBean(request)
-												.getUserName()),true);
-							} else {
-								throw new ClsExceptions("Error al actualizar los importes de la factura: "
-												+ facturaAdm.getError());
-							}
-
-						} else {
-							throw new ClsExceptions(
-									"No se ha encontrado la factura buscada: "+ miForm.getIdInstitucion() + " "
-											+ miForm.getIdFacturaCompensadora());
-						}
-					}
-				} else {
-
-					FacFacturaBean facturaBean = null;
-					FacFacturaAdm facturaAdm = new FacFacturaAdm(this.getUserBean(request));
-					Hashtable ht = new Hashtable();
-					ht.put(FacFacturaBean.C_IDINSTITUCION,miForm.getIdInstitucion());
-					ht.put(FacFacturaBean.C_IDFACTURA, miForm.getIdFactura());
-					Vector v = facturaAdm.selectByPK(ht);
-					if (v != null && v.size() > 0) {
-						facturaBean = (FacFacturaBean) v.get(0);
-
-						// AQUI VAMOS A MODIFICAR LOS VALORES DE IMPORTES
-						Double impTotalCompensadoFac = UtilidadesNumero.redondea(facturaBean.getImpTotalCompensado().doubleValue()+ (new Double((String) miForm.getImporte())).doubleValue(), 2);	
-						facturaBean.setImpTotalCompensado(new Double(impTotalCompensadoFac));
-						facturaBean.setImpTotalPagado(new Double(facturaBean.getImpTotalPagado().doubleValue()));
-						facturaBean.setImpTotalPorPagar(new Double(facturaBean.getImpTotalPorPagar().doubleValue()));
-
-						boolean correcto = facturaAdm.update(facturaBean);
-
-						if (!correcto) {
-							// No se ha realizado correctamente la actualizacion
-							// de la factura
-							throw new ClsExceptions("Error al actualizar los importes de la factura: "
-											+ facturaAdm.getError());
-						}
-
-					} else {
-						throw new ClsExceptions(
-								"No se ha encontrado la factura buscada: "+ miForm.getIdInstitucion() + " "
-										+ miForm.getIdFacturaCompensadora());
-					}
-
-				}
-			}
-			tx.commit();
+			//Inserto el pago por caja
+			boolean abonoPagado=this.insertarPagoCaja(miForm,usr,pagoVariosAbonos);
+			
 			result = exitoModal(
 					"facturacion.abonosPagos.datosPagoAbono.abonoRealizado",
 					request);
 
 		} catch (Exception e) {
-			throwExcp("facturacion.abonosPagos.datosPagoAbono.errorAbono",new String[] { "modulo.facturacion" }, e, tx);
+			
+			if((e instanceof SIGAException)||(e instanceof ClsExceptions))
+				throwExcp (e.getMessage(),new String[] {"modulo.facturacion"},e,null); 
+			else
+				throwExcp("messages.general.error",new String[] {"modulo.facturacion"},e,null); 	
 		}
 		return (result);
 	}
@@ -1250,7 +1113,491 @@ public class AbonosPagosAction extends MasterAction {
 		}
 	return result;
 	}
+
+	/** 
+	 *  MJM: Abonos Masivos
+	 *  Funcion que atiende la accion pagar varios abonos a la vez
+	 * @param  mapping - Mapeo de los struts
+	 * @param  formulario -  Action Form asociado a este Action
+	 * @param  request - objeto llamada HTTP 
+	 * @param  response - objeto respuesta HTTP
+	 * @return  String  Destino del action  
+	 * @exception  SIGAException  En cualquier caso de error
+	 */
 	
+	protected String pagarVariosAbonos (ActionMapping mapping, 		
+			MasterForm formulario, 
+			HttpServletRequest request, 
+			HttpServletResponse response) throws ClsExceptions, SIGAException 
+			{
+		
+	try {
+		
+		UsrBean user=(UsrBean)request.getSession().getAttribute("USRBEAN");			
+		String idInstitucion=user.getLocation();
+		FacAbonoAdm abonoAdm=new FacAbonoAdm(user);
+		
+		AbonosPagosForm form = (AbonosPagosForm) formulario;
+		String datosAbonos = form.getAbonos();
+		Integer abonosNoTratados=0;
+		Integer abonosTratados=0;
+		Integer abonosSeleccionados=0;
+		boolean pagoVariosAbonos=true;
+		FacAbonoAdm abAdm=new FacAbonoAdm(user);
+		CenCuentasBancariasAdm cuentasAdm=new CenCuentasBancariasAdm(user);
+		
+		if (datosAbonos != null && !datosAbonos.equals("")) {
+			String arrayAbonos[] = datosAbonos.split(";");
+
+			if (arrayAbonos.length<1) {
+				throw new SIGAException("Error al obtener las facturas");
+			};
+			
+			abonosSeleccionados=arrayAbonos.length;
+			
+			for (int i=0; i<arrayAbonos.length; i++) {
+			
+				String idAbono = arrayAbonos[i];
+			
+				if(arrayAbonos.length==1)
+					pagoVariosAbonos=false;
+				
+				//Recupero el importe pendiente por abonar
+				Hashtable htA = new Hashtable();
+				htA.put(FacAbonoBean.C_IDINSTITUCION, idInstitucion);
+				htA.put(FacAbonoBean.C_IDABONO, idAbono);
+				Vector vAbono = abAdm.selectByPK(htA);
+				FacAbonoBean bAbono = null;
+				if (vAbono != null && vAbono.size() > 0) {
+					bAbono = (FacAbonoBean) vAbono.get(0);
+				}
+
+				//Si el abono ya ha sido pagado 
+				if(bAbono.getEstado()==1){
+					if(arrayAbonos.length==1)
+							throw new SIGAException("facturacion.abonos.error.abonoPagado");
+				
+				}else{
+					//Si el importe del abono es cero
+					if(bAbono.getImpTotalNeto().doubleValue() <=0){
+						if(arrayAbonos.length==1)
+								throw new SIGAException("facturacion.abonos.error.abonoSinImporte");
+					
+					}else{
+					
+						//Si no tiene importe pendiente
+						if(bAbono.getImpPendientePorAbonar().doubleValue() <=0){
+							if(arrayAbonos.length==1)
+									throw new SIGAException("facturacion.abonos.error.importePendiente");
+						}else{
+							form.setIdInstitucion(idInstitucion);
+							form.setIdAbono(idAbono);
+							
+							if((bAbono.getIdFactura()!=null)||(!bAbono.getIdFactura().isEmpty()))	
+								form.setIdFactura(bAbono.getIdFactura());
+							
+							if(form.TipoPago().equals("caja"))
+							{
+								//Si se seleccionó un abono solamente el importe lo introduce el usuario,
+								//si hay varios se hará el pago el abono por el importe pendiente que tenga el abono
+								if(form.getImporte().isEmpty())
+									form.setImporte(bAbono.getImpPendientePorAbonar().toString());
+								
+								//Inserto el pago por caja
+								boolean abonoPagado=this.insertarPagoCaja(form,user,pagoVariosAbonos);
+								
+								if(abonoPagado)
+									abonosTratados++;
+							}else{
+							
+								//Se obtiene la cuenta, si la persona tiene más de una cuenta no se realiza el pago
+								//Los abonos SJCS se pagarán a la cuenta SJCS 
+								//Los abonos no SJCS se pagarán a la cuenta no SJCS
+								if(bAbono.getIdPagosJG()==null)
+									bAbono.setIdPagosJG(0);
+								
+								String  where=" Where ";
+										where +=CenCuentasBancariasBean.C_IDINSTITUCION+"="+idInstitucion;
+										where +=" AND "+CenCuentasBancariasBean.C_IDPERSONA+"="+bAbono.getIdPersona();
+										where +=" AND "+CenCuentasBancariasBean.C_ABONOSJCS+"="+bAbono.getIdPagosJG();
+										where +=" AND "+CenCuentasBancariasBean.C_FECHABAJA+" IS NULL";
+										where +=" AND "+CenCuentasBancariasBean.C_ABONOCARGO+" IN('A','T')";
+								
+								Vector vCuentas=cuentasAdm.select(where);
+								
+								if (vCuentas.size() >0) {
+									
+									if(vCuentas.size()>1)
+									{
+										if(arrayAbonos.length==1)
+											throw new SIGAException("facturacion.abonos.error.masDeUnaCuenta");
+										
+									}else{
+										
+										CenCuentasBancariasBean bCuentas = (CenCuentasBancariasBean) vCuentas.get(0);
+										
+										form.setIdPersona(bAbono.getIdPersona().toString());
+										form.setNumeroCuenta(bCuentas.getIdCuenta().toString());
+										
+										//Inserto el pago por banco
+										boolean abonoPagado=this.insertarPagoBanco(form,user,pagoVariosAbonos);
+										
+										if(abonoPagado)
+											abonosTratados++;
+									}
+									
+								
+								//No tiene cuentas asociadas
+								}else{
+									if(arrayAbonos.length==1)
+										throw new SIGAException("facturacion.abonos.error.noExisteCuenta");
+								}
+
+							}
+							
+						}
+					}
+				}
+			}
+	}
+		
+	String tipoAlert="";
+	String mensaje="";
+	
+	abonosNoTratados=abonosNoTratados-abonosTratados;
+	
+	
+	 if (abonosNoTratados==0) {
+    	// No hay errores
+    	String[] datos = {""+abonosTratados,""+abonosSeleccionados};
+    	tipoAlert="success";
+    	mensaje = UtilidadesString.getMensaje("facturacion.abonos.mensaje.abonosPagados", datos, user.getLanguage());
+    
+    } else {
+    	tipoAlert=abonosTratados==0?"error":"warning";
+    	// Hay errores en la generacion de los abonos
+    	String[] datos = {""+abonosTratados,""+abonosSeleccionados};
+    	mensaje = UtilidadesString.getMensaje("facturacion.abonos.mensaje.abonosPagados", datos, user.getLanguage());
+    }
+	 
+	request.setAttribute("estiloMensaje",tipoAlert);	
+	request.setAttribute("mensaje",mensaje);	
+
+	}catch (Exception e){
+		if((e instanceof SIGAException)||(e instanceof ClsExceptions))
+			throwExcp (e.getMessage(),new String[] {"modulo.facturacion"},e,null); 
+		else
+			throwExcp("messages.general.error",new String[] {"modulo.facturacion"},e,null); 			
+	}
+
+	 return "exitoConString";
+		
+	
+}
+	
+	/** 
+	 *  MJM: Abonos Masivos
+	 *  Método para insertar pagos de abonos por caja, se crea un nuevo método común al pago de un abono 
+	 *  y pago masivo de abonos por caja.
+	 * @param  formulario -  Action Form asociado a este Action
+	 * @param  usr -  usuario
+	 * @param  abonoMasivo -  indicador que tiene valor true si tratamos pagos masivos desde
+	 * 						  la búsqueda general de abonos y false si estamos pagando un abono 
+	 * 						  desde la pestaña de pagos de abonos
+	 *       
+	 * @return  true si el abono se ha insertado correctamente y false sino se ha insertado correctamente  
+	 * @exception  SIGAException  En cualquier caso de error
+	 */
+	protected boolean insertarPagoCaja(AbonosPagosForm miForm,UsrBean usr, boolean pagoVariosAbonos) throws ClsExceptions, SIGAException{
+		
+		boolean pagoInsertado=false;
+		UserTransaction tx = null;
+		Hashtable hash = new Hashtable();
+		Hashtable datosPagoFactura = new Hashtable();
+		Double impTotalFactura = null;
+		Double impTotalPagadoFactura = null;
+		
+		try{
+			FacPagoAbonoEfectivoAdm admin = new FacPagoAbonoEfectivoAdm(usr);
+			FacPagosPorCajaAdm adminPPC = new FacPagosPorCajaAdm(usr);
+			FacFacturaAdm adminFactura = new FacFacturaAdm(usr);
+			FacAbonoAdm adminAbono = new FacAbonoAdm(usr);
+		
+		
+			// Cargo la tabla hash con los valores del formulario para insertar
+			// en la BBDD
+			hash.put(FacPagoAbonoEfectivoBean.C_IDINSTITUCION,miForm.getIdInstitucion());
+			hash.put(FacPagoAbonoEfectivoBean.C_IDABONO, miForm.getIdAbono());
+			hash.put(FacPagoAbonoEfectivoBean.C_IDPAGOABONO,admin.getNuevoID(miForm.getIdInstitucion(),miForm.getIdAbono()));
+			hash.put(FacPagoAbonoEfectivoBean.C_IMPORTE, miForm.getImporte());
+			hash.put(FacPagoAbonoEfectivoBean.C_FECHA, "sysdate");
+			hash.put(FacPagoAbonoEfectivoBean.C_CONTABILIZADO,ClsConstants.FACTURA_ABONO_NO_CONTABILIZADA);
+	
+			// Comienzo control de transacciones
+			tx = usr.getTransaction();
+			tx.begin();
+	
+			if (admin.insert(hash)) {
+				// RGG 29/05/2009 Cambio de funciones de abono
+				// Obtengo el abono insertado
+				FacAbonoAdm adminA = new FacAbonoAdm(usr);
+				Hashtable htA = new Hashtable();
+				htA.put(FacAbonoBean.C_IDINSTITUCION, miForm.getIdInstitucion());
+				htA.put(FacAbonoBean.C_IDABONO, miForm.getIdAbono());
+				Vector vAbono = adminA.selectByPK(htA);
+				FacAbonoBean bAbono = null;
+				if (vAbono != null && vAbono.size() > 0) {
+					bAbono = (FacAbonoBean) vAbono.get(0);
+				}
+				
+				Double impPendientePorAbonar = UtilidadesNumero.redondea(bAbono.getImpPendientePorAbonar().doubleValue()- new Double(miForm.getImporte()).doubleValue(), 2);
+				Double impTotalAbonado = UtilidadesNumero.redondea(bAbono.getImpTotalAbonado().doubleValue()+ new Double(miForm.getImporte()).doubleValue(), 2);
+				Double impTotalAbonadoEfectivo = UtilidadesNumero.redondea(bAbono.getImpTotalAbonadoEfectivo().doubleValue()+ new Double(miForm.getImporte()).doubleValue(), 2);
+	
+				bAbono.setImpPendientePorAbonar(new Double(impPendientePorAbonar));
+				bAbono.setImpTotalAbonado(new Double(impTotalAbonado));
+				bAbono.setImpTotalAbonadoEfectivo(new Double(impTotalAbonadoEfectivo));
+				
+				if (bAbono.getImpPendientePorAbonar().doubleValue() <= 0) {
+					// pagado
+					bAbono.setEstado(new Integer(1));
+				} else {
+					if (bAbono.getIdCuenta() != null) {
+						// pendiente pago banco
+						bAbono.setEstado(new Integer(5));
+					} else {
+						// pendiente pago caja
+						bAbono.setEstado(new Integer(6));
+					}
+				}
+				if (!adminA.update(bAbono)) {
+					
+					if (Status.STATUS_ACTIVE  == tx.getStatus()){
+					    try {tx.rollback();}catch (Exception e) {}
+					}
+					
+					if(!pagoVariosAbonos)
+						throw new ClsExceptions("Error al actualizar estado e importes del abono: "+ adminA.getError());
+					else
+						return pagoInsertado=false;
+				}
+	
+			} else {
+				
+				if (Status.STATUS_ACTIVE  == tx.getStatus()){
+					try {tx.rollback();}catch (Exception e) {}
+				}
+				
+				if(!pagoVariosAbonos)
+					throw new ClsExceptions("Error al actualizar el pago efectivo del abono: "+ admin.getError());
+				else
+					return pagoInsertado=false;
+			}
+	
+			Vector vFactura = (Vector) adminFactura.getImpFactura(miForm.getIdInstitucion().toString(), miForm.getIdFactura().toString());
+	
+			FacFacturaBean bAFactura = null;
+	
+			if (vFactura != null && vFactura.size() > 0) {
+				impTotalFactura = Double.valueOf((String) ((Row) vFactura.firstElement()).getRow().get(FacFacturaBean.C_IMPTOTAL));
+				impTotalPagadoFactura = Double.valueOf((String) ((Row) vFactura.firstElement()).getRow().get(FacFacturaBean.C_IMPTOTALPAGADO));
+			}
+	
+			if (vFactura != null && vFactura.size() > 0) {
+	
+				Double impPteFac = UtilidadesNumero.redondea(impTotalFactura - impTotalPagadoFactura, 2);
+	
+				if (impPteFac > 0) {
+					// Cargo la tabla hash con los valores del formulario para
+					// insertar en la BBDD (pago por caja de la factura)
+					datosPagoFactura.put(FacPagosPorCajaBean.C_IDINSTITUCION,miForm.getIdInstitucion());
+					datosPagoFactura.put(FacPagosPorCajaBean.C_IDFACTURA,miForm.getIdFactura());
+					datosPagoFactura.put(FacPagosPorCajaBean.C_IDPAGOPORCAJA,adminPPC.getNuevoID(new Integer(miForm.getIdInstitucion()),miForm.getIdFactura()));
+					datosPagoFactura.put(FacPagosPorCajaBean.C_FECHA, "sysdate");
+					datosPagoFactura.put(FacPagosPorCajaBean.C_TARJETA, "N");
+					datosPagoFactura.put(FacPagosPorCajaBean.C_CONTABILIZADO,ClsConstants.FACTURA_ABONO_NO_CONTABILIZADA);
+					datosPagoFactura.put(FacPagosPorCajaBean.C_IMPORTE,miForm.getImporte());
+	
+					datosPagoFactura.put(FacPagosPorCajaBean.C_IDABONO,miForm.getIdAbono());
+					datosPagoFactura.put(FacPagosPorCajaBean.C_IDPAGOABONO,hash.get(FacPagoAbonoEfectivoBean.C_IDPAGOABONO));
+	
+					if (adminPPC.insert(datosPagoFactura)) {
+						FacFacturaBean facturaBean = null;
+						FacFacturaAdm facturaAdm = new FacFacturaAdm(usr);
+						Hashtable ht = new Hashtable();
+						ht.put(FacFacturaBean.C_IDINSTITUCION,miForm.getIdInstitucion());
+						ht.put(FacFacturaBean.C_IDFACTURA,miForm.getIdFactura());
+						Vector v = facturaAdm.selectByPK(ht);
+						if (v != null && v.size() > 0) {
+							facturaBean = (FacFacturaBean) v.get(0);
+	
+							// AQUI VAMOS A MODIFICAR LOS VALORES DE IMPORTES
+							Double impTotalCompensadoFac = UtilidadesNumero.redondea(facturaBean.getImpTotalCompensado().doubleValue()+ (new Double((String) datosPagoFactura.get(FacPagosPorCajaBean.C_IMPORTE))).doubleValue(), 2);
+							Double impTotalPagadoFac = UtilidadesNumero.redondea(facturaBean.getImpTotalPagado().doubleValue()+ (new Double((String) datosPagoFactura.get(FacPagosPorCajaBean.C_IMPORTE))).doubleValue(), 2);
+							Double impTotalPorPagarFac = UtilidadesNumero.redondea(facturaBean.getImpTotalPorPagar().doubleValue()- (new Double((String) datosPagoFactura.get(FacPagosPorCajaBean.C_IMPORTE))).doubleValue(), 2);
+	
+							facturaBean.setImpTotalCompensado(new Double(impTotalCompensadoFac));
+							facturaBean.setImpTotalPagado(new Double(impTotalPagadoFac));
+							facturaBean.setImpTotalPorPagar(new Double(impTotalPorPagarFac));
+	
+							if (facturaAdm.update(facturaBean)) {
+								// AQUI VAMOS A MODIFICAR EL VALOR DE ESTADO
+								facturaAdm.consultarActNuevoEstadoFactura(facturaBean,new Integer(usr
+												.getUserName()),true);
+							} else {
+								
+								if (Status.STATUS_ACTIVE  == tx.getStatus()){
+								    try {tx.rollback();}catch (Exception e) {}
+								}
+								
+								if(!pagoVariosAbonos)
+									throw new ClsExceptions("Error al actualizar los importes de la factura: "
+												+ facturaAdm.getError());
+								else
+									return pagoInsertado=false;
+							}
+	
+						} else {
+							
+							if (Status.STATUS_ACTIVE  == tx.getStatus()){
+								try {tx.rollback();}catch (Exception e) {}
+							}
+							
+							if(!pagoVariosAbonos)
+								throw new ClsExceptions(
+										"No se ha encontrado la factura buscada: "+ miForm.getIdInstitucion() + " "
+												+ miForm.getIdFacturaCompensadora());
+							else
+								return pagoInsertado=false;
+						}
+					}
+				} else {
+	
+					FacFacturaBean facturaBean = null;
+					FacFacturaAdm facturaAdm = new FacFacturaAdm(usr);
+					Hashtable ht = new Hashtable();
+					ht.put(FacFacturaBean.C_IDINSTITUCION,miForm.getIdInstitucion());
+					ht.put(FacFacturaBean.C_IDFACTURA, miForm.getIdFactura());
+					Vector v = facturaAdm.selectByPK(ht);
+					if (v != null && v.size() > 0) {
+						facturaBean = (FacFacturaBean) v.get(0);
+	
+						// AQUI VAMOS A MODIFICAR LOS VALORES DE IMPORTES
+						Double impTotalCompensadoFac = UtilidadesNumero.redondea(facturaBean.getImpTotalCompensado().doubleValue()+ (new Double((String) miForm.getImporte())).doubleValue(), 2);	
+						facturaBean.setImpTotalCompensado(new Double(impTotalCompensadoFac));
+						facturaBean.setImpTotalPagado(new Double(facturaBean.getImpTotalPagado().doubleValue()));
+						facturaBean.setImpTotalPorPagar(new Double(facturaBean.getImpTotalPorPagar().doubleValue()));
+	
+						boolean correcto = facturaAdm.update(facturaBean);
+	
+						if (!correcto) {
+							// No se ha realizado correctamente la actualizacion
+							// de la factura
+							if (Status.STATUS_ACTIVE  == tx.getStatus()){
+								try {tx.rollback();}catch (Exception e) {}
+							}
+							
+							if(!pagoVariosAbonos)
+								throw new ClsExceptions("Error al actualizar los importes de la factura: "
+											+ facturaAdm.getError());
+							else
+								return pagoInsertado=false;
+						}
+	
+					} else {
+						
+						if (Status.STATUS_ACTIVE  == tx.getStatus()){
+							try {tx.rollback();}catch (Exception e) {}
+						}
+						
+						if(!pagoVariosAbonos)
+							throw new ClsExceptions(
+									"No se ha encontrado la factura buscada: "+ miForm.getIdInstitucion() + " "
+											+ miForm.getIdFacturaCompensadora());
+						else
+							return pagoInsertado=false;
+					}
+	
+				}
+			}
+			tx.commit();
+			pagoInsertado=true;
+		
+		} 
+		catch (Exception e) { 
+			throwExcp("messages.general.error",new String[] {"modulo.facturacion"},e,tx); 
+		}	
+	
+	return pagoInsertado;
+	}
+	
+	
+	/** 
+	 *  MJM: Abonos Masivos
+	 *  Método para insertar pagos de abonos por banco, se crea un nuevo método común al pago de un abono 
+	 *  y pago masivo de abonos por banco.
+	 * @param  formulario -  Action Form asociado a este Action
+	 * @param  usr -  usuario
+	 * @param  abonoMasivo -  indicador que tiene valor true si tratamos pagos masivos desde
+	 * 						  la búsqueda general de abonos y false si estamos pagando un abono 
+	 * 						  desde la pestaña de pagos de abonos
+	 *       
+	 * @return  true si el abono se ha insertado correctamente y false sino se ha insertado correctamente  
+	 * @exception  SIGAException  En cualquier caso de error
+	 */
+	protected boolean insertarPagoBanco(AbonosPagosForm miForm,UsrBean usr, boolean pagoVariosAbonos) throws ClsExceptions, SIGAException{
+		
+		boolean pagoInsertado=false;
+		
+		String result="error";
+		UserTransaction tx = null;
+		Hashtable hash = new Hashtable();
+		Hashtable hashOriginal = new Hashtable();
+		
+		try {		 				
+
+			// Obtengo usuario y creo manejadores para acceder a las BBDD
+			FacAbonoAdm admin=new FacAbonoAdm(usr);			
+ 		
+			// Cargo una hastable con los valores originales del registro sobre el que se realizará la modificacion						
+			hashOriginal=((Row)(admin.getAbono(miForm.getIdInstitucion(),miForm.getIdAbono()).firstElement())).getRow();
+			hash=(Hashtable)hashOriginal.clone();
+			
+			// Cargo la tabla hash con los valores del formulario para insertar en la BBDD
+			hash.put(FacAbonoBean.C_IDCUENTA, miForm.getNumeroCuenta());
+			
+			// RGG 29/06/2009 Cambio de funciones de abonos
+			if (miForm.getNumeroCuenta()==null || miForm.getNumeroCuenta().trim().equals("")) {
+				hash.put(FacAbonoBean.C_ESTADO, "6"); // pendiente pagar por caja 
+			} else {
+			    hash.put(FacAbonoBean.C_ESTADO, "5"); // pendiente pagar por banco
+			}
+
+			// Comienzo control de transacciones
+			tx = usr.getTransaction();
+			tx.begin();	
+			
+			if (!admin.update(hash,hashOriginal)){
+			    if (Status.STATUS_ACTIVE  == tx.getStatus()){
+					try {tx.rollback();}catch (Exception e) {}
+				}
+			    
+				if(!pagoVariosAbonos)
+			    	throw new ClsExceptions("Error al actualizar el abono: "+admin.getError());
+			    else
+			    	pagoInsertado=false;
+			}
+			
+			tx.commit();
+			pagoInsertado=true;
+		
+		} 
+		catch (Exception e) { 
+			throwExcp("messages.general.error",new String[] {"modulo.facturacion"},e,tx); 
+		}
+	
+	return pagoInsertado;
+	}
 	
 	
 }

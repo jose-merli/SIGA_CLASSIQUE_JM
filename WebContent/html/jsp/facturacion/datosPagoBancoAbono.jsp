@@ -20,16 +20,17 @@
 <%@ taglib uri = "struts-bean.tld"  	prefix = "bean"%>
 <%@ taglib uri = "struts-html.tld" 		prefix = "html"%>
 <%@ taglib uri = "struts-logic.tld" 	prefix = "logic"%>
+<%@ taglib uri="c.tld" prefix="c"%>
 
 <!-- IMPORTS -->
 <%@ page import = "com.siga.administracion.SIGAConstants"%>
 <%@ page import = "com.siga.gui.processTree.SIGAPTConstants"%>
-<%@ page import = "com.siga.beans.CenDatosCVBean"%>
 <%@ page import = "com.siga.Utilidades.UtilidadesString"%>
 <%@ page import = "com.atos.utils.*"%>
 <%@ page import="com.siga.Utilidades.UtilidadesNumero"%>
-<%@ page import="java.util.Properties"%>
-<%@ page import="java.util.ArrayList"%>
+<%@ page import="java.util.*"%>
+<%@ page import="com.siga.beans.*"%>
+
 
 <!-- JSP -->
 <% 
@@ -42,15 +43,6 @@
 	String idInstitucion=(String)request.getAttribute("IDINSTITUCION"); // Obtengo el identificador de la institucion	
 	String importePendiente=(String)request.getAttribute("PAGOPENDIENTE"); // Obtengo el importe pendiente	
 	String idPersona=(String)request.getAttribute("IDPERSONA"); // Obtengo el identifiador de persona
-	String idCuenta=(String)request.getAttribute("IDCUENTA"); // Obtengo el identifiador de la cuenta
-	
-	String parametro[] = new String[2];
-	parametro[0] = idPersona;
-	parametro[1] = idInstitucion;
-	
-	ArrayList cuentaSel = new ArrayList();
-	cuentaSel.add(idCuenta);
-	
 %>
 
 
@@ -84,7 +76,7 @@
 		
 		//Asociada al boton Pagar -->
 		function accionRealizarPago() {
-
+			
 			document.forms[0].importe.value=document.forms[0].importe.value.replace(".","");
 			if (validateAbonosPagosForm(document.AbonosPagosForm)){
 				document.forms[0].modo.value="realizarPagoBanco";
@@ -134,7 +126,14 @@
 									<siga:Idioma key="facturacion.abonosPagos.datosPagoAbono.nCuenta"/>
 								</td>
 								<td>
-									<siga:ComboBD nombre="numeroCuenta" tipo="cuenta" clase="boxCombo" obligatorio="true" parametro="<%=parametro%>" elementoSel="<%=cuentaSel%>"/>
+								<bean:define id="listaCuentas" name="listaCuentas" scope="request"/>
+								<bean:define id="idCuentaSel" name="idCuentaSel" scope="request"/>
+								<html:select styleId="comboCuentas" property="numeroCuenta" value="${idCuentaSel}" styleClass="boxCombo" style="width:200px;" >
+								<html:option value=""><c:out value=""/></html:option>
+								<c:forEach items="${listaCuentas}" var="cuentasCmb">
+									<html:option value="${cuentasCmb.ID}"><c:out value="${cuentasCmb.DESCRIPCION}"/></html:option>
+								</c:forEach>
+								</html:select>							
 								</td>
 							</tr>
 						</table>

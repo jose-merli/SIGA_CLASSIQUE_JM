@@ -10,6 +10,7 @@ import java.util.Hashtable;
 import java.util.Vector;
 import com.atos.utils.*;
 import com.siga.Utilidades.*;
+import com.siga.Utilidades.paginadores.PaginadorBind;
 import com.siga.general.SIGAException;
 
 /**
@@ -285,11 +286,14 @@ public class FacAbonoAdm extends MasterBeanAdministrador {
 	 * @return  Vector - Filas de la tabla seleccionadas  
 	 * @exception  ClsExceptions  En cualquier caso de error
 	 */	
-	public PaginadorCaseSensitive getAbonos(Hashtable criterios) throws ClsExceptions,SIGAException {
+	public PaginadorBind getAbonos(Hashtable criterios) throws ClsExceptions,SIGAException {
 		   Vector datos=new Vector();
+		   Hashtable codigosBind = new Hashtable();
+		   int contador = 0;
 	       try {
 	            RowsContainer rc = new RowsContainer(); 
-	            String sql ="SELECT " +
+	            String selectContar=" SELECT 1 ";
+	            String select ="SELECT " +
     						FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDABONO + "," +
     						FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_NUMEROABONO + "," +
 	            			FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDINSTITUCION + "," +
@@ -305,20 +309,24 @@ public class FacAbonoAdm extends MasterBeanAdministrador {
 							FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_ESTADO + " AS ESTADO," +
 							FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IMPTOTAL + " AS TOTAL," +
 							FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IMPTOTALABONADO + " AS TOTALABONADO, " +
-							FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDPAGOSJG + " " +
+							FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IMPPENDIENTEPORABONAR+ " AS IMPPENDIENTEPORABONAR, " +
+							FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDPAGOSJG;
 							
 //	            			"F_SIGA_ESTADOSABONO("+ FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDINSTITUCION +","+ FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDABONO + ") AS ESTADO" + "," + 
 //	            			"PKG_SIGA_TOTALESABONO.TOTAL("+ FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDINSTITUCION +","+ FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDABONO + ") AS TOTAL," +
 //	            			"PKG_SIGA_TOTALESABONO.TOTALABONADO("+ FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDINSTITUCION +","+ FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDABONO + ") AS TOTALABONADO" +
-							" FROM " + FacAbonoBean.T_NOMBRETABLA + "," + FacFacturaBean.T_NOMBRETABLA;
+				String from=" FROM " + FacAbonoBean.T_NOMBRETABLA + "," + FacFacturaBean.T_NOMBRETABLA;
 //							if ((!((String)criterios.get("FACTURAFECHAINICIO")).trim().equals("")) || (!((String)criterios.get("FACTURAFECHAINICIO")).trim().equals(""))) {
 //								sql += " INNER JOIN " + FacFacturaBean.T_NOMBRETABLA +
 //				 							" ON "+ 
 //											FacAbonoBean.T_NOMBRETABLA +"."+ FacAbonoBean.C_IDFACTURA + "=" +
 //											FacFacturaBean.T_NOMBRETABLA +"."+ FacFacturaBean.C_IDFACTURA;
 //							}
-					sql += 	" WHERE " + 
-							FacAbonoBean.T_NOMBRETABLA +"."+ FacAbonoBean.C_IDINSTITUCION + "=" + (String)criterios.get(FacAbonoBean.C_IDINSTITUCION) +
+					contador++;
+					String idInstitucion=(String)criterios.get(FacAbonoBean.C_IDINSTITUCION);
+					codigosBind.put(new Integer(contador),idInstitucion);
+	            String where= 	" WHERE " + 
+							FacAbonoBean.T_NOMBRETABLA +"."+ FacAbonoBean.C_IDINSTITUCION + " = :" +contador+ 
 							" AND " +
 							FacFacturaBean.T_NOMBRETABLA +"."+ FacFacturaBean.C_IDINSTITUCION + "(+)=" + FacAbonoBean.T_NOMBRETABLA +"."+ FacAbonoBean.C_IDINSTITUCION +
 							" AND " +
@@ -333,7 +341,7 @@ public class FacAbonoAdm extends MasterBeanAdministrador {
 	            if (criterios.get(FacAbonoBean.C_NUMEROABONO)!=null && !((String)criterios.get(FacAbonoBean.C_NUMEROABONO)).trim().equals("")){								 
 					/*sql +=" AND " +
 						  FacAbonoBean.T_NOMBRETABLA +"."+ FacAbonoBean.C_IDABONO + "=" + (String)criterios.get(FacAbonoBean.C_IDABONO);*/
-	            	sql +=" AND "+ComodinBusquedas.prepararSentenciaCompletaUPPER(criterios.get(FacAbonoBean.C_NUMEROABONO).toString().trim(),FacAbonoBean.T_NOMBRETABLA +"."+ FacAbonoBean.C_NUMEROABONO);
+	            	where +=" AND "+ComodinBusquedas.prepararSentenciaCompletaUPPER(criterios.get(FacAbonoBean.C_NUMEROABONO).toString().trim(),FacAbonoBean.T_NOMBRETABLA +"."+ FacAbonoBean.C_NUMEROABONO);
 				}
 				// Busqueda por fecha de abono
 				String abonoFechaInicio = "";
@@ -344,18 +352,18 @@ public class FacAbonoAdm extends MasterBeanAdministrador {
 	 				abonoFechaFin = GstDate.getApplicationFormatDate("",(String)criterios.get("ABONOFECHAFIN"));
 				
 				if ((!((String)criterios.get("ABONOFECHAINICIO")).trim().equals("")) || (!((String)criterios.get("ABONOFECHAINICIO")).trim().equals(""))) {
-					sql += " AND " + GstDate.dateBetweenDesdeAndHasta(FacAbonoBean.T_NOMBRETABLA +"."+ FacAbonoBean.C_FECHA,abonoFechaInicio,abonoFechaFin);
+					where += " AND " + GstDate.dateBetweenDesdeAndHasta(FacAbonoBean.T_NOMBRETABLA +"."+ FacAbonoBean.C_FECHA,abonoFechaInicio,abonoFechaFin);
 				}
 				
 				// Busqueda por cliente
 	            if (!((String)criterios.get(FacAbonoBean.C_IDPERSONA)).trim().equals("")){								 
-					sql +=" AND " +
+					where +=" AND " +
 						  FacAbonoBean.T_NOMBRETABLA +"."+ FacAbonoBean.C_IDPERSONA + "=" + (String)criterios.get(FacAbonoBean.C_IDPERSONA);									 
 				}
 				
 				// Busqueda por numero de factura
 	            if (!((String)criterios.get(FacAbonoBean.C_IDFACTURA)).trim().equals("")){								 
-					sql +=" AND " + FacFacturaBean.T_NOMBRETABLA +"."+ FacFacturaBean.C_IDINSTITUCION + "=" + FacAbonoBean.T_NOMBRETABLA +"."+ FacAbonoBean.C_IDINSTITUCION +
+					where +=" AND " + FacFacturaBean.T_NOMBRETABLA +"."+ FacFacturaBean.C_IDINSTITUCION + "=" + FacAbonoBean.T_NOMBRETABLA +"."+ FacAbonoBean.C_IDINSTITUCION +
 					  	  " AND " + FacFacturaBean.T_NOMBRETABLA +"."+ FacFacturaBean.C_IDFACTURA + "=" + FacAbonoBean.T_NOMBRETABLA +"."+ FacAbonoBean.C_IDFACTURA + 						
 						 // " AND " + FacFacturaBean.T_NOMBRETABLA +"."+ FacFacturaBean.C_NUMEROFACTURA + "= '" + (String)criterios.get(FacFacturaBean.C_IDFACTURA) + "' ";
 					  	  " AND " +ComodinBusquedas.prepararSentenciaCompletaUPPER(criterios.get(FacFacturaBean.C_IDFACTURA).toString().trim(),FacFacturaBean.T_NOMBRETABLA +"."+ FacFacturaBean.C_NUMEROFACTURA);
@@ -370,7 +378,7 @@ public class FacAbonoAdm extends MasterBeanAdministrador {
 	 				facturaFechaFin = GstDate.getApplicationFormatDate("",(String)criterios.get("FACTURAFECHAFIN"));
 				
 				if ((!((String)criterios.get("FACTURAFECHAINICIO")).trim().equals("")) || (!((String)criterios.get("FACTURAFECHAINICIO")).trim().equals(""))) {
-					sql +=" AND " + FacAbonoBean.T_NOMBRETABLA +"."+ FacAbonoBean.C_IDINSTITUCION + "=" + FacFacturaBean.T_NOMBRETABLA +"."+ FacFacturaBean.C_IDINSTITUCION +
+					where +=" AND " + FacAbonoBean.T_NOMBRETABLA +"."+ FacAbonoBean.C_IDINSTITUCION + "=" + FacFacturaBean.T_NOMBRETABLA +"."+ FacFacturaBean.C_IDINSTITUCION +
 						  " AND " + FacAbonoBean.T_NOMBRETABLA +"."+ FacAbonoBean.C_IDFACTURA + "=" + FacFacturaBean.T_NOMBRETABLA +"."+ FacFacturaBean.C_IDFACTURA + 						
 						  " AND " + GstDate.dateBetweenDesdeAndHasta(FacFacturaBean.T_NOMBRETABLA +"."+ FacFacturaBean.C_FECHAEMISION,facturaFechaInicio,facturaFechaFin);
 				}
@@ -378,11 +386,11 @@ public class FacAbonoAdm extends MasterBeanAdministrador {
 				// Busqueda por forma de pago
 	            if (!((String)criterios.get("FORMAPAGO")).trim().equals("")){
 		            if (((String)criterios.get("FORMAPAGO")).trim().equals(ClsConstants.TIPO_CARGO_BANCO)){								 
-						sql +=" AND " +
+						where +=" AND " +
 							  FacAbonoBean.T_NOMBRETABLA +"."+ FacAbonoBean.C_IDCUENTA + " is not null ";									 
 					}
 		            if (((String)criterios.get("FORMAPAGO")).trim().equals(ClsConstants.TIPO_CARGO_CAJA)){								 
-						sql +=" AND " +
+						where +=" AND " +
 							  FacAbonoBean.T_NOMBRETABLA +"."+ FacAbonoBean.C_IDCUENTA + " is null ";									 
 					}
 	            }
@@ -390,11 +398,11 @@ public class FacAbonoAdm extends MasterBeanAdministrador {
 				// Busqueda por tipo de abono - nuevo MAV 06/05/05
 	            if (!((String)criterios.get(FacAbonoBean.C_IDPAGOSJG)).trim().equals("")){
 		            if (((String)criterios.get(FacAbonoBean.C_IDPAGOSJG)).trim().equals(ClsConstants.TIPO_ABONO_JUSTICIA_GRATUITA)){								 
-						sql +=" AND " +
+						where +=" AND " +
 							  FacAbonoBean.T_NOMBRETABLA +"."+ FacAbonoBean.C_IDPAGOSJG + " is not null ";									 
 					}
 		            if (((String)criterios.get(FacAbonoBean.C_IDPAGOSJG)).trim().equals(ClsConstants.TIPO_ABONO_FACTURACION)){								 
-						sql +=" AND " +
+						where +=" AND " +
 							  FacAbonoBean.T_NOMBRETABLA +"."+ FacAbonoBean.C_IDPAGOSJG + " is null ";									 
 					}
 	            }
@@ -402,12 +410,12 @@ public class FacAbonoAdm extends MasterBeanAdministrador {
 				// Busqueda por pagado
 	            if (!((String)criterios.get("PAGADO")).trim().equals("")){
 		            if (((String)criterios.get("PAGADO")).trim().equals(ClsConstants.DB_TRUE)){								 
-						sql +=" AND " +
+						where +=" AND " +
 						FacAbonoBean.T_NOMBRETABLA +"."+ FacAbonoBean.C_ESTADO+ "=1 ";
 //							"F_SIGA_ESTADOSABONO("+ FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDINSTITUCION +","+ FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDABONO + ") = 1"; 									 
 					}
 		            if (((String)criterios.get("PAGADO")).trim().equals(ClsConstants.DB_FALSE)){								 
-						sql +=" AND " +
+						where +=" AND " +
 							FacAbonoBean.T_NOMBRETABLA +"."+ FacAbonoBean.C_ESTADO+ " IN (5,6) ";
 //						  	  "(F_SIGA_ESTADOSABONO("+ FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDINSTITUCION +","+ FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDABONO + ") = 5" + 
 //						  	  " OR " +
@@ -417,15 +425,16 @@ public class FacAbonoAdm extends MasterBeanAdministrador {
 	            
 				// Busqueda por contabilizada
 	            if (!((String)criterios.get(FacAbonoBean.C_CONTABILIZADA)).trim().equals("")){								 
-					sql +=" AND " +
+					where +=" AND " +
 						  FacAbonoBean.T_NOMBRETABLA +"."+ FacAbonoBean.C_CONTABILIZADA + "= '" + (String)criterios.get(FacAbonoBean.C_CONTABILIZADA)+ "'";									 
 				}
 				
-				sql += " ORDER BY " + FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDABONO + " DESC"; 										
+				String orderBy= " ORDER BY " + FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDABONO + " DESC"; 										
 							
-	           
-				PaginadorCaseSensitive paginador = new PaginadorCaseSensitive(sql);				
-				int totalRegistros = paginador.getNumeroTotalRegistros();
+	           String consulta = select + from + where + orderBy;
+			   selectContar+= from + where;
+	           PaginadorBind paginador = new PaginadorBind(consulta,selectContar,codigosBind);				
+	           int totalRegistros = paginador.getNumeroTotalRegistros();
 				
 				if (totalRegistros==0){					
 					paginador =null;
@@ -482,7 +491,7 @@ public class FacAbonoAdm extends MasterBeanAdministrador {
 							//"PKG_SIGA_TOTALESABONO.TOTALNETO("+ FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDINSTITUCION +","+ FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDABONO + ") AS TOTALNETO" + "," +
 							//"PKG_SIGA_TOTALESABONO.TOTALIVA("+ FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDINSTITUCION +","+ FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDABONO + ") AS TOTALIVA" + "," +
 							//"PKG_SIGA_TOTALESABONO.TOTAL("+ FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDINSTITUCION +","+ FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDABONO + ") AS TOTAL" +
-							"NVL(" + FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDPAGOSJG + ",'') AS IDPAGOSJG" + 
+							"NVL(" + FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDPAGOSJG + ",'') AS IDPAGOSJG " + 
 							" FROM " + FacAbonoBean.T_NOMBRETABLA;
 				            contador++;
 							codigos.put(new Integer(contador),abono);

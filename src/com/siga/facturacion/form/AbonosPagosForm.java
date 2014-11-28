@@ -32,8 +32,10 @@ public class AbonosPagosForm extends MasterForm{
 	private String estadoFacturaCompensadora="";
 	private String fechaFacturaCompensadora="";
 	private String importeFacturaCompensadora="";
+	private String abonos="";
+	private String tipoPago="";
 	
-
+	
 	/**
 	 * @return Returns the idAbono.
 	 */
@@ -136,5 +138,18 @@ public class AbonosPagosForm extends MasterForm{
 	}
 	public void setIdFactura(String idFactura) {
 		this.idFactura = idFactura;
-	}	
+	}
+	public String getAbonos() {
+		return abonos;
+	}
+	public void setAbonos(String abonos) {
+		this.abonos = abonos;
+	}
+	public String TipoPago() {
+		return tipoPago;
+	}
+	public void setTipoPago(String tipoPago) {
+		this.tipoPago = tipoPago;
+	}
+
 }
