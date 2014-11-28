@@ -1127,7 +1127,7 @@ public class Facturacion {
 
 		    	    	
 	    			/***************    ENVIO FACTURAS *****************/
-	    			if (bGenerarEnvios && correcto){
+	    			if (bGenerarEnvios && correcto && !esFacturacionRapida){
 	    				enviarProgramacionFactura(idPersona, institucion.toString(), idFactura, plantillaMail, nColegiado, numFactura,rutaAlmacen,log,esFacturacionRapida, salida, existeAlgunErrorEnvio, tx);
 	    			}
 
