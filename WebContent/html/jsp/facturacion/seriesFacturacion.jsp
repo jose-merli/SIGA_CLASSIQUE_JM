@@ -549,7 +549,7 @@
 					<% if (!modoAction.equals("nuevaPrevision")) { %>
 						<td class="labelText"><siga:Idioma key="facturacion.estado"/></td>
 						<td>
-							<siga:ComboBD nombre = "estadoConfirmacion" tipo="cmbEstadoConfirmacion" ancho="100" parametro="<%=datoEstado%>" elementoSel="<%=estadoConfirmacionSel%>" clase="boxConsulta" readOnly="true" />					
+							<siga:ComboBD nombre = "estadoConfirmacion" tipo="cmbEstadoConfirmacion" ancho="200" parametro="<%=datoEstado%>" elementoSel="<%=estadoConfirmacionSel%>" clase="boxConsulta" readOnly="true"/>					
 						</td>		
 					<% } %>				
 				</tr>
@@ -674,7 +674,7 @@
 			<table class="tablaCampos" align="center" border="0" cellspacing="0" cellpadding="0">
 				<tr>
 					<td class="labelText" width="210px">
-						<siga:Idioma key="facturacion.seriesFacturacion.literal.fechaPrevistaConfirmacion"/>
+						<siga:Idioma key="facturacion.seriesFacturacion.literal.fechaPrevistaConfirmacion"/><%if(bObligatorioFechasSEPA){%>&nbsp;(*)<%}%>
 					</td>
 					<td width="120px">
 						<% if (modoAction.equals("editar") || modoAction.equals("nuevaPrevision")) { %>

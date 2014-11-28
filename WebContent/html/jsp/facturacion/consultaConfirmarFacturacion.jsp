@@ -381,7 +381,7 @@
 				  	columnNames="facturacion.confirmarFacturacion.literal.conceptosFacturables,general.description,facturacion.programarFacturacion.literal.fechaInicioProductos,
 				  				facturacion.programarFacturacion.literal.fechaInicioServicios,facturacion.confirmarFacturacion.literal.fechaRealGeneracion,
 				  				facturacion.confirmarFacturacion.literal.fechaConfirmacion,facturacion.estado,"
-				  	columnSizes="20,21,9,9,8,8,11,14"
+				  	columnSizes="20,21,9,9,8,8,12,13"
 				    modal="M">	 	
 					<%if(vDatos == null || vDatos.size()<1 ) { %>
 		 					<tr class="notFound">
@@ -444,6 +444,7 @@
 								//ESTADO DE ERROR CON LOG ERROR 
 								if (idEstadoConfirmacion.equals(FacEstadoConfirmFactBean.ERROR_GENERACION) || idEstadoConfirmacion.equals(FacEstadoConfirmFactBean.ERROR_CONFIRMACION)) {
 									elems[2]=new FilaExtElement("descargaLog","descargaLog",SIGAConstants.ACCESS_READ); 
+									elems[3]=new FilaExtElement("eliminiarfact","eliminiarfact",SIGAConstants.ACCESS_READ);
 								}							
 								
 								//ESTADO CONFIRMACION PROGRAMADA (PUEDE TENER INFORME GENERACION Y LOGERROR DE CONFIRMACION)
