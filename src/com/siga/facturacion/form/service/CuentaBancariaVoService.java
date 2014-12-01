@@ -107,7 +107,7 @@ public class CuentaBancariaVoService implements VoUiService<CuentasBancariasForm
 		
 		// JPT (19-08-2014): Nuevos valores para la comision
 		if (objectForm.getComisionimporte()!=null && !objectForm.getComisionimporte().equals(""))
-			objectVo.setComisionimporte(UtilidadesNumero.getBigDecimal(objectForm.getComisionimporte()));
+			objectVo.setComisionimporte(new BigDecimal(objectForm.getComisionimporte()));
 		if (objectForm.getComisioniva()!=null && !objectForm.getComisioniva().equals(""))
 			objectVo.setComisioniva(new BigDecimal(objectForm.getComisioniva()));
 		if (objectForm.getComisiondescripcion()!=null && !objectForm.getComisiondescripcion().equals(""))

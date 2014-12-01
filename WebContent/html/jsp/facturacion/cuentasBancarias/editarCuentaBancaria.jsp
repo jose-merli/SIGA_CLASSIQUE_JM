@@ -621,6 +621,8 @@
 				document.CuentasBancariasForm.modo.value="modificar";
 			}
 			
+			document.CuentasBancariasForm.comisionimporte.value = document.CuentasBancariasForm.comisionimporte.value.replace(/,/,".");
+			
 			
 			document.CuentasBancariasForm.submit();
 	
