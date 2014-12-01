@@ -193,7 +193,7 @@
 									<td>
 										<html:textarea property="datosPagosRenegociarObservaciones" 
 											onKeyDown="cuenta(this,4000)" onChange="cuenta(this,4000)" 
-											style="overflow-y:auto; overflow-x:hidden; width:540px; height:50px; resize:none;"
+											style="overflow-y:auto; overflow-x:hidden; width:540px; height:35px; resize:none;"
 											styleClass="box" value=""/>
 									</td>
 								</tr>
