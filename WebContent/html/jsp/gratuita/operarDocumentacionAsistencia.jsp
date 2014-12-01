@@ -193,10 +193,23 @@
 			return false;
 		}
 		
-		if(document.forms['DefinirDocumentacionAsistenciaForm'].theFile && document.forms['DefinirDocumentacionAsistenciaForm'].theFile.value!='' && !TestFileType(document.forms['DefinirDocumentacionAsistenciaForm'].theFile.value, ['DOC','DOCX','PDF','JPG','PNG','RTF','TXT'])){
-			fin();
-			return false;
+		if(!document.forms['DefinirDocumentacionAsistenciaForm'].idFichero || document.forms['DefinirDocumentacionAsistenciaForm'].idFichero.value=='' ){
+			
+			if(!document.forms['DefinirDocumentacionAsistenciaForm'].theFile || document.forms['DefinirDocumentacionAsistenciaForm'].theFile.value=='' ){
+				error = "<siga:Idioma key='errors.required' arg0='administracion.informes.literal.archivo'/>";
+				alert(error);
+				fin();
+				return false;
+			}
+			
+			if(document.forms['DefinirDocumentacionAsistenciaForm'].theFile && document.forms['DefinirDocumentacionAsistenciaForm'].theFile.value!='' && !TestFileType(document.forms['DefinirDocumentacionAsistenciaForm'].theFile.value, ['DOC','DOCX','PDF','JPG','PNG','RTF','TXT'])){
+				fin();
+				return false;
+			}
 		}
+		
+		
+		
 		
 			
 		if(document.forms['DefinirDocumentacionAsistenciaForm'].theFile && document.forms['DefinirDocumentacionAsistenciaForm'].theFile.value!=''){
@@ -226,11 +239,9 @@
 		
 		function onLoad()
 		{
-			if(document.forms['DefinirDocumentacionAsistenciaForm'].modo.value =="insertar"){
-				jQuery("#divFicheros").css("display", "none");
-			}else{
-				jQuery("#divFicheros").css("display", "block");
-			}
+			
+			jQuery("#divFicheros").css("display", "block");
+			
 			
 		}
 		jQuery(function(){

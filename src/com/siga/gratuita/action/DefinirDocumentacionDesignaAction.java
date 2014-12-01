@@ -264,9 +264,6 @@ public class DefinirDocumentacionDesignaAction extends MasterAction {
 				request.setAttribute("permisoFicheros", permisoFicheros);
 			} catch (ClsExceptions e) {
 				throw new SIGAException(e.getMsg());
-			}finally{
-				//hacemos lo siguiente para setear el permiso de esta accion
-				testAccess(request.getContextPath()+mapping.getPath()+".do",null,request);
 			}
 			
 		} catch (Exception e) {
@@ -292,15 +289,11 @@ public class DefinirDocumentacionDesignaAction extends MasterAction {
 			DocumentacionDesignaVo objectVo = voService.getForm2Vo(definirDocumentacionDesignaForm);
 			objectVo.setUsumodificacion(Integer.parseInt(usr.getUserName()));			
 
-			documentacionService.insert(objectVo);
-			
-			
 			//Insertamos primero el fichero para quedarnos con su referencia
-			if(objectVo.getFichero()!=null && objectVo.getFichero().length>0){
-				documentacionService.uploadFile(objectVo);
-				objectVo.setIdfichero(objectVo.getIdfichero());
-				documentacionService.updateSelective(objectVo);
-			}
+			documentacionService.uploadFile(objectVo);
+
+			objectVo.setIdfichero(objectVo.getIdfichero());
+			documentacionService.insert(objectVo);
 			
 			
 		} catch (Exception e) {

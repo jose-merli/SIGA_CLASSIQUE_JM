@@ -112,7 +112,7 @@ public class DefinirDocumentacionAsistenciaAction extends MasterAction {
 			request.setAttribute("DefinirDocumentacionAsistenciaForm",miForm);
 			request.setAttribute("accionModo", "editar");
 			//pasamos si es obligatorio el archivo
-			request.setAttribute("fileRequired", false);
+			request.setAttribute("fileRequired", true);
 			try {
 				String permisoFicheros = testAccess(request.getContextPath()+"/JGR_DocumentacionAsistencia.do",null,request);
 				request.setAttribute("permisoFicheros", permisoFicheros);
@@ -218,15 +218,12 @@ public class DefinirDocumentacionAsistenciaAction extends MasterAction {
 			request.setAttribute("accionModo", "editar");
 			miForm.setModo("insertar");
 			//pasamos si es obligatorio el archivo
-			request.setAttribute("fileRequired", false);
+			request.setAttribute("fileRequired", true);
 			try {
-				String permisoFicheros = testAccess(request.getContextPath()+"/JGR_DocumentacionAsistencia.do",null,request);
+				String permisoFicheros = testAccess(request.getContextPath()+mapping.getPath()+".do",null,request);
 				request.setAttribute("permisoFicheros", permisoFicheros);
 			} catch (ClsExceptions e) {
 				throw new SIGAException(e.getMsg());
-			}finally{
-				//hacemos lo siguiente para setear el permiso de esta accion
-				testAccess(request.getContextPath()+mapping.getPath()+".do",null,request);
 			}
 			
 		} catch (Exception e) {
@@ -251,6 +248,9 @@ public class DefinirDocumentacionAsistenciaAction extends MasterAction {
 			VoUiService<DefinirDocumentacionAsistenciaForm, DocumentacionAsistenciaVo> voService = new DocumentacionAsistenciaVoService();
 			DocumentacionAsistenciaVo objectVo = voService.getForm2Vo(definirDocumentacionAsistenciaForm);
 			objectVo.setUsumodificacion(Integer.parseInt(usr.getUserName()));			
+			//Insertamos primero el fichero para quedarnos con su referencia
+
+			documentacionService.uploadFile(objectVo);
 
 			documentacionService.insert(objectVo);
 			
@@ -276,6 +276,9 @@ public class DefinirDocumentacionAsistenciaAction extends MasterAction {
 			VoUiService<DefinirDocumentacionAsistenciaForm, DocumentacionAsistenciaVo> voService = new DocumentacionAsistenciaVoService();
 			DocumentacionAsistenciaVo objectVo = voService.getForm2Vo(definirDocumentacionAsistenciaForm);
 			objectVo.setUsumodificacion(Integer.parseInt(usr.getUserName()));
+			
+			
+			
 			
 			documentacionService.update(objectVo);
 

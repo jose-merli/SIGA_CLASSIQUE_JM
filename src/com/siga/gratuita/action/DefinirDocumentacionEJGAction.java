@@ -311,17 +311,20 @@ public class DefinirDocumentacionEJGAction extends MasterAction {
 			VoUiService<DefinirDocumentacionEJGForm, DocumentacionEjgVo> voService = new DocumentacionEjgVoService();
 			DocumentacionEjgVo documentacionEjgVo = voService.getForm2Vo(definirDocumentacionEJGForm);
 			documentacionEjgVo.setUsumodificacion(Integer.parseInt(usr.getUserName()));
-			documentacionEjgService.insert(documentacionEjgVo);
-			
 			
 			if(documentacionEjgVo.getIddocumento()!=null){
 				//Insertamos primero el fichero para quedarnos con su referencia
 				if(documentacionEjgVo.getFichero()!=null&&documentacionEjgVo.getFichero().length>0){
 					documentacionEjgService.uploadFile(documentacionEjgVo);
-					documentacionEjgService.updateSelective(documentacionEjgVo);
+					//documentacionEjgService.updateSelective(documentacionEjgVo);
 				}
 
 			}
+			
+			documentacionEjgService.insert(documentacionEjgVo);
+			
+			
+			
 			
 
 		} catch (Exception e) {
@@ -357,8 +360,6 @@ public class DefinirDocumentacionEJGAction extends MasterAction {
 					documentacionEjgVoOld.setPresentador(Long.valueOf(idsPresentador[1]));
 				}
 			}
-			documentacionEjgService.update(documentacionEjgVoOld,documentacionEjgVo);
-			
 			//Subimos primero el fichero
 			if(documentacionEjgVo.getFichero()!=null){
 				ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
@@ -369,9 +370,13 @@ public class DefinirDocumentacionEJGAction extends MasterAction {
 				}				
 				
 				documentacionEjgService.uploadFile(documentacionEjgVo);
-				documentacionEjgService.updateSelective(documentacionEjgVo);
+				//documentacionEjgService.updateSelective(documentacionEjgVo);
 			}
-			else if (documentacionEjgVo.isBorrarFichero()){
+			
+			documentacionEjgService.update(documentacionEjgVoOld,documentacionEjgVo);
+			
+			
+			if (documentacionEjgVo.isBorrarFichero()){
 				documentacionEjgService.deleteFile(documentacionEjgVoOld);
 			}
 			
