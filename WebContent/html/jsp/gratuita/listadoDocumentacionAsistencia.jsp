@@ -109,8 +109,8 @@
 		<siga:Table 		   
 		   name="listadoDocumentacion"
 		   border="1"
-		   columnNames="gratuita.documentacionAsistencia.fechaentrada,gratuita.documentacionAsistencia.nombre, "
-		   columnSizes="10,50,10"
+		   columnNames="gratuita.documentacionAsistencia.fechaentrada,gratuita.documentacionAsistencia.nombre,gratuita.documentacionDesigna.actuacion "
+		   columnSizes="10,40,40,10"
 		   modal="M">
 		   
   	<% if (obj != null && obj.size()>0){
@@ -128,6 +128,7 @@
 						<%=GstDate.getFormatedDateShort(fila.getFechaentrada())%>&nbsp;
 					</td>					
 					<td><%=fila.getNombreTipoDoc()%></td>
+					<td><%=fila.getDescripcionActuacion()!=null?fila.getDescripcionActuacion():""%>&nbsp;</td>
 				</siga:FilaConIconos>		
 		<% recordNumber++;		   
 		} %>
