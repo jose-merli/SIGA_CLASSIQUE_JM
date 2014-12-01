@@ -1183,7 +1183,7 @@ public class CenCuentasBancariasAdm extends MasterBeanAdmVisible {
 	}	
 	
 	/**
-	 * Obtiene la cuenta bancaria activa de cargo de la persona mas utilizada para los servicios
+	 * Obtiene la cuenta bancaria activa de cargo de la persona, que tiene la mayoria de suscripciones activas
 	 * @param idInstitucion
 	 * @param idPersona
 	 * @return
@@ -1193,7 +1193,8 @@ public class CenCuentasBancariasAdm extends MasterBeanAdmVisible {
 		String idCuenta = null;
 		
 		try {
-			String sql = "SELECT TABLA." + CenCuentasBancariasBean.C_IDCUENTA + 
+			String sql = "SELECT TABLA." + CenCuentasBancariasBean.C_IDCUENTA + ", " +
+							" TABLA.NUM_SERVICIOS_ASOCIADOS " +
 						" FROM ( " +
 							"SELECT " + CenCuentasBancariasBean.C_IDCUENTA + ", " +
 								CenCuentasBancariasBean.C_FECHAMODIFICACION + ", " +
@@ -1212,13 +1213,26 @@ public class CenCuentasBancariasAdm extends MasterBeanAdmVisible {
 								" AND " + CenCuentasBancariasBean.C_ABONOCARGO + " in ('T','C')" +							
 						" ) TABLA " +
 						" WHERE TABLA.NUM_SERVICIOS_ASOCIADOS > 0 " + // Solo obtengo las cuentas con servicios asociados
-						" ORDER BY TABLA.NUM_SERVICIOS_ASOCIADOS DESC, " + // Ordeno por el numero de servicios para obtener la cuenta con mas servicios asociados
-							" TABLA." + CenCuentasBancariasBean.C_FECHAMODIFICACION + " DESC"; // En caso de tener el mismo numero de servicios, obtengo la mas actual
+						" ORDER BY TABLA.NUM_SERVICIOS_ASOCIADOS DESC"; // Ordeno por el numero de servicios para obtener la cuenta con mas servicios asociados
 			
 			RowsContainer rc = this.find(sql);
 	        if (rc!=null && rc.size()>0) {
-	        	Row fila = (Row) rc.get(0);
-	        	idCuenta = (String) fila.getString(CenCuentasBancariasBean.C_IDCUENTA);
+	        	if (rc.size()>1) { // Almenos tiene dos cuentas asociadas a un numero de suscripciones activas
+	        		Row fila1 = (Row) rc.get(0);
+	        		String sNumSuscrCuenta1 = fila1.getString("NUM_SERVICIOS_ASOCIADOS");
+	        		
+	        		Row fila2 = (Row) rc.get(1);
+	        		String sNumSuscrCuenta2 = fila2.getString("NUM_SERVICIOS_ASOCIADOS");
+
+	        		// Si son diferentes, ya que la sentencia esta ordenada, es que la fila1 tiene la mayoria de suscripciones activas
+	        		if (!sNumSuscrCuenta1.equals(sNumSuscrCuenta2)) {
+	        			idCuenta = (String) fila1.getString(CenCuentasBancariasBean.C_IDCUENTA);
+	        		}
+	        		
+	        	} else { // Solo tiene una cuenta asociada a suscripciones activas
+	        		Row fila = (Row) rc.get(0);
+	        		idCuenta = (String) fila.getString(CenCuentasBancariasBean.C_IDCUENTA);
+	        	}
 	        } 
 			
 		} catch (Exception e) {
