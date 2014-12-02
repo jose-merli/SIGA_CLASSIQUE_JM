@@ -409,7 +409,7 @@
 						cantidad = UtilidadesHash.getInteger (productoServicio, PysServiciosSolicitadosBean.C_CANTIDAD).intValue();
 						if (UtilidadesHash.getDouble (productoServicio, "VALOR")!=null){
 							precio = UtilidadesHash.getDouble (productoServicio, "VALOR").doubleValue();
-							iva = UtilidadesHash.getFloat (productoServicio, "PORCENTAJEIVA").doubleValue();
+							iva = UtilidadesHash.getFloat (productoServicio, "VALORIVA").doubleValue();
 							periodicidad = " / " + UtilidadesHash.getString(productoServicio, "SERVICIO_DESCRIPCION_PERIODICIDAD");
 							existePrecio="1";							
 						} else {
