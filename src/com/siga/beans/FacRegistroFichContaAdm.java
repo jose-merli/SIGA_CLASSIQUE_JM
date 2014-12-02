@@ -654,7 +654,7 @@ public class FacRegistroFichContaAdm extends MasterBeanAdministrador {
 					select +=" AND " + vCondicion.get(1) ;
 				}	
 			
-			select+=" ORDER BY F.IDFACTURA ";
+			select+=" ORDER BY TO_NUMBER(F.IDFACTURA) ";
 
 			vLineasFacturas = this.selectTablaBind(select,codigos);
 			
@@ -1571,7 +1571,7 @@ public class FacRegistroFichContaAdm extends MasterBeanAdministrador {
 				select +=" AND " + vCondicion.get(1) ;
 			}		
 
-			select += "    ORDER BY IDFACTURA ";
+			select += "    ORDER BY TO_NUMBER(IDFACTURA) ";
 			
 			String idFactura ="";
 			String idFacturaAnt ="";
@@ -1766,7 +1766,7 @@ public class FacRegistroFichContaAdm extends MasterBeanAdministrador {
 					select +=" AND " + vCondicion.get(1) ;
 				}	
    
-				select += "    ORDER BY IDFACTURA ";
+				select += "    ORDER BY TO_NUMBER(IDFACTURA) ";
 
 			vPagoTarjeta=(Vector)this.selectTablaBind(select,codigos);
 			
@@ -1927,7 +1927,7 @@ public class FacRegistroFichContaAdm extends MasterBeanAdministrador {
 					select +=" AND " + vCondicion.get(1) ;
 				}	
 
-			select += " ORDER BY A.IDFACTURA ";
+			select += " ORDER BY TO_NUMBER(A.IDFACTURA) ";
 			
 			vPagoBanco=(Vector)this.selectTablaBind(select,codigos);
 
@@ -2612,7 +2612,7 @@ public class FacRegistroFichContaAdm extends MasterBeanAdministrador {
 					contador=new Integer(vCondicion.get(0).toString()).intValue();
 					select +=" AND " + vCondicion.get(1) ;
 			   }		
-			select += "    ORDER BY IDFACTURA ";
+			select += "    ORDER BY TO_NUMBER(IDFACTURA) ";
 			
 			String idFactura ="";
 			String idFacturaAnt ="";
