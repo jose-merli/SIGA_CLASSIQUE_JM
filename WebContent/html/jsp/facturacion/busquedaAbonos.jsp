@@ -234,12 +234,7 @@
 			</tr>
 		</table>
 		<!-- FIN: CAMPOS DE BUSQUEDA-->									
-		<html:form action="/FAC_AbonosPagos.do" method="POST" target="mainWorkArea">
-			<html:hidden property="abonos" value=""/>
-			<html:hidden property="modo" value=""/>
-			<html:hidden property="importe" value=""/>
-			<html:hidden property="tipoPago" value=""/>
-		</html:form>							
+							
 		<!-- INICIO: BOTONES BUSQUEDA -->
 		<!-- Esto pinta los botones que le digamos de busqueda. Ademas, tienen asociado cada
 			 boton una funcion que abajo se reescribe. Los valores asociados separados por comas
@@ -257,6 +252,7 @@
 					document.getElementById('numeroNifTagBusquedaPersonas').value="<%=nifCliente%>";				
 					obtenerPersonas();
 				<%}%>
+				
 			}
 	
 			// Funcion asociada a boton nuevo
@@ -340,38 +336,9 @@
 			
 			function accionPagarBanco(){
 				
-				if(window.frames.resultado.ObjArray.length>0){
-					
-						sub();
-						if (window.frames.resultado.ObjArray.length>1000) {
-							alert ('<siga:Idioma key="facturacion.anulacion.error.pagarMilAbonos"/>');
-							fin();
-							return false;
-						}
-						
-						for (var i=0; i<window.frames.resultado.ObjArray.length; i++) {
-								
-							if (document.AbonosPagosForm.abonos.value=="") {
-								document.AbonosPagosForm.abonos.value += window.frames.resultado.ObjArray[i];						
-							} else {
-								document.AbonosPagosForm.abonos.value += ";" +  window.frames.resultado.ObjArray[i];
-							}	
-							
-						}
-						//estos dos campos están dentro del jdialog
-						document.AbonosPagosForm.target = "submitArea";
-						document.AbonosPagosForm.modo.value="pagarVariosAbonos";
-						document.AbonosPagosForm.importe.value="";
-						document.AbonosPagosForm.tipoPago.value="banco";
-						document.AbonosPagosForm.submit();
-						fin();
-
-				}else{
-					fin();
-					var mensaje = '<siga:Idioma key="general.message.seleccionar"/>';
-					alert(mensaje);
-					return false;
-				}
+				pagarBanco();
+				document.AbonosPagosForm.abonos.value="";
+		        document.AbonosPagosForm.importe.value="";  
 				
 			}
 			
@@ -424,7 +391,47 @@
 				}	
 			
 			}
-	
+			
+			function pagarBanco(){
+				
+				if(window.frames.resultado.ObjArray.length>0){
+					
+					sub();
+					if (window.frames.resultado.ObjArray.length>1000) {
+						alert ('<siga:Idioma key="facturacion.anulacion.error.pagarMilAbonos"/>');
+						fin();
+						return false;
+					}
+					document.AbonosPagosForm.abonos.value=="";
+					for (var i=0; i<window.frames.resultado.ObjArray.length; i++) {
+							
+						if (document.AbonosPagosForm.abonos.value=="") {
+							document.AbonosPagosForm.abonos.value += window.frames.resultado.ObjArray[i];						
+						} else {
+							document.AbonosPagosForm.abonos.value += ";" +  window.frames.resultado.ObjArray[i];
+						}	
+						
+					}
+					//estos dos campos están dentro del jdialog
+					document.AbonosPagosForm.target = "submitArea";
+					document.AbonosPagosForm.modo.value="pagarVariosAbonos";
+					document.AbonosPagosForm.importe.value="";
+					document.AbonosPagosForm.tipoPago.value="banco";
+					document.AbonosPagosForm.submit();
+					fin();
+
+			}else{
+				fin();
+				var mensaje = '<siga:Idioma key="general.message.seleccionar"/>';
+				alert(mensaje);
+				return false;
+			}
+			
+				
+				
+				
+			}
+			
 			function pagarCaja(){
 				sub();
 
@@ -496,5 +503,11 @@
 	<!-- Obligatoria en todas las páginas-->
 	<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
 	<!-- FIN: SUBMIT AREA -->
+	<html:form action="/FAC_AbonosPagos.do" method="POST" target="mainWorkArea">
+		<html:hidden property="abonos" value=""/>
+		<html:hidden property="modo" value=""/>
+		<html:hidden property="importe" value=""/>
+		<html:hidden property="tipoPago" value=""/>
+	</html:form>		
 </body>
 </html>

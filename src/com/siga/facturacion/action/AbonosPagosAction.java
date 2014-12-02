@@ -396,6 +396,9 @@ public class AbonosPagosAction extends MasterAction {
 			CenCuentasBancariasAdm cuentasAdm=new CenCuentasBancariasAdm(this.getUserBean(request));
 			Vector vCuentas=cuentasAdm.selectGenerico(select);
 			
+			if(vCuentas.size()==0)
+				throw new SIGAException("facturacion.abonos.error.noExisteCuenta");
+				
 			List cuentasListFinal= new ArrayList();
 			Hashtable cuentash=new Hashtable();
 			for (int c = 0; c < vCuentas.size(); c++){
@@ -407,10 +410,13 @@ public class AbonosPagosAction extends MasterAction {
 			Hashtable cuentaSelh= (Hashtable) vCuentas.get(0);
 			request.setAttribute("idCuentaSel", cuentaSelh.get("ID"));
 			
-		} 
-		catch (Exception e) { 
-			throwExcp("messages.general.error",new String[] {"modulo.facturacion"},e,null); 
-		}			
+		} catch (Exception e) { 
+			if((e instanceof SIGAException)||(e instanceof ClsExceptions))
+				throwExcp (e.getMessage(),new String[] {"modulo.facturacion"},e,null); 
+			else
+				throwExcp("messages.general.error",new String[] {"modulo.facturacion"},e,null); 			
+		}
+		
 		return (result);
 	}
 	
