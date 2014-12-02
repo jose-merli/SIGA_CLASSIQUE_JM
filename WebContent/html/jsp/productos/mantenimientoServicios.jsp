@@ -78,7 +78,7 @@
         }  	        
 		
 		// cambioSituacion valor IVA
-        vIva.add(row.getString(PysServiciosInstitucionBean.C_PORCENTAJEIVA));
+        vIva.add(row.getString(PysServiciosInstitucionBean.C_IDTIPOIVA));
 
 		// Informacion sobre formas de pago internet
 		enumTemp = ((Vector)request.getAttribute("container_I")).elements();
@@ -319,14 +319,14 @@
 									</td>
 									<td class="labelText"> 
 										<% if (modo=="insertar") {%>
-											<siga:ComboBD nombre = "iva" tipo="porcentajeIva" clase="boxCombo" obligatorio="true"/>
+											<siga:ComboBD nombre = "iva" tipo="tipoIva" clase="boxCombo" obligatorio="true"/>
 											
 								 		<% } else { %>  
 								 			<%if (modo=="modificar"){%> 
-												<siga:ComboBD nombre = "iva" tipo="porcentajeIva" clase="boxCombo" elementoSel="<%=vIva%>" obligatorio="true"/>
+												<siga:ComboBD nombre = "iva" tipo="tipoIva" clase="boxCombo" elementoSel="<%=vIva%>" obligatorio="true"/>
 												
 											<% } else { %>
-												<siga:ComboBD nombre = "iva" tipo="porcentajeIva" clase="boxConsulta" elementoSel="<%=vIva%>" obligatorio="true" readOnly="true"/>
+												<siga:ComboBD nombre = "iva" tipo="tipoIva" clase="boxConsulta" elementoSel="<%=vIva%>" obligatorio="true" readOnly="true"/>
 											<% } %>	
 										 <% } %>
 									</td>							
