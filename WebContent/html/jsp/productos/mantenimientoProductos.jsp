@@ -97,10 +97,7 @@
 		}	         
 
 		// Cargo valor IVA
-		if (row.getString(PysProductosInstitucionBean.C_PORCENTAJEIVA).startsWith("0."))	
-	    	vIva.add(row.getString(PysProductosInstitucionBean.C_PORCENTAJEIVA).substring(1));
-		else
-			vIva.add(row.getString(PysProductosInstitucionBean.C_PORCENTAJEIVA));		
+		vIva.add(row.getString(PysProductosInstitucionBean.C_IDTIPOIVA));		
 
 		// Informacion sobre formas de pago internet
 		enumTemp = ((Vector)request.getAttribute("container_I")).elements();
