@@ -356,7 +356,8 @@
 		
 		// Asociada al boton Anular -> abonos masivos
 		function accionAnular() {
-			if(window.frames.resultado.ObjArray){
+			if(window.frames.resultado.ObjArray.length>0){
+				jQuery("#idButton").attr("disabled", true);
 				jQuery("#dialogoAnular").dialog(
 						{
 						      height: 250,
@@ -475,7 +476,7 @@
 					class="frameGeneral">
 	</iframe>
 	<!-- BOTONES ACCION: an: "Anular" -->	 
-	<siga:ConjBotonesAccion botones="an" />
+	<siga:ConjBotonesAccion botones="an"/>
 	<!-- FIN: BOTONES ACCION -->		
 <!-- INICIO: SUBMIT AREA -->
 <iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>

@@ -340,7 +340,7 @@
 			
 			function accionPagarBanco(){
 				
-					if(window.frames.resultado.ObjArray){
+				if(window.frames.resultado.ObjArray.length>0){
 					
 						sub();
 						if (window.frames.resultado.ObjArray.length>1000) {
