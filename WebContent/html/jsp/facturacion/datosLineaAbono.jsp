@@ -347,13 +347,8 @@
 					if (document.forms[0].iva.value!=""){
 						document.forms[0].iva.value=document.forms[0].iva.value.replace(/,/,".");
 						if (!isNaN(document.forms[0].iva.value)){
-							document.forms[0].impIva.value=eval((document.forms[0].impNeto.value + "*" + document.forms[0].iva.value) + "/" + 100);
-							document.forms[0].impTotal.value=eval(document.forms[0].impNeto.value + "+" + document.forms[0].impIva.value);
-							// Redondeo
-							//document.forms[0].impIva.value=(parseInt(document.forms[0].impIva.value*100)/100;
-							document.forms[0].impIva.value=Math.round(document.forms[0].impIva.value*100)/100;
-							//document.forms[0].impTotal.value=parseInt(document.forms[0].impTotal.value*100)/100;
-							document.forms[0].impTotal.value=Math.round(document.forms[0].impTotal.value*100)/100;
+							document.forms[0].impIva.value = roundNumber(eval(document.forms[0].impNeto.value) * eval(document.forms[0].iva.value) / 100, 2);
+							document.forms[0].impTotal.value = eval(document.forms[0].impNeto.value) + eval(document.forms[0].impIva.value);
 
 						//Formato:
 						document.forms[0].impNeto.value = convertirAFormato(document.forms[0].impNeto.value);
@@ -380,13 +375,8 @@
 				document.forms[0].precio.value=document.forms[0].precio.value.replace(/,/,".");
 				document.forms[0].iva.value=document.forms[0].iva.value.replace(/,/,".");
 				if (!isNaN(document.forms[0].cantidad.value)&&!isNaN(document.forms[0].precio.value)&&!isNaN(document.forms[0].iva.value)){
-					document.forms[0].impIva.value=eval(eval(document.forms[0].impNeto.value + "*" +document.forms[0].iva.value)+"/"+"100");
-					document.forms[0].impTotal.value=eval(document.forms[0].impNeto.value + "+" +document.forms[0].impIva.value);
-					// Redondeo
-					//document.forms[0].impIva.value=parseInt(document.forms[0].impIva.value*100)/100;
-					document.forms[0].impIva.value=Math.round(document.forms[0].impIva.value*100)/100;
-					//document.forms[0].impTotal.value=parseInt(document.forms[0].impTotal.value*100)/100;
-					document.forms[0].impTotal.value=Math.round(document.forms[0].impTotal.value*100)/100;
+					document.forms[0].impIva.value = roundNumber(eval(document.forms[0].impNeto.value) * eval(document.forms[0].iva.value) / 100, 2);
+					document.forms[0].impTotal.value = eval(document.forms[0].impNeto.value) + eval(document.forms[0].impIva.value);
 
 					//Formato:
 					document.forms[0].impTotal.value = convertirAFormato(document.forms[0].impTotal.value);
