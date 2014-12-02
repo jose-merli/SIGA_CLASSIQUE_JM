@@ -90,7 +90,6 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 			ExpExpedienteBean.C_MINUTAFINAL,
 			ExpExpedienteBean.C_IMPORTETOTALFINAL,
 			ExpExpedienteBean.C_DERECHOSCOLEGIALES,
-			ExpExpedienteBean.C_PORCENTAJEIVA,
 			ExpExpedienteBean.C_IDAREA,
 			ExpExpedienteBean.C_IDMATERIA,
 			ExpExpedienteBean.C_IDPRETENSION,
@@ -196,8 +195,6 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 			bean.setObservaciones(UtilidadesHash.getString(hash, ExpExpedienteBean.C_OBSERVACIONES));
 			bean.setMinuta(UtilidadesHash.getDouble(hash, ExpExpedienteBean.C_MINUTA));
 			bean.setImporteTotal(UtilidadesHash.getDouble(hash, ExpExpedienteBean.C_IMPORTETOTAL));
-			bean.setPorcentajeIVA(UtilidadesHash.getDouble(hash, ExpExpedienteBean.C_PORCENTAJEIVA));
-			bean.setPorcentajeIVAFinal(UtilidadesHash.getDouble(hash, ExpExpedienteBean.C_PORCENTAJEIVA));
 			bean.setMinutaFinal(UtilidadesHash.getDouble(hash, ExpExpedienteBean.C_MINUTAFINAL));
 			bean.setImporteTotalFinal(UtilidadesHash.getDouble(hash, ExpExpedienteBean.C_IMPORTETOTALFINAL));
 			bean.setDerechosColegiales(UtilidadesHash.getDouble(hash, ExpExpedienteBean.C_DERECHOSCOLEGIALES));
@@ -285,8 +282,6 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(htData, ExpExpedienteBean.C_OBSERVACIONES, b.getObservaciones());
 			UtilidadesHash.set(htData, ExpExpedienteBean.C_MINUTA, b.getMinuta());
 			UtilidadesHash.set(htData, ExpExpedienteBean.C_IMPORTETOTAL, b.getImporteTotal());
-			UtilidadesHash.set(htData, ExpExpedienteBean.C_PORCENTAJEIVA, b.getPorcentajeIVA());
-			UtilidadesHash.set(htData, ExpExpedienteBean.C_PORCENTAJEIVA, b.getPorcentajeIVAFinal());
 			UtilidadesHash.set(htData, ExpExpedienteBean.C_MINUTAFINAL, b.getMinutaFinal());
 			UtilidadesHash.set(htData, ExpExpedienteBean.C_IMPORTETOTALFINAL, b.getImporteTotalFinal());
 			UtilidadesHash.set(htData, ExpExpedienteBean.C_DERECHOSCOLEGIALES, b.getDerechosColegiales());
@@ -318,14 +313,6 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 		//Tabla cen_persona
 		//NOMBRES COLUMNAS PARA LA JOIN
 		//Tabla cen_persona
-
-		//Tabla exp_tipoexpediente
-		String T_IDINSTITUCION="T."+ExpTipoExpedienteBean.C_IDINSTITUCION;
-		String T_IDTIPOEXPEDIENTE="T."+ExpTipoExpedienteBean.C_IDTIPOEXPEDIENTE;
-
-		//Tabla cen_institucion
-		String I_IDINSTITUCION="I."+CenInstitucionBean.C_IDINSTITUCION;
-
 
 		//Tabla exp_parte
 		String PA_IDINSTITUCION="PA."+ExpPartesBean.C_IDINSTITUCION;
@@ -955,20 +942,13 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 	public int getNumeroDenunciantes (String where) throws ClsExceptions {
 		
 		int resultado = 0;
-	
-		RowsContainer rc = null;
 		
 		Hashtable contador = new Hashtable();
 		
-		String resultadoStr;
-		
-		
-        String sql = "SELECT COUNT(*) AS NUMERO ";
-
-		sql += " FROM ";
-		sql += ExpDenuncianteBean.T_NOMBRETABLA+" DEN, "+CenPersonaBean.T_NOMBRETABLA+" PER";
-		
-		sql += " " + where;
+        String sql = "SELECT COUNT(*) AS NUMERO " + 
+        			" FROM " + ExpDenuncianteBean.T_NOMBRETABLA + " DEN, " +
+        				CenPersonaBean.T_NOMBRETABLA + " PER " + 
+    				where;
 		
 		try{
 			
@@ -1068,7 +1048,6 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 	 * */
 	public Integer selectTipoExpedienteEJG(String idInstitucion) throws ClsExceptions 
 	{
-		Vector datos = new Vector();
 		Integer tipoExpediente = null;
 		
 		//NOMBRES TABLAS PARA LA JOIN
@@ -1127,24 +1106,16 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 		String E_ANIOEXPEDIENTE = ExpExpedienteBean.C_ANIOEXPEDIENTE;
 		String E_ESVISIBLEENFICHA = ExpExpedienteBean.C_ESVISIBLEENFICHA;
 		String E_IDINSTITUCION_TIPOEXPEDIENTE = ExpExpedienteBean.C_IDINSTITUCION_TIPOEXPEDIENTE;
-		String E_IDFASE = ExpExpedienteBean.C_IDFASE;
 		String E_FECHAFINALESTADO = ExpExpedienteBean.C_FECHAFINALESTADO;
 		String E_FECHAPRORROGAESTADO = ExpExpedienteBean.C_FECHAPRORROGAESTADO;
 		String E_SANCIONADO = ExpExpedienteBean.C_SANCIONADO;
 		String E_ASUNTO = ExpExpedienteBean.C_ASUNTO;
-		String E_IDESTADO = ExpExpedienteBean.C_IDESTADO;
 		String E_IDINSTITUCIONTIPOEXPEDIENTE = ExpExpedienteBean.C_IDINSTITUCION_TIPOEXPEDIENTE;
 		
 		//Tabla exp_estados
-		String ES_IDINSTITUCION = "ES." + ExpEstadosBean.C_IDINSTITUCION;
-		String ES_IDTIPOEXPEDIENTE = "ES." + ExpEstadosBean.C_IDTIPOEXPEDIENTE;
-		String ES_IDFASE = "ES." + ExpEstadosBean.C_IDFASE;
 		String ES_ESEJECUCIONSANCION = "ES." + ExpEstadosBean.C_ESEJECUCIONSANCION;
-		String ES_IDESTADO = "ES." + ExpEstadosBean.C_IDESTADO;
 		
 		//Tabla exp_tipoexpediente
-		String T_IDINSTITUCION = "T." + ExpTipoExpedienteBean.C_IDINSTITUCION;
-		String T_IDTIPOEXPEDIENTE = "T." + ExpTipoExpedienteBean.C_IDTIPOEXPEDIENTE;
 		String T_TIPOEXPEDIENTE = "T." + ExpTipoExpedienteBean.C_NOMBRE;
 		
 		//Subselect
@@ -1244,7 +1215,6 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 	{		
 		Hashtable resultado = new Hashtable();
 		int nuevoNumExp = 1;
-		Calendar fecha = Calendar.getInstance();		
 		
 		// Acceso a BBDD
 		RowsContainer rc = null;
@@ -2204,12 +2174,6 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 				UtilidadesHash.set(htData, ExpExpedienteBean.C_DERECHOSCOLEGIALES, "");
 			}
 			
-			if(b.getPorcentajeIVA()!=null){
-				UtilidadesHash.set(htData, ExpExpedienteBean.C_PORCENTAJEIVA, b.getPorcentajeIVA());
-			}else{
-				UtilidadesHash.set(htData, ExpExpedienteBean.C_PORCENTAJEIVA, "");
-			}
-			
 			UtilidadesHash.set(htData, ExpExpedienteBean.C_IDTIPOIVA, b.getIdTipoIVA());
 			if (b.getIdResultadoJuntaGobierno() != null)
 				UtilidadesHash.set(htData, ExpExpedienteBean.C_IDRESULTADOJUNTAGOBIERNO, b.getIdResultadoJuntaGobierno());
@@ -2295,7 +2259,7 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 							+ " TO_CHAR(EXP.FECHACADUCIDAD, 'dd-mm-yyyy') AS FECHACADUCIDAD, "
 							+ " EXP.OBSERVACIONES, "
 							+ " f_siga_formatonumero(EXP.MINUTA,2) MINUTA, "
-							+ " f_siga_formatonumero(EXP.PORCENTAJEIVA,2) PORCENTAJEIVA, "
+							+ " f_siga_formatonumero(EXP.IDTIPOIVA,2) IDTIPOIVA, "
 							+ " f_siga_formatonumero(EXP.IMPORTETOTAL,2) IMPORTETOTAL, "
 							+ " f_siga_formatonumero(EXP.MINUTAFINAL,2) MINUTAFINAL, "
 							+ " EXP.DERECHOSCOLEGIALES, "

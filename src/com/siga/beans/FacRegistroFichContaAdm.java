@@ -5,7 +5,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
-
 import java.util.Date;
 import java.util.Hashtable;
 import java.util.Vector;
@@ -365,8 +364,6 @@ public class FacRegistroFichContaAdm extends MasterBeanAdministrador {
 		
 		try
 		{
-			String idcontabilidad 	= beanContab.getIdContabilidad().toString();
-
 			// PREPARAMOS EL FICHERO
 			// Se crea el directorio en el servidor web.
 		    ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
@@ -615,14 +612,29 @@ public class FacRegistroFichContaAdm extends MasterBeanAdministrador {
 			CONTABILIDAD_IVA = ((GenParametrosBean) vContabilidad.get(0)).getValor();
 		try{
 		    // RGG 21/11/2007
-			select = " SELECT F.IDFACTURA,F.NUMEROFACTURA, (L.CANTIDAD * L.PRECIOUNITARIO) IMPNETO, ((L.CANTIDAD * L.PRECIOUNITARIO) * (L.IVA/100)) IMPIVA, L.IVA, DECODE(F.IDPERSONADEUDOR,NULL,F.IDPERSONA,F.IDPERSONADEUDOR) IDPERSONA, F.FECHAEMISION, " +
-			" L.DESCRIPCION, L.CTAPRODUCTOSERVICIO, L.CTAIVA, P.CONFDEUDOR, P.CONFINGRESOS, P.CTAINGRESOS, P.CTACLIENTES " +
-			" FROM FAC_FACTURA F, FAC_LINEAFACTURA L, FAC_FACTURACIONPROGRAMADA P " +
-			" WHERE F.IDINSTITUCION = L.IDINSTITUCION " + 
-			" AND   F.IDFACTURA = L.IDFACTURA " + 
-			" AND F.IDINSTITUCION = P.IDINSTITUCION " +
-			" AND F.IDSERIEFACTURACION = P.IDSERIEFACTURACION " +
-			" AND F.IDPROGRAMACION = P.IDPROGRAMACION " ;
+			select = " SELECT F.IDFACTURA, " +
+						" F.NUMEROFACTURA, " +
+						" L.CANTIDAD * L.PRECIOUNITARIO AS IMPNETO, " +
+						" ROUND(L.CANTIDAD * L.PRECIOUNITARIO * L.IVA / 100, 2) AS IMPIVA, " +
+						" L.IVA, " +
+						" DECODE(F.IDPERSONADEUDOR, NULL, F.IDPERSONA, F.IDPERSONADEUDOR) AS IDPERSONA, " +
+						" F.FECHAEMISION, " +
+						" L.DESCRIPCION, " +
+						" L.CTAPRODUCTOSERVICIO, " +
+						" L.CTAIVA, " +
+						" P.CONFDEUDOR, " +
+						" P.CONFINGRESOS, " +
+						" P.CTAINGRESOS, " +
+						" P.CTACLIENTES " +
+					" FROM FAC_FACTURA F, " +
+						" FAC_LINEAFACTURA L, " +
+						" FAC_FACTURACIONPROGRAMADA P " +
+					" WHERE F.IDINSTITUCION = L.IDINSTITUCION " + 
+						" AND F.IDFACTURA = L.IDFACTURA " + 
+						" AND F.IDINSTITUCION = P.IDINSTITUCION " +
+						" AND F.IDSERIEFACTURACION = P.IDSERIEFACTURACION " +
+						" AND F.IDPROGRAMACION = P.IDPROGRAMACION " ;
+			
 			contador++;
 			codigos.put(new Integer(contador),this.usrbean.getLocation());
 			select+=" AND F.IDINSTITUCION = :" + contador +
@@ -644,7 +656,7 @@ public class FacRegistroFichContaAdm extends MasterBeanAdministrador {
 			
 			select+=" ORDER BY F.IDFACTURA ";
 
-			vLineasFacturas=(Vector)this.selectTablaBind(select,codigos);
+			vLineasFacturas = this.selectTablaBind(select,codigos);
 			
 			String idFacturaAnt = ""; 
 			String idFactura = "";  
@@ -664,14 +676,14 @@ public class FacRegistroFichContaAdm extends MasterBeanAdministrador {
 			    // importes
 			    imp=UtilidadesNumero.redondea((String)hash.get("IMPNETO"), 2);
 			    importeIva= UtilidadesNumero.redondea((String)hash.get("IMPIVA"), 2);
-			    String porcentajeIva= UtilidadesNumero.redondea((String)hash.get("IVA"), 2);
+			    String valorIva= UtilidadesNumero.redondea((String)hash.get("IVA"), 2);
 			   
 			    
 			    
 			    // Control de iva 0
 			    boolean ivacero=false;
 			    try {
-			        Double d = new Double(porcentajeIva);
+			        Double d = new Double(valorIva);
 			        if (d.doubleValue()==0.0) 
 			            ivacero=true;
 			    } catch (NumberFormatException nf) {
@@ -699,47 +711,46 @@ public class FacRegistroFichContaAdm extends MasterBeanAdministrador {
 				// aumentamos el contador de asientos
 				asiento++;
 				
-				Hashtable a = new Hashtable();
+				Hashtable hAsiento = new Hashtable();
 				
 				// Escribimos 1º APUNTE
-				a.clear();
-				UtilidadesHash.set(a, "FECHA", 			UtilidadesHash.getShortDate(hash, FacFacturaBean.C_FECHAEMISION));
-				UtilidadesHash.set(a, "CONCEPTO", 		concepto);
-				UtilidadesHash.set(a, "DOCUMENTO", 		UtilidadesHash.getString(hash, "NUMEROFACTURA"));
-				UtilidadesHash.set(a, "CUENTA", 		asientoClientes);
-				UtilidadesHash.set(a, "DEBE", 			"" + (Double.parseDouble(imp) + Double.parseDouble(importeIva)));
-				UtilidadesHash.set(a, "HABER", 			"0");
-				UtilidadesHash.set(a, "BASEIMPONIBLE", 	"");
-				UtilidadesHash.set(a, "IVA", 			"");
-				UtilidadesHash.set(a, "CONTRAPARTIDA", 	asientoIngresos);
-				pwcontabilidad.write(this.generarLineaAbono(asiento, a));
+				UtilidadesHash.set(hAsiento, "FECHA", 			UtilidadesHash.getShortDate(hash, FacFacturaBean.C_FECHAEMISION));
+				UtilidadesHash.set(hAsiento, "CONCEPTO", 		concepto);
+				UtilidadesHash.set(hAsiento, "DOCUMENTO", 		UtilidadesHash.getString(hash, "NUMEROFACTURA"));
+				UtilidadesHash.set(hAsiento, "CUENTA", 		asientoClientes);
+				UtilidadesHash.set(hAsiento, "DEBE", 			"" + (Double.parseDouble(imp) + Double.parseDouble(importeIva)));
+				UtilidadesHash.set(hAsiento, "HABER", 			"0");
+				UtilidadesHash.set(hAsiento, "BASEIMPONIBLE", 	"");
+				UtilidadesHash.set(hAsiento, "IVA", 			"");
+				UtilidadesHash.set(hAsiento, "CONTRAPARTIDA", 	asientoIngresos);
+				pwcontabilidad.write(this.generarLineaAbono(asiento, hAsiento));
 				
 				// Escribimos 2º APUNTE
-				a.clear();
-				UtilidadesHash.set(a, "FECHA", 			UtilidadesHash.getShortDate(hash, FacFacturaBean.C_FECHAEMISION));
-				UtilidadesHash.set(a, "CONCEPTO", 		concepto);
-				UtilidadesHash.set(a, "DOCUMENTO", 		UtilidadesHash.getString(hash, "NUMEROFACTURA"));
-				UtilidadesHash.set(a, "CUENTA", 		asientoIngresos);
-				UtilidadesHash.set(a, "DEBE", 			"0");
-				UtilidadesHash.set(a, "HABER", 			imp);
-				UtilidadesHash.set(a, "BASEIMPONIBLE", 	"");
-				UtilidadesHash.set(a, "IVA", 			"");
-				UtilidadesHash.set(a, "CONTRAPARTIDA", 	asientoClientes);
-				pwcontabilidad.write(this.generarLineaAbono(asiento, a));
+				hAsiento.clear();
+				UtilidadesHash.set(hAsiento, "FECHA", 			UtilidadesHash.getShortDate(hash, FacFacturaBean.C_FECHAEMISION));
+				UtilidadesHash.set(hAsiento, "CONCEPTO", 		concepto);
+				UtilidadesHash.set(hAsiento, "DOCUMENTO", 		UtilidadesHash.getString(hash, "NUMEROFACTURA"));
+				UtilidadesHash.set(hAsiento, "CUENTA", 		asientoIngresos);
+				UtilidadesHash.set(hAsiento, "DEBE", 			"0");
+				UtilidadesHash.set(hAsiento, "HABER", 			imp);
+				UtilidadesHash.set(hAsiento, "BASEIMPONIBLE", 	"");
+				UtilidadesHash.set(hAsiento, "IVA", 			"");
+				UtilidadesHash.set(hAsiento, "CONTRAPARTIDA", 	asientoClientes);
+				pwcontabilidad.write(this.generarLineaAbono(asiento, hAsiento));
 				
 				// Escribimos 3º APUNTE
 				if (!ivacero) {
-					a.clear();
-					UtilidadesHash.set(a, "FECHA", 			UtilidadesHash.getShortDate(hash, FacFacturaBean.C_FECHAEMISION));
-					UtilidadesHash.set(a, "CONCEPTO", 		concepto);
-					UtilidadesHash.set(a, "DOCUMENTO", 		UtilidadesHash.getString(hash, "NUMEROFACTURA"));
-					UtilidadesHash.set(a, "CUENTA", 		asientoIVA);
-					UtilidadesHash.set(a, "DEBE", 			"0");
-					UtilidadesHash.set(a, "HABER", 			importeIva);
-					UtilidadesHash.set(a, "BASEIMPONIBLE", 	imp);
-					UtilidadesHash.set(a, "IVA", 			porcentajeIva);
-					UtilidadesHash.set(a, "CONTRAPARTIDA", 	asientoClientes);
-					pwcontabilidad.write(this.generarLineaAbono(asiento, a));
+					hAsiento.clear();
+					UtilidadesHash.set(hAsiento, "FECHA", 			UtilidadesHash.getShortDate(hash, FacFacturaBean.C_FECHAEMISION));
+					UtilidadesHash.set(hAsiento, "CONCEPTO", 		concepto);
+					UtilidadesHash.set(hAsiento, "DOCUMENTO", 		UtilidadesHash.getString(hash, "NUMEROFACTURA"));
+					UtilidadesHash.set(hAsiento, "CUENTA", 		asientoIVA);
+					UtilidadesHash.set(hAsiento, "DEBE", 			"0");
+					UtilidadesHash.set(hAsiento, "HABER", 			importeIva);
+					UtilidadesHash.set(hAsiento, "BASEIMPONIBLE", 	imp);
+					UtilidadesHash.set(hAsiento, "IVA", 			valorIva);
+					UtilidadesHash.set(hAsiento, "CONTRAPARTIDA", 	asientoClientes);
+					pwcontabilidad.write(this.generarLineaAbono(asiento, hAsiento));
 				}
 				
 				///////////////////////////////
@@ -765,10 +776,6 @@ public class FacRegistroFichContaAdm extends MasterBeanAdministrador {
 				String usuModificacion=(String)((Hashtable)vAsiento1.get(0)).get("USUMODIFICACION");
 				String fechaModificacion=(String)((Hashtable)vAsiento1.get(0)).get("FECHAMODIFICACION");
 				
-				// Ahora
-				int cuantosRegEnIN=800;// se Ha modificado la actualizacion para que las claves no contengan mas de 1000 elementos ya que si no da error la actualizacion porque oracle
-				                       // tiene esa restriccion en las listas. Ahora las listas tendran como mucho 800 elementos
-
 				String sqlUpdate="UPDATE "+FacFacturaBean.T_NOMBRETABLA+" SET "+FacFacturaBean.C_CONTABILIZADA+"='"+contabilizada+"', "+FacFacturaBean.C_USUMODIFICACION+"="+usuModificacion+", "+FacFacturaBean.C_FECHAMODIFICACION+"="+fechaModificacion;
 				int con = 0;
 				tx.begin();
@@ -816,13 +823,10 @@ public class FacRegistroFichContaAdm extends MasterBeanAdministrador {
 	private java.io.PrintWriter generaAsiento2(java.io.PrintWriter pwcontabilidad, String fechaDesde, String fechaHasta, UserTransaction tx) throws SIGAException, ClsExceptions{
 	    // RGG 21/11/2007
 		String concepto 		= "";
-		String asientoContable 	= null;
-		Vector vResultado 	    = null;
 		Vector vLineasAbonos 	= null;
 		Hashtable hash 		    = null; 
 		Hashtable laHash 	    = null;
 		String select 		    = null; 
-		String sql 	            = null; 
 		String imp              = null; 
 		String importeIva       = null;
 		Vector vAsiento2        = new Vector();
@@ -833,26 +837,51 @@ public class FacRegistroFichContaAdm extends MasterBeanAdministrador {
 
 		try{
 		    // RGG atencion a los importes negativos
-			select = " SELECT A.IDABONO, A.NUMEROABONO, A.IDPERSONA, A.FECHA, " + 
-			    " (LA.CANTIDAD * LA.PRECIOUNITARIO * -1) IMPNETO, ((LA.CANTIDAD * LA.PRECIOUNITARIO) * (LA.IVA/100) * -1) IMPIVA, LA.IVA, LA.DESCRIPCIONLINEA DESCRIPCION, L.CTAPRODUCTOSERVICIO, L.CTAIVA, " + 
-			    " F.NUMEROFACTURA NUMEROFACTURA, DECODE(F.IDPERSONADEUDOR,NULL,F.IDPERSONA,F.IDPERSONADEUDOR) IDPERSONA,  D.DEVUELTA, " +
-			    " P.CONFDEUDOR, P.CONFINGRESOS, P.CTAINGRESOS, P.CTACLIENTES, " +
-			    " F.IMPTOTALPAGADOPORBANCO, F.IMPTOTALPAGADOPORCAJA," +
-			    " (SELECT BANCOS_CODIGO FROM FAC_DISQUETECARGOS WHERE IDINSTITUCION = d.IDINSTITUCION AND IDDISQUETECARGOS = d.iddisquetecargos) BANCOS_CODIGO " +
-			    " FROM   FAC_ABONO A, FAC_FACTURA F, FAC_LINEAABONO LA, FAC_LINEAFACTURA L, FAC_FACTURACIONPROGRAMADA P, FAC_FACTURAINCLUIDAENDISQUETE D " +
-			    " WHERE  A.IDINSTITUCION = F.IDINSTITUCION " +
-			    " AND    A.IDFACTURA = F.IDFACTURA " +
-			    " AND    A.IDINSTITUCION = LA.IDINSTITUCION " +
-			    " AND    A.IDABONO = LA.IDABONO " +
-			    " AND    LA.IDINSTITUCION = L.IDINSTITUCION (+) " +
-			    " AND    LA.IDFACTURA = L.IDFACTURA(+) " +
-			    " AND    LA.LINEAFACTURA = L.NUMEROLINEA(+) " +
-			    " AND    F.IDINSTITUCION = P.IDINSTITUCION " +
-			    " AND    F.IDSERIEFACTURACION = P.IDSERIEFACTURACION " +
-			    " AND    F.IDPROGRAMACION = P.IDPROGRAMACION (+)" +
-			    " AND    F.IDFACTURA = D.IDFACTURA (+)" +
-			    " AND    F.IDINSTITUCION = D.IDINSTITUCION (+)" +
-			    " AND    A.IDPAGOSJG IS NULL "; // pagos no sjcs
+			select = " SELECT A.IDABONO, " +
+						" A.NUMEROABONO, " +
+						" A.IDPERSONA, " +
+						" A.FECHA, " + 
+						" -1 * LA.CANTIDAD * LA.PRECIOUNITARIO AS IMPNETO, " +
+						" -1 * ROUND(LA.CANTIDAD * LA.PRECIOUNITARIO * LA.IVA / 100, 2) AS IMPIVA, " +
+						" LA.IVA, " +
+						" LA.DESCRIPCIONLINEA AS DESCRIPCION, " +
+						" L.CTAPRODUCTOSERVICIO, " +
+						" L.CTAIVA, " + 
+						" F.NUMEROFACTURA, " +
+						" DECODE(F.IDPERSONADEUDOR, NULL, F.IDPERSONA, F.IDPERSONADEUDOR) AS IDPERSONA, " +
+						" D.DEVUELTA, " +
+						" P.CONFDEUDOR, " +
+						" P.CONFINGRESOS, " +
+						" P.CTAINGRESOS, " +
+						" P.CTACLIENTES, " +
+						" F.IMPTOTALPAGADOPORBANCO, " +
+						" F.IMPTOTALPAGADOPORCAJA," +
+						" ( " +
+							" SELECT BANCOS_CODIGO " +
+							" FROM FAC_DISQUETECARGOS " +
+							" WHERE IDINSTITUCION = d.IDINSTITUCION " +
+								" AND IDDISQUETECARGOS = d.iddisquetecargos " +
+						" ) AS BANCOS_CODIGO " +
+					" FROM FAC_ABONO A, " +
+						" FAC_FACTURA F, " +
+						" FAC_LINEAABONO LA, " +
+						" FAC_LINEAFACTURA L, " +
+						" FAC_FACTURACIONPROGRAMADA P, " +
+						" FAC_FACTURAINCLUIDAENDISQUETE D " +
+					" WHERE A.IDINSTITUCION = F.IDINSTITUCION " +
+						" AND A.IDFACTURA = F.IDFACTURA " +
+						" AND A.IDINSTITUCION = LA.IDINSTITUCION " +
+						" AND A.IDABONO = LA.IDABONO " +
+						" AND LA.IDINSTITUCION = L.IDINSTITUCION (+) " +
+						" AND LA.IDFACTURA = L.IDFACTURA(+) " +
+						" AND LA.LINEAFACTURA = L.NUMEROLINEA(+) " +
+						" AND F.IDINSTITUCION = P.IDINSTITUCION " +
+						" AND F.IDSERIEFACTURACION = P.IDSERIEFACTURACION " +
+						" AND F.IDPROGRAMACION = P.IDPROGRAMACION (+)" +
+						" AND F.IDFACTURA = D.IDFACTURA (+)" +
+						" AND F.IDINSTITUCION = D.IDINSTITUCION (+)" +
+						" AND A.IDPAGOSJG IS NULL "; // pagos no sjcs
+			
 			contador++;
 			codigos.put(new Integer(contador),this.usrbean.getLocation());
 			select+=" AND    A.IDINSTITUCION = :"+contador;
@@ -893,12 +922,12 @@ public class FacRegistroFichContaAdm extends MasterBeanAdministrador {
 			    // importes
 			    imp=UtilidadesNumero.redondea((String)hash.get("IMPNETO"), 2);
 			    importeIva= UtilidadesNumero.redondea((String)hash.get("IMPIVA"), 2);
-			    String porcentajeIva= UtilidadesNumero.redondea((String)hash.get("IVA"), 2);
+			    String valorIva= UtilidadesNumero.redondea((String)hash.get("IVA"), 2);
 			    
 			    // Control de iva 0
 			    boolean ivacero=false;
 			    try {
-			        Double d = new Double(porcentajeIva);
+			        Double d = new Double(valorIva);
 			        if (d.doubleValue()==0.0) 
 			            ivacero=true;
 			    } catch (NumberFormatException nf) {
@@ -974,7 +1003,7 @@ public class FacRegistroFichContaAdm extends MasterBeanAdministrador {
 						UtilidadesHash.set(a, "DEBE", 			importeIva);
 						UtilidadesHash.set(a, "HABER", 			"0");
 						UtilidadesHash.set(a, "BASEIMPONIBLE", 	imp);
-						UtilidadesHash.set(a, "IVA", 			porcentajeIva);
+						UtilidadesHash.set(a, "IVA", 			valorIva);
 						UtilidadesHash.set(a, "CONTRAPARTIDA", 	asientoIVA);
 						pwcontabilidad.write(this.generarLineaAbono(asiento, a));
 					}	
@@ -1026,7 +1055,7 @@ public class FacRegistroFichContaAdm extends MasterBeanAdministrador {
 						UtilidadesHash.set(a, "DEBE", 			"0");
 						UtilidadesHash.set(a, "HABER", 			importeIva);
 						UtilidadesHash.set(a, "BASEIMPONIBLE", 	imp);
-						UtilidadesHash.set(a, "IVA", 			porcentajeIva);
+						UtilidadesHash.set(a, "IVA", 			valorIva);
 						UtilidadesHash.set(a, "CONTRAPARTIDA", 	asientoIVA);
 						pwcontabilidad.write(this.generarLineaAbono(asiento, a));
 					}	
@@ -1036,8 +1065,6 @@ public class FacRegistroFichContaAdm extends MasterBeanAdministrador {
 				///////////////////////////////
 				
 				if (!idAbono.equals(idAbonoAnt)) {
-					String[] claves = {"IDINSTITUCION","IDABONO"};
-					String[] campos = {"CONTABILIZADA","USUMODIFICACION","FECHAMODIFICACION"};
 					laHash = new Hashtable();
 					laHash.put("CONTABILIZADA",ClsConstants.FACTURA_ABONO_CONTABILIZADA);
 					laHash.put("IDINSTITUCION",this.usrbean.getLocation());

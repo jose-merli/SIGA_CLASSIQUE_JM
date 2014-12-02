@@ -14,8 +14,8 @@
 
 package com.siga.productos.form;
 
+import com.siga.beans.PysProductosInstitucionBean;
 import com.siga.general.MasterForm;
-import com.siga.beans.*;
 
 
 public class MantenimientoProductosForm extends MasterForm{
@@ -96,8 +96,8 @@ public class MantenimientoProductosForm extends MasterForm{
 		datos.put(PysProductosInstitucionBean.C_VALOR,Double.toString(v));
 	}
 
-	public void setIva(float v){		
-		datos.put(PysProductosInstitucionBean.C_PORCENTAJEIVA,Float.toString(v));
+	public void setIdTipoIva(float v){		
+		datos.put(PysProductosInstitucionBean.C_IDTIPOIVA,Float.toString(v));
 	}
 
 	public void setAltaInternet(String v){
@@ -217,8 +217,8 @@ public class MantenimientoProductosForm extends MasterForm{
 		return Double.parseDouble((String)this.datos.get(PysProductosInstitucionBean.C_VALOR));
 	}
 
-	public float getIva(){
-		return Float.parseFloat((String)this.datos.get(PysProductosInstitucionBean.C_PORCENTAJEIVA));
+	public float getIdTipoIva(){
+		return Float.parseFloat((String)this.datos.get(PysProductosInstitucionBean.C_IDTIPOIVA));
 	}
 
 	public String getAltaInternet(){

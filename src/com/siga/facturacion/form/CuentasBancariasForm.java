@@ -46,7 +46,7 @@ public class CuentasBancariasForm extends MasterForm {
 	String bancosCodigo;
 	
 	// JPT (19-08-2014): Nuevos valores para la comision
-	String comisionimporte, comisioniva, comisiondescripcion, comisioncuentacontable;
+	String comisionimporte, idTipoIva, comisiondescripcion, comisioncuentacontable;
 	
 //	FIXME Por prisas no hemos creado Formulario de series de facturacion. Deberia ser una lis de Forms 
 //	List<FacSeriefacturacion> seriesFacturacion;	
@@ -60,11 +60,11 @@ public class CuentasBancariasForm extends MasterForm {
 	public void setComisionimporte(String comisionimporte) {
 		this.comisionimporte = comisionimporte;
 	}
-	public String getComisioniva() {
-		return comisioniva;
+	public String getIdTipoIva() {
+		return idTipoIva;
 	}
-	public void setComisioniva(String comisioniva) {
-		this.comisioniva = comisioniva;
+	public void setIdTipoIva(String idTipoIva) {
+		this.idTipoIva = idTipoIva;
 	}
 	public String getComisiondescripcion() {
 		return comisiondescripcion;

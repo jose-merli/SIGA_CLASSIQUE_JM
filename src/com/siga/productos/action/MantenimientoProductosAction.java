@@ -36,7 +36,6 @@ import com.siga.beans.AdmContadorAdm;
 import com.siga.beans.AdmContadorBean;
 import com.siga.beans.CerSolicitudCertificadosBean;
 import com.siga.beans.GenParametrosAdm;
-import com.siga.beans.PysFormaPagoAdm;
 import com.siga.beans.PysFormaPagoProductoAdm;
 import com.siga.beans.PysFormaPagoProductoBean;
 import com.siga.beans.PysProductosInstitucionAdm;
@@ -213,13 +212,10 @@ public class MantenimientoProductosAction extends MasterAction {
 		// TODO Auto-generated method stub		
 		
 		String result="";
-		String producto;
-		String pago;		
 		String tipoProducto;
 		String[] pagosInternet;
 		String[] pagosSecretaria;		
 		ArrayList pagosCom = new ArrayList();		
-		Hashtable pagosHash;
 		UserTransaction tx = null;
 		boolean correcto=true;
 
@@ -228,12 +224,10 @@ public class MantenimientoProductosAction extends MasterAction {
 			UsrBean usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
 			PysProductosInstitucionAdm adminPI=new PysProductosInstitucionAdm(this.getUserBean(request));
 			PysFormaPagoProductoAdm adminFPP=new PysFormaPagoProductoAdm(this.getUserBean(request));
-			PysFormaPagoAdm adminFP = new PysFormaPagoAdm(this.getUserBean(request));
 			// Comienzo control de transacciones
 			tx = usr.getTransaction(); 
 			// Obtengo los datos del formulario
 			MantenimientoProductosForm miForm = (MantenimientoProductosForm)formulario;
-			producto=miForm.getProducto();
 			tipoProducto=miForm.getTipoProducto();
 			pagosInternet=miForm.getFormaPagoInternet();
 			pagosSecretaria=miForm.getFormaPagoSecretaria();
@@ -294,7 +288,6 @@ public class MantenimientoProductosAction extends MasterAction {
 			
 			// Creacion de las hash para insertar las diferentes formas de pago de Internet	y Secretaria
 			Hashtable hashAux = new Hashtable();
-			Vector vectorAux = new Vector();
 			
 			// Insercion Forma Pago Internet y Secretaria
 			if (correcto){
@@ -380,14 +373,12 @@ public class MantenimientoProductosAction extends MasterAction {
 		
 		String result="error";
 		String producto;
-		String pago;		
 		String paramConsulta;		
 		String tipoProducto;
 		String idProdInst;
 		String[] pagosInternet;
 		String[] pagosSecretaria;
 		ArrayList pagosCom = new ArrayList();		
-		Hashtable pagosHash;
 		Hashtable hashOriginal = new Hashtable();
 		Enumeration filaOriginal; 		
 		Row registroOriginal;
@@ -397,7 +388,6 @@ public class MantenimientoProductosAction extends MasterAction {
 		Hashtable hashAux = new Hashtable();
 		Vector vectorAux = new Vector();
 		Vector vectorFP = new Vector();
-		Vector camposOcultos = new Vector();
 		boolean correcto=true;
 		
 		
@@ -435,7 +425,6 @@ public class MantenimientoProductosAction extends MasterAction {
 			PysFormaPagoProductoAdm adminFPP=new PysFormaPagoProductoAdm(this.getUserBean(request));
 			PysProductosSolicitadosAdm adminPPS=new PysProductosSolicitadosAdm(this.getUserBean(request));
 			
-			PysFormaPagoAdm adminFP = new PysFormaPagoAdm(this.getUserBean(request));
 			// Comienzo control de transacciones
 			tx = usr.getTransaction(); 			
 			// Obtengo los datos del formulario
@@ -499,7 +488,7 @@ public class MantenimientoProductosAction extends MasterAction {
 				hashOriginal.put("DESCRIPCION",registroOriginal.getString(PysProductosInstitucionBean.C_DESCRIPCION));				              									
 				hashOriginal.put("CUENTACONTABLE",registroOriginal.getString(PysProductosInstitucionBean.C_CUENTACONTABLE));
 				hashOriginal.put("VALOR",registroOriginal.getString(PysProductosInstitucionBean.C_VALOR));				              									
-				hashOriginal.put("PORCENTAJEIVA",registroOriginal.getString(PysProductosInstitucionBean.C_PORCENTAJEIVA));								
+				hashOriginal.put("IDTIPOIVA",registroOriginal.getString(PysProductosInstitucionBean.C_IDTIPOIVA));								
 				hashOriginal.put("MOMENTOCARGO",registroOriginal.getString(PysProductosInstitucionBean.C_MOMENTOCARGO));
 				hashOriginal.put("SOLICITARBAJA",registroOriginal.getString(PysProductosInstitucionBean.C_SOLICITARBAJA));				              									
 				hashOriginal.put("SOLICITARALTA",registroOriginal.getString(PysProductosInstitucionBean.C_SOLICITARALTA));												

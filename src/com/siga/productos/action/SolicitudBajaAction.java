@@ -118,7 +118,6 @@ public class SolicitudBajaAction extends MasterAction{
 			UsrBean user=(UsrBean)request.getSession().getAttribute("USRBEAN");			
 			Integer idInstitucion=Integer.valueOf(user.getLocation());
 			Long idPersona=null;
-			Integer usuario = this.getUserName(request);				
 			
 			String nombre = null;
 			String numero = "";	
@@ -174,7 +173,6 @@ public class SolicitudBajaAction extends MasterAction{
 	protected String solicitar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		SolicitudBajaForm form = (SolicitudBajaForm) formulario;
 		
-		Long idPersona = form.getIdPersona();	
 		UserTransaction tx = null;
 		try{
 			UsrBean user=(UsrBean)request.getSession().getAttribute("USRBEAN");		
@@ -355,7 +353,7 @@ public class SolicitudBajaAction extends MasterAction{
 				UtilidadesHash.set(hash, PysProductosSolicitadosBean.C_IDPERSONA, idPersona);
 				UtilidadesHash.set(hash, PysProductosSolicitadosBean.C_IDCUENTA, bean.getIdCuenta());
 				UtilidadesHash.set(hash, PysProductosSolicitadosBean.C_IDFORMAPAGO, bean.getIdFormaPago());
-				UtilidadesHash.set(hash, PysProductosSolicitadosBean.C_PORCENTAJEIVA, bean.getPorcentajeIVA());
+				UtilidadesHash.set(hash, PysProductosSolicitadosBean.C_IDTIPOIVA, bean.getIdTipoIva());
 				UtilidadesHash.set(hash, PysProductosSolicitadosBean.C_CANTIDAD, bean.getCantidad());
 				UtilidadesHash.set(hash, PysProductosSolicitadosBean.C_NOFACTURABLE, bean.getNoFacturable());
 				/*GenParametrosAdm parametrosAdm = new GenParametrosAdm(usuario);

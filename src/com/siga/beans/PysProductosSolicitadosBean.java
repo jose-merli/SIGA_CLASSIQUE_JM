@@ -19,7 +19,7 @@ public class PysProductosSolicitadosBean extends MasterBean{
 	private Long 	idProducto, idProductoInstitucion, idPeticion, idPersona, idDireccion;
 	private String 	aceptado,noFacturable, fechaSolicitud;	
 	private Double 	valor;
-	private Float 	iva;
+	private Float 	idTipoIva;
 	
 
 	/* Nombre tabla */
@@ -39,7 +39,7 @@ public class PysProductosSolicitadosBean extends MasterBean{
 	static public final String C_CANTIDAD				= "CANTIDAD";
 	static public final String C_ACEPTADO				= "ACEPTADO";
 	static public final String C_VALOR					= "VALOR";
-	static public final String C_PORCENTAJEIVA			= "PORCENTAJEIVA";
+	static public final String C_IDTIPOIVA			= "IDTIPOIVA";
 	static public final String C_IDTIPOENVIOS			= "IDTIPOENVIOS";
 	static public final String C_IDDIRECCION			= "IDDIRECCION";
 	static public final String C_NOFACTURABLE			= "NOFACTURABLE";
@@ -61,7 +61,7 @@ public class PysProductosSolicitadosBean extends MasterBean{
 	public void setIdProductoInstitucion(Long idProductoInstitucion) {this.idProductoInstitucion = idProductoInstitucion;}
 	public void setIdTipoProducto(Integer idTipoProducto)	{this.idTipoProducto = idTipoProducto;}
 	public void setValor(Double valor)						{this.valor = valor;}	
-	public void setPorcentajeIVA(Float iva)					{this.iva = iva;}
+	public void setIdTipoIva(Float idTipoIva)					{this.idTipoIva = idTipoIva;}
 	public void setIdTipoEnvios(Integer tipoEnvios)			{this.idTipoEnvios = tipoEnvios;}	
 	public void setIdDireccion(Long direccion)				{this.idDireccion = direccion;}
 	public void setMetodoSolicitud(Integer metodoSolicitud)	{this.metodoSolicitud = metodoSolicitud;}	
@@ -83,7 +83,7 @@ public class PysProductosSolicitadosBean extends MasterBean{
 	public Long getIdProductoInstitucion() 	{return idProductoInstitucion;}
 	public Integer getIdTipoProducto() 		{return idTipoProducto;}
 	public Double getValor() 				{return valor;}
-	public Float getPorcentajeIVA()			{return iva;}
+	public Float getIdTipoIva()			{return idTipoIva;}
 	public Integer getIdTipoEnvios()		{return this.idTipoEnvios;}	
 	public Long getIdDireccion()			{return this.idDireccion;}
 	public String getFechaSolicitud()		{return this.fechaSolicitud;}	

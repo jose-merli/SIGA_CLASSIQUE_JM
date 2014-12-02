@@ -40,7 +40,7 @@ public class Articulo
 	
 	private Double precio; // VALOR
 	private Float valorIva;
-	private Float idIva;
+	private Float idTipoIva;
 	private int cantidad;
 	private Integer idFormaPago;
 	private String formaPago;
@@ -104,7 +104,7 @@ public class Articulo
 				this.setIdArticuloInstitucionDescripcion(UtilidadesHash.getString(producto, "DESCRIPCION_P_INSTITUCION"));
 				this.setPrecio(UtilidadesHash.getDouble(producto, PysProductosInstitucionBean.C_VALOR));
 				this.setValorIva(UtilidadesHash.getFloat(producto, "VALORIVA"));
-				this.setIdIva(UtilidadesHash.getFloat(producto, PysProductosInstitucionBean.C_PORCENTAJEIVA));
+				this.setIdTipoIva(UtilidadesHash.getFloat(producto, PysProductosInstitucionBean.C_IDTIPOIVA));
 				this.setMomentoCargo(UtilidadesHash.getString(producto, PysProductosInstitucionBean.C_MOMENTOCARGO));
 								
 				// UNICAMENTE PARA PRODUCTOS QUE SON CERTIFICADOS
@@ -124,7 +124,7 @@ public class Articulo
 				this.setIdTipoDescripcion(UtilidadesHash.getString(servicio, "DESCRIPCION_TIPO"));
 				this.setIdArticuloInstitucionDescripcion(UtilidadesHash.getString(servicio, "DESCRIPCION_S_INSTITUCION"));
 				this.setValorIva(UtilidadesHash.getFloat(servicio, "VALORIVA"));
-				this.setIdIva(UtilidadesHash.getFloat(servicio, PysServiciosInstitucionBean.C_PORCENTAJEIVA));
+				this.setIdTipoIva(UtilidadesHash.getFloat(servicio, PysServiciosInstitucionBean.C_IDTIPOIVA));
 				this.setMomentoCargo(UtilidadesHash.getString(servicio, PysServiciosInstitucionBean.C_MOMENTOCARGO));
 			}
 		}
@@ -471,12 +471,12 @@ public class Articulo
 		this.valorIva = valorIva;
 	}
 
-	public Float getIdIva() {
-		return idIva;
+	public Float getIdTipoIva() {
+		return idTipoIva;
 	}
 
-	public void setIdIva(Float idIva) {
-		this.idIva = idIva;
+	public void setIdTipoIva(Float idTipoIva) {
+		this.idTipoIva = idTipoIva;
 	}
 
 	public String getDescripcionPrecio() {

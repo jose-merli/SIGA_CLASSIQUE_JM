@@ -255,7 +255,6 @@ public class MantenimientoServiciosAction extends MasterAction {
 		Vector pagoComun=new Vector();
 		Vector pagoSec=new Vector();
 		Vector infoPrecios=new Vector();		
-		boolean porDefecto=false;
 		
 		try {
 			
@@ -456,7 +455,6 @@ public class MantenimientoServiciosAction extends MasterAction {
 			            request.getSession().setAttribute("DATABACKUPCONSULTA", consultaHash);
 					}catch(Exception e){
 						//si no hay consulta no debe fallar, simplemente no se mostrarán criterios
-						porDefecto = true;
 					}
 					
 					// Paso valores para dar valores iniciales al formulario
@@ -501,7 +499,6 @@ public class MantenimientoServiciosAction extends MasterAction {
 		Vector pagoInt=new Vector();
 		Vector pagoComun=new Vector();
 		Vector pagoSec=new Vector();		
-		boolean porDefecto=false;
 		
 		try {
 			
@@ -641,7 +638,6 @@ public class MantenimientoServiciosAction extends MasterAction {
 		            request.getSession().setAttribute("DATABACKUPCONSULTA", consultaHash);
 				}catch(Exception e){
 					//si no hay consulta no debe fallar, simplemente no se mostrarán criterios
-					porDefecto = true;
 				}
 				
 				// Paso valores para dar valores iniciales al formulario
@@ -677,8 +673,6 @@ public class MantenimientoServiciosAction extends MasterAction {
 	 * @exception  SIGAException  En cualquier caso de error
 	 */
 	protected String nuevo(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
-
-		PysFormaPagoBean bean=new PysFormaPagoBean ();
 		String result="nuevo";
 		try{
 						
@@ -705,12 +699,10 @@ public class MantenimientoServiciosAction extends MasterAction {
 		
 		String result="";
 		String servicio;
-		String pago;		
 		String tipoServicio;
 		String[] pagosInternet;
 		String[] pagosSecretaria;		
 		ArrayList pagosCom = new ArrayList();		
-		Hashtable pagosHash;
 		UserTransaction tx = null;
 		boolean correcto=true;
 
@@ -719,7 +711,6 @@ public class MantenimientoServiciosAction extends MasterAction {
 			UsrBean usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
 			PysServiciosInstitucionAdm admin=new PysServiciosInstitucionAdm(this.getUserBean(request));
 			PysFormaPagoServiciosAdm adminFPS=new PysFormaPagoServiciosAdm(this.getUserBean(request));
-			PysFormaPagoAdm adminFP = new PysFormaPagoAdm(this.getUserBean(request));
 			PysPreciosServiciosAdm adminPS = new PysPreciosServiciosAdm(this.getUserBean(request));
 			// Comienzo control de transacciones
 			tx = usr.getTransactionPesada(); 
@@ -753,7 +744,6 @@ public class MantenimientoServiciosAction extends MasterAction {
 			
 			// Creacion de las hash para insertar las diferentes formas de pago de Internet	y Secretaria
 			Hashtable hashAux = new Hashtable();
-			Vector vectorAux = new Vector();
 			
 			// Insercion Forma Pago Internet y Secretaria
 			if (correcto){
@@ -958,7 +948,7 @@ public class MantenimientoServiciosAction extends MasterAction {
 				hashOriginal.put(PysServiciosInstitucionBean.C_DESCRIPCION,registroOriginal.getString(PysServiciosInstitucionBean.C_DESCRIPCION));
 				hashOriginal.put(PysServiciosInstitucionBean.C_CUENTACONTABLE,registroOriginal.getString(PysServiciosInstitucionBean.C_CUENTACONTABLE));
 				hashOriginal.put(PysServiciosInstitucionBean.C_INICIOFINALPONDERADO,registroOriginal.getString(PysServiciosInstitucionBean.C_INICIOFINALPONDERADO));
-				hashOriginal.put(PysServiciosInstitucionBean.C_PORCENTAJEIVA,registroOriginal.getString(PysServiciosInstitucionBean.C_PORCENTAJEIVA));
+				hashOriginal.put(PysServiciosInstitucionBean.C_IDTIPOIVA,registroOriginal.getString(PysServiciosInstitucionBean.C_IDTIPOIVA));
 				hashOriginal.put(PysServiciosInstitucionBean.C_SOLICITARBAJA,registroOriginal.getString(PysServiciosInstitucionBean.C_SOLICITARBAJA));
 				hashOriginal.put(PysServiciosInstitucionBean.C_SOLICITARALTA,registroOriginal.getString(PysServiciosInstitucionBean.C_SOLICITARALTA));
 				hashOriginal.put(PysServiciosInstitucionBean.C_AUTOMATICO,registroOriginal.getString(PysServiciosInstitucionBean.C_AUTOMATICO));

@@ -18,6 +18,7 @@ import com.atos.utils.UsrBean;
 import com.siga.Utilidades.PaginadorBind;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesMultidioma;
+import com.siga.Utilidades.UtilidadesNumero;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.general.Articulo;
 import com.siga.general.SIGAException;
@@ -55,7 +56,7 @@ public class PysProductosSolicitadosAdm extends MasterBeanAdministrador {
 				PysProductosSolicitadosBean.C_CANTIDAD,				
 				PysProductosSolicitadosBean.C_ACEPTADO,	
 				PysProductosSolicitadosBean.C_VALOR,
-				PysProductosSolicitadosBean.C_PORCENTAJEIVA,				
+				PysProductosSolicitadosBean.C_IDTIPOIVA,				
 				PysProductosSolicitadosBean.C_IDTIPOENVIOS,
 				PysProductosSolicitadosBean.C_IDDIRECCION,
 				PysProductosSolicitadosBean.C_FECHAMODIFICACION,
@@ -106,7 +107,7 @@ public class PysProductosSolicitadosAdm extends MasterBeanAdministrador {
 			bean.setIdPersona(UtilidadesHash.getLong(hash,PysProductosSolicitadosBean.C_IDPERSONA));
 			bean.setIdCuenta(UtilidadesHash.getInteger(hash,PysProductosSolicitadosBean.C_IDCUENTA));
 			bean.setIdFormaPago(UtilidadesHash.getInteger(hash,PysProductosSolicitadosBean.C_IDFORMAPAGO));
-			bean.setPorcentajeIVA(UtilidadesHash.getFloat(hash,PysProductosSolicitadosBean.C_PORCENTAJEIVA));
+			bean.setIdTipoIva(UtilidadesHash.getFloat(hash,PysProductosSolicitadosBean.C_IDTIPOIVA));
 			bean.setCantidad(UtilidadesHash.getInteger(hash,PysProductosSolicitadosBean.C_CANTIDAD));
 			bean.setAceptado(UtilidadesHash.getString(hash,PysProductosSolicitadosBean.C_ACEPTADO));
 			bean.setValor(UtilidadesHash.getDouble(hash,PysProductosSolicitadosBean.C_VALOR));
@@ -146,7 +147,7 @@ public class PysProductosSolicitadosAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(hash, PysProductosSolicitadosBean.C_IDPERSONA, b.getIdPersona());
 			UtilidadesHash.set(hash, PysProductosSolicitadosBean.C_IDCUENTA, b.getIdCuenta());
 			UtilidadesHash.set(hash, PysProductosSolicitadosBean.C_IDFORMAPAGO, b.getIdFormaPago());
-			UtilidadesHash.set(hash, PysProductosSolicitadosBean.C_PORCENTAJEIVA, b.getPorcentajeIVA());
+			UtilidadesHash.set(hash, PysProductosSolicitadosBean.C_IDTIPOIVA, b.getIdTipoIva());
 			UtilidadesHash.set(hash, PysProductosSolicitadosBean.C_CANTIDAD, b.getCantidad());
 			UtilidadesHash.set(hash, PysProductosSolicitadosBean.C_ACEPTADO, b.getAceptado());
 			UtilidadesHash.set(hash, PysProductosSolicitadosBean.C_VALOR, b.getValor());			
@@ -298,7 +299,7 @@ public class PysProductosSolicitadosAdm extends MasterBeanAdministrador {
 									PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDCUENTA + ", " + 
 									PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_CANTIDAD + ", " +
 									PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_VALOR 	+ ", " +
-									PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_PORCENTAJEIVA + ", " +
+									PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDTIPOIVA + ", " +
 									PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_ACEPTADO + ", " +
 									PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDFORMAPAGO + ", " +
 									PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDTIPOENVIOS + ", " +
@@ -417,7 +418,7 @@ public class PysProductosSolicitadosAdm extends MasterBeanAdministrador {
 										PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDPERSONA + ", " +
 										PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_VALOR +
 											" || '#' || " +
-											PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_PORCENTAJEIVA +
+											PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDTIPOIVA +
 							        " ) AS ANTICIPAR ";
 										
 			String from  =  " FROM " + PysProductosSolicitadosBean.T_NOMBRETABLA + ", " + 
@@ -427,7 +428,7 @@ public class PysProductosSolicitadosAdm extends MasterBeanAdministrador {
 			String where =  " WHERE " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDINSTITUCION + " = " + idInstitucion +
 								" AND " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDPETICION + " = " + PysPeticionCompraSuscripcionBean.T_NOMBRETABLA + "." + PysPeticionCompraSuscripcionBean.C_IDPETICION + 
 								" AND " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDINSTITUCION + " = " + PysPeticionCompraSuscripcionBean.T_NOMBRETABLA + "." + PysPeticionCompraSuscripcionBean.C_IDINSTITUCION +
-								" AND " + PysTipoIvaBean.T_NOMBRETABLA + "." + PysTipoIvaBean.C_IDTIPOIVA + " = " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_PORCENTAJEIVA;
+								" AND " + PysTipoIvaBean.T_NOMBRETABLA + "." + PysTipoIvaBean.C_IDTIPOIVA + " = " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDTIPOIVA;
 			
 			if (idPeticion != null) {
 				where += " AND " + PysPeticionCompraSuscripcionBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDPETICION + " = " + idPeticion;
@@ -635,7 +636,7 @@ public class PysProductosSolicitadosAdm extends MasterBeanAdministrador {
 				if(productoBean.getNoFacturable().equals("0")){
 				
 					if (productoBean.getIdFormaPago().intValue() == ClsConstants.TIPO_FORMAPAGO_TARJETA) {
-						double importeAnticipadoTarjeta = new Double(""+productoBean.getCantidad()).doubleValue() * (productoBean.getValor().doubleValue() + ( (productoBean.getValor().doubleValue()*productoBean.getPorcentajeIVA().floatValue()) / 100 ));
+						double importeAnticipadoTarjeta = productoBean.getCantidad().doubleValue() * UtilidadesNumero.redondea(productoBean.getValor().doubleValue() * (1 + (productoBean.getIdTipoIva().floatValue() / 100)),2);
 						compraBean.setImporteAnticipado(new Double(importeAnticipadoTarjeta));	
 					}
 					else {
@@ -646,7 +647,7 @@ public class PysProductosSolicitadosAdm extends MasterBeanAdministrador {
 					}
 				}
 
-				compraBean.setIva(productoBean.getPorcentajeIVA());				
+				compraBean.setIdTipoIva(productoBean.getIdTipoIva());				
 				
 				PysCompraAdm compraAdm = new PysCompraAdm (this.usrbean);
 				if (!compraAdm.insert(compraBean)) {
@@ -908,7 +909,7 @@ public class PysProductosSolicitadosAdm extends MasterBeanAdministrador {
 		}
 		UtilidadesHash.set(hash, PysProductosSolicitadosBean.C_IDFORMAPAGO, a.getIdFormaPago());
 		//INC_07291_SIGA Porcentajes de IVA.
-		UtilidadesHash.set(hash, PysProductosSolicitadosBean.C_PORCENTAJEIVA, a.getIdIva());
+		UtilidadesHash.set(hash, PysProductosSolicitadosBean.C_IDTIPOIVA, a.getIdTipoIva());
 		UtilidadesHash.set(hash, PysProductosSolicitadosBean.C_CANTIDAD, new Integer(a.getCantidad()));
 		UtilidadesHash.set(hash, PysProductosSolicitadosBean.C_ACEPTADO, ClsConstants.PRODUCTO_PENDIENTE);
 		UtilidadesHash.set(hash, PysProductosSolicitadosBean.C_VALOR, a.getPrecio());		
@@ -975,7 +976,7 @@ public class PysProductosSolicitadosAdm extends MasterBeanAdministrador {
 		}
 		UtilidadesHash.set(hash, PysProductosSolicitadosBean.C_IDFORMAPAGO, a.getIdFormaPago());
 		//INC_07291_SIGA Porcentajes de IVA.
-		UtilidadesHash.set(hash, PysProductosSolicitadosBean.C_PORCENTAJEIVA, a.getIdIva());
+		UtilidadesHash.set(hash, PysProductosSolicitadosBean.C_IDTIPOIVA, a.getIdTipoIva());
 		UtilidadesHash.set(hash, PysProductosSolicitadosBean.C_CANTIDAD, new Integer(a.getCantidad()));
 		UtilidadesHash.set(hash, PysProductosSolicitadosBean.C_ACEPTADO, ClsConstants.PRODUCTO_PENDIENTE);
 		UtilidadesHash.set(hash, PysProductosSolicitadosBean.C_VALOR, a.getPrecio());		
@@ -1068,7 +1069,6 @@ public class PysProductosSolicitadosAdm extends MasterBeanAdministrador {
 				for (int i = 0; i < rc.size(); i++)	{		
 					Row fila = (Row) rc.get(i);
 					Hashtable registro = (Hashtable)fila.getRow();
-					Hashtable registro2 = new Hashtable();
 					if (registro != null) 
 						datos.add(registro);
 				}
@@ -1151,7 +1151,7 @@ public class PysProductosSolicitadosAdm extends MasterBeanAdministrador {
 					" WHERE " + PysCompraBean.T_NOMBRETABLA + "."+ PysCompraBean.C_IDINSTITUCION + " = " + idInstitucion +
 						" AND " + PysCompraBean.T_NOMBRETABLA + "." + PysCompraBean.C_IDPETICION + " = " + PysPeticionCompraSuscripcionBean.T_NOMBRETABLA + "." + PysPeticionCompraSuscripcionBean.C_IDPETICION +
 						" AND " + PysCompraBean.T_NOMBRETABLA + "." + PysCompraBean.C_IDINSTITUCION + " = " + PysPeticionCompraSuscripcionBean.T_NOMBRETABLA + "." + PysPeticionCompraSuscripcionBean.C_IDINSTITUCION +
-						" AND " + PysCompraBean.T_NOMBRETABLA + "." + PysCompraBean.C_PORCENTAJEIVA + " = " + PysTipoIvaBean.T_NOMBRETABLA + "." + PysTipoIvaBean.C_IDTIPOIVA + 
+						" AND " + PysCompraBean.T_NOMBRETABLA + "." + PysCompraBean.C_IDTIPOIVA + " = " + PysTipoIvaBean.T_NOMBRETABLA + "." + PysTipoIvaBean.C_IDTIPOIVA + 
 						" AND " + PysCompraBean.T_NOMBRETABLA + "." + PysCompraBean.C_IDINSTITUCION + " = " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDINSTITUCION +
 						" AND " + PysCompraBean.T_NOMBRETABLA + "." + PysCompraBean.C_IDTIPOPRODUCTO + " = " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDTIPOPRODUCTO +
 						" AND " + PysCompraBean.T_NOMBRETABLA + "." + PysCompraBean.C_IDPRODUCTO + " = " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDPRODUCTO +

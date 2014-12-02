@@ -1818,7 +1818,7 @@ public class Facturacion {
 		FacBancoInstitucionBean beanBancoInstitucion = (FacBancoInstitucionBean) comisiones.firstElement();		
 				
 		Hashtable<String,Object> hTipoIva = new Hashtable<String,Object>();
-		hTipoIva.put(PysTipoIvaBean.C_IDTIPOIVA, beanBancoInstitucion.getComisionIVA());
+		hTipoIva.put(PysTipoIvaBean.C_IDTIPOIVA, beanBancoInstitucion.getIdTipoIva());
 		
 		PysTipoIvaAdm admTipoIva = new PysTipoIvaAdm(userBean);
 		Vector<?> vTipoIva = admTipoIva.selectByPK(hTipoIva);
@@ -1961,7 +1961,7 @@ public class Facturacion {
 			}						
 			
 			// JPT - Devoluciones 117 - Calculo el campo CTAIVA
-			String sCTAIVA = admTipoIva.obtenerCTAIVA(beanFacFactura.getIdInstitucion().toString(), beanBancoInstitucion.getComisionIVA().toString());
+			String sCTAIVA = admTipoIva.obtenerCTAIVA(beanFacFactura.getIdInstitucion().toString(), beanBancoInstitucion.getIdTipoIva().toString());
 			
 			// JPT - Devoluciones 117 - Genero un objeto para la nueva linea con la comision
 			beanFacLineaFactura = new FacLineaFacturaBean();

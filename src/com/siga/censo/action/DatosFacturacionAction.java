@@ -182,8 +182,6 @@ public class DatosFacturacionAction extends MasterAction {
 			DatosFacturacionForm miform = (DatosFacturacionForm)formulario;
 			miform.reset(mapping,request);
 
-			UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");
-
 			// cargo los valores recibidos por paramtros en el FORM
 			miform.setIdInstitucion(request.getParameter("idInstitucion"));			
 			miform.setIdPersona(request.getParameter("idPersona"));			
@@ -623,8 +621,6 @@ public class DatosFacturacionAction extends MasterAction {
 							HttpServletRequest request, 
 							HttpServletResponse response) throws SIGAException 
 	{
-		String result="error";
-		Hashtable hashOriginal = new Hashtable(); 		
 		UserTransaction tx = null;
 		String salida = null;
 		
@@ -632,12 +628,10 @@ public class DatosFacturacionAction extends MasterAction {
 			// Obtengo usuario y creo manejadores para acceder a las BBDD
 			UsrBean usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
 
-			String idInstitucion = "";
 			String idTipoServicios = "";
 			String idServicio = "";
 			String idServiciosInstitucion = "";
 			String idPeticion = "";
-			idInstitucion = request.getParameter("idInstitucion");
 			idTipoServicios = request.getParameter("idTipoServicios");
 			idServicio = request.getParameter("idServicio");
 			idServiciosInstitucion = request.getParameter("idServiciosInstitucion");
@@ -1014,7 +1008,7 @@ public class DatosFacturacionAction extends MasterAction {
 				String diezgg = datosPrecio[1];
 				diezgg = diezgg.replaceAll(",",".");
 
-				//UtilidadesHash.set(registro, "PORCENTAJEIVA", new Float(diezgg)); => JPT: No lo utiliza la jsp
+				//UtilidadesHash.set(registro, "VALORIVA", new Float(diezgg)); => JPT: No lo utiliza la jsp
 				UtilidadesHash.set(registro, "VALORIVA", new Float(diezgg));
 				
 				//UtilidadesHash.set(registro, "SERVICIO_IDPRECIOSSERVICIOS", new Integer(datosPrecio[2])); => JPT: No lo utiliza la jsp

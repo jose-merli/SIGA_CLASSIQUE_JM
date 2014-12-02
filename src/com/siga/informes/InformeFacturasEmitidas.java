@@ -2,7 +2,6 @@ package com.siga.informes;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.TreeMap;
@@ -33,7 +32,6 @@ import com.siga.beans.AdmInformeBean;
 import com.siga.beans.AdmLenguajesAdm;
 import com.siga.beans.CenInstitucionAdm;
 import com.siga.beans.FacFacturaAdm;
-import com.siga.beans.GenParametrosAdm;
 import com.siga.certificados.Plantilla;
 import com.siga.general.SIGAException;
 
@@ -92,20 +90,15 @@ public class InformeFacturasEmitidas extends MasterReport
 	
 	public File generarListadoFacturasEmitidasOld (HttpServletRequest request, Hashtable datos) throws ClsExceptions,SIGAException 
 	{
-		String resultado="exito";
 		File fPdf = null;
 		
-		ArrayList ficherosPDF= new ArrayList();
-		File rutaFin=null;
 		File rutaTmp=null;
-		int numeroCarta=0;
 			
 		try {
 			UsrBean usr = this.getUsuario();
 			String idioma = usr.getLanguage();
 			String idInstitucion = usr.getLocation();
 			
-			GenParametrosAdm admParametros = new GenParametrosAdm(usr);
 		    ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
 //			ReadProperties rp = new ReadProperties("SIGA.properties");	
 			
@@ -407,13 +400,13 @@ public class InformeFacturasEmitidas extends MasterReport
             		
             		
             		// Calculo de total x iva
-            		Float porcentajeIVA  = UtilidadesHash.getFloat(fila, "IVA_PORCENTAJE");
-            		Hashtable htTotalesIva = (Hashtable) tmTotalesIva.get(porcentajeIVA);
-            		htTotalesIva = almacenaDesglosesIva(htTotalesIva, porcentajeIVA.floatValue(),
+            		Float valorIVA  = UtilidadesHash.getFloat(fila, "IVA_PORCENTAJE");
+            		Hashtable htTotalesIva = (Hashtable) tmTotalesIva.get(valorIVA);
+            		htTotalesIva = almacenaDesglosesIva(htTotalesIva, valorIVA.floatValue(),
             								   UtilidadesHash.getFloat(fila, "BASE_IMPONIBLE").floatValue(),
             				                   UtilidadesHash.getFloat(fila, "IVA").floatValue(), 
 											   UtilidadesHash.getFloat(fila, "TOTAL_FACTURA").floatValue());
-            		tmTotalesIva.put(porcentajeIVA, htTotalesIva);
+            		tmTotalesIva.put(valorIVA, htTotalesIva);
             		
             		// Calculo de total acumulado
             		totalAcumuladoIVA           += UtilidadesHash.getFloat(fila, "IVA").floatValue();
@@ -436,8 +429,8 @@ public class InformeFacturasEmitidas extends MasterReport
             	//Miramo se es el primer registro para poner el titulo
             	String textoDesgloseIva = UtilidadesString.getMensajeIdioma(this.getUsuario(), "facturacion.facturas.emitidas.desgloseiva");
             	while (iteIva.hasNext()) {
-					Float keyPorcentajeIva = (Float) iteIva.next();
-					Hashtable htTotalIva = (Hashtable)tmTotalesIva.get(keyPorcentajeIva);
+					Float keyValorIva = (Float) iteIva.next();
+					Hashtable htTotalIva = (Hashtable)tmTotalesIva.get(keyValorIva);
 					desgloseIvaE = xmlDoc.createElement("desgloseIva");
 					
 				    //desgloseIva.addContent(new Element("textoDesgloseIva").setText(textoDesgloseIva));
@@ -509,19 +502,19 @@ public class InformeFacturasEmitidas extends MasterReport
 	/**
 	 * 
 	 * @param registro Hashtable con los datos de cada una delas filas del informe
-	 * @param porcentajeIVA Porcentaje de Iva a almacenar en el hash registro
+	 * @param valorIVA Porcentaje de Iva a almacenar en el hash registro
 	 * @param baseImponible Base imponible a almacenar en el hash registro
 	 * @param iva Iva a almacenar en el hash registro
 	 * @param totalFactura Importe totald de la factura a almacenar en el hash registro
 	 * @return
 	 */
 	
-	private Hashtable almacenaDesglosesIva (Hashtable registro, float porcentajeIVA, float baseImponible, float iva, float totalFactura) 
+	private Hashtable almacenaDesglosesIva (Hashtable registro, float valorIVA, float baseImponible, float iva, float totalFactura) 
 	{
 		try {
 			if (registro == null) {
 				registro = new Hashtable();
-				UtilidadesHash.set(registro, "POR_IVA_IVA_PORCENTAJE", new Double(porcentajeIVA));
+				UtilidadesHash.set(registro, "POR_IVA_IVA_PORCENTAJE", new Double(valorIVA));
 			}
 			
 			double aux = 0.0d;

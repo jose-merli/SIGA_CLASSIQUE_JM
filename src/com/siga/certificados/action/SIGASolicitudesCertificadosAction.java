@@ -2222,7 +2222,7 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 								// Creo que el importe anticipado es cero
 								compraBean.setImporteAnticipado(new Double(0));
 								
-								compraBean.setIva(productoSolicitadoBean.getPorcentajeIVA());
+								compraBean.setIdTipoIva(productoSolicitadoBean.getIdTipoIva());
 								PysCompraAdm compraAdm = new PysCompraAdm(this.getUserBean(request));
 								try {
 									if (!compraAdm.insert(compraBean)) {
@@ -2396,7 +2396,7 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 			
 			FacFacturacionProgramadaBean programacion = null;			    
 		    // PASO 0: ANTES DE FACTURAR APUNTO EL IMPORTE TOTAL COMO IMPORTE ANTICIPADO
-		    double importe = beanCompra.getCantidad().intValue() * UtilidadesNumero.redondea(beanCompra.getImporteUnitario().doubleValue() * (1 + (beanCompra.getIva().doubleValue() / 100)), 2);
+		    double importe = beanCompra.getCantidad().intValue() * UtilidadesNumero.redondea(beanCompra.getImporteUnitario().doubleValue() * (1 + (beanCompra.getIdTipoIva().doubleValue() / 100)), 2);
 		    beanCompra.setImporteAnticipado(new Double(importe));
 		    if (!admCompra.updateDirect(beanCompra)) {
 		    	// LIBERAMOS EL BLOQUEO DE LAS TABLAS Y LA TRANSACCIÓN

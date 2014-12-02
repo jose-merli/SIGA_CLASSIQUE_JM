@@ -28,7 +28,7 @@ public class PysProductosInstitucionBean extends MasterBean {
 	private String 	descripcion;
 	private String 	cuentacontable;
 	private Double valor;
-	private Float porcentajeIva;
+	private Float idTipoIva;
 	private String 	momentoCargo;
 	private String 	solicitarBaja;
 	private String 	solicitarAlta;
@@ -51,7 +51,7 @@ public class PysProductosInstitucionBean extends MasterBean {
 	static public final String C_DESCRIPCION	= "DESCRIPCION";
 	static public final String C_CUENTACONTABLE	= "CUENTACONTABLE";
 	static public final String C_VALOR	= "VALOR";
-	static public final String C_PORCENTAJEIVA	= "PORCENTAJEIVA";
+	static public final String C_IDTIPOIVA	= "IDTIPOIVA";
 	static public final String C_MOMENTOCARGO	= "MOMENTOCARGO";
 	static public final String C_SOLICITARBAJA	= "SOLICITARBAJA";
 	static public final String C_SOLICITARALTA	= "SOLICITARALTA";
@@ -70,7 +70,7 @@ public class PysProductosInstitucionBean extends MasterBean {
 	public void setDescripcion (String s)	{  this.descripcion=s;}
 	public void setCuentacontable (String s)	{ this.cuentacontable=s;}
 	public void setValor (Double v)	{ this.valor=v;}
-	public void setPorcentajeIva (Float v)	{ this.porcentajeIva=v;}
+	public void setIdTipoIva (Float idTipoIva)	{ this.idTipoIva=idTipoIva;}
 	public void setMomentoCargo (String s)	{ this.momentoCargo=s;}
 	public void setSolicitarBaja (String s)	{ this.solicitarBaja=s;}
 	public void setSolicitarAlta (String s)	{ this.solicitarAlta=s;}
@@ -90,7 +90,7 @@ public class PysProductosInstitucionBean extends MasterBean {
 	public String getDescripcion ()	{ return this.descripcion;}
 	public String getCuentacontable ()	{ return this.cuentacontable;}
 	public Double getValor ()	{ return this.valor;}
-	public Float getPorcentajeIva ()	{ return this.porcentajeIva;}
+	public Float getIdTipoIva ()	{ return this.idTipoIva;}
 	public String getMomentoCargo ()	{ return this.momentoCargo;}
 	public String getSolicitarBaja ()	{ return this.solicitarBaja;}
 	public String getSolicitarAlta ()	{ return this.solicitarAlta;}

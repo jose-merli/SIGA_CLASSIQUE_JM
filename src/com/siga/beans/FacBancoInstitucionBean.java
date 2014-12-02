@@ -10,9 +10,9 @@ package com.siga.beans;
 public class FacBancoInstitucionBean extends MasterBean {
 
 	/* Variables */
-	private Integer idInstitucion, idsufijo, idsufijosjcs;
-	private String 	bancosCodigo, codBanco, codSucursal, numeroCuenta, fechaBaja, asientoContable, digitoControl, sjcs,nosjcs, iban;	
-	private Double comisionImporte, comisionIVA;
+	private Integer idInstitucion, idsufijosjcs;
+	private String 	bancosCodigo, codBanco, codSucursal, numeroCuenta, fechaBaja, asientoContable, digitoControl, sjcs, iban;	
+	private Double comisionImporte, idTipoIva;
 	private String comisionDescripcion, comisionCuentaContable;
 	
 	/* Nombre tabla */
@@ -32,7 +32,7 @@ public class FacBancoInstitucionBean extends MasterBean {
 	static public final String C_IBAN						= "IBAN";
 	static public final String C_COMISIONIMPORTE			= "COMISIONIMPORTE";
 	static public final String C_COMISIONDESCRIPCION		= "COMISIONDESCRIPCION";
-	static public final String C_COMISIONIVA				= "COMISIONIVA";
+	static public final String C_IDTIPOIVA					= "IDTIPOIVA";
 	static public final String C_COMISIONCUENTACONTABLE		= "COMISIONCUENTACONTABLE";	
 
 	/* Métodos get */
@@ -115,11 +115,11 @@ public class FacBancoInstitucionBean extends MasterBean {
 	public void setComisionImporte(Double comisionImporte) {
 		this.comisionImporte = comisionImporte;
 	}
-	public Double getComisionIVA() {
-		return comisionIVA;
+	public Double getIdTipoIva() {
+		return idTipoIva;
 	}
-	public void setComisionIVA(Double comisionIVA) {
-		this.comisionIVA = comisionIVA;
+	public void setIdTipoIva(Double idTipoIva) {
+		this.idTipoIva = idTipoIva;
 	}
 	public String getComisionDescripcion() {
 		return comisionDescripcion;

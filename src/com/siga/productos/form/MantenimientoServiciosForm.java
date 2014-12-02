@@ -11,9 +11,10 @@
 
 package com.siga.productos.form;
 
-import com.siga.general.MasterForm;
 import com.siga.Utilidades.UtilidadesHash;
-import com.siga.beans.*;
+import com.siga.beans.PysPreciosServiciosBean;
+import com.siga.beans.PysServiciosInstitucionBean;
+import com.siga.general.MasterForm;
 
 
 public class MantenimientoServiciosForm extends MasterForm{
@@ -29,7 +30,6 @@ public class MantenimientoServiciosForm extends MasterForm{
 	private String estado="";
 	private String tipoCampo = "";
 	private String criterios = "";
-	private String fechaBaja = "";
 	private String[] formaPagoInternet;
 	private String[] formaPagoSecretaria;
 	private String radioAlta="";
@@ -122,8 +122,8 @@ public class MantenimientoServiciosForm extends MasterForm{
 		datos.put(PysServiciosInstitucionBean.C_CUENTACONTABLE,v);
 	}
 
-	public void setIva(float v){		
-		datos.put(PysServiciosInstitucionBean.C_PORCENTAJEIVA,Float.toString(v));
+	public void setIdTipoIva(float v){		
+		datos.put(PysServiciosInstitucionBean.C_IDTIPOIVA,Float.toString(v));
 	}
 
 	public void setAltaInternet(String v){
@@ -258,8 +258,8 @@ public class MantenimientoServiciosForm extends MasterForm{
 		return (String)datos.get(PysServiciosInstitucionBean.C_CUENTACONTABLE);
 	}
 
-	public float getIva(){
-		return Float.parseFloat((String)this.datos.get(PysServiciosInstitucionBean.C_PORCENTAJEIVA));
+	public float getIdTipoIva(){
+		return Float.parseFloat((String)this.datos.get(PysServiciosInstitucionBean.C_IDTIPOIVA));
 	}
 
 	public String getAltaInternet(){

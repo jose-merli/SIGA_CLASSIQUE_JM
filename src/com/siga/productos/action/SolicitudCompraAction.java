@@ -277,7 +277,7 @@ public class SolicitudCompraAction extends MasterAction{
 					// Antes de borrar tenemos que recoger los valores de la pagina y guardarlo en el carrito.
 					ArrayList arrayListaArticulosOrdenada = carro.getArrayListaArticulosOrdenada();	
 					for(int i=1; i < arrayListaArticulosOrdenada.size()+1; i++){											
-						Articulo a = getOcultos(request, i);			
+						getOcultos(request, i);			
 					}		
 				}			
 				nombre = request.getParameter("nombrePersona");
@@ -337,7 +337,7 @@ public class SolicitudCompraAction extends MasterAction{
 				// Antes de borrar tenemos que recoger los valores de la pagina y guardarlo en el carrito.
 				ArrayList arrayListaArticulosOrdenada = carro.getArrayListaArticulosOrdenada();	
 				for(int i=1; i < arrayListaArticulosOrdenada.size()+1; i++){											
-					Articulo a = getOcultos(request, i);			
+					getOcultos(request, i);			
 				}		
 			}						
 			
@@ -1325,7 +1325,7 @@ public class SolicitudCompraAction extends MasterAction{
 		
 			ArrayList arrayListaArticulosOrdenada = carro.getArrayListaArticulosOrdenada();	
 				for(int i=1; i < arrayListaArticulosOrdenada.size()+1; i++){											
-					Articulo a = getOcultos(request, i);			
+					getOcultos(request, i);			
 				}		
 			
 			CarroCompraAdm.setCarroCompra(carro, request);			
@@ -1348,7 +1348,7 @@ public class SolicitudCompraAction extends MasterAction{
 		try{
 			
 			SolicitudCompraForm form = (SolicitudCompraForm) formulario;			
-			CarroCompra carro = CarroCompraAdm.getCarroCompra(form.getIdPersona(), form.getIdInstitucion(), form.getIdInstitucionPresentador(), request);
+			CarroCompraAdm.getCarroCompra(form.getIdPersona(), form.getIdInstitucion(), form.getIdInstitucionPresentador(), request);
 			CenDireccionesAdm direccionesAdm = new CenDireccionesAdm(this.getUserBean(request));
 			EnvTipoEnviosAdm tipoEnvioAdm = new EnvTipoEnviosAdm(this.getUserBean(request));
 			
@@ -1457,7 +1457,7 @@ public class SolicitudCompraAction extends MasterAction{
 				UtilidadesHash.set(hash, PysProductosSolicitadosBean.C_IDPERSONA, carro.getIdPersona());
 				UtilidadesHash.set(hash, PysProductosSolicitadosBean.C_IDCUENTA, articulo.getIdCuenta());
 				UtilidadesHash.set(hash, PysProductosSolicitadosBean.C_IDFORMAPAGO, articulo.getIdFormaPago());
-				UtilidadesHash.set(hash, PysProductosSolicitadosBean.C_PORCENTAJEIVA, articulo.getIdIva());				
+				UtilidadesHash.set(hash, PysProductosSolicitadosBean.C_IDTIPOIVA, articulo.getIdTipoIva());				
 				UtilidadesHash.set(hash, PysProductosSolicitadosBean.C_CANTIDAD, new Integer(articulo.getCantidad()));
 				UtilidadesHash.set(hash, PysProductosSolicitadosBean.C_ACEPTADO, ClsConstants.PRODUCTO_PENDIENTE);
 				UtilidadesHash.set(hash, PysProductosSolicitadosBean.C_VALOR, articulo.getPrecio());							
@@ -1486,7 +1486,7 @@ public class SolicitudCompraAction extends MasterAction{
 				UtilidadesHash.set(hash, PysServiciosSolicitadosBean.C_IDPERSONA, carro.getIdPersona());
 				UtilidadesHash.set(hash, PysServiciosSolicitadosBean.C_IDCUENTA, articulo.getIdCuenta());
 				UtilidadesHash.set(hash, PysServiciosSolicitadosBean.C_IDFORMAPAGO, articulo.getIdFormaPago());
-				UtilidadesHash.set(hash, PysServiciosInstitucionBean.C_PORCENTAJEIVA , articulo.getIdIva());
+				UtilidadesHash.set(hash, PysServiciosInstitucionBean.C_IDTIPOIVA , articulo.getIdTipoIva());
 				UtilidadesHash.set(hash, PysServiciosSolicitadosBean.C_CANTIDAD , new Integer(articulo.getCantidad()));
 				UtilidadesHash.set(hash, PysServiciosSolicitadosBean.C_ACEPTADO , ClsConstants.PRODUCTO_PENDIENTE);
 				UtilidadesHash.set(hash, PysServiciosSolicitadosBean.C_IDPERIODICIDAD , articulo.getIdPeriodicidad());
@@ -1495,7 +1495,7 @@ public class SolicitudCompraAction extends MasterAction{
 				UtilidadesHash.set(hash, "DESCRIPCION_ARTICULO", articulo.getIdArticuloInstitucionDescripcion());
 				UtilidadesHash.set(hash, "DESCRIPCION_CUENTA", articulo.getNumeroCuenta());
 				UtilidadesHash.set(hash, "IMPORTEANTICIPADO", articulo.getImporteAnticipado());
-				UtilidadesHash.set(hash, "IVA" , articulo.getIdIva());
+				UtilidadesHash.set(hash, "IVA" , articulo.getIdTipoIva());
 				UtilidadesHash.set(hash, "PERIODICIDAD" , articulo.getPeriodicidad());
 				UtilidadesHash.set(hash, "PRECIOSSERVICIOS", articulo.getPrecio());
 				UtilidadesHash.set(hash, "SERVICIO_DESCRIPCION_PRECIO", articulo.getDescripcionPrecio());

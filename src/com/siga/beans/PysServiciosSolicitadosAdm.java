@@ -425,7 +425,7 @@ public class PysServiciosSolicitadosAdm extends MasterBeanAdministrador {
 						String diezgg = datosPrecio[1];
 						diezgg = diezgg.replaceAll(",",".");
 						
-						UtilidadesHash.set(a, "PORCENTAJEIVA", new Float(diezgg));
+						UtilidadesHash.set(a, "VALORIVA", new Float(diezgg));
 						
 						UtilidadesHash.set(a, "SERVICIO_IDPRECIOSSERVICIOS", new Integer(datosPrecio[2]));
 						UtilidadesHash.set(a, "SERVICIO_IDPERIODICIDAD", new Integer(datosPrecio[3]));
@@ -451,7 +451,6 @@ public class PysServiciosSolicitadosAdm extends MasterBeanAdministrador {
 							a.put("ESTADO_BAJA","SI");
 						else
 							a.put("ESTADO_BAJA","NO");
-						String estadoPago = (String)a.get("ESTADOPAGO");
 						// CRM--> SI SE PUEDE ANULAR LOS SERVICIOS FACTURADOS
 						resultados.add(a);
 					}else{
@@ -551,7 +550,7 @@ public class PysServiciosSolicitadosAdm extends MasterBeanAdministrador {
 				if (vpi!=null && vpi.size()>0) {
 					PysServiciosInstitucionBean b = (PysServiciosInstitucionBean) vpi.get(0);
 					descripcion = b.getDescripcion();
-					iva = b.getPorcentajeIva();
+					iva = b.getIdTipoIva();
 				}
 				suscripcionBean.setDescripcion(descripcion);
 				
@@ -908,7 +907,7 @@ public class PysServiciosSolicitadosAdm extends MasterBeanAdministrador {
 				UtilidadesHash.set(hash, "DESCRIPCION_FORMAPAGO", a.getFormaPago());	
 				UtilidadesHash.set(hash, "DESCRIPCION_CUENTA", a.getNumeroCuenta());
 				UtilidadesHash.set(hash, PysServiciosSolicitadosBean.C_IDPRECIOSSERVICIOS, a.getPrecio());
-				UtilidadesHash.set(hash, "IVA" , a.getIdIva());		
+				UtilidadesHash.set(hash, "IVA" , a.getIdTipoIva());		
 				UtilidadesHash.set(hash, "PERIODICIDAD" , a.getPeriodicidad());
 				UtilidadesHash.set(hash, "SERVICIO_DESCRIPCION_PRECIO" , a.getDescripcionPrecio());
 			} else {
@@ -975,7 +974,6 @@ public class PysServiciosSolicitadosAdm extends MasterBeanAdministrador {
 				for (int i = 0; i < rc.size(); i++)	{		
 					Row fila = (Row) rc.get(i);
 					Hashtable registro = (Hashtable)fila.getRow();
-					Hashtable registro2 = new Hashtable();
 					if (registro != null) 
 						datos.add(registro);
 				}

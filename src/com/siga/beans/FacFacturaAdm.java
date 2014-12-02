@@ -35,10 +35,10 @@ import com.lowagie.text.pdf.PdfReader;
 import com.lowagie.text.pdf.PdfSignatureAppearance;
 import com.lowagie.text.pdf.PdfStamper;
 import com.siga.Utilidades.PaginadorBind;
+import com.siga.Utilidades.PaginadorCaseSensitiveBind;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesNumero;
 import com.siga.Utilidades.UtilidadesString;
-import com.siga.Utilidades.PaginadorCaseSensitiveBind;
 import com.siga.facturacion.form.BusquedaFacturaForm;
 import com.siga.facturacion.form.ConsultaMorososForm;
 import com.siga.general.SIGAException;
@@ -895,7 +895,6 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
 	public String getConsultaFacturasClientePeriodo (Integer idInstitucion, Long idPersona, Integer dias, Hashtable codigosBind)  throws ClsExceptions,SIGAException {
 		UsrBean user = this.usrbean;
 		
-		Vector resultados = new Vector (); 
 		//Hashtable codigosBind = new Hashtable();
 		int contador=0;
 		
@@ -2644,7 +2643,7 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
             		            " fac_factura.observinforme as OBSERVACIONES, " +
             		            " (fac_lineafactura.preciounitario * fac_lineafactura.cantidad) AS BASE_IMPONIBLE, " +
 //            		            " fac_lineafactura.cantidad AS CANTIDAD, " +
-            		            " fac_lineafactura.iva AS IVA_PORCENTAJE, " +
+            		            " fac_lineafactura.iva AS VALOR_IVA, " +
             		            " (fac_lineafactura.preciounitario * fac_lineafactura.cantidad *(fac_lineafactura.iva/100)) as IVA, " +
             		            " (fac_lineafactura.preciounitario * fac_lineafactura.cantidad) + (fac_lineafactura.preciounitario * fac_lineafactura.cantidad * (fac_lineafactura.iva/100)) as TOTAL_FACTURA " +
 
@@ -2728,13 +2727,13 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
             		Hashtable fila = ((Row)rc.get(i)).getRow();
 
             		// Calculo de total x iva
-            		Float porcentajeIVA  = UtilidadesHash.getFloat(fila, "IVA_PORCENTAJE");
-            		Hashtable a = (Hashtable) totalesXiva.get(porcentajeIVA);
-            		a = TotalX_IVA_almacena(a, porcentajeIVA.floatValue(),
+            		Float valorIVA  = UtilidadesHash.getFloat(fila, "VALOR_IVA");
+            		Hashtable a = (Hashtable) totalesXiva.get(valorIVA);
+            		a = TotalX_IVA_almacena(a, valorIVA.floatValue(),
             								   UtilidadesHash.getFloat(fila, "BASE_IMPONIBLE").floatValue(),
             				                   UtilidadesHash.getFloat(fila, "IVA").floatValue(), 
 											   UtilidadesHash.getFloat(fila, "TOTAL_FACTURA").floatValue());
-            		totalesXiva.put(porcentajeIVA, a);
+            		totalesXiva.put(valorIVA, a);
             		
             		// Calculo de total acumulado
             		totalAcumuladoIVA           += UtilidadesHash.getFloat(fila, "IVA").floatValue();
@@ -2883,12 +2882,12 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
 	}
 
 	
-	private Hashtable TotalX_IVA_almacena (Hashtable h, float porcentajeIVA, float baseImponible, float iva, float totalFactura) 
+	private Hashtable TotalX_IVA_almacena (Hashtable h, float valorIVA, float baseImponible, float iva, float totalFactura) 
 	{
 		try {
 			if (h == null) {
 				h = new Hashtable();
-				UtilidadesHash.set(h, "POR_IVA_IVA_PORCENTAJE", new Double(porcentajeIVA));
+				UtilidadesHash.set(h, "POR_IVA_IVA_PORCENTAJE", new Double(valorIVA));
 			}
 			
 			double aux = 0.0d;

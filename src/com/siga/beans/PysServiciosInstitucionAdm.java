@@ -4,14 +4,13 @@
  */
 package com.siga.beans;
 
-import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Vector;
 
 import javax.transaction.UserTransaction;
 
-import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsConstants;
+import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsLogging;
 import com.atos.utils.ComodinBusquedas;
 import com.atos.utils.Row;
@@ -49,7 +48,7 @@ public class PysServiciosInstitucionAdm extends MasterBeanAdministrador {
 							PysServiciosInstitucionBean.C_DESCRIPCION,
 							PysServiciosInstitucionBean.C_CUENTACONTABLE,
 							PysServiciosInstitucionBean.C_INICIOFINALPONDERADO,
-							PysServiciosInstitucionBean.C_PORCENTAJEIVA,
+							PysServiciosInstitucionBean.C_IDTIPOIVA,
 							PysServiciosInstitucionBean.C_MOMENTOCARGO,
 							PysServiciosInstitucionBean.C_SOLICITARBAJA,
 							PysServiciosInstitucionBean.C_SOLICITARALTA,
@@ -94,7 +93,7 @@ public class PysServiciosInstitucionAdm extends MasterBeanAdministrador {
 			bean.setDescripcion (UtilidadesHash.getString(hash,PysServiciosInstitucionBean.C_DESCRIPCION ));
 			bean.setCuentacontable (UtilidadesHash.getString(hash,PysServiciosInstitucionBean.C_CUENTACONTABLE ));
 			bean.setInicioFinalPonderado (UtilidadesHash.getString(hash,PysServiciosInstitucionBean.C_INICIOFINALPONDERADO));
-			bean.setPorcentajeIva (UtilidadesHash.getFloat(hash, PysServiciosInstitucionBean.C_PORCENTAJEIVA));			
+			bean.setIdTipoIva (UtilidadesHash.getFloat(hash, PysServiciosInstitucionBean.C_IDTIPOIVA));			
 			bean.setMomentoCargo (UtilidadesHash.getString(hash,PysServiciosInstitucionBean.C_MOMENTOCARGO ));
 			bean.setSolicitarBaja (UtilidadesHash.getString(hash,PysServiciosInstitucionBean.C_SOLICITARBAJA ));
 			bean.setSolicitarAlta (UtilidadesHash.getString(hash,PysServiciosInstitucionBean.C_SOLICITARALTA));
@@ -133,7 +132,7 @@ public class PysServiciosInstitucionAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(htData,PysServiciosInstitucionBean.C_DESCRIPCION ,b.getDescripcion());
 			UtilidadesHash.set(htData,PysServiciosInstitucionBean.C_CUENTACONTABLE ,b.getCuentacontable());
 			UtilidadesHash.set(htData,PysServiciosInstitucionBean.C_CUENTACONTABLE ,b.getInicioFinalPonderado());
-			UtilidadesHash.set(htData,PysServiciosInstitucionBean.C_PORCENTAJEIVA ,b.getPorcentajeIva());			
+			UtilidadesHash.set(htData,PysServiciosInstitucionBean.C_IDTIPOIVA ,b.getIdTipoIva());			
 			UtilidadesHash.set(htData,PysServiciosInstitucionBean.C_MOMENTOCARGO ,b.getMomentoCargo());
 			UtilidadesHash.set(htData,PysServiciosInstitucionBean.C_SOLICITARBAJA ,b.getSolicitarBaja());
 			UtilidadesHash.set(htData,PysServiciosInstitucionBean.C_SOLICITARALTA,b.getSolicitarAlta());
@@ -177,7 +176,7 @@ public class PysServiciosInstitucionAdm extends MasterBeanAdministrador {
 			            UtilidadesMultidioma.getCampoMultidiomaSimple(PysTipoServiciosBean.T_NOMBRETABLA + "." + PysTipoServiciosBean.C_DESCRIPCION ,this.usrbean.getLanguage())+" AS DESCRIPCION_TIPO, " + 
 						PysServiciosBean.T_NOMBRETABLA + "." + PysServiciosBean.C_DESCRIPCION + " AS DESCRIPCION_SERVICIO, " +
 						PysServiciosInstitucionBean.T_NOMBRETABLA + "." + PysServiciosInstitucionBean.C_DESCRIPCION + " AS DESCRIPCION_S_INSTITUCION, " +
-						PysServiciosInstitucionBean.T_NOMBRETABLA + "." + PysServiciosInstitucionBean.C_PORCENTAJEIVA + ", " +
+						PysServiciosInstitucionBean.T_NOMBRETABLA + "." + PysServiciosInstitucionBean.C_IDTIPOIVA + ", " +
 						PysTipoIvaBean.T_NOMBRETABLA + "." + PysTipoIvaBean.C_VALOR + " AS VALORIVA," +
 						
 						PysServiciosInstitucionBean.T_NOMBRETABLA + "." + PysServiciosInstitucionBean.C_FECHABAJA + ", " +
@@ -198,7 +197,7 @@ public class PysServiciosInstitucionAdm extends MasterBeanAdministrador {
 			PysServiciosInstitucionBean.T_NOMBRETABLA + "." + PysServiciosInstitucionBean.C_IDINSTITUCION + " = " + PysServiciosBean.T_NOMBRETABLA + "." + PysServiciosBean.C_IDINSTITUCION + " AND " +
 			
 			PysServiciosInstitucionBean.T_NOMBRETABLA + "." + PysServiciosInstitucionBean.C_IDTIPOSERVICIOS + " = " + PysTipoServiciosBean.T_NOMBRETABLA + "." +  PysTipoServiciosBean.C_IDTIPOSERVICIOS+
-			" AND "+PysTipoIvaBean.T_NOMBRETABLA+".IDTIPOIVA = "+ PysServiciosInstitucionBean.T_NOMBRETABLA + "." +PysServiciosInstitucionBean.C_PORCENTAJEIVA;
+			" AND "+PysTipoIvaBean.T_NOMBRETABLA+".IDTIPOIVA = "+ PysServiciosInstitucionBean.T_NOMBRETABLA + "." +PysServiciosInstitucionBean.C_IDTIPOIVA;
 			
 		
 			RowsContainer rc = null;
@@ -245,7 +244,7 @@ public class PysServiciosInstitucionAdm extends MasterBeanAdministrador {
 	            			PysServiciosInstitucionBean.T_NOMBRETABLA +"." + PysServiciosInstitucionBean.C_DESCRIPCION  + "," +
 							PysServiciosInstitucionBean.T_NOMBRETABLA + "." + PysServiciosInstitucionBean.C_FECHABAJA + ", " +
 							PysServiciosInstitucionBean.T_NOMBRETABLA + "." + PysServiciosInstitucionBean.C_AUTOMATICO + ", " +							
-	            			PysServiciosInstitucionBean.T_NOMBRETABLA +"." + PysServiciosInstitucionBean.C_PORCENTAJEIVA  + "," +
+	            			PysServiciosInstitucionBean.T_NOMBRETABLA +"." + PysServiciosInstitucionBean.C_IDTIPOIVA  + "," +
 	            			UtilidadesMultidioma.getCampoMultidiomaSimple(PysTipoServiciosBean.T_NOMBRETABLA +"." + PysTipoServiciosBean.C_DESCRIPCION  ,this.usrbean.getLanguage())+" AS TIPO," +
 	            			PysServiciosBean.T_NOMBRETABLA +"." + PysServiciosBean.C_DESCRIPCION  + " AS CATEGORIA," +
 	            			PysTipoIvaBean.T_NOMBRETABLA + "." + PysTipoIvaBean.C_DESCRIPCION + " AS IVA" + 
@@ -272,7 +271,7 @@ public class PysServiciosInstitucionAdm extends MasterBeanAdministrador {
 							" INNER JOIN "+ 
 							PysTipoIvaBean.T_NOMBRETABLA +
 							" ON "+
-								PysServiciosInstitucionBean.T_NOMBRETABLA +"."+ PysServiciosInstitucionBean.C_PORCENTAJEIVA + "=" +
+								PysServiciosInstitucionBean.T_NOMBRETABLA +"."+ PysServiciosInstitucionBean.C_IDTIPOIVA + "=" +
 								PysTipoIvaBean.T_NOMBRETABLA +"."+ PysTipoIvaBean.C_IDTIPOIVA;
 	            
 	    			// Si se empleo la forma de pago como parametro de busqueda
@@ -372,7 +371,7 @@ public class PysServiciosInstitucionAdm extends MasterBeanAdministrador {
 							PysServiciosInstitucionBean.T_NOMBRETABLA + "." + PysServiciosInstitucionBean.C_FECHAMODIFICACION + "," +
 	            			PysServiciosInstitucionBean.T_NOMBRETABLA + "." + PysServiciosInstitucionBean.C_DESCRIPCION + "," +
 	            			PysServiciosInstitucionBean.T_NOMBRETABLA + "." + PysServiciosInstitucionBean.C_CUENTACONTABLE + "," +
-	            			PysServiciosInstitucionBean.T_NOMBRETABLA + "." + PysServiciosInstitucionBean.C_PORCENTAJEIVA + "," +
+	            			PysServiciosInstitucionBean.T_NOMBRETABLA + "." + PysServiciosInstitucionBean.C_IDTIPOIVA + "," +
 	            			PysServiciosInstitucionBean.T_NOMBRETABLA + "." + PysServiciosInstitucionBean.C_INICIOFINALPONDERADO + "," +
 	            			PysServiciosInstitucionBean.T_NOMBRETABLA + "." + PysServiciosInstitucionBean.C_MOMENTOCARGO + "," +
 	            			PysServiciosInstitucionBean.T_NOMBRETABLA + "." + PysServiciosInstitucionBean.C_SOLICITARBAJA + "," +
@@ -404,7 +403,7 @@ public class PysServiciosInstitucionAdm extends MasterBeanAdministrador {
 	            			PysServiciosInstitucionBean.T_NOMBRETABLA +"."+ PysServiciosInstitucionBean.C_IDSERVICIO + "=" + idServ +
 	            			" AND " +
 	            			PysServiciosInstitucionBean.T_NOMBRETABLA +"."+ PysServiciosInstitucionBean.C_IDSERVICIOSINSTITUCION + "=" + idServInst+
-	            			" AND "+PysTipoIvaBean.T_NOMBRETABLA+".IDTIPOIVA = "+ PysServiciosInstitucionBean.T_NOMBRETABLA + "." +PysServiciosInstitucionBean.C_PORCENTAJEIVA;
+	            			" AND "+PysTipoIvaBean.T_NOMBRETABLA+".IDTIPOIVA = "+ PysServiciosInstitucionBean.T_NOMBRETABLA + "." +PysServiciosInstitucionBean.C_IDTIPOIVA;
 							
 							// Ordenado por...						
 							sql += " ORDER BY " + PysServiciosInstitucionBean.T_NOMBRETABLA + "." + PysServiciosInstitucionBean.C_DESCRIPCION; 
@@ -510,9 +509,7 @@ public class PysServiciosInstitucionAdm extends MasterBeanAdministrador {
 	 */	
 	public Hashtable prepararInsert (Hashtable entrada)throws ClsExceptions, SIGAException 
 	{
-		String values;	
 		RowsContainer rc = null;
-		int contador = 0;
 		
 		try { rc = new RowsContainer(); }
 		catch(Exception e) { e.printStackTrace(); }
@@ -577,7 +574,6 @@ public class PysServiciosInstitucionAdm extends MasterBeanAdministrador {
 	{
 		String maximo="0";	
 		RowsContainer rc = null;
-		int contador = 0;
 		
 		try { rc = new RowsContainer(); }
 		catch(Exception e) { e.printStackTrace(); }
@@ -717,10 +713,6 @@ public class PysServiciosInstitucionAdm extends MasterBeanAdministrador {
 	public boolean ComprobacionServiciosAutomaticos (Integer institucion) throws ClsExceptions {
 		
 		boolean resul=true;
-		boolean correcto;
-		Vector vector=new Vector();
-		Enumeration listaSolicitudes;
-		Hashtable solicitud = new Hashtable();
 		
 		UsrBean userBean = UsrBean.UsrBeanAutomatico(institucion.toString());
 		//userBean.setLanguage(idioma);

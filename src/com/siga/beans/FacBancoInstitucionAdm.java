@@ -36,7 +36,7 @@ public class FacBancoInstitucionAdm extends MasterBeanAdministrador {
 							FacBancoInstitucionBean.C_SJCS,
 							FacBancoInstitucionBean.C_IDSUFIJOSJCS,			
 							FacBancoInstitucionBean.C_COMISIONIMPORTE,
-							FacBancoInstitucionBean.C_COMISIONIVA,
+							FacBancoInstitucionBean.C_IDTIPOIVA,
 							FacBancoInstitucionBean.C_COMISIONDESCRIPCION,
 							FacBancoInstitucionBean.C_COMISIONCUENTACONTABLE,
 							FacBancoInstitucionBean.C_USUMODIFICACION,
@@ -67,7 +67,7 @@ public class FacBancoInstitucionAdm extends MasterBeanAdministrador {
 			bean.setSJCS						(UtilidadesHash.getString(hash, FacBancoInstitucionBean.C_SJCS));
 			bean.setIdsufijosjcs				(UtilidadesHash.getInteger(hash, FacBancoInstitucionBean.C_IDSUFIJOSJCS));
 			bean.setComisionImporte				(UtilidadesHash.getDouble(hash, FacBancoInstitucionBean.C_COMISIONIMPORTE));
-			bean.setComisionIVA					(UtilidadesHash.getDouble(hash, FacBancoInstitucionBean.C_COMISIONIVA));
+			bean.setIdTipoIva					(UtilidadesHash.getDouble(hash, FacBancoInstitucionBean.C_IDTIPOIVA));
 			bean.setComisionDescripcion			(UtilidadesHash.getString(hash, FacBancoInstitucionBean.C_COMISIONDESCRIPCION));
 			bean.setComisionCuentaContable		(UtilidadesHash.getString(hash, FacBancoInstitucionBean.C_COMISIONCUENTACONTABLE));
 			bean.setFechaMod					(UtilidadesHash.getString(hash, FacBancoInstitucionBean.C_FECHAMODIFICACION));
@@ -99,7 +99,7 @@ public class FacBancoInstitucionAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(htData, FacBancoInstitucionBean.C_SJCS, b.getSJCS());
 			UtilidadesHash.set(htData, FacBancoInstitucionBean.C_IDSUFIJOSJCS, b.getIdsufijosjcs());
 			UtilidadesHash.set(htData, FacBancoInstitucionBean.C_COMISIONIMPORTE, b.getComisionImporte());
-			UtilidadesHash.set(htData, FacBancoInstitucionBean.C_COMISIONIVA, b.getComisionIVA());
+			UtilidadesHash.set(htData, FacBancoInstitucionBean.C_IDTIPOIVA, b.getIdTipoIva());
 			UtilidadesHash.set(htData, FacBancoInstitucionBean.C_COMISIONDESCRIPCION, b.getComisionDescripcion());
 			UtilidadesHash.set(htData, FacBancoInstitucionBean.C_COMISIONCUENTACONTABLE, b.getComisionCuentaContable());
 			UtilidadesHash.set(htData, FacBancoInstitucionBean.C_FECHAMODIFICACION, b.getFechaMod());

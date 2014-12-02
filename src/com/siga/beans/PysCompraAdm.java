@@ -42,7 +42,7 @@ public class PysCompraAdm extends MasterBeanAdministrador {
 							PysCompraBean.C_IDPETICION, 			PysCompraBean.C_IDPRODUCTO,
 							PysCompraBean.C_IDPRODUCTOINSTITUCION, 	PysCompraBean.C_IDTIPOPRODUCTO,
 							PysCompraBean.C_IMPORTEUNITARIO, 		PysCompraBean.C_IMPORTEANTICIPADO,
-							PysCompraBean.C_NUMEROLINEA, 			PysCompraBean.C_PORCENTAJEIVA,
+							PysCompraBean.C_NUMEROLINEA, 			PysCompraBean.C_IDTIPOIVA,
 							PysCompraBean.C_IDCUENTA, 				PysCompraBean.C_IDPERSONA,
 							PysCompraBean.C_IDCUENTADEUDOR,			PysCompraBean.C_IDPERSONADEUDOR,
 							PysCompraBean.C_USUMODIFICACION,		PysCompraBean.C_NOFACTURABLE};
@@ -88,7 +88,7 @@ public class PysCompraAdm extends MasterBeanAdministrador {
 			bean.setIdTipoProducto(UtilidadesHash.getInteger(hash,PysCompraBean.C_IDTIPOPRODUCTO));
 			bean.setImporteUnitario(UtilidadesHash.getDouble(hash,PysCompraBean.C_IMPORTEUNITARIO));
 			bean.setImporteAnticipado(UtilidadesHash.getDouble(hash,PysCompraBean.C_IMPORTEANTICIPADO));
-			bean.setIva(UtilidadesHash.getFloat(hash,PysCompraBean.C_PORCENTAJEIVA));
+			bean.setIdTipoIva(UtilidadesHash.getFloat(hash,PysCompraBean.C_IDTIPOIVA));
 			bean.setIdPersona(UtilidadesHash.getLong(hash,PysCompraBean.C_IDPERSONA));
 			bean.setIdCuenta(UtilidadesHash.getInteger(hash,PysCompraBean.C_IDCUENTA));
 			bean.setIdPersonaDeudor(UtilidadesHash.getLong(hash,PysCompraBean.C_IDPERSONADEUDOR));
@@ -127,7 +127,7 @@ public class PysCompraAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(hash, PysCompraBean.C_IDTIPOPRODUCTO, b.getIdTipoProducto());
 			UtilidadesHash.set(hash, PysCompraBean.C_IMPORTEUNITARIO, b.getImporteUnitario());
 			UtilidadesHash.set(hash, PysCompraBean.C_IMPORTEANTICIPADO, b.getImporteAnticipado());
-			UtilidadesHash.set(hash, PysCompraBean.C_PORCENTAJEIVA, b.getIva());
+			UtilidadesHash.set(hash, PysCompraBean.C_IDTIPOIVA, b.getIdTipoIva());
 			UtilidadesHash.set(hash, PysCompraBean.C_IDCUENTA, b.getIdCuenta());
 			UtilidadesHash.set(hash, PysCompraBean.C_IDPERSONA, b.getIdPersona());
 			UtilidadesHash.set(hash, PysCompraBean.C_IDCUENTADEUDOR, b.getIdCuentaDeudor());
@@ -210,7 +210,7 @@ public class PysCompraAdm extends MasterBeanAdministrador {
 					" PC." + PysCompraBean.C_IMPORTEUNITARIO + ", " +
 					" PC." + PysCompraBean.C_IMPORTEANTICIPADO + ", " +
 					" PC." + PysCompraBean.C_NUMEROLINEA + ", " +
-					" PC." + PysCompraBean.C_PORCENTAJEIVA + ", "+
+					" PC." + PysCompraBean.C_IDTIPOIVA + ", "+
 					" PC." + PysCompraBean.C_IDCUENTA + ", " +
 					" PC." + PysCompraBean.C_IDPERSONA + ", " + 
 					" PC." + PysCompraBean.C_IDCUENTADEUDOR + ", " +

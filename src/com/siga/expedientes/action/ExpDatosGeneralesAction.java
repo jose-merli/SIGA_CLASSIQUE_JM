@@ -34,7 +34,6 @@ import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesNumero;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.beans.CenClienteAdm;
-import com.siga.beans.CenClienteBean;
 import com.siga.beans.CenColegiadoAdm;
 import com.siga.beans.CenColegiadoBean;
 import com.siga.beans.CenInstitucionAdm;
@@ -67,7 +66,6 @@ import com.siga.beans.GenParametrosAdm;
 import com.siga.beans.ScsEJGAdm;
 import com.siga.beans.ScsTurnoAdm;
 import com.siga.beans.ScsTurnoBean;
-import com.siga.expedientes.form.EstadosForm;
 import com.siga.expedientes.form.ExpDatosGeneralesForm;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
@@ -131,9 +129,6 @@ public class ExpDatosGeneralesAction extends MasterAction
 	 * @throws SIGAException
 	 */
 	protected String consultarPlazo(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
-		
-		EstadosForm formularioEstado = new EstadosForm();
-		
 
 		try{
 			ExpDatosGeneralesForm form = (ExpDatosGeneralesForm)formulario;
@@ -363,8 +358,6 @@ public class ExpDatosGeneralesAction extends MasterAction
 		
 		String tiempoCaducidad;
 		
-		SimpleDateFormat sdf = new SimpleDateFormat("DD/MM/yyyy");
-
 		try {
 			// Buscando idTipoExpediente
 			String idTipoExpediente = "";
@@ -499,7 +492,6 @@ public class ExpDatosGeneralesAction extends MasterAction
 			
 			tiempoCaducidad = tipoAdm.getImporteCaducidad(this.getIDInstitucion(request).toString() , idTipoExpediente).toString();
 			request.setAttribute("tiempoCaducidad", tiempoCaducidad );
-			ExpDatosGeneralesForm formExpediente = (ExpDatosGeneralesForm)formulario;			
 			
 			UtilidadesHash.set(h, ExpCampoTipoExpedienteBean.C_IDCAMPO, new Integer(ClsConstants.IDCAMPO_TIPOEXPEDIENTE_MINUTA_INICIAL));
 			v = adm.select(h);
@@ -520,9 +512,7 @@ public class ExpDatosGeneralesAction extends MasterAction
 			}
 			UtilidadesHash.set(h, ExpCampoTipoExpedienteBean.C_IDCAMPO, new Integer(ClsConstants.IDCAMPO_TIPOEXPEDIENTE_SOLICITANTEEJG));
 			v = adm.select(h);
-			boolean mostrarSolicitanteEJG = false;
 			if (v != null && v.size() > 0) {
-				mostrarSolicitanteEJG = UtilidadesString.stringToBoolean(((ExpCampoTipoExpedienteBean) v.get(0)).getVisible());
 				request.setAttribute("mostrarSolicitanteEJG", ((ExpCampoTipoExpedienteBean) v.get(0)).getVisible());
 			}
 			
@@ -658,7 +648,6 @@ public class ExpDatosGeneralesAction extends MasterAction
 		try{
 		
 			ExpDatosGeneralesForm form = (ExpDatosGeneralesForm)formulario;
-			ExpExpedienteAdm expAdm = new ExpExpedienteAdm(this.getUserBean(request));
 			ExpTipoExpedienteAdm tipoAdm = new ExpTipoExpedienteAdm(this.getUserBean(request));
 			HttpSession session = request.getSession();
 			UsrBean user = (UsrBean)session.getAttribute("USRBEAN");
@@ -765,7 +754,6 @@ public class ExpDatosGeneralesAction extends MasterAction
 				form.setIdPersonaDenunciado(idpersona);
 				form.setNumColegiado((String)request.getParameter("numColDesignado"));
 				//form.setIdPersona(numCol);
-				CenClienteBean cliente = null;
 				CenClienteAdm clienteAdm = new CenClienteAdm(this.getUserBean(request));
 				Vector v = clienteAdm.getDatosPersonales(new Long(idpersona),new Integer(idInstitucion));
 				if (v!=null && v.size()>0) {
@@ -818,11 +806,9 @@ public class ExpDatosGeneralesAction extends MasterAction
 			MasterForm formulario, HttpServletRequest request,
 			HttpServletResponse response) throws SIGAException {
 		
-		String relacionExpediente=null;
 		try{
 			ExpDatosGeneralesForm form = (ExpDatosGeneralesForm)formulario;
 	        UsrBean userBean = ((UsrBean)request.getSession().getAttribute(("USRBEAN")));
-	        ExpCampoTipoExpedienteAdm campoTipoExpedienteAdm = new ExpCampoTipoExpedienteAdm (this.getUserBean(request));
 	        ExpTipoExpedienteAdm tipoExpedienteAdm = new ExpTipoExpedienteAdm (this.getUserBean(request));
 	        
 	        String institucion = userBean.getLocation();        
@@ -831,8 +817,6 @@ public class ExpDatosGeneralesAction extends MasterAction
 			String idTipoExpediente = request.getParameter("idTipoExpediente");
 	        where += ExpCampoTipoExpedienteBean.C_IDINSTITUCION + " = " + institucion+" AND "+ExpCampoTipoExpedienteBean.C_IDTIPOEXPEDIENTE + " = " + idTipoExpediente;
 	        
-	        //Recupero los campos de un tipo de expediente para una institución
-	        Vector camposExp = campoTipoExpedienteAdm.select(where);
 	        //Recupero el tipo de expediente para editar el nombre
 	        Vector tipoExp = tipoExpedienteAdm.select(where);
 	        ExpTipoExpedienteBean beantipoexp=(ExpTipoExpedienteBean)tipoExp.elementAt(0);
@@ -840,8 +824,6 @@ public class ExpDatosGeneralesAction extends MasterAction
 	        where = " WHERE ";
 			where += ExpCampoTipoExpedienteBean.C_IDINSTITUCION + " = " + institucion+" AND "+ExpCampoTipoExpedienteBean.C_IDTIPOEXPEDIENTE + " = " + beantipoexp.getRelacionExpediente();
 	        
-	        //Recupero los campos de un tipo de expediente para una institución
-	        camposExp = campoTipoExpedienteAdm.select(where);
 	        //Recupero el tipo de expediente para editar el nombre
 	        tipoExp = tipoExpedienteAdm.select(where);
 	        beantipoexp=(ExpTipoExpedienteBean)tipoExp.elementAt(0);
@@ -1224,13 +1206,6 @@ public class ExpDatosGeneralesAction extends MasterAction
 				form.setImporteTotal("" + UtilidadesNumero.formatoCampo(ImporteTotal));
 			}			
 		
-			String sPorcentajeIVA = fila.getString(ExpExpedienteBean.C_PORCENTAJEIVA); 
-			if (sPorcentajeIVA != null && !sPorcentajeIVA.equals("")) {
-				double PorcentajeIVA = Double.parseDouble(sPorcentajeIVA);
-				form.setPorcentajeIVA("" + UtilidadesNumero.formatoCampo(PorcentajeIVA));
-				form.setPorcentajeIVAFinal("" + UtilidadesNumero.formatoCampo(PorcentajeIVA));
-			}	
-			
 			String sMinutaFinal = fila.getString(ExpExpedienteBean.C_MINUTAFINAL); 
 			if (sMinutaFinal != null && !sMinutaFinal.equals("")) {
 				double minuta = Double.parseDouble(sMinutaFinal);
@@ -1521,23 +1496,6 @@ public class ExpDatosGeneralesAction extends MasterAction
 		        		String derechos = form.getDerechosColegiales().replace(',', '.');
 		        		expBean.setDerechosColegiales(Double.parseDouble(derechos));
 		    	    }
-			}
-			if (form.getPorcentajeIVA()!= null){
-				if(!form.getPorcentajeIVA().trim().equals("")) {
-					
-
-			    	try{
-						expBean.setPorcentajeIVA(new Double(form.getPorcentajeIVA()));
-				    	expBean.setPorcentajeIVAFinal(new Double(form.getPorcentajeIVA()));
-						}catch (Exception e) {
-			        		String porceniva = form.getPorcentajeIVA().replace(',', '.');
-			        		expBean.setPorcentajeIVA(Double.parseDouble(porceniva));
-			        		expBean.setPorcentajeIVAFinal(Double.parseDouble(porceniva));
-			    	    }
-				}else{
-					expBean.setPorcentajeIVA(null);
-			    	expBean.setPorcentajeIVAFinal(null);
-				}
 			}
 	        
 	        if (form.getIdTipoIVA() != null && !form.getIdTipoIVA().equals("")) {
@@ -1939,14 +1897,6 @@ public class ExpDatosGeneralesAction extends MasterAction
 			if (form.getImporteTotal()!= null && !form.getImporteTotal().trim().equals("")) {
 			    expBean.setImporteTotal(new Double(form.getImporteTotal()));
 			}
-			if (form.getPorcentajeIVA()!= null && !form.getPorcentajeIVA().trim().equals("")) {
-			    expBean.setPorcentajeIVA(new Double(form.getPorcentajeIVA()));
-			}
-			
-			if (form.getPorcentajeIVAFinal()!= null && !form.getPorcentajeIVAFinal().trim().equals("")) {
-			    expBean.setPorcentajeIVAFinal(new Double(form.getPorcentajeIVAFinal()));
-			}
-			
 			if (form.getMinutaFinal()!= null && !form.getMinutaFinal().trim().equals("")) {
 			    expBean.setMinutaFinal(new Double(form.getMinutaFinal()));
 			}

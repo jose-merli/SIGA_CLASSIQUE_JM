@@ -21,7 +21,7 @@ public class PysServiciosInstitucionBean extends MasterBean {
 	/* Variables */
 	private Integer idInstitucion, idTipoServicios;
 	private Long 	idServicio, idServiciosInstitucion, idConsulta;
-	private Float 	porcentajeIva;
+	private Float 	idTipoIva;
 	private String 	descripcion, cuentacontable, inicioFinalPonderado, momentoCargo, criterios;
 	private String 	solicitarBaja, solicitarAlta, automatico, fechaBaja, facturacionPonderada;
 	
@@ -37,7 +37,7 @@ public class PysServiciosInstitucionBean extends MasterBean {
 	static public final String C_DESCRIPCION			= "DESCRIPCION";
 	static public final String C_CUENTACONTABLE			= "CUENTACONTABLE";
 	static public final String C_INICIOFINALPONDERADO	= "INICIOFINALPONDERADO";
-	static public final String C_PORCENTAJEIVA			= "PORCENTAJEIVA";
+	static public final String C_IDTIPOIVA				= "IDTIPOIVA";
 	static public final String C_MOMENTOCARGO			= "MOMENTOCARGO";
 	static public final String C_SOLICITARBAJA			= "SOLICITARBAJA";
 	static public final String C_SOLICITARALTA			= "SOLICITARALTA";
@@ -57,7 +57,7 @@ public class PysServiciosInstitucionBean extends MasterBean {
 	public void setIdTipoServicios(Integer idTipoServicios) {this.idTipoServicios = idTipoServicios;}
 	public void setInicioFinalPonderado(String inicioFinalPonderado) {this.inicioFinalPonderado = inicioFinalPonderado;}
 	public void setMomentoCargo(String momentoCargo) 		{this.momentoCargo = momentoCargo;}
-	public void setPorcentajeIva(Float porcentajeIva) 		{this.porcentajeIva = porcentajeIva;}
+	public void setIdTipoIva(Float idTipoIva) 				{this.idTipoIva = idTipoIva;}
 	public void setSolicitarAlta(String solicitarAlta) 		{this.solicitarAlta = solicitarAlta;}
 	public void setSolicitarBaja(String solicitarBaja) 		{this.solicitarBaja = solicitarBaja;}
 	public void setAutomatico(String automatico) 			{this.automatico = automatico;}
@@ -76,7 +76,7 @@ public class PysServiciosInstitucionBean extends MasterBean {
 	public Integer getIdTipoServicios() 		{return this.idTipoServicios;}
 	public String getInicioFinalPonderado() 	{return this.inicioFinalPonderado;}
 	public String getMomentoCargo() 			{return this.momentoCargo;}
-	public Float getPorcentajeIva() 			{return this.porcentajeIva;}
+	public Float getIdTipoIva() 			{return this.idTipoIva;}
 	public String getSolicitarAlta() 			{return this.solicitarAlta;}
 	public String getSolicitarBaja() 			{return this.solicitarBaja;}
 	public String getAutomatico() 				{return this.automatico;}

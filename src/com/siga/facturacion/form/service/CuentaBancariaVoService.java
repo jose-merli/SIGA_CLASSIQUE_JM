@@ -9,7 +9,6 @@ import java.util.List;
 import org.redabogacia.sigaservices.app.autogen.model.FacBancoinstitucion;
 import org.redabogacia.sigaservices.app.vo.fac.CuentaBancariaVo;
 
-import com.siga.Utilidades.UtilidadesNumero;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.comun.VoUiService;
 import com.siga.facturacion.form.CuentasBancariasForm;
@@ -108,8 +107,8 @@ public class CuentaBancariaVoService implements VoUiService<CuentasBancariasForm
 		// JPT (19-08-2014): Nuevos valores para la comision
 		if (objectForm.getComisionimporte()!=null && !objectForm.getComisionimporte().equals(""))
 			objectVo.setComisionimporte(new BigDecimal(objectForm.getComisionimporte()));
-		if (objectForm.getComisioniva()!=null && !objectForm.getComisioniva().equals(""))
-			objectVo.setComisioniva(new BigDecimal(objectForm.getComisioniva()));
+		if (objectForm.getIdTipoIva()!=null && !objectForm.getIdTipoIva().equals(""))
+			objectVo.setIdtipoiva(Integer.valueOf(objectForm.getIdTipoIva()));
 		if (objectForm.getComisiondescripcion()!=null && !objectForm.getComisiondescripcion().equals(""))
 			objectVo.setComisiondescripcion(objectForm.getComisiondescripcion());
 		if (objectForm.getComisioncuentacontable()!=null && !objectForm.getComisioncuentacontable().equals(""))
@@ -172,8 +171,8 @@ public class CuentaBancariaVoService implements VoUiService<CuentasBancariasForm
 			// JPT (19-08-2014): Nuevos valores para la comision
 			if (objectVo.getComisionimporte()!=null)
 				cuentasBancariasForm.setComisionimporte(UtilidadesString.formatoImporte(objectVo.getComisionimporte().doubleValue()));
-			if (objectVo.getComisioniva()!=null)
-				cuentasBancariasForm.setComisioniva(objectVo.getComisioniva().toString());
+			if (objectVo.getIdtipoiva()!=null)
+				cuentasBancariasForm.setIdTipoIva(objectVo.getIdtipoiva().toString());
 			if (objectVo.getComisiondescripcion()!=null)
 				cuentasBancariasForm.setComisiondescripcion(objectVo.getComisiondescripcion());
 			if (objectVo.getComisioncuentacontable()!=null)

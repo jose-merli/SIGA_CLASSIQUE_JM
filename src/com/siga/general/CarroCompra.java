@@ -565,64 +565,14 @@ public class CarroCompra
 			throw new SIGAException ("Error al recuperar los articulos del carro");
 		}
 	}
-
-	/**
-	 * Obtiene el precio de un servicio
-	 * @param Articulo a articulo del que se obtiene el precio
-	 * @return el precio del servicio
-	 * @throws SIGAException
-	 */
-	private Double getPrecioServicio(Articulo a) throws SIGAException {
-		Double precio = null;
-		Hashtable codigos = new Hashtable();
-		try {
-		    codigos.put(new Integer(1),a.getIdInstitucion().toString());
-		    codigos.put(new Integer(2),a.getIdTipo().toString());
-		    codigos.put(new Integer(3),a.getIdArticulo().toString());
-		    codigos.put(new Integer(4),a.getIdArticuloInstitucion().toString());
-		    codigos.put(new Integer(5),this.idPersona.toString());
-		    codigos.put(new Integer(6),this.usrBean.getLanguageInstitucion());
-			String sql = "SELECT F_SIGA_CALCULOPRECIOSERVICIO(:1, " + 
-															  ":2, " + 
-															  ":3, " + 
-															  ":4, " + 
-															  ":5, " +
-															  ":6" +
-						  ") AS PRECIO_SERVICIO FROM DUAL";
-			
-			RowsContainer rc = null;
-			rc = new RowsContainer(); 
-			if (rc.queryBind(sql,codigos)) {
-				if (rc.size() ==  1) {
-					// Tratamos los datos de la funcion 'F_SIGA_CALCULOPRECIOSERVICIO'
-					Hashtable hash = (Hashtable)((Row) rc.get(0)).getRow();
-					String valor = UtilidadesHash.getString(hash, "PRECIO_SERVICIO");
-					
-					// "-1" --> Error no existen datos en la tabla Pys_ServicioInstitucion
-					if (!valor.equalsIgnoreCase("-1")){
-						String datosPrecio[] =  UtilidadesString.split(valor, "#");
-						// RGG cambio para 10g
-						String diezg = datosPrecio[0];
-						diezg = diezg.replaceAll(",",".");
-						precio = new Double(diezg);			
-					}
-				}
-			}
-		}
-		catch(Exception e){
-			throw new SIGAException ("Error al obtener el precio del servicio", e);
-		}
-		return precio;
-	}
 	
 	/**
-	 * Obtiene el precio el porcentajeIva, el idPrecio y periodicidad del servicio
+	 * Obtiene el precio el valorIva, el idPrecio y periodicidad del servicio
 	 * @param Articulo a articulo del que se obtiene el precio
 	 * @return los valores del servicio
 	 * @throws SIGAException
 	 */
 	private Vector getCalculoPrecioServicio(Articulo a) throws SIGAException {
-		Double precio = null;
 		Vector resultados = new Vector (); 
 		try {
 			String sql = "SELECT F_SIGA_CALCULOPRECIOSERVICIO(" + a.getIdInstitucion()			+ ", " + 
@@ -650,7 +600,7 @@ public class CarroCompra
 						
 
 						UtilidadesHash.set(hash, "VALOR", new Double(diezg));
-						UtilidadesHash.set(hash, "PORCENTAJEIVA", new Float(datosPrecio[1]));
+						UtilidadesHash.set(hash, "VALORIVA", new Float(datosPrecio[1]));
 						UtilidadesHash.set(hash, "SERVICIO_IDPRECIOSSERVICIOS", new Integer(datosPrecio[2]));
 						UtilidadesHash.set(hash, "SERVICIO_IDPERIODICIDAD", new Integer(datosPrecio[3]));
 						if (datosPrecio.length == 5) {

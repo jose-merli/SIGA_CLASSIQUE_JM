@@ -18,7 +18,7 @@ public class PysCompraBean extends MasterBean {
 	private Integer idInstitucion, idTipoProducto, idFormaPago, cantidad, idCuenta, idCuentaDeudor;
 	private Long 	idProducto, idPeticion, idProductoInstitucion, numeroLinea, idPersona, idPersonaDeudor;
 	private String 	aceptado, descripcion, idFactura, fecha, fechaBaja,noFacturable;	
-	private Float 	iva;
+	private Float 	idTipoIva;
 	private Double  importeUnitario, importeAnticipado; 
 	
 	/* Nombre tabla */
@@ -36,7 +36,7 @@ public class PysCompraBean extends MasterBean {
 	static public final String C_CANTIDAD					= "CANTIDAD";
 	static public final String C_IMPORTEUNITARIO			= "IMPORTEUNITARIO";
 	static public final String C_IMPORTEANTICIPADO			= "IMPORTEANTICIPADO";
-	static public final String C_PORCENTAJEIVA				= "PORCENTAJEIVA";
+	static public final String C_IDTIPOIVA					= "IDTIPOIVA";
 	static public final String C_IDFORMAPAGO				= "IDFORMAPAGO";
 	static public final String C_ACEPTADO					= "ACEPTADO";
 	static public final String C_NUMEROLINEA				= "NUMEROLINEA";
@@ -233,14 +233,14 @@ public class PysCompraBean extends MasterBean {
 	/**
 	 * @return Returns the iva.
 	 */
-	public Float getIva() {
-		return iva;
+	public Float getIdTipoIva() {
+		return idTipoIva;
 	}
 	/**
 	 * @param iva The iva to set.
 	 */
-	public void setIva(Float iva) {
-		this.iva = iva;
+	public void setIdTipoIva(Float idTipoIva) {
+		this.idTipoIva = idTipoIva;
 	}
 	/**
 	 * @return Returns the numeroLinea.

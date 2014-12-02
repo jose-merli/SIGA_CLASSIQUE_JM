@@ -62,7 +62,7 @@ public class PysProductosInstitucionAdm extends MasterBeanAdministrador
 							PysProductosInstitucionBean.C_DESCRIPCION,
 							PysProductosInstitucionBean.C_CUENTACONTABLE,
 							PysProductosInstitucionBean.C_VALOR,
-							PysProductosInstitucionBean.C_PORCENTAJEIVA,
+							PysProductosInstitucionBean.C_IDTIPOIVA,
 							PysProductosInstitucionBean.C_MOMENTOCARGO,
 							PysProductosInstitucionBean.C_SOLICITARBAJA,
 							PysProductosInstitucionBean.C_SOLICITARALTA,
@@ -130,8 +130,7 @@ public class PysProductosInstitucionAdm extends MasterBeanAdministrador
 			//bean.setValor ((Double)hash.get(PysProductosInstitucionBean.C_VALOR));
 			bean.setValor (UtilidadesHash.getDouble(hash,PysProductosInstitucionBean.C_VALOR));
 			// Esto no ha podido funcionar nunca, pero bueno, lo comento por si acaso.
-			//bean.setPorcentajeIva ((Float)hash.get(PysProductosInstitucionBean.C_PORCENTAJEIVA ));
-			bean.setPorcentajeIva (UtilidadesHash.getFloat(hash,PysProductosInstitucionBean.C_PORCENTAJEIVA));
+			bean.setIdTipoIva (UtilidadesHash.getFloat(hash,PysProductosInstitucionBean.C_IDTIPOIVA));
 			bean.setMomentoCargo (UtilidadesHash.getString(hash,PysProductosInstitucionBean.C_MOMENTOCARGO ));
 			bean.setSolicitarBaja (UtilidadesHash.getString(hash,PysProductosInstitucionBean.C_SOLICITARBAJA ));
 			bean.setSolicitarAlta (UtilidadesHash.getString(hash,PysProductosInstitucionBean.C_SOLICITARALTA));
@@ -171,7 +170,7 @@ public class PysProductosInstitucionAdm extends MasterBeanAdministrador
 			UtilidadesHash.set(htData,PysProductosInstitucionBean.C_DESCRIPCION ,b.getDescripcion());
 			UtilidadesHash.set(htData,PysProductosInstitucionBean.C_CUENTACONTABLE ,b.getCuentacontable());
 			htData.put(PysProductosInstitucionBean.C_VALOR,b.getValor());
-			htData.put(PysProductosInstitucionBean.C_PORCENTAJEIVA ,b.getPorcentajeIva());
+			htData.put(PysProductosInstitucionBean.C_IDTIPOIVA ,b.getIdTipoIva());
 			UtilidadesHash.set(htData,PysProductosInstitucionBean.C_MOMENTOCARGO ,b.getMomentoCargo());
 			UtilidadesHash.set(htData,PysProductosInstitucionBean.C_SOLICITARBAJA ,b.getSolicitarBaja());
 			UtilidadesHash.set(htData,PysProductosInstitucionBean.C_SOLICITARALTA,b.getSolicitarAlta());
@@ -201,9 +200,7 @@ public class PysProductosInstitucionAdm extends MasterBeanAdministrador
 	 */	
 	public Hashtable prepararInsert (Hashtable entrada)throws ClsExceptions, SIGAException 
 	{
-		String values;	
 		RowsContainer rc = null;
-		int contador = 0;
 		
 		try { rc = new RowsContainer(); }
 		catch(Exception e) { e.printStackTrace(); }
@@ -273,7 +270,7 @@ public class PysProductosInstitucionAdm extends MasterBeanAdministrador
 	            			PysProductosInstitucionBean.T_NOMBRETABLA +"." + PysProductosInstitucionBean.C_DESCRIPCION  + "," +
 	            			"F_siga_formatonumero("+PysProductosInstitucionBean.T_NOMBRETABLA +"." + PysProductosInstitucionBean.C_VALOR+",2)"  + " VALOR," +
 	            			//PysProductosInstitucionBean.T_NOMBRETABLA +"." + PysProductosInstitucionBean.C_NOFACTURABLE  + " FACTURABLE," +
-	            			PysProductosInstitucionBean.T_NOMBRETABLA +"." + PysProductosInstitucionBean.C_PORCENTAJEIVA  + "," +
+	            			PysProductosInstitucionBean.T_NOMBRETABLA +"." + PysProductosInstitucionBean.C_IDTIPOIVA  + "," +
 	            			PysProductosInstitucionBean.T_NOMBRETABLA +"." + PysProductosInstitucionBean.C_FECHABAJA  + "," +
 	            			PysProductosInstitucionBean.T_NOMBRETABLA +"." + PysProductosInstitucionBean.C_TIPOCERTIFICADO  + "," +
 	            			UtilidadesMultidioma.getCampoMultidiomaSimple(PysTiposProductosBean.T_NOMBRETABLA +"." + PysTiposProductosBean.C_DESCRIPCION,this.usrbean.getLanguage())  + " AS TIPO," +
@@ -302,7 +299,7 @@ public class PysProductosInstitucionAdm extends MasterBeanAdministrador
 							" INNER JOIN "+ 
 							PysTipoIvaBean.T_NOMBRETABLA +
 							" ON "+
-								PysProductosInstitucionBean.T_NOMBRETABLA +"."+ PysProductosInstitucionBean.C_PORCENTAJEIVA + "=" +
+								PysProductosInstitucionBean.T_NOMBRETABLA +"."+ PysProductosInstitucionBean.C_IDTIPOIVA + "=" +
 								PysTipoIvaBean.T_NOMBRETABLA +"."+ PysTipoIvaBean.C_IDTIPOIVA;
 	            
 	    			// Si se empleo la forma de pago como parametro de busqueda
@@ -406,7 +403,7 @@ public class PysProductosInstitucionAdm extends MasterBeanAdministrador
 		            			PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_DESCRIPCION + "," +
 		            			PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_CUENTACONTABLE + "," +
 		            			PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_VALOR + "," +
-		            			PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_PORCENTAJEIVA + "," +
+		            			PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_IDTIPOIVA + "," +
 		            			PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_MOMENTOCARGO + "," +
 		            			PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_FECHABAJA + "," +
 		            			PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_SOLICITARBAJA + "," +
@@ -428,7 +425,7 @@ public class PysProductosInstitucionAdm extends MasterBeanAdministrador
 								" AND " + PysProductosInstitucionBean.T_NOMBRETABLA +"."+ PysProductosInstitucionBean.C_IDTIPOPRODUCTO + "=" + idTipoProd +
 		            			" AND " + PysProductosInstitucionBean.T_NOMBRETABLA +"."+ PysProductosInstitucionBean.C_IDPRODUCTO + "=" + idProd +
 		            			" AND " + PysProductosInstitucionBean.T_NOMBRETABLA +"."+ PysProductosInstitucionBean.C_IDPRODUCTOINSTITUCION + "=" + idProdInst +
-		            			" AND " + PysTipoIvaBean.T_NOMBRETABLA+".IDTIPOIVA = "+ PysProductosInstitucionBean.T_NOMBRETABLA + "." +PysProductosInstitucionBean.C_PORCENTAJEIVA + 
+		            			" AND " + PysTipoIvaBean.T_NOMBRETABLA+".IDTIPOIVA = "+ PysProductosInstitucionBean.T_NOMBRETABLA + "." +PysProductosInstitucionBean.C_IDTIPOIVA + 
 		            		" ORDER BY " + PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_DESCRIPCION;
 							
 	            if (rc.find(sql)) {
@@ -598,7 +595,7 @@ public class PysProductosInstitucionAdm extends MasterBeanAdministrador
 						PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_VALOR + ", " +
 						//PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_NOFACTURABLE + ", " +
 						PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_IDCONTADOR + ", " +
-						PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_PORCENTAJEIVA + ", " +
+						PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_IDTIPOIVA + ", " +
 						PysTipoIvaBean.T_NOMBRETABLA + "." + PysTipoIvaBean.C_VALOR + " AS VALORIVA," +
 						
 						PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_MOMENTOCARGO + ", " +
@@ -619,7 +616,7 @@ public class PysProductosInstitucionAdm extends MasterBeanAdministrador
 						PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_IDINSTITUCION + " = " + PysProductosBean.T_NOMBRETABLA + "." + PysProductosBean.C_IDINSTITUCION + " AND " +
 						
 						PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_IDTIPOPRODUCTO + " = " + PysTiposProductosBean.T_NOMBRETABLA + "." +  PysTiposProductosBean.C_IDTIPOPRODUCTO
-						+" AND "+PysTipoIvaBean.T_NOMBRETABLA+".IDTIPOIVA = "+ PysProductosInstitucionBean.T_NOMBRETABLA + "." +PysProductosInstitucionBean.C_PORCENTAJEIVA;
+						+" AND "+PysTipoIvaBean.T_NOMBRETABLA+".IDTIPOIVA = "+ PysProductosInstitucionBean.T_NOMBRETABLA + "." +PysProductosInstitucionBean.C_IDTIPOIVA;
 			
 		
 			RowsContainer rc = null;
@@ -976,7 +973,7 @@ public class PysProductosInstitucionAdm extends MasterBeanAdministrador
 		prodSolBean.setCantidad(new Integer(unidades));
 		prodSolBean.setAceptado("A");
 		prodSolBean.setValor(producto.getValor());
-		prodSolBean.setPorcentajeIVA(producto.getPorcentajeIva());
+		prodSolBean.setIdTipoIva(producto.getIdTipoIva());
 		if (!(cuentasBanBean==null)){
 			prodSolBean.setIdCuenta(cuentasBanBean.getIdCuenta());
 			prodSolBean.setIdFormaPago(new Integer(ClsConstants.TIPO_FORMAPAGO_FACTURA));//Forma de pago por Banco
@@ -1001,7 +998,7 @@ public class PysProductosInstitucionAdm extends MasterBeanAdministrador
 		compraBean.setFecha("sysdate");
 		compraBean.setCantidad(new Integer(unidades));
 		compraBean.setImporteUnitario(producto.getValor());
-		compraBean.setIva(producto.getPorcentajeIva());
+		compraBean.setIdTipoIva(producto.getIdTipoIva());
 		compraBean.setIdFormaPago(new Integer(ClsConstants.TIPO_FORMAPAGO_FACTURA));//Forma de pago por Banco
 		compraBean.setFechaMod("sysdate");
 		compraBean.setUsuMod(new Integer(this.usrbean.getUserName()));
