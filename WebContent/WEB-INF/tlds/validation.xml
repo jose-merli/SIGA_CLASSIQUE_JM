@@ -4824,7 +4824,7 @@
 			</var> 
 		</field>
 		
-       <field property="comisioniva" depends="required"> 
+       <field property="idTipoIva" depends="required"> 
 			<arg0 key="facturacion.cuentasBancarias.comision.IVA"/> 
 		</field>	
 		
