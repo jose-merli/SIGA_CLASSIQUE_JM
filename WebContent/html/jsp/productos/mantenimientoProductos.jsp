@@ -202,17 +202,17 @@
 			}		
 			
 			//Comprobar IVA
-			if (document.forms[0].iva.value==""){
+			if (document.forms[0].idTipoIva.value==""){
 				alert("<siga:Idioma key="messages.pys.Iva.error"/>");
 				envio=-1;
 			}			
 			
-			if ((document.forms[0].iva.value>100)||(document.forms[0].iva.value<0)){
+			if ((document.forms[0].idTipoIva.value>100)||(document.forms[0].idTipoIva.value<0)){
 				alert("<siga:Idioma key="messages.pys.IvaValor.error"/>");
 				envio=-1;
 			}		
 			
-			if (isNaN(document.forms[0].iva.value)){
+			if (isNaN(document.forms[0].idTipoIva.value)){
 				alert("<siga:Idioma key="messages.pys.IvaAplicado.error"/>");
 				envio=-1;
 			}	
@@ -513,16 +513,16 @@
 <% 
 										if ("insertar".equalsIgnoreCase(remitente)) {
 %>
-											<siga:Select queryId="getPorcentajesIva" id="iva" required="true"/>
+											<siga:Select queryId="getPorcentajesIva" id="idTipoIva" required="true"/>
 <% 
 										} else { 
 											if ("modificar".equalsIgnoreCase(remitente)) { 
 %>
-												<siga:Select queryId="getPorcentajesIva" id="iva" selectedIds="<%=vIva%>" required="true"/>
+												<siga:Select queryId="getPorcentajesIva" id="idTipoIva" selectedIds="<%=vIva%>" required="true"/>
 <%
 											} else { 
 %>
-												<siga:Select queryId="getPorcentajesIva" id="iva" selectedIds="<%=vIva%>" required="true" disabled="true" />
+												<siga:Select queryId="getPorcentajesIva" id="idTipoIva" selectedIds="<%=vIva%>" required="true" disabled="true" />
 <% 
 											}
 										} 
