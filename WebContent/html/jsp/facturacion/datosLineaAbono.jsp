@@ -220,7 +220,7 @@
 									if (nextModo.equalsIgnoreCase("insertar")) { 
 %>
 										<!--html:text property="iva" size="5" maxlength="5" styleClass="<%=estiloBox%>" value="" onchange="calcularIva();"!--><!--/html:text--><!--&nbsp;&nbsp;%-->
-										<siga:ComboBD nombre="iva" tipo="porcentajeIva" readonly="<%=readonly%>"  clase="<%=estiloCombo%>" obligatorio="true" accion="calcularIva();"/>
+										<siga:ComboBD nombre="iva" tipo="tipoIva" readonly="<%=readonly%>"  clase="<%=estiloCombo%>" obligatorio="true" accion="calcularIva();"/>
 <% 
 									} else { 
 										if (readonly.equalsIgnoreCase("true")) {
@@ -231,7 +231,7 @@
 %>
 									
 										<!--html:text property="iva" size="5" maxlength="5" styleClass="<%=estiloBox%>" value="<%=registro.getString(FacLineaAbonoBean.C_IVA)%>" onchange="calcularIva();"--><!--/html:text--><!--&nbsp;&nbsp;%-->
-										<siga:ComboBD nombre="iva" tipo="porcentajeIva" readonly="<%=readonly%>"  clase="<%=estiloCombo%>" elementoSel="<%=valorIva%>" obligatorio="true" accion="calcularIva();"/>
+										<siga:ComboBD nombre="iva" tipo="tipoIva" readonly="<%=readonly%>"  clase="<%=estiloCombo%>" elementoSel="<%=valorIva%>" obligatorio="true" accion="calcularIva();"/>
 										
 <% 
 										}
