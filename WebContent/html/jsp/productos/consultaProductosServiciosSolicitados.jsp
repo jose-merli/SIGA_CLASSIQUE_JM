@@ -272,10 +272,6 @@
 			  					precio = UtilidadesHash.getDouble(hash, PysProductosSolicitadosBean.C_VALOR).doubleValue();
 							}
 							
-							//if (hash.get(PysProductosSolicitadosBean.C_PORCENTAJEIVA)!=null){	
-							  //iva = UtilidadesHash.getFloat(hash, PysProductosSolicitadosBean.C_PORCENTAJEIVA).floatValue();
-							//}
-							
 							if (hash.get("VALORIVA")!=null){	
 							  iva = UtilidadesHash.getFloat(hash, "VALORIVA").floatValue();
 							}
@@ -384,10 +380,6 @@
 							if (hash.get(PysProductosSolicitadosBean.C_VALOR)!=null){					
 							  precio = UtilidadesHash.getDouble(hash, PysProductosSolicitadosBean.C_VALOR).doubleValue();
 							}
-							
-							//if (hash.get(PysProductosSolicitadosBean.C_PORCENTAJEIVA)!=null){		
-							  //iva = UtilidadesHash.getFloat(hash, PysProductosSolicitadosBean.C_PORCENTAJEIVA).floatValue();
-							//}
 							
 							if (hash.get("VALORIVA")!=null){		
 							  iva = UtilidadesHash.getFloat(hash, "VALORIVA").floatValue();
