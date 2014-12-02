@@ -39,10 +39,10 @@
 	ArrayList vIva = new ArrayList(); // valores originales iva
 	// Cargo valor IVA
 	
-	if (formulario.getComisioniva().startsWith("0."))	
-    	vIva.add(formulario.getComisioniva().substring(1));
+	if (formulario.getIdTipoIva().startsWith("0."))	
+    	vIva.add(formulario.getIdTipoIva().substring(1));
 	else
-		vIva.add(formulario.getComisioniva());
+		vIva.add(formulario.getIdTipoIva());
 %>
 
 <script type="text/javascript">
@@ -371,15 +371,15 @@
 								<td>
 									<c:choose>
 										<c:when test="${CuentasBancariasForm.modo=='insertar'}">
-											<siga:Select queryId="getPorcentajesIva" id="comisioniva" required="true"/>
+											<siga:Select queryId="getPorcentajesIva" id="idTipoIva" required="true"/>
 										</c:when>
 										
 										<c:when test="${CuentasBancariasForm.modo=='modificar'}">
-											<siga:Select queryId="getPorcentajesIva" id="comisioniva" selectedIds="<%=vIva%>" required="true"/>
+											<siga:Select queryId="getPorcentajesIva" id="idTipoIva" selectedIds="<%=vIva%>" required="true"/>
 										</c:when>	
 										
 										<c:otherwise>
-											<siga:Select queryId="getPorcentajesIva" id="comisioniva" selectedIds="<%=vIva%>" required="true" disabled="true" />
+											<siga:Select queryId="getPorcentajesIva" id="idTipoIva" selectedIds="<%=vIva%>" required="true" disabled="true" />
 										</c:otherwise>
 									</c:choose>
 								</td>
