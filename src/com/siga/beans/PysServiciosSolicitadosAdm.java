@@ -20,6 +20,7 @@ import com.atos.utils.UsrBean;
 import com.siga.Utilidades.PaginadorBind;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesMultidioma;
+import com.siga.Utilidades.UtilidadesNumero;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.general.Articulo;
 import com.siga.general.SIGAException;
@@ -569,7 +570,7 @@ public class PysServiciosSolicitadosAdm extends MasterBeanAdministrador {
 							precio = new Double(aux.split("#")[0]);
 						}
 					}
-					double importeAnticipadoTarjeta = new Double(""+servicioBean.getCantidad()).doubleValue() * (precio.doubleValue() + ( (precio.doubleValue()*iva.floatValue()) / 100 ));
+					double importeAnticipadoTarjeta = servicioBean.getCantidad().doubleValue() * UtilidadesNumero.redondea(precio.doubleValue() * (1 + (iva.floatValue() / 100)),2);
 					suscripcionBean.setImporteAnticipado(new Double(importeAnticipadoTarjeta));	
 					
 					//suscripcionBean.setD
