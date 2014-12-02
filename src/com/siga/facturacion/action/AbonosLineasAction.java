@@ -54,7 +54,6 @@ public class AbonosLineasAction extends MasterAction {
 		Vector seleccionados= new Vector();
 		Vector escogido= new Vector();
 		String contabilizado= ClsConstants.FACTURA_ABONO_NO_CONTABILIZADA;
-		ClsExceptions ee=null;
 
 		try {
 			String volver = null;
@@ -85,11 +84,11 @@ public class AbonosLineasAction extends MasterAction {
 					contabilizado=((Row)escogido.firstElement()).getRow().get(FacAbonoBean.C_CONTABILIZADA).toString();					
 				}
 				else{
-					ee = new ClsExceptions("No existe informacion relativa a contabilizado para este abono");
+					new ClsExceptions("No existe informacion relativa a contabilizado para este abono");
 				}
 			}
 			else{
-				ee = new ClsExceptions("No existe informacion relativa a contabilizado para este abono");
+				new ClsExceptions("No existe informacion relativa a contabilizado para este abono");
 			}
 			
 						
@@ -113,17 +112,7 @@ public class AbonosLineasAction extends MasterAction {
 	 * @see com.siga.general.MasterAction#abrir(org.apache.struts.action.ActionMapping, com.siga.general.MasterForm, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
 	 */
 	protected String abrirAvanzada(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
-		
-		String result="abrirAvanzada";
-
-		// Cuentas de impNeto, impIva e impTotal
-		Row row =new Row();
-		String resultado=(new Double((new Double(row.getString(FacLineaAbonoBean.C_CANTIDAD))).doubleValue()*(new Double(row.getString(FacLineaAbonoBean.C_CANTIDAD))).doubleValue())).toString();
-		String resultado2=(new Double(((new Double(resultado)).doubleValue()*(new Double(row.getString(FacLineaAbonoBean.C_IVA))).doubleValue())/(new Double("100").doubleValue()))).toString();
-		String resultado3= new Double(new Double(resultado2).doubleValue() + new Double(resultado).doubleValue()).toString();
-		
-		return result;
-		
+		return "abrirAvanzada";
 	}
 
 	/* (non-Javadoc)
@@ -149,7 +138,6 @@ public class AbonosLineasAction extends MasterAction {
 		try {
 			Vector ocultos=new Vector();
 			Vector entrada=new Vector();				
-			Vector pagos= new Vector();
 			Vector info= new Vector();
 			Hashtable hashInfo= new Hashtable();
 			Hashtable hashPagos= new Hashtable();
@@ -201,7 +189,6 @@ public class AbonosLineasAction extends MasterAction {
 		try {
 			Vector ocultos=new Vector();
 			Vector entrada=new Vector();				
-			Vector pagos= new Vector();
 			Vector info= new Vector();
 			Hashtable hashInfo= new Hashtable();
 			Hashtable hashPagos= new Hashtable();
@@ -258,8 +245,6 @@ public class AbonosLineasAction extends MasterAction {
 		String result="nuevo";
 		try{
 		
-			Hashtable hash=new Hashtable();	
-			Vector pagos= new Vector();
 			Vector info= new Vector();
 			Hashtable hashInfo= new Hashtable();
 			Hashtable hashPagos= new Hashtable();
