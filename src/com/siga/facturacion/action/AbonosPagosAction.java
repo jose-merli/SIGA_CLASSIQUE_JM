@@ -12,24 +12,44 @@
 
 package com.siga.facturacion.action;
 
-import javax.servlet.http.*;
-import javax.transaction.*;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.List;
+import java.util.Vector;
 
-import org.apache.struts.action.*;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.transaction.Status;
+import javax.transaction.UserTransaction;
 
-import cern.colt.map.HashFunctions;
+import org.apache.struts.action.ActionForm;
+import org.apache.struts.action.ActionForward;
+import org.apache.struts.action.ActionMapping;
 
-import com.atos.utils.*;
-import com.siga.Utilidades.GestorContadores;
-import com.siga.Utilidades.UtilidadesHash;
+import com.atos.utils.ClsConstants;
+import com.atos.utils.ClsExceptions;
+import com.atos.utils.Row;
+import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesNumero;
 import com.siga.Utilidades.UtilidadesString;
-import com.siga.beans.*;
+import com.siga.beans.CenCuentasBancariasAdm;
+import com.siga.beans.CenCuentasBancariasBean;
+import com.siga.beans.CenInstitucionAdm;
+import com.siga.beans.CenPersonaAdm;
+import com.siga.beans.CenPersonaBean;
+import com.siga.beans.FacAbonoAdm;
+import com.siga.beans.FacAbonoBean;
+import com.siga.beans.FacFacturaAdm;
+import com.siga.beans.FacFacturaBean;
+import com.siga.beans.FacPagoAbonoEfectivoAdm;
+import com.siga.beans.FacPagoAbonoEfectivoBean;
+import com.siga.beans.FacPagosPorCajaAdm;
+import com.siga.beans.FacPagosPorCajaBean;
 import com.siga.facturacion.form.AbonosPagosForm;
-import com.siga.facturacion.form.AltaAbonosForm;
-import com.siga.general.*;
-
-import java.util.*;
+import com.siga.general.MasterAction;
+import com.siga.general.MasterForm;
+import com.siga.general.SIGAException;
 
 
 public class AbonosPagosAction extends MasterAction {
@@ -172,16 +192,7 @@ public class AbonosPagosAction extends MasterAction {
 	 * @see com.siga.general.MasterAction#abrir(org.apache.struts.action.ActionMapping, com.siga.general.MasterForm, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
 	 */
 	protected String abrirAvanzada(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
-		
-		String result="abrirAvanzada";
-
-		// Cuentas de impNeto, impIva e impTotal
-		Row row =new Row();
-		String resultado=(new Double((new Double(row.getString(FacLineaAbonoBean.C_CANTIDAD))).doubleValue()*(new Double(row.getString(FacLineaAbonoBean.C_CANTIDAD))).doubleValue())).toString();
-		String resultado2=(new Double(((new Double(resultado)).doubleValue()*(new Double(row.getString(FacLineaAbonoBean.C_IVA))).doubleValue())/(new Double("100").doubleValue()))).toString();
-		String resultado3= new Double(new Double(resultado2).doubleValue() + new Double(resultado).doubleValue()).toString();
-		
-		return result;
+		return "abrirAvanzada";
 		
 	}
 
@@ -314,9 +325,6 @@ public class AbonosPagosAction extends MasterAction {
 		String result="";
 
 		try {
-			Vector ocultos=new Vector();
-			Vector entrada=new Vector();		
-
 			result="pagarCaja";
 			AbonosPagosForm form = (AbonosPagosForm) formulario;
 			
@@ -477,7 +485,7 @@ public class AbonosPagosAction extends MasterAction {
 			AbonosPagosForm miForm = (AbonosPagosForm) formulario;
 			
 			//Inserto el pago por banco
-			boolean abonoPagado=this.insertarPagoBanco(miForm,usr,pagoVariosAbonos);
+			this.insertarPagoBanco(miForm,usr,pagoVariosAbonos);
 
 			result=exitoModal("facturacion.abonosPagos.datosPagoAbono.abonoRealizado",request);
 		} 
@@ -515,7 +523,7 @@ public class AbonosPagosAction extends MasterAction {
 			AbonosPagosForm miForm = (AbonosPagosForm) formulario;
 
 			//Inserto el pago por caja
-			boolean abonoPagado=this.insertarPagoCaja(miForm,usr,pagoVariosAbonos);
+			this.insertarPagoCaja(miForm,usr,pagoVariosAbonos);
 			
 			result = exitoModal(
 					"facturacion.abonosPagos.datosPagoAbono.abonoRealizado",
@@ -587,7 +595,6 @@ public class AbonosPagosAction extends MasterAction {
 			result="dialogoCompensacionFacturaManual";
 			AbonosPagosForm form = (AbonosPagosForm) formulario;
 			FacAbonoAdm adm = new FacAbonoAdm(this.getUserBean(request));
-			FacFacturaAdm admFactura = new FacFacturaAdm(this.getUserBean(request));
 			CenPersonaAdm admPersona = new CenPersonaAdm(this.getUserBean(request));
 			
 			
@@ -626,7 +633,6 @@ public class AbonosPagosAction extends MasterAction {
 			
 			request.setAttribute("CLIENTE", nombre.toString());
 			request.setAttribute(FacAbonoBean.C_NUMEROABONO, registro.get(FacAbonoBean.C_NUMEROABONO));
-			String idFactura = (String)registro.get(FacAbonoBean.C_IDFACTURA);
 			//Obtenemos los datos de la factura rectificativa
 			/*
 			Hashtable htFactura = new Hashtable();
@@ -852,7 +858,7 @@ public class AbonosPagosAction extends MasterAction {
 							
 										    
 					    } else {
-					        throw new ClsExceptions("No se ha encontrado la factura buscada: "+institucion+ " "+facturaBean.getIdFactura());
+					        throw new ClsExceptions("No se ha encontrado la factura buscada: "+institucion);
 					    }
 					    
 //					    // actualizamos el estado del abono
@@ -874,24 +880,19 @@ public class AbonosPagosAction extends MasterAction {
 	public static double compensarFactura(String institucion, String abono, String idFactura, double importeFactura , UsrBean userBean) throws ClsExceptions{
 		
 		double resultado=0;
-		UserTransaction tx = null;
 		Hashtable datosAbono=new Hashtable();
-		Vector facturasPendientes=new Vector();
 		double cantidadPendiente=0;
 		double cantidadOriginal=0;
-		String idPersona="";
 		boolean correcto=true;
 		
 		try {		 				
 			// Creo manejadores para acceder a las BBDD
 			FacAbonoAdm adminAbono=new FacAbonoAdm(userBean);
-			FacFacturaAdm adminFactura=new FacFacturaAdm(userBean);
 			FacPagoAbonoEfectivoAdm adminPAE=new FacPagoAbonoEfectivoAdm(userBean);
 			FacPagosPorCajaAdm adminPPC=new FacPagosPorCajaAdm(userBean);
 			
 			// Obtengo datos generales del abono
 			datosAbono=((Row)adminAbono.getTotalesPagos(institucion,abono).firstElement()).getRow();
-			idPersona=(String)datosAbono.get(FacAbonoBean.C_IDPERSONA);
 			cantidadPendiente=new Double((String)datosAbono.get("PENDIENTE")).doubleValue();
 			cantidadOriginal=cantidadPendiente;
 			
