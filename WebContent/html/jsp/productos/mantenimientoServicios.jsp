@@ -319,14 +319,14 @@
 									</td>
 									<td class="labelText"> 
 										<% if (modo=="insertar") {%>
-											<siga:ComboBD nombre = "iva" tipo="tipoIva" clase="boxCombo" obligatorio="true"/>
+											<siga:ComboBD nombre = "idTipoIva" tipo="tipoIva" clase="boxCombo" obligatorio="true"/>
 											
 								 		<% } else { %>  
 								 			<%if (modo=="modificar"){%> 
-												<siga:ComboBD nombre = "iva" tipo="tipoIva" clase="boxCombo" elementoSel="<%=vIva%>" obligatorio="true"/>
+												<siga:ComboBD nombre = "idTipoIva" tipo="tipoIva" clase="boxCombo" elementoSel="<%=vIva%>" obligatorio="true"/>
 												
 											<% } else { %>
-												<siga:ComboBD nombre = "iva" tipo="tipoIva" clase="boxConsulta" elementoSel="<%=vIva%>" obligatorio="true" readOnly="true"/>
+												<siga:ComboBD nombre = "idTipoIva" tipo="tipoIva" clase="boxConsulta" elementoSel="<%=vIva%>" obligatorio="true" readOnly="true"/>
 											<% } %>	
 										 <% } %>
 									</td>							

@@ -1587,7 +1587,7 @@
         <arg0 key="pys.mantenimientoServicios.literal.categoria"/>
     </field>
 
-    <field property = "iva" depends = "required">
+    <field property = "idTipoIva" depends = "required">
         <arg0 key="pys.mantenimientoServicios.literal.IVA"/>
     </field>
 
