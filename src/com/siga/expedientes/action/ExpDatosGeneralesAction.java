@@ -1205,7 +1205,7 @@ public class ExpDatosGeneralesAction extends MasterAction
 				double ImporteTotal = Double.parseDouble(sImporteTotal);
 				form.setImporteTotal("" + UtilidadesNumero.formatoCampo(ImporteTotal));
 			}			
-		
+
 			String sMinutaFinal = fila.getString(ExpExpedienteBean.C_MINUTAFINAL); 
 			if (sMinutaFinal != null && !sMinutaFinal.equals("")) {
 				double minuta = Double.parseDouble(sMinutaFinal);
@@ -1868,7 +1868,9 @@ public class ExpDatosGeneralesAction extends MasterAction
 			expBean.setIdInstitucion_tipoExpediente(Integer.valueOf(idInstitucion_TipoExpediente));
 			expBean.setIdTipoExpediente(Integer.valueOf(idTipoExpediente));
 			expBean.setIdPersonaDenunciado(form.getIdPersonaDenunciado().equals("")?null:Long.valueOf(form.getIdPersonaDenunciado()));
+			expBean.setIdDireccion(form.getIdDireccionDenunciado());
 			expBean.setIdPersonaDenunciante(form.getIdPersonaDenunciante().equals("")?null:Long.valueOf(form.getIdPersonaDenunciante()));
+			expBean.setIdDireccionDenunciante(form.getIdDireccionDenunciante());
 			expBean.setNumExpDisciplinario(form.getNumExpDisciplinario().equals("")?null:Integer.valueOf(form.getNumExpDisciplinario()));
 			expBean.setAnioExpDisciplinario(form.getAnioExpDisciplinario().equals("")?null:Integer.valueOf(form.getAnioExpDisciplinario()));
 			if(form.getTipoExpDisciplinario()!=null && !form.getTipoExpDisciplinario().trim().equals(""))
@@ -1957,6 +1959,7 @@ public class ExpDatosGeneralesAction extends MasterAction
 			expBean.setAlertaFinalGenerada("N");
 			expBean.setEsVisible("N");
 			expBean.setEsVisibleEnFicha("N");
+			
 			
 			Integer numExpAGuardar =null;
 			Integer anioExpAGuardar = null;
@@ -2089,6 +2092,7 @@ public class ExpDatosGeneralesAction extends MasterAction
 			    denBean.setAnioExpediente(Integer.valueOf(form.getAnioExpediente()));
 			    denBean.setIdDenunciado(ExpDenunciadoBean.ID_DENUNCIADO_PRINCIPAL);
 			    denBean.setIdPersona(Long.valueOf(form.getIdPersonaDenunciado()));
+			    denBean.setIdDireccion(form.getIdDireccionDenunciado().equals("")?null:Long.valueOf(form.getIdDireccionDenunciado()));
 			    		    
 			    if(!denAdm.insert(denBean)) {
 				    return this.exitoModalSinRefresco("messages.inserted.error",request);
@@ -2106,6 +2110,7 @@ public class ExpDatosGeneralesAction extends MasterAction
 			    denBean.setAnioExpediente(Integer.valueOf(form.getAnioExpediente()));
 			    denBean.setIdDenunciante(ExpDenuncianteBean.ID_DENUNCIANTE_PRINCIPAL);
 			    denBean.setIdPersona(Long.valueOf(form.getIdPersonaDenunciante()));
+			    denBean.setIdDireccion(form.getIdDireccionDenunciante().equals("")?null:Long.valueOf(form.getIdDireccionDenunciante()));
 			    		    
 			    if(!denAdm.insert(denBean)) {
 				    return this.exitoModalSinRefresco("messages.inserted.error",request);
