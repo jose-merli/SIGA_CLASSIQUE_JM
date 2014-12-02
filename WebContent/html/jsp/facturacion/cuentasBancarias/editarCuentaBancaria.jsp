@@ -234,7 +234,6 @@
 			
 		}else{
 			document.getElementById("comboSufijossjcs").disabled=true;
-			document.getElementById("comboSufijos").disabled=true;
 			
 		}
 	}
