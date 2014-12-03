@@ -1205,7 +1205,14 @@ public class ExpDatosGeneralesAction extends MasterAction
 				double ImporteTotal = Double.parseDouble(sImporteTotal);
 				form.setImporteTotal("" + UtilidadesNumero.formatoCampo(ImporteTotal));
 			}			
-
+		
+			String sPorcentajeIVA = fila.getString(ExpExpedienteBean.C_PORCENTAJEIVA); 
+			if (sPorcentajeIVA != null && !sPorcentajeIVA.equals("")) {
+				double PorcentajeIVA = Double.parseDouble(sPorcentajeIVA);
+				form.setPorcentajeIVA("" + UtilidadesNumero.formatoCampo(PorcentajeIVA));
+				form.setPorcentajeIVAFinal("" + UtilidadesNumero.formatoCampo(PorcentajeIVA));
+			}	
+			
 			String sMinutaFinal = fila.getString(ExpExpedienteBean.C_MINUTAFINAL); 
 			if (sMinutaFinal != null && !sMinutaFinal.equals("")) {
 				double minuta = Double.parseDouble(sMinutaFinal);
@@ -1496,6 +1503,23 @@ public class ExpDatosGeneralesAction extends MasterAction
 		        		String derechos = form.getDerechosColegiales().replace(',', '.');
 		        		expBean.setDerechosColegiales(Double.parseDouble(derechos));
 		    	    }
+			}
+			if (form.getPorcentajeIVA()!= null){
+				if(!form.getPorcentajeIVA().trim().equals("")) {
+					
+
+			    	try{
+						expBean.setPorcentajeIVA(new Double(form.getPorcentajeIVA()));
+				    	expBean.setPorcentajeIVAFinal(new Double(form.getPorcentajeIVA()));
+						}catch (Exception e) {
+			        		String porceniva = form.getPorcentajeIVA().replace(',', '.');
+			        		expBean.setPorcentajeIVA(Double.parseDouble(porceniva));
+			        		expBean.setPorcentajeIVAFinal(Double.parseDouble(porceniva));
+			    	    }
+				}else{
+					expBean.setPorcentajeIVA(null);
+			    	expBean.setPorcentajeIVAFinal(null);
+				}
 			}
 	        
 	        if (form.getIdTipoIVA() != null && !form.getIdTipoIVA().equals("")) {
@@ -1899,6 +1923,14 @@ public class ExpDatosGeneralesAction extends MasterAction
 			if (form.getImporteTotal()!= null && !form.getImporteTotal().trim().equals("")) {
 			    expBean.setImporteTotal(new Double(form.getImporteTotal()));
 			}
+			if (form.getPorcentajeIVA()!= null && !form.getPorcentajeIVA().trim().equals("")) {
+			    expBean.setPorcentajeIVA(new Double(form.getPorcentajeIVA()));
+			}
+			
+			if (form.getPorcentajeIVAFinal()!= null && !form.getPorcentajeIVAFinal().trim().equals("")) {
+			    expBean.setPorcentajeIVAFinal(new Double(form.getPorcentajeIVAFinal()));
+			}
+			
 			if (form.getMinutaFinal()!= null && !form.getMinutaFinal().trim().equals("")) {
 			    expBean.setMinutaFinal(new Double(form.getMinutaFinal()));
 			}
@@ -1959,7 +1991,6 @@ public class ExpDatosGeneralesAction extends MasterAction
 			expBean.setAlertaFinalGenerada("N");
 			expBean.setEsVisible("N");
 			expBean.setEsVisibleEnFicha("N");
-			
 			
 			Integer numExpAGuardar =null;
 			Integer anioExpAGuardar = null;

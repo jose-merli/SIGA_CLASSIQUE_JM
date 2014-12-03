@@ -90,6 +90,7 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 			ExpExpedienteBean.C_MINUTAFINAL,
 			ExpExpedienteBean.C_IMPORTETOTALFINAL,
 			ExpExpedienteBean.C_DERECHOSCOLEGIALES,
+			ExpExpedienteBean.C_PORCENTAJEIVA,
 			ExpExpedienteBean.C_IDAREA,
 			ExpExpedienteBean.C_IDMATERIA,
 			ExpExpedienteBean.C_IDPRETENSION,
@@ -195,6 +196,8 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 			bean.setObservaciones(UtilidadesHash.getString(hash, ExpExpedienteBean.C_OBSERVACIONES));
 			bean.setMinuta(UtilidadesHash.getDouble(hash, ExpExpedienteBean.C_MINUTA));
 			bean.setImporteTotal(UtilidadesHash.getDouble(hash, ExpExpedienteBean.C_IMPORTETOTAL));
+			bean.setPorcentajeIVA(UtilidadesHash.getDouble(hash, ExpExpedienteBean.C_PORCENTAJEIVA));
+			bean.setPorcentajeIVAFinal(UtilidadesHash.getDouble(hash, ExpExpedienteBean.C_PORCENTAJEIVA));
 			bean.setMinutaFinal(UtilidadesHash.getDouble(hash, ExpExpedienteBean.C_MINUTAFINAL));
 			bean.setImporteTotalFinal(UtilidadesHash.getDouble(hash, ExpExpedienteBean.C_IMPORTETOTALFINAL));
 			bean.setDerechosColegiales(UtilidadesHash.getDouble(hash, ExpExpedienteBean.C_DERECHOSCOLEGIALES));
@@ -282,6 +285,8 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(htData, ExpExpedienteBean.C_OBSERVACIONES, b.getObservaciones());
 			UtilidadesHash.set(htData, ExpExpedienteBean.C_MINUTA, b.getMinuta());
 			UtilidadesHash.set(htData, ExpExpedienteBean.C_IMPORTETOTAL, b.getImporteTotal());
+			UtilidadesHash.set(htData, ExpExpedienteBean.C_PORCENTAJEIVA, b.getPorcentajeIVA());
+			UtilidadesHash.set(htData, ExpExpedienteBean.C_PORCENTAJEIVA, b.getPorcentajeIVAFinal());
 			UtilidadesHash.set(htData, ExpExpedienteBean.C_MINUTAFINAL, b.getMinutaFinal());
 			UtilidadesHash.set(htData, ExpExpedienteBean.C_IMPORTETOTALFINAL, b.getImporteTotalFinal());
 			UtilidadesHash.set(htData, ExpExpedienteBean.C_DERECHOSCOLEGIALES, b.getDerechosColegiales());
@@ -2174,6 +2179,12 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 				UtilidadesHash.set(htData, ExpExpedienteBean.C_DERECHOSCOLEGIALES, "");
 			}
 			
+			if(b.getPorcentajeIVA()!=null){
+				UtilidadesHash.set(htData, ExpExpedienteBean.C_PORCENTAJEIVA, b.getPorcentajeIVA());
+			}else{
+				UtilidadesHash.set(htData, ExpExpedienteBean.C_PORCENTAJEIVA, "");
+			}
+			
 			UtilidadesHash.set(htData, ExpExpedienteBean.C_IDTIPOIVA, b.getIdTipoIVA());
 			if (b.getIdResultadoJuntaGobierno() != null)
 				UtilidadesHash.set(htData, ExpExpedienteBean.C_IDRESULTADOJUNTAGOBIERNO, b.getIdResultadoJuntaGobierno());
@@ -2259,7 +2270,7 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 							+ " TO_CHAR(EXP.FECHACADUCIDAD, 'dd-mm-yyyy') AS FECHACADUCIDAD, "
 							+ " EXP.OBSERVACIONES, "
 							+ " f_siga_formatonumero(EXP.MINUTA,2) MINUTA, "
-							+ " f_siga_formatonumero(EXP.IDTIPOIVA,2) IDTIPOIVA, "
+							+ " f_siga_formatonumero(EXP.PORCENTAJEIVA,2) PORCENTAJEIVA, "
 							+ " f_siga_formatonumero(EXP.IMPORTETOTAL,2) IMPORTETOTAL, "
 							+ " f_siga_formatonumero(EXP.MINUTAFINAL,2) MINUTAFINAL, "
 							+ " EXP.DERECHOSCOLEGIALES, "
