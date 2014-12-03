@@ -68,7 +68,25 @@
 	<siga:ConjCampos leyenda="pestana.justiciagratuitaejg.documentacion">
 		
 	<table class="tablaCampos" align="center" border ="0">
-
+	<tr>
+		<td class="labelText">	
+			<siga:Idioma key='sjcs.asistencia.documentacion.asociado'/>&nbsp;(*)
+		</td>
+		<td colspan="3">
+			<c:choose>
+				<c:when test="${DefinirDocumentacionAsistenciaForm.modo=='insertar'}">
+					<siga:Select id="idActuacion" queryId="getTipoActuacionAsociada" required="true"  width="300" firstLabel="Asistencia"  />
+				</c:when>
+				<c:when test="${accionModo=='ver'}">
+					<siga:Select id="idActuacion" queryId="getTipoActuacionAsociada" params="${paramActuacionesJson}" selectedIds="${idActuacionSelected}" firstLabel="Asistencia" required="true" disabled="true"  width="300"   />
+				</c:when>
+				<c:otherwise>
+					<siga:Select id="idActuacion" queryId="getTipoActuacionAsociada" params="${paramActuacionesJson}" selectedIds="${idActuacionSelected}" firstLabel="Asistencia" required="true"  width="300"   />
+				</c:otherwise>
+			</c:choose>
+		
+		</td>
+	</tr>	
 	<tr>
 		<td class="labelText">	
 			<siga:Idioma key='sjcs.ejg.documentacion.tipoDocumentacion'/>&nbsp;(*)
@@ -89,25 +107,7 @@
 		</td>
 	</tr>					
 
-	<tr>
-		<td class="labelText">	
-			<siga:Idioma key='sjcs.asistencia.documentacion.asociado'/>&nbsp;(*)
-		</td>
-		<td colspan="3">
-			<c:choose>
-				<c:when test="${DefinirDocumentacionAsistenciaForm.modo=='insertar'}">
-					<siga:Select id="idActuacion" queryId="getTipoActuacionAsociada" required="true"  width="300" firstLabel="Asistencia"  />
-				</c:when>
-				<c:when test="${accionModo=='ver'}">
-					<siga:Select id="idActuacion" queryId="getTipoActuacionAsociada" params="${paramActuacionesJson}" selectedIds="${idActuacionSelected}" firstLabel="Asistencia" required="true" disabled="true"  width="300"   />
-				</c:when>
-				<c:otherwise>
-					<siga:Select id="idActuacion" queryId="getTipoActuacionAsociada" params="${paramActuacionesJson}" selectedIds="${idActuacionSelected}" firstLabel="Asistencia" required="true"  width="300"   />
-				</c:otherwise>
-			</c:choose>
-		
-		</td>
-	</tr>	
+	
 
 	<tr>
 		<td class="labelText">
