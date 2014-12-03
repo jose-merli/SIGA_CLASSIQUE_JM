@@ -65,27 +65,6 @@
 	<siga:ConjCampos leyenda="pestana.justiciagratuitaejg.documentacion">
 		
 	<table class="tablaCampos" align="center" border ="0">
-
-	<tr>
-		<td class="labelText">	
-			<siga:Idioma key='sjcs.ejg.documentacion.tipoDocumentacion'/>&nbsp;(*)
-		</td>
-		<td colspan="3">
-			<c:choose>
-				<c:when test="${DefinirDocumentacionDesignaForm.modo=='insertar'&& DefinirDocumentacionDesignaForm.idActuacion==''}">
-					<siga:Select id="idTipoDocumento" queryId="getTipoDocumentoDes" required="true"  width="300"   />
-				</c:when>
-				<c:when test="${DefinirDocumentacionDesignaForm.modo=='ver'}">
-					<siga:Select id="idTipoDocumento" queryId="getTipoDocumentoDes" selectedIds="${idTipoDocumentoSelected}" required="true" disabled="true"  width="300"   />
-				</c:when>
-				<c:otherwise>
-					<siga:Select id="idTipoDocumento" queryId="getTipoDocumentoDes" selectedIds="${idTipoDocumentoSelected}" required="true"  width="300"   />
-				</c:otherwise>
-			</c:choose>
-		
-		</td>
-	</tr>					
-
 	<tr>
 		<td class="labelText">	
 			<siga:Idioma key='sjcs.asistencia.documentacion.asociado'/>&nbsp;(*)
@@ -106,6 +85,27 @@
 		
 		</td>
 	</tr>	
+	<tr>
+		<td class="labelText">	
+			<siga:Idioma key='sjcs.ejg.documentacion.tipoDocumentacion'/>&nbsp;(*)
+		</td>
+		<td colspan="3">
+			<c:choose>
+				<c:when test="${DefinirDocumentacionDesignaForm.modo=='insertar'&& DefinirDocumentacionDesignaForm.idActuacion==''}">
+					<siga:Select id="idTipoDocumento" queryId="getTipoDocumentoDes" required="true"  width="300"   />
+				</c:when>
+				<c:when test="${DefinirDocumentacionDesignaForm.modo=='ver'}">
+					<siga:Select id="idTipoDocumento" queryId="getTipoDocumentoDes" selectedIds="${idTipoDocumentoSelected}" required="true" disabled="true"  width="300"   />
+				</c:when>
+				<c:otherwise>
+					<siga:Select id="idTipoDocumento" queryId="getTipoDocumentoDes" selectedIds="${idTipoDocumentoSelected}" required="true"  width="300"   />
+				</c:otherwise>
+			</c:choose>
+		
+		</td>
+	</tr>					
+
+	
 
 	<tr>
 		<td class="labelText">
