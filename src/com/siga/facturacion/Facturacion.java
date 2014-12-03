@@ -2068,7 +2068,6 @@ public class Facturacion {
 			    }							
 				tx.commit();				
 				
-				
 				/****** INICIAMOS LA GENERACION DEL INFORME *******/
 				try {
 					ClsLogging.writeFileLog("### Inicio datosInforme GENERACION",7);
@@ -2212,8 +2211,10 @@ public class Facturacion {
 			UtilidadesHash.set(hashEstado,FacFacturacionProgramadaBean.C_IDESTADOCONFIRMACION, estadoFin); //ESTADO ERROR GENERAION 
 			UtilidadesHash.set(hashEstado,FacFacturacionProgramadaBean.C_LOGERROR,"LOG_FAC_" + nombreFichero + ".log.xls");
 			
-			if (Status.STATUS_NO_TRANSACTION == tx.getStatus())
+			if (tx == null || tx.getStatus() != Status.STATUS_ACTIVE) {
+				tx = this.usrbean.getTransaction();
 				tx.begin();
+			}
 
 			if (!admProg.updateDirect(hashEstado,claves,campos)) {
 			      throw new ClsExceptions("Error al actualizar el estado de la generación. finalizada con errores.");
