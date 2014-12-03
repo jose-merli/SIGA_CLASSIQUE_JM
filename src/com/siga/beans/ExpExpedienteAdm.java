@@ -1011,8 +1011,6 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 		    }		    
 		    sql += ", C."+CenColegiadoBean.C_NCOLEGIADO+" ";
 		    */	
-		    sql += "(select IDTIPOIVA||','|| replace(VALOR,',','.')  from pys_tipoiva where idtipoiva = E.idtipoiva) VALOR_IVA ";
-		    
 			sql += " FROM ";
 			//sql += ExpExpedienteBean.T_NOMBRETABLA+" E, "+CenInstitucionBean.T_NOMBRETABLA+" I, "+CenColegiadoBean.T_NOMBRETABLA+" C, "+ExpTipoExpedienteBean.T_NOMBRETABLA+" T, "+CenPersonaBean.T_NOMBRETABLA+" P";
 			sql += ExpExpedienteBean.T_NOMBRETABLA+" E, "+CenInstitucionBean.T_NOMBRETABLA+" I, "+ExpTipoExpedienteBean.T_NOMBRETABLA+" T";
