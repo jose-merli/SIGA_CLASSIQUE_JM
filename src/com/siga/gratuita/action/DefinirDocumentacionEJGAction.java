@@ -356,7 +356,7 @@ public class DefinirDocumentacionEJGAction extends MasterAction {
 				if(idsPresentador.length>1)
 					documentacionEjgVoOld.setIdmaestropresentador(Short.valueOf(idsPresentador[1]));
 				else{
-					idsPresentador = definirDocumentacionEJGForm.getIdPresentador().split("IDPERSONAJG_");
+					idsPresentador = definirDocumentacionEJGForm.getIdPresentadorAnterior().split("IDPERSONAJG_");
 					documentacionEjgVoOld.setPresentador(Long.valueOf(idsPresentador[1]));
 				}
 			}
