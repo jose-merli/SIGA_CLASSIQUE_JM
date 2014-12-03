@@ -76,7 +76,6 @@ public class ExpExpedienteBean extends MasterBean {
 	private Double  importeIVAFinal;
 	private Double  importeTotalFinal;
 	private Double  derechosColegiales;
-	private Integer idTipoIVA;
 	private Integer idResultadoJuntaGobierno;
 	
 	private String identificadorDS;
@@ -134,7 +133,6 @@ public class ExpExpedienteBean extends MasterBean {
 	static public final String C_IMPORTETOTALFINAL ="IMPORTETOTALFINAL";
 	static public final String C_DERECHOSCOLEGIALES ="DERECHOSCOLEGIALES";	
 	static public final String C_PORCENTAJEIVA ="PORCENTAJEIVA";
-	static public final String C_IDTIPOIVA ="IDTIPOIVA";
 	static public final String C_IDRESULTADOJUNTAGOBIERNO ="IDRESULTADOJUNTAGOBIERNO";
 	static public final String C_ALERTAFASEGENERADA ="ALERTAFASEGENERADA";
 	static public final String C_IDTIPOEJG ="IDTIPOEJG";
@@ -197,12 +195,6 @@ public class ExpExpedienteBean extends MasterBean {
 	}
 	public void setPorcentajeIVAFinal(Double porcentajeIVAFinal) {
 		this.porcentajeIVAFinal = porcentajeIVAFinal;
-	}
-	public Integer getIdTipoIVA() {
-		return idTipoIVA;
-	}
-	public void setIdTipoIVA(Integer idTipoIVA) {
-		this.idTipoIVA = idTipoIVA;
 	}
 	public Integer getIdResultadoJuntaGobierno() {
 		return idResultadoJuntaGobierno;

@@ -1196,8 +1196,6 @@ public class ExpDatosGeneralesAction extends MasterAction
 			if (sMinuta != null && !sMinuta.equals("")) {
 				double minuta = Double.parseDouble(sMinuta);
 				form.setMinuta("" + UtilidadesNumero.formatoCampo(minuta));
-				//if (fila.getString("VALOR_IVA") != null)
-				//	request.setAttribute("idTipoIVA", fila.getString("VALOR_IVA"));
 			}
 			
 			String sImporteTotal = fila.getString(ExpExpedienteBean.C_IMPORTETOTAL); 
@@ -1521,11 +1519,6 @@ public class ExpDatosGeneralesAction extends MasterAction
 			    	expBean.setPorcentajeIVAFinal(null);
 				}
 			}
-	        
-	        if (form.getIdTipoIVA() != null && !form.getIdTipoIVA().equals("")) {
-	        	String a = form.getIdTipoIVA().split(",")[0];
-	        	expBean.setIdTipoIVA(new Integer(a));
-	        }
 	        
 	        if (estadoCambiado && form.getEstado() != null && !form.getEstado().equals(""))
 	            expBean.setIdEstado(new Integer(form.getEstado()));
@@ -1943,10 +1936,6 @@ public class ExpDatosGeneralesAction extends MasterAction
 			if (form.getDerechosColegiales()!= null && !form.getDerechosColegiales().trim().equals("")) {
 			    expBean.setDerechosColegiales(new Double(form.getDerechosColegiales()));
 			}
-			if (form.getIdTipoIVA() != null && !form.getIdTipoIVA().equals("")) {
-	        	String a = form.getIdTipoIVA().split(",")[0];
-	        	expBean.setIdTipoIVA(new Integer(a));
-	        }			
 			expBean.setJuzgado(form.getJuzgado().equals("")?null:form.getJuzgado());
 	        expBean.setIdPretension(form.getIdPretension().equals("")?null:Integer.valueOf(form.getIdPretension()));
 	        expBean.setOtrasPretensiones(form.getOtrasPretensiones());

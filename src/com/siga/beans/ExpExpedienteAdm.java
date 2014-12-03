@@ -95,7 +95,6 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 			ExpExpedienteBean.C_IDMATERIA,
 			ExpExpedienteBean.C_IDPRETENSION,
 			ExpExpedienteBean.C_OTRASPRETENSIONES,
-			ExpExpedienteBean.C_IDTIPOIVA,
 			ExpExpedienteBean.C_IDRESULTADOJUNTAGOBIERNO,
 			ExpExpedienteBean.C_IDENTIFICADORDS,
 			ExpExpedienteBean.C_IDDIRECCION,
@@ -201,7 +200,6 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 			bean.setMinutaFinal(UtilidadesHash.getDouble(hash, ExpExpedienteBean.C_MINUTAFINAL));
 			bean.setImporteTotalFinal(UtilidadesHash.getDouble(hash, ExpExpedienteBean.C_IMPORTETOTALFINAL));
 			bean.setDerechosColegiales(UtilidadesHash.getDouble(hash, ExpExpedienteBean.C_DERECHOSCOLEGIALES));
-			bean.setIdTipoIVA(UtilidadesHash.getInteger(hash, ExpExpedienteBean.C_IDTIPOIVA));
 			bean.setIdResultadoJuntaGobierno(UtilidadesHash.getInteger(hash, ExpExpedienteBean.C_IDRESULTADOJUNTAGOBIERNO));
 			
 			bean.setIdentificadorDS(UtilidadesHash.getString(hash, ExpExpedienteBean.C_IDENTIFICADORDS));
@@ -290,7 +288,6 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(htData, ExpExpedienteBean.C_MINUTAFINAL, b.getMinutaFinal());
 			UtilidadesHash.set(htData, ExpExpedienteBean.C_IMPORTETOTALFINAL, b.getImporteTotalFinal());
 			UtilidadesHash.set(htData, ExpExpedienteBean.C_DERECHOSCOLEGIALES, b.getDerechosColegiales());
-			UtilidadesHash.set(htData, ExpExpedienteBean.C_IDTIPOIVA, b.getIdTipoIVA());
 			UtilidadesHash.set(htData, ExpExpedienteBean.C_IDRESULTADOJUNTAGOBIERNO, b.getIdResultadoJuntaGobierno());
 			UtilidadesHash.set(htData, ExpExpedienteBean.C_IDENTIFICADORDS, b.getIdentificadorDS());
 			UtilidadesHash.set(htData, ExpExpedienteBean.C_IDDIRECCION, b.getIdDireccion());
@@ -2185,7 +2182,6 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 				UtilidadesHash.set(htData, ExpExpedienteBean.C_PORCENTAJEIVA, "");
 			}
 			
-			UtilidadesHash.set(htData, ExpExpedienteBean.C_IDTIPOIVA, b.getIdTipoIVA());
 			if (b.getIdResultadoJuntaGobierno() != null)
 				UtilidadesHash.set(htData, ExpExpedienteBean.C_IDRESULTADOJUNTAGOBIERNO, b.getIdResultadoJuntaGobierno());
 			else

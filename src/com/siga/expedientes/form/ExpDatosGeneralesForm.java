@@ -81,8 +81,6 @@ public class ExpDatosGeneralesForm extends MasterForm {
     private String importeTotal="";
     private String porcentajeIVA="";
     private String porcentajeIVAFinal="";
-    private String idTipoIVA="";
-    //private String idDireccion;
     private String idDireccionDenunciante;
     private String idDireccionDenunciado;
     private String idInstitucionOrigenDenunciante;
@@ -217,13 +215,6 @@ public class ExpDatosGeneralesForm extends MasterForm {
 	}
 	public void setPorcentajeIVAFinal(String valor) {
 		this.porcentajeIVAFinal = valor;
-	}
-
-	public String getIdTipoIVA() {
-		return idTipoIVA;
-	}
-	public void setIdTipoIVA(String idTipoIVA) {
-		this.idTipoIVA = idTipoIVA;
 	}
     
 	public String getIdPretension() {

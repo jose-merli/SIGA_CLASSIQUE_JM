@@ -157,11 +157,9 @@
 	String nuevoNoCol = UtilidadesString.getMensajeIdioma(userBean, "general.new");
 	String plazo = UtilidadesString.getMensajeIdioma(userBean, "general.boton.consultarplazo");
 	
-	ArrayList tipoIVASel = new ArrayList();
 	ArrayList procedimientoSel = new ArrayList();
 	String[] paramJuz = {userBean.getLocation()};
 	
-	String idTipoIVA = (String)request.getAttribute("idTipoIVA");
 	String idProcedimiento=(String)request.getAttribute("idProcedimiento");
 	String idInstitucionProcedimiento=(String)request.getAttribute("idInstitucionProcedimiento");
 
@@ -177,10 +175,6 @@
 		procedimientoSel.add(0,idProcedimiento+","+idInstitucionProcedimiento);
 	}
 	
-	if (idTipoIVA != null)
-	{
-		tipoIVASel.add(idTipoIVA);
-	}
 	String tituloDenunciado = (String)request.getAttribute("tituloDenunciado");
 	
 	String tituloDenunciante = (String)request.getAttribute("tituloDenunciante");
@@ -228,9 +222,8 @@
 		var jsEstadoViejo="";
 		var jsEstadoNuevo="";
 		
-		<!-- Asociada al boton Volver -->
-		function accionVolver() 
-		{
+		// Asociada al boton Volver
+		function accionVolver() {
 			<% if (busquedaVolver.equals("AB")) { %>
 				document.forms[1].action = "<%=app%>/EXP_AuditoriaExpedientes.do?noReset=true";
 				document.forms[1].modo.value="buscarPor";
@@ -256,16 +249,14 @@
 			document.forms[1].submit();	
 		}
 
-		<!-- Asociada al boton Restablecer -->
-		function accionRestablecer() 
-		{		
+		// Asociada al boton Restablecer
+		function accionRestablecer() {		
 			var elemento=parent.document.getElementById('pestana.auditoriaexp.datosgenerales');
-			parent.pulsar(elemento,'mainPestanas') 
+			parent.pulsar(elemento,'mainPestanas'); 
 		}
 		
-		<!-- Asociada al boton Guardar -->
-		function accionGuardar() 
-		{	
+		// Asociada al boton Guardar
+		function accionGuardar() {	
 			sub();					
 			if (validateExpDatosGeneralesForm(document.ExpDatosGeneralesForm)){
 				if (document.ExpDatosGeneralesForm.idPersonaDenunciado.value == ""){
@@ -277,7 +268,7 @@
 
 						if ((document.ExpDatosGeneralesForm.fechaInicial && document.ExpDatosGeneralesForm.fechaInicial.value != '') || (document.ExpDatosGeneralesForm.fechaFinal.value && document.ExpDatosGeneralesForm.fechaFinal.value!='')) {
 							if (compararFecha (document.ExpDatosGeneralesForm.fechaInicial, document.ExpDatosGeneralesForm.fechaFinal) == 1) {
-								mensaje = '<siga:Idioma key="messages.expediente.rangoFechasIniFin"/>'
+								mensaje = '<siga:Idioma key="messages.expediente.rangoFechasIniFin"/>';
 								alert(mensaje);
 								fin();
 								return false;
@@ -286,7 +277,7 @@
 						
 						if ((document.ExpDatosGeneralesForm.fechaInicial && document.ExpDatosGeneralesForm.fechaInicial.value != '') || (document.ExpDatosGeneralesForm.fechaProrroga.value && document.ExpDatosGeneralesForm.fechaProrroga.value!='')) {
 							if (compararFecha (document.ExpDatosGeneralesForm.fechaInicial, document.ExpDatosGeneralesForm.fechaProrroga) == 1) {
-								mensaje = '<siga:Idioma key="messages.expediente.rangoFechasIniPro"/>'
+								mensaje = '<siga:Idioma key="messages.expediente.rangoFechasIniPro"/>';
 								alert(mensaje);
 								fin();
 								return false;
@@ -295,7 +286,7 @@
 				
 						if ((document.ExpDatosGeneralesForm.fechaFinal && document.ExpDatosGeneralesForm.fechaFinal.value != '') || (document.ExpDatosGeneralesForm.fechaProrroga.value && document.ExpDatosGeneralesForm.fechaProrroga.value!='')) {
 							if (compararFecha (document.ExpDatosGeneralesForm.fechaFinal, document.ExpDatosGeneralesForm.fechaProrroga) == 1) {
-								mensaje = '<siga:Idioma key="messages.expediente.rangoFechasFinPro"/>'
+								mensaje = '<siga:Idioma key="messages.expediente.rangoFechasFinPro"/>';
 								alert(mensaje);
 								fin();
 								return false;
@@ -363,9 +354,6 @@
 				var tmp1 = document.getElementsByName("comboFases");
 				var tmp2 = tmp1[0];			 
 				tmp2.onchange();
-				if(document.forms[0].idTipoIVA){// solo aparece el tipo IVA cuando está el campo minuta
-				  document.getElementById("idTipoIVA").onchange();
-				}
 			<%}%>
 		}
 		

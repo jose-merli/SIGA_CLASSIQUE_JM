@@ -319,11 +319,9 @@
 	String nuevoNoCol = UtilidadesString.getMensajeIdioma(userBean, "general.new");
 	String plazo = UtilidadesString.getMensajeIdioma(userBean, "general.boton.consultarplazo");
 
-	ArrayList tipoIVASel = new ArrayList();
 	ArrayList procedimientoSel = new ArrayList();
 	String[] paramJuz = { userBean.getLocation() };
 
-	String idTipoIVA = (String) request.getAttribute("idTipoIVA");
 	String idProcedimiento = (String) request.getAttribute("idProcedimiento");
 	String idInstitucionProcedimiento = (String) request.getAttribute("idInstitucionProcedimiento");
 
@@ -344,9 +342,6 @@
 		procedimientoSel.add(0, "{\"idprocedimiento\":\""+idProcedimiento+"\",\"idinstitucion\":\""+idInstitucionProcedimiento+"\"}");
 	}
 
-	if (idTipoIVA != null) {
-		tipoIVASel.add(idTipoIVA);
-	}
 	String tituloDenunciado = (String) request.getAttribute("tituloDenunciado");
 	String tituloDenunciadoMensajeError = "";
 	if(tituloDenunciado == null || tituloDenunciado.equals(""))
@@ -658,13 +653,6 @@
 					//jQuery("#idMateria").change();
 <%
 				}
-%>
-				/*
-				if(document.forms[0].idTipoIVA){// solo aparece el tipo IVA cuando está el campo minuta
-					jQuery("#idTipoIVA").change();
-				}
-				*/
-<%
 			}
 %>
 		}
