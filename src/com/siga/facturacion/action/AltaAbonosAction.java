@@ -430,7 +430,7 @@ public class AltaAbonosAction extends MasterAction {
 	factNoTratadas=factNoTratadas-factTratadas;
 	
 	
-	 if (factNoTratadas==0) {
+	 if (factTratadas==factSeleccionadas) {
     	// No hay errores
     	String[] datos = {""+factTratadas,""+factSeleccionadas};
     	tipoAlert="success";

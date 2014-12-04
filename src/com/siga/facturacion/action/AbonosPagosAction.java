@@ -1274,7 +1274,7 @@ public class AbonosPagosAction extends MasterAction {
 	abonosNoTratados=abonosNoTratados-abonosTratados;
 	
 	
-	 if (abonosNoTratados==0) {
+	 if (abonosTratados==abonosSeleccionados) {
     	// No hay errores
     	String[] datos = {""+abonosTratados,""+abonosSeleccionados};
     	tipoAlert="success";
