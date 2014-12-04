@@ -995,7 +995,7 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 		    sql += "T."+ExpTipoExpedienteBean.C_IDINSTITUCION+", ";	
 		    sql += "T."+ExpTipoExpedienteBean.C_IDTIPOEXPEDIENTE+", ";	
 		    sql += "T."+ExpTipoExpedienteBean.C_NOMBRE+" AS NOMBRETIPOEXPEDIENTE, ";
-		    sql += "I."+CenInstitucionBean.C_ABREVIATURA+" AS NOMBREINSTITUCION, ";
+		    sql += "I."+CenInstitucionBean.C_ABREVIATURA+" AS NOMBREINSTITUCION ";
 		    /* BNS QUITO LOS DATOS DE DENUNCIANTE YA QUE SE OBTIENEN EN OTRA QUERY
 		    sql += "P."+CenPersonaBean.C_NOMBRE+" AS NOMBREPERSONA, ";
 		    sql += "P."+CenPersonaBean.C_APELLIDOS1+", ";
