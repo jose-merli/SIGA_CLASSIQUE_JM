@@ -355,7 +355,7 @@
 											<html:textarea name="DatosGeneralesForm" property="observaciones"  styleId="observaciones"  style="width:350px;"  rows="3" onkeydown="cuenta(this,4000)" onChange="cuenta(this,4000)" styleClass="box" value="<%=observaciones%>" readonly="false"/>
 										<%}%>
 									</td>
-									<%if (ClsConstants.esConsejoGeneral(idInstitucion)){%>
+									<%if (ClsConstants.esConsejoITCGAE(idInstitucion)){%>
 										<td id="titulo" class="labelText">
 											Planificar posteriormente a
 										</td>
