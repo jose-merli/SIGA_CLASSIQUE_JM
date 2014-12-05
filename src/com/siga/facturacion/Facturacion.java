@@ -2215,7 +2215,9 @@ public class Facturacion {
 			
 			ClsLogging.writeFileLog("El estado de la transaccion es: "+tx.getStatus(), 7);
 			if (tx == null || tx.getStatus() != Status.STATUS_ACTIVE) {
+				ClsLogging.writeFileLog("Dentro del if antes de crear la transaccion", 7);
 				tx = this.usrbean.getTransaction();
+				ClsLogging.writeFileLog("Dentro del if antes del begin de la transaccion", 7);
 				tx.begin();
 			}
 			
@@ -2247,6 +2249,7 @@ public class Facturacion {
 			tx.commit();
 			
 		} catch (Exception e) {
+			e.printStackTrace();
 			throw e;
 		} 
 	}
