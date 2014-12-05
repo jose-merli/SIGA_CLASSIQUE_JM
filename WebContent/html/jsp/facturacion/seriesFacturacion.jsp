@@ -541,7 +541,7 @@
 					</td>
 					<td align="left">
 						<% if (modoAction.equals("editar") || modoAction.equals("nuevaPrevision")) { %>
-							<html:text name="confirmarFacturacionForm" styleId="descripcionProgramacion" property="descripcionProgramacion" value="<%=sDescripcion%>" size="50" styleClass="box"/>
+							<html:text name="confirmarFacturacionForm" styleId="descripcionProgramacion" property="descripcionProgramacion" value="<%=sDescripcion%>" size="50" maxlength="255" styleClass="box"/>
 						<% } else { %>
 							<html:text name="confirmarFacturacionForm" styleId="descripcionProgramacion" property="descripcionProgramacion" value="<%=sDescripcion%>" size="50" styleClass="boxConsulta" readOnly="true" />
 						<% } %>	

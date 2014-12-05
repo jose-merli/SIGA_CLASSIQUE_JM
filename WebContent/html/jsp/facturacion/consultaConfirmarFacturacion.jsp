@@ -459,8 +459,10 @@
 								// ESTADO CONFIRMADA
 								if (idEstadoConfirmacion.equals(FacEstadoConfirmFactBean.CONFIRM_FINALIZADA)) {
 									elems[1]=new FilaExtElement("archivar","archivar",SIGAConstants.ACCESS_READ); 				
-									elems[2]=new FilaExtElement("download","download",SIGAConstants.ACCESS_READ); 				
-									elems[3]=new FilaExtElement("enviar","enviar",SIGAConstants.ACCESS_READ);
+									elems[2]=new FilaExtElement("download","download",SIGAConstants.ACCESS_READ); 	
+									if(sCheckArchivado== null || !sCheckArchivado.equals("1")){
+										elems[3]=new FilaExtElement("enviar","enviar",SIGAConstants.ACCESS_READ);
+									}
 								
 									if(htData.get("IDESTADOPDF")!= null){ 
 										if(((String)htData.get("IDESTADOPDF")).equals(String.valueOf(FacEstadoConfirmFactBean.PDF_FINALIZADAERRORES.intValue()))){

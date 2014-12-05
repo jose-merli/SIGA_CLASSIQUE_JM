@@ -2098,6 +2098,7 @@ public class Facturacion {
 			}
 			
 		} catch (Exception e) {
+			ClsLogging.writeFileLog("### ERROR GLOBAL GENERACION (Serie:" + idSerieFacturacion + "; IdProgramacion:" + idProgramacion + "), empezamos la gestion del error", 7);
 			try { // Tratamiento rollback
 				if (Status.STATUS_ACTIVE  == tx.getStatus()){
 					tx.rollback();
@@ -2207,15 +2208,18 @@ public class Facturacion {
 	 */
 	private void controlarEstadoErrorGeneracion(UserTransaction tx, FacFacturacionProgramadaAdm admProg,String [] claves,Hashtable<String,Object> hashEstado, String nombreFichero, Integer estadoFin) throws Exception {
 		try {
+			ClsLogging.writeFileLog("### GESTION ERROR GENERACION  ####", 7);
 			String [] campos = {FacFacturacionProgramadaBean.C_IDESTADOCONFIRMACION,FacFacturacionProgramadaBean.C_LOGERROR};
 			UtilidadesHash.set(hashEstado,FacFacturacionProgramadaBean.C_IDESTADOCONFIRMACION, estadoFin); //ESTADO ERROR GENERAION 
 			UtilidadesHash.set(hashEstado,FacFacturacionProgramadaBean.C_LOGERROR,"LOG_FAC_" + nombreFichero + ".log.xls");
 			
+			ClsLogging.writeFileLog("El estado de la transaccion es: "+tx.getStatus(), 7);
 			if (tx == null || tx.getStatus() != Status.STATUS_ACTIVE) {
 				tx = this.usrbean.getTransaction();
 				tx.begin();
 			}
-
+			
+			ClsLogging.writeFileLog("### CAMBIANDO A ESTADO: "+estadoFin,7);
 			if (!admProg.updateDirect(hashEstado,claves,campos)) {
 			      throw new ClsExceptions("Error al actualizar el estado de la generación. finalizada con errores.");
 			}
