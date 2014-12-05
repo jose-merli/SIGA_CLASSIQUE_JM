@@ -124,7 +124,7 @@
 </head>
 
 
-<body onload="ajusteAltoBotones('resultado');<%=buscar%>">
+<body onload="ajusteAltoBotones('resultado');inicio();<%=buscar%>">
 <bean:define id="path" name="org.apache.struts.action.mapping.instance"	property="path" scope="request" />
 <table class="tablaCentralCampos" align="center">
 
@@ -265,6 +265,11 @@
 </html:form>	
 	<!-- INICIO: SCRIPTS BOTONES BUSQUEDA -->
 	<script language="JavaScript">
+		
+		function inicio(){
+			jQuery("#idBotonesAccion").hide();
+		}
+		
 		//Funcion asociada a boton buscarCliente -->
 		function buscarCliente() 
 		{
@@ -318,6 +323,7 @@
 		//Funcion asociada a boton buscar -->
 		function buscar() 
 		{		
+			jQuery("#idBotonesAccion").show();
 			if((validarFecha(document.BusquedaFacturaForm.buscarFechaDesde.value))&&
 				(validarFecha(document.BusquedaFacturaForm.buscarFechaGeneracion.value))&&
 				(validarFecha(document.BusquedaFacturaForm.buscarFechaHasta.value))){

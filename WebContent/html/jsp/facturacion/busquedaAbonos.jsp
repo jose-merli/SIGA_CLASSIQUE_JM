@@ -252,6 +252,7 @@
 					document.getElementById('numeroNifTagBusquedaPersonas').value="<%=nifCliente%>";				
 					obtenerPersonas();
 				<%}%>
+				jQuery("#idBotonesAccion").hide();
 				
 			}
 	
@@ -290,7 +291,8 @@
 					document.GenerarAbonosForm.modo.value='buscarInit';
 					document.GenerarAbonosForm.target='resultado';
 					document.GenerarAbonosForm.submit();
-				}	
+				}
+				jQuery("#idBotonesAccion").show();
 			}
 			
 			function buscarPaginador() {
@@ -395,7 +397,7 @@
 			function pagarBanco(){
 				
 				if(window.frames.resultado.ObjArray.length>0){
-					
+					jQuery("#idButton").attr("disabled", true);
 					sub();
 					if (window.frames.resultado.ObjArray.length>1000) {
 						alert ('<siga:Idioma key="facturacion.anulacion.error.pagarMilAbonos"/>');
@@ -433,6 +435,7 @@
 			}
 			
 			function pagarCaja(){
+				jQuery("#idButton").attr("disabled", true);
 				sub();
 
 				if (window.frames.resultado.ObjArray.length>1000) {
