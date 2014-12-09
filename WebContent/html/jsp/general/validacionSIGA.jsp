@@ -734,9 +734,9 @@ function getDigitoControl(valor){
 	
 	function numerico(valor){
 		cad = valor.toString();
-		for (var i=0; i<cad.length; i++) {
+		for (var i=0; i < cad.length; i++) {
 			var caracter = cad.charAt(i);
-			if (caracter<"0"||caracter>"9"){					
+			if (caracter < "0"||caracter>"9"){					
 				return false;
 			}
 		}

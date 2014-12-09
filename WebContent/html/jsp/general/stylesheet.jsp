@@ -8,25 +8,26 @@
 <%
 	String app=request.getContextPath();
 	HttpSession ses=request.getSession();
+	Properties src2 = src;
 	
-	if (src==null) {
+	if (src2==null) {
 	  SIGAGestorInterfaz interfazGestor=new SIGAGestorInterfaz("2000");
-	  src=interfazGestor.getInterfaceOptions();	  
+	  src2=interfazGestor.getInterfaceOptions();	  
 	}
 	// RGG 14/03/2007 cambio para dar un tamaño a la letra y en caso de Tiems darle otro
 	
 	String fontSize = "11px";
-	if (((String)src.get("color.background")).equalsIgnoreCase("FFFFFF")) {
+	if (((String)src2.get("color.background")).equalsIgnoreCase("FFFFFF")) {
 		fontSize="15px";
-		if (((String)src.get("font.style")).indexOf("Times")!=-1) {
+		if (((String)src2.get("font.style")).indexOf("Times")!=-1) {
 			fontSize="17px";
 		}
 	} else{
 	
-		if (((String)src.get("font.style")).indexOf("Arial")>=0) {
+		if (((String)src2.get("font.style")).indexOf("Arial")>=0) {
 			fontSize="13px";
 		}
-		if (((String)src.get("font.style")).indexOf("Times")>=0) {
+		if (((String)src2.get("font.style")).indexOf("Times")>=0) {
 		    fontSize="14px";
 			
 		}
@@ -44,8 +45,8 @@ iframe {
 }
 
 h1 {
-	font-family: <%=src.get("font.style")%>;
-	color:#<%=src.get("color.labelText")%>;
+	font-family: <%=src2.get("font.style")%>;
+	color:#<%=src2.get("color.labelText")%>;
 }
 
 td {
@@ -55,7 +56,7 @@ td {
 
 td.disabled {
 	opacity: 0.5;
-	color: <%=src.get("color.link.inactivo")%>;
+	color: <%=src2.get("color.link.inactivo")%>;
 }
 
 textarea {
@@ -76,7 +77,7 @@ BODY {
 	text-align: left;
 	vertical-align: top;
 	font-size: <%=fontSize%>;
-	background-color : #<%=src.get("color.background")%>;
+	background-color : #<%=src2.get("color.background")%>;
 	font-size: <%=fontSize %>;
 	width: 100%;
 
@@ -92,37 +93,37 @@ BODY {
 }
 
 select {
-	border: 1px solid #<%=src.get("color.button.border")%>;
+	border: 1px solid #<%=src2.get("color.button.border")%>;
 }
 
 checkbox {
-	font-family: <%=src.get("font.style")%>;
+	font-family: <%=src2.get("font.style")%>;
 	font-size: <%=fontSize%>;
 	left: 25px;
 	vertical-align: top;
 	margin-top: -4px;
 	margin-left: 0px;
-	color:#<%=src.get("color.labelText")%>;
-	background-color: #<%=src.get("color.background")%>;	
+	color:#<%=src2.get("color.labelText")%>;
+	background-color: #<%=src2.get("color.background")%>;	
 }
 
 radio {
-	font-family: <%=src.get("font.style")%>;
+	font-family: <%=src2.get("font.style")%>;
 	font-size: <%=fontSize%>;
 	left: 25px;
 	vertical-align: top;
 	margin-top: -4px;
 	margin-left: 0px;
-	color:#<%=src.get("color.labelText")%>;
-	background-color: #<%=src.get("color.background")%>;	
+	color:#<%=src2.get("color.labelText")%>;
+	background-color: #<%=src2.get("color.background")%>;	
 }
 
 fieldset {
-	border: 1px solid #<%=src.get("color.labelText")%>;	
+	border: 1px solid #<%=src2.get("color.labelText")%>;	
 	text-align: left;
-	font-family: <%=src.get("font.style")%>;
+	font-family: <%=src2.get("font.style")%>;
 	font-size: <%=fontSize%>;
-	color: #<%=src.get("color.labelText")%>;
+	color: #<%=src2.get("color.labelText")%>;
 	padding: 1px;
 	vertical-align: top;
 	margin-left: 2px;
@@ -132,8 +133,8 @@ fieldset {
 }
 
 legend {
-	color:#<%=src.get("color.labelText")%>;
-	font-family: <%=src.get("font.style")%>;
+	color:#<%=src2.get("color.labelText")%>;
+	font-family: <%=src2.get("font.style")%>;
 	font-size: <%=fontSize%>;
 	font-weight: normal;
 	padding-top:0px;
@@ -165,13 +166,13 @@ a.disabled {
 	padding-top: 2px;
 	padding-bottom: 1px;
 	vertical-align: top;
-	background-color : #<%=src.get("color.background")%>;
+	background-color : #<%=src2.get("color.background")%>;
 }
 
 .labelTextNum {
 	text-align: right;
-	font-family: <%=src.get("font.style")%>;
-	color:#<%=src.get("color.labelText")%>;
+	font-family: <%=src2.get("font.style")%>;
+	color:#<%=src2.get("color.labelText")%>;
 	font-size: <%=fontSize %>;
 	font-weight: normal;
 	padding-left: 10px;
@@ -183,8 +184,8 @@ a.disabled {
 
 .labelTextValue{
 	text-align: left;
-	font-family: <%=src.get("font.style")%>;
-	color:#<%=src.get("color.labelText")%>;
+	font-family: <%=src2.get("font.style")%>;
+	color:#<%=src2.get("color.labelText")%>;
 	font-size: <%=fontSize%>;
 	padding-left: 10px;
 	padding-right: 10px;
@@ -195,8 +196,8 @@ a.disabled {
 
 .txGrandeActivo {
 	text-align: left;
-	font-family: <%=src.get("font.style")%>;
-	color:#<%=src.get("color.labelText")%>;
+	font-family: <%=src2.get("font.style")%>;
+	color:#<%=src2.get("color.labelText")%>;
 	font-size: 14pt;
 	padding-left: 10px;
 	padding-right: 10px;
@@ -207,8 +208,8 @@ a.disabled {
 
 .txGrandeBaja {
 	text-align: left;
-	font-family: <%=src.get("font.style")%>;
-	color:#<%=src.get("color.labelText")%>;
+	font-family: <%=src2.get("font.style")%>;
+	color:#<%=src2.get("color.labelText")%>;
 	font-size: 14pt;
 	padding-left: 10px;
 	padding-right: 10px;
@@ -219,8 +220,8 @@ a.disabled {
 
 .labelTextValor {
 	text-align: left;
-	font-family: <%=src.get("font.style")%>;
-	color:#<%=src.get("color.labelText")%>;
+	font-family: <%=src2.get("font.style")%>;
+	color:#<%=src2.get("color.labelText")%>;
 	font-size: <%=fontSize%>;
 	padding-left: 10px;
 	padding-right: 10px;
@@ -231,8 +232,8 @@ a.disabled {
 
 .labelText {
 	text-align: left;
-	font-family: <%=src.get("font.style")%>;
-	color:#<%=src.get("color.labelText")%>;
+	font-family: <%=src2.get("font.style")%>;
+	color:#<%=src2.get("color.labelText")%>;
 	font-size: <%=fontSize %>;
 	font-weight: normal;
 	padding-left: 10px;
@@ -246,15 +247,15 @@ a.disabled {
 
 .labelTextArea{
 	text-align: left;
-	font-family: <%=src.get("font.style")%>;
+	font-family: <%=src2.get("font.style")%>;
 	font-size: <%=fontSize%>;
 	left: 25px;
 	vertical-align: top;
 	margin-top: 0px;
 	margin-left: 0px;
-	color:#<%=src.get("color.labelText")%>;
-	background-color: #<%=src.get("color.button.BG")%>;
-	border: 1px solid #<%=src.get("color.button.border")%>;
+	color:#<%=src2.get("color.labelText")%>;
+	background-color: #<%=src2.get("color.button.BG")%>;
+	border: 1px solid #<%=src2.get("color.button.border")%>;
 	padding-left: 2px;
 	padding-right: 2px;
 	padding-top: 2px;
@@ -264,9 +265,9 @@ a.disabled {
 
 .labelTextCentro {
 	text-align: center;
-	font-family: <%=src.get("font.style")%>;
+	font-family: <%=src2.get("font.style")%>;
 	font-size: <%=fontSize%>;
-	color:#<%=src.get("color.labelText")%>;
+	color:#<%=src2.get("color.labelText")%>;
 	padding-left: 3px;
 	padding-right: 3px;
 	padding-top: 2px;
@@ -277,7 +278,7 @@ a.disabled {
 
 
 .nonEdit {
-	font-family: <%=src.get("font.style")%>;
+	font-family: <%=src2.get("font.style")%>;
 	font-size: <%=fontSize%>;
 	font-weight: normal;
 	margin: auto;
@@ -286,11 +287,11 @@ a.disabled {
 	text-align: left;
 	padding-top: 2px;
 	padding-bottom: 1px;
-	color:#<%=src.get("color.labelText")%>;
+	color:#<%=src2.get("color.labelText")%>;
 }
 
 .nonEditRed {
-	font-family: <%=src.get("font.style")%>;
+	font-family: <%=src2.get("font.style")%>;
 	font-size: <%=fontSize%>;
 	font-weight: bold;
 	margin: auto;
@@ -303,29 +304,29 @@ a.disabled {
 
 
 .tableTitle {
-	font-family: <%=src.get("font.style")%>;
+	font-family: <%=src2.get("font.style")%>;
 	font-size: <%=fontSize %>;
 	font-weight: normal;
-	color: #<%=src.get("color.tableTitle.font")%>;
+	color: #<%=src2.get("color.tableTitle.font")%>;
 	margin: auto;
 	padding-left: 2px;
 	vertical-align: middle;
 	padding-top: 2px;
 	text-align: center;
-	background-color: #<%=src.get("color.labelTable")%>;
+	background-color: #<%=src2.get("color.labelTable")%>;
 }
 
 .tableTitlePrimero {
-	font-family: <%=src.get("font.style")%>;
+	font-family: <%=src2.get("font.style")%>;
 	font-size: <%=fontSize %>;
 	font-weight: normal;
-	color: #<%=src.get("color.tableTitle.font")%>;
+	color: #<%=src2.get("color.tableTitle.font")%>;
 	margin: auto;
 	padding-left: 2px;
 	vertical-align: middle;
 	padding-top: 2px;
 	text-align: center;
-	background-color: #<%=src.get("color.labelTable")%>;
+	background-color: #<%=src2.get("color.labelTable")%>;
 }
 
 #tablaDatos td {
@@ -333,7 +334,7 @@ a.disabled {
 }
 
 .filaTablaPar {
-	font-family: <%=src.get("font.style")%>;
+	font-family: <%=src2.get("font.style")%>;
 	font-size: <%=fontSize %>;
 	font-weight: normal;
 	margin: auto;
@@ -343,13 +344,13 @@ a.disabled {
 	text-align: left;
 	padding-top: 0px;
 	padding-bottom: 0px;
-	color: #<%=src.get("color.nonEdit.selected.font")%>;
+	color: #<%=src2.get("color.nonEdit.selected.font")%>;
 	width: 30px;
-	background-color: #<%=src.get("color.fila.par.BG")%>;
+	background-color: #<%=src2.get("color.fila.par.BG")%>;
 }
 
 .filaTablaImpar {
-	font-family: <%=src.get("font.style")%>;
+	font-family: <%=src2.get("font.style")%>;
 	font-size: <%=fontSize %>;
 	font-weight: normal;
 	margin: auto;
@@ -359,134 +360,134 @@ a.disabled {
 	text-align: left;
 	padding-top: 0px;
 	padding-bottom: 0px;
-	color: #<%=src.get("color.nonEdit.selected.font")%>;
+	color: #<%=src2.get("color.nonEdit.selected.font")%>;
 	width: 30px;
-	background-color: #<%=src.get("color.fila.impar.BG")%>;
+	background-color: #<%=src2.get("color.fila.impar.BG")%>;
 }
 
 .box {
-	font-family: <%=src.get("font.style")%>;
+	font-family: <%=src2.get("font.style")%>;
 	font-size: <%=fontSize%>;
 	left: 25px;
 	vertical-align: top;
 	margin-top: 0px;
 	margin-left: 0px;
-	color:#<%=src.get("color.labelText")%>;
-	background-color: #<%=src.get("color.button.BG")%>;
-	border: 1px solid #<%=src.get("color.button.border")%>;
+	color:#<%=src2.get("color.labelText")%>;
+	background-color: #<%=src2.get("color.button.BG")%>;
+	border: 1px solid #<%=src2.get("color.button.border")%>;
 	padding-top: 2px;
 	padding-bottom: 1px;
 }
 
 .boxNumber {
-	font-family: <%=src.get("font.style")%>;
+	font-family: <%=src2.get("font.style")%>;
 	font-size: <%=fontSize%>;
 	text-align: right;
 	vertical-align: top;
 	margin-top: 0px;
 	margin-left: 0px;
-	color: #<%=src.get("color.button.font")%>;
-	background-color: #<%=src.get("color.button.BG")%>;
-	border: 1px solid #<%=src.get("color.button.border")%>;
+	color: #<%=src2.get("color.button.font")%>;
+	background-color: #<%=src2.get("color.button.BG")%>;
+	border: 1px solid #<%=src2.get("color.button.border")%>;
 	padding-top: 2px;
 	padding-bottom: 1px;
 }
 
 .boxMayuscula {
-	font-family: <%=src.get("font.style")%>;
+	font-family: <%=src2.get("font.style")%>;
 	font-size: <%=fontSize%>;
 	left: 25px;
 	text-transform: uppercase;
 	vertical-align: top;
 	margin-top: 0px;
 	margin-left: 0px;
-	color:#<%=src.get("color.labelText")%>;
-	background-color:  #<%=src.get("color.button.BG")%>;
-	border: 1px solid #<%=src.get("color.button.border")%>;
+	color:#<%=src2.get("color.labelText")%>;
+	background-color:  #<%=src2.get("color.button.BG")%>;
+	border: 1px solid #<%=src2.get("color.button.border")%>;
 	padding-top: 2px;
 	padding-bottom: 1px;
 }
 
 .boxDisabled {
-	font-family: <%=src.get("font.style")%>;
+	font-family: <%=src2.get("font.style")%>;
 	font-size: <%=fontSize%>;
 	left: 25px;
 	vertical-align: top;
 	margin-top: 0px;
 	margin-left: 0px;
-	color:#<%=src.get("color.labelText")%>;
-	background-color: #<%=src.get("color.background")%>;
-	border: 1px solid #<%=src.get("color.button.border")%>;
+	color:#<%=src2.get("color.labelText")%>;
+	background-color: #<%=src2.get("color.background")%>;
+	border: 1px solid #<%=src2.get("color.button.border")%>;
 	padding-top: 2px;
 	padding-bottom: 1px;
 }
 
 .linea {
-	border-left: 1px solid #<%=src.get("color.button.border")%>;
+	border-left: 1px solid #<%=src2.get("color.button.border")%>;
 }
 
 .boxLabel { 
-	font-family: <%=src.get("font.style")%>;
+	font-family: <%=src2.get("font.style")%>;
 	font-size: <%=fontSize%>;
 	font-weight: bold;
 	margin-top: 0px;
 	margin-left: 0px;
 	text-align: left;
-	color:#<%=src.get("color.labelText")%>;
-	background-color: #<%=src.get("color.background")%>;
-	border: 0px solid #<%=src.get("color.button.border")%>;
+	color:#<%=src2.get("color.labelText")%>;
+	background-color: #<%=src2.get("color.background")%>;
+	border: 0px solid #<%=src2.get("color.button.border")%>;
 	padding-top: 1px;
 	padding-bottom: 1px;
 	vertical-align: middle;	
 }
 
 .boxLabelReadOnly { 
-	font-family: <%=src.get("font.style")%>;
+	font-family: <%=src2.get("font.style")%>;
 	font-size: <%=fontSize%>;
 	font-weight: normal;
 	margin-top: 0px;
 	margin-left: 0px;
 	text-align: left;
-	color:#<%=src.get("color.labelText")%>;
-	background-color: #<%=src.get("color.background")%>;
-	border: 0px solid #<%=src.get("color.button.border")%>;
+	color:#<%=src2.get("color.labelText")%>;
+	background-color: #<%=src2.get("color.background")%>;
+	border: 0px solid #<%=src2.get("color.button.border")%>;
 	padding-top: 1px;
 	padding-bottom: 1px;
 	vertical-align: middle;	
 }
 
 .boxConsulta { 
-	font-family: <%=src.get("font.style")%>;
+	font-family: <%=src2.get("font.style")%>;
 	font-size: <%=fontSize%>;
 	font-weight: normal;
 	margin-top: 0px;
 	margin-left: 0px;
 	vertical-align: top;
 	text-align: left;
-	color:#<%=src.get("color.labelText")%>;
-	background-color: #<%=src.get("color.background")%>;
-	border: 0px solid #<%=src.get("color.button.border")%>;
+	color:#<%=src2.get("color.labelText")%>;
+	background-color: #<%=src2.get("color.background")%>;
+	border: 0px solid #<%=src2.get("color.button.border")%>;
 	padding-top: 2px;
 	padding-bottom: 1px;
 }
 
 .boxComboConsulta { 
-	font-family: <%=src.get("font.style")%>;
+	font-family: <%=src2.get("font.style")%>;
 	font-size: <%=fontSize%>;
 	font-weight: normal;
 	margin-top: 0px;
 	margin-left: 0px;
 	vertical-align: top;
 	text-align: left;
-	color:#<%=src.get("color.labelText")%>;
+	color:#<%=src2.get("color.labelText")%>;
 	background-color: transparent;
-	border: 0px solid #<%=src.get("color.button.border")%>;
+	border: 0px solid #<%=src2.get("color.button.border")%>;
 	padding-top: 2px;
 	padding-bottom: 1px;
 }
 
 .boxComboEnTabla { 
-	font-family: <%=src.get("font.style")%>;
+	font-family: <%=src2.get("font.style")%>;
 	font-size: <%=fontSize%>;
 	font-weight: normal;
 	margin-top: 0px;
@@ -494,29 +495,29 @@ a.disabled {
 	vertical-align: top;
 	text-align: left;
 	background-color: transparent;
-	border: 0px solid #<%=src.get("color.button.border")%>;
+	border: 0px solid #<%=src2.get("color.button.border")%>;
 	padding-top: 2px;
 	padding-bottom: 1px;
 }
 
 
 .boxConsultaNumber { 
-	font-family: <%=src.get("font.style")%>;
+	font-family: <%=src2.get("font.style")%>;
 	font-size: <%=fontSize%>;
 	font-weight: normal;
 	margin-top: 0px;
 	margin-left: 0px;
 	vertical-align: top;
 	text-align: right;
-	color:#<%=src.get("color.labelText")%>;
-	background-color: #<%=src.get("color.background")%>;
-	border: 0px solid #<%=src.get("color.button.border")%>;
+	color:#<%=src2.get("color.labelText")%>;
+	background-color: #<%=src2.get("color.background")%>;
+	border: 0px solid #<%=src2.get("color.button.border")%>;
 	padding-top: 2px;
 	padding-bottom: 1px;	
 }
 
 .boxConsultaLabelText {
-	font-family: <%=src.get("font.style")%>;
+	font-family: <%=src2.get("font.style")%>;
 	font-size: <%=fontSize%>;
 	font-weight: normal;
 	margin: auto;
@@ -526,9 +527,9 @@ a.disabled {
 	//padding-top: 2px;
 	//padding-bottom: 3px;
 	background-color:transparent;
-	background-color: #<%=src.get("color.background")%>;
+	background-color: #<%=src2.get("color.background")%>;
 	margin-top: -4px;
-	border: 0px solid #<%=src.get("color.button.border")%>;
+	border: 0px solid #<%=src2.get("color.button.border")%>;
 	padding-top: 2px;
 	padding-bottom: 1px;
 }
@@ -536,63 +537,63 @@ a.disabled {
 
 .boxCabecera {
 	color: #333333;
-	font-family: <%=src.get("font.style")%>;
+	font-family: <%=src2.get("font.style")%>;
 	font-size: <%=fontSize%>;
 	left: 25px;
 	width: 70%;
-	background-color: #<%=src.get("color.button.BG")%>;
-	color: #<%=src.get("color.button.font")%>;
-	border: 1px solid #<%=src.get("color.button.border")%>;
+	background-color: #<%=src2.get("color.button.BG")%>;
+	color: #<%=src2.get("color.button.font")%>;
+	border: 1px solid #<%=src2.get("color.button.border")%>;
 	vertical-align: top;
 }
 
 .boxDisabledNumber {
-	font-family: <%=src.get("font.style")%>;
+	font-family: <%=src2.get("font.style")%>;
 	font-size: <%=fontSize%>;
 	left: 25px;
-//	background-color:  #<%=src.get("color.button.BG")%>;
-	background-color: #<%=src.get("color.background")%>;
+//	background-color:  #<%=src2.get("color.button.BG")%>;
+	background-color: #<%=src2.get("color.background")%>;
 	text-align: right;
 	vertical-align: top;
 	margin-top: -3px;
 	margin-left: 0px;
-	border: 1px solid #<%=src.get("color.button.border")%>;
+	border: 1px solid #<%=src2.get("color.button.border")%>;
 	padding-top: 2px;
 	padding-bottom: 1px;	
 }
 
 .boxLogin {
-	font-family: <%=src.get("font.style")%>;
+	font-family: <%=src2.get("font.style")%>;
 	font-size: <%=fontSize%>;
 	left: 25px;
 	margin-top: -2px;
 	margin-left: 0px;
-	border: 1px solid #<%=src.get("color.button.border")%>;
-	color: #<%=src.get("color.button.font")%>;
-	background-color: #<%=src.get("color.button.BG")%>;	
+	border: 1px solid #<%=src2.get("color.button.border")%>;
+	color: #<%=src2.get("color.button.font")%>;
+	background-color: #<%=src2.get("color.button.BG")%>;	
 	padding-top: 2px;
 	padding-bottom: 1px;
 }
 
 .boxCombo {
-	font-family: <%=src.get("font.style")%>;
+	font-family: <%=src2.get("font.style")%>;
 	font-size: <%=fontSize%>;
 	left: 25px;
 	vertical-align: top;
 	margin-top: 0px;	
 	margin-left: 0px;	
-	color: #<%=src.get("color.button.font")%>;
-	background-color: #<%=src.get("color.button.BG")%>;
-	border: 1px solid #<%=src.get("color.button.border")%>;
+	color: #<%=src2.get("color.button.font")%>;
+	background-color: #<%=src2.get("color.button.BG")%>;
+	border: 1px solid #<%=src2.get("color.button.border")%>;
 	padding-top: 2px;
 	padding-bottom: 1px;
 }
 
 .button {
-	font-family: <%=src.get("font.style")%>;
-	color: #<%=src.get("color.button.font")%>;
-	background-color: #<%=src.get("color.button.BG")%>;
-	border: 2px solid  #<%=src.get("color.button.border")%>;
+	font-family: <%=src2.get("font.style")%>;
+	color: #<%=src2.get("color.button.font")%>;
+	background-color: #<%=src2.get("color.button.BG")%>;
+	border: 2px solid  #<%=src2.get("color.button.border")%>;
 	-webkit-border-radius: 2px;
 	-moz-border-radius: 2px;
 	font-size: <%=fontSize %>;
@@ -608,7 +609,7 @@ a.disabled {
 }
 
 .buttonEnTabla {
-	font-family:  <%=src.get("font.style")%>;
+	font-family:  <%=src2.get("font.style")%>;
 	color: white;
 	background-color: #444444;
 	border: thin solid white;
@@ -625,22 +626,22 @@ a.disabled {
 }
 
 .titlebar {
-	font-family: <%=src.get("font.style")%>;
-	background-color : #<%=src.get("color.titleBar.font")%>;
+	font-family: <%=src2.get("font.style")%>;
+	background-color : #<%=src2.get("color.titleBar.font")%>;
 	font-size: <%=fontSize %>;
 	text-align: center;
 	font-weight: normal;
-	color:#<%=src.get("color.titleBar.BG")%>;
+	color:#<%=src2.get("color.titleBar.BG")%>;
 }
 
 .titulos {
 	FONT-WEIGHT: normal;
 	text-align:right;
 	FONT-SIZE: 17px; 
-	FONT-FAMILY: <%=src.get("font.style")%>;
+	FONT-FAMILY: <%=src2.get("font.style")%>;
 	text-decoration: none;
-	background-color : #<%=src.get("color.labelTable")%>;
-	color:#<%=src.get("color.titleBar.font")%>;
+	background-color : #<%=src2.get("color.labelTable")%>;
+	color:#<%=src2.get("color.titleBar.font")%>;
 	padding-top: 2px;
 	padding-right: 50px;
 	padding-bottom: 2px;
@@ -656,10 +657,10 @@ a.disabled {
 .titulosPeq {
 	FONT-WEIGHT: normal; 
 	font-size: <%=fontSize %>; 
-	FONT-FAMILY: <%=src.get("font.style")%>;
+	FONT-FAMILY: <%=src2.get("font.style")%>;
 	text-decoration: none;
-	background-color : #<%=src.get("color.labelTable")%>;
-	color:#<%=src.get("color.titleBar.font")%>;
+	background-color : #<%=src2.get("color.labelTable")%>;
+	color:#<%=src2.get("color.titleBar.font")%>;
 	height: 25px;
 	width:100%;
 	padding: 2px;
@@ -672,10 +673,10 @@ a.disabled {
 	FONT-WEIGHT: normal;
 	text-align:left;
 	FONT-SIZE: 17px; 
-	FONT-FAMILY: <%=src.get("font.style")%>;
+	FONT-FAMILY: <%=src2.get("font.style")%>;
 	text-decoration: none;
-	background-color : #<%=src.get("color.labelTable")%>;
-	color:#<%=src.get("color.titleBar.font")%>;
+	background-color : #<%=src2.get("color.labelTable")%>;
+	color:#<%=src2.get("color.titleBar.font")%>;
 	padding-top: 1px;
 	padding-right: 10px;
 	padding-bottom: 1px;
@@ -689,10 +690,10 @@ a.disabled {
 .titulitosDatos {
 	FONT-WEIGHT: normal; 
 	font-size: <%=fontSize %>; 
-	FONT-FAMILY: <%=src.get("font.style")%>;
+	FONT-FAMILY: <%=src2.get("font.style")%>;
 	text-decoration: none;
-	background-color : #<%=src.get("color.labelTable")%>;
-	color:#<%=src.get("color.titleBar.font")%>;
+	background-color : #<%=src2.get("color.labelTable")%>;
+	color:#<%=src2.get("color.titleBar.font")%>;
 	height: 22px;
 	width:100%;
 	padding: 2px;
@@ -704,12 +705,12 @@ a.disabled {
 .titulitosDatosImp {
 	FONT-WEIGHT: normal; 
 	font-size: <%=fontSize %>;	
-	FONT-FAMILY: <%=src.get("font.style")%>;
+	FONT-FAMILY: <%=src2.get("font.style")%>;
 	text-decoration: none;
 	padding: 2px;
-	background-color : #<%=src.get("color.labelTable")%>;
-	border: 1px solid #<%=src.get("color.labelText")%>;
-	color:#<%=src.get("color.titleBar.font")%>;;
+	background-color : #<%=src2.get("color.labelTable")%>;
+	border: 1px solid #<%=src2.get("color.labelText")%>;
+	color:#<%=src2.get("color.titleBar.font")%>;;
 	height: 30px;
 	width: 100%;
 	font: bold;
@@ -719,8 +720,8 @@ a.disabled {
 .titulitos {
 	FONT-WEIGHT: bold; 
 	font-size: <%=fontSize %>; 
-	color:#<%=src.get("color.titleBar.font")%>;
-	FONT-FAMILY: <%=src.get("font.style")%>;
+	color:#<%=src2.get("color.titleBar.font")%>;
+	FONT-FAMILY: <%=src2.get("font.style")%>;
 	text-decoration: none;
 	margin: 0px;
 	height: 26px;
@@ -732,22 +733,22 @@ a.disabled {
 
 A.titulitos:link {
 	CURSOR: pointer; 
-	COLOR: #<%=src.get("color.titulos")%>; 
+	COLOR: #<%=src2.get("color.titulos")%>; 
 	FONT-STYLE: normal; 
 	TEXT-DECORATION: none;
 }
 A.titulitos:active {
-	COLOR: #<%=src.get("color.titulos")%>;
+	COLOR: #<%=src2.get("color.titulos")%>;
 	TEXT-DECORATION: none;
 }
 A.titulitos:hover {
-	COLOR: #<%=src.get("color.titulos")%>;
+	COLOR: #<%=src2.get("color.titulos")%>;
 	TEXT-DECORATION: none;
 }
 
 A.section:link {
-	color:#<%=src.get("color.link.inactivo")%>;
-	font:bold 10,5px <%=src.get("font.style")%>;
+	color:#<%=src2.get("color.link.inactivo")%>;
+	font:bold 10,5px <%=src2.get("font.style")%>;
 	text-decoration: none;
 	height: 29px;
 	width: 162px;
@@ -756,8 +757,8 @@ A.section:link {
 }
 
 A.section:visited {
-	color:#<%=src.get("color.link.inactivo")%>;
-	font:bold 10,5px <%=src.get("font.style")%>;
+	color:#<%=src2.get("color.link.inactivo")%>;
+	font:bold 10,5px <%=src2.get("font.style")%>;
 	text-decoration: none;
 	height: 29px;
 	width: 162px;
@@ -766,8 +767,8 @@ A.section:visited {
 }
 
 A.section:hover {
-	color:#<%=src.get("color.link.activo")%>;
-	font:bold 10,5px <%=src.get("font.style")%>;
+	color:#<%=src2.get("color.link.activo")%>;
+	font:bold 10,5px <%=src2.get("font.style")%>;
 	text-decoration: none;
 	height: 29px;
 	width: 162px;
@@ -776,8 +777,8 @@ A.section:hover {
 }
 
 A.section:active {
-	color:#<%=src.get("color.link.activo")%>;
-	font:bold 10,5px <%=src.get("font.style")%>;
+	color:#<%=src2.get("color.link.activo")%>;
+	font:bold 10,5px <%=src2.get("font.style")%>;
 	text-decoration: none;
 	height: 29px;
 	width: 162px;
@@ -787,8 +788,8 @@ A.section:active {
 
 
 A.lb:link {
-	color:#<%=src.get("color.link.inactivo")%>;
-	font:bold 10,5px <%=src.get("font.style")%>;
+	color:#<%=src2.get("color.link.inactivo")%>;
+	font:bold 10,5px <%=src2.get("font.style")%>;
 	text-decoration: none;
 	height: 15px;
 	width: 90px;
@@ -798,8 +799,8 @@ A.lb:link {
 
 
 A.lb:visited {
-	color:#<%=src.get("color.link.inactivo")%>;
-	font:bold 10,5px <%=src.get("font.style")%>;
+	color:#<%=src2.get("color.link.inactivo")%>;
+	font:bold 10,5px <%=src2.get("font.style")%>;
 	text-decoration: none;
 	height: 15px;
 	width: 90px;
@@ -808,8 +809,8 @@ A.lb:visited {
 }
 
 A.lb:hover {
-	color:#<%=src.get("color.link.activo")%>;
-	font:bold 10,5px <%=src.get("font.style")%>;
+	color:#<%=src2.get("color.link.activo")%>;
+	font:bold 10,5px <%=src2.get("font.style")%>;
 	text-decoration: none;
 	height: 15px;
 	width: 90px;
@@ -818,8 +819,8 @@ A.lb:hover {
 }
 
 A.lb:active {
-	color:#<%=src.get("color.link.activo")%>;
-	font:bold 10,5px <%=src.get("font.style")%>;
+	color:#<%=src2.get("color.link.activo")%>;
+	font:bold 10,5px <%=src2.get("font.style")%>;
 	text-decoration: none;
 	height: 15px;
 	width: 90px;
@@ -855,7 +856,7 @@ A.lb:active {
 .clLevel0,.clLevel0over,.clLevel0NoLinkOver {
 	position: absolute;
 	padding: 1px;
-	font-family: <%= src.get ( "font.style") %>;
+	font-family: <%=src2.get ( "font.style") %>;
 	font-size: <%= fontSize %>;
 	font-weight: normal;
 	text-align: center;
@@ -867,15 +868,15 @@ A.lb:active {
 }
 
 .clLevel0 {
-	background-color: #<%= src.get ( "color.menu.level0.BG" ) %>;
-	layer-background-color: #<%= src.get ( "color.menu.level0.BG" ) %>;
-	color: #<%= src.get ( "color.menu.level0.font" ) %>;
+	background-color: #<%=src2.get ( "color.menu.level0.BG" ) %>;
+	layer-background-color: #<%=src2.get ( "color.menu.level0.BG" ) %>;
+	color: #<%=src2.get ( "color.menu.level0.font" ) %>;
 }
 
 .clLevel0over {
-	background-color: #<%= src.get ( "color.menu.level0.activo.BG" ) %>;
-	layer-background-color: #<%= src.get ( "color.menu.level0.activo.BG" )%>;
-	color: #<%= src.get ( "color.menu.level0.activo.font" ) %>;
+	background-color: #<%=src2.get ( "color.menu.level0.activo.BG" ) %>;
+	layer-background-color: #<%=src2.get ( "color.menu.level0.activo.BG" )%>;
+	color: #<%=src2.get ( "color.menu.level0.activo.font" ) %>;
 	cursor: pointer;
 	border-bottom: 1px solid #000000;
 	border-left: 1px solid #000000;
@@ -885,9 +886,9 @@ A.lb:active {
 }
 
 .clLevel0NoLinkOver {
-	background-color: #<%= src.get ( "color.menu.level0.activo.BG" ) %>;
-	layer-background-color: #<%= src.get ( "color.menu.level0.activo.BG" )%>;
-	color: #<%= src.get ( "color.menu.level0.activo.font" ) %>;
+	background-color: #<%=src2.get ( "color.menu.level0.activo.BG" ) %>;
+	layer-background-color: #<%=src2.get ( "color.menu.level0.activo.BG" )%>;
+	color: #<%=src2.get ( "color.menu.level0.activo.font" ) %>;
 	cursor: default;
 }
 
@@ -902,30 +903,30 @@ A.lb:active {
 .clLevel1,.clLevel1over,.clLevel1NoLinkOver {
 	position: absolute;
 	padding: 2px;
-	font-family: <%= src.get ( "font.style") %>;
+	font-family: <%=src2.get ( "font.style") %>;
 	font-size: <%= fontSize %>;
 	font-weight: normal
 }
 
 .clLevel1 {
-	background-color: #<%= src.get ( "color.menu.level1.BG" ) %>;
-	layer-background-color: #<%= src.get ( "color.menu.level1.BG" ) %>;
-	color: #<%= src.get ( "color.menu.level1.font" ) %>;
+	background-color: #<%=src2.get ( "color.menu.level1.BG" ) %>;
+	layer-background-color: #<%=src2.get ( "color.menu.level1.BG" ) %>;
+	color: #<%=src2.get ( "color.menu.level1.font" ) %>;
 	border: 1px solid #FFFFFF;
 }
 
 .clLevel1over {
-	background-color: #<%= src.get ( "color.menu.level1.activo.BG" ) %>;
-	layer-background-color: #<%= src.get ( "color.menu.level1.activo.BG" )%>;
-	color: #<%= src.get ( "color.menu.level1.activo.font" ) %>;
+	background-color: #<%=src2.get ( "color.menu.level1.activo.BG" ) %>;
+	layer-background-color: #<%=src2.get ( "color.menu.level1.activo.BG" )%>;
+	color: #<%=src2.get ( "color.menu.level1.activo.font" ) %>;
 	cursor: pointer;
 	border: 1px solid #000000;
 }
 
 .clLevel1NoLinkOver {
-	background-color: #<%= src.get ( "color.menu.level1.activo.BG" ) %>;
-	layer-background-color: #<%= src.get ( "color.menu.level1.activo.BG" )%>;
-	color: #<%= src.get ( "color.menu.level1.activo.font" ) %>;
+	background-color: #<%=src2.get ( "color.menu.level1.activo.BG" ) %>;
+	layer-background-color: #<%=src2.get ( "color.menu.level1.activo.BG" )%>;
+	color: #<%=src2.get ( "color.menu.level1.activo.font" ) %>;
 }
 
 .clLevel1border {
@@ -938,23 +939,23 @@ A.lb:active {
 .clLevel2,.clLevel2over {
 	position: absolute;
 	padding: 2px;
-	font-family: <%= src.get ( "font.style") %>;
+	font-family: <%=src2.get ( "font.style") %>;
 	font-size: <%= fontSize %>;
 	font-weight: normal
 }
 
 .clLevel2 {
-	background-color: #<%= src.get ( "color.menu.level2.BG" ) %>;
-	layer-background-color: #<%= src.get ( "color.menu.level2.BG" ) %>;
-	color: #<%= src.get ( "color.menu.level2.font" ) %>;
+	background-color: #<%=src2.get ( "color.menu.level2.BG" ) %>;
+	layer-background-color: #<%=src2.get ( "color.menu.level2.BG" ) %>;
+	color: #<%=src2.get ( "color.menu.level2.font" ) %>;
 	border: 1px solid #FFFFFF;
 }
 
 .clLevel2over {
-	background-color: #<%= src.get ( "color.menu.level2.activo.BG" ) %>;
-	layer-background-color: #<%= src.get ( "color.menu.level2.activo.BG" )
+	background-color: #<%=src2.get ( "color.menu.level2.activo.BG" ) %>;
+	layer-background-color: #<%=src2.get ( "color.menu.level2.activo.BG" )
 		%>;
-	color: #<%= src.get ( "color.menu.level2.activo.font" ) %>;
+	color: #<%=src2.get ( "color.menu.level2.activo.font" ) %>;
 	cursor: pointer;
 	cursor: pointer;
 	border: 1px solid #000000;
@@ -966,8 +967,8 @@ A.lb:active {
 }
 
 A.imageLink:link {
-	color:#<%=src.get("color.labelText")%>;;
-	font-family: <%=src.get("font.style")%>;
+	color:#<%=src2.get("color.labelText")%>;;
+	font-family: <%=src2.get("font.style")%>;
 	font-size: <%=fontSize %>;
 	font-weight: normal;
 	margin: auto;
@@ -979,8 +980,8 @@ A.imageLink:link {
 }
 
 A.imageLink:visited {
-	color:#<%=src.get("color.labelText")%>;;
-	font-family: <%=src.get("font.style")%>;
+	color:#<%=src2.get("color.labelText")%>;;
+	font-family: <%=src2.get("font.style")%>;
 	font-size: <%=fontSize %>;
 	font-weight: normal;
 	margin: auto;
@@ -992,8 +993,8 @@ A.imageLink:visited {
 }
 
 A.imageLink:hover {
-	color:#<%=src.get("color.labelText")%>;;
-	font-family: <%=src.get("font.style")%>;
+	color:#<%=src2.get("color.labelText")%>;;
+	font-family: <%=src2.get("font.style")%>;
 	font-size: <%=fontSize %>;
 	font-weight: normal;
 	margin: auto;
@@ -1006,8 +1007,8 @@ A.imageLink:hover {
 	
 
 A.imageLink:active {
-	color:#<%=src.get("color.labelText")%>;;
-	font-family: <%=src.get("font.style")%>;
+	color:#<%=src2.get("color.labelText")%>;;
+	font-family: <%=src2.get("font.style")%>;
 	font-size: <%=fontSize %>;
 	font-weight: normal;
 	margin: auto;
@@ -1019,74 +1020,74 @@ A.imageLink:active {
 }
 
 .nonEditSelected {
-	font-family: <%=src.get("font.style")%>;
+	font-family: <%=src2.get("font.style")%>;
 	font-size: <%=fontSize%>;
 	font-weight: bold;
-	color: #<%=src.get("color.nonEdit.selected.font")%>;
+	color: #<%=src2.get("color.nonEdit.selected.font")%>;
 	margin: auto;
 	padding-left: 5px;
 	vertical-align: middle;
 	text-align: left;
 	padding-top: 3px;
-	background-color: #<%=src.get("color.nonEdit.selected.BG")%>;
+	background-color: #<%=src2.get("color.nonEdit.selected.BG")%>;
 	padding-bottom: 3px;
 }
 
 .tablaCentralMedia {
-	background-color : #<%=src.get("color.titleBar.BG")%>;
+	background-color : #<%=src2.get("color.titleBar.BG")%>;
 	width: 100%;
 }
 .tablaCentralPeque {
-	background-color : #<%=src.get("color.titleBar.BG")%>;
+	background-color : #<%=src2.get("color.titleBar.BG")%>;
 	width: 100%;
 }
 
 .tablaCentralGrande {
-	background-color : #<%=src.get("color.titleBar.BG")%>;
+	background-color : #<%=src2.get("color.titleBar.BG")%>;
 	width: 100%;
 }
 
 .tablaCentralCampos {
-	background-color: #<%=src.get("color.background")%>;
+	background-color: #<%=src2.get("color.background")%>;
 	width: 100%;
 }
 
 .tablaCentralCamposImp {
-	background-color: #<%=src.get("color.background")%>;
+	background-color: #<%=src2.get("color.background")%>;
 	width: 670px;
 }
 
 .tablaCentralCamposMedia {
-	background-color: #<%=src.get("color.background")%>;
+	background-color: #<%=src2.get("color.background")%>;
 	width: 100%;
 }
 
 .tablaCentralCamposGrande {
-	background-color: #<%=src.get("color.background")%>;
+	background-color: #<%=src2.get("color.background")%>;
 	width: 100%;
 }
 
 .tablaCentralCamposPeque {
-	background-color: #<%=src.get("color.background")%>;
+	background-color: #<%=src2.get("color.background")%>;
 	width: 100%;
 }
 
 .tablaCampos {
-	background-color: #<%=src.get("color.background")%>;
+	background-color: #<%=src2.get("color.background")%>;
 	width: 100%;
 }
 
 .tablaTitulo {
 	width: 100%;
-	background-color : #<%=src.get("color.labelTable")%>;
+	background-color : #<%=src2.get("color.labelTable")%>;
 	margin: 0px;
 	padding: 0px;	
-	border: 1px solid #<%=src.get("color.labelText")%>;	
+	border: 1px solid #<%=src2.get("color.labelText")%>;	
 }
 
 .tdBotones {
 	text-align: right;
-	color:#<%=src.get("color.labelText")%>;
+	color:#<%=src2.get("color.labelText")%>;
 	padding-left: 7px;
 	padding-right: 7px;
 	padding-top: 1px;
@@ -1099,9 +1100,9 @@ A.imageLink:active {
 
 .tdMensaje {
 	text-align: center;
-	font-family: <%=src.get("font.style")%>;
+	font-family: <%=src2.get("font.style")%>;
 	font-size: <%=fontSize%>;
-	color:#<%=src.get("color.labelText")%>;
+	color:#<%=src2.get("color.labelText")%>;
 	padding-left: 5px;
 	padding-right: 5px;
 	padding-top: 5px;
@@ -1110,7 +1111,7 @@ A.imageLink:active {
 }
 
 .tableCabecera {
-	color: #<%=src.get("color.tableTitle.font")%>;
+	color: #<%=src2.get("color.tableTitle.font")%>;
 	padding-left: 0px;
 	vertical-align: left;
 	padding-top: 0px;
@@ -1142,37 +1143,37 @@ A.imageLink:active {
 
 
 .botonesDetalleSinPosicionFija {
-	background-color : #<%=src.get("color.tableTitle.BG")%>;
+	background-color : #<%=src2.get("color.tableTitle.BG")%>;
 	width:100%; 
 	height:26px; 
 	z-index:2; 
 	bottom: 0px; 
 	left:0px;
-	border: 0px solid #<%=src.get("color.labelText")%>;	
+	border: 0px solid #<%=src2.get("color.labelText")%>;	
 	margin:0px;
 	padding:0px;
 }
 
 .botonesDetalle {
-	background-color : #<%=src.get("color.tableTitle.BG")%>;
+	background-color : #<%=src2.get("color.tableTitle.BG")%>;
 	position:absolute; 
 	width:100%; 
 	height:26px; 
 	z-index:2; 
 	bottom: 0px; 
 	left:0px;
-	border: 0px solid #<%=src.get("color.labelText")%>;	
+	border: 0px solid #<%=src2.get("color.labelText")%>;	
 	margin:0px;
 	padding:0px;
 }
 
 .botonesSeguido {
-	background-color : #<%=src.get("color.tableTitle.BG")%>;
+	background-color : #<%=src2.get("color.tableTitle.BG")%>;
 	position:relative;
 	width:100%; 
 	height:26px; 
 	z-index:2; 
-	border: 0px solid #<%=src.get("color.labelText")%>;	
+	border: 0px solid #<%=src2.get("color.labelText")%>;	
 	margin:0px;
 	padding:0px;
 }
@@ -1180,10 +1181,10 @@ A.imageLink:active {
 .posicionPrincipal {
 	<%--position:absolute; width:1000px; height:600; z-index:3; top: 102px; left: 0px; --%>
 	position:absolute; width:1000px; height: 600px; top: 102px; z-index:3;  
-	border-bottom: 0px solid #<%=src.get("color.labeltable")%>;
-	border-left: 0px solid #<%=src.get("color.labeltable")%>;
-	border-right: 0px solid #<%=src.get("color.labeltable")%>;
-	border-top: 0px solid #<%=src.get("color.labeltable")%>;
+	border-bottom: 0px solid #<%=src2.get("color.labeltable")%>;
+	border-left: 0px solid #<%=src2.get("color.labeltable")%>;
+	border-right: 0px solid #<%=src2.get("color.labeltable")%>;
+	border-top: 0px solid #<%=src2.get("color.labeltable")%>;
 	margin :0px;
 	margin-top: 3px;	
 }
@@ -1196,14 +1197,14 @@ A.imageLink:active {
 }	
 
 .posicionBusquedaSolo {
-	background-color: #<%=src.get("color.background")%>;
+	background-color: #<%=src2.get("color.background")%>;
 	margin: 0px;
 	padding: 0px;
 	width: 100%;
 	height: 100%;
 }
 .posicionBusquedaSoloImp {
-	background-color: #<%=src.get("color.background")%>;
+	background-color: #<%=src2.get("color.background")%>;
 	left: 0px; 
 	width: 670px; 
 	top: 0px; 
@@ -1219,7 +1220,7 @@ A.imageLink:active {
 }
 	
 .pest {	
-	font-family: <%=src.get("font.style")%>;
+	font-family: <%=src2.get("font.style")%>;
 	font-size: <%=fontSize %>;
 	font-weight: normal;
 	color: #000000;
@@ -1234,8 +1235,8 @@ A.imageLink:active {
 }
 
 .pestanaTD a {
-	font-family: <%=src.get("font.style")%>;
-	background: url(<%=app%>/html/imagenes/<%=src.get("color.fondo.pesatana")%>) no-repeat right;
+	font-family: <%=src2.get("font.style")%>;
+	background: url(<%=app%>/html/imagenes/<%=src2.get("color.fondo.pesatana")%>) no-repeat right;
 	font-size: <%=fontSize %>;
 	font-weight: normal;
 	color: #FFFFFF;
@@ -1243,7 +1244,7 @@ A.imageLink:active {
 	padding: 4px 7px 4px 2px;
 	border-left-width: 2px;
 	border-left-style: solid;
-	border-left-color: #<%=src.get("color.background")%>;	
+	border-left-color: #<%=src2.get("color.background")%>;	
 }
 
 .pestanaTD a:hover {
@@ -1255,7 +1256,7 @@ A.imageLink:active {
 }
 	
 .listaNonEdit {
-	font-family: <%=src.get("font.style")%>;
+	font-family: <%=src2.get("font.style")%>;
 	font-size: <%=fontSize %>;
 	font-weight: normal;
 	margin: auto;
@@ -1265,8 +1266,8 @@ A.imageLink:active {
 	text-align: left;
 	padding-top: 0px;
 	padding-bottom: 0px;
-	background-color : #<%=src.get("color.nonEdit")%>;
-	color: #<%=src.get("color.nonEdit.selected.font")%>;
+	background-color : #<%=src2.get("color.nonEdit")%>;
+	color: #<%=src2.get("color.nonEdit.selected.font")%>;
 }
 
 .posicionPest {
@@ -1274,17 +1275,17 @@ A.imageLink:active {
 }
 
 .listaNonEditSelected {
-	font-family: <%=src.get("font.style")%>;
+	font-family: <%=src2.get("font.style")%>;
 	font-size: <%=fontSize %>;
 	font-weight: normal;
-	color: #<%=src.get("color.nonEdit.selected.font")%>;
+	color: #<%=src2.get("color.nonEdit.selected.font")%>;
 	margin: auto;
 	padding-right: 4px;
 	padding-left: 3px;
 	vertical-align: middle;
 	text-align: left; 
 	padding-top: 0px;
-	background-color: #<%=src.get("color.nonEdit.selected.BG")%>;
+	background-color: #<%=src2.get("color.nonEdit.selected.BG")%>;
 	padding-bottom: 0px;
 }
 
@@ -1301,29 +1302,29 @@ A.imageLink:active {
 }
 
 .posicionModalGrande {
-	background-color: #<%=src.get("color.background")%>;
+	background-color: #<%=src2.get("color.background")%>;
 	width: 100%;
 }
 
 .posicionModalMedia {
-	background-color: #<%=src.get("color.background")%>;
+	background-color: #<%=src2.get("color.background")%>;
 	width: 100%;
 }
 
 .posicionModalPeque {
-	background-color: #<%=src.get("color.background")%>;
+	background-color: #<%=src2.get("color.background")%>;
 	width: 100%;
 }
 
 .detallePestanas {
-	background-color: #<%=src.get("color.background")%>;
+	background-color: #<%=src2.get("color.background")%>;
 }
 
 .paginator {
 	font-size: <%=fontSize %>; 
-	COLOR: #<%=src.get("color.tableTitle.font")%>; 
-	background-color: #<%=src.get("color.tableTitle.BG")%>;
-	FONT-FAMILY: <%=src.get("font.style")%>;
+	COLOR: #<%=src2.get("color.tableTitle.font")%>; 
+	background-color: #<%=src2.get("color.tableTitle.BG")%>;
+	FONT-FAMILY: <%=src2.get("font.style")%>;
 	text-decoration: none;
 	margin: 0px;
 	padding: 1px;
@@ -1331,9 +1332,9 @@ A.imageLink:active {
 
 .tPaginator {
 	font-size: <%=fontSize %>; 
-	COLOR: #<%=src.get("color.tableTitle.font")%>; 
-	background-color: #<%=src.get("color.tableTitle.BG")%>;
-	FONT-FAMILY: <%=src.get("font.style")%>;
+	COLOR: #<%=src2.get("color.tableTitle.font")%>; 
+	background-color: #<%=src2.get("color.tableTitle.BG")%>;
+	FONT-FAMILY: <%=src2.get("font.style")%>;
 	text-decoration: none;
 	margin: 0px;
 	padding: 0px;
@@ -1342,41 +1343,41 @@ A.imageLink:active {
 }
 
 .boxConsultaPaginador { 
-	font-family: <%=src.get("font.style")%>;
+	font-family: <%=src2.get("font.style")%>;
 	font-size: <%=fontSize%>;
 	font-weight: bold;
 	margin-top: 0px;
 	margin-left: 0px;
 	vertical-align: top;
 	text-align: left;
-	color:#<%=src.get("color.labelText")%>;
-	background-color: #<%=src.get("color.tableTitle.BG")%>;
-	border: 0px solid #<%=src.get("color.button.border")%>;
+	color:#<%=src2.get("color.labelText")%>;
+	background-color: #<%=src2.get("color.tableTitle.BG")%>;
+	border: 0px solid #<%=src2.get("color.button.border")%>;
 	padding-top: 0px;
 	padding-bottom: 0px;
 }
 
 a.paginator:link {
 	CURSOR: pointer; 
-	COLOR: #<%=src.get("color.titulos")%>; 
+	COLOR: #<%=src2.get("color.titulos")%>; 
 	FONT-STYLE: normal; 
 	TEXT-DECORATION: none;
 }
 a.paginator:visited {
-	COLOR: #<%=src.get("color.titulos")%>;
+	COLOR: #<%=src2.get("color.titulos")%>;
 	TEXT-DECORATION: none;
 }
 a.paginator:hover {
-	COLOR: #<%=src.get("color.titulos")%>;
+	COLOR: #<%=src2.get("color.titulos")%>;
 	TEXT-DECORATION: none;
 }
 a.paginator:active {
-	COLOR: #<%=src.get("color.titulos")%>;
+	COLOR: #<%=src2.get("color.titulos")%>;
 	TEXT-DECORATION: none;
 }
 
 .tooltipo {
-	background-color: #<%=src.get("color.tableTitle.BG")%>;
+	background-color: #<%=src2.get("color.tableTitle.BG")%>;
 	border: solid 1px #999999;
 	vertical-align: middle;
 	padding-right: 5px;
@@ -1387,7 +1388,7 @@ a.paginator:active {
 }
 .tooltipoletra {
 	font-size: 12px;
-	color: #<%=src.get("color.tableTitle.font")%>;
+	color: #<%=src2.get("color.tableTitle.font")%>;
 }
 
 #iconoboton {
@@ -1412,7 +1413,7 @@ ul#tabs {
 	width: 400px;
 	height: 24px;
 	z-index: 20;
-	font-family: <%=src.get("font.style")%>;
+	font-family: <%=src2.get("font.style")%>;
 	font-size: <%=fontSize %>;
 	font-weight: normal;
 	color: #000000;
@@ -1426,8 +1427,8 @@ ul#tabs li {
 		padding-left: 8px;
 		list-style: none;
 		margin-right: 1px;
-		background-color: #<%=src.get("color.labelTable")%>;
-		font-family: <%=src.get("font.style")%>;
+		background-color: #<%=src2.get("color.labelTable")%>;
+		font-family: <%=src2.get("font.style")%>;
 		font-size: <%=fontSize %>;
 		font-weight: normal;
 		color: #FFFFFF;
@@ -1437,15 +1438,15 @@ ul#tabs li.actual {
 		height: 24px;
 		width: 80px;
 		background: url(<%=app%>/html/imagenes/pestahover.gif) no-repeat right;
-		background-color: #<%=src.get("color.labelTable")%>;
-		font-family: <%=src.get("font.style")%>;
+		background-color: #<%=src2.get("color.labelTable")%>;
+		font-family: <%=src2.get("font.style")%>;
 		font-size: <%=fontSize %>;
 		font-weight: normal;
 		color: #FFFFFF;
 		text-decoration: none;
 		border-left-width: 2px;
 		border-left-style: solid;
-		border-left-color: #<%=src.get("color.background")%>;			
+		border-left-color: #<%=src2.get("color.background")%>;			
 }
 
 ul#tabs li a {	
@@ -1457,7 +1458,7 @@ ul#tabs li a {
 	line-height: 23px;
 	padding-right: 8px;
 	outline: 0px none;
-	font-family: <%=src.get("font.style")%>;
+	font-family: <%=src2.get("font.style")%>;
 	font-size: <%=fontSize%>;
 	text-decoration: none;
 	color: #FFFFFF;
@@ -1480,7 +1481,7 @@ div#panel #paneles {
 	width: 950px;
 	height: 350px;
 	border: 1px solid #91a7b4;
-	background: #<%=src.get("color.background")%>;
+	background: #<%=src2.get("color.background")%>;
 	overflow: hidden;
 	z-index: 10px;
 }
@@ -1489,7 +1490,7 @@ div#panel #paneles div {
 	margin: 10px;
 	width: 935px;
 	height: 345px;
-	font-family: <%=src.get("font.style")%>;
+	font-family: <%=src2.get("font.style")%>;
 	font-size: <%=fontSize%>;
 	text-decoration: none;
 	color: #000;
@@ -1586,9 +1587,9 @@ div#panel #paneles div {
 
 /* Component containers
 ----------------------------------*/
-.ui-widget { font-family: <%=src.get("font.style")%>; font-size: 1.1em; }
+.ui-widget { font-family: <%=src2.get("font.style")%>; font-size: 1.1em; }
 .ui-widget .ui-widget { font-size: 1em; }
-.ui-widget input, .ui-widget select, .ui-widget textarea, .ui-widget button { font-family: <%=src.get("font.style")%>; font-size: 1em; }
+.ui-widget input, .ui-widget select, .ui-widget textarea, .ui-widget button { font-family: <%=src2.get("font.style")%>; font-size: 1em; }
 .ui-widget-content { border: 1px solid #aaaaaa; background: #ffffff; color: #222222; }
 .ui-widget-content a { color: #222222; }
 .ui-widget-header { border: 1px solid #aaaaaa; background:#cccccc; color: #222222; font-weight: bold; }
@@ -1966,7 +1967,7 @@ button.ui-button::-moz-focus-inner { border: 0; padding: 0; } /* reset extra pad
  * http://docs.jquery.com/UI/Dialog#theming
  */
 .ui-dialog { position: absolute; padding: .2em; width: 300px; overflow: hidden; }
-.ui-dialog .ui-dialog-titlebar { padding: .4em 1em; position: relative; background-color : #<%=src.get("color.background")%>;  }
+.ui-dialog .ui-dialog-titlebar { padding: .4em 1em; position: relative; background-color : #<%=src2.get("color.background")%>;  }
 .ui-dialog .ui-dialog-title { float: left; margin: .1em 16px .1em 0; } 
 .ui-dialog .ui-dialog-titlebar-close { position: absolute; right: .3em; top: 50%; width: 19px; margin: -10px 0 0 0; padding: 1px; height: 18px; }
 .ui-dialog .ui-dialog-titlebar-close span { display: block; margin: 1px; }
@@ -2034,8 +2035,8 @@ button.ui-button::-moz-focus-inner { border: 0; padding: 0; } /* reset extra pad
         z-index: 9999999;
     }
 
-.ui-datepicker {overflow-x:visible; width: 17em; padding: .2em .2em 0; position: absolute;  z-index:9000 !important; font-family: <%=src.get("font.style")%>;} 
-.ui-datepicker .ui-datepicker-header { position:relative; padding:.2em 0; background: #<%=src.get("color.background")%>;height:50px; }
+.ui-datepicker {overflow-x:visible; width: 17em; padding: .2em .2em 0; position: absolute;  z-index:9000 !important; font-family: <%=src2.get("font.style")%>;} 
+.ui-datepicker .ui-datepicker-header { position:relative; padding:.2em 0; background: #<%=src2.get("color.background")%>;height:50px; }
  .ui-datepicker .ui-datepicker-prev, .ui-datepicker .ui-datepicker-next
  { position:absolute; top: 2px; width: 1.8em; height: 1.8em; }
  .ui-datepicker .ui-datepicker-prevAnio, .ui-datepicker .ui-datepicker-nextAnio
@@ -2198,7 +2199,7 @@ button.ui-button::-moz-focus-inner { border: 0; padding: 0; } /* reset extra pad
 	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 	color: #000;
 	padding: 10px 10px 10px 50px;
-	font-family: <%=src.get("font.style")%>;
+	font-family: <%=src2.get("font.style")%>;
 	font-size: <%=fontSize%>;
 	font-weight: bold;
 	border: 2px solid #999;

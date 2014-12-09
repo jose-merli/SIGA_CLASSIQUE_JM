@@ -24,12 +24,12 @@
 	<c:set var="msg" value="${param.msg}" />
 </c:if>
 
-<span align="Left" class="labelText"><siga:Idioma key="${msg}"/></span>
+<span class="labelText"><siga:Idioma key="${msg}"/></span>
 
 <div id="divEspera" title="<siga:Idioma key="${msg}"/>" style="z-index:100;position:absolute;top:45%;left:50%">
 	<div style="position:relative;left:-50%">
 		<br><img src="<html:rewrite page='/html/imagenes/loadingBar.gif'/>">
-	</div
+	</div>
 </div>
 	
 </body>
