@@ -242,7 +242,7 @@
 
 <body onload="inicio(); inicioCargarBancoBIC(); habilitarDeshabCombo();">
 
-	<table class="tablaTitulo" cellspacing="0" heigth="32">
+	<table class="tablaTitulo" cellspacing="0" height="32">
 		<tr>
 			<td id="titulo" class="titulosPeq">
 				<siga:Idioma key="menu.facturacion.gestionCuentasBancarias"/>
@@ -301,7 +301,7 @@
 						<siga:Idioma key="facturacion.cuentasBancarias.tieneBaja"/> 
 					</td>
 					<td>
-						<siga:Fecha nombreCampo="fechaBaja" valorInicial="${CuentasBancariasForm.fechaBaja}" disabled="${disabledFecha}" readonly="${disabledFecha}"/>
+						<siga:Fecha nombreCampo="fechaBaja" valorInicial="${CuentasBancariasForm.fechaBaja}" disabled="${disabledFecha}" readOnly="${disabledFecha}"/>
 					</td>		
 				</c:if>	
 			</tr>
@@ -413,7 +413,7 @@
 									<siga:Idioma key="facturacion.cuentasBancarias.uso.sjcs"/>
 								</td>								
 								<td> 
-									<html:checkbox name="CuentasBancariasForm" id = "sjcs" property="sjcs" value="1" onclick="habilitarDeshabCombo()"></html:checkbox>
+									<html:checkbox name="CuentasBancariasForm" styleId="sjcs" property="sjcs" value="1" onclick="habilitarDeshabCombo()"></html:checkbox>
 								</td>
 								<td class="labelText" nowrap>
 								<siga:Idioma key="facturacion.sufijos.literal.sufijo"/>
@@ -474,9 +474,9 @@
 										</td>
 										<td align='left'>	
 											<html:select styleId="comboSufijosSerie_${status.count}" property="idSufijoSerie" value="${serieFacturacion.idsufijo}" styleClass="boxCombo" style="width:200px;">
-												<s:if test="${empty serieFacturacion.idsufijo}">
+												<c:if test="${empty serieFacturacion.idsufijo}">
 													<html:option value=""><siga:Idioma key="general.combo.seleccionar" /></html:option>
-												</s:if>
+												</c:if>
 												<c:forEach items="${listaSufijos}" var="sufijoSerieCmb">											
 													<html:option value="${sufijoSerieCmb.idSufijo}">
 													<c:if	test="${sufijoSerieCmb.sufijo.trim().length()>0}">
