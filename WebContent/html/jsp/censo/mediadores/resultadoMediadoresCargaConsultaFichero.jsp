@@ -166,7 +166,7 @@
 					<td style="text-align: right"><%=cenMediadorCsv.getNcolegiado()!=null?cenMediadorCsv.getNcolegiado():"&nbsp;"%></td>										
 					<td style="text-align: center"><%=cenMediadorCsv.getIdentificacion()!=null?cenMediadorCsv.getIdentificacion():"&nbsp;"%></td>					
 					<td><%=cenMediadorCsv.getNombre()!=null?cenMediadorCsv.getNombre():"&nbsp;"%></td>					
-					<td><%=cenMediadorCsv.getApellido1()!=null?cenMediadorCsv.getApellido1():"&nbsp"%></td>
+					<td><%=cenMediadorCsv.getApellido1()!=null?cenMediadorCsv.getApellido1():"&nbsp;"%></td>
 					<td><%=cenMediadorCsv.getApellido2()!=null?cenMediadorCsv.getApellido2():"&nbsp;"%></td>					
 					
 				</siga:FilaConIconos>	

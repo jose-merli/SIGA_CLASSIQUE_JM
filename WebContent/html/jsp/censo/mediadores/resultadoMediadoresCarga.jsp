@@ -162,7 +162,7 @@
 					<td style="text-align: right"><%=mediadorCSVVo.getnColegiado()!=null?mediadorCSVVo.getnColegiado():"&nbsp;"%></td>										
 					<td style="text-align: center"><%=mediadorCSVVo.getIdentificacion()!=null?mediadorCSVVo.getIdentificacion():"&nbsp;"%></td>					
 					<td><%=mediadorCSVVo.getNombre()!=null?mediadorCSVVo.getNombre():"&nbsp;"%></td>					
-					<td><%=mediadorCSVVo.getApellido1()!=null?mediadorCSVVo.getApellido1():"&nbsp"%></td>
+					<td><%=mediadorCSVVo.getApellido1()!=null?mediadorCSVVo.getApellido1():"&nbsp;"%></td>
 					<td><%=mediadorCSVVo.getApellido2()!=null?mediadorCSVVo.getApellido2():"&nbsp;"%></td>
 					<td><%=UtilidadesString.getMensajeIdioma(usr, mediadorCSVVo.getErrorMsg())%>&nbsp;</td>
 				</siga:FilaConIconos>	
