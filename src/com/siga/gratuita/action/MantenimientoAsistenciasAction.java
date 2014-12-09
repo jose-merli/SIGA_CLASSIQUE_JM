@@ -32,7 +32,6 @@ import com.siga.Utilidades.UtilidadesString;
 import com.siga.beans.CenBajasTemporalesAdm;
 import com.siga.beans.CenBajasTemporalesBean;
 import com.siga.beans.CenColegiadoAdm;
-import com.siga.beans.CenColegiadoBean;
 import com.siga.beans.ScsActuacionAsistenciaAdm;
 import com.siga.beans.ScsActuacionAsistenciaBean;
 import com.siga.beans.ScsAsistenciasAdm;
@@ -335,7 +334,6 @@ public class MantenimientoAsistenciasAction extends MasterAction
 		UsrBean usr = (UsrBean)request.getSession().getAttribute("USRBEAN");
 		if (usr.isLetrado()){
 			CenColegiadoAdm colegiado = new CenColegiadoAdm(this.getUserBean(request));
-			CenColegiadoBean elegido = new CenColegiadoBean();
 			try {
 				String numeroColegiado = colegiado.getIdentificadorColegiado(usr);
 				request.setAttribute("nColegiado",numeroColegiado);
@@ -821,8 +819,6 @@ public class MantenimientoAsistenciasAction extends MasterAction
 			" AND GUAR.RESERVA = 'N'"+
 			" AND trunc(SYSDATE) >= guar.FECHAINICIO"+ 
 			" AND trunc(SYSDATE) <= guar.FECHAFIN"; 
-			ScsCalendarioLaboralAdm admBean =  new ScsCalendarioLaboralAdm(this.getUserBean(request));
-			Vector obj = admBean.selectGenerico(sql);
 			Vector resultado = (Vector)asistencias.ejecutaSelect(sql);
 			request.setAttribute("resultado",resultado);
 		}
@@ -908,13 +904,13 @@ public class MantenimientoAsistenciasAction extends MasterAction
 				
 				ScsEJGDESIGNAAdm ejgDesignaAdm = new ScsEJGDESIGNAAdm (this.getUserBean(request));
 				
-				UtilidadesHash.set(hashEjgDesigna, ejgDesignabean.C_ANIODESIGNA, 			miForm.getDesigna_anio());
-				UtilidadesHash.set(hashEjgDesigna, ejgDesignabean.C_NUMERODESIGNA,  new Integer(miForm.getDesigna_numero()));
-				UtilidadesHash.set(hashEjgDesigna, ejgDesignabean.C_IDTURNO, 		miForm.getDesigna_turno());
-				UtilidadesHash.set(hashEjgDesigna, ejgDesignabean.C_IDTIPOEJG, 		new Integer((String)miForm.getEjg_idTipoEJG()));
-				UtilidadesHash.set(hashEjgDesigna, ejgDesignabean.C_NUMEROEJG, 		new Integer((String)miForm.getEjg_numero()));
-				UtilidadesHash.set(hashEjgDesigna, ejgDesignabean.C_ANIOEJG, 		new Integer((String)miForm.getEjg_anio()));
-				UtilidadesHash.set(hashEjgDesigna, ejgDesignabean.C_IDINSTITUCION, 		this.getIDInstitucion(request));
+				UtilidadesHash.set(hashEjgDesigna, ScsEJGDESIGNABean.C_ANIODESIGNA, 			miForm.getDesigna_anio());
+				UtilidadesHash.set(hashEjgDesigna, ScsEJGDESIGNABean.C_NUMERODESIGNA,  new Integer(miForm.getDesigna_numero()));
+				UtilidadesHash.set(hashEjgDesigna, ScsEJGDESIGNABean.C_IDTURNO, 		miForm.getDesigna_turno());
+				UtilidadesHash.set(hashEjgDesigna, ScsEJGDESIGNABean.C_IDTIPOEJG, 		new Integer((String)miForm.getEjg_idTipoEJG()));
+				UtilidadesHash.set(hashEjgDesigna, ScsEJGDESIGNABean.C_NUMEROEJG, 		new Integer((String)miForm.getEjg_numero()));
+				UtilidadesHash.set(hashEjgDesigna, ScsEJGDESIGNABean.C_ANIOEJG, 		new Integer((String)miForm.getEjg_anio()));
+				UtilidadesHash.set(hashEjgDesigna, ScsEJGDESIGNABean.C_IDINSTITUCION, 		this.getIDInstitucion(request));
 				Vector existeRelacion = ejgDesignaAdm.select(hashEjgDesigna);
 				
 				tx=this.getUserBean(request).getTransaction();
@@ -1062,7 +1058,6 @@ public class MantenimientoAsistenciasAction extends MasterAction
 			// Relacionamos la asistencia con la designa
 			
 			mapDestino = this.relacionarConDesigna(true, miForm, request);
-			Vector datosEJG= new Vector();
 			
 			if((mapDestino.equalsIgnoreCase("exito"))){
 			
@@ -1087,13 +1082,13 @@ public class MantenimientoAsistenciasAction extends MasterAction
 				
 				ScsEJGDESIGNAAdm ejgDesignaAdm = new ScsEJGDESIGNAAdm (this.getUserBean(request));
 				
-				UtilidadesHash.set(hashEjgDesigna, ejgDesignabean.C_ANIODESIGNA, 			miForm.getDesigna_anio());
-				UtilidadesHash.set(hashEjgDesigna, ejgDesignabean.C_NUMERODESIGNA,  new Integer(miForm.getDesigna_numero()));
-				UtilidadesHash.set(hashEjgDesigna, ejgDesignabean.C_IDTURNO, 		miForm.getDesigna_turno());
-				UtilidadesHash.set(hashEjgDesigna, ejgDesignabean.C_IDTIPOEJG, 		new Integer((String)miForm.getEjg_idTipoEJG()));
-				UtilidadesHash.set(hashEjgDesigna, ejgDesignabean.C_NUMEROEJG, 		new Integer((String)miForm.getEjg_numero()));
-				UtilidadesHash.set(hashEjgDesigna, ejgDesignabean.C_ANIOEJG, 		new Integer((String)miForm.getEjg_anio()));
-				UtilidadesHash.set(hashEjgDesigna, ejgDesignabean.C_IDINSTITUCION, 		this.getIDInstitucion(request));
+				UtilidadesHash.set(hashEjgDesigna, ScsEJGDESIGNABean.C_ANIODESIGNA, 			miForm.getDesigna_anio());
+				UtilidadesHash.set(hashEjgDesigna, ScsEJGDESIGNABean.C_NUMERODESIGNA,  new Integer(miForm.getDesigna_numero()));
+				UtilidadesHash.set(hashEjgDesigna, ScsEJGDESIGNABean.C_IDTURNO, 		miForm.getDesigna_turno());
+				UtilidadesHash.set(hashEjgDesigna, ScsEJGDESIGNABean.C_IDTIPOEJG, 		new Integer((String)miForm.getEjg_idTipoEJG()));
+				UtilidadesHash.set(hashEjgDesigna, ScsEJGDESIGNABean.C_NUMEROEJG, 		new Integer((String)miForm.getEjg_numero()));
+				UtilidadesHash.set(hashEjgDesigna, ScsEJGDESIGNABean.C_ANIOEJG, 		new Integer((String)miForm.getEjg_anio()));
+				UtilidadesHash.set(hashEjgDesigna, ScsEJGDESIGNABean.C_IDINSTITUCION, 		this.getIDInstitucion(request));
 				Vector existeRelacion = ejgDesignaAdm.select(hashEjgDesigna);
 				
 				

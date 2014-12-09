@@ -1,9 +1,7 @@
 package com.siga.gratuita.action;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
-import java.util.List;
 import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
@@ -160,7 +158,6 @@ public class BusquedaClientesFiltrosAction extends MasterAction
 		// Controles generales
 		UsrBean usr = this.getUserBean(request);
 		String idInstitucion = usr.getLocation();
-		String idioma = usr.getLanguage();
 		
 		BusquedaClientesFiltrosAdm adm = new BusquedaClientesFiltrosAdm(usr);
 		Vector resultado;
@@ -412,7 +409,6 @@ public class BusquedaClientesFiltrosAction extends MasterAction
 	 */
 	protected String insertar(ActionMapping mapping, MasterForm miForm, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		String forward = "";
-		boolean resultOk=false;
 		UserTransaction tx = null;
 		try	{
 			BusquedaClientesFiltrosForm formulario = (BusquedaClientesFiltrosForm)miForm;
@@ -424,7 +420,6 @@ public class BusquedaClientesFiltrosAction extends MasterAction
 			// ACTUALIZAMOS LA DIRECCIÓN DE GUARDIA DEL CLIENTE. EN CASO DE QUE NO EXISTIERA UNA DIRECCIÓN DE GUARDIA
 			// ENTONCES LA INSERTAMOS Y SI YA EXISTIA ACTUALIZAMOS LOS DATOS DE LA MISMA
 			CenDireccionesBean beanDir  = new CenDireccionesBean ();
-			Direccion direccion = new Direccion();	
 			beanDir.setIdInstitucion(formulario.getIdInstitucion());
 			beanDir.setIdPersona(formulario.getIdPersona());
 			beanDir.setFax1(formulario.getFax1());
@@ -448,7 +443,7 @@ public class BusquedaClientesFiltrosAction extends MasterAction
 			String tiposDir = ""+ClsConstants.TIPO_DIRECCION_GUARDIA;
 			
 			// Se llama a la interfaz Direccion para actualizar una nueva direccion
-			direccion.insertar(beanDir, tiposDir, "",null, null, usr);
+			Direccion.insertar(beanDir, tiposDir, "",null, null, usr);
 			
 			request.setAttribute("mensaje","messages.inserted.success");
 			tx.commit();
@@ -476,7 +471,6 @@ public class BusquedaClientesFiltrosAction extends MasterAction
 	 */
 	protected String modificar(ActionMapping mapping, MasterForm miForm, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		String forward = "";
-		boolean resultOk=false;
 		UserTransaction tx = null;
 		try	{
 			BusquedaClientesFiltrosForm formulario = (BusquedaClientesFiltrosForm)miForm;
@@ -487,7 +481,6 @@ public class BusquedaClientesFiltrosAction extends MasterAction
 			
 			// ACTUALIZAMOS LA DIRECCIÓN DE GUARDIA DEL CLIENTE. EN CASO DE QUE NO EXISTIERA UNA DIRECCIÓN DE GUARDIA
 			// ENTONCES LA INSERTAMOS Y SI YA EXISTIA ACTUALIZAMOS LOS DATOS DE LA MISMA
-			Direccion direccion = new Direccion();	
 			CenDireccionesBean beanDir  = new CenDireccionesBean ();
 			beanDir.setIdInstitucion(formulario.getIdInstitucion());
 			beanDir.setIdPersona(formulario.getIdPersona());
@@ -502,7 +495,7 @@ public class BusquedaClientesFiltrosAction extends MasterAction
 			beanDir.setIdDireccion(formulario.getIdDireccion());
 			beanDir.setOriginalHash((Hashtable)request.getSession().getAttribute("DATABACKUP_CLIENTESFILTRO"));
 			// Se llama a la interfaz Direccion para actualizar una nueva direccion
-			direccion.actualizar(beanDir, "", "",null, null, usr);
+			Direccion.actualizar(beanDir, "", "",null, null, usr);
 			
 			request.setAttribute("mensaje","messages.inserted.success");
 			tx.commit();

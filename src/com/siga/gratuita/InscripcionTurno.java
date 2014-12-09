@@ -1,6 +1,5 @@
 package com.siga.gratuita;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -14,8 +13,6 @@ import com.atos.utils.GstDate;
 import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesHash;
-import com.siga.beans.CenBajasTemporalesAdm;
-import com.siga.beans.CenPersonaBean;
 import com.siga.beans.MasterBean;
 import com.siga.beans.ScsGuardiasTurnoAdm;
 import com.siga.beans.ScsGuardiasTurnoBean;
@@ -36,26 +33,10 @@ public class InscripcionTurno {
 	// ATRIBUTOS
 	////////////////////
 	private ScsInscripcionTurnoBean bean = null;
-	private static SimpleDateFormat formatoFecha = new SimpleDateFormat ("yyyy/MM/dd HH:mm:ss");
 	
 	////////////////////
 	// CONSTRUCTORES
 	////////////////////
-	/**
-	 * Constructor 
-	 * 
-	 * @param idInstitucion
-	 * @param idTurno
-	 * @param idPersona
-	 * @param fechaSolicitudAlta
-	 */
-	private InscripcionTurno (Integer idInstitucion, Integer idTurno, Long idPersona,  String fechaSolicitudAlta) {
-		this.bean = new ScsInscripcionTurnoBean();
-		this.bean.setIdInstitucion(idInstitucion);
-		this.bean.setIdTurno(idTurno);
-		this.bean.setIdPersona(idPersona);
-		this.bean.setFechaSolicitud(fechaSolicitudAlta);
-	} //InscripcionTurno ()
 	
 	/**
 	 * Constructor
@@ -144,7 +125,6 @@ public class InscripcionTurno {
 			ArrayList<LetradoInscripcion> colaLetrados = new ArrayList<LetradoInscripcion>();
 			ScsInscripcionTurnoAdm insadm = new ScsInscripcionTurnoAdm(usr);
 			ScsSaltosCompensacionesAdm saladm = new ScsSaltosCompensacionesAdm(usr);
-			CenBajasTemporalesAdm bajasAdm = new CenBajasTemporalesAdm(usr);
 			ScsOrdenacionColasAdm ordenacionColasAdm = new ScsOrdenacionColasAdm(usr);
 			
 			
@@ -248,10 +228,9 @@ public class InscripcionTurno {
 			// quitando letrados de la cola si tienen saltos
 			if (quitarSaltos) {
 				HashMap<Long, ArrayList<LetradoInscripcion>> personasConSaltos = saladm.getSaltos(idInstitucion, idTurno, null);
-				ArrayList<LetradoInscripcion> alSaltos;
 				for (Iterator iter = colaLetrados.iterator(); iter.hasNext(); ) {
 					letradoTurno = (LetradoInscripcion) iter.next();
-					if ( (alSaltos = personasConSaltos.get(letradoTurno.getIdPersona())) != null )
+					if ( personasConSaltos.get(letradoTurno.getIdPersona()) != null )
 						iter.remove();
 				}
 			}

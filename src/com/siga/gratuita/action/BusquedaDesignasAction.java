@@ -707,8 +707,6 @@ public class BusquedaDesignasAction extends MasterAction {
 					String fecha = (String)formDesignaHash.get("FECHAENTRADAINICIO");
 					//busqueda automatica
 					
-					ReadProperties rp = new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
-					
 					CalendarioSJCS calendarioSJCS = new CalendarioSJCS();
 					calendarioSJCS.inicializaParaObtenerLetrado(
 					new Integer(usr.getLocation()), new Integer(idTurno),fecha,usr);
@@ -1120,13 +1118,13 @@ public class BusquedaDesignasAction extends MasterAction {
 				Hashtable hashEjgDesigna=new Hashtable();
 				ScsEJGDESIGNAAdm ejgDesignaAdm = new ScsEJGDESIGNAAdm (usuario);
 				
-				UtilidadesHash.set(hashEjgDesigna, ejgDesignabean.C_ANIODESIGNA, 	designaBean.getAnio());
-				UtilidadesHash.set(hashEjgDesigna, ejgDesignabean.C_NUMERODESIGNA,  new Integer (designaBean.getNumero().intValue()));
-				UtilidadesHash.set(hashEjgDesigna, ejgDesignabean.C_IDTURNO, 		designaBean.getIdTurno());
-				UtilidadesHash.set(hashEjgDesigna, ejgDesignabean.C_IDTIPOEJG, 		asistenciaBean.getEjgIdTipoEjg());
-				UtilidadesHash.set(hashEjgDesigna, ejgDesignabean.C_NUMEROEJG, 		new Integer(asistenciaBean.getEjgNumero().intValue()));
-				UtilidadesHash.set(hashEjgDesigna, ejgDesignabean.C_ANIOEJG, 		asistenciaBean.getEjgAnio());
-				UtilidadesHash.set(hashEjgDesigna, ejgDesignabean.C_IDINSTITUCION, 		new Integer (usuario.getLocation()));
+				UtilidadesHash.set(hashEjgDesigna, ScsEJGDESIGNABean.C_ANIODESIGNA, 	designaBean.getAnio());
+				UtilidadesHash.set(hashEjgDesigna, ScsEJGDESIGNABean.C_NUMERODESIGNA,  new Integer (designaBean.getNumero().intValue()));
+				UtilidadesHash.set(hashEjgDesigna, ScsEJGDESIGNABean.C_IDTURNO, 		designaBean.getIdTurno());
+				UtilidadesHash.set(hashEjgDesigna, ScsEJGDESIGNABean.C_IDTIPOEJG, 		asistenciaBean.getEjgIdTipoEjg());
+				UtilidadesHash.set(hashEjgDesigna, ScsEJGDESIGNABean.C_NUMEROEJG, 		new Integer(asistenciaBean.getEjgNumero().intValue()));
+				UtilidadesHash.set(hashEjgDesigna, ScsEJGDESIGNABean.C_ANIOEJG, 		asistenciaBean.getEjgAnio());
+				UtilidadesHash.set(hashEjgDesigna, ScsEJGDESIGNABean.C_IDINSTITUCION, 		new Integer (usuario.getLocation()));
 				Vector existeRelacion = ejgDesignaAdm.select(hashEjgDesigna);
 				
 				if (existeRelacion.size()==0){//Si no existe la relación, la creamos
@@ -1323,7 +1321,6 @@ public class BusquedaDesignasAction extends MasterAction {
 					String idProcuradorContrario = (String)((Hashtable)contrarios.get(i)).get("IDPROCURADOR");
 					String idInstProcuradorContrario = (String)((Hashtable)contrarios.get(i)).get("IDINSTPROCURADOR");
 					String idAbogadoContrario = (String)((Hashtable)contrarios.get(i)).get("IDABOGADO");
-					String idRepresentanteContrario = (String)((Hashtable)contrarios.get(i)).get("IDREPRESENTANTE");
 					String nombreAbogado = (String)((Hashtable)contrarios.get(i)).get("NOMBREABOGADO");
 					String nombreRepresentante = (String)((Hashtable)contrarios.get(i)).get("NOMBREREPRESENTANTE");
 					contrariosHash.put(ScsContrariosDesignaBean.C_IDPERSONA,idPersonaContrario);

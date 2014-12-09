@@ -28,8 +28,6 @@ public class FilaExtElement {
 		accesoMin=_accesoMin;
 		alt=_alt;
 		this.label = label;
-		this.width = width;
-	
 	}
 	
 	

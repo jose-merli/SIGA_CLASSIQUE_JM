@@ -105,7 +105,7 @@ public class CenBancosAdm extends MasterBeanAdministrador
  				Row fila = (Row) rc.get(0);
 				Hashtable registro = (Hashtable)fila.getRow(); 
 				if (registro != null) { 					
-					bancoBean.setNombre(UtilidadesHash.getString(registro,bancoBean.C_NOMBRE));
+					bancoBean.setNombre(UtilidadesHash.getString(registro,CenBancosBean.C_NOMBRE));
 				}
 			}
 		}
@@ -132,9 +132,9 @@ public class CenBancosAdm extends MasterBeanAdministrador
  				Row fila = (Row) rc.get(0);
 				Hashtable registro = (Hashtable)fila.getRow(); 
 				if (registro != null) { 					
-					bancoBean.setNombre(UtilidadesHash.getString(registro,bancoBean.C_NOMBRE));
-					bancoBean.setBic(UtilidadesHash.getString(registro,bancoBean.C_BIC));
-					bancoBean.setIdPais(UtilidadesHash.getString(registro,bancoBean.C_IDPAIS));
+					bancoBean.setNombre(UtilidadesHash.getString(registro,CenBancosBean.C_NOMBRE));
+					bancoBean.setBic(UtilidadesHash.getString(registro,CenBancosBean.C_BIC));
+					bancoBean.setIdPais(UtilidadesHash.getString(registro,CenBancosBean.C_IDPAIS));
 				}
 			}
 		}
@@ -171,7 +171,6 @@ public class CenBancosAdm extends MasterBeanAdministrador
  	
  	 public CenBancosBean insertarBancoExtranjero(String idPais,String bic) throws SIGAException{
 		CenBancosBean bancoBean = new CenBancosBean();
-		CenPaisAdm paisAdm = new CenPaisAdm(this.usrbean);
 		try{
 			bancoBean.setCodigo(getNuevoId());
 			bancoBean.setNombre("BANCO EXTRANJERO");

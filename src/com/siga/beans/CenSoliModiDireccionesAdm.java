@@ -6,17 +6,15 @@
  */
 package com.siga.beans;
 
-import java.util.ArrayList;
 import java.util.Hashtable;
-import java.util.List;
 import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
-import com.atos.utils.Row;
 import com.atos.utils.GstDate;
+import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesHash;
@@ -350,7 +348,6 @@ public class CenSoliModiDireccionesAdm extends MasterBeanAdministrador {
 	public Long	getNuevoId()throws ClsExceptions, SIGAException {
 		String sql;
 		RowsContainer rc = null;
-		int contador = 0;
 		Long id=null;
 		
 		try { rc = new RowsContainer(); }
@@ -424,13 +421,10 @@ public class CenSoliModiDireccionesAdm extends MasterBeanAdministrador {
 
 		boolean correcto=true;
 		Vector original = new Vector();
-		Vector direcciones = new Vector();		
 		Hashtable hash = new Hashtable();
 		Hashtable hashOriginal = new Hashtable();		
-		Hashtable clave = new Hashtable();
 		Hashtable dirOriginal = new Hashtable(); 
 		CenDireccionesBean dirModificada = new CenDireccionesBean();		
-		CenHistoricoBean beanHist = new CenHistoricoBean();		
 	
        try {
 			if (!solicitud.equalsIgnoreCase("")){
@@ -452,7 +446,6 @@ public class CenSoliModiDireccionesAdm extends MasterBeanAdministrador {
 				}else{
 				
 					// Obtengo el registro a modificar de la tabla cliente y preparo el bean correspondiente
-					Direccion direccion = new Direccion();	
 					CenDireccionesAdm adminDir = new CenDireccionesAdm(this.usrbean);					
 					dirOriginal=adminDir.getEntradaDireccionGeneral((String)hash.get(CenDireccionesBean.C_IDPERSONA),(String)hash.get(CenDireccionesBean.C_IDINSTITUCION),(String)hash.get(CenDireccionesBean.C_IDDIRECCION));
 					dirModificada.setIdPersona(new Long((String)dirOriginal.get(CenDireccionesBean.C_IDPERSONA)));
@@ -485,10 +478,10 @@ public class CenSoliModiDireccionesAdm extends MasterBeanAdministrador {
 					}
 
 					// Se llama a la interfaz Direccion para actualizar una nueva direccion
-					direccion.actualizar(dirModificada, "", motivo,null, null, this.usrbean);
+					Direccion.actualizar(dirModificada, "", motivo,null, null, this.usrbean);
 
 					if(!dirModificada.getPreferente().equals("")){ //Cambio de preferencia si la tuviese
-						String preferenteModif = direccion.parsearPreferenteModificado(dirModificada.getPreferente());
+						String preferenteModif = Direccion.parsearPreferenteModificado(dirModificada.getPreferente());
 						String idDireccionesPreferentes = adminDir.obtenerPreferenteDirecciones (dirModificada.getIdPersona().toString(), dirModificada.getIdInstitucion().toString(), dirModificada.getPreferente(), dirModificada.getIdDireccion());
 						
 						adminDir.modificarDireccionesPreferentes(dirModificada.getIdPersona(), dirModificada.getIdInstitucion().toString(), idDireccionesPreferentes,preferenteModif,null);
@@ -503,7 +496,6 @@ public class CenSoliModiDireccionesAdm extends MasterBeanAdministrador {
 					//estableciendo los datos del tipo de direccion
 					String tiposDir = "";
 					CenDireccionTipoDireccionAdm tipoDirAdm = new CenDireccionTipoDireccionAdm (this.usrbean);
-					CenTipoDireccionAdm cenTipoDirAdm = new CenTipoDireccionAdm (this.usrbean);
 					Vector vTipos = new Vector();
 					vTipos=tipoDirAdm.getTiposDireccion(beanDir.getIdInstitucion().toString(),beanDir.getIdPersona().toString(), oldId);
 					if ((vTipos != null) && (vTipos.size() > 0)){
@@ -513,7 +505,7 @@ public class CenSoliModiDireccionesAdm extends MasterBeanAdministrador {
 						}
 					}
 					
-					direccion.insertar(beanDir, tiposDir, motivo,null, null, this.usrbean);
+					Direccion.insertar(beanDir, tiposDir, motivo,null, null, this.usrbean);
 										
 				}
 			}

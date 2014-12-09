@@ -189,9 +189,9 @@ public class ScsTipoActuacionAdm extends MasterBeanAdministrador {
             		Row fila = (Row) rc.get(i);
             		Hashtable<String, Object> htFila=fila.getRow();
             		tipoActuacionBean = new ScsTipoActuacionBean();
-            		tipoActuacionBean.setIdInstitucion(UtilidadesHash.getInteger(htFila,tipoActuacionBean.C_IDINSTITUCION));
-            		tipoActuacionBean.setIdTipoActuacion(UtilidadesHash.getInteger(htFila,tipoActuacionBean.C_IDTIPOACTUACION));
-            		tipoActuacionBean.setDescripcion(UtilidadesHash.getString(htFila,tipoActuacionBean.C_DESCRIPCION));
+            		tipoActuacionBean.setIdInstitucion(UtilidadesHash.getInteger(htFila,ScsTipoActuacionBean.C_IDINSTITUCION));
+            		tipoActuacionBean.setIdTipoActuacion(UtilidadesHash.getInteger(htFila,ScsTipoActuacionBean.C_IDTIPOACTUACION));
+            		tipoActuacionBean.setDescripcion(UtilidadesHash.getString(htFila,ScsTipoActuacionBean.C_DESCRIPCION));
             		tipoActuacionBeans.add(tipoActuacionBean);
             	}
             } 

@@ -9,7 +9,6 @@ import javax.transaction.UserTransaction;
 
 import org.apache.struts.action.ActionMapping;
 
-import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesHash;
@@ -160,9 +159,7 @@ public class SufijosAction extends MasterAction {
 		UserTransaction tx = null;
 		
 		try {
-			String where="";
 			tx = this.getUserBean(request).getTransaction();
-			UsrBean user=(UsrBean)request.getSession().getAttribute("USRBEAN");
 			SufijosForm miForm = (SufijosForm) formulario;
 			FacSufijoAdm sufijoAdm = new FacSufijoAdm (this.getUserBean(request));
 
@@ -237,8 +234,8 @@ public class SufijosAction extends MasterAction {
 				
 				//se comprueba si el código del sufijo ya existe en bbdd
 				Hashtable clavesSuf = new Hashtable ();
-				UtilidadesHash.set (clavesSuf, sufijoBean.C_IDINSTITUCION, user.getLocation());
-				UtilidadesHash.set (clavesSuf, sufijoBean.C_SUFIJO, miForm.getSufijo());
+				UtilidadesHash.set (clavesSuf, FacSufijoBean.C_IDINSTITUCION, user.getLocation());
+				UtilidadesHash.set (clavesSuf, FacSufijoBean.C_SUFIJO, miForm.getSufijo());
 			
 				Vector vSuf=sufijoAdm.select(clavesSuf);
 				

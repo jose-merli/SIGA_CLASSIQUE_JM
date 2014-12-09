@@ -186,7 +186,7 @@ public class FacLineaDevoluDisqBancoAdm extends MasterBeanAdministrador {
             	for (int i = 0; i < rc.size(); i++){
                   Row fila = (Row) rc.get(i);
                   Hashtable<String, Object> htFila=fila.getRow();
-                  FacLineaDevoluDisqBancoBean beanDevoluciones = beanDevoluciones =  (FacLineaDevoluDisqBancoBean) this.hashTableToBean(htFila);
+                  FacLineaDevoluDisqBancoBean beanDevoluciones = (FacLineaDevoluDisqBancoBean) this.hashTableToBean(htFila);
                   datos.add(beanDevoluciones);
                }
             } 

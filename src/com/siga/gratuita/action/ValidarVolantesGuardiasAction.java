@@ -2,15 +2,13 @@ package com.siga.gratuita.action;
 
 import java.util.Hashtable;
 import java.util.TreeMap;
+import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import org.apache.struts.action.ActionMapping;
-
 import javax.transaction.UserTransaction;
 
-import java.util.Vector;
+import org.apache.struts.action.ActionMapping;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
@@ -24,8 +22,6 @@ import com.siga.beans.CenPersonaBean;
 import com.siga.beans.HelperInformesAdm;
 import com.siga.beans.ScsCabeceraGuardiasAdm;
 import com.siga.beans.ScsCabeceraGuardiasBean;
-import com.siga.beans.ScsGuardiasColegiadoAdm;
-import com.siga.beans.ScsGuardiasColegiadoBean;
 import com.siga.beans.ScsPermutaGuardiasAdm;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
@@ -43,18 +39,7 @@ public class ValidarVolantesGuardiasAction extends MasterAction {
 
 
 	protected String abrir(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
-	    String forward = "abrir";
-	    try {
-	        UsrBean usr = (UsrBean) request.getSession().getAttribute("USRBEAN");			
-		    ValidarVolantesGuardiasForm miForm = (ValidarVolantesGuardiasForm) formulario;
-	
-	
-		} 
-		catch (Exception e){
-			throwExcp("messages.general.error",new String[] {"modulo.censo"},e,null);
-		}
-		
-		return forward;
+		return "abrir";
 	}
 
 	/* Realiza la busqueda de colegiado para el filtro
@@ -141,7 +126,7 @@ public class ValidarVolantesGuardiasAction extends MasterAction {
 						UtilidadesHash.set (h, ScsCabeceraGuardiasBean.C_IDINSTITUCION, idinstitucion);
 						ScsCabeceraGuardiasAdm admAux = new ScsCabeceraGuardiasAdm (this.getUserBean(request));
 						Vector vGuardias = admAux.select(h);
-						if (vGuardias == null && vGuardias.size() != 1) {
+						if (vGuardias != null && vGuardias.size() != 1) {
 				            throw new ClsExceptions("La guardia seleccionada tiene varios calendarios asociados");
 						}
 						if (vGuardias!=null && vGuardias.size()>0){
