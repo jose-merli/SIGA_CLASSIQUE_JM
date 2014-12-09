@@ -253,6 +253,8 @@
 					obtenerPersonas();
 				<%}%>
 				jQuery("#idBotonesAccion").hide();
+				jQuery("#idBotonesBusqueda").removeAttr("disabled");
+				jQuery("#idBotonesAccion").removeAttr("disabled");
 				
 			}
 	
@@ -293,6 +295,8 @@
 					document.GenerarAbonosForm.submit();
 				}
 				jQuery("#idBotonesAccion").show();
+				jQuery("#idBotonesBusqueda").removeAttr("disabled");
+    			jQuery("#idBotonesAccion").removeAttr("disabled");
 			}
 			
 			function buscarPaginador() {
@@ -349,6 +353,8 @@
 					//Si se ha seleccionado solo un registro se abre la ventana de pago por caja para introducir el importe,
 					//si hay más registros no se abre, se realizará el pago por el importe pendiente que tenga el abono
 					if(window.frames.resultado.ObjArray.length==1){
+						jQuery("#idBotonesBusqueda").attr("disabled", "disabled");
+						jQuery("#idBotonesAccion").attr("disabled", "disabled");
 						jQuery("#dialogoPagarCaja").dialog(
 								{
 								      height: 250,
@@ -371,6 +377,8 @@
 								            jQuery( this ).dialog( "close" );						            
 								            },
 								            "Cerrar": function() {
+								            	jQuery("#idBotonesBusqueda").removeAttr("disabled");
+								    			jQuery("#idBotonesAccion").removeAttr("disabled");
 								            	document.AbonosPagosForm.abonos.value="";
 										        document.AbonosPagosForm.importe.value="";  
 								            	jQuery( this ).dialog( "close" );
@@ -402,6 +410,8 @@
 					sub();
 					if (window.frames.resultado.ObjArray.length>1000) {
 						alert ('<siga:Idioma key="facturacion.abonos.error.pagarMilAbonos"/>');
+						jQuery("#idBotonesBusqueda").removeAttr("disabled");
+		    			jQuery("#idBotonesAccion").removeAttr("disabled");
 						fin();
 						return false;
 					}
@@ -422,6 +432,8 @@
 					document.AbonosPagosForm.tipoPago.value="banco";
 					document.AbonosPagosForm.submit();
 					fin();
+					jQuery("#idBotonesBusqueda").removeAttr("disabled");
+	    			jQuery("#idBotonesAccion").removeAttr("disabled");
 
 			}else{
 				fin();
@@ -436,12 +448,12 @@
 			}
 			
 			function pagarCaja(){
-				jQuery("#idBotonesBusqueda").attr("disabled", "disabled");
-				jQuery("#idBotonesAccion").attr("disabled", "disabled");
 				sub();
 
 				if (window.frames.resultado.ObjArray.length>1000) {
 					alert ('<siga:Idioma key="facturacion.abonos.error.pagarMilAbonos"/>');
+					jQuery("#idBotonesBusqueda").removeAttr("disabled");
+	    			jQuery("#idBotonesAccion").removeAttr("disabled");
 					fin();
 					return false;
 				}
@@ -467,6 +479,10 @@
 				
 				document.AbonosPagosForm.submit();
 				fin();
+				jQuery("#idBotonesBusqueda").removeAttr("disabled");
+    			jQuery("#idBotonesAccion").removeAttr("disabled");
+				
+				
 			}
 			
 		</script>

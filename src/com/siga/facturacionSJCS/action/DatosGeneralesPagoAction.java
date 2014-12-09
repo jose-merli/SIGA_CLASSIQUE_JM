@@ -1747,41 +1747,39 @@ public class DatosGeneralesPagoAction extends MasterAction {
 
 		try {
 
+			/**
+				INC: R1411_0038 Movimientos a aplicar:
+				1.-Movimientos del colegiado no asociados a ninguna facturación ni grupo de turnos.
+				2.-Movimientos del colegiado asociados a una facturación y grupo de turnos que:
+				   a)Facturación asociada al movimiento <= Facturación del pago
+				   b)Grupo asociado al movimiento = Grupo del pago (facturación del movimiento puede no estar informada, si está informada tiene que cumplir condición a))
+			*/
+			FcsMovimientosVariosAdm movimientosAdm = new FcsMovimientosVariosAdm(usr);
+
+			Vector movimientos = new  Vector();
+			
+			//Se obtienen los movimientos del colegiado que no están asociados ni a una facturación ni a un grupo. (Caso 1)
+			movimientos.addAll(movimientosAdm.getMovimientosRW(movimientosBean.getIdInstitucion().toString(), idPago,movimientosBean.getIdPersona().toString(),null,null,32));
+			
+			//Obtiene la facturación del pago y sus grupos.
 			FcsPagosJGAdm fcsPagosJGAdm = new FcsPagosJGAdm(usr);
 			List<Hashtable> facturacionesGruposPagosList =  fcsPagosJGAdm.getFacturacionesGruposPagos(idPago,movimientosBean.getIdInstitucion().toString());
-			
-			// obtiene todos los movimientos varios del colegiado ordenados por
-			// importe y fecha de alta
-			FcsMovimientosVariosAdm movimientosAdm = new FcsMovimientosVariosAdm(
-					usr);
-			//Hay que traerse el idfacturacion y el idgrupo facturacion del pago	
-			//Vamo a ir acumeulando los movimientos en orden en una lista
-			//lista lista = new Lista
-			//Priemro metemos los que traigan facturacion no nula
-			//if(idfacturacion !=null)
-			//lista.add(movimientos where idfacturacion is idfacturacion )
-			//segundo metemos los que traigan idgrupofacturacion no nula and not in la select de las facturaciones
-			//if(idgrupofacturacion!=null)
-			//lista.add(movimientos where idgrupofacturacion is idgrupofacturacion )
-			//tercero los que no esten incluidos en los anteriores
-			//lista.add movimientos where idgrupofacturacion is null and idfacturacion is not null
-			
-			Vector movimientos = new  Vector();
 			
 			String idFacturacion  = null;
 			if(facturacionesGruposPagosList!=null && facturacionesGruposPagosList.size()>0){
 				idFacturacion = (String) facturacionesGruposPagosList.get(0).get("IDFACTURACION");
-				if(idFacturacion!=null)
-					movimientos.addAll(movimientosAdm.getMovimientosRW(movimientosBean.getIdInstitucion().toString(), idPago,movimientosBean.getIdPersona().toString(),idFacturacion,null,1));
-				for (int i = 0; i < facturacionesGruposPagosList.size(); i++) {
+				
+				if(idFacturacion!=null){
+					for (int i = 0; i < facturacionesGruposPagosList.size(); i++) {
 					Hashtable facturacionesGruposPagos = facturacionesGruposPagosList.get(i);
 					String idGrupo = (String) facturacionesGruposPagos.get("IDGRUPOFACTURACION");
 					if((idGrupo!=null)&&(!idGrupo.isEmpty()))
+						//Se obtienen los movimientos del colegiado que tienen idfacturacion <= que la del pago y el grupo = grupo del pago que estamos tratando (Caso 2)
 						movimientos.addAll(movimientosAdm.getMovimientosRW(movimientosBean.getIdInstitucion().toString(), idPago,movimientosBean.getIdPersona().toString(),idFacturacion,idGrupo,2));
+					}
 				}
-				
 			}
-			movimientos.addAll(movimientosAdm.getMovimientosRW(movimientosBean.getIdInstitucion().toString(), idPago,movimientosBean.getIdPersona().toString(),null,null,32));
+			
 
 			for (int contador = 0; contador < movimientos.size(); contador++) {
 

@@ -268,6 +268,8 @@
 		
 		function inicio(){
 			jQuery("#idBotonesAccion").hide();
+			jQuery("#idBotonesBusqueda").removeAttr("disabled");
+			jQuery("#idBotonesAccion").removeAttr("disabled");
 		}
 		
 		//Funcion asociada a boton buscarCliente -->
@@ -340,7 +342,9 @@
 				document.BusquedaFacturaForm.submit();
 			}else{
 				setFocusFormularios();
-			}		
+			}
+			jQuery("#idBotonesBusqueda").removeAttr("disabled");
+			jQuery("#idBotonesAccion").removeAttr("disabled");
 		}
 		function buscarPaginador() 
 		{		
@@ -376,9 +380,12 @@
 						            "Guardar y Cerrar": function() {
 						            
 						            if(window.frames.document.getElementsByName("motivos")[1].value==""){
-						            	fin();
+						            	
 										var mensaje = '<siga:Idioma key="gratuita.literal.sustitucionLetradoGuardia.Motivos"/>';
 										alert(mensaje);
+										jQuery("#idBotonesBusqueda").removeAttr("disabled");
+						    			jQuery("#idBotonesAccion").removeAttr("disabled");
+						    			fin();
 										return false;
 						            }
 						            	
@@ -390,7 +397,9 @@
 						            
 						            },
 						            "Cerrar": function() {
-							              jQuery( this ).dialog( "close" );
+						            	 jQuery("#idBotonesBusqueda").removeAttr("disabled");
+						    			 jQuery("#idBotonesAccion").removeAttr("disabled");
+						            	 jQuery( this ).dialog( "close" );
 							              document.AltaAbonosForm.facturas.value="";
 								          document.AltaAbonosForm.fecha.value="";
 								          document.AltaAbonosForm.motivos.value="";
@@ -414,6 +423,8 @@
 		 
 		
 		if (window.frames.resultado.ObjArray.length>1000) {
+			jQuery("#idBotonesBusqueda").removeAttr("disabled");
+			jQuery("#idBotonesAccion").removeAttr("disabled");
 			alert ('<siga:Idioma key="facturacion.anulacion.error.anularMilFacturas"/>');
 			fin();
 			return false;
@@ -435,6 +446,8 @@
 		document.AltaAbonosForm.modo.value="anularFacturas";
 		document.AltaAbonosForm.submit();
 		fin();
+		jQuery("#idBotonesBusqueda").removeAttr("disabled");
+		jQuery("#idBotonesAccion").removeAttr("disabled");
 
 	}
 	
