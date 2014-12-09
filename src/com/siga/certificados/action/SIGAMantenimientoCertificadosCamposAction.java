@@ -245,9 +245,9 @@ public class SIGAMantenimientoCertificadosCamposAction extends MasterAction
 	        //se sabe que a partir del elemento 4 corresponde al valor por lo que se agrupan
 	        //se sustituyen los caracteres @@ por espacios puesto que se han convertido en la jsp para poder conservarlos.
 	        if (vOcultos.size()>=5){
-	        	valor = ((String)vOcultos.elementAt(4)).trim().replace("&nbsp", " ");
+	        	valor = ((String)vOcultos.elementAt(4)).trim().replace("&nbsp;", " ");
 	        	for (int i=5;i<vOcultos.size();i++)
-	            valor += "," + ((String)vOcultos.elementAt(i)).trim().replace("&nbsp", " ");
+	            valor += "," + ((String)vOcultos.elementAt(i)).trim().replace("&nbsp;", " ");
 	        }
 		}
 

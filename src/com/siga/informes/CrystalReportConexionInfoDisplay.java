@@ -120,7 +120,7 @@ class CrystalReportConexionInfoDisplay {
 
 				prop_name = (String)prop_ids.get(i);
 				result += "<td colspan=2 bgcolor='#CFD0E2'><i>" + prop_name + " Properties</i></td>";
-                                result += this.property_bag_section ((PropertyBag)oPropertyBag.get(prop_ids.get(i)), "&nbsp&nbsp&nbsp&nbsp&nbsp");
+                                result += this.property_bag_section ((PropertyBag)oPropertyBag.get(prop_ids.get(i)), "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
 			} else {
 				  result += " ***** " + (oPropertyBag.get(prop_ids.get(i))).getClass();
 			}

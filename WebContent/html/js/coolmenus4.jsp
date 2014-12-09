@@ -342,7 +342,7 @@ makeCM.prototype.hidesub=function(l,el){ //Changed v4.05
     if(c.l[i].a&&c.l[i].a!=el){
       m=c.m[c.l[i].a]; m.active(0,1); if(m.mout) eval(m.mout); c.l[i].a=0
       if(i>0&&i>l-1) if(bw.op5||bw.op6) for(j=0;j<c.l[i].m.length;j++) c.m[c.l[i].m[j]].o.hideIt()
-    }if(i>l){for(j=0;j<c.l[i-1].arnum;j++){c.l[i-1].arr[j].hideIt(); if(bw.op6) c.l[i-1].arr[j].moveIt(-1000,-1000)}} //opera bug
+    }if(i>l){for(j=0;j < c.l[i-1].arnum;j++){c.l[i-1].arr[j].hideIt(); if(bw.op6) c.l[i-1].arr[j].moveIt(-1000,-1000)}} //opera bug
   }if(hide&&c.onhide) eval(c.onhide) //onhide event
 
   
@@ -371,7 +371,7 @@ makeCM.prototype.makeObjects=function(nowrite,fromframe){ //Changed v4.06
       else if(i>0) this.body.appendChild(c.l[i].app)
       if(!this.frames) c.l[i].str=null
     }}c.z=c.zIndex+2
-  for(i=st;i<en;i++){oc=0
+  for(i=st;i < en;i++){oc=0
     if(i!=0){bobj=c.l[i].b = new cm_makeObj(c.name + "_"+i+"_0","",c.l[i].app,this.doc); bobj.css.zIndex=c.z;
     if(bw.dom) bobj.css.overflow='hidden'}; bx=c.l[i].borderX; by=c.l[i].borderY; c.l[i].max=0;
     for(j=0;j<c.l[i].m.length;j++){
@@ -383,7 +383,7 @@ makeCM.prototype.makeObjects=function(nowrite,fromframe){ //Changed v4.06
         o=m.o=new cm_makeObj(id,nest+"_0",m.d2,this.doc); o.z=o.css.zIndex=c.z+1; if(bw.reuse){c.l[l].o[oc]=o; oc++};
         if(l==0&&m.img1) o.css.visibility='inherit'; if(bw.op5) o.showIt(); o.arr=0;
       }if(!bw.reuse||l==0) o.clipTo(0,w,h,0,1); o.moveIt(bx,by); o.z=o.css.zIndex=c.z+2
-      if(j<c.l[i].arnum){
+      if(j < c.l[i].arnum){
         c.l[i].arr[j]=new cm_makeObj(c.name+"_a"+i+"_"+j,nest+"_0",nowrite?0:c.l[i].arr[j],this.doc)
         c.l[i].arr[j].css.zIndex=c.z+30+j;
       }else if(l==0&&m.arr==1){
@@ -462,7 +462,7 @@ makeCM.prototype.construct=function(nowrite){ //Changed v4.06
     case "right": x=cmpage.x2-totw; break;
     case "bottom": case "bottomcenter": y=cmpage.y2-toth; if(mp=="bottomcenter") x=cmpage.x2/2-totw/2; break;
     default: if(mp.toString().indexOf(",")>-1) mpa=1; break;
-  }for(var i=0;i<c.l[0].m.length;i++){
+  }for(var i=0;i < c.l[0].m.length;i++){
     m = c.m[c.l[0].m[i]]; o = m.b; if(mpa) rows?x=cm_cp(mp[i]):y=cm_cp(mp[i],0,0,1);
     o.moveIt(x,y); o.showIt(); if(m.arr) m.o.arr.showIt(); o.oy=y;
     if(!mpa) rows?x+=m.w+px+bx:y+=m.h+px+by
@@ -492,7 +492,7 @@ var cm_inresize=0
 function cm_resized(){
   if(cm_inresize) return
 	page2=new cm_page(); var off=(bw.op6||bw.op5)?20:5
-  if(page2.x2<cmpage.x2-off || page2.y2<cmpage.orgy-off || page2.x2>cmpage.x2+off || page2.y2>cmpage.orgy+off){
+  if(page2.x2 < cmpage.x2-off || page2.y2<cmpage.orgy-off || page2.x2>cmpage.x2+off || page2.y2>cmpage.orgy+off){
 		if(bw.ie||bw.ns6||bw.op7||bw.ns4){
       cmpage=page2; this.isresized=1;
       if(this.onresize) eval(this.onresize); this.construct(1);
@@ -518,11 +518,11 @@ makeCM.prototype.onclck=function(m){ //Changed v4.06
           this.m[this.l[0].a].active(0,1)
           this.l[0].a =0
         }
-        for(i=this.frameStartLevel;i<this.l.length;i++){
+        for(i=this.frameStartLevel;i < this.l.length;i++){
           if(this.l[i].b){
             this.l[i].b.hideIt()
             this.l[i].b = null
-            for(j=0;j<this.l[i].m.length;j++){
+            for(j=0;j < this.l[i].m.length;j++){
               this.m[this.l[i].m[j]].b = null;
             }
           }

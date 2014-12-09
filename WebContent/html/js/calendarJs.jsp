@@ -101,7 +101,7 @@ function buildDetail(){
 		startingPos--;
 		days+=startingPos;
 		
-		for(var cont=0;cont<startingPos;cont++){
+		for(var cont=0;cont < startingPos;cont++){
 			calDoc+=blankCell;columnCount++;
 		}
 		

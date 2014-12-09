@@ -606,13 +606,6 @@ public class UtilidadesString {
 
 	    return sSalida;
 	  }
-/*	
-		static public String mostrarDatoJSP (String a) {
-			if ((a == null) || a.trim().equals(""))
-				return "&nbsp";
-			return a;
-		}
-*/
 		/**
 		  *  Controla los nulos y los caracteres HTML a mostrar
 		  *  @param <B>sCadena</B> La cadena a transformar
