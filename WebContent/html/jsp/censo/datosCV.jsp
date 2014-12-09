@@ -346,7 +346,7 @@
 
 <body onload="init();">
 	<!-- TITULO -->
-	<table class="tablaTitulo" cellspacing="0" heigth="32">
+	<table class="tablaTitulo" cellspacing="0" height="32">
 		<tr>
 			<td id="titulo" class="titulosPeq"><siga:Idioma
 					key="censo.consultaDatosCV.literal.titulo1" /> &nbsp;&nbsp;<%=UtilidadesString.mostrarDatoJSP(nombreUsu)%>
@@ -436,7 +436,7 @@
 
 								<tr>
 									<td class="labelText"><siga:Idioma
-											key="censo.datosCV.literal.tipo" />&nbsp(*)</td>
+											key="censo.datosCV.literal.tipo" />&nbsp;(*)</td>
 									<td>
 										<%
 											if (editarCampos) {
@@ -496,7 +496,7 @@
 								</tr>
 
 <tr>
-								<td class="labelText" ><siga:Idioma key="censo.datosCV.literal.fechaInicio"/>&nbsp</td>
+								<td class="labelText" ><siga:Idioma key="censo.datosCV.literal.fechaInicio"/>&nbsp;</td>
 								<td>
 									<siga:Fecha nombreCampo="fechaInicio" valorInicial="<%=fechaInicio%>" disabled="<%=String.valueOf(!editarCampos) %>"/>									
 								</td>
@@ -515,7 +515,7 @@
 								<td class="labelText"><siga:Idioma key="censo.consultaDatosCV.literal.verificado"/></td>
 								<td><html:checkbox name="datosCVForm" property="certificado" disabled="<%=desactivado%>"/></td>
 
-								<td class="labelText"><siga:Idioma key="censo.consultaDatosCV.literal.fechaVerificacion"/>&nbsp</td>
+								<td class="labelText"><siga:Idioma key="censo.consultaDatosCV.literal.fechaVerificacion"/>&nbsp;</td>
 								<td  class="labelText">
 									<%if (editarCampos) {%>
 									<siga:Fecha  nombreCampo= "fechaMovimiento" valorInicial="<%=fechaCertificado%>"  posicionX="200" posicionY="10"/>
@@ -526,7 +526,7 @@
 							</tr>
 								<tr>
 									<td class="labelText"><siga:Idioma
-											key="censo.datosCV.literal.creditos" />&nbsp</td>
+											key="censo.datosCV.literal.creditos" />&nbsp;</td>
 									<td><html:text property="creditos"
 											styleId="creditos"
 											value='<%=creditos%>' maxlength="10" size="10"
@@ -536,7 +536,7 @@
 
 								<tr>
 									<td class="labelText"><siga:Idioma
-											key="censo.datosCV.literal.descripcion" />&nbsp</td>
+											key="censo.datosCV.literal.descripcion" />&nbsp;</td>
 									<td colspan="3"><textarea id="descripcion" name="descripcion"
 											onKeyDown="cuenta(this,500)" onChange="cuenta(this,500)"
 											style="overflow-y:auto; overflow-x:hidden; width:550px; height:80px; resize:none;"

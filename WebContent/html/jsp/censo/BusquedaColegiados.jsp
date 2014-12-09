@@ -38,8 +38,7 @@
 	<html:base />
 </head>
 
-<body onload="ajusteAltoDisplayTag('divWindowDataScroll'); selectRow('<bean:write name='BusquedaColegiadosForm' property='tableName' scope='request' />',
-                        '<bean:write name='BusquedaColegiadosForm' property='id' scope='request' />', '0');">
+<body onload="ajusteAltoDisplayTag('divWindowDataScroll'); selectRow('<bean:write name='BusquedaColegiadosForm' property='tableName' scope='request' />', '<bean:write name='BusquedaColegiadosForm' property='id' scope='request' />', '0');">
 <html:errors />
 
 <bean:define id="accessType" name="USRBEAN" property="accessType" scope="session"/>

@@ -955,7 +955,7 @@
 					
 					<!-- TIPO DIRECCION -->
 					<tr>
-						<td class="labelText"><siga:Idioma key="censo.datosDireccion.literal.tipoDireccion"/>&nbsp(*)</td>
+						<td class="labelText"><siga:Idioma key="censo.datosDireccion.literal.tipoDireccion"/>&nbsp;(*)</td>
 						<td class="labelText" colspan="10">
 							<table align="left" border="0" style="width:900px;">
 				         		<tr>

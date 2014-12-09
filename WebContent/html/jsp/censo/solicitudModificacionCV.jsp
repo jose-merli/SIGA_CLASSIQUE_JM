@@ -135,7 +135,7 @@
 </head>
 <body>
 <!-- Barra de titulo actualizable desde los mantenimientos -->
-		<table class="tablaTitulo" cellspacing="0" heigth="32">
+		<table class="tablaTitulo" cellspacing="0" height="32">
 			<tr>
 				<td id="titulo" class="titulosPeq">
 					<siga:Idioma key="censo.consultaDatosCV.literal.titulo1"/> &nbsp;&nbsp;<%=UtilidadesString.mostrarDatoJSP(nombre)%> &nbsp;&nbsp;
@@ -194,7 +194,7 @@
 													hideIfnoOptions="true"/>
 								</td>									
 							</tr>
-							<tr><td>&nbsp</td></tr>		
+							<tr><td>&nbsp;</td></tr>		
 								<!-- FILA -->
 							<tr>					
 								<td class="labelText">
@@ -211,7 +211,7 @@
 								<br>
 								</td>									
 							</tr>
-							<tr><td>&nbsp</td></tr>		
+							<tr><td>&nbsp;</td></tr>		
 		   				<!-- FILA -->
 		  				<tr>						
 								<td class="labelText">
@@ -222,7 +222,7 @@
 								<br>
 								</td>								
 							</tr>
-							<tr><td>&nbsp</td></tr>		
+							<tr><td>&nbsp;</td></tr>		
 		   				<!-- FILA -->
 		  				<tr>
 		   					<td class="labelText">

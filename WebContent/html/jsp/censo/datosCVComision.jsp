@@ -213,7 +213,7 @@
 
 <body>
 	<!-- TITULO -->
-	<table class="tablaTitulo" cellspacing="0" heigth="32">
+	<table class="tablaTitulo" cellspacing="0" height="32">
 		<tr>
 			<td id="titulo" class="titulosPeq">
 				<siga:Idioma key="censo.comisiones.literal.titulo1"/> &nbsp;&nbsp;<%=UtilidadesString.mostrarDatoJSP(nombreUsu)%> &nbsp;&nbsp;
@@ -261,7 +261,7 @@
 			   			    <% } %>
 						
 							<tr>		
-								<td class="labelText"  style="display:none"><siga:Idioma key="censo.datosCV.literal.tipo"/>&nbsp(*)</td>
+								<td class="labelText"  style="display:none"><siga:Idioma key="censo.datosCV.literal.tipo"/>&nbsp;(*)</td>
 								<td style="display:none">
 									<siga:Select id="tipoApunte"
 													queryId="getCenTiposCV"
@@ -293,7 +293,7 @@
 							</tr>
 							
 							<tr>
-								<td class="labelText" ><siga:Idioma key="censo.datosCV.literal.fechaInicio"/>&nbsp(*)</td>
+								<td class="labelText" ><siga:Idioma key="censo.datosCV.literal.fechaInicio"/>&nbsp;(*)</td>
 								<td>
 									<%if (editarCampos) {%>
 									<siga:Fecha  nombreCampo= "fechaInicio" valorInicial="<%=fechaInicio%>" />
@@ -302,7 +302,7 @@
 									<%}%>	
 								</td>
 								
-								<td class="labelText" ><siga:Idioma key="censo.datosCV.literal.fechaFin"/>&nbsp(*)</td>	
+								<td class="labelText" ><siga:Idioma key="censo.datosCV.literal.fechaFin"/>&nbsp;(*)</td>	
 								<td>
 										<%if (editarCampos) {%>
 										<siga:Fecha  nombreCampo= "fechaFin" valorInicial="<%=fechaFin%>" />
@@ -316,7 +316,7 @@
 								<td class="labelText"><siga:Idioma key="censo.datosCV.literal.certificado"/></td>
 								<td><html:checkbox name="datosCVForm" property="certificado" disabled="<%=desactivado%>"/></td>
 
-								<td class="labelText"><siga:Idioma key="censo.datosCV.literal.fechaCertificado"/>&nbsp</td>
+								<td class="labelText"><siga:Idioma key="censo.datosCV.literal.fechaCertificado"/>&nbsp;</td>
 								<td>
 									<%if (editarCampos) {%>
 									<siga:Fecha  nombreCampo= "fechaMovimiento" valorInicial="<%=fechaCertificado%>" />
@@ -327,14 +327,14 @@
 							</tr>
 							
 							<tr>						
-								<td class="labelText" ><siga:Idioma key="censo.datosCV.literal.creditos"/>&nbsp</td>				
+								<td class="labelText" ><siga:Idioma key="censo.datosCV.literal.creditos"/>&nbsp;</td>				
 								<td>
 									<html:text name="datosCVForm" property="creditos" value='<%=creditos%>' maxlength="10" size="10" styleClass="<%=clase%>" readOnly="<%=desactivado%>"></html:text>
 								</td>
 							</tr>
 
 							<tr>
-								<td class="labelText" ><siga:Idioma key="censo.datosCV.literal.descripcion"/>&nbsp(*)</td>
+								<td class="labelText" ><siga:Idioma key="censo.datosCV.literal.descripcion"/>&nbsp;(*)</td>
 									<td colspan="3">
 										<textarea cols="70" rows="5" name="descripcion" class="<%=clase%>" style="width:550" readOnly="<%=desactivado%>"><%=descripcion%></textarea>
 									</td>			   	

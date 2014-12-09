@@ -117,7 +117,7 @@
 		//recupera los datos de los registros seleccionados en la pagina actual
 		var elements = document.getElementsByName("_chk");
 		var seleccionados2 = "";
-		for (i=0; i<elements.length; i++){
+		for (i=0; i < elements.length; i++){
 			if(elements[i].type == "checkbox" && elements[i].checked && seleccionados.indexOf(elements[i].value) == -1){
 				seleccionados2 += "," + elements[i].value
 			}

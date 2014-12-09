@@ -427,7 +427,7 @@
 				scrolling="no"
 				frameborder="0"
 				marginheight="0"
-				marginwidth="0";					 
+				marginwidth="0"					 
 				class="frameGeneral">
 			<!--style="position:absolute; width:964; height:350; z-index:2; top: 150px; left: 0px">-->
 	  		</iframe>
@@ -439,7 +439,7 @@
 				scrolling="no"
 				frameborder="0"
 				marginheight="0"
-				marginwidth="0";					 
+				marginwidth="0"					 
 				class="frameGeneral">
 			<!--style="position:absolute; width:964; height:297; z-index:2; top: 177px; left: 0px"> -->
 	  		</iframe>

@@ -256,7 +256,7 @@
 
 <body onLoad="rellenarCampos(); inicioCargarBancoBIC();">
 	<!-- Barra de titulo actualizable desde los mantenimientos -->
-	<table class="tablaTitulo" cellspacing="0" heigth="32">
+	<table class="tablaTitulo" cellspacing="0" height="32">
 		<tr>
 			<td id="titulo" class="titulosPeq">
 				<siga:Idioma key="censo.consultaDatosBancarios.literal.titulo1"/> &nbsp;&nbsp;<%=UtilidadesString.mostrarDatoJSP(nombre)%> &nbsp;&nbsp;
@@ -288,7 +288,6 @@
 								<tr>		
 									<td class="labelText"><siga:Idioma key="censo.datosCuentaBancaria.literal.titular"/>&nbsp;(*)</td>
 									<td class="labelText" colspan="3">
-										<!--<html:text name="cuentasBancariasSolicForm" property="titular" value="<%=String.valueOf(htData.get(CenCuentasBancariasBean.C_TITULAR))%>" size="75" maxlength="100" styleClass="box"/>-->
 										<html:text name="cuentasBancariasSolicForm" property="titular" value="<%=String.valueOf(htData.get(CenCuentasBancariasBean.C_TITULAR))%>" size="75" styleClass="boxConsulta" readonly="true"/>
 									</td>
 								</tr>
@@ -297,7 +296,6 @@
 								<tr>						
 									<td class="labelText" nowrap><siga:Idioma key="censo.datosCuentaBancaria.literal.codigoIBAN"/>&nbsp;(*)</td>
 									<td class="labelText">
-										<!--<html:text size="34"  maxlength="34" name="cuentasBancariasSolicForm" styleId="IBAN" property="IBAN" value="<%=String.valueOf(htData.get(CenCuentasBancariasBean.C_IBAN))%>"  styleClass="box" readonly="false" onblur="cargarBancoPorIBAN();"/>-->
 										<html:text size="34" name="cuentasBancariasSolicForm" styleId="IBAN" property="IBAN" value="<%=String.valueOf(htData.get(CenCuentasBancariasBean.C_IBAN))%>" styleClass="boxConsulta" readonly="true"/>
 									</td>
 	

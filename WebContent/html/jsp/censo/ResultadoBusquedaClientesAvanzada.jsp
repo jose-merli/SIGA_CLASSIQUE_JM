@@ -526,7 +526,7 @@
 					<td>
 					<%
 						if (estadoColegial != null
-														&& !estadoColegial.equals("&nbsp")) {
+														&& !estadoColegial.equals("&nbsp;")) {
 					%>
 					   <%=estadoColegial%>  (<%=fechaEstadoColegial%>)  
 					<%
@@ -541,7 +541,7 @@
 				%>				
 					<%
 										if (estadoColegial != null
-																		&& !estadoColegial.equals("&nbsp")) {
+																		&& !estadoColegial.equals("&nbsp;")) {
 									%>
 					   <td><%=estadoColegial%></td><td><%=fechaEstadoColegial%></td>  
 					<%
@@ -597,7 +597,7 @@
 		<td><%=nombre + " " + apellido1 + " " + apellido2%></td>
 		
 		<%
-				if (domicilio != null && !domicilio.equals("&nbsp")) {
+				if (domicilio != null && !domicilio.equals("&nbsp;")) {
 			%>
 				<td><%=domicilio + ", " + CP + ", " + poblacion%></td>
 			<%

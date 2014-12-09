@@ -30,6 +30,7 @@
 <%@ page import="java.util.Hashtable"%>
 <%@ page import="java.util.Properties"%>
 <%@ page import="utils.system"%>
+<%@ page import="java.util.Vector"%>
 
 <%
 	HttpSession ses=request.getSession();

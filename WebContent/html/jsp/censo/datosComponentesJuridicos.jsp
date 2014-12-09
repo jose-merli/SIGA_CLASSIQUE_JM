@@ -31,6 +31,7 @@
 <%@ page import="java.util.Properties"%>
 <%@ page import="java.util.Hashtable"%>
 <%@ page import="java.util.ArrayList"%>
+<%@ page import="java.util.Vector"%>
 
 <!-- JSP -->
 <% 
@@ -455,7 +456,7 @@
 <!-- INICIO: TITULO Y LOCALIZACION 	-->	
 </head>
 <body onload="cargar();">
-		<table class="tablaTitulo" cellspacing="0" heigth="32">
+		<table class="tablaTitulo" cellspacing="0" height="32">
 			<tr>
 				<td id="titulo" class="titulosPeq">
 					<siga:Idioma key="censo.consultaComponentesJuridicos.literal.titulo1"/> &nbsp;&nbsp;<%=UtilidadesString.mostrarDatoJSP(nombreUsu)%> &nbsp;&nbsp;

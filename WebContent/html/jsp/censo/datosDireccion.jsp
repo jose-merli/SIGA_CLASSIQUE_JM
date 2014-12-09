@@ -816,7 +816,7 @@
 <body onload="comprobarTelefonoAsterico();selPaisInicio();">
 
 	<!-- TITULO -->
-	<table class="tablaTitulo" cellspacing="0" heigth="32">
+	<table class="tablaTitulo" cellspacing="0" height="32">
 		<tr>
 			<td id="titulo" class="titulosPeq"><siga:Idioma
 					key="censo.consultaDirecciones.literal.titulo1" /> &nbsp;&nbsp;<%=UtilidadesString.mostrarDatoJSP(nombreUsu)%>
@@ -885,7 +885,7 @@
 							<table class="tablaCampos" align="center" border="0">
 								<tr>
 									<td class="labelText">
-										<siga:Idioma key="censo.datosDireccion.literal.tipoDireccion" />&nbsp(*)
+										<siga:Idioma key="censo.datosDireccion.literal.tipoDireccion" />&nbsp;(*)
 									</td>
 									<td class="labelText" colspan="2">
 										<div style='height: 200px; width: 250px; overflow-x: auto; overflow-y: auto'>
@@ -937,7 +937,7 @@
 												<td class="labelText">
 													<p align="right">
 														<siga:Idioma key="censo.datosDireccion.literal.fechaModificacion" />
-														&nbsp&nbsp<%=fechaModificacion%>
+														&nbsp;&nbsp;<%=fechaModificacion%>
 													</p>
 												</td>
 											</tr>
@@ -961,10 +961,10 @@
 
 								<tr>
 									<td class="labelText" width="180px" id="direccionSinAsterisco">
-										<siga:Idioma key="censo.datosDireccion.literal.direccion" />&nbsp
+										<siga:Idioma key="censo.datosDireccion.literal.direccion" />&nbsp;
 									</td>
 									<td class="ocultar" width="180px" id="direccionConAsterisco">
-										<siga:Idioma key="censo.datosDireccion.literal.direccion" />&nbsp(*)
+										<siga:Idioma key="censo.datosDireccion.literal.direccion" />&nbsp;(*)
 									</td>
 									<td>
 										<html:textarea name="consultaDireccionesForm" property="domicilio" styleId="domicilio"
@@ -974,10 +974,10 @@
 											readOnly="<%=desactivado%>"></html:textarea>
 									</td>
 									<td class="labelText" width="180px" id="cpSinAsterisco" nowrap>
-										<siga:Idioma key="censo.datosDireccion.literal.cp" />&nbsp
+										<siga:Idioma key="censo.datosDireccion.literal.cp" />&nbsp;
 									</td>
 									<td class="ocultar" width="180px" id="cpConAsterisco" nowrap>
-										<siga:Idioma key="censo.datosDireccion.literal.cp" />&nbsp(*)
+										<siga:Idioma key="censo.datosDireccion.literal.cp" />&nbsp;(*)
 									</td>
 									<td>
 										<%
@@ -1002,10 +1002,10 @@
 
 								<tr>
 									<td class="labelText" width="180px" id="paisSinAsterisco">
-										<siga:Idioma key="censo.datosDireccion.literal.pais2" />&nbsp
+										<siga:Idioma key="censo.datosDireccion.literal.pais2" />&nbsp;
 									</td>
 									<td class="ocultar" width="180px" id="paisConAsterisco">
-										<siga:Idioma key="censo.datosDireccion.literal.pais2" />&nbsp
+										<siga:Idioma key="censo.datosDireccion.literal.pais2" />&nbsp;
 									</td>
 									<td>
 										<%
@@ -1028,10 +1028,10 @@
 
 								<tr>
 									<td class="labelText" id="provinciaSinAsterisco">
-										<siga:Idioma key="censo.datosDireccion.literal.provincia" />&nbsp
+										<siga:Idioma key="censo.datosDireccion.literal.provincia" />&nbsp;
 									</td>
 									<td class="ocultar" id="provinciaConAsterisco">
-										<siga:Idioma key="censo.datosDireccion.literal.provincia" />&nbsp(*)
+										<siga:Idioma key="censo.datosDireccion.literal.provincia" />&nbsp;(*)
 									</td>
 									<td id="provinciaEspanola">
 										<%
@@ -1050,10 +1050,10 @@
 										%>
 									</td>
 									<td class="labelText" id="poblacionSinAsterisco">
-										<siga:Idioma key="censo.datosDireccion.literal.poblacion" />&nbsp
+										<siga:Idioma key="censo.datosDireccion.literal.poblacion" />&nbsp;
 									</td>
 									<td class="ocultar" id="poblacionConAsterisco">
-										<siga:Idioma key="censo.datosDireccion.literal.poblacion" />&nbsp(*)
+										<siga:Idioma key="censo.datosDireccion.literal.poblacion" />&nbsp;(*)
 									</td>
 									<td id="poblacionEspanola">
 										<%
@@ -1080,10 +1080,10 @@
 
 								<tr>
 									<td class="labelText" id="telefonoSinAsterisco">
-										<siga:Idioma key="censo.datosDireccion.literal.telefono1" />&nbsp
+										<siga:Idioma key="censo.datosDireccion.literal.telefono1" />&nbsp;
 									</td>
 									<td class="ocultar" id="telefonoConAsterisco">
-										<siga:Idioma key="censo.datosDireccion.literal.telefono1" />&nbsp(*)
+										<siga:Idioma key="censo.datosDireccion.literal.telefono1" />&nbsp;(*)
 									</td>
 									<td>
 										<html:text name="consultaDireccionesForm" styleId="telefono1"
@@ -1093,7 +1093,7 @@
 									</td>
 
 									<td class="labelText">
-										<siga:Idioma key="censo.datosDireccion.literal.telefono2" />&nbsp
+										<siga:Idioma key="censo.datosDireccion.literal.telefono2" />&nbsp;
 									</td>
 									<td>
 										<html:text name="consultaDireccionesForm" styleId="telefono2"
@@ -1105,7 +1105,7 @@
 
 								<tr>
 									<td class="labelText">
-										<siga:Idioma key="censo.datosDireccion.literal.movil" />&nbsp
+										<siga:Idioma key="censo.datosDireccion.literal.movil" />&nbsp;
 									</td>
 									<td>
 										<html:text name="consultaDireccionesForm" styleId="movil"
@@ -1117,7 +1117,7 @@
 
 								<tr>
 									<td class="labelText">
-										<siga:Idioma key="censo.datosDireccion.literal.fax1" />&nbsp
+										<siga:Idioma key="censo.datosDireccion.literal.fax1" />&nbsp;
 									</td>
 									<td>
 										<html:text name="consultaDireccionesForm" styleId="fax1"
@@ -1126,7 +1126,7 @@
 										</html:text>
 									</td>
 									<td class="labelText">
-										<siga:Idioma key="censo.datosDireccion.literal.fax2" />&nbsp
+										<siga:Idioma key="censo.datosDireccion.literal.fax2" />&nbsp;
 									</td>
 									<td>
 										<html:text name="consultaDireccionesForm" styleId="fax2"
@@ -1138,7 +1138,7 @@
 
 								<tr>
 									<td class="labelText">
-										<siga:Idioma key="censo.datosDireccion.literal.correo" />&nbsp
+										<siga:Idioma key="censo.datosDireccion.literal.correo" />&nbsp;
 									</td>
 									<%
 										if (!modo.equals("editar")) {
@@ -1183,7 +1183,7 @@
 										}
 									%>
 									<td class="labelText">
-										<siga:Idioma key="censo.datosDireccion.literal.paginaWeb" />&nbsp
+										<siga:Idioma key="censo.datosDireccion.literal.paginaWeb" />&nbsp;
 									</td>
 									<%
 										if (!modo.equals("editar")) {

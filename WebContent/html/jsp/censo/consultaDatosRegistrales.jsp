@@ -786,7 +786,7 @@
 								</tr>
 								<tr>
 									<td id="obligatorionombre" class="labelText">
-										<siga:Idioma key="censo.consultaDatosGenerales.literal.nombre"/>&nbsp (*)
+										<siga:Idioma key="censo.consultaDatosGenerales.literal.nombre"/>&nbsp;(*)
 									</td>
 									<td>
 										<html:text name="DatosRegistralesForm" property="nombre" styleId="nombre" size="25" maxlength="80" styleClass="<%=estiloCaja %>"></html:text>

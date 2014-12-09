@@ -229,7 +229,7 @@
 </head>
 <body onLoad="selPaisInicio();">
 <!-- Barra de titulo actualizable desde los mantenimientos -->
-		<table class="tablaTitulo" cellspacing="0" heigth="32">
+		<table class="tablaTitulo" cellspacing="0" height="32">
 			<tr>
 				<td id="titulo" class="titulosPeq">
 					<siga:Idioma key="censo.consultaDirecciones.literal.titulo1"/> &nbsp;&nbsp;<%=UtilidadesString.mostrarDatoJSP(nombre)%> &nbsp;&nbsp;
@@ -307,13 +307,13 @@
 		   				<!-- FILA -->
 		  				<tr>
 		   					<td class="labelText">
-									<siga:Idioma key="censo.datosDireccion.literal.telefono1"/>&nbsp
+									<siga:Idioma key="censo.datosDireccion.literal.telefono1"/>&nbsp;
 								</td>				
 		   					<td>
 		   						<html:text name="consultaDireccionesSolicForm" property="telefono1" value="<%=String.valueOf(htData.get(CenDireccionesBean.C_TELEFONO1))%>" size="20" maxlength="20" styleClass="box"></html:text>
 		   					</td>			   	
 		   					<td class="labelText">
-									<siga:Idioma key="censo.datosDireccion.literal.telefono2"/>&nbsp
+									<siga:Idioma key="censo.datosDireccion.literal.telefono2"/>&nbsp;
 								</td>				
 		   					<td>
 		   	 					<html:text name="consultaDireccionesSolicForm" property="telefono2" value="<%=String.valueOf(htData.get(CenDireccionesBean.C_TELEFONO2))%>" size="20" maxlength="20" styleClass="box"></html:text>
@@ -323,13 +323,13 @@
 		   				<!-- FILA -->
 							<tr>
 		   					<td class="labelText">
-									<siga:Idioma key="censo.datosDireccion.literal.movil"/>&nbsp
+									<siga:Idioma key="censo.datosDireccion.literal.movil"/>&nbsp;
 								</td>				
 		   					<td>
 		   						<html:text name="consultaDireccionesSolicForm" property="movil" value="<%=String.valueOf(htData.get(CenDireccionesBean.C_MOVIL))%>" size="20" maxlength="20" styleClass="box"></html:text>
 		   					</td>	
 		   					<td class="labelText">
-									<siga:Idioma key="censo.datosDireccion.literal.fax1"/>&nbsp
+									<siga:Idioma key="censo.datosDireccion.literal.fax1"/>&nbsp;
 								</td>				
 		   					<td>
 		   						<html:text name="consultaDireccionesSolicForm" property="fax1" value="<%=String.valueOf(htData.get(CenDireccionesBean.C_FAX1))%>" size="20" maxlength="20" styleClass="box"></html:text>		   					
@@ -339,7 +339,7 @@
 		 					<!-- FILA -->
 		  				<tr>
 		  				 	<td class="labelText">
-									<siga:Idioma key="censo.datosDireccion.literal.fax2"/>&nbsp
+									<siga:Idioma key="censo.datosDireccion.literal.fax2"/>&nbsp;
 								</td>				
 		   					<td colspan="3">
 		   						<html:text name="consultaDireccionesSolicForm" property="fax2" value="<%=String.valueOf(htData.get(CenDireccionesBean.C_FAX2))%>" size="20" maxlength="20" styleClass="box"></html:text>		   					
@@ -348,13 +348,13 @@
 		  				<!-- FILA -->
 		 					<tr>	
 		   					<td class="labelText">
-									<siga:Idioma key="censo.datosDireccion.literal.correo"/>&nbsp										
+									<siga:Idioma key="censo.datosDireccion.literal.correo"/>&nbsp;										
 								</td>				
 		   					<td>
 		   						<html:text name="consultaDireccionesSolicForm" property="correoElectronico" value="<%=String.valueOf(htData.get(CenDireccionesBean.C_CORREOELECTRONICO))%>" size="50" maxlength="100" styleClass="box"></html:text>					
 		   			   	</td>	
 		  					<td class="labelText">
-									<siga:Idioma key="censo.datosDireccion.literal.paginaWeb"/>&nbsp
+									<siga:Idioma key="censo.datosDireccion.literal.paginaWeb"/>&nbsp;
 								</td>				
 		   					<td>
 		   						<html:text name="consultaDireccionesSolicForm" property="paginaWeb" value="<%=String.valueOf(htData.get(CenDireccionesBean.C_PAGINAWEB))%>" size="25" maxlength="100" styleClass="box"></html:text>					

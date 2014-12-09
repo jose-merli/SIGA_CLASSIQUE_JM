@@ -236,7 +236,7 @@
 				}
 				
 				if (idCuenta == null || idCuenta.equals("")) {
-					idCuenta = "&nbsp";
+					idCuenta = "&nbsp;";
 				} else if (!idCuenta.equals("-")) {					
 					idCuenta = UtilidadesString.mostrarIBANConAsteriscos(idCuenta);
 				}

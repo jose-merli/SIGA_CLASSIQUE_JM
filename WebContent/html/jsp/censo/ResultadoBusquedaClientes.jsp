@@ -500,7 +500,7 @@
 		%>
 		<td>
 		<%
-			if (estadoColegial != null && !estadoColegial.equals("&nbsp")) {
+			if (estadoColegial != null && !estadoColegial.equals("&nbsp;")) {
 		%>
 		   <%=estadoColegial%>  (<%=fechaEstadoColegial%>)  
 		<%
@@ -566,7 +566,7 @@
 		<td><%=fechaNacimiento%></td>
 		
 			<%
-				if (domicilio != null && !domicilio.equals("&nbsp")) {
+				if (domicilio != null && !domicilio.equals("&nbsp;")) {
 			%>
 				<td><%=domicilio + ", " + CP + ", " + poblacion%></td>
 			<%

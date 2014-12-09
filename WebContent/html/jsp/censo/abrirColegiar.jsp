@@ -144,7 +144,7 @@
 <body >
 
 	<!-- ******* BOTONES Y CAMPOS DE BUSQUEDA ****** -->
-	<table class="tablaTitulo" cellspacing="0" heigth="32">
+	<table class="tablaTitulo" cellspacing="0" height="32">
 			<tr>
 				<td id="titulo" class="titulosPeq">
 					<siga:Idioma key="censo.colegiarNoColegiado.literal.titulo1"/>

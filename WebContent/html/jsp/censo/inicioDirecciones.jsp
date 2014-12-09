@@ -34,7 +34,7 @@
 	<table width="100%" border="0" cellpadding="0" cellspacing="0">
 		<tr><td class="rayita"></td></tr>
 	</table>
-	<p class="titulos" style="text-align:right">"<prueba>"&nbsp</p>
+	<p class="titulos" style="text-align:right">"<prueba>"&nbsp;</p>
 	<table width="100%" border="0" cellpadding="0" cellspacing="0">
 		<tr><td class="rayita"></td></tr>
 	</table>
