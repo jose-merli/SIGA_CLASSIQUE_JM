@@ -115,7 +115,7 @@
 								<table class="tablaCampos" align="center">
 									<tr>				
 										<td class="labelText">
-											<siga:Idioma key="envios.definir.literal.descripcion"/>&nbsp(*)
+											<siga:Idioma key="envios.definir.literal.descripcion"/>&nbsp;(*)
 										</td>
 										<td>
 											<html:text name="DocumentosForm" property="descripcion" size="30" maxlength="100" styleClass="boxCombo"/>
@@ -123,7 +123,7 @@
 									</tr>
 									<tr>				
 										<td class="labelText">
-											<siga:Idioma key="certificados.mantenimiento.literal.archivo"/>&nbsp(*)
+											<siga:Idioma key="certificados.mantenimiento.literal.archivo"/>&nbsp;(*)
 										</td>				
 										<td>
 											<html:file name="DocumentosForm" property="theFile" size="30" styleClass="boxCombo"  />

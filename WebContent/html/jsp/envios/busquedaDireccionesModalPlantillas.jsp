@@ -69,7 +69,7 @@
 <body onload="ajusteAlto('resultadoModal');<%=funcionBuscar%>">
 		<!-- TITULO -->
 		<!-- Barra de titulo actualizable desde los mantenimientos -->
-		<table class="tablaTitulo" cellspacing="0" heigth="32">
+		<table class="tablaTitulo" cellspacing="0" height="32">
 			<tr>
 				<td id="titulitos" class="titulitosDatos">
 				   <siga:Idioma key="envios.certificados.literal.elegirDireccion"/>
@@ -156,7 +156,7 @@
 					scrolling="no"
 					frameborder="0"
 					marginheight="0"
-					marginwidth="0";					 
+					marginwidth="0"					 
 					class="frameGeneral">
 	</iframe>
 
