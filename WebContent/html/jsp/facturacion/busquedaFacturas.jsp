@@ -210,7 +210,7 @@
 					<% } %>
 					</td>
 					<td class="labelText" width="200"> 
-					<input type="text" name="buscarNombreCliente" value="<%=UtilidadesString.mostrarDatoJSP(nombreClienteAnterior)%>" size="50" class="boxConsulta" readOnly="true"/>
+					<input type="text" name="buscarNombreCliente" value="<%=UtilidadesString.mostrarDatoJSP(nombreClienteAnterior)%>" size="50" class="boxConsulta" readOnly/>
 					</td>
 					
 					<td class="labelText" ><siga:Idioma key="facturacion.buscarFactura.literal.Deudor"/>&nbsp;&nbsp;&nbsp;&nbsp;
@@ -457,7 +457,7 @@
 					<siga:Idioma key="facturacion.busquedaAbonos.literal.fecha"/>
 				</td>	
 				<td >
-					<html:text id="fecha" property="fecha" size="10" maxlength="10"  readOnly="true" value="<%=fechaActual%>"></html:text>
+					<html:text styleId="fecha" property="fecha" size="10" maxlength="10"  readonly="true" value="<%=fechaActual%>"></html:text>
 				</td>
 			</tr>
 			<tr>
@@ -465,7 +465,7 @@
 					<siga:Idioma key="facturacion.altaAbonos.literal.motivos"/>&nbsp;(*)
 				</td>
 				<td >
-					<html:textarea id="motivos" property="motivos" onKeyDown="cuenta(this,255)" onChange="cuenta(this,255)" rows="4" size="100" value="" style="overflow-y:auto; overflow-x:hidden; width:300px; height:50px; resize:none;"></html:textarea>
+					<html:textarea styleId="motivos" property="motivos" onkeydown="cuenta(this,255)" onchange="cuenta(this,255)" rows="4" size="100" value="" style="overflow-y:auto; overflow-x:hidden; width:300px; height:50px; resize:none;"></html:textarea>
 				</td>
 			</tr>
 			</table>
@@ -480,7 +480,7 @@
 					scrolling="no"
 					frameborder="0"
 					marginheight="0"
-					marginwidth="0";					 
+					marginwidth="0"
 					class="frameGeneral">
 	</iframe>
 	<!-- BOTONES ACCION: an: "Anular" -->	 
