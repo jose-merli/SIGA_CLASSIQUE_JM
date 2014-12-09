@@ -363,7 +363,9 @@
 		// Asociada al boton Anular -> abonos masivos
 		function accionAnular() {
 			if(window.frames.resultado.ObjArray.length>0){
-				jQuery("#idButton").attr("disabled", true);
+				
+				jQuery("#idBotonesBusqueda").attr("disabled", "disabled");
+				jQuery("#idBotonesAccion").attr("disabled", "disabled");
 				jQuery("#dialogoAnular").dialog(
 						{
 						      height: 250,

@@ -397,10 +397,11 @@
 			function pagarBanco(){
 				
 				if(window.frames.resultado.ObjArray.length>0){
-					jQuery("#idButton").attr("disabled", true);
+					jQuery("#idBotonesBusqueda").attr("disabled", "disabled");
+					jQuery("#idBotonesAccion").attr("disabled", "disabled");
 					sub();
 					if (window.frames.resultado.ObjArray.length>1000) {
-						alert ('<siga:Idioma key="facturacion.anulacion.error.pagarMilAbonos"/>');
+						alert ('<siga:Idioma key="facturacion.abonos.error.pagarMilAbonos"/>');
 						fin();
 						return false;
 					}
@@ -435,7 +436,8 @@
 			}
 			
 			function pagarCaja(){
-				jQuery("#idButton").attr("disabled", true);
+				jQuery("#idBotonesBusqueda").attr("disabled", "disabled");
+				jQuery("#idBotonesAccion").attr("disabled", "disabled");
 				sub();
 
 				if (window.frames.resultado.ObjArray.length>1000) {
