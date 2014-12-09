@@ -257,7 +257,7 @@
 			
 		<!-- TITULO -->
 		<!-- Barra de titulo actualizable desde los mantenimientos -->
-		<table class="tablaTitulo" cellspacing="0" heigth="32">
+		<table class="tablaTitulo" cellspacing="0" height="32">
 			<tr>
 				<td id="titulo" class="titulitosDatos">
 					<siga:Idioma key="pys.busquedaServicios.cabecera"/>
@@ -306,10 +306,10 @@
 											<% vTipoServicios.add(row.getString(PysServiciosInstitucionBean.C_IDTIPOSERVICIOS)); %>  
 											<%if (modo=="modificar"){%> 										
 												<html:hidden property="servicio" value="<%=row.getString(PysServiciosInstitucionBean.C_IDSERVICIO)%>"/>
-												<siga:ComboBD nombre = "tipoServicio" tipo="tipoServicio" clase="boxConsulta" obligatorio="true" elementoSel="<%=vTipoServicios%>" accion="Hijo:servicio" readOnly="true"/>
+												<siga:ComboBD nombre = "tipoServicio" tipo="tipoServicio" clase="boxConsulta" obligatorio="true" elementoSel="<%=vTipoServicios%>" accion="Hijo:servicio" readonly="true"/>
 											
 											<% } else { %>
-												<siga:ComboBD nombre = "tipoServicio" tipo="tipoServicio" clase="boxConsulta" obligatorio="true" elementoSel="<%=vTipoServicios%>" accion="Hijo:servicio" readOnly="true"/>
+												<siga:ComboBD nombre = "tipoServicio" tipo="tipoServicio" clase="boxConsulta" obligatorio="true" elementoSel="<%=vTipoServicios%>" accion="Hijo:servicio" readonly="true"/>
 											<% } %>	
 										 <% } %>
 									</td>
@@ -326,7 +326,7 @@
 												<siga:ComboBD nombre = "idTipoIva" tipo="tipoIva" clase="boxCombo" elementoSel="<%=vIva%>" obligatorio="true"/>
 												
 											<% } else { %>
-												<siga:ComboBD nombre = "idTipoIva" tipo="tipoIva" clase="boxConsulta" elementoSel="<%=vIva%>" obligatorio="true" readOnly="true"/>
+												<siga:ComboBD nombre = "idTipoIva" tipo="tipoIva" clase="boxConsulta" elementoSel="<%=vIva%>" obligatorio="true" readonly="true"/>
 											<% } %>	
 										 <% } %>
 									</td>							
@@ -342,10 +342,10 @@
 										<% } else { %>
 											<% vServicios.add(row.getString(PysServiciosInstitucionBean.C_IDSERVICIO)); %>
 											<% if (modo=="modificar"){ %>
-												<html:text property="servicioC" styleClass="boxConsulta" size="30" value='<%=row.getString("CATEGORIA")%>' readOnly="true" />
+												<html:text property="servicioC" styleClass="boxConsulta" size="30" value='<%=row.getString("CATEGORIA")%>' readonly="true" />
 												
 											<% } else { %>
-												<html:text property="servicioC" styleClass="boxConsulta" size="30" value='<%=row.getString("CATEGORIA")%>' readOnly="true" />
+												<html:text property="servicioC" styleClass="boxConsulta" size="30" value='<%=row.getString("CATEGORIA")%>' readonly="true" />
 											<% } %>											
 										<% } %>
 									</td>
@@ -361,7 +361,7 @@
 												<html:text property="cuentaContable" styleClass="box" size="20" value="<%=row.getString(PysServiciosInstitucionBean.C_CUENTACONTABLE)%>" />
 												
 											<% } else { %>
-												<html:text property="cuentaContable" styleClass="boxConsulta" size="20" value="<%=row.getString(PysServiciosInstitucionBean.C_CUENTACONTABLE)%>" readOnly="true" />
+												<html:text property="cuentaContable" styleClass="boxConsulta" size="20" value="<%=row.getString(PysServiciosInstitucionBean.C_CUENTACONTABLE)%>" readonly="true" />
 											<% } %>							  						  		
 										<% } %>
 										</td>
@@ -380,7 +380,7 @@
 													<html:text property="descripcion" styleClass="box" size="30" value="<%=row.getString(PysServiciosInstitucionBean.C_DESCRIPCION)%>" />
 													
 												<% } else { %>
-													<html:text property="descripcion" styleClass="boxConsulta" size="30" value="<%=row.getString(PysServiciosInstitucionBean.C_DESCRIPCION)%>" readOnly="true" />
+													<html:text property="descripcion" styleClass="boxConsulta" size="30" value="<%=row.getString(PysServiciosInstitucionBean.C_DESCRIPCION)%>" readonly="true" />
 												<% } %>
 									  		<% } %>
 									  	</td>
@@ -463,7 +463,7 @@
 																		<siga:ComboBD nombre = "formaPagoInternet" tipo="cmbFormaPagoInternet" clase="boxCombo" filasMostrar="4" seleccionMultiple="true" elementoSel="<%=i%>" obligatorio="true" parametro="<%=valorInternet%>"/>
 																		
 																	<% } else { %>
-																		<siga:ComboBD nombre = "formaPagoInternet" tipo="cmbFormaPagoInternet" clase="boxConsulta" filasMostrar="4" seleccionMultiple="true" obligatorio="true" parametro="<%=valorInternet%>" readOnly="true"/>
+																		<siga:ComboBD nombre = "formaPagoInternet" tipo="cmbFormaPagoInternet" clase="boxConsulta" filasMostrar="4" seleccionMultiple="true" obligatorio="true" parametro="<%=valorInternet%>" readonly="true"/>
 																	<% } %>		
 																															
 																<% } else { %>
@@ -471,7 +471,7 @@
 																		<siga:ComboBD nombre = "formaPagoInternet" tipo="cmbFormaPagoInternet" clase="boxCombo" filasMostrar="4" seleccionMultiple="true" elementoSel="<%=vInt%>" obligatorio="true" parametro="<%=valorInternet%>"/>
 																		
 																	<% } else { %>
-																		<siga:ComboBD nombre = "formaPagoInternet" tipo="cmbFormaPagoInternet" clase="boxConsulta" filasMostrar="4" seleccionMultiple="true" elementoSel="<%=vInt%>" obligatorio="true" parametro="<%=valorInternet%>" readOnly="true"/>
+																		<siga:ComboBD nombre = "formaPagoInternet" tipo="cmbFormaPagoInternet" clase="boxConsulta" filasMostrar="4" seleccionMultiple="true" elementoSel="<%=vInt%>" obligatorio="true" parametro="<%=valorInternet%>" readonly="true"/>
 																	<% } %>																																		
 																<% } %>
 															<% } %>
@@ -490,7 +490,7 @@
 																		<siga:ComboBD nombre = "formaPagoSecretaria" tipo="cmbFormaPagoSecretaria" clase="boxCombo" filasMostrar="4" seleccionMultiple="true" elementoSel="<%=i%>" obligatorio="true" parametro="<%=valorSecretaria%>"/>
 																		
 																	<% } else { %>
-																		<siga:ComboBD nombre = "formaPagoSecretaria" tipo="cmbFormaPagoSecretaria" clase="boxConsulta" filasMostrar="4" seleccionMultiple="true" obligatorio="true" parametro="<%=valorSecretaria%>" readOnly="true"/>
+																		<siga:ComboBD nombre = "formaPagoSecretaria" tipo="cmbFormaPagoSecretaria" clase="boxConsulta" filasMostrar="4" seleccionMultiple="true" obligatorio="true" parametro="<%=valorSecretaria%>" readonly="true"/>
 																	<% } %>	
 																																																			
 																<% } else { %>
@@ -498,7 +498,7 @@
 																		<siga:ComboBD nombre = "formaPagoSecretaria" tipo="cmbFormaPagoSecretaria" clase="boxCombo" filasMostrar="4" seleccionMultiple="true" elementoSel="<%=vSec%>" obligatorio="true" parametro="<%=valorSecretaria%>"/>
 																		
 																	<% } else { %>
-																		<siga:ComboBD nombre = "formaPagoSecretaria" tipo="cmbFormaPagoSecretaria" clase="boxConsulta" filasMostrar="4" seleccionMultiple="true" elementoSel="<%=vSec%>" obligatorio="true" parametro="<%=valorSecretaria%>" readOnly="true"/>
+																		<siga:ComboBD nombre = "formaPagoSecretaria" tipo="cmbFormaPagoSecretaria" clase="boxConsulta" filasMostrar="4" seleccionMultiple="true" elementoSel="<%=vSec%>" obligatorio="true" parametro="<%=valorSecretaria%>" readonly="true"/>
 																	<% } %>																			
 																<% } %>																													
 															<% } %>
@@ -511,7 +511,7 @@
 												<tr>
 													<td width="35%">
 														<siga:ConjCampos leyenda="productos.mantenimientoProductos.literal.estado">					
-															<table valign="top" width="100%" border="0" cellspacing="0" cellpadding="0">
+															<table width="100%" border="0" cellspacing="0" cellpadding="0">
 																<tr>
 																	<td class="labelText" width="100%">
 																		<siga:Idioma key="productos.mantenimientoProductos.literal.bajaLogica"/>&nbsp;&nbsp;
@@ -533,7 +533,7 @@
 													<td width="65%">
 													<!-- DCG ini --> 												
 														<siga:ConjCampos leyenda="productos.mantenimientoServicios.literal.asginacion">					
-															<table valign="top" width="100%" border="0" cellspacing="0" cellpadding="0">
+															<table width="100%" border="0" cellspacing="0" cellpadding="0">
 																<tr>
 																	<td class="labelText">
 																		<siga:Idioma key="productos.mantenimientoServicios.literal.SuscripcionAutomatica"/>&nbsp;&nbsp;
@@ -581,7 +581,7 @@
 										
 										<td width="50%" valign="top">
 											<siga:ConjCampos leyenda="pys.mantenimientoServicios.literal.ponderacion">	
-												<table width="100%" valign="top" border="0">												
+												<table width="100%" border="0">												
 													<tr>
 														<td class="labelText">
 															<% if (modo=="insertar"){%>
@@ -677,7 +677,7 @@
 											</siga:ConjCampos>	
 													
 											<siga:ConjCampos leyenda="productos.mantenimientoProductos.literal.facturacionPonderada">					
-												<table valign="top" width="100%" border="0" cellspacing="0" cellpadding="0">
+												<table width="100%" border="0" cellspacing="0" cellpadding="0">
 													<tr>
 														<td class="labelText" width="100%">
 															<siga:Idioma key="productos.mantenimientoProductos.literal.noPonderar"/>&nbsp;&nbsp;
@@ -729,8 +729,7 @@
 				   name="tablaResultados"
 				   border="1"
 				   columnNames="pys.mantenimientoServicios.literal.precio,pys.mantenimientoServicios.literal.periodicidad,pys.mantenimientoCategorias.literal.descripcion,productos.mantenimientoProductos.literal.precioDefecto,"
-				   columnSizes="20,20,20,20,20"
-				   modal="G">
+				   columnSizes="20,20,20,20,20">
 						   				   
 					<% if (request.getAttribute("DATESTADO") == null || ((Vector)request.getAttribute("DATESTADO")).size() < 1 ) { %>									
 				 		<tr class="notFound">
@@ -823,8 +822,7 @@
 					name="tablaResultados"
 					border="1"
 					columnNames="pys.mantenimientoServicios.literal.precio,pys.mantenimientoServicios.literal.periodicidad,pys.mantenimientoCategorias.literal.descripcion,productos.mantenimientoProductos.literal.precioDefecto"
-					columnSizes="30,20,30,20"
-					modal="G">
+					columnSizes="30,20,30,20">
 
 					<%if (request.getAttribute("DATESTADO") == null || ((Vector)request.getAttribute("DATESTADO")).size() < 1 ){ %>
 				 		<tr class="notFound">

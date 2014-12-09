@@ -58,7 +58,7 @@
 
 <!-- TITULO -->
 	<!-- Barra de titulo actualizable desde los mantenimientos -->
-	<table class="tablaTitulo" cellspacing="0" heigth="32">
+	<table class="tablaTitulo" cellspacing="0" height="32">
 		<tr>
 			<td id="titulo" class="titulitosDatos">
 				<siga:Idioma key="certificados.comunicacionydiligencia.literal.titulo"/>
@@ -68,13 +68,12 @@
 
 	<!-- INICIO: CAMPOS DE BUSQUEDA-->
 	<!-- Zona de campos de busqueda o filtro -->
-	<table class="tablaCentralCamposPeque" align="center">
-		<form id="DummyForm2" name="DummyForm2" action="<%=app%>/PYS_CompraPredefinida.do" method="POST"
-			target="submitArea">
+	<form id="DummyForm2" name="DummyForm2" action="<%=app%>/PYS_CompraPredefinida.do" method="POST" target="submitArea">
 			<input type="hidden" name="modo" value="insertarDiligencia">
 			<input type="hidden" name="idPersona" value="<%=idPersonaX%>">
 			<input type="hidden" name="idInstitucion" value="<%=idInstitucionX%>">
 			<input type="hidden" name="idBoton" value="<%=idBoton%>">
+		<table class="tablaCentralCamposPeque" align="center">		
 			<tr>
 				<td>
 					<siga:ConjCampos leyenda="certificados.solicitudes.literal.instituciones">
@@ -82,7 +81,7 @@
 
 							<tr>
 								<td class="labelText"><siga:Idioma
-										key="certificados.solicitudes.literal.institucionorigen" />&nbsp(*)
+										key="certificados.solicitudes.literal.institucionorigen" />&nbsp;(*)
 								</td>
 								<td><siga:ComboBD nombre="idInstitucionOrigen"
 										tipo="cmbColegiosAbreviados" obligatorio="true"
@@ -91,7 +90,7 @@
 							</tr>
 							<tr>
 								<td class="labelText"><siga:Idioma
-										key="certificados.solicitudes.literal.institucionDestino2" />&nbsp(*)
+										key="certificados.solicitudes.literal.institucionDestino2" />&nbsp;(*)
 								</td>
 								<td><siga:ComboBD nombre="idInstitucionDestino"
 										tipo="cmbColegiosAbreviados" obligatorio="true"
@@ -113,7 +112,7 @@
 										key="certificados.solicitudes.literal.metodoSolicitud" /></td>
 								<td><siga:ComboBD nombre="metodoSolicitud"
 										tipo="comboMetodoSolicitud" obligatorio="false"
-										parametro="<%=parametro%>" ElementoSel="<%=aMetodoSol%>"
+										parametro="<%=parametro%>" elementoSel="<%=aMetodoSol%>"
 										clase="boxCombo" /></td>
 							</tr>
 						</table>
@@ -133,9 +132,9 @@
 						</table>
 					</siga:ConjCampos>
 				</td>
-			</tr>
-		</form>
-	</table>
+			</tr>		
+		</table>
+	</form>
 
 	<!-- FIN: CAMPOS DE BUSQUEDA-->
 

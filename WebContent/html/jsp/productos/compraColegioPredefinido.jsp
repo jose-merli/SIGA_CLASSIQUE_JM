@@ -68,7 +68,7 @@
 
 <body>
 
-<table class="tablaTitulo" cellspacing="0" heigth="32">
+<table class="tablaTitulo" cellspacing="0" height="32">
 	<tr>
 		<td id="titulo" class="titulitosDatos"><siga:Idioma
 			key="certificados.mantenimiento.literal.seleccionPlantillayCertificado" />
@@ -76,41 +76,36 @@
 	</tr>
 </table>
 
-<fieldset>
-<table class="tablaCentralCamposPeque" align="center">
-	<form name="x">
-	<tr>
-		<td class="labelText"><siga:Idioma
-			key="certificados.mantenimiento.literal.productoCertificado" />&nbsp(*)
-		</td>
-		<td><siga:ComboBD nombre="idProductoCertificado"
-			tipo="cmbCertificadosOrdinadios" clase="boxCombo"
-			parametro="<%=paramInstitucion %>" obligatorio="true" /></td>
-	</tr>
-		<tr>	
-		<td class="labelText">
-			<siga:Idioma key="certificados.solicitudes.literal.fechaSolicitud"/>
-		</td>				
-		<td>
+	<fieldset>
+		<form name="x">
+			<table class="tablaCentralCamposPeque" align="center">
+				<tr>
+					<td class="labelText"><siga:Idioma
+							key="certificados.mantenimiento.literal.productoCertificado" />&nbsp;(*)
+					</td>
+					<td><siga:ComboBD nombre="idProductoCertificado"
+							tipo="cmbCertificadosOrdinadios" clase="boxCombo"
+							parametro="<%=paramInstitucion %>" obligatorio="true" /></td>
+				</tr>
+				<tr>
+					<td class="labelText"><siga:Idioma
+							key="certificados.solicitudes.literal.fechaSolicitud" /></td>
+					<td><siga:Fecha nombreCampo="fechaSolicitud"
+							valorInicial="<%=fechaSolicitud%>" posicionX="30" posicionY="10"></siga:Fecha>
+					</td>
+				</tr>
+				<tr>
+					<td class="labelText"><siga:Idioma
+							key="certificados.solicitudes.literal.metodoSolicitud" /></td>
+					<td><siga:ComboBD nombre="metodoSolicitud"
+							tipo="comboMetodoSolicitud" obligatorio="false"
+							elementoSel="<%=aMetodoSol%>" clase="boxCombo" /></td>
+				</tr>
+			</table>
+		</form>
+	</fieldset>
 
-			<siga:Fecha nombreCampo="fechaSolicitud" valorInicial="<%=fechaSolicitud%>" posicionX="30" posicionY="10"></siga:Fecha>
-		</td>
-	</tr>
-	<tr>
-		<td class="labelText">
-			<siga:Idioma key="certificados.solicitudes.literal.metodoSolicitud"/>
-		</td>				
-		<td>
-			<siga:ComboBD nombre="metodoSolicitud" tipo="comboMetodoSolicitud" obligatorio="false" ElementoSel="<%=aMetodoSol%>" clase="boxCombo"/>
-		</td>
-	</tr>
-	
-	
-	</form>
-</table>
-</fieldset>
-
-<siga:ConjBotonesAccion botones="A,C" modal="P" />
+	<siga:ConjBotonesAccion botones="A,C" modal="P" />
 
 <iframe name="submitArea"
 	src="<html:rewrite page="/html/jsp/general/blank.jsp"/>"

@@ -23,21 +23,23 @@
 <%@ page import="java.util.ArrayList"%>
 <%@ page import="com.siga.Utilidades.UtilidadesBDAdm"%>
 <%
-	String app=request.getContextPath();
-	HttpSession ses=request.getSession();
-	
+	String app = request.getContextPath();
+	HttpSession ses = request.getSession();
 
-	UsrBean user=(UsrBean)request.getSession().getAttribute("USRBEAN");
+	UsrBean user = (UsrBean) request.getSession().getAttribute(
+			"USRBEAN");
 
-	String idInstitucion=(String)request.getAttribute("idInstitucion");
-	String idInstitucionX=(String)request.getAttribute("idInstitucionX");
-	String idPersonaX=(String)request.getAttribute("idPersonaX");
-	String idBoton=(String)request.getAttribute("idBoton");
+	String idInstitucion = (String) request
+			.getAttribute("idInstitucion");
+	String idInstitucionX = (String) request
+			.getAttribute("idInstitucionX");
+	String idPersonaX = (String) request.getAttribute("idPersonaX");
+	String idBoton = (String) request.getAttribute("idBoton");
 
-	String paramInstitucion[] = {idInstitucion};
-	
+	String paramInstitucion[] = { idInstitucion };
+
 	String fechaSolicitud = UtilidadesBDAdm.getFechaBD("");
-	
+
 	ArrayList aMetodoSol = new ArrayList();
 	aMetodoSol.add(1);
 %>
@@ -120,7 +122,7 @@
 
 	<body>
 
-		<table class="tablaTitulo" cellspacing="0" heigth="32">
+		<table class="tablaTitulo" cellspacing="0" height="32">
 			<tr>
 				<td id="titulo" class="titulitosDatos">
 					<siga:Idioma key="certificados.mantenimiento.literal.seleccionPlantillayCertificado"/>
@@ -128,68 +130,67 @@
 			</tr>
 		</table>
 
-			<fieldset>
+	<fieldset>
+		<form name="x">
 			<table class="tablaCentralCamposPeque" align="center">
-				<form name="x">
 				<tr>
-					<td class="labelText">
-						<siga:Idioma key="certificados.mantenimiento.literal.productoCertificado"/>&nbsp(*)
+					<td class="labelText"><siga:Idioma
+							key="certificados.mantenimiento.literal.productoCertificado" />&nbsp;(*)
 					</td>
-					<td>
-						<siga:ComboBD nombre="idProductoCertificado" tipo="cmbCertificadosOrdinadios" clase="boxCombo" parametro="<%=paramInstitucion %>" obligatorio="true"/>
-					</td>
+					<td><siga:ComboBD nombre="idProductoCertificado"
+							tipo="cmbCertificadosOrdinadios" clase="boxCombo"
+							parametro="<%=paramInstitucion %>" obligatorio="true" /></td>
 				</tr>
 				<tr>
-					<td class="labelText">
-						<siga:Idioma key="pys.solicitudCompra.literal.presentador"/>&nbsp;(*)
-					</td>
-					<td>
-						<siga:ComboBD nombre="idInstitucionPresentador" tipo="cmbInstitucionesAbreviadas" clase="boxCombo" readonly="false" obligatorio="true" accion="completarColegiacion()" />									
-					</td>
-				</tr></table>
-				<table><td>
-					<siga:ConjCampos>
-						<table>
-							<tr>
-								<td class="labelText" width="200px" >
-									<siga:Idioma key="pys.solicitudCompra.literal.colegiadoen"/>&nbsp;(*)
-								</td>
-								<td>
-									<siga:ComboBD nombre="idInstitucionColegiacion"  tipo="cmbInstitucionesAbreviadas" clase="boxCombo" readonly="false" obligatorio="true"/>									
-								</td>
-							</tr>	
-							<tr >
-								<td class="labelText" colspan="2">
-									<i><siga:Idioma key="pys.solicitudCompra.literal.indicacion"/></i>
-								</td>
-							</tr>
-						</table>	
-					</siga:ConjCampos>
-				</td></table>
-				<table>
-				<tr>&nbsp;</tr>
-				<tr>	
-					<td class="labelText">
-						<siga:Idioma key="certificados.solicitudes.literal.fechaSolicitud"/>
-					</td>				
-					<td>
-						<siga:Fecha nombreCampo="fechaSolicitud" valorInicial="<%=fechaSolicitud%>"></siga:Fecha>&nbsp;
-						
-					</td>
+					<td class="labelText"><siga:Idioma
+							key="pys.solicitudCompra.literal.presentador" />&nbsp;(*)</td>
+					<td><siga:ComboBD nombre="idInstitucionPresentador"
+							tipo="cmbInstitucionesAbreviadas" clase="boxCombo"
+							readonly="false" obligatorio="true"
+							accion="completarColegiacion()" /></td>
 				</tr>
-				<tr>
-					<td class="labelText">
-						<siga:Idioma key="certificados.solicitudes.literal.metodoSolicitud"/>
-					</td>				
-					<td>
-						<siga:ComboBD nombre="metodoSolicitud" tipo="comboMetodoSolicitud" obligatorio="false" ElementoSel="<%=aMetodoSol%>" clase="boxCombo"/>
-					</td>
-				</tr>
-				</form>		
 			</table>
-			</fieldset>
+			<table>
+				<tr>
+					<td><siga:ConjCampos>
+							<table>
+								<tr>
+									<td class="labelText" width="200px"><siga:Idioma
+											key="pys.solicitudCompra.literal.colegiadoen" />&nbsp;(*)</td>
+									<td><siga:ComboBD nombre="idInstitucionColegiacion"
+											tipo="cmbInstitucionesAbreviadas" clase="boxCombo"
+											readonly="false" obligatorio="true" /></td>
+								</tr>
+								<tr>
+									<td class="labelText" colspan="2"><i><siga:Idioma
+												key="pys.solicitudCompra.literal.indicacion" /></i></td>
+								</tr>
+							</table>
+						</siga:ConjCampos></td>
+				</tr>
+			</table>
+			<table>
+				<tr>
+					<td>&nbsp;</td>
+				</tr>
+				<tr>
+					<td class="labelText"><siga:Idioma
+							key="certificados.solicitudes.literal.fechaSolicitud" /></td>
+					<td><siga:Fecha nombreCampo="fechaSolicitud"
+							valorInicial="<%=fechaSolicitud%>"></siga:Fecha>&nbsp;</td>
+				</tr>
+				<tr>
+					<td class="labelText"><siga:Idioma
+							key="certificados.solicitudes.literal.metodoSolicitud" /></td>
+					<td><siga:ComboBD nombre="metodoSolicitud"
+							tipo="comboMetodoSolicitud" obligatorio="false"
+							elementoSel="<%=aMetodoSol%>" clase="boxCombo" /></td>
+				</tr>
+			</table>
+		</form>
+	</fieldset>
 
-			<siga:ConjBotonesAccion botones="A,C" modal="P"/>
+	<siga:ConjBotonesAccion botones="A,C" modal="P"/>
 
 		<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
 	</body>

@@ -211,7 +211,7 @@
 											<html:text property="precio" styleClass="boxNumber" size="10" maxlength="11" value="<%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero.formatoCampo(precio))%>" />&nbsp;&euro;
 											
 										<% } else { %>
-											<html:text property="precio" styleClass="boxConsulta" size="10" value="<%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero.formatoCampo(precio))%>" readOnly="true" />&nbsp;&euro;
+											<html:text property="precio" styleClass="boxConsulta" size="10" value="<%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero.formatoCampo(precio))%>" readonly="true" />&nbsp;&euro;
 										<% } %>								  		
 									<% } %>
 								</td>
@@ -225,10 +225,10 @@
 										
 									<% } else { %>
 										<% if (modo.equalsIgnoreCase("modificar")){ %>
-											<siga:ComboBD nombre = "periodicidad" tipo="cmbPeriodicidad" clase="boxConsulta" obligatorio="true" elementoSel="<%=vPeriodicidad%>" readOnly="true" ancho="110"/>
+											<siga:ComboBD nombre = "periodicidad" tipo="cmbPeriodicidad" clase="boxConsulta" obligatorio="true" elementoSel="<%=vPeriodicidad%>" readonly="true" ancho="110"/>
 											
 										<% } else { %>
-											<siga:ComboBD nombre = "periodicidad" tipo="cmbPeriodicidad" clase="boxConsulta" obligatorio="true" elementoSel="<%=vPeriodicidad%>" readOnly="true" ancho="110"/>
+											<siga:ComboBD nombre = "periodicidad" tipo="cmbPeriodicidad" clase="boxConsulta" obligatorio="true" elementoSel="<%=vPeriodicidad%>" readonly="true" ancho="110"/>
 										<% } %>								  		
 									<% } %>
 								</td>
@@ -242,7 +242,7 @@
 										
 									<% } else { %>
 										<% if (modo.equalsIgnoreCase("modificar")){ %> 
-											 <% if ("&nbsp".equals(UtilidadesString.mostrarDatoJSP(sDescripcion))) {%>
+											 <% if ("&nbsp;".equals(UtilidadesString.mostrarDatoJSP(sDescripcion))) {%>
 												<html:text property="descripcion" styleClass="box" size="29" maxlength="100" value="" />
 												
 											<% } else { %>
@@ -250,7 +250,7 @@
 											<% } %>	
 										
 										<% } else { %>
-											<html:text property="descripcion" styleClass="boxConsulta" size="29" value="<%=sDescripcion%>" readOnly="true" />
+											<html:text property="descripcion" styleClass="boxConsulta" size="29" value="<%=sDescripcion%>" readonly="true" />
 										<% } %>								  		
 									<% } %>
 								</td>	

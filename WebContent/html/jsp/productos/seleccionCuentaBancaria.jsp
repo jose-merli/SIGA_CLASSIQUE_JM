@@ -74,7 +74,7 @@
 </head>
 <body>
 <html:form action="/PYS_GenerarSolicitudes.do" method="POST" target="mainWorkArea" type="">
-<table class="tablaTitulo" cellspacing="0" heigth="32">
+<table class="tablaTitulo" cellspacing="0" height="32">
 			<tr>
 				<td id="titulo" class="titulosPeq">
 					<siga:Idioma key="pys.solicitudCompra.cabecera"/>

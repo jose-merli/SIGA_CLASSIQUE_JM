@@ -25,6 +25,7 @@
 <%@ page import="com.siga.Utilidades.UtilidadesNumero"%>
 <%@ page import="java.util.Properties"%>
 <%@ page import="java.util.Vector"%>
+<%@ page import="java.util.ArrayList"%>
 
 <!-- JSP -->
 <% 
@@ -109,7 +110,7 @@
 		</tr>
 	</table>
 
-	<table class="tablaTitulo" cellspacing="0" heigth="32">
+	<table class="tablaTitulo" cellspacing="0" height="32">
 		<tr>
 			<td id="titulo" class="titulosPeq">
 				<siga:Idioma key="pys.desgloseCesta.literal.pagoTarjeta"/>
@@ -188,26 +189,26 @@
 			<tr>
 				<td class="labelText"><siga:Idioma key="pys.solicitudCompra.literal.nTarjeta"/>&nbsp;(*)</td>
 				<td>
-					<html:text name="solicitudCompraForm" property="tarjeta1" maxlength="4" size="4" styleClass="<%=estilo%>" readOnly="<%=visibilidad%>" value=""></html:text>
+					<html:text name="solicitudCompraForm" property="tarjeta1" maxlength="4" size="4" styleClass="<%=estilo%>" readonly="<%=visibilidad%>" value=""></html:text>
 					&nbsp;-
-					<html:text name="solicitudCompraForm" property="tarjeta2" maxlength="4" size="4" styleClass="<%=estilo%>" readOnly="<%=visibilidad%>" value=""></html:text>
+					<html:text name="solicitudCompraForm" property="tarjeta2" maxlength="4" size="4" styleClass="<%=estilo%>" readonly="<%=visibilidad%>" value=""></html:text>
 					&nbsp;-
-					<html:text name="solicitudCompraForm" property="tarjeta3" maxlength="4" size="4" styleClass="<%=estilo%>" readOnly="<%=visibilidad%>" value=""></html:text>
+					<html:text name="solicitudCompraForm" property="tarjeta3" maxlength="4" size="4" styleClass="<%=estilo%>" readonly="<%=visibilidad%>" value=""></html:text>
 					&nbsp;-
-					<html:text name="solicitudCompraForm" property="tarjeta4" maxlength="4" size="4" styleClass="<%=estilo%>" readOnly="<%=visibilidad%>" value=""></html:text>
+					<html:text name="solicitudCompraForm" property="tarjeta4" maxlength="4" size="4" styleClass="<%=estilo%>" readonly="<%=visibilidad%>" value=""></html:text>
 				</td>
 				<td>&nbsp;&nbsp;</td>
 				<td class="labelText"><siga:Idioma key="pys.solicitudCompra.literal.caducidad"/> (<siga:Idioma key="pys.solicitudCompra.literal.formatoCaducidad"/>)&nbsp;(*)</td>
 				<td>
-					<html:text name="solicitudCompraForm" property="tarjetaMes" maxlength="2" size="2" styleClass="<%=estilo%>" readOnly="<%=visibilidad%>" value=""></html:text>
+					<html:text name="solicitudCompraForm" property="tarjetaMes" maxlength="2" size="2" styleClass="<%=estilo%>" readonly="<%=visibilidad%>" value=""></html:text>
 					&nbsp;/
-					<html:text name="solicitudCompraForm" property="tarjetaAnho" maxlength="4" size="4" styleClass="<%=estilo%>" readOnly="<%=visibilidad%>" value=""></html:text>
+					<html:text name="solicitudCompraForm" property="tarjetaAnho" maxlength="4" size="4" styleClass="<%=estilo%>" readonly="<%=visibilidad%>" value=""></html:text>
 				</td>
 			</tr>
 		</table>
 	</div>
 				
-	<table class="tablaTitulo" cellspacing="0" heigth="32">
+	<table class="tablaTitulo" cellspacing="0" height="32">
 		<tr>
 			<td id="titulo" class="titulosPeq">
 				<siga:Idioma key="pys.desgloseCesta.literal.otrosPagos"/>

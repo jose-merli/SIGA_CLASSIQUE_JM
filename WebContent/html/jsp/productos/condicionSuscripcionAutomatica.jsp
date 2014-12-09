@@ -106,7 +106,7 @@
 
 		<!-- TITULO -->
 		<!-- Barra de titulo actualizable desde los mantenimientos -->
-		<table class="tablaTitulo" cellspacing="0" heigth="32">
+		<table class="tablaTitulo" cellspacing="0" height="32">
 			<tr>
 				<td id="titulo" class="titulitosDatos">
 					<siga:Idioma key="pys.mantenimientoServicios.CondicionSuscripcionAutomatica.literal.titulo"/>
@@ -136,7 +136,7 @@
 											<% // if ((modo.equalsIgnoreCase("consulta"))||(queryPorDefecto)){
 												if (modo.equalsIgnoreCase("consulta")){	
 											%>
-												<html:text property="conector" styleClass="boxConsulta" size="10" value="" readOnly="true" />
+												<html:text property="conector" styleClass="boxConsulta" size="10" value="" readonly="true" />
 												
 											<% } else { %>
 									  			<select name="conector" id="conector" class="boxCombo">
@@ -154,7 +154,7 @@
 									  		<% // if ((modo.equalsIgnoreCase("consulta"))||(queryPorDefecto)){
 									  			if (modo.equalsIgnoreCase("consulta")){
 									  		%>
-												<html:text property="conector" styleClass="boxConsulta" size="10" value="" readOnly="true" />
+												<html:text property="conector" styleClass="boxConsulta" size="10" value="" readonly="true" />
 												
 											<% } else { %>
 												<siga:ComboBD nombre="campo" tipo="cmbCamposConsulta" clase="boxCombo" obligatorio="false" accion="cambiarTipo(this)" />

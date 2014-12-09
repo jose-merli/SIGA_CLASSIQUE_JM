@@ -22,6 +22,8 @@
 <%@ page import = "com.siga.Utilidades.UtilidadesString"%>
 <%@ page import = "com.atos.utils.*"%>
 <%@ page import = "org.redabogacia.sigaservices.app.util.*"%>
+<%@ page import="java.util.HashMap"%>
+<%@ page import="java.util.List"%>
 
 <!-- JSP -->
 <%
@@ -512,7 +514,7 @@
 			  		<input type="hidden" id="ventana"  name="ventana" 		value="solicitud">
 					<input type="hidden" id="deCertificado" name="deCertificado"	value="<%=deCertificado%>">
 					<input type="hidden" id="clientes" name="clientes"	value="1">					
-					<html:hidden name="busquedaClientesModalForm" property="numeroColegiado" styleId="numeroColegiado"  value="<%=numero%>" size="10" />
+					<html:hidden name="busquedaClientesModalForm" property="numeroColegiado" styleId="numeroColegiado"  value="<%=numero%>"/>
 					<html:hidden name="busquedaClientesModalForm" property="nif" value="<%=nif%>" styleId="nif" />
 					
 					<tr>	
@@ -535,7 +537,7 @@
 								<siga:Idioma key="pys.solicitudCompra.literal.interesado"/>&nbsp;(*)
 							</td>
 							<td  width="150px">
-								<html:text name="busquedaClientesModalForm" property="nombrePersona" value="<%=nombre%>" size="40" styleClass="boxConsulta" readOnly="true" />
+								<html:text name="busquedaClientesModalForm" property="nombrePersona" value="<%=nombre%>" size="40" styleClass="boxConsulta" readonly="true" />
 							</td>
 	<%
 						}
@@ -718,15 +720,14 @@
 									
 							<% } else { %>					
 							
-								<tr id="campoBlanco" style="<%=styleCampoBlanco%>">	
-									<input type="hidden" id="idInstitucionPresentador" name="idInstitucionPresentador"	value="<%=idInstitucionP%>">																													
-									<td colspan="6">&nbsp;</td>	
+								<tr id="campoBlanco" style="<%=styleCampoBlanco%>">																																						
+									<td colspan="6"><input type="hidden" id="idInstitucionPresentador" name="idInstitucionPresentador"	value="<%=idInstitucionP%>">&nbsp;</td>	
 									
 							<% } %>
 									
 								<td align="left" id="nombreProductoId" colspan="2">
 									<html:text name="solicitudCompraForm" styleId="nombreProducto" property="nombreProducto" style="width:300px" maxlength="100"
-							  			styleClass="box" readonly="false" onKeyPress="return disableEnterKey(event)"/>
+							  			styleClass="box" readonly="false" onkeypress="return disableEnterKey(event)"/>
 								</td>
 								
 								<td align="left" id="solicitarServicio1">
