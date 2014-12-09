@@ -100,7 +100,7 @@
 	<iframe align="middle"
 			src="<%=app%>/html/jsp/consultas/resultadoEjecucionConsulta.jsp"
 			id="resultado" name="resultado"	scrolling="yes"
-			frameborder="0" marginheight="0" marginwidth="0";
+			frameborder="0" marginheight="0" marginwidth="0"
 			class="frameGeneral">
 	</iframe>
 	

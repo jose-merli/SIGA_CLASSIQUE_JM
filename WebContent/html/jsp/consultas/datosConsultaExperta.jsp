@@ -364,7 +364,7 @@
 		<table class="tablaTitulo" align="center" cellspacing="0">
 			<tr>
 				<td id="titulo" class="titulitosDatos" width=120px>
-					<siga:Idioma key="consultas.recuperarconsulta.literal.descripcion"/>&nbsp(*)
+					<siga:Idioma key="consultas.recuperarconsulta.literal.descripcion"/>&nbsp;(*)
 					&nbsp;
 					<html:text name="EditarConsultaForm" property="descripcion" size="80" maxlength="100" styleClass="<%=boxStyle%>" readonly="<%=!bEditable%>"></html:text>
 				</td>
@@ -384,18 +384,18 @@
 <logic:notMatch name="EditarConsultaForm" property="tipoConsulta" value="<%=tipoConsultaPattern%>">		
 		<tr>
 			<td class="labelText" width="100">
-				<siga:Idioma key="consultas.recuperarconsulta.literal.modulo"/>&nbsp(*)
+				<siga:Idioma key="consultas.recuperarconsulta.literal.modulo"/>&nbsp;(*)
 			</td>
 			<td  width="350">
 			<%if (bEditable){%>				
-				<siga:ComboBD nombre = "modulo" tipo="cmbModuloConsulta" clase="boxCombo" obligatorio="false" pestana="t" ElementoSel="<%=moduloSel%>"/>
+				<siga:ComboBD nombre = "modulo" tipo="cmbModuloConsulta" clase="boxCombo" obligatorio="false" pestana="t" elementoSel="<%=moduloSel%>"/>
 			<%}else{%>
-				<siga:ComboBD nombre = "modulo" tipo="cmbModuloConsulta" clase="boxConsulta" readonly="true" obligatorio="false" pestana="t" ElementoSel="<%=moduloSel%>"/>
+				<siga:ComboBD nombre = "modulo" tipo="cmbModuloConsulta" clase="boxConsulta" readonly="true" obligatorio="false" pestana="t" elementoSel="<%=moduloSel%>"/>
 			<%}%>
 			</td>
 			<td class="labelText">
 				<siga:Idioma key="consultas.recuperarconsulta.literal.tipoConsulta"/>
-				&nbsp&nbsp
+				&nbsp;&nbsp;
 				<%if (bEditable && "nuevo".equals(accion)){%>				
 					<select name="tipoConsulta" class="boxCombo" id="tipoConsulta" onChange=parsearSelect()>
 					<logic:equal name="EditarConsultaForm" property="tipoConsulta" value="<%=ConConsultaAdm.TIPO_CONSULTA_ENV%>">			
@@ -459,7 +459,7 @@ if (!bEditable){
 		<tr>
 
 			<td  align="center" width="93%">
-		    	<html:textarea style="width:800px" rows="20" property="selectExperta" styleId='boxExperta' styleclass="boxExpert" value="<%=sentenciaSelect%>"></html:textarea> 
+		    	<html:textarea style="width:800px" rows="20" property="selectExperta" styleId='boxExperta' styleClass="boxExpert" value="<%=sentenciaSelect%>"></html:textarea> 
 		    </td>	
 			<td align="left">
 			   <a HREF="javascript:abrirAyuda();"><IMG border=0 src="<%=app_imagen%>help.gif"  alt="<%=help%>"></a>

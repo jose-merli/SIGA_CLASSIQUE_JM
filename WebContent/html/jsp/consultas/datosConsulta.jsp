@@ -868,7 +868,7 @@
 		<table class="tablaTitulo" align="center" cellspacing="0">
 			<tr>
 				<td id="titulo" class="titulitosDatos" width=120px>
-					<siga:Idioma key="consultas.recuperarconsulta.literal.descripcion"/>&nbsp(*) &nbsp;&nbsp;
+					<siga:Idioma key="consultas.recuperarconsulta.literal.descripcion"/>&nbsp;(*) &nbsp;&nbsp;
 					<html:text name="EditarConsultaForm" property="descripcion" size="80" maxlength="100" styleClass="<%=boxStyle%>" readonly="<%=!bEditable%>"></html:text>
 				</td>
 			</tr>
@@ -888,11 +888,11 @@
 <logic:equal name="EditarConsultaForm" property="tipoConsulta" value="<%=ConConsultaAdm.TIPO_CONSULTA_GEN%>">		
 		<tr>
 			<td class="labelText">
-				<siga:Idioma key="consultas.recuperarconsulta.literal.modulo"/>&nbsp(*)
+				<siga:Idioma key="consultas.recuperarconsulta.literal.modulo"/>&nbsp;(*)
 			</td>
 			<td>
 			<%if (bEditable){%>				
-				<siga:ComboBD nombre = "modulo" tipo="cmbModuloConsulta" clase="boxCombo" obligatorio="false" pestana="t" ElementoSel="<%=moduloSel%>"/>
+				<siga:ComboBD nombre = "modulo" tipo="cmbModuloConsulta" clase="boxCombo" obligatorio="false" pestana="t" elementoSel="<%=moduloSel%>"/>
 			<%}else{%>
 				<html:text name="EditarConsultaForm" property="moduloSel"  styleClass="boxConsulta" readonly="true"></html:text>
 			<%}%>
@@ -1012,9 +1012,9 @@ if (!bEditable){
 						</select>	
 <%}else{
 	if (descTablaPri!=null && !descTablaPri.equals("")){%>							
-						<input type="text" class="boxConsulta" readonly="true" value="<%=descTablaPri%>"></input>
+						<input type="text" class="boxConsulta" readonly value="<%=descTablaPri%>"></input>
 <%}else{%>
-						<input type="text" class="box" readonly="true" size="20" value=""></input>
+						<input type="text" class="box" readonly size="20" value=""></input>
 <%}
 }%>						
 					</td>
@@ -1078,7 +1078,7 @@ if (!bEditable){
 							scrolling="no"
 							frameborder="0"
 							marginheight="0"
-							marginwidth="0";					 
+							marginwidth="0"					 
 							style="width:100%; height:30; z-index:2;left: 0px">
 				</iframe>
 			

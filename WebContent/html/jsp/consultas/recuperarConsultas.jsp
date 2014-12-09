@@ -121,7 +121,7 @@
 		<siga:Idioma key="consultas.recuperarconsulta.literal.modulo"/>
 	</td>
 	<td width="20%">
-		<siga:ComboBD nombre = "idModulo" tipo="cmbModuloConsulta" clase="boxCombo" obligatorio="false" ElementoSel="<%=idModulo%>"/>
+		<siga:ComboBD nombre = "idModulo" tipo="cmbModuloConsulta" clase="boxCombo" obligatorio="false" elementoSel="<%=idModulo%>"/>
 	</td>
 </logic:equal>	
 <logic:notEqual name="RecuperarConsultasForm" property="tipoConsulta" value="<%=ConConsultaAdm.TIPO_CONSULTA_GEN%>">			
@@ -239,7 +239,7 @@
 					scrolling="no"
 					frameborder="0"
 					marginheight="0"
-					marginwidth="0";					 
+					marginwidth="0"					 
 					class="frameGeneral">
 	</iframe>
 	<siga:ConjBotonesAccion botones="V" clase="<%=claseBotoneraAccion%>"/>
