@@ -119,7 +119,7 @@
 	
 		<!-- TITULO -->
 		<!-- Barra de titulo actualizable desde los mantenimientos -->
-		<table class="tablaTitulo" cellspacing="0" heigth="32">
+		<table class="tablaTitulo" cellspacing="0" height="32">
 			<tr>
 				<td id="titulitos" class="titulitosDatos">
 				   <siga:Idioma key="certificados.campos.editar.literal"/>
@@ -153,7 +153,7 @@
 								<table class="tablaCampos" align="center">
 									<tr>				
 										<td width="10%" class="labelText">
-											<siga:Idioma key="certificados.mantenimiento.literal.campo"/>&nbsp(*)
+											<siga:Idioma key="certificados.mantenimiento.literal.campo"/>&nbsp;(*)
 										</td>
 										<td width="85%" class="boxConsulta">
 <%

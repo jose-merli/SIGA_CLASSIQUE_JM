@@ -394,7 +394,7 @@
 
 <body onLoad="revisarCheck();">
 
-<table class="tablaTitulo" cellspacing="0" heigth="32">
+<table class="tablaTitulo" cellspacing="0" height="32">
 	<tr>
 		<td id="titulo" class="titulosPeq"><siga:Idioma
 			key="certificados.solicitudes.ventanaEdicion.titulo" /></td>
@@ -434,7 +434,7 @@
 									SimpleDateFormat sdf = new SimpleDateFormat(UtilidadesFecha.FORMATO_FECHA_ES);
 									Date date = new Date(beanSolicitud.getFechaSolicitud());
 									String fechaSol = sdf.format(date);	%>
-									<siga:Fecha nombreCampo="fechaSolicitud" valorInicial="<%=fechaSol%>" />&nbsp
+									<siga:Fecha nombreCampo="fechaSolicitud" valorInicial="<%=fechaSol%>" />&nbsp;
 									
 								<%} else {%>
 									<html:text	name="SolicitudesCertificadosForm" style="width:80px"
@@ -540,7 +540,7 @@
 											Date date = new Date(beanSolicitud.getFechaEmisionCertificado());
 											fechaEm = sdf.format(date);
 										}%>
-									<siga:Fecha nombreCampo="fechaEmision" valorInicial="<%=fechaEm%>" />&nbsp
+									<siga:Fecha nombreCampo="fechaEmision" valorInicial="<%=fechaEm%>" />&nbsp;
 								<%} else {%>
 									<html:text
 										name="SolicitudesCertificadosForm" style="width:80px"

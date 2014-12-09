@@ -74,7 +74,7 @@
 	</head>
 
 	<body>
-		<table class="tablaTitulo" cellspacing="0" heigth="32">
+		<table class="tablaTitulo" cellspacing="0" height="32">
 			<tr>
 				<td id="titulo" class="titulosPeq">
 					<%=sCertificado%>
@@ -89,7 +89,7 @@
 						<table class="tablaCampos" align="center">
 							<tr>
 								<td class="labelText">
-									<siga:Idioma key="certificados.mantenimiento.literal.plantilla"/>&nbsp(*)
+									<siga:Idioma key="certificados.mantenimiento.literal.plantilla"/>&nbsp;(*)
 								</td>
 								<td>
 <%

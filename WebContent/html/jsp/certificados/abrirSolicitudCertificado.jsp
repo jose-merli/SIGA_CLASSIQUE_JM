@@ -121,21 +121,21 @@
 	
 	<tr>		
 		<td class="labelText">
-			<siga:Idioma key="censo.busquedaClientes.literal.nombre"/>&nbsp(*)
+			<siga:Idioma key="censo.busquedaClientes.literal.nombre"/>&nbsp;(*)
 		</td>				
 		<td>
 			<html:text name="SolicitudCertificadoForm" property="nombre" styleClass="boxConsulta" readonly="true" value="<%=nombre%>"></html:text>
 		</td>			
 	
 		<td class="labelText">
-			<siga:Idioma key="censo.busquedaClientes.literal.apellido1"/>&nbsp(*)
+			<siga:Idioma key="censo.busquedaClientes.literal.apellido1"/>&nbsp;(*)
 		</td>				
 		<td>		
 			<html:text name="SolicitudCertificadoForm" property="apellido1" styleClass="boxConsulta" readonly="true" value="<%=apellido1%>"></html:text>
 		</td>
 		
 		<td class="labelText">
-			<siga:Idioma key="censo.busquedaClientes.literal.apellido2"/>&nbsp(*)
+			<siga:Idioma key="censo.busquedaClientes.literal.apellido2"/>&nbsp;(*)
 		</td>				
 		<td>		
 			<html:text name="SolicitudCertificadoForm" property="apellido2" styleClass="boxConsulta" readonly="true" value="<%=apellido2%>"></html:text>
@@ -144,7 +144,7 @@
 	
 	<tr>
 		<td class="labelText">
-			<siga:Idioma key="censo.busquedaClientes.literal.nif"/>&nbsp(*)
+			<siga:Idioma key="censo.busquedaClientes.literal.nif"/>&nbsp;(*)
 		</td>
 		<td>
 			<html:text name="SolicitudCertificadoForm" property="nif" styleClass="boxConsulta" readonly="true" value="<%=nif%>"></html:text>
@@ -173,14 +173,14 @@
 	
 	<tr>
 		<td class="labelText">
-			<siga:Idioma key="certificados.solicitudes.literal.institucionorigen"/>&nbsp(*)
+			<siga:Idioma key="certificados.solicitudes.literal.institucionorigen"/>&nbsp;(*)
 		</td>				
 		<td>
 			<siga:ComboBD nombre="idInstitucionOrigen" tipo="<%=consultaOrigen%>" obligatorio="true" parametro="<%=parametro%>" ElementoSel="<%=aInstitucion%>" clase="boxCombo"/>
 		</td>
 	
 		<td class="labelText">
-			<siga:Idioma key="certificados.solicitudes.literal.institucionDestino2"/>&nbsp(*)
+			<siga:Idioma key="certificados.solicitudes.literal.institucionDestino2"/>&nbsp;(*)
 		</td>				
 		<td>
 			<siga:ComboBD nombre = "idInstitucionDestino" tipo="<%=consultaDestino%>" parametro="<%=parametro%>" obligatorio="true" clase="boxCombo"/>

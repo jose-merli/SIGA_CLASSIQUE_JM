@@ -106,7 +106,7 @@
 	
 		<!-- TITULO -->
 		<!-- Barra de titulo actualizable desde los mantenimientos -->
-		<table class="tablaTitulo" cellspacing="0" heigth="32">
+		<table class="tablaTitulo" cellspacing="0" height="32">
 			<tr>
 				<td id="titulitos" class="titulitosDatos">
 				   <siga:Idioma key="certificados.plantillas.editar.literal"/>
@@ -136,7 +136,7 @@
 								<table class="tablaCampos" align="center">
 									<tr>				
 										<td class="labelText">
-											<siga:Idioma key="certificados.mantenimiento.literal.plantilla"/>&nbsp(*)
+											<siga:Idioma key="certificados.mantenimiento.literal.plantilla"/>&nbsp;(*)
 										</td>
 										<td>
 											<html:text property="descripcion" value="<%=sDescripcion%>" styleClass="boxCombo" maxlength="50"/>
@@ -144,7 +144,7 @@
 									</tr>
 									<tr>				
 										<td class="labelText">
-											<siga:Idioma key="certificados.mantenimiento.literal.archivo"/>&nbsp(*)
+											<siga:Idioma key="certificados.mantenimiento.literal.archivo"/>&nbsp;(*)
 										</td>				
 										<td>
 											<html:file name="MantenimientoCertificadosPlantillasForm" property="theFile" styleClass="boxCombo"/>
