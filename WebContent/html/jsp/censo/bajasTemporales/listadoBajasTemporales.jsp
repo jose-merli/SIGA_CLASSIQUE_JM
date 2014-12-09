@@ -20,6 +20,7 @@
 
 <%@ page import="com.atos.utils.*"%>
 <%@ page import="com.siga.Utilidades.UtilidadesBDAdm"%>
+<%@ page import="java.util.Date"%>
 
 <!-- HEAD -->
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
