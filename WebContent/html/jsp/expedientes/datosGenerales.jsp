@@ -1281,7 +1281,7 @@
 %>
 									
 									<td class="labelText">
-										<siga:Idioma key="expedientes.gestionarExpedientes.fApert" />&nbsp(*)
+										<siga:Idioma key="expedientes.gestionarExpedientes.fApert" />&nbsp;(*)
 									</td>
 									<td class="labelText">
 <%
@@ -1450,7 +1450,7 @@
 									</td>
 									
 									<td class="labelText">
-										<siga:Idioma 	key="expedientes.auditoria.literal.asunto" />&nbsp(*)
+										<siga:Idioma 	key="expedientes.auditoria.literal.asunto" />&nbsp;(*)
 									</td>
 									<td colspan="3" class="labelText">
 										<html:text name="ExpDatosGeneralesForm" styleId="asunto" property="asunto" 
@@ -1478,7 +1478,7 @@
 								<table class="tablaCampos" align="center" border="0" cellpadding="0" cellspacing="0">
 									<tr>					
 										<td class="labelText">
-											<siga:Idioma key="expedientes.auditoria.literal.fase"/>&nbsp(*)
+											<siga:Idioma key="expedientes.auditoria.literal.fase"/>&nbsp;(*)
 										</td>				
 										<td>
 											<siga:Select queryId="getFasesExpediente" 
@@ -1492,7 +1492,7 @@
 										</td>
 
 										<td class="labelText">
-											<siga:Idioma key="expedientes.auditoria.literal.estadoyfechainicial"/>&nbsp(*)
+											<siga:Idioma key="expedientes.auditoria.literal.estadoyfechainicial"/>&nbsp;(*)
 										</td>			
 										<td colspan="2" nowrap>											
 											<siga:Select queryId="getEstadosExpediente" 

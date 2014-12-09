@@ -88,7 +88,7 @@
 <div id="camposRegistro" class="posicionModalMedia" align="center">
 
 
-	<table class="tablaTitulo" cellspacing="0" heigth="32">
+	<table class="tablaTitulo" cellspacing="0" height="32">
 		<tr>
 			<td id="titulo" class="titulosPeq">
 				<% ExpPartesForm f = (ExpPartesForm)request.getAttribute("ExpPartesForm"); %>
@@ -130,7 +130,7 @@
 		<tr>					
 			<td class="labelText">
 				
-				<siga:Idioma key="expedientes.auditoria.literal.nombre"/>&nbsp(*)
+				<siga:Idioma key="expedientes.auditoria.literal.nombre"/>&nbsp;(*)
 			</td>				
 			<td>
 				<html:text name="ExpPartesForm" property="nombre" styleClass="boxConsulta" readonly="true"></html:text>
@@ -147,14 +147,14 @@
 	<!-- FILA -->
 		<tr>		
 			<td class="labelText">
-				<siga:Idioma key="expedientes.auditoria.literal.primerapellido"/>&nbsp(*)
+				<siga:Idioma key="expedientes.auditoria.literal.primerapellido"/>&nbsp;(*)
 			</td>
 			<td>
 				<html:text name="ExpPartesForm" property="primerApellido" styleClass="boxConsulta" readonly="true"></html:text>				
 			</td>
 		
 			<td class="labelText">
-				<siga:Idioma key="expedientes.auditoria.literal.segundoapellido"/>&nbsp(*)
+				<siga:Idioma key="expedientes.auditoria.literal.segundoapellido"/>&nbsp;(*)
 			</td>
 			<td>
 				<html:text name="ExpPartesForm" property="segundoApellido" styleClass="boxConsulta" readonly="true"></html:text>				
@@ -164,14 +164,14 @@
 	<!-- FILA -->
 		<tr>					
 			<td class="labelText">
-				<siga:Idioma key="expedientes.auditoria.literal.nif"/>&nbsp(*)
+				<siga:Idioma key="expedientes.auditoria.literal.nif"/>&nbsp;(*)
 			</td>				
 			<td>				
 				<html:text name="ExpPartesForm" property="nif" styleClass="boxConsulta" readonly="true"></html:text>
 			</td>
 		
 			<td class="labelText">
-				<siga:Idioma key="expedientes.auditoria.literal.ncolegiado"/>&nbsp(*)
+				<siga:Idioma key="expedientes.auditoria.literal.ncolegiado"/>&nbsp;(*)
 			</td>
 			<td>
 				<html:text name="ExpPartesForm" property="numColegiado" styleClass="boxConsulta" readonly="true"></html:text>
@@ -262,7 +262,7 @@
 	<!-- FILA -->
 		<tr>
 			<td class="labelText">
-				<siga:Idioma key="expedientes.auditoria.literal.rol"/>&nbsp(*)
+				<siga:Idioma key="expedientes.auditoria.literal.rol"/>&nbsp;(*)
 			</td>				
 			<td>
 				<%if (editable){%>		

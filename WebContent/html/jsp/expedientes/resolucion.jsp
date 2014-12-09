@@ -222,7 +222,7 @@
 				<siga:Idioma key="expedientes.auditoria.literal.sancionfinalizada"/>
 			</td>
 			<td>
-				&nbsp&nbsp&nbsp&nbsp&nbsp
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 				<% if (bEditable){%>
 					<siga:Fecha  nombreCampo="sancionFinalizada" valorInicial="<%=f.getSancionFinalizada()%>"/>
 				<%} else{%>
@@ -247,7 +247,7 @@
 				<siga:Idioma key="expedientes.auditoria.literal.anotcanceladas"/>
 			</td>				
 			<td>
-				&nbsp&nbsp&nbsp&nbsp&nbsp
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 				<% if (bEditable){%>
 					<siga:Fecha  nombreCampo="anotacionesCanceladas" valorInicial="<%=f.getAnotacionesCanceladas()%>"/>
 				<%} else{%>
@@ -272,7 +272,7 @@
 				<siga:Idioma key="expedientes.auditoria.literal.resultadoInforme"/>
 			</td>
 			<td>
-				&nbsp&nbsp&nbsp&nbsp&nbsp
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 				<siga:ComboBD nombre="resultadoInforme" tipo="resultadoInforme" clase="<%=comboStyle%>" obligatorio="false" parametro="<%=dato%>" elementoSel="<%=resultadoInformeSel%>" readonly="<%=soloLectura%>"/>
 				
 			</td>
@@ -290,7 +290,7 @@
 				<siga:Idioma key="expedientes.auditoria.literal.visibleenficha"/>
 			</td>				
 			<td>
-				&nbsp&nbsp&nbsp&nbsp&nbsp
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 				<html:checkbox name="expResolucionForm" property="visibleEnFicha" disabled="<%=!bEditable%>"></html:checkbox>
 			</td>
 			<td colspan="2"></td>

@@ -87,7 +87,7 @@
 <div id="camposRegistro" class="posicionModalMedia" align="center">
 
 
-	<table class="tablaTitulo" cellspacing="0" heigth="32">
+	<table class="tablaTitulo" cellspacing="0" height="32">
 		<tr>
 			<td id="titulo" class="titulosPeq">
 				<% ExpDenunciadoForm f = (ExpDenunciadoForm)request.getAttribute("ExpDenunciadoForm"); %>
@@ -133,13 +133,13 @@
 	<!-- FILA -->
 		<tr>					
 			<td class="labelText">
-				<siga:Idioma key="expedientes.auditoria.literal.nombre"/>&nbsp(*)
+				<siga:Idioma key="expedientes.auditoria.literal.nombre"/>&nbsp;(*)
 			</td>				
 			<td>
 				<html:text name="ExpDenunciadoForm" property="nombre" styleClass="boxConsulta" readonly="true"></html:text>
 			</td>
 			<td class="labelText">
-				<siga:Idioma key="expedientes.auditoria.literal.primerapellido"/>&nbsp(*)
+				<siga:Idioma key="expedientes.auditoria.literal.primerapellido"/>&nbsp;(*)
 			</td>
 			<td>
 				<html:text name="ExpDenunciadoForm" property="primerApellido" styleClass="boxConsulta" readonly="true"></html:text>				
@@ -151,7 +151,7 @@
 		<tr>		
 		
 			<td class="labelText">
-				<siga:Idioma key="expedientes.auditoria.literal.segundoapellido"/>&nbsp(*)
+				<siga:Idioma key="expedientes.auditoria.literal.segundoapellido"/>&nbsp;(*)
 			</td>
 			<td>
 				<html:text name="ExpDenunciadoForm" property="segundoApellido" styleClass="boxConsulta" readonly="true"></html:text>				

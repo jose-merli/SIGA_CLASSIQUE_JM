@@ -107,7 +107,7 @@
 		<tr>				
 
 		<td class="labelText">
-			<siga:Idioma key="expedientes.auditoria.literal.nombre"/>&nbsp(*)
+			<siga:Idioma key="expedientes.auditoria.literal.nombre"/>&nbsp;(*)
 		</td>				
 		<td>
 			<% if (bEditable){ %>

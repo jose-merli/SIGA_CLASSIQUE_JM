@@ -119,7 +119,7 @@
 								<!-- FILA -->
 								<tr>				
 									<td class="labelText" >
-										<siga:Idioma key="expedientes.auditoria.literal.fase"/>&nbsp(*)
+										<siga:Idioma key="expedientes.auditoria.literal.fase"/>&nbsp;(*)
 									</td>				
 									<td width="550px">
 <% 
@@ -155,7 +155,7 @@
 								
 								<tr>
 									<td class="labelText">
-										<siga:Idioma key="expedientes.auditoria.literal.estado"/>&nbsp(*)
+										<siga:Idioma key="expedientes.auditoria.literal.estado"/>&nbsp;(*)
 									</td>				
 									<td>
 <% 

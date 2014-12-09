@@ -72,7 +72,7 @@
 	
 	<body>
 	
-	<%--<table class="tablaTitulo" cellspacing="0" heigth="32">--%>
+	<%--<table class="tablaTitulo" cellspacing="0" height="32">--%>
 	<table class="tablaTitulo" align="center" cellspacing="0">
 			<html:form  action="/EXP_TiposExpedientes_Fases.do" method="POST" target="submitArea">
 				<html:hidden property = "modo" value = ""/>

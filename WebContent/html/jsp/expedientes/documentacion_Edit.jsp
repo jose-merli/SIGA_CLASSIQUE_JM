@@ -65,7 +65,7 @@
 
 <div id="camposRegistro" class="posicionModalPeque" align="center">
 
-	<table class="tablaTitulo" cellspacing="0" heigth="32">
+	<table class="tablaTitulo" cellspacing="0" height="32">
 		<tr>
 			<td id="titulo" class="titulosPeq">
 				<% ExpDocumentacionForm f = (ExpDocumentacionForm)request.getAttribute("ExpDocumentacionForm"); %>
@@ -122,7 +122,7 @@
 		<tr>				
 
 			<td class="labelText">
-				<siga:Idioma key="expedientes.auditoria.literal.descripcion"/>&nbsp(*)
+				<siga:Idioma key="expedientes.auditoria.literal.descripcion"/>&nbsp;(*)
 			</td>				
 			<td colspan="3">
 				<html:text name="ExpDocumentacionForm" property="descripcion" size="40" maxlength="100" styleClass="<%=boxStyle%>" readonly="<%=!editable%>"></html:text>
