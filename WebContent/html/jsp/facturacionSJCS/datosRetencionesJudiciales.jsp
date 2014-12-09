@@ -180,7 +180,7 @@
 <body onload="cargarCheck();">
 
 	<!-- INICIO: TITULO OPCIONAL DE LA TABLA -->
-	<table class="tablaTitulo" align="center" cellspacing="0" heigth="32">
+	<table class="tablaTitulo" align="center" cellspacing="0" height="32">
 		<tr>
 			<td class="titulitosDatos">
 				<siga:Idioma key="FactSJCS.mantRetencionesJ.cabeceraExt" />
@@ -238,7 +238,7 @@
 										
 										<td colspan="3">
 											<input type="text" name="numeroColegiado"
-											style="width: 250px;" class="boxConsulta" readonly="true"
+											style="width: 250px;" class="boxConsulta" readonly
 											value="<%=ncolegiado%> - <%=nombre%>" />
 										</td>
 									<%}%>
@@ -253,15 +253,15 @@
 										<%if (lectura) {%>																				
 											<%if (tipoRetencion.equalsIgnoreCase("P")) {%>
 												<input type="hidden" name="tipoRetencion" value="<%=ClsConstants.TIPO_RETENCION_PORCENTAJE%>" /> 
-												<input type="text" class="boxConsulta" readonly="true" value='<siga:Idioma key="FactSJCS.mantRetencionesJ.literal.porcentual" />' />
+												<input type="text" class="boxConsulta" readonly value='<siga:Idioma key="FactSJCS.mantRetencionesJ.literal.porcentual" />' />
 												
 											<%}else if (tipoRetencion.equalsIgnoreCase("F")) {%>
 												<input type="hidden" name="tipoRetencion" value="<%=ClsConstants.TIPO_RETENCION_IMPORTEFIJO%>" /> 
-												<input type="text" class="boxConsulta" readonly="true" value='<siga:Idioma key="FactSJCS.mantRetencionesJ.literal.importeFijo" />' />
+												<input type="text" class="boxConsulta" readonly value='<siga:Idioma key="FactSJCS.mantRetencionesJ.literal.importeFijo" />' />
 																								
 											<%}else if (tipoRetencion.equalsIgnoreCase(ClsConstants.TIPO_RETENCION_LEC)) {%>
 												<input type="hidden" name="tipoRetencion" value="<%=ClsConstants.TIPO_RETENCION_LEC%>" />
-												<input type="text" class="boxConsulta" readonly="true" value='<siga:Idioma key="FactSJCS.mantRetencionesJ.literal.tramosLEC" />' />												 
+												<input type="text" class="boxConsulta" readonly value='<siga:Idioma key="FactSJCS.mantRetencionesJ.literal.tramosLEC" />' />												 
 											<%}%>
 											 
 											
@@ -309,10 +309,10 @@
 										<% // Si se entra en modo consulta, los botones del calendario desaparecen
 											if (!accion.equalsIgnoreCase("ver") && !accion.equalsIgnoreCase("modificar")) {
 										%>
-											<siga:Fecha nombreCampo="fechaInicio" valorInicial="<%=fechaInicio%>" readonly="true" />
+											<siga:Fecha nombreCampo="fechaInicio" valorInicial="<%=fechaInicio%>" readOnly="true" />
 										
 										<%} else {%>
-											<input type="text" name="fechaInicio" class="boxConsulta" readonly="true" value="<%=fechaInicio%>" /> 
+											<input type="text" name="fechaInicio" class="boxConsulta" readonly value="<%=fechaInicio%>" /> 
 										<%}%>
 									</td>
 									
@@ -322,10 +322,10 @@
 									
 									<td class="labelText">
 										<%if (!accion.equalsIgnoreCase("ver")) {%> 
-											<siga:Fecha nombreCampo="fechaFin" valorInicial="<%=fechaFin%>" readonly="true" />
+											<siga:Fecha nombreCampo="fechaFin" valorInicial="<%=fechaFin%>" readOnly="true" />
 											 
 										<%} else {%> 
-											<input type="text" name="fechaFin" class="boxConsulta" readonly="true" value="<%=fechaFin%>" /> 
+											<input type="text" name="fechaFin" class="boxConsulta" readonly value="<%=fechaFin%>" /> 
 										<%}%>
 									</td>
 								</tr>
@@ -341,7 +341,7 @@
 												tipo="destinatariosRetencionesFCS" ancho="150"
 												clase="<%=estiloCombo%>" filasMostrar="1"
 												seleccionMultiple="false" obligatorio="false"
-												parametro="<%=dato%>" ElementoSel="<%=destinatario%>"
+												parametro="<%=dato%>" elementoSel="<%=destinatario%>"
 												readonly="true" /> 
 												
 										<%} else {%> 
@@ -349,7 +349,7 @@
 												nombre="idDestinatario" tipo="destinatariosRetencionesFCS"
 												ancho="150" clase="<%=estiloCombo%>" filasMostrar="1"
 												seleccionMultiple="false" obligatorio="false"
-												parametro="<%=dato%>" ElementoSel="<%=destinatario%>"
+												parametro="<%=dato%>" elementoSel="<%=destinatario%>"
 												accion="obtenerCuenta();" /> 
 										<%}%>
 									</td>
@@ -368,7 +368,7 @@
 										<siga:Idioma key="FactSJCS.mantRetencionesJ.literal.cuentaContable" />
 									</td>
 									<td class="labelText">
-										<input type="text" name="cuentaContable" class="boxConsulta" readonly="true" />
+										<input type="text" name="cuentaContable" class="boxConsulta" readonly />
 									</td>
 								</tr>
 
@@ -378,8 +378,8 @@
 									</td>
 									<td class="labelText" colspan="3">
 										<html:textarea property="observaciones"
-											onKeyDown="cuenta(this,400)" onChange="cuenta(this,400)"												
-											styleclass="<%=estilo%>" 
+											onkeydown="cuenta(this,400)" onchange="cuenta(this,400)"												
+											styleClass="<%=estilo%>" 
 											value="<%=observaciones%>"
 											readonly="<%=lectura%>" 
 											style="overflow-y:auto; overflow-x:hidden; resize:none; width:500px; height:70px;"/> 

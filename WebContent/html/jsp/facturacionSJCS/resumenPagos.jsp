@@ -151,11 +151,11 @@
 								<tr>
 									<td class="labelText" nowrap><siga:Idioma key="factSJCS.resumenPagos.literal.nColegiado"/>&nbsp;(*)</td>
 									<td>
-										<html:text name="busquedaClientesModalForm" property="numeroColegiado" value="<%=numero%>" size="10" maxlength="20" styleClass="boxConsulta" readOnly="true"></html:text></td>
+										<html:text name="busquedaClientesModalForm" property="numeroColegiado" value="<%=numero%>" size="10" maxlength="20" styleClass="boxConsulta" readonly="true"></html:text>
 									</td>	
 									<td class="labelText" nowrap><siga:Idioma key="factSJCS.resumenPagos.literal.nombre"/>&nbsp;(*)</td>				
 									<td colspan="3">
-										<html:text name="busquedaClientesModalForm" property="nombrePersona" value="<%=nombre%>" size="80" styleClass="boxConsulta" readOnly="true"></html:text>
+										<html:text name="busquedaClientesModalForm" property="nombrePersona" value="<%=nombre%>" size="80" styleClass="boxConsulta" readonly="true"></html:text>
 									</td>
 								</tr>
 								<!-- FILA -->
@@ -163,7 +163,7 @@
 									
 									<td class="labelText" nowrap><siga:Idioma key="factSJCS.resumenPagos.literal.nifcif"/>&nbsp;(*)</td>
 									<td>
-										<html:text name="busquedaClientesModalForm" property="nif" value="<%=nif%>" size="30" styleClass="boxConsulta" readOnly="true"></html:text></td>
+										<html:text name="busquedaClientesModalForm" property="nif" value="<%=nif%>" size="30" styleClass="boxConsulta" readonly="true"></html:text>
 									</td>	
 
 									
@@ -219,7 +219,7 @@
 					scrolling="no"
 					frameborder="0"
 					marginheight="0"
-					marginwidth="0";					 
+					marginwidth="0"				 
 					class="frameGeneral">
 		</iframe> -->
 	

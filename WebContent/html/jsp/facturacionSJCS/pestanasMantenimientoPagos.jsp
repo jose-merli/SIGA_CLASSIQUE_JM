@@ -91,7 +91,7 @@
 			target="mainPestanas"
 			parametros="datos"
 			elementoactivo="<%=elementoActivo%>"
-			tipoAcceso="0xffffffff"
+			tipoacceso="0xffffffff"
 			idInstitucionCliente="<%=idInstitucion %>"			
 	/>
 
@@ -101,7 +101,7 @@
 			scrolling="no"
 			frameborder="0"
 			marginheight="0"
-			marginwidth="0";
+			marginwidth="0"
 			class="framePestanas"
 	>
 	</iframe>

@@ -157,14 +157,14 @@
 		<siga:Idioma key="factSJCS.datosPagos.literal.fechaInicio"/>
 	</td>
 	<td >
-		<siga:Fecha nombreCampo="fechaIni" readonly="true"></siga:Fecha>
+		<siga:Fecha nombreCampo="fechaIni" readOnly="true"></siga:Fecha>
 	</td>
 
 	<td class="labelText">
 		<siga:Idioma key="factSJCS.datosPagos.literal.fechaFin"/>
 	</td>				
 	<td>
-		<siga:Fecha nombreCampo="fechaFin" readonly="true" campoCargarFechaDesde="fechaIni"></siga:Fecha>
+		<siga:Fecha nombreCampo="fechaFin" readOnly="true" campoCargarFechaDesde="fechaIni"></siga:Fecha>
 	</td>
 
 	</tr>
@@ -229,7 +229,7 @@
 					scrolling="no"
 					frameborder="0"
 					marginheight="0"
-					marginwidth="0";					 
+					marginwidth="0"				 
 					class="frameGeneral">
 	</iframe>
 

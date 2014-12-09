@@ -34,6 +34,8 @@
 <%@ page import = "com.atos.utils.*"%>
 <%@ page import = "com.siga.ws.CajgConfiguracion"%>
 <%@ page import = "com.siga.Utilidades.UtilidadesNumero"%>
+<%@ page import="java.util.Vector"%>
+<%@ page import="java.util.Hashtable"%>
 
 <!-- JSP -->
 <% 
@@ -390,7 +392,7 @@
 
 <body>
 	<!-- TITULO -->
-	<table class="tablaTitulo" cellspacing="0" heigth="32">
+	<table class="tablaTitulo" cellspacing="0" height="32">
 		<tr>
 			<td id="titulo" class="titulitosDatos">
 				<siga:Idioma key="factSJCS.datosFacturacion.titulo1"/> <%=UtilidadesString.mostrarDatoJSP(nombreInstitucion)%>
@@ -412,23 +414,23 @@
 			<table class="tablaCampos" align="center" >	
 				<tr>		
 					<td class="labelText">
-						<siga:Idioma key="factSJCS.datosFacturacion.literal.nombre"/>&nbsp(*)
+						<siga:Idioma key="factSJCS.datosFacturacion.literal.nombre"/>&nbsp;(*)
 					</td>
 					<td colspan="3">
-						<html:text name="DatosGeneralesFacturacionForm" property="nombre" value='<%=nombre%>' size="60" maxlength="100" styleClass="<%=clase%>" readOnly="<%=readonly%>" />
+						<html:text name="DatosGeneralesFacturacionForm" property="nombre" value='<%=nombre%>' size="60" maxlength="100" styleClass="<%=clase%>" readonly="<%=readonly%>" />
 					</td>
 				</tr>
 				
 				<tr>
 					<td class="labelText">
-						<siga:Idioma key="factSJCS.datosFacturacion.literal.fechaInicio"/>&nbsp(*)
+						<siga:Idioma key="factSJCS.datosFacturacion.literal.fechaInicio"/>&nbsp;(*)
 					</td>
 					<td>
 						<siga:Fecha nombreCampo="fechaInicio" valorInicial="<%=fechaInicio%>" disabled="<%=desactivado%>"></siga:Fecha>
 					</td>
 					
 					<td class="labelText">
-						<siga:Idioma key="factSJCS.datosFacturacion.literal.fechaFin"/>&nbsp(*)
+						<siga:Idioma key="factSJCS.datosFacturacion.literal.fechaFin"/>&nbsp;(*)
 					</td>	
 					<td>								
 						<siga:Fecha nombreCampo="fechaFin" valorInicial="<%=fechaFin%>" disabled="<%=desactivado%>"></siga:Fecha>
@@ -440,14 +442,14 @@
 						<siga:Idioma key="factSJCS.datosFacturacion.literal.estado"/>&nbsp;
 					</td>				
 					<td>
-						<html:text name="DatosGeneralesFacturacionForm" property="estado" value="" maxlength="50" size="50" styleClass="boxConsulta" readOnly="true" />
+						<html:text name="DatosGeneralesFacturacionForm" property="estado" value="" maxlength="50" size="50" styleClass="boxConsulta" readonly="true" />
 					</td>
 					
 					<td class="labelText">
 						<siga:Idioma key="factSJCS.datosFacturacion.literal.fechaEstado"/>&nbsp;
 					</td>				
 					<td>
-						<html:text name="DatosGeneralesFacturacionForm" property="fechaEstado" value='<%=fechaEstado%>' maxlength="10" size="10" styleClass="boxConsulta" readOnly="true" />
+						<html:text name="DatosGeneralesFacturacionForm" property="fechaEstado" value='<%=fechaEstado%>' maxlength="10" size="10" styleClass="boxConsulta" readonly="true" />
 					</td>
 				</tr>
 			</table>
@@ -485,8 +487,7 @@
 	   	border="1"
 		columnNames="factSJCS.datosFacturacion.literal.gruposFacturacion,factSJCS.datosFacturacion.literal.hitos,"
 		columnSizes="35,45,10"
-		fixedHeight="50%"
-		modal="P">
+		fixedHeight="50%">
 		
 <% 
 		if (obj==null || obj.size()==0) {

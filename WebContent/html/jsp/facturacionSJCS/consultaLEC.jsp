@@ -35,7 +35,7 @@
 	<bean:define id="consultaLEC" name="consultaLEC" scope="request"/>
 	
 	<!-- Barra de titulo actualizable desde los mantenimientos -->
-	<table class="tablaTitulo" cellspacing="0" heigth="38">
+	<table class="tablaTitulo" cellspacing="0" height="38">
 		<tr>
 			<td id="titulo" class="titulitosDatos"><siga:Idioma key="factSJCS.busquedaRetAplicadas.titulo.importesImplicados" /></td>
 		</tr>
@@ -54,8 +54,7 @@
 			factSJCS.busquedaRetAplicadas.literal.importeMesRetenido,
 			factSJCS.busquedaRetAplicadas.literal.importeTotRetener,
 			factSJCS.busquedaRetAplicadas.literal.importeTotRetenido,"
-		columnSizes="36,6,8,8,8,8,8,8,8,2" 
-		modal="M" >
+		columnSizes="36,6,8,8,8,8,8,8,8,2">
 		
 	<c:forEach items="${consultaLEC}" var="registro" varStatus="status">    
 	

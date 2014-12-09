@@ -59,7 +59,7 @@
 
 	<!-- TITULO -->
 	<!-- Barra de titulo actualizable desde los mantenimientos -->
-	<table class="tablaTitulo" cellspacing="0" heigth="32">
+	<table class="tablaTitulo" cellspacing="0" height="32">
 	<tr>
 		<td id="titulo" class="titulosPeq">
 			<siga:Idioma key="factSJCS.previsiones.titulo2"/>
@@ -69,9 +69,9 @@
 
 
 	<div id="camposRegistro" class="posicionModalPeque" align="center">
-	<table  class="tablaCentralCamposPeque"  align="center">
 	<!-- Formulario de la lista de detalle multiregistro -->
 	<form name="formulario" action="" method="POST" target="submitArea">
+	<table  class="tablaCentralCamposPeque"  align="center">	
 	<tr>
 	<td  height="110">
 
@@ -80,21 +80,21 @@
 				<tr>		
 					<td class="labelText" >
   					  <input type="radio" name="ficheros" value="uno" checked> 
-					  <siga:Idioma key="factSJCS.previsiones.literal.salida1"/>&nbsp
+					  <siga:Idioma key="factSJCS.previsiones.literal.salida1"/>&nbsp;
 					</td>
 				</tr>
 				<tr>		
 					<td class="labelText" >
 					  <input type="radio" name="ficheros" value="varios"> 
-					  <siga:Idioma key="factSJCS.previsiones.literal.salida2"/>&nbsp
+					  <siga:Idioma key="factSJCS.previsiones.literal.salida2"/>&nbsp;
 					</td>
 				</tr>
 			</table>
 			</siga:ConjCampos>
 	</td>				
-	</tr>
-	</form>
+	</tr>	
 	</table>
+	</form>
 
 
 	<div id="botonesAccion" style="position:absolute;top=180;left:0">	

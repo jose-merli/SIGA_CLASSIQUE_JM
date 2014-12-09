@@ -124,7 +124,7 @@
 <body class="tablaCentralCampos">
 
 	<!-- TITULO -->
-	<table class="tablaTitulo" cellspacing="0" heigth="32">
+	<table class="tablaTitulo" cellspacing="0" height="32">
 		<tr>
 		<html:form action="/FCS_DetalleFacturacion.do" method="POST" target="submitArea">
 
@@ -153,7 +153,6 @@
 			   border="1"
 			   columnNames="Concepto,factSJCS.detalleFacturacion.literal.importe"
 			   columnSizes="70,30"
-			   modal = "g"	
 			   modalScroll="true">
 	
 				<!-- INICIO: ZONA DE REGISTROS -->

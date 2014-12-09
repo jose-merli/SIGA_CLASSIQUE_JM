@@ -66,7 +66,7 @@
 
 <body>
 
-	<table class="tablaTitulo" cellspacing="0" heigth="32">
+	<table class="tablaTitulo" cellspacing="0" height="32">
 	<tr>
 		<td id="titulo" class="titulosPeq">
 			<siga:Idioma key="factSJCS.datosFacturacion.titulo1"/> <%=UtilidadesString.mostrarDatoJSP(nombreInstitucion)%>
@@ -130,7 +130,7 @@
 	<script language="JavaScript">
   
 
-		<!-- Asociada al boton GuardarCerrar -->
+		// Asociada al boton GuardarCerrar
 		function accionGuardarCerrar() 
 		{
 			sub();		
@@ -179,7 +179,7 @@
 			window.top.returnValue="MODIFICADO";			
 		}
 		
-		<!-- Asociada al boton Cerrar -->
+		// Asociada al boton Cerrar
 		function accionCerrar() 
 		{		
 			// esta funcion cierra la ventana y devuelve 
@@ -187,7 +187,7 @@
 			top.cierraConParametros("NORMAL");
 		}
 
-		<!-- Asociada al boton Restablecer -->
+		// Asociada al boton Restablecer
 		function accionRestablecer() 
 		{		
 			document.forms[0].reset();
@@ -205,9 +205,6 @@
 	<!-- FIN: SCRIPTS BOTONES -->
 
 	<!-- FIN ******* BOTONES DE ACCIONES EN REGISTRO ****** -->
-
-
-</div>
 <!-- FIN ******* CAPA DE PRESENTACION ****** -->
 			
 <!-- INICIO: SUBMIT AREA -->

@@ -36,6 +36,7 @@
 <%@ page import="com.atos.utils.Row"%>
 <%@ page import="com.siga.Utilidades.*"%>
 <%@ page import="java.util.Properties"%>
+<%@ page import="java.util.List"%>
 
 <!-- JSP -->
 <% 
@@ -112,9 +113,9 @@
 					<td>
 						<bean:define id="listaPropositosSEPA" name="listaPropositosSEPA" scope="request"/>
 						<html:select styleId="comboPropositosSEPA" property="idpropSEPA" value="${configuracionAbonosForm.idpropSEPA}" styleClass="boxCombo" style="width:200px;" disabled="<%=combodeshabilitado%>">
-						<s:if test="${configuracionAbonosForm.idpropSEPA eq 0}">
+						<c:if test="${configuracionAbonosForm.idpropSEPA eq 0}">
 							<html:option value=""><c:out value=""/></html:option>
-						</s:if>
+						</c:if>
 						<c:forEach items="${listaPropositosSEPA}" var="propSEPACmb">
 							<html:option value="${propSEPACmb.idProposito}"><c:out value="${propSEPACmb.codigo.trim().length()>0?propSEPACmb.codigo:'	'} ${propSEPACmb.nombre}"/></html:option>
 						</c:forEach>
@@ -127,9 +128,9 @@
 					<td>
 						<bean:define id="listaPropositosOtros" name="listaPropositosOtros" scope="request"/>
 						<html:select styleId="comboPropositosOtros" property="idpropOtros" value="${configuracionAbonosForm.idpropOtros}" styleClass="boxCombo" style="width:200px;" disabled="<%=combodeshabilitado%>">
-						<s:if test="${configuracionAbonosForm.idpropOtros eq 0}">
+						<c:if test="${configuracionAbonosForm.idpropOtros eq 0}">
 							<html:option value=""><c:out value=""/></html:option>
-						</s:if>
+						</c:if>
 						<c:forEach items="${listaPropositosOtros}" var="propOtrosCmb">
 							<html:option value="${propOtrosCmb.idProposito}"><c:out value="${propOtrosCmb.codigo.trim().length()>0?propOtrosCmb.codigo:'	'} ${propOtrosCmb.nombre}"/></html:option>
 						</c:forEach>
@@ -141,7 +142,7 @@
 
 		<!-- TITULO -->
 		<!-- Barra de titulo actualizable desde los mantenimientos -->
-		<table class="tablaTitulo" cellspacing="0" heigth="32">
+		<table class="tablaTitulo" cellspacing="0" height="32">
 			<tr>
 				<td id="titulo" class="titulosPeq">
 					<siga:Idioma key="factSJCS.abonos.configuracion.literal.cuentas"/>
@@ -154,8 +155,7 @@
 					facturacion.ficheroBancarioAbonos.literal.banco,
 					facturacion.sufijos.literal.sufijo,
 					facturacion.cuentasBancarias.IBAN"
-				columnSizes="5,35,22,38"
-				modal="g">
+				columnSizes="5,35,22,38">
 				   				   
 <%
 	    		if (request.getAttribute("bancosInstitucion") == null || ((Vector)request.getAttribute("bancosInstitucion")).size() < 1 ) {
@@ -208,7 +208,7 @@
 								visibleEdicion='no'
 								visibleBorrado='no' 	
 								clase='listaNonEdit' 	
-								pintarespacio='no'>
+								pintarEspacio='no'>
 								<td align="center">
 <% 
 									if (guardable) {
@@ -251,9 +251,9 @@
 								<c:set var="valorSeleccionadoComboExisteAb" value="${configuracionAbonosForm.idsufijo!=null&&cuentaChecked?configuracionAbonosForm.idsufijo:''}"></c:set>
 								<c:set var="valorSeleccionadoCombo" value="${configuracionAbonosForm.idsufijo==null&&cuentaChecked?configuracionAbonosForm.idsufijo:valorSeleccionadoComboExisteAb}"></c:set>
 								<html:select styleId="<%=idComboSuf%>" name = "sufijoCmb" property="idSufijo" value="${valorSeleccionadoCombo}" styleClass="boxCombo" disabled="<%=combodeshabilitado%>" style="width:200px;">
- 								<s:if test="${empty valorSeleccionadoCombo}"> 
+ 								<c:if test="${empty valorSeleccionadoCombo}"> 
  									<html:option value=""><c:out value=""/></html:option> 
- 								</s:if> 
+ 								</c:if> 
 								<c:forEach items="${listaSufijos}" var="sufijoCmb">											
 									<html:option value="${sufijoCmb.idSufijo}">										
 										<c:if	test="${sufijoCmb.sufijo.trim().length()>0}">

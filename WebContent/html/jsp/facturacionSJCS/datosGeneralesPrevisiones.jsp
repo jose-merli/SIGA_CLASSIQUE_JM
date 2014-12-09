@@ -240,16 +240,16 @@
 				
 					<table class="tablaCampos" align="center">	
 						<tr>		
-							<td class="labelText" ><siga:Idioma key="factSJCS.datosFacturacion.literal.nombre"/>&nbsp(*)</td>
+							<td class="labelText" ><siga:Idioma key="factSJCS.datosFacturacion.literal.nombre"/>&nbsp;(*)</td>
 							<td >
-								<html:text name="mantenimientoPrevisionesForm" property="nombre" value='<%=nombre%>' size="60" maxlength="100" styleClass="<%=clase%>" readOnly="<%=readonly%>"></html:text>
+								<html:text name="mantenimientoPrevisionesForm" property="nombre" value='<%=nombre%>' size="60" maxlength="100" styleClass="<%=clase%>" readonly="<%=readonly%>"></html:text>
 								<html:hidden name="mantenimientoPrevisionesForm" property="nombreB"></html:hidden>
 							</td>
-							<td class="labelText" ><siga:Idioma key="factSJCS.datosFacturacion.literal.fechaInicio"/>&nbsp(*)</td>
+							<td class="labelText" ><siga:Idioma key="factSJCS.datosFacturacion.literal.fechaInicio"/>&nbsp;(*)</td>
 							<td>
 								<siga:Fecha nombreCampo="fechaDesde" valorInicial="<%=fechaInicio%>" disabled="<%=String.valueOf(consulta)%>"></siga:Fecha>								
 							</td>
-							<td class="labelText" ><siga:Idioma key="factSJCS.datosFacturacion.literal.fechaFin"/>&nbsp(*)</td>	
+							<td class="labelText" ><siga:Idioma key="factSJCS.datosFacturacion.literal.fechaFin"/>&nbsp;(*)</td>	
 							<td >								
 								<siga:Fecha nombreCampo="fechaHasta" valorInicial="<%=fechaFin%>" disabled="<%=String.valueOf(consulta)%>"></siga:Fecha>
 							</td>	
@@ -272,7 +272,7 @@
 					scrolling="no"
 					frameborder="0"
 					marginheight="0"
-					marginwidth="0";					 
+					marginwidth="0"		 
 					class="frameGeneral">
 </iframe>
 

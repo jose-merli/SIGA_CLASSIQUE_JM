@@ -65,7 +65,7 @@
 
 	<!-- TITULO -->
 	<!-- Barra de titulo actualizable desde los mantenimientos -->
-	<table class="tablaTitulo" cellspacing="0" heigth="32">
+	<table class="tablaTitulo" cellspacing="0" height="32">
 	<tr>
 		<td id="titulo" class="titulosPeq">
 			<siga:Idioma key="factSJCS.previsiones.titulo3"/>
@@ -92,25 +92,25 @@
 				<tr>		
 					<td class="labelText" >
 					  <input type="button" alt="<%=UtilidadesString.getMensajeIdioma(usrbean, "general.boton.download")%>" onclick="descargas('O');" class="button" value="<%=UtilidadesString.getMensajeIdioma(usrbean, "general.boton.download")%>" />
-					  &nbsp;<siga:Idioma key="factSJCS.previsiones.literal.ficheroTurnosOficio"/>&nbsp
+					  &nbsp;<siga:Idioma key="factSJCS.previsiones.literal.ficheroTurnosOficio"/>&nbsp;
 					</td>
 				</tr>
 				<tr>		
 					<td class="labelText" >
 					  <input type="button" alt="<%=UtilidadesString.getMensajeIdioma(usrbean, "general.boton.download")%>" onclick="descargas('G');" class="button" value="<%=UtilidadesString.getMensajeIdioma(usrbean, "general.boton.download")%>" />
-					  &nbsp;<siga:Idioma key="factSJCS.previsiones.literal.ficheroGuardias"/>&nbsp
+					  &nbsp;<siga:Idioma key="factSJCS.previsiones.literal.ficheroGuardias"/>&nbsp;
 					</td>
 				</tr>
 				<tr>		
 					<td class="labelText" >
 					  <input type="button" alt="<%=UtilidadesString.getMensajeIdioma(usrbean, "general.boton.download")%>" onclick="descargas('E');" class="button" value="<%=UtilidadesString.getMensajeIdioma(usrbean, "general.boton.download")%>" />
-					  &nbsp;<siga:Idioma key="factSJCS.previsiones.literal.ficheroExpedientesEJG"/>&nbsp
+					  &nbsp;<siga:Idioma key="factSJCS.previsiones.literal.ficheroExpedientesEJG"/>&nbsp;
 					</td>
 				</tr>
 				<tr>		
 					<td class="labelText" >
 					  <input type="button" alt="<%=UtilidadesString.getMensajeIdioma(usrbean, "general.boton.download")%>" onclick="descargas('S');" class="button" value="<%=UtilidadesString.getMensajeIdioma(usrbean, "general.boton.download")%>" />
-					  &nbsp;<siga:Idioma key="factSJCS.previsiones.literal.ficheroExpedientesSOJ"/>&nbsp
+					  &nbsp;<siga:Idioma key="factSJCS.previsiones.literal.ficheroExpedientesSOJ"/>&nbsp;
 					</td>
 				</tr>
 			</table>

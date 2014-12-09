@@ -171,7 +171,7 @@
 
 <body>
 
-	<table class="tablaTitulo" cellspacing="0" heigth="62">
+	<table class="tablaTitulo" cellspacing="0" height="62">
 	<tr>
 		<td id="titulo" class="titulitosDatos">
 			<siga:Idioma key="factSJCS.datosMovimientos.cabecera"/>
@@ -320,11 +320,11 @@
 				</td>
 				<%if ((modo!=null)&&(modo.equals("consulta"))){%>
 				<td class="labelText" colspan="3">
-					<html:textarea name="MantenimientoMovimientosForm" property="motivo" cols="60" rows="4" onKeyDown="cuenta(this,255)" onChange="cuenta(this,255)" styleClass="<%=clase%>" readonly="true" value="<%=motivo%>"/>
+					<html:textarea name="MantenimientoMovimientosForm" property="motivo" cols="60" rows="4" onkeydown="cuenta(this,255)" onchange="cuenta(this,255)" styleClass="<%=clase%>" readonly="true" value="<%=motivo%>"/>
 				</td>
 				<%} else {%>
 				<td class="labelText" colspan="3">
-					<html:textarea name="MantenimientoMovimientosForm" property="motivo" cols="60" rows="4" onKeyDown="cuenta(this,255)" onChange="cuenta(this,255)" styleClass="<%=clase%>" readonly="false" value="<%=motivo%>"/>
+					<html:textarea name="MantenimientoMovimientosForm" property="motivo" cols="60" rows="4" onkeydown="cuenta(this,255)" onchange="cuenta(this,255)" styleClass="<%=clase%>" readonly="false" value="<%=motivo%>"/>
 				</td>				
 				<%}%>	
 			</tr>			

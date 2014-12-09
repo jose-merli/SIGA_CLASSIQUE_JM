@@ -241,7 +241,7 @@
 					<%=nomInstitucion %>
 				</td>
 				<td>
-				<% if (!estado.equals("") && !estado.equals("&nbsp;") && !estado.equals("&nbsp")) { %>
+				<% if (!estado.equals("") && !estado.equals("&nbsp;")) { %>
 				<siga:Idioma key="<%=estado%>"/>
 				<% } else { %>
 				&nbsp;
