@@ -152,7 +152,7 @@
 					scrolling="no"
 					frameborder="0"
 					marginheight="0"
-					marginwidth="0";					 
+					marginwidth="0"					 
 					style="position:absolute; width:964; height:400; z-index:2; top: 72px; left: 0px">
 	</iframe> -->
 	<!-- FIN: IFRAME LISTA RESULTADOS -->

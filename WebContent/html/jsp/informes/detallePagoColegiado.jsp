@@ -80,7 +80,7 @@
 
 <!-- TITULO -->
 <!-- Barra de titulo actualizable desde los mantenimientos -->
-<table class="tablaTitulo" cellspacing="0" heigth="38">
+<table class="tablaTitulo" cellspacing="0" height="38">
 	<tr>
 		<td id="titulo" class="titulitosDatos"><siga:Idioma
 			key="informes.sjcs.pagos.envio.detalle.titulo" /></td>
@@ -89,7 +89,6 @@
 
 
 <table class="tablaCentralCampos" align="center">
-
 	<tr>
 		<td><siga:ConjCampos leyenda="informes.sjcs.pagos.envio.detalle.titulo">
 			<table>
@@ -103,7 +102,7 @@
 					<td class="labelTextValue"><%=UtilidadesNumero.formatoCampo(importeMvtos)%></td>
 					<td class="labelText"><siga:Idioma
 						key="informes.sjcs.pagos.envio.detalle.totalBrutos" />:</td>
-					<td class="labelTextValue" align="rigth"><%=UtilidadesNumero.formatoCampo(totalBrutos)%>&nbsp;&euro;</td>
+					<td class="labelTextValue" align="right"><%=UtilidadesNumero.formatoCampo(totalBrutos)%>&nbsp;&euro;</td>
 					<td></td>
 				</tr>
 				<tr>
@@ -116,7 +115,7 @@
 					<td class="labelTextValue"><%=UtilidadesNumero.formatoCampo(importeRetencion)%></td>
 					<td class="labelText"><siga:Idioma
 						key="informes.sjcs.pagos.envio.detalle.totalRetenido" />:</td>
-					<td class="labelTextValue" align="rigth"><%=UtilidadesNumero.formatoCampo(totalRetenido)%>&nbsp;&euro;</td>
+					<td class="labelTextValue" align="right"><%=UtilidadesNumero.formatoCampo(totalRetenido)%>&nbsp;&euro;</td>
 					<td></td>
 				</tr>
 				<tr>
@@ -127,7 +126,7 @@
 					<td class="labelText">&nbsp;</td>
 					<td class="labelText"><siga:Idioma
 						key="informes.sjcs.pagos.envio.detalle.importeTotal" />:</td>
-					<td class="labelTextValue" align="rigth"><%=UtilidadesNumero.formatoCampo(neto)%>&nbsp;&euro;</td>
+					<td class="labelTextValue" align="right"><%=UtilidadesNumero.formatoCampo(neto)%>&nbsp;&euro;</td>
 					<td></td>
 				</tr>
 
@@ -138,12 +137,6 @@
 	</tr>
 </table>
 
-
-
-
-
-
-</div>
 <iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp"
 	style="display: none"></iframe>
 </body>
