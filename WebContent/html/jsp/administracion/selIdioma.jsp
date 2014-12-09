@@ -18,7 +18,7 @@
 <%@ page import="com.siga.administracion.SIGAConstants"%>
 <%@ page import="java.util.Hashtable" %>
 <%@ page import="java.util.Vector" %>
-
+<%@ page import="java.util.ArrayList"%>
 
 <%
 	String app=request.getContextPath();

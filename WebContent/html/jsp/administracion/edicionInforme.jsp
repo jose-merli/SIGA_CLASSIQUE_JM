@@ -4,7 +4,6 @@
 <!-- edicionInforme.jsp -->
 
 <!-- CABECERA JSP -->
-<%@page import="java.util.ArrayList"%>
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache">
 <%@ page pageEncoding="ISO-8859-1"%>
@@ -18,6 +17,9 @@
 <%@ taglib uri="struts-html.tld" prefix="html"%>
 <%@ taglib uri="struts-logic.tld" prefix="logic"%>
 <%@ taglib uri="c.tld" prefix="c"%>
+
+<%@page import="java.util.ArrayList"%>
+<%@ page import="java.util.Iterator"%>
 
 
 
@@ -225,7 +227,7 @@
 	
 	%>
 
-	<table class="tablaTitulo" cellspacing="0" heigth="32">
+	<table class="tablaTitulo" cellspacing="0" height="32">
 		<tr>
 			<td id="titulo" class="titulosPeq">
 				<siga:Idioma key="administracion.informes.edicion.titulo"/>
@@ -566,7 +568,7 @@
 		scrolling="no"
 		frameborder="0"
 		marginheight="0"
-		marginwidth="0";					 
+		marginwidth="0"					 
 		class="frameGeneral">					
 	</iframe>
 	

@@ -86,7 +86,7 @@
 		<siga:ConjBotonesBusqueda botones="B" titulo=""/>
 
 		<iframe align="center" src="<%=app%>/html/jsp/general/blank.jsp" id="resultado" name="resultado"  scrolling="no"
-								frameborder="0" marginheight="0" marginwidth="0"; class="frameGeneral">
+								frameborder="0" marginheight="0" marginwidth="0" class="frameGeneral">
 		</iframe>
 
 		<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
