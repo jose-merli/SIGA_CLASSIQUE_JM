@@ -86,7 +86,7 @@
 
 		<!-- TITULO -->
 		<!-- Barra de titulo actualizable desde los mantenimientos -->
-		<table class="tablaTitulo" cellspacing="0" heigth="32">
+		<table class="tablaTitulo" cellspacing="0" height="32">
 			<tr>
 				<td id="titulo" class="titulosPeq">
 					<siga:Idioma key="facturacion.datosPlantillas.cabecera"/>
@@ -119,9 +119,9 @@
 									</td>
 									<td class="nonEdit">
 										<% if (nextModo.equalsIgnoreCase("insertar")){ %>
-											<html:textarea cols="50" rows="2" onKeyDown="cuenta(this,4000)" onChange="cuenta(this,4000)" property="descripcion" styleClass="box"></html:textarea> 
+											<html:textarea cols="50" rows="2" onkeydown="cuenta(this,4000)" onchange="cuenta(this,4000)" property="descripcion" styleClass="box"></html:textarea> 
 										<% } else { %>
-											<html:textarea cols="50" rows="2" onKeyDown="cuenta(this,4000)" onChange="cuenta(this,4000)" property="descripcion" styleClass="box" value="<%=registro.getDescripcion()%>"></html:textarea> 
+											<html:textarea cols="50" rows="2" onkeydown="cuenta(this,4000)" onchange="cuenta(this,4000)" property="descripcion" styleClass="box" value="<%=registro.getDescripcion()%>"></html:textarea> 
 							  	    	<% } %>
 									</td>
 								</tr>

@@ -79,7 +79,7 @@
 
 		<!-- TITULO -->
 		<!-- Barra de titulo actualizable desde los mantenimientos -->
-		<table class="tablaTitulo" cellspacing="0" heigth="32">
+		<table class="tablaTitulo" cellspacing="0" height="32">
 			<tr>
 				<td id="titulo" class="titulosPeq">
 					<siga:Idioma key="facturacion.altaAbonos.literal.cabecera"/>
@@ -121,14 +121,14 @@
 										<siga:Idioma key="facturacion.busquedaAbonos.literal.numeroAbono"/>
 									</td>
 									<td class="labelTextValor">
-										<html:text property="numeroAbono" styleClass="boxConsultaLabelText" size="8" maxlength="10" value="<%=numeroAbono%>" readOnly="true"></html:text>&nbsp;
+										<html:text property="numeroAbono" styleClass="boxConsultaLabelText" size="8" maxlength="10" value="<%=numeroAbono%>" readonly="true"></html:text>&nbsp;
 										<siga:Idioma key="facturacion.altaAbonos.literal.provisional"/>
 									</td>
 									<td class="labelText">
 										<siga:Idioma key="facturacion.busquedaAbonos.literal.fecha"/>
 									</td>	
 									<td class="labelTextValor">
-										<html:text property="fecha" size="10" maxlength="10" styleClass="boxConsultaLabelText" readOnly="true" value="<%=fechaA%>"></html:text>
+										<html:text property="fecha" size="10" maxlength="10" styleClass="boxConsultaLabelText" readonly="true" value="<%=fechaA%>"></html:text>
 									</td>
 								</tr>
 								<tr>
@@ -154,7 +154,7 @@
 										<siga:Idioma key="facturacion.busquedaAbonos.literal.fecha"/>
 									</td>	
 									<td class="labelText">										
-										<html:text property="fechaFactura" size="10" maxlength="10" styleClass="boxConsulta" readOnly="true"></html:text>
+										<html:text property="fechaFactura" size="10" maxlength="10" styleClass="boxConsulta" readonly="true"></html:text>
 									</td>
 								</tr>
 								<tr>
@@ -162,7 +162,7 @@
 										<siga:Idioma key="facturacion.busquedaAbonos.literal.estado"/>
 									</td>
 									<td class="labelText" colspan="3">
-										<html:text property="estado" size="30" maxlength="10" styleClass="boxConsulta" readOnly="true" value=""></html:text>
+										<html:text property="estado" size="30" maxlength="10" styleClass="boxConsulta" readonly="true" value=""></html:text>
 									</td>
 								</tr>
 								<tr>
@@ -170,7 +170,7 @@
 										<siga:Idioma key="facturacion.altaAbonos.literal.motivos"/>&nbsp;(*)
 									</td>
 									<td class="labelText" colspan="3">
-										<html:textarea property="motivos" onKeyDown="cuenta(this,255)" onChange="cuenta(this,255)" rows="4" styleClass="box" size="100" value=""></html:textarea>
+										<html:textarea property="motivos" onkeydown="cuenta(this,255)" onchange="cuenta(this,255)" rows="4" styleClass="box" size="100" value=""></html:textarea>
 									</td>
 								</tr>
 							</html:form>	

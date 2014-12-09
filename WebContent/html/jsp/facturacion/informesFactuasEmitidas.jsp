@@ -136,7 +136,7 @@
 					scrolling="no"
 					frameborder="0"
 					marginheight="0"
-					marginwidth="0";					 
+					marginwidth="0"			 
 					style="position:absolute; width:964; height:325; z-index:2; top: 147px; left: 0px">
 	</iframe> -->
 	<!-- FIN: IFRAME LISTA RESULTADOS -->

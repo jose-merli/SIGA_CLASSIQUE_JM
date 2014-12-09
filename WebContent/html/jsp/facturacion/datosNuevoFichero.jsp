@@ -98,7 +98,7 @@
 <body>
 	<!-- TITULO -->
 	<!-- Barra de titulo actualizable desde los mantenimientos -->
-	<table class="tablaTitulo" cellspacing="0" heigth="32">
+	<table class="tablaTitulo" cellspacing="0" height="32">
 		<tr>
 			<td id="titulo" class="titulitosDatos"><siga:Idioma key="facturacion.nuevoFichero.cabecera"/></td>
 		</tr>
@@ -123,9 +123,9 @@
 							</tr>
 							<tr>
 								<td class="labelText">
-									<html:file property="ruta" styleClass="box" readOnly="false" onChange="rutaVisible.value=ruta.value" style="width:650px"></html:file>
+									<html:file property="ruta" styleClass="box" onchange="rutaVisible.value=ruta.value" style="width:650px"></html:file>
 									<div style="display:none; position:absolute; width:18px; height:35px; z-index:2; top: 60px; left: 25px">
-										<html:text styleClass="box" property="rutaVisible" size="60" value="" readOnly="true" />
+										<html:text styleClass="box" property="rutaVisible" size="60" value="" readonly="true" />
 									</div>
 								</td>
 							</tr>
@@ -192,7 +192,7 @@
 									</td>
 									<td>
 										<html:textarea property="datosPagosRenegociarObservaciones" 
-											onKeyDown="cuenta(this,4000)" onChange="cuenta(this,4000)" 
+											onkeydown="cuenta(this,4000)" onchange="cuenta(this,4000)" 
 											style="overflow-y:auto; overflow-x:hidden; width:540px; height:35px; resize:none;"
 											styleClass="box" value=""/>
 									</td>

@@ -31,6 +31,7 @@
 <%@ page import="com.siga.tlds.*"%>
 <%@ page import="java.util.Vector"%>
 <%@ page import="com.siga.Utilidades.PaginadorCaseSensitive"%>
+<%@ page import="java.util.HashMap"%>
 
 <!-- JSP -->
 <% 

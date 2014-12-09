@@ -158,7 +158,7 @@
 <body onload="onload();">
 	<!-- TITULO -->
 	<!-- Barra de titulo actualizable desde los mantenimientos -->
-	<table class="tablaTitulo" cellspacing="0" heigth="32px">
+	<table class="tablaTitulo" cellspacing="0" height="32px">
 		<tr>
 			<td id="titulo" class="titulitosDatos"><siga:Idioma key="facturacion.pagosFactura.Renegociar.Titulo"/></td>
 		</tr>
@@ -287,7 +287,7 @@
 									
 								} else { // numeroPersonasFactura=1; numeroFacturas=1; numeroFacturasPorBanco=0;
 %>																	
-									<tr width="100%">
+									<tr>
 										<td>
 											<input type="radio" id="radio1" name="datosPagosRenegociarNuevaFormaPago" value="cuentaFactura" disabled="disabled"/>
 										</td>
@@ -415,7 +415,7 @@
 								</td>
 								<td>
 									<html:textarea property="datosPagosRenegociarObservaciones" 
-										onKeyDown="cuenta(this,4000)" onChange="cuenta(this,4000)" 
+										onkeydown="cuenta(this,4000)" onchange="cuenta(this,4000)" 
 										styleClass="box" value=""
 										style="overflow-y:auto; overflow-x:hidden; resize:none; width:340px; height:60px;"/>
 								</td>

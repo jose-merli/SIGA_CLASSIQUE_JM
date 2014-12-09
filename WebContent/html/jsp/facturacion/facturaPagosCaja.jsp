@@ -112,7 +112,7 @@
 <body>
 	<!-- TITULO -->
 	<!-- Barra de titulo actualizable desde los mantenimientos -->
-	<table class="tablaTitulo" cellspacing="0" heigth="32">
+	<table class="tablaTitulo" cellspacing="0" height="32">
 		<tr>
 				<td id="titulo" class="titulitosDatos"><siga:Idioma key="facturacion.pagosFactura.Caja.Titulo"/></td>
 		</tr>
@@ -136,7 +136,7 @@
 							<td class="labelText" width="210px"><siga:Idioma key="facturacion.pagosFactura.Caja.literal.Observaciones"/>&nbsp;(*)</td>
 							<td>
 								<html:textarea property="datosPagosCajaObservaciones" 
-								onKeyDown="cuenta(this,4000)" onChange="cuenta(this,4000)" 
+								onkeydown="cuenta(this,4000)" onchange="cuenta(this,4000)" 
 								style="overflow-y:auto; overflow-x:hidden; width:250px; height:50px; resize:none;"
 								styleClass="box" value=""/></td>
 						</tr>
@@ -161,7 +161,6 @@
 
 	<siga:ConjBotonesAccion botones='C,Y' modo='' modal="P" />
 
-</div>
 <!-- FIN ******* CAPA DE PRESENTACION ****** -->
 			
 <!-- INICIO: SUBMIT AREA -->

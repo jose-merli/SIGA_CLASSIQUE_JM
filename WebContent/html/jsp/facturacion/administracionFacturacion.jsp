@@ -94,7 +94,7 @@
 			target="mainPestanas"
 			parametros="datosFacturacion"
 			elementoactivo="1"
-			tipoAcceso="<%=tipoAcceso.toString()%>"
+			tipoacceso="<%=tipoAcceso.toString()%>"
 			idInstitucionCliente="<%=idInstitucion %>"			
 		
 	/>
@@ -116,7 +116,7 @@
 			scrolling="no"
 			frameborder="0"
 			marginheight="0"
-			marginwidth="0";
+			marginwidth="0"
 			class="framePestanas"
 			>
 	</iframe>

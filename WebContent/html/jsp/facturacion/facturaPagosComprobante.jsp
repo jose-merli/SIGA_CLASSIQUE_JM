@@ -67,7 +67,7 @@
 <body>
 	<!-- TITULO -->
 	<!-- Barra de titulo actualizable desde los mantenimientos -->
-	<table class="tablaTitulo" cellspacing="0" heigth="32">
+	<table class="tablaTitulo" cellspacing="0" height="32">
 		<tr>
 			<td id="titulo" class="titulitosDatos">
 				<siga:Idioma key="facturacion.pagosFactura.Comprobante.Titulo"/>
@@ -120,7 +120,7 @@
 					<html:textarea property="observaciones" 
 						style="overflow-y:auto; overflow-x:hidden; width:250px; height:50px; resize:none; "
 						value="<%=pago.getObservaciones().trim()%>" 
-						styleClass="boxConsulta" readOnly="true"></html:textarea>
+						styleClass="boxConsulta" readonly="true"></html:textarea>
 					</td>
 				</tr>
 			</table>

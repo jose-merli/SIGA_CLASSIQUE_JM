@@ -345,7 +345,7 @@
 		<html:hidden property="modo"  styleId="modo" value = "preSeleccionInformes"/>
 		<input type='hidden' name='actionModal' id='actionModal'>
 	</html:form>
-	<script languaje="javascript">
+	<script language="javascript">
 ObjArray = new Array();
 
 Array.prototype.indexOf = function(s) {

@@ -127,7 +127,7 @@
 
 	<!-- TITULO -->
 	<!-- Barra de titulo actualizable desde los mantenimientos -->
-	<table class="tablaTitulo" cellspacing="0" heigth="32">
+	<table class="tablaTitulo" cellspacing="0" height="32">
 		<tr>
 			<td id="titulo" class="titulosPeq">
 				<siga:Idioma key="facturacion.mantenimientoLineas.literal.cabecera"/>
@@ -161,11 +161,11 @@
 								<td class="labelTextValue">
 									<% if (nextModo.equalsIgnoreCase("insertar")){ %>
 										<html:textarea property="descripcion" readonly="<%=breadonly%>"  styleClass="<%=estiloBox%>"
-											onKeyDown="cuenta(this,255)" onChange="cuenta(this,255)" 
+											onkeydown="cuenta(this,255)" onchange="cuenta(this,255)" 
 											style="overflow-y:auto; overflow-x:hidden; width:850px; height:50px; resize:none;"></html:textarea> 
 									<% } else { %>
 										<html:textarea property="descripcion" styleClass="<%=estiloBox%>" readonly="<%=breadonly%>"  value="<%=registro.getString(FacLineaAbonoBean.C_DESCRIPCIONLINEA)%>" 
-											onKeyDown="cuenta(this,255)" onChange="cuenta(this,255)" 
+											onkeydown="cuenta(this,255)" onchange="cuenta(this,255)" 
 											style="overflow-y:auto; overflow-x:hidden; width:500px; height:50px; resize:none;"></html:textarea> 
 						  	    	<% } %>
 								</td>

@@ -63,7 +63,7 @@
 
 			<!-- TITULO -->
 			<!-- Barra de titulo actualizable desde los mantenimientos -->
-			<table class="tablaTitulo" cellspacing="0" heigth="32">
+			<table class="tablaTitulo" cellspacing="0" height="32">
 				<tr>
 					<td id="titulo" class="titulitosDatos">
 						<siga:Idioma key="facturacion.morosos.titulo.seleccionCarta"/>
@@ -77,8 +77,7 @@
 		   	      name="tablaDatos"
 		   		  border="1"
 		   		  columnNames="infomes.seleccionPlantillas.literal.sel,infomes.seleccionPlantillas.literal.descripcion"
-		   		  columnSizes="10,90"
-		   		  modal="M">
+		   		  columnSizes="10,90">
 <%
 				if (plantillas==null || plantillas.size()==0)
 				{

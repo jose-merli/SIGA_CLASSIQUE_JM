@@ -91,7 +91,7 @@
 <body>
 	<!-- TITULO -->
 	<!-- Barra de titulo actualizable desde los mantenimientos -->
-	<table class="tablaTitulo" cellspacing="0" heigth="32">
+	<table class="tablaTitulo" cellspacing="0" height="32">
 		<tr>
 			<td id="titulo" class="titulitosDatos"><siga:Idioma key="facturacion.abonosPagos.datosPagoAbono.abonoBanco"/></td>
 		</tr>
@@ -118,7 +118,7 @@
 									<siga:Idioma key="facturacion.abonosPagos.datosPagoAbono.importePago"/>
 								</td>
 								<td class="labelText">
-									<html:text property="importe" size="11" maxlength="11" styleClass="boxConsultaNumber" value="<%=UtilidadesString.mostrarDatoJSP(UtilidadesString.formatoImporte(importePendiente))%>" readOnly="true"></html:text>&nbsp;&euro;
+									<html:text property="importe" size="11" maxlength="11" styleClass="boxConsultaNumber" value="<%=UtilidadesString.mostrarDatoJSP(UtilidadesString.formatoImporte(importePendiente))%>" readonly="true"></html:text>&nbsp;&euro;
 								</td>
 							</tr>
 							<tr>

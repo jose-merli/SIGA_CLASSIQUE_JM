@@ -240,7 +240,7 @@
 	<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp"
 		style="display: none"></iframe>
 	<!-- FIN: SUBMIT AREA -->
-<script languaje="javascript">
+<script language="javascript">
 ObjArray = new Array();
 
 Array.prototype.indexOf = function(s) {

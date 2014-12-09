@@ -72,7 +72,7 @@
 
 		<!-- TITULO -->
 		<!-- Barra de titulo actualizable desde los mantenimientos -->
-		<table class="tablaTitulo" cellspacing="0" heigth="32">
+		<table class="tablaTitulo" cellspacing="0" height="32">
 			<tr>
 				<td id="titulo" class="titulitosDatos">
 					<siga:Idioma key="facturacion.nuevoGrupoDinamico.literal.titulo"/>
@@ -128,7 +128,7 @@
 								dato[4] = sPerfiles;
 								%>
 				
-								<tr colspan="100%" align="center"> 
+								<tr align="center"> 
 									<td class="labelText">
 										<siga:Idioma key="facturacion.nuevoGrupoDinamico.literal.leyenda"/>&nbsp;(*)
 									</td>

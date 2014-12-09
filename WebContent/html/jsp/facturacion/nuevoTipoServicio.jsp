@@ -72,7 +72,7 @@
 
 		<!-- TITULO -->
 		<!-- Barra de titulo actualizable desde los mantenimientos -->
-		<table class="tablaTitulo" cellspacing="0" heigth="32">
+		<table class="tablaTitulo" cellspacing="0" height="32">
 			<tr>
 				<td id="titulo" class="titulitosDatos">
 					<siga:Idioma key="facturacion.nuevoTipoServicio.literal.titulo"/>
@@ -113,7 +113,7 @@
 								dato[2] = idSerieFacturacion;
 								%>
 				
-								<tr colspan="100%" align="center"> 
+								<tr align="center"> 
 								<td class="labelText">
 									<siga:Idioma key="facturacion.nuevoTipoServicio.literal.leyenda"/>&nbsp;(*)
 								</td>

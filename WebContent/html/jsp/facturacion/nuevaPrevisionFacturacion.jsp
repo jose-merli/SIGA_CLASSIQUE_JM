@@ -79,11 +79,11 @@
 		</script>
 	</head>
 
-	<body onLoad="load()";>
+	<body onLoad="load()">
 
 		<!-- TITULO -->
 		<!-- Barra de titulo actualizable desde los mantenimientos -->
-		<table class="tablaTitulo" cellspacing="0" heigth="32">
+		<table class="tablaTitulo" cellspacing="0" height="32">
 			<tr>
 				<td id="titulo" class="titulitosDatos">
 					<siga:Idioma key="facturacion.nuevaPrevisionFacturacion.literal.titulo"/>

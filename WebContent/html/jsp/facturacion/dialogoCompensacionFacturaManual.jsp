@@ -75,7 +75,7 @@
 
 		<!-- TITULO -->
 		<!-- Barra de titulo actualizable desde los mantenimientos -->
-		<table class="tablaTitulo" cellspacing="0" heigth="32">
+		<table class="tablaTitulo" cellspacing="0" height="32">
 			<tr>
 				<td id="titulo" class="titulosPeq">
 					<siga:Idioma key="facturacion.abonos.compensacionManual.titulo"/>
@@ -180,7 +180,7 @@
 										<siga:Idioma key="facturacion.abonos.compensacionManual.fechaEmisionFacturaCompensadora"/>
 									</td>
 									<td class="labelTextValor" width="15%">
-										<html:text property="fechaFacturaCompensadora" styleClass="boxConsulta" size="10" maxlength="20" value="" readOnly="true"></html:text>
+										<html:text property="fechaFacturaCompensadora" styleClass="boxConsulta" size="10" maxlength="20" value="" readonly="true"></html:text>
 									</td>
 									
 								</tr>
@@ -191,14 +191,14 @@
 									</td>
 									<td class="labelTextValor">
 										
-										<html:text property="importeFacturaCompensadora" size="30" maxlength="10" styleClass="boxConsulta" readOnly="true" value=""></html:text>
+										<html:text property="importeFacturaCompensadora" size="30" maxlength="10" styleClass="boxConsulta" readonly="true" value=""></html:text>
 									</td>
 									<td class="labelText">
 										<siga:Idioma key="facturacion.abonos.compensacionManual.estadoFacturaCompensadora"/>
 									</td>
 									<td class="labelTextValor">
 										
-										<html:text property="estadoFacturaCompensadora" size="30" maxlength="10" styleClass="boxConsulta" readOnly="true" value=""></html:text>
+										<html:text property="estadoFacturaCompensadora" size="30" maxlength="10" styleClass="boxConsulta" readonly="true" value=""></html:text>
 									</td>
 									
 								</tr>

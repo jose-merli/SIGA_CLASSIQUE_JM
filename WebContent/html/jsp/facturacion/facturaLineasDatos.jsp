@@ -178,7 +178,7 @@
 <body>
 	<!-- TITULO -->
 	<!-- Barra de titulo actualizable desde los mantenimientos -->
-	<table class="tablaTitulo" cellspacing="0" heigth="32">
+	<table class="tablaTitulo" cellspacing="0" height="32">
 		<tr>
 			<td id="titulo" class="titulitosDatos"><siga:Idioma key="facturacion.lineasFactura.Datos.Titulo"/></td>
 		</tr>
@@ -204,14 +204,14 @@
 									<td class="labelText"><siga:Idioma key="facturacion.lineasFactura.literal.Descripcion"/></td>
 									<td class="labelText">
 										<html:textarea property="datosLineaDescripcion" styleClass="<%=claseEditarDes%>"  readonly="<%=readOnlyDes%>"
-											value="<%=linea.getDescripcion()%>" onKeyDown="cuenta(this,4000)" onChange="cuenta(this,4000)" 
+											value="<%=linea.getDescripcion()%>" onkeydown="cuenta(this,4000)" onchange="cuenta(this,4000)" 
 											style="overflow-y:auto; overflow-x:hidden; width:550px; height:50px; resize:none;"/>
 									</td>
 								</tr>
 
 								<tr>
 									<td class="labelText"><siga:Idioma key="facturacion.lineasFactura.literal.Cantidad"/></td>
-									<td class="labelText"><html:text property="datosLineaCantidad" styleClass="boxConsulta" value="<%=UtilidadesString.mostrarDatoJSP(linea.getCantidad())%>" readOnly="true" /></td>
+									<td class="labelText"><html:text property="datosLineaCantidad" styleClass="boxConsulta" value="<%=UtilidadesString.mostrarDatoJSP(linea.getCantidad())%>" readonly="true" /></td>
 								</tr>
 							</table>					
 						</siga:ConjCampos>
@@ -226,7 +226,7 @@
 									<td class="labelText"><siga:Idioma key="facturacion.lineasFactura.literal.Precio"/></td>
 									<td class="labelText">
 										<html:text property="datosLineaPrecio" styleClass="<%=claseEditarPrecio%>" readonly="<%=readOnlyPre%>" style="text-align:right" maxlength="13"
-											value="<%=UtilidadesString.mostrarDatoJSP(UtilidadesString.formatoImporte(linea.getPrecioUnitario().doubleValue()))%>" onChange="calculaPrecios();"/>&nbsp;&euro;
+											value="<%=UtilidadesString.mostrarDatoJSP(UtilidadesString.formatoImporte(linea.getPrecioUnitario().doubleValue()))%>" onchange="calculaPrecios();"/>&nbsp;&euro;
 									</td>
 
 									<td class="labelText"><siga:Idioma key="facturacion.lineasFactura.literal.TotalNeto"/></td>
@@ -237,7 +237,7 @@
 									<td class="labelText"><siga:Idioma key="facturacion.lineasFactura.literal.IVA"/></td>
 									<td class="labelText">
 										<html:text property="datosLineaIVA" styleClass="<%=claseEditarIVA%>" readonly="<%=readOnlyIva%>" style="text-align:right" maxlength="5" 										
-											value="<%=UtilidadesString.mostrarDatoJSP(UtilidadesString.formatoImporte(linea.getIva().doubleValue()))%>" onChange="calculaPrecios();"/>&nbsp;%
+											value="<%=UtilidadesString.mostrarDatoJSP(UtilidadesString.formatoImporte(linea.getIva().doubleValue()))%>" onchange="calculaPrecios();"/>&nbsp;%
 									</td>
 
 									<td class="labelText"><siga:Idioma key="facturacion.lineasFactura.literal.importeIVA"/></td>

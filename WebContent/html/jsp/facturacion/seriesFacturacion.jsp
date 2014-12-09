@@ -518,7 +518,7 @@
 
 <body onLoad="inicio();">
 	<!-- Barra de titulo actualizable desde los mantenimientos -->
-	<table class="tablaTitulo" cellspacing="0" heigth="32">
+	<table class="tablaTitulo" cellspacing="0" height="32">
 		<tr>
 			<td id="titulo" class="titulosPeq">
 				<siga:Idioma key="facturacion.programarFacturacion.literal.cabecera"/> 
@@ -543,13 +543,13 @@
 						<% if (modoAction.equals("editar") || modoAction.equals("nuevaPrevision")) { %>
 							<html:text name="confirmarFacturacionForm" styleId="descripcionProgramacion" property="descripcionProgramacion" value="<%=sDescripcion%>" size="50" maxlength="255" styleClass="box"/>
 						<% } else { %>
-							<html:text name="confirmarFacturacionForm" styleId="descripcionProgramacion" property="descripcionProgramacion" value="<%=sDescripcion%>" size="50" styleClass="boxConsulta" readOnly="true" />
+							<html:text name="confirmarFacturacionForm" styleId="descripcionProgramacion" property="descripcionProgramacion" value="<%=sDescripcion%>" size="50" styleClass="boxConsulta" readonly="true" />
 						<% } %>	
 					</td>
 					<% if (!modoAction.equals("nuevaPrevision")) { %>
 						<td class="labelText"><siga:Idioma key="facturacion.estado"/></td>
 						<td>
-							<siga:ComboBD nombre = "estadoConfirmacion" tipo="cmbEstadoConfirmacion" ancho="200" parametro="<%=datoEstado%>" elementoSel="<%=estadoConfirmacionSel%>" clase="boxConsulta" readOnly="true"/>					
+							<siga:ComboBD nombre = "estadoConfirmacion" tipo="cmbEstadoConfirmacion" ancho="200" parametro="<%=datoEstado%>" elementoSel="<%=estadoConfirmacionSel%>" clase="boxConsulta" readonly="true"/>					
 						</td>		
 					<% } %>				
 				</tr>
@@ -565,7 +565,7 @@
 				    		<siga:ComboBD nombre="idSerieFacturacion" tipo="cmbSerieFacturacion" parametro="<%=dato%>" clase="boxCombo" accion="cambiaSerie();" obligatorio="true"/>
 						<% } else { %>
 							<html:hidden property="idSerieFacturacion" value='<%=LSerieFacturacion.toString()%>'/>
-							<html:text property="serieFacturacionDes" value='<%=sSerieFacturacionDesc%>' size="60" styleClass="boxConsulta" readOnly="true" />
+							<html:text property="serieFacturacionDes" value='<%=sSerieFacturacionDesc%>' size="60" styleClass="boxConsulta" readonly="true" />
 						<%}%>								
 					</td>
 				</tr>
