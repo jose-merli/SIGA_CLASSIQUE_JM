@@ -15,6 +15,7 @@
 <%@ page import="com.atos.utils.ClsLogging" %>
 <%@ page import="org.redabogacia.sigaservices.app.util.PropertyReader"%>
 <%@ page import="org.redabogacia.sigaservices.app.util.SIGAReferences"%>
+<%@ page import="java.util.Properties"%>
 
 <%
 	String app=request.getContextPath();
