@@ -96,7 +96,7 @@
 		<input type="hidden" id="pantallaE" name="pantallaE" value="M">
 	</html:form>	
 	
-      <table class="tablaTitulo" cellspacing="0" heigth="310">
+      <table class="tablaTitulo" cellspacing="0" height="310">
 		<tr>
 			<td id="titulo" class="titulitosDatos">
 	
@@ -122,8 +122,7 @@
 	   name="tablaDatos"
 	   border="1"
 	   columnNames="gratuita.defendidosDesigna.literal.nif,gratuita.defendidosDesigna.literal.nombreApellidos,envios.etiquetas.tipoCliente.abogado,gratuita.personaJG.literal.procurador,"
-	   columnSizes="10,30,24,24,12"
-	   modal="G">
+	   columnSizes="10,30,24,24,12">
 
 		<% if (obj==null || obj.size()==0){%>
  			<tr class="notFound">

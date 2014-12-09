@@ -53,7 +53,7 @@
 <body>
 
 	<!-- INICIO: TITULO OPCIONAL DE LA TABLA -->
-	<table class="tablaTitulo" align="center" cellspacing="0" heigth="32">
+	<table class="tablaTitulo" align="center" cellspacing="0" height="32">
 	<tr>
 	<td class="titulitosDatos">
 		<%if (accion.equalsIgnoreCase("ver")){%>					  		   
@@ -109,7 +109,7 @@
 	</td>
 	<td>
 		<%if (accion.equalsIgnoreCase("ver")){%>
-			<html:text name="DefinirPartidaPresupuestariaForm" property="importePartida" size="12" maxlength="13" styleClass="boxConsultaNumber" value="<%=UtilidadesNumero.formatoCampo((String)miHash.get(ScsPartidaPresupuestariaBean.C_IMPORTEPARTIDA))%>" readOnly="true"></html:text>
+			<html:text name="DefinirPartidaPresupuestariaForm" property="importePartida" size="12" maxlength="13" styleClass="boxConsultaNumber" value="<%=UtilidadesNumero.formatoCampo((String)miHash.get(ScsPartidaPresupuestariaBean.C_IMPORTEPARTIDA))%>" readonly="true"></html:text>
 		<%} else {%>
 			<html:text name="DefinirPartidaPresupuestariaForm" property="importePartida" size="12" maxlength="13" styleClass="boxNumber" value="<%=UtilidadesNumero.formatoCampo((String)miHash.get(ScsPartidaPresupuestariaBean.C_IMPORTEPARTIDA))%>"></html:text>
 		<%}%>
@@ -123,7 +123,7 @@
 
 	<td>
 		<%if (accion.equalsIgnoreCase("ver")){%>
-			<textarea name="descripcion" rows="4" cols="62" readOnly="true" class="boxConsulta"><%=(String)miHash.get(ScsPartidaPresupuestariaBean.C_DESCRIPCION)%></textarea>
+			<textarea name="descripcion" rows="4" cols="62" readOnly class="boxConsulta"><%=(String)miHash.get(ScsPartidaPresupuestariaBean.C_DESCRIPCION)%></textarea>
 		<%} else {%>
 			<textarea name="descripcion" rows="4" cols="62" onKeyDown="cuenta(this,100)" onChange="cuenta(this,100)"
 			 class="box"><%=(String)miHash.get(ScsPartidaPresupuestariaBean.C_DESCRIPCION)%></textarea>		
@@ -139,6 +139,7 @@
 	</tr>
 	</html:form>
 	</table>
+	</div>
 	<!-- FIN: CAMPOS DEL REGISTRO -->
 
 	<!-- ******* BOTONES DE ACCIONES EN REGISTRO ****** -->

@@ -20,6 +20,8 @@
 <%@ page import="com.siga.beans.ScsActaComisionBean"%>
 <%@ page import="java.util.Hashtable"%>
 <%@ page import="com.siga.Utilidades.UtilidadesString"%>
+<%@ page import="java.util.ArrayList"%>
+<%@ page import="java.util.Vector"%>
 
 <%
 	HttpSession ses = request.getSession();

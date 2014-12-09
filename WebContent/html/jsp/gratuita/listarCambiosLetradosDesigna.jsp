@@ -68,7 +68,7 @@
 		<html:hidden property = "modo" value = ""/>
 	</html:form>	
 	
-	<table class="tablaTitulo" cellspacing="0" heigth="38">
+	<table class="tablaTitulo" cellspacing="0" height="38">
 		<tr>
 			<td id="titulo" class="titulitosDatos">	
 <% 
@@ -102,8 +102,7 @@
 			   		name="tablaDatos"
 			   		border="1"
 			   		columnNames="censo.resultadosSolicitudesModificacion.literal.fecha,gratuita.busquedaSOJ.literal.nColegiado,gratuita.defendidosDesigna.literal.nombreApellidos,gratuita.cambiosProcuradoresDesigna.literal.fechaRenuncia,"
-			   		columnSizes="15,20,45,10,10"
-			   		modal="M">
+			   		columnSizes="15,20,45,10,10">
 			   
 <% 
 					if (obj==null || obj.size()==0) {

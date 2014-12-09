@@ -155,7 +155,7 @@
 
 	<table  align="center">
 	
-	<tr width="100%">
+	<tr>
 	<td class="labelText">
 		<siga:Idioma key="gratuita.busquedaSOJ.literal.nif"/>		
 	</td>
@@ -163,7 +163,7 @@
 	<%if (!accion.equalsIgnoreCase("nuevo")){%>
 		<html:text name="DefendidosDesignasForm" property="nif" size="10" maxlength="20" styleClass="boxConsulta"  value="<%=nif%>"></html:text>
 	<%} else  {%>
-		<html:text name="DefendidosDesignasForm" property="nif" onBlur="obtenerNif()" size="10" maxlength="20" styleClass="box"  value="<%=nif%>"></html:text>
+		<html:text name="DefendidosDesignasForm" property="nif" onblur="obtenerNif()" size="10" maxlength="20" styleClass="box"  value="<%=nif%>"></html:text>
 	<%}%>
 	</td>
 
@@ -372,7 +372,7 @@
 		<siga:Idioma key="gratuita.editarDesigna.literal.observaciones"/><br>
 
 		<%if (accion.equalsIgnoreCase("ver")){%>
-			<textarea class="boxConsulta" scroll="none" name="observaciones" rows="4" cols="230" readonly="true"><%=observaciones%></textarea>
+			<textarea class="boxConsulta" scroll="none" name="observaciones" rows="4" cols="230" readonly><%=observaciones%></textarea>
 		<%} else  {%>
 			<textarea class="box" scroll="none" name="observaciones" onKeyDown="cuenta(this,1024)" onChange="cuenta(this,1024)" rows="4" cols="230" ><%=observaciones%></textarea>
 		<%}%>
@@ -396,7 +396,7 @@
 					scrolling="no"
 					frameborder="0"
 					marginheight="0"
-					marginwidth="0";					 
+					marginwidth="0"					 
 					class="frameGeneral">
 	</iframe>
 

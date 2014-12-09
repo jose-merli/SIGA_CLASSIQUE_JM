@@ -221,7 +221,7 @@
 <body onLoad="recargarCombo();">
 
 	<!-- TITULO -->
-	<table class="tablaTitulo" cellspacing="0" heigth="32">
+	<table class="tablaTitulo" cellspacing="0" height="32">
 		<tr>
 			<td id="titulo" class="titulosPeq">
 				   <siga:Idioma key="gratuita.mantAsistencias.literal.tituloCO"/>
@@ -249,13 +249,13 @@
 	<!-- SUBCONJUNTO DE DATOS -->
 	<siga:ConjCampos leyenda="gratuita.mantAsistencias.literal.tituloCO">
 	<table class="tablaCampos" align="center">	
-	<tr width="100%">
+	<tr>
 		<td class="labelText">
 			<siga:Idioma key="gratuita.aisRespAsistencias.literal.nif"/>:		
 		</td>
 		<td colspan="5">
 		<% if (accion!=null && accion.equalsIgnoreCase("nuevo")) { %>
-			<html:text name="contrariosAsistenciaForm" property="nif" size="10" maxlength="20" styleClass="box"  value="<%=nif%>" onBlur="obtenerNif();"></html:text>
+			<html:text name="contrariosAsistenciaForm" property="nif" size="10" maxlength="20" styleClass="box"  value="<%=nif%>" onblur="obtenerNif();"></html:text>
 		<% } else { %>
 			<html:text name="contrariosAsistenciaForm" property="nif" size="10" maxlength="20" styleClass="boxConsulta"  value="<%=nif%>" readonly="true"></html:text>
 		<% } %>
@@ -266,19 +266,19 @@
 			<siga:Idioma key="gratuita.aisRespAsistencias.literal.nombre"/>:
 		</td>
 		<td>
-			<html:text name="contrariosAsistenciaForm" property="nombre" size="15" maxlength="100" styleClass="<%=estiloCaja%>"  readOnly="<%=lectura%>" value="<%=nombre%>"></html:text>
+			<html:text name="contrariosAsistenciaForm" property="nombre" size="15" maxlength="100" styleClass="<%=estiloCaja%>"  readonly="<%=lectura%>" value="<%=nombre%>"></html:text>
 		</td>
 		<td class="labelText">	
 			<siga:Idioma key="gratuita.aisRespAsistencias.literal.apellido1"/>:
 		</td>		
 		<td>
-			<html:text name="contrariosAsistenciaForm" property="apellido1" size="15" maxlength="100" styleClass="<%=estiloCaja%>"  readOnly="<%=lectura%>" value="<%=apellido1%>"></html:text>
+			<html:text name="contrariosAsistenciaForm" property="apellido1" size="15" maxlength="100" styleClass="<%=estiloCaja%>"  readonly="<%=lectura%>" value="<%=apellido1%>"></html:text>
 		</td>
 		<td class="labelText">
 			<siga:Idioma key="gratuita.aisRespAsistencias.literal.apellido2"/>:
 		</td>
 		<td>
-			<html:text name="contrariosAsistenciaForm" property="apellido2" size="15" maxlength="100" styleClass="<%=estiloCaja%>"  readOnly="<%=lectura%>"  value="<%=apellido2%>"></html:text>
+			<html:text name="contrariosAsistenciaForm" property="apellido2" size="15" maxlength="100" styleClass="<%=estiloCaja%>"  readonly="<%=lectura%>"  value="<%=apellido2%>"></html:text>
 		</td>	
 	</tr>	
 	
@@ -287,13 +287,13 @@
 			<siga:Idioma key="gratuita.aisRespAsistencias.literal.cp"/>:
 		</td>
 		<td>
-			<html:text name="contrariosAsistenciaForm" property="codigoPostal" size="10" maxlength="20" styleClass="<%=estiloCaja%>"  readOnly="<%=lectura%>"  value="<%=cp%>"></html:text>
+			<html:text name="contrariosAsistenciaForm" property="codigoPostal" size="10" maxlength="20" styleClass="<%=estiloCaja%>"  readonly="<%=lectura%>"  value="<%=cp%>"></html:text>
 		</td>
 		<td class="labelText">
 			<siga:Idioma key="gratuita.aisRespAsistencias.literal.direccion"/>:
 		</td>
 		<td colspan="3">
-			<html:text name="contrariosAsistenciaForm" property="direccion" size="50" maxlength="100" styleClass="<%=estiloCaja%>"  readOnly="<%=lectura%>"  value="<%=direccion%>"></html:text>
+			<html:text name="contrariosAsistenciaForm" property="direccion" size="50" maxlength="100" styleClass="<%=estiloCaja%>"  readonly="<%=lectura%>"  value="<%=direccion%>"></html:text>
 		</td>
 	</tr>
 	
@@ -305,7 +305,7 @@
 		<% if (accion!=null && !accion.equalsIgnoreCase("ver")) { %>
 				<siga:ComboBD nombre="idPais" tipo="pais" estilo="true" clase="boxCombo" obligatorio="false" elementoSel="<%=selPais%>" /> 
 		<% } else { %>
-				<html:text name="contrariosAsistenciaForm" property="idPais" styleClass="boxConsulta"  readOnly="true"  value="<%=PAISDESC%>"></html:text>
+				<html:text name="contrariosAsistenciaForm" property="idPais" styleClass="boxConsulta"  readonly="true"  value="<%=PAISDESC%>"></html:text>
 		<% } %>
 		</td>
 		<td class="labelText" colspan="3">
@@ -320,7 +320,7 @@
 		<% if (accion!=null && !accion.equalsIgnoreCase("ver")) { %>
 				<siga:ComboBD nombre="idProvincia" tipo="provincia" clase="boxCombo" obligatorio="false" accion="Hijo:idPoblacion" elementoSel="<%=idProvincia%>" />
 		<% } else { %>
-				<html:text name="contrariosAsistenciaForm" property="idProvincia" styleClass="boxConsulta"  readOnly="true"  value="<%=PROVINCIADESC%>"></html:text>
+				<html:text name="contrariosAsistenciaForm" property="idProvincia" styleClass="boxConsulta"  readonly="true"  value="<%=PROVINCIADESC%>"></html:text>
 		<% } %>
 		</td>
 		<td class="labelText" colspan="3">	
@@ -335,7 +335,7 @@
 		<% if(accion != null && !accion.equalsIgnoreCase("ver")) { %>
 				<siga:ComboBD nombre="idPoblacion" tipo="poblacion" clase="boxCombo" obligatorio="false" accion="" hijo="t" elementoSel="<%=idPoblacion%>" />
 		<% } else { %>
-				<html:text name="contrariosAsistenciaForm" property="idPoblacion" styleClass="boxConsulta"  readOnly="true"  value="<%=POBLACIONDESC%>"></html:text>
+				<html:text name="contrariosAsistenciaForm" property="idPoblacion" styleClass="boxConsulta"  readonly="true"  value="<%=POBLACIONDESC%>"></html:text>
 		<% } %>
 		</td>
 		<td class="labelText" colspan="3">	
@@ -365,7 +365,7 @@
 			<% if (accion!=null && !accion.equalsIgnoreCase("ver")) { %>
 				<siga:ComboBD nombre="idEstadoCivil" tipo="estadoCivil" estilo="true" clase="boxCombo" obligatorio="false" elementoSel="<%=idEstadoCivil %>" pestana="t"/>
 			<% } else { %>
-				<html:text name="contrariosAsistenciaForm" property="idEstadoCivil" styleClass="boxConsulta"  readOnly="true"  value="<%=ESTADODESC%>"></html:text>
+				<html:text name="contrariosAsistenciaForm" property="idEstadoCivil" styleClass="boxConsulta"  readonly="true"  value="<%=ESTADODESC%>"></html:text>
 			<% } %>
 		</td>
 		<td class="labelText" colspan="4">		
@@ -405,16 +405,16 @@
 				<siga:Idioma key="gratuita.mantAsistencias.literal.observaciones" />
 		</td>
 		<td colspan="5">				
-				<html:textarea name="contrariosAsistenciaForm" onKeyDown="cuenta(this,1024)" onChange="cuenta(this,1024)"	property="observaciones" rows="3" cols="100" styleClass="<%=estiloCaja%>" readonly="<%=lectura%>" />
+				<html:textarea name="contrariosAsistenciaForm" onkeydown="cuenta(this,1024)" onchange="cuenta(this,1024)"	property="observaciones" rows="3" cols="100" styleClass="<%=estiloCaja%>" readonly="<%=lectura%>" />
 		</td>
 	</tr>
 	</table>
 	</siga:ConjCampos>
 	
 	</td>
-	</tr>	
-	</html:form>
+	</tr>		
 </table>
+</html:form>
 <!-- FIN: SUBMIT AREA -->	
 </div>
 
@@ -433,7 +433,7 @@
 						scrolling="no"
 						frameborder="0"
 						marginheight="0"
-						marginwidth="0";					 
+						marginwidth="0"			 
 						style="position:absolute; width:440; height:200; z-index:2; top: 143px; left: 514px">
 	</iframe>
 

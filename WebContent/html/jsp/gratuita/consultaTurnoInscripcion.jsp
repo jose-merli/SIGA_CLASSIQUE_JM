@@ -72,7 +72,7 @@
 		<table width="100%">
 			<tr>
 				<td>
-					<table class="tablaTitulo" cellspacing="0" heigth="32">
+					<table class="tablaTitulo" cellspacing="0" height="32">
 						<tr>
 							<td id="titulo" class="titulitosDatos">
 								<c:if test="${InscripcionTGForm.modo=='sitConsultaGuardias'}">

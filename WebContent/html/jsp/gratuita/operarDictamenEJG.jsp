@@ -102,7 +102,7 @@
 		obligatorioTipoDictamen = true;
 		obligatorioFundamento = true;
 	}
-	String asterisco = "&nbsp(*)&nbsp";
+	String asterisco = "&nbsp;(*)&nbsp;";
 	String informeUnico =(String) request.getAttribute("informeUnico");
 %>
 
@@ -130,10 +130,8 @@
 </head>
 <body>
 <input type="hidden" id= "informeUnico" value="<%=informeUnico%>">
-<tr>
-	<td width="100%" align="center">
 
-	<table class="tablaTitulo" cellspacing="0" heigth="38">
+	<table class="tablaTitulo" cellspacing="0" height="38">
 		<tr>
 			<td id="titulo" class="titulitosDatos">
 			<%
@@ -214,7 +212,7 @@
 									<siga:ComboBD
 										nombre="idTipoDictamenEJG" tipo="dictamenEJGCalif" clase="boxConsulta"  pestana="t" accion="Hijo:idFundamentoCalif"
 										filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=dato%>"
-										elementoSel="<%=vIntFDict%>" readOnly="true"  /> 
+										elementoSel="<%=vIntFDict%>" readonly="true"  /> 
 								<%}else{%> 
 									<siga:ComboBD
 										nombre="idTipoDictamenEJG" tipo="dictamenEJGCalif" clase="boxCombo"
@@ -236,7 +234,7 @@
 								nombre="idFundamentoCalif" ancho="815"
 								tipo="tipoFundamentosCalifActivosConParametroBaja" pestana="t" parametro="<%=datos%>"  hijo="t" 
 								clase="boxConsulta" filasMostrar="1" seleccionMultiple="false"
-								obligatorio="false" elementoSel="<%=vIntFCalf%>" readOnly="true" />
+								obligatorio="false" elementoSel="<%=vIntFCalf%>" readonly="true" />
 							<%
 								} else {
 							%> <siga:ComboBD nombre="idFundamentoCalif"
@@ -253,7 +251,7 @@
 							<%if (accion.equalsIgnoreCase("ver")) {%> 
 								<textarea name="dictamen"
 									class="boxConsulta" style="width: 815px" rows="20"
-									readOnly="true"><%=dictamen%></textarea> 
+									readOnly><%=dictamen%></textarea> 
 							<%} else {%> 
 								<textarea
 									name="dictamen" class="box" style="width: 815px" 
@@ -268,6 +266,7 @@
 			</siga:ConjCampos></td>
 		</tr>
 	</table>
+	</div>
 	
 	<html:form action="/INF_InformesGenericos" method="post"	target="submitArea">
 	<html:hidden property="idInstitucion" value = "<%=idInstitucion%>"/>

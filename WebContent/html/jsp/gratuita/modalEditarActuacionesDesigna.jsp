@@ -289,7 +289,7 @@
 		maxLenghtProc = "15";
 	
 	
-	String asterisco = "&nbsp(*)";
+	String asterisco = "&nbsp;(*)";
 	
 	boolean obligatorioNumeroProcedimiento = false;
 	boolean obligatorioProcedimiento = false;
@@ -440,7 +440,7 @@
 
 <!-- TITULO -->
 <!-- Barra de titulo actualizable desde los mantenimientos -->
-<table class="tablaTitulo" cellspacing="0" heigth="32">
+<table class="tablaTitulo" cellspacing="0" height="32">
 	<tr>
 		<td id="titulo" class="titulitosDatos">
 				<siga:Idioma key="gratuita.actuacionesDesigna.literal.titulo"/>
@@ -587,11 +587,11 @@
 					  	</td>
 					  	<td colspan="2">	 
 							<% if (esLetrado||modoAnterior.equalsIgnoreCase("VER")){%>							
-									<siga:ComboBD nombre="juzgado" ancho="500" tipo="<%=comboJuzgados%>"estilo="true" clase="<%=estiloCombo%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  readOnly="<%=readOnlyCombo%>" parametro="<%=datoJuzg%>"  elementoSel="<%=juzgadoSel%>" accion="Hijo:procedimiento"/>
+									<siga:ComboBD nombre="juzgado" ancho="500" tipo="<%=comboJuzgados%>"estilo="true" clase="<%=estiloCombo%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  readonly="<%=readOnlyCombo%>" parametro="<%=datoJuzg%>"  elementoSel="<%=juzgadoSel%>" accion="Hijo:procedimiento"/>
 							
 							<%}else{%>
 								<input type="text" name="codigoExtJuzgado" class="box" size="8"  style="margin-top:0px;" maxlength="10" onBlur="obtenerJuzgado();" />
-								<siga:ComboBD nombre="juzgado" ancho="400" tipo="<%=comboJuzgados%>" estilo="true" clase="<%=estiloCombo%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false" readOnly="<%=readOnlyCombo%>" parametro="<%=datoJuzg%>"  elementoSel="<%=juzgadoSel%>"  accion="Hijo:procedimiento; cambiarJuzgado(this);"/>
+								<siga:ComboBD nombre="juzgado" ancho="400" tipo="<%=comboJuzgados%>" estilo="true" clase="<%=estiloCombo%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false" readonly="<%=readOnlyCombo%>" parametro="<%=datoJuzg%>"  elementoSel="<%=juzgadoSel%>"  accion="Hijo:procedimiento; cambiarJuzgado(this);"/>
 							<%}%>
 						</td>														
 					</tr>	
@@ -619,14 +619,14 @@
 						</td>						
 						<td colspan="4">											
 							<%if (modoJustificacion!=null && modoJustificacion.equals("nuevoJustificacion")){%>
-			                	<siga:ComboBD ancho="600" nombre="procedimiento" tipo="<%=comboJuzgadosJustificacion%>" estilo="true" clase="<%=estiloCombo%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false" readOnly="<%=readOnlyCombo%>" hijo="t"  elementoSel="<%=procedimientoSel%>" accion="Hijo:acreditacion" />
+			                	<siga:ComboBD ancho="600" nombre="procedimiento" tipo="<%=comboJuzgadosJustificacion%>" estilo="true" clase="<%=estiloCombo%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false" readonly="<%=readOnlyCombo%>" hijo="t"  elementoSel="<%=procedimientoSel%>" accion="Hijo:acreditacion" />
 								
 							<%} else if ((esLetrado||modoAnterior.equalsIgnoreCase("VER"))){%>
-								<html:text name="ActuacionesDesignasForm" style="width:600px" property="procedimiento1" styleClass="boxConsulta" readOnly="true" value="<%=nombreProcedimiento%>"/>
+								<html:text name="ActuacionesDesignasForm" style="width:600px" property="procedimiento1" styleClass="boxConsulta" readonly="true" value="<%=nombreProcedimiento%>"/>
 								
 							<%} else { %>				
 								<input type="text" id="codigoBusquedaAux" name="codigoBusquedaAux" class="box" size="8"  style="margin-top:0px;" maxlength="10" onBlur="obtenerProcedimiento();" />
-			                	<siga:ComboBD ancho="600" nombre="procedimiento" tipo="<%=comboModulos%>" estilo="true" clase="<%=estiloCombo%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false" readOnly="<%=readOnlyCombo%>" hijo="t"  elementoSel="<%=procedimientoSel%>" accion="Hijo:acreditacion" />
+			                	<siga:ComboBD ancho="600" nombre="procedimiento" tipo="<%=comboModulos%>" estilo="true" clase="<%=estiloCombo%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false" readonly="<%=readOnlyCombo%>" hijo="t"  elementoSel="<%=procedimientoSel%>" accion="Hijo:acreditacion" />
 							<%}%>
 						</td>
 					</tr>		
@@ -637,14 +637,14 @@
 						</td>			
 						<td  colspan="4">
 							<%if (modoJustificacion!=null && modoJustificacion.equals("nuevoJustificacion")){%>
-								<siga:ComboBD ancho="600" nombre="acreditacion" tipo="comboAcreditaciones" estilo="true" clase="<%=estiloCombo%>"  filasMostrar="1" seleccionMultiple="false" obligatorio="false" readOnly="<%=readOnlyCombo%>"  hijo="t" elementoSel="<%=acreditacionSel%>" />
+								<siga:ComboBD ancho="600" nombre="acreditacion" tipo="comboAcreditaciones" estilo="true" clase="<%=estiloCombo%>"  filasMostrar="1" seleccionMultiple="false" obligatorio="false" readonly="<%=readOnlyCombo%>"  hijo="t" elementoSel="<%=acreditacionSel%>" />
 							<%}else if (modoAnterior.equalsIgnoreCase("VER")) { %>
-								<siga:ComboBD ancho="600" nombre="acreditacion" tipo="comboAcreditaciones" estilo="true" clase="<%=estiloCombo%>"  filasMostrar="1" seleccionMultiple="false" obligatorio="false" readOnly="true"   parametro="<%=paramAcreditacion%>" elementoSel="<%=acreditacionSel%>" />	
+								<siga:ComboBD ancho="600" nombre="acreditacion" tipo="comboAcreditaciones" estilo="true" clase="<%=estiloCombo%>"  filasMostrar="1" seleccionMultiple="false" obligatorio="false" readonly="true"   parametro="<%=paramAcreditacion%>" elementoSel="<%=acreditacionSel%>" />	
 							<% } else { 
 								if (esLetrado){%>
-									<siga:ComboBD ancho="600" nombre="acreditacion" tipo="comboAcreditaciones" estilo="true" clase="<%=estiloCombo%>"  filasMostrar="1" seleccionMultiple="false" obligatorio="false" readOnly="<%=readOnlyCombo%>"   parametro="<%=paramAcreditacion%>" elementoSel="<%=acreditacionSel%>" />
+									<siga:ComboBD ancho="600" nombre="acreditacion" tipo="comboAcreditaciones" estilo="true" clase="<%=estiloCombo%>"  filasMostrar="1" seleccionMultiple="false" obligatorio="false" readonly="<%=readOnlyCombo%>"   parametro="<%=paramAcreditacion%>" elementoSel="<%=acreditacionSel%>" />
 								<%} else {%>	
-									<siga:ComboBD ancho="600" nombre="acreditacion" tipo="comboAcreditaciones" estilo="true" clase="<%=estiloCombo%>"  filasMostrar="1" seleccionMultiple="false" obligatorio="false" readOnly="<%=readOnlyCombo%>"  hijo="t" elementoSel="<%=acreditacionSel%>" />
+									<siga:ComboBD ancho="600" nombre="acreditacion" tipo="comboAcreditaciones" estilo="true" clase="<%=estiloCombo%>"  filasMostrar="1" seleccionMultiple="false" obligatorio="false" readonly="<%=readOnlyCombo%>"  hijo="t" elementoSel="<%=acreditacionSel%>" />
 								<%}
 							}%>
 						</td>
@@ -655,7 +655,7 @@
 							<siga:Idioma key="gratuita.mantenimientoTablasMaestra.literal.prision"/>
 						</td>
 						<td colspan="4">
-							<siga:ComboBD  ancho="300" nombre="prision" tipo="comboPrisiones"  estilo="true" clase="<%=estiloCombo%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  readOnly="<%=readOnlyCombo%>" parametro="<%=param%>" elementoSel="<%=prisionSel%>" />
+							<siga:ComboBD  ancho="300" nombre="prision" tipo="comboPrisiones"  estilo="true" clase="<%=estiloCombo%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  readonly="<%=readOnlyCombo%>" parametro="<%=param%>" elementoSel="<%=prisionSel%>" />
 						 
 							<font class="labelTextValor" style="vertical-align: middle;">
 								<siga:Idioma key="gratuita.mantenimientoTablasMaestra.literal.prisionCompletar"/>
@@ -668,12 +668,12 @@
 							<siga:Idioma key="gratuita.actuacionesDesigna.literal.pretensiones"/><%=(obligatorioProcedimiento?asterisco:"")%>
 						</td>
 						<td colspan="4">
-							<siga:ComboBD  ancho="300" nombre="pretension" tipo="comboPretensiones"  estilo="true" clase="<%=estiloCombo%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  readOnly="<%=readOnlyCombo%>" parametro="<%=paramPretension%>" elementoSel="<%=pretensionSel%>" />										 
+							<siga:ComboBD  ancho="300" nombre="pretension" tipo="comboPretensiones"  estilo="true" clase="<%=estiloCombo%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  readonly="<%=readOnlyCombo%>" parametro="<%=paramPretension%>" elementoSel="<%=pretensionSel%>" />										 
 							<% if (pcajgActivo==CajgConfiguracion.TIPO_CAJG_TXT_ALCALA) { %>
 								<font class="labelText">
 									<siga:Idioma key="gratuita.altaGuardia.literal.motivoCambio"/>
 								</font>
-								<siga:ComboBD  ancho="300" nombre="idMotivoCambio" tipo="cmbActuacionDesignaMotivoCambio"  estilo="true" clase="<%=estiloCombo%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  readOnly="<%=readOnlyCombo%>" parametro="<%=paramMotivoCambio%>" elementoSel="<%=motCambioSel%>" />
+								<siga:ComboBD  ancho="300" nombre="idMotivoCambio" tipo="cmbActuacionDesignaMotivoCambio"  estilo="true" clase="<%=estiloCombo%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  readonly="<%=readOnlyCombo%>" parametro="<%=paramMotivoCambio%>" elementoSel="<%=motCambioSel%>" />
 							<%} else {%>
 								<html:hidden property = "idMotivoCambio" value="<%=idMotivoCambio%>"/>
 							<%}%>
@@ -690,7 +690,7 @@
 									onKeyDown="cuenta(this,4000)" onChange="cuenta(this,4000)" style="overflow:auto;width:600px;height:45px" 
 								><%=observaciones%></textarea>
 							<% } else { %>
-								<textarea class="boxConsulta" name="observaciones" readonly="true"
+								<textarea class="boxConsulta" name="observaciones" readonly
 									style="overflow:auto;width:600px;height:40px"
 								><%=observaciones%></textarea>
 							<%}%>							
@@ -708,9 +708,9 @@
 								&nbsp;/&nbsp;
 					     		<html:text name="ActuacionesDesignasForm" property="talon" size="20"  maxlength="20" styleClass="box" />
 						     <%}else{%>	
-					     		<html:text name="ActuacionesDesignasForm" property="talonario" size="20" styleClass="boxConsulta" readOnly="true"/>
+					     		<html:text name="ActuacionesDesignasForm" property="talonario" size="20" styleClass="boxConsulta" readonly="true"/>
 					     		&nbsp;/&nbsp;
-					     		<html:text name="ActuacionesDesignasForm" property="talon" size="20" styleClass="boxConsulta" readOnly="true"/>
+					     		<html:text name="ActuacionesDesignasForm" property="talon" size="20" styleClass="boxConsulta" readonly="true"/>
 						     <%}%>				     
 						</td>			
 					</tr>
@@ -747,9 +747,9 @@
 						
 						<td class="labelText">
 							<%if(actuacionValidada.equals("1")) {%>	
-								<input name="estadoActuacion" type="text" class="boxConsulta" value='<siga:Idioma key='gratuita.mantActuacion.literal.actuacionValidada'/>' readonly="true" style="width:400px; border:0px solid">
+								<input name="estadoActuacion" type="text" class="boxConsulta" value='<siga:Idioma key='gratuita.mantActuacion.literal.actuacionValidada'/>' readonly style="width:400px; border:0px solid">
 							<%} else {%>
-								<input name="estadoActuacion" type="text" class="boxConsulta" value="<siga:Idioma key='gratuita.mantActuacion.literal.actuacionPteValidar'/>" readonly="true" style="width:400px; border:px solid">
+								<input name="estadoActuacion" type="text" class="boxConsulta" value="<siga:Idioma key='gratuita.mantActuacion.literal.actuacionPteValidar'/>" readonly style="width:400px; border:px solid">
 							<%}%>
 						</td>
 					</tr>
@@ -763,7 +763,7 @@
 									onKeyDown="cuenta(this,1024)" onChange="cuenta(this,1024)" style="overflow:auto;width:600px;height:45px"
 								><%=observacionesJustificacion%></textarea>
 							<%}else{%>
-								<textarea class="boxConsulta" name="observacionesJustificacion" readonly="true" 
+								<textarea class="boxConsulta" name="observacionesJustificacion" readonly 
 									style="overflow:auto;width:600px;height:40px" 
 								><%=observacionesJustificacion%></textarea>
 							<%}%>
@@ -785,7 +785,7 @@
 			
 							<td class="labelTextValue">
 							<%if (vTipoRatificacion!=null && vTipoRatificacion.size()>0){%>	
-									<siga:ComboBD nombre="idTipoRatificacionEJG" tipo="tipoResolucionTodos" ancho="375" clase="boxConsulta" parametro="<%=dato%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  elementoSel="<%=vTipoRatificacion%>" readOnly="true"/>				
+									<siga:ComboBD nombre="idTipoRatificacionEJG" tipo="tipoResolucionTodos" ancho="375" clase="boxConsulta" parametro="<%=dato%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  elementoSel="<%=vTipoRatificacion%>" readonly="true"/>				
 			 				<%}else{%>
 			 					-	
 			 				<%}%>	
@@ -825,13 +825,13 @@
 								<siga:Idioma key="gratuita.operarRatificacion.literal.fechaAuto"/>
 							</td>
 							<td class="labelTextValue">
-								<siga:Fecha nombreCampo="fechaAuto" valorInicial="<%=fechaAuto%>" disabled="true" readonly="true"></siga:Fecha>
+								<siga:Fecha nombreCampo="fechaAuto" valorInicial="<%=fechaAuto%>" disabled="true" readOnly="true"></siga:Fecha>
 							</td>
 							<td class="labelText">
 								<siga:Idioma key="gratuita.EJG.literal.autoResolutorio"/>
 							</td>	
 							<td class="labelTextValue">
-								<siga:ComboBD nombre="idTipoResolAuto" tipo="idTipoResolAuto" clase="boxConsulta" ancho="375"  filasMostrar="1" seleccionMultiple="false" obligatorio="false" elementoSel="<%=vTipoResolAuto%>" readOnly="true"/>
+								<siga:ComboBD nombre="idTipoResolAuto" tipo="idTipoResolAuto" clase="boxConsulta" ancho="375"  filasMostrar="1" seleccionMultiple="false" obligatorio="false" elementoSel="<%=vTipoResolAuto%>" readonly="true"/>
 							</td>
 						</tr>
 						<%} %>

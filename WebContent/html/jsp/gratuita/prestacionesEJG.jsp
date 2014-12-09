@@ -43,7 +43,7 @@
 	<html:hidden property="idsInsertarRechazadas" value = '' />
 	<html:hidden property="idsBorrarRechazadas" value = ''/>
 
-<table class="tablaTitulo" cellspacing="0" heigth="38">
+<table class="tablaTitulo" cellspacing="0" height="38">
 	<tr>
 		<td id="titulo" class="titulitosDatos">
 			<c:out value="${PREFIJOEXPEDIENTECAJG}" />&nbsp;<c:out value="${PrestacionRechazadaEjgForm.ejgAnio}"/>/<c:out
@@ -84,8 +84,6 @@
 											
 											<input type='checkbox'  	id='prestacion_${prestacionEJG.idprestacion}' name='prestacion'  checked="checked" ${disabledPorConfiguracion} >
 											<label for="prestacion_${prestacionEJG.idprestacion}"><c:out value="${prestacionEJG.descripcion}"/></label>
-											
-											</input>
 										</td>
 									</tr>
 									</c:forEach>

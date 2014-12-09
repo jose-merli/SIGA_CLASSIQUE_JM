@@ -77,7 +77,7 @@
 <body>
 	<!-- TITULO -->
 	<!-- Barra de titulo actualizable desde los mantenimientos -->
-	<table class="tablaTitulo" cellspacing="0" heigth="32">
+	<table class="tablaTitulo" cellspacing="0" height="32">
 		<tr>
 			<td id="titulo" class="titulosPeq">
 				<siga:Idioma key="gratuita.modalCambiar_PestanaCalendarioGuardias.literal.tituloTitular"/>
@@ -119,14 +119,14 @@
 						<siga:Idioma key="gratuita.modalCambiar_PestanaCalendarioGuardias.literal.numero"/>		
 					</td>
 					<td>
-						<html:text name="PermutasForm" property="numeroColegiadoSolicitante"  styleId="numeroColegiadoSolicitante" size="20" maxlength="20" styleClass="boxConsulta" value="<%=numeroColegiado%>" readOnly="true" />
+						<html:text name="PermutasForm" property="numeroColegiadoSolicitante"  styleId="numeroColegiadoSolicitante" size="20" maxlength="20" styleClass="boxConsulta" value="<%=numeroColegiado%>" readonly="true" />
 					</td>
 							
 					<td class="labelText">
 						<siga:Idioma key="gratuita.modalCambiar_PestanaCalendarioGuardias.literal.nombre"/>
 					</td>
 					<td>
-						<html:text name="PermutasForm" property="nombreSolicitante" styleId="nombreSolicitante" size="30" maxlength="300" styleClass="boxConsulta" value="<%=nombreYApellidos%>" readOnly="true" />
+						<html:text name="PermutasForm" property="nombreSolicitante" styleId="nombreSolicitante" size="30" maxlength="300" styleClass="boxConsulta" value="<%=nombreYApellidos%>" readonly="true" />
 					</td>
 				</tr>
 				
@@ -135,14 +135,14 @@
 						<siga:Idioma key="gratuita.modalCambiar_PestanaCalendarioGuardias.literal.fechaInicio"/>
 					</td>
 					<td>
-						<html:text name="PermutasForm" property="fechaInicioSolicitante" styleId="fechaInicioSolicitante" size="10" maxlength="10" styleClass="boxConsulta" value="<%=GstDate.getFormatedDateShort(usr.getLanguage(),fechaInicio)%>" readOnly="true" />
+						<html:text name="PermutasForm" property="fechaInicioSolicitante" styleId="fechaInicioSolicitante" size="10" maxlength="10" styleClass="boxConsulta" value="<%=GstDate.getFormatedDateShort(usr.getLanguage(),fechaInicio)%>" readonly="true" />
 					</td>		
 					
 					<td class="labelText">
 						<siga:Idioma key="gratuita.modalCambiar_PestanaCalendarioGuardias.literal.fechaFin"/>
 					</td>
 					<td>
-						<html:text name="PermutasForm" property="fechaFinSolicitante" styleId="fechaFinSolicitante" size="10" maxlength="10" styleClass="boxConsulta" value="<%=GstDate.getFormatedDateShort(usr.getLanguage(),fechaFin)%>" readOnly="true" />
+						<html:text name="PermutasForm" property="fechaFinSolicitante" styleId="fechaFinSolicitante" size="10" maxlength="10" styleClass="boxConsulta" value="<%=GstDate.getFormatedDateShort(usr.getLanguage(),fechaFin)%>" readonly="true" />
 					</td>
 				</tr>	
 			
@@ -152,9 +152,9 @@
 					</td>
 					<td colspan="3">
 						<html:textarea name="PermutasForm" property="motivosSolicitante" styleId="motivosSolicitante" 
-							onKeyDown="cuenta(this,255)" onChange="cuenta(this,255)" 
+							onkeydown="cuenta(this,255)" onchange="cuenta(this,255)" 
 							style="overflow-y:auto; overflow-x:hidden; width:545px; height:50px; resize:none;"
-							styleClass="boxCombo" value="" readOnly="false" />
+							styleClass="boxCombo" value="" readonly="false" />
 					</td>		
 				</tr>		
 			</table>

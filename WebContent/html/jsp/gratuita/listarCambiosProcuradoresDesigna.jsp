@@ -74,7 +74,7 @@
 		<html:form action="JGR_CambioProcuradorDesigna.do" method="POST" target="mainPestanas" style="display:none">
 			<html:hidden property = "modo" value = ""/>
 		</html:form>	
-		<table class="tablaTitulo" cellspacing="0" heigth="38">
+		<table class="tablaTitulo" cellspacing="0" height="38">
 		<tr>
 			<td id="titulo" class="titulitosDatos">
 	
@@ -109,8 +109,7 @@
 			   gratuita.busquedaSOJ.literal.nColegiado,
 			   gratuita.defendidosDesigna.literal.nombreApellidos,
 			   gratuita.cambiosProcuradoresDesigna.literal.fechaRenuncia,"
-			   columnSizes="12,12,12,42,12,10"
-			   modal="M">
+			   columnSizes="12,12,12,42,12,10">
 			   
 		<!-- Campo obligatorio -->
 	<% if (obj==null || obj.size()==0){%>

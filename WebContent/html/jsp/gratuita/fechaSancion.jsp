@@ -93,7 +93,7 @@
 <body>
 
 	<!-- INICIO: TITULO OPCIONAL DE LA TABLA -->
-	<table class="tablaTitulo" align="center" cellspacing="0" heigth="32">
+	<table class="tablaTitulo" align="center" cellspacing="0" height="32">
 	<tr>
 	<td class="titulitosDatos">	
 			<siga:Idioma key="gratuita.insertarArchivo.literal.insertarArchivo"/>
@@ -141,7 +141,7 @@
 		<%if (automatico!=null && !automatico.equals("1")){%>
 		 	<siga:Fecha nombreCampo="fechaArchivada" posicionX="30" posicionY="30"></siga:Fecha>
 		<%}else{%>
-		<html:textarea property="fechaArchivada" styleclass="box" style="width:100;overflow:hidden" rows="1" value="<%=fechaInicio%>" readOnly="true"/>
+		<html:textarea property="fechaArchivada" styleClass="box" style="width:100;overflow:hidden" rows="1" value="<%=fechaInicio%>" readonly="true"/>
 		<%}%>
 		
 	</td>

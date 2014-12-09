@@ -82,10 +82,7 @@
 		<html:hidden styleId="numero" property = "numero"/>
 	</html:form>	
 		
-		<tr>				
-	<td width="100%" align="center">
-
-		<table class="tablaTitulo" cellspacing="0" heigth="38">
+		<table class="tablaTitulo" cellspacing="0" height="38">
 		<tr>
 			<td id="titulo" class="titulitosDatos">
 	
@@ -110,8 +107,7 @@
 		   name="listadoDocumentacion"
 		   border="1"
 		   columnNames="gratuita.documentacionAsistencia.fechaentrada,gratuita.documentacionAsistencia.nombre,gratuita.documentacionDesigna.actuacion "
-		   columnSizes="10,40,40,10"
-		   modal="M">
+		   columnSizes="10,40,40,10">
 		   
   	<% if (obj != null && obj.size()>0){
 	    	int recordNumber=1;

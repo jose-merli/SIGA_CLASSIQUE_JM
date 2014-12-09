@@ -64,7 +64,7 @@
 
 <body>
 
-	<table class="tablaTitulo" cellspacing="0" heigth="32">
+	<table class="tablaTitulo" cellspacing="0" height="32">
 	<tr>
 		<td id="titulo" class="titulos">
 			<siga:Idioma key="gratuita.listadoHistosFacturables.literal.titulo"/>
@@ -97,7 +97,7 @@
 		<td>
 			<%	String[] dato1 = {"G"};%>
 			<% if (modo.equalsIgnoreCase("VER")) { %>
-				<html:text name="DefinirHitosFacturablesGuardiasForm" property="descripcion" size="40" maxlength="40" styleClass="boxConsulta" value="<%=nombreHito%>" readOnly="true"></html:text>
+				<html:text name="DefinirHitosFacturablesGuardiasForm" property="descripcion" size="40" maxlength="40" styleClass="boxConsulta" value="<%=nombreHito%>" readonly="true"></html:text>
 			<%} else { %>
 				<siga:ComboBD nombre = "descripcion" tipo="cmbHitoFacturable" clase="boxCombo" obligatorio="true" parametro="<%=dato1%>" elementoSel="<%=seleccionado%>" />						
 			<% } %>

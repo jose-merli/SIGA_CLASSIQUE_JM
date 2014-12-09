@@ -281,15 +281,15 @@
 
 	<table  align="center" width="100%">
 	
-	<tr width="100%">
+	<tr>
 	<td class="labelText">
 		<siga:Idioma key="gratuita.busquedaSOJ.literal.nif"/>		
 	</td>
 	<td  colspan="7">
 	<%if ((accion.equalsIgnoreCase("ver")) || (!nif.equals(""))){%>
-		<html:text name="DefinirInteresadoEJGForm" property="nif" size="10" maxlength="20" styleClass="boxConsulta"  value="<%=nif%>" readOnly="true"></html:text>
+		<html:text name="DefinirInteresadoEJGForm" property="nif" size="10" maxlength="20" styleClass="boxConsulta"  value="<%=nif%>" readonly="true"></html:text>
 	<%} else  {%>
-		<html:text name="DefinirInteresadoEJGForm" property="nif" size="10" maxlength="20" styleClass="box"  value="<%=nif%>" onBlur="obtenerNif()"></html:text>
+		<html:text name="DefinirInteresadoEJGForm" property="nif" size="10" maxlength="20" styleClass="box"  value="<%=nif%>" onblur="obtenerNif()"></html:text>
 	<%}%>
 	</td>
 
@@ -566,7 +566,7 @@ if(importeOtrosBienes!=null && !importeOtrosBienes.equals(""))
 					scrolling="no"
 					frameborder="0"
 					marginheight="0"
-					marginwidth="0";					 
+					marginwidth="0"					 
 					class="frameGeneral">
 	</iframe>
 

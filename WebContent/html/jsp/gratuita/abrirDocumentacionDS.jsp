@@ -144,7 +144,7 @@
 							scrolling="no"
 							frameborder="0"
 							marginheight="0"
-							marginwidth="0";					 
+							marginwidth="0"				 
 							style="width:100%; height:100%;">
 			</iframe>
 			<!-- FIN: IFRAME LISTA RESULTADOS -->

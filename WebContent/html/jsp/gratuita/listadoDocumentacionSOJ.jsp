@@ -90,7 +90,7 @@
 		<input type="hidden" name="anio" value="<%=anio%>">
 		<input type="hidden" name="numero" value="<%=numero%>">
 	</html:form>	
-		<table class="tablaTitulo" cellspacing="0" heigth="38">
+		<table class="tablaTitulo" cellspacing="0" height="38">
 		<tr>
 			<td id="titulo" class="titulitosDatos">
 	
@@ -116,8 +116,7 @@
 		   name="listadoDocumentacion"
 		   border="2"
 		   columnNames="gratuita.operarEJG.literal.fechaLimitePresentacion,pestana.justiciagratuitaejg.documentacion,gratuita.documentacionSOJ.regentrada,gratuita.documentacionSOJ.regsalida,gratuita.operarEJG.literal.fechaPresentacion,"
-		   columnSizes="10,50,10,10,10"
-		   modal="P">
+		   columnSizes="10,50,10,10,10">
 		   
       <%if (obj.size()>0)
       { 
@@ -128,16 +127,6 @@
 			while (recordNumber-1 < obj.size())
 			{			
 				fila = (Hashtable) obj.get(recordNumber-1);
-				
-				/*if(fila.get("REGENTRADA").equals("")||fila.get("REGENTRADA")==null)
-					regentrada="&nbsp";
-				else
-					regentrada=fila.get("REGENTRADA");
-					
-				if(fila.get("REGSALIDA").equals("")||fila.get("REGSALIDA")==null)
-					regsalida="&nbsp";
-				else
-					regsalida=fila.get("REGSALIDA");*/
 			%>				
 					<siga:FilaConIconos fila='<%=String.valueOf(recordNumber)%>' botones="<%=botones%>" clase="listaNonEdit" >
 					<td><input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_1" value="<%=fila.get("IDDOCUMENTACION")%>"><%=GstDate.getFormatedDateShort("",fila.get("FECHALIMITE"))%>&nbsp;</td>

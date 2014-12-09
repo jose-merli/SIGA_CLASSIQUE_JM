@@ -36,7 +36,7 @@
 	String localiz="";
 	String entrada =(String)request.getSession().getAttribute("entrada");
 	
-	String asterisco = "&nbsp(*)&nbsp";
+	String asterisco = "&nbsp;(*)&nbsp;";
 	int pcajgActivo = 0;
     boolean obligatorioCodigoExterno = false;
 	if (request.getAttribute("pcajgActivo") != null) {
@@ -203,7 +203,7 @@
 </head>
 
 <body>
-	<table class="tablaTitulo" cellspacing="0" heigth="32">
+	<table class="tablaTitulo" cellspacing="0" height="32">
 		<tr>
 			<td id="titulo" class="titulitosDatos">
 				<siga:Idioma key="gratuita.maestroGuardias.literal.mantenimientoTurnos"/>
@@ -211,19 +211,21 @@
 		</tr>
 	</table>
 	
-	<html:form action = "/DefinirTurnosAction.do" method="POST" target="submitArea" enctype="multipart/form-data" onSubmit="return Buscar()">
+	<html:form action = "/DefinirTurnosAction.do" method="POST" target="submitArea" enctype="multipart/form-data" onsubmit="return Buscar()">
 		<input type="hidden" name="modo" value="insertar">
 	
 		<siga:ConjCampos leyenda="gratuita.listarTurnos.literal.estado">
 			<table width="30%" border="0" align="left" class="labelText" >
-				<td>
-					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-					<INPUT NAME="visibilidad" TYPE=RADIO VALUE="1" checked> <siga:Idioma key="gratuita.maestroTurnos.literal.bajaLogica.alta"/> 
-				</td>
-
-				<td>
-					<INPUT NAME="visibilidad" TYPE=RADIO VALUE="0"> <siga:Idioma key="gratuita.maestroTurnos.literal.bajaLogica.baja"/>
-				</td>
+				<tr>
+					<td>
+						&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+						<INPUT NAME="visibilidad" TYPE=RADIO VALUE="1" checked> <siga:Idioma key="gratuita.maestroTurnos.literal.bajaLogica.alta"/> 
+					</td>
+	
+					<td>
+						<INPUT NAME="visibilidad" TYPE=RADIO VALUE="0"> <siga:Idioma key="gratuita.maestroTurnos.literal.bajaLogica.baja"/>
+					</td>
+				</tr>
 			</table>
 		</siga:ConjCampos>
 
@@ -297,7 +299,7 @@
 %>
 				  	</td>
 					<td>
-						<html:text name="DefinirTurnosForm" property="codigoExterno"  size="10" maxlength="10"  styleClass="Box" readOnly="false" value="" />			
+						<html:text name="DefinirTurnosForm" property="codigoExterno"  size="10" maxlength="10"  styleClass="Box" readonly="false" value="" />			
 					</td>
 				</tr>
 				

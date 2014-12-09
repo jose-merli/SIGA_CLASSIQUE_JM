@@ -74,7 +74,7 @@
 		<html:hidden property = "modo" value = ""/>
 	</html:form>	
 	
-	<table class="tablaTitulo" cellspacing="0" heigth="32">
+	<table class="tablaTitulo" cellspacing="0" height="32">
 		<tr>
 			<td id="titulo" class="titulosPeq">
 				<% if (tipo.equals("asistencia")) { %>
@@ -90,8 +90,7 @@
 	   	name="tablaDatos"
 	   	border="1"
 	   	columnNames="<%=nombreCol%>"
-	   	columnSizes="<%=tamano%>"
-	   	modal="P">  		
+	   	columnSizes="<%=tamano%>">  		
 
 <% 
 		if (obj==null || obj.size()==0) {

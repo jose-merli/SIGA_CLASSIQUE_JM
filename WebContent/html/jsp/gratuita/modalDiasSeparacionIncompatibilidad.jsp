@@ -110,7 +110,7 @@
 <body onload="setDefault();">
 
 	<!-- INICIO: Titulo -->
-	<table class="tablaTitulo" cellspacing="0" heigth="32">
+	<table class="tablaTitulo" cellspacing="0" height="32">
 		<tr>
 			<td id="titulo" class="titulosPeq">
 		    	<siga:Idioma key="gratuita.incompatibilidadesGuardias.literal.diasSeparacionGuardias" />
@@ -139,7 +139,7 @@
 			    		<siga:Idioma key="gratuita.incompatibilidadesGuardias.literal.motivos" />
 			    	</td>
 			    	<td>
-				    	<textarea class="box" type="text" name="motivos" 
+				    	<textarea class="box" name="motivos" 
 							onKeyDown="cuenta(this,1024)" onChange="cuenta(this,1024)"	
 							style="overflow-y:auto; overflow-x:hidden; width:400px; height:50px; resize:none;"
 						></textarea>

@@ -121,9 +121,9 @@
 		</td>	
 		<td class="labelText">	
 			<% if (modo.equalsIgnoreCase("EDITAR")) {%>
-				<html:text name="DefinirListaGuardiasForm" property="listaGuardias" size="50" maxlength="100" styleClass="<%=clase%>" value="<%=nombre%>" readOnly="<%=desactivado%>"></html:text>
+				<html:text name="DefinirListaGuardiasForm" property="listaGuardias" size="50" maxlength="100" styleClass="<%=clase%>" value="<%=nombre%>" readonly="<%=desactivado%>"></html:text>
 			<% } else { %>
-				<html:text name="DefinirListaGuardiasForm" property="listaGuardias" size="50" maxlength="100" styleClass="<%=clase%>" value="<%=nombre%>" readOnly="<%=desactivado%>"></html:text>			
+				<html:text name="DefinirListaGuardiasForm" property="listaGuardias" size="50" maxlength="100" styleClass="<%=clase%>" value="<%=nombre%>" readonly="<%=desactivado%>"></html:text>			
 			<% } %>
 		</td>
 	</tr>
@@ -133,9 +133,9 @@
 		</td>	
 		<td class="labelText">	
 		    <% if (modo.equalsIgnoreCase("EDITAR")) {%>
-				<html:text name="DefinirListaGuardiasForm" property="lugar" size="50" maxlength="100" styleClass="<%=clase%>" value="<%=lugar%>" readOnly="<%=desactivado%>" ></html:text>
+				<html:text name="DefinirListaGuardiasForm" property="lugar" size="50" maxlength="100" styleClass="<%=clase%>" value="<%=lugar%>" readonly="<%=desactivado%>" ></html:text>
 			<% } else { %>
-				<html:text name="DefinirListaGuardiasForm" property="lugar" size="50" maxlength="100" styleClass="<%=clase%>" value="<%=lugar%>" readOnly="<%=desactivado%>" ></html:text>			
+				<html:text name="DefinirListaGuardiasForm" property="lugar" size="50" maxlength="100" styleClass="<%=clase%>" value="<%=lugar%>" readonly="<%=desactivado%>" ></html:text>			
 			<% } %>
 		</td>
 	</tr>
@@ -271,7 +271,7 @@
 					scrolling="no"
 					frameborder="0"
 					marginheight="0"
-					marginwidth="0";					 
+					marginwidth="0"				 
 					class="frameGeneral">
 	</iframe>
 	<!-- FIN: IFRAME LISTA RESULTADOS -->

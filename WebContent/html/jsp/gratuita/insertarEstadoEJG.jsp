@@ -93,7 +93,7 @@
 <body>
 
 	<!-- INICIO: TITULO OPCIONAL DE LA TABLA -->
-	<table class="tablaTitulo" align="center" cellspacing="0" heigth="32">
+	<table class="tablaTitulo" align="center" cellspacing="0" height="32">
 	<tr>
 	<td class="titulitosDatos">	
 	 <%if (modo!=null && modo.equals("editar")){%>
@@ -162,7 +162,7 @@
 		<siga:Idioma key="pestana.justiciagratuitaejg.observaciones"/>
 	</td>
 	<td colspan="3">
-		<html:textarea cols="60" rows="8" property="observaciones" onKeyDown="cuenta(this,4000)" onChange="cuenta(this,4000)"  styleclass="<%=estilo%>" value="<%=observaciones%>" ></html:textarea> 
+		<html:textarea cols="60" rows="8" property="observaciones" onkeydown="cuenta(this,4000)" onchange="cuenta(this,4000)"  styleClass="<%=estilo%>" value="<%=observaciones%>" ></html:textarea> 
 	
 	</td>
 	</tr>		

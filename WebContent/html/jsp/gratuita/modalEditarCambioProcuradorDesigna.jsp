@@ -29,7 +29,7 @@
 	String accion =(String) request.getAttribute("accion");	%>
 
 <%	/*Lo del pcajg*/
-	String asterisco = "&nbsp(*)&nbsp";
+	String asterisco = "&nbsp;(*)&nbsp;";
 	int pcajgActivo = 0;
 	if (request.getAttribute("PCAJG_ACTIVO")!=null){
 		pcajgActivo = Integer.parseInt(request.getAttribute("PCAJG_ACTIVO").toString());
@@ -68,7 +68,7 @@
 
 <body>
 
-	<table class="tablaTitulo" cellspacing="0" heigth="32">
+	<table class="tablaTitulo" cellspacing="0" height="32">
 	<tr>
 		<td id="titulo" class="titulitosDatos">
 			<siga:Idioma key="gratuita.modalEditarProcuradorDesigna.titulo"/>
@@ -186,7 +186,7 @@
 		<%if (accion.equalsIgnoreCase("ver")){%>
 			<html:textarea name="CambiosProcuradoresDesignasForm" rows="5" cols="150" styleClass="boxConsulta" style="width=660;height=170" onkeydown="cuenta(this,1024);" property="observaciones" readonly="true" style="overflow-y: hidden;"/>
 		<%} else {%>
-			<html:textarea name="CambiosProcuradoresDesignasForm" onKeyDown="cuenta(this,1024)" onChange="cuenta(this,1024)" rows="5" cols="150" styleClass="box" style="width=660;height=170" onkeydown="cuenta(this,1024);" property="observaciones"/>
+			<html:textarea name="CambiosProcuradoresDesignasForm" onkeydown="cuenta(this,1024)" onchange="cuenta(this,1024)" rows="5" cols="150" styleClass="box" style="width=660;height=170" onkeydown="cuenta(this,1024);" property="observaciones"/>
 		<%}%>
 		</td>
 	</tr>

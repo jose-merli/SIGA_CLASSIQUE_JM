@@ -38,7 +38,7 @@
 </head>
 
 <body>
-<table class="tablaTitulo" cellspacing="0" heigth="38">
+<table class="tablaTitulo" cellspacing="0" height="38">
 	<tr>
 		<td id="titulo" class="titulitosDatos">
 			<siga:Idioma key="gratuita.volantesExpres.asistencia.detalle"/>

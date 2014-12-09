@@ -62,7 +62,7 @@
 
 <!-- TITULO -->
 <!-- Barra de titulo actualizable desde los mantenimientos -->
-<table class="tablaTitulo" cellspacing="0" heigth="32">
+<table class="tablaTitulo" cellspacing="0" height="32">
 <tr>
 	<td id="titulo" class="titulitosDatos">
 		<siga:Idioma key="gratuita.mantenimientoTablasMaestra.literal.delito"/>
@@ -72,10 +72,6 @@
 	
 <div id="camposRegistro" class="posicionModalPeque" align="center">
 
-	<!-- INICIO: CAMPOS -->
-	<!-- Zona de campos de busqueda o filtro -->
-	<table class="tablaCentralCamposPeque" align="center">
-	
 	<!-- Comienzo del formulario con los campos -->	
 	<html:form action="/JGR_DelitosDesignas.do" method="post">
 		<html:hidden property = "modo" value = ""/>
@@ -83,6 +79,10 @@
 		<html:hidden name="pestanaDelitoDesignaForm" property="anio" />
 		<html:hidden name="pestanaDelitoDesignaForm" property="numero" />
 		<html:hidden name="pestanaDelitoDesignaForm" property="idTurno" />
+
+	<!-- INICIO: CAMPOS -->
+	<!-- Zona de campos de busqueda o filtro -->
+	<table class="tablaCentralCamposPeque" align="center">
 
 	<!-- INICIO: CAMPOS DEL REGISTRO -->
 	<tr>			

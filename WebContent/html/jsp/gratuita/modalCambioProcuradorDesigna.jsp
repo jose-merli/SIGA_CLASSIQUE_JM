@@ -31,7 +31,7 @@
 	idCeroValue.add("0");%>
 	
 <%	/*Lo del pcajg*/
-	String asterisco = "&nbsp(*)&nbsp";
+	String asterisco = "&nbsp;(*)&nbsp;";
 	int pcajgActivo = 0;
 	if (request.getAttribute("PCAJG_ACTIVO")!=null){
 		pcajgActivo = Integer.parseInt(request.getAttribute("PCAJG_ACTIVO").toString());
@@ -111,7 +111,7 @@
 
 <body onload="borraActual()">
 
-	<table class="tablaTitulo" cellspacing="0" heigth="32">
+	<table class="tablaTitulo" cellspacing="0" height="32">
 	<tr>
 		<td id="titulo" class="titulitosDatos">
 			<siga:Idioma key="gratuita.cambiosProcuradoresDesigna.literal.nuevoProcurador"/>
@@ -224,7 +224,7 @@
 	<tr>
 		<td class="labelText" colspan="4">
 			<siga:Idioma key="gratuita.modalConsulta_DefinirCalendarioGuardia.literal.observaciones"/><br>
-			<html:textarea name="CambiosProcuradoresDesignasForm" onKeyDown="cuenta(this,1024)" onChange="cuenta(this,1024)" rows="5" cols="150" styleClass="box" style="width=665;height=120" onkeydown="cuenta(this,1024);" property="observaciones"/>
+			<html:textarea name="CambiosProcuradoresDesignasForm" onkeydown="cuenta(this,1024)" onchange="cuenta(this,1024)" rows="5" cols="150" styleClass="box" style="width=665;height=120" onkeydown="cuenta(this,1024);" property="observaciones"/>
 		</td>
 	</tr>
 	</table>

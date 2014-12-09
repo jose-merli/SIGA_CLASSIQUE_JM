@@ -33,7 +33,7 @@
 
 <body onload="init();">
   <html:form action="JGR_BusquedaClientesFiltros.do" method="post" target="submitArea" styleId="busquedaClientesFiltrosForm">
-	<table class="tablaTitulo" cellspacing="0" heigth="32">
+	<table class="tablaTitulo" cellspacing="0" height="32">
 		<tr>
 			<td id="titulo" class="titulitosDatos">
 				<siga:Idioma key="gratuita.editartelefonosGuardia.literal.telefonosGuardia"/>
@@ -47,13 +47,13 @@
 					<table class="tablaCampos" align="center">	
 						<tr>
 		   					<td class="labelText">
-		   						<siga:Idioma key="censo.datosDireccion.literal.telefono1"/>&nbsp(*)
+		   						<siga:Idioma key="censo.datosDireccion.literal.telefono1"/>&nbsp;(*)
 		   					</td>				
 		   					<td>
 		   						<html:text name="busquedaClientesFiltrosForm" property="telefono1" styleId="telefono1" maxlength="20" size="10" styleClass="box"></html:text>
 		   					</td>
 		   					<td class="labelText">
-		   						<siga:Idioma key="censo.datosDireccion.literal.fax1"/>&nbsp
+		   						<siga:Idioma key="censo.datosDireccion.literal.fax1"/>&nbsp;
 		   					</td>
 		   					<td>
 		   						<html:text name="busquedaClientesFiltrosForm" property="fax1" styleId="fax1" maxlength="20" size="10" styleClass="box"></html:text>
@@ -61,13 +61,13 @@
 		 				</tr>
 	 					<tr>
 		   					<td class="labelText">
-		   						<siga:Idioma key="censo.datosDireccion.literal.telefono2"/>&nbsp
+		   						<siga:Idioma key="censo.datosDireccion.literal.telefono2"/>&nbsp;
 		   					</td>				
 		   					<td>
 		   						<html:text name="busquedaClientesFiltrosForm" property="telefono2" styleId="telefono2" maxlength="20" size="10" styleClass="box"></html:text>
 		   					</td>	
 		  				 	<td class="labelText">
-		  				 		<siga:Idioma key="censo.datosDireccion.literal.fax2"/>&nbsp
+		  				 		<siga:Idioma key="censo.datosDireccion.literal.fax2"/>&nbsp;
 		  				 	</td>				
 		   					<td>
 		   						<html:text name="busquedaClientesFiltrosForm" property="fax2" styleId="fax2" maxlength="20" size="10" styleClass="box"></html:text>
@@ -75,7 +75,7 @@
 	 					</tr>
 	 					<tr>
 		   					<td class="labelText">
-		   						<siga:Idioma key="censo.datosDireccion.literal.movil"/>&nbsp
+		   						<siga:Idioma key="censo.datosDireccion.literal.movil"/>&nbsp;
 		   					</td>				
 		   					<td>
 		   						<html:text name="busquedaClientesFiltrosForm" property="movil" styleId="movil" maxlength="20" size="10" styleClass="box"></html:text>

@@ -189,7 +189,7 @@
 
 
 
-	<table class="tablaTitulo" cellspacing="0" heigth="38">
+	<table class="tablaTitulo" cellspacing="0" height="38">
 		<tr>
 			<td id="titulo" class="titulitosDatos">
 	
@@ -251,7 +251,7 @@
 				
 	
 				<!-- FILA -->
-				<tr style="align:left" width="100%" >
+				<tr>
 					<td class="labelText" width="220px">	
 						<siga:Idioma key='gratuita.operarEJG.literal.CAJG'/> <siga:Idioma key='gratuita.operarEJG.literal.anio'/> / <siga:Idioma key='gratuita.busquedaEJG.literal.codigo'/>
 					</td>
@@ -271,7 +271,7 @@
 					</td>
 					<td width="250px">
 						<% if (accion.equalsIgnoreCase("ver")) {%> 
-							<siga:ComboBD nombre="idOrigenCAJG" tipo="origenCAJG" clase="boxConsulta" ancho="240"  filasMostrar="1" seleccionMultiple="false" obligatorio="false"  elementoSel="<%=vOrigenCAJGSel%>" readOnly="true"/>
+							<siga:ComboBD nombre="idOrigenCAJG" tipo="origenCAJG" clase="boxConsulta" ancho="240"  filasMostrar="1" seleccionMultiple="false" obligatorio="false"  elementoSel="<%=vOrigenCAJGSel%>" readonly="true"/>
 						<%}else{ %>
 					    	<siga:ComboBD nombre="idOrigenCAJG" tipo="origenCAJG" clase="boxCombo" ancho="240" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  elementoSel="<%=vOrigenCAJGSel%>" />
 					 	<%}%>		
@@ -283,9 +283,9 @@
 						<siga:ConjCampos>
 							<table align="left" class="fixed" border="0">
 	  							<tr>
-									<%if(accesoActas){%>
-									<input type="hidden"  id="actasActivado"  />
+									<%if(accesoActas){%>									
 										<td class="labelText" width="212px">
+											<input type="hidden"  id="actasActivado"  />
 											<siga:Idioma key="sjcs.actas.anio" />/<siga:Idioma key="sjcs.actas.numeroActa" /> - <siga:Idioma key="sjcs.actas.fechaResolucion" />
 										</td>
 										<td width="300px">
@@ -335,7 +335,7 @@
 					</td>
 					<td colspan="3">
 						<%if (accion.equalsIgnoreCase("ver")){%>
-							<siga:ComboBD nombre="idPonente"  ancho="700" tipo="tipoPonente" clase="boxConsulta"  filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=datoPonente%>" elementoSel="<%=vPonente%>" readOnly="true"/>
+							<siga:ComboBD nombre="idPonente"  ancho="700" tipo="tipoPonente" clase="boxConsulta"  filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=datoPonente%>" elementoSel="<%=vPonente%>" readonly="true"/>
 						<%} else {%>
 							<siga:ComboBD nombre="idPonente"  ancho="700" tipo="tipoPonente" clase="boxCombo"  	  filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=datoPonente%>" elementoSel="<%=vPonente%>" accion="return accionComboTipoPonente(this);" />
 						<%}%>
@@ -350,9 +350,9 @@
 					</td>
 					<td width="300px">
 						<%if (accion.equalsIgnoreCase("ver")){%>
-							<siga:Fecha nombreCampo="fechaPresentacionPonente" valorInicial="<%=fechaPresentacionPonente%>" disabled="true" readonly="true"></siga:Fecha>
+							<siga:Fecha nombreCampo="fechaPresentacionPonente" valorInicial="<%=fechaPresentacionPonente%>" disabled="true" readOnly="true"></siga:Fecha>
 						<%} else {%>
-							<siga:Fecha nombreCampo="fechaPresentacionPonente" valorInicial="<%=fechaPresentacionPonente%>" readonly="true"></siga:Fecha>
+							<siga:Fecha nombreCampo="fechaPresentacionPonente" valorInicial="<%=fechaPresentacionPonente%>" readOnly="true"></siga:Fecha>
 						<%}%>
 					</td>
 				</tr>
@@ -363,7 +363,7 @@
 					</td>
 					<td  colspan="3">
 						<%if (accion.equalsIgnoreCase("ver")){%>
-							<siga:ComboBD nombre="idTipoRatificacionEJG" ancho="700" tipo="tipoResolucionActivosConParametroBaja" clase="boxConsulta"  filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=datoTipoResolucion%>" elementoSel="<%=vTipoRatificacion%>" readOnly="true" pestana="t" accion="Hijo:idFundamentoJuridico"/>
+							<siga:ComboBD nombre="idTipoRatificacionEJG" ancho="700" tipo="tipoResolucionActivosConParametroBaja" clase="boxConsulta"  filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=datoTipoResolucion%>" elementoSel="<%=vTipoRatificacion%>" readonly="true" pestana="t" accion="Hijo:idFundamentoJuridico"/>
 						<%} else {%>
 							<siga:ComboBD nombre="idTipoRatificacionEJG" ancho="700" tipo="tipoResolucionActivosConParametroBaja" clase="boxCombo"  filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=datoTipoResolucion%>" elementoSel="<%=vTipoRatificacion%>" pestana="t" accion="Hijo:idFundamentoJuridico"/>
 						<%}%>
@@ -375,7 +375,7 @@
 					</td>
 					<td colspan="3">
 						<%if (accion.equalsIgnoreCase("ver")){%>				
-							<siga:ComboBD nombre="idFundamentoJuridico" ancho="700" tipo="tipoFundamentosActivosConParametroBaja" clase="boxConsulta"  filasMostrar="1" seleccionMultiple="false" obligatorio="false"  elementoSel="<%=vFundamentoJuridico%>" parametro="<%=datoFundamentosResolucion%>" hijo="t" pestana="t" readOnly="true" />
+							<siga:ComboBD nombre="idFundamentoJuridico" ancho="700" tipo="tipoFundamentosActivosConParametroBaja" clase="boxConsulta"  filasMostrar="1" seleccionMultiple="false" obligatorio="false"  elementoSel="<%=vFundamentoJuridico%>" parametro="<%=datoFundamentosResolucion%>" hijo="t" pestana="t" readonly="true" />
 						<%} else {%>
 							<siga:ComboBD nombre="idFundamentoJuridico" ancho="700" tipo="tipoFundamentosActivosConParametroBaja" clase="boxCombo"     filasMostrar="1" seleccionMultiple="false" obligatorio="false"  elementoSel="<%=vFundamentoJuridico%>" parametro="<%=datoFundamentosResolucion%>"  hijo="t" pestana="t" />
 						<%}%>
@@ -388,9 +388,9 @@
 					</td>
 					<td>
 						<%if (accion.equalsIgnoreCase("ver")){%>
-							<siga:Fecha nombreCampo="fechaNotificacion" valorInicial="<%=fechaNotificacion%>" disabled="true" readonly="true"></siga:Fecha>
+							<siga:Fecha nombreCampo="fechaNotificacion" valorInicial="<%=fechaNotificacion%>" disabled="true" readOnly="true"></siga:Fecha>
 						<%} else {%>
-							<siga:Fecha nombreCampo="fechaNotificacion" valorInicial="<%=fechaNotificacion%>" readonly="true"></siga:Fecha>
+							<siga:Fecha nombreCampo="fechaNotificacion" valorInicial="<%=fechaNotificacion%>" readOnly="true"></siga:Fecha>
 						<%}%>
 					</td>
 					
@@ -412,9 +412,9 @@
 					</td>	
 					<td colspan="3">
 					<%if (accion.equalsIgnoreCase("ver")){%>
-						<siga:Fecha nombreCampo="fechaRatificacion" valorInicial="<%=fechaRatificacion%>" disabled="true" readonly="true"></siga:Fecha>
+						<siga:Fecha nombreCampo="fechaRatificacion" valorInicial="<%=fechaRatificacion%>" disabled="true" readOnly="true"></siga:Fecha>
 					<%} else {%>
-						<siga:Fecha nombreCampo="fechaRatificacion" valorInicial="<%=fechaRatificacion%>" readonly="true"></siga:Fecha>
+						<siga:Fecha nombreCampo="fechaRatificacion" valorInicial="<%=fechaRatificacion%>" readOnly="true"></siga:Fecha>
 					<%}%>
 					</td>	
 				</tr>
@@ -459,7 +459,7 @@
 						<%if (accion.equalsIgnoreCase("ver")) {%>	
 							<textarea name="ratificacionDictamen" class="boxConsulta"
 							style="overflow-y:auto; overflow-x:hidden; width:750px; height:200px; resize:none;" 
-							readOnly="true"><%=observaciones%></textarea>
+							readOnly><%=observaciones%></textarea>
 						<%} else {%>
 							<textarea name="ratificacionDictamen" class="box" 					
 							style="overflow-y:auto; overflow-x:hidden; width:730px; height:200px; resize:none;"><%=observaciones%></textarea>

@@ -126,7 +126,7 @@
 
 	<!-- TITULO -->
 	<!-- Barra de titulo actualizable desde los mantenimientos -->
-	<table class="tablaTitulo" cellspacing="0" heigth="32">
+	<table class="tablaTitulo" cellspacing="0" height="32">
 		<tr>
 			<td id="titulo" class="titulitosDatos">
 					<siga:Idioma key="gratuita.nuevaAsistencia.literal.titulo"/>
@@ -162,7 +162,7 @@
 <%
 					if (bEsFichaColegial) {
 %>
-						<siga:ComboBD nombre="turnos" tipo="turnosLetradoAsistencia" clase="boxCombo"  ancho="480"  obligatorio="false" accion="Hijo:guardias;"  parametro="<%=dato%>" ElementoSel="<%=idTurno%>" />
+						<siga:ComboBD nombre="turnos" tipo="turnosLetradoAsistencia" clase="boxCombo"  ancho="480"  obligatorio="false" accion="Hijo:guardias;"  parametro="<%=dato%>" elementoSel="<%=idTurno%>" />
 <%
 					} else {
 %>
@@ -266,7 +266,7 @@
 					<siga:Idioma key='gratuita.nuevaAsistencia.literal.tasistencia'/>&nbsp;(*)
 				</td>	
 				<td colspan="3">
-					<siga:ComboBD nombre="idTipoAsistencia" tipo="scstipoasistencia" estilo="true" clase="boxCombo" ancho="480" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  ElementoSel="<%=tAsistencia%>" />
+					<siga:ComboBD nombre="idTipoAsistencia" tipo="scstipoasistencia" estilo="true" clase="boxCombo" ancho="480" filasMostrar="1" seleccionMultiple="false" obligatorio="false" elementoSel="<%=tAsistencia%>" />
 				</td>	
 			</tr>
 			
@@ -278,7 +278,7 @@
 						<siga:Idioma key="gratuita.nuevaAsistencia.literal.ncolegiado"/>
 					</td>	
 					<td colspan="3">
-						<html:text name="AsistenciasForm" property="colegiado" size="10" maxlength="10" styleClass="boxConsulta" value="<%=nColegiado%>" readOnly="true" />			
+						<html:text name="AsistenciasForm" property="colegiado" size="10" maxlength="10" styleClass="boxConsulta" value="<%=nColegiado%>" readonly="true" />			
 					</td>
 				</tr>
 			

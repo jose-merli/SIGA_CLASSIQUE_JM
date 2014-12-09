@@ -64,7 +64,7 @@
 			 de cabeceras fijas -->
 
 		<!-- Formulario de la lista de detalle multiregistro -->
-		        <table class="tablaTitulo" cellspacing="0" heigth="38">
+		        <table class="tablaTitulo" cellspacing="0" height="38">
 		<tr>
 			<td id="titulo" class="titulitosDatos">
 	

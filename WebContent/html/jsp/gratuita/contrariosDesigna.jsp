@@ -110,7 +110,7 @@
 		<input type="hidden" name="pantallaE" value="M">						
 	</html:form>
 	
-	<table class="tablaTitulo" cellspacing="0" heigth="310">
+	<table class="tablaTitulo" cellspacing="0" height="310">
 		<tr>
 			<td id="titulo" class="titulitosDatos">
 	

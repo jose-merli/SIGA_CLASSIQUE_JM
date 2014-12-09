@@ -37,7 +37,7 @@
 	Hashtable turno = (Hashtable) ses.getAttribute("turnoElegido");
 	String validarInscripciones=(String)turno.get("VALIDARINSCRIPCIONES"); 
 	
-	String asterisco = "&nbsp(*)&nbsp";
+	String asterisco = "&nbsp;(*)&nbsp;";
 	int pcajgActivo = 0;
     boolean obligatorioCodigoExterno = false;
     
@@ -311,14 +311,14 @@
 	
 		<siga:ConjCampos leyenda="gratuita.listarTurnos.literal.estado">
 			<%if (accion.equalsIgnoreCase("editar")){%>
-				<table width="30%" border="0" align="left" class="labelText" >
+				<table width="30%" border="0" align="left" class="labelText" ><tr>				
 					<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 						<input NAME="visibilidad" TYPE=RADIO VALUE="1" <% if((((String)turno.get("VISIBILIDAD")).equalsIgnoreCase("1"))||(accion.equalsIgnoreCase("nuevo"))){ %> checked <% } %> > <siga:Idioma key="gratuita.maestroTurnos.literal.bajaLogica.alta"/> 
 					</td>	
 					<td>
 						<input NAME="visibilidad" TYPE=RADIO VALUE="0" <% if((((String)turno.get("VISIBILIDAD")).equalsIgnoreCase("0"))){ %> checked <% } %>> <siga:Idioma key="gratuita.maestroTurnos.literal.bajaLogica.baja"/>
 					</td>
-				</table>
+				</tr></table>
 				
 			<%} else {
 				String estadoVisibilidad = "";
@@ -327,7 +327,7 @@
 				}else{
 					estadoVisibilidad="BAJA";
 				}%>
-				<td style="text-align:left">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<html:text name="DefinirTurnosForm" property="visibilidad" size="50" maxlength="50" styleClass="boxConsulta" value='<%=estadoVisibilidad%>' readOnly="true" /></td>
+				<td style="text-align:left">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<html:text name="DefinirTurnosForm" property="visibilidad" size="50" maxlength="50" styleClass="boxConsulta" value='<%=estadoVisibilidad%>' readonly="true" /></td>
 			<%}%>
 		</siga:ConjCampos>
 
@@ -449,11 +449,11 @@
 <%
 						if (accion.equalsIgnoreCase("ver")) {
 %>
-						    <html:text name="DefinirTurnosForm" property="codigoExterno"  size="10" maxlength="10"  styleClass="boxConsulta" readOnly="true" value='<%=(String)turno.get("CODIGOEXT")%>' />			
+						    <html:text name="DefinirTurnosForm" property="codigoExterno"  size="10" maxlength="10"  styleClass="boxConsulta" readonly="true" value='<%=(String)turno.get("CODIGOEXT")%>' />			
 <%
 						} else {
 %>				
-							<html:text name="DefinirTurnosForm" property="codigoExterno"  size="10" maxlength="10"  styleClass="Box" readOnly="false" value='<%=(String)turno.get("CODIGOEXT")%>' />
+							<html:text name="DefinirTurnosForm" property="codigoExterno"  size="10" maxlength="10"  styleClass="Box" readonly="false" value='<%=(String)turno.get("CODIGOEXT")%>' />
 <%
 						}
 %>	
@@ -545,7 +545,7 @@
 		</siga:ConjCampos>
 		
 		<siga:ConjCampos leyenda="gratuita.listarTurnos.literal.guardias">
-			<table width="80%" border="0" align="center" class="labelText" >				
+			<table width="80%" border="0" align="center" class="labelText" ><tr>				
 <% 
 				if (accion.equalsIgnoreCase("nuevo")) { 
 %> 
@@ -574,7 +574,7 @@
 <% 
 				} 
 %>				
-			</table>
+			</tr></table>
 		</siga:ConjCampos>
 		
 		<siga:ConjCampos leyenda="gratuita.maestroTurnos.literal.configuracion">

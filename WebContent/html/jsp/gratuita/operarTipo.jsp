@@ -35,7 +35,7 @@
 		pcajgActivo = Integer.parseInt(request.getAttribute(
 				"pcajgActivo").toString());
 	}
-	String asterisco = "&nbsp(*)&nbsp";
+	String asterisco = "&nbsp;(*)&nbsp;";
 	boolean codigoExtObligatorio = false;	
 	if (pcajgActivo == 5){
 		codigoExtObligatorio=true;
@@ -115,9 +115,9 @@
 					</td>
 					<td valign="top">	
 						<%if (accion.equalsIgnoreCase("ver")){%>						
-							<html:textarea name="DefinirMantenimDocumentacionEJGForm" property="descripcion" rows="5" cols="60" onkeydown="cuenta(this,200)" onChange="cuenta(this,200)" styleClass="boxConsulta" readonly="true"/>
+							<html:textarea name="DefinirMantenimDocumentacionEJGForm" property="descripcion" rows="5" cols="60" onkeydown="cuenta(this,200)" onchange="cuenta(this,200)" styleClass="boxConsulta" readonly="true"/>
 						<%} else {%>
-							<html:textarea name="DefinirMantenimDocumentacionEJGForm" property="descripcion" rows="5" cols="60" onkeydown="cuenta(this,200)" onChange="cuenta(this,200)" styleClass="box" readonly="false"/>
+							<html:textarea name="DefinirMantenimDocumentacionEJGForm" property="descripcion" rows="5" cols="60" onkeydown="cuenta(this,200)" onchange="cuenta(this,200)" styleClass="box" readonly="false"/>
 						<%}%>					
 					</td>
 				</tr>
@@ -211,7 +211,7 @@
 					scrolling="no"
 					frameborder="0"
 					marginheight="0"
-					marginwidth="0";
+					marginwidth="0"
 					class="frameGeneral">
 	</iframe>
 

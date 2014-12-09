@@ -60,18 +60,14 @@
 
 <!-- TITULO -->
 <!-- Barra de titulo actualizable desde los mantenimientos -->
-<table class="tablaTitulo" cellspacing="0" heigth="32">
+<table class="tablaTitulo" cellspacing="0" height="32">
 <tr>
 	<td id="titulo" class="titulosPeq">
 		<siga:Idioma key="gratuita.IncompatibilidadesGuardia.literal.titulo"/>
 	</td>
 </tr>
 </table>
-	
-	<!-- INICIO: CAMPOS -->
-	<!-- Zona de campos de busqueda o filtro -->
-	<table class="tablaCentralCamposGrande" align="center">
-	
+
 	<!-- Comienzo del formulario con los campos -->	
 	<html:form action="/JGR_IncompatibilidadesGuardia.do" method="post" target="submitArea">
 		<html:hidden property = "usuMod" value = "<%=usr.getUserName()%>"/>
@@ -86,6 +82,10 @@
 
 		<html:hidden property = "hiddenFrame" value = "1"/>		
 		<input type="hidden" name="datosModificados" value="">
+	
+	<!-- INICIO: CAMPOS -->
+	<!-- Zona de campos de busqueda o filtro -->
+	<table class="tablaCentralCamposGrande" align="center">
 		
 	<!-- INICIO: CAMPOS DEL REGISTRO -->
 	<tr>		
@@ -189,7 +189,7 @@
 					scrolling="no"
 					frameborder="0"
 					marginheight="0"
-					marginwidth="0";					 
+					marginwidth="0"				 
 					class="frameGeneral">
 	</iframe>
 	<!-- FIN: IFRAME LISTA RESULTADOS -->

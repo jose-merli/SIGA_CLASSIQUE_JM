@@ -264,7 +264,7 @@
 	String nombreTurnoAsistencia = (String) request.getAttribute("nombreTurnoAsistencia");
 	String nombreGuardiaAsistencia = (String) request.getAttribute("nombreGuardiaAsistencia");
 	
-	String asterisco = "&nbsp(*)&nbsp";
+	String asterisco = "&nbsp;(*)&nbsp;";
 	int pcajgActivo = 0;
 	if (request.getAttribute("PCAJG_ACTIVO")!=null){
 		pcajgActivo = Integer.parseInt(request.getAttribute("PCAJG_ACTIVO").toString());
@@ -687,7 +687,7 @@
 
 <body>
 
-<table class="tablaTitulo" cellspacing="0" heigth="38" width="100%" border="0">
+<table class="tablaTitulo" cellspacing="0" height="38" width="100%" border="0">
 	<tr>
 		<td id="titulo" class="titulitosDatos">
 			<%
@@ -761,7 +761,7 @@
 								<siga:Idioma key='sjcs.designa.general.letrado' />
 							</td>
 							<td>
-								<input type="text" class="boxConsulta" value="<%=nume_colegiado%>  <%=nombre_letrado%>" readOnly="true" style="width:500px">
+								<input type="text" class="boxConsulta" value="<%=nume_colegiado%>  <%=nombre_letrado%>" readOnly style="width:500px">
 							</td>
 						</tr>
 					</table>
@@ -1143,7 +1143,7 @@
 								<% if (!modo.equalsIgnoreCase("ver")) { %> 
 									<textarea scroll="none" name="observaciones" onKeyDown="cuenta(this,4000)" onChange="cuenta(this,4000)" rows="7" style="width: 300" class="box"><%=observaciones%></textarea> 
 								<% } else { %>
-									<textarea scroll="none" name="observaciones" onKeyDown="cuenta(this,4000)" onChange="cuenta(this,4000)" rows="7" style="width: 300" class="boxConsulta" readonly="true"><%=observaciones%></textarea>
+									<textarea scroll="none" name="observaciones" onKeyDown="cuenta(this,4000)" onChange="cuenta(this,4000)" rows="7" style="width: 300" class="boxConsulta" readonly><%=observaciones%></textarea>
 								<% } %>
 							</td>
 							<td class="labelText">
@@ -1153,7 +1153,7 @@
 								<% if (!modo.equalsIgnoreCase("ver")) { %> 
 									<textarea scroll="none" name="delitos" onKeyDown="cuenta(this,1024)" onChange="cuenta(this,1024)" rows="7" style="width: 300" class="box"><%=delitos%></textarea> 
 								<% } else { %>
-									<textarea scroll="none" name="delitos" onKeyDown="cuenta(this,1024)" onChange="cuenta(this,1024)" rows="7" style="width: 300" class="boxConsulta" readonly="true"><%=delitos%></textarea>
+									<textarea scroll="none" name="delitos" onKeyDown="cuenta(this,1024)" onChange="cuenta(this,1024)" rows="7" style="width: 300" class="boxConsulta" readonly><%=delitos%></textarea>
 								<% } %>
 							</td>
 						</tr>

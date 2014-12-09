@@ -27,7 +27,7 @@
 	<bean:define id="usrBean" name="USRBEAN" scope="session" type="com.atos.utils.UsrBean" />
 	<bean:define id="path" name="org.apache.struts.action.mapping.instance" property="path" scope="request"/>			
 <div>
-	<table class="tablaTitulo" cellspacing="0" heigth="38">
+	<table class="tablaTitulo" cellspacing="0" height="38">
 		<tr>
 			<td id="titulo"  class="titulitosDatos" style="font:normal" >
 				<c:out value="${PREFIJOEXPEDIENTECAJG}" />&nbsp;<c:out value="${ComunicacionesForm.anio}"/>/<c:out value="${ComunicacionesForm.codigoDesignaNumEJG}"/>
@@ -98,7 +98,7 @@
 		<html:hidden styleId = "origen" property="origen" value ="${path}"/>
 	</html:form>
 
-	<table class="tablaTitulo" cellspacing="0" heigth="38">
+	<table class="tablaTitulo" cellspacing="0" height="38">
 		<tr>
 		
 			<td id="titulo" class="titulitosDatos">
@@ -181,7 +181,7 @@
 	</siga:Table>	    
 	
 
-	<table class="tablaTitulo" cellspacing="0" heigth="38">
+	<table class="tablaTitulo" cellspacing="0" height="38">
 		<tr>
 			<td id="titulo" class="titulitosDatos">
 				<siga:Idioma key="envios.bandejaentrada.titulo"/>

@@ -22,6 +22,7 @@
 <%@ page import="com.siga.gratuita.form.PestanaDelitoAsistenciaForm"%>
 <%@ page import="java.util.Properties"%>
 <%@ page import="com.siga.Utilidades.*"%>
+<%@ page import="java.util.HashMap"%>
 <!-- JSP -->
 <% 
 	String app=request.getContextPath(); 
@@ -69,7 +70,7 @@
 
 <!-- TITULO -->
 <!-- Barra de titulo actualizable desde los mantenimientos -->
-<table class="tablaTitulo" cellspacing="0" heigth="32">
+<table class="tablaTitulo" cellspacing="0" height="32">
 <tr>
 	<td id="titulo" class="titulitosDatos">
 		<siga:Idioma key="gratuita.mantenimientoTablasMaestra.literal.delito"/>
@@ -78,10 +79,6 @@
 </table>
 	
 <div id="camposRegistro" class="posicionModalPeque" align="center">
-
-	<!-- INICIO: CAMPOS -->
-	<!-- Zona de campos de busqueda o filtro -->
-	<table class="tablaCentralCamposPeque" align="center">
 	
 	<!-- Comienzo del formulario con los campos -->	
 	<html:form action="/JGR_DelitosAsistencia.do" method="post">
@@ -90,6 +87,10 @@
 		<html:hidden name="pestanaDelitoAsistenciaForm" property="anio" />
 		<html:hidden name="pestanaDelitoAsistenciaForm" property="numero" />
 		<input type="hidden" name="esFichaColegial" value="<%=sEsFichaColegial%>"/>
+		
+	<!-- INICIO: CAMPOS -->
+	<!-- Zona de campos de busqueda o filtro -->
+	<table class="tablaCentralCamposPeque" align="center">		
 
 	<!-- INICIO: CAMPOS DEL REGISTRO -->
 	<tr>			

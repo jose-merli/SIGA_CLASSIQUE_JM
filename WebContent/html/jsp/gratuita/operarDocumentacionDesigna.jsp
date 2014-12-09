@@ -27,7 +27,7 @@
 <body onload="onLoad();">
 	
 <!-- INICIO: TITULO OPCIONAL DE LA TABLA -->
-<table class="tablaTitulo" align="center" cellspacing="0" heigth="32">
+<table class="tablaTitulo" align="center" cellspacing="0" height="32">
 	<tr>
 		<td class="titulitosDatos">	
 			<siga:Idioma key="gratuita.insertarDocumentacion.literal.editarDocumentacion"/>
@@ -117,7 +117,7 @@
 					<html:textarea property="observaciones"  rows="6" cols="50" style="width:350" styleClass="boxConsulta" readonly="true"/>
 				</c:when>
 				<c:otherwise>
-					<html:textarea property="observaciones"  onKeyDown="cuenta(this,1024)" onChange="cuenta(this,1024)" rows="6" cols="10" styleClass="box" style="width:100"/>
+					<html:textarea property="observaciones"  onkeydown="cuenta(this,1024)" onchange="cuenta(this,1024)" rows="6" cols="10" styleClass="box" style="width:100"/>
 				</c:otherwise>
 			</c:choose>
 		</td>	

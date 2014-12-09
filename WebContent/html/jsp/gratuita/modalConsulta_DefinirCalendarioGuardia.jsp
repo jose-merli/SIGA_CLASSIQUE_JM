@@ -42,7 +42,7 @@
 <body>
 	<!-- TITULO -->
 	<!-- Barra de titulo actualizable desde los mantenimientos -->
-	<table class="tablaTitulo" cellspacing="0" heigth="32">
+	<table class="tablaTitulo" cellspacing="0" height="32">
 		<tr>
 			<td id="titulo" class="titulosPeq"><siga:Idioma
 				key="gratuita.modalConsulta_DefinirCalendarioGuardia.literal.tituloGuardia" />
@@ -95,7 +95,7 @@
 								<td class="labelText"><siga:Idioma key="gratuita.modalCambiar_PestanaCalendarioGuardias.literal.motivos" /></td>
 								<td>
 									<html:textarea name="DefinirCalendarioGuardiaForm" property="comentarioSustituto" 
-										styleClass="boxConsulta" readOnly="true"
+										styleClass="boxConsulta" readonly="true"
 										style="overflow-y:auto; overflow-x:hidden; width:800px; height:80px; resize:none;"></html:textarea>
 								</td>
 							</tr>
@@ -132,7 +132,7 @@
 								<td class="labelText"><siga:Idioma key="gratuita.modalCambiar_PestanaCalendarioGuardias.literal.motivos" /></td>
 								<td>
 									<html:textarea name="DefinirCalendarioGuardiaForm" property="motivosSolicitante"
-										styleClass="boxConsulta" readOnly="true"
+										styleClass="boxConsulta" readonly="true"
 										style="overflow-y:auto; overflow-x:hidden; width:800px; height:80px; resize:none;"></html:textarea>
 								</td>
 							</tr>
@@ -149,7 +149,7 @@
 								<td class="labelText" width="170px"><siga:Idioma key="gratuita.modalCambiar_PestanaCalendarioGuardias.literal.motivos" /></td>
 								<td>
 									<html:textarea name="DefinirCalendarioGuardiaForm" property="comenAnulacion"
-										styleClass="boxConsulta" readOnly="true"
+										styleClass="boxConsulta" readonly="true"
 										style="overflow-y:auto; overflow-x:hidden; width:800px; height:80px; resize:none;"></html:textarea>
 								</td>
 							</tr>

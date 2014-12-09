@@ -137,7 +137,7 @@ String informeUnico =(String) request.getAttribute("informeUnico");
 <body>
 <input type="hidden" id= "informeUnico" value="<%=informeUnico%>">
 
-		<table class="tablaTitulo" cellspacing="0" heigth="38">
+		<table class="tablaTitulo" cellspacing="0" height="38">
 		<tr>
 			<td id="titulo" class="titulitosDatos">
 	
@@ -216,7 +216,7 @@ String informeUnico =(String) request.getAttribute("informeUnico");
 	
 			<td  class="labelTextValor">
 			<% if (sufijo!=null && !sufijo.equals("")){ %>
-				<html:text name="DatosGeneralesSOJForm" property="anio" size="4" maxlength="4" styleClass="boxConsulta"  value="<%=anio%>" readonly="true"></html:text> / <html:text name="DatosGeneralesSOJForm" property="numSOJ" size="5" maxlength="10" styleClass="boxConsulta"  value="<%=numeroSOJ%>" readonly="true"></html:text>-<input type="text" class="boxConsulta" value="<%=sufijo%>" readOnly="true" style="width:100px">
+				<html:text name="DatosGeneralesSOJForm" property="anio" size="4" maxlength="4" styleClass="boxConsulta"  value="<%=anio%>" readonly="true"></html:text> / <html:text name="DatosGeneralesSOJForm" property="numSOJ" size="5" maxlength="10" styleClass="boxConsulta"  value="<%=numeroSOJ%>" readonly="true"></html:text>-<input type="text" class="boxConsulta" value="<%=sufijo%>" readOnly style="width:100px">
 			<%}else{%>
 		  		<html:text name="DatosGeneralesSOJForm" property="anio" size="4" maxlength="4" styleClass="boxConsulta"  value="<%=anio%>" readonly="true"></html:text> / <html:text name="DatosGeneralesSOJForm" property="numSOJ" size="5" maxlength="10" styleClass="boxConsulta"  value="<%=numeroSOJ%>" readonly="true"></html:text>
 			<% } %>
@@ -228,7 +228,7 @@ String informeUnico =(String) request.getAttribute("informeUnico");
 			</td>
 			<td>	
 				<%if(accion.equals("ver")){%>
-					<input type="text" class="boxConsulta" value="<%=descripcionTurno%>" readOnly="true" style="width:300px">
+					<input type="text" class="boxConsulta" value="<%=descripcionTurno%>" readOnly style="width:300px">
 				<%}else{
 					ArrayList lista=new ArrayList();
 					String cadena= usr.getLocation()+","+idTurno;
@@ -242,7 +242,7 @@ String informeUnico =(String) request.getAttribute("informeUnico");
 			</td>
 			<td>	
 				<%if(accion.equals("ver")){%>
-					<input type="text" class="boxConsulta" value="<%=descripcionGuardia%>" readOnly="true" style="width:200px">					
+					<input type="text" class="boxConsulta" value="<%=descripcionGuardia%>" readOnly style="width:200px">					
 				<%}else{
 					ArrayList lista=new ArrayList();
 					String cadena= usr.getLocation()+","+idGuardia;
@@ -316,7 +316,7 @@ String informeUnico =(String) request.getAttribute("informeUnico");
 		<siga:Idioma key="gratuita.busquedaSOJ.literal.fechaApertura"/>
 	</td>				
 	<td class="labelTextValue">
-		<input type="text" name="fechaApertura" class="boxConsulta" value="<%=fechaApertura%>" readonly="true" size="10">
+		<input type="text" name="fechaApertura" class="boxConsulta" value="<%=fechaApertura%>" readonly size="10">
 	</td>
 	</tr>
 	
@@ -356,14 +356,14 @@ String informeUnico =(String) request.getAttribute("informeUnico");
 	<%int rows= (hayEJG?6:10);%>
 	<td class="labelText"  colspan="2">
 		<%if (accion.equalsIgnoreCase("ver")){%>
-			<textarea name="descripcionConsulta" cols="70" rows="<%=rows%>" readonly="true" class="boxConsulta" style="overflow-y:auto; overflow-x:hidden; width:470px; height:200px; resize:none;"><%=consulta%></textarea>
+			<textarea name="descripcionConsulta" cols="70" rows="<%=rows%>" readonly class="boxConsulta" style="overflow-y:auto; overflow-x:hidden; width:470px; height:200px; resize:none;"><%=consulta%></textarea>
 		<%} else {%>
 			<textarea name="descripcionConsulta" onKeyDown="cuenta(this,4000)" onChange="cuenta(this,4000)" cols="70" rows="<%=rows%>" class="box" style="overflow-y:auto; overflow-x:hidden; width:470px; height:200px; resize:none;"><%=consulta%></textarea>
 		<%}%>
 	</td>
 	<td class="labelText"  colspan="2">
 		<%if (accion.equalsIgnoreCase("ver")){%>
-			<textarea name="respuestaLetrado" cols="70" rows="<%=rows%>" readonly="true" class="boxConsulta" style="overflow-y:auto; overflow-x:hidden; width:450px; height:200px; resize:none;"><%=respuesta%></textarea>
+			<textarea name="respuestaLetrado" cols="70" rows="<%=rows%>" readonly class="boxConsulta" style="overflow-y:auto; overflow-x:hidden; width:450px; height:200px; resize:none;"><%=respuesta%></textarea>
 		<%} else {%>
 			<textarea name="respuestaLetrado" onKeyDown="cuenta(this,4000)" onChange="cuenta(this,4000)" cols="70" rows="<%=rows%>" class="box" style="overflow-y:auto; overflow-x:hidden; width:450px; height:200px; resize:none;"><%=respuesta%></textarea>
 		<%}%>

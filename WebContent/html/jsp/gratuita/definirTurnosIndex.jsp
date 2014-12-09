@@ -142,7 +142,7 @@
 					scrolling="no"
 					frameborder="0"
 					marginheight="0"
-					marginwidth="0";					 
+					marginwidth="0"			 
 					style="position:absolute; width:964; height:373; z-index:2; top: 65px">
 	</iframe>
 <%}%>

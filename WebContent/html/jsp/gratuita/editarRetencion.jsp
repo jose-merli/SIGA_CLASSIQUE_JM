@@ -49,7 +49,7 @@
 	<body>
 
 		<!-- INICIO: TITULO OPCIONAL DE LA TABLA -->
-		<table class="tablaTitulo" align="center" cellspacing="0" heigth="32">
+		<table class="tablaTitulo" align="center" cellspacing="0" height="32">
 			<tr>
 				<td class="titulitosDatos">
 					<%if (accion.equalsIgnoreCase("ver")){%>
@@ -154,24 +154,25 @@
 	
 		<iframe name="submitArea" src="<html:rewrite page='/html/jsp/general/blank.jsp'/>" style="display:none"></iframe>
 	</body>
-</html>
 
-<script language="JavaScript">	
-	// Asociada al boton Restablecer
-	function accionRestablecer() {		
-		document.forms[0].reset();
-	}
 
-	// Asociada al boton Guardar y Cerrar
-	function accionGuardarCerrar() {	
-		document.SolicitudRetencionForm.retencion.value = document.SolicitudRetencionForm.retencion.value.replace(",", ".");
-		if (validateSolicitudRetencionForm(document.SolicitudRetencionForm)) {
-       		document.forms[0].submit();				
+	<script language="JavaScript">	
+		// Asociada al boton Restablecer
+		function accionRestablecer() {		
+			document.forms[0].reset();
 		}
-	}		
-
-	// Asociada al boton Cerrar
-	function accionCerrar()	{
-		top.cierraConParametros("NORMAL");
-	}
-</script>
+	
+		// Asociada al boton Guardar y Cerrar
+		function accionGuardarCerrar() {	
+			document.SolicitudRetencionForm.retencion.value = document.SolicitudRetencionForm.retencion.value.replace(",", ".");
+			if (validateSolicitudRetencionForm(document.SolicitudRetencionForm)) {
+	       		document.forms[0].submit();				
+			}
+		}		
+	
+		// Asociada al boton Cerrar
+		function accionCerrar()	{
+			top.cierraConParametros("NORMAL");
+		}
+	</script>
+</html>

@@ -74,18 +74,14 @@
 
 <!-- TITULO -->
 <!-- Barra de titulo actualizable desde los mantenimientos -->
-<table class="tablaTitulo" cellspacing="0" heigth="32">
+<table class="tablaTitulo" cellspacing="0" height="32">
 <tr>
 	<td id="titulo" class="titulosPeq">
 		<siga:Idioma key="gratuita.modalNuevo_DefinirCalendarioGuardia.literal.titulo"/>
 	</td>
 </tr>
 </table>
-	
-	<!-- INICIO: CAMPOS -->
-	<!-- Zona de campos de busqueda o filtro -->
-	<table class="tablaCentralCamposMedia" align="center">
-	
+
 	<!-- Comienzo del formulario con los campos -->	
 	<html:form action="/JGR_DefinirCalendarioGuardia.do" method="post">
 		<html:hidden property = "usuMod" value = "<%=usr.getUserName()%>"/>
@@ -94,6 +90,10 @@
 		<html:hidden property = "idInstitucionPestanha" value = "<%=idinstitucionpestanha%>"/>
 		<html:hidden property = "idTurnoPestanha" value = "<%=idturnopestanha%>"/>
 		<html:hidden property = "idGuardiaPestanha" value = "<%=idguardiapestanha%>"/>
+	
+	<!-- INICIO: CAMPOS -->
+	<!-- Zona de campos de busqueda o filtro -->
+	<table class="tablaCentralCamposMedia" align="center">
 
 	<!-- INICIO: CAMPOS DEL REGISTRO -->
 	<tr>			
@@ -160,7 +160,7 @@
 		</tr>
 		<tr>
 			<td class="labelText" colspan="2">
-				<html:textarea name="DefinirCalendarioGuardiaForm" onKeyDown="cuenta(this,1024)" onChange="cuenta(this,1024)" property="observaciones" cols="140" rows="5" style="overflow:auto" styleClass="boxCombo" value="" readOnly="false" ></html:textarea>
+				<html:textarea name="DefinirCalendarioGuardiaForm" onkeydown="cuenta(this,1024)" onchange="cuenta(this,1024)" property="observaciones" cols="140" rows="5" style="overflow:auto" styleClass="boxCombo" value="" readonly="false" ></html:textarea>
 			</td>
 		</tr>
 		</table>

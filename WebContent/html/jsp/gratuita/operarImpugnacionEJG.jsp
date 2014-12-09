@@ -124,10 +124,7 @@
 <body>
 	
 	
-			<tr>				
-	<td width="100%" align="center">
-
-		<table class="tablaTitulo" cellspacing="0" heigth="38">
+		<table class="tablaTitulo" cellspacing="0" height="38">
 		<tr>
 			<td id="titulo" class="titulitosDatos">
 	
@@ -178,9 +175,9 @@
 			</td>
 			<td class="labelText">
 				<%if (accion.equalsIgnoreCase("ver")) {%>
-					<siga:Fecha nombreCampo="fechaAuto" valorInicial="<%=fechaAuto%>" disabled="true" readonly="true"></siga:Fecha>
+					<siga:Fecha nombreCampo="fechaAuto" valorInicial="<%=fechaAuto%>" disabled="true" readOnly="true"></siga:Fecha>
 				<%}else{%>
-					<siga:Fecha nombreCampo="fechaAuto" valorInicial="<%=fechaAuto%>" readonly="true"></siga:Fecha>
+					<siga:Fecha nombreCampo="fechaAuto" valorInicial="<%=fechaAuto%>" readOnly="true"></siga:Fecha>
 				<%}%>
 			</td>
 			<td class="labelText">
@@ -188,7 +185,7 @@
 			</td>	
 			<td class="labelText">
 				<%if (accion.equalsIgnoreCase("ver")) {%>
-					<siga:ComboBD nombre="idTipoResolAuto" tipo="idTipoResolAuto" clase="boxConsulta"  filasMostrar="1" seleccionMultiple="false" obligatorio="false" elementoSel="<%=vTipoResolAuto%>" readOnly="true"/>
+					<siga:ComboBD nombre="idTipoResolAuto" tipo="idTipoResolAuto" clase="boxConsulta"  filasMostrar="1" seleccionMultiple="false" obligatorio="false" elementoSel="<%=vTipoResolAuto%>" readonly="true"/>
 				<%}else{%>
 					<siga:ComboBD nombre="idTipoResolAuto" tipo="idTipoResolAuto" clase="boxCombo"  filasMostrar="1" seleccionMultiple="false" obligatorio="false" elementoSel="<%=vTipoResolAuto%>"/>
 				<%}%>
@@ -205,7 +202,7 @@
 					nombre="idTipoSentidoAuto" tipo="idTipoSentidoAuto"
 					clase="boxConsulta" filasMostrar="1" seleccionMultiple="false"
 					obligatorio="false" elementoSel="<%=vTipoSentidoAuto%>" ancho="700"
-					readOnly="true"/> 
+					readonly="true"/> 
 			<%}else{%> 
 				<siga:ComboBD
 					nombre="idTipoSentidoAuto" tipo="idTipoSentidoAuto"
@@ -242,10 +239,10 @@
 			</td>
 			<td class="labelText">			
 				<%if (accion.equalsIgnoreCase("ver")) {%>
-					<siga:Fecha nombreCampo="fechaPublicacion" valorInicial="<%=fechaPublicacion%>" disabled="true" readonly="true"></siga:Fecha>
+					<siga:Fecha nombreCampo="fechaPublicacion" valorInicial="<%=fechaPublicacion%>" disabled="true" readOnly="true"></siga:Fecha>
 					
 				<%}else{%>
-					<siga:Fecha nombreCampo="fechaPublicacion" valorInicial="<%=fechaPublicacion%>" readonly="true"></siga:Fecha>
+					<siga:Fecha nombreCampo="fechaPublicacion" valorInicial="<%=fechaPublicacion%>" readOnly="true"></siga:Fecha>
 					
 				<%}%>
 			</td>
@@ -260,7 +257,7 @@
 			</td>
 			<td class="labelText" colspan="4">	
 				<%if (accion.equalsIgnoreCase("ver")) {%>	
-					<textarea name="observacionImpugnacion" class="boxConsulta" style="width:770px" rows="18" readOnly="true"><%=observacionImpugnacion%></textarea>
+					<textarea name="observacionImpugnacion" class="boxConsulta" style="width:770px" rows="18" readOnly><%=observacionImpugnacion%></textarea>
 				<%} else {%>
 					<textarea name="observacionImpugnacion" class="box" style="width:770px" rows="18"><%=observacionImpugnacion%></textarea>
 				<%}%>

@@ -55,7 +55,7 @@
 
 	<!-- TITULO -->
 	<!-- Barra de titulo actualizable desde los mantenimientos -->
-	<table class="tablaTitulo" cellspacing="0" heigth="32">
+	<table class="tablaTitulo" cellspacing="0" height="32">
 		<tr>
 			<td id="titulo" class="titulitosDatos">
 				<siga:Idioma key="gratuita.modalNuevo_SaltosYCompensaciones.literal.titulo"/>
@@ -65,7 +65,7 @@
 	
 	<!-- INICIO: CAMPOS -->
 	<!-- Zona de campos de busqueda o filtro -->
-	<table class="tablaCentralCamposPeque" align="center" border="0" valign="top" >
+	<table class="tablaCentralCamposPeque" align="center" border="0">
 		<bean:define id="path" name="org.apache.struts.action.mapping.instance" property="path" scope="request"/>
 		<!-- Comienzo del formulario con los campos -->	
 		<html:form  action="${path}"  method="post">
@@ -116,7 +116,7 @@
 					<siga:Idioma key="gratuita.modalNuevo_SaltosYCompensaciones.literal.motivos"/>
 				</td>		
 				<td colspan="3">
-					<html:textarea name="SaltosYCompensacionesForm" property="motivos"  onChange="cuenta(this,1024)" cols="65" rows="2" style="overflow:auto" style="width=400;height=80" onkeydown="cuenta(this,1024);" styleClass="boxCombo" value="" readOnly="false"></html:textarea>
+					<html:textarea name="SaltosYCompensacionesForm" property="motivos"  onchange="cuenta(this,1024)" cols="65" rows="2" style="overflow:auto" style="width=400;height=80" onkeydown="cuenta(this,1024);" styleClass="boxCombo" value="" readonly="false"></html:textarea>
 				</td>		
 			</tr>	
 	

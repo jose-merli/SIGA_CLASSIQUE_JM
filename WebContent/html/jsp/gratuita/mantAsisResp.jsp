@@ -115,7 +115,7 @@
 		</tr>
 		<tr>
 			<td class="labelText">	
-				<siga:Idioma key="gratuita.mantAsisResp.literal.ecivil"/>:&nbsp;<html:text name="AsistenciasForm" property="nombre" size="10" maxlength="10" styleClass="box" value=""></html:text></br>
+				<siga:Idioma key="gratuita.mantAsisResp.literal.ecivil"/>:&nbsp;<html:text name="AsistenciasForm" property="nombre" size="10" maxlength="10" styleClass="box" value=""></html:text>
 				<siga:Idioma key="gratuita.mantAsisResp.literal.rconyugal"/>:&nbsp;<html:text name="AsistenciasForm" property="nombre" size="10" maxlength="10" styleClass="box" value=""></html:text>
 			</td>
 			<td class="labelText" colspan="3">	
@@ -181,7 +181,7 @@
 					scrolling="no"
 					frameborder="0"
 					marginheight="0"
-					marginwidth="0";					 
+					marginwidth="0"				 
 					class="frameGeneral">
 	</iframe>
 

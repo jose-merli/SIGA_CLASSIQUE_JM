@@ -65,7 +65,7 @@
 <body onload="eliminaPreSuf()">
 
 	<!-- INICIO: TITULO OPCIONAL DE LA TABLA -->
-	<table class="tablaTitulo" align="center" cellspacing="0" heigth="32">
+	<table class="tablaTitulo" align="center" cellspacing="0" height="32">
 		<tr>
 		<td class="titulitosDatos">
 			<siga:Idioma key="gratuita.busquedaResolucionesCAJG.literal.datos"/>
@@ -101,8 +101,6 @@
 			
 		<table class="tablaCampos" align="center">
 				
-			</tr>
-				
 			<tr>	
 				<td class="labelText" >
 					<siga:Idioma key="gratuita.BusquedaResolucionCAJG.literal.numRegistro"/>	
@@ -120,7 +118,7 @@
 					<siga:Idioma key="gratuita.BusquedaResolucionCAJG.literal.fCarga"/>&nbsp;(*)
 				</td>
 				<td class="labelText">
-					<html:text   property="fechaCarga" size="10" maxlength="10" styleClass="<%=estilocaja%>"  value="<%=fecha%>" readOnly="true"></html:text>					
+					<html:text   property="fechaCarga" size="10" maxlength="10" styleClass="<%=estilocaja%>"  value="<%=fecha%>" readonly="true"></html:text>					
 				</td>
 		
 			</tr>

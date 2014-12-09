@@ -11,6 +11,8 @@
 <%@ page contentType="text/html" language="java" errorPage="/html/jsp/error/errorSIGA.jsp"%>
 <%@ page import="com.atos.utils.UsrBean"%>
 <%@ page import="java.util.Calendar"%>
+<%@ page import="java.util.ArrayList"%>
+<%@ page import="java.util.HashMap"%>
 
 <%@ taglib uri = "libreria_SIGA.tld" 	prefix="siga"%>
 <%@ taglib uri = "struts-bean.tld" 		prefix="bean"%>
@@ -139,7 +141,7 @@
 					scrolling="no"
 					frameborder="0"
 					marginheight="0"
-					marginwidth="0";					 
+					marginwidth="0"		 
 					class="frameGeneral">
 	</iframe>
 

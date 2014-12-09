@@ -79,7 +79,7 @@
 </head>
 
 <body class="tablaCentralCampos" >
-	<table class="tablaTitulo" cellspacing="0" heigth="38">
+	<table class="tablaTitulo" cellspacing="0" height="38">
 		<tr>
 			<td id="titulo" class="titulitosDatos">
 	
@@ -113,8 +113,7 @@
 			   name="tablaDatos"
 			   border="1"
 			   columnNames="gratuita.actuacionesAsistencia.literal.fechaActuacion,gratuita.busquedaAsistencias.literal.numero,gratuita.actuacionesDesigna.literal.modulo,gratuita.procedimientos.literal.acreditacion,gratuita.actuacionesDesigna.literal.justificacion,gratuita.actuacionesDesigna.literal.validada,gratuita.procedimientos.literal.anulada,gratuita.actuacionesDesigna.literal.facturacion,"
-			   columnSizes="8,6,20,15,8,6,6,20,10"
-			   modal="G">
+			   columnSizes="8,6,20,15,8,6,6,20,10">
 
 		<% if (obj==null || obj.size()==0) { %>
 					<tr class="notFound">

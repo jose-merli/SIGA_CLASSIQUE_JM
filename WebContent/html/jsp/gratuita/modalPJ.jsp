@@ -54,7 +54,7 @@
 
 <!-- TITULO -->
 <!-- Barra de titulo actualizable desde los mantenimientos -->
-<table class="tablaTitulo" cellspacing="0" heigth="32">
+<table class="tablaTitulo" cellspacing="0" height="32">
 <tr>
 	<td id="titulo" class="titulitosDatos">
 		<siga:Idioma key="gratuita.busquedaPJ.literal.titulo"/>
@@ -64,10 +64,6 @@
 	
 <div id="camposRegistro" class="posicionModalPeque" align="center">
 
-	<!-- INICIO: CAMPOS -->
-	<!-- Zona de campos de busqueda o filtro -->
-	<table class="tablaCentralCamposPeque" align="center">
-	
 	<!-- Comienzo del formulario con los campos -->	
 	<html:form action="/JGR_MantenimientoPartidosJudiciales.do" method="post">
 		<html:hidden property = "usuMod" value = "<%=usr.getUserName()%>"/>
@@ -78,7 +74,11 @@
 		<html:hidden property = "idPoblacion" value = "<%=idpoblacion%>"/>
 		<html:hidden property = "poblacion" value = "<%=poblacion%>"/>
 		<html:hidden property = "idPartidoSeleccionado" value = ""/>								
-		<html:hidden property = "cambiar" value = "modal"/>										
+		<html:hidden property = "cambiar" value = "modal"/>			
+
+	<!-- INICIO: CAMPOS -->
+	<!-- Zona de campos de busqueda o filtro -->
+	<table class="tablaCentralCamposPeque" align="center">
 
 	<tr>
 	<td>

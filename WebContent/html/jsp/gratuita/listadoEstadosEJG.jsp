@@ -88,7 +88,7 @@
 		<input type="hidden" name="idInstitucion" value="<%=idInstitucion%>">
 	</html:form>
 		
-	<table class="tablaTitulo" cellspacing="0" heigth="38">
+	<table class="tablaTitulo" cellspacing="0" height="38">
 		<tr>
 			<td id="titulo" class="titulitosDatos">
 	
@@ -126,8 +126,7 @@
 				   pestana.justiciagratuitaejg.observaciones,
 				   pestana.justiciagratuitaejg.automatico,
 				   Propietario,"
-	   columnSizes="10,25,35,10,10,10"
-	   modal="P">
+	   columnSizes="10,25,35,10,10,10">
 	   
 <%
 		if (obj.size()>0) {
@@ -166,7 +165,7 @@
 					botones="C";
 				}
 %>				
-				<siga:FilaConIconos fila='<%=String.valueOf(recordNumber)%>' pintarespacio="false"  visibleConsulta="false" botones="<%=botones%>" clase="listaNonEdit" modo="<%=accion%>">
+				<siga:FilaConIconos fila='<%=String.valueOf(recordNumber)%>' pintarEspacio="false"  visibleConsulta="false" botones="<%=botones%>" clase="listaNonEdit" modo="<%=accion%>">
 					<td>
 						<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_1" value="<%=fila.get("IDESTADOPOREJG")%>">
 					    <input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_2" value="<%=fila.get("AUTOMATICO")%>"> 

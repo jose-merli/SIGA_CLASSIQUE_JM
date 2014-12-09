@@ -124,7 +124,7 @@
 	String solicitaInfoJG = miform.getChkSolicitaInfoJG();
 	String checkSolicitante = miform.getSolicitante();
 	String existeDomicilio = miform.getExisteDomicilio();
-	String asterisco = "&nbsp(*)&nbsp";
+	String asterisco = "&nbsp;(*)&nbsp;";
 
 	// Ponemos astericos en los campos obligatorios para el pcajg activo
 	// jbd 19/01/2010 Hay que cambiar esto porque ahora pcajgActivo es un numero en vez de boolean
@@ -132,7 +132,7 @@
 			(( conceptoE.equals(PersonaJGAction.EJG)
 			|| conceptoE.equals(PersonaJGAction.EJG_UNIDADFAMILIAR) 
 			|| conceptoE.equals(PersonaJGAction.PERSONAJG) ))){
-		asterisco="&nbsp(*)&nbsp";
+		asterisco="&nbsp;(*)&nbsp;";
 	}*/
 	/*  Creamos una variable booleana por cada campo que dependa del tipo de pcjag del colegio.
 		Estas variables luego nos serviran para colocar el asterisco en el campo y validar que tenga valor. */
@@ -1110,7 +1110,7 @@
 		</script>
 
 		<!-- TITULO -->
-		<table class="tablaTitulo" heigth="38" cellpadding="0" cellspacing="0" border="0">
+		<table class="tablaTitulo" height="38" cellpadding="0" cellspacing="0" border="0">
 			<tr>
 				<td id="titulo" class="titulitosDatos">
 					<siga:Idioma key="<%=titulo %>"/>
@@ -1198,7 +1198,7 @@
 				|| conceptoE.equals(PersonaJGAction.ASISTENCIA_REPRESENTANTE)
 				|| conceptoE.equals(PersonaJGAction.ASISTENCIA_CONTRARIOS)) {
 %>
-				<table class="tablaTitulo" heigth="38" cellpadding="0" cellspacing="0" border="0">
+				<table class="tablaTitulo" height="38" cellpadding="0" cellspacing="0" border="0">
 					<tr>
 						<td id="titulo" class="titulitosDatos">	
 <%
@@ -1224,7 +1224,7 @@
 <%
 			} else if (conceptoE.equals(PersonaJGAction.SOJ)) {
 %>
-				<table class="tablaTitulo" heigth="38" cellpadding="0" cellspacing="0" border="0">
+				<table class="tablaTitulo" height="38" cellpadding="0" cellspacing="0" border="0">
 					<tr>
 						<td id="titulo" class="titulitosDatos">
 <%
@@ -1252,7 +1252,7 @@
 <%
 			} else if (conceptoE.equals(PersonaJGAction.EJG)) {
 %>
-				<table class="tablaTitulo" heigth="38" cellpadding="0" cellspacing="0" border="0">
+				<table class="tablaTitulo" height="38" cellpadding="0" cellspacing="0" border="0">
 					<tr>
 						<td id="titulo" class="titulitosDatos">
 <%
@@ -1318,7 +1318,7 @@
 <%
 							} else {
 %>			
-								<html:select styleId="idTipoPersona"   styleClass="<%=estiloBox%>"  readOnly="<%=readonly%>" property="idTipoPersona">				
+								<html:select styleId="idTipoPersona"   styleClass="<%=estiloBox%>"  property="idTipoPersona">				
 									<bean:define id="tipos" name="PersonaJGForm" property="tipos" type="java.util.Collection" />
 									<html:optionsCollection name="tipos" value="idTipo" label="descripcion" />					
 								</html:select>		
@@ -1340,7 +1340,7 @@
 	    <%
 		 	} else {
 		  %>
-		   		<html:select styleId="identificadores"  name="PersonaJGForm"  styleClass="boxCombo"  readOnly="false" property="tipoId" onchange="comprobarTipoIdent();"  >
+		   		<html:select styleId="identificadores"  name="PersonaJGForm"  styleClass="boxCombo" property="tipoId" onchange="comprobarTipoIdent();"  >
 					<bean:define id="identificadores" name="PersonaJGForm"
 						property="identificadores" type="java.util.Collection" />
 					<html:optionsCollection name="identificadores" value="idTipoIdentificacion"
@@ -1351,7 +1351,7 @@
 		   %>
 		</td>
 						<td class="labelText">
-							<html:text name="PersonaJGForm" property="NIdentificacion" size="10" maxlength="20" styleClass="<%=estiloBox%>"  readOnly="<%=readonly%>" />
+							<html:text name="PersonaJGForm" property="NIdentificacion" size="10" maxlength="20" styleClass="<%=estiloBox%>"  readonly="<%=readonly%>" />
 						</td>
 
 						<td class="labelText" colspan="3">
@@ -1372,7 +1372,7 @@
 						</td>
 
 						<td colspan="2">
-							<html:text name="PersonaJGForm" property="nombre" maxlength="100" styleClass="<%=estiloBox%>"  readOnly="<%=readonly%>" style="width:160px" />
+							<html:text name="PersonaJGForm" property="nombre" maxlength="100" styleClass="<%=estiloBox%>"  readonly="<%=readonly%>" style="width:160px" />
 						</td>
 
 						<td class="labelText">
@@ -1387,13 +1387,13 @@
 
 						<td colspan="1">
 							<div class="labelText">
-								<html:text name="PersonaJGForm" property="apellido1" maxlength="100" styleClass="<%=estiloBox%>" readOnly="<%=readonly%>" style="width:120px" />
+								<html:text name="PersonaJGForm" property="apellido1" maxlength="100" styleClass="<%=estiloBox%>" readonly="<%=readonly%>" style="width:120px" />
 							</div>
 						</td>
 						
 						<td>			
 							<div class="labelText" id="apelli2">
-								<html:text name="PersonaJGForm" property="apellido2" maxlength="100" styleClass="<%=estiloBox%>" readOnly="<%=readonly%>" style="width:120px" />
+								<html:text name="PersonaJGForm" property="apellido2" maxlength="100" styleClass="<%=estiloBox%>" readonly="<%=readonly%>" style="width:120px" />
 							</div>
 						</td>
 				
@@ -1429,7 +1429,7 @@
 							selTipoVia.add(miform.getTipoVia());
 						String paramTipoVia[] = { idInstitucion };
 				%>	
-				<siga:ComboBD nombre = "tipoVia" tipo="comboTipoVia" clase="<%=classCombo%>" elementoSel="<%=selTipoVia%>" parametro="<%=paramTipoVia%>" readOnly="<%=sreadonly%>" estilo="width:120" />
+				<siga:ComboBD nombre = "tipoVia" tipo="comboTipoVia" clase="<%=classCombo%>" elementoSel="<%=selTipoVia%>" parametro="<%=paramTipoVia%>" readonly="<%=sreadonly%>" estilo="width:120" />
 			</td>
 			
 						<td class="labelText" width="82px">
@@ -1451,35 +1451,35 @@
 %>							
 						</td>						
 						<td width="200px">		
-							<html:text name="PersonaJGForm" property="direccion" maxlength="100" styleClass="<%=estiloBox%>" readOnly="<%=readonly%>" style="width:190px" />
+							<html:text name="PersonaJGForm" property="direccion" maxlength="100" styleClass="<%=estiloBox%>" readonly="<%=readonly%>" style="width:190px" />
 						</td>
 						
 						<td class="labelText" width="25px">
 							<siga:Idioma key="gratuita.personaJG.literal.numdir"/>
 						</td>						
 						<td width="35px">		
-							<html:text name="PersonaJGForm" property="numeroDir" styleClass="<%=estiloBox%>" readOnly="<%=readonly%>" style="width:30px" maxlength="5" />
+							<html:text name="PersonaJGForm" property="numeroDir" styleClass="<%=estiloBox%>" readonly="<%=readonly%>" style="width:30px" maxlength="5" />
 						</td>
 						
 						<td class="labelText" width="30px">
 							<siga:Idioma key="gratuita.personaJG.literal.escdir"/>
 						</td>						
 						<td width="45px">		
-							<html:text name="PersonaJGForm" property="escaleraDir"  styleClass="<%=estiloBox%>" readOnly="<%=readonly%>" style="width:40px" maxlength="10" />
+							<html:text name="PersonaJGForm" property="escaleraDir"  styleClass="<%=estiloBox%>" readonly="<%=readonly%>" style="width:40px" maxlength="10" />
 						</td>
 						
 						<td class="labelText" width="30px">
 							<siga:Idioma key="gratuita.personaJG.literal.pisodir"/>
 						</td>
 						<td width="35px">		
-							<html:text name="PersonaJGForm" property="pisoDir" styleClass="<%=estiloBox%>" readOnly="<%=readonly%>" style="width:30px" maxlength="5" />
+							<html:text name="PersonaJGForm" property="pisoDir" styleClass="<%=estiloBox%>" readonly="<%=readonly%>" style="width:30px" maxlength="5" />
 						</td>
 						
 						<td class="labelText" width="45px">
 							<siga:Idioma key="gratuita.personaJG.literal.puertadir"/>
 						</td>
 						<td width="35px">		
-							<html:text name="PersonaJGForm" property="puertaDir" styleClass="<%=estiloBox%>" readOnly="<%=readonly%>" style="width:30px" maxlength="5" />
+							<html:text name="PersonaJGForm" property="puertaDir" styleClass="<%=estiloBox%>" readonly="<%=readonly%>" style="width:30px" maxlength="5" />
 						</td>																							
 					</tr>				
 
@@ -1502,7 +1502,7 @@
 %>												
 						</td>
 						<td>
-							<html:text name="PersonaJGForm" property="cp" size="5" maxlength="5" styleClass="<%=estiloBox%>" readOnly="<%=readonly%>"  onChange="createProvince()" />
+							<html:text name="PersonaJGForm" property="cp" size="5" maxlength="5" styleClass="<%=estiloBox%>" readonly="<%=readonly%>"  onchange="createProvince()" />
 						</td>
 
 						<td class="labelText">
@@ -1549,7 +1549,7 @@
 %>
 			
 		  
-			<siga:ComboBD pestana="<%=bPestana%>" nombre = "provincia" tipo="provincia" elementoSel="<%=selProvincia %>" clase="<%=classCombo %>" obligatorio="false" accion="<%=sHack%>" readOnly="<%=sreadonly%>" obligatorioSinTextoSeleccionar="false"/>
+			<siga:ComboBD pestana="<%=bPestana%>" nombre = "provincia" tipo="provincia" elementoSel="<%=selProvincia %>" clase="<%=classCombo %>" obligatorio="false" accion="<%=sHack%>" readonly="<%=sreadonly%>" obligatorioSinTextoSeleccionar="false"/>
 		 
 		</td>
 						
@@ -1586,7 +1586,7 @@
 		   <%
 		   	} else {
 		   %>
-				<siga:ComboBD pestana="<%=bPestana%>" nombre="poblacion" tipo="poblacion" elementoSel="<%=selPoblacion%>" clase="<%=classCombo%>" obligatorio="true" hijo="t" readOnly="<%=sreadonly%>" obligatorioSinTextoSeleccionar="false" />
+				<siga:ComboBD pestana="<%=bPestana%>" nombre="poblacion" tipo="poblacion" elementoSel="<%=selPoblacion%>" clase="<%=classCombo%>" obligatorio="true" hijo="t" readonly="<%=sreadonly%>" obligatorioSinTextoSeleccionar="false" />
 		   <%
 		   	}
 		   %>
@@ -1646,7 +1646,7 @@
 																																		selPais.add(ClsConstants.ID_PAIS_ESPANA);
 																																	}*/
 			%>
-			<siga:ComboBD pestana="<%=bPestana%>" elementoSel="<%=selPais %>" nombre = "nacionalidad" tipo="pais" ancho="200" clase="<%=classCombo %>" readOnly="<%=sreadonly%>"/>
+			<siga:ComboBD pestana="<%=bPestana%>" elementoSel="<%=selPais %>" nombre = "nacionalidad" tipo="pais" ancho="200" clase="<%=classCombo %>" readonly="<%=sreadonly%>"/>
 		</td>
 						
 						<td class="labelText" width="140px">
@@ -1692,7 +1692,7 @@
 <%
 							if ((obligatorioFechaNac)||(accion.equalsIgnoreCase("ver"))) {
 %>
-								<html:text name="PersonaJGForm" value ="<%=edad %>" property="edad" size="3" styleClass="boxConsulta" readOnly="true"/>
+								<html:text name="PersonaJGForm" value ="<%=edad %>" property="edad" size="3" styleClass="boxConsulta" readonly="true"/>
 <%
 							} else {
 %>
@@ -1720,7 +1720,7 @@
 						if (miform.getEstadoCivil() != null)
 							selEstadoCiv.add(miform.getEstadoCivil());
 			%>
-			<siga:ComboBD nombre = "estadoCivil" tipo="estadoCivil" clase="<%=classCombo%>" elementoSel="<%=selEstadoCiv%>" readOnly="<%=sreadonly%>"/>
+			<siga:ComboBD nombre = "estadoCivil" tipo="estadoCivil" clase="<%=classCombo%>" elementoSel="<%=selEstadoCiv%>" readonly="<%=sreadonly%>"/>
 		</td>
 						
 						<td class="labelText">
@@ -1758,7 +1758,7 @@
 								if (reg == null)
 									reg = new String("");
 %>
-								<html:select styleClass="boxCombo" name="PersonaJGForm" value="<%=reg%>" property="regimenConyugal" readOnly="false">
+								<html:select styleClass="boxCombo" name="PersonaJGForm" value="<%=reg%>" property="regimenConyugal">
 									<html:option value=""></html:option>
 									<html:option value="G"><siga:Idioma key="gratuita.personaJG.regimen.literal.gananciales"/></html:option>
 									<html:option value="S"><siga:Idioma key="gratuita.personaJG.regimen.literal.separacion"/></html:option>
@@ -1813,7 +1813,7 @@
 						ArrayList selIdioma = new ArrayList();
 						selIdioma.add(idioma);
 			%>
-			<siga:ComboBD nombre = "idioma" tipo="cmbIdiomaInstitucion" parametro="<%=dato%>" clase="<%=classCombo%>"  elementoSel="<%=selIdioma%>" readOnly="<%=sreadonly%>"/>
+			<siga:ComboBD nombre = "idioma" tipo="cmbIdiomaInstitucion" parametro="<%=dato%>" clase="<%=classCombo%>"  elementoSel="<%=selIdioma%>" readonly="<%=sreadonly%>"/>
 		</td>
 							
 							<td class="labelText">
@@ -1825,7 +1825,7 @@
 						if (miform.getProfesion() != null)
 							selProfe.add(miform.getProfesion());
 			%>
-			<siga:ComboBD nombre = "profesion" tipo="cmbProfesion" clase="<%=classCombo%>" elementoSel="<%=selProfe%>" readOnly="<%=sreadonly%>"/>
+			<siga:ComboBD nombre = "profesion" tipo="cmbProfesion" clase="<%=classCombo%>" elementoSel="<%=selProfe%>" readonly="<%=sreadonly%>"/>
 		</td>
 
      						<html:hidden name="PersonaJGForm" value ="<%=nHijos %>" property="hijos"/>
@@ -1859,7 +1859,7 @@
 								<siga:Idioma key="gratuita.personaJG.literal.enCalidadDe"/>		
 							</td>
 							<td>
-			<siga:ComboBD nombre = "enCalidadDe" tipo="cmbEnCalidadDe" clase="<%=estiloBox%>" readOnly="<%=sreadonly%>"/>
+			<siga:ComboBD nombre = "enCalidadDe" tipo="cmbEnCalidadDe" clase="<%=estiloBox%>" readonly="<%=sreadonly%>"/>
 		</td>
 <%
 						} else if (conceptoE.equals(PersonaJGAction.EJG_UNIDADFAMILIAR)) {
@@ -1876,7 +1876,7 @@
 %>			
 							</td>
 							<td style="display:none">
-								<html:text name="PersonaJGForm" property="enCalidadDeLibre" size="10" maxlength="20" styleClass="<%=estiloBox%>" readOnly="<%=readonly%>" />
+								<html:text name="PersonaJGForm" property="enCalidadDeLibre" size="10" maxlength="20" styleClass="<%=estiloBox%>" readonly="<%=readonly%>" />
 							</td>
 						
 							<td  >
@@ -1886,7 +1886,7 @@
 							selParentesco.add(miform.getParentesco());
 						String paramParentesco[] = {idInstitucion};
 		%>
-			<siga:ComboBD  nombre="parentesco" tipo="cmbParentesco" elementoSel="<%=selParentesco %>" parametro="<%=paramParentesco%>" clase="<%=classCombo %>" obligatorio="false" readOnly="<%=sreadonly%>" obligatorioSinTextoSeleccionar="false"/>
+			<siga:ComboBD  nombre="parentesco" tipo="cmbParentesco" elementoSel="<%=selParentesco %>" parametro="<%=paramParentesco%>" clase="<%=classCombo %>" obligatorio="false" readonly="<%=sreadonly%>" obligatorioSinTextoSeleccionar="false"/>
 		</td>
 						
 <%
@@ -1974,7 +1974,7 @@
 							selMinus.add(minusDefecto);
 						}	
 			%>
-			<siga:ComboBD nombre = "minusvalia" tipo="cmbMinusvalia" clase="<%=classCombo%>"  parametro="<%=dato%>"  elementoSel="<%=selMinus%>" readOnly="<%=sreadonly%>"/>
+			<siga:ComboBD nombre = "minusvalia" tipo="cmbMinusvalia" clase="<%=classCombo%>"  parametro="<%=dato%>"  elementoSel="<%=selMinus%>" readonly="<%=sreadonly%>"/>
 			
 		</td>
 		
@@ -1995,7 +1995,7 @@
 					selIdioma.add(idioma);
 					
 				%>
-				<siga:ComboBD nombre = "idioma" tipo="cmbIdiomaInstitucion" parametro="<%=dato%>" clase="<%=classCombo%>"  elementoSel="<%=selIdioma%>" readOnly="<%=sreadonly%>"/>
+				<siga:ComboBD nombre = "idioma" tipo="cmbIdiomaInstitucion" parametro="<%=dato%>" clase="<%=classCombo%>"  elementoSel="<%=selIdioma%>" readonly="<%=sreadonly%>"/>
 			</td>	
 <% 
 						} 
@@ -2074,9 +2074,9 @@
 								<siga:Idioma key="gratuita.personaJG.literal.representanteLegal"/>		
 							</td>
 							<td>
-	 							<html:hidden  name="PersonaJGForm" property="ncolegiadoRepresentante"  styleClass="boxConsulta"  readOnly="false" size="10" maxlength="10" /> 	
-			 			 		<html:hidden  name="PersonaJGForm" property="idPersonaRepresentante" styleClass="boxConsulta"  readOnly="false" size="10" maxlength="10" />
-			 			 		<html:text  name="PersonaJGForm" property="representante" size="70" maxlength="200" styleClass="boxConsulta" readOnly="true" />
+	 							<html:hidden  name="PersonaJGForm" property="ncolegiadoRepresentante"  styleClass="boxConsulta"/> 	
+			 			 		<html:hidden  name="PersonaJGForm" property="idPersonaRepresentante" styleClass="boxConsulta"/>
+			 			 		<html:text  name="PersonaJGForm" property="representante" size="70" maxlength="200" styleClass="boxConsulta" readonly="true" />
 							</td>
 			
 							<td width="100px">
@@ -2104,10 +2104,10 @@
 								<siga:Idioma key="envios.etiquetas.tipoCliente.abogado"/>	
 							</td>
 							<td>			       
-								<html:hidden  name="PersonaJGForm" property="ncolegiadoContrario" styleClass="boxConsulta"  readOnly="false" size="10" maxlength="10" /> 	
-			 					<html:hidden  name="PersonaJGForm" property="idPersonaContrario" styleClass="box"  readOnly="true" size="10" maxlength="10" />
-			 					<html:hidden  name="PersonaJGForm" property="ninstitucionOrigen" size="4" maxlength="4" />
-			 					<html:text  name="PersonaJGForm" property="abogadoContrario" size="70" maxlength="200" styleClass="boxConsulta" readOnly="true" />
+								<html:hidden  name="PersonaJGForm" property="ncolegiadoContrario" styleClass="boxConsulta"/> 	
+			 					<html:hidden  name="PersonaJGForm" property="idPersonaContrario" styleClass="box"/>
+			 					<html:hidden  name="PersonaJGForm" property="ninstitucionOrigen"/>
+			 					<html:text  name="PersonaJGForm" property="abogadoContrario" size="70" maxlength="200" styleClass="boxConsulta" readonly="true" />
 							</td>		
 							<td> 
 <%
@@ -2145,11 +2145,11 @@
 								
 								if (!accion.equalsIgnoreCase("ver")) {
 %>
-									<siga:ComboBD nombre = "idProcurador" ancho="500" tipo="comboProcuradores"  clase="<%=classCombo%>" elementoSel="<%=selProcu%>" parametro="<%=paramProcu%>" readOnly="<%=sreadonly%>"/>
+									<siga:ComboBD nombre = "idProcurador" ancho="500" tipo="comboProcuradores"  clase="<%=classCombo%>" elementoSel="<%=selProcu%>" parametro="<%=paramProcu%>" readonly="<%=sreadonly%>"/>
 <%
 								} else {
 %>		
-			        				<siga:ComboBD nombre = "idProcurador" ancho="500" tipo="comboProcuradores"  clase="<%=classCombo%>" elementoSel="<%=selProcu%>" parametro="<%=paramProcu%>" readOnly="<%=sreadonly%>"/>
+			        				<siga:ComboBD nombre = "idProcurador" ancho="500" tipo="comboProcuradores"  clase="<%=classCombo%>" elementoSel="<%=selProcu%>" parametro="<%=paramProcu%>" readonly="<%=sreadonly%>"/>
 <%
 								}
 %>			
@@ -2215,7 +2215,7 @@
 										<siga:Idioma key="censo.SolicitudIncorporacion.literal.email"/>						
 									</td>										
 									<td class="labelTextValor">													
-										<html:text name="PersonaJGForm" property="correoElectronico" maxlength="50" style="width:310px"  styleClass="<%=estiloBox%>" readOnly="<%=readonly%>" />
+										<html:text name="PersonaJGForm" property="correoElectronico" maxlength="50" style="width:310px"  styleClass="<%=estiloBox%>" readonly="<%=readonly%>" />
 									</td>	
 									<td rowspan=2>
 										<siga:ConjCampos leyenda="gratuita.personaJG.literal.telefonos">
@@ -2237,7 +2237,7 @@
 										<siga:Idioma key="censo.preferente.fax"/>								
 									</td>
 									<td class="labelTextValor" >
-										<html:text name="PersonaJGForm" property="fax" maxlength="20" style="width:150px" styleClass="<%=estiloBox%>" readOnly="<%=readonly%>" />								
+										<html:text name="PersonaJGForm" property="fax" maxlength="20" style="width:150px" styleClass="<%=estiloBox%>" readonly="<%=readonly%>" />								
 									</td>	
 								</tr>
 							</table>
@@ -2254,7 +2254,7 @@
 									<siga:Idioma key="gratuita.personaJG.literal.representanteLegal"/>		
 								</td>
 								<td>
-									<html:text name="PersonaJGForm" property="representante" maxlength="200" styleClass="boxConsulta"  readOnly="true" value="<%= nomRep %>" style="width:600px" />
+									<html:text name="PersonaJGForm" property="representante" maxlength="200" styleClass="boxConsulta"  readonly="true" value="<%= nomRep %>" style="width:600px" />
 									<html:hidden name="PersonaJGForm" property="idRepresentanteJG"></html:hidden>
 								</td>
 								
@@ -2288,7 +2288,7 @@
 									<td>	
 								    	<html:hidden  name="PersonaJGForm" property="ncolegiadoContrario"  /> 	
 								 		<html:hidden  name="PersonaJGForm" property="idAbogadoContrarioEJG" />
-								 		<html:text  name="PersonaJGForm" property="abogadoContrarioEJG" size="70" maxlength="200" styleClass="boxConsulta"  readOnly="true" />
+								 		<html:text  name="PersonaJGForm" property="abogadoContrarioEJG" size="70" maxlength="200" styleClass="boxConsulta"  readonly="true" />
 									</td>		
 									
 									<td> 
@@ -2324,9 +2324,9 @@
 			%>	
 			<%
 				if (!accion.equalsIgnoreCase("ver")) {%>
-					<siga:ComboBD nombre = "idProcurador" ancho="500" tipo="comboProcuradores"  clase="<%=classCombo%>" elementoSel="<%=selProcu%>" parametro="<%=paramProcu%>" readOnly="<%=sreadonly%>"/>
+					<siga:ComboBD nombre = "idProcurador" ancho="500" tipo="comboProcuradores"  clase="<%=classCombo%>" elementoSel="<%=selProcu%>" parametro="<%=paramProcu%>" readonly="<%=sreadonly%>"/>
 			<%}else{%>		
-			        <siga:ComboBD nombre = "idProcurador"  ancho="500" tipo="comboProcuradores"  clase="<%=classCombo%>" elementoSel="<%=selProcu%>" parametro="<%=paramProcu%>" readOnly="<%=sreadonly%>"/>
+			        <siga:ComboBD nombre = "idProcurador"  ancho="500" tipo="comboProcuradores"  clase="<%=classCombo%>" elementoSel="<%=selProcu%>" parametro="<%=paramProcu%>" readonly="<%=sreadonly%>"/>
 			<%}%>			
 		</td>							
 								</tr>		
@@ -2355,7 +2355,7 @@
 					<table width="100%" cellpadding="0" cellspacing="0" border="0">
 						<tr>
 							<td height="156px">
-								<html:textarea name="PersonaJGForm" onKeyDown="cuenta(this,1024)" onChange="cuenta(this,1024)" property="observaciones" cols="60" rows="7" style="width:500px" styleClass="<%=estiloBox%>"  readOnly="<%=readonly%>" />
+								<html:textarea name="PersonaJGForm" onkeydown="cuenta(this,1024)" onchange="cuenta(this,1024)" property="observaciones" cols="60" rows="7" style="width:500px" styleClass="<%=estiloBox%>"  readonly="<%=readonly%>" />
 							</td>
 						</tr>
 					</table>
@@ -2415,10 +2415,10 @@
 %>
 							</td>
 							<td>
-								<html:text name="PersonaJGForm" property="ingresosAnuales" maxlength="1024" style="width:270px" styleClass="<%=estiloBox%>" readOnly="<%=readonly%>" />
+								<html:text name="PersonaJGForm" property="ingresosAnuales" maxlength="1024" style="width:270px" styleClass="<%=estiloBox%>" readonly="<%=readonly%>" />
 							</td>
 							<td class="labelTextValor">
-								<html:text name="PersonaJGForm" property="importeIngresosAnuales" maxlength="11" style="width:80px" styleClass="<%=estiloBoxNumber%>" readOnly="<%=readonly%>" value="<%=UtilidadesNumero.formatoCampo(importeIngresosAnuales)%>" />&nbsp;&euro;
+								<html:text name="PersonaJGForm" property="importeIngresosAnuales" maxlength="11" style="width:80px" styleClass="<%=estiloBoxNumber%>" readonly="<%=readonly%>" value="<%=UtilidadesNumero.formatoCampo(importeIngresosAnuales)%>" />&nbsp;&euro;
 							</td>
 						</tr>
 						
@@ -2427,10 +2427,10 @@
 								<siga:Idioma key="gratuita.operarInteresado.literal.bienesInmuebles"/>
 							</td>
 							<td>
-								<html:text name="PersonaJGForm" property="bienesInmuebles" maxlength="1024" style="width:270px" styleClass="<%=estiloBox%>" readOnly="<%=readonly%>" />
+								<html:text name="PersonaJGForm" property="bienesInmuebles" maxlength="1024" style="width:270px" styleClass="<%=estiloBox%>" readonly="<%=readonly%>" />
 							</td>
 							<td class="labelTextValor">
-								<html:text name="PersonaJGForm" property="importeBienesInmuebles" maxlength="11" style="width:80px" styleClass="<%=estiloBoxNumber%>" readOnly="<%=readonly%>" value="<%=UtilidadesNumero.formatoCampo(importeBienesInmuebles)%>" />&nbsp;&euro;
+								<html:text name="PersonaJGForm" property="importeBienesInmuebles" maxlength="11" style="width:80px" styleClass="<%=estiloBoxNumber%>" readonly="<%=readonly%>" value="<%=UtilidadesNumero.formatoCampo(importeBienesInmuebles)%>" />&nbsp;&euro;
 							</td>
 						</tr>
 	
@@ -2439,10 +2439,10 @@
 								<siga:Idioma key="gratuita.operarInteresado.literal.bienesMobiliarios"/>
 							</td>
 							<td>
-								<html:text name="PersonaJGForm" property="bienesMuebles" maxlength="1024" style="width:270px" styleClass="<%=estiloBox%>" readOnly="<%=readonly%>" />
+								<html:text name="PersonaJGForm" property="bienesMuebles" maxlength="1024" style="width:270px" styleClass="<%=estiloBox%>" readonly="<%=readonly%>" />
 							</td>
 							<td class="labelTextValor">
-								<html:text name="PersonaJGForm" property="importeBienesMuebles" maxlength="11" style="width:80px" styleClass="<%=estiloBoxNumber%>"  readOnly="<%=readonly%>" value="<%=UtilidadesNumero.formatoCampo(importeBienesMuebles)%>" />&nbsp;&euro;
+								<html:text name="PersonaJGForm" property="importeBienesMuebles" maxlength="11" style="width:80px" styleClass="<%=estiloBoxNumber%>"  readonly="<%=readonly%>" value="<%=UtilidadesNumero.formatoCampo(importeBienesMuebles)%>" />&nbsp;&euro;
 							</td>
 						</tr>
 	
@@ -2451,10 +2451,10 @@
 								<siga:Idioma key="gratuita.operarInteresado.literal.otrosBienes"/>
 							</td>
 							<td>
-								<html:text name="PersonaJGForm" property="otrosBienes" maxlength="1024" style="width:270px" styleClass="<%=estiloBox%>" readOnly="<%=readonly%>" />
+								<html:text name="PersonaJGForm" property="otrosBienes" maxlength="1024" style="width:270px" styleClass="<%=estiloBox%>" readonly="<%=readonly%>" />
 							</td>
 							<td class="labelTextValor">
-								<html:text name="PersonaJGForm" property="importeOtrosBienes" maxlength="11" style="width:80px" styleClass="<%=estiloBoxNumber%>" readOnly="<%=readonly%>" value="<%=UtilidadesNumero.formatoCampo(importeOtrosBienes)%>" />&nbsp;&euro;
+								<html:text name="PersonaJGForm" property="importeOtrosBienes" maxlength="11" style="width:80px" styleClass="<%=estiloBoxNumber%>" readonly="<%=readonly%>" value="<%=UtilidadesNumero.formatoCampo(importeOtrosBienes)%>" />&nbsp;&euro;
 							</td>
 						</tr>
 						
@@ -2463,7 +2463,7 @@
 								<siga:Idioma key="gratuita.operarInteresado.literal.finanzas.observaciones"/>
 							</td>
 							<td colspan="2">
-								<html:text name="PersonaJGForm" property="unidadObservaciones" maxlength="1024" style="width:376px" styleClass="<%=estiloBox%>" readOnly="<%=readonly%>" />
+								<html:text name="PersonaJGForm" property="unidadObservaciones" maxlength="1024" style="width:376px" styleClass="<%=estiloBox%>" readonly="<%=readonly%>" />
 							</td>
 						</tr>
 					</table>
@@ -2486,7 +2486,7 @@
 							</td>	
 													
 							<td class="labelTextValor">													
-								<html:text name="PersonaJGForm" property="correoElectronico" maxlength="50" style="width:250px"  styleClass="<%=estiloBox%>" readOnly="<%=readonly%>" />
+								<html:text name="PersonaJGForm" property="correoElectronico" maxlength="50" style="width:250px"  styleClass="<%=estiloBox%>" readonly="<%=readonly%>" />
 							</td>
 									
 						</tr>
@@ -2496,7 +2496,7 @@
 								<siga:Idioma key="censo.preferente.fax"/>								
 							</td >
 							<td class="labelTextValor" >
-								<html:text name="PersonaJGForm" property="fax" maxlength="20" style="width:150px" styleClass="<%=estiloBox%>" readOnly="<%=readonly%>" />								
+								<html:text name="PersonaJGForm" property="fax" maxlength="20" style="width:150px" styleClass="<%=estiloBox%>" readonly="<%=readonly%>" />								
 							</td>					
 						</tr>
 			

@@ -35,7 +35,7 @@
 		pcajgActivo = Integer.parseInt(request.getAttribute(
 				"pcajgActivo").toString());
 	}
-	String asterisco = "&nbsp(*)&nbsp";
+	String asterisco = "&nbsp;(*)&nbsp;";
 	boolean codigoExtObligatorio = false;	
 	if (pcajgActivo == 5){
 		codigoExtObligatorio=true;
@@ -196,7 +196,7 @@
 				scrolling="no"
 				frameborder="0"
 				marginheight="0"
-				marginwidth="0";
+				marginwidth="0"
 					class="frameGeneral">
 	</iframe>
 	<!-- FIN: IFRAME LISTA RESULTADOS -->

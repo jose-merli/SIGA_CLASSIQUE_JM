@@ -135,7 +135,7 @@
 		</tr>   
 	</table>
 	
-	<table class="tablaTitulo" cellspacing="0" heigth="32">
+	<table class="tablaTitulo" cellspacing="0" height="32">
 		<tr>
 			<td id="titulo" class="titulitosDatos">
 				<siga:Idioma key="gratuita.listarTurnosDisp.listado.titulo"/>
@@ -171,8 +171,7 @@
 	   name="listarTurnosDisp"
 	   border="1"
 	   columnNames="<%=nC%>"
-	   columnSizes="<%=tC%>"
-	   modal="G" >
+	   columnSizes="<%=tC%>">
 <%
 		String idPersona = (String)request.getAttribute("idPersonaTurno");
 		if (obj.size()>0) {

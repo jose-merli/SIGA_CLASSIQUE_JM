@@ -44,7 +44,7 @@
 
 	<!-- TITULO -->
 	<!-- Barra de titulo actualizable desde los mantenimientos -->
-	<table class="tablaTitulo" cellspacing="0" heigth="32">
+	<table class="tablaTitulo" cellspacing="0" height="32">
 		<tr>
 			<td id="titulo" class="titulitosDatos">
 				Anulacíon Validacion Cabecera Guardia
@@ -78,7 +78,7 @@
 				 				<siga:Idioma key="gratuita.modalCambiar_PestanaCalendarioGuardias.literal.motivos"/> 			
 							</td>
 							<td >
-								<html:textarea name="DefinirCalendarioGuardiaForm" property="comenAnulacion" styleId="comenAnulacion" onKeyDown="cuenta(this,1024)" onChange="cuenta(this,1024)" cols="50" rows="12" style="width:350"  styleClass="box" readOnly="false" ></html:textarea>
+								<html:textarea name="DefinirCalendarioGuardiaForm" property="comenAnulacion" styleId="comenAnulacion" onkeydown="cuenta(this,1024)" onchange="cuenta(this,1024)" cols="50" rows="12" style="width:350"  styleClass="box" readonly="false" ></html:textarea>
 							</td>	
 						</tr>
 					</table>

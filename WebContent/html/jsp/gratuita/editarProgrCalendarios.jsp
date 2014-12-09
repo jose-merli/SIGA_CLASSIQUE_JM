@@ -89,7 +89,7 @@
 
 <body onload="inicio();">
 
-	<table class="tablaTitulo" cellspacing="0" heigth="32">
+	<table class="tablaTitulo" cellspacing="0" height="32">
 		<tr>
 			<td id="titulo" class="titulosPeq"><siga:Idioma key="gratuita.calendarios.programacion.modal.edicion"/>
 			</td>
@@ -146,7 +146,7 @@
 				<td>
 					<c:choose>
 						<c:when test="${ProgrCalendariosFormEdicion.modo=='consultarProgrCalendarios'}">					
-							<html:select styleClass="boxConsulta" style="width:320px;" readonly="true" 
+							<html:select styleClass="boxConsulta" style="width:320px;" readOnly="true" 
 								property="idConjuntoGuardia" id="idConjuntoGuardia"  onchange="onChangeConjuntoGuardia();" value="${ProgrCalendariosFormEdicion.idConjuntoGuardia}" disabled="true">
 								<html:option value=""><siga:Idioma key="general.combo.seleccionar"/></html:option>
 								<html:optionsCollection name="ConjuntoGuardiasForms" value="idConjuntoGuardia" label="descripcion" />

@@ -47,7 +47,7 @@
 <body>
 
 	<!-- INICIO: TITULO OPCIONAL DE LA TABLA -->
-	<table class="tablaTitulo" align="center" cellspacing="0" heigth="32">
+	<table class="tablaTitulo" align="center" cellspacing="0" height="32">
 	<tr>
 	<td class="titulitosDatos">
 		<siga:Idioma key="gratuita.insertarArea.literal.insertarMateria"/>
@@ -107,6 +107,7 @@
 	</tr>
 	</html:form>
 	</table>
+	</div>
 
 	<!-- FIN: CAMPOS DEL REGISTRO -->
 

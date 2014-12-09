@@ -61,7 +61,7 @@
 
 <body>
 	<!-- TITULO -->
-	<table class="tablaTitulo" cellspacing="0" heigth="32">
+	<table class="tablaTitulo" cellspacing="0" height="32">
 		<tr>
 			<td id="titulo" class="titulitosDatos">
 				<siga:Idioma key="gratuita.editarRetencionesIRPF.literal.titulo"/>
@@ -91,7 +91,7 @@
 									<siga:Idioma key="gratuita.altaRetencionIRPF.literal.fDesde"/>
 								</td>
 								<td>
-									<html:text name="RetencionesIRPFForm" property="fechaInicio" size="10" maxlength="10" styleClass="boxConsulta" readOnly="true" value="<%=fechaInicio%>" />
+									<html:text name="RetencionesIRPFForm" property="fechaInicio" size="10" maxlength="10" styleClass="boxConsulta" readonly="true" value="<%=fechaInicio%>" />
 								</td>
 							</tr>
 						
@@ -100,7 +100,7 @@
 									<siga:Idioma key="gratuita.altaRetencionIRPF.literal.fHasta"/>
 								</td>
 								<td>
-									<html:text name="RetencionesIRPFForm" property="fechaFin" size="10" maxlength="10" styleClass="boxConsulta" readOnly="true" value="<%=fechaFin%>" />
+									<html:text name="RetencionesIRPFForm" property="fechaFin" size="10" maxlength="10" styleClass="boxConsulta" readonly="true" value="<%=fechaFin%>" />
 								</td>
 							</tr>
 							

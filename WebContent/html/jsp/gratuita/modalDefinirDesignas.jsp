@@ -142,7 +142,7 @@
 	
 	 
 	
-	String asterisco = "&nbsp(*)&nbsp";
+	String asterisco = "&nbsp;(*)&nbsp;";
 	
 	boolean obligatorioProcedimiento = false;
 	boolean obligatorioModulo=false;
@@ -239,7 +239,7 @@
 <%}%>
 
 
-<table class="tablaTitulo" cellspacing="0" heigth="32">
+<table class="tablaTitulo" cellspacing="0" height="32">
 	<tr>
 		<td id="titulo" class="titulos">
 			<siga:Idioma key="gratuita.busquedaDesignas.literal.nuevaDesigna"/>
@@ -378,17 +378,18 @@
 			<siga:ConjCampos leyenda="gratuita.mantenimientoTablasMaestra.literal.juzgado">
 				<table>							
 					<tr>
-							
-						<td class="labelText">
-							<siga:Idioma key="gratuita.mantenimientoTablasMaestra.literal.codigoext" />
 							<% if (obligatoriojuzgado){ %>
-								<%= asterisco %>
+								<td class="labelText">
+									<siga:Idioma key="gratuita.mantenimientoTablasMaestra.literal.codigoext" /><%= asterisco %>
 								</td>
 							
 								<td>
 									<siga:Select id="juzgado" onLoadCallback="seleccionarJuzgadoInicial();" queryId="<%=comboJuzgados%>" params="<%=paramsJuzgadoJSON%>" parentQueryParamIds="idjuzgado,fechadesdevigor,fechahastavigor,idturno" required="true" selectedIds="<%=elementoSelJuzgado%>"  showSearchBox="true" searchkey="CODIGOEXT2" searchBoxMaxLength="10" searchBoxWidth="8" width="515" required="true" childrenIds="idPretension,idProcedimiento"/>		
 								</td>
+								
 							<%}else{%>
+								<td class="labelText">
+									<siga:Idioma key="gratuita.mantenimientoTablasMaestra.literal.codigoext" />
 								</td>
 					
 								<td>

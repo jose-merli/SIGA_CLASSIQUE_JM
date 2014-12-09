@@ -49,7 +49,7 @@
 
 <body>
 
-	<table class="tablaTitulo" cellspacing="0" heigth="32">
+	<table class="tablaTitulo" cellspacing="0" height="32">
 	<tr>
 		<td id="titulo" class="titulitosDatos">
 			<siga:Idioma key="gratuita.modalCambioLetradoDesigna.tituloConsulta"/>
@@ -153,7 +153,7 @@
 		<%if (accion.equalsIgnoreCase("ver")){%>
 			<html:textarea name="CambiosLetradosDesignasForm" rows="5" cols="150" styleClass="boxConsulta" property="observaciones" readonly="true" style="overflow-y: hidden;"/>
 		<%} else {%>
-			<html:textarea name="CambiosLetradosDesignasForm" onKeyDown="cuenta(this,1024)" onChange="cuenta(this,1024)" rows="5" cols="150" styleClass="box" property="observaciones"/>
+			<html:textarea name="CambiosLetradosDesignasForm" onkeydown="cuenta(this,1024)" onchange="cuenta(this,1024)" rows="5" cols="150" styleClass="box" property="observaciones"/>
 		<%}%>
 		</td>
 	</tr>

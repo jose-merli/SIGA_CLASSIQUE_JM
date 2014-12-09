@@ -134,7 +134,7 @@
 <body>
 	<!-- TITULO -->
 	<!-- Barra de titulo actualizable desde los mantenimientos -->
-	<table class="tablaTitulo" cellspacing="0" heigth="32">
+	<table class="tablaTitulo" cellspacing="0" height="32">
 		<tr>
 			<td id="titulo" class="titulitosDatos"><siga:Idioma key="gratuita.datosProcurador.literal.procurador"/></td>
 		</tr>
@@ -182,7 +182,7 @@
 							
 							<tr>
 								<td class="labelText">
-									<siga:Idioma key="gratuita.mantenimientoTablasMaestra.literal.apellido1"/>&nbsp(*)
+									<siga:Idioma key="gratuita.mantenimientoTablasMaestra.literal.apellido1"/>&nbsp;(*)
 								</td>
 								<td>
 									<html:text name="MantenimientoProcuradorForm" property="apellido1" size="30" maxlength="100" styleClass="<%=estilo%>" readonly="<%=desactivado%>" />

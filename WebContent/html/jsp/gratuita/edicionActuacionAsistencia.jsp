@@ -204,7 +204,7 @@
 	<bean:define id="tipoPcajg" name="tipoPcajg" scope="request" />
 	<bean:define id="path" name="org.apache.struts.action.mapping.instance" property="path" scope="request" />
 
-	<table class="tablaTitulo" border="0" cellpadding="0" cellspacing="0" heigth="32px">
+	<table class="tablaTitulo" border="0" cellpadding="0" cellspacing="0" height="32px">
 		<tr>
 			<td id="titulo" class="titulosPeq"><siga:Idioma key="gratuita.mantActuacion.literal.titulo" /></td>
 		</tr>

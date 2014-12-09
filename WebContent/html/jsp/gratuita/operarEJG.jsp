@@ -489,7 +489,7 @@
 		<table>
 			<tr>				
 				<td width="100%" align="center">
-					<table class="tablaTitulo" cellspacing="0" heigth="38">
+					<table class="tablaTitulo" cellspacing="0" height="38">
 						<tr>
 							<td id="titulo" class="titulitosDatos">
 								<%
@@ -578,8 +578,8 @@
 									<siga:Idioma key='gratuita.operarEJG.literal.interesado'/>
 								</td>
 								<td colspan="3" class="labelTextValue">	
-									<input type="text" style="width:100px" class="boxConsulta" value="<%=NIFASISTIDO%>"    readOnly="true">
-									<input type="text" style="width:300px" class="boxConsulta" value="<%=NOMBRECOMPLETOASISTIDO%>" readOnly="true">
+									<input type="text" style="width:100px" class="boxConsulta" value="<%=NIFASISTIDO%>"    readOnly>
+									<input type="text" style="width:300px" class="boxConsulta" value="<%=NOMBRECOMPLETOASISTIDO%>" readOnly>
 								</td>			
 							</tr>
 	
@@ -610,7 +610,7 @@
 									<siga:Idioma key='gratuita.busquedaEJG.literal.estadoEJG'/>
 								</td>
 								<td colspan="3">	
-									<input type="text" class="boxConsulta" value="<%=NOMBREESTADO%>" readOnly="true" style="width:500">
+									<input type="text" class="boxConsulta" value="<%=NOMBREESTADO%>" readOnly style="width:500">
 								</td>			
 							</tr>
 					
@@ -619,7 +619,7 @@
 									<siga:Idioma key='gratuita.operarEJG.literal.tipo'/>
 								</td>
 								<td colspan="5">	
-									<input type="text" class="boxConsulta" value="<%=TIPOEJG%>" readOnly="true" style="width:140">
+									<input type="text" class="boxConsulta" value="<%=TIPOEJG%>" readOnly style="width:140">
 								</td>
 							</tr>
 							
@@ -631,7 +631,7 @@
 									<%
 											if (modo.equals("ver")) {
 										%>
-										<siga:ComboBD nombre="idTipoEJGColegio" tipo="tipoEJGColegio"  seleccionMultiple="false" obligatorio="false"  elementoSel="<%=TIPOEJGCOLEGIOSEL%>" parametro="<%=dato%>" clase="boxConsulta" readOnly="true" />
+										<siga:ComboBD nombre="idTipoEJGColegio" tipo="tipoEJGColegio"  seleccionMultiple="false" obligatorio="false"  elementoSel="<%=TIPOEJGCOLEGIOSEL%>" parametro="<%=dato%>" clase="boxConsulta" readonly="true" />
 									<%
 										} else {
 									%>
@@ -684,7 +684,7 @@
 															if (modo.equals("ver")) {
 														%>
 									<td  class="labelText">	
-										<input size="4" type="text" class="boxConsulta" value="<%=anioCAJG%>" readOnly="true" > / <input type="text" class="boxConsulta" size="10" value="<%=numeroCAJG%>" readOnly="true" >
+										<input size="4" type="text" class="boxConsulta" value="<%=anioCAJG%>" readOnly > / <input type="text" class="boxConsulta" size="10" value="<%=numeroCAJG%>" readOnly >
 									</td>
 									
 								<%
@@ -705,7 +705,7 @@
 									<%
 										if (modo.equals("ver")) {
 									%> 
-										<siga:ComboBD nombre="idOrigenCAJG" tipo="origenCAJG" clase="boxConsulta" ancho="230"  filasMostrar="1" seleccionMultiple="false" obligatorio="false"  elementoSel="<%=vOrigenCAJGSel%>" readOnly="true"/>
+										<siga:ComboBD nombre="idOrigenCAJG" tipo="origenCAJG" clase="boxConsulta" ancho="230"  filasMostrar="1" seleccionMultiple="false" obligatorio="false"  elementoSel="<%=vOrigenCAJGSel%>" readonly="true"/>
 									<%
 										} else {
 									%>
@@ -717,7 +717,7 @@
 					
 								<td class="labelText" colspan="2">	
 									<siga:Idioma key='gratuita.busquedaEJG.dictamen'/> &nbsp;
-									<siga:ComboBD nombre="idTipoDictamenEJG" ancho="210" tipo="dictamenEJG" clase="boxConsulta"  filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=dato%>" elementoSel="<%=vIntFDict%>" readOnly="true"/>	
+									<siga:ComboBD nombre="idTipoDictamenEJG" ancho="210" tipo="dictamenEJG" clase="boxConsulta"  filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=dato%>" elementoSel="<%=vIntFDict%>" readonly="true"/>	
 								</td>			
 							</tr>
 						</table>
@@ -729,7 +729,7 @@
 										<siga:Idioma key='gratuita.mantAsistencias.literal.numeroDiligencia'/>
 									</td>
 									<td>
-										<input name="numeroDilegencia" size="20" maxlength="20" type="text" value="<%=numeroDiligenciaAsi%>" class="boxConsulta" readonly="true"/>
+										<input name="numeroDilegencia" size="20" maxlength="20" type="text" value="<%=numeroDiligenciaAsi%>" class="boxConsulta" readonly/>
 									</td> 
 									<td class="labelText">
 										<siga:Idioma key='gratuita.mantAsistencias.literal.centroDetencion'/>
@@ -746,14 +746,14 @@
 			 							if (ejisActivo > 0) {
 			 						%>							
 										<td>
-											<input name="numeroProcedimiento" type="text" value="<%=numeroProcedimientoAsi%>" size="7" class="boxConsulta" readonly="true"/>/
-											<input name="anioProcedimiento" type="text" value="<%=anioProcedimientoAsi%>" size="4" class="boxConsulta" readonly="true"/>
+											<input name="numeroProcedimiento" type="text" value="<%=numeroProcedimientoAsi%>" size="7" class="boxConsulta" readonly/>/
+											<input name="anioProcedimiento" type="text" value="<%=anioProcedimientoAsi%>" size="4" class="boxConsulta" readonly/>
 										</td>
 			 						<%
 			 							} else {
 			 						%>			
 							 			<td class="labelText">
-											<input name="numeroProcedimiento" type="text" value="<%=numeroProcedimientoAsi%>" class="boxConsulta" readonly="true"/>
+											<input name="numeroProcedimiento" type="text" value="<%=numeroProcedimientoAsi%>" class="boxConsulta" readonly/>
 										</td>
 			  						<%
 			  							}
@@ -809,10 +809,10 @@
 										<siga:Idioma key='gratuita.personaJG.literal.calidad'/>
 									</td>									
 									<td class="labelText">					
-										<input type="text" style="width:500px" class="boxConsulta" value="<%=calidad%>" readOnly="true">										
+										<input type="text" style="width:500px" class="boxConsulta" value="<%=calidad%>" readOnly>										
 									</td>								
 									<td  style="display:none">
-									  <html:text name="DefinirMantenimientoEJGForm" property="calidad" value="<%=calidad%>" readOnly="true"/>				
+									  <html:text name="DefinirMantenimientoEJGForm" property="calidad" value="<%=calidad%>" readonly="true"/>				
 									</td> 	
 								
 									<td class="labelText">	
@@ -843,11 +843,11 @@
 									</td>		
 									
 									<td class="labelText" >					
-										<input id="nig2" type="text" class="boxConsulta" value="<%=NIG%>" style="size:19;width:200px" readOnly="true">										
+										<input id="nig2" type="text" class="boxConsulta" value="<%=NIG%>" style="size:19;width:200px" readOnly>										
 									</td>	
-
-									</td>			
-										<td id="info" style="display:none"><img  id="imagenInfo" src="/SIGA/html/imagenes/info.gif"	style="cursor: hand;"	title="" border="0" />
+											
+									<td id="info" style="display:none">
+										<img  id="imagenInfo" src="/SIGA/html/imagenes/info.gif"	style="cursor: hand;"	title="" border="0" />
 									</td>
 									
 									<td></td>
@@ -862,13 +862,13 @@
 														<siga:Idioma key="gratuita.busquedaSOJ.literal.numeroColegidado"/>
 													</td>
 													<td width="20%">
-														<input type="text" name="nColegiadoProcurador" id="nColegiadoProcurador" size="15" maxlength="100" class="boxConsulta" readOnly="true" value="<%=procuradorNumColegiado%>"/>
+														<input type="text" name="nColegiadoProcurador" id="nColegiadoProcurador" size="15" maxlength="100" class="boxConsulta" readOnly value="<%=procuradorNumColegiado%>"/>
 													</td>
 													<td class="labelText" width="20%">
 														<siga:Idioma key="gratuita.busquedaSOJ.literal.nombre"/>
 													</td>
 													<td width="30%">
-														<input type="text" name="nombreCompleto" id="nombreCompleto" size="60" maxlength="100" class="boxConsulta" readOnly="true" value="<%=procuradorNombreCompleto%>"/>
+														<input type="text" name="nombreCompleto" id="nombreCompleto" size="60" maxlength="100" class="boxConsulta" readOnly value="<%=procuradorNombreCompleto%>"/>
 													</td>
 													<td width="10%">	
 													</td>
@@ -931,7 +931,7 @@
 									<%
 											if (modo.equals("ver")) {
 										%>
-										<input type="text" class="boxConsulta" value="<%=TURNO%>" readOnly="true" style="width:140px">
+										<input type="text" class="boxConsulta" value="<%=TURNO%>" readOnly style="width:140px">
 									<%
 										} else {
 													ArrayList lista = new ArrayList();
@@ -950,7 +950,7 @@
 									<%
 											if (modo.equals("ver")) {
 										%>
-										<input type="text" class="boxConsulta" value="<%=GUARDIA%>" readOnly="true" style="width:140px">					
+										<input type="text" class="boxConsulta" value="<%=GUARDIA%>" readOnly style="width:140px">					
 									<%
 															} else {
 																		ArrayList lista = new ArrayList();

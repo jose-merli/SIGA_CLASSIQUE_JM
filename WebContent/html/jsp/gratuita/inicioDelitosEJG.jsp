@@ -166,7 +166,7 @@
 	if( idPretension != null && (!idPretension.equals("")))
 		paramPretension[1]= idPretension;
 	
-	String asterisco = "&nbsp(*)&nbsp";
+	String asterisco = "&nbsp;(*)&nbsp;";
 
 	int pcajgActivo = 0;
 	if (request.getAttribute("PCAJG_ACTIVO")!=null){
@@ -373,7 +373,7 @@
 
 <body onload="refrescarLocal();calcularAltura();">
 	
-<table class="tablaTitulo" cellspacing="0" heigth="38">
+<table class="tablaTitulo" cellspacing="0" height="38">
 
 	<html:form action = "/JGR_DelitosEJG.do" method="POST" target="resultado" style="display:none">
 		<html:hidden property = "modo" value = ""/>
@@ -394,7 +394,6 @@
 		<html:hidden property = "anio" value = "<%=anio%>"/>		
 		<html:hidden property = "idProcurador" value="<%=idProcurador%>"/>
 		<html:hidden property = "idInstitucionProcurador" value="<%=idInstitucionProcurador%>"/>
-		<!--<html:hidden property = "calidad" value="<%=idcalidad%>"/>-->
 	    <html:hidden property = "idTipoenCalidad" value="<%=idcalidad%>"/>
 		<html:hidden property = "observaciones" value=""/>
 		<html:hidden property = "comisaria" value="<%=OBSERVACIONES%>"/>
@@ -689,7 +688,7 @@
 							if(modopestanha.equals("editar")) { 
 %>
 								<html:textarea property="observaciones2" styleClass="box" 
-									onKeyDown="cuenta(this,1024)" onChange="cuenta(this,1024)"
+									onkeydown="cuenta(this,1024)" onchange="cuenta(this,1024)"
 									style="overflow-y:auto; overflow-x:hidden; width:250px; height:30px; resize:none;"    
 									value="<%=OBSERVACIONES%>"></html:textarea>
 <%
@@ -711,7 +710,7 @@
 							if(modopestanha.equals("editar")) { 
 %>
 								<html:textarea name="DefinirMantenimientoEJGForm" property="delitos2" styleClass="box"
-									onKeyDown="cuenta(this,1024)" onChange="cuenta(this,1024)"
+									onkeydown="cuenta(this,1024)" onchange="cuenta(this,1024)"
 									style="overflow-y:auto; overflow-x:hidden; width:350px; height:30px; resize:none;"   
 									value="<%=DELITOS%>"></html:textarea>							
 <%
@@ -813,7 +812,7 @@
 						<td id="info" style="display:none"><img  id="imagenInfo" src="/SIGA/html/imagenes/info.gif"	style="cursor: hand;"	title="" border="0" />
 						</td>
 						
-						</td colspan="3"></td>
+						<td colspan="3">&nbsp;</td>
 					</tr>
 					
 					<tr>
@@ -835,14 +834,14 @@
 	%>
 							</td>
 							<td>
-								<input type="text" name="nColegiadoProcurador" id="nColegiadoProcurador" size="5" maxlength="100" class="boxConsulta" readOnly="true" value="<%=procuradorNumColegiado%>"/>
+								<input type="text" name="nColegiadoProcurador" id="nColegiadoProcurador" size="5" maxlength="100" class="boxConsulta" readOnly value="<%=procuradorNumColegiado%>"/>
 							</td>
 							
 							<td  class="labelText" >
 								<siga:Idioma key="gratuita.busquedaSOJ.literal.nombre"/>
 							</td>
 							<td>
-								<input type="text" name="nombreCompleto" id="nombreCompleto" size="30" maxlength="100" class="boxConsulta" readOnly="true" value="<%=procuradorNombreCompleto%>"/>
+								<input type="text" name="nombreCompleto" id="nombreCompleto" size="30" maxlength="100" class="boxConsulta" readOnly value="<%=procuradorNombreCompleto%>"/>
 							</td>
 							
 							<td class="labelText">
@@ -852,7 +851,7 @@
 	<%
 								if (modopestanha.equals("ver")) {
 	%>
-		                        	<input type="text" class="boxConsulta" value="99" readOnly="true">
+		                        	<input type="text" class="boxConsulta" value="99" readOnly>
 	<%
 								} else {
 	%>
@@ -869,7 +868,7 @@
 	<%   
 								if (modopestanha.equals("ver")) {
 	%>
-	                             	<input type="text" class="boxConsulta" value="<%=FECHAPROCURADOR%>" readOnly="true">
+	                             	<input type="text" class="boxConsulta" value="<%=FECHAPROCURADOR%>" readOnly>
 	<%	
 								} else { 
 	%>

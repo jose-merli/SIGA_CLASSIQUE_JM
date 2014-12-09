@@ -186,7 +186,7 @@
 	<siga:ConjCampos leyenda="gratuita.busquedaSOJ.literal.solicitante">
 
 	<table  align="center">
-	<tr width="100%">
+	<tr>
 			<td class="labelText">
 				<siga:Idioma key="gratuita.busquedaSOJ.literal.nif"/>		
 			</td>
@@ -194,7 +194,7 @@
 				<%if (!accion.equalsIgnoreCase("nuevo")){%>
 					<html:text name="ContrariosDesignasForm" property="nif" size="10" maxlength="20" styleClass="boxConsulta"  value="<%=nif%>"></html:text>
 				<%} else  {%>
-					<html:text name="ContrariosDesignasForm" property="nif" onBlur="obtenerNif()" size="10" maxlength="20" styleClass="box"  value="<%=nif%>"></html:text>
+					<html:text name="ContrariosDesignasForm" property="nif" onblur="obtenerNif()" size="10" maxlength="20" styleClass="box"  value="<%=nif%>"></html:text>
 				<%}%>
 			</td>
 	</tr>
@@ -369,7 +369,7 @@
 					<siga:Idioma key="gratuita.editarDesigna.literal.procurador"/>
 			</td>		
 			<td class="labelText" colspan="3">
-					<siga:ComboBD nombre="procurador" tipo="comboProcuradores" estilo="true" clase="<%=estiloCombo%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  readOnly="<%=readOnly%>" parametro="<%=dato%>" elementoSel="<%=procuradorSel%>"/>
+					<siga:ComboBD nombre="procurador" tipo="comboProcuradores" estilo="true" clase="<%=estiloCombo%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  readonly="<%=readOnly%>" parametro="<%=dato%>" elementoSel="<%=procuradorSel%>"/>
 			</td>		
 	</tr>		
 	<tr>
@@ -390,7 +390,7 @@
 			</td>
 			<td class="labelText" colspan="5">
 				<%if (accion.equalsIgnoreCase("ver")){%>
-					<textarea class="boxConsulta" scroll="none" name="observaciones" rows="2" cols="190" readonly="true"><%=observaciones%></textarea>
+					<textarea class="boxConsulta" scroll="none" name="observaciones" rows="2" cols="190" readonly><%=observaciones%></textarea>
 				<%} else  {%>
 					<textarea class="box" scroll="none" name="observaciones" onKeyDown="cuenta(this,1024)" onChange="cuenta(this,1024)" rows="2" cols="190" ><%=observaciones%></textarea>
 				<%}%>
@@ -423,7 +423,7 @@
 					scrolling="no"
 					frameborder="0"
 					marginheight="0"
-					marginwidth="0";					 
+					marginwidth="0"				 
 					style="position:absolute; width:440; height:<%=alturaFrame%>; z-index:2; top: 140px; left: 514px">
 </iframe>
 

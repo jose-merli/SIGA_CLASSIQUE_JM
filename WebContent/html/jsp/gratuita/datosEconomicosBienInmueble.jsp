@@ -72,7 +72,7 @@
 		<html:hidden property="anio" value="<%=anio%>"/>	
 		<html:hidden property="numero" value="<%=numero%>"/>	
 	
-		<table class="tablaTitulo" cellspacing="0" heigth="38">
+		<table class="tablaTitulo" cellspacing="0" height="38">
 			<tr>
 				<%  String t_nombre = "", t_apellido1 = "", t_apellido2 = "", t_anio = "", t_numero = "", t_tipoEJG="";;
 					ScsEJGAdm adm = new ScsEJGAdm (usr);

@@ -143,7 +143,7 @@
 <body>
 
 	<!-- INICIO: TITULO OPCIONAL DE LA TABLA -->
-	<table class="tablaTitulo" align="center" cellspacing="0" heigth="32">
+	<table class="tablaTitulo" align="center" cellspacing="0" height="32">
 		<tr>
 		<td class="titulitosDatos">
 			<siga:Idioma key="gratuita.busquedaResolucionesCAJG.literal.datos"/>
@@ -181,8 +181,6 @@
 			
 		<table class="tablaCampos" align="center">
 				
-			</tr>
-				
 			<tr>	
 				<td class="labelText" >
 					<siga:Idioma key="gratuita.BusquedaResolucionCAJG.literal.numRegistro"/>	
@@ -209,7 +207,7 @@
 					<siga:Idioma key="gratuita.BusquedaResolucionCAJG.literal.fCarga"/>
 				</td>
 				<td class="labelText">
-					<html:text property="fechaCarga" size="10" maxlength="10" styleClass="boxConsulta"  value="<%=fechaCarga%>" readOnly="true"></html:text>
+					<html:text property="fechaCarga" size="10" maxlength="10" styleClass="boxConsulta"  value="<%=fechaCarga%>" readonly="true"></html:text>
 				</td>
 		
 			</tr>
@@ -251,7 +249,7 @@
 				</td>
 				
 				<td class="labelText">
-					<html:textarea style="width:400px;" onKeyDown="cuenta(this,1000)" onChange="cuenta(this,1000)" property="observaciones" readonly="<%=readonly%>" rows="14" value="<%=observaciones%>" styleClass="box"></html:textarea>					
+					<html:textarea style="width:400px;" onkeydown="cuenta(this,1000)" onchange="cuenta(this,1000)" property="observaciones" readonly="<%=readonly%>" rows="14" value="<%=observaciones%>" styleClass="box"></html:textarea>					
 				</td>
 			</tr>
 			

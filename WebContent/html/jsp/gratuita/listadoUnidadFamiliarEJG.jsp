@@ -69,7 +69,7 @@
 		<input type="hidden" name="tablaDatosDinamicosD"/>
 	</html:form>
 
-	<table class="tablaTitulo" cellspacing="0" heigth="38">
+	<table class="tablaTitulo" cellspacing="0" height="38">
 		<tr>
 			<td id="titulo" class="titulitosDatos">
 				<c:out value="${PREFIJOEXPEDIENTECAJG}" />&nbsp;<c:out value="${DefinirUnidadFamiliarEJGForm.ejg.anio}"></c:out>/<c:out value="${DefinirUnidadFamiliarEJGForm.ejg.numEJG}"></c:out>&nbsp;-&nbsp;<c:out value="${DefinirUnidadFamiliarEJGForm.personaJG.nombre}"></c:out>&nbsp;<c:out value="${DefinirUnidadFamiliarEJGForm.personaJG.apellido1}"></c:out>&nbsp;<c:out value="${DefinirUnidadFamiliarEJGForm.personaJG.apellido2}"></c:out>
@@ -94,7 +94,6 @@
 			gratuita.operarInteresado.literal.bienesInmuebles,
 			gratuita.operarInteresado.literal.otrosBienes,"
 		columnSizes="9,8,25,8,8,8,8,28"
-		modal="G"
 		mensajeBorrado="gratuita.ejg.unidadFamiliar.borrado"
 		fixedHeight="<%=alto%>">
 			  
@@ -307,7 +306,7 @@
 	</siga:Table>
 
 	<c:if test="${DefinirUnidadFamiliarEJGForm.permisoEejg==true}">
-		<table class="tablaTitulo" cellspacing="0" heigth="38">
+		<table class="tablaTitulo" cellspacing="0" height="38">
 			<tr>
 				<td id="titulo" class="titulitosDatos">	
 					<siga:Idioma key="gratuita.eejg.peticiones.titulo"/>
@@ -412,7 +411,7 @@
 	<html:form action="/INF_InformesGenericos" method="post"	target="submitArea">
 		<html:hidden property="idInstitucion" value = "<%=usrBean.getLocation()%>"/>
 		<html:hidden property="idTipoInforme" value='<%=usrBean.isComision() ?"CAJG":"EJG"%>'/>
-		<html:hidden property="enviar" value="0"/ />
+		<html:hidden property="enviar" value="0" />
 		<html:hidden property="descargar" value="1"/>
 		<html:hidden property="datosInforme"/>
 		<html:hidden property="destinatarios" value="S"/>

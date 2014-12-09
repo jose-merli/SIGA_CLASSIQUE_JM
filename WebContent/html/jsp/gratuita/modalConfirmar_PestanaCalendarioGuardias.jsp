@@ -95,7 +95,7 @@
 
 	<!-- TITULO -->
 	<!-- Barra de titulo actualizable desde los mantenimientos -->
-	<table class="tablaTitulo" cellspacing="0" heigth="32">
+	<table class="tablaTitulo" cellspacing="0" height="32">
 		<tr>
 			<td id="titulo" class="titulitosDatos">
 				<siga:Idioma key="gratuita.modalConfirmar_PestanaCalendarioGuardias.literal.titulo"/>
@@ -149,14 +149,14 @@
 										<siga:Idioma key="gratuita.modalConfirmar_PestanaCalendarioGuardias.literal.numero"/>:			
 									</td>
 									<td class="labelText">
-										<html:text name="PermutasForm" property="numeroColegiadoSolicitante" size="10" maxlength="20" styleClass="boxConsulta" value="<%=numeroColegiadoSolicitante%>" readOnly="true" />
+										<html:text name="PermutasForm" property="numeroColegiadoSolicitante" size="10" maxlength="20" styleClass="boxConsulta" value="<%=numeroColegiadoSolicitante%>" readonly="true" />
 									</td>		
 									
 									<td class="labelText">
 										<siga:Idioma key="gratuita.modalConfirmar_PestanaCalendarioGuardias.literal.nombre"/>:
 									</td>
 									<td class="labelText">
-										<html:text name="PermutasForm" property="nombreSolicitante" size="70" maxlength="300" styleClass="boxConsulta" value="<%=nombreYApellidosSolicitante%>" readOnly="true" />
+										<html:text name="PermutasForm" property="nombreSolicitante" size="70" maxlength="300" styleClass="boxConsulta" value="<%=nombreYApellidosSolicitante%>" readonly="true" />
 									</td>
 								</tr>
 								
@@ -165,14 +165,14 @@
 										<siga:Idioma key="gratuita.modalConfirmar_PestanaCalendarioGuardias.literal.fechainicio"/>:
 									</td>
 									<td class="labelText">
-										<html:text name="PermutasForm" property="fechaInicioSolicitanteParseada" size="10" maxlength="10" styleClass="boxConsulta" value="<%=GstDate.getFormatedDateShort(usr.getLanguage(),fechaInicioSolicitante)%>" readOnly="true" />
+										<html:text name="PermutasForm" property="fechaInicioSolicitanteParseada" size="10" maxlength="10" styleClass="boxConsulta" value="<%=GstDate.getFormatedDateShort(usr.getLanguage(),fechaInicioSolicitante)%>" readonly="true" />
 									</td>
 											
 									<td class="labelText">
 										<siga:Idioma key="gratuita.modalConfirmar_PestanaCalendarioGuardias.literal.fechafin"/>:
 									</td>
 									<td class="labelText">
-										<html:text name="PermutasForm" property="fechaFinSolicitanteParseada" size="10" maxlength="10" styleClass="boxConsulta" value="<%=GstDate.getFormatedDateShort(usr.getLanguage(),fechaFinSolicitante)%>" readOnly="true" />
+										<html:text name="PermutasForm" property="fechaFinSolicitanteParseada" size="10" maxlength="10" styleClass="boxConsulta" value="<%=GstDate.getFormatedDateShort(usr.getLanguage(),fechaFinSolicitante)%>" readonly="true" />
 									</td>
 								</tr>		
 								
@@ -184,7 +184,7 @@
 										<html:textarea name="PermutasForm" property="motivosSolicitante" 											 
 											style="overflow-y:auto; overflow-x:hidden; width:850px; height:50px; resize:none;"
 											styleClass="boxConsulta" 
-											value="<%=motivosSolicitante%>" readOnly="true"></html:textarea>
+											value="<%=motivosSolicitante%>" readonly="true"></html:textarea>
 									</td>		
 								</tr>		
 							</table>
@@ -214,14 +214,14 @@
 										<siga:Idioma key="gratuita.modalConfirmar_PestanaCalendarioGuardias.literal.numero"/>:			
 									</td>
 									<td class="labelText">
-										<html:text name="PermutasForm" property="numeroColegiadoConfirmador" size="10" maxlength="20" styleClass="boxConsulta" value="<%=numeroColegiadoConfirmador%>" readOnly="true" />
+										<html:text name="PermutasForm" property="numeroColegiadoConfirmador" size="10" maxlength="20" styleClass="boxConsulta" value="<%=numeroColegiadoConfirmador%>" readonly="true" />
 									</td>		
 									
 									<td class="labelText">
 										<siga:Idioma key="gratuita.modalConfirmar_PestanaCalendarioGuardias.literal.nombre"/>:
 									</td>
 									<td class="labelText">
-										<html:text name="PermutasForm" property="nombreConfirmador" size="70" maxlength="300" styleClass="boxConsulta" value="<%=nombreYApellidosConfirmador%>" readOnly="true" />
+										<html:text name="PermutasForm" property="nombreConfirmador" size="70" maxlength="300" styleClass="boxConsulta" value="<%=nombreYApellidosConfirmador%>" readonly="true" />
 									</td>
 								</tr>
 								
@@ -230,13 +230,13 @@
 										<siga:Idioma key="gratuita.modalConfirmar_PestanaCalendarioGuardias.literal.fechainicio"/>:
 									</td>
 									<td class="labelText">
-										<html:text name="PermutasForm" property="fechaInicioConfirmadorParseada" size="10" maxlength="10" styleClass="boxConsulta" value="<%=GstDate.getFormatedDateShort(usr.getLanguage(),fechaInicioConfirmador)%>" readOnly="true" />
+										<html:text name="PermutasForm" property="fechaInicioConfirmadorParseada" size="10" maxlength="10" styleClass="boxConsulta" value="<%=GstDate.getFormatedDateShort(usr.getLanguage(),fechaInicioConfirmador)%>" readonly="true" />
 									</td>		
 									<td class="labelText">
 										<siga:Idioma key="gratuita.modalConfirmar_PestanaCalendarioGuardias.literal.fechafin"/>:
 									</td>
 									<td class="labelText">
-										<html:text name="PermutasForm" property="fechaFinConfirmadorParseada" size="10" maxlength="10" styleClass="boxConsulta" value="<%=GstDate.getFormatedDateShort(usr.getLanguage(),fechaFinConfirmador)%>" readOnly="true" />
+										<html:text name="PermutasForm" property="fechaFinConfirmadorParseada" size="10" maxlength="10" styleClass="boxConsulta" value="<%=GstDate.getFormatedDateShort(usr.getLanguage(),fechaFinConfirmador)%>" readonly="true" />
 									</td>
 								</tr>	
 									
@@ -246,9 +246,9 @@
 									</td>
 									<td class="labelText" colspan="3">
 										<html:textarea name="PermutasForm" property="motivosConfirmador" 
-											onKeyDown="cuenta(this,1024)" onChange="cuenta(this,1024)"
+											onkeydown="cuenta(this,1024)" onchange="cuenta(this,1024)"
 											style="overflow-y:auto; overflow-x:hidden; width:850px; height:50px; resize:none;"
-											value="" readOnly="false"></html:textarea>
+											value="" readonly="false"></html:textarea>
 									</td>		
 								</tr>
 										

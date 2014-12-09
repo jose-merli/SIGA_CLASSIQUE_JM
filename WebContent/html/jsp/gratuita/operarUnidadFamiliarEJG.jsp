@@ -239,7 +239,7 @@
 <body onLoad="ajusteAltoBotones('resultado');recargar();">
 	<!-- TITULO -->
 	<!-- Barra de titulo actualizable desde los mantenimientos -->
-	<table class="tablaTitulo" cellspacing="0" heigth="32">
+	<table class="tablaTitulo" cellspacing="0" height="32">
 	<tr>
 		<td id="titulo" class="titulitosDatos">
 				<siga:Idioma key="gratuita.unidadFamiliarEJG.literal.titulo"/>
@@ -286,7 +286,7 @@
 
 	<table  align="center" width="100%">
 	
-	<tr width="100%">
+	<tr>
 	<td class="labelText">
 		<siga:Idioma key="gratuita.personaJG.literal.parentescoNormalizado"/>
 	</td>
@@ -302,13 +302,13 @@
 	</td>
 	<td class="labelText"  colspan="6">
 	<%if (accion.equalsIgnoreCase("ver")){%>
-		<textarea name="observaciones" readOnly="true" class="boxConsulta" rows="3" cols="80"><%=observaciones%></textarea>
+		<textarea name="observaciones" readOnly class="boxConsulta" rows="3" cols="80"><%=observaciones%></textarea>
 	<%} else  {%>
 		<textarea name="observaciones" onKeyDown="cuenta(this,1024)" onChange="cuenta(this,1024)" class="box" rows="3" cols="80"><%=observaciones%></textarea>
 	<%}%>
 	</td>
 	
-	<tr width="100%">
+	<tr>
 	<td class="labelText">
 		<siga:Idioma key="gratuita.busquedaSOJ.literal.nif"/>		
 	</td>
@@ -316,7 +316,7 @@
 	<%if ((accion.equalsIgnoreCase("ver") || !nif.equals("")) && bean == null){%>
 		<html:text name="DefinirUnidadFamiliarEJGForm" property="nif" size="10" maxlength="20" styleClass="boxConsulta"  value="<%=nif%>"></html:text>
 	<%} else  {%>
-		<html:text name="DefinirUnidadFamiliarEJGForm" property="nif" size="10" maxlength="20" styleClass="box"  value="<%=nif%>" onBlur="obtenerNif()"></html:text>
+		<html:text name="DefinirUnidadFamiliarEJGForm" property="nif" size="10" maxlength="20" styleClass="box"  value="<%=nif%>" onblur="obtenerNif()"></html:text>
 	<%}%>
 	</td>
 
@@ -576,7 +576,7 @@
 					scrolling="no"
 					frameborder="0"
 					marginheight="0"
-					marginwidth="0";					 
+					marginwidth="0"					 
 					class="frameGeneral">
 	</iframe>
 

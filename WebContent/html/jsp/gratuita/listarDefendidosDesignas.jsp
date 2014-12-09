@@ -133,7 +133,7 @@
 			<input type="hidden" id="pantallaE" name="pantallaE" value="M">
 		</html:form>
 			
-		<table class="tablaTitulo" cellspacing="0" heigth="38">
+		<table class="tablaTitulo" cellspacing="0" height="38">
 			<tr>
 				<td id="titulo" class="titulitosDatos">
 					<%  String t_nombre = "", t_apellido1 = "", t_apellido2 = "", t_anio = "", t_numero = "";
@@ -159,8 +159,7 @@
 		   name="listadoDefendidos"
 		   border="2"
 		   columnNames="gratuita.defendidosDesigna.literal.nif,gratuita.defendidosDesigna.literal.nombreApellidos,gratuita.defendidosDesigna.literal.representante,"
-		   columnSizes="10,45,30,15"
-		   modal="G">
+		   columnSizes="10,45,30,15">
 
 			<% if (obj==null || obj.size()==0){%>
 	 			<tr class="notFound">

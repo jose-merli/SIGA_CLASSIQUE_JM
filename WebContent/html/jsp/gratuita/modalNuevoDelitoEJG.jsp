@@ -23,6 +23,7 @@
 <%@ page import="com.siga.gratuita.form.PestanaDelitoEJGForm"%>
 <%@ page import="java.util.Properties"%>
 <%@ page import="com.siga.Utilidades.*"%>
+<%@ page import="java.util.HashMap"%>
 
 <!-- JSP -->
 <% 
@@ -57,7 +58,7 @@
 <body>
 	<!-- TITULO -->
 	<!-- Barra de titulo actualizable desde los mantenimientos -->
-	<table class="tablaTitulo" cellspacing="0" heigth="32">
+	<table class="tablaTitulo" cellspacing="0" height="32">
 		<tr>
 			<td id="titulo" class="titulitosDatos">
 				<siga:Idioma key="gratuita.mantenimientoTablasMaestra.literal.delito"/>
@@ -66,19 +67,19 @@
 	</table>
 	
 	<div id="camposRegistro" class="posicionModalPeque" align="center">
-
-		<!-- INICIO: CAMPOS -->
-		<!-- Zona de campos de busqueda o filtro -->
-		<table class="tablaCentralCamposPeque" align="center">
 	
-			<!-- Comienzo del formulario con los campos -->	
-			<html:form action="/JGR_DelitosEJG.do" method="post">
-				<html:hidden property = "modo" value = ""/>
-				<!-- Datos de la pestanha -->
-				<html:hidden name="pestanaDelitoEJGForm" property="anio" />
-				<html:hidden name="pestanaDelitoEJGForm" property="numero" />
-				<html:hidden name="pestanaDelitoEJGForm" property="idTipoEJG" />
-				<html:hidden name="pestanaDelitoEJGForm" property="idInstitucion" />
+		<!-- Comienzo del formulario con los campos -->	
+		<html:form action="/JGR_DelitosEJG.do" method="post">
+			<html:hidden property = "modo" value = ""/>
+			<!-- Datos de la pestanha -->
+			<html:hidden name="pestanaDelitoEJGForm" property="anio" />
+			<html:hidden name="pestanaDelitoEJGForm" property="numero" />
+			<html:hidden name="pestanaDelitoEJGForm" property="idTipoEJG" />
+			<html:hidden name="pestanaDelitoEJGForm" property="idInstitucion" />	
+
+			<!-- INICIO: CAMPOS -->
+			<!-- Zona de campos de busqueda o filtro -->
+			<table class="tablaCentralCamposPeque" align="center">
 
 				<!-- INICIO: CAMPOS DEL REGISTRO -->
 				<tr>			

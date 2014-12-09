@@ -562,7 +562,7 @@
 
 <!-- TITULO -->
 <!-- Barra de titulo actualizable desde los mantenimientos -->
-<table class="tablaTitulo" cellspacing="0" heigth="32">
+<table class="tablaTitulo" cellspacing="0" height="32">
 	<tr>
 		<td id="titulo" class="titulitosDatos">
 		<c:if test="${InscripcionTGForm.modo=='sitEditarTelefonosGuardia'}">
@@ -647,7 +647,7 @@
 							<siga:Idioma key="gratuita.altaTurnos.literal.fsolicitud" />
 						</td>
 						<td class="labelText">
-							<input type="text" name="fechaSol" class="boxConsulta" readOnly="true"/>
+							<input type="text" name="fechaSol" class="boxConsulta" readOnly/>
 						</td>
 						
 						<td>
@@ -687,8 +687,8 @@
 						</td>
 						<td colspan="2">
 							<html:textarea name="InscripcionTGForm" property="observacionesSolicitud" styleId="observacionesSolicitud"
-								onChange="cuenta(this,1024)" onkeydown="cuenta(this,1024);" 
-								styleClass="box" readOnly="false"
+								onchange="cuenta(this,1024)" onkeydown="cuenta(this,1024);" 
+								styleClass="box" readonly="false"
 								style="overflow-y:auto; overflow-x:hidden; width:700px; height:50px; resize:none;"></html:textarea>
 						</td>
 					</tr>
@@ -711,7 +711,7 @@
 							<siga:Idioma key="gratuita.altaTurnos.literal.fsolicitud" />
 						</td>
 						<td class="labelText">
-							<input type="text" name="fechaSol" id="fechaSol" class="boxConsulta" readOnly="true"/>
+							<input type="text" name="fechaSol" id="fechaSol" class="boxConsulta" readOnly/>
 						</td>
 						
 						<td>&nbsp;</td>
@@ -723,8 +723,8 @@
 						</td>
 						<td colspan="2"> 
 							<html:textarea name="InscripcionTGForm" property="observacionesBaja" styleId="observacionesBaja" 
-								onChange="cuenta(this,1024)" onkeydown="cuenta(this,1024);" 
-								styleClass="box" readOnly="false"
+								onchange="cuenta(this,1024)" onkeydown="cuenta(this,1024);" 
+								styleClass="box" readonly="false"
 								style="overflow-y:auto; overflow-x:hidden; width:700px; height:50px; resize:none;"></html:textarea>
 						</td>
 					</tr>
@@ -760,7 +760,7 @@
 								</td>
 								<td colspan="2">
 									<html:textarea name="InscripcionTGForm" property="observacionesSolicitud" styleId="observacionesSolicitud" 
-										onChange="cuenta(this,1024)" onkeydown="cuenta(this,1024);" 
+										onchange="cuenta(this,1024)" onkeydown="cuenta(this,1024);" 
 										styleClass="box" disabled="true"
 										style="overflow-y:auto; overflow-x:hidden; width:700px; height:50px; resize:none;"></html:textarea>
 								</td>
@@ -795,7 +795,7 @@
 								</td>
 								<td colspan="2">
 									<html:textarea name="InscripcionTGForm" property="observacionesBaja" styleId="observacionesBaja" 
-										onChange="cuenta(this,1024)" onkeydown="cuenta(this,1024);"
+										onchange="cuenta(this,1024)" onkeydown="cuenta(this,1024);"
 										styleClass="box" disabled="true"
 										style="overflow-y:auto; overflow-x:hidden; width:700px; height:50px; resize:none;"></html:textarea>
 								</td>
@@ -908,8 +908,8 @@
 								</td>
 								<td colspan="2">
 									<html:textarea name="InscripcionTGForm" property="observacionesValidacion" styleId="observacionesValidacion"
-										onChange="cuenta(this,1024)" onkeydown="cuenta(this,1024);"
-										styleClass="box" readOnly="false"
+										onchange="cuenta(this,1024)" onkeydown="cuenta(this,1024);"
+										styleClass="box" readonly="false"
 										style="overflow-y:auto; overflow-x:hidden; width:700px; height:50px; resize:none;"></html:textarea>
 								</td>
 							</tr>
@@ -935,14 +935,14 @@
 								<siga:Idioma key="gratuita.altaTurnos.literal.fvalidacion" />
 							</td>
 							<td class="labelText">
-								<input type="text" id="fechaCheck" name="fechaCheck" class="boxConsulta" postFunction="postFunctionFechaValidacion();" readOnly="true"/>							
+								<input type="text" id="fechaCheck" name="fechaCheck" class="boxConsulta" readOnly/>							
 							</td>
 							
 							<td class="labelText">
 								<siga:Idioma key="gratuita.altaTurnos.literal.validacion" />
 							</td>
 							<td class="labelText">
-								<input type="checkbox" id="validar" name="validar" value="si" checked="checked" disabled="true"  />
+								<input type="checkbox" id="validar" name="validar" value="si" checked="checked" disabled  />
 							</td>			
 						</tr>
 						
@@ -952,8 +952,8 @@
 							</td>
 							<td colspan="3"> 
 								<html:textarea name="InscripcionTGForm" property="observacionesValidacion" styleId="observacionesValidacion"
-									onChange="cuenta(this,1024)" onkeydown="cuenta(this,1024);" 
-									styleClass="box" readOnly="true"
+									onchange="cuenta(this,1024)" onkeydown="cuenta(this,1024);" 
+									styleClass="box" readonly="true"
 									style="overflow-y:auto; overflow-x:hidden; width:400px; height:80px; resize:none;"></html:textarea>
 							</td>
 						</tr>

@@ -48,67 +48,69 @@
 <body>
 
 	<!-- INICIO: TITULO OPCIONAL DE LA TABLA -->
-	<table class="tablaTitulo" align="center" cellspacing="0" heigth="32">
-	<tr>
-	<td class="titulitosDatos">	
-		<siga:Idioma key="gratuita.operarDatosBeneficiario.literal.telefonos"/>
-	</td>
-	</tr>
+	<table class="tablaTitulo" align="center" cellspacing="0" height="32">
+		<tr>
+			<td class="titulitosDatos"><siga:Idioma
+					key="gratuita.operarDatosBeneficiario.literal.telefonos" /></td>
+		</tr>
 	</table>
 	<!-- FIN: TITULO OPCIONAL DE LA TABLA -->
 
 	<!-- INICIO: CAPA DE REGISTRO CON MEDIDAS EN EL ESTILO -->
 	<div id="campos" class="posicionModalPeque" align="center">
 
-	<!-- INICIO: CAMPOS DEL REGISTRO -->
+		<!-- INICIO: CAMPOS DEL REGISTRO -->
+		<html:form action="/JGR_PestanaSOJBeneficiarios" method="POST"
+			target="submitArea">
+			<html:hidden property="modo" value="" />
+			<html:hidden property="idPersona" value="<%=idPersona%>" />
+			<html:hidden property="idTelefono" value="" />
+			<html:hidden property="idInstitucion" value="<%=usr.getLocation()%>" />
 
-	<!-- Comienzo del formulario con los campos -->
-	<table class="tablaCentralCamposPeque" align="center">	
-	
-	<html:form action="/JGR_PestanaSOJBeneficiarios" method="POST" target="submitArea">
-	<html:hidden property = "modo" value = ""/>
-	<html:hidden property = "idPersona" value = "<%=idPersona%>"/>
-	<html:hidden property = "idTelefono" value = ""/>
-	<html:hidden property = "idInstitucion" value ="<%=usr.getLocation()%>"/>
+			<!-- Comienzo del formulario con los campos -->
+			<table class="tablaCentralCamposPeque" align="center">
 
-	<tr>		
-	<td>	
-	<!-- SUBCONJUNTO DE DATOS -->
-	<siga:ConjCampos leyenda="gratuita.operarDatosBeneficiario.literal.telefonos">
-	<table class="tablaCampos" align="center">
-	<tr>	
-	<td class="labelText">
-		<siga:Idioma key="gratuita.operarDatosBeneficiario.literal.telefonoUso"/>
-	</td>				
-	<td>
-		<html:text name="DefinirPersonaJGForm" property="nombreTelefono" size="20" styleClass="box" value="" ></html:text>
-	</td>
-	<tr>
-	</tr>
-	<td class="labelText">
-		<siga:Idioma key="gratuita.operarDatosBeneficiario.literal.numeroTelefono"/>
-	</td>				
-	<td>
-		<html:text name="DefinirPersonaJGForm" property="numeroTelefono" size="20" styleClass="box" value=""></html:text>
-	</td>	
-	</tr>
-	</table>
-	</siga:ConjCampos>
-	
-	</td>
-	</tr>
-	</html:form>
-	</table>
-	<!-- FIN: CAMPOS DEL REGISTRO -->
 
-	<!-- ******* BOTONES DE ACCIONES EN REGISTRO ****** -->
-	<!-- INICIO: BOTONES REGISTRO -->
-		<siga:ConjBotonesAccion botones="Y,R,C" modal="P"  />
-	<!-- FIN: BOTONES REGISTRO -->
 
-	
-	<!-- INICIO: SCRIPTS BOTONES -->
-	<script language="JavaScript">	
+				<tr>
+					<td>
+						<!-- SUBCONJUNTO DE DATOS --> <siga:ConjCampos
+							leyenda="gratuita.operarDatosBeneficiario.literal.telefonos">
+							<table class="tablaCampos" align="center">
+								<tr>
+									<td class="labelText"><siga:Idioma
+											key="gratuita.operarDatosBeneficiario.literal.telefonoUso" />
+									</td>
+									<td><html:text name="DefinirPersonaJGForm"
+											property="nombreTelefono" size="20" styleClass="box" value=""></html:text>
+									</td>
+								</tr>
+								<tr>
+									<td class="labelText"><siga:Idioma
+											key="gratuita.operarDatosBeneficiario.literal.numeroTelefono" />
+									</td>
+									<td><html:text name="DefinirPersonaJGForm"
+											property="numeroTelefono" size="20" styleClass="box" value=""></html:text>
+									</td>
+								</tr>
+							</table>
+						</siga:ConjCampos>
+
+					</td>
+				</tr>
+			</table>
+		</html:form>
+	</div>
+		<!-- FIN: CAMPOS DEL REGISTRO -->
+
+		<!-- ******* BOTONES DE ACCIONES EN REGISTRO ****** -->
+		<!-- INICIO: BOTONES REGISTRO -->
+		<siga:ConjBotonesAccion botones="Y,R,C" modal="P" />
+		<!-- FIN: BOTONES REGISTRO -->
+
+
+		<!-- INICIO: SCRIPTS BOTONES -->
+		<script language="JavaScript">	
 	
 		//Asociada al boton Restablecer -->
 		function accionRestablecer() 
@@ -141,16 +143,15 @@
 			top.cierraConParametros("NORMAL");
 		}
 	</script>
-	<!-- FIN: SCRIPTS BOTONES -->
+		<!-- FIN: SCRIPTS BOTONES -->
 
-	<!-- FIN ******* BOTONES DE ACCIONES EN REGISTRO ****** -->
-	
-<!-- INICIO: SUBMIT AREA -->
-<!-- Obligatoria en todas las páginas-->
-	<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
-<!-- FIN: SUBMIT AREA -->
+		<!-- FIN ******* BOTONES DE ACCIONES EN REGISTRO ****** -->
 
-
+		<!-- INICIO: SUBMIT AREA -->
+		<!-- Obligatoria en todas las páginas-->
+		<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp"
+			style="display: none"></iframe>
+		<!-- FIN: SUBMIT AREA -->
 </body>
 
 </html>

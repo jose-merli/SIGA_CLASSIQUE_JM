@@ -75,7 +75,7 @@
 		<html:hidden name="pestanaDelitoDesignaForm" property="idTurno" />
 		<html:hidden name="pestanaDelitoDesignaForm" property="idInstitucion" />
 	</html:form>
-	<table class="tablaTitulo" cellspacing="0" heigth="38">
+	<table class="tablaTitulo" cellspacing="0" height="38">
 		<tr>
 			<td id="titulo" class="titulitosDatos">
 	
@@ -106,7 +106,7 @@
 					scrolling="no"
 					frameborder="0"
 					marginheight="0"
-					marginwidth="0";					 
+					marginwidth="0"					 
 					class="frameGeneral">
 	</iframe>
 	<!-- FIN: IFRAME LISTA RESULTADOS -->

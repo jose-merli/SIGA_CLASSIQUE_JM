@@ -79,7 +79,7 @@
 		<!-- INICIO: LISTA DE VALORES -->
 		<!-- Tratamiento del tagTabla y tagFila para la formacion de la lista de cabeceras fijas -->
 
-	<table class="tablaTitulo" cellspacing="0" heigth="38">
+	<table class="tablaTitulo" cellspacing="0" height="38">
 		<tr>
 			<td id="titulo" class="titulitosDatos">
 

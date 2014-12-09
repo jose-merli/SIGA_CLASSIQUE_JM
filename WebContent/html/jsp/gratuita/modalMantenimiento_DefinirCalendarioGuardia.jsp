@@ -123,7 +123,7 @@
 
 <!-- TITULO -->
 <!-- Barra de titulo actualizable desde los mantenimientos -->
-<table class="tablaTitulo" cellspacing="0" heigth="32">
+<table class="tablaTitulo" cellspacing="0" height="32">
 <tr>
 	<td id="titulo" class="titulitosDatos">
 		<siga:Idioma key="gratuita.modalNuevo_DefinirCalendarioGuardia.literal.titulo"/>
@@ -131,9 +131,6 @@
 </tr>
 </table>
 	
-	<!-- INICIO: CAMPOS -->
-	<!-- Zona de campos de busqueda o filtro -->
-	<table class="tablaCentralCampos" align="center">
 	
 	<!-- Comienzo del formulario con los campos -->	
 	<html:form action="/JGR_DefinirCalendarioGuardia.do" method="post" target="submitArea">
@@ -152,6 +149,10 @@
 		<html:hidden property = "numeroLetrados" value = "<%=num_letrados%>"/>
 		<html:hidden property = "numeroSustitutos" value = "<%=num_sustitutos%>"/>	
 		<html:hidden property = "actionModal" value = ""/>
+		
+	<!-- INICIO: CAMPOS -->
+	<!-- Zona de campos de busqueda o filtro -->
+	<table class="tablaCentralCampos" align="center">		
 					
 
 	<!-- INICIO: CAMPOS DEL REGISTRO -->
@@ -233,9 +234,9 @@
 			</td>
 			<td class="labelTextValor" colspan="3">
 				<% if (modo.equalsIgnoreCase("VER")) { %>
-					<html:textarea name="DefinirCalendarioGuardiaForm" property="observaciones" cols="60" rows="5" style="overflow:auto" styleClass="boxConsulta" value="<%=observaciones%>" readOnly="true" ></html:textarea>
+					<html:textarea name="DefinirCalendarioGuardiaForm" property="observaciones" cols="60" rows="5" style="overflow:auto" styleClass="boxConsulta" value="<%=observaciones%>" readonly="true" ></html:textarea>
 				<% } else { %>
-					<html:textarea name="DefinirCalendarioGuardiaForm" onKeyDown="cuenta(this,1024)" onChange="cuenta(this,1024)" property="observaciones" cols="60" rows="5" style="overflow:auto" styleClass="boxCombo" value="<%=observaciones%>" readOnly="false" ></html:textarea>
+					<html:textarea name="DefinirCalendarioGuardiaForm" onkeydown="cuenta(this,1024)" onchange="cuenta(this,1024)" property="observaciones" cols="60" rows="5" style="overflow:auto" styleClass="boxCombo" value="<%=observaciones%>" readonly="false" ></html:textarea>
 				<% } %>
 			</td>
 		</tr>
@@ -416,7 +417,7 @@
 					scrolling="no"
 					frameborder="0"
 					marginheight="0"
-					marginwidth="0";					 
+					marginwidth="0"			 
 					class="frameGeneral">
 	</iframe>
 	<%

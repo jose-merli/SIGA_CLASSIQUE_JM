@@ -105,8 +105,7 @@
 		name="listadoInicial"
 		border="2"
 		columnNames="gratuita.mantenimientoTablasMaestra.literal.nif,gratuita.mantenimientoTablasMaestra.literal.nombreyapellidos,envios.etiquetas.tipoCliente.abogado,gratuita.personaJG.literal.procurador,"
-		columnSizes="10,30,25,25,15"
-		modal="G">
+		columnSizes="10,30,25,25,15">
 		
 <% 
 		if (vContrariosEJG!= null && !vContrariosEJG.isEmpty()) {
@@ -128,13 +127,13 @@
 					abogadoContrario=(String)hashContrariosEJG.get("NOMBREABOGADOCONTRARIOEJG");
 				} else 
 					//se agrega un espacio de esta forma porque es la unica forma para que no de error al borrar o editar, si el campo esta vacio o a null.
-				   abogadoContrario="&nbsp";
+				   abogadoContrario="&nbsp;";
 				
 				if (procurador != null && !"".equals(procurador)){
 					procurador=(String)hashContrariosEJG.get("PROCURADOR");
 				} else 
 					//se agrega un espacio de esta forma porque es la unica forma para que no de error al borrar o editar, si el campo esta vacio o a null.
-				    procurador="&nbsp";
+				    procurador="&nbsp;";
 %>	
 				<siga:FilaConIconos fila='<%=String.valueOf(recordNumber)%>' botones="B,E,C"  clase="listaNonEdit" modo="<%=modopestanha%>" >
 					<td>

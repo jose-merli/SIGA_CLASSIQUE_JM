@@ -23,15 +23,15 @@
 <%@ page import="com.siga.Utilidades.UtilidadesString"%>
    
 <!-- JSP -->
-<% 
-	String app=request.getContextPath(); 
-	HttpSession ses=request.getSession(true);
-	UsrBean usr=(UsrBean)ses.getAttribute("USRBEAN");	
-	String profile[]=usr.getProfile();
-	
+<%
+	String app = request.getContextPath();
+	HttpSession ses = request.getSession(true);
+	UsrBean usr = (UsrBean) ses.getAttribute("USRBEAN");
+	String profile[] = usr.getProfile();
 
 	//Datos propios del jsp:
-	ArrayList arrayPeriodos = (ArrayList)request.getAttribute("ARRAYPERIODOS");
+	ArrayList arrayPeriodos = (ArrayList) request
+			.getAttribute("ARRAYPERIODOS");
 %>
 
 <%@page import="java.util.Properties"%>
@@ -71,109 +71,118 @@
 
 <body onload="actualizarFechaApertura()">
 
-<!-- TITULO -->
-<!-- Barra de titulo actualizable desde los mantenimientos -->
-<table class="tablaTitulo" cellspacing="0" heigth="32">
-<tr>
-	<td id="titulo" class="titulitosDatos">
-			<siga:Idioma key="gratuita.modalRegistro_DefinirCalendarioGuardia.literal.tituloReserva"/>
-	</td>
-</tr>
-</table>
-	
-
-	<!-- INICIO: CAMPOS -->
-	<!-- Zona de campos de busqueda o filtro -->
-	<table class="tablaCentralCamposMedia" align="center">
-	
-	<!-- Comienzo del formulario con los campos -->	
-	<html:form action="/JGR_DefinirCalendarioGuardia.do" method="post">
-		<html:hidden property = "modo" value = "modificar"/>
-		<html:hidden property = "usuMod" value = "<%=usr.getUserName()%>"/>
-
-		<html:hidden property = "idInstitucion"/>
-		<html:hidden property = "idCalendarioGuardias"/>
-		<html:hidden property = "idTurno"/>
-		<html:hidden property = "idGuardia"/>
-		<html:hidden property = "fechaApertura"/>
-		<html:hidden property = "fechaInicio"/>
-		<html:hidden property = "fechaFin"/>
-		<html:hidden property = "indicePeriodo"/>
-		<html:hidden property = "idPersona" value=""/>
-		<html:hidden property = "flagSalto" value=""/>
-		<html:hidden property = "flagCompensacion" value=""/>		
-	
-	<!-- INICIO: CAMPOS DEL REGISTRO -->
-	<tr>			
-	<td>
-	<!-- SUBCONJUNTO DE DATOS -->
-		<siga:ConjCampos leyenda="gratuita.calendarioGuardias.literal.periodo">		
-		<table class="tablaCampos" align="center">
+	<!-- TITULO -->
+	<!-- Barra de titulo actualizable desde los mantenimientos -->
+	<table class="tablaTitulo" cellspacing="0" height="32">
 		<tr>
-			<td class="labelText">
-				<siga:Idioma key="gratuita.calendarioGuardias.literal.periodo" />
-			</td>
-			<td>
-				<html:select name="DefinirCalendarioGuardiaForm" property="periodos" styleClass="boxCombo" size="1" onchange="actualizarFechaApertura()">
-					<% if (arrayPeriodos==null || arrayPeriodos.isEmpty()) { %>
-						<html:option value="0" key="informes.cartaAsistencia.error"/>
-				<% } else { 
-						Iterator iter = arrayPeriodos.iterator();
-						int i=0;
-						while (iter.hasNext()){
-							ArrayList arraydiasPeriodo = new ArrayList();
-							arraydiasPeriodo = (ArrayList)iter.next();
-							String value = arraydiasPeriodo.get(0)+","+arraydiasPeriodo.get(arraydiasPeriodo.size()-1)+ "("+i+")";
-							i++;
-							%>
-					 	    <html:option value="<%=value%>" >
-						    <%=UtilidadesString.getMensajeIdioma(usr,"gratuita.calendarioGuardias.literal.periodo")+" "+arraydiasPeriodo.get(0)+" - "+arraydiasPeriodo.get(arraydiasPeriodo.size()-1)%>
-							</html:option>
-						<% } %>
-				<% } %>
-				</html:select>
+			<td id="titulo" class="titulitosDatos"><siga:Idioma
+					key="gratuita.modalRegistro_DefinirCalendarioGuardia.literal.tituloReserva" />
 			</td>
 		</tr>
-		</table>
-		</siga:ConjCampos>				
-	</td>
-	</tr>
-	<td>
-
-	<siga:ConjCampos leyenda="gratuita.seleccionColegiadoJG.literal.titulo">		
-		<table class="tablaCampos" border="0" width="100%">		
-			<tr>
-				<td colspan="5">
-					<siga:BusquedaSJCS nombre="DefinirCalendarioGuardiaForm" propiedad="buscaLetrado"
-		 				   concepto="GUARDIA" operacion="Asignacion" 
-						   campoTurno="idTurno" campoGuardia="idGuardia" campoFecha="fechaApertura"
-						   campoPersona="idPersona" campoColegiado="NColegiado"  campoNombreColegiado="nomColegiado"
-						   campoFlagSalto="flagSalto" campoFlagCompensacion="flagCompensacion"
-						   modo="nuevo"/>
-				</td>
-			</tr>					   
-			<tr>
-				<td class="labelText">
-					<siga:Idioma key='gratuita.busquedaEJG.literal.numeroColegidado'/>
-				</td>		
-				<td>
-					<input type="text" name="NColegiado" class="boxConsulta" readOnly value="" style="width:'100px';">
-				</td>
-				<td class="labelText">
-					<siga:Idioma key='FactSJCS.listadoRetencionesJ.literal.nombreColegiado'/>
-				</td>
-				<td colspan="2">
-					<input type="text" name="nomColegiado" class="boxConsulta" readOnly value="" style="width:'240px';">
-				</td>			
-			</tr>					   
-		</table>
-	</siga:ConjCampos>
-	
-	</td>
-	</tr>
 	</table>
-	</html:form>			
-	
+
+	<!-- Comienzo del formulario con los campos -->
+	<html:form action="/JGR_DefinirCalendarioGuardia.do" method="post">
+		<html:hidden property="modo" value="modificar" />
+		<html:hidden property="usuMod" value="<%=usr.getUserName()%>" />
+
+		<html:hidden property="idInstitucion" />
+		<html:hidden property="idCalendarioGuardias" />
+		<html:hidden property="idTurno" />
+		<html:hidden property="idGuardia" />
+		<html:hidden property="fechaApertura" />
+		<html:hidden property="fechaInicio" />
+		<html:hidden property="fechaFin" />
+		<html:hidden property="indicePeriodo" />
+		<html:hidden property="idPersona" value="" />
+		<html:hidden property="flagSalto" value="" />
+		<html:hidden property="flagCompensacion" value="" />
+
+		<!-- INICIO: CAMPOS -->
+		<!-- Zona de campos de busqueda o filtro -->
+		<table class="tablaCentralCamposMedia" align="center">
+
+			<!-- INICIO: CAMPOS DEL REGISTRO -->
+			<tr>
+				<td>
+					<!-- SUBCONJUNTO DE DATOS --> 
+					<siga:ConjCampos leyenda="gratuita.calendarioGuardias.literal.periodo">
+						<table class="tablaCampos" align="center">
+							<tr>
+								<td class="labelText">
+									<siga:Idioma key="gratuita.calendarioGuardias.literal.periodo" />
+								</td>
+								<td>
+									<html:select name="DefinirCalendarioGuardiaForm" property="periodos" styleClass="boxCombo" size="1" onchange="actualizarFechaApertura()">
+<%
+										if (arrayPeriodos == null || arrayPeriodos.isEmpty()) {
+%>
+											<html:option value="0" key="informes.cartaAsistencia.error" />
+<%
+										} else {
+											Iterator iter = arrayPeriodos.iterator();
+											int i = 0;
+											while (iter.hasNext()) {
+												ArrayList arraydiasPeriodo = new ArrayList();
+												arraydiasPeriodo = (ArrayList) iter.next();
+												String value = arraydiasPeriodo.get(0)
+														+ ","
+														+ arraydiasPeriodo.get(arraydiasPeriodo
+																.size() - 1) + "(" + i + ")";
+												i++;
+%>
+												<html:option value="<%=value%>">
+													<%=UtilidadesString.getMensajeIdioma(usr, "gratuita.calendarioGuardias.literal.periodo") + " " + arraydiasPeriodo.get(0) + " - " + arraydiasPeriodo.get(arraydiasPeriodo.size() - 1)%>
+												</html:option>
+<%
+											}
+										}
+%>
+									</html:select>
+								</td>
+							</tr>
+						</table>
+					</siga:ConjCampos>
+				</td>
+			</tr>
+			
+			<tr>
+				<td>
+					<siga:ConjCampos leyenda="gratuita.seleccionColegiadoJG.literal.titulo">
+						<table class="tablaCampos" border="0" width="100%">
+							<tr>
+								<td colspan="5">
+									<siga:BusquedaSJCS
+										nombre="DefinirCalendarioGuardiaForm" propiedad="buscaLetrado"
+										concepto="GUARDIA" operacion="Asignacion" campoTurno="idTurno"
+										campoGuardia="idGuardia" campoFecha="fechaApertura"
+										campoPersona="idPersona" campoColegiado="NColegiado"
+										campoNombreColegiado="nomColegiado" campoFlagSalto="flagSalto"
+										campoFlagCompensacion="flagCompensacion" modo="nuevo" />
+								</td>
+							</tr>
+						
+							<tr>
+								<td class="labelText">
+									<siga:Idioma key='gratuita.busquedaEJG.literal.numeroColegidado' />
+								</td>
+								<td>
+									<input type="text" name="NColegiado" class="boxConsulta" readOnly value="" style="width: '100px';">
+								</td>
+								<td class="labelText">
+									<siga:Idioma key='FactSJCS.listadoRetencionesJ.literal.nombreColegiado' />
+								</td>
+								<td colspan="2">
+									<input type="text" name="nomColegiado" class="boxConsulta" readOnly value="" style="width: '240px';">
+								</td>
+							</tr>
+						</table>
+					</siga:ConjCampos>
+				</td>
+			</tr>
+		</table>
+	</html:form>
+
 	<!-- ******* BOTONES DE ACCIONES EN REGISTRO ****** -->
 	<!-- Aqui comienza la zona de botones de acciones -->
 	<!-- INICIO: BOTONES REGISTRO -->
@@ -183,9 +192,9 @@
 		 LA PROPIEDAD CLASE SE CARGA CON EL ESTILO "botonesDetalle" 
 		 PARA POSICIONARLA EN SU SITIO NATURAL, SI NO SE POSICIONA A MANO
 	-->
-<!-- FIN ******* CAPA DE PRESENTACION ****** -->
+	<!-- FIN ******* CAPA DE PRESENTACION ****** -->
 
-		<siga:ConjBotonesAccion botones="Y,C" modal="M"/>
+	<siga:ConjBotonesAccion botones="Y,C" modal="M" />
 
 	<!-- FIN: BOTONES REGISTRO -->
 	<!-- INICIO: SCRIPTS BOTONES -->
@@ -246,10 +255,11 @@
 
 
 
-	
+
 	<!-- INICIO: SUBMIT AREA -->
 	<!-- Obligatoria en todas las páginas-->
-		<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
+	<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp"
+		style="display: none"></iframe>
 	<!-- FIN: SUBMIT AREA -->
 
 </body>

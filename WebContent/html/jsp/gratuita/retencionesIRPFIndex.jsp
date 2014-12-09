@@ -64,9 +64,7 @@
 
 </head>
 
-<body onLoad="ajusteAlto('resultado');refrescarLocal();">
-    
-	</table>
+<body onLoad="ajusteAlto('resultado');refrescarLocal();">    
 	<br>
 	
 	<html:form action = "/JGR_PestanaRetencionesIRPF" method="POST" target="resultado" enctype="multipart/form-data" style="display:none">
@@ -79,7 +77,7 @@
 					scrolling="no"
 					frameborder="0"
 					marginheight="0"
-					marginwidth="0";					 
+					marginwidth="0"				 
 					class="frameGeneral">
 	</iframe>
 	

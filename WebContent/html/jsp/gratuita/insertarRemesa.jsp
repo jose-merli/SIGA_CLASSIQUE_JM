@@ -92,7 +92,7 @@
 <body>
 
 	<!-- INICIO: TITULO OPCIONAL DE LA TABLA -->
-	<table class="tablaTitulo" align="center" cellspacing="0" heigth="32">
+	<table class="tablaTitulo" align="center" cellspacing="0" height="32">
 		<tr>
 		<td class="titulitosDatos">
 			<siga:Idioma key="gratuita.BusquedaRemesas_CAJG.literal.datos"/>
@@ -126,8 +126,6 @@
 	<siga:ConjCampos leyenda="gratuita.BusquedaRemesas_CAJG.literal.datos">
 			
 		<table class="tablaCampos" align="center">
-				
-			</tr>
 				
 			<tr>	
 				<td class="labelText" >

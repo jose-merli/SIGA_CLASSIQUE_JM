@@ -36,7 +36,7 @@
 		pcajgActivo = Integer.parseInt(request.getAttribute(
 				"pcajgActivo").toString());
 	}
-	String asterisco = "&nbsp(*)&nbsp";
+	String asterisco = "&nbsp;(*)&nbsp;";
 	boolean codigoExtObligatorio = false;	
 	if (pcajgActivo == 5){
 		codigoExtObligatorio=true;
@@ -107,9 +107,9 @@
 					</td>
 					<td valign="top">
 						<%if (accion.equalsIgnoreCase("ver")){%>
-							<html:textarea name="DefinirMantenimDocumentacionEJGForm" property="descripcion" rows="5" cols="60" onkeydown="cuenta(this,300)" onChange="cuenta(this,300)" styleClass="boxConsulta" readonly="true"/>
+							<html:textarea name="DefinirMantenimDocumentacionEJGForm" property="descripcion" rows="5" cols="60" onkeydown="cuenta(this,300)" onchange="cuenta(this,300)" styleClass="boxConsulta" readonly="true"/>
 						<%} else {%>
-							<html:textarea name="DefinirMantenimDocumentacionEJGForm" property="descripcion" rows="5" cols="60" onkeydown="cuenta(this,300)" onChange="cuenta(this,300)" styleClass="box" readonly="false"/>
+							<html:textarea name="DefinirMantenimDocumentacionEJGForm" property="descripcion" rows="5" cols="60" onkeydown="cuenta(this,300)" onchange="cuenta(this,300)" styleClass="box" readonly="false"/>
 						<%}%>
 					</td>
 				</tr>

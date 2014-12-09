@@ -114,8 +114,8 @@
 				<!-- Si la busqueda se realiza por idPersona, el campo numeroLetrado no puede modificarse, en cambio
 					 si la busqueda se realiza mediante el campo numeroLetrado se podría modificar por pantalla sin
 					 necesidad de seleccionarlo por el botón -->
-				<html:text name="SaltosYCompensacionesForm" property="numeroLetrado" size="10" maxlength="100" styleClass="boxConsulta" value="" readOnly="true"></html:text>
-				<html:text property="nombreMostrado" size="30" maxlength="150" styleClass="boxConsulta" value="" readOnly="true"></html:text>
+				<html:text name="SaltosYCompensacionesForm" property="numeroLetrado" size="10" maxlength="100" styleClass="boxConsulta" value="" readonly="true"></html:text>
+				<html:text property="nombreMostrado" size="30" maxlength="150" styleClass="boxConsulta" value="" readonly="true"></html:text>
 				&nbsp;
 				<!-- Boton para buscar un Colegiado -->
 				<input type="button" class="button" id="idButton" name="buscarColegiado" value='<siga:Idioma key="gratuita.inicio_SaltosYCompensaciones.literal.buscar"/>' onClick="buscarCliente();">
@@ -232,7 +232,7 @@
 					scrolling="no"
 					frameborder="0"
 					marginheight="0"
-					marginwidth="0";					 
+					marginwidth="0"				 
 					class="frameGeneral">
 	</iframe>
 			

@@ -55,22 +55,21 @@
 
 <!-- TITULO -->
 <!-- Barra de titulo actualizable desde los mantenimientos -->
-<table class="tablaTitulo" cellspacing="0" heigth="32">
+<table class="tablaTitulo" cellspacing="0" height="32">
 <tr>
 	<td id="titulo" class="titulosPeq">
 			<siga:Idioma key="gratuita.modalConsulta_DefinirCalendarioGuardia.literal.tituloGuardia"/>
 	</td>
 </tr>
 </table>
-	
+
+	<!-- Comienzo del formulario con los campos -->	
+	<html:form action="/JGR_DefinirCalendarioGuardia.do" method="post">
+		<html:hidden property = "modo" value = ""/>	
 
 	<!-- INICIO: CAMPOS -->
 	<!-- Zona de campos de busqueda o filtro -->
 	<table class="tablaCentralCamposPeque" align="center">
-	
-	<!-- Comienzo del formulario con los campos -->	
-	<html:form action="/JGR_DefinirCalendarioGuardia.do" method="post">
-		<html:hidden property = "modo" value = ""/>
 
 	<!-- INICIO: CAMPOS DEL REGISTRO -->
 	<tr>			
@@ -147,7 +146,7 @@
 				<siga:Idioma key="gratuita.modalMantenimiento_DefinirCalendarioGuardia.literal.diasGuardia"/>
 			</td>
 			<td>
-				<html:textarea name="DefinirCalendarioGuardiaForm" property="guardiasPeriodo" cols="10" rows="3" style="overflow:auto" styleClass="boxConsulta" readOnly="true" ></html:textarea>				
+				<html:textarea name="DefinirCalendarioGuardiaForm" property="guardiasPeriodo" cols="10" rows="3" style="overflow:auto" styleClass="boxConsulta" readonly="true" ></html:textarea>				
 			</td>		
 		</tr>
 		</table>

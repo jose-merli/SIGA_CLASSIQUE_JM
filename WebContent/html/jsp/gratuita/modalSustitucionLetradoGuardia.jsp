@@ -77,7 +77,7 @@
 
 	<!-- TITULO -->
 	<!-- Barra de titulo actualizable desde los mantenimientos -->
-	<table class="tablaTitulo" cellspacing="0" heigth="32">
+	<table class="tablaTitulo" cellspacing="0" height="32">
 		<tr>
 			<td id="titulo" class="titulitosDatos">
 				Sustitución de Letrado
@@ -119,14 +119,14 @@
 								<siga:Idioma key="gratuita.modalSustitucionLetrado.literal.turno"/>:			
 							</td>
 							<td>
-								<input type="text" name="turno" id="turno" maxlength="20" class="boxConsulta" value="<%=turno%>" readOnly="true" style="width:220px">
+								<input type="text" name="turno" id="turno" maxlength="20" class="boxConsulta" value="<%=turno%>" readOnly style="width:220px">
 							</td>		
 							
 							<td class="labelText">
 								<siga:Idioma key="gratuita.modalSustitucionLetrado.literal.guardia"/>:								
 							</td>
 							<td >
-								<input type="text" name="guardia" id="guardia" maxlength="20" class="boxConsulta" value="<%=guardia%>" readOnly="true"  style="width:220px">
+								<input type="text" name="guardia" id="guardia" maxlength="20" class="boxConsulta" value="<%=guardia%>" readOnly  style="width:220px">
 							</td>	
 						</tr>
 						
@@ -137,14 +137,14 @@
 									<siga:Idioma key="gratuita.modalCambiar_PestanaCalendarioGuardias.literal.fechaInicio"/>:
 								</td>
 								<td> 
-									<html:text name="PermutasForm" property="fechaInicio" styleId="fechaInicio" size="10" maxlength="10" styleClass="boxConsulta" value="<%=GstDate.getFormatedDateShort(usr.getLanguage(),fechaInicio)%>" readOnly="true" />
+									<html:text name="PermutasForm" property="fechaInicio" styleId="fechaInicio" size="10" maxlength="10" styleClass="boxConsulta" value="<%=GstDate.getFormatedDateShort(usr.getLanguage(),fechaInicio)%>" readonly="true" />
 								</td>
 										
 								<td class="labelText">
 									<siga:Idioma key="gratuita.modalCambiar_PestanaCalendarioGuardias.literal.fechaFin"/>:
 								</td>
 								<td>
-									<html:text name="PermutasForm" property="fechaFin" styleId="fechaFin" size="10" maxlength="10" styleClass="boxConsulta" value="<%=GstDate.getFormatedDateShort(usr.getLanguage(),fechaFin)%>" readOnly="true" />
+									<html:text name="PermutasForm" property="fechaFin" styleId="fechaFin" size="10" maxlength="10" styleClass="boxConsulta" value="<%=GstDate.getFormatedDateShort(usr.getLanguage(),fechaFin)%>" readonly="true" />
 								</td>
 							</tr>					
 						<% } %>		
@@ -201,9 +201,9 @@
 								</td>
 								<td>
 									<html:textarea name="PermutasForm" property="comenSustitucion" styleId="comenSustitucion"									
-										onKeyDown="cuenta(this,250)" onChange="cuenta(this,250)" 
+										onkeydown="cuenta(this,250)" onchange="cuenta(this,250)" 
 										style="overflow-y:auto; overflow-x:hidden; width:580px; height:50px; resize:none;" 
-										styleClass="box" readOnly="false" ></html:textarea>
+										styleClass="box" readonly="false" ></html:textarea>
 								</td>					
 							</tr>
 						</table>
@@ -222,9 +222,9 @@
 								</td>
 								<td>
 									<html:textarea name="DefinirGuardiasTurnosForm" property="comenSustitucion" styleId="comenSustitucion" 
-										onKeyDown="cuenta(this,250)" onChange="cuenta(this,250)" 
+										onkeydown="cuenta(this,250)" onchange="cuenta(this,250)" 
 										style="overflow-y:auto; overflow-x:hidden; width:580px; height:50px; resize:none;"
-										styleClass="box" readOnly="false" ></html:textarea>
+										styleClass="box" readonly="false" ></html:textarea>
 								</td>					
 							</tr>
 						</table>
