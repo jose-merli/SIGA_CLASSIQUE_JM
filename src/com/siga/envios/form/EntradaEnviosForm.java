@@ -4,7 +4,6 @@ import org.json.JSONArray;
 import org.redabogacia.sigaservices.app.AppConstants;
 import org.redabogacia.sigaservices.app.AppConstants.EstadosEntradaEnviosEnum;
 
-import com.atos.utils.ClsConstants;
 import com.siga.administracion.SIGAConstants;
 import com.siga.general.MasterForm;
 import com.siga.tlds.FilaExtElement;
@@ -16,6 +15,10 @@ import com.siga.tlds.FilaExtElement;
  */
 public class EntradaEnviosForm extends MasterForm
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3373537653309695595L;
 	// Atributos
 	private String fechaDesde;
 	private String fechaHasta;

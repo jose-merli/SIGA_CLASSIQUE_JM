@@ -1,11 +1,14 @@
 package com.siga.administracion.form;
 
-import com.siga.beans.GenTablasMaestrasBean;
 import com.siga.general.MasterForm;
 
 public class SIGAListadoTablasMaestrasForm extends MasterForm
 {
-//    private String modo="";
+/**
+	 * 
+	 */
+	private static final long serialVersionUID = 8202162975401945276L;
+	//    private String modo="";
     private String modal="";
     private String codigoRegistro="";
     private String codigoRegistroExt="";

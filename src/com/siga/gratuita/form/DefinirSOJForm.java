@@ -17,6 +17,11 @@ import com.siga.general.MasterForm;
 
  	
  	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -1638976095625140811L;
+
+	/**
 	 * Almacena en la Hashtable el identificador de un SOJ 
 	 * 
 	 * @param Identificador SOJ 

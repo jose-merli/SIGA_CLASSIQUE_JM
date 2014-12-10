@@ -15,7 +15,12 @@ import com.siga.general.MasterForm;
 
 public class TextoSMSForm extends MasterForm
 {
-//  private String modo="";
+/**
+	 * 
+	 */
+	private static final long serialVersionUID = -6188697555367498769L;
+
+	//  private String modo="";
     private String editable="";
 
     private String idInstitucion="";

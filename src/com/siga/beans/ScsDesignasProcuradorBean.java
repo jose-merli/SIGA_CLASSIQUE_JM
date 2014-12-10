@@ -9,6 +9,10 @@ package com.siga.beans;
 
 public class ScsDesignasProcuradorBean extends MasterBean{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3686036469092250247L;
 	/* Variables */ 
 	private Integer	idInstitucionProc;
 	private Integer	idInstitucion;

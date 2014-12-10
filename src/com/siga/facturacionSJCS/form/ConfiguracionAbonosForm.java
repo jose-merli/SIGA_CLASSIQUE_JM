@@ -16,6 +16,10 @@ import com.siga.general.MasterForm;
  */
 public class ConfiguracionAbonosForm extends MasterForm{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -546998783753485668L;
 	private Integer idpropSEPA;
 	private Integer idpropOtros;
 	private Integer idsufijo;

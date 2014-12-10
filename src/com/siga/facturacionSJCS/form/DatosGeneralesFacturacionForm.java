@@ -9,6 +9,10 @@ import com.siga.general.MasterForm;
 
 public class DatosGeneralesFacturacionForm extends MasterForm {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 5319229179554960406L;
 	private String nombre = "NOMBRE";
 	private String estado = "ESTADO";
 	private String fechaInicio = "FECHADESDE";

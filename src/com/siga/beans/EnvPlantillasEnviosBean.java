@@ -11,6 +11,10 @@ import com.siga.Utilidades.AjaxXMLBuilderValueAnnotation;
 
 public class EnvPlantillasEnviosBean extends MasterBean
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3595344702691536932L;
 	/* Variables */
 	private Integer idInstitucion;
 	private Integer idTipoEnvios;

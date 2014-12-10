@@ -5,7 +5,11 @@ import org.apache.struts.upload.*;
 
 public class DocumentosForm extends MasterForm
 {
-//    private String modo="";
+/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3621873831896114003L;
+	//    private String modo="";
     private String editable="";
     private String idInstitucion="";
     private String idEnvio="";

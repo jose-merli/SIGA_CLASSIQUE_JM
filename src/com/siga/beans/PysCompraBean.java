@@ -14,6 +14,10 @@ package com.siga.beans;
  */
 public class PysCompraBean extends MasterBean {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 32410933809124513L;
 	/* Variables */
 	private Integer idInstitucion, idTipoProducto, idFormaPago, cantidad, idCuenta, idCuentaDeudor;
 	private Long 	idProducto, idPeticion, idProductoInstitucion, numeroLinea, idPersona, idPersonaDeudor;

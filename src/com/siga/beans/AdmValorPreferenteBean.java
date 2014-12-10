@@ -6,6 +6,10 @@ package com.siga.beans;
  */
 public class AdmValorPreferenteBean extends MasterBean {
     
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -186249474330701190L;
 	//Variables
 	private Integer idInstitucion;
 	private Integer idBoton;

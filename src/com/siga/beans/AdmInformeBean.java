@@ -17,6 +17,11 @@ import com.siga.administracion.form.InformeForm;
 
 public class AdmInformeBean extends MasterBean {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 8377717042308270889L;
+
 	// Variables	
 	private String idPlantilla, descripcion, alias, nombreFisico, directorio, idTipoInforme, visible, nombreSalida,
 			preseleccionado, aSolicitantes, destinatarios, tipoformato,codigo,orden, claseJava,aContrarios,generarInformeSinDireccion;

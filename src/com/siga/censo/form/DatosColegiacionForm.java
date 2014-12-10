@@ -13,14 +13,17 @@
 package com.siga.censo.form;
 
 import com.atos.utils.GstDate;
-import com.siga.general.MasterForm;
-import com.siga.beans.*;
-import com.siga.censo.vos.ColegiadoVO;
+import com.siga.beans.CenEstadoActividadPersonaBean;
 import com.siga.comun.vos.Vo;
+import com.siga.general.MasterForm;
 	
 
 public class DatosColegiacionForm extends MasterForm
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -1124124224986404304L;
 	String idPersona, idInstitucion,nombre,numero;
 	
 	

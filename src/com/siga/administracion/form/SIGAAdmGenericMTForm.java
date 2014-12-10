@@ -17,7 +17,11 @@ import org.apache.struts.action.ActionForm;
  */
 
 public class SIGAAdmGenericMTForm extends ActionForm {
-  private Hashtable table = null;
+  /**
+	 * 
+	 */
+	private static final long serialVersionUID = 8520674269319484118L;
+private Hashtable table = null;
   private Hashtable reg = null;
   private String sLanguage;
 

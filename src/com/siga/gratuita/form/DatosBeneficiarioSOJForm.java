@@ -16,6 +16,11 @@ import com.siga.general.MasterForm;
 	// Metodos Set (Formulario (*.jsp))
 	
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -1026687656118493923L;
+
+	/**
 	 * Almacena en la Hashtable el identificador de una persona 
 	 * 
 	 * @param Identificador solicitante SOJ 

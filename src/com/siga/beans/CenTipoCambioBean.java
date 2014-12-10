@@ -13,6 +13,10 @@ package com.siga.beans;
 
 public class CenTipoCambioBean extends MasterBean{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -1473062704846634979L;
 	/* Variables */
 	private Integer idTipoCambio;
 	private String 	descripcion;

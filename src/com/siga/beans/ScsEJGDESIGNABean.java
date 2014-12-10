@@ -9,6 +9,10 @@ package com.siga.beans;
 
 public class ScsEJGDESIGNABean extends MasterBean{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 5658704447474097312L;
 	/*
 	 *  Variables */ 
 	private Integer idInstitucion;

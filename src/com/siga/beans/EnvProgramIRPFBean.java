@@ -7,6 +7,10 @@ package com.siga.beans;
 
 public class EnvProgramIRPFBean extends EnvProgramBean
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 5372039497507013022L;
 	// Nombres de los campos
 	static public final String C_IDPERSONA = "IDPERSONA";
 	static public final String C_PERIODO = "PERIODO";

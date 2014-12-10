@@ -2,12 +2,15 @@ package com.siga.envios.form;
 
 import java.util.StringTokenizer;
 
-import com.siga.beans.EnvPlantillasEnviosBean;
 import com.siga.general.MasterForm;
 
 public class SIGAPlantillasEnviosCorreoElectronicoForm extends MasterForm
 {
-//    private String modo="";
+/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3118101810940393283L;
+	//    private String modo="";
     private String idInstitucion="";
     private String idTipoEnvio="";
     private String idPlantillaEnvios="";

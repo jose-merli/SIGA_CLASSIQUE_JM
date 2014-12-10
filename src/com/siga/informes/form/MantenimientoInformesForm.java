@@ -5,6 +5,10 @@ import com.siga.general.MasterForm;
 
 public class MantenimientoInformesForm extends MasterForm
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4793556503269961472L;
 	// Atributos
 	private String idInstitucion;
 	private String letrado;

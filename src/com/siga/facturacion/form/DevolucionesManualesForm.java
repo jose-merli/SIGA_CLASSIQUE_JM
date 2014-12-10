@@ -16,6 +16,12 @@ import com.siga.general.MasterForm;
  */
 public class DevolucionesManualesForm extends MasterForm{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2426586081150655671L;
+
+
 	public void setFechaCargoDesde (String dato) {
 		UtilidadesHash.set(datos, "FechaCargoDesde", dato);
  	}
@@ -137,11 +143,9 @@ public class DevolucionesManualesForm extends MasterForm{
 	
 		ArrayList salida = new ArrayList();
 	    StringTokenizer st = null;
-	    int contadorReg=1;
 	    String tok=getRecibos();
 	    try {
 	    	st = new StringTokenizer(tok, ";");
-		    contadorReg=st.countTokens();
 	    } catch (java.util.NoSuchElementException nee) {
 	    	// solamente existe un token
 	    }

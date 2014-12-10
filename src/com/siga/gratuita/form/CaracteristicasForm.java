@@ -8,6 +8,10 @@ import com.siga.general.MasterForm;
 public class CaracteristicasForm extends MasterForm
 {
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -9159459014132199646L;
+	/**
 	 *  Variables 
 	 * 
 	 * */ 	

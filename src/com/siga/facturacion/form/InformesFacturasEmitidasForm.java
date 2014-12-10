@@ -14,6 +14,10 @@ import com.siga.general.MasterForm;
 
 public class InformesFacturasEmitidasForm extends MasterForm
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 752184804266403737L;
 	public String getFechaDesde() {
 		return UtilidadesHash.getString(this.datos, "FECHA_DESDE");
 	}

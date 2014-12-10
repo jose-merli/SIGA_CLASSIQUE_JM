@@ -13,6 +13,11 @@ import com.siga.Utilidades.AjaxXMLBuilderValueAnnotation;
 @AjaxXMLBuilderAnnotation
 public class ScsGuardiasTurnoBean extends MasterBean
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8800507317873282780L;
+
 	//////////////////// ATRIBUTOS DE CLASE ////////////////////
 	/** Nombre de Tabla */
 	static public String T_NOMBRETABLA = "SCS_GUARDIASTURNO";

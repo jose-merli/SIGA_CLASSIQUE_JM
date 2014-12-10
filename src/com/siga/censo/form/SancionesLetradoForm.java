@@ -8,6 +8,10 @@ import com.siga.general.MasterForm;
  */
 public class SancionesLetradoForm extends MasterForm{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -6754221134406870288L;
 	private String FechaArchivada;
 	private String ChkArchivada;
 	private String MostrarSanciones;

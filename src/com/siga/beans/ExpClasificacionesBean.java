@@ -13,6 +13,10 @@ package com.siga.beans;
  */
 public class ExpClasificacionesBean extends MasterBean {
     
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -5632347320537986905L;
 	//Variables
 	private Integer idClasificacion;
 	private String nombre;

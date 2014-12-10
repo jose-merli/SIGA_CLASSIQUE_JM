@@ -13,6 +13,10 @@ package com.siga.beans;
 
 public class CenSolicitModifDatosBasicosBean extends MasterBean {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 6722915736379735706L;
 	/* Variables */
 	private Long idSolicitud;
 	private String motivo;

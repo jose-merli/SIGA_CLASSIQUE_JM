@@ -15,6 +15,12 @@ package com.siga.beans;
 public class VleLetradosSigaBean extends MasterBean {
 	//private static final long serialVersionUID = -2510899080052901261L;
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1337400732874744542L;
+
+
 	/* Variables */
 	private String 	id_letrado, nombre, apellidos, num_doc, dir_profesional, poblacion,
 	   provincia, cod_postal, telefono, mail;

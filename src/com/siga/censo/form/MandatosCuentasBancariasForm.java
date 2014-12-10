@@ -5,6 +5,10 @@ import com.siga.general.form.FicheroForm;
 public class MandatosCuentasBancariasForm  extends FicheroForm {	
 	
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -6379574982706732200L;
 	/* Variables */	
 	private String idInstitucion, idPersona, idCuenta, idMandato, tipoMandato, fechaCreacion, usuCreacion, refMandatoSepa, tipoPago, esquema, autorizacionB2B;
 	private String acreedorTipoId, acreedorId, acreedorNombre, acreedorDomicilio, acreedorCodigoPostal, acreedorIdPais, acreedorPais, acreedorIdProvincia, acreedorProvincia, acreedorIdPoblacion, acreedorPoblacion;

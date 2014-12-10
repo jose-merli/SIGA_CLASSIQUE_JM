@@ -10,6 +10,10 @@ package com.siga.beans;
  */
 public class FacFacturaIncluidaEnDisqueteBean extends MasterBean {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -7727291118199945818L;
 	/* Variables */
 	private Integer idInstitucion, idDisqueteCargos, idFacturaIncluidaEnDisquete;
 	private String 	idFactura;

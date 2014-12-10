@@ -14,6 +14,10 @@ package com.siga.beans;
  */
 public class PysLineaAnticipoBean extends MasterBean {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 6081213343749367166L;
 	/* Variables */
 	private Integer idInstitucion, idAnticipo, idLinea,idPersona;
 	private Long NumeroLinea;

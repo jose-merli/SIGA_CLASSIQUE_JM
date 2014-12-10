@@ -10,6 +10,10 @@ package com.siga.beans;
 public class ScsTipoActuacionBean extends MasterBean{
 	
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 5027398428104051422L;
+	/**
 	 *  Variables */ 
 	
 	private Integer	idInstitucion;

@@ -14,6 +14,10 @@ import java.util.Hashtable;
 */
  public class DatosGeneralesSOJForm extends MasterForm{	
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 26276417568339400L;
 	protected Hashtable ejg= new Hashtable();
 	String anio="",num="",tipo=""; // Variables para el EJG
 	

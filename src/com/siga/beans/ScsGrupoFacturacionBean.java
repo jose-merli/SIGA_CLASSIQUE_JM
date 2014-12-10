@@ -14,6 +14,10 @@ import com.siga.Utilidades.AjaxXMLBuilderValueAnnotation;
 public class ScsGrupoFacturacionBean extends MasterBean{
 	
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 6046267314906868345L;
+	/**
 	 *  Variables 
 	 * */ 
 	

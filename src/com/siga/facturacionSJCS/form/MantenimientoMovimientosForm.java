@@ -8,6 +8,10 @@ import com.siga.general.MasterForm;
 
 public class MantenimientoMovimientosForm extends MasterForm {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -500966801771191310L;
 	private String nif              = 	"NIF";
 	private String ncolegiado       = 	"NCOLEGIADO";
 	private String nombre           = 	"NOMBRE";

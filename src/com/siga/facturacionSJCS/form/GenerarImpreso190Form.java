@@ -15,6 +15,11 @@ public class GenerarImpreso190Form extends MasterForm {
 	
 	// Metodos Set (Formulario (*.jsp))
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2523069070273759721L;
+
 	public void setAnio (String dato) { 
 		try {
 			UtilidadesHash.set(this.datos,"anio", dato);

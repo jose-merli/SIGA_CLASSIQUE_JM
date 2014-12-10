@@ -19,6 +19,10 @@ import com.siga.general.MasterForm;
 public class MantenimientoGruposFijosForm extends MasterForm {
 	
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -1461823896375945763L;
 	// METODOS SET
 	public void setIdInstitucion(String dato) {
 		UtilidadesHash.set(this.datos, CenGruposClienteBean.C_IDINSTITUCION , dato);

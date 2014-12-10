@@ -5,6 +5,11 @@ import java.util.Hashtable;
 
 public class GenProcesoBean extends MasterBean{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 6724921232495387786L;
+
 	static public String T_NOMBRETABLA="GEN_PROCESOS";
 
 	static public final String C_IDPROCESO 		= "IDPROCESO";

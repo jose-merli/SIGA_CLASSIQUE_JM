@@ -22,7 +22,12 @@ import com.siga.general.MasterForm;
  */
 public class DatosRegistralesForm extends MasterForm{
 
-//	metodos set de los campos del formulario
+/**
+	 * 
+	 */
+	private static final long serialVersionUID = 828748228379314303L;
+
+	//	metodos set de los campos del formulario
 	public void setIdPersona (String dato) { 
  		try {
  			UtilidadesHash.set(this.datos,CenPersonaBean.C_IDPERSONA, dato);

@@ -10,6 +10,10 @@ public class ScsContrariosEJGBean extends MasterBean{
 	
 	/* Variables */ 
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3135733674827536081L;
 	private Integer	idInstitucion;
 	private Integer	idTipoEJG;
 	private Integer	anio;

@@ -8,6 +8,10 @@ import com.siga.general.MasterForm;
 
 public class AsistenciasForm extends MasterForm 
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4576877802048759085L;
 	String 	numeroDilegencia = "", 
 			numeroProcedimiento = "", 
 			estadoAsintecia = "",
@@ -153,8 +157,6 @@ public class AsistenciasForm extends MasterForm
 	private String desdeDesigna = "";
 	private String actuacionValidada = "";
 
-	private String comisaria;
-	private String juzgado ;
 	private String idDelito = "idDelito";
 	private String acIdPrision = "acIdPrision";
 	private String acIdInstitucionPrision = "acIdInstitucionPrision";

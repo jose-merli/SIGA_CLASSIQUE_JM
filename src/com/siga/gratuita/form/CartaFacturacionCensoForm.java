@@ -9,6 +9,10 @@ import com.siga.general.MasterForm;
 
 public class CartaFacturacionCensoForm extends MasterForm {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -9191543578516748801L;
 	// Atributos
 	private String idInstitucion;
 	private String letrado;

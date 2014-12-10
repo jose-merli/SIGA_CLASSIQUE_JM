@@ -12,6 +12,10 @@ public class ScsDesignasLetradoBean extends MasterBean{
 	/*
 	 *  Variables */ 
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -728983550621622821L;
 	private Integer	idInstitucion;
 	private Integer	idInstitucionOrigen;	
 	private Integer	idTurno;

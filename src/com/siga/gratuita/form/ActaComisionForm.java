@@ -1,17 +1,12 @@
 package com.siga.gratuita.form;
 
-import java.util.Date;
-import java.util.Locale;
-
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.action.ActionMessage;
 
-import com.atos.utils.GstDate;
 import com.atos.utils.UsrBean;
-import com.atos.utils.Validaciones;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.general.MasterForm;
 
@@ -22,6 +17,10 @@ import com.siga.general.MasterForm;
 
 public class ActaComisionForm extends MasterForm {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2174741588741809237L;
 	private String numeroActa;
 	private String anioActa;
 	private String fechaResolucion;

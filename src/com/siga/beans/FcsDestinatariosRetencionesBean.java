@@ -9,6 +9,10 @@ package com.siga.beans;
 
 public class FcsDestinatariosRetencionesBean extends MasterBean {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 7358674542594408303L;
 	/* Variables */
 	private Integer  idInstitucion, idDestinatario;
 	private String   nombre, cuentaContable, codigoExt, orden;

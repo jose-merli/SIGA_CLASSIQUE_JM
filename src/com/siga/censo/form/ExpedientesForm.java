@@ -17,6 +17,10 @@ import com.siga.general.MasterForm;
  */
 public class ExpedientesForm extends MasterForm{
 		
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2920477383491325553L;
 	private String idPersona=""; 	
 	private String idInstitucion="";
 	private String idInstitucionTipoExpediente=""; 	

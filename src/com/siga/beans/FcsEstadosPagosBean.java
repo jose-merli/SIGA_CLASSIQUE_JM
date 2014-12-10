@@ -11,6 +11,10 @@ package com.siga.beans;
 */
 public class FcsEstadosPagosBean extends MasterBean {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3866623164719838741L;
 	/* Variables */
 	private Integer idEstadoPagosJG;
 	private String 	descripcion = null;

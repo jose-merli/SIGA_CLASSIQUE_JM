@@ -6,6 +6,10 @@ package com.siga.gratuita.form;
 import com.siga.general.MasterForm;
 
 public class ActuacionesForm extends MasterForm {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 431725471085081510L;
 	private String aanio            ="aanio";
 	private String anumero          ="anumero";
 	private String pjgapellido2     ="pjgapellido2";   

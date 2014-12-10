@@ -19,6 +19,11 @@ import com.siga.general.MasterForm;
  */
 public class FicheroBancarioPagosForm extends MasterForm{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 622439253176150015L;
+
 	private String fechaEntrega="", fechaFRST="", fechaRCUR="", fechaCOR1="", fechaB2B="", idDisqueteCargo="", nombreFichero="";
 
 	private String fechaCargo = "";

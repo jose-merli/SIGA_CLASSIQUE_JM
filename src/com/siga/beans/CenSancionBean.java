@@ -8,6 +8,10 @@ package com.siga.beans;
  */
 public class CenSancionBean extends MasterBean{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8577341498247972976L;
 	/* Variables */ 
 	private Integer	idSancion;
 	private Integer	idPersona;

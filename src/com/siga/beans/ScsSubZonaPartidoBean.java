@@ -12,6 +12,10 @@ package com.siga.beans;
 
 public class ScsSubZonaPartidoBean extends MasterBean{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 8089611673474648278L;
 	/* Variables */
 	private Integer	idInstitucion;
 	private Integer	idZona;

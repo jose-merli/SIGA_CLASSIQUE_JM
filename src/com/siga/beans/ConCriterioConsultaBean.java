@@ -12,6 +12,10 @@ package com.siga.beans;
 public class ConCriterioConsultaBean extends MasterBean {
 
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3794674083721485720L;
 	private Integer idInstitucion;
 	private String orden;
 	private String operador;

@@ -2,6 +2,10 @@ package com.siga.beans;
 
 public class CerPlantillasBean extends MasterBean
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3302668868045148516L;
 	/* Variables */
 	private Integer idInstitucion;
 	private Integer idTipoProducto;

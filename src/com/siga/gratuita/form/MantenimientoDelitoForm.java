@@ -12,6 +12,10 @@ import com.siga.general.MasterForm;
 public class MantenimientoDelitoForm extends MasterForm {
 	
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -321437618846768577L;
 	// METODOS SET
 	public void setIdDelito(String dato) {
 		UtilidadesHash.set(this.datos, ScsDelitoBean.C_IDDELITO , dato);

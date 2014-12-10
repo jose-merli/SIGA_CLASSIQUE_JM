@@ -2,6 +2,10 @@ package com.siga.beans;
 
 public class ConImpresoraBean extends MasterBean
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 6864980622088702564L;
 	/* Variables */
 	private Integer idImpresora;
 	private Integer idInstitucion;

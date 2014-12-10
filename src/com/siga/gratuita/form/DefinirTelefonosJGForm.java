@@ -17,6 +17,10 @@ import com.siga.beans.ScsTelefonosPersonaJGBean;
  */
 public class DefinirTelefonosJGForm extends com.siga.general.MasterForm {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1555178141870653045L;
 	String idPersona=null; 
 	String numeroTelefonoJG=null;
 	String nombreTelefonoJG=null;

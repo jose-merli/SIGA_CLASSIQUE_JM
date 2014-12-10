@@ -9,6 +9,10 @@ public class EnvProgramPagosBean extends EnvProgramBean {
     
 	//Variables
     
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3605621482693199738L;
 	private Integer idPago;
 	private Long idPersona;
 	

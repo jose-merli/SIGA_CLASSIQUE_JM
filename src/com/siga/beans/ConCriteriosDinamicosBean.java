@@ -10,7 +10,11 @@ package com.siga.beans;
  */
 public class ConCriteriosDinamicosBean extends MasterBean {
 
-//	Variables
+/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1083008628062619209L;
+	//	Variables
 	private Integer idInstitucion;
 	private Integer idConsulta;
 	private Integer orden;

@@ -8,6 +8,10 @@ import com.siga.general.MasterForm;
 
 public class DatosDetalleFacturacionForm extends MasterForm {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -7417543849305881611L;
 	private String idPersona = 		"IDPERSONA";
 	private String idFacturacion =  "IDFACTURACION";
 	private String idInstitucion =  "IDINSTITUCION";

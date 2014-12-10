@@ -1,6 +1,5 @@
 package com.siga.envios.form;
 
-import org.redabogacia.sigaservices.app.autogen.model.EcomDesignaprovisional;
 import org.redabogacia.sigaservices.app.autogen.model.EcomSolsusprocedimiento;
 
 import com.atos.utils.ClsExceptions;
@@ -9,6 +8,10 @@ import com.atos.utils.GstDate;
 
 public class SolSusProcedimientoForm extends IntercambioTelematicoForm
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 2425700237670182761L;
 	/**
 	 * 
 	 */

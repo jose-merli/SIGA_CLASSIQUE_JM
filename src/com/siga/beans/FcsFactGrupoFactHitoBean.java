@@ -13,6 +13,10 @@ package com.siga.beans;
 public class FcsFactGrupoFactHitoBean extends MasterBean{
 	
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3260533823493078426L;
+	/**
 	 *  Variables 
 	 * */ 
 	

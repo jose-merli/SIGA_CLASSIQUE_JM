@@ -12,6 +12,11 @@ import com.siga.censo.form.AlterMutuaForm;
 
 public class CenSolicitudAlterMutuaBean extends MasterBean {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 318172367478148973L;
+
 	/* Nombre tabla */
 	static public String T_NOMBRETABLA = "CEN_SOLICITUDALTER";
 	

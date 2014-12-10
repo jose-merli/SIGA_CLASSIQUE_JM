@@ -1,11 +1,8 @@
 package com.siga.gratuita.form;
 
-import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
-import com.siga.beans.CenComponentesBean;
-import com.siga.beans.ScsJuzgadoBean;
 import com.siga.comun.vos.ValueKeyVO;
 import com.siga.general.MasterForm;
 
@@ -14,6 +11,10 @@ import com.siga.general.MasterForm;
  */
 public class RetencionesIRPFForm extends MasterForm
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3958923131933117268L;
 	// Atributos
 	String FECHAINICIO = null;
 	String FECHAFIN = null;

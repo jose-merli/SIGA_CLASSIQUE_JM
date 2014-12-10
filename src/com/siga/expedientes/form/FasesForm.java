@@ -14,7 +14,11 @@ import com.siga.general.MasterForm;
  */
 public class FasesForm extends MasterForm {
     
-//    private String modo="";
+/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3647510687371002385L;
+	//    private String modo="";
     private String modal="";
     private String idFase;
 	private String nombre;

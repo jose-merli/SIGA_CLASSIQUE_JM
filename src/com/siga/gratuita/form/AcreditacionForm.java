@@ -1,7 +1,5 @@
 package com.siga.gratuita.form;
 
-import java.util.List;
-
 import com.siga.general.MasterForm;
 
 /**
@@ -13,6 +11,10 @@ import com.siga.general.MasterForm;
 public class AcreditacionForm extends MasterForm
 {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 355333789353564520L;
 	private String descripcion;
 	private String id;
 	private String idTipo;

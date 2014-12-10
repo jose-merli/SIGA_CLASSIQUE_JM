@@ -13,6 +13,10 @@ package com.siga.beans;
 
 public class FicheroEmisorAbonoBean extends MasterBean{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 5212378822626181266L;
 	/* Variables */
 	private Integer identificador;
 	private String iban;

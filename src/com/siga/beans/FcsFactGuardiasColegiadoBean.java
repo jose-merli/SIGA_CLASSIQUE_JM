@@ -13,6 +13,10 @@ package com.siga.beans;
 public class FcsFactGuardiasColegiadoBean extends MasterBean{
 	
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4731524835714300996L;
+	/**
 	 *  Variables 
 	 * 
 	 * */ 

@@ -6,6 +6,11 @@ package com.siga.beans;
 
 public class FcsCobrosRetencionJudicialBean extends MasterBean
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 5749387587787128183L;
+
 	/* Nombre tabla */
 	static public String T_NOMBRETABLA = "FCS_COBROS_RETENCIONJUDICIAL";
 	

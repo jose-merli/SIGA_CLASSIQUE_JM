@@ -11,6 +11,10 @@ import com.siga.envios.form.ImagenPlantillaForm;
 
 public class EnvImagenPlantillaBean extends MasterBean
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4819376688127734137L;
 	/* Variables */
 	private Integer idInstitucion;
 	private Integer idTipoEnvios;

@@ -7,7 +7,6 @@ import java.util.List;
 
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.GstDate;
-import com.atos.utils.UsrBean;
 import com.siga.beans.ScsActuacionAsistenciaBean;
 import com.siga.beans.ScsComisariaBean;
 import com.siga.beans.ScsJuzgadoBean;
@@ -19,7 +18,11 @@ import com.siga.general.MasterForm;
 public class ActuacionAsistenciaForm extends MasterForm 
 {
 
-      String idInstitucion; 
+      /**
+	 * 
+	 */
+	private static final long serialVersionUID = -5151925289916286910L;
+	String idInstitucion; 
 	  String anio;   
 	  String numero;               
 	  String idActuacion;        

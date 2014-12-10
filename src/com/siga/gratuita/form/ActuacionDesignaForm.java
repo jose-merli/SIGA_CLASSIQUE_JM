@@ -1,9 +1,6 @@
 package com.siga.gratuita.form;
 
-import java.util.Iterator;
 import java.util.List;
-
-import org.apache.poi.hssf.util.HSSFColor.ROSE;
 
 import com.siga.general.MasterForm;
 
@@ -16,6 +13,10 @@ import com.siga.general.MasterForm;
 public class ActuacionDesignaForm extends MasterForm
 {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8836334310559917183L;
 	private List<AcreditacionForm> acreditaciones;
 	private String categoria;
 	private String numero;

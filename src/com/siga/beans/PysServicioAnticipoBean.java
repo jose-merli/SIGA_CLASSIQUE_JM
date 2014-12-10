@@ -14,6 +14,10 @@ package com.siga.beans;
 
 public class PysServicioAnticipoBean extends MasterBean{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 2961956164213525606L;
 	/* Variables */
 	private Integer idInstitucion, 	
 					idAnticipo, 

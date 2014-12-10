@@ -7,10 +7,13 @@ package com.siga.beans;
  */
 public class CenInstitucionPoblacionBean extends MasterBean{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2334565474884181940L;
 	/* Atributos */
 	private Integer idInstitucion;
 	private String idPoblacion;
-	private Integer UsuMod;
 	private String fechaMod;
 	
 	/* Nombre de la tabla */

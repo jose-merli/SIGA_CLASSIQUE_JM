@@ -10,6 +10,11 @@ import com.siga.general.MasterForm;
 public class PestanaDelitoEJGForm extends MasterForm {
 	
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8878470226039550862L;
+
 	private Integer idDelito, anio, numero, idTipoEJG;
 	
 	private String idInstitucion;

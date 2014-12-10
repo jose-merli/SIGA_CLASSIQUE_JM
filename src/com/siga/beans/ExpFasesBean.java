@@ -13,6 +13,10 @@ package com.siga.beans;
  */
 public class ExpFasesBean extends MasterBean {
     
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 5870842864535723634L;
 	//Variables
 	private Integer idFase;
 	private String nombre;

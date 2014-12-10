@@ -10,6 +10,10 @@ import java.io.Serializable;
 //Este bean sirve para implementar cada fila de Criterios de Pago con todos sus campos.
 public class CriteriosPagosBean implements Serializable{
     
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4930809000589484509L;
 	//Variables
 	private String idGrupoFacturacion = null;
 	private String idHitoGeneral = null;

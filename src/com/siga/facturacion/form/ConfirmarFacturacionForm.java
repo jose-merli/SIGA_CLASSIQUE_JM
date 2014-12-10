@@ -17,6 +17,10 @@ import com.siga.general.MasterForm;
  * Window - Preferences - Java - Code Style - Code Templates
  */
 public class ConfirmarFacturacionForm extends MasterForm{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -5956726886950561164L;
 	private String fechaCargo, estadoConfirmacion, estadoPDF, estadoEnvios, archivadas;
 	private String facturacionRapida, idSerieFacturacion, idProgramacion;
 	private String fechaEntrega="", fechaFRST="", fechaRCUR="", fechaCOR1="", fechaB2B="";

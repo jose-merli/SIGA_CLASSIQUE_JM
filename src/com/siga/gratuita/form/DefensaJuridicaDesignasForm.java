@@ -11,6 +11,10 @@ import com.siga.general.MasterForm;
 
 public class DefensaJuridicaDesignasForm extends MasterForm {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -851637053798127765L;
 	protected String defensaJuridica= "DEFENSAJURIDICA";
 	protected String idturno = "IDTURNO";
 	protected String anio = "ANIO";

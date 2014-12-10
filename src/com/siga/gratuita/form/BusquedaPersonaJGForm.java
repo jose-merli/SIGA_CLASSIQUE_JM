@@ -15,6 +15,10 @@ import com.siga.Utilidades.UtilidadesHash;
 
 public class BusquedaPersonaJGForm extends MasterForm {
 			
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 2844152778953764582L;
 	// Datos de entrada de la ventana
 	public void setNIdentificacion(String dato) {
 		UtilidadesHash.set(this.datos,"NIdentificacion",dato);

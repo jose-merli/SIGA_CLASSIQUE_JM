@@ -1,10 +1,5 @@
 package com.siga.beans;
 
-import java.util.TreeMap;
-import java.util.Vector;
-
-
-
 import com.siga.Utilidades.AjaxXMLBuilderAnnotation;
 import com.siga.Utilidades.AjaxXMLBuilderNameAnnotation;
 import com.siga.Utilidades.AjaxXMLBuilderValueAnnotation;
@@ -20,6 +15,10 @@ public class ScsTurnoBean extends MasterBean{
 	
 	/* Variables */ 
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3572689589678590596L;
 	private Integer 	idInstitucion;
 	private Integer 	idTurno;
 	private String		nombre;

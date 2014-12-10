@@ -11,6 +11,10 @@ package com.siga.beans;
  */
 public class FacPropositosBean extends MasterBean {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -5410434164782226339L;
 	/* Variables */	
 	private Integer 	idProposito,tipoSEPA;
 	private String      codigo, nombre;	

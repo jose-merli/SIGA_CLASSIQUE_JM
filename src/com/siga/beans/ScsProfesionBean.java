@@ -13,6 +13,10 @@ package com.siga.beans;
 
 public class ScsProfesionBean extends MasterBean{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -5376020745281276210L;
 	/* Variables */
 	private Integer idProfesion;
 	private String 	descripcion;	

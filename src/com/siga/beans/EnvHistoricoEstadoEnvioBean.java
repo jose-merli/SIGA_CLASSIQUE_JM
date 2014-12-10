@@ -10,7 +10,11 @@ import java.util.Date;
  */
 public class EnvHistoricoEstadoEnvioBean extends MasterBean {
 	
-    // Variables
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -4101496758621709116L;
+	// Variables
 	private Integer idInstitucion;
 	private Integer idEnvio;
 	private Integer idHistorico;

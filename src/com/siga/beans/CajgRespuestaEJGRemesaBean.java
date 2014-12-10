@@ -11,6 +11,10 @@ import es.satec.siga.util.SigaSequence;
 
 public class CajgRespuestaEJGRemesaBean extends MasterBean{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8872831136575112094L;
 	public static int TIPO_RESPUESTA_SIGA = 1;
 	public static int TIPO_RESPUESTA_COMISION = 2;
 	

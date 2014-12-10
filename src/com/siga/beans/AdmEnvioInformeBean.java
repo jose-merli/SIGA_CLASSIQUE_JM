@@ -11,6 +11,10 @@ import com.atos.utils.UsrBean;
 
 public class AdmEnvioInformeBean extends MasterBean {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 2348956556914443359L;
 	// Variables	
 	private String idPlantilla;
 	private Integer idInstitucion;

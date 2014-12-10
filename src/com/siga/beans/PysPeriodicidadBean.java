@@ -8,6 +8,10 @@ package com.siga.beans;
 
 public class PysPeriodicidadBean extends MasterBean{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -1374897993653830119L;
 	/* Variables */
 	private Integer idPeriodicidad;
 	private String 	descripcion;

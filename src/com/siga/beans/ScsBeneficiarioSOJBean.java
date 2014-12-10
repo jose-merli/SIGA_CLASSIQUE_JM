@@ -14,8 +14,11 @@ package com.siga.beans;
  */
 public class ScsBeneficiarioSOJBean extends MasterBean {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8404996644302445544L;
 	/* Variables */	
-	private String 	descripcion;
 	private Integer idInstitucion, idPersona, idTipoConoce, idTipoGrupoLab;
 	private Integer nVecesSOJ ;
 	private String solicitaJG,solicitaInfoSOJ;

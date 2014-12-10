@@ -13,6 +13,10 @@ package com.siga.beans;
 public class FcsFactActuacionDesignaBean extends MasterBean{
 	
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8494184937355937837L;
+	/**
 	 *  Variables 
 	 * 
 	 * */ 

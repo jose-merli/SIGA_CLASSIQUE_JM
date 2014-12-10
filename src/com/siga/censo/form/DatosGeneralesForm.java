@@ -26,6 +26,10 @@ import com.siga.general.ParejaNombreID;
 
  public class DatosGeneralesForm extends MasterForm {
  	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8369677269507063001L;
 	// Metodos Set (Formulario (*.jsp))
  	/**
      * El fichero a subir

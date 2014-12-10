@@ -21,6 +21,10 @@ public class SolicitudesModificacionEspecificasForm extends MasterForm{
 		
 	// Variables busqueda
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -6130560235999912018L;
 	private String fechaDesde="";
 	private String fechaHasta="";		
 	private String solicitudes="";	

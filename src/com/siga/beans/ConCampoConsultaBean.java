@@ -11,7 +11,11 @@ package com.siga.beans;
  */
 public class ConCampoConsultaBean extends MasterBean {
 
-//	Variables
+/**
+	 * 
+	 */
+	private static final long serialVersionUID = 2793280441549923515L;
+	//	Variables
 	private Integer idCampo;
 	private String descripcion;
 	private String nombreReal;

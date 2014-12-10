@@ -1,7 +1,5 @@
 package com.siga.gratuita.form;
 
-import java.util.List;
-
 import com.siga.general.MasterForm;
 import com.siga.gratuita.beans.ScsConfConjuntoGuardiasBean;
 
@@ -15,7 +13,7 @@ public class ConfConjuntoGuardiasForm extends MasterForm {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 6391943285292308881L;
 	private String idConjuntoGuardia;
 	private String idInstitucion;
 	private String idTurno;

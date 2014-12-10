@@ -20,6 +20,10 @@ import com.siga.beans.*;
 */
 public class DatosFacturacionForm extends MasterForm {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -5719089666922657171L;
 	private String incluirRegistrosConBajaLogica;
 
 

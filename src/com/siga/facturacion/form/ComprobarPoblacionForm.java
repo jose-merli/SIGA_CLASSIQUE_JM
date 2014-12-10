@@ -15,6 +15,11 @@ import com.siga.beans.*;
 
 public class ComprobarPoblacionForm extends MasterForm{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2757378350904288163L;
+
 	// Metodos Set (Formulario (*.jsp))
 	public void setIdInstitucion (Integer id) {
 		UtilidadesHash.set(datos, FacSerieFacturacionBean.C_IDINSTITUCION, id);

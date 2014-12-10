@@ -4,6 +4,10 @@ public class CaracteristicasAsistenciasBean extends MasterBean
 {
 	
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4096830996757656666L;
+	/**
 	 *  Variables 
 	 * 
 	 * */ 	

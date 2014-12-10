@@ -18,7 +18,11 @@ import com.siga.general.ParejaNombreID;
 
  	
 		
-	 	String nombre;
+	 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -9021263177410859820L;
+		String nombre;
 	 	String apellido1;
 	 	String apellido2;
 	 	String nif;

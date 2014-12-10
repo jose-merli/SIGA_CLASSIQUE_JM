@@ -9,12 +9,11 @@ package com.siga.gratuita.form;
 import java.util.List;
 import java.util.Vector;
 
+import com.siga.Utilidades.UtilidadesHash;
 import com.siga.beans.CenPersonaBean;
 import com.siga.beans.CenTipoIdentificacionBean;
-import com.siga.beans.ScsPersonaJGBean;
 import com.siga.beans.ScsTelefonosPersonaJGBean;
 import com.siga.general.MasterForm;
-import com.siga.Utilidades.UtilidadesHash;
 
 
 public class PersonaJGForm extends MasterForm {
@@ -22,6 +21,11 @@ public class PersonaJGForm extends MasterForm {
 	
 
 			
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 5562674890412959879L;
+
 	// Datos de entrada de la ventana
 	public void setNcolegiadoContrario(String dato) {
 		UtilidadesHash.set(this.datos,"NcolegiadoContrario",dato);

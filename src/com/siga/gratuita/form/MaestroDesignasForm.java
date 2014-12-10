@@ -19,6 +19,10 @@ import com.siga.general.MasterForm;
 
 public class MaestroDesignasForm extends MasterForm {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -7334422733012974540L;
 	private String ANIO="ANIO";
 	private String NUMERO="NUMERO";
 	private String TURNO="TURNO";

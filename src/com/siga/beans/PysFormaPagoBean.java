@@ -15,6 +15,10 @@ package com.siga.beans;
 
 public class PysFormaPagoBean extends MasterBean{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4815096900282361886L;
 	/* Variables */
 	private Integer idFormaPago;
 	private String 	descripcion;

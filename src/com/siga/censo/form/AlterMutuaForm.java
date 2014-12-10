@@ -1,17 +1,13 @@
 package com.siga.censo.form;
 
 import java.util.ArrayList;
-import java.util.StringTokenizer;
 
 import com.atos.utils.ClsConstants;
-import com.siga.Utilidades.UtilidadesFecha;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.beans.CenSolicitudAlterMutuaBean;
 import com.siga.general.MasterForm;
 import com.siga.ws.alterMutua.WSAsegurado;
 import com.siga.ws.alterMutua.WSDireccion;
-import com.siga.ws.alterMutua.WSPersona;
-import com.siga.ws.alterMutua.WSAsegurado;
 import com.siga.ws.alterMutua.WSPropuesta;
 
 /**
@@ -21,6 +17,10 @@ import com.siga.ws.alterMutua.WSPropuesta;
  */
 public class AlterMutuaForm extends MasterForm {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1293357397461585047L;
 	private boolean error;
 	private boolean publicidad;
 	private boolean quiereCertificado;

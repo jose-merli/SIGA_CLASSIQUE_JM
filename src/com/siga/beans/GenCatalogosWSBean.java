@@ -3,6 +3,10 @@ package com.siga.beans;
 
 public class GenCatalogosWSBean extends MasterBean
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 430194071137443946L;
 	// Variables 
 	private String catalogo;
 	private String conjunto;

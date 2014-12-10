@@ -13,6 +13,10 @@ package com.siga.beans;
  * Window - Preferences - Java - Code Style - Code Templates
  */
 public class CenClienteBean extends MasterBean {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -5830667271953826720L;
 	/* Variables */
 	private Integer idInstitucion, idTratamiento;
 	Long idPersona;

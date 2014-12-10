@@ -8,6 +8,10 @@ package com.siga.beans;
  */
 public class ScsDeclaracionBean extends MasterBean{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 188707640759522263L;
 	/* Variables */ 
 	private Integer	idDeclaracion;
 	private String	descripcion=null;

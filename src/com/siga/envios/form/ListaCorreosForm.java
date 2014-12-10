@@ -14,7 +14,11 @@ import com.siga.general.MasterForm;
  */
 public class ListaCorreosForm extends MasterForm {
 	
-//    private String modo="";
+/**
+	 * 
+	 */
+	private static final long serialVersionUID = 2620368869789740665L;
+	//    private String modo="";
     private String modal="";
 	private String nombre="";
 	private String descripcion="";

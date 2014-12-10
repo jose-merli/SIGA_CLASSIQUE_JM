@@ -2,6 +2,10 @@ package com.siga.beans;
 
 public class AdmTipoFiltroInformeBean extends MasterBean {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -816702101601434510L;
 	// Atributos
 	private String idTipoInforme;
 	private Integer idTipoFiltroInforme;

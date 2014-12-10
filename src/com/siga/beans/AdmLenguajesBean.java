@@ -6,6 +6,10 @@ package com.siga.beans;
  */
 public class AdmLenguajesBean extends MasterBean {
     
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -1993044506929644481L;
 	//Variables
 	private String idLenguaje;
 	private String descripcion;

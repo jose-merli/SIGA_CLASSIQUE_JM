@@ -6,6 +6,10 @@ package com.siga.beans;
 
 public class FcsHistoricoHitoFactBean extends MasterBean {
 		
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3191043297926114549L;
 	/* Variables */
 	private Integer idFacturacion, idGuardia, idTurno, idHito, idInstitucion;
 	private String  pagoFacturacion;

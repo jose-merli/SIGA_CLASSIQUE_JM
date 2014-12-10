@@ -7,6 +7,10 @@ package com.siga.beans;
 
 public class EnvListaCorreosEnviosBean extends MasterBean {
     
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 7874636895787540572L;
 	//Variables
 	private Integer idListaCorreo;
 	private Integer idEnvio;

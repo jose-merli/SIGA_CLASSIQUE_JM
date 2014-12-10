@@ -1,6 +1,5 @@
 package com.siga.facturacion.form;
 
-import com.atos.utils.ClsConstants;
 import com.siga.general.MasterForm;
 
 /**
@@ -10,6 +9,10 @@ import com.siga.general.MasterForm;
  */
 public class SufijosForm extends MasterForm {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3423393979380517529L;
 	private String sufijo = null;
 	private Integer idsufijo = null;
 	private String concepto = null;

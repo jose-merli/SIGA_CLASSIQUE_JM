@@ -19,6 +19,10 @@ import com.siga.general.MasterForm;
  */
 public class ProgramarFacturacionForm extends MasterForm{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -5407438118190592672L;
 	private String idTipoPlantillaMail;
 	private String fechaPresentacion;
 	private String fechaRecibosPrimeros;

@@ -16,6 +16,11 @@ import com.siga.general.MasterForm;
 	// Metodos Set (Formulario (*.jsp))
  	
  	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 964390132795324484L;
+
+	/**
 	 * Almacena en la Hashtable el identificador de una fiesta 
 	 * 
 	 * @param Identificador fiesta. 

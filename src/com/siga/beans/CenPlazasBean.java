@@ -15,6 +15,10 @@ public class CenPlazasBean extends MasterBean{
 
 	/* Variables */
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3219012285875498505L;
 	private String 	codPlaza;
 	private String 	nombre;
 	private String  codProvincia;

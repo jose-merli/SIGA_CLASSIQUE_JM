@@ -10,6 +10,11 @@ import com.siga.general.MasterForm;
  *
  */
 public class CuentasBancariasForm extends MasterForm {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4085546956057834189L;
+
 	public CuentasBancariasForm() {
 		
 	}

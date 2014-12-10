@@ -12,6 +12,10 @@ public class ScsTelefonosPersonaJGBean extends MasterBean{
 	
 	/* Variables */ 
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3341288524766939785L;
 	private Integer idInstitucion;
 	private Integer idPersona;
 	private Integer idTelefono;

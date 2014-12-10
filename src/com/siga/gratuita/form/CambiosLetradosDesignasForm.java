@@ -9,6 +9,10 @@ import com.siga.general.MasterForm;
 
 public class CambiosLetradosDesignasForm extends MasterForm {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3459130495615605150L;
 	protected String anio = ScsDesignasLetradoBean.C_ANIO;
 	protected String numero = ScsDesignasLetradoBean.C_NUMERO;
 	protected String idTurno = ScsDesignasLetradoBean.C_IDTURNO;

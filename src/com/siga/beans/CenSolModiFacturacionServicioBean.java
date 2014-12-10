@@ -11,9 +11,13 @@ package com.siga.beans;
 public class CenSolModiFacturacionServicioBean extends MasterBean{
 	
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4892358155942627229L;
 	/* Variables */
 	private Integer idTipoServicios, idServiciosInstitucion, idCuenta, idEstadoSolic; 
-	private Long	idSolicitud, idInstitucion, idPersona, idDireccion, idServicio, idPeticion;
+	private Long	idSolicitud, idInstitucion, idPersona, idServicio, idPeticion;
 	private String 	motivo, fechaAlta;
 	
 	/* Nombre tabla */

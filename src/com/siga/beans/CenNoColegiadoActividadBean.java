@@ -8,6 +8,10 @@ package com.siga.beans;
 
 public class CenNoColegiadoActividadBean extends MasterBean{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2495879153116119044L;
 	/* Variables */
 	private Long 	idPersona;
 	private Integer	idInstitucion;

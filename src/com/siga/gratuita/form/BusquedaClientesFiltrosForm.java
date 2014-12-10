@@ -13,6 +13,12 @@ import com.siga.general.MasterForm;
  */
 public class BusquedaClientesFiltrosForm extends MasterForm {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -5709280793809375419L;
+
+
 	// Metodos Set (Formulario (*.jsp))
 	public void setSustituta (String dato) { 
 		UtilidadesHash.set(this.datos,"Sustituta", dato);

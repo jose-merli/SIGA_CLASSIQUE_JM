@@ -10,13 +10,16 @@
 
 package com.siga.beans;
 
-import java.util.Hashtable;
 import java.util.Vector;
 
 public class ScsPersonaJGBean extends MasterBean{
 	
 	/* Variables */ 
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8386731589938829302L;
 	CenPoblacionesBean poblacion;
 	CenProvinciaBean provincia;
 	Vector<ScsTelefonosPersonaJGBean> telefonos;

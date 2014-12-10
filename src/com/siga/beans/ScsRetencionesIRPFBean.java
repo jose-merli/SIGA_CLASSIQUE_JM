@@ -8,12 +8,15 @@ package com.siga.beans;
  */
 public class ScsRetencionesIRPFBean extends MasterBean {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3407674679050323295L;
 	/* Variables */
 	private Integer idInstitucion;	
 	private Integer idPersona;	
 	private Integer idRetencion;	
 	private String 	fechaInicio,fechaFin;
-	private Integer idPersonaSociedad;
 	
 	/* Nombre tabla */
 	static public String T_NOMBRETABLA = "SCS_RETENCIONESIRPF";

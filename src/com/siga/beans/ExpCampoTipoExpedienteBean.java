@@ -13,6 +13,10 @@ package com.siga.beans;
  */
 public class ExpCampoTipoExpedienteBean extends MasterBean {
     
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 136122857841077546L;
 	public static final String si= "S";
 	public static final String no= "N";
 	public static final String DENUNCIANTE = "pestana.auditoriaexp.denunciante";

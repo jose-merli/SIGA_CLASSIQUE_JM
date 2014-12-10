@@ -5,6 +5,10 @@ import es.satec.siga.util.SigaSequence;
 
 public class GenWebServiceLogBean extends MasterBean {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4615922461259207525L;
 	/* Variables */
 	private SigaSequence idWebServiceLog = new SigaSequence("SEQ_GEN_WEBSERVICE_LOG");
 	private Integer idInstitucion;

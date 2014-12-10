@@ -14,6 +14,10 @@ public class ScsContrariosAsistenciaBean extends MasterBean
 	/*
 	 *  Variables */ 
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4651902534685217801L;
 	private Integer	idInstitucion;
 	private Integer	anio;
 	private Long numero;	

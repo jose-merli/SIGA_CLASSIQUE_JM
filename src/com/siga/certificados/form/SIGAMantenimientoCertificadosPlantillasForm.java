@@ -5,7 +5,11 @@ import org.apache.struts.upload.*;
 
 public class SIGAMantenimientoCertificadosPlantillasForm extends MasterForm
 {
-//    private String modo="";
+/**
+	 * 
+	 */
+	private static final long serialVersionUID = 2862542709226458772L;
+	//    private String modo="";
     private String certificado="";
     private String editable="";
     private String idInstitucion="";

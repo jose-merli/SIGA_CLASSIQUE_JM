@@ -2,6 +2,10 @@ package com.siga.beans;
 
 public class CerEstadoSoliCertifiBean extends MasterBean
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 2626001202380881645L;
 	/* Variables */
 	private Integer idEstadoSolicitudCertificado;
 	private String descripcion;

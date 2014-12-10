@@ -10,6 +10,10 @@ package com.siga.beans;
 
 public class ExpCampoConfBean extends MasterBean {
     
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 8196460649759131308L;
 	//Variables
     private Integer idInstitucion;
 	private Integer idTipoExpediente;

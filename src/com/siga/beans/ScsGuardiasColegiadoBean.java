@@ -14,6 +14,11 @@ package com.siga.beans;
 
 public class ScsGuardiasColegiadoBean extends MasterBean
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -7774848962072929831L;
+
 	//////////////////// ATRIBUTOS DE CLASE ////////////////////
 	/** Nombre de Tabla */
 	static public String T_NOMBRETABLA = "SCS_GUARDIASCOLEGIADO";

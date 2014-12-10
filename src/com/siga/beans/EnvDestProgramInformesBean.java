@@ -11,6 +11,10 @@ public class EnvDestProgramInformesBean extends EnvProgramInformesBean {
     
 	//Variables
     
+/**
+	 * 
+	 */
+	private static final long serialVersionUID = 6193508193445318100L;
 private Long idPersona;
 private String tipoDestinatario=EnvDestinatariosBean.TIPODESTINATARIO_CENPERSONA;
 private Integer idInstitucionPersona;

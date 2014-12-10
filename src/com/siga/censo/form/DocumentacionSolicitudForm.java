@@ -18,6 +18,10 @@ import com.siga.beans.*;
 */
 public class DocumentacionSolicitudForm extends MasterForm {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3547917704869212997L;
 	private String documentosSolicitados="";
 	
 	// Metodos Set (Formulario (*.jsp))

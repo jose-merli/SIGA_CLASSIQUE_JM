@@ -21,9 +21,10 @@ import com.siga.beans.ScsPersonaJGBean;
 
  public class DefinicionRemesas_CAJG_Form extends DefinirEJGForm{
 	 
-	   private String TipoFecha;
-	   private String FechaInicioBuscar;
-	   private String FechaFinBuscar;
+	   /**
+	 * 
+	 */
+	private static final long serialVersionUID = 660321620743286469L;
  		 
 	 
 		public String getIdIncidenciasEnvio() {

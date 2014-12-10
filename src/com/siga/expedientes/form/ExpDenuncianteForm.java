@@ -12,8 +12,10 @@ import com.siga.general.MasterForm;
  */
 public class ExpDenuncianteForm extends MasterForm {
 	
-	private String modo="";
-    private String modal="";
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -1588603086052287117L;
 	private String nombre="";
 	private String primerApellido="";
 	private String segundoApellido="";

@@ -11,6 +11,10 @@ public class ScsListaGuardiasBean extends MasterBean{
 	
 	/* Variables */ 
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 2763855251529026876L;
 	private Integer 	idLista;
 	private String 		nombre;
 	private String 		lugar;

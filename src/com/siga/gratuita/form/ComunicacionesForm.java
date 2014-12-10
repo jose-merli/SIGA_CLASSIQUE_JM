@@ -12,10 +12,11 @@ import com.siga.general.MasterForm;
  *
  */
 public class ComunicacionesForm extends MasterForm{
+
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 7986809121711887046L;
 	String solicitante;
 	String anio;
 	String codigoDesignaNumEJG;

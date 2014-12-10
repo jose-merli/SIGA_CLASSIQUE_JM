@@ -10,6 +10,10 @@ import com.siga.general.MasterForm;
 
 public class MantenimientoProcedimientosForm extends MasterForm {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -5984496713406572334L;
 	private String idProcedimiento = 	"IDPROCEDIMIENTO";
 	private String nombre =	 			"NOMBRE";
 	private String precio =	  			"PRECIO";

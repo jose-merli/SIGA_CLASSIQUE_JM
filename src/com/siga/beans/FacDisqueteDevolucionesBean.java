@@ -8,6 +8,10 @@ package com.siga.beans;
 
 public class FacDisqueteDevolucionesBean extends MasterBean {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 8355144227838465721L;
 	/* Variables */
 	private Integer idInstitucion;
 	private String 	fechaGeneracion, nombreFichero, bancosCodigo;	

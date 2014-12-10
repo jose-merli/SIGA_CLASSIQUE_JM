@@ -4,6 +4,10 @@ import java.util.StringTokenizer;
 
 public class AdmPerfilBean extends MasterBean
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 6383570013738278189L;
 	/* Variables */
 	private String idPerfil;
 	private String descripcion;

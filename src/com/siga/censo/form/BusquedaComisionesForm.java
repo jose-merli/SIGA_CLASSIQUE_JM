@@ -11,12 +11,15 @@ import java.util.List;
 
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.beans.CenDatosCVBean;
-import com.siga.beans.ScsAsistenciasBean;
 import com.siga.general.MasterForm;
 
 public class BusquedaComisionesForm extends MasterForm{
 	
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -9210610350770140676L;
 	String comision="";
 	String cargos="";	
 	String fechaCargo="";

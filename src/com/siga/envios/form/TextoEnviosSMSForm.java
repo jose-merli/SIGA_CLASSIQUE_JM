@@ -10,12 +10,15 @@
 
 package com.siga.envios.form;
 
-import java.util.StringTokenizer;
 import com.siga.general.MasterForm;
 
 public class TextoEnviosSMSForm extends MasterForm
 {
-//  private String modo="";
+/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1756210968198505715L;
+	//  private String modo="";
     private String accion = "";
     private String idInstitucion="";
     private String idEnvio="";

@@ -10,6 +10,10 @@ import com.siga.general.MasterForm;
 */
  public class ListadoSOJEnEJGForm extends MasterForm{
  	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 6492609952154947488L;
 	protected String ejgidInstitucion = "EJGIDINSTITUCION";
 	protected String ejganio = "EJGANIO";
 	protected String ejgnumero = "EJGNUMERO";

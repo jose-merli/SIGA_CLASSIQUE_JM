@@ -4,6 +4,10 @@ package com.siga.gratuita.form;
 import com.siga.general.MasterForm;
 
 public class DatosEconomicosEJGForm extends MasterForm {	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8173125821119731562L;
 	private String anio;
 	private String datoEJG;
 	private String idtipoejg;

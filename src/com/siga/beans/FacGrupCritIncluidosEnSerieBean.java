@@ -7,6 +7,11 @@ package com.siga.beans;
 
 public class FacGrupCritIncluidosEnSerieBean extends MasterBean {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 717307749767159608L;
+
 	/* Variables */
 	private Integer idInstitucion, idGruposCriterios, idInstitucionGrup;
 	

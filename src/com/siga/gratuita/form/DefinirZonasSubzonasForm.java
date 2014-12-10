@@ -11,6 +11,10 @@ import com.siga.general.MasterForm;
 
  public class DefinirZonasSubzonasForm extends MasterForm{	
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2232300809383166362L;
 	// Metodos Set (Formulario (*.jsp))
 	public void setIdZona				(int idzona)				{ this.datos.put(ScsZonaBean.C_IDZONA, Integer.toString(idzona));					}
 	

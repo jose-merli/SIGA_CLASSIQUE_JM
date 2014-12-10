@@ -9,6 +9,10 @@ import com.siga.general.MasterForm;
  */
 public class ParametrosGeneralesForm extends MasterForm {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1517095082055323592L;
 	String idModulo = "";
 	String checkParametrosGenerales = "";
 	String datosModificados = "";

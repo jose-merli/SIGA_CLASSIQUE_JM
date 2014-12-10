@@ -1,8 +1,5 @@
 package com.siga.beans;
 
-import java.util.ArrayList;
-
-import com.siga.gratuita.util.calendarioSJCS.LetradoInscripcion;
 
 /**
  * Bean de la tabla SCS_GRUPOGUARDIACOLEGIADO
@@ -10,6 +7,12 @@ import com.siga.gratuita.util.calendarioSJCS.LetradoInscripcion;
  */
 public class ScsGrupoGuardiaColegiadoBean extends MasterBean
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4955606080585346272L;
+
+
 	/**
 	 *  Nombre de Tabla
 	 */

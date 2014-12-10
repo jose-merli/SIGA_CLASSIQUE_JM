@@ -9,6 +9,10 @@ import java.util.*;
 
 public class DefinirTurnosForm extends MasterForm {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3371453338970997564L;
 	private ArrayList ordenacion = new ArrayList();
 	public static String cod_Alfabetico="1";
 	public static String cod_Antig="2";

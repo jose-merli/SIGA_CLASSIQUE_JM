@@ -19,6 +19,10 @@ import com.siga.general.MasterForm;
  */
 public class CuentasBancariasForm extends MasterForm
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -845130511472345684L;
 	private String incluirRegistrosConBajaLogica;
 	private String IBAN;
 	private String BIC;	

@@ -8,6 +8,11 @@ package com.siga.beans;
 
 public class FacTipoCliIncluidoEnSerieFacBean extends MasterBean {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8841276190103851119L;
+
 	/* Variables */
 	private Integer idInstitucion, idInstitucionGrupo, idGrupo;
 	

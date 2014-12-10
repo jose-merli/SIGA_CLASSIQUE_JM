@@ -11,6 +11,11 @@ package com.siga.beans;
 */
 public class FcsEstadosFacturacionBean extends MasterBean {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -135140211255213590L;
+
 	/* Variables */
 	private Integer idEstadoFacturacion;
 	

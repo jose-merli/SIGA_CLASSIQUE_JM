@@ -23,12 +23,16 @@ package com.siga.beans;
  */
 public class CenNoColegiadoBean extends MasterBean {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -220705274174163402L;
 	/* Variables */
 	private Long idPersona;
 	private Integer idInstitucion,contadorNumReg,contadorNumRegSP=null;
-	private String numeroReg=null, sociedadSJ=null, tipo=null, anotaciones=null, prefijoNumReg=null, sociedadSP=null; 
+	private String sociedadSJ=null, tipo=null, anotaciones=null, prefijoNumReg=null, sociedadSP=null; 
 	private String  sufijoNumReg=null;
-	private String numeroRegSP=null,prefijoNumRegSP=null,sufijoNumRegSP=null;
+	private String prefijoNumRegSP=null,sufijoNumRegSP=null;
 	private String  fecha_constitucion=null;
 	private String  fechafin=null;
 	private String  resena=null;

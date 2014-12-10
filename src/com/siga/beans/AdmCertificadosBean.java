@@ -2,6 +2,10 @@ package com.siga.beans;
 
 public class AdmCertificadosBean extends MasterBean
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 836006522063530566L;
 	/* Variables */
 	private Integer idUsuario;
 	private Integer idInstitucion;

@@ -9,7 +9,11 @@ import com.siga.general.MasterForm;
 
 public class SIGASolicitudesCertificadosForm extends MasterForm
 {
-//    private String modo="";
+/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1524975115704111648L;
+	//    private String modo="";
     private String fechaDesde="";
     private String fechaHasta="";
     private String fechaEmisionDesde="";

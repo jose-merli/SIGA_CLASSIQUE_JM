@@ -14,6 +14,10 @@ import  com.atos.utils.ClsConstants;
  */
 public class GenParametrosBean extends MasterBean {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -7539329589647486088L;
 	/* Variables */
 	private Integer idInstitucion= new Integer(ClsConstants.INSTITUCION_POR_DEFECTO);
 	private String 	modulo, parametro, valor, idRecurso;

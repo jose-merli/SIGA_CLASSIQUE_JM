@@ -4,6 +4,10 @@ import com.siga.general.MasterForm;
 
 public class ColaGuardiasForm extends MasterForm
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4066794656531723669L;
 	//Campos para la tabla de turnos
 	String idPersona = "";
 	String fechaSuscripcion = "";

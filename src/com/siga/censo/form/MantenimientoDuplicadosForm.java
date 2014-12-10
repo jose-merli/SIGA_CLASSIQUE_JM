@@ -9,7 +9,10 @@ public class MantenimientoDuplicadosForm extends MasterForm {
 
 
 
-	private String solBusqueda="", codigo = "";
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1916453132854234795L;
 	String permitirAniadirNuevo= "N";
 	String idPersona =  "";
 	String idInstitucion;

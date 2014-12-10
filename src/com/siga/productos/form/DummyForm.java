@@ -8,4 +8,9 @@ import com.siga.general.MasterForm;
 public class DummyForm extends MasterForm 
 {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 2098073599927972476L;
+
 }

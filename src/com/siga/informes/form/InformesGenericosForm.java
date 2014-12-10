@@ -10,6 +10,10 @@ public class InformesGenericosForm extends MasterForm
 {
 	//datos esta en MasterForm
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 8406341596351566568L;
 	private String idTipoEnvio;
 	//GETTERS
 	public String getIdInstitucion() { return UtilidadesHash.getString(this.datos, "IDINSTITUCION"); }

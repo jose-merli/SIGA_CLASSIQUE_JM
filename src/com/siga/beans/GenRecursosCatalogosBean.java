@@ -3,6 +3,10 @@ package com.siga.beans;
 
 public class GenRecursosCatalogosBean extends MasterBean
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8683738390908746864L;
 	// Variables 
 	private String idRecurso;
 	private String descripcion;

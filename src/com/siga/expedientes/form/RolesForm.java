@@ -14,7 +14,11 @@ import com.siga.general.MasterForm;
  */
 public class RolesForm extends MasterForm {
     
-//    private String modo="";
+/**
+	 * 
+	 */
+	private static final long serialVersionUID = 8608022352334878603L;
+	//    private String modo="";
     private String modal="";
     private String idRol;
 	private String nombre;

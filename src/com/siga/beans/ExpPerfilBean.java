@@ -15,6 +15,10 @@ import java.io.Serializable;
  */
 public class ExpPerfilBean implements Serializable{
     
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 7518058172736282934L;
 	//Variables
 	private String idPerfil;
 	private String nombrePerfil;

@@ -19,6 +19,10 @@ import com.siga.general.MasterForm;
 public class PlantillasForm extends MasterForm{
 	
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -544908153908224122L;
 	private String idInstitucion="";
 	private String idPlantilla="";
 	private String descripcion="";

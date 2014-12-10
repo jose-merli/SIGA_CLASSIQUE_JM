@@ -12,6 +12,10 @@ import com.siga.general.MasterForm;
 public class MantenimientoPrisionForm extends MasterForm {
 	
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -1678528345042809174L;
 	// METODOS SET
 	public void setIdInstitucionPrision(String dato) {
 		UtilidadesHash.set(this.datos, ScsPrisionBean.C_IDINSTITUCION , dato);

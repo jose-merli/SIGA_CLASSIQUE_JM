@@ -7,6 +7,10 @@ package com.siga.beans;
  */
 public class FacSerieFacturacionBancoBean extends MasterBean {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 2171879210785011886L;
 	/* Variables */
 	private Integer idInstitucion, idSerieFacturacion,idSufijo;
 	private String bancos_codigo;

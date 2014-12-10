@@ -10,6 +10,11 @@ package com.siga.beans;
  */
 public class ScsEstadoEJGBean extends MasterBean
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1552169374083397742L;
+
 	//////////////////// ATRIBUTOS DE CLASE ////////////////////
 	// Nombre de Tabla
 	static public String T_NOMBRETABLA = "SCS_ESTADOEJG";

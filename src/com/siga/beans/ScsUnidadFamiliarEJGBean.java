@@ -7,14 +7,16 @@
 package com.siga.beans;
 
 import com.atos.utils.ClsExceptions;
-import com.atos.utils.UsrBean;
-import com.siga.Utilidades.UtilidadesNumero;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.beans.eejg.ScsEejgPeticionesBean;
 import com.siga.gratuita.form.DefinirUnidadFamiliarEJGForm;
 
 public class ScsUnidadFamiliarEJGBean extends MasterBean{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4574052529220173729L;
 	/* Variables */ 
 	ScsPersonaJGBean personaJG;
 	ScsParentescoBean parentesco;

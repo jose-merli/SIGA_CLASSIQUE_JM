@@ -10,6 +10,10 @@ public class ScsTipoDictamenenEJGBean extends MasterBean{
 	
 	/* Variables */ 
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 8968618245113338185L;
 	private Integer idTipoDictamenEJG;		
 	private String 	descripcion;	
 	

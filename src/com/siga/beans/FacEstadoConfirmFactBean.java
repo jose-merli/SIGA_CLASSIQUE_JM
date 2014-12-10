@@ -13,6 +13,10 @@ package com.siga.beans;
 
 public class FacEstadoConfirmFactBean extends MasterBean{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 8296594287189946401L;
 	/* Variables */
 	private Integer idEstado;
 	private String 	alias;	

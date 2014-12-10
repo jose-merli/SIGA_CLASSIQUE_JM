@@ -8,6 +8,10 @@ import com.siga.general.MasterForm;
 
 public class DefinicionRemesaResolucionesCAJGForm extends MasterForm {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 5790479468941009622L;
 	private FormFile file;
 	
 	/**

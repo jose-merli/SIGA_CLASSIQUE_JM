@@ -2,6 +2,10 @@ package com.siga.beans;
 
 public class PCAJGTablasMaestrasBean extends MasterBean
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -6475978534279481391L;
 	/* Variables */
 	private String identificador;
 	private String aliasTabla;

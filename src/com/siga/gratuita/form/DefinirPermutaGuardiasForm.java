@@ -13,6 +13,11 @@ import com.siga.general.MasterForm;
  */
  public class DefinirPermutaGuardiasForm extends MasterForm {	
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -5262947574869852598L;
+
 	// Metodos Set para escribir en una tabla hash datos los campos del formulario.
  	// Hay 1 metodo set por cada campo del formulario.
  	public void setIdInstitucion (String valor)						{ this.datos.put("IDINSTITUCION",valor); 					}

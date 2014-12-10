@@ -11,6 +11,10 @@ public class ScsOrdenacionColasBean extends MasterBean{
 	
 	/* Variables */ 
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 7136782690211247848L;
 	private Integer		idOrdenacionColas;
 	private Integer		alfabeticoApellidos;
 	private Integer		fechaNacimiento;

@@ -3,6 +3,10 @@ package com.siga.censo.form;
 import com.siga.general.form.FicheroForm;
 
 public class AnexosCuentasBancariasForm extends FicheroForm {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 289711096591884431L;
 	/* Variables */	
 	private String idInstitucion, idPersona, idCuenta, idMandato, idAnexo, fechaCreacion, usuCreacion, origen, descripcion;
 	private String firmaFecha, firmaLugar;

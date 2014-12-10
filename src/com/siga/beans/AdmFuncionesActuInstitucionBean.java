@@ -14,6 +14,10 @@ package com.siga.beans;
  */
 public class AdmFuncionesActuInstitucionBean extends MasterBean{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 7523772814143382698L;
 	/* Variables */
 	private Integer idFuncion;
 	private String 	automatico;

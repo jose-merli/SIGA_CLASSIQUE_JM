@@ -10,6 +10,10 @@ public class ScsAreaBean extends MasterBean{
 	
 	/* Variables */ 
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 6337698661881290778L;
 	private Integer	idArea;
 	private String	nombre;
 	private String 	contenido;

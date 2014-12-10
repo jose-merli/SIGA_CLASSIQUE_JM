@@ -14,6 +14,10 @@ package com.siga.beans;
  */
 public class CenCuentasBancariasBean extends MasterBean {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1138790802611271432L;
 	/* Variables */
 	private Integer	idInstitucion, idCuenta; 
 	private Long	idPersona;

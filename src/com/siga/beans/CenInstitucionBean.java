@@ -15,6 +15,10 @@ public class CenInstitucionBean extends MasterBean{
 	
 	/* Variables */ 
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 2541501638618322756L;
 	private Integer		idInstitucion;
 	private String		nombre;
 	private Integer		cuentaContableCaja;

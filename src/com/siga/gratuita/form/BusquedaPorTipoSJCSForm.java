@@ -10,6 +10,11 @@ import com.siga.general.MasterForm;
 
 public class BusquedaPorTipoSJCSForm extends MasterForm 
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -9142529944490421854L;
+
 	String tipo, anio, numero, idInstitucion, idTipoEJG, turnoDesigna,idTipoSOJ;
 	
 	private String nif, nombre, apellido1, apellido2;

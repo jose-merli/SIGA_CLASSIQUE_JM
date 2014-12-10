@@ -11,6 +11,11 @@ import com.siga.general.MasterForm;
  */
  public class SolicitudRetencionForm extends MasterForm{	
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -6023721924419934297L;
+
 	// Metodos Set (Formulario (*.jsp))
  	/**
 	 * Almacena en la Hashtable el identificador de una retención "idretencion" 

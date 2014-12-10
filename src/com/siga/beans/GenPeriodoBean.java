@@ -2,6 +2,10 @@ package com.siga.beans;
 
 public class GenPeriodoBean extends MasterBean
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 2015528742999556588L;
 	// Campos 
 	private Integer	idPeriodo;
 	private String	nombre;

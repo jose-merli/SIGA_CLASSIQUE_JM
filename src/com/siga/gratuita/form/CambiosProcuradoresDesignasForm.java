@@ -15,6 +15,10 @@ import com.siga.general.MasterForm;
 
 public class CambiosProcuradoresDesignasForm extends MasterForm {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3528160730663753375L;
 	protected String anio = ScsDesignasProcuradorBean.C_ANIO;
 	protected String numero = ScsDesignasProcuradorBean.C_NUMERO;
 	protected String idTurno = ScsDesignasProcuradorBean.C_IDTURNO;

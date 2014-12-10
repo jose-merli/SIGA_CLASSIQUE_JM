@@ -12,6 +12,11 @@ import com.siga.general.MasterForm;
  */
  public class DefinirListaGuardiasForm extends MasterForm{	
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 7453953831310816463L;
+
 	// Metodos Set para escribir en una tabla hash datos los campos del formulario.
  	// Hay 1 metodo set por cada campo del formulario.
  	public void setListaGuardias (String lista)			{ this.datos.put("LISTAGUARDIAS",lista); 	 		}

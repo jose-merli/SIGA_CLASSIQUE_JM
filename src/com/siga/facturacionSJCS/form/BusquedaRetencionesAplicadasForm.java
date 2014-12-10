@@ -8,6 +8,10 @@ import com.siga.general.MasterForm;
 public class BusquedaRetencionesAplicadasForm extends MasterForm 
 {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -39674884267696144L;
 	String idInstitucion;
 	String idPersona;
 	String idCobro;

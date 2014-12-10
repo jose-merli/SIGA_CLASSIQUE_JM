@@ -1,12 +1,9 @@
 package com.siga.administracion.form;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.struts.upload.FormFile;
-import org.json.JSONArray;
 
-import com.atos.utils.ClsConstants;
 import com.atos.utils.UsrBean;
 import com.siga.administracion.SIGAConstants;
 import com.siga.beans.AdmInformeBean;
@@ -20,6 +17,10 @@ import com.siga.tlds.FilaExtElement;
 
 public class InformeForm extends MasterForm {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4031392071771728156L;
 	private String idPlantilla;
 	private String descripcion;
 	private String alias;

@@ -12,6 +12,11 @@ package com.siga.beans;
  */
 public class ScsIncompatibilidadGuardiasBean extends MasterBean
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3706356274826388560L;
+
 	////////// ATRIBUTOS //////////
 	//Tabla
 	static public String T_NOMBRETABLA = "SCS_INCOMPATIBILIDADGUARDIAS";

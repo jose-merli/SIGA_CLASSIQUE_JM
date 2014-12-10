@@ -10,6 +10,10 @@ public class ScsComisariaBean extends MasterBean{
 	
 	/* Variables */ 
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4534041906354600903L;
 	private Integer	idInstitucion, idComisaria;
 	private String	nombre=null, direccion=null, codigoPostal=null, idProvincia=null, idPoblacion=null, 
 					telefono1=null, telefono2=null, fax1=null;

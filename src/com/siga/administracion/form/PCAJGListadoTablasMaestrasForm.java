@@ -4,6 +4,11 @@ import com.siga.general.MasterForm;
 
 public class PCAJGListadoTablasMaestrasForm extends MasterForm {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 2074199132622069268L;
+
 	private String modal;
 
 	private String identificador;

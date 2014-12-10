@@ -14,6 +14,10 @@ package com.siga.beans;
  */
 public class ScsAcreditacionBean extends MasterBean {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2252933701928210709L;
 	/* Variables */	
 	private String 	descripcion;
 	private Integer idAcreditacion, idTipoAcreditacion;

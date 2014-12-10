@@ -10,6 +10,11 @@ public class ScsMateriaJurisdiccionBean extends MasterBean{
 	
 	/* Variables */ 
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 2780379663529844179L;
+
 	private Integer	idInstitucion, idArea, idMateria, idJurisdiccion;
 	
 	/* Nombre de Tabla*/

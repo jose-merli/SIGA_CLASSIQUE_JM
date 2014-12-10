@@ -13,6 +13,10 @@ import com.siga.general.MasterForm;
 
 public class ContrariosEjgForm extends MasterForm {
 			
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4912116237632595073L;
 	private Integer anio, numero, idTipoEJG;
 	private String idPersona,idInstitucion;
 	

@@ -21,6 +21,10 @@ import com.siga.general.MasterForm;
 public class MantenimientoProductosForm extends MasterForm{
 	
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4925552404461230742L;
 	private String producto="";
 	private String tipoProducto="";	
 	private String categoriaProducto="";

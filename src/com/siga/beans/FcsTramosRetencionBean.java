@@ -1,8 +1,6 @@
 package com.siga.beans;
 
-import com.atos.utils.GstDate;
 import com.siga.Utilidades.UtilidadesNumero;
-import com.siga.censo.form.BajasTemporalesForm;
 import com.siga.facturacionSJCS.form.TramosRetencionForm;
 
 /**
@@ -14,6 +12,10 @@ import com.siga.facturacionSJCS.form.TramosRetencionForm;
 
 public class FcsTramosRetencionBean extends MasterBean{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2132893628922154800L;
 	/**
 	 *  FCS_TRAMOSRETENCION
 	 *  (

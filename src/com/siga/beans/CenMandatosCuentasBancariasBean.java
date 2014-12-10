@@ -7,6 +7,10 @@ import com.siga.censo.form.MandatosCuentasBancariasForm;
  */
 public class CenMandatosCuentasBancariasBean extends MasterBean {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -5692221111788186257L;
 	/* Variables */	
 	private String idInstitucion, idPersona, idCuenta, idMandato, tipoMandato, fechaCreacion, usuCreacion, refMandatoSepa, tipoPago, esquema, autorizacionB2B;
 	private String acreedorTipoId, acreedorId, acreedorNombre, acreedorDomicilio, acreedorCodigoPostal, acreedorIdPais, acreedorPais, acreedorIdProvincia, acreedorProvincia, acreedorIdPoblacion, acreedorPoblacion;

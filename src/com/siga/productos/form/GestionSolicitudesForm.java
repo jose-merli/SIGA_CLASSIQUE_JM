@@ -17,6 +17,11 @@ import com.siga.Utilidades.UtilidadesHash;
 public class GestionSolicitudesForm extends MasterForm 
 {
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 6952034259865416484L;
+
+	/**
 	 * @param buscarFechaDesde The buscarFechaDesde to set.
 	 */
 	public void setBuscarFechaDesde(String buscarFechaDesde) {

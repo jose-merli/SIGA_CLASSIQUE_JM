@@ -15,7 +15,11 @@ import com.siga.general.MasterForm;
 public class CampoTipoExpedienteForm extends MasterForm {
     
     
-//    private String modo="";
+/**
+	 * 
+	 */
+	private static final long serialVersionUID = -5512098832037243730L;
+	//    private String modo="";
     private String modal="";
     //private boolean fecha;
     private boolean nexpDisciplinario;

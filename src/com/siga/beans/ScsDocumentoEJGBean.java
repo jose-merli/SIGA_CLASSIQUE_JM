@@ -13,6 +13,10 @@ package com.siga.beans;
  * @author nuria.rgonzalez 
  */
 public class ScsDocumentoEJGBean extends MasterBean{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 764644143035061203L;
 	/* Variables */
 	private String 	idInstitucion,idTipoDocumentoEJG,idDocumentoEJG,abreviatura,descripcion;
 	private String  codigoExt;

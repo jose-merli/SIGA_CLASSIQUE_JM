@@ -14,6 +14,10 @@ package com.siga.beans;
  */
 public class ExpTiposAnotacionesBean extends MasterBean {
     
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1848554058644132656L;
 	//Variables
 	private Integer idTipoAnotacion;
 	private String nombre;

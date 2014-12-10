@@ -13,6 +13,10 @@ public class GenRecursosBean extends MasterBean{
 	
 	/* Variables */ 
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 782544465536198701L;
 	private String idRecurso;
 	private String descripcion;
 	private Integer error;

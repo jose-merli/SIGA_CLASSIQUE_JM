@@ -8,6 +8,11 @@ package com.siga.beans;
 
 public class CenColaCambioLetradoBean extends MasterBean
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -5419147235277630471L;
+
 	/* Nombre tabla */
 	static public String T_NOMBRETABLA = "CEN_COLACAMBIOLETRADO";
 	

@@ -4,6 +4,10 @@ import com.siga.general.MasterForm;
 
 public class DatosRegTelForm extends MasterForm {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4528020964872260832L;
 	private String identificadorDs;
 	private String titleDs;
 	private String posicionDs;

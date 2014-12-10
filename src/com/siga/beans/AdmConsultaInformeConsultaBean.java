@@ -5,6 +5,10 @@ package com.siga.beans;
  */
 public class AdmConsultaInformeConsultaBean extends MasterBean
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 5220176699860813517L;
 	// Atributos
 	private Integer idInstitucion;
 	private String idPlantilla;

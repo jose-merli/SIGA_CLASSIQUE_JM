@@ -12,7 +12,11 @@ public class ExpSolicitudBorradoBean extends MasterBean {
 
 	//Variables
 	
-    private Integer idSolicitud;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -8267719312566254806L;
+	private Integer idSolicitud;
 	private String motivo;
 	private Integer idEstadoSolic;
 	private Integer idPersona;

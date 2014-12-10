@@ -9,12 +9,15 @@
  */
 package com.siga.beans;
 
-import java.util.Hashtable;
 
 /**
  * @author nuria.rgonzalez 
  */
 public class CenDatosCVBean extends MasterBean{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -5489468127852490422L;
 	/* Variables */
 	private Integer idInstitucion, idCV, idTipoCV,idInstitucion_subt1,idInstitucion_subt2,idInstitucionCargo;
 	private Long 	idPersona, creditos;

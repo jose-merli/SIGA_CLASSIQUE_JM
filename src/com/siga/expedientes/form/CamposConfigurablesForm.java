@@ -15,6 +15,10 @@ import com.siga.general.MasterForm;
  */
 public class CamposConfigurablesForm extends MasterForm {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 7352724184046297708L;
 	private List<GenTipoCampoBean> tiposcampo;
 	private Integer tipo;
 	private Integer maxLong;

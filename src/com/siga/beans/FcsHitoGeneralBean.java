@@ -6,6 +6,10 @@ package com.siga.beans;
 
 public class FcsHitoGeneralBean extends MasterBean {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -6018967338672916302L;
 	/* Variables */
 	private Integer  idHitoGeneral;
 	private String descripcion;

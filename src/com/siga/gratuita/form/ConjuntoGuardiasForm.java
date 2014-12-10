@@ -11,11 +11,10 @@ import com.siga.gratuita.beans.ScsConjuntoGuardiasBean;
  *
  */
 public class ConjuntoGuardiasForm extends MasterForm {
-
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 5522919478862236192L;
 	private String idConjuntoGuardia;
 	private String idInstitucion;
 	private String descripcion;

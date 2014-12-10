@@ -12,6 +12,10 @@ import com.siga.general.MasterForm;
 
 public class DatosGeneralesPagoForm extends MasterForm {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1275551087375057910L;
 	static public final String accion = "ACCION";
 	static public final String nombre = "NOMBRE";
 	static public final String abreviatura = "ABREVIATURA";

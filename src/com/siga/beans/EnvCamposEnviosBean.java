@@ -2,6 +2,10 @@ package com.siga.beans;
 
 public class EnvCamposEnviosBean extends MasterBean
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4752850470910899022L;
 	/* Variables */
 	private Integer idInstitucion;
 	private Integer idEnvio;

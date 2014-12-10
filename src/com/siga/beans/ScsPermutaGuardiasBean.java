@@ -11,6 +11,10 @@ import com.siga.gratuita.form.DefinirPermutaGuardiasForm;
 
 public class ScsPermutaGuardiasBean extends MasterBean{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -9107032814828777133L;
 	/* Variables */ 
 	private Integer 	idInstitucion;
 	private Integer 	numero;
@@ -34,7 +38,6 @@ public class ScsPermutaGuardiasBean extends MasterBean{
 	private String 		fechaInicio_Confirmador;
 	private String 		motivos_Confirmador;
 	private String 		fechaConfirmacion;
-	private String      nombrePermutaConfirmador;		
 	private Integer		idPermutaCabeceraConfirmador;
 	
 	/* Nombre de Tabla */

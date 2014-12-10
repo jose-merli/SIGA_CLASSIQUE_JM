@@ -13,6 +13,10 @@ public class ScsContrariosDesignaBean extends MasterBean{
 	/*
 	 *  Variables */ 
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2809279988202988994L;
 	private Integer	idInstitucion;
 	private Integer	idTurno;
 	private Integer idProcurador;

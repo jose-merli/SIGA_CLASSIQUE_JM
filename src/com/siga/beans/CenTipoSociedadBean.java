@@ -9,6 +9,10 @@ import com.siga.Utilidades.AjaxXMLBuilderValueAnnotation;
  */
 @AjaxXMLBuilderAnnotation
 public class CenTipoSociedadBean extends MasterBean{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -5316070090055607474L;
 	/* Variables */
 	private String letraCif;
 	private String 	descripcion;	

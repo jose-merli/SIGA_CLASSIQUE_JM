@@ -13,6 +13,10 @@ package com.siga.beans;
 
 public class CenTiposSeguroBean extends MasterBean {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 7655202009703411771L;
 	/* Variables */
 	private Integer idTipoSeguro;
 	private String 	nombre;

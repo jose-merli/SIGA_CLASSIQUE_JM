@@ -11,6 +11,11 @@ package com.siga.beans;
  */
 public class FacMotivoDevolucionBean extends MasterBean {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 6423928711564193463L;
+
 	/* Variables */	
 	private String 	idMotivo, codigo, nombre;	
 	

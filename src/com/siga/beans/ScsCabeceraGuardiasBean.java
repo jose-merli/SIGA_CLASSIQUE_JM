@@ -12,6 +12,10 @@ public class ScsCabeceraGuardiasBean extends MasterBean{
 	
 	/* Variables */ 
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2060401135774419509L;
 	public Integer	idInstitucion;
 	public Integer	idTurno ;
 	public Integer	idGuardia;

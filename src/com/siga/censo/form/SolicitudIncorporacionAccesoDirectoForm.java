@@ -13,4 +13,9 @@ import com.siga.general.MasterForm;
  */
 public class SolicitudIncorporacionAccesoDirectoForm extends MasterForm {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4584701499637892715L;
+
 }

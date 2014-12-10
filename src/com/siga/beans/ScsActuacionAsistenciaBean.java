@@ -16,6 +16,10 @@ import com.siga.gratuita.form.ActuacionAsistenciaForm;
  */
 public class ScsActuacionAsistenciaBean extends MasterBean {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4250668439202802992L;
 	/* Variables */
 	private String  fecha, diaDespues, descripcionBreve, lugar, numeroAsunto;
 	private String observaciones, observacionesJustificacion, validada;

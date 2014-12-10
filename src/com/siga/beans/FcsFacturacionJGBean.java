@@ -17,6 +17,10 @@ import com.siga.Utilidades.AjaxXMLBuilderValueAnnotation;
 @AjaxXMLBuilderAnnotation 
 public class FcsFacturacionJGBean extends MasterBean {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -6464224178893166777L;
 	/* Variables */
 	private Integer idInstitucion, idFacturacion, idFacturacion_regulariza;
 	private Double importeTotal, importeOficio, importeGuardia, importeSOJ, importeEJG;

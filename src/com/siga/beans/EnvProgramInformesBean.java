@@ -11,6 +11,10 @@ public class EnvProgramInformesBean extends EnvProgramBean {
     
 	//Variables
     
+/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3124306428051513883L;
 private String claves;
 private String plantillas;
 

@@ -9,6 +9,10 @@ package com.siga.beans;
 public class FcsPagoGrupoFactHitoBean extends MasterBean{
 	
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 8223171840113990221L;
+	/**
 	 *  Variables 
 	 * */ 
 	

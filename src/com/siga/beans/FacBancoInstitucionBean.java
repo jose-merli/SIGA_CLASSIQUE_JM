@@ -9,6 +9,10 @@ package com.siga.beans;
 
 public class FacBancoInstitucionBean extends MasterBean {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -5350638827504206894L;
 	/* Variables */
 	private Integer idInstitucion, idsufijosjcs;
 	private String 	bancosCodigo, codBanco, codSucursal, numeroCuenta, fechaBaja, asientoContable, digitoControl, sjcs, iban;	

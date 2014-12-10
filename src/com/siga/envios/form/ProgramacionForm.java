@@ -12,7 +12,11 @@ import com.siga.general.MasterForm;
  */
 public class ProgramacionForm extends MasterForm {
 	
-//    private String modo="";
+/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3507447136101298456L;
+	//    private String modo="";
     private String idEnvio;
 	private String fechaProgramada;
 	private String horas;

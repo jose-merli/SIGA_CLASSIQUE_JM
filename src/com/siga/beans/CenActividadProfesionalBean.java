@@ -6,10 +6,13 @@ package com.siga.beans;
 
 public class CenActividadProfesionalBean extends MasterBean{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 7407202368877454182L;
 	/* Variables */
 	private Integer idActividadProfesional;
 	private String 	descripcion,codigoext;
-	private Integer idInstitucion;
 	
 	/* Nombre tabla */
 	static public String T_NOMBRETABLA = "CEN_ACTIVIDADPROFESIONAL";

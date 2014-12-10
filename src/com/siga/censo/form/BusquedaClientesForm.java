@@ -13,6 +13,10 @@ import com.siga.general.MasterForm;
  * @version 30/01/2006 (david.sanchezp): modificacion de las busquedas por el tipo
  */
  public class BusquedaClientesForm extends MasterForm {	
+		/**
+	 * 
+	 */
+	private static final long serialVersionUID = 325504173868070974L;
 		private String codigo="";
 		private String idInstitucion;
 		private String idInstitucionCargo;

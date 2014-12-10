@@ -18,6 +18,10 @@ import com.siga.general.MasterForm;
 public class MantenimientoFacturacionForm extends MasterForm {
 	
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -1377897682410311676L;
 	String borrarFact = null;
 	
 	public String getBorrarFact() {

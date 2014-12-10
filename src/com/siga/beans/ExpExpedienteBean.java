@@ -18,6 +18,10 @@ public class ExpExpedienteBean extends MasterBean {
 
 	//Variables
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -6300869643947195711L;
 	private Integer idInstitucion;
 	private Integer idInstitucion_tipoExpediente;
 	private Integer idTipoExpediente;

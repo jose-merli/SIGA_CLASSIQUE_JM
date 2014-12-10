@@ -3,16 +3,13 @@ package com.siga.envios.form;
 import java.util.List;
 import java.util.StringTokenizer;
 
-import org.redabogacia.sigaservices.app.AppConstants.EEJG_ESTADO;
 import org.redabogacia.sigaservices.app.autogen.model.ScsDesigna;
 import org.redabogacia.sigaservices.app.autogen.model.ScsEjg;
 
-import com.atos.utils.ClsConstants;
 import com.siga.administracion.SIGAConstants;
 import com.siga.beans.EnvEnviosAdm;
 import com.siga.beans.EnvEstadoEnvioAdm;
 import com.siga.beans.EnvPlantillasEnviosBean;
-import com.siga.beans.ScsComisariaBean;
 import com.siga.general.MasterForm;
 import com.siga.tlds.FilaExtElement;
 
@@ -25,6 +22,10 @@ public class DefinirEnviosForm extends MasterForm
 {
 	// Atributos
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 617318168626546402L;
 	List<ScsDesigna> designas;
 	List<ScsEjg> ejgs;
 	private String tipoFecha = EnvEnviosAdm.FECHA_CREACION;

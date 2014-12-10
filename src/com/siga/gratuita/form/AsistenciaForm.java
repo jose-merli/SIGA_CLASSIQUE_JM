@@ -3,14 +3,17 @@ package com.siga.gratuita.form;
 /**
  * @author jorgeta
  */
-import com.siga.beans.CenColegiadoBean;
 import com.siga.beans.CenPersonaBean;
 import com.siga.beans.ScsAsistenciasBean;
 import com.siga.general.MasterForm;
 
 public class AsistenciaForm extends MasterForm 
 {
-	  String idInstitucion;          
+	  /**
+	 * 
+	 */
+	private static final long serialVersionUID = 4508119498375255480L;
+	String idInstitucion;          
 	  String anio;                   
 	  String numero;                  
 	  String fechaHora;               

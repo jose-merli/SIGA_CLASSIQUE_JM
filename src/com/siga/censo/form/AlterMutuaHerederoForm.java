@@ -11,6 +11,10 @@ import com.siga.general.MasterForm;
  */
 public class AlterMutuaHerederoForm extends MasterForm {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2040497133683055438L;
 	private String nombre;
     private String apellidos;
     private String tipoIdentificador;

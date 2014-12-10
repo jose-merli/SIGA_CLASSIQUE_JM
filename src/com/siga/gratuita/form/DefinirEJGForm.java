@@ -28,7 +28,11 @@ import com.siga.censo.form.DatosRegTelForm;
 	 * Metodos SET
 	 */
  	
-	 String anioCAJG;
+	 /**
+	 * 
+	 */
+	private static final long serialVersionUID = -8606339453928926812L;
+	String anioCAJG;
 	 String numeroCAJG;
 	 
 	 //Crear nuevos campos en la pestaña de impugnaciones del EJG

@@ -14,7 +14,11 @@ import com.siga.general.MasterForm;
  */
 public class NuevoExpedienteForm extends MasterForm {
 	
-//    private String modo="";
+/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4825920037924492159L;
+	//    private String modo="";
     private String modal="";
     private String idInstitucion="";
     private String idTipoExpediente="";

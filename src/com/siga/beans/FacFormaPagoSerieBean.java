@@ -2,6 +2,10 @@ package com.siga.beans;
 
 public class FacFormaPagoSerieBean extends MasterBean{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -1037380433252326525L;
 	/* Variables */
 	private Integer idInstitucion;
 	private Integer idSerieFacturacion;

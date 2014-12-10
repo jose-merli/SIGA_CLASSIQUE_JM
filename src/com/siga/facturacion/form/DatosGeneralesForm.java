@@ -9,14 +9,17 @@
 
 package com.siga.facturacion.form;
 
-import java.util.Vector;
-
-import com.siga.general.MasterForm;
 import com.siga.Utilidades.UtilidadesHash;
-import com.siga.beans.*;
+import com.siga.beans.FacPlantillaFacturacionBean;
+import com.siga.beans.FacSerieFacturacionBean;
+import com.siga.general.MasterForm;
 
 public class DatosGeneralesForm extends MasterForm {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -5641929929812522853L;
 	private String idPlantillaMail, idTipoPlantillaMail, idSerieFacturacionPrevia;
 	private String[] formaPagoAutomática;
 

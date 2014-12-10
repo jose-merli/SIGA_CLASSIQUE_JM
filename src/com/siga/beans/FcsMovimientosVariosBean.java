@@ -6,6 +6,10 @@ package com.siga.beans;
 
 public class FcsMovimientosVariosBean extends MasterBean {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 8394960345283333072L;
 	/* Variables */
 	private Integer idInstitucion;
 	private Integer idMovimiento;

@@ -16,6 +16,10 @@ import com.siga.general.MasterForm;
  * Window - Preferences - Java - Code Style - Code Templates
  */
 public class SIGAAuditoriaAdminForm extends MasterForm{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 6553158584964252100L;
 	//Hashtable data;
 	private String direccionIP = null;
 	private String usuario = null;

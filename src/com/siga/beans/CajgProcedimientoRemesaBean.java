@@ -2,6 +2,10 @@ package com.siga.beans;
 
 public class CajgProcedimientoRemesaBean extends MasterBean {
 	 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -287135441984400607L;
 	private Integer idInstitucion;
 	private String consulta;
 	private Integer cabecera;

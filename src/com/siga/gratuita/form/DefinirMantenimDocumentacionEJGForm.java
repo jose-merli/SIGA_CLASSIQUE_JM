@@ -14,6 +14,11 @@ import com.siga.general.MasterForm;
 */
 public class DefinirMantenimDocumentacionEJGForm extends MasterForm{
 
+/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3533534022626693456L;
+
 public String getDescripcion() {									return UtilidadesHash.getString(this.datos,ScsTipoDocumentoEJGBean.C_DESCRIPCION);}
 
 public void setDescripcion(String descripcion) {					UtilidadesHash.set(this.datos, ScsTipoDocumentoEJGBean.C_DESCRIPCION, descripcion);}

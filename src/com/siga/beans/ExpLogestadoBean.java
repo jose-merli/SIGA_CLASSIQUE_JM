@@ -12,6 +12,10 @@ public class ExpLogestadoBean extends MasterBean {
 	
 //	Variables
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -1213379797299316985L;
 	private Integer idInstitucion;
 	private Integer idInstitucion_tipoExpediente;
 	private Integer idTipoExpediente;

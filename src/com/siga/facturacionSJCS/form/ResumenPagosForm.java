@@ -19,6 +19,11 @@ public class ResumenPagosForm extends MasterForm{
 
 	
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -1256051127537632653L;
+
 	public void setIdPersona(Long dato) {
 		UtilidadesHash.set(this.datos, "IDPERSONA", dato);
 	}

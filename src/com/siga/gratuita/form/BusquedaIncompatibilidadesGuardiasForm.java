@@ -7,6 +7,10 @@ import com.siga.general.MasterForm;
 
 public class BusquedaIncompatibilidadesGuardiasForm extends MasterForm 
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -5432598527210394530L;
 	////////// Atributos //////////
 	//Propios del Bean
 	private String idInstitucion			= "idInstitucion";

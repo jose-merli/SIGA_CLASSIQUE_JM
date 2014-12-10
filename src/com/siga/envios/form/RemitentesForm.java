@@ -12,7 +12,11 @@ import com.siga.general.MasterForm;
  */
 public class RemitentesForm extends MasterForm {
 	
-//    private String modo="";
+/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3452618501989158570L;
+	//    private String modo="";
     private String modal="";
     private String accion = "";
     private String idEnvio;

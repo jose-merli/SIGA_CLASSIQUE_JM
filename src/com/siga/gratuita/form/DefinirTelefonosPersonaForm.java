@@ -13,6 +13,11 @@ import com.siga.general.MasterForm;
 */
  public class DefinirTelefonosPersonaForm extends MasterForm{	
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 628847348934151131L;
+
 	// Metodos Set (Formulario (*.jsp))
  	/**
 	 * Almacena en la Hashtable el identificador de la persona 

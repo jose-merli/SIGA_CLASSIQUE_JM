@@ -16,6 +16,10 @@ import com.siga.general.MasterForm;
 
 public class DefinirGuardiasTurnosForm extends MasterForm
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1368781336973383621L;
 	//////////////////// ATRIBUTOS DE CLASE ////////////////////
 	//Ordenacion
 	public static int ORDEN_ALFABETICO = 1;

@@ -17,7 +17,11 @@ import org.apache.struts.action.ActionForm;
 
 public class SIGAConforCertificateForm extends ActionForm {
 
-  Hashtable reg = null;
+  /**
+	 * 
+	 */
+	private static final long serialVersionUID = 3530296518087197829L;
+Hashtable reg = null;
 
   public Hashtable getData(){
 	  return reg;

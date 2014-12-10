@@ -16,6 +16,10 @@ import com.siga.general.MasterForm;
 
 public class ContrariosDesignasForm extends MasterForm {
 			
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -7932861337430943187L;
 	private String idPaisAux="idPaisAux";
 	private String idProvinciaAux="idProvinciaAux";
 	private String idPoblacionAux="idPoblacionAux";

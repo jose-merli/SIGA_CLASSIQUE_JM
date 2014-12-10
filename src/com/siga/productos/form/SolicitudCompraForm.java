@@ -21,6 +21,10 @@ import com.siga.general.MasterForm;
  */
 public class SolicitudCompraForm extends MasterForm{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -6098448458214279668L;
 	Integer idInstitucionPresentador;
 
 	public Integer getIdInstitucionPresentador() {

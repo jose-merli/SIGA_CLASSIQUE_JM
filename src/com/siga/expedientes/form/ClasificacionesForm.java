@@ -14,7 +14,11 @@ import com.siga.general.MasterForm;
  */
 public class ClasificacionesForm extends MasterForm {
     
-//    private String modo="";
+/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4066938454963458183L;
+	//    private String modo="";
     private String modal="";
     private String idClasificacion;
 	private String nombre;

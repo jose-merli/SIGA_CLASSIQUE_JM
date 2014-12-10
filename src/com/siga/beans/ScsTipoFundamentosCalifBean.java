@@ -4,6 +4,10 @@ public class ScsTipoFundamentosCalifBean extends MasterBean{
 	
 	/* Variables */ 
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -6179897970821679398L;
 	private Integer idFundamentoCalif;		
 	private String  codigo;		
 	private String 	descripcion;

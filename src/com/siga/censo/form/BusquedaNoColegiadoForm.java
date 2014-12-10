@@ -2,8 +2,6 @@ package com.siga.censo.form;
 
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
-
 import com.siga.censo.vos.NoColegiadoVO;
 import com.siga.comun.form.BaseForm;
 import com.siga.comun.vos.Vo;

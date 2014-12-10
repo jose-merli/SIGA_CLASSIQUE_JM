@@ -9,6 +9,11 @@ import com.siga.general.MasterForm;
 public class InformesFacturacionMultipleForm extends MasterForm {
 
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -9201527814554625140L;
+
+	/**
 	 * @param valor
 	 */
 	public void setIdInstitucion(String valor){

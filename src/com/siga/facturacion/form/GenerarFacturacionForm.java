@@ -15,4 +15,9 @@ import com.siga.general.MasterForm;
  */
 public class GenerarFacturacionForm extends MasterForm{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 787417796966071576L;
+
 }

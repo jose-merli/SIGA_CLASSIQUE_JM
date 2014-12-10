@@ -11,6 +11,10 @@ public class ScsMateriaBean extends MasterBean{
 	
 	/* Variables */ 
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 8304971211514321160L;
 	private Integer		idArea;
 	private Integer		idMateria;
 	private String		nombre;

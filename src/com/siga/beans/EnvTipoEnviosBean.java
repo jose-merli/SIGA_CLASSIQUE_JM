@@ -5,17 +5,15 @@
  */
 package com.siga.beans;
 
-import java.util.Collection;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.siga.Utilidades.AjaxXMLBuilderAnnotation;
-import com.siga.Utilidades.AjaxXMLBuilderNameAnnotation;
-import com.siga.Utilidades.AjaxXMLBuilderValueAnnotation;
-
 public class EnvTipoEnviosBean extends MasterBean {
     
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -1559064362655841584L;
 	//Variables
     private String nombre;
 	private Integer idTipoEnvios;

@@ -15,6 +15,11 @@ import com.siga.general.MasterForm;
 	// Metodos Set (Formulario (*.jsp))
  	
  	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 255831222685103053L;
+
+	/**
 	 * Almacena en la Hashtable el identificador de un grupo de facturación 
 	 * 
 	 * @param Identificador grupo facturación. 

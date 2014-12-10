@@ -13,6 +13,10 @@ import com.siga.general.form.FicheroForm;
  * Maneja el formulario que mantiene la tabla SCS_DefinirDocumentacionEJG
  */
 public class DefinirDocumentacionEJGForm extends FicheroForm {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3910932651213750364L;
 	private FormFile theFile;
 	private String borrarFichero;
 	private String  fechaLimite;

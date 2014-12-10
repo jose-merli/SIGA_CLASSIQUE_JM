@@ -19,7 +19,12 @@ import com.siga.general.MasterForm;
  */
 public class ComponentesJuridicosForm extends MasterForm{
 
-//	metodos set de los campos del formulario
+/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4980293669127659547L;
+
+	//	metodos set de los campos del formulario
 	public void setModo(String modo) {
 		UtilidadesHash.set(this.datos, "MODO", modo);		
 	}

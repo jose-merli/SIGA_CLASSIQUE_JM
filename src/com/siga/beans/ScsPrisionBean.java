@@ -10,6 +10,10 @@ public class ScsPrisionBean extends MasterBean{
 	
 	/* Variables */ 
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2409192501020362582L;
 	private Integer	idInstitucion, idPrision;
 	private String	nombre=null, direccion=null, codigoPostal=null, idProvincia=null, idPoblacion=null, 
 					telefono1=null, telefono2=null, fax1=null;

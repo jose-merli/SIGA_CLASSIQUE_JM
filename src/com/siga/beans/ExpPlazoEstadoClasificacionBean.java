@@ -13,6 +13,10 @@ package com.siga.beans;
  */
 public class ExpPlazoEstadoClasificacionBean extends MasterBean {
     
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 8418940429425015864L;
 	//Variables
     private Integer idFase;
     private Integer idEstado;	

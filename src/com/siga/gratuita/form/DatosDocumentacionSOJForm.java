@@ -16,6 +16,11 @@ import com.siga.general.MasterForm;
 	// Metodos Set (Formulario (*.jsp))
 
  	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3344923848460390045L;
+
+	/**
 	 * Almacena en la Hashtable el registro de entrada de un SOJ 
 	 * 
 	 * @param reg. entrada SOJ 

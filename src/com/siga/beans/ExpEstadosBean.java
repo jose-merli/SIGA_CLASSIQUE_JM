@@ -13,6 +13,10 @@ package com.siga.beans;
  */
 public class ExpEstadosBean extends MasterBean {
     
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4279726757302739600L;
 	//Variables
 	private Integer idEstado;
 	private String nombre;

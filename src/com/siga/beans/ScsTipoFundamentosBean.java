@@ -4,6 +4,10 @@ public class ScsTipoFundamentosBean extends MasterBean{
 	
 	/* Variables */ 
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 7525950246256343075L;
 	private Integer idFundamento;		
 	private String  codigo;		
 	private String 	descripcion;	

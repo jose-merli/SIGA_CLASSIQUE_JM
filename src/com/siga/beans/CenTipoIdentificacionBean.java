@@ -20,6 +20,10 @@ import com.siga.Utilidades.AjaxXMLBuilderValueAnnotation;
 @AjaxXMLBuilderAnnotation 
 public class CenTipoIdentificacionBean extends MasterBean{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 8698172838257840101L;
 	/* Variables */
 	private Integer idTipoIdentificacion;	
 	private String idTipo;

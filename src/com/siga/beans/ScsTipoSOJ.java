@@ -10,6 +10,10 @@ public class ScsTipoSOJ extends MasterBean{
 	
 	/* Variables */ 
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 5264618926768859170L;
 	private Integer idTipoSOJ;		
 	private String 	descripcion;	
 	

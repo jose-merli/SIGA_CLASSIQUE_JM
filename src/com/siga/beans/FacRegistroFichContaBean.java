@@ -13,7 +13,11 @@ public class FacRegistroFichContaBean extends MasterBean{
 	
 	/* Variables */ 
 	
-    public static final int ESTADO_PROGRAMADO=1;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 865964485034624848L;
+	public static final int ESTADO_PROGRAMADO=1;
     public static final int ESTADO_ENPROCESO=2;
     public static final int ESTADO_TERMINADO=3;
     public static final int ESTADO_ERROR=4;

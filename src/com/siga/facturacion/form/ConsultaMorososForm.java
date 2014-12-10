@@ -6,14 +6,11 @@
 package com.siga.facturacion.form;
 
 
-import java.util.Enumeration;
 import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.struts.action.ActionMapping;
-
-
 
 import com.siga.general.MasterForm;
 
@@ -22,6 +19,10 @@ import com.siga.general.MasterForm;
  */
 public class ConsultaMorososForm extends MasterForm {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -5438365660621741304L;
 	private String fechaDesde = "";
 	private String fechaHasta = "";
 	private String facturasImpagadasDesde = "";

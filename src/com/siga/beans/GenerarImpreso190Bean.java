@@ -20,6 +20,10 @@ package com.siga.beans;
 
 public class GenerarImpreso190Bean extends MasterBean {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1921177992453344616L;
 	/* Variables */	
 	private String 	nombreFichero, idprovincia, telefono, nombre, apellido1, apellido2 ;
 	private Integer idinstitucion, anio; 

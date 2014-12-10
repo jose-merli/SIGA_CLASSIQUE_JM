@@ -4,12 +4,11 @@ import java.util.List;
 
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.GstDate;
-import com.siga.administracion.SIGAConstants;
+import com.siga.Utilidades.UtilidadesHash;
 import com.siga.beans.ScsGuardiasTurnoBean;
 import com.siga.beans.ScsTurnoBean;
 import com.siga.general.MasterForm;
 import com.siga.tlds.FilaExtElement;
-import com.siga.Utilidades.UtilidadesHash;
 
 /**
  * Metodos set y get del formulario del caso de uso de Definir Calendario de Guardias. 
@@ -20,6 +19,10 @@ import com.siga.Utilidades.UtilidadesHash;
  */
 public class DefinirCalendarioGuardiaForm extends MasterForm
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8342756154117709162L;
 	// Atributos
 	// this.datos
 	DefinirPermutaGuardiasForm permutaGuardias;

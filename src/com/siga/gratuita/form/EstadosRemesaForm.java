@@ -17,6 +17,10 @@ import com.siga.general.MasterForm;
  */
  public class EstadosRemesaForm extends MasterForm {
  	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -289929152805193464L;
 	public void setIdInstitucion (String dato) { 
  		try {
  			UtilidadesHash.set(this.datos,"IDINSTITUCION", dato);

@@ -9,6 +9,10 @@ import com.siga.general.MasterForm;
  */
 public class ValidarVolantesGuardiasForm extends MasterForm 
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -9093684676708524344L;
 	public void setIdPersona	(String valor)	{
 		this.datos.put("IdPersona", valor);
 	}

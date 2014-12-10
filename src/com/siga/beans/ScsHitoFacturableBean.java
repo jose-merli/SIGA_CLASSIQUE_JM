@@ -10,6 +10,10 @@ package com.siga.beans;
 public class ScsHitoFacturableBean extends MasterBean{
 	
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -7103051736896367414L;
+	/**
 	 *  Variables */ 
 	
 	private Integer	idHito;

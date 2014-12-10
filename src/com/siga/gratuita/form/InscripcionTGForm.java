@@ -20,6 +20,10 @@ import com.siga.tlds.FilaExtElement;
 
 public class InscripcionTGForm extends MasterForm {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 8201223493370952345L;
 	//Campos para la tabla de turnos
 	String idInstitucion = null;
 	String idPersona = null;

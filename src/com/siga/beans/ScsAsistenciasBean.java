@@ -11,6 +11,10 @@ import com.siga.gratuita.form.AsistenciaForm;
 
 public class ScsAsistenciasBean extends MasterBean{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 196085411981959095L;
 	/*
 	 *  Variables */ 
 	ScsTurnoBean turno ;

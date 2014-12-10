@@ -7,6 +7,10 @@ package com.siga.beans;
 
 public class CenGruposClienteBean extends MasterBean{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -5211338729479965853L;
 	/* Variables */
 	private Integer idGrupo;
 	private String 	nombre;

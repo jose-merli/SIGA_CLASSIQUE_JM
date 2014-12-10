@@ -6,6 +6,10 @@ package com.siga.beans;
  */
 public class ScsActuacionAsistCosteFijoBean extends MasterBean {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -139595912301013432L;
 	/* Variables */
 	private String  facturado, pagado;
 	private Integer idInstitucion, anio;

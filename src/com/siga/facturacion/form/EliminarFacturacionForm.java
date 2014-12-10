@@ -15,4 +15,9 @@ import com.siga.general.MasterForm;
  */
 public class EliminarFacturacionForm extends MasterForm{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 332853328850188941L;
+
 }

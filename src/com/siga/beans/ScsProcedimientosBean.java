@@ -14,6 +14,11 @@ import com.siga.Utilidades.AjaxXMLBuilderValueAnnotation;
 @AjaxXMLBuilderAnnotation 
 public class ScsProcedimientosBean extends MasterBean
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3755441474074381180L;
+
 	//
 	//ATRIBUTOS DE CLASE
 	//

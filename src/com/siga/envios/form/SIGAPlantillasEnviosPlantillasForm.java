@@ -5,7 +5,11 @@ import org.apache.struts.upload.*;
 
 public class SIGAPlantillasEnviosPlantillasForm extends MasterForm
 {
-//    private String modo="";
+/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2538828984555814423L;
+	//    private String modo="";
     private String plantilla="";
     private String editable="";
     private String idInstitucion="";

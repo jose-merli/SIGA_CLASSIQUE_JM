@@ -8,6 +8,10 @@ package com.siga.beans;
 
 public class FacPagoAbonoEfectivoBean extends MasterBean {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4393486905577178999L;
 	/* Variables */
 	private Integer idInstitucion;	
 	private String 	fecha, contabilizado;	

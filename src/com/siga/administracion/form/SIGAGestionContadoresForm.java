@@ -9,6 +9,10 @@ import com.siga.general.MasterForm;
  */
 public class SIGAGestionContadoresForm extends MasterForm {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -6190046359485383219L;
 	String idModulo = "";
 	String codigo = "";
 	String nombreContador = "";

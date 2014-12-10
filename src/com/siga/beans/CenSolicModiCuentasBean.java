@@ -14,6 +14,10 @@ package com.siga.beans;
  */
 public class CenSolicModiCuentasBean extends MasterBean {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 8708433369192052723L;
 	/* Variables */
 	private Integer	idInstitucion, idCuenta, idEstadoSolic; 
 	private Long	idSolicitud, idPersona;

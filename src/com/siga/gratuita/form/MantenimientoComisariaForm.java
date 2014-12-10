@@ -11,6 +11,10 @@ import com.siga.general.MasterForm;
  */
 public class MantenimientoComisariaForm extends MasterForm {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 5159856413199675422L;
 	String ponerBaja;
 	
 	

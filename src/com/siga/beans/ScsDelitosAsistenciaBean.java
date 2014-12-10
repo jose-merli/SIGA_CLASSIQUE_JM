@@ -8,6 +8,11 @@ package com.siga.beans;
  */
 public class ScsDelitosAsistenciaBean extends MasterBean{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 2787813267905959032L;
+
 	/* Variables */ 
 	private Integer	idDelito, anio, numero, idInstitucion;
 	

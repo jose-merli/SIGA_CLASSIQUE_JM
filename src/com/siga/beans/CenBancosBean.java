@@ -14,6 +14,11 @@ import org.json.JSONObject;
  */
 public class CenBancosBean extends MasterBean {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3278459659077616363L;
+
 	/* Variables */	
 	private String 	codigo, nombre, bic, idPais;	
 	

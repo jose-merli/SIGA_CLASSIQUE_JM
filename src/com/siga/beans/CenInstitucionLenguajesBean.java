@@ -2,6 +2,10 @@ package com.siga.beans;
 
 public class CenInstitucionLenguajesBean extends MasterBean
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 6356647909880725668L;
 	/* Variables */ 
 	private Integer		idInstitucion;
 	private String  	idLenguaje;

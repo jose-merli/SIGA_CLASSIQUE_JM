@@ -11,6 +11,10 @@ public class DesignaProvisionalForm extends IntercambioTelematicoForm
 	/**
 	 * 
 	 */
+	private static final long serialVersionUID = -1528603725306822855L;
+	/**
+	 * 
+	 */
 	private String designaCodigo;
 	private String designaFecha;
 	private String designaTurno;

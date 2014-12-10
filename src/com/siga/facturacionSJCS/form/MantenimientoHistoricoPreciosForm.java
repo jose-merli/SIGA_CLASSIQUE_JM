@@ -15,6 +15,11 @@ import com.siga.general.MasterForm;
 */
 public class MantenimientoHistoricoPreciosForm extends MasterForm {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4649407988960244909L;
+
 	// Metodos Set (Formulario (*.jsp))
 	public void setIdInstitucion (String dato) {UtilidadesHash.set(this.datos,"IDINSTITUCION", dato);} 
 	public void setIdFacturacion(String dato) {UtilidadesHash.set(this.datos,"IDFACTURACION", dato);}

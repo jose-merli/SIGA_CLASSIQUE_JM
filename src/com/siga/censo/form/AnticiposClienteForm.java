@@ -11,7 +11,11 @@ import com.siga.general.MasterForm;
  */
  public class AnticiposClienteForm extends MasterForm {
 	 
-	 private String incluirRegistrosConBajaLogica;
+	 /**
+	 * 
+	 */
+	private static final long serialVersionUID = 8795753209258985485L;
+	private String incluirRegistrosConBajaLogica;
 	 
  	
 	// Metodos Set (Formulario (*.jsp))

@@ -10,6 +10,10 @@ import com.siga.gratuita.form.DefinirCalendarioGuardiaForm;
  */
 public class ScsCalendarioGuardiasBean extends MasterBean
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8397303219984707756L;
 	static public final String estadoProgramado = "0";
 	static public final String estadoProcesando = "1";
 	static public final String estadoError = "2";

@@ -2,7 +2,6 @@ package com.siga.beans;
 
 import com.atos.utils.GstDate;
 import com.siga.gratuita.form.InscripcionTGForm;
-import com.siga.tlds.FilaExtElement;
 
 /**
  * Implementa las operaciones sobre el bean de la tabla SCS_INSCRIPCIONTURNO
@@ -17,6 +16,10 @@ public class ScsInscripcionTurnoBean extends MasterBean{
 	
 	/* Variables */ 
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -6084923004886556528L;
 	private Long 	idPersona;
 	private Integer idInstitucion;
 	private Integer idTurno;

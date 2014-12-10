@@ -13,6 +13,10 @@ package com.siga.beans;
 
 public class FacLineaAbonoBean extends MasterBean{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -6945445860024682976L;
 	/* Variables */
 	private Long idAbono;
 	private Integer idInstitucion;

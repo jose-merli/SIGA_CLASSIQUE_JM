@@ -2,6 +2,10 @@ package com.siga.beans;
 
 public class GenTablasMaestrasBean extends MasterBean
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 7176375696070506814L;
 	/* Variables */
 	private String idTablaMaestra;
 	private String idCampoCodigo;

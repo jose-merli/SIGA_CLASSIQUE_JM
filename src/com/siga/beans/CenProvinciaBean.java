@@ -19,6 +19,11 @@ import com.siga.Utilidades.AjaxXMLBuilderValueAnnotation;
 @AjaxXMLBuilderAnnotation 
 public class CenProvinciaBean extends MasterBean{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2665063065946142075L;
+
 	/* Variables */
 	private String 	idProvincia, nombre;
 	

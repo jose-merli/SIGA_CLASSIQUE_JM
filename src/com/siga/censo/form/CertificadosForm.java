@@ -16,6 +16,11 @@ import com.siga.Utilidades.UtilidadesHash;
  */
 public class CertificadosForm  extends MasterForm{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8244321055244844920L;
+
 	// Metodos Set (Formulario (*.jsp))
 	public void setIdProductoCertificado (String id) {
 		UtilidadesHash.set(datos, "IDPRODUCTOCERTIFICADO", id);

@@ -8,6 +8,11 @@ package com.siga.beans;
 
 public class FacTiposServInclsEnFactBean extends MasterBean {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -1518019073969517055L;
+
 	/* Variables */
 	private Integer idInstitucion, idTipoServicios, idServicio;
 	

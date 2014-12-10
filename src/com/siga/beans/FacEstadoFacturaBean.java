@@ -13,6 +13,10 @@ package com.siga.beans;
 
 public class FacEstadoFacturaBean extends MasterBean{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -5693487041363786446L;
 	static public final String ID_ESTADO_PAGADA		= "1";
 	/* Variables */
 	private Integer idEstado;

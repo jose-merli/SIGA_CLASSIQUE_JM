@@ -13,6 +13,10 @@ package com.siga.beans;
  * Window - Preferences - Java - Code Style - Code Templates
  */
 public class PysSuscripcionBean extends MasterBean {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -465063980033362932L;
 	/* Variables */
 	private Integer idInstitucion, idTipoServicios, cantidad, idSuscripcion, idFormaPago, idCuenta;
 	private Long 	idServicio, idPeticion, idServicioInstitucion, idPersona;

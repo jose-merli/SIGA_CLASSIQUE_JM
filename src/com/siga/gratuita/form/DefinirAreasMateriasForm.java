@@ -11,6 +11,10 @@ import com.siga.general.MasterForm;
 
  public class DefinirAreasMateriasForm extends MasterForm{	
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3027693557979572531L;
 	// Metodos Set (Formulario (*.jsp))
 	public void setIdArea			(Integer idarea)				{ this.datos.put(ScsAreaBean.C_IDAREA, idarea);					}
 	

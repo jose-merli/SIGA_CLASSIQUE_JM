@@ -17,8 +17,7 @@ import com.siga.general.MasterForm;
 
 
 public class AbonosDatosGeneralesForm extends MasterForm{
-	
-
+	private static final long serialVersionUID = 3418715094292356578L;
 	private String idAbono="";
 	private String idInstitucion="";
 	private String fecha="";

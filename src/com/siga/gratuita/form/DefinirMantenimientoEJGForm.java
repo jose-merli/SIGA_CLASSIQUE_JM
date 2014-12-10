@@ -14,6 +14,10 @@ import com.siga.general.MasterForm;
 */
  public class DefinirMantenimientoEJGForm extends MasterForm
  {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4239496221871607518L;
 	String numeroDilegencia = "";
 	String numeroProcedimiento = "";
 	String anioProcedimiento = "";

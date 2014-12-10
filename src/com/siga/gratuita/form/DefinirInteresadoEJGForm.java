@@ -13,6 +13,10 @@ import com.siga.general.MasterForm;
 */
  public class DefinirInteresadoEJGForm extends MasterForm{	
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -7726999165294285656L;
 	private String idPaisAux="idPaisAux";
 	private String idProvinciaAux="idProvinciaAux";
 	private String idPoblacionAux="idPoblacionAux";

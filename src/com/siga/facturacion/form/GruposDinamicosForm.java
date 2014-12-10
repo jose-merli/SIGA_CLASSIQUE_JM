@@ -15,6 +15,11 @@ import com.siga.beans.*;
 
 public class GruposDinamicosForm extends MasterForm{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3558406963555178009L;
+
 	// Metodos Set (Formulario (*.jsp))
 	public void setIdInstitucion (Integer id) {
 		UtilidadesHash.set(datos, FacSerieFacturacionBean.C_IDINSTITUCION, id);

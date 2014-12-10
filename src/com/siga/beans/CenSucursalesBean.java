@@ -15,6 +15,10 @@ public class CenSucursalesBean extends MasterBean{
 
 	/* Variables */
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3228553725389133304L;
 	private String 	bancosCodigo;
 	private String 	codSucursal;
 	private String 	nombre;

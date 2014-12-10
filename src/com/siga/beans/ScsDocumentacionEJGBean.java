@@ -10,6 +10,10 @@ public class ScsDocumentacionEJGBean extends MasterBean{
 	
 	/* Variables */ 
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2298205418841667720L;
 	private String  fechaLimite;
 	private String 	documentacion;
 	private String	fechaEntrega;

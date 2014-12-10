@@ -3,7 +3,6 @@ package com.siga.facturacionSJCS.form;
 import java.util.List;
 
 import com.siga.Utilidades.UtilidadesNumero;
-import com.siga.beans.FcsTramosRetencionBean;
 import com.siga.general.MasterForm;
 
 /**
@@ -13,6 +12,10 @@ import com.siga.general.MasterForm;
  */
 public class TramosRetencionForm extends MasterForm {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4467655141585973701L;
 	private String 	anio;
 	
 	public String getAnio() {

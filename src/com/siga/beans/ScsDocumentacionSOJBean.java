@@ -10,10 +10,13 @@ public class ScsDocumentacionSOJBean extends MasterBean{
 	
 	/* Variables */ 
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4720024643142940236L;
 	private String  fechaLimite;
 	private String 	documentacion;
 	private String	fechaEntrega;
-	private String	fechaApertura;
 	private Integer	idTipoSOJ;
 	private Integer	anio;
 	private Integer	numero;

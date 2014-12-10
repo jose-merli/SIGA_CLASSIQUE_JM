@@ -11,6 +11,10 @@ public class ScsSubzonaBean extends MasterBean{
 	
 	/* Variables */ 
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -9076350637855362545L;
 	private Integer		idSubzona;
 	private Integer		idZona;
 	private String		nombre;

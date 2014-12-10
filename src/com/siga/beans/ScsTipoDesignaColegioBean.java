@@ -10,6 +10,10 @@ package com.siga.beans;
 public class ScsTipoDesignaColegioBean extends MasterBean{
 	
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 7971535189360501900L;
+	/**
 	 *  Variables */ 
 	
 	private Integer	idInstitucion;

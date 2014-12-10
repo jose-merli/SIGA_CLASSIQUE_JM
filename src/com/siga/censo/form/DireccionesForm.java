@@ -25,6 +25,10 @@ import com.siga.general.MasterForm;
 @AjaxXMLBuilderAnnotation 
 public class DireccionesForm extends MasterForm{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4255744854209534631L;
 	String incluirRegistrosConBajaLogica;
 	String vieneDe;
 	String nombre;

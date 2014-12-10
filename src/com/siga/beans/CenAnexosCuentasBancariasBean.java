@@ -7,6 +7,10 @@ import com.siga.censo.form.AnexosCuentasBancariasForm;
  */
 public class CenAnexosCuentasBancariasBean extends MasterBean {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -6072532547556479848L;
 	/* Variables */	
 	private String idInstitucion, idPersona, idCuenta, idMandato, idAnexo, fechaCreacion, usuCreacion, origen, descripcion;
 	private String firmaFecha, firmaLugar, idFicheroFirma, fechaUso, tipoAnexoAutomatico;

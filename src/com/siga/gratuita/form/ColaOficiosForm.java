@@ -7,6 +7,10 @@ import com.siga.general.MasterForm;
 
 public class ColaOficiosForm extends MasterForm 
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8148534733548381350L;
 	String idPersona = "";
 	String fechaSuscripcion = "";
 	private String fechaConsulta;

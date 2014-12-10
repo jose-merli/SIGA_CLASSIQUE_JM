@@ -10,6 +10,10 @@ public class ScsJuzgadoBean extends MasterBean{
 	
 	/* Variables */ 
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3795279638721762594L;
 	private Integer	idInstitucion, idJuzgado ;
 	private String	nombre=null, direccion=null, codigoPostal=null, idProvincia=null, idPoblacion=null, 
 					telefono1=null, telefono2=null, fax1=null,codProcurador="", email="", visible="", movil="";

@@ -13,6 +13,10 @@ package com.siga.beans;
  * @author nuria.rgonzalez 
  */
 public class CenPaisBean extends MasterBean{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 7986580557271239583L;
 	/* Variables */
 	private String idPais;
 	private String nombre;

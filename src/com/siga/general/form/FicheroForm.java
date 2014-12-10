@@ -12,6 +12,10 @@ import com.siga.general.MasterForm;
  *
  */
 public class FicheroForm extends MasterForm {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -239446360429993931L;
 	private FormFile theFile;
 	private String directorioArchivo;
 	private String nombreArchivo;

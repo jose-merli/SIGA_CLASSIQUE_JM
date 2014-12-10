@@ -10,6 +10,10 @@ public class ScsPonenteBean extends MasterBean{
 	
 	/* Variables */ 
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4525500066107843752L;
 	private Integer	idInstitucion, idPonente;
 	private String	nombre=null;
 	

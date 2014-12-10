@@ -13,6 +13,10 @@ import com.siga.Utilidades.UtilidadesString;
 
 public class GenTipoCampoBean extends MasterBean {
     
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4816340036515894912L;
 	//Variables
     private Integer idTipoCampo;
     private String 	descripcion;	

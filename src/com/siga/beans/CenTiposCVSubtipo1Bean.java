@@ -10,6 +10,10 @@ package com.siga.beans;
 public class CenTiposCVSubtipo1Bean extends MasterBean{
 	
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -9185621580957914183L;
+	/**
 	 *  Variables */ 
 	
 	

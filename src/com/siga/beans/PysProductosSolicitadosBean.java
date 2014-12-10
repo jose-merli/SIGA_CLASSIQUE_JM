@@ -14,6 +14,10 @@ package com.siga.beans;
  */
 public class PysProductosSolicitadosBean extends MasterBean{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 2799696358932831005L;
 	/* Variables */
 	private Integer idInstitucion, idInstitucionOrigen, idInstitucionColegiacion, idTipoProducto, idCuenta, idFormaPago, cantidad, idTipoEnvios, metodoSolicitud, orden;
 	private Long 	idProducto, idProductoInstitucion, idPeticion, idPersona, idDireccion;

@@ -10,6 +10,10 @@ package com.siga.beans;
  */
 public class ConTipoCampoConsultaBean extends MasterBean {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4150681390383876415L;
 	private Integer idTipoCampo;
 	private String descripcion;
 	private Integer idBase;

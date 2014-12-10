@@ -1,15 +1,11 @@
 package com.siga.censo.form;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import com.atos.utils.ClsExceptions;
 import com.atos.utils.GstDate;
 import com.siga.beans.CenPoblacionesBean;
 import com.siga.beans.CenProvinciaBean;
 import com.siga.beans.CenSolicitudMutualidadBean;
-import com.siga.beans.ScsTurnoBean;
 import com.siga.comun.vos.ValueKeyVO;
 import com.siga.general.MasterForm;
 /**
@@ -19,6 +15,10 @@ import com.siga.general.MasterForm;
  public class MutualidadForm extends MasterForm {
  	
 	 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -176213764040299738L;
 	private String idSolicitud;
 	private String idSolicitudAceptada;
 	private String idTipoSolicitud;

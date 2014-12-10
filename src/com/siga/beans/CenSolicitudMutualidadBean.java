@@ -3,7 +3,6 @@ package com.siga.beans;
 
 import com.atos.utils.GstDate;
 import com.siga.censo.form.MutualidadForm;
-import com.siga.general.MasterForm;
 
 /**
  * 
@@ -14,6 +13,10 @@ import com.siga.general.MasterForm;
 public class CenSolicitudMutualidadBean extends MasterBean {
 
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1900179253853676331L;
 	static public String SERVICIO_NOSOLICITADO = "Servicio no solicitado";
 	static public int ESTADO_INICIAL = 0; 
 	static public String ESTADO_PTERESPUESTA = "Pendiente Respuesta";

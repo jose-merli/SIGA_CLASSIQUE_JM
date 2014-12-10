@@ -10,6 +10,10 @@ package com.siga.beans;
  */
 public class ConModuloBean extends MasterBean {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 8860261606411427920L;
 	//	Variables
 	private Integer idModulo;
 	private String nombre;

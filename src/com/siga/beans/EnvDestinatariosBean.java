@@ -6,6 +6,10 @@
 package com.siga.beans;
 
 public class EnvDestinatariosBean extends MasterBean {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4811209378603696423L;
 	static public final String TIPODESTINATARIO_CENPERSONA = "CEN_PERSONA";
 	static public final String TIPODESTINATARIO_SCSPERSONAJG = "SCS_PERSONAJG";
 	static public final String TIPODESTINATARIO_SCSJUZGADO = "SCS_JUZGADO";

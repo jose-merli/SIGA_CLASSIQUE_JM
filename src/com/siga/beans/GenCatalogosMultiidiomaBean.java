@@ -3,6 +3,10 @@ package com.siga.beans;
 
 public class GenCatalogosMultiidiomaBean extends MasterBean
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3014330739685294173L;
 	// Variables 
 	private Integer codigo;
 	private String nombreTabla;

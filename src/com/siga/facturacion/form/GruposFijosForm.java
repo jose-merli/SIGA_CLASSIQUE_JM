@@ -13,6 +13,10 @@ import com.siga.general.MasterForm;
 
 public class GruposFijosForm extends MasterForm{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4589827575601398234L;
 	public String getIdGrupo() {
 		return idGrupo;
 	}

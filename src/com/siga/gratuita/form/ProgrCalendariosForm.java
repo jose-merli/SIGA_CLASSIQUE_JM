@@ -19,11 +19,10 @@ import com.siga.tlds.FilaExtElement;
  *
  */
 public class ProgrCalendariosForm extends MasterForm {
-
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 184334739524495531L;
 	private String idConjuntoGuardia;
 	private String idProgrCalendario;
 	private String idInstitucion;

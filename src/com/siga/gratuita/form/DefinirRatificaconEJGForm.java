@@ -18,6 +18,10 @@ import com.siga.general.MasterForm;
 	 */
 	
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 2530632785049398352L;
+	/**
 	 * Almacena en la Hashtable el anho del EJG 
 	 * 
 	 * @param valor Anho de la EJG. De tipo "Integer". 

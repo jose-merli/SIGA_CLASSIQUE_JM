@@ -17,6 +17,10 @@ import java.util.Hashtable;
  */
 public abstract class MasterBean implements Serializable{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 2125506074513110229L;
 	protected Integer	usuMod;
 	protected String	fechaMod = "";
 	private Hashtable originalHash=null;

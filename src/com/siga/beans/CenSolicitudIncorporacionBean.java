@@ -15,6 +15,11 @@ package com.siga.beans;
  */
 public class CenSolicitudIncorporacionBean extends MasterBean {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 5621530107297236611L;
+
 	/* Variables */
 	private Long 	idSolicitud, idPersonaTemp, idDireccionTemp;
 	

@@ -13,6 +13,10 @@ package com.siga.beans;
  * @author nuria.rgonzalez 
  */
 public class CenSolicitudModificacionCVBean extends MasterBean{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4190926036990014033L;
 	/* Variables */
 	private Integer idInstitucion, idCV, idTipoCV,idEstadoSolic,idInstitucion_subt1,idInstitucion_subt2;
 	private Long 	idSolicitud, idPersona;

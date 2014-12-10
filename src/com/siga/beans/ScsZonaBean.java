@@ -11,6 +11,10 @@ public class ScsZonaBean extends MasterBean{
 	
 	/* Variables */ 
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 8374080959370256032L;
 	private Integer		idZona;
 	private String		nombre;
 	private String		municipios;

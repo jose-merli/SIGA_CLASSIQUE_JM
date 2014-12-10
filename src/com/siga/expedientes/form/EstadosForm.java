@@ -14,7 +14,11 @@ import com.siga.general.MasterForm;
  */
 public class EstadosForm extends MasterForm {
     
-//    private String modo="";
+/**
+	 * 
+	 */
+	private static final long serialVersionUID = 2017906997378300827L;
+	//    private String modo="";
     private String modal="";
     private String idEstado;
 	private String estado;

@@ -5,7 +5,12 @@ import com.siga.general.MasterForm;
 
 public class SIGAPlantillasEnviosCamposForm extends MasterForm
 {
-//    private String modo="";
+/**
+	 * 
+	 */
+	private static final long serialVersionUID = -254853613502844211L;
+
+	//    private String modo="";
     private String editable="";
 
     private String idInstitucion="";

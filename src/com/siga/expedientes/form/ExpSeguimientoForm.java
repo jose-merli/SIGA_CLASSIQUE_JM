@@ -5,17 +5,8 @@
  */
 package com.siga.expedientes.form;
 
-import java.util.Enumeration;
-import java.util.HashMap;
 import java.util.StringTokenizer;
 
-import javax.servlet.http.HttpServletRequest;
-
-import org.apache.struts.action.ActionForm;
-import org.apache.struts.action.ActionMapping;
-
-import com.siga.Utilidades.UtilidadesHash;
-import com.siga.censo.form.ExpedientesForm;
 import com.siga.general.MasterForm;
 
 /**
@@ -23,7 +14,11 @@ import com.siga.general.MasterForm;
  */
 public class ExpSeguimientoForm extends MasterForm {
 	
-//	private String modo="";
+/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2459902945613670513L;
+	//	private String modo="";
     private String modal="";
     private String fecha="";
     private String fechaInicioEstado="";

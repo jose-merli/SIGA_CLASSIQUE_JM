@@ -12,6 +12,11 @@ import com.siga.general.form.FicheroForm;
  */
 public class DefinirDocumentacionDesignaForm extends FicheroForm {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 810595257203499824L;
+
 	private String	idTipoDocumento;	
 	
 	private String	idDocumento;

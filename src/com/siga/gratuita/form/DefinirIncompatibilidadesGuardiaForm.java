@@ -12,6 +12,10 @@ import com.siga.general.MasterForm;
  */
  public class DefinirIncompatibilidadesGuardiaForm extends MasterForm{	
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4093672594246237695L;
 	// Metodos Set para escribir en una tabla hash datos los campos del formulario.
  	// Hay 1 metodo set por cada campo del formulario.
  	public void setIdInstitucionPestanha (String valor)	{ this.datos.put("IDINSTITUCIONPESTAÑA",valor); 	}

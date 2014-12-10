@@ -5,6 +5,10 @@ package com.siga.beans;
  */
 public class ScsSaltosCompensacionesBean extends MasterBean
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4478508050193769138L;
 	// Campos
 	private Integer	idInstitucion;
 	private Integer idTurno;

@@ -13,6 +13,10 @@ package com.siga.beans;
 public class FcsFactApunteBean extends MasterBean{
 	
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -6797894544736614353L;
+	/**
 	 *  Variables 
 	 * 
 	 * */ 

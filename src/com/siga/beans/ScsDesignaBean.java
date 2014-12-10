@@ -9,6 +9,10 @@ package com.siga.beans;
 
 public class ScsDesignaBean extends MasterBean {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 5853533067834079442L;
 	ScsTurnoBean turno;
 	CenPersonaBean colegiadoDesignado;
 	// Variables 

@@ -1,11 +1,6 @@
 
 package com.siga.gratuita.form;
 
-import java.util.List;
-
-import org.redabogacia.sigaservices.app.autogen.model.ScsPrestacion;
-
-import com.siga.comun.vos.ValueKeyVO;
 import com.siga.general.MasterForm;
 
 /**
@@ -16,10 +11,11 @@ import com.siga.general.MasterForm;
  *
  */
 public class PrestacionRechazadaEjgForm extends MasterForm{
+
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 3343814598117241919L;
 	String solicitante;
 	String ejgNumEjg;
 	String ejgAnio;

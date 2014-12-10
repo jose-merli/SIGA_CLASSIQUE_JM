@@ -10,6 +10,10 @@ public class ScsProcuradorBean extends MasterBean{
 	
 	/* Variables */ 
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 8217230219340080596L;
 	private Integer	idInstitucion, idProcurador;
 	private String	nombre=null, apellido1=null, apellido2=null,ncolegiado=null, direccion=null, codigoPostal=null, idProvincia=null, idPoblacion=null, 
 					telefono1=null, telefono2=null, fax1=null, email=null,codProcurador="", idColProcurador=null;

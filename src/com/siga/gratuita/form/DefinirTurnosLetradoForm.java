@@ -3,12 +3,15 @@ package com.siga.gratuita.form;
 /**
  * @author ruben.fernandez
  */
-import com.siga.general.*;
-import java.util.*;
+import com.siga.general.MasterForm;
 
 
 public class DefinirTurnosLetradoForm extends MasterForm {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 5141186221412998148L;
 	public String incluirRegistrosConBajaLogica = "N";
 	public String fechaConsulta;
 	

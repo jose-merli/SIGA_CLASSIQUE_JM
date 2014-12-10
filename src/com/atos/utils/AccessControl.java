@@ -21,6 +21,11 @@ import com.siga.administracion.SIGAConstants;
  * Window - Preferences - Java - Code Style - Code Templates
  */
 public class AccessControl implements SIGAConstants, Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8857440990175753266L;
+
 	private Hashtable procesos = null;
 
 	private Hashtable accesos = null;
@@ -112,14 +117,10 @@ public class AccessControl implements SIGAConstants, Serializable {
 			con = ClsMngBBDD.getReadConnection();
 			stmtAccess = con.createStatement();
 			rsAccess = stmtAccess.executeQuery(queryAccess);
-			Hashtable hidden=new Hashtable();
-
 			while (rsAccess.next()) {
 				String processNumber = rsAccess.getString(1);
 				String processTrans = rsAccess.getString(2);
 				int tipoAccess = rsAccess.getInt(3);
-				String descripcion = rsAccess.getString(4);
-				String pater = rsAccess.getString(5);
 
 				Integer accessTypeStored = (Integer) accesos.get(processNumber);
 				if (accessTypeStored == null) {
@@ -182,7 +183,6 @@ public class AccessControl implements SIGAConstants, Serializable {
 			con = ClsMngBBDD.getReadConnection();
 			stmtAccess = con.createStatement();
 			rsAccess = stmtAccess.executeQuery(queryAccess);
-			Hashtable hidden=new Hashtable();
 
 			while (rsAccess.next()) {
 				String processNumber = rsAccess.getString(1);

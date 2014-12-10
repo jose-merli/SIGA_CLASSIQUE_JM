@@ -7,10 +7,11 @@ package com.siga.beans;
  */
 public class EnvComunicacionMorososBean extends MasterBean
 {
+
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = -4969411095944175048L;
 	/* Variables */
 	private Integer idPersona;
 	private Integer idInstitucion;

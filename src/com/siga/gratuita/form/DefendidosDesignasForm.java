@@ -15,6 +15,10 @@ import com.siga.general.MasterForm;
 
 public class DefendidosDesignasForm extends MasterForm {
 			
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8583949742262843886L;
 	private String idPaisAux="idPaisAux";
 	private String idProvinciaAux="idProvinciaAux";
 	private String idPoblacionAux="idPoblacionAux";

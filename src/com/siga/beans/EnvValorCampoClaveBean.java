@@ -10,6 +10,10 @@ public class EnvValorCampoClaveBean extends EnvDestProgramInformesBean {
 	//Variables
     
 
+/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8007624067861574461L;
 private Long idValor;
 private String idTipoInforme;
 private String clave;

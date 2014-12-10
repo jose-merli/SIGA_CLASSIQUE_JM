@@ -16,8 +16,10 @@ import com.siga.general.MasterForm;
  public class MantenimientoMandatosForm extends MasterForm {	
 
 	
-	private String fechaFirma="";
-	private String lugarFirma="";
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 593770342143175453L;
 	private String idPersona;
 	private String idInstitucion;
 	private FormFile fichero;

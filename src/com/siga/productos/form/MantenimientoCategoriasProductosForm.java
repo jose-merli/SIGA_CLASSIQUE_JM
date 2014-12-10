@@ -15,6 +15,10 @@ import com.siga.general.MasterForm;
  */
 public class MantenimientoCategoriasProductosForm extends MasterForm {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -6028907958025879759L;
 	// METODOS SET
 	public void setIdTipoProducto(Integer dato) {
 		UtilidadesHash.set(this.datos, "_IDTIPOPRODUCTO_", dato);

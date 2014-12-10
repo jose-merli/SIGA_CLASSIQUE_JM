@@ -2,6 +2,10 @@ package com.siga.beans;
 
 public class AdmUsuariosPerfilBean extends MasterBean
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 6590113009979098645L;
 	/* Variables */
 	private Integer usuario;
 	private Integer institucion;

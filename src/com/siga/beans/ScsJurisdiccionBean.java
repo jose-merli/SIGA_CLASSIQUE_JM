@@ -14,6 +14,10 @@ package com.siga.beans;
  */
 public class ScsJurisdiccionBean extends MasterBean {
 
+		/**
+	 * 
+	 */
+	private static final long serialVersionUID = 8927965226648001167L;
 		/* Variables */	
 		private String 	descripcion;
 		private Integer idJurisdiccion;

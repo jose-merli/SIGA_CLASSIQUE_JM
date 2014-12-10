@@ -11,6 +11,10 @@ public class ScsInclusionGuardiasEnListasBean extends MasterBean{
 	
 	/* Variables */ 
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -1871819241560765124L;
 	private Integer 	idInstitucion;
 	private Integer 	idTurno;
 	private Integer 	idGuardia;	

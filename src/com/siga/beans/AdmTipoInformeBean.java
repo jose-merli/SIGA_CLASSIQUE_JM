@@ -15,6 +15,10 @@ package com.siga.beans;
 
 public class AdmTipoInformeBean extends MasterBean {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3790424031805214022L;
 	static public final String CLASETIPOINFORME_PERSONALIZABLE = "P";
 	static public final String CLASETIPOINFORME_CONSULTAS = "C";
 	static public final String CLASETIPOINFORME_GENERICO = "G";

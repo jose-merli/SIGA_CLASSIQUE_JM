@@ -19,6 +19,12 @@ public class MantenimientoFacturacionForm extends MasterForm {
 	
 	// Metodos Set (Formulario (*.jsp))
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1053938787717283381L;
+
+
 	public void setNombreInstitucion (String dato) { 
 		try {
 			UtilidadesHash.set(this.datos,"nombreInstitucion", dato);

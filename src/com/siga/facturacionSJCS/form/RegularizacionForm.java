@@ -15,6 +15,11 @@ public class RegularizacionForm extends MasterForm {
 	
 	// Metodos Set (Formulario (*.jsp))
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4830273101468841867L;
+
 	public void setIdInstitucion (String dato) { 
 		try {
 			UtilidadesHash.set(this.datos,"idInstitucion", dato);

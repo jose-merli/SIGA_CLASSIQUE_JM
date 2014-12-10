@@ -17,6 +17,11 @@ import com.siga.general.MasterForm;
  */
 public class SolicitudBajaForm extends MasterForm{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8402268746996327250L;
+
 	public void setIdPersona(Long dato) {
 		UtilidadesHash.set(this.datos, "IDPERSONA", dato);
 	}

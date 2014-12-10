@@ -13,6 +13,10 @@ package com.siga.beans;
 
 public class CenSolicModifExportarFotoBean extends MasterBean {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1249246499254465234L;
 	/* Variables */
 	private Long idSolicitud;
 	private String motivo;

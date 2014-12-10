@@ -11,6 +11,10 @@ package com.siga.beans;
  */
 public class ConOperacionConsultaBean extends MasterBean {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3138464632316778660L;
 	private Integer idOperacion;
 	private String descripcion;
 	private String tipoOperador;

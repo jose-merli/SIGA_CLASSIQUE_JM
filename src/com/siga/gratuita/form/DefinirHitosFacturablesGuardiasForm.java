@@ -14,6 +14,10 @@ import com.siga.general.MasterForm;
  */
 public class DefinirHitosFacturablesGuardiasForm extends MasterForm
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3357306348596830312L;
 	//////////////////// ATRIBUTOS ////////////////////
 	protected Hashtable mapHitoPrecio = null;
 	protected String radioA="0";

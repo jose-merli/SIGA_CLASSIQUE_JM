@@ -13,7 +13,11 @@ import com.siga.censo.form.DatosRegTelForm;
  */
 public class ExpDocumentacionForm extends DatosRegTelForm {
 	
-//    private String modo="";
+/**
+	 * 
+	 */
+	private static final long serialVersionUID = -32361041051997701L;
+	//    private String modo="";
     private String modal="";    
     private String fase="";    
     private String idFase="";    

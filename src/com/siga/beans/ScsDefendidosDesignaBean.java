@@ -12,6 +12,10 @@ public class ScsDefendidosDesignaBean extends MasterBean{
 	/*
 	 *  Variables */ 
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4964378526833004098L;
 	private Integer	idInstitucion;
 	private Integer	idTurno;
 	private Integer	anio;

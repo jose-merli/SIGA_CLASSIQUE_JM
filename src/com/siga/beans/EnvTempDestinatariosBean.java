@@ -7,6 +7,10 @@ package com.siga.beans;
 
 public class EnvTempDestinatariosBean extends MasterBean {
     
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -7500043228901226135L;
 	//Variables
     private Integer idEnvio;
     private Long idPersona;

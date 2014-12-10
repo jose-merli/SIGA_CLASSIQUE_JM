@@ -20,6 +20,10 @@ package com.siga.beans;
 
 public class AdmContadorBean extends MasterBean {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 6996843930547812077L;
 	/* Variables */	
 	private String 	idcontador, nombre, descripcion, modificableContador, general ;
 	private Integer idinstitucion, modoContador, longitudContador, idModulo; 

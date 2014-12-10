@@ -10,6 +10,10 @@ package com.siga.beans;
  */
 public class FacRenegociacionBean extends MasterBean {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8904836778933939267L;
 	/* Variables */
 	private Integer idInstitucion, idRenegociacion, idCuenta;
 	private Long idPersona;

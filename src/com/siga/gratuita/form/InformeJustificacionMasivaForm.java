@@ -6,6 +6,11 @@ import com.siga.general.MasterForm;
 
 public class InformeJustificacionMasivaForm extends MasterForm 
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 7845618356693226589L;
+
 	private String anio;
 	
 	private String datosJustificacion;

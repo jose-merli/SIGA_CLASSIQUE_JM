@@ -9,6 +9,10 @@ import com.siga.general.MasterForm;
  */
 public class AuditoriaUsuariosForm extends MasterForm 
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 8639748542540518601L;
 	String nombre, fechaDesde, fechaHasta, tipoAccion, fechaEntrada, fechaEfectiva, motivo, usuarioAutomatico;
 	
 	public String getFechaDesde() {

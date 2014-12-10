@@ -23,7 +23,13 @@ import org.apache.struts.upload.MultipartRequestHandler;
 
 public class UploadForm extends ActionForm
 {
-    public static final String ERROR_PROPERTY_MAX_LENGTH_EXCEEDED = "org.apache.struts.webapp.upload.MaxLengthExceeded";
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -4046682295552607155L;
+
+
+	public static final String ERROR_PROPERTY_MAX_LENGTH_EXCEEDED = "org.apache.struts.webapp.upload.MaxLengthExceeded";
 
    
     /**

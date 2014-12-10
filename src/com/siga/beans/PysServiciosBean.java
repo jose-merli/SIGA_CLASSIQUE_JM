@@ -20,6 +20,10 @@ package com.siga.beans;
  */
 public class PysServiciosBean extends MasterBean{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -5656888013626519582L;
 	/* Variables */
 	private Integer idTipoServicios;
 	private Long idServicio;

@@ -10,6 +10,10 @@ public class ScsTipoEJGColegioBean extends MasterBean{
 	
 	/* Variables */ 
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -6360532416042228561L;
 	private Integer idTipoEJGColegio;		
 	private String 	descripcion;
 	private String 	idInstitucion;

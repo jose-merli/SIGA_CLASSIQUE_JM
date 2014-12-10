@@ -4,7 +4,11 @@ import com.siga.general.MasterForm;
 
 public class SIGAListadoUsuariosForm extends MasterForm
 {
-//    private String modo="";
+/**
+	 * 
+	 */
+	private static final long serialVersionUID = 7368918395173799096L;
+	//    private String modo="";
     private String modal="";
     private String activoConsulta="";
     private String idUsuario="";

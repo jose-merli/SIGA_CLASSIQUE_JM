@@ -7,6 +7,10 @@ package com.siga.beans;
 
 public class FacLineaFacturaBean extends MasterBean {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 481117072639480926L;
 	/* Variables */
 	private Integer idInstitucion, cantidad, idFormaPago;	
 	private Long 	numeroLinea, numeroOrden;

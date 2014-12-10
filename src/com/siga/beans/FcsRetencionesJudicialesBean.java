@@ -6,9 +6,13 @@ package com.siga.beans;
 
 public class FcsRetencionesJudicialesBean extends MasterBean {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1646898491015586477L;
 	/* Variables */
-	private Integer  idPersona, idRetencion, idTramoLec, idDestinatario, idInstitucion;
-	private String   fechaAlta, fechaInicio, fechaFin, tipoRetencion, observaciones, salarioAnual,contabilizado,descDestinatario,esDeTurno;
+	private Integer  idPersona, idRetencion, idDestinatario, idInstitucion;
+	private String   fechaAlta, fechaInicio, fechaFin, tipoRetencion, observaciones, contabilizado,descDestinatario,esDeTurno;
 	private Double 	 importe;
 	
 	/* Nombre tabla */

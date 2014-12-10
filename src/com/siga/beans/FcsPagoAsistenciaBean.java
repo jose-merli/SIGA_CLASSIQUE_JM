@@ -13,6 +13,10 @@ package com.siga.beans;
 public class FcsPagoAsistenciaBean extends MasterBean{
 	
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -9172788455602252063L;
+	/**
 	 *  Variables 
 	 * 
 	 * */ 

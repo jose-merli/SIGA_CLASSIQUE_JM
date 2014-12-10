@@ -9,7 +9,11 @@ import com.siga.general.MasterForm;
  */
 public class SIGAEnviosDatosGeneralesForm extends MasterForm {
 	
-//    private String modo="";
+/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1988344077329721154L;
+	//    private String modo="";
     private String modal="";
     private String accion = "";
     private String idEnvio;

@@ -15,6 +15,10 @@ package com.siga.beans;
 
 public class FicheroReceptorAbonoBean extends MasterBean{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 873805986096353380L;
 	/* Variables */
 	private Double importe;
 	private Long identificador;

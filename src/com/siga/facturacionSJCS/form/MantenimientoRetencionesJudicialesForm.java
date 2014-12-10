@@ -14,6 +14,10 @@ import com.siga.general.MasterForm;
 * @author julio.vicente 31-03-2005
 */
 public class MantenimientoRetencionesJudicialesForm extends MasterForm {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4566164715602820941L;
 	String checkEsDeTurno;
 	public String getCheckEsDeTurno() {
 		return checkEsDeTurno;

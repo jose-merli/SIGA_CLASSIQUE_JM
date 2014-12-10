@@ -10,6 +10,12 @@ public class EnvCampoClaveBean extends EnvClaveProgBean{
 	//Variables
     
 
+/**
+	 * 
+	 */
+	private static final long serialVersionUID = -5486016157781478783L;
+
+
 String campo ;
 
 	

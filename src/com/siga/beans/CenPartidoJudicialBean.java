@@ -11,6 +11,10 @@ public class CenPartidoJudicialBean extends MasterBean
 {
 	/* Variables */ 
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4436632043781559899L;
 	private Integer	idPartido;
 	private String	nombre;
 	private String idInstitucionPropietario;

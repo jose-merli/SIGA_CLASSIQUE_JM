@@ -10,6 +10,11 @@ package com.siga.beans;
 
 public class FacFacturacionProgramadaBean extends MasterBean {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -7040853546630563259L;
+
 	/* Variables */
 	private Integer idInstitucion, idEstadoConfirmacion, idEstadoPDF, idEstadoEnvio, idTipoPlantillaMail, idTipoEnvios;
 	

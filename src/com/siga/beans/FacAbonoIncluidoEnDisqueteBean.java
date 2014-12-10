@@ -8,6 +8,10 @@ package com.siga.beans;
 
 public class FacAbonoIncluidoEnDisqueteBean extends MasterBean {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3748316055591722315L;
 	/* Variables */
 	private Integer idInstitucion;
 	private String 	fecha;

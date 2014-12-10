@@ -9,6 +9,11 @@ package com.siga.beans;
  
 public class ScsTipoAsistenciaColegioBean extends MasterBean{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 8875720432131506420L;
+
 	public static final Integer TIPO_ASISTENCIA_DETENIDO_PROC_GENERAL = Integer.valueOf(2);
 	
 	/**

@@ -7,6 +7,10 @@ package com.siga.beans;
 
 public class EnvEstadoEnvioBean extends MasterBean {
     
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4501588815365953559L;
 	//Variables
     private String nombre;
 	private Integer idEstado;

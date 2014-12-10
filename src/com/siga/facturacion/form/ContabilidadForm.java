@@ -10,6 +10,10 @@ package com.siga.facturacion.form;
 
 import com.siga.general.MasterForm;
 public class ContabilidadForm extends MasterForm{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8209357620354278809L;
 	private String fechaDesde            ="fechaDesde";
 	private String fechaHasta            ="fechaHasta";
 	private String esConfirmacion        ="esConfirmacion";

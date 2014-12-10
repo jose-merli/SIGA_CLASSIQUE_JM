@@ -14,6 +14,10 @@ import com.siga.general.MasterForm;
  */
 public class RecuperarConsultasForm extends MasterForm {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 6960393888000629389L;
 	private String descripcion="";
 	private String idModulo="";
 	private boolean todos;

@@ -4,7 +4,11 @@ import com.siga.general.MasterForm;
 
 public class SIGAEnviosCorreoElectronicoForm extends MasterForm
 {
-//    private String modo="";
+/**
+	 * 
+	 */
+	private static final long serialVersionUID = -5151525262315037791L;
+	//    private String modo="";
     private String accion = "";
     private String idInstitucion="";
     private String idEnvio="";

@@ -6,7 +6,6 @@
  */
 package com.siga.beans;
 
-import  com.atos.utils.ClsConstants;
 
 /**
  * @author jose.barrientos
@@ -14,6 +13,11 @@ import  com.atos.utils.ClsConstants;
  */
 public class GenPropertiesBean extends MasterBean {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 7034421228346947524L;
+
 	/* Variables */
 	private String 	fichero, parametro, valor;
 	

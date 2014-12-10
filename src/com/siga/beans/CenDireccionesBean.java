@@ -10,6 +10,11 @@ package com.siga.beans;
  */
 public class CenDireccionesBean extends MasterBean
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8857391192652353400L;
+
 	//////////////////// ATRIBUTOS DE CLASE ////////////////////
 	/** Nombre tabla */
 	static public String T_NOMBRETABLA = "CEN_DIRECCIONES";

@@ -2,6 +2,10 @@ package com.siga.beans;
 
 public class AdmRolBean extends MasterBean
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1808930724573034881L;
 	/* Variables */
 	private String idRol;
 	private String codigoExt;

@@ -10,6 +10,10 @@ package com.siga.beans;
  */
 public class ExpDenuncianteBean extends MasterBean {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8024219447617613671L;
 	//Variables
 	private Integer idInstitucion;
 	private Integer idInstitucion_TipoExpediente;

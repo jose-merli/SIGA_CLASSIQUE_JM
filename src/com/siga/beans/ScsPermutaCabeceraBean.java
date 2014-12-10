@@ -10,6 +10,10 @@ package com.siga.beans;
 
 public class ScsPermutaCabeceraBean extends MasterBean{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 8031330101903765417L;
 	/* Variables */ 	
 	private Integer idPermutaCabecera;
 	private Integer idInstitucion;	

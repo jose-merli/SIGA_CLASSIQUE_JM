@@ -17,7 +17,11 @@ import com.siga.general.MasterForm;
 	 * Metodos SET
 	 */
 	
- 	public void setIdDictamen 					(String idDictamen)					{ this.datos.put(ScsEJGBean.C_IDDICTAMEN, idDictamen);									}
+ 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 8800202728847185576L;
+	public void setIdDictamen 					(String idDictamen)					{ this.datos.put(ScsEJGBean.C_IDDICTAMEN, idDictamen);									}
 	/**
 	 * Almacena en la Hashtable el anho del EJG 
 	 * 

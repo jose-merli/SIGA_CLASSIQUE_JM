@@ -10,6 +10,10 @@ public class ScsTipoEJGBean extends MasterBean{
 	
 	/* Variables */ 
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -1138100316762264292L;
 	private Integer idTipoEJG;		
 	private String 	descripcion;	
 	

@@ -14,7 +14,11 @@ import com.siga.general.MasterForm;
  */
 public class TiposAnotacionesForm extends MasterForm {
     
-//    private String modo="";
+/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4690327323989745521L;
+	//    private String modo="";
     private String modal="";
     private String idTipoAnotacion;
 	private String nombre;

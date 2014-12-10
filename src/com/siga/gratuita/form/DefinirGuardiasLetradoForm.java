@@ -13,6 +13,10 @@ public class DefinirGuardiasLetradoForm extends MasterForm {
 		//Metodos set de los campos del formulario
 
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -6162169845319119958L;
 	String fechaConsulta;
 	public String getFechaConsulta() {
 		return fechaConsulta;

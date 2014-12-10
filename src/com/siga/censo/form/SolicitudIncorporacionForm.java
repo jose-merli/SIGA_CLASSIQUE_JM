@@ -18,6 +18,10 @@ import com.atos.utils.*;
  */
  public class SolicitudIncorporacionForm extends MasterForm {
  	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4257639328308955920L;
 	private String idSolicitudPlanProfesional;
 	private String idSolicitudAceptadaSeguroUniversal;
 	private String idSolicitudAceptadaPlanProfesional;

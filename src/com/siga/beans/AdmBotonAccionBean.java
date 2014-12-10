@@ -2,6 +2,10 @@ package com.siga.beans;
 
 public class AdmBotonAccionBean extends MasterBean
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 2441380089431991243L;
 	/* Variables */
 	private Integer idInstitucion;
 	private Integer idBoton;

@@ -11,6 +11,10 @@ import com.siga.general.MasterForm;
 
 public class MultidiomasForm extends MasterForm 
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -9182138544979911288L;
 	String descripcion = "", idIdioma = "", idIdiomaATraducir = "", datosModificados = "", esCatalogo = "";
 
 	public String getDescripcion() {

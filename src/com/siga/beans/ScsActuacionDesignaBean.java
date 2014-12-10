@@ -15,6 +15,13 @@ public class ScsActuacionDesignaBean extends MasterBean{
 	/*
 	 *  Nombre de Tabla*/
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8352325372945552146L;
+
+
+
 	static public String T_NOMBRETABLA = "SCS_ACTUACIONDESIGNA";
 	
 	

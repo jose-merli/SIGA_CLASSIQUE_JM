@@ -12,6 +12,10 @@ package com.siga.beans;
 
 public class CenGruposClienteClienteBean extends MasterBean{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8563566135146737631L;
 	/* Variables */
 	private Long 	idPersona;
 	private Integer	idInstitucion;

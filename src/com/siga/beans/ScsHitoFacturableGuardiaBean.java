@@ -10,6 +10,11 @@ package com.siga.beans;
  */
 public class ScsHitoFacturableGuardiaBean extends MasterBean
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -5974744612391393307L;
+
 	//////////////////// ATRIBUTOS DE CLASE ////////////////////
 	//Nombre de Tabla
 	static public String T_NOMBRETABLA = "SCS_HITOFACTURABLEGUARDIA";

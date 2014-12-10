@@ -10,6 +10,10 @@ package com.siga.beans;
  */
 public class EnvListaCorreoConsultaBean extends MasterBean {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 6644423401818614124L;
 	//Variables
 	private Integer idInstitucion;
 	private Integer idConsulta;

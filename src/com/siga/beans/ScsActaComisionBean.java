@@ -9,6 +9,11 @@ package com.siga.beans;
 
 public class ScsActaComisionBean extends MasterBean{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4371823896203692583L;
+
 	/* Nombre de Tabla*/
 	static public String T_NOMBRETABLA = "SCS_ACTACOMISION";
 

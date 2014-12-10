@@ -10,6 +10,10 @@ import java.io.Serializable;
 //Este bean sirve para implementar cada fila de Criterios de Pago con todos sus campos.
 public class ColegiadosPagosBean implements Serializable{
     
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3772423322023260400L;
 	//Variables
 	private String idPersona = null;
 	private String ncolegiado = null;

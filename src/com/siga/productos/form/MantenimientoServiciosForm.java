@@ -20,6 +20,10 @@ import com.siga.general.MasterForm;
 public class MantenimientoServiciosForm extends MasterForm{
 	
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -1188117150338231683L;
 	private String servicio="";
 	private String tipoServicio="";	
 	private String categoriaServicio="";

@@ -10,6 +10,10 @@ package com.siga.beans;
  */
 public class ConConsultaBean extends MasterBean {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4029158552936382421L;
 	//	Variables
 	private Integer idInstitucion;
 	private Integer idConsulta;

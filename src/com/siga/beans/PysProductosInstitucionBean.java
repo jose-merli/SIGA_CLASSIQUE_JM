@@ -12,6 +12,10 @@
 package com.siga.beans;
 
 public class PysProductosInstitucionBean extends MasterBean {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 5178161006514722672L;
 	/* Constantes */
 	public static final String PI_COMUNICACION_CODIGO="M";
 	public static final String PI_DILIGENCIA_CODIGO="D";

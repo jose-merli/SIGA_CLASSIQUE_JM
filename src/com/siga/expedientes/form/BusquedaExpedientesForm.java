@@ -13,6 +13,10 @@ import com.siga.general.MasterForm;
  */
 public class BusquedaExpedientesForm extends MasterForm {
     
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3870753545940723805L;
 	String orden;
 	String tipoOrden;
 	String idTipoExpediente;

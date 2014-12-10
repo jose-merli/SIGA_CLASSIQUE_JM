@@ -13,6 +13,11 @@ package com.siga.beans;
  * Window - Preferences - Java - Code Style - Code Templates
  */
 public class VlcLetradoColegiacionesSigaBean extends MasterBean {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -829675654144378229L;
+
 	//private static final long serialVersionUID = -2510899080052901261L;
 	private String 	id_letrado, id_colegio, descripcion, num_colegiado, residencia, ejerciente, fecha_modificacion, fecha_alta, colegio_cgae;
 

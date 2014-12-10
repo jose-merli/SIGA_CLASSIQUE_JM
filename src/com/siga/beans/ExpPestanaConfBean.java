@@ -10,6 +10,10 @@ package com.siga.beans;
 
 public class ExpPestanaConfBean extends MasterBean {
     
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -6249108710773741752L;
 	//Variables
     private Integer idInstitucion;
 	private Integer idTipoExpediente;

@@ -6,7 +6,11 @@ import com.siga.general.MasterForm;
 
 public class SIGAMantenimientoCertificadosCamposForm extends MasterForm
 {
-//    private String modo="";
+/**
+	 * 
+	 */
+	private static final long serialVersionUID = 7534362350875502934L;
+	//    private String modo="";
     private String certificado="";
     private String editable="";
     private String idInstitucion="";

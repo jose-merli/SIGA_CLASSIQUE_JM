@@ -11,6 +11,10 @@ import com.siga.general.MasterForm;
 
 public class BusquedaDesignasForm extends MasterForm {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 8029335205674765444L;
 	//Metodos set de los campos del formulario
 	public void setOrden (String valor){		this.datos.put("ORDEN", valor);	}
 	public void setColegiado (String valor){	this.datos.put("COLEGIADO", valor);	}

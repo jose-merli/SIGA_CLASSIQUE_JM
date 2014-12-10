@@ -14,6 +14,11 @@ import com.siga.general.MasterForm;
 */
  public class DefinirMantenimDictamenesEJGForm extends MasterForm{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 8067363594387636022L;
+
 	public String getDescripcion() {							return UtilidadesHash.getString(this.datos,ScsDictamenEJGBean.C_DESCRIPCION);}
 
 	public void setDescripcion(String descripcion) {			UtilidadesHash.set(this.datos, ScsDictamenEJGBean.C_DESCRIPCION, descripcion);}

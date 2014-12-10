@@ -11,6 +11,10 @@ public class EnvClaveProgBean extends MasterBean{
     
 
 
+/**
+	 * 
+	 */
+	private static final long serialVersionUID = 7603684269571009587L;
 private String idTipoInforme;
 private String clave;
 private String tipo;

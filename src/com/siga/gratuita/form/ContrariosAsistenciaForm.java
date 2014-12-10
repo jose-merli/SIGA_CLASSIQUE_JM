@@ -9,6 +9,10 @@ import com.siga.general.MasterForm;
  */
 public class ContrariosAsistenciaForm extends MasterForm {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 841819666864580766L;
 	private String modoPestanha=null, anio=null,numero=null;
 	
 	/**

@@ -10,6 +10,10 @@ public class ScsTelefonosPersonaBean extends MasterBean{
 	
 	/* Variables */ 
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -5198505307959018788L;
 	private Integer	numeroTelefono;
 	private String	nombreTelefono;
 	private Integer	idTelefono;

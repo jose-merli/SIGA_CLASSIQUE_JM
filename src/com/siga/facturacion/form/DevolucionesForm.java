@@ -18,12 +18,15 @@ import org.apache.struts.action.ActionMapping;
 import org.apache.struts.upload.FormFile;
 
 import com.atos.utils.GstDate;
-import com.siga.Utilidades.UtilidadesHash;
 import com.siga.general.MasterForm;
 
 
 public class DevolucionesForm extends MasterForm{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4694376970626570167L;
 	private String idInstitucion="";
 	protected FormFile ruta;
 	private String comisiones="";

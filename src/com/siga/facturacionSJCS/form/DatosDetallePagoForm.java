@@ -9,6 +9,10 @@ import com.siga.general.MasterForm;
 
 public class DatosDetallePagoForm extends MasterForm {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3185032586757090988L;
 	private String idPersona 	   = "IDPERSONA";
 	private String idPago 		   = "IDPAGOSJG";
 	private String idInstitucion   = "IDINSTITUCION";
@@ -19,7 +23,6 @@ public class DatosDetallePagoForm extends MasterForm {
 	private String importeIrpf	   = "IMPORTEIRPF";
 	private String porcentajeIrpf  = "PORCENTAJEIRPF";
 	private String estadoPago  	   = "ESTADOPAGO";
-	private String accion	  	   = "ACCION";
 	private String modoOriginal	   = "MODOORIGINAL";
 	
 	

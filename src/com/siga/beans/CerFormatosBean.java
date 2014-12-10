@@ -2,6 +2,10 @@ package com.siga.beans;
 
 public class CerFormatosBean extends MasterBean
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4921941298071789427L;
 	/* Variables */
 	private Integer idFormato;
 	private String descripcion;

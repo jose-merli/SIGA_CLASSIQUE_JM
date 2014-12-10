@@ -10,6 +10,10 @@ import com.siga.Utilidades.AjaxXMLBuilderValueAnnotation;
 @AjaxXMLBuilderAnnotation
 public class CenPersonaBean extends MasterBean
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4292399225364804072L;
 	// Atributos
 	private Long idPersona;
 	private String nombre;

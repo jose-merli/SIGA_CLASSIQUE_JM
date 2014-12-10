@@ -15,6 +15,10 @@ import java.util.Hashtable;
 
 public class CenHistoricoBean extends MasterBean{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -7269646040586442300L;
 	/* Variables */
 	private Long idPersona;
 	private Integer idInstitucion;

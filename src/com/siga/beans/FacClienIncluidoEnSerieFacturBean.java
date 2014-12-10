@@ -8,6 +8,11 @@ package com.siga.beans;
 
 public class FacClienIncluidoEnSerieFacturBean extends MasterBean {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -134886431880190656L;
+
 	/* Variables */
 	private Integer idInstitucion;
 	

@@ -13,6 +13,10 @@ package com.siga.beans;
  */
 public class ExpRolesBean extends MasterBean {
     
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4549401122050270999L;
 	//Variables
 	private Integer idRol;
 	private String nombre;

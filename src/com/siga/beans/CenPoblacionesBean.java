@@ -19,6 +19,10 @@ import com.siga.Utilidades.AjaxXMLBuilderValueAnnotation;
 @AjaxXMLBuilderAnnotation 
 public class CenPoblacionesBean extends MasterBean {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 9002739930563782286L;
 	/* Variables */
 	private Integer idPartido;
 	private String 	idPoblacion, idProvincia, nombre, ine, idPoblacionMunicipio;

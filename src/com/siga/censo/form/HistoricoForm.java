@@ -18,6 +18,10 @@ import com.siga.beans.*;
 
 public class HistoricoForm extends MasterForm{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 5870352393225465354L;
 	private String fechaInicio=""; 	// Inicio fecha efectiva en busqueda
 	private String fechaFin="";		// Fin fecha efectiva en busqueda
 	

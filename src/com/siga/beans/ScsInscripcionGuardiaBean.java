@@ -13,6 +13,12 @@ import com.siga.gratuita.form.InscripcionTGForm;
 public class ScsInscripcionGuardiaBean extends MasterBean
 {
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 8302011281109780832L;
+
+
+	/**
 	 *  Nombre de Tabla
 	 */
 	static public String T_NOMBRETABLA = "SCS_INSCRIPCIONGUARDIA";

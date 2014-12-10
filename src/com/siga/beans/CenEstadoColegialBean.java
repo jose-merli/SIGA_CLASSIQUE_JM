@@ -14,6 +14,10 @@ package com.siga.beans;
  */
 public class CenEstadoColegialBean extends MasterBean {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3456607275588745681L;
 	/* Variables */
 	private Integer idEstado;
 	private String 	descripcion;

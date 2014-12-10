@@ -6,6 +6,12 @@
 package com.siga.beans;
 
 public class ExpDestinatariosAvisosBean extends MasterBean {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3835401585718067651L;
+
+
 	static public final String TIPODESTINATARIO_CENPERSONA = "CEN_PERSONA";
 
 	

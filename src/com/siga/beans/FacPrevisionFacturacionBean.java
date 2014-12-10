@@ -8,6 +8,11 @@ package com.siga.beans;
 
 public class FacPrevisionFacturacionBean extends MasterBean {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3009451510570550502L;
+
 	/* Variables */
 	private Integer idInstitucion, idEstadoPrevision;
 	

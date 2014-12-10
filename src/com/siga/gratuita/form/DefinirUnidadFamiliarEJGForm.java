@@ -28,6 +28,10 @@ import com.siga.tlds.FilaExtElement;
 */
  public class DefinirUnidadFamiliarEJGForm extends MasterForm{	
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 9169934500658939569L;
 	private List<DefinirUnidadFamiliarEJGForm> unidadFamiliar;
 	private List<ScsEejgPeticionesBean> peticionesEejg;
 	ScsParentescoBean parentesco;

@@ -4,6 +4,10 @@ import com.siga.general.MasterForm;
 
 public class SIGAAsignarUsuariosGrupoForm extends MasterForm
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 2418368828305566809L;
 	private String nombreBusqueda="";
 	private String idGrupoBusqueda="";
 	private String idRolBusqueda="";

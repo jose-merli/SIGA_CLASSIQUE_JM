@@ -14,6 +14,10 @@ import com.siga.general.MasterForm;
  */
 public class EditarConsultaForm extends MasterForm {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -7806325539116092993L;
 	private String idInstitucion="";
 	private String idConsulta="";
 	private String descripcion="";

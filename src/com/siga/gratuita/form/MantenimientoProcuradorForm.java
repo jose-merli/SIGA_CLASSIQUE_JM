@@ -11,6 +11,10 @@ import com.siga.general.MasterForm;
  */
 public class MantenimientoProcuradorForm extends MasterForm {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 966177539549698607L;
 	// METODOS SET
 	public void setIdInstitucionProcurador(String dato) {
 		UtilidadesHash.set(this.datos, ScsProcuradorBean.C_IDINSTITUCION , dato);

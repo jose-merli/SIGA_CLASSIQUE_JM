@@ -10,6 +10,11 @@ public class EnvInformesGenericosBean extends EnvProgramInformesBean {
 	//Variables
     
 
+/**
+	 * 
+	 */
+	private static final long serialVersionUID = 5371949071769271233L;
+
 private String idPlantilla;
 
 	static public final String C_IDPLANTILLA = "IDPLANTILLA";

@@ -14,7 +14,7 @@ public class HcoConfProgrCalendarioForm extends MasterForm {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = -6264202645053613053L;
 	private String idProgrCalendario;
 	private String idConjuntoGuardia;
 	private String idInstitucion;

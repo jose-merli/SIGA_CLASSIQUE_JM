@@ -14,7 +14,11 @@ import com.siga.general.MasterForm;
  */
 public class PermisosConsultaForm extends MasterForm {
 
-//	private String modo="";
+/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4167971616785446698L;
+	//	private String modo="";
     private String modal="";
     private String grupos="";
     private String gruposAntiguos="";

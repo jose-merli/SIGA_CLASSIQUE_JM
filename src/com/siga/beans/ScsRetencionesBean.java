@@ -8,6 +8,10 @@ package com.siga.beans;
  */
 public class ScsRetencionesBean extends MasterBean {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 8182100027666309695L;
 	/* Variables */
 	private String modo;	
 	private Integer idRetencion;	

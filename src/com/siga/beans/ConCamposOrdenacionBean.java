@@ -10,6 +10,10 @@ package com.siga.beans;
  */
 public class ConCamposOrdenacionBean extends MasterBean {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3294963985611952565L;
 	//	Variables
 	private Integer idInstitucion;
 	private Integer idConsulta;

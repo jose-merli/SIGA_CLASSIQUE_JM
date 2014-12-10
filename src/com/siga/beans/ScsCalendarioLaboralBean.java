@@ -6,9 +6,12 @@ package com.siga.beans;
 
 public class ScsCalendarioLaboralBean extends MasterBean {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 6867687878017582014L;
+
 	/* Variables */
-	private String modo;
-	
 	private Integer identificativo,
 				    idinstitucion,
 				    idpartido;

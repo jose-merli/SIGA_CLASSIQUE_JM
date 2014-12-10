@@ -9,6 +9,10 @@ import com.siga.gratuita.util.calendarioSJCS.LetradoInscripcion;
  */
 public class ScsSaltoCompensacionGrupoBean extends MasterBean
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3059555816963731465L;
 	// Campos
 	private Long	idSaltoCompensacionGrupo;
 	private Long	idGrupoGuardia;

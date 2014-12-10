@@ -13,6 +13,10 @@ public class ExpTipoResultadoResolucionBean extends MasterBean {
 
 	//Variables
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -1651916810622219257L;
 	private Integer idTipoResultado;
 	private Integer idInstitucion;
 	private String descripcion;

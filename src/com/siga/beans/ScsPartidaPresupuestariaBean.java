@@ -12,6 +12,10 @@ public class ScsPartidaPresupuestariaBean extends MasterBean{
 	
 	/* Variables */ 
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4840439477606217340L;
 	private Integer		idPartidaPresupuestaria;
 	private String		nombrePartida;
 	private String		descripcion;

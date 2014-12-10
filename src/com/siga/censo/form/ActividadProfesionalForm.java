@@ -14,6 +14,10 @@ import com.siga.general.MasterForm;
  */
  public class ActividadProfesionalForm extends MasterForm {
  	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -5353295441645737878L;
 	public void setIdInstitucion (String dato) { 
  		try {
  			UtilidadesHash.set(this.datos,"IDINSTITUCION", dato);

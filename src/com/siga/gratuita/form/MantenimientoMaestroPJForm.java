@@ -12,6 +12,10 @@ import com.siga.general.MasterForm;
  */
  public class MantenimientoMaestroPJForm extends MasterForm{	
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 5607180377223324424L;
 	// Metodos Set para escribir en una tabla hash datos los campos del formulario.
  	// Hay 1 metodo set por cada campo del formulario.
  	public void setPartidoJudicial (String pj)			{ this.datos.put("PARTIDOJUDICIAL",pj); 			}

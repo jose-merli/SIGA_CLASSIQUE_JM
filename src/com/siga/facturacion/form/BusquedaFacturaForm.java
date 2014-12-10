@@ -15,6 +15,10 @@ import com.siga.general.MasterForm;
  */
 public class BusquedaFacturaForm extends MasterForm 
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3831777869399250036L;
 	private String incluirRegistrosConBajaLogica;
 	
 	

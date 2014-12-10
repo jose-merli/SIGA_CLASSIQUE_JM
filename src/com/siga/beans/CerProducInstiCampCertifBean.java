@@ -2,6 +2,10 @@ package com.siga.beans;
 
 public class CerProducInstiCampCertifBean extends MasterBean
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2280160162500475997L;
 	/* Variables */
 	private Integer idInstitucion;
 	private Integer idTipoProducto;

@@ -13,6 +13,10 @@ package com.siga.beans;
 
 public class PysTipoIvaBean extends MasterBean{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -7167825345146413908L;
 	/* Variables */
 	private Integer idTipoIva;
 	private String 	descripcion;

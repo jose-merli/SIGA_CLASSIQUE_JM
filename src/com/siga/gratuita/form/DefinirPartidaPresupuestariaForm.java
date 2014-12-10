@@ -11,6 +11,10 @@ import com.siga.general.MasterForm;
  */
  public class DefinirPartidaPresupuestariaForm extends MasterForm {	
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1472733069240658238L;
 	// Metodos Set (Formulario (*.jsp))
 	/**
 	 * Almacena en la Hashtable el identificador de una partida 

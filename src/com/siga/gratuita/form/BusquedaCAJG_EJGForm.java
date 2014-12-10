@@ -7,6 +7,11 @@ import com.siga.Utilidades.UtilidadesHash;
  */
 public class BusquedaCAJG_EJGForm extends DefinirEJGForm {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -6470908417696747106L;
+
 	public void setSelDefinitivo(String dato) {
 		UtilidadesHash.set(this.datos, "SELDEFINITIVO", dato);
 	}

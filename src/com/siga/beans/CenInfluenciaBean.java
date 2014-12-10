@@ -10,6 +10,10 @@ public class CenInfluenciaBean extends MasterBean{
 	
 	/* Variables */ 
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8183902011210961412L;
 	private Integer	idPartido;
 	private Integer	idInstitucion;
 	

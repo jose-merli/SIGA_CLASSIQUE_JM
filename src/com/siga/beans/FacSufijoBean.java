@@ -7,9 +7,13 @@ package com.siga.beans;
  */
 public class FacSufijoBean extends MasterBean {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 8845954067325920025L;
 	/* Variables */
 	private Integer idInstitucion, idSufijo;
-	private String 	sufijo=null, concepto=null, defecto=null;
+	private String 	sufijo=null, concepto=null;
 	
 	/* Nombre tabla */
 	static public String T_NOMBRETABLA = "FAC_SUFIJO";
