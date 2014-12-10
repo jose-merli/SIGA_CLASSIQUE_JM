@@ -22,7 +22,6 @@ import org.apache.struts.action.ActionMapping;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
-import com.atos.utils.Row;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.PaginadorCaseSensitiveBind;
 import com.siga.Utilidades.UtilidadesHash;
@@ -30,10 +29,8 @@ import com.siga.Utilidades.UtilidadesNumero;
 import com.siga.administracion.form.InformeForm;
 import com.siga.beans.AdmInformeAdm;
 import com.siga.beans.AdmInformeBean;
-import com.siga.beans.CenPersonaAdm;
 import com.siga.beans.FcsPagoColegiadoBean;
 import com.siga.beans.FcsPagosJGAdm;
-import com.siga.beans.HelperInformesAdm;
 import com.siga.general.EjecucionPLs;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
@@ -249,7 +246,6 @@ public class InformePagosColegiadoAction extends MasterAction {
 				//Si no es la primera llamada, obtengo la página del request y la busco con el paginador
 				AdmInformeAdm adm = new AdmInformeAdm(user);
 				Vector datos = adm.selectGenericoBind(paginador.getQueryOriginal(), paginador.getCodigos());
-				Hashtable<String, Object> datosHashtable = (Hashtable<String, Object>)datos.get(0);
 				//La linea de debajo serviria si no se necesita Orden
 				//String[] cabeceras = UtilidadesHash.getClaves(datosHashtable);
 				String[] cabeceras = new String[9];
@@ -263,7 +259,6 @@ public class InformePagosColegiadoAction extends MasterAction {
 				cabeceras[7] = "IMPORTETOTALRETENCIONES";
 							
 				cabeceras[8] = "IMPORTETOTAL";//IMPORTEBRUTO + TOTALIMPORTEIRPF + IMPORTETOTALRETENCIONES
-				Vector datosFormateados = new Vector();
 				//Como alguno de los metodos set, formatoCampo o redondea esta mal no es posible
 				//que UtilidadesHash.set(filaHashtable, "TOTALIMPORTESJCS", UtilidadesNumero.formatoCampo(UtilidadesNumero.redondea((String)filaHashtable.get("TOTALIMPORTESJCS"), 2))); 
 				//nos guarde la direccion de memoria correcta
@@ -339,8 +334,8 @@ public class InformePagosColegiadoAction extends MasterAction {
 					String importeMvtos = UtilidadesNumero.redondea(UtilidadesHash.getString(filaDetalle,
 			"IMPORTETOTALMOVIMIENTOS"),2);
 					String aux = UtilidadesHash.getString(filaDetalle,"TOTALIMPORTEIRPF");
-					float floatAux = -1*Float.parseFloat(aux);
-					String importeIRPF = UtilidadesNumero.redondea(new Float(floatAux).toString(),2);
+					double dAux = Double.parseDouble(aux);
+					String importeIRPF = String.valueOf(-1 * UtilidadesNumero.redondea(dAux, 2));
 					UtilidadesHash.set(filaDetalle,"TOTALIMPORTEIRPF",UtilidadesNumero.formatoCampo(importeIRPF));
 					
 		//Importe de Retenciones y Total SJCS:
@@ -371,29 +366,6 @@ public class InformePagosColegiadoAction extends MasterAction {
 		}
 
 		return "detallePagoColegiado";
-	}
-
-	private Vector actualizarColegiado(UsrBean usr, String idInstitucion,
-			Vector datos) throws ClsExceptions {
-
-		HelperInformesAdm helperInformes = new HelperInformesAdm();
-
-		CenPersonaAdm cenPersona = new CenPersonaAdm(usr);
-
-		for (int i = 0; i < datos.size(); i++) {
-			Row fila = (Row) datos.get(i);
-
-			Hashtable registro = (Hashtable) fila.getRow();
-
-			String idPersona = (String) registro.get("IDPERSONASJCS");
-			Vector vPersona = cenPersona.getDatosPersonaTag(idInstitucion,
-					idPersona);
-			helperInformes.completarHashSalida(registro, vPersona);
-
-		}
-
-		return datos;
-
 	}
 	
 	private void limpiarFormulario(MasterForm formulario){

@@ -3873,10 +3873,10 @@ function validaFloat(numero){
  * @return num redondeado con dec posiciones decimales
  */
 function roundNumber(num, dec) {
-	var result = Math.round(Math.round(num * Math.pow(10, dec + 1))
-			/ Math.pow(10, 1))
-			/ Math.pow(10, dec);
-	return result;
+	if (num < 0) 
+		return -1 * Math.round(Math.round(-1 * num * Math.pow(10, dec + 1)) / Math.pow(10, 1)) / Math.pow(10, dec);
+	else 
+		return Math.round(Math.round(num * Math.pow(10, dec + 1)) / Math.pow(10, 1)) / Math.pow(10, dec);
 }
 
 /**
