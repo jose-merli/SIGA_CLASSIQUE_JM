@@ -121,45 +121,9 @@ public class PaginadorVector extends Paginador implements IPaginador, Serializab
 				this.paginaFinalCache = this.ultimaPagina;
 			}
 				
+			retorno = obtenerPaginaCache(pagina , pagina == ultimaPagina);
+			paginaActual = pagina;
 			
-			
-			// Comprobamos si está en Caché
-			if (false && (pagina >= this.paginaInicialCache
-					&& pagina <= this.paginaFinalCache)) {
-				retorno = obtenerPaginaCache(pagina - this.paginaInicialCache
-						+ 1, pagina == ultimaPagina);
-				paginaActual = pagina;
-			} else {
-				if(true){
-					retorno = obtenerPaginaCache(pagina , pagina == ultimaPagina);
-					paginaActual = pagina;
-				}else{
-					int rowmax = (pagina + DISTANCIA_PAGINAS_CACHE)
-							* this.numeroRegistrosPagina;
-					int rowmin = (pagina - DISTANCIA_PAGINAS_CACHE - 1)
-							* this.numeroRegistrosPagina + 1;
-	
-					if (rowmin < 0) {
-						rowmin = 1;
-						this.paginaInicialCache = 1;
-					} else {
-						this.paginaInicialCache = pagina - DISTANCIA_PAGINAS_CACHE;
-					}
-	
-					if (rowmax > numeroTotalRegistros) {
-						rowmax = numeroTotalRegistros;
-						this.paginaFinalCache = ultimaPagina;
-					} else {
-						this.paginaFinalCache = pagina + DISTANCIA_PAGINAS_CACHE;
-					}
-	
-					//hago la select para actualizar la caché
-					setCache(rowmin, rowmax);
-					retorno = obtenerPaginaCache(pagina - this.paginaInicialCache
-							+ 1, pagina == ultimaPagina);
-					paginaActual = pagina;
-				}
-			}
 		} catch (Exception e) {
 			throw new ClsExceptions(e, e.getMessage());
 		}

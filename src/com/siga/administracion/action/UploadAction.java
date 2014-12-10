@@ -2,7 +2,6 @@
 package com.siga.administracion.action;
 
 
-import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -68,7 +67,6 @@ public class UploadAction extends Action
 
             String data = null;
 			InputStream stream =null;
-			ByteArrayOutputStream baos = null;
 			OutputStream bos = null;
             try {
                 //retrieve the file data
@@ -94,7 +92,6 @@ public class UploadAction extends Action
             {
 //				close the stream
 				stream.close();
-				baos.close();
                 bos.close();
             }
 

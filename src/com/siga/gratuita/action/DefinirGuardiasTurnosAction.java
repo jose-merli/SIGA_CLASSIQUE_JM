@@ -661,7 +661,7 @@ public class DefinirGuardiasTurnosAction extends MasterAction {
 			miForm.setTurnosPrincipales(alTurnos);
 			
 			// JPT: Obtiene los tipos de guardias
-			List<ScsTiposguardias> listaTiposGuardias = this.obtenerListaTiposGuardias(usr);
+			List<ScsTiposguardias> listaTiposGuardias = DefinirGuardiasTurnosAction.obtenerListaTiposGuardias(usr);
 			miForm.setTiposGuardias(listaTiposGuardias);			
 			
 			miForm.setGuardiasPrincipales(new ArrayList<ScsGuardiasTurnoBean>());

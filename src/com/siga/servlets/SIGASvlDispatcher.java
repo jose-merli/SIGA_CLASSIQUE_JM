@@ -15,9 +15,9 @@ import javax.servlet.http.HttpSession;
 
 import com.atos.utils.ClsLogging;
 import com.atos.utils.ClsMngBBDD;
-import com.atos.utils.UsrBean;
 import com.atos.utils.ColumnConstants;
 import com.atos.utils.TableConstants;
+import com.atos.utils.UsrBean;
 
 /**
  * <p>Title: </p>
@@ -110,14 +110,6 @@ public class SIGASvlDispatcher extends HttpServlet {
     if(usrbean!=null){
       	prof=usrbean.getProfile();
       	ClsLogging.writeFileLog("Perfil SIGA: "+prof+", Proceso SIGA: "+proc+", id SIGA: "+id+", type SIGA: "+type,request,3);
-    } else {
-      	url="/jsp/index.jsp?error=3";
-      	ClsLogging.writeFileLogError("SESION DE USUARIO NO ENCONTRADA!!!",request,3);
-
-      	RequestDispatcher rd = request.getRequestDispatcher(url);
-      	ClsLogging.writeFileLog("Redireccionando a: "+url,request,3);
-      	rd.forward(request, response);
-      	return;
     }
 
     int access_type=0;

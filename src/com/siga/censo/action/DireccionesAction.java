@@ -1,7 +1,6 @@
 
 package com.siga.censo.action;
 
-import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.List;
@@ -35,7 +34,6 @@ import com.siga.beans.CenSoliModiDireccionesAdm;
 import com.siga.beans.CenSoliModiDireccionesBean;
 import com.siga.beans.CenTipoDireccionAdm;
 import com.siga.beans.CenTipoDireccionBean;
-import com.siga.beans.GenParametrosAdm;
 import com.siga.censo.form.DireccionesForm;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
@@ -435,7 +433,6 @@ public class DireccionesAction extends MasterAction
 			UsrBean user=(UsrBean)request.getSession().getAttribute("USRBEAN");		
 			Long idPersona = miForm.getIDPersona();
 			Integer idInstitucionPersona = miForm.getIDInstitucion();			
-			CenClienteAdm clienteAdm = new CenClienteAdm(this.getUserName(request), user, idInstitucionPersona.intValue(), idPersona.longValue());			
 			//CR - Queremos saber si se trata de un Colegiadoo de un No Colegiado. Y si es No colegiado si es tipo Personal (1) o Sociedad (0).
 			String tipoCliente = "";
 			CenNoColegiadoAdm noColAdm = new CenNoColegiadoAdm(user);
@@ -470,7 +467,6 @@ protected String insertar (ActionMapping mapping,
 		//Variables generales
 		String rc = "";
 		UserTransaction t = null; 
-		String idDireccionesCensoWeb="";
 		
 		try
 		{
@@ -478,7 +474,6 @@ protected String insertar (ActionMapping mapping,
 			//obteniendo datos del formulario
 			DireccionesForm miForm = (DireccionesForm) formulario;
 			CenDireccionesBean beanDir = new CenDireccionesBean ();
-			Direccion direccion = new Direccion();
 			UsrBean usr = this.getUserBean (request);
 		
 			t = usr.getTransactionPesada();
@@ -533,7 +528,7 @@ protected String insertar (ActionMapping mapping,
 			}			
 			
 			// Se llama a la interfaz Direccion para insertar una nueva direccion
-			Direccion dirAux = direccion.insertar(beanDir, tiposDir, motivo,Direccion.getListaDireccionesObligatorias(miForm.getTipoAcceso()), request, usr);
+			Direccion dirAux = Direccion.insertar(beanDir, tiposDir, motivo,Direccion.getListaDireccionesObligatorias(miForm.getTipoAcceso()), request, usr);
 
 			//Si se necesita confirmación por parte del usuario se realiza una peticion de pregunta
 			if(dirAux.isConfirmacionPregunta()){
@@ -590,15 +585,12 @@ protected String insertar (ActionMapping mapping,
 		//Variables generales
 		String rc = "";
 		UserTransaction t = null;
-		String idDireccionesCensoWeb="";
-		
 
 		try {
 			
 			//obteniendo datos del formulario
 			DireccionesForm miForm = (DireccionesForm) formulario;
 			CenDireccionesBean beanDir = new CenDireccionesBean ();
-			Direccion direccion = new Direccion();
 			UsrBean usr = this.getUserBean (request);
 			
 			t = usr.getTransactionPesada();
@@ -647,7 +639,7 @@ protected String insertar (ActionMapping mapping,
 			beanDir.setIdDireccion (miForm.getIdDireccion ());
 			beanDir.setOriginalHash ((Hashtable) request.getSession ().getAttribute ("DATABACKUP"));
 			// Se llama a la interfaz Direccion para insertar una nueva direccion
-			Direccion dirAux = direccion.actualizar(beanDir, tiposDir, miForm.getMotivo (),Direccion.getListaDireccionesObligatorias(miForm.getTipoAcceso()), request, usr);
+			Direccion dirAux = Direccion.actualizar(beanDir, tiposDir, miForm.getMotivo (),Direccion.getListaDireccionesObligatorias(miForm.getTipoAcceso()), request, usr);
 
 			//Si se necesita confirmación por parte del usuario se realiza una peticion de pregunta
 			if(dirAux.isConfirmacionPregunta()){
@@ -936,18 +928,9 @@ protected String insertar (ActionMapping mapping,
 	 * Funcion que modifica una direccion o la borra para crear otra y mantener el historico
 	 * @throws ClsExceptions 
 	 */
-	protected String modificar (ActionMapping mapping, 
-			MasterForm formulario, 
-			HttpServletRequest request, 
-			HttpServletResponse response)
-	throws SIGAException, ClsExceptions{
-		String rc = "";
+	protected String modificar (ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException, ClsExceptions{
 		DireccionesForm miForm = (DireccionesForm) formulario;
-		GenParametrosAdm paramAdm = new GenParametrosAdm(this.getUserBean (request));
-		//String idInstitucion = miForm.getIDInstitucion().toString();
-		
 		return modificarDireccion(mapping, miForm, request, response);
-		
 	}
 	
 	/** 
@@ -969,7 +952,6 @@ protected String insertar (ActionMapping mapping,
 		//Variables generales
 		String rc = "";
 		UserTransaction t = null;
-		String idDireccionesCensoWeb="";
 		Long idDireccionAntigua;
 		
 		try
@@ -1054,7 +1036,7 @@ protected String insertar (ActionMapping mapping,
 			
 			List<Integer> tiposDireccionAValidarIntegers = Direccion.getListaDireccionesObligatorias(miForm.getTipoAcceso());
 			// Se llama a la interfaz Direccion para insertar una nueva direccion
-			Direccion dirAux = direccion.insertar(beanDir, tiposDir, motivo,tiposDireccionAValidarIntegers, request, usr); 
+			Direccion dirAux = Direccion.insertar(beanDir, tiposDir, motivo,tiposDireccionAValidarIntegers, request, usr); 
 			
 			//Se llama a la interfaz Direccion para realizar el borrado de la direccion antigua
 			beanDir.setIdDireccion(idDireccionAntigua);

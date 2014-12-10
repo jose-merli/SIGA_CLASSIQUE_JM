@@ -115,7 +115,6 @@ public class ColaGuardiasAction extends MasterAction {
 		Vector vectGuardia = new Vector();
 		ScsGuardiasTurnoBean beanGuardia = new ScsGuardiasTurnoBean();
 		
-		Integer usuario=this.getUserName(request);
 		String institucion =usr.getLocation();
 		String turno =(String)turnoElegido.get("IDTURNO");
 		String guardia=coForm.getIdGuardia();
@@ -192,8 +191,8 @@ public class ColaGuardiasAction extends MasterAction {
 		Vector letradosinscritos = new Vector();
 		String NLetradosInscritos="";
 		 letradosinscritos= InscripcionGuardiaAdm.selectGenerico(InscripcionGuardiaAdm.getQueryNumeroColegiadosIncritos(institucion, turno, guardia,fecha));
-		 if( letradosinscritos!=null  ||  letradosinscritos.size()>0){			 
-			NLetradosInscritos=(String)(((Hashtable)(letradosinscritos.get(0))).get("NLETRADOSINSCRITOS"));
+		 if( letradosinscritos!=null && letradosinscritos.size()>0){			 
+			NLetradosInscritos=(String)(((Hashtable) letradosinscritos.get(0)).get("NLETRADOSINSCRITOS"));
 			request.setAttribute("NLETRADOSINSCRITOS",NLetradosInscritos);	
 		 }else{			
 			request.setAttribute("NLETRADOSINSCRITOS",NLetradosInscritos);	

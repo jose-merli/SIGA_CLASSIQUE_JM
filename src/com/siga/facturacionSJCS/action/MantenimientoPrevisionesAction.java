@@ -508,7 +508,7 @@ public class MantenimientoPrevisionesAction extends MasterAction {
 		
 		//calculamos el nuevo idFacturacion
 		datos.put("IDINSTITUCION", (String)usr.getLocation());
-		facturacionAdm.prepararInsert(datos);
+		FcsFacturacionJGAdm.prepararInsert(datos);
 		
 		//ponemos el campo regularizacion a false
 		datos.put(FcsFacturacionJGBean.C_REGULARIZACION,ClsConstants.DB_FALSE);

@@ -105,14 +105,14 @@ public class CalendarioAutomatico
 		semana = beanGuardiasTurno.getSeleccionLaborables();
 		for (int i=0; i<semana.length(); i++)
 			this.seleccionLaborables.add (new Integer 
-					(this.convertirUnidadesDiasSemana (semana.charAt (i))));
+					(CalendarioAutomatico.convertirUnidadesDiasSemana (semana.charAt (i))));
 		
 		//Seleccion de festivos:
 		this.seleccionFestivos = new Vector ();
 		semana = beanGuardiasTurno.getSeleccionFestivos ();
 		for (int i=0; i<semana.length(); i++)
 			this.seleccionFestivos.add (new Integer 
-					(this.convertirUnidadesDiasSemana (semana.charAt (i))));
+					(CalendarioAutomatico.convertirUnidadesDiasSemana (semana.charAt (i))));
 		
 		//FESTIVOS:
 		this.listaFestivos = 

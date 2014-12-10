@@ -594,7 +594,6 @@ public class FacRegistroFichContaAdm extends MasterBeanAdministrador {
 		String asientoIngresos 	= ""; 
 		String asientoIVA 	    = "";  
 		Vector vLineasFacturas  = null; 
-		Vector vContabilidad    = null;
 		Hashtable hash          = null; 
 		Hashtable laHash        = null;
 		String select 			= null;  
@@ -606,10 +605,6 @@ public class FacRegistroFichContaAdm extends MasterBeanAdministrador {
 		// Beans
 		FacFacturaAdm facturaAdm 	= new FacFacturaAdm(this.usrbean);
 		
-
-        
-		if(vContabilidad !=null && vContabilidad.size()>0)	
-			CONTABILIDAD_IVA = ((GenParametrosBean) vContabilidad.get(0)).getValor();
 		try{
 		    // RGG 21/11/2007
 			select = " SELECT F.IDFACTURA, " +

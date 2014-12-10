@@ -18,18 +18,17 @@ import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.beans.CenPersonaAdm;
-import com.siga.beans.ExpCampoTipoExpedienteAdm;
 import com.siga.beans.ExpExpedienteAdm;
+import com.siga.beans.ExpExpedienteBean;
 import com.siga.beans.GenParametrosAdm;
 import com.siga.beans.ScsAsistenciasAdm;
 import com.siga.beans.ScsAsistenciasBean;
-import com.siga.beans.ExpExpedienteBean;
 import com.siga.beans.ScsDefinirSOJAdm;
 import com.siga.beans.ScsDesignaAdm;
 import com.siga.beans.ScsEJGAdm;
+import com.siga.beans.ScsEJGDESIGNAAdm;
 import com.siga.beans.ScsEJGDESIGNABean;
 import com.siga.beans.ScsSOJBean;
-import com.siga.beans.ScsEJGDESIGNAAdm;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
@@ -46,22 +45,10 @@ public class RelacionadoConSJCSAction extends MasterAction
 			do {
 				miForm = (MasterForm) formulario;
 				if (miForm != null) {
-					
-//					String accion = miForm.getModo();
-//					if (accion == null) {
-//						return super.executeInternal(mapping,formulario,request,response);
-//					}
-//					else {
-//						return super.executeInternal(mapping,formulario,request,response);
-//					}
-					
 					return super.executeInternal(mapping,formulario,request,response);
 				}
 			} while (false);
-
-			if (mapDestino == null)	{ 
-			    throw new ClsExceptions("El ActionMapping no puede ser nulo");
-			}
+			
 			return mapping.findForward(mapDestino);
 		} 
 		catch (SIGAException es) {
@@ -171,7 +158,6 @@ public class RelacionadoConSJCSAction extends MasterAction
 				v2 = exp.getRelacionadoConEjg(idInstitucion, anio, numero, idTipo);
 				for (int  j = 0; j < v2.size(); j++){
 					Hashtable h2 = new Hashtable();
-					Vector vPersona = new Vector();
 					h2 = (Hashtable)v2.get(j);
 					v.add(h2);
 					i++;

@@ -13,22 +13,35 @@
 package com.siga.censo.action;
 
 
-import javax.servlet.http.*;
-import javax.transaction.*;
+import java.util.ArrayList;
+import java.util.Hashtable;
+import java.util.Vector;
 
-import org.apache.struts.action.*;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.transaction.UserTransaction;
+
+import org.apache.struts.action.ActionForm;
+import org.apache.struts.action.ActionForward;
+import org.apache.struts.action.ActionMapping;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.GstDate;
 import com.atos.utils.Row;
 import com.atos.utils.UsrBean;
-import com.siga.Utilidades.UtilidadesFecha;
 import com.siga.Utilidades.UtilidadesString;
-import com.siga.beans.*;
-import com.siga.general.*;
+import com.siga.beans.CenClienteAdm;
+import com.siga.beans.CenClienteBean;
+import com.siga.beans.CenHistoricoAdm;
+import com.siga.beans.CenHistoricoBean;
+import com.siga.beans.CenNoColegiadoAdm;
+import com.siga.beans.CenNoColegiadoBean;
+import com.siga.beans.CenSolicitudesModificacionAdm;
 import com.siga.censo.form.SolicitudesModificacionForm;
-import java.util.*;
+import com.siga.general.MasterAction;
+import com.siga.general.MasterForm;
+import com.siga.general.SIGAException;
 
 
 public class SolicitudesModificacionAction extends MasterAction {
@@ -206,11 +219,9 @@ public class SolicitudesModificacionAction extends MasterAction {
 	protected String insertar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		
 		String result="error";
-		boolean acceso=true;
 		UserTransaction tx=null;
 
 		CenClienteBean beanCli = null;
-		CenNoColegiadoBean beanNoCol = null;
 		CenClienteAdm admCliente;
 		CenNoColegiadoAdm admNoColegiado;
 		
@@ -386,8 +397,6 @@ public class SolicitudesModificacionAction extends MasterAction {
 
 		try{
 			Vector vector=new Vector();
-			
-			UsrBean usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
 		
 			// Manejadores para el formulario y el acceso a las BBDDs
 			SolicitudesModificacionForm form = (SolicitudesModificacionForm) formulario;
@@ -397,8 +406,7 @@ public class SolicitudesModificacionAction extends MasterAction {
 			vector=admin.getSolicitudes(form.getIdInstitucion(),form.getCmbTipoModificacion(),form.getEstadoSolicitudModif(),form.getFechaDesde(),form.getFechaHasta());			
 
 			//mhg Obtengo si es letrado o no la persona
-			CenClienteAdm cliente = new CenClienteAdm(this.getUserBean(request));
-			String esCliente = cliente.getEsCliente(form.getIdPersona(), form.getIdInstitucion());
+			String esCliente = CenClienteAdm.getEsCliente(form.getIdPersona(), form.getIdInstitucion());
 
 			// Paso la busqueda como parametro en el request 
 			request.setAttribute("container", vector);
@@ -428,15 +436,9 @@ public class SolicitudesModificacionAction extends MasterAction {
 		
 		String result="modificarDatos";
 		String modo="";
-		UserTransaction tx = null;
 		
 		try {		
-			Hashtable hash= new Hashtable(); 		
 			Vector camposOcultos=new Vector();
-			CenColegiadoBean original;		
-
-			// Obtengo el userbean
-			UsrBean usr = (UsrBean) request.getSession().getAttribute("USRBEAN");			
  			
 			// Obtengo los datos del formulario
 			SolicitudesModificacionForm miForm = (SolicitudesModificacionForm)formulario;
@@ -478,14 +480,11 @@ public class SolicitudesModificacionAction extends MasterAction {
 		Hashtable hashSol = new Hashtable();
 		
 		try {		
-			Hashtable hashOriginal = new Hashtable(); 		
-			Hashtable hash = new Hashtable();		
 			Vector original;
 			boolean correcto=true;
-			Enumeration listaPeticiones;
 			String[] solicitudes;
 			String peticiones="";
-			int i=0, procesados=0;
+			int i=0;
 			ArrayList noProcesadas=new ArrayList();
 			
 			// Obtengo usuario y creo manejadores para acceder a las BBDD
@@ -531,7 +530,6 @@ public class SolicitudesModificacionAction extends MasterAction {
 						beanHistorico.setDescripcion(hashSol.get("DESCRIPCION").toString());
 						beanHistorico.setMotivo(UtilidadesString.getMensajeIdioma(usr, "censo.solicitudModificacion.motivoGenerico"));
 						admHistorico.insertarRegistroHistorico(beanHistorico, usr);
-						procesados++;															//
 						tx.commit();															//
 					}																			//
 					else{																		//
@@ -593,14 +591,10 @@ public class SolicitudesModificacionAction extends MasterAction {
 		UserTransaction tx = null;
 		
 		try {		
-			Hashtable hashOriginal = new Hashtable(); 		
-			Hashtable hash = new Hashtable();		
-			Vector original;
 			boolean correcto=true;
-			Enumeration listaPeticiones;
 			String[] solicitudes;
 			String peticiones="";
-			int i=0, procesados=0;
+			int i=0;
 			ArrayList noProcesadas=new ArrayList();
 
 			// Obtengo usuario y creo manejadores para acceder a las BBDD
@@ -624,7 +618,6 @@ public class SolicitudesModificacionAction extends MasterAction {
 					///MODIFICACION///////////////////////////////////////////////////////////////	
 					correcto=admin.denegacionSolicitud(solicitudes[i]);//
 					if (correcto){																//
-						procesados++;															//
 						tx.commit();															//
 					}																			//
 					else{																		//

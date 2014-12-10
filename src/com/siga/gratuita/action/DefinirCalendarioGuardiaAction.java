@@ -146,7 +146,6 @@ public class DefinirCalendarioGuardiaAction extends MasterAction
 		//Variables
 		Vector salida = new Vector();
 		String idinstitucion="", idturno="", idguardia="";
-		int numGuardias=0;
 
 		try
 		{
@@ -342,10 +341,9 @@ public class DefinirCalendarioGuardiaAction extends MasterAction
 		ScsCabeceraGuardiasAdm cabecerasAdm = new ScsCabeceraGuardiasAdm(this.getUserBean(request));
 		ScsPermutaGuardiasAdm  permutasAdm= new ScsPermutaGuardiasAdm (this.getUserBean(request));
 
-		String forward = "",nombre="";
+		String forward = "";
 		Vector visibles = new Vector();
 		Vector ocultos = new Vector();
-		Vector cabecera = new Vector();
 		Vector temporal = new Vector();
 		Vector letradoSustituido = new Vector();
 		String fechaInicio="", fechaFin="", numeroColegiado="";
@@ -463,7 +461,6 @@ public class DefinirCalendarioGuardiaAction extends MasterAction
 				String comesustitutucion="";
 				String fechaSustitucion="";
 				String idletradoConfir="";
-				Vector idletradoconfirmador = new Vector();
 				
 				solicitanteHash.put("IDINSTITUCION",idInstitucion);
 				solicitanteHash.put("IDTURNO",idTurno);
@@ -492,7 +489,7 @@ public class DefinirCalendarioGuardiaAction extends MasterAction
 					if((String)((Hashtable)registros.get(0)).get("LETRADOSUSTITUIDO")!=null && !((String)((Hashtable)registros.get(0)).get("LETRADOSUSTITUIDO")).equals("")){					
 						String nombresustitucion=UtilidadesHash.getString((Hashtable)registros.get(0),"LETRADOSUSTITUIDO");						                       
 						 letradoSustituido= cabecerasAdm.selectGenerico(cabecerasAdm.getnombresustituto(nombresustitucion, idInstitucion));						
-						if(letradoSustituido!=null  || letradoSustituido.size()>0){
+						if(letradoSustituido!=null && letradoSustituido.size()>0){
 							nombresustituto=(String)(((Hashtable)(letradoSustituido.get(0))).get("NOMBRE"));
 							ncolegiadoSustituto=(String)(((Hashtable)(letradoSustituido.get(0))).get("NCOLEGIADOSUSTITUTO"));
 							request.setAttribute("LETRADOSUSTITUIDO",nombresustituto);							

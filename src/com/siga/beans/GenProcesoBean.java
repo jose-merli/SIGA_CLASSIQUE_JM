@@ -35,7 +35,7 @@ public class GenProcesoBean extends MasterBean{
 	}
 
 	public void setIdProceso(String valor) {
-		this.map.put(C_IDPROCESO, valor);
+		map.put(C_IDPROCESO, valor);
 	}
 
 	public String getIdModulo() {
@@ -43,7 +43,7 @@ public class GenProcesoBean extends MasterBean{
 	}
 
 	public void setIdModulo(String valor) {
-		this.map.put(C_IDMODULO, valor);
+		map.put(C_IDMODULO, valor);
 	}
 
 	public String getTraza() {
@@ -51,7 +51,7 @@ public class GenProcesoBean extends MasterBean{
 	}
 
 	public void setTraza(String valor) {
-		this.map.put(C_TRAZA, valor);
+		map.put(C_TRAZA, valor);
 	}
 
 	public String getTarget() {
@@ -59,7 +59,7 @@ public class GenProcesoBean extends MasterBean{
 	}
 
 	public void setTarget(String valor) {
-		this.map.put(C_TARGET, valor);
+		map.put(C_TARGET, valor);
 	}
 
 	public String getDescripcion() {
@@ -67,7 +67,7 @@ public class GenProcesoBean extends MasterBean{
 	}
 
 	public void setDescripcion(String valor) {
-		this.map.put(C_DESCRIPCION, valor);
+		map.put(C_DESCRIPCION, valor);
 	}
 
 	public String getTransaccion() {
@@ -75,7 +75,7 @@ public class GenProcesoBean extends MasterBean{
 	}
 
 	public void setTransaccion(String valor) {
-		this.map.put(C_TRANSACCION, valor);
+		map.put(C_TRANSACCION, valor);
 	}
 
 	public String getIdParent() {
@@ -83,7 +83,7 @@ public class GenProcesoBean extends MasterBean{
 	}
 
 	public void setIdParent(String valor) {
-		this.map.put(C_IDPARENT, valor);
+		map.put(C_IDPARENT, valor);
 	}
 
 	public String getNivel() {
@@ -91,11 +91,11 @@ public class GenProcesoBean extends MasterBean{
 	}
 
 	public void setNivel(String valor) {
-		this.map.put(C_NIVEL, valor);
+		map.put(C_NIVEL, valor);
 	}
 
 	public HashMap getMap() {
-		return this.map;
+		return map;
 	}
 	
 	public void setMap(Hashtable hash) {

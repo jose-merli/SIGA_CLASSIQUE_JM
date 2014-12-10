@@ -19,8 +19,6 @@ import com.atos.utils.*;
 public class SIGAProfileAction extends Action {
 
   public SIGAProfileAction()   {
-    Hashtable htrbackup = null;
-    String user = "";
   }
   public Hashtable setDBValues(SIGAProfileForm form, String user)  {
     Hashtable htRecord = form.getData();
@@ -36,10 +34,8 @@ public class SIGAProfileAction extends Action {
   public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest req, HttpServletResponse res)
       throws ServletException {
     String result = "";
-    SIGAProfileForm profileForm = (SIGAProfileForm)form;
     String user = "";
     try {
-      SIGAProfile status = new SIGAProfile(req);
       HttpSession ses = req.getSession();
       UsrBean usrbean = (UsrBean)ses.getAttribute("USRBEAN");
       if(usrbean == null)
@@ -191,7 +187,6 @@ public class SIGAProfileAction extends Action {
       result = "recNoExist";
       req.setAttribute("descOperation", "error.messages.noupdated");
       ClsLogging.writeFileLog("result = "+result,req,3);
-      ActionForward actionforward = mapping.findForward(result);
       throw new ClsExceptions(ex, ex.toString(), "Profiles","113","GEN00","9");
     }
     return mapping.findForward(result);
@@ -233,10 +228,6 @@ public class SIGAProfileAction extends Action {
           ClsLogging.writeFileLog("result =  "+result,req,3);
           req.setAttribute("descOperation", "OK");
         }
-      } else {
-        result = "recNoExist";
-        req.setAttribute("descOperation", "error.messages.deleted");
-        ClsLogging.writeFileLog("result = "+result,req,3);
       }
     } catch(ClsExceptions ex) {
       ex.setErrorType("22");
@@ -321,7 +312,6 @@ public class SIGAProfileAction extends Action {
     SIGAProfileForm profileForm = (SIGAProfileForm)form;
     String pk = req.getParameter("profileId");
     profile.setProfileId(pk);
-    SIGAProfile auxProfile = new SIGAProfile(req);
     Table gtTable = new Table(req, TableConstants.TABLE_PROFILE, "com.com.siga.generalRequirements.accessControl.profiles.SIGAProfile");
     gtTable.addFilter(ColumnConstants.FN_PROFILE_ID_PROFILE, pk);
     Vector v = gtTable.search();

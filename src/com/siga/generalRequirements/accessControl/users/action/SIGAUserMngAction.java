@@ -18,17 +18,20 @@ import org.apache.struts.action.ActionMapping;
 import org.redabogacia.sigaservices.app.util.ReadProperties;
 import org.redabogacia.sigaservices.app.util.SIGAReferences;
 
-import com.siga.generalRequirements.accessControl.SIGAGrDDBBObject;
-import com.siga.generalRequirements.accessControl.users.SIGAUser;
-import com.siga.generalRequirements.accessControl.users.SIGAUserMng;
-import com.siga.generalRequirements.accessControl.users.form.SIGAUserMngForm;
-
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsLogging;
 import com.atos.utils.ColumnConstants;
 import com.atos.utils.Crypter;
+import com.atos.utils.LdapUserEJ;
+import com.atos.utils.LdapUserEJHome;
+import com.atos.utils.Mngjndi;
+import com.atos.utils.PairsKeys;
 import com.atos.utils.Table;
 import com.atos.utils.TableConstants;
+import com.atos.utils.UsrBean;
+import com.siga.generalRequirements.accessControl.SIGAGrDDBBObject;
+import com.siga.generalRequirements.accessControl.users.SIGAUserMng;
+import com.siga.generalRequirements.accessControl.users.form.SIGAUserMngForm;
 
 
 
@@ -71,7 +74,6 @@ public class SIGAUserMngAction extends Action {
                                HttpServletResponse res)
       throws ServletException  {
 
-    Hashtable htrbackup=null;
     UserTransaction tx ;
 
     Hashtable hash=new Hashtable(); // Hashtable de profiles
@@ -80,11 +82,9 @@ public class SIGAUserMngAction extends Action {
     String user="";
 
     String result ="";
-    SIGAUserMngForm statusForm = (SIGAUserMngForm) form;
     try{
-      SIGAUser status = new SIGAUser(req);
       HttpSession ses= req.getSession();
-      com.atos.utils.UsrBean usrbean = (com.atos.utils.UsrBean)ses.getAttribute("USRBEAN");
+      UsrBean usrbean = (UsrBean)ses.getAttribute("USRBEAN");
       if (usrbean==null)
         throw new ClsExceptions("usrbean is null");
 
@@ -165,17 +165,17 @@ public class SIGAUserMngAction extends Action {
   protected void importUser(HttpServletRequest req,String userId,
                             HttpSession ses, String airForce, String location)
       throws Exception {
-    com.atos.utils.LdapUserEJ ldapUser=null;
+    LdapUserEJ ldapUser=null;
 
     //ldapUser=new PSSCLdapUser(userId,null,req);
 
     /******** RELEVANTE ********/
-    com.atos.utils.Mngjndi jnd = new com.atos.utils.Mngjndi();
-    com.atos.utils.LdapUserEJHome home = jnd.lookupHome();
+    Mngjndi jnd = new Mngjndi();
+    LdapUserEJHome home = jnd.lookupHome();
     Object obje = home.create(userId,null,req.getHeader("user-agent"),
                               req.getRemoteAddr());
-    ldapUser = (com.atos.utils.LdapUserEJ)
-               jnd.narrow(obje, com.atos.utils.LdapUserEJ.class);
+    ldapUser = (LdapUserEJ)
+               jnd.narrow(obje, LdapUserEJ.class);
     /******** RELEVANTE ********/
     String INITCTX = "";
     String MY_HOST[] = {""};
@@ -328,9 +328,6 @@ public class SIGAUserMngAction extends Action {
     ClsLogging.writeFileLog("UserMant : Inside update "+vec.size(),req,3);
     HttpSession ses = req.getSession();
 
-    if (vec==null) {
-      resultOk = "recNoExist";
-    } else {
       SIGAUserMng user=(SIGAUserMng)vec.elementAt(0);
       Hashtable htr = user.getData();
       user.setDataBackup(htr);
@@ -358,7 +355,7 @@ public class SIGAUserMngAction extends Action {
             ClsLogging.writeFileLog("ve = "+ve.size(),req,3);
             java.util.Enumeration en=ve.elements();
             while (en.hasMoreElements()){
-              com.atos.utils.PairsKeys obj = (com.atos.utils.PairsKeys)en.nextElement();
+              PairsKeys obj = (PairsKeys)en.nextElement();
               rec=rec+", "+obj.getIdObj();
             }
 
@@ -391,7 +388,6 @@ public class SIGAUserMngAction extends Action {
         throw new ClsExceptions(ex.toString(),
                                     "User management" ,"514","GEN00","9");
       }
-    }
     return resultOk;
   }
   protected ActionForward performEnable(ActionMapping mapping, ActionForm form,
@@ -404,7 +400,6 @@ public class SIGAUserMngAction extends Action {
     try {
       String desoper="OK";
       String result="";
-      Table gtTable=null;
 
       String userId=(String)req.getParameter("userId");
       if (userId==null)
@@ -663,18 +658,18 @@ public class SIGAUserMngAction extends Action {
       throws ClsExceptions {
     Vector vec = new Vector();
     try {
-      com.atos.utils.LdapUserEJ ldapUser=null;
+      LdapUserEJ ldapUser=null;
 /*
       ldapUser=new PSSCLdapUser(null,null,req);
       */
 
       /******** RELEVANTE ********/
-      com.atos.utils.Mngjndi jnd = new com.atos.utils.Mngjndi();
-      com.atos.utils.LdapUserEJHome home = jnd.lookupHome();
+      Mngjndi jnd = new Mngjndi();
+      LdapUserEJHome home = jnd.lookupHome();
       Object obje = home.create(null,null,req.getHeader("user-agent"),
                                 req.getRemoteAddr());
-      ldapUser = (com.atos.utils.LdapUserEJ)
-                 jnd.narrow(obje, com.atos.utils.LdapUserEJ.class);
+      ldapUser = (LdapUserEJ)
+                 jnd.narrow(obje, LdapUserEJ.class);
       /******** RELEVANTE ********/
       String INITCTX = "";
       String MY_HOST[] = {""};

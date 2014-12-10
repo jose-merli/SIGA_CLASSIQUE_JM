@@ -208,7 +208,6 @@ public class Plantilla {
 	public Vector obtencionModelosFacturas(String institucion) throws ClsExceptions, SIGAException {
 		
 		File directorioPlantillas=null; 		
-		BufferedReader bufferLectura=null;
 		Vector modelos = new Vector();
 		
 		try{			
@@ -254,7 +253,6 @@ public class Plantilla {
 						}
 				    							
 			    	}catch(Exception _ex) {
-						bufferLectura.close();
 						throw new ClsExceptions(_ex,"Error de insercion en direcetorio");						
 					}
 			    }				    	
@@ -643,11 +641,7 @@ public class Plantilla {
 
 			if (etiqueta.equalsIgnoreCase("NOMBRE_APELLIDOS_ETIQUETA")){
 				String nombreApellidos = ((datos.getNombre()==null)?"":(String)datos.getNombre())+" "+((datos.getApellidos1()==null)?"":(String)datos.getApellidos1())+" "+((datos.getApellidos2()==null)?"":(String)datos.getApellidos2()); 
-				if (nombreApellidos==null){
-					resultado="";	
-				}else{
-					resultado=nombreApellidos;
-				}
+				resultado=nombreApellidos;
 			}
 			if (etiqueta.equalsIgnoreCase("DIRECCION_ETIQUETA")){
 				if (datos.getDomicilio()==null){
@@ -1470,7 +1464,6 @@ public class Plantilla {
 
 		File plantillaFactura=null; 
 		File plantillaLinea=null;
-		int contador=0;
 		BufferedReader bufferLectura=null;
 		BufferedReader bufferLecturaLinea=null;
 		String linea;
@@ -1565,7 +1558,6 @@ public class Plantilla {
 				    		else{
 				    			printer.println(linea);
 				    		}
-				    		contador++;
 							linea=bufferLectura.readLine();
 				    	}
 				        printer.flush();
@@ -1613,7 +1605,6 @@ public class Plantilla {
 		
 		File plantillaComunicacion=null; 
 		//File plantillaLinea=null;
-		int contador=0;
 		int numeroLineas=15;
 		BufferedReader bufferLectura=null;
 		//BufferedReader bufferLecturaLinea=null;
@@ -1732,7 +1723,6 @@ public class Plantilla {
 				    		else{
 				    			printer.println(linea);
 				    		}
-				    		contador++;
 							linea=bufferLectura.readLine();
 				    	}
 				        printer.flush();
@@ -1785,7 +1775,6 @@ public class Plantilla {
 
 		File plantillaSolicitud=null; 
 		
-		int contador=0;
 		BufferedReader bufferLectura=null;
 		BufferedReader bufferLecturaLinea=null;
 		String linea;
@@ -1925,7 +1914,6 @@ public class Plantilla {
 				    		else{
 				    			printer.println(linea);
 				    		}
-				    		contador++;
 							linea=bufferLectura.readLine();
 				    	}
 				        printer.flush();
@@ -2010,8 +1998,6 @@ public class Plantilla {
 		        printer.close();
 		    	
 			}catch(IOException _ex) {
-				printer.flush();
-				printer.close();
 				throw new SIGAException("facturacion.nuevoFichero.literal.errorInsercion",_ex);						
 			}catch(Exception _ex) {
 				printer.flush();
@@ -2084,8 +2070,6 @@ public class Plantilla {
 		        printer.close();
 		    	
 			}catch(IOException _ex) {
-				printer.flush();
-				printer.close();
 				throw new SIGAException("facturacion.nuevoFichero.literal.errorInsercion",_ex);						
 			}catch(Exception _ex) {
 				printer.flush();
@@ -2139,8 +2123,6 @@ public class Plantilla {
 		        printer.close();
 			}
 	    	catch(IOException _ex) {
-				printer.flush();
-				printer.close();
 				throw new SIGAException("facturacion.nuevoFichero.literal.errorInsercion",_ex);						
 			}
 	    	catch(Exception _ex) {
@@ -2182,8 +2164,6 @@ public class Plantilla {
 		        printer.close();
 		    	
 			}catch(IOException _ex) {
-				printer.flush();
-				printer.close();
 				throw new SIGAException("facturacion.nuevoFichero.literal.errorInsercion",_ex);						
 			}catch(Exception _ex) {
 				printer.flush();
@@ -2215,7 +2195,6 @@ public class Plantilla {
 
 		File plantillaSolicitud=null; 
 		
-		int contador=0;
 		BufferedReader bufferLectura=null;
 		String linea;
 		PrintWriter printer=null;
@@ -2265,7 +2244,6 @@ public class Plantilla {
 				    		else{
 				    			printer.println(linea);
 				    		}
-				    		contador++;
 							linea=bufferLectura.readLine();
 				    	}
 				        printer.flush();
@@ -2322,8 +2300,6 @@ public class Plantilla {
 		        printer.close();
 		    	
 			}catch(IOException _ex) {
-				printer.flush();
-				printer.close();
 				throw new SIGAException("facturacion.nuevoFichero.literal.errorInsercion",_ex);						
 			}catch(Exception _ex) {
 				printer.flush();
@@ -2365,8 +2341,6 @@ public class Plantilla {
 		        printer.close();
 		    	
 			}catch(IOException _ex) {
-				printer.flush();
-				printer.close();
 				throw new SIGAException("facturacion.nuevoFichero.literal.errorInsercion",_ex);						
 			}catch(Exception _ex) {
 				printer.flush();

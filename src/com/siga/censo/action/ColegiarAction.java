@@ -1,11 +1,9 @@
 
 package com.siga.censo.action;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.Hashtable;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
@@ -207,9 +205,6 @@ public class ColegiarAction extends MasterAction
 			
 			//comprobando que la persona no esta ya dada de alta 
 			//  como colegiado en el colegio seleccionado
-			String sComunitario = "0";
-			if(comunitario ==true)
-				sComunitario = "1";
 			if (admCol.existeColegiado 
 					(new Integer (colegio),numero,numero) != null)
 				throw new SIGAException ("error.message.NumColegiadoRepetido");
@@ -324,9 +319,8 @@ public class ColegiarAction extends MasterAction
 			Vector listaBeanDireccion = admDir.select (hashDir);
 
 			if ((listaBeanDireccion != null) && (listaBeanDireccion.size () > 0)) {
-				Long idDireccionDestino, idDireccionOrigen;
+				Long idDireccionOrigen;
 				CenDireccionesBean beanDir;
-				Direccion direccion;
 				
 				for (int i=0; i < listaBeanDireccion.size (); i++) {
 					
@@ -334,7 +328,6 @@ public class ColegiarAction extends MasterAction
 					beanDir = (CenDireccionesBean) listaBeanDireccion.get (i);
 					if(beanDir.getFechaBaja() == null || beanDir.getFechaBaja().equalsIgnoreCase("")){
 						idDireccionOrigen = beanDir.getIdDireccion ();
-						direccion = new Direccion();
 						String tiposDir ="";
 						
 						//buscando los tipos de la direccion del consejo
@@ -362,7 +355,7 @@ public class ColegiarAction extends MasterAction
 							//Insertamos en el colegio
 							beanDir.setIdInstitucion (new Integer (colegio));
 							
-							direccion.insertar(beanDir, tiposDir, "",null, null, user);
+							Direccion.insertar(beanDir, tiposDir, "",null, null, user);
 							
 							//enlazando la direccion de Consejo con la del Colegio
 							beanDir = (CenDireccionesBean) listaBeanDireccion.get (i);
@@ -371,7 +364,7 @@ public class ColegiarAction extends MasterAction
 							beanDir.setIdDireccion (idDireccionOrigen);
 							beanDir.setIdInstitucionAlta (new Integer (colegio));
 							
-							direccion.actualizar(beanDir, "", null,null, null, user);
+							Direccion.actualizar(beanDir, "", null,null, null, user);
 						}
 					}					
 				} //for

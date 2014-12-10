@@ -52,10 +52,8 @@ public class SIGAPasswordManagementAction extends Action {
   public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest req, HttpServletResponse res)
       throws ServletException {
     String result = "";
-    SIGAPasswordManagementForm passwordForm = (SIGAPasswordManagementForm)form;
     String user = "";
     try  {
-      SIGAPasswordManagement status = new SIGAPasswordManagement(req);
       HttpSession ses = req.getSession();
       UsrBean usrbean = (UsrBean)ses.getAttribute("USRBEAN");
       if(usrbean == null)
@@ -230,11 +228,6 @@ public class SIGAPasswordManagementAction extends Action {
         ses.setAttribute("htrbackup", htr);
         ClsLogging.writeFileLog("result =  "+result,req,3);
         req.setAttribute("descOperation", "OK");
-      } else {
-        result = "recNoExist";
-        req.setAttribute("descOperation", "error.messages.deleted");
-        ClsLogging.writeFileLog("result = "+result,req,3);
-        return mapping.findForward(result);
       }
     } catch(ClsExceptions ex) {
       ex.setErrorType("22");

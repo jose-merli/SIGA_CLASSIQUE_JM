@@ -172,20 +172,9 @@ public class InformesFacturacionMultipleAction extends MasterAction
 				request.setAttribute("rutaFichero", fichero.getAbsolutePath());			
 				request.setAttribute("borrarFichero", "false");			
 				request.setAttribute("generacionOK","OK");
-				salida = "descargaFichero";
-			}
-			else{
+				salida = "descarga";
+			} else{
 				throw new SIGAException("facturacion.informes.facturasEmitidas.generarInforme.error");
-			}
-			if(fichero!= null){
-				request.setAttribute("nombreFichero", fichero.getName());
-				request.setAttribute("rutaFichero", fichero.getAbsolutePath());			
-				request.setAttribute("borrarFichero", "false");			
-				request.setAttribute("generacionOK","OK");
-				salida= "descarga";
-			}
-			else{
-				return exitoModalSinRefresco("facturacion.informes.facturasEmitidas.generarInforme.error", request);
 			}
 		}
 		catch (Exception e) { 

@@ -74,7 +74,6 @@ public class Row implements Serializable {
 			try 
 			{
 				Connection con = null;
-				boolean found = false;
 				Statement st = null;
 				ResultSet rs = null;
 				String sqlStatement = "select VALOR from "+TableConstants.TABLE_PARAMETERS+" where "+
@@ -727,7 +726,6 @@ public class Row implements Serializable {
 	{
 		boolean thowsExc=false;
 		Connection con = null;
-		int deletedRecords = 0;
 		Statement st = null;
 		try 
 		{
@@ -778,7 +776,6 @@ public class Row implements Serializable {
 	{
 		boolean thowsExc=false;
 		Connection con = null;
-		int deletedRecords = 0;
 		PreparedStatement st = null;
 		try 
 		{
@@ -1550,16 +1547,6 @@ public class Row implements Serializable {
 		/******************************************/
 		
 		Vector vect=null;
-		
-		if (htend==null) {
-			ClsLogging.writeFileLog("(COMPARACIÓN) La Hashtable a insertar está vacía", this.request, 3);
-			ClsExceptions psscExrow = new ClsExceptions("(COMPARACIÓN) La Hashtable a insertar está vacía");
-			psscExrow.setErrorType("0");
-			psscExrow.setMsg("(COMPARACIÓN) La Hashtable a insertar está vacía");
-			psscExrow.setParam("Comparando Integridad de Datos");
-			psscExrow.setErrorCode("UPDCOMPARE");
-			throw psscExrow;
-		}
 		try {
 			ClsMngData mngData = new ClsMngData();
 			//vect=mngData.compareHashtables(this.htorigin,htend,this.request);
@@ -1942,8 +1929,6 @@ public class Row implements Serializable {
 		String sqlWhere = (String) v.get(0);
 		sql += sqlWhere;
 		codigos = (Hashtable) v.get(1);
-		
-		Hashtable htend=new Hashtable();
 		
 		Connection connec = null;
 		

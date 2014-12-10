@@ -1,7 +1,5 @@
 package com.siga.gratuita.action;
 
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Vector;
@@ -16,7 +14,6 @@ import org.apache.struts.action.ActionMapping;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
-import com.atos.utils.GstDate;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.beans.CenColegiadoAdm;
@@ -110,12 +107,10 @@ public class ColaOficiosAction extends MasterAction {
 		Hashtable turnoElegido = (Hashtable)ses.getAttribute("turnoElegido");
 		UsrBean usr = (UsrBean)ses.getAttribute("USRBEAN");
 		
-		Integer usuario=this.getUserName(request);
 		String institucion =usr.getLocation();
 		String turno =(String)turnoElegido.get("IDTURNO");
 		String fecha  = coForm.getFechaConsulta();
 		fecha = (fecha!=null&&!fecha.trim().equals(""))?fecha:null;
-		ScsTurnoAdm turnoAdm = new ScsTurnoAdm(this.getUserBean(request));
 		ScsSaltosCompensacionesAdm saltosCompensacionesAdm = new ScsSaltosCompensacionesAdm(this.getUserBean(request));
 		
 		//Cargar último letrado
@@ -130,7 +125,7 @@ public class ColaOficiosAction extends MasterAction {
 		Vector letradosinscritos = new Vector();
 		String NLETRADOSTURNO="";
 		 letradosinscritos= InscripcionTurnoAdm.selectGenerico(InscripcionTurnoAdm.getQueryNumeroColegiadosIncritos(institucion, turno,fecha));
-		 if( letradosinscritos!=null  ||  letradosinscritos.size()>0){			 
+		 if( letradosinscritos!=null && letradosinscritos.size()>0){			 
 			NLETRADOSTURNO=(String)(((Hashtable)(letradosinscritos.get(0))).get("NLETRADOSTURNO"));
 			request.setAttribute("NLETRADOSTURNO",NLETRADOSTURNO);	
 		 }else{			

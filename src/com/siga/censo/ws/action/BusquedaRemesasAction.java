@@ -63,9 +63,6 @@ public class BusquedaRemesasAction extends MasterAction {
 			}
 
 			// Redireccionamos el flujo a la JSP correspondiente
-			if (mapDestino == null)	{ 
-			    throw new ClsExceptions("El ActionMapping no puede ser nulo");
-			}
 			return mapping.findForward(mapDestino);
 		} catch (SIGAException es) {
 			throw es;

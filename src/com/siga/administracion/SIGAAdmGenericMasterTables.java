@@ -3,10 +3,13 @@ package com.siga.administracion;
 
 import java.util.Hashtable;
 import java.util.Vector;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.transaction.SystemException;
 import javax.transaction.UserTransaction;
+
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
@@ -15,12 +18,10 @@ import org.apache.struts.action.ActionMapping;
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsLogging;
-
+import com.atos.utils.PairsKeys;
 import com.atos.utils.Row;
 import com.atos.utils.UsrBean;
 import com.siga.administracion.form.SIGAAdmGenericMTForm;
-
-import javax.transaction.SystemException;
 
 /**
  * <p>Title: Propulsion Support System Core</p>
@@ -53,7 +54,6 @@ public class SIGAAdmGenericMasterTables extends Action {
   public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) {
 	Hashtable table = null;
 	String forward = "";
-	Vector v = new Vector ();
 	Hashtable ht = new Hashtable();
 	String user="";
 
@@ -333,9 +333,7 @@ public class SIGAAdmGenericMasterTables extends Action {
   private String update(HttpServletRequest req, SIGAAdmGenericMTForm form, SIGAMasterTable manager, String user) throws ClsExceptions {
 	String result = "updatedOk";
 	HttpSession ses = req.getSession();
-	com.atos.utils.UsrBean usrbean =(com.atos.utils.UsrBean)ses.getAttribute("USRBEAN");
-//	UserTransaction tx = usrbean.getTransaction();
-	String access = usrbean.getAccessType();
+	UsrBean usrbean =(UsrBean)ses.getAttribute("USRBEAN");
 	String tabName = req.getParameter("tableName");
 	boolean updatedOk;
 	ClsLogging.writeFileLog("Inside updating ",req,10);
@@ -360,7 +358,7 @@ public class SIGAAdmGenericMasterTables extends Action {
 			ClsLogging.writeFileLog("ve = "+ve.size(),req,10);
 			java.util.Enumeration en=ve.elements();
 			while (en.hasMoreElements()){
-			  com.atos.utils.PairsKeys obj = (com.atos.utils.PairsKeys)en.nextElement();
+			  PairsKeys obj = (PairsKeys)en.nextElement();
 			  rec=rec+", "+obj.getIdObj();
 			}
 		  }
@@ -406,9 +404,8 @@ public class SIGAAdmGenericMasterTables extends Action {
   private String insert(HttpServletRequest req, SIGAAdmGenericMTForm form, SIGAMasterTable manager) throws ClsExceptions{
 	String result = "insertedOk";
 	HttpSession ses = req.getSession();
-	com.atos.utils.UsrBean usrbean =(com.atos.utils.UsrBean)ses.getAttribute("USRBEAN");
+	UsrBean usrbean = (UsrBean)ses.getAttribute("USRBEAN");
 	UserTransaction tx = usrbean.getTransaction();
-	String access = usrbean.getAccessType();
 	String tabName = req.getParameter("tableName");
 	try {
 	  if (usrbean!=null){
@@ -421,8 +418,6 @@ public class SIGAAdmGenericMasterTables extends Action {
 		  result = "exception";
 		  tx.rollback();
 		}
-	  }else if (access.equals("READ")){
-		req.setAttribute("disabled","true");
 	  }
 	}
 	catch (ClsExceptions ex) {
@@ -446,9 +441,7 @@ public class SIGAAdmGenericMasterTables extends Action {
   public String deleteTraductionRecord (HttpServletRequest req, SIGAAdmGenericMTForm form, SIGAMasterTable manager) throws ClsExceptions {
 	String result = "deletedOk";
 	HttpSession ses = req.getSession();
-	com.atos.utils.UsrBean usrbean =(com.atos.utils.UsrBean)ses.getAttribute("USRBEAN");
-	UserTransaction tx = usrbean.getTransaction();
-	String access = usrbean.getAccessType();
+	UsrBean usrbean =(UsrBean)ses.getAttribute("USRBEAN");
 	String tabName = req.getParameter("tableName");
 
 	try {

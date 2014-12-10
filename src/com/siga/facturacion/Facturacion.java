@@ -938,7 +938,6 @@ public class Facturacion {
 		
 		UsrBean userbean = this.usrbean;
 		
-		File ficFOP=null;
 		int salida = 0;
 		boolean existeAlgunErrorPdf = false;
 		boolean existeAlgunErrorEnvio = false;
@@ -1214,10 +1213,6 @@ public class Facturacion {
 				log.writeLogFactura("PDF/ENVIO","N/A","N/A","message.facturacion.error.generacion.envio.factura"+e.getLiteral(userbean.getLanguage()));
 			else
 				throw e;
-			
-			if (ficFOP!=null && ficFOP.exists()){
-				ficFOP.delete();
-			}
 			existeAlgunErrorEnvio = true;
 			existeAlgunErrorPdf = true;
 			//throw e;
@@ -1233,9 +1228,6 @@ public class Facturacion {
 				throw new SIGAException(msj);
 			
 			}
-			if (ficFOP!=null && ficFOP.exists())
-				ficFOP.delete();
-			
 			
 			existeAlgunErrorEnvio = true;
 			existeAlgunErrorPdf = true;

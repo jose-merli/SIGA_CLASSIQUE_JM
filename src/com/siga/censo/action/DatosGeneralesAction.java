@@ -66,7 +66,6 @@ import com.siga.beans.VleLetradosSigaAdm;
 import com.siga.censo.form.BusquedaCensoForm;
 import com.siga.censo.form.DatosGeneralesForm;
 import com.siga.censo.form.DireccionesForm;
-import com.siga.general.CenVisibilidad;
 import com.siga.general.EjecucionPLs;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
@@ -294,10 +293,6 @@ public class DatosGeneralesAction extends MasterAction {
 				forward = "sociedadSJ_inicio";
 				
 				//Calculo un nuevo posible numero de registro:
-				String [] resultadoPL = new String[3];
-				tx.begin();
-				//resultadoPL = EjecucionPLs.ejecutarPLCalcularNumRegistro(user.getLocation());
-				tx.commit();
 				miform.setSociedadSJ(ClsConstants.DB_FALSE);
 				miform.setSociedadSP(ClsConstants.DB_FALSE);
 				
@@ -379,8 +374,7 @@ public class DatosGeneralesAction extends MasterAction {
 
 	protected String altaNoColegiado (ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException 
 	{
-		String forward="inicio", accionPestanha=null, idPersona=null, idInstitucion=null;
-		UsrBean user = null;
+		String forward="inicio", accionPestanha=null;
 		
 		try {
 			DatosGeneralesForm miform = (DatosGeneralesForm)formulario;			
@@ -390,7 +384,6 @@ public class DatosGeneralesAction extends MasterAction {
 			Vector vTipos = new Vector();
 			vTipos=cenTipoDirAdm.select("");
 			Hashtable hTipoDir=new Hashtable();
-			Hashtable hTipoDirSel=new Hashtable();
 			if ( (vTipos != null) && (vTipos.size() > 0) )
 				for (int i = 1; i <= vTipos.size(); i++) {
 					CenTipoDireccionBean tipoDir = (CenTipoDireccionBean) vTipos.get(i-1);
@@ -405,7 +398,6 @@ public class DatosGeneralesAction extends MasterAction {
 			miform.setAccion(accionPestanha);
 			miform.setModo(accionPestanha);
 			//Para saber si debemos cargar en la pestanha el jsp de colegiados/personal o el de no colegiados de Sociedad SJ:
-			String tipo = request.getParameter("tipo");
 			request.setAttribute("modoPestanha",accionPestanha);
 			
 			ArrayList list = new ArrayList();
@@ -414,12 +406,6 @@ public class DatosGeneralesAction extends MasterAction {
 			dirForm.setIdDireccion(new Long(-1));
 			list.add(dirForm);			
 			miform.setDirecciones(list);			
-
-			user = (UsrBean) request.getSession().getAttribute("USRBEAN");
-
-			// compruebo que vienen idpersona e idinstitucion
-			idPersona = miform.getIdPersona();
-			idInstitucion = miform.getIdInstitucion();			
 			
 			forward = "altaNoColegiado";
 
@@ -744,8 +730,6 @@ public class DatosGeneralesAction extends MasterAction {
 					if (beanNoColegiado.getContadorNumReg()!=null){
 					miform.setContadorNumRegSJ(beanNoColegiado.getContadorNumReg().toString());
 					}else{
-						//miform.setContadorNumRegSJ("");
-						GestorContadores gcSJ2 = new GestorContadores(this.getUserBean(request));
 		        		
 		        		//Obtenemos los datos de la tabla de contadores sin pasarle el prefijo y el sufijo del formulario (datos originales)	
 		        			Hashtable contadorTablaHashSJ2=gcSJ.getContador(Integer.valueOf(miform.getIdInstitucion()),ClsConstants.SOCIEDADSJ);
@@ -855,17 +839,6 @@ public class DatosGeneralesAction extends MasterAction {
 		 throwExcp("messages.general.error",new String[] {"modulo.censo"},e,null);
    	   }
 	}
-	
-	
-	/*
-	 * obtienen la visibilidad para el usuario 
-	 */
-	private String obtenerVisibilidadUsuario(HttpServletRequest req) throws ClsExceptions 
-	{
-		UsrBean user = (UsrBean) req.getSession().getAttribute("USRBEAN");
-		String idInstitucion=user.getLocation();
-		return CenVisibilidad.getVisibilidadInstitucion(idInstitucion);
-	}
 
 	/**
 	 * Metodo para modificar los datos generales de un no colegiado de tipo personal.
@@ -902,11 +875,6 @@ public class DatosGeneralesAction extends MasterAction {
 		    String pathImagenes = "";
 		    String nombreFoto = "";
 		    
-		    // obtencion del path app desde tabla parametros
-		    GenParametrosAdm paramAdm = new GenParametrosAdm(this.getUserBean(request));    
-		    //pathImagenes = paramAdm.getValor(miForm.getIdInstitucion(),ClsConstants.MODULO_CENSO,ClsConstants.PATH_APP, null);
-			//pathImagenes += File.separator + ClsConstants.RELATIVE_PATH_FOTOS;
-			
 			ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
 			pathImagenes = rp.returnProperty("directorios.carpeta.fotos"); 
 		    
@@ -1312,16 +1280,12 @@ public class DatosGeneralesAction extends MasterAction {
 		    if (nombreFoto!=null) {
 	    		hash.put(CenClienteBean.C_FOTOGRAFIA, nombreFoto);			
 			} 
-			else{
-				hash.put(CenClienteBean.C_FOTOGRAFIA, "");	
-			}
 		    
 			// Comienzo control de transacciones
 			tx = usr.getTransactionPesada();
 			tx.begin();	
 
 			CenPersonaBean perBean = null;
-			String idinstitucion = miForm.getIdInstitucion();
 			CenPersonaAdm perAdm = new CenPersonaAdm(this.getUserBean(request));
 			long idPersonaValor=0;
 			Vector personas = new Vector();
@@ -1337,7 +1301,6 @@ public class DatosGeneralesAction extends MasterAction {
 					if(stipoIdenti.equals(ClsConstants.TIPO_IDENTIFICACION_OTRO))
 					{
 						String subNumIdentificacion = numIdentificacion.substring(0, 8);
-						String p = numIdentificacion.substring(8);
 						int num = new Integer(numIdentificacion.substring(8)).intValue();					
 						num++;
 						String numfinal=new Integer(num).toString();
@@ -1427,7 +1390,6 @@ public class DatosGeneralesAction extends MasterAction {
 		            		  msj += "-"+nombrePersona+" "+apellido1Persona+" "+apellido2Persona+". "+ "\u00BFDesea"+"Continuar\u003F";
 		            	  }
 		            	  // para los datos anteriores
-		            	  Hashtable datosGeneralesAnteriores = new Hashtable();
 		            	  if (resultado!=null && resultado.size()>0) {
 		            		  request.setAttribute("CenResultadoDatosGenerales",resultado);
 		            		  request.setAttribute ("msj", msj);					
@@ -1531,13 +1493,8 @@ public class DatosGeneralesAction extends MasterAction {
 			hash = this.prepararFormatosFechas(hash);
 			hash = this.controlFormatosCheck(hash);
 
-    		String numIdentificacion = miForm.getNumIdentificacion();
     		String idInstitucion = usr.getLocation();
     		hash.put("IDINSTITUCION", idInstitucion);
-
-		    String pathImagenes = "";
-		    String nombreFoto = "";
-		    
 
 			hash.remove(CenClienteBean.C_FOTOGRAFIA);
     		
@@ -1590,7 +1547,6 @@ public class DatosGeneralesAction extends MasterAction {
    		    ///////////////////////////////////////////////////////////////////////////
    		 
    		    if(miForm.getIdTipoDireccion()!=null && !miForm.getIdTipoDireccion().equals("")){
-   		    	Direccion direccion = new Direccion();
 	   		    CenDireccionesBean beanDir = new CenDireccionesBean ();
 				beanDir.setCodigoPostal (miForm.getCodigoPostal ());
 				beanDir.setCorreoElectronico (miForm.getCorreoElectronico ());
@@ -1634,7 +1590,7 @@ public class DatosGeneralesAction extends MasterAction {
 				}
 				List<Integer> tiposDireccionAValidarIntegers = Direccion.getListaDireccionesObligatorias(ClsConstants.TIPO_ACCESO_PESTANAS_NOCOLEGIADO);
 				// Se llama a la interfaz Direccion para insertar una nueva direccion
-				direccion.insertar(beanDir, tiposDir, motivo,tiposDireccionAValidarIntegers, null, usr);
+				Direccion.insertar(beanDir, tiposDir, motivo,tiposDireccionAValidarIntegers, null, usr);
 				
 				request.setAttribute("idDireccion",beanDir.getIdDireccion().toString());   		    
    		    }

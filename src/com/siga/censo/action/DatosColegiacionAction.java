@@ -147,8 +147,6 @@ public class DatosColegiacionAction extends MasterAction {
 			UsrBean user=(UsrBean)request.getSession().getAttribute("USRBEAN");		
 			String accion = (String)request.getParameter("accion");
 			String idInstitucion=user.getLocation();
-			Integer idInst=new Integer(idInstitucion);
-			String fechaActualiz="";
 			
 	//		 Obtengo el identificador de persona, la accion y el identificador de institucion del cliente
 			Long idPersona = new Long(request.getParameter("idPersona"));
@@ -279,7 +277,6 @@ public class DatosColegiacionAction extends MasterAction {
 				CenPersonaAdm personaAdm= new CenPersonaAdm(this.getUserBean(request));
 				Hashtable hashPersona=new Hashtable();
 				
-				CenPersonaBean personaBean = new CenPersonaBean();
 				hashPersona.put(CenPersonaBean.C_IDPERSONA, request.getParameter("idPersona"));
 				Vector vPersonaOld=personaAdm.selectByPK(hashPersona);
 				CenPersonaBean beanPersona = (CenPersonaBean)vPersonaOld.elementAt(0);
@@ -327,17 +324,13 @@ public class DatosColegiacionAction extends MasterAction {
 	protected String buscarDatosColegiacion(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		
 		String result = "abrirDatosColegiacion";
-		UserTransaction tx = null;
 		Vector datosEstado = null;
-		Vector vEstado;
 
 		try { 
-			DatosColegiacionForm miForm = (DatosColegiacionForm)formulario;
 			// Obtengo usuario y creo manejadores para acceder a las BBDD
 			String accion = (String)request.getParameter("accion");
 			UsrBean usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
 			CenClienteAdm clienteAdm =new CenClienteAdm(this.getUserBean(request));
-			CenColegiadoAdm colegiadoAdm = new CenColegiadoAdm(this.getUserBean(request));
 			String idInstitucion=usr.getLocation();
 			Long idPersona = new Long(request.getParameter("idPersona"));
 			datosEstado=clienteAdm.getDatosColegiacion(idPersona,idInstitucion, usr.getLanguage());
@@ -393,9 +386,8 @@ public class DatosColegiacionAction extends MasterAction {
 					Row fila = (Row) datosEstado.get(i);
 					String fechaEstado = GstDate.getFormatedDateShort(usr.getLanguage(),fila.getString("FECHAESTADO"));
 					if(fechaEstado != null & !fechaEstado.equals("")){
-						GstDate gstDate = new GstDate();
 						
-						if(gstDate.compararFechas(fechaEstado, anio_control) >= 0){
+						if(GstDate.compararFechas(fechaEstado, anio_control) >= 0){
 							Vector datos =  coleAdm.getDatosColegialesPersonaInstitucion(fila.getString("IDINSTITUCION"), idPersona);
 							
 							switch (Integer.parseInt(fila.getString("IDESTADOCOLEGIAL"))) {
@@ -534,7 +526,6 @@ public class DatosColegiacionAction extends MasterAction {
 				CenPersonaAdm personaAdm= new CenPersonaAdm(this.getUserBean(request));
 				Hashtable hashPersona=new Hashtable();
 				
-				CenPersonaBean personaBean = new CenPersonaBean();
 				hashPersona.put(CenPersonaBean.C_IDPERSONA, request.getParameter("idPersona"));
 				Vector vPersonaOld=personaAdm.selectByPK(hashPersona);
 				CenPersonaBean beanPersona = (CenPersonaBean)vPersonaOld.elementAt(0);
@@ -576,8 +567,6 @@ public class DatosColegiacionAction extends MasterAction {
 	protected String nuevo(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		
 		String result = "nuevo";
-		Hashtable original=new Hashtable();	
-		Vector datosEstado;	
 		try { 
 			DatosColegiacionForm form = (DatosColegiacionForm) formulario;
 
@@ -602,9 +591,6 @@ public class DatosColegiacionAction extends MasterAction {
 				nombre=form.getNombre();
 				numero=form.getNumero();
 			}
-			UsrBean user=(UsrBean)request.getSession().getAttribute("USRBEAN");			
-			
-			CenDatosColegialesEstadoAdm admin=new CenDatosColegialesEstadoAdm(this.getUserName(request),user,idInstitucionPersona,idPersona);			
 			
 			// Mostrar valores del formulario en MantenimientoProductos (posible traslado a editar o abrir avanzado)
 			
@@ -667,9 +653,6 @@ public class DatosColegiacionAction extends MasterAction {
 			CenDatosColegialesEstadoAdm admin=new CenDatosColegialesEstadoAdm(this.getUserBean(request));
 			CenHistoricoAdm adminHist=new CenHistoricoAdm(this.getUserBean(request));			
  			
-			// Obtengo los datos del formulario
-			DatosColegiacionForm miForm = (DatosColegiacionForm) formulario;
-
 			camposOcultos = (Vector)formulario.getDatosTablaOcultos(0);		
 
 			// Cargo la tabla hash con los valores del formulario para insertar en la BBDD
@@ -781,7 +764,6 @@ public class DatosColegiacionAction extends MasterAction {
 			// Obtengo el UserBean y el identificador de la institucion
 			UsrBean user=(UsrBean)request.getSession().getAttribute("USRBEAN");			
 			String idInstitucion=user.getLocation();
-			Integer idInst=new Integer(idInstitucion);
 
 			String accion;
 			accion = "editar";

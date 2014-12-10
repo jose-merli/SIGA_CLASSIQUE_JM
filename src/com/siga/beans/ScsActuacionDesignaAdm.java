@@ -228,9 +228,7 @@ public class ScsActuacionDesignaAdm extends MasterBeanAdministrador {
 	
 	public Hashtable prepararInsert (Hashtable entrada)throws ClsExceptions 
 	{
-		String values;	
 		RowsContainer rc = null;
-		int contador = 0;
 		
 		try { rc = new RowsContainer(); }
 		catch(Exception e) { e.printStackTrace(); }
@@ -748,26 +746,11 @@ public class ScsActuacionDesignaAdm extends MasterBeanAdministrador {
 				
 				if(acreditacionesPendientesList==null || acreditacionesPendientesList.size()==0){
 					//si no hay mas actuaciones no aparece en la vista
-					if(false){
-//					if(tmActuaciones.size()==1){
-						boolean isPteValidar = false;
-						for(ActuacionDesignaForm actuacion:actuacionesProcedimientoList ){
-							isPteValidar = actuacion.getValidada().equals(ClsConstants.DB_FALSE);
-							if(isPteValidar)
-								break;
-						}
-						if(!isPteValidar&&isMostrarJustificacionesPtes)
-							itActuaciones.remove();
-					}else{
-						boolean isPteValidar = false;
-						for(ActuacionDesignaForm actuacion:actuacionesProcedimientoList ){
-							isPteValidar = actuacion.getValidada().equals(ClsConstants.DB_FALSE);
-							if(isPteValidar&&!isAgunaActuacionPte)
-								isAgunaActuacionPte = true;
-								
-						}
-						
-						
+					boolean isPteValidar = false;
+					for(ActuacionDesignaForm actuacion:actuacionesProcedimientoList ){
+						isPteValidar = actuacion.getValidada().equals(ClsConstants.DB_FALSE);
+						if(isPteValidar&&!isAgunaActuacionPte)
+							isAgunaActuacionPte = true;
 					}
 				}else{
 					isAgunaActuacionPte = true;

@@ -1643,9 +1643,6 @@ public class UtilidadesString {
 			 if (jsonKey == null){
 				 jsonKey = "";
 			 }
-			 if (jsonKey == null){
-				 jsonKey = "";
-			 }
 			 if (!"".equals(jsonKey)){
 				 jsonString = "{\""+jsonKey.toLowerCase()+"\":\""+jsonValue+"\"}";
 			 }

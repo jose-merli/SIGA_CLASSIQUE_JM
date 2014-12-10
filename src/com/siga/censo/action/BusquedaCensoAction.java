@@ -47,7 +47,6 @@ import com.siga.beans.CenTipoDireccionBean;
 import com.siga.beans.GenParametrosAdm;
 import com.siga.beans.VleLetradosSigaAdm;
 import com.siga.censo.form.BusquedaCensoForm;
-import com.siga.censo.form.BusquedaClientesForm;
 import com.siga.censo.form.DireccionesForm;
 import com.siga.general.CenVisibilidad;
 import com.siga.general.MasterAction;
@@ -196,8 +195,6 @@ public class BusquedaCensoAction extends MasterAction {
 			//BusquedaCensoForm miForm = (BusquedaCensoForm)request.getSession().getAttribute("BusquedaCensoForm");
 			UsrBean usr = this.getUserBean(request);
 			
-			CenPersonaAdm adminPer=new CenPersonaAdm(usr);
-//			String dni = miForm.getNif();
 			//Comprobamos si es cliente nuestro, si no es lo introducimos en cenNOcolegiado
    			CenClienteAdm clienteAdm = new CenClienteAdm(usr);
    			
@@ -233,7 +230,6 @@ public class BusquedaCensoAction extends MasterAction {
 			// Obtengo los datos del formulario
 	     	BusquedaCensoForm miForm = (BusquedaCensoForm)formulario;
 			UsrBean usr = this.getUserBean(request);
-			CenPersonaAdm adminPer=new CenPersonaAdm(usr);
    			CenClienteAdm clienteAdm = new CenClienteAdm(usr);   			
    			CenClienteBean cli = null;
    			UserTransaction t = null; 
@@ -256,7 +252,6 @@ public class BusquedaCensoAction extends MasterAction {
 				//Solo se modifica/inserta direccion a los nuevos letrados o letrados que vienen de otro colegio
 				if(miForm.getIdInstitucion() != null && (!miForm.getIdInstitucion().equals(usr.getLocation()) || miForm.getIdDireccion().equals("-1"))){
 				
-					Direccion direccion = new Direccion();
 					t = usr.getTransactionPesada();
 					t.begin ();
 					CenDireccionesBean beanDir = new CenDireccionesBean ();
@@ -297,7 +292,7 @@ public class BusquedaCensoAction extends MasterAction {
 					if(miForm.getDirecciones()!= null && miForm.getDirecciones().equals("-1")){
 						// Se llama a la interfaz Direccion para insertar una nueva direccion
 						
-						Direccion dirAux = direccion.insertar(beanDir, tiposDir, "",Direccion.getListaDireccionesObligatorias(ClsConstants.TIPO_ACCESO_PESTANAS_NOCOLEGIADO), request, usr);
+						Direccion dirAux = Direccion.insertar(beanDir, tiposDir, "",Direccion.getListaDireccionesObligatorias(ClsConstants.TIPO_ACCESO_PESTANAS_NOCOLEGIADO), request, usr);
 						
 						//Si se necesita confirmación por parte del usuario se realiza una peticion de pregunta
 						if(dirAux.isConfirmacionPregunta()){
@@ -360,15 +355,10 @@ public class BusquedaCensoAction extends MasterAction {
 			
 			// Obtengo usuario y creo manejadores para acceder a las BBDD
 			UsrBean usr = this.getUserBean(request);
-			Direccion direccion = new Direccion();
 			CenClienteAdm adminCli=new CenClienteAdm(usr);
 			CenClienteBean beanCli = new  CenClienteBean();
 			String institucion =  usr.getLocation();
 			beanCli =  adminCli.insertNoColegiadoCenso ( request, new Long(miForm.getIdPersona()),institucion, miForm.getTratamiento());
-			String mensInformacion = "messages.inserted.success"; 
-			if (!adminCli.getError().equals("")) {
-				mensInformacion = adminCli.getError();
-			}
 
 			tx = usr.getTransaction();			
 			tx.begin();
@@ -423,7 +413,7 @@ public class BusquedaCensoAction extends MasterAction {
 			}
 			
 			// Se llama a la interfaz Direccion para insertar una nueva direccion
-			direccion.insertar(beanDir, tiposDir, "",Direccion.getListaDireccionesObligatorias(ClsConstants.TIPO_ACCESO_PESTANAS_NOCOLEGIADO), null, usr);
+			Direccion.insertar(beanDir, tiposDir, "",Direccion.getListaDireccionesObligatorias(ClsConstants.TIPO_ACCESO_PESTANAS_NOCOLEGIADO), null, usr);
 				
 			//confirmando las modificaciones de BD
 			tx.commit();	
@@ -459,7 +449,6 @@ public class BusquedaCensoAction extends MasterAction {
 			
 			// Obtengo usuario y creo manejadores para acceder a las BBDD
 			UsrBean usr = this.getUserBean(request);
-			Direccion direccion = new Direccion();
 			CenClienteAdm adminCli=new CenClienteAdm(usr);
 			CenClienteBean beanCli = new  CenClienteBean();
 			String institucion =  miForm.getIdInstitucion();
@@ -518,7 +507,7 @@ public class BusquedaCensoAction extends MasterAction {
 			String tiposDir = "3";
 			
 			// Se llama a la interfaz Direccion para insertar una nueva direccion
-			direccion.insertar(beanDir, tiposDir, "", Direccion.getListaDireccionesObligatorias(ClsConstants.TIPO_ACCESO_PESTANAS_NOCOLEGIADO),request, usr);
+			Direccion.insertar(beanDir, tiposDir, "", Direccion.getListaDireccionesObligatorias(ClsConstants.TIPO_ACCESO_PESTANAS_NOCOLEGIADO),request, usr);
 			
 			request.setAttribute("idDireccion",beanDir.getIdDireccion().toString());
 			
@@ -686,7 +675,6 @@ public class BusquedaCensoAction extends MasterAction {
 			if (vOcultos.size()==3)
 				tipo = (String)vOcultos.get(2);
 			
-			UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");
 			String[] pestanasOcultas=new String [1];
 			Integer tipoAcceso = new Integer(ClsConstants.TIPO_ACCESO_PESTANAS_NOCOLEGIADO);
 			
@@ -706,10 +694,6 @@ public class BusquedaCensoAction extends MasterAction {
 			if (tipoCliente.equals(ClsConstants.TIPO_CLIENTE_COLEGIADO) || tipoCliente.equals(ClsConstants.TIPO_CLIENTE_COLEGIADO_BAJA)) {
 				tipoAcceso = new Integer(ClsConstants.TIPO_ACCESO_PESTANAS_COLEGIADO);
 			} else {
-				//tipoAcceso = new Integer(ClsConstants.TIPO_ACCESO_PESTANAS_NOCOLEGIADO);
-				CenPersonaAdm admPer = new CenPersonaAdm(this.getUserBean(request));
-				CenPersonaBean beanPer = admPer.getIdentificador(new Long(idPersona));
-
 				Hashtable  claveh=new Hashtable();
 				claveh.put(CenClienteBean.C_IDPERSONA,idPersona);
 				claveh.put(CenClienteBean.C_IDINSTITUCION,idInstitucion);
@@ -826,12 +810,6 @@ public class BusquedaCensoAction extends MasterAction {
 			if (tipoCliente.equals(ClsConstants.TIPO_CLIENTE_COLEGIADO) || tipoCliente.equals(ClsConstants.TIPO_CLIENTE_COLEGIADO_BAJA)) {
 				tipoAcceso = new Integer(ClsConstants.TIPO_ACCESO_PESTANAS_COLEGIADO);
 			}else{
-				
-			  
-				//tipoAcceso = new Integer(ClsConstants.TIPO_ACCESO_PESTANAS_NOCOLEGIADO);
-				CenPersonaAdm admPer = new CenPersonaAdm(this.getUserBean(request));
-				CenPersonaBean beanPer = admPer.getIdentificador(new Long(idPersona));
-				
 				Hashtable  claveh=new Hashtable();
 				claveh.put(CenClienteBean.C_IDPERSONA,idPersona);
 				claveh.put(CenClienteBean.C_IDINSTITUCION,idInstitucion);
@@ -925,7 +903,6 @@ public class BusquedaCensoAction extends MasterAction {
 			HttpServletResponse response) throws SIGAException 
 	{
 		String destino = "";
-		Vector v = new Vector();
 		try {
 		
 			BusquedaCensoForm miform = (BusquedaCensoForm)formulario;
@@ -1078,7 +1055,6 @@ public class BusquedaCensoAction extends MasterAction {
 				
 				
 				if (paginador!=null&& paginador.getNumeroTotalRegistros()>0){
-					int totalRegistros = paginador.getNumeroTotalRegistros();
 					databackup.put("paginador",paginador);
 					Vector datos = paginador.obtenerPagina(1);
 					request.setAttribute("paginaSeleccionada", paginador.getPaginaActual());

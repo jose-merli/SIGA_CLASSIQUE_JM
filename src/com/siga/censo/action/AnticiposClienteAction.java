@@ -19,7 +19,6 @@ import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsLogging;
 import com.atos.utils.GstStringTokenizer;
-import com.atos.utils.Row;
 import com.siga.Utilidades.PaginadorBind;
 import com.siga.Utilidades.UtilidadesNumero;
 import com.siga.Utilidades.UtilidadesString;
@@ -27,19 +26,15 @@ import com.siga.beans.CenClienteAdm;
 import com.siga.beans.CenColegiadoAdm;
 import com.siga.beans.CenColegiadoBean;
 import com.siga.beans.CenPersonaAdm;
-import com.siga.beans.FacFacturaAdm;
-import com.siga.beans.FacFacturaBean;
 import com.siga.beans.GenParametrosAdm;
 import com.siga.beans.PysAnticipoLetradoAdm;
 import com.siga.beans.PysAnticipoLetradoBean;
 import com.siga.beans.PysLineaAnticipoAdm;
-import com.siga.beans.PysPeticionCompraSuscripcionBean;
 import com.siga.beans.PysServicioAnticipoAdm;
 import com.siga.beans.PysServicioAnticipoBean;
 import com.siga.beans.PysServiciosInstitucionAdm;
 import com.siga.beans.PysServiciosInstitucionBean;
 import com.siga.censo.form.AnticiposClienteForm;
-import com.siga.censo.form.FacturasClienteForm;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
@@ -281,7 +276,6 @@ public class AnticiposClienteAction extends MasterAction {
 			
 			// Fijamos los datos del anticipo
 			PysAnticipoLetradoBean bean  = new PysAnticipoLetradoBean();
-			PysAnticipoLetradoAdm adm    = new PysAnticipoLetradoAdm(this.getUserBean(request));
 			
 			Vector vOcultos = form.getDatosTablaOcultos(0);
 			// obtener idpersona
@@ -434,8 +428,6 @@ public class AnticiposClienteAction extends MasterAction {
 	 * @exception  ClsExceptions  En cualquier caso de error
 	 */
 	protected String ver(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
-		String destino = "";
-		
 		try{	
 		    AnticiposClienteForm form = (AnticiposClienteForm)formulario;
 		    PysAnticipoLetradoAdm adm=new PysAnticipoLetradoAdm(this.getUserBean(request));
@@ -477,13 +469,8 @@ public class AnticiposClienteAction extends MasterAction {
 		    form.setCategoriaServicio("");
 		    form.setTipoServicio("");
 		    form.setNombreServicio("");
-		    
-		    PysAnticipoLetradoAdm adm=new PysAnticipoLetradoAdm(this.getUserBean(request));
-		    PysLineaAnticipoAdm admLineas=new PysLineaAnticipoAdm(this.getUserBean(request));
-			
 
-	     } 	
-		 catch (Exception e) {
+	     } catch (Exception e) {
 			throwExcp("messages.general.error",new String[] {"modulo.censo"},e,null);
 	   	 }
 
@@ -632,7 +619,6 @@ public class AnticiposClienteAction extends MasterAction {
 			
 			Vector vOcultos = form.getDatosTablaOcultos(0);
 			// obtener idtiposervicio, idservicio, idservicioinstitucion
-			String idAnticipo = (String)vOcultos.get(2); 
 			
 			bean.setIdInstitucion(this.getIDInstitucion(request));
 			bean.setIdPersona(new Long(form.getIdPersona()));
@@ -688,17 +674,11 @@ public class AnticiposClienteAction extends MasterAction {
 		Long idPersona = (Long) request.getAttribute("idPersona");
 		if (idPersona == null){
 			idPersona = new Long (request.getParameter("idPersona"));
-			if (idPersona == null){
-				idPersona = (Long) request.getSession().getAttribute("IDPERSONA");
-			}
 		}
 		
 		Integer idInstitucion = (Integer) request.getAttribute("idInstitucion");
 		if(idInstitucion == null){
 			idInstitucion = new Integer(request.getParameter("idInstitucion"));	
-			if(idInstitucion == null){
-				idInstitucion = (Integer) request.getSession().getAttribute("IDINSTITUCION");
-			}
 		}
 		
 		request.getSession().setAttribute("IDPERSONA",idPersona);

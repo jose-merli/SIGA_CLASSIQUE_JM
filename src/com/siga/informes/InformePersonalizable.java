@@ -2,11 +2,7 @@ package com.siga.informes;
 
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.FileWriter;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -76,14 +72,14 @@ public class InformePersonalizable extends MasterReport
 						listaFicheros.addAll(this.generarInformeDOC(informe, filtrosInforme, usr));	
 					} catch (SIGAException e) {
 						if(e.getLiteral().equals("noExistePlantilla")){
-							listaFicheros.addAll(this.generarInformeXLS(informe, filtrosInforme,null, usr));
+							listaFicheros.addAll(InformePersonalizable.generarInformeXLS(informe, filtrosInforme,null, usr));
 						}else
 							throw e; 
 							
 					}
 					
 				} else if (informe.getTipoformato().equalsIgnoreCase(AdmInformeBean.TIPOFORMATO_EXCEL)) {
-					listaFicheros.addAll(this.generarInformeXLS(informe, filtrosInforme,null, usr));
+					listaFicheros.addAll(InformePersonalizable.generarInformeXLS(informe, filtrosInforme,null, usr));
 				} else if (informe.getTipoformato().equalsIgnoreCase(AdmInformeBean.TIPOFORMATO_XML)) {
 //					llamada
 					String claseJava = informe.getClaseJava();
@@ -101,7 +97,7 @@ public class InformePersonalizable extends MasterReport
 					}
 					
 				} else {
-					listaFicheros.addAll(this.generarInformeXLS(informe, filtrosInforme,null, usr));
+					listaFicheros.addAll(InformePersonalizable.generarInformeXLS(informe, filtrosInforme,null, usr));
 				}
 			}
 			File ficheroSalida = getFicheroSalida(listaFicheros, tipoInformeBean, usr);
@@ -295,7 +291,6 @@ public class InformePersonalizable extends MasterReport
 		// obteniendo ruta de almacenamiento
 		String idinstitucionInforme = informe.getIdInstitucion().toString();
 		String idinstitucion = usr.getLocation();
-		String idiomainforme = usr.getLanguageExt();
 		ReadProperties rp = new ReadProperties(
 				SIGAReferences.RESOURCE_FILES.SIGA);
 		
@@ -610,7 +605,6 @@ public class InformePersonalizable extends MasterReport
 
 	public File getFicheroGenerado(List<InformeForm> informesForms, Vector datos,String[] columnas, UsrBean userBean) throws ClsExceptions, SIGAException{
 		ArrayList<File> listaFicheros = new ArrayList<File>();
-		String idInstitucion = userBean.getLocation();
 		AdmTipoInformeAdm admT = new AdmTipoInformeAdm(userBean);
 		AdmTipoInformeBean tipoInformeBean = admT.obtenerTipoInforme(AdmTipoInformeBean.TIPOINFORME_CONSULTAS);
 		boolean isGeneradoFicheroExcelDefecto = false;

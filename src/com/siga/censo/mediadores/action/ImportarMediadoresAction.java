@@ -16,7 +16,6 @@ import org.redabogacia.sigaservices.app.services.cen.MediadoresService;
 import org.redabogacia.sigaservices.app.vo.cen.MediadorCSVVo;
 
 import com.atos.utils.ClsExceptions;
-import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesBDAdm;
 import com.siga.Utilidades.paginadores.PaginadorVector;
 import com.siga.beans.CenInstitucionAdm;
@@ -58,13 +57,11 @@ public class ImportarMediadoresAction extends MasterAction {
 				return super.executeInternal(mapping,formulario,request,response);				
 			}
 
-			// Redireccionamos el flujo a la JSP correspondiente
-			if (mapDestino == null)	{ 
-			    throw new ClsExceptions("El ActionMapping no puede ser nulo");
-			}
 			return mapping.findForward(mapDestino);
+			
 		} catch (SIGAException es) {
 			throw es;
+			
 		} catch (Exception e) {
 			throw new SIGAException("messages.general.error",e,new String[] {"modulo.censo"});
 		}
@@ -123,8 +120,6 @@ public class ImportarMediadoresAction extends MasterAction {
 		String mensaje = "messages.cargaFichero.success";
 
 		try {
-			
-			UsrBean usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
 			MediadoresImportForm mediadoresImportForm = (MediadoresImportForm) formulario;
 			
 			FormFile formFile = mediadoresImportForm.getFile();
@@ -163,7 +158,6 @@ public class ImportarMediadoresAction extends MasterAction {
 	private String buscarPor (ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response, List<MediadorCSVVo> datos) throws ClsExceptions, SIGAException {
 		
 		try {
-			MediadoresImportForm form = (MediadoresImportForm) formulario;			
 			HashMap databackup = new HashMap();
 
 			if (request.getSession().getAttribute(DATAPAGINADOR) != null) {

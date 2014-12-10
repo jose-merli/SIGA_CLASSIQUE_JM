@@ -343,8 +343,6 @@ public class FcsRegistroFichContaAdm extends MasterBeanAdministrador{
 		
 		try
 		{
-			String idcontabilidad 	= beanContab.getIdContabilidad().toString();
-
 			// PREPARAMOS EL FICHERO
 			// Se crea el directorio en el servidor web.
 		    ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
@@ -491,16 +489,15 @@ public class FcsRegistroFichContaAdm extends MasterBeanAdministrador{
 		String asientoContable 	= ""; // Obtener de bd.
 		
 		// Variables
-		Vector vResultado = null, vPagos = null, vContabilidad = null;
+		Vector vPagos = null;
 		Hashtable hash = null, laHash = null;
-		String select = null, sql = null, imp = null, importeIva = null;
+		String select = null, sql = null;
 		
 		Vector vAsiento8=new Vector();
 		Vector vAsiento8Persona=new Vector();
 
 		// Beans
 		FcsPagosJGAdm pagoAdm 	= new FcsPagosJGAdm(this.usrbean);
-		if(vContabilidad !=null && vContabilidad.size()>0)	CONTABILIDAD_IVA = ((GenParametrosBean) vContabilidad.get(0)).getValor();
 		int contador = 0;             
         Hashtable codigos = new Hashtable();
 		
@@ -557,7 +554,6 @@ public class FcsRegistroFichContaAdm extends MasterBeanAdministrador{
 				// PARA CADA PAGO BUSCO LAS PERSONAS (PORQUE LOS PAGOS SON DE MUCHOS LETRADOS)
 				hash = (Hashtable) vPagos.get(x);
 				String idpago=(String)hash.get("IDPAGO");
-				String fechapago=(String)hash.get("FECHAESTADO");
 				int xx=0;
 
 				// BUSCO A LAS PERSONAS IMPLICADAS EN EL PAGO

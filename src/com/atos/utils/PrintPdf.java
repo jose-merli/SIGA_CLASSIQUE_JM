@@ -1,10 +1,23 @@
 package com.atos.utils;
 
-import javax.print.*;
-import javax.print.attribute.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FilenameFilter;
+import java.util.Date;
+import java.util.StringTokenizer;
 
-import java.io.*;
-import java.util.*;
+import javax.print.Doc;
+import javax.print.DocFlavor;
+import javax.print.DocPrintJob;
+import javax.print.PrintService;
+import javax.print.PrintServiceLookup;
+import javax.print.SimpleDoc;
+import javax.print.attribute.Attribute;
+import javax.print.attribute.DocAttributeSet;
+import javax.print.attribute.HashDocAttributeSet;
+import javax.print.attribute.HashPrintRequestAttributeSet;
+import javax.print.attribute.PrintRequestAttributeSet;
+import javax.print.attribute.PrintServiceAttributeSet;
 
 /**
 * <p>Title: PrintPdf.java</p>
@@ -23,9 +36,6 @@ private String outputFileName;
 /* Path from where the pdftops tool can be accessed */
 //private static final String PDF_TO_PS_TOOL_PATH = "\"C:\\Printing in Java\"\\cmd /c pdftops";
 private static final String PDF_TO_PS_TOOL_PATH = "cmd /c pdftops";
-
-/* Thread class which clean up accumulates .ps file every 1 hour. */
-private CleanUpThread cleanUpThread;
 
 /**
 * Default Constructor.
@@ -296,35 +306,6 @@ fileList[i].delete();
 catch (Exception e)
 {
 e.printStackTrace();
-}
-}
-
-/**
-* <p>Title: </p>
-* <p>Description: This private inner class is used to clean up the converted ps file. Over a period of time <br>
-* the files PS file gets accumulated and clogs the hard disk space hence every one hour clean the files.</p>
-*/
-private class CleanUpThread extends Thread
-{
-public CleanUpThread()
-{
-start();
-}
-
-public void run()
-{
-while(true)
-{
-cleanUpPSDocument();
-try
-{
-sleep(60 * 60 * 1000); //Sleep for ONE hour
-}
-catch (InterruptedException e)
-{
-e.printStackTrace();
-}
-}
 }
 }
 

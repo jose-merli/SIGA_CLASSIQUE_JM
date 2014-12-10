@@ -39,7 +39,6 @@ import com.siga.Utilidades.UtilidadesNumero;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.beans.CenInstitucionAdm;
 import com.siga.beans.FcsEstadosPagosBean;
-import com.siga.beans.FcsFacturacionJGAdm;
 import com.siga.beans.FcsPagosJGAdm;
 import com.siga.beans.FcsPagosJGBean;
 import com.siga.beans.GenParametrosAdm;
@@ -118,12 +117,6 @@ public class DatosDetallePagoAction extends MasterAction {
 		//Recogemos los parámetros de las pestanhas 
 		String idInstitucion = (String)request.getParameter("idInstitucion");
 		String idPago = (String)miform.getIdPago();
-		String accion = "editar";
-		
-		//Si estamos en abrir depues de haber insertado las pestanhas no nos pasa el modo
-		if (accion==null){
-			accion = "Edicion";
-		}
 		
 		//vector que pasaremos como resultado a la jsp
 		Vector resultado = new Vector();
@@ -144,20 +137,15 @@ public class DatosDetallePagoAction extends MasterAction {
 		}catch(Exception e){}
 		
 		if (!abierta){
-			//Creamos una clausula where que nos servirá para consultar por idPago e idInstitucion
-			String consultaPago = " where idInstitucion = " + idInstitucion +" and idPago =" + idPago + " ";
-			
-			try 
-			{
+			try {
 				//Recuperamos los importes del pago, por cada persona
 				resultado = this.getDetallePago(usr.getLocation(),idPago , request);
-			}
-			catch(ClsExceptions e){
+				
+			} catch(ClsExceptions e){
 				ClsLogging.writeFileLogError("Error: DatosDetallePagoAction"+e.getMessage(), e,3);
 				resultado = new Vector();
-			}
-			catch(Exception e)
-			{	
+				
+			} catch(Exception e) {	
 				ClsLogging.writeFileLogError("Error: DatosDetallePagoAction"+e.getMessage(), e,3);
 				throwExcp("Error: DatosDetallePagoAction",e,null);
 			}
@@ -511,19 +499,10 @@ public class DatosDetallePagoAction extends MasterAction {
 					double dcolegiado      = Double.parseDouble(ncolegiado);	
 					
 					double dTipoIrpf = Double.parseDouble(UtilidadesHash.getString(fila, "TIPOIRPF"));
-					String tipoIrpf  = UtilidadesString.formatoImporte(UtilidadesNumero.redondea(dTipoIrpf, 2));
-					
 					double dIrpf = Double.parseDouble(UtilidadesHash.getString(fila, "TOTALIMPORTEIRPF"));
-					String irpf = UtilidadesString.formatoImporte(UtilidadesNumero.redondea(dIrpf, 2));
-
 					double dImporteRetenciones = Double.parseDouble(UtilidadesHash.getString(fila, "IMPORTETOTALRETENCIONES"));
-					String importeRetenciones = UtilidadesString.formatoImporte(UtilidadesNumero.redondea(dImporteRetenciones, 2));
-					
 					double dImporteTotalSJCS = Double.parseDouble(UtilidadesHash.getString(fila, "TOTALIMPORTESJCS"));
-					String importeTotalSJCS = UtilidadesString.formatoImporte(UtilidadesNumero.redondea(dImporteTotalSJCS, 2));
-					
 					double dIimporteTotalMovimientoVarios = Double.parseDouble(UtilidadesHash.getString(fila, "IMPORTETOTALMOVIMIENTOS"));
-					String importeTotalMovimientoVarios = UtilidadesString.formatoImporte(UtilidadesNumero.redondea(dIimporteTotalMovimientoVarios, 2));
 					
 					String destinatario = UtilidadesHash.getString(fila, "DESTINATARIO");
 					String formaPago    = UtilidadesHash.getString(fila, "FORMADEPAGO");
@@ -531,11 +510,9 @@ public class DatosDetallePagoAction extends MasterAction {
 					String codigoCuenta    = UtilidadesHash.getString(fila, "NUMEROCUENTA");
 					
 					double dTotalBrutos = dImporteTotalSJCS + dIimporteTotalMovimientoVarios;
-					String totalBruto = UtilidadesString.formatoImporte(UtilidadesNumero.redondea(dTotalBrutos, 2));
 					
 					if (dTotalBrutos<0) dTotalBrutos=0; 
 					double dTotalTotal = dImporteTotalSJCS + dIimporteTotalMovimientoVarios + dIrpf + dImporteRetenciones;
-					String totalTotal = UtilidadesString.formatoImporte(UtilidadesNumero.redondea(dTotalTotal, 2));
 					
 					if (dTotalTotal<0) dTotalTotal=0; 
 					

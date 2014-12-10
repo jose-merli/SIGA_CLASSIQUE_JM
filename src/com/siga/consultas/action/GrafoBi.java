@@ -163,10 +163,9 @@ public class GrafoBi implements Grafo
 			 	return h;
 
 			for (int i = 2; i < sTablas.length; i++) {
-
-				for (int j = 0; j < v.size(); j++) {
+				if (v.size() > 0) {
 					if (!v.contains(sTablas[i])) {
-						if (!this.getMiniCamino((String)v.get(j), sTablas[i], v, h))
+						if (!this.getMiniCamino((String)v.get(0), sTablas[i], v, h))
 						 	return h;
 						else 
 							break;
@@ -270,29 +269,5 @@ public class GrafoBi implements Grafo
 		catch (Exception e) {
 			return false;
 		}
-	}
-	
-	private boolean estanTablasEnRuta (String sTablas[], List lista) 
-	{
-		if (lista.size() != sTablas.length) return false;
-		
-		int total = 0;
-		Iterator i = lista.iterator();
-		while(i.hasNext()){
-			UndirectedSparseEdge edg=(UndirectedSparseEdge)i.next();
-			Pair par = edg.getEndpoints();
-			String tabla = (String)((SimpleSparseVertex)par.getFirst()).getUserDatum("tabla");
-
-			for (int a = 0; a < sTablas.length; a++) {
-				if (sTablas[a].equalsIgnoreCase(tabla)) {
-					total ++;
-					break;
-				}
-			}
-		}
-		if (total == sTablas.length) 
-			return true;
-		
-		return false;
 	}
 }

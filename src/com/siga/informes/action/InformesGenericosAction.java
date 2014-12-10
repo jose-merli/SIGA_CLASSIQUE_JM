@@ -15,7 +15,6 @@ import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
@@ -85,10 +84,7 @@ import es.satec.businessManager.BusinessManager;
  */
 public class InformesGenericosAction extends MasterAction {
 	
-	public ActionForward executeInternal(ActionMapping mapping,
-			ActionForm formulario, HttpServletRequest request,
-			HttpServletResponse response) throws SIGAException {
-		String mapDestino = null;
+	public ActionForward executeInternal(ActionMapping mapping, ActionForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		MasterForm miForm = null;
 
 		try {
@@ -96,30 +92,27 @@ public class InformesGenericosAction extends MasterAction {
 				miForm = (MasterForm) formulario;
 				if (miForm != null) {
 					String accion = miForm.getModo();
-
+	
 					if (accion != null && accion.equalsIgnoreCase("descargaFicheroGlobal")) {
-						return super.executeInternal(mapping, formulario,
-								request, response);
-					}else if (accion != null && accion.equalsIgnoreCase("preSeleccionInformes")) {
-						return preSeleccionInformes(mapping, formulario,
-								request, response);
-					}else if (accion != null && accion.equalsIgnoreCase("download")) {
-						return download(mapping, formulario,
-								request, response);
+						return super.executeInternal(mapping, formulario, request, response);
+						
+					} else if (accion != null && accion.equalsIgnoreCase("preSeleccionInformes")) {
+						return preSeleccionInformes(mapping, formulario, request, response);
+						
+					} else if (accion != null && accion.equalsIgnoreCase("download")) {
+						return download(mapping, formulario, request, response);
 					} 
 				}
 			} while (false);
 
 			// Redireccionamos el flujo a la JSP correspondiente
-			if (mapDestino == null) {
-				throw new ClsExceptions("El ActionMapping no puede ser nulo INFORMES GENERICOS");
-			}
-			return mapping.findForward(mapDestino);
+			throw new ClsExceptions("El ActionMapping no puede ser nulo INFORMES GENERICOS");
+			
 		} catch (SIGAException es) {
 			throw es;
+			
 		} catch (Exception e) {
-			throw new SIGAException("messages.general.error", e,
-					new String[] { "modulo.gratuita" });
+			throw new SIGAException("messages.general.error", e, new String[] { "modulo.gratuita" });
 		}
 	}
 	
@@ -154,9 +147,6 @@ public class InformesGenericosAction extends MasterAction {
 			Vector datos = informeAbono.obtenerDatosFormulario(miform);
 			// --- acceso a paths y nombres 
 		    ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
-//			ReadProperties rp = new ReadProperties("SIGA.properties");	
-			String rutaPlantilla = rp.returnProperty("informes.directorioFisicoPlantillaInformesJava")+rp.returnProperty("informes.directorioPlantillaInformesJava");
-			String rutaAlmacen = rp.returnProperty("informes.directorioFisicoSalidaInformesJava")+rp.returnProperty("informes.directorioPlantillaInformesJava");
 			////////////////////////////////////////////////
 			// MODELO DE TIPO FOP: LLAMADA A MASTER REPORT
 
@@ -227,36 +217,20 @@ public class InformesGenericosAction extends MasterAction {
 	
 	protected String irpf (ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) 
 	throws SIGAException{
-		InformesGenericosForm miForm = (InformesGenericosForm) formulario;
 		InformeCertificadoIRPF informeIRPF = new InformeCertificadoIRPF();
 		File ficheroSalida=null;
 		try {
-			HttpSession session = request.getSession(false);
-			String pepe = session.getId();
-			SimpleDateFormat  fm = new SimpleDateFormat("ddMMyyyyhhmmssSSSS");
-			String fecha = fm.format(new Date(session.getCreationTime()));
-			
-			
 			ficheroSalida = informeIRPF.getInformeIRPF(formulario, this.getUserBean(request));
 
-		}
-		
-		catch (Exception e) {
+		} catch (Exception e) {
 			throwExcp("messages.general.error",new String[] {"modulo.informes"},e,null);
 		}
 
-		
-
-			request.setAttribute("nombreFichero", ficheroSalida.getName());
-			request.setAttribute("rutaFichero", ficheroSalida.getPath());
-			request.setAttribute("borrarFichero", "true");
-			request.setAttribute("generacionOK","OK");
-			return "descarga";
-		
-
-
-
-
+		request.setAttribute("nombreFichero", ficheroSalida.getName());
+		request.setAttribute("rutaFichero", ficheroSalida.getPath());
+		request.setAttribute("borrarFichero", "true");
+		request.setAttribute("generacionOK","OK");
+		return "descarga";
 	}
 	
 	/**
@@ -371,7 +345,6 @@ public class InformesGenericosAction extends MasterAction {
 
 			UsrBean usr = this.getUserBean(request);
 
-			ScsGuardiasTurnoAdm clase=new ScsGuardiasTurnoAdm(usr);
 			//Obtenemos el formulario y sus datos:
 			InformesGenericosForm miform = (InformesGenericosForm)formulario;
 			File ficheroSalida = null;
@@ -558,9 +531,6 @@ public class InformesGenericosAction extends MasterAction {
 			////////////////////////////////////////////////
 			// MODELO DE TIPO WORD: LLAMADA A ASPOSE.WORDS
 
-
-
-			Hashtable hashConsultasHechas = new Hashtable();
 			if(plantillas!=null &&plantillas.size()>0){
 				for (int i=0;i<plantillas.size();i++) {
 					AdmInformeBean beanInforme = null;
@@ -799,7 +769,6 @@ public class InformesGenericosAction extends MasterAction {
 
 		UsrBean usr;
 		InformesGenericosForm miform;
-		AdmInformeAdm infAdm;
 		Vector plantillas, datos;
 		Vector informesRes;
 		AdmInformeBean infBean;
@@ -817,7 +786,6 @@ public class InformesGenericosAction extends MasterAction {
 			idinstitucion = "" + this.getIDInstitucion (request);
 			usr = this.getUserBean (request);
 			miform = (InformesGenericosForm) formulario;
-			infAdm = new AdmInformeAdm (usr);
 			//plantillas = infAdm.obtenerInformesTipo(idinstitucion, miform.getIdTipoInforme(), miform.getAsolicitantes(), miform.getDestinatarios());
 			EnvioInformesGenericos envioInformesGenericos = new EnvioInformesGenericos();
 			plantillas = envioInformesGenericos.getPlantillasInforme(miform.getIdInforme(),"##",usr);
