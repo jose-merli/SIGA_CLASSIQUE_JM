@@ -7,9 +7,6 @@
  */
 package com.siga.informes;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.Hashtable;
 import java.util.Vector;
 
@@ -28,7 +25,6 @@ import com.siga.beans.CenInstitucionAdm;
 import com.siga.beans.CenPersonaAdm;
 import com.siga.beans.CenPersonaBean;
 import com.siga.beans.FcsMovimientosVariosAdm;
-import com.siga.beans.FcsMovimientosVariosBean;
 import com.siga.beans.FcsPagoColegiadoAdm;
 import com.siga.beans.FcsPagosJGAdm;
 import com.siga.general.SIGAException;
@@ -830,20 +826,10 @@ public class InformeColegiadosPagos extends MasterReport {
 		double dTotalOficio=0;
 		double dTotalFactOficio=0;
 		double dCompensadoCaja=0;
-		double sPagadoCaja=0;
-		double sPagoRectificado=0;
-		double sTotalFactura=0;
-		double sPagadoBanco;
-		String pcAsistencia=null;
 		String pcOficio=null;
 		String fechaPago=null;
-		String idFactura=null;
-		String numFactura;
-		String conceptoFactura;
-		String sDescripcion="";
 		double sTotalLiquidacion = 0;
-		String sFormaPago;
-		int IRPF = 0;
+		String pcAsistencia;
 		
 		try {
 			// Porcentajes DEL PAGO y periodo del pago

@@ -287,11 +287,11 @@ public class FacAbonoAdm extends MasterBeanAdministrador {
 	 * @exception  ClsExceptions  En cualquier caso de error
 	 */	
 	public PaginadorBind getAbonos(Hashtable criterios) throws ClsExceptions,SIGAException {
-		   Vector datos=new Vector();
+		   
 		   Hashtable codigosBind = new Hashtable();
 		   int contador = 0;
 	       try {
-	            RowsContainer rc = new RowsContainer(); 
+	            
 	            String selectContar=" SELECT 1 ";
 	            String select ="SELECT " +
     						FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDABONO + "," +
@@ -613,7 +613,7 @@ public class FacAbonoAdm extends MasterBeanAdministrador {
 				sql.append(" PC.impret AS RET_JUDICIAL, ");
 				sql.append(" PC.impmovvar AS MOV_VARIOS, ");
 				sql.append(" (PC.impoficio + PC.impsoj + PC.impasistencia + PC.impejg) AS TOTAL_BRUTO,  ");  
-				sql.append(" PC.IMPIRPF AS IRPF, ");				
+				sql.append(" PC.PORCENTAJEIRPF AS IRPF, ");	
 				sql.append(" PC.IDPERORIGEN,PC.IDPERDESTINO ");
 				
 				sql.append(" FROM FAC_ABONO A, FCS_PAGO_COLEGIADO PC ");
@@ -648,7 +648,7 @@ public class FacAbonoAdm extends MasterBeanAdministrador {
 				sql.append(" PC.impret AS RET_JUDICIAL, ");
 				sql.append(" PC.impmovvar AS MOV_VARIOS, ");
 				sql.append(" (PC.impoficio + PC.impsoj + PC.impasistencia + PC.impejg) AS TOTAL_BRUTO,  ");  
-				sql.append(" PC.IMPIRPF AS IRPF, ");							
+				sql.append(" PC.PORCENTAJEIRPF AS IRPF, ");								
 				sql.append(" A.IDPERSONA IDPERORIGEN,A.IDPERSONA IDPERDESTINO ");
 				
 				sql.append(" FROM FAC_ABONO A, FCS_PAGO_COLEGIADO PC ");
@@ -1441,10 +1441,8 @@ public class FacAbonoAdm extends MasterBeanAdministrador {
 			sql.append(" PC.IDPERDESTINO as IDPERSONASJCS, ");
 			sql.append(" SUM(PC.IMPOFICIO + PC.IMPASISTENCIA + PC.IMPEJG + PC.IMPSOJ) AS TOTALIMPORTESJCSSUJETO, ");
 			sql.append(" SUM(PC.IMPRET) AS IMPORTETOTALRETENCIONESSUJETO, ");
-			sql.append(" SUM(PC.IMPMOVVAR) AS IMPORTETOTALMVTOSSUJETO,  -1 * ");
-			sql.append(" ROUND(ABS(SUM((PC.IMPOFICIO + PC.IMPASISTENCIA + PC.IMPEJG + ");
-			sql.append(" PC.IMPSOJ + PC.IMPMOVVAR) * PC.IMPIRPF / 100)), ");
-			sql.append(" 2) AS TOTALIMPORTEIRPF, ");
+			sql.append(" SUM(PC.IMPMOVVAR) AS IMPORTETOTALMVTOSSUJETO, ");
+			sql.append(" (-1 *PC.IMPIRPF) AS TOTALIMPORTEIRPF,");
 			sql.append(" 0 AS TOTALIMPORTESJCSEXENTO, ");
 			sql.append(" 0 AS IMPORTETOTALRETENCIONESEXENTO, ");
 			sql.append(" 0 AS IMPORTETOTALMVTOSEXENTO ");

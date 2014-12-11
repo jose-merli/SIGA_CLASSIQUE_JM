@@ -1108,13 +1108,13 @@ public class FcsPagosJGAdm extends MasterBeanAdministrador {
 			" SUM(PC.IMPOFICIO + PC.IMPASISTENCIA + PC.IMPEJG + PC.IMPSOJ) AS TOTALIMPORTESJCS, " + 
 			" SUM(PC.IMPRET) AS IMPORTETOTALRETENCIONES, " + 
 			" SUM(PC.IMPMOVVAR) AS IMPORTETOTALMOVIMIENTOS, " + 			
-			" -1*ABS(SUM(ROUND((PC.IMPOFICIO + PC.IMPASISTENCIA + PC.IMPEJG + PC.IMPSOJ + PC.IMPMOVVAR) * PC.IMPIRPF / 100, 2))) AS TOTALIMPORTEIRPF, "+
+			" (-1*SUM(PC.IMPIRPF)) AS TOTALIMPORTEIRPF, "+
 			
 			" SUM(PC.IMPOFICIO + PC.IMPASISTENCIA + PC.IMPEJG + PC.IMPSOJ) + "+ 
 			" SUM(PC.IMPRET) + "+ 
 			" SUM(PC.IMPMOVVAR) + "+ 
-			" -1*ABS(SUM(ROUND((PC.IMPOFICIO + PC.IMPASISTENCIA + PC.IMPEJG + PC.IMPSOJ + PC.IMPMOVVAR) * PC.IMPIRPF / 100, 2))) AS TOTALFINAL, "+
-			" ABS(SUM(ROUND((PC.IMPOFICIO + PC.IMPASISTENCIA + PC.IMPEJG + PC.IMPSOJ + PC.IMPMOVVAR) * PC.IMPIRPF / 100, 2))) AS TOTALIMPORTEIVA, ";
+			" (-1*SUM(PC.IMPIRPF)) AS TOTALFINAL, "+
+			" IMPIRPF AS TOTALIMPORTEIVA, ";
 		
 		if (irpf) {
 			sql += " PC.IDPERDESTINO as IDPERSONASJCS ";
@@ -1122,7 +1122,7 @@ public class FcsPagosJGAdm extends MasterBeanAdministrador {
 		} else {
 			sql += " PC.IDCUENTA, " +
 				" PC.IDPERDESTINO, " +
-				" PC.IMPIRPF AS TIPOIRPF, " +
+				" PC.PORCENTAJEIRPF AS TIPOIRPF, " +
 				" SUM(PC.IMPOFICIO) AS IMPORTETOTALOFICIO, " + 
 				" SUM(PC.IMPASISTENCIA) AS IMPORTETOTALASISTENCIA, " + 
 				" SUM(PC.IMPEJG) AS IMPORTETOTALEJG, " + 
@@ -1162,9 +1162,9 @@ public class FcsPagosJGAdm extends MasterBeanAdministrador {
 		
 		if (irpf) {
 			//sql += " AND PC.IMPIRPF > 0 " +
-			sql +=	" GROUP BY PC.IDPERDESTINO, PC.IDPAGOSJG, PC.IDINSTITUCION, PC.IMPIRPF, PC.IDCUENTA ";
+			sql +=	" GROUP BY PC.IDPERDESTINO, PC.IDPAGOSJG, PC.IDINSTITUCION, PC.PORCENTAJEIRPF, PC.IDCUENTA, PC.IMPIRPF ";
 		} else {
-			sql += " GROUP BY PC.IDPERORIGEN, PC.IDPERDESTINO, PC.IDPAGOSJG, PC.IDINSTITUCION, PC.IMPIRPF, PC.IDCUENTA ";
+			sql += " GROUP BY PC.IDPERORIGEN, PC.IDPERDESTINO, PC.IDPAGOSJG, PC.IDINSTITUCION, PC.PORCENTAJEIRPF, PC.IDCUENTA,PC.IMPIRPF ";
 		}
 		
 		return sql;
@@ -1480,8 +1480,7 @@ public class FcsPagosJGAdm extends MasterBeanAdministrador {
 	 * @throws ClsExceptions
 	 */
 	public List<FcsPagosJGBean> getPagosInformes(String idInstitucion, String idTurno, String sEstado) throws ClsExceptions {
-		Hashtable<Integer, Object> htCodigos = new Hashtable<Integer, Object>();
-		
+				
 		String sql = " SELECT P." + FcsPagosJGBean.C_IDPAGOSJG + ", " +
 				" TO_CHAR(E." + FcsPagosEstadosPagosBean.C_FECHAESTADO + ", 'dd/mm/yy')  || ' - ' || P." + FcsPagosJGBean.C_NOMBRE + " || ' (' || TO_CHAR(P." + FcsPagosJGBean.C_FECHADESDE + ", 'dd/mm/yy') || '-' ||TO_CHAR(P." + FcsPagosJGBean.C_FECHAHASTA + ", 'dd/mm/yy') || ')' AS " + FcsPagosJGBean.C_NOMBRE +
 			" FROM " + FcsPagosJGBean.T_NOMBRETABLA + " P, " + 

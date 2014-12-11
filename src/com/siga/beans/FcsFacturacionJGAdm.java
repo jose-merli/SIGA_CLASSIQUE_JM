@@ -323,7 +323,7 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 			  " and   est."+FcsFactEstadosFacturacionBean.C_IDINSTITUCION+" = "+idInstitucion +
 			  " and   est."+FcsFactEstadosFacturacionBean.C_IDESTADOFACTURACION+" = "+ FcsEstadosFacturacionBean.T_NOMBRETABLA +"."+FcsEstadosFacturacionBean.C_IDESTADOFACTURACION;
 			
-			FcsEstadosFacturacionAdm adm = new FcsEstadosFacturacionAdm(this.usrbean);
+			
 			rc = this.find(sql);
 			if (rc!=null) {
 				if (rc.size()>0) {
@@ -386,8 +386,8 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 	 */
 	public Vector getCriteriosFacturacion (String idInstitucion, String idFacturacion)throws ClsExceptions, SIGAException
 	{
-		FcsFactGrupoFactHitoAdm grupoAdm = new FcsFactGrupoFactHitoAdm (this.usrbean);
-		FcsFactGrupoFactHitoBean grupoBean = new FcsFactGrupoFactHitoBean ();
+		
+		
 		Vector vHito = new Vector();
 		RowsContainer rc = null;
 		String consulta =	" select  " + UtilidadesMultidioma.getCampoMultidiomaSimple(ScsGrupoFacturacionBean.T_NOMBRETABLA + "." + ScsGrupoFacturacionBean.C_NOMBRE,this.usrbean.getLanguage()) + " NOMBRE, " + UtilidadesMultidioma.getCampoMultidiomaSimple(FcsHitoGeneralBean.T_NOMBRETABLA + "." + FcsHitoGeneralBean.C_DESCRIPCION, this.usrbean.getLanguage()) + " DESCRIPCION,"+
@@ -577,9 +577,8 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 	
 	public static Hashtable prepararInsert (Hashtable entrada)throws ClsExceptions 
 	{
-		String values;	
-		RowsContainer rc = null;
-		int contador = 0;
+		
+		RowsContainer rc = null;	
 		
 		try { rc = new RowsContainer(); }
 		catch(Exception e) { e.printStackTrace(); }
@@ -732,7 +731,7 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 			}
 			
 			// inserto los grupos hito
-			Vector vGrupos = new Vector();
+			
 			RowsContainer rc = null;
 			String consulta =	" SELECT IDINSTITUCION, IDFACTURACION, IDGRUPOFACTURACION, IDHITOGENERAL FROM FCS_FACT_GRUPOFACT_HITO " +
 								" WHERE IDINSTITUCION=" + idInstitucion + " AND IDFACTURACION="+idFacturacion;
@@ -1041,11 +1040,7 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 		
 				StringBuffer select = new StringBuffer();
 				select.append(" SELECT " + FcsPagoColegiadoBean.C_IDPERDESTINO + " AS IDPERSONAIMPRESO, ");
-				select.append(" SUM ( round ( (" + FcsPagoColegiadoBean.C_IMPOFICIO + " + ");
-				select.append(                  FcsPagoColegiadoBean.C_IMPASISTENCIA + " + ");
-				select.append(                  FcsPagoColegiadoBean.C_IMPEJG + " + ");
-				select.append(                  FcsPagoColegiadoBean.C_IMPSOJ + " + ");
-				select.append(                  FcsPagoColegiadoBean.C_IMPMOVVAR + ") * " + FcsPagoColegiadoBean.C_IMPIRPF + " / 100, 2 )) AS TOTALIMPORTEIRPF, ");
+				select.append("        SUM ("+FcsPagoColegiadoBean.C_IMPIRPF + ") AS TOTALIMPORTEIRPF, ");
 				select.append("        SUM (" + FcsPagoColegiadoBean.C_IMPOFICIO + " + ");
 				select.append(                  FcsPagoColegiadoBean.C_IMPASISTENCIA + " + ");
 				select.append(                  FcsPagoColegiadoBean.C_IMPEJG + " + ");

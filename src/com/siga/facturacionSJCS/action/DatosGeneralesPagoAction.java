@@ -19,21 +19,16 @@ import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.transaction.HeuristicMixedException;
-import javax.transaction.HeuristicRollbackException;
-import javax.transaction.NotSupportedException;
-import javax.transaction.RollbackException;
-import javax.transaction.SystemException;
 import javax.transaction.UserTransaction;
 
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
-import com.atos.utils.Row;
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.GstDate;
+import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.GestorContadores;
@@ -47,18 +42,13 @@ import com.siga.beans.CenInstitucionAdm;
 import com.siga.beans.CenPersonaAdm;
 import com.siga.beans.CenPersonaBean;
 import com.siga.beans.ColegiadosPagosBean;
-import com.siga.beans.CriteriosPagosBean;
 import com.siga.beans.FacAbonoAdm;
 import com.siga.beans.FacAbonoBean;
-import com.siga.beans.FacBancoInstitucionAdm;
-import com.siga.beans.FacBancoInstitucionBean;
 import com.siga.beans.FacFacturaAdm;
 import com.siga.beans.FacLineaAbonoAdm;
 import com.siga.beans.FacLineaAbonoBean;
 import com.siga.beans.FacPagoAbonoEfectivoAdm;
 import com.siga.beans.FacPagosPorCajaAdm;
-import com.siga.beans.FacSufijoAdm;
-import com.siga.beans.FacSufijoBean;
 import com.siga.beans.FcsAplicaMovimientosVariosAdm;
 import com.siga.beans.FcsAplicaMovimientosVariosBean;
 import com.siga.beans.FcsCobrosRetencionJudicialAdm;
@@ -249,7 +239,6 @@ public class DatosGeneralesPagoAction extends MasterAction {
 	private void guardarBloquePago(DatosGeneralesPagoForm miform,UsrBean usr) throws SIGAException{
 		
 		FcsPagosJGAdm pagosAdm = new FcsPagosJGAdm(usr);
-		FacBancoInstitucionAdm admBancoFac = new FacBancoInstitucionAdm(usr);
 		UserTransaction tx = null;
 		
 		try {
@@ -1028,8 +1017,6 @@ public class DatosGeneralesPagoAction extends MasterAction {
 		FcsFactGrupoFactHitoAdm factGrupoAdm = new FcsFactGrupoFactHitoAdm(
 				this.getUserBean(request));
 		
-		FacBancoInstitucionAdm admBancoFac = new FacBancoInstitucionAdm(
-				this.getUserBean(request));
 		
 		UsrBean usr;
 		String forward = "";
@@ -1386,7 +1373,7 @@ public class DatosGeneralesPagoAction extends MasterAction {
 		UsrBean usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
 
 		FcsPagosJGAdm pagoAdm = new FcsPagosJGAdm(usr);
-		Hashtable importes = new Hashtable();
+		
 
 		// variables para hacer el calculo del importe final a pagar
 		String idPersonaDestino = "";
@@ -1476,9 +1463,9 @@ public class DatosGeneralesPagoAction extends MasterAction {
 			// 4. Obtener el importe neto aplicando el IRPF
 			// (hay que redondear el importeIrpf porque es un importe que se ha
 			// de presentar)		
-			importeIrpfTotal = -1*UtilidadesNumero.redondea(importeBruto * porcentajeIRPF / 100,2);
+			importeIrpfTotal = UtilidadesNumero.redondea(importeBruto * porcentajeIRPF / 100,2);
 			
-			double importeNeto = importeBruto + importeIrpfTotal;
+			double importeNeto = importeBruto - importeIrpfTotal;
 
 			// 5. Aplicar retenciones judiciales y no judiciales
 			//aalg Incidencia del 28-sep-2011. Se modifica el usuario de modificacion que se estaba
@@ -1494,7 +1481,7 @@ public class DatosGeneralesPagoAction extends MasterAction {
 
 			// Actualizar el irpf, movimientos varios y retenciones en
 			// fcs_pago_colegiado
-			pcAdm.updateCierrePago(idInstitucion, idPago, idPersona,
+			pcAdm.updateCierrePago(idInstitucion, idPago, idPersona,importeIrpfTotal,
 					porcentajeIRPF, importeMovimientos, importeRetenciones,
 					vector.isEmpty());
 

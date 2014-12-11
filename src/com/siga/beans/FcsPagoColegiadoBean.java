@@ -25,7 +25,8 @@ public class FcsPagoColegiadoBean extends MasterBean {
 	private Double		impSOJ;
 	private Double		impEJG;
 	private Double		impMovVar;
-	private Integer		impIRPF;
+	private Double		impIRPF;
+	private Integer		porcentajeIRPF;
 	private Double		impRet;
 
 	/* Nombre tabla */
@@ -42,6 +43,7 @@ public class FcsPagoColegiadoBean extends MasterBean {
 	static public final String C_IMPEJG						= "IMPEJG";
 	static public final String C_IMPMOVVAR					= "IMPMOVVAR";
 	static public final String C_IMPIRPF					= "IMPIRPF";
+	static public final String C_PORCENTAJEIRPF				= "PORCENTAJEIRPF";
 	static public final String C_IMPRET						= "IMPRET";
 	static public final String C_FECHAMODIFICACION			= "FECHAMODIFICACION";
 	static public final String C_USUMODIFICACION			= "USUMODIFICACION";
@@ -101,16 +103,22 @@ public class FcsPagoColegiadoBean extends MasterBean {
 	public void setImpMovVar(Double impMovVar) {
 		this.impMovVar = impMovVar;
 	}
-	public Integer getImpIRPF() {
-		return impIRPF;
+	public Integer getPorcentajeIRPF() {
+		return porcentajeIRPF;
 	}
-	public void setImpIRPF(Integer impIRPF) {
-		this.impIRPF = impIRPF;
+	public void setPorcentajeIRPF(Integer porcentajeIRPF) {
+		this.porcentajeIRPF = porcentajeIRPF;
 	}
 	public Double getImpRet() {
 		return impRet;
 	}
 	public void setImpRet(Double impRet) {
 		this.impRet = impRet;
+	}
+	public Double getImpIRPF() {
+		return impIRPF;
+	}
+	public void setImpIRPF(Double impIRPF) {
+		this.impIRPF = impIRPF;
 	}
 }

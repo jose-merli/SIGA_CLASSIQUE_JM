@@ -32,6 +32,7 @@ public class FcsPagoColegiadoAdm extends MasterBeanAdministrador {
 							FcsPagoColegiadoBean.C_IMPSOJ,
 							FcsPagoColegiadoBean.C_IMPMOVVAR,
 							FcsPagoColegiadoBean.C_IMPIRPF,
+							FcsPagoColegiadoBean.C_PORCENTAJEIRPF,
 							FcsPagoColegiadoBean.C_IMPRET,
 							FcsPagoColegiadoBean.C_FECHAMODIFICACION,
 							FcsPagoColegiadoBean.C_USUMODIFICACION};
@@ -63,7 +64,8 @@ public class FcsPagoColegiadoAdm extends MasterBeanAdministrador {
 			bean.setImpSOJ			(UtilidadesHash.getDouble(hash,FcsPagoColegiadoBean.C_IMPSOJ));
 			bean.setImpEJG			(UtilidadesHash.getDouble(hash,FcsPagoColegiadoBean.C_IMPEJG));
 			bean.setImpMovVar		(UtilidadesHash.getDouble(hash,FcsPagoColegiadoBean.C_IMPMOVVAR));
-			bean.setImpIRPF			(UtilidadesHash.getInteger(hash,FcsPagoColegiadoBean.C_IMPIRPF));
+			bean.setImpIRPF			(UtilidadesHash.getDouble(hash,FcsPagoColegiadoBean.C_IMPIRPF));
+			bean.setPorcentajeIRPF	(UtilidadesHash.getInteger(hash,FcsPagoColegiadoBean.C_PORCENTAJEIRPF));
 			bean.setImpRet			(UtilidadesHash.getDouble(hash,FcsPagoColegiadoBean.C_IMPRET));
 			bean.setUsuMod			(UtilidadesHash.getInteger(hash,FcsPagoColegiadoBean.C_USUMODIFICACION));
 			bean.setFechaMod		(UtilidadesHash.getString(hash,FcsPagoColegiadoBean.C_FECHAMODIFICACION));
@@ -90,6 +92,7 @@ public class FcsPagoColegiadoAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(htData, FcsPagoColegiadoBean.C_IMPEJG, bean.getImpEJG());
 			UtilidadesHash.set(htData, FcsPagoColegiadoBean.C_IMPMOVVAR, bean.getImpMovVar());
 			UtilidadesHash.set(htData, FcsPagoColegiadoBean.C_IMPIRPF, bean.getImpIRPF());
+			UtilidadesHash.set(htData, FcsPagoColegiadoBean.C_PORCENTAJEIRPF, bean.getPorcentajeIRPF());
 			UtilidadesHash.set(htData, FcsPagoColegiadoBean.C_IMPRET, bean.getImpRet());
 			UtilidadesHash.set(htData, FcsPagoColegiadoBean.C_USUMODIFICACION, bean.getUsuMod());
 			UtilidadesHash.set(htData, FcsPagoColegiadoBean.C_FECHAMODIFICACION, bean.getFechaMod());
@@ -143,7 +146,8 @@ public class FcsPagoColegiadoAdm extends MasterBeanAdministrador {
 		bean.setImpSOJ			(new Double(0));
 		bean.setImpEJG			(new Double(0));
 		bean.setImpSOJ			(new Double(0));
-		bean.setImpIRPF			(new Integer(0));
+		bean.setImpIRPF			(new Double(0));
+		bean.setPorcentajeIRPF	(new Integer(0));
 		bean.setImpRet			(new Double(0));
 		bean.setUsuMod			(new Integer(0));
 		bean.setFechaMod		("sysdate");
@@ -163,16 +167,18 @@ public class FcsPagoColegiadoAdm extends MasterBeanAdministrador {
 	 * @throws ClsExceptions 
 	 */
 	public boolean updateCierrePago(String idInstitucion, String idPago, String idPersona, 
-			double irpf, double movimientos, double retenciones, boolean insertar) throws ClsExceptions {
+			double irpf, double porcentajeIRPF, double movimientos, double retenciones, boolean insertar) throws ClsExceptions {
 		Hashtable hash = new Hashtable();
 		hash.put(FcsPagoColegiadoBean.C_IDINSTITUCION, idInstitucion);
 		hash.put(FcsPagoColegiadoBean.C_IDPAGOSJG, idPago);
 		hash.put(FcsPagoColegiadoBean.C_IDPERORIGEN, idPersona);
 		hash.put(FcsPagoColegiadoBean.C_IMPIRPF, Double.toString(irpf));
+		hash.put(FcsPagoColegiadoBean.C_PORCENTAJEIRPF, Double.toString(porcentajeIRPF));
 		hash.put(FcsPagoColegiadoBean.C_IMPMOVVAR, Double.toString(movimientos));
 		hash.put(FcsPagoColegiadoBean.C_IMPRET, Double.toString(retenciones));
 
 		String aux[] = {FcsPagoColegiadoBean.C_IMPIRPF,
+						FcsPagoColegiadoBean.C_PORCENTAJEIRPF,
 						FcsPagoColegiadoBean.C_IMPMOVVAR,
 						FcsPagoColegiadoBean.C_IMPRET};
 		try {
@@ -203,7 +209,7 @@ public class FcsPagoColegiadoAdm extends MasterBeanAdministrador {
 		Vector resultado;
 		
 		StringBuffer sql = new StringBuffer();
-		sql.append("select nvl(impirpf,0) IMPIRPF ");
+		sql.append("select nvl(PORCENTAJEIRPF,0) PORCENTAJEIRPF ");
 		sql.append(" from fcs_pago_colegiado col ");
 		sql.append(" WHERE col.IDPAGOSJG = " + idPago);
 		sql.append(" and col.idinstitucion = " + idInstitucion);
@@ -211,10 +217,10 @@ public class FcsPagoColegiadoAdm extends MasterBeanAdministrador {
 		try {
 			resultado = this.selectGenerico(sql.toString());
 		} catch (ClsExceptions e) {
-			throw new ClsExceptions (e, "Error al obtener el IRPF");
+			throw new ClsExceptions (e, "Error al obtener el porcentaje IRPF");
 		}
-		if(resultado!=null && resultado.size()>0 && ((Hashtable)resultado.get(0)).get("IMPIRPF")!=null)
-			return ((Hashtable)resultado.get(0)).get("IMPIRPF").toString();
+		if(resultado!=null && resultado.size()>0 && ((Hashtable)resultado.get(0)).get("PORCENTAJEIRPF")!=null)
+			return ((Hashtable)resultado.get(0)).get("PORCENTAJEIRPF").toString();
 		else 
 			return "";
 	}
