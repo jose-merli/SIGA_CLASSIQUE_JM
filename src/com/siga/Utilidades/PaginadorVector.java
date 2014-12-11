@@ -22,6 +22,10 @@ import org.redabogacia.sigaservices.app.util.SIGAReferences;
 @Deprecated
 public class PaginadorVector extends Paginador implements IPaginador, Serializable 
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 691786969393430047L;
 	protected int numeroTotalRegistros = 0;
 	protected int numeroRegistrosPagina = 0;
 	protected int paginaActual = 0;

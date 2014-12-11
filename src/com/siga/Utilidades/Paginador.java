@@ -13,6 +13,10 @@ import com.siga.general.SIGAException;
 @Deprecated
 public class Paginador implements IPaginador, Serializable
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2618877113045074308L;
 	IPaginador paginador = null;
 
 	protected Paginador() throws ClsExceptions {}

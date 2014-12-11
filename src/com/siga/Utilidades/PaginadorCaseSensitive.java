@@ -5,7 +5,6 @@
 package com.siga.Utilidades;
 
 import java.util.ArrayList;
-import java.util.Hashtable;
 import java.util.Vector;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -34,6 +33,11 @@ import com.atos.utils.RowsContainer;
 public class PaginadorCaseSensitive extends PaginadorSQL 
 {
 	 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4443709237020545369L;
+
 	public PaginadorCaseSensitive (String query) throws ClsExceptions{
 		
 		try {

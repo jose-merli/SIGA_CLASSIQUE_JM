@@ -32,6 +32,10 @@ import com.siga.general.SIGAException;
 @Deprecated
 public class PaginadorSQLBind extends PaginadorBind implements IPaginador, Serializable
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2697686448009158667L;
 	protected int numeroTotalRegistros = 0;
 	protected int numeroRegistrosPagina = 0;
 	protected int paginaActual = 0;

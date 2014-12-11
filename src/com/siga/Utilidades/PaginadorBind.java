@@ -4,17 +4,20 @@
  */
 package com.siga.Utilidades;
 
+import java.io.Serializable;
 import java.util.Hashtable;
 import java.util.Vector;
+
 import com.atos.utils.ClsExceptions;
 import com.siga.general.SIGAException;
-
-import java.util.*;
-import java.io.Serializable;
 
 @Deprecated
 public class PaginadorBind implements IPaginador,Serializable
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1704606618625050273L;
 	IPaginador paginador = null;
 	
 	protected PaginadorBind() throws ClsExceptions {}

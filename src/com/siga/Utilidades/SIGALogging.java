@@ -28,7 +28,6 @@ import com.atos.utils.ExceptionManager;
 public class SIGALogging
 {
 	private SimpleDateFormat sdfLong = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss"); 
-	private SimpleDateFormat sdfShort = new SimpleDateFormat("yyyyMMdd"); 
 	private String sError = "[ERROR]";
 	private String sInfo = "[INFO]";
 	private String separador = ClsConstants.SEPARADOR;

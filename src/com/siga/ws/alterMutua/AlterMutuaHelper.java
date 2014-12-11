@@ -9,6 +9,11 @@ package com.siga.ws.alterMutua;
 
 public class AlterMutuaHelper implements java.io.Serializable {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2760536337760253733L;
+
 	public static final String CATALOGO = "ALTERMUTUA";
 	
 	public static final String CONJUNTO_PARENTESCO = "PARENTESCO";

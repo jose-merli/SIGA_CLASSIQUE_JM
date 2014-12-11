@@ -113,7 +113,6 @@ public class GestorContadores {
 		return htData;	
 	}
 	public void setContador(Hashtable datosContadorNuevo, String numRegNuevo) throws ClsExceptions, SIGAException {
-		Hashtable htData = null;
 		Hashtable gcOriginal = null;//registro contador que se obtiene de la tabla ADM_CONTADORES con el idinstitucion y el idcontador
 		try {
 			gcOriginal=getContador((Integer)datosContadorNuevo.get("IDINSTITUCION"),(String)datosContadorNuevo.get("IDCONTADOR"));
@@ -138,7 +137,6 @@ public class GestorContadores {
 			throw e;
 		}
 		catch (Exception e) {
-			htData = null;
 			throw new ClsExceptions (e, "Error al modificar los datos del contador");
 		}
 	
@@ -178,10 +176,6 @@ public class GestorContadores {
 		int contadorSiguiente=0;
 		RowsContainer rc=null;
 		Hashtable gcOriginal=null;
-		Integer longitud;
-		
-		String contadorlongitud="";
-	
 		
 		try {
 			gcOriginal=getContador((Integer)contador.get("IDINSTITUCION"),(String)contador.get("IDCONTADOR"));
@@ -255,12 +249,7 @@ public class GestorContadores {
 	 */
 	private int buscarSiguienteContador(Hashtable contador) throws ClsExceptions, SIGAException {
 		int contadorSiguiente=0;
-		RowsContainer rc=null;
 		Hashtable gcOriginal=null;
-		Integer longitud;
-		
-		String contadorlongitud="";
-	
 		
 		try {
 			gcOriginal=getContador((Integer)contador.get("IDINSTITUCION"),(String)contador.get("IDCONTADOR"));
@@ -270,9 +259,6 @@ public class GestorContadores {
 				//Comprobamos que el contador que se sugiere no supera la longitud definida
 			
 				validarLogitudContador(contadorSiguiente,contador);
-					
-				
-			
 			
 		}
 		catch (SIGAException e) {
@@ -289,7 +275,6 @@ public class GestorContadores {
 	{
 
 		String contadorFinalSugerido="";
-		Hashtable contadorTablaHash=new Hashtable();
 		try { 
 //			Obtenemos los datos de la tabla de contadores 
 			
@@ -313,7 +298,6 @@ public class GestorContadores {
 
 		
 		String contadorFinalSugerido="";
-		Hashtable contadorTablaHash=new Hashtable();
 		try { 
 
 			String numeroAbono=getNuevoContador (contenidoAdmContador);

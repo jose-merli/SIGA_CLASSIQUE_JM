@@ -24,6 +24,11 @@ import com.atos.utils.RowsContainer;
 @Deprecated
 public class PaginadorCaseSensitiveBind extends PaginadorSQLBind
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 7053676140491605698L;
+
 	//
 	// CONSTRUCTORES
 	//

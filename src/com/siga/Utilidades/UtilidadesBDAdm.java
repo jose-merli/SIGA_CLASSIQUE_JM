@@ -891,7 +891,6 @@ public class UtilidadesBDAdm
 			// Revisión de variables bind 
 			if (codigos!=null) {
 			    int posVbleBind=-1;
-			    boolean salir=false;
 			    int inicial = 0;
 			    String vbleBind = "";
 			    //obtengo la primera variable bind
@@ -932,7 +931,7 @@ public class UtilidadesBDAdm
 	  
 	  public static boolean esNumerico(String numero) {
 	      try {
-	          Integer test = new Integer(numero);
+	          new Integer(numero);
 	          return true;
 	      }catch (NumberFormatException nfe) {
 	          return false;
@@ -947,7 +946,6 @@ public class UtilidadesBDAdm
 	   */
 	  private static Hashtable comprobarCodigosQuery(String query, Hashtable codigos) {
 		  Hashtable codigosNuevo = new Hashtable();
-		  int indice = 1;
 		  
 		  if (codigos!=null) {
 			  Enumeration e = codigos.keys();
@@ -955,7 +953,6 @@ public class UtilidadesBDAdm
 				  Integer key = (Integer)e.nextElement();
 				  if (query.indexOf(":"+key) >= 0) {	
 					   codigosNuevo.put(key, codigos.get(key));
-					   indice++;
 				  }
 			  }
 			  

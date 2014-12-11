@@ -4,20 +4,18 @@
  */
 package com.siga.Utilidades;
 
+import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Hashtable;
 import java.util.Vector;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import com.atos.utils.ClsExceptions;
-import com.atos.utils.Row;
-import com.atos.utils.RowsContainer;
-
-
-import java.io.Serializable;
 
 import org.redabogacia.sigaservices.app.util.ReadProperties;
 import org.redabogacia.sigaservices.app.util.SIGAReferences;
+
+import com.atos.utils.ClsExceptions;
+import com.atos.utils.Row;
+import com.atos.utils.RowsContainer;
 
 /**
  * Paginador no sensitivo a mayusculas/minusculas y acentos. Utiliza un Pool configurado
@@ -32,6 +30,10 @@ import org.redabogacia.sigaservices.app.util.SIGAReferences;
 @Deprecated
 public class PaginadorSQL extends Paginador implements IPaginador,Serializable 
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4346051093126861581L;
 	protected int numeroTotalRegistros = 0;
 	protected int numeroRegistrosPagina = 0;
 	protected int paginaActual = 0;

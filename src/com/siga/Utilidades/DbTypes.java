@@ -18,7 +18,11 @@ import com.atos.utils.ClsMngBBDD;
 
 public class DbTypes implements Serializable {
 
-  public static final String DATE			= "DATE";
+  /**
+	 * 
+	 */
+	private static final long serialVersionUID = 3556657945834120942L;
+public static final String DATE			= "DATE";
   public static final String NUMBER			= "NUMBER";
   public static final String STRING			= "STRING";
   public static final String BLOB			= "BLOB";

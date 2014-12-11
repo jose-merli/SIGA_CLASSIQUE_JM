@@ -4,7 +4,6 @@ package com.siga.Utilidades;
 import java.util.Hashtable;
 import java.util.Vector;
 
-import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.Row;
 import com.atos.utils.UsrBean;
