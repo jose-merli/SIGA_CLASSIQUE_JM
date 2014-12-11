@@ -38,11 +38,7 @@
 
 	ArrayList vIva = new ArrayList(); // valores originales iva
 	// Cargo valor IVA
-	
-	if (formulario.getIdTipoIva().startsWith("0."))	
-    	vIva.add(formulario.getIdTipoIva().substring(1));
-	else
-		vIva.add(formulario.getIdTipoIva());
+	vIva.add(formulario.getIdTipoIva());
 %>
 
 <script type="text/javascript">
