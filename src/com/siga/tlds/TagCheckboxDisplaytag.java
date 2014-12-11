@@ -100,14 +100,6 @@ public class TagCheckboxDisplaytag extends TagSupport {
 	public int doEndTag() throws JspException {
 		StringBuffer strBuf = new StringBuffer();
 		
-		String aux = "";
-		//BEGIN BNS: NO HACE FALTA
-		/*
-		if (PagedSortedForm.SELECT_ALL_TRUE.equals(formBean.getSelectAll()))
-			aux = "document.getElementById(\""+formBean.getSelectAllName()+"\").checked=1;";
-		*/
-		//END BNS
-		
 		try {
 			//BNS: NO HACE FALTA
 			//strBuf.append(String.format(endJavascript, selectAllName, aux));

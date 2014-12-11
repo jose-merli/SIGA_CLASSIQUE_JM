@@ -20,6 +20,10 @@ import com.siga.gui.processTree.SIGAPTConstants;
  * Window - Preferences - Java - Code Style - Code Templates
  */
 public class TagFilaExt extends TagFila {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3079384180675719313L;
 	protected FilaExtElement[] elementos=null;
 	protected Hashtable accesosVec=new Hashtable(); 
 	

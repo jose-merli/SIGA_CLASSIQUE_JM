@@ -17,7 +17,11 @@ import com.siga.Utilidades.UtilidadesString;
 
 public class TagInformeSimple extends TagSupport {
 
-    private String recurso; 
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 2660059857360860649L;
+	private String recurso; 
     private String idInforme; 
     private String idTipoInforme; 
     private String idInstitucion; 

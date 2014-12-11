@@ -19,6 +19,11 @@ import com.siga.Utilidades.UtilidadesString;
 public class TagError extends TagSupport 
 {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8558766868935703921L;
+
 	public int doStartTag() 
 	{
 		

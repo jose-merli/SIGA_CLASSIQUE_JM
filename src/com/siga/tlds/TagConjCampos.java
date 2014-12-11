@@ -15,6 +15,10 @@ import com.siga.Utilidades.UtilidadesString;
 
 public class TagConjCampos extends TagSupport {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 7268268236030943992L;
 	/** Leyenda a mostrar en la caja */
 	String leyenda;
 	boolean desplegable;
@@ -157,7 +161,6 @@ public class TagConjCampos extends TagSupport {
 	public int doEndTag() 
 	{
 		try {
-			String aux = "";
 			pageContext.getResponse().setContentType("text/html");
 			PrintWriter out = pageContext.getResponse().getWriter();
 			if (this.leyenda!=null) {

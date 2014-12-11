@@ -14,6 +14,10 @@ import com.siga.Utilidades.*;
 @Deprecated
 public class TagTablaExt extends TagTabla
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -1784686993882874693L;
 	boolean bVariasTablasEnLaMismaPagina=false;
 
 	public void setVariasTablasEnLaMismaPagina(String dato)

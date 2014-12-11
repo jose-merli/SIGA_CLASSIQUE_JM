@@ -24,6 +24,10 @@ import com.siga.Utilidades.UtilidadesString;
 
 public class TagPaginador extends TagSupport {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3118163409742350217L;
 	private String registrosSeleccionados;
 	private String totalRegistros;
 	private String registrosPorPagina;
@@ -109,7 +113,7 @@ public class TagPaginador extends TagSupport {
 	public int doStartTag() {
 		
 		int total, results, pages, selected, i, ci, distance, pageUltima,registrosSeleccionados;
-		boolean firstPage, hasPreviousPage, hasNextPage,conRegistrosSeleccionados;
+		boolean hasPreviousPage, hasNextPage,conRegistrosSeleccionados;
 		conRegistrosSeleccionados = this.registrosSeleccionados!=null && !this.registrosSeleccionados.equals("");
 		if(conRegistrosSeleccionados)
 			registrosSeleccionados = Integer.parseInt(this.registrosSeleccionados);

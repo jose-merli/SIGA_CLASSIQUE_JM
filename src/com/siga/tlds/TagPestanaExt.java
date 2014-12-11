@@ -11,7 +11,6 @@
 package com.siga.tlds;
 
 import java.io.PrintWriter;
-import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -38,6 +37,10 @@ import com.siga.beans.ExpPestanaConfAdm;
  * Window - Preferences - Java - Code Style - Code Templates
  */
 public class TagPestanaExt extends TagSupport {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 6702156639591270032L;
 	// procesosinvisibles contiene un array de strings con los idproceso de 
     // las pestanhas que no son visibles. 
     protected String []procesosinvisibles=null;
@@ -245,7 +248,6 @@ public class TagPestanaExt extends TagSupport {
 	
 	public int doEndTag() { 
 		try {
-			String aux = "";
 			pageContext.getResponse().setContentType("text/html");
 			PrintWriter out = pageContext.getResponse().getWriter();
 			out.println("</tr>");
@@ -263,7 +265,6 @@ public class TagPestanaExt extends TagSupport {
 	}
 	
 	private void executeConsulta(UsrBean usrbean) throws Exception  {
-		int rc = 0;
 	    ReadProperties p= new ReadProperties(SIGAReferences.RESOURCE_FILES.QUERY);
 		//ReadProperties p = new ReadProperties (PROPERTIES_FILE);
 		String consultaSQL = p.returnProperty(SQL_KEY, true);

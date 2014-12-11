@@ -27,6 +27,10 @@ import com.siga.Utilidades.UtilidadesString;
 public class TagBusquedaSJCS extends TagSupport {
 
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4821480647934542203L;
+	/**
 	 * Botones que se van a mostrar en el tag [Automatica|Manual] <br>Por defecto aparecen ambos
 	 */
 	private boolean automatica=true;
@@ -156,7 +160,7 @@ public class TagBusquedaSJCS extends TagSupport {
 			if (dato != null){
 				dato += ",";
 				StringTokenizer datos = new StringTokenizer(dato, ",");
-				for (int i = 0; datos.hasMoreElements(); i++) {
+				while (datos.hasMoreElements()) {
 					String tipo = datos.nextToken();
 					tipo = tipo.trim();
 					if (tipo.equalsIgnoreCase("a")) { 

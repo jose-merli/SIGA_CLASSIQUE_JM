@@ -26,6 +26,10 @@ import org.redabogacia.sigaservices.app.util.SIGAReferences;
 
 public class TagComboBDExt extends TagSupport {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -5399393035561026679L;
 	private static int OK = 1;
 	private static int ERROR = -1;
 	private static String parametroWhere = "@parametro@";

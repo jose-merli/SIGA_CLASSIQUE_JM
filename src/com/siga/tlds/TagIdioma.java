@@ -12,6 +12,10 @@ import com.siga.Utilidades.UtilidadesString;
 
 public class TagIdioma extends TagSupport 
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 357686633244045637L;
 	String key = "";
 	String arg0 = "";
 	String arg1 = "";

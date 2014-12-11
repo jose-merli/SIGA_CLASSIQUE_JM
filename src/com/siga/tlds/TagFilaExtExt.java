@@ -11,6 +11,10 @@ import com.siga.Utilidades.*;
 
 public class TagFilaExtExt extends TagFilaExt
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4302084983023027266L;
 	String sNombreTablaPadre="";
 	
 	

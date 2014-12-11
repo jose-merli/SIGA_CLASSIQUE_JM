@@ -17,6 +17,10 @@ import com.siga.Utilidades.*;
 @Deprecated
 public class TagTablaMultipleModal extends TagTablaExt
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 5293166933482869149L;
 	boolean bVariasTablasEnLaMismaPagina=false;
 
 	public void setVariasTablasEnLaMismaPagina(String dato)

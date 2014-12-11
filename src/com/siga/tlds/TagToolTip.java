@@ -8,6 +8,10 @@ import javax.servlet.jsp.tagext.TagSupport;
 
 public class TagToolTip extends TagSupport 
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 7826411496935001431L;
 	String id = "", texto = "", imagen = "";
 	
 	public String getId() {

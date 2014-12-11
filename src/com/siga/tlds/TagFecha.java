@@ -18,6 +18,10 @@ import java.util.Date;
 public class TagFecha extends TagSupport {
 	
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -6112383609745590820L;
+	/**
 	 * <siga:FechaBox
 	 *		valorInicial="<%=fechaDesde()%>" 
 	 *		required="TRUE"

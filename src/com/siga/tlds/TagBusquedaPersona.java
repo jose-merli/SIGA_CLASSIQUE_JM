@@ -12,6 +12,10 @@ import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesString;
 
 public class TagBusquedaPersona extends TagSupport {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8017160795406872669L;
 	String tipo = "";
 	String tipoClientes = "";
 	String titulo = "";

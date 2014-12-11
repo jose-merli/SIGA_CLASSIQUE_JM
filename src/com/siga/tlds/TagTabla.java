@@ -30,6 +30,10 @@ import com.siga.Utilidades.UtilidadesString;
 @Deprecated
 public class TagTabla extends TagSupport {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2985739693386657432L;
 	int borde=1;
 	int numColumnas = 0;
 	String alto = "0";

@@ -18,6 +18,11 @@ public class TagTituloExt extends TagTitulo {
 
 	
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3722770521062740684L;
+
+	/**
 	 * Acciones a pintar antes del tag 
 	 * @author raul.ggonzalez. 10-12-04
 	 * @return codigo de respuesta 

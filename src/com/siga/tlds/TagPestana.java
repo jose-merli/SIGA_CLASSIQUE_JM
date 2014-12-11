@@ -1,11 +1,9 @@
 package com.siga.tlds;
 import java.io.PrintWriter;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.tagext.TagSupport;
-import javax.servlet.http.*;
-
-import com.atos.utils.ClsConstants;
-import com.atos.utils.UsrBean;
 
 /**
  * Este tag presenta una linea de pestanhas con sus respectivas etiquetas y acciones asociadas.
@@ -17,6 +15,10 @@ import com.atos.utils.UsrBean;
 
 public class TagPestana extends TagSupport {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2142528772662865500L;
 	/** Identificador de linea de pestanhas */
 	int conjunto=0;
 	/** Conjunto de nombres de las pestanhas */
@@ -125,7 +127,6 @@ public class TagPestana extends TagSupport {
 			HttpSession session = pageContext.getSession();
 			HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
 			String path = request.getContextPath(); 
-			UsrBean usrbean = (UsrBean)session.getAttribute(ClsConstants.USERBEAN);
 			PrintWriter out = pageContext.getResponse().getWriter();
 			String hidden= "";
 			if (!this.visible) {
@@ -171,7 +172,6 @@ public class TagPestana extends TagSupport {
 	public int doEndTag() 
 	{
 		try {
-			String aux = "";
 			pageContext.getResponse().setContentType("text/html");
 			PrintWriter out = pageContext.getResponse().getWriter();
 

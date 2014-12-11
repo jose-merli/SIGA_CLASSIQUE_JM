@@ -24,6 +24,11 @@ import com.siga.gui.processTree.SIGAPTConstants;
  */
 public class TagFila extends TagSupport 
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -655421102178976659L;
+
 	private boolean botonesPintados = false; 
 	
 	static final String accConsultar = "consultar";
@@ -55,7 +60,7 @@ public class TagFila extends TagSupport
 			
 			dato += ",";
 			StringTokenizer datos = new StringTokenizer(dato, ",");
-			for (int i = 0; datos.hasMoreElements(); i++) {
+			while (datos.hasMoreElements()) {
 				String tipo = datos.nextToken();
 				tipo = tipo.trim();
 				if (tipo.equalsIgnoreCase("c")) { 

@@ -30,6 +30,10 @@ import com.siga.general.ParejaNombreID;
 
 public class TagComboBD extends TagSupport {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3471911641819429115L;
 	private static int OK = 1;
 	private static int ERROR = -1;
 	private static String parametroWhere  = "@parametro@";
@@ -740,36 +744,7 @@ public class TagComboBD extends TagSupport {
 
 
 	}
-	
-	
-	private Vector ReemplazaParametrosBind (String nombreParametro,String consulta, String dato[],Hashtable codigos, int contador) 
-	{
-	    Vector salida = new Vector();
-		for (int i = 0; i < dato.length; i++) {
-			if ((dato[i] != null) && (dato[i].trim().equalsIgnoreCase("null"))){
-				break;
-			}
-			
-			if ((dato[i] == null) || (dato[i].trim().equalsIgnoreCase(""))){
-				break;
-			}
-			if (consulta.indexOf(nombreParametro.toUpperCase())<0 && consulta.indexOf(nombreParametro.toLowerCase())<0) {
-				break;
-			}
-			//consulta = consulta.replaceFirst("(?i)"+parametroWhere, dato[i]);
-			consulta = consulta.replaceFirst("(?i)"+nombreParametro, ":"+contador);
-			codigos.put(new Integer(contador),dato[i]);
-			contador++;
-		}
-		salida.add(consulta);
-		salida.add(codigos);
-		salida.add(new Integer(contador-1));
-		return salida;
 
-//		if (consulta.indexOf(TagComboBD.parametroWhere) > 0) 
-//			return TagComboBD.ERROR;
-//		return TagComboBD.OK;
-	}
 	private Vector ReemplazaParametrosBind (String nombreParametro,String consulta, String parametro,Hashtable codigos, int contador) 
 	{
 	    Vector salida = new Vector();
@@ -850,66 +825,6 @@ public class TagComboBD extends TagSupport {
 
 		return salida;
 	}
-	
-	
-	
-	
-	private Vector ReemplazaIdiomaBind (String consulta, String dato[],Hashtable codigos, int contador) 
-	{
-	    Vector salida = new Vector();
-	    String idioma = "";
-		HttpSession session = pageContext.getSession();
-		UsrBean usrbean = (UsrBean)session.getAttribute(ClsConstants.USERBEAN);
-		try {
-			idioma = "" + usrbean.getLanguage();
-		}
-		catch (Exception e) {
-			idioma = "1"; // Por defecto español para la pantalla inicial de los 3 combos (es temporal)
-		}
-		boolean existe=(consulta.indexOf(parametroIdioma.toLowerCase())!=-1 || consulta.indexOf(parametroIdioma.toUpperCase())!=-1);
-		
-		while (existe) {
-			consulta = consulta.replaceFirst("(?i)"+parametroIdioma, ":"+contador);
-			codigos.put(new Integer(contador),idioma);
-			contador++;
-			existe=(consulta.indexOf(parametroIdioma.toLowerCase())!=-1 || consulta.indexOf(parametroIdioma.toUpperCase())!=-1);
-		}
-		salida.add(consulta);
-		salida.add(codigos);
-		salida.add(new Integer(contador));
-		return salida;
-
-//		if (consulta.indexOf(TagComboBD.parametroWhere) > 0) 
-//			return TagComboBD.ERROR;
-//		return TagComboBD.OK;
-	}
-	
-	
-	
-/*	Vector getCamposConsulta(String consultaSQL) {
-		Vector campos = new Vector();
-		try {
-			consultaSQL = consultaSQL.toLowerCase();
-			StringTokenizer datos = new StringTokenizer(consultaSQL, "select");
-			String tipo = datos.nextToken();
-			tipo = tipo.trim();
-			datos = new StringTokenizer(tipo, "from");
-			tipo = datos.nextToken();
-			tipo = tipo.trim();
-			datos = new StringTokenizer(tipo, ",");
-			for (int i = 0; datos.hasMoreElements(); i++) {
-				String campo = datos.nextToken();
-				campo = campo.trim();
-				campos.add(campo);
-			}
-		}
-		catch (Exception e) {
-			return null;
-		}
-		
-		return campos;
-	}
-*/
 	
 	private String arrayStringToString (String a[]) {
 		String rc = "";

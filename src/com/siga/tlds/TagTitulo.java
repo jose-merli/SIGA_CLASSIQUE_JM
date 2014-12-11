@@ -15,6 +15,10 @@ import com.siga.Utilidades.UtilidadesString;
 
 public class TagTitulo extends TagSupport {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -9005504571844487826L;
 	/** titulo de la pagina */
 	String titulo;
 	/** localizacion de la pagina */
