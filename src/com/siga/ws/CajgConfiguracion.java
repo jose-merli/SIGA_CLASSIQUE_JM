@@ -6,6 +6,7 @@ import com.atos.utils.UsrBean;
 import com.siga.beans.GenParametrosAdm;
 import com.siga.ws.cat.PCAJGGeneraXML;
 import com.siga.ws.cat.PCAJGxmlResponse;
+import com.siga.ws.i2023.PCAJGGeneralitatValencianaEnvioEJG;
 import com.siga.ws.i2032.PCAJGPaisVascoEnvioEJG;
 import com.siga.ws.i2055.SIGAWSClient;
 import com.siga.ws.i2064.PCAJGGeneraXMLSantiago;
@@ -24,6 +25,7 @@ public class CajgConfiguracion  {
 	public static final int TIPO_CAJG_TXT_ALCALA = 5;
 	public static final int TIPO_CAJG_XML_SANTIAGO = 6;
 	public static final int TIPO_CAJG_WEBSERVICE_PAISVASCO = 7;
+	public static final int TIPO_CAJG_WEBSERVICE_GENERALITAT_VALENCIANA = 8;
 	
 	
 	private static final String PCAJG_ENVIO_WEBSERVICE_TIPO_CAJG3 = "PCAJG_ENVIO_WEBSERVICE_TIPO_CAJG3";
@@ -53,6 +55,8 @@ public class CajgConfiguracion  {
 			obj = new PCAJGGeneraXMLSantiago();
 		} else if (tipoCAJG == TIPO_CAJG_WEBSERVICE_PAISVASCO) {
 			obj = new PCAJGPaisVascoEnvioEJG();
+		} else if (tipoCAJG == TIPO_CAJG_WEBSERVICE_GENERALITAT_VALENCIANA) {
+			obj = new PCAJGGeneralitatValencianaEnvioEJG();
 		}
 		return obj;
 	}

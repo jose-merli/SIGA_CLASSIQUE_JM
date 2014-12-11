@@ -119,7 +119,9 @@
 			} else if (cajgConfig == 6) {
 				buttons+=",val,gxml";//generar XML			
 			} else if (cajgConfig == 7) {
-				buttons+=",val,ws";//envio WebService
+				buttons+=",val,ws";//envio WebService GVasco
+			} else if (cajgConfig == 8) {
+				buttons+=",val,ws";//envio WebService GenValenciana
 			}
 		}
 	
