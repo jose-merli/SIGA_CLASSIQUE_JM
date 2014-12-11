@@ -8,7 +8,6 @@ import javax.management.InstanceNotFoundException;
 import javax.management.Notification;
 import javax.management.NotificationListener;
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 
 import org.redabogacia.sigaservices.app.util.ReadProperties;
 import org.redabogacia.sigaservices.app.util.SIGAReferences;
@@ -31,7 +30,11 @@ public class SIGASvlProcesoAutomaticoEnvios extends SIGAServletAdapter implement
 
 	
 	
-    private Timer timer;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -6065534807424027785L;
+	private Timer timer;
     private Integer idNotificacion;
     private long lIntervalo = 1;
     private String sNombreProceso = "ProcesoAutomaticoEnvios";

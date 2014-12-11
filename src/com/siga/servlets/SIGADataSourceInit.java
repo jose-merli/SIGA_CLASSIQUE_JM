@@ -14,7 +14,6 @@ import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsLogging;
 import com.atos.utils.ClsMngProperties;
 import com.siga.beans.EnvEnviosAdm;
-import com.siga.beans.FacFacturacionProgramadaAdm;
 import com.siga.beans.FcsFacturacionJGAdm;
 import com.siga.general.CenVisibilidad;
 

@@ -25,6 +25,10 @@ import com.siga.Utilidades.UtilidadesString;
  */
 public class SIGASvlVectorToClientFile extends HttpServlet {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 851169368642767459L;
 	public void doGet(HttpServletRequest request, HttpServletResponse response)	throws ServletException, IOException {
 		doPost(request,response);
 	}
@@ -65,7 +69,6 @@ public class SIGASvlVectorToClientFile extends HttpServlet {
 			for (int i=0;i<datos.size();i++){
 				String linea = "";
 				String cabecera = "";
-				String columna = "";
 				Row row = null;
 				try {
 					row = (Row)datos.elementAt(i);

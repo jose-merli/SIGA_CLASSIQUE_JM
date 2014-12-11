@@ -109,53 +109,6 @@ public class SIGASvlAuthenticate extends SIGAServletAdapter {
     }
   }
   
-  private String chkLocation(String uid, HttpServletRequest request)
-  {
-    String queryAccess="select ID_LOCATION from SIGA_USER WHERE ID_USER='"+uid.toUpperCase()+"'";
-
-    String loc="";
-	Statement stmtAccess=null;
-    Connection con= null;
-	ResultSet rsLoc=null;
-
-    try{
-      con= ClsMngBBDD.getConnection();
-      stmtAccess=con.createStatement();
-      rsLoc=stmtAccess.executeQuery(queryAccess);
-
-      while(rsLoc.next()){
-        loc=rsLoc.getString("ID_LOCATION");
-        ClsLogging.writeFileLog("Location: "+loc,request,3);
-      }
-      
-      rsLoc.close();
-      stmtAccess.close();
-
-
-    }catch (Exception e){
-      //ORA-00942: tabla o vista no encontrada
-      //ORA-00923: palabra clave FROM no encontrada donde se esperaba
-      //ORA-00933: comando SQL no terminado correctamente
-//                 throw new ClsExceptions("Error en sentencia SQL, " + e.toString(), "","","","");
-      ClsLogging.writeFileLogError("ERROR: "+e.toString(),request,1);
-
-    }finally{
-    	
-		try {
-			if (rsLoc!=null)       rsLoc.close();
-			if (stmtAccess!=null)     stmtAccess.close();
-            ClsMngBBDD.closeConnection(con);
-			 }
-			 catch (Exception ex)
-    		 {
-      ClsLogging.writeFileLogError("ERROR closing connection: "+ex.toString(),request,1);
-     }
-    }
-
-    return loc;
-  }
-
-
   //Limpiar recursos
   public void destroy() {
 	ClsLogging.writeFileLogWithoutSession("Destroy servlet Authenticate",1);

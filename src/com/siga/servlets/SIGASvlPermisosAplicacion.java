@@ -14,7 +14,12 @@ import com.siga.gui.processTree.SIGAPTConstants;
 
 public class SIGASvlPermisosAplicacion extends HttpServlet
 {
-    public void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1632465354186592789L;
+
+	public void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException
     {
     	doWork(req, res);
     }

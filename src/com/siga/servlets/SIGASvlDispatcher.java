@@ -31,7 +31,12 @@ import com.atos.utils.UsrBean;
 public class SIGASvlDispatcher extends HttpServlet {
   //static final private String CONTENT_TYPE = "text/html";
 
-  //Process a HTTP GET request
+  /**
+	 * 
+	 */
+	private static final long serialVersionUID = -5474690217495051631L;
+
+//Process a HTTP GET request
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     ClsLogging.writeFileLog("GET METHOD Dispatcher",request,3);
     response.setHeader("Cache-Control","no-store"); //HTTP 1.1

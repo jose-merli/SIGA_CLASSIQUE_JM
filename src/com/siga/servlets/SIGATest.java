@@ -18,7 +18,12 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class SIGATest extends HttpServlet {
 
-	 protected void processRequest(HttpServletRequest request, HttpServletResponse response)
+	 /**
+	 * 
+	 */
+	private static final long serialVersionUID = -7750900744246317612L;
+
+	protected void processRequest(HttpServletRequest request, HttpServletResponse response)
 	 	throws ServletException {
 	 	
 	 	

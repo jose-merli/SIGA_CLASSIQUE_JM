@@ -12,7 +12,12 @@ import com.atos.utils.RowsContainer;
 public class SIGASvlConectarBaseDatos extends HttpServlet
 {  
 	
-    public void doPost(HttpServletRequest req, HttpServletResponse res) throws  javax.servlet.ServletException, java.io.IOException
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -3997541385318188728L;
+
+	public void doPost(HttpServletRequest req, HttpServletResponse res) throws  javax.servlet.ServletException, java.io.IOException
     {
     	doWork(req, res);
     }

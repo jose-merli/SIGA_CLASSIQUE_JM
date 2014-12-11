@@ -23,7 +23,13 @@ import com.siga.Utilidades.UtilidadesString;
 
 public class SIGASvlDownloadFile extends HttpServlet
 {
-    public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 2277394979304292050L;
+
+
+	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
     {
         doWork(request, response);
     }

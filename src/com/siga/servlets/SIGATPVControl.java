@@ -44,6 +44,11 @@ import com.siga.general.PagoTarjeta;
  */
 public class SIGATPVControl extends HttpServlet {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 6528540571697112971L;
+
 	public void init(){		
 		com.atos.utils.ClsLogging.writeFileLog("SIGATVPControl: init()", 1);		
 	}
@@ -121,7 +126,7 @@ public class SIGATPVControl extends HttpServlet {
 	
 	private boolean validarDatos(HttpServletRequest request){
 		String merchantId="", acquirerBin="", terminalId="", operacion="", importe="", moneda="";
-		String exponente="", referencia="", firma="", autorizacion="", where=null;
+		String exponente="", referencia="", firma="", autorizacion="";
 		String clave = null; //Clave para descifrar la firma
 		String idInstitucion=null;
 		boolean validar = true;
@@ -154,7 +159,6 @@ public class SIGATPVControl extends HttpServlet {
 			else {
 				//2. Validez de la firma:
 				//Calculo la firma con los datos:
-				String valorFirma = "";
 				Firma firmaTPV = new Firma();
 				firmaTPV.setClave(clave);
 				firmaTPV.setMerchantId(merchantId);
@@ -234,12 +238,9 @@ public class SIGATPVControl extends HttpServlet {
 			autorizacion = request.getParameter("Num_aut");
 			referencia = request.getParameter("Referencia");
 			
-			SimpleDateFormat sdf = new SimpleDateFormat(ClsConstants.DATE_FORMAT_JAVA);
 			fecha = operacion.substring(15,operacion.length());			
 			Calendar calendario = Calendar.getInstance();
 			calendario.setTimeInMillis(Long.parseLong(fecha));
-			Date date = calendario.getTime();
-			String fechaFormateada = sdf.format(date);
 		
 			//Recuperamos el carro del contexto:
 			carro = (CarroCompra)this.getServletContext().getAttribute(request.getParameter("Num_operacion"));
@@ -279,7 +280,6 @@ public class SIGATPVControl extends HttpServlet {
 		String merchantId=null, acquirerBin=null, terminalId=null, operacion=null, importe=null, moneda=null;
 		String exponente=null, referencia=null, firma=null, autorizacion=null, fecha=null;
 		FacPagosPorCajaAdm facPagosPorCajaAdm;
-		Hashtable hashTemporal = new Hashtable();
 		PagoTarjeta pagoTarjeta;
 		UserTransaction tx = null;
 		boolean finCorrecto = false;
@@ -304,7 +304,6 @@ public class SIGATPVControl extends HttpServlet {
 			String fechaFormateada = sdf.format(date);
 			//Insertamos la operacion en Base de Datos:
 			pagoTarjeta 		= (PagoTarjeta)this.getServletContext().getAttribute(request.getParameter("Num_operacion"));
-			Integer user     = new Integer(pagoTarjeta.getUsrBean().getUserName());
 			facPagosPorCajaAdm 	= new FacPagosPorCajaAdm(pagoTarjeta.getUsrBean());
 			Hashtable hash 		= new Hashtable();
 			hash.put(FacPagosPorCajaBean.C_IDINSTITUCION,pagoTarjeta.getIdInstitucion());

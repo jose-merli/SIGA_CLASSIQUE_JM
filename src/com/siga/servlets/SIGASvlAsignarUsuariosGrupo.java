@@ -14,7 +14,13 @@ import com.siga.generalRequirements.accessControl.asignarUsuariosGrupoRight.*;
 
 public class SIGASvlAsignarUsuariosGrupo extends HttpServlet
 {
-    public void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 3402529943378621552L;
+
+
+	public void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException
     {
     	doWork(req, res);
     }

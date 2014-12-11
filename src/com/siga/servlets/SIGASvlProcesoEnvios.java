@@ -12,14 +12,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-//RGG import weblogic.management.timer.Timer;
-
-
 import com.atos.utils.ClsLogging;
 import com.atos.utils.UsrBean;
 import com.siga.beans.CenInstitucionAdm;
 import com.siga.beans.CenInstitucionBean;
-
 import com.siga.envios.Envio;
 
 /**
@@ -35,9 +31,10 @@ public class SIGASvlProcesoEnvios extends HttpServlet {
 
 	
 	
-  // RGG   private Timer timer;
-    private Integer idNotificacion;
-    private long lIntervalo = 1;
+  /**
+	 * 
+	 */
+	private static final long serialVersionUID = 4878712899452314614L;
     private String sNombreProceso = "ProcesoAutomaticoEnvios";
 
     

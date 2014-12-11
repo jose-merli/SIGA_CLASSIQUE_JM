@@ -11,7 +11,12 @@ import org.redabogacia.sigaservices.app.util.SIGAReferences;
 
 public class ServletPruebaACA extends HttpServlet
 {
-    public void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 787434550171312764L;
+
+	public void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException
     {
     	doWork(req, res);
     }

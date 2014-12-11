@@ -2,7 +2,6 @@ package com.siga.servlets;
 
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Vector;
 
@@ -19,8 +18,6 @@ import weblogic.management.timer.Timer;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsLogging;
-import com.atos.utils.ClsMngBBDD;
-import com.atos.utils.Row;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesBDAdm;
 import com.siga.Utilidades.UtilidadesString;

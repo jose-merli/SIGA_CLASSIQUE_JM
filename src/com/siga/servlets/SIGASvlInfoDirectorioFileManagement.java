@@ -17,7 +17,12 @@ import com.atos.utils.ClsLogging;
 
 public class SIGASvlInfoDirectorioFileManagement extends SIGASvlDownloadFile {
 	 
-	 public void doWork(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	 /**
+	 * 
+	 */
+	private static final long serialVersionUID = 3911680330771584283L;
+
+	public void doWork(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String accion = "";
     	if (request.getAttribute("accion") == null) {
             boolean isMultipart = FileUpload.isMultipartContent(request);
@@ -38,7 +43,6 @@ public class SIGASvlInfoDirectorioFileManagement extends SIGASvlDownloadFile {
 	        String fileName = "";
 	        try{
 
-	            FileUpload fup=new FileUpload();
 	            boolean isMultipart = FileUpload.isMultipartContent(req);
 	            DiskFileUpload upload = new DiskFileUpload();
 
