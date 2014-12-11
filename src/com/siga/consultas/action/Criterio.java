@@ -13,6 +13,10 @@ import java.io.Serializable;
  */
 public class Criterio implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3249814790139367989L;
 	private String tc="";
 	private String idC="";
 	private String op="";

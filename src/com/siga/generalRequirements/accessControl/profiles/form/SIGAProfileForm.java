@@ -5,7 +5,11 @@ import org.apache.struts.action.ActionForm;
 import com.atos.utils.ColumnConstants;
 
 public class SIGAProfileForm extends ActionForm {
-   private Hashtable htRecord;
+   /**
+	 * 
+	 */
+	private static final long serialVersionUID = 2870911611383909313L;
+private Hashtable htRecord;
 
 
     public void putHas(Hashtable has) {

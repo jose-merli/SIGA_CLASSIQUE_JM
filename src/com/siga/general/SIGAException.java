@@ -26,6 +26,10 @@ import es.satec.businessManager.BusinessException;
 public class SIGAException extends ClsExcBase  {
 	
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2165972601408779090L;
 	private String literal[]=null;
 	private String literal_2=null;
 	protected Hashtable errorLit=null;

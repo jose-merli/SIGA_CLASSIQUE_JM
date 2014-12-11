@@ -31,6 +31,10 @@ import com.siga.comun.form.AuxForm;
 
 public class MasterForm extends AuxForm  {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 8829967516936854044L;
 	protected Hashtable datos = new Hashtable();
 
 	public Hashtable getDatos() 			 { return (Hashtable)datos.clone();	}
@@ -56,7 +60,7 @@ public class MasterForm extends AuxForm  {
 		try {
 			// Cogemos las filas de la tabla
 			StringTokenizer filas = new StringTokenizer(dato, "#");
-			for (int i = 0; filas.hasMoreElements(); i++) {
+			while (filas.hasMoreElements()) {
 				String fila = filas.nextToken();
 				
 				Vector vFila = new Vector();
@@ -67,7 +71,7 @@ public class MasterForm extends AuxForm  {
 					if ((fila.indexOf("%") == 0) || (k == 1)){
 						Vector aux = new Vector();
 						StringTokenizer celdas = new StringTokenizer(campo, ",");
-						for (int j = 0; celdas.hasMoreElements(); j++) {
+						while (celdas.hasMoreElements()) {
 							String celda = celdas.nextToken();
 							if (!celda.equalsIgnoreCase("&nbsp;"))
 								aux.add(celda.trim());
@@ -83,7 +87,7 @@ public class MasterForm extends AuxForm  {
 					else {
 						Vector aux = new Vector();
 						StringTokenizer celdas = new StringTokenizer(campo, ",");
-						for (int j = 0; celdas.hasMoreElements(); j++) {
+						while (celdas.hasMoreElements()) {
 							String celda = celdas.nextToken();
 							aux.add(celda.trim());
 						}

@@ -6,6 +6,10 @@ import net.sourceforge.ajaxtags.xml.AjaxXmlBuilder.PropertyReader;
 
 public class ParejaNombreID implements Serializable, PropertyReader {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	// Atributos
 	private String nombre, idNombre;
 	

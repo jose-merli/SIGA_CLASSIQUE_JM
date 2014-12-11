@@ -6,7 +6,11 @@ import com.atos.utils.ColumnConstants;
 
 public class SIGAPasswordManagementForm extends ActionForm {
 
-   private Hashtable htRecord;
+   /**
+	 * 
+	 */
+	private static final long serialVersionUID = -1790597080696976153L;
+private Hashtable htRecord;
 
     public void putHas(Hashtable has) {
         htRecord = has;

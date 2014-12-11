@@ -15,6 +15,11 @@ package com.siga.general;
 public class SIGAExcOk extends SIGAException {
 
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2252611928931062180L;
+
+	/**
 	 * @param _literal
 	 */
 	public SIGAExcOk(String _literal) {

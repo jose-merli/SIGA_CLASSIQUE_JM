@@ -20,7 +20,11 @@ import java.io.Serializable;
 
 public class SIGAGrDDBBObject extends SIGAGeneric implements Serializable
 {
-  protected Hashtable htRecord;
+  /**
+	 * 
+	 */
+	private static final long serialVersionUID = -3044640667801010980L;
+protected Hashtable htRecord;
   protected Hashtable htRecordBackup;
   protected HttpServletRequest req;
 
