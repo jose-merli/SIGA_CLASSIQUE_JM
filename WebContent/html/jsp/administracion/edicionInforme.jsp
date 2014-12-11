@@ -50,7 +50,7 @@
 			
 			jQuery.ajax({ //Comunicación jQuery hacia JSP  
 		           type: "POST",
-		           url: "/SIGA/ENV_Enviar.do?modo=getJQueryPlantillasEnvio",
+		           url: "/SIGA/ENV_DefinirEnvios.do?modo=getJQueryPlantillasEnvio",
 		           data: "idTipoEnvio="+comboTiposEnvio.value+"&idPlantillaEnvioDefecto="+plantillaDefectoSel,
 		           dataType: "json",
 		           success:  function(json) {
@@ -94,7 +94,7 @@
 				
 					jQuery.ajax({ //Comunicación jQuery hacia JSP  
 			           type: "POST",
-			           url: "/SIGA/ENV_Enviar.do?modo=getJQueryTiposIntercambioTelematico",
+			           url: "/SIGA/ENV_DefinirEnvios.do?modo=getJQueryTiposIntercambioTelematico",
 			           data: "idTipoEnvio=6",
 			           dataType: "json",
 			           success:  function(json) {
@@ -133,7 +133,7 @@
 			if(comboTiposEnvio.value!='' && comboTiposEnvio.value != "undefined"){			
 			jQuery.ajax({ //Comunicación jQuery hacia JSP  
 		           type: "POST",
-		           url: "/SIGA/ENV_Enviar.do?modo=getJQueryPlantillasEnvio",
+		           url: "/SIGA/ENV_DefinirEnvios.do?modo=getJQueryPlantillasEnvio",
 		           data: "idTipoEnvio="+comboTiposEnvio.value,
 		           dataType: "json",
 		           success:  function(json) {
@@ -168,7 +168,7 @@
 				
 					jQuery.ajax({ //Comunicación jQuery hacia JSP  
 			           type: "POST",
-			           url: "/SIGA/ENV_Enviar.do?modo=getJQueryTiposIntercambioTelematico",
+			           url: "/SIGA/ENV_DefinirEnvios.do?modo=getJQueryTiposIntercambioTelematico",
 			           data: "idTipoEnvio=6",
 			           dataType: "json",
 			           success:  function(json) {

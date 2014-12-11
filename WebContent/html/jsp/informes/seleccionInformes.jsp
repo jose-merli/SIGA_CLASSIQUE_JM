@@ -46,7 +46,7 @@
 		
 			jQuery.ajax({ //Comunicación jQuery hacia JSP  
 	           type: "POST",
-	           url: "/SIGA/ENV_Enviar.do?modo=getJQueryPlantillasEnvio",
+	           url: "/SIGA/ENV_DefinirEnvios.do?modo=getJQueryPlantillasEnvio",
 	           async: false,
 	           data: "idTipoEnvio="+comboTiposEnvio.value+"&idPlantillaEnvioDefecto="+idPlantillaEnvioDefecto,
 	           contentType: "application/x-www-form-urlencoded;charset=UTF-8",
@@ -93,7 +93,7 @@
 		if(comboTiposEnvio.value!=''){			
 			jQuery.ajax({ //Comunicación jQuery hacia JSP  
 	           type: "POST",
-	           url: "/SIGA/ENV_Enviar.do?modo=getJQueryPlantillasEnvio",
+	           url: "/SIGA/ENV_DefinirEnvios.do?modo=getJQueryPlantillasEnvio",
 	           data: "idTipoEnvio="+comboTiposEnvio.value,
 	           dataType: "json",
 	           success:  function(json) {
@@ -142,7 +142,7 @@
 	</html:form>
 	
 	<c:if test="${InformesGenericosForm.enviar=='1' }">
-		<html:form action="/ENV_Enviar.do" method="POST" target="submitArea">
+		<html:form action="/ENV_DefinirEnvios.do" method="POST" target="submitArea">
 			<html:hidden property="modo" value="insertarEnvioGenerico" />
 			<html:hidden property="idTipoInforme" />
 			<html:hidden property="datosInforme" value="" />
@@ -460,7 +460,7 @@
 			//Recupero los datos de los combos del registro
 			jQuery.ajax({ //Comunicación jQuery hacia JSP  
 		           type: "POST",
-		           url: "/SIGA/ENV_Enviar.do?modo=getJQueryTiposEnvioPermitido",
+		           url: "/SIGA/ENV_DefinirEnvios.do?modo=getJQueryTiposEnvioPermitido",
 		           data: "idPlantilla="+ids[1]+"&idInstitucion="+ids[2],
 				   contentType: "application/x-www-form-urlencoded;charset=UTF-8",
 		           dataType: "json",
