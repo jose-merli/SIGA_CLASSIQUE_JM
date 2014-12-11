@@ -1442,7 +1442,7 @@ public class FacAbonoAdm extends MasterBeanAdministrador {
 			sql.append(" SUM(PC.IMPOFICIO + PC.IMPASISTENCIA + PC.IMPEJG + PC.IMPSOJ) AS TOTALIMPORTESJCSSUJETO, ");
 			sql.append(" SUM(PC.IMPRET) AS IMPORTETOTALRETENCIONESSUJETO, ");
 			sql.append(" SUM(PC.IMPMOVVAR) AS IMPORTETOTALMVTOSSUJETO, ");
-			sql.append(" (-1 *PC.IMPIRPF) AS TOTALIMPORTEIRPF,");
+			sql.append(" SUM(PC.IMPIRPF) AS TOTALIMPORTEIRPF,");
 			sql.append(" 0 AS TOTALIMPORTESJCSEXENTO, ");
 			sql.append(" 0 AS IMPORTETOTALRETENCIONESEXENTO, ");
 			sql.append(" 0 AS IMPORTETOTALMVTOSEXENTO ");
@@ -1455,11 +1455,11 @@ public class FacAbonoAdm extends MasterBeanAdministrador {
 				sql.append(" AND PC.IDPERDESTINO = ");
 				sql.append(idPersona);
 			}
-			sql.append(" AND NVL(PC.IMPIRPF, 0) <> 0 ");
+			sql.append(" AND NVL(PC.PORCENTAJEIRPF, 0) <> 0 ");
 			sql.append(" GROUP BY PC.IDPERDESTINO, ");
 			sql.append(" PC.IDPAGOSJG, ");
 			sql.append(" PC.IDINSTITUCION, ");
-			sql.append(" PC.IMPIRPF, ");
+			sql.append(" PC.PORCENTAJEIRPF, ");
 			sql.append(" PC.IDCUENTA ");
 			sql.append(" UNION ");
 //			query para sacar los pagos cuya retencion sea cero
@@ -1484,11 +1484,11 @@ public class FacAbonoAdm extends MasterBeanAdministrador {
 				sql.append(" AND PC.IDPERDESTINO = ");
 				sql.append(idPersona);
 			}
-			sql.append(" AND NVL(PC.IMPIRPF, 0) = 0 ");
+			sql.append(" AND NVL(PC.PORCENTAJEIRPF, 0) = 0 ");
 			sql.append(" GROUP BY PC.IDPERDESTINO, ");
 			sql.append(" PC.IDPAGOSJG, ");
 			sql.append(" PC.IDINSTITUCION, ");
-			sql.append(" PC.IMPIRPF, ");
+			sql.append(" PC.PORCENTAJEIRPF, ");
 			sql.append(" PC.IDCUENTA ");
 			sql.append(" )TOTAL ");
 			

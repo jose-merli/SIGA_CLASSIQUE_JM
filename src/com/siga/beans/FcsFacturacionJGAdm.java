@@ -1040,7 +1040,7 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 		
 				StringBuffer select = new StringBuffer();
 				select.append(" SELECT " + FcsPagoColegiadoBean.C_IDPERDESTINO + " AS IDPERSONAIMPRESO, ");
-				select.append("        SUM ("+FcsPagoColegiadoBean.C_IMPIRPF + ") AS TOTALIMPORTEIRPF, ");
+				select.append("        ((-1*)SUM ("+FcsPagoColegiadoBean.C_IMPIRPF + ")) AS TOTALIMPORTEIRPF, "); //Está guardado con signo menos aquí se recupera positivo
 				select.append("        SUM (" + FcsPagoColegiadoBean.C_IMPOFICIO + " + ");
 				select.append(                  FcsPagoColegiadoBean.C_IMPASISTENCIA + " + ");
 				select.append(                  FcsPagoColegiadoBean.C_IMPEJG + " + ");
@@ -1049,7 +1049,7 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 				select.append(" FROM "  + FcsPagoColegiadoBean.T_NOMBRETABLA);
 				select.append(" WHERE " + FcsPagoColegiadoBean.C_IDINSTITUCION + " = " + idInstitucion);
 				select.append(" AND "   + FcsPagoColegiadoBean.C_IDPAGOSJG + " IN (" + sPagos + ")");
-				select.append(" AND "   + FcsPagoColegiadoBean.C_IMPIRPF + " > 0 ");
+				select.append(" AND "   + FcsPagoColegiadoBean.C_PORCENTAJEIRPF + " > 0 ");
 				select.append(" AND ("   + FcsPagoColegiadoBean.C_IMPOFICIO + " > 0 or ");
 				select.append( FcsPagoColegiadoBean.C_IMPASISTENCIA + " > 0 or ");
 				select.append( FcsPagoColegiadoBean.C_IMPEJG + " > 0 or ");

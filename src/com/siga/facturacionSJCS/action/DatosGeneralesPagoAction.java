@@ -1463,9 +1463,9 @@ public class DatosGeneralesPagoAction extends MasterAction {
 			// 4. Obtener el importe neto aplicando el IRPF
 			// (hay que redondear el importeIrpf porque es un importe que se ha
 			// de presentar)		
-			importeIrpfTotal = UtilidadesNumero.redondea(importeBruto * porcentajeIRPF / 100,2);
+			importeIrpfTotal =(-1)*UtilidadesNumero.redondea(importeBruto * porcentajeIRPF / 100,2);
 			
-			double importeNeto = importeBruto - importeIrpfTotal;
+			double importeNeto = importeBruto + importeIrpfTotal;
 
 			// 5. Aplicar retenciones judiciales y no judiciales
 			//aalg Incidencia del 28-sep-2011. Se modifica el usuario de modificacion que se estaba

@@ -1108,13 +1108,13 @@ public class FcsPagosJGAdm extends MasterBeanAdministrador {
 			" SUM(PC.IMPOFICIO + PC.IMPASISTENCIA + PC.IMPEJG + PC.IMPSOJ) AS TOTALIMPORTESJCS, " + 
 			" SUM(PC.IMPRET) AS IMPORTETOTALRETENCIONES, " + 
 			" SUM(PC.IMPMOVVAR) AS IMPORTETOTALMOVIMIENTOS, " + 			
-			" (-1*SUM(PC.IMPIRPF)) AS TOTALIMPORTEIRPF, "+
+			" SUM(PC.IMPIRPF) AS TOTALIMPORTEIRPF, "+
 			
 			" SUM(PC.IMPOFICIO + PC.IMPASISTENCIA + PC.IMPEJG + PC.IMPSOJ) + "+ 
 			" SUM(PC.IMPRET) + "+ 
 			" SUM(PC.IMPMOVVAR) + "+ 
-			" (-1*SUM(PC.IMPIRPF)) AS TOTALFINAL, "+
-			" IMPIRPF AS TOTALIMPORTEIVA, ";
+			" SUM(PC.IMPIRPF) AS TOTALFINAL, "+
+			" SUM(PC.IMPIRPF) AS TOTALIMPORTEIVA, ";
 		
 		if (irpf) {
 			sql += " PC.IDPERDESTINO as IDPERSONASJCS ";
@@ -1162,9 +1162,9 @@ public class FcsPagosJGAdm extends MasterBeanAdministrador {
 		
 		if (irpf) {
 			//sql += " AND PC.IMPIRPF > 0 " +
-			sql +=	" GROUP BY PC.IDPERDESTINO, PC.IDPAGOSJG, PC.IDINSTITUCION, PC.PORCENTAJEIRPF, PC.IDCUENTA, PC.IMPIRPF ";
+			sql +=	" GROUP BY PC.IDPERDESTINO, PC.IDPAGOSJG, PC.IDINSTITUCION, PC.PORCENTAJEIRPF, PC.IDCUENTA ";
 		} else {
-			sql += " GROUP BY PC.IDPERORIGEN, PC.IDPERDESTINO, PC.IDPAGOSJG, PC.IDINSTITUCION, PC.PORCENTAJEIRPF, PC.IDCUENTA,PC.IMPIRPF ";
+			sql += " GROUP BY PC.IDPERORIGEN, PC.IDPERDESTINO, PC.IDPAGOSJG, PC.IDINSTITUCION, PC.PORCENTAJEIRPF, PC.IDCUENTA ";
 		}
 		
 		return sql;
@@ -1194,8 +1194,8 @@ public class FcsPagosJGAdm extends MasterBeanAdministrador {
 		sql.append("       sum(pc.impMovVar) as importeTotalMovimientos, ");
 		sql.append("       sum(pc.impOficio + pc.impAsistencia + pc.impEJG + pc.impSOJ + pc.impMovVar) as TOTALIMPORTEBRUTO, ");
 		
-		sql.append("       -1*round(abs(sum(pc.impOficio + pc.impAsistencia + pc.impEJG + pc.impSOJ + pc.impMovVar) * max(pc.impirpf) / 100), 2) as TOTALIMPORTEIRPF, ");
-		sql.append("       (sum(pc.impOficio + pc.impAsistencia + pc.impEJG + pc.impSOJ + pc.impMovVar)+(-1*round(abs(sum(pc.impOficio + pc.impAsistencia + pc.impEJG + pc.impSOJ + pc.impMovVar) * max(pc.impirpf) / 100), 2))+(sum(pc.impRet))) as IMPORTETOTAL, ");
+		sql.append("       sum(pc.impirpf) as TOTALIMPORTEIRPF, ");
+		sql.append("       (sum(pc.impOficio + pc.impAsistencia + pc.impEJG + pc.impSOJ + pc.impMovVar)+(sum(pc.impirpf))+(sum(pc.impRet))) as IMPORTETOTAL, ");
 		
 		sql.append("       pc.idinstitucion, ");
 		sql.append("       f_siga_getrecurso_etiqueta(decode(");
@@ -1219,7 +1219,7 @@ public class FcsPagosJGAdm extends MasterBeanAdministrador {
                               
 		if (irpf)
 			sql.append(
-					"  and impirpf > 0 ");		
+					"  and pc.porcentajeirpf > 0 ");		
 		sql.append(" group by cen.apellidos1,cen.apellidos2, pc.IDPERORIGEN, pc.IDPERDESTINO, pc.IDPAGOSJG, pc.IDINSTITUCION,  pj.nombre, pj.fechadesde ");
 		sql.append(" ORDER BY cen.apellidos1, cen.apellidos2, pj.fechadesde");
 		
