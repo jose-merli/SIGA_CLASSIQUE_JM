@@ -36,6 +36,9 @@ public final class ClsMngBBDD {
   private static DataSource dsread=null;
   private static DataSource dsnls=null;
   
+  //Sólo una instancia de esta clase: Patrón Singleton
+  private static ClsMngBBDD bd = new ClsMngBBDD();  
+  
   protected ClsMngBBDD() {
 	Context ctx=null;
 
