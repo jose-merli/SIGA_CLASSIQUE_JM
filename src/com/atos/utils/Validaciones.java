@@ -342,7 +342,6 @@ public final class Validaciones{
                         String primera_letra = nif.substring(0,1);
                         //quito la primera letra
                         String nif_sin_letra_primera = nif.substring(1);
-                        String nif_con_ceros="";
                         //rellena ceros
                         for (int i=0;i<num_ceros_relleno ;i++ )
                         {
@@ -457,7 +456,6 @@ public final class Validaciones{
         * @throws NumberFormatException
         */
         public boolean format_cif(String cif, String mensaje) throws NumberFormatException{
-                String resultado="";
                 String cif_virgen = cif.replaceAll("-","").toUpperCase().trim();
                 String cif_formateado="";
                 int long_cif= cif_virgen.length();

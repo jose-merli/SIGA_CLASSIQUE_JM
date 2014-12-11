@@ -40,7 +40,6 @@ public class ClsLogging{
 	private static final String sError = "\n***** ERROR ***** ";
 	private static String fileName;
 	private static int loglevel=10;
-	private static long nLastMod = 0;
 	
 	private static boolean iniciado=false;
 	private static boolean bStoreFile; //Indica si se escribirá en el fichero de log de la capa básica.

@@ -13,6 +13,10 @@ import java.io.Serializable;
  */
 public class Campo implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -7751897777219191033L;
 	private String tc="";
 	private String idC="";
 	private String cab="";

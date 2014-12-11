@@ -18,6 +18,11 @@ import java.awt.*;
  */
 public class SplashWindow extends JWindow {
   /**
+	 * 
+	 */
+	private static final long serialVersionUID = 8924131979239584025L;
+
+/**
    * Delay between increments of the progress bar.
    *
    * @see   #setDelay(int delay)  setDelay(int delay)

@@ -219,8 +219,6 @@ public class ComodinBusquedas {
      */
     public static String prepararSentenciaNIF( String cadena, String campo ) {
         String cadenaTemp = "";
-        String ceros="0";
-        String cerosAux="";
         String campoNIF=campo;
         cadena=cadena.trim();
         /*if (cadena.length()<9){
@@ -241,8 +239,6 @@ public class ComodinBusquedas {
     
     public static String prepararSentenciaNIFBind( String cadena, String campo, int contador, Hashtable codigos ) {
         String cadenaTemp = "";
-        String ceros="0";
-        String cerosAux="";
         String campoNIF=campo;
         cadena=cadena.trim();
         /*if (cadena.length()<9){
@@ -267,8 +263,6 @@ public class ComodinBusquedas {
     
     public static String prepararSentenciaNIFExacta( String cadena, String campo ) {
         String cadenaTemp = "";
-        String ceros="0";
-        String cerosAux="";
         String campoNIF=campo;
         cadena=cadena.trim();
         /*if (cadena.length()<9){
@@ -289,8 +283,6 @@ public class ComodinBusquedas {
 
     public static String prepararSentenciaNIFExactaBind( String cadena, String campo, int contador, Hashtable campos ) {
         String cadenaTemp = "";
-        String ceros="0";
-        String cerosAux="";
         String campoNIF=campo;
         cadena=cadena.trim();
 
@@ -304,8 +296,6 @@ public class ComodinBusquedas {
     
     public static String prepararSentenciaNIFUpper( String cadena, String campo ) {
         String cadenaTemp = "";
-        String ceros="0";
-        String cerosAux="";
         String campoNIF=campo;
         cadena=cadena.trim().toUpperCase();
         /*if (cadena.length()<9){
@@ -326,8 +316,6 @@ public class ComodinBusquedas {
     
     public static String prepararSentenciaNIFUpperExacta( String cadena, String campo ) {
         String cadenaTemp = "";
-        String ceros="0";
-        String cerosAux="";
         String campoNIF=campo;
         cadena=cadena.trim().toUpperCase();
         /*if (cadena.length()<9){
@@ -652,14 +640,10 @@ public class ComodinBusquedas {
     }
     
     public static String sustituirVocales(String cadena) {
-        String temp = "";
-        String sentenciaCompleta="";
         /* La cadena introducida se pasa a mayusculas y se eliminan los blancos
          * por la derecha y por la izquierda
          */
         for (int i=0;i<sustituirA.length;i++){
-        	String var=sustituirA[i];
-        	String var1=A;
           cadena=cadena.replaceAll(sustituirA[i],A);
         }
         for (int i=0;i<sustituirE.length;i++){

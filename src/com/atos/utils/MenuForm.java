@@ -14,8 +14,11 @@ import org.apache.struts.action.ActionForm;
 
 
 public class MenuForm extends ActionForm {
-  private Hashtable table = null;
-  private Hashtable reg = null;
+  /**
+	 * 
+	 */
+	private static final long serialVersionUID = -4221390764138531031L;
+private Hashtable table = null;
 
   public String getNivel() {
     return ((table == null) ? "" : (String)table.get("NIVEL"));

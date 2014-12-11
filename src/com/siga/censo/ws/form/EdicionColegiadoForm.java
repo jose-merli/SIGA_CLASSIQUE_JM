@@ -10,6 +10,11 @@ import com.siga.general.MasterForm;
 
 
 public class EdicionColegiadoForm extends MasterForm {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 355295580296420768L;
+
 	private Long idcensodatos = null;
 	
 	private boolean publicarcolegiado = false;  

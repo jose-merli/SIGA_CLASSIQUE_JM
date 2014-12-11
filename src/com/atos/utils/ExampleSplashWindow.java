@@ -12,6 +12,10 @@ import java.awt.event.*;
 public class ExampleSplashWindow extends JApplet
                         implements ActionListener {
 
+/**
+	 * 
+	 */
+	private static final long serialVersionUID = -7404282653619891345L;
 //public class ExampleSplashWindow {
   private static SplashWindow splash;
   
@@ -234,10 +238,4 @@ public static void main(String[] args) {
     // bye
     System.exit(0);
     }
-  
-  // When the user clicks the closeButton the Splash Window will hide (but
-  // the program will continue working.
-  private static void closeActionPerformed(java.awt.event.ActionEvent evt) {
-    splash.close();
-  }
 }

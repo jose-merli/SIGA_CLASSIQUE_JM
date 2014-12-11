@@ -18,6 +18,11 @@ import java.awt.image.*;
  */
 public  class BackgroundPanel extends JPanel {
   /**
+	 * 
+	 */
+	private static final long serialVersionUID = 2670788158043092234L;
+
+/**
    * The captured image
    */
   private BufferedImage im;

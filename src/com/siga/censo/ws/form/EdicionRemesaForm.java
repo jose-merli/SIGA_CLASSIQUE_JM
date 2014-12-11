@@ -7,6 +7,10 @@ import com.siga.general.MasterForm;
 
 public class EdicionRemesaForm extends MasterForm {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 9206395252318517078L;
 	private Long idcensowsenvio = null;
 	private Short idinstitucion = null;	
 	private String numeroPeticion = null;

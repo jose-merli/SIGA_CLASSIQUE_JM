@@ -15,6 +15,10 @@ import java.io.Serializable;
  * Window - Preferences - Java - Code Style - Code Templates
  */
 public class Lista implements Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3414906716594300096L;
 	private String funcion="";
 	private String automatico="off";
 	

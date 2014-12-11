@@ -10,7 +10,6 @@
 package com.atos.utils;
 
 import java.io.BufferedWriter;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -93,7 +92,6 @@ public class ClsMngProperties {
 	 * la base de datos, y cargados en el Hash <code>htLanguages</code>
 	 * @throws ClsExceptions
 	 */
-	@SuppressWarnings("unchecked")
 	private static void writePropertiesInFiles() throws ClsExceptions{
   		FileOutputStream outputStream=null;
   		BufferedWriter bufferedWriter = null;

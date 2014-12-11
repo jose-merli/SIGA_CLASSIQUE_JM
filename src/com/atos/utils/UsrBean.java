@@ -33,6 +33,11 @@ import com.siga.general.CenVisibilidad;
 
 public class UsrBean implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2333701933635931026L;
+
 	public static String trans = "javax.transaction.UserTransaction";
 	
 	private String idRol="";

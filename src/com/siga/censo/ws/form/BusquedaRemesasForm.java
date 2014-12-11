@@ -2,10 +2,6 @@ package com.siga.censo.ws.form;
 
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
-
-import org.apache.struts.action.ActionMapping;
-
 import com.siga.comun.vos.InstitucionVO;
 import com.siga.comun.vos.ValueKeyVO;
 import com.siga.general.MasterForm;

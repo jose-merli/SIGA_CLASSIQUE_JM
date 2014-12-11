@@ -27,14 +27,18 @@ import javax.naming.directory.SearchResult;
  */
 
 public class LdapUserEJBean implements SessionBean {
-  private SessionContext sessionContext;
+  /**
+	 * 
+	 */
+	private static final long serialVersionUID = 3717888738260973600L;
+
+private SessionContext sessionContext;
 
   private String INITCTX = "";
   private String MY_HOST[] = {""};
   private String  MGR_DN = "";
   private String MGR_PW = "";
   private String MY_SEARCHBASE = "";
-  final private String CONTENT_TYPE = "text/html";
   private boolean certificado=false;
   private String userAgent =null;
   private String remoteAddr=null;
@@ -120,51 +124,7 @@ public class LdapUserEJBean implements SessionBean {
     return userSession();
   }
 
-  protected void checkParams()
-      throws Exception {
-    boolean profileOk=true;
-    boolean langOk=true;
-    boolean ddbblang=true;
-    boolean ddbbprofile=true;
-
-/*
-    Table table=new Table(
-        null, TableConstants.SIGA_LANGUAJE,
-        "pssc.generalRequirements.accessControl.SIGAGrDDBBObject");
-
-    table.addFilter(ColumnConstants.SIGA_LANG_ID_LANGUAGE,ldapUser.lang.toUpperCase());
-    Vector vec=table.search();
-
-    Table table2=new Table(
-        null, TableConstants.SIGA_PROFILE,
-        "pssc.generalRequirements.accessControl.SIGAGrDDBBObject");
-
-    table2.addFilter(ColumnConstants.SIGA_PROFILE_ID_PROFILE,ldapUser.profile.toUpperCase());
-    Vector vec2=table.search();
-
-    if (vec==null || vec.size()<1) {
-      langOk=false;
-    } else {
-      ddbblang=ldapUser.lang.equalsIgnoreCase(ddbbUser.lang);
-    }
-
-    if (vec2==null || vec2.size()<1) {
-      profileOk=false;
-    } else {
-      ddbbprofile=ldapUser.profile.equalsIgnoreCase(ddbbUser.profile);
-    }
-
-    if (!profileOk || !langOk)
-      throw new Exception("User parameter does not exist in DDBB :" +
-                          (!profileOk?" Invalid profile ":"") +
-                          (!langOk?" Invalid lang":""));
-    if (!ddbblang || !ddbbprofile) {
-      throw new Exception("User parameter: different value from LDAP and DDBB :" +
-                          (!ddbbprofile?" Invalid profile ":"") +
-                          (!ddbblang?" Invalid lang":""));
-						  
-    }
-	*/
+  protected void checkParams() {
   }
 
   protected UsrBean userSession()
@@ -282,11 +242,10 @@ public class LdapUserEJBean implements SessionBean {
 
       String MY_ATTRS[] = {"preferredLanguage","SIGAProfile"};
       String cadbusq=DN;
-      Attributes ar = null;
       BasicAttributes lengu=null;
       BasicAttributes prof=null;
       try{
-        ar=ctx.getAttributes(cadbusq, MY_ATTRS);
+        ctx.getAttributes(cadbusq, MY_ATTRS);
         if (_lang!=null) {
           lengu = new BasicAttributes("preferredLanguage", _lang);
         }
@@ -336,8 +295,6 @@ public class LdapUserEJBean implements SessionBean {
         throws Exception {
       String MY_FILTER = "";
       String ldapName = null;
-      String ldapUser = null ;
-      int j=0;
 
       ldapName = uid;
       DirContext ctx=connectToLdap();
@@ -367,7 +324,6 @@ public class LdapUserEJBean implements SessionBean {
         ddbbUser.setUserPassword(uid,null);
       } else if ((ldapName!=null) && (ldapName.length()>0)) {
         // si no tengo credenciales de entrust, he de tener usuario y password
-        String dn2="";
         uid=ldapName;
         try {
           SearchControls constraints = new SearchControls();
@@ -432,7 +388,6 @@ public class LdapUserEJBean implements SessionBean {
                                        DirContext ctx,
                                        Hashtable ret)
         throws Exception {
-      String dn2="";
       String MY_FILTER="";
       try {
         SearchControls constraints = new SearchControls();

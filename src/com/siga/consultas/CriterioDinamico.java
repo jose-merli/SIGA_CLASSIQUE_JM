@@ -13,6 +13,10 @@ import java.io.Serializable;
  */
 public class CriterioDinamico implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -699664867415951586L;
 	private String idC="";
 	private String op="";
 	private String val="";

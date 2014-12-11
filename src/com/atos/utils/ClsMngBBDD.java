@@ -26,7 +26,6 @@ import com.siga.Utilidades.UtilidadesString;
 public final class ClsMngBBDD {
 
   private static Hashtable poolHashtab = null;
-  private static String poolName="none";
   private static ReadProperties dsProperties= new ReadProperties(SIGAReferences.RESOURCE_FILES.POOL);
 //private static ReadProperties dsProperties=new ReadProperties("pool.properties");
   public static String POOLWR = dsProperties.returnProperty("POOL.WRITE");
@@ -37,9 +36,6 @@ public final class ClsMngBBDD {
   private static DataSource dsread=null;
   private static DataSource dsnls=null;
   
-  //Sólo una instancia de esta clase: Patrón Singleton
-  private static ClsMngBBDD bd = new ClsMngBBDD();
-
   protected ClsMngBBDD() {
 	Context ctx=null;
 
@@ -151,10 +147,6 @@ public final class ClsMngBBDD {
     }
     poolHashtab.put(DSname, ds);
 
-  }
-
-  public static void setDataSource(String poolname){
-    poolName=poolname;
   }
 
   public static void init(){

@@ -18,6 +18,10 @@ import org.apache.struts.action.ActionForm;
  * Window - Preferences - Java - Code Style - Code Templates
  */
 public class ChecksForm extends ActionForm{
+/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3218099735848004471L;
 private Vector lista=new Vector();
 private String prueba="hola";
 

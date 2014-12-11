@@ -10,7 +10,6 @@
 package com.atos.utils;
 
 //import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Serializable;
@@ -39,6 +38,11 @@ import org.redabogacia.sigaservices.app.util.SIGAReferences;
 
 public class RowsContainer implements Serializable {
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2264435032617407122L;
+
+	/**
 	 * To keep Table Name, needed in batch methods
 	 */
 	private String tableName;
@@ -48,10 +52,6 @@ public class RowsContainer implements Serializable {
 	 */
 	private String[] fieldNames;
 
-	/**
-	 * To keep the format we want for date fields
-	 */
-	private String dateFormat = null;
     /**
      *  Will contain the Row Objects
      */
@@ -636,7 +636,6 @@ public class RowsContainer implements Serializable {
 			stmt = con.createStatement();
 
             Row referenceRow = null;
-            int batchCount = 0;
 
             Enumeration en = rows.elements();
             while (en.hasMoreElements()) {
@@ -656,7 +655,6 @@ public class RowsContainer implements Serializable {
 				sql = r.buildInsertStatement(con, tableName, fieldNames);
                 ClsLogging.writeFileLog("SQL INSERT: "+sql,10);
 				stmt.addBatch(sql);
-                batchCount++;
             }
 
             int [] updateCounts = stmt.executeBatch();
@@ -750,17 +748,6 @@ public class RowsContainer implements Serializable {
     //***************************************************
     //****************  Accesory methods ****************
     //***************************************************
-    private Object loadRow (Class clase, ResultSet rs) {
-      try {
-         Object row = clase.newInstance();
-         java.lang.reflect.Method m = clase.getMethod("load", new Class[] {Class.forName("java.sql.ResultSet")});
-         m.invoke(row, new Object[] {rs});
-         return row;
-      } catch (Exception ex) {
-          return null;
-      }
-    }
-
     public void initialize(HttpServletRequest req) {
        this.getReady();
        this.req = req;
@@ -896,7 +883,6 @@ public class RowsContainer implements Serializable {
 
 	public String getClob (String tableName, String nombreCampo, String select) throws ClsExceptions, UnsupportedEncodingException {
 		Connection con = null;
-		ByteArrayOutputStream os = null;
 		String salida ="";
 		try{
 			con = ClsMngBBDD.getConnection();

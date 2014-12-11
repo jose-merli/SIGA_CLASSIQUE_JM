@@ -20,6 +20,10 @@ import java.io.Serializable;
 
 public class LinkedHashMap extends Hashtable implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 6257405572339978254L;
 	private LinkedList orderedKeys;
 
     public LinkedHashMap() {

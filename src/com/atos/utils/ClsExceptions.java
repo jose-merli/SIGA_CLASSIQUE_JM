@@ -11,7 +11,11 @@ package com.atos.utils;
 
 public class ClsExceptions extends ClsExcBase {
 
-  private String param="NO PARAM";
+  /**
+	 * 
+	 */
+	private static final long serialVersionUID = -5394972786069245366L;
+private String param="NO PARAM";
   private String mesg="NO MESSAGE";
   private String process="NO PROCESS";
   private String errorCategory="NO ERROR CATEGORY";

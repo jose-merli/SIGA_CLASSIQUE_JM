@@ -2,7 +2,6 @@ package com.atos.utils;
 
 
 import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -49,7 +48,6 @@ public class MngClob {
 	      throws ClsExceptions {
 
 	    ClsExceptions gEx=null;
-	    ByteArrayOutputStream os = new ByteArrayOutputStream();
 	    Statement st=null;
 	    ResultSet rs=null;
 	    String  dbClobString=null;
@@ -94,7 +92,6 @@ public class MngClob {
                                      String clobNameField, 
 									 String clobString) throws ClsExceptions{
 
-    ClsExceptions gEx=null;
     PreparedStatement psLock=null;
     // OPCION ORIGINAL
     //PreparedStatement psUpdate=null;

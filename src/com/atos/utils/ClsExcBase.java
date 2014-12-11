@@ -16,6 +16,10 @@ import javax.servlet.http.HttpServletRequest;
  */
 public class ClsExcBase extends Exception {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -1387371723393047114L;
 	protected Exception next=null;
 	protected boolean hiddenFrame=true;
 	protected String user="";

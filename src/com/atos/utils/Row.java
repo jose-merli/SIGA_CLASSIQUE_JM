@@ -35,6 +35,11 @@ import es.satec.siga.util.SigaSequence;
  */
 
 public class Row implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -7149993993945460617L;
+
 	static protected String schemasAvailables[]=null; 
 	
 	/**
