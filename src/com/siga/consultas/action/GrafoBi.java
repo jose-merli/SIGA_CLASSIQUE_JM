@@ -163,15 +163,8 @@ public class GrafoBi implements Grafo
 			 	return h;
 
 			for (int i = 2; i < sTablas.length; i++) {
-				if (v.size() > 0) {
-					if (!v.contains(sTablas[i])) {
-						if (!this.getMiniCamino((String)v.get(0), sTablas[i], v, h))
+				if (v.size() > 0 && !v.contains(sTablas[i]) && !this.getMiniCamino((String)v.get(0), sTablas[i], v, h))
 						 	return h;
-						else 
-							break;
-					}
-					else break;
-				}
 			}
 
 			// Llegados aqui tengo todas las tablas

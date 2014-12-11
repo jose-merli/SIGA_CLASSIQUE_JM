@@ -187,6 +187,7 @@ public class SIGAProfileAction extends Action {
       result = "recNoExist";
       req.setAttribute("descOperation", "error.messages.noupdated");
       ClsLogging.writeFileLog("result = "+result,req,3);
+      ActionForward actionforward = mapping.findForward(result);
       throw new ClsExceptions(ex, ex.toString(), "Profiles","113","GEN00","9");
     }
     return mapping.findForward(result);
