@@ -6,7 +6,11 @@ import java.util.*;
 
 public class SIGAProcessObj extends SIGABaseNode implements Serializable
 {
-  	private static final String CLASSNAME = SIGAProcessObj.class.getName();
+  	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -9138385210172600474L;
+	private static final String CLASSNAME = SIGAProcessObj.class.getName();
   	
   	public SIGAProcessObj() {  }
   

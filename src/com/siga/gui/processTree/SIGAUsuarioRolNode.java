@@ -4,7 +4,11 @@ import javax.swing.tree.*;
 
 public class SIGAUsuarioRolNode extends DefaultMutableTreeNode
 {
-  	private static final String CLASSNAME = SIGAUsuarioRolNode.class.getName();
+  	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 8022053049129617965L;
+	private static final String CLASSNAME = SIGAUsuarioRolNode.class.getName();
   	
   	public SIGAUsuarioRolNode() { }
   	

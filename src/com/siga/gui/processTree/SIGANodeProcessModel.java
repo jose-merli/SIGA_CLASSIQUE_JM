@@ -8,6 +8,10 @@ import javax.swing.tree.*;
 
 class SIGANodeProcessModel extends javax.swing.tree.DefaultTreeModel
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -1690837976689835672L;
 	JApplet parentApplet;
   	protected String funcion;
 
@@ -57,7 +61,6 @@ class SIGANodeProcessModel extends javax.swing.tree.DefaultTreeModel
       		e.printStackTrace();
     	}
     	
-    	String URLiconsAf = urlPrefix;
     	SIGAProcessHier hier = null;
     	Hashtable elements = null;
     	DefaultMutableTreeNode root= null;
@@ -79,8 +82,6 @@ class SIGANodeProcessModel extends javax.swing.tree.DefaultTreeModel
   	public static DefaultTreeModel newSIGANodeTreeModelSIGA(String UrlServlet,String urlPrefix,String _funcion,String[] params, JApplet _applet,SIGAProcessHier hier,Hashtable elements, String iconos)
 	{
      	String UrlIcons= iconos;
-     	Vector vecRet=null;
-     	String URLiconsAf = urlPrefix;
      	DefaultMutableTreeNode root=hier.createTree(elements,UrlIcons, UrlServlet,_applet);
      	
      	return new SIGANodeProcessModel(root,true,_applet);

@@ -11,6 +11,10 @@ import javax.swing.border.*;
 
 public abstract class SIGAAppletBase extends JApplet
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -9068950418511279543L;
 	public Hashtable literales=null;
 	public Vector vGrupos=null;
   	protected String access="DENY";

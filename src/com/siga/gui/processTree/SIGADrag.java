@@ -8,7 +8,6 @@ import javax.swing.tree.*;
 
 public class SIGADrag implements DragGestureListener,DragSourceListener
 {
-  	private boolean encurso=false;
   	protected DragSource sourc=null;
   	
   	protected SIGADrag(JComponent tree2, int action, boolean drawIcon)
@@ -39,7 +38,6 @@ public class SIGADrag implements DragGestureListener,DragSourceListener
     	try
     	{
       		SIGAPTransferableNode transf=null;
-      		encurso=true;
       		Component component=dge.getComponent();
       		
       		if (component instanceof JTree)

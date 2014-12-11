@@ -11,8 +11,11 @@ import javax.swing.table.*;
 
 public class SIGAAppletUsuariosGrupos extends SIGAAppletBase
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 5254025969136568851L;
 	private JTree treeSIGA = null;
-	private TableModel tableModel = null;
 	private JTable table = null;
 	private DefaultTreeModel model = null;
 	private JScrollPane JScrollPane1Grupos = new JScrollPane();
@@ -150,8 +153,6 @@ public class SIGAAppletUsuariosGrupos extends SIGAAppletBase
     		{
     			return;
     		}
-    		
-    		Vector vec = new Vector();
     		
       		DefaultTreeModel model=(DefaultTreeModel)treeSIGA.getModel();
       		DefaultMutableTreeNode nodoRaiz=(DefaultMutableTreeNode)model.getRoot();

@@ -7,7 +7,11 @@ import javax.swing.plaf.basic.*;
 
 public class SIGAUsuariosGruposTree extends JTree
 {
-  	JApplet applet=null;
+  	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4640547518508046447L;
+	JApplet applet=null;
   	
   	public SIGAUsuariosGruposTree(DefaultTreeModel model, String urlPrefix, int dnd, JApplet _applet, String icontree)
   	{

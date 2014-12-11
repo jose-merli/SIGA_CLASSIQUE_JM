@@ -4,7 +4,11 @@ import javax.swing.tree.*;
 
 public class SIGAUsuariosGruposNode extends DefaultMutableTreeNode
 {
-  	private static final String CLASSNAME = SIGAUsuariosGruposNode.class.getName();
+  	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2197334934056408298L;
+	private static final String CLASSNAME = SIGAUsuariosGruposNode.class.getName();
   	
   	public SIGAUsuariosGruposNode() { }
 

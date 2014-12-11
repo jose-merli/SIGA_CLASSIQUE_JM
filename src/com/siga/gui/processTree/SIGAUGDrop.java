@@ -160,9 +160,6 @@ public class SIGAUGDrop implements DropTargetListener
     	
 	    for (int i=0; i<iVector; i++)
 	    {
-			long seg_first = 0;
-			long seg_last =0;
-
 	        nodoArbol = (DefaultMutableTreeNode)vector.elementAt(i);
 	        
 	        if (i==0)
@@ -296,10 +293,7 @@ public class SIGAUGDrop implements DropTargetListener
 
 	protected void modifyChildren(DefaultMutableTreeNode node, String access, int ac)
 	{
-    	int accesso=0;
-
 		SIGAUsuariosGruposObj objdes=(SIGAUsuariosGruposObj)node.getUserObject();
-    	String nodeaccess=(String)objdes.get(SIGAUsuariosGruposObj.ACCESS);
     	objdes.setChangeState(true);
     	objdes.setAdded(true);
   	}

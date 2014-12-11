@@ -4,7 +4,11 @@ import javax.swing.tree.*;
 
 public class SIGAProcessNode extends DefaultMutableTreeNode
 {
-  	private static final String CLASSNAME = SIGAProcessNode.class.getName();
+  	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 8960113139332291819L;
+	private static final String CLASSNAME = SIGAProcessNode.class.getName();
   	
   	public SIGAProcessNode() { }
 

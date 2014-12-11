@@ -7,6 +7,10 @@ import javax.swing.*;
 
 abstract public class SIGABaseNode extends Hashtable implements Serializable,SIGAPTConstants
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 2183982547914366732L;
 	protected String nodeIconName = "";
 	protected String urlIcon = "";
 	static protected ImageIcon imageicon=null;
@@ -21,8 +25,6 @@ abstract public class SIGABaseNode extends Hashtable implements Serializable,SIG
 	static Font connectedFont = null;
 	protected String oldState=null;
 	
-	private Color colorForeground=null;
-
 	public SIGABaseNode() { }
 	
 	public void setURLIcon(String sURL)

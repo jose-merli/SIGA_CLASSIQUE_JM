@@ -1,20 +1,33 @@
 package com.siga.gui.processTree;
 
-import java.io.*;
-import java.awt.*;
-import java.net.*;
-import java.util.*;
-import javax.swing.*;
-import javax.swing.tree.*;
-import javax.swing.table.*;
+import java.awt.BorderLayout;
+import java.awt.Font;
+import java.io.ObjectInputStream;
+import java.net.URL;
+import java.net.URLConnection;
+import java.net.URLEncoder;
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.Vector;
+
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
+import javax.swing.JTree;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreeSelectionModel;
 
 public class SIGAAppletProcess extends SIGAAppletBase
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 2629433568025487390L;
 	private JTree treeSIGA=null;
 	private JTree treeSIGA2=null;
-	private TableModel tableModel=null;
-	private JTable table=null;
-	private DefaultTreeModel model=null;
 	
 	protected int numberOfParams=0;
 	
@@ -109,8 +122,6 @@ public class SIGAAppletProcess extends SIGAAppletBase
       		getContentPane().add(JScrollPane1Localizaciones);
     	}
     	
-    	int appletWidth = this.getWidth();
-
 	    JScrollPane1Localizaciones.setAutoscrolls(true);
 	    JScrollPane1Localizaciones.setOpaque(true);
 	    JScrollPane1Localizaciones.setDoubleBuffered(true);

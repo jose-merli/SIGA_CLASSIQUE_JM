@@ -7,7 +7,11 @@ import javax.swing.tree.*;
 
 public class SIGAProcessHier  implements Serializable
 {
-  	String idProcess=null;
+  	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 2581565117322185521L;
+	String idProcess=null;
   	String parent=null;
   	Vector hijos=new Vector();
   	
@@ -47,8 +51,6 @@ public class SIGAProcessHier  implements Serializable
     	{
       		return;
       	}
-    	
-    	Hashtable has = new Hashtable();
     	
     	for (int h=0;h<hijos.size();h++)
     	{

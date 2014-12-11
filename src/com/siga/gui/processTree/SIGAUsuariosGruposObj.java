@@ -8,6 +8,10 @@ import javax.swing.*;
 
 public class SIGAUsuariosGruposObj extends SIGABaseNode implements Serializable, Comparator
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 7180519407730144388L;
 	private static final String CLASSNAME = SIGAGrupoObj.class.getName();
 	static protected ImageIcon imageiconLic=null;
 
@@ -45,7 +49,6 @@ public class SIGAUsuariosGruposObj extends SIGABaseNode implements Serializable,
 	protected void loadImageIcons()
 	{
     	java.net.URL url=null;//the url to show the gif for each node
-    	java.net.URL urlGeneric=null;//to show a generic gif if the specific one doesn't exist
     	
     	try
     	{

@@ -7,18 +7,15 @@ import javax.swing.border.*;
 
 public class SIGADialog extends JDialog
 {
-	private JApplet parentApplet;
-	private boolean frameSizeAdjusted = false;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -7412834238832642650L;
 	
-	private JTextField dateField = new JTextField();
 	JButton confirmButton = new JButton();
 	JButton cancelButton  = new JButton();
-	private GridLayout gridLayout1 = new GridLayout();
-	private JButton jButton1 = new JButton();
 	private Border border1;
-	private JPanel containerPane = new JPanel();
 	Color defaultColor = new Color(238,237,243);
-	private JPanel jPanel1 = new JPanel();// Default background
 
 	public SIGADialog()
   	{

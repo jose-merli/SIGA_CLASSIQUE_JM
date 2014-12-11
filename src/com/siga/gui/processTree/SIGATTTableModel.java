@@ -5,6 +5,10 @@ import javax.swing.table.*;
 
 public class SIGATTTableModel extends AbstractTableModel
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2884088986553177169L;
 	protected static int ROWS = 4;
 	protected static int COLUMNS = 1;
 	protected SIGATableObj[][] values=null;

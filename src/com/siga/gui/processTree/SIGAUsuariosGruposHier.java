@@ -7,7 +7,11 @@ import javax.swing.tree.*;
 
 public class SIGAUsuariosGruposHier  implements Serializable
 {
-  	//String idPerfil=null;
+  	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4854903838985214091L;
+	//String idPerfil=null;
     String idUsuario=null;
   	String parent=null;
   	Vector hijos=new Vector();
@@ -53,8 +57,6 @@ public class SIGAUsuariosGruposHier  implements Serializable
     	{
       		return;
       	}
-    	
-    	Hashtable has = new Hashtable();
     	
     	int iHijos=hijos.size();
     	

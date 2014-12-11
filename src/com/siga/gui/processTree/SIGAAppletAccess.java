@@ -1,22 +1,39 @@
 package com.siga.gui.processTree;
 
-import java.io.*;
-import java.awt.*;
-import java.net.*;
-import java.util.*;
-import javax.swing.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.dnd.DnDConstants;
+import java.io.ObjectInputStream;
+import java.io.OutputStreamWriter;
+import java.net.URL;
+import java.net.URLConnection;
+import java.net.URLEncoder;
+import java.util.Hashtable;
+import java.util.Vector;
 
-import java.awt.dnd.*;
-import javax.swing.tree.*;
-import javax.swing.table.*;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTree;
+import javax.swing.table.TableColumn;
+import javax.swing.table.TableColumnModel;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.DefaultTreeSelectionModel;
+import javax.swing.tree.TreeSelectionModel;
 
 public class SIGAAppletAccess extends SIGAAppletBase
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -5856132669785614546L;
 	private JTree treeSIGA=null;
-	private TableModel tableModel=null;
 	private JTable table=null;
 	private DefaultTreeModel model=null;
-	private JScrollPane  JScrollPane1Localizaciones = null;
 	private JScrollPane  JScrollPane1SIGA = new javax.swing.JScrollPane();
 	private BorderLayout layout  = new BorderLayout();
 	private JPanel panel=null;

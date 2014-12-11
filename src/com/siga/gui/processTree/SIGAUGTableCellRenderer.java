@@ -5,7 +5,11 @@ import javax.swing.*;
 
 class SIGAUGTableCellRenderer extends javax.swing.table.DefaultTableCellRenderer
 {
-  	ImageIcon imageicon;
+  	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4461832538813951104L;
+	ImageIcon imageicon;
   	String URLIcon=null;
 
   	public SIGAUGTableCellRenderer()

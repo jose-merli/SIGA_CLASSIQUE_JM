@@ -7,7 +7,11 @@ import javax.swing.plaf.basic.*;
 
 public class SIGAProcessTree extends JTree
 {
-  	JApplet applet=null;
+  	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3935218796931503797L;
+	JApplet applet=null;
   	
   	public SIGAProcessTree(DefaultTreeModel model, String urlPrefix,int dnd, JApplet _applet, String icontree)
   	{

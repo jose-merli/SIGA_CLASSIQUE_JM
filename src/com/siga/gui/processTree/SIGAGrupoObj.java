@@ -6,7 +6,11 @@ import java.util.*;
 
 public class SIGAGrupoObj extends SIGABaseNode implements Serializable
 {
-  	private static final String CLASSNAME = SIGAGrupoObj.class.getName();
+  	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -7645021816544237892L;
+	private static final String CLASSNAME = SIGAGrupoObj.class.getName();
   	private String idPerfil = "";
   	private String idInstitucion = "";
   	

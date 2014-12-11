@@ -1,11 +1,16 @@
 package com.siga.gui.processTree;
 
-import java.io.*;
-import java.util.*;
-import javax.swing.*;
+import java.io.Serializable;
+import java.util.Vector;
+
+import javax.swing.ImageIcon;
 
 public class SIGAUGTableObj extends SIGABaseNode implements Serializable
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4674761251883765043L;
 	private static final String CLASSNAME = SIGAGrupoObj.class.getName();
   	String imagen;
   	ImageIcon imagn;
@@ -34,7 +39,6 @@ public class SIGAUGTableObj extends SIGABaseNode implements Serializable
   	protected void loadImageIcons()
   	{
     	java.net.URL url=null;
-    	java.net.URL urlGeneric=null;
     	
     	try
     	{

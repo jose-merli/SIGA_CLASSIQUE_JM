@@ -6,6 +6,10 @@ import javax.swing.table.*;
 
 public class SIGAUGTableModel extends AbstractTableModel
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 2238045280967236631L;
 	//protected static int ROWS = 4;
     protected int ROWS = 1;
 	protected static int COLUMNS = 1;

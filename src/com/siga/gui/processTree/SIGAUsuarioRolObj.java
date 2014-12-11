@@ -8,6 +8,10 @@ import javax.swing.*;
 
 public class SIGAUsuarioRolObj extends SIGABaseNode implements Serializable, Comparator
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -5557841721750376915L;
 	private static final String CLASSNAME = SIGAGrupoObj.class.getName();
 	static protected ImageIcon imageiconLic=null;
 	
@@ -63,7 +67,6 @@ public class SIGAUsuarioRolObj extends SIGABaseNode implements Serializable, Com
 	protected void loadImageIcons()
 	{
     	java.net.URL url=null;
-    	java.net.URL urlGeneric=null;
     	
     	try
     	{

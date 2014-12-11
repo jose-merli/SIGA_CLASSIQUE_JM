@@ -6,7 +6,10 @@ import javax.swing.tree.*;
 
 class SIGAPTCellHandler extends javax.swing.tree.DefaultTreeCellRenderer
 {
-  	private JApplet parentApplet;
+  	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3883623320506117652L;
   	ImageIcon imageicon;
   	String URLIcon=null;
 
@@ -18,9 +21,6 @@ class SIGAPTCellHandler extends javax.swing.tree.DefaultTreeCellRenderer
   	public Component getTreeCellRendererComponent  (JTree tree, Object value,boolean sel, boolean expanded, boolean leaf, int row, boolean hasFocus)
   	{
     	super.getTreeCellRendererComponent(tree, value, sel,expanded, leaf, row,hasFocus);
-
-    	Font noConnectedFont = new Font("Arial", Font.BOLD+Font.ITALIC, 11);
-    	Font connectedFont = new Font("Arial", Font.BOLD, 11);
 
     	DefaultMutableTreeNode node = (DefaultMutableTreeNode) value;
     	SIGABaseNode obj=(SIGABaseNode)node.getUserObject();
