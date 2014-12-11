@@ -3621,7 +3621,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 				" AND  EJGD.Aniodesigna =  d.anio(+) " +
 				" AND  EJGD.Idturno = d.idturno(+) " +
 				" AND  EJGD.NUMERODESIGNA = d.numero(+) " +
-				" AND d.ESTADO <> 'A' "+
+				" AND (d.idinstitucion is null or d.ESTADO <> 'A' ) " +
 				" AND fund.idfundamento(+)=ejg.idfundamentojuridico " + 
 				" AND fund.idinstitucion(+)=ejg.idinstitucion " + 
 				" AND EJG.idinstitucion = " + idInstitucion +
