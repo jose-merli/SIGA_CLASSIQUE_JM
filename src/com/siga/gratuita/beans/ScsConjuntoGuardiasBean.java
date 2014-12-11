@@ -13,6 +13,10 @@ public class ScsConjuntoGuardiasBean extends MasterBean{
 
 	  
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4258659821774087367L;
 	static public String T_NOMBRETABLA = "SCS_CONJUNTOGUARDIAS";
 	static public final String SEQ_SCS_CONJUNTO_GUARDIAS = "SEQ_SCSCONJUNTOGUARDIAS";
 	UsrBean usrBean;

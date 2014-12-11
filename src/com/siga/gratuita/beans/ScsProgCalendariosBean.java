@@ -12,6 +12,10 @@ import com.siga.beans.MasterBean;
 import com.siga.gratuita.form.ProgrCalendariosForm;
 
 	public class ScsProgCalendariosBean extends MasterBean{
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = -2763238539129890873L;
 		static public final Short estadoProgramado = new Short("0"); 
 		static public final Short estadoProcesando = new Short("1");
 		static public final Short estadoError = new Short("2");

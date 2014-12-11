@@ -11,6 +11,10 @@ import com.siga.gratuita.form.ConfConjuntoGuardiasForm;
 public class ScsConfConjuntoGuardiasBean  extends MasterBean{
 
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8772515673969071006L;
 	static public String T_NOMBRETABLA = "SCS_CONF_CONJUNTO_GUARDIAS";
 	UsrBean usrBean;
 

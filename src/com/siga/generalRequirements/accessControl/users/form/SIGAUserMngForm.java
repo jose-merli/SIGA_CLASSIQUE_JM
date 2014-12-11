@@ -16,7 +16,11 @@ import com.atos.utils.ColumnConstants;
  */
 
 public class SIGAUserMngForm extends ActionForm {
-  private Hashtable htRecord;
+  /**
+	 * 
+	 */
+	private static final long serialVersionUID = 3290037298093768276L;
+private Hashtable htRecord;
 
   /**
    * Access method for the sIdStatus property.

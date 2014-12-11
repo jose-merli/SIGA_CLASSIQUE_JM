@@ -10,6 +10,10 @@ import com.siga.gratuita.form.HcoConfProgrCalendarioForm;
  *
  */
 public class ScsHcoConfProgCalendariosBean  extends MasterBean{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 7937913815836303727L;
 	static public final Short estadoProgramado = new Short("0"); 
 	static public final Short estadoProcesando = new Short("1");
 	static public final Short estadoError = new Short("2");

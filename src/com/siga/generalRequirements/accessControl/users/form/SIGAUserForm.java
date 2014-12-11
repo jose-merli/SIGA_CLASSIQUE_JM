@@ -15,7 +15,11 @@ import com.siga.generalRequirements.accessControl.users.SIGAUser;
  */
 
 public class SIGAUserForm extends ActionForm {
-  private Hashtable htRecord;
+  /**
+	 * 
+	 */
+	private static final long serialVersionUID = 7282046708857098885L;
+private Hashtable htRecord;
 
 //getter and setter methods
 
