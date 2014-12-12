@@ -252,12 +252,24 @@
 </head>
 
 <body class="tableCabecera"
-	onLoad="inicio();<%=onLoad%>;ajusteAlto('mainWorkArea');">
+	onLoad="inicio();<%=onLoad%>;ajusteAlto('mainWorkArea');showModals()">
 	
 	<!-- MENU PRINCIPAL -->
 	<!-- Esto pinta el menu principal en funcion de los permisos del userBean -->
 	<script src="<%=app%>/html/js/coolmenus4.jsp" type="text/javascript"></script>
 
+	<div id="modalAviso" style="display:none">
+		<span>
+		Se ha detectado un fallo en la última actualización de Internet Explorer 11 (<b>11.0.15</b>). Este problema afecta a las ventanas modales en toda la aplicación. 
+		<br>
+		<br>Se recomienda desinstalar la actualización KB3008923 hasta que Microsoft corrija el error.
+		
+		<br><br>Para más información visite la <a href="http://wiki.redabogacia.org/index.php/Degradar_IE11" target="_new">wiki</a>
+
+		</span>
+
+	</div>
+	
 	<div id="modalDialog" style="display:none">
 		<span>Su versión del navegador tiene inhabilitada la funcionalidad de ventanas emergentes <b>modales</b>. Esto afecta al correcto funcionamiento de este aplicativo en su navegador.
 		<br>Estamos trabajando para evitar este inconveniente.Mientras tanto le sugerimos que utilice otro navegador:
@@ -387,10 +399,31 @@
 		});	
 	}
 	
-	if (!(window.showModalDialog)){
-		showModal();
+	function showModals(){
+		if (!(window.showModalDialog)){
+			showModal();
+		}else if (isIE11()){
+			showAvisoModal();
+		}
 	}
 
+	function isIE11(){
+		//alertStop(navigator.userAgent);
+	    return !!(navigator.userAgent.indexOf('Trident', 0)>0 && navigator.userAgent.indexOf('rv:11', 0)>0);
+	  }
+	
+	 function showAvisoModal(){
+		 jQuery("#modalAviso").dialog({
+				height: 280,
+				width: 500,
+				modal: true,
+				title:'Problema compatibilidad con Internet Explorer 11',
+				resizable: false,
+				buttons : {
+					'<siga:Idioma key="global.boton.aceptar"/>': function() {$(this).dialog("close");}
+				}
+			});	
+	 }
 	
 </script>
 <div id="main_overlay" class="overlay" style="display:none;z-index: 50;"></div>
