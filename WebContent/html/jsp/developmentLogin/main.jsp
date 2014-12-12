@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html style="background-color:#ced9e6;">
 <head>
 <!-- main.jsp -->
 
@@ -61,6 +61,7 @@
 				name="mainWorkArea"
 				scrolling="no"
 				frameborder="0"
+				height="600px"
 				class="posicionPrincipal">
 		</iframe>
 	</body>
