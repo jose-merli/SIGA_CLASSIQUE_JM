@@ -61,7 +61,7 @@
   String acceso=usr.getAccessType();
   String accion="/JGR_DefinirHitosFacturables.do";
   String existenHitos=(String)request.getAttribute("EXISTENHITOS");
-  String checkControlado="1";//(String)request.getAttribute("checkControlado");
+  String checkControlado=(String)request.getAttribute("checkControlado");
   String importeControlado=(String)request.getAttribute("importeControlado");
   String minimoControlado=(String)request.getAttribute("minimoControlado");
 %>	
@@ -96,7 +96,7 @@
 			numeroNumber = Number(numeroNumber.toFixed(2));
 			
 			return numeroNumber;	
-		}		  	
+		}		  		  		
     
 	    //////////////////// FUNCIONES DE BOTONES - INI ////////////////////
 	    function accionGuardar () {
