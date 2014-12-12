@@ -1394,7 +1394,9 @@ public class EnvioInformesGenericos extends MasterReport {
 		datosInforme.put("idioma", idioma);
 		
 		String idPersona = (String) datosInforme.get("idPersona");
-		String idInstitucion = (String) datosInforme.get("idInstitucion");
+		String idInstitucion = (String) datosInforme.get("idinstitucion");
+		if (idInstitucion == null)
+			idInstitucion = (String) datosInforme.get("idInstitucion");
 		StringBuffer identificador = new StringBuffer();
 		identificador.append(idInstitucion);
 		if(idPersona!=null){
