@@ -245,13 +245,10 @@
 	
   		// JPT Transforma la coma en punto, comprueba que es un numero y muestra dos decimales
 		function convertirAFormato(numero){
-  			if (numero.toString().indexOf(",", 0) != -1) {
-  				while (numero.toString().indexOf(".", 0) != -1) {			
-  					numero = numero.replace(".","");					
-  				}	
-  			}
-  			
   			var numeroFormateado = numero.replace(",", ".");
+			while (numeroFormateado.toString().indexOf(".", 0) > 0 && numeroFormateado.toString().length - numeroFormateado.toString().indexOf(".", 0) > 3) {
+				numeroFormateado = numeroFormateado.replace(".", "");
+			}  	
 			var numeroNumber = new Number(numeroFormateado);
 			
 			if (isNaN(numeroNumber)) {
@@ -273,40 +270,15 @@
 			return numeroNumber;	
 		}		
 
-		function convertirANumero2(n){
-			return convertirAFormato(n).replace(",",".");
-		}
-
-
-		function convertirANumero(n)
-		{
+		function convertirANumero(n) {
 			numero = convertirAFormato(n);
 			if (numero.toString().indexOf(".", 0) != -1  && numero.toString().indexOf(",", 0) != -1){
-				for (;numero.toString().indexOf(".", 0) != -1;)
-				{
+				while(numero.toString().indexOf(".", 0) != -1) {
 					numero = numero.replace(".","");
 				}
-				numero = numero.replace(",",".");
-				return numero;
-			}else{
-				numero = numero.replace(",",".");
-				return numero;
 			}
-		}
-
-		
-
-		function convertirANumeroGuardar(n)
-		{
-			numero = convertirAFormato(n);
-		
-		/*	for (;numero.toString().indexOf(".", 0) != -1;)
-			{			
-				numero = numero.replace(".","");					
-			}								
-			*/
 			numero = numero.replace(",",".");
-			return numero;			
+			return numero;
 		}
 				
 		/*	NOTA:
@@ -1022,10 +994,10 @@
 
 			var restantes = new Array(4);
 			
-			for (i=0;i<4;i++){
+			for (var i=0;i<4;i++) {
 				var objImporte = document.getElementById("importe"+conceptos[i]);
 				
-				var importe = convertirANumeroGuardar(objImporte.value);
+				var importe = convertirANumero(objImporte.value);
 			
 				
 				//Copia del importe restante para recuperarla tras enviar el formulario
@@ -1034,21 +1006,14 @@
 				if (isNaN(importe) || importe == 0){
 					objImporte.value = importe;
 					document.getElementById("porcentaje"+conceptos[i]).value = 0;
-				}
-				else{
-					
-					var objPorcentaje = document.getElementById("porcentaje"+conceptos[i]);
-					var porcentaje = convertirANumero(objPorcentaje.value);
+				} else{
 					importeRepartirTotal = parseFloat(importeRepartirTotal) + parseFloat(importe);
-					
 				}
 			}
 			
 			// Guarda los valores de los importes a repartir y pagado
 			// para recuperarlos una vez enviados al guardar si 
 			// se esta editando el pago en el estado ABIERTO
-			var iportePagadoAux = f.importePagado.value;
-
 			document.getElementById("importeRepartir").value = importeRepartirTotal;
 			
 			f.target = "submitArea";
@@ -1056,13 +1021,8 @@
 	
 			if (validateDatosGeneralesPagoForm(f)) {
 				//Calculo lo que le queda por pagar:
-				var importeFacturado = 0;
-				var importePagado = 0;				
-				var total = 0;
 
 				if (f.importeFacturado.value!='' && f.importePagado.value!='') {
-					var importeFacturado = parseFloat(f.importeFacturado.value.replace(/,/,"."));
-					var importePagado = parseFloat(f.importePagado.value.replace(/,/,"."));	
 					//actualiza el importe pagado 
 					f.importePagado.value = importeRepartirTotal;	
 				}
@@ -1076,7 +1036,7 @@
 				// con pantalla de espera
 				window.frames.submitArea.location='<%=app%>/html/jsp/general/loadingWindowOpener.jsp?formName='+fname+'&msg=messages.factSJCS.procesandoFacturacion';					
 
-			}else{
+			} else {
 				fin();
 				formatearCamposprecio();				
 				return false;
@@ -1100,10 +1060,10 @@
 
 			var restantes = new Array(4);
 			
-			for (i=0;i<4;i++){
+			for (var i=0;i<4;i++){
 				var objImporte = document.getElementById("importe"+conceptos[i]);
 				
-				var importe = convertirANumeroGuardar(objImporte.value);
+				var importe = convertirANumero(objImporte.value);
 			
 				
 				//Copia del importe restante para recuperarla tras enviar el formulario
@@ -1112,13 +1072,8 @@
 				if (isNaN(importe) || importe == 0){
 					objImporte.value = importe;
 					document.getElementById("porcentaje"+conceptos[i]).value = 0;
-				}
-				else{
-					
-					var objPorcentaje = document.getElementById("porcentaje"+conceptos[i]);
-					var porcentaje = convertirANumero(objPorcentaje.value);
+				} else{
 					importeRepartirTotal = parseFloat(importeRepartirTotal) + parseFloat(importe);
-					
 				}
 			}
 			
@@ -1134,13 +1089,7 @@
 	
 			if (validateDatosGeneralesPagoForm(f)) {
 				//Calculo lo que le queda por pagar:
-				var importeFacturado = 0;
-				var importePagado = 0;				
-				var total = 0;
-
 				if (f.importeFacturado.value!='' && f.importePagado.value!='') {
-					var importeFacturado = parseFloat(f.importeFacturado.value.replace(/,/,"."));
-					var importePagado = parseFloat(f.importePagado.value.replace(/,/,"."));	
 					//actualiza el importe pagado 
 					f.importePagado.value = importeRepartirTotal;	
 				}
@@ -1216,14 +1165,14 @@
 		function accionDefinirCriterio(){
 			var f=document.getElementById("datosGeneralesPagoForm");
 			f.modo.value = "abrirModal";		
-			var salida = ventaModalGeneral(f.name,"M"); 			
+			ventaModalGeneral(f.name,"M"); 			
 			f.modo.value = "modificarPago";
 		}
 		
 		function accionVisualizarCriterios(){
 			var f=document.getElementById("datosGeneralesPagoForm");
 			f.modo.value = "abrirModal";		
-			var salida = ventaModalGeneral(f.name,"M"); 			
+			ventaModalGeneral(f.name,"M"); 			
 			f.modo.value = "modificarPago";
 		}
 	</script>
