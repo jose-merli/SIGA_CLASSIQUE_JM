@@ -408,8 +408,8 @@
 	}
 
 	function isIE11(){
-		//alertStop(navigator.userAgent);
-	    return !!(navigator.userAgent.indexOf('Trident', 0)>0 && navigator.userAgent.indexOf('rv:11', 0)>0);
+		alertStop(navigator.userAgent.revision);
+	    return !!(navigator.userAgent.indexOf('Trident/7', 0)>0);
 	  }
 	
 	 function showAvisoModal(){
