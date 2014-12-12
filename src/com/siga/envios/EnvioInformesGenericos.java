@@ -10327,6 +10327,8 @@ public class EnvioInformesGenericos extends MasterReport {
 		String anio = (String) datosInforme.get("anio");
 		String numero = (String) datosInforme.get("numero");
 		String idInstitucion = (String) datosInforme.get("idinstitucion");
+		if (idInstitucion == null)
+			idInstitucion = (String) datosInforme.get("idInstitucion");
 
 		String idPersona = null;
 		String tipoDestinatario = null;
