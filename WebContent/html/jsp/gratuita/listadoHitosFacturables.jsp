@@ -61,7 +61,7 @@
   String acceso=usr.getAccessType();
   String accion="/JGR_DefinirHitosFacturables.do";
   String existenHitos=(String)request.getAttribute("EXISTENHITOS");
-  String checkControlado=(String)request.getAttribute("checkControlado");
+  String checkControlado="1";//(String)request.getAttribute("checkControlado");
   String importeControlado=(String)request.getAttribute("importeControlado");
   String minimoControlado=(String)request.getAttribute("minimoControlado");
 %>	
@@ -78,9 +78,15 @@
   
   	<!-------------------- FUNCIONES SCRIPT - INICIO -------------------->
   	<script>
-  		// Transforma la coma en punto, comprueba que es un numero y muestra dos decimales
-		function  convertirAFormato(numero){
-			var numeroFormateado = numero.replace(",", ".");
+  		// JPT Transforma la coma en punto, comprueba que es un numero y muestra dos decimales
+		function convertirAFormato(numero){
+  			if (numero.toString().indexOf(",", 0) != -1) {
+  				while (numero.toString().indexOf(".", 0) != -1) {			
+  					numero = numero.replace(".","");					
+  				}	
+  			}
+  			
+  			var numeroFormateado = numero.replace(",", ".");
 			var numeroNumber = new Number(numeroFormateado);
 			
 			if (isNaN(numeroNumber)) {
@@ -1028,7 +1034,7 @@
       		noPagaGuardiaGeneral (
       			DefinirHitosFacturablesGuardiasForm.chPagaGuardiaDomingo,
                 DefinirHitosFacturablesGuardiasForm.chNoPagaGuardiaDomingo,
-                DefinirHitosFacturablesGuardiasForm.checkB1)
+                DefinirHitosFacturablesGuardiasForm.checkB1);
     	} //noPagaGuardiaDomingo ()
     
 	    /**

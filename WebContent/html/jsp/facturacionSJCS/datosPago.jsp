@@ -243,8 +243,15 @@
 		conceptos[2] = 'EJG';
 		conceptos[3] = 'SOJ';
 	
-		function  convertirAFormato(numero){
-			var numeroFormateado = numero.replace(",", ".");
+  		// JPT Transforma la coma en punto, comprueba que es un numero y muestra dos decimales
+		function convertirAFormato(numero){
+  			if (numero.toString().indexOf(",", 0) != -1) {
+  				while (numero.toString().indexOf(".", 0) != -1) {			
+  					numero = numero.replace(".","");					
+  				}	
+  			}
+  			
+  			var numeroFormateado = numero.replace(",", ".");
 			var numeroNumber = new Number(numeroFormateado);
 			
 			if (isNaN(numeroNumber)) {
@@ -395,8 +402,7 @@
 		*/
 		function borrarAPagar(){
 			//Obtener la suma del importe a repartir 
-			var importeRepartirTotal = 0;
-			for (i=0;i<4;i++){			
+			for (var i=0; i<4; i++){			
 				//inicializa el valor de los elementos
 				document.getElementById("importe"+conceptos[i]).value = "0,00";
 				document.getElementById("porcentaje"+conceptos[i]).value = "0,00";
@@ -414,7 +420,7 @@
 		* Inicializa campos "a pagar" de cada concepto
 		*/
 		function inicializaAPagar(){
-			for (i=0;i<4;i++){			
+			for (var i=0;i<4;i++){			
 				//inicializa el valor de los elementos
 				document.getElementById("importe"+conceptos[i]).value = convertirAFormato(eval("importe"+conceptos[i])+"");
 				actualizaConcepto(conceptos[i], eval("total"+conceptos[i]), eval("importePend"+conceptos[i]), 0);
@@ -469,7 +475,7 @@
 		 * Oculta las fila de cada concepto de la tabla de reparto
 		 */
 		function ocultarConceptos(){
-			for (i=0;i<4;i++){					
+			for (var i=0;i<4;i++){					
 				jQuery("#fila"+conceptos[i]).hide();
 			}
 		}
@@ -479,7 +485,7 @@
 		 */
 		function ocultarRestante(){
 			  fila=document.getElementById('tablaConceptos').getElementsByTagName('tr');
-			  for(i=0;i<fila.length;i++)
+			  for (var i=0; i<fila.length; i++)
 			    fila[i].getElementsByTagName('td')[4].style.display="none";
 		}
 		
@@ -490,7 +496,7 @@
 				if (f.options[i].text == "<%=nombreFacturacion%>") {
 					f.options[i].selected = true;					
 					var seleccionado = f.options[i].value;
-					var id = seleccionado.substring(0,seleccionado.indexOf(","))
+					var id = seleccionado.substring(0,seleccionado.indexOf(","));
 					document.getElementById("datosGeneralesPagoForm").idFacturacion.value = id;
 				}
 			}
@@ -866,7 +872,7 @@
 		function actualizarCamposPrecio(){
 			
 			//Convierte los importes y porcentajes de cada concepto
-			for (i=0;i<4;i++){
+			for (var i=0;i<4;i++){
 				var objPorcentaje = document.getElementById("porcentaje"+conceptos[i]);
 				var objImporte = document.getElementById("importe"+conceptos[i]);
 				if (objImporte.value.toString().indexOf(".", 0) != -1  && objImporte.value.toString().indexOf(",", 0) != -1){			
@@ -881,7 +887,7 @@
 		}
 		
 		function formatearCamposprecio(){
-			for (i=0;i<4;i++){			
+			for (var i=0; i<4; i++){			
 				document.getElementById("importe"+conceptos[i]).value = convertirAFormato(document.getElementById("importe"+conceptos[i]).value);
 				document.getElementById("porcentaje"+conceptos[i]).value = convertirAFormato(document.getElementById("porcentaje"+conceptos[i]).value);
 			}
@@ -892,7 +898,7 @@
 		 *
 		 */
 		function inicializaConceptos(){
-			for (i=0;i<4;i++){	
+			for (var i=0; i<4; i++){	
 				if (eval("total"+conceptos[i])==0)
 					jQuery("#fila"+conceptos[i]).hide();
 				else{
