@@ -91,15 +91,9 @@
 			return valorNumero;
 		}
 	
-  		// JPT Transforma la coma en punto, comprueba que es un numero y muestra dos decimales
-		function convertirAFormato(numero){
-  			if (numero.toString().indexOf(",", 0) != -1) {
-  				while (numero.toString().indexOf(".", 0) != -1) {			
-  					numero = numero.replace(".","");					
-  				}	
-  			}
-  			
-  			var numeroFormateado = numero.replace(",", ".");
+		// JPT: Funcion que pone muestra un numero con punto en los millares, coma en el simbolo decimal y dos decimales
+		function  convertirAFormato(numero){
+			var numeroFormateado = numero.replace(",", ".");
 			var numeroNumber = new Number(numeroFormateado);
 			
 			if (isNaN(numeroNumber)) {
