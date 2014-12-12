@@ -408,7 +408,6 @@
 	}
 
 	function isIE11(){
-		alertStop(navigator.userAgent.revision);
 	    return !!(navigator.userAgent.indexOf('Trident/7', 0)>0);
 	  }
 	
@@ -429,6 +428,10 @@
 <div id="main_overlay" class="overlay" style="display:none;z-index: 50;"></div>
 	<div id="divEspera" title="Espere por favor" style="z-index:100; position:absolute;vertical-align: center;display:none; top:45%; left:450px">
 		<span class="labelText"></span><br><img src="<%=app%>/html/imagenes/loadingBar.gif"/><span id="barraBloqueante">&nbsp;</span>
+	</div>
+	
+	
+	<div id='contenidoVentanaModal' style='display:none'>
 	</div>
 	
 </body>
