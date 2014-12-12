@@ -1040,7 +1040,7 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 		
 				StringBuffer select = new StringBuffer();
 				select.append(" SELECT " + FcsPagoColegiadoBean.C_IDPERDESTINO + " AS IDPERSONAIMPRESO, ");
-				select.append("        ((-1*)SUM ("+FcsPagoColegiadoBean.C_IMPIRPF + ")) AS TOTALIMPORTEIRPF, "); //Está guardado con signo menos aquí se recupera positivo
+				select.append("        ((-1)*SUM ("+FcsPagoColegiadoBean.C_IMPIRPF + ")) AS TOTALIMPORTEIRPF, "); //Está guardado con signo menos aquí se recupera positivo
 				select.append("        SUM (" + FcsPagoColegiadoBean.C_IMPOFICIO + " + ");
 				select.append(                  FcsPagoColegiadoBean.C_IMPASISTENCIA + " + ");
 				select.append(                  FcsPagoColegiadoBean.C_IMPEJG + " + ");
