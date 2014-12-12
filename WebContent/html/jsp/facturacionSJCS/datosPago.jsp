@@ -246,7 +246,7 @@
   		// JPT Transforma la coma en punto, comprueba que es un numero y muestra dos decimales
 		function convertirAFormato(numero){
   			var numeroFormateado = numero.replace(",", ".");
-			while (numeroFormateado.toString().indexOf(".", 0) > 0 && numeroFormateado.toString().length - numeroFormateado.toString().indexOf(".", 0) > 3) {
+			while (numeroFormateado.toString().indexOf(".", 0) > 0 && numeroFormateado.toString().indexOf(".", numeroFormateado.toString().indexOf(".", 0) + 1) > 0) {
 				numeroFormateado = numeroFormateado.replace(".", "");
 			}  	
 			var numeroNumber = new Number(numeroFormateado);
@@ -848,7 +848,7 @@
 				var objPorcentaje = document.getElementById("porcentaje"+conceptos[i]);
 				var objImporte = document.getElementById("importe"+conceptos[i]);
 				if (objImporte.value.toString().indexOf(".", 0) != -1  && objImporte.value.toString().indexOf(",", 0) != -1){			
-					objImporte.value = convertirAFormato(document.getElementById("importe"+conceptos[i]).value);
+					objImporte.value = convertirANumero(document.getElementById("importe"+conceptos[i]).value);
 					objPorcentaje.value = objPorcentaje.value.replace(/,/,".");
 				}else{
 					objImporte.value = objImporte.value.replace(/,/,".");
@@ -1105,7 +1105,7 @@
 				<% if (esEdicion && estadoAbierto){%>
 				// Se recuperan los datos del importe Pagado si se edita el pago con estado ABIERTO
 				f.importePagado.value = iportePagadoAux;
-				for (i=0;i<4;i++){
+				for (var i=0;i<4;i++){
 					document.getElementById("txtRestante"+conceptos[i]).value = restantes[i];
 				}
 				<% } %>	
