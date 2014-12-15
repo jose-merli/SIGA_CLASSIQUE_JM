@@ -104,9 +104,11 @@
            			jQuery("#idPlantillaEnvio_"+index).append("<option  value=''>&nbsp;</option>");
            				jQuery.each(plantillasEnvio, function(i,item2){
 	           				var selected = "";
-	           				if(idPlantillaEnvioDefecto==item2.idPlantillaEnvios&&comboTiposEnvio.value ==idTipoEnvioDefecto){
-	           					selected = "selected";
-           					}
+	           				if((idPlantillaEnvioDefecto!="")&&(idPlantillaEnvioDefecto!=null)){
+		           				if(idPlantillaEnvioDefecto==item2.idPlantillaEnvios&&comboTiposEnvio.value ==idTipoEnvioDefecto){
+		           					selected = "selected";
+	           					}
+	           				}
 	                        jQuery("#idPlantillaEnvio_"+index).append("<option "+selected+" value='"+item2.idPlantillaEnvios+"'>"+item2.nombre+"</option>");
 	                        //ATENCION EL i+1 el porque tenemos la linea vacia al principio
 	                        document.getElementById("idPlantillaEnvio_"+index).options[i+1].setAttribute("acuseRecibo", item2.acuseRecibo);
@@ -479,6 +481,10 @@
 	 		           			if(item2.defecto=="1"){
 		           					selected = "selected";
 		           					jQuery("#idTipoEnvioDefecto_"+index).val(item2.idTipoEnvios);
+		           					if((item2.idPlantillaDefecto!=null)&&(item2.idPlantillaDefecto!="0"))
+		           						jQuery("#idPlantillaEnvioDefecto_"+index).val(item2.idPlantillaDefecto);
+		           					else
+		           						jQuery("#idPlantillaEnvioDefecto_"+index).val("");
 	           					}
  		           				 		           				
 		                        jQuery("#idTipoEnvio_"+index).append("<option "+selected+" value='"+item2.idTipoEnvios+"'>"+item2.nombre+"</option>");
