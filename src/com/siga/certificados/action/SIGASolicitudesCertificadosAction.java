@@ -2650,7 +2650,11 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 		
 		String idSolicitud = request.getParameter("idSolicitud");
 		if (idSolicitud==null || idSolicitud.trim().equalsIgnoreCase(""))
-			throw new SIGAException("Falta el identificador de la solicitud");		
+			throw new SIGAException("Falta el identificador de la solicitud");
+		
+		String idPersona = request.getParameter("idPersona");
+		if (idPersona==null || idPersona.trim().equalsIgnoreCase(""))
+			throw new SIGAException("Falta el identificador de la persona");				
 		
 		JSONObject json = new JSONObject();
 		UsrBean usr = this.getUserBean(request);
@@ -2668,7 +2672,7 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 	    } else {
 		
 			// Busca las series de facturacion del producto
-			Vector<FacSerieFacturacionBean> vSeriesFacturacion =  admSerieFacturacion.obtenerSeriesFacturacionProducto(idInstitucion, idTipoProducto, idProducto);
+			Vector<FacSerieFacturacionBean> vSeriesFacturacion =  admSerieFacturacion.obtenerSeriesFacturacionProducto(idInstitucion, idTipoProducto, idProducto, idPersona);
 			    		
 		    // Compruebo que tiene una serie de facturacion
 		    if (vSeriesFacturacion.size()==1) {

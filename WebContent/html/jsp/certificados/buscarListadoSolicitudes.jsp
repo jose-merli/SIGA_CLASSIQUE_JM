@@ -268,13 +268,14 @@
 				
 			    var idInstitucion = document.getElementById('oculto' + fila + '_1');			          		
 			    var idSolicitud = document.getElementById('oculto' + fila + '_2');
+			    var idPersona = document.getElementById('oculto' + fila + '_4');
 			    var idProducto = document.getElementById('oculto' + fila + '_7');
 			    var idTipoProducto = document.getElementById('oculto' + fila + '_8');		    
 			    
 			    jQuery.ajax({ 
 					type: "POST",
 					url: "/SIGA/CER_GestionSolicitudes.do?modo=getAjaxSeleccionSerieFacturacion",				
-					data: "idInstitucion=" + idInstitucion.value + "&idTipoProducto=" + idTipoProducto.value + "&idProducto=" + idProducto.value + "&idSolicitud=" + idSolicitud.value,
+					data: "idInstitucion=" + idInstitucion.value + "&idTipoProducto=" + idTipoProducto.value + "&idProducto=" + idProducto.value + "&idSolicitud=" + idSolicitud.value + "&idPersona=" + idPersona.value,
 					dataType: "json",
 					contentType: "application/x-www-form-urlencoded;charset=UTF-8",
 					success: function(json){							
