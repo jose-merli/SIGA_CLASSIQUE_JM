@@ -351,7 +351,7 @@ public class ConfirmarFacturacionAction extends MasterAction{
 			File ficheroZip = new File(sRutaTemporal+sNombreFichero);
 			if (!ficheroZip.exists()){
 				FacFacturaAdm facturas = new FacFacturaAdm(user);
-				Vector resultado = facturas.getSerieFacturacionConfirmada(idInstitucion, idSerieFacturacion, idProgramacion);
+				Vector resultado = facturas.getFacturasDeFacturacionProgramada(idInstitucion, idSerieFacturacion, idProgramacion);
 				if(!resultado.isEmpty()){
 					//Se accede por clave referenciada de la tabla que hace join por lo que todos los registro tienen el mismo estado de generacion de pdf. Cogemos por tanto el estado del priemr registro
 					Hashtable hashPrimeraFacturaSerieProgramacion = (Hashtable)resultado.get(0); 
@@ -659,7 +659,7 @@ public class ConfirmarFacturacionAction extends MasterAction{
 			hash.put(FacFacturacionProgramadaBean.C_IDSERIEFACTURACION,idSerieFacturacion);
 			hash.put(FacFacturacionProgramadaBean.C_IDPROGRAMACION,idProgramacion);			
 			FacFacturaAdm facturas = new FacFacturaAdm(userBean);
-			Vector vFacturas = facturas.getSerieFacturacionConfirmada(idInstitucion, idSerieFacturacion, idProgramacion);
+			Vector vFacturas = facturas.getFacturasDeFacturacionProgramada(idInstitucion, idSerieFacturacion, idProgramacion);
 			if(!vFacturas.isEmpty()){
 				Vector v = adm.selectByPK(hash);
 				FacFacturacionProgramadaBean bean = (FacFacturacionProgramadaBean) v.get(0);				

@@ -945,7 +945,7 @@ public class Facturacion {
 		try {		
 			// Obtengo las facturas a almacenar
 		    FacFacturaAdm admF = new FacFacturaAdm(userbean);		    
-		    Vector<?> vFacturas = admF.getSerieFacturacionConfirmada(institucion.toString(), serieFacturacion.toString(), idProgramacion.toString());
+		    Vector<?> vFacturas = admF.getFacturasDeFacturacionProgramada(institucion.toString(), serieFacturacion.toString(), idProgramacion.toString());
 		    
 		    /** CR - Si no se ha generado ninguna factura, se lanza una excepcion ya que no se puede generar PDF **/
 		    if(vFacturas == null || vFacturas.size() < 1){

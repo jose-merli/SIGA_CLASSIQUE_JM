@@ -1977,7 +1977,7 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
 	 * @return  Vector - Filas de la tabla seleccionadas  
 	 * @exception  ClsExceptions  En cualquier caso de error
 	 */	
-	public Vector getSerieFacturacionConfirmada(String institucion, String seriefacturacion, String idProgramacion) throws ClsExceptions,SIGAException {
+	public Vector getFacturasDeFacturacionProgramada(String institucion, String seriefacturacion, String idProgramacion) throws ClsExceptions,SIGAException {
 		   Vector datos=new Vector();
 	       try {
 	            RowsContainer rc = new RowsContainer(); 
