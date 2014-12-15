@@ -3610,6 +3610,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 				" FUND.TEXTOPLANTILLA4, " +
 				" FUND.TEXTOPLANTILLA4, " +
 				" FUND.DESCRIPCION AS FUNDAMENTO_JURIDICO_DESCR " +
+				" ,d.ESTADO "+
 			" FROM SCS_EJG EJG, " +
 				" SCS_EJGDESIGNA EJGD, " +
 				" SCS_TIPOFUNDAMENTOS FUND, scs_designa d " +
@@ -3621,7 +3622,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 				" AND  EJGD.Aniodesigna =  d.anio(+) " +
 				" AND  EJGD.Idturno = d.idturno(+) " +
 				" AND  EJGD.NUMERODESIGNA = d.numero(+) " +
-				" AND (d.idinstitucion is null or d.ESTADO <> 'A' ) " +
+			//	" AND (d.idinstitucion is null or d.ESTADO <> 'A' ) " +
 				" AND fund.idfundamento(+)=ejg.idfundamentojuridico " + 
 				" AND fund.idinstitucion(+)=ejg.idinstitucion " + 
 				" AND EJG.idinstitucion = " + idInstitucion +
@@ -3634,18 +3635,25 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 				 if (rc!=null){
 		 				GenParametrosAdm paramAdm = new GenParametrosAdm (usrbean);
 		 				CenInstitucionAdm cenInstitucionAdm = new CenInstitucionAdm (usrbean);
+		 				int numeroRegistros = rc.size();
 						for (int i = 0; i < rc.size(); i++)	{
 							Row fila = (Row) rc.get(i);
 							Hashtable registro = (Hashtable)fila.getRow(); 
-							
+							 
 							if (registro != null){
+								//Lo añadimos.
+								// Si solo hay un registro--> Siempre
+								// Si hay mas de un registro -->Cuando no este anulada la designacion
+								if(numeroRegistros==1 || ( registro.get("ESTADO")!=null && !((String)registro.get("ESTADO")).equals("A"))){
 									String prefijoExpedienteCajg =  paramAdm.getValor (idInstitucion, ClsConstants.MODULO_SJCS, ClsConstants.GEN_PARAM_PREFIJO_EXPEDIENTES_CAJG, " ");
 									registro.put(CenInstitucionBean.C_IDINSTITUCION, idInstitucion);
 									Vector institucionVector =  cenInstitucionAdm.selectByPK(registro);
 									String abreviaturaColegio =  ((CenInstitucionBean)institucionVector.get(0)).getAbreviatura();
 									registro.put("PREFIJO_EXPEDIENTES_CAJG", prefijoExpedienteCajg);
 									registro.put("ABREVIATURA_COLEGIO", UtilidadesString.getPrimeraMayuscula(abreviaturaColegio));
+									
 									datos.add(registro);
+								}
 							}
 						}
 					}		           
