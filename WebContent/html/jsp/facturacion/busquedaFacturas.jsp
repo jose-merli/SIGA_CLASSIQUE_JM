@@ -370,9 +370,11 @@
 				
 				jQuery("#idBotonesBusqueda").attr("disabled", "disabled");
 				jQuery("#idBotonesAccion").attr("disabled", "disabled");
+				
 				jQuery("#dialogoAnular").dialog(
 						{
-						      height: 250,
+							
+							  height: 250,
 						      width: 525,
 						      modal: true,
 						      resizable: false,
@@ -397,17 +399,26 @@
 						            
 						            },
 						            "Cerrar": function() {
-						            	 jQuery("#idBotonesBusqueda").removeAttr("disabled");
-						    			 jQuery("#idBotonesAccion").removeAttr("disabled");
+						            	 
 						            	 jQuery( this ).dialog( "close" );
-							              document.AltaAbonosForm.facturas.value="";
-								          document.AltaAbonosForm.fecha.value="";
-								          document.AltaAbonosForm.motivos.value="";
+							              
 							            }
-						          }
+						          },
+						          close: function( event, ui ) { 
+						        	 document.AltaAbonosForm.facturas.value="";
+							         document.AltaAbonosForm.fecha.value="";
+							         document.AltaAbonosForm.motivos.value="";
+							         jQuery("#motivos").val("");
+						        	 jQuery("#idBotonesBusqueda").removeAttr("disabled");
+					    			 jQuery("#idBotonesAccion").removeAttr("disabled")
+					    		}
+									
+						
 						    }
+						
 					);
 				jQuery(".ui-widget-overlay").css("opacity","0");
+
 			}else{
 				fin();
 				var mensaje = '<siga:Idioma key="general.message.seleccionar"/>';

@@ -357,7 +357,9 @@
 						jQuery("#idBotonesAccion").attr("disabled", "disabled");
 						jQuery("#dialogoPagarCaja").dialog(
 								{
-								      height: 250,
+									
+									
+									height: 250,
 								      width: 525,
 								      modal: true,
 								      resizable: false,
@@ -377,17 +379,22 @@
 								            jQuery( this ).dialog( "close" );						            
 								            },
 								            "Cerrar": function() {
-								            	jQuery("#idBotonesBusqueda").removeAttr("disabled");
-								    			jQuery("#idBotonesAccion").removeAttr("disabled");
-								            	document.AbonosPagosForm.abonos.value="";
-										        document.AbonosPagosForm.importe.value="";  
 								            	jQuery( this ).dialog( "close" );
 									              
 									            }
-								          }
+								          },
+								          close: function( event, ui ) { 
+								        	  document.AbonosPagosForm.abonos.value="";
+										      document.AbonosPagosForm.importe.value="";   
+										      jQuery("#importe").val("");
+								        	  jQuery("#idBotonesBusqueda").removeAttr("disabled");
+								    		  jQuery("#idBotonesAccion").removeAttr("disabled")
+								    	  }
+
 								    }
 							);
 						jQuery(".ui-widget-overlay").css("opacity","0");
+						
 					}else{
 						pagarCaja();
 						document.AbonosPagosForm.abonos.value="";
@@ -485,6 +492,8 @@
 				
 			}
 			
+			
+			
 		</script>
 		<!-- FIN: SCRIPTS BOTONES BUSQUEDA -->
 	
@@ -511,7 +520,7 @@
 					<siga:Idioma key="facturacion.abonosPagos.datosPagoAbono.importePago"/>
 				</td>	
 				<td >
-					<html:text property="importe" size="11" maxlength="11" styleClass="box" value=""></html:text>&nbsp;&euro;
+					<html:text id="importe" property="importe" size="11" maxlength="11" styleClass="box" value=""></html:text>&nbsp;&euro;
 				</td>
 			</tr>
 			</table>
