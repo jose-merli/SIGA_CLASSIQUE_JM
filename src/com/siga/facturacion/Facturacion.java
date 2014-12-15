@@ -946,6 +946,11 @@ public class Facturacion {
 			// Obtengo las facturas a almacenar
 		    FacFacturaAdm admF = new FacFacturaAdm(userbean);		    
 		    Vector<?> vFacturas = admF.getSerieFacturacionConfirmada(institucion.toString(), serieFacturacion.toString(), idProgramacion.toString());
+		    
+		    /** CR - Si no se ha generado ninguna factura, se lanza una excepcion ya que no se puede generar PDF **/
+		    if(vFacturas == null || vFacturas.size() < 1){
+		    	throw new SIGAException("messages.facturacion.confirmacion.errorPdf");	
+		    }
 			
 			ClsLogging.writeFileLog("ALMACENAR >> "+institucion.toString()+" "+serieFacturacion.toString()+" "+idProgramacion.toString(),10);
 			
@@ -1192,8 +1197,7 @@ public class Facturacion {
 						//Si la previsión está vacía
 						if(fichPrev==null || fichPrev.size()==0) {
 							ClsLogging.writeFileLog("### Error al generar el informe de la confirmacion. Inicio creación fichero log CONFIRMACION sin datos",7);
-							throw new ClsExceptions("message.facturacion.error.fichero.nulo");
-						
+							throw new ClsExceptions("message.facturacion.error.fichero.nulo");						
 						} 
 					}	
 				}
