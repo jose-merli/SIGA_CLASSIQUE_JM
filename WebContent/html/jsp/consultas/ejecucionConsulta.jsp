@@ -39,10 +39,11 @@
 	HashMap hm = (HashMap) ses.getAttribute ("DATABACKUP");
 //	PaginadorCaseSensitiveBind paginador = (PaginadorCaseSensitiveBind) hm.get ("paginador");
 	PaginadorBind paginador = (PaginadorBind) hm.get ("paginador");
-	
 	String paginaSeleccionada = String.valueOf (paginador.getPaginaActual());
 	String totalRegistros = String.valueOf (paginador.getNumeroTotalRegistros());
 	String registrosPorPagina = String.valueOf (paginador.getNumeroRegistrosPorPagina());
+	
+	String tipoConsulta = (String) request.getAttribute ("tipoConsulta");
 %>
 
 
@@ -65,21 +66,33 @@
 	<script language="JavaScript">	
 	
 		//Asociada al boton Cerrar
-		function accionCerrar() 
-		{
-			top.cierraConParametros ("");		
-		}
+
 		
 		function accionDownload() 
 		{
 			sub();
-			RecuperarConsultasForm.modo.value = "download";
-			RecuperarConsultasForm.target = "submitArea";
-			RecuperarConsultasForm.submit();
+			document.forms[0].modo.value = "download";
+			document.forms[0].target = "submitArea";
+			document.forms[0].submit();
 		}
 		
 		function accionImprimir() 
 		{			window.print();
+		}
+		
+		function accionVolver() 
+		{		
+			var formu=document.forms[1];
+			formu.action=formu.action+"?noReset=true";
+			if(parent.document.getElementById("accionAnterior")&&parent.document.getElementById("accionAnterior").value!=""){
+				formu.accionAnterior.value=parent.document.getElementById("accionAnterior").value;
+				formu.idModulo.value=parent.document.getElementById("idModulo").value;
+				formu.modo.value="inicio";
+			}else{
+				formu.modo.value="abrir";
+			}
+			formu.target='mainWorkArea';
+			formu.submit();				
 		}
 		
 	</script>
@@ -106,15 +119,17 @@
 	
 	<table id="tablaBotonesDetalle" class="botonesDetalle" align="center">
 		<tr>
-			<td style="width: 100%;">&nbsp;</td>
+			<td class="tdBotones">
+				<input type="button" alt='<siga:Idioma key="general.boton.volver"/>' name='idButton' id="idButton" onclick="return accionVolver();" class="button" value='<siga:Idioma key="general.boton.volver"/>'>
+			</td>
+			<td  style="width:900px;">
+			&nbsp;
+			</td>
 			<td class="tdBotones">
 				<input type="button" alt='<siga:Idioma key="general.boton.imprimir"/>' name='idButton' id="idButton" onclick="return accionImprimir();" class="button" value='<siga:Idioma key="general.boton.imprimir"/>'>
 			</td>
 			<td class="tdBotones">
 				<input type="button" alt='<siga:Idioma key="general.boton.download"/>' name='idButton' id="idButton" onclick="return accionDownload();" class="button" value='<siga:Idioma key="general.boton.download"/>'>
-			</td>
-			<td class="tdBotones">
-				<input type="button" alt='<siga:Idioma key="general.boton.close"/>' name='idButton' id="idButton" onclick="return accionCerrar();" class="button" value='<siga:Idioma key="general.boton.close"/>'>
 			</td>
 		</tr>
 	</table>
@@ -129,11 +144,13 @@
 					distanciaPaginas=""
 					action="<%=action%>" />
 	
-	<html:form action="/CON_RecuperarConsultas.do" method="POST" target="submitArea">
-		<html:hidden property = "modo" value = ""/>	
-		<html:hidden property = "idInstitucion"/>
-		<html:hidden property = "idConsulta"/>
-	</html:form>
+		
+		<html:form action="/CON_RecuperarConsultasDinamicas.do" method="POST" target="mainWorkArea">
+			<html:hidden property = "modo" value = ""/>
+			<html:hidden property = "accionAnterior" value = "ejecucion"/>
+			<html:hidden property = "idModulo"/>
+		</html:form>
+
 	
 	<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp"
 			style="display:none">

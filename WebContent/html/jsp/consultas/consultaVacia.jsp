@@ -45,37 +45,25 @@
 	
 <!-- INICIO ******* CAPA DE PRESENTACION ****** -->
 
-<div id="camposRegistro" class="posicionModalGrande" align="center">
+<div id="camposRegistro" align="center">
 
-	<!-- INICIO: CAMPOS -->
-	<!-- Zona de campos de busqueda o filtro -->
-
-	<table  class="tablaCentralCamposGrande"  align="center">
+	<table  class="tablaCentralCampos"  align="center">
 	<tr>				
 	<td>	
 	
-	<siga:ConjCampos leyenda="consultas.recuperarconsulta.literal.consulta">
-
-		<table class="tablaCampos" align="center">
-		
-	
-		<!-- FILA -->
-		<tr>
-			<td class="labelText" align="center">
-				<br>
-				<siga:Idioma key="consultas.recuperarconsulta.error.consultaVacia"/>
-			</td>				
-		</tr>				
-		
-		</table>
-
-	</siga:ConjCampos>
-
-	</td>
-</tr>
-
-
-</table>
+		<siga:ConjCampos leyenda="consultas.recuperarconsulta.literal.consulta">
+			<table class="tablaCampos" align="center">
+			<tr>
+				<td class="labelText" align="center">
+					<br>
+					<siga:Idioma key="consultas.recuperarconsulta.error.consultaVacia"/>
+				</td>				
+			</tr>				
+			</table>
+		</siga:ConjCampos>
+		</td>
+	</tr>
+	</table>
 
 
 
@@ -85,10 +73,14 @@
 
 <table id="tablaBotonesDetalle" class="botonesDetalle" align="center">
 	<tr>
-		<td style="width: 100%;">&nbsp;</td>
-		<td class="tdBotones">
-			<input type="button" alt='<siga:Idioma key="general.boton.close"/>' name='idButton' id="idButton" onclick="return accionCerrar();" class="button" value='<siga:Idioma key="general.boton.close"/>'>
-		</td>
+		<tr>
+			<td class="tdBotones">
+				<input type="button" alt='<siga:Idioma key="general.boton.volver"/>' name='idButton' id="idButton" onclick="return accionVolver();" class="button" value='<siga:Idioma key="general.boton.volver"/>'>
+			</td>
+			<td  style="width:900px;">
+			&nbsp;
+			</td>
+		</tr>
 	</tr>
 </table>
 
@@ -99,18 +91,31 @@
 	<!-- Aqui se reescriben las funciones que vayamos a utilizar -->
 	<script language="JavaScript">
 
-		<!-- Asociada al boton Cerrar -->
-		function accionCerrar() 
-		{		
-			window.top.close();
+	function accionVolver() 
+	{		
+		var formu=document.forms[0];
+		formu.action=formu.action+"?noReset=true";
+		if(parent.document.getElementById("accionAnterior")&&parent.document.getElementById("accionAnterior").value!=""){
+			formu.accionAnterior.value=parent.document.getElementById("accionAnterior").value;
+			formu.idModulo.value=parent.document.getElementById("idModulo").value;
+			formu.modo.value="inicio";
+		}else{
+			formu.modo.value="abrir";
 		}
+		formu.target='mainWorkArea';
+		formu.submit();				
+	}
 		
 	</script>
 	<!-- FIN: SCRIPTS BOTONES -->
 
 	<!-- FIN ******* BOTONES DE ACCIONES EN REGISTRO ****** -->
 
-
+		<html:form action="/CON_RecuperarConsultasDinamicas.do" method="POST" target="mainWorkArea">
+			<html:hidden property = "modo" value = ""/>
+			<html:hidden property = "accionAnterior" value = "ejecucion"/>
+			<html:hidden property = "idModulo"/>
+		</html:form>
 </div>
 <!-- FIN ******* CAPA DE PRESENTACION ****** -->
 			

@@ -53,13 +53,13 @@
 		
 	</head>
 
-	<body onload="comprobar();">
+	<body onload="comprobar();ajusteAlto()" style='height:100%'>
 	<html:form action="/CON_RecuperarConsultas.do" method="POST" target="submitArea">			
 		    <html:hidden property = "modo" value = ""/>
 			<html:hidden property = "hiddenFrame" value = "1"/>		
 			<html:hidden property = "actionModal" value = ""/>
 
-	<div id="camposRegistro" style="position:absolute; width:964px; height:450px; left:16px; top:20px; overflow-y:auto">
+	<div id="camposRegistro">
 
 	<siga:ConjCampos leyenda="consultas.recuperarconsulta.literal.criteriosdinamicos">
 	<table  class="tablaCampos"  align="center">
@@ -213,22 +213,21 @@
 <%}
 }%>			
 	</table>
-	</siga:ConjCampos>	
+	</siga:ConjCampos>
 	</div>
-	
-	
-		<table id="tablaBotonesDetalle" class="botonesDetalle" align="center">
+	<div>
+		<table id="tablaBotonesDetalle" class="botonesSeguido" align="center">
 			<tr>
 				<td style="width: 100%;">&nbsp;</td>
 				<td class="tdBotones">
 					<input type="button" alt='<siga:Idioma key="global.boton.aceptar"/>' name='idButton' id="idButton" onclick="return accionAceptar();" class="button" value='<siga:Idioma key="global.boton.aceptar"/>'>
 				</td>
-				<td class="tdBotones">
-					<input type="button" alt='<siga:Idioma key="general.boton.close"/>' name='idButton' id="idButton" onclick="return accionCerrar();" class="button" value='<siga:Idioma key="general.boton.close"/>'>
-				</td>
 			</tr>
 		</table>
-
+	</div>
+	<div id='frameResultado'>
+		<iframe name="resultado" id="resultado" src="<%=app%>/html/jsp/general/blank.jsp" style="width:99%; border:0" frameborder="0"></iframe>
+	</div>
 	
 	<!-- INICIO: BOTONES REGISTRO -->	
 		
@@ -248,7 +247,7 @@
 		function accionAceptar() 
 		{		
 			
-			
+			sub();
 			inputs = document.getElementsByTagName("input");
 			error = "";
 			for(var i = 0 ; i <inputs.length ; i++) {
@@ -287,21 +286,16 @@
 			}
 			if(error!=""){
 				alert(error);	
+				fin();
 				return false;
 			}
 			
-			
-			document.forms[0].modo.value = "abrirConParametros";	
-			document.forms[0].target = "submitArea";	
+			document.forms[0].target = "resultado";	
+			document.forms[0].modo.value = "ejecutarConsulta";
 			document.forms[0].submit();
 			
 		}
 		
-		<!-- Asociada al boton Cerrar -->
-		function accionCerrar() 
-		{		
-			top.cierraConParametros("VACIO");
-		}		
 		
         function sustituirComillas(cadena) 
 		{		
@@ -318,7 +312,10 @@
         	}
 		}
         
-        
+        jQuery(document).ready(function() {
+    		jQuery('#frameResultado').height(jQuery(document).height()-85);
+    		jQuery('#resultado').height(jQuery('#frameResultado').height());
+        });
 	</script>
 	<!-- FIN: SCRIPTS BOTONES -->
 
