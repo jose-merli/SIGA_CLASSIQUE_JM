@@ -65,7 +65,7 @@ public class BusquedaFacturaAction extends MasterAction {
 					miForm.reset(new String[]{"registrosSeleccionados","datosPaginador","seleccionarTodos"});
 					request.getSession().removeAttribute("DATAPAGINADOR");
 					mapDestino = buscarPor(mapping, miForm, request, response); 
-				} else {
+				}else {
 					return super.executeInternal(mapping,
 							      formulario,
 							      request, 

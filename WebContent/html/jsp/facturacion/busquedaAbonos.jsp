@@ -76,7 +76,7 @@
 		tipoAbonoBusqueda=formSession.getTipoAbonoBusqueda();
 		busquedaNumeroAbono=formSession.getNumeroAbono();
 		nifCliente = admPersona.obtenerNIF(idPersonaBusqueda);
-		funcionBuscar = "buscarPaginador()";
+		funcionBuscar = "buscar()";
 	}
 	String campo = UtilidadesString.getMensajeIdioma(user.getLanguage(),"facturacion.abonosPagos.datosPagoAbono.importePago");
 	String[] campos = {campo};
@@ -299,14 +299,6 @@
     			jQuery("#idBotonesAccion").removeAttr("disabled");
 			}
 			
-			function buscarPaginador() {
-				if (validateGenerarAbonosForm(document.GenerarAbonosForm)){
-					document.GenerarAbonosForm.modo.value='buscarPor';
-					document.GenerarAbonosForm.target='resultado';
-					document.GenerarAbonosForm.submit();
-				}	
-			}
-			
 			// Asociada al boton Restablecer
 			function limpiar() {
 				document.GenerarAbonosForm.idPersonaBusqueda.value="<%=idPersonaBusqueda%>";
@@ -357,9 +349,7 @@
 						jQuery("#idBotonesAccion").attr("disabled", "disabled");
 						jQuery("#dialogoPagarCaja").dialog(
 								{
-									
-									
-									height: 250,
+									  height: 250,
 								      width: 525,
 								      modal: true,
 								      resizable: false,
@@ -520,7 +510,7 @@
 					<siga:Idioma key="facturacion.abonosPagos.datosPagoAbono.importePago"/>
 				</td>	
 				<td >
-					<html:text id="importe" property="importe" size="11" maxlength="11" styleClass="box" value=""></html:text>&nbsp;&euro;
+					<html:text styleId="importe" property="importe" size="11" maxlength="11" styleClass="box" value=""></html:text>&nbsp;&euro;
 				</td>
 			</tr>
 			</table>

@@ -80,7 +80,7 @@
 			idEstadoSeleccionado.add(aux2);
 		}
 
-		buscar = "buscarPaginador()";
+		buscar = "buscar()";
 	}
 	else buscar = new String("");
 
@@ -346,18 +346,7 @@
 			jQuery("#idBotonesBusqueda").removeAttr("disabled");
 			jQuery("#idBotonesAccion").removeAttr("disabled");
 		}
-		function buscarPaginador() 
-		{		
-				
-				// Rango Fechas (desde / hasta)
-				if (compararFecha (document.BusquedaFacturaForm.buscarFechaDesde, document.BusquedaFacturaForm.buscarFechaHasta) == 1) {
-					mensaje = '<siga:Idioma key="messages.fechas.rangoFechas"/>'
-					alert(mensaje);
-					return false;
-				}
-				document.BusquedaFacturaForm.modo.value = "buscarPor";
-				document.BusquedaFacturaForm.submit();
-		}
+		
 		function consultas() 
 		{		
 			document.RecuperarConsultasForm.submit();
@@ -372,6 +361,7 @@
 				jQuery("#idBotonesAccion").attr("disabled", "disabled");
 				
 				jQuery("#dialogoAnular").dialog(
+						
 						{
 							
 							  height: 250,
@@ -465,8 +455,7 @@
 	function seleccionarTodos(pagina) {
 		document.forms[0].seleccionarTodos.value = pagina;
 		buscar('buscarPor');				
-	}
-		
+	}		
 	</script>
 	
 	<!-- FIN: SCRIPTS BOTONES BUSQUEDA -->
