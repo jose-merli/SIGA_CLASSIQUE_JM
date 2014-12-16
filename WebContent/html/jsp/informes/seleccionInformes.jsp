@@ -61,8 +61,8 @@
            				//vaciamos la listas
 						optionComboPlantilla.length = 0;
 						jQuery("#idPlantillaEnvio_"+index).append("<option  value=''>&nbsp;</option>");
-           				jQuery.each(plantillasEnvio, function(i,item2){
-	           				var selected = "";
+						var selected = "";
+						jQuery.each(plantillasEnvio, function(i,item2){
 	           				if(valueComboPlantilla!='' && valueComboPlantilla==item2.idPlantillaEnvios){
 	           					selected = "selected";
            					}
@@ -102,18 +102,19 @@
            			
            			optionComboPlantilla.length = 0;
            			jQuery("#idPlantillaEnvio_"+index).append("<option  value=''>&nbsp;</option>");
-           				jQuery.each(plantillasEnvio, function(i,item2){
-	           				var selected = "";
-	           				if((idPlantillaEnvioDefecto!="")&&(idPlantillaEnvioDefecto!=null)){
-		           				if(idPlantillaEnvioDefecto==item2.idPlantillaEnvios&&comboTiposEnvio.value ==idTipoEnvioDefecto){
-		           					selected = "selected";
-	           					}
-	           				}
-	                        jQuery("#idPlantillaEnvio_"+index).append("<option "+selected+" value='"+item2.idPlantillaEnvios+"'>"+item2.nombre+"</option>");
-	                        //ATENCION EL i+1 el porque tenemos la linea vacia al principio
-	                        document.getElementById("idPlantillaEnvio_"+index).options[i+1].setAttribute("acuseRecibo", item2.acuseRecibo);
-	                        
-	                    });
+           			var selected = "";	
+           			jQuery.each(plantillasEnvio, function(i,item2){
+	           				
+          				if((idPlantillaEnvioDefecto!=null)&&(idPlantillaEnvioDefecto!="")){
+	           				if(idPlantillaEnvioDefecto==item2.idPlantillaEnvios&&comboTiposEnvio.value ==idTipoEnvioDefecto){
+	           					selected = "selected";
+	          					}
+          				}
+                       jQuery("#idPlantillaEnvio_"+index).append("<option "+selected+" value='"+item2.idPlantillaEnvios+"'>"+item2.nombre+"</option>");
+                       //ATENCION EL i+1 el porque tenemos la linea vacia al principio
+                       document.getElementById("idPlantillaEnvio_"+index).options[i+1].setAttribute("acuseRecibo", item2.acuseRecibo);
+                        
+                    });
            			
 		           			
 	           },
