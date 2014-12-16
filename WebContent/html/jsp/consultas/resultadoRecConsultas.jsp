@@ -155,15 +155,16 @@
 				if (resultado!=undefined && resultado!="VACIO" && resultado!=""){				
 					document.forms[0].tipoEnvio.value=resultado;
 					document.forms[0].modo.value = "ejecutarConsulta";
-					
-					//var ejecucion = ventaModalGeneral(document.forms[0].name,"G");
+					document.forms[0].target.value='mainWorkArea';
+					document.forms[0].submit();
+				}else{
+					fin();
 				}
 			} else {
 				document.forms[0].modo.value = "criteriosDinamicos";
-				//var valores = ventaModalGeneral(document.forms[0].name,"G");
+				document.forms[0].target.value='mainWorkArea';
+				document.forms[0].submit();
 			}
-			document.forms[0].target.value='mainWorkArea';
-			document.forms[0].submit();
 		}
 	</script>
 	
