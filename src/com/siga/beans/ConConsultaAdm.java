@@ -625,9 +625,6 @@ public class ConConsultaAdm extends MasterBeanAdministrador {
 						if (ccBean.getTipoCampo().equals (SIGAConstants.TYPE_DATE) &&
 								ocBean.getSimbolo().trim().equals ("="))
 						{
-							//							criteriosDinamicos += "TO_CHAR ("+
-							//									cdAdm.getNombreCampo (cDinamicos[i].getIdC())+
-							//									", 'YYYY/MM/DD')";
 							criteriosDinamicos += "TRUNC("+
 							cdAdm.getNombreCampo (cDinamicos[i].getIdC())+
 							")";
@@ -644,8 +641,8 @@ public class ConConsultaAdm extends MasterBeanAdministrador {
 								iParametroBind++;
 								criteriosDinamicos += ":@"+iParametroBind+"@:";
 								codigosBind.put (new Integer(iParametroBind), cDinamicos[i].getVal());
-							}
-							else {
+							
+							} else {
 								String formato = ccBean.getFormato();
 								final Pattern pattern = Pattern.compile (ConCampoConsultaAdm.CONS_FORMATO);
 								final Matcher matcher = pattern.matcher (formato);
@@ -655,18 +652,16 @@ public class ConConsultaAdm extends MasterBeanAdministrador {
 									if (ocBean.getSimbolo().trim().equals("=")) {
 										while (matcher.find()) {
 											iParametroBind++;
-											//											criteriosDinamicos += "TO_CHAR ("+
-											//											(matcher.replaceFirst ("---")).replaceFirst
-											//												("'---'", ":@"+iParametroBind)+"@:"+
-											//											", 'YYYY/MM/DD')";
 											String aux = matcher.replaceFirst ("---");
 											aux = UtilidadesString.replaceAllIgnoreCase(aux,"'---'", ":@"+iParametroBind+"@:");
-											criteriosDinamicos += "TRUNC("+aux+")";
-											codigosBind.put (new Integer(iParametroBind),
-													GstDate.getApplicationFormatDate ("", cDinamicos[i].getVal()));
+											criteriosDinamicos += "TRUNC("+aux+")";											
+											String fechaConsulta = GstDate.getApplicationFormatDate ("", cDinamicos[i].getVal());											
+											if(fechaConsulta == null){
+												fechaConsulta = "";
+											}											
+											codigosBind.put (new Integer(iParametroBind),fechaConsulta);
 										}
-									}
-									else {
+									} else {
 										while (matcher.find()) {
 											iParametroBind++;
 											criteriosDinamicos += (matcher.replaceFirst ("---")).replaceFirst 
@@ -675,12 +670,10 @@ public class ConConsultaAdm extends MasterBeanAdministrador {
 													GstDate.getApplicationFormatDate ("", cDinamicos[i].getVal()));
 										}
 									}
-								}
-								else {
+								} else {
 									while (matcher.find()) {
 										iParametroBind++;
-										criteriosDinamicos += (matcher.replaceFirst ("---")).replaceFirst
-										("'---'", ":@"+iParametroBind+"@:");
+										criteriosDinamicos += (matcher.replaceFirst ("---")).replaceFirst("'---'", ":@"+iParametroBind+"@:");
 										codigosBind.put (new Integer(iParametroBind), cDinamicos[i].getVal());
 									}
 								}
@@ -691,11 +684,6 @@ public class ConConsultaAdm extends MasterBeanAdministrador {
 					final Pattern pattern2 = Pattern.compile (ConCriteriosDinamicosAdm.CONS_DINAMICOS);
 					final Matcher matcher2 = pattern2.matcher (sentencia);
 					sentencia = matcher2.replaceAll (criteriosDinamicos);
-					//PaginadorCaseSensitiveBind paginador = 
-					//	new PaginadorCaseSensitiveBind
-					//		(sentencia, cabeceras, codigosBind);
-					//La anterior linea no es necesaria ya que se ejecuta al final
-
 				}
 			}
 			else

@@ -71,7 +71,7 @@
 
 	<!-- INICIO: BOTONES REGISTRO -->	
 
-<table id="tablaBotonesDetalle" class="botonesDetalle" align="center">
+<table id="tablaBotonesDetalle" class="botonesDetalle" align="center" style="bottom: 26px;">
 	<tr>
 		<tr>
 			<td class="tdBotones">
@@ -94,7 +94,7 @@
 	function accionVolver() 
 	{		
 		var formu=document.forms[0];
-		formu.action=formu.action+"?noReset=true";
+		formu.action=formu.action+"?noReset=true&buscar=true";
 		if(parent.document.getElementById("accionAnterior")&&parent.document.getElementById("accionAnterior").value!=""){
 			formu.accionAnterior.value=parent.document.getElementById("accionAnterior").value;
 			formu.idModulo.value=parent.document.getElementById("idModulo").value;

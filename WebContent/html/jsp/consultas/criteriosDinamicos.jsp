@@ -134,9 +134,12 @@
 						<option value="<%=id2%>"><%=desc2%></option>
 					<%	}%>					
 				</select>	
-			<%}else{%>				
-				<%if (fecha){%>					
-					<siga:Fecha nombreCampo="criteriosDinamicos[<%=i%>].val" styleId="valor<%=i%>"></siga:Fecha>
+			<%}else{%>			
+				<%if (fecha){
+					String styleId = "valor" + i;
+					String nombreCampo = "criteriosDinamicos[" + i + "].val";
+				%>				
+					<siga:Fecha nombreCampo="<%=nombreCampo%>" styleId="<%=styleId%>"></siga:Fecha>				
 				<%}else if (numerico){%>
 					<input type="text" id="valor<%=i%>" name="criteriosDinamicos[<%=i%>].val" class="box" maxlength="<%=max%>"></input>
 				<%}else{%>
@@ -151,17 +154,20 @@
 	</siga:ConjCampos>	
 	
 	
-<table id="tablaBotonesDetalle" class="botonesDetalle" align="center">
-	<tr>
-		<td style="width: 100%;">&nbsp;</td>
-		<td class="tdBotones">
-			<input type="button" alt='<siga:Idioma key="global.boton.aceptar"/>' name='idButton' id="idButton" onclick="return accionAceptar();" class="button" value='<siga:Idioma key="global.boton.aceptar"/>'>
-		</td>
-		<td class="tdBotones">
-			<input type="button" alt='<siga:Idioma key="general.boton.close"/>' name='idButton' id="idButton" onclick="return accionCerrar();" class="button" value='<siga:Idioma key="general.boton.close"/>'>
-		</td>
-	</tr>
-</table>
+	<div>
+		<table id="tablaBotonesDetalle" class="botonesSeguido" align="center">
+			<tr>
+				<td style="width: 100%;">&nbsp;</td>
+				<td class="tdBotones">
+					<input type="button" alt='<siga:Idioma key="global.boton.aceptar"/>' name='idButton' id="idButton" onclick="return accionAceptar();" class="button" value='<siga:Idioma key="global.boton.aceptar"/>'>
+				</td>
+			</tr>
+		</table>
+	</div>	
+	
+	<div id='frameResultado'>
+		<iframe name="resultado" id="resultado" src="<%=app%>/html/jsp/general/blank.jsp" style="width:99%; border:0" frameborder="0"></iframe>
+	</div>
 	
 	<!-- INICIO: BOTONES REGISTRO -->	
 		
@@ -179,20 +185,17 @@
 		
 		<!-- Asociada al boton Aceptar -->
 		function accionAceptar() 
-		{		
-
-			document.forms[0].modo.value = "abrirConParametros";	
-			document.forms[0].target = "submitArea";	
+		{			
+			document.forms[0].target = "resultado";	
+			document.forms[0].modo.value = "ejecutarConsulta";
 			document.forms[0].submit();
 			
 		}
 		
-		<!-- Asociada al boton Cerrar -->
-		function accionCerrar() 
-		{		
-			top.cierraConParametros("VACIO");
-		}		
-		
+        jQuery(document).ready(function() {
+    		jQuery('#frameResultado').height(jQuery(document).height()-85);
+    		jQuery('#resultado').height(jQuery('#frameResultado').height());
+        });
 
 	</script>
 	<!-- FIN: SCRIPTS BOTONES -->

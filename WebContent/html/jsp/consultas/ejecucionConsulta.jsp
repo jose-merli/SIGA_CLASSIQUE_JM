@@ -18,7 +18,6 @@
 <%@ page import="com.siga.Utilidades.UtilidadesNumero"%>
 <%@ page import="com.siga.administracion.SIGAConstants"%>
 <%@ page import="com.siga.gui.processTree.SIGAPTConstants"%>
-<%@ page import="com.siga.Utilidades.PaginadorCaseSensitiveBind"%>
 <%@ page import="com.siga.Utilidades.PaginadorBind"%>
 <%@ page import="com.atos.utils.UsrBean"%>
 
@@ -37,7 +36,6 @@
 	String vacio = (String) request.getAttribute ("vacio");	
 	
 	HashMap hm = (HashMap) ses.getAttribute ("DATABACKUP");
-//	PaginadorCaseSensitiveBind paginador = (PaginadorCaseSensitiveBind) hm.get ("paginador");
 	PaginadorBind paginador = (PaginadorBind) hm.get ("paginador");
 	String paginaSeleccionada = String.valueOf (paginador.getPaginaActual());
 	String totalRegistros = String.valueOf (paginador.getNumeroTotalRegistros());
@@ -74,16 +72,19 @@
 			document.forms[0].modo.value = "download";
 			document.forms[0].target = "submitArea";
 			document.forms[0].submit();
+			fin();
 		}
 		
 		function accionImprimir() 
-		{			window.print();
+		{			
+			
+			window.print();
 		}
 		
 		function accionVolver() 
 		{		
-			var formu=document.forms[1];
-			formu.action=formu.action+"?noReset=true";
+			var formu=document.RecuperarConsultasForm;
+			formu.action=formu.action+"?noReset=true&buscar=true";
 			if(parent.document.getElementById("accionAnterior")&&parent.document.getElementById("accionAnterior").value!=""){
 				formu.accionAnterior.value=parent.document.getElementById("accionAnterior").value;
 				formu.idModulo.value=parent.document.getElementById("idModulo").value;
@@ -91,6 +92,7 @@
 			}else{
 				formu.modo.value="abrir";
 			}
+			
 			formu.target='mainWorkArea';
 			formu.submit();				
 		}
@@ -117,7 +119,7 @@
 			class="frameGeneral">
 	</iframe>
 	
-	<table id="tablaBotonesDetalle" class="botonesDetalle" align="center">
+	<table id="tablaBotonesDetalle" class="botonesDetalle" align="center" style="bottom: 20px;">
 		<tr>
 			<td class="tdBotones">
 				<input type="button" alt='<siga:Idioma key="general.boton.volver"/>' name='idButton' id="idButton" onclick="return accionVolver();" class="button" value='<siga:Idioma key="general.boton.volver"/>'>
@@ -140,7 +142,7 @@
 					idioma="<%=idioma%>"
 					modo="ejecutarConsulta"								
 					clase="paginator" 
-					divStyle="position:absolute; width:100%; height:20; z-index:3; bottom: 32px; left: 0px"
+					divStyle="position:absolute; width:100%; height:20; z-index:3; bottom: 48px; left: 0px"
 					distanciaPaginas=""
 					action="<%=action%>" />
 	
@@ -152,9 +154,7 @@
 		</html:form>
 
 	
-	<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp"
-			style="display:none">
-	</iframe>
+	<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp"	style="display:none" />
 	 
 </body>
 

@@ -155,6 +155,7 @@
 			}else{
 				document.forms[1].modo.value="abrir";
 			}
+			document.forms[1].target='mainWorkArea';
 			document.forms[1].action=document.forms[1].action+"<%=parametros%>";
 			document.forms[1].submit();				
 		}
