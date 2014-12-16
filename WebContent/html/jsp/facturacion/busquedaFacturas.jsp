@@ -404,7 +404,7 @@
 							              
 							            }
 						          },
-						          close: function( event, ui ) { 
+						          close: function() { 
 						        	 document.AltaAbonosForm.facturas.value="";
 							         document.AltaAbonosForm.fecha.value="";
 							         document.AltaAbonosForm.motivos.value="";

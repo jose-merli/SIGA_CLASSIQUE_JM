@@ -188,7 +188,7 @@
 			   			  facturacion.busquedaAbonos.literal.numAbono,facturacion.busquedaAbonos.literal.fecha,
 			   			  facturacion.busquedaAbonos.literal.cliente,gratuita.modalRegistro_DefinirCalendarioGuardia.literal.observaciones,facturacion.busquedaAbonos.literal.estado,
 			   			  facturacion.busquedaAbonos.literal.totalAbono,facturacion.busquedaAbonos.literal.numFacturaAsociada,"
-			   columnSizes="4,10,8,15,23,12,7,9,13">		       
+			   columnSizes="4,10,8,15,22,12,7,9,14">		       
 			<%
 	    	if (resultado == null || resultado.size() < 1 )
 		    {

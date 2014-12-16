@@ -383,7 +383,7 @@
 									              
 									            }
 								          },
-								          close: function( event, ui ) { 
+								          close: function() { 
 								        	  document.AbonosPagosForm.abonos.value="";
 										      document.AbonosPagosForm.importe.value="";   
 										      jQuery("#importe").val("");
