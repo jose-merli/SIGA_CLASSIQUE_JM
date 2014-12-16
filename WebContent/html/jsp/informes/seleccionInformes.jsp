@@ -61,8 +61,9 @@
            				//vaciamos la listas
 						optionComboPlantilla.length = 0;
 						jQuery("#idPlantillaEnvio_"+index).append("<option  value=''>&nbsp;</option>");
-						var selected = "";
+						
 						jQuery.each(plantillasEnvio, function(i,item2){
+							var selected = "";
 	           				if(valueComboPlantilla!='' && valueComboPlantilla==item2.idPlantillaEnvios){
 	           					selected = "selected";
            					}
@@ -102,9 +103,9 @@
            			
            			optionComboPlantilla.length = 0;
            			jQuery("#idPlantillaEnvio_"+index).append("<option  value=''>&nbsp;</option>");
-           			var selected = "";	
+           			
            			jQuery.each(plantillasEnvio, function(i,item2){
-	           				
+           				var selected = "";	
           				if((idPlantillaEnvioDefecto!=null)&&(idPlantillaEnvioDefecto!="")){
 	           				if(idPlantillaEnvioDefecto==item2.idPlantillaEnvios&&comboTiposEnvio.value ==idTipoEnvioDefecto){
 	           					selected = "selected";
