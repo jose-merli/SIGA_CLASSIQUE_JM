@@ -192,7 +192,6 @@
 	if (esConsejo && valorCatalog =="C"){
 		presentador = true;
 	}	
-	
 %>
 
 <%@page import="java.util.Properties"%>
@@ -419,28 +418,50 @@
 					mostrarPresentador(true);						
 				else
 					mostrarPresentador(false);
-				
-			 	document.solicitudCompraForm.nombreProducto.value='';
-				if (catalogoVal=='P'||catalogoVal==''||catalogoVal=='C'){
-				    if (catalogoVal=='P'){
-				   	<%if(esLetrado)	{%>
-				  		jQuery("#producto").data("queryid", "getProductosInstitucionLetrado");
-					<%}else{%>
-					  	jQuery("#producto").data("queryid", "getProductosInstitucion");
-					<%}%>
-					}else{
-					  	<%if(esLetrado)	{%>
-					         jQuery("#producto").data("queryid", "getCertificadosInstitucionLetrado");
+				if(jQuery("#catalogo").find("option:selected").val().length>0){
+
+				 	document.solicitudCompraForm.nombreProducto.value='';
+				 	
+					if (catalogoVal=='P'||catalogoVal=='C'){
+					    
+						jQuery("#tipoProducto").removeAttr("disabled");
+						jQuery("#categoriaProducto").removeAttr("disabled");
+						jQuery("#producto").removeAttr("disabled");
+
+						if (catalogoVal=='P'){
+					   	<%if(esLetrado)	{%>
+					  		jQuery("#producto").data("queryid", "getProductosInstitucionLetrado"); 		
 						<%}else{%>
-							jQuery("#producto").data("queryid", "getCertificadosInstitucion");					 
+						  	jQuery("#producto").data("queryid", "getProductosInstitucion");  	
 						<%}%>
+						}else{
+						  	<%if(esLetrado)	{%>
+						         jQuery("#producto").data("queryid", "getCertificadosInstitucionLetrado");
+							<%}else{%>
+								jQuery("#producto").data("queryid", "getCertificadosInstitucion");
+							<%}%>
+						}
+					    jQuery("#producto").change();
+					    console.debug("#catalogo.change Productos ('P','C','')");
+					    mostrarProducto();
+					}else{
+
+						jQuery("#tipoServicio").removeAttr("disabled");
+						jQuery("#categoriaServicio").removeAttr("disabled");
+						jQuery("#servicio").removeAttr("disabled");
+						jQuery("#servicio").change();
+						console.debug("#catalogo.change Servicios !('P','C','')");
+						mostrarServicio();
 					}
-				    jQuery("#producto").change();
-				    console.debug("#catalogo.change Productos ('P','C','')");
-				    mostrarProducto();
 				}else{
-					console.debug("#catalogo.change Servicios !('P','C','')");
-					mostrarServicio();
+						
+					jQuery("#tipoProducto").attr("disabled","disabled");
+					jQuery("#tipoServicio").attr("disabled","disabled");
+					jQuery("#categoriaProducto").attr("disabled","disabled");
+					jQuery("#categoriaServicio").attr("disabled","disabled");
+					jQuery("#producto").attr("disabled","disabled");
+					jQuery("#servicio").attr("disabled","disabled");
+				
 				}
 			});
 			
@@ -598,7 +619,7 @@
 						
 								<td class="labelText">></td>							
 								<td id="tipo_td">
-									<div class="producto" style="<%=productoStyle%>" style="<%=productoStyle%>">
+									<div class="producto" style="<%=productoStyle%>">
 										<siga:Select id="tipoProducto"
 											queryId="getTiposProductos"
 											queryParamId="idtipoproducto"
