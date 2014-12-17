@@ -106,7 +106,7 @@
            			
            			jQuery.each(plantillasEnvio, function(i,item2){
            				var selected = "";	
-          				if((idPlantillaEnvioDefecto!=null)&&(idPlantillaEnvioDefecto!="")){
+          				if((idPlantillaEnvioDefecto!=null)&&(idPlantillaEnvioDefecto!="-1")){
 	           				if(idPlantillaEnvioDefecto==item2.idPlantillaEnvios&&comboTiposEnvio.value ==idTipoEnvioDefecto){
 	           					selected = "selected";
 	          					}
