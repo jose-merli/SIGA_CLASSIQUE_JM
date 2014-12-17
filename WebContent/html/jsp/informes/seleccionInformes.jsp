@@ -483,7 +483,7 @@
 	 		           			if(item2.defecto=="1"){
 		           					selected = "selected";
 		           					jQuery("#idTipoEnvioDefecto_"+index).val(item2.idTipoEnvios);
-		           					if((item2.idPlantillaDefecto!=null)&&(item2.idPlantillaDefecto!="0"))
+		           					if((item2.idPlantillaDefecto!=null)&&(item2.idPlantillaDefecto!=""))
 		           						jQuery("#idPlantillaEnvioDefecto_"+index).val(item2.idPlantillaDefecto);
 		           					else
 		           						jQuery("#idPlantillaEnvioDefecto_"+index).val("");
