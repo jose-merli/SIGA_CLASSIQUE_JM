@@ -652,6 +652,7 @@
 	}
 	
 	function accionRelacionarSerieFact(){
+		document.CuentasBancariasForm.comisionimporte.value = document.CuentasBancariasForm.comisionimporte.value.replace(/,/,".");
  		document.CuentasBancariasForm.modo.value = "seriesDisponibles";
 		var resultado=ventaModalGeneral(document.CuentasBancariasForm.name,"P");
   		if (resultado=="MODIFICADO"){
