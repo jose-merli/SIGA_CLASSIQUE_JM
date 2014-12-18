@@ -20,6 +20,8 @@
 <%@ page import="com.siga.gui.processTree.SIGAPTConstants"%>
 <%@ page import="com.siga.Utilidades.PaginadorBind"%>
 <%@ page import="com.atos.utils.UsrBean"%>
+<%@ page import="java.util.Vector"%>
+<%@ page import="com.atos.utils.Row"%>
 
 <!-- SCRIPTLET -->
 <%
@@ -42,9 +44,15 @@
 	String registrosPorPagina = String.valueOf (paginador.getNumeroRegistrosPorPagina());
 	
 	String tipoConsulta = (String) request.getAttribute ("tipoConsulta");
+	
+	String tipoacceso = user.getAccessType();
+
+	//Variables para tomar los datos
+	Vector datos = (Vector) ((HashMap) ses.getAttribute("DATABACKUP")).get("datos");
+	String[] cabeceras = (String[]) ((HashMap) ses.getAttribute("DATABACKUP")).get("cabeceras");
+	
+	
 %>
-
-
 
 <!-- METATAGS -->
 <meta http-equiv="Expires" content="0">
@@ -55,94 +63,70 @@
 
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
-	
 	<!-- Incluido jquery en siga.js -->
 	
 	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js?v=${sessionScope.VERSIONJS}'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
 	
-	<!-- INICIO: SCRIPTS BOTONES -->
-	<script language="JavaScript">	
-	
-		//Asociada al boton Cerrar
-
-		
-		function accionDownload() 
-		{
-			sub();
-			document.forms[0].modo.value = "download";
-			document.forms[0].target = "submitArea";
-			document.forms[0].submit();
-			fin();
-		}
-		
-		function accionImprimir() 
-		{			
-			
-			window.print();
-		}
-		
-		function accionVolver() 
-		{		
-			var formu=document.RecuperarConsultasForm;
-			formu.action=formu.action+"?noReset=true&buscar=true";
-			if(parent.document.getElementById("accionAnterior")&&parent.document.getElementById("accionAnterior").value!=""){
-				formu.accionAnterior.value=parent.document.getElementById("accionAnterior").value;
-				formu.idModulo.value=parent.document.getElementById("idModulo").value;
-				formu.modo.value="inicio";
-			}else{
-				formu.modo.value="abrir";
-			}
-			
-			formu.target='mainWorkArea';
-			formu.submit();				
-		}
-		
-	</script>
 	<!-- FIN: SCRIPTS BOTONES -->
 </head>
 
-<body onLoad="ajusteAltoMain('resultado','52');">
+<body>
 
 	<!-- TITULO -->
 	<!-- Barra de titulo actualizable desde los mantenimientos -->
-	<table class="tablaTitulo" cellspacing="0" height="38">
+	<table class="tablaTitulo" cellspacing="0" height="25">
 		<tr>
 			<td id="titulo" class="titulitosDatos"><%=descripcion%></td>
 		</tr>
 	</table>
 	
-	<!-- IFRAME LISTA RESULTADOS -->
-	<iframe align="middle"
-			src="<%=app%>/html/jsp/consultas/resultadoEjecucionConsulta.jsp"
-			id="resultado" name="resultado"	scrolling="yes"
-			frameborder="0" marginheight="0" marginwidth="0"
-			class="frameGeneral">
-	</iframe>
+<%
+	String nombresCol = "";	
+	for (int j = 0; j < cabeceras.length; j++) {
+		if(j == cabeceras.length-1)
+			nombresCol += UtilidadesString.mostrarDatoJSP(cabeceras[j]);
+		else
+			nombresCol += UtilidadesString.mostrarDatoJSP(cabeceras[j]) + ",";
+	}	
 	
-	<table id="tablaBotonesDetalle" class="botonesDetalle" align="center" style="bottom: 20px;">
-		<tr>
-			<td class="tdBotones">
-				<input type="button" alt='<siga:Idioma key="general.boton.volver"/>' name='idButton' id="idButton" onclick="return accionVolver();" class="button" value='<siga:Idioma key="general.boton.volver"/>'>
-			</td>
-			<td  style="width:900px;">
-			&nbsp;
-			</td>
-			<td class="tdBotones">
-				<input type="button" alt='<siga:Idioma key="general.boton.imprimir"/>' name='idButton' id="idButton" onclick="return accionImprimir();" class="button" value='<siga:Idioma key="general.boton.imprimir"/>'>
-			</td>
-			<td class="tdBotones">
-				<input type="button" alt='<siga:Idioma key="general.boton.download"/>' name='idButton' id="idButton" onclick="return accionDownload();" class="button" value='<siga:Idioma key="general.boton.download"/>'>
-			</td>
-		</tr>
-	</table>
+%>	
 	
+	<siga:Table 
+   	      name="tablaDatos"
+   		  border="1"
+		  columnNames="<%=nombresCol%>">
+	   		     		    		  
+		   		  
+		    <!-- INICIO: ZONA DE REGISTROS -->
+			<% if (datos==null || datos.size()==0) { %>
+				<tr class="notFound">
+			   		<td class="titulitos"><siga:Idioma key="messages.noRecordFound"/></td>
+				</tr>
+			<% } else {  
+			
+					for (int i = 0; i < datos.size(); i++) {
+						Row fila = (Row) datos.elementAt(i);
+			%>
+						<tr>
+						  	<siga:FilaConIconos fila="1" botones="" visibleEdicion="no" visibleConsulta="no" visibleBorrado="no" pintarEspacio="no" clase="listaNonEdit">
+								<% for (int k = 0; k < cabeceras.length; k++) { %>
+									<td><%=UtilidadesString.mostrarDatoJSP(fila.getString(cabeceras[k]))%></td>
+								<% } %>
+							</siga:FilaConIconos>				
+						</tr>
+					<% } 
+				} %>
+			
+	<!-- FIN: ZONA DE REGISTROS -->
+	</siga:Table>	
+
 	<siga:Paginador totalRegistros="<%=totalRegistros%>" 
 					registrosPorPagina="<%=registrosPorPagina%>" 
 					paginaSeleccionada="<%=paginaSeleccionada%>" 
 					idioma="<%=idioma%>"
 					modo="ejecutarConsulta"								
 					clase="paginator" 
-					divStyle="position:absolute; width:100%; height:20; z-index:3; bottom: 48px; left: 0px"
+					divStyle="position:absolute; width:100%; height:20; z-index:3; bottom:10px; left: 0px"
 					distanciaPaginas=""
 					action="<%=action%>" />
 	

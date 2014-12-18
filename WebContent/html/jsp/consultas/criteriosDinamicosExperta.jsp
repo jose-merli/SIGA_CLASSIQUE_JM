@@ -42,10 +42,7 @@
 	
 	
 %>
-
-
-	    <link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
-	
+    <link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
 	<!-- Incluido jquery en siga.js -->
 	
@@ -53,7 +50,7 @@
 		
 	</head>
 
-	<body onload="comprobar();ajusteAlto()" style='height:100%'>
+	<body onload="comprobar();ajusteAlto('resultado');" style='height:100%'>
 	<html:form action="/CON_RecuperarConsultas.do" method="POST" target="submitArea">			
 		    <html:hidden property = "modo" value = ""/>
 			<html:hidden property = "hiddenFrame" value = "1"/>		
@@ -226,7 +223,7 @@
 		</table>
 	</div>
 	<div id='frameResultado'>
-		<iframe name="resultado" id="resultado" src="<%=app%>/html/jsp/general/blank.jsp" style="width:99%; border:0" frameborder="0"></iframe>
+		<iframe name="resultado" id="resultado" src="<%=app%>/html/jsp/general/blank.jsp" style="width:100%; border:0" frameborder="0"></iframe>
 	</div>
 	
 	<!-- INICIO: BOTONES REGISTRO -->	
@@ -312,19 +309,63 @@
         	}
 		}
         
-        jQuery(document).ready(function() {
-    		jQuery('#frameResultado').height(jQuery(document).height()-85);
-    		jQuery('#resultado').height(jQuery('#frameResultado').height());
-        });
+		function accionDownload() 
+		{
+			sub();
+			document.forms[0].modo.value = "download";
+			document.forms[0].target = "submitArea";
+			document.forms[0].submit();
+			fin();
+		}
+		
+		function accionImprimir() 
+		{			
+			
+			window.print();
+		}
+		
+		function accionVolver() 
+		{		
+			var formu=document.RecuperarConsultasForm;
+			formu.action=formu.action+"?noReset=true&buscar=true";
+			if(parent.document.getElementById("accionAnterior")&&parent.document.getElementById("accionAnterior").value!=""){
+				formu.accionAnterior.value=parent.document.getElementById("accionAnterior").value;
+				formu.idModulo.value=parent.document.getElementById("idModulo").value;
+				formu.modo.value="inicio";
+			}else{
+				formu.modo.value="abrir";
+			}
+			
+			formu.target='mainWorkArea';
+			formu.submit();				
+		}        
+
 	</script>
 	<!-- FIN: SCRIPTS BOTONES -->
 
 	<!-- FIN ******* BOTONES DE ACCIONES EN REGISTRO ****** -->
 
-
-
 <!-- FIN ******* CAPA DE PRESENTACION ****** -->
 	</html:form>	
+	
+	
+	<table id="tablaBotonesDetalle" class="botonesDetalle" align="center">
+		<tr>
+			<td class="tdBotones">
+				<input type="button" alt='<siga:Idioma key="general.boton.volver"/>' name='idButton' id="idButton" onclick="return accionVolver();" class="button" value='<siga:Idioma key="general.boton.volver"/>'>
+			</td>
+			<td  style="width:900px;">
+			&nbsp;
+			</td>
+			<td class="tdBotones">
+				<input type="button" alt='<siga:Idioma key="general.boton.imprimir"/>' name='idButton' id="idButton" onclick="return accionImprimir();" class="button" value='<siga:Idioma key="general.boton.imprimir"/>'>
+			</td>
+			<td class="tdBotones">
+				<input type="button" alt='<siga:Idioma key="general.boton.download"/>' name='idButton' id="idButton" onclick="return accionDownload();" class="button" value='<siga:Idioma key="general.boton.download"/>'>
+			</td>
+		</tr>
+	</table>	
+	
 	
 <!-- INICIO: SUBMIT AREA -->
 	<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>

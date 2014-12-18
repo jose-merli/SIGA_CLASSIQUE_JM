@@ -48,7 +48,7 @@
 		
 	</head>
 
-	<body onload="comprobar();">
+	<body onload="comprobar();ajusteAlto('resultado');">
 	
 	<table class="tablaTitulo" align="center" height="20" cellpadding="0" cellspacing="0">
 		<tr>
@@ -166,7 +166,7 @@
 	</div>	
 	
 	<div id='frameResultado'>
-		<iframe name="resultado" id="resultado" src="<%=app%>/html/jsp/general/blank.jsp" style="width:99%; border:0" frameborder="0"></iframe>
+		<iframe name="resultado" id="resultado" src="<%=app%>/html/jsp/general/blank.jsp" style="width:100%; border:0" frameborder="0"></iframe>
 	</div>
 	
 	<!-- INICIO: BOTONES REGISTRO -->	
@@ -192,11 +192,6 @@
 			
 		}
 		
-        jQuery(document).ready(function() {
-    		jQuery('#frameResultado').height(jQuery(document).height()-85);
-    		jQuery('#resultado').height(jQuery('#frameResultado').height());
-        });
-
 	</script>
 	<!-- FIN: SCRIPTS BOTONES -->
 
