@@ -235,7 +235,13 @@ public class DatosColegialesAction extends MasterAction {
 			request.setAttribute("ACCION", accion);
 			request.setAttribute("NOMBRE", nombre);
 			request.setAttribute("NUMERO", numero);
-			request.setAttribute("ESTADOCOLEGIAL",admCli.getEstadoColegial(idPersona.toString(), idInstitucionPersona));
+			
+			String	estadoColegial=admCli.getEstadoColegial(idPersona.toString(), idInstitucionPersona);
+			if(estadoColegial==null) 
+				estadoColegial="";
+			
+			request.setAttribute("ESTADOCOLEGIAL",estadoColegial );
+			
 			request.setAttribute("DATCOLEGIAL", datosColegiales);
 			request.setAttribute("DATESTADO", datosEstado);
 			request.setAttribute("DATSEGURO", datosSeguro);
