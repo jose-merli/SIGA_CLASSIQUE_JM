@@ -232,6 +232,11 @@
 	<!-- FIN: BOTONES REGISTRO -->
 
 	<script language="JavaScript">
+	
+		jQuery(document).ready(function () {
+			jQuery("#idButtonDescargar").hide();
+			jQuery("#idButtonImprimir").hide();
+		});		
 
 		function comprobar() 
 		{		
@@ -287,10 +292,11 @@
 				return false;
 			}
 			
+			jQuery("#idButtonDescargar").show();
+			jQuery("#idButtonImprimir").show();			
 			document.forms[0].target = "resultado";	
 			document.forms[0].modo.value = "ejecutarConsulta";
 			document.forms[0].submit();
-			
 		}
 		
 		
@@ -358,10 +364,10 @@
 			&nbsp;
 			</td>
 			<td class="tdBotones">
-				<input type="button" alt='<siga:Idioma key="general.boton.imprimir"/>' name='idButton' id="idButton" onclick="return accionImprimir();" class="button" value='<siga:Idioma key="general.boton.imprimir"/>'>
+				<input type="button" alt='<siga:Idioma key="general.boton.imprimir"/>' name='idButton' id="idButtonImprimir" onclick="return accionImprimir();" class="button" value='<siga:Idioma key="general.boton.imprimir"/>'>
 			</td>
 			<td class="tdBotones">
-				<input type="button" alt='<siga:Idioma key="general.boton.download"/>' name='idButton' id="idButton" onclick="return accionDownload();" class="button" value='<siga:Idioma key="general.boton.download"/>'>
+				<input type="button" alt='<siga:Idioma key="general.boton.download"/>' name='idButton' id="idButtonDescargar" onclick="return accionDownload();" class="button" value='<siga:Idioma key="general.boton.download"/>'>
 			</td>
 		</tr>
 	</table>	

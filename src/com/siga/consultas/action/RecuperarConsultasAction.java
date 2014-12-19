@@ -626,7 +626,7 @@ public class RecuperarConsultasAction extends MasterAction {
 			  	  
 					retorno="criteriosDinamicosExperta";
 			  	}else{
-			  	  retorno=ejecutarConsulta(mapping, formulario, request, response);
+			  	  retorno="consultaSinCriterios";
 			  	}
 			  }else{// no es consulta experta
 				ConCriteriosDinamicosAdm cdAdm = new ConCriteriosDinamicosAdm(this.getUserBean(request));
@@ -669,11 +669,11 @@ public class RecuperarConsultasAction extends MasterAction {
 					request.setAttribute("criterios",vcd);
 					retorno="criteriosDinamicos";
 				}else{
-					retorno=ejecutarConsulta(mapping, formulario, request, response);
+					retorno="consultaSinCriterios";
 				}
 			  }	
 			}else{
-				retorno=ejecutarConsulta(mapping, formulario, request, response);
+				retorno="consultaSinCriterios";
 			}
 			
 		} catch (Exception e) {

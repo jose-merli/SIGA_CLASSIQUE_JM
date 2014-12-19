@@ -50,8 +50,6 @@
 	//Variables para tomar los datos
 	Vector datos = (Vector) ((HashMap) ses.getAttribute("DATABACKUP")).get("datos");
 	String[] cabeceras = (String[]) ((HashMap) ses.getAttribute("DATABACKUP")).get("cabeceras");
-	
-	
 %>
 
 <!-- METATAGS -->
@@ -70,7 +68,15 @@
 	<!-- FIN: SCRIPTS BOTONES -->
 </head>
 
-<body>
+<body onload="funcionPe();">
+
+	<script language="JavaScript">
+		jQuery(document).ready(function () {
+			<% if (datos==null || datos.size()==0) { %>
+				parent.document.getElementById("idButtonDescargar").style.display =  'none';
+			<% } %>
+		});		
+	</script>
 
 	<!-- TITULO -->
 	<!-- Barra de titulo actualizable desde los mantenimientos -->
@@ -102,6 +108,7 @@
 				<tr class="notFound">
 			   		<td class="titulitos"><siga:Idioma key="messages.noRecordFound"/></td>
 				</tr>
+				
 			<% } else {  
 			
 					for (int i = 0; i < datos.size(); i++) {
@@ -129,14 +136,6 @@
 					divStyle="position:absolute; width:100%; height:20; z-index:3; bottom:10px; left: 0px"
 					distanciaPaginas=""
 					action="<%=action%>" />
-	
-		
-		<html:form action="/CON_RecuperarConsultasDinamicas.do" method="POST" target="mainWorkArea">
-			<html:hidden property = "modo" value = ""/>
-			<html:hidden property = "accionAnterior" value = "ejecucion"/>
-			<html:hidden property = "idModulo"/>
-		</html:form>
-
 	
 	<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp"	style="display:none" />
 	 
