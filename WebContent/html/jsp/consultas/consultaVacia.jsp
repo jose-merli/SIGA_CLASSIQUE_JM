@@ -35,6 +35,13 @@
 
 <body>
 	
+	<script language="JavaScript">
+		jQuery(document).ready(function () {
+			parent.document.getElementById("idButtonDescargar").style.display =  'none';
+			parent.document.getElementById("idButtonImprimir").style.display =  'none';
+		});		
+	</script>	
+	
 <!-- INICIO ******* CAPA DE PRESENTACION ****** -->
 
 <div id="camposRegistro" align="center">

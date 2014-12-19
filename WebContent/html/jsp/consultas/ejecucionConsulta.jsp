@@ -68,15 +68,7 @@
 	<!-- FIN: SCRIPTS BOTONES -->
 </head>
 
-<body onload="funcionPe();">
-
-	<script language="JavaScript">
-		jQuery(document).ready(function () {
-			<% if (datos==null || datos.size()==0) { %>
-				parent.document.getElementById("idButtonDescargar").style.display =  'none';
-			<% } %>
-		});		
-	</script>
+<body>
 
 	<!-- TITULO -->
 	<!-- Barra de titulo actualizable desde los mantenimientos -->
