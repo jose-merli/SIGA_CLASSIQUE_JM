@@ -10,6 +10,7 @@ import java.util.Vector;
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ComodinBusquedas;
+import com.atos.utils.GstDate;
 import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
@@ -219,10 +220,10 @@ public class FcsMovimientosVariosAdm extends MasterBeanAdministrador {
 	 * @param idPersona
 	 * @return
 	 */
-	public Vector getMovimientosRW (String idInstitucion, String idPago, String idPersona,String idFacturacion,String idGrupoFacturacion,int caso) throws ClsExceptions 
+	public Vector getMovimientosRW (String idInstitucion, String idPago, String idPersona,String idFacturacion,String fDesde,String idGrupoFacturacion,int caso) throws ClsExceptions 
 	{
 		//donde devolveremos el resultado
-		Vector resultado = new Vector();
+		Vector resultado = new Vector(); 
 		//query con la select a ejecutar
 		String consulta = " SELECT M." + FcsMovimientosVariosBean.C_MOTIVO + " " + FcsMovimientosVariosBean.C_MOTIVO + ","+
 							" M." + FcsMovimientosVariosBean.C_DESCRIPCION + " " + FcsMovimientosVariosBean.C_DESCRIPCION + ","+
@@ -255,8 +256,19 @@ public class FcsMovimientosVariosAdm extends MasterBeanAdministrador {
 							case 2:
 								consulta+=" AND M." + FcsMovimientosVariosBean.C_IDGRUPOFACTURACION + "=" + idGrupoFacturacion +" " ;
 								consulta+=" AND (M." + FcsMovimientosVariosBean.C_IDFACTURACION + " IS NULL " ;
-								consulta+=" OR M." + FcsMovimientosVariosBean.C_IDFACTURACION + "<=" + idFacturacion +" ) " ;
-					
+								consulta+=" OR EXISTS (SELECT 1 " ;
+								consulta+=" FROM "+FcsFacturacionJGBean.T_NOMBRETABLA;
+								consulta+=" WHERE trunc("+ FcsFacturacionJGBean.C_FECHADESDE+")<='"+fDesde+"'))";
+										
+								break;
+							case 3:
+								consulta+=" AND M." + FcsMovimientosVariosBean.C_IDGRUPOFACTURACION + " is null" ;
+								consulta+=" AND M." + FcsMovimientosVariosBean.C_IDFACTURACION + " is not null" ;
+								consulta+=" AND (M." + FcsMovimientosVariosBean.C_IDFACTURACION + "=" + idFacturacion;
+								consulta+=" OR EXISTS (SELECT 1 "   ;
+								consulta+=" FROM "+FcsFacturacionJGBean.T_NOMBRETABLA;
+								consulta+=" WHERE trunc("+ FcsFacturacionJGBean.C_FECHADESDE+")<='"+fDesde+"'))";
+										
 								break;
 							default:
 									consulta+=" AND M." + FcsMovimientosVariosBean.C_IDFACTURACION + " is null" ;

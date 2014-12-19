@@ -1746,7 +1746,7 @@ public class DatosGeneralesPagoAction extends MasterAction {
 			Vector movimientos = new  Vector();
 			
 			//Se obtienen los movimientos del colegiado que no están asociados ni a una facturación ni a un grupo. (Caso 1)
-			movimientos.addAll(movimientosAdm.getMovimientosRW(movimientosBean.getIdInstitucion().toString(), idPago,movimientosBean.getIdPersona().toString(),null,null,32));
+			movimientos.addAll(movimientosAdm.getMovimientosRW(movimientosBean.getIdInstitucion().toString(), idPago,movimientosBean.getIdPersona().toString(),null,null,null,32));
 			
 			//Obtiene la facturación del pago y sus grupos.
 			FcsPagosJGAdm fcsPagosJGAdm = new FcsPagosJGAdm(usr);
@@ -1756,13 +1756,30 @@ public class DatosGeneralesPagoAction extends MasterAction {
 			if(facturacionesGruposPagosList!=null && facturacionesGruposPagosList.size()>0){
 				idFacturacion = (String) facturacionesGruposPagosList.get(0).get("IDFACTURACION");
 				
+				//Recuperamos las fechas desde y hasta de la facturación
+				FcsFacturacionJGAdm fcsFactJGAdm = new FcsFacturacionJGAdm(usr);
+				Hashtable htF = new Hashtable();
+				htF.put(FcsFacturacionJGBean.C_IDINSTITUCION, movimientosBean.getIdInstitucion());
+				htF.put(FcsFacturacionJGBean.C_IDFACTURACION, idFacturacion);
+				
+				Vector vFact = fcsFactJGAdm.selectByPK(htF);
+				FcsFacturacionJGBean bFact = null;
+				if (vFact != null && vFact.size() > 0) {
+					bFact = (FcsFacturacionJGBean) vFact.get(0);
+				}
+			
 				if(idFacturacion!=null){
+					//Se obtienen los movimientos de la facturación que no tienen grupo asociado y que están pendientes de aplicar de la facturación del pago y de facturaciones anteriores
+					movimientos.addAll(movimientosAdm.getMovimientosRW(movimientosBean.getIdInstitucion().toString(), idPago,movimientosBean.getIdPersona().toString(),idFacturacion,GstDate.getFormatedDateShort("es",bFact.getFechaDesde()),null,3));
+							
 					for (int i = 0; i < facturacionesGruposPagosList.size(); i++) {
-					Hashtable facturacionesGruposPagos = facturacionesGruposPagosList.get(i);
-					String idGrupo = (String) facturacionesGruposPagos.get("IDGRUPOFACTURACION");
-					if((idGrupo!=null)&&(!idGrupo.isEmpty()))
-						//Se obtienen los movimientos del colegiado que tienen idfacturacion <= que la del pago y el grupo = grupo del pago que estamos tratando (Caso 2)
-						movimientos.addAll(movimientosAdm.getMovimientosRW(movimientosBean.getIdInstitucion().toString(), idPago,movimientosBean.getIdPersona().toString(),idFacturacion,idGrupo,2));
+						Hashtable facturacionesGruposPagos = facturacionesGruposPagosList.get(i);
+						String idGrupo = (String) facturacionesGruposPagos.get("IDGRUPOFACTURACION");
+						if((idGrupo!=null)&&(!idGrupo.isEmpty())){
+							//Se obtienen los movimientos del colegiado que tienen idfacturacion <= que la del pago y el grupo = grupo del pago que estamos tratando (Caso 2)
+							movimientos.addAll(movimientosAdm.getMovimientosRW(movimientosBean.getIdInstitucion().toString(), idPago,movimientosBean.getIdPersona().toString(),idFacturacion,GstDate.getFormatedDateShort("es",bFact.getFechaDesde()),idGrupo,2));
+					
+						}
 					}
 				}
 			}
