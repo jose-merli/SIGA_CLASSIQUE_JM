@@ -607,7 +607,7 @@ public class FacRegistroFichContaAdm extends MasterBeanAdministrador {
 		
 		try{
 		    // RGG 21/11/2007
-			select = " SELECT F.IDFACTURA, " +
+			select = " SELECT TO_NUMBER(F.IDFACTURA) IDFACTURA, " +
 						" F.NUMEROFACTURA, " +
 						" L.CANTIDAD * L.PRECIOUNITARIO AS IMPNETO, " +
 						" L.CANTIDAD * ROUND(L.PRECIOUNITARIO * L.IVA / 100, 2) AS IMPIVA, " +
@@ -649,13 +649,13 @@ public class FacRegistroFichContaAdm extends MasterBeanAdministrador {
 					select +=" AND " + vCondicion.get(1) ;
 				}	
 			
-			select+=" ORDER BY TO_NUMBER(F.IDFACTURA) ";
+			select+=" ORDER BY 1 ";
 
 			vLineasFacturas = this.selectTablaBind(select,codigos);
 			
 			String idFacturaAnt = ""; 
 			String idFactura = "";  
-			 
+			
 			for(int x=0;x<vLineasFacturas.size();x++){
 			    hash = (Hashtable) vLineasFacturas.get(x);
 				
@@ -832,7 +832,7 @@ public class FacRegistroFichContaAdm extends MasterBeanAdministrador {
 
 		try{
 		    // RGG atencion a los importes negativos
-			select = " SELECT A.IDABONO, " +
+			select = " SELECT TO_NUMBER(A.IDABONO) IDABONO, " +
 						" A.NUMEROABONO, " +
 						" A.IDPERSONA, " +
 						" A.FECHA, " + 
@@ -894,7 +894,7 @@ public class FacRegistroFichContaAdm extends MasterBeanAdministrador {
 					contador=new Integer(vCondicion.get(0).toString()).intValue();
 					select +=" AND " + vCondicion.get(1) ;
 				}	
-			select += " ORDER BY A.IDABONO ";
+			select += " ORDER BY 1 ";
 				    
 			vLineasAbonos=(Vector)this.selectTablaBind(select,codigos);
 			
@@ -1534,7 +1534,7 @@ public class FacRegistroFichContaAdm extends MasterBeanAdministrador {
 		try{
 
 			// pagos por caja sobre la factura, obteniendoo el idapunte para comprobar si la factura ha sido compensada o no
-			select= "  SELECT '0' AS ANTICIPO, A.IDFACTURA IDFACTURA, B.NUMEROFACTURA, A.TARJETA TARJETA, P.CONFDEUDOR, P.CTACLIENTES, A.IMPORTE IMPORTE, A.TIPOAPUNTE TIPOAPUNTE, " +
+			select= "  SELECT '0' AS ANTICIPO, TO_NUMBER(A.IDFACTURA) IDFACTURA, B.NUMEROFACTURA, A.TARJETA TARJETA, P.CONFDEUDOR, P.CTACLIENTES, A.IMPORTE IMPORTE, A.TIPOAPUNTE TIPOAPUNTE, " +
 		    " DECODE(B.IDPERSONADEUDOR, NULL, B.IDPERSONA, B.IDPERSONADEUDOR) IDPERSONA, " +
 		    " A.FECHA FECHA " +
 		    " FROM FAC_PAGOSPORCAJA A, FAC_FACTURA B, FAC_FACTURACIONPROGRAMADA P " +
@@ -1566,7 +1566,7 @@ public class FacRegistroFichContaAdm extends MasterBeanAdministrador {
 				select +=" AND " + vCondicion.get(1) ;
 			}		
 
-			select += "    ORDER BY TO_NUMBER(IDFACTURA) ";
+			select += "    ORDER BY  2 ";
 			
 			String idFactura ="";
 			String idFacturaAnt ="";
@@ -1729,7 +1729,7 @@ public class FacRegistroFichContaAdm extends MasterBeanAdministrador {
 		FacPagosPorCajaAdm pagosPorCajaAdm 	= new FacPagosPorCajaAdm(this.usrbean);
 
 		try{
-			select= "  SELECT A.IDFACTURA IDFACTURA, B.NUMEROFACTURA, A.TARJETA TARJETA, P.CONFDEUDOR, P.CTACLIENTES, A.IMPORTE IMPORTE, " +
+			select= "  SELECT TO_NUMBER(A.IDFACTURA) IDFACTURA, B.NUMEROFACTURA, A.TARJETA TARJETA, P.CONFDEUDOR, P.CTACLIENTES, A.IMPORTE IMPORTE, " +
 			    " DECODE(B.IDPERSONADEUDOR, NULL, B.IDPERSONA, B.IDPERSONADEUDOR) IDPERSONA, " +
 			    " A.FECHA FECHA " +
 			    " FROM FAC_PAGOSPORCAJA A, FAC_FACTURA B, FAC_FACTURACIONPROGRAMADA P " +
@@ -1761,7 +1761,7 @@ public class FacRegistroFichContaAdm extends MasterBeanAdministrador {
 					select +=" AND " + vCondicion.get(1) ;
 				}	
    
-				select += "    ORDER BY TO_NUMBER(IDFACTURA) ";
+				select += "    ORDER BY 1 ";
 
 			vPagoTarjeta=(Vector)this.selectTablaBind(select,codigos);
 			
@@ -1894,7 +1894,7 @@ public class FacRegistroFichContaAdm extends MasterBeanAdministrador {
 		FacFacturaIncluidaEnDisqueteAdm facturaIncludidaEnDisqueteAdm 	= new FacFacturaIncluidaEnDisqueteAdm(this.usrbean);
 
 		try{
-			select= " SELECT A.IDFACTURA IDFACTURA, C.NUMEROFACTURA, A.IMPORTE IMPORTE, B.BANCOS_CODIGO BANCOS_CODIGO,  " + 
+			select= " SELECT TO_NUMBER(A.IDFACTURA) IDFACTURA, C.NUMEROFACTURA, A.IMPORTE IMPORTE, B.BANCOS_CODIGO BANCOS_CODIGO,  " + 
 			    " DECODE(C.IDPERSONADEUDOR,NULL,C.IDPERSONA,C.IDPERSONADEUDOR) IDPERSONA, B.FECHACREACION FECHACREACION, P.CONFDEUDOR, P.CTACLIENTES " +
 			    " FROM FAC_FACTURAINCLUIDAENDISQUETE A, FAC_DISQUETECARGOS B, FAC_FACTURA C, FAC_FACTURACIONPROGRAMADA P " +
 			    " WHERE C.IDINSTITUCION = P.IDINSTITUCION " +
@@ -1922,7 +1922,7 @@ public class FacRegistroFichContaAdm extends MasterBeanAdministrador {
 					select +=" AND " + vCondicion.get(1) ;
 				}	
 
-			select += " ORDER BY TO_NUMBER(A.IDFACTURA) ";
+			select += " ORDER BY 1 ";
 			
 			vPagoBanco=(Vector)this.selectTablaBind(select,codigos);
 
@@ -2541,7 +2541,7 @@ public class FacRegistroFichContaAdm extends MasterBeanAdministrador {
 		try {
 	
 	//ANTICIPADO PRODUCTOS
-			select =  " select '1' AS ANTICIPO, B.IDFACTURA IDFACTURA , B.NUMEROFACTURA, 'S' TARJETA, P.CONFDEUDOR, P.CTACLIENTES, L.IMPORTEANTICIPADO IMPORTE, " +
+			select =  " select '1' AS ANTICIPO, TO_NUMBER(B.IDFACTURA) IDFACTURA , B.NUMEROFACTURA, 'S' TARJETA, P.CONFDEUDOR, P.CTACLIENTES, L.IMPORTEANTICIPADO IMPORTE, " +
 			" DECODE(B.IDPERSONADEUDOR, NULL, B.IDPERSONA, B.IDPERSONADEUDOR) IDPERSONA, " +
 			" B.FECHAEMISION FECHA, L.numerolinea numerolinea" +
 			"    from FAC_FACTURA B, FAC_FACTURACIONPROGRAMADA P, FAC_LINEAFACTURA L, PYS_COMPRA C " +
@@ -2574,7 +2574,7 @@ public class FacRegistroFichContaAdm extends MasterBeanAdministrador {
 			select += "  UNION  " +
 			
 	//ANTICIPADO SERVICIOS
-			"  select '1' AS ANTICIPO, B.IDFACTURA IDFACTURA, B.NUMEROFACTURA, 'S' TARJETA, P.CONFDEUDOR, P.CTACLIENTES, L.IMPORTEANTICIPADO IMPORTE,  " +
+			"  select '1' AS ANTICIPO, TO_NUMBER(B.IDFACTURA) IDFACTURA, B.NUMEROFACTURA, 'S' TARJETA, P.CONFDEUDOR, P.CTACLIENTES, L.IMPORTEANTICIPADO IMPORTE,  " +
 			"         DECODE(B.IDPERSONADEUDOR, NULL, B.IDPERSONA, B.IDPERSONADEUDOR) IDPERSONA, " +
 			"         B.FECHAEMISION FECHA, l.numerolinea numerolinea" +
 			"  from FAC_FACTURA B, FAC_FACTURACIONPROGRAMADA P, FAC_LINEAFACTURA L, FAC_FACTURACIONSUSCRIPCION S, PYS_SUSCRIPCION SUS " +
@@ -2607,7 +2607,7 @@ public class FacRegistroFichContaAdm extends MasterBeanAdministrador {
 					contador=new Integer(vCondicion.get(0).toString()).intValue();
 					select +=" AND " + vCondicion.get(1) ;
 			   }		
-			select += "    ORDER BY TO_NUMBER(IDFACTURA) ";
+			select += "    ORDER BY 2 ";
 			
 			String idFactura ="";
 			String idFacturaAnt ="";
