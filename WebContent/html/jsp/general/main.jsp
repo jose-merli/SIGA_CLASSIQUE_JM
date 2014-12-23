@@ -260,11 +260,9 @@
 
 	<div id="modalAviso" style="display:none">
 		<span>
-		Se ha detectado un fallo en la última actualización de Internet Explorer 11 (<b>11.0.15</b>). Este problema afecta a las ventanas modales en toda la aplicación. 
+		Microsoft ha solventado la problemática con las ventanas emergentes de su actualización KB3008923.
 		<br>
-		<br>Se recomienda desinstalar la actualización KB3008923 hasta que Microsoft corrija el error.
-		
-		<br><br>Para más información visite la <a href="http://wiki.redabogacia.org/index.php/Degradar_IE11" target="_new">wiki</a>
+		<br>Ahora se recomienda la instalación de la actualización <b><a href="http://support.microsoft.com/kb/3025390" target="_new">KB3025390</a>.</b>
 
 		</span>
 
@@ -398,7 +396,7 @@
 			}
 		});	
 	}
-	
+		
 	function showModals(){
 		if (!(window.showModalDialog)){
 			showModal();
@@ -413,10 +411,10 @@
 	
 	 function showAvisoModal(){
 		 jQuery("#modalAviso").dialog({
-				height: 280,
-				width: 500,
+				height: 220,
+				width: 580,
 				modal: true,
-				title:'Problema compatibilidad con Internet Explorer 11',
+				title:'Solventado problema compatibilidad con Internet Explorer 11',
 				resizable: false,
 				buttons : {
 					'<siga:Idioma key="global.boton.aceptar"/>': function() {$(this).dialog("close");}
@@ -425,14 +423,13 @@
 	 }
 	
 </script>
+
+
 <div id="main_overlay" class="overlay" style="display:none;z-index: 50;"></div>
 	<div id="divEspera" title="Espere por favor" style="z-index:100; position:absolute;vertical-align: center;display:none; top:45%; left:450px">
 		<span class="labelText"></span><br><img src="<%=app%>/html/imagenes/loadingBar.gif"/><span id="barraBloqueante">&nbsp;</span>
 	</div>
-	
-	
-	<div id='contenidoVentanaModal' style='display:none'>
-	</div>
+
 	
 </body>
 </html>
