@@ -51,7 +51,8 @@
 	</head>
 
 	<body onload="comprobar();ajusteAlto('resultado');" style='height:100%'>
-	<html:form action="/CON_RecuperarConsultas.do" method="POST" target="submitArea">			
+	<bean:define id="path" name="org.apache.struts.action.mapping.instance" property="path" scope="request"/>
+	<html:form action = "${path}" method="POST" target="submitArea">			
 		    <html:hidden property = "modo" value = ""/>
 			<html:hidden property = "hiddenFrame" value = "1"/>		
 			<html:hidden property = "actionModal" value = ""/>
