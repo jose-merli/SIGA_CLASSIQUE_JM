@@ -610,7 +610,7 @@ public class FacRegistroFichContaAdm extends MasterBeanAdministrador {
 			select = " SELECT TO_NUMBER(F.IDFACTURA) IDFACTURA, " +
 						" F.NUMEROFACTURA, " +
 						" L.CANTIDAD * L.PRECIOUNITARIO AS IMPNETO, " +
-						" L.CANTIDAD * ROUND(L.PRECIOUNITARIO * L.IVA / 100, 2) AS IMPIVA, " +
+						" ROUND(L.CANTIDAD * L.PRECIOUNITARIO * L.IVA / 100, 2) AS IMPIVA, " +
 						" L.IVA, " +
 						" DECODE(F.IDPERSONADEUDOR, NULL, F.IDPERSONA, F.IDPERSONADEUDOR) AS IDPERSONA, " +
 						" F.FECHAEMISION, " +
@@ -837,7 +837,7 @@ public class FacRegistroFichContaAdm extends MasterBeanAdministrador {
 						" A.IDPERSONA, " +
 						" A.FECHA, " + 
 						" -1 * LA.CANTIDAD * LA.PRECIOUNITARIO AS IMPNETO, " +
-						" -1 * LA.CANTIDAD * ROUND(LA.PRECIOUNITARIO * LA.IVA / 100, 2) AS IMPIVA, " +
+						" -1 * ROUND(LA.CANTIDAD * LA.PRECIOUNITARIO * LA.IVA / 100, 2) AS IMPIVA, " +
 						" LA.IVA, " +
 						" LA.DESCRIPCIONLINEA AS DESCRIPCION, " +
 						" L.CTAPRODUCTOSERVICIO, " +
