@@ -249,7 +249,7 @@
 						Float iva = linea.getIva();
 						Double anticipado = linea.getImporteAnticipado();
 						double imp = cantidad.intValue() * importe.doubleValue();
-						double ivaImporte = cantidad.intValue() * UtilidadesNumero.redondea(importe.doubleValue() * iva.doubleValue() / 100, 2);
+						double ivaImporte = UtilidadesNumero.redondea(cantidad.intValue() * importe.doubleValue() * iva.doubleValue() / 100, 2);
 						double aux = imp + ivaImporte;
 						Double total = new Double(UtilidadesNumero.redondea(aux, 2));
 	

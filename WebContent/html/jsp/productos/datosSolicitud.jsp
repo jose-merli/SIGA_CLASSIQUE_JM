@@ -423,10 +423,10 @@
 					
 				
 					// Calculamos el precio total y el total del iva
-					importeUnitario = cantidad * UtilidadesNumero.redondea(precio * (1 + (iva / 100)), 2);
+					importeUnitario = UtilidadesNumero.redondea(cantidad * precio * (1 + (iva / 100)), 2);
 					
 					if(idFormaPago!=null){
-						ivaTotal = ivaTotal + (cantidad * UtilidadesNumero.redondea(precio * iva / 100, 2));
+						ivaTotal = ivaTotal + UtilidadesNumero.redondea(cantidad * precio * iva / 100, 2);
 						precioTotal = precioTotal + importeUnitario;
 					}
 				

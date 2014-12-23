@@ -161,7 +161,7 @@
 						document.GestionarFacturaForm.datosLineaTotal.value = "";
 					
 					} else {
-						var calculoTotalIva = eval(cantidad) * roundNumber(eval(precio) * eval(iva) / 100, 2);
+						var calculoTotalIva = roundNumber(eval(cantidad) * eval(precio) * eval(iva) / 100, 2);
 						document.GestionarFacturaForm.datosLineaTotalIVA.value = calculoTotalIva;
 						document.GestionarFacturaForm.datosLineaTotalIVA.value = convertirAFormato(document.GestionarFacturaForm.datosLineaTotalIVA.value);
 						

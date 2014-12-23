@@ -132,8 +132,8 @@
 			if (a.getIdFormaPago() != null && a.getIdFormaPago().intValue() == tarjeta) {			
 				double precio = a.getPrecio().doubleValue();
 				double iva = a.getValorIva().doubleValue();
-				varIvaTotalTarjeta = varIvaTotalTarjeta + (a.getCantidad() * UtilidadesNumero.redondea(precio * iva / 100, 2));
-				varPrecioTotalTarjeta = varPrecioTotalTarjeta + (a.getCantidad() * UtilidadesNumero.redondea(precio * (1 + (iva / 100)), 2));
+				varIvaTotalTarjeta = varIvaTotalTarjeta + UtilidadesNumero.redondea(a.getCantidad() * precio * iva / 100, 2);
+				varPrecioTotalTarjeta = varPrecioTotalTarjeta + UtilidadesNumero.redondea(a.getCantidad() * precio * (1 + (iva / 100)), 2);
 				
 				sPeriodicidad = "";
 				sPrecio = "-";
@@ -232,8 +232,8 @@
 				double precio = a.getPrecio().doubleValue();
 				double iva = a.getValorIva().doubleValue();
 				if(a.getIdFormaPago() != null){
-					varIvaTotalOtro = varIvaTotalOtro + (a.getCantidad() * UtilidadesNumero.redondea(precio * iva / 100, 2));
-					varPrecioTotalOtro = varPrecioTotalOtro + (a.getCantidad() * UtilidadesNumero.redondea(precio * (1 + (iva / 100)), 2));
+					varIvaTotalOtro = varIvaTotalOtro + UtilidadesNumero.redondea(a.getCantidad() * precio * iva / 100, 2);
+					varPrecioTotalOtro = varPrecioTotalOtro + UtilidadesNumero.redondea(a.getCantidad() * precio * (1 + (iva / 100)), 2);
 				}
 				
 				sPeriodicidad = "";

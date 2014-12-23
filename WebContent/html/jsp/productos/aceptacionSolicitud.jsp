@@ -536,8 +536,8 @@
 	 				precio.value = precio.value.replace(/,/,".");
 					iva.value = iva.value.replace(/,/,".");
 					if (!isNaN(parseFloat(precio.value))) {			
-						varIvaTotal = varIvaTotal + (cantidad.value * roundNumber(precio.value * iva.value / 100, 2));
-						varPrecioTotal = varPrecioTotal + (cantidad.value * roundNumber(precio.value * (1 + (iva.value / 100)), 2));
+						varIvaTotal = varIvaTotal + roundNumber(cantidad.value * precio.value * iva.value / 100, 2);
+						varPrecioTotal = varPrecioTotal + roundNumber(cantidad.value * precio.value * (1 + (iva.value / 100)), 2);
 					}					
 	 			}
 
@@ -721,8 +721,8 @@
 					}
 
 					if (datos == null || (datos!=null && nofacturable.equals(DB_FALSE))) {
-						varIvaTotal = varIvaTotal + (a.getCantidad() * UtilidadesNumero.redondea(precio * iva / 100, 2));
-						varPrecioTotal = varPrecioTotal + (a.getCantidad() * UtilidadesNumero.redondea(precio * (1 + (iva / 100)), 2));	
+						varIvaTotal = varIvaTotal + UtilidadesNumero.redondea(a.getCantidad() * precio * iva / 100, 2);
+						varPrecioTotal = varPrecioTotal + UtilidadesNumero.redondea(a.getCantidad() * precio * (1 + (iva / 100)), 2);	
 					}				
 
 									

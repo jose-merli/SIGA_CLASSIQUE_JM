@@ -375,8 +375,8 @@
 						
 		
 						if((UtilidadesHash.getString(hash, PysServiciosSolicitadosBean.C_IDFORMAPAGO))!=null){
-							varIvaTotal = varIvaTotal +  (cantidad * UtilidadesNumero.redondea(precio * iva / 100, 2));
-							varPrecioTotal = varPrecioTotal + (cantidad * UtilidadesNumero.redondea(precio * (1 + (iva / 100)), 2));
+							varIvaTotal = varIvaTotal + UtilidadesNumero.redondea(cantidad * precio * iva / 100, 2);
+							varPrecioTotal = varPrecioTotal + UtilidadesNumero.redondea(cantidad * precio * (1 + (iva / 100)), 2);
 						}				
 		
 						//recupera el flag para mostrar/ocultar el botón de anticipar y el importe anticipado

@@ -118,7 +118,7 @@
 					double dPrecioUnitario = linea.getPrecioUnitario();
 					double dImporteNeto = iCantidad * dPrecioUnitario;
 					double dIVA = linea.getIva().doubleValue();
-					double dImporteIVA = iCantidad * UtilidadesNumero.redondea(dPrecioUnitario * dIVA / 100, 2);
+					double dImporteIVA = UtilidadesNumero.redondea(iCantidad * dPrecioUnitario * dIVA / 100, 2);
 					double dImporteTotal = dImporteIVA + dImporteNeto;
 					double dAnticipado = linea.getImporteAnticipado().doubleValue();
 					
