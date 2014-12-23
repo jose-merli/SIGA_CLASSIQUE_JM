@@ -2644,8 +2644,8 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
             		            " (fac_lineafactura.preciounitario * fac_lineafactura.cantidad) AS BASE_IMPONIBLE, " +
 //            		            " fac_lineafactura.cantidad AS CANTIDAD, " +
             		            " fac_lineafactura.iva AS VALOR_IVA, " +
-            		            " fac_lineafactura.cantidad * ROUND(fac_lineafactura.preciounitario * fac_lineafactura.iva / 100, 2) as IVA, " +
-            		            " fac_lineafactura.cantidad * ROUND(fac_lineafactura.preciounitario * (1 + fac_lineafactura.iva / 100), 2) as TOTAL_FACTURA " +
+            		            " ROUND(fac_lineafactura.cantidad * fac_lineafactura.preciounitario * fac_lineafactura.iva / 100, 2) as IVA, " +
+            		            " ROUND(fac_lineafactura.cantidad * fac_lineafactura.preciounitario * (1 + fac_lineafactura.iva / 100), 2) as TOTAL_FACTURA " +
             		       " from fac_factura, fac_lineafactura , cen_cliente, cen_persona " +
 						   
             		      " where fac_factura.idinstitucion =  fac_lineafactura.idinstitucion " +
@@ -2786,8 +2786,8 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
 			" (fac_lineafactura.preciounitario * fac_lineafactura.cantidad) AS BASE_IMPONIBLE, " +
 	//		" fac_lineafactura.cantidad AS CANTIDAD, " +
 			" fac_lineafactura.iva AS IVA_PORCENTAJE, " +
-			" fac_lineafactura.cantidad * ROUND(fac_lineafactura.preciounitario * fac_lineafactura.iva / 100, 2) as IVA, " +
-			" fac_lineafactura.cantidad * ROUND(fac_lineafactura.preciounitario * (1 + fac_lineafactura.iva / 100), 2) as TOTAL_FACTURA " +
+			" ROUND(fac_lineafactura.cantidad * fac_lineafactura.preciounitario * fac_lineafactura.iva / 100, 2) as IVA, " +
+			" ROUND(fac_lineafactura.cantidad * fac_lineafactura.preciounitario * (1 + fac_lineafactura.iva / 100), 2) as TOTAL_FACTURA " +
 	
 			" from fac_factura, fac_lineafactura , cen_cliente, cen_persona " +
 	

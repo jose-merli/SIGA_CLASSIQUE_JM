@@ -636,7 +636,7 @@ public class PysProductosSolicitadosAdm extends MasterBeanAdministrador {
 				if(productoBean.getNoFacturable().equals("0")){
 				
 					if (productoBean.getIdFormaPago().intValue() == ClsConstants.TIPO_FORMAPAGO_TARJETA) {
-						double importeAnticipadoTarjeta = productoBean.getCantidad().doubleValue() * UtilidadesNumero.redondea(productoBean.getValor().doubleValue() * (1 + (productoBean.getIdTipoIva().floatValue() / 100)),2);
+						double importeAnticipadoTarjeta = UtilidadesNumero.redondea(productoBean.getCantidad().doubleValue() * productoBean.getValor().doubleValue() * (1 + (productoBean.getIdTipoIva().floatValue() / 100)),2);
 						compraBean.setImporteAnticipado(new Double(importeAnticipadoTarjeta));	
 					}
 					else {

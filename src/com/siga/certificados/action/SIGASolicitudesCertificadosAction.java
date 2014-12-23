@@ -2396,7 +2396,7 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 			
 			FacFacturacionProgramadaBean programacion = null;			    
 		    // PASO 0: ANTES DE FACTURAR APUNTO EL IMPORTE TOTAL COMO IMPORTE ANTICIPADO
-		    double importe = beanCompra.getCantidad().intValue() * UtilidadesNumero.redondea(beanCompra.getImporteUnitario().doubleValue() * (1 + (beanCompra.getIdTipoIva().doubleValue() / 100)), 2);
+		    double importe = UtilidadesNumero.redondea(beanCompra.getCantidad().intValue() * beanCompra.getImporteUnitario().doubleValue() * (1 + (beanCompra.getIdTipoIva().doubleValue() / 100)), 2);
 		    beanCompra.setImporteAnticipado(new Double(importe));
 		    if (!admCompra.updateDirect(beanCompra)) {
 		    	// LIBERAMOS EL BLOQUEO DE LAS TABLAS Y LA TRANSACCIÓN

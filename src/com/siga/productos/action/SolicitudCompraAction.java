@@ -1043,7 +1043,7 @@ public class SolicitudCompraAction extends MasterAction{
 						//Calculo el importe TOTAL del pago con Tarjeta:
 						precio = articulo.getPrecio().doubleValue();
 						iva = articulo.getValorIva().doubleValue();
-						varIvaTotalTarjeta = (double)articulo.getCantidad() * UtilidadesNumero.redondea(precio * iva / 100, 2);
+						varIvaTotalTarjeta = UtilidadesNumero.redondea((double)articulo.getCantidad() * precio * iva / 100, 2);
 						varPrecioTotalTarjeta = (double)articulo.getCantidad() * precio;
 						importe += varIvaTotalTarjeta + varPrecioTotalTarjeta;
 						if (claseArticulo == Articulo.CLASE_PRODUCTO) {
@@ -1068,7 +1068,7 @@ public class SolicitudCompraAction extends MasterAction{
 					claveTipo = articulo.getIdTipo()+"_"+articulo.getIdArticulo()+"_"+articulo.getIdInstitucion()+"_"+articulo.getIdFormaPago();
 					if ((subtotal = subtotalesPorTipo.get(claveTipo)) == null)
 						subtotal = new Double(0);
-					subtotal += articulo.getCantidad() * UtilidadesNumero.redondea(articulo.getPrecio() * (1 + iva / 100), 2);
+					subtotal += UtilidadesNumero.redondea(articulo.getCantidad() * articulo.getPrecio() * (1 + iva / 100), 2);
 					subtotalesPorTipo.put(claveTipo, subtotal);
 				}
 				

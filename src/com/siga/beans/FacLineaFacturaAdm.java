@@ -256,8 +256,8 @@ public class FacLineaFacturaAdm extends MasterBeanAdministrador {
 	               for (int i = 0; i < rc.size(); i++){
 	                  Row fila = (Row) rc.get(i);
 	                  Hashtable resultado=fila.getRow();	                  
-	                  double importeNeto = new Double((String)resultado.get("CANTIDAD_LINEA")).doubleValue() * UtilidadesNumero.redondea(new Double((String)resultado.get("PRECIO_LINEA")).doubleValue(), 2);
-	                  double importeIva = new Double((String)resultado.get("CANTIDAD_LINEA")).doubleValue() * UtilidadesNumero.redondea(new Double((String)resultado.get("PRECIO_LINEA")).doubleValue() * new Double((String)resultado.get("IVA_LINEA")).doubleValue() /100, 2);
+	                  double importeNeto = UtilidadesNumero.redondea(new Double((String)resultado.get("CANTIDAD_LINEA")).doubleValue() * new Double((String)resultado.get("PRECIO_LINEA")).doubleValue(), 2);
+	                  double importeIva = UtilidadesNumero.redondea(new Double((String)resultado.get("CANTIDAD_LINEA")).doubleValue() * new Double((String)resultado.get("PRECIO_LINEA")).doubleValue() * new Double((String)resultado.get("IVA_LINEA")).doubleValue() /100, 2);
 	                  double importeTotal = importeNeto + importeIva;
 	                  
 	                  resultado.put("NETO_LINEA",        UtilidadesNumero.formato(new Double(importeNeto).toString()));

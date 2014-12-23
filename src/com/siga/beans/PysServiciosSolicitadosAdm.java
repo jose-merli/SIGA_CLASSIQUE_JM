@@ -570,7 +570,7 @@ public class PysServiciosSolicitadosAdm extends MasterBeanAdministrador {
 							precio = new Double(aux.split("#")[0]);
 						}
 					}
-					double importeAnticipadoTarjeta = servicioBean.getCantidad().doubleValue() * UtilidadesNumero.redondea(precio.doubleValue() * (1 + (iva.floatValue() / 100)),2);
+					double importeAnticipadoTarjeta = UtilidadesNumero.redondea(servicioBean.getCantidad().doubleValue() * precio.doubleValue() * (1 + (iva.floatValue() / 100)),2);
 					suscripcionBean.setImporteAnticipado(new Double(importeAnticipadoTarjeta));	
 					
 					//suscripcionBean.setD
