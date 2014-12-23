@@ -154,7 +154,7 @@
 				var resultado = ventaModalGeneral(document.forms[0].name,"P");
 				if (resultado!=undefined && resultado!="VACIO" && resultado!=""){				
 					document.forms[0].tipoEnvio.value=resultado;
-					document.forms[0].modo.value = "ejecutarConsulta";
+					document.forms[0].modo.value = "criteriosDinamicos";
 					document.forms[0].target.value='mainWorkArea';
 					document.forms[0].submit();
 				}else{

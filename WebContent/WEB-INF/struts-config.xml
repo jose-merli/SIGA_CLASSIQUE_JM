@@ -3062,6 +3062,7 @@
 			<forward name="editar" path="/html/jsp/consultas/pestanasConsultas.jsp"/>
 			<forward name="ejecucion" path="/html/jsp/consultas/ejecucionConsulta.jsp"/>
 			<forward name="export" path="/SIGASvlVectorToClientFile.svrl"/>
+			<forward name="consultaSinCriterios" path="/html/jsp/consultas/consultaSinCriterios.jsp"/>
 			<forward name="criteriosDinamicos" path="/html/jsp/consultas/criteriosDinamicos.jsp"/>
 			<forward name="exitoCriterios" path="/html/jsp/consultas/exitoCriteriosDinamicos.jsp"/>
 			<forward name="vacia" path="/html/jsp/consultas/consultaVacia.jsp"/>
