@@ -70,6 +70,13 @@
 
 <body>
 
+	<script language="JavaScript">
+		jQuery(document).ready(function () {
+			parent.document.getElementById("idButtonDescargar").style.display =  'block';
+			parent.document.getElementById("idButtonImprimir").style.display =  'block';
+		});		
+	</script>	
+
 	<!-- TITULO -->
 	<!-- Barra de titulo actualizable desde los mantenimientos -->
 	<table class="tablaTitulo" cellspacing="0" height="25">

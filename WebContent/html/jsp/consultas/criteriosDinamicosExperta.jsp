@@ -292,8 +292,6 @@
 				return false;
 			}
 			
-			jQuery("#idButtonDescargar").show();
-			jQuery("#idButtonImprimir").show();			
 			document.forms[0].target = "resultado";	
 			document.forms[0].modo.value = "ejecutarConsulta";
 			document.forms[0].submit();
