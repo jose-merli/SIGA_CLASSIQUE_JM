@@ -3461,7 +3461,7 @@
 		</action>
 		
 		<action path="/JGR_FicherosDocumentacionEjg"/>							
-
+		<action path="/ENV_Enviar" type="com.siga.envios.action.DefinirEnviosAction" name="DefinirEnviosForm" scope="session"/>
 		<!-- ****************************************************************************
 -->
 		<!-- *****************************  FIN ACTION MENÚS ****************************
