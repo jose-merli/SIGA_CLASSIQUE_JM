@@ -46,6 +46,10 @@
 		{
 			window.frames["mainPestanas"].location.href=window.frames["mainPestanas"].location.href;
 		}
+		function refrescarLocal() 
+		{
+			window.frames["mainPestanas"].location.href=window.frames["mainPestanas"].location.href;
+		}
 
 </script>
 

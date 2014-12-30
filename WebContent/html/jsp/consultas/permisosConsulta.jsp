@@ -323,6 +323,7 @@
 	
 		function refrescarLocal()
 		{			
+			//alertStop("aqui refrescarLocal");
 			document.location.reload();			
 		}
 
@@ -411,7 +412,10 @@
 			document.InformeForm.idConsulta.value="<%=idConsulta%>";
 			document.InformeForm.idInstitucionConsulta.value="<%=idInstitucion%>";
 			var resultado = ventaModalGeneral(document.InformeForm.name,"G");
-			refrescarLocal();
+			if(resultado == "MODIFICADO") {
+			   	refrescarLocal();
+			}
+			//refrescarLocal();
 			
 		}
 		function consultar(fila){
@@ -440,7 +444,9 @@
 			document.InformeForm.modo.value = "editarInformeConsulta";
 			
 			var resultado = ventaModalGeneral(document.InformeForm.name,"G");
-			refrescarLocal();
+			if(resultado == "MODIFICADO") {
+			   	refrescarLocal();
+			}
 			 
 
 		}

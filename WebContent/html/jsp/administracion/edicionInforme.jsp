@@ -573,9 +573,17 @@
 	</iframe>
 	
 	<c:choose>
+		<c:when test="${InformeForm.modo=='modificarDesdeConsultas'}">		
+			<siga:ConjBotonesAccion botones="G,R"/>
+		</c:when>
+		
+		<c:when test="${ InformeForm.modo=='consultarDesdeConsultas'}">
+			
+		</c:when>
 		<c:when test="${((InformeFormEdicion.idInstitucion=='0'&&InformeFormEdicion.usrBean.location=='2000')||InformeFormEdicion.idInstitucion==InformeFormEdicion.usrBean.location)&&InformeForm.modo!='consultar'}">		
 			<siga:ConjBotonesAccion botones="V,G,R"/>
 		</c:when>
+		
 		<c:otherwise>
 			<siga:ConjBotonesAccion botones="V"/>
 		</c:otherwise>
@@ -594,7 +602,7 @@
 			document.InformeFormEdicion.target = "resultado";
 			document.InformeFormEdicion.modoInterno.value = document.InformeForm.modo.value;
 						
-			if(document.InformeForm.modo.value=='modificar' || document.InformeForm.modo.value=='modificarTelematico' || document.InformeForm.modo.value=='consultar'){
+			if(document.InformeForm.modo.value=='modificar' || document.InformeForm.modo.value=='modificarTelematico' || document.InformeForm.modo.value=='consultar' ||document.InformeForm.modo.value=='modificarDesdeConsultas'){
 		
 				document.InformeFormEdicion.modo.value = "listadoArchivosInforme";
 				document.InformeFormEdicion.submit();
@@ -799,14 +807,21 @@
 			document.InformeFormEdicion.modo.value = document.InformeForm.modo.value; 
 		
 			if (validateInformeFormEdicion(document.InformeFormEdicion)){
-				if (document.InformeForm.modo.value=='insertar'){
+				if (document.InformeForm.modo.value=='insertarDesdeConsultas'){
+					
+				} else	if (document.InformeForm.modo.value=='modificarDesdeConsultas'){
+					
+					document.InformeFormEdicion.target="submitArea";
+				}else	if (document.InformeForm.modo.value=='insertar'){
 					document.InformeFormEdicion.target="mainWorkArea";
+					document.InformeForm.modo.value="modificar";
 				}else{
 					document.InformeFormEdicion.target="submitArea";
+					document.InformeForm.modo.value="modificar";
 				}
 				document.InformeFormEdicion.submit();
 				jQuery('#textomod').hide();
-				document.InformeForm.modo.value="modificar";
+				
 				if(formatearFormulario(document.InformeFormEdicion)){
 					alert("<siga:Idioma key='administracion.informes.mensaje.aviso.sustituyeEspacios'/>");
 				}
@@ -974,10 +989,11 @@
 				jQuery(campo).addClass('box');
 			}
 		}
-		if (document.InformeForm.modo.value=='insertar'){
+		if (document.InformeForm.modo.value=='insertar'&&document.InformeFormEdicion.idTipoInforme.value!='CON'){
 			document.getElementById("idTipoInforme").selectedIndex=0;
 			onChangeIdTipoInforme();
 		}
+		
 	</script>
 </body>
 </html>

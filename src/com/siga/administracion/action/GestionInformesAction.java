@@ -73,6 +73,8 @@ public class GestionInformesAction extends MasterAction {
 					}
 					else if ( accion.equalsIgnoreCase("insertar")){
 						mapDestino = insertar(mapping, miForm, request, response);
+					}else if ( accion.equalsIgnoreCase("insertarDesdeConsultas")){
+						mapDestino = insertarDesdeConsultas(mapping, miForm, request, response);
 					}
 					else if ( accion.equalsIgnoreCase("duplicar")){
 						mapDestino = duplicar(mapping, miForm, request, response);
@@ -92,6 +94,9 @@ public class GestionInformesAction extends MasterAction {
 						mapDestino = editarInformeConsulta(mapping, miForm, request, response);
 					}else if ( accion.equalsIgnoreCase("modificar")){
 						mapDestino = modificar(mapping, miForm, request, response);
+					}else if (accion.equalsIgnoreCase("modificarDesdeConsultas")){
+						mapDestino = modificarDesdeConsultas(mapping, miForm, request, response);
+						
 					}else if ( accion.equalsIgnoreCase("refrescar")){
 						mapDestino = refrescar(mapping, miForm, request, response);
 					}else if (accion.equalsIgnoreCase("download"))  {
@@ -312,7 +317,7 @@ public class GestionInformesAction extends MasterAction {
 			{
 		InformeForm informeForm = (InformeForm) formulario;
 		// informeForm.clear();
-		informeForm.setModo("insertar");
+		informeForm.setModo("insertarDesdeConsultas");
 		UsrBean usrBean = this.getUserBean(request);
 		informeForm.setIdInstitucion(usrBean.getLocation());
 		BusinessManager bm = getBusinessManager();
@@ -533,7 +538,7 @@ public class GestionInformesAction extends MasterAction {
 				request.setAttribute("mostrarTipoIntercambio", "0");
 			
 			
-			informeForm.setModo("modificar");
+			informeForm.setModo("modificarDesdeConsultas");
 		}catch (Exception e){
 			throwExcp("messages.general.errorExcepcion", e, null); 			
 		}
@@ -647,7 +652,7 @@ public class GestionInformesAction extends MasterAction {
 			request.setAttribute("intercambioTelematico", "0");
 			request.setAttribute("mostrarTipoIntercambio", "0");
 			request.setAttribute("InformeFormEdicion", informeFormEdicion);
-			informeForm.setModo("consultar");
+			informeForm.setModo("consultarDesdeConsultas");
 		}catch (Exception e){
 			throwExcp("messages.general.errorExcepcion", e, null); 			
 		}
@@ -718,6 +723,39 @@ public class GestionInformesAction extends MasterAction {
 				forward = exitoRefresco("messages.duplicated.success",request);
 			else{
 				forward = exitoRefresco("administracion.informes.mensaje.aviso.insertar.nombreFisicoRepetido",request);				
+			}
+			
+		}catch (Exception e) {
+			throwExcp("messages.general.errorExcepcion", e, null); 
+		}
+		return forward;
+	}
+	
+	
+	
+	protected String insertarDesdeConsultas(ActionMapping mapping, 		
+			MasterForm formulario, 
+			HttpServletRequest request, 
+			HttpServletResponse response) throws ClsExceptions, SIGAException 
+			{
+
+		InformeForm informeForm = (InformeForm) formulario;
+		UsrBean usrBean = this.getUserBean(request);
+		String forward="exception";
+		try {
+			
+			BusinessManager bm = getBusinessManager();
+			InformesService informeService = (InformesService)bm.getService(InformesService.class);
+			boolean isNombreFisicoUnico = informeService.isNombreFisicoUnico(informeForm,true,this.getUserBean(request));
+			
+			informeService.insertaInforme(informeForm, usrBean);
+			
+			
+			if(isNombreFisicoUnico)
+				forward = exitoModal("messages.updated.success",request);
+			else{
+				forward = exitoModal("administracion.informes.mensaje.aviso.insertar.nombreFisicoRepetido",request);
+				
 			}
 			
 		}catch (Exception e) {
@@ -908,6 +946,31 @@ public class GestionInformesAction extends MasterAction {
 		}
 		return forward;
 	}
+	protected String modificarDesdeConsultas(ActionMapping mapping, 		
+			MasterForm formulario, 
+			HttpServletRequest request, 
+			HttpServletResponse response) throws ClsExceptions, SIGAException 
+			{
+
+		InformeForm informeForm = (InformeForm) formulario;
+//		if(informeForm.getIdPlantilla()==null ||informeForm.getIdPlantilla().equals("") )
+//			return insertar(mapping, formulario, request, response);
+		
+		UsrBean usrBean = this.getUserBean(request);
+		String forward="exception";
+		try {
+			
+			BusinessManager bm = getBusinessManager();
+			InformesService informeService = (InformesService)bm.getService(InformesService.class);
+			informeService.modificarInforme(informeForm, usrBean);
+			
+			forward = exitoModal("messages.updated.success",request);
+		} catch (Exception e) {
+			throwExcp("messages.general.errorExcepcion", e, null); 
+		}
+		return forward;
+	}
+	
 	
 	protected String download(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException
 	{
@@ -954,7 +1017,11 @@ public class GestionInformesAction extends MasterAction {
 		}catch (Exception e) {
 			throwExcp("messages.general.errorExcepcion", e, null); 
 		}
-		return "exito";
+		if(informeForm.getModoInterno()!=null && informeForm.getModoInterno().equals("modificarDesdeConsultas")){
+			informeForm.setMsgAviso("messages.deleted.success") ;
+			return exitoModal("messages.deleted.success",request);
+		}else
+			return "exito";
 	}
 	
 	protected String comprobarBorrarInformeFile(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException
@@ -995,9 +1062,16 @@ public class GestionInformesAction extends MasterAction {
 				ClsLogging.writeFileLog("GestionInformesAction.error..."+e.toString(),3);
 				throw e;
 			}
+   			informeForm.setModo("modificar");
    		
 			request.setAttribute("mensaje","messages.updated.success");
-			return "exito";
+			request.setAttribute("modo", "editar");
+			if(informeForm.getModoInterno()!=null && informeForm.getModoInterno().equals("modificarDesdeConsultas")){
+				informeForm.setMsgAviso("messages.updated.success") ;
+				return exitoModal("messages.updated.success",request);
+			}
+			else
+				return "exito";
    	}
 	protected String listadoArchivosInforme(ActionMapping mapping, 		
 			MasterForm formulario, 
