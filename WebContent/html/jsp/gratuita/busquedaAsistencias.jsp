@@ -33,6 +33,7 @@
 	// parametro
 	GenParametrosAdm admPar = new GenParametrosAdm(usr);
 	String validarVolantes = admPar.getValor(usr.getLocation(),"SCS","VALIDAR_VOLANTE","N");	
+	String cv_activo = admPar.getValor(usr.getLocation(),"ECOM","CENTRALITAVIRTUAL_ACTIVO","0");	
 	
 	String nColegiado =  request.getAttribute("nColegiado")==null?"":(String)request.getAttribute("nColegiado");
 	String nombreColegiado =  request.getAttribute("nombreColegiado")==null?"":(String)request.getAttribute("nombreColegiado");
@@ -280,8 +281,15 @@
 			<td>
 				<html:text name="AsistenciasForm" property="anio"  style="width:40px" maxlength="4" styleClass="box" value="<%=anio%>"></html:text> / <html:text name="AsistenciasForm" property="numero" size="10" maxlength="10" styleClass="box" value="<%=numero%>"></html:text>
 			</td>
-			<td>&nbsp;</td>
-			<td>&nbsp;</td>
+			
+			<% if (cv_activo.equals("1")) { %>
+				<td class="labelText"><siga:Idioma key="gratuita.busquedaAsistencias.literal.idAvisoCentralita"/></td>
+				<td><html:text name="AsistenciasForm" property="solicIdentCentralita" styleClass="box"></html:text></td>			
+			<% } else { %>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+			<% } %>
+			
 			<td class="labelText">	
 				<siga:Idioma key="gratuita.busquedaAsistencias.literal.fechaAsistencia"/>&nbsp; <siga:Idioma key="gratuita.busquedaAsistencias.literal.entre"/>
 			</td>
@@ -320,6 +328,7 @@
 					<option value='10' ><siga:Idioma key="gratuita.busquedaAsistencias.origen.colegioSIGA"/></option>
 					<option value='30' ><siga:Idioma key="gratuita.busquedaAsistencias.origen.colegiadoVolanteExpresMovil"/></option>
 					<option value='20' ><siga:Idioma key="gratuita.busquedaAsistencias.origen.colegiadoSIGA"/></option>
+					<option value='40' ><siga:Idioma key="gratuita.busquedaAsistencias.origen.centralitaGuardias"/></option>
 				
 				</Select>
 			</td>

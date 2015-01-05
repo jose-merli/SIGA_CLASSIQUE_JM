@@ -57,6 +57,7 @@ public class ScsGuardiasTurnoBean extends MasterBean
 	static public final String C_IDGUARDIAPRINCIPAL			= "IDGUARDIAPRINCIPAL";
 	static public final String C_TIPODIASGUARDIA			= "TIPODIASGUARDIA";
 	static public final String C_IDTIPOGUARDIA				= "IDTIPOGUARDIA";
+	static public final String C_ENVIOCENTRALITA				= "ENVIOCENTRALITA";
 	
 	
 	//////////////////// ATRIBUTOS ////////////////////
@@ -100,6 +101,7 @@ public class ScsGuardiasTurnoBean extends MasterBean
 	private Integer 	idTurnoPrincipal;
 	private Integer 	idGuardiaPrincipal;
 	private Integer 	idTipoGuardiaSeleccionado;
+	private String		envioCentralita;
 	
 	
 	//////////////////// GETTERS ////////////////////
@@ -187,6 +189,11 @@ public class ScsGuardiasTurnoBean extends MasterBean
 	public void setIdInstitucionPrincipal(Integer idInstitucionPrincipal) {this.idInstitucionPrincipal = idInstitucionPrincipal;}
 	public void setIdTurnoPrincipal(Integer idTurnoPrincipal) {this.idTurnoPrincipal = idTurnoPrincipal;}
 	public void setIdGuardiaPrincipal(Integer idGuardiaPrincipal) {this.idGuardiaPrincipal = idGuardiaPrincipal;}
-	public void setIdGrupoGuardiaColegiado_Ultimo(Long idGrupoGuardiaUltimo) {this.idGrupoGuardiaColegiado_Ultimo = idGrupoGuardiaUltimo;
+	public void setIdGrupoGuardiaColegiado_Ultimo(Long idGrupoGuardiaUltimo) {this.idGrupoGuardiaColegiado_Ultimo = idGrupoGuardiaUltimo;}
+	public String getEnvioCentralita() {
+		return envioCentralita;
+	}
+	public void setEnvioCentralita(String envioCentralita) {
+		this.envioCentralita = envioCentralita;
 	}
 }

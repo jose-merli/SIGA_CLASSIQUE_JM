@@ -77,7 +77,8 @@ public class ScsGuardiasTurnoAdm extends MasterBeanAdministrador
 				ScsGuardiasTurnoBean.C_IDTURNOPRINCIPAL,
 				ScsGuardiasTurnoBean.C_IDGUARDIAPRINCIPAL,
 				ScsGuardiasTurnoBean.C_TIPODIASGUARDIA,
-				ScsGuardiasTurnoBean.C_IDTIPOGUARDIA
+				ScsGuardiasTurnoBean.C_IDTIPOGUARDIA,
+				ScsGuardiasTurnoBean.C_ENVIOCENTRALITA
 		};
 		return campos;
 	} //getCamposBean ()
@@ -142,7 +143,7 @@ public class ScsGuardiasTurnoAdm extends MasterBeanAdministrador
 			bean.setIdGuardiaPrincipal(UtilidadesHash.getInteger(hash, ScsGuardiasTurnoBean.C_IDGUARDIAPRINCIPAL));
 			
 			bean.setIdTipoGuardiaSeleccionado(UtilidadesHash.getInteger(hash, ScsGuardiasTurnoBean.C_IDTIPOGUARDIA));
-			
+			bean.setEnvioCentralita(UtilidadesHash.getString(hash, ScsGuardiasTurnoBean.C_ENVIOCENTRALITA));
 			
 		}
 		catch(Exception e){
@@ -199,6 +200,7 @@ public class ScsGuardiasTurnoAdm extends MasterBeanAdministrador
 			UtilidadesHash.set(hash, ScsGuardiasTurnoBean.C_IDTURNOPRINCIPAL, b.getIdTurnoPrincipal());
 			UtilidadesHash.set(hash, ScsGuardiasTurnoBean.C_IDGUARDIAPRINCIPAL, b.getIdGuardiaPrincipal());			
 			UtilidadesHash.set(hash, ScsGuardiasTurnoBean.C_IDTIPOGUARDIA, b.getIdTipoGuardiaSeleccionado());
+			UtilidadesHash.set(hash, ScsGuardiasTurnoBean.C_ENVIOCENTRALITA, b.getEnvioCentralita());
 		}
 		catch (Exception e){
 			hash = null;
@@ -283,6 +285,7 @@ public class ScsGuardiasTurnoAdm extends MasterBeanAdministrador
 					ScsGuardiasTurnoBean.T_NOMBRETABLA+"."+ScsGuardiasTurnoBean.C_SELECCIONLABORABLES+","+
 					ScsGuardiasTurnoBean.T_NOMBRETABLA+"."+ScsGuardiasTurnoBean.C_IDTIPOGUARDIA+","+
 					ScsGuardiasTurnoBean.T_NOMBRETABLA+"."+ScsGuardiasTurnoBean.C_PORGRUPOS+","+
+					ScsGuardiasTurnoBean.T_NOMBRETABLA+"."+ScsGuardiasTurnoBean.C_ENVIOCENTRALITA+","+
 					ScsGuardiasTurnoBean.T_NOMBRETABLA+"."+ScsGuardiasTurnoBean.C_SELECCIONFESTIVOS;
 				break;
 				

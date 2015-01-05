@@ -848,6 +848,7 @@ public class DefinirGuardiasTurnosAction extends MasterAction {
 			// Hay que cambiar la jsp para que se puedan meter estos parametros por interfaz
 			nuevo.put(ScsGuardiasTurnoBean.C_PORGRUPOS, "0");
 			nuevo.put(ScsGuardiasTurnoBean.C_ROTARCOMPONENTES, "0");
+			nuevo.put(ScsGuardiasTurnoBean.C_ENVIOCENTRALITA, "0");
 			
 			// JPT: Combo seleccionable de tipo de guardia
 			nuevo.put(ScsGuardiasTurnoBean.C_IDTIPOGUARDIA, miForm.getIdTipoGuardiaSeleccionado());
@@ -1040,6 +1041,7 @@ public class DefinirGuardiasTurnosAction extends MasterAction {
 				nuevo.put(ScsGuardiasTurnoBean.C_IDTURNO, miForm.getIdTurnoPestanha());
 				nuevo.put(ScsGuardiasTurnoBean.C_IDGUARDIA, miForm.getIdGuardiaPestanha());
 				nuevo.put(ScsGuardiasTurnoBean.C_PORGRUPOS, (miForm.getPorGrupos() == null) ? "0" : "1");
+				nuevo.put(ScsGuardiasTurnoBean.C_ENVIOCENTRALITA, (miForm.getTurnoCentralitaGuardias() == null) ? "0" : "1");
 				nuevo.put(ScsGuardiasTurnoBean.C_ROTARCOMPONENTES, (miForm.getRotarComponentes() == null) ? "0" : "1");
 				nuevo.put(ScsGuardiasTurnoBean.C_USUMODIFICACION, usr.getUserName());
 				nuevo.put(ScsGuardiasTurnoBean.C_FECHAMODIFICACION, "sysdate");

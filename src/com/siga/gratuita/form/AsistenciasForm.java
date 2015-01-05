@@ -32,6 +32,7 @@ public class AsistenciasForm extends MasterForm
 	String comisariaAsistencia;
 	String juzgadoAsistencia;
 	String origen;
+	String solicIdentCentralita;
 	
 	private String modoPestanha=null;
 	
@@ -651,6 +652,11 @@ public class AsistenciasForm extends MasterForm
 	}
 	public void setMinutoSolicitud(String minutoSolicitud) {
 		this.minutoSolicitud = minutoSolicitud;
+	}
+	public String getSolicIdentCentralita() {
+		return solicIdentCentralita;
+	}
+	public void setSolicIdentCentralita(String solicIdentCentralita) {
+		this.solicIdentCentralita = solicIdentCentralita;
 	}	
-	
 }

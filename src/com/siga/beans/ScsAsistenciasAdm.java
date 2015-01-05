@@ -1181,6 +1181,7 @@ public class ScsAsistenciasAdm extends MasterBeanAdministrador {
 			String comisariaInstitucionAsi = "";
 			String procedimiento		= miForm.getProcedimiento();
 			String nig					= miForm.getNig2();
+			String solicIdenCV			= miForm.getSolicIdentCentralita();
 			
 			if(!String.valueOf(comisaria).equals("")){
 				String a[]=comisaria.split(",");
@@ -1388,6 +1389,12 @@ public class ScsAsistenciasAdm extends MasterBeanAdministrador {
 				    sql += " and upper(F_SIGA_ACTUACIONESASIST(a.idinstitucion,a.anio,a.numero))=upper(:" + contador + ")";
 			}
 			}
+			
+			if(!String.valueOf(solicIdenCV).equals("")) {
+			    contador ++;
+			    codigos.put(new Integer(contador),solicIdenCV);
+			    sql+=" AND A.IDSOLICITUDCENTRALITA = :"+contador;
+			}			
 					  		
 			sql += " ORDER BY " + ScsAsistenciasBean.C_IDINSTITUCION+" desc, " + ScsAsistenciasBean.C_ANIO+" desc, "+ScsAsistenciasBean.C_NUMERO+" desc";
 		
