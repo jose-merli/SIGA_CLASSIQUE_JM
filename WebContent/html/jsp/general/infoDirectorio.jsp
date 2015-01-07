@@ -157,7 +157,8 @@ try {
 		if (confirm("¿Está seguro de querer borrar el fichero?")) {
 			document.borrar.rutaFichero.value = unescape(rutaArchivo);
 			document.borrar.nombreFichero.value = nombreArchivo; 
-			document.borrar.accion.value = "borrar";
+			document.borrar.accion.value = "";
+			document.borrar.borrarFichero.value = "true";
 			document.borrar.submit();
 		}
 	}
@@ -209,10 +210,11 @@ try {
 		<input type="hidden" name="borrarFichero" value=""/>
 	</form>
 
-	<form name="borrar" action="<%=app%>/html/jsp/general/infoDirectorio.jsp" method="POST">
+	<form name="borrar" action="<%=app%>/ServletFicherosInfoDirectorio.svrl" method="POST">
 		<input type="hidden" name="nombreFichero" value=""/>
 		<input type="hidden" name="rutaFichero"   value=""/>
-		<input type="hidden" name="accion"        value="borrar"/>
+		<input type="hidden" name="accion"        value=""/>
+		<input type="hidden" name="borrarFichero" value=""/>
 	</form>
 
 	
