@@ -42,9 +42,10 @@
 
 	<bean:define id="path" name="org.apache.struts.action.mapping.instance" property="path" scope="request"/>
 	<html:form action = "${path}" method="POST" target="submitArea">			
-		    <html:hidden property = "modo" value = ""/>
-			<html:hidden property = "hiddenFrame" value = "1"/>		
-			<html:hidden property = "actionModal" value = ""/>
+		<html:hidden property = "modo" value = ""/>
+		<html:hidden property = "hiddenFrame" value = "1"/>		
+		<html:hidden property = "actionModal" value = ""/>
+		<html:hidden property = "tipoEnvio" />
 
 	<div id='frameResultado'>
 		<iframe name="resultado" id="resultado" src="<%=app%>/html/jsp/general/blank.jsp" style="width:100%; border:0" frameborder="0"></iframe>
