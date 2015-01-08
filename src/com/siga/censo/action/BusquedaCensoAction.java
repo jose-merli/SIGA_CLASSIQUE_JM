@@ -946,14 +946,25 @@ public class BusquedaCensoAction extends MasterAction {
 			String codPostal = miform.getCodPostal().replace("\u00a0"," ").trim();
 			String telefono = miform.getTelefono().replace("\u00a0"," ").trim();
 			String mail = miform.getMail().replace("\u00a0"," ").trim();
-			String sexo = miform.getSexo().replace("\u00a0"," ").trim();
-			String tratamiento = miform.getTratamiento().replace("\u00a0"," ").trim();			
+			String sexo = perBean.getSexo().replace("\u00a0"," ").trim();
+			String tratamiento = "";
+			if(cli.getIdTratamiento()!=null){
+				tratamiento = cli.getIdTratamiento().toString().replace("\u00a0"," ").trim();
+			}
 			String fax = miform.getFax1().replace("\u00a0"," ").trim();		
 			String pais = miform.getPais().replace("\u00a0"," ").trim();	
-			String idTipoIden = miform.getIdTipoIdentificacion().replace("\u00a0"," ").trim();	
+			
+			String idTipoIden = "";
+			if(cli.getIdTratamiento()!=null){
+				 idTipoIden = perBean.getIdTipoIdentificacion().toString().replace("\u00a0"," ").trim();	
+			}	
+			
+			String idEstadoCivil = "";
+			if(perBean.getIdEstadoCivil()!=null){
+				 idEstadoCivil = perBean.getIdEstadoCivil().toString();	
+			}				
 			
 			Hashtable datosCliente = new Hashtable();
-			
 			datosCliente.put("idPersona",idPersona);
 			datosCliente.put("idInstitucion",idInstitucion);
 			datosCliente.put("nColegiado",nColegiado);
@@ -976,6 +987,7 @@ public class BusquedaCensoAction extends MasterAction {
 			datosCliente.put("LugarNacimiento",perBean.getNaturalDe());
 			datosCliente.put("colegiadoen",colegiadoen);
 			datosCliente.put("idTipoIden",idTipoIden);
+			datosCliente.put("idEstadoCivil",idEstadoCivil);
 			
 			request.setAttribute("datosCensoModal", datosCliente);	
 
@@ -1418,7 +1430,12 @@ public class BusquedaCensoAction extends MasterAction {
 							}
 							miForm.setLugarNacimiento(perBean.getNaturalDe());
 							miForm.setTratamiento((String)infoCliente.get("TRATAMIENTO"));
-							miForm.setEstadoCivil("");
+							if(perBean.getIdEstadoCivil() != null){
+								miForm.setEstadoCivil(perBean.getIdEstadoCivil().toString());
+							}else{
+								miForm.setEstadoCivil("");
+							}							
+							
 							miForm.setIdioma("1");
 							miForm.setTextoAlerta("");
 							
@@ -1456,7 +1473,6 @@ public class BusquedaCensoAction extends MasterAction {
 							miForm.setDireccion("");
 							miForm.setCodPostal("");
 	
-							
 							CenClienteAdm cliAdm = new CenClienteAdm(user);
 							CenClienteBean cli = null;
 							CenNoColegiadoAdm nColAdm = new CenNoColegiadoAdm(user);
@@ -1678,41 +1694,6 @@ public class BusquedaCensoAction extends MasterAction {
 		return forward;
 		
 	}				
-		/*String forward="designarArt27", accionPestanha=null;
-		
-		try {
-			BusquedaCensoForm miform = (BusquedaCensoForm)formulario;
-			
-			CenTipoDireccionAdm cenTipoDirAdm = new CenTipoDireccionAdm (this.getUserBean(request));
-			Vector vTipos = new Vector();
-			vTipos=cenTipoDirAdm.select("");
-			Hashtable hTipoDir=new Hashtable();
-			Hashtable hTipoDirSel=new Hashtable();
-			if ( (vTipos != null) && (vTipos.size() > 0) )
-				for (int i = 1; i <= vTipos.size(); i++) {
-					CenTipoDireccionBean tipoDir = (CenTipoDireccionBean) vTipos.get(i-1);
-					hTipoDir.put(tipoDir.getIdTipoDireccion(),"N");
-				}
-			request.setAttribute("vTipos",vTipos);
-			
-			//Cargar combo Paises
-			miform.setPaises(getPaisesList(request));
-			
-			//Cargar combo Provincias
-			miform.setProvincias(getProvinciasList(request));			
-
-			// cargo los valores recibidos por paramtros en el FORM
-			accionPestanha = "nuevo";
-			miform.setAccion(accionPestanha);
-			miform.setModo(accionPestanha);
-			forward = "designarArt27";
-
-	   } catch (Exception e) {
-		 throwExcp("messages.general.error",new String[] {"modulo.censo"},e,null);
-   	   }
-		return forward;
-		
-	}*/	
 	
 	private List<ParejaNombreID> getPaisesList(HttpServletRequest request) {
 		final String tipo = "pais";

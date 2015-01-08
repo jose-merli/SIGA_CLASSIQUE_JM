@@ -57,7 +57,7 @@
 		if (apellido2==null) apellido2="";
 	}	
 
-	String  dni="", mail="", numcolegiado="", telefono="", descripcion= "", nacido = "", fechaNac = "", colegiadoen ="", idTipoIden ="";
+	String  dni="", mail="", numcolegiado="", telefono="", descripcion= "", nacido = "", fechaNac = "", colegiadoen ="", idTipoIden ="", idEstadoCivil="";
  	String  codPostal= "", direcion="",provincia="", poblacion= "", residencia="", ejerciente="", sexo = "", tratamiento= "";
 	String pais = "",  cPostal = "", telefono1 = "", movil = "", idDireccion = "", direccion = "", idPais = "", poblacionExtranjera = "", fax="";
 	Hashtable h = (Hashtable) request.getAttribute("unicaDireccion");
@@ -78,6 +78,7 @@
 		fechaNac    = (String) datosCliente.get("FechaNacimiento");      if (fechaNac  	 == null) fechaNac    = new String("");
 		colegiadoen = (String) datosCliente.get("colegiadoen");      	 if (colegiadoen == null) colegiadoen = new String("");
 		idTipoIden  = (String) datosCliente.get("idTipoIden");      	 if (idTipoIden == null)  idTipoIden  = new String("");
+		idEstadoCivil  = (String) datosCliente.get("idEstadoCivil");     if (idEstadoCivil == null)idEstadoCivil  = new String("");
 		poblacionExtranjera = null; /*(String) h.get(CenDireccionesBean.C_POBLACIONEXTRANJERA);*/	  if (poblacionExtranjera == null) poblacionExtranjera = new String("");
 	
 		if (!fechaNac.equals("")){
@@ -126,6 +127,7 @@
 					aux[19] = "<%=fechaNac%>";
 					aux[20] = "<%=colegiadoen%>";
 					aux[21] = "<%=idTipoIden%>";
+					aux[22] = "<%=idEstadoCivil%>";
 
 				
 				top.cierraConParametros(aux);

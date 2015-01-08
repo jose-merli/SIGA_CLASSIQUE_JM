@@ -268,6 +268,7 @@
 				datosGeneralesForm.sexo.value=resultado[14];
 				datosGeneralesForm.lugarNacimiento.value=resultado[18];
 				datosGeneralesForm.fechaNacimiento.value=resultado[19];
+				datosGeneralesForm.estadoCivil.value = resultado[22];
 
 				//Datos direcciones
 				if(resultado[1] != "<%=idInstitucionActual%>"){
