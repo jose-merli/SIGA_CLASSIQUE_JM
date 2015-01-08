@@ -1411,8 +1411,9 @@ public class Facturacion {
      * @param beanSerieCandidata
      * @return
      * @throws ClsExceptions
+     * @throws SIGAException
      */
-    public FacFacturacionProgramadaBean procesarFacturacionRapidaCompras(PysPeticionCompraSuscripcionBean beanPeticionCompraSuscripcion, Vector<PysCompraBean> compras, FacSerieFacturacionBean beanSerieCandidata) throws ClsExceptions {
+    public FacFacturacionProgramadaBean procesarFacturacionRapidaCompras(PysPeticionCompraSuscripcionBean beanPeticionCompraSuscripcion, Vector<PysCompraBean> compras, FacSerieFacturacionBean beanSerieCandidata) throws ClsExceptions, SIGAException {
     	FacFacturacionProgramadaBean beanFacturacionProgramada = new FacFacturacionProgramadaBean();
     	
     	try {
@@ -1495,7 +1496,10 @@ public class Facturacion {
         	
         	// Compruebo que ha finalizado correctamente
         	String codretorno = resultado[0];
-        	if (!codretorno.equals("0")){
+        	if (codretorno.equals("-201")){
+        		throw new SIGAException (resultado[1]);
+        		
+        	} else if (!codretorno.equals("0")){
         		throw new ClsExceptions ("Error al generar la Facturación rapida: "+resultado[1]);
         	}
         	
@@ -1503,6 +1507,9 @@ public class Facturacion {
 			if (!admFacturacionProgramada.updateDirect(beanFacturacionProgramada)) {
     	        throw new ClsExceptions("Error al actualizar la programacion: " + admFacturacionProgramada.getError());
     	    }
+			
+		} catch (SIGAException e) {
+			throw e;				
     	    
     	} catch (Exception e) {
     		throw new ClsExceptions(e,"Error al realizar generacion de facturacion rápida.");
@@ -2046,7 +2053,11 @@ public class Facturacion {
 
 			String codretorno = resultado[0];
 			
-			if (!codretorno.equals("0")) {				
+        	if (codretorno.equals("-201")){
+        		ClsLogging.writeFileLog("### Fin GENERACION (Serie:" + idSerieFacturacion + "; IdProgramacion:" + idProgramacion + "), finalizada con errores", 7);				
+				throw new ClsExceptions(resultado[1] + "(Serie:" + idSerieFacturacion + "; IdProgramacion:" + idProgramacion + "; CodigoError:" + codretorno + ")");
+			
+        	} else if (!codretorno.equals("0")) {				
 				ClsLogging.writeFileLog("### Fin GENERACION (Serie:" + idSerieFacturacion + "; IdProgramacion:" + idProgramacion + "), finalizada con errores", 7);				
 				throw new ClsExceptions(UtilidadesString.getMensajeIdioma(this.usrbean.getLanguage(),"facturacion.nuevaPrevisionFacturacion.mensaje.generacionFicheroERROR") + 
 			    		"(Serie:" + idSerieFacturacion + "; IdProgramacion:" + idProgramacion + "; CodigoError:" + codretorno + ")");
