@@ -139,7 +139,7 @@
 <%
 					} else { 
 %>
-						<td class="labelText" >
+						<td class="labelText" colspan = "6">
 							<siga:BusquedaPersona tipo="colegiado"  idPersona="titular"></siga:BusquedaPersona>
 							<html:hidden property="titular" />
 							<html:hidden property="nombreTitular"/>
@@ -157,9 +157,7 @@
 					} 
 %>
 				</tr>
-			</table>
-			
-			<table>
+
 				<tr>							
 					<td class="labelText" width="80px"><siga:Idioma key="facturacion.devolucionManual.numeroRecibo"/></td>
 					<td><html:text styleClass="box" property="numeroRecibo" maxlength="12" /></td>
