@@ -213,8 +213,7 @@ public class DefinirListaGuardiasAction extends MasterAction {
 	 */
 	protected String editar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		DefinirListaGuardiasForm miForm = (DefinirListaGuardiasForm) formulario;
-		ScsListaGuardiasAdm admListaGuardias = new ScsListaGuardiasAdm(this.getUserBean(request));
-		
+		ScsListaGuardiasAdm admListaGuardias = new ScsListaGuardiasAdm(this.getUserBean(request));		
 		Vector ocultos = new Vector();
 		Vector visibles = new Vector();
 		String idlista="", idinstitucion="", nombre="", lugar="", observaciones="";
@@ -223,56 +222,55 @@ public class DefinirListaGuardiasAction extends MasterAction {
 		try {
 			//NUEVO desde la pantalla inicial de Busqueda.
 			if ((miForm.getAccion() != null)&&(miForm.getAccion().equals("nuevo"))) {
-					request.setAttribute("accion","nuevo");
-					request.setAttribute("modo",miForm.getModo());					
-			}
-	        //EDITAR desde la pantalla inicial de Busqueda.
-			else {
-					//Parametros ocultos y visibles de la pantalla anterior.
-					ocultos = miForm.getDatosTablaOcultos(0);
-					visibles = miForm.getDatosTablaVisibles(0);
-					idinstitucion = (String)ocultos.get(0);
-					idlista = (String)ocultos.get(1);
-					nombre = (String)visibles.get(0);
-					lugar = (String)visibles.get(1);	
-					observaciones = (String)ocultos.get(2);				
-					request.setAttribute("IDLISTA",idlista);
-					request.setAttribute("IDINSTITUCION",idinstitucion);
-					request.setAttribute("NOMBRE",nombre);
-					request.setAttribute("LUGAR",lugar);
-					request.setAttribute("OBSERVACIONES",observaciones);
+				request.setAttribute("accion","nuevo");
+				request.setAttribute("modo",miForm.getModo());			
 					
-					//Consultamos la fecha y usuario de registro a partir de sus id			
-					Vector fechaYUsu = admListaGuardias.selectGenerico(admListaGuardias.getFechaYUsu(idinstitucion,idlista));
-					//Almacenamos en sesion el registro de la lista de guardias			
-					backupHash.put("NOMBRE",(String)((Hashtable)fechaYUsu.elementAt(0)).get("NOMBRE"));
-					backupHash.put("LUGAR",(String)((Hashtable)fechaYUsu.elementAt(0)).get("LUGAR"));
-					backupHash.put("OBSERVACIONES",(String)((Hashtable)fechaYUsu.elementAt(0)).get("OBSERVACIONES"));
-					backupHash.put("USUMODIFICACION",(String)((Hashtable)fechaYUsu.elementAt(0)).get("USUMODIFICACION"));
-					backupHash.put("FECHAMODIFICACION",(String)((Hashtable)fechaYUsu.elementAt(0)).get("FECHAMODIFICACION"));
-					backupHash.put("IDINSTITUCION",(String)((Hashtable)fechaYUsu.elementAt(0)).get("IDINSTITUCION"));
-					backupHash.put("IDLISTA",(String)((Hashtable)fechaYUsu.elementAt(0)).get("IDLISTA"));
-					AdmInformeAdm admInforme = new AdmInformeAdm(this.getUserBean(request));
-					Vector infs=admInforme.obtenerInformesTipo(idinstitucion,"LIGUA",null, null);
-					if(infs.size()!=0){
-						miForm.setComunicacion("true");
-					}else{
-						miForm.setComunicacion("");
+			} else { //EDITAR desde la pantalla inicial de Busqueda.
+				ocultos = miForm.getDatosTablaOcultos(0);
+				visibles = miForm.getDatosTablaVisibles(0);
+				idinstitucion = (String)ocultos.get(0);
+				idlista = (String)ocultos.get(1);
+		
+				//Consultamos la fecha y usuario de registro a partir de sus id			
+				Vector fechaYUsu = admListaGuardias.selectGenerico(admListaGuardias.getFechaYUsu(idinstitucion,idlista));
+				nombre = (String)((Hashtable)fechaYUsu.elementAt(0)).get("NOMBRE");
+				lugar = (String)((Hashtable)fechaYUsu.elementAt(0)).get("LUGAR");	
+				observaciones = (String)((Hashtable)fechaYUsu.elementAt(0)).get("OBSERVACIONES");						
+				
+				//Almacenamos en sesion el registro de la lista de guardias			
+				backupHash.put("NOMBRE",nombre);
+				backupHash.put("LUGAR",lugar);
+				backupHash.put("OBSERVACIONES",observaciones);
+				backupHash.put("USUMODIFICACION",(String)((Hashtable)fechaYUsu.elementAt(0)).get("USUMODIFICACION"));
+				backupHash.put("FECHAMODIFICACION",(String)((Hashtable)fechaYUsu.elementAt(0)).get("FECHAMODIFICACION"));
+				backupHash.put("IDINSTITUCION",(String)((Hashtable)fechaYUsu.elementAt(0)).get("IDINSTITUCION"));
+				backupHash.put("IDLISTA",(String)((Hashtable)fechaYUsu.elementAt(0)).get("IDLISTA"));
+				AdmInformeAdm admInforme = new AdmInformeAdm(this.getUserBean(request));
+				Vector infs=admInforme.obtenerInformesTipo(idinstitucion,"LIGUA",null, null);
+				if(infs.size()!=0){
+					miForm.setComunicacion("true");
+				}else{
+					miForm.setComunicacion("");
 
-					}
-					
-					request.getSession().removeAttribute("DATABACKUP");
-					request.getSession().setAttribute("DATABACKUP",backupHash);						
-					
-					request.getSession().setAttribute("datosLista",backupHash);					
-					request.setAttribute("accion",miForm.getAccion());
-					request.setAttribute("modo",miForm.getModo());	
-					request.setAttribute("comunicacion",miForm.getComunicacion());
+				}
+				
+				request.getSession().removeAttribute("DATABACKUP");
+				request.getSession().setAttribute("DATABACKUP",backupHash);						
+				request.getSession().setAttribute("datosLista",backupHash);					
+				request.setAttribute("accion",miForm.getAccion());
+				request.setAttribute("modo",miForm.getModo());	
+				request.setAttribute("comunicacion",miForm.getComunicacion());
+				request.setAttribute("IDLISTA",idlista);
+				request.setAttribute("IDINSTITUCION",idinstitucion);				
+				request.setAttribute("NOMBRE",nombre);
+				request.setAttribute("LUGAR",lugar);
+				request.setAttribute("OBSERVACIONES",observaciones);					
 			}
-		}
-		catch (Exception e) {
+			
+		} catch (Exception e) {
 			throwExcp("messages.select.error",e,null);			
-		}							
+		}	
+		
 		return "consultarLG";
 	}
 
