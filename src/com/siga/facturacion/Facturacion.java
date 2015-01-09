@@ -2026,11 +2026,11 @@ public class Facturacion {
     	UtilidadesHash.set(hashEstado, FacFacturacionProgramadaBean.C_IDPROGRAMACION, idProgramacion);
     	UtilidadesHash.set(hashEstado, FacFacturacionProgramadaBean.C_IDSERIEFACTURACION, idSerieFacturacion);
     	
+    	String resultado[] = new String[2];
 		try {			
 			ClsLogging.writeFileLog("### Procesando GENERACION (Serie:" + idSerieFacturacion + "; IdProgramacion:" + idProgramacion + ")", 7);
 			
-			// Carga los parametros
-			String resultado[] = new String[2];
+			// Carga los parametros			
 			Object[] param_in = new Object[7];
 			param_in[0] = idInstitucion;
         	param_in[1] = idSerieFacturacion;
@@ -2082,7 +2082,7 @@ public class Facturacion {
 					// Si la previsión está vacía
 					if (nameFile == null || nameFile.length() == 0) {
 						ClsLogging.writeFileLog("### Inicio creación fichero log GENERACION sin datos", 7);
-						controlarEstadoErrorGeneracion(tx, admFacturacionProgramada, claves, hashEstado, nombreFichero, FacEstadoConfirmFactBean.GENERADA);
+						controlarEstadoErrorGeneracion(tx, admFacturacionProgramada, claves, hashEstado, nombreFichero, FacEstadoConfirmFactBean.GENERADA, null);
 						ClsLogging.writeFileLog("### Fin creación fichero log GENERACION sin datos", 7);
 	
 					} else {
@@ -2114,7 +2114,12 @@ public class Facturacion {
 			
 			// Le cambio el estado a error
 			try { 
-				controlarEstadoErrorGeneracion(tx,admFacturacionProgramada,claves,hashEstado,nombreFichero, FacEstadoConfirmFactBean.ERROR_GENERACION);	
+				String sMensaje = null;
+				if (resultado[0]!=null && resultado[0].equals("-201")) {
+					sMensaje = resultado[1];
+				}
+				
+				controlarEstadoErrorGeneracion(tx,admFacturacionProgramada,claves,hashEstado,nombreFichero, FacEstadoConfirmFactBean.ERROR_GENERACION, sMensaje);	
 				
 			} catch(Exception e2){
 				try { // Tratamiento rollback
@@ -2213,7 +2218,7 @@ public class Facturacion {
 	 * @throws Exception 
 	 * 
 	 */
-	private void controlarEstadoErrorGeneracion(UserTransaction tx, FacFacturacionProgramadaAdm admProg,String [] claves,Hashtable<String,Object> hashEstado, String nombreFichero, Integer estadoFin) throws Exception {
+	private void controlarEstadoErrorGeneracion(UserTransaction tx, FacFacturacionProgramadaAdm admProg,String [] claves,Hashtable<String,Object> hashEstado, String nombreFichero, Integer estadoFin, String sMensaje) throws Exception {
 		try {
 			ClsLogging.writeFileLog("### GESTION ERROR GENERACION  ####", 7);
 			String [] campos = {FacFacturacionProgramadaBean.C_IDESTADOCONFIRMACION,FacFacturacionProgramadaBean.C_LOGERROR};
@@ -2250,7 +2255,11 @@ public class Facturacion {
 			
 			ficheroGenerado.createNewFile();
 			out = new BufferedWriter(new FileWriter(ficheroGenerado));
-			out.write("No se ha podido facturar nada. Compruebe la configuracion y el periodo indicado\t");
+			if (sMensaje!=null && !sMensaje.equals("")) {
+				out.write(sMensaje);
+			} else {
+				out.write("No se ha podido facturar nada. Compruebe la configuracion y el periodo indicado\t");
+			}
 			out.close();			
 			
 			tx.commit();
