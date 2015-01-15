@@ -785,7 +785,10 @@ public class FcsMovimientosVariosAdm extends MasterBeanAdministrador {
 				" m.cantidad cantidad, m.fechaalta fechaalta, (p.nombre||' '||p.apellidos1||' '||p.apellidos2) nombre, p.nifcif nif, c.ncolegiado ncolegiado, m.idpersona idpersona, a.idpagosjg idpago, "+
 				" m.idfacturacion, m.idgrupofacturacion, "+
 				//Numero de Colegiado o Comunitario segun proceda:
-				" (CASE c."+CenColegiadoBean.C_COMUNITARIO+" WHEN '"+ClsConstants.DB_FALSE+"' THEN c."+CenColegiadoBean.C_NCOLEGIADO+" ELSE c."+CenColegiadoBean.C_NCOMUNITARIO+" END ) AS NUMERO "+
+				" (CASE c."+CenColegiadoBean.C_COMUNITARIO+" WHEN '"+ClsConstants.DB_FALSE+"' THEN c."+CenColegiadoBean.C_NCOLEGIADO+" ELSE c."+CenColegiadoBean.C_NCOMUNITARIO+" END ) AS NUMERO, "+
+				" (select "+ FcsPagosJGBean.C_NOMBRE + 
+				   " from " +FcsPagosJGBean.T_NOMBRETABLA+ 
+				  " where " + FcsPagosJGBean.C_IDINSTITUCION +"=a."+FcsAplicaMovimientosVariosBean.C_IDINSTITUCION+" and "+ FcsPagosJGBean.C_IDPAGOSJG+"=a."+FcsAplicaMovimientosVariosBean.C_IDPAGOSJG+") as PAGO "+ 
 				" from "+ FcsMovimientosVariosBean.T_NOMBRETABLA +" m,"+ CenPersonaBean.T_NOMBRETABLA +" p, "+ CenColegiadoBean.T_NOMBRETABLA +" c, " + FcsAplicaMovimientosVariosBean.T_NOMBRETABLA +" a "+
 				" where p."+ CenPersonaBean.C_IDPERSONA + " = m."+ FcsMovimientosVariosBean.C_IDPERSONA +
 				" and c."+ CenColegiadoBean.C_IDINSTITUCION + " (+) = m."+ FcsMovimientosVariosBean.C_IDINSTITUCION +
