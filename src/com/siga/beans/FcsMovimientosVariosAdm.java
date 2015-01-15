@@ -23,6 +23,9 @@ import com.siga.Utilidades.paginadores.Paginador;
 */
 public class FcsMovimientosVariosAdm extends MasterBeanAdministrador {
 
+	public static final int CASO_MVNOASOCIADO = 1;
+	public static final int CASO_MVASOCIADOAGRUPOFACT = 2;
+	public static final int CASO_MVASOCIADOAFACTURACION = 3;
 	
 	public FcsMovimientosVariosAdm(UsrBean usuario) {
 		super(FcsMovimientosVariosBean.T_NOMBRETABLA, usuario);
@@ -213,100 +216,101 @@ public class FcsMovimientosVariosAdm extends MasterBeanAdministrador {
 	}
 	
 	/**
-	 * Devuelve un vector con los movimientos varios que hay que pagar para una persona
-	 * ordenados por fecha de alta utilizando el pool RW
+	 * Devuelve un vector con los movimientos varios que hay que pagar para una persona ordenados por fecha de alta
+	 * utilizando el pool RW
+	 * 
 	 * @param idInstitucion
 	 * @param idPago
 	 * @param idPersona
 	 * @return
 	 */
-	public Vector getMovimientosRW (String idInstitucion, String idPago, String idPersona,String idFacturacion,String fDesde,String idGrupoFacturacion,int caso) throws ClsExceptions 
+	public Vector getMovimientosRW(String idInstitucion,
+			String idPago,
+			String idPersona,
+			String idFacturacion,
+			String fDesde,
+			String idGrupoFacturacion,
+			int caso) throws ClsExceptions
 	{
-		//donde devolveremos el resultado
-		Vector resultado = new Vector(); 
-		//query con la select a ejecutar
-		String consulta = " SELECT M." + FcsMovimientosVariosBean.C_MOTIVO + " " + FcsMovimientosVariosBean.C_MOTIVO + ","+
-							" M." + FcsMovimientosVariosBean.C_DESCRIPCION + " " + FcsMovimientosVariosBean.C_DESCRIPCION + ","+
-							" M." + FcsMovimientosVariosBean.C_IDINSTITUCION + " " + FcsMovimientosVariosBean.C_IDINSTITUCION + ","+
-							" M." + FcsMovimientosVariosBean.C_IDMOVIMIENTO + " " + FcsMovimientosVariosBean.C_IDMOVIMIENTO + ","+
-							" M." + FcsMovimientosVariosBean.C_CANTIDAD + " " +
-							
-			/*				" - nvl((select (sum (aplica." + FcsAplicaMovimientosVariosBean.C_IMPORTEAPLICADO + "))" + 
-							" from " + FcsAplicaMovimientosVariosBean.T_NOMBRETABLA + "aplica" +
-							" where m." + FcsMovimientosVariosBean.C_IDINSTITUCION + " = aplica." + FcsAplicaMovimientosVariosBean.C_IDINSTITUCION + 
-							" and m." + FcsMovimientosVariosBean.C_IDMOVIMIENTO + " = aplica." + FcsAplicaMovimientosVariosBean.C_IDMOVIMIENTO +
-							"),0) " + */ 
-							FcsMovimientosVariosBean.C_CANTIDAD + ", " +
-							" M." + FcsMovimientosVariosBean.C_IDFACTURACION + " " + FcsMovimientosVariosBean.C_IDFACTURACION + ","+
-							" M." + FcsMovimientosVariosBean.C_IDGRUPOFACTURACION + " " + FcsMovimientosVariosBean.C_IDGRUPOFACTURACION + ","+
-							" nvl(a." + FcsAplicaMovimientosVariosBean.C_IMPORTEAPLICADO + ",0) " + FcsAplicaMovimientosVariosBean.C_IMPORTEAPLICADO + ", " +
-							" M." + FcsMovimientosVariosBean.C_FECHAMODIFICACION + " " + FcsMovimientosVariosBean.C_FECHAMODIFICACION + ", "+
-							" M." + FcsMovimientosVariosBean.C_USUMODIFICACION + " " + FcsMovimientosVariosBean.C_USUMODIFICACION + " "+
-							" FROM " + FcsMovimientosVariosBean.T_NOMBRETABLA + " M " +
-							" left join " + FcsAplicaMovimientosVariosBean.T_NOMBRETABLA + " a on m." +
-							FcsMovimientosVariosBean.C_IDINSTITUCION + " = a." + FcsAplicaMovimientosVariosBean.C_IDINSTITUCION +
-							" and m." + FcsMovimientosVariosBean.C_IDMOVIMIENTO + " = a." + FcsAplicaMovimientosVariosBean.C_IDMOVIMIENTO +
-							" WHERE M." + FcsMovimientosVariosBean.C_IDINSTITUCION + "=" + idInstitucion +
-							" AND M." + FcsMovimientosVariosBean.C_IDPERSONA + "=" + idPersona +" " ;
-		
-							switch (caso) {
-							case 1:
-								consulta+=" AND M." + FcsMovimientosVariosBean.C_IDFACTURACION + "=" + idFacturacion +" " ;
-								break;
-							case 2:
-								consulta+=" AND M." + FcsMovimientosVariosBean.C_IDGRUPOFACTURACION + "=" + idGrupoFacturacion +" " ;
-								consulta+=" AND (M." + FcsMovimientosVariosBean.C_IDFACTURACION + " IS NULL " ;
-								consulta+=" OR EXISTS (SELECT 1 " ;
-								consulta+=" FROM "+FcsFacturacionJGBean.T_NOMBRETABLA + " FACJG ";
-								consulta+=" WHERE trunc("+ FcsFacturacionJGBean.C_FECHADESDE+")<='"+fDesde+"'";
-								consulta+=" AND M." + FcsMovimientosVariosBean.C_IDINSTITUCION + " = FACJG."+FcsFacturacionJGBean.C_IDINSTITUCION;
-								consulta+=" AND M." + FcsMovimientosVariosBean.C_IDFACTURACION + " = FACJG."+FcsFacturacionJGBean.C_IDFACTURACION+"))";
-										
-								break;
-							case 3:
-								consulta+=" AND M." + FcsMovimientosVariosBean.C_IDGRUPOFACTURACION + " is null" ;
-								consulta+=" AND M." + FcsMovimientosVariosBean.C_IDFACTURACION + " is not null" ;
-								consulta+=" AND (M." + FcsMovimientosVariosBean.C_IDFACTURACION + "=" + idFacturacion;
-								consulta+=" OR EXISTS (SELECT 1 " ;
-								consulta+=" FROM "+FcsFacturacionJGBean.T_NOMBRETABLA + " FACJG ";
-								consulta+=" WHERE trunc("+ FcsFacturacionJGBean.C_FECHADESDE+")<='"+fDesde+"'";
-								consulta+=" AND M." + FcsMovimientosVariosBean.C_IDINSTITUCION + " = FACJG."+FcsFacturacionJGBean.C_IDINSTITUCION;
-								consulta+=" AND M." + FcsMovimientosVariosBean.C_IDFACTURACION + " = FACJG."+FcsFacturacionJGBean.C_IDFACTURACION+"))";
-										
-								break;
-							default:
-									consulta+=" AND M." + FcsMovimientosVariosBean.C_IDFACTURACION + " is null" ;
-									consulta+=" AND M." + FcsMovimientosVariosBean.C_IDGRUPOFACTURACION + " is null" ;
-								
-								break;
-							}
-							
-							consulta+=" group by m." + FcsMovimientosVariosBean.C_MOTIVO + ", m." + FcsMovimientosVariosBean.C_DESCRIPCION +
-							", m." + FcsMovimientosVariosBean.C_IDINSTITUCION + ", m." + FcsMovimientosVariosBean.C_IDMOVIMIENTO +
-							", m." + FcsMovimientosVariosBean.C_CANTIDAD + ", a." + FcsAplicaMovimientosVariosBean.C_IMPORTEAPLICADO + 
-							", m." + FcsMovimientosVariosBean.C_FECHAMODIFICACION +
-							", m." + FcsMovimientosVariosBean.C_USUMODIFICACION + ", m." + FcsMovimientosVariosBean.C_FECHAALTA +
-							", M.IDFACTURACION ,        M.IDGRUPOFACTURACION"+ 
-							" having abs(m." + FcsMovimientosVariosBean.C_CANTIDAD + ") > nvl((select abs (sum (aplica." + FcsAplicaMovimientosVariosBean.C_IMPORTEAPLICADO +
-							 
-							")) from " + FcsAplicaMovimientosVariosBean.T_NOMBRETABLA + " aplica" +
-							" where m." + FcsMovimientosVariosBean.C_IDINSTITUCION + " = aplica." + FcsAplicaMovimientosVariosBean.C_IDINSTITUCION + 
-							" and m." + FcsMovimientosVariosBean.C_IDMOVIMIENTO + " = aplica." + FcsAplicaMovimientosVariosBean.C_IDMOVIMIENTO + "),0)" +						
-							" ORDER BY  case when (m." + FcsMovimientosVariosBean.C_CANTIDAD + "> 0) " +
-							" then '1'" + 
-							" else '2'" +
-							" end asc, m." + FcsMovimientosVariosBean.C_FECHAALTA + " asc";
-							
-		try{
-			resultado = (Vector)super.selectGenerico(consulta);
-		}catch(Exception e){
-			throw new ClsExceptions (e,"Error en FcsMovimientosVarios.getMovimientosRW()"+consulta);
+		// donde devolveremos el resultado
+		Vector resultado = new Vector();
+		StringBuilder consulta, consultaPorFacturacion;
+
+		// query con la select a ejecutar
+		consulta = new StringBuilder();
+		consulta.append("SELECT M." + FcsMovimientosVariosBean.C_MOTIVO + " " + FcsMovimientosVariosBean.C_MOTIVO + ",");
+		consulta.append("       M." + FcsMovimientosVariosBean.C_DESCRIPCION + " " + FcsMovimientosVariosBean.C_DESCRIPCION + ",");
+		consulta.append("       M." + FcsMovimientosVariosBean.C_IDINSTITUCION + " " + FcsMovimientosVariosBean.C_IDINSTITUCION + ",");
+		consulta.append("       M." + FcsMovimientosVariosBean.C_IDMOVIMIENTO + " " + FcsMovimientosVariosBean.C_IDMOVIMIENTO + ",");
+		consulta.append("       M." + FcsMovimientosVariosBean.C_CANTIDAD + " " + FcsMovimientosVariosBean.C_CANTIDAD + ", ");
+		consulta.append("       M." + FcsMovimientosVariosBean.C_IDFACTURACION + " " + FcsMovimientosVariosBean.C_IDFACTURACION + ",");
+		consulta.append("       M." + FcsMovimientosVariosBean.C_IDGRUPOFACTURACION + " " + FcsMovimientosVariosBean.C_IDGRUPOFACTURACION + ",");
+		consulta.append("       nvl(a." + FcsAplicaMovimientosVariosBean.C_IMPORTEAPLICADO + ",0) " + FcsAplicaMovimientosVariosBean.C_IMPORTEAPLICADO + ", ");
+		consulta.append("       M." + FcsMovimientosVariosBean.C_FECHAMODIFICACION + " " + FcsMovimientosVariosBean.C_FECHAMODIFICACION + ", ");
+		consulta.append("       M." + FcsMovimientosVariosBean.C_USUMODIFICACION + " " + FcsMovimientosVariosBean.C_USUMODIFICACION + " ");
+		consulta.append("  FROM " + FcsMovimientosVariosBean.T_NOMBRETABLA + " M ");
+		consulta.append("  left join " + FcsAplicaMovimientosVariosBean.T_NOMBRETABLA + " a on ");
+		consulta.append("       m." + FcsMovimientosVariosBean.C_IDINSTITUCION + " = a." + FcsAplicaMovimientosVariosBean.C_IDINSTITUCION);
+		consulta.append("   and m." + FcsMovimientosVariosBean.C_IDMOVIMIENTO + " = a." + FcsAplicaMovimientosVariosBean.C_IDMOVIMIENTO);
+		consulta.append(" WHERE M." + FcsMovimientosVariosBean.C_IDINSTITUCION + "=" + idInstitucion);
+		consulta.append("   AND M." + FcsMovimientosVariosBean.C_IDPERSONA + "=" + idPersona + " ");
+
+		consultaPorFacturacion = new StringBuilder();
+		consultaPorFacturacion.append("    OR EXISTS (SELECT 1 ");
+		consultaPorFacturacion.append("                 FROM " + FcsFacturacionJGBean.T_NOMBRETABLA + " FACJG ");
+		consultaPorFacturacion.append("                WHERE trunc(" + FcsFacturacionJGBean.C_FECHADESDE + ")<='" + fDesde + "'");
+		consultaPorFacturacion.append("                  AND M." + FcsMovimientosVariosBean.C_IDINSTITUCION + " = FACJG." + FcsFacturacionJGBean.C_IDINSTITUCION);
+		consultaPorFacturacion.append("                  AND M." + FcsMovimientosVariosBean.C_IDFACTURACION + " = FACJG." + FcsFacturacionJGBean.C_IDFACTURACION + "))");
+
+		switch (caso) {
+		case CASO_MVNOASOCIADO:
+			consulta.append("   AND M." + FcsMovimientosVariosBean.C_IDFACTURACION + " is null");
+			consulta.append("   AND M." + FcsMovimientosVariosBean.C_IDGRUPOFACTURACION + " is null");
+
+			break;
+		case CASO_MVASOCIADOAFACTURACION:
+			consulta.append("   AND M." + FcsMovimientosVariosBean.C_IDGRUPOFACTURACION + " is null");
+			consulta.append("   AND M." + FcsMovimientosVariosBean.C_IDFACTURACION + " is not null");
+			consulta.append("   AND (M." + FcsMovimientosVariosBean.C_IDFACTURACION + "=" + idFacturacion);
+			consulta.append(consultaPorFacturacion);
+
+			break;
+		case CASO_MVASOCIADOAGRUPOFACT:
+			consulta.append("   AND M." + FcsMovimientosVariosBean.C_IDGRUPOFACTURACION + "=" + idGrupoFacturacion + " ");
+			consulta.append("   AND (M." + FcsMovimientosVariosBean.C_IDFACTURACION + " IS NULL ");
+			consulta.append(consultaPorFacturacion);
+
+			break;
 		}
-		
+
+		consulta.append(" group by m." + FcsMovimientosVariosBean.C_MOTIVO + ", ");
+		consulta.append("          m." + FcsMovimientosVariosBean.C_DESCRIPCION + ", ");
+		consulta.append("          m." + FcsMovimientosVariosBean.C_IDINSTITUCION + ", ");
+		consulta.append("          m." + FcsMovimientosVariosBean.C_IDMOVIMIENTO + ", ");
+		consulta.append("          m." + FcsMovimientosVariosBean.C_CANTIDAD + ", ");
+		consulta.append("          m." + FcsMovimientosVariosBean.C_FECHAMODIFICACION + ", ");
+		consulta.append("          m." + FcsMovimientosVariosBean.C_USUMODIFICACION + ", ");
+		consulta.append("          m." + FcsMovimientosVariosBean.C_FECHAALTA + ", ");
+		consulta.append("          M." + FcsMovimientosVariosBean.C_IDFACTURACION + ", ");
+		consulta.append("          M." + FcsMovimientosVariosBean.C_IDGRUPOFACTURACION + " ");
+		consulta.append("having abs (m." + FcsMovimientosVariosBean.C_CANTIDAD + ") > ");
+		consulta.append("       sum (nvl(a." + FcsAplicaMovimientosVariosBean.C_IMPORTEAPLICADO + "), 0)");
+
+		consulta.append(" ORDER BY case when (m." + FcsMovimientosVariosBean.C_CANTIDAD + "> 0) ");
+		consulta.append("               then '1'");
+		consulta.append("               else '2'");
+		consulta.append("          end asc, ");
+		consulta.append("          m." + FcsMovimientosVariosBean.C_FECHAALTA + " asc");
+
+		try {
+			resultado = (Vector) super.selectGenerico(consulta.toString());
+		} catch (Exception e) {
+			throw new ClsExceptions(e, "Error en FcsMovimientosVarios.getMovimientosRW()" + consulta);
+		}
+
 		return resultado;
-		
-	}
-	
+
+	} // getMovimientosRW()	
 	
 	/**
 	 * Actualiza a NULL el idPagosJG de los movimientos si conincide el idPago del registro con el del método. 
