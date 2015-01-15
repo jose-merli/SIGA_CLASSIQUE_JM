@@ -116,7 +116,8 @@
 		   name="listadoDocumentacion"
 		   border="2"
 		   columnNames="gratuita.operarEJG.literal.fechaLimitePresentacion,pestana.justiciagratuitaejg.documentacion,gratuita.documentacionSOJ.regentrada,gratuita.documentacionSOJ.regsalida,gratuita.operarEJG.literal.fechaPresentacion,"
-		   columnSizes="10,50,10,10,10">
+		   columnSizes="10,50,10,10,10"
+		   modal="P">
 		   
       <%if (obj.size()>0)
       { 

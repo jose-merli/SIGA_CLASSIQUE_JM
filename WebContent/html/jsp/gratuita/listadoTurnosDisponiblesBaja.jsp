@@ -171,7 +171,8 @@
 	   name="listarTurnosDisp"
 	   border="1"
 	   columnNames="<%=nC%>"
-	   columnSizes="<%=tC%>">
+	   columnSizes="<%=tC%>"
+	   modal="G">
 <%
 		String idPersona = (String)request.getAttribute("idPersonaTurno");
 		if (obj.size()>0) {

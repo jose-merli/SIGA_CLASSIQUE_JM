@@ -729,7 +729,8 @@
 				   name="tablaResultados"
 				   border="1"
 				   columnNames="pys.mantenimientoServicios.literal.precio,pys.mantenimientoServicios.literal.periodicidad,pys.mantenimientoCategorias.literal.descripcion,productos.mantenimientoProductos.literal.precioDefecto,"
-				   columnSizes="20,20,20,20,20">
+				   columnSizes="20,20,20,20,20"
+				   modal="G">
 						   				   
 					<% if (request.getAttribute("DATESTADO") == null || ((Vector)request.getAttribute("DATESTADO")).size() < 1 ) { %>									
 				 		<tr class="notFound">
@@ -822,7 +823,8 @@
 					name="tablaResultados"
 					border="1"
 					columnNames="pys.mantenimientoServicios.literal.precio,pys.mantenimientoServicios.literal.periodicidad,pys.mantenimientoCategorias.literal.descripcion,productos.mantenimientoProductos.literal.precioDefecto"
-					columnSizes="30,20,30,20">
+					columnSizes="30,20,30,20"
+					modal="G">
 
 					<%if (request.getAttribute("DATESTADO") == null || ((Vector)request.getAttribute("DATESTADO")).size() < 1 ){ %>
 				 		<tr class="notFound">

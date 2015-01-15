@@ -102,7 +102,8 @@
 			   		name="tablaDatos"
 			   		border="1"
 			   		columnNames="censo.resultadosSolicitudesModificacion.literal.fecha,gratuita.busquedaSOJ.literal.nColegiado,gratuita.defendidosDesigna.literal.nombreApellidos,gratuita.cambiosProcuradoresDesigna.literal.fechaRenuncia,"
-			   		columnSizes="15,20,45,10,10">
+			   		columnSizes="15,20,45,10,10"
+			   		modal="M">
 			   
 <% 
 					if (obj==null || obj.size()==0) {

@@ -153,6 +153,7 @@
 			   border="1"
 			   columnNames="Concepto,factSJCS.detalleFacturacion.literal.importe"
 			   columnSizes="70,30"
+			   modal = "g"
 			   modalScroll="true">
 	
 				<!-- INICIO: ZONA DE REGISTROS -->

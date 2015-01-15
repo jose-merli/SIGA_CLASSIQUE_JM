@@ -109,7 +109,8 @@
 			   gratuita.busquedaSOJ.literal.nColegiado,
 			   gratuita.defendidosDesigna.literal.nombreApellidos,
 			   gratuita.cambiosProcuradoresDesigna.literal.fechaRenuncia,"
-			   columnSizes="12,12,12,42,12,10">
+			   columnSizes="12,12,12,42,12,10"
+			   modal="M">
 			   
 		<!-- Campo obligatorio -->
 	<% if (obj==null || obj.size()==0){%>

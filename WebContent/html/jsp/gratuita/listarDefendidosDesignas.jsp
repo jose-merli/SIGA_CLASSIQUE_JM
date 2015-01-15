@@ -159,7 +159,8 @@
 		   name="listadoDefendidos"
 		   border="2"
 		   columnNames="gratuita.defendidosDesigna.literal.nif,gratuita.defendidosDesigna.literal.nombreApellidos,gratuita.defendidosDesigna.literal.representante,"
-		   columnSizes="10,45,30,15">
+		   columnSizes="10,45,30,15"
+		   modal="G">
 
 			<% if (obj==null || obj.size()==0){%>
 	 			<tr class="notFound">

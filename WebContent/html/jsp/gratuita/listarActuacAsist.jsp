@@ -90,7 +90,8 @@
 	   	name="tablaDatos"
 	   	border="1"
 	   	columnNames="<%=nombreCol%>"
-	   	columnSizes="<%=tamano%>">  		
+	   	columnSizes="<%=tamano%>"
+	   	modal="P">  		
 
 <% 
 		if (obj==null || obj.size()==0) {

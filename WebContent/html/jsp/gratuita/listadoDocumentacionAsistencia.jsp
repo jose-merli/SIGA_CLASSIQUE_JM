@@ -107,7 +107,8 @@
 		   name="listadoDocumentacion"
 		   border="1"
 		   columnNames="gratuita.documentacionAsistencia.fechaentrada,gratuita.documentacionAsistencia.nombre,gratuita.documentacionDesigna.actuacion "
-		   columnSizes="10,40,40,10">
+		   columnSizes="10,40,40,10"
+		   modal="M">
 		   
   	<% if (obj != null && obj.size()>0){
 	    	int recordNumber=1;

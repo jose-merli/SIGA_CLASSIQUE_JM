@@ -77,7 +77,8 @@
 		   	      name="tablaDatos"
 		   		  border="1"
 		   		  columnNames="infomes.seleccionPlantillas.literal.sel,infomes.seleccionPlantillas.literal.descripcion"
-		   		  columnSizes="10,90">
+		   		  columnSizes="10,90"
+		   		  modal="M">
 <%
 				if (plantillas==null || plantillas.size()==0)
 				{

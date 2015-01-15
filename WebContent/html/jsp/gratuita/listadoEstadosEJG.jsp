@@ -126,7 +126,8 @@
 				   pestana.justiciagratuitaejg.observaciones,
 				   pestana.justiciagratuitaejg.automatico,
 				   Propietario,"
-	   columnSizes="10,25,35,10,10,10">
+	   columnSizes="10,25,35,10,10,10"
+	   modal="P">
 	   
 <%
 		if (obj.size()>0) {

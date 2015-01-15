@@ -94,6 +94,7 @@
 			gratuita.operarInteresado.literal.bienesInmuebles,
 			gratuita.operarInteresado.literal.otrosBienes,"
 		columnSizes="9,8,25,8,8,8,8,28"
+		modal="G"
 		mensajeBorrado="gratuita.ejg.unidadFamiliar.borrado"
 		fixedHeight="<%=alto%>">
 			  

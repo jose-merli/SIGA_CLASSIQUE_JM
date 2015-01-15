@@ -87,7 +87,8 @@
 		   name="listadoDocumentacion"
 		   border="1"
 		   columnNames="gratuita.operarEJG.literal.fechaLimitePresentacion,sjcs.ejg.documentacion.presentador,expedientes.auditoria.literal.documento,gratuita.documentacionEJG.regentrada,gratuita.documentacionEJG.regsalida,gratuita.operarEJG.literal.fechaPresentacion,"
-		   columnSizes="10,25,25,10,10,10">
+		   columnSizes="10,25,25,10,10,10"
+		   modal="G">
 		   
   	<% if (obj.size()>0){
 	    	int recordNumber=1;

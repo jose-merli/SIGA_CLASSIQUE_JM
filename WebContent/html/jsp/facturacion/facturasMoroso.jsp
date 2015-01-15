@@ -233,6 +233,7 @@
 					 facturacion.lineasFactura.literal.Total,
   					facturacion.lineasFactura.literal.Anticipado"
 		columnSizes="50,7,9,7,9,9" 
+		modal="M"
 		fixedHeight="50%">
 
 <%
@@ -298,7 +299,8 @@
 	<siga:Table name="tablaResultados2" 
 		border="2"
 		columnNames="Envio,Fecha Envio,facturacion.consultamorosos.literal.comunicaciones.realizadas,"
-		columnSizes="10,20,50,10">
+		columnSizes="10,20,50,10"
+		modal="M">
 		
 		<logic:empty name="ConsultaMorososForm" property="lineasComunicaciones">
 			<tr class="notFound">

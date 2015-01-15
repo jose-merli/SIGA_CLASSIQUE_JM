@@ -54,7 +54,8 @@
 			factSJCS.busquedaRetAplicadas.literal.importeMesRetenido,
 			factSJCS.busquedaRetAplicadas.literal.importeTotRetener,
 			factSJCS.busquedaRetAplicadas.literal.importeTotRetenido,"
-		columnSizes="36,6,8,8,8,8,8,8,8,2">
+		columnSizes="36,6,8,8,8,8,8,8,8,2"
+		modal="M">
 		
 	<c:forEach items="${consultaLEC}" var="registro" varStatus="status">    
 	

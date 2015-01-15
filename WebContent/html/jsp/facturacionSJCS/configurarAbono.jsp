@@ -155,7 +155,8 @@
 					facturacion.ficheroBancarioAbonos.literal.banco,
 					facturacion.sufijos.literal.sufijo,
 					facturacion.cuentasBancarias.IBAN"
-				columnSizes="5,35,22,38">
+				columnSizes="5,35,22,38"
+				modal="g">
 				   				   
 <%
 	    		if (request.getAttribute("bancosInstitucion") == null || ((Vector)request.getAttribute("bancosInstitucion")).size() < 1 ) {
