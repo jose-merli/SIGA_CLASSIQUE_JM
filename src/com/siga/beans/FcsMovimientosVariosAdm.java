@@ -257,17 +257,23 @@ public class FcsMovimientosVariosAdm extends MasterBeanAdministrador {
 								consulta+=" AND M." + FcsMovimientosVariosBean.C_IDGRUPOFACTURACION + "=" + idGrupoFacturacion +" " ;
 								consulta+=" AND (M." + FcsMovimientosVariosBean.C_IDFACTURACION + " IS NULL " ;
 								consulta+=" OR EXISTS (SELECT 1 " ;
-								consulta+=" FROM "+FcsFacturacionJGBean.T_NOMBRETABLA;
-								consulta+=" WHERE trunc("+ FcsFacturacionJGBean.C_FECHADESDE+")<='"+fDesde+"'))";
+								consulta+=" FROM "+FcsFacturacionJGBean.T_NOMBRETABLA + " FACJG, "+FcsMovimientosVariosBean.T_NOMBRETABLA + " MOV ";
+								consulta+=" WHERE trunc("+ FcsFacturacionJGBean.C_FECHADESDE+")<='"+fDesde+"'";
+								consulta+=" AND MOV." + FcsMovimientosVariosBean.C_IDINSTITUCION + " = FACJG."+FcsFacturacionJGBean.C_IDINSTITUCION;
+								consulta+=" AND MOV." + FcsMovimientosVariosBean.C_IDFACTURACION + " = FACJG."+FcsFacturacionJGBean.C_IDFACTURACION;
+								consulta+=" AND MOV." + FcsMovimientosVariosBean.C_IDMOVIMIENTO + " = M."+FcsMovimientosVariosBean.C_IDMOVIMIENTO+"))";
 										
 								break;
 							case 3:
 								consulta+=" AND M." + FcsMovimientosVariosBean.C_IDGRUPOFACTURACION + " is null" ;
 								consulta+=" AND M." + FcsMovimientosVariosBean.C_IDFACTURACION + " is not null" ;
 								consulta+=" AND (M." + FcsMovimientosVariosBean.C_IDFACTURACION + "=" + idFacturacion;
-								consulta+=" OR EXISTS (SELECT 1 "   ;
-								consulta+=" FROM "+FcsFacturacionJGBean.T_NOMBRETABLA;
-								consulta+=" WHERE trunc("+ FcsFacturacionJGBean.C_FECHADESDE+")<='"+fDesde+"'))";
+								consulta+=" OR EXISTS (SELECT 1 " ;
+								consulta+=" FROM "+FcsFacturacionJGBean.T_NOMBRETABLA + " FACJG, "+FcsMovimientosVariosBean.T_NOMBRETABLA + " MOV ";
+								consulta+=" WHERE trunc("+ FcsFacturacionJGBean.C_FECHADESDE+")<='"+fDesde+"'";
+								consulta+=" AND MOV." + FcsMovimientosVariosBean.C_IDINSTITUCION + " = FACJG."+FcsFacturacionJGBean.C_IDINSTITUCION;
+								consulta+=" AND MOV." + FcsMovimientosVariosBean.C_IDFACTURACION + " = FACJG."+FcsFacturacionJGBean.C_IDFACTURACION;
+								consulta+=" AND MOV." + FcsMovimientosVariosBean.C_IDMOVIMIENTO + " = M."+FcsMovimientosVariosBean.C_IDMOVIMIENTO+"))";
 										
 								break;
 							default:
