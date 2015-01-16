@@ -44,6 +44,7 @@ public class PestanaDelitoAsistenciaAction extends MasterAction {
 			// Obtengo de la pestanha el anio, numero:			
 			numero = (String)request.getParameter("NUMERO");
 			anio = (String)request.getParameter("ANIO");
+			miForm.setJsonVolver(request.getParameter("jsonVolver"));
 			
 			//Busco el delito:
 			String delito = "";

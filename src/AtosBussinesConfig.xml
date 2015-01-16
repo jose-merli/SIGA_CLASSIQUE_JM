@@ -105,6 +105,13 @@
 		<service interface="org.redabogacia.sigaservices.app.services.scs.ScsDesignaProcuradorService" 		implementation="org.redabogacia.sigaservices.app.services.scs.impl.ScsDesignaProcuradorServiceImpl"/>
 		<service interface="org.redabogacia.sigaservices.app.services.mutualidad.MutualidadService" 		implementation="org.redabogacia.sigaservices.app.services.mutualidad.impl.MutualidadServiceImpl"/>
 		<service interface="org.redabogacia.sigaservices.app.services.cen.CenInstitucionService" 			implementation="org.redabogacia.sigaservices.app.services.cen.impl.CenInstitucionServiceImpl"/>
+		<service interface="org.redabogacia.sigaservices.app.services.scs.ScsSolicitudesAcpetadasService" 			implementation="org.redabogacia.sigaservices.app.services.scs.impl.ScsSolicitudesAcpetadasServiceImpl"/>
+		<service interface="org.redabogacia.sigaservices.app.services.scs.VolanteExpresService" 			implementation="org.redabogacia.sigaservices.app.services.scs.impl.VolanteExpresServiceImpl"/>
+		<service interface="org.redabogacia.sigaservices.app.services.scs.ScsPersonaJGService" 			implementation="org.redabogacia.sigaservices.app.services.scs.impl.ScsPersonaJGServiceImpl"/>
+		<service interface="org.redabogacia.sigaservices.app.services.scs.ScsTelefonosPersonaService" 			implementation="org.redabogacia.sigaservices.app.services.scs.impl.ScsTelefonosPersonaServiceImpl"/>
+		
+		
+		
 	</context>
 </configuration> 
 	

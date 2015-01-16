@@ -539,7 +539,7 @@ public class MantenimientoAsistenciasAction extends MasterAction
 			String numero = asistencias.getNumeroAsistencia(usr.getLocation(), Integer.parseInt(anio));
 			String estadoAsistencia = "1";	// Activo
 			
-			asistencias.insertarNuevaAsistencia(usr.getLocation(), anio,numero, fechaTotal, idTurno, idGuardia, idTipoAsistencia, idTipoAsistenciaColegio,idPersona, estadoAsistencia, fechaSolicitud,usr.isLetrado()?AppConstants.ORIGENASISTENCIA_SIGACOLEGIADO:AppConstants.ORIGENASISTENCIA_SIGACOLEGIO);
+			asistencias.insertarNuevaAsistencia(usr.getLocation(), anio,numero, fechaTotal, idTurno, idGuardia, idTipoAsistencia, idTipoAsistenciaColegio,idPersona, estadoAsistencia, fechaSolicitud,usr.isLetrado()?AppConstants.ORIGENASISTENCIA.SIGACOLEGIADO.getCodigo():AppConstants.ORIGENASISTENCIA.SIGACOLEGIO.getCodigo());
 
 			// Si estamos clonando puede que necesitemos meter el juzgado y comisaria
 			// Esto lo hacemos con un update por no modificar el insert, que podria dar problemas ya que se llama desde mas sitios

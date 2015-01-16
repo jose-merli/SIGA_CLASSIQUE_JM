@@ -100,6 +100,7 @@ public class CaracteristicasAsistenciaAction extends MasterAction
 											
 			// obtener Accion
 			String accion = request.getParameter("accionE");
+			miform.setJsonVolver(request.getParameter("jsonVolver"));
 									     
 			idInstitucionAsistencia=request.getParameter("idInstitucionASI");
 			anioAsistencia=request.getParameter("anioASI");

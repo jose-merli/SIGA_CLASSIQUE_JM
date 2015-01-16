@@ -1198,8 +1198,8 @@ public class ScsAsistenciasAdm extends MasterBeanAdministrador {
 			if(miForm.getOrigen()!=null && !miForm.getOrigen().equalsIgnoreCase("")) 	{
 			    contador ++;
 			    codigos.put(new Integer(contador),miForm.getOrigen());
-			    if(miForm.getOrigen().equals(""+AppConstants.ORIGENASISTENCIA_SIGACOLEGIO))
-			    	sql+=" AND nvl(A.IDORIGENASISTENCIA,"+AppConstants.ORIGENASISTENCIA_SIGACOLEGIO+") = :"+contador;
+			    if(miForm.getOrigen().equals(""+AppConstants.ORIGENASISTENCIA.SIGACOLEGIO.getCodigo()))
+			    	sql+=" AND nvl(A.IDORIGENASISTENCIA,"+AppConstants.ORIGENASISTENCIA.SIGACOLEGIO.getCodigo()+") = :"+contador;
 			    else
 			    	sql+=" AND A.IDORIGENASISTENCIA = :"+contador;
 			}
@@ -1774,7 +1774,7 @@ public  List<ScsAsistenciasBean> getAsistenciasVolantesExpres(VolantesExpressVo 
 				String anio = truncFechaGuardia.split("/")[2];
 				asistencia.setAnio(new Integer(anio));
 				asistencia.setNumero(new Integer(this.getNumeroAsistencia(asistencia.getIdInstitucion().toString(), Integer.parseInt(anio))));
-				asistencia.setIdOrigenAsistencia(AppConstants.ORIGENASISTENCIA_SIGACOLEGIO);
+				asistencia.setIdOrigenAsistencia(AppConstants.ORIGENASISTENCIA.SIGACOLEGIO.getCodigo());
 				this.insert(asistencia);
 				if(cabeceraGuardiasAdm==null)
 					cabeceraGuardiasAdm = new ScsCabeceraGuardiasAdm (volantesExpressVo.getUsrBean());

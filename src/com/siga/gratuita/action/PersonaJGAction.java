@@ -693,6 +693,7 @@ public class PersonaJGAction extends MasterAction {
 			UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");
 	     	PersonaJGForm miform = (PersonaJGForm)formulario;
 	     	String ididioma=user.getLanguage();
+	     	miform.setJsonVolver(request.getParameter("jsonVolver"));
 			
 			// para la clave de la persona JG
 			String idInstitucionJG="", idPersonaJG="";
@@ -781,6 +782,8 @@ public class PersonaJGAction extends MasterAction {
 					} else
 						if (concepto.equals(PersonaJGAction.ASISTENCIA_ASISTIDO)) {
 							idInstitucionAsistencia=request.getParameter("idInstitucionASI");
+							String jsonVolver =request.getParameter("jsonVolver");
+							miform.setJsonVolver(jsonVolver);
 							anioAsistencia=request.getParameter("anioASI");
 							numeroAsistencia=request.getParameter("numeroASI");
 							// busco si se ha actualizado el valor de idpersonaJG

@@ -1670,7 +1670,19 @@ public class UtilidadesString {
 		 }
 		 return jsonMap;
 	 }
-	 
+	 public static HashMap createJsonMap(String jsonString) throws Exception {
+		 return UtilidadesString.createJson(jsonString, HashMap.class);
+	 }
+	 public static HashMap createJson(String jsonString, Class mapClass) throws Exception {
+		 HashMap jsonMap = new HashMap<Object, Object>();
+		 try{
+			 jsonMap = new ObjectMapper().readValue(jsonString, mapClass);
+		 } catch (Exception e){
+			 ClsLogging.writeFileLog("Error al crear HASHMAP desde JSON STRING",10);
+			 throw e;
+		 }
+		 return jsonMap;
+	 }
 	 public static Object createHashMap(String jsonString, TypeReference typeReference) throws IOException {
 		 Object result= null;
 		 try{

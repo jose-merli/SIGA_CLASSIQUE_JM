@@ -135,7 +135,8 @@ public class BusquedaAsistenciasAction extends MasterAction {
 	protected String abrir(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, 
 			HttpServletResponse response) throws ClsExceptions, SIGAException
 	{
-		
+		AsistenciasForm miForm =(AsistenciasForm)formulario;
+		miForm.setSolicIdentCentralita("");
 		// DCG Ini
 		String esFichaColegial = request.getParameter("esFichaColegial");
 		if ((esFichaColegial != null) && (esFichaColegial.equalsIgnoreCase("1"))) {
@@ -172,7 +173,8 @@ public class BusquedaAsistenciasAction extends MasterAction {
 			MasterForm formulario, HttpServletRequest request,
 			HttpServletResponse response) throws ClsExceptions, SIGAException {
 		
-		
+		AsistenciasForm miForm =(AsistenciasForm)formulario;
+		miForm.setSolicIdentCentralita("");
 		// DCG Ini
 		String esFichaColegial = request.getParameter("esFichaColegial");
 		if ((esFichaColegial != null) && (esFichaColegial.equalsIgnoreCase("1"))) {
@@ -270,7 +272,7 @@ public class BusquedaAsistenciasAction extends MasterAction {
 		AsistenciasForm miForm = (AsistenciasForm)formulario;
 		Vector ocultos = miForm.getDatosTablaOcultos(0);
 		
-		String anio = "", numeroAsist = "";
+		String anio = "", numeroAsist = "",jsonVolver = "";
 		if (ocultos != null && ocultos.size() >= 2) {
 			anio   = (String)ocultos.get(0);
 			numeroAsist = (String)ocultos.get(1);
@@ -288,6 +290,9 @@ public class BusquedaAsistenciasAction extends MasterAction {
 				// Vengo de la seleccion de una asistencia
 				anio   = miForm.getAnio();	
 				numeroAsist = miForm.getNumero();	
+				jsonVolver = miForm.getJsonVolver();
+//				if(miForm.getSolicIdentCentralita()!=null && !miForm.getSolicIdentCentralita().equals(""))
+//					request.setAttribute(arg0, arg1)
 			}
 		}
 
@@ -326,6 +331,10 @@ public class BusquedaAsistenciasAction extends MasterAction {
 		// action
 		hash.put("actionE","/JGR_AsistidoAsistencia.do");
 		hash.put("esFichaColegial",sEsFichaColegial);
+		
+		//Metemos este atributo para saber los parametro para volver
+		hash.put("jsonVolver",jsonVolver);
+		
 		
 		//Se guardan el juzgado y la institucion_juzgado
 		//hash.put("numeroJuzgado",obj.getJuzgado().toString());
@@ -419,15 +428,27 @@ public class BusquedaAsistenciasAction extends MasterAction {
 		
 		} else {
 			Vector ocultos = miForm.getDatosTablaOcultos(0); 
-			hash.put("ANIO",ocultos.get(0));
-			hash.put("NUMERO",ocultos.get(1));
+			String anio = "", numeroAsist = "",jsonVolver = "";
+			if (ocultos != null && ocultos.size() >= 2) {
+				anio   = (String)ocultos.get(0);
+				numeroAsist = (String)ocultos.get(1);
+			}
+			else {
+				anio   = miForm.getAnio();	
+				numeroAsist = miForm.getNumero();
+				jsonVolver = miForm.getJsonVolver();
+			}
+			
+			
+			hash.put("ANIO",anio);
+			hash.put("NUMERO",numeroAsist);
 
 			// 03-04-2006 RGG cambio en ventanas de Personas JG
 			// Persona JG
 			Hashtable miHash = new Hashtable();
 			miHash.put("IDINSTITUCION",usr.getLocation());
-			miHash.put("ANIO",ocultos.get(0));
-			miHash.put("NUMERO",ocultos.get(1));
+			miHash.put("ANIO",anio);
+			miHash.put("NUMERO",numeroAsist);
 			ScsAsistenciasAdm admi = new ScsAsistenciasAdm(this.getUserBean(request)); 
 			Vector resultadoObj = admi.selectByPK(miHash);
 			ScsAsistenciasBean obj = (ScsAsistenciasBean)resultadoObj.get(0);
@@ -438,8 +459,10 @@ public class BusquedaAsistenciasAction extends MasterAction {
 			}
 			hash.put("idInstitucionJG",usr.getLocation());
 			
-			hash.put("anioASI",ocultos.get(0));
-			hash.put("numeroASI",ocultos.get(1));
+			hash.put("anioASI",anio);
+			hash.put("numeroASI",numeroAsist);
+			//Metemos este atributo para saber los parametro para volver
+			hash.put("jsonVolver",jsonVolver);
 			
 		}
 		// CONCEPTO
@@ -455,9 +478,10 @@ public class BusquedaAsistenciasAction extends MasterAction {
 		hash.put("actionE","/JGR_AsistidoAsistencia.do");
 
 		hash.put("MODO","ver");
-
+		
 		
 		request.setAttribute("asistencia",hash);
+		
 		
 		if ((desdeEjg!=null && desdeEjg.equalsIgnoreCase("si"))||(desdeEJG!=null && desdeEJG.equalsIgnoreCase("si"))){
 			ses.removeAttribute("DATAPAGINADOR");

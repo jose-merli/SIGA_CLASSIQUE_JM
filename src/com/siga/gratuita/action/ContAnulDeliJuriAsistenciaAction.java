@@ -45,6 +45,7 @@ public class ContAnulDeliJuriAsistenciaAction extends MasterAction {
 		// Obtenemos el turno seleccionado para la consulta
 		String anio = request.getParameter("ANIO");
 		String numero = request.getParameter("NUMERO");
+		miForm.setJsonVolver(request.getParameter("jsonVolver"));
 		String select = "SELECT "+
 		" A.ANIO ANIO, A.NUMERO NUMERO, A.CONTRARIOS CONTRARIOS, A.MOTIVOSANULACION, A.FECHAANULACION FECHAANULACION,"+
 		" A.DELITOSIMPUTADOS, A.DATOSDEFENSAJURIDICA FROM"+

@@ -90,12 +90,12 @@ public class ContrariosAsistenciaAction extends MasterAction {
 			HttpServletResponse response) throws ClsExceptions, SIGAException {
 		
 		String anio=null, numero=null, modoPestanha=null;
-
+		ContrariosAsistenciaForm miForm = (ContrariosAsistenciaForm) formulario;
 		//Tomo los datos de la pestanha:
 		anio 	= request.getParameter("ANIO");
 		numero 	= request.getParameter("NUMERO");
 		modoPestanha	= request.getParameter("MODO");
-		
+		miForm.setJsonVolver(request.getParameter("jsonVolver"));
 		// Mandamos estos datos en el request:
 		request.setAttribute("anio", anio);
 		request.setAttribute("numero", numero);

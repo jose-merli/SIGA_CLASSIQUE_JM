@@ -337,6 +337,7 @@ public class DefinirDocumentacionAsistenciaAction extends MasterAction {
 		miForm.setAnio(request.getParameter("anioASI").toString());
 		miForm.setNumero(request.getParameter("numeroASI").toString());
 		miForm.setIdInstitucion(request.getParameter("idInstitucionASI").toString());
+		miForm.setJsonVolver(request.getParameter("jsonVolver"));
 		request.getSession().removeAttribute("DATABACKUP");
 		BusinessManager bm = getBusinessManager();
 		DocumentacionAsistenciaService documentacioAsistenciaService = (DocumentacionAsistenciaService) bm.getService(DocumentacionAsistenciaService.class);
