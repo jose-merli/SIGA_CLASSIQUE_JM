@@ -40,6 +40,12 @@ public interface VoUiService<L, J> {
 	 * @return
 	 */
 	public L getVo2Form(J objectVo );
+	/**
+	 * Metodo que transforma un objeto Vo a un tipo de objeto form
+	 * @param objectVo
+	 * @return
+	 */
+	public L getVo2Form(J objectVo,L  objectForm);
 	
 
 }
