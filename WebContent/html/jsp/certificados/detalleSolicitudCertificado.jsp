@@ -99,7 +99,7 @@
 	if (beanInstitucionDestino != null) {
 		sAbreviaturaInstitucionDestino = beanInstitucionDestino.getAbreviatura();
 	}
-	String deshabilitaCobro = "";
+	String deshabilitaCobro = "",deshabilitaMutualidad="";
 	boolean camposDeshabilitaCobro = false;
 	String deshabilitaDescarga = "";
 	if (idEstadoSolicitud.equals(CerSolicitudCertificadosAdm.K_ESTADO_SOL_PEND)) {
@@ -114,6 +114,7 @@
 			|| idEstadoSolicitud.equals(CerSolicitudCertificadosAdm.K_ESTADO_SOL_ANULADO)) {
 		deshabilitaDescarga = "disabled";
 		deshabilitaCobro = "disabled";
+		deshabilitaMutualidad = "disabled";
 	} 
 	
 	String botones = "";
@@ -138,6 +139,7 @@
 		deshabilitaCobro = "disabled";
 		deshabilitaInfo = "disabled";
 		deshabilitaChecks = "disabled";
+		deshabilitaMutualidad = "disabled";
 		modificarSolicitud="0";
 	}
 
@@ -668,7 +670,7 @@
 					<%if(pintarCheckMutualidad){ %>
 						<tr>
 							<td class="labelText" colspan="10">
-							<div style="float:left"><input type=checkbox name="aceptaCesionMutualidad" <%=aceptaCesion %>/></div>
+							<div style="float:left"><input type=checkbox name="aceptaCesionMutualidad" <%=aceptaCesion %> <%=deshabilitaMutualidad%>/></div>
 							<siga:Idioma key="certificados.solicitudes.literal.textoConformidad" /></td>					
 						</tr>
 					<%} %>
