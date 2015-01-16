@@ -6,7 +6,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.redabogacia.sigaservices.app.autogen.model.GenFichero;
 import org.redabogacia.sigaservices.app.vo.gen.FicheroVo;
 import org.redabogacia.sigaservices.app.vo.scs.DocumentacionEjgVo;
 
@@ -108,6 +107,15 @@ public class FicheroVoService implements VoUiService<FicheroForm, FicheroVo> {
 		
 			
 		return ficheroForm;
+	}
+
+	/* (non-Javadoc)
+	 * @see com.siga.comun.VoUiService#getVo2Form(java.lang.Object, java.lang.Object)
+	 */
+	@Override
+	public FicheroForm getVo2Form(FicheroVo objectVo, FicheroForm objectForm) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 	
