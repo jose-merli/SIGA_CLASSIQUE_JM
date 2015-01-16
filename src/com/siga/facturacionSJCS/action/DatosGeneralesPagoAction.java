@@ -9,6 +9,7 @@
 
 package com.siga.facturacionSJCS.action;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -20,6 +21,8 @@ import java.util.Vector;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.transaction.UserTransaction;
+
+import oracle.sql.DATE;
 
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
@@ -1744,9 +1747,9 @@ public class DatosGeneralesPagoAction extends MasterAction {
 			FcsMovimientosVariosAdm movimientosAdm = new FcsMovimientosVariosAdm(usr);
 
 			Vector movimientos = new  Vector();
-			
+			Vector movimientos_aux = new  Vector();
 			//Se obtienen los movimientos del colegiado que no están asociados ni a una facturación ni a un grupo. (Caso 1)
-			movimientos.addAll(movimientosAdm.getMovimientosRW(movimientosBean.getIdInstitucion().toString(), idPago,movimientosBean.getIdPersona().toString(),null,null,null,FcsMovimientosVariosAdm.CASO_MVNOASOCIADO));
+			movimientos_aux.addAll(movimientosAdm.getMovimientosRW(movimientosBean.getIdInstitucion().toString(), idPago,movimientosBean.getIdPersona().toString(),null,null,null,FcsMovimientosVariosAdm.CASO_MVNOASOCIADO));
 			
 			//Obtiene la facturación del pago y sus grupos.
 			FcsPagosJGAdm fcsPagosJGAdm = new FcsPagosJGAdm(usr);
@@ -1770,20 +1773,106 @@ public class DatosGeneralesPagoAction extends MasterAction {
 			
 				if(idFacturacion!=null){
 					//Se obtienen los movimientos de la facturación que no tienen grupo asociado y que están pendientes de aplicar de la facturación del pago y de facturaciones anteriores
-					movimientos.addAll(movimientosAdm.getMovimientosRW(movimientosBean.getIdInstitucion().toString(), idPago,movimientosBean.getIdPersona().toString(),idFacturacion,GstDate.getFormatedDateShort("es",bFact.getFechaDesde()),null,FcsMovimientosVariosAdm.CASO_MVASOCIADOAFACTURACION));
+					movimientos_aux.addAll(movimientosAdm.getMovimientosRW(movimientosBean.getIdInstitucion().toString(), idPago,movimientosBean.getIdPersona().toString(),idFacturacion,GstDate.getFormatedDateShort("es",bFact.getFechaDesde()),null,FcsMovimientosVariosAdm.CASO_MVASOCIADOAFACTURACION));
 							
 					for (int i = 0; i < facturacionesGruposPagosList.size(); i++) {
 						Hashtable facturacionesGruposPagos = facturacionesGruposPagosList.get(i);
 						String idGrupo = (String) facturacionesGruposPagos.get("IDGRUPOFACTURACION");
 						if((idGrupo!=null)&&(!idGrupo.isEmpty())){
 							//Se obtienen los movimientos del colegiado que tienen idfacturacion <= que la del pago y el grupo = grupo del pago que estamos tratando (Caso 2)
-							movimientos.addAll(movimientosAdm.getMovimientosRW(movimientosBean.getIdInstitucion().toString(), idPago,movimientosBean.getIdPersona().toString(),idFacturacion,GstDate.getFormatedDateShort("es",bFact.getFechaDesde()),idGrupo,FcsMovimientosVariosAdm.CASO_MVASOCIADOAGRUPOFACT));
+							movimientos_aux.addAll(movimientosAdm.getMovimientosRW(movimientosBean.getIdInstitucion().toString(), idPago,movimientosBean.getIdPersona().toString(),idFacturacion,GstDate.getFormatedDateShort("es",bFact.getFechaDesde()),idGrupo,FcsMovimientosVariosAdm.CASO_MVASOCIADOAGRUPOFACT));
 					
 						}
 					}
 				}
 			}
 			
+			//MJM: Ordeno la lista de movimientos por tipo de movimiento (positivo/negativo) y fecha (se hace aquí para no tocar la consulta)					
+            Vector movimientos_positivos=new  Vector();
+            Vector movimientos_negativos=new  Vector();
+            
+            for (int dm=0;dm<movimientos_aux.size();dm++){
+            	if((UtilidadesHash.getDouble(
+								(Hashtable) movimientos_aux.get(dm),
+								FcsMovimientosVariosBean.C_CANTIDAD).doubleValue())>0){
+            		movimientos_positivos.add((Hashtable) movimientos_aux.get(dm));
+            		
+            	}else{
+            		movimientos_negativos.add((Hashtable) movimientos_aux.get(dm));
+            		
+            	}
+            }
+            
+            if(movimientos_positivos.size()>1){
+            	
+	            for (int dp=0;dp<movimientos_positivos.size()-1;dp++){
+
+						for(int dsp=dp+1;dsp<movimientos_positivos.size();dsp++){
+							
+								String fecha = UtilidadesHash.getString(
+									(Hashtable) movimientos_positivos.get(dp),FcsMovimientosVariosBean.C_FECHAALTA);
+								
+								String fechaSig = UtilidadesHash.getString(
+										(Hashtable) movimientos_positivos.get(dsp),
+										FcsMovimientosVariosBean.C_FECHAALTA);
+						
+								//Si la fecha del siguiente movimiento es mayor se intercambia el elemento 
+								if (GstDate.compararFechas(fecha,fechaSig)>0){
+				                    //Intercambiamos valores
+				                    Hashtable mov_aux= (Hashtable) movimientos_positivos.get(dp);
+				                    movimientos_positivos.set(dp,(Hashtable) movimientos_positivos.get(dsp));
+				                    movimientos_positivos.set(dsp,(Hashtable) mov_aux);
+				                    
+				                }
+						
+							
+
+						}
+						
+						
+					
+	            }
+	            
+	            movimientos.addAll(movimientos_positivos);
+            }else{
+            	movimientos.addAll(movimientos_positivos);
+            }
+
+             if(movimientos_negativos.size()>1){
+            	
+	            for (int dn=0;dn<movimientos_negativos.size()-1;dn++){
+
+						for(int dsn=dn+1;dsn<movimientos_negativos.size();dsn++){
+							
+								String fecha = UtilidadesHash.getString(
+									(Hashtable) movimientos_negativos.get(dn),FcsMovimientosVariosBean.C_FECHAALTA);
+								
+								String fechaSig = UtilidadesHash.getString(
+										(Hashtable) movimientos_negativos.get(dsn),
+										FcsMovimientosVariosBean.C_FECHAALTA);
+						
+								//Si la fecha del siguiente movimiento es mayor se intercambia el elemento 
+								if (GstDate.compararFechas(fecha,fechaSig)>0){
+				                    //Intercambiamos valores
+				                    Hashtable mov_aux= (Hashtable) movimientos_negativos.get(dn);
+				                    movimientos_negativos.set(dn,(Hashtable) movimientos_negativos.get(dsn));
+				                    movimientos_negativos.set(dsn,(Hashtable) mov_aux);
+				                    
+				                }
+						
+							
+
+						}
+						
+						
+					
+	            }
+	            
+	            movimientos.addAll(movimientos_negativos);
+            }else{
+            	movimientos.addAll(movimientos_negativos);
+            }
+            
 
 			for (int contador = 0; contador < movimientos.size(); contador++) {
 
