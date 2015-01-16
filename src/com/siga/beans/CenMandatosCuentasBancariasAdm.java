@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Vector;
 
 import com.atos.utils.ClsExceptions;
+import com.atos.utils.GstDate;
 import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
@@ -100,7 +101,7 @@ public class CenMandatosCuentasBancariasAdm extends MasterBeanAdministrador {
 			CenMandatosCuentasBancariasBean.C_ACREEDOR_POBLACION,
 			CenMandatosCuentasBancariasBean.C_DEUDOR_TIPOID,
 			CenMandatosCuentasBancariasBean.C_DEUDOR_ID,
-			CenMandatosCuentasBancariasBean.C_DEUDOR_NOMBRE,
+//			CenMandatosCuentasBancariasBean.C_DEUDOR_NOMBRE,
 			CenMandatosCuentasBancariasBean.C_DEUDOR_DOMICILIO, 
 			CenMandatosCuentasBancariasBean.C_DEUDOR_CODIGOPOSTAL, 
 			CenMandatosCuentasBancariasBean.C_DEUDOR_IDPAIS,
@@ -113,9 +114,9 @@ public class CenMandatosCuentasBancariasAdm extends MasterBeanAdministrador {
 			CenMandatosCuentasBancariasBean.C_FIRMA_LUGAR, 
 			CenMandatosCuentasBancariasBean.C_IDFICHEROFIRMA,
 			CenMandatosCuentasBancariasBean.C_FECHAUSO, 			
-			CenMandatosCuentasBancariasBean.C_IBAN, 
-			CenMandatosCuentasBancariasBean.C_BIC,
-			CenMandatosCuentasBancariasBean.C_BANCO,
+//			CenMandatosCuentasBancariasBean.C_IBAN, 
+//			CenMandatosCuentasBancariasBean.C_BIC,
+//			CenMandatosCuentasBancariasBean.C_BANCO,
 			CenMandatosCuentasBancariasBean.C_FECHAMODIFICACION,
 			CenMandatosCuentasBancariasBean.C_USUMODIFICACION};
 
@@ -446,29 +447,15 @@ public class CenMandatosCuentasBancariasAdm extends MasterBeanAdministrador {
 	public boolean modificarFirmaMandato(CenMandatosCuentasBancariasBean beanMandato) throws ClsExceptions {
 		try {
 			// Calculo la fecha de la firma
-			String sFirmaFecha = "NULL";
+			CenMandatosCuentasBancariasBean beanMandatoOld = (CenMandatosCuentasBancariasBean) (selectByPK(beanToHashTable(beanMandato))).get(0);
+			
+			
 			if (beanMandato.getFirmaFecha()!=null && !beanMandato.getFirmaFecha().equals("")) {
-				sFirmaFecha = "TO_DATE('" + beanMandato.getFirmaFecha() + "', 'DD/MM/YYYY')";
+				beanMandato.setFirmaFecha(GstDate.getApplicationFormatDate(this.usrbean.getLanguage(), beanMandato.getFirmaFecha()));
 			}
 			
-			// Calculo el lugar de la firma
-			String sFirmaLugar = "NULL";
-			if (beanMandato.getFirmaLugar()!=null && !beanMandato.getFirmaLugar().equals("")) {
-				sFirmaLugar = "'" + beanMandato.getFirmaLugar() + "'";
-			}
-			
-			String sql = "UPDATE " + CenMandatosCuentasBancariasBean.T_NOMBRETABLA +
-						" SET " + CenMandatosCuentasBancariasBean.C_FIRMA_FECHA + " = " + sFirmaFecha + ", " +
-							CenMandatosCuentasBancariasBean.C_FIRMA_LUGAR + " = " + sFirmaLugar +  ", " +
-							CenMandatosCuentasBancariasBean.C_USUMODIFICACION + " = " + this.usrbean.getUserName() + ", " +
-							CenMandatosCuentasBancariasBean.C_FECHAMODIFICACION + " = SYSDATE " +							
-						" WHERE " + CenMandatosCuentasBancariasBean.C_IDINSTITUCION + " = " + beanMandato.getIdInstitucion() +
-							" AND " + CenMandatosCuentasBancariasBean.C_IDPERSONA + " = " + beanMandato.getIdPersona() + 
-							" AND " + CenMandatosCuentasBancariasBean.C_IDCUENTA + " = " + beanMandato.getIdCuenta() + 
-							" AND " + CenMandatosCuentasBancariasBean.C_IDMANDATO + " = " + beanMandato.getIdMandato();
-			
-			Row row = new Row();									
-			return (row.updateSQL(sql)>0);
+											
+			return update(beanMandato,beanMandatoOld);
 							
 		} catch(Exception e) {			
 			throw new ClsExceptions (e, "Error al ejecutar el 'select' en B.D.");

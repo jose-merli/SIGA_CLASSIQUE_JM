@@ -1,11 +1,13 @@
 package com.siga.beans;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Vector;
 
 import com.atos.utils.ClsExceptions;
+import com.atos.utils.GstDate;
 import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
@@ -339,48 +341,19 @@ public class CenAnexosCuentasBancariasAdm extends MasterBeanAdministrador {
 	 */
 	public boolean modificarFirmaAnexo(CenAnexosCuentasBancariasBean beanAnexo) throws ClsExceptions {
 		try {
-			// Calculo la fecha de la firma
-			String sFirmaFecha = "NULL";
+			CenAnexosCuentasBancariasBean beanAnexoOld = (CenAnexosCuentasBancariasBean) (selectByPK(beanToHashTable(beanAnexo))).get(0);		
 			if (beanAnexo.getFirmaFecha()!=null && !beanAnexo.getFirmaFecha().equals("")) {
-				sFirmaFecha = "TO_DATE('" + beanAnexo.getFirmaFecha() + "', 'DD/MM/YYYY')";
+				
+				beanAnexo.setFirmaFecha(GstDate.getApplicationFormatDate(this.usrbean.getLanguage(), beanAnexo.getFirmaFecha()));
 			}
 			
-			// Calculo el lugar de la firma
-			String sFirmaLugar = "NULL";
-			if (beanAnexo.getFirmaLugar()!=null && !beanAnexo.getFirmaLugar().equals("")) {
-				sFirmaLugar = "'" + beanAnexo.getFirmaLugar() + "'";
-			}
 			
-			// Calculo el origen de la firma
-			String sFirmaOrigen = "NULL";
-			if (beanAnexo.getOrigen()!=null && !beanAnexo.getOrigen().equals("")) {
-				sFirmaOrigen = "'" + beanAnexo.getOrigen() + "'";
-			}
 			
-			// Calculo la descripcion de la firma
-			String sFirmaDescripcion = "NULL";
-			if (beanAnexo.getDescripcion()!=null && !beanAnexo.getDescripcion().equals("")) {
-				sFirmaDescripcion = "'" + beanAnexo.getDescripcion() + "'";
-			}		
+			return update(beanAnexo,beanAnexoOld);
 			
-			String sql = "UPDATE " + CenAnexosCuentasBancariasBean.T_NOMBRETABLA +
-						" SET " + CenAnexosCuentasBancariasBean.C_FIRMA_FECHA + " = " + sFirmaFecha + ", " +
-							CenAnexosCuentasBancariasBean.C_FIRMA_LUGAR + " = " + sFirmaLugar +  ", " +
-							CenAnexosCuentasBancariasBean.C_ORIGEN + " = " + sFirmaOrigen +  ", " +
-							CenAnexosCuentasBancariasBean.C_DESCRIPCION + " = " + sFirmaDescripcion +  ", " +
-							CenAnexosCuentasBancariasBean.C_USUMODIFICACION + " = " + this.usrbean.getUserName() + ", " +
-							CenAnexosCuentasBancariasBean.C_FECHAMODIFICACION + " = SYSDATE " +							
-						" WHERE " + CenAnexosCuentasBancariasBean.C_IDINSTITUCION + " = " + beanAnexo.getIdInstitucion() +
-							" AND " + CenAnexosCuentasBancariasBean.C_IDPERSONA + " = " + beanAnexo.getIdPersona() + 
-							" AND " + CenAnexosCuentasBancariasBean.C_IDCUENTA + " = " + beanAnexo.getIdCuenta() + 
-							" AND " + CenAnexosCuentasBancariasBean.C_IDMANDATO + " = " + beanAnexo.getIdMandato() +
-							" AND " + CenAnexosCuentasBancariasBean.C_IDANEXO + " = " + beanAnexo.getIdAnexo();
-			
-			Row row = new Row();									
-			return (row.updateSQL(sql)>0);
 							
 		} catch(Exception e) {			
-			throw new ClsExceptions (e, "Error al ejecutar el 'select' en B.D.");
+			throw new ClsExceptions (e, "Error al modificarFirmaAnexo");
 		}		
 	}		
 	
@@ -393,67 +366,26 @@ public class CenAnexosCuentasBancariasAdm extends MasterBeanAdministrador {
 	public void insertarFirmaAnexo(CenAnexosCuentasBancariasBean beanAnexo) throws ClsExceptions {
 		try {
 			// Calculo la fecha de la firma
-			String sFirmaFecha = "NULL";
-			if (beanAnexo.getFirmaFecha()!=null && !beanAnexo.getFirmaFecha().equals("")) {
-				sFirmaFecha = "TO_DATE('" + beanAnexo.getFirmaFecha() + "', 'DD/MM/YYYY')";
-			}
 			
-			// Calculo el lugar de la firma
-			String sFirmaLugar = "NULL";
-			if (beanAnexo.getFirmaLugar()!=null && !beanAnexo.getFirmaLugar().equals("")) {
-				sFirmaLugar = "'" + beanAnexo.getFirmaLugar() + "'";
-			}
-			
-			// Calculo el origen de la firma
-			String sFirmaOrigen = "NULL";
-			if (beanAnexo.getOrigen()!=null && !beanAnexo.getOrigen().equals("")) {
-				sFirmaOrigen = "'" + beanAnexo.getOrigen() + "'";
-			}
-			
-			// Calculo la descripcion de la firma
-			String sFirmaDescripcion = "NULL";
-			if (beanAnexo.getDescripcion()!=null && !beanAnexo.getDescripcion().equals("")) {
-				sFirmaDescripcion = "'" + beanAnexo.getDescripcion() + "'";
-			}
 			
 			// Calculo nuevo identificador de anexo
-			Integer idAnexo = this.getNuevoID(beanAnexo);	
+			Integer idAnexo = this.getNuevoID(beanAnexo);
+			
+			
+			if (beanAnexo.getFirmaFecha()!=null && !beanAnexo.getFirmaFecha().equals("")) {
+				beanAnexo.setFirmaFecha(GstDate.getApplicationFormatDate(this.usrbean.getLanguage(), beanAnexo.getFirmaFecha()));
+			}
 			
 			// Guardo el identificador del anexo en el bean
 			beanAnexo.setIdAnexo(idAnexo.toString());
+			beanAnexo.setUsuCreacion(this.usrbean.getUserName() );
+			beanAnexo.setFechaCreacion("sysdate");
 			
-			String sql = "INSERT INTO " + CenAnexosCuentasBancariasBean.T_NOMBRETABLA + " (" +
-								CenAnexosCuentasBancariasBean.C_IDINSTITUCION + ", " +
-								CenAnexosCuentasBancariasBean.C_IDPERSONA + ", " +
-								CenAnexosCuentasBancariasBean.C_IDCUENTA + ", " +
-								CenAnexosCuentasBancariasBean.C_IDMANDATO + ", " +
-								CenAnexosCuentasBancariasBean.C_IDANEXO + ", " +								
-								CenAnexosCuentasBancariasBean.C_FIRMA_FECHA + ", " +
-								CenAnexosCuentasBancariasBean.C_FIRMA_LUGAR + ", " +
-								CenAnexosCuentasBancariasBean.C_ORIGEN + ", " +
-								CenAnexosCuentasBancariasBean.C_DESCRIPCION + ", " +
-								CenAnexosCuentasBancariasBean.C_USUCREACION + ", " +
-								CenAnexosCuentasBancariasBean.C_FECHACREACION + ", " +								
-								CenAnexosCuentasBancariasBean.C_USUMODIFICACION + ", " +
-								CenAnexosCuentasBancariasBean.C_FECHAMODIFICACION + 
-							") VALUES (" +
-								beanAnexo.getIdInstitucion() + ", " +
-								beanAnexo.getIdPersona() + ", " +
-								beanAnexo.getIdCuenta() + ", " +
-								beanAnexo.getIdMandato() + ", " +
-								idAnexo + ", " +								
-								sFirmaFecha + ", " +
-								sFirmaLugar + ", " +
-								sFirmaOrigen + ", " +
-								sFirmaDescripcion + ", " +
-								this.usrbean.getUserName() + ", " +
-								"SYSDATE, " +
-								this.usrbean.getUserName() + ", " +
-								"SYSDATE)";
 			
-			Row row = new Row();									
-			row.insertSQL(sql);
-							
+			
+			insert(beanAnexo);
+			
+						
 		} catch(Exception e) {			
 			throw new ClsExceptions (e, "Error al insertar un nuevo anexo en B.D.");
 		}		
@@ -505,18 +437,11 @@ public class CenAnexosCuentasBancariasAdm extends MasterBeanAdministrador {
 	 */
 	public boolean borrarFirmaAnexo(CenAnexosCuentasBancariasBean beanAnexo) throws ClsExceptions {
 		try {			
-			String sql = "DELETE " + CenAnexosCuentasBancariasBean.T_NOMBRETABLA +
-						" WHERE " + CenAnexosCuentasBancariasBean.C_IDINSTITUCION + " = " + beanAnexo.getIdInstitucion() +
-							" AND " + CenAnexosCuentasBancariasBean.C_IDPERSONA + " = " + beanAnexo.getIdPersona() + 
-							" AND " + CenAnexosCuentasBancariasBean.C_IDCUENTA + " = " + beanAnexo.getIdCuenta() + 
-							" AND " + CenAnexosCuentasBancariasBean.C_IDMANDATO + " = " + beanAnexo.getIdMandato() +
-							" AND " + CenAnexosCuentasBancariasBean.C_IDANEXO + " = " + beanAnexo.getIdAnexo();
 			
-			Row row = new Row();									
-			return (row.deleteSQL(sql) == 1);
+			return (delete(beanAnexo));
 							
 		} catch(Exception e) {			
-			throw new ClsExceptions (e, "Error al insertar un nuevo anexo en B.D.");
+			throw new ClsExceptions (e, "Error al borrar un nuevo anexo en B.D.");
 		}		
 	}		
 	public boolean asociarFichero(AnexosCuentasBancariasForm anexoMandatosCuentasBancariasForm) throws ClsExceptions {
