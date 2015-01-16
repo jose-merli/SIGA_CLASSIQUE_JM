@@ -180,4 +180,16 @@ public class CuentaBancariaVoService implements VoUiService<CuentasBancariasForm
 			
 		return cuentasBancariasForm;
 	}
+
+
+
+	/* (non-Javadoc)
+	 * @see com.siga.comun.VoUiService#getVo2Form(java.lang.Object, java.lang.Object)
+	 */
+	@Override
+	public CuentasBancariasForm getVo2Form(CuentaBancariaVo objectVo,
+			CuentasBancariasForm objectForm) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }
