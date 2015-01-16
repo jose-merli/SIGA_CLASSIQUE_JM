@@ -441,7 +441,7 @@
 						<input type="text" id="codComisaria" class="box" size="8" style="margin-top: 2px;" maxlength="10" onBlur="obtenerComisaria();" />
 					</td>
 					
-					<td colspan="3" id="tdSelectComisaria">
+					<td id="tdSelectComisaria">
 						<html:select styleClass="boxCombo" style="width:680px;" name="ActuacionAsistenciaFormEdicion" property="idComisaria" styleId="idComisaria" onchange="cambioComisaria();">
 							<bean:define id="comisarias" name="ActuacionAsistenciaForm" property="comisarias" type="java.util.Collection" />
 							<html:optionsCollection name="comisarias" value="idComisaria" label="nombre" />

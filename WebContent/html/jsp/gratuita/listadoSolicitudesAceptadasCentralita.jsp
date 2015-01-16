@@ -18,32 +18,18 @@
 
 <!-- HEAD -->
 
-
-<table style="width:100%;BORDER-COLLAPSE: collapse; TABLE-LAYOUT: fixed; BORDER-SPACING: 0px; VISIBILITY: visible" id="listadoInicial" border="0">
-<tr class="tableTitle" style="height:25px;">
-			   	<th style="width:4%">
-			   		<input type='checkbox' name='chkGeneral' onclick='marcarDesmarcarTodos(this);'/>
-			   	</th>
-			   	<th style="width:8%"><siga:Idioma key='gratuita.mantAsistencias.literal.estado'/></th>
-			   	<th style="width:18%"><siga:Idioma key='gratuita.seleccionColegiadoJG.literal.colegiado'/></th>
-			   	<th style="width:16%"><siga:Idioma key='gratuita.busquedaAsistencias.literal.guardia'/></th>
-			   	<th style="width:14%"><siga:Idioma key='sjcs.solicitudaceptadacentralita.literal.fechaLlamada'/></th>
-			   	<th style="width:18%"><siga:Idioma key='sjcs.solicitudaceptadacentralita.literal.centroDetencion'/></th>
-			   	<th style="width:10%"><siga:Idioma key='gratuita.mantAsistencias.literal.estado'/></th>
-			   	<th style="width:12%">&nbsp;</th>
-			   	
-			   	
-			   	
-		   	</tr>
-
-
-	<div id='listadoArchivosDiv'>
-		
+<siga:Table 		   
+		   name="listadoInicial"
+		   border="1"
+		   columnNames="<input type='checkbox' name='chkGeneral' onclick='marcarDesmarcarTodos(this);'/>,
+		    gratuita.mantAsistencias.literal.estado,gratuita.seleccionColegiadoJG.literal.colegiado,gratuita.busquedaAsistencias.literal.guardia,
+		    sjcs.solicitudaceptadacentralita.literal.fechaLlamada,sjcs.solicitudaceptadacentralita.literal.centroDetencion,gratuita.mantAsistencias.literal.estado,"
+		   columnSizes="4,8,18,16,14,18,10,12">
 		<c:choose>
 			<c:when test="${empty solicitudesAceptadasCentralita}">
-				<td align='center' colspan ="7" >
-					<p class="titulitos" style="text-align:center" ><siga:Idioma key="messages.noRecordFound"/></p>
-				<td>
+				<tr class="notFound">
+			   		<td class="titulitos"><siga:Idioma key="messages.noRecordFound"/></td>
+				</tr>
 			</c:when>
 			<c:otherwise>
 				
@@ -85,8 +71,8 @@
 					</c:forEach>
 			</c:otherwise>
 		</c:choose>
-	</div>	
+	</siga:Table>	
 		
-		</table>
+		
 		
 

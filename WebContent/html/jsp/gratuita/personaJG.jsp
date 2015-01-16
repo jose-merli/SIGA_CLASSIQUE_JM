@@ -250,6 +250,7 @@
 	<script type="text/javascript" src="<html:rewrite page='/html/js/ajaxtags.js'/>"></script>
   	
 	<script type="text/javascript">
+		jQuery.noConflict();
 		String.prototype.trim = function() {
 			return this.replace(/^\s+|\s+$/g,"");
 		}
@@ -1129,6 +1130,7 @@
 	<html:form action="<%=actionE%>" method="POST" target="mainPestanas" styleId="PersonaJGForm">		
 		<html:hidden styleId = "modo"  property = "modo" />
 		<html:hidden styleId = "nuevo" property = "nuevo" value="<%=nuevo%>" />
+		<html:hidden name="PersonaJGForm" property = "jsonVolver" styleId="jsonVolver" />
 		<html:hidden name="PersonaJGForm" property = "accionE" styleId="accionE"/>
 		<html:hidden name="PersonaJGForm" property = "pantalla" styleId = "pantalla"/>
 		<html:hidden name="PersonaJGForm" property = "localizacionE" styleId = "localizacionE" />
@@ -1168,6 +1170,7 @@
 		<html:hidden name="PersonaJGForm" styleId = "idInstitucionASI"  property = "idInstitucionASI" />
 		<html:hidden name="PersonaJGForm" styleId = "anioASI" property = "anioASI" />
 		<html:hidden name="PersonaJGForm" styleId = "numeroASI"  property = "numeroASI" />
+		
 <%
 	} else if (conceptoE.equals(PersonaJGAction.DESIGNACION_INTERESADO)
 		|| conceptoE.equals(PersonaJGAction.DESIGNACION_CONTRARIOS)
@@ -3133,18 +3136,33 @@
 			window.location=window.location;
 		}
 		
+		
 <%} else if (conceptoE.equals(PersonaJGAction.ASISTENCIA_ASISTIDO)) {%>
 
 		function accionVolver()	{
-			<%String sAction = esFichaColegial
-						? "JGR_AsistenciasLetrado.do"
-						: "JGR_Asistencia.do";%>
-			<%// indicamos que es boton volver
-				ses.setAttribute("esVolver", "1");%>
-			document.forms[0].target="mainWorkArea"; 
-			document.forms[0].action 	= "<%=sAction%>";
-			document.forms[0].modo.value= "abrir";
-			document.forms[0].submit();
+			if(document.forms[0].jsonVolver && document.forms[0].jsonVolver.value!=''){
+				jSonVolverValue = document.forms[0].jsonVolver.value;
+				jSonVolverValue = replaceAll(jSonVolverValue,"'", "\"");
+				var jSonVolverObject =  jQuery.parseJSON(jSonVolverValue);
+				nombreFormulario = jSonVolverObject.nombreformulario; 
+				if(nombreFormulario == 'SolicitudAceptadaCentralitaForm'){
+					document.forms['SolicitudAceptadaCentralitaForm'].idSolicitudAceptada.value =  jSonVolverObject.idsolicitudaceptada;
+					document.forms['SolicitudAceptadaCentralitaForm'].idInstitucion.value = jSonVolverObject.idinstitucion;
+					document.forms['SolicitudAceptadaCentralitaForm'].modo.value="consultarSolicitudAceptada";
+					document.forms['SolicitudAceptadaCentralitaForm'].target = "mainWorkArea";
+					document.forms['SolicitudAceptadaCentralitaForm'].submit();
+				}
+			}else{
+				<%String sAction = esFichaColegial
+							? "JGR_AsistenciasLetrado.do"
+							: "JGR_Asistencia.do";%>
+				<%// indicamos que es boton volver
+					ses.setAttribute("esVolver", "1");%>
+				document.forms[0].target="mainWorkArea"; 
+				document.forms[0].action 	= "<%=sAction%>";
+				document.forms[0].modo.value= "abrir";
+				document.forms[0].submit();
+			}
 		}
 		
 
@@ -3913,11 +3931,19 @@ function accionRestablecer()
 			<html:hidden  name="busquedaCensoModalForm" property="modo"/>
 			<html:hidden property = "actionModal" value = ""/>
 	</html:form>	
+	
+	<html:form action="/JGR_GestionSolicitudesAceptadasCentralita.do"  method="POST" target="mainWorkArea">
+		<html:hidden property="modo"/>
+		<html:hidden property="idInstitucion"/>
+		<html:hidden property="idSolicitudAceptada"/>
+	</html:form>
 	<!-- FIN formulario para buscar letrados-->
 	
 <!-- INICIO: SUBMIT AREA -->
 <!-- Obligatoria en todas las páginas-->
 	<iframe name="submitArea2" src="<%=app%>/html/jsp/general/blank.jsp"  style="display:none"></iframe>
-<!-- FIN: SUBMIT AREA -->	
+<!-- FIN: SUBMIT AREA -->
+	
+	
 	</body>
 </html>

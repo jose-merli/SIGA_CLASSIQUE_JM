@@ -128,6 +128,7 @@
 		<html:hidden property = "anio" styleId="anio" value = "<%=ANIO%>"/>	
 		<html:hidden property = "numero" styleId="numero" value = "<%=NUMERO%>"/>	
 		<html:hidden property = "modo" value = ""/>	
+		<html:hidden styleId="jsonVolver" property = "jsonVolver"  />
 		<input type="hidden" name="esFichaColegial" value="<%=sEsFichaColegial%>"/>
 		<fieldset>
 			<table width="100%" border="0">
@@ -178,6 +179,11 @@
 		</fieldset>
 	
 	</html:form>
+	<html:form action="/JGR_GestionSolicitudesAceptadasCentralita.do"  method="POST" target="mainWorkArea">
+		<html:hidden property="modo"/>
+		<html:hidden property="idInstitucion"/>
+		<html:hidden property="idSolicitudAceptada"/>
+	</html:form>
 	
 	<!-- FIN: CAMPOS DE BUSQUEDA-->	
 
@@ -210,16 +216,31 @@
 
 		
 		function accionVolver() {
-			<%
-			// indicamos que es boton volver
-			ses.setAttribute("esVolver","1");
-			%>
-<%
-			String sAction2 = esFichaColegial ? "JGR_AsistenciasLetrado.do" : "JGR_Asistencia.do";
-%>
-			document.forms[0].action = "<%=sAction2%>";
-			document.forms[0].modo.value= "abrir";
-			document.forms[0].submit();
+			if(document.forms[0].jsonVolver && document.forms[0].jsonVolver.value!=''){
+				jSonVolverValue = document.forms[0].jsonVolver.value;
+				jSonVolverValue = replaceAll(jSonVolverValue,"'", "\"");
+				var jSonVolverObject =  jQuery.parseJSON(jSonVolverValue);
+				nombreFormulario = jSonVolverObject.nombreformulario; 
+				if(nombreFormulario == 'SolicitudAceptadaCentralitaForm'){
+					document.forms['SolicitudAceptadaCentralitaForm'].idSolicitudAceptada.value =  jSonVolverObject.idsolicitudaceptada;
+					document.forms['SolicitudAceptadaCentralitaForm'].idInstitucion.value = jSonVolverObject.idinstitucion;
+					document.forms['SolicitudAceptadaCentralitaForm'].modo.value="consultarSolicitudAceptada";
+					document.forms['SolicitudAceptadaCentralitaForm'].target = "mainWorkArea";
+					document.forms['SolicitudAceptadaCentralitaForm'].submit();
+				}
+			}else{
+			
+				<%
+				// indicamos que es boton volver
+				ses.setAttribute("esVolver","1");
+				%>
+	<%
+				String sAction2 = esFichaColegial ? "JGR_AsistenciasLetrado.do" : "JGR_Asistencia.do";
+	%>
+				document.forms[0].action = "<%=sAction2%>";
+				document.forms[0].modo.value= "abrir";
+				document.forms[0].submit();
+			}
 		}
 	</script>
 

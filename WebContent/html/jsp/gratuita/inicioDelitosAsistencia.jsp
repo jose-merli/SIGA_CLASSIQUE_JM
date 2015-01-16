@@ -97,14 +97,19 @@
 	
 	<html:form action = "/JGR_DelitosAsistencia.do" method="POST" target="resultado" style="display:none">
 		<html:hidden property = "modo" value = ""/>
-		<html:hidden property = "actionModal" value = ""/>			
+		<html:hidden property = "actionModal" value = ""/>
+		<html:hidden styleId="jsonVolver" property = "jsonVolver"  />			
 		<!-- Datos de la pestanha -->
 		<html:hidden name="pestanaDelitoAsistenciaForm" property="anio" styleId="anio" />
 		<html:hidden name="pestanaDelitoAsistenciaForm" property="numero" styleId="numero" />
 		<html:hidden name="pestanaDelitoAsistenciaForm" property="delito" styleId="delito" />
 		<input type="hidden" name="esFichaColegial" id="esFichaColegial" value="<%=sEsFichaColegial%>"/>
 	</html:form>
-	
+	<html:form action="/JGR_GestionSolicitudesAceptadasCentralita.do"  method="POST" target="mainWorkArea">
+		<html:hidden property="modo"/>
+		<html:hidden property="idInstitucion"/>
+		<html:hidden property="idSolicitudAceptada"/>
+	</html:form>
 
 	<!-- INICIO: CAPA DE REGISTRO CON MEDIDAS EN EL ESTILO -->
 <%
@@ -213,17 +218,31 @@
 		}
 
 		function accionVolver() {
-			<%
-			// indicamos que es boton volver
-			ses.setAttribute("esVolver","1");
-			%>
-			<%
-			String sAction2 = esFichaColegial ? "JGR_AsistenciasLetrado.do" : "JGR_Asistencia.do";
-			%>
-			document.forms[0].action = "<%=sAction2%>";
-			document.forms[0].target = "mainWorkArea";
-			document.forms[0].modo.value= "abrir";
-			document.forms[0].submit();
+			if(document.forms[0].jsonVolver && document.forms[0].jsonVolver.value!=''){
+				jSonVolverValue = document.forms[0].jsonVolver.value;
+				jSonVolverValue = replaceAll(jSonVolverValue,"'", "\"");
+				var jSonVolverObject =  jQuery.parseJSON(jSonVolverValue);
+				nombreFormulario = jSonVolverObject.nombreformulario; 
+				if(nombreFormulario == 'SolicitudAceptadaCentralitaForm'){
+					document.forms['SolicitudAceptadaCentralitaForm'].idSolicitudAceptada.value =  jSonVolverObject.idsolicitudaceptada;
+					document.forms['SolicitudAceptadaCentralitaForm'].idInstitucion.value = jSonVolverObject.idinstitucion;
+					document.forms['SolicitudAceptadaCentralitaForm'].modo.value="consultarSolicitudAceptada";
+					document.forms['SolicitudAceptadaCentralitaForm'].target = "mainWorkArea";
+					document.forms['SolicitudAceptadaCentralitaForm'].submit();
+				}
+			}else{
+				<%
+				// indicamos que es boton volver
+				ses.setAttribute("esVolver","1");
+				%>
+				<%
+				String sAction2 = esFichaColegial ? "JGR_AsistenciasLetrado.do" : "JGR_Asistencia.do";
+				%>
+				document.forms[0].action = "<%=sAction2%>";
+				document.forms[0].target = "mainWorkArea";
+				document.forms[0].modo.value= "abrir";
+				document.forms[0].submit();
+			}
 		}		
 	</script>
 	<!-- FIN: SCRIPTS BOTONES ACCION -->

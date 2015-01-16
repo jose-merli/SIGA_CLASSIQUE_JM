@@ -200,26 +200,28 @@ else
 <script language="JavaScript">
 
 function cambiarJuzgado() {
-	var combo = document.getElementById("idJuzgado").value;
-	
-	if(combo!="-1"){
-		jQuery.ajax({ //Comunicación jQuery hacia JSP  
-					type: "POST",
-			url: "/SIGA/GEN_Juzgados.do?modo=getAjaxJuzgado3",
-			data: "idCombo="+combo,
-			dataType: "json",
-			success: function(json){		
-    	   		document.getElementById("codigoExtJuzgado").value = json.codigoExt2;      		
-				fin();
-			},
-			error: function(e){
-				alert('Error de comunicación: ' + e);
-				fin();
-			}
-		});
+	if(document.getElementById("idJuzgado")){
+		var combo = document.getElementById("idJuzgado").value;
+		
+		if(combo!="-1"){
+			jQuery.ajax({ //Comunicación jQuery hacia JSP  
+						type: "POST",
+				url: "/SIGA/GEN_Juzgados.do?modo=getAjaxJuzgado3",
+				data: "idCombo="+combo,
+				dataType: "json",
+				success: function(json){		
+	    	   		document.getElementById("codigoExtJuzgado").value = json.codigoExt2;      		
+					fin();
+				},
+				error: function(e){
+					alert('Error de comunicación: ' + e);
+					fin();
+				}
+			});
+		}
+		else
+			document.getElementById("codigoExtJuzgado").value = "";
 	}
-	else
-		document.getElementById("codigoExtJuzgado").value = "";
 }		
 
 function obtenerJuzgado() { 
@@ -473,10 +475,24 @@ function accionRestablecer()
 //Asociada al boton Volver -->
 function accionVolver()   
 {		
- 	document.forms[0].action="/SIGA/JGR_Asistencia.do";	
-	document.forms[0].modo.value="abrir";
-	document.forms[0].target="mainWorkArea"; 
-	document.forms[0].submit(); 	
+	if(document.forms[0].jsonVolver && document.forms[0].jsonVolver.value!=''){
+		jSonVolverValue = document.forms[0].jsonVolver.value;
+		jSonVolverValue = replaceAll(jSonVolverValue,"'", "\"");
+		var jSonVolverObject =  jQuery.parseJSON(jSonVolverValue);
+		nombreFormulario = jSonVolverObject.nombreformulario; 
+		if(nombreFormulario == 'SolicitudAceptadaCentralitaForm'){
+			document.forms['SolicitudAceptadaCentralitaForm'].idSolicitudAceptada.value =  jSonVolverObject.idsolicitudaceptada;
+			document.forms['SolicitudAceptadaCentralitaForm'].idInstitucion.value = jSonVolverObject.idinstitucion;
+			document.forms['SolicitudAceptadaCentralitaForm'].modo.value="consultarSolicitudAceptada";
+			document.forms['SolicitudAceptadaCentralitaForm'].target = "mainWorkArea";
+			document.forms['SolicitudAceptadaCentralitaForm'].submit();
+		}
+	}else{
+		document.forms[0].action="/SIGA/JGR_Asistencia.do";	
+		document.forms[0].modo.value="abrir";
+		document.forms[0].target="mainWorkArea"; 
+		document.forms[0].submit();
+	}
 }
 
 //Asociada al boton Guardar -->
@@ -597,7 +613,7 @@ function bloquearDesbloquear(o)
 
 <table align="center"  border="0" width="100%" class="tablaCampos" >
 <html:form action="/JGR_CaracteristicasAsistenciaLetrado" method="POST" target="mainWorkArea">
-
+<html:hidden styleId="jsonVolver" property = "jsonVolver"  />
 <!-- VARIABLES HIDDEN -->
 <input type="hidden" name="violenciaDomestica" value="<%=violenciaDomestica%>">
 <input type="hidden" name="violenciaGenero" value="<%=violenciaGenero%>">
@@ -979,6 +995,11 @@ function bloquearDesbloquear(o)
 <html:form action="/CEN_BusquedaClientesModal.do" method="POST" target="mainWorkArea" type="" style="display:none">
 		<input type="hidden" name="actionModal" value="">
 		<input type="hidden" name="modo" value="abrirBusquedaModal">
+</html:form>
+<html:form action="/JGR_GestionSolicitudesAceptadasCentralita.do"  method="POST" target="mainWorkArea">
+	<html:hidden property="modo"/>
+	<html:hidden property="idInstitucion"/>
+	<html:hidden property="idSolicitudAceptada"/>
 </html:form>
 
 <iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>

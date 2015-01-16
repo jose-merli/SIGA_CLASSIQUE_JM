@@ -39,6 +39,7 @@
 		
 	<html:form action="${path}" style="display: none">
 		<html:hidden property="modo" value="abrir" />
+		<html:hidden styleId="jsonVolver" property = "jsonVolver"  />
 	</html:form>
 	
 	<table class="tablaTitulo" align="center" cellspacing="0">
@@ -147,6 +148,12 @@
 		<html:hidden property="idTipoAsistencia" styleId="idTipoAsistencia" name="ActuacionAsistenciaFormEdicion" value="${asistencia.idTipoAsistenciaColegio}" />
 		<html:hidden property="idActuacion" styleId="idActuacion" name="ActuacionAsistenciaFormEdicion" />
 		<input type="hidden" name="actionModal" />
+		
+	</html:form>
+	<html:form action="/JGR_GestionSolicitudesAceptadasCentralita.do"  method="POST" target="mainWorkArea">
+		<html:hidden property="modo"/>
+		<html:hidden property="idInstitucion"/>
+		<html:hidden property="idSolicitudAceptada"/>
 	</html:form>
 
 	<iframe name="submitArea" src="<html:rewrite page='/html/jsp/general/blank.jsp'/>" style="display: none"></iframe>
@@ -175,10 +182,24 @@
 		}
 
 		function accionVolver() {
-			document.ActuacionAsistenciaForm.target="mainWorkArea";
-			document.ActuacionAsistenciaForm.action = "/SIGA/JGR_Asistencia.do";
-			document.ActuacionAsistenciaForm.modo.value= "abrir";
-			document.ActuacionAsistenciaForm.submit();
+			if(document.forms[0].jsonVolver && document.forms[0].jsonVolver.value!=''){
+				jSonVolverValue = document.forms[0].jsonVolver.value;
+				jSonVolverValue = replaceAll(jSonVolverValue,"'", "\"");
+				var jSonVolverObject =  jQuery.parseJSON(jSonVolverValue);
+				nombreFormulario = jSonVolverObject.nombreformulario; 
+				if(nombreFormulario == 'SolicitudAceptadaCentralitaForm'){
+					document.forms['SolicitudAceptadaCentralitaForm'].idSolicitudAceptada.value =  jSonVolverObject.idsolicitudaceptada;
+					document.forms['SolicitudAceptadaCentralitaForm'].idInstitucion.value = jSonVolverObject.idinstitucion;
+					document.forms['SolicitudAceptadaCentralitaForm'].modo.value="consultarSolicitudAceptada";
+					document.forms['SolicitudAceptadaCentralitaForm'].target = "mainWorkArea";
+					document.forms['SolicitudAceptadaCentralitaForm'].submit();
+				}
+			}else{
+				document.ActuacionAsistenciaForm.target="mainWorkArea";
+				document.ActuacionAsistenciaForm.action = "/SIGA/JGR_Asistencia.do";
+				document.ActuacionAsistenciaForm.modo.value= "abrir";
+				document.ActuacionAsistenciaForm.submit();
+			}
 		}
 
 		function refrescarLocal() {
