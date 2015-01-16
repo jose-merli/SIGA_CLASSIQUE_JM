@@ -268,7 +268,7 @@ public class SolicitudRetencionAction extends MasterAction {
 		UserTransaction tx=null;
 		
 		String claves[]={ScsRetencionesBean.C_IDRETENCION};
-		String campos[]={ScsRetencionesBean.C_DESCRIPCION,ScsRetencionesBean.C_LETRANIFSOCIEDAD,ScsRetencionesBean.C_RETENCION};
+		String campos[]={ScsRetencionesBean.C_DESCRIPCION,ScsRetencionesBean.C_LETRANIFSOCIEDAD,ScsRetencionesBean.C_RETENCION,ScsRetencionesBean.C_CLAVEM190};
 		
 		SolicitudRetencionForm miForm = (SolicitudRetencionForm) formulario;		
 		ScsRetencionesAdm admBean =  new ScsRetencionesAdm(this.getUserBean(request));

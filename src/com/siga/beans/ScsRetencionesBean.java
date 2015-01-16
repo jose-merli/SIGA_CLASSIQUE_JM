@@ -17,7 +17,7 @@ public class ScsRetencionesBean extends MasterBean {
 	private Integer idRetencion;	
 	private float retencion;	
 	private String letraNifSociedad,	
-					descripcion;
+					descripcion, claveM190;
 	
 	/* Nombre tabla */
 	static public String T_NOMBRETABLA = "SCS_MAESTRORETENCIONES";
@@ -29,6 +29,7 @@ public class ScsRetencionesBean extends MasterBean {
 	static public final String C_LETRANIFSOCIEDAD 		= "LETRANIFSOCIEDAD";
 	static public final String C_RETENCION 				= "RETENCION";	
 	static public final String C_PORDEFECTO 			= "PORDEFECTO";	
+	static public final String C_CLAVEM190 				= "CLAVEM190";	
 	
 	
 	
@@ -118,5 +119,12 @@ public class ScsRetencionesBean extends MasterBean {
 	 */
 	public String  getModo 				()			{ return this.modo;				}
 
+	public String getClaveM190() {
+		return claveM190;
+	}
+
+	public void setClaveM190(String claveM190) {
+		this.claveM190 = claveM190;
+	}
 	
 }

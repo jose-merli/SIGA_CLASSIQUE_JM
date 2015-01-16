@@ -994,6 +994,7 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 		Hashtable importes = new Hashtable();
 		Hashtable irpfs = new Hashtable();
 		Hashtable datos = new Hashtable();
+		Hashtable clavesM190 = new Hashtable();
 		double importeTotal = 0;
 		double irpfTotal = 0;
 		File fichero = null;
@@ -1045,8 +1046,9 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 				select.append(                  FcsPagoColegiadoBean.C_IMPASISTENCIA + " + ");
 				select.append(                  FcsPagoColegiadoBean.C_IMPEJG + " + ");
 				select.append(                  FcsPagoColegiadoBean.C_IMPSOJ + " + ");
-				select.append(                  FcsPagoColegiadoBean.C_IMPMOVVAR + " ) AS TOTALIMPORTEPAGADO ");
-				select.append(" FROM "  + FcsPagoColegiadoBean.T_NOMBRETABLA);
+				select.append(                  FcsPagoColegiadoBean.C_IMPMOVVAR + " ) AS TOTALIMPORTEPAGADO, ");
+				select.append(          " NVL("+ScsRetencionesBean.C_CLAVEM190+",'G01') AS CLAVEM190 ");
+				select.append(" FROM "  + FcsPagoColegiadoBean.T_NOMBRETABLA +", "+ ScsRetencionesBean.T_NOMBRETABLA );
 				select.append(" WHERE " + FcsPagoColegiadoBean.C_IDINSTITUCION + " = " + idInstitucion);
 				select.append(" AND "   + FcsPagoColegiadoBean.C_IDPAGOSJG + " IN (" + sPagos + ")");
 				select.append(" AND "   + FcsPagoColegiadoBean.C_PORCENTAJEIRPF + " > 0 ");
@@ -1054,7 +1056,8 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 				select.append( FcsPagoColegiadoBean.C_IMPASISTENCIA + " > 0 or ");
 				select.append( FcsPagoColegiadoBean.C_IMPEJG + " > 0 or ");
 				select.append( FcsPagoColegiadoBean.C_IMPSOJ + " > 0 ) ");
-				select.append(" GROUP BY " + FcsPagoColegiadoBean.C_IDPERDESTINO);
+				select.append(" AND "   + FcsPagoColegiadoBean.C_PORCENTAJEIRPF + " = " + ScsRetencionesBean.C_RETENCION + "(+)");
+				select.append(" GROUP BY " + FcsPagoColegiadoBean.C_IDPERDESTINO + ", NVL("+ScsRetencionesBean.C_CLAVEM190+",'G01')");
 
 				Vector vIRPF = (Vector) this.selectGenerico(select.toString());
 				if (vIRPF != null && vIRPF.size() > 0) {					
@@ -1063,15 +1066,14 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 						String idPersona = UtilidadesHash.getString(aux, "IDPERSONAIMPRESO");
 						Double importeIRPFPersona = UtilidadesHash.getDouble(aux, "TOTALIMPORTEIRPF");
 						Double importePagadoPersona = UtilidadesHash.getDouble(aux, "TOTALIMPORTEPAGADO");
+						String claveM190 = UtilidadesHash.getString(aux, "CLAVEM190");
 						// Controlamos aqui que el IRPF no sea nulo (SL) para no acumular su importe
 						if (!importeIRPFPersona.equals(new Double(0.0))){ 
 
 							// Datos de la persona
 							Hashtable hashPersona = getDatosPersona(idPersona);
 							
-							//
 							//Control para ver que tenemos todos los datos necesarios para generar el fichero:
-							//
 							String tipoIdentificacion = (String)hashPersona.get("IDTIPOIDENTIFICACION");
 							String nombre = (String)hashPersona.get("NOMBRE");
 							String apellidos1 = (String)hashPersona.get("APELLIDOS1");
@@ -1096,72 +1098,6 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 								hashError.put("ERROR", mensajeError);
 								vErrores.add(hashError);
 							}
-							/**
-							 * Se han comentado las validaciones que son redundantes porque se deberian haber hecho antes
-							 * 
-							 * if (tipoIdentificacion!=null && tipoIdentificacion.equals(String.valueOf(ClsConstants.TIPO_IDENTIFICACION_NIF))){
-							 
-								//NIF=>obligatorio nombre, apellido1, apellido2
-								if (nombre==null || nombre.equals("")) {
-									mensajeError = "ERROR: el nombre es necesario";
-									errorPersona = true;	
-									hashError.put("NOMBRE", "");
-								}							
-								if (apellidos1==null || apellidos1.equals("")) {
-									if (mensajeError.equals(""))
-										mensajeError += "ERROR: el apellidos1 es necesario";
-									else
-										mensajeError += ", el apellidos1 es necesario";
-									errorPersona = true;
-									hashError.put("APELLIDOS1", "");
-								}
-								// Si al apellido 2 es nulo se cambia por un guion, puede tener ambos como apellido1 o
-								// ser una sociedad y no tener apellido2 
-								if (apellidos2==null || apellidos2.equals("")) {
-									if (mensajeError.equals(""))
-										mensajeError += "ERROR: el apellidos2 es necesario";
-									else
-										mensajeError += ", el apellidos2 es necesario";
-									errorPersona = true;
-									hashError.put("APELLIDOS2", "");
-									apellidos2 = "-";
-								}
-								if (errorPersona) {
-									hashError.put("DESCRIPCION_ERROR", mensajeError);
-									vErrores.add(hashError);
-								}
-							} else if (tipoIdentificacion!=null && (tipoIdentificacion.equals(String.valueOf(ClsConstants.TIPO_IDENTIFICACION_TRESIDENTE)) 
-									   || tipoIdentificacion.equals(String.valueOf(ClsConstants.TIPO_IDENTIFICACION_CIF)))) {
-								//NIE/CIF=> obligatorio nombre, apellido1
-								if (nombre==null || nombre.equals("")) {
-									mensajeError = "ERROR: el nombre es necesario";
-									errorPersona = true;
-									hashError.put("NOMBRE", "");
-								}							
-								if (apellidos1==null || apellidos1.equals("")) {
-									if (mensajeError.equals(""))
-										mensajeError += "ERROR: el apellido es necesario";
-									else
-										mensajeError += ", el apellido es necesario";
-									errorPersona = true;
-									hashError.put("APELLIDOS1", "");
-								}
-								if (hayError) {
-									hashError.put("DESCRIPCION_ERROR", mensajeError);
-									vErrores.add(hashError);																						
-								}
-							} else{
-								//ERROR si es de otro tipo
-								hayError = true;
-								if (nombre==null || nombre.equals(""))
-									hashError.put("NOMBRE", "");							
-								if (apellidos1==null || apellidos1.equals(""))
-									hashError.put("APELLIDOS1", "");
-								// if (apellidos2==null || apellidos2.equals(""))
-								//	 hashError.put("APELLIDOS2", "");
-								hashError.put("DESCRIPCION_ERROR", "ERROR: el tipo de Identificacion debe ser NIF, NIE o CIF");
-								vErrores.add(hashError);
-							}*/						
 							
 							//Si no hay error lo añado y recalculo irpfs e importes:
 							if (!hayError) {
@@ -1173,7 +1109,10 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 	
 								// Importe
 								importes.put(idPersona, importePagadoPersona);
-								importeTotal += importePagadoPersona.doubleValue();							
+								importeTotal += importePagadoPersona.doubleValue();		
+								
+								//Claves Modelo 190
+								clavesM190.put(idPersona, claveM190);
 							}
 						}
 					}
@@ -1210,11 +1149,11 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 			if (!hayError)
 				fichero = generarModelo190(sNombreCompletoFichero, anio, telefonoContacto, nombreContacto, 
 					       apellido1Contacto, apellido2Contacto, soporte, codigoProvincia, 
-					       irpfs, importes, datosInstitucion, datos, irpfTotal, importeTotal);				
+					       irpfs, importes, datosInstitucion, datos, irpfTotal, importeTotal,clavesM190);				
 			else {
 				fichero190 = generarModelo190(sNombreCompletoFichero, anio, telefonoContacto, nombreContacto, 
 					       					  apellido1Contacto, apellido2Contacto, soporte, codigoProvincia, 
-											  irpfs, importes, datosInstitucion, datos, irpfTotal, importeTotal);
+											  irpfs, importes, datosInstitucion, datos, irpfTotal, importeTotal,clavesM190);
 				ficheroErrores = generarLogImpreso190(sNombreFicheroErrorLog, vErrores);
 				
 //				FileInputStream inputImpreso190 = null;
@@ -1286,7 +1225,7 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 	private File generarModelo190(String nombreFichero, String anio, String telefonoContacto, String nombreContacto, 
 			String apellido1Contacto, String apellido2Contacto, String soporte, String codigoProvincia, 
 			Hashtable irpfs, Hashtable importes, Hashtable datosInstitucion, Hashtable datos
-			, double irpfTotal, double importeTotal) throws SIGAException, ClsExceptions {
+			, double irpfTotal, double importeTotal,Hashtable clavesM190) throws SIGAException, ClsExceptions {
 	
 		BufferedWriter bw = null;
 		File fichero = null;
@@ -1401,8 +1340,15 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 				linea += formatea(nombrePerceptor,40,false); // nombre de perceptor
 				
 				linea += formatea(codigoProvincia,2,true); // provincia
-				linea += "G"; // clave de registro G (rendimientos de actividaddes economicas)
-				linea += "01"; // subclave de registro 01 (tipo de retencion de caracter general)
+				
+				//CR - Obtenemmos la clave del modelo 190 por cada colegiado
+				String claveM190 = (String)clavesM190.get(persona.toString());				
+				linea += claveM190; 
+				/*
+				 * CR - YA NO SE PONE SIEMPRE ESTO
+				 * linea += "G"; // clave de registro G (rendimientos de actividaddes economicas)
+				 * linea += "01"; // subclave de registro 01 (tipo de retencion de caracter general)
+				 */
 
 				/*
 				 * Esto no hace falta porque desdoblarDouble y formatea ya se encargan de ello

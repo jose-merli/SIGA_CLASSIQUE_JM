@@ -59,17 +59,15 @@ public class ScsRetencionesAdm extends MasterBeanAdministrador {
 		sql.append(lenguaje);
 		sql.append(") ");
 		sql.append(ScsRetencionesBean.C_DESCRIPCION);
-		sql.append(" , LETRANIFSOCIEDAD, RETENCION  "); 
+		sql.append(" , LETRANIFSOCIEDAD, RETENCION,  CLAVEM190 "); 
 		sql.append(" FROM SCS_MAESTRORETENCIONES  WHERE ");
 		sql.append(ScsRetencionesBean.C_IDRETENCION);
 		sql.append(" = :");
 		contador++;
 		htCodigos.put(new Integer(contador), idRetencion);
 		sql.append(contador);
-		
 		   
 		try {
-						
 			
 			Vector datos = this.selectGenericoBind(sql.toString(),htCodigos);
 			//como es por PK
@@ -77,17 +75,15 @@ public class ScsRetencionesAdm extends MasterBeanAdministrador {
 			String descripcion = (String)row.get(ScsRetencionesBean.C_DESCRIPCION);
 			String letra = (String)row.get(ScsRetencionesBean.C_LETRANIFSOCIEDAD);
 			String retencion = (String)row.get(ScsRetencionesBean.C_RETENCION);
+			String claveM190 = (String)row.get(ScsRetencionesBean.C_CLAVEM190);
 			beanRetencion = new ScsRetencionesBean();
 			beanRetencion.setIdRetencion(new Integer(idRetencion));
 			beanRetencion.setDescripcion(descripcion);
 			beanRetencion.setLetraNifSociedad(letra);
 			beanRetencion.setRetencion(new Float(retencion).floatValue());
-			
-			
-			
+			beanRetencion.setClaveM190(claveM190);
 
-		} 
-		catch (Exception e) { 	
+		} catch (Exception e) { 	
 			throw new ClsExceptions (e, "Error al ejecutar el 'select' en B.D."); 
 		}
 		return beanRetencion;
@@ -144,7 +140,8 @@ public class ScsRetencionesAdm extends MasterBeanAdministrador {
 		String sql="SELECT " + ScsRetencionesBean.C_IDRETENCION + ", " +
 				" F_SIGA_GETRECURSO(" + ScsRetencionesBean.C_DESCRIPCION + ", " + lenguaje + ") DESCRIPCION, " +
 				ScsRetencionesBean.C_LETRANIFSOCIEDAD + ", " +
-				ScsRetencionesBean.C_RETENCION + ", " +
+				ScsRetencionesBean.C_RETENCION + ", " + 
+				ScsRetencionesBean.C_CLAVEM190 + ", " +  
 				ScsRetencionesBean.C_FECHAMODIFICACION + ", " +
 				ScsRetencionesBean.C_USUMODIFICACION +
 		   " FROM " + ScsRetencionesBean.T_NOMBRETABLA;
@@ -231,7 +228,7 @@ public class ScsRetencionesAdm extends MasterBeanAdministrador {
 			sql.append("  F_SIGA_GETRECURSO(DESCRIPCION, ");
 			sql.append(idLenguaje);
 			sql.append(") DESCRIPCION ");
-			sql.append(" , LETRANIFSOCIEDAD, RETENCION, FECHAMODIFICACION, USUMODIFICACION   FROM SCS_MAESTRORETENCIONES "); 
+			sql.append(" , LETRANIFSOCIEDAD, RETENCION, CLAVEM190, FECHAMODIFICACION, USUMODIFICACION   FROM SCS_MAESTRORETENCIONES "); 
 			if(where!=null)
 				sql.append(where);
 			
@@ -361,7 +358,8 @@ public class ScsRetencionesAdm extends MasterBeanAdministrador {
 							ScsRetencionesBean.C_LETRANIFSOCIEDAD, 
 							ScsRetencionesBean.C_RETENCION,
 							ScsRetencionesBean.C_FECHAMODIFICACION,
-							ScsRetencionesBean.C_USUMODIFICACION};
+							ScsRetencionesBean.C_USUMODIFICACION,
+							ScsRetencionesBean.C_CLAVEM190};
 		return campos;
 	}
 	
@@ -387,7 +385,8 @@ public class ScsRetencionesAdm extends MasterBeanAdministrador {
 			bean.setLetraNifSociedad(UtilidadesHash.getString(hash,ScsRetencionesBean.C_LETRANIFSOCIEDAD));		
 			bean.setRetencion(Float.parseFloat((String)hash.get(ScsRetencionesBean.C_RETENCION)));
 			bean.setFechaMod(UtilidadesHash.getString(hash,ScsRetencionesBean.C_FECHAMODIFICACION));
-			bean.setUsuMod(UtilidadesHash.getInteger(hash,ScsRetencionesBean.C_USUMODIFICACION));		
+			bean.setUsuMod(UtilidadesHash.getInteger(hash,ScsRetencionesBean.C_USUMODIFICACION));
+			bean.setClaveM190(UtilidadesHash.getString(hash,ScsRetencionesBean.C_CLAVEM190));
 		}		
 		catch (Exception e){
 			 throw new ClsExceptions(e,"EXCEPCION EN TRANSFORMAR HASHTABLE A BEAN");
@@ -411,6 +410,7 @@ public class ScsRetencionesAdm extends MasterBeanAdministrador {
 			htData.put(ScsRetencionesBean.C_DESCRIPCION, b.getDescripcion());
 			htData.put(ScsRetencionesBean.C_FECHAMODIFICACION, b.getFechaMod());
 			htData.put(ScsRetencionesBean.C_USUMODIFICACION, String.valueOf(b.getUsuMod()));
+			htData.put(ScsRetencionesBean.C_CLAVEM190, String.valueOf(b.getClaveM190()));
 		}
 		catch (Exception e){
 			 throw new ClsExceptions(e,"EXCEPCION EN TRANSFORMAR EL BEAN A HASHTABLE");

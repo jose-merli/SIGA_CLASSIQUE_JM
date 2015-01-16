@@ -106,6 +106,19 @@
 										</td>	
 									</tr>
 									
+									<tr>	
+										<td class="labelText">
+											<siga:Idioma key="gratuita.retenciones.clavem190"/>&nbsp;
+										</td>			
+										<td>
+											<%if (accion.equalsIgnoreCase("ver")){%>
+												<html:text name="SolicitudRetencionForm" styleId="claveM190" property="claveM190" size="5" maxlength="10" styleClass="boxConsulta" value="<%=(String)miHash.get(ScsRetencionesBean.C_CLAVEM190)%>" readonly="true"/>
+											<%} else {%>
+												<html:text name="SolicitudRetencionForm" styleId="claveM190" property="claveM190" size="5" maxlength="10" styleClass="box" value="<%=(String)miHash.get(ScsRetencionesBean.C_CLAVEM190)%>"/>
+											<%}%>
+										</td>	
+									</tr>									
+									
 									<tr>
 										<td class="labelText">
 											<siga:Idioma key="gratuita.retenciones.tipoSociedad"/>

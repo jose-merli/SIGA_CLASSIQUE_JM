@@ -114,4 +114,11 @@ import com.siga.general.MasterForm;
  	public String[] getComboSociedades	() 	        { return (String[]) this.datos.get("SOCIEDADES");		
   	}
 	
+ 	public String claveM190;
+
+	public String getClaveM190() {					return (String)this.datos.get(ScsRetencionesBean.C_CLAVEM190); 	}
+
+	public void setClaveM190(String claveM190) {	this.datos.put(ScsRetencionesBean.C_CLAVEM190,claveM190);		}
+ 	
+ 	
 }

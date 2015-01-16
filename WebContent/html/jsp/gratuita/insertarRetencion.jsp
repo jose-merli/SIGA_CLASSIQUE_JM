@@ -84,6 +84,15 @@
 											<html:text name="SolicitudRetencionForm" property="retencion" size="5" maxlength="5" styleClass="boxNumber" value="0.0" />
 										</td>
 									</tr>
+
+									<tr>	
+										<td class="labelText">
+											<siga:Idioma key="gratuita.retenciones.clavem190"/>&nbsp;
+										</td>			
+										<td align="left">
+											<html:text name="SolicitudRetencionForm" styleId="claveM190" property="claveM190" size="5" maxlength="10" styleClass="box"/>
+										</td>	
+									</tr>										
 									
 									<tr>
 										<td class="labelText">
