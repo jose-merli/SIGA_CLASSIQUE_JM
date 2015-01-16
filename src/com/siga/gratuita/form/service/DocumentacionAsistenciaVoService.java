@@ -135,5 +135,16 @@ public class DocumentacionAsistenciaVoService implements VoUiService<DefinirDocu
 		return definirDocumentacionAsistenciaForm;
 	}
 
+	/* (non-Javadoc)
+	 * @see com.siga.comun.VoUiService#getVo2Form(java.lang.Object, java.lang.Object)
+	 */
+	@Override
+	public DefinirDocumentacionAsistenciaForm getVo2Form(
+			DocumentacionAsistenciaVo objectVo,
+			DefinirDocumentacionAsistenciaForm objectForm) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }
 

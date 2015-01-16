@@ -6,8 +6,6 @@ import java.util.List;
 
 import org.redabogacia.sigaservices.app.autogen.model.ScsEjgPrestacionRechazada;
 import org.redabogacia.sigaservices.app.vo.scs.PrestacionRechazadaEjgVo;
-import org.redabogacia.sigaservices.app.vo.services.VoDbService;
-
 
 import com.siga.comun.VoUiService;
 import com.siga.gratuita.form.PrestacionRechazadaEjgForm;
@@ -100,6 +98,19 @@ public class PrestacionRechazadaEjgVoService implements VoUiService<PrestacionRe
 			prestacionesRechazadasForm.setEjgNumero(objectVo.getNumero().toString());
 			
 		return prestacionesRechazadasForm;
+	}
+
+
+
+	/* (non-Javadoc)
+	 * @see com.siga.comun.VoUiService#getVo2Form(java.lang.Object, java.lang.Object)
+	 */
+	@Override
+	public PrestacionRechazadaEjgForm getVo2Form(
+			PrestacionRechazadaEjgVo objectVo,
+			PrestacionRechazadaEjgForm objectForm) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 

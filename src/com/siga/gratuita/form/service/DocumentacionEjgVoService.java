@@ -177,6 +177,16 @@ public class DocumentacionEjgVoService implements VoUiService<DefinirDocumentaci
 		return definirDocumentacionEJGForm;
 	}
 
+	/* (non-Javadoc)
+	 * @see com.siga.comun.VoUiService#getVo2Form(java.lang.Object, java.lang.Object)
+	 */
+	@Override
+	public DefinirDocumentacionEJGForm getVo2Form(DocumentacionEjgVo objectVo,
+			DefinirDocumentacionEJGForm objectForm) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 
 
 	
