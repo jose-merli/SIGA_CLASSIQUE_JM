@@ -18,6 +18,7 @@
 
 package com.siga.general;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -31,6 +32,8 @@ import javax.transaction.UserTransaction;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.redabogacia.sigaservices.app.util.ReadProperties;
 import org.redabogacia.sigaservices.app.util.SIGAReferences;
 
@@ -38,7 +41,9 @@ import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsLogging;
 import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
+import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesString;
+import com.siga.beans.CenClienteAdm;
 
 
 public abstract class MasterAction extends SIGAAuxAction {
@@ -49,6 +54,7 @@ public abstract class MasterAction extends SIGAAuxAction {
 	public final String paginadorModal = "DATAPAGINADORMODAL";
 	public final String paginadorPenstania = "DATAPAGINADORPESTANIA";
 	protected final String separador = "||";
+	public final String dataBusqueda = "DATABUSQUEDA";
 	//public final String sPrefijoDownload = "download:/";
 	
 	
@@ -643,6 +649,15 @@ public abstract class MasterAction extends SIGAAuxAction {
 		
 		
 	}
+	protected String getIdBusqueda(String busqueda,String nameClass){
+		StringBuffer idPaginador = new StringBuffer();
+		idPaginador.append(busqueda);
+		idPaginador.append("_");
+		idPaginador.append(nameClass.substring(nameClass.lastIndexOf(".")+1).toUpperCase());
+		return idPaginador.toString();
+		
+		
+	}
 	protected void borrarPaginador(HttpServletRequest request,String paginador) throws SIGAException {
 		//Cada vez que se da al boton buscar, se borra el paginador guardado en sesion para luego cargarlo con nuevos criterios
 		request.getSession().removeAttribute(paginador);
@@ -787,4 +802,55 @@ public abstract class MasterAction extends SIGAAuxAction {
 		}
 		return comboList;
 	}
+	
+	protected void getColegiadoAjax (ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+		String colegiadoNumero = request.getParameter("colegiadoNumero");
+		String idInstitucion = request.getParameter("idInstitucion");
+		UsrBean usrBean = this.getUserBean(request);
+		Hashtable<String, Object> htCliente = null;
+		if(colegiadoNumero!= null && !colegiadoNumero.equals("")){
+			CenClienteAdm admCli = new CenClienteAdm(usrBean);
+			Vector<Hashtable<String, Object>> vClientes = null;
+			try {
+				vClientes = admCli.getClientePorNColegiado(idInstitucion,colegiadoNumero);
+			} catch (ClsExceptions e) {
+				throw new SIGAException("process.database_error"+e);
+			}
+			if(vClientes!=null &&vClientes.size()>0)
+				htCliente = vClientes.get(0);
+		}
+		String colegiadoNombre = null;
+		String idPersona = null;
+		
+		if(htCliente!=null){
+			colegiadoNombre = (String)htCliente.get("NOMCOLEGIADO");
+			idPersona = (String)htCliente.get("IDPERSONA");
+			
+		}else{
+			colegiadoNombre = "";
+			idPersona = "";
+			colegiadoNumero = "";
+		}
+		
+	
+		JSONObject json = new JSONObject();	
+		try {
+			json.put("colegiadoNombre", colegiadoNombre);
+			json.put("colegiadoNumero", colegiadoNumero);
+			json.put("idPersona", idPersona);
+			
+			response.setContentType("text/x-json;charset=UTF-8");
+			response.setHeader("Cache-Control", "no-cache");
+			response.setHeader("Content-Type", "application/json");
+		    response.setHeader("X-JSON", json.toString());
+			response.getWriter().write(json.toString()); 	
+		} catch (JSONException e) {
+			throw new SIGAException("process.json_error",e);
+		} catch (IOException e) {
+			throw new SIGAException("process.io_error",e);
+		}
+		
+				
+	}
+	
 }
