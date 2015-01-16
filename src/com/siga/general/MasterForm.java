@@ -209,7 +209,21 @@ public class MasterForm extends AuxForm  {
 		this.rutaFichero = rutaFichero;
 	}
 
-	
+	private String jsonVolver;
+	/**
+	 * @return the jsonVolver
+	 */
+	public String getJsonVolver() {
+		return jsonVolver;
+	}
+
+	/**
+	 * @param jsonVolver the jsonVolver to set
+	 */
+	public void setJsonVolver(String jsonVolver) {
+		this.jsonVolver = jsonVolver;
+	}
+
 	
 	
 	
