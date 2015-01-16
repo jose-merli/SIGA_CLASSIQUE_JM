@@ -216,9 +216,8 @@ public class FcsMovimientosVariosAdm extends MasterBeanAdministrador {
 	}
 	
 	/**
-	 * Devuelve un vector con los movimientos varios que hay que pagar para una persona ordenados por fecha de alta
-	 * utilizando el pool RW
-	 * 
+	 * Devuelve un vector con los movimientos varios que hay que pagar para una persona
+	 * ordenados por fecha de alta utilizando el pool RW
 	 * @param idInstitucion
 	 * @param idPago
 	 * @param idPersona
@@ -232,7 +231,7 @@ public class FcsMovimientosVariosAdm extends MasterBeanAdministrador {
 			String idGrupoFacturacion,
 			int caso) throws ClsExceptions
 	{
-		// donde devolveremos el resultado
+				// donde devolveremos el resultado
 		Vector resultado = new Vector();
 		StringBuilder consulta, consultaPorFacturacion;
 
@@ -245,8 +244,9 @@ public class FcsMovimientosVariosAdm extends MasterBeanAdministrador {
 		consulta.append("       M." + FcsMovimientosVariosBean.C_CANTIDAD + " " + FcsMovimientosVariosBean.C_CANTIDAD + ", ");
 		consulta.append("       M." + FcsMovimientosVariosBean.C_IDFACTURACION + " " + FcsMovimientosVariosBean.C_IDFACTURACION + ",");
 		consulta.append("       M." + FcsMovimientosVariosBean.C_IDGRUPOFACTURACION + " " + FcsMovimientosVariosBean.C_IDGRUPOFACTURACION + ",");
-		consulta.append("       nvl(a." + FcsAplicaMovimientosVariosBean.C_IMPORTEAPLICADO + ",0) " + FcsAplicaMovimientosVariosBean.C_IMPORTEAPLICADO + ", ");
+		consulta.append("      sum( nvl(a." + FcsAplicaMovimientosVariosBean.C_IMPORTEAPLICADO + ",0)) " + FcsAplicaMovimientosVariosBean.C_IMPORTEAPLICADO + ", ");
 		consulta.append("       M." + FcsMovimientosVariosBean.C_FECHAMODIFICACION + " " + FcsMovimientosVariosBean.C_FECHAMODIFICACION + ", ");
+		consulta.append("       trunc(M." + FcsMovimientosVariosBean.C_FECHAALTA + ") " + FcsMovimientosVariosBean.C_FECHAALTA + ", ");
 		consulta.append("       M." + FcsMovimientosVariosBean.C_USUMODIFICACION + " " + FcsMovimientosVariosBean.C_USUMODIFICACION + " ");
 		consulta.append("  FROM " + FcsMovimientosVariosBean.T_NOMBRETABLA + " M ");
 		consulta.append("  left join " + FcsAplicaMovimientosVariosBean.T_NOMBRETABLA + " a on ");
@@ -294,8 +294,10 @@ public class FcsMovimientosVariosAdm extends MasterBeanAdministrador {
 		consulta.append("          M." + FcsMovimientosVariosBean.C_IDFACTURACION + ", ");
 		consulta.append("          M." + FcsMovimientosVariosBean.C_IDGRUPOFACTURACION + " ");
 		consulta.append("having abs (m." + FcsMovimientosVariosBean.C_CANTIDAD + ") > ");
-		consulta.append("       sum (nvl(a." + FcsAplicaMovimientosVariosBean.C_IMPORTEAPLICADO + "), 0)");
-
+		
+		consulta.append("       sum (nvl(a." + FcsAplicaMovimientosVariosBean.C_IMPORTEAPLICADO +",0))"); 
+		
+		
 		consulta.append(" ORDER BY case when (m." + FcsMovimientosVariosBean.C_CANTIDAD + "> 0) ");
 		consulta.append("               then '1'");
 		consulta.append("               else '2'");
