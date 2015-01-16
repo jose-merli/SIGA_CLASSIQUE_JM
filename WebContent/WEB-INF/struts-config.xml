@@ -350,6 +350,8 @@
 		<form-bean name="CuentasBancariasForm" type="com.siga.facturacion.form.CuentasBancariasForm"/>
 		<form-bean name="PrestacionRechazadaEjgForm" type="com.siga.gratuita.form.PrestacionRechazadaEjgForm"/>
 		<form-bean name="ComunicacionesForm" type="com.siga.gratuita.form.ComunicacionesForm"/>
+		<form-bean name="SolicitudAceptadaCentralitaForm" type="com.siga.gratuita.form.SolicitudAceptadaCentralitaForm"/>
+		
 		
 	</form-beans>
 
@@ -3460,7 +3462,16 @@
 			<forward name="inicio" path="/html/jsp/gratuita/pestanasCenSJCSRetIRPFNoColegiado.jsp"/>
 		</action>
 		
-		<action path="/JGR_FicherosDocumentacionEjg"/>							
+		<action path="/JGR_FicherosDocumentacionEjg"/>			
+		
+		<action path="/JGR_GestionSolicitudesAceptadasCentralita" type="com.siga.gratuita.action.GestionSolicitudesAceptadasCentralitaAction" name="SolicitudAceptadaCentralitaForm" scope="request">
+			<forward name="inicio" path="/html/jsp/gratuita/gestionSolitudesAceptadasCentralita.jsp"/>
+			<forward name="listado" path="/html/jsp/gratuita/listadoSolicitudesAceptadasCentralita.jsp"/>
+			<forward name="consultarSolicitudAceptada" path="/html/jsp/gratuita/editarSolicitudAceptadaCentralita.jsp"/>
+			<forward name="validarSolicitudAceptada" path="/html/jsp/gratuita/editarSolicitudAceptadaCentralita.jsp"/>
+			
+		</action>
+						
 		<action path="/ENV_Enviar" type="com.siga.envios.action.DefinirEnviosAction" name="DefinirEnviosForm" scope="session"/>
 		<!-- ****************************************************************************
 -->

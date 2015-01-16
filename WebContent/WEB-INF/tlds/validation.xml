@@ -4873,7 +4873,113 @@
 					<var-value>20</var-value>
 				</var>					
 			</field>
-		</form>        
+		</form>     
+		<form name="SolicitudAceptadaCentralitaForm">  
+            <field property = "idSolicitudAceptada" depends = "required,integer">
+                <arg0 key="gratuita.busquedaAsistencias.literal.idAvisoCentralita"/>
+            </field>
+            <field property = "idInstitucion" depends = "required">
+                <arg0 key="gratuita.busquedaAsistencias.literal.idAvisoCentralita"/>
+            </field>
+            <field property = "idTurno" depends = "required">
+                <arg0 key="gratuita.busquedaAsistencias.literal.turno"/>
+            </field>
+            <field property = "idGuardia" depends = "required,integer">
+                <arg0 key="gratuita.busquedaAsistencias.literal.guardia"/>
+            </field>
+            <field property = "idPersona" depends = "required,integer">
+                <arg0 key="gratuita.volantesExpres.literal.letradosGuardia"/>
+            </field>
+            <field property = "idTipoAsistenciaColegio" depends = "required">
+                <arg0 key="gratuita.busquedaAsistencias.literal.tipoAsistenciaColegio"/>
+		     </field>
+			<field property="solicitanteNombre" depends="maxlength">
+				<arg0 key="gratuita.personaJG.literal.nombre" />
+				<arg1 key="${var:maxlength}" name="maxlength" resource="false" />
+				<var>
+					<var-name>maxlength</var-name>
+					<var-value>100</var-value>
+				</var>
+			</field>
+		
+			<field property="solicitanteApellido1" depends="maxlength">
+				<arg0 key="gratuita.busquedaSOJ.literal.apellido1" />
+				<arg1 key="${var:maxlength}" name="maxlength" resource="false" />
+				<var>
+					<var-name>maxlength</var-name>
+					<var-value>100</var-value>
+				</var>
+			</field>
+		
+			<field property="solicitanteApellido2" depends="maxlength">
+				<arg0 key="gratuita.personaJG.literal.apellido2" />
+				<arg1 key="${var:maxlength}" name="maxlength" resource="false" />
+				<var>
+					<var-name>maxlength</var-name>
+					<var-value>100</var-value>
+				</var>
+			</field>
+		
+			<field property="solicitanteCodPostal" depends="maxlength,mask">
+				<arg0 key="gratuita.personaJG.literal.cp" />
+				<arg1 key="${var:maxlength}" name="maxlength" resource="false" />
+				<var>
+					<var-name>maxlength</var-name>
+					<var-value>5</var-value>
+				</var>
+				<var>
+					<var-name>mask</var-name>
+					<var-value>^[0-9]*$</var-value>
+				</var>
+			</field>
+			<field property="solicitanteDireccion" depends="maxlength">
+				<arg0 key="gratuita.personaJG.literal.direccion" />
+				<arg1 key="${var:maxlength}" name="maxlength" resource="false" />
+				<var>
+					<var-name>maxlength</var-name>
+					<var-value>100</var-value>
+				</var>
+			</field>
+		
+			<field property="solicitanteCorreoElectronico" depends="maxlength,email">
+				<arg0 key="censo.SolicitudIncorporacion.literal.email" />
+				<arg1 key="${var:maxlength}" name="maxlength" resource="false" />
+				<var>
+					<var-name>maxlength</var-name>
+					<var-value>100</var-value>
+				</var>
+			</field>
+		
+			<field property="solicitanteFax" depends="mask">
+				<msg name="mask" key="errors.telefono" />
+				<arg0 key="censo.preferente.fax" />
+				<var>
+					<var-name>mask</var-name>
+					<var-value>${telefonoSIGA}</var-value>
+				</var>
+			</field>
+			<field property="solicitanteTelefono" depends="maxlength, mask">
+				<msg name="mask" key="errors.telefono" />
+				<arg0 key="gratuita.operarDatosBeneficiario.literal.numeroTelefono" />
+				<arg1 key="${var:maxlength}" name="maxlength" resource="false" />
+				<arg2 key="${var:minlength}" name="minlength" resource="false" />
+				<var>
+					<var-name>maxlength</var-name>
+					<var-value>14</var-value>
+				</var>
+				<var>
+					<var-name>minlength</var-name>
+					<var-value>9</var-value>
+				</var>
+				<var>
+					<var-name>mask</var-name>
+					<var-value>${telefonoSIGA}</var-value>
+				</var>
+			</field>
+        
+            
+            
+        </form>   
 	</formset>
 
     <!-- An example formset for another locale
