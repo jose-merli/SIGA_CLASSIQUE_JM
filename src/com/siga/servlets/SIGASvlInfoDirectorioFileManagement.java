@@ -1,6 +1,7 @@
 package com.siga.servlets;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
@@ -14,6 +15,8 @@ import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUpload;
 
 import com.atos.utils.ClsLogging;
+import com.siga.Utilidades.UtilidadesFicheros;
+import com.siga.Utilidades.UtilidadesString;
 
 public class SIGASvlInfoDirectorioFileManagement extends SIGASvlDownloadFile {
 	 
@@ -32,6 +35,9 @@ public class SIGASvlInfoDirectorioFileManagement extends SIGASvlDownloadFile {
     	}
     	if(accion==null || accion.equals("")){
     		descargarFichero(request,response);
+    	}else if(accion.equals("borrar")){
+    		deleteFichero(request,response);
+    		/* La funcion descargarFichero contiene el borrado */
     	}else{
     		uploadFichero(request,response);
     		/* La funcion descargarFichero contiene el borrado */
@@ -87,5 +93,61 @@ public class SIGASvlInfoDirectorioFileManagement extends SIGASvlDownloadFile {
 			 	String app=req.getContextPath();
 			 	res.sendRedirect(app+"/html/jsp/general/infoDirectorio.jsp");
 		    }
+	 }
+	 
+	 public void deleteFichero (HttpServletRequest request, HttpServletResponse res)	throws ServletException, IOException{
+		
+		
+        	
+    	String sNombreFichero = (String)request.getAttribute("nombreFichero");
+    	String sRutaFichero = (String)request.getAttribute("rutaFichero");
+
+    	// El nombre del fichero y la ruta vienen por parametros
+    	if (sNombreFichero == null) {
+	    	sNombreFichero = (String)request.getParameter("nombreFichero");
+    	}
+    	if (sRutaFichero == null) {
+    		sRutaFichero = (String)request.getParameter("rutaFichero");
+    	}
+    	
+	    try
+        {
+	    	// traducri un fichero con espacios.
+	    	sRutaFichero = UtilidadesString.replaceAllIgnoreCase(sRutaFichero,"+"," ");
+	    	
+	        ClsLogging.writeFileLog("SERVLET DESCARGA > Ruta fichero a descargar: " + sRutaFichero, request, 10);
+	
+	       
+	        ClsLogging.writeFileLog("SERVLET DESCARGA > OK ", request, 10);
+	        File directorio = null;
+	       
+	        ClsLogging.writeFileLog("SERVLET DESCARGA > Se va a borrar el fichero de la ruta "+sRutaFichero, request, 10);
+	           
+	        File f= new File(sRutaFichero);
+	        directorio = f.getParentFile();
+	        if (f.delete())
+	        	ClsLogging.writeFileLog("SERVLET DESCARGA > Fichero borrado por peticion de la ruta "+sRutaFichero, request, 10);
+	        else
+	        	ClsLogging.writeFileLog("SERVLET DESCARGA > NO se ha borrado el fichero en la ruta "+sRutaFichero, request, 10);
+	 
+        	if(directorio !=null && directorio.list().length==0){
+        	
+        		if(directorio.delete())
+        			ClsLogging.writeFileLog("SERVLET DESCARGA > Directorio borrado por estar vacio de la ruta "+directorio.getPath(), request, 10);
+        		else
+		        	ClsLogging.writeFileLog("SERVLET DESCARGA > No se ha borrado el directorio en la ruta "+directorio.getPath(), request, 10);
+        	}
+	        	
+	    } catch (Exception e) {
+	        ClsLogging.writeFileLogError("InfoDirectorio Delete Servlet: General Error: \n" + e.getMessage(),e, 3);
+	    }
+	    finally {
+	        /* El siguiente codigo permite retornar a infoDirectorio en el directorio en el que se ha añadido
+			   el archivo*/
+			request.getSession().setAttribute("mensajeOK", "Fichero grabado");
+			request.getSession().setAttribute("path", sRutaFichero);
+		 	String app=request.getContextPath();
+		 	res.sendRedirect(app+"/html/jsp/general/infoDirectorio.jsp");
+	    }
 	 }
 }
