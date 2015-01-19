@@ -1809,12 +1809,12 @@ public class DatosGeneralesPagoAction extends MasterAction {
 
 						for(int dsp=dp+1;dsp<movimientos_positivos.size();dsp++){
 							
-								String fecha = UtilidadesHash.getString(
-									(Hashtable) movimientos_positivos.get(dp),FcsMovimientosVariosBean.C_FECHAALTA);
-								
-								String fechaSig = UtilidadesHash.getString(
+								String fecha = GstDate.getFormatedDateShort("es",UtilidadesHash.getString(
+									(Hashtable) movimientos_positivos.get(dp),FcsMovimientosVariosBean.C_FECHAALTA));
+																
+								String fechaSig = GstDate.getFormatedDateShort("es",UtilidadesHash.getString(
 										(Hashtable) movimientos_positivos.get(dsp),
-										FcsMovimientosVariosBean.C_FECHAALTA);
+										FcsMovimientosVariosBean.C_FECHAALTA));
 						
 								//Si la fecha del siguiente movimiento es mayor se intercambia el elemento 
 								if (GstDate.compararFechas(fecha,fechaSig)>0){
@@ -1844,12 +1844,12 @@ public class DatosGeneralesPagoAction extends MasterAction {
 
 						for(int dsn=dn+1;dsn<movimientos_negativos.size();dsn++){
 							
-								String fecha = UtilidadesHash.getString(
-									(Hashtable) movimientos_negativos.get(dn),FcsMovimientosVariosBean.C_FECHAALTA);
-								
-								String fechaSig = UtilidadesHash.getString(
+								String fecha = GstDate.getFormatedDateShort("es",UtilidadesHash.getString(
+									(Hashtable) movimientos_negativos.get(dn),FcsMovimientosVariosBean.C_FECHAALTA));
+																
+								String fechaSig = GstDate.getFormatedDateShort("es",UtilidadesHash.getString(
 										(Hashtable) movimientos_negativos.get(dsn),
-										FcsMovimientosVariosBean.C_FECHAALTA);
+										FcsMovimientosVariosBean.C_FECHAALTA));
 						
 								//Si la fecha del siguiente movimiento es mayor se intercambia el elemento 
 								if (GstDate.compararFechas(fecha,fechaSig)>0){

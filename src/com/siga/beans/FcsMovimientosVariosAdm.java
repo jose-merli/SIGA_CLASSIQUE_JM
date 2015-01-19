@@ -246,7 +246,7 @@ public class FcsMovimientosVariosAdm extends MasterBeanAdministrador {
 		consulta.append("       M." + FcsMovimientosVariosBean.C_IDGRUPOFACTURACION + " " + FcsMovimientosVariosBean.C_IDGRUPOFACTURACION + ",");
 		consulta.append("      sum( nvl(a." + FcsAplicaMovimientosVariosBean.C_IMPORTEAPLICADO + ",0)) " + FcsAplicaMovimientosVariosBean.C_IMPORTEAPLICADO + ", ");
 		consulta.append("       M." + FcsMovimientosVariosBean.C_FECHAMODIFICACION + " " + FcsMovimientosVariosBean.C_FECHAMODIFICACION + ", ");
-		consulta.append("       trunc(M." + FcsMovimientosVariosBean.C_FECHAALTA + ") " + FcsMovimientosVariosBean.C_FECHAALTA + ", ");
+		consulta.append("       M." + FcsMovimientosVariosBean.C_FECHAALTA + " " + FcsMovimientosVariosBean.C_FECHAALTA + ", ");
 		consulta.append("       M." + FcsMovimientosVariosBean.C_USUMODIFICACION + " " + FcsMovimientosVariosBean.C_USUMODIFICACION + " ");
 		consulta.append("  FROM " + FcsMovimientosVariosBean.T_NOMBRETABLA + " M ");
 		consulta.append("  left join " + FcsAplicaMovimientosVariosBean.T_NOMBRETABLA + " a on ");
