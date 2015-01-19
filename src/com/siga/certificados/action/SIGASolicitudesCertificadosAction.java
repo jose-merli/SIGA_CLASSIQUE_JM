@@ -2,6 +2,7 @@ package com.siga.certificados.action;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
@@ -17,9 +18,17 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.json.JSONObject;
+import org.redabogacia.sigaservices.app.AppConstants;
+import org.redabogacia.sigaservices.app.AppConstants.GEN_PROPERTIES;
+import org.redabogacia.sigaservices.app.AppConstants.MODULO;
+import org.redabogacia.sigaservices.app.AppConstants.PARAMETRO;
 import org.redabogacia.sigaservices.app.autogen.model.CerSolicitudcertificadostexto;
 import org.redabogacia.sigaservices.app.autogen.model.CerSolicitudcertificadostextoExample;
+import org.redabogacia.sigaservices.app.exceptions.BusinessException;
+import org.redabogacia.sigaservices.app.helper.SIGAServicesHelper;
 import org.redabogacia.sigaservices.app.services.cer.CerSolicitudCertificadosTextoService;
+import org.redabogacia.sigaservices.app.services.gen.GenParametrosService;
+import org.redabogacia.sigaservices.app.services.helper.SigaServiceHelperService;
 import org.redabogacia.sigaservices.app.services.mutualidad.MutualidadService;
 import org.redabogacia.sigaservices.app.util.ReadProperties;
 import org.redabogacia.sigaservices.app.util.SIGAReferences;
@@ -2231,11 +2240,17 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 									} else {
 										tx.commit();
 										
-										//*********************  FIN CERTIFICADO     **********************//
-										if(beanSolicitud.getAceptaCesionMutualidad() != null && beanSolicitud.getAceptaCesionMutualidad().equals("1")){
-											MutualidadService service = (MutualidadService) BusinessManager.getInstance().getService(MutualidadService.class);
-											service.insertarFinalizacionCertificado(productoSolicitadoBean.getIdPersona(),beanSolicitud.getIdInstitucionOrigen());
+										/**********************************  ENVIO A LA MUTUALIDAD     ******************************/
+										try {
+											if(beanSolicitud.getAceptaCesionMutualidad() != null && beanSolicitud.getAceptaCesionMutualidad().equals("1")){
+												MutualidadService service = (MutualidadService) BusinessManager.getInstance().getService(MutualidadService.class);
+												service.insertarFinalizacionCertificado(productoSolicitadoBean.getIdPersona(),beanSolicitud.getIdInstitucionOrigen());
+											}
+										} catch (Exception e) {											
+											e.printStackTrace();
+											this.enviarEmailResumenEnvios(nombre+" "+apellido1+" "+apellido2,productoSolicitadoBean.getIdPersona().toString(),e);
 										}
+										/**********************************  FIN ENVIO A LA MUTUALIDAD     ******************************/
 									}
 								} catch (Exception e) {
 									tx.rollback();
@@ -2260,6 +2275,33 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
         }
         
 	}
+	
+	private void enviarEmailResumenEnvios(String nombre, String idPersona, Exception e)	throws BusinessException {
+		try {			
+			SigaServiceHelperService serviceHelperService = (SigaServiceHelperService) BusinessManager.getInstance().getService(SigaServiceHelperService.class);
+			GenParametrosService genParametrosService = (GenParametrosService) BusinessManager.getInstance().getService(GenParametrosService.class);
+    	   
+			String from = genParametrosService.getValorParametro(AppConstants.IDINSTITUCION_2000, PARAMETRO.MUTUALIDAD_MAILFALLOINSERCION_FROM,MODULO.ECOM);
+    	    String bcc = genParametrosService.getValorParametro(AppConstants.IDINSTITUCION_2000, PARAMETRO.MUTUALIDAD_MAILFALLOINSERCION_BCC,MODULO.ECOM);
+    	    String[] bccArray = bcc.split(";"); 
+    	    String asunto = "[SIGA - MUTUALIDAD] Fallo en la inserción en EcomMutualidadCertificados";
+    	    
+    	    //Tras recuperar los parámetros de configuración del mail rellenamos el cuerpo del mensaje
+    	    StringBuffer sb = new StringBuffer();
+    	    sb.append("["+ new Date() + "] Error en la inserción de EcomMutualidadCertificados del colegiado " + nombre + " con IdPersona "+idPersona);
+    	    SIGAServicesHelper.saltoLinea(sb);		
+    	    sb.append("Exception: " +e);
+    	    SIGAServicesHelper.saltoLinea(sb);
+    	    sb.append("Mensaje Exception: " +e.getMessage());
+    	    SIGAServicesHelper.saltoLinea(sb);
+    	    sb.append("Causa: " +e.getCause());
+    	    
+    	    serviceHelperService.enviarCorreo(from, bccArray, asunto, sb.toString(), null, GEN_PROPERTIES.mail_smtp_host, GEN_PROPERTIES.mail_smtp_user, GEN_PROPERTIES.mail_smtp_pwd);
+			
+		} catch (Exception ex) {
+			ClsLogging.writeFileLog("Error al enviar el correo con informe resumen de carga recibida.", 4);			
+		}
+	}	
 	
 	/**
 	 * Notas Jorge PT 118:
