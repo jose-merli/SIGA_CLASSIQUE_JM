@@ -68,26 +68,26 @@ try {
 	if (request.getParameter("accion")!=null)  {
 		accion = (String) request.getParameter("accion");
 	}
-	if (accion.equals("borrar")) {
-		String sRutaFichero = (String)request.getParameter("rutaFichero");
-    	File f= new File(sRutaFichero);
-    	f.delete();
-    	if (sRutaFichero.lastIndexOf("\\")!=-1) {
-	    	path = sRutaFichero.substring(0, sRutaFichero.lastIndexOf("\\"));
-	    } else if (sRutaFichero.lastIndexOf("/")!=-1) {
-	    	path = sRutaFichero.substring(0, sRutaFichero.lastIndexOf("/"));
-	    }
-    	File aux = new File(path);
-//		path = path.substring(0,path.lastIndexOf(aux.getName()));	
-		if (path.startsWith("C:")) {
-			// windows
-			path = path.substring(2,path.length());
-			path = UtilidadesString.replaceAllIgnoreCase(path,"\\","/");
+// 	if (accion.equals("borrar")) {
+// 		String sRutaFichero = (String)request.getParameter("rutaFichero");
+//     	File f= new File(sRutaFichero);
+//     	f.delete();
+//     	if (sRutaFichero.lastIndexOf("\\")!=-1) {
+// 	    	path = sRutaFichero.substring(0, sRutaFichero.lastIndexOf("\\"));
+// 	    } else if (sRutaFichero.lastIndexOf("/")!=-1) {
+// 	    	path = sRutaFichero.substring(0, sRutaFichero.lastIndexOf("/"));
+// 	    }
+//     	File aux = new File(path);
+
+// 		if (path.startsWith("C:")) {
+// 			// windows
+// 			path = path.substring(2,path.length());
+// 			path = UtilidadesString.replaceAllIgnoreCase(path,"\\","/");
 			
-		}
-		buscar=true;
+// 		}
+// 		buscar=true;
 		
-	}	
+// 	}	
 	
 %>
 
@@ -155,11 +155,14 @@ try {
 	function fBorrar (nombreArchivo, rutaArchivo)
 	{	
 		if (confirm("¿Está seguro de querer borrar el fichero?")) {
+			
+			<% request.setAttribute("accion","borrar");%>
 			document.borrar.rutaFichero.value = unescape(rutaArchivo);
 			document.borrar.nombreFichero.value = nombreArchivo; 
 			document.borrar.accion.value = "borrar";
  			document.borrar.borrarFichero.value = true;
 			document.borrar.submit();
+			
 		}
 	}
 	
@@ -213,7 +216,7 @@ try {
 	<form name="borrar" action="<%=app%>/ServletFicherosInfoDirectorio.svrl" method="POST">
 		<input type="hidden" name="nombreFichero" value=""/>
 		<input type="hidden" name="rutaFichero"   value=""/>
-		<input type="hidden" name="accion"        value=""/>
+		<input type="hidden" name="accion"        value="borrar"/>
 		<input type="hidden" name="borrarFichero" value="true"/>
 	</form>
 
