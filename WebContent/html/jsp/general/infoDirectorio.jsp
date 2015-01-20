@@ -156,7 +156,6 @@ try {
 	{	
 		if (confirm("¿Está seguro de querer borrar el fichero?")) {
 			
-			<% request.setAttribute("accion","borrar");%>
 			document.borrar.rutaFichero.value = unescape(rutaArchivo);
 			document.borrar.nombreFichero.value = nombreArchivo; 
 			document.borrar.accion.value = "borrar";

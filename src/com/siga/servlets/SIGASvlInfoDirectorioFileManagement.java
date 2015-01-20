@@ -27,6 +27,7 @@ public class SIGASvlInfoDirectorioFileManagement extends SIGASvlDownloadFile {
 
 	public void doWork(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String accion = "";
+
     	if (request.getAttribute("accion") == null) {
             boolean isMultipart = FileUpload.isMultipartContent(request);
             if (isMultipart) accion="subir";
@@ -34,10 +35,15 @@ public class SIGASvlInfoDirectorioFileManagement extends SIGASvlDownloadFile {
     		accion=(String)request.getAttribute("accion");
     	}
     	if(accion==null || accion.equals("")){
-    		descargarFichero(request,response);
-    	}else if(accion.equals("borrar")){
-    		deleteFichero(request,response);
-    		/* La funcion descargarFichero contiene el borrado */
+    		
+    		String accionP="";
+    		
+    		accionP=(String)request.getParameter("accion");
+    		
+    		if((accionP==null)||(accionP.equals("")))
+    			descargarFichero(request,response);
+    		else
+    			deleteFichero(request,response);
     	}else{
     		uploadFichero(request,response);
     		/* La funcion descargarFichero contiene el borrado */
