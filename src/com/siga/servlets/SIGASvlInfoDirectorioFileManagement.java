@@ -115,10 +115,6 @@ public class SIGASvlInfoDirectorioFileManagement extends SIGASvlDownloadFile {
 	    	// traducri un fichero con espacios.
 	    	sRutaFichero = UtilidadesString.replaceAllIgnoreCase(sRutaFichero,"+"," ");
 	    	
-	        ClsLogging.writeFileLog("SERVLET DESCARGA > Ruta fichero a descargar: " + sRutaFichero, request, 10);
-	
-	       
-	        ClsLogging.writeFileLog("SERVLET DESCARGA > OK ", request, 10);
 	        File directorio = null;
 	       
 	        ClsLogging.writeFileLog("SERVLET DESCARGA > Se va a borrar el fichero de la ruta "+sRutaFichero, request, 10);
@@ -144,7 +140,7 @@ public class SIGASvlInfoDirectorioFileManagement extends SIGASvlDownloadFile {
 	    finally {
 	        /* El siguiente codigo permite retornar a infoDirectorio en el directorio en el que se ha añadido
 			   el archivo*/
-			request.getSession().setAttribute("mensajeOK", "Fichero grabado");
+			request.getSession().setAttribute("mensajeOK", "Fichero borrado");
 			request.getSession().setAttribute("path", sRutaFichero);
 		 	String app=request.getContextPath();
 		 	res.sendRedirect(app+"/html/jsp/general/infoDirectorio.jsp");
