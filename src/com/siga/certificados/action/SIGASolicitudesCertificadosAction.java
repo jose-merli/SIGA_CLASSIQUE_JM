@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Properties;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
@@ -30,6 +31,7 @@ import org.redabogacia.sigaservices.app.services.cer.CerSolicitudCertificadosTex
 import org.redabogacia.sigaservices.app.services.gen.GenParametrosService;
 import org.redabogacia.sigaservices.app.services.helper.SigaServiceHelperService;
 import org.redabogacia.sigaservices.app.services.mutualidad.MutualidadService;
+import org.redabogacia.sigaservices.app.util.PropertyReader;
 import org.redabogacia.sigaservices.app.util.ReadProperties;
 import org.redabogacia.sigaservices.app.util.SIGAReferences;
 
@@ -46,6 +48,7 @@ import com.siga.Utilidades.UtilidadesBDAdm;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesNumero;
 import com.siga.Utilidades.UtilidadesString;
+import com.siga.administracion.SIGAConstants;
 import com.siga.beans.AdmUsuariosAdm;
 import com.siga.beans.AdmUsuariosBean;
 import com.siga.beans.CenBancosBean;
@@ -2284,9 +2287,13 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 			String from = genParametrosService.getValorParametro(AppConstants.IDINSTITUCION_2000, PARAMETRO.MUTUALIDAD_MAILFALLOINSERCION_FROM,MODULO.ECOM);
     	    String bcc = genParametrosService.getValorParametro(AppConstants.IDINSTITUCION_2000, PARAMETRO.MUTUALIDAD_MAILFALLOINSERCION_BCC,MODULO.ECOM);
     	    String[] bccArray = bcc.split(";"); 
-    	    String asunto = "[SIGA - MUTUALIDAD] Fallo en la inserción en EcomMutualidadCertificados";
     	    
-    	    //Tras recuperar los parámetros de configuración del mail rellenamos el cuerpo del mensaje
+    	    /** ASUNTO */
+    	    Properties props = PropertyReader.getProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+    	    String entorno = props.getProperty("administracion.login.entorno"); //Sacar a constante
+    	    String asunto = "[SIGA - MUTUALIDAD] ["+entorno+"] Fallo en la inserción en EcomMutualidadCertificados";
+    	    
+    	    /** Tras recuperar los parámetros de configuración del mail rellenamos el cuerpo del mensaje */
     	    StringBuffer sb = new StringBuffer();
     	    sb.append("["+ new Date() + "] Error en la inserción de EcomMutualidadCertificados del colegiado " + nombre + " con IdPersona "+idPersona);
     	    SIGAServicesHelper.saltoLinea(sb);		
