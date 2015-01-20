@@ -36,7 +36,8 @@ public class CenHistoricoAdm extends MasterBeanAdministrador
 	
 	public static final int  ACCION_INSERT = 1,
 							 ACCION_UPDATE = 2,
-						     ACCION_DELETE = 3;
+						     ACCION_DELETE = 3,
+						     MAX_NUM_CARACTERES_DESCRIPCION=4000;
 
 	/** 
 	 *  Constructor
@@ -1239,7 +1240,6 @@ public class CenHistoricoAdm extends MasterBeanAdministrador
 			} while (false);
 
 			String descripcion = "";
-			
 			switch (accion) {
 				case ACCION_INSERT:	descripcion = UtilidadesString.getMensajeIdioma(idioma, "historico.literal.registroNuevo")     + "\n";	break;
 				case ACCION_DELETE:	descripcion = UtilidadesString.getMensajeIdioma(idioma, "historico.literal.registroEliminado") + "\n";	break;
@@ -1252,7 +1252,21 @@ public class CenHistoricoAdm extends MasterBeanAdministrador
 				descripcion += this.getDescripcionCalveValor(hBeanAsociadoAnterior);
 			}
 			
+			//Hay que comprobar la longitud de la descripción que vamos a insertar
+			//porque con la petición R1411_0046 se amplió el campo de la descripción de los datos del cv a 4000.
+			int numCaract=descripcion.length();
+			
+			//Si estamos insertando más de 4000 caracteres hay que truncar el valor de "DESCRIPCION"
+			if(numCaract > MAX_NUM_CARACTERES_DESCRIPCION)
+			{
+				descripcion="";
+				
+				descripcion=this.getDescripcionCorta(accion,hBeanAsociado,hBeanAsociadoAnterior,idioma,numCaract);
+				
+			}
+			
 			beanHistorico.setDescripcion(descripcion);
+				
 			if ((beanHistorico.getFechaEfectiva() == null) || (beanHistorico.getFechaEfectiva().equals(""))) 
 				beanHistorico.setFechaEfectiva("SYSDATE");
 			if ((beanHistorico.getFechaEntrada()  == null) || (beanHistorico.getFechaEntrada().equals(""))) 
@@ -1271,6 +1285,140 @@ public class CenHistoricoAdm extends MasterBeanAdministrador
 		}
 	}
 	
+	/**
+	 * @param accion, hBeanAsociado, hBeanAsociadoAnterior,numCaract
+	 * @return descripcion con 4000 caracteres
+	 * @throws Exception 
+	 * @throws ClsExceptions 
+	 */
+	private String getDescripcionCorta(int accion, Hashtable hBeanAsociado, Hashtable hBeanAsociadoAnterior,String idioma, int numCaract) throws Exception {
+		try{
+			
+			String descripcion="";
+			
+			//Obtenemos el número de caracteres a acortar
+			int numCaractElim=numCaract-MAX_NUM_CARACTERES_DESCRIPCION;
+			int numCaractElimUpdate=0;
+			
+			switch (accion) {
+				case ACCION_INSERT:	descripcion = UtilidadesString.getMensajeIdioma(idioma, "historico.literal.registroNuevo")     + "\n";	break;
+				case ACCION_DELETE:	descripcion = UtilidadesString.getMensajeIdioma(idioma, "historico.literal.registroEliminado") + "\n";	break;
+				case ACCION_UPDATE:	descripcion = UtilidadesString.getMensajeIdioma(idioma, "historico.literal.registroActual")    + "\n";	break;
+			}
+
+			Vector v = new Vector();
+			Enumeration e = hBeanAsociado.keys();
+			while (e.hasMoreElements()) {
+				String clave = (String) e.nextElement();
+				
+				if (this.omitirClave(clave))
+					continue;
+				
+				String valor = "";
+				try {
+					// Si es fecha, la presentamos en español
+					valor = GstDate.getFormatedDateShort("", (String)hBeanAsociado.get(clave));
+				}
+				catch (Exception exp) {
+					valor = (String)hBeanAsociado.get(clave);
+					if (valor.trim().equalsIgnoreCase("SYSDATE")) {
+						valor = UtilidadesBDAdm.getFechaBD("");
+					}
+				}
+				
+				clave = this.reemplazarClave(clave);				
+				String t="";
+				//Acortamos el valor de la clave "DESCRIPCION" 
+				if(clave.equals(CenDatosCVBean.C_DESCRIPCION)){
+				
+					//Si estamos haciendo una actualización hay que calcular el número de caracteres a recortar 
+					//de la DESCRIPCION de cada hash (actual y anterior)
+					if (accion == ACCION_UPDATE) {
+						
+						if ((numCaractElim%2) == 0) {
+							numCaractElimUpdate=numCaractElim/2;
+						}else{
+							numCaractElimUpdate=(numCaractElim-1)/2;
+						}
+						
+						t = "  - " + clave.substring(0,1).toUpperCase() +  clave.substring(1).toLowerCase() + ": ..." + valor.substring(numCaractElimUpdate) + "\n";
+						
+					}else{
+						t = "  - " + clave.substring(0,1).toUpperCase() +  clave.substring(1).toLowerCase() + ": ..." + valor.substring(numCaractElim) + "\n";
+					}
+					
+					
+				
+				}else{
+					t = "  - " + clave.substring(0,1).toUpperCase() +  clave.substring(1).toLowerCase() + ": " + valor + "\n";
+				}
+
+				int i;
+				for (i = 0; i < v.size() && ((String)v.get(i)).compareToIgnoreCase(t) < 0; i++);
+					v.add(i,t);
+			}
+			String descripcion_aux = "";
+			for (int i = 0; i < v.size(); i++) 
+				descripcion_aux += v.get(i);
+
+			descripcion +=descripcion_aux;
+
+			if (accion == ACCION_UPDATE) {
+				descripcion += "\n" + UtilidadesString.getMensajeIdioma(idioma, "historico.literal.registroAnterior") + "\n";
+	
+				Vector vu = new Vector();
+				Enumeration eu = hBeanAsociadoAnterior.keys();
+				while (eu.hasMoreElements()) {
+					String clave = (String) eu.nextElement();
+					
+					if (this.omitirClave(clave))
+						continue;
+					
+					String valor = "";
+					try {
+						// Si es fecha, la presentamos en español
+						valor = GstDate.getFormatedDateShort("", (String)hBeanAsociadoAnterior.get(clave));
+					}
+					catch (Exception exp) {
+						valor = (String)hBeanAsociadoAnterior.get(clave);
+						if (valor.trim().equalsIgnoreCase("SYSDATE")) {
+							valor = UtilidadesBDAdm.getFechaBD("");
+						}
+					}
+					
+					clave = this.reemplazarClave(clave);				
+					String t="";
+					//Acortamos el valor de la clave "DESCRIPCION" 
+					if(clave.equals(CenDatosCVBean.C_DESCRIPCION)){
+
+						if ((numCaractElim%2) == 0) {
+							t = "  - " + clave.substring(0,1).toUpperCase() +  clave.substring(1).toLowerCase() + ": ..." + valor.substring(numCaractElimUpdate) + "\n";
+						}else{
+							//Le sumo un caracter más porque en la descripción antigua le resté
+							t = "  - " + clave.substring(0,1).toUpperCase() +  clave.substring(1).toLowerCase() + ": ..." + valor.substring(numCaractElimUpdate+1) + "\n";
+						}
+
+					}
+					
+					int i;
+					for (i = 0; i < vu.size() && ((String)vu.get(i)).compareToIgnoreCase(t) < 0; i++);
+						vu.add(i,t);
+				}
+				String descripcion_aux2 = "";
+				for (int i = 0; i < vu.size(); i++) 
+					descripcion_aux2 += vu.get(i);
+	
+				descripcion +=descripcion_aux2;
+
+			}
+			
+			return descripcion;
+		
+		}catch (Exception e)	{
+			throw new Exception (e);
+		}
+	}
+
 	private String getDescripcionCalveValor (Hashtable h) 
 	{
 		try {
@@ -1311,7 +1459,7 @@ public class CenHistoricoAdm extends MasterBeanAdministrador
 			return "";
 		}
 	}
-	
+		
 	private boolean omitirClave (String s) 
 	{
 		String [] camposOmitir = {"IDPERSONA", "IDINSTITUCION", "FECHABAJA", MasterBean.C_FECHAMODIFICACION, MasterBean.C_USUMODIFICACION, 

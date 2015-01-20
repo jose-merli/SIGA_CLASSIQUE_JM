@@ -49,7 +49,13 @@
 	String DB_FALSE=ClsConstants.DB_FALSE;
 	String botones="N";
 	String accion = String.valueOf(request.getAttribute("accion"));
-	String sTipo = request.getParameter("tipo");
+	String sTipo =request.getParameter("tipo");
+	
+	if (sTipo!=null){
+		
+		ses.setAttribute("tipoR",sTipo);
+	}else
+		sTipo=ses.getAttribute("tipoR").toString();
 	
 	// Gestion de Volver
 	String busquedaVolver = (String)
@@ -95,25 +101,19 @@
 				}
 				datos.value = datos.value + "%"
 		    document.datosCVForm.modo.value = "solicitarModificacion";
-		   	ventaModalGeneral(document.forms[0].name,"M");	   
+		   	
 		 }
 		 
 		function accionSolicitarNuevo(){
 			document.datosCVForm.modo.value = "solicitarNuevo";	
-   	  		var rc = ventaModalGeneral(document.forms[0].name, "M");
-  	 	 	if (rc == "MODIFICADO") {
-  	 	 		refrescarLocal();
-  	  		}
+   	  		
 		}
 		 
 		function accionNuevo() {		
-		  document.datosCVForm.modo.value = "nuevo";
-	  	  var rc = ventaModalGeneral(document.datosCVForm.name, "M");
-  		  if (rc != null) { 
-  	 	 	if (rc == "MODIFICADO") {
-  	 	 		refrescarLocal();
-  	  		}
-	  	  }
+		    
+			document.datosCVForm.modo.value = "nuevo";
+			document.datosCVForm.submit();
+			fin();
 		}
 		
 		function refrescarLocal() {
@@ -185,7 +185,7 @@
 		border="1" 
 		columnNames="censo.busquedaClientes.literal.institucion,censo.consultaDatosCV.literal.tipo,,,censo.consultaDatosCV.literal.fechaInicio,censo.consultaDatosCV.literal.fechaFin,censo.consultaDatosCV.literal.descripcion,censo.consultaDatosCV.literal.verificado,"
 		columnSizes="10,10,10,10,10,10,20,8,13"
-		modal="M">
+		modal="">
 
 		<%		if((String.valueOf((Long)request.getAttribute("idPersona"))).equals(idUsr) &&
 				usr.isLetrado()){

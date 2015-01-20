@@ -64,7 +64,7 @@
 			}  			
 		}
 	}			
-	String	botones="C,Y,R";
+	String	botones="V,G,R";
 
 	String nombreUsuMod = "";
 	try { 	
@@ -142,7 +142,7 @@
 
 			<table  class="tablaCentralCamposMedia"  align="center">
 
-				<html:form action="/CEN_Historico.do" method="POST" target="submitArea">
+				<html:form action="/CEN_Historico.do" method="POST" >
 					<html:hidden property = "modo" value = "<%=remitente%>"/>
 
 					<tr>				
@@ -165,7 +165,7 @@
 										<td class="labelText">
 											<siga:Idioma key="censo.consultaHistorico.literal.tipo"/>&nbsp;(*)
 										</td>				
-										<td colspan="3">
+										<td colspan="2">
 											<% if (remitente.equalsIgnoreCase("insertar")){%>
 												<siga:ComboBD nombre = "cmbCambioHistorico" tipo="cmbCambioHistorico" clase="boxCombo" obligatorio="true"/>
 											<% } else { %>
@@ -227,7 +227,7 @@
 										<td class="labelText">
 											<siga:Idioma key="censo.consultaHistorico.literal.motivo"/>&nbsp;(*)
 										</td>				
-										<td colspan="3">	
+										<td colspan="2">	
 										
 										<% if (remitente.equalsIgnoreCase("insertar")){ %>
  												<html:textarea property="motivo"
@@ -253,10 +253,10 @@
 										<td class="labelText">
 											<siga:Idioma key="censo.consultaHistorico.literal.descripcion"/>
 										</td>
-										<td colspan="3">	
+										<td colspan="2">								
 											<textArea 
 												onKeyDown="cuenta(this,4000)" onChange="cuenta(this,4000)"
-												style="overflow-y:auto; overflow-x:hidden; width:500px; height:80px; resize:none;"
+												style="overflow-y:auto; overflow-x:hidden; width:500px; height:500px; resize:none;"
 												class="boxConsulta"  readonly=""><% if(row.getString(CenHistoricoBean.C_DESCRIPCION) != null) out.print(row.getString(CenHistoricoBean.C_DESCRIPCION));%></textarea>
 										</td>
 									</tr>
@@ -280,7 +280,7 @@
 				 La propiedad modal dice el tamanho de la ventana (M,P,G)
 			-->
 		
-			<siga:ConjBotonesAccion botones='<%=botones%>' modo='<%=remitente%>'  modal="M"/>
+			<siga:ConjBotonesAccion botones='<%=botones%>' modo='<%=remitente%>'  modal=""/>
 			
 			<!-- FIN: BOTONES REGISTRO -->
 
@@ -291,7 +291,7 @@
 
 
 			//Asociada al boton GuardarCerrar
-			function accionGuardarCerrar() 
+			function accionGuardar() 
 			{					
 				sub();
 				if (validateHistoricoForm(document.HistoricoForm)){
@@ -301,6 +301,7 @@
 						return false;
 					}
 					else{
+						document.forms[0].target="submitArea"; 
 						document.forms[0].submit();		
 					}
 				}else{
@@ -309,20 +310,25 @@
 				}	
 			}
 
-			//Asociada al boton Cerrar
-			function accionCerrar() 
-			{		
-				// esta funcion cierra la ventana y devuelve 
-				// un valor a la ventana padre (USAR SIEMPRE)
-				top.cierraConParametros("NORMAL");
-			}
-
 			//Asociada al boton Restablecer
 			function accionRestablecer() 
 			{		
 				document.forms[0].reset();
 			}
-
+			
+			// Asociada al boton Volver
+			function accionVolver(){		
+				refrescarLocal();
+			}
+			
+			function refrescarLocal() {		
+				sub();
+				document.forms[0].modo.value="abrir";
+				document.forms[0].target= "_self";
+				document.forms[0].submit();
+				fin();
+			}	
+			
 			</script>
 			<!-- FIN: SCRIPTS BOTONES -->
 	

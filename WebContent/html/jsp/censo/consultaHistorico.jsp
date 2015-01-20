@@ -88,7 +88,7 @@
 	<body class="tablaCentralCampos">
 
 		<!-- Formulario de la lista de detalle multiregistro -->
-		<html:form action="/CEN_Historico.do" method="POST" style="display:none" styleId="HistoricoForm">
+		<html:form action="/CEN_Historico.do" method="POST" style="display:none" target="mainPestanas" styleId="HistoricoForm">
 
 		<!-- Campo obligatorio -->
 		<html:hidden styleId = "modo" property = "modo" value = ""/>
@@ -105,9 +105,7 @@
 				  border="1"
 				  columnNames="censo.consultaHistorico.literal.tipo,censo.consultaHistorico.literal.fechaEntrada,censo.consultaHistorico.literal.fechaEfectiva,censo.consultaHistorico.literal.tipoApunte,censo.consultaHistorico.literal.motivo,"
 				  columnSizes="16,12,12,10,22,8"
-				  modal="M">
-
-
+				  modal="">
 				<%
 		    	 if (request.getAttribute("container") == null || ((Vector)request.getAttribute("container")).size() < 1 ){
 				%>

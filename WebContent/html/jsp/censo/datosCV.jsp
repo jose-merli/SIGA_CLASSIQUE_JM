@@ -46,7 +46,7 @@
 	boolean editarCampos = false;
 	boolean desactivado = false;
 	String clase = "box";
-	String botones = "C,Y,R";
+	String botones = "V,G,R";
 
 	String DB_TRUE = ClsConstants.DB_TRUE;
 	String DB_FALSE = ClsConstants.DB_FALSE;
@@ -74,7 +74,8 @@
 	ArrayList idTipoCV = new ArrayList();
 	ArrayList idSubtipo1 = new ArrayList();
 	ArrayList idSubtipo2 = new ArrayList();
-
+	String accion = String.valueOf(request.getAttribute("accion"));
+	
 	String modo = (String) request.getAttribute("modoConsulta");
 	if (modo.equals("ver") || modo.equals("editar")) {
 		htData = (Hashtable) request.getSession().getAttribute("DATABACKUP");
@@ -93,7 +94,7 @@
 			descTipo2 = String.valueOf(htData.get("DESCSUBTIPO2"));
 
 			fechaBaja = String.valueOf(htData.get(CenDatosCVBean.C_FECHABAJA));
-			if ((fechaBaja != null) && !fechaBaja.equals(""))
+			if ((fechaBaja != "null") && !fechaBaja.equals(""))
 				fechaBaja = UtilidadesString.mostrarDatoJSP(GstDate.getFormatedDateShort("", fechaBaja));
 			else
 				fechaBaja = "";
@@ -238,10 +239,13 @@
 				cargarCombos();
 			});
 			 
-			//Asociada al boton Volver 
-			function accionCerrar() { 		
-				window.top.close();
-			}	
+			// Asociada al boton Volver
+			function accionVolver(){		
+				sub();
+				document.datosCVForm.modo.value="abrir";
+ 				document.datosCVForm.submit(); 
+				fin();
+			}
 			
 			function cargarCombos(){
 					jQuery("#idTipoCVSubtipo1").data("set-id-value", jQuery("#idTipoCVSubtipo1").data("inival"));
@@ -259,7 +263,7 @@
 			}			
 	
 			// Asociada al boton GuardarCerrar
-			function accionGuardarCerrar() {
+			function accionGuardar() {
 	      		sub();
 				// Validamos los errores ///////////
 				if (!validateDatosCVForm(document.datosCVForm)){
@@ -303,13 +307,26 @@
 				
 				if (datos[0] == 1) { // Boton Guardar
 					document.datosCVForm.motivo.value = datos[1];
-					<%if (modo.equals("editar")) {%>
-						document.datosCVForm.modo.value = "modificar";
+					
+					<%if (modo.equals("editar")){%>
+						
+ 			 			
+ 						document.datosCVForm.modo.value="modificar";
+ 						document.datosCVForm.target="submitArea"; 
+ 						document.datosCVForm.submit(); 
+ 						fin();
+						
 					<%} else {%>
-						document.datosCVForm.modo.value = "insertar";
+
+			 			
+						document.datosCVForm.modo.value="insertar";
+						document.datosCVForm.target="submitArea"; 
+						document.datosCVForm.submit(); 
+						fin();
+						
+						
 					<%}%>
-					document.datosCVForm.target = "submitArea";
-					document.datosCVForm.submit();
+					
 				} else {
 					fin();
 					return false;
@@ -340,7 +357,14 @@
 		}
 		
 		function  postAccionColegiado(){
-		}		
+		}
+		function refrescarLocal() {		
+			document.datosCVForm.modo.value="abrir";
+			document.datosCVForm.target = "_self";
+			document.datosCVForm.submit();
+			fin();
+		}
+		
 	</script>
 </head>
 
@@ -372,15 +396,15 @@
 		<!-- INICIO: CAMPOS -->
 		<!-- Zona de campos de busqueda o filtro -->
 
-		<html:form action="/CEN_DatosCV.do" method="POST" target="submitArea" styleId="datosCVForm">
-			<html:hidden property="modo" value="cerrar" />
+		<html:form action="/CEN_DatosCV.do" method="POST"  styleId="datosCVForm">
+			<html:hidden property="modo" value="" />
 
 			<html:hidden property="idPersona" styleId="" value="<%=idPersona%>" />
 			<html:hidden property="idCV" styleId="idCV" value="<%=idCV%>" />
 			<html:hidden property="idInstitucion" styleId="idInstitucion"
 				value="<%=idInstitucion%>" />
 			<html:hidden property="motivo" styleId="motivo" value="" />
-
+			<input type='hidden' id="accion"  name="accion" value="<%=accion%>" />
 			<table class="tablaCentralCamposMedia" align="center">
 				<tr>
 					<td>
@@ -473,6 +497,7 @@
  												}
 											}
  										%>
+ 										
 									</td>
 
 									<td>
@@ -495,14 +520,14 @@
 									</td>
 								</tr>
 
-<tr>
+								<tr>
 								<td class="labelText" ><siga:Idioma key="censo.datosCV.literal.fechaInicio"/>&nbsp;</td>
 								<td>
 									<siga:Fecha nombreCampo="fechaInicio" valorInicial="<%=fechaInicio%>" disabled="<%=String.valueOf(!editarCampos) %>"/>									
 								</td>
 								
-								<td class="labelText" ><siga:Idioma key="censo.datosCV.literal.fechaFin"/></td>	
-								<td  class="labelText">
+								<td class="labelText"><siga:Idioma key="censo.datosCV.literal.fechaFin"/></td>	
+								<td>
 										<%if (editarCampos) {%>
 										<siga:Fecha  nombreCampo= "fechaFin" valorInicial="<%=fechaFin%>"  posicionX="200" posicionY="10"/>
 										<%}else{%>
@@ -515,8 +540,8 @@
 								<td class="labelText"><siga:Idioma key="censo.consultaDatosCV.literal.verificado"/></td>
 								<td><html:checkbox name="datosCVForm" property="certificado" disabled="<%=desactivado%>"/></td>
 
-								<td class="labelText"><siga:Idioma key="censo.consultaDatosCV.literal.fechaVerificacion"/>&nbsp;</td>
-								<td  class="labelText">
+								<td class="labelText" ><siga:Idioma key="censo.consultaDatosCV.literal.fechaVerificacion"/>&nbsp;</td>
+								<td>
 									<%if (editarCampos) {%>
 									<siga:Fecha  nombreCampo= "fechaMovimiento" valorInicial="<%=fechaCertificado%>"  posicionX="200" posicionY="10"/>
 									<%} else { %>
@@ -538,10 +563,14 @@
 									<td class="labelText"><siga:Idioma
 											key="censo.datosCV.literal.descripcion" />&nbsp;</td>
 									<td colspan="3"><textarea id="descripcion" name="descripcion"
-											onKeyDown="cuenta(this,500)" onChange="cuenta(this,500)"
-											style="overflow-y:auto; overflow-x:hidden; width:550px; height:80px; resize:none;"
+											onKeyDown="cuenta(this,4000)" onChange="cuenta(this,4000)"
+											style="overflow-y:auto; overflow-x:hidden; width:725px; height:250px; resize:none;"
 											class="<%=clase%>"><%=descripcion%></textarea>
 									</td>
+								</tr>
+								<tr>
+								</tr>
+								<tr>
 								</tr>
 							</table>
 						</siga:ConjCampos>

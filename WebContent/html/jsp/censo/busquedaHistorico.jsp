@@ -48,8 +48,15 @@
 
     // Botones a mostrar
 	String botones = "B";
-	String sTipo = request.getParameter("tipo");
-
+		
+	String sTipo =request.getParameter("tipo");
+	
+	if (sTipo!=null){
+		
+		ses.setAttribute("tipoR",sTipo);
+	}else
+		sTipo=ses.getAttribute("tipoR").toString();
+	
 	// Gestion de Volver
 	String busquedaVolver = (String)
 	request.getSession().getAttribute("CenBusquedaClientesTipo");
@@ -214,14 +221,16 @@
 				document.forms[0].target='';			
 				document.forms[0].submit();	
 			}
-		
+			
 			<!-- Funcion asociada a boton Nuevo -->
 			function nuevo() 
 			{		
-				document.forms[0].modo.value='nuevo';
-				ventaModalGeneral(document.forms[0].name,"M");
+				document.forms[0].modo.value = "nuevo";
+				document.forms[0].target= "_self";
+				document.forms[0].submit();
+				fin();
 			}
-		
+			
 		</script>
 		<!-- FIN: SCRIPTS BOTONES BUSQUEDA -->
 
@@ -251,13 +260,10 @@
 
 		function accionNuevo() 
 		{		
-			document.forms[0].modo.value='nuevo';
-			var respuesta=ventaModalGeneral(document.forms[0].name,"M");
-			if (respuesta!=null){
-				if (respuesta=="MODIFICADO"){
-					refrescarLocal();
-				}				
-			}
+			document.forms[0].modo.value = "nuevo";
+			document.forms[0].target= "_self";
+			document.forms[0].submit();
+			fin();
 		}			
   
 		function refrescarLocal() {

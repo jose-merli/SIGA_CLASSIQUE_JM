@@ -41,26 +41,36 @@ public class HistoricoAction extends MasterAction {
 		String numero = "";
 		String nombre = "";
 		String estadoColegial="";
+		Long idPersona=null;
+		String idInstitucionPersona="";
 
 		try{
 			// Obtengo el UserBean y el identificador de la institucion
 			UsrBean user=(UsrBean)request.getSession().getAttribute("USRBEAN");			
 			String accion = (String)request.getParameter("accion");
 			
+			//Estamos volviendo del botón volver de editar/consulta/nuevo registro de auditoría
+			if(accion==null){
+				accion=(String)request.getSession().getAttribute("ACCION");
+				idPersona =new Long(request.getSession().getAttribute("IDPERSONA").toString());
+				idInstitucionPersona=request.getSession().getAttribute("IDINSTITUCIONPERSONA").toString();
+				
+			}else{
+				// Obtengo el identificador de persona, la accion y el identificador de institucion del cliente
+				idPersona = new Long(request.getParameter("idPersona").toString());
+				idInstitucionPersona = Integer.valueOf(request.getParameter("idInstitucion")).toString();
+				
+			}
+			
 			// Vemos si venimos de nueva sociedad o nuevo no colegiado de tipo personal:
 			if ( accion!=null && accion.equals("nuevo") || accion.equalsIgnoreCase("nuevaSociedad") || 
-				 (request.getParameter("idPersona").equals("") && request.getParameter("idInstitucion").equals("") )) {
+				 (idPersona.equals("") && idInstitucionPersona.equals("") )) {
 				request.setAttribute("modoVolver",accion);
 				return "clienteNoExiste";
 			}
 			
 			String idInstitucion=user.getLocation();
 			Integer idInst=new Integer(idInstitucion);
-
-			// Obtengo el identificador de persona, la accion y el identificador de institucion del cliente
-			Long idPersona = new Long(request.getParameter("idPersona"));
-			String idInstitucionPersona = Integer.valueOf(request.getParameter("idInstitucion")).toString();
-
 			// Obtengo manejadores para accesos a las BBDDs (cuidado con ls identificadores de usuario)
 			CenClienteAdm clienteAdm = new CenClienteAdm(this.getUserBean(request));
 			CenPersonaAdm personaAdm = new CenPersonaAdm(this.getUserBean(request));			
@@ -310,7 +320,7 @@ public class HistoricoAction extends MasterAction {
 			acceso=admin.insertarRegistroHistorico(bean,usr);			
 			if (acceso){
 				tx.commit();
-				result=exitoModal("messages.updated.success",request);				
+				result=exitoRefresco("messages.inserted.success", request);			
 			}			
 		} 
 		catch (Exception e) { 
@@ -389,7 +399,7 @@ public class HistoricoAction extends MasterAction {
 			// Actualizo CEN_HISTORICO
 			if (admin.update(hash,hashOriginal)){
 				tx.commit();
-				result=exitoModal("messages.updated.success",request);
+				result=exitoRefresco("messages.updated.success", request);
 			}
 			else{
 				throw new SIGAException (admin.getError());

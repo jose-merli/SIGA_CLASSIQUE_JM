@@ -398,7 +398,7 @@ public class CenDatosCVAdm extends MasterBeanAdmVisible{
 	public boolean insertarConHistorico (CenDatosCVBean beanCV, CenHistoricoBean beanHis, String idioma) throws ClsExceptions, SIGAException 
 	{
 		try {
-			beanCV.setIdCV(this.getNuevoID(beanCV));
+			
 			if (insert(beanCV)) {
 				CenHistoricoAdm admHis = new CenHistoricoAdm (this.usrbean);
 				if (admHis.insertCompleto(beanHis, beanCV, CenHistoricoAdm.ACCION_INSERT, idioma)) {
@@ -406,11 +406,8 @@ public class CenDatosCVAdm extends MasterBeanAdmVisible{
 				}
 			}
 			return false;
-		}
-		catch (SIGAException e) {
-			throw e;
-		}
-		catch (Exception e) {
+		
+		}catch (Exception e) {
 			throw new ClsExceptions (e, "Error al insertar datos en B.D.");
 		}
 	}
