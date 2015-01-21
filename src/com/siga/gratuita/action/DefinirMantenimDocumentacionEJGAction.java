@@ -121,7 +121,7 @@ protected ActionForward executeInternal (ActionMapping mapping,
 		Hashtable busqueda = new Hashtable();		
 		
 		
-		String sql="select distinct f_siga_getrecurso(t.descripcion,"+usr.getLanguage()+") as DESCRIPCIONTIPO,t.abreviatura as ABREVIATURATIPO, F_SIGA_NOMBRE_DOCUMENTOS(t.idtipodocumentoejg,t.idinstitucion) as ABREVIATURADOCU,"+"F_SIGA_DESCRIPCION_DOCUMENTOS(t.idtipodocumentoejg,t.idinstitucion,"+usr.getLanguage()+") as DESCRIPCIONDOCU,t.idtipodocumentoejg as IDTIPO " +
+		String sql="select distinct f_siga_getrecurso(t.descripcion,"+usr.getLanguage()+") as DESCRIPCIONTIPO,t.abreviatura as ABREVIATURATIPO, F_SIGA_NOMBRE_DOCUMENTOS(t.idtipodocumentoejg,"+usr.getLanguage()+") as ABREVIATURADOCU,"+"F_SIGA_DESCRIPCION_DOCUMENTOS(t.idtipodocumentoejg,t.idinstitucion,"+usr.getLanguage()+") as DESCRIPCIONDOCU,t.idtipodocumentoejg as IDTIPO " +
 				"from Scs_Tipodocumentoejg t, Scs_Documentoejg d where ";
 		String v1= miForm.getDocumentoAbreviado();
 		String v2= miForm.getDoc();
@@ -714,7 +714,7 @@ protected ActionForward executeInternal (ActionMapping mapping,
 			        	recCatalogoBean.setDescripcion(descripcion);
 			        	recCatalogoBean.setIdRecurso(idRecurso);
 			        	recCatalogoBean.setIdRecursoAlias(idRecursoAlias);
-			        	if(!admRecCatalogos.update(recCatalogoBean, usr)) { 
+			        	if(!admRecCatalogos.update(recCatalogoBean, usr,usr.getLanguage())) { 
 			        		throw new SIGAException ("messages.updated.error");
 			        	}
 						
@@ -811,7 +811,7 @@ protected ActionForward executeInternal (ActionMapping mapping,
 				        	recCatalogoBean.setDescripcion(descripcion);
 				        	recCatalogoBean.setIdRecurso(idRecurso);
 				        	recCatalogoBean.setIdRecursoAlias(idRecursoAlias);
-				        	if(!admRecCatalogos.update(recCatalogoBean, this.getUserBean(request))) { 
+				        	if(!admRecCatalogos.update(recCatalogoBean, this.getUserBean(request),usr.getLanguage())) { 
 				        		throw new SIGAException ("messages.updated.error");
 				        	}
 							

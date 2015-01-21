@@ -235,6 +235,9 @@ public class GenRecursosCatalogosAdm extends MasterBeanAdministrador {
 	public boolean update(GenRecursosCatalogosBean datos, UsrBean user) throws ClsExceptions {
 		return this.update(this.beanToHashTable(datos), user);
 	}
+	public boolean update(GenRecursosCatalogosBean datos, UsrBean user,String idLenguaje) throws ClsExceptions {
+		return this.update(this.beanToHashTable(datos), user,idLenguaje);
+	}
 
 	public boolean update(Hashtable datos, UsrBean user) throws ClsExceptions 
 	{
@@ -263,6 +266,26 @@ public class GenRecursosCatalogosAdm extends MasterBeanAdministrador {
 		}
 		return true;
 	}
+	public boolean update(Hashtable datos, UsrBean user,String idLenguaje) throws ClsExceptions 
+	{
+		// Hacemos un update por cada uno de los lenguajes que estan dados de alta en el sistema 
+		String campos [] = {GenRecursosCatalogosBean.C_DESCRIPCION};
+
+		Hashtable h = new Hashtable();
+		UtilidadesHash.set (h, GenRecursosCatalogosBean.C_IDRECURSO,   UtilidadesHash.getString(datos, GenRecursosCatalogosBean.C_IDRECURSO));
+
+		String  descripcion = UtilidadesHash.getString(datos, GenRecursosCatalogosBean.C_DESCRIPCION);
+		
+			UtilidadesHash.set (h, GenRecursosCatalogosBean.C_DESCRIPCION, descripcion);
+		
+		
+		UtilidadesHash.set (h, GenRecursosCatalogosBean.C_IDLENGUAJE, idLenguaje);
+		if (!this.updateDirectRecursosCatalogos(h, this.getClavesBean(), campos)) 
+			return false;
+		
+		return true;
+	}
+	
 	
 	public boolean updateDirectRecursosCatalogos(Hashtable hash, String[] claves, String [] campos) throws ClsExceptions 
 	{
