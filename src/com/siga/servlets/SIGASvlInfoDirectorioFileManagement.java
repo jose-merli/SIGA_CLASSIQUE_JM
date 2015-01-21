@@ -102,9 +102,7 @@ public class SIGASvlInfoDirectorioFileManagement extends SIGASvlDownloadFile {
 	 }
 	 
 	 public void deleteFichero (HttpServletRequest request, HttpServletResponse res)	throws ServletException, IOException{
-		
-		
-        	
+        String rutaDestino = null;	
     	String sNombreFichero = (String)request.getAttribute("nombreFichero");
     	String sRutaFichero = (String)request.getAttribute("rutaFichero");
 
@@ -112,13 +110,14 @@ public class SIGASvlInfoDirectorioFileManagement extends SIGASvlDownloadFile {
     	if (sNombreFichero == null) {
 	    	sNombreFichero = (String)request.getParameter("nombreFichero");
     	}
+    	
     	if (sRutaFichero == null) {
     		sRutaFichero = (String)request.getParameter("rutaFichero");
+    		rutaDestino = sRutaFichero;
     	}
     	
-	    try
-        {
-	    	// traducri un fichero con espacios.
+	    try {
+	    	// traducir un fichero con espacios.
 	    	sRutaFichero = UtilidadesString.replaceAllIgnoreCase(sRutaFichero,"+"," ");
 	    	
 	        File directorio = null;
@@ -127,13 +126,14 @@ public class SIGASvlInfoDirectorioFileManagement extends SIGASvlDownloadFile {
 	           
 	        File f= new File(sRutaFichero);
 	        directorio = f.getParentFile();
+
 	        if (f.delete())
 	        	ClsLogging.writeFileLog("SERVLET DESCARGA > Fichero borrado por peticion de la ruta "+sRutaFichero, request, 10);
 	        else
 	        	ClsLogging.writeFileLog("SERVLET DESCARGA > NO se ha borrado el fichero en la ruta "+sRutaFichero, request, 10);
 	 
+	        rutaDestino = directorio.getPath();
         	if(directorio !=null && directorio.list().length==0){
-        	
         		if(directorio.delete())
         			ClsLogging.writeFileLog("SERVLET DESCARGA > Directorio borrado por estar vacio de la ruta "+directorio.getPath(), request, 10);
         		else
@@ -142,12 +142,11 @@ public class SIGASvlInfoDirectorioFileManagement extends SIGASvlDownloadFile {
 	        	
 	    } catch (Exception e) {
 	        ClsLogging.writeFileLogError("InfoDirectorio Delete Servlet: General Error: \n" + e.getMessage(),e, 3);
-	    }
-	    finally {
-	        /* El siguiente codigo permite retornar a infoDirectorio en el directorio en el que se ha añadido
-			   el archivo*/
+	    
+	    } finally {
+	        /* El siguiente codigo permite retornar a infoDirectorio en el directorio en el que se ha añadido el archivo*/
 			request.getSession().setAttribute("mensajeOK", "Fichero borrado");
-			request.getSession().setAttribute("path", sRutaFichero);
+			request.getSession().setAttribute("path", rutaDestino);
 		 	String app=request.getContextPath();
 		 	res.sendRedirect(app+"/html/jsp/general/infoDirectorio.jsp");
 	    }
