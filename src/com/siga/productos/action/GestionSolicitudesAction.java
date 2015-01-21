@@ -344,7 +344,7 @@ public class GestionSolicitudesAction extends MasterAction {
 					// Por cierto, form devuelve "null" en lugar de null ??																				//
 					// Integer idCuenta = miForm.getIdCuenta();																							//
 					if (((miForm.getDatosTablaOcultos(0).get(8))!=null)&&!((String)(miForm.getDatosTablaOcultos(0).get(8))).equalsIgnoreCase("null")){	//
-						idCuenta = new Integer((String)(miForm.getDatosTablaOcultos(0).get(9)));														//
+						idCuenta = new Integer((String)(miForm.getDatosTablaOcultos(0).get(8)));														//
 					}			
 				}
 			
