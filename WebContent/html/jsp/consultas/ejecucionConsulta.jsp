@@ -27,7 +27,7 @@
 <%
 	//Controles generales
 	String app = request.getContextPath();
-	String action = app + "/CON_RecuperarConsultas.do";
+	String action = (String)request.getAttribute("javax.servlet.forward.request_uri");
 	HttpSession ses = request.getSession();
 	UsrBean user = (UsrBean) ses.getAttribute ("USRBEAN");
 	String idioma = user.getLanguage().toUpperCase();
@@ -125,6 +125,8 @@
 			
 	<!-- FIN: ZONA DE REGISTROS -->
 	</siga:Table>	
+	
+	<% if (action!=null && action.equals("/SIGA/CON_RecuperarConsultasDinamicas.do")) { %>
 
 	<siga:Paginador totalRegistros="<%=totalRegistros%>" 
 					registrosPorPagina="<%=registrosPorPagina%>" 
@@ -135,7 +137,20 @@
 					divStyle="position:absolute; width:100%; height:20; z-index:3; bottom:10px; left: 0px"
 					distanciaPaginas=""
 					action="<%=action%>" />
-	
+					
+	<% } else {  %>	
+		
+			<siga:Paginador totalRegistros="<%=totalRegistros%>" 
+					registrosPorPagina="<%=registrosPorPagina%>" 
+					paginaSeleccionada="<%=paginaSeleccionada%>" 
+					idioma="<%=idioma%>"
+					modo="ejecutarConsulta"								
+					clase="paginator" 
+					divStyle="position:absolute; width:100%; height:20; z-index:3; bottom:25px; left: 0px"
+					distanciaPaginas=""
+					action="<%=action%>" />
+	<% } %>
+		
 	<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp"	style="display:none" />
 	 
 </body>
