@@ -44,6 +44,7 @@ public class FacLineaFacturaAdm extends MasterBeanAdministrador {
 							FacLineaFacturaBean.C_DESCRIPCION,
 							FacLineaFacturaBean.C_PRECIOUNITARIO,
 							FacLineaFacturaBean.C_IVA,
+							FacLineaFacturaBean.C_IDTIPOIVA,
 							FacLineaFacturaBean.C_CTAPRODUCTOSERVICIO,
 							FacLineaFacturaBean.C_CTAIVA,
 							FacLineaFacturaBean.C_IDFORMAPAGO,
@@ -93,6 +94,7 @@ public class FacLineaFacturaAdm extends MasterBeanAdministrador {
 			bean.setDescripcion(UtilidadesHash.getString(hash,FacLineaFacturaBean.C_DESCRIPCION));	
 			bean.setPrecioUnitario(UtilidadesHash.getDouble(hash,FacLineaFacturaBean.C_PRECIOUNITARIO));	
 			bean.setIva(UtilidadesHash.getFloat(hash,FacLineaFacturaBean.C_IVA));	
+			bean.setIdTipoIva(UtilidadesHash.getInteger(hash,FacLineaFacturaBean.C_IDTIPOIVA));
 			bean.setCtaProductoServicio(UtilidadesHash.getString(hash,FacLineaFacturaBean.C_CTAPRODUCTOSERVICIO));	
 			bean.setCtaIva(UtilidadesHash.getString(hash,FacLineaFacturaBean.C_CTAIVA));
 			bean.setIdFormaPago(UtilidadesHash.getInteger(hash,FacLineaFacturaBean.C_IDFORMAPAGO));
@@ -127,6 +129,7 @@ public class FacLineaFacturaAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(htData,FacLineaFacturaBean.C_DESCRIPCION, b.getDescripcion());
 			UtilidadesHash.set(htData,FacLineaFacturaBean.C_PRECIOUNITARIO, b.getPrecioUnitario());
 			UtilidadesHash.set(htData,FacLineaFacturaBean.C_IVA, b.getIva());
+			UtilidadesHash.set(htData,FacLineaFacturaBean.C_IDTIPOIVA, b.getIdTipoIva());
 			UtilidadesHash.set(htData,FacLineaFacturaBean.C_CTAPRODUCTOSERVICIO, b.getCtaProductoServicio());
 			UtilidadesHash.set(htData,FacLineaFacturaBean.C_CTAIVA, b.getCtaIva());
 			UtilidadesHash.set(htData,FacLineaFacturaBean.C_IDFORMAPAGO, b.getIdFormaPago());

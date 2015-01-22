@@ -15,7 +15,8 @@ public class FacLineaFacturaBean extends MasterBean {
 	private Integer idInstitucion, cantidad, idFormaPago;	
 	private Long 	numeroLinea, numeroOrden;
 	private Double 	importeAnticipado, precioUnitario;
-	private Float 	iva;	
+	private Float 	iva;
+	private Integer idTipoIva;
 	private String 	idFactura, descripcion, ctaProductoServicio, ctaIva;
 
 	/* Nombre tabla */
@@ -31,6 +32,7 @@ public class FacLineaFacturaBean extends MasterBean {
 	static public final String C_DESCRIPCION 			= "DESCRIPCION";
 	static public final String C_PRECIOUNITARIO 		= "PRECIOUNITARIO";
 	static public final String C_IVA 					= "IVA";
+	static public final String C_IDTIPOIVA 				= "IDTIPOIVA";
 	static public final String C_CTAPRODUCTOSERVICIO	= "CTAPRODUCTOSERVICIO";
 	static public final String C_CTAIVA 				= "CTAIVA";
 	static public final String C_IDFORMAPAGO			= "IDFORMAPAGO";
@@ -41,7 +43,8 @@ public class FacLineaFacturaBean extends MasterBean {
 	public String getIdFactura() 							   {return idFactura;}	
 	public Integer getIdInstitucion() 						   {return idInstitucion;}	
 	public Double getImporteAnticipado()					   {return importeAnticipado;}	
-	public Float getIva() 									   {return iva;}	
+	public Float getIva() 									   {return iva;}
+	public Integer getIdTipoIva() 							   {return idTipoIva;}
 	public Long getNumeroLinea()							   {return numeroLinea;}	
 	public Long getNumeroOrden() 							   {return numeroOrden;}	
 	public Double getPrecioUnitario() 						   {return precioUnitario;}
@@ -55,7 +58,8 @@ public class FacLineaFacturaBean extends MasterBean {
 	public void setIdFactura(String idFactura) 				   {this.idFactura = idFactura;}	
 	public void setIdInstitucion(Integer idInstitucion) 	   {this.idInstitucion = idInstitucion;}	
 	public void setImporteAnticipado(Double importeAnticipado) {this.importeAnticipado = importeAnticipado;}
-	public void setIva(Float iva) 							   {this.iva = iva;}	
+	public void setIva(Float iva) 							   {this.iva = iva;}
+	public void setIdTipoIva(Integer idTipoIva) 			   {this.idTipoIva = idTipoIva;}
 	public void setNumeroLinea(Long numeroLinea) 			   {this.numeroLinea = numeroLinea;}	
 	public void setNumeroOrden(Long numeroOrden) 			   {this.numeroOrden = numeroOrden;}	
 	public void setPrecioUnitario(Double precioUnitario)	   {this.precioUnitario = precioUnitario;	}
