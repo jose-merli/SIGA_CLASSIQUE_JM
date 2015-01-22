@@ -477,7 +477,10 @@
 			<taglib-uri>ajaxtags.tld</taglib-uri>
 			<taglib-location>/WEB-INF/tlds/ajaxtags.tld</taglib-location>
 		</taglib>
-
+		<jsp-property-group>
+        	<url-pattern>*.jsp</url-pattern>
+        	<page-encoding>ISO-8859-15</page-encoding>
+    	</jsp-property-group>
 
 	</jsp-config>
 </web-app>
