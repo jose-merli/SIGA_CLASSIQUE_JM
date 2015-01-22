@@ -1977,6 +1977,7 @@ public class Facturacion {
 			beanFacLineaFactura.setDescripcion(beanBancoInstitucion.getComisionDescripcion()); // Obtiene la descripcion de la comision del banco del acreedor
 			beanFacLineaFactura.setPrecioUnitario(beanBancoInstitucion.getComisionImporte()); // Obtiene el importe de la comision del banco del acreedor
 			beanFacLineaFactura.setIva(Float.valueOf(beanTipoIva.getValor())); // Obtiene el iva de la comision del banco del acreedor
+			beanFacLineaFactura.setIdTipoIva(beanTipoIva.getIdTipoIva()); // Asigna el identificador del tipo de iva
 			beanFacLineaFactura.setCtaProductoServicio(beanBancoInstitucion.getComisionCuentaContable()); // Obtiene la cuenta contable del banco del acreedor
 			beanFacLineaFactura.setCtaIva(sCTAIVA);
 			beanFacLineaFactura.setIdFormaPago(idFormaPago); // Indica la forma de pago de la factura	                  
