@@ -410,6 +410,7 @@
 	  }
 	
 	 function showAvisoModal(){
+		 /*
 		 jQuery("#modalAviso").dialog({
 				height: 220,
 				width: 580,
@@ -419,7 +420,8 @@
 				buttons : {
 					'<siga:Idioma key="global.boton.aceptar"/>': function() {$(this).dialog("close");}
 				}
-			});	
+			});
+		 */
 	 }
 	
 </script>
