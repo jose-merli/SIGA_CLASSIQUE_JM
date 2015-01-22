@@ -21,6 +21,8 @@ import com.atos.utils.ClsMngBBDD;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.paginadores.Paginador;
 import com.siga.beans.FcsFacturacionJGAdm;
+import com.siga.beans.FcsMovimientosVariosAdm;
+import com.siga.beans.FcsMovimientosVariosBean;
 import com.siga.facturacionSJCS.UtilidadesFacturacionSJCS;
 import com.siga.facturacionSJCS.form.MantenimientoFacturacionForm;
 import com.siga.general.CenVisibilidad;
@@ -405,7 +407,20 @@ public class MantenimientoFacturacionAction extends MasterAction {
 
 			// Recupero el nombre de los ficheros asociados a la facturacion
 			Hashtable nombreFicheros = UtilidadesFacturacionSJCS.getNombreFicherosFacturacion(new Integer(idInstitucionRegistro), new Integer(idFacturacion), this.getUserBean(request));
-
+			
+			//Se comprueba si la facturación tiene mov. varios asociados
+			FcsMovimientosVariosAdm movVariosAdm= new FcsMovimientosVariosAdm(this.getUserBean(request));
+			
+			String sql="SELECT * FROM "+FcsMovimientosVariosBean.T_NOMBRETABLA+
+					   " WHERE "+FcsMovimientosVariosBean.C_IDINSTITUCION+"="+idInstitucionRegistro+
+					   "   AND "+ FcsMovimientosVariosBean.C_IDFACTURACION+"="+idFacturacion;
+ 			
+			Vector vmovs=movVariosAdm.selectGenerico(sql);
+			
+			if((vmovs!=null)&&(vmovs.size()>0)){
+				throw new SIGAException("factSJCS.facturacion.error.borrarFact.mov");
+			}
+			
 			// Comienzo control de transacciones 
 			tx = usr.getTransactionPesada();			
 			tx.begin();
@@ -416,6 +431,7 @@ public class MantenimientoFacturacionAction extends MasterAction {
 	        HttpSession ses = (HttpSession)request.getSession();
 			param_in[0] = idInstitucionRegistro;			
 			param_in[1] = idFacturacion;
+
 	 		//Ejecucion del PL
 			resultadoPl = ClsMngBBDD.callPLProcedure("{call PKG_SIGA_FACTURACION_SJCS.PROC_FCS_BORRAR_FACTURACION (?,?,?,?)}", 2, param_in);
 			correcto = ((String)resultadoPl[0]).equals("0");
