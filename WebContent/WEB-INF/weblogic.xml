@@ -8,7 +8,6 @@
 		<wls:precompile>false</wls:precompile>
 		<wls:verbose>true</wls:verbose>
 		<wls:working-dir>.\WEB-INF\classes</wls:working-dir>
-        <wls:encoding>ISO-8859-1</wls:encoding>
 		<wls:debug>true</wls:debug>
 	</wls:jsp-descriptor>
     <wls:session-descriptor>
