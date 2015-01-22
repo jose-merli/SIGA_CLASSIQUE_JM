@@ -217,6 +217,7 @@ public class CenCuentasBancariasAdm extends MasterBeanAdmVisible {
 			
 			String where2 = " WHERE " + CenComponentesBean.T_NOMBRETABLA + "." + CenComponentesBean.C_CEN_CLIENTE_IDPERSONA + " = " + idPersona +
 							" AND " + CenComponentesBean.T_NOMBRETABLA + "." + CenComponentesBean.C_CEN_CLIENTE_IDINSTITUCION + " = " + idInstitucion;
+				where2+= " AND CEN_COMPONENTES.FECHABAJA IS NULL ";
 			if(!bIncluirRegistrosConBajaLogica) {
 				where2 += " AND (" + CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_FECHABAJA + " IS NULL " +
 								 " 	OR " + CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_FECHABAJA + " > SYSDATE) ";
