@@ -121,6 +121,8 @@ public class ConfirmarFacturacionAction extends MasterAction{
 				}else if (accion.equalsIgnoreCase("getAjaxFechasFicheroBancario")){
 					getAjaxFechasFicheroBancario (mapping, miForm, request, response);
 					return null;
+				} else if (accion.equalsIgnoreCase("recalcular")){
+					mapDestino = recalcular(mapping, miForm, request, response);					
 				}else {
 					return super.executeInternal(mapping, formulario, request, response);
 				}
@@ -235,7 +237,6 @@ public class ConfirmarFacturacionAction extends MasterAction{
 			//Debo calcular si necesita o no la fecha de cargo por cada registro enviado.
 			Integer idInstitucion	= this.getIDInstitucion(request);			
 			String fechaInicial 	= "01/01/2000";
-			
 			FacFacturacionProgramadaAdm adm = new FacFacturacionProgramadaAdm(this.getUserBean(request));
 			
 			UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");
@@ -413,7 +414,6 @@ public class ConfirmarFacturacionAction extends MasterAction{
 		
 		try {
 			tx = this.getUserBean(request).getTransaction();
-			
 			ConfirmarFacturacionForm form 	= (ConfirmarFacturacionForm)formulario;
 			FacFacturacionProgramadaAdm admProgra = new FacFacturacionProgramadaAdm(this.getUserBean(request));
 			
@@ -594,9 +594,7 @@ public class ConfirmarFacturacionAction extends MasterAction{
 	{
 		try {
 			ConfirmarFacturacionForm form = (ConfirmarFacturacionForm)formulario;
-			
 			Vector ocultos = (Vector)form.getDatosTablaOcultos(0);
-			
 			String idSerieFacturacion = (String)ocultos.elementAt(0);			
 			String idProgramacion 	= (String)ocultos.elementAt(1);
 			String idInstitucion	= this.getIDInstitucion(request).toString();
@@ -897,11 +895,38 @@ public class ConfirmarFacturacionAction extends MasterAction{
 		String salida = "";
 		HttpSession ses = request.getSession();
 		
-		try
-		{	
-			tx = this.getUserBean(request).getTransaction();			
-			FacFacturacionProgramadaAdm adm = new FacFacturacionProgramadaAdm(this.getUserBean(request));
+		try {
+			tx = this.getUserBean(request).getTransaction();
 			
+			/*********** INICIO TRANSACCION *************/
+			tx.begin();				
+			// Se saca fuera el bloque que realiza la operacion de INSERTAR de una facturación para poder usarse en otros metodos **/
+			salida = accionInsertar(null, form, request);			
+			tx.commit();
+			/************ FIN TRANSACCION *****************/			
+			
+			ses.setAttribute("ModoAction","editar");
+			
+		} catch (SIGAException e) {
+			String sms = e.getLiteral();
+			if (sms == null || sms.equals("")) {
+				sms = "messages.general.error";
+			}
+			
+			throwExcp(sms, new String[] {"modulo.facturacion"}, e, tx);				
+
+		} catch (Exception e) {
+			throwExcp("messages.general.error",new String[] {"modulo.facturacion"}, e, tx);
+		}
+		return salida;				
+	}
+	
+	protected String accionInsertar(Long idProgramacion, ConfirmarFacturacionForm form,  HttpServletRequest request) throws Exception {
+		String salida = "";
+		HttpSession ses = request.getSession();		
+		try {			
+			
+			FacFacturacionProgramadaAdm adm = new FacFacturacionProgramadaAdm(this.getUserBean(request));			
 			{	// Comprobamos si existe ese nombre para la institucion. Debe ser unico
 				Hashtable h = new Hashtable();
 				UtilidadesHash.set(h, FacFacturacionProgramadaBean.C_IDINSTITUCION, this.getIDInstitucion(request));
@@ -911,13 +936,18 @@ public class ConfirmarFacturacionAction extends MasterAction{
 					throw new SIGAException(UtilidadesString.getMensajeIdioma(this.getLenguaje(request), "facturacion.seriesFacturacion.error.descripcionDuplicada"));
 				}
 			}
-			
-			tx.begin();	
 
 			FacFacturacionProgramadaBean bean = getDatos(form, request);
 
-			// Obtenemos el idProgramacion
-			bean.setIdProgramacion(adm.getNuevoID(bean));
+			/** CR - Si viene de recalcular el idProgramacion viene relleno, si no se crea uno nuevo. Ademas ponemos la fecha prevista de generacion a la fecha actual **/ 
+			if(idProgramacion!= null && !idProgramacion.equals("")){
+				bean.setIdProgramacion(idProgramacion);
+				bean.setFechaPrevistaGeneracion("sysdate");
+			}else{	
+				// Obtenemos el idProgramacion
+				bean.setIdProgramacion(adm.getNuevoID(bean));
+			}
+			
 			form.setIdProgramacion(bean.getIdProgramacion().toString());
 			
 			// tratamiento de estados de la programacion 
@@ -985,23 +1015,19 @@ public class ConfirmarFacturacionAction extends MasterAction{
 			if(!adm.insert(bean)){
 				throw new SIGAException (adm.getError());
 			}			
-			tx.commit();
-			ses.setAttribute("ModoAction","editar");
+			
 			ses.setAttribute("idProgramacion",bean.getIdProgramacion());
 			
 		} catch (SIGAException e) {
-			String sms = e.getLiteral();
-			if (sms == null || sms.equals("")) {
-				sms = "messages.general.error";
-			}
-			
-			throwExcp(sms, new String[] {"modulo.facturacion"}, e, tx);				
+			throw e;		
 
 		} catch (Exception e) {
-			throwExcp("messages.general.error",new String[] {"modulo.facturacion"}, e, tx);
+			throw new Exception(e);
 		}
+		
 		return salida;				
-	}
+	}	
+	
 
 	/**
 	 * Funcion para obtener los datos a insertar en BD
@@ -1171,8 +1197,6 @@ public class ConfirmarFacturacionAction extends MasterAction{
 				throw new SIGAException (adm.getError());
 			}			
 			tx.commit();
-			
-			
 			salida = exitoRefresco(mensaje,request);
 			
 		} catch (SIGAException e) {
@@ -1270,98 +1294,117 @@ public class ConfirmarFacturacionAction extends MasterAction{
 		
 		UserTransaction tx = null;	
 		try{
-			tx = this.getUserBean(request).getTransactionPesada();
-			
+			tx = this.getUserBean(request).getTransactionPesada();			
 			ConfirmarFacturacionForm form 				= (ConfirmarFacturacionForm)formulario;
-			FacFacturacionProgramadaAdm adm 			= new FacFacturacionProgramadaAdm(this.getUserBean(request));
-			FacFacturacionProgramadaBean bean 			= new FacFacturacionProgramadaBean();
 			Vector ocultos 				= (Vector)form.getDatosTablaOcultos(0);			
 			String idSerieFacturacion 	= (String)ocultos.elementAt(0);			
 			String idProgramacion 		= (String)ocultos.elementAt(1);
 			String idInstitucion		= this.getIDInstitucion(request).toString();
-            Hashtable ht = new Hashtable();
+			
+			/*********** INICIO TRANSACCION *************/
+			tx.begin();				
+			// Se saca fuera el bloque que realiza la operacion de BORRAR de una facturación para poder usarse en otros metodos **/
+			accionBorrado(idSerieFacturacion, idProgramacion, idInstitucion, request);		
+			tx.commit();
+			/************ FIN TRANSACCION *****************/				
+			
+		} catch (Exception e) {
+			throwExcp("messages.general.error",new String[] {"modulo.facturacion"}, e, tx);
+		}
+	
+		return exitoRefresco("messages.deleted.success", request);
+	}
+	
+	
+	private void accionBorrado(String idSerieFacturacion, String idProgramacion, String idInstitucion,  HttpServletRequest request) throws Exception {
+		try {
+			FacFacturacionProgramadaAdm adm = new FacFacturacionProgramadaAdm(this.getUserBean(request));
+			FacFacturacionProgramadaBean bean = new FacFacturacionProgramadaBean();
+			Hashtable ht = new Hashtable();
 			ht.put(FacFacturacionProgramadaBean.C_IDINSTITUCION, idInstitucion);
 			ht.put(FacFacturacionProgramadaBean.C_IDSERIEFACTURACION, idSerieFacturacion);
 			ht.put(FacFacturacionProgramadaBean.C_IDPROGRAMACION, idProgramacion);
 			Vector v = adm.selectByPK(ht);
-			bean = (FacFacturacionProgramadaBean) v.get(0);			
-			
-			tx.begin();	
-	
+			bean = (FacFacturacionProgramadaBean) v.get(0);
+
 			Object[] param_in = new Object[4];
 			param_in[0] = idInstitucion;
 			param_in[1] = idSerieFacturacion;
 			param_in[2] = idProgramacion;
 			param_in[3] = this.getUserName(request).toString();
 			String resultado[] = new String[2];
-			resultado = ClsMngBBDD.callPLProcedure("{call PKG_SIGA_FACTURACION.ELIMINARFACTURACION(?,?,?,?,?,?)}",2, param_in);
+			resultado = ClsMngBBDD.callPLProcedure("{call PKG_SIGA_FACTURACION.ELIMINARFACTURACION(?,?,?,?,?,?)}", 2, param_in);
 			String codretorno = resultado[0];
 			if (!codretorno.equals("0")) {
-				
+
 				if (codretorno.equals("-1")) {
 					// No existe la facturacion
 					throw new SIGAException("messages.facturacion.facturacionNoExiste");
-				} else
-				if (codretorno.equals("-2")) {
+				} else if (codretorno.equals("-2")) {
 					// La facturacion está bloqueada
 					throw new SIGAException("messages.facturacion.generacionEnProceso");
 				} else {
 					// Error general
-					throw new ClsExceptions("Error en ejecución del PL PKG_SIGA_FACTURACION.ELIMINARFACTURACION. Cod:ORA-"+codretorno+" Desc:"+resultado[1]);
+					throw new ClsExceptions("Error en ejecución del PL PKG_SIGA_FACTURACION.ELIMINARFACTURACION. Cod:ORA-" + codretorno + " Desc:"
+							+ resultado[1]);
 				}
-				
+
 			} else {
-				
-				ReadProperties p= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
-				
+
+				ReadProperties p = new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+
 				// 1. SE ELIMINA EL FICHERO DE LOG SI EXISTIESE
-				String logError = bean.getLogerror(); 				
-				if(logError!= null & !logError.equals("")){		 		
-					String pathFichero 		= p.returnProperty("facturacion.directorioFisicoLogProgramacion");
-		    		String sBarra = "";
-		    		if (pathFichero.indexOf("/") > -1) sBarra = "/"; 
-		    		if (pathFichero.indexOf("\\") > -1) sBarra = "\\";        		
-					
-					File fichero = new File(pathFichero+sBarra+idInstitucion+sBarra+logError);
+				String logError = bean.getLogerror();
+				if (logError != null & !logError.equals("")) {
+					String pathFichero = p.returnProperty("facturacion.directorioFisicoLogProgramacion");
+					String sBarra = "";
+					if (pathFichero.indexOf("/") > -1)
+						sBarra = "/";
+					if (pathFichero.indexOf("\\") > -1)
+						sBarra = "\\";
+
+					File fichero = new File(pathFichero + sBarra + idInstitucion + sBarra + logError);
 					if (fichero.exists()) {
 						fichero.delete();
-					}	
+					}
 				}
-				
+
 				// 2. SE ELIMINA EL INFORME DE GENERACION SI EXISTIESE
-				String nombreFichero = bean.getNombrefichero();				
-				if(nombreFichero!= null & !nombreFichero.equals("")){		 		
-					String pathFichero 		= p.returnProperty("facturacion.directorioFisicoPrevisionesJava")+p.returnProperty("facturacion.directorioPrevisionesJava");
-		    		String sBarra = "";
-		    		if (pathFichero.indexOf("/") > -1) sBarra = "/"; 
-		    		if (pathFichero.indexOf("\\") > -1) sBarra = "\\";        		
-					
-					File fichero = new File(pathFichero+sBarra+idInstitucion+sBarra+nombreFichero);
+				String nombreFichero = bean.getNombrefichero();
+				if (nombreFichero != null & !nombreFichero.equals("")) {
+					String pathFichero = p.returnProperty("facturacion.directorioFisicoPrevisionesJava")
+							+ p.returnProperty("facturacion.directorioPrevisionesJava");
+					String sBarra = "";
+					if (pathFichero.indexOf("/") > -1)
+						sBarra = "/";
+					if (pathFichero.indexOf("\\") > -1)
+						sBarra = "\\";
+
+					File fichero = new File(pathFichero + sBarra + idInstitucion + sBarra + nombreFichero);
 					if (fichero.exists()) {
 						fichero.delete();
-					}	
+					}
 				}
-				
-				//  3. SE ELIMINAN LOS FICHEROS PDF EN CASO DE QUE SE HAYAN CREADO	
-				String pathFicheroPDF = p.returnProperty("facturacion.directorioFisicoFacturaPDFJava")+p.returnProperty("facturacion.directorioFacturaPDFJava");
-				String idserieidprogramacion = idSerieFacturacion+"_" + idProgramacion;
-	    		String sBarra = "";
-	    		if (pathFicheroPDF.indexOf("/") > -1) sBarra = "/"; 
-	    		if (pathFicheroPDF.indexOf("\\") > -1) sBarra = "\\";  				
-				pathFicheroPDF += sBarra+idInstitucion+sBarra+idserieidprogramacion;
+
+				// 3. SE ELIMINAN LOS FICHEROS PDF EN CASO DE QUE SE HAYAN CREADO
+				String pathFicheroPDF = p.returnProperty("facturacion.directorioFisicoFacturaPDFJava")
+						+ p.returnProperty("facturacion.directorioFacturaPDFJava");
+				String idserieidprogramacion = idSerieFacturacion + "_" + idProgramacion;
+				String sBarra = "";
+				if (pathFicheroPDF.indexOf("/") > -1)
+					sBarra = "/";
+				if (pathFicheroPDF.indexOf("\\") > -1)
+					sBarra = "\\";
+				pathFicheroPDF += sBarra + idInstitucion + sBarra + idserieidprogramacion;
 				File ficheroPDF = new File(pathFicheroPDF);
 				if (ficheroPDF.exists()) {
 					Plantilla.borrarDirectorio(ficheroPDF);
 				}
 			}
-				
-			tx.commit();					
+
+		} catch (Exception e) {
+			throw new Exception(e);
 		}
-		catch (Exception e) {
-			throwExcp("messages.general.error",new String[] {"modulo.facturacion"}, e, tx);
-		}
-	
-		return exitoRefresco("messages.deleted.success", request);
 	}
 	
 	/**
@@ -1429,4 +1472,51 @@ public class ConfirmarFacturacionAction extends MasterAction{
         
         return "actualizaDatos";
     }
+    
+	/** 
+	 *  Funcion que atiende la accion de recalcular una facturacion
+	 * @param  mapping - Mapeo de los struts
+	 * @param  formulario -  Action Form asociado a este Action
+	 * @param  request - objeto llamada HTTP 
+	 * @param  response - objeto respuesta HTTP
+	 * @return  String  Destino del action  
+	 * @exception  SIGAException  Errores de aplicación
+	 */
+	protected String recalcular(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+		UserTransaction tx = null;	
+		ConfirmarFacturacionForm form = (ConfirmarFacturacionForm)formulario;
+		Integer idInstitucion    = this.getIDInstitucion(request);
+		Long idProgramacion = Long.valueOf(form.getIdProgramacion());
+		try {			
+			tx = this.getUserBean(request).getTransaction();
+			
+			/*********** INICIO TRANSACCION *************/
+			tx.begin();				
+	
+			/** PRIMER PASO: Borramos la facturación, pero nos quedamos los datos de clave **/
+			accionBorrado(form.getIdSerieFacturacion(), form.getIdProgramacion(), idInstitucion.toString(), request);	
+			
+			/** SEGUNDO PASO: Volvemos a crear la facturacion pero con los datos anteriores **/
+			accionInsertar(idProgramacion, form, request);
+			
+			request.setAttribute("volver","s");			
+			request.setAttribute("estadoConfirmacion", FacEstadoConfirmFactBean.GENERACION_PROGRAMADA.toString());			
+			
+			tx.commit();
+			/************ FIN TRANSACCION *****************/	
+			
+		} catch (SIGAException e) {
+			String sms = e.getLiteral();
+			if (sms == null || sms.equals("")) {
+				sms = "messages.general.error";
+			}
+			
+			throwExcp(sms, new String[] {"modulo.facturacion"}, e, tx);				
+
+		} catch (Exception e) {
+			throwExcp("messages.general.error",new String[] {"modulo.facturacion"}, e, tx);
+		}
+		
+		return abrir(mapping, formulario, request, response);			
+	}    
 }

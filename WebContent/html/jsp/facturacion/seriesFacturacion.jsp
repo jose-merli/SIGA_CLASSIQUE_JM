@@ -222,7 +222,7 @@
 		}  // end IsNum
 
 
-		function refrescarLocal() {		
+		function refrescarLocal() {	
 			document.confirmarFacturacionForm.modo.value="editarFechas";
 			document.confirmarFacturacionForm.target = "mainWorkArea";
 			document.confirmarFacturacionForm.submit();
@@ -512,6 +512,17 @@
 			document.confirmarFacturacionForm.target = "mainWorkArea";
 			document.confirmarFacturacionForm.submit();
 		}
+		
+		function accionRecalcularFacturacion() {
+			sub();
+			var type = '<siga:Idioma key="facturacion.mantenimientoFacturacion.mensaje.confirmacionRecalcular"/>';
+			if(confirm(type)){
+				document.confirmarFacturacionForm.modo.value = "recalcular";
+				document.confirmarFacturacionForm.target = "mainWorkArea";
+				document.confirmarFacturacionForm.submit();				
+			}
+			fin();		
+		}		
 		
 	</script>
 </head>
@@ -805,9 +816,14 @@
 	
 		<!-- ******* BOTONES DE ACCIONES EN REGISTRO ****** -->
 		<% if (modoAction.equals("editar") ||  modoAction.equals("nuevaPrevision")) { %>
-			<siga:ConjBotonesAccion botones="V,G" clase="botonesDetalle"  />
+			<% if( idEstadoConfirmacion.equals(FacEstadoConfirmFactBean.GENERADA.toString()) || idEstadoConfirmacion.equals(FacEstadoConfirmFactBean.CONFIRM_PROGRAMADA.toString()) || idEstadoConfirmacion.equals(FacEstadoConfirmFactBean.CONFIRM_FINALIZADAERRORES.toString())){ %>
+				<siga:ConjBotonesAccion botones="V,RF,G" clase="botonesDetalle"/>
+			<% } else { %>
+				<siga:ConjBotonesAccion botones="V,G" clase="botonesDetalle"/>
+			<% } %>
+
 		<% } else { %>
-			<siga:ConjBotonesAccion botones="V" clase="botonesDetalle"  />
+			<siga:ConjBotonesAccion botones="V" clase="botonesDetalle"/>
 		<% } %>
 		<!-- FIN ******* CAPA DE PRESENTACION ****** -->
 			
