@@ -417,7 +417,7 @@
 							<td class="labelText">
 								<siga:Idioma key='gratuita.mantActuacion.literal.nasunto' />(*)
 							</td>
-							<td align="left" colspan="2">
+							<td align="left" colspan="4">
 								<html:text name="ActuacionAsistenciaFormEdicion" property="numeroAsunto" styleId="numeroAsunto" size="30" maxlength="15" styleClass="box" />
 							</td>
 						</c:when>
@@ -426,7 +426,7 @@
 							<td class="labelText">
 								<siga:Idioma key='gratuita.mantActuacion.literal.nasunto' />
 							</td>
-							<td align="left" colspan="2">
+							<td align="left" colspan="4">
 								<html:text name="ActuacionAsistenciaFormEdicion" property="numeroAsunto" styleId="numeroAsunto" size="30" maxlength="20" styleClass="box" />
 							</td>
 						</c:otherwise>
@@ -441,7 +441,7 @@
 						<input type="text" id="codComisaria" class="box" size="8" style="margin-top: 2px;" maxlength="10" onBlur="obtenerComisaria();" />
 					</td>
 					
-					<td id="tdSelectComisaria">
+					<td id="tdSelectComisaria" colspan="3">
 						<html:select styleClass="boxCombo" style="width:680px;" name="ActuacionAsistenciaFormEdicion" property="idComisaria" styleId="idComisaria" onchange="cambioComisaria();">
 							<bean:define id="comisarias" name="ActuacionAsistenciaForm" property="comisarias" type="java.util.Collection" />
 							<html:optionsCollection name="comisarias" value="idComisaria" label="nombre" />
@@ -472,14 +472,12 @@
 					<td class="labelText">
 						<siga:Idioma key='gratuita.mantAsistencias.literal.NIG' />
 					</td>
-					<td>
+					<td colspan="2">
 						<html:text name="ActuacionAsistenciaFormEdicion" property="nig"  styleId="nig" styleClass="box" style="size:19;width:200px" />
 					</td>
 					 			
 					<td id="info" style="display:none"><img  id="imagenInfo" src="/SIGA/html/imagenes/info.gif"	style="cursor: hand;"	title="" border="0" />
 					</td>
-					<td colspan="2"></td>
-					
 				</tr>
 				
 				<tr>
