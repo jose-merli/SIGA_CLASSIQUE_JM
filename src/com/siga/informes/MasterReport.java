@@ -500,7 +500,7 @@ public class MasterReport
 		Driver driver = new Driver();
 
 //		Setup logger
-		Logger logger = new ConsoleLogger(ConsoleLogger.LEVEL_INFO);
+		Logger logger = new ConsoleLogger(ConsoleLogger.LEVEL_ERROR);
 		driver.setLogger(logger);
 		MessageHandler.setScreenLogger(logger);
 
@@ -568,7 +568,7 @@ public class MasterReport
 		Driver driver = new Driver();
 
 //		Setup logger
-		Logger logger = new ConsoleLogger(ConsoleLogger.LEVEL_INFO);
+		Logger logger = new ConsoleLogger(ConsoleLogger.LEVEL_ERROR);
 		driver.setLogger(logger);
 //		driver.getContentHandler().
 		
@@ -642,7 +642,7 @@ public class MasterReport
 		Driver driver = new Driver();
 
 //		Setup logger
-		Logger logger = new ConsoleLogger(ConsoleLogger.LEVEL_INFO);
+		Logger logger = new ConsoleLogger(ConsoleLogger.LEVEL_ERROR);
 		driver.setLogger(logger);
 		MessageHandler.setScreenLogger(logger);
 
@@ -1036,6 +1036,10 @@ Así que hemos logrado convertirse en el documento en formato RTF xml. So that we
 	            ClsLogging.writeFileLog(">>> org.apache.fop.configuration.Configuration",10);
 	            // Construct driver and setup output format
 	            Driver driver = new Driver();
+	            Logger logger = new ConsoleLogger(ConsoleLogger.LEVEL_ERROR);
+	    		driver.setLogger(logger);
+	    		MessageHandler.setScreenLogger(logger);
+
 	            ClsLogging.writeFileLog(">>> Driver driver",10);
 	            
 	            driver.setRenderer(Driver.RENDER_PDF);
@@ -1101,10 +1105,10 @@ Así que hemos logrado convertirse en el documento en formato RTF xml. So that we
 		   Driver driver = new Driver();
 
 //			Setup logger
-			Logger logger = new ConsoleLogger(ConsoleLogger.LEVEL_INFO);
+		   Logger logger = new ConsoleLogger(ConsoleLogger.LEVEL_ERROR);
 			driver.setLogger(logger);
 			MessageHandler.setScreenLogger(logger);
-
+			
 //			Setup Renderer (output format)        
 			driver.setRenderer(Driver.RENDER_PDF);
 //			Setup output
