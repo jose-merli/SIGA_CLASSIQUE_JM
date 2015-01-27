@@ -1038,26 +1038,31 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 					sPagos += UtilidadesHash.getString((Hashtable)resultado1.get(i), "IDPAGOSJG");
 					if (i < resultado1.size() - 1) sPagos += ",";
 				}
-		
+				
 				StringBuffer select = new StringBuffer();
-				select.append(" SELECT " + FcsPagoColegiadoBean.C_IDPERDESTINO + " AS IDPERSONAIMPRESO, ");
-				select.append("        ((-1)*SUM ("+FcsPagoColegiadoBean.C_IMPIRPF + ")) AS TOTALIMPORTEIRPF, "); //Está guardado con signo menos aquí se recupera positivo
-				select.append("        SUM (" + FcsPagoColegiadoBean.C_IMPOFICIO + " + ");
-				select.append(                  FcsPagoColegiadoBean.C_IMPASISTENCIA + " + ");
-				select.append(                  FcsPagoColegiadoBean.C_IMPEJG + " + ");
-				select.append(                  FcsPagoColegiadoBean.C_IMPSOJ + " + ");
-				select.append(                  FcsPagoColegiadoBean.C_IMPMOVVAR + " ) AS TOTALIMPORTEPAGADO, ");
-				select.append(          " NVL("+ScsRetencionesBean.C_CLAVEM190+",'G01') AS CLAVEM190 ");
-				select.append(" FROM "  + FcsPagoColegiadoBean.T_NOMBRETABLA +", "+ ScsRetencionesBean.T_NOMBRETABLA );
-				select.append(" WHERE " + FcsPagoColegiadoBean.C_IDINSTITUCION + " = " + idInstitucion);
-				select.append(" AND "   + FcsPagoColegiadoBean.C_IDPAGOSJG + " IN (" + sPagos + ")");
-				select.append(" AND "   + FcsPagoColegiadoBean.C_PORCENTAJEIRPF + " > 0 ");
-				select.append(" AND ("   + FcsPagoColegiadoBean.C_IMPOFICIO + " > 0 or ");
-				select.append( FcsPagoColegiadoBean.C_IMPASISTENCIA + " > 0 or ");
-				select.append( FcsPagoColegiadoBean.C_IMPEJG + " > 0 or ");
-				select.append( FcsPagoColegiadoBean.C_IMPSOJ + " > 0 ) ");
-				select.append(" AND "   + FcsPagoColegiadoBean.C_PORCENTAJEIRPF + " = " + ScsRetencionesBean.C_RETENCION + "(+)");
-				select.append(" GROUP BY " + FcsPagoColegiadoBean.C_IDPERDESTINO + ", NVL("+ScsRetencionesBean.C_CLAVEM190+",'G01')");
+				select.append(" SELECT IDPERSONAIMPRESO, Sum(importeirpf) As TOTALIMPORTEIRPF, Sum(importepagado) As TOTALIMPORTEPAGADO, CLAVEM190 ");
+				select.append("  FROM ( " );
+				select.append("   SELECT " + FcsPagoColegiadoBean.C_IDPERDESTINO + " AS IDPERSONAIMPRESO, ");
+				select.append(" 	(-1) * " + FcsPagoColegiadoBean.C_IMPIRPF + "  AS importeirpf, ");
+				select.append(		FcsPagoColegiadoBean.C_IMPOFICIO + " + ");
+				select.append(      FcsPagoColegiadoBean.C_IMPASISTENCIA + " + ");
+				select.append(      FcsPagoColegiadoBean.C_IMPEJG + " + ");
+				select.append(      FcsPagoColegiadoBean.C_IMPSOJ + " + ");
+				select.append(      FcsPagoColegiadoBean.C_IMPMOVVAR + " AS importepagado, ");
+				select.append(    " NVL((SELECT " + ScsRetencionesBean.C_CLAVEM190 );
+				select.append(		   " FROM  " + ScsRetencionesBean.T_NOMBRETABLA);
+				select.append(		   " WHERE " + ScsRetencionesBean.C_CLAVEM190 + " is not null ");
+				select.append(		   "   AND " + FcsPagoColegiadoBean.C_PORCENTAJEIRPF + " = " + ScsRetencionesBean.C_RETENCION + "), 'G01') AS CLAVEM190 ");
+				select.append("   FROM "  + FcsPagoColegiadoBean.T_NOMBRETABLA );
+				select.append("   WHERE " + FcsPagoColegiadoBean.C_IDINSTITUCION + " = " + idInstitucion);
+				select.append("     AND "   + FcsPagoColegiadoBean.C_IDPAGOSJG + " IN (" + sPagos + ")");
+				select.append("     AND "   + FcsPagoColegiadoBean.C_PORCENTAJEIRPF + " > 0 ");
+				select.append("     AND ("  + FcsPagoColegiadoBean.C_IMPOFICIO + " > 0 or ");
+				select.append( 				  FcsPagoColegiadoBean.C_IMPASISTENCIA + " > 0 or ");
+				select.append( 				  FcsPagoColegiadoBean.C_IMPEJG + " > 0 or ");
+				select.append( 				  FcsPagoColegiadoBean.C_IMPSOJ + " > 0 ) ");
+				select.append(" 		) " );
+				select.append(" GROUP BY IDPERSONAIMPRESO, CLAVEM190");
 
 				Vector vIRPF = (Vector) this.selectGenerico(select.toString());
 				if (vIRPF != null && vIRPF.size() > 0) {					
@@ -1101,26 +1106,24 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 							
 							//Si no hay error lo añado y recalculo irpfs e importes:
 							if (!hayError) {
-								datos.put(idPersona, hashPersona);
+								datos.put(idPersona+claveM190, hashPersona);
 	
 								// IRPF
-								irpfs.put(idPersona, importeIRPFPersona);
+								irpfs.put(idPersona+claveM190, importeIRPFPersona);
 								irpfTotal += importeIRPFPersona.doubleValue();
 	
 								// Importe
-								importes.put(idPersona, importePagadoPersona);
+								importes.put(idPersona+claveM190, importePagadoPersona);
 								importeTotal += importePagadoPersona.doubleValue();		
 								
 								//Claves Modelo 190
-								clavesM190.put(idPersona, claveM190);
+								clavesM190.put(idPersona+claveM190, claveM190);
 							}
 						}
 					}
 				}
-			}
-				
-
-			
+			}				
+		
 			// realizo la generación del directorio y del fichero:
 			String sNombreFichero = miform.getNombreFicheroOriginal();
 			 if (miform.getNombreFicheroOriginal()!="" && miform.getNombreFicheroOriginal().indexOf(".190")<0){
@@ -1309,8 +1312,8 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 			Enumeration claves = importes.keys();
 			while (claves.hasMoreElements()) {
 				Object o = claves.nextElement();
-				Long persona = (Long) new Long ((String)o);
-				Hashtable datosPersonaRegistro = (Hashtable) datos.get(persona.toString());
+				String persona = (String)o;
+				Hashtable datosPersonaRegistro = (Hashtable) datos.get(persona);
 				
 				// registro unico de persona
 				linea = "";
@@ -1342,7 +1345,7 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 				linea += formatea(codigoProvincia,2,true); // provincia
 				
 				//CR - Obtenemmos la clave del modelo 190 por cada colegiado
-				String claveM190 = (String)clavesM190.get(persona.toString());				
+				String claveM190 = (String)clavesM190.get(persona);				
 				linea += claveM190; 
 				/*
 				 * CR - YA NO SE PONE SIEMPRE ESTO
@@ -1361,8 +1364,8 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 				personaIrpfTotalDouble = new Double(FcsFacturacionJGAdm.formatearDouble(personaIrpfTotalDouble.doubleValue(), 2));*/
 				
 				//Obtengo el IRPF y el importe para esta persona:
-				Double personaImporteTotalDouble = (Double)importes.get(persona.toString());
-				Double personaIrpfTotalDouble = (Double)irpfs.get(persona.toString());
+				Double personaImporteTotalDouble = (Double)importes.get(persona);
+				Double personaIrpfTotalDouble = (Double)irpfs.get(persona);
 				
 				// Si no hay retenciones "no debe aparecer" en el archivo
 				if(!personaIrpfTotalDouble.equals(new Double(0))){
@@ -1425,6 +1428,7 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 		}
 		return fichero;
 	}
+	
 	
 	// formatea un dato a una longitud rellenando por la izquierda a ceros 
 	// o por la derecha a blancos en funcion de si es numerico para el impreso 190
