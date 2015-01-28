@@ -47,12 +47,24 @@
 	
 	String editable = (String)request.getParameter("editable");		
 	String idInstitucion = (String)request.getParameter("idInstitucion");
+	String idConsulta = (String)request.getParameter("idConsulta");
+	String tipoConsultaParam = (String)request.getParameter("tipoConsulta");
 	editable = idInstitucion.equals(user.getLocation())?editable:"0";	
 	boolean bEditable = editable.equals("1")?true:false;
-	String botones = bEditable?"V,G,GE":"V";
 	String boxStyle = bEditable?"box":"boxConsulta";
 	String accion = (String)request.getParameter("accion");
 	boolean breadonly = false;
+
+	String botones = "V";	
+	if(bEditable){
+		if(accion.equals("nuevo")){
+			botones = "V,G";
+		}else{
+			botones = "V,EJC,G";
+		}
+	}else{
+		botones = "V";
+	}	
 	
 	String cgae = (String)request.getAttribute("esCGAE");
 	boolean esCGAE = (cgae!=null && cgae.equals("true"))?true:false;	
@@ -86,9 +98,6 @@
 			parametros+="&"+buscar;
 		}
 	}
-	
-	
-	
 	
 	//Calculo los values d elos simbolos esta vacio SQL:
 	ConOperacionConsultaAdm opConsulta = new ConOperacionConsultaAdm(user);
@@ -148,7 +157,6 @@
 		function accionVolver() 
 		{		
 			if(parent.document.getElementById("accionAnterior")&&parent.document.getElementById("accionAnterior").value!=""){
-
 				document.forms[1].accionAnterior.value=parent.document.getElementById("accionAnterior").value;
 				document.forms[1].idModulo.value=parent.document.getElementById("idModulo").value;
 				document.forms[1].modo.value="inicio";
@@ -160,14 +168,11 @@
 			document.forms[1].submit();				
 		}
 		
-		
-		
-		
 		<!-- Asociada al boton Guardar -->
 		function accionGuardar() 
-		{		//Pongo la inhabilitacion de los botones dentro de este metodo
-				guardarListas();
-			
+		{		
+			//Pongo la inhabilitacion de los botones dentro de este metodo
+			guardarListas();
 		}
 		
 		function guardarListas() 
@@ -194,7 +199,7 @@
 		}
 		
 		<!-- Asociada al boton Guardar -->
-		function accionGuardarEjecutar() 
+		function accionEjecutarConsulta() 
 		{	
 			//Pongo la inhabilitacion de los botones dentro de este metodo
 				guardarEjecutarListas();
@@ -230,18 +235,25 @@
 		function guardarEjecutarListas() 
 		{	
 			sub();
+			
 			if (document.forms[0].descripcion==null || document.forms[0].descripcion.value==""){
 				alert('<%=errorDescripcion%>');
 				fin();
 				return false;
 			}else{
 			  if (validateEditarConsultaForm(document.EditarConsultaForm)){	
-				<%if (accion.equals("nuevo")){%>
-					document.forms[0].modo.value="insertarEjecutar";
-				<%}else{%>
-					document.forms[0].modo.value="modificarEjecutar";					
-				<%}%>
-				document.forms[0].submit();
+					<%  if (tipoConsultaParam.equals(ConConsultaAdm.TIPO_CONSULTA_ENV)){%>
+							document.forms[1].modo.value="tipoEnvio";
+							var tipoenvio = ventaModalGeneral(document.forms[1].name,"P");
+							if (tipoenvio!=undefined && tipoenvio!="VACIO" && tipoenvio!=""){
+								document.forms[1].tipoEnvio.value=tipoenvio;
+							}else{
+								return;
+							}
+					<%  } %>				
+					document.forms[1].target='mainWorkArea';
+					document.forms[1].modo.value="criteriosDinamicos";	
+					document.forms[1].submit();	
 			  }else{
 			 	 fin();
 				return false;
@@ -253,8 +265,6 @@
 		function ajusteSelectExperta(){
 			jQuery('#boxExperta').height(jQuery(document).height()-130);
 		}
-		
-		
 		
 		function editarCriterio(ref){
 			if (ref.selectedIndex>-1){
@@ -269,6 +279,7 @@
 			}
 			
 		}
+		
 		function abrirAyuda() {
 				
 		
@@ -335,8 +346,6 @@
 <% 	if (accion!=null && accion.equalsIgnoreCase("NUEVO")) { %>
 
 		<siga:TituloExt titulo="consultas.consultasRecuperar.consulta.cabecera"  localizacion="consultas.nuevaConsultaExperta.localizacion"/>
-		
-	
 	
 	<!-- FIN: TITULO Y LOCALIZACION -->	
 <% } else { %>
@@ -354,13 +363,9 @@
 			<html:hidden property = "hiddenFrame" value = "1"/>	
 			<html:hidden property = "idConsulta" value=""/>	
 			<html:hidden property = "tablas"/>
-			<html:hidden property = "actionModal" value=""/>
 			<html:hidden property = "criterioModif" value=""/>
 			<html:hidden property = "esExperta" value="1"/>
-			
 			<input type="Hidden"  name="experta" value="1">
-
-		
 	
 		<table class="tablaTitulo" align="center" cellspacing="0">
 			<tr>
@@ -487,16 +492,26 @@ if (!bEditable){
 	<!-- FIN ******* BOTONES DE ACCIONES EN REGISTRO ****** -->
 	<%if (tipoConsulta != null && tipoConsulta.equals("tipoConsulta=listas")){%>				
 		<html:form action="/CON_RecuperarConsultasDinamicas.do" method="POST" target="mainWorkArea">
+			<input type="hidden" id="actionModal" name="actionModal" value="">
 			<html:hidden property = "modo" value = ""/>
 			<html:hidden property = "accionAnterior"/>
 			<html:hidden property = "idModulo"/>
+			<html:hidden styleId = "idInstitucion" property = "idInstitucion" value="<%=idInstitucion%>"/>
+			<html:hidden styleId = "idConsulta" property = "idConsulta" value="<%=idConsulta%>"/>
+			<html:hidden styleId = "tipoConsulta"  property = "tipoConsulta" value="<%=tipoConsultaParam%>"/>
+			<html:hidden styleId ="tipoEnvio" property ="tipoEnvio" value = ""/>		
 		</html:form>
 		
 	<%}else{%>
 		<html:form action="/CON_RecuperarConsultas.do" method="POST" target="mainWorkArea">
+			<input type="hidden" id="actionModal" name="actionModal" value="">
 			<html:hidden property = "modo" value = ""/>
 			<html:hidden property = "accionAnterior"/>
 			<html:hidden property = "idModulo"/>
+			<html:hidden styleId = "idInstitucion" property = "idInstitucion" value="<%=idInstitucion%>"/>
+			<html:hidden styleId = "idConsulta" property = "idConsulta" value="<%=idConsulta%>"/>
+			<html:hidden styleId = "tipoConsulta"  property = "tipoConsulta" value="<%=tipoConsultaParam%>"/>
+			<html:hidden styleId ="tipoEnvio" property ="tipoEnvio" value = ""/>
 		</html:form>
 	<%}%>
 	

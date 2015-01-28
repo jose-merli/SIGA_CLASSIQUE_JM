@@ -289,6 +289,9 @@ public class RecuperarConsultasAction extends MasterAction {
 	protected String mostrarRegistro(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response, boolean bEditable) throws SIGAException{
         
 		try{
+			
+			RecuperarConsultasForm form = (RecuperarConsultasForm) formulario;
+			
 			Vector vOcultos = formulario.getDatosTablaOcultos(0);		
 	
 	        String idInstitucion = (String)vOcultos.elementAt(0);
