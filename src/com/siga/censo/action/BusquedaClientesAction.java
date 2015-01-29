@@ -1770,6 +1770,8 @@ public class BusquedaClientesAction extends MasterAction {
         //}
         //if (request.getAttribute("nif")!=null){
         	nif=miForm.getNumeroNif();
+        	if(nif!=null)
+        		nif = nif.trim();
         //}
 		
 		if(tipo.equals("colegiado")){
