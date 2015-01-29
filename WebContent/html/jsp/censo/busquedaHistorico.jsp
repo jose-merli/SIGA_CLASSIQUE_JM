@@ -54,8 +54,13 @@
 	if (sTipo!=null){
 		
 		ses.setAttribute("tipoR",sTipo);
-	}else
-		sTipo=ses.getAttribute("tipoR").toString();
+	}else{
+		
+		if(ses.getAttribute("tipoR")!=null)
+			sTipo=ses.getAttribute("tipoR").toString();
+		else
+			sTipo=null;
+	}
 	
 	// Gestion de Volver
 	String busquedaVolver = (String)

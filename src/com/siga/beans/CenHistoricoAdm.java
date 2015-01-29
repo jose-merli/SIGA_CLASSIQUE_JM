@@ -1336,20 +1336,23 @@ public class CenHistoricoAdm extends MasterBeanAdministrador
 					if (accion == ACCION_UPDATE) {
 						
 						if ((numCaractElim%2) == 0) {
-							numCaractElimUpdate=numCaractElim/2;
+							numCaractElimUpdate=(numCaractElim/2)+3;
 						}else{
-							numCaractElimUpdate=(numCaractElim-1)/2;
+							numCaractElimUpdate=((numCaractElim-1)/2)+3;
 						}
 						
 						t = "  - " + clave.substring(0,1).toUpperCase() +  clave.substring(1).toLowerCase() + ": ..." + valor.substring(numCaractElimUpdate) + "\n";
 						
 					}else{
-						t = "  - " + clave.substring(0,1).toUpperCase() +  clave.substring(1).toLowerCase() + ": ..." + valor.substring(numCaractElim) + "\n";
+						t = "  - " + clave.substring(0,1).toUpperCase() +  clave.substring(1).toLowerCase() + ": ..." + valor.substring(numCaractElim+3) + "\n";
 					}
 					
 					
 				
 				}else{
+					if(valor.equals("null"))
+						valor="";
+					
 					t = "  - " + clave.substring(0,1).toUpperCase() +  clave.substring(1).toLowerCase() + ": " + valor + "\n";
 				}
 
@@ -1398,6 +1401,11 @@ public class CenHistoricoAdm extends MasterBeanAdministrador
 							t = "  - " + clave.substring(0,1).toUpperCase() +  clave.substring(1).toLowerCase() + ": ..." + valor.substring(numCaractElimUpdate+1) + "\n";
 						}
 
+					}else{
+						if(valor.equals("null"))
+							valor="";
+						
+						t = "  - " + clave.substring(0,1).toUpperCase() +  clave.substring(1).toLowerCase() + ": " + valor + "\n";
 					}
 					
 					int i;

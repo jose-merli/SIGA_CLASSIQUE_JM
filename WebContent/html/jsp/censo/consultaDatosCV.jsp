@@ -54,9 +54,13 @@
 	if (sTipo!=null){
 		
 		ses.setAttribute("tipoR",sTipo);
-	}else
-		sTipo=ses.getAttribute("tipoR").toString();
-	
+	}else{
+		
+		if(ses.getAttribute("tipoR")!=null)
+			sTipo=ses.getAttribute("tipoR").toString();
+		else
+			sTipo=null;
+	}
 	// Gestion de Volver
 	String busquedaVolver = (String)
 	request.getSession().getAttribute("CenBusquedaClientesTipo");
@@ -159,7 +163,6 @@
 			<!-- Campo obligatorio -->
 			<html:hidden property="modo"  styleId="modo" value="" />
 			<input type="hidden" id="nombreUsuario"  name="nombreUsuario" value="<%=nombre%>" />
-			<input type="hidden" id="numeroUsuario"  name="numeroUsuario" value="<%=numero%>" />
 			<input type='hidden' id="idPersona"  name="idPersona" value="<%=String.valueOf((Long)request.getAttribute("idPersona"))%>" />
 			<input type='hidden' id="idInstitucion"  name="idInstitucion" value="<%=String.valueOf((Integer)request.getAttribute("idInstitucion"))%>" />
 			<input type='hidden' id="accion"  name="accion" value="<%=accion%>" />
