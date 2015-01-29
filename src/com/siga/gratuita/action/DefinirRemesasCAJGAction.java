@@ -782,7 +782,7 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 			cajgRemesa.setIdremesa(Long.valueOf(idRemesa));
 			cajgRemesaService.borrarOviedoTemporal(cajgRemesa);
 		} catch (Exception e) {
-			throw new SIGAException("No se puede borrar la remesa"+e.toString());
+			throw new SIGAException("No se puede borrar la remesa"+e.toString(),e);
 		}
 
 		request.setAttribute("hiddenFrame", "1");
