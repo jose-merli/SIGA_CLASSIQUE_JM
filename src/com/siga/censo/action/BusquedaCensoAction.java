@@ -964,6 +964,12 @@ public class BusquedaCensoAction extends MasterAction {
 				 idEstadoCivil = perBean.getIdEstadoCivil().toString();	
 			}				
 			
+			String idioma = "";
+			if(cli.getIdLenguaje()!=null){
+				 idioma = cli.getIdLenguaje();	
+			}				
+						
+			
 			Hashtable datosCliente = new Hashtable();
 			datosCliente.put("idPersona",idPersona);
 			datosCliente.put("idInstitucion",idInstitucion);
@@ -988,6 +994,7 @@ public class BusquedaCensoAction extends MasterAction {
 			datosCliente.put("colegiadoen",colegiadoen);
 			datosCliente.put("idTipoIden",idTipoIden);
 			datosCliente.put("idEstadoCivil",idEstadoCivil);
+			datosCliente.put("idioma",idioma);
 			
 			request.setAttribute("datosCensoModal", datosCliente);	
 
