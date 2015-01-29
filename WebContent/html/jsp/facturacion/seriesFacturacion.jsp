@@ -816,7 +816,7 @@
 	
 		<!-- ******* BOTONES DE ACCIONES EN REGISTRO ****** -->
 		<% if (modoAction.equals("editar") ||  modoAction.equals("nuevaPrevision")) { %>
-			<% if( idEstadoConfirmacion.equals(FacEstadoConfirmFactBean.GENERADA.toString()) || idEstadoConfirmacion.equals(FacEstadoConfirmFactBean.CONFIRM_PROGRAMADA.toString()) || idEstadoConfirmacion.equals(FacEstadoConfirmFactBean.CONFIRM_FINALIZADAERRORES.toString())){ %>
+			<% if( idEstadoConfirmacion.equals(FacEstadoConfirmFactBean.GENERADA.toString()) || idEstadoConfirmacion.equals(FacEstadoConfirmFactBean.CONFIRM_PROGRAMADA.toString()) || idEstadoConfirmacion.equals(FacEstadoConfirmFactBean.ERROR_CONFIRMACION.toString())){ %>
 				<siga:ConjBotonesAccion botones="V,RF,G" clase="botonesDetalle"/>
 			<% } else { %>
 				<siga:ConjBotonesAccion botones="V,G" clase="botonesDetalle"/>
