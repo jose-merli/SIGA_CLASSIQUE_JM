@@ -122,7 +122,7 @@ public class GestionSolicitudesAceptadasCentralitaAction extends MasterAction {
 		String identificadorFormularioBusqueda = getIdBusqueda(super.dataBusqueda,getClass().getName());
 		SolicitudAceptadaCentralitaForm solicitudAceptadaCentralitaForm = (SolicitudAceptadaCentralitaForm) request.getSession().getAttribute(identificadorFormularioBusqueda);
 		miForm.setIdInstitucion(solicitudAceptadaCentralitaForm.getIdInstitucion());
-        miForm.setIdSolicitudAceptada(solicitudAceptadaCentralitaForm.getIdSolicitudAceptada());
+        miForm.setIdLlamada(solicitudAceptadaCentralitaForm.getIdLlamada());
         miForm.setIdEstado(solicitudAceptadaCentralitaForm.getIdEstado());
         miForm.setIdTurno(solicitudAceptadaCentralitaForm.getIdTurno());
         miForm.setIdGuardia(solicitudAceptadaCentralitaForm.getIdGuardia());
@@ -166,7 +166,7 @@ public class GestionSolicitudesAceptadasCentralitaAction extends MasterAction {
 	private String getAjaxBusqueda (ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 			SolicitudAceptadaCentralitaForm solicitudAceptadaCentralitaForm = (SolicitudAceptadaCentralitaForm) formulario;
 			String idInstitucion = request.getParameter("idInstitucion");
-			String idSolicitudAceptada = request.getParameter("idSolicitudAceptada");
+			String idLlamada = request.getParameter("idLlamada");
 			String idEstado = request.getParameter("idEstado");
 			String idTurno = request.getParameter("idTurno");
 	        String idGuardia = request.getParameter("idGuardia");
@@ -178,7 +178,7 @@ public class GestionSolicitudesAceptadasCentralitaAction extends MasterAction {
 	        String colegiadoNumero = request.getParameter("colegiadoNumero");
 	        
 	        solicitudAceptadaCentralitaForm.setIdInstitucion(idInstitucion);
-	        solicitudAceptadaCentralitaForm.setIdSolicitudAceptada(idSolicitudAceptada);
+	        solicitudAceptadaCentralitaForm.setIdLlamada(idLlamada);
 	        solicitudAceptadaCentralitaForm.setIdEstado(idEstado);
 	        solicitudAceptadaCentralitaForm.setIdTurno(idTurno);
 	        solicitudAceptadaCentralitaForm.setIdGuardia(idGuardia);

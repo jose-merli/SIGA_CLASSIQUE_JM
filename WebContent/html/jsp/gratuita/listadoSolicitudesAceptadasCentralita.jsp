@@ -22,7 +22,7 @@
 		   name="listadoInicial"
 		   border="1"
 		   columnNames="<input type='checkbox' name='chkGeneral' onclick='marcarDesmarcarTodos(this);'/>,
-		    gratuita.mantAsistencias.literal.estado,gratuita.seleccionColegiadoJG.literal.colegiado,gratuita.busquedaAsistencias.literal.guardia,
+		    gratuita.busquedaAsistencias.literal.idAvisoCentralita,gratuita.seleccionColegiadoJG.literal.colegiado,gratuita.busquedaAsistencias.literal.guardia,
 		    sjcs.solicitudaceptadacentralita.literal.fechaLlamada,sjcs.solicitudaceptadacentralita.literal.centroDetencion,gratuita.mantAsistencias.literal.estado,"
 		   columnSizes="4,8,18,16,14,18,10,12">
 		<c:choose>
@@ -53,7 +53,7 @@
 		 					</td>
 		 					<td align='left'>
 								
-								<c:out value="${solicitudAceptadaCentralita.idSolicitudAceptada}"></c:out>
+								<c:out value="${solicitudAceptadaCentralita.idLlamada}"></c:out>
 								
 							</td>
 							<td align='left'>

@@ -520,6 +520,7 @@ public class SolicitudAceptadaCentralitaForm extends MasterForm {
 	String idComisaria;
 	String idJuzgado;
 	String idSolicitudAceptada;
+	String idLlamada;
 
 	String datosMasivos;
 	
@@ -888,6 +889,7 @@ public class SolicitudAceptadaCentralitaForm extends MasterForm {
 	}
 	public void clear() {
 		idSolicitudAceptada = null;
+		idLlamada = null;
 		idPersona = null;
 		idTurno = null;
 		idGuardia = null;
@@ -905,6 +907,7 @@ public class SolicitudAceptadaCentralitaForm extends MasterForm {
 		SolicitudAceptadaCentralitaForm miForm = new SolicitudAceptadaCentralitaForm();
 		miForm.setIdInstitucion(this.getIdInstitucion());
         miForm.setIdSolicitudAceptada(this.getIdSolicitudAceptada());
+        miForm.setIdLlamada(this.getIdLlamada());
         miForm.setIdEstado(this.getIdEstado());
         miForm.setIdTurno(this.getIdTurno());
         miForm.setIdGuardia(this.getIdGuardia());
@@ -920,6 +923,22 @@ public class SolicitudAceptadaCentralitaForm extends MasterForm {
 		
 		return miForm;
 		
+	}
+
+
+	/**
+	 * @return the idLlamada
+	 */
+	public String getIdLlamada() {
+		return idLlamada;
+	}
+
+
+	/**
+	 * @param idLlamada the idLlamada to set
+	 */
+	public void setIdLlamada(String idLlamada) {
+		this.idLlamada = idLlamada;
 	}
 	
 	

@@ -34,7 +34,7 @@
 		
 
 		<!-- INICIO: TITULO Y LOCALIZACION -->
-		<siga:TituloExt titulo="menu.sjcs.solicitudesAceptadasCentralita" localizacion="sjcs.solicitudaceptadacentralita.localizacion"/>
+		<siga:Titulo  titulo="menu.sjcs.solicitudesAceptadasCentralita" localizacion="sjcs.solicitudaceptadacentralita.localizacion"/>
 		
 
 <script type="text/javascript">
@@ -111,13 +111,19 @@
 	function buscar() {
 		return buscarSolicitudesAceptadas();
 	}
+	
+	
+	
+	
+	
+	
 	function buscarSolicitudesAceptadas() {
 		
 		
 		
 		
         var idInstitucion = document.SolicitudAceptadaCentralitaForm.idInstitucion.value;
-        var idSolicitudAceptada = document.SolicitudAceptadaCentralitaForm.idSolicitudAceptada.value;
+        var idLlamada = document.SolicitudAceptadaCentralitaForm.idLlamada.value;
         var idEstado = document.SolicitudAceptadaCentralitaForm.idEstado.value;
         var idTurno = document.SolicitudAceptadaCentralitaForm.idTurno.value;
         var idGuardia = document.SolicitudAceptadaCentralitaForm.idGuardia.value;
@@ -131,6 +137,8 @@
         
         
         var data = "idInstitucion="+idInstitucion;
+        
+        
         if(idEstado=='-1'){
         	error = "<siga:Idioma key='errors.required' arg0='estado'/>"+ '\n';
         	alert(error);
@@ -138,8 +146,15 @@
         }else
         	data += "&idEstado="+idEstado;
 
-        if(idSolicitudAceptada!='')
-        	data += "&idSolicitudAceptada="+idSolicitudAceptada;
+        if(idLlamada!=''){
+        	if(!isInteger(idLlamada)){
+        		error = "<siga:Idioma key='errors.integer' arg0='gratuita.busquedaAsistencias.literal.idAvisoCentralita'/>"+ '\n';
+            	alert(error);
+            	return false;
+        		
+        	}
+        	data += "&idLlamada="+idLlamada;
+        }
         
         if(idTurno!='')
         	data += "&idTurno="+idTurno;
@@ -192,28 +207,28 @@
 	function validar(fila) {				
 		var idSolicitudAceptada = 'idSolicitudAceptada_' + fila ;
 		var idInstitucion = 'idInstitucion_' + fila ;
-		document.FormAValidar.target = 'mainWorkArea';
-		document.FormAValidar.idInstitucion.value = document.getElementById(idInstitucion).value;
-	   	document.FormAValidar.idSolicitudAceptada.value = document.getElementById(idSolicitudAceptada).value;
-	 	document.FormAValidar.modo.value = "editarSolicitudAceptada";
-	 	document.FormAValidar.submit();
+		document.forms['SolicitudAceptadaCentralitaFormAValidar'].target = 'mainWorkArea';
+		document.forms['SolicitudAceptadaCentralitaFormAValidar'].idInstitucion.value = document.getElementById(idInstitucion).value;
+	   	document.forms['SolicitudAceptadaCentralitaFormAValidar'].idSolicitudAceptada.value = document.getElementById(idSolicitudAceptada).value;
+	 	document.forms['SolicitudAceptadaCentralitaFormAValidar'].modo.value = "editarSolicitudAceptada";
+	 	document.forms['SolicitudAceptadaCentralitaFormAValidar'].submit();
 	 }
 	
 	function denegar(fila) {		
 		var idSolicitudAceptada = 'idSolicitudAceptada_' + fila ;
 		var idInstitucion = 'idInstitucion_' + fila ;
-		document.FormAValidar.idInstitucion.value = document.getElementById(idInstitucion).value;
-	   	document.FormAValidar.idSolicitudAceptada.value = document.getElementById(idSolicitudAceptada).value;
-	 	document.FormAValidar.modo.value = "denegarSolicitudAceptada";
-	 	document.FormAValidar.submit();
+		document.forms['SolicitudAceptadaCentralitaFormAValidar'].idInstitucion.value = document.getElementById(idInstitucion).value;
+	   	document.forms['SolicitudAceptadaCentralitaFormAValidar'].idSolicitudAceptada.value = document.getElementById(idSolicitudAceptada).value;
+	 	document.forms['SolicitudAceptadaCentralitaFormAValidar'].modo.value = "denegarSolicitudAceptada";
+	 	document.forms['SolicitudAceptadaCentralitaFormAValidar'].submit();
 	 }
 	function activar(fila) {				
 		var idSolicitudAceptada = 'idSolicitudAceptada_' + fila ;
 		var idInstitucion = 'idInstitucion_' + fila ;
-		document.FormAValidar.idInstitucion.value = document.getElementById(idInstitucion).value;
-	   	document.FormAValidar.idSolicitudAceptada.value = document.getElementById(idSolicitudAceptada).value;
-	 	document.FormAValidar.modo.value = "activarSolicitudAceptadaDenegada";
-	 	document.FormAValidar.submit();
+		document.forms['SolicitudAceptadaCentralitaFormAValidar'].idInstitucion.value = document.getElementById(idInstitucion).value;
+	   	document.forms['SolicitudAceptadaCentralitaFormAValidar'].idSolicitudAceptada.value = document.getElementById(idSolicitudAceptada).value;
+	 	document.forms['SolicitudAceptadaCentralitaFormAValidar'].modo.value = "activarSolicitudAceptadaDenegada";
+	 	document.forms['SolicitudAceptadaCentralitaFormAValidar'].submit();
 	 }
 	function marcarDesmarcarTodos(o) { 
 		var ele = document.getElementsByName("chkSolicitud");
@@ -243,9 +258,9 @@
 			return false;
 		}
 		datosMasivos=datosMasivos.substring(1);
-		document.FormAValidar.datosMasivos.value=datosMasivos;
-		document.FormAValidar.modo.value=modoAccionMasiva;
-		document.FormAValidar.submit();		
+		document.forms['SolicitudAceptadaCentralitaFormAValidar'].datosMasivos.value=datosMasivos;
+		document.forms['SolicitudAceptadaCentralitaFormAValidar'].modo.value=modoAccionMasiva;
+		document.forms['SolicitudAceptadaCentralitaFormAValidar'].submit();		
 	}
   	
   	
@@ -253,11 +268,11 @@
 	function consultaInscripcion(fila) {
 		var idSolicitudAceptada = 'idSolicitudAceptada_' + fila ;
 		var idInstitucion = 'idInstitucion_' + fila ;
-		document.FormAValidar.target = 'mainWorkArea';
-		document.FormAValidar.idInstitucion.value = document.getElementById(idInstitucion).value;
-	   	document.FormAValidar.idSolicitudAceptada.value = document.getElementById(idSolicitudAceptada).value;
-	 	document.FormAValidar.modo.value = "consultarSolicitudAceptada";
-	 	document.FormAValidar.submit();																							 
+		document.forms['SolicitudAceptadaCentralitaFormAValidar'].target = 'mainWorkArea';
+		document.forms['SolicitudAceptadaCentralitaFormAValidar'].idInstitucion.value = document.getElementById(idInstitucion).value;
+	   	document.forms['SolicitudAceptadaCentralitaFormAValidar'].idSolicitudAceptada.value = document.getElementById(idSolicitudAceptada).value;
+	 	document.forms['SolicitudAceptadaCentralitaFormAValidar'].modo.value = "consultarSolicitudAceptada";
+	 	document.forms['SolicitudAceptadaCentralitaFormAValidar'].submit();																							 
 	}
 		
 	function inicio() {
@@ -299,17 +314,16 @@
 						</td>
 						<td>
 						
-							<html:text property="idSolicitudAceptada" size="10" maxlength="10" styleClass="box"  />
+							<html:text property="idLlamada" size="10" maxlength="10" styleClass="box"  />
 								
 						</td>
 						
 						<td class="labelText">
-							<siga:Idioma key="gratuita.mantAsistencias.literal.estado"/>
+							<siga:Idioma key="gratuita.mantAsistencias.literal.estado"/>(*)
 						</td>
 						<td>
 						
 							<html:select property="idEstado" styleClass="boxCombo" onchange="return buscarSolicitudesAceptadas();" >						
-								<html:option value="-1"><siga:Idioma key="general.combo.seleccionar"/></html:option>
 								<html:option value="0" ><siga:Idioma key="gratuita.gestionInscripciones.estado.pendiente"/></html:option>
 								<html:option value="1"><siga:Idioma key="gratuita.gestionInscripciones.estado.confirmada"/></html:option>
 								<html:option value="2"><siga:Idioma key="gratuita.gestionInscripciones.estado.denegada"/></html:option>
@@ -437,7 +451,7 @@
 				</table>				
 			</siga:ConjCampos>
 	
-			<siga:ConjBotonesBusqueda botones="B"  titulo="gratuita.busquedaAsistencias.literal.titulo"/>
+			<siga:ConjBotonesBusqueda botones="B"  titulo="menu.sjcs.solicitudesAceptadasCentralita"/>
 			
 			
 			<div id="divListado"></div>	
@@ -469,7 +483,7 @@
 			<input type="hidden" name="modo" value="abrirBusquedaModal" />
 		</html:form>
 		
-		<html:form action="${path}"  name="FormAValidar" type ="com.siga.gratuita.form.SolicitudAceptadaCentralitaForm" target="submitArea">
+		<html:form action="${path}"  name="SolicitudAceptadaCentralitaFormAValidar" type ="com.siga.gratuita.form.SolicitudAceptadaCentralitaForm" target="submitArea">
 			<html:hidden property="modo"/>
 			<html:hidden property="idInstitucion" />
 			<html:hidden property="idSolicitudAceptada" />

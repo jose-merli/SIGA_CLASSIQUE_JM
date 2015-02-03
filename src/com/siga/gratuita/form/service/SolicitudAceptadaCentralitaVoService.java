@@ -79,6 +79,9 @@ public class SolicitudAceptadaCentralitaVoService implements VoUiService<Solicit
 		}
 		if(objectForm.getIdSolicitudAceptada()!=null && !objectForm.getIdSolicitudAceptada().equals(""))
 			solicitudAceptadaCentralitaVo.setIdsolicitud(Integer.valueOf(objectForm.getIdSolicitudAceptada()));
+		if(objectForm.getIdLlamada()!=null && !objectForm.getIdLlamada().equals(""))
+			solicitudAceptadaCentralitaVo.setIdllamada(Long.valueOf(objectForm.getIdLlamada()));
+		
 		if(objectForm.getIdComisaria()!=null && !objectForm.getIdComisaria().equals("")){
 			solicitudAceptadaCentralitaVo.setIdcentrodetencion(objectForm.getIdComisaria().split(",")[0]);
 			solicitudAceptadaCentralitaVo.setIdtipocentrodetencion(String.valueOf(AppConstants.LUGARACTUACION_CENTRODETENCION));
@@ -97,7 +100,7 @@ public class SolicitudAceptadaCentralitaVoService implements VoUiService<Solicit
 			solicitudAceptadaCentralitaVo.setIdTipoAsistenciaColegio(objectForm.getIdTipoAsistenciaColegio());
 		if(objectForm.getFechaGuardia()!=null && !objectForm.getFechaGuardia().equals(""))
 			try {
-				solicitudAceptadaCentralitaVo.setFechallamada(sdf.parse(objectForm.getFechaGuardia()));
+//				solicitudAceptadaCentralitaVo.setFechallamada(sdf.parse(objectForm.getFechaGuardia()));
 				solicitudAceptadaCentralitaVo.setFechaguardia(sdf.parse(objectForm.getFechaGuardia()));
 			} catch (ParseException e) {
 				// TODO Auto-generated catch block
@@ -164,8 +167,13 @@ public class SolicitudAceptadaCentralitaVoService implements VoUiService<Solicit
 				solicitudAceptadaCentralitaForm.setIdPersona(objectVo.getIdPersona().toString());
 			}
 		}
+		if(objectVo.getFechallamada()!=null && !objectVo.getFechallamada().equals("")){
+			
+				solicitudAceptadaCentralitaForm.setFechaLlamadaHoras(sdfddmmyyyyhhmm.format(objectVo.getFechallamada()));
+		}
+		
 		if(objectVo.getFechaguardia()!=null && !objectVo.getFechaguardia().equals("")){
-			solicitudAceptadaCentralitaForm.setFechaLlamadaHoras(sdfddmmyyyyhhmm.format(objectVo.getFechaguardia()));
+			
 			solicitudAceptadaCentralitaForm.setFechaGuardia(sdfddmmyyyy.format(objectVo.getFechaguardia()));
 		}
 		if(objectVo.getFecharecepcion()!=null && !objectVo.getFecharecepcion().equals(""))
@@ -181,6 +189,9 @@ public class SolicitudAceptadaCentralitaVoService implements VoUiService<Solicit
 		}
 		if(objectVo.getIdsolicitud()!=null && !objectVo.getIdsolicitud().equals(""))
 			solicitudAceptadaCentralitaForm.setIdSolicitudAceptada(objectVo.getIdsolicitud().toString());
+		if(objectVo.getIdllamada()!=null && !objectVo.getIdllamada().equals(""))
+			solicitudAceptadaCentralitaForm.setIdLlamada(objectVo.getIdllamada().toString());
+		
 		if(objectVo.getIdtipocentrodetencion()!=null && objectVo.getIdtipocentrodetencion().equals(String.valueOf(AppConstants.LUGARACTUACION_CENTRODETENCION))){
 			if(objectVo.getIdcentrodetencion()!=null && !objectVo.getIdcentrodetencion().equals("")){
 				solicitudAceptadaCentralitaForm.setIdComisaria(objectVo.getIdcentrodetencion()+","+objectVo.getIdinstitucion());

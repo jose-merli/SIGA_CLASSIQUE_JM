@@ -227,6 +227,7 @@
 	<html:form action="${path}"  method="POST" target="mainWorkArea">
 		<html:hidden property="modo"/>
 		<html:hidden property="idInstitucion"/>
+		<html:hidden property="idSolicitudAceptada"/>
 		<html:hidden property="jsonVolver"/>
 		<c:if	test="${(SolicitudAceptadaCentralitaForm.idEstado=='0' && SolicitudAceptadaCentralitaForm.modo=='editarSolicitudAceptada')
 			||(SolicitudAceptadaCentralitaForm.idEstado=='1' && SolicitudAceptadaCentralitaForm.modo=='editarSolicitudAceptada')}">
@@ -259,7 +260,7 @@
 					</td>
 					<td>
 					
-						<html:text property="idSolicitudAceptada" size="10" maxlength="10" styleClass="boxConsulta" readonly="true" />
+						<html:text property="idLlamada" size="10" maxlength="10" styleClass="boxConsulta" readonly="true" />
 							
 					</td>
 					<td class="labelText">
@@ -453,7 +454,6 @@
 								<html:text property="solicitanteApellido2" maxlength="100" styleClass="box"style="width:120px" />
 						</td>
 						<td>
-							<input type="button" alt="<siga:Idioma key="gratuita.personaJG.literal.buscar"/>" name="idButton"  onclick="return buscarSolicitante();" class="button" value="<siga:Idioma key="gratuita.personaJG.literal.buscar"/>">
 						</td>
 					</tr>
 				</table>
@@ -674,6 +674,7 @@
 	<html:hidden property="jsonVolver" value="${SolicitudAceptadaCentralitaForm.jsonVolver}"/>
 	
 </html:form>
+
 
 <script type="text/javascript">
 	
