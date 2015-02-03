@@ -1902,11 +1902,13 @@ public class DatosGeneralesPagoAction extends MasterAction {
 								.valueOf(auxUsuarioModificacion));
 						movimientosBean.setCantidad(importeTotalMovimiento);
 	
-						if (importeTotalMovimiento > -1) {
+						if (importeTotalMovimiento >= 0) {
 							// Si el importe del movimiento es positivo
-							importeMovimientos += importeTotalMovimiento;
-							this.insertarAplicacionMovimientos(movimientosBean,
-									idPago, importeTotalMovimiento, usr);
+							if(importeTotalMovimiento>0){
+								importeMovimientos += importeTotalMovimiento;
+								this.insertarAplicacionMovimientos(movimientosBean,
+										idPago, importeTotalMovimiento, usr);
+							}
 						} else {
 	
 							// Si el importe del movimiento es negatio

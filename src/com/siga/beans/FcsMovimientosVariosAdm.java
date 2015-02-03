@@ -295,7 +295,7 @@ public class FcsMovimientosVariosAdm extends MasterBeanAdministrador {
 		consulta.append("          M." + FcsMovimientosVariosBean.C_IDGRUPOFACTURACION + " ");
 		consulta.append("having abs (m." + FcsMovimientosVariosBean.C_CANTIDAD + ") > ");
 		
-		consulta.append("       sum (nvl(a." + FcsAplicaMovimientosVariosBean.C_IMPORTEAPLICADO +",0))"); 
+		consulta.append("       abs (sum (nvl(a." + FcsAplicaMovimientosVariosBean.C_IMPORTEAPLICADO +",0)))"); 
 		
 		
 		consulta.append(" ORDER BY case when (m." + FcsMovimientosVariosBean.C_CANTIDAD + "> 0) ");
