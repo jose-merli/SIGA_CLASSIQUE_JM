@@ -4875,7 +4875,7 @@
 			</field>
 		</form>     
 		<form name="SolicitudAceptadaCentralitaForm">  
-            <field property = "idSolicitudAceptada" depends = "required,integer">
+            <field property = "idLlamada" depends = "required,integer">
                 <arg0 key="gratuita.busquedaAsistencias.literal.idAvisoCentralita"/>
             </field>
             <field property = "idInstitucion" depends = "required">
@@ -4980,6 +4980,9 @@
             
             
         </form>   
+       
+        
+        
 	</formset>
 
     <!-- An example formset for another locale
