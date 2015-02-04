@@ -88,7 +88,16 @@ public class SolicitudAceptadaCentralitaVoService implements VoUiService<Solicit
 			solicitudAceptadaCentralitaVo.setNombrecentrodetencion(objectForm.getNombreCentroDetencion());
 		}
 		if(objectForm.getIdJuzgado()!=null && !objectForm.getIdJuzgado().equals("")){
-			solicitudAceptadaCentralitaVo.setIdcentrodetencion(objectForm.getIdJuzgado().split(",")[0]);
+			HashMap<String, String> hashMap = null;
+			try {
+				hashMap = UtilidadesString.createJsonMap(objectForm.getIdJuzgado());
+				solicitudAceptadaCentralitaVo.setIdcentrodetencion((String)hashMap.get("idjuzgado"));
+			} catch (Exception e) {
+				solicitudAceptadaCentralitaVo.setIdTurno(Integer.valueOf(objectForm.getIdTurno()));
+				
+			}
+			
+			
 			solicitudAceptadaCentralitaVo.setIdtipocentrodetencion(String.valueOf(AppConstants.LUGARACTUACION_JUZGADO));
 			solicitudAceptadaCentralitaVo.setNombrecentrodetencion(objectForm.getNombreCentroDetencion());
 			
