@@ -33,7 +33,7 @@
 	// parametro
 	GenParametrosAdm admPar = new GenParametrosAdm(usr);
 	String validarVolantes = admPar.getValor(usr.getLocation(),"SCS","VALIDAR_VOLANTE","N");	
-	String cv_activo = admPar.getValor(usr.getLocation(),"ECOM","CENTRALITAVIRTUAL_ACTIVO","0");	
+	String cv_activo = admPar.getValorSinIrAlPadre(usr.getLocation(),"ECOM","CENTRALITAVIRTUAL_ACTIVO","0");	
 	
 	String nColegiado =  request.getAttribute("nColegiado")==null?"":(String)request.getAttribute("nColegiado");
 	String nombreColegiado =  request.getAttribute("nombreColegiado")==null?"":(String)request.getAttribute("nombreColegiado");
@@ -284,7 +284,14 @@
 			
 			<% if (cv_activo.equals("1")) { %>
 				<td class="labelText"><siga:Idioma key="gratuita.busquedaAsistencias.literal.idAvisoCentralita"/></td>
-				<td><html:text name="AsistenciasForm" property="solicIdentCentralita" styleClass="box"></html:text></td>			
+				<td><html:text name="AsistenciasForm" styleId="solicIdentCentralita" property="solicIdentCentralita" styleClass="box" maxlength="8"></html:text></td>		
+				<script type="text/javascript">
+					jQuery("#solicIdentCentralita").keypress(function (e) {
+   						if (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57))    
+               				return false;
+   					});
+				</script>		
+				
 			<% } else { %>
 				<td>&nbsp;</td>
 				<td>&nbsp;</td>
@@ -549,6 +556,11 @@
 
 			if ( !validarObjetoAnio(document.getElementById("anio")) ){
 				alert("<siga:Idioma key="fecha.error.anio"/>");
+				return false;
+			}
+			
+			if (!isInteger(document.getElementById("solicIdentCentralita").value) ){
+				alert("El campo " + "<siga:Idioma key="gratuita.busquedaAsistencias.literal.idAvisoCentralita"/>" + " no es válido");
 				return false;
 			}
 

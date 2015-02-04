@@ -131,6 +131,28 @@ public class GenParametrosAdm extends MasterBeanAdministrador {
 		}
 	}
 	
+	public String getValorSinIrAlPadre(String idInstitucion, String idModulo, String idParametro, String valorDefecto) throws ClsExceptions	{
+		Hashtable htData = new Hashtable();
+		String salida = valorDefecto;
+		try {
+			htData = getValores(idModulo, idParametro);
+			// ya tengo todos los path de las instituciones
+			// miro si existe para la mia
+			if (htData.containsKey(idInstitucion)) {
+				salida = (String) htData.get(idInstitucion);
+			} 
+		
+		} catch (Exception e) {
+			throw new ClsExceptions (e, "Error al obtener el valor del parámetro " + idParametro);
+		}
+		
+		if (salida==null) {
+			return valorDefecto;
+		} else {
+			return salida;
+		}
+	}	
+	
 	public boolean tieneParametro(String idInstitucion, String idModulo, String idParametro) throws ClsExceptions 
 	{
 		Hashtable htData = new Hashtable();
