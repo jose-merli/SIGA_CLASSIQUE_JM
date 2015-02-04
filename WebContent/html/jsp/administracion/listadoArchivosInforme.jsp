@@ -200,7 +200,7 @@ function upload()
 		return;
 	}
 	
-	if (!TestFileType(document.InformeForm.theFile.value, ['DOC','XSL'])){
+	if (!TestFileType(document.InformeForm.theFile.value, ['DOC','XLS'])){
 		fin();
 		return false;
 	}
