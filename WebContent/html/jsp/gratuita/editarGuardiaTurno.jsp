@@ -362,34 +362,6 @@
 								ancho="300" /> 
 						<% } %>
 					</td>
-					
-					<td class="labelText">
-						<siga:Idioma key="gratuita.turno.guardia.literal.tipoGuardia" />
-					</td>
-					<td>
-						<% if (soloLectura) {
-							String textoTipoGuardia = "";
-							if (idTipoGuardiaSeleccionado!=null && !idTipoGuardiaSeleccionado.equals("")) {
-								for (int i=0; i<listaTiposGuardias.size(); i++) {
-									ScsTiposguardias objTipoGuardia = (ScsTiposguardias) listaTiposGuardias.get(i);
-									if (objTipoGuardia.getIdtipoguardia() != null && idTipoGuardiaSeleccionado.equals(objTipoGuardia.getIdtipoguardia().toString())) {
-										textoTipoGuardia = UtilidadesMultidioma.getDatoMaestroIdioma(objTipoGuardia.getDescripcion(), usr);
-									}
-								}
-							}%>
-								<input type="text" name="tiposGuardias" class="boxConsulta" value="<%=textoTipoGuardia%>" readOnly="true" />			
-							
-						<% } else { %>
-							<html:select styleId="tiposGuardias" styleClass="boxCombo" style="width:150px;" property="idTipoGuardiaSeleccionado"  value="<%=idTipoGuardiaSeleccionado%>"> 		
-								<html:option value="">&nbsp;</html:option>	
-								<%for (int i=0; i<listaTiposGuardias.size(); i++) {
-									ScsTiposguardias objTipoGuardia = (ScsTiposguardias) listaTiposGuardias.get(i);
-								%>							
-									<html:option value="<%=UtilidadesString.mostrarDatoJSP(objTipoGuardia.getIdtipoguardia())%>"> <%=UtilidadesMultidioma.getDatoMaestroIdioma(objTipoGuardia.getDescripcion(), usr)%></html:option> 
-								<%}%>					
-							</html:select>
-						<% } %>							
-					</td>
 				</tr>
 				
 				<logic:empty name="DefinirGuardiasTurnosForm" property="guardiasVinculadas">
