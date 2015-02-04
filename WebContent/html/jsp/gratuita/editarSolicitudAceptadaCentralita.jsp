@@ -228,6 +228,7 @@
 		<html:hidden property="modo"/>
 		<html:hidden property="idInstitucion"/>
 		<html:hidden property="idSolicitudAceptada"/>
+		<html:hidden property="idLlamada"/>
 		<html:hidden property="jsonVolver"/>
 		<c:if	test="${(SolicitudAceptadaCentralitaForm.idEstado=='0' && SolicitudAceptadaCentralitaForm.modo=='editarSolicitudAceptada')
 			||(SolicitudAceptadaCentralitaForm.idEstado=='1' && SolicitudAceptadaCentralitaForm.modo=='editarSolicitudAceptada')}">
@@ -249,26 +250,28 @@
 		<siga:ConjCampos leyenda="gratuita.gestionInscripciones.datosSolicitud.leyenda">
 			<table width="100%" border="0">
 				<tr>
-					<td width="150x"></td>
-					<td colspan="3" width="330x"></td>
-					<td width="150x"></td>
-					<td width="330x"></td>
+					<td width="10"></td>
+					<td width="25"></td>
+					<td width="10"></td>
+					<td width="25"></td>
+					<td width="10"></td>
+					<td width="20"></td>
+					
 				</tr>
 				<tr>
 					<td class="labelText">
 						<siga:Idioma key="gratuita.busquedaAsistencias.literal.idAvisoCentralita"/>
 					</td>
-					<td>
-					
-						<html:text property="idLlamada" size="10" maxlength="10" styleClass="boxConsulta" readonly="true" />
+					<td class="labelTextValor">
+						<c:out value="${SolicitudAceptadaCentralitaForm.idLlamada}"/>
 							
 					</td>
-					<td class="labelText">
+					<td class="labelText" >
 						<siga:Idioma key="sjcs.solicitudaceptadacentralita.literal.fechaLlamada"/>
 					</td>
-					<td>
+					<td class="labelTextValor"> 
+						<c:out value="${SolicitudAceptadaCentralitaForm.fechaLlamadaHoras}"/>
 						<html:hidden property="fechaGuardia"/>
-						<html:text property="fechaLlamadaHoras" size="14" maxlength="10" styleClass="boxConsulta"  readonly="true"/>
 							
 					</td>
 					
@@ -276,117 +279,39 @@
 						<siga:Idioma key="sjcs.solicitudaceptadacentralita.literal.fechaRecepcion"/>
 					
 					</td>
-					<td>
-					
-						<html:text property="fechaRecepcion" size="14" maxlength="10" styleClass="boxConsulta" readonly="true" />
-							
+					<td class="labelTextValor">
+						<c:out value="${SolicitudAceptadaCentralitaForm.fechaRecepcion}"/>
 					</td>
 					
 				</tr>
-		
 				<tr>
+	
 					<td class="labelText">
-						<siga:Idioma key="gratuita.busquedaAsistencias.literal.turno" />&nbsp;(*)
+						<siga:Idioma key="gratuita.seleccionColegiadoJG.literal.colegiado" />
 					</td>
-					<td colspan="3">
-						<siga:Select queryId="getTurnos" id="idTurno" queryParamId="idturno" childrenIds="idGuardia" selectedIds="${idTurnoSelected}"  required="true" width="300" cssClass="${estiloSelect}" disabled="${disabledSelect}" />
+					<td class="labelTextValor" colspan="2" >
+						<c:out value="${SolicitudAceptadaCentralitaForm.colegiadoNumero}"/>&nbsp;<c:out value="${SolicitudAceptadaCentralitaForm.colegiadoNombre}"/>
 						
 					</td>
-					
 					<td class="labelText">
-						<siga:Idioma key="gratuita.busquedaAsistencias.literal.guardia" />&nbsp;(*)
-					</td>
-					<td>
-						<siga:Select queryId="getGuardiasDeTurno" id="idGuardia"  parentQueryParamIds="idturno" queryParamId="idGuardia" params="${paramsGuardiasDeTurno}" selectedIds="${idGuardiaSelected}" required="true" width="300" childrenIds="idPersona" cssClass="${estiloSelect}" disabled="${disabledSelect}"/>
+						<siga:Idioma key="gratuita.busquedaAsistencias.literal.guardia" />
+					</td >
+					<td colspan="2" class="labelTextValor">
+						<c:out value="${SolicitudAceptadaCentralitaForm.nombreGuardia}"/>
+						
 					</td>
 				</tr>
-				<c:if	test="${SolicitudAceptadaCentralitaForm.modo!='consultarSolicitudAceptada'}">
-					<tr>
-					
-						<td class="labelText">
-							<siga:Idioma key="gratuita.busquedaAsistencias.literal.tipoAsistenciaColegio"/>&nbsp;(*)
-						</td>
-												
-						<td colspan="5">
-							
-							<siga:Select queryId="getTiposAsistenciaDeColegio" id="idTipoAsistenciaColegio" selectedIds="${idTipoAsitenciaSelected}" width="498" cssClass="${estiloSelect}" disabled="${disabledSelect}"/>
-						
-							
-						</td>
-					</tr>
-				</c:if>
 				<tr>
+					<td class="labelText">
+						<siga:Idioma key="sjcs.solicitudaceptadacentralita.literal.centroDetencion" />
+					</td>
+											
+					<td colspan="5" class="labelTextValor">
+						<c:out value="${SolicitudAceptadaCentralitaForm.nombreCentroDetencion}"/>
+					</td>
+					
+				</tr>
 				
-					<td class="labelText">
-						<siga:Idioma key="gratuita.mantenimientoTablasMaestra.literal.comisaria" />
-					</td>
-											
-					<td id="tdSelectComisaria" colspan="5">
-						<siga:Select id="idComisaria" 
-									queryId="getComisariasDeInstitucion" 
-									params="${parametrosComboComisaria}"
-									showSearchBox="true"
-									searchkey="CODIGOEXT"
-									searchBoxMaxLength="10"
-									searchBoxWidth="8"
-									width="420"
-									selectedIds="${idComisariaSelected}"
-									cssClass="${estiloSelect}"
-									disabled="${disabledSelect}"
-									/>
-					
-					
-						
-					</td>
-				</tr>
-				<tr>
-					<td class="labelText">
-						<siga:Idioma key="gratuita.mantenimientoTablasMaestra.literal.juzgado" />
-					</td>
-										
-					<td id="tdSelectJuzgado" colspan = "5">
-					
-						<siga:Select id="idJuzgado" 
-									queryParamId="idjuzgado"
-									queryId="getJuzgados"
-									showSearchBox="true"
-									searchkey="CODIGOEXT2"
-									searchBoxMaxLength="10"
-									searchBoxWidth="8"
-									width="420"
-									selectedIds="${idJuzgadoSelected}"
-									cssClass="${estiloSelect}"
-									disabled="${disabledSelect}"
-									/>
-					</td>
-				</tr>
-				<tr>
-					
-					<td colspan="6">
-						
-						<siga:ConjCampos leyenda="gratuita.seleccionColegiadoJG.literal.titulo">
-								<table align="left">
-									<tr>
-										<td class="labelText" width="95px">
-											<siga:Idioma key="gratuita.seleccionColegiadoJG.literal.colegiado" />
-										</td>
-										<td class="labelTextValor" >
-											<c:out value="${SolicitudAceptadaCentralitaForm.colegiadoNumero}"/>
-											
-											
-										</td>											
-										<td  class="labelTextValor">
-											<c:out value="${SolicitudAceptadaCentralitaForm.colegiadoNombre}"/>
-											
-										</td>
-										
-									</tr>
-								</table>
-							</siga:ConjCampos>	
-			
-					
-					</td>
-				</tr>
 			</table>				
 		</siga:ConjCampos>
 	
@@ -394,13 +319,92 @@
 	<c:choose>
 		<c:when test="${(SolicitudAceptadaCentralitaForm.idEstado=='0' && SolicitudAceptadaCentralitaForm.modo!='consultarSolicitudAceptada')||
 		(SolicitudAceptadaCentralitaForm.idEstado=='1' && SolicitudAceptadaCentralitaForm.modo!='consultarSolicitudAceptada')}">
-			<siga:ConjCampos leyenda="gratuita.volantesExpres.literal.letradosGuardia">
-				<table align="left">
+			<siga:ConjCampos leyenda="gratuita.mantActuacion.literal.dasistencia">
+				<table width="100%" border="0">
 					<tr>
-						<td class="labelText" width="95px">
-							<siga:Idioma key="gratuita.seleccionColegiadoJG.literal.colegiado" />(*)&nbsp;
+						<td class="labelText">
+							<siga:Idioma key="gratuita.busquedaAsistencias.literal.turno" />&nbsp;(*)
+						</td>
+						<td >
+							<siga:Select queryId="getTurnos" id="idTurno" queryParamId="idturno" childrenIds="idGuardia" selectedIds="${idTurnoSelected}"  required="true" width="300" cssClass="${estiloSelect}" disabled="${disabledSelect}" />
+							
+						</td>
+						
+						<td class="labelText">
+							<siga:Idioma key="gratuita.busquedaAsistencias.literal.guardia" />&nbsp;(*)
 						</td>
 						<td>
+							<siga:Select queryId="getGuardiasDeTurno" id="idGuardia"  parentQueryParamIds="idturno" queryParamId="idGuardia" params="${paramsGuardiasDeTurno}" selectedIds="${idGuardiaSelected}" required="true" width="300" childrenIds="idPersona" cssClass="${estiloSelect}" disabled="${disabledSelect}"/>
+						</td>
+					</tr>
+					<c:if	test="${SolicitudAceptadaCentralitaForm.modo!='consultarSolicitudAceptada'}">
+						<tr>
+						
+							<td class="labelText">
+								<siga:Idioma key="gratuita.busquedaAsistencias.literal.tipoAsistenciaColegio"/>&nbsp;(*)
+							</td>
+													
+							<td colspan="3">
+								
+								<siga:Select queryId="getTiposAsistenciaDeColegio" id="idTipoAsistenciaColegio" selectedIds="${idTipoAsitenciaSelected}" width="498" cssClass="${estiloSelect}" disabled="${disabledSelect}"/>
+							
+								
+							</td>
+						</tr>
+					</c:if>
+					<tr>
+					
+						<td class="labelText">
+							<siga:Idioma key="gratuita.mantenimientoTablasMaestra.literal.comisaria" />
+						</td>
+												
+						<td id="tdSelectComisaria" colspan="3">
+							<siga:Select id="idComisaria" 
+										queryId="getComisariasDeInstitucion" 
+										params="${parametrosComboComisaria}"
+										showSearchBox="true"
+										searchkey="CODIGOEXT"
+										searchBoxMaxLength="10"
+										searchBoxWidth="8"
+										width="420"
+										selectedIds="${idComisariaSelected}"
+										cssClass="${estiloSelect}"
+										disabled="${disabledSelect}"
+										/>
+						
+						
+							
+						</td>
+					</tr>
+					<tr>
+						<td class="labelText">
+							<siga:Idioma key="gratuita.mantenimientoTablasMaestra.literal.juzgado" />
+						</td>
+											
+						<td id="tdSelectJuzgado" colspan = "3">
+						
+							<siga:Select id="idJuzgado" 
+										queryParamId="idjuzgado"
+										queryId="getJuzgadosTurnos"
+										params="${paramJuzgadosTurnos}"
+										showSearchBox="true"
+										searchkey="CODIGOEXT2"
+										searchBoxMaxLength="10"
+										searchBoxWidth="8"
+										width="420"
+										selectedIds="${idJuzgadoSelected}"
+										cssClass="${estiloSelect}"
+										disabled="${disabledSelect}"
+										/>
+						</td>
+					</tr>
+					
+
+					<tr>
+						<td class="labelText">
+							<siga:Idioma key="gratuita.seleccionColegiadoJG.literal.colegiado" />(*)&nbsp;
+						</td>
+						<td colspan = "3">
 							<siga:Select queryId="getColegiadosGuardia" id="idPersona" parentQueryParamIds="idGuardia"  params="${parametrosComboColegiadosGuardia}" selectedIds="${idColegiadoGuardiaSelected}" required="true" />
 						</td>
 					</tr>
