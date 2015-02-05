@@ -215,6 +215,10 @@
 	 }
 	
 	function denegar(fila) {		
+		
+		if (!confirm('<siga:Idioma key="sjcs.solicitudaceptadacentralita.mensaje.denegar"/>'))
+			return false;
+		
 		var idSolicitudAceptada = 'idSolicitudAceptada_' + fila ;
 		var idInstitucion = 'idInstitucion_' + fila ;
 		document.forms['SolicitudAceptadaCentralitaFormAValidar'].idInstitucion.value = document.getElementById(idInstitucion).value;
@@ -257,6 +261,12 @@
 			alert('<siga:Idioma key="general.message.seleccionar"/>');
 			return false;
 		}
+		
+		if(modoAccionMasiva=="denegarSolicitudesAceptadas"){
+			if (!confirm('<siga:Idioma key="sjcs.solicitudaceptadacentralita.mensaje.denegar.masivo"/>'))
+				return false;
+		}
+		
 		datosMasivos=datosMasivos.substring(1);
 		document.forms['SolicitudAceptadaCentralitaFormAValidar'].datosMasivos.value=datosMasivos;
 		document.forms['SolicitudAceptadaCentralitaFormAValidar'].modo.value=modoAccionMasiva;
