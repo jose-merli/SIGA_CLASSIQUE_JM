@@ -284,7 +284,7 @@
 			
 			<% if (cv_activo.equals("1")) { %>
 				<td class="labelText"><siga:Idioma key="gratuita.busquedaAsistencias.literal.idAvisoCentralita"/></td>
-				<td><html:text name="AsistenciasForm" styleId="solicIdentCentralita" property="solicIdentCentralita" styleClass="box" maxlength="8"></html:text></td>		
+				<td><html:text name="AsistenciasForm" styleId="solicIdentCentralita" property="solicIdentCentralita" styleClass="box" maxlength="11"></html:text></td>		
 				<script type="text/javascript">
 					jQuery("#solicIdentCentralita").keypress(function (e) {
    						if (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57))    
