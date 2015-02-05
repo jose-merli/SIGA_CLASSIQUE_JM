@@ -136,6 +136,7 @@ public class SolicitudAceptadaCentralitaVoService implements VoUiService<Solicit
 			solicitudAceptadaCentralitaVo.setSolicitantePoblacionExt(objectForm.getSolicitantePoblacionExt());
 		else
 			solicitudAceptadaCentralitaVo.setSolicitantePoblacion(objectForm.getSolicitantePoblacion());
+		solicitudAceptadaCentralitaVo.setSolicitanteCodPostal(objectForm.getSolicitanteCodPostal());
 		solicitudAceptadaCentralitaVo.setSolicitanteTelefono(objectForm.getSolicitanteTelefono());
 		solicitudAceptadaCentralitaVo.setSolicitanteCorreoElectronico(objectForm.getSolicitanteCorreoElectronico());
 		solicitudAceptadaCentralitaVo.setSolicitanteFax(objectForm.getSolicitanteFax());
