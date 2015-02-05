@@ -125,13 +125,30 @@
 			fin();
 			return false;
 		}
-		if(document.forms['SolicitudAceptadaCentralitaForm'].solicitanteNombre.value!=""){
+		if((document.forms['SolicitudAceptadaCentralitaForm'].solicitanteNombre.value!="")||
+		  (document.forms['SolicitudAceptadaCentralitaForm'].solicitanteApellido1.value!="")||
+		  (document.forms['SolicitudAceptadaCentralitaForm'].solicitanteApellido2.value!="")||
+		  (document.forms['SolicitudAceptadaCentralitaForm'].solicitanteTipoVia.value!="")||
+		  (document.forms['SolicitudAceptadaCentralitaForm'].solicitanteDireccion.value!="")||
+		  (document.forms['SolicitudAceptadaCentralitaForm'].solicitantePoblacion.value!="")||
+		  (document.forms['SolicitudAceptadaCentralitaForm'].solicitanteProvincia.value!="")||
+		  (document.forms['SolicitudAceptadaCentralitaForm'].solicitanteNumero.value!="")||
+		  (document.forms['SolicitudAceptadaCentralitaForm'].solicitanteEscalera.value!="")||
+		  (document.forms['SolicitudAceptadaCentralitaForm'].solicitantePiso.value!="")||
+		  (document.forms['SolicitudAceptadaCentralitaForm'].solicitantePuerta.value!="")||
+		  (document.forms['SolicitudAceptadaCentralitaForm'].solicitanteCodPostal.value!="")||
+		  (document.forms['SolicitudAceptadaCentralitaForm'].solicitanteCorreoElectronico.value!="")||
+		  (document.forms['SolicitudAceptadaCentralitaForm'].solicitanteTelefono.value!="")||
+		  (document.forms['SolicitudAceptadaCentralitaForm'].solicitanteFax.value!="")||
+		  (document.forms['SolicitudAceptadaCentralitaForm'].solicitantePoblacionExt.value!="")||
+		  (document.forms['SolicitudAceptadaCentralitaForm'].solicitantePais.value!="")){
 			
 			if(document.forms['SolicitudAceptadaCentralitaForm'].solicitanteIdTipoIdentificacion.value==''){
 				alert("<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.tipoIdentificacion'/>");
 				fin();
 				return false;
 			}
+			
 			if(!validaNumeroIdentificacion()){
 				fin();
 				return false;
