@@ -59,7 +59,14 @@
 			return onChangeComisaria(jQuery(this).val());
 		});
 	});
-	
+	jQuery(function(){
+		jQuery("#solicitanteProvincia").on("change", function(){
+			document.forms['SolicitudAceptadaCentralitaForm'].solicitanteCodPostal.value="";
+		});
+		jQuery("#solicitantePoblacion").on("change", function(){
+			document.forms['SolicitudAceptadaCentralitaForm'].solicitanteCodPostal.value="";
+		});
+	});
 	function onChangeComisaria(valor){
 		jQuery("#idJuzgado").val("");
 		jQuery("#idJuzgado_searchBox").val("");
@@ -73,6 +80,7 @@
 	   if (valor!="" && valor!="191") {
 		   	jQuery("#solicitantePoblacion").val("");
 		   	jQuery("#solicitanteProvincia").val("");
+		   	document.forms['SolicitudAceptadaCentralitaForm'].solicitanteCodPostal.value="";
 	   		jQuery("#solicitanteProvincia").attr("disabled","disabled");
 	   		jQuery("#poblacionEspanola").hide();
         	jQuery("#poblacionExtranjera").show();
@@ -80,6 +88,7 @@
        } else {
     		jQuery("#solicitantePoblacionExt").val("");
 			jQuery("#solicitanteProvincia").removeAttr("disabled");
+			document.forms['SolicitudAceptadaCentralitaForm'].solicitanteCodPostal.value="";
 			jQuery("#poblacionEspanola").show();
         	jQuery("#poblacionExtranjera").hide();
        }
