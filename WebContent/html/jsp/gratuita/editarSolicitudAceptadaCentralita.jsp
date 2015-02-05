@@ -238,6 +238,24 @@
 		}
 		return valido;
 	}
+	function accionCalendario() {
+		// Abrimos el calendario
+		if (document.getElementById('fechaGuardia').value!='') {
+			document.forms['SolicitudAceptadaCentralitaForm'].fechaGuardia.value = document.getElementById('fechaGuardia').value; 
+			var fechaGuardia = document.getElementById('fechaGuardia').value;
+			reloadSelect("idTurno", undefined, [{key:'fechaGuardia', value: fechaGuardia}]);
+	 	}else{
+			//Si da a reset no viene nada por lo que actualizamos. si viene con fecha
+			//es que ha cerrado desde el aspa, lo dejamos como estuviera(no hacemos nada) 		 		
+			if(document.getElementById('fechaGuardia').value==''){
+			 	//document.getElementById('fechaGuardia').onchange();
+				jQuery("#idTurno").val("");
+				jQuery("#idGuardia").val("");
+				jQuery("#idColegiado").val("");
+			}
+		} 
+	}
+	
 </script>
 </head>
 
@@ -297,7 +315,7 @@
 					</td>
 					<td class="labelTextValor"> 
 						<c:out value="${SolicitudAceptadaCentralitaForm.fechaLlamadaHoras}"/>
-						<html:hidden property="fechaGuardia"/>
+						
 							
 					</td>
 					
@@ -347,12 +365,22 @@
 		(SolicitudAceptadaCentralitaForm.idEstado=='1' && SolicitudAceptadaCentralitaForm.modo!='consultarSolicitudAceptada')}">
 			<siga:ConjCampos leyenda="gratuita.mantActuacion.literal.dasistencia">
 				<table width="100%" border="0">
+				
+				<tr>
+						<td class="labelText">
+							<siga:Idioma key='gratuita.busquedaAsistencias.literal.fechaAsistencia'/>&nbsp;(*)
+						</td>
+						<td colspan = "3">
+							<siga:Fecha styleId="fechaGuardia" nombreCampo="fechaGuardia" valorInicial="${SolicitudAceptadaCentralitaForm.fechaGuardia}" postFunction="accionCalendario();"/>
+						</td>
+					</tr>
+				
 					<tr>
 						<td class="labelText">
 							<siga:Idioma key="gratuita.busquedaAsistencias.literal.turno" />&nbsp;(*)
 						</td>
 						<td >
-							<siga:Select queryId="getTurnos" id="idTurno" queryParamId="idturno" childrenIds="idGuardia" selectedIds="${idTurnoSelected}"  required="true" width="300" cssClass="${estiloSelect}" disabled="${disabledSelect}" />
+							<siga:Select queryId="getTurnosConColegGuardia" id="idTurno" queryParamId="idturno" params="${paramsTurnos}"  childrenIds="idGuardia" selectedIds="${idTurnoSelected}"  required="true" width="300" cssClass="${estiloSelect}" disabled="${disabledSelect}" />
 							
 						</td>
 						
@@ -360,9 +388,19 @@
 							<siga:Idioma key="gratuita.busquedaAsistencias.literal.guardia" />&nbsp;(*)
 						</td>
 						<td>
-							<siga:Select queryId="getGuardiasDeTurno" id="idGuardia"  parentQueryParamIds="idturno" queryParamId="idGuardia" params="${paramsGuardiasDeTurno}" selectedIds="${idGuardiaSelected}" required="true" width="300" childrenIds="idPersona" cssClass="${estiloSelect}" disabled="${disabledSelect}"/>
+							<siga:Select queryId="getGuardiasConColegGuardia" id="idGuardia"  parentQueryParamIds="idturno" queryParamId="idGuardia" params="${paramsGuardiasDeTurno}" selectedIds="${idGuardiaSelected}" required="true" width="300" childrenIds="idPersona" cssClass="${estiloSelect}" disabled="${disabledSelect}"/>
 						</td>
 					</tr>
+					<tr>
+						<td class="labelText">
+							<siga:Idioma key="gratuita.seleccionColegiadoJG.literal.colegiado" />(*)&nbsp;
+						</td>
+						<td colspan = "3">
+							<siga:Select queryId="getColegiadosGuardia" id="idPersona" parentQueryParamIds="idGuardia"  params="${parametrosComboColegiadosGuardia}" selectedIds="${idColegiadoGuardiaSelected}" required="true" />
+						</td>
+					</tr>
+					
+					
 					<c:if	test="${SolicitudAceptadaCentralitaForm.modo!='consultarSolicitudAceptada'}">
 						<tr>
 						
@@ -426,14 +464,7 @@
 					</tr>
 					
 
-					<tr>
-						<td class="labelText">
-							<siga:Idioma key="gratuita.seleccionColegiadoJG.literal.colegiado" />(*)&nbsp;
-						</td>
-						<td colspan = "3">
-							<siga:Select queryId="getColegiadosGuardia" id="idPersona" parentQueryParamIds="idGuardia"  params="${parametrosComboColegiadosGuardia}" selectedIds="${idColegiadoGuardiaSelected}" required="true" />
-						</td>
-					</tr>
+					
 				</table>
 			</siga:ConjCampos>
 

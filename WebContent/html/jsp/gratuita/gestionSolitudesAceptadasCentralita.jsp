@@ -324,7 +324,7 @@
 						</td>
 						<td>
 						
-							<html:text property="idLlamada" size="10" maxlength="10" styleClass="box"  />
+							<html:text property="idLlamada" size="11" maxlength="11" styleClass="box"  />
 								
 						</td>
 						
