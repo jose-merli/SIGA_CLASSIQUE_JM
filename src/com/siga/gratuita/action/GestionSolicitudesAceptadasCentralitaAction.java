@@ -229,6 +229,10 @@ public class GestionSolicitudesAceptadasCentralitaAction extends MasterAction {
 	        if(solicitudAceptadaCentralitaForm.getIdTurno()!=null && !solicitudAceptadaCentralitaForm.getIdTurno().equals("")){
 	        	idTurnoLlamada = solicitudAceptadaCentralitaForm.getIdTurno();
 			}
+	        Map<String, String> fechaGuardiaJsonMap = new HashMap<String, String>();
+	        fechaGuardiaJsonMap.put("fechaGuardia", solicitudAceptadaCentralitaForm.getFechaGuardia());
+	        request.setAttribute("paramsTurnos",UtilidadesString.createJsonString(fechaGuardiaJsonMap));
+	        
 	        List<String> idTurnoSelectedList = new ArrayList<String>();
 	        Map<String, String> turnoJsonMap = new HashMap<String, String>();
 	        turnoJsonMap.put("idinstitucion", solicitudAceptadaCentralitaForm.getIdInstitucion());
@@ -236,7 +240,8 @@ public class GestionSolicitudesAceptadasCentralitaAction extends MasterAction {
 			String idTurnoJsonSelected = UtilidadesString.createJsonString(turnoJsonMap);
 			idTurnoSelectedList.add(idTurnoJsonSelected);
 			request.setAttribute("idTurnoSelected",idTurnoSelectedList);
-			request.setAttribute("paramsGuardiasDeTurno",idTurnoJsonSelected);
+			turnoJsonMap.put("fechaGuardia", solicitudAceptadaCentralitaForm.getFechaGuardia());
+			request.setAttribute("paramsGuardiasDeTurno",UtilidadesString.createJsonString(turnoJsonMap));
 			
 			List<String> idGuardiaSelected = new ArrayList<String>();
 			idGuardiaSelected.add(solicitudAceptadaCentralitaForm.getIdGuardia());
@@ -445,6 +450,11 @@ public class GestionSolicitudesAceptadasCentralitaAction extends MasterAction {
 			SolicitudAceptadaCentralitaVo solicitudAceptadaCentralitaVo =   scsSolicitudesAcpetadasService.getSolicitudAceptada(voService.getForm2Vo(solicitudAceptadaCentralitaForm));
 			solicitudAceptadaCentralitaForm.clear();
 			solicitudAceptadaCentralitaForm  = voService.getVo2Form(solicitudAceptadaCentralitaVo,solicitudAceptadaCentralitaForm);
+			
+			Map<String, String> fechaGuardiaJsonMap = new HashMap<String, String>();
+	        fechaGuardiaJsonMap.put("fechaGuardia", solicitudAceptadaCentralitaForm.getFechaGuardia());
+	        request.setAttribute("paramsTurnos",UtilidadesString.createJsonString(fechaGuardiaJsonMap));
+			
 			List<String> idTurnoSelectedList = new ArrayList<String>();
 	        Map<String, String> turnoJsonMap = new HashMap<String, String>();
 	        turnoJsonMap.put("idinstitucion", solicitudAceptadaCentralitaForm.getIdInstitucion());

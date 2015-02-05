@@ -93,7 +93,7 @@ public class SolicitudAceptadaCentralitaVoService implements VoUiService<Solicit
 				hashMap = UtilidadesString.createJsonMap(objectForm.getIdJuzgado());
 				solicitudAceptadaCentralitaVo.setIdcentrodetencion((String)hashMap.get("idjuzgado"));
 			} catch (Exception e) {
-				solicitudAceptadaCentralitaVo.setIdTurno(Integer.valueOf(objectForm.getIdTurno()));
+				solicitudAceptadaCentralitaVo.setIdcentrodetencion(objectForm.getIdJuzgado().split(",")[0]);
 				
 			}
 			
@@ -152,7 +152,7 @@ public class SolicitudAceptadaCentralitaVoService implements VoUiService<Solicit
 	}
 	public SolicitudAceptadaCentralitaForm getVo2Form(SolicitudAceptadaCentralitaVo objectVo, SolicitudAceptadaCentralitaForm solicitudAceptadaCentralitaForm) {
 		SimpleDateFormat sdfddmmyyyy = new SimpleDateFormat("dd/MM/yyyy");
-		SimpleDateFormat sdfddmmyyyyhhmm = new SimpleDateFormat("dd/MM/yyyy hh:mm");
+		SimpleDateFormat sdfddmmyyyyhhmm = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 		if(objectVo.getIdinstitucion()!=null)
 			solicitudAceptadaCentralitaForm.setIdInstitucion(objectVo.getIdinstitucion().toString());
 		if(objectVo.getNumerocolegiado()!=null && !objectVo.getNumerocolegiado().equals("")){
