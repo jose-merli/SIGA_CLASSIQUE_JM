@@ -463,28 +463,6 @@ public class GestionSolicitudesAceptadasCentralitaAction extends MasterAction {
 			solicitudAceptadaCentralitaForm.clear();
 			solicitudAceptadaCentralitaForm  = voService.getVo2Form(solicitudAceptadaCentralitaVo,solicitudAceptadaCentralitaForm);
 			
-			Map<String, String> fechaGuardiaJsonMap = new HashMap<String, String>();
-	        fechaGuardiaJsonMap.put("fechaGuardia", solicitudAceptadaCentralitaForm.getFechaGuardia());
-	        request.setAttribute("paramsTurnos",UtilidadesString.createJsonString(fechaGuardiaJsonMap));
-			
-			List<String> idTurnoSelectedList = new ArrayList<String>();
-	        Map<String, String> turnoJsonMap = new HashMap<String, String>();
-	        turnoJsonMap.put("idinstitucion", solicitudAceptadaCentralitaForm.getIdInstitucion());
-	        turnoJsonMap.put("idturno", solicitudAceptadaCentralitaForm.getIdTurno());
-			String idTurnoJsonSelected = UtilidadesString.createJsonString(turnoJsonMap);
-			idTurnoSelectedList.add(idTurnoJsonSelected);
-			request.setAttribute("idTurnoSelected",idTurnoSelectedList);
-			Map<String, String> juzgadoJsonMap = new HashMap<String, String>();
-			if(solicitudAceptadaCentralitaForm.getIdJuzgado()!=null){
-				juzgadoJsonMap.put("idjuzgado", solicitudAceptadaCentralitaForm.getIdJuzgado().split(",")[0]);
-				juzgadoJsonMap.put("idinstitucion", solicitudAceptadaCentralitaForm.getIdInstitucion());
-			}else{
-				juzgadoJsonMap.put("idjuzgado", "-1");
-				juzgadoJsonMap.put("idinstitucion", solicitudAceptadaCentralitaForm.getIdInstitucion());
-				
-			}
-			String paramJuzgadosTurnos = UtilidadesString.createJsonString(juzgadoJsonMap);
-	        request.setAttribute("paramJuzgadosTurnos",paramJuzgadosTurnos);
 			
 			
 			Map<String, String> clavesSolicitudJsonMap = new HashMap<String, String>();
@@ -494,29 +472,6 @@ public class GestionSolicitudesAceptadasCentralitaAction extends MasterAction {
 			String idSolicitudConsultada = UtilidadesString.createJsonString(clavesSolicitudJsonMap);
 			solicitudAceptadaCentralitaForm.setJsonVolver(idSolicitudConsultada);
 			
-			List<String> idGuardiaSelected = new ArrayList<String>();
-			idGuardiaSelected.add(solicitudAceptadaCentralitaForm.getIdGuardia());
-			request.setAttribute("idGuardiaSelected",idGuardiaSelected);
-			request.setAttribute("paramsGuardiasDeTurno",idTurnoJsonSelected);
-			
-			List<String> idComisariaSelected = new ArrayList<String>();
-			idComisariaSelected.add(solicitudAceptadaCentralitaForm.getIdComisaria());
-			request.setAttribute("idComisariaSelected",idComisariaSelected);
-			
-			List<String> idJuzgadoSelected = new ArrayList<String>();
-			idJuzgadoSelected.add(paramJuzgadosTurnos);
-			request.setAttribute("idJuzgadoSelected",idJuzgadoSelected);
-			
-//			Map jsonMap = new HashMap<String, String>();
-//			jsonMap.put("idTurno", solicitudAceptadaCentralitaForm.getIdTurno());
-//			jsonMap.put("idGuardia", solicitudAceptadaCentralitaForm.getIdGuardia());
-//			jsonMap.put("fechaGuardia", solicitudAceptadaCentralitaForm.getFechaLlamada());
-//			
-//			request.setAttribute("parametrosComboColegiadosGuardia",UtilidadesString.createJsonString(jsonMap));
-//			
-//			List<String> idColegiadoGuardiaSelected = new ArrayList<String>();
-//			idColegiadoGuardiaSelected.add(solicitudAceptadaCentralitaForm.getIdPersona());
-//			request.setAttribute("idColegiadoGuardiaSelected",idColegiadoGuardiaSelected);
 			switch (Integer.parseInt(solicitudAceptadaCentralitaForm.getIdEstado())) {
 				case 0:
 					
@@ -537,12 +492,6 @@ public class GestionSolicitudesAceptadasCentralitaAction extends MasterAction {
 	
 
 				}
-			
-			
-			
-
-
-			
 			
 		}catch (Exception e){
 			throw new SIGAException("messages.general.error", e , new String[] {"modulo.gratuita"});
