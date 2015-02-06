@@ -243,6 +243,7 @@
 			function accionVolver(){		
 				sub();
 				document.datosCVForm.modo.value="abrir";
+				document.datosCVForm.target="_self";
  				document.datosCVForm.submit(); 
 				fin();
 			}

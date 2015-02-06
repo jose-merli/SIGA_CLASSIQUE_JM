@@ -320,7 +320,9 @@ public class HistoricoAction extends MasterAction {
 			acceso=admin.insertarRegistroHistorico(bean,usr);			
 			if (acceso){
 				tx.commit();
-				result=exitoRefresco("messages.inserted.success", request);			
+				request.setAttribute("mensaje","messages.inserted.success");
+				request.setAttribute("sinrefresco", "1");
+				result= "exito";		
 			}			
 		} 
 		catch (Exception e) { 
@@ -399,7 +401,9 @@ public class HistoricoAction extends MasterAction {
 			// Actualizo CEN_HISTORICO
 			if (admin.update(hash,hashOriginal)){
 				tx.commit();
-				result=exitoRefresco("messages.updated.success", request);
+				request.setAttribute("mensaje","messages.updated.success");
+				request.setAttribute("sinrefresco", "1");
+				result= "exito";		
 			}
 			else{
 				throw new SIGAException (admin.getError());

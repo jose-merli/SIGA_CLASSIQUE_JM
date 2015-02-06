@@ -475,8 +475,9 @@ public class DatosCVAction extends MasterAction{
 			throwExcp("messages.general.error",new String[] {"modulo.censo"}, e, t);
 		}
 		
-		
-		return exitoRefresco("messages.inserted.success", request);
+		request.setAttribute("mensaje","messages.inserted.success");
+		request.setAttribute("sinrefresco", "1");
+		return "exito";
 		
 	}
 
@@ -574,7 +575,9 @@ public class DatosCVAction extends MasterAction{
 		catch (Exception e) {
 			throwExcp("messages.general.error",new String[] {"modulo.censo"}, e, t);
 		}
-		return exitoRefresco("messages.updated.success", request);
+		request.setAttribute("mensaje","messages.updated.success");
+		request.setAttribute("sinrefresco", "1");
+		return "exito";
 	}
 
 	/* (non-Javadoc)
