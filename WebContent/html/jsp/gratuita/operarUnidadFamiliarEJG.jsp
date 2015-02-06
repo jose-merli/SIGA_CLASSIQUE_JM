@@ -239,7 +239,7 @@
 <body onLoad="ajusteAltoBotones('resultado');recargar();">
 	<!-- TITULO -->
 	<!-- Barra de titulo actualizable desde los mantenimientos -->
-	<table class="tablaTitulo" cellspacing="0" height="32">
+	<table class="tablaTitulo" cellspacing="0">
 	<tr>
 		<td id="titulo" class="titulitosDatos">
 				<siga:Idioma key="gratuita.unidadFamiliarEJG.literal.titulo"/>
@@ -250,7 +250,6 @@
 	
 	<!-- CAMPOS DEL REGISTRO -->
 	<table class="tablaCentralCamposGrande" align="center" width="100%">
-	<!--<table align="center"  width="100%" height="350" class="tablaCentralCampos">-->
 	
 	<html:form action="/JGR_ResponsableAsistencia.do" method="POST" target="mainWorkArea" type="">
 		<input type="hidden" name="actionModal" value="">

@@ -57,7 +57,7 @@
 
 <body>
 
-	<table class="tablaTitulo" cellspacing="0" height="32">
+	<table class="tablaTitulo" cellspacing="0">
 	<tr>
 		<td id="titulo" class="titulos">
 			<siga:Idioma key="gratuita.listadoHistosFacturables.literal.titulo"/>

@@ -687,7 +687,7 @@
 
 <body>
 
-<table class="tablaTitulo" cellspacing="0" height="38" width="100%" border="0">
+<table class="tablaTitulo" cellspacing="0" width="100%" border="0">
 	<tr>
 		<td id="titulo" class="titulitosDatos">
 			<%

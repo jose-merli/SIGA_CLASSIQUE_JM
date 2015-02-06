@@ -35,7 +35,7 @@
 <body>
 
 <!-- INI ******* CAPA DE PRESENTACION ****** -->
-<table class="tablaTitulo" cellspacing="0" height="32">
+<table class="tablaTitulo" cellspacing="0">
 	<tr>
 		<td id="titulo" class="titulitosDatos">
 			<siga:Idioma key="facturacion.serios.literal.seriesFacturacion"/>

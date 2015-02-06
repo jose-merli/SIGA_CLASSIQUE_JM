@@ -33,7 +33,7 @@
 
 <body onload="init();">
   <html:form action="JGR_BusquedaClientesFiltros.do" method="post" target="submitArea" styleId="busquedaClientesFiltrosForm">
-	<table class="tablaTitulo" cellspacing="0" height="32">
+	<table class="tablaTitulo" cellspacing="0">
 		<tr>
 			<td id="titulo" class="titulitosDatos">
 				<siga:Idioma key="gratuita.editartelefonosGuardia.literal.telefonosGuardia"/>

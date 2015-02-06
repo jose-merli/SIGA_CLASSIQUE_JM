@@ -69,7 +69,7 @@
 		<input type="hidden" name="tablaDatosDinamicosD"/>
 	</html:form>
 
-	<table class="tablaTitulo" cellspacing="0" height="38">
+	<table class="tablaTitulo" cellspacing="0">
 		<tr>
 			<td id="titulo" class="titulitosDatos">
 				<c:out value="${PREFIJOEXPEDIENTECAJG}" />&nbsp;<c:out value="${DefinirUnidadFamiliarEJGForm.ejg.anio}"></c:out>/<c:out value="${DefinirUnidadFamiliarEJGForm.ejg.numEJG}"></c:out>&nbsp;-&nbsp;<c:out value="${DefinirUnidadFamiliarEJGForm.personaJG.nombre}"></c:out>&nbsp;<c:out value="${DefinirUnidadFamiliarEJGForm.personaJG.apellido1}"></c:out>&nbsp;<c:out value="${DefinirUnidadFamiliarEJGForm.personaJG.apellido2}"></c:out>
@@ -307,7 +307,7 @@
 	</siga:Table>
 
 	<c:if test="${DefinirUnidadFamiliarEJGForm.permisoEejg==true}">
-		<table class="tablaTitulo" cellspacing="0" height="38">
+		<table class="tablaTitulo" cellspacing="0">
 			<tr>
 				<td id="titulo" class="titulitosDatos">	
 					<siga:Idioma key="gratuita.eejg.peticiones.titulo"/>

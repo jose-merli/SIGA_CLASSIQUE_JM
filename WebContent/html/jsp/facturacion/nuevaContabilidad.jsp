@@ -79,7 +79,7 @@
 
 <body onLoad="confirmar();">
 	<!-- TITULO -->
-	<table class="tablaTitulo" cellspacing="0" height="32">
+	<table class="tablaTitulo" cellspacing="0">
 	<tr>
 		<td id="titulo" class="titulitosDatos">
 			<siga:Idioma key="gratuita.nuevaContabilidad.literal.titulo"/>

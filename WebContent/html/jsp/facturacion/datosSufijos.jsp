@@ -130,7 +130,7 @@
 <body>
 	<!-- TITULO -->
 	<!-- Barra de titulo actualizable desde los mantenimientos -->
-	<table class="tablaTitulo" cellspacing="0" height="32">
+	<table class="tablaTitulo" cellspacing="0">
 		<tr>
 			<td id="titulo" class="titulosPeq"><siga:Idioma key="menu.facturacion.mantenimientoSufijos"/></td>
 		</tr>

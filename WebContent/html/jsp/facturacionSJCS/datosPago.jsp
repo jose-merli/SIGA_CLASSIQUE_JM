@@ -490,7 +490,7 @@
 
 <!-- ******* BOTONES Y CAMPOS ****** -->
 	<!-- TITULO -->
-	<table class="tablaTitulo" cellspacing="0" height="32">
+	<table class="tablaTitulo" cellspacing="0">
 		<tr>
 			<td id="titulo" class="titulitosDatos">
 				<siga:Idioma key="factSJCS.datosPagos.titulo1"/>&nbsp;&nbsp;<%=UtilidadesString.mostrarDatoJSP(nombreInstitucion)%>

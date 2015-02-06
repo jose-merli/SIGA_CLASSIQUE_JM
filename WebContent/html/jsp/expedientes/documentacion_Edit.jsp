@@ -65,7 +65,7 @@
 
 <div id="camposRegistro" class="posicionModalPeque" align="center">
 
-	<table class="tablaTitulo" cellspacing="0" height="32">
+	<table class="tablaTitulo" cellspacing="0">
 		<tr>
 			<td id="titulo" class="titulosPeq">
 				<% ExpDocumentacionForm f = (ExpDocumentacionForm)request.getAttribute("ExpDocumentacionForm"); %>

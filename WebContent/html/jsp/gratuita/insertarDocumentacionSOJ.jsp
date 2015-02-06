@@ -56,7 +56,7 @@
 <body>
 
 	<!-- INICIO: TITULO OPCIONAL DE LA TABLA -->
-	<table class="tablaTitulo" align="center" cellspacing="0" height="32">
+	<table class="tablaTitulo" align="center" cellspacing="0">
 	<tr>
 	<td class="titulitosDatos">	
 		<siga:Idioma key="pestana.justiciagratuitasoj.documentacion"/>

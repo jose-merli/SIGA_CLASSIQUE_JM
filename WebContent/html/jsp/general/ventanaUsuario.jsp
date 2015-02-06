@@ -60,7 +60,7 @@
 
 <body>
 
-	<table class="tablaTitulo" cellspacing="0" height="32" width="100%">
+	<table class="tablaTitulo" cellspacing="0" width="100%">
 		<tr>
 			<td id="titulo" class="titulosPeq"><siga:Idioma key="general.usuario.cabecera"/></td>
 		</tr>

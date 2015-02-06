@@ -171,7 +171,7 @@
 
 <body>
 
-	<table class="tablaTitulo" cellspacing="0" height="62">
+	<table class="tablaTitulo" cellspacing="0">
 	<tr>
 		<td id="titulo" class="titulitosDatos">
 			<siga:Idioma key="factSJCS.datosMovimientos.cabecera"/>

@@ -137,7 +137,7 @@ String informeUnico =(String) request.getAttribute("informeUnico");
 <body>
 <input type="hidden" id= "informeUnico" value="<%=informeUnico%>">
 
-		<table class="tablaTitulo" cellspacing="0" height="38">
+		<table class="tablaTitulo" cellspacing="0">
 		<tr>
 			<td id="titulo" class="titulitosDatos">
 	

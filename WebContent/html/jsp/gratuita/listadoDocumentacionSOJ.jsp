@@ -90,7 +90,7 @@
 		<input type="hidden" name="anio" value="<%=anio%>">
 		<input type="hidden" name="numero" value="<%=numero%>">
 	</html:form>	
-		<table class="tablaTitulo" cellspacing="0" height="38">
+		<table class="tablaTitulo" cellspacing="0">
 		<tr>
 			<td id="titulo" class="titulitosDatos">
 	

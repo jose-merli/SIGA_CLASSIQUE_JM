@@ -128,7 +128,7 @@
 	<bean:define id="path" name="org.apache.struts.action.mapping.instance" property="path" scope="request"/>
 	
 	<html:form action="${path}" method="POST"	target="_top">
-		<table class="tablaTitulo" cellspacing="0" height="32">
+		<table class="tablaTitulo" cellspacing="0">
 			<tr>
 				<td id="titulo" class="titulitosDatos">
 					<c:if test="${InscripcionTGForm.modo=='sitDatos'}">

@@ -124,7 +124,7 @@
 <body class="tablaCentralCampos">
 
 	<!-- TITULO -->
-	<table class="tablaTitulo" cellspacing="0" height="32">
+	<table class="tablaTitulo" cellspacing="0">
 		<tr>
 		<html:form action="/FCS_DetalleFacturacion.do" method="POST" target="submitArea">
 

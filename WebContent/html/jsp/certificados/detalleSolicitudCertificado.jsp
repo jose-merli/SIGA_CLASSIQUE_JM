@@ -396,7 +396,7 @@
 
 <body onLoad="revisarCheck();">
 
-<table class="tablaTitulo" cellspacing="0" height="32">
+<table class="tablaTitulo" cellspacing="0">
 	<tr>
 		<td id="titulo" class="titulosPeq"><siga:Idioma
 			key="certificados.solicitudes.ventanaEdicion.titulo" /></td>

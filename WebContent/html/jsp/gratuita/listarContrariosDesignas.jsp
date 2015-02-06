@@ -96,7 +96,7 @@
 		<input type="hidden" id="pantallaE" name="pantallaE" value="M">
 	</html:form>	
 	
-      <table class="tablaTitulo" cellspacing="0" height="310">
+      <table class="tablaTitulo" cellspacing="0">
 		<tr>
 			<td id="titulo" class="titulitosDatos">
 	

@@ -65,7 +65,7 @@
 <body>
 
 	<!-- INICIO: TITULO OPCIONAL DE LA TABLA -->
-	<table class="tablaTitulo" align="center" cellspacing="0" height="32">
+	<table class="tablaTitulo" align="center" cellspacing="0">
 		<tr>
 			<td class="titulitosDatos">
 				<%if (accion.equalsIgnoreCase("ver")){%>
@@ -98,7 +98,7 @@
 	
 					<!-- SUBCONJUNTO DE DATOS -->
 					<siga:ConjCampos leyenda="gratuita.insertarArea.literal.materia">	
-						<table class="tablaCampos" align="center" height="25">
+						<table class="tablaCampos" align="center">
 							<tr>	
 								<td class="labelText">
 									<siga:Idioma key="gratuita.busquedaAreas.literal.nombreMateria"/>

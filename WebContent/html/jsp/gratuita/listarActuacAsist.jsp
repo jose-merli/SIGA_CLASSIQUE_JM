@@ -74,7 +74,7 @@
 		<html:hidden property = "modo" value = ""/>
 	</html:form>	
 	
-	<table class="tablaTitulo" cellspacing="0" height="32">
+	<table class="tablaTitulo" cellspacing="0">
 		<tr>
 			<td id="titulo" class="titulosPeq">
 				<% if (tipo.equals("asistencia")) { %>

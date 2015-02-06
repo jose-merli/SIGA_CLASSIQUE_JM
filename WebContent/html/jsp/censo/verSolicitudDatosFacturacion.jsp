@@ -106,7 +106,7 @@
 
 	<!-- TITULO -->
 	<!-- Barra de titulo actualizable desde los mantenimientos -->
-	<table class="titulitosDatos" cellspacing="0" height="32">
+	<table class="titulitosDatos" cellspacing="0">
 		<tr>
 			<td id="titulo" class="titulos">
 				<siga:Idioma key="censo.solicitudModificacion.literal.titulo"/>

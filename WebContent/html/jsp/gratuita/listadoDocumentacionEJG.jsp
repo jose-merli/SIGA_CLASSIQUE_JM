@@ -73,7 +73,7 @@
 		
 	</html:form>	
 		
-		<table class="tablaTitulo" cellspacing="0" height="38">
+		<table class="tablaTitulo" cellspacing="0">
 			<tr>
 				<td id="titulo" class="titulitosDatos">
 				<c:out value="${PREFIJOEXPEDIENTECAJG}" />&nbsp;<c:out value="${DefinirDocumentacionEJGForm.anio}"/>/<c:out

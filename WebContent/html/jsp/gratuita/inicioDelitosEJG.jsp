@@ -373,7 +373,7 @@
 
 <body onload="refrescarLocal();calcularAltura();">
 	
-<table class="tablaTitulo" cellspacing="0" height="38">
+<table class="tablaTitulo" cellspacing="0">
 
 	<html:form action = "/JGR_DelitosEJG.do" method="POST" target="resultado" style="display:none">
 		<html:hidden property = "modo" value = ""/>

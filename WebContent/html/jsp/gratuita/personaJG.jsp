@@ -1111,7 +1111,7 @@
 		</script>
 
 		<!-- TITULO -->
-		<table class="tablaTitulo" height="38" cellpadding="0" cellspacing="0" border="0">
+		<table class="tablaTitulo" cellpadding="0" cellspacing="0" border="0">
 			<tr>
 				<td id="titulo" class="titulitosDatos">
 					<siga:Idioma key="<%=titulo %>"/>
@@ -1201,7 +1201,7 @@
 				|| conceptoE.equals(PersonaJGAction.ASISTENCIA_REPRESENTANTE)
 				|| conceptoE.equals(PersonaJGAction.ASISTENCIA_CONTRARIOS)) {
 %>
-				<table class="tablaTitulo" height="38" cellpadding="0" cellspacing="0" border="0">
+				<table class="tablaTitulo" cellpadding="0" cellspacing="0" border="0">
 					<tr>
 						<td id="titulo" class="titulitosDatos">	
 <%
@@ -1227,7 +1227,7 @@
 <%
 			} else if (conceptoE.equals(PersonaJGAction.SOJ)) {
 %>
-				<table class="tablaTitulo" height="38" cellpadding="0" cellspacing="0" border="0">
+				<table class="tablaTitulo" cellpadding="0" cellspacing="0" border="0">
 					<tr>
 						<td id="titulo" class="titulitosDatos">
 <%
@@ -1255,7 +1255,7 @@
 <%
 			} else if (conceptoE.equals(PersonaJGAction.EJG)) {
 %>
-				<table class="tablaTitulo" height="38" cellpadding="0" cellspacing="0" border="0">
+				<table class="tablaTitulo" cellpadding="0" cellspacing="0" border="0">
 					<tr>
 						<td id="titulo" class="titulitosDatos">
 <%

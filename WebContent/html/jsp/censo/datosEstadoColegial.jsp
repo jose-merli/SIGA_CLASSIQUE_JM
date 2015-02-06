@@ -105,7 +105,7 @@
 <body>
 	<!-- TITULO -->
 	<!-- Barra de titulo actualizable desde los mantenimientos -->
-	<table class="titulitosDatos" cellspacing="0" height="32">
+	<table class="titulitosDatos" cellspacing="0">
 		<tr>
 			<td id="titulitos" class="titulosPeq">
 				<siga:Idioma key="censo.consultaDatosColegiales.literal.cabecera2"/> 

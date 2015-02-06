@@ -88,7 +88,7 @@
 		<input type="hidden" name="idInstitucion" value="<%=idInstitucion%>">
 	</html:form>
 		
-	<table class="tablaTitulo" cellspacing="0" height="38">
+	<table class="tablaTitulo" cellspacing="0">
 		<tr>
 			<td id="titulo" class="titulitosDatos">
 	
