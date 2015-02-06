@@ -38,11 +38,6 @@
 	}
 
 	jQuery(function(){
-		jQuery("#solicitantePais").on("change", function(){
-			return onChangePais(jQuery(this).val());
-		});
-	});
-	jQuery(function(){
 		jQuery("#solicitanteIdTipoIdentificacion").on("change", function(){
 			return onChangeTipoIdentificacion(jQuery(this).val());
 		});
@@ -76,35 +71,13 @@
 		jQuery("#idComisaria_searchBox").val("");
 		
 	}
-	function onChangePais(valor) {
-	   if (valor!="" && valor!="191") {
-		   	jQuery("#solicitantePoblacion").val("");
-		   	jQuery("#solicitanteProvincia").val("");
-		   	document.forms['SolicitudAceptadaCentralitaForm'].solicitanteCodPostal.value="";
-	   		jQuery("#solicitanteProvincia").attr("disabled","disabled");
-	   		jQuery("#poblacionEspanola").hide();
-        	jQuery("#poblacionExtranjera").show();
-			
-       } else {
-    		jQuery("#solicitantePoblacionExt").val("");
-			jQuery("#solicitanteProvincia").removeAttr("disabled");
-			document.forms['SolicitudAceptadaCentralitaForm'].solicitanteCodPostal.value="";
-			jQuery("#poblacionEspanola").show();
-        	jQuery("#poblacionExtranjera").hide();
-       }
-    }
-		
-	function inicio() {
-		if(document.getElementById("solicitantePais"))
-			onChangePais('');
-	}	    
+	
 	
 	 function onChangeTipoIdentificacion(valor){
 						
 		// Solo se genera el NIF o CIF de la persona
 		if(valor== "10"){
 			document.getElementById("textoInformativo").style.display="none";
-			onChangePais("191")
 		} else if ((valor== "20") || (valor== "40")){
 			document.getElementById("textoInformativo").style.display="none";
 
@@ -139,9 +112,7 @@
 		  (document.forms['SolicitudAceptadaCentralitaForm'].solicitanteCodPostal.value!="")||
 		  (document.forms['SolicitudAceptadaCentralitaForm'].solicitanteCorreoElectronico.value!="")||
 		  (document.forms['SolicitudAceptadaCentralitaForm'].solicitanteTelefono.value!="")||
-		  (document.forms['SolicitudAceptadaCentralitaForm'].solicitanteFax.value!="")||
-		  (document.forms['SolicitudAceptadaCentralitaForm'].solicitantePoblacionExt.value!="")||
-		  (document.forms['SolicitudAceptadaCentralitaForm'].solicitantePais.value!="")){
+		  (document.forms['SolicitudAceptadaCentralitaForm'].solicitanteFax.value!="")){
 			
 			if(document.forms['SolicitudAceptadaCentralitaForm'].solicitanteIdTipoIdentificacion.value==''){
 				alert("<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.tipoIdentificacion'/>");
@@ -259,7 +230,7 @@
 </script>
 </head>
 
-<body onload="inicio();" >
+<body >
 	<c:set var="parametrosComboComisaria" value="{\"idcomisaria\":\"-1\"}"/>
 		<c:set var="readonlyText" value="true" />
 		<c:set var="disabledSelect" value="true" />
@@ -274,6 +245,7 @@
 		<html:hidden property="idSolicitudAceptada"/>
 		<html:hidden property="idLlamada"/>
 		<html:hidden property="jsonVolver"/>
+		<html:hidden property="solicitantePais" value="191"/>
 		<c:if	test="${(SolicitudAceptadaCentralitaForm.idEstado=='0' && SolicitudAceptadaCentralitaForm.modo=='editarSolicitudAceptada')
 			||(SolicitudAceptadaCentralitaForm.idEstado=='1' && SolicitudAceptadaCentralitaForm.modo=='editarSolicitudAceptada')}">
 			<c:set var="estiloText" value="box" />
@@ -522,7 +494,7 @@
 			<siga:ConjCampos leyenda="gratuita.personaJG.literal.direccion">
 				<table width="100%" cellpadding="2" cellspacing="0" border="0">
 					<tr>
-						<td class="labelText" width="107px">
+						<td class="labelText" >
 							<siga:Idioma key="gratuita.personaJG.literal.tipovia"/>
 						</td>			
 
@@ -570,25 +542,14 @@
 						</td>																							
 					</tr>				
 					
+					
 					<tr>	
-						
-						
-						<td class="labelText">
-							<siga:Idioma key="censo.datosDireccion.literal.pais2" />&nbsp;
-						</td>
-						
-						<td >
-							<siga:Select queryId="getPaises" id="solicitantePais"/>
-						</td>
-						
-
 						<td class="labelText">
 							<siga:Idioma key="gratuita.personaJG.literal.provincia"/>	
 
 						</td>
 						<td>
 			
-		  
 						<siga:Select id="solicitanteProvincia" 
 										queryParamId="idprovincia" 
 										queryId="getProvincias"
@@ -596,28 +557,19 @@
 		 
 						</td>
 						
-						<td colspan="6">
-							<table width="100%" cellpadding="0" cellspacing="0" border="0">			
-								<tr>						
-									<td class="labelText">
-	 									<siga:Idioma key="gratuita.personaJG.literal.poblacion"/>	
-									</td>
-									<td>
-		   
-									<td id="poblacionEspanola" style="display: none;" width="20px">
-										<siga:Select id="solicitantePoblacion"
-											queryParamId="idpoblacion"
-											queryId="getPoblacionesDeProvincia"
-											parentQueryParamIds="idprovincia"/>
-									</td>
-									<td style="display: none" id="poblacionExtranjera" width="20px">
-										<html:text		 property="solicitantePoblacionExt" size="25"
-											styleClass="box"></html:text>
-									</td>
-		   
-									
-								</tr>
-							</table>
+						
+								
+											
+						<td class="labelText" width="82px">
+								<siga:Idioma key="gratuita.personaJG.literal.poblacion"/>	
+						</td>
+						
+  
+						<td width="200px">
+							<siga:Select id="solicitantePoblacion"
+								queryParamId="idpoblacion"
+								queryId="getPoblacionesDeProvincia"
+								parentQueryParamIds="idprovincia"/>
 						</td>
 						<td class="labelText">
 							<siga:Idioma key="gratuita.personaJG.literal.cp"/>	
