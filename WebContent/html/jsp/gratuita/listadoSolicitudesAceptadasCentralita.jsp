@@ -48,7 +48,9 @@
 						id="idSolicitudAceptada_${status.count}"
 						value="${solicitudAceptadaCentralita.idSolicitudAceptada}">
 						<input type="hidden" id="idInstitucion_${status.count}"
-						value="${solicitudAceptadaCentralita.idInstitucion}"> <input
+						value="${solicitudAceptadaCentralita.idInstitucion}"> <input type="hidden"
+						id="idLlamada_${status.count}"
+						value="${solicitudAceptadaCentralita.idLlamada}"><input
 						type="checkbox" value="${status.count}" name="chkSolicitud">
 					</td>
 					<td align="right"><c:out

@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.redabogacia.sigaservices.app.exceptions.BusinessException;
 import org.redabogacia.sigaservices.app.services.scs.ScsSolicitudesAcpetadasService;
 import org.redabogacia.sigaservices.app.vo.scs.SolicitudAceptadaCentralitaVo;
 
@@ -341,9 +342,11 @@ public class GestionSolicitudesAceptadasCentralitaAction extends MasterAction {
 			String datosSolicitudAceptada[]= registroSolicitudAceptada.split("##");
 			String idInstitucion = datosSolicitudAceptada[0];
 			String idSolicitudAceptada = datosSolicitudAceptada[1];
+			String idLlamada = datosSolicitudAceptada[2];
 			solicitudAceptadaCentralitaForm2= new SolicitudAceptadaCentralitaForm();
 			solicitudAceptadaCentralitaForm2.setIdInstitucion(idInstitucion);
 			solicitudAceptadaCentralitaForm2.setIdSolicitudAceptada(idSolicitudAceptada);
+			solicitudAceptadaCentralitaForm2.setIdLlamada(idLlamada);
 			solicitudAceptadaCentralitaList.add(voService.getForm2Vo(solicitudAceptadaCentralitaForm2));
 			 
 		}
@@ -351,10 +354,19 @@ public class GestionSolicitudesAceptadasCentralitaAction extends MasterAction {
 		try {
 			
 			scsSolicitudesAcpetadasService.guardarSolicitudesAceptadas(solicitudAceptadaCentralitaList);
-		}catch (Exception e){
+		}catch (BusinessException e){
+			StringBuffer error = new StringBuffer(e.getMessage());
+			error = error.insert(0, UtilidadesString.getMensajeIdioma(this.getUserBean(request), "sjcs.solicitudaceptadacentralita.aviso.datosErroneos"));
+					
+			return errorRefresco(error.toString(), new ClsExceptions(error.toString()), request);
+			
+			
+		}
+		catch (Exception e){
 			throw new SIGAException("messages.general.error", e , new String[] {"modulo.gratuita"});
 			
 		}
+		
 		return exitoRefresco("messages.updated.success", request);
 						
 

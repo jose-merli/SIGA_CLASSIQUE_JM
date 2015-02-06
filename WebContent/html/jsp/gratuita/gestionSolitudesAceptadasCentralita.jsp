@@ -249,11 +249,14 @@
 		for (fila = 0; fila < ele.length; fila++) {
 		    if(ele[fila].checked){
 		    	filaTabla = fila+1;
+		    	var idInstitucionFila = 'idInstitucion_' + filaTabla ;
 		    	var idSolicitudAceptadaFila = 'idSolicitudAceptada_' + filaTabla ;
-				var idInstitucionFila = 'idInstitucion_' + filaTabla ;
+				var idLlamadaFila = 'idLlamada_' + filaTabla ;
+				
+				idLlamada = document.getElementById(idLlamadaFila).value;
 				idSolicitudAceptada = document.getElementById(idSolicitudAceptadaFila).value;
 			   	idInstitucion = document.getElementById(idInstitucionFila).value;
-			   	datosMasivos = datosMasivos +","+ idInstitucion+"##"+idSolicitudAceptada+"##"; 			
+			   	datosMasivos = datosMasivos +","+ idInstitucion+"##"+idSolicitudAceptada+"##"+idLlamada+"##"; 			
 			}			
 		}
 
@@ -497,6 +500,7 @@
 			<html:hidden property="modo"/>
 			<html:hidden property="idInstitucion" />
 			<html:hidden property="idSolicitudAceptada" />
+			<html:hidden property="idLlamada" />
 			<html:hidden property="datosMasivos" />
 			
 			

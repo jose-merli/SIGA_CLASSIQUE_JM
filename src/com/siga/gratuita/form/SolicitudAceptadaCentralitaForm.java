@@ -901,6 +901,7 @@ public class SolicitudAceptadaCentralitaForm extends MasterForm {
 		fechaDesde = null;
 		fechaHasta = null;
 		idEstado = null;
+		fechaGuardia = null;
 
 	}
 	public SolicitudAceptadaCentralitaForm clone() {
