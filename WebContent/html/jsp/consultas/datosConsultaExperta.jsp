@@ -248,6 +248,7 @@
 							if (tipoenvio!=undefined && tipoenvio!="VACIO" && tipoenvio!=""){
 								document.forms[1].tipoEnvio.value=tipoenvio;
 							}else{
+								fin();
 								return;
 							}
 					<%  } %>				
