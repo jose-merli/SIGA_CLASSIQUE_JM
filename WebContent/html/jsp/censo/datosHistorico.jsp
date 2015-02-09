@@ -249,7 +249,7 @@
 						  				</td>
 									</tr>
 									<tr>
-										<% if (!remitente.equalsIgnoreCase("insertar")){ %>
+										<% if ((!remitente.equalsIgnoreCase("insertar"))&&(row.getString(CenHistoricoBean.C_DESCRIPCION) != null)&&(row.getString(CenHistoricoBean.C_DESCRIPCION) != "")){ %>
 										<td class="labelText">
 											<siga:Idioma key="censo.consultaHistorico.literal.descripcion"/>
 										</td>
