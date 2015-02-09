@@ -29,7 +29,7 @@
 		
 
 		<!-- INICIO: TITULO Y LOCALIZACION -->
-		<siga:TituloExt titulo="menu.sjcs.solicitudesAceptadasCentralita" localizacion="sjcs.solicitudaceptadacentralita.localizacion"/>
+		<siga:Titulo titulo="menu.sjcs.solicitudesAceptadasCentralita" localizacion="sjcs.solicitudaceptadacentralita.localizacion"/>
 
 <script type="text/javascript">
 	
