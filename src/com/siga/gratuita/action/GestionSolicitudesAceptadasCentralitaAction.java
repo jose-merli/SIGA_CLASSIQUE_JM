@@ -57,13 +57,13 @@ public class GestionSolicitudesAceptadasCentralitaAction extends MasterAction {
 						
 					}else if ( accion.equalsIgnoreCase("getAjaxBusqueda")){
 						mapDestino = getAjaxBusqueda (mapping, miForm, request, response);
-					}else if ( accion.equalsIgnoreCase("editarSolicitudAceptada")){
+					}else if ( accion.equalsIgnoreCase("editarSolicitudAceptada")||accion.equalsIgnoreCase("validarSolicitudAceptada")){
 						mapDestino = editarSolicitudAceptada (mapping, miForm, request, response);
 					}else if ( accion.equalsIgnoreCase("guardarSolicitudAceptada")){
 						mapDestino = guardarSolicitudAceptada (mapping, miForm, request, response);
-					}else if ( accion.equalsIgnoreCase("denegarSolicitudAceptada")){
+					}else if ( accion.equalsIgnoreCase("denegarSolicitudAceptada")||accion.equalsIgnoreCase("denegarSolicitudAceptadaVolver")){
 						mapDestino = denegarSolicitudAceptada (mapping, miForm, request, response);
-					}else if ( accion.equalsIgnoreCase("activarSolicitudAceptadaDenegada")){
+					}else if ( accion.equalsIgnoreCase("activarSolicitudAceptadaDenegada")|| accion.equalsIgnoreCase("activarSolicitudAceptadaDenegadaVolver")){
 						mapDestino = activarSolicitudAceptadaDenegada (mapping, miForm, request, response);
 					}else if ( accion.equalsIgnoreCase("guardarSolicitudesAceptadas")){
 						mapDestino = guardarSolicitudesAceptadas (mapping, miForm, request, response);
@@ -149,8 +149,6 @@ public class GestionSolicitudesAceptadasCentralitaAction extends MasterAction {
 		List<String> idJuzgadoSelected = new ArrayList<String>();
 		idJuzgadoSelected.add(miForm.getIdJuzgado());
 		request.setAttribute("idJuzgadoSelected",idJuzgadoSelected);
-		
-		
         
 		return "inicio";
 	}
@@ -290,7 +288,7 @@ public class GestionSolicitudesAceptadasCentralitaAction extends MasterAction {
 			idColegiadoGuardiaSelected.add(solicitudAceptadaCentralitaForm.getIdPersona());
 			request.setAttribute("idColegiadoGuardiaSelected",idColegiadoGuardiaSelected);
 			
-			
+			solicitudAceptadaCentralitaForm.setModo("editarSolicitudAceptada");
 		}catch (Exception e){
 			throw new SIGAException("messages.general.error", e , new String[] {"modulo.gratuita"});
 			
@@ -311,7 +309,14 @@ public class GestionSolicitudesAceptadasCentralitaAction extends MasterAction {
 			
 			
 		}
-		return exitoRefresco("messages.updated.success", request);
+		if(solicitudAceptadaCentralitaForm.getModo().equals("denegarSolicitudAceptada"))
+			return exitoRefresco("messages.updated.success", request);
+		else{
+			request.setAttribute("mensajeSuccess",UtilidadesString.getMensajeIdioma(this.getUserBean(request),"messages.updated.success"));
+			formulario.setModo("consultarSolicitudAceptada");
+			return consultarSolicitudAceptada(mapping, formulario, request, response);
+		}
+			
 						
 	}
 	private String activarSolicitudAceptadaDenegada (ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
@@ -325,7 +330,14 @@ public class GestionSolicitudesAceptadasCentralitaAction extends MasterAction {
 			throw new SIGAException("messages.general.error", e , new String[] {"modulo.gratuita"});
 			
 		}
-		return exitoRefresco("messages.updated.success", request);
+		if(solicitudAceptadaCentralitaForm.getModo().equals("denegarSolicitudAceptada"))
+			return exitoRefresco("messages.updated.success", request);
+		else{
+			request.setAttribute("mensajeSuccess",UtilidadesString.getMensajeIdioma(this.getUserBean(request),"messages.updated.success"));
+			formulario.setModo("consultarSolicitudAceptada");
+			return consultarSolicitudAceptada(mapping, formulario, request, response);
+		}
+		
 						
 
 	}

@@ -230,12 +230,13 @@
 </script>
 </head>
 
-<body >
+<body onload="inicio();">
 	<c:set var="parametrosComboComisaria" value="{\"idcomisaria\":\"-1\"}"/>
-		<c:set var="readonlyText" value="true" />
-		<c:set var="disabledSelect" value="true" />
-		<c:set var="estiloText" value="boxConsulta" />
-		<c:set var="estiloSelect" value="boxComboConsulta" />
+	<c:set var="readonlyText" value="true" />
+	<c:set var="disabledSelect" value="true" />
+	<c:set var="estiloText" value="boxConsulta" />
+	<c:set var="estiloSelect" value="boxComboConsulta" />
+	<input type="hidden" id="mensajeSuccess" value="${mensajeSuccess}"/>
 	<!-- INICIO: CAMPOS DE BUSQUEDA-->
 	<bean:define id="path" name="org.apache.struts.action.mapping.instance" property="path" scope="request"/>
 	<html:javascript formName="SolicitudAceptadaCentralitaForm" staticJavascript="false" />
@@ -282,6 +283,15 @@
 						<c:out value="${SolicitudAceptadaCentralitaForm.idLlamada}"/>
 							
 					</td>
+					<td class="labelText">
+						<siga:Idioma key="gratuita.mantAsistencias.literal.estado"/>
+					</td>
+					<td class="labelTextValor">
+						<c:out value="${SolicitudAceptadaCentralitaForm.descripcionEstado}"/>
+							
+					</td>
+					</tr>
+			<tr>
 					<td class="labelText" >
 						<siga:Idioma key="sjcs.solicitudaceptadacentralita.literal.fechaLlamada"/>
 					</td>
@@ -305,7 +315,7 @@
 					<td class="labelText">
 						<siga:Idioma key="gratuita.seleccionColegiadoJG.literal.colegiado" />
 					</td>
-					<td class="labelTextValor" colspan="2" >
+					<td class="labelTextValor" >
 						<c:out value="${SolicitudAceptadaCentralitaForm.colegiadoNumero}"/>&nbsp;<c:out value="${SolicitudAceptadaCentralitaForm.colegiadoNombre}"/>
 						
 					</td>
@@ -322,7 +332,7 @@
 						<siga:Idioma key="sjcs.solicitudaceptadacentralita.literal.centroDetencion" />
 					</td>
 											
-					<td colspan="5" class="labelTextValor">
+					<td colspan="3" class="labelTextValor">
 						<c:out value="${SolicitudAceptadaCentralitaForm.nombreCentroDetencion}"/>
 					</td>
 					
@@ -665,13 +675,61 @@
 			
 			
 			</siga:Table>
-			<siga:ConjBotonesAccion botones="V" clase="botonesDetalle"  />
+		<table class="botonesDetalle" align="center">
+				<tr>
+				<td class="tdBotones">
+					<input type="button" alt="Volver"  id="idButton" onclick="return accionVolver();" class="button" name="idButton" value="Volver">
+				</td>	
+				<td style="width: 900px;">
+						&nbsp;
+					</td>
+					
+					
+					<td class="tdBotones">
+						<input type="button" alt="<siga:Idioma key='sjcs.solicitudaceptadacentralita.boton.validarSolicitud'/>"	id="idValidarSolicitudAceptada" onclick="return validarSolicitudAceptada();" class="button"   name="idButton" value="<siga:Idioma key='sjcs.solicitudaceptadacentralita.boton.validarSolicitud'/>" />
+					</td>
+					
+				</tr>
+			</table>
 		</c:when>
 		<c:when test="${SolicitudAceptadaCentralitaForm.idEstado=='2'}">
-			<siga:ConjBotonesAccion botones="V" clase="botonesDetalle"  />
+			<table class="botonesDetalle" align="center">
+				<tr>
+					<td class="tdBotones">
+						<input type="button" alt="Volver"  id="idButton" onclick="return accionVolver();" class="button" name="idButton" value="Volver">
+					</td>	
+					<td style="width: 900px;">
+						&nbsp;
+					</td>
+					
+					<td class="tdBotones">
+						<input type="button" alt="<siga:Idioma key='sjcs.solicitudaceptadacentralita.boton.activarSolicitud'/>"  id="idActivarSolicitudAceptadaDenegada" onclick="return activarSolicitudAceptada();" class="button" name="idButton"    value="<siga:Idioma key='sjcs.solicitudaceptadacentralita.boton.activarSolicitud'/>">
+					</td>
+						
+					
+				</tr>
+			</table>
+			
 		</c:when>
 		<c:otherwise>
-			<siga:ConjBotonesAccion botones="V" clase="botonesDetalle"  />
+			<table class="botonesDetalle" align="center">
+				<tr>
+				<td class="tdBotones">
+					<input type="button" alt="Volver"  id="idButton" onclick="return accionVolver();" class="button" name="idButton" value="Volver">
+				</td>	
+				<td style="width: 900px;">
+						&nbsp;
+					</td>
+					
+					<td class="tdBotones">
+						<input type="button" alt="<siga:Idioma key='sjcs.solicitudaceptadacentralita.boton.denegarSolicitud'/>"  id="idDenegarSolicitudAceptada" onclick="return denegarSolicitudAceptada();" class="button" name="idButton"   value="<siga:Idioma key='sjcs.solicitudaceptadacentralita.boton.denegarSolicitud'/>">
+					</td>
+					<td class="tdBotones">
+						<input type="button" alt="<siga:Idioma key='sjcs.solicitudaceptadacentralita.boton.validarSolicitud'/>"	id="idValidarSolicitudAceptada" onclick="return validarSolicitudAceptada();" class="button"   name="idButton" value="<siga:Idioma key='sjcs.solicitudaceptadacentralita.boton.validarSolicitud'/>" />
+					</td>
+					
+				</tr>
+			</table>
 		</c:otherwise>
 		
 	</c:choose>
@@ -719,6 +777,30 @@
 		document.forms['AsistenciasForm'].target = "mainWorkArea";
 		document.forms['AsistenciasForm'].submit();
 	}
+	function activarSolicitudAceptada() {	
+	 	document.forms['SolicitudAceptadaCentralitaForm'].modo.value = "activarSolicitudAceptadaDenegadaVolver";
+	 	document.forms['SolicitudAceptadaCentralitaForm'].submit();
+	}
+	function denegarSolicitudAceptada() {	
+		if (!confirm('<siga:Idioma key="sjcs.solicitudaceptadacentralita.mensaje.denegar"/>'))
+			return false;
+	 	document.forms['SolicitudAceptadaCentralitaForm'].modo.value = "denegarSolicitudAceptadaVolver";
+	 	document.forms['SolicitudAceptadaCentralitaForm'].submit();
+	}
+	function validarSolicitudAceptada() {	
+	 	document.forms['SolicitudAceptadaCentralitaForm'].modo.value = "validarSolicitudAceptada";
+	 	document.forms['SolicitudAceptadaCentralitaForm'].submit();
+	}
+	
+	
+	function inicio() {
+		if(document.getElementById("mensajeSuccess") && document.getElementById("mensajeSuccess").value!=''){
+			alert(document.getElementById("mensajeSuccess").value,'success');
+		}
+		
+		
+	}	
+	
 </script>
 	 	
 	
