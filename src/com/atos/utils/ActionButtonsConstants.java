@@ -31,7 +31,7 @@ public enum ActionButtonsConstants {
 	ACEPTAR ("a","global.boton.aceptar","accionAceptar()",21),
 	DETALLE_PAGO ("dpa","general.boton.detallePago","accionDetallePago()",22),
 	GUARDAR_EJECUTAR ("ge","general.boton.guardarEjecutar","accionGuardarEjecutar()",23),
-	EJECUTAR_CONSULTA ("ejc","general.boton.ejecutarFacturacion","accionEjecutarConsulta()",23),
+	EJECUTAR_CONSULTA ("ejc","general.boton.ejecutarFacturacion","accionEjecutarConsulta()","idButtonEjecutarConsulta",23),
 	ENVIO_WS ("ws","general.boton.envioWS","envioWS(this)", "idButtonEnvioWS",24),
 	IMPRIMIR ("i","general.boton.imprimir","accionImprimir()",25),
 	CONTINUAR ("ct","general.boton.continuar","accionContinuar()",26),
