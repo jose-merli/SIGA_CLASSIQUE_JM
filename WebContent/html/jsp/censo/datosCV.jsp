@@ -360,7 +360,7 @@
 		function  postAccionColegiado(){
 		}
 		function refrescarLocal() {		
-			document.datosCVForm.modo.value="abrir";
+			document.datosCVForm.modo.value="editar";
 			document.datosCVForm.target = "_self";
 			document.datosCVForm.submit();
 			fin();

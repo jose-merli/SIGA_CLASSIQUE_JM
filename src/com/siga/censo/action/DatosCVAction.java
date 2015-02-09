@@ -476,7 +476,6 @@ public class DatosCVAction extends MasterAction{
 		}
 		
 		request.setAttribute("mensaje","messages.inserted.success");
-		request.setAttribute("sinrefresco", "1");
 		return "exito";
 		
 	}

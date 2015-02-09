@@ -191,9 +191,15 @@ public class HistoricoAction extends MasterAction {
 			request.setAttribute("modelo",remitente);
 		
 			// Mostrar valores del formulario en MantenimientoProductos (posible traslado a editar o abrir avanzado)
-			ocultos = (Vector)form.getDatosTablaOcultos(0);					
-			infoEntrada=admin.obtenerEntradaHistorico((String)ocultos.get(0),(String)ocultos.get(1),(String)ocultos.get(2));
-			
+			ocultos = (Vector)form.getDatosTablaOcultos(0);	
+			if(ocultos!=null)
+				infoEntrada=admin.obtenerEntradaHistorico((String)ocultos.get(0),(String)ocultos.get(1),(String)ocultos.get(2));
+			//Si estamos refrescando tras insertar
+			else{
+				Hashtable hash=(Hashtable) request.getSession().getAttribute("hashInsert");
+				infoEntrada=admin.obtenerEntradaHistorico(hash.get("IDPERSONA").toString(),hash.get("IDINSTITUCION").toString(),hash.get("IDHISTORICO").toString());
+				request.getSession().removeAttribute("hashInsert");
+			}
 			// Paso valores originales del registro al session para tratar siempre copn los mismos valores
 			// y no los de posibles modificaciones
 			request.getSession().setAttribute("DATABACKUP", infoEntrada);
@@ -314,14 +320,16 @@ public class HistoricoAction extends MasterAction {
 			bean.setMotivo((String)hash.get("MOTIVO"));
 			Integer tipoCambio=new Integer ((String)hash.get("IDTIPOCAMBIO"));			
 			bean.setIdTipoCambio(tipoCambio);
+			bean.setIdHistorico(admin.getNuevoID(hash));
+			hash.put("IDHISTORICO",bean.getIdHistorico());
 			// Comienzo la transaccion
 			tx.begin();
 			// inserto el bean (registro) en la BBDDs
 			acceso=admin.insertarRegistroHistorico(bean,usr);			
 			if (acceso){
 				tx.commit();
+				request.getSession().setAttribute("hashInsert",hash);
 				request.setAttribute("mensaje","messages.inserted.success");
-				request.setAttribute("sinrefresco", "1");
 				result= "exito";		
 			}			
 		} 

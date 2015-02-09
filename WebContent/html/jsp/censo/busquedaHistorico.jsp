@@ -56,8 +56,10 @@
 		ses.setAttribute("tipoR",sTipo);
 	}else{
 		
-		if(ses.getAttribute("tipoR")!=null)
+		if(ses.getAttribute("tipoR")!=null){
 			sTipo=ses.getAttribute("tipoR").toString();
+		
+		}
 		else
 			sTipo=null;
 	}
@@ -190,7 +192,6 @@
 	
 		<!-- INICIO: SCRIPTS BOTONES BUSQUEDA -->
 		<script language="JavaScript">
-
 			<!-- Funcion asociada a boton buscar -->
 			function buscar() 
 			{		

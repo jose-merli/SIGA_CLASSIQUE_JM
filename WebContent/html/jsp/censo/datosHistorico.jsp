@@ -144,7 +144,6 @@
 
 				<html:form action="/CEN_Historico.do" method="POST" >
 					<html:hidden property = "modo" value = "<%=remitente%>"/>
-
 					<tr>				
 						<td>
 						<siga:ConjCampos leyenda="censo.consultaHistorico.cabecera">
@@ -250,6 +249,7 @@
 						  				</td>
 									</tr>
 									<tr>
+										<% if (!remitente.equalsIgnoreCase("insertar")){ %>
 										<td class="labelText">
 											<siga:Idioma key="censo.consultaHistorico.literal.descripcion"/>
 										</td>
@@ -259,6 +259,7 @@
 												style="overflow-y:auto; overflow-x:hidden; width:500px; height:500px; resize:none;"
 												class="boxConsulta"  readonly=""><% if(row.getString(CenHistoricoBean.C_DESCRIPCION) != null) out.print(row.getString(CenHistoricoBean.C_DESCRIPCION));%></textarea>
 										</td>
+										<% } %>		
 									</tr>
 								</table>
 							</siga:ConjCampos>
@@ -318,12 +319,17 @@
 			
 			// Asociada al boton Volver
 			function accionVolver(){		
-				refrescarLocal();
+				sub();
+				document.forms[0].modo.value="abrir";
+				document.forms[0].target= "_self";
+				document.forms[0].submit();
+				fin();
+				
 			}
 			
 			function refrescarLocal() {		
 				sub();
-				document.forms[0].modo.value="abrir";
+				document.forms[0].modo.value="editar";
 				document.forms[0].target= "_self";
 				document.forms[0].submit();
 				fin();
