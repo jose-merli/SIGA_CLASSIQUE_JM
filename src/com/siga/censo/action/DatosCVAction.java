@@ -575,7 +575,6 @@ public class DatosCVAction extends MasterAction{
 			throwExcp("messages.general.error",new String[] {"modulo.censo"}, e, t);
 		}
 		request.setAttribute("mensaje","messages.updated.success");
-		request.setAttribute("sinrefresco", "1");
 		return "exito";
 	}
 

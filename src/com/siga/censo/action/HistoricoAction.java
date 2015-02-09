@@ -410,7 +410,7 @@ public class HistoricoAction extends MasterAction {
 			if (admin.update(hash,hashOriginal)){
 				tx.commit();
 				request.setAttribute("mensaje","messages.updated.success");
-				request.setAttribute("sinrefresco", "1");
+				request.getSession().setAttribute("hashInsert",hash);
 				result= "exito";		
 			}
 			else{
