@@ -687,44 +687,21 @@
 		function accionEjecutarConsulta() 
 		{	
 			sub();
-			tipoConsultaEnvios="<%=tipoConsultaEnvios%>";
-			tipoConsultaFact="<%=tipoConsultaFact%>";
-			if (document.forms[0].tipoConsulta.value==tipoConsultaEnvios || document.forms[0].tipoConsulta.value==tipoConsultaFact){
-				guardarEjecutarListas();
-			}else{
-				extractCampos(document.forms[0].camposSalida,1);
-				if (validateEditarConsultaForm(document.EditarConsultaForm)){
 				
-					if (comprobarIgualdadDeListas (document.forms[0].camposSalida, document.forms[0].camposAgregacion) == false) {
-				    	alert('<%=UtilidadesString.getMensajeIdioma(user,"consultas.camposAgregacion.error")%>');
+			<%  if (tipoConsultaParam.equals(ConConsultaAdm.TIPO_CONSULTA_ENV)){%>
+					document.forms[1].modo.value="tipoEnvio";
+					var tipoenvio = ventaModalGeneral(document.forms[1].name,"P");
+					if (tipoenvio!=undefined && tipoenvio!="VACIO" && tipoenvio!=""){
+						document.forms[1].tipoEnvio.value=tipoenvio;
+					}else{
 						fin();
-
-						return false;
+						return;
 					}
-				
-					extractCampos(document.forms[0].camposOrden,0);
-					extractCampos(document.forms[0].camposAgregacion,0);
-					extractCampos(document.forms[0].criteriosDinamicos,0);
-					extractCriterios(document.forms[0].criterios);
-					
-					<%  if (tipoConsultaParam.equals(ConConsultaAdm.TIPO_CONSULTA_ENV)){%>
-							document.forms[1].modo.value="tipoEnvio";
-							var tipoenvio = ventaModalGeneral(document.forms[1].name,"P");
-							if (tipoenvio!=undefined && tipoenvio!="VACIO" && tipoenvio!=""){
-								document.forms[1].tipoEnvio.value=tipoenvio;
-							}else{
-								fin();
-								return;
-							}
-					<%  } %>				
-					document.forms[1].target='mainWorkArea';
-					document.forms[1].modo.value="criteriosDinamicos";	
-					document.forms[1].submit();	
+			<%  } %>				
+			document.forms[1].target='mainWorkArea';
+			document.forms[1].modo.value="criteriosDinamicos";	
+			document.forms[1].submit();	
 
-					fin();
-					return false;
-				}
-			}	
 		}
 		
 		function comprobarIgualdadDeListas (lista1, lista2) 
@@ -1331,6 +1308,7 @@ if (!bEditable){
 			<html:hidden styleId = "idConsulta" property = "idConsulta" value="<%=idConsulta%>"/>
 			<html:hidden styleId = "tipoConsulta"  property = "tipoConsulta" value="<%=tipoConsultaParam%>"/>
 			<html:hidden styleId ="tipoEnvio" property ="tipoEnvio" value = ""/>
+			<input type="hidden" id="actionModal" name="actionModal" value="">
 		</html:form>
 		
 	<%}else{%>
@@ -1341,7 +1319,8 @@ if (!bEditable){
 			<html:hidden styleId = "idInstitucion" property = "idInstitucion" value="<%=idInstitucion%>"/>
 			<html:hidden styleId = "idConsulta" property = "idConsulta" value="<%=idConsulta%>"/>
 			<html:hidden styleId = "tipoConsulta"  property = "tipoConsulta" value="<%=tipoConsultaParam%>"/>			
-			<html:hidden styleId ="tipoEnvio" property ="tipoEnvio" value = ""/>			
+			<html:hidden styleId ="tipoEnvio" property ="tipoEnvio" value = ""/>
+			<input type="hidden" id="actionModal" name="actionModal" value="">			
 		</html:form>
 	<%}%>
 	

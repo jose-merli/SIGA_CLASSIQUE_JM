@@ -168,6 +168,11 @@
 			document.forms[1].submit();				
 		}
 		
+		function changeConsulta(){
+			jQuery('#idButtonEjecutarConsulta').attr('disabled','disabled'); 
+		}
+		
+		
 		<!-- Asociada al boton Guardar -->
 		function accionGuardar() 
 		{		
@@ -190,6 +195,7 @@
 					<%}else{%>
 						document.forms[0].modo.value="modificarSolo";					
 					<%}%>
+					jQuery('#idButtonEjecutarConsulta').removeAttr('disabled'); 
 					document.forms[0].submit();
 				}else{
 					fin();
@@ -466,7 +472,7 @@ if (!bEditable){
 		<tr>
 
 			<td  align="center" width="93%">
-		    	<html:textarea style="width:800px" rows="20" property="selectExperta" styleId='boxExperta' styleClass="boxExpert" value="<%=sentenciaSelect%>"></html:textarea> 
+		    	<html:textarea style="width:800px" rows="20" property="selectExperta" styleId='boxExperta' styleClass="boxExpert" value="<%=sentenciaSelect%>" onchange="changeConsulta()"></html:textarea> 
 		    </td>	
 			<td align="left">
 			   <a HREF="javascript:abrirAyuda();"><IMG border=0 src="<%=app_imagen%>help.gif"  alt="<%=help%>"></a>
