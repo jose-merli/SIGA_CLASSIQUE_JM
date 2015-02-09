@@ -430,7 +430,7 @@ public class CenHistoricoAdm extends MasterBeanAdministrador
 	public boolean insert(Hashtable hash) throws ClsExceptions{
 		try
 		{
-			if((UtilidadesHash.getInteger(hash, CenHistoricoBean.C_IDHISTORICO)==null)&&(UtilidadesHash.getInteger(hash, CenHistoricoBean.C_IDHISTORICO)==0))
+			if(UtilidadesHash.getInteger(hash, CenHistoricoBean.C_IDHISTORICO)==null)
 				UtilidadesHash.set(hash, CenHistoricoBean.C_IDHISTORICO, getNuevoID(hash));
 			return super.insert(hash);
 		}
