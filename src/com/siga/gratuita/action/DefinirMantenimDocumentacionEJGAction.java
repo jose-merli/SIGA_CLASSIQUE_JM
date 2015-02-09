@@ -121,7 +121,7 @@ protected ActionForward executeInternal (ActionMapping mapping,
 		Hashtable busqueda = new Hashtable();		
 		
 		
-		String sql="select distinct f_siga_getrecurso(t.descripcion,"+usr.getLanguage()+") as DESCRIPCIONTIPO,t.abreviatura as ABREVIATURATIPO, F_SIGA_NOMBRE_DOCUMENTOS(t.idtipodocumentoejg,"+usr.getLanguage()+") as ABREVIATURADOCU,"+"F_SIGA_DESCRIPCION_DOCUMENTOS(t.idtipodocumentoejg,t.idinstitucion,"+usr.getLanguage()+") as DESCRIPCIONDOCU,t.idtipodocumentoejg as IDTIPO " +
+		String sql="select distinct f_siga_getrecurso(t.descripcion,"+usr.getLanguage()+") as DESCRIPCIONTIPO,t.abreviatura as ABREVIATURATIPO, F_SIGA_NOMBRE_DOCUMENTOS(t.idtipodocumentoejg,t.idinstitucion) as ABREVIATURADOCU,"+"F_SIGA_DESCRIPCION_DOCUMENTOS(t.idtipodocumentoejg,t.idinstitucion,"+usr.getLanguage()+") as DESCRIPCIONDOCU,t.idtipodocumentoejg as IDTIPO " +
 				"from Scs_Tipodocumentoejg t, Scs_Documentoejg d where ";
 		String v1= miForm.getDocumentoAbreviado();
 		String v2= miForm.getDoc();
@@ -496,7 +496,7 @@ protected ActionForward executeInternal (ActionMapping mapping,
 		        	recCatalogoBean.setIdRecurso(idRecurso);
 		        	recCatalogoBean.setIdRecursoAlias(idRecursoAlias);
 		        	recCatalogoBean.setNombreTabla(nombreTabla);
-		        	if(!admRecCatalogos.insert(recCatalogoBean, usr.getLanguageInstitucion())) 
+		        	if(!admRecCatalogos.insert(recCatalogoBean, usr.getLanguage())) 
 		        		throw new SIGAException ("messages.inserted.error");
 	        	
 					
@@ -597,7 +597,7 @@ protected ActionForward executeInternal (ActionMapping mapping,
 		        	recCatalogoBean.setIdRecurso(idRecurso);
 		        	recCatalogoBean.setIdRecursoAlias(idRecursoAlias);
 		        	recCatalogoBean.setNombreTabla(nombreTabla);
-		        	if(!admRecCatalogos.insert(recCatalogoBean, usr.getLanguageInstitucion())) 
+		        	if(!admRecCatalogos.insert(recCatalogoBean, usr.getLanguage())) 
 		        		throw new SIGAException ("messages.inserted.error");
 	        	
 					
@@ -722,7 +722,8 @@ protected ActionForward executeInternal (ActionMapping mapping,
 					
 					miHash.put(ScsTipoDocumentoEJGBean.C_DESCRIPCION,idRecurso);
 					miHash.put(ScsTipoDocumentoEJGBean.C_ABREVIATURA,abreviatura);
-					miHash.put(ScsTipoDocumentoEJGBean.C_CODIGOEXT,codigoExt);					
+					miHash.put(ScsTipoDocumentoEJGBean.C_CODIGOEXT,codigoExt);		
+					request.getSession().setAttribute("idTipoDoc",miForm.getTipoDocumento());
 					admBean.updateDirect(miHash,claves,campos);	        
 					tx.commit();	
 					
