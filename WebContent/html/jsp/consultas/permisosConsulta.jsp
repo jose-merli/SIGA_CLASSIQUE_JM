@@ -37,6 +37,9 @@
 	
 	String editable = (String)request.getParameter("editable");		
 	boolean bEditable = editable.equals("1")?true:false;
+	String modoInformes = "EDICION";
+	if(!bEditable)
+		modoInformes = "VER";
 	String botones = bEditable?"V,G,R":"V";
 	String idConsulta = (String)request.getParameter("idConsulta");		
 	String idInstitucion = (String)request.getParameter("idInstitucion");		
@@ -179,8 +182,10 @@
 		<tr><td colspan="3">&nbsp;</td></tr>
 		</table>
 			
-		</html:form>
 		
+<%
+		if (bEditable){
+%>	
 <table class="tablaTitulo" align="center" cellspacing="0">
 	<tr>
 		<td id="titulo" class="titulitosDatos" style="width:95%;">
@@ -192,7 +197,8 @@
 			<input type="button" alt="<siga:Idioma key="general.boton.new"/>"  id="idButton" onclick="return accionNuevo();" class="button" name="idButton" value="<siga:Idioma key="general.boton.new"/>">
 		</td>
 	</tr>
-</table>		
+</table>
+<%} %>		
 	<table id='listadoArchivosCab' style="table-layout:fixed" border='1' width='100%' cellspacing='0' cellpadding='0'>
 		<tr class ='tableTitle'>
 			<td align='left' width='80%'><siga:Idioma key="administracion.informes.literal.descripcion"/></td>
@@ -245,6 +251,7 @@
 		  				visibleBorrado = "si"
 		  				clase="listaNonEdit"
 		  				id="filaInforme_${status.count}"
+		  				modo="<%=modoInformes%>"
 		  				>
 		  				<input type="hidden" name="idPlantilla_${status.count}" value="${informe.idPlantilla}">
 						<input type="hidden" name="idInstitucion_${status.count}" value="${informe.idInstitucion}">
@@ -277,7 +284,7 @@
 
 		
 		
-		
+</html:form>
 		
 		<!-- FIN: LISTA DE VALORES -->
 
