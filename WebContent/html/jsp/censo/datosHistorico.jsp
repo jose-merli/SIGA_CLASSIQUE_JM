@@ -297,7 +297,7 @@
 				sub();
 				if (validateHistoricoForm(document.HistoricoForm)){
 					if (compararFecha(document.forms[0].fechaEntrada, document.forms[0].fechaEfectiva) == 1) {
-						alert ("mensaje.error.Fechas = Fecha efectiva no puede ser menor que la fecha de entrada");
+						alert ("<siga:Idioma key="messages.censo.historico.error.fechas"/>");
 						fin();
 						return false;
 					}
