@@ -270,12 +270,11 @@
 		<siga:ConjCampos leyenda="gratuita.gestionInscripciones.datosSolicitud.leyenda">
 			<table width="100%" border="0">
 				<tr>
-					<td width="10"></td>
-					<td width="25"></td>
-					<td width="10"></td>
-					<td width="25"></td>
-					<td width="10"></td>
-					<td width="20"></td>
+					<td width="15"></td>
+					<td width="35"></td>
+					<td width="15"></td>
+					<td width="35"></td>
+					
 					
 				</tr>
 				<tr>
