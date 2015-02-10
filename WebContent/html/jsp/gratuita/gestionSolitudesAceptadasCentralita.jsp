@@ -155,9 +155,11 @@
         	}
         	data += "&idLlamada="+idLlamada;
         }
-        
-        if(idTurno!='')
-        	data += "&idTurno="+idTurno;
+        if(idTurno!='' && idGuardia==''){
+        	error = "<siga:Idioma key='errors.required' arg0='gratuita.busquedaAsistencias.literal.guardia'/>"+ '\n';
+    		alert(error);
+    		return false;
+        }
         if(idGuardia!='')
         	data += "&idGuardia="+idGuardia;
         if(fechaDesde!='')

@@ -210,6 +210,7 @@
 		return valido;
 	}
 	function accionCalendario() {
+		
 		// Abrimos el calendario
 		if (document.getElementById('fechaGuardia').value!='') {
 			document.forms['SolicitudAceptadaCentralitaForm'].fechaGuardia.value = document.getElementById('fechaGuardia').value; 
@@ -222,7 +223,8 @@
 			 	//document.getElementById('fechaGuardia').onchange();
 				jQuery("#idTurno").val("");
 				jQuery("#idGuardia").val("");
-				jQuery("#idColegiado").val("");
+				jQuery("#idPersona").val("");
+				
 			}
 		} 
 	}

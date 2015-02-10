@@ -330,7 +330,7 @@ public class GestionSolicitudesAceptadasCentralitaAction extends MasterAction {
 			throw new SIGAException("messages.general.error", e , new String[] {"modulo.gratuita"});
 			
 		}
-		if(solicitudAceptadaCentralitaForm.getModo().equals("denegarSolicitudAceptada"))
+		if(solicitudAceptadaCentralitaForm.getModo().equals("activarSolicitudAceptadaDenegada"))
 			return exitoRefresco("messages.updated.success", request);
 		else{
 			request.setAttribute("mensajeSuccess",UtilidadesString.getMensajeIdioma(this.getUserBean(request),"messages.updated.success"));
