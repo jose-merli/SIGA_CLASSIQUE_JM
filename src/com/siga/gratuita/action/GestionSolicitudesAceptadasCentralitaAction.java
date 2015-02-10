@@ -355,10 +355,12 @@ public class GestionSolicitudesAceptadasCentralitaAction extends MasterAction {
 			String idInstitucion = datosSolicitudAceptada[0];
 			String idSolicitudAceptada = datosSolicitudAceptada[1];
 			String idLlamada = datosSolicitudAceptada[2];
+			String fechaLlamada = datosSolicitudAceptada[3];
 			solicitudAceptadaCentralitaForm2= new SolicitudAceptadaCentralitaForm();
 			solicitudAceptadaCentralitaForm2.setIdInstitucion(idInstitucion);
 			solicitudAceptadaCentralitaForm2.setIdSolicitudAceptada(idSolicitudAceptada);
 			solicitudAceptadaCentralitaForm2.setIdLlamada(idLlamada);
+			solicitudAceptadaCentralitaForm2.setFechaLlamadaHoras(fechaLlamada);
 			solicitudAceptadaCentralitaList.add(voService.getForm2Vo(solicitudAceptadaCentralitaForm2));
 			 
 		}

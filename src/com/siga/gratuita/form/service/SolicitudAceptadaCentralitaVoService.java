@@ -1,6 +1,5 @@
 package com.siga.gratuita.form.service;
 
-import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -62,6 +61,17 @@ public class SolicitudAceptadaCentralitaVoService implements VoUiService<Solicit
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+		
+		SimpleDateFormat sdfddmmyyyyhhmm = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+		if(objectForm.getFechaLlamadaHoras()!=null && !objectForm.getFechaLlamadaHoras().equals("")){
+			
+			try {
+				solicitudAceptadaCentralitaVo.setFechallamada(sdfddmmyyyyhhmm.parse(objectForm.getFechaLlamadaHoras()));
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 		
 		if(objectForm.getIdGuardia()!=null && !objectForm.getIdGuardia().equals(""))
 			solicitudAceptadaCentralitaVo.setIdguardia(Integer.valueOf(objectForm.getIdGuardia()));

@@ -254,11 +254,12 @@
 		    	var idInstitucionFila = 'idInstitucion_' + filaTabla ;
 		    	var idSolicitudAceptadaFila = 'idSolicitudAceptada_' + filaTabla ;
 				var idLlamadaFila = 'idLlamada_' + filaTabla ;
+				var fechaLlamada = 'fechaLlamada_' + filaTabla ;
 				
 				idLlamada = document.getElementById(idLlamadaFila).value;
 				idSolicitudAceptada = document.getElementById(idSolicitudAceptadaFila).value;
 			   	idInstitucion = document.getElementById(idInstitucionFila).value;
-			   	datosMasivos = datosMasivos +","+ idInstitucion+"##"+idSolicitudAceptada+"##"+idLlamada+"##"; 			
+			   	datosMasivos = datosMasivos +","+ idInstitucion+"##"+idSolicitudAceptada+"##"+idLlamada+"##"+fechaLlamada+""; 			
 			}			
 		}
 

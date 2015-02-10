@@ -249,6 +249,7 @@
 		<html:hidden property="idLlamada"/>
 		<html:hidden property="jsonVolver"/>
 		<html:hidden property="solicitantePais" value="191"/>
+		<html:hidden property="fechaLlamadaHoras" value="${SolicitudAceptadaCentralitaForm.fechaLlamadaHoras}"/>
 		<c:if	test="${(SolicitudAceptadaCentralitaForm.idEstado=='0' && SolicitudAceptadaCentralitaForm.modo=='editarSolicitudAceptada')
 			||(SolicitudAceptadaCentralitaForm.idEstado=='1' && SolicitudAceptadaCentralitaForm.modo=='editarSolicitudAceptada')}">
 			<c:set var="estiloText" value="box" />

@@ -48,9 +48,14 @@
 						id="idSolicitudAceptada_${status.count}"
 						value="${solicitudAceptadaCentralita.idSolicitudAceptada}">
 						<input type="hidden" id="idInstitucion_${status.count}"
-						value="${solicitudAceptadaCentralita.idInstitucion}"> <input type="hidden"
+						value="${solicitudAceptadaCentralita.idInstitucion}"> 
+						<input type="hidden"
 						id="idLlamada_${status.count}"
-						value="${solicitudAceptadaCentralita.idLlamada}"><input
+						value="${solicitudAceptadaCentralita.idLlamada}">
+						<input type="hidden"
+						id="fechaLlamada_${status.count}"
+						value="${solicitudAceptadaCentralita.fechaLlamadaHoras}">
+						<input
 						type="checkbox" value="${status.count}" name="chkSolicitud">
 					</td>
 					<td align="right"><c:out
