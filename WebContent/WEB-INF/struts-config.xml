@@ -875,6 +875,7 @@
 		<action path="/CEN_SolicitudCV" type="com.siga.censo.action.DatosCVAction" name="datosCVSolicForm">
 			<forward name="solicitarModificacion" path="/html/jsp/censo/solicitudModificacionCV.jsp"/>
 			<forward name="solicitarNuevo" path="/html/jsp/censo/solicitudModificacionCV.jsp"/>
+			<forward name="inicio" path="/html/jsp/censo/consultaDatosCV.jsp"/>
 		</action>
 
 		<action path="/CEN_DatosCV" type="com.siga.censo.action.DatosCVAction" name="datosCVForm" scope="request">
@@ -2008,6 +2009,7 @@
 			<forward name="abrir" path="/html/jsp/administracion/abrirListadoTablasMaestras.jsp"/>
 			<forward name="buscar" path="/html/jsp/administracion/buscarListadoTablasMaestras.jsp"/>
 			<forward name="mostrar" path="/html/jsp/administracion/detalleRegistroTablasMaestras.jsp"/>
+			<forward name="abrirConfCostesFijos" path="/html/jsp/administracion/mantCostesFijos.jsp"/>
 		</action>
 		
 		<!-- ***** Administración / Gestión Catálogos Maestros PCAJG ***** -->
