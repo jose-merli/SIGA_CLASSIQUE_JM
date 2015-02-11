@@ -198,7 +198,11 @@ public class GestionSolicitudesAceptadasCentralitaAction extends MasterAction {
 			VoUiService<SolicitudAceptadaCentralitaForm, SolicitudAceptadaCentralitaVo> voService = new SolicitudAceptadaCentralitaVoService();
 			List<SolicitudAceptadaCentralitaForm> solicitudesAceptadasForms = null;
 			try {
-				solicitudesAceptadasForms =  voService.getVo2FormList(scsSolicitudesAcpetadasService.getList(voService.getForm2Vo(solicitudAceptadaCentralitaForm)));
+				
+				SolicitudAceptadaCentralitaVo solicitudAceptadaCentralitaVoForm = voService.getForm2Vo(solicitudAceptadaCentralitaForm);
+				solicitudAceptadaCentralitaVoForm.setIdioma(this.getUserBean(request).getLanguage());
+				
+				solicitudesAceptadasForms =  voService.getVo2FormList(scsSolicitudesAcpetadasService.getList(solicitudAceptadaCentralitaVoForm));
 				request.setAttribute("solicitudesAceptadasCentralita", solicitudesAceptadasForms);
 				return "listado";
 			}catch (Exception e){
@@ -220,7 +224,11 @@ public class GestionSolicitudesAceptadasCentralitaAction extends MasterAction {
 		VoUiService<SolicitudAceptadaCentralitaForm, SolicitudAceptadaCentralitaVo> voService = new SolicitudAceptadaCentralitaVoService();
 		try {
 			
-			SolicitudAceptadaCentralitaVo solicitudAceptadaCentralitaVo =   scsSolicitudesAcpetadasService.getSolicitudAceptada(voService.getForm2Vo(solicitudAceptadaCentralitaForm));
+			
+			
+			SolicitudAceptadaCentralitaVo solicitudAceptadaCentralitaVoForm = voService.getForm2Vo(solicitudAceptadaCentralitaForm);
+			solicitudAceptadaCentralitaVoForm.setIdioma(this.getUserBean(request).getLanguage());
+			SolicitudAceptadaCentralitaVo solicitudAceptadaCentralitaVo =   scsSolicitudesAcpetadasService.getSolicitudAceptada(solicitudAceptadaCentralitaVoForm);
 			solicitudAceptadaCentralitaForm.clear();
 			solicitudAceptadaCentralitaForm  = voService.getVo2Form(solicitudAceptadaCentralitaVo,solicitudAceptadaCentralitaForm);
 			
@@ -476,8 +484,9 @@ public class GestionSolicitudesAceptadasCentralitaAction extends MasterAction {
 		ScsSolicitudesAcpetadasService scsSolicitudesAcpetadasService = (ScsSolicitudesAcpetadasService) bm.getService(ScsSolicitudesAcpetadasService.class);
 		VoUiService<SolicitudAceptadaCentralitaForm, SolicitudAceptadaCentralitaVo> voService = new SolicitudAceptadaCentralitaVoService();
 		try {
-			
-			SolicitudAceptadaCentralitaVo solicitudAceptadaCentralitaVo =   scsSolicitudesAcpetadasService.getSolicitudAceptada(voService.getForm2Vo(solicitudAceptadaCentralitaForm));
+			SolicitudAceptadaCentralitaVo solicitudAceptadaCentralitaVoForm = voService.getForm2Vo(solicitudAceptadaCentralitaForm);
+			solicitudAceptadaCentralitaVoForm.setIdioma(this.getUserBean(request).getLanguage());
+			SolicitudAceptadaCentralitaVo solicitudAceptadaCentralitaVo =   scsSolicitudesAcpetadasService.getSolicitudAceptada(solicitudAceptadaCentralitaVoForm);
 			solicitudAceptadaCentralitaForm.clear();
 			solicitudAceptadaCentralitaForm  = voService.getVo2Form(solicitudAceptadaCentralitaVo,solicitudAceptadaCentralitaForm);
 			
