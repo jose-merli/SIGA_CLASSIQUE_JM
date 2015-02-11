@@ -29,7 +29,8 @@
 		
 
 		<!-- INICIO: TITULO Y LOCALIZACION -->
-		<siga:Titulo titulo="menu.sjcs.solicitudesAceptadasCentralita" localizacion="sjcs.solicitudaceptadacentralita.localizacion"/>
+		
+		
 
 <script type="text/javascript">
 	
@@ -233,6 +234,7 @@
 </head>
 
 <body onload="inicio();">
+<siga:Titulo  titulo="Consulta" localizacion="sjcs.solicitudaceptadacentralita.localizacion"/>
 	<c:set var="parametrosComboComisaria" value="{\"idcomisaria\":\"-1\"}"/>
 	<c:set var="readonlyText" value="true" />
 	<c:set var="disabledSelect" value="true" />
@@ -258,6 +260,8 @@
 			<c:set var="disabledSelect" value="" />
 					
 		</c:if>
+		<siga:Titulo  titulo="${tituloLocalizacion}" localizacion="${localizacion}"/>
+		
 		<table class="tablaTitulo" cellspacing="0" height="32">
 			<tr>
 				<td id="titulo" class="titulosPeq">
@@ -377,7 +381,7 @@
 					</tr>
 					<tr>
 						<td class="labelText">
-							<siga:Idioma key="gratuita.seleccionColegiadoJG.literal.colegiado" />(*)&nbsp;
+							<siga:Idioma key="gratuita.volantesExpres.literal.letradosGuardia" />(*)&nbsp;
 						</td>
 						<td colspan = "3">
 							<siga:Select queryId="getColegiadosGuardia" id="idPersona" parentQueryParamIds="idGuardia"  params="${parametrosComboColegiadosGuardia}" selectedIds="${idColegiadoGuardiaSelected}" required="true" />

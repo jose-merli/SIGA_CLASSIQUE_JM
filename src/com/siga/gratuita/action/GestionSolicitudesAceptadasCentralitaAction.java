@@ -294,6 +294,10 @@ public class GestionSolicitudesAceptadasCentralitaAction extends MasterAction {
 			
 		}
 		request.setAttribute("titulo","sjcs.solicitudaceptadacentralita.validacion.titulo");
+		request.setAttribute("tituloLocalizacion","sjcs.solicitudaceptadacentralita.validacion");
+		request.setAttribute("localizacion","sjcs.solicitudaceptadacentralita.localizacion");
+		
+		
 		return "validarSolicitudAceptada";
 
 	}
@@ -513,6 +517,9 @@ public class GestionSolicitudesAceptadasCentralitaAction extends MasterAction {
 		}
 		
 		request.setAttribute("titulo","sjcs.solicitudaceptadacentralita.consulta.titulo");
+		request.setAttribute("tituloLocalizacion","sjcs.solicitudaceptadacentralita.consulta");
+		request.setAttribute("localizacion","sjcs.solicitudaceptadacentralita.localizacion");
+
 		return "consultarSolicitudAceptada";
 		
 

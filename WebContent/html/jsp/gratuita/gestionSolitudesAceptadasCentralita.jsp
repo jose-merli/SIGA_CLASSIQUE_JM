@@ -34,7 +34,7 @@
 		
 
 		<!-- INICIO: TITULO Y LOCALIZACION -->
-		<siga:Titulo  titulo="menu.sjcs.solicitudesAceptadasCentralita" localizacion="sjcs.solicitudaceptadacentralita.localizacion"/>
+		<siga:TituloExt  titulo="menu.sjcs.solicitudesAceptadasCentralita" localizacion="sjcs.solicitudaceptadacentralita.localizacion"/>
 		
 
 <script type="text/javascript">
@@ -468,10 +468,7 @@
 			</siga:ConjCampos>
 	
 			<siga:ConjBotonesBusqueda botones="B"  titulo="menu.sjcs.solicitudesAceptadasCentralita"/>
-			
-			
 			<div id="divListado"></div>	
-
 			<table class="botonesDetalle" align="center">
 				<tr>
 					<td style="width: 900px;">

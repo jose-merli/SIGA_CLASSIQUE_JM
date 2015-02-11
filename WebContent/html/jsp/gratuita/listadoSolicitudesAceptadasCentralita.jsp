@@ -32,7 +32,6 @@
 			</tr>
 		</c:when>
 		<c:otherwise>
-
 			<c:forEach items="${solicitudesAceptadasCentralita}"
 				var="solicitudAceptadaCentralita" varStatus="status">
 				<bean:define id="elementosFila" name="solicitudAceptadaCentralita"
@@ -41,9 +40,6 @@
 					pintarEspacio="no" visibleConsulta="no" visibleEdicion="no"
 					visibleBorrado="no" elementos="${elementosFila}"
 					clase="listaNonEdit">
-
-
-
 					<td align='center'><input type="hidden"
 						id="idSolicitudAceptada_${status.count}"
 						value="${solicitudAceptadaCentralita.idSolicitudAceptada}">
@@ -62,7 +58,6 @@
 							value="${solicitudAceptadaCentralita.idLlamada}"></c:out></td>
 					<td align='left'><c:out
 							value="${solicitudAceptadaCentralita.descripcionColegiado}"></c:out>
-
 					</td>
 					<td align='left'><c:out
 							value="${solicitudAceptadaCentralita.nombreGuardia}"></c:out></td>
@@ -70,10 +65,8 @@
 							value="${solicitudAceptadaCentralita.fechaLlamadaHoras}"></c:out></td>
 					<td align='left'><c:out
 							value="${solicitudAceptadaCentralita.nombreCentroDetencion}"></c:out></td>
-
 					<td align='left'><c:out
 							value="${solicitudAceptadaCentralita.descripcionEstado}"></c:out></td>
-
 				</siga:FilaConIconos>
 			</c:forEach>
 		</c:otherwise>
