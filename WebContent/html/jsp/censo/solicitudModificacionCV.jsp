@@ -37,11 +37,10 @@
 	UsrBean usr = (UsrBean)request.getSession().getAttribute("USRBEAN");
 	String nombre=(String)request.getAttribute("nombrePersona");
 	String numero=(String)request.getAttribute("numero");
-	
-
+	String accion = String.valueOf(request.getAttribute("accion"));
+	String modo=(String)request.getAttribute("modoConsulta");
 	String DB_TRUE=ClsConstants.DB_TRUE;
 	String DB_FALSE=ClsConstants.DB_FALSE;	
-	String modo=(String)request.getAttribute("modoConsulta");	
 	boolean solicitarNuevo=((modo != null) && (modo.equalsIgnoreCase("solicitarNuevo")));
 	ArrayList lista=new ArrayList();
 	ArrayList idSubtipo1 = new ArrayList();
@@ -88,17 +87,23 @@
 		<!-- FIN: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->
 	<!-- Aqui se reescriben las funciones que vayamos a utilizar -->
 	<script language="JavaScript">
-		function accionCerrar(){	
-			window.top.close();
-		}	
 		
+		// Asociada al boton Volver
+		function accionVolver(){		
+			sub();
+			document.datosCVSolicForm.modo.value="abrir";
+			document.datosCVSolicForm.target="_self";
+			document.datosCVSolicForm.submit(); 
+			fin();
+		}
+	
 		function accionRestablecer(){	
-			if(confirm('<siga:Idioma key="messages.confirm.cancel"/>')) {
-				document.all.datosCVSolicForm.reset();				
-				}
+			
+			document.all.datosCVSolicForm.reset();				
+			
 		}
 		
-		function accionGuardarCerrar() {	
+		function accionGuardar() {	
 			sub();	
 			if (!validateDatosCVSolicForm(document.datosCVSolicForm)){	
 				fin();
@@ -124,10 +129,15 @@
 				fin();
 				return false;
 			}	
-			document.all.datosCVSolicForm.modo.value = "insertarModificacion";					
+			
+			document.datosCVSolicForm.modo.value="insertarModificacion";
 			document.all.datosCVSolicForm.submit();						
 		}
         
+		function refrescarLocal() {		
+			accionVolver();
+		}
+		
 	</script>	
 
 	<!-- INICIO: TITULO Y LOCALIZACION 	-->	
@@ -156,11 +166,13 @@
 		<div id="camposRegistro" class="posicionModalMedia" align="center">
 
 		<!-- INICIO: CAMPOS -->
-		<html:hidden property="modo" value="cerrar"/>
+		<html:hidden property="modo"/>
 		<input type='hidden' name="idPersona" value="<%=String.valueOf((Long)request.getAttribute("idPersona"))%>"/>	
 		<input type='hidden' name="idInstitucion" value="<%=String.valueOf((Integer)request.getAttribute("idInstitucion"))%>"/>
 		<input type='hidden' name="idCV" value="<%=idCV%>">
-		<table class="tablaCentralCamposMedia" align="center">			
+		<table class="tablaCentralCamposMedia" align="center">		
+		<input type='hidden' id="accion"  name="accion" value="<%=accion%>" />	
+		
 			<tr>				
 				<td>
 					<siga:ConjCampos leyenda="censo.solicitudModificacion.literal.titulo">
@@ -218,7 +230,7 @@
 									<siga:Idioma key="censo.datosCV.literal.descripcion"/>&nbsp;(*)		 			
 								</td>							
 								<td COLSPAN=3>
-										<html:textarea name="datosCVSolicForm" property="descripcion" onKeyDown="cuenta(this,4000)" onChange="cuenta(this,4000)" styleClass="box" value='<%=descripcion%>' maxlength="255" cols="80" rows="3"/>
+										<html:textarea name="datosCVSolicForm" property="descripcion" onKeyDown="cuenta(this,4000)" onChange="cuenta(this,4000)" styleClass="box" style="overflow-y:auto; overflow-x:hidden; width:725px; height:150px; resize:none;" value='<%=descripcion%>' maxlength="250" cols="70" rows="3"/>
 								<br>
 								</td>								
 							</tr>
@@ -229,7 +241,7 @@
 									<siga:Idioma key="censo.datosCV.literal.motivo"/>&nbsp;(*)
 								</td>											
 		   					<td COLSPAN=3>
-		   						<html:textarea name="datosCVSolicForm" property="motivo" styleClass="box" value="" cols="80" rows="3"/> 
+		   						<html:textarea name="datosCVSolicForm" property="motivo" styleClass="box" style="overflow-y:auto; overflow-x:hidden; width:725px; height:150px; resize:none;" value="" cols="80" rows="3"  maxlength="250"/> 
 								</td>		   					
 		  				</tr>
 		   			</table>
@@ -241,7 +253,7 @@
 
 	<!-- ******* BOTONES DE ACCIONES EN REGISTRO ****** -->
 	
-		<siga:ConjBotonesAccion botones="C,Y,R" modal="M"/>
+		<siga:ConjBotonesAccion botones="V,G,R"/>
 
 
 	<!-- FIN ******* BOTONES DE ACCIONES EN REGISTRO ****** -->

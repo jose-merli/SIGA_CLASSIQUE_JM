@@ -662,21 +662,22 @@ public class DatosCVAction extends MasterAction{
 			DatosCVForm form= (DatosCVForm) formulario;					
 			CenSolicitudModificacionCVAdm adm = new CenSolicitudModificacionCVAdm(this.getUserBean(request));
 
-			
 			t.begin();	
-			CenSolicitudModificacionCVBean bean = getDatos(form, request);			
+			CenSolicitudModificacionCVBean bean = getDatos(form, request);	
+			
 			if(!adm.insert(bean)){
 				throw new SIGAException (adm.getError());
 			}
 			t.commit();
-			modo = exitoModal("messages.censo.solicitudes.exito",request);
+			request.setAttribute("mensaje","messages.inserted.success");
+			modo="exito";
 		} 
 		catch (Exception e) {
 			throwExcp("messages.general.error",new String[] {"modulo.censo"}, e, t);
 		}
 		return modo;
 	}
-	
+
 	protected String solicitarNuevo(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException
  {
 		String modo = "solicitarNuevo";			

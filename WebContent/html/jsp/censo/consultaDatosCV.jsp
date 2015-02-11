@@ -88,6 +88,7 @@
 <!-- SCRIPTS LOCALES -->
 <script language="JavaScript">
 		function solicitar(fila) {
+				fin();
 				var datos;
 				datos = document.getElementById('tablaDatosDinamicosD');
 				datos.value = ""; 
@@ -105,7 +106,7 @@
 				}
 				datos.value = datos.value + "%"
 		    document.datosCVForm.modo.value = "solicitarModificacion";
-		   	
+			document.datosCVForm.submit();
 		 }
 		 
 		function accionSolicitarNuevo(){
