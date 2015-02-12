@@ -399,6 +399,8 @@ public class CenDatosCVAdm extends MasterBeanAdmVisible{
 	{
 		try {
 			
+			if((beanCV.getIdCV()==null)||(beanCV.getIdCV()==0))
+				beanCV.setIdCV(this.getNuevoID(beanCV));
 			if (insert(beanCV)) {
 				CenHistoricoAdm admHis = new CenHistoricoAdm (this.usrbean);
 				if (admHis.insertCompleto(beanHis, beanCV, CenHistoricoAdm.ACCION_INSERT, idioma)) {
