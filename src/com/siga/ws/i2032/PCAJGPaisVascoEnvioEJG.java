@@ -18,26 +18,34 @@ public class PCAJGPaisVascoEnvioEJG extends PCAJGPaisVascoComun {
 	
 	@Override
 	public void execute() throws Exception {	
+				
+		try {
+			BusinessManager.getInstance().startTransaction();
+			CajgRemesaService cajgRemesaService = (CajgRemesaService) BusinessManager.getInstance().getService(CajgRemesaService.class);
+			EcomColaService ecomColaService = (EcomColaService) BusinessManager.getInstance().getService(EcomColaService.class);
+			
+			EcomCola ecomCola = new EcomCola();
+			ecomCola.setIdinstitucion((short)getIdInstitucion());
+			if (isSimular()) {
+				ecomCola.setIdoperacion(AppConstants.OPERACION.GV_VALIDACION_EXPEDIENTES.getId());
+			} else {
+				ecomCola.setIdoperacion(AppConstants.OPERACION.GV_ENVIO_EXPEDIENTES.getId());
+			}
+			log.debug("Insertando un nuevo registro para la validación de datos de una remesa de envío.");
+			CajgRemesa cajgRemesaKey = new CajgRemesa();
+			cajgRemesaKey.setIdinstitucion((short)getIdInstitucion());
+			cajgRemesaKey.setIdremesa((long)getIdRemesa());
+			
+			cajgRemesaService.deleteCajgRespuestasRemesa(cajgRemesaKey);
+			cajgRemesaService.insertaEstadoValidandoRemesa(cajgRemesaKey, UtilidadesString.getMensajeIdioma(getUsrBean(), GEN_RECURSOS.scs_mensaje_validando.getValor()));
+			
+			ecomColaService.insertaColaRemesa(ecomCola, cajgRemesaKey);
+			BusinessManager.getInstance().commitTransaction();
+		} catch (Exception e) {
+			log.error("Error al solicitar envío de expedientes del GV", e);
+			BusinessManager.getInstance().endTransaction();
+		}	
 		
-		CajgRemesaService cajgRemesaService = (CajgRemesaService) BusinessManager.getInstance().getService(CajgRemesaService.class);
-		EcomColaService ecomColaService = (EcomColaService) BusinessManager.getInstance().getService(EcomColaService.class);
-		
-		EcomCola ecomCola = new EcomCola();
-		ecomCola.setIdinstitucion((short)getIdInstitucion());
-		if (isSimular()) {
-			ecomCola.setIdoperacion(AppConstants.OPERACION.GV_VALIDACION_EXPEDIENTES.getId());
-		} else {
-			ecomCola.setIdoperacion(AppConstants.OPERACION.GV_ENVIO_EXPEDIENTES.getId());
-		}
-		log.debug("Insertando un nuevo registro para la validación de datos de una remesa de envío.");
-		CajgRemesa cajgRemesaKey = new CajgRemesa();
-		cajgRemesaKey.setIdinstitucion((short)getIdInstitucion());
-		cajgRemesaKey.setIdremesa((long)getIdRemesa());
-		
-		cajgRemesaService.deleteCajgRespuestasRemesa(cajgRemesaKey);
-		cajgRemesaService.insertaEstadoValidandoRemesa(cajgRemesaKey, UtilidadesString.getMensajeIdioma(getUsrBean(), GEN_RECURSOS.scs_mensaje_validando.getValor()));
-		
-		ecomColaService.insertaColaRemesa(ecomCola, cajgRemesaKey);
 		
 	}
 
