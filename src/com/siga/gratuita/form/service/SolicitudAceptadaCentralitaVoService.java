@@ -126,8 +126,6 @@ public class SolicitudAceptadaCentralitaVoService implements VoUiService<Solicit
 				e.printStackTrace();
 			}
 		
-		solicitudAceptadaCentralitaVo.setOrigenAsistencia(AppConstants.ORIGENASISTENCIA.CENTRALITAGUARDIAS.getCodigo());
-		solicitudAceptadaCentralitaVo.setObservacionesOrigen(AppConstants.ORIGENASISTENCIA.CENTRALITAGUARDIAS.getRecursoObservaciones());
 		
 		solicitudAceptadaCentralitaVo.setSolicitanteIdTipoIdentificacion(objectForm.getSolicitanteIdTipoIdentificacion());
 		solicitudAceptadaCentralitaVo.setSolicitanteNumeroIdentificacion(objectForm.getSolicitanteNumeroIdentificacion());
