@@ -285,7 +285,7 @@ public class CenDatosCVAdm extends MasterBeanAdmVisible{
 			String sql = "Select IDTIPOCV,IDTIPOCVSUBTIPO1,IDTIPOCVSUBTIPO2,TIPOAPUNTE,IDCV,IDINSTITUCION,IDPERSONA, "+
 						 " to_char(FECHAINICIO, 'dd/mm/yyyy') FECHAINICIO, " +
 						 " to_char(FECHAFIN, 'dd/mm/yyyy') FECHAFIN, "+
-						 " f_siga_getrecurso_etiqueta(decode(CERTIFICADO,1, 'messages.si','messages.no'),"+usrbean.getLanguage()+") AS VERIFICADO, "+
+						 " f_siga_getrecurso_etiqueta(decode(CERTIFICADO,1, 'messages.si','messages.no'),"+usrbean.getLanguage()+") AS CERTIFICADO, "+
 						 " DESCRIPCION,CREDITOS,IDINSTITUCION_SUBT1,IDINSTITUCION_SUBT2, "+
 						 " to_char(FECHAMOVIMIENTO, 'dd/mm/yyyy') AS FECHAVERIFICACION, "+
 						 " to_char(FECHABAJA, 'dd/mm/yyyy')FECHABAJA,"+
@@ -891,8 +891,34 @@ public class CenDatosCVAdm extends MasterBeanAdmVisible{
 		Vector tipo = null;
 		Vector subtipo1 = null;
 		Vector subtipo2 = null;
+		
+		Hashtable sindatosH = new Hashtable();
+		if(!conDatos){
+			sindatosH.put("IDTIPOCV", "");
+			sindatosH.put("IDTIPOCVSUBTIPO1", "");
+			sindatosH.put("IDTIPOCVSUBTIPO2", "");
+			sindatosH.put("TIPOAPUNTE", "");
+			sindatosH.put("IDCV", "");
+			sindatosH.put("IDINSTITUCION", "");
+			sindatosH.put("IDPERSONA", ""); 
+		    sindatosH.put("FECHAINICIO", "");
+		    sindatosH.put("FECHAFIN", "");  
+		    sindatosH.put("DESCRIPCION", "");
+		    sindatosH.put("CERTIFICADO", "");
+		    sindatosH.put("CREDITOS", "");
+		    sindatosH.put("IDINSTITUCION_SUBT1", "");
+		    sindatosH.put("IDINSTITUCION_SUBT2", "");
+		    sindatosH.put("FECHAVERIFICACION", "");
+		    sindatosH.put("FECHABAJA", "");
+		    sindatosH.put("DESCSUBTIPO1", "");
+		    sindatosH.put("DESCSUBTIPO2", "");
+		    
+		}
+		
+		
 		for (int i = 0; i < datosCV.size(); i++) {
 			Hashtable reg = ((Hashtable) datosCV.get(i));
+			
 			if (reg.get("IDTIPOCVSUBTIPO1") != null && !reg.get("IDTIPOCVSUBTIPO1").equals("")) {
 				if (reg.get("IDTIPOCVSUBTIPO2") != null && !reg.get("IDTIPOCVSUBTIPO2").equals("")) {
 					if(conDatos){
@@ -905,7 +931,7 @@ public class CenDatosCVAdm extends MasterBeanAdmVisible{
 						htDatosInforme.put(reg.get("IDTIPOCV") + "-" + reg.get("IDTIPOCVSUBTIPO1") + "-" + reg.get("IDTIPOCVSUBTIPO2"), subtipo2);
 					}else{
 						subtipo2 = new Vector();
-						subtipo2.add(reg);
+						subtipo2.add(sindatosH);
 						htDatosInforme.put(reg.get("IDTIPOCV") + "-" + reg.get("IDTIPOCVSUBTIPO1") + "-" + reg.get("IDTIPOCVSUBTIPO2"), subtipo2);
 					}
 
@@ -920,19 +946,32 @@ public class CenDatosCVAdm extends MasterBeanAdmVisible{
 						htDatosInforme.put(reg.get("IDTIPOCV") + "-" + reg.get("IDTIPOCVSUBTIPO1"), subtipo1);
 					}else{
 						subtipo1 = new Vector();
-						subtipo1.add(reg);
+						subtipo1.add(sindatosH);
 						htDatosInforme.put(reg.get("IDTIPOCV") + "-" + reg.get("IDTIPOCVSUBTIPO1"), subtipo1);
 					}
 				}
 
 			} else {
-				if (tipo != null && ((Hashtable) tipo.get(0)).get("IDTIPOCV").equals(reg.get("IDTIPOCV"))) {
-					tipo.add(reg);
-				} else {
-					tipo = new Vector();
-					tipo.add(reg);
+				
+				if(conDatos){
+					if (tipo != null && ((Hashtable) tipo.get(0)).get("IDTIPOCV").equals(reg.get("IDTIPOCV"))) {
+						tipo.add(reg);
+					} else {
+						tipo = new Vector();
+						tipo.add(reg);
+					}
+				
+					htDatosInforme.put(reg.get("IDTIPOCV"), tipo);
+				}else{
+					if (tipo != null && ((Hashtable) tipo.get(0)).get("IDTIPOCV").equals(reg.get("IDTIPOCV"))) {
+						tipo.add(sindatosH);
+					} else {
+						tipo = new Vector();
+						tipo.add(sindatosH);
+					}
+					
+					htDatosInforme.put(reg.get("IDTIPOCV"), tipo);
 				}
-				htDatosInforme.put(reg.get("IDTIPOCV"), tipo);
 			}
 		}
 	}
