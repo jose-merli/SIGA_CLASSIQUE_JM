@@ -559,10 +559,12 @@
 				return false;
 			}
 			
-			if (!isInteger(document.getElementById("solicIdentCentralita").value) ){
-				alert("El campo " + "<siga:Idioma key="gratuita.busquedaAsistencias.literal.idAvisoCentralita"/>" + " no es válido");
-				return false;
-			}
+			<% if (cv_activo.equals("1")) { %>			
+				if (!isInteger(document.getElementById("solicIdentCentralita").value) ){
+					alert("El campo " + "<siga:Idioma key="gratuita.busquedaAsistencias.literal.idAvisoCentralita"/>" + " no es válido");
+					return false;
+				}			
+			<% } %>
 
 			if((validarFecha(document.forms[0].fechaDesde.value))&&
 				(validarFecha(document.forms[0].fechaHasta.value))){
