@@ -871,46 +871,34 @@ public class BusquedaCensoAction extends MasterAction {
 		 return destino;
     }
 
-	protected String abrirBusquedaCensoModal (ActionMapping mapping, 		
-			MasterForm formulario, 
-			HttpServletRequest request, 
-			HttpServletResponse response) throws SIGAException 
-	{
-	try {
-		BusquedaCensoForm miFormulario = (BusquedaCensoForm)formulario;
-		miFormulario.setNif("");
-		// obtengo la visibilidad para el user
-		UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");
-		String visibilidad = CenVisibilidad.getVisibilidadCenso(user.getLocation());
-		request.setAttribute("CenInstitucionesVisibles",visibilidad);
-		request.setAttribute("clientes",request.getParameter("clientes"));
-		request.setAttribute("deudor",request.getParameter("deudor"));
-		if (request.getParameter("busquedaSancion")!=null && request.getParameter("busquedaSancion").equals("1")){
-		request.setAttribute("busquedaSancion","1");
-	}
-	} 	
-	catch (Exception e) {
-		throwExcp("messages.general.error",new String[] {"modulo.censo"},e,null);
+	protected String abrirBusquedaCensoModal(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response)
+			throws SIGAException {
+		try {
+			BusquedaCensoForm miFormulario = (BusquedaCensoForm) formulario;
+			miFormulario.setNif("");
+			// obtengo la visibilidad para el user
+			UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");
+			String visibilidad = CenVisibilidad.getVisibilidadCenso(user.getLocation());
+			request.setAttribute("CenInstitucionesVisibles", visibilidad);
+			request.setAttribute("clientes", request.getParameter("clientes"));
+			request.setAttribute("deudor", request.getParameter("deudor"));
+			if (request.getParameter("busquedaSancion") != null && request.getParameter("busquedaSancion").equals("1")) {
+				request.setAttribute("busquedaSancion", "1");
+			}
+		} catch (Exception e) {
+			throwExcp("messages.general.error", new String[] { "modulo.censo" }, e, null);
+		}
+	
+		// COMUN
+		return "inicioCenso";
 	}
 	
-	// COMUN
-	return "inicioCenso";
-	}
-	
-	protected String enviarClienteCenso (ActionMapping mapping, 		
-			MasterForm formulario, 
-			HttpServletRequest request, 
-			HttpServletResponse response) throws SIGAException 
-	{
-		String destino = "";
+	protected String enviarClienteCenso (ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+		String destino = "";		
 		try {
 		
 			BusquedaCensoForm miform = (BusquedaCensoForm)formulario;
 			UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");
-			// OBTENGO VALORES DEL FORM
-			// solamente el 0 porque es el unico que he pulsado
-			//Vector vOcultos = miform.getDatosTablaOcultos(0);
-			
 			
 			// obtener idpersona
 			String idPersona = miform.getIdPersona();
@@ -929,14 +917,8 @@ public class BusquedaCensoAction extends MasterAction {
 			CenPersonaBean perBean = new CenPersonaBean();
 			perBean = perAdm.getPersonaPorId(idPersona);
 			
-			// obtener nColegiado
-			//String nColegiado = (String)vOcultos.get(2);
 			String nColegiado = miform.getNumeroColegiado();
-			// obtener nifCif
-			//String nifCif = (String)vOcultos.get(3);
 			String nifCif = miform.getNif();
-			// obtener nombre
-			//String nombre = (String)vOcultos.get(4);
 			String nombre = miform.getNombre().replace("\u00a0"," ").trim();
 			String apellido1 = miform.getApellido1().replace("\u00a0"," ").trim();
 			String apellido2 = miform.getApellido2().replace("\u00a0"," ").trim();
@@ -947,28 +929,28 @@ public class BusquedaCensoAction extends MasterAction {
 			String telefono = miform.getTelefono().replace("\u00a0"," ").trim();
 			String mail = miform.getMail().replace("\u00a0"," ").trim();
 			String sexo = perBean.getSexo().replace("\u00a0"," ").trim();
+			String fax = miform.getFax1().replace("\u00a0"," ").trim();		
+			String pais = miform.getPais().replace("\u00a0"," ").trim();				
+			
 			String tratamiento = "";
-			if(cli.getIdTratamiento()!=null){
+			if(cli != null && cli.getIdTratamiento()!=null){
 				tratamiento = cli.getIdTratamiento().toString().replace("\u00a0"," ").trim();
 			}
-			String fax = miform.getFax1().replace("\u00a0"," ").trim();		
-			String pais = miform.getPais().replace("\u00a0"," ").trim();	
 			
 			String idTipoIden = "";
-			if(cli.getIdTratamiento()!=null){
+			if(perBean!=null && perBean.getIdTipoIdentificacion()!=null){
 				 idTipoIden = perBean.getIdTipoIdentificacion().toString().replace("\u00a0"," ").trim();	
 			}	
 			
 			String idEstadoCivil = "";
-			if(perBean.getIdEstadoCivil()!=null){
+			if(perBean!=null && perBean.getIdEstadoCivil()!=null){
 				 idEstadoCivil = perBean.getIdEstadoCivil().toString();	
 			}				
 			
 			String idioma = "";
-			if(cli.getIdLenguaje()!=null){
+			if(cli != null && cli.getIdLenguaje()!=null){
 				 idioma = cli.getIdLenguaje();	
 			}				
-						
 			
 			Hashtable datosCliente = new Hashtable();
 			datosCliente.put("idPersona",idPersona);
@@ -996,15 +978,15 @@ public class BusquedaCensoAction extends MasterAction {
 			datosCliente.put("idEstadoCivil",idEstadoCivil);
 			datosCliente.put("idioma",idioma);
 			
-			request.setAttribute("datosCensoModal", datosCliente);	
-
-			request.setAttribute("resultado", datosCliente);
+			request.setAttribute("datosCensoModal", datosCliente);
+			request.setAttribute("resultado", datosCliente);		
 		
 			destino="seleccionCenso";
-			} 	
-		catch (Exception e) {
+		
+		} catch (Exception e) {
 			throwExcp("messages.general.error",new String[] {"modulo.censo"},e,null);
 		}
+		
 		return destino;
 	}
 
