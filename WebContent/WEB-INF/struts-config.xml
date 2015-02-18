@@ -3474,7 +3474,10 @@
 			
 		</action>
 						
-		<action path="/ENV_Enviar" type="com.siga.envios.action.DefinirEnviosAction" name="DefinirEnviosForm" scope="session"/>
+		<action path="/ENV_Enviar" type="com.siga.envios.action.DefinirEnviosAction" name="DefinirEnviosForm" scope="session">
+			<forward name="seleccionEnvio" path="/html/jsp/envios/seleccionEnvio.jsp"/>
+		</action>
+		
 		<!-- ****************************************************************************
 -->
 		<!-- *****************************  FIN ACTION MENÚS ****************************
