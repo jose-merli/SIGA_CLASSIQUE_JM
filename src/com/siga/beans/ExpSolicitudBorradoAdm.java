@@ -299,6 +299,7 @@ public class ExpSolicitudBorradoAdm extends MasterBeanAdministrador {
 				String idTipoExpediente = row.getString(ExpExpedienteBean.C_IDTIPOEXPEDIENTE);
 				String numeroExpediente = row.getString(ExpExpedienteBean.C_NUMEROEXPEDIENTE);
 				String anioExpediente = row.getString(ExpExpedienteBean.C_ANIOEXPEDIENTE);
+				Long idPersona=Long.parseLong(row.getString(ExpSolicitudBorradoBean.C_IDPERSONA));
 				hashOriginal = row.getRow();
 				hash=(Hashtable)hashOriginal.clone();
 				hash.put(ExpSolicitudBorradoBean.C_IDESTADOSOLIC,String.valueOf(ClsConstants.ESTADO_SOLICITUD_MODIF_REALIZADA));
@@ -326,7 +327,7 @@ public class ExpSolicitudBorradoAdm extends MasterBeanAdministrador {
 					expOriginal.setEsVisible("N");
 					expOriginal.setEsVisibleEnFicha("N");
 					expOriginal.setAnotacionesCanceladas("SYSDATE");
-					
+					expOriginal.setIdPersonaDenunciado(idPersona);
 					// Fijamos los datos del Historico
 					beanHist.setMotivo(row.getString(ExpSolicitudBorradoBean.C_MOTIVO));			
 					// Actualizo el registro cliente con historico				
