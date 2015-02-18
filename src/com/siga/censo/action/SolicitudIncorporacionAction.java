@@ -277,7 +277,7 @@ public class SolicitudIncorporacionAction extends MasterAction
 			
 			CenPersonaBean perBean = null;
 			perBean= obtenerDatosPersona(miFormulario.getNIFCIF(),request);
-				
+			
 			//aalg: incidencia 142 (INC_03706_SIGA)	
 			if (tipoSolicitud.intValue() == this.solicitudDesestima) {
 				
@@ -1269,7 +1269,7 @@ public class SolicitudIncorporacionAction extends MasterAction
 	{
 	  	try {
 			CenPersonaAdm perAdm = new CenPersonaAdm(this.getUserBean(request));
-			Vector personas = perAdm.select("WHERE UPPER(" + CenPersonaBean.C_NIFCIF + ") = '" + nif.toUpperCase() + "'");
+			Vector personas = perAdm.select("WHERE ltrim(UPPER(" +CenPersonaBean.C_NIFCIF+"),'0')  = '" + UtilidadesString.LTrim(nif.toUpperCase(),"0") + "'");
 			
 			CenPersonaBean perBean = null;
 			if ((personas != null) && personas.size() == 1)

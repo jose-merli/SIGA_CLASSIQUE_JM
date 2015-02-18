@@ -612,7 +612,7 @@ public class MantenimientoSolicitudIncorporacionAction extends MasterAction
 					nombrePersona = perBean.getNombre ().toUpperCase ();
 					apellido1Persona = perBean.getApellido1 ().toUpperCase (); 
 					apellido2Persona = perBean.getApellido2 ().toUpperCase ();
-					String msj = UtilidadesString.getMensajeIdioma (user, "messages.censo.nifcifExiste3");	
+					String msj = UtilidadesString.getMensajeIdioma (user, "messages.censo.nifcifExiste2");	
 					msj += "-"+nombrePersona+" "+apellido1Persona+" "+apellido2Persona+". "+ "\u00BFDesea"+"Continuar\u003F";
 					request.setAttribute ("msj", msj);
 					forward = "continuarAprobacion";
@@ -1337,7 +1337,7 @@ public class MantenimientoSolicitudIncorporacionAction extends MasterAction
 	{
 	  	try {
 			CenPersonaAdm perAdm = new CenPersonaAdm(this.getUserBean(request));
-			Vector personas = perAdm.select("WHERE UPPER(" + CenPersonaBean.C_NIFCIF + ") = '" + nif.toUpperCase() + "'");
+			Vector personas = perAdm.select("WHERE ltrim(UPPER(" +CenPersonaBean.C_NIFCIF+"),'0') = '" + UtilidadesString.LTrim(nif.toUpperCase(),"0") + "'");
 			
 			CenPersonaBean perBean = null;
 			if ((personas != null) && personas.size() == 1)
