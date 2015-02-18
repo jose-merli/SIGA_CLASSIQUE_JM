@@ -290,7 +290,7 @@ public class BusquedaAsistenciasAction extends MasterAction {
 				// Vengo de la seleccion de una asistencia
 				anio   = miForm.getAnio();	
 				numeroAsist = miForm.getNumero();	
-				jsonVolver = miForm.getJsonVolver();
+				jsonVolver = miForm.getJsonVolver()!=null?miForm.getJsonVolver():"";
 //				if(miForm.getSolicIdentCentralita()!=null && !miForm.getSolicIdentCentralita().equals(""))
 //					request.setAttribute(arg0, arg1)
 			}
@@ -436,7 +436,7 @@ public class BusquedaAsistenciasAction extends MasterAction {
 			else {
 				anio   = miForm.getAnio();	
 				numeroAsist = miForm.getNumero();
-				jsonVolver = miForm.getJsonVolver();
+				jsonVolver = miForm.getJsonVolver()!=null?miForm.getJsonVolver():"";
 			}
 			
 			
