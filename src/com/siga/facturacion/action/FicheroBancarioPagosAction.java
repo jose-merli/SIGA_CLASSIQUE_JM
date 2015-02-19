@@ -7,6 +7,7 @@ package com.siga.facturacion.action;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
@@ -408,13 +409,13 @@ public class FicheroBancarioPagosAction extends MasterAction{
 			tx = usr.getTransactionPesada(); 
 			tx.begin();
 			resultado = ClsMngBBDD.callPLProcedure("{call PKG_SIGA_CARGOS.PRESENTACION(?,?,?,?,?,?,?,?,?,?,?,?,?,?)}", 3, param_in_banco);
-			String codretorno = resultado[1];
 			
-			if (codretorno.equals("5412") || codretorno.equals("5413") || codretorno.equals("5414") || codretorno.equals("5415") || codretorno.equals("5417")) {
+			String[] codigosErrorFormato = {"5412", "5413", "5414", "5415", "5416", "5417", "5418"};
+			if(Arrays.asList(codigosErrorFormato).contains(resultado[1])){
 				throw new SIGAException(resultado[2]);
 				
 			} else {
-				if (!codretorno.equals("0")){
+				if (!resultado[1].equals("0")){
 					throw new SIGAException("censo.fichaCliente.bancos.mandatos.error.generacionFicheros");
 				}							
 			}	
@@ -560,7 +561,7 @@ public class FicheroBancarioPagosAction extends MasterAction{
 			}			
 			
 			// Se envían los parametros para modificar las fechas del fichero
-			Object[] param_in_banco = new Object[10];
+			Object[] param_in_banco = new Object[11];
 			param_in_banco[0] = idInstitucion;
 			param_in_banco[1] = form.getIdDisqueteCargo();
 			
@@ -610,12 +611,18 @@ public class FicheroBancarioPagosAction extends MasterAction{
 			param_in_banco[6] = fechaRecibosB2B;
 			
 			param_in_banco[7] = usuario.toString();
-			param_in_banco[8] = pathFichero;			
-			param_in_banco[9] = form.getNombreFichero();
+			param_in_banco[8] = usr.getLanguage();
+			param_in_banco[9] = pathFichero;			
+			param_in_banco[10] = form.getNombreFichero();
 			
 			String resultado[] = new String[2];
-			resultado = ClsMngBBDD.callPLProcedure("{call PKG_SIGA_CARGOS.CambiarFechasPresentacion(?,?,?,?,?,?,?,?,?,?,?,?)}", 2, param_in_banco);			
-			if (resultado == null || !resultado[0].equals("0")) {
+			resultado = ClsMngBBDD.callPLProcedure("{call PKG_SIGA_CARGOS.CambiarFechasPresentacion(?,?,?,?,?,?,?,?,?,?,?,?,?)}", 2, param_in_banco);	
+			
+			String[] codigosErrorFormato = {"5412", "5413", "5414", "5415", "5416", "5417", "5418"};
+			if(Arrays.asList(codigosErrorFormato).contains(resultado[0])){
+				throw new SIGAException(resultado[1]);
+				
+			} else if (resultado == null || !resultado[0].equals("0")) {
 				throw new SIGAException("messages.updated.error");
 			}							
 
