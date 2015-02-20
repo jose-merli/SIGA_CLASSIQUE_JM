@@ -32,11 +32,14 @@ import org.apache.struts.action.ActionMapping;
 import org.apache.struts.upload.FormFile;
 import org.redabogacia.sigaservices.app.AppConstants;
 import org.redabogacia.sigaservices.app.AppConstants.ESTADOS_EJG;
+import org.redabogacia.sigaservices.app.AppConstants.GEN_RECURSOS;
 import org.redabogacia.sigaservices.app.autogen.model.CajgRemesa;
 import org.redabogacia.sigaservices.app.autogen.model.EcomCola;
 import org.redabogacia.sigaservices.app.helper.SIGAServicesHelper;
 import org.redabogacia.sigaservices.app.services.caj.CajgRemesaService;
+import org.redabogacia.sigaservices.app.services.caj.PCAJGInsertaColaService;
 import org.redabogacia.sigaservices.app.services.ecom.EcomColaService;
+import org.redabogacia.sigaservices.app.services.ecom.EcomColaService.RESPUESTA_ENVIO_REMESA;
 import org.redabogacia.sigaservices.app.util.ReadProperties;
 import org.redabogacia.sigaservices.app.util.SIGAReferences;
 
@@ -1832,13 +1835,86 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 	 * @return
 	 * @throws Exception
 	 */
-	private String envioWS(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws Exception {
+	private String validarRemesa(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws Exception {
+		log.debug("Ejecutando validarRemesa para el colegio " + getIDInstitucion(request));
+		return validaEnviaWS(mapping, (DefinicionRemesas_CAJG_Form) formulario, request, response);
+	}
+	
+	private String validaEnviaWS(ActionMapping mapping, DefinicionRemesas_CAJG_Form formulario, HttpServletRequest request, HttpServletResponse response) throws Exception {
+		Integer idInstitucion = getIDInstitucion(request);
+		int tipoCAJG = CajgConfiguracion.getTipoCAJG(idInstitucion);
 		
-		ejecutaBackground(formulario, request, 0);		
-		return exitoRefresco("messages.cajg.enviandoWS", request);
+		String idRemesa = formulario.getIdRemesa();
+		String mensaje = null;
+		
+		boolean simular = "1".equals(((DefinicionRemesas_CAJG_Form) formulario).getSimular());
+		
+		if (CajgConfiguracion.TIPO_CAJG_WEBSERVICE_PAISVASCO == tipoCAJG) {
+			PCAJGInsertaColaService pcajgInsertaColaService = (PCAJGInsertaColaService) getBusinessManager().getService(PCAJGInsertaColaService.class);
+			RESPUESTA_ENVIO_REMESA respuesta = null;
+			if (simular) {			
+				respuesta = pcajgInsertaColaService.validaExpedientesPaisVasco(Short.valueOf(idInstitucion.toString()), Long.valueOf(idRemesa)
+					, UtilidadesString.getMensajeIdioma(getUserBean(request), GEN_RECURSOS.scs_mensaje_validando.getValor()));
+			} else {
+				respuesta = pcajgInsertaColaService.enviaExpedientesPaisVasco(Short.valueOf(idInstitucion.toString()), Long.valueOf(idRemesa)
+						, UtilidadesString.getMensajeIdioma(getUserBean(request), GEN_RECURSOS.scs_mensaje_validando.getValor()));
+			}
+			mensaje = getMensajeRespuesta(respuesta, request, simular);			
+		} else if (CajgConfiguracion.TIPO_CAJG_WEBSERVICE_GENERALITAT_VALENCIANA == tipoCAJG) {
+			PCAJGInsertaColaService pcajgInsertaColaService = (PCAJGInsertaColaService) getBusinessManager().getService(PCAJGInsertaColaService.class);
+			RESPUESTA_ENVIO_REMESA respuesta = null;
+			if (simular) {
+				respuesta = pcajgInsertaColaService.validaExpedientesGeneralitatValenciana(Short.valueOf(idInstitucion.toString()), Long.valueOf(idRemesa)
+						, UtilidadesString.getMensajeIdioma(getUserBean(request), GEN_RECURSOS.scs_mensaje_validando.getValor()));	
+			} else {
+				respuesta = pcajgInsertaColaService.enviaExpedientesGeneralitatValenciana(Short.valueOf(idInstitucion.toString()), Long.valueOf(idRemesa)
+						, UtilidadesString.getMensajeIdioma(getUserBean(request), GEN_RECURSOS.scs_mensaje_validando.getValor()));
+			}
+			
+			mensaje = getMensajeRespuesta(respuesta, request, simular);			
+		} else {
+			ejecutaBackground(formulario, request, 0);	
+			if (simular) {
+				mensaje = exitoRefresco("messages.cajg.validarRemesa", request);
+			} else {
+				mensaje = exitoRefresco("messages.cajg.enviandoWS", request);
+			}
+		}
+		
+		return mensaje;
+	}
+	
+	/**
+	 * 
+	 * @param mapping
+	 * @param formulario
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	private String envioWS(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws Exception {
+		log.debug("Ejecutando envio por WS para el colegio " + getIDInstitucion(request));
+		return validaEnviaWS(mapping, (DefinicionRemesas_CAJG_Form) formulario, request, response);
 	}
 	
 	
+	private String getMensajeRespuesta(RESPUESTA_ENVIO_REMESA respuesta, HttpServletRequest request, boolean simular) throws SIGAException {
+		String mensaje = null;
+		if (RESPUESTA_ENVIO_REMESA.OK.equals(respuesta)) {
+			if (simular) {
+				mensaje = exitoRefresco("messages.cajg.validarRemesa", request);
+			} else {
+				mensaje = exitoRefresco("messages.cajg.enviandoWS", request);	
+			}			
+		} else if (RESPUESTA_ENVIO_REMESA.ERROR.equals(respuesta)) {
+			throw new SIGAException("messages.general.error");
+		} else if (RESPUESTA_ENVIO_REMESA.ENVIO_EN_EJECUCION.equals(respuesta)) {
+			mensaje = exitoRefresco("messages.cajg.remesa.enviando", request);
+		}
+		return mensaje;
+	}
+
 	private String generaXML(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws Exception {		
 		ejecutaBackground(formulario, request, 0);		
 		return exitoRefresco("messages.cajg.generandoXML", request);
@@ -1861,20 +1937,7 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 		return exitoRefresco("messages.cajg.envioFTP.correcto", request);
 	}
 	
-	/**
-	 * 
-	 * @param mapping
-	 * @param formulario
-	 * @param request
-	 * @param response
-	 * @return
-	 * @throws Exception
-	 */
-	private String validarRemesa(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws Exception {
-		log.debug("Ejecutando validarRemesa para el colegio " + getIDInstitucion(request));
-		ejecutaBackground(formulario, request, 0);		
-		return exitoRefresco("messages.cajg.validarRemesa", request);
-	}
+	
 	
 	
 
