@@ -1330,7 +1330,7 @@ public class CenHistoricoAdm extends MasterBeanAdministrador
 				clave = this.reemplazarClave(clave);				
 				String t="";
 				//Acortamos el valor de la clave "DESCRIPCION" 
-				if(clave.equals(CenDatosCVBean.C_DESCRIPCION)){
+				if((clave.equals(CenDatosCVBean.C_DESCRIPCION))||(clave.equals(ExpExpedienteBean.C_OBSERVACIONES))){
 				
 					//Si estamos haciendo una actualización hay que calcular el número de caracteres a recortar 
 					//de la DESCRIPCION de cada hash (actual y anterior)
@@ -1393,7 +1393,7 @@ public class CenHistoricoAdm extends MasterBeanAdministrador
 					clave = this.reemplazarClave(clave);				
 					String t="";
 					//Acortamos el valor de la clave "DESCRIPCION" 
-					if(clave.equals(CenDatosCVBean.C_DESCRIPCION)){
+					if((clave.equals(CenDatosCVBean.C_DESCRIPCION))||(clave.equals(ExpExpedienteBean.C_OBSERVACIONES))){
 
 						if ((numCaractElim%2) == 0) {
 							t = "  - " + clave.substring(0,1).toUpperCase() +  clave.substring(1).toLowerCase() + ": ..." + valor.substring(numCaractElimUpdate) + "\n";
