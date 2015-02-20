@@ -45,7 +45,6 @@ import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsLogging;
 import com.atos.utils.ClsMngBBDD;
-import com.atos.utils.GstDate;
 import com.atos.utils.Row;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.PaginadorCaseSensitive;
@@ -486,9 +485,7 @@ public class DevolucionesAction extends MasterAction {
 		String identificador= "";
 		String nombreFichero= "";		
 		boolean correcto = true;		
-		String codigoError = "5397";	// Código de error, el fichero no se ha encontrado.
 		String[] codigosErrorFormato = {"20000", "5399", "5402"};
-		String codigoErrorBanco = "-100"; // Código de error, EL FICHERO CARGADO ES DE UN BANCO DIFERENTE AL USADO POR EL COLEGIO PARA EMITIR SUS DOMICILIACIONES
 		String codretorno;
 
 		try{
@@ -637,7 +634,7 @@ public class DevolucionesAction extends MasterAction {
 					}
 				}
 				
-			} else if(codretorno.equalsIgnoreCase(codigoError)){
+			} else if(codretorno.equalsIgnoreCase("5397")){ // El fichero no se ha encontrado.
 				tx.rollback();
 				request.setAttribute("mensaje","facturacion.nuevoFichero.literal.confirmarReintentar");
 				return "mostrarVentana";
@@ -649,18 +646,23 @@ public class DevolucionesAction extends MasterAction {
 				
 			} else 	if (codretorno.equals("5405")) {
 				tx.rollback();		
-				request.setAttribute("mensaje", "facturacion.devolucionManual.error.importeDevolucion"); // No tiene recurso
+				request.setAttribute("mensaje", "facturacion.devolucionManual.error.importeDevolucion");
 				return "nuevo";				
 				
-			} else if(Arrays.asList(codigosErrorFormato).contains(codretorno)){
-				tx.rollback();		
-				request.setAttribute("mensaje","facturacion.nuevoFichero.literal.errorFormato");
+			} else if (codretorno.equalsIgnoreCase("5406")){ // IBAN diferente al usado en el adeudo
+				tx.rollback();	
+				request.setAttribute("mensaje","facturacion.nuevoFichero.literal.errorBanco");
 				return "nuevo";
 				
-			} else if (codretorno.equalsIgnoreCase(codigoErrorBanco)){
+			} else if (codretorno.equalsIgnoreCase("5407")){ // No encuentra la factura en FAC_FACTURA y FAC_FACTURAINCLUIDAENDISQUETE
 				tx.rollback();	
-				request.setAttribute("mensaje","facturacion.nuevoFichero.literal.errorBanco"); // No tiene recurso
-				return "nuevo";
+				request.setAttribute("mensaje","facturacion.nuevoFichero.literal.errorFactura");
+				return "nuevo";								
+				
+			} else if(Arrays.asList(codigosErrorFormato).contains(codretorno)){ // "20000", "5399", "5402"
+				tx.rollback();		
+				request.setAttribute("mensaje","facturacion.nuevoFichero.literal.errorFormato");
+				return "nuevo";				
 				
 			} else {
 				correcto=false;
@@ -800,9 +802,7 @@ public class DevolucionesAction extends MasterAction {
 		String identificador = "";		
 		boolean correcto = true;
 		
-		String codigoError = "5397";	// Código de error, el fichero no se ha encontrado.
 		String[] codigosErrorFormato = {"20000", "5399", "5402"};
-		String codigoErrorBanco = "-100"; // Código de error, EL FICHERO CARGADO ES DE UN BANCO DIFERENTE AL USADO POR EL COLEGIO PARA EMITIR SUS DOMICILIACIONES
 		String codretorno;
 		try {
 			// Obtengo usuario y creo manejadores para acceder a las BBDD
@@ -902,7 +902,7 @@ public class DevolucionesAction extends MasterAction {
 					}
 				}	
 				
-			} else if(codretorno.equalsIgnoreCase(codigoError)){
+			} else if(codretorno.equalsIgnoreCase("5397")){ // El fichero no se ha encontrado.
 				tx.rollback();
 				request.setAttribute("mensaje","facturacion.nuevoFichero.literal.confirmarReintentar");
 				return "mostrarVentana";
@@ -917,15 +917,20 @@ public class DevolucionesAction extends MasterAction {
 				request.setAttribute("mensaje", "facturacion.devolucionManual.error.importeDevolucion");
 				return "nuevo";				
 				
-			} else if(Arrays.asList(codigosErrorFormato).contains(codretorno)){
-				tx.rollback();		
-				request.setAttribute("mensaje","facturacion.nuevoFichero.literal.errorFormato");
-				return "nuevo";
-				
-			} else if (codretorno.equalsIgnoreCase(codigoErrorBanco)){
+			} else if (codretorno.equalsIgnoreCase("5406")){ // IBAN diferente al usado en el adeudo
 				tx.rollback();	
 				request.setAttribute("mensaje","facturacion.nuevoFichero.literal.errorBanco");
 				return "nuevo";
+				
+			} else if (codretorno.equalsIgnoreCase("5407")){ // No encuentra la factura en FAC_FACTURA y FAC_FACTURAINCLUIDAENDISQUETE
+				tx.rollback();	
+				request.setAttribute("mensaje","facturacion.nuevoFichero.literal.errorFactura");
+				return "nuevo";								
+				
+			} else if(Arrays.asList(codigosErrorFormato).contains(codretorno)){ // "20000", "5399", "5402"
+				tx.rollback();		
+				request.setAttribute("mensaje","facturacion.nuevoFichero.literal.errorFormato");
+				return "nuevo";		
 				
 			} else {
 				correcto=false;
