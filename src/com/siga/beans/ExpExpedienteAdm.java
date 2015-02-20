@@ -1605,50 +1605,9 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 			sqlCaducidad.append("AND E.IDTIPOEXPEDIENTE = ES.IDTIPOEXPEDIENTE(+) ");
 			sqlCaducidad.append("AND E.IDINSTITUCION = TIPO.IDINSTITUCION(+) ");
 			sqlCaducidad.append("AND E.IDTIPOEXPEDIENTE = TIPO.IDTIPOEXPEDIENTE(+) ");
+			sqlCaducidad.append("AND SYSDATE > nvl(f_Siga_Getfechacaducidad_Exp(E.IDINSTITUCION, E.IDINSTITUCION_TIPOEXPEDIENTE, E.IDTIPOEXPEDIENTE, E.ANIOEXPEDIENTE, E.NUMEROEXPEDIENTE), sysdate) ");
 			sqlCaducidad.append("AND E.ALERTAGENERADACAD <> 'S' ");
-			sqlCaducidad.append("AND SYSDATE >  ");
-			sqlCaducidad.append("CASE  ");
-			sqlCaducidad.append("	WHEN INSTR(UPPER(TIPO.TIEMPOCADUCIDAD), 'M') <> 0 ");
-			sqlCaducidad.append("	THEN (SELECT ADD_MONTHS(E.FECHA,SUBSTR(TIPO.TIEMPOCADUCIDAD, 1,(INSTR(UPPER(TIPO.TIEMPOCADUCIDAD), 'M') - 1))) FROM DUAL) "); 
-			sqlCaducidad.append("	WHEN INSTR(UPPER(TIPO.TIEMPOCADUCIDAD), 'A') <> 0  ");
-			sqlCaducidad.append("	THEN TO_DATE((SELECT TO_CHAR(E.FECHA,'DD/MM/') || (TO_CHAR(E.FECHA,'YYYY') +(SUBSTR(TIPO.TIEMPOCADUCIDAD,  1,(INSTR(UPPER(TIPO.TIEMPOCADUCIDAD), 'A') - 1)))) "); 
-			sqlCaducidad.append("		FROM DUAL), 'DD/MM/YYYY') ");
-			sqlCaducidad.append("	WHEN INSTR(UPPER(TIPO.TIEMPOCADUCIDAD), 'DH') <> 0 "); 
-			sqlCaducidad.append("	THEN (SELECT F_SIGA_SUMARDIASHABILESCOLEGIO(E.FECHA,SUBSTR(TIPO.TIEMPOCADUCIDAD,1,(INSTR(UPPER(TIPO.TIEMPOCADUCIDAD),'DH') - 1)),E.IDINSTITUCION) FROM DUAL) ");
-
-			sqlCaducidad.append("	WHEN TIPO.TIEMPOCADUCIDAD IS NULL THEN NVL(E.FECHACADUCIDAD, SYSDATE) ");
-			sqlCaducidad.append("	ELSE NVL(E.FECHACADUCIDAD, E.FECHA + TIPO.TIEMPOCADUCIDAD) END ");
-
-			sqlCaducidad.append("AND SYSDATE > NVL(E.FECHACADUCIDAD, E.FECHA) AND ES.ESTADOFINAL(+) = 'N' ");
-			
-			
-			
-			
-			
-			
-//			String sql_estado2="SELECT E.IDINSTITUCION, "+
-//			    	" E.IDINSTITUCION_TIPOEXPEDIENTE, "+
-//			    	" E.IDTIPOEXPEDIENTE, "+
-//				    " E.ANIOEXPEDIENTE, "+
-//				    " E.NUMEROEXPEDIENTE, "+
-//				    " ES.NOMBRE "+
-//				    " FROM   EXP_EXPEDIENTE E, EXP_ESTADO ES, exp_tipoexpediente tipo "+
-//				    " WHERE  E.IDESTADO = ES.IDESTADO (+) "+
-//				    " AND    E.IDFASE = ES.IDFASE (+) "+
-//				    " AND    E.IDINSTITUCION_TIPOEXPEDIENTE = ES.IDINSTITUCION (+) "+
-//				    " AND    E.IDTIPOEXPEDIENTE = ES.IDTIPOEXPEDIENTE (+) "+
-//				    " AND    e.idinstitucion = tipo.idinstitucion(+) "+
-//				    " AND    e.idtipoexpediente = tipo.idtipoexpediente(+) "+
-//				    " AND    E.ALERTAGENERADACAD <> 'S' "+ 
-//				    " AND    sysdate >" +
-//				    " case when tipo.TIEMPOCADUCIDAD > 0 " +
-//				  
-//				    " then nvl(e.fechacaducidad, e.fecha + tipo.TIEMPOCADUCIDAD)" +
-//				  
-//				    " else nvl (e.fechacaducidad, sysdate)" + 
-//				    " end" +
-//				  
-//				    " AND    ES.ESTADOFINAL(+) = 'N'";
+			sqlCaducidad.append("AND ES.ESTADOFINAL(+) = 'N' ");
 			
 			rc1 = new RowsContainer();
 			if (rc1.query(sqlCaducidad.toString())) {
@@ -1925,27 +1884,17 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 			/////////////////////////////////////////////
 			
 			StringBuffer sqlAvisoCaducidad = new StringBuffer();
-			sqlAvisoCaducidad.append(" ");
 			sqlAvisoCaducidad.append(" SELECT DATOS.*, DATOS.FECHACADUCIDAD - DATOS.DIASANTELACION AS FECHAAVISO FROM ( ");
 			sqlAvisoCaducidad.append(" SELECT E.IDINSTITUCION, E.IDINSTITUCION_TIPOEXPEDIENTE, E.IDTIPOEXPEDIENTE, ");
-			sqlAvisoCaducidad.append(" E.ANIOEXPEDIENTE,  E.NUMEROEXPEDIENTE,    E.FECHA,  TIPO.TIEMPOCADUCIDAD ");
-			sqlAvisoCaducidad.append(" ,NVL(E.FECHACADUCIDAD, "); 
-			sqlAvisoCaducidad.append(" CASE  ");
-			sqlAvisoCaducidad.append(" 		WHEN INSTR(UPPER(TIPO.TIEMPOCADUCIDAD), 'M') <> 0 ");
-			sqlAvisoCaducidad.append(" 		THEN (SELECT ADD_MONTHS(E.FECHA,SUBSTR(TIPO.TIEMPOCADUCIDAD, 1,(INSTR(UPPER(TIPO.TIEMPOCADUCIDAD), 'M') - 1))) FROM DUAL) "); 
-			sqlAvisoCaducidad.append(" 		WHEN INSTR(UPPER(TIPO.TIEMPOCADUCIDAD), 'A') <> 0  ");
-			sqlAvisoCaducidad.append(" 		THEN TO_DATE((SELECT TO_CHAR(E.FECHA,'DD/MM/') || (TO_CHAR(E.FECHA,'YYYY') +(SUBSTR(TIPO.TIEMPOCADUCIDAD,  1,(INSTR(UPPER(TIPO.TIEMPOCADUCIDAD), 'A') - 1)))) "); 
-			sqlAvisoCaducidad.append(" 		FROM DUAL), 'DD/MM/YYYY') ");
-			sqlAvisoCaducidad.append(" 		WHEN INSTR(UPPER(TIPO.TIEMPOCADUCIDAD), 'DH') <> 0 "); 
-			sqlAvisoCaducidad.append(" 		THEN (SELECT F_SIGA_SUMARDIASHABILESCOLEGIO(E.FECHA,SUBSTR(TIPO.TIEMPOCADUCIDAD,1,(INSTR(UPPER(TIPO.TIEMPOCADUCIDAD),'DH') - 1)),E.IDINSTITUCION) FROM DUAL) ");
-			sqlAvisoCaducidad.append(" 		WHEN TIPO.TIEMPOCADUCIDAD IS NULL THEN NVL(E.FECHACADUCIDAD, SYSDATE) ELSE NVL(E.FECHACADUCIDAD, E.FECHA + TIPO.TIEMPOCADUCIDAD) END) AS FECHACADUCIDAD ");
+			sqlAvisoCaducidad.append(" E.ANIOEXPEDIENTE,  E.NUMEROEXPEDIENTE,    E.FECHA,  TIPO.TIEMPOCADUCIDAD, ");
+			sqlAvisoCaducidad.append(" f_Siga_Getfechacaducidad_Exp(E.IDINSTITUCION, E.IDINSTITUCION_TIPOEXPEDIENTE, E.IDTIPOEXPEDIENTE, E.ANIOEXPEDIENTE, E.NUMEROEXPEDIENTE) AS FECHACADUCIDAD ");
 			sqlAvisoCaducidad.append(" ,nvl(TIPO.DIASANTELACIONCAD, 0) AS DIASANTELACION ");
 			sqlAvisoCaducidad.append(" FROM EXP_EXPEDIENTE E, EXP_TIPOEXPEDIENTE TIPO ");
 			sqlAvisoCaducidad.append(" WHERE E.IDINSTITUCION_TIPOEXPEDIENTE = TIPO.IDINSTITUCION ");
 			sqlAvisoCaducidad.append(" AND E.IDTIPOEXPEDIENTE = TIPO.IDTIPOEXPEDIENTE ");
 			sqlAvisoCaducidad.append(" AND E.ALERTACADUCIDADGENERADA = 'N' ");
 			sqlAvisoCaducidad.append(" and nvl(TIPO.DIASANTELACIONCAD, 0) > 0 ");
-			sqlAvisoCaducidad.append(" ) DATOS WHERE SYSDATE >FECHACADUCIDAD ");
+			sqlAvisoCaducidad.append(" ) DATOS WHERE SYSDATE >nvl(FECHACADUCIDAD, sysdate) ");
 			
 			
 			rc1 = new RowsContainer();
