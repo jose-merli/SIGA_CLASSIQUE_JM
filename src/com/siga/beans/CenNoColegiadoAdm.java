@@ -312,13 +312,17 @@ public class CenNoColegiadoAdm extends MasterBeanAdministrador {
 			
 			Hashtable registro = null;
 			Hashtable registroContenido = null;
+			Hashtable registroNoColegiado = null;
 			Vector vInformeComp =new Vector();
 			if(isInforme){
-				//registro = (Hashtable) vInforme.get(0);
+				
+				// Informacion de datos de No colegiado
+				if(vInforme!=null && vInforme.size()!=0) {
+					registroNoColegiado = (Hashtable) vInforme.get(0);
+				}
 
-				if(v!=null && v.size()!=0) {
+				if(v!=null && v.size()!=0) {					
 					for(int i=0;i<v.size();i++) {
-
 						registroContenido = (Hashtable) v.get(i);
 						registro = new Hashtable();
 						registro.put("CARGO", registroContenido.get("CARGO"));
@@ -348,22 +352,21 @@ public class CenNoColegiadoAdm extends MasterBeanAdministrador {
 						}
 						vInformeComp.add(registro);
 					}//fin for
-				} else
-					registro = (Hashtable) vInforme.get(0);	
+				}// fin if v.size
 								
 			} else {
-				registro = ((Row) vInforme.get(0)).getRow();
+				registroNoColegiado = ((Row) vInforme.get(0)).getRow();
 			}
 									
 			CenColegiadoAdm admColegiado = new CenColegiadoAdm(usrbean);
-			admColegiado.getDatosInforme(idInstitucion, idPersona, registro, idioma);												
+			admColegiado.getDatosInforme(idInstitucion, idPersona, registroNoColegiado, idioma);												
 			
 			if(vInformeComp.size()!=0) {
 				total.put("vInformeComp", vInformeComp);
 			}
 			
-			if(registro.size()!=0) {
-				total.put("vInforme", registro);
+			if(registroNoColegiado.size()!=0) {
+				total.put("vInforme", registroNoColegiado);
 			}
 		}catch (Exception e) {
 			throw new ClsExceptions (e, "Error CenNoColegiadoAdm.getInformeNoColegiadoInforme.");
