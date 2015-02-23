@@ -110,7 +110,9 @@
 		<service interface="org.redabogacia.sigaservices.app.services.scs.ScsPersonaJGService" 				implementation="org.redabogacia.sigaservices.app.services.scs.impl.ScsPersonaJGServiceImpl"/>
 		<service interface="org.redabogacia.sigaservices.app.services.scs.ScsTelefonosPersonaService" 		implementation="org.redabogacia.sigaservices.app.services.scs.impl.ScsTelefonosPersonaServiceImpl"/>
 		<service interface="org.redabogacia.sigaservices.app.services.helper.SigaServiceHelperService" 		implementation="org.redabogacia.sigaservices.app.services.helper.impl.SigaServiceHelperServiceImpl"/>
+		<service interface="org.redabogacia.sigaservices.app.services.cen.SubtiposCVService" 		implementation="org.redabogacia.sigaservices.app.services.cen.impl.SubtiposCVServiceImpl"/>
 		<service interface="org.redabogacia.sigaservices.app.services.caj.PCAJGInsertaColaService" 			implementation="org.redabogacia.sigaservices.app.services.caj.impl.PCAJGInsertaColaServiceImpl"/>
+
 		
 	</context>
 </configuration> 

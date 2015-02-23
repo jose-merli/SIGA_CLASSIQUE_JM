@@ -351,6 +351,7 @@
 		<form-bean name="PrestacionRechazadaEjgForm" type="com.siga.gratuita.form.PrestacionRechazadaEjgForm"/>
 		<form-bean name="ComunicacionesForm" type="com.siga.gratuita.form.ComunicacionesForm"/>
 		<form-bean name="SolicitudAceptadaCentralitaForm" type="com.siga.gratuita.form.SolicitudAceptadaCentralitaForm"/>
+		<form-bean name="SubtiposCVForm" type="com.siga.censo.form.SubtiposCVForm"/>
 		
 		
 	</form-beans>
@@ -3478,6 +3479,10 @@
 			<forward name="seleccionEnvio" path="/html/jsp/envios/seleccionEnvio.jsp"/>
 		</action>
 		
+		<action path="/CEN_GestionSubtiposCV" type="com.siga.censo.action.GestionSubtiposCVAction" name="SubtiposCVForm" scope="request">
+			<forward name="inicio" path="/html/jsp/censo/gestionSubtiposCV.jsp"/>
+			<forward name="listado" path="/html/jsp/censo/listadoSubtiposCV.jsp"/>
+		</action>
 		<!-- ****************************************************************************
 -->
 		<!-- *****************************  FIN ACTION MENÚS ****************************
