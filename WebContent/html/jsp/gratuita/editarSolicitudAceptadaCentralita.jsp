@@ -234,7 +234,7 @@
 </head>
 
 <body onload="inicio();">
-<siga:Titulo  titulo="Consulta" localizacion="sjcs.solicitudaceptadacentralita.localizacion"/>
+
 	<c:set var="parametrosComboComisaria" value="{\"idcomisaria\":\"-1\"}"/>
 	<c:set var="readonlyText" value="true" />
 	<c:set var="disabledSelect" value="true" />
