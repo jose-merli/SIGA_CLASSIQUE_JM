@@ -441,6 +441,7 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
 			    			FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_OBSERVACIONES + "," +
 			    			FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_OBSERVINFORME + "," +
 							FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDSERIEFACTURACION + "," +
+			    			FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_ESTADO + "," +
 							// RGG 26/05/2009 cambio de funciones de facturas
 			    			FacEstadoFacturaBean.T_NOMBRETABLA + "." + FacEstadoFacturaBean.C_DESCRIPCION + " AS DESCESTADO ," +
 							//" F_SIGA_DESCESTADOSFACTURA("+FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDINSTITUCION+","+FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDFACTURA+") AS DESCESTADO ," +

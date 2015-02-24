@@ -308,7 +308,18 @@ public class AltaAbonosAction extends MasterAction {
 					ConsPLFacturacion cpl = new ConsPLFacturacion(new Integer(user.getUserName()),user.getLanguage());
 					String estado=cpl.obtenerEstadoFacAbo(new Integer(idInstitucion).intValue(),new Long((String)registro.get(FacFacturaBean.C_IDFACTURA)).longValue(),ConsPLFacturacion.FACTURA);
 					*/
-
+					//Si la factura está anulada pero no tiene abono asociado no se puede incluir en un abono
+					//(caso de fac. origen de fac. integración comisión bancaria)
+					if(Integer.parseInt(registro.get(FacFacturaBean.C_ESTADO).toString())==8){
+						request.setAttribute("MSGERROR","messages.abonos.facturaAnuladaComisionBancaria");
+						request.setAttribute("IDFACTURA","");
+						request.setAttribute("FECHAFACTURA","");
+						request.setAttribute("ESTADO","");
+						request.setAttribute("IDPERSONA","");
+						request.setAttribute("NOMBREPERSONA","");
+						return result;
+					
+					}
 					// Paso de parametros empleando request
 					request.setAttribute("IDFACTURA",(String)registro.get(FacFacturaBean.C_IDFACTURA));
 					request.setAttribute("FECHAFACTURA", (String)registro.get(FacFacturaBean.C_FECHAEMISION));
@@ -318,7 +329,7 @@ public class AltaAbonosAction extends MasterAction {
 					request.setAttribute("NOMBREPERSONA", admP.obtenerNombreApellidos((String)registro.get(FacFacturaBean.C_IDPERSONA)));
 				}
 				else{
-					request.setAttribute("MSGERROR","messages.abonos.noExisteFactura");
+					request.setAttribute("MSGERROR","facturacion.altaAbonos.literal.facturaNoAsociada");
 					request.setAttribute("IDFACTURA","");
 					request.setAttribute("FECHAFACTURA","");
 					request.setAttribute("ESTADO","");
@@ -383,14 +394,15 @@ public class AltaAbonosAction extends MasterAction {
 			
 				String datosFactura = arrayFacturas[i];
 				
-				String idFactura= datosFactura.substring(0, datosFactura.indexOf("||"));
-				String numfactura= datosFactura.substring(datosFactura.indexOf("||")+2, datosFactura.length()).trim().toUpperCase();
+				String idFactura=datosFactura.substring(0,datosFactura.indexOf("||"));
+				String numfactura=datosFactura.substring(datosFactura.indexOf("||")+2,datosFactura.lastIndexOf("||"));
 
 				//comprobaciones si solamente hay marcada una factura se muestra el error, sino se procesan todas y se muestra el contador 
 				//de las que no se han actualizado
 				//Se comprueba si existe la factura
 				Vector facturas=facturaAdm.getFacturaPorNumero(idInstitucion,numfactura,false);
 				if (!facturas.isEmpty()){
+
 					//Se comprueba si la factura tiene un abono rectificativo
 					facturas=facturaAdm.getFacturaPorNumero(idInstitucion,numfactura,true);
 					if(facturas.isEmpty()){
@@ -398,27 +410,41 @@ public class AltaAbonosAction extends MasterAction {
 						if(arrayFacturas.length==1)
 							throw new SIGAException("messages.abonos.facturaConAbonoRectficativo"); 
 
-					//Se crea un abono para cada una de las facturas
+					
 					}else{
 						
-						form.setIdInstitucion(idInstitucion);
-						form.setNumFactura(numfactura);
-						form.setIdFactura(idFactura);
-						boolean abonoMasivo=true;
-						
-						if(arrayFacturas.length==1)
-							abonoMasivo=false;
+						//Si la factura está anulada no se puede volver a anular (caso de facturas con comisión->la factura origen queda anulada sin abono)
+						Integer estado=Integer.parseInt(datosFactura.substring(datosFactura.lastIndexOf("||")+2,datosFactura.length()));
+					
+						//Sino está anulada se crea un abono para cada una de las facturas
+						if(estado!=8){
+
+							form.setIdInstitucion(idInstitucion);
+							form.setNumFactura(numfactura);
+							form.setIdFactura(idFactura);
+							boolean abonoMasivo=true;
 							
-						boolean abonoInsertado=this.insertarNuevoAbono(form,user,abonoMasivo);
+							if(arrayFacturas.length==1)
+								abonoMasivo=false;
+								
+							boolean abonoInsertado=this.insertarNuevoAbono(form,user,abonoMasivo);
+							
+							if(abonoInsertado)
+								factTratadas++;
+						}else{
+							if(arrayFacturas.length==1)
+								throw new SIGAException("messages.abonos.facturaAnuladaComisionBancaria"); 
 						
-						if(abonoInsertado)
-							factTratadas++;
+						}
 					
 					}
 					
+					
+				//La factura no tiene número de factura asociado (estado de factura: en revisión)	
 				}else{
+					
 					if(arrayFacturas.length==1)
-						throw new SIGAException("messages.abonos.noExisteFactura");
+						throw new SIGAException("facturacion.altaAbonos.literal.facturaNoAsociada");
 					
 				}
 			}
@@ -506,7 +532,7 @@ public class AltaAbonosAction extends MasterAction {
 		
 			
 			String numfactura="";
-			// Compruebo que la factura asociada exista y este ligada a la misma persona //ESTO SOBRARIA YA QUE SE HACE EN LA VENTANA PREVIA
+			// Compruebo que la factura asociada exista y este ligada a la misma persona 
 			if(miForm.getNumFactura()!=null)
 				 numfactura =miForm.getNumFactura().trim().toUpperCase();
 			//BNS INC_10519_SIGA COMPROBAMOS TAMBIEN QUE NO ESTÁ YA ABONADA

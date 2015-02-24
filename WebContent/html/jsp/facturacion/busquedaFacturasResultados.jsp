@@ -144,6 +144,7 @@
 							Double total = UtilidadesHash.getDouble(factura, FacFacturaBean.C_IMPTOTAL);
 							Double pendiente = UtilidadesHash.getDouble(factura, FacFacturaBean.C_IMPTOTALPORPAGAR);
 							String sEstado = UtilidadesHash.getString(factura, "DESCRIPCION_ESTADO");
+							Integer estado = UtilidadesHash.getInteger(factura, FacFacturaBean.C_ESTADO);
 							String fecha = UtilidadesHash.getString(factura, FacFacturaBean.C_FECHAEMISION);
 							String descripcion = UtilidadesHash.getString(factura, FacFacturacionProgramadaBean.C_DESCRIPCION);
 							fecha = GstDate.getFormatedDateShort("", fecha);
@@ -159,7 +160,12 @@
 			botones="E,C" visibleBorrado="false" pintarEspacio="no"
 			clase="listaNonEdit">			
 			<td align="center">
-			<%String valorCheck = idFactura+"||"+numFactura;
+			<%String valorCheck = idFactura+"||"+numFactura+"||"+estado;
+			
+			//No se pueden anular facturas ya anuladas, ni que no tengan número de factura (en revisión o que en otro estado no tienen número de factura)
+			if((estado==8)||(estado==7)||(numFactura == null)||(numFactura.trim().equals(""))){%>
+				<input type="checkbox" value="<%=valorCheck%>"  disabled>
+			<%}else{ 
 			boolean isChecked = false;
 			for (int z = 0; z < registrosSeleccionados.size(); z++) {
 				Hashtable clavesRegistro = (Hashtable) registrosSeleccionados.get(z);
@@ -171,15 +177,18 @@
 			}if (isChecked) {%>
 					<input type="checkbox" value="<%=valorCheck%>"  name="sel" checked onclick="pulsarCheck(this)">
 			<%} else {%>
+					
 					<input type="checkbox" value="<%=valorCheck%>"  name="sel" onclick="pulsarCheck(this)" >
 			<%}%>
+		<%}%>
 			</td>
 			
 			<td>
 				<!-- Datos ocultos tabla --> <input type="hidden"
-				id="oculto<%=i%>_1" value="<%=idInstitucion%>"> <input
-				type="hidden" id="oculto<%=i%>_2" value="<%=idFactura%>"> <input
-				type="hidden" id="oculto<%=i%>_3" value="<%=idPersona%>"> <%=UtilidadesString.mostrarDatoJSP(nombreCompleto)%>
+				id="oculto<%=i%>_1" value="<%=idInstitucion%>"> 
+				<input type="hidden" id="oculto<%=i%>_2" value="<%=idFactura%>"> 
+				<input type="hidden" id="oculto<%=i%>_3" value="<%=idPersona%>">
+				 <%=UtilidadesString.mostrarDatoJSP(nombreCompleto)%>
 			</td>
 			<td><%=UtilidadesString.mostrarDatoJSP(fecha)%></td>
 			<td><%=UtilidadesString.mostrarDatoJSP(numFactura)%></td>
@@ -276,15 +285,14 @@ function cargarChecks(){
    		for (int p=0;p<registrosSeleccionados.size();p++){
    		 	
 	   		Hashtable clavesFac= (Hashtable) registrosSeleccionados.get(p);
-	   		
-	   		
 			valorCheckFactura=(String)clavesFac.get("CLAVE");
-			
-					
+				
 			%>
+				
 				var aux='<%=valorCheckFactura%>';
 				ObjArray.push(aux);
 			<%
+
 		} 
    	}%>
    	
@@ -297,78 +305,64 @@ function cargarChecks(){
 		document.getElementById('registrosSeleccionadosPaginador').value =ObjArray.length;
 		
 }
-function cargarChecksTodos(o){
-	   if (document.getElementById('registrosSeleccionadosPaginador')){ 	
-		var conf = confirm("<siga:Idioma key='paginador.message.marcarDesmarcar'/>"); 
-   	 
-   	if (conf){
-		ObjArray = new Array();
-	   	if (o.checked){
-	   		parent.seleccionarTodos('<%=paginaSeleccionada%>');
-	   	 		
-			
-		}else{
-			ObjArray1= new Array();
-		 	ObjArray=ObjArray1;
-		 	seleccionados1=ObjArray;
-		 	if(seleccionados1){
-			document.forms[0].registrosSeleccionados.value=seleccionados1;
-			var ele = document.getElementsByName("sel");
-				
-			for (i = 0; i < ele.length; i++) {
-				if(!ele[i].disabled)	
-					ele[i].checked = false; 
-					
-					
-			}
-			}
-
-		 }
-   	  
-   	  }else{
-   	  	if (!o.checked ){
-	   	  		var ele = document.getElementsByName("sel");
-					
-			  	for (i = 0; i < ele.length; i++) {
-			  		if(!ele[i].disabled){
-			  			if(ele[i].checked){	
-	     					ele[i].checked = false;
-	     				
-							ObjArray.splice(ObjArray.indexOf(ele[i].value),1);
+function cargarChecksTodos(o){  		
+	if (document.getElementById('registrosSeleccionadosPaginador')){			
+  		var conf = confirm('<siga:Idioma key="paginador.message.marcarDesmarcar"/>'); 	   	   	
+	   	if (conf){
+			ObjArray = new Array();
+		   	if (o.checked){				   				
+				parent.seleccionarTodos('<%=paginaSeleccionada%>');					
+			} else {					
+				ObjArray1= new Array();
+			 	ObjArray=ObjArray1;
+			 	seleccionados1=ObjArray;				 	
+				document.forms[0].registrosSeleccionados.value=seleccionados1;
+				var ele = document.getElementsByName("sel");						
+				for (i = 0; i < ele.length; i++) {
+					if(!ele[i].disabled){
+						ele[i].checked = false; 
+					}							
+				}		
+			 }		   	  
+	   	  } else {
+	   	  	if (!o.checked ){		   	  			
+		   	  		var ele = document.getElementsByName("sel");							
+				  	for (i = 0; i < ele.length; i++) {
+				  		if(!ele[i].disabled){
+				  			if(ele[i].checked){	
+		     					ele[i].checked = false;
+								ObjArray.splice(ObjArray.indexOf(ele[i].value),1);
+							}
 						}
-					}
-			   	}
-			   	
-			   	seleccionados1=ObjArray;
-		   }else{
-			   	var ele = document.getElementsByName("sel");
-						
-			  	for (i = 0; i < ele.length; i++) {
-			  		if(!ele[i].disabled){
-						if(!ele[i].checked){				  		
-		    				ele[i].checked = true;
-							ObjArray.push(ele[i].value);
+				   	}					   	
+				   	seleccionados1=ObjArray;
+			   } else {				   	
+				   	var ele = document.getElementsByName("sel");								
+				  	for (i = 0; i < ele.length; i++) {
+				  		if(!ele[i].disabled){
+							if(!ele[i].checked){				  		
+			    				ele[i].checked = true;
+								ObjArray.push(ele[i].value);
+							}
 						}
-					}
-			   	}
-			   		
-		   		seleccionados1=ObjArray;
-		   }
-		   document.forms[0].registrosSeleccionados.value=seleccionados1;
-	   		
-   	  }
-   	 if (document.getElementById('registrosSeleccionadosPaginador')){ 		 
-	  document.getElementById('registrosSeleccionadosPaginador').value =ObjArray.length;
-	 }
-	} 
+				   	}					   		
+			   		seleccionados1=ObjArray;
+			   }
+			   document.forms[0].registrosSeleccionados.value=seleccionados1;			   		
+	   	  }
+	   	if(document.getElementById('registrosSeleccionadosPaginador')) {
+	   		document.getElementById('registrosSeleccionadosPaginador').value =ObjArray.length;
+	   	}
+	}
  }
-   
+ 
 function checkTodos(){
 
  	var ele = document.getElementsByName("sel");
 	var todos=1;	
   	for (i = 0; i < ele.length; i++) {
-			if(!ele[i].checked){
+  			//Los de estado anulado y en revisión no se checkean
+			if((!ele[i].checked)&&(ele[i].value.split("||")[2]!=8)&&(ele[i].value.split("||")[2]!=7)){
 				todos=0;
 				break;
 			} 

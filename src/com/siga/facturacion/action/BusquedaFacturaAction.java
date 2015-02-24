@@ -39,7 +39,7 @@ import com.siga.general.SIGAException;
  */
 public class BusquedaFacturaAction extends MasterAction {
 
-	final String[] clavesBusqueda={FacFacturaBean.C_IDFACTURA,FacFacturaBean.C_NUMEROFACTURA};
+	final String[] clavesBusqueda={FacFacturaBean.C_IDFACTURA,FacFacturaBean.C_NUMEROFACTURA,FacFacturaBean.C_ESTADO};
 	
 		protected ActionForward executeInternal (ActionMapping mapping,
 							      ActionForm formulario,
@@ -173,6 +173,7 @@ public class BusquedaFacturaAction extends MasterAction {
 				}
 			}
 			
+			
 			HashMap databackup = (HashMap) miForm.getDatosPaginador();
 			if (databackup!=null && databackup.get("paginador")!=null&&!isSeleccionarTodos){
 				PaginadorBind paginador = (PaginadorBind)databackup.get("paginador");
@@ -209,9 +210,23 @@ public class BusquedaFacturaAction extends MasterAction {
 					
 					if(isSeleccionarTodos){
 						//Si hay que seleccionar todos hacemos la query completa.
-						ArrayList clavesRegSeleccinados = new ArrayList((Collection)admFactura.selectGenericoNLSBind(resultado.getQueryInicio(), resultado.getCodigosInicio()));
+						ArrayList clavesRegSeleccinados_aux = new ArrayList((Collection)admFactura.selectGenericoNLSBind(resultado.getQueryInicio(), resultado.getCodigosInicio()));
+						ArrayList clavesRegSeleccinados =new ArrayList();
+						
+						for (int r=0;r<clavesRegSeleccinados_aux.size();r++)
+						{
+							Hashtable clavesRegSeleccinadosH = (Hashtable) clavesRegSeleccinados_aux.get(r);
+							//Las facturas en revisión y anuladas no se pueden anular, las anuladas por estar anuladas ya y las de en revisión por no tener número de factura
+							if((UtilidadesHash.getInteger(clavesRegSeleccinadosH, FacFacturaBean.C_ESTADO)!=8)&&(UtilidadesHash.getInteger(clavesRegSeleccinadosH, FacFacturaBean.C_ESTADO)!=7))
+								//Para anular una factura tiene que tener número de factura
+								if((UtilidadesHash.getString(clavesRegSeleccinadosH, FacFacturaBean.C_NUMEROFACTURA)!=null)&&(!UtilidadesHash.getString(clavesRegSeleccinadosH, FacFacturaBean.C_NUMEROFACTURA).isEmpty()))
+									clavesRegSeleccinados.add(clavesRegSeleccinados_aux.get(r));
+							
+						}
+						
 						aniadeClavesBusqueda(this.clavesBusqueda,clavesRegSeleccinados);
 						miForm.setRegistrosSeleccionados(clavesRegSeleccinados);
+
 						int pagina;
 						try{
 							pagina = Integer.parseInt(miForm.getSeleccionarTodos());
