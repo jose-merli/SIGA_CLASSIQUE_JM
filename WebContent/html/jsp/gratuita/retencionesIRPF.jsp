@@ -125,7 +125,7 @@
 			document.forms[0].modo.value	= "nuevo";		
 	   		var resultado = ventaModalGeneral(document.forms[0].name,"P");
 		    if(resultado == "MODIFICADO") {
-		    	refrescarLocal();
+		   		refrescarLocal();
 		    }
 		}
 	
@@ -249,7 +249,7 @@
 	tC = "10,10,5,55,10,10";
 %>
 	
-	<html:form action="/JGR_PestanaRetencionesIRPF.do" method="post" styleId="RetencionesIRPFForm">
+	<html:form action="/JGR_PestanaRetencionesIRPF.do" method="post" styleId="RetencionesIRPFForm" >
 		<siga:ConjCampos leyenda="censo.busquedaClientes.literal.liquidacionSJCS" >	
 			<table class="tablaCampos" align="center" border ="0" >	
 				<tr>						
@@ -333,8 +333,12 @@
 							&& !hash.get("FECHAINICIO").equals("")) {
 						if (accion.equalsIgnoreCase("ver"))
 							botonesA = "";
-						else
-							botonesA = "E,B";
+						else{
+							if(recordNumber==1)
+								botonesA = "B";
+							else
+								botonesA = "";
+						}
 					} else
 						botonesA = "";
 				}
@@ -436,6 +440,8 @@
 	}
 %>
 
-	<%@ include file="/html/jsp/censo/includeVolver.jspf" %>		
+	<iframe name="submitArea" src="<html:rewrite page='/html/jsp/general/blank.jsp'/>" style="display:none"></iframe>
+	<%@ include file="/html/jsp/censo/includeVolver.jspf" %>
+			
 </body>
 </html>

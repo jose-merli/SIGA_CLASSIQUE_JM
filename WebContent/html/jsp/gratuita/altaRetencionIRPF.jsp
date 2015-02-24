@@ -68,7 +68,7 @@
 		<!-- INICIO: CAMPOS -->
 		<!-- Zona de campos de busqueda o filtro -->
 		<table  class="tablaCentralCampos"  align="center">
-			<html:form action="JGR_PestanaRetencionesIRPF.do" method="post" target="_self">
+			<html:form action="JGR_PestanaRetencionesIRPF.do" method="post" target="submitArea">
 				<input type="hidden" name="modo" value="insertar">
 				<tr>
 					<td>

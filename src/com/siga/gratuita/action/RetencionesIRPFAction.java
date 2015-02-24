@@ -331,7 +331,7 @@ public class RetencionesIRPFAction extends MasterAction {
 					"from Scs_Retencionesirpf a,scs_maestroretenciones b where "+
 					"a.idretencion = b.idretencion " +
 					"and a.idpersona = "+request.getSession().getAttribute("idPersonaTurno")+" "+
-					"and a.idinstitucion ="+usr.getLocation()+" order by FECHAINICIO";
+					"and a.idinstitucion ="+usr.getLocation()+" order by FECHAINICIO desc";
 						
 				vRete = reten.select(sql);
 				request.setAttribute("idSociedadLetradoSel","0");				
@@ -688,81 +688,7 @@ public class RetencionesIRPFAction extends MasterAction {
 	 */
 		
 	protected String insertar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
-		/*RetencionesIRPFForm miForm = (RetencionesIRPFForm) formulario;			
-		ScsRetencionesIRPFAdm scsRetencionesIRPFAdm = new ScsRetencionesIRPFAdm(this.getUserBean(request));
-		ScsRetencionesIRPFBean scsRetencionesIRPFBean = new ScsRetencionesIRPFBean();
 				
-		String forward = "error";
-		UsrBean usr;
-		UserTransaction tx=null;
-
-		try {
-			usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
-			tx=usr.getTransaction();
-			
-			tx.begin();
-			// Cargamos los datos del alta
-			Hashtable hash = new Hashtable();
-			hash.put("IDINSTITUCION",usr.getLocation());
-			// Se coge de la sesion la persona.
-			hash.put("IDPERSONA",request.getSession().getAttribute("idPersonaTurno"));
-			hash.put("IDRETENCION",miForm.getIdRetencion());
-			hash.put("FECHAINICIO",GstDate.getApplicationFormatDate(usr.getLanguage(),miForm.getFechaInicio()));
-			if(!miForm.getFechaFin().equals(""))
-				hash.put("FECHAFIN",GstDate.getApplicationFormatDate(usr.getLanguage(),miForm.getFechaFin()));
-						
-			scsRetencionesIRPFAdm.insert(hash);
-			request.setAttribute("mensaje","messages.inserted.success");
-
-			// Hay que actualizar las fechas.
-			// Se busca la fechaFin > y se pone a "".
-			// La fecha "" anterior se == a la de inicio inmediatamente superior.
-			//Preparamos la select a ejecutar.
-			String sql = "select * from Scs_Retencionesirpf where "+
-				" idpersona = "+request.getSession().getAttribute("idPersonaTurno")+
-				" and idinstitucion ="+usr.getLocation()+
-				" order by fechafin desc";
-			Vector vRete = scsRetencionesIRPFAdm.select(sql);
-			String fechaInicio = "";
-			if(vRete != null)
-			{
-				Hashtable miHash0  = (Hashtable) vRete.get(0);
-
-				Hashtable backup0  = (Hashtable)((Hashtable) vRete.get(0)).clone();
-				if(miHash0.get("FECHAFIN").equals(""))
-				{
-					fechaInicio = (String) miHash0.get("FECHAINICIO");
-					Hashtable miHash1  = (Hashtable) vRete.get(1);
-					Hashtable backup1  = (Hashtable)((Hashtable) vRete.get(1)).clone();
-					if(((String)miHash1.get("FECHAFIN")).compareTo(fechaInicio) > 0)
-					{
-						// Ponemos la fechainicio como la fechafin del anterior blanco
-						miHash0.put("FECHAFIN",miHash1.get("FECHAINICIO"));
-						scsRetencionesIRPFAdm.update(miHash0,backup0);
-						// Ponemos a blanco la 
-						miHash1.put("FECHAFIN","");
-						scsRetencionesIRPFAdm.update(miHash1,backup1);
-					}
-				}
-				else
-				{
-					miHash0.put("FECHAFIN","");
-					scsRetencionesIRPFAdm.update(miHash0,backup0);
-				}
-			}
-			tx.commit();
-		} 
-		catch (Exception e) 
-		{
-			try {
-				tx.rollback();
-			} catch (Exception e2){
-				throwExcp("messages.inserted.error",e2,tx);
-			}
-			return exitoModalSinRefresco("messages.rangoFechas.error",request);			
-		} 
-		return exitoModal("messages.inserted.success",request);*/
-		
 		RetencionesIRPFForm miForm = (RetencionesIRPFForm) formulario;			
 		ScsRetencionesIRPFAdm scsRetencionesIRPFAdm = new ScsRetencionesIRPFAdm(this.getUserBean(request));
 		ScsRetencionesIRPFBean scsRetencionesIRPFBean = new ScsRetencionesIRPFBean();
@@ -798,9 +724,10 @@ public class RetencionesIRPFAction extends MasterAction {
 				String fechaInicioNueva = GstDate.getApplicationFormatDate(usr.getLanguage(),miForm.getFechaInicio());
 				
 				if(fechaInicioNueva.compareTo(fechaInicio) < 0)
-					return exitoModalSinRefresco("gratuita.altaRetencionesIRPF.literal.alert2",request);
+					return error("gratuita.altaRetencionesIRPF.literal.alert2",new ClsExceptions("gratuita.altaRetencionesIRPF.literal.alert2"),request);
 				else{
-					miHash0.put("FECHAFIN",fechaInicioNueva);
+					
+					miHash0.put("FECHAFIN",GstDate.dateSumaDiasJava(fechaInicioNueva,-1));
 					if(!scsRetencionesIRPFAdm.update(miHash0,backup0))
 						throw new SIGAException(scsRetencionesIRPFAdm.getError());
 					if(!scsRetencionesIRPFAdm.insert(hash))
