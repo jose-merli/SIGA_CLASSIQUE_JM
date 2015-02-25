@@ -18,7 +18,9 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.redabogacia.sigaservices.app.autogen.model.CenInstitucion;
+import org.redabogacia.sigaservices.app.autogen.model.EstUserRegistry;
 import org.redabogacia.sigaservices.app.services.cen.CenInstitucionService;
+import org.redabogacia.sigaservices.app.services.est.EstadisticasUserRegistryService;
 import org.redabogacia.sigaservices.app.util.PropertyReader;
 import org.redabogacia.sigaservices.app.util.SIGAReferences;
 
@@ -122,6 +124,18 @@ public class SIGATemporalAccessAction extends Action
 		//usrbean.setIdRol("CNE");
 		// rgg cambio de codigos
 		usrbean.setIdRol("2");
+		
+		
+		/****************** CR - INSERTAMOS EN LA TABLA EST_USER_REGISTRY PARA LAS ESTADISTICAS DEL BI **********************/
+		EstUserRegistry registroUser = new EstUserRegistry();
+		registroUser.setIdusuario(new Integer(usrbean.getUserName()));
+		registroUser.setIdinstitucion(new Short(usrbean.getLocation()));
+		registroUser.setIdperfil(profile);
+		
+		EstadisticasUserRegistryService userRegistryService = (EstadisticasUserRegistryService) BusinessManager.getInstance().getService(EstadisticasUserRegistryService.class);		
+		userRegistryService.insert(registroUser);
+		/*****************************************************************************************************************/
+		
 		
 		//usrbean.setAccessType("FULL");
 		//usrbean.setAccessType(sAccess);
