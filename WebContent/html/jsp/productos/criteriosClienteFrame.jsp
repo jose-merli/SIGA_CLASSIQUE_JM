@@ -55,192 +55,108 @@
 			function cambiar(){		
 				var oper_aux= operador.value.split(",");			
 				
-				if ((oper_aux[0]==<%=ClsConstants.ESVACIO_ALFANUMERICO%>) || (oper_aux[0]==<%=ClsConstants.ESVACIO_NUMERICO%>) || (oper_aux[0]==<%=ClsConstants.ESVACIO_FECHA%>)) {
-						if (document.getElementById('caja')){
-							document.getElementById('comb').style.visibility='visible';
-							document.getElementById('caja').style.visibility='hidden';
-							document.getElementById('caja').style.width='0px';
-							pasarvalor();
-						}
+				if (oper_aux[0]==<%=ClsConstants.ESVACIO_ALFANUMERICO%> || oper_aux[0]==<%=ClsConstants.ESVACIO_NUMERICO%> || oper_aux[0]==<%=ClsConstants.ESVACIO_FECHA%>) {						
+						jQuery("#divSinVacio").hide();
+						jQuery("#comboVacio").show();
+						pasarvalor(jQuery("#comboVacio").find("option:selected").text(), jQuery("#comboVacio").val());
 	
-						if (document.getElementById('cmbvalor') ){				
-							document.getElementById('comb').style.visibility='visible';
-							document.getElementById('cmbvalor').style.visibility='hidden';
-							document.getElementById('cmbvalor').style.width='0px';
-							pasarvalorcombo();					
-						}
-							
-						if (document.getElementById('valor') ){						 								
-						 	document.getElementById('comb').style.visibility='visible';
-					 	 	if (document.getElementById('caja')){
-						 	 	document.getElementById('caja').style.visibility='hidden';
-						 	 	document.getElementById('caja').style.width='0px';
-					 	 	}
-					 	 	if (document.getElementById('caja-datepicker-trigger')){ 		
-					 	 		jQuery("#caja-datepicker-trigger").hide();
-					 	 	}		
-					 	 	pasarvalor();	
-					   }	
-	
-				} else {		
-					if (document.getElementById('caja')){
-						document.getElementById('valor').value="";
-						document.getElementById('comb').style.visibility='hidden';
-						document.getElementById('caja').style.visibility='visible';
-						if (document.getElementById('caja-datepicker-trigger')){ 	
-							jQuery("#caja-datepicker-trigger").show();
-						}
-						document.getElementById('caja').style.width='120px';
+				} else {
+					jQuery("#comboVacio").hide();
+					jQuery("#divSinVacio").show();							
+					if (jQuery("#valorCombo").exists()) {
+						pasarvalor(jQuery("#valorCombo").find("option:selected").text(), jQuery("#valorCombo").val());
 					}
-					
-					if (document.getElementById('cmbvalor') ){					
-						quitarvalorcombo();
-						document.getElementById('comb').style.visibility='hidden';
-						document.getElementById('cmbvalor').style.visibility='visible';
-						document.getElementById('cmbvalor').style.width='220px';
-					}			
-				}
-			}
-		
-			function ocultar(){
-				if (document.getElementById('comb')){
-					document.getElementById('comb').value=1;
-					document.getElementById('comb').style.visibility='hidden';
 				}
 			}
 			
-			function pasarvalor(){	
-				document.getElementById('valor').value=document.getElementById('valor1').value
+			function pasarvalor(valorTexto, valorId) {	
+				jQuery("#valorTexto").val(valorTexto);
+				jQuery("#valorId").val(valorId);
 			}
-		
-			function pasarvalorcombo(){			
-			 	var tiene_0=false;
-			 	var tiene_1=false;
-			 	var valor = document.getElementById('valor');
-			 	for (i=0;i<valor.options.length;i++){
-			 		if (valor[i].value==0){
-			 			tiene_0=true;
-			 			break;
-			 		}
-			 	}
-			 	
-			 	for (i=0;i<valor.options.length;i++){
-			 		if (valor[i].value==1){
-			 			tiene_1=true;
-			 			break;
-			 		}	
-			 	}
-			 	
-			 	if (!tiene_0){
-			 		valor.options[valor.options.length]=new Option("0","0");
-			 	}
-			 	
-				if (!tiene_1){
-					valor.options[valor.options.length]=new Option("1","1");
-				}
-				valor.value=valor1.value;			
-			}
-		
-			function quitarvalorcombo(){			
-			 	var tiene_0=false;
-			 	var tiene_1=false;
-				var posicion_0=0;
-				var posicion_1=0;
-				var valor = document.getElementById('valor');
-			 	for (i=0;i<valor.options.length;i++){
-			 		if (valor[i].innerHTML==0){
-			 			tiene_0=true;
-						posicion_0=i;
-			 			break;					
-			 		}
-			 	}
-			 	
-				if (tiene_0){				
-			 		valor.options[posicion_0]=null;				
-			 	}
-				
-			 	for (i=0;i<valor.options.length;i++){
-			 		if (valor[i].innerHTML==1){
-			 			tiene_1=true;
-						posicion_1=i;
-						break;
-			 		}	
-			 	}
-			 	
-				if (tiene_1){
-					valor.options[posicion_1]=null;
-				}			
-			}		
 		</script>
 	</head>
 
-<body class="BodyIframe" onload="ocultar();">
+<body class="BodyIframe" onload="cambiar();">
 	<table align="center" cellspacing="0" border="0" width="100%">
 		<tr>
 			<td class="labelText" >
 				<siga:Idioma key="pys.mantenimientoServicios.literal.operador"/>
 			</td>
 			<td>
-				<%if (!modo.equalsIgnoreCase("consulta")){%>
+<%
+				if (!modo.equalsIgnoreCase("consulta")) {
+%>
 					<select name = "operador" id="operador"  class = "boxCombo" onchange="cambiar();">
-						<% if (datosOperador!=null){
-								for (int i=0; i<datosOperador.size(); i++){
-									ConOperacionConsultaBean fila = (ConOperacionConsultaBean)datosOperador.get(i);
-									String id = (String.valueOf(((Integer)fila.getIdOperacion()).intValue())+","+((String)fila.getSimbolo()));
-									String desc = (String)fila.getDescripcion();							
-						%>
-							<option value="<%=id%>"><%=desc%></option>
-							<% } // FOR %>
-						<% } // IF %>
+<% 
+						if (datosOperador!=null) {
+							for (int i=0; i<datosOperador.size(); i++) {
+								ConOperacionConsultaBean fila = (ConOperacionConsultaBean)datosOperador.get(i);
+								String id = String.valueOf(((Integer)fila.getIdOperacion()).intValue()) + "," + fila.getSimbolo();
+								String desc = fila.getDescripcion();							
+%>
+								<option value="<%=id%>"><%=desc%></option>
+<% 
+							} // FOR
+						} // IF 
+%>
 					</select>
-								
-				<% } else { %>
+<% 
+				} else { 
+%>
 					<html:text property="operador" styleClass="boxConsulta" size="10" value="" readOnly="true" />
-				<%}%>
+<%
+				}
+%>
 			</td>
 			
 			<td class="labelText" width="25%">
 				<siga:Idioma key="pys.mantenimientoServicios.literal.valor"/>
+				<html:hidden styleId="valorTexto" property="valorFinal" value=""/>
+				<html:hidden styleId="valorId" property="valorFinal" value=""/>
 			</td>
-			<td>
-				<%if (!modo.equalsIgnoreCase("consulta")){%>
-					<% if ((datosValor!=null)&&(datosValor.size()>0)){ %>				
-						<select name = "valor" id="cmbvalor" style="width:220px" class = "boxCombo">
-							<%
+			<td>							
+<%
+				if (!modo.equalsIgnoreCase("consulta")) {
+%>					
+					<div id="divSinVacio">
+<% 
+						if (datosValor!=null && datosValor.size()>0) { 
+%>				
+							<select name="valorCombo" id="valorCombo" style="width:220px" class = "boxCombo" onchange="pasarvalor(this.options[this.selectedIndex].text, this.value);">
+<%
 								for (int i=0; i<datosValor.size(); i++){
 									Hashtable fila = (Hashtable)datosValor.get(i);
 									String id2 = (String)fila.get("ID");
 									String desc2 = (String)fila.get("DESCRIPCION");
-							%>
-								<option value="<%=id2%>"><%=desc2%></option>
-							<% } %>					
-						</select>
-						
-						<select name = "valor1" id="comb" class = "boxCombo" onchange="pasarvalorcombo();">
-							<option value="1">SI</option>
-							<option value="0">NO</option>
-						</select>
-							
-					<% } else { %>						
-						<% if (fecha){ %>	
-							<siga:Fecha styleId="caja" nombreCampo="valor" anchoTextField="16" readOnly="true"/>
-							<select name = "valor1" id="comb"  class = "boxCombo"  onchange="pasarvalor();">
-								<option value="SI">SI</option>
-								<option value="NO">NO</option>
-							</select>
-							
-						<% } else { %>					
-							<input type="text" name="valor" id="caja" class="box" width="300px"></input>
-							<select name = "valor1" id="comb"  class = "boxCombo"  onchange="pasarvalor();">
-								<option value="1">SI</option>
-								<option value="0">NO</option>
-							</select>									
-						<%}%>
-					<%}%>
-					
-				<%}else{%>
+%>
+									<option value="<%=id2%>"><%=desc2%></option>
+<% 
+								} 
+%>					
+							</select>																			
+<% 
+						} else if (fecha){ 
+%>	
+							<siga:Fecha styleId="valorFecha" nombreCampo="valor" anchoTextField="16" readOnly="true" postFunction="pasarvalor(this.value, this.value);"/>
+<% 							
+						} else { 
+%>					
+							<input type="text" name="valorTexto" id="valorTexto" class="box" width="300px" onchange="pasarvalor(this.value, this.value);"></input>								
+<%
+						}
+%>
+					</div>
+					<select name="comboVacio" id="comboVacio" class="boxCombo" onchange="pasarvalor(this.options[this.selectedIndex].text, this.value);">
+						<option value="1">SI</option>
+						<option value="0">NO</option>
+					</select>
+<%
+				} else {
+%>
 					<html:text property="valor" style="width:600px" styleClass="boxConsulta" value="" readOnly="true" />
-				<%}%>
+<%
+				}
+%>
 			</td>
 		</tr>
 	</table>

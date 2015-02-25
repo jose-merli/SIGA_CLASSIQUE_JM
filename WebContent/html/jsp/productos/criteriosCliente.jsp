@@ -113,7 +113,6 @@
 
 			function validacionPosterior(){
 				var envio=true;	
-				var i;
 				var mensaje="";
 
 				if (document.forms[0].precio.value==""){
@@ -146,10 +145,10 @@
 					document.frameResultado.location.href="/SIGA/html/jsp/productos/definirCriteriosCliente.jsp?resultado=\""+global+"\"";
 					// inhabilito los combos
 					jQuery("#conector").attr("disabled","disabled");
-					document.getElementById("conector").className="boxConsulta"
+					document.getElementById("conector").className="boxConsulta";
 						document.getElementById("conector").value="";
 					jQuery("#campo").attr("disabled","disabled");
-					document.getElementById("campo").className="boxConsulta"
+					document.getElementById("campo").className="boxConsulta";
 					document.getElementById("campo").value="";
 					jQuery("#idButton").attr("disabled","disabled");
 					document.frameOperadorValor.location.href="/SIGA/html/jsp/productos/criteriosClienteFrame.jsp";
@@ -157,10 +156,10 @@
 				} else {
 					// habilito los combos
 					jQuery("#conector").removeAttr("disabled");
-					document.getElementById("conector").className="boxCombo"
+					document.getElementById("conector").className="boxCombo";
 					document.getElementById("conector").value="";
 					jQuery("#campo").removeAttr("disabled");
-					document.getElementById("campo").className="boxCombo"
+					document.getElementById("campo").className="boxCombo";
 					document.getElementById("campo").value="";
 					jQuery("#idButton").removeAttr("disabled");
 					document.frameOperadorValor.location.href="/SIGA/html/jsp/productos/criteriosClienteFrame.jsp";				
@@ -440,26 +439,16 @@
 							var operador =  window.frames["frameOperadorValor"].document.all.item("operador");
 							var operadorT = operador[operador.selectedIndex].text;
 							var operadorV = operador[operador.selectedIndex].value;
-	
-							 window.frames["frameOperadorValor"].document.all.item("valor").value =  window.frames["frameOperadorValor"].document.all.item("valor").value.replace(/,/,".");
-							var valor =  window.frames["frameOperadorValor"].document.all.item("valor");
-							//valor.value = valor.value.replace(/,/,".");
-							
-							if (valor.tagName=="SELECT"){
-					  			valorT = valor.options[valor.selectedIndex].text;
-					  			valorV = valor.options[valor.selectedIndex].value;
-					  			
-						  	} else {
-						  		valortrim = trim(valor.value);
-						  		valorT = valortrim;
-						  		valorV = valortrim;
-						  	}		  	
+								
+							var valorT = jQuery("#frameOperadorValor").contents().find("#valorTexto").val();
+							var valorV = jQuery("#frameOperadorValor").contents().find("#valorId").val();
+								//window.frames["frameOperadorValor"].document.all.item("valorFinal").value.replace(/,/,".");
 					    
 							var conect = document.forms[0].conector[document.forms[0].conector.selectedIndex].value;
 							var campoV = document.forms[0].campo[document.forms[0].campo.selectedIndex].value;
 							var campoT = document.forms[0].campo[document.forms[0].campo.selectedIndex].text;
 							global = global + "*" + conect + "_" + campoT + "_" + operadorT + "_" + valorT + "_" + campoV + "_" +  operadorV + "_" +valorV+"_0_0_";						
-							global = global.replace("#","$")
+							global = global.replace("#","$");
 							document.frameResultado.location.href="/SIGA/html/jsp/productos/definirCriteriosCliente.jsp?resultado=\""+global+"\"";
 						}
 						

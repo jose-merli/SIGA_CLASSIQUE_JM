@@ -260,8 +260,8 @@ public class UtilidadesProductosServicios {
 	  			String value = (String)hash.get("VALOR");
 		  		if (value!=null && value.indexOf("$")!=-1) {
 		  			// viene de GruposCliente_Cliente
-		  			String idGrupo = value.substring(0,value.indexOf("$")); 
-		  			String idInstGrupo = value.substring(value.indexOf("$")+1,value.length()); 
+		  			String idGrupo = value.substring(1,value.indexOf("$")); 
+		  			String idInstGrupo = value.substring(value.indexOf("$")+1,value.length()-1); 
 		  			if ((String)hash.get("OPERADOR")!=null&&(cont>0)){
 			  			if(((String)hash.get("OPERADOR")).equalsIgnoreCase("Y"))
 							operador = " AND ";

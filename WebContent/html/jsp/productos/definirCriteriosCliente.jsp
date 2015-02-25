@@ -150,8 +150,10 @@
 						if (valor.equalsIgnoreCase("")) 
 							valor ="&nbsp;";
 							
-						if (idOperador.split(",")[0].equals(Integer.toString(ClsConstants.ESVACIO_ALFANUMERICO)) || idOperador.split(",")[0].equals(Integer.toString(ClsConstants.ESVACIO_NUMERICO)) ){
-							if (valor.equals("0") || valor.equals("NO")||valor.equals("NO COLEGIADO")|| valor.equals("Desconocido")){
+						if (idOperador.split(",")[0].equals(Integer.toString(ClsConstants.ESVACIO_ALFANUMERICO)) || 
+							idOperador.split(",")[0].equals(Integer.toString(ClsConstants.ESVACIO_NUMERICO)) || 
+							idOperador.split(",")[0].equals(Integer.toString(ClsConstants.ESVACIO_FECHA)) ){
+							if (valor.equals("0") || valor.equals("NO")){
 								valor="NO";
 								
 							} else {

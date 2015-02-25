@@ -291,32 +291,15 @@
 						var operador =  window.frames["frameOperadorValor"].document.all.item("operador");
 						var operadorT = operador[operador.selectedIndex].text;
 						var operadorV = operador[operador.selectedIndex].value;
-						var valor;
 						
-						if (window.frames["frameOperadorValor"].document.all.item("valor")) {
-							window.frames["frameOperadorValor"].document.all.item("valor").value =  window.frames["frameOperadorValor"].document.all.item("valor").value.replace(/,/,".");
-							valor =  window.frames["frameOperadorValor"].document.all.item("valor");
-						} else {
-							window.frames["frameOperadorValor"].document.all.item("caja").value =  window.frames["frameOperadorValor"].document.all.item("caja").value.replace(/,/,".");
-							valor =  window.frames["frameOperadorValor"].document.all.item("caja");
-						}
-							
-						//valor.value = valor.value.replace(/,/,".");
-						if (valor.tagName=="SELECT"){
-				  			valorT = valor.options[valor.selectedIndex].text;
-				  			valorV = valor.options[valor.selectedIndex].value;	
-					  	}else{
-					  		valortrim = trim(valor.value);
-					  		valorT = valortrim;
-					  		valorV = valortrim;
-					  	}		  	
+						var valorT = jQuery("#frameOperadorValor").contents().find("#valorTexto").val();
+						var valorV = jQuery("#frameOperadorValor").contents().find("#valorId").val();
 				    
 						var conect = document.forms[0].conector[document.forms[0].conector.selectedIndex].value;
 						var campoV = document.forms[0].campo[document.forms[0].campo.selectedIndex].value;
 						var campoT = document.forms[0].campo[document.forms[0].campo.selectedIndex].text;
-						global = global + "*" + conect + "_" + campoT + "_" + operadorT + "_" + valorT + "_" + campoV + "_" +  operadorV + "_" +valorV+"_0_0_";
-						
-						global = global.replace("#","$")
+						global = global + "*" + conect + "_" + campoT + "_" + operadorT + "_" + valorT + "_" + campoV + "_" +  operadorV + "_" +valorV+"_0_0_";						
+						global = global.replace("#","$");
 						document.frameResultado.location.href="/SIGA/html/jsp/productos/definirCriteriosCliente.jsp?resultado=\""+global+"\"";
 					}
 					
