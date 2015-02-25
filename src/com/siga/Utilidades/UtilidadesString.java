@@ -1258,7 +1258,7 @@ public class UtilidadesString {
 
     public static String replaceFirstIgnoreCase (String texto, String clave, String valor)
     {
-    	if(texto!=null){
+    	if(texto!=null && clave!=null && valor!=null){
 	    	String t = texto.toUpperCase();
 	    	int ini = t.indexOf(clave.toUpperCase());
 	    	if (ini < 0) 
@@ -1267,14 +1267,17 @@ public class UtilidadesString {
 	    	t = texto.substring(0, ini) + valor + texto.substring(ini + clave.length());
 	    	return t;
     	}else{
-    		return texto;
+    		ClsLogging.writeFileLogWithoutSession("replaceFirstIgnoreCase.returntexto. Devolvemos espacio");
+    		return "";
     	}
     }
     
     private static int replaceFirstIgnoreCase (String texto[], String clave, String valor, int posIni)
     {
-    	if (texto.length < 0) 
+    	if (texto==null || texto.length < 0 ||clave ==null||valor ==null){ 
+    		ClsLogging.writeFileLogWithoutSession("replaceFirstIgnoreCase.returnmenosuno");
     		return -1;
+    	}
     	
     	String t = texto[0].toUpperCase();
     	int ini = t.indexOf(clave.toUpperCase(), posIni);

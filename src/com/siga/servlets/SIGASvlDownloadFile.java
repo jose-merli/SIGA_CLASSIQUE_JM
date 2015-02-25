@@ -69,6 +69,8 @@ public class SIGASvlDownloadFile extends HttpServlet
 	    		sRutaFichero = (String)request.getParameter("rutaFichero");
 	    	}
 	    	
+	    	if(sRutaFichero==null)
+	    		throw new ServletException("La ruta del fichero no puede estar vacia...");
 	    	// RGG 30/03/2009 cambio para traducri un fichero con espacios.
 	    	sRutaFichero = UtilidadesString.replaceAllIgnoreCase(sRutaFichero,"+"," ");
 	    	
