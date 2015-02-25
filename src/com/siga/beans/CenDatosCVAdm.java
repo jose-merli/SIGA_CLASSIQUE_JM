@@ -549,6 +549,8 @@ public class CenDatosCVAdm extends MasterBeanAdmVisible{
 	            String sql ="SELECT " +
 							CenDatosCVBean.T_NOMBRETABLA + "." + CenDatosCVBean.C_IDPERSONA + "," +
 							CenDatosCVBean.T_NOMBRETABLA + "." + CenDatosCVBean.C_IDINSTITUCION + "," +
+							CenDatosCVBean.T_NOMBRETABLA + "." + CenDatosCVBean.C_IDINSTITUCION_SUBT1 + "," +
+							CenDatosCVBean.T_NOMBRETABLA + "." + CenDatosCVBean.C_IDINSTITUCION_SUBT2 + "," +
 							CenDatosCVBean.T_NOMBRETABLA + "." + CenDatosCVBean.C_IDINSTITUCIONCARGO + "," +
 							CenDatosCVBean.T_NOMBRETABLA + "." + CenDatosCVBean.C_IDCV + "," +
 							CenDatosCVBean.T_NOMBRETABLA + "." + CenDatosCVBean.C_FECHAINICIO + "," +
@@ -557,7 +559,10 @@ public class CenDatosCVAdm extends MasterBeanAdmVisible{
 							CenDatosCVBean.T_NOMBRETABLA + "." + CenDatosCVBean.C_CERTIFICADO + "," +
 							CenDatosCVBean.T_NOMBRETABLA + "." + CenDatosCVBean.C_CREDITOS + "," +
 							CenDatosCVBean.T_NOMBRETABLA + "." + CenDatosCVBean.C_IDTIPOCV + "," +
+							CenDatosCVBean.T_NOMBRETABLA + "." + CenDatosCVBean.C_IDTIPOCVSUBTIPO1 + "," +
+							CenDatosCVBean.T_NOMBRETABLA + "." + CenDatosCVBean.C_IDTIPOCVSUBTIPO2 + "," +
 							CenDatosCVBean.T_NOMBRETABLA + "." + CenDatosCVBean.C_FECHAMOVIMIENTO + "," +
+							CenDatosCVBean.T_NOMBRETABLA + "." + CenDatosCVBean.C_FECHABAJA + "," +
 							CenDatosCVBean.T_NOMBRETABLA + "." + CenDatosCVBean.C_FECHAMODIFICACION + "," +
 	            			CenDatosCVBean.T_NOMBRETABLA + "." + CenDatosCVBean.C_USUMODIFICACION +
 							" FROM " + CenDatosCVBean.T_NOMBRETABLA + 
