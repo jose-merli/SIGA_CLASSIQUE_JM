@@ -734,19 +734,27 @@ public class FacRegistroFichContaAdm extends MasterBeanAdministrador {
 				pwcontabilidad.write(this.generarLineaAbono(asiento, hAsiento));
 				
 				// Escribimos 3º APUNTE
-				if (!ivacero) {
-					hAsiento.clear();
-					UtilidadesHash.set(hAsiento, "FECHA", 			UtilidadesHash.getShortDate(hash, FacFacturaBean.C_FECHAEMISION));
-					UtilidadesHash.set(hAsiento, "CONCEPTO", 		concepto);
-					UtilidadesHash.set(hAsiento, "DOCUMENTO", 		UtilidadesHash.getString(hash, "NUMEROFACTURA"));
-					UtilidadesHash.set(hAsiento, "CUENTA", 		asientoIVA);
-					UtilidadesHash.set(hAsiento, "DEBE", 			"0");
+				hAsiento.clear();
+				UtilidadesHash.set(hAsiento, "FECHA", 			UtilidadesHash.getShortDate(hash, FacFacturaBean.C_FECHAEMISION));
+				UtilidadesHash.set(hAsiento, "CONCEPTO", 		concepto);
+				UtilidadesHash.set(hAsiento, "DOCUMENTO", 		UtilidadesHash.getString(hash, "NUMEROFACTURA"));
+				UtilidadesHash.set(hAsiento, "CUENTA", 		asientoIVA);
+				UtilidadesHash.set(hAsiento, "DEBE", 			"0");
+				
+				if (!ivacero) 
 					UtilidadesHash.set(hAsiento, "HABER", 			importeIva);
-					UtilidadesHash.set(hAsiento, "BASEIMPONIBLE", 	imp);
-					UtilidadesHash.set(hAsiento, "IVA", 			valorIva);
-					UtilidadesHash.set(hAsiento, "CONTRAPARTIDA", 	asientoClientes);
-					pwcontabilidad.write(this.generarLineaAbono(asiento, hAsiento));
-				}
+				//MJM se hace un apunte con importe IVA 0 si no tiene IVA 
+				//Esto es por la incidencia R1502_0055:
+				//en la exportación de datos a contaplus no se tienen en cuenta las fac. con IVA 0 sino existe
+				//asiento de IVA.
+				else
+					UtilidadesHash.set(hAsiento, "HABER", 			"0");
+				
+				UtilidadesHash.set(hAsiento, "BASEIMPONIBLE", 	imp);
+				UtilidadesHash.set(hAsiento, "IVA", 			valorIva);
+				UtilidadesHash.set(hAsiento, "CONTRAPARTIDA", 	asientoClientes);
+				pwcontabilidad.write(this.generarLineaAbono(asiento, hAsiento));
+			
 				
 				///////////////////////////////
 				
