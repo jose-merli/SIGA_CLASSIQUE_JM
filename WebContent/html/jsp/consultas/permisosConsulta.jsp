@@ -266,6 +266,9 @@
 							<c:when test="${informe.tipoFormato=='E'}">
 							<siga:Idioma key="administracion.informes.formato.excel"/>
 							</c:when>
+							<c:when test="${informe.tipoFormato=='P'}">
+								<siga:Idioma key="administracion.informes.formato.pdf"/>
+							</c:when>
 							<c:otherwise>
 								<c:out value="${informe.tipoFormato}"></c:out>
 							</c:otherwise>
