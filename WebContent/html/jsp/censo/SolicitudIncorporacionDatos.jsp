@@ -87,12 +87,18 @@
 	}
 	
 	ArrayList selEstadoCiv = new ArrayList();
-	ArrayList selIdent = new ArrayList();
 	ArrayList selTratamiento = new ArrayList();
 	selEstadoCiv.add(datosPersonales.getIdEstadoCivil());
-	selIdent.add(datosPersonales.getIdTipoIdentificacion());
 	selTratamiento.add(datosPersonales.getIdTratamiento());	
-				
+	
+	ArrayList selIdent = new ArrayList();
+	String idtipoidentificacion = "-1";
+	if(datosPersonales.getIdTipoIdentificacion() != null){
+		idtipoidentificacion = datosPersonales.getIdTipoIdentificacion().toString();	
+	}
+	selIdent.add(idtipoidentificacion);
+	String paramsTipoIdenJSON = "{\"idtipoidentificacion\":\""+idtipoidentificacion+"\"}";
+	
 	String estiloBox = "box";
 	String estiloBoxNumber = "boxNumber";
 	String estiloCombo = "box";
@@ -265,6 +271,9 @@
 			if(document.SolicitudIncorporacionForm.tipoIdentificacion.value==""){
 				errores += "<siga:Idioma key='errors.required' arg0='censo.SolicitudIncorporacion.literal.nifcif'/>"+ '\n';
 			}
+			if(document.SolicitudIncorporacionForm.tipoIdentificacion.value=="50"){
+				errores += "<siga:Idioma key='messages.error.datosGenerales.tipoiden.otros'/>"+ '\n';
+			}			
 			if(document.SolicitudIncorporacionForm.tipoDon.value==""){
 				errores += "<siga:Idioma key='errors.required' arg0='censo.SolicitudIncorporacion.literal.tratamiento'/>" + '\n';
 			}
@@ -340,6 +349,7 @@
 	}
 
 	function comprobarTipoIdent(){
+		
 		<%if(!readonly){%>
 			// Solo se genera el NIF o CIF de la persona
 			if((SolicitudIncorporacionForm.tipoIdentificacion.value== "<%=ClsConstants.TIPO_IDENTIFICACION_NIF%>")||
@@ -1753,8 +1763,21 @@
 						</td>	
 					<%}else{%>
 						<td colspan="5">
-							<siga:ComboBD nombre = "tipoIdentificacion" tipo="identificacionSolicitud" ancho="100" clase="<%=estiloCombo%>" elementoSel="<%=selIdent%>" readOnly="<%=sreadonly%>" obligatorio="true" accion="comprobarTipoIdent();"/>
-
+							<siga:Select id="tipoIdentificacion" 
+										queryId="getTiposIdentificacionSinCIFNiOtros"
+										width="100"
+										selectedIds="<%=selIdent%>"										
+										params="<%=paramsTipoIdenJSON%>" 										
+										required="true"/> 	
+										
+							<script type="text/javascript">
+								jQuery(function(){
+									jQuery("#tipoIdentificacion").on("change", function(){
+										return comprobarTipoIdent();
+									});
+								});
+							</script>
+							
 							<html:text property="NIFCIF" styleClass="box" size="25" maxlength="20" value="<%=datosPersonales.getNumeroIdentificador() %>"/>
 							<span id="idButtonNif" style="display:none; margin:0;padding:0" >
 								<img src="<html:rewrite page='/html/imagenes/comprobar.gif'/>" border="0" onclick="obtenerLetra();" style="cursor:hand" height="20px">

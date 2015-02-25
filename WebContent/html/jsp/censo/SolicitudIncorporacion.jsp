@@ -41,6 +41,7 @@
 	modalidadParam[0] = user.getLocation();
 	String estiloBox = "box";
 	String estiloCombo = "boxCombo";
+	String paramsTipoIdenJSON = "{\"idtipoidentificacion\":\"-1\"}";
 %>
 
 
@@ -1041,7 +1042,19 @@
 						<siga:Idioma key='censo.SolicitudIncorporacion.literal.nifcif'/>&nbsp;(*)
 					</td>
 					<td colspan="5">
-						<siga:ComboBD nombre="tipoIdentificacion" tipo="identificacionSolicitud" ancho="100" clase="<%=estiloCombo%>" obligatorio="true" accion="comprobarTipoIdent();"/>
+						<siga:Select id="tipoIdentificacion" 
+								queryId="getTiposIdentificacionSinCIFNiOtros"
+								width="100"
+								params="<%=paramsTipoIdenJSON%>" 										
+								required="true"/> 	
+									
+							<script type="text/javascript">
+								jQuery(function(){
+									jQuery("#tipoIdentificacion").on("change", function(){
+										return comprobarTipoIdent();
+									});
+								});
+							</script>
 						<html:text property="NIFCIF" styleClass="box" size="25" maxlength="20" value=""/>
 
 						<span id="idButtonNif" style="display:none; margin:0;padding:0" >

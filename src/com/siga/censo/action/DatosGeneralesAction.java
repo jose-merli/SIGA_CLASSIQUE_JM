@@ -864,13 +864,21 @@ public class DatosGeneralesAction extends MasterAction {
 			// Obtengo los datos del formulario
 			DatosGeneralesForm miForm = (DatosGeneralesForm)formulario;
 			
-			if(miForm.getNumIdentificacion()==null || miForm.getNumIdentificacion().equals(""))
-			{				
-				String numIdent= (String)getIdenHistorico(mapping, miForm, request, response,1,usr.getLocation());
-				miForm.setNumIdentificacion(numIdent);
-				miForm.setTipoIdentificacion("50");				
-			}
 			
+			/** CR - Si eres colegiado ya NO se podrá guardar 'Otros' como tipo de identificacion **/
+			if (miForm.getCliente().equalsIgnoreCase("No Colegiado")) {
+				if (miForm.getNumIdentificacion() == null || miForm.getNumIdentificacion().equals("")) {
+					String numIdent = (String) getIdenHistorico(mapping, miForm, request, response, 1, usr.getLocation());
+					miForm.setNumIdentificacion(numIdent);
+					miForm.setTipoIdentificacion("50");
+				}
+				
+			} else {
+				if (miForm.getTipoIdentificacion() == null || miForm.getTipoIdentificacion().equals("")	|| miForm.getTipoIdentificacion().equals("50")) {
+					throw new SIGAException("messages.error.datosGenerales.tipoiden.otros");
+				}
+			}
+
 			// tratamiento del fichero de fotografia
 		    String pathImagenes = "";
 		    String nombreFoto = "";
@@ -880,10 +888,9 @@ public class DatosGeneralesAction extends MasterAction {
 		    
 		    
 		    FormFile foto = miForm.getFoto();
-		    if(foto==null || foto.getFileSize()<1){
+		    if (foto==null || foto.getFileSize()<1){
 //		    	throw new SIGAException("messages.general.error.ficheroNoExiste");
-		    }
-		    else{
+		    } else {
 		    	InputStream stream =null;
 		    	nombreFoto = miForm.getFoto().getFileName();
 		    	String extension = nombreFoto.substring(nombreFoto.lastIndexOf("."),nombreFoto.length());

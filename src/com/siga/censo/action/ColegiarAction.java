@@ -31,6 +31,8 @@ import com.siga.beans.CenDireccionesAdm;
 import com.siga.beans.CenDireccionesBean;
 import com.siga.beans.CenNoColegiadoAdm;
 import com.siga.beans.CenNoColegiadoBean;
+import com.siga.beans.CenPersonaAdm;
+import com.siga.beans.CenPersonaBean;
 import com.siga.general.EjecucionPLs;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
@@ -143,6 +145,7 @@ public class ColegiarAction extends MasterAction
 		CenNoColegiadoAdm admNoCol;
 		CenDireccionesAdm admDir;
 		CenDireccionTipoDireccionAdm admTipoDir;
+		CenPersonaAdm personaAdm;
 		
 		//Variables generales
 		UsrBean user;
@@ -166,6 +169,7 @@ public class ColegiarAction extends MasterAction
 			admNoCol = new CenNoColegiadoAdm (user);
 			admDir = new CenDireccionesAdm (user);
 			admTipoDir = new CenDireccionTipoDireccionAdm (user);
+			personaAdm = new CenPersonaAdm(user);
 			
 			//obteniendo parametros
 			String idPersona = request.getParameter ("idPersonaX");
@@ -193,9 +197,7 @@ public class ColegiarAction extends MasterAction
 			Integer idTratamiento = null;
 			if (beanCliente != null)
 				if (beanCliente.size () == 1)
-					idTratamiento = ((CenClienteBean) beanCliente.get (0)).
-							getIdTratamiento ();
-			
+					idTratamiento = ((CenClienteBean) beanCliente.get (0)).getIdTratamiento ();
 			
 			////////// REALIZANDO COLEGIACION //////////
 			
@@ -203,10 +205,14 @@ public class ColegiarAction extends MasterAction
 			t = user.getTransactionPesada ();
 			t.begin ();
 			
-			//comprobando que la persona no esta ya dada de alta 
-			//  como colegiado en el colegio seleccionado
-			if (admCol.existeColegiado 
-					(new Integer (colegio),numero,numero) != null)
+			/** CR - Si eres colegiado o No Colegiado en el CGAE ya NO se podrá guardar 'Otros' como tipo de identificacion **/
+			CenPersonaBean perBean = personaAdm.getPersonaPorId (idPersona);
+			if (perBean.getIdTipoIdentificacion() == null || perBean.getIdTipoIdentificacion().equals(50)) {
+				throw new SIGAException("messages.error.datosGenerales.tipoiden.otros");
+			}			
+			
+			//comprobando que la persona no esta ya dada de alta como colegiado en el colegio seleccionado
+			if (admCol.existeColegiado (new Integer (colegio),numero,numero) != null)
 				throw new SIGAException ("error.message.NumColegiadoRepetido");
 			
 			//borrando registro de no colegiado en colegio (si existe)

@@ -269,6 +269,11 @@ public class MantenimientoSolicitudIncorporacionAction extends MasterAction
 				return exito("messages.censo.nifcifExiste2",request);
 			}
 			
+			/** CR - Para nuevas incorporaciones ya NO se podrá guardar 'Otros' como tipo de identificacion **/
+			if (miFormulario.getTipoIdentificacion() == null || miFormulario.getTipoIdentificacion().equals(50)) {
+				throw new SIGAException("messages.error.datosGenerales.tipoiden.otros");
+			}		
+			
 			CenPersonaBean perBean = null;
 			perBean= obtenerDatosPersona(miFormulario.getNIFCIF(),request);
 				
@@ -411,6 +416,10 @@ public class MantenimientoSolicitudIncorporacionAction extends MasterAction
 				}*/
 			}
 			
+			/** CR - Para nuevas incorporaciones ya NO se podrá guardar 'Otros' como tipo de identificacion **/
+			if (miFormulario.getTipoIdentificacion() == null || miFormulario.getTipoIdentificacion().equals(50)) {
+				throw new SIGAException("messages.error.datosGenerales.tipoiden.otros");
+			}
 			
 			////////// REALIZANDO INCORPORACION //////////
 			CenDocumentacionPresentadaAdm admDoc = new CenDocumentacionPresentadaAdm (user);

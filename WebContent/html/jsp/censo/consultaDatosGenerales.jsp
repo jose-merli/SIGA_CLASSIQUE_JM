@@ -131,6 +131,7 @@
 	estadoColegial = (String) request.getAttribute("ESTADOCOLEGIAL");
 	int tipoIdenNIF = ClsConstants.TIPO_IDENTIFICACION_NIF;
     int tipoIdenCIF = ClsConstants.TIPO_IDENTIFICACION_CIF;
+    String paramsTipoIdenJSON = "{\"idtipoidentificacion\":\"-1\"}";
 	
     
 	// Obteniendo idinstitucion
@@ -861,26 +862,19 @@ function str_replace(search, replace, subject) {
 	
 			// combos
 			tratamientoSel.add((String) registro.get(CenClienteBean.C_IDTRATAMIENTO));
-			tipoIdentificacionSel.add((String) registro.get(CenPersonaBean.C_IDTIPOIDENTIFICACION));
+			String idtipoidentificacion = (String) registro.get(CenPersonaBean.C_IDTIPOIDENTIFICACION);
+			tipoIdentificacionSel.add(idtipoidentificacion);
+			paramsTipoIdenJSON = "{\"idtipoidentificacion\":\""+idtipoidentificacion+"\"}";
 			estadoCivilSel.add((String) registro.get(CenPersonaBean.C_IDESTADOCIVIL));
 			idiomaSel.add((String) registro.get(CenClienteBean.C_IDLENGUAJE));
 			caracterSel.add((String) registro.get(CenClienteBean.C_CARACTER));
 			
 			fallecido=(String)registro.get(CenPersonaBean.C_FALLECIDO);
-			/*if (fallecido==null || fallecido.equals("0")){
-			  fallecido=ClsConstants.DB_FALSE;
-			  checkFallecido="";
 			
-			
-			}else { 
-			  fallecido = (String) registro.get(CenPersonaBean.C_FALLECIDO);
-			  checkFallecido="checked";
-			
-			}*/
-			
-		}
-		else {
-			tipoIdentificacionSel.add(""+ClsConstants.TIPO_IDENTIFICACION_NIF);
+		} else {
+			String idtipoidentificacion = String.valueOf(ClsConstants.TIPO_IDENTIFICACION_NIF);
+			tipoIdentificacionSel.add(idtipoidentificacion);
+			paramsTipoIdenJSON = "{\"idtipoidentificacion\":\""+idtipoidentificacion+"\"}";
 			descripcion = new Boolean(false);
 		}
 	
@@ -1020,10 +1014,22 @@ function str_replace(search, replace, subject) {
 					</td>				
 					<td colspan="4">
 					<% if (!breadonly && bDatosGeneralesEditables) { %>
+					
+						<% if(tipoCliente.equals(ClsConstants.TIPO_CLIENTE_NOCOLEGIADO) && !idInstitucion.equals("2000")){%>
 							<siga:Select id="tipoIdentificacion" 
 										queryId="getTiposIdentificacionSinCIF"
 										selectedIds="<%=tipoIdentificacionSel%>"
-										required="true"/> 
+										required="true"/>
+										
+						<% } else { %>
+								<siga:Select id="tipoIdentificacion" 
+										queryId="getTiposIdentificacionSinCIFNiOtros"
+										selectedIds="<%=tipoIdentificacionSel%>"
+										params="<%=paramsTipoIdenJSON%>" 
+										required="true"/>		
+										
+						<% } %>
+						
 					<% } else { %>
 							<siga:Select id="tipoIdentificacion" 
 										queryId="getTiposIdentificacion"
