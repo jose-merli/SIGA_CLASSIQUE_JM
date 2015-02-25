@@ -487,6 +487,9 @@ public class InformePersonalizable extends MasterReport
 			crear.mkdirs();
 		
 		doc = words.sustituyeRegionDocumento(doc, "region", vDatos);
+		
+		if(vDatos!=null && vDatos.size()>0)
+			words.sustituyeDocumento(doc, (Hashtable)vDatos.get(0));
 		// sustituyendo la descripcion del informe en el fichero
 		Hashtable<String, Object> descripcionInforme = new Hashtable<String, Object>();
 		descripcionInforme.put("DESCRIPCION_INFORME", informe.getDescripcion());
@@ -501,8 +504,14 @@ public class InformePersonalizable extends MasterReport
 		 *       descriptivo ¿?
 		 */
 		String nombreFichero = informe.getNombreSalida() + "_" + idinstitucion + "_" + usr.getUserName() + "_"
-		+ UtilidadesBDAdm.getFechaCompletaBD("").replaceAll("/", "").replaceAll(":", "").replaceAll(" ", "")
-		+ ".doc";
+		+ UtilidadesBDAdm.getFechaCompletaBD("").replaceAll("/", "").replaceAll(":", "").replaceAll(" ", "");
+		
+		if(informe.getTipoformato()!=null && informe.getTipoformato().equals("P"))
+			nombreFichero= nombreFichero + ".pdf";
+		else
+			nombreFichero = nombreFichero + ".doc";
+		
+		
 		File ficheroGenerado = words.grabaDocumento(doc, rutaAlm, nombreFichero);
 		
 		return ficheroGenerado;
@@ -625,6 +634,19 @@ public class InformePersonalizable extends MasterReport
 			}else if(informeForm2.getTipoFormato()!=null && informeForm2.getTipoFormato().equals(AdmInformeBean.TIPOFORMATO_EXCEL)){
 				File  fichero= generarInformeXLS(informeForm2.getInformeVO(), datos,columnas, userBean);
 				listaFicheros.add(fichero);
+			}else if(informeForm2.getTipoFormato()!=null && informeForm2.getTipoFormato().equals(AdmInformeBean.TIPOFORMATO_PDF)){
+				try {
+					File  fichero= generarInformeDOC(informeForm2.getInformeVO(), datos, userBean);
+					listaFicheros.add(fichero);	
+				} catch (SIGAException e) {
+					if(!isGeneradoFicheroExcelDefecto){
+						File  fichero= generarInformeXLS(informeForm2.getInformeVO(), datos,columnas, userBean);
+						listaFicheros.add(fichero);
+					}
+					isGeneradoFicheroExcelDefecto = true;
+					
+				}
+				
 			}
 		}                
 		File ficheroSalida = getFicheroSalida(listaFicheros,tipoInformeBean, userBean);
