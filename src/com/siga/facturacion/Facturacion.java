@@ -11,6 +11,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.sql.SQLTimeoutException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Enumeration;
@@ -2052,10 +2053,16 @@ public class Facturacion {
         		tx.begin();
         		resultado = ClsMngBBDD.callPLProcedure("{call PKG_SIGA_FACTURACION.GENERACIONFACTURACION(?,?,?,?,?,?,?,?,?)}", 2, param_in);
 
-        	} catch (Exception e) {
-        		ClsLogging.writeFileLog("### Fin GENERACION (Serie:" + idSerieFacturacion + "; IdProgramacion:" + idProgramacion + "), excepcion " + e.getMessage(), 7);	     		
-			    throw new ClsExceptions(UtilidadesString.getMensajeIdioma(this.usrbean.getLanguage(),"facturacion.nuevaPrevisionFacturacion.mensaje.procesoPlSQLERROR") + 
-			    		"(Serie:" + idSerieFacturacion + "; IdProgramacion:" + idProgramacion + "; CodigoError:" + e.getMessage() + ")");
+        	} catch (Exception e) {        			
+			    if (e.getMessage().indexOf("TimedOutException")!=-1 || e.getMessage().indexOf("timed out")!=-1) {
+			    	ClsLogging.writeFileLog("### Fin GENERACION - ERROR TIMEOUT (Serie:" + idSerieFacturacion + "; IdProgramacion:" + idProgramacion + "), excepcion " + e.getMessage(), 7);
+			        throw new ClsExceptions("TimedOutException al generar una Facturacion (Serie:" + idSerieFacturacion + "; IdProgramacion:" + idProgramacion + "; CodigoError:" + e.getMessage() + ")");
+			    
+			    }else{
+        			ClsLogging.writeFileLog("### Fin GENERACION (Serie:" + idSerieFacturacion + "; IdProgramacion:" + idProgramacion + "), excepcion " + e.getMessage(), 7);	     		
+        			throw new ClsExceptions(UtilidadesString.getMensajeIdioma(this.usrbean.getLanguage(),"facturacion.nuevaPrevisionFacturacion.mensaje.procesoPlSQLERROR") +
+        					"(Serie:" + idSerieFacturacion + "; IdProgramacion:" + idProgramacion + "; CodigoError:" + e.getMessage() + ")");
+			    }
 			}
 
 			String codretorno = resultado[0];
@@ -2124,7 +2131,12 @@ public class Facturacion {
 				String sMensaje = null;
 				if (resultado[0]!=null && resultado[0].equals("-201")) {
 					sMensaje = resultado[1];
+				} else if (e.getMessage().indexOf("TimedOutException")!=-1 || e.getMessage().indexOf("timed out")!=-1) {
+					sMensaje = UtilidadesString.getMensajeIdioma(this.usrbean.getLanguage(),"messages.error.generacionFacturacion.timeout");
+				} else {
+					sMensaje = UtilidadesString.getMensajeIdioma(this.usrbean.getLanguage(),"messages.error.generacionFacturacion.general");
 				}
+				
 				
 				controlarEstadoErrorGeneracion(tx,admFacturacionProgramada,claves,hashEstado,nombreFichero, FacEstadoConfirmFactBean.ERROR_GENERACION, sMensaje);	
 				
