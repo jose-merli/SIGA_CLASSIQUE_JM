@@ -29,7 +29,6 @@ import org.apache.struts.action.ActionMapping;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
-import com.atos.utils.ClsLogging;
 import com.atos.utils.GstDate;
 import com.atos.utils.Row;
 import com.atos.utils.UsrBean;
@@ -51,8 +50,6 @@ import com.siga.beans.ConOperacionConsultaAdm;
 import com.siga.beans.ConOperacionConsultaBean;
 import com.siga.beans.ConTablaConsultaAdm;
 import com.siga.beans.ConTablaConsultaBean;
-import com.siga.beans.PysFormaPagoAdm;
-import com.siga.beans.PysFormaPagoBean;
 import com.siga.beans.PysFormaPagoServiciosAdm;
 import com.siga.beans.PysFormaPagoServiciosBean;
 import com.siga.beans.PysPreciosServiciosAdm;
@@ -190,7 +187,7 @@ public class MantenimientoServiciosAction extends MasterAction {
 			//consultamos en BD la SelectAyuda
 			ConCampoConsultaAdm camposAdm = new ConCampoConsultaAdm(this.getUserBean(request));
 			String condicion = " where " +ConCampoConsultaBean.C_IDCAMPO +"="+idCampo+ " ";  
-			ConCampoConsultaBean campoBean = (ConCampoConsultaBean)((Vector)camposAdm.select(condicion)).get(0);
+			ConCampoConsultaBean campoBean = (ConCampoConsultaBean) camposAdm.select(condicion).get(0);
 			String selectAyuda = (String)campoBean.getSelectAyuda();
 			Vector datosValor = new Vector(); 
 			// Obtengo el UserBean y el identificador de la institucion
@@ -202,7 +199,7 @@ public class MantenimientoServiciosAction extends MasterAction {
 				if (selectAyuda!=null && !selectAyuda.equals("")) {
 					selectAyuda = selectAyuda.replaceAll("@IDINSTITUCION@",user.getLocation());
 					selectAyuda = selectAyuda.replaceAll("@IDIOMA@",user.getLanguage());
-					datosValor = (Vector)camposAdm.selectGenerico(selectAyuda);
+					datosValor = camposAdm.selectGenerico(selectAyuda);
 					
 				}
 					
@@ -216,7 +213,7 @@ public class MantenimientoServiciosAction extends MasterAction {
 			//lanzamos la consulta que nos recuperará las posibles operaciones
 			ConOperacionConsultaAdm operacionAdm = new ConOperacionConsultaAdm(this.getUserBean(request));
 			String condicionOper = " where " + ConOperacionConsultaBean.C_TIPOOPERADOR +"='"+campoBean.getTipoCampo()+"' "; 
-			Vector datosOperador = (Vector)operacionAdm.select(condicionOper);
+			Vector datosOperador = operacionAdm.select(condicionOper);
 			
 			//pasamos todos los parametros por la request
 			request.setAttribute("tipoCampo", tipoCampo);
@@ -236,7 +233,7 @@ public class MantenimientoServiciosAction extends MasterAction {
 	}
 
 	/** 
-	 *  Funcion que implementa la accion editar
+	 * Funcion que implementa la accion editar
 	 * @param  mapping - Mapeo de los struts
 	 * @param  formulario -  Action Form asociado a este Action
 	 * @param  request - objeto llamada HTTP 
@@ -245,44 +242,38 @@ public class MantenimientoServiciosAction extends MasterAction {
 	 * @exception  SIGAException  En cualquier caso de error
 	 */
 	protected String editar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
-		
 		String result="";
-		String refresco="";
-		Vector ocultos=new Vector();
-		Vector infoServicio=new Vector();
-		Vector precioServicio=new Vector();		
-		Vector pagoInt=new Vector();
-		Vector pagoComun=new Vector();
-		Vector pagoSec=new Vector();
-		Vector infoPrecios=new Vector();		
-		
 		try {
-			
 			MantenimientoServiciosForm form = (MantenimientoServiciosForm) formulario;			
-			Object remitente=(Object)"modificar";
+			Object remitente = (Object)"modificar";
 			request.setAttribute("modelo",remitente);
 			request.getSession().setAttribute("modo","modificar");
 			request.getSession().setAttribute("modoResultado","modificar");
 
 			UsrBean usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
+			
+			PysServiciosInstitucionAdm admServiciosInstitucion = new PysServiciosInstitucionAdm(usr);
+			PysPreciosServiciosAdm admPreciosServicios = new PysPreciosServiciosAdm(usr);	
+			Vector infoServicio = new Vector();		
+			Vector pagoInt = new Vector();
+			Vector pagoComun = new Vector();
+			Vector pagoSec = new Vector();
+			Vector infoPrecios = new Vector();	
 
 			// Mostrar valores del formulario en MantenimientoProductos (posible traslado a editar o abrir avanzado)
-			ocultos = (Vector)form.getDatosTablaOcultos(0);					
+			Vector ocultos = form.getDatosTablaOcultos(0);					
 						
-			refresco=form.getRefresco();
+			String refresco = form.getRefresco();
 
 			//Actualizar ventana modal (de nuevo a edicion):
 			if ((ocultos==null)||(refresco.equalsIgnoreCase("refresco"))){ 
-				PysServiciosInstitucionAdm adminPI=new PysServiciosInstitucionAdm(usr);
-				PysPreciosServiciosAdm adminPS=new PysPreciosServiciosAdm(usr);				
-				infoServicio=adminPI.obtenerInfoServicio(form.getIdInstitucion(),form.getIdTipoServicios(),form.getIdServicio(),form.getIdServiciosInstitucion());
-				pagoInt=adminPI.obtenerFormasPago(form.getIdInstitucion(),form.getIdTipoServicios(),form.getIdServicio(),form.getIdServiciosInstitucion(),ClsConstants.TIPO_PAGO_INTERNET);
-				pagoSec=adminPI.obtenerFormasPago(form.getIdInstitucion(),form.getIdTipoServicios(),form.getIdServicio(),form.getIdServiciosInstitucion(),ClsConstants.TIPO_PAGO_SECRETARIA);			
-				pagoComun=adminPI.obtenerFormasPago(form.getIdInstitucion(),form.getIdTipoServicios(),form.getIdServicio(),form.getIdServiciosInstitucion(),ClsConstants.TIPO_PAGO_INTERNET_SECRETARIA);
-				infoPrecios=adminPS.getPrecios(form.getIdInstitucion(),form.getIdTipoServicios(),form.getIdServicio(),form.getIdServiciosInstitucion());			
+				infoServicio = admServiciosInstitucion.obtenerInfoServicio(form.getIdInstitucion(),form.getIdTipoServicios(),form.getIdServicio(),form.getIdServiciosInstitucion());
+				pagoInt = admServiciosInstitucion.obtenerFormasPago(form.getIdInstitucion(),form.getIdTipoServicios(),form.getIdServicio(),form.getIdServiciosInstitucion(),ClsConstants.TIPO_PAGO_INTERNET);
+				pagoSec = admServiciosInstitucion.obtenerFormasPago(form.getIdInstitucion(),form.getIdTipoServicios(),form.getIdServicio(),form.getIdServiciosInstitucion(),ClsConstants.TIPO_PAGO_SECRETARIA);			
+				pagoComun = admServiciosInstitucion.obtenerFormasPago(form.getIdInstitucion(),form.getIdTipoServicios(),form.getIdServicio(),form.getIdServiciosInstitucion(),ClsConstants.TIPO_PAGO_INTERNET_SECRETARIA);
+				infoPrecios = admPreciosServicios.getPrecios(form.getIdInstitucion(),form.getIdTipoServicios(),form.getIdServicio(),form.getIdServiciosInstitucion());			
 				
-				// Paso valores originales del registro al session para tratar siempre copn los mismos valores
-				// y no los de posibles modificaciones
+				// Paso valores originales del registro a la sesion para tratar siempre con los mismos valores y no los de posibles modificaciones
 				request.getSession().setAttribute("DATABACKUP", infoServicio);
 				
 				// Paso valores para dar valores iniciales al formulario			
@@ -293,18 +284,16 @@ public class MantenimientoServiciosAction extends MasterAction {
 				request.setAttribute("DATESTADO", infoPrecios);
 				form.reset(mapping,request);
 				
-				result="editar";
-			}
-			else{
+				result = "editar";
+				
+			} else {
 				// Si se trata de mostrar datos de los servicios
 				if (ocultos.size()==4){
-					PysServiciosInstitucionAdm admin=new PysServiciosInstitucionAdm(usr);
-					PysPreciosServiciosAdm adminPS=new PysPreciosServiciosAdm(usr);				
-					infoServicio=admin.obtenerInfoServicio((String)ocultos.get(0),(String)ocultos.get(1),(String)ocultos.get(2),(String)ocultos.get(3));
-					pagoInt=admin.obtenerFormasPago((String)ocultos.get(0),(String)ocultos.get(1),(String)ocultos.get(2),(String)ocultos.get(3),ClsConstants.TIPO_PAGO_INTERNET);
-					pagoSec=admin.obtenerFormasPago((String)ocultos.get(0),(String)ocultos.get(1),(String)ocultos.get(2),(String)ocultos.get(3),ClsConstants.TIPO_PAGO_SECRETARIA);			
-					pagoComun=admin.obtenerFormasPago((String)ocultos.get(0),(String)ocultos.get(1),(String)ocultos.get(2),(String)ocultos.get(3),ClsConstants.TIPO_PAGO_INTERNET_SECRETARIA);
-					infoPrecios=adminPS.getPrecios((String)ocultos.get(0),(String)ocultos.get(1),(String)ocultos.get(2),(String)ocultos.get(3));			
+					infoServicio = admServiciosInstitucion.obtenerInfoServicio((String)ocultos.get(0),(String)ocultos.get(1),(String)ocultos.get(2),(String)ocultos.get(3));
+					pagoInt = admServiciosInstitucion.obtenerFormasPago((String)ocultos.get(0),(String)ocultos.get(1),(String)ocultos.get(2),(String)ocultos.get(3),ClsConstants.TIPO_PAGO_INTERNET);
+					pagoSec = admServiciosInstitucion.obtenerFormasPago((String)ocultos.get(0),(String)ocultos.get(1),(String)ocultos.get(2),(String)ocultos.get(3),ClsConstants.TIPO_PAGO_SECRETARIA);			
+					pagoComun = admServiciosInstitucion.obtenerFormasPago((String)ocultos.get(0),(String)ocultos.get(1),(String)ocultos.get(2),(String)ocultos.get(3),ClsConstants.TIPO_PAGO_INTERNET_SECRETARIA);
+					infoPrecios = admPreciosServicios.getPrecios((String)ocultos.get(0),(String)ocultos.get(1),(String)ocultos.get(2),(String)ocultos.get(3));			
 					
 					// Paso valores originales del registro al session para tratar siempre copn los mismos valores
 					// y no los de posibles modificaciones
@@ -318,138 +307,35 @@ public class MantenimientoServiciosAction extends MasterAction {
 					request.setAttribute("DATESTADO", infoPrecios);
 					
 					result="editar";
-				}
-				else{ // si se trata de mostrar datos de los precios
-					PysPreciosServiciosAdm admin=new PysPreciosServiciosAdm(usr);
-					Hashtable claves= new Hashtable();
+					
+				} else { // si se trata de mostrar datos de los precios
+					Hashtable<String,String> claves= new Hashtable<String,String>();
 					claves.put(PysPreciosServiciosBean.C_IDINSTITUCION,(String)ocultos.get(0));
 					claves.put(PysPreciosServiciosBean.C_IDTIPOSERVICIOS,(String)ocultos.get(1));
 					claves.put(PysPreciosServiciosBean.C_IDSERVICIO,(String)ocultos.get(2));
 					claves.put(PysPreciosServiciosBean.C_IDSERVICIOSINSTITUCION,(String)ocultos.get(3));
 					claves.put(PysPreciosServiciosBean.C_IDPERIODICIDAD,(String)ocultos.get(4));
 					claves.put(PysPreciosServiciosBean.C_IDPRECIOSSERVICIOS,(String)ocultos.get(5));				
-					precioServicio=admin.select(claves);	
-					
-					//Para que la tabla de los criterio que afectan a ese precio se muestre bien,
-					//hay que pasarle el resultado de la consulta de criterios en el formato correcto
-					//el formato es
-					
-					//	*conector_campo_operador_valor_idCampo__idOperador_idValor_abrirParentesis_cerrarParentesis_
-					 
-					//	donde los siguientes campos tambien tienen un formato concreto:
-					 
-					//	idCampo: 		idCampo,tipoCampo,idTabla
-					//	idOperador: 	idOperador,simbolo
-					
-					//comenzamos recuperando el idConsulta del Bean seleccionado y
-					//despues consultado en la tabla los criterios, con ese idCOnsulta
+					Vector precioServicio = admPreciosServicios.select(claves);	
 					PysPreciosServiciosBean precioBean = (PysPreciosServiciosBean)precioServicio.get(0);
-					ConCriterioConsultaAdm criteriosAdm = new ConCriterioConsultaAdm(usr);
-
-					//puede que no tenga criterios o la consulta luego metemos la consulta dentro de un try,
-					//en cuyo caso no debe devolver ningun String, pero tampoco es un fallo.
-					String criteriosString = "";
-					String idConsulta=precioBean.getIdConsulta()==null?"0":((Long)precioBean.getIdConsulta()).toString();
-					try {
-						String consultaCriterios = " SELECT " + ConCampoConsultaBean.T_NOMBRETABLA + "." + ConCampoConsultaBean.C_NOMBREENCONSULTA + " AS CAMPO, " +
-														ConCampoConsultaBean.T_NOMBRETABLA + "." + ConCampoConsultaBean.C_IDCAMPO + " AS IDCAMPO, " + 
-														ConCampoConsultaBean.T_NOMBRETABLA + "." + ConCampoConsultaBean.C_TIPOCAMPO + " AS TIPOCAMPO, " +
-														ConCampoConsultaBean.T_NOMBRETABLA + "." + ConCampoConsultaBean.C_SELECTAYUDA + " AS SELECTAYUDA, " +
-														ConTablaConsultaBean.T_NOMBRETABLA + "." + ConTablaConsultaBean.C_IDTABLA + " AS IDTABLA, " +
-														ConTablaConsultaBean.T_NOMBRETABLA + "." + ConTablaConsultaBean.C_DESCRIPCION + " AS TABLA, " + 
-														ConOperacionConsultaBean.T_NOMBRETABLA + "." + ConOperacionConsultaBean.C_IDOPERACION + " AS OPERADOR, " +
-														ConOperacionConsultaBean.T_NOMBRETABLA + "." + ConOperacionConsultaBean.C_SIMBOLO + " AS SIMBOLO, " +
-														ConCriterioConsultaBean.T_NOMBRETABLA + "." + ConCriterioConsultaBean.C_ABRIRPAR + " AS ABRIRPAR, " +
-														ConCriterioConsultaBean.T_NOMBRETABLA + "." + ConCriterioConsultaBean.C_CERRARPAR + " AS CERRARPAR, " +
-														ConCriterioConsultaBean.T_NOMBRETABLA + "." + ConCriterioConsultaBean.C_OPERADOR + " AS CONECTOR, " +
-														" CASE WHEN (" + ConCampoConsultaBean.T_NOMBRETABLA + "." + ConCampoConsultaBean.C_TIPOCAMPO + " <> 'N') THEN " +
-															" SUBSTR(" + ConCriterioConsultaBean.T_NOMBRETABLA + "." + ConCriterioConsultaBean.C_VALOR + ",2,LENGTH(" + ConCriterioConsultaBean.T_NOMBRETABLA + "." + ConCriterioConsultaBean.C_VALOR + ")-2) ELSE " +
-															ConCriterioConsultaBean.T_NOMBRETABLA + "." + ConCriterioConsultaBean.C_VALOR + " END AS VALOR, " +
-														UtilidadesMultidioma.getCampoMultidiomaSimple(ConOperacionConsultaBean.T_NOMBRETABLA + "." + ConOperacionConsultaBean.C_DESCRIPCION, this.getLenguaje(request)) + " AS DESCRIPCION " +
-													" FROM " + ConCriterioConsultaBean.T_NOMBRETABLA + ", " +
-														ConTablaConsultaBean.T_NOMBRETABLA + ", " +
-														ConCampoConsultaBean.T_NOMBRETABLA + ", " +
-														ConOperacionConsultaBean.T_NOMBRETABLA +
-													" WHERE " + ConCampoConsultaBean.T_NOMBRETABLA + "." + ConCampoConsultaBean.C_IDCAMPO + " = " + ConCriterioConsultaBean.T_NOMBRETABLA + "." + ConCriterioConsultaBean.C_IDCAMPO +
-														" AND " + ConOperacionConsultaBean.T_NOMBRETABLA + "." + ConOperacionConsultaBean.C_IDOPERACION + " = " + ConCriterioConsultaBean.T_NOMBRETABLA + "." + ConCriterioConsultaBean.C_IDOPERACION +
-														" AND " + ConTablaConsultaBean.T_NOMBRETABLA + "." + ConTablaConsultaBean.C_IDTABLA + " = " + ConCampoConsultaBean.T_NOMBRETABLA + "." + ConCampoConsultaBean.C_IDTABLA +
-														" AND " + ConCriterioConsultaBean.T_NOMBRETABLA + "." + ConCriterioConsultaBean.C_IDINSTITUCION + " = " + (String)ocultos.get(0) +
-														" AND " + ConCriterioConsultaBean.T_NOMBRETABLA + "." + ConCriterioConsultaBean.C_IDCONSULTA + " = " + idConsulta +
-													" ORDER BY " + ConCriterioConsultaBean.T_NOMBRETABLA + "." + ConCriterioConsultaBean.C_ORDEN + " ASC";
-						
-						Vector vCriterios = (Vector)criteriosAdm.selectGenerico(consultaCriterios);
-						//creamos el String
-						for (int cont=0; cont<vCriterios.size(); cont++){
-							Hashtable criterio = (Hashtable)vCriterios.get(cont);
-
-							//Ahora tenemos todos los campos a falta del idValor
-							//Ejecutamos la selectAyuda del campo, y recuperamos el ID 
-							//para el valor con descripcion = al valor que ya tenemos
-							ConCampoConsultaAdm camposAdm = new ConCampoConsultaAdm(usr);
-						
-							//Si tenemos la select buscamos el idvalor: 
-							if (criterio.get("SELECTAYUDA")!=null && !((String)criterio.get("SELECTAYUDA")).equals("")) {
-								String con = (String)criterio.get("SELECTAYUDA");
-								con = con.replaceAll("@IDINSTITUCION@",usr.getLocation());
-								con = con.replaceAll("@IDIOMA@" , usr.getLanguage());
-								Vector campos = (Vector)camposAdm.selectGenerico(con);
-								for (int contador=0; contador<campos.size(); contador++){
-									Hashtable campoHash = (Hashtable)campos.get(contador);
-									if (((String)campoHash.get("ID")).equalsIgnoreCase((String)criterio.get("VALOR"))){
-										String aux = (String)campoHash.get("ID");
-										criterio.put("IDVALOR", aux.replace("#", "$"));
-										criterio.put("VALOR", campoHash.get("DESCRIPCION"));
-										break;
-									}
-								}//Fin del for interior
-							}
-							
-							//para cada uno de los criterios el formato indicado:
-							//	*conector_campo_operador_valor_idCampo__idOperador_idValor_
-							//	donde los siguientes campos tambien tienen un formato concreto:
-							//	idCampo: 		idCampo,tipoCampo,idTabla
-							//	idOperador: 	idOperador,simbolo
-							String abrirPar = (String)criterio.get("ABRIRPAR");
-							String cerrarPar = (String)criterio.get("CERRARPAR");
-							if (abrirPar!=null && abrirPar.equals("1")) abrirPar="1"; else abrirPar="0";
-							if (cerrarPar!=null && cerrarPar.equals("1")) cerrarPar="1"; else cerrarPar="0";
-							
-							if (!criterio.containsKey("IDVALOR"))
-								criterio.put("IDVALOR", criterio.get("VALOR"));
-							
-							String conector = (criterio.containsKey("CONECTOR")?(String)criterio.get("CONECTOR"):" ");
-							criteriosString += "*" + conector + "_" +
-													(String)criterio.get("CAMPO")+"_"+
-													(String)criterio.get("DESCRIPCION")+"_"+
-													(((String)criterio.get("VALOR")).equalsIgnoreCase("NULL")?"":(String)criterio.get("VALOR"))+"_"+
-													(String)criterio.get("IDCAMPO")+","+
-													(String)criterio.get("TIPOCAMPO")+","+
-													(String)criterio.get("IDTABLA")+"_"+
-													(String)criterio.get("OPERADOR")+","+
-													(String)criterio.get("SIMBOLO")+"_"+
-													(((String)criterio.get("IDVALOR")).equalsIgnoreCase("NULL")?"":(String)criterio.get("IDVALOR"))+"_"+
-													abrirPar+"_"+
-													cerrarPar+"_";
-							
-						}//Fin del for principal
-					} catch(Exception e){
-						e.printStackTrace();
-					}
 					
+					// Recuperamos el idConsulta del bean seleccionado														
+					String idConsulta = precioBean.getIdConsulta()==null ? "0" : ((Long)precioBean.getIdConsulta()).toString();
 					
-					// Paso valores originales del registro al session para tratar siempre copn los mismos valores
-					// y no los de posibles modificaciones
+					// Obtenemos los criterios con la consulta obtenida
+					String criteriosString = this.obtenerCriterios((String)ocultos.get(0), idConsulta, usr);					
+					
+					// Paso valores originales del registro a la sesion para tratar siempre con los mismos valores y no los de posibles modificaciones
 					request.getSession().setAttribute("DATABACKUP", precioServicio);
 
-					//seleccionamos la consulta para futuras modificaciones
-					ConConsultaAdm consultaAdm = new ConConsultaAdm(usr);
+					//seleccionamos la consulta para futuras modificaciones					
 					try{
-						String consultaConsulta = " where " + ConConsultaBean.C_IDINSTITUCION + "=" + (String)ocultos.get(0)+
-													" and " + ConConsultaBean.C_IDCONSULTA +"= "+ idConsulta+" ";
-			            ConConsultaBean consultaBean = (ConConsultaBean)((Vector)consultaAdm.select(consultaConsulta)).get(0);
+						String consultaConsulta = " WHERE " + ConConsultaBean.C_IDINSTITUCION + " = " + (String)ocultos.get(0) + " AND " + ConConsultaBean.C_IDCONSULTA + " = " + idConsulta;
+						ConConsultaAdm consultaAdm = new ConConsultaAdm(usr);
+			            ConConsultaBean consultaBean = (ConConsultaBean) consultaAdm.select(consultaConsulta).get(0);
 			            Hashtable consultaHash = (Hashtable)consultaBean.getOriginalHash().clone();
 			            request.getSession().setAttribute("DATABACKUPCONSULTA", consultaHash);
-					}catch(Exception e){
+					} catch(Exception e) {
 						//si no hay consulta no debe fallar, simplemente no se mostrarán criterios
 					}
 					
@@ -470,34 +356,28 @@ public class MantenimientoServiciosAction extends MasterAction {
 				}
 			}
 			
-			if(!infoServicio.isEmpty())
-			{
+			if(!infoServicio.isEmpty()) {
 				String idConsulta = (String)(((Row) infoServicio.get(0)).getRow()).get(PysServiciosInstitucionBean.C_IDCONSULTA);
 				request.setAttribute("idConsulta", idConsulta);
 			}
-		}	
-		catch (Exception e) { 
+		} catch (Exception e) { 
 			throwExcp("messages.general.error",new String[] {"modulo.productos"},e,null); 
 		}		
 		return (result);
 	}
 
-	/* (non-Javadoc)
-	 * @see com.siga.general.MasterAction#ver(org.apache.struts.action.ActionMapping, com.siga.general.MasterForm, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+	/** 
+	 * Funcion que implementa la accion ver
+	 * @param  mapping - Mapeo de los struts
+	 * @param  formulario -  Action Form asociado a este Action
+	 * @param  request - objeto llamada HTTP 
+	 * @param  response - objeto respuesta HTTP
+	 * @return  String  Destino del action  
+	 * @exception  SIGAException  En cualquier caso de error
 	 */
 	protected String ver(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
-		// TODO Auto-generated method stub
 		String result="";
-		Vector ocultos=new Vector();
-		Vector infoServ=new Vector();
-		Vector infoPrecios=new Vector();		
-		Vector precioServicio=new Vector();
-		Vector pagoInt=new Vector();
-		Vector pagoComun=new Vector();
-		Vector pagoSec=new Vector();		
-		
 		try {
-			
 			MantenimientoServiciosForm form = (MantenimientoServiciosForm) formulario;
 			Object remitente=(Object)"consulta";
 			request.setAttribute("modelo",remitente);
@@ -506,19 +386,19 @@ public class MantenimientoServiciosAction extends MasterAction {
 			
 			UsrBean usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
 			
+			PysServiciosInstitucionAdm admServiciosInstitucion = new PysServiciosInstitucionAdm(usr);
+			PysPreciosServiciosAdm admPreciosServicios = new PysPreciosServiciosAdm(usr);
 			
 			// Mostrar valores del formulario en MantenimientoServicios (posible traslado a editar o abrir avanzado)
-			ocultos = (Vector)form.getDatosTablaOcultos(0);					
+			Vector ocultos = form.getDatosTablaOcultos(0);					
 															
 			// Si se trata de mostrar datos de los servicios
 			if (ocultos.size()==4){
-				PysServiciosInstitucionAdm admin=new PysServiciosInstitucionAdm(usr);
-				PysPreciosServiciosAdm adminPS=new PysPreciosServiciosAdm(usr);				
-				infoServ=admin.obtenerInfoServicio((String)ocultos.get(0),(String)ocultos.get(1),(String)ocultos.get(2),(String)ocultos.get(3));
-				pagoInt=admin.obtenerFormasPago((String)ocultos.get(0),(String)ocultos.get(1),(String)ocultos.get(2),(String)ocultos.get(3),ClsConstants.TIPO_PAGO_INTERNET);
-				pagoSec=admin.obtenerFormasPago((String)ocultos.get(0),(String)ocultos.get(1),(String)ocultos.get(2),(String)ocultos.get(3),ClsConstants.TIPO_PAGO_SECRETARIA);			
-				pagoComun=admin.obtenerFormasPago((String)ocultos.get(0),(String)ocultos.get(1),(String)ocultos.get(2),(String)ocultos.get(3),ClsConstants.TIPO_PAGO_INTERNET_SECRETARIA);
-				infoPrecios=adminPS.getPrecios((String)ocultos.get(0),(String)ocultos.get(1),(String)ocultos.get(2),(String)ocultos.get(3));			
+				Vector infoServ = admServiciosInstitucion.obtenerInfoServicio((String)ocultos.get(0),(String)ocultos.get(1),(String)ocultos.get(2),(String)ocultos.get(3));
+				Vector pagoInt = admServiciosInstitucion.obtenerFormasPago((String)ocultos.get(0),(String)ocultos.get(1),(String)ocultos.get(2),(String)ocultos.get(3),ClsConstants.TIPO_PAGO_INTERNET);
+				Vector pagoSec = admServiciosInstitucion.obtenerFormasPago((String)ocultos.get(0),(String)ocultos.get(1),(String)ocultos.get(2),(String)ocultos.get(3),ClsConstants.TIPO_PAGO_SECRETARIA);			
+				Vector pagoComun = admServiciosInstitucion.obtenerFormasPago((String)ocultos.get(0),(String)ocultos.get(1),(String)ocultos.get(2),(String)ocultos.get(3),ClsConstants.TIPO_PAGO_INTERNET_SECRETARIA);
+				Vector infoPrecios = admPreciosServicios.getPrecios((String)ocultos.get(0),(String)ocultos.get(1),(String)ocultos.get(2),(String)ocultos.get(3));			
 				
 				// Paso valores para dar valores iniciales al formulario			
 				request.setAttribute("container", infoServ);
@@ -530,131 +410,30 @@ public class MantenimientoServiciosAction extends MasterAction {
 				result="ver";								
 			}
 			else{ // si se trata de mostrar datos de los precios
-				PysPreciosServiciosAdm admin=new PysPreciosServiciosAdm(usr);
-				Hashtable claves= new Hashtable();
+				Hashtable<String,String> claves= new Hashtable<String,String> ();
 				claves.put(PysPreciosServiciosBean.C_IDINSTITUCION,(String)ocultos.get(0));
 				claves.put(PysPreciosServiciosBean.C_IDTIPOSERVICIOS,(String)ocultos.get(1));
 				claves.put(PysPreciosServiciosBean.C_IDSERVICIO,(String)ocultos.get(2));
 				claves.put(PysPreciosServiciosBean.C_IDSERVICIOSINSTITUCION,(String)ocultos.get(3));
 				claves.put(PysPreciosServiciosBean.C_IDPERIODICIDAD,(String)ocultos.get(4));
 				claves.put(PysPreciosServiciosBean.C_IDPRECIOSSERVICIOS,(String)ocultos.get(5));				
-				precioServicio=admin.select(claves);	
-//				PAra que la tabla de los criterio que afectan a ese precio se muestre bien,
-				//hay que pasarle el resultado de la consulta de criterios en el formato correcto
-				//el formato es
-				
-				//	*conector_campo_operador_valor_idCampo__idOperador_idValor_
-				 
-				//	donde los siguientes campos tambien tienen un formato concreto:
-				 
-				//	idCampo: 		idCampo,tipoCampo,idTabla
-				//	idOperador: 	idOperador,simbolo
-				
-				//comenzamos recuperando el idConsulta del Bean seleccionado y
-				//despues consultado en la tabla los criterios, con ese idCOnsulta
+				Vector precioServicio = admPreciosServicios.select(claves);	
 				PysPreciosServiciosBean precioBean = (PysPreciosServiciosBean)precioServicio.get(0);
-				ConCriterioConsultaAdm criteriosAdm = new ConCriterioConsultaAdm(usr);
-				//puede que no tenga criterios o la consulta luego metemos la consulta dentro de un try,
-				//en cuyo caso no debe devolver ningun String, pero tampoco es un fallo.
-				String criteriosString = "";
-				String idConsulta=precioBean.getIdConsulta()==null?"0":((Long)precioBean.getIdConsulta()).toString();
-				try {
-					String consultaCriterios = " SELECT " + ConCampoConsultaBean.T_NOMBRETABLA + "." + ConCampoConsultaBean.C_NOMBREENCONSULTA + " AS CAMPO, " +
-							ConCampoConsultaBean.T_NOMBRETABLA + "." + ConCampoConsultaBean.C_IDCAMPO + " AS IDCAMPO, " + 
-							ConCampoConsultaBean.T_NOMBRETABLA + "." + ConCampoConsultaBean.C_TIPOCAMPO + " AS TIPOCAMPO, " +
-							ConCampoConsultaBean.T_NOMBRETABLA + "." + ConCampoConsultaBean.C_SELECTAYUDA + " AS SELECTAYUDA, " +
-							ConTablaConsultaBean.T_NOMBRETABLA + "." + ConTablaConsultaBean.C_IDTABLA + " AS IDTABLA, " +
-							ConTablaConsultaBean.T_NOMBRETABLA + "." + ConTablaConsultaBean.C_DESCRIPCION + " AS TABLA, " + 
-							ConOperacionConsultaBean.T_NOMBRETABLA + "." + ConOperacionConsultaBean.C_IDOPERACION + " AS OPERADOR, " +
-							ConOperacionConsultaBean.T_NOMBRETABLA + "." + ConOperacionConsultaBean.C_SIMBOLO + " AS SIMBOLO, " +
-							ConCriterioConsultaBean.T_NOMBRETABLA + "." + ConCriterioConsultaBean.C_ABRIRPAR + " AS ABRIRPAR, " +
-							ConCriterioConsultaBean.T_NOMBRETABLA + "." + ConCriterioConsultaBean.C_CERRARPAR + " AS CERRARPAR, " +
-							ConCriterioConsultaBean.T_NOMBRETABLA + "." + ConCriterioConsultaBean.C_OPERADOR + " AS CONECTOR, " +
-							" CASE WHEN (" + ConCampoConsultaBean.T_NOMBRETABLA + "." + ConCampoConsultaBean.C_TIPOCAMPO + " <> 'N') THEN " +
-								" SUBSTR(" + ConCriterioConsultaBean.T_NOMBRETABLA + "." + ConCriterioConsultaBean.C_VALOR + ",2,LENGTH(" + ConCriterioConsultaBean.T_NOMBRETABLA + "." + ConCriterioConsultaBean.C_VALOR + ")-2) ELSE " +
-								ConCriterioConsultaBean.T_NOMBRETABLA + "." + ConCriterioConsultaBean.C_VALOR + " END AS VALOR, " +
-							UtilidadesMultidioma.getCampoMultidiomaSimple(ConOperacionConsultaBean.T_NOMBRETABLA + "." + ConOperacionConsultaBean.C_DESCRIPCION, this.getLenguaje(request)) + " AS DESCRIPCION " +
-						" FROM " + ConCriterioConsultaBean.T_NOMBRETABLA + ", " +
-							ConTablaConsultaBean.T_NOMBRETABLA + ", " +
-							ConCampoConsultaBean.T_NOMBRETABLA + ", " +
-							ConOperacionConsultaBean.T_NOMBRETABLA +
-						" WHERE " + ConCampoConsultaBean.T_NOMBRETABLA + "." + ConCampoConsultaBean.C_IDCAMPO + " = " + ConCriterioConsultaBean.T_NOMBRETABLA + "." + ConCriterioConsultaBean.C_IDCAMPO +
-							" AND " + ConOperacionConsultaBean.T_NOMBRETABLA + "." + ConOperacionConsultaBean.C_IDOPERACION + " = " + ConCriterioConsultaBean.T_NOMBRETABLA + "." + ConCriterioConsultaBean.C_IDOPERACION +
-							" AND " + ConTablaConsultaBean.T_NOMBRETABLA + "." + ConTablaConsultaBean.C_IDTABLA + " = " + ConCampoConsultaBean.T_NOMBRETABLA + "." + ConCampoConsultaBean.C_IDTABLA +
-							" AND " + ConCriterioConsultaBean.T_NOMBRETABLA + "." + ConCriterioConsultaBean.C_IDINSTITUCION + " = " + (String)ocultos.get(0) +
-							" AND " + ConCriterioConsultaBean.T_NOMBRETABLA + "." + ConCriterioConsultaBean.C_IDCONSULTA + " = " + idConsulta +
-						" ORDER BY " + ConCriterioConsultaBean.T_NOMBRETABLA + "." + ConCriterioConsultaBean.C_ORDEN + " ASC";					
-					
-					Vector vCriterios = (Vector)criteriosAdm.selectGenerico(consultaCriterios);
-					//creamos el String
-					for (int cont=0; cont<vCriterios.size(); cont++){
-						Hashtable criterio = (Hashtable)vCriterios.get(cont);
+				
+				// Recuperamos el idConsulta del bean seleccionado														
+				String idConsulta = precioBean.getIdConsulta()==null ? "0" : ((Long)precioBean.getIdConsulta()).toString();
+				
+				// Obtenemos los criterios con la consulta obtenida
+				String criteriosString = this.obtenerCriterios((String)ocultos.get(0), idConsulta, usr);	
 
-						//Ahora tenemos todos los campos a falta del idValor
-						//Ejecutamos la selectAyuda del campo, y recuperamos el ID 
-						//para el valor con descripcion = al valor que ya tenemos
-						ConCampoConsultaAdm camposAdm = new ConCampoConsultaAdm(usr);
-					
-						//Si tenemos la select buscamos el idvalor: 
-						if (criterio.get("SELECTAYUDA")!=null && !((String)criterio.get("SELECTAYUDA")).equals("")) {
-							String con = (String)criterio.get("SELECTAYUDA");
-							con = con.replaceAll("@IDINSTITUCION@",usr.getLocation());
-							con = con.replaceAll("@IDIOMA@" , usr.getLanguage());
-							Vector campos = (Vector)camposAdm.selectGenerico(con);
-							for (int contador=0; contador<campos.size(); contador++){
-								Hashtable campoHash = (Hashtable)campos.get(contador);
-								if (((String)campoHash.get("ID")).equalsIgnoreCase((String)criterio.get("VALOR"))){
-									String aux = (String)campoHash.get("ID");
-									criterio.put("IDVALOR", aux.replace("#", "$"));
-									criterio.put("VALOR", campoHash.get("DESCRIPCION"));
-									break;
-								}
-							}//Fin del for interior
-						}
-						
-						//para cada uno de los criterios el formato indicado:
-						//	*conector_campo_operador_valor_idCampo__idOperador_idValor_
-						//	donde los siguientes campos tambien tienen un formato concreto:
-						//	idCampo: 		idCampo,tipoCampo,idTabla
-						//	idOperador: 	idOperador,simbolo
-						String abrirPar = (String)criterio.get("ABRIRPAR");
-						String cerrarPar = (String)criterio.get("CERRARPAR");
-						if (abrirPar!=null && abrirPar.equals("1")) abrirPar="1"; else abrirPar="0";
-						if (cerrarPar!=null && cerrarPar.equals("1")) cerrarPar="1"; else cerrarPar="0";
-						
-						if (!criterio.containsKey("IDVALOR"))
-							criterio.put("IDVALOR", criterio.get("VALOR"));
-						
-						String conector = (criterio.containsKey("CONECTOR")?(String)criterio.get("CONECTOR"):" ");
-						criteriosString += "*" + conector + "_" +
-												(String)criterio.get("CAMPO")+"_"+
-												(String)criterio.get("DESCRIPCION")+"_"+
-												(((String)criterio.get("VALOR")).equalsIgnoreCase("NULL")?"":(String)criterio.get("VALOR"))+"_"+
-												(String)criterio.get("IDCAMPO")+","+
-												(String)criterio.get("TIPOCAMPO")+","+
-												(String)criterio.get("IDTABLA")+"_"+
-												(String)criterio.get("OPERADOR")+","+
-												(String)criterio.get("SIMBOLO")+"_"+
-												(((String)criterio.get("IDVALOR")).equalsIgnoreCase("NULL")?"":(String)criterio.get("IDVALOR"))+"_"+
-												abrirPar+"_"+
-												cerrarPar+"_";				
-						
-					}
-				}
-				catch(Exception e){
-					ClsLogging.writeFileLogError("",e,1);
-				}
-
-				// Paso valores originales del registro al session para tratar siempre copn los mismos valores
-				// y no los de posibles modificaciones
+				// Paso valores originales del registro a la sesion para tratar siempre copn los mismos valores y no los de posibles modificaciones
 				request.getSession().setAttribute("DATABACKUP", precioServicio);
 				
-//				seleccionamos la consulta para futuras modificaciones
-				ConConsultaAdm consultaAdm = new ConConsultaAdm(usr);
+				// seleccionamos la consulta para futuras modificaciones				
 				try{
-					String consultaConsulta = " where " + ConConsultaBean.C_IDINSTITUCION + "=" + (String)ocultos.get(0)+
-												" and " + ConConsultaBean.C_IDCONSULTA +"= "+ idConsulta+" ";
-		            ConConsultaBean consultaBean = (ConConsultaBean)((Vector)consultaAdm.select(consultaConsulta)).get(0);
+					String consultaConsulta = " WHERE " + ConConsultaBean.C_IDINSTITUCION + " = " + (String)ocultos.get(0) + " AND " + ConConsultaBean.C_IDCONSULTA + " = " + idConsulta;
+					ConConsultaAdm consultaAdm = new ConConsultaAdm(usr);
+		            ConConsultaBean consultaBean = (ConConsultaBean) consultaAdm.select(consultaConsulta).get(0);
 		            Hashtable consultaHash = (Hashtable)consultaBean.getOriginalHash().clone();
 		            request.getSession().setAttribute("DATABACKUPCONSULTA", consultaHash);
 				}catch(Exception e){
@@ -672,7 +451,7 @@ public class MantenimientoServiciosAction extends MasterAction {
 				request.setAttribute("servicio",(String)ocultos.get(2));
 				request.setAttribute("servicioInstitucion",(String)ocultos.get(3));
 				
-//				 Pasamos el String para presentar los criterios
+				// Pasamos el String para presentar los criterios
 				request.setAttribute("resultado",criteriosString);
 				
 				result="verCriterio";
@@ -723,7 +502,6 @@ public class MantenimientoServiciosAction extends MasterAction {
 		String tipoServicio;
 		String[] pagosInternet;
 		String[] pagosSecretaria;		
-		ArrayList pagosCom = new ArrayList();		
 		UserTransaction tx = null;
 		boolean correcto=true;
 
@@ -741,7 +519,7 @@ public class MantenimientoServiciosAction extends MasterAction {
 			tipoServicio=miForm.getTipoServicio();
 			pagosInternet=miForm.getFormaPagoInternet();
 			pagosSecretaria=miForm.getFormaPagoSecretaria();
-			pagosCom=pagosComunes(pagosInternet,pagosSecretaria);
+			ArrayList<String>  pagosCom = this.pagosComunes(pagosInternet,pagosSecretaria);
 			// Cargo la tabla hash con los valores del formulario para insertar
 			Hashtable hash = formulario.getDatos();
 			// Anhado valores que faltan
@@ -764,7 +542,7 @@ public class MantenimientoServiciosAction extends MasterAction {
 			correcto=admin.insert(hash); 			
 			
 			// Creacion de las hash para insertar las diferentes formas de pago de Internet	y Secretaria
-			Hashtable hashAux = new Hashtable();
+			Hashtable<String,Object> hashAux = new Hashtable<String,Object>();
 			
 			// Insercion Forma Pago Internet y Secretaria
 			if (correcto){
@@ -827,7 +605,7 @@ public class MantenimientoServiciosAction extends MasterAction {
 			if (correcto){
 				String query = UtilidadesProductosServicios.getQueryPorDefecto();
 				query = UtilidadesProductosServicios.reemplazaString("@IDINSTITUCION@", (String)usr.getLocation(),query);
-				Hashtable hashPrecio = new Hashtable();
+				Hashtable<String,Object> hashPrecio = new Hashtable<String,Object>();
 				hashPrecio.put(PysPreciosServiciosBean.C_IDINSTITUCION,hash.get(PysFormaPagoServiciosBean.C_IDINSTITUCION));																					
 				hashPrecio.put(PysPreciosServiciosBean.C_IDTIPOSERVICIOS,hash.get(PysFormaPagoServiciosBean.C_IDTIPOSERVICIOS));
 				hashPrecio.put(PysPreciosServiciosBean.C_IDSERVICIO,hash.get(PysFormaPagoServiciosBean.C_IDSERVICIO));				
@@ -871,27 +649,12 @@ public class MantenimientoServiciosAction extends MasterAction {
 		// TODO Auto-generated method stub
 		
 		String result="error";
-		String servicio;
-		String pago;		
-		String paramConsulta;		
-		String tipoServicio;
-		String idServInst;		
+		String servicio, paramConsulta, tipoServicio, idServInst;		
 		String[] pagosInternet;
-		String[] pagosSecretaria;
-		ArrayList pagosCom = new ArrayList();		
-		Hashtable pagosHash;
-		Hashtable hashOriginal = new Hashtable();
-		Enumeration filaOriginal; 		
+		String[] pagosSecretaria;		
 		Row registroOriginal;
 		UserTransaction tx=null;
-
-		// Creacion de las hash para insertar las diferentes formas de pago de Internet	y Secretaria
-		Hashtable hashAux = new Hashtable();
-		Vector vectorAux = new Vector();
-		Vector vectorFP = new Vector();
-		Vector camposOcultos = new Vector();
 		boolean correcto=true;
-		
 		
 		try {		
 			// Obtengo usuario y creo manejadores para acceder a las BBDD
@@ -904,9 +667,8 @@ public class MantenimientoServiciosAction extends MasterAction {
 				fechaEfectiva=gstDate.parseDateToString(new Date(),"dd/MM/yyyy", this.getLocale(request));
 			}
 			UsrBean usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
-			PysServiciosInstitucionAdm admin=new PysServiciosInstitucionAdm(this.getUserBean(request));
-			PysFormaPagoServiciosAdm adminFPS=new PysFormaPagoServiciosAdm(this.getUserBean(request));
-			PysFormaPagoAdm adminFP = new PysFormaPagoAdm(this.getUserBean(request));
+			PysServiciosInstitucionAdm admin=new PysServiciosInstitucionAdm(usr);
+			PysFormaPagoServiciosAdm adminFPS=new PysFormaPagoServiciosAdm(usr);
 			// Comienzo control de transacciones
 			tx = usr.getTransactionPesada(); 			
 			// Obtengo los datos del formulario
@@ -916,13 +678,13 @@ public class MantenimientoServiciosAction extends MasterAction {
 			// Obtengo las diferentes formas de pago "modificadas"
 			pagosInternet=miForm.getFormaPagoInternet();
 			pagosSecretaria=miForm.getFormaPagoSecretaria();
-			pagosCom=pagosComunes(pagosInternet,pagosSecretaria);			
+			ArrayList<String> pagosCom = this.pagosComunes(pagosInternet,pagosSecretaria);			
 			idServInst=miForm.getIdServInst();			
 			// Cargo la tabla hash con los valores del formulario para insertar
 			Hashtable hash = formulario.getDatos();			
 
 			String bajaLogica = (String) request.getParameter("bajaLogica"); 
-			String automatico = (String) request.getParameter("automatico");
+			//String automatico = (String) request.getParameter("automatico");
 			if (bajaLogica!=null) {
 				hash.put("FECHABAJA","SYSDATE");
 			} else {
@@ -947,19 +709,16 @@ public class MantenimientoServiciosAction extends MasterAction {
 			
 
 			// Obtengo formas de pago existentes, construyo sentencia where para busqueda y realizo la busqueda
-			paramConsulta = " WHERE " +
-			  	PysFormaPagoServiciosBean.T_NOMBRETABLA +"."+ PysFormaPagoServiciosBean.C_IDINSTITUCION + "=" + hash.get(PysFormaPagoServiciosBean.C_IDINSTITUCION) +
-				" AND " +
-				PysFormaPagoServiciosBean.T_NOMBRETABLA +"."+ PysFormaPagoServiciosBean.C_IDTIPOSERVICIOS + "=" + hash.get(PysFormaPagoServiciosBean.C_IDTIPOSERVICIOS) +
-				" AND " +
-				PysFormaPagoServiciosBean.T_NOMBRETABLA +"."+ PysFormaPagoServiciosBean.C_IDSERVICIO + "=" + hash.get(PysFormaPagoServiciosBean.C_IDSERVICIO) +
-				" AND " +
-				PysFormaPagoServiciosBean.T_NOMBRETABLA +"."+ PysFormaPagoServiciosBean.C_IDSERVICIOSINSTITUCION + "=" + hash.get(PysFormaPagoServiciosBean.C_IDSERVICIOSINSTITUCION);
+			paramConsulta = " WHERE " + PysFormaPagoServiciosBean.T_NOMBRETABLA +"."+ PysFormaPagoServiciosBean.C_IDINSTITUCION + "=" + hash.get(PysFormaPagoServiciosBean.C_IDINSTITUCION) +
+				" AND " + PysFormaPagoServiciosBean.T_NOMBRETABLA +"."+ PysFormaPagoServiciosBean.C_IDTIPOSERVICIOS + "=" + hash.get(PysFormaPagoServiciosBean.C_IDTIPOSERVICIOS) +
+				" AND " + PysFormaPagoServiciosBean.T_NOMBRETABLA +"."+ PysFormaPagoServiciosBean.C_IDSERVICIO + "=" + hash.get(PysFormaPagoServiciosBean.C_IDSERVICIO) +
+				" AND " + PysFormaPagoServiciosBean.T_NOMBRETABLA +"."+ PysFormaPagoServiciosBean.C_IDSERVICIOSINSTITUCION + "=" + hash.get(PysFormaPagoServiciosBean.C_IDSERVICIOSINSTITUCION);
 			
-			vectorAux=adminFPS.select(paramConsulta);
+			Vector vectorAux = adminFPS.select(paramConsulta);
 			
 			// Cargo una hastable con los valores originales del registro sobre el que se realizará la modificacion						
-			filaOriginal=((Vector)request.getSession().getAttribute("DATABACKUP")).elements();
+			Enumeration filaOriginal = ((Vector)request.getSession().getAttribute("DATABACKUP")).elements();
+			Hashtable<String,String> hashOriginal = new Hashtable<String,String>();
 			while(filaOriginal.hasMoreElements()){
               	registroOriginal = (Row) filaOriginal.nextElement(); 
 				hashOriginal.put(PysFormaPagoServiciosBean.C_IDINSTITUCION,registroOriginal.getString(PysServiciosInstitucionBean.C_IDINSTITUCION));
@@ -980,13 +739,13 @@ public class MantenimientoServiciosAction extends MasterAction {
 										
 			// Actualizo la tabla
 			correcto=admin.update(hash,hashOriginal);
-			
+			Hashtable<String,Object> hashAux = new Hashtable<String,Object>();
+			Vector vectorFP = new Vector();
 			if (correcto){
 				// paso la consulta realizada a un objeto enumeracion para recorrerlo facilmente
 		    	Enumeration enumer = vectorAux.elements();
 		    	// Creo un vector con las formas de pago (IDFORMAPAGO) existentes para esas caracteristicas
-				while (enumer.hasMoreElements())
-				{
+				while (enumer.hasMoreElements()) {
 					PysFormaPagoServiciosBean fila = (PysFormaPagoServiciosBean) enumer.nextElement();
 		           	vectorFP.add(fila.getIdFormaPago().toString());
 				}
@@ -1106,7 +865,6 @@ public class MantenimientoServiciosAction extends MasterAction {
 		return (result);		
 	}
 
-
 	/** 
 	 *  Funcion que implementa la accion borrar
 	 * @param  mapping - Mapeo de los struts
@@ -1117,13 +875,9 @@ public class MantenimientoServiciosAction extends MasterAction {
 	 * @exception  SIGAException  En cualquier caso de error
 	 */
 	protected String borrar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
-		// TODO Auto-generated method stub
-		
 		String result="error";
-		int numElementos;		
 		boolean correcto;		
-		Hashtable hash = new Hashtable();		
-		Vector camposVistos = new Vector();
+		Hashtable<String,Object> hash = new Hashtable<String,Object>();		
 		Vector camposOcultos = new Vector();
 		UserTransaction tx=null;
 		
@@ -1134,9 +888,6 @@ public class MantenimientoServiciosAction extends MasterAction {
 			tx = usr.getTransaction(); 			
 			// Obtengo los datos del formulario		
 			MantenimientoServiciosForm miForm = (MantenimientoServiciosForm)formulario;		
-			camposVistos = miForm.getDatosTabla();
-			numElementos = camposVistos.size();
-			camposVistos = miForm.getDatosTablaVisibles(0);
 			camposOcultos = miForm.getDatosTablaOcultos(0);
 		
 			tx.begin();
@@ -1180,20 +931,10 @@ public class MantenimientoServiciosAction extends MasterAction {
 					//result="refresco";
 				}
 			}	
-		}
-//		catch(ClsExceptions ex){
-//			try {
-//				tx.rollback();
-//			} 
-//			catch (Exception e) {}
-//			ex.prepare(request);
-//			result=exito("messages.deleted.error",request);
-//		}	
-		catch (Exception e) { 
+		} catch (Exception e) { 
 			if (camposOcultos.size()==4){
 				throwExcp("messages.pys.mantenimientoProductos.errorBorrado",new String[] {"modulo.productos"},e,tx);
-			}
-			else{
+			} else{
 				throwExcp("messages.pys.mantenimientoServicios.errorBorradoPrecio",new String[] {"modulo.productos"},e,tx);
 			}
 		}				
@@ -1211,24 +952,20 @@ public class MantenimientoServiciosAction extends MasterAction {
 	 * @exception  SIGAException  En cualquier caso de error
 	 */
 	protected String buscarPor(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
-		// TODO Auto-generated method stub
-
 		String result="listar";
-		Vector v=new Vector();		
 		
 		try {
 			UsrBean usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
 			MantenimientoServiciosForm f = (MantenimientoServiciosForm) formulario;
 			PysServiciosInstitucionAdm admin=new PysServiciosInstitucionAdm(this.getUserBean(request));
-			v = admin.obtenerServiciosInstitucion(f.getBusquedaTipo(),
+			Vector v = admin.obtenerServiciosInstitucion(f.getBusquedaTipo(),
 												  f.getBusquedaCategoria(),
 												  f.getBusquedaServicio(),
 												  usr.getLocation(),
 												  f.getBusquedaPago(),
 												  f.getBusquedaEstado());
 			request.setAttribute("container", v);
-		}	
-		catch (Exception e) { 
+		} catch (Exception e) { 
 			throwExcp("messages.general.error",new String[] {"modulo.productos"},e,null); 
 		}		
 
@@ -1245,8 +982,6 @@ public class MantenimientoServiciosAction extends MasterAction {
 	 * @exception  SIGAException  En cualquier caso de error
 	 */
 	protected String nuevoCriterio(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
-
-		PysFormaPagoBean bean=new PysFormaPagoBean ();
 		String result="nuevoCriterio";
 		try{
 						
@@ -1274,170 +1009,70 @@ public class MantenimientoServiciosAction extends MasterAction {
 		return result;
 	}	
 	
-	
+	/** 
+	 * Funcion que implementa la accion condicionSuscripcionAutomatica
+	 * @param  mapping - Mapeo de los struts
+	 * @param  formulario -  Action Form asociado a este Action
+	 * @param  request - objeto llamada HTTP 
+	 * @param  response - objeto respuesta HTTP
+	 * @return  String  Destino del action  
+	 * @exception  SIGAException  En cualquier caso de error
+	 */
 	protected String condicionSuscripcionAutomatica(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
-
 		String result = "condicionSuscripcionAutomatica";
-		try{
-						
+		try {
 			// Obtengo el formulario
-			MantenimientoServiciosForm miForm = (MantenimientoServiciosForm)formulario;
-			UsrBean usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
-			
+			MantenimientoServiciosForm miForm = (MantenimientoServiciosForm)formulario;						
 			request.setAttribute("modelo", miForm.getModo());
 			request.setAttribute("checkAutomatico", miForm.getComprobarCondicion());
 			request.setAttribute("idInstitucion",miForm.getIdInstitucion());
 			request.setAttribute("idTipoServicio",miForm.getIdTipoServicios());
 			request.setAttribute("idServicio",miForm.getIdServicio());
+			
+			UsrBean usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
+			PysServiciosInstitucionAdm admServiciosInstitucion = new PysServiciosInstitucionAdm(usr);
 
 			// Consigo el maximo servicio institucion si se trata de una insercion -> 0
 			String idServicioInstitucion = "";
 			if (miForm.getIdServiciosInstitucion().equalsIgnoreCase("0")){ 
-				PysServiciosInstitucionAdm adm = new PysServiciosInstitucionAdm(usr);
-				idServicioInstitucion = adm.getMaxIdServiciosInstitucion(miForm.getIdInstitucion(),miForm.getIdTipoServicios(),miForm.getIdServicio());
-			}
-			else{
+				idServicioInstitucion = admServiciosInstitucion.getMaxIdServiciosInstitucion(miForm.getIdInstitucion(),miForm.getIdTipoServicios(),miForm.getIdServicio());
+			} else {
 				idServicioInstitucion = miForm.getIdServiciosInstitucion();
 			}
 			request.setAttribute("idServicioInstitucion", idServicioInstitucion);
 			
 			
 			//*************************** mostrar datos de condicion  **********************************
-			{ 	
-				PysServiciosInstitucionAdm admin = new PysServiciosInstitucionAdm (usr);
-				Hashtable claves = new Hashtable();
-				claves.put(PysServiciosInstitucionBean.C_IDINSTITUCION,(String)miForm.getIdInstitucion());
-				claves.put(PysServiciosInstitucionBean.C_IDTIPOSERVICIOS,(String)miForm.getIdTipoServicios());
-				claves.put(PysServiciosInstitucionBean.C_IDSERVICIO,(String)miForm.getIdServicio());
-				claves.put(PysServiciosInstitucionBean.C_IDSERVICIOSINSTITUCION, idServicioInstitucion);
-				PysServiciosInstitucionBean beanServInsti = (PysServiciosInstitucionBean) (admin.select(claves)).get(0);	
-				
-				//Para que la tabla de los criterio que afectan a ese precio se muestre bien,
-				//hay que pasarle el resultado de la consulta de criterios en el formato correcto
-				//el formato es
-				
-				//	*conector_campo_operador_valor_idCampo__idOperador_idValor__abrirParentesis_cerrarParentesis_
-				 
-				//	donde los siguientes campos tambien tienen un formato concreto:
-				 
-				//	idCampo: 		idCampo,tipoCampo,idTabla
-				//	idOperador: 	idOperador,simbolo
-				
-				//comenzamos recuperando el idConsulta del Bean seleccionado y
-				//despues consultado en la tabla los criterios, con ese idCOnsulta
-				ConCriterioConsultaAdm criteriosAdm = new ConCriterioConsultaAdm(usr);
-	
-				//puede que no tenga criterios o la consulta luego metemos la consulta dentro de un try,
-				//en cuyo caso no debe devolver ningun String, pero tampoco es un fallo.
-				String criteriosString = "";
-				if (beanServInsti.getIdConsulta()!=null) {					
-					try {
-						String consultaCriterios = " SELECT " + ConCampoConsultaBean.T_NOMBRETABLA + "." + ConCampoConsultaBean.C_NOMBREENCONSULTA + " AS CAMPO, " +
-								ConCampoConsultaBean.T_NOMBRETABLA + "." + ConCampoConsultaBean.C_IDCAMPO + " AS IDCAMPO, " + 
-								ConCampoConsultaBean.T_NOMBRETABLA + "." + ConCampoConsultaBean.C_TIPOCAMPO + " AS TIPOCAMPO, " +
-								ConCampoConsultaBean.T_NOMBRETABLA + "." + ConCampoConsultaBean.C_SELECTAYUDA + " AS SELECTAYUDA, " +
-								ConTablaConsultaBean.T_NOMBRETABLA + "." + ConTablaConsultaBean.C_IDTABLA + " AS IDTABLA, " +
-								ConTablaConsultaBean.T_NOMBRETABLA + "." + ConTablaConsultaBean.C_DESCRIPCION + " AS TABLA, " + 
-								ConOperacionConsultaBean.T_NOMBRETABLA + "." + ConOperacionConsultaBean.C_IDOPERACION + " AS OPERADOR, " +
-								ConOperacionConsultaBean.T_NOMBRETABLA + "." + ConOperacionConsultaBean.C_SIMBOLO + " AS SIMBOLO, " +
-								ConCriterioConsultaBean.T_NOMBRETABLA + "." + ConCriterioConsultaBean.C_ABRIRPAR + " AS ABRIRPAR, " +
-								ConCriterioConsultaBean.T_NOMBRETABLA + "." + ConCriterioConsultaBean.C_CERRARPAR + " AS CERRARPAR, " +
-								ConCriterioConsultaBean.T_NOMBRETABLA + "." + ConCriterioConsultaBean.C_OPERADOR + " AS CONECTOR, " +
-								" CASE WHEN (" + ConCampoConsultaBean.T_NOMBRETABLA + "." + ConCampoConsultaBean.C_TIPOCAMPO + " <> 'N') THEN " +
-									" SUBSTR(" + ConCriterioConsultaBean.T_NOMBRETABLA + "." + ConCriterioConsultaBean.C_VALOR + ",2,LENGTH(" + ConCriterioConsultaBean.T_NOMBRETABLA + "." + ConCriterioConsultaBean.C_VALOR + ")-2) ELSE " +
-									ConCriterioConsultaBean.T_NOMBRETABLA + "." + ConCriterioConsultaBean.C_VALOR + " END AS VALOR, " +
-								UtilidadesMultidioma.getCampoMultidiomaSimple(ConOperacionConsultaBean.T_NOMBRETABLA + "." + ConOperacionConsultaBean.C_DESCRIPCION, this.getLenguaje(request)) + " AS DESCRIPCION " +
-							" FROM " + ConCriterioConsultaBean.T_NOMBRETABLA + ", " +
-								ConTablaConsultaBean.T_NOMBRETABLA + ", " +
-								ConCampoConsultaBean.T_NOMBRETABLA + ", " +
-								ConOperacionConsultaBean.T_NOMBRETABLA +
-							" WHERE " + ConCampoConsultaBean.T_NOMBRETABLA + "." + ConCampoConsultaBean.C_IDCAMPO + " = " + ConCriterioConsultaBean.T_NOMBRETABLA + "." + ConCriterioConsultaBean.C_IDCAMPO +
-								" AND " + ConOperacionConsultaBean.T_NOMBRETABLA + "." + ConOperacionConsultaBean.C_IDOPERACION + " = " + ConCriterioConsultaBean.T_NOMBRETABLA + "." + ConCriterioConsultaBean.C_IDOPERACION +
-								" AND " + ConTablaConsultaBean.T_NOMBRETABLA + "." + ConTablaConsultaBean.C_IDTABLA + " = " + ConCampoConsultaBean.T_NOMBRETABLA + "." + ConCampoConsultaBean.C_IDTABLA +
-								" AND " + ConCriterioConsultaBean.T_NOMBRETABLA + "." + ConCriterioConsultaBean.C_IDINSTITUCION + " = " + (String)miForm.getIdInstitucion() +
-								" AND " + ConCriterioConsultaBean.T_NOMBRETABLA + "." + ConCriterioConsultaBean.C_IDCONSULTA + " = " + ((Long)beanServInsti.getIdConsulta()).toString() +
-							" ORDER BY " + ConCriterioConsultaBean.T_NOMBRETABLA + "." + ConCriterioConsultaBean.C_ORDEN + " ASC";								
-						
-						Vector vCriterios = (Vector)criteriosAdm.selectGenerico(consultaCriterios);
-						for (int cont = 0; cont < vCriterios.size(); cont++){
-							Hashtable criterio = (Hashtable)vCriterios.get(cont);
-		
-							// Ahora tenemos todos los campos a falta del idValor
-							// Ejecutamos la selectAyuda del campo, y recuperamos el ID 
-							// para el valor con descripcion = al valor que ya tenemos
-							ConCampoConsultaAdm camposAdm = new ConCampoConsultaAdm(usr);
-							
-							//Si tenemos la select buscamos el idvalor: 
-							if (criterio.get("SELECTAYUDA")!=null && !((String)criterio.get("SELECTAYUDA")).equals("")) {
-								String con = (String)criterio.get("SELECTAYUDA");
-								con = con.replaceAll("@IDINSTITUCION@",usr.getLocation());
-								con = con.replaceAll("@IDIOMA@" , usr.getLanguage());
-								Vector campos = (Vector)camposAdm.selectGenerico(con);
-								for (int contador=0; contador<campos.size(); contador++){
-									Hashtable campoHash = (Hashtable)campos.get(contador);
-									if (((String)campoHash.get("ID")).equalsIgnoreCase((String)criterio.get("VALOR"))){
-										String aux = (String)campoHash.get("ID");
-										criterio.put("IDVALOR", aux.replace("#", "$"));
-										criterio.put("VALOR", campoHash.get("DESCRIPCION"));
-										break;
-									}
-								}//Fin del for interior
-							}							
-							
-							//para cada uno de los criterios el formato indicado:
-							//	*conector_campo_operador_valor_idCampo__idOperador_idValor_
-							//	donde los siguientes campos tambien tienen un formato concreto:
-							//	idCampo: 		idCampo,tipoCampo,idTabla
-							//	idOperador: 	idOperador,simbolo
-							String abrirPar = (String)criterio.get("ABRIRPAR");
-							String cerrarPar = (String)criterio.get("CERRARPAR");
-							if (abrirPar!=null && abrirPar.equals("1")) abrirPar="1"; else abrirPar="0";
-							if (cerrarPar!=null && cerrarPar.equals("1")) cerrarPar="1"; else cerrarPar="0";
-							
-							if (!criterio.containsKey("IDVALOR"))
-								criterio.put("IDVALOR", criterio.get("VALOR"));
-							
-							String conector = (criterio.containsKey("CONECTOR")?(String)criterio.get("CONECTOR"):" ");
-							criteriosString += "*" + conector + "_" +
-													(String)criterio.get("CAMPO")+"_"+
-													(String)criterio.get("DESCRIPCION")+"_"+
-													(((String)criterio.get("VALOR")).equalsIgnoreCase("NULL")?"":(String)criterio.get("VALOR"))+"_"+
-													(String)criterio.get("IDCAMPO")+","+
-													(String)criterio.get("TIPOCAMPO")+","+
-													(String)criterio.get("IDTABLA")+"_"+
-													(String)criterio.get("OPERADOR")+","+
-													(String)criterio.get("SIMBOLO")+"_"+
-													(((String)criterio.get("IDVALOR")).equalsIgnoreCase("NULL")?"":(String)criterio.get("IDVALOR"))+"_"+
-													abrirPar+"_"+
-													cerrarPar+"_";								
-						} // Fin del for principal
-					} 
-					catch(Exception e) {
-						e.printStackTrace();
-					}
-				}
-	
-				//seleccionamos la consulta para futuras modificaciones
+			Hashtable<String,String> claves = new Hashtable<String,String>();
+			claves.put(PysServiciosInstitucionBean.C_IDINSTITUCION, miForm.getIdInstitucion());
+			claves.put(PysServiciosInstitucionBean.C_IDTIPOSERVICIOS, miForm.getIdTipoServicios());
+			claves.put(PysServiciosInstitucionBean.C_IDSERVICIO, miForm.getIdServicio());
+			claves.put(PysServiciosInstitucionBean.C_IDSERVICIOSINSTITUCION, idServicioInstitucion);
+			PysServiciosInstitucionBean beanServInsti = (PysServiciosInstitucionBean) admServiciosInstitucion.select(claves).get(0);	
+			
+			// Recuperamos el idConsulta del bean seleccionado														
+			String idConsulta = beanServInsti.getIdConsulta()==null ? "0" : ((Long)beanServInsti.getIdConsulta()).toString();
+			
+			// Obtenemos los criterios con la consulta obtenida
+			String criteriosString = this.obtenerCriterios(miForm.getIdInstitucion(), idConsulta, usr);
+
+			//seleccionamos la consulta para futuras modificaciones			
+			try {
+				String consultaConsulta = " WHERE " + ConConsultaBean.C_IDINSTITUCION + " = " + miForm.getIdInstitucion() + " AND " + ConConsultaBean.C_IDCONSULTA + " = " + idConsulta;
 				ConConsultaAdm consultaAdm = new ConConsultaAdm(usr);
-				try {
-					String consultaConsulta = " where " + ConConsultaBean.C_IDINSTITUCION + "=" + miForm.getIdInstitucion()+
-												" and " + ConConsultaBean.C_IDCONSULTA +"= "+ ((Long)beanServInsti.getIdConsulta()).toString()+" ";
-		            ConConsultaBean consultaBean = (ConConsultaBean)((Vector)consultaAdm.select(consultaConsulta)).get(0);
-		            Hashtable consultaHash = (Hashtable)consultaBean.getOriginalHash().clone();
-		            request.getSession().setAttribute("DATABACKUPCONSULTA", consultaHash);
-				}
-				catch (Exception e)
-				{
-					//si no hay consulta no debe fallar, simplemente no se mostrarán criterios
-				}
-				
-				// Pasamos el String para presentar los criterios
-				request.setAttribute("resultado",criteriosString);
+	            ConConsultaBean consultaBean = (ConConsultaBean) consultaAdm.select(consultaConsulta).get(0);
+	            Hashtable consultaHash = (Hashtable)consultaBean.getOriginalHash().clone();
+	            request.getSession().setAttribute("DATABACKUPCONSULTA", consultaHash);
+			} catch (Exception e) {
+				//si no hay consulta no debe fallar, simplemente no se mostrarán criterios
 			}
-		}	
-		catch (Exception e) { 
+			
+			// Pasamos el String para presentar los criterios
+			request.setAttribute("resultado",criteriosString);
+		} catch (Exception e) { 
 			throwExcp("messages.general.error", new String[] {"modulo.productos"}, e, null); 
-		}		
+		}	
+		
 		return result;
 	}	
 	
@@ -1453,15 +1088,15 @@ public class MantenimientoServiciosAction extends MasterAction {
 	 * 			con formato: "*conector1_campo1_operador1_valor1_idCampo1_idOperador1_idValor1_"
 	 * @return
 	 */
-	protected Vector getVectorCriteriosTablas (String criterios, HttpServletRequest request) throws SIGAException {
-		Vector resultado = new Vector();
+	protected Vector<Vector<Object>> getVectorCriteriosTablas (String criterios, HttpServletRequest request) throws SIGAException {
+		Vector<Vector<Object>> resultado = new Vector<Vector<Object>>();
 
 		try {						
 			UsrBean usr = this.getUserBean(request);									
 			ConCampoConsultaAdm admCampoConsulta = new ConCampoConsultaAdm(usr);
 			String consultaTablas=" WHERE ";
-			Vector resultadoCriterios = new Vector();
-			Vector resultadoIdCriterios = new Vector();
+			Vector<Object> resultadoCriterios = new Vector<Object>();
+			Vector<Object> resultadoIdCriterios = new Vector<Object>();
 			
 			/* Cada criterio tiene el siguiente formato
 			 * *conector_campo_operador_valor_idCampo_idOperador_idValor_abrirPar_cerrarPar
@@ -1554,13 +1189,13 @@ public class MantenimientoServiciosAction extends MasterAction {
 				}					
 
 				//construimos la hash con el criterio
-				Hashtable hash = new Hashtable();							
+				Hashtable<String,String> hash = new Hashtable<String,String>();							
 				hash.put("OPERADOR", conector);
 				hash.put("NOMBREREAL", campoBean.getNombreReal());
 				hash.put("OPERACION", simbolo);
 				hash.put("VALOR", idValor);
 				
-				Hashtable hashId = new Hashtable();
+				Hashtable<String,String> hashId = new Hashtable<String,String>();
 				hashId.put(ConCriterioConsultaBean.C_IDCAMPO, idCampo);
 				hashId.put(ConCriterioConsultaBean.C_IDOPERACION, idOperador);
 				hashId.put(ConCriterioConsultaBean.C_VALOR, idValor.replace("$", "#"));
@@ -1583,7 +1218,7 @@ public class MantenimientoServiciosAction extends MasterAction {
 			}
 			
 			
-			Vector resultadoTablas = new Vector();
+			Vector<Object> resultadoTablas = new Vector<Object>();
 			
 			//en consultaTablas tenemos la consulta de todos los idTablas a las que se va a acceder
 			ConTablaConsultaAdm admTablaConsulta = new ConTablaConsultaAdm(usr);
@@ -1656,43 +1291,41 @@ public class MantenimientoServiciosAction extends MasterAction {
 	 * @return  String  Destino del action  
 	 * @exception  SIGAException  En cualquier caso de error
 	 */
-	protected String insertarCriterio(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException 
-	{
+	protected String insertarCriterio(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		String result="";
-		String servicio;	
-		String tipoServicio;
-		String institucion;	
-		String servicioInstitucion;		
 		UserTransaction tx = null;
 		boolean correcto=true;
 
 		try{
 			// Obtengo usuario y creo manejadores para acceder a las BBDD
 			UsrBean usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
-			PysPreciosServiciosAdm admin=new PysPreciosServiciosAdm(this.getUserBean(request));
-			ConConsultaAdm consultaAdm = new ConConsultaAdm(this.getUserBean(request));
-			ConCriterioConsultaAdm criteriosAdm = new ConCriterioConsultaAdm(this.getUserBean(request));
+			PysPreciosServiciosAdm admin = new PysPreciosServiciosAdm(usr);
+			ConConsultaAdm consultaAdm = new ConConsultaAdm(usr);
+			ConCriterioConsultaAdm criteriosAdm = new ConCriterioConsultaAdm(usr);
+			
 			// Comienzo control de transacciones
 			tx = usr.getTransaction();
+			
 			// Obtengo los datos del formulario
 			MantenimientoServiciosForm miForm = (MantenimientoServiciosForm)formulario;
+			
 			// Recupero el contenido de la tabla de criterios
 			String criterios = (String)miForm.getCriterios();
-			Vector resultado = new Vector();
-			Vector vCriterios = new Vector();
-			Vector vIdCriterios = new Vector();
-			Vector vTablas = new Vector();
+			Vector<Object> vCriterios = new Vector<Object>();
+			Vector<Object> vIdCriterios = new Vector<Object>();
+			Vector<Object> vTablas = new Vector<Object>();
 			if ((criterios != null)&&(!criterios.equals(""))){
-				resultado = (Vector)this.getVectorCriteriosTablas(criterios, request);
-				vCriterios = (Vector)resultado.get(0);
-				vTablas = (Vector)resultado.get(1);
-				vIdCriterios = (Vector)resultado.get(2);
+				Vector<Vector<Object>> resultado = this.getVectorCriteriosTablas(criterios, request);
+				vCriterios = (Vector<Object>)resultado.get(0);
+				vTablas = (Vector<Object>)resultado.get(1);
+				vIdCriterios = (Vector<Object>)resultado.get(2);
 			}
 			
 			
 			// Cargo la tabla hash con los valores del formulario para insertar
 			Hashtable hash = miForm.getDatos();
-			// Anhado valores que faltan
+			
+			// Inserto valores que faltan
 			hash.put(PysPreciosServiciosBean.C_IDPRECIOSSERVICIOS,admin.getIdPreciosServicios(miForm.getIdInstitucion(),miForm.getIdTipoServicios(),miForm.getIdServicio(),miForm.getIdServiciosInstitucion(),miForm.getPeriodicidad()));
 			
 			// RGG 05-10-2005 Esto se cambia por lo de abajo
@@ -1704,12 +1337,12 @@ public class MantenimientoServiciosAction extends MasterAction {
 				hash.put(PysPreciosServiciosBean.C_PORDEFECTO,ClsConstants.DB_TRUE);
 				
 				// Solo permitimos un precio por defecto, asi que borramos los que hubiese
-				Hashtable h = new Hashtable();
+				Hashtable<String, String> h = new Hashtable<String, String>();
 				UtilidadesHash.set(h, PysPreciosServiciosBean.C_IDINSTITUCION, miForm.getIdInstitucion());
 				UtilidadesHash.set(h, PysPreciosServiciosBean.C_IDTIPOSERVICIOS, miForm.getIdTipoServicios());
 				UtilidadesHash.set(h, PysPreciosServiciosBean.C_IDSERVICIO, miForm.getIdServicio());
 				UtilidadesHash.set(h, PysPreciosServiciosBean.C_IDSERVICIOSINSTITUCION, miForm.getIdServiciosInstitucion());
-				UtilidadesHash.set(h, PysPreciosServiciosBean.C_PORDEFECTO, "" + ClsConstants.DB_TRUE);
+				UtilidadesHash.set(h, PysPreciosServiciosBean.C_PORDEFECTO, String.valueOf(ClsConstants.DB_TRUE));
 				
 				String campos[] = {PysPreciosServiciosBean.C_IDINSTITUCION, 
 				        		   PysPreciosServiciosBean.C_IDTIPOSERVICIOS, 
@@ -1720,8 +1353,7 @@ public class MantenimientoServiciosAction extends MasterAction {
 				if (!admin.deleteDirect(h, campos)) {
 				    throw new SIGAException (admin.getError());
 				}
-			} 
-			else {
+			} else {
 				hash.put(PysPreciosServiciosBean.C_PORDEFECTO,ClsConstants.DB_FALSE);
 			}
 
@@ -1730,9 +1362,8 @@ public class MantenimientoServiciosAction extends MasterAction {
 			String query = "";
 			boolean queryPorDefecto = false;
 			//si no hay criterios, cogemos la select por defecto
-			Hashtable nuevaConsulta = new Hashtable();
-			String nuevoIdConsulta = "";
-			nuevoIdConsulta = ((Integer)consultaAdm.getNewIdConsulta(usr.getLocation())).toString();
+			Hashtable<String,String> nuevaConsulta = new Hashtable<String,String>();
+			String nuevoIdConsulta = consultaAdm.getNewIdConsulta(usr.getLocation()).toString();
 			
 			if ((criterios != null)&&(!criterios.equals(""))){
 				query = UtilidadesProductosServicios.getQuery( vTablas, vCriterios);
@@ -1743,7 +1374,7 @@ public class MantenimientoServiciosAction extends MasterAction {
 				//cambiamos @IDINSTITUCION@	 por el IdInstitucion correcto
 				query = UtilidadesProductosServicios.reemplazaString("@IDINSTITUCION@",(String)usr.getLocation(), query);
 				//aplicamos el idConsulta si existia y sino calculamos uno nuevo
-				nuevaConsulta.put(ConConsultaBean.C_IDINSTITUCION, (String)usr.getLocation());
+				nuevaConsulta.put(ConConsultaBean.C_IDINSTITUCION, usr.getLocation());
 				nuevaConsulta.put(ConConsultaBean.C_IDCONSULTA, nuevoIdConsulta);
 				nuevaConsulta.put(ConConsultaBean.C_GENERAL, ClsConstants.DB_TRUE);
 				nuevaConsulta.put(ConConsultaBean.C_IDMODULO, ID_MODULO_PYS);
@@ -1778,11 +1409,11 @@ public class MantenimientoServiciosAction extends MasterAction {
 			if (!queryPorDefecto) correcto = consultaAdm.insert(nuevaConsulta);
 			// Insertamos en CON_CRITERIOCONSULTA, todos los criterios
 			for (int contador=0; contador<vIdCriterios.size();contador++){
-				Hashtable criterio = (Hashtable)vIdCriterios.get(contador);
+				Hashtable<String,String> criterio = (Hashtable<String,String>) vIdCriterios.get(contador);
 				criterio.put(ConCriterioConsultaBean.C_FECHAMODIFICACION, "sysdate");
 				criterio.put(ConCriterioConsultaBean.C_IDCONSULTA, nuevoIdConsulta);
-				criterio.put(ConCriterioConsultaBean.C_IDINSTITUCION, (String)usr.getLocation());
-				criterio.put(ConCriterioConsultaBean.C_USUMODIFICACION, (String)usr.getUserName());
+				criterio.put(ConCriterioConsultaBean.C_IDINSTITUCION, usr.getLocation());
+				criterio.put(ConCriterioConsultaBean.C_USUMODIFICACION, usr.getUserName());
 				criterio.put(ConCriterioConsultaBean.C_ORDEN, ""+(contador+1));
 				correcto = criteriosAdm.insert(criterio);
 			}
@@ -1798,14 +1429,11 @@ public class MantenimientoServiciosAction extends MasterAction {
 				result = exitoModal("messages.updated.success", request);
 
 			}			
-		}
-		catch (ClsExceptions e){
+		} catch (ClsExceptions e){
 			throwExcp(e.getMessage(),e,tx);
-		}
-		catch (SIGAException e){
+		} catch (SIGAException e){
 			throw(e);
-		}
-		catch (Exception e) { 
+		} catch (Exception e) { 
 			throwExcp("messages.general.error",new String[] {"modulo.productos"},e,tx); 
 		}		
 		return result;
@@ -1822,42 +1450,28 @@ public class MantenimientoServiciosAction extends MasterAction {
 	 * @exception  SIGAException  En cualquier caso de error
 	 */
 	protected String modificarCriterio(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
-		// TODO Auto-generated method stub
-		
 		String result="error";
-		String servicio;
-		String pago;		
-		String paramConsulta;		
-		String tipoServicio;
-		String idServInst;		
-		Hashtable hashOriginal = new Hashtable();
-		Enumeration filaOriginal; 		
-		PysPreciosServiciosBean registroOriginal= new PysPreciosServiciosBean();
-		ConConsultaAdm consultaAdm = new ConConsultaAdm(this.getUserBean(request));
-		ConCriterioConsultaAdm criteriosAdm = new ConCriterioConsultaAdm(this.getUserBean(request));
 		UserTransaction tx=null;
-
-		// Creacion de las hash para insertar las diferentes formas de pago de Internet	y Secretaria
-		Hashtable hashAux = new Hashtable();
-		Vector vectorAux = new Vector();
-		Vector vectorFP = new Vector();
-		Vector camposOcultos = new Vector();
 		boolean correcto=true;
+		PysPreciosServiciosBean registroOriginal= new PysPreciosServiciosBean();
 		
 		
 		try {		
 			// Obtengo usuario y creo manejadores para acceder a las BBDD
 			UsrBean usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
-			PysPreciosServiciosAdm admin=new PysPreciosServiciosAdm(this.getUserBean(request));
+			PysPreciosServiciosAdm admin = new PysPreciosServiciosAdm(usr);			
+			ConConsultaAdm consultaAdm = new ConConsultaAdm(usr);
+			ConCriterioConsultaAdm criteriosAdm = new ConCriterioConsultaAdm(usr);			
+			
 			// Obtengo los datos del formulario
 			MantenimientoServiciosForm miForm = (MantenimientoServiciosForm)formulario;
 			Hashtable hash = miForm.getDatos();			
 			
 			// Cargo una hastable con los valores originales del registro sobre el que se realizará la modificacion						
-			filaOriginal=((Vector)request.getSession().getAttribute("DATABACKUP")).elements();
+			Enumeration filaOriginal = ((Vector)request.getSession().getAttribute("DATABACKUP")).elements();
 			while(filaOriginal.hasMoreElements()){
               	registroOriginal = (PysPreciosServiciosBean) filaOriginal.nextElement(); 
-				// Anhado valores que faltan en la hash modificada (idperiodicidad e idpreciosServicios)
+				// Inserto valores que faltan en la hash modificada (idperiodicidad e idpreciosServicios)
 				hash.put(PysPreciosServiciosBean.C_IDPERIODICIDAD,registroOriginal.getIdPeriodicidad().toString());
 				hash.put(PysPreciosServiciosBean.C_IDPRECIOSSERVICIOS,registroOriginal.getIdPreciosServicios().toString());
 				hash.put(PysPreciosServiciosBean.C_CRITERIOS,registroOriginal.getCriterios());
@@ -1870,22 +1484,21 @@ public class MantenimientoServiciosAction extends MasterAction {
 
 			// Recupero el contenido de la tabla de criterios
 			String criterios = (String)miForm.getCriterios();
-			Vector resultado = new Vector();
-			Vector vCriterios = new Vector();
-			Vector vIdCriterios = new Vector();
-			Vector vTablas = new Vector();
+			Vector<Object> vCriterios = new Vector<Object>();
+			Vector<Object> vIdCriterios = new Vector<Object>();
+			Vector<Object> vTablas = new Vector<Object>();
 			if ((criterios != null)&&(!criterios.equals(""))){
-				resultado = (Vector)this.getVectorCriteriosTablas(criterios, request);
-				vCriterios = (Vector)resultado.get(0);
-				vTablas = (Vector)resultado.get(1);
-				vIdCriterios = (Vector)resultado.get(2);
+				Vector<Vector<Object>> resultado = this.getVectorCriteriosTablas(criterios, request);
+				vCriterios = (Vector<Object>)resultado.get(0);
+				vTablas = (Vector<Object>)resultado.get(1);
+				vIdCriterios = (Vector<Object>)resultado.get(2);
 			}
 
 			//construimos la query
 			String query = "";
 			boolean queryPorDefecto = false;
 			//si no hay criterios, cogemos la select por defecto
-			Hashtable nuevaConsulta = new Hashtable();
+			Hashtable<String,String> nuevaConsulta = new Hashtable<String,String>();
 			String nuevoIdConsulta = "";
 			boolean esInsercion = false;
 			if (((String)hash.get(PysPreciosServiciosBean.C_IDCONSULTA)).equals("")){
@@ -1901,7 +1514,7 @@ public class MantenimientoServiciosAction extends MasterAction {
 				}
 				query = UtilidadesProductosServicios.reemplazaString("@IDINSTITUCION@",(String)usr.getLocation(), query);
 				//aplicamos el idConsulta si existia y sino calculamos uno nuevo
-				nuevaConsulta.put(ConConsultaBean.C_IDINSTITUCION, (String)usr.getLocation());
+				nuevaConsulta.put(ConConsultaBean.C_IDINSTITUCION, usr.getLocation());
 				nuevaConsulta.put(ConConsultaBean.C_IDCONSULTA, nuevoIdConsulta);
 				nuevaConsulta.put(ConConsultaBean.C_GENERAL, ClsConstants.DB_TRUE);
 				nuevaConsulta.put(ConConsultaBean.C_IDMODULO, ID_MODULO_PYS);
@@ -1915,7 +1528,7 @@ public class MantenimientoServiciosAction extends MasterAction {
 				queryPorDefecto = true;
 			}
 			
-			// Anhado valores que faltan
+			// Inserto valores que faltan
 			hash.put(PysPreciosServiciosBean.C_CRITERIOS,query);
 			//AA> Comentando la linea siguiente se arreglaba la incidencia
 			// INC_02761, pero no se si puede dar problemas en el futuro
@@ -1924,7 +1537,6 @@ public class MantenimientoServiciosAction extends MasterAction {
 			if(!queryPorDefecto)
 				// si no es la query por defecto se debe insertar el idConsulta
 				hash.put(PysPreciosServiciosBean.C_IDCONSULTA, nuevoIdConsulta);
-			
 			else 
 				hash.put(PysPreciosServiciosBean.C_IDCONSULTA,"NULL");
 			
@@ -1937,41 +1549,40 @@ public class MantenimientoServiciosAction extends MasterAction {
 			// Inserto en CON_CONSULTA, si hace falta
 			if (!esInsercion){
 				Hashtable viejaConsulta = (Hashtable)request.getSession().getAttribute("DATABACKUPCONSULTA");
-				if (!queryPorDefecto) 
-					
-				
-				if (!nuevaConsulta.equals(viejaConsulta)){
-					correcto = consultaAdm.update(nuevaConsulta, viejaConsulta);
-				}
-				else {
-					Hashtable aborrar = new Hashtable();
-					aborrar.put(ConConsultaBean.C_IDINSTITUCION, (String)usr.getLocation());
-					aborrar.put(ConConsultaBean.C_IDCONSULTA, nuevoIdConsulta);
-					String camposBorrar[] = new String[] {ConConsultaBean.C_IDINSTITUCION, ConConsultaBean.C_IDCONSULTA};
-					consultaAdm.deleteDirect(nuevaConsulta, camposBorrar);
+				if (!queryPorDefecto) { 
+					if (!nuevaConsulta.equals(viejaConsulta)) {
+						correcto = consultaAdm.update(nuevaConsulta, viejaConsulta);
+					} else {
+						Hashtable<String,String> aborrar = new Hashtable<String,String>();
+						aborrar.put(ConConsultaBean.C_IDINSTITUCION, usr.getLocation());
+						aborrar.put(ConConsultaBean.C_IDCONSULTA, nuevoIdConsulta);
+						String camposBorrar[] = new String[] {ConConsultaBean.C_IDINSTITUCION, ConConsultaBean.C_IDCONSULTA};
+						consultaAdm.deleteDirect(nuevaConsulta, camposBorrar);
+					}
 				}
 			}else{
 				//primero borramos la anterior consulta
 				if (!queryPorDefecto) {
 					correcto = consultaAdm.insert(nuevaConsulta);
-				}
-				else {
+				} else {
 					consultaAdm.delete(nuevaConsulta);
 				}
 			}
+			
 			// Borramos de CON_CRITERIOCONSULTA, todos los criterios anteriores
-			Hashtable hashBorrado = new Hashtable();
-			hashBorrado.put(ConCriterioConsultaBean.C_IDINSTITUCION, (String)usr.getLocation());
+			Hashtable<String,String> hashBorrado = new Hashtable<String,String>();
+			hashBorrado.put(ConCriterioConsultaBean.C_IDINSTITUCION, usr.getLocation());
 			hashBorrado.put(ConCriterioConsultaBean.C_IDCONSULTA, nuevoIdConsulta);
 			String camposActualizar[] = new String[] {ConCriterioConsultaBean.C_IDINSTITUCION, ConCriterioConsultaBean.C_IDCONSULTA}; 
 			correcto = criteriosAdm.deleteDirect(hashBorrado, camposActualizar);
+			
 			// Insertamos en CON_CRITERIOCONSULTA, todos los criterios nuevos
 			for (int contador=0; contador<vIdCriterios.size();contador++){
-				Hashtable criterio = (Hashtable)vIdCriterios.get(contador);
+				Hashtable<String,String> criterio = (Hashtable<String,String>) vIdCriterios.get(contador);
 				criterio.put(ConConsultaBean.C_FECHAMODIFICACION, "sysdate");
 				criterio.put(ConConsultaBean.C_IDCONSULTA, nuevoIdConsulta);
-				criterio.put(ConConsultaBean.C_IDINSTITUCION, (String)usr.getLocation());
-				criterio.put(ConConsultaBean.C_USUMODIFICACION, (String)usr.getUserName());
+				criterio.put(ConConsultaBean.C_IDINSTITUCION, usr.getLocation());
+				criterio.put(ConConsultaBean.C_USUMODIFICACION, usr.getUserName());
 				criterio.put(ConConsultaBean.C_ORDEN, ""+(contador+1));
 				correcto = criteriosAdm.insert(criterio);
 			}
@@ -1993,14 +1604,11 @@ public class MantenimientoServiciosAction extends MasterAction {
 				miForm.reset(mapping,request);
 				result = exitoModal("messages.updated.success", request);		
 			}			
-		}
-		catch (ClsExceptions e){
+		} catch (ClsExceptions e){
 			throwExcp(e.getMessage(),e,tx);
-		}
-		catch (SIGAException e){
+		} catch (SIGAException e){
 			throw(e);
-		}
-		catch (Exception e) { 
+		} catch (Exception e) { 
 			throwExcp("messages.general.error",new String[] {"modulo.productos"},e,tx); 
 		}
 									
@@ -2018,18 +1626,17 @@ public class MantenimientoServiciosAction extends MasterAction {
 	 * @return
 	 * @throws SIGAException
 	 */
-	protected String insertarCondicionSuscripcionAutomatica (ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException 
-	{
+	protected String insertarCondicionSuscripcionAutomatica (ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		String result="";
-		String servicio;	
-		String tipoServicio;
-		String institucion;	
-		String servicioInstitucion;		
 		UserTransaction tx = null;
 
 		try{
 			// Obtengo usuario y creo manejadores para acceder a las BBDD
 			UsrBean usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
+			
+			ConConsultaAdm consultaAdm = new ConConsultaAdm(usr);
+			PysServiciosInstitucionAdm admServiciosInstitucion  = new PysServiciosInstitucionAdm(usr);
+			ConCriterioConsultaAdm criteriosAdm = new ConCriterioConsultaAdm(usr);
 			
 			// Obtengo los datos del formulario
 			MantenimientoServiciosForm miForm = (MantenimientoServiciosForm)formulario;
@@ -2038,26 +1645,25 @@ public class MantenimientoServiciosAction extends MasterAction {
 			tx = usr.getTransaction();
 
 			// Recupero el contenido de la tabla de criterios
-			String criterios    = (String)miForm.getCriterios();
-			Vector resultado    = new Vector();
-			Vector vCriterios   = new Vector();
-			Vector vIdCriterios = new Vector();
-			Vector vTablas      = new Vector();
+			String criterios = (String)miForm.getCriterios();
+			Vector<Object> vCriterios = new Vector<Object>();
+			Vector<Object> vIdCriterios = new Vector<Object>();
+			Vector<Object> vTablas = new Vector<Object>();
 			if ((criterios != null) && (!criterios.equals(""))){
-				resultado    = (Vector)this.getVectorCriteriosTablas(criterios, request);
-				vCriterios   = (Vector)resultado.get(0);
-				vTablas      = (Vector)resultado.get(1);
-				vIdCriterios = (Vector)resultado.get(2);
+				Vector<Vector<Object>> resultado = this.getVectorCriteriosTablas(criterios, request);
+				vCriterios = (Vector<Object>)resultado.get(0);
+				vTablas = (Vector<Object>)resultado.get(1);
+				vIdCriterios = (Vector<Object>)resultado.get(2);
 			}
 
 			// Construimos la query
 			String query = "";
 			boolean queryPorDefecto = false;
-			Hashtable nuevaConsulta = new Hashtable();
-			Long nuevoIdConsulta, oldIdConsulta = null;
-
-			ConConsultaAdm consultaAdm = new ConConsultaAdm(this.getUserBean(request));
-			nuevoIdConsulta = new Long((consultaAdm.getNewIdConsulta(usr.getLocation())).longValue());
+			Hashtable<String,String> nuevaConsulta = new Hashtable<String,String>();
+			Long oldIdConsulta = null;
+			
+			String sNuevoIdConsulta = consultaAdm.getNewIdConsulta(usr.getLocation()).toString();
+			Long nuevoIdConsulta = new Long(sNuevoIdConsulta);
 			
 			// Si no hay criterios, cogemos la select por defecto
 			if ((criterios != null)&&(!criterios.equals(""))){
@@ -2068,8 +1674,8 @@ public class MantenimientoServiciosAction extends MasterAction {
 				}
 				query = UtilidadesProductosServicios.reemplazaString("@IDINSTITUCION@",(String)usr.getLocation(), query);
 				//aplicamos el idConsulta si existia y sino calculamos uno nuevo
-				nuevaConsulta.put(ConConsultaBean.C_IDINSTITUCION, (String)usr.getLocation());
-				nuevaConsulta.put(ConConsultaBean.C_IDCONSULTA, nuevoIdConsulta);
+				nuevaConsulta.put(ConConsultaBean.C_IDINSTITUCION, usr.getLocation());
+				nuevaConsulta.put(ConConsultaBean.C_IDCONSULTA, sNuevoIdConsulta);
 				nuevaConsulta.put(ConConsultaBean.C_GENERAL, ClsConstants.DB_TRUE);
 				nuevaConsulta.put(ConConsultaBean.C_IDMODULO, ID_MODULO_PYS);
 				nuevaConsulta.put(ConConsultaBean.C_DESCRIPCION, "Módulo Productos y Servicios - Suscripción Automática");
@@ -2085,8 +1691,8 @@ public class MantenimientoServiciosAction extends MasterAction {
 			}
 			
 			// Fijo los nuevos valores
-			Row fila = (Row)((Vector)request.getSession().getAttribute("DATABACKUP")).get(0);
-			Hashtable datosNuevos 	  = fila.getRow();
+			Row fila = (Row) ((Vector) request.getSession().getAttribute("DATABACKUP")).get(0);
+			Hashtable<String,Object> datosNuevos = fila.getRow();
 			UtilidadesHash.set(datosNuevos, PysServiciosInstitucionBean.C_IDINSTITUCION, new Integer(miForm.getIdInstitucion()));
 			UtilidadesHash.set(datosNuevos, PysServiciosInstitucionBean.C_IDTIPOSERVICIOS, new Integer(miForm.getIdTipoServicios()));
 			UtilidadesHash.set(datosNuevos, PysServiciosInstitucionBean.C_IDSERVICIO, new Long(miForm.getIdServicio()));
@@ -2100,12 +1706,8 @@ public class MantenimientoServiciosAction extends MasterAction {
 				UtilidadesHash.set(datosNuevos, PysServiciosInstitucionBean.C_IDCONSULTA, "NULL");
 			}
 
-			PysServiciosInstitucionAdm admServiciosInstitucion  = new PysServiciosInstitucionAdm(this.getUserBean(request));
-			ConCriterioConsultaAdm criteriosAdm = new ConCriterioConsultaAdm(this.getUserBean(request));
-			
 			// Actualizo los datos de Pys_ServiciosInstitucion 
 			tx.begin();
-			boolean correcto = true;
 
 			String [] campos = {PysServiciosInstitucionBean.C_USUMODIFICACION,
 								PysServiciosInstitucionBean.C_FECHAMODIFICACION,
@@ -2122,9 +1724,8 @@ public class MantenimientoServiciosAction extends MasterAction {
 					if (!consultaAdm.insert(nuevaConsulta))
 						throw new ClsExceptions("Error al insertar el registro en la tabla " + ConConsultaBean.T_NOMBRETABLA);
 //					request.setAttribute("idConsulta", nuevoIdConsulta);
-				}
-				else {
-					Hashtable borrar = new Hashtable();
+				} else {
+					Hashtable<String,Object> borrar = new Hashtable<String,Object>();
 					UtilidadesHash.set(borrar, ConConsultaBean.C_IDINSTITUCION, new Integer(miForm.getIdInstitucion()));
 					UtilidadesHash.set(borrar, ConConsultaBean.C_IDCONSULTA, oldIdConsulta);
 					consultaAdm.delete(borrar);
@@ -2133,12 +1734,12 @@ public class MantenimientoServiciosAction extends MasterAction {
 				
 				// Insertamos en CON_CRITERIOCONSULTA, todos los criterios
 				for (int contador = 0; contador < vIdCriterios.size(); contador++){
-					Hashtable criterio = (Hashtable)vIdCriterios.get(contador);
+					Hashtable<String,String> criterio = (Hashtable<String,String>)vIdCriterios.get(contador);
 					criterio.put(ConCriterioConsultaBean.C_FECHAMODIFICACION, "sysdate");
-					criterio.put(ConCriterioConsultaBean.C_IDCONSULTA, nuevoIdConsulta);
-					criterio.put(ConCriterioConsultaBean.C_IDINSTITUCION, (String)usr.getLocation());
-					criterio.put(ConCriterioConsultaBean.C_USUMODIFICACION, (String)usr.getUserName());
-					criterio.put(ConCriterioConsultaBean.C_ORDEN, ""+(contador+1));
+					criterio.put(ConCriterioConsultaBean.C_IDCONSULTA, sNuevoIdConsulta);
+					criterio.put(ConCriterioConsultaBean.C_IDINSTITUCION, usr.getLocation());
+					criterio.put(ConCriterioConsultaBean.C_USUMODIFICACION, usr.getUserName());
+					criterio.put(ConCriterioConsultaBean.C_ORDEN, String.valueOf(contador+1));
 					if (!criteriosAdm.insert(criterio))
 						throw new ClsExceptions("Error al insertar el registro en la tabla " + ConCriterioConsultaBean.T_NOMBRETABLA);
 				}
@@ -2146,41 +1747,21 @@ public class MantenimientoServiciosAction extends MasterAction {
 				tx.commit();
 				// Cargo las claves para la "recarga" de la ventana modalen modo edicion
 				if (queryPorDefecto) request.setAttribute("porDefecto", "SI");
-				request.setAttribute("idInstitucion",         miForm.getIdInstitucion());
-				request.setAttribute("idTipoServicio",        miForm.getIdTipoServicios());
-				request.setAttribute("idServicio",            miForm.getIdServicio());
+				request.setAttribute("idInstitucion", miForm.getIdInstitucion());
+				request.setAttribute("idTipoServicio", miForm.getIdTipoServicios());
+				request.setAttribute("idServicio", miForm.getIdServicio());
 				request.setAttribute("idServicioInstitucion", miForm.getIdServiciosInstitucion());
 				result = exitoEspecificoModal("messages.updated.success", hayCondicion, request);
 			}
-		}
-		catch (ClsExceptions e){
+		} catch (ClsExceptions e){
 			throwExcp(e.getMessage(),e,tx);
-		}
-		catch (SIGAException e){
+		} catch (SIGAException e){
 			throw(e);
-		}
-		catch (Exception e) { 
+		} catch (Exception e) { 
 			throwExcp("messages.general.error",new String[] {"modulo.productos"},e,tx); 
-		}		
-		return result;
-	}
-
-	/** 
-	 *  Funcion que prepara el formato fecha
-	 * @param  fecha - Fecha en formato original
-	 * @return  String - Formato actualizado fecha   
-	 */	
-	protected String prepararFecha(String fecha){
-		
-		String sInicial=fecha;
-		String sFinal="";		
-		
-		for (int i=0;i<sInicial.length();i++) {
-			if (sInicial.charAt(i) == '-') sFinal += '/';
-			else sFinal += sInicial.charAt(i);
 		}
-		sFinal += " 00:00:00";		
-		return sFinal;
+		
+		return result;
 	}
 	
 	/** 
@@ -2189,13 +1770,11 @@ public class MantenimientoServiciosAction extends MasterAction {
 	 * @param  pagosB - Lista de pagos B
 	 * @return  ArrayList - Lista de pagos comunes  
 	 */	
-	protected ArrayList pagosComunes(String[] pagosA, String[] pagosB){
+	protected ArrayList<String> pagosComunes(String[] pagosA, String[] pagosB){
+		ArrayList<String> comunes = new ArrayList<String>();
 		
-		int i,j,k;
-		ArrayList comunes=new ArrayList();
-		
-		for (i=0;i<pagosA.length;i++) {
-			for (j=0;j<pagosB.length;j++) {
+		for (int i=0;i<pagosA.length;i++) {
+			for (int j=0;j<pagosB.length;j++) {
 				if (pagosA[i].compareToIgnoreCase(pagosB[j])==0){
 				 comunes.add(pagosA[i]);
 				}
@@ -2204,8 +1783,13 @@ public class MantenimientoServiciosAction extends MasterAction {
 		return comunes;
 	}
 	
-	protected boolean estaPago(String pago, ArrayList listaPagos){
-				
+	/**
+	 * Comprueba si existe el pago
+	 * @param pago
+	 * @param listaPagos
+	 * @return
+	 */
+	protected boolean estaPago(String pago, ArrayList<String> listaPagos){
 		return listaPagos.contains(pago);
 	}
 
@@ -2226,34 +1810,6 @@ public class MantenimientoServiciosAction extends MasterAction {
 	protected Integer getUserName(HttpServletRequest request) {
 		return new Integer (this.getUserBean(request).getUserName());
 	}
-
-	/** 
-	 *  Funcion que recupera el perfil
-	 *  @param HttpServletRequest
-	 *  @return String con el perfil
-	 */
-	/*protected String getProfileName(HttpServletRequest request) {
-		return (String) this.getUserBean(request).getProfile();
-	}*/
-
-	/** 
-	 *  Funcion que recupera la institucion
-	 *  @param HttpServletRequest
-	 *  @return Integer con el ID de la institucion
-	 */
-	protected Integer getIDInstitucion(HttpServletRequest request) {
-		return new Integer(this.getUserBean(request).getLocation());
-	}
-
-	/** 
-	 *  Funcion que recupera el idioma
-	 *  @param HttpServletRequest
-	 *  @return String con el idioma
-	 * 
-	 */
-	protected String getLenguaje(HttpServletRequest request) {
-		return (String) this.getUserBean(request).getLanguage();
-	}	
 	
 	/** 
 	 *  Funcion que prepara la salida en caso de exito de la ventana modal <br/>
@@ -2269,23 +1825,6 @@ public class MantenimientoServiciosAction extends MasterAction {
 		request.setAttribute("sinrefresco","");
 		request.setAttribute("modal",null);
 		return "exitoEspecifico"; 
-	}	
-	
-	
-	/** 
-	 *  Funcion que prepara la salida en caso de exito de la ventana modal <br/>
-	 *  y refresca nivel modal
-	 *  @param mensaje en formato key de recurso
-	 *  @param request para envias los datos
-	 *  @return String con el forward
-	 */
-	protected String exitoRefrescoModal(String mensaje, HttpServletRequest request) {
-		if (mensaje!=null && !mensaje.equals("")) {
-			request.setAttribute("mensaje",mensaje);
-		}
-		request.setAttribute("conrefresco","");
-		request.setAttribute("modal",null);
-		return "exitoModal"; 
 	}	
 	
 	/** 
@@ -2332,8 +1871,7 @@ public class MantenimientoServiciosAction extends MasterAction {
 	 * @return
 	 * @throws SIGAException
 	 */
-	protected String cerrarCriterio(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException 
-	{
+	protected String cerrarCriterio(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		String servicio            = (String)request.getSession().getAttribute("AUX_servicio");
 		String tipoServicio        = (String)request.getSession().getAttribute("AUX_tipoServicio");
 		String institucion         = (String)request.getSession().getAttribute("AUX_institucion");
@@ -2360,7 +1898,6 @@ public class MantenimientoServiciosAction extends MasterAction {
 		return editar(mapping, formulario, request, response);
 //		return exitoEspecificoModal("", "", request);	
 	}
-	
 		
 	/** 
 	 *  Funcion que implementa la accion borrar
@@ -2383,51 +1920,14 @@ public class MantenimientoServiciosAction extends MasterAction {
 		try {		
 			// Obtengo usuario y creo manejadores para acceder a las BBDD
 			UsrBean usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
-			/*PysServiciosInstitucionAdm admin=new PysServiciosInstitucionAdm(this.getUserBean(request));
-			PysFormaPagoServiciosAdm adminFPS=new PysFormaPagoServiciosAdm(this.getUserBean(request));
-			PysFormaPagoAdm adminFP = new PysFormaPagoAdm(this.getUserBean(request));*/
 			// Comienzo control de transacciones
 			tx = usr.getTransactionPesada(); 			
-			// Obtengo los datos del formulario
-			/*MantenimientoServiciosForm miForm = (MantenimientoServiciosForm)formulario;
-			servicio=miForm.getIdServicio();
-			tipoServicio=miForm.getIdTipoServicios();		
-			// Obtengo las diferentes formas de pago "modificadas"
-			pagosInternet=miForm.getFormaPagoInternet();
-			pagosSecretaria=miForm.getFormaPagoSecretaria();
-			pagosCom=pagosComunes(pagosInternet,pagosSecretaria);			
-			idServInst=miForm.getIdServInst();		*/	
-			// Cargo la tabla hash con los valores del formulario para insertar
-			Hashtable hash = formulario.getDatos();		
 			MantenimientoServiciosForm form = (MantenimientoServiciosForm) formulario;
 
-		
-			
-			
 			// Comienzo la transaccion
 			tx.begin();	
-										
-			// Actualizo la tabla
-			
-		
-			
-			
-					/*String [] rc = EjecucionPLs.ejecutarPL_EliminarSuscripcion((String)request.getParameter("idInstitucion"),
-																				 (String)request.getParameter("idTipoServicios"),
-																				 (String)request.getParameter("idServicio"),
-																				 (String)request.getParameter("idServicioInstitucion"),
-																				 (String)form.getRadioAlta(),
-																				 (String)form.getFechaAlta(),
-																				 (String)form.getChkSolicitudBaja(),
-																				 ""+this.getUserBean(request));*/
-			String [] rc = EjecucionPLs.ejecutarPL_EliminarSuscripcion((String)form.getIdInstitucion(),
-					 												   (String)form.getIdTipoServicios(),
-																	   (String)form.getIdServicio(),
-																	   (String)form.getIdServiciosInstitucion(),
-																	   (String)form.getRadioAlta(),
-																	   (String)form.getFechaAlta(),
-																	    (String)form.getChkSolicitudBaja()
-																	   );
+
+			String [] rc = EjecucionPLs.ejecutarPL_EliminarSuscripcion(form.getIdInstitucion(), form.getIdTipoServicios(), form.getIdServicio(), form.getIdServiciosInstitucion(), form.getRadioAlta(), form.getFechaAlta(), form.getChkSolicitudBaja());
 			if ((rc == null) || (!rc[0].equals("0"))) {
 				throw new ClsExceptions ("Error al ejecutar el PL:PKG_SERVICIOS_AUTOMATICOS.PROCESO_ELIMINAR_SUSCRIPCION. "+rc[1]);
 			} else {
@@ -2475,4 +1975,111 @@ public class MantenimientoServiciosAction extends MasterAction {
 		return (result);		
 	}
 	
+	/**
+	 * Obtiene los criterios de una consulta
+	 * 
+	 * Formato:
+	 * *conector_campo_operador_valor_idCampo_idOperador_idValor_abrirPar_cerrarPar
+	 * => idCampo = idCampo,tipoCampo,idTabla
+	 * => idOperador = idOperador,simbolo
+	 * 
+	 * @param idInstitucion
+	 * @param idConsulta
+	 * @param usr
+	 * @return
+	 */
+	private String obtenerCriterios (String idInstitucion, String idConsulta, UsrBean usr) {
+		String sCriterios = "";
+		
+		//puede que no tenga criterios o la consulta luego metemos la consulta dentro de un try, en cuyo caso no debe devolver ningun String, pero tampoco es un fallo.
+		try {
+			String consultaCriterios = " SELECT " + ConCampoConsultaBean.T_NOMBRETABLA + "." + ConCampoConsultaBean.C_NOMBREENCONSULTA + " AS CAMPO, " +
+											ConCampoConsultaBean.T_NOMBRETABLA + "." + ConCampoConsultaBean.C_IDCAMPO + " AS IDCAMPO, " + 
+											ConCampoConsultaBean.T_NOMBRETABLA + "." + ConCampoConsultaBean.C_TIPOCAMPO + " AS TIPOCAMPO, " +
+											ConCampoConsultaBean.T_NOMBRETABLA + "." + ConCampoConsultaBean.C_SELECTAYUDA + " AS SELECTAYUDA, " +
+											ConTablaConsultaBean.T_NOMBRETABLA + "." + ConTablaConsultaBean.C_IDTABLA + " AS IDTABLA, " +
+											ConTablaConsultaBean.T_NOMBRETABLA + "." + ConTablaConsultaBean.C_DESCRIPCION + " AS TABLA, " + 
+											ConOperacionConsultaBean.T_NOMBRETABLA + "." + ConOperacionConsultaBean.C_IDOPERACION + " AS OPERADOR, " +
+											ConOperacionConsultaBean.T_NOMBRETABLA + "." + ConOperacionConsultaBean.C_SIMBOLO + " AS SIMBOLO, " +
+											ConCriterioConsultaBean.T_NOMBRETABLA + "." + ConCriterioConsultaBean.C_ABRIRPAR + " AS ABRIRPAR, " +
+											ConCriterioConsultaBean.T_NOMBRETABLA + "." + ConCriterioConsultaBean.C_CERRARPAR + " AS CERRARPAR, " +
+											ConCriterioConsultaBean.T_NOMBRETABLA + "." + ConCriterioConsultaBean.C_OPERADOR + " AS CONECTOR, " +
+											" CASE WHEN (" + ConCampoConsultaBean.T_NOMBRETABLA + "." + ConCampoConsultaBean.C_TIPOCAMPO + " <> 'N') THEN " +
+												" REPLACE(" + ConCriterioConsultaBean.T_NOMBRETABLA + "." + ConCriterioConsultaBean.C_VALOR + ",'''','') ELSE " +
+												ConCriterioConsultaBean.T_NOMBRETABLA + "." + ConCriterioConsultaBean.C_VALOR + 
+											" END AS VALOR, " +
+											UtilidadesMultidioma.getCampoMultidiomaSimple(ConOperacionConsultaBean.T_NOMBRETABLA + "." + ConOperacionConsultaBean.C_DESCRIPCION, usr.getLanguage()) + " AS DESCRIPCION " +
+										" FROM " + ConCriterioConsultaBean.T_NOMBRETABLA + ", " +
+											ConTablaConsultaBean.T_NOMBRETABLA + ", " +
+											ConCampoConsultaBean.T_NOMBRETABLA + ", " +
+											ConOperacionConsultaBean.T_NOMBRETABLA +
+										" WHERE " + ConCampoConsultaBean.T_NOMBRETABLA + "." + ConCampoConsultaBean.C_IDCAMPO + " = " + ConCriterioConsultaBean.T_NOMBRETABLA + "." + ConCriterioConsultaBean.C_IDCAMPO +
+											" AND " + ConOperacionConsultaBean.T_NOMBRETABLA + "." + ConOperacionConsultaBean.C_IDOPERACION + " = " + ConCriterioConsultaBean.T_NOMBRETABLA + "." + ConCriterioConsultaBean.C_IDOPERACION +
+											" AND " + ConTablaConsultaBean.T_NOMBRETABLA + "." + ConTablaConsultaBean.C_IDTABLA + " = " + ConCampoConsultaBean.T_NOMBRETABLA + "." + ConCampoConsultaBean.C_IDTABLA +
+											" AND " + ConCriterioConsultaBean.T_NOMBRETABLA + "." + ConCriterioConsultaBean.C_IDINSTITUCION + " = " + idInstitucion +
+											" AND " + ConCriterioConsultaBean.T_NOMBRETABLA + "." + ConCriterioConsultaBean.C_IDCONSULTA + " = " + idConsulta +
+										" ORDER BY " + ConCriterioConsultaBean.T_NOMBRETABLA + "." + ConCriterioConsultaBean.C_ORDEN + " ASC";
+			
+			ConCriterioConsultaAdm criteriosAdm = new ConCriterioConsultaAdm(usr);
+			Vector<Hashtable<String,Object>> vCriterios = criteriosAdm.selectGenerico(consultaCriterios);
+			
+			//creamos el String
+			for (int cont=0; cont<vCriterios.size(); cont++){
+				Hashtable<String,Object> criterio = vCriterios.get(cont);
+
+				//Ahora tenemos todos los campos a falta del idValor
+				//Ejecutamos la selectAyuda del campo, y recuperamos el ID para el valor con descripcion = al valor que ya tenemos
+				ConCampoConsultaAdm camposAdm = new ConCampoConsultaAdm(usr);
+			
+				//Si tenemos la select buscamos el idvalor: 
+				String con = (String)criterio.get("SELECTAYUDA");
+				if (con!=null && ! con.equals("")) {					
+					con = con.replaceAll("@IDINSTITUCION@",usr.getLocation());
+					con = con.replaceAll("@IDIOMA@" , usr.getLanguage());
+					Vector<Hashtable<String,Object>> campos = camposAdm.selectGenerico(con);
+					
+					for (int contador=0; contador<campos.size(); contador++){
+						Hashtable<String,Object> campoHash = campos.get(contador);
+						
+						if (((String)campoHash.get("ID")).equalsIgnoreCase((String)criterio.get("VALOR"))){
+							String aux = (String)campoHash.get("ID");
+							criterio.put("IDVALOR", aux.replace("#", "$"));
+							criterio.put("VALOR", campoHash.get("DESCRIPCION"));
+							break;
+						}
+					}
+				}
+				
+				/** Formato:
+				* *conector_campo_operador_valor_idCampo_idOperador_idValor_abrirPar_cerrarPar
+				* => idCampo = idCampo,tipoCampo,idTabla
+				* => idOperador = idOperador,simbolo*/
+				String abrirPar = (String)criterio.get("ABRIRPAR");
+				String cerrarPar = (String)criterio.get("CERRARPAR");
+				if (abrirPar!=null && abrirPar.equals("1")) abrirPar="1"; else abrirPar="0";
+				if (cerrarPar!=null && cerrarPar.equals("1")) cerrarPar="1"; else cerrarPar="0";
+				
+				if (!criterio.containsKey("IDVALOR"))
+					criterio.put("IDVALOR", criterio.get("VALOR"));
+				
+				String conector = (criterio.containsKey("CONECTOR")?(String)criterio.get("CONECTOR"):" ");
+				sCriterios += "*" + conector + "_" +
+										(String)criterio.get("CAMPO")+"_"+
+										(String)criterio.get("DESCRIPCION")+"_"+
+										(((String)criterio.get("VALOR")).equalsIgnoreCase("NULL")?"":(String)criterio.get("VALOR"))+"_"+
+										(String)criterio.get("IDCAMPO")+","+
+										(String)criterio.get("TIPOCAMPO")+","+
+										(String)criterio.get("IDTABLA")+"_"+
+										(String)criterio.get("OPERADOR")+","+
+										(String)criterio.get("SIMBOLO")+"_"+
+										(((String)criterio.get("IDVALOR")).equalsIgnoreCase("NULL")?"":(String)criterio.get("IDVALOR"))+"_"+
+										abrirPar+"_"+
+										cerrarPar+"_";
+			}
+		} catch(Exception e){
+			e.printStackTrace();
+		}		
+		
+		return sCriterios;
+	}
 }
