@@ -1202,7 +1202,7 @@
 							<siga:Idioma key="censo.consultaDatosGenerales.literal.idiomacomunicaciones"/>&nbsp;(*)
 						</td>
 						<td>
-							<siga:ComboBD nombre = "idioma" tipo="cmbIdiomaInstitucion" parametro="<%=institucionParam%>" clase="<%=estiloCaja %>" obligatorio="true" elementoSel="<%=idiomaSel %>"  readonly="<%=readonly %>" obligatorioSinTextoSeleccionar="true" />
+							<siga:ComboBD nombre = "idioma" tipo="cmbIdiomaInstitucion" parametro="<%=institucionParam%>" clase="<%=estiloCaja %>" obligatorio="true" elementoSel="<%=idiomaSel %>"  readonly="<%=readonly %>" />
 						</td>
 					</tr>
 				</table>

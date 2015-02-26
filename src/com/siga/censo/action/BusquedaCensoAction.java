@@ -1425,7 +1425,7 @@ public class BusquedaCensoAction extends MasterAction {
 								miForm.setEstadoCivil("");
 							}							
 							
-							miForm.setIdioma("1");
+							miForm.setIdioma("");
 							miForm.setTextoAlerta("");
 							
 							//PODRIA ESTAR EN NUESTRO COLEGIO
@@ -1451,7 +1451,7 @@ public class BusquedaCensoAction extends MasterAction {
 							miForm.setLugarNacimiento("");
 							miForm.setEstadoCivil("");
 							miForm.setTratamiento("");
-							miForm.setIdioma("1");
+							miForm.setIdioma("");
 							
 							miForm.setFax1("");
 							miForm.setMail("");
@@ -1567,7 +1567,7 @@ public class BusquedaCensoAction extends MasterAction {
 				miForm.setLugarNacimiento("");
 				miForm.setEstadoCivil("");
 				miForm.setTratamiento("");	
-				miForm.setIdioma("1");
+				miForm.setIdioma("");
 				miForm.setTextoAlerta("No se ha encontrado ninguna persona con los datos introducidos. Complete los datos para crear una nueva");
 			}
 			
