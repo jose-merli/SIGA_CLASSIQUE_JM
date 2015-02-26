@@ -638,6 +638,7 @@ public class BusquedaDesignasAction extends MasterAction {
 			request.setAttribute("EJIS_ACTIVO", ejisActivo);
 						
 			miform.setIdPretension("");
+			miform.setIdProcedimiento("");
 			GenParametrosAdm adm = new GenParametrosAdm (this.getUserBean(request));
 			String filtrarModulos = adm.getValor((String)usr.getLocation(),"SCS","FILTRAR_MODULOS_PORFECHA_DESIGNACION", "");
 			request.setAttribute("filtrarModulos", filtrarModulos);
