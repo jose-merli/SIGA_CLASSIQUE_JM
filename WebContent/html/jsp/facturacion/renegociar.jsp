@@ -107,10 +107,13 @@
 		
 		// Asociada al boton Guardar y Cerrar
 		function accionGuardarCerrar() {
+			sub();
+			
 			// Validamos que ha marcado alguna opcion
 			if(!jQuery("input[name='datosPagosRenegociarNuevaFormaPago']:checked").val()){
 				var mensaje = '<siga:Idioma key="messages.pys.pago.error"/>';
 				alert(mensaje);
+				fin();
 				return 0;
 			}			
 
@@ -118,6 +121,7 @@
 			if (document.GestionarFacturaForm.radio2 != undefined && document.GestionarFacturaForm.radio2.checked && document.GestionarFacturaForm.datosPagosRenegociarIdCuenta.value == "") {
 				var mensaje = '<siga:Idioma key="facturacion.pagosFactura.Renegociar.Obligatoria.Cuenta"/>';
 				alert(mensaje);
+				fin();
 				return 0;
 			}	
 			
@@ -125,6 +129,7 @@
 			if (document.GestionarFacturaForm.datosRenegociarFecha.value.length < 1) {
 				var mensaje = '<siga:Idioma key="facturacion.pagosFactura.Caja.literal.Fecha"/> <siga:Idioma key="messages.campoObligatorio.error"/>';
 				alert (mensaje);
+				fin();
 				return 0;
 			}
 			
@@ -133,6 +138,7 @@
 			if (ultimaFechaPagosFacturas!=null && ultimaFechaPagosFacturas!='' && compararFecha (document.GestionarFacturaForm.datosRenegociarFecha, ultimaFechaPagosFacturas) > 1) {
 				var mensaje = '<siga:Idioma key="facturacion.renegociar.error.fecha"/> ' + ultimaFechaPagosFacturas;
 				alert(mensaje);
+				fin();
 				return 0;
 			}				
 			
