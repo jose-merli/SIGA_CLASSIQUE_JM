@@ -2048,6 +2048,10 @@ public class MantenimientoServiciosAction extends MasterAction {
 							break;
 						}
 					}
+					
+					// JPT (27-02-2015): Si no lo encuentra lo pongo en blanco
+					if (!criterio.containsKey("IDVALOR"))
+						criterio.put("VALOR", "");
 				}
 				
 				/** Formato:
