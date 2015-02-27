@@ -264,7 +264,7 @@
 		   }
            
 			function facturacionrapida(fila) {
-				subicono('iconoboton_facturacionrapida' + fila);
+				sub();
 				
 			    var idInstitucion = document.getElementById('oculto' + fila + '_1');			          		
 			    var idSolicitud = document.getElementById('oculto' + fila + '_2');
@@ -323,7 +323,6 @@
 						   	document.forms[0].submit();							
 						}							
 						
-					   	finsubicono('iconoboton_facturacionrapida'+fila);
 					   	window.setTimeout("fin()",5000,"Javascript");								
 					},
 					
