@@ -606,7 +606,7 @@ public class DatosColegialesAction extends MasterAction {
 			tx.begin();	
 			
 			//obteniendo nuevo IDHISTORICO para auditoria			
-			hashHist.put(CenHistoricoBean.C_IDHISTORICO,adminHist.getNuevoID(hash).toString());
+			hashHist.put(CenHistoricoBean.C_IDHISTORICO,adminHist.getNuevoID(hashHist).toString());
 			
 			//ejecutando la modificacion
 			if (! admin.modificacionConHistorico (hash, hashOriginal, hashHist,
@@ -798,7 +798,7 @@ public class DatosColegialesAction extends MasterAction {
 		   }	
 			 boolean bDesdeGGAE = false;
 			 if (this.getIDInstitucion(request) == 2000){
-				 hashHist.put(CenHistoricoBean.C_IDINSTITUCION, 2000);
+				 hashHist.put(CenHistoricoBean.C_IDINSTITUCION, "2000");
 				 bDesdeGGAE = true;
 			 }
 			// Comienzo control de transacciones
@@ -806,7 +806,7 @@ public class DatosColegialesAction extends MasterAction {
 			tx.begin();	
 
 			// Asigno el IDHISTORICO			
-			hashHist.put(CenHistoricoBean.C_IDHISTORICO, adminHist.getNuevoID(hash).toString());			
+			hashHist.put(CenHistoricoBean.C_IDHISTORICO, adminHist.getNuevoID(hashHist).toString());			
 			
 			if (admin.modificacionConHistorico(hash,original,hashHist, this.getLenguaje(request), bDesdeGGAE)){
 
