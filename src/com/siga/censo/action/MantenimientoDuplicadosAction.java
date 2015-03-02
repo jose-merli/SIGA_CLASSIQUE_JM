@@ -242,6 +242,8 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 			miFormulario.setDatosPaginador(databackup);
 			miFormulario.setRegistrosSeleccionados(new ArrayList());
 			formulario=miFormulario;
+			
+			request.setAttribute("mostarNColegiado", miFormulario.getChkNumColegiado()?ClsConstants.DB_TRUE:ClsConstants.DB_FALSE);
 			destino="resultado";
 
 		}catch (SIGAException e1) {
@@ -307,6 +309,7 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 			}
 			
 			formulario=miFormulario;
+			request.setAttribute("mostarNColegiado", miFormulario.getChkNumColegiado()?ClsConstants.DB_TRUE:ClsConstants.DB_FALSE);
 			destino="resultado";
 
 		}catch (SIGAException e1) {

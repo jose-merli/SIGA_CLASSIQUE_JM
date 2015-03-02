@@ -64,20 +64,41 @@ public class DuplicadosHelper{
 			
 			StringBuffer sqlPersona = new StringBuffer();
 			sqlPersona.append(" select distinct per.idpersona, per.nifcif, per.nombre, per.apellidos1, per.apellidos2, col.ncolegiado ");
-			sqlPersona.append(" from cen_persona per, cen_cliente cli, (select ncolegiado, idpersona, idinstitucion ");
+			sqlPersona.append(" ,col.idinstitucion ");
+            
+			
+			sqlPersona.append(" from cen_persona per, cen_cliente cli");
+			sqlPersona.append(", (select nvl(ncolegiado,ncomunitario) ncolegiado, idpersona, idinstitucion ");
 			sqlPersona.append("                                     from cen_colegiado ");
-			sqlPersona.append("                                     union all  ");
-			sqlPersona.append("                                    select null ncolegiado, idpersona, idinstitucion ");
-			sqlPersona.append("                                     from cen_nocolegiado) col ");
+			if(!checkNumColegiado){
+				sqlPersona.append("                                     union all  ");
+				sqlPersona.append("                                    select null ncolegiado, idpersona, idinstitucion ");
+				sqlPersona.append("                                     from cen_nocolegiado ");
+			}
+			sqlPersona.append("                                     ) col ");
+			
 			sqlPersona.append(" where per.idpersona = cli.idpersona ");
 			sqlPersona.append(" and per.idpersona > 100 ");
 			sqlPersona.append(" and cli.idinstitucion = " + ClsConstants.INSTITUCION_CGAE);
-			sqlPersona.append(" and col.idpersona(+) = cli.idpersona ");
+			if(institucion!=null && !institucion.equalsIgnoreCase("")){
+				sqlPersona.append("  and col.idinstitucion = ");
+				sqlPersona.append(institucion);
+			}
+			
+			if(checkNumColegiado)
+				sqlPersona.append(" and col.idpersona = cli.idpersona ");
+			else
+				sqlPersona.append(" and col.idpersona(+) = cli.idpersona ");
 			// A partir de aqui filtros de la persona
 			if(institucion!=null && !institucion.equalsIgnoreCase("")){
 				buscar=true;
-				sqlPersona.append(" and exists (select 1 from cen_colegiado cole where cole.idpersona=per.idpersona and cole.idinstitucion="+institucion+" union " + 
-												"select 1 from cen_nocolegiado nocole where nocole.idpersona=per.idpersona and nocole.idinstitucion="+institucion+")");
+				sqlPersona.append(" and exists (select 1 from cen_colegiado cole where cole.idpersona=per.idpersona and cole.idinstitucion=");
+				sqlPersona.append(institucion);
+				if(!checkNumColegiado){
+					sqlPersona.append(" union select 1 from cen_nocolegiado nocole where nocole.idpersona=per.idpersona and nocole.idinstitucion=");
+					sqlPersona.append(institucion);
+				}
+				sqlPersona.append(")");
 			}
 			if(nombre!=null && !nombre.equalsIgnoreCase("")){
 				buscar=true;
@@ -98,9 +119,11 @@ public class DuplicadosHelper{
 						" '·ÈÌÛ˙‡ËÏÚ˘„ı‚ÍÓÙÙ‰ÎÔˆ¸Á¡…Õ”⁄¿»Ã“Ÿ√’¬ Œ‘€ƒÀœ÷‹«', " +
 						" 'aeiouaeiouaoaeiooaeioucAEIOUAEIOUAOAEIOOAEIOUC')) ");
 			}
+			
+			
 			if(nColegiado!=null && !nColegiado.equalsIgnoreCase("")){
 				buscar=true;
-				sqlPersona.append(" and col.idpersona = cli.idpersona ");
+				//sqlPersona.append(" and col.idpersona = cli.idpersona ");
 				sqlPersona.append(" and col.ncolegiado = '"+nColegiado+"' ");
 			}
 			if(nif!=null && !nif.equalsIgnoreCase("")){
@@ -113,11 +136,19 @@ public class DuplicadosHelper{
 			// Parte de la query comun a todas las subconsultas
 			StringBuffer sqlGenerico = new StringBuffer();
 			sqlGenerico.append(" select p1.idpersona, p1.nifcif, p1.nombre, p1.apellidos1, p1.apellidos2, (select count(1) from cen_colegiado where idpersona=p1.idpersona) as colegiaciones, ");
+			if(checkNumColegiado)
+				sqlGenerico.append("  p1.idinstitucion,      p1.ncolegiado,i.ABREVIATURA, ");
+			
 			sqlGenerico.append(" (select count(1) from cen_nocolegiado n where n.idinstitucion=" + ClsConstants.INSTITUCION_CGAE + " and n.idpersona=p1.idpersona) nocolegiadoCGAE from ");
 			sqlGenerico.append(" ("+ sqlPersona.toString() +" ) p1, ");
 			sqlGenerico.append(" ("+ sqlPersona.toString() +" ) p2 ");
+			if(checkNumColegiado)
+				sqlGenerico.append(",cen_institucion i ");
 			sqlGenerico.append(" where p1.idpersona <> p2.idpersona ");
-
+			if(checkNumColegiado){
+				sqlGenerico.append(" and p1.idinstitucion = p2.idinstitucion ");
+				sqlGenerico.append(" and p1.idinstitucion = i.idinstitucion ");
+			}
 			// Creamos las querys para cada paremetro de busqueda
 			StringBuffer sqlMismoNif = new StringBuffer();
 			sqlMismoNif.append("    and to_number(regexp_replace(p1.nifcif, '[^[:digit:]]', '')) = to_number(regexp_replace(p2.nifcif, '[^[:digit:]]', '')) ");
@@ -154,13 +185,23 @@ public class DuplicadosHelper{
 			// Creamos el order by dependiendo de la eleccion del usuario 
 			StringBuffer sqlOrden = new StringBuffer();
 	       	String campoOrden = formulario.getCampoOrdenacion();
+	       	
+	       	
 	       	if (campoOrden.equalsIgnoreCase("nif"))
 	       		sqlOrden.append(" order by regexp_replace(nifcif, '[^[:digit:]]', '') ");
 	       	if (campoOrden.equalsIgnoreCase("numeroColegiado"))
 	       		sqlOrden.append(" order by to_number(ncolegiado) ");
 	       	if (campoOrden.equalsIgnoreCase("apellidos"))
 	       		sqlOrden.append(" order by upper(apellidos1||' '||nvl(apellidos2, ' ')) ");
-			sqlOrden.append(formulario.getSentidoOrdenacion());      	
+			sqlOrden.append(formulario.getSentidoOrdenacion());
+			if(checkNumColegiado){
+				if(sqlOrden.indexOf("order by")>-1)
+					sqlOrden.insert(9," idinstitucion,ncolegiado,");
+				
+			}
+			
+			
+			
 	       	
 			if(formulario.getTipoConexion()!=null && formulario.getTipoConexion().equalsIgnoreCase("union")){
 				if(buscar)
@@ -213,6 +254,13 @@ public class DuplicadosHelper{
 		       		else
 		       			sqlFinal += sqlGenerico.toString()+sqlMismoNombreApellidos.toString();
 				}
+		       	if(institucion!=null && !institucion.equalsIgnoreCase("")){
+		       		if(!sqlFinal.equalsIgnoreCase(""))
+		       			sqlFinal += " and  p1.idinstitucion = "+institucion;
+		       		else
+		       			sqlFinal += sqlGenerico.toString()+" and  p1.idinstitucion = "+institucion;
+		       		
+		       	}
 			}
 			if(formulario.getTipoConexion()!=null && formulario.getTipoConexion().equalsIgnoreCase("union")){
 				if(sqlFinal!=""){
@@ -221,6 +269,8 @@ public class DuplicadosHelper{
 			}else{
 				if(sqlFinal!=""){
 					sqlFinal += " group by p1.idpersona, p1.nifcif, p1.nombre, p1.apellidos1, p1.apellidos2 ";
+					if(checkNumColegiado)
+						sqlFinal += "  ,p1.idinstitucion,      p1.ncolegiado, i.ABREVIATURA ";
 				}
 			}
 	       	Vector similares = new Vector();

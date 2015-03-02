@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<%@page import="org.redabogacia.sigaservices.app.AppConstants"%>
 <html>
 <head>
 <!-- resultadoBusquedaDuplicados.jsp -->
@@ -98,14 +99,18 @@
 	
 	MantenimientoDuplicadosForm form = (MantenimientoDuplicadosForm)request.getAttribute("MantenimientoDuplicadosForm");
 	
-	String nombreCol="&nbsp;,censo.resultadoDuplicados.identificador,censo.resultadoDuplicados.nif,censo.resultadoDuplicados.nombre,censo.resultadoDuplicados.apellido1,censo.resultadoDuplicados.apellido2,censo.resultadoDuplicados.institucion,censo.resultadoDuplicados.numeroColegiado,";
-	String tamanoCol="3,10,10,18,18,18,10,5,3";
+	String nombreCol="&nbsp;,censo.resultadoDuplicados.identificador,censo.resultadoDuplicados.nif,censo.resultadoDuplicados.nombre,censo.resultadoDuplicados.apellido1,censo.resultadoDuplicados.apellido2,censo.resultadoDuplicados.institucion,Nº.Col,";
+	String tamanoCol="3,10,10,16,16,16,9,5,10";
 	boolean ocultarColegiaciones=true;
 	if(form!=null){
 		ocultarColegiaciones = form.getAgruparColegiaciones()!=null&&form.getAgruparColegiaciones().equalsIgnoreCase("s");
 	}
-	if(ocultarColegiaciones){
-		nombreCol="&nbsp;,censo.resultadoDuplicados.identificador,censo.resultadoDuplicados.nif,censo.resultadoDuplicados.nombre,censo.resultadoDuplicados.apellido1,censo.resultadoDuplicados.apellido2, Número de colegiaciones,";
+	String mostarNColegiado =null;
+	if(request.getAttribute("mostarNColegiado")!=null)
+		mostarNColegiado = (String)request.getAttribute("mostarNColegiado");
+		
+	if(ocultarColegiaciones && mostarNColegiado != null && mostarNColegiado.equals(AppConstants.DB_FALSE)){
+		nombreCol="&nbsp;,censo.resultadoDuplicados.identificador,censo.resultadoDuplicados.nif,censo.resultadoDuplicados.nombre,censo.resultadoDuplicados.apellido1,censo.resultadoDuplicados.apellido2, censo.fusionDuplicados.colegiaciones.titulo,";
 		tamanoCol="3,10,10,17,19,18,9,10";
 	}
 %>
@@ -222,16 +227,31 @@
 
 	function accionExportar(){
 		
-		if(<%=nRegistros<100%>||confirm("Hay muchos registros. El proceso de exportación puede tardar varios minutos.")){
-			//sub();
-			//seleccionarTodo();
-			document.getElementById('seleccionados').value=<%=totalRegistros%>;
-			document.forms[0].modo.value="export";
-			document.forms[0].target="new";
-			document.forms[0].submit();
-			document.getElementById('seleccionados').value=0;
-			//desmarcar();
+		
+		
+		
+		if(document.getElementById('seleccionados') && document.getElementById('seleccionados').value>'100'){
+			 if(!confirm("Hay muchos registros. El proceso de exportación puede tardar varios minutos."))
+				 return false;
+			
 		}
+			sub();
+			//seleccionarTodo();
+			// document.getElementById('seleccionados').value=<%=totalRegistros%>;
+			document.forms[0].modo.value="exportar";
+			
+			document.forms[0].target="submitArea";
+			//document.forms[0].submit();
+			
+			var res = ventaModalGeneral(document.forms[0].name,"P");
+			
+			
+			fin();
+			
+			
+			//document.getElementById('seleccionados').value=0;
+			//desmarcar();
+		
 	}
 
 	function seleccionarTodo(){
@@ -378,7 +398,7 @@
 				<td><%=apellido1%>&nbsp;</td>
 				<td><%=apellido2%>&nbsp;</td>
 				<!-- Comprobamos si vamos a mostrar colegiaciones o personas -->
-				<%if(ocultarColegiaciones){%>
+				<%if(ocultarColegiaciones&&((String)request.getAttribute("mostarNColegiado")).equals(AppConstants.DB_FALSE)){%>
 					<td><%=colegiaciones%>&nbsp;</td>
 				<%}else{%>
 					<td><%=abrev%>&nbsp;</td>
