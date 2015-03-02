@@ -511,7 +511,7 @@ public class DatosColegialesAction extends MasterAction {
 
 			// 1 y 2. guardando estado e historico
 			if (admEstados.insercionConHistorico(hashEstado, beanHis, idioma, bDesdeCGAE)) {
-				revisionesPorCambioEstadoColegial(idinstitucion, idpersona, Integer.toString(estado), miForm.getFechaEstado(), usr); // OJO: se pasa la fecha sin hora
+				admEstados.revisionesPorCambioEstadoColegial(idinstitucion, idpersona, Integer.toString(estado), miForm.getFechaEstado(), usr); // OJO: se pasa la fecha sin hora
 
 				// terminando transaccion
 				tx.commit();
@@ -860,172 +860,32 @@ public class DatosColegialesAction extends MasterAction {
 			HttpServletRequest request,
 			HttpServletResponse response) throws SIGAException
 	{
-		// Controles generales
+		
 		UsrBean usr = this.getUserBean(request);
-		String idioma = usr.getLanguage();
-		DatosColegialesForm miForm = (DatosColegialesForm) formulario;
-		CenClienteAdm admCliente = new CenClienteAdm(usr);
-		CenColegiadoAdm admColegiado = new CenColegiadoAdm(usr);
-		CenDatosColegialesEstadoAdm admEstados = new CenDatosColegialesEstadoAdm(usr);
-		CenHistoricoAdm admHistorico = new CenHistoricoAdm(usr);
-		UserTransaction tx = null;
+		CenDatosColegialesEstadoAdm admEstados=new CenDatosColegialesEstadoAdm(usr);			
+		
+		
 		String result;
 
-		// Variables
-		Vector camposOcultos;
-		String idinstitucion;
-		String idpersona;
-
-		int pendienteSJCS;
-
 		try {
-			// obteniendo datos del formulario
-			camposOcultos = miForm.getDatosTablaOcultos(0);
-			idinstitucion = miForm.getIdInstitucion();
-			idpersona = miForm.getIdPersona();
-
-			// a. comprobando si tiene cosas pendientes de SJCS (Guardias y Designas)
-			pendienteSJCS = admCliente.tieneTrabajosSJCSPendientes(new Long(idpersona), new Integer(idinstitucion),null,null);
-			if (pendienteSJCS == 3)
-				throw new SIGAException(admCliente.getError());
-
-			// obteniendo datos del estado
-			Hashtable hash = new Hashtable();
-			hash.put(CenDatosColegialesEstadoBean.C_IDPERSONA, idpersona);
-			hash.put(CenDatosColegialesEstadoBean.C_IDINSTITUCION, idinstitucion);
-			hash.put(CenDatosColegialesEstadoBean.C_FECHAESTADO, (String) camposOcultos.get(2));
-
-			// generando datos para el historico
-			Hashtable hashHist = new Hashtable();
-			hashHist.put(CenHistoricoBean.C_IDPERSONA, idpersona);
-			hashHist.put(CenHistoricoBean.C_IDINSTITUCION, idinstitucion);
-			boolean bDesdeCGAE = false;
-			if (this.getIDInstitucion(request) == 2000){
-				bDesdeCGAE = true;
-				hashHist.put(CenHistoricoBean.C_IDINSTITUCION, 2000);
-			}			
-			hashHist.put(CenHistoricoBean.C_MOTIVO, ClsConstants.HISTORICO_REGISTRO_ELIMINADO);
-			hashHist.put(CenHistoricoBean.C_IDTIPOCAMBIO, new Integer(
-					ClsConstants.TIPO_CAMBIO_HISTORICO_DATOS_COLEGIALES).toString());
-			hashHist.put(CenHistoricoBean.C_IDHISTORICO, admHistorico.getNuevoID(hash).toString());
-
-			//b. Si el estado que se está borrando no es Ejerciente/No Ejerciente 
-			//	 Se comprueba que no existan inscripciones en turnos/guardias que tengan fecha de baja=fecha del estado que se está borrando
-			Integer idEstadoB=Integer.parseInt((String) camposOcultos.get(5));
-			String fechaEstadoB=(String) camposOcultos.get(2);
+			// obteniendo datos del formulario			
+			DatosColegialesForm miForm = (DatosColegialesForm)formulario;
+			Vector camposOcultos = miForm.getDatosTablaOcultos(0);
+						
+			String message=admEstados.eliminarEstadoColegiado(miForm.getIdInstitucion(),miForm.getIdPersona(),(String) camposOcultos.get(2),usr);
 			
-			if(idEstadoB!=ClsConstants.ESTADO_COLEGIAL_EJERCIENTE){
-				
-				ScsInscripcionTurnoAdm admInscTurno = new ScsInscripcionTurnoAdm(usr);
-				ScsInscripcionGuardiaAdm admInscGuardia = new ScsInscripcionGuardiaAdm(usr);
-			
-				if((admInscTurno.getInscripcionesTurnoBajaAFecha(idinstitucion,idpersona,fechaEstadoB)>0)||(admInscGuardia.getInscripcionesGuardiaBajaAFecha(idinstitucion,idpersona,fechaEstadoB)>0))
-				{
-					throw new SIGAException (UtilidadesString.getMensajeIdioma(usr,"messages.censo.estadosColegiales.error.inscripciones.baja.fecha"));
-				}	
-			}
-			
-			// iniciando transaccion
-			tx = usr.getTransaction();
-			tx.begin();
+			if(message.contains("error"))
+				result=exito(message,request);
+			else
+				result=exitoRefresco(message,request);
 
-			// 1 y 2. borrando estado e insertando historico
-			if (admEstados.borrarConHistorico(hash, hashHist, idioma, bDesdeCGAE)) {
-				// obteniendo ultimo estado colegial
-				Vector<Row> vEstados = admColegiado.getEstadosColegiales(new Long(idpersona), new Integer(idinstitucion), idioma);
-				if (vEstados != null && vEstados.size() > 0) {
-					Row ultimoEstado = vEstados.get(0);
-					String estado = ultimoEstado.getString(CenDatosColegialesEstadoBean.C_IDESTADO);
-					String fechaEstado = ultimoEstado.getString(CenDatosColegialesEstadoBean.C_FECHAESTADO);
-					
-					// ejecutando revisiones
-					revisionesPorCambioEstadoColegial(idinstitucion, idpersona, estado, fechaEstado, usr);
-				}
-
-				// terminando transaccion
-				tx.commit();
-
-				// informando de fin correcto y de cosas SJCS pendientes
-				String message = (UtilidadesString.getMensajeIdioma(usr, "messages.deleted.success"));
-				if (pendienteSJCS == 1 || pendienteSJCS == 2)
-					message += "\r\n"
-							+ UtilidadesString.getMensajeIdioma(usr,
-									"messages.censo.estadosColegiales.avisoTareasPendientes");
-				result = exitoRefresco(message, request);
-			} else {
-				throw new SIGAException(admEstados.getError());
-			}
 		} catch (Exception e) {
 			result = "error";
-			throwExcp("messages.general.error", new String[] { "modulo.censo" }, e, tx);
+			throwExcp("messages.general.error", new String[] { "modulo.censo" }, e, null);
 		}
 
 		return result;
 	} // borrar()
-	
-	/**
-	 *  Realiza revisiones sobre el colegiado a partir del estado pasado como parametro:
-	 *  1. Revisar anticipos
-	 *  2. Revisar suscripciones a servicios
-	 *  3. Dar de baja en las colas de guardia y turno si el nuevo estado no es ejerciente
-	 *  4. Revocar certificados si el nuevo estado es de baja
-	 *  
-	 *  Hay una transaccion que se realiza por encima [this.borrar(), this.insertar()]
-	 *  
-	 * @param idinstitucion
-	 * @param idpersona
-	 * @param estado
-	 * @param fechaEstado
-	 * @param usr
-	 * @throws ClsExceptions
-	 * @throws ParseException
-	 * @throws SIGAException
-	 */
-	protected void revisionesPorCambioEstadoColegial(String idinstitucion, String idpersona, String estado, String fechaEstado, UsrBean usr) throws ClsExceptions, ParseException, SIGAException {
-		// Controles generales
-		CenPersonaAdm admPersona = new CenPersonaAdm(usr);
-		AdmCertificadosAdm admCertif = new AdmCertificadosAdm(usr);
-		String usuario = usr.getUserName();
-
-		// 1. revisando anticipos
-		String resultado1[] = EjecucionPLs.ejecutarPL_RevisionAnticiposLetrado(idinstitucion, idpersona, usuario);
-		if ((resultado1 == null) || (!resultado1[0].equals("0")))
-			throw new ClsExceptions("Error al ejecutar el PL PROC_SIGA_ACT_ANTICIPOSCLIENTE ");
-
-		// 2. revisando suscripciones a servicios
-		try {
-			fechaEstado=UtilidadesString.formatoFecha(fechaEstado, ClsConstants.DATE_FORMAT_JAVA, ClsConstants.DATE_FORMAT_SHORT_SPANISH);
-		} catch (Exception e1) {
-			// La fecha esta bien formada como dia/mes/ano
-		}
-		
-		String resultado[] = EjecucionPLs.ejecutarPL_RevisionSuscripcionesLetrado(idinstitucion, idpersona, fechaEstado, usuario);
-		if ((resultado == null) || (!resultado[0].equals("0")))
-			throw new ClsExceptions("Error al ejecutar el PL PKG_SERVICIOS_AUTOMATICOS.PROCESO_REVISION_LETRADO"+resultado[1]);
-
-		// 3. Dar de baja en las colas de guardia y turno si el nuevo estado es de baja
-		if (new Integer(estado).intValue() != ClsConstants.ESTADO_COLEGIAL_EJERCIENTE) {			
-						
-			/* JPT: Me ha costado llegar hasta aqui.
-	 		1. Expedientes > Tipos Expedientes: Crear un tipo de expediente con fase, clasificación, estados y permiso de acceso.
-	 		2. Expedientes > Gestionar Expedientes: Introducir colegiado, estado y datos obligatorios.
-	 		3. Cada vez que cambias el estado, sale una pantalla con una serie de checks:
-	 		- Baja Turno de Oficio: Da de baja al colegiado del turno de oficio.
-	 		- Baja Colegial: Cambia el estado del colegiado y da de baja las inscripciones de turno y guardia activas.
-	 		- Baja en ejercicio: Cambia el estado del colegiado y da de baja las inscripciones de turno y guardia activas.
-	 		- Inhabilitación perpetua: Cambia el estado del colegiado y da de baja las inscripciones de turno y guardia activas.
-	 		- Suspensión ejercicio: Cambia el estado del colegiado y da de baja las inscripciones de turno y guardia activas.*/			
-			ScsInscripcionTurnoAdm tAdm = new ScsInscripcionTurnoAdm(usr);
-			String sMotivo = UtilidadesString.getMensajeIdioma(usr, "gratuita.gestionInscripciones.motivo.bajaEstadoColegial");
-			tAdm.cancelarInscripcionesTurnosPersona(idpersona, idinstitucion, sMotivo, fechaEstado);
-		}
-
-		// 4. revocando certificados
-		if (new Integer(estado).intValue() > ClsConstants.ESTADO_COLEGIAL_EJERCIENTE) {
-			String nif = admPersona.obtenerNIF(idpersona);
-			admCertif.revocarCertificados(new Integer(idinstitucion), nif);
-		}
-	} // revisionesPorCambioEstadoColegial()
 	
 	/** 
 	 *  Funcion que implementa la accion buscarPor

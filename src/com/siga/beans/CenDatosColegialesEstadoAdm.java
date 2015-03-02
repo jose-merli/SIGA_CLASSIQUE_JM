@@ -5,14 +5,18 @@
  *	
  */
 package com.siga.beans;
-
+import java.text.ParseException;
 import java.util.Date;
 import java.util.Hashtable;
 
 import java.util.Vector;
 import com.atos.utils.*;
 import com.siga.Utilidades.*;
+import com.siga.general.EjecucionPLs;
 import com.siga.general.SIGAException;
+
+import javax.transaction.SystemException;
+import javax.transaction.UserTransaction;
 
 /**
 *
@@ -606,6 +610,204 @@ public class CenDatosColegialesEstadoAdm extends MasterBeanAdmVisible {
 
 		return salida;
 
-	}		
+	}	
 	
+	/**
+	 * Borra un estado colegial. En este método se hacen las validaciones
+	 * que se hacían en el action para así unificar los borrados del estado colegial
+	 * desde DatosColegiacionAction y DatosColegialesAction	 
+	 * @param  entrada - idinstitucion, idpersona, fechaEstado, usr
+	 * @param  entHistorico - entrada historico
+	 * @return  Boolean - Resultado de la operacion  
+	 * @exception  ClsExceptions  En cualquier caso de error 
+	 */
+	
+	public String eliminarEstadoColegiado(String idinstitucion,String idpersona,String fechaEstado,UsrBean usr) throws ClsExceptions, SIGAException{
+	
+		String message="";
+		UserTransaction tx = null;
+		try{
+			
+			CenClienteAdm admCliente = new CenClienteAdm(usr);
+			CenColegiadoAdm admColegiado = new CenColegiadoAdm(usr);
+			CenDatosColegialesEstadoAdm admEstados = new CenDatosColegialesEstadoAdm(usr);
+			CenHistoricoAdm admHistorico = new CenHistoricoAdm(usr);
+			
+			boolean bDesdeCGAE = false;
+			if (Integer.parseInt(usr.getLocation()) == 2000){
+				bDesdeCGAE = true;
+			}
+			
+			// a. comprobando si tiene cosas pendientes de SJCS (Guardias y Designas)
+			int pendienteSJCS = admCliente.tieneTrabajosSJCSPendientes(new Long(idpersona), new Integer(idinstitucion),null,null);
+			
+			if (pendienteSJCS == 3)
+				throw new SIGAException(admCliente.getError());
+			
+			if(bDesdeCGAE){
+				if (pendienteSJCS == 1){
+					message="error.message.guardiasEstadoColegial";
+					return message;
+				}else if (pendienteSJCS == 2){
+					message="error.message.designasEstadoColegial";
+					return message;
+				}
+			}
+			
+			// obteniendo datos del estado
+			Hashtable hash = new Hashtable();
+			hash.put(CenDatosColegialesEstadoBean.C_IDPERSONA, idpersona);
+			hash.put(CenDatosColegialesEstadoBean.C_FECHAESTADO, fechaEstado);
+			hash.put(CenDatosColegialesEstadoBean.C_IDINSTITUCION, idinstitucion);
+			
+			// generando datos para el historico
+			Hashtable hashHist = new Hashtable();
+			hashHist.put(CenHistoricoBean.C_IDPERSONA, idpersona);
+
+			if (bDesdeCGAE){
+				hashHist.put(CenHistoricoBean.C_IDINSTITUCION, "2000");
+			}else{
+				hashHist.put(CenHistoricoBean.C_IDINSTITUCION, idinstitucion);
+			}
+			
+			hashHist.put(CenHistoricoBean.C_MOTIVO, ClsConstants.HISTORICO_REGISTRO_ELIMINADO);
+			hashHist.put(CenHistoricoBean.C_IDTIPOCAMBIO, new Integer(
+					ClsConstants.TIPO_CAMBIO_HISTORICO_DATOS_COLEGIALES).toString());
+			hashHist.put(CenHistoricoBean.C_IDHISTORICO, admHistorico.getNuevoID(hashHist).toString());
+			
+				
+			
+			//b. Si el estado que se está borrando no es Ejerciente/No Ejerciente 
+			//	 Se comprueba que no existan inscripciones en turnos/guardias que tengan fecha de baja=fecha del estado que se está borrando
+			CenDatosColegialesEstadoBean beanDatos = (CenDatosColegialesEstadoBean) this.selectByPK(hash).get(0);
+			Integer idEstadoB=beanDatos.getIdEstado();
+						
+			if(idEstadoB!=ClsConstants.ESTADO_COLEGIAL_EJERCIENTE){
+				
+				ScsInscripcionTurnoAdm admInscTurno = new ScsInscripcionTurnoAdm(usr);
+				ScsInscripcionGuardiaAdm admInscGuardia = new ScsInscripcionGuardiaAdm(usr);
+			
+				if((admInscTurno.getInscripcionesTurnoBajaAFecha(idinstitucion,idpersona,fechaEstado)>0)||(admInscGuardia.getInscripcionesGuardiaBajaAFecha(idinstitucion,idpersona,fechaEstado)>0))
+				{
+					message = "messages.censo.estadosColegiales.error.inscripciones.baja.fecha";
+					return message;
+				}	
+			}
+			
+			// iniciando transaccion
+			tx = usr.getTransaction();
+			tx.begin();
+
+			// 1 y 2. borrando estado e insertando historico
+			if (admEstados.borrarConHistorico(hash, hashHist, usr.getLanguage(), bDesdeCGAE)) {
+				// obteniendo ultimo estado colegial
+				Vector<Row> vEstados = admColegiado.getEstadosColegiales(new Long(idpersona), new Integer(idinstitucion), usr.getLanguage());
+				if (vEstados != null && vEstados.size() > 0) {
+					Row ultimoEstado = vEstados.get(0);
+					String estado = ultimoEstado.getString(CenDatosColegialesEstadoBean.C_IDESTADO);
+					String fechaEstadoU = ultimoEstado.getString(CenDatosColegialesEstadoBean.C_FECHAESTADO);
+					
+					// ejecutando revisiones
+					revisionesPorCambioEstadoColegial(idinstitucion, idpersona, estado, fechaEstadoU, usr);
+				}
+
+				// terminando transaccion
+				tx.commit();
+
+				// informando de fin correcto y de cosas SJCS pendientes
+				if (pendienteSJCS == 1 || pendienteSJCS == 2){
+					message = (UtilidadesString.getMensajeIdioma(usr, "messages.deleted.success"));
+					message += "\r\n"
+							+ UtilidadesString.getMensajeIdioma(usr,
+									"messages.censo.estadosColegiales.avisoTareasPendientes");
+				}else{
+					message="messages.deleted.success";
+				}
+				
+			} else {
+				if (tx!=null) {
+					tx.rollback();
+				}
+				throw new SIGAException(admEstados.getError());
+			}
+			
+		
+		} catch (Exception e) {
+			if (tx!=null) {
+				try {
+					tx.rollback();
+				} catch (Exception e1) {
+					e1.printStackTrace();
+				} 
+			}
+			throw new ClsExceptions(e,"Error al eliminar el estado del colegiado. ");
+		}
+		
+		return message;
+	
+	}
+	
+	/**
+	 *  Realiza revisiones sobre el colegiado a partir del estado pasado como parametro:
+	 *  1. Revisar anticipos
+	 *  2. Revisar suscripciones a servicios
+	 *  3. Dar de baja en las colas de guardia y turno si el nuevo estado no es ejerciente
+	 *  4. Revocar certificados si el nuevo estado es de baja
+	 *  
+	 *  Hay una transaccion que se realiza por encima [this.borrar(), this.insertar()]
+	 *  
+	 * @param idinstitucion
+	 * @param idpersona
+	 * @param estado
+	 * @param fechaEstado
+	 * @param usr
+	 * @throws ClsExceptions
+	 * @throws ParseException
+	 * @throws SIGAException
+	 */
+	public void revisionesPorCambioEstadoColegial(String idinstitucion, String idpersona, String estado, String fechaEstado, UsrBean usr) throws ClsExceptions, ParseException, SIGAException {
+		// Controles generales
+		CenPersonaAdm admPersona = new CenPersonaAdm(usr);
+		AdmCertificadosAdm admCertif = new AdmCertificadosAdm(usr);
+		String usuario = usr.getUserName();
+
+		// 1. revisando anticipos
+		String resultado1[] = EjecucionPLs.ejecutarPL_RevisionAnticiposLetrado(idinstitucion, idpersona, usuario);
+		if ((resultado1 == null) || (!resultado1[0].equals("0")))
+			throw new ClsExceptions("Error al ejecutar el PL PROC_SIGA_ACT_ANTICIPOSCLIENTE ");
+
+		// 2. revisando suscripciones a servicios
+		try {
+			fechaEstado=UtilidadesString.formatoFecha(fechaEstado, ClsConstants.DATE_FORMAT_JAVA, ClsConstants.DATE_FORMAT_SHORT_SPANISH);
+		} catch (Exception e1) {
+			// La fecha esta bien formada como dia/mes/ano
+		}
+		
+		String resultado[] = EjecucionPLs.ejecutarPL_RevisionSuscripcionesLetrado(idinstitucion, idpersona, fechaEstado, usuario);
+		if ((resultado == null) || (!resultado[0].equals("0")))
+			throw new ClsExceptions("Error al ejecutar el PL PKG_SERVICIOS_AUTOMATICOS.PROCESO_REVISION_LETRADO"+resultado[1]);
+
+		// 3. Dar de baja en las colas de guardia y turno si el nuevo estado es de baja
+		if (new Integer(estado).intValue() != ClsConstants.ESTADO_COLEGIAL_EJERCIENTE) {			
+						
+			/* JPT: Me ha costado llegar hasta aqui.
+	 		1. Expedientes > Tipos Expedientes: Crear un tipo de expediente con fase, clasificación, estados y permiso de acceso.
+	 		2. Expedientes > Gestionar Expedientes: Introducir colegiado, estado y datos obligatorios.
+	 		3. Cada vez que cambias el estado, sale una pantalla con una serie de checks:
+	 		- Baja Turno de Oficio: Da de baja al colegiado del turno de oficio.
+	 		- Baja Colegial: Cambia el estado del colegiado y da de baja las inscripciones de turno y guardia activas.
+	 		- Baja en ejercicio: Cambia el estado del colegiado y da de baja las inscripciones de turno y guardia activas.
+	 		- Inhabilitación perpetua: Cambia el estado del colegiado y da de baja las inscripciones de turno y guardia activas.
+	 		- Suspensión ejercicio: Cambia el estado del colegiado y da de baja las inscripciones de turno y guardia activas.*/			
+			ScsInscripcionTurnoAdm tAdm = new ScsInscripcionTurnoAdm(usr);
+			String sMotivo = UtilidadesString.getMensajeIdioma(usr, "gratuita.gestionInscripciones.motivo.bajaEstadoColegial");
+			tAdm.cancelarInscripcionesTurnosPersona(idpersona, idinstitucion, sMotivo, fechaEstado);
+		}
+
+		// 4. revocando certificados
+		if (new Integer(estado).intValue() > ClsConstants.ESTADO_COLEGIAL_EJERCIENTE) {
+			String nif = admPersona.obtenerNIF(idpersona);
+			admCertif.revocarCertificados(new Integer(idinstitucion), nif);
+		}
+	} // revisionesPorCambioEstadoColegial()
 }

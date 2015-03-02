@@ -639,66 +639,26 @@ public class DatosColegiacionAction extends MasterAction {
 	
 	protected String borrar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		
-		String result="error";				
-		UserTransaction tx=null;
-		CenClienteAdm admCliente = new CenClienteAdm(this.getUserBean(request));
+		String result;				
+		UsrBean usr = (UsrBean) request.getSession().getAttribute("USRBEAN");;
+		CenDatosColegialesEstadoAdm admEstados=new CenDatosColegialesEstadoAdm(usr);			
 		
 		try {
 			Hashtable hash = new Hashtable();		
 			Vector camposOcultos = new Vector();
 			
-
-			// Obtengo usuario y creo manejadores para acceder a las BBDD
-			UsrBean usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
-			CenDatosColegialesEstadoAdm admin=new CenDatosColegialesEstadoAdm(this.getUserBean(request));
-			CenHistoricoAdm adminHist=new CenHistoricoAdm(this.getUserBean(request));			
- 			
 			camposOcultos = (Vector)formulario.getDatosTablaOcultos(0);		
-
-			// Cargo la tabla hash con los valores del formulario para insertar en la BBDD
-			hash.put(CenDatosColegialesEstadoBean.C_IDPERSONA, camposOcultos.get(0));			
-			hash.put(CenDatosColegialesEstadoBean.C_IDINSTITUCION, camposOcultos.get(1));
-			hash.put(CenDatosColegialesEstadoBean.C_FECHAESTADO, camposOcultos.get(5));
-												
-			// Cargo una nueva tabla hash para insertar en la tabla de historico
-			Hashtable hashHist = new Hashtable();			
-
-			// Cargo los valores obtenidos del formulario referentes al historico			
-			hashHist.put(CenHistoricoBean.C_IDPERSONA, camposOcultos.get(0));
-			boolean bDesdeCGAE = false;
-			if (this.getIDInstitucion(request) == 2000){
-				bDesdeCGAE = true;
-				hashHist.put(CenHistoricoBean.C_IDINSTITUCION, "2000");
-			}else
-				hashHist.put(CenHistoricoBean.C_IDINSTITUCION, camposOcultos.get(1));			
-			hashHist.put(CenHistoricoBean.C_MOTIVO, ClsConstants.HISTORICO_REGISTRO_ELIMINADO);
-			hashHist.put(CenHistoricoBean.C_IDTIPOCAMBIO, new Integer(ClsConstants.TIPO_CAMBIO_HISTORICO_DATOS_COLEGIALES).toString());
 			
+			String message=admEstados.eliminarEstadoColegiado((String)camposOcultos.get(1),(String)camposOcultos.get(0),(String)camposOcultos.get(5),usr);
 			
-			//Control de errores:
-			int error = admCliente.tieneTrabajosSJCSPendientes(new Long((String)camposOcultos.get(0)), new Integer((String)camposOcultos.get(1)),null,null);
-			if (error == 1)
-				return exito("error.message.guardiasEstadoColegial", request);
-			else if (error == 2)
-				return exito("error.message.designasEstadoColegial", request);
+			if(message.contains("error"))
+				result=exito(message,request);
+			else
+				result=exitoRefresco(message,request);
 			
-			
-			// Comienzo control de transacciones
-			tx = usr.getTransaction();
-			tx.begin();	
-
-			// Asigno el IDHISTORICO			
-			hashHist.put(CenHistoricoBean.C_IDHISTORICO, adminHist.getNuevoID(hash).toString());			
-
-			if (admin.borrarConHistorico(hash,hashHist, this.getLenguaje(request), bDesdeCGAE)){
-				tx.commit();
-				result=exitoRefresco("messages.deleted.success",request);
-			}	
-			else{
-				throw new SIGAException (admin.getError());
-			}
 		} 
 		catch (Exception e) { 
+			result="error";
 			throwExcp("messages.general.error",new String[] {"modulo.censo"},e,null); 
 		}					
 		return result;					
@@ -706,49 +666,6 @@ public class DatosColegiacionAction extends MasterAction {
 
 	protected String editar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		
-		/*String result = "editar";
-		try { 
-			DatosColegiacionForm form = (DatosColegiacionForm) formulario;
-
-			Vector ocultos = new Vector();
-			ocultos = (Vector)formulario.getDatosTablaOcultos(0);
-			CenDatosColegialesEstadoBean infoEntrada=new CenDatosColegialesEstadoBean();	
-			CenColegiadoAdm colegiadoAdm = new CenColegiadoAdm(this.getUserName(request));
-		
-			int idInstitucionPersona = new Integer((String)ocultos.get(1)).intValue();
-			long idPersona = new Long((String)ocultos.get(3)).longValue();
-			UsrBean user=(UsrBean)request.getSession().getAttribute("USRBEAN");			
-			
-			CenDatosColegialesEstadoAdm admin=new CenDatosColegialesEstadoAdm(this.getUserName(request),user,idInstitucionPersona,idPersona);			
-			
-			// Mostrar valores del formulario en MantenimientoProductos (posible traslado a editar o abrir avanzado)
-			ocultos = (Vector)formulario.getDatosTablaOcultos(0);
-			
-			// Obtener los datos colegiales del usuario
-			infoEntrada=(CenDatosColegialesEstadoBean)admin.obtenerEntradaEstadoColegial((String)ocultos.get(3),(String)ocultos.get(1),(String)ocultos.get(5));			
-			
-			Vector v = colegiadoAdm.getEstadosColegiales(new Long(idPersona), new Integer(idInstitucionPersona));
-		    if (v.size()<1)
-				request.getSession().setAttribute("DATABACKUP_EST",new Row());
-			else
-				request.getSession().setAttribute("DATABACKUP_EST",v.firstElement());
-			// Paso valores originales del registro al session para tratar siempre copn los mismos valores
-			// y no los de posibles modificaciones
-			//request.getSession().setAttribute("DATABACKUP_ESTADOS", infoEntrada);
-
-			// Paso valores para dar valores iniciales al formulario			
-			request.setAttribute("container", infoEntrada);
-			request.setAttribute("NOMBRE", (String)ocultos.get(4));
-			request.setAttribute("NUMERO", (String)ocultos.get(0));			
-			
-			// Paso el origen			
-			Object remitente=(Object)"modificar";
-			request.setAttribute("modelo",remitente);			
-		} 
-		catch (Exception e) { 
-			throwExcp("messages.general.error",new String[] {"modulo.censo"},e,null); 
-		}					
-		return (result);*/
 		String numero = "";
 		String nombre = "";
 		String result = "editar";
