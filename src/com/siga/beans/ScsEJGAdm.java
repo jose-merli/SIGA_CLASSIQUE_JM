@@ -3561,7 +3561,8 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 				" EJG.ANIO, " +
 				" EJG.NUMEJG as NUMERO, " +
 				" (EJG.ANIO || '/' || EJG.NUMEJG) as NUMERO_EJG, " +
-				" EJG.IDPERSONA, " +			
+				" EJG.IDPERSONA, " +		
+			    " EJG.IDPERSONAJG AS IDSOLICITANTEPRINCIPAL,"+
 				" EJG.CALIDAD, " +			
 				" (SELECT Descripcion FROM Scs_Tipoencalidad WHERE Idinstitucion = Ejg.Idinstitucion AND Idtipoencalidad = Ejg.Idtipoencalidad) as CALIDAD_DJ_DESCRIPCION, " +  			
 				" EJG.OBSERVACIONES AS ASUNTO_DEFENSA_JURIDICA, " +
@@ -4580,8 +4581,9 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			} 
 			
 			// la siguiente linea es un parche: desde SMSs no viene el tipoDestinatarioInforme
-			tipoDestinatarioInforme = (tipoDestinatarioInforme == null) ? tipoDestinatario : tipoDestinatarioInforme;
+			tipoDestinatarioInforme = (tipoDestinatarioInforme == null) ? tipoDestinatario : tipoDestinatarioInforme;	
 		}
+		
 
 		try {
 
@@ -4673,7 +4675,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
                 }//Fin si el EJG tiene relacionada alguna designa
                 //Fin Mod MJM se incluyen las etiquetas del informe de designas
 
-				if(tipoDestinatarioInforme.equals(AdmInformeBean.TIPODESTINATARIO_CENPERSONA)){
+				if(tipoDestinatarioInforme ==null || tipoDestinatarioInforme.equals(AdmInformeBean.TIPODESTINATARIO_CENPERSONA)){
 					if(registro.get("DES_ANIO")!=null && !((String)registro.get("DES_ANIO")).equals("") ){
 						Vector colegiadoDestinatarios = getLetradoDesignadoEjg((String)registro.get("DES_INSTITUCION"), (String)registro.get("DES_IDTURNO"), (String)registro.get("DES_ANIO"), (String)registro.get("DES_NUMERO"));
 						if(colegiadoDestinatarios!=null && colegiadoDestinatarios.size()>0){
@@ -4851,7 +4853,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 						hastejg.put(ScsEJGBean.C_NUMERO,numeroEjg);					
 						if(scsPersonaJGAdm==null)
 							scsPersonaJGAdm = new ScsPersonaJGAdm(this.usrbean);	
-
+//						String idSolicitantePrincipal = (String)registro.get("IDPERSONAJG");
 						
 						actualizarDefendidos(idInstitucion, tipoEjg, anioEjg, numeroEjg, idPersonaJG, vDefendidos, idioma, idiomainforme, registro);
 						
@@ -4872,21 +4874,20 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 						registro.put("PARRAFO_LETRADO_PROCURADOR", "");
 
 						registro.put("CODIGOLENGUAJE", idiomainforme);
-						registro.put("NIF_DEFENDIDO", "");
-						registro.put("NOMBRE_DEFENDIDO", "");
-						registro.put("FECHANAC_DEFENDIDO", "");
-						registro.put("ESTADOCIVIL_DEFENDIDO", "");
-						registro.put("DOMICILIO_DEFENDIDO", "");
-						registro.put("CP_DEFENDIDO", "");
-						registro.put("POBLACION_DEFENDIDO", "");
-						registro.put("TELEFONO1_DEFENDIDO", "");
-						registro.put("PROVINCIA_DEFENDIDO", "");
-						registro.put("SEXO_INTERESADO", "");
-						registro.put("LENGUAJE_INTERESADO", "");
-						registro.put("CALIDAD_INTERESADO", "");
-						//registro.put("CODIGOLENGUAJE", "");
-						registro.put("PROFESION_DEFENDIDO", "");
-						registro.put("REGIMENCONYUGAL_DEFENDIDO", "");
+//						registro.put("NIF_DEFENDIDO", "");
+//						registro.put("NOMBRE_DEFENDIDO", "");
+//						registro.put("FECHANAC_DEFENDIDO", "");
+//						registro.put("ESTADOCIVIL_DEFENDIDO", "");
+//						registro.put("DOMICILIO_DEFENDIDO", "");
+//						registro.put("CP_DEFENDIDO", "");
+//						registro.put("POBLACION_DEFENDIDO", "");
+//						registro.put("TELEFONO1_DEFENDIDO", "");
+//						registro.put("PROVINCIA_DEFENDIDO", "");
+//						registro.put("SEXO_INTERESADO", "");
+//						registro.put("LENGUAJE_INTERESADO", "");
+//						registro.put("CALIDAD_INTERESADO", "");
+//						registro.put("PROFESION_DEFENDIDO", "");
+//						registro.put("REGIMENCONYUGAL_DEFENDIDO", "");
 
 						registro.put("NOMBRE_CONTRARIO", "");
 						registro.put("DOMICILIO_CONTRARIO", "");
@@ -5044,20 +5045,20 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 					Vector contrariosEjgVector = getContrariosEjg(idInstitucion, tipoEjg, anioEjg, numeroEjg,idContrario);
 					registro.put("PARRAFO_LETRADO_PROCURADOR", "");
 					registro.put("CODIGOLENGUAJE", idiomainforme);
-					registro.put("NIF_DEFENDIDO", "");
-					registro.put("NOMBRE_DEFENDIDO", "");
-					registro.put("FECHANAC_DEFENDIDO", "");
-					registro.put("ESTADOCIVIL_DEFENDIDO", "");
-					registro.put("DOMICILIO_DEFENDIDO", "");
-					registro.put("CP_DEFENDIDO", "");
-					registro.put("POBLACION_DEFENDIDO", "");
-					registro.put("TELEFONO1_DEFENDIDO", "");
-					registro.put("PROVINCIA_DEFENDIDO", "");
-					registro.put("SEXO_INTERESADO", "");
-					registro.put("LENGUAJE_INTERESADO", "");
-					registro.put("CALIDAD_INTERESADO", "");
-					registro.put("PROFESION_DEFENDIDO", "");
-					registro.put("REGIMENCONYUGAL_DEFENDIDO", "");
+//					registro.put("NIF_DEFENDIDO", "");
+//					registro.put("NOMBRE_DEFENDIDO", "");
+//					registro.put("FECHANAC_DEFENDIDO", "");
+//					registro.put("ESTADOCIVIL_DEFENDIDO", "");
+//					registro.put("DOMICILIO_DEFENDIDO", "");
+//					registro.put("CP_DEFENDIDO", "");
+//					registro.put("POBLACION_DEFENDIDO", "");
+//					registro.put("TELEFONO1_DEFENDIDO", "");
+//					registro.put("PROVINCIA_DEFENDIDO", "");
+//					registro.put("SEXO_INTERESADO", "");
+//					registro.put("LENGUAJE_INTERESADO", "");
+//					registro.put("CALIDAD_INTERESADO", "");
+//					registro.put("PROFESION_DEFENDIDO", "");
+//					registro.put("REGIMENCONYUGAL_DEFENDIDO", "");
 
 					if(contrariosEjgVector!=null && contrariosEjgVector.size()>0){
 						for (int k = 0; k < contrariosEjgVector.size(); k++) {
@@ -5346,21 +5347,21 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 						registro.put("PARRAFO_LETRADO_PROCURADOR", "");
 
 						registro.put("CODIGOLENGUAJE", idiomainforme);
-						registro.put("NIF_DEFENDIDO", "");
-						registro.put("NOMBRE_DEFENDIDO", "");
-						registro.put("FECHANAC_DEFENDIDO", "");
-						registro.put("ESTADOCIVIL_DEFENDIDO", "");
-						registro.put("DOMICILIO_DEFENDIDO", "");
-						registro.put("CP_DEFENDIDO", "");
-						registro.put("POBLACION_DEFENDIDO", "");
-						registro.put("TELEFONO1_DEFENDIDO", "");
-						registro.put("PROVINCIA_DEFENDIDO", "");
-						registro.put("SEXO_INTERESADO", "");
-						registro.put("LENGUAJE_INTERESADO", "");
-						registro.put("CALIDAD_INTERESADO", "");
-						//registro.put("CODIGOLENGUAJE", "");
-						registro.put("PROFESION_DEFENDIDO", "");
-						registro.put("REGIMENCONYUGAL_DEFENDIDO", "");
+//						registro.put("NIF_DEFENDIDO", "");
+//						registro.put("NOMBRE_DEFENDIDO", "");
+//						registro.put("FECHANAC_DEFENDIDO", "");
+//						registro.put("ESTADOCIVIL_DEFENDIDO", "");
+//						registro.put("DOMICILIO_DEFENDIDO", "");
+//						registro.put("CP_DEFENDIDO", "");
+//						registro.put("POBLACION_DEFENDIDO", "");
+//						registro.put("TELEFONO1_DEFENDIDO", "");
+//						registro.put("PROVINCIA_DEFENDIDO", "");
+//						registro.put("SEXO_INTERESADO", "");
+//						registro.put("LENGUAJE_INTERESADO", "");
+//						registro.put("CALIDAD_INTERESADO", "");
+//						//registro.put("CODIGOLENGUAJE", "");
+//						registro.put("PROFESION_DEFENDIDO", "");
+//						registro.put("REGIMENCONYUGAL_DEFENDIDO", "");
 
 						registro.put("NOMBRE_CONTRARIO", "");
 						registro.put("DOMICILIO_CONTRARIO", "");
@@ -5433,13 +5434,19 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 		if(vDefendidos!=null && vDefendidos.size()>0){
 			for (int k = 0; k < vDefendidos.size(); k++) {
 				Hashtable registroDefendido = (Hashtable) vDefendidos.get(k);
+//				String idSolicitantePrincipal = (String)registro.get("IDSOLICITANTEPRINCIPAL");
+				if(registroDefendido.get("IDPERSONA")!=null && registro.get("IDSOLICITANTEPRINCIPAL")!=null 
+						&& ((String)registroDefendido.get("IDPERSONA")).equals((String)registro.get("IDSOLICITANTEPRINCIPAL"))){
+					registro.putAll(registroDefendido);
+				}
+				
 				if(((String)( ((Hashtable) vDefendidos.get(0)).get("IDPERSONA"))).equalsIgnoreCase(""))continue;
 				String idPersona=(String)registroDefendido.get("IDPERSONA");						
 	
 				registroDefendido  = getregistrodatosEjg(idInstitucion,tipoEjg,anioEjg,numeroEjg,idioma,idPersonaJG,registro,false);
 				/**Para saaber en que idioma se tiene que imprimer la carta de oficio**/
 				registroDefendido.put("CODIGOLENGUAJE", idiomaInforme);
-	
+				
 				try{   // aunque no tenga datos y puede dar error al comunicar a un NO defendido
 					if (idPersona!=null&&(!idPersona.trim().equals(""))){
 						ScsUnidadFamiliarEJGAdm admUniFam = new ScsUnidadFamiliarEJGAdm(this.usrbean);
