@@ -3851,10 +3851,16 @@ public class EnvioInformesGenericos extends MasterReport {
 
 				envio.generarEnvioBean(destProgramInfBean.getIdPersona().toString(), destProgramInfBean.getTipoDestinatario(), vDocumentos, ejgBean);
 				
-			} else {
-			
-			
-			
+			}else if (programInfBean.getIdTipoInforme().equals(EnvioInformesGenericos.comunicacionesDesigna)) {
+				Hashtable htDatosInformeFinal = getDatosInformeFinal(datosInforme, usrBean);
+				Vector datosInformeDesigna = (Vector) htDatosInformeFinal.get("row");
+				ScsDesignaBean designaBean = new ScsDesignaBean();
+				
+				if(datosInformeDesigna!=null && datosInformeDesigna.size()>0)
+					designaBean.setOriginalHash((Hashtable) datosInformeDesigna.get(0));
+				envio.generarEnvioBean(destProgramInfBean.getIdPersona().toString(),destProgramInfBean.getTipoDestinatario(), vDocumentos,designaBean);
+			}
+			else {
 				envio.generarEnvio(destProgramInfBean.getIdPersona().toString(),tipoDestinatario, vDocumentos);
 			}
 		}
