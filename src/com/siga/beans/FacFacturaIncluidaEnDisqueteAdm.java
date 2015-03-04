@@ -7,7 +7,6 @@
 package com.siga.beans;
 
 import java.util.Hashtable;
-import java.util.Vector;
 
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ComodinBusquedas;
@@ -230,8 +229,6 @@ public class FacFacturaIncluidaEnDisqueteAdm extends MasterBeanAdministrador {
 	 * @throws ClsExceptions
 	 */
 	public PaginadorCaseSensitive getRecibosParaDevolucion(String idInstitucion,String fechaDesde,String fechaHasta,String numRecibo,String titular, String numRemesa, String numFactura, String destinatario) throws ClsExceptions {
-		Vector v = new Vector();
-		RowsContainer rc = null;
 		try{
 			String sql = " select " + 
 				" " + FacFacturaIncluidaEnDisqueteBean.T_NOMBRETABLA + "." + FacFacturaIncluidaEnDisqueteBean.C_IDDISQUETECARGOS + ", " +
@@ -295,32 +292,20 @@ public class FacFacturaIncluidaEnDisqueteAdm extends MasterBeanAdministrador {
 			
 			sql += " ORDER BY " + FacFacturaIncluidaEnDisqueteBean.T_NOMBRETABLA + "." + FacFacturaIncluidaEnDisqueteBean.C_IDRECIBO + " DESC ";
 			
-				
-				
-           /* rc = this.find(sql);
- 			if (rc!=null) {
-				for (int i = 0; i < rc.size(); i++)	{
-					Row fila = (Row) rc.get(i);
-					Hashtable registro = (Hashtable)fila.getRow(); 
-					if (registro != null) 
-						v.add(registro);
-				}
-			}*/
 			PaginadorCaseSensitive paginador = new PaginadorCaseSensitive(sql);				
-				int totalRegistros = paginador.getNumeroTotalRegistros();
+			int totalRegistros = paginador.getNumeroTotalRegistros();
 				
-				if (totalRegistros==0){					
-					paginador =null;
-				}
-	 
-		       
+			if (totalRegistros==0){					
+				paginador = null;
 				
-				return paginador;
+			} else {
+				paginador.setQueryInicio(sql);
+			}
+				
+			return paginador;
 
-		}
-		catch(Exception e) {
+		} catch(Exception e) {
 			throw new ClsExceptions (e, "Error en getRecibosParaDevolucion");
 		}
-	//	return v;	
 	}
 }

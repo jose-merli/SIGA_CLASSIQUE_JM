@@ -6,6 +6,8 @@
 package com.siga.facturacion.action;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Vector;
@@ -29,6 +31,7 @@ import com.siga.beans.CenPersonaAdm;
 import com.siga.beans.FacFacturaAdm;
 import com.siga.beans.FacFacturaBean;
 import com.siga.beans.FacFacturaIncluidaEnDisqueteAdm;
+import com.siga.beans.FacFacturaIncluidaEnDisqueteBean;
 import com.siga.beans.FacLineaDevoluDisqBancoAdm;
 import com.siga.beans.FacLineaDevoluDisqBancoBean;
 import com.siga.beans.FacMotivoDevolucionAdm;
@@ -41,13 +44,19 @@ import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
 import com.siga.informes.form.MantenimientoInformesForm;
 
-
 /**
  * Clase Action de struts para el mantenimiento de devoluciones manuales<b>
  * Implementa las diferentes acciones del caso de uso.
  * @author RGG AtosOrigin
  */
 public class DevolucionesManualesAction extends MasterAction{
+	// Atencion!!Tenr en cuenta que el orden de estas claves es el mismo oden que se va a seguir al obtener los adtos en la jsp. Ver metodos actualizarSelecionados y aniadeClaveBusqueda(2) de la super clase(MasterAction)
+	final String[] clavesBusqueda = {
+			FacFacturaIncluidaEnDisqueteBean.C_IDDISQUETECARGOS,
+			FacFacturaIncluidaEnDisqueteBean.C_IDFACTURAINCLUIDAENDISQUETE,
+			FacFacturaIncluidaEnDisqueteBean.C_IDFACTURA,
+			FacFacturaIncluidaEnDisqueteBean.C_IDRECIBO,
+			"IDMOTIVO"};
 
 	protected ActionForward executeInternal (ActionMapping mapping, ActionForm formulario, HttpServletRequest request, HttpServletResponse response)throws SIGAException {
 
@@ -62,15 +71,21 @@ public class DevolucionesManualesAction extends MasterAction{
 
 			String accion = miForm.getModo();
 
-			//La primera vez que se carga el formulario 
-			// Abrir
+			//La primera vez que se carga el formulario o Abrir
 			if (accion == null || accion.equalsIgnoreCase("") || accion.equalsIgnoreCase("abrir")) {
+				DevolucionesManualesForm formDevoluciones = (DevolucionesManualesForm) miForm;
+				formDevoluciones.reset(new String[]{"registrosSeleccionados","datosPaginador","seleccionarTodos"});
+				formDevoluciones.reset(mapping,request);
+				request.getSession().removeAttribute("DATAPAGINADOR");
 				mapDestino = abrir(mapping, miForm, request, response);						
 				
 			} else if (accion.equalsIgnoreCase("abrirConParametros")) {
 				mapDestino = abrirConParametros(mapping, miForm, request, response);
 				
-			} else if (accion.equalsIgnoreCase("buscar")) {
+			} else if (accion.equalsIgnoreCase("buscarInicio")) {
+				DevolucionesManualesForm formDevoluciones = (DevolucionesManualesForm) miForm;
+				formDevoluciones.reset(new String[]{"registrosSeleccionados","datosPaginador","seleccionarTodos"});
+				request.getSession().removeAttribute("DATAPAGINADOR");
 				mapDestino = buscar(mapping, miForm, request, response);
 				
 			} else if (accion.equalsIgnoreCase("download")) {
@@ -194,6 +209,8 @@ public class DevolucionesManualesAction extends MasterAction{
 	
 	/**
 	 * Implemente la accion de la devolucion manual de una factura
+	 * 
+	 * Valores = idDisqueteCargos||idFacturaIncluidaEnDisquete||idFactura||idRecibo||idMotivo, ...
 	 */
 	protected String insertar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		UserTransaction tx 	= null;
@@ -207,7 +224,11 @@ public class DevolucionesManualesAction extends MasterAction{
 			String aplicaComisiones = form.getAplicarComisiones();
 			String fechaDevolucion = form.getFechaDevolucion();
 			String fechaDevolucionHora = form.getFechaDevolucion(); 
-			String recibos = form.getRecibos();
+			String recibos = form.getRecibos(); // idDisqueteCargos||idFacturaIncluidaEnDisquete||idFactura||idRecibo||idMotivo, ...
+			
+			if (recibos.length() > 4000) { // 4000 es el maximo de caracteres que admite Oracle para una variable VARCHAR2
+				throw new SIGAException("facturacion.devolucionManual.error.superaLimiteMaximoDevoluciones");
+			}
 			
 			if (fechaDevolucion != null && !fechaDevolucion.equals("") && fechaDevolucion.length()==10) {
 				try { 
@@ -277,6 +298,8 @@ public class DevolucionesManualesAction extends MasterAction{
 
 	/**
 	 * Implementa la accion de procesar las devoluciones manuales mediante el paso previo de obtener por pantalla los datos de cabecera de devolucion.  
+	 * 
+	 * Valores = idDisqueteCargos||idFacturaIncluidaEnDisquete||idFactura||idRecibo||idMotivo, ...
 	 */
 	protected String modificar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		try {			
@@ -284,11 +307,15 @@ public class DevolucionesManualesAction extends MasterAction{
 			Integer idInstitucion = new Integer(user.getLocation());	
 			
 			DevolucionesManualesForm form = (DevolucionesManualesForm) formulario;
-			String datosFacturas = form.getFacturas();
+			String sFacturas = form.getRecibos(); // idDisqueteCargos||idFacturaIncluidaEnDisquete||idFactura||idRecibo||idMotivo, ...
 			String ultimaFechaPagosFacturas = "";
 			
-			if (datosFacturas != null && !datosFacturas.equals("")) {
-				String arrayFacturas[] = datosFacturas.split(";");
+			if (sFacturas.length() > 4000) { // 4000 es el maximo de caracteres que admite Oracle para una variable VARCHAR2
+				throw new SIGAException("facturacion.devolucionManual.error.superaLimiteMaximoDevoluciones");
+			}			
+			
+			if (sFacturas != null && !sFacturas.equals("")) {
+				String[] arrayFacturas = sFacturas.split(",");
 				
 				if (arrayFacturas.length<1) {
 					throw new SIGAException("Error al obtener las facturas");
@@ -303,13 +330,13 @@ public class DevolucionesManualesAction extends MasterAction{
 						String datosFactura = arrayFacturas[i];
 						
 						if (datosFactura != null && !datosFactura.equals("")) {
-							String arrayFactura[] = datosFactura.split("%%");
+							String arrayFactura[] = datosFactura.split("\\|\\|");
 							
 							if (arrayFactura.length<1) {
 								throw new SIGAException("Error al obtener la factura");
 							};
 							
-							String idFactura = arrayFactura[0];
+							String idFactura = arrayFactura[2];
 							
 							if (i==0) {
 								listaIdsFacturas += idFactura;						
@@ -344,27 +371,59 @@ public class DevolucionesManualesAction extends MasterAction{
 
 
 	/**
-	 * Implementa la accion de buscar los recibos de banco de las facturas emitidas segun criterios de busqueda.  
+	 * Implementa la accion de buscar los recibos de banco de las facturas emitidas segun criterios de busqueda.
+	 * 
+	 * Seleccionados = idDisqueteCargos||idFacturaIncluidaEnDisquete||idFactura||idRecibo||idMotivo, ...
 	 */
 	protected String buscar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		try {
 			UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");		
 			String idInstitucion = user.getLocation();
 			DevolucionesManualesForm form = (DevolucionesManualesForm) formulario;
+			boolean isSeleccionarTodos = form.getSeleccionarTodos()!=null && !form.getSeleccionarTodos().equals("");			
+			
+			ArrayList clavesRegSeleccinados = (ArrayList) form.getRegistrosSeleccionados();
+			String seleccionados = request.getParameter("Seleccion"); // idDisqueteCargos||idFacturaIncluidaEnDisquete||idFactura||idRecibo||idMotivo, ...
+			
+			if (seleccionados!=null && !seleccionados.equals("")) {
+				ArrayList alRegistros = actualizarSelecionados(this.clavesBusqueda, seleccionados, clavesRegSeleccinados);
+				if (alRegistros != null) {
+					clavesRegSeleccinados = alRegistros;
+					form.setRegistrosSeleccionados(clavesRegSeleccinados);
+				}
+			}			
+			
+			// Obtiene los motivos de devolucion
+			FacMotivoDevolucionAdm admMotivoDevolucion = new FacMotivoDevolucionAdm(user);
+			Vector vMotivos = admMotivoDevolucion.obtenerMotivosDevolucion(user.getLanguage());
+			request.setAttribute("vMotivos", vMotivos);		
+			
+			// obtengo el motivo por defecto de parametros.
+			GenParametrosAdm admParametros = new GenParametrosAdm(user);
+			String motivo = admParametros.getValor(idInstitucion,"FAC","MOTIVO_DEVOLUCION","8");
+			request.setAttribute("motivoDevolucion", motivo);			
 				
-			if (request.getSession().getAttribute("DATAPAGINADOR")!=null){ 
-				HashMap databackup = (HashMap)request.getSession().getAttribute("DATAPAGINADOR");
+			HashMap<String,Object> databackup = form.getDatosPaginador();
+			if (databackup!=null && databackup.get("paginador")!=null && !isSeleccionarTodos){ 
 				PaginadorCaseSensitive paginador = (PaginadorCaseSensitive)databackup.get("paginador");
-				Vector datos = new Vector();
+				Vector datos=new Vector();
 					
 				//Si no es la primera llamada, obtengo la página del request y la busco con el paginador
 				String pagina = (String)request.getParameter("pagina");
 					
 				if (paginador!=null){	
+					int paginaInt;
+					try{
+						paginaInt = Integer.parseInt(pagina);
+					}catch (Exception e) {
+						// Con esto evitamos un error cuando se recupera una pagina y hemos "perdido" la pagina actual cargamos la primera y no evitamos mostrar un error
+						paginaInt = 1;
+					}					
+					
 					if (pagina!=null){
-						datos = paginador.obtenerPagina(Integer.parseInt(pagina));
+						datos = paginador.obtenerPagina(paginaInt);
 					} else {// cuando hemos editado un registro de la busqueda y volvemos a la paginacion
-						datos = paginador.obtenerPagina((paginador.getPaginaActual()));
+						datos = paginador.obtenerPagina(paginador.getPaginaActual());
 					}
 				}	
 					
@@ -372,22 +431,36 @@ public class DevolucionesManualesAction extends MasterAction{
 				databackup.put("datos", datos);
 					
 			} else {						
-				HashMap databackup = new HashMap();
+				databackup = new HashMap();
+				Vector datos = null;
 				
-				FacFacturaIncluidaEnDisqueteAdm recibosAdm = new FacFacturaIncluidaEnDisqueteAdm(user);
-				PaginadorCaseSensitive recibos = recibosAdm.getRecibosParaDevolucion(idInstitucion,form.getFechaCargoDesde(),form.getFechaCargoHasta(),form.getNumeroRecibo(),form.getTitular(),form.getNumeroRemesa(), form.getNumeroFactura(), form.getDestinatario());
+				FacFacturaIncluidaEnDisqueteAdm admFacturaIncluidaEnDisquete = new FacFacturaIncluidaEnDisqueteAdm(user);
+				PaginadorCaseSensitive recibos = admFacturaIncluidaEnDisquete.getRecibosParaDevolucion(idInstitucion,form.getFechaCargoDesde(),form.getFechaCargoHasta(),form.getNumeroRecibo(),form.getTitular(),form.getNumeroRemesa(), form.getNumeroFactura(), form.getDestinatario());
 				databackup.put("paginador",recibos);
+				
 				if (recibos!=null){ 
-					Vector datos = recibos.obtenerPagina(1);
+					if(isSeleccionarTodos){
+						clavesRegSeleccinados = new ArrayList((Collection) admFacturaIncluidaEnDisquete.selectGenericoNLS(recibos.getQueryInicio())); // Query completa
+						aniadeClavesBusqueda(this.clavesBusqueda,clavesRegSeleccinados);						
+						form.setRegistrosSeleccionados(clavesRegSeleccinados);
+						if (form.getSeleccionarTodos()!=null && !form.getSeleccionarTodos().equals("")) {
+							datos = recibos.obtenerPagina(Integer.parseInt(form.getSeleccionarTodos()));
+						} else {
+							datos = recibos.obtenerPagina(1);
+						}
+						form.setSeleccionarTodos("");
+						
+					} else {
+						form.setRegistrosSeleccionados(new ArrayList());
+						datos = recibos.obtenerPagina(1);
+					}
 					databackup.put("datos",datos);
-					request.getSession().setAttribute("DATAPAGINADOR",databackup);
-				} 
-			}
-			
-			// obtengo el motivo por defecto de parametros.
-			GenParametrosAdm param = new GenParametrosAdm(user);
-			String motivo = param.getValor(idInstitucion,"FAC","MOTIVO_DEVOLUCION","8");
-			request.setAttribute("motivoDevolucion",motivo);
+					
+				} else {
+					form.setRegistrosSeleccionados(new ArrayList());
+				}  
+				form.setDatosPaginador(databackup);
+			}		
 			
 		} catch (Exception e) { 
 		   throwExcp("messages.general.error",new String[] {"modulo.facturacion"},e,null); 
@@ -406,16 +479,16 @@ public class DevolucionesManualesAction extends MasterAction{
 			DevolucionesManualesForm form = (DevolucionesManualesForm) formulario;
 
 			// obtengo los datos OCULTOS: idfactura
-			Vector vOcultos = (Vector)form.getDatosTablaOcultos(0);
+			Vector vOcultos = form.getDatosTablaOcultos(0);
 			String idFactura = (String)vOcultos.get(0); 
 			
 			// preparo las pestanhas
-			Hashtable datosFac = new Hashtable();
+			Hashtable<String,String> datosFac = new Hashtable<String,String>();
 			UtilidadesHash.set(datosFac,"accion", "ver");
 			UtilidadesHash.set(datosFac,"idFactura", idFactura);
 			UtilidadesHash.set(datosFac,"idInstitucion", idInstitucion);
 
-			Hashtable datos = new Hashtable();
+			Hashtable<String,String> datos = new Hashtable<String,String>();
 			UtilidadesHash.set(datos,"IDFACTURA", idFactura);
 			UtilidadesHash.set(datos,"IDINSTITUCION", idInstitucion);
 			

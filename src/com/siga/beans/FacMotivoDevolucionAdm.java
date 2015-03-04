@@ -8,6 +8,7 @@ import java.util.*;
 
 import com.atos.utils.*;
 import com.siga.Utilidades.*;
+import com.siga.general.SIGAException;
 
 /**
  *  Administrador de la tabla FAC_MOTIVODEVOLUCION
@@ -92,4 +93,21 @@ public class FacMotivoDevolucionAdm extends MasterBeanAdministrador
 
 		return orden;
     }
+    
+    /**
+     * Obtiene los motivos de devolucion
+     * @param idioma
+     * @return
+     * @throws ClsExceptions
+     * @throws SIGAException
+     */
+    public Vector obtenerMotivosDevolucion(String idioma) throws ClsExceptions, SIGAException {
+    	String sql = "SELECT " + FacMotivoDevolucionBean.C_CODIGO + " AS ID," + 
+    					" F_SIGA_GETRECURSO(" + FacMotivoDevolucionBean.C_NOMBRE + ", " + idioma + ") AS DESCRIPCION" +
+    				" FROM " + FacMotivoDevolucionBean.T_NOMBRETABLA +
+    				" ORDER BY DESCRIPCION"; 
+    	
+    	return this.selectGenerico(sql);
+    }
+    
 }

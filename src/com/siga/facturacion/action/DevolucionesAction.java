@@ -252,7 +252,7 @@ public class DevolucionesAction extends MasterAction {
 			UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");
 		
 			DevolucionesForm form = (DevolucionesForm) formulario;
-			Vector ocultos = (Vector)form.getDatosTablaOcultos(0);
+			Vector ocultos = form.getDatosTablaOcultos(0);
 			
 			// Obtengo la informacion relacionada con los abonos
 			FacLineaDevoluDisqBancoAdm devolucionAdm = new FacLineaDevoluDisqBancoAdm(user);
@@ -274,7 +274,7 @@ public class DevolucionesAction extends MasterAction {
 			DevolucionesForm form = (DevolucionesForm) formulario;
 		
 			// Obtengo valores del formulario y los estructuro
-			Vector ocultos = (Vector)form.getDatosTablaOcultos(0);
+			Vector ocultos = form.getDatosTablaOcultos(0);
 			
 			Hashtable datosAbonos=new Hashtable();
 			datosAbonos.put("accion","consulta");
@@ -1069,7 +1069,7 @@ public class DevolucionesAction extends MasterAction {
 	/**
 	 * Funcion que realiza una llamada a la PL PKG_SIGA_CARGOS.DevolucionesManuales
 	 * @param institucion
-	 * @param listaFacturas
+	 * @param listaFacturas = idDisqueteCargos||idFacturaIncluidaEnDisquete||idFactura||idRecibo||idMotivo;...
 	 * @param fechaDevolucion
 	 * @param user
 	 * @return
@@ -1080,7 +1080,7 @@ public class DevolucionesAction extends MasterAction {
 		try	{			
 			Object[] param_in = new Object[5];
 	    	param_in[0] = institucion;
-	    	param_in[1] = listaFacturas;
+	    	param_in[1] = listaFacturas; // idDisqueteCargos||idFacturaIncluidaEnDisquete||idFactura||idRecibo||idMotivo;...
 	    	param_in[2] = fechaDevolucion;
 	    	param_in[3] = user.getLanguageInstitucion();
 	    	param_in[4] = user.getUserName();

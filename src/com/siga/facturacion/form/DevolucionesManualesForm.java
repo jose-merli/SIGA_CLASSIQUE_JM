@@ -71,6 +71,13 @@ public class DevolucionesManualesForm extends MasterForm{
  		return UtilidadesHash.getString(datos, "NombreTitular");
  	}
 	
+	public void setIdentificacionTitular (String dato) {
+		UtilidadesHash.set(datos, "IdentificacionTitular", dato);
+ 	}
+	public String getIdentificacionTitular() {
+ 		return UtilidadesHash.getString(datos, "IdentificacionTitular");
+ 	}		
+	
 	public void setDestinatario (String dato) {
 		UtilidadesHash.set(datos, "Destinatario", dato);
  	}
@@ -133,7 +140,6 @@ public class DevolucionesManualesForm extends MasterForm{
 	public String getFacturas () {
  		return UtilidadesHash.getString(datos, "facturas");
  	}	
-	
 	
 	/**
 	 * Obtiene del form solamente los idrecibos.
