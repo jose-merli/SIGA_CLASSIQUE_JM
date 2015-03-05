@@ -329,7 +329,7 @@
 		idPretensionParamsJSON += ",\"idjuzgado\":\""+sIdJuzgado+"\"}";
 	} else {
 		comboPretensionesParentQueryIds = "";
-		idPretensionParamsJSON = "";
+		idPretensionParamsJSON += "}";
 	}
 	
 %>	
