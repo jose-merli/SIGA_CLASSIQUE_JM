@@ -1069,7 +1069,7 @@ public class DevolucionesAction extends MasterAction {
 	/**
 	 * Funcion que realiza una llamada a la PL PKG_SIGA_CARGOS.DevolucionesManuales
 	 * @param institucion
-	 * @param listaFacturas = idDisqueteCargos||idFacturaIncluidaEnDisquete||idFactura||idRecibo||idMotivo;...
+	 * @param listaFacturas = idDisqueteCargos||idFacturaIncluidaEnDisquete||idFactura||idRecibo||idMotivo, ...
 	 * @param fechaDevolucion
 	 * @param user
 	 * @return
@@ -1080,7 +1080,7 @@ public class DevolucionesAction extends MasterAction {
 		try	{			
 			Object[] param_in = new Object[5];
 	    	param_in[0] = institucion;
-	    	param_in[1] = listaFacturas; // idDisqueteCargos||idFacturaIncluidaEnDisquete||idFactura||idRecibo||idMotivo;...
+	    	param_in[1] = listaFacturas; // idDisqueteCargos||idFacturaIncluidaEnDisquete||idFactura||idRecibo||idMotivo, ...
 	    	param_in[2] = fechaDevolucion;
 	    	param_in[3] = user.getLanguageInstitucion();
 	    	param_in[4] = user.getUserName();

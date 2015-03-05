@@ -226,10 +226,6 @@ public class DevolucionesManualesAction extends MasterAction{
 			String fechaDevolucionHora = form.getFechaDevolucion(); 
 			String recibos = form.getRecibos(); // idDisqueteCargos||idFacturaIncluidaEnDisquete||idFactura||idRecibo||idMotivo, ...
 			
-			if (recibos.length() > 4000) { // 4000 es el maximo de caracteres que admite Oracle para una variable VARCHAR2
-				throw new SIGAException("facturacion.devolucionManual.error.superaLimiteMaximoDevoluciones");
-			}
-			
 			if (fechaDevolucion != null && !fechaDevolucion.equals("") && fechaDevolucion.length()==10) {
 				try { 
 					fechaDevolucionHora = GstDate.getApplicationFormatDate("", fechaDevolucion);
@@ -308,11 +304,7 @@ public class DevolucionesManualesAction extends MasterAction{
 			
 			DevolucionesManualesForm form = (DevolucionesManualesForm) formulario;
 			String sFacturas = form.getRecibos(); // idDisqueteCargos||idFacturaIncluidaEnDisquete||idFactura||idRecibo||idMotivo, ...
-			String ultimaFechaPagosFacturas = "";
-			
-			if (sFacturas.length() > 4000) { // 4000 es el maximo de caracteres que admite Oracle para una variable VARCHAR2
-				throw new SIGAException("facturacion.devolucionManual.error.superaLimiteMaximoDevoluciones");
-			}			
+			String ultimaFechaPagosFacturas = "";		
 			
 			if (sFacturas != null && !sFacturas.equals("")) {
 				String[] arrayFacturas = sFacturas.split(",");

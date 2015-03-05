@@ -140,11 +140,6 @@
 		
 		var datosFacturasSeleccionadas =  jQuery("#resultado").contents().find("#registrosSeleccionados").val();
 		
-		if (datosFacturasSeleccionadas.length>4000) {
-			alert ('<siga:Idioma key="facturacion.devolucionManual.error.superaLimiteMaximoDevoluciones"/>');
-			return false;
-		}
-		
 		document.DevolucionesManualesForm.recibos.value = datosFacturasSeleccionadas;
 		var aux = document.DevolucionesManualesForm.modo.value;
 		document.DevolucionesManualesForm.modo.value = "modificar";
