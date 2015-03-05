@@ -2391,10 +2391,30 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 								estadoCivilDefendido = (String) ((Hashtable)estadodCivilDefendidoVector.get(0)).get("ESTADOCIVIL_DEFENDIDO");
 							}
 							registroDefendido.put("ESTADOCIVIL_DEFENDIDO", estadoCivilDefendido);
+							if(k==0){
+								registro.putAll(registroDefendido);
+							}
 						} // END FOR
 						registro.put("defendido", vDefendidos);						
 					}else{
-						//registro.put("defendido","");
+						registro.put("CODIGOLENGUAJE", idiomaInforme);
+						registro.put("LISTA_TELEFONOS_INTERESADO", "");
+						registro.put("NIF_DEFENDIDO", "");
+						registro.put("NOMBRE_DEFENDIDO", "");
+						registro.put("DOMICILIO_DEFENDIDO", "");
+						registro.put("CP_DEFENDIDO", "");
+						registro.put("POBLACION_DEFENDIDO", "");
+						registro.put("PROVINCIA_DEFENDIDO", "");
+						registro.put("TELEFONO1_DEFENDIDO", "");
+						registro.put("SEXO_DEFENDIDO", "");
+						registro.put("IDLENGUAJE_DEFENDIDO", "");
+						registro.put("CALIDAD_DEFENDIDO", "");
+						registro.put("OBS_DEFENDIDO", "");		
+						registro.put("O_A_DEFENDIDO", "");
+						registro.put("EL_LA_DEFENDIDO", "");
+						registro.put("ESTADOCIVIL_DEFENDIDO", "");
+						registro.put("NOMBRE_PAIS", "");
+						registro.put("IDPERSONAINTERESADO", "");
 					}
 					
 					// Control de datos para el informe
@@ -2423,24 +2443,7 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 						registro.put("PARRAFO_LETRADO_PROCURADOR", "");					
 					
 					// Como desdobla, no muestra las siguientes etiquetas individualmente
-					registro.put("CODIGOLENGUAJE", idiomaInforme);
-					registro.put("LISTA_TELEFONOS_INTERESADO", "");
-					registro.put("NIF_DEFENDIDO", "");
-					registro.put("NOMBRE_DEFENDIDO", "");
-					registro.put("DOMICILIO_DEFENDIDO", "");
-					registro.put("CP_DEFENDIDO", "");
-					registro.put("POBLACION_DEFENDIDO", "");
-					registro.put("PROVINCIA_DEFENDIDO", "");
-					registro.put("TELEFONO1_DEFENDIDO", "");
-					registro.put("SEXO_DEFENDIDO", "");
-					registro.put("IDLENGUAJE_DEFENDIDO", "");
-					registro.put("CALIDAD_DEFENDIDO", "");
-					registro.put("OBS_DEFENDIDO", "");		
-					registro.put("O_A_DEFENDIDO", "");
-					registro.put("EL_LA_DEFENDIDO", "");
-					registro.put("ESTADOCIVIL_DEFENDIDO", "");
-					registro.put("NOMBRE_PAIS", "");
-					registro.put("IDPERSONAINTERESADO", "");
+
 					
 					vSalida.add(registro);
 				}		
@@ -2811,6 +2814,8 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 			h.put(new Integer(9), idPersonaJG);
 			sql.append(" AND PERJG.IDPERSONA = :9  ");
 		}
+		sql.append(" ORDER BY PERJG.IDPERSONA");
+		
 
 		try {
 			defendidos = this.ejecutaSelectBind(sql.toString(), h);
