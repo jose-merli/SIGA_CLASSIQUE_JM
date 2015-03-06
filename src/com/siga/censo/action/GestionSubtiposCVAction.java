@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.redabogacia.sigaservices.app.exceptions.BusinessException;
 import org.redabogacia.sigaservices.app.services.cen.SubtiposCVService;
 import org.redabogacia.sigaservices.app.vo.cen.SubtiposCVVo;
 
@@ -231,7 +232,11 @@ public class GestionSubtiposCVAction extends MasterAction {
 			tiposDatosCurricularesVo.setIdioma(this.getUserBean(request).getLanguage());
 			tiposDatosCurricularesVo.setUsumodificacion(Integer.valueOf(this.getUserBean(request).getUserName()));
 			tiposDatosCurricularesService.insertarSubtiposCV(tiposDatosCurricularesVo);
-		}catch (Exception e){
+		}catch (BusinessException e){
+			return errorRefresco(e.getMessage(),new ClsExceptions(e.toString()),request);
+			
+		}
+		catch (Exception e){
 			throw new SIGAException("messages.general.error", e , new String[] {"modulo.gratuita"});
 			
 		}

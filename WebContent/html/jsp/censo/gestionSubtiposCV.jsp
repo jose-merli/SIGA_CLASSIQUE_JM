@@ -360,7 +360,7 @@
 			return false;
 		}
 		msjConfirmacion = "";
-		if(document.forms['FormularioGestion'].subTipo2IdTipo.value!=''){
+		if(document.forms['FormularioGestion'].subTipo.value=='2'){
 			msjConfirmacion = '<siga:Idioma key="censo.tiposDatosCurriculares.aviso.eliminaSubtipo2.literal"/>';
 			msjConfirmacion += jQuery("#descripcionBorrado").val();
 			msjConfirmacion +="\n"

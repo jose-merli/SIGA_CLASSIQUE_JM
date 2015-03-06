@@ -19,8 +19,10 @@
 	<table id='listadoArchivosCab' border='1' width='100%' cellspacing='0' cellpadding='0'>
 		<tr class ='tableTitle'>
 			<td align='center' width='30%'><b><bean:message key="censo.tiposDatosCurriculares.tipo.literal"/></b></td>
-			<td align='center' width='30%'><b><bean:message key="censo.tiposDatosCurriculares.subtipo1.literal"/></b></td>
-			<td align='center' width='25%'><b><bean:message key="censo.tiposDatosCurriculares.subtipo2.literal"/></b></td>
+			<td align='center' width='20%'><b><bean:message key="censo.tiposDatosCurriculares.subtipo1.literal"/></b></td>
+			<td align='center' width='10%'><b>Cod</b></td>
+			<td align='center' width='15%'><b><bean:message key="censo.tiposDatosCurriculares.subtipo2.literal"/></b></td>
+			<td align='center' width='10%'><b>Cod</b></td>
 			<td align='center' width='10%'>&nbsp;</td>
 		</tr>
 	</table>
@@ -33,8 +35,10 @@
 		<c:when test="${empty tiposDatosCurriculares}">
 			<tr>
 					<td width='30%'></td>
-					<td width='30%'></td>
-					<td width='25%'></td>
+					<td width='20%'></td>
+					<td width='10%'></td>
+					<td width='15%'></td>
+					<td width='10%'></td>
 					<td width='10%'></td>
 				</tr>
 		
@@ -45,9 +49,11 @@
 		<c:otherwise>
 			<tr>
 				<td width='30%'></td>
-				<td width='30%'></td>
-				<td width='25%'></td>
-				<td width='10%'></td>
+					<td width='20%'></td>
+					<td width='10%'></td>
+					<td width='15%'></td>
+					<td width='10%'></td>
+					<td width='10%'></td>
 			</tr>
 			<c:forEach items="${tiposDatosCurriculares}" var="tiposDatosCurricular" varStatus="status">
 				<siga:FilaConIconos	fila='${status.count}'
@@ -78,7 +84,13 @@
 						<c:out value="${tiposDatosCurricular.subTipo1Descripcion}"/>&nbsp;
 					</td>
 					<td align='left'>
+						<c:out value="${tiposDatosCurricular.subTipo1CodigoExt}"/>&nbsp;
+					</td>
+					<td align='left'>
 						<c:out value="${tiposDatosCurricular.subTipo2Descripcion}"/>&nbsp;
+					</td>
+					<td align='left'>
+						<c:out value="${tiposDatosCurricular.subTipo2CodigoExt}"/>&nbsp;
 					</td>
 				</siga:FilaConIconos>
 			</c:forEach>
