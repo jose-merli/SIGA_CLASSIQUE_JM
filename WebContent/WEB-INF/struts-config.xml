@@ -1375,8 +1375,6 @@
 		<action path="/FAC_DevolucionesManual" type="com.siga.facturacion.action.DevolucionesManualesAction" name="DevolucionesManualesForm" scope="session">
 			<forward name="abrir" path="/html/jsp/facturacion/busquedaRecibos.jsp"/>
 			<forward name="listar" path="/html/jsp/facturacion/consultaRecibos.jsp"/>
-			<forward name="nuevo" path="/html/jsp/facturacion/cabeceraDevolucion.jsp"/>
-			<forward name="exitoDevolucion" path="/html/jsp/facturacion/exitoDevolucionManual.jsp"/>
 			<forward name="verFactura" path="/html/jsp/facturacion/facturaAdministracionPestanas.jsp"/>
 		</action>
 

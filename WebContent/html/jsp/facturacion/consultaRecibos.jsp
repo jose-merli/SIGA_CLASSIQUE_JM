@@ -10,10 +10,10 @@
 <%@ page contentType="text/html" language="java" errorPage="/html/jsp/error/errorSIGA.jsp"%>
 
 <!-- TAGLIBS -->
-<%@ taglib uri = "libreria_SIGA.tld" prefix="siga"%>
-<%@ taglib uri = "struts-bean.tld" prefix="bean"%>
-<%@ taglib uri = "struts-html.tld" prefix="html"%>
-<%@ taglib uri = "struts-logic.tld" prefix="logic"%>
+<%@ taglib uri="libreria_SIGA.tld" prefix="siga"%>
+<%@ taglib uri="struts-bean.tld" prefix="bean"%>
+<%@ taglib uri="struts-html.tld" prefix="html"%>
+<%@ taglib uri="struts-logic.tld" prefix="logic"%>
 
 <%@ page import="com.siga.beans.CenPersonaBean"%>
 <%@ page import="com.siga.beans.FacFacturaBean"%>
@@ -125,7 +125,7 @@
 		var idFactura = jQuery("#devolucionManual_" + fila + "_3").val();
 		var idRecibo = jQuery("#devolucionManual_" + fila + "_4").val();
 		var idMotivo = jQuery("#devolucionManual_" + fila + "_5").val();
-		var valorPK = idDisqueteCargos + "<%=separador%>" + idFacturaIncluidaEnDisquete;
+		var valorPK = idDisqueteCargos + "<%=separador%>" + idFacturaIncluidaEnDisquete + "<%=separador%>";
 		var valores = idDisqueteCargos + "<%=separador%>" + idFacturaIncluidaEnDisquete + "<%=separador%>" + idFactura + "<%=separador%>" + idRecibo + "<%=separador%>" + idMotivo;
 		
 		if (!obj.checked) {	
@@ -133,12 +133,15 @@
 			if (indice >= 0) {
 				ObjArray.splice(indice,1);
 			}
+			jQuery("#devolucionManual_" + fila + "_5").hide();
+			
 		} else {
 			var indice = ObjArray.indexOf(valorPK);
 			if (indice >= 0) {
 				ObjArray.splice(indice,1);
 			}
 			ObjArray.push(valores);
+			jQuery("#devolucionManual_" + fila + "_5").show();
 		}
 		
 		seleccionados1 = ObjArray; // Variable del paginador
@@ -164,18 +167,24 @@
 		seleccionados1 = ObjArray; // Variable del paginador
 		jQuery("#registrosSeleccionados").val(ObjArray);
 		jQuery("#registrosSeleccionadosPaginador").val(ObjArray.length); // Variable del paginador
+		
+		parent.cerrarDialog();
 	}
 	
 	function cargarChecksTodos(obj) {  		
   		var conf = confirm('<siga:Idioma key="paginador.message.marcarDesmarcar"/>');
    	   	
-	   	if (conf) {
-			ObjArray = new Array();
+	   	if (conf) {			
 		   	if (obj.checked){
 		   		parent.seleccionarTodos('<%=paginaSeleccionada%>');			   	 	
 				
-			} else {
+			} else {								
 				jQuery("input[id=checkDevolucion]:checked").prop('checked', false);	
+				
+				ObjArray = new Array();
+				seleccionados1 = ObjArray; // Variable del paginador
+			   	jQuery("#registrosSeleccionados").val(ObjArray);
+				jQuery("#registrosSeleccionadosPaginador").val(ObjArray.length); // Variable del paginador
 			 }
 	   	  
 		} else {
@@ -192,10 +201,6 @@
 				});
 			}
 		}
-	   	  		 
-	   	seleccionados1 = ObjArray; // Variable del paginador
-	   	jQuery("#registrosSeleccionados").val(ObjArray);
-		jQuery("#registrosSeleccionadosPaginador").val(ObjArray.length); // Variable del paginador
 	 }
 	
 	function cambiarMotivo(fila) {
@@ -223,7 +228,7 @@
 	   						facturacion.devolucionManual.titular,
 	   						facturacion.devolucionManual.importe,
 	   						facturacion.devolucionManual.motivos,"
-	   columnSizes = "4,8,8,13,23,8,30,6">
+	   columnSizes = "4,8,8,15,25,8,26,6">
 <%
 		if ((resultado != null) && (resultado.size() > 0)) { 
 			for (int i = 0; i < resultado.size(); i++) { 							
@@ -294,7 +299,7 @@
 							<input type="hidden" id="devolucionManual_<%=(i+1)%>_3" value="<%=idFactura%>">
 							<input type="hidden" id="devolucionManual_<%=(i+1)%>_4" value="<%=idRecibo%>">
 							
-							<select id="devolucionManual_<%=(i+1)%>_5" styleClass="boxCombo" onchange="cambiarMotivo(<%=(i+1)%>)" style="width:300px"> 
+							<select id="devolucionManual_<%=(i+1)%>_5" styleClass="boxCombo" onchange="cambiarMotivo(<%=(i+1)%>)" style="width:250px; display:none"> 
 <%
 								for (int j=0; j<vMotivos.size(); j++) {
 									Hashtable hMotivo = (Hashtable) vMotivos.get(j);

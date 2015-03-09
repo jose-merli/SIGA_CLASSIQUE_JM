@@ -10,12 +10,14 @@
 <%@ page contentType="text/html" language="java" errorPage="/html/jsp/error/errorSIGA.jsp"%>
 
 <%@ taglib uri="libreria_SIGA.tld" prefix="siga"%>
-<%@ taglib uri = "struts-bean.tld" prefix="bean"%>
-<%@ taglib uri = "struts-html.tld" prefix="html"%>
-<%@ taglib uri = "struts-logic.tld" prefix="logic"%>
+<%@ taglib uri="struts-bean.tld" prefix="bean"%>
+<%@ taglib uri="struts-html.tld" prefix="html"%>
+<%@ taglib uri="struts-logic.tld" prefix="logic"%>
 
 <%@ page import="com.atos.utils.UsrBean"%>
 <%@ page import="com.siga.facturacion.form.DevolucionesManualesForm"%>
+<%@ page import="com.siga.Utilidades.UtilidadesString"%>
+<%@ page import="com.atos.utils.ClsConstants"%>
 
 <%  
 	HttpSession ses=request.getSession();
@@ -46,11 +48,18 @@
 	if (form.getHayMotivos().equals("0")) {
 		funcionBuscar = "mensaje()";
 	}
+	
+	String sDialogBotonCerrar = UtilidadesString.mostrarDatoJSP(UtilidadesString.getMensajeIdioma(user, "general.boton.close"));
+	String sDialogBotonGuardarCerrar = UtilidadesString.mostrarDatoJSP(UtilidadesString.getMensajeIdioma(user, "general.boton.guardarCerrar"));
 %>	
 
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
+	<link rel="stylesheet" href="<html:rewrite page='/html/js/jquery.ui/css/smoothness/jquery-ui-1.10.3.custom.min.css'/>">
 	
-	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js?v=${sessionScope.VERSIONJS}'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-1.9.1.js?v=${sessionScope.VERSIONJS}'/>"></script>	
+	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js?v=${sessionScope.VERSIONJS}'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-ui-1.10.3.custom.min.js?v=${sessionScope.VERSIONJS}'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
 	<script type="text/javascript" src="<html:rewrite page='/html/js/validacionStruts.js'/>"></script>
 	<script type="text/javascript" src="<html:rewrite page='/html/jsp/general/validacionSIGA.jsp'/>"></script>
 
@@ -84,7 +93,7 @@
 	
 	// Funcion asociada a boton buscarCliente
 	function refrescarLocal() {
-		buscar();
+		buscar();				
 	}
 
 	// Funcion asociada a boton buscar
@@ -102,30 +111,28 @@
 			return false;
 		}
 		
-		if (validateDevolucionesManualesForm(document.DevolucionesManualesForm)){
-			if (modo) {
-				document.DevolucionesManualesForm.modo.value = modo;
-				
-			} else {
-				var checkTodos = jQuery("#resultado").contents().find("#chkGeneral");
-				if (!checkTodos.exists() || !checkTodos[0].checked) {
-					document.DevolucionesManualesForm.seleccionarTodos.value = "";
-				}
-				document.DevolucionesManualesForm.modo.value = "BuscarInicio";
-			}
+		if (modo) {
+			document.DevolucionesManualesForm.modo.value = modo;
 			
-			document.DevolucionesManualesForm.target="resultado";	
-			document.DevolucionesManualesForm.submit();
+		} else {
+			var checkTodos = jQuery("#resultado").contents().find("#chkGeneral");
+			if (!checkTodos.exists() || !checkTodos[0].checked) {
+				document.DevolucionesManualesForm.seleccionarTodos.value = "";
+			}
+			document.DevolucionesManualesForm.modo.value = "BuscarInicio";
 		}
+		
+		document.DevolucionesManualesForm.target="resultado";	
+		document.DevolucionesManualesForm.submit();
 	}
 	
 	function seleccionarTodos(pagina) {
 		document.DevolucionesManualesForm.seleccionarTodos.value = pagina;
 		buscar('buscar');				
-	}		
+	}	
 
 	// Asociada al boton ProcesarDevoluciones
-	function accionProcesarDevoluciones() {
+	function accionProcesarDevoluciones() {		
 		var numeroFacturasSeleccionadas =  jQuery("#resultado").contents().find("#registrosSeleccionadosPaginador").val();
 		
 		if (numeroFacturasSeleccionadas==null || numeroFacturasSeleccionadas == 0) {
@@ -133,22 +140,55 @@
 			alert(mensaje2);
 			return false;
 			
-		} else if (numeroFacturasSeleccionadas.length>1000) {
+		} else if (numeroFacturasSeleccionadas>1000) {
 			alert ('<siga:Idioma key="facturacion.devolucionManual.error.devolverMilFacturas"/>');
 			return false;
 		}
 		
-		var datosFacturasSeleccionadas =  jQuery("#resultado").contents().find("#registrosSeleccionados").val();
+		jQuery("#dialogFechaDevolucion").val("");
+        jQuery("#dialogAplicarComisiones").prop('checked', false);
 		
-		document.DevolucionesManualesForm.recibos.value = datosFacturasSeleccionadas;
-		var aux = document.DevolucionesManualesForm.modo.value;
-		document.DevolucionesManualesForm.modo.value = "modificar";
-		var datos = ventaModalGeneral("DevolucionesManualesForm","P");
-		if (datos != null && datos == "MODIFICADO") {
-  	 		refrescarLocal();
-	  	}
-		document.DevolucionesManualesForm.modo.value = aux;		
+		jQuery("#divDatosDevolucionManual").dialog({
+			height: 170,
+			width: 400,
+			modal: true,
+			resizable: false,
+			buttons: {
+				"<%=sDialogBotonGuardarCerrar%>": function() {
+					sub();
+					var dialogFechaDevolucion = jQuery("#dialogFechaDevolucion");
+					
+					if (!dialogFechaDevolucion.exists() || dialogFechaDevolucion.val()=="") {
+						var mensaje = "<siga:Idioma key='errors.required' arg0='facturacion.devolucionManual.fechaDevolucion'/>";
+						alert(mensaje);
+						fin();
+						return false;
+					}					
+					
+					var datosFacturasSeleccionadas =  jQuery("#resultado").contents().find("#registrosSeleccionados").val();
+					document.DevolucionesManualesForm.recibos.value = datosFacturasSeleccionadas;
+					document.DevolucionesManualesForm.fechaDevolucion.value = dialogFechaDevolucion.val();
+					document.DevolucionesManualesForm.aplicarComisiones.value = jQuery("#dialogAplicarComisiones").val();					
+					
+					document.DevolucionesManualesForm.target = "submitArea";
+					document.DevolucionesManualesForm.modo.value = "insertar";																				
+					document.DevolucionesManualesForm.submit();
+					
+					window.setTimeout("fin()",5000,"Javascript");
+				},
+				"<%=sDialogBotonCerrar%>": function() {
+					cerrarDialog();
+				}
+			}
+		});
+		jQuery(".ui-widget-overlay").css("opacity","0");	
 	}	
+	
+	function cerrarDialog(){
+		if (jQuery("#divDatosDevolucionManual").hasClass('ui-dialog-content')) {
+		 jQuery("#divDatosDevolucionManual").dialog("close"); 
+		}
+	}
 
 </script>
 
@@ -156,15 +196,36 @@
 	<html:form action="/FAC_DevolucionesManual.do?noReset=true" method="POST" target="resultado">
 		<html:hidden property="modo" value = ""/>
 		<html:hidden property="recibos"/>
-		<html:hidden property="facturas" value=""/>		
-		<html:hidden property="fechaDevolucion"/>		
-		<html:hidden property="banco"/>		
+		<html:hidden property="fechaDevolucion" />
+		<html:hidden property="aplicarComisiones" />
 		<html:hidden property="seleccionarTodos" />
 		<html:hidden property="titular" styleId="titular" />										
 		<html:hidden property="nombreTitular" styleId="nombreTitular" />
 		<html:hidden property="identificacionTitular" styleId="identificacionTitular" />
 		<input type="hidden" name="limpiarFilaSeleccionada" value="">
 	    <input type="hidden" name="actionModal" value="">
+	    
+		<div id="divDatosDevolucionManual" title="<siga:Idioma key='facturacion.devolucionManual.datosDevolucion'/>" style="display:none">
+			<table align="left">
+				<tr>		
+					<td class="labelText" nowrap>
+						<siga:Idioma key="facturacion.devolucionManual.fechaDevolucion"/>&nbsp;(*)
+					</td>
+					<td>
+						<siga:Fecha nombreCampo="dialogFechaDevolucion" valorInicial="" anchoTextField="8" />
+					</td>
+				</tr>		
+				
+				<tr>
+					<td class="labelText">
+						<siga:Idioma key="facturacion.devolucionManual.aplicarComisiones"/>
+					</td>
+					<td>
+						<input type="checkbox" id="dialogAplicarComisiones" value="<%=ClsConstants.DB_TRUE%>">
+					</td>
+				</tr>			
+			</table>			
+		</div>		    
 		
 		<siga:ConjCampos leyenda="facturacion.devolucionManual.criterios">	
 			<table>

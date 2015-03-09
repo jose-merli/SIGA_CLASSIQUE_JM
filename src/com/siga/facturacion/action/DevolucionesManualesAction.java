@@ -274,8 +274,6 @@ public class DevolucionesManualesAction extends MasterAction{
 			
 			tx.commit();				
 
-			request.setAttribute("generacionOK","1");
-
 		} catch (SIGAException e) {
 			String sms = e.getLiteral();
 			if (sms == null || sms.equals("")) {
@@ -288,79 +286,9 @@ public class DevolucionesManualesAction extends MasterAction{
 		   throwExcp("messages.general.error",new String[] {"modulo.facturacion"},e,tx); 
 		} 	
 
-		return "exitoDevolucion";
+		return exitoRefresco("messages.updated.success",request);
 		
 	}
-
-	/**
-	 * Implementa la accion de procesar las devoluciones manuales mediante el paso previo de obtener por pantalla los datos de cabecera de devolucion.  
-	 * 
-	 * Valores = idDisqueteCargos||idFacturaIncluidaEnDisquete||idFactura||idRecibo||idMotivo, ...
-	 */
-	protected String modificar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
-		try {			
-			UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");
-			Integer idInstitucion = new Integer(user.getLocation());	
-			
-			DevolucionesManualesForm form = (DevolucionesManualesForm) formulario;
-			String sFacturas = form.getRecibos(); // idDisqueteCargos||idFacturaIncluidaEnDisquete||idFactura||idRecibo||idMotivo, ...
-			String ultimaFechaPagosFacturas = "";		
-			
-			if (sFacturas != null && !sFacturas.equals("")) {
-				String[] arrayFacturas = sFacturas.split(",");
-				
-				if (arrayFacturas.length<1) {
-					throw new SIGAException("Error al obtener las facturas");
-				};
-				
-				// Solo se comprueba para una factura devuelta
-				if (arrayFacturas.length==1) {		
-					
-					// JPT: Recorre todas las facturas marcadas y calcula el listado de facturas
-					String listaIdsFacturas = "";
-					for (int i=0; i<arrayFacturas.length; i++) {
-						String datosFactura = arrayFacturas[i];
-						
-						if (datosFactura != null && !datosFactura.equals("")) {
-							String arrayFactura[] = datosFactura.split("\\|\\|");
-							
-							if (arrayFactura.length<1) {
-								throw new SIGAException("Error al obtener la factura");
-							};
-							
-							String idFactura = arrayFactura[2];
-							
-							if (i==0) {
-								listaIdsFacturas += idFactura;						
-							} else {
-								listaIdsFacturas += "," + idFactura;
-							}
-						}
-					}				
-					
-					// JPT: Obtiene la ultima fecha de pago de una lista de facturas
-					FacPagosPorCajaAdm admPagosPorCaja = new FacPagosPorCajaAdm(user);
-					ultimaFechaPagosFacturas = admPagosPorCaja.getUltimaFechaPagosFacturas(idInstitucion, listaIdsFacturas);
-					if (ultimaFechaPagosFacturas==null || ultimaFechaPagosFacturas.equals("")) {
-						throw new SIGAException("Error al no obtener la última fecha de los pagos de las facturas");
-					}										
-				}				
-			}
-			
-			request.setAttribute("ultimaFechaPagosFacturas", ultimaFechaPagosFacturas);
-
-			// inicializo el form para esta pantalla
-			form.setAplicarComisiones("");
-			form.setBanco("");
-			form.setFechaDevolucion("");
-
-		} catch (Exception e) { 
-		   throwExcp("messages.general.error",new String[] {"modulo.facturacion"},e,null); 
-		} 	
-
-		return "nuevo";
-	}
-
 
 	/**
 	 * Implementa la accion de buscar los recibos de banco de las facturas emitidas segun criterios de busqueda.
@@ -374,8 +302,11 @@ public class DevolucionesManualesAction extends MasterAction{
 			DevolucionesManualesForm form = (DevolucionesManualesForm) formulario;
 			boolean isSeleccionarTodos = form.getSeleccionarTodos()!=null && !form.getSeleccionarTodos().equals("");			
 			
-			ArrayList clavesRegSeleccinados = (ArrayList) form.getRegistrosSeleccionados();
+			ArrayList clavesRegSeleccinados = new ArrayList();
 			String seleccionados = request.getParameter("Seleccion"); // idDisqueteCargos||idFacturaIncluidaEnDisquete||idFactura||idRecibo||idMotivo, ...
+			
+			// Inicialmente pongo todos los elementos deseleccionados
+			form.setRegistrosSeleccionados(new ArrayList());
 			
 			if (seleccionados!=null && !seleccionados.equals("")) {
 				ArrayList alRegistros = actualizarSelecionados(this.clavesBusqueda, seleccionados, clavesRegSeleccinados);
@@ -443,13 +374,9 @@ public class DevolucionesManualesAction extends MasterAction{
 						form.setSeleccionarTodos("");
 						
 					} else {
-						form.setRegistrosSeleccionados(new ArrayList());
 						datos = recibos.obtenerPagina(1);
 					}
 					databackup.put("datos",datos);
-					
-				} else {
-					form.setRegistrosSeleccionados(new ArrayList());
 				}  
 				form.setDatosPaginador(databackup);
 			}		
