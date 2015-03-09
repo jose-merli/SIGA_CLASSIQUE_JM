@@ -2597,7 +2597,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 				consulta += " AND MEE.VISIBLECOMISION = '1' ";
 		}
 
-		consulta += " ORDER BY TO_NUMBER(" + ScsEJGBean.C_ANIO + ") DESC, " +
+		consulta += " ORDER BY " + ScsEJGBean.C_ANIO + " DESC, " +
 			" TO_NUMBER(" + ScsEJGBean.C_NUMEJG + ") DESC ";
 
 		hashReturn.put(keyBindConsulta,consulta);
