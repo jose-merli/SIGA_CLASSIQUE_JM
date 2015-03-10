@@ -190,15 +190,11 @@ public class DuplicadosHelper{
 	       	if (campoOrden.equalsIgnoreCase("nif"))
 	       		sqlOrden.append(" order by regexp_replace(nifcif, '[^[:digit:]]', '') ");
 	       	if (campoOrden.equalsIgnoreCase("numeroColegiado"))
-	       		sqlOrden.append(" order by to_number(ncolegiado) ");
+	       		sqlOrden.append(" order by ABREVIATURA,to_number(ncolegiado) ");
 	       	if (campoOrden.equalsIgnoreCase("apellidos"))
 	       		sqlOrden.append(" order by upper(apellidos1||' '||nvl(apellidos2, ' ')) ");
 			sqlOrden.append(formulario.getSentidoOrdenacion());
-			if(checkNumColegiado){
-				if(sqlOrden.indexOf("order by")>-1)
-					sqlOrden.insert(9," idinstitucion,ncolegiado,");
-				
-			}
+			
 			
 			
 			

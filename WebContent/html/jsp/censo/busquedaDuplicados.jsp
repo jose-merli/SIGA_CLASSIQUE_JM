@@ -61,7 +61,8 @@
 	
 	<!-- Incluido jquery en siga.js -->
 	
-	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js?v=${sessionScope.VERSIONJS}'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js?v=${sessionScope.VERSIONJS}'/>"></script>
+	<script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
 	<script src="<html:rewrite page='/html/jsp/general/validacionSIGA.jsp'/>" type="text/javascript"></script>
 	
 
@@ -71,10 +72,11 @@
 	
 	<script>
 		function ChequearCriterios(){
-			$('input[name=chkApellidos]').attr('checked', true);
-			$('input[name=chkNombreApellidos]').attr('checked', true);
-			$('input[name=chkIdentificador]').attr('checked', true);
-			$('input[name=chkNumColegiado]').attr('checked', true); 
+			jQuery('input[name=chkApellidos]').attr('checked', true);
+			jQuery('input[name=chkNombreApellidos]').attr('checked', true);
+			jQuery('input[name=chkIdentificador]').attr('checked', true);
+			jQuery('input[name=chkNumColegiado]').attr('checked', true); 
+			jQuery("#campoOrdenacion").append('<option value="numeroColegiado">Inst/Nº.Col</option>');
 		}
 		
 		function preAccionBusqueda(){
@@ -84,7 +86,15 @@
 		function postAccionBusqueda(){
 			fin();
 		}
-		
+		function onClickChkNumColegiado(){
+			
+			if(document.MantenimientoDuplicadosForm.chkNumColegiado.checked){
+				jQuery("#campoOrdenacion").append('<option value="numeroColegiado">Inst/Nº.Col</option>');
+			}else{
+				jQuery("#campoOrdenacion option[value='numeroColegiado']").remove();
+			}
+			
+		}
 		function buscar(){
 			sub();
 			//chequear los criterios en el hidden
@@ -206,7 +216,7 @@
 					</td>
 					<td class="labelText" style="align:right">
 						<siga:Idioma key="censo.busquedaDuplicados.coincidencias.ordenacion"/>
-						<html:select name="MantenimientoDuplicadosForm" property="campoOrdenacion" styleClass="boxCombo">
+						<html:select name="MantenimientoDuplicadosForm" styleId="campoOrdenacion" property="campoOrdenacion" styleClass="boxCombo">
 							<html:option value="apellidos" key="gratuita.turnos.literal.apellidosSolo"></html:option>
 							<html:option value="nif" key="censo.busquedaClientesAvanzada.literal.nif"></html:option>
 						</html:select>
@@ -222,7 +232,7 @@
 						<label for="chkIdentificador"><siga:Idioma key="censo.busquedaDuplicados.coincidencias.nifCif"/></label>
 					</td>
 					<td class="labelText">
-						<html:checkbox styleid="chkNumColegiado" name="MantenimientoDuplicadosForm" property="chkNumColegiado" /> 
+						<html:checkbox styleid="chkNumColegiado" name="MantenimientoDuplicadosForm" property="chkNumColegiado" onclick="return onClickChkNumColegiado();" /> 
 						<label for="chkNumColegiado"><siga:Idioma key="censo.busquedaDuplicados.coincidencias.numeroColegiado"/></label>
 					</td>
 					<td class="labelText" style="align:right">
