@@ -133,21 +133,26 @@
 
 	// Asociada al boton ProcesarDevoluciones
 	function accionProcesarDevoluciones() {		
+		sub();
+		
 		var numeroFacturasSeleccionadas =  jQuery("#resultado").contents().find("#registrosSeleccionadosPaginador").val();
 		
 		if (numeroFacturasSeleccionadas==null || numeroFacturasSeleccionadas == 0) {
 			var mensaje2 = '<siga:Idioma key="messages.fact.error.noRecibos"/>';
 			alert(mensaje2);
+			fin();
 			return false;
 			
 		} else if (numeroFacturasSeleccionadas>1000) {
 			alert ('<siga:Idioma key="facturacion.devolucionManual.error.devolverMilFacturas"/>');
+			fin();
 			return false;
 		}
 		
 		jQuery("#dialogFechaDevolucion").val("");
         jQuery("#dialogAplicarComisiones").prop('checked', false);
 		
+        fin();
 		jQuery("#divDatosDevolucionManual").dialog({
 			height: 170,
 			width: 400,
