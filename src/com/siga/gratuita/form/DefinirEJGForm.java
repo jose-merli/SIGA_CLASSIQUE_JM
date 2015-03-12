@@ -46,7 +46,8 @@ import com.siga.censo.form.DatosRegTelForm;
 	 
 	 //String bisResolucion;
 	 
-	 
+	 boolean chkBusquedaExactaSolicitante;
+	 String valorBusquedaExactaSolicitante;
  	
 
 	public void setRefAuto 					(String refAuto)					{ this.datos.put(ScsEJGBean.C_REFAUTO, refAuto);									} 	
@@ -1078,5 +1079,38 @@ import com.siga.censo.form.DatosRegTelForm;
 		
 		public String getIdPreceptivo() 	{return UtilidadesHash.getString(this.datos, ScsEJGBean.C_PRECEPTIVO);}
 		public void setIdPreceptivo(String valor)	{this.datos.put(ScsEJGBean.C_PRECEPTIVO, valor);}
+
+		/**
+		 * @return the chkBusquedaExactaSolicitante
+		 */
+		public boolean isChkBusquedaExactaSolicitante() {
+			return chkBusquedaExactaSolicitante;
+		}
+
+		/**
+		 * @param chkBusquedaExactaSolicitante the chkBusquedaExactaSolicitante to set
+		 */
+		public void setChkBusquedaExactaSolicitante(boolean chkBusquedaExactaSolicitante) {
+			this.chkBusquedaExactaSolicitante = chkBusquedaExactaSolicitante;
+		}
+
+		/**
+		 * @return the valorBusquedaExactaSolicitante
+		 */
+		public String getValorBusquedaExactaSolicitante() {
+			return valorBusquedaExactaSolicitante;
+		}
+
+		/**
+		 * @param valorBusquedaExactaSolicitante the valorBusquedaExactaSolicitante to set
+		 */
+		public void setValorBusquedaExactaSolicitante(
+				String valorBusquedaExactaSolicitante) {
+			this.valorBusquedaExactaSolicitante = valorBusquedaExactaSolicitante;
+		}
+
+		
+
+				
 		
 }

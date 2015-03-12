@@ -71,7 +71,7 @@
 	String paramsInstitucionComision = "{\"idinstitucioncomision\":\""+idInstitucionComision+"\"}";
 	String datoPonente[] = {idInstitucionComision,idInstitucionComision};
 	
-	
+	boolean chkBusquedaExactaSolicitante = true;
 	if (ses.getAttribute("DATOSFORMULARIO") instanceof Hashtable) {
 		miHash = (Hashtable) ses.getAttribute("DATOSFORMULARIO");
 		ses.removeAttribute("DATOSFORMULARIO");    
@@ -234,6 +234,11 @@
 				if (miHash.get(ScsEJGBean.C_IDINSTITUCION) != null){
 					idInstitucionSelected.add(miHash.get(ScsEJGBean.C_IDINSTITUCION).toString());
 				}
+				if (miHash.get("chkBusquedaExactaSolicitante") != null){
+					chkBusquedaExactaSolicitante = (Boolean)miHash.get("chkBusquedaExactaSolicitante");
+				}
+				
+				
 				
 			} else {
 				if (miHash.get(ScsEstadoEJGBean.C_IDESTADOEJG) != null)
@@ -250,7 +255,9 @@
 					idTipoEJG.add(miHash.get(ScsTipoEJGBean.C_IDTIPOEJG).toString());
 		
 				if (miHash.get(ScsTipoEJGColegioBean.C_IDTIPOEJGCOLEGIO) != null)
-					idTipoEJGColegio.add(miHash.get(ScsTipoEJGColegioBean.C_IDTIPOEJGCOLEGIO).toString());		
+					idTipoEJGColegio.add(miHash.get(ScsTipoEJGColegioBean.C_IDTIPOEJGCOLEGIO).toString());	
+				
+				 
 			}
 		} 
 		catch (Exception e) {
@@ -304,7 +311,7 @@ dd { padding-bottom: 15px }
 			//Solicitante
 		 	var visibleSolicitante = false;
 			jQuery("#gratuitabusquedaEJGliteralsolicitante").find('td input').each(function () {
-				if (jQuery(this).val() != "")
+				if (jQuery(this).val() != "" && jQuery(this).attr('type')!='checkbox')
 					visibleSolicitante = true;
 			});	 	
 		 	
@@ -356,6 +363,10 @@ dd { padding-bottom: 15px }
 		}	
 	
 	function onchangeTipoResolucion() {
+		<% if(esComision){%>	
+	
+		
+	
 		comboTipoResolucion = document.getElementById('idTipoResolucionEJG');
 		var idInstitucion = document.forms['DefinirEJGForm'].idInstitucion.value;
 		if(document.getElementById('idFundamentoJuridico')){
@@ -398,6 +409,7 @@ dd { padding-bottom: 15px }
 				
 			}
 		}
+		<% }%>
 	}	
 	jQuery(function($){
 		jQuery("#nig").mask("AAAAA AA A AAAA AAAAAAA");
@@ -431,7 +443,7 @@ dd { padding-bottom: 15px }
 	<!-- FIN: TITULO Y LOCALIZACION -->
 </head>
 
-<body onLoad="inicio();ajusteAlto('resultado');onchangeTipoResolucion();" >
+<body id="body" onLoad="inicio();ajusteAlto('resultado');onchangeTipoResolucion();" >
 <!--bean:define id="permisoEejg" scope="request" name="permisoEejg" type="java.lang.Boolean"/-->
 
 <bean:define id="path" name="org.apache.struts.action.mapping.instance"	property="path" scope="request" />
@@ -459,6 +471,8 @@ if(usr.isComision()){
 		<input type="hidden" id="filaSelD" />		
 		<html:hidden property = "idTipoResolucion" />
 		<html:hidden property = "idTipoFundamento" />	
+		<html:hidden property = "valorBusquedaExactaSolicitante" />
+		
 		
 		
 		
@@ -812,8 +826,25 @@ if(usr.isComision()){
 	<siga:ConjCampos leyenda="gratuita.busquedaEJG.literal.solicitante" desplegable="true" oculto="true">
 		<table align="center" width="100%" border="0" cellpadding="5" cellspacing="0">
 			<tr>
+				<td width="20%"></td>
+				<td width="5%"></td>
+				<td width="10%"></td>
+				<td width="10%"></td>
+				<td width="15%"></td>
+				<td width="10%"></td>
+				<td width="10%"></td>
+				<td width="10%"></td>
+				<td width="10%"></td>
+				
+			</tr>
+			
+			<tr>
+				<td class="labelText" style="vertical-align: middle"><siga:Idioma
+						key="censo.busquedaClientes.literal.checkBusqueda" /> <html:checkbox
+					 name="<%=formulario%>" property="chkBusquedaExactaSolicitante" /></td>
+
 				<td class="labelText" style="vertical-align:middle">
-					<siga:Idioma key="gratuita.busquedaEJG.literal.nif" />
+				<siga:Idioma key="gratuita.busquedaEJG.literal.nif" />
 				</td>
 				<td>
 					<html:text name="<%=formulario%>" property="nif" size="10" maxlength="20" styleClass="box" value="<%=nif%>" />
@@ -823,14 +854,14 @@ if(usr.isComision()){
 					<siga:Idioma key="gratuita.busquedaEJG.literal.nombre" /> 
 				</td>				
 				<td>
-					<html:text name="<%=formulario%>" property="nombre" size="26" maxlength="100" styleClass="box" value="<%=nombre%>" />
+					<html:text name="<%=formulario%>" property="nombre" size="15" maxlength="100" styleClass="box" value="<%=nombre%>" />
 				</td>
 				
 				<td class="labelText" style="vertical-align:middle">
 					<siga:Idioma key="gratuita.busquedaAsistencias.literal.apellido1" /> 
 				</td>				
 				<td>
-					<html:text name="<%=formulario%>" property="apellido1" size="26" maxlength="100" styleClass="box" value="<%=apellido1%>" />
+					<html:text name="<%=formulario%>" property="apellido1" size="15" maxlength="100" styleClass="box" value="<%=apellido1%>" />
 				</td>
 				
 				<td class="labelText" style="vertical-align:middle">
@@ -838,7 +869,7 @@ if(usr.isComision()){
 				</td>
 				
 				<td>
-					<html:text name="<%=formulario%>" property="apellido2" size="26" maxlength="100" styleClass="box" value="<%=apellido2%>" />
+					<html:text name="<%=formulario%>" property="apellido2" size="15" maxlength="100" styleClass="box" value="<%=apellido2%>" />
 				</td>
 			</tr>
 		</table>
@@ -933,17 +964,28 @@ if(usr.isComision()){
 			el combo hijo de guardias
 			*/
 			<%if (!esComision){%>
-			document.forms[0].descripcionEstado.value = document.forms[0].estadoEJG[document.forms[0].estadoEJG.selectedIndex].text;
+				document.forms[0].descripcionEstado.value = document.forms[0].estadoEJG[document.forms[0].estadoEJG.selectedIndex].text;
 			<% } %>
 			document.forms[0].guardiaTurnoIdTurno.value = document.forms[0].identificador.value;
 			if (isNaN(document.forms[0].anio.value)) {
 				alert('<siga:Idioma key="gratuita.busquedaEJG.literal.errorAnio"/>');
 			}else if (isNaN(document.forms[0].idPersona.value)) {
 				alert('<siga:Idioma key="gratuita.busquedaEJG.literal.errorIdPersona"/>');
-			}else document.forms[0].submit();			
+			}else{
+				
+			
+				document.forms[0].submit();
+			}
 		}		
 		
 		function buscar(){ 
+			
+			if (document.getElementById('chkBusquedaExactaSolicitante').checked){
+	           document.forms[0].valorBusquedaExactaSolicitante.value="1";
+	        }else{
+			   document.forms[0].valorBusquedaExactaSolicitante.value="0";
+			}
+			
 			
 			var tipoResol = jQuery("#idTipoResolucionEJG").val();
 			if(tipoResol){
@@ -1014,7 +1056,31 @@ if(usr.isComision()){
 						fin();
 						alert('<siga:Idioma key="gratuita.busquedaEJG.literal.errorIdPersona"/>');
 					}
-					else document.forms[0].submit();
+					else{ 
+						filtroSeleccionado = false;	
+						jQuery("#body").find('td input').each(function () {
+
+						
+							if (jQuery(this).val() != "" && jQuery(this).attr('type')!='checkbox' && jQuery(this).attr('type')!='button'){
+								filtroSeleccionado = true;
+							}
+						});	
+						if(!filtroSeleccionado){
+							jQuery("#body").find('td select').each(function () {
+								if (jQuery(this).val() != "" && jQuery(this).attr("name")!='dictaminado' ){
+									filtroSeleccionado = true;
+								}
+							});
+						}
+						if(!filtroSeleccionado){
+							
+							alert('<siga:Idioma key="errors.filter.required"/>');
+							fin();
+							return false;
+						}else{
+							document.forms[0].submit();
+						}
+					}
 				}else{
 					setFocusFormularios();
 				}
@@ -1128,6 +1194,11 @@ if(usr.isComision()){
 				}
 			}
 		}
+		<% if(chkBusquedaExactaSolicitante){%>
+			document.getElementById("chkBusquedaExactaSolicitante").checked="checked";
+		<% }else{%>
+			document.getElementById("chkBusquedaExactaSolicitante").checked="";
+		<% }%>
 		
 	</script>
 <!-- FIN: SCRIPTS BOTONES BUSQUEDA -->
