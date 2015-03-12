@@ -183,6 +183,7 @@
 					jQuery("#selectSeleccionSerieFacturacion").find("option").detach();
 					jQuery("#selectSeleccionSerieFacturacion").append(json.aOptionsSeriesFacturacion[0]);
 					
+					fin();
 					jQuery("#divSeleccionSerieFacturacion").dialog(
 						{
 							height: 220,
@@ -191,16 +192,19 @@
 							resizable: false,
 							buttons: {
 								"<%=sDialogBotonGuardarCerrar%>": function() {
+									sub();
 									idSerieFacturacion = jQuery("#selectSeleccionSerieFacturacion").val();
 									if (idSerieFacturacion==null || idSerieFacturacion=='') {
 										alert('<siga:Idioma key="messages.facturacion.seleccionSerie.noSeleccion"/>');
+										fin();
 										
 									} else {
 										jQuery(this).dialog("close");
 										document.solicitudCompraForm.target = "submitArea";
 										document.solicitudCompraForm.tablaDatosDinamicosD.value = idInstitucion.value + ',' + idPeticion.value + ',' + idSerieFacturacion;
 										document.solicitudCompraForm.modo.value = "facturacionRapidaCompra";
-										document.solicitudCompraForm.submit();	
+										document.solicitudCompraForm.submit();
+										window.setTimeout("fin()",5000,"Javascript");
 									}
 								},
 								"<%=sDialogBotonCerrar%>": function() {
@@ -215,10 +219,9 @@
 					document.solicitudCompraForm.target = "submitArea";
 					document.solicitudCompraForm.tablaDatosDinamicosD.value = idInstitucion.value + ',' + idPeticion.value + ',' + idSerieFacturacion;	
 					document.solicitudCompraForm.modo.value = "facturacionRapidaCompra";
-					document.solicitudCompraForm.submit();							
-				}							
-				
-			   	window.setTimeout("fin()",5000,"Javascript");								
+					document.solicitudCompraForm.submit();
+					window.setTimeout("fin()",5000,"Javascript");
+				}											
 			},
 			
 			error: function(e){
