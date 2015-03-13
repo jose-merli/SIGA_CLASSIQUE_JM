@@ -25,7 +25,6 @@ public interface AsistenciasService extends BusinessService{
 	public List<ScsComisariaBean> getComisarias(AsistenciaForm asistenciaForm,String idComisaria, UsrBean usrBean) throws ClsExceptions;
 	public List<ScsJuzgadoBean> getJuzgados(AsistenciaForm asistenciaForm,UsrBean usrBean) throws ClsExceptions ;
 	public List<ScsJuzgadoBean> getJuzgados(AsistenciaForm asistenciaForm,String idJuzgado,UsrBean usrBean) throws ClsExceptions ;
-	public List<ValueKeyVO> getTipoCosteFijoActuaciones(ActuacionAsistenciaForm actuacionAsistenciaForm,String idTipoActuacion, UsrBean usrBean)throws ClsExceptions ;
 	public List<ScsTipoActuacionBean> getTiposActuacion(AsistenciaForm asistenciaForm, UsrBean usrBean)	throws ClsExceptions ;
 	public List<ScsPrisionBean> getPrisiones(AsistenciaForm asistenciaForm,	UsrBean usrBean) throws ClsExceptions;
 	public void modificarActuacionAsistencia(ActuacionAsistenciaForm actuacionAsistenciaForm, UsrBean usrBean)throws ClsExceptions, SIGAException ;

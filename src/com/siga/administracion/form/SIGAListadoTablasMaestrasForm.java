@@ -9,7 +9,6 @@ public class SIGAListadoTablasMaestrasForm extends MasterForm
 	 */
 	private static final long serialVersionUID = 8202162975401945276L;
 	//    private String modo="";
-    private String modal="";
     private String codigoRegistro="";
     private String codigoRegistroExt="";
     private String descripcionRegistro="";
@@ -35,7 +34,8 @@ public class SIGAListadoTablasMaestrasForm extends MasterForm
     private String queryTablaRel;
     private String numeroTextoPlantillas;
     private String textoPlantillas;
-    
+    private String datosConf;
+    private String regBajaLogica;
     
 //    public String getModo() 
 //    {
@@ -46,18 +46,25 @@ public class SIGAListadoTablasMaestrasForm extends MasterForm
 //    {
 //        this.modo = modo;
 //    }
-
-    public String getModal() 
-    {
-        return modal;
-    }
     
-    public void setModal(String modal) 
-    {
-        this.modal = modal;
-    }
+    
+    public String getDatosConf() {
+		return datosConf;
+	}
 
-    public String getCodigoRegistro() 
+	public String getRegBajaLogica() {
+		return regBajaLogica;
+	}
+
+	public void setRegBajaLogica(String regBajaLogica) {
+		this.regBajaLogica = regBajaLogica;
+	}
+
+	public void setDatosConf(String datosConf) {
+		this.datosConf = datosConf;
+	}
+
+	public String getCodigoRegistro() 
     {
         return codigoRegistro;
     }

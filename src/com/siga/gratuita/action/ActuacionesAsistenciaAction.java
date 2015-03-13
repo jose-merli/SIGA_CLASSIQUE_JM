@@ -14,6 +14,7 @@ import com.atos.utils.ClsExceptions;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.AjaxCollectionXmlBuilder;
 import com.siga.Utilidades.UtilidadesString;
+import com.siga.beans.ScsActuacionAsistCosteFijoAdm;
 import com.siga.beans.ScsAsistenciasAdm;
 import com.siga.beans.ScsAsistenciasBean;
 import com.siga.comun.vos.ValueKeyVO;
@@ -183,12 +184,29 @@ public class ActuacionesAsistenciaAction extends MasterAction {
 		actuacionAsistenciaForm.setIdTipoActuacion(idTipoActuacion);
 		actuacionAsistenciaForm.setIdInstitucion(idInstitucion);
 		
+		Integer numero=null;
+		Integer anio=null;
+		Integer idActuacion=null;
+		
+		if((actuacionAsistenciaForm.getNumero()!=null)&&(!actuacionAsistenciaForm.getNumero().isEmpty()))
+			numero=Integer.parseInt(actuacionAsistenciaForm.getNumero());
+		
+		if((actuacionAsistenciaForm.getAnio()!=null)&&(!actuacionAsistenciaForm.getAnio().isEmpty()))
+			anio=Integer.parseInt(actuacionAsistenciaForm.getAnio());
+		
+		if((actuacionAsistenciaForm.getIdActuacion()!=null)&&(!actuacionAsistenciaForm.getIdActuacion().isEmpty()))
+			idActuacion=Integer.parseInt(actuacionAsistenciaForm.getIdActuacion()); //número de actuacion que se muestra en ventana
+		
 		//Sacamos las guardias si hay algo selccionado en el turno
 		List<ValueKeyVO> tipoCosteList = null;
 		if(idTipoActuacion!= null && !idTipoActuacion.equals("-1")&& !idTipoActuacion.equals("")){
-			BusinessManager bm = getBusinessManager();
-			AsistenciasService asistenciasService = (AsistenciasService)bm.getService(AsistenciasService.class);
-			tipoCosteList = asistenciasService.getTipoCosteFijoActuaciones(actuacionAsistenciaForm,idTipoActuacion, usrBean);
+									
+			ScsActuacionAsistCosteFijoAdm actuacionAsistCosteFijoAdm = new ScsActuacionAsistCosteFijoAdm(usrBean);
+    	    tipoCosteList = actuacionAsistCosteFijoAdm.getTipoCosteFijoActuaciones(new Integer(idInstitucion),new Integer(idTipoAsistencia),new Integer(idTipoActuacion),numero,anio,idActuacion,false);
+
+    	    if(tipoCosteList==null)
+	    		tipoCosteList = new ArrayList<ValueKeyVO>();
+
 		}
 		
 		respuestaAjax(new AjaxCollectionXmlBuilder<ValueKeyVO>(), tipoCosteList,response);
@@ -236,7 +254,7 @@ public class ActuacionesAsistenciaAction extends MasterAction {
 			actuacionAsistenciaFormEdicion.setNumeroDiligenciaAsistencia(asistenciaForm.getNumeroDiligencia());
 			actuacionAsistenciaFormEdicion.setComisariaAsistencia(asistenciaForm.getComisaria());
 			actuacionAsistenciaFormEdicion.setJuzgadoAsistencia(asistenciaForm.getJuzgado());
-			actuacionAsistenciaForm.setIdCosteFijoActuacion(null);
+		//	actuacionAsistenciaForm.setIdCosteFijoActuacion(null);
 			
 			String idPrision = actuacionAsistenciaFormEdicion.getIdPrision();
 			String idInstitucionPrision = actuacionAsistenciaFormEdicion.getIdInstitucionPris();
@@ -244,7 +262,7 @@ public class ActuacionesAsistenciaAction extends MasterAction {
 				String codigoPrision = idInstitucionPrision+","+idPrision;
 				actuacionAsistenciaFormEdicion.setIdPrision(codigoPrision);
 			}
-			
+			 
 			String idComisaria = actuacionAsistenciaFormEdicion.getIdComisaria();
 			if(idComisaria==null ||idComisaria.equals(""))
 				idComisaria = asistenciaForm.getComisaria();

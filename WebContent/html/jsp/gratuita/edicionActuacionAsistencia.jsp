@@ -234,6 +234,7 @@
 		<input type="hidden" name="validarJustificaciones" id="validarJustificaciones" value="${asistencia.validarJustificaciones}" />
 		<input type="hidden" id="isLetrado" name="isLetrado" value="${usrBean.letrado}" />
 		<html:hidden property="idTipoAsistencia" styleId="idTipoAsistencia" value="${ActuacionAsistenciaFormEdicion.idTipoAsistencia}" />
+		<html:hidden property="idActuacion" styleId="idActuacion" value="${ActuacionAsistenciaFormEdicion.idActuacion}" />
 		<input type="hidden" name="auxIdCosteFijoActuacion" id="auxIdCosteFijoActuacion" value="${ActuacionAsistenciaFormEdicion.idCosteFijoActuacion}" />
 		<input type="hidden" name="actionModal" id="actionModal"/>
 
@@ -404,10 +405,10 @@
 						<siga:Idioma key="gratuita.mantActuacion.literal.Coste" />
 					</td>
 					<td colspan="4" id="tdSelectTiposCosteFijo">
-						<html:select styleClass="boxCombo" style="width:600px;" styleId="tiposCosteFijoActuaciones" name="ActuacionAsistenciaFormEdicion" property="idCosteFijoActuacion">
-							<bean:define id="tipoCosteFijoActuaciones" name="ActuacionAsistenciaForm" property="tipoCosteFijoActuaciones" type="java.util.Collection" />
-							<html:optionsCollection name="tipoCosteFijoActuaciones" value="value" label="key" />
-						</html:select>
+					<html:select styleClass="boxCombo" style="width:600px;" styleId="tiposCosteFijoActuaciones" value="${ActuacionAsistenciaForm.idCosteFijoActuacion}" name="ActuacionAsistenciaFormEdicion" property="idCosteFijoActuacion" >
+						<bean:define id="tipoCosteFijoActuaciones" name="ActuacionAsistenciaForm" property="tipoCosteFijoActuaciones" type="java.util.Collection" />
+						<html:optionsCollection name="tipoCosteFijoActuaciones" value="value" label="key" />
+					</html:select>
 					</td>
 				</tr>
 				

@@ -147,7 +147,7 @@ public class ScsActuacionAsistCosteFijoAdm extends MasterBeanAdministrador {
 		String[] campos= {ScsActuacionAsistCosteFijoBean.C_IDCOSTEFIJO};	
 		return campos;
 	}
-	public List<ValueKeyVO> getTipoCosteFijoActuaciones(Integer idInstitucion, Integer idTipoAsistencia,Integer idTipoActuacion,boolean isObligatorio)throws ClsExceptions{
+	public List<ValueKeyVO> getTipoCosteFijoActuaciones(Integer idInstitucion, Integer idTipoAsistencia,Integer idTipoActuacion,Integer numero, Integer anio, Integer idActuacion,boolean isObligatorio)throws ClsExceptions{
 
 		Hashtable<Integer, Object> htCodigos = new Hashtable<Integer, Object>();
 		int contador = 0;
@@ -174,14 +174,43 @@ public class ScsActuacionAsistCosteFijoAdm extends MasterBeanAdministrador {
 		sql.append(contador);
 		htCodigos.put(new Integer(contador),idTipoAsistencia);
 		sql.append(" AND tipo.IDINSTITUCION = coste.IDINSTITUCION "); 
-		sql.append(" AND tipo.IDCOSTEFIJO = coste.IDCOSTEFIJO ORDER BY DESCRIPCION ");
+		sql.append(" AND tipo.IDCOSTEFIJO = coste.IDCOSTEFIJO AND tipo.FECHABAJA IS NULL  ");
 		
+		//Recuperamos el coste fijo relacionado con la actuación, porque puede estar de baja
+		if((numero!=null)&&(anio!=null)&&(idActuacion!=null)){
+			sql.append(" UNION ");
+			sql.append("  SELECT ACF.IDCOSTEFIJO, F_SIGA_GETRECURSO (CFD.DESCRIPCION,1) AS DESCRIPCION ");
+			sql.append("  FROM SCS_ACTUACIONASISTCOSTEFIJO ACF , SCS_COSTEFIJO CFD, SCS_TIPOACTUACIONCOSTEFIJO TIPO ");
+			sql.append("   WHERE ACF.IDINSTITUCION = : ");
+			contador ++;
+			sql.append(contador);
+			htCodigos.put(new Integer(contador),idInstitucion);
+			sql.append("   AND ACF.IDTIPOASISTENCIA =: ");
+			contador ++;
+			sql.append(contador);
+			htCodigos.put(new Integer(contador),idTipoAsistencia);
+			sql.append("   AND ACF.IDTIPOACTUACION =: ");
+			contador ++;
+			sql.append(contador);
+			htCodigos.put(new Integer(contador),idTipoActuacion);
+			sql.append("   AND ACF.ANIO=: ");
+			contador ++;
+			sql.append(contador);
+			htCodigos.put(new Integer(contador),anio);
+			sql.append("   AND ACF.NUMERO=: ");
+			contador ++;
+			sql.append(contador);
+			htCodigos.put(new Integer(contador),numero);
+			sql.append("   AND CFD.IDINSTITUCION = ACF.IDINSTITUCION ");
+			sql.append("   AND CFD.IDCOSTEFIJO = ACF.IDCOSTEFIJO ");
+			sql.append("   AND TIPO.IDINSTITUCION = ACF.IDINSTITUCION ");
+			sql.append(" AND TIPO.IDTIPOASISTENCIA =ACF.IDTIPOASISTENCIA ");
+			sql.append(" AND TIPO.IDCOSTEFIJO = ACF.IDCOSTEFIJO  ");
+			sql.append(" AND TIPO.FECHABAJA IS NOT NULL ");
+		}
 		
-		
-		
-		
-		
-		
+		sql.append(" ORDER BY DESCRIPCION  ");
+
 		List<ValueKeyVO> valueKeyVOs = null;
 		try {
 			RowsContainer rc = new RowsContainer(); 
@@ -304,7 +333,43 @@ public class ScsActuacionAsistCosteFijoAdm extends MasterBeanAdministrador {
 	}
 	
 	
-	
-	
+	/**
+	 * Devuelve un vector con los tipos de asistencias incluidas en la configuración de un coste fijo
+	 * ordenadas por descripción
+	 * @param idInstitucion
+	 * @param idCosteFijo
+	 * @return
+	 */
+	public Vector getTiposAsistenciasCosteFijo (String idInstitucion, String idCosteFijo, boolean hist, String lang) throws ClsExceptions{
+
+		Vector resultado=new Vector();
+		
+		StringBuilder select = new StringBuilder();
+		select.append("SELECT TAS.IDTIPOASISTENCIA AS IDTIPOASISTENCIA,");	
+		select.append("(SELECT F_SIGA_GETRECURSO(DESCRIPCION,"+lang+") ");	
+		select.append("   FROM SCS_TIPOASISTENCIACOLEGIO ");	
+		select.append("   WHERE IDINSTITUCION= TAS.IDINSTITUCION");	
+		select.append("     AND IDTIPOASISTENCIACOLEGIO=TAS.IDTIPOASISTENCIA) AS DESCRIPCION,");
+		select.append(" REPLACE(TO_CHAR(NVL(SUM(TAS.IMPORTE),0),'9999999999.99'),'.',',') AS IMPORTE ");	
+		select.append("  FROM SCS_TIPOACTUACIONCOSTEFIJO TAS ");
+		select.append("  WHERE TAS.IDINSTITUCION= "+idInstitucion);
+		select.append("    AND TAS.IDCOSTEFIJO= "+idCosteFijo);
+		
+		if(hist)
+			select.append("    AND TAS.FECHABAJA IS NOT NULL ");
+		else
+			select.append("    AND TAS.FECHABAJA IS NULL ");
+		
+		select.append("    GROUP BY TAS.IDINSTITUCION,TAS.IDTIPOASISTENCIA ");
+		select.append("    ORDER BY DESCRIPCION");
+
+		try {
+			resultado = (Vector) super.selectGenerico(select.toString());
+		} catch (Exception e) {
+			throw new ClsExceptions(e, "Error en ScsActuacionAsistCosteFijo.getTiposAsistenciasCosteFijo()" + select.toString());
+		}		
+		
+		return resultado;
+	}
 	
 }

@@ -119,15 +119,7 @@
 	</head>
 
 	<body class="tablaCentralCampos">
-					
-					
-<% String tamanio = "P";
-if(beanTablaMaestra.getNumeroTextoPlantillas()!=null ){
-		tamanio = "G";
-}
-	
-%>
-		<html:form action="/ADM_GestionarTablasMaestras.do" method="POST" target="submitArea" style="display:none">
+		<html:form action="/ADM_GestionarTablasMaestras.do" method="POST" target="mainWorkArea" style="display:none">
 			<html:hidden property = "modo" value = ""/>
 			<input type="hidden" id="nombreTablaMaestra"  name="nombreTablaMaestra" value="<%=beanTablaMaestra.getIdTablaMaestra()%>">
 			<input type="hidden" id="nombreCampoCodigo" name="nombreCampoCodigo" value="<%=beanTablaMaestra.getIdCampoCodigo()%>">
@@ -163,7 +155,7 @@ if(beanTablaMaestra.getNumeroTextoPlantillas()!=null ){
 		   		  border="1"
 		   		  columnNames="<%=nombrecols%>"
 		   		  columnSizes="<%=ncols%>"
-		   		  modal="<%=tamanio %>">
+		   		  >
 
 <%				
 				if (resultado==null || resultado.size()==0) { %>	

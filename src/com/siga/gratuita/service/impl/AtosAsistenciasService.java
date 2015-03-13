@@ -128,17 +128,7 @@ public class AtosAsistenciasService extends JtaBusinessServiceTemplate
     		juzgadosList = new ArrayList<ScsJuzgadoBean>();
     	return juzgadosList;
 	}
-	public List<ValueKeyVO> getTipoCosteFijoActuaciones(
-			ActuacionAsistenciaForm actuacionAsistenciaForm,String idTipoActuacion, UsrBean usrBean)
-			throws ClsExceptions {
-		ScsActuacionAsistCosteFijoAdm actuacionAsistCosteFijoAdm = new ScsActuacionAsistCosteFijoAdm(usrBean);
-		ScsActuacionAsistenciaBean actuacion = actuacionAsistenciaForm.getActuacionAsistenciaVO();
-    	List<ValueKeyVO> costesFijosList = actuacionAsistCosteFijoAdm.getTipoCosteFijoActuaciones(actuacion.getIdInstitucion(),actuacion.getIdTipoAsistencia(),new Integer(idTipoActuacion),false);
-    	if(costesFijosList==null)
-    		costesFijosList = new ArrayList<ValueKeyVO>();
-    	return costesFijosList;
 
-	}
 	public List<ScsTipoActuacionBean> getTiposActuacion(
 			AsistenciaForm asistenciaForm, UsrBean usrBean)
 			throws ClsExceptions {

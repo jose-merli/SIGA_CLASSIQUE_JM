@@ -1,17 +1,23 @@
 package com.siga.administracion.action;
 
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Vector;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.transaction.UserTransaction;
 
+import org.apache.struts.action.ActionForm;
+import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.redabogacia.sigaservices.app.autogen.model.CenInstitucion;
+import org.redabogacia.sigaservices.app.autogen.model.ScsTipoactuacioncostefijo;
 import org.redabogacia.sigaservices.app.services.cen.CenInstitucionService;
+import org.redabogacia.sigaservices.app.services.scs.ScsTipoactuacioncostefijoService;
 
 import com.atos.utils.CLSAdminLog;
 import com.atos.utils.ClsConstants;
@@ -20,19 +26,76 @@ import com.atos.utils.ComodinBusquedas;
 import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
+import com.siga.Utilidades.UtilidadesHash;
+import com.siga.Utilidades.UtilidadesString;
 import com.siga.Utilidades.paginadores.Paginador;
+import com.siga.Utilidades.paginadores.PaginadorBind;
 import com.siga.administracion.form.SIGAListadoTablasMaestrasForm;
 import com.siga.beans.GenRecursosCatalogosAdm;
 import com.siga.beans.GenRecursosCatalogosBean;
 import com.siga.beans.GenTablasMaestrasAdm;
 import com.siga.beans.GenTablasMaestrasBean;
 import com.siga.beans.MasterBean;
+import com.siga.beans.ScsActuacionAsistCosteFijoAdm;
+import com.siga.beans.ScsActuacionAsistCosteFijoBean;
+import com.siga.beans.ScsTipoActuacionAdm;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
 
+import es.satec.businessManager.BusinessManager;
+
+
 public class SIGAListadoTablasMaestrasAction extends MasterAction
-{
+{	
+	protected ActionForward executeInternal(ActionMapping mapping,ActionForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException 
+	{
+		String mapDestino = "exception";
+		MasterForm miForm = null;
+		try { 
+			
+			
+			do {
+				miForm = (MasterForm) formulario;
+				if (miForm != null) {
+					String accion = miForm.getModo();
+					String modo = request.getParameter("modo");
+					if(modo!=null)
+						accion = modo;
+					if ((accion!=null)&&((accion.equalsIgnoreCase("abrirConfiguracionCosteFijo"))||(accion.equalsIgnoreCase("editarAsistencia")) || (accion.equalsIgnoreCase("verAsistencia"))||(accion.equalsIgnoreCase("configuracionCosteFijoBuscarPor")) )){
+						if(!accion.equalsIgnoreCase("configuracionCosteFijoBuscarPor")){
+							miForm.reset(new String[]{"registrosSeleccionados","datosPaginador","seleccionarTodos"});
+							miForm.reset(mapping,request);
+							request.getSession().removeAttribute("DATAPAGINADOR");
+						}
+						mapDestino = abrirConfiguracionCosteFijo(mapping, miForm, request, response);
+					}else if ((accion!=null)&&(accion.equalsIgnoreCase("insetarAsistencia"))) {
+						mapDestino = insertarRelTipoAsistCosteFijo(mapping, miForm, request, response);
+					}else if ((accion!=null)&&(accion.equalsIgnoreCase("borrarAsistencia"))) {
+						mapDestino = borrarRelTipoAsistCosteFijo(mapping, miForm, request, response);
+					}else{
+						return super.executeInternal(mapping,formulario,request,response);
+					}
+				}
+			} while (false);
+			// Redireccionamos el flujo a la JSP correspondiente
+			if (mapDestino == null)	{ 
+				throw new ClsExceptions("El ActionMapping no puede ser nulo");
+			}
+			return mapping.findForward(mapDestino);
+		} 
+		catch (SIGAException es) {
+
+			throw es;
+		} catch (Exception e) {
+			throw new SIGAException("messages.general.error",e,new String[] {"modulo.gratuita"});
+		}
+	}
+
+	
+	
+	
+	
 	protected String abrir(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException
 	
 	{
@@ -64,10 +127,10 @@ public class SIGAListadoTablasMaestrasAction extends MasterAction
 	        /***** PAGINACION*****/
 	        HashMap databackup=new HashMap();
 	        if (request.getSession().getAttribute("DATAPAGINADOR")!=null){ 
-		 		databackup = (HashMap)request.getSession().getAttribute("DATAPAGINADOR");
-			     Paginador paginador = (Paginador)databackup.get("paginador");
-			     Vector datos=new Vector();
-			
+			 	databackup = (HashMap)request.getSession().getAttribute("DATAPAGINADOR");
+				Paginador paginador = (Paginador)databackup.get("paginador");
+				Vector datos=new Vector();
+		
 			
 			//Si no es la primera llamada, obtengo la página del request y la busco con el paginador
 			String pagina = (String)request.getParameter("pagina");
@@ -81,7 +144,7 @@ public class SIGAListadoTablasMaestrasAction extends MasterAction
 			databackup.put("paginador",paginador);
 			databackup.put("datos",datos);
 			request.setAttribute("beanTablaMaestra", request.getSession().getAttribute("beanTablaMaestraOld"));
-	  }
+	}
       else{	
 	  	    databackup=new HashMap();
 	        Paginador resultado = null;
@@ -340,8 +403,10 @@ public class SIGAListadoTablasMaestrasAction extends MasterAction
 				throwExcp("error.messages.application",e,tx);
 			}
 		}
-        request.setAttribute("modal","1");
-	    return "exito";
+       
+	    request.setAttribute("mensaje","messages.inserted.success");
+	    request.setAttribute("sinrefresco","1");
+		return "exito";
 	}
 	private void insertarRegistroMaestro(String idInstitucion,SIGAListadoTablasMaestrasForm form,UsrBean userBean) throws ClsExceptions, SIGAException{
 		String strTextoPlantillas =  form.getNumeroTextoPlantillas();
@@ -481,7 +546,9 @@ public class SIGAListadoTablasMaestrasAction extends MasterAction
 			throwExcp("messages.updated.error",e,tx);
 		}
 
-		return this.exitoModal("messages.updated.success", request);
+		request.setAttribute("mensaje","messages.updated.success");
+		request.setAttribute("sinrefresco","1");
+		return "exito";
 	}
 	private void modificarRegistroMaestro(String idInstitucion,SIGAListadoTablasMaestrasForm form,int aceptaBaja,UsrBean userBean) throws ClsExceptions, SIGAException{
 		 String strTextoPlantillas =  form.getNumeroTextoPlantillas();
@@ -699,7 +766,7 @@ public class SIGAListadoTablasMaestrasAction extends MasterAction
 	    {
 		    
 		    SIGAListadoTablasMaestrasForm form = (SIGAListadoTablasMaestrasForm)formulario;
-		    form.setModal("false");
+		   
 		    Vector vOcultos = form.getDatosTablaOcultos(0);
 		    String sCodigo = (String)vOcultos.elementAt(0);
 		    String sDescripcion = (String)vOcultos.elementAt(1);
@@ -822,9 +889,15 @@ public class SIGAListadoTablasMaestrasAction extends MasterAction
 	        if (!bNuevo) {
 			    Vector vOcultos = form.getDatosTablaOcultos(0);
 			    
-			    sCodigoExt = (String)vOcultos.elementAt(0);
-			    sBloqueo = (String)vOcultos.elementAt(1);
-		        
+			    if(vOcultos!=null){
+				    sCodigoExt = (String)vOcultos.elementAt(0);
+				    sBloqueo = (String)vOcultos.elementAt(1);
+			    //Si hemos configurado un coste fijo hay que recargar la ventana
+			    }else{
+			    	sBloqueo=(String) request.getSession().getAttribute("bloqueo");
+			    	request.getSession().removeAttribute("bloqueo");
+			    	sCodigoExt=form.getCodigoRegistro();
+			    }
 			    String sSQL = "SELECT " + sNombreCampoCodigoExt + " AS CODIGOEXTERNO, " + 
 			    				sNombreCampoCodigo + " AS CODIGO, " +
 			    				" F_SIGA_GETRECURSO(" + sNombreCampoDescripcion + ", " + 
@@ -891,6 +964,33 @@ public class SIGAListadoTablasMaestrasAction extends MasterAction
 			    Row row = (Row)rc.get(0);
 		        request.setAttribute("datos", row);
 		        request.setAttribute("bloqueo",sBloqueo);
+		        
+		        //Si la tabla es costes fijos mostramos los tipos de asistencias relacionadas
+		        if(sNombreTabla.equals("SCS_COSTEFIJO")){
+		        	
+		        	ScsActuacionAsistCosteFijoAdm actAsisCostAdm = new ScsActuacionAsistCosteFijoAdm (userBean);
+		        	List tiposAsistenciasRelList= new ArrayList();
+		        	boolean regBajaLog=false;
+		        	
+		        	if(form.getRegBajaLogica()!=null){
+		        		regBajaLog=UtilidadesString.stringToBoolean(form.getRegBajaLogica());
+		        		request.setAttribute("bIncluirRegistrosConBajaLogica", form.getRegBajaLogica());
+		        	}
+		        	
+		        	Vector tiposAsistenciasRelV=actAsisCostAdm.getTiposAsistenciasCosteFijo(userBean.getLocation(), sCodigoExt,regBajaLog,userBean.getLanguage());
+	        	
+		        	if((tiposAsistenciasRelV!=null)&&(tiposAsistenciasRelV.size()>0)){
+		        	
+		        		for(int t=0;t<tiposAsistenciasRelV.size();t++){
+		        			
+		        			 tiposAsistenciasRelList.add((Hashtable) tiposAsistenciasRelV.get(t));
+		        		}
+		        		        	
+		        	}	
+		        	
+		        
+		        	request.setAttribute("tiposAsistenciasRel", tiposAsistenciasRelList);
+		        }
 		
 	        } else {
 	        	
@@ -1094,4 +1194,205 @@ public class SIGAListadoTablasMaestrasAction extends MasterAction
 	    }
 		return existe;
 	}
+	
+	protected String abrirConfiguracionCosteFijo(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, SIGAException ,Exception
+	
+	{
+		final String[] clavesBusqueda={ScsActuacionAsistCosteFijoBean.C_IDTIPOASISTENCIA,ScsActuacionAsistCosteFijoBean.C_IDTIPOACTUACION};
+		
+		try{
+		
+			UsrBean userBean = ((UsrBean)request.getSession().getAttribute(("USRBEAN")));
+			SIGAListadoTablasMaestrasForm form = (SIGAListadoTablasMaestrasForm)formulario;
+			String idCosteFijo=(String)form.getCodigoRegistro();
+			String idTipoAsistencia="";
+			
+			if(request.getParameter("modo").equals("verAsistencia"))
+				request.setAttribute("modoConsulta","1");
+			else
+				request.setAttribute("modoConsulta","0");
+			
+			request.setAttribute("modo",request.getParameter("modo"));
+			
+			//Si es seleccionar todos esta variable no vandra nula y ademas nos traera el numero de pagina 
+			//donde nos han marcado el seleccionar todos(asi evitamos meter otra variable)
+			boolean isSeleccionarTodos = form.getSeleccionarTodos()!=null 
+				&& !form.getSeleccionarTodos().equals("");
+			
+			
+			//si no es seleccionar todos los cambios van a fectar a los datos que se han mostrado en 
+			//la jsp por lo que parseamos los datos dento dela variable Registro seleccionados. Cuando hay modificacion
+			//habra que actualizar estos datos
+			if(!isSeleccionarTodos){
+				ArrayList clavesRegSeleccinados = (ArrayList) form.getRegistrosSeleccionados();
+				String seleccionados = request.getParameter("Seleccion");
+				
+				
+				if ((seleccionados != null )&&(!seleccionados.isEmpty())) {
+					ArrayList alRegistros = actualizarSelecionados(clavesBusqueda,seleccionados, clavesRegSeleccinados);
+					if (alRegistros != null) {
+						clavesRegSeleccinados = alRegistros;
+						form.setRegistrosSeleccionados(clavesRegSeleccinados);
+					}
+				}
+			}
+
+			HashMap databackup = (HashMap) form.getDatosPaginador();
+			if (databackup!=null && databackup.get("paginador")!=null&&!isSeleccionarTodos){
+				PaginadorBind paginador = (PaginadorBind)databackup.get("paginador");
+				Vector datos=new Vector();
+
+				//Si no es la primera llamada, obtengo la página del request y la busco con el paginador
+				String pagina = (String)request.getParameter("pagina");
+
+				if (paginador!=null){	
+					if (pagina!=null){
+						datos = paginador.obtenerPagina(Integer.parseInt(pagina));
+					}else{// cuando hemos editado un registro de la busqueda y volvemos a la paginacion
+						datos = paginador.obtenerPagina((paginador.getPaginaActual()));
+					}
+				}	
+
+				databackup.put("paginador",paginador);
+				databackup.put("datos",datos);
+				
+			}else{	
+				
+				databackup=new HashMap();
+
+				//obtengo datos de la consulta 			
+				PaginadorBind resultado = null;
+				Vector datos = null;
+				boolean regBajaLog=false;
+				
+				if(request.getParameter("modo")!=null)
+					if(!request.getParameter("modo").equals("abrirConfiguracionCosteFijo")){
+						idTipoAsistencia = form.getId();
+						//Si estamos consultando/editando un registro en baja lógica
+						if(form.getRegBajaLogica()!=null){
+			        		regBajaLog=UtilidadesString.stringToBoolean(form.getRegBajaLogica());
+			        		request.setAttribute("bIncluirRegistrosConBajaLogica", form.getRegBajaLogica());
+						}
+						
+					}
+
+				ScsTipoActuacionAdm actAsisCostAdm = new ScsTipoActuacionAdm (userBean);
+	        	resultado=actAsisCostAdm. getTiposAsistTiposActDispCosteFijo (userBean.getLocation(), idCosteFijo, idTipoAsistencia,regBajaLog, userBean.getLanguage());
+
+				databackup.put("paginador",resultado);
+				
+				if (resultado!=null && resultado.getNumeroTotalRegistros()>0){ 
+							
+					
+					if(isSeleccionarTodos){
+						//Si hay que seleccionar todos hacemos la query completa.
+						ArrayList clavesRegSeleccinados = new ArrayList((Collection)actAsisCostAdm.selectGenericoNLSBind(resultado.getQueryInicio(), resultado.getCodigosInicio()));
+
+						aniadeClavesBusqueda(clavesBusqueda,clavesRegSeleccinados);
+						form.setRegistrosSeleccionados(clavesRegSeleccinados);
+
+						int pagina;
+						try{
+							pagina = Integer.parseInt(form.getSeleccionarTodos());
+						}catch (Exception e) {
+							// Con esto evitamos un error cuando se recupera una pagina y hemos "perdido" la pagina actual
+							// cargamos la primera y no evitamos mostrar un error
+							pagina = 1;
+						}
+						datos = resultado.obtenerPagina(pagina);
+						form.setSeleccionarTodos("");
+						
+					}else{				
+						form.setRegistrosSeleccionados(new ArrayList());
+						datos = resultado.obtenerPagina(1);
+					}
+					databackup.put("datos",datos);
+
+				}else{
+					resultado = null;
+					form.setRegistrosSeleccionados(new ArrayList());
+				}  
+				form.setDatosPaginador(databackup);
+
+			}			
+		
+		} catch (Exception e) {
+			throwExcp("messages.general.errorExcepcion", e, null); 
+		}
+
+		return "abrirConfCostesFijos";
+	}
+
+	protected String borrarRelTipoAsistCosteFijo(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, SIGAException ,Exception
+	
+	{
+		UsrBean userBean = ((UsrBean)request.getSession().getAttribute(("USRBEAN")));
+		
+		
+		try{
+		
+			SIGAListadoTablasMaestrasForm form = (SIGAListadoTablasMaestrasForm)formulario;
+			BusinessManager businessManager =  BusinessManager.getInstance();
+			ScsTipoactuacioncostefijoService scsTipoActCosteFijService = (ScsTipoactuacioncostefijoService) businessManager.getService(ScsTipoactuacioncostefijoService.class);
+			ScsTipoactuacioncostefijo obj = new ScsTipoactuacioncostefijo();
+			
+			obj.setIdinstitucion(Short.parseShort(userBean.getLocation()));
+			obj.setIdtipoasistencia(Short.parseShort(form.getId()));
+			obj.setIdcostefijo(Short.parseShort(form.getCodigoRegistro()));
+			obj.setUsumodificacion(Integer.parseInt(userBean.getUserName()));
+			
+			
+			
+			scsTipoActCosteFijService.delete(obj);	
+			
+		
+
+		} catch (Exception e) {
+			
+			throwExcp("messages.deleted.error",new String[] {"modulo.administracion"}, e, null);
+		}
+
+		request.setAttribute("mensaje","messages.deleted.success");
+		return "exito";
+	}
+	
+	protected String insertarRelTipoAsistCosteFijo(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, SIGAException ,Exception
+	
+	{
+		
+		String resultado="";
+		UsrBean userBean = ((UsrBean)request.getSession().getAttribute(("USRBEAN")));
+		
+			
+		try{
+		
+			
+			SIGAListadoTablasMaestrasForm form = (SIGAListadoTablasMaestrasForm)formulario;
+						
+			BusinessManager businessManager =  BusinessManager.getInstance();
+			ScsTipoactuacioncostefijoService scsTipoActCosteFijService = (ScsTipoactuacioncostefijoService) businessManager.getService(ScsTipoactuacioncostefijoService.class);
+			
+			ScsTipoactuacioncostefijo obj = new ScsTipoactuacioncostefijo();
+			obj.setIdinstitucion(Short.parseShort(userBean.getLocation()));
+			obj.setIdcostefijo(Short.parseShort(form.getCodigoRegistro()));
+			obj.setUsumodificacion(Integer.parseInt(userBean.getUserName()));
+			
+			//Borramos las relaciones existentes e insertamos las nuevas
+			scsTipoActCosteFijService.insertarRelacionAsistActCosteFijo(form.getDatosConf(),form.getId(),obj);		
+			
+			if((form.getId()!=null)&&(!form.getId().isEmpty()))
+				resultado="successEditarRelAsistencia";
+			else
+				resultado="successNuevaRelAsistencia";
+				
+		} catch (Exception e) {
+			
+			throwExcp("messages.inserted.error",new String[] {"modulo.administracion"}, e, null);
+		}
+		request.setAttribute("mensaje","messages.inserted.success");
+		return resultado;
+	}
+	
+	
+	
 }

@@ -2004,11 +2004,13 @@
 		</action>
 
 		<!-- ***** Administración / Gestión Catálogos Maestros ***** -->
-		<action path="/ADM_GestionarTablasMaestras" type="com.siga.administracion.action.SIGAListadoTablasMaestrasAction" name="listadoTablasMaestrasForm" scope="request">
+		<action path="/ADM_GestionarTablasMaestras" type="com.siga.administracion.action.SIGAListadoTablasMaestrasAction" name="listadoTablasMaestrasForm" scope="session">
 			<forward name="abrir" path="/html/jsp/administracion/abrirListadoTablasMaestras.jsp"/>
 			<forward name="buscar" path="/html/jsp/administracion/buscarListadoTablasMaestras.jsp"/>
 			<forward name="mostrar" path="/html/jsp/administracion/detalleRegistroTablasMaestras.jsp"/>
-			<forward name="abrirConfCostesFijos" path="/html/jsp/administracion/mantCostesFijos.jsp"/>
+			<forward name="abrirConfCostesFijos" path="/html/jsp/administracion/confCostesFijos.jsp"/>
+			<forward name="successNuevaRelAsistencia" path="/ADM_GestionarTablasMaestras.do?modo=abrirConfiguracionCosteFijo"/>
+			<forward name="successEditarRelAsistencia" path="/ADM_GestionarTablasMaestras.do?modo=editarAsistencia"/>
 		</action>
 		
 		<!-- ***** Administración / Gestión Catálogos Maestros PCAJG ***** -->

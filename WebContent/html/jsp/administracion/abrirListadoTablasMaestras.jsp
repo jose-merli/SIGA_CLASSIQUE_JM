@@ -37,6 +37,17 @@
 			sTipoCombo = sTipoCombo!=null && sTipoCombo.equals("1") ? "getTablasMaestrasAdmin" : "getTablasMaestras";
 		}
 	}
+	String refrescar="";
+	String tabla="";
+	if(ses.getAttribute("refrescar")!=null){
+		refrescar=(String)ses.getAttribute("refrescar");
+		tabla=(String)ses.getAttribute("tabla");
+		request.getSession().removeAttribute("refrescar");
+		request.getSession().removeAttribute("tabla");
+	}	
+	
+	
+	
 %>	
 	
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
@@ -54,7 +65,15 @@
 			jQuery("#nombreTablaMaestra").on("change", function(){
 				bBuscado=false;
 				buscar();
-			});				
+			});
+			
+			<%if((refrescar!=null)&&(refrescar.equals("S"))){%>
+				bBuscado=true;
+				listadoTablasMaestrasForm.modo.value="buscarInicio";
+				listadoTablasMaestrasForm.nombreTablaMaestra.value="<%=tabla%>";
+				listadoTablasMaestrasForm.submit();
+			<%}%>
+
 		});
 		
 		// Funcion asociada a boton buscar
@@ -76,16 +95,10 @@
 			if (!bBuscado) {
 				alert("<siga:Idioma key="administracion.catalogos.realizarBusqueda"/>");
 			} else {
+				listadoTablasMaestrasForm.action="./ADM_GestionarTablasMaestras.do";	
 				listadoTablasMaestrasForm.modo.value="nuevo";
-				var tamanio = "P";
-				if(listadoTablasMaestrasForm.numeroTextoPlantillas.value>=1)
-					tamanio = 'G';
-				
-				var resultado=ventaModalGeneral("listadoTablasMaestrasForm",tamanio);
-				
-				if (resultado=="MODIFICADO") {
-					buscar();
-				}
+				listadoTablasMaestrasForm.target="mainWorkArea"; 
+				listadoTablasMaestrasForm.submit(); 
 			}
 		}
 	</script>
@@ -141,7 +154,7 @@
 		</table>
 	</fieldset>
 
-	<!-- V Volver, B Buscar, A Avanzada, S Simple, N Nuevo registro, L Limpiar, R Borrar Log -->
+	<!-- B Buscar,N Nuevo registro -->
 	<siga:ConjBotonesBusqueda botones="B,N" titulo=""/>
 
 	<iframe align="center" src="<%=app%>/html/jsp/general/blank.jsp"
