@@ -266,6 +266,7 @@ public class TagTable extends TagSupport {
 
 			// FUNCIÓN BORRAR
 			out.println(" function " + TagFila.accBorrar + "(fila, id) {");
+			out.println("	sub();");
 			out.println("	if (typeof id == 'undefined')");
 			out.println("		id='"+this.name+"';");
 			out.println("   var datos;");
@@ -280,7 +281,9 @@ public class TagTable extends TagSupport {
 			out.println("   	document.forms[0].modo.value = \"Borrar\";");
 			out.println("   	document.forms[0].submit();");			
 			out.println("   	document.forms[0].target=auxTarget;");
-			out.println(" 	}");
+			out.println(" 	} else {");
+			out.println(" 		fin(); ");
+			out.println(" 	} ");
 			out.println(" }");
 			out.println("</script>");
 			out.println("<!-- TagTable.doEndTag END -->");

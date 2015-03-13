@@ -204,7 +204,23 @@
 			}
 		}
 		
-	
+
+		function borrar(fila, id) {
+			sub();
+			if (typeof id == 'undefined')
+				id = 'listadoDocumentacion';
+			var datos;
+			if (confirm('¿Está seguro de que desea eliminar el registro?')) {
+				preparaDatos(fila, id);
+				var auxTarget = document.forms[0].target;
+				document.forms[0].target = "submitArea";
+				document.forms[0].modo.value = "Borrar";
+				document.forms[0].submit();
+				document.forms[0].target = auxTarget;
+			} else {
+				fin();
+			}
+		}
 	</script>
 
 	<!-- Obligatoria en todas las páginas-->
