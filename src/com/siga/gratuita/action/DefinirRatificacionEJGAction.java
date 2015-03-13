@@ -97,13 +97,12 @@ public class DefinirRatificacionEJGAction extends MasterAction {
 				nuevos.put("IDINSTITUCIONPONENTE", usr.getIdInstitucionComision());
 			
 			// Actualizamos en la base de datos
-			tx=usr.getTransaction();
-			tx.begin();
 			ejgAdm.update(nuevos,(Hashtable)request.getSession().getAttribute("DATABACKUP"));
-			tx.commit();
+
 			// En DATABACKUP almacenamos los datos más recientes por si se vuelve a actualizar seguidamente
 			nuevos.put("FECHAMODIFICACION", "sysdate");
-			request.getSession().setAttribute("DATABACKUP",nuevos);			
+			request.getSession().setAttribute("DATABACKUP",nuevos);
+			
 		} catch (Exception e) {
 			throwExcp("messages.general.error", new String[] {"modulo.gratuita"}, e, tx); 
 		}

@@ -118,12 +118,12 @@ public class DefinirDictamenEJGAction extends MasterAction {
 				// Ponemos la fecha en el formato correcto
 				nuevos.put("FECHADICTAMEN", nuevos.get("FECHADICTAMEN").toString());
 			}
-			// Actualizamos en la base de datos
-			tx=usr.getTransaction();
-			tx.begin();
+			
 			Hashtable old = (Hashtable)request.getSession().getAttribute("DATABACKUPDICT");
+
+			// Actualizamos en la base de datos
 			admEJG.update(nuevos,old);
-			tx.commit();
+			
 			// En DATABACKUP almacenamos los datos más recientes por si se vuelve a actualizar seguidamente
 			nuevos.put("FECHAMODIFICACION", "sysdate");
 			request.getSession().setAttribute("DATABACKUPDICT",nuevos);			
