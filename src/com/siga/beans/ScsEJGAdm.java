@@ -2041,7 +2041,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 		try {
 	        String consulta = (String) htConsultaBind.get(keyBindConsulta);
 	        Hashtable codigos = (Hashtable) htConsultaBind.get(keyBindCodigos);
-	        vDatos = this.selectGenericoBind(consulta, codigos); 
+	        vDatos = this.selectGenericoNLSBind(consulta, codigos); 
 	        	
 	         
 	   } catch (Exception e) {
