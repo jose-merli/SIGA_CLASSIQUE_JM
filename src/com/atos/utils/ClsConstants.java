@@ -144,6 +144,9 @@ public class ClsConstants {
 	public static final int TIPO_CAMBIO_HISTORICO_DATOS_FACTURACION		= 70;
 	public static final int TIPO_CAMBIO_HISTORICO_TURNOS				= 80;
 	public static final int TIPO_CAMBIO_HISTORICO_EXPEDIENTES			= 90;
+	public static final int TIPO_CAMBIO_HISTORICO_DESIGNACIONMODIFICACION		= 101;
+	public static final int TIPO_CAMBIO_HISTORICO_DESIGNACIONJUSTIFICACION		= 102;
+	public static final int TIPO_CAMBIO_HISTORICO_DESIGNACIONALTAACTUACION		= 103;
 	
 	public static final String HISTORICO_REGISTRO_ELIMINADO 			= "Registro eliminado";
 

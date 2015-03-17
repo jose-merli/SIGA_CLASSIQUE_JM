@@ -4,11 +4,13 @@ package com.siga.beans;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.transaction.UserTransaction;
 
 import org.apache.struts.action.ActionMapping;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -4275,6 +4277,39 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 		}
 
 		return datos;
-	}	
+	}
+	
+	public void updateDirectHistorico(Hashtable designaHashtable, String[] claves, String [] clavesCampos,Hashtable  designaOriginalHashtable,List<String> ocultarClaveList) throws ClsExceptions {
+		UserTransaction tx = usrbean.getTransaction();
+		try {
+			
+			tx.begin();
+			
+			updateDirect(designaHashtable, claves, clavesCampos);	
+			
+			CenHistoricoAdm cenHistoricoAdm = new CenHistoricoAdm(usrbean);
+			Hashtable historicoHashtable = new Hashtable();
+			StringBuffer motivo = new StringBuffer();
+			motivo.append("Designación ");
+			motivo.append(UtilidadesHash.getString(designaOriginalHashtable, ScsDesignaBean.C_ANIO));
+			motivo.append("/");
+			motivo.append(UtilidadesHash.getString(designaOriginalHashtable, ScsDesignaBean.C_CODIGO));
+			historicoHashtable.put(CenHistoricoBean.C_MOTIVO, motivo.toString());
+			CenHistoricoAdm admHis = new CenHistoricoAdm (this.usrbean);
+			 
+			boolean isInsertado = admHis.auditoriaColegiados(motivo.toString(), ClsConstants.TIPO_CAMBIO_HISTORICO_DESIGNACIONMODIFICACION,designaHashtable, 
+					designaOriginalHashtable, clavesCampos,ocultarClaveList, CenHistoricoAdm.ACCION_UPDATE, usrbean.getLanguage(), false); 
+			tx.commit();	
+			
+		} catch (Exception e) {
+			try {
+				tx.rollback();
+			} catch (Exception e1) {
+				e1.printStackTrace();
+			}
+			throw new ClsExceptions(e,"Error al actualizacion la designa por parte de los colegiados ");
+		}
+	
+	}
 	
 }

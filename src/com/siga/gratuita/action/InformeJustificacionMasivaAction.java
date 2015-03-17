@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Map;
 import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
@@ -34,11 +35,14 @@ import com.siga.beans.CenColegiadoAdm;
 import com.siga.beans.CenColegiadoBean;
 import com.siga.beans.CenPersonaAdm;
 import com.siga.beans.GenParametrosAdm;
+import com.siga.beans.ScsAcreditacionBean;
 import com.siga.beans.ScsActuacionDesignaAdm;
 import com.siga.beans.ScsActuacionDesignaBean;
 import com.siga.beans.ScsDesignaAdm;
 import com.siga.beans.ScsDesignaBean;
 import com.siga.beans.ScsDesignasLetradoAdm;
+import com.siga.beans.ScsJuzgadoBean;
+import com.siga.beans.ScsProcedimientosBean;
 import com.siga.envios.EnvioInformesGenericos;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
@@ -212,7 +216,35 @@ public class InformeJustificacionMasivaAction extends MasterAction {
 		return this.abrir(mapping, formulario, request, response);
 	}
 
-	
+	private List<String> getListCamposOcultarHistorico(){
+		List<String> ocultarClaveList = new ArrayList<String>();
+		ocultarClaveList.add(ScsActuacionDesignaBean.C_IDINSTITUCION);
+		ocultarClaveList.add(ScsActuacionDesignaBean.C_IDTURNO);
+		ocultarClaveList.add(ScsActuacionDesignaBean.C_ANIO);
+		ocultarClaveList.add(ScsActuacionDesignaBean.C_NUMERO);
+		ocultarClaveList.add(ScsActuacionDesignaBean.C_FECHAMODIFICACION);
+		ocultarClaveList.add(ScsActuacionDesignaBean.C_USUMODIFICACION);
+		ocultarClaveList.add(ScsActuacionDesignaBean.C_ACUERDOEXTRAJUDICIAL);
+		ocultarClaveList.add(ScsActuacionDesignaBean.C_ANULACION);
+		ocultarClaveList.add(ScsActuacionDesignaBean.C_LUGAR);
+		ocultarClaveList.add(ScsActuacionDesignaBean.C_FACTURADO);
+		ocultarClaveList.add(ScsActuacionDesignaBean.C_PAGADO);
+		ocultarClaveList.add(ScsActuacionDesignaBean.C_IDFACTURACION);
+		ocultarClaveList.add(ScsActuacionDesignaBean.C_IDPERSONACOLEGIADO);
+		ocultarClaveList.add(ScsActuacionDesignaBean.C_TALONARIO);
+		ocultarClaveList.add(ScsActuacionDesignaBean.C_TALON);
+		ocultarClaveList.add(ScsActuacionDesignaBean.C_ID_MOTIVO_CAMBIO);
+		ocultarClaveList.add(ScsActuacionDesignaBean.C_IDPRETENSION);
+		ocultarClaveList.add(ScsActuacionDesignaBean.C_IDPRISION);
+		ocultarClaveList.add(ScsActuacionDesignaBean.C_IDCOMISARIA);
+		
+		ocultarClaveList.add(ScsActuacionDesignaBean.C_IDINSTITUCIONPROCEDIMIENTO);
+		ocultarClaveList.add(ScsActuacionDesignaBean.C_IDINSTITUCIONCOMISARIA);
+		ocultarClaveList.add(ScsActuacionDesignaBean.C_IDINSTITUCIONPRISION);
+		ocultarClaveList.add(ScsActuacionDesignaBean.C_IDINSTITUCIONJUZGADO);
+		return ocultarClaveList;
+		
+	}
 	
 	protected synchronized String justificar(ActionMapping mapping, MasterForm formulario,
 			HttpServletRequest request, HttpServletResponse response)
@@ -251,7 +283,7 @@ public class InformeJustificacionMasivaAction extends MasterAction {
 			String datosJustificacion = miForm.getDatosJustificacion();
 			tx = user.getTransactionPesada();
 			tx.begin();
-			Hashtable<String,String> nigDesignaHashtable = new Hashtable<String , String>();
+			Hashtable<String,ScsDesignaBean> scsDesignaHashtable = new Hashtable<String , ScsDesignaBean>();
 			if(datosJustificacion.length()>0){
 				String[] arrayDatosJustificacion = datosJustificacion.split("#");
 				
@@ -283,6 +315,8 @@ public class InformeJustificacionMasivaAction extends MasterAction {
 					
 					//si la actuacion es x es que es nueva, sino es modificacion(justificacion, validacion o baja)
 					Hashtable hashActuacion = new Hashtable();
+					Map<String,Hashtable<String, Object>> fksActuacionMap = new HashMap<String, Hashtable<String,Object>>(); 
+					Hashtable<String, Object> fksActuacionHashtable = null;
 					if(numActuacion.equals("x")){
 						
 						UtilidadesHash.set(hashActuacion,
@@ -303,6 +337,15 @@ public class InformeJustificacionMasivaAction extends MasterAction {
 						UtilidadesHash.set(hashActuacion,
 								ScsActuacionDesignaBean.C_IDINSTITUCIONJUZGADO,
 								idInstitucion);
+						if(user.isLetrado()){
+							fksActuacionHashtable = new Hashtable<String, Object>();
+							fksActuacionHashtable.put("TABLA_FK", ScsJuzgadoBean.T_NOMBRETABLA);
+							fksActuacionHashtable.put("SALIDA_FK", ScsJuzgadoBean.C_NOMBRE);
+							fksActuacionHashtable.put(ScsJuzgadoBean.C_IDINSTITUCION, idInstitucion);
+							fksActuacionHashtable.put(ScsJuzgadoBean.C_IDJUZGADO, idJuzgado);
+							fksActuacionMap.put(ScsActuacionDesignaBean.C_IDJUZGADO,fksActuacionHashtable);
+						}
+						
 	//					UtilidadesHash.set(hashActuacion,
 	//							ScsActuacionDesignaBean.C_FECHAMODIFICACION,
 	//					"sysdate");
@@ -317,6 +360,17 @@ public class InformeJustificacionMasivaAction extends MasterAction {
 								hashActuacion,
 								ScsActuacionDesignaBean.C_IDINSTITUCIONPROCEDIMIENTO,
 								idInstitucion);
+						
+						if(user.isLetrado()){
+							fksActuacionHashtable = new Hashtable<String, Object>();
+							fksActuacionHashtable.put("TABLA_FK", ScsProcedimientosBean.T_NOMBRETABLA);
+							fksActuacionHashtable.put("SALIDA_FK", ScsProcedimientosBean.C_NOMBRE);
+							fksActuacionHashtable.put(ScsProcedimientosBean.C_IDPROCEDIMIENTO, idProcedimiento);
+							fksActuacionHashtable.put(ScsProcedimientosBean.C_IDINSTITUCION, idInstitucion);
+							
+							
+							fksActuacionMap.put(ScsActuacionDesignaBean.C_IDPROCEDIMIENTO,fksActuacionHashtable);
+						}
 	
 						UtilidadesHash.set(
 								hashActuacion,
@@ -333,7 +387,15 @@ public class InformeJustificacionMasivaAction extends MasterAction {
 						UtilidadesHash.set(hashActuacion,
 								ScsActuacionDesignaBean.C_IDACREDITACION,
 								idAcreditacion);
-	
+						if(user.isLetrado()){
+							fksActuacionHashtable = new Hashtable<String, Object>();
+							fksActuacionHashtable.put("TABLA_FK", ScsAcreditacionBean.T_NOMBRETABLA);
+							fksActuacionHashtable.put("SALIDA_FK", ScsAcreditacionBean.C_DESCRIPCION);
+							fksActuacionHashtable.put(ScsAcreditacionBean.C_IDACREDITACION, idAcreditacion);
+							
+							
+							fksActuacionMap.put(ScsActuacionDesignaBean.C_IDACREDITACION,fksActuacionHashtable);
+						}
 						UtilidadesHash.set(hashActuacion,
 								ScsActuacionDesignaBean.C_FECHA,
 								GstDate.getApplicationFormatDate("", fechaJustificacion));
@@ -374,18 +436,25 @@ public class InformeJustificacionMasivaAction extends MasterAction {
 						pkDesignacion.append(numero);
 						
 						
-						if(!nigDesignaHashtable.containsKey(pkDesignacion.toString())){
+						if(!scsDesignaHashtable.containsKey(pkDesignacion.toString())){
 							Hashtable pkDesignaHashtable = new Hashtable();
 							UtilidadesHash.set(pkDesignaHashtable,ScsDesignaBean.C_ANIO, 				anio);
 							UtilidadesHash.set(pkDesignaHashtable,ScsDesignaBean.C_NUMERO, 				numero);
 							UtilidadesHash.set(pkDesignaHashtable,ScsDesignaBean.C_IDINSTITUCION,		idInstitucion);
 							UtilidadesHash.set(pkDesignaHashtable,ScsDesignaBean.C_IDTURNO,				idTurno);
 							ScsDesignaBean designaBean =  (ScsDesignaBean)desginaAdm.selectByPK(pkDesignaHashtable).get(0);
-							nigDesignaHashtable.put(pkDesignacion.toString(), designaBean.getNIG()!=null?designaBean.getNIG():"");
+							scsDesignaHashtable.put(pkDesignacion.toString(), designaBean);
 						}
-						UtilidadesHash.set(hashActuacion, ScsActuacionDesignaBean.C_NIG, nigDesignaHashtable.get(pkDesignacion.toString()));
+						ScsDesignaBean scsDesignaBean = scsDesignaHashtable.get(pkDesignacion.toString());
+						UtilidadesHash.set(hashActuacion, ScsActuacionDesignaBean.C_NIG, scsDesignaBean.getNIG()!=null?scsDesignaBean.getNIG():"");
 						
-						actuacionDesginaAdm.insert(hashActuacion);
+						if(user.isLetrado()){
+							List<String> ocultarClaveList = getListCamposOcultarHistorico();
+							hashActuacion.put("fks", fksActuacionMap);							hashActuacion.put("scsDesignaBean", scsDesignaBean);
+							actuacionDesginaAdm.insertHistorico(hashActuacion,ocultarClaveList,ClsConstants.TIPO_CAMBIO_HISTORICO_DESIGNACIONJUSTIFICACION);
+						}
+						else
+							actuacionDesginaAdm.insert(hashActuacion);
 						
 						
 	
@@ -450,9 +519,7 @@ public class InformeJustificacionMasivaAction extends MasterAction {
 							
 						}
 						
-						
-						
-						actuacionDesginaAdm.updateDirect(hashActuacion,clavesActuacion,camposList.toArray(new String[camposList.size()]));
+							actuacionDesginaAdm.updateDirect(hashActuacion,clavesActuacion,camposList.toArray(new String[camposList.size()]));
 						
 						
 						

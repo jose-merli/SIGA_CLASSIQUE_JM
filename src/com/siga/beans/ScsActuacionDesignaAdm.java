@@ -1057,4 +1057,31 @@ public class ScsActuacionDesignaAdm extends MasterBeanAdministrador {
 		}
 
 	}
+	
+	
+	public void insertHistorico(Hashtable actuacionDesignaHashtable,List<String> ocultarClaveList, int tipoCambio) throws ClsExceptions {
+		
+		this.insert(actuacionDesignaHashtable);	
+		
+		
+		CenHistoricoAdm cenHistoricoAdm = new CenHistoricoAdm(usrbean);
+		ScsDesignaBean designaBean = (ScsDesignaBean) actuacionDesignaHashtable.get("scsDesignaBean");
+		
+		
+		StringBuffer motivo = new StringBuffer();
+		if(ocultarClaveList.size()>0)
+			motivo.append("Designación ");
+		
+		motivo.append(designaBean.getAnio());
+		motivo.append("/");
+		motivo.append(designaBean.getCodigo());
+
+		CenHistoricoAdm admHis = new CenHistoricoAdm (this.usrbean);
+		boolean isInsertado = admHis.auditoriaColegiados(motivo.toString(), tipoCambio,actuacionDesignaHashtable, 
+				null, this.getCamposActualizablesBean(),ocultarClaveList, CenHistoricoAdm.ACCION_INSERT, usrbean.getLanguage(), false); 
+			
+			
+		
+	
+	}
 }

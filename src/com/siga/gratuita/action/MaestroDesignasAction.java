@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Map;
 import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
@@ -22,7 +23,6 @@ import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.GstDate;
 import com.atos.utils.UsrBean;
-import com.siga.Utilidades.AjaxCollectionXmlBuilder;
 import com.siga.Utilidades.UtilidadesFecha;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesMultidioma;
@@ -42,7 +42,6 @@ import com.siga.beans.ScsGuardiasTurnoAdm;
 import com.siga.beans.ScsGuardiasTurnoBean;
 import com.siga.beans.ScsJuzgadoAdm;
 import com.siga.beans.ScsJuzgadoBean;
-import com.siga.beans.ScsJuzgadoProcedimientoAdm;
 import com.siga.beans.ScsPersonaJGBean;
 import com.siga.beans.ScsProcedimientosBean;
 import com.siga.beans.ScsProcuradorAdm;
@@ -1099,29 +1098,79 @@ public class MaestroDesignasAction extends MasterAction {
 			String clavesDesigna[] = { ScsDesignaBean.C_ANIO, ScsDesignaBean.C_NUMERO,
 					ScsDesignaBean.C_IDINSTITUCION, ScsDesignaBean.C_IDTURNO };
 			String camposDesigna[]={ScsDesignaBean.C_IDINSTITUCIONJUZGADO,ScsDesignaBean.C_IDJUZGADO,ScsDesignaBean.C_IDPROCEDIMIENTO,ScsDesignaBean.C_NUMPROCEDIMIENTO,ScsDesignaBean.C_ANIOPROCEDIMIENTO,ScsDesignaBean.C_NIG};
-			Hashtable<String, String> htDesigna = new Hashtable<String, String>();
+			Hashtable<String, Object> htDesigna = new Hashtable<String, Object>();
 			htDesigna.put(ScsDesignaBean.C_IDINSTITUCION,usr.getLocation());
 			htDesigna.put(ScsDesignaBean.C_ANIO,miform.getAnio());
 			htDesigna.put(ScsDesignaBean.C_IDTURNO,miform.getIdTurno());
 			htDesigna.put(ScsDesignaBean.C_NUMERO,miform.getNumero());
 			htDesigna.put(ScsDesignaBean.C_NUMPROCEDIMIENTO,miform.getNumeroProcedimiento());
+			Map<String,Hashtable<String, Object>> fksDesignaMap = new HashMap<String, Hashtable<String,Object>>(); 
+			Hashtable<String, Object> fksDesignaHashtable = null;
 			if (miform.getAnioProcedimiento() == null)
 				htDesigna.put(ScsDesignaBean.C_ANIOPROCEDIMIENTO,"");
 			else
 				htDesigna.put(ScsDesignaBean.C_ANIOPROCEDIMIENTO,miform.getAnioProcedimiento());
 			
-			if(miform.getIdProcedimiento()!=null && !miform.getIdProcedimiento().equals("")&& !miform.getIdProcedimiento().equals("-1"))
+			if(miform.getIdProcedimiento()!=null && !miform.getIdProcedimiento().equals("")&& !miform.getIdProcedimiento().equals("-1")){
 				htDesigna.put(ScsDesignaBean.C_IDPROCEDIMIENTO,miform.getIdProcedimiento());
+				if(usr.isLetrado()){
+					fksDesignaHashtable = new Hashtable<String, Object>();
+					fksDesignaHashtable.put("TABLA_FK", ScsProcedimientosBean.T_NOMBRETABLA);
+					fksDesignaHashtable.put("SALIDA_FK", ScsProcedimientosBean.C_NOMBRE);
+					fksDesignaHashtable.put(ScsProcedimientosBean.C_IDPROCEDIMIENTO, miform.getIdProcedimiento());
+					fksDesignaHashtable.put(ScsProcedimientosBean.C_IDINSTITUCION, usr.getLocation());
+					
+					
+					fksDesignaMap.put(ScsDesignaBean.C_IDPROCEDIMIENTO,fksDesignaHashtable);
+				}
+				//htDesigna.put();
+			}
 			if(miform.getIdJuzgado()!=null && !miform.getIdJuzgado().equals("")&& !miform.getIdJuzgado().equals("-1")){
 				htDesigna.put(ScsDesignaBean.C_IDJUZGADO, miform.getIdJuzgado());
 				htDesigna.put(ScsDesignaBean.C_IDINSTITUCIONJUZGADO, usr.getLocation());
+				if(usr.isLetrado()){
+					fksDesignaHashtable = new Hashtable<String, Object>();
+					fksDesignaHashtable.put("TABLA_FK", ScsJuzgadoBean.T_NOMBRETABLA);
+					fksDesignaHashtable.put("SALIDA_FK", ScsJuzgadoBean.C_NOMBRE);
+					fksDesignaHashtable.put(ScsJuzgadoBean.C_IDINSTITUCION, usr.getLocation());
+					fksDesignaHashtable.put(ScsJuzgadoBean.C_IDJUZGADO, miform.getIdJuzgado());
+					fksDesignaMap.put(ScsDesignaBean.C_IDJUZGADO,fksDesignaHashtable);
+				}
+				
 			}
 			if (miform.getNig() == null)
 				htDesigna.put(ScsDesignaBean.C_NIG,"");
 			else
 				htDesigna.put(ScsDesignaBean.C_NIG,miform.getNig());
-			
-			designaAdm.updateDirect(htDesigna, clavesDesigna, camposDesigna);
+			if(usr.isLetrado()){
+				Vector designaPKVector =  designaAdm.selectByPK(htDesigna);
+				ScsDesignaBean scsDesignaBean = (ScsDesignaBean) designaPKVector.get(0);
+				Hashtable designaOriginalHashtable = scsDesignaBean.getOriginalHash();
+				Map<String,Hashtable<String, Object>> fksDesignaOriginalMap = new HashMap<String, Hashtable<String,Object>>();
+				if(designaOriginalHashtable.get(ScsDesignaBean.C_IDJUZGADO)!=null && !designaOriginalHashtable.get(ScsDesignaBean.C_IDJUZGADO).equals("")){
+					fksDesignaHashtable = new Hashtable<String, Object>();
+					fksDesignaHashtable.put("TABLA_FK", ScsJuzgadoBean.T_NOMBRETABLA);
+					fksDesignaHashtable.put("SALIDA_FK", ScsJuzgadoBean.C_NOMBRE);
+					fksDesignaHashtable.put(ScsJuzgadoBean.C_IDINSTITUCION, designaOriginalHashtable.get(ScsDesignaBean.C_IDINSTITUCIONJUZGADO));
+					fksDesignaHashtable.put(ScsJuzgadoBean.C_IDJUZGADO, designaOriginalHashtable.get(ScsDesignaBean.C_IDJUZGADO));
+					fksDesignaOriginalMap.put(ScsDesignaBean.C_IDJUZGADO,fksDesignaHashtable);
+				}
+				if(designaOriginalHashtable.get(ScsDesignaBean.C_IDPROCEDIMIENTO)!=null && !designaOriginalHashtable.get(ScsDesignaBean.C_IDPROCEDIMIENTO).equals("")){
+					fksDesignaHashtable = new Hashtable<String, Object>();
+					fksDesignaHashtable.put("TABLA_FK", ScsProcedimientosBean.T_NOMBRETABLA);
+					fksDesignaHashtable.put("SALIDA_FK", ScsProcedimientosBean.C_NOMBRE);
+					fksDesignaHashtable.put(ScsProcedimientosBean.C_IDPROCEDIMIENTO, designaOriginalHashtable.get(ScsDesignaBean.C_IDPROCEDIMIENTO));
+					fksDesignaHashtable.put(ScsProcedimientosBean.C_IDINSTITUCION, designaOriginalHashtable.get(ScsDesignaBean.C_IDINSTITUCION));
+					fksDesignaOriginalMap.put(ScsDesignaBean.C_IDPROCEDIMIENTO,fksDesignaHashtable);
+				}
+				designaOriginalHashtable.put("fks", fksDesignaOriginalMap);
+				htDesigna.put("fks", fksDesignaMap);
+				List<String> ocultarClaveList = new ArrayList<String>();
+				ocultarClaveList.add(ScsDesignaBean.C_IDINSTITUCIONJUZGADO);
+				designaAdm.updateDirectHistorico(htDesigna, clavesDesigna, camposDesigna,scsDesignaBean.getOriginalHash(),ocultarClaveList);
+			}
+			else
+				designaAdm.updateDirect(htDesigna, clavesDesigna, camposDesigna);
 
 		}catch(Exception e){
 			throwExcp("messages.general.error", new String[] {"modulo.gratuita"}, e, null); 

@@ -1,8 +1,12 @@
 package com.siga.gratuita.action;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.List;
+import java.util.Map;
 import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
@@ -35,6 +39,8 @@ import com.siga.beans.ScsDesignasLetradoAdm;
 import com.siga.beans.ScsDesignasLetradoBean;
 import com.siga.beans.ScsEJGAdm;
 import com.siga.beans.ScsEJGBean;
+import com.siga.beans.ScsJuzgadoBean;
+import com.siga.beans.ScsPrisionBean;
 import com.siga.beans.ScsProcedimientosAdm;
 import com.siga.beans.ScsProcedimientosBean;
 import com.siga.beans.ScsTurnoAdm;
@@ -610,6 +616,30 @@ public class ActuacionesDesignasAction extends MasterAction {
 		}
 		return "edicion";
 	}
+	private List<String> getListCamposOcultarHistorico(){
+		List<String> ocultarClaveList = new ArrayList<String>();
+		ocultarClaveList.add(ScsActuacionDesignaBean.C_IDINSTITUCION);
+		ocultarClaveList.add(ScsActuacionDesignaBean.C_IDTURNO);
+		ocultarClaveList.add(ScsActuacionDesignaBean.C_ANIO);
+		ocultarClaveList.add(ScsActuacionDesignaBean.C_NUMERO);
+		ocultarClaveList.add(ScsActuacionDesignaBean.C_FECHAMODIFICACION);
+		ocultarClaveList.add(ScsActuacionDesignaBean.C_USUMODIFICACION);
+		ocultarClaveList.add(ScsActuacionDesignaBean.C_ACUERDOEXTRAJUDICIAL);
+		ocultarClaveList.add(ScsActuacionDesignaBean.C_ANULACION);
+		ocultarClaveList.add(ScsActuacionDesignaBean.C_LUGAR);
+		ocultarClaveList.add(ScsActuacionDesignaBean.C_FACTURADO);
+		ocultarClaveList.add(ScsActuacionDesignaBean.C_PAGADO);
+		ocultarClaveList.add(ScsActuacionDesignaBean.C_IDFACTURACION);
+		ocultarClaveList.add(ScsActuacionDesignaBean.C_IDPERSONACOLEGIADO);
+		ocultarClaveList.add(ScsActuacionDesignaBean.C_ID_MOTIVO_CAMBIO);
+		ocultarClaveList.add(ScsActuacionDesignaBean.C_IDCOMISARIA);
+		ocultarClaveList.add(ScsActuacionDesignaBean.C_IDINSTITUCIONPROCEDIMIENTO);
+		ocultarClaveList.add(ScsActuacionDesignaBean.C_IDINSTITUCIONCOMISARIA);
+		ocultarClaveList.add(ScsActuacionDesignaBean.C_IDINSTITUCIONPRISION);
+		ocultarClaveList.add(ScsActuacionDesignaBean.C_IDINSTITUCIONJUZGADO);
+		return ocultarClaveList;
+		
+	}
 
 	/** 
 	 *  Funcion que atiende la accion insertar
@@ -633,6 +663,9 @@ public class ActuacionesDesignasAction extends MasterAction {
 		boolean esFichaColegial = false;
 		
 		try {
+			Map<String,Hashtable<String, Object>> fksActuacionMap = new HashMap<String, Hashtable<String,Object>>(); 
+			Hashtable<String, Object> fksActuacionHashtable = null;
+			
 			usr = (UsrBean)request.getSession().getAttribute("USRBEAN");
 			tx = usr.getTransaction();
 
@@ -662,6 +695,7 @@ public class ActuacionesDesignasAction extends MasterAction {
 			    if ((vD != null) && (vD.size() == 1)) {
 			        SimpleDateFormat sd = new SimpleDateFormat (ClsConstants.DATE_FORMAT_JAVA);
 			        sdb = (ScsDesignaBean)vD.get(0);
+			        hash.put("scsDesignaBean",sdb);
 			        Date dDesgina = sd.parse(sdb.getFechaEntrada());
 			        
 			        if (dActuacion.compareTo(dDesgina) < 0) {
@@ -688,6 +722,16 @@ public class ActuacionesDesignasAction extends MasterAction {
 				idInstitucionPrision = new Integer(prision.substring(prision.indexOf(",")+1));
 				hash.put(ScsActuacionDesignaBean.C_IDPRISION, idPrision);
 				hash.put(ScsActuacionDesignaBean.C_IDINSTITUCIONPRISION, idInstitucionPrision);
+				if(usr.isLetrado()){
+					fksActuacionHashtable = new Hashtable<String, Object>();
+					fksActuacionHashtable.put("TABLA_FK", ScsPrisionBean.T_NOMBRETABLA);
+					fksActuacionHashtable.put("SALIDA_FK", ScsPrisionBean.C_NOMBRE);
+					fksActuacionHashtable.put(ScsPrisionBean.C_IDINSTITUCION, idInstitucionPrision);
+					fksActuacionHashtable.put(ScsPrisionBean.C_IDPRISION, idPrision);
+					fksActuacionMap.put(ScsActuacionDesignaBean.C_IDPRISION,fksActuacionHashtable);
+				}
+				
+				
 			} else {
 				hash.put(ScsActuacionDesignaBean.C_IDPRISION, "");
 				hash.put(ScsActuacionDesignaBean.C_IDINSTITUCIONPRISION, "");
@@ -695,6 +739,17 @@ public class ActuacionesDesignasAction extends MasterAction {
 			String pretension = miform.getPretension();
 			if (pretension!=null && !pretension.equals("")){
 				hash.put(ScsActuacionDesignaBean.C_IDPRETENSION, pretension);
+				if(usr.isLetrado()){
+					fksActuacionHashtable = new Hashtable<String, Object>();
+					fksActuacionHashtable.put("TABLA_FK", "SCS_PRETENSION");
+					fksActuacionHashtable.put("SALIDA_FK", "DESCRIPCION");
+					fksActuacionHashtable.put(ScsActuacionDesignaBean.C_IDPRETENSION, pretension);
+					fksActuacionHashtable.put(ScsActuacionDesignaBean.C_IDINSTITUCION, usr.getLocation());
+					
+					
+					fksActuacionMap.put(ScsActuacionDesignaBean.C_IDPRETENSION,fksActuacionHashtable);
+				}
+				
 				
 			} else {
 				hash.put(ScsActuacionDesignaBean.C_IDPRETENSION, "");
@@ -731,6 +786,15 @@ public class ActuacionesDesignasAction extends MasterAction {
 				idInstitucionJuzgado = new Integer(juzgado[1]);
 				hash.put(ScsActuacionDesignaBean.C_IDJUZGADO, idJuzgado);
 				hash.put(ScsActuacionDesignaBean.C_IDINSTITUCIONJUZGADO, idInstitucionJuzgado);
+				if(usr.isLetrado()){
+					fksActuacionHashtable = new Hashtable<String, Object>();
+					fksActuacionHashtable.put("TABLA_FK", ScsJuzgadoBean.T_NOMBRETABLA);
+					fksActuacionHashtable.put("SALIDA_FK", ScsJuzgadoBean.C_NOMBRE);
+					fksActuacionHashtable.put(ScsJuzgadoBean.C_IDINSTITUCION, idInstitucionJuzgado);
+					fksActuacionHashtable.put(ScsJuzgadoBean.C_IDJUZGADO, idJuzgado);
+					fksActuacionMap.put(ScsActuacionDesignaBean.C_IDJUZGADO,fksActuacionHashtable);
+				}
+				
 			} else {
 				hash.put(ScsActuacionDesignaBean.C_IDJUZGADO, "");
 				hash.put(ScsActuacionDesignaBean.C_IDINSTITUCIONJUZGADO, "");
@@ -745,6 +809,16 @@ public class ActuacionesDesignasAction extends MasterAction {
 				idInstitucionProcedimiento = new Integer(procedimiento.substring(procedimiento.indexOf(",")+1));
 				hash.put(ScsActuacionDesignaBean.C_IDPROCEDIMIENTO, idProcedimiento.toString());
 				hash.put(ScsActuacionDesignaBean.C_IDINSTITUCIONPROCEDIMIENTO, idInstitucionProcedimiento);
+				if(usr.isLetrado()){
+					fksActuacionHashtable = new Hashtable<String, Object>();
+					fksActuacionHashtable.put("TABLA_FK", ScsProcedimientosBean.T_NOMBRETABLA);
+					fksActuacionHashtable.put("SALIDA_FK", ScsProcedimientosBean.C_NOMBRE);
+					fksActuacionHashtable.put(ScsProcedimientosBean.C_IDPROCEDIMIENTO, idProcedimiento);
+					fksActuacionHashtable.put(ScsProcedimientosBean.C_IDINSTITUCION, idInstitucionProcedimiento);
+					
+					
+					fksActuacionMap.put(ScsActuacionDesignaBean.C_IDPROCEDIMIENTO,fksActuacionHashtable);
+				}
 			} else {
 				hash.put(ScsActuacionDesignaBean.C_IDPROCEDIMIENTO, "");
 				hash.put(ScsActuacionDesignaBean.C_IDINSTITUCIONPROCEDIMIENTO, "");
@@ -756,7 +830,16 @@ public class ActuacionesDesignasAction extends MasterAction {
 			String acreditacion = miform.getAcreditacion();
 			if (acreditacion!=null && !acreditacion.equals("")){
 				idAcreditacion = new Integer(acreditacion);				
-				hash.put(ScsActuacionDesignaBean.C_IDACREDITACION, idAcreditacion);				
+				hash.put(ScsActuacionDesignaBean.C_IDACREDITACION, idAcreditacion);	
+				if(usr.isLetrado()){
+					fksActuacionHashtable = new Hashtable<String, Object>();
+					fksActuacionHashtable.put("TABLA_FK", ScsAcreditacionBean.T_NOMBRETABLA);
+					fksActuacionHashtable.put("SALIDA_FK", ScsAcreditacionBean.C_DESCRIPCION);
+					fksActuacionHashtable.put(ScsAcreditacionBean.C_IDACREDITACION, idAcreditacion);
+					
+					
+					fksActuacionMap.put(ScsActuacionDesignaBean.C_IDACREDITACION,fksActuacionHashtable);
+				}
 			} else {
 				hash.put(ScsActuacionDesignaBean.C_IDACREDITACION, "");				
 			}		
@@ -831,7 +914,11 @@ public class ActuacionesDesignasAction extends MasterAction {
 			//Valido que el nuevo estado de la acreditacion es correcto:
 			if (multiplesAcreditaciones || this.comprobarAcreditacion(nuevoEstado, false, hash, request, bAplicarRestriccionesActuaciones)) {
 				tx.begin();
-				actuacionDesignaAdm.insert(hash);
+				if(usr.isLetrado()){
+					hash.put("fks", fksActuacionMap);
+					actuacionDesignaAdm.insertHistorico(hash,getListCamposOcultarHistorico(),ClsConstants.TIPO_CAMBIO_HISTORICO_DESIGNACIONALTAACTUACION);
+				}else
+					actuacionDesignaAdm.insert(hash);
 				tx.commit();
 				String mensaje = cambiaLetradoDesigna == true ? "gratuita.designas.actuaciones.exitoConCambioLetrado" : "messages.updated.success";
 				forward = exitoModal(mensaje,request); 
