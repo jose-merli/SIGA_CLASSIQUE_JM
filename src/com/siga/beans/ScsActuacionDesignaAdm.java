@@ -18,6 +18,7 @@ import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesHash;
+import com.siga.Utilidades.UtilidadesString;
 import com.siga.general.SIGAException;
 import com.siga.gratuita.form.AcreditacionForm;
 import com.siga.gratuita.form.ActuacionDesignaForm;
@@ -1069,8 +1070,11 @@ public class ScsActuacionDesignaAdm extends MasterBeanAdministrador {
 		
 		
 		StringBuffer motivo = new StringBuffer();
-		if(ocultarClaveList.size()>0)
-			motivo.append("Designación ");
+		if(ocultarClaveList.size()>0){
+			motivo.append(UtilidadesString.getMensajeIdioma(this.usrbean, "gratuita.busquedaDesignas.literal.designa"));
+			
+			motivo.append(" ");
+		}
 		
 		motivo.append(designaBean.getAnio());
 		motivo.append("/");
