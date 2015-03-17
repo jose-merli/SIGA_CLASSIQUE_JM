@@ -12,16 +12,31 @@
 
 package com.siga.censo.action;
 
-import javax.servlet.http.*;
-import javax.transaction.*;
-import org.apache.struts.action.*;
-import com.atos.utils.*;
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.Vector;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.transaction.UserTransaction;
+
+import org.apache.struts.action.ActionMapping;
+
+import com.atos.utils.Row;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesHash;
-import com.siga.beans.*;
-import com.siga.general.*;
+import com.siga.beans.CenClienteAdm;
+import com.siga.beans.CenColegiadoAdm;
+import com.siga.beans.CenColegiadoBean;
+import com.siga.beans.CenHistoricoAdm;
+import com.siga.beans.CenHistoricoBean;
+import com.siga.beans.CenPersonaAdm;
+import com.siga.beans.CenTipoCambioAdm;
+import com.siga.beans.PysFormaPagoBean;
 import com.siga.censo.form.HistoricoForm;
-import java.util.*;
+import com.siga.general.MasterAction;
+import com.siga.general.MasterForm;
+import com.siga.general.SIGAException;
 
 
 public class HistoricoAction extends MasterAction {
@@ -470,7 +485,7 @@ public class HistoricoAction extends MasterAction {
 			CenHistoricoAdm admin=new CenHistoricoAdm(this.getUserBean(request));		
 
 			// Obtengo las entradas del historico para la busqueda indicada en el formulario
-			vect=admin.getHistorico(idPersona,idInstitucion,form.getCmbCambioHistorico(),form.getFechaInicio(),form.getFechaFin());
+			vect=admin.getHistorico(idPersona,idInstitucion,form.getCmbCambioHistorico(),form.getFechaInicio(),form.getFechaFin(),form.getMotivo());
 
 			// Paso la busqueda como parametro en el request 
 			request.setAttribute("container", vect);

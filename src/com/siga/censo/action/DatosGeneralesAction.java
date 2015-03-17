@@ -269,7 +269,7 @@ public class DatosGeneralesAction extends MasterAction {
 			//Esto es para para la variable del check observacion
 			if (idPersona != null && !idPersona.equals("")) {
 				CenHistoricoAdm admHis = new CenHistoricoAdm (this.getUserBean(request));
-				Vector resultado1 = admHis.getHistorico(miform.getIdPersona(),miform.getIdInstitucion(),"100","","");
+				Vector resultado1 = admHis.getHistorico(miform.getIdPersona(),miform.getIdInstitucion(),"100","","",null);
 				if (resultado1.size()>0) {
 					request.setAttribute("descripcion",Boolean.TRUE);
 				} else {

@@ -256,7 +256,7 @@
 										<td colspan="2">								
 											<textArea 
 												onKeyDown="cuenta(this,4000)" onChange="cuenta(this,4000)"
-												style="overflow-y:auto; overflow-x:hidden; width:500px; height:500px; resize:none;"
+												style="overflow-y:auto; overflow-x:hidden; width:500px; height:390px; resize:none;"
 												class="boxConsulta"  readonly=""><% if(row.getString(CenHistoricoBean.C_DESCRIPCION) != null) out.print(row.getString(CenHistoricoBean.C_DESCRIPCION));%></textarea>
 										</td>
 										<% } %>		

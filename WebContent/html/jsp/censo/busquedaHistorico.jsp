@@ -145,27 +145,36 @@
 		<!-- Zona de campos de busqueda o filtro -->
 
 		<table class="tablaCentralCampos" align="center">
-
+				
 			<html:form action="/CEN_Historico.do" method="POST" target="resultado">
 
 				<html:hidden property = "modo" value = ""/>
 				<html:hidden property = "actionModal" value=""/>
-
+				
+				
 				<tr>				
 					<td class="labelText">
-						<siga:Idioma key="censo.consultaHistorico.literal.tipo"/>&nbsp;&nbsp;
+						<siga:Idioma key="censo.consultaHistorico.literal.tipo"/>
 					</td>				
 					<td>
-						<siga:ComboBD nombre = "cmbCambioHistorico" tipo="cmbCambioHistorico" clase="boxCombo" obligatorio="false"/>
+						<siga:ComboBD nombre = "cmbCambioHistorico" tipo="cmbCambioHistorico" clase="boxCombo" obligatorio="false" ancho="150"/>
 					</td>
 					<td class="labelText">
-						<siga:Idioma key="censo.busquedaHistorico.literal.fechaEfectivaInicio"/>&nbsp;&nbsp;
+						<siga:Idioma key="censo.consultaHistorico.literal.motivo"/>
+						
+					</td>				
+					<td>
+						<html:text property="motivo" size="20" maxlength="20" styleClass="box" value = "" />
+					</td>
+					
+					<td class="labelText">
+						<siga:Idioma key="censo.busquedaHistorico.literal.fechaEfectivaInicio"/>
 					</td>					
 					<td>
 									<siga:Fecha nombreCampo="fechaInicio"/>
 					</td>					
 					<td class="labelText">
-						<siga:Idioma key="censo.busquedaHistorico.literal.fechaEfectivaFin"/>&nbsp;&nbsp;					
+						<siga:Idioma key="censo.busquedaHistorico.literal.fechaEfectivaFin"/>					
 					</td>					
 					<td>
 									<siga:Fecha nombreCampo="fechaFin"/>

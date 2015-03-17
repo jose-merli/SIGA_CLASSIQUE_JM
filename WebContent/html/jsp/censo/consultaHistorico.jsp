@@ -103,8 +103,8 @@
 			<siga:Table 
 		  	      name="tablaDatos"
 				  border="1"
-				  columnNames="censo.consultaHistorico.literal.tipo,censo.consultaHistorico.literal.fechaEntrada,censo.consultaHistorico.literal.fechaEfectiva,censo.consultaHistorico.literal.tipoApunte,censo.consultaHistorico.literal.motivo,"
-				  columnSizes="16,12,12,10,22,8"
+				  columnNames="censo.consultaHistorico.literal.tipo,censo.consultaHistorico.literal.fechaEntrada,censo.consultaHistorico.literal.fechaEfectiva,censo.consultaHistorico.literal.motivo,"
+				  columnSizes="30,12,12,40,6"
 				  modal="">
 				<%
 		    	 if (request.getAttribute("container") == null || ((Vector)request.getAttribute("container")).size() < 1 ){
@@ -117,7 +117,7 @@
 		    	 else { 
 		    		Enumeration en = ((Vector)request.getAttribute("container")).elements();
 					int recordNumber=1;
-					String botonesMostrados="C,E";	
+					String botonesMostrados="C";	
 					while (en.hasMoreElements())
 					{
 	            		Row row = (Row) en.nextElement(); %>
@@ -135,6 +135,8 @@
 							  botones='<%=botonesMostrados%>'
 							  modo='<%=modoFila%>'
 							  visibleBorrado='no'
+							  visibleEdicion='no'
+							  pintarEspacio="no"
 							  clase="listaNonEdit">
 							<td>
 								<input type="hidden" id="oculto<%=String.valueOf(recordNumber)%>_1" name="oculto<%=String.valueOf(recordNumber)%>_1" value="<%=row.getString(CenHistoricoBean.C_IDPERSONA)%>">
@@ -148,13 +150,7 @@
 							<td>
 								<%=UtilidadesString.mostrarDatoJSP(GstDate.getFormatedDateShort(usr.getLanguage(),row.getString(CenHistoricoBean.C_FECHAEFECTIVA)))%>
 							</td>  	
-							<td>
-								<%if (row.getString(CenHistoricoBean.C_USUMODIFICACION).equalsIgnoreCase(Integer.toString(ClsConstants.USUMODIFICACION_AUTOMATICO))){%>
-									<siga:Idioma key="censo.tipoApunteHistorico.automatico"/>
-								<% }else{ %>
-									<siga:Idioma key="censo.tipoApunteHistorico.manual"/>
-								<% } %>								
-							</td>  								
+														
 							<td>							
 								<%=UtilidadesString.mostrarDatoJSP(row.getString(CenHistoricoBean.C_MOTIVO))%>
 							</td>  	

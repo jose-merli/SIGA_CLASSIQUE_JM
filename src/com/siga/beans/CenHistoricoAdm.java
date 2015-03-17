@@ -7,9 +7,16 @@
  */
 package com.siga.beans;
 
+import java.util.Arrays;
+import java.util.Date;
 import java.util.Enumeration;
 import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.Vector;
+
+import org.redabogacia.sigaservices.app.exceptions.BusinessException;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
@@ -275,10 +282,11 @@ public class CenHistoricoAdm extends MasterBeanAdministrador
 	 * @param  tipoCambio - tipo de cambio en el historial 
 	 * @param  fechaInicio - inicio de rango de la fecha efectiva
 	 * @param  fechaFin - fin de rango de la fecha efectiva
+	 * @param motivo 
 	 * @return  Vector - Filas de la tabla seleccionadas  
 	 * @exception  ClsExceptions  En cualquier caso de error
 	 */	
-	public Vector getHistorico(String idPersona, String idInstitucion, String tipoCambio, String fechaInicio, String fechaFin) throws ClsExceptions,SIGAException {
+	public Vector getHistorico(String idPersona, String idInstitucion, String tipoCambio, String fechaInicio, String fechaFin, String motivo) throws ClsExceptions,SIGAException {
 		   Vector datos=new Vector();
 	       try {
 	            RowsContainer rc = new RowsContainer(); 
@@ -303,6 +311,10 @@ public class CenHistoricoAdm extends MasterBeanAdministrador
 				if (!tipoCambio.trim().equals("")){								 
 					sql +=" AND " +
 						  CenHistoricoBean.T_NOMBRETABLA +"."+ CenHistoricoBean.C_IDTIPOCAMBIO + "=" + tipoCambio;									 
+				}
+				if (motivo!=null &&  !motivo.trim().equals("")){								 
+					sql +=" AND " +
+						  CenHistoricoBean.T_NOMBRETABLA +"."+ CenHistoricoBean.C_MOTIVO + " like '%" + motivo+"%'";									 
 				}
 				
 				String auxFechaInicio = "";
@@ -563,7 +575,10 @@ public class CenHistoricoAdm extends MasterBeanAdministrador
 			} else if (nombreClaseBean.equalsIgnoreCase("PysCompraBean")) {
 				adm = new PysCompraAdm(this.usrbean);
 				
-			} else {
+			} else if (nombreClaseBean.equalsIgnoreCase("ScsDesignaBean")) {
+				adm = new ScsDesignaAdm(this.usrbean);
+				
+			}  else {
 				return false;
 			}
 
@@ -1286,12 +1301,157 @@ public class CenHistoricoAdm extends MasterBeanAdministrador
 		}
 	}
 	
-	/**
-	 * @param accion, hBeanAsociado, hBeanAsociadoAnterior,numCaract
-	 * @return descripcion con 4000 caracteres
-	 * @throws Exception 
-	 * @throws ClsExceptions 
-	 */
+	public boolean auditoriaColegiados( String motivo, int tipoCambio,Hashtable objectHashtable, Hashtable originalObjectHashtable,
+			String [] claves, List<String> ocultarClaveList,int accion, String idioma, boolean isCGAE) throws ClsExceptions
+	{
+		try {
+			
+			
+			CenHistoricoBean beanHistorico = new CenHistoricoBean();
+			beanHistorico.setIdInstitucion(Integer.parseInt(this.usrbean.getLocation()));
+			beanHistorico.setIdPersona(this.usrbean.getIdPersona());
+			beanHistorico.setMotivo(motivo);
+			beanHistorico.setIdTipoCambio(tipoCambio);
+			beanHistorico.setUsuMod(ClsConstants.USUMODIFICACION_AUTOMATICO); 
+			beanHistorico.setDescripcion(getDescripcion(objectHashtable, originalObjectHashtable, claves, ocultarClaveList,accion, idioma));
+			if ((beanHistorico.getFechaEfectiva() == null) || (beanHistorico.getFechaEfectiva().equals(""))) 
+				beanHistorico.setFechaEfectiva("SYSDATE");
+			if ((beanHistorico.getFechaEntrada()  == null) || (beanHistorico.getFechaEntrada().equals(""))) 
+				beanHistorico.setFechaEntrada ("SYSDATE");
+			if (isCGAE)
+				beanHistorico.setIdInstitucion(2000);
+//			beanHistorico.setIdInstitucionCargo("");
+			// Insertamos el historico
+			if (this.insert(beanHistorico)) {
+				return true;
+			}
+			return false;
+		}
+		catch (Exception e)	{
+			throw new ClsExceptions (e, "Error al ejecutar el \"insert\" en B.D.");
+		}
+	}
+	
+	private String getDescripcion(Hashtable objectHashtable, Hashtable originalObjectHashtable, String[] claves, List<String> ocultarClaveList,int accion, String idioma) throws SIGAException{
+		StringBuffer descripcion = new StringBuffer();
+		switch (accion) {
+			case ACCION_INSERT:	
+				descripcion.append(UtilidadesString.getMensajeIdioma(idioma, "historico.literal.registroNuevo"));
+				descripcion.append("\n");
+				break;
+			case ACCION_DELETE:
+				descripcion.append(UtilidadesString.getMensajeIdioma(idioma, "historico.literal.registroEliminado"));
+				descripcion.append("\n");
+				break;
+			case ACCION_UPDATE:	
+				descripcion.append(UtilidadesString.getMensajeIdioma(idioma, "historico.literal.registroActual"));
+				descripcion.append("\n");
+				break;
+		}
+		
+		descripcion.append(getDescripcionClaveValor(objectHashtable, claves,ocultarClaveList,idioma));
+		if(accion!=ACCION_UPDATE && descripcion.length()>4000)
+			throw new SIGAException("lA DESCRIPCION ES DEMASIADO LARGA. NO PUEDE LLEGAR HASTA AQUI");
+		
+		
+		if (accion == ACCION_UPDATE) {
+			descripcion.append(UtilidadesString.getMensajeIdioma(idioma, "historico.literal.registroAnterior"));
+			descripcion.append("\n");
+			descripcion.append(getDescripcionClaveValor(originalObjectHashtable, claves,ocultarClaveList,idioma));
+		}
+		if(descripcion.length()>4000){
+			return getDescripcionCorta(objectHashtable,originalObjectHashtable, claves,ocultarClaveList,accion, idioma, descripcion.length()-MAX_NUM_CARACTERES_DESCRIPCION);
+		}else{
+			return descripcion.toString();	
+		}
+		
+		
+		
+	}
+	private void recortarrCampoLargo(Hashtable objectHashtable, Hashtable originalObjectHashtable,String clave,int numCaracteresCortar){
+		//Vamos a ver cuanto tenemos que acortar proporcianalmente al nuevo o al viejo
+		String observaciones = (String)objectHashtable.get(clave);
+		String observacionesOriginal = (String)originalObjectHashtable.get(clave);
+		int observacionesLength = observaciones.length();
+		int observacionesOriginalesLength = observacionesOriginal.length();
+		int observacionesTotalLength = observacionesLength+observacionesOriginalesLength;
+		//Miramos si hay alguno que sea mucho mas grande que el otro. en este caso solo recortaremos a este
+		double  porcentaje = observacionesLength*100/observacionesTotalLength;
+		double  porOriginal = 0;
+//		si es mayor que 75 solo cortamos a este
+		if(porcentaje>75){
+			porcentaje = 100;
+			
+		}else if(porcentaje<=25){
+			porOriginal = 100;
+			porcentaje = 0;
+			
+		}else{
+			porOriginal = 100-porcentaje;
+		}
+		if(porcentaje==0){
+			StringBuffer observacionesCortadas = new StringBuffer();
+			observacionesCortadas.append("...");
+			observacionesCortadas.append(((String)originalObjectHashtable.get(clave)).substring(numCaracteresCortar+3));
+			originalObjectHashtable.put(clave,observacionesCortadas);
+		}else if(porOriginal==0){
+			StringBuffer observacionesCortadas = new StringBuffer();
+			observacionesCortadas.append("...");
+			observacionesCortadas.append(((String)objectHashtable.get(clave)).substring(numCaracteresCortar+3));
+			objectHashtable.put(clave,observacionesCortadas);
+			
+		}else{
+			double caracteresRecortar = (numCaracteresCortar-6)*porOriginal/100;
+			int enteroOriginal = (int)caracteresRecortar;
+			int entero = numCaracteresCortar-enteroOriginal;
+			StringBuffer observacionesCortadas = new StringBuffer();
+			observacionesCortadas.append("...");
+			observacionesCortadas.append(((String)originalObjectHashtable.get(clave)).substring(enteroOriginal+3));
+			originalObjectHashtable.put(clave,observacionesCortadas);
+			
+			observacionesCortadas = new StringBuffer();
+			observacionesCortadas.append("...");
+			observacionesCortadas.append(((String)objectHashtable.get(clave)).substring(entero+3));
+			objectHashtable.put(clave,observacionesCortadas);
+			
+		}
+		
+	}
+	private String getDescripcionCorta(Hashtable objectHashtable, Hashtable originalObjectHashtable, String[] claves, List<String> ocultarClaveList, int accion, String idioma,int numCaracteresCortar){
+		if(!objectHashtable.containsKey("DESCRIPCION") && !objectHashtable.containsKey("OBSERVACIONES"))
+			throw new BusinessException("No tiene campo descripcion ni observaciones por lo que no se puede acortar");
+		//Asumimos que solo tendra una
+		List<String> clavesList = Arrays.asList (claves);
+		if(clavesList.contains("OBSERVACIONES")){
+			recortarrCampoLargo(objectHashtable, originalObjectHashtable, "OBSERVACIONES", numCaracteresCortar);
+		}else if(clavesList.contains("DESCRIPCION")){
+			recortarrCampoLargo(objectHashtable, originalObjectHashtable, "DESCRIPCION", numCaracteresCortar);
+			
+		}
+		StringBuffer descripcion = new StringBuffer();
+		switch (accion) {
+			case ACCION_INSERT:	
+				descripcion.append(UtilidadesString.getMensajeIdioma(idioma, "historico.literal.registroNuevo"));
+				descripcion.append("\n");
+				break;
+			case ACCION_DELETE:
+				descripcion.append(UtilidadesString.getMensajeIdioma(idioma, "historico.literal.registroEliminado"));
+				descripcion.append("\n");
+				break;
+			case ACCION_UPDATE:	
+				descripcion.append(UtilidadesString.getMensajeIdioma(idioma, "historico.literal.registroActual"));
+				descripcion.append("\n");
+				break;
+		}
+		descripcion.append(getDescripcionClaveValor(objectHashtable, claves,ocultarClaveList, idioma)); 
+		if (accion == ACCION_UPDATE) {
+			descripcion.append(UtilidadesString.getMensajeIdioma(idioma, "historico.literal.registroAnterior"));
+			descripcion.append("\n");
+			descripcion.append(getDescripcionClaveValor(originalObjectHashtable, claves,ocultarClaveList, idioma));
+		}
+		return descripcion.toString();
+	}
+	
 	private String getDescripcionCorta(int accion, Hashtable hBeanAsociado, Hashtable hBeanAsociadoAnterior,String idioma, int numCaract) throws Exception {
 		try{
 			
@@ -1468,7 +1628,89 @@ public class CenHistoricoAdm extends MasterBeanAdministrador
 			return "";
 		}
 	}
+	
+	
+	private String getDescripcionClaveValor (Hashtable hashtable,String[] claves,List<String> ocultarClaveList ,String idioma) 
+	{
+		StringBuffer descripcion =  new StringBuffer();
+		Map<String,Hashtable<String, Object>> fksDesignaMap = (Map<String, Hashtable<String, Object>>) hashtable.get("fks");
+		for (int i = 0; i < claves.length  ; i++) {
+			
+			if(!ocultarClaveList.contains(claves[i])){
+				String clave = claves[i];
+				descripcion.append("  - ");
+				descripcion.append(UtilidadesString.getPrimeraMayuscula(clave));
+				descripcion.append(": ");
+				Object valor = hashtable.get(clave); 
+				if(valor!=null){
+					if(valor instanceof Date){
+						try {
+							descripcion.append(GstDate.getFormatedDateShort((Date)hashtable.get(clave)));
+						} catch (ClsExceptions e) {
+							e.printStackTrace();
+							descripcion.append("");
+						}
+						
+					}else{
+						if(fksDesignaMap!=null && fksDesignaMap.containsKey(clave)){
+							
+							try {
+								Vector vFK =  this.getHashSQL(getQueryFK(fksDesignaMap.get(clave), idioma));
+								if(vFK!=null && vFK.size()==1){
+									Hashtable htFK = (Hashtable)vFK.get(0);
+									descripcion.append(htFK.get("SALIDA_FK").toString());
+								}else{
+									throw new ClsExceptions("Hay clave primaria de la FK mal configurada");
+								}
+							} catch (ClsExceptions e) {
+								e.printStackTrace();
+								descripcion.append(hashtable.get(clave).toString());
+							}	
+						}else{
+							descripcion.append(hashtable.get(clave).toString());	
+						}
+						
+					}
+				}else
+					descripcion.append("");
+				descripcion.append("\n");
+			}
+			
+		}
+		return descripcion.toString();
 		
+	}
+	private String getQueryFK(Hashtable<String, Object> hashtable,String idioma){
+		String tabla = (String)hashtable.get("TABLA_FK");
+		String salida = (String)hashtable.get("SALIDA_FK");
+		StringBuffer sql = new StringBuffer();
+		sql.append("SELECT ");
+		sql.append("F_SIGA_GETRECURSO(");
+		sql.append(salida);
+		sql.append(",");
+		sql.append(idioma);
+		sql.append(") SALIDA_FK ");
+		sql.append(" FROM ");
+		sql.append(tabla);
+		sql.append(" WHERE ");
+		Iterator<String> iteratorWhere = hashtable.keySet().iterator();
+		while (iteratorWhere.hasNext()) {
+			String key = (String) iteratorWhere.next();
+			if(!key.equals("TABLA_FK") && !key.equals("SALIDA_FK")){
+				sql.append(key);
+				sql.append("=");
+				sql.append(hashtable.get(key));
+				sql.append(" AND ");
+			}
+			
+		}
+		return sql.substring(0,sql.lastIndexOf("AND"));
+		
+//		return sql.toString();
+		
+	}
+		
+	
 	private boolean omitirClave (String s) 
 	{
 		String [] camposOmitir = {"IDPERSONA", "IDINSTITUCION", "FECHABAJA", MasterBean.C_FECHAMODIFICACION, MasterBean.C_USUMODIFICACION, 

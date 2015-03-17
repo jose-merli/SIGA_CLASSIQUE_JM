@@ -2,7 +2,6 @@
 package com.siga.censo.action;
 
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Hashtable;
@@ -24,7 +23,6 @@ import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesBDAdm;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;
-import com.siga.beans.AdmCertificadosAdm;
 import com.siga.beans.CenClienteAdm;
 import com.siga.beans.CenColaCambioLetradoAdm;
 import com.siga.beans.CenColegiadoAdm;
@@ -912,7 +910,7 @@ public class DatosColegialesAction extends MasterAction {
 			Vector vect=new Vector();
 
 			// Obtengo las entradas del historico para la busqueda indicada en el formulario
-			vect = admin.getHistorico(idPersona,idInstitucion,form.getCmbCambioHistorico(),form.getFechaInicio(),form.getFechaFin());
+			vect = admin.getHistorico(idPersona,idInstitucion,form.getCmbCambioHistorico(),form.getFechaInicio(),form.getFechaFin(),form.getMotivo());
 
 			// Paso la busqueda como parametro en el request 
 			request.setAttribute("container", vect);
