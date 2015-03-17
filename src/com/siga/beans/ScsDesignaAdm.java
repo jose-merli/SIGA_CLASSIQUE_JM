@@ -4290,7 +4290,8 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 			CenHistoricoAdm cenHistoricoAdm = new CenHistoricoAdm(usrbean);
 			Hashtable historicoHashtable = new Hashtable();
 			StringBuffer motivo = new StringBuffer();
-			motivo.append("Designación ");
+			motivo.append(UtilidadesString.getMensajeIdioma(this.usrbean, "gratuita.busquedaDesignas.literal.designa"));
+			motivo.append(" ");
 			motivo.append(UtilidadesHash.getString(designaOriginalHashtable, ScsDesignaBean.C_ANIO));
 			motivo.append("/");
 			motivo.append(UtilidadesHash.getString(designaOriginalHashtable, ScsDesignaBean.C_CODIGO));
