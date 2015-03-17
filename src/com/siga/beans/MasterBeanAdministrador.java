@@ -135,6 +135,27 @@ public abstract class MasterBeanAdministrador {
 		}
 		return datos;
 	}
+	public Vector getHashSQL(String sql) throws ClsExceptions 
+	{
+		Vector datos = new Vector();
+		
+		// Acceso a BBDD
+		RowsContainer rc = null;
+		try { 
+			rc = new RowsContainer(); 
+			if (rc.query(sql)) {
+				for (int i = 0; i < rc.size(); i++)	{
+					Row fila = (Row) rc.get(i);
+					if (fila.getRow() != null) 
+						datos.add(fila.getRow());
+				}
+			}
+		} 
+		catch (Exception e) { 	
+			throw new ClsExceptions (e, e.getMessage()); 
+		}
+		return datos;
+	}
 	
 	public Vector selectBind(String where, Hashtable codigos ) throws ClsExceptions 
 	{
