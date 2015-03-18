@@ -764,35 +764,37 @@ public class SIGAWSClient extends SIGAWSClientAbstract {
 			Vector<ScsUnidadFamiliarEJGBean> v = scsUnidadFamiliarEJGAdm.selectByPK(scsUnidadFamiliarEJGAdm.beanToHashTable(unidadFamiliarVo));
 			
 			if (v == null || v.size() != 1) {
-				throw new BusinessException("No se ha encontrado el registro de la unidad familiar.");
-			}
-			unidadFamiliarVo = v.get(0);
-			usrBean.setLocation(String.valueOf(scsEejgPeticionesBean.getIdInstitucion()));
-			unidadFamiliarVo.setPeticionEejg(scsEejgPeticionesBean);
-			
-			//el proceso que genera el fichero recoge el dato de personaJGBean
-			ScsPersonaJGBean scsPersonaJGBean = new ScsPersonaJGBean();
-			scsPersonaJGBean.setIdPersona(unidadFamiliarVo.getIdPersona());
-			unidadFamiliarVo.setPersonaJG(scsPersonaJGBean);
-			
-			Map<Integer, Map<String, String>> mapInformeEejg = eEjgS.getDatosInformeEejg(unidadFamiliarVo, usrBean);
-			File fichero = eEjgS.getInformeEejg(mapInformeEejg, usrBean);
-
-			scsEejgPeticionesBean.setRutaPDF(fichero.getAbsolutePath());
-			
-			EcomCola ecomCola = new EcomCola();
-			ecomCola.setIdoperacion(OPERACION.ASIGNA_ENVIO_DOCUMENTO.getId());
-			ecomCola.setIdinstitucion(Short.valueOf(scsEejgPeticionesBean.getIdInstitucion().toString()));
-			EcomColaService ecomColaService = (EcomColaService)BusinessManager.getInstance().getService(EcomColaService.class);
-						
-			if (ecomColaService.insert(ecomCola) != 1) {				
-				throw new ClsExceptions("No se ha podido insertar en la cola de comunicaciones.");
-			}
-			scsEejgPeticionesBean.setIdEcomCola(ecomCola.getIdecomcola());
-			
-			ScsEejgPeticionesAdm scsEejgPeticionesAdm = new ScsEejgPeticionesAdm(usrBean);
-			if (!scsEejgPeticionesAdm.update(scsEejgPeticionesBean)) {
-				throw new ClsExceptions("No se ha podido actualizar scsEejgPeticionesBean.");
+//				throw new BusinessException("No se ha encontrado el registro de la unidad familiar.");
+				ClsLogging.writeFileLog("No se ha encontrado el registro de la unidad familiar.", 3);
+			} else {
+				unidadFamiliarVo = v.get(0);
+				usrBean.setLocation(String.valueOf(scsEejgPeticionesBean.getIdInstitucion()));
+				unidadFamiliarVo.setPeticionEejg(scsEejgPeticionesBean);
+				
+				//el proceso que genera el fichero recoge el dato de personaJGBean
+				ScsPersonaJGBean scsPersonaJGBean = new ScsPersonaJGBean();
+				scsPersonaJGBean.setIdPersona(unidadFamiliarVo.getIdPersona());
+				unidadFamiliarVo.setPersonaJG(scsPersonaJGBean);
+				
+				Map<Integer, Map<String, String>> mapInformeEejg = eEjgS.getDatosInformeEejg(unidadFamiliarVo, usrBean);
+				File fichero = eEjgS.getInformeEejg(mapInformeEejg, usrBean);
+	
+				scsEejgPeticionesBean.setRutaPDF(fichero.getAbsolutePath());
+				
+				EcomCola ecomCola = new EcomCola();
+				ecomCola.setIdoperacion(OPERACION.ASIGNA_ENVIO_DOCUMENTO.getId());
+				ecomCola.setIdinstitucion(Short.valueOf(scsEejgPeticionesBean.getIdInstitucion().toString()));
+				EcomColaService ecomColaService = (EcomColaService)BusinessManager.getInstance().getService(EcomColaService.class);
+							
+				if (ecomColaService.insert(ecomCola) != 1) {				
+					throw new ClsExceptions("No se ha podido insertar en la cola de comunicaciones.");
+				}
+				scsEejgPeticionesBean.setIdEcomCola(ecomCola.getIdecomcola());
+				
+				ScsEejgPeticionesAdm scsEejgPeticionesAdm = new ScsEejgPeticionesAdm(usrBean);
+				if (!scsEejgPeticionesAdm.update(scsEejgPeticionesBean)) {
+					throw new ClsExceptions("No se ha podido actualizar scsEejgPeticionesBean.");
+				}
 			}
 			
 		} catch (Exception e) {
