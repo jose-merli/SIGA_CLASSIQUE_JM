@@ -1070,11 +1070,9 @@ public class ScsActuacionDesignaAdm extends MasterBeanAdministrador {
 		
 		
 		StringBuffer motivo = new StringBuffer();
-		if(ocultarClaveList.size()>0){
-			motivo.append(UtilidadesString.getMensajeIdioma(this.usrbean, "gratuita.busquedaDesignas.literal.designa"));
-			
-			motivo.append(" ");
-		}
+		
+		motivo.append(UtilidadesString.getMensajeIdioma(this.usrbean, "gratuita.busquedaDesignas.literal.designa"));
+		motivo.append(" ");
 		
 		motivo.append(designaBean.getAnio());
 		motivo.append("/");

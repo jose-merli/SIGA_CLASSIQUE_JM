@@ -92,6 +92,7 @@
 
 		<!-- Campo obligatorio -->
 		<html:hidden styleId = "modo" property = "modo" value = ""/>
+		<html:hidden property = "jsonVolver" />
 			<!-- RGG: cambio a formularios ligeros -->
 		</html:form>
 		

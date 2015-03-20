@@ -116,7 +116,7 @@
  	
 	</head>
 
-	<body onLoad="ajusteAltoBotones('resultado');" class="tablaCentralCampos">
+	<body onLoad="ajusteAltoBotones('resultado'); inicio();" class="tablaCentralCampos">
 
 		<!-- ******* INFORMACION GENERAL CLIENTE ****** -->
 
@@ -150,6 +150,7 @@
 
 				<html:hidden property = "modo" value = ""/>
 				<html:hidden property = "actionModal" value=""/>
+				<html:hidden property = "jsonVolver" />
 				
 				
 				<tr>				
@@ -284,6 +285,21 @@
 		function refrescarLocal() {
 			buscar();
 		}
+		function inicio() {
+			if(document.forms[0].jsonVolver.value!=''){
+				var jSonVolverObject =  jQuery.parseJSON(document.forms[0].jsonVolver.value);
+				if(jSonVolverObject.nombreFormulario == 'HistoricoForm'){
+					document.forms['HistoricoForm'].cmbCambioHistorico.value =  jSonVolverObject.idTipoCambio;
+					document.forms['HistoricoForm'].fechaInicio.value = jSonVolverObject.fechaInicio;
+					document.forms['HistoricoForm'].fechaFin.value = jSonVolverObject.fechaFin;
+					document.forms['HistoricoForm'].motivo.value = jSonVolverObject.motivo;
+					buscar();
+					
+				}
+			
+			}
+		}
+		
 				
 	</script>
 

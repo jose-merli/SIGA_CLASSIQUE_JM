@@ -13,7 +13,9 @@
 package com.siga.censo.action;
 
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Map;
 import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
@@ -25,6 +27,7 @@ import org.apache.struts.action.ActionMapping;
 import com.atos.utils.Row;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesHash;
+import com.siga.Utilidades.UtilidadesString;
 import com.siga.beans.CenClienteAdm;
 import com.siga.beans.CenColegiadoAdm;
 import com.siga.beans.CenColegiadoBean;
@@ -63,6 +66,7 @@ public class HistoricoAction extends MasterAction {
 			// Obtengo el UserBean y el identificador de la institucion
 			UsrBean user=(UsrBean)request.getSession().getAttribute("USRBEAN");			
 			String accion = (String)request.getParameter("accion");
+			HistoricoForm form = (HistoricoForm) formulario;
 			
 			//Estamos volviendo del botón volver de editar/consulta/nuevo registro de auditoría
 			if(accion==null){
@@ -482,8 +486,15 @@ public class HistoricoAction extends MasterAction {
 		
 			// Manejadores para el formulario y el acceso a las BBDDs
 			HistoricoForm form = (HistoricoForm) formulario;
-			CenHistoricoAdm admin=new CenHistoricoAdm(this.getUserBean(request));		
-
+			CenHistoricoAdm admin=new CenHistoricoAdm(this.getUserBean(request));
+			Map<String, String> clavesJsonMap = new HashMap<String, String>();
+			clavesJsonMap.put("nombreFormulario", "HistoricoForm");
+			clavesJsonMap.put("fechaInicio", form.getFechaInicio());
+			clavesJsonMap.put("fechaFin", form.getFechaFin());
+			clavesJsonMap.put("motivo", form.getMotivo());
+			clavesJsonMap.put("idTipoCambio", form.getCmbCambioHistorico());
+			String jsonVolver = UtilidadesString.createJsonString(clavesJsonMap);
+			form.setJsonVolver(jsonVolver);
 			// Obtengo las entradas del historico para la busqueda indicada en el formulario
 			vect=admin.getHistorico(idPersona,idInstitucion,form.getCmbCambioHistorico(),form.getFechaInicio(),form.getFechaFin(),form.getMotivo());
 

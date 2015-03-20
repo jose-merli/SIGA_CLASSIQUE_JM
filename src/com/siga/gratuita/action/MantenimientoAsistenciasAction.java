@@ -34,16 +34,20 @@ import com.siga.beans.CenBajasTemporalesBean;
 import com.siga.beans.CenColegiadoAdm;
 import com.siga.beans.ScsActuacionAsistenciaAdm;
 import com.siga.beans.ScsActuacionAsistenciaBean;
+import com.siga.beans.ScsActuacionDesignaBean;
 import com.siga.beans.ScsAsistenciasAdm;
 import com.siga.beans.ScsAsistenciasBean;
 import com.siga.beans.ScsCalendarioLaboralAdm;
+import com.siga.beans.ScsComisariaBean;
 import com.siga.beans.ScsDesignaAdm;
 import com.siga.beans.ScsEJGAdm;
 import com.siga.beans.ScsEJGDESIGNAAdm;
 import com.siga.beans.ScsEJGDESIGNABean;
 import com.siga.beans.ScsGuardiasColegiadoAdm;
 import com.siga.beans.ScsGuardiasColegiadoBean;
+import com.siga.beans.ScsJuzgadoBean;
 import com.siga.beans.ScsSaltosCompensacionesAdm;
+import com.siga.beans.ScsTipoAsistenciaColegioBean;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
@@ -629,10 +633,9 @@ public class MantenimientoAsistenciasAction extends MasterAction
 		{
 			UsrBean usr = (UsrBean)request.getSession().getAttribute("USRBEAN");
 			
-			tx = usr.getTransaction();
-			tx.begin();
+			
 
-			Hashtable hash = new Hashtable();
+			Hashtable asistenciaHashtable = new Hashtable();
 			// Dependiendo de donde vengamos tenemos que modificar unos campos u otros.
 			ScsAsistenciasAdm scsAsistenciaAdm = new ScsAsistenciasAdm(usr);
 			AsistenciasForm miForm 	= (AsistenciasForm)formulario;
@@ -649,67 +652,77 @@ public class MantenimientoAsistenciasAction extends MasterAction
 								ScsAsistenciasBean.C_FECHASOLICITUD};
 			
 			// Campos a modificar
-			hash.put(ScsAsistenciasBean.C_IDTIPOASISTENCIA,miForm.getIdTipoAsistencia());
-			hash.put(ScsAsistenciasBean.C_IDTIPOASISTENCIACOLEGIO,miForm.getIdTipoAsistenciaColegio());
+			asistenciaHashtable.put(ScsAsistenciasBean.C_IDTIPOASISTENCIA,miForm.getIdTipoAsistencia());
+			asistenciaHashtable.put(ScsAsistenciasBean.C_IDTIPOASISTENCIACOLEGIO,miForm.getIdTipoAsistenciaColegio());
 			if(!miForm.getFechaCierre().equals(""))
-				hash.put(ScsAsistenciasBean.C_FECHACIERRE,GstDate.getApplicationFormatDate(usr.getLanguage(),miForm.getFechaCierre()));
-			hash.put(ScsAsistenciasBean.C_OBSERVACIONES,miForm.getObservaciones());
-			hash.put(ScsAsistenciasBean.C_INCIDENCIAS,miForm.getIncidencias());
+				asistenciaHashtable.put(ScsAsistenciasBean.C_FECHACIERRE,GstDate.getApplicationFormatDate(usr.getLanguage(),miForm.getFechaCierre()));
+			asistenciaHashtable.put(ScsAsistenciasBean.C_OBSERVACIONES,miForm.getObservaciones());
+			asistenciaHashtable.put(ScsAsistenciasBean.C_INCIDENCIAS,miForm.getIncidencias());
 			
 			String juzgado = miForm.getJuzgado();
 			if (juzgado != null && !juzgado.equals("")) {
 				if (juzgado.startsWith("{")){
 					// ES UN JSON
 					HashMap<String, String> hmIdJuzgadoObtenido = new ObjectMapper().readValue(juzgado, HashMap.class);
-					UtilidadesHash.set(hash, ScsAsistenciasBean.C_JUZGADO, hmIdJuzgadoObtenido.get("idjuzgado"));
-					UtilidadesHash.set(hash, ScsAsistenciasBean.C_JUZGADO_IDINSTITUCION, hmIdJuzgadoObtenido.get("idinstitucion"));
+					UtilidadesHash.set(asistenciaHashtable, ScsAsistenciasBean.C_JUZGADO, hmIdJuzgadoObtenido.get("idjuzgado"));
+					UtilidadesHash.set(asistenciaHashtable, ScsAsistenciasBean.C_JUZGADO_IDINSTITUCION, hmIdJuzgadoObtenido.get("idinstitucion"));
 				} else {
 					String a[] = juzgado.split(",");
-					UtilidadesHash.set(hash, ScsAsistenciasBean.C_JUZGADO, a[0].trim());
-					UtilidadesHash.set(hash, ScsAsistenciasBean.C_JUZGADO_IDINSTITUCION, a[1].trim());
+					UtilidadesHash.set(asistenciaHashtable, ScsAsistenciasBean.C_JUZGADO, a[0].trim());
+					UtilidadesHash.set(asistenciaHashtable, ScsAsistenciasBean.C_JUZGADO_IDINSTITUCION, a[1].trim());
 				}
 			}
 
 			String comisaria = miForm.getComisaria();
 			if (comisaria != null && !comisaria.equals("")) {
 				String a[] = comisaria.split(",");
-				UtilidadesHash.set(hash, ScsAsistenciasBean.C_COMISARIA, a[0].trim());
-				UtilidadesHash.set(hash, ScsAsistenciasBean.C_COMISARIA_IDINSTITUCION, a[1].trim());
+				UtilidadesHash.set(asistenciaHashtable, ScsAsistenciasBean.C_COMISARIA, a[0].trim());
+				UtilidadesHash.set(asistenciaHashtable, ScsAsistenciasBean.C_COMISARIA_IDINSTITUCION, a[1].trim());
 			}
-			UtilidadesHash.set(hash, ScsAsistenciasBean.C_NUMERODILIGENCIA,    miForm.getNumeroDilegencia());
-			UtilidadesHash.set(hash, ScsAsistenciasBean.C_NUMEROPROCEDIMIENTO, miForm.getNumeroProcedimiento());
-			UtilidadesHash.set(hash, ScsAsistenciasBean.C_IDPRETENSION, miForm.getIdPretension());
+			UtilidadesHash.set(asistenciaHashtable, ScsAsistenciasBean.C_NUMERODILIGENCIA,    miForm.getNumeroDilegencia());
+			UtilidadesHash.set(asistenciaHashtable, ScsAsistenciasBean.C_NUMEROPROCEDIMIENTO, miForm.getNumeroProcedimiento());
+			UtilidadesHash.set(asistenciaHashtable, ScsAsistenciasBean.C_IDPRETENSION, miForm.getIdPretension());
 			
 			if (miForm.getNig() != null) {
-			    UtilidadesHash.set(hash, ScsAsistenciasBean.C_NIG, miForm.getNig());
+			    UtilidadesHash.set(asistenciaHashtable, ScsAsistenciasBean.C_NIG, miForm.getNig());
 			}else{
-				 UtilidadesHash.set(hash, ScsAsistenciasBean.C_NIG, "");
+				 UtilidadesHash.set(asistenciaHashtable, ScsAsistenciasBean.C_NIG, "");
 			}
 			
 			// Campos a clave
-			hash.put(ScsAsistenciasBean.C_ANIO,miForm.getAnio());
-			hash.put(ScsAsistenciasBean.C_NUMERO,miForm.getNumero());
-			hash.put(ScsAsistenciasBean.C_IDINSTITUCION,usr.getLocation());
-
+			asistenciaHashtable.put(ScsAsistenciasBean.C_ANIO,miForm.getAnio());
+			asistenciaHashtable.put(ScsAsistenciasBean.C_NUMERO,miForm.getNumero());
+			asistenciaHashtable.put(ScsAsistenciasBean.C_IDINSTITUCION,usr.getLocation());
+			Hashtable<String, Object> asistenciaOriginalHashtable = null;
+			if(usr.isLetrado()){
+				asistenciaOriginalHashtable = scsAsistenciaAdm.getHashAsistenciaOriginalParaHistorico(asistenciaHashtable, true,usr);
+				asistenciaHashtable = scsAsistenciaAdm.actualizaHashAsistenciaParaHistorico(asistenciaHashtable, usr);
+			}
+			
+			
+			
+			tx = usr.getTransaction();
+			tx.begin();
+			
 			String estado         = miForm.getEstadoAsintecia();
 			String estadoAnterior = miForm.getEstadoAsinteciaAnterior();
 			if (estado != null) {
 				if (estadoAnterior == null || !estado.equals(estadoAnterior)) {
-					UtilidadesHash.set(hash, ScsAsistenciasBean.C_IDESTADOASISTENCIA, estado);
+					UtilidadesHash.set(asistenciaHashtable, ScsAsistenciasBean.C_IDESTADOASISTENCIA, estado);
 					if (estado.equals(""))
-						UtilidadesHash.set(hash, ScsAsistenciasBean.C_FECHAESTADOASISTENCIA, "");
+						UtilidadesHash.set(asistenciaHashtable, ScsAsistenciasBean.C_FECHAESTADOASISTENCIA, "");
 					else 
-						UtilidadesHash.set(hash, ScsAsistenciasBean.C_FECHAESTADOASISTENCIA, "SYSDATE");
+						UtilidadesHash.set(asistenciaHashtable, ScsAsistenciasBean.C_FECHAESTADOASISTENCIA, "SYSDATE");
 					
 					//////////////////////
 					// Anulamos / Activamos las actuaciones de la asistencia
 					boolean bAnular = false;
 					if (estado.equals("2") || estado.equals("3")) { // Anulado o Venia
 						bAnular = true;
-						UtilidadesHash.set(hash, ScsAsistenciasBean.C_FECHAANULACION, "SYSDATE");
+						UtilidadesHash.set(asistenciaHashtable, ScsAsistenciasBean.C_FECHAANULACION, "SYSDATE");
 					} 
 					else {
-						UtilidadesHash.set(hash, ScsAsistenciasBean.C_FECHAANULACION, "");
+						UtilidadesHash.set(asistenciaHashtable, ScsAsistenciasBean.C_FECHAANULACION, "");
 					}
 					
 					Hashtable act = new Hashtable();
@@ -731,8 +744,8 @@ public class MantenimientoAsistenciasAction extends MasterAction
 					//////////////////////
 				}else{
 					//NO HA CAMBIADO NADA
-					UtilidadesHash.set(hash, ScsAsistenciasBean.C_IDESTADOASISTENCIA, estado);
-					UtilidadesHash.set(hash, ScsAsistenciasBean.C_FECHAESTADOASISTENCIA, GstDate.getApplicationFormatDate(usr.getLanguage(),miForm.getFechaEstadoAsistencia()));
+					UtilidadesHash.set(asistenciaHashtable, ScsAsistenciasBean.C_IDESTADOASISTENCIA, estado);
+					UtilidadesHash.set(asistenciaHashtable, ScsAsistenciasBean.C_FECHAESTADOASISTENCIA, GstDate.getApplicationFormatDate(usr.getLanguage(),miForm.getFechaEstadoAsistencia()));
 				}
 			}
 			
@@ -755,10 +768,12 @@ public class MantenimientoAsistenciasAction extends MasterAction
 				myCalendar.set(Calendar.MILLISECOND,0);
 				SimpleDateFormat simpleDateFormat2 = new SimpleDateFormat(ClsConstants.DATE_FORMAT_JAVA);
 				fechaSolicitud = simpleDateFormat2.format(myCalendar.getTime());
-				UtilidadesHash.set(hash, ScsAsistenciasBean.C_FECHASOLICITUD, fechaSolicitud);
+				UtilidadesHash.set(asistenciaHashtable, ScsAsistenciasBean.C_FECHASOLICITUD, fechaSolicitud);
 			}			
-
-			scsAsistenciaAdm.updateDirect(hash,null,campos);
+			if(usr.isLetrado())
+				scsAsistenciaAdm.updateDirectHistorico(asistenciaHashtable,null,campos,asistenciaOriginalHashtable);
+			else
+				scsAsistenciaAdm.updateDirect(asistenciaHashtable,null,campos);
 			
 			tx.commit();
 			
@@ -774,7 +789,10 @@ public class MantenimientoAsistenciasAction extends MasterAction
 		
 		return forward;
 	}
-
+	
+	
+	
+	
 	/** 
 	 *  Funcion que atiende la accion borrar
 	 * @param  mapping - Mapeo de los struts

@@ -148,6 +148,11 @@ public class ClsConstants {
 	public static final int TIPO_CAMBIO_HISTORICO_DESIGNACIONJUSTIFICACION		= 102;
 	public static final int TIPO_CAMBIO_HISTORICO_DESIGNACIONALTAACTUACION		= 103;
 	
+	public static final int TIPO_CAMBIO_HISTORICO_ASISTENCIAALTA		= 104;
+	public static final int TIPO_CAMBIO_HISTORICO_ASISTENCIAMODIFICACION		= 105;
+	public static final int TIPO_CAMBIO_HISTORICO_ASISTENCIAALTAACTUACION		= 106;
+	
+	
 	public static final String HISTORICO_REGISTRO_ELIMINADO 			= "Registro eliminado";
 
     // Tipo direcciones que tienen logica asociada

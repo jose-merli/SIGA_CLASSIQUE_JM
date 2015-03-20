@@ -1,13 +1,17 @@
 
 package com.siga.beans;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Vector;
+
+import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesHash;
+import com.siga.Utilidades.UtilidadesString;
 import com.siga.general.SIGAException;
 
 /**
@@ -223,5 +227,45 @@ public class ScsContrariosAsistenciaAdm extends MasterBeanAdministrador {
 	       }
 	       return datos;                        
 	    }
+	public boolean insertConHistorico(Hashtable contrarioAsistenciaHashtable, String[] claves, String [] campos,Hashtable asistenciaHashtable) throws ClsExceptions{
 		
+		boolean isInsertado = this.insert(contrarioAsistenciaHashtable);
+		CenHistoricoAdm cenHistoricoAdm = new CenHistoricoAdm(usrbean);
+		Hashtable historicoHashtable = new Hashtable();
+		StringBuffer motivo = new StringBuffer();
+		motivo.append(UtilidadesString.getMensajeIdioma(this.usrbean, "gratuita.generalDesigna.literal.asistencia"));
+		motivo.append(" ");
+		motivo.append(asistenciaHashtable.get(ScsAsistenciasBean.C_ANIO));
+		motivo.append("/");
+		motivo.append(asistenciaHashtable.get(ScsAsistenciasBean.C_NUMERO));
+		historicoHashtable.put(CenHistoricoBean.C_MOTIVO, motivo.toString());
+		CenHistoricoAdm admHis = new CenHistoricoAdm (this.usrbean);
+		if(isInsertado)
+			isInsertado = admHis.auditoriaColegiados(motivo.toString(), ClsConstants.TIPO_CAMBIO_HISTORICO_ASISTENCIAMODIFICACION,asistenciaHashtable, 
+				null, campos,new ArrayList<String>(), CenHistoricoAdm.ACCION_INSERT, usrbean.getLanguage(), false); 
+		
+		return isInsertado;
+		
+		
+	}
+	public boolean deleteConHistorico(Hashtable contrarioAsistenciaHashtable, String[] claves, String [] campos,Hashtable asistenciaHashtable) throws ClsExceptions{
+		boolean isBorrado = this.delete(contrarioAsistenciaHashtable);
+		CenHistoricoAdm cenHistoricoAdm = new CenHistoricoAdm(usrbean);
+		Hashtable historicoHashtable = new Hashtable();
+		StringBuffer motivo = new StringBuffer();
+		motivo.append(UtilidadesString.getMensajeIdioma(this.usrbean, "gratuita.generalDesigna.literal.asistencia"));
+		motivo.append(" ");
+		motivo.append(asistenciaHashtable.get(ScsAsistenciasBean.C_ANIO));
+		motivo.append("/");
+		motivo.append(asistenciaHashtable.get(ScsAsistenciasBean.C_NUMERO));
+		historicoHashtable.put(CenHistoricoBean.C_MOTIVO, motivo.toString());
+		CenHistoricoAdm admHis = new CenHistoricoAdm (this.usrbean);
+		if(isBorrado)
+			isBorrado = admHis.auditoriaColegiados(motivo.toString(), ClsConstants.TIPO_CAMBIO_HISTORICO_ASISTENCIAMODIFICACION,asistenciaHashtable, 
+				null, campos,new ArrayList<String>(), CenHistoricoAdm.ACCION_DELETE, usrbean.getLanguage(), false); 
+		
+		return isBorrado;
+		
+		
+	}
 }

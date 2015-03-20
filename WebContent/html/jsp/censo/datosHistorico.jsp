@@ -144,6 +144,8 @@
 
 				<html:form action="/CEN_Historico.do" method="POST" >
 					<html:hidden property = "modo" value = "<%=remitente%>"/>
+					<html:hidden property = "jsonVolver" />
+					
 					<tr>				
 						<td>
 						<siga:ConjCampos leyenda="censo.consultaHistorico.cabecera">

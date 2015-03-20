@@ -6,6 +6,7 @@ import com.atos.utils.*;
 import com.siga.Utilidades.UtilidadesBDAdm;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.beans.eejg.ScsEejgPeticionesBean;
+import com.siga.gratuita.beans.ScsConjuntoGuardiasBean;
 import com.siga.gratuita.beans.ScsProgCalendariosBean;
 import com.siga.gratuita.form.ActuacionAsistenciaForm;
 import com.siga.gratuita.form.AsistenciaForm;
@@ -182,35 +183,37 @@ public class ScsActuacionAsistenciaAdm extends MasterBeanAdministrador {
 		try {
 			htData = new Hashtable();
 			ScsActuacionAsistenciaBean b = (ScsActuacionAsistenciaBean) bean;
-			htData.put(ScsActuacionAsistenciaBean.C_IDINSTITUCION             , String.valueOf(b.getIdInstitucion()));
-			htData.put(ScsActuacionAsistenciaBean.C_ANIO                      , String.valueOf(b.getAnio()));
-			htData.put(ScsActuacionAsistenciaBean.C_NUMERO                    , String.valueOf(b.getNumero()));
-			htData.put(ScsActuacionAsistenciaBean.C_IDACTUACION               , String.valueOf(b.getIdActuacion()));
-			htData.put(ScsActuacionAsistenciaBean.C_FECHA                     , String.valueOf(b.getFecha()));
-			htData.put(ScsActuacionAsistenciaBean.C_DIADESPUES                , String.valueOf(b.getDiaDespues()));
-			htData.put(ScsActuacionAsistenciaBean.C_ACUERDOEXTRAJUDICIAL      , String.valueOf(b.getAcuerdoExtrajudicial()));
-			htData.put(ScsActuacionAsistenciaBean.C_FECHAJUSTIFICACION        , String.valueOf(b.getFechaJustificacion()));
-			htData.put(ScsActuacionAsistenciaBean.C_DESCRIPCIONBREVE          , String.valueOf(b.getDescripcionBreve()));
-			htData.put(ScsActuacionAsistenciaBean.C_LUGAR                     , String.valueOf(b.getLugar()));
-			htData.put(ScsActuacionAsistenciaBean.C_NUMEROASUNTO              , String.valueOf(b.getNumeroAsunto()));
-			htData.put(ScsActuacionAsistenciaBean.C_ANULACION                 , String.valueOf(b.getAnulacion()));
-			htData.put(ScsActuacionAsistenciaBean.C_PAGADO                    , String.valueOf(b.getPagado()));
-			htData.put(ScsActuacionAsistenciaBean.C_FACTURADO                 , String.valueOf(b.getFacturado()));
-			htData.put(ScsActuacionAsistenciaBean.C_OBSERVACIONESJUSTIFICACION, String.valueOf(b.getObservacionesJustificacion()));
-			htData.put(ScsActuacionAsistenciaBean.C_OBSERVACIONES             , String.valueOf(b.getObservaciones()));
-			htData.put(ScsActuacionAsistenciaBean.C_IDFACTURACION             , String.valueOf(b.getIdFacturacion()));
-			htData.put(ScsActuacionAsistenciaBean.C_VALIDADA				  , String.valueOf(b.getValidada()));
-			htData.put(ScsActuacionAsistenciaBean.C_IDJUZGADO				  , String.valueOf(b.getIdJuzgado()));
-			htData.put(ScsActuacionAsistenciaBean.C_IDINSTITUCIONJUZGADO      , String.valueOf(b.getIdInstitucionJuzgado()));
-			htData.put(ScsActuacionAsistenciaBean.C_IDCOMISARIA               , String.valueOf(b.getIdComisaria()));
-			htData.put(ScsActuacionAsistenciaBean.C_IDINSTITUCIONCOMISARIA	  , String.valueOf(b.getIdInstitucionComisaria()));
-			htData.put(ScsActuacionAsistenciaBean.C_IDTIPOACTUACION			  , String.valueOf(b.getIdTipoActuacion()));
-			htData.put(ScsActuacionAsistenciaBean.C_IDTIPOASISTENCIA	  	  , String.valueOf(b.getIdTipoAsistencia()));
-			htData.put(ScsActuacionAsistenciaBean.C_IDPRISION			  	  , String.valueOf(b.getIdPrision()));
-			htData.put(ScsActuacionAsistenciaBean.C_IDINSTITUCIONPRISION	  , String.valueOf(b.getIdInstitucionPrision()));
-			htData.put(ScsActuacionAsistenciaBean.C_USUMODIFICACION	  		  , String.valueOf(b.getUsuMod()));
-			htData.put(ScsActuacionAsistenciaBean.C_FECHAMODIFICACION		  , String.valueOf(b.getFechaMod()));
-			htData.put(ScsActuacionAsistenciaBean.C_NIG						  , String.valueOf(b.getNIG()));
+			
+			
+			UtilidadesHash.set(htData, ScsActuacionAsistenciaBean.C_IDINSTITUCION             , b.getIdInstitucion());
+			UtilidadesHash.set(htData, ScsActuacionAsistenciaBean.C_ANIO                      , b.getAnio());
+			UtilidadesHash.set(htData, ScsActuacionAsistenciaBean.C_NUMERO                    , b.getNumero());
+			UtilidadesHash.set(htData, ScsActuacionAsistenciaBean.C_IDACTUACION               , b.getIdActuacion());
+			UtilidadesHash.set(htData, ScsActuacionAsistenciaBean.C_FECHA                     , b.getFecha());
+			UtilidadesHash.set(htData, ScsActuacionAsistenciaBean.C_DIADESPUES                , b.getDiaDespues());
+			UtilidadesHash.set(htData, ScsActuacionAsistenciaBean.C_ACUERDOEXTRAJUDICIAL      , b.getAcuerdoExtrajudicial());
+			UtilidadesHash.set(htData, ScsActuacionAsistenciaBean.C_FECHAJUSTIFICACION        , b.getFechaJustificacion());
+			UtilidadesHash.set(htData, ScsActuacionAsistenciaBean.C_DESCRIPCIONBREVE          , b.getDescripcionBreve());
+			UtilidadesHash.set(htData, ScsActuacionAsistenciaBean.C_LUGAR                     , b.getLugar());
+			UtilidadesHash.set(htData, ScsActuacionAsistenciaBean.C_NUMEROASUNTO              , b.getNumeroAsunto());
+			UtilidadesHash.set(htData, ScsActuacionAsistenciaBean.C_ANULACION                 , b.getAnulacion());
+			UtilidadesHash.set(htData, ScsActuacionAsistenciaBean.C_PAGADO                    , b.getPagado());
+			UtilidadesHash.set(htData, ScsActuacionAsistenciaBean.C_FACTURADO                 , b.getFacturado());
+			UtilidadesHash.set(htData, ScsActuacionAsistenciaBean.C_OBSERVACIONESJUSTIFICACION, b.getObservacionesJustificacion());
+			UtilidadesHash.set(htData, ScsActuacionAsistenciaBean.C_OBSERVACIONES             , b.getObservaciones());
+			UtilidadesHash.set(htData, ScsActuacionAsistenciaBean.C_IDFACTURACION             , b.getIdFacturacion());
+			UtilidadesHash.set(htData, ScsActuacionAsistenciaBean.C_VALIDADA				  , b.getValidada());
+			UtilidadesHash.set(htData, ScsActuacionAsistenciaBean.C_IDJUZGADO				  , b.getIdJuzgado());
+			UtilidadesHash.set(htData, ScsActuacionAsistenciaBean.C_IDINSTITUCIONJUZGADO      , b.getIdInstitucionJuzgado());
+			UtilidadesHash.set(htData, ScsActuacionAsistenciaBean.C_IDCOMISARIA               , b.getIdComisaria());
+			UtilidadesHash.set(htData, ScsActuacionAsistenciaBean.C_IDINSTITUCIONCOMISARIA	  , b.getIdInstitucionComisaria());
+			UtilidadesHash.set(htData, ScsActuacionAsistenciaBean.C_IDTIPOACTUACION			  , b.getIdTipoActuacion());
+			UtilidadesHash.set(htData, ScsActuacionAsistenciaBean.C_IDTIPOASISTENCIA	  	  , b.getIdTipoAsistencia());
+			UtilidadesHash.set(htData, ScsActuacionAsistenciaBean.C_IDPRISION			  	  , b.getIdPrision());
+			UtilidadesHash.set(htData, ScsActuacionAsistenciaBean.C_IDINSTITUCIONPRISION	  , b.getIdInstitucionPrision());
+			UtilidadesHash.set(htData, ScsActuacionAsistenciaBean.C_USUMODIFICACION	  		  , b.getUsuMod());
+			UtilidadesHash.set(htData, ScsActuacionAsistenciaBean.C_FECHAMODIFICACION		  , b.getFechaMod());
+			UtilidadesHash.set(htData, ScsActuacionAsistenciaBean.C_NIG						  , b.getNIG());
 		}
 		catch (Exception e){
 			 throw new ClsExceptions(e,"EXCEPCION EN TRANSFORMAR EL BEAN A HASHTABLE");
@@ -533,5 +536,65 @@ public class ScsActuacionAsistenciaAdm extends MasterBeanAdministrador {
         }
         return new Integer(valor);        
     }
+	public Hashtable<String , Object> actualizaHashActuacionAsistenciaParaHistorico(Hashtable<String, Object> actuacionAsistenciaHashtable,UsrBean usr) throws ClsExceptions{
+		
+		Map<String,Hashtable<String, Object>> fksAsistenciaMap = new HashMap<String, Hashtable<String,Object>>(); 
+		//Como el turno es obligarotio
+		Hashtable<String, Object> fksAsistenciaHashtable = new Hashtable<String, Object>();
+		if(actuacionAsistenciaHashtable.get(ScsActuacionAsistenciaBean.C_IDTIPOACTUACION)!=null && !actuacionAsistenciaHashtable.get(ScsActuacionAsistenciaBean.C_IDTIPOACTUACION).toString().equals("")){
+			fksAsistenciaHashtable = new Hashtable<String, Object>();
+			fksAsistenciaHashtable.put("TABLA_FK", ScsTipoActuacionBean.T_NOMBRETABLA);
+			fksAsistenciaHashtable.put("SALIDA_FK", ScsTipoActuacionBean.C_DESCRIPCION);
+			fksAsistenciaHashtable.put(ScsTipoActuacionBean.C_IDINSTITUCION, actuacionAsistenciaHashtable.get(ScsActuacionAsistenciaBean.C_IDINSTITUCION));
+			fksAsistenciaHashtable.put(ScsTipoActuacionBean.C_IDTIPOACTUACION, actuacionAsistenciaHashtable.get(ScsActuacionAsistenciaBean.C_IDTIPOACTUACION));
+			fksAsistenciaHashtable.put(ScsTipoActuacionBean.C_IDTIPOASISTENCIA, actuacionAsistenciaHashtable.get(ScsActuacionAsistenciaBean.C_IDTIPOASISTENCIA));
+			fksAsistenciaMap.put(ScsActuacionAsistenciaBean.C_IDTIPOACTUACION,fksAsistenciaHashtable);
+		}
+		
+		if(actuacionAsistenciaHashtable.get(ScsActuacionAsistenciaBean.C_IDJUZGADO)!=null && !actuacionAsistenciaHashtable.get(ScsActuacionAsistenciaBean.C_IDJUZGADO).toString().equals("")){
+			
+			fksAsistenciaHashtable = new Hashtable<String, Object>();
+			fksAsistenciaHashtable.put("TABLA_FK", ScsJuzgadoBean.T_NOMBRETABLA);
+			fksAsistenciaHashtable.put("SALIDA_FK", ScsJuzgadoBean.C_NOMBRE);
+			fksAsistenciaHashtable.put(ScsJuzgadoBean.C_IDINSTITUCION, actuacionAsistenciaHashtable.get(ScsActuacionAsistenciaBean.C_IDINSTITUCION));
+			fksAsistenciaHashtable.put(ScsJuzgadoBean.C_IDJUZGADO,actuacionAsistenciaHashtable.get(ScsActuacionAsistenciaBean.C_IDJUZGADO));
+			fksAsistenciaMap.put(ScsActuacionAsistenciaBean.C_IDJUZGADO,fksAsistenciaHashtable);
+			
+		}
+		if(actuacionAsistenciaHashtable.get(ScsActuacionAsistenciaBean.C_IDCOMISARIA)!=null && !actuacionAsistenciaHashtable.get(ScsActuacionAsistenciaBean.C_IDCOMISARIA).toString().equals("")){
+			fksAsistenciaHashtable = new Hashtable<String, Object>();
+			fksAsistenciaHashtable.put("TABLA_FK", ScsComisariaBean.T_NOMBRETABLA);
+			fksAsistenciaHashtable.put("SALIDA_FK", ScsComisariaBean.C_NOMBRE);
+			fksAsistenciaHashtable.put(ScsComisariaBean.C_IDINSTITUCION, actuacionAsistenciaHashtable.get(ScsActuacionAsistenciaBean.C_IDINSTITUCIONCOMISARIA));
+			fksAsistenciaHashtable.put(ScsComisariaBean.C_IDCOMISARIA,actuacionAsistenciaHashtable.get(ScsActuacionAsistenciaBean.C_IDCOMISARIA));
+			fksAsistenciaMap.put(ScsActuacionAsistenciaBean.C_IDCOMISARIA,fksAsistenciaHashtable);
+		}
+		if(actuacionAsistenciaHashtable.get(ScsActuacionAsistenciaBean.C_IDPRISION)!=null && !actuacionAsistenciaHashtable.get(ScsActuacionAsistenciaBean.C_IDPRISION).toString().equals("")){
+			fksAsistenciaHashtable = new Hashtable<String, Object>();
+			fksAsistenciaHashtable.put("TABLA_FK", ScsPrisionBean.T_NOMBRETABLA);
+			fksAsistenciaHashtable.put("SALIDA_FK", ScsPrisionBean.C_NOMBRE);
+			fksAsistenciaHashtable.put(ScsActuacionAsistenciaBean.C_IDPRISION, actuacionAsistenciaHashtable.get(ScsActuacionAsistenciaBean.C_IDPRISION));
+			fksAsistenciaHashtable.put(ScsActuacionAsistenciaBean.C_IDINSTITUCION, actuacionAsistenciaHashtable.get(ScsActuacionAsistenciaBean.C_IDINSTITUCION));
+			fksAsistenciaMap.put(ScsActuacionAsistenciaBean.C_IDPRISION,fksAsistenciaHashtable);
+		}
+		//aQUI METEMOS EL COSTE FIJO QUE ES OBLIGATORIO
+//		if(actuacionAsistenciaHashtable.get(ScsActuacionAsistenciaBean.C_IDTIPOASISTENCIA)!=null && !actuacionAsistenciaHashtable.get(ScsActuacionAsistenciaBean.C_IDTIPOASISTENCIA).toString().equals("")){
+			fksAsistenciaHashtable = new Hashtable<String, Object>();
+			fksAsistenciaHashtable.put("TABLA_FK","SCS_ACTUACIONASISTCOSTEFIJO TIPO,SCS_COSTEFIJO COSTE");
+			fksAsistenciaHashtable.put("SALIDA_FK", "DESCRIPCION");
+			fksAsistenciaHashtable.put("TIPO.IDTIPOACTUACION", actuacionAsistenciaHashtable.get(ScsActuacionAsistenciaBean.C_IDTIPOACTUACION));
+			fksAsistenciaHashtable.put("TIPO.IDINSTITUCION", actuacionAsistenciaHashtable.get(ScsActuacionAsistenciaBean.C_IDINSTITUCION));
+			fksAsistenciaHashtable.put("TIPO.ANIO", actuacionAsistenciaHashtable.get(ScsActuacionAsistenciaBean.C_ANIO));
+			fksAsistenciaHashtable.put("TIPO.NUMERO", actuacionAsistenciaHashtable.get(ScsActuacionAsistenciaBean.C_NUMERO));
+			fksAsistenciaHashtable.put("TIPO.IDACTUACION", actuacionAsistenciaHashtable.get(ScsActuacionAsistenciaBean.C_IDACTUACION));
+			fksAsistenciaHashtable.put("TIPO.IDINSTITUCION", "COSTE.IDINSTITUCION");
+			fksAsistenciaHashtable.put("TIPO.IDCOSTEFIJO", "COSTE.IDCOSTEFIJO");
+			fksAsistenciaMap.put("COSTEFIJO",fksAsistenciaHashtable);
+			actuacionAsistenciaHashtable.put("COSTEFIJO", "");
+//		}
+		
+		actuacionAsistenciaHashtable.put("fks", fksAsistenciaMap);
+		return actuacionAsistenciaHashtable;
+	}
 
 }

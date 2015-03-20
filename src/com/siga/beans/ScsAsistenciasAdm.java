@@ -2,8 +2,10 @@
 package com.siga.beans;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Map;
 import java.util.Vector;
 
 import org.redabogacia.sigaservices.app.AppConstants;
@@ -862,24 +864,101 @@ public class ScsAsistenciasAdm extends MasterBeanAdministrador {
 	public void insertarNuevaAsistencia(String idInstitucion, String anio, String numero, String fecha, String idTurno, String idGuardia, String idTipoAsistencia, String idTipoAsistenciaColegio, String idPersona, String estadoAsistencia, String fechaSolicitud,short idOrigenAsistencia) throws ClsExceptions
 	{
 		
-			Hashtable hash = new Hashtable();
-			hash.put(ScsAsistenciasBean.C_IDINSTITUCION,idInstitucion);
-			hash.put(ScsAsistenciasBean.C_ANIO,anio);
-			hash.put(ScsAsistenciasBean.C_NUMERO,numero);
-			hash.put(ScsAsistenciasBean.C_FECHAHORA,fecha);
-			hash.put(ScsAsistenciasBean.C_IDTURNO,idTurno);
-			hash.put(ScsAsistenciasBean.C_IDGUARDIA,idGuardia);
-			hash.put(ScsAsistenciasBean.C_IDTIPOASISTENCIA,idTipoAsistencia);
-			hash.put(ScsAsistenciasBean.C_IDTIPOASISTENCIACOLEGIO,idTipoAsistenciaColegio);
-			hash.put(ScsAsistenciasBean.C_IDPERSONACOLEGIADO,idPersona);
-			hash.put(ScsAsistenciasBean.C_IDESTADOASISTENCIA,estadoAsistencia);
-			hash.put(ScsAsistenciasBean.C_FECHAESTADOASISTENCIA,fecha);
-			hash.put(ScsAsistenciasBean.C_FECHASOLICITUD,fechaSolicitud);
-			hash.put(ScsAsistenciasBean.C_IDORIGENASISTENCIA,idOrigenAsistencia);
+			Hashtable asistenciaHashtable = new Hashtable();
+			asistenciaHashtable.put(ScsAsistenciasBean.C_IDINSTITUCION,idInstitucion);
+			asistenciaHashtable.put(ScsAsistenciasBean.C_ANIO,anio);
+			asistenciaHashtable.put(ScsAsistenciasBean.C_NUMERO,numero);
+			asistenciaHashtable.put(ScsAsistenciasBean.C_FECHAHORA,fecha);
+			asistenciaHashtable.put(ScsAsistenciasBean.C_IDTURNO,idTurno);
+			asistenciaHashtable.put(ScsAsistenciasBean.C_IDGUARDIA,idGuardia);
+			asistenciaHashtable.put(ScsAsistenciasBean.C_IDTIPOASISTENCIA,idTipoAsistencia);
+			asistenciaHashtable.put(ScsAsistenciasBean.C_IDTIPOASISTENCIACOLEGIO,idTipoAsistenciaColegio);
+			asistenciaHashtable.put(ScsAsistenciasBean.C_IDPERSONACOLEGIADO,idPersona);
+			asistenciaHashtable.put(ScsAsistenciasBean.C_IDESTADOASISTENCIA,estadoAsistencia);
+			asistenciaHashtable.put(ScsAsistenciasBean.C_FECHAESTADOASISTENCIA,fecha);
+			asistenciaHashtable.put(ScsAsistenciasBean.C_FECHASOLICITUD,fechaSolicitud);
+			asistenciaHashtable.put(ScsAsistenciasBean.C_IDORIGENASISTENCIA,idOrigenAsistencia);
 			
-			if(!this.insert(hash))
+			if(!this.insert(asistenciaHashtable))
 				throw new ClsExceptions(this.getError());
+			if(this.usrbean.isLetrado()){
+				StringBuffer motivo = new StringBuffer();
+				motivo.append(UtilidadesString.getMensajeIdioma(this.usrbean, "gratuita.generalDesigna.literal.asistencia"));
+				motivo.append(" ");
+				motivo.append(anio);
+				motivo.append("/");
+				motivo.append(numero);
+				Map<String,Hashtable<String, Object>> fksActuacionMap = new HashMap<String, Hashtable<String,Object>>(); 
+				//Como el turno es obligarotio
+				Hashtable<String, Object> fksActuacionHashtable = new Hashtable<String, Object>();
+				fksActuacionHashtable.put("TABLA_FK", ScsTurnoBean.T_NOMBRETABLA);
+				fksActuacionHashtable.put("SALIDA_FK", ScsTurnoBean.C_NOMBRE);
+				fksActuacionHashtable.put(ScsTurnoBean.C_IDINSTITUCION, idInstitucion);
+				fksActuacionHashtable.put(ScsTurnoBean.C_IDTURNO, idTurno);
+				fksActuacionMap.put(ScsAsistenciasBean.C_IDTURNO,fksActuacionHashtable);
+				
+				fksActuacionHashtable = new Hashtable<String, Object>();
+				fksActuacionHashtable.put("TABLA_FK", ScsGuardiasTurnoBean.T_NOMBRETABLA);
+				fksActuacionHashtable.put("SALIDA_FK", ScsGuardiasTurnoBean.C_NOMBRE);
+				fksActuacionHashtable.put(ScsGuardiasTurnoBean.C_IDINSTITUCION, idInstitucion);
+				fksActuacionHashtable.put(ScsGuardiasTurnoBean.C_IDTURNO, idTurno);
+				fksActuacionHashtable.put(ScsGuardiasTurnoBean.C_IDGUARDIA, idGuardia);
+				fksActuacionMap.put(ScsAsistenciasBean.C_IDGUARDIA,fksActuacionHashtable);
+				
+				fksActuacionHashtable = new Hashtable<String, Object>();
+				fksActuacionHashtable.put("TABLA_FK", ScsTipoAsistenciaColegioBean.T_NOMBRETABLA);
+				fksActuacionHashtable.put("SALIDA_FK", ScsTipoAsistenciaColegioBean.C_DESCRIPCION);
+				fksActuacionHashtable.put(ScsTipoAsistenciaColegioBean.C_IDINSTITUCION, idInstitucion);
+				fksActuacionHashtable.put(ScsTipoAsistenciaColegioBean.C_IDTIPOASISTENCIACOLEGIO, idTipoAsistenciaColegio);
+				fksActuacionMap.put(ScsAsistenciasBean.C_IDTIPOASISTENCIACOLEGIO,fksActuacionHashtable);
+	
+				
+				asistenciaHashtable.put("fks", fksActuacionMap);
+
+				CenHistoricoAdm admHis = new CenHistoricoAdm (this.usrbean);
+				boolean isInsertado = admHis.auditoriaColegiados(motivo.toString(), ClsConstants.TIPO_CAMBIO_HISTORICO_ASISTENCIAALTA ,asistenciaHashtable, 
+						null, this.getCamposActualizablesBean(),getListCamposOcultarHistoricoAltaAsistencia(), CenHistoricoAdm.ACCION_INSERT, usrbean.getLanguage(), false); 
+			}
+			
 		
+	}
+	private List<String> getListCamposOcultarHistoricoAltaAsistencia(){
+		List<String> ocultarClaveList = new ArrayList<String>();
+		ocultarClaveList.add(ScsAsistenciasBean.C_IDINSTITUCION);
+		ocultarClaveList.add(ScsAsistenciasBean.C_IDTIPOASISTENCIA);  
+		ocultarClaveList.add(ScsAsistenciasBean.C_OBSERVACIONES);          
+		ocultarClaveList.add(ScsAsistenciasBean.C_INCIDENCIAS);            
+		ocultarClaveList.add(ScsAsistenciasBean.C_FECHAANULACION);         
+		ocultarClaveList.add(ScsAsistenciasBean.C_MOTIVOSANULACION);       
+		ocultarClaveList.add(ScsAsistenciasBean.C_DELITOSIMPUTADOS);       
+		ocultarClaveList.add(ScsAsistenciasBean.C_CONTRARIOS);             
+		ocultarClaveList.add(ScsAsistenciasBean.C_DATOSDEFENSAJURIDICA);   
+		ocultarClaveList.add(ScsAsistenciasBean.C_FECHACIERRE);            
+		ocultarClaveList.add(ScsAsistenciasBean.C_IDPERSONACOLEGIADO);     
+		ocultarClaveList.add(ScsAsistenciasBean.C_IDPERSONAJG);            
+		ocultarClaveList.add(ScsAsistenciasBean.C_FECHAMODIFICACION);      
+		ocultarClaveList.add(ScsAsistenciasBean.C_USUMODIFICACION);
+		ocultarClaveList.add(ScsAsistenciasBean.C_DESIGNA_ANIO);
+		ocultarClaveList.add(ScsAsistenciasBean.C_DESIGNA_NUMERO);
+		ocultarClaveList.add(ScsAsistenciasBean.C_DESIGNA_TURNO);
+		ocultarClaveList.add(ScsAsistenciasBean.C_FACTURADO);
+		ocultarClaveList.add(ScsAsistenciasBean.C_PAGADO);
+		ocultarClaveList.add(ScsAsistenciasBean.C_IDFACTURACION);
+		ocultarClaveList.add(ScsAsistenciasBean.C_NUMERODILIGENCIA);
+		ocultarClaveList.add(ScsAsistenciasBean.C_COMISARIA);
+		ocultarClaveList.add(ScsAsistenciasBean.C_COMISARIA_IDINSTITUCION);
+		ocultarClaveList.add(ScsAsistenciasBean.C_NUMEROPROCEDIMIENTO);
+		ocultarClaveList.add(ScsAsistenciasBean.C_JUZGADO);
+		ocultarClaveList.add(ScsAsistenciasBean.C_JUZGADO_IDINSTITUCION);
+		ocultarClaveList.add(ScsAsistenciasBean.C_EJGIDTIPOEJG);
+		ocultarClaveList.add(ScsAsistenciasBean.C_EJGANIO);
+		ocultarClaveList.add(ScsAsistenciasBean.C_EJGNUMERO);
+		ocultarClaveList.add(ScsAsistenciasBean.C_NIG);
+		ocultarClaveList.add(ScsAsistenciasBean.C_IDPRETENSION);
+		ocultarClaveList.add(ScsAsistenciasBean.C_IDESTADOASISTENCIA);
+		ocultarClaveList.add(ScsAsistenciasBean.C_IDORIGENASISTENCIA);
+		
+		return ocultarClaveList;
 	}
 
 	public Hashtable getCabeceraGuardia(Hashtable hashAsistencia) throws ClsExceptions,SIGAException {
@@ -2038,6 +2117,115 @@ public  List<ScsAsistenciasBean> getAsistenciasVolantesExpres(VolantesExpressVo 
 		
 		
 	}
+	public boolean updateDirectHistorico(Hashtable asistenciaHashtable, String[] claves, String [] campos,Hashtable asistenciaOriginalHashtable) throws ClsExceptions{
+		
+		boolean isActualizado = this.updateDirect(asistenciaHashtable,  claves, campos);
+		CenHistoricoAdm cenHistoricoAdm = new CenHistoricoAdm(usrbean);
+		Hashtable historicoHashtable = new Hashtable();
+		StringBuffer motivo = new StringBuffer();
+		motivo.append(UtilidadesString.getMensajeIdioma(this.usrbean, "gratuita.generalDesigna.literal.asistencia"));
+		motivo.append(" ");
+		motivo.append(asistenciaHashtable.get(ScsAsistenciasBean.C_ANIO));
+		motivo.append("/");
+		motivo.append(asistenciaHashtable.get(ScsAsistenciasBean.C_NUMERO));
+		historicoHashtable.put(CenHistoricoBean.C_MOTIVO, motivo.toString());
+		CenHistoricoAdm admHis = new CenHistoricoAdm (this.usrbean);
+		if(isActualizado)
+			isActualizado = admHis.auditoriaColegiados(motivo.toString(), ClsConstants.TIPO_CAMBIO_HISTORICO_ASISTENCIAMODIFICACION,asistenciaHashtable, 
+				asistenciaOriginalHashtable, campos,getListCamposOcultarHistoricoModificarDatosGeneralesAsistencia(), CenHistoricoAdm.ACCION_UPDATE, usrbean.getLanguage(), false); 
+		
+		return isActualizado;
+		
+		
+	}
+	public boolean updateDirecConHistoricoInsert(String[] claves, String [] campos,Hashtable asistenciaHashtable) throws ClsExceptions{
+		
+		boolean isInsertado = this.updateDirect(asistenciaHashtable,  claves, campos);
+		CenHistoricoAdm cenHistoricoAdm = new CenHistoricoAdm(usrbean);
+		Hashtable historicoHashtable = new Hashtable();
+		StringBuffer motivo = new StringBuffer();
+		motivo.append(UtilidadesString.getMensajeIdioma(this.usrbean, "gratuita.generalDesigna.literal.asistencia"));
+		motivo.append(" ");
+		motivo.append(asistenciaHashtable.get(ScsAsistenciasBean.C_ANIO));
+		motivo.append("/");
+		motivo.append(asistenciaHashtable.get(ScsAsistenciasBean.C_NUMERO));
+		historicoHashtable.put(CenHistoricoBean.C_MOTIVO, motivo.toString());
+		CenHistoricoAdm admHis = new CenHistoricoAdm (this.usrbean);
+		if(isInsertado)
+			isInsertado = admHis.auditoriaColegiados(motivo.toString(), ClsConstants.TIPO_CAMBIO_HISTORICO_ASISTENCIAMODIFICACION,asistenciaHashtable, 
+				null, campos,new ArrayList<String>(), CenHistoricoAdm.ACCION_INSERT, usrbean.getLanguage(), false); 
+		
+		return isInsertado;
+		
+		
+	}
+	
+	private List<String> getListCamposOcultarHistoricoModificarDatosGeneralesAsistencia(){
+		List<String> ocultarClaveList = new ArrayList<String>();
+		ocultarClaveList.add(ScsAsistenciasBean.C_IDESTADOASISTENCIA);
+		ocultarClaveList.add(ScsAsistenciasBean.C_USUMODIFICACION);
+		ocultarClaveList.add(ScsAsistenciasBean.C_FECHAMODIFICACION);
+		ocultarClaveList.add(ScsAsistenciasBean.C_IDTIPOASISTENCIA);
+		ocultarClaveList.add(ScsAsistenciasBean.C_FECHAANULACION);
+		ocultarClaveList.add(ScsAsistenciasBean.C_COMISARIA_IDINSTITUCION);
+		ocultarClaveList.add(ScsAsistenciasBean.C_JUZGADO_IDINSTITUCION);
+		ocultarClaveList.add(ScsAsistenciasBean.C_FECHAESTADOASISTENCIA);
+		return ocultarClaveList;
+	}
+	public Hashtable<String , Object> getHashAsistenciaOriginalParaHistorico(Hashtable<String, Object> asistenciaHashtable,boolean actualizar,UsrBean usr) throws ClsExceptions{
+		ScsAsistenciasAdm scsAsistenciaAdm = new ScsAsistenciasAdm(usr);
+		Vector asistenciaPKVector =  scsAsistenciaAdm.selectByPK(asistenciaHashtable);
+		ScsAsistenciasBean scsAsistenciaBean = (ScsAsistenciasBean) asistenciaPKVector.get(0);
+		Hashtable asistenciaOriginalHashtable = scsAsistenciaBean.getOriginalHash();
+		if(actualizar)
+			asistenciaOriginalHashtable = actualizaHashAsistenciaParaHistorico(asistenciaOriginalHashtable,usr);
+		return asistenciaOriginalHashtable;
+	}
+	
+	public Hashtable<String , Object> actualizaHashAsistenciaParaHistorico(Hashtable<String, Object> asistenciaHashtable,UsrBean usr) throws ClsExceptions{
+		
+		Map<String,Hashtable<String, Object>> fksAsistenciaMap = new HashMap<String, Hashtable<String,Object>>(); 
+		//Como el turno es obligarotio
+		Hashtable<String, Object> fksAsistenciaHashtable = new Hashtable<String, Object>();
+		if(asistenciaHashtable.get(ScsAsistenciasBean.C_IDTIPOASISTENCIACOLEGIO)!=null && !asistenciaHashtable.get(ScsAsistenciasBean.C_IDTIPOASISTENCIACOLEGIO).toString().equals("")){
+			fksAsistenciaHashtable = new Hashtable<String, Object>();
+			fksAsistenciaHashtable.put("TABLA_FK", ScsTipoAsistenciaColegioBean.T_NOMBRETABLA);
+			fksAsistenciaHashtable.put("SALIDA_FK", ScsTipoAsistenciaColegioBean.C_DESCRIPCION);
+			fksAsistenciaHashtable.put(ScsTipoAsistenciaColegioBean.C_IDINSTITUCION, asistenciaHashtable.get(ScsAsistenciasBean.C_IDINSTITUCION));
+			fksAsistenciaHashtable.put(ScsTipoAsistenciaColegioBean.C_IDTIPOASISTENCIACOLEGIO, asistenciaHashtable.get(ScsAsistenciasBean.C_IDTIPOASISTENCIACOLEGIO));
+			fksAsistenciaMap.put(ScsAsistenciasBean.C_IDTIPOASISTENCIACOLEGIO,fksAsistenciaHashtable);
+		}
+		
+		if(asistenciaHashtable.get(ScsAsistenciasBean.C_JUZGADO)!=null && !asistenciaHashtable.get(ScsAsistenciasBean.C_JUZGADO).toString().equals("")){
+			
+			fksAsistenciaHashtable = new Hashtable<String, Object>();
+			fksAsistenciaHashtable.put("TABLA_FK", ScsJuzgadoBean.T_NOMBRETABLA);
+			fksAsistenciaHashtable.put("SALIDA_FK", ScsJuzgadoBean.C_NOMBRE);
+			fksAsistenciaHashtable.put(ScsJuzgadoBean.C_IDINSTITUCION, asistenciaHashtable.get(ScsAsistenciasBean.C_IDINSTITUCION));
+			fksAsistenciaHashtable.put(ScsJuzgadoBean.C_IDJUZGADO,asistenciaHashtable.get(ScsAsistenciasBean.C_JUZGADO));
+			fksAsistenciaMap.put(ScsAsistenciasBean.C_JUZGADO,fksAsistenciaHashtable);
+			
+		}
+		if(asistenciaHashtable.get(ScsAsistenciasBean.C_COMISARIA)!=null && !asistenciaHashtable.get(ScsAsistenciasBean.C_COMISARIA).toString().equals("")){
+			fksAsistenciaHashtable = new Hashtable<String, Object>();
+			fksAsistenciaHashtable.put("TABLA_FK", ScsComisariaBean.T_NOMBRETABLA);
+			fksAsistenciaHashtable.put("SALIDA_FK", ScsComisariaBean.C_NOMBRE);
+			fksAsistenciaHashtable.put(ScsComisariaBean.C_IDINSTITUCION, asistenciaHashtable.get(ScsAsistenciasBean.C_COMISARIA_IDINSTITUCION));
+			fksAsistenciaHashtable.put(ScsComisariaBean.C_IDCOMISARIA,asistenciaHashtable.get(ScsAsistenciasBean.C_COMISARIA));
+			fksAsistenciaMap.put(ScsAsistenciasBean.C_COMISARIA,fksAsistenciaHashtable);
+		}
+		if(asistenciaHashtable.get(ScsAsistenciasBean.C_IDPRETENSION)!=null && !asistenciaHashtable.get(ScsAsistenciasBean.C_IDPRETENSION).toString().equals("")){
+			fksAsistenciaHashtable = new Hashtable<String, Object>();
+			fksAsistenciaHashtable.put("TABLA_FK", "SCS_PRETENSION");
+			fksAsistenciaHashtable.put("SALIDA_FK", "DESCRIPCION");
+			fksAsistenciaHashtable.put(ScsActuacionDesignaBean.C_IDPRETENSION, asistenciaHashtable.get(ScsAsistenciasBean.C_IDPRETENSION));
+			fksAsistenciaHashtable.put(ScsActuacionDesignaBean.C_IDINSTITUCION, asistenciaHashtable.get(ScsAsistenciasBean.C_IDINSTITUCION));
+			fksAsistenciaMap.put(ScsAsistenciasBean.C_IDPRETENSION,fksAsistenciaHashtable);
+		}
+		asistenciaHashtable.put("fks", fksAsistenciaMap);
+		return asistenciaHashtable;
+	}
+	
 	private void updateAsistenciaVolanteExpress(ScsAsistenciasBean asistencia) throws ClsExceptions 
 	{
 		String claves [] ={ScsAsistenciasBean.C_ANIO,ScsAsistenciasBean.C_NUMERO, ScsAsistenciasBean.C_IDINSTITUCION};

@@ -283,7 +283,11 @@ public class ContAnulDeliJuriAsistenciaAction extends MasterAction {
 			{
 				String[] campos = {ScsAsistenciasBean.C_DATOSDEFENSAJURIDICA};
 				hash.put(ScsAsistenciasBean.C_DATOSDEFENSAJURIDICA,miForm.getDatosDefensaJuridica());
-				scsAsistenciaAdm.updateDirect(hash,null,campos);
+				if(usr.isLetrado()){
+					Hashtable<String, Object> asistenciaOriginalHashtable = scsAsistenciaAdm.getHashAsistenciaOriginalParaHistorico(hash,false, usr);
+					scsAsistenciaAdm.updateDirectHistorico(hash,null,campos,asistenciaOriginalHashtable);
+				}else
+					scsAsistenciaAdm.updateDirect(hash,null,campos);
 			}
 			else
 			{

@@ -1,7 +1,10 @@
 package com.siga.gratuita.action;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Hashtable;
 import java.util.List;
+import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -10,11 +13,16 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
+import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.AjaxCollectionXmlBuilder;
 import com.siga.Utilidades.UtilidadesString;
+import com.siga.beans.CenHistoricoAdm;
+import com.siga.beans.CenHistoricoBean;
 import com.siga.beans.ScsActuacionAsistCosteFijoAdm;
+import com.siga.beans.ScsActuacionAsistenciaAdm;
+import com.siga.beans.ScsActuacionAsistenciaBean;
 import com.siga.beans.ScsAsistenciasAdm;
 import com.siga.beans.ScsAsistenciasBean;
 import com.siga.comun.vos.ValueKeyVO;
@@ -492,6 +500,56 @@ public class ActuacionesAsistenciaAction extends MasterAction {
 			
 			asistenciasService.insertarActuacionAsistencia(actuacionAsistenciaFormEdicion, usrBean);
 			
+			
+			if(usrBean.isLetrado()){
+			
+				CenHistoricoAdm cenHistoricoAdm = new CenHistoricoAdm(usrBean);
+				Hashtable historicoHashtable = new Hashtable();
+				
+				
+				
+				StringBuffer motivo = new StringBuffer();
+				motivo.append(UtilidadesString.getMensajeIdioma(usrBean, "gratuita.generalDesigna.literal.asistencia"));
+				motivo.append(" ");
+				motivo.append(actuacionAsistenciaFormEdicion.getAnio());
+				motivo.append("/");
+				motivo.append(actuacionAsistenciaFormEdicion.getNumero());
+				historicoHashtable.put(CenHistoricoBean.C_MOTIVO, motivo.toString());
+				
+				Hashtable actuacionAsistenciaHashtable = new Hashtable();
+				actuacionAsistenciaHashtable.put(ScsActuacionAsistenciaBean.C_ANIO,actuacionAsistenciaFormEdicion.getAnio());
+				actuacionAsistenciaHashtable.put(ScsActuacionAsistenciaBean.C_NUMERO,actuacionAsistenciaFormEdicion.getNumero());
+				actuacionAsistenciaHashtable.put(ScsActuacionAsistenciaBean.C_IDINSTITUCION,actuacionAsistenciaFormEdicion.getIdInstitucion());
+				actuacionAsistenciaHashtable.put(ScsActuacionAsistenciaBean.C_IDACTUACION,actuacionAsistenciaFormEdicion.getIdActuacion());
+				
+				
+				ScsActuacionAsistenciaAdm scsActuacionAsistenciaAdm = new ScsActuacionAsistenciaAdm(usrBean);
+				Vector actuacionAsistenciaPKVector =  scsActuacionAsistenciaAdm.selectByPK(actuacionAsistenciaHashtable);
+				ScsActuacionAsistenciaBean actuacionAsistenciaBean = (ScsActuacionAsistenciaBean) actuacionAsistenciaPKVector.get(0);
+				
+				actuacionAsistenciaHashtable =   scsActuacionAsistenciaAdm.beanToHashTable(actuacionAsistenciaBean);
+				actuacionAsistenciaHashtable = scsActuacionAsistenciaAdm.actualizaHashActuacionAsistenciaParaHistorico(actuacionAsistenciaHashtable,usrBean);
+				List<String> clavesList =  new ArrayList<String>();
+				clavesList.addAll(Arrays.asList(scsActuacionAsistenciaAdm.getCamposBean()));
+				
+				clavesList.add("COSTEFIJO");
+				String []clavesStrings = new String[clavesList.size()];
+				clavesList.toArray(clavesStrings);
+				try {
+					//COMO NO ESTAMOS EN TRANSACCION CON LO DE ARRIBA , SI FALLA LA INSERCION DEL HISTORICO BORRAMOS LA ACTUACION
+					boolean	isInsertado = cenHistoricoAdm.auditoriaColegiados(motivo.toString(), ClsConstants.TIPO_CAMBIO_HISTORICO_ASISTENCIAALTAACTUACION,
+							actuacionAsistenciaHashtable,null,clavesStrings ,getListCamposOcultarHistorico(), CenHistoricoAdm.ACCION_INSERT, usrBean.getLanguage(), false);
+					
+					if(!isInsertado)
+						throw new Exception();
+				} catch (Exception e) {
+					asistenciasService.borrarActuacionAsistencia(actuacionAsistenciaFormEdicion, usrBean);
+					throw new SIGAException("Error al insertar en histórico");
+				}
+				
+				
+			}
+			
 			actuacionAsistenciaFormEdicion.setModo("abrir");
 			forward = exitoModal("messages.inserted.success",request);
 		} catch (Exception e) {
@@ -503,6 +561,27 @@ public class ActuacionesAsistenciaAction extends MasterAction {
 		
 		
 		
+	}
+	private List<String> getListCamposOcultarHistorico(){
+		List<String> ocultarClaveList = new ArrayList<String>();
+		
+		ocultarClaveList.add(ScsActuacionAsistenciaBean.C_IDINSTITUCION);
+		ocultarClaveList.add(ScsActuacionAsistenciaBean.C_ANIO);
+		ocultarClaveList.add(ScsActuacionAsistenciaBean.C_NUMERO);
+		ocultarClaveList.add(ScsActuacionAsistenciaBean.C_ACUERDOEXTRAJUDICIAL);
+		ocultarClaveList.add(ScsActuacionAsistenciaBean.C_FECHAMODIFICACION);
+		ocultarClaveList.add(ScsActuacionAsistenciaBean.C_USUMODIFICACION);
+		ocultarClaveList.add(ScsActuacionAsistenciaBean.C_FACTURADO);
+		ocultarClaveList.add(ScsActuacionAsistenciaBean.C_PAGADO);
+		ocultarClaveList.add(ScsActuacionAsistenciaBean.C_IDFACTURACION);
+		ocultarClaveList.add(ScsActuacionAsistenciaBean.C_IDINSTITUCIONJUZGADO);
+		ocultarClaveList.add(ScsActuacionAsistenciaBean.C_IDINSTITUCIONCOMISARIA);
+		ocultarClaveList.add(ScsActuacionAsistenciaBean.C_IDINSTITUCIONPRISION);
+		ocultarClaveList.add(ScsActuacionAsistenciaBean.C_LUGAR);
+		ocultarClaveList.add(ScsActuacionAsistenciaBean.C_IDTIPOASISTENCIA);
+		
+
+		return ocultarClaveList;
 	}
 
 	

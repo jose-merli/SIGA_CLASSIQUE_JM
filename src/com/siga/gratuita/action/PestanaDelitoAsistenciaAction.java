@@ -1,6 +1,8 @@
 package com.siga.gratuita.action;
 
+import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Map;
 import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
@@ -13,8 +15,11 @@ import com.atos.utils.ClsExceptions;
 import com.atos.utils.UsrBean;
 import com.siga.beans.ScsAsistenciasAdm;
 import com.siga.beans.ScsAsistenciasBean;
+import com.siga.beans.ScsDelitoBean;
 import com.siga.beans.ScsDelitosAsistenciaAdm;
 import com.siga.beans.ScsDelitosAsistenciaBean;
+import com.siga.beans.ScsDelitosEJGAdm;
+import com.siga.beans.ScsTipoAsistenciaColegioBean;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
@@ -190,9 +195,33 @@ public class PestanaDelitoAsistenciaAction extends MasterAction {
 			beanDelitoAsistencia.setFechaMod("SYSDATE");
 			beanDelitoAsistencia.setUsuMod(new Integer(usr.getUserName()));
 						
-			tx.begin();
-			admDelitoAsistencia.insert(beanDelitoAsistencia);
-			tx.commit();
+			
+			if(usr.isLetrado()){
+				Hashtable<String, Object> asistenciaHashtable = new Hashtable<String, Object>();
+				asistenciaHashtable.put(ScsAsistenciasBean.C_ANIO,anio);
+				asistenciaHashtable.put(ScsAsistenciasBean.C_NUMERO,numero);
+				asistenciaHashtable.put(ScsAsistenciasBean.C_IDINSTITUCION,idInstitucion);
+				
+				asistenciaHashtable.put(ScsDelitosAsistenciaBean.C_IDDELITO,idDelito);
+				ScsAsistenciasAdm scsAsistenciaAdm = new ScsAsistenciasAdm(usr);
+				String[] campos = {ScsDelitosAsistenciaBean.C_IDDELITO};
+				Map<String,Hashtable<String, Object>> fksAsistenciaMap = new HashMap<String, Hashtable<String,Object>>(); 
+				//Como el turno es obligarotio
+				Hashtable<String, Object> fksAsistenciaHashtable = new Hashtable<String, Object>();
+				
+				fksAsistenciaHashtable.put("TABLA_FK", ScsDelitoBean.T_NOMBRETABLA);
+				fksAsistenciaHashtable.put("SALIDA_FK", ScsDelitoBean.C_DESCRIPCION);
+				fksAsistenciaHashtable.put(ScsDelitoBean.C_IDINSTITUCION, idInstitucion);
+				fksAsistenciaHashtable.put(ScsDelitoBean.C_IDDELITO, idDelito);
+				fksAsistenciaMap.put(ScsDelitosAsistenciaBean.C_IDDELITO,fksAsistenciaHashtable);
+				
+				asistenciaHashtable.put("fks", fksAsistenciaMap);
+				tx.begin();
+				admDelitoAsistencia.insertConHistorico(beanDelitoAsistencia,null,campos,asistenciaHashtable);
+				tx.commit();
+			}else
+				admDelitoAsistencia.insert(beanDelitoAsistencia);
+			
 		} catch (Exception e){
 			throwExcp("messages.general.error", new String[] {"modulo.gratuita"}, e, tx); 
 		}
@@ -236,9 +265,31 @@ public class PestanaDelitoAsistenciaAction extends MasterAction {
 			beanDelitoAsistencia.setIdInstitucion(idInstitucion);
 			beanDelitoAsistencia.setNumero(numero);
 						
-			tx.begin();
-			admDelitoAsistencia.delete(beanDelitoAsistencia);
-			tx.commit();
+			if(usr.isLetrado()){
+				Hashtable<String, Object> asistenciaHashtable = new Hashtable<String, Object>();
+				asistenciaHashtable.put(ScsAsistenciasBean.C_ANIO,anio);
+				asistenciaHashtable.put(ScsAsistenciasBean.C_NUMERO,numero);
+				asistenciaHashtable.put(ScsAsistenciasBean.C_IDINSTITUCION,idInstitucion);
+				
+				asistenciaHashtable.put(ScsDelitosAsistenciaBean.C_IDDELITO,idDelito);
+				String[] campos = {ScsDelitosAsistenciaBean.C_IDDELITO};
+				Map<String,Hashtable<String, Object>> fksAsistenciaMap = new HashMap<String, Hashtable<String,Object>>(); 
+				//Como el turno es obligarotio
+				Hashtable<String, Object> fksAsistenciaHashtable = new Hashtable<String, Object>();
+				
+				fksAsistenciaHashtable.put("TABLA_FK", ScsDelitoBean.T_NOMBRETABLA);
+				fksAsistenciaHashtable.put("SALIDA_FK", ScsDelitoBean.C_DESCRIPCION);
+				fksAsistenciaHashtable.put(ScsDelitoBean.C_IDINSTITUCION, idInstitucion);
+				fksAsistenciaHashtable.put(ScsDelitoBean.C_IDDELITO, idDelito);
+				fksAsistenciaMap.put(ScsDelitosAsistenciaBean.C_IDDELITO,fksAsistenciaHashtable);
+				
+				asistenciaHashtable.put("fks", fksAsistenciaMap);
+				tx.begin();
+				admDelitoAsistencia.deleteConHistorico(beanDelitoAsistencia,null,campos,asistenciaHashtable);
+				tx.commit();
+			}else
+				admDelitoAsistencia.delete(beanDelitoAsistencia);
+			
 		} catch (Exception e){
 		    throwExcp("messages.general.error", new String[] {"modulo.gratuita"}, e, tx); 
 		}
@@ -263,10 +314,10 @@ public class PestanaDelitoAsistenciaAction extends MasterAction {
 		PestanaDelitoAsistenciaForm miForm = (PestanaDelitoAsistenciaForm)formulario;		
 		Integer anio, numero, idInstitucion;
 		String delito=null;
-		UserTransaction tx = null;
+		
 		
 		String sEsFichaColegial = (String)request.getParameter("esFichaColegial");
-		
+		UserTransaction tx = null;
 		try {			
 			UsrBean usr=(UsrBean)request.getSession().getAttribute("USRBEAN");
 			tx = usr.getTransaction();
@@ -285,11 +336,20 @@ public class PestanaDelitoAsistenciaAction extends MasterAction {
 			hashAsistencia.put(ScsAsistenciasBean.C_IDINSTITUCION,usr.getLocation());
 			hashAsistencia.put(ScsAsistenciasBean.C_DELITOSIMPUTADOS,delito);
 			
-			Hashtable hashOriginal = (Hashtable)request.getSession().getAttribute("hashAsistenciaOriginal");
+			String[] campos = {ScsAsistenciasBean.C_DELITOSIMPUTADOS};
+
+			if(usr.isLetrado()){
+				Hashtable<String, Object> asistenciaOriginalHashtable = admAsistencias.getHashAsistenciaOriginalParaHistorico(hashAsistencia,false, usr);
+				tx.begin();
+				admAsistencias.updateDirectHistorico(hashAsistencia,null,campos,asistenciaOriginalHashtable);
+				tx.commit();
+			}else
+				admAsistencias.updateDirect(hashAsistencia,null,campos);
 			
-			tx.begin();
-			admAsistencias.update(hashAsistencia,hashOriginal);
-			tx.commit();
+			
+			
+			
+			
 		} catch (Exception e){
 			throwExcp("messages.general.error", new String[] {"modulo.gratuita"}, e, tx); 
 		}
