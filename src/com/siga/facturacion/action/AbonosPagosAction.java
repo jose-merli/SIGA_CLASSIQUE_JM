@@ -376,19 +376,17 @@ public class AbonosPagosAction extends MasterAction {
 			//request.setAttribute("IDCUENTA", registro.get(FacAbonoBean.C_IDCUENTA));
 			//Los abonos SJCS se pagarán a la cuenta SJCS 
 			//Los abonos no SJCS se pagarán a la cuenta no SJCS
-			Integer idpagosJG=0;
+			Integer abonoSjcs=0;
 			if((registro.get(FacAbonoBean.C_IDPAGOSJG)!=null)&&(!registro.get(FacAbonoBean.C_IDPAGOSJG).toString().isEmpty()))
-			{
-				idpagosJG=Integer.parseInt(registro.get(FacAbonoBean.C_IDPAGOSJG).toString());
-			}
-			
+				abonoSjcs=1;
+
 			String  select = "SELECT "+CenCuentasBancariasBean.C_IDCUENTA+" AS ID ,";
 			        select +=" F_SIGA_FORMATOIBAN("+CenCuentasBancariasBean.C_IBAN+") as DESCRIPCION ";
 			        select +=" FROM "+CenCuentasBancariasBean.T_NOMBRETABLA;
 			        select +=" WHERE ";
 					select +=CenCuentasBancariasBean.C_IDINSTITUCION+"="+form.getIdInstitucion();
 					select +=" AND "+CenCuentasBancariasBean.C_IDPERSONA+"="+registro.get(FacAbonoBean.C_IDPERSONA);
-					select +=" AND "+CenCuentasBancariasBean.C_ABONOSJCS+"="+idpagosJG;
+					select +=" AND "+CenCuentasBancariasBean.C_ABONOSJCS+"="+abonoSjcs;
 					select +=" AND "+CenCuentasBancariasBean.C_FECHABAJA+" IS NULL";
 					select +=" AND "+CenCuentasBancariasBean.C_ABONOCARGO+" IN('A','T')";
 					select +=" ORDER BY DESCRIPCION";
