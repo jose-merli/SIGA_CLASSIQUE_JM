@@ -50,14 +50,40 @@ public class CuentasBancariasForm extends MasterForm {
 	String ibanSerie;
 	String bancosCodigo;
 	
+	private String configuracionFicherosEsquema;	
+	private String configuracionFicherosSecuencia;	
+	private String configuracionLugarEsquemaSecuencia;
+	
 	// JPT (19-08-2014): Nuevos valores para la comision
 	String comisionimporte, idTipoIva, comisiondescripcion, comisioncuentacontable;
 	
 //	FIXME Por prisas no hemos creado Formulario de series de facturacion. Deberia ser una lis de Forms 
-//	List<FacSeriefacturacion> seriesFacturacion;	
+//	List<FacSeriefacturacion> seriesFacturacion;
+	
+	
 	
 	public String getNif() {
 		return nif;
+	}
+	public String getConfiguracionFicherosEsquema() {
+		return configuracionFicherosEsquema;
+	}
+	public void setConfiguracionFicherosEsquema(String configuracionFicherosEsquema) {
+		this.configuracionFicherosEsquema = configuracionFicherosEsquema;
+	}
+	public String getConfiguracionFicherosSecuencia() {
+		return configuracionFicherosSecuencia;
+	}
+	public void setConfiguracionFicherosSecuencia(
+			String configuracionFicherosSecuencia) {
+		this.configuracionFicherosSecuencia = configuracionFicherosSecuencia;
+	}
+	public String getConfiguracionLugarEsquemaSecuencia() {
+		return configuracionLugarEsquemaSecuencia;
+	}
+	public void setConfiguracionLugarEsquemaSecuencia(
+			String configuracionLugarEsquemaSecuencia) {
+		this.configuracionLugarEsquemaSecuencia = configuracionLugarEsquemaSecuencia;
 	}
 	public String getComisionimporte() {
 		return comisionimporte;

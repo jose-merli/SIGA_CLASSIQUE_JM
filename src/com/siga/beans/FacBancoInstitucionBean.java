@@ -17,7 +17,7 @@ public class FacBancoInstitucionBean extends MasterBean {
 	private Integer idInstitucion, idsufijosjcs;
 	private String 	bancosCodigo, codBanco, codSucursal, numeroCuenta, fechaBaja, asientoContable, digitoControl, sjcs, iban;	
 	private Double comisionImporte, idTipoIva;
-	private String comisionDescripcion, comisionCuentaContable;
+	private String comisionDescripcion, comisionCuentaContable, configFicherosEsquema, configFicherosSecuencia, configLugarEsquemaSecuencia;
 	
 	/* Nombre tabla */
 	static public String T_NOMBRETABLA = "FAC_BANCOINSTITUCION";
@@ -37,7 +37,10 @@ public class FacBancoInstitucionBean extends MasterBean {
 	static public final String C_COMISIONIMPORTE			= "COMISIONIMPORTE";
 	static public final String C_COMISIONDESCRIPCION		= "COMISIONDESCRIPCION";
 	static public final String C_IDTIPOIVA					= "IDTIPOIVA";
-	static public final String C_COMISIONCUENTACONTABLE		= "COMISIONCUENTACONTABLE";	
+	static public final String C_COMISIONCUENTACONTABLE		= "COMISIONCUENTACONTABLE";
+	static public final String C_CONFIGFICHEROSESQUEMA		= "CONFIGFICHEROSESQUEMA";	
+	static public final String C_CONFIGFICHEROSSECUENCIA	= "CONFIGFICHEROSSECUENCIA";	
+	static public final String C_CONFIGLUGARESQUEMASECUENCIA	= "CONFIGLUGARESQUEMASECUENCIA";	
 
 	/* Métodos get */
 	public String getBancosCodigo() {
@@ -136,5 +139,24 @@ public class FacBancoInstitucionBean extends MasterBean {
 	}
 	public void setComisionCuentaContable(String comisionCuentaContable) {
 		this.comisionCuentaContable = comisionCuentaContable;
-	}	
+	}
+	public String getConfigFicherosEsquema() {
+		return configFicherosEsquema;
+	}
+	public void setConfigFicherosEsquema(String configFicherosEsquema) {
+		this.configFicherosEsquema = configFicherosEsquema;
+	}
+	public String getConfigFicherosSecuencia() {
+		return configFicherosSecuencia;
+	}
+	public void setConfigFicherosSecuencia(String configFicherosSecuencia) {
+		this.configFicherosSecuencia = configFicherosSecuencia;
+	}
+	public String getConfigLugarEsquemaSecuencia() {
+		return configLugarEsquemaSecuencia;
+	}
+	public void setConfigLugarEsquemaSecuencia(String configLugarEsquemaSecuencia) {
+		this.configLugarEsquemaSecuencia = configLugarEsquemaSecuencia;
+	}
+	
 }

@@ -26,6 +26,8 @@
 	String habilesRecibosCOR1 = (String) request.getAttribute("habilesRecibosCOR1");
 	String habilesRecibosB2B = (String) request.getAttribute("habilesRecibosB2B");
 	String accionRecFechas = (String) request.getAttribute("accionInit");
+	
+	String tiposFicherosAdeudo = (String) request.getAttribute("tiposFicherosAdeudo");
 %>
 
 <table class="tablaCampos" align="center" border="0" cellspacing="0" cellpadding="0">
@@ -108,7 +110,7 @@
 			</td>
 
 			<td>
-				<siga:Fecha nombreCampo="fechaRecibosCOR1" posicionX="10" posicionY="10" valorInicial="<%=fechaRecibosCOR1%>" disabled="true" readonly="true"/>
+				<siga:Fecha nombreCampo="fechaRecibosCOR1" posicionX="10" posicionY="10" valorInicial="<%=fechaRecibosCOR1%>" readonly="true"/>
 			</td>
 			
 <%
@@ -132,7 +134,7 @@
 			</td>
 
 			<td>
-				<siga:Fecha nombreCampo="fechaRecibosB2B" posicionX="10" posicionY="10" valorInicial="<%=fechaRecibosB2B%>" disabled="true" readonly="true"/>
+				<siga:Fecha nombreCampo="fechaRecibosB2B" posicionX="10" posicionY="10" valorInicial="<%=fechaRecibosB2B%>" readonly="true"/>
 			</td>
 			
 <%
@@ -175,10 +177,15 @@
 			jQuery('#fechaRecibosB2BSinAsterisco').hide();
 <%
 		}
+
+		if (tiposFicherosAdeudo==null || tiposFicherosAdeudo.equals("0")) {
 %>
 
-		jQuery('#trFechaRecibosCOR1').hide();
-		jQuery('#trFechaRecibosB2B').hide();
+			jQuery('#trFechaRecibosCOR1').hide();
+			jQuery('#trFechaRecibosB2B').hide();
+<%
+		}
+%>		
 	});	
 	
 	function deshabilitar(){
@@ -228,7 +235,7 @@
 				return false;
 			}		
 			
-			/*if (jQuery('#fechaRecibosCOR1').val() == "") {
+			if (jQuery('#fechaRecibosCOR1').val() == "") {
 				alert ('<siga:Idioma key="messages.campos.required"/> <siga:Idioma key="facturacion.fechasficherobancario.fechareciboscor1"/>');
 				return false;
 			}		
@@ -241,7 +248,7 @@
 			if(jQuery('#fechaRecibosRecurrentes').val() == "" || jQuery('#fechaRecibosPrimeros').val() == "" || jQuery('#fechaRecibosCOR1').val() == "" || jQuery('#fechaRecibosB2B').val() == ""){
 				alert('<siga:Idioma key="facturacion.fechasficherobancario.msgerror.fechasminimas"/>');
 				return false;
-			}*/
+			}
 		}			
 		
 		return true;

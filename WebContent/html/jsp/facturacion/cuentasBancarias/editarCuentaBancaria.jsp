@@ -22,6 +22,8 @@
 <%@ page import="java.util.List"%>
 <%@ page import="com.siga.facturacion.form.CuentasBancariasForm"%>
 <%@ page import="java.util.ArrayList"%>
+<%@ page import="com.siga.Utilidades.UtilidadesString"%>
+<%@ page import="com.atos.utils.UsrBean"%>
 
 <!-- HEAD -->
 
@@ -32,13 +34,16 @@
 <script src="<html:rewrite page='/html/js/validacionStruts.js'/>" type="text/javascript"></script>
 
 <% 
+	UsrBean usuario = (UsrBean)request.getSession().getAttribute("USRBEAN");
+
 	List<FacSeriefacturacion> lista = (List<FacSeriefacturacion>) request.getAttribute("seriesFacturacion");
 
 	CuentasBancariasForm formulario = (CuentasBancariasForm) request.getAttribute("CuentasBancariasForm");
 
-	ArrayList vIva = new ArrayList(); // valores originales iva
-	// Cargo valor IVA
-	vIva.add(formulario.getIdTipoIva());
+	ArrayList vIva = new ArrayList(); // valores originales iva	
+	vIva.add(formulario.getIdTipoIva()); // Cargo valor IVA
+	
+	String tiposFicherosAdeudo = (String) request.getAttribute("tiposFicherosAdeudo");
 %>
 
 <script type="text/javascript">
@@ -331,7 +336,7 @@
 			<c:if test="${CuentasBancariasForm.modo != 'insertar' && CuentasBancariasForm.cuentaBanco != null &&  CuentasBancariasForm.cuentaBanco != ''}">	
 				<tr>
 					<td colspan="6">
-						<siga:ConjCampos leyenda="datosCuentaBancaria.literal.formatoAntiguo">
+						<siga:ConjCampos leyenda="datosCuentaBancaria.literal.formatoAntiguo" desplegable="true" oculto="true">
 							<table>
 								<tr>						
 									<td class="labelText" nowrap>C.C.C.&nbsp;(*)</td>
@@ -350,7 +355,7 @@
 				
 			<tr>
 				<td colspan="6">
-					<siga:ConjCampos leyenda="facturacion.cuentasBancarias.comision">
+					<siga:ConjCampos leyenda="facturacion.cuentasBancarias.comision" desplegable="true" oculto="false">
 						<table width="100%" border="0">
 							<tr>
 								<td class="labelText">
@@ -398,7 +403,69 @@
 						</table>
 					</siga:ConjCampos>
 				</td>
-			</tr>
+			</tr>	
+			
+			<tr>
+				<td colspan="6">
+					<siga:ConjCampos leyenda="facturacion.cuentasBancarias.configuracionFicherosAdeudo" desplegable="true" oculto="true">
+						<table border="0">
+						
+<%
+	if (tiposFicherosAdeudo!=null && (tiposFicherosAdeudo.equals("1") || tiposFicherosAdeudo.equals("2"))) {
+%>						
+							<tr>
+								<td class="labelText">
+									<siga:Idioma key="facturacion.cuentasBancarias.configuracionFicherosEsquema.titulo"/>
+								</td>
+								<td>
+									<html:select name="CuentasBancariasForm" property="configuracionFicherosEsquema" styleId="configuracionFicherosEsquema">
+										<html:option value="0"><siga:Idioma key="facturacion.cuentasBancarias.configuracionFicherosEsquema.opcion1"/></html:option>
+										<html:option value="1"><siga:Idioma key="facturacion.cuentasBancarias.configuracionFicherosEsquema.opcion2"/></html:option>
+										<html:option value="2"><siga:Idioma key="facturacion.cuentasBancarias.configuracionFicherosEsquema.opcion3"/></html:option>
+									</html:select>
+								</td>
+							</tr>	
+<% 
+	}
+%>							
+							
+							<tr>
+								<td class="labelText">
+									<siga:Idioma key="facturacion.cuentasBancarias.configuracionFicherosSecuencia.titulo"/>
+								</td>
+								<td>
+									<html:select name="CuentasBancariasForm" property="configuracionFicherosSecuencia" styleId="configuracionFicherosSecuencia">
+										<html:option value="0"><siga:Idioma key="facturacion.cuentasBancarias.configuracionFicherosSecuencia.opcion1"/></html:option>
+										<!-- Lo ha pedido Pamplona R1412_0072 -->
+										<html:option value="1"><siga:Idioma key="facturacion.cuentasBancarias.configuracionFicherosSecuencia.opcion2"/></html:option>
+										<!-- Lo ha pedido Sant Feliu R1501_0007 -->
+										<html:option value="2"><siga:Idioma key="facturacion.cuentasBancarias.configuracionFicherosSecuencia.opcionRCUR"/></html:option>
+									</html:select>
+								</td>
+							</tr>
+							
+<%
+	if (tiposFicherosAdeudo!=null && (tiposFicherosAdeudo.equals("1") || tiposFicherosAdeudo.equals("2"))) {
+%>								
+							<tr>
+								<td class="labelText">
+									<siga:Idioma key="facturacion.cuentasBancarias.configuracionLugarEsquemaSecuencia.titulo"/>
+									<siga:ToolTip id='ayudaLugarEsquemaSecuencia' imagen='/SIGA/html/imagenes/botonAyuda.gif' texto='<%=UtilidadesString.mostrarDatoJSP(UtilidadesString.getMensajeIdioma(usuario,"facturacion.cuentasBancarias.configuracionLugarEsquemaSecuencia.ayuda"))%>' />
+								</td>
+								<td>
+									<html:select name="CuentasBancariasForm" property="configuracionLugarEsquemaSecuencia" styleId="configuracionLugarEsquemaSecuencia">
+										<html:option value="0"><siga:Idioma key="facturacion.cuentasBancarias.configuracionLugarEsquemaSecuencia.opcionBloqueAcreedor"/></html:option>
+										<html:option value="1"><siga:Idioma key="facturacion.cuentasBancarias.configuracionLugarEsquemaSecuencia.opcionRegistroIndividual"/></html:option>
+									</html:select>
+								</td>
+							</tr>		
+<% 
+	}
+%>																			
+						</table>
+					</siga:ConjCampos>
+				</td>
+			</tr>			
 			
 			<tr>
 				<td colspan="6">
@@ -569,7 +636,7 @@
 				var contadorLista = <%=lista.size()%>;
 				var datos = "";
 				
-				for(i=1; i<=contadorLista; i++) {
+				for(var i=1; i<=contadorLista; i++) {
 					var datosFila = jQuery("#comboSufijosSerie_" + i);				
 					var datosSerie = jQuery("#idseriefacturacion_" + i);
 					var datosBanco = jQuery("#bancos_codigo_" + i);

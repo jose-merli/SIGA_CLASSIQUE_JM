@@ -364,13 +364,12 @@ public class ConfirmarFacturacionAction extends MasterAction{
 						ClsLogging.writeFileLog("NO EXISTE EL ZIP, SE PASA A PROGRAMAR SU GENERACION",10);
 						generarFacturaSolo(mapping, formulario, request, response);
 						
-						Hashtable datosProceso = new Hashtable();
-						
-						Hashtable datosHashtable = new Hashtable();
+						Hashtable<String,String> datosHashtable = new Hashtable<String,String>();
 						datosHashtable.put("idInstitucion",idInstitucion);
 						datosHashtable.put("idSerieFacturacion",idSerieFacturacion);
 						datosHashtable.put("idProgramacion",idProgramacion);
-						
+
+						Hashtable<String,Object> datosProceso = new Hashtable<String,Object>();
 						datosProceso.put(SIGASvlProcesoAutomaticoRapido.htNombreProceso,SIGASvlProcesoAutomaticoRapido.procesoIndividualConfirmacionFacturacion);
 						datosProceso.put(SIGASvlProcesoAutomaticoRapido.htNombreDatosHashtable, datosHashtable);
 						
@@ -417,8 +416,7 @@ public class ConfirmarFacturacionAction extends MasterAction{
 			ConfirmarFacturacionForm form 	= (ConfirmarFacturacionForm)formulario;
 			FacFacturacionProgramadaAdm admProgra = new FacFacturacionProgramadaAdm(this.getUserBean(request));
 			
-			Vector ocultos = new Vector();		
-			ocultos = (Vector)form.getDatosTablaOcultos(0);
+			Vector ocultos = form.getDatosTablaOcultos(0);
 			
 			String idSerieFacturacion = (String)ocultos.elementAt(0);			
 			String idProgramacion 	= (String)ocultos.elementAt(1);
@@ -426,10 +424,11 @@ public class ConfirmarFacturacionAction extends MasterAction{
 
 			tx.begin();
 			
-			Hashtable hash = new Hashtable();
+			Hashtable<String,String> hash = new Hashtable<String,String>();
 			hash.put(FacFacturacionProgramadaBean.C_IDINSTITUCION,idInstitucion);
 			hash.put(FacFacturacionProgramadaBean.C_IDSERIEFACTURACION,idSerieFacturacion);
 			hash.put(FacFacturacionProgramadaBean.C_IDPROGRAMACION,idProgramacion);
+			
 			Vector v = admProgra.selectByPK(hash);
 			FacFacturacionProgramadaBean be = null;
 			if (v!=null && v.size()>0) {
@@ -468,13 +467,15 @@ public class ConfirmarFacturacionAction extends MasterAction{
 	 */
 	protected String generarNuevoFicheroAdeudo(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		try {
-			String idInstitucion	 = this.getIDInstitucion(request).toString();
+			UsrBean user = this.getUserBean(request);
+			
+			String idInstitucion = this.getIDInstitucion(request).toString();
 			String fechaActual = GstDate.getHoyJsp(); // Obtengo la fecha actual
 			String fechaPresentacion = fechaActual;		
 			
 			// Calcula las fechas para el fichero bancario a partir de la fecha de presentación
-			FacDisqueteCargosAdm admDisqueteCargos = new FacDisqueteCargosAdm(this.getUserBean(request));	
-			HashMap fechas=admDisqueteCargos.getFechasCargo (idInstitucion, fechaPresentacion);
+			FacDisqueteCargosAdm admDisqueteCargos = new FacDisqueteCargosAdm(user);	
+			Hashtable<String,String> fechas = admDisqueteCargos.getFechasCargo (idInstitucion, fechaPresentacion);
 			
 			// Carga las fechas en la request
 			request.setAttribute("fechaPresentacion",fechaPresentacion);
@@ -490,6 +491,11 @@ public class ConfirmarFacturacionAction extends MasterAction{
 			
 			// Esto sirve para indicar el action que se ha utilizado para utilizar AJAX posteriormente
 			request.setAttribute("accionInit", "FAC_ConfirmarFacturacion");
+			
+			// obtengo el parametro general 'SEPA_TIPO_FICHEROS_ADEUDO
+			GenParametrosAdm admParametros = new GenParametrosAdm(user);
+			String tiposFicherosAdeudo = admParametros.getValor(idInstitucion, "FAC", "SEPA_TIPO_FICHEROS_ADEUDO", "0"); // Por defecto solo n1914
+			request.setAttribute("tiposFicherosAdeudo", tiposFicherosAdeudo);
 		
 		} catch (Exception e) {
 			throw new SIGAException("messages.general.error");
@@ -515,7 +521,7 @@ public class ConfirmarFacturacionAction extends MasterAction{
 			
 			// Obtiene los parametros necesarios para la configuracion de las fechas del fichero bancario 
 			FacDisqueteCargosAdm admDisqueteCargos = new FacDisqueteCargosAdm(user);	
-			HashMap fechas = admDisqueteCargos.getParametrosFechasCargo(idInstitucion);
+			Hashtable<String,String> fechas = admDisqueteCargos.getParametrosFechasCargo(idInstitucion);
 			
 			request.setAttribute("habilesPrimerosRecibos",fechas.get("habilesPrimerosRecibos").toString());
 			request.setAttribute("habilesRecibosRecurrentes",fechas.get("habilesRecibosRecurrentes").toString());
@@ -558,11 +564,8 @@ public class ConfirmarFacturacionAction extends MasterAction{
 			
 			ConfirmarFacturacionForm form 	= (ConfirmarFacturacionForm)formulario;
 			
-			Vector ocultos = new Vector();		
-			ocultos = (Vector)form.getDatosTablaOcultos(0);
+			Vector ocultos = form.getDatosTablaOcultos(0);
 			
-			String idSerieFacturacion = (String)ocultos.elementAt(0);			
-			String idProgramacion 	= (String)ocultos.elementAt(1);
 			String idInstitucion	= this.getIDInstitucion(request).toString();
 			String logFichero = (String)ocultos.elementAt(5); 
 			
@@ -594,12 +597,12 @@ public class ConfirmarFacturacionAction extends MasterAction{
 	{
 		try {
 			ConfirmarFacturacionForm form = (ConfirmarFacturacionForm)formulario;
-			Vector ocultos = (Vector)form.getDatosTablaOcultos(0);
+			Vector ocultos = form.getDatosTablaOcultos(0);
 			String idSerieFacturacion = (String)ocultos.elementAt(0);			
 			String idProgramacion 	= (String)ocultos.elementAt(1);
 			String idInstitucion	= this.getIDInstitucion(request).toString();
 
-			Hashtable h = new Hashtable();
+			Hashtable<String,String> h = new Hashtable<String,String>();
 			UtilidadesHash.set(h, FacFacturacionProgramadaBean.C_IDINSTITUCION, idInstitucion); 
 			UtilidadesHash.set(h, FacFacturacionProgramadaBean.C_IDSERIEFACTURACION, idSerieFacturacion); 
 			UtilidadesHash.set(h, FacFacturacionProgramadaBean.C_IDPROGRAMACION, idProgramacion); 
@@ -641,7 +644,7 @@ public class ConfirmarFacturacionAction extends MasterAction{
 	 * @throws ClsExceptions 
 	 */
 	protected String enviarFacturas(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException, ClsExceptions {
-		Hashtable hash = new Hashtable();
+		Hashtable<String,Object> hash = new Hashtable<String,Object>();
 		String [] claves = {FacFacturacionProgramadaBean.C_IDINSTITUCION,FacFacturacionProgramadaBean.C_IDPROGRAMACION,FacFacturacionProgramadaBean.C_IDSERIEFACTURACION};
 		String [] camposEnvioPdf = {FacFacturacionProgramadaBean.C_IDESTADOENVIO,FacFacturacionProgramadaBean.C_IDESTADOPDF};
 		FacFacturacionProgramadaAdm adm = new FacFacturacionProgramadaAdm(this.getUserBean(request));
@@ -653,9 +656,11 @@ public class ConfirmarFacturacionAction extends MasterAction{
 			String idInstitucion = userBean.getLocation();
 			String idSerieFacturacion = (String) vOcultos.elementAt(0);
 			String idProgramacion=(String) vOcultos.elementAt(1);
+			
 			hash.put(FacFacturacionProgramadaBean.C_IDINSTITUCION,idInstitucion);
 			hash.put(FacFacturacionProgramadaBean.C_IDSERIEFACTURACION,idSerieFacturacion);
-			hash.put(FacFacturacionProgramadaBean.C_IDPROGRAMACION,idProgramacion);			
+			hash.put(FacFacturacionProgramadaBean.C_IDPROGRAMACION,idProgramacion);		
+			
 			FacFacturaAdm facturas = new FacFacturaAdm(userBean);
 			Vector vFacturas = facturas.getFacturasDeFacturacionProgramada(idInstitucion, idSerieFacturacion, idProgramacion);
 			if(!vFacturas.isEmpty()){
@@ -730,12 +735,12 @@ public class ConfirmarFacturacionAction extends MasterAction{
 	
 	protected String consultarFacturas(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		try {				
-			ConfirmarFacturacionForm form 	= (ConfirmarFacturacionForm)formulario;
-			FacFacturacionProgramadaAdm adm = new FacFacturacionProgramadaAdm(this.getUserBean(request));
+			ConfirmarFacturacionForm form 	= (ConfirmarFacturacionForm)formulario;			
 			HttpSession ses = request.getSession();
+			UsrBean user = this.getUserBean(request);
+			FacFacturacionProgramadaAdm adm = new FacFacturacionProgramadaAdm(user);
 			
-			Vector ocultos = new Vector();		
-			ocultos = (Vector)form.getDatosTablaOcultos(0);
+			Vector ocultos = form.getDatosTablaOcultos(0);
 			
 			Long idSerieFacturacion = Long.valueOf((String)ocultos.elementAt(0));			
 			Long idProgramacion 	= Long.valueOf((String)ocultos.elementAt(1));	
@@ -792,6 +797,11 @@ public class ConfirmarFacturacionAction extends MasterAction{
 			}
 			request.setAttribute("datosInformeFac",datosInformeFac);
 			
+			// obtengo el parametro general 'SEPA_TIPO_FICHEROS_ADEUDO
+			GenParametrosAdm admParametros = new GenParametrosAdm(user);
+			String tiposFicherosAdeudo = admParametros.getValor(user.getLocation(), "FAC", "SEPA_TIPO_FICHEROS_ADEUDO", "0"); // Por defecto solo n1914
+			request.setAttribute("tiposFicherosAdeudo", tiposFicherosAdeudo);
+			
 		} catch (Exception e) { 
 			throwExcp("messages.general.error",new String[] {"modulo.facturacion"},e,null); 
 		} 	
@@ -808,7 +818,7 @@ public class ConfirmarFacturacionAction extends MasterAction{
 			String idInstitucion = user.getLocation();
 
 			ConfirmarFacturacionForm form = (ConfirmarFacturacionForm)formulario;
-			Vector ocultos = (Vector)form.getDatosTablaOcultos(0);			
+			Vector ocultos = form.getDatosTablaOcultos(0);			
 			String idSerieFacturacion, idProgramacion;
 			
 			if (ocultos!=null) {			
@@ -837,7 +847,6 @@ public class ConfirmarFacturacionAction extends MasterAction{
 			
 			/** JPT - Control de fechas de presentación y cargo en ficheros SEPA **/
 			Hashtable hash = (Hashtable) vDatos.get(0);
-			GenParametrosAdm admParametros = new GenParametrosAdm(user);
 			String fechaPresentacion = GstDate.getFormatedDateShort("es",(String)hash.get("FECHAPRESENTACION"));
 			String fechaPrimerosRecibos = "";
 			String fechaRecibosRecurrentes = "";
@@ -847,7 +856,7 @@ public class ConfirmarFacturacionAction extends MasterAction{
 			FacDisqueteCargosAdm admDisqueteCargos = new FacDisqueteCargosAdm(user);	
 
 			// Obtiene los parametros necesarios para la configuracion de las fechas del fichero bancario
-			HashMap fechas = admDisqueteCargos.getParametrosFechasCargo(idInstitucion);
+			Hashtable<String,String> fechas = admDisqueteCargos.getParametrosFechasCargo(idInstitucion);
 			
 			if (fechaPresentacion!=null && !fechaPresentacion.isEmpty()) {
 				fechaPrimerosRecibos = GstDate.getFormatedDateShort("es",(String)hash.get("FECHARECIBOSPRIMEROS"));
@@ -871,7 +880,12 @@ public class ConfirmarFacturacionAction extends MasterAction{
 			request.setAttribute("idProgramacion",idProgramacion);
 			request.getSession().setAttribute("DATABACKUP", vDatos);
 			ses.setAttribute("ModoAction","editar");
-			request.setAttribute("accionInit","FAC_ConfirmarFacturacion");			
+			request.setAttribute("accionInit","FAC_ConfirmarFacturacion");		
+			
+			// obtengo el parametro general 'SEPA_TIPO_FICHEROS_ADEUDO
+			GenParametrosAdm admParametros = new GenParametrosAdm(user);
+			String tiposFicherosAdeudo = admParametros.getValor(user.getLocation(), "FAC", "SEPA_TIPO_FICHEROS_ADEUDO", "0"); // Por defecto solo n1914
+			request.setAttribute("tiposFicherosAdeudo", tiposFicherosAdeudo);
 			
 		}  catch (Exception e) { 
 			throwExcp("messages.general.error",new String[] {"modulo.facturacion"},e,null); 
@@ -928,7 +942,7 @@ public class ConfirmarFacturacionAction extends MasterAction{
 			
 			FacFacturacionProgramadaAdm adm = new FacFacturacionProgramadaAdm(this.getUserBean(request));			
 			{	// Comprobamos si existe ese nombre para la institucion. Debe ser unico
-				Hashtable h = new Hashtable();
+				Hashtable<String,Object> h = new Hashtable<String,Object>();
 				UtilidadesHash.set(h, FacFacturacionProgramadaBean.C_IDINSTITUCION, this.getIDInstitucion(request));
 				UtilidadesHash.set(h, FacFacturacionProgramadaBean.C_DESCRIPCION,   form.getDescripcionProgramacion());
 				Vector v = adm.select(h);
@@ -999,9 +1013,10 @@ public class ConfirmarFacturacionAction extends MasterAction{
 
 			// RGG 20/11/2007 añadimos los campos nuevos de contabilidad
 			FacSerieFacturacionAdm admS = new FacSerieFacturacionAdm(this.getUserBean(request));
-			Hashtable ht = new Hashtable();
+			Hashtable<String,Object> ht = new Hashtable<String,Object>();
 			ht.put(FacFacturacionProgramadaBean.C_IDINSTITUCION, bean.getIdInstitucion());
 			ht.put(FacFacturacionProgramadaBean.C_IDSERIEFACTURACION, bean.getIdSerieFacturacion());
+			
 			Vector v = admS.selectByPK(ht);
 			if (v!=null && v.size()>0) {
 			    FacSerieFacturacionBean bSF = (FacSerieFacturacionBean) v.get(0);
@@ -1041,8 +1056,6 @@ public class ConfirmarFacturacionAction extends MasterAction{
 		String idTipoPlantillaMail = "";
 		try {
 			bean = new FacFacturacionProgramadaBean();
-			FacFacturacionProgramadaAdm adm = new FacFacturacionProgramadaAdm(this.getUserBean(request));
-			
 			bean.setIdInstitucion(this.getIDInstitucion(request));
 			bean.setIdSerieFacturacion(new Long(form.getIdSerieFacturacion()));
 			bean.setFechaInicioProductos(form.getFechaInicialProducto());
@@ -1056,7 +1069,6 @@ public class ConfirmarFacturacionAction extends MasterAction{
 			
 			// tratamos las fechas con minutos y segundos
 			String aux = "";
-			String auxfechaCargo="";
 
 			aux = form.getFechaPrevistaGeneracion().substring(0,form.getFechaPrevistaGeneracion().length()-9) + " " + ((form.getHorasGeneracion().trim().equals(""))?"00":form.getHorasGeneracion())+":"+((form.getMinutosGeneracion().trim().equals(""))?"00":form.getMinutosGeneracion())+":00";
 			bean.setFechaPrevistaGeneracion(aux);			
@@ -1120,20 +1132,19 @@ public class ConfirmarFacturacionAction extends MasterAction{
 			Enumeration en = ((Vector)request.getSession().getAttribute("DATABACKUP")).elements();
 			Hashtable hash = (Hashtable)en.nextElement();
 			
-			{	// Comprobamos si existe ese nombre para la institucion. Debe ser unico
-				String where="";
-				where =" where "+FacFacturacionProgramadaBean.C_IDINSTITUCION+"="+this.getIDInstitucion(request)+
-			       " and "+ FacFacturacionProgramadaBean.C_DESCRIPCION+"='"+form.getDescripcionProgramacion()+"'"+
-				   " and "+FacFacturacionProgramadaBean.C_IDPROGRAMACION +" not in (select "+FacFacturacionProgramadaBean.C_IDPROGRAMACION +
-                       "																from "+FacFacturacionProgramadaBean.T_NOMBRETABLA+
-					   "																where "+FacFacturacionProgramadaBean.C_IDINSTITUCION+"="+this.getIDInstitucion(request)+
-				       "                                                                  and "+ FacFacturacionProgramadaBean.C_IDSERIEFACTURACION+"="+bean.getIdSerieFacturacion()+
-					   " 															      and "+FacFacturacionProgramadaBean.C_IDPROGRAMACION+"="+UtilidadesHash.getLong(hash, FacFacturacionProgramadaBean.C_IDPROGRAMACION)+")";																																		                                                                      
-				
-				Vector v = adm.select(where);
-				if ((v != null) && (v.size() > 0)) {
-					throw new SIGAException(UtilidadesString.getMensajeIdioma(this.getLenguaje(request), "facturacion.seriesFacturacion.error.descripcionDuplicada"));
-				}
+			// Comprobamos si existe ese nombre para la institucion. Debe ser unico
+			String where="";
+			where =" where "+FacFacturacionProgramadaBean.C_IDINSTITUCION+"="+this.getIDInstitucion(request)+
+		       " and "+ FacFacturacionProgramadaBean.C_DESCRIPCION+"='"+form.getDescripcionProgramacion()+"'"+
+			   " and "+FacFacturacionProgramadaBean.C_IDPROGRAMACION +" not in (select "+FacFacturacionProgramadaBean.C_IDPROGRAMACION +
+                   "																from "+FacFacturacionProgramadaBean.T_NOMBRETABLA+
+				   "																where "+FacFacturacionProgramadaBean.C_IDINSTITUCION+"="+this.getIDInstitucion(request)+
+			       "                                                                  and "+ FacFacturacionProgramadaBean.C_IDSERIEFACTURACION+"="+bean.getIdSerieFacturacion()+
+				   " 															      and "+FacFacturacionProgramadaBean.C_IDPROGRAMACION+"="+UtilidadesHash.getLong(hash, FacFacturacionProgramadaBean.C_IDPROGRAMACION)+")";																																		                                                                      
+			
+			Vector v = adm.select(where);
+			if ((v != null) && (v.size() > 0)) {
+				throw new SIGAException(UtilidadesString.getMensajeIdioma(this.getLenguaje(request), "facturacion.seriesFacturacion.error.descripcionDuplicada"));
 			}
 			
 			tx.begin();			
@@ -1235,7 +1246,7 @@ public class ConfirmarFacturacionAction extends MasterAction{
 		try {
 			UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");
 			ConfirmarFacturacionForm form = (ConfirmarFacturacionForm) formulario;
-			Vector vOcultos = (Vector)form.getDatosTablaOcultos(0);
+			Vector vOcultos = form.getDatosTablaOcultos(0);
 			String idSerieFacturacion = (String)vOcultos.elementAt(0);			
 			String idProgramacion 	= (String)vOcultos.elementAt(1);
 			String idInstitucion	= this.getIDInstitucion(request).toString();
@@ -1296,7 +1307,7 @@ public class ConfirmarFacturacionAction extends MasterAction{
 		try{
 			tx = this.getUserBean(request).getTransactionPesada();			
 			ConfirmarFacturacionForm form 				= (ConfirmarFacturacionForm)formulario;
-			Vector ocultos 				= (Vector)form.getDatosTablaOcultos(0);			
+			Vector ocultos 				= form.getDatosTablaOcultos(0);			
 			String idSerieFacturacion 	= (String)ocultos.elementAt(0);			
 			String idProgramacion 		= (String)ocultos.elementAt(1);
 			String idInstitucion		= this.getIDInstitucion(request).toString();
@@ -1320,10 +1331,11 @@ public class ConfirmarFacturacionAction extends MasterAction{
 		try {
 			FacFacturacionProgramadaAdm adm = new FacFacturacionProgramadaAdm(this.getUserBean(request));
 			FacFacturacionProgramadaBean bean = new FacFacturacionProgramadaBean();
-			Hashtable ht = new Hashtable();
+			Hashtable<String,String> ht = new Hashtable<String,String>();
 			ht.put(FacFacturacionProgramadaBean.C_IDINSTITUCION, idInstitucion);
 			ht.put(FacFacturacionProgramadaBean.C_IDSERIEFACTURACION, idSerieFacturacion);
 			ht.put(FacFacturacionProgramadaBean.C_IDPROGRAMACION, idProgramacion);
+			
 			Vector v = adm.selectByPK(ht);
 			bean = (FacFacturacionProgramadaBean) v.get(0);
 
@@ -1421,7 +1433,7 @@ public class ConfirmarFacturacionAction extends MasterAction{
 		String idInstitucion = user.getLocation();
 		
 		FacDisqueteCargosAdm admDisqueteCargos = new FacDisqueteCargosAdm(user);	
-		HashMap fechas=admDisqueteCargos.getFechasCargo (idInstitucion, (String)request.getParameter("fechaPresentacion"));
+		Hashtable<String,String> fechas = admDisqueteCargos.getFechasCargo (idInstitucion, (String)request.getParameter("fechaPresentacion"));
 
 		JSONObject json = new JSONObject();	
 		

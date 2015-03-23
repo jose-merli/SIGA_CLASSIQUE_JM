@@ -68,7 +68,7 @@
 				document.ficheroBancarioPagosForm.fechaCOR1.value = jQuery("#fechaRecibosCOR1").val();
 				document.ficheroBancarioPagosForm.fechaB2B.value = jQuery("#fechaRecibosB2B").val();	
 				
-				document.ficheroBancarioPagosForm.modo.value = "cambiarFechasFichero";
+				document.ficheroBancarioPagosForm.modo.value = "regenerarFicherosDisqueteCargos";
 				document.ficheroBancarioPagosForm.target = 'submitArea';
 				document.ficheroBancarioPagosForm.submit();
 				

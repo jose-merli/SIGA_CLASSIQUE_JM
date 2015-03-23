@@ -66,6 +66,13 @@
 	ArrayList<String> arrayDeudorTipoId = new ArrayList<String>(), arrayAcreedorTipoId = new ArrayList<String>();
 	arrayDeudorTipoId.add(beanMandato.getDeudorTipoId());
 	arrayAcreedorTipoId.add(beanMandato.getAcreedorTipoId());
+	
+	String tiposFicherosAdeudo = (String) request.getAttribute("tiposFicherosAdeudo");
+	boolean desactivarEsquemasXml = true;
+	if (!modoConsulta && tiposFicherosAdeudo!=null && (tiposFicherosAdeudo.equals("1") || tiposFicherosAdeudo.equals("2"))) {
+		desactivarEsquemasXml = false;
+	}
+		
 %>	
 
 	<!-- HEAD -->
@@ -88,15 +95,18 @@
 	
 		var idEspana='<%=ClsConstants.ID_PAIS_ESPANA%>';
 		
-		jQuery(function(){						
-			controlarAutorizacion("<%=beanMandato.getEsquema()%>");
+		jQuery(function(){		
+<%
+			if (!modoConsulta) {
+				
+%>
+				controlarAutorizacion("<%=beanMandato.getEsquema()%>");
+<%
+			}
+					
+%>				
 			
 			calcularAltura();
-			
-			// INICIO = Quitar este codigo para habilitar COR1 y B2B
-			jQuery("input[id=esquema][value=1]").attr("disabled","disabled");
-			jQuery("input[id=esquema][value=2]").attr("disabled","disabled");
-			// FIN = Quitar este codigo para habilitar COR1 y B2B
 		});	
 		
 		function controlarAutorizacion(valorEsquema) {
@@ -132,9 +142,13 @@
 				errores += "<siga:Idioma key='errors.required' arg0='censo.fichaCliente.datosBancarios.referencia'/>"+ '\n';				
 			}
 			
+			if (jQuery("input[id=esquema]:checked").attr("disabled") == "disabled") {
+				errores += "<siga:Idioma key='errors.required' arg0='censo.fichaCliente.datosBancarios.esquema'/>"+ '\n';
+			}			
+			
 			if (jQuery("input[id=esquema]:checked").val() == 2 && !jQuery("#autorizacionB2BCheck")[0].checked) {
 				errores += "<siga:Idioma key='errors.required' arg0='censo.fichaCliente.datosBancarios.autorizacion.b2b'/>"+ '\n';				 
-			}
+			}						
 			
 			if (jQuery("#deudorTipoId").val()=="<%=ClsConstants.TIPO_IDENTIFICACION_NIF%>" || jQuery("#deudorTipoId").val()=="<%=ClsConstants.TIPO_IDENTIFICACION_CIF%>") {
 				if (!validarNIFCIF(jQuery("#deudorTipoId").val(), jQuery("#deudorId").val())) {
@@ -271,20 +285,20 @@
 		
 								<tr>
 									<td>							
-										<input id="esquema" name="esquema" TYPE="radio" VALUE="1" <%if(beanMandato.getEsquema().equals("1")) {%> checked <%}%> <%if(modoConsulta) {%> disabled <%}%> onchange="controlarAutorizacion(this.value);"> 
+										<input id="esquema" name="esquema" TYPE="radio" VALUE="1" <%if(beanMandato.getEsquema().equals("1")) {%> checked <%}%> <%if(desactivarEsquemasXml) {%> disabled <%}%> onchange="controlarAutorizacion(this.value);"> 
 										<siga:Idioma key="censo.fichaCliente.datosBancarios.esquema.cor1"/>
 									</td>
 								</tr>
 									
 								<tr>
 									<td>							
-										<input id="esquema" name="esquema" TYPE="radio" VALUE="2" <%if(beanMandato.getEsquema().equals("2")) {%> checked <%}%> <%if(modoConsulta) {%> disabled <%}%> onchange="controlarAutorizacion(this.value);">
+										<input id="esquema" name="esquema" TYPE="radio" VALUE="2" <%if(beanMandato.getEsquema().equals("2")) {%> checked <%}%> <%if(desactivarEsquemasXml) {%> disabled <%}%> onchange="controlarAutorizacion(this.value);">
 										<siga:Idioma key="censo.fichaCliente.datosBancarios.esquema.b2b"/>
 									</td>	
 									
 									<td>									
 										&nbsp;&nbsp;
-										<input id="autorizacionB2BCheck" name="autorizacionB2BCheck" TYPE="checkbox" style="vertical-align:top" <%if(beanMandato.getAutorizacionB2B().equals("1")) {%> checked <%}%> <%if(modoConsulta) {%> disabled <%}%>>
+										<input id="autorizacionB2BCheck" name="autorizacionB2BCheck" TYPE="checkbox" style="vertical-align:top" <%if(beanMandato.getAutorizacionB2B().equals("1")) {%> checked <%}%> <%if(desactivarEsquemasXml) {%> disabled <%}%>>
 										<siga:Idioma key="censo.fichaCliente.datosBancarios.autorizacion.b2b"/> 			
 										<siga:ToolTip id='ayudaB2B' imagen='/SIGA/html/imagenes/botonAyuda.gif' texto='<%=UtilidadesString.mostrarDatoJSP(UtilidadesString.getMensajeIdioma(usuario,"censo.fichaCliente.datosBancarios.autorizacion.b2b.ayuda"))%>' />						
 									</td>

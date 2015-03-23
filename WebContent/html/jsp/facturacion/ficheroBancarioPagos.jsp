@@ -3,10 +3,6 @@
 <head>
 <!-- ficheroBancarioPagos.jsp -->
 
-<!-- 
-	 VERSIONES : 
-	 	nuria.rgonzalez 18-03-2005 - Inicio
--->		
 <!-- CABECERA JSP -->
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-1"%>
@@ -15,10 +11,10 @@
 <%@ page contentType="text/html" language="java" errorPage="/html/jsp/error/errorSIGA.jsp"%>
 
 <!-- TAGLIBS -->
-<%@ taglib uri = "libreria_SIGA.tld" 	prefix = "siga"%>
-<%@ taglib uri = "struts-bean.tld"  	prefix = "bean"%>
-<%@ taglib uri = "struts-html.tld" 		prefix = "html"%>
-<%@ taglib uri = "struts-logic.tld" 	prefix = "logic"%>
+<%@ taglib uri="libreria_SIGA.tld" prefix="siga"%>
+<%@ taglib uri="struts-bean.tld" prefix="bean"%>
+<%@ taglib uri="struts-html.tld" prefix="html"%>
+<%@ taglib uri="struts-logic.tld" prefix="logic"%>
 
 <!-- IMPORTS -->
 <%@ page import="com.siga.administracion.SIGAConstants"%>
@@ -92,8 +88,6 @@
 			datos = document.getElementById('tablaDatosDinamicosD');
 			datos.value = ""; 
 			var j;
-			var tabla;
-			tabla = document.getElementById('tablaDatos');
 			var flag = true;
 			j = 1;
 			while (flag) {
@@ -117,8 +111,6 @@
 			datos = document.getElementById('tablaDatosDinamicosD');
 			datos.value = ""; 
 			var j;
-			var tabla;
-			tabla = document.getElementById('tablaDatos');
 			var flag = true;
 			j = 1;
 			while (flag) {
@@ -185,15 +177,7 @@
 				Row row = (Row)resultado.elementAt(i);
 				
 				FilaExtElement[] elems = new FilaExtElement[3];
-				
-				String nombreFichero = row.getString(FacDisqueteCargosBean.C_NOMBREFICHERO);
-				
-				Properties props = PropertyReader.getProperties(SIGAReferences.RESOURCE_FILES.SIGA);
-				String extensionSEPA = ".n" + props.getProperty("facturacion.cuaderno.identificador");
-				
-				if (nombreFichero.endsWith(extensionSEPA)) {
-					elems[0]=new FilaExtElement("editar", "editar", SIGAConstants.ACCESS_READ); 						
-				}
+				elems[0]=new FilaExtElement("generar", "editar", "Regenerar", SIGAConstants.ACCESS_READ); 						
 				elems[1]=new FilaExtElement("download", "download", SIGAConstants.ACCESS_READ); 	
 				elems[2]=new FilaExtElement("versolicitud", "versolicitud", "Informe remesa", SIGAConstants.ACCESS_READ);
 				

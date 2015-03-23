@@ -1,9 +1,6 @@
 package com.siga.censo.action;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.text.ParseException;
 import java.util.Date;
 import java.util.Hashtable;
 import java.util.Vector;
@@ -15,24 +12,20 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.redabogacia.sigaservices.app.AppConstants;
-import org.redabogacia.sigaservices.app.autogen.model.GenFichero;
 import org.redabogacia.sigaservices.app.helper.SIGAServicesHelper;
 import org.redabogacia.sigaservices.app.services.gen.FicherosService;
-import org.redabogacia.sigaservices.app.services.scs.DocumentacionEjgService;
 import org.redabogacia.sigaservices.app.util.ReadProperties;
 import org.redabogacia.sigaservices.app.util.SIGAReferences;
 import org.redabogacia.sigaservices.app.vo.gen.FicheroVo;
-import org.redabogacia.sigaservices.app.vo.scs.DocumentacionEjgVo;
-import org.redabogacia.sigaservices.app.vo.services.VoDbService;
 
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesString;
-import com.siga.administracion.form.InformeForm;
 import com.siga.beans.CenAnexosCuentasBancariasAdm;
 import com.siga.beans.CenAnexosCuentasBancariasBean;
 import com.siga.beans.CenMandatosCuentasBancariasAdm;
 import com.siga.beans.CenMandatosCuentasBancariasBean;
+import com.siga.beans.GenParametrosAdm;
 import com.siga.censo.form.MandatosCuentasBancariasForm;
 import com.siga.comun.VoUiService;
 import com.siga.general.MasterAction;
@@ -40,11 +33,8 @@ import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
 import com.siga.general.form.FicheroForm;
 import com.siga.general.form.service.FicheroVoService;
-import com.siga.gratuita.form.DefinirDocumentacionEJGForm;
-import com.siga.gratuita.form.service.DocumentacionEjgVoService;
 
 import es.satec.businessManager.BusinessException;
-import es.satec.businessManager.BusinessManager;
 
 public class MandatosCuentasBancariasAction extends MasterAction{
 
@@ -186,6 +176,11 @@ public class MandatosCuentasBancariasAction extends MasterAction{
 				
 				// Indico los datos devuelto en la request
 				request.setAttribute("beanMandato", beanMandato);	
+				
+				// obtengo el parametro general 'SEPA_TIPO_FICHEROS_ADEUDO
+				GenParametrosAdm admParametros = new GenParametrosAdm(usuario);
+				String tiposFicherosAdeudo = admParametros.getValor(usuario.getLocation(), "FAC", "SEPA_TIPO_FICHEROS_ADEUDO", "0"); // Por defecto solo n1914
+				request.setAttribute("tiposFicherosAdeudo", tiposFicherosAdeudo);
 			}
 		
 		} catch (Exception e) {

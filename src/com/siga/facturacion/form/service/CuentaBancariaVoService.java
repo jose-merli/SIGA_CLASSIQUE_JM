@@ -113,6 +113,13 @@ public class CuentaBancariaVoService implements VoUiService<CuentasBancariasForm
 			objectVo.setComisiondescripcion(objectForm.getComisiondescripcion());
 		if (objectForm.getComisioncuentacontable()!=null && !objectForm.getComisioncuentacontable().equals(""))
 			objectVo.setComisioncuentacontable(objectForm.getComisioncuentacontable());
+		
+		if (objectForm.getConfiguracionFicherosEsquema()!=null && !objectForm.getConfiguracionFicherosEsquema().equals(""))
+			objectVo.setConfigficherosesquema(new BigDecimal(objectForm.getConfiguracionFicherosEsquema()));
+		if (objectForm.getConfiguracionFicherosSecuencia()!=null && !objectForm.getConfiguracionFicherosSecuencia().equals(""))
+			objectVo.setConfigficherossecuencia(new BigDecimal(objectForm.getConfiguracionFicherosSecuencia()));
+		if (objectForm.getConfiguracionLugarEsquemaSecuencia()!=null && !objectForm.getConfiguracionLugarEsquemaSecuencia().equals(""))
+			objectVo.setConfiglugaresquemasecuencia(new BigDecimal(objectForm.getConfiguracionLugarEsquemaSecuencia()));
 			
 		return objectVo;
 	}
@@ -177,6 +184,13 @@ public class CuentaBancariaVoService implements VoUiService<CuentasBancariasForm
 				cuentasBancariasForm.setComisiondescripcion(objectVo.getComisiondescripcion());
 			if (objectVo.getComisioncuentacontable()!=null)
 				cuentasBancariasForm.setComisioncuentacontable(objectVo.getComisioncuentacontable());
+			
+			if (objectVo.getConfigficherosesquema()!=null)
+				cuentasBancariasForm.setConfiguracionFicherosEsquema(objectVo.getConfigficherosesquema().toString());
+			if (objectVo.getConfigficherossecuencia()!=null)
+				cuentasBancariasForm.setConfiguracionFicherosSecuencia(objectVo.getConfigficherossecuencia().toString());
+			if (objectVo.getConfiglugaresquemasecuencia()!=null)
+				cuentasBancariasForm.setConfiguracionLugarEsquemaSecuencia(objectVo.getConfiglugaresquemasecuencia().toString());
 			
 		return cuentasBancariasForm;
 	}

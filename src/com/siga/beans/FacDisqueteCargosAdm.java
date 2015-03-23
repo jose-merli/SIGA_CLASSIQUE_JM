@@ -5,7 +5,6 @@
 
 package com.siga.beans;
 
-import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Vector;
 
@@ -330,9 +329,9 @@ public class FacDisqueteCargosAdm extends MasterBeanAdministrador {
 		// Comprueba que los dias introducidos son habiles bancarios
 		if (EjecucionPLs.ejecutarEsDiaHabil(fechaEntrega) == 0 ||
 			EjecucionPLs.ejecutarEsDiaHabil(fechaRecibosPrimeros) == 0 ||
-			EjecucionPLs.ejecutarEsDiaHabil(fechaRecibosRecurrentes) == 0 /*||
+			EjecucionPLs.ejecutarEsDiaHabil(fechaRecibosRecurrentes) == 0 ||
 			EjecucionPLs.ejecutarEsDiaHabil(fechaRecibosCOR1) == 0 ||
-			EjecucionPLs.ejecutarEsDiaHabil(fechaRecibosB2B) == 0*/) {
+			EjecucionPLs.ejecutarEsDiaHabil(fechaRecibosB2B) == 0) {
 			return false;
 		}			
 		
@@ -352,20 +351,20 @@ public class FacDisqueteCargosAdm extends MasterBeanAdministrador {
 		GenParametrosAdm admParametros = new GenParametrosAdm(this.usrbean);
 		String habilesPrimerosRecibos = admParametros.getValor(idInstitucion, "FAC", "DIAS_HABILES_PRIMEROS_RECIBOS", "7");
 		String habilesRecibosRecurrentes = admParametros.getValor(idInstitucion, "FAC", "DIAS_HABILES_RECIBOS_RECURRENTES", "4");
-		/*String habilesRecibosCOR1 = admParametros.getValor(idInstitucion, "FAC", "DIAS_HABILES_RECIBOS_COR1", "3");
-		String habilesRecibosB2B = admParametros.getValor(idInstitucion, "FAC", "DIAS_HABILES_RECIBOS_B2B", "3");*/
+		String habilesRecibosCOR1 = admParametros.getValor(idInstitucion, "FAC", "DIAS_HABILES_RECIBOS_COR1", "3");
+		String habilesRecibosB2B = admParametros.getValor(idInstitucion, "FAC", "DIAS_HABILES_RECIBOS_B2B", "3");
 		
 		// Obtengo las fechas minimas para el fichero
 		String fechaMinimaPrimerosRecibos = EjecucionPLs.ejecutarSumarDiasHabiles( fechaEntrega, habilesPrimerosRecibos);
 		String fechaMinimaRecibosRecurrentes = EjecucionPLs.ejecutarSumarDiasHabiles(fechaEntrega, habilesRecibosRecurrentes);
-		/*String fechaMinimaRecibosCOR1 = EjecucionPLs.ejecutarSumarDiasHabiles(fechaEntrega, habilesRecibosCOR1);
-		String fechaMinimaRecibosB2B = EjecucionPLs.ejecutarSumarDiasHabiles(fechaEntrega, habilesRecibosB2B);*/			
+		String fechaMinimaRecibosCOR1 = EjecucionPLs.ejecutarSumarDiasHabiles(fechaEntrega, habilesRecibosCOR1);
+		String fechaMinimaRecibosB2B = EjecucionPLs.ejecutarSumarDiasHabiles(fechaEntrega, habilesRecibosB2B);			
 		
 		// Compruebo que las fechas son posterior o igual que la fecha minima
 		if (GstDate.compararFechas(fechaRecibosPrimeros, fechaMinimaPrimerosRecibos) < 0 ||
-			GstDate.compararFechas(fechaRecibosRecurrentes, fechaMinimaRecibosRecurrentes) < 0 /*||
+			GstDate.compararFechas(fechaRecibosRecurrentes, fechaMinimaRecibosRecurrentes) < 0 ||
 			GstDate.compararFechas(fechaRecibosCOR1, fechaMinimaRecibosCOR1) < 0 ||
-			GstDate.compararFechas(fechaRecibosB2B, fechaMinimaRecibosB2B) < 0*/) {
+			GstDate.compararFechas(fechaRecibosB2B, fechaMinimaRecibosB2B) < 0) {
 			return false;
 		}
 		
@@ -381,8 +380,8 @@ public class FacDisqueteCargosAdm extends MasterBeanAdministrador {
 	 * @throws ClsExceptions
 	 * @throws SIGAException
 	 */
-	public HashMap getFechasCargo (String idInstitucion, String fechaPresentacion) throws ClsExceptions, SIGAException {
-		HashMap fechas = new HashMap();
+	public Hashtable<String,String> getFechasCargo (String idInstitucion, String fechaPresentacion) throws ClsExceptions, SIGAException {
+		Hashtable<String,String> fechas = new Hashtable<String,String>();
 		
 		try{
 			// Obtiene los parametros necesarios para la configuracion de las fechas del fichero bancario 
@@ -424,8 +423,8 @@ public class FacDisqueteCargosAdm extends MasterBeanAdministrador {
 	 * @throws ClsExceptions
 	 * @throws SIGAException
 	 */
-	public HashMap getParametrosFechasCargo (String idInstitucion) throws ClsExceptions, SIGAException {
-		HashMap fechas = new HashMap();
+	public Hashtable<String,String> getParametrosFechasCargo (String idInstitucion) throws ClsExceptions, SIGAException {
+		Hashtable<String,String> fechas = new Hashtable<String,String>();
 		
 		try{
 			GenParametrosAdm admParametros = new GenParametrosAdm(this.usrbean);

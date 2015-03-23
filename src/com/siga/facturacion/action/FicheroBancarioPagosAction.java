@@ -33,6 +33,7 @@ import com.atos.utils.GstDate;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.PaginadorCaseSensitive;
 import com.siga.beans.FacDisqueteCargosAdm;
+import com.siga.beans.GenParametrosAdm;
 import com.siga.facturacion.form.FicheroBancarioPagosForm;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
@@ -87,8 +88,8 @@ public class FicheroBancarioPagosAction extends MasterAction{
 			} else if (accion.equalsIgnoreCase("generarFichero")){
 				mapDestino = generarFichero(mapping, miForm, request, response);
 				
-			} else if (accion.equalsIgnoreCase("cambiarFechasFichero")){
-				mapDestino = cambiarFechasFichero(mapping, miForm, request, response);
+			} else if (accion.equalsIgnoreCase("regenerarFicherosDisqueteCargos")){
+				mapDestino = regenerarFicherosDisqueteCargos(mapping, miForm, request, response);
 				
 			} else if (accion.equalsIgnoreCase("informeRemesa")){
 				mapDestino = informeRemesa(miForm, request);
@@ -252,8 +253,7 @@ public class FicheroBancarioPagosAction extends MasterAction{
 			pathFichero 		= p.returnProperty(directorioFisico) + p.returnProperty(directorio);			
 			//String nombreFichero 	= p.returnProperty(keyFichero);						
 			
-			Vector ocultos 			= new Vector();		
-			ocultos 				= (Vector)form.getDatosTablaOcultos(0);			
+			Vector ocultos = form.getDatosTablaOcultos(0);			
 			//idDisqueteCargos 		= (String)ocultos.elementAt(0);			
 			nombreFichero 			= (String)ocultos.elementAt(1);	
 			idInstitucion			= this.getIDInstitucion(request).toString();	
@@ -445,7 +445,7 @@ public class FicheroBancarioPagosAction extends MasterAction{
 	{
 		FicheroBancarioPagosForm form = (FicheroBancarioPagosForm)formulario;
 
-		Vector ocultos 			= (Vector)form.getDatosTablaOcultos(0);			
+		Vector ocultos 			= form.getDatosTablaOcultos(0);			
 		String idDisqueteCargo 	= (String)ocultos.elementAt(0);	
 		String idInstitucion	= this.getIDInstitucion(request).toString();			
 
@@ -480,7 +480,7 @@ public class FicheroBancarioPagosAction extends MasterAction{
 			String fechaPresentacion = GstDate.getHoyJsp(); // Obtengo la fecha actual
 			
 			FacDisqueteCargosAdm admDisqueteCargos = new FacDisqueteCargosAdm(user);	
-			HashMap fechas=admDisqueteCargos.getFechasCargo (idInstitucion, fechaPresentacion);
+			Hashtable<String,String> fechas = admDisqueteCargos.getFechasCargo (idInstitucion, fechaPresentacion);
 			
 			request.setAttribute("fechaPresentacion",fechaPresentacion);
 			
@@ -499,13 +499,18 @@ public class FicheroBancarioPagosAction extends MasterAction{
 			String idDisqueteCargo = form.getIdDisqueteCargo();
 			String nombreFichero = form.getNombreFichero();
 			if (idDisqueteCargo==null || idDisqueteCargo.equals("") || nombreFichero == null || nombreFichero.equals("")) {
-				Vector ocultos = (Vector)form.getDatosTablaOcultos(0);			
+				Vector ocultos = form.getDatosTablaOcultos(0);			
 				idDisqueteCargo = (String)ocultos.elementAt(0);
 				nombreFichero = (String)ocultos.elementAt(1);
 			}
 			
 			request.setAttribute("idDisqueteCargo", idDisqueteCargo);
 			request.setAttribute("nombreFichero", nombreFichero);
+			
+			// obtengo el parametro general 'SEPA_TIPO_FICHEROS_ADEUDO
+			GenParametrosAdm admParametros = new GenParametrosAdm(user);
+			String tiposFicherosAdeudo = admParametros.getValor(idInstitucion, "FAC", "SEPA_TIPO_FICHEROS_ADEUDO", "0"); // Por defecto solo n1914
+			request.setAttribute("tiposFicherosAdeudo", tiposFicherosAdeudo);
 			
 		}  catch (Exception e) { 
 			throwExcp("messages.general.error",new String[] {"modulo.facturacion"},e,null); 
@@ -515,7 +520,7 @@ public class FicheroBancarioPagosAction extends MasterAction{
 	}
 	
 	/**
-	 * Funcion que cambia las fechas de un fichero
+	 * Funcion que regenera los ficheros de un disquete de cargos
 	 * @param mapping
 	 * @param formulario
 	 * @param request
@@ -523,7 +528,7 @@ public class FicheroBancarioPagosAction extends MasterAction{
 	 * @return
 	 * @throws SIGAException
 	 */
-	protected String cambiarFechasFichero(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {	
+	protected String regenerarFicherosDisqueteCargos(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {	
 		UsrBean usr = (UsrBean)request.getSession().getAttribute("USRBEAN");
 		
 		String keyPath 				= "facturacion.directorioBancosOracle";			
@@ -534,8 +539,6 @@ public class FicheroBancarioPagosAction extends MasterAction{
 		try{	
 			tx = usr.getTransaction(); 
 			tx.begin();
-			Integer usuario = this.getUserName(request);						
-			
 		    ReadProperties p = new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
 			pathFichero = p.returnProperty(keyPath);
 			idInstitucion = this.getIDInstitucion(request).toString();
@@ -548,7 +551,7 @@ public class FicheroBancarioPagosAction extends MasterAction{
 									
 			FicheroBancarioPagosForm form = (FicheroBancarioPagosForm)formulario;
 			String fechaEntrega = form.getFechaEntrega();
-			
+			String idDisqueteCargos = form.getIdDisqueteCargo();
 			String fechaRecibosPrimeros = form.getFechaFRST();
 			String fechaRecibosRecurrentes = form.getFechaRCUR();
 			String fechaRecibosCOR1 = form.getFechaCOR1();
@@ -558,12 +561,23 @@ public class FicheroBancarioPagosAction extends MasterAction{
 			FacDisqueteCargosAdm adm = new FacDisqueteCargosAdm(this.getUserBean(request));	
 			if (!adm.controlarFechasFicheroBancario(idInstitucion, fechaEntrega, fechaRecibosPrimeros, fechaRecibosRecurrentes, fechaRecibosCOR1, fechaRecibosB2B, null)) {
 				throw new SIGAException("facturacion.ficheroBancarioPagos.errorMandatos.mensajeFechas");
-			}			
+			}		
+				    		    	
+	    	//Se borrar todos los ficheros que contengan el identificador del disquete de cargos
+			File directorioFicheros = new File(pathFichero);
+	    	if (directorioFicheros.exists()){
+		    	File[] ficheros = directorioFicheros.listFiles();
+		    	for (int x=0; x<ficheros.length; x++){
+		    		if (ficheros[x].getName().startsWith(idDisqueteCargos + ".")) {
+		    			ficheros[x].delete();
+		    		}	    		
+		    	}
+	    	} 
 			
 			// Se envían los parametros para modificar las fechas del fichero
-			Object[] param_in_banco = new Object[11];
+			Object[] param_in_banco = new Object[9];
 			param_in_banco[0] = idInstitucion;
-			param_in_banco[1] = form.getIdDisqueteCargo();
+			param_in_banco[1] = idDisqueteCargos;
 			
 			if (fechaEntrega != null && !fechaEntrega.equals("") && fechaEntrega.length()==10) {
 				try {
@@ -609,23 +623,22 @@ public class FicheroBancarioPagosAction extends MasterAction{
 				}		
 			}
 			param_in_banco[6] = fechaRecibosB2B;
-			
-			param_in_banco[7] = usuario.toString();
+			param_in_banco[7] = pathFichero;		
 			param_in_banco[8] = usr.getLanguage();
-			param_in_banco[9] = pathFichero;			
-			param_in_banco[10] = form.getNombreFichero();
 			
 			String resultado[] = new String[2];
-			resultado = ClsMngBBDD.callPLProcedure("{call PKG_SIGA_CARGOS.CambiarFechasPresentacion(?,?,?,?,?,?,?,?,?,?,?,?,?)}", 2, param_in_banco);	
-			
+			resultado = ClsMngBBDD.callPLProcedure("{call PKG_SIGA_CARGOS.Regenerar_Presentacion(?,?,?,?,?,?,?,?,?,?,?)}", 2, param_in_banco);	
+		
 			String[] codigosErrorFormato = {"5412", "5413", "5414", "5415", "5416", "5417", "5418"};
 			if(Arrays.asList(codigosErrorFormato).contains(resultado[0])){
 				throw new SIGAException(resultado[1]);
 				
-			} else if (resultado == null || !resultado[0].equals("0")) {
-				throw new SIGAException("messages.updated.error");
-			}							
-
+			} else {
+				if (!resultado[0].equals("0")){
+					throw new SIGAException("censo.fichaCliente.bancos.mandatos.error.generacionFicheros");
+				}							
+			}
+			
 			tx.commit();
 			
 		} catch (SIGAException e) {
@@ -657,7 +670,7 @@ public class FicheroBancarioPagosAction extends MasterAction{
 		String idInstitucion = user.getLocation();
 
 		FacDisqueteCargosAdm admDisqueteCargos = new FacDisqueteCargosAdm(user);	
-		HashMap fechas = admDisqueteCargos.getFechasCargo (idInstitucion, (String)request.getParameter("fechaPresentacion"));
+		Hashtable<String,String> fechas = admDisqueteCargos.getFechasCargo(idInstitucion, (String)request.getParameter("fechaPresentacion"));
 
 		JSONObject json = new JSONObject();	
 		

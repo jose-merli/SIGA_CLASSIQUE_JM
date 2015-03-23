@@ -15,7 +15,6 @@ import org.apache.struts.action.ActionMapping;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.redabogacia.sigaservices.app.autogen.model.CenBancos;
-import org.redabogacia.sigaservices.app.autogen.model.FacSeriefacturacionBanco;
 import org.redabogacia.sigaservices.app.services.fac.CuentasBancariasService;
 import org.redabogacia.sigaservices.app.vo.BancoVo;
 import org.redabogacia.sigaservices.app.vo.fac.CuentaBancariaVo;
@@ -29,12 +28,11 @@ import com.siga.beans.CenBancosAdm;
 import com.siga.beans.CenBancosBean;
 import com.siga.beans.CenPaisAdm;
 import com.siga.beans.CenPaisBean;
-import com.siga.beans.FacSerieFacturacionAdm;
 import com.siga.beans.FacSerieFacturacionBancoAdm;
 import com.siga.beans.FacSerieFacturacionBancoBean;
-import com.siga.beans.FacSerieFacturacionBean;
 import com.siga.beans.FacSufijoAdm;
 import com.siga.beans.FacSufijoBean;
+import com.siga.beans.GenParametrosAdm;
 import com.siga.comun.VoUiService;
 import com.siga.facturacion.form.CuentasBancariasForm;
 import com.siga.facturacion.form.service.CuentaBancariaVoService;
@@ -183,11 +181,10 @@ public class GestionCuentasBancariasAction extends MasterAction {
 		cuentasBancariasForm.setModo("insertar");
 		//Combo sufijos
 		FacSufijoAdm sufijoAdm = new FacSufijoAdm (this.getUserBean(request));
-		Hashtable claves = new Hashtable ();
+		Hashtable<String,String> claves = new Hashtable<String,String>();
 		UtilidadesHash.set (claves, FacSufijoBean.C_IDINSTITUCION, cuentasBancariasForm.getIdInstitucion());
 		
 		Vector vsufijos = sufijoAdm.select(claves);
-		Vector vsufijosList = new Vector();
 		List <FacSufijoBean> sufijosListFinal= new ArrayList<FacSufijoBean>();
 		for (int vs = 0; vs < vsufijos.size(); vs++){
 			
@@ -207,14 +204,20 @@ public class GestionCuentasBancariasAction extends MasterAction {
 		return "editar";
 	}
 	
-	protected String consultar (ActionMapping mapping, 		
-			MasterForm formulario, 
-			HttpServletRequest request, 
-			HttpServletResponse response) throws ClsExceptions, SIGAException 
-			{
-		
+	/**
+	 * 
+	 * @param mapping
+	 * @param formulario
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws ClsExceptions
+	 * @throws SIGAException
+	 */
+	protected String consultar (ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, SIGAException {		
 		CuentasBancariasForm cuentasBancariasForm = (CuentasBancariasForm) formulario;
 		try {
+			UsrBean user = this.getUserBean(request);
 			BusinessManager bm = getBusinessManager();
 			CuentasBancariasService cuentasBancariasService = (CuentasBancariasService)bm.getService(CuentasBancariasService.class);
 			VoUiService<CuentasBancariasForm, CuentaBancariaVo> voService = new CuentaBancariaVoService();
@@ -226,12 +229,11 @@ public class GestionCuentasBancariasAction extends MasterAction {
 			cuentasBancariasForm.setDigControlBanco("**");
 
 			//Combos sufijos
-			FacSufijoAdm sufijoAdm = new FacSufijoAdm (this.getUserBean(request));
-			Hashtable claves = new Hashtable ();
+			FacSufijoAdm sufijoAdm = new FacSufijoAdm (user);
+			Hashtable<String,String> claves = new Hashtable<String,String>();
 			UtilidadesHash.set (claves, FacSufijoBean.C_IDINSTITUCION, cuentasBancariasForm.getIdInstitucion());
 			
 			Vector vsufijos = sufijoAdm.select(claves);
-			Vector vsufijosList = new Vector();
 			List <FacSufijoBean> sufijosListFinal= new ArrayList<FacSufijoBean>();
 			for (int vs = 0; vs < vsufijos.size(); vs++){
 				
@@ -243,6 +245,11 @@ public class GestionCuentasBancariasAction extends MasterAction {
 			
 			cuentasBancariasForm.setModo("abrir");
 			request.setAttribute("CuentasBancariasForm", cuentasBancariasForm);
+			
+			// obtengo el parametro general 'SEPA_TIPO_FICHEROS_ADEUDO
+			GenParametrosAdm admParametros = new GenParametrosAdm(user);
+			String tiposFicherosAdeudo = admParametros.getValor(user.getLocation(), "FAC", "SEPA_TIPO_FICHEROS_ADEUDO", "0"); // Por defecto solo n1914
+			request.setAttribute("tiposFicherosAdeudo", tiposFicherosAdeudo);
 			
 		}catch (Exception e){
 			throwExcp("messages.general.errorExcepcion", e, null); 			
@@ -262,7 +269,7 @@ public class GestionCuentasBancariasAction extends MasterAction {
 		
 		CuentasBancariasForm cuentasBancariasForm = (CuentasBancariasForm) formulario;
 		try {
-			
+			UsrBean user = this.getUserBean(request);
 			
 			String Uso = cuentasBancariasForm.getUso();
 			BusinessManager bm = getBusinessManager();
@@ -277,12 +284,11 @@ public class GestionCuentasBancariasAction extends MasterAction {
 			request.setAttribute("CuentasBancariasForm", cuentasBancariasForm);
 			
 			//Combo sufijos
-			FacSufijoAdm sufijoAdm = new FacSufijoAdm (this.getUserBean(request));
-			Hashtable claves = new Hashtable ();
+			FacSufijoAdm sufijoAdm = new FacSufijoAdm (user);
+			Hashtable<String,String> claves = new Hashtable<String,String>();
 			UtilidadesHash.set (claves, FacSufijoBean.C_IDINSTITUCION, cuentasBancariasForm.getIdInstitucion());
 			
 			Vector vsufijos = sufijoAdm.select(claves);
-			Vector vsufijosList = new Vector();
 			List <FacSufijoBean> sufijosListFinal= new ArrayList<FacSufijoBean>();
 			for (int vs = 0; vs < vsufijos.size(); vs++){
 				
@@ -291,6 +297,11 @@ public class GestionCuentasBancariasAction extends MasterAction {
 			}
 
 			request.setAttribute("listaSufijos", sufijosListFinal);
+			
+			// obtengo el parametro general 'SEPA_TIPO_FICHEROS_ADEUDO
+			GenParametrosAdm admParametros = new GenParametrosAdm(user);
+			String tiposFicherosAdeudo = admParametros.getValor(user.getLocation(), "FAC", "SEPA_TIPO_FICHEROS_ADEUDO", "0"); // Por defecto solo n1914
+			request.setAttribute("tiposFicherosAdeudo", tiposFicherosAdeudo);		
 
 		}catch (Exception e){
 			throwExcp("messages.general.errorExcepcion", e, null); 			
@@ -319,7 +330,7 @@ public class GestionCuentasBancariasAction extends MasterAction {
 			cuentaBancariaVo.setUsumodificacion(new Integer(usrBean.getUserName()));
 			
 			//Se comprueba si la cuenta bancaria tiene alguna serie asignada, si tiene no se permite eliminar 
-			List series = bts.getSeriesCuentaBancaria(cuentaBancariaVo);
+			List<SeriesCuentaBancariaVo> series = bts.getSeriesCuentaBancaria(cuentaBancariaVo);
 			
 			//Si no existe ninguna serie relacionada
 			if(!series.isEmpty())
@@ -549,11 +560,10 @@ public class GestionCuentasBancariasAction extends MasterAction {
 			
 			//Combo sufijos
 			FacSufijoAdm sufijoAdm = new FacSufijoAdm (this.getUserBean(request));
-			Hashtable claves = new Hashtable ();
+			Hashtable<String,String> claves = new Hashtable<String,String>();
 			UtilidadesHash.set (claves, FacSufijoBean.C_IDINSTITUCION, cuentasBancariasForm.getIdInstitucion());
 			
 			Vector vsufijos = sufijoAdm.select(claves);
-			Vector vsufijosList = new Vector();
 			List <FacSufijoBean> sufijosListFinal= new ArrayList<FacSufijoBean>();
 			for (int vs = 0; vs < vsufijos.size(); vs++){
 				
@@ -584,12 +594,11 @@ public class GestionCuentasBancariasAction extends MasterAction {
 			UserTransaction tx = null;
 			
 			CuentasBancariasForm cuentasBancariasForm = (CuentasBancariasForm) formulario;	
-			UsrBean usrBean = this.getUserBean(request);
 			FacSerieFacturacionBancoAdm serieFacBancoAdm = new FacSerieFacturacionBancoAdm(this.getUserBean(request));
 
 			//Se borra la relación con las cuentas que existan
 			tx = this.getUserBean(request).getTransaction();
-			Hashtable claves = new Hashtable ();
+			Hashtable<String,String> claves = new Hashtable<String,String>();
 			UtilidadesHash.set (claves, FacSerieFacturacionBancoBean.C_IDINSTITUCION, cuentasBancariasForm.getIdInstitucion());
 			UtilidadesHash.set (claves, FacSerieFacturacionBancoBean.C_IDSERIEFACTURACION, cuentasBancariasForm.getIdSerieFacturacion());
 			
