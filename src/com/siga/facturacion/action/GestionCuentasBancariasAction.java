@@ -199,9 +199,9 @@ public class GestionCuentasBancariasAction extends MasterAction {
 		CuentaBancariaVo cuentaBancariaVo =cuentasBancariasService.getCuentaBancaria(voService.getForm2Vo(cuentasBancariasForm));
 		cuentasBancariasForm = voService.getVo2Form(cuentaBancariaVo);
 		
-		// obtengo el parametro general 'SEPA_TIPO_FICHEROS_ADEUDO
+		// obtengo el parametro general 'SEPA_TIPO_FICHEROS'
 		GenParametrosAdm admParametros = new GenParametrosAdm(user);
-		String tiposFicherosAdeudo = admParametros.getValor(user.getLocation(), "FAC", "SEPA_TIPO_FICHEROS_ADEUDO", "0"); // Por defecto solo n1914
+		String tiposFicherosAdeudo = admParametros.getValor(user.getLocation(), "FAC", "SEPA_TIPO_FICHEROS", "0"); // Por defecto solo n1914
 		request.setAttribute("tiposFicherosAdeudo", tiposFicherosAdeudo);		
 
 		return "editar";
@@ -249,9 +249,9 @@ public class GestionCuentasBancariasAction extends MasterAction {
 			cuentasBancariasForm.setModo("abrir");
 			request.setAttribute("CuentasBancariasForm", cuentasBancariasForm);
 			
-			// obtengo el parametro general 'SEPA_TIPO_FICHEROS_ADEUDO
+			// obtengo el parametro general 'SEPA_TIPO_FICHEROS'
 			GenParametrosAdm admParametros = new GenParametrosAdm(user);
-			String tiposFicherosAdeudo = admParametros.getValor(user.getLocation(), "FAC", "SEPA_TIPO_FICHEROS_ADEUDO", "0"); // Por defecto solo n1914
+			String tiposFicherosAdeudo = admParametros.getValor(user.getLocation(), "FAC", "SEPA_TIPO_FICHEROS", "0"); // Por defecto solo n1914
 			request.setAttribute("tiposFicherosAdeudo", tiposFicherosAdeudo);
 			
 		}catch (Exception e){
@@ -294,9 +294,9 @@ public class GestionCuentasBancariasAction extends MasterAction {
 
 			request.setAttribute("listaSufijos", sufijosListFinal);
 			
-			// obtengo el parametro general 'SEPA_TIPO_FICHEROS_ADEUDO
+			// obtengo el parametro general 'SEPA_TIPO_FICHEROS'
 			GenParametrosAdm admParametros = new GenParametrosAdm(user);
-			String tiposFicherosAdeudo = admParametros.getValor(user.getLocation(), "FAC", "SEPA_TIPO_FICHEROS_ADEUDO", "0"); // Por defecto solo n1914
+			String tiposFicherosAdeudo = admParametros.getValor(user.getLocation(), "FAC", "SEPA_TIPO_FICHEROS", "0"); // Por defecto solo n1914
 			request.setAttribute("tiposFicherosAdeudo", tiposFicherosAdeudo);		
 
 		}catch (Exception e){

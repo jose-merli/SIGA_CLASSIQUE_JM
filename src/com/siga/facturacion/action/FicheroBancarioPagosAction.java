@@ -507,9 +507,9 @@ public class FicheroBancarioPagosAction extends MasterAction{
 			request.setAttribute("idDisqueteCargo", idDisqueteCargo);
 			request.setAttribute("nombreFichero", nombreFichero);
 			
-			// obtengo el parametro general 'SEPA_TIPO_FICHEROS_ADEUDO
+			// obtengo el parametro general 'SEPA_TIPO_FICHEROS'
 			GenParametrosAdm admParametros = new GenParametrosAdm(user);
-			String tiposFicherosAdeudo = admParametros.getValor(idInstitucion, "FAC", "SEPA_TIPO_FICHEROS_ADEUDO", "0"); // Por defecto solo n1914
+			String tiposFicherosAdeudo = admParametros.getValor(idInstitucion, "FAC", "SEPA_TIPO_FICHEROS", "0"); // Por defecto solo n1914
 			request.setAttribute("tiposFicherosAdeudo", tiposFicherosAdeudo);
 			
 		}  catch (Exception e) { 

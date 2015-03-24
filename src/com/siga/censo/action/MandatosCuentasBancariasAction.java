@@ -177,9 +177,9 @@ public class MandatosCuentasBancariasAction extends MasterAction{
 				// Indico los datos devuelto en la request
 				request.setAttribute("beanMandato", beanMandato);	
 				
-				// obtengo el parametro general 'SEPA_TIPO_FICHEROS_ADEUDO
+				// obtengo el parametro general 'SEPA_TIPO_FICHEROS'
 				GenParametrosAdm admParametros = new GenParametrosAdm(usuario);
-				String tiposFicherosAdeudo = admParametros.getValor(usuario.getLocation(), "FAC", "SEPA_TIPO_FICHEROS_ADEUDO", "0"); // Por defecto solo n1914
+				String tiposFicherosAdeudo = admParametros.getValor(usuario.getLocation(), "FAC", "SEPA_TIPO_FICHEROS", "0"); // Por defecto solo n1914
 				request.setAttribute("tiposFicherosAdeudo", tiposFicherosAdeudo);
 			}
 		
