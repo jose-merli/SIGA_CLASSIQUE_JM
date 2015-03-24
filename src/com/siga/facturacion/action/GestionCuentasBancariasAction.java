@@ -166,12 +166,10 @@ public class GestionCuentasBancariasAction extends MasterAction {
 		return forward;
 	}
 	
-	protected String nuevo (ActionMapping mapping, 		
-			MasterForm formulario, 
-			HttpServletRequest request, 
-			HttpServletResponse response) throws ClsExceptions, SIGAException 
-			{
+	protected String nuevo (ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, SIGAException {
 		CuentasBancariasForm cuentasBancariasForm = (CuentasBancariasForm) formulario;
+		
+		UsrBean user = this.getUserBean(request);
 		
 		
 //			BusinessManager bm = getBusinessManager();
@@ -180,7 +178,7 @@ public class GestionCuentasBancariasAction extends MasterAction {
 //			request.setAttribute("listaBancos", bancosList);
 		cuentasBancariasForm.setModo("insertar");
 		//Combo sufijos
-		FacSufijoAdm sufijoAdm = new FacSufijoAdm (this.getUserBean(request));
+		FacSufijoAdm sufijoAdm = new FacSufijoAdm (user);
 		Hashtable<String,String> claves = new Hashtable<String,String>();
 		UtilidadesHash.set (claves, FacSufijoBean.C_IDINSTITUCION, cuentasBancariasForm.getIdInstitucion());
 		
@@ -200,6 +198,11 @@ public class GestionCuentasBancariasAction extends MasterAction {
 		VoUiService<CuentasBancariasForm, CuentaBancariaVo> voService = new CuentaBancariaVoService();
 		CuentaBancariaVo cuentaBancariaVo =cuentasBancariasService.getCuentaBancaria(voService.getForm2Vo(cuentasBancariasForm));
 		cuentasBancariasForm = voService.getVo2Form(cuentaBancariaVo);
+		
+		// obtengo el parametro general 'SEPA_TIPO_FICHEROS_ADEUDO
+		GenParametrosAdm admParametros = new GenParametrosAdm(user);
+		String tiposFicherosAdeudo = admParametros.getValor(user.getLocation(), "FAC", "SEPA_TIPO_FICHEROS_ADEUDO", "0"); // Por defecto solo n1914
+		request.setAttribute("tiposFicherosAdeudo", tiposFicherosAdeudo);		
 
 		return "editar";
 	}
@@ -257,15 +260,8 @@ public class GestionCuentasBancariasAction extends MasterAction {
 		
 		return "editar";
 	}
-	/**
-	 * Lo comenntamos porque no se usa
-	 */
 	
-	protected String editar (ActionMapping mapping, 		
-			MasterForm formulario, 
-			HttpServletRequest request, 
-			HttpServletResponse response) throws ClsExceptions, SIGAException 
-			{
+	protected String editar (ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, SIGAException {
 		
 		CuentasBancariasForm cuentasBancariasForm = (CuentasBancariasForm) formulario;
 		try {
