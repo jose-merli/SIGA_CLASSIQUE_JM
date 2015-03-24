@@ -415,7 +415,7 @@
 %>						
 							<tr>
 								<td class="labelText">
-									<siga:Idioma key="facturacion.cuentasBancarias.configuracionFicherosEsquema.titulo"/>
+									<siga:Idioma key="facturacion.cuentasBancarias.configuracionFicherosEsquema.titulo"/>&nbsp;(*)
 								</td>
 								<td>
 									<html:select name="CuentasBancariasForm" property="configuracionFicherosEsquema" styleId="configuracionFicherosEsquema">
@@ -431,7 +431,7 @@
 							
 							<tr>
 								<td class="labelText">
-									<siga:Idioma key="facturacion.cuentasBancarias.configuracionFicherosSecuencia.titulo"/>
+									<siga:Idioma key="facturacion.cuentasBancarias.configuracionFicherosSecuencia.titulo"/>&nbsp;(*)
 								</td>
 								<td>
 									<html:select name="CuentasBancariasForm" property="configuracionFicherosSecuencia" styleId="configuracionFicherosSecuencia">
@@ -449,7 +449,7 @@
 %>								
 							<tr>
 								<td class="labelText">
-									<siga:Idioma key="facturacion.cuentasBancarias.configuracionLugarEsquemaSecuencia.titulo"/>
+									<siga:Idioma key="facturacion.cuentasBancarias.configuracionLugarEsquemaSecuencia.titulo"/>&nbsp;(*)
 									<siga:ToolTip id='ayudaLugarEsquemaSecuencia' imagen='/SIGA/html/imagenes/botonAyuda.gif' texto='<%=UtilidadesString.mostrarDatoJSP(UtilidadesString.getMensajeIdioma(usuario,"facturacion.cuentasBancarias.configuracionLugarEsquemaSecuencia.ayuda"))%>' />
 								</td>
 								<td>
