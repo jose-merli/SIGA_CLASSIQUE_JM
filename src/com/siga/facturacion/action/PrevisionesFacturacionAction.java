@@ -898,10 +898,10 @@ or	 * @param request -
 				
 				// Obtengo los parametros de los dias habiles
 				GenParametrosAdm admParametros = new GenParametrosAdm(user);
-				String habilesPrimerosRecibos = admParametros.getValor(idInstitucion, "FAC", "DIAS_HABILES_PRIMEROS_RECIBOS", "7");
-				String habilesRecibosRecurrentes = admParametros.getValor(idInstitucion, "FAC", "DIAS_HABILES_RECIBOS_RECURRENTES", "4");
-				String habilesRecibosCOR1 = admParametros.getValor(idInstitucion, "FAC", "DIAS_HABILES_RECIBOS_COR1", "3");
-				String habilesRecibosB2B = admParametros.getValor(idInstitucion, "FAC", "DIAS_HABILES_RECIBOS_B2B", "3");				
+				String habilesPrimerosRecibos = admParametros.getValor(idInstitucion, "FAC", "SEPA_DIAS_HABILES_PRIMEROS_RECIBOS", "7");
+				String habilesRecibosRecurrentes = admParametros.getValor(idInstitucion, "FAC", "SEPA_DIAS_HABILES_RECIBOS_RECURRENTES", "4");
+				String habilesRecibosCOR1 = admParametros.getValor(idInstitucion, "FAC", "SEPA_DIAS_HABILES_RECIBOS_COR1", "3");
+				String habilesRecibosB2B = admParametros.getValor(idInstitucion, "FAC", "SEPA_DIAS_HABILES_RECIBOS_B2B", "3");				
 				
 				// Obtengo las fechas minimas para el fichero
 				String fechaMinimaPrimerosRecibos = EjecucionPLs.ejecutarSumarDiasHabiles(fechaPresentacion, habilesPrimerosRecibos);
