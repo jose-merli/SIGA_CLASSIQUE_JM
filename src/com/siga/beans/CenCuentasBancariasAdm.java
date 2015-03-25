@@ -938,7 +938,7 @@ public class CenCuentasBancariasAdm extends MasterBeanAdmVisible {
 				h.put (claves[i], hash.get(claves[i]));
 			}
 
-			String [] campos = {CenCuentasBancariasBean.C_FECHABAJA};
+			String [] campos = {CenCuentasBancariasBean.C_FECHABAJA, CenCuentasBancariasBean.C_USUMODIFICACION, CenCuentasBancariasBean.C_FECHAMODIFICACION};
 			UtilidadesHash.set(h, CenCuentasBancariasBean.C_FECHABAJA, "SYSDATE");
 
 			if (this.updateDirect(h, claves, campos)) {
