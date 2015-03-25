@@ -89,7 +89,7 @@
 		<!-- Campo obligatorio -->
 		<tr>		
 			<td class="titulitosDatos">
-				<siga:Idioma key="facturacion.ficheroBancarioPagos.boton.renegociacion"/>				    
+				<siga:Idioma key="facturacion.ficheroBancarioPagos.titulo.generarFicherosAdeudos"/>				    
 			</td>				
 		</tr>
 	</table>	

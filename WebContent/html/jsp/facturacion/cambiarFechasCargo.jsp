@@ -94,7 +94,7 @@
 	<table class="tablaTitulo" cellspacing="0">
 		<tr>
 			<td id="titulo" class="titulosPeq">
-				<siga:Idioma key="facturacion.fechasficherobancario.titulo.cambiarFechasCargo"/>
+				<siga:Idioma key="facturacion.ficheroBancarioPagos.titulo.regenerarFicherosAdeudos"/>
 			</td>
 		</tr>
 	</table>
