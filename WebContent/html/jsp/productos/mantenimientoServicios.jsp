@@ -724,155 +724,98 @@
 
 			<siga:ConjBotonesAccion botones='<%=botones%>' modo='<%=modo%>'  modal="G" clase="botonesSeguido"/>
 		
-			<% if ((modo.equalsIgnoreCase("editar"))||(modo.equalsIgnoreCase("edicion"))||(modo.equalsIgnoreCase("insertar"))||(modo.equalsIgnoreCase("modificar"))){ %>
-				<siga:Table 
-				   name="tablaResultados"
-				   border="1"
-				   columnNames="pys.mantenimientoServicios.literal.precio,pys.mantenimientoServicios.literal.periodicidad,pys.mantenimientoCategorias.literal.descripcion,productos.mantenimientoProductos.literal.precioDefecto,"
-				   columnSizes="20,20,20,20,20"
-				   modal="G">
-						   				   
-					<% if (request.getAttribute("DATESTADO") == null || ((Vector)request.getAttribute("DATESTADO")).size() < 1 ) { %>									
-				 		<tr class="notFound">
-							<td class="titulitos">
-								<siga:Idioma key="messages.noRecordFound"/>
-							</td>
-						</tr>		
-						
-					<% } else { %>
-						<%
-				    		// RGG 05-10-2005 Primera pasada para saber cuantos hay por defecto.
-				    		Enumeration en = ((Vector)request.getAttribute("DATESTADO")).elements();
-							int contDefecto=0;
-		            		while (en.hasMoreElements()) {
-			            		Row rowPrecios = (Row) en.nextElement();
-			            		if (rowPrecios.getString(PysPreciosServiciosBean.C_PORDEFECTO).equalsIgnoreCase(ClsConstants.DB_TRUE)){
-			            			contDefecto ++;
-								}
-			            	}			            	
-
-		            		en = ((Vector)request.getAttribute("DATESTADO")).elements();
-							int recordNumber=1;
-		            		String iconosFila="";
-							while (en.hasMoreElements()) {
-			            		Row rowPrecios = (Row) en.nextElement();
-			            		if (rowPrecios.getString(PysPreciosServiciosBean.C_PORDEFECTO).equalsIgnoreCase(ClsConstants.DB_TRUE)){
-				            		if (contDefecto==1) {
-					            		iconosFila="C,E";
-					            	} else {
-						            	iconosFila="C,E,B";
-					            	}
-			            		}else{
-				            		iconosFila="C,E,B";
-			            		}
-			            		
-			            		//Precio:
-			            		double precio = 0.00;
-								String sPrecio = rowPrecios.getString(PysPreciosServiciosBean.C_VALOR);
-
-								try { 
-									if (sPrecio!=null)
-										precio = Double.parseDouble(sPrecio);
-									
-								} catch(NumberFormatException e){
-									precio = 0.00;
-								}	
-			            %>
-						            		
-							<siga:FilaConIconos
-							  	fila='<%=String.valueOf(recordNumber)%>'
-							  	botones='<%=iconosFila%>'
-							  	modo='<%=modo%>'
-							  	clase="listaNonEdit">		
-								  										  
-								<td align = "right">
-									<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_1" value="<%=rowPrecios.getString(PysPreciosServiciosBean.C_IDINSTITUCION)%>">
-									<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_2" value="<%=rowPrecios.getString(PysPreciosServiciosBean.C_IDTIPOSERVICIOS)%>">
-									<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_3" value="<%=rowPrecios.getString(PysPreciosServiciosBean.C_IDSERVICIO)%>">
-									<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_4" value="<%=rowPrecios.getString(PysPreciosServiciosBean.C_IDSERVICIOSINSTITUCION)%>">
-									<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_5" value="<%=rowPrecios.getString(PysPreciosServiciosBean.C_IDPERIODICIDAD)%>">
-									<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_6" value="<%=rowPrecios.getString(PysPreciosServiciosBean.C_IDPRECIOSSERVICIOS)%>">
-									<%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero.formato(precio))%>&nbsp;&euro;
-								</td>
-								
-								<td align = "right">
-									<%=UtilidadesString.mostrarDatoJSP(rowPrecios.getString("PERIODICIDAD"))%>
-								</td>  	
-								
-								<td align = "right">
-									<%=UtilidadesString.mostrarDatoJSP(rowPrecios.getString("DESCRIPCION"))%>
-								</td>  																				
-								
-								<td align = "right">
-									<% if (rowPrecios.getString(PysPreciosServiciosBean.C_PORDEFECTO).equalsIgnoreCase(ClsConstants.DB_TRUE)){ %>
-										<siga:Idioma key="general.yes"/>
-										
-									<% } else { %>
-										<siga:Idioma key="general.no"/>
-									<% } %>
-								</td>  								
-							</siga:FilaConIconos>
-							
-							<% recordNumber++;%>
-						<% } // WHILE %>
-					<% } // ELSE %>					
-				</siga:Table>		
+			<siga:Table 
+			   name="tablaResultados"
+			   border="1"
+			   columnNames="pys.mantenimientoServicios.literal.precio,pys.mantenimientoServicios.literal.periodicidad,pys.mantenimientoCategorias.literal.descripcion,productos.mantenimientoProductos.literal.precioDefecto,"
+			   columnSizes="20,20,20,20,20"
+			   modal="G">
+					   				   
+				<% if (request.getAttribute("DATESTADO") == null || ((Vector)request.getAttribute("DATESTADO")).size() < 1 ) { %>									
+			 		<tr class="notFound">
+						<td class="titulitos">
+							<siga:Idioma key="messages.noRecordFound"/>
+						</td>
+					</tr>		
 					
-			<% } else {	%>								
-				<siga:Table 
-					name="tablaResultados"
-					border="1"
-					columnNames="pys.mantenimientoServicios.literal.precio,pys.mantenimientoServicios.literal.periodicidad,pys.mantenimientoCategorias.literal.descripcion,productos.mantenimientoProductos.literal.precioDefecto"
-					columnSizes="30,20,30,20"
-					modal="G">
+				<% } else { %>
+					<%
+			    		// RGG 05-10-2005 Primera pasada para saber cuantos hay por defecto.
+			    		Enumeration en = ((Vector)request.getAttribute("DATESTADO")).elements();
+						int contDefecto=0;
+	            		while (en.hasMoreElements()) {
+		            		Row rowPrecios = (Row) en.nextElement();
+		            		if (rowPrecios.getString(PysPreciosServiciosBean.C_PORDEFECTO).equalsIgnoreCase(ClsConstants.DB_TRUE)){
+		            			contDefecto ++;
+							}
+		            	}			            	
 
-					<%if (request.getAttribute("DATESTADO") == null || ((Vector)request.getAttribute("DATESTADO")).size() < 1 ){ %>
-				 		<tr class="notFound">
-							<td class="titulitos">
-								<siga:Idioma key="messages.noRecordFound"/>
-							</td>
-						</tr>		
-							
-					<% } else {
-					   	Enumeration en = ((Vector)request.getAttribute("DATESTADO")).elements();								    	
+	            		en = ((Vector)request.getAttribute("DATESTADO")).elements();
+						int recordNumber=1;
+	            		String iconosFila="";
 						while (en.hasMoreElements()) {
-					    	Row rowPrecios = (Row) en.nextElement();
-					            		
-					        //Precio:
-					        double precio = 0.00;
+		            		Row rowPrecios = (Row) en.nextElement();
+		            		if (rowPrecios.getString(PysPreciosServiciosBean.C_PORDEFECTO).equalsIgnoreCase(ClsConstants.DB_TRUE)){
+			            		if (contDefecto==1) {
+				            		iconosFila="C,E";
+				            	} else {
+					            	iconosFila="C,E,B";
+				            	}
+		            		}else{
+			            		iconosFila="C,E,B";
+		            		}
+		            		
+		            		//Precio:
+		            		double precio = 0.00;
 							String sPrecio = rowPrecios.getString(PysPreciosServiciosBean.C_VALOR);
 
 							try { 
 								if (sPrecio!=null)
 									precio = Double.parseDouble(sPrecio);
+								
 							} catch(NumberFormatException e){
 								precio = 0.00;
 							}	
-					%>
-							<tr>						            							  
-								<td align = "right" class="listaNonEdit" nowrap>
-									<%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero.formatoCampo(precio))%>&nbsp;&euro;
-								</td>
-								<td class="listaNonEdit" nowrap>
-									<%=UtilidadesString.mostrarDatoJSP(rowPrecios.getString("PERIODICIDAD"))%>
-								</td>
-								
-								<td class="listaNonEdit" nowrap>
-									<%=UtilidadesString.mostrarDatoJSP(rowPrecios.getString("DESCRIPCION"))%>
-								</td>													
-								<td class="listaNonEdit" nowrap>
-									<% if (rowPrecios.getString(PysPreciosServiciosBean.C_PORDEFECTO).equalsIgnoreCase(ClsConstants.DB_TRUE)){ %>
-										<siga:Idioma key="general.yes"/>
-										
-									<% } else { %>
-										<siga:Idioma key="general.no"/>
-									<% } %>
-								</td>  																	
-							</tr>	
-						<% } // WHILE %>
-					<% } // ELSE %>
-				</siga:Table> 
-			<% } // ELSE %>
+		            %>
+					            		
+						<siga:FilaConIconos
+						  	fila='<%=String.valueOf(recordNumber)%>'
+						  	botones='<%=iconosFila%>'
+						  	modo='<%=modo%>'
+						  	clase="listaNonEdit">		
+							  										  
+							<td align = "right">
+								<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_1" value="<%=rowPrecios.getString(PysPreciosServiciosBean.C_IDINSTITUCION)%>">
+								<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_2" value="<%=rowPrecios.getString(PysPreciosServiciosBean.C_IDTIPOSERVICIOS)%>">
+								<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_3" value="<%=rowPrecios.getString(PysPreciosServiciosBean.C_IDSERVICIO)%>">
+								<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_4" value="<%=rowPrecios.getString(PysPreciosServiciosBean.C_IDSERVICIOSINSTITUCION)%>">
+								<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_5" value="<%=rowPrecios.getString(PysPreciosServiciosBean.C_IDPERIODICIDAD)%>">
+								<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_6" value="<%=rowPrecios.getString(PysPreciosServiciosBean.C_IDPRECIOSSERVICIOS)%>">
+								<%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero.formato(precio))%>&nbsp;&euro;
+							</td>
+							
+							<td align = "right">
+								<%=UtilidadesString.mostrarDatoJSP(rowPrecios.getString("PERIODICIDAD"))%>
+							</td>  	
+							
+							<td align = "right">
+								<%=UtilidadesString.mostrarDatoJSP(rowPrecios.getString("DESCRIPCION"))%>
+							</td>  																				
+							
+							<td align = "right">
+								<% if (rowPrecios.getString(PysPreciosServiciosBean.C_PORDEFECTO).equalsIgnoreCase(ClsConstants.DB_TRUE)){ %>
+									<siga:Idioma key="general.yes"/>
+									
+								<% } else { %>
+									<siga:Idioma key="general.no"/>
+								<% } %>
+							</td>  								
+						</siga:FilaConIconos>
+						
+						<% recordNumber++;%>
+					<% } // WHILE %>
+				<% } // ELSE %>					
+			</siga:Table>		
 			
 			<siga:ConjBotonesAccion botones='<%=botonesPrecio%>' modo='<%=modo%>' clase="botonesDetalle" modal="G"/>
 			<!-- FIN: CAMPOS -->
