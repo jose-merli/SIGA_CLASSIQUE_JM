@@ -756,7 +756,7 @@
 			  					
 		  					<input type='hidden' name='nombreArticulo<%=String.valueOf(fila)%>' value='<%=UtilidadesString.mostrarDatoJSP(a.getIdArticuloInstitucionDescripcion())%>'>
 				  					
-		  					<%=UtilidadesString.mostrarDatoJSP(a.getIdArticuloInstitucionDescripcion())%>
+		  					<%=UtilidadesString.mostrarDatoJSP(a.getIdArticuloInstitucionDescripcion().replaceAll("\r\n", " ").replaceAll("\n\r", " "))%>
 		  					&nbsp;
 		  					<%=UtilidadesString.mostrarDatoJSP(a.getDescripcionPrecio())%>
 		  				</td>

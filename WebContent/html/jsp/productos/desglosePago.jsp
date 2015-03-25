@@ -148,13 +148,13 @@
 %> 											
 				<tr class="listaNonEdit">
 					<td>
-								<%=UtilidadesString.mostrarDatoJSP(a.getIdArticuloInstitucionDescripcion())%>
-								&nbsp;
-							<%=UtilidadesString.mostrarDatoJSP(a.getDescripcionPrecio())%>
-							</td>					  				
-							<td align="right"><%=a.getCantidad()%></td>
-							<td align="right"><%=UtilidadesString.formatoImporte(sPrecio)%>&nbsp;&euro;&nbsp;<%=sPeriodicidad%></td>
-							<td align="right"><%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero.formatoCampo(iva))%>&nbsp;%</td>					  				
+						<%=UtilidadesString.mostrarDatoJSP(a.getIdArticuloInstitucionDescripcion().replaceAll("\r\n", " ").replaceAll("\n\r", " "))%>
+						&nbsp;
+						<%=UtilidadesString.mostrarDatoJSP(a.getDescripcionPrecio())%>
+					</td>					  				
+					<td align="right"><%=a.getCantidad()%></td>
+					<td align="right"><%=UtilidadesString.formatoImporte(sPrecio)%>&nbsp;&euro;&nbsp;<%=sPeriodicidad%></td>
+					<td align="right"><%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero.formatoCampo(iva))%>&nbsp;%</td>					  				
 			 	</tr>							
 <%						
 			}
@@ -249,9 +249,9 @@
 	%> 											
 				<tr class="listaNonEdit">
 					<td>
-	  					<%=UtilidadesString.mostrarDatoJSP(a.getIdArticuloInstitucionDescripcion())%>
+	  					<%=UtilidadesString.mostrarDatoJSP(a.getIdArticuloInstitucionDescripcion().replaceAll("\r\n", " ").replaceAll("\n\r", " "))%>
 	  					&nbsp;
- 							<%=UtilidadesString.mostrarDatoJSP(a.getDescripcionPrecio())%>
+ 						<%=UtilidadesString.mostrarDatoJSP(a.getDescripcionPrecio())%>
 	  				</td>					  				
 	  				<td align="right">
 	  					<%=a.getCantidad()%>

@@ -156,13 +156,13 @@
 									<input type='hidden' name='oculto<%=String.valueOf(fila)%>_3' value='<%=String.valueOf((Long)a.getIdArticuloInstitucion())%>'>
 									<input type='hidden' name='oculto<%=String.valueOf(fila)%>_4' value='<%=String.valueOf(a.getClaseArticulo())%>'>	
 									<input type='hidden' name='oculto<%=String.valueOf(fila)%>_5' value='<%=String.valueOf(a.getTipoCertificado())%>'>																														
-			  					<%=UtilidadesString.mostrarDatoJSP(a.getIdTipoDescripcion())%>  						  								
+			  					<%=UtilidadesString.mostrarDatoJSP(a.getIdTipoDescripcion().replaceAll("\r\n", " ").replaceAll("\n\r", " "))%>  						  								
 			  				</td>
 			  				<td>
-			  					<%=UtilidadesString.mostrarDatoJSP(a.getIdArticuloDescripcion())%> 
+			  					<%=UtilidadesString.mostrarDatoJSP(a.getIdArticuloDescripcion().replaceAll("\r\n", " ").replaceAll("\n\r", " "))%> 
 			  				</td>
 			  				<td>
-			  					<%=UtilidadesString.mostrarDatoJSP(a.getIdArticuloInstitucionDescripcion())%> 
+			  					<%=UtilidadesString.mostrarDatoJSP(a.getIdArticuloInstitucionDescripcion().replaceAll("\r\n", " ").replaceAll("\n\r", " "))%> 
 			  				</td>
 			  				<td align="right">
 							    <%=UtilidadesString.mostrarDatoJSP(String.valueOf(a.getCantidad()))%> 
