@@ -535,6 +535,11 @@ public class ConfirmarFacturacionAction extends MasterAction{
 			HttpSession ses = request.getSession();
 			request.getSession().setAttribute("DATABACKUP", null);	
 			ses.setAttribute("ModoAction", "nuevaPrevision");
+			
+			// obtengo el parametro general 'SEPA_TIPO_FICHEROS'
+			GenParametrosAdm admParametros = new GenParametrosAdm(user);
+			String tiposFicherosAdeudo = admParametros.getValor(user.getLocation(), "FAC", "SEPA_TIPO_FICHEROS", "0"); // Por defecto solo n1914
+			request.setAttribute("tiposFicherosAdeudo", tiposFicherosAdeudo);
 		
 		} catch (Exception e) {
 			throw new SIGAException("messages.general.error");
