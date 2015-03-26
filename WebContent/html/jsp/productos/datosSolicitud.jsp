@@ -462,7 +462,7 @@
 				<input type="hidden" id="oculto<%=i+1%>_12" value="<%=fechaEfectiva%>">
 				<input type="hidden" id="oculto<%=i+1%>_13" value="<%=importeAnticipado%>">
 
-				<%=UtilidadesString.mostrarDatoJSP(concepto)%>
+				<%=UtilidadesString.mostrarDatoJSP(concepto.replaceAll("\r\n", " ").replaceAll("\n\r", " "))%>
 			</td>
 			
 			<td>										
