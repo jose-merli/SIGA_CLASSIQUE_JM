@@ -2,33 +2,36 @@
 <html>
 <head>
 <!-- consultaProductosServiciosSolicitados.jsp -->
+
 <!-- CABECERA JSP -->
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-1"%>
 <meta http-equiv="Cache-Control" content="no-cache">
-<meta http-equiv="Conte nt-Type" content="text/html; charset=ISO-8859-1">
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <%@ page contentType="text/html" language="java" errorPage="/html/jsp/error/errorSIGA.jsp"%>
 
 <!-- TAGLIBS -->
-<%@ taglib uri = "libreria_SIGA.tld" 	prefix = "siga"%>
-<%@ taglib uri = "struts-bean.tld"  	prefix = "bean"%>
-<%@ taglib uri = "struts-html.tld" 		prefix = "html"%>
-<%@ taglib uri = "struts-logic.tld" 	prefix = "logic"%>
+<%@ taglib uri="libreria_SIGA.tld" prefix="siga"%>
+<%@ taglib uri="struts-bean.tld" prefix="bean"%>
+<%@ taglib uri="struts-html.tld" prefix="html"%>
+<%@ taglib uri="struts-logic.tld" prefix="logic"%>
 
 <!-- IMPORTS -->
-<%@ page import = "com.siga.administracion.SIGAConstants"%>
-<%@ page import = "com.siga.gui.processTree.SIGAPTConstants"%>
-<%@ page import = "com.siga.Utilidades.*"%>
-<%@ page import = "com.atos.utils.*"%>
-<%@ page import = "com.siga.tlds.FilaExtElement"%>
-<%@ page import = "com.siga.beans.PysProductosSolicitadosBean"%>
-<%@ page import = "com.siga.beans.PysServiciosSolicitadosBean"%>
-<%@ page import = "com.siga.beans.PysPeticionCompraSuscripcionBean"%>
-<%@ page import = "com.siga.beans.PysProductosInstitucionBean"%>
-<%@ page import = "com.siga.beans.PysServiciosInstitucionBean"%>
+<%@ page import="com.siga.administracion.SIGAConstants"%>
+<%@ page import="com.siga.gui.processTree.SIGAPTConstants"%>
+<%@ page import="com.siga.Utilidades.*"%>
+<%@ page import="com.atos.utils.*"%>
+<%@ page import="com.siga.tlds.FilaExtElement"%>
+<%@ page import="com.siga.beans.PysProductosSolicitadosBean"%>
+<%@ page import="com.siga.beans.PysServiciosSolicitadosBean"%>
+<%@ page import="com.siga.beans.PysPeticionCompraSuscripcionBean"%>
+<%@ page import="com.siga.beans.PysProductosInstitucionBean"%>
+<%@ page import="com.siga.beans.PysServiciosInstitucionBean"%>
 <%@ page import="com.siga.Utilidades.UtilidadesNumero"%>
-
-<%@ page import="java.*"%>
+<%@ page import="java.util.Properties"%>
+<%@ page import="java.util.Vector"%>
+<%@ page import="java.util.Hashtable"%>
+<%@ page import="java.util.Enumeration"%>
 
 <!-- JSP -->
 <% 
@@ -87,11 +90,6 @@
 	}
 %>
 
-<%@page import="java.util.Properties"%>
-<%@page import="java.util.Vector"%>
-<%@page import="java.util.Hashtable"%>
-<%@page import="java.util.Enumeration"%>
-
 <!-- HEAD -->
 
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
@@ -117,8 +115,6 @@
 			var datos;
 			datos = document.getElementById('tablaDatosDinamicosD');
 			datos.value = ""; 
-			var j;
-			var tabla;
 			
 			<%if((!esLetrado)&&(aprobarSolicitudBaja)){%>
 				document.forms[0].modo.value = "fechaEfectiva";
@@ -143,9 +139,8 @@
 	    		}
 	    	<%}%>
 	    	
-			tabla = document.getElementById('servicios');
 			var flag = true;
-			j = 1;
+			var j = 1;
 			while (flag) {
 			  var aux = 'ocultoS' + fila + '_' + j;
 			  var oculto = document.getElementById(aux);
@@ -154,7 +149,7 @@
 			  j++;
 			}
 			
-			datos.value = datos.value + "%"
+			datos.value = datos.value + "%";
 			
 			document.all.solicitudBajaForm.modo.value = "solicitar";
 		   	document.solicitudBajaForm.submit();
@@ -165,17 +160,14 @@
 			var datos;
 			datos = document.getElementById('tablaDatosDinamicosD');
 			datos.value = ""; 
-			var j;
-			var tabla;
 			//mhg - INC_08066_SIGA Cuando se da de baja una solicitud no hace falta pedir la fecha efectiva por lo que se ha quitado.
 			if (!confirm("<siga:Idioma key="pys.solicitarBaja.literal.confirmaSolicitud"/>")){
     			finsubicono('solicitarbaja_'+fila);
     			return false;
 			}
-			tabla = document.getElementById('productos');
 			
 			var flag = true;
-			j = 1;
+			var j = 1;
 			while (flag) {
 			  var aux = 'ocultoP' + fila + '_' + j;
 			 
@@ -291,7 +283,7 @@
 						 			<%=UtilidadesString.mostrarDatoJSP(com.atos.utils.GstDate.getFormatedDateShort("", (String)hash.get(PysPeticionCompraSuscripcionBean.C_FECHA)))%>  							
 		  						</td>
 		  						<td><%=UtilidadesString.mostrarDatoJSP(hash.get(PysProductosSolicitadosBean.C_IDPETICION))%></td>  								
-		  						<td><%=UtilidadesString.mostrarDatoJSP(hash.get("CONCEPTO"))%></td>
+		  						<td><%=UtilidadesString.mostrarDatoJSP(((String)hash.get("CONCEPTO")).replaceAll("\r\n", " ").replaceAll("\n\r", " "))%></td>
 		  						<td><%=UtilidadesString.mostrarDatoJSP(hash.get("FORMAPAGO"))%></td>
 		  						<td><%=cuenta%></td>
 		  						<td align="right"><%=UtilidadesString.mostrarDatoJSP(hash.get(PysProductosSolicitadosBean.C_CANTIDAD))%></td>
@@ -400,7 +392,7 @@
 								</td>
 								
 								<td><%=UtilidadesString.mostrarDatoJSP(hash.get(PysServiciosSolicitadosBean.C_IDPETICION))%></td> 								
-								<td><%=UtilidadesString.mostrarDatoJSP(hash.get("CONCEPTO"))%></td>			  					
+								<td><%=UtilidadesString.mostrarDatoJSP(((String)hash.get("CONCEPTO")).replaceAll("\r\n", " ").replaceAll("\n\r", " "))%></td>			  					
 			  					<td><%=UtilidadesString.mostrarDatoJSP(hash.get("FORMAPAGO"))%></td>			  					
 			  					<td><%=cuenta%></td>			  					
 			  					<td align="right"><%=UtilidadesString.mostrarDatoJSP(hash.get(PysServiciosSolicitadosBean.C_CANTIDAD))%></td>			  					
