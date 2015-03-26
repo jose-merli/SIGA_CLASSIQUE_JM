@@ -6,7 +6,6 @@ package com.siga.facturacion.form;
 
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.beans.CenPersonaBean;
-import com.siga.beans.CenSolModiFacturacionServicioBean;
 import com.siga.general.MasterForm;
 
 /**
@@ -42,9 +41,6 @@ public class BusquedaFacturaForm extends MasterForm
 	public void setBuscarFechaHasta (String  d) {
 		UtilidadesHash.set(datos, "_FECHA_HASTA_", d);
  	}
-	public void setBuscarIdPersona (Long d) {
-		UtilidadesHash.set(datos, "_IDPERSONA_", d);
- 	}
 	public void setBuscarIdSerieFacturacion (Long d) {
 		UtilidadesHash.set(datos, "_SERIE_FACTURACION_", d);
  	}
@@ -64,9 +60,6 @@ public class BusquedaFacturaForm extends MasterForm
 		UtilidadesHash.set(datos, "_CONTABILIZADA_", d);
  	}
 
-	public String getIdPersona	() 	{ 
-		return UtilidadesHash.getString(this.datos, CenSolModiFacturacionServicioBean.C_IDPERSONA);		
-	}	
 	public String getBuscarNumeroFactura() {
 		return UtilidadesHash.getString(datos, "_NUMERO_FACTURA_");
  	}
@@ -75,9 +68,6 @@ public class BusquedaFacturaForm extends MasterForm
  	}
 	public String getBuscarFechaHasta () {
 		return UtilidadesHash.getString(datos, "_FECHA_HASTA_");
- 	}
-	public Long getBuscarIdPersona () {
-		return UtilidadesHash.getLong(datos, "_IDPERSONA_");
  	}
 	public Long getBuscarIdSerieFacturacion () {
 		return UtilidadesHash.getLong(datos, "_SERIE_FACTURACION_");
@@ -104,6 +94,27 @@ public class BusquedaFacturaForm extends MasterForm
 	public String getDeudor () {
 		return UtilidadesHash.getString(datos, "_DEUDOR_");
  	}
+	
+	public void setTitular (String dato) {
+		UtilidadesHash.set(datos, "Titular", dato);
+ 	}
+	public String getTitular() {
+ 		return UtilidadesHash.getString(datos, "Titular");
+ 	}
+ 		
+	public void setNombreTitular (String dato) {
+		UtilidadesHash.set(datos, "NombreTitular", dato);
+ 	}
+	public String getNombreTitular() {
+ 		return UtilidadesHash.getString(datos, "NombreTitular");
+ 	}
+	
+	public void setIdentificacionTitular (String dato) {
+		UtilidadesHash.set(datos, "IdentificacionTitular", dato);
+ 	}
+	public String getIdentificacionTitular() {
+ 		return UtilidadesHash.getString(datos, "IdentificacionTitular");
+ 	}			
 	
 	public String getIncluirRegistrosConBajaLogica() {
 		return this.incluirRegistrosConBajaLogica;

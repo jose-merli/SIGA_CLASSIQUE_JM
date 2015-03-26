@@ -27,7 +27,6 @@ import com.atos.utils.GstDate;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.PaginadorCaseSensitive;
 import com.siga.Utilidades.UtilidadesHash;
-import com.siga.beans.CenPersonaAdm;
 import com.siga.beans.FacFacturaAdm;
 import com.siga.beans.FacFacturaBean;
 import com.siga.beans.FacFacturaIncluidaEnDisqueteAdm;
@@ -35,7 +34,6 @@ import com.siga.beans.FacFacturaIncluidaEnDisqueteBean;
 import com.siga.beans.FacLineaDevoluDisqBancoAdm;
 import com.siga.beans.FacLineaDevoluDisqBancoBean;
 import com.siga.beans.FacMotivoDevolucionAdm;
-import com.siga.beans.FacPagosPorCajaAdm;
 import com.siga.beans.GenParametrosAdm;
 import com.siga.facturacion.Facturacion;
 import com.siga.facturacion.form.DevolucionesManualesForm;
@@ -177,12 +175,6 @@ public class DevolucionesManualesAction extends MasterAction{
 		try {
 			UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");		
 			DevolucionesManualesForm form = (DevolucionesManualesForm) formulario;
-			
-			// obtenemos el nombre del titular
-			if (!form.getTitular().equals("")) {
-				CenPersonaAdm personaAdm = new CenPersonaAdm(user);
-				form.setNombreTitular(personaAdm.obtenerNombreApellidos(form.getTitular()));
-			}
 
 			// comprobamos la existencia de Motivos
 			FacMotivoDevolucionAdm motivosAdm = new FacMotivoDevolucionAdm(user);

@@ -680,8 +680,8 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
 			}
 			
 			// Persona OK
-			if ((datos.getBuscarIdPersona() != null) && (datos.getBuscarIdPersona().intValue() != -1)){
-				where += " AND " + CenPersonaBean.T_NOMBRETABLA + "." + CenPersonaBean.C_IDPERSONA + " = " + datos.getBuscarIdPersona() + " "; 
+			if (datos.getTitular()!=null && !datos.getTitular().equals("")) {
+				where += " AND " + CenPersonaBean.T_NOMBRETABLA + "." + CenPersonaBean.C_IDPERSONA + " = " + datos.getTitular() + " "; 
 			}
 			
 			// Serie Facturacion OK

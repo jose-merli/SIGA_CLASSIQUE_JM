@@ -19,11 +19,9 @@ import org.apache.struts.action.ActionMapping;
 
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.Row;
-import com.siga.Utilidades.PaginadorCaseSensitiveBind;
+import com.siga.Utilidades.PaginadorBind;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;
-import com.siga.Utilidades.PaginadorBind;
-import com.siga.beans.CenPersonaAdm;
 import com.siga.beans.FacAbonoAdm;
 import com.siga.beans.FacAbonoBean;
 import com.siga.beans.FacFacturaAdm;
@@ -101,9 +99,7 @@ public class BusquedaFacturaAction extends MasterAction {
 	 * @see com.siga.general.MasterAction#abrir(org.apache.struts.action.ActionMapping, com.siga.general.MasterForm, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
 	 */
 	protected String abrir(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, SIGAException {
-
 		try {
-			
 			// Si no vengo del boton volver reseteo los formulario
 			BusquedaFacturaForm miFormSession = (BusquedaFacturaForm)request.getSession().getAttribute("BusquedaFacturaForm");
 			BusquedaFacturaForm miForm = (BusquedaFacturaForm)formulario;
@@ -116,17 +112,6 @@ public class BusquedaFacturaAction extends MasterAction {
 					miForm.reset(mapping,request);
 				}
 			
-				// Pasamos los datos del sigaCombo y el nombre del cliente
-				Vector v = miFormSession.getDatosTablaVisibles(0);
-				if (v != null) {
-					
-					if (!miFormSession.getBuscarIdPersona().toString().equals("-1")) {
-						CenPersonaAdm personaAdm = new CenPersonaAdm (this.getUserBean(request));
-						String nombre = personaAdm.obtenerNombreApellidos(miFormSession.getBuscarIdPersona().toString());
-						request.setAttribute("nombreClienteAnteriorBusqueda", nombre);
-						request.setAttribute("idPersonaAnteriorBusqueda", miFormSession.getBuscarIdPersona());
-					}
-				}
 				request.setAttribute("idSereFacturacionAnteriorBusqueda", miFormSession.getBuscarIdSerieFacturacion());
 				request.setAttribute("deudor", miFormSession.getDeudor());
 				request.setAttribute("idEstado", miFormSession.getBuscarIdEstado());
@@ -160,7 +145,7 @@ public class BusquedaFacturaAction extends MasterAction {
 			//la jsp por lo que parseamos los datos dento dela variable Registro seleccionados. Cuando hay modificacion
 			//habra que actualizar estos datos
 			if(!isSeleccionarTodos){
-				ArrayList clavesRegSeleccinados = (ArrayList) miForm.getRegistrosSeleccionados();
+				ArrayList clavesRegSeleccinados = miForm.getRegistrosSeleccionados();
 				String seleccionados = request.getParameter("Seleccion");
 				
 				
@@ -174,7 +159,7 @@ public class BusquedaFacturaAction extends MasterAction {
 			}
 			
 			
-			HashMap databackup = (HashMap) miForm.getDatosPaginador();
+			HashMap databackup = miForm.getDatosPaginador();
 			if (databackup!=null && databackup.get("paginador")!=null&&!isSeleccionarTodos){
 				PaginadorBind paginador = (PaginadorBind)databackup.get("paginador");
 				Vector datos=new Vector();
@@ -264,16 +249,16 @@ public class BusquedaFacturaAction extends MasterAction {
 		return "buscarPor";
 	}
 	
-	private Vector actualizarFacturaciones(FacFacturaAdm admFac,FacAbonoAdm admAbono ,Integer idInstitucion,String idioma,Vector datos) throws SIGAException,ClsExceptions{
+	private Vector actualizarFacturaciones(FacFacturaAdm admFac,FacAbonoAdm admAbono, Integer idInstitucion, String idioma, Vector datos) throws SIGAException,ClsExceptions{
 		
 		
-		Hashtable htAbono = new Hashtable();
+		Hashtable<String,Object> htAbono = new Hashtable<String,Object>();
 		htAbono.put(FacAbonoBean.C_IDINSTITUCION, idInstitucion);
 		for (int i=0;i<datos.size();i++) 
 		{
 			Row fila = (Row)datos.get(i);
 			
-			Hashtable registro = (Hashtable) fila.getRow();
+			Hashtable registro = fila.getRow();
 
 			String idFactura = UtilidadesHash.getString(registro, FacFacturaBean.C_IDFACTURA);
 			String idEstado = UtilidadesHash.getString(registro, FacFacturaBean.C_ESTADO);
@@ -318,7 +303,7 @@ public class BusquedaFacturaAction extends MasterAction {
 			String idFactura = (String)fila.get(1);
 			String idPersona = (String)fila.get(2);
 
-			Hashtable datosFac = new Hashtable();
+			Hashtable<String,String> datosFac = new Hashtable<String,String>();
 			
 			datosFac.put("accion", "editar");
 			datosFac.put("idFactura", idFactura);
@@ -346,7 +331,7 @@ public class BusquedaFacturaAction extends MasterAction {
 			String idFactura = (String)fila.get(1);
 			String idPersona = (String)fila.get(2);
 
-			Hashtable datosFac = new Hashtable();
+			Hashtable<String,String> datosFac = new Hashtable<String,String>();
 			
 			UtilidadesHash.set(datosFac,"accion", "ver");
 			UtilidadesHash.set(datosFac,"idFactura", idFactura);
@@ -361,5 +346,4 @@ public class BusquedaFacturaAction extends MasterAction {
 		}
 		return "administrarPestanas";
 	}
-
 }
