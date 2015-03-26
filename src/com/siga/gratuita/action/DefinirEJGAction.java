@@ -22,6 +22,7 @@ import javax.transaction.UserTransaction;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.redabogacia.sigaservices.app.AppConstants.PARAMETRO;
 import org.redabogacia.sigaservices.app.autogen.model.ScsTiporesolucion;
 import org.redabogacia.sigaservices.app.helper.DocuShareHelper;
 import org.redabogacia.sigaservices.app.services.scs.ScsTipoResolucionService;
@@ -275,7 +276,7 @@ public class DefinirEJGAction extends MasterAction
 	throws ClsExceptions,SIGAException  {
 		
 		
-		
+		String longitudNumEjg = (String) request.getSession().getAttribute(PARAMETRO.LONGITUD_CODEJG.toString());
 		ScsEJGAdm admBean =new ScsEJGAdm(this.getUserBean(request));
 		UsrBean usr = (UsrBean)request.getSession().getAttribute("USRBEAN");
 		DefinirEJGForm miFormulario =(DefinirEJGForm)formulario;
@@ -346,7 +347,7 @@ public class DefinirEJGAction extends MasterAction
 
 				//obtengo datos de la consulta 			
 				PaginadorBind resultado = null;
-				resultado = admBean.getPaginadorBusquedaMantenimientoEJG(miHash, miFormulario,miFormulario.getIdInstitucion());
+				resultado = admBean.getPaginadorBusquedaMantenimientoEJG(miHash, miFormulario,miFormulario.getIdInstitucion(),longitudNumEjg);
 //				resultado=desigAdm.getBusquedaDesigna((String)usr.getLocation(),miHash);
 				Vector datos = null;
 
@@ -452,6 +453,7 @@ public class DefinirEJGAction extends MasterAction
 			
 			
 			HttpSession session =request.getSession();
+			String longitudNumEjg = (String) request.getSession().getAttribute(PARAMETRO.LONGITUD_CODEJG.toString());
 			DefinirEJGForm miForm = (DefinirEJGForm) formulario;		
 			
 			// Recuperamos los datos del registro que hemos seleccionado
@@ -489,7 +491,7 @@ public class DefinirEJGAction extends MasterAction
 			// 03-04-2006 RGG cambio en ventanas de Personas JG
 			// Persona JG
 			ScsEJGAdm admi = new ScsEJGAdm(this.getUserBean(request)); 
-			Hashtable hTitulo = admi.getTituloPantallaEJG((String)miHash.get(ScsEJGBean.C_IDINSTITUCION),	(String)miHash.get(ScsEJGBean.C_ANIO), (String)miHash.get(ScsEJGBean.C_NUMERO), (String)miHash.get(ScsEJGBean.C_IDTIPOEJG));
+			Hashtable hTitulo = admi.getTituloPantallaEJG((String)miHash.get(ScsEJGBean.C_IDINSTITUCION),	(String)miHash.get(ScsEJGBean.C_ANIO), (String)miHash.get(ScsEJGBean.C_NUMERO), (String)miHash.get(ScsEJGBean.C_IDTIPOEJG),longitudNumEjg);
 			StringBuffer solicitante = new StringBuffer();
 			solicitante.append((String) hTitulo.get(ScsPersonaJGBean.C_NOMBRE));
 			solicitante.append(" ");
@@ -558,6 +560,7 @@ public class DefinirEJGAction extends MasterAction
 		DefinirEJGForm miForm = (DefinirEJGForm) formulario;		
 		try {	
 			HttpSession session =request.getSession();
+			String longitudNumEjg = (String) request.getSession().getAttribute(PARAMETRO.LONGITUD_CODEJG.toString());
 			//Entramos al formulario en modo 'modificación'
 			session.setAttribute("accion","ver");
 			if ((request.getParameter("desdeEjg")!=null && request.getParameter("desdeEjg").equalsIgnoreCase("si"))||(request.getParameter("desdeDesigna")!=null && request.getParameter("desdeDesigna").equalsIgnoreCase("si"))){
@@ -598,7 +601,7 @@ public class DefinirEJGAction extends MasterAction
 			// 03-04-2006 RGG cambio en ventanas de Personas JG
 			// Persona JG
 			ScsEJGAdm admi = new ScsEJGAdm(this.getUserBean(request)); 
-			Hashtable hTitulo = admi.getTituloPantallaEJG((String)miHash.get(ScsEJGBean.C_IDINSTITUCION),	(String)miHash.get(ScsEJGBean.C_ANIO), (String)miHash.get(ScsEJGBean.C_NUMERO), (String)miHash.get(ScsEJGBean.C_IDTIPOEJG));
+			Hashtable hTitulo = admi.getTituloPantallaEJG((String)miHash.get(ScsEJGBean.C_IDINSTITUCION),	(String)miHash.get(ScsEJGBean.C_ANIO), (String)miHash.get(ScsEJGBean.C_NUMERO), (String)miHash.get(ScsEJGBean.C_IDTIPOEJG),longitudNumEjg);
 			StringBuffer solicitante = new StringBuffer();
 			solicitante.append((String) hTitulo.get(ScsPersonaJGBean.C_NOMBRE));
 			solicitante.append(" ");

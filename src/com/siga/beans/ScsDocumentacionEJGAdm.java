@@ -438,9 +438,9 @@ public class ScsDocumentacionEJGAdm extends MasterBeanAdministrador {
 
 
 	public RowsContainer getDocumentacionEJG(String idInstitucion, String idTipoEJG, String anio, String numero,
-			String idioma) throws ClsExceptions {
+			String idioma, String longitudNumEjg) throws ClsExceptions {
 		
-		String sql = "SELECT EJG.NUMEJG, EJG.ANIO, DECODE(EJG.IDPERSONAJG,PER.IDPERSONA, 1,0) AS INTERESADO" +
+		String sql = "SELECT  lpad(EJG.numejg,"+longitudNumEjg+",0) NUMEJG, EJG.ANIO, DECODE(EJG.IDPERSONAJG,PER.IDPERSONA, 1,0) AS INTERESADO" +
 				", DECODE(U.SOLICITANTE, 1, f_siga_getrecurso_etiqueta('gratuita.busquedaEJG.literal.solicitante', " + idioma + ")" +
 						", (select f_siga_getrecurso(P.DESCRIPCION, " + idioma + ")" +
 						" FROM SCS_PARENTESCO P" +

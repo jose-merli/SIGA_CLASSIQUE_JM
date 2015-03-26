@@ -33,6 +33,7 @@ import org.apache.struts.upload.FormFile;
 import org.redabogacia.sigaservices.app.AppConstants;
 import org.redabogacia.sigaservices.app.AppConstants.ESTADOS_EJG;
 import org.redabogacia.sigaservices.app.AppConstants.GEN_RECURSOS;
+import org.redabogacia.sigaservices.app.AppConstants.PARAMETRO;
 import org.redabogacia.sigaservices.app.autogen.model.CajgRemesa;
 import org.redabogacia.sigaservices.app.autogen.model.EcomCola;
 import org.redabogacia.sigaservices.app.helper.SIGAServicesHelper;
@@ -1214,7 +1215,7 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 		String consulta = "";
 
 		try {
-
+			String longitudNumEjg = (String) request.getSession().getAttribute(PARAMETRO.LONGITUD_CODEJG.toString());
 			DefinicionRemesas_CAJG_Form miForm = (DefinicionRemesas_CAJG_Form) formulario;			
 			miHash = miForm.getDatos();
 			String idremesa = miForm.getIdRemesa();
@@ -1293,7 +1294,8 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 						+ ScsEJGBean.C_FECHARATIFICACION
 						+ ",  "
 						+ UtilidadesMultidioma.getCampoMultidiomaSimple("tipoejg." + ScsTipoEJGBean.C_DESCRIPCION, this.getUserBean(request).getLanguage())
-						+ " as TIPOEJG, ejg."
+						+ " as TIPOEJG,"
+						+" lpad( ejg."+ScsEJGBean.C_NUMEJG+","+longitudNumEjg+",0) as "
 						+ ScsEJGBean.C_NUMEJG
 						+ ", ejg."
 						+ ScsEJGBean.C_FECHAAPERTURA
@@ -1389,7 +1391,7 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 		Hashtable miHash = new Hashtable();
 
 		try {
-
+			String longitudNumEjg = (String) request.getSession().getAttribute(PARAMETRO.LONGITUD_CODEJG.toString());
 			DefinicionRemesas_CAJG_Form miForm = (DefinicionRemesas_CAJG_Form) formulario;
 			admBean = new ScsEJGAdm(this.getUserBean(request));
 			miHash = miForm.getDatos();
@@ -1448,7 +1450,7 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 				// obtengo datos de la consulta
 				
 				Vector datos = null;
-				Hashtable htConsultaBind  = admBean.getBindBusquedaMantenimientoEJG(miHash,  miForm, ScsEJGAdm.TipoVentana.BUSQUEDA_ANIADIR_REMESA, idInstitucion);
+				Hashtable htConsultaBind  = admBean.getBindBusquedaMantenimientoEJG(miHash,  miForm, ScsEJGAdm.TipoVentana.BUSQUEDA_ANIADIR_REMESA, idInstitucion,longitudNumEjg);
 				v = admBean.getBusquedaMantenimientoEJG(htConsultaBind);
 
 				// Rellena un vector de Hastable con la claves primarias de la

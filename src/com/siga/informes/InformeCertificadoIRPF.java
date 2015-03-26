@@ -14,6 +14,7 @@ import java.util.Date;
 import java.util.Hashtable;
 import java.util.Vector;
 
+import org.redabogacia.sigaservices.app.AppConstants.PARAMETRO;
 import org.redabogacia.sigaservices.app.util.ReadProperties;
 import org.redabogacia.sigaservices.app.util.SIGAReferences;
 
@@ -67,7 +68,7 @@ public class InformeCertificadoIRPF extends MasterReport
 	}
 
 	public File getInformeIRPF(MasterForm formulario,
-			UsrBean usr)
+			UsrBean usr,String longitudNumEjg)
 	throws SIGAException, Exception
 	{
 		//Lista de informes generados
@@ -83,7 +84,7 @@ public class InformeCertificadoIRPF extends MasterReport
 		InformesGenericosForm miform = (InformesGenericosForm) formulario;
 
 		//obteniendo del campo idInforme los ids separados por ## y devuelviendo sus beans
-		EnvioInformesGenericos envioInformesGenericos = new EnvioInformesGenericos();
+		EnvioInformesGenericos envioInformesGenericos = new EnvioInformesGenericos(longitudNumEjg);
 		Vector plantillas = envioInformesGenericos.getPlantillasInforme(miform.getIdInforme(),"##", usr);
 
 		String idPersona = null;
@@ -352,7 +353,7 @@ public class InformeCertificadoIRPF extends MasterReport
 	}
 	public void enviarCertificadoIRPFColegiado(UsrBean usrBean,
 			EnvProgramIRPFBean programIRPFBean,
-			EnvEnvioProgramadoBean envioProgramadoBean)
+			EnvEnvioProgramadoBean envioProgramadoBean,String longitudNumEjg)
 	throws ClsExceptions, SIGAException
 	{
 		Envio envio = new Envio(usrBean, envioProgramadoBean.getNombre());
@@ -375,7 +376,7 @@ public class InformeCertificadoIRPF extends MasterReport
 		} else {
 			enviosBean.setIdPlantilla(null);
 		}
-		EnvioInformesGenericos envioInformesGenericos = new EnvioInformesGenericos();
+		EnvioInformesGenericos envioInformesGenericos = new EnvioInformesGenericos(longitudNumEjg);
 		Vector plantillasVector = envioInformesGenericos.getPlantillasInforme(programIRPFBean
 				.getPlantillas(),"##",usrBean);
 		Vector vDocumentos = getDocumentosAEnviar(plantillasVector , programIRPFBean.getPeriodo().toString(),

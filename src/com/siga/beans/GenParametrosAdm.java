@@ -206,4 +206,5 @@ public class GenParametrosAdm extends MasterBeanAdministrador {
 		}
 		return datos;
 	}
+	
 }

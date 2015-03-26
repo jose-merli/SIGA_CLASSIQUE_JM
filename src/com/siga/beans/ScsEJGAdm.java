@@ -4,6 +4,7 @@ import java.util.Hashtable;
 import java.util.Vector;
 
 import org.redabogacia.sigaservices.app.AppConstants.ESTADOS_EJG;
+import org.redabogacia.sigaservices.app.AppConstants.PARAMETRO;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
@@ -106,15 +107,19 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 		return datos;
 	}
 
-	public Hashtable getTituloPantallaEJG (String idInstitucion, String anio, String numero, String idTipoEJG) 
+	public Hashtable getTituloPantallaEJG (String idInstitucion, String anio, String numero, String idTipoEJG, String longitudNumEjg ) 
 	{
 		try {
 			String sql = 	"select " + ScsPersonaJGBean.C_NOMBRE + "," + 
 			                            ScsPersonaJGBean.C_APELLIDO1 + ", " + 
 										ScsPersonaJGBean.C_APELLIDO2 + ", " + 
-										ScsEJGBean.C_ANIO + ", " +
-										ScsEJGBean.C_NUMEJG +", "+
-										ScsEJGBean.C_IDTIPODICTAMENEJG+","+
+										ScsEJGBean.C_ANIO + ", " ;
+										if(longitudNumEjg!=null)
+											sql += "LPAD( a." + ScsEJGBean.C_NUMEJG + ", "+longitudNumEjg+",0)" + ScsEJGBean.C_NUMEJG + ", " ;
+										else
+											sql += " a." + ScsEJGBean.C_NUMEJG + ", " ;
+
+										sql+=ScsEJGBean.C_IDTIPODICTAMENEJG+","+
 										"TO_CHAR("+ScsEJGBean.C_FECHADICTAMEN+", 'DD/MM/YYYY') AS FECHADICTAMEN, "+
 										ScsEJGBean.C_SUFIJO+
 																				
@@ -139,12 +144,13 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 	
 	
 	
-	public Hashtable getDatosEjg (String idInstitucion, String anio, String numero, String idTipoEJG) 
+	public Hashtable getDatosEjg (String idInstitucion, String anio, String numero, String idTipoEJG, String longitudNumEjg) 
 	{
 		try {
 			StringBuffer sql = new StringBuffer();
-			
-			sql.append("SELECT SUFIJO, NUMEJG AS CODIGO, ");
+			sql.append("SELECT SUFIJO, lpad(NUMEJG,");
+			sql.append(longitudNumEjg);
+			sql.append(",0) AS CODIGO, ");
 			sql.append("PJG.NIF,PJG.NOMBRE,PJG.APELLIDO1,PJG.APELLIDO2 ");
 			sql.append("FROM SCS_EJG EJG,SCS_PERSONAJG PJG ");
 			sql.append("WHERE "); 
@@ -1635,10 +1641,11 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 	 * @param  tipoEJG - tipo de EJG
 	 * @param  epoca - anho del expediente	 	  
 	 * @param  numero - numero de expediente
+		 * @param longitudNumEjg 
 	 * @return  Vector - Filas seleccionadas  
 	 * @exception  ClsExceptions  En cualquier caso de error
 	 */
-	public Row getEJGdeSOJ(String institucion, String anio, String tipo, String numero) throws ClsExceptions,SIGAException {
+	public Row getEJGdeSOJ(String institucion, String anio, String tipo, String numero, String longitudNumEjg) throws ClsExceptions,SIGAException {
         RowsContainer rc = new RowsContainer();
         Row fila = null;
 	       try {
@@ -1649,7 +1656,9 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
             "A."+ScsEJGBean.C_IDTIPOEJG+","+
             UtilidadesMultidioma.getCampoMultidioma("B."+ScsTipoEJGBean.C_DESCRIPCION,this.usrbean.getLanguage())+","+
             "A."+ScsEJGBean.C_FECHAAPERTURA+","+
-			"A."+ScsEJGBean.C_NUMEJG+
+            " lpad(A.numejg,"+longitudNumEjg+",0) "+ScsEJGBean.C_NUMEJG+
+            
+			
             " from "+ScsEJGBean.T_NOMBRETABLA +" A,"+ScsTipoEJGBean.T_NOMBRETABLA+" B,"+ScsSOJBean.T_NOMBRETABLA+" C"+
             " where c."+ScsSOJBean.C_IDINSTITUCION+"="+institucion+
             "   and C."+ScsSOJBean.C_ANIO+"="+anio+
@@ -1659,6 +1668,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			"   and A."+ScsEJGBean.C_ANIO+"=C."+ScsSOJBean.C_EJGANIO +
 			"   and A."+ScsEJGBean.C_NUMERO+"=C."+ScsSOJBean.C_EJGNUMERO +
 			"   and A."+ScsEJGBean.C_IDTIPOEJG+"=C."+ScsSOJBean.C_EJGIDTIPOEJG +
+            "   and A."+ScsEJGBean.C_IDINSTITUCION+"=C."+ScsSOJBean.C_IDINSTITUCION +
 			
             "   and C." + ScsSOJBean.C_EJGIDTIPOEJG + "=B." + ScsTipoEJGBean.C_IDTIPOEJG;
 	     
@@ -2006,10 +2016,10 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 
 	}		*/
 	
-	public PaginadorBind getPaginadorBusquedaMantenimientoEJG(Hashtable miHash, DefinirEJGForm miForm, String idInstitucion)throws ClsExceptions,SIGAException {
+	public PaginadorBind getPaginadorBusquedaMantenimientoEJG(Hashtable miHash, DefinirEJGForm miForm, String idInstitucion,String longitudNumEjg)throws ClsExceptions,SIGAException {
 	    	    PaginadorBind paginador=null;
 	       try {
-	            Hashtable htConsultaBind  = getBindBusquedaMantenimientoEJG(miHash,  miForm, TipoVentana.BUSQUEDA_EJG, idInstitucion);
+	            Hashtable htConsultaBind  = getBindBusquedaMantenimientoEJG(miHash,  miForm, TipoVentana.BUSQUEDA_EJG, idInstitucion,longitudNumEjg);
 	            String consulta = (String) htConsultaBind.get(keyBindConsulta);
 	            Hashtable codigos = (Hashtable) htConsultaBind.get(keyBindCodigos);
 						
@@ -2051,7 +2061,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 		return vDatos;
 	}
 	
-	public Hashtable getBindBusquedaMantenimientoEJG(Hashtable miHash, DefinirEJGForm miForm, TipoVentana tipoVentana, String idInstitucion) throws ClsExceptions,SIGAException{
+	public Hashtable getBindBusquedaMantenimientoEJG(Hashtable miHash, DefinirEJGForm miForm, TipoVentana tipoVentana, String idInstitucion,String longitudNumEjg) throws ClsExceptions,SIGAException{
 		
 		// A raiz de la INC_07042_SIGA se revisan los criterios de busqueda eliminado el codigo comentado.
 		// Estamos a 08/04/2010 version 1.4.2.3 del CVS
@@ -2068,15 +2078,19 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 				||(miHash.containsKey("DESCRIPCIONESTADO")) && (!miHash.get("DESCRIPCIONESTADO").toString().equals(""))
 				||esComision;
 		Short[] idInstitucionesComision = usrbean.getInstitucionesComision();
+		
 		// Estos son los campos que devuelve la select
 		String consulta = "SELECT EJG." + ScsEJGBean.C_ANIO + ", " + 
 			" EJG." + ScsEJGBean.C_IDINSTITUCION + ", " + 
 			" EJG." + ScsEJGBean.C_IDTIPOEJG + ", " + 
 			" EJG." + ScsEJGBean.C_IDFACTURACION + ", " +
 			" EJG." + ScsEJGBean.C_FECHARATIFICACION + ", " + 
-			" TIPOEJG." + ScsTipoEJGBean.C_DESCRIPCION +  " as TIPOEJG, " +
-			" EJG." + ScsEJGBean.C_NUMEJG + ", " +
-			" EJG." + ScsEJGBean.C_FECHAAPERTURA + ", " + 
+			" TIPOEJG." + ScsTipoEJGBean.C_DESCRIPCION +  " as TIPOEJG, " ;
+			if(longitudNumEjg!=null)
+				consulta += "LPAD( EJG." + ScsEJGBean.C_NUMEJG + ", "+longitudNumEjg+",0)" + ScsEJGBean.C_NUMEJG + ", " ;
+			else
+				consulta += " EJG." + ScsEJGBean.C_NUMEJG + ", " ;
+			consulta +=" EJG." + ScsEJGBean.C_FECHAAPERTURA + ", " + 
 			" EJG." + ScsEJGBean.C_GUARDIATURNO_IDTURNO + ", " +
 			" EJG." + ScsEJGBean.C_GUARDIATURNO_IDGUARDIA + ", " +
 			" '' AS APELLIDO1, " +
@@ -2086,8 +2100,8 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			}else{
 				consulta += " NVL(F_SIGA_GET_ULTIMOESTADOEJG(EJG.IDINSTITUCION, EJG.IDTIPOEJG, EJG.ANIO, EJG.NUMERO), '') DESC_ESTADO,";
 			}
-			consulta += " EJG." + ScsEJGBean.C_NUMERO + ", " +
-			" EJG." + ScsEJGBean.C_FECHAMODIFICACION + ", " +
+			consulta += " EJG." + ScsEJGBean.C_NUMERO + ", " ;
+			consulta +=" EJG." + ScsEJGBean.C_FECHAMODIFICACION + ", " +
 			" EJG." + ScsEJGBean.C_SUFIJO;
 		if(idInstitucionesComision!=null && idInstitucionesComision.length>0){
 			consulta +=  ",(SELECT INT.ABREVIATURA FROM CEN_INSTITUCION INT WHERE INT.IDINSTITUCION = EJG.IDINSTITUCION) INST_ABREV ";
@@ -2668,7 +2682,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 	}
 	
 	public Vector getCalificacionEjgSalida (String idInstitucion, String tipoEjg,
-			String anio, String numero,String idioma) throws ClsExceptions  
+			String anio, String numero,String idioma, String longitudNumEjg) throws ClsExceptions  
 	{
 		try {
 			Hashtable htCodigos = new Hashtable();
@@ -2688,8 +2702,8 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			sql.append(" ejg.idinstitucion_proc IDINSTITUCIONPROC, ");
 			sql.append(" ejg.idprocurador IDPROCURADOR, ");
 			
-			sql.append(" nvl(ejg.numejg || '/' || substr(ejg.anio, 3, 2), '-') as NUM_SOLICITUD, ");
-			sql.append(" ejg.numejg as NUMERO_EJG, ejg.anio as ANIO_EJG, ");
+			sql.append(" nvl(lpad( ejg.numejg,"+longitudNumEjg+",0) || '/' || substr(ejg.anio, 3, 2), '-') as NUM_SOLICITUD, ");
+			sql.append(" lpad( ejg.numejg,"+longitudNumEjg+",0) as NUMERO_EJG, ejg.anio as ANIO_EJG, ");
 			
 			sql.append(" nvl(to_char(ejg.fechaapertura, 'DD/mm/YYYY'), '-') as FECHA_SOLICITUD, ");
 			//sql.append(" ' ' as SITUACION_LABORAL, ");
@@ -3559,7 +3573,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 		
 	}
 	
-	public Vector getEjgSalida (String idInstitucion, String tipoEjg, String anio, String numero) throws ClsExceptions {
+	public Vector getEjgSalida (String idInstitucion, String tipoEjg, String anio, String numero, String longitudNumEjg) throws ClsExceptions {
 			RowsContainer rc = new RowsContainer();
 			Vector datos = new Vector();
 			
@@ -3586,8 +3600,8 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 				" TO_CHAR(SYSDATE, 'yyyy') AS ANIO_ACTUAL, " +
 				" EJG.IDTIPOEJG, " +
 				" EJG.ANIO, " +
-				" EJG.NUMEJG as NUMERO, " +
-				" (EJG.ANIO || '/' || EJG.NUMEJG) as NUMERO_EJG, " +
+				" lpad(EJG.NUMEJG,"+longitudNumEjg+",0) as NUMERO, " +
+				" (EJG.ANIO || '/' || lpad(EJG.NUMEJG,"+longitudNumEjg+",0)) as NUMERO_EJG, " +
 				" EJG.IDPERSONA, " +		
 			    " EJG.IDPERSONAJG AS IDSOLICITANTEPRINCIPAL,"+
 				" EJG.CALIDAD, " +			
@@ -3833,7 +3847,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 	
 	
 	public Vector getInteresadosEjgSalida (String idInstitucion, String tipoEjg,
-			String anio, String numero,String idioma, String idPersonaJG) throws ClsExceptions  
+			String anio, String numero,String idioma, String idPersonaJG, String longitudNumEjg) throws ClsExceptions  
 	{
 		try {
 			Hashtable htCodigos = new Hashtable();
@@ -3889,7 +3903,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			
 			
 			
-			sql.append(" DECODE(INTERESADO.ANIOEJG, NULL, NULL, INTERESADO.ANIOEJG || '/' || INTERESADO.NUMEJG) AS NUMERO_EJG, ");
+			sql.append(" DECODE(INTERESADO.ANIOEJG, NULL, NULL, INTERESADO.ANIOEJG || '/' || lpad(INTERESADO.NUMEJG,"+longitudNumEjg+",0)) AS NUMERO_EJG, ");
 			sql.append(" F_SIGA_GETCODIDIOMA(INTERESADO.IDLENGUAJE) AS CODIGOLENGUAJE, ");
 			sql.append(" INTERESADO.IDLENGUAJE AS IDLENGUAJE, ");
 			sql.append(" ESTADOCIVIL.DESCRIPCION  as ESTADOCIVILDEFENDIDO, ");
@@ -4492,7 +4506,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 		}
 	}
 	
-	public Vector getDatosRegionConyuge(String idInstitucion, String tipoEjg, String anioEjg, String numeroEjg,String idioma) throws ClsExceptions {	 
+	public Vector getDatosRegionConyuge(String idInstitucion, String tipoEjg, String anioEjg, String numeroEjg,String idioma, String longitudNumEjg) throws ClsExceptions {	 
 
 		RowsContainer rc = new RowsContainer();
 		Vector datos = new Vector();
@@ -4510,7 +4524,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 		sql.append("    EJG3.IDTIPOENCALIDAD AS IDTIPOENCALIDAD,EJG3.CALIDADIDINSTITUCION AS CALIDADIDINSTITUCION,");
 		sql.append("    decode(UFA.SOLICITANTE,1, '"+textoSolicitante+"', null) AS SOLICITANTE, ");
 		sql.append("	PER2.NOMBRE, PER2.APELLIDO1,PER2.APELLIDO2, PER2.DIRECCION, PER2.CODIGOPOSTAL, POB.NOMBRE AS NOMBRE_POB,");
-		sql.append("    PROV.NOMBRE AS NOMBRE_PROV, PAIS.NOMBRE AS NOMBRE_PAIS, EJG3.ANIO AS ANIOEJG, EJG3.NUMEJG, PER2.SEXO, PER2.IDLENGUAJE,");
+		sql.append("    PROV.NOMBRE AS NOMBRE_PROV, PAIS.NOMBRE AS NOMBRE_PAIS, EJG3.ANIO AS ANIOEJG, lpad(EJG3.NUMEJG,"+longitudNumEjg+",0) as NUMEJG, PER2.SEXO, PER2.IDLENGUAJE,");
 		sql.append("    (SELECT TEL2.NUMEROTELEFONO FROM SCS_TELEFONOSPERSONA TEL2 WHERE TEL2.IDINSTITUCION = UFA.IDINSTITUCION AND TEL2.IDPERSONA = UFA.IDPERSONA AND ROWNUM < 2) AS TELEFONO, PER2.OBSERVACIONES");
 		sql.append(" FROM SCS_UNIDADFAMILIAREJG UFA, SCS_PERSONAJG PER2, CEN_POBLACIONES POB, CEN_PROVINCIAS PROV, CEN_PAIS PAIS, SCS_EJG EJG3 ");
 		sql.append(" WHERE UFA.IDINSTITUCION = PER2.IDINSTITUCION");
@@ -4539,7 +4553,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 		}
 	}
 	
-		public Vector getDatosRegionUF(String idInstitucion, String tipoEjg, String anioEjg, String numeroEjg,String idioma) throws ClsExceptions {	 
+		public Vector getDatosRegionUF(String idInstitucion, String tipoEjg, String anioEjg, String numeroEjg,String idioma, String longitudNumEjg) throws ClsExceptions {	 
 
 		RowsContainer rc = new RowsContainer();
 		Vector datos = new Vector();
@@ -4560,7 +4574,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 		sql.append("    EJG3.IDTIPOENCALIDAD AS IDTIPOENCALIDAD,EJG3.CALIDADIDINSTITUCION AS CALIDADIDINSTITUCION, ");
 		sql.append("    decode(UFA.SOLICITANTE,1, '"+textoSolicitante+"', null) AS SOLICITANTE, ");
 		sql.append("    PER2.NOMBRE, PER2.APELLIDO1,PER2.APELLIDO2, PER2.DIRECCION, PER2.CODIGOPOSTAL, POB.NOMBRE AS NOMBRE_POB,");
-		sql.append("    PROV.NOMBRE AS NOMBRE_PROV, PAIS.NOMBRE AS NOMBRE_PAIS, EJG3.ANIO AS ANIOEJG, EJG3.NUMEJG, PER2.SEXO, PER2.IDLENGUAJE,");
+		sql.append("    PROV.NOMBRE AS NOMBRE_PROV, PAIS.NOMBRE AS NOMBRE_PAIS, EJG3.ANIO AS ANIOEJG,lpad(EJG3.NUMEJG,"+longitudNumEjg+",0) as NUMEJG, PER2.SEXO, PER2.IDLENGUAJE,");
 		sql.append("    (SELECT TEL2.NUMEROTELEFONO FROM SCS_TELEFONOSPERSONA TEL2 WHERE TEL2.IDINSTITUCION = UFA.IDINSTITUCION AND TEL2.IDPERSONA = UFA.IDPERSONA AND ROWNUM < 2) AS TELEFONO, PER2.OBSERVACIONES");
 		sql.append(" FROM SCS_UNIDADFAMILIAREJG UFA, SCS_PERSONAJG PER2, CEN_POBLACIONES POB, CEN_PROVINCIAS PROV, CEN_PAIS PAIS, SCS_EJG EJG3 ");
 		sql.append(" WHERE UFA.IDINSTITUCION = PER2.IDINSTITUCION");
@@ -4589,7 +4603,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 		}
 	}
 
-	public Vector getDatosInformeEjg (String idInstitucion, String tipoEjg, String anioEjg, String numeroEjg, boolean isSolicitantes,boolean isAcontrarios, String idDestinatario,String tipoDestinatario,boolean generarInformeSinDireccion, String tipoDestinatarioInforme, boolean agregarEtiqDesigna) throws ClsExceptions, SIGAException {	 
+	public Vector getDatosInformeEjg (String idInstitucion, String tipoEjg, String anioEjg, String numeroEjg, boolean isSolicitantes,boolean isAcontrarios, String idDestinatario,String tipoDestinatario,boolean generarInformeSinDireccion, String tipoDestinatarioInforme, boolean agregarEtiqDesigna, String longitudNumEjg) throws ClsExceptions, SIGAException {	 
 		Vector vSalida = null;		
 		Hashtable htFuncion = new Hashtable();
 		HelperInformesAdm helperInformes = new HelperInformesAdm();
@@ -4615,7 +4629,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 		try {
 
 			vSalida = new Vector();
-			Vector vEjg = getEjgSalida(idInstitucion, tipoEjg,anioEjg, numeroEjg); 
+			Vector vEjg = getEjgSalida(idInstitucion, tipoEjg,anioEjg, numeroEjg,longitudNumEjg); 
 			String idiomainforme="ES";
 			for (int j = 0; j < vEjg.size(); j++) {
 				Hashtable registro = (Hashtable) vEjg.get(j);
@@ -4634,7 +4648,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
                         ScsDesignaAdm scsDesignaAdm = new ScsDesignaAdm(this.usrbean);
                         boolean agregarEtiqEJG=false;
                        
-                        Vector designasRelVector = scsDesignaAdm.getDatosSalidaOficio((String)registro.get("DES_INSTITUCION"),(String)registro.get("DES_IDTURNO"),(String)registro.get("DES_ANIO"),(String)registro.get("DES_NUMERO"),null,isSolicitantes,isAcontrarios,idPersonaJG,this.usrbean.getLanguage(),this.usrbean.getLanguageExt(),tipoDestinatarioInforme, agregarEtiqEJG);
+                        Vector designasRelVector = scsDesignaAdm.getDatosSalidaOficio((String)registro.get("DES_INSTITUCION"),(String)registro.get("DES_IDTURNO"),(String)registro.get("DES_ANIO"),(String)registro.get("DES_NUMERO"),null,isSolicitantes,isAcontrarios,idPersonaJG,this.usrbean.getLanguage(),this.usrbean.getLanguageExt(),tipoDestinatarioInforme, agregarEtiqEJG,longitudNumEjg);
                        
                         Hashtable designasRel = new Hashtable();
                        
@@ -4804,7 +4818,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 					actualizarDatosFechaRemitidoComision(idInstitucion, tipoEjg, anioEjg, numeroEjg, idioma, registro);
 					actualizarDatosFechaReunionActa(idInstitucion, tipoEjg, anioEjg, numeroEjg, idioma, registro);
 
-					Vector vDefendidos = getInteresadosEjgSalida(idInstitucion,tipoEjg,anioEjg,numeroEjg,idioma,idPersonaJG);
+					Vector vDefendidos = getInteresadosEjgSalida(idInstitucion,tipoEjg,anioEjg,numeroEjg,idioma,idPersonaJG,longitudNumEjg);
 					Vector contrariosEjgVector = getContrariosEjg(idInstitucion, tipoEjg, anioEjg, numeroEjg,idContrario);
 
 					if(isSolicitantes || isAcontrarios){
@@ -4932,7 +4946,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 				}else if(tipoDestinatarioInforme.equals("S") || tipoDestinatarioInforme.equals(EnvDestinatariosBean.TIPODESTINATARIO_SCSPERSONAJG)){
 					//					Sacamos los interesados el EJG  y los recorremos
 
-					Vector vDefendidos = getInteresadosEjgSalida(idInstitucion,tipoEjg,anioEjg,numeroEjg,idioma,idPersonaJG);
+					Vector vDefendidos = getInteresadosEjgSalida(idInstitucion,tipoEjg,anioEjg,numeroEjg,idioma,idPersonaJG,longitudNumEjg);
 					Vector contrariosEjgVector = getContrariosEjg(idInstitucion, tipoEjg, anioEjg, numeroEjg,idContrario);
 					registro.put("NOMBRE_CONTRARIO", "");
 					registro.put("DOMICILIO_CONTRARIO", "");
@@ -4958,7 +4972,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 							helperInformesAdm.setIdiomaInforme(idInstitucion,idPersonaJG, AdmInformeBean.TIPODESTINATARIO_SCSPERSONAJG,clone, usrbean);
 							idioma = (String)clone.get("idioma");
 							idiomainforme= (String)clone.get("idiomaExt");
-							Vector defendidoVector = getInteresadosEjgSalida(idInstitucion, tipoEjg, anioEjg, numeroEjg, idioma, idPersonaJG);
+							Vector defendidoVector = getInteresadosEjgSalida(idInstitucion, tipoEjg, anioEjg, numeroEjg, idioma, idPersonaJG,longitudNumEjg);
 							//solo hay uno ya que filtramos por PK
 							Hashtable registroDefendidoConDatos = (Hashtable) defendidoVector.get(0);
 							clone.putAll(registroDefendidoConDatos);
@@ -5154,7 +5168,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 								clone.put("NOMBRE_PROVINCIA_DEST", (String) clone.get("PROVINCIA_PJG"));
 
 							}
-							Vector vDefendidos = getInteresadosEjgSalida(idInstitucion,tipoEjg,anioEjg,numeroEjg,idioma,idPersonaJG);
+							Vector vDefendidos = getInteresadosEjgSalida(idInstitucion,tipoEjg,anioEjg,numeroEjg,idioma,idPersonaJG,longitudNumEjg);
 							
 							actualizarDefendidos(idInstitucion, tipoEjg, anioEjg, numeroEjg, idPersonaJG, vDefendidos, idioma, idiomainforme, clone);
 							
@@ -5240,7 +5254,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 					actualizarDatosFechaRemitidoComision(idInstitucion, tipoEjg, anioEjg, numeroEjg, idioma, registro);
 					actualizarDatosFechaReunionActa(idInstitucion, tipoEjg, anioEjg, numeroEjg, idioma, registro);
 
-					Vector vDefendidos = getInteresadosEjgSalida(idInstitucion,tipoEjg,anioEjg,numeroEjg,idioma,idPersonaJG);
+					Vector vDefendidos = getInteresadosEjgSalida(idInstitucion,tipoEjg,anioEjg,numeroEjg,idioma,idPersonaJG,longitudNumEjg);
 					Vector contrariosEjgVector = getContrariosEjg(idInstitucion, tipoEjg, anioEjg, numeroEjg,idContrario);
 
 					if(isSolicitantes || isAcontrarios){

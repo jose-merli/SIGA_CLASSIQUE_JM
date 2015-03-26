@@ -678,7 +678,7 @@ public class ScsDefinirSOJAdm extends MasterBeanAdministrador {
 	public Hashtable getDatosInformeSOJ(Integer idInstitucion,
 			Integer idTipoSOJ,
 			Integer anio,
-			Integer numero,String idioma) throws ClsExceptions
+			Integer numero,String idioma,String longitudNumEjg) throws ClsExceptions
 	{
 
 		Hashtable<Integer, Object> htCodigos = new Hashtable<Integer, Object>();
@@ -689,7 +689,9 @@ public class ScsDefinirSOJAdm extends MasterBeanAdministrador {
 		sql.append(" F_SIGA_GETRECURSO(TIPOSOJC.DESCRIPCION,"+idioma+") DESCRIPCIONTIPOSOJCOLEGIO, ");
 		sql.append(" F_SIGA_GETRECURSO(TC.DESCRIPCION, "+idioma+") DESCRIPCIONTIPOCONSULTA, ");
 		sql.append(" F_SIGA_GETRECURSO(TR.DESCRIPCION, "+idioma+") DESCRIPCIONTIPORESPUESTA, ");
-		sql.append(" EJG.NUMEJG ");
+		sql.append(" LPAD(EJG.NUMEJG,");
+		sql.append(longitudNumEjg);
+		sql.append(" ,0) NUMEJG");
 		sql.append(" FROM SCS_SOJ       SOJ, ");
 		sql.append(" SCS_TIPOSOJ        TIPOSOJ, ");
 		sql.append(" SCS_TIPOSOJCOLEGIO TIPOSOJC, ");

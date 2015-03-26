@@ -11,6 +11,8 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Vector;
 
+import org.redabogacia.sigaservices.app.AppConstants.PARAMETRO;
+
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.Row;
@@ -324,14 +326,13 @@ public class ScsActaComisionAdm extends MasterBeanAdministrador {
 		return false;	
 	}
 	
-	public Vector<Hashtable<String, String>> getListadoEJGActa(String idActa, String anioActa, String idInstitucion) throws ClsExceptions {
-		
+	public Vector<Hashtable<String, String>> getListadoEJGActa(String idActa, String anioActa, String idInstitucion,String longitudNumEjg) throws ClsExceptions {
 		StringBuffer consulta = new StringBuffer();
 		RowsContainer rc = new RowsContainer(); 
 		Vector resultado = new Vector();
 		consulta.append("select ");
 		consulta.append(" ejg."+ScsEJGBean.C_ANIO + " as ANIO");
-		consulta.append(", ejg."+ScsEJGBean.C_NUMEJG + " as NUMERO");
+		consulta.append(", lpad(ejg."+ScsEJGBean.C_NUMEJG + ","+longitudNumEjg+",0) as NUMERO");
 		consulta.append(", ejg."+ScsEJGBean.C_FECHAAPERTURA + " as FECHAAPERTURA");
 		consulta.append(", tur."+ScsTurnoBean.C_NOMBRE + " as TURNO");
 		consulta.append(", gua."+ScsGuardiasTurnoBean.C_NOMBRE  + " as GUARDIA");
@@ -442,17 +443,19 @@ public class ScsActaComisionAdm extends MasterBeanAdministrador {
 	 * @param idInstitucion
 	 * @param idActa
 	 * @param anioActa
+	 * @param longitudNumEjg 
 	 * @return
 	 * @throws ClsExceptions 
 	 * @throws SIGAException 
 	 */
-	public Vector getEJGsInforme(String idInstitucion, String idActa, String anioActa) throws ClsExceptions, SIGAException {
+	public Vector getEJGsInforme(String idInstitucion, String idActa, String anioActa, String longitudNumEjg) throws ClsExceptions, SIGAException {
 		RowsContainer rc = new RowsContainer();
 		Vector datos = new Vector();
 		
 		String sql = "SELECT rownum as NACUERDO, DATOS.* FROM (" +
 			"SELECT EJG." + ScsEJGBean.C_ANIO + " as ANIO, " +
-				" EJG." + ScsEJGBean.C_NUMEJG + " as NUMERO, " +
+				" lpad(EJG."+ScsEJGBean.C_NUMEJG + ","+longitudNumEjg+",0) as NUMERO, "+
+				
 				" TO_CHAR(EJG." + ScsEJGBean.C_FECHAAPERTURA + ", 'dd/mm/yyyy') as " + ScsEJGBean.C_FECHAAPERTURA + ", " +
 				" TUR." + ScsTurnoBean.C_NOMBRE + " as TURNO, " + 
 				" GUA." + ScsGuardiasTurnoBean.C_NOMBRE  + " as GUARDIA, " + 
@@ -543,17 +546,19 @@ public class ScsActaComisionAdm extends MasterBeanAdministrador {
 	 * @param idInstitucion
 	 * @param idActa
 	 * @param anioActa
+	 * @param longitudNumEjg 
 	 * @return
 	 * @throws ClsExceptions 
 	 * @throws SIGAException 
 	 */
-	public Vector getEJGsPendientes(String idInstitucion, String idActa, String anioActa) throws ClsExceptions, SIGAException {
+	public Vector getEJGsPendientes(String idInstitucion, String idActa, String anioActa, String longitudNumEjg) throws ClsExceptions, SIGAException {
 		RowsContainer rc = new RowsContainer();
 		Vector datos = new Vector();
 		
 		String sql = "SELECT rownum as NACUERDO, DATOS.* FROM (" +
 			"SELECT EJG." + ScsEJGBean.C_ANIO + " as ANIO, " +
-				" EJG." + ScsEJGBean.C_NUMEJG + " as NUMERO, " +
+				" lpad(EJG."+ScsEJGBean.C_NUMEJG + ","+longitudNumEjg+",0) as NUMERO, "+
+				
 				" TO_CHAR(EJG." + ScsEJGBean.C_FECHAAPERTURA + ", 'dd/mm/yyyy') as " + ScsEJGBean.C_FECHAAPERTURA + ", " +
 				" TUR." + ScsTurnoBean.C_NOMBRE + " as TURNO, " + 
 				" GUA." + ScsGuardiasTurnoBean.C_NOMBRE  + " as GUARDIA, " + 
@@ -640,16 +645,17 @@ public class ScsActaComisionAdm extends MasterBeanAdministrador {
 	 * @param idInstitucion
 	 * @param idActa
 	 * @param anioActa
+	 * @param longitudNumEjg 
 	 * @return
 	 * @throws ClsExceptions 
 	 * @throws SIGAException 
 	 */
-	public Vector getEJGsPendientesPonentes(String idInstitucion, String idActa, String anioActa) throws ClsExceptions, SIGAException {
+	public Vector getEJGsPendientesPonentes(String idInstitucion, String idActa, String anioActa, String longitudNumEjg) throws ClsExceptions, SIGAException {
 		RowsContainer rc = new RowsContainer();
 		Vector datos = new Vector();
 		
 		String sql = "SELECT F_SIGA_GETRECURSO(PON." + ScsPonenteBean.C_NOMBRE + ", 1) as PONENTE, " +
-				" REPLACE(WM_CONCAT(EJG." + ScsEJGBean.C_ANIO + " || '/' || EJG." + ScsEJGBean.C_NUMEJG + "), ',', ', ') as LISTAEJG " +
+				" REPLACE(WM_CONCAT(EJG." + ScsEJGBean.C_ANIO + " || '/' || LPAD(EJG." + ScsEJGBean.C_NUMEJG + ","+longitudNumEjg+",0)), ',', ', ') as LISTAEJG " +
 				" ,EJG." + ScsEJGBean.C_IDINSTITUCION +" " +
 			" FROM " + ScsEJGBean.T_NOMBRETABLA + " EJG, " + 
 				ScsPonenteBean.T_NOMBRETABLA +" PON " +
@@ -702,15 +708,16 @@ public class ScsActaComisionAdm extends MasterBeanAdministrador {
 	 * @param idInstitucion
 	 * @param idActa
 	 * @param anioActa
+	 * @param longitudNumEjg 
 	 * @return
 	 * @throws ClsExceptions 
 	 * @throws SIGAException 
 	 */
-	public Vector getEJGsRetirados(int idInstitucion, int idActa, int anioActa) throws ClsExceptions, SIGAException {
+	public Vector getEJGsRetirados(int idInstitucion, int idActa, int anioActa, String longitudNumEjg) throws ClsExceptions, SIGAException {
 		RowsContainer rc = new RowsContainer();
 		Vector ejgPendientes = new Vector();
 		
-		String sql=getConsultaEJGsRetirados(idInstitucion, idActa, anioActa);
+		String sql=getConsultaEJGsRetirados(idInstitucion, idActa, anioActa,longitudNumEjg);
  		
 		Vector datos = new Vector();
 		try{    	   	    	   			
@@ -730,13 +737,13 @@ public class ScsActaComisionAdm extends MasterBeanAdministrador {
 		return datos;			
 	}
 	
-	public Vector updateEJGsRetirados(int idInstitucion, int idActa, int anioActa) throws ClsExceptions, SIGAException {
+	public Vector updateEJGsRetirados(int idInstitucion, int idActa, int anioActa, String longitudNumejg) throws ClsExceptions, SIGAException {
 		RowsContainer rc = new RowsContainer();
 		Vector ejgPendientes = new Vector();
 		
 		ScsEJGAdm ejgAdm = new ScsEJGAdm(this.usrbean);
 		
-		String sql=getConsultaEJGsRetirados(idInstitucion, idActa, anioActa);
+		String sql=getConsultaEJGsRetirados(idInstitucion, idActa, anioActa,longitudNumejg);
 		
  		
 		Vector datos = new Vector<Hashtable>();
@@ -781,13 +788,13 @@ public class ScsActaComisionAdm extends MasterBeanAdministrador {
 	}
 	
 	
-	private String getConsultaEJGsRetirados(int idInstitucion, int idActa, int anioActa){
+	private String getConsultaEJGsRetirados(int idInstitucion, int idActa, int anioActa,String longitudNumejg){
 		String sql = "select " + 
 		  " ejg."+ScsEJGBean.C_ANIO+"," + 
 		  " ejg."+ScsEJGBean.C_IDINSTITUCION+"," +
 		  " ejg."+ScsEJGBean.C_IDTIPOEJG+"," +
 		  " ejg."+ScsEJGBean.C_NUMERO+"," +
-		  " ejg."+ScsEJGBean.C_NUMEJG+"," +
+		  " lpad(ejg."+ScsEJGBean.C_NUMEJG+","+longitudNumejg+",0) "+ScsEJGBean.C_NUMEJG+"," +
 		  " ejg."+ScsEJGBean.C_IDTIPORATIFICACIONEJG +
 		  " from "+ScsEJGBean.T_NOMBRETABLA +" ejg" +
 		  " where ejg."+ScsEJGBean.C_IDTIPORATIFICACIONEJG +" in (4,6) " +

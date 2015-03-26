@@ -384,7 +384,7 @@
 								</td>
 							
 								<td>
-									<siga:Select id="juzgado" onLoadCallback="seleccionarJuzgadoInicial();" queryId="<%=comboJuzgados%>" params="<%=paramsJuzgadoJSON%>" parentQueryParamIds="idjuzgado,fechadesdevigor,fechahastavigor,idturno" required="true" selectedIds="<%=elementoSelJuzgado%>"  showSearchBox="true" searchkey="CODIGOEXT2" searchBoxMaxLength="10" searchBoxWidth="8" width="515" required="true" childrenIds="idPretension,idProcedimiento"/>		
+									<siga:Select id="juzgado" onLoadCallback="seleccionarJuzgadoInicial();" queryId="<%=comboJuzgados%>" params="<%=paramsJuzgadoJSON%>" parentQueryParamIds="idjuzgado,fechadesdevigor,fechahastavigor,idturno" required="true" selectedIds="<%=elementoSelJuzgado%>"  showSearchBox="true" searchkey="CODIGOEXT2" searchBoxMaxLength="10" searchBoxWidth="8" width="515" required="true" />		
 								</td>
 								
 							<%}else{%>
@@ -393,7 +393,7 @@
 								</td>
 					
 								<td>
-									<siga:Select id="juzgado" onLoadCallback="seleccionarJuzgadoInicial();" queryId="<%=comboJuzgados%>" params="<%=paramsJuzgadoJSON%>" parentQueryParamIds="idjuzgado,fechadesdevigor,fechahastavigor,idturno" required="true" selectedIds="<%=elementoSelJuzgado%>" showSearchBox="true" searchkey="CODIGOEXT2" searchBoxMaxLength="10" searchBoxWidth="8" width="515"  childrenIds="idPretension,idProcedimiento"/>		
+									<siga:Select id="juzgado" onLoadCallback="seleccionarJuzgadoInicial();" queryId="<%=comboJuzgados%>" params="<%=paramsJuzgadoJSON%>" parentQueryParamIds="idjuzgado,fechadesdevigor,fechahastavigor,idturno" required="true" selectedIds="<%=elementoSelJuzgado%>" showSearchBox="true" searchkey="CODIGOEXT2" searchBoxMaxLength="10" searchBoxWidth="8" width="515"  />		
 								</td>
 							<%}%>
 						 
@@ -499,7 +499,6 @@
 		}
 		<!-- Funcion asociada a boton buscar -->
 		// documen
-		
 	</script>
 	<!-- FIN: SCRIPTS BOTONES -->
 

@@ -14,6 +14,7 @@ import javax.transaction.UserTransaction;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.redabogacia.sigaservices.app.AppConstants.PARAMETRO;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
@@ -224,6 +225,7 @@ public class DefinirDatosGeneralesSOJAction extends MasterAction {
 		
 		DatosGeneralesSOJForm miForm = (DatosGeneralesSOJForm) formulario;
 		ScsDefinirSOJAdm admBean =  new ScsDefinirSOJAdm(this.getUserBean(request));
+		String longitudNumEjg = (String) request.getSession().getAttribute(PARAMETRO.LONGITUD_CODEJG.toString());
 		Hashtable miHash = new Hashtable();
 		String consulta = "";
 		String institucion=null;
@@ -268,7 +270,7 @@ public class DefinirDatosGeneralesSOJAction extends MasterAction {
 			
 			
 			ScsEJGAdm ejgAdm =  new ScsEJGAdm(this.getUserBean(request));
-			Row ejg=ejgAdm.getEJGdeSOJ(institucion, anio, tipoSoj, numero);
+			Row ejg=ejgAdm.getEJGdeSOJ(institucion, anio, tipoSoj, numero,longitudNumEjg);
 			miForm.setEJG((ejg==null?null:ejg.getRow()));
 			
 			String informeUnico = ClsConstants.DB_TRUE;

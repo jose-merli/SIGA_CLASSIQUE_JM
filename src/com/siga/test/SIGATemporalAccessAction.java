@@ -17,10 +17,16 @@ import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.redabogacia.sigaservices.app.AppConstants.ErroresValidacionCensoWSClient;
+import org.redabogacia.sigaservices.app.AppConstants.MODULO;
+import org.redabogacia.sigaservices.app.AppConstants.PARAMETRO;
 import org.redabogacia.sigaservices.app.autogen.model.CenInstitucion;
 import org.redabogacia.sigaservices.app.autogen.model.EstUserRegistry;
+import org.redabogacia.sigaservices.app.autogen.model.GenParametros;
 import org.redabogacia.sigaservices.app.services.cen.CenInstitucionService;
 import org.redabogacia.sigaservices.app.services.est.EstadisticasUserRegistryService;
+import org.redabogacia.sigaservices.app.services.gen.GenParametrosService;
+import org.redabogacia.sigaservices.app.services.gen.impl.GenParametrosServiceImpl;
 import org.redabogacia.sigaservices.app.util.PropertyReader;
 import org.redabogacia.sigaservices.app.util.SIGAReferences;
 
@@ -248,19 +254,32 @@ public class SIGATemporalAccessAction extends Action
 			}
 		}
 		
+		
 		usrbean.setLanguage(idLenguaje);
 		usrbean.setLanguageExt(idLenguajeExt);
 		usrbean.setLanguageInstitucion(idLenguajeInstitucion);
 		
 		HttpSession ses= request.getSession();
 		ses.setAttribute(Globals.LOCALE_KEY, new java.util.Locale(idLenguajeExt.toLowerCase(), "es"));
+			
 
 		//ses.setAttribute(Globals.LOCALE_KEY, new java.util.Locale("es", "es"));
 		ClsLogging.writeFileLog("LENGUAJE "+sInsti+" = " + idLenguaje + " ("+idLenguajeExt+")",7);
 		
 		usrbean.setUserDescription("USUARIO DE PRUEBAS");
 		ses.setAttribute("USRBEAN", usrbean);
-		
+		if(ses.getAttribute(PARAMETRO.LONGITUD_CODEJG.toString())==null){
+			GenParametrosService genParametrosService = (GenParametrosService) bm.getService(GenParametrosService.class);
+			GenParametros genParametros = new GenParametros();
+			genParametros.setIdinstitucion(cenInstitucion.getIdinstitucion());
+			genParametros.setModulo(MODULO.SCS.toString());
+			genParametros.setParametro(PARAMETRO.LONGITUD_CODEJG.toString());
+			genParametros =  genParametrosService.getGenParametroInstitucionORvalor0(genParametros);
+			if (genParametros != null && genParametros.getValor() != null) {
+				ses.setAttribute(PARAMETRO.LONGITUD_CODEJG.toString(), genParametros.getValor());
+				ClsLogging.writeFileLog("Tamaño EJGs:"+genParametros.getValor(),1);
+			} 
+		}
 		initStyles(location, ses);
 		
 		// RGG 13/01/2007 cambio para obtener IP

@@ -19,6 +19,7 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.redabogacia.sigaservices.app.AppConstants;
+import org.redabogacia.sigaservices.app.AppConstants.PARAMETRO;
 import org.redabogacia.sigaservices.app.util.ReadProperties;
 import org.redabogacia.sigaservices.app.util.SIGAReferences;
 
@@ -112,13 +113,14 @@ public class MantenimientoAsistenciasAction extends MasterAction
 	 * @param  formulario -  Action Form asociado a este Action
 	 * @param  request - objeto llamada HTTP 
 	 * @param  response - objeto respuesta HTTP
+	 * @param longitudNumEjg 
 	 * @return  String  Destino del action  
 	 * @exception  ClsExceptions  En cualquier caso de error
 	 */
 	protected String abrir(ActionMapping mapping, 		
 				MasterForm formulario, 
 				HttpServletRequest request, 
-				HttpServletResponse response) throws SIGAException 
+				HttpServletResponse response, String longitudNumEjg) throws SIGAException 
     {
 		String sEsFichaColegial = (String)request.getParameter("esFichaColegial");
 		
@@ -138,7 +140,7 @@ public class MantenimientoAsistenciasAction extends MasterAction
 							" A.ANIO ANIO, A.NUMERO NUMERO,A.FECHAANULACION, B.ABREVIATURA TURNO, BB.NOMBRE DES_DESIGNA_TURNO, C.NOMBRE GUARDIA,"+
 							" D.FECHAENTRADA FECHA, E.NIF NIFASISTIDO, E.NOMBRE NOMBREAASISTIDO, E.IDPERSONA IDPERSONAJG, "+
 							" E.APELLIDO1 APELLIDO1ASISTIDO, E.APELLIDO2 APELLIDO2ASISTIDO,"+
-							" F.ANIO ANIOEJG, F.NUMERO NUMEROEJG, F.NUMEJG CODIGO_EJG, " + UtilidadesMultidioma.getCampoMultidiomaSimple("G.DESCRIPCION",this.getUserBean(request).getLanguage()) + " TIPOEJG, G.IDTIPOEJG IDTIPOEJG,"+
+							" F.ANIO ANIOEJG, F.NUMERO NUMEROEJG, lpad(F.NUMEJG,"+longitudNumEjg+",0) CODIGO_EJG, " + UtilidadesMultidioma.getCampoMultidiomaSimple("G.DESCRIPCION",this.getUserBean(request).getLanguage()) + " TIPOEJG, G.IDTIPOEJG IDTIPOEJG,"+
 							" F.FECHAAPERTURA FECHAAPERTURA, A.DESIGNA_ANIO DESIGNA_ANIO, A.DESIGNA_TURNO DESIGNA_TURNO,"+
 							" A.DESIGNA_NUMERO DESIGNA_NUMERO, B.NOMBRE NOMBRETURNO, D.FECHAENTRADA FECHAENTRADA,"+
 							" A.IDTIPOASISTENCIA TIPOASISTENCIA,A.IDTIPOASISTENCIACOLEGIO TIPOASISTENCIACOLEGIO,"+ 
@@ -1073,6 +1075,7 @@ public class MantenimientoAsistenciasAction extends MasterAction
 		UserTransaction tx = null;
 		try {
 			AsistenciasForm miForm 	= (AsistenciasForm)formulario;
+			String longitudNumEjg = (String) request.getSession().getAttribute(PARAMETRO.LONGITUD_CODEJG.toString());
 			// Relacionamos la asistencia con la designa
 			
 			mapDestino = this.relacionarConDesigna(true, miForm, request);
@@ -1124,7 +1127,7 @@ public class MantenimientoAsistenciasAction extends MasterAction
 				ScsDesignaAdm desAdm = new ScsDesignaAdm(this.getUserBean(request));
 				Vector vRelacionados = new Vector(); 
 				vRelacionados = desAdm.getRelacionadoCon (	miForm.getIdInstitucion(), miForm.getDesigna_anio(), 
-															miForm.getDesigna_numero(), miForm.getDesigna_turno());
+															miForm.getDesigna_numero(), miForm.getDesigna_turno(),longitudNumEjg);
 				// Recorremos el vector 
 				if (vRelacionados.size()>0){
 					// Solo nos quedaremos con el relacionado si es unico

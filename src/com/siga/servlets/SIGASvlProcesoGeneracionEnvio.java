@@ -7,6 +7,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.redabogacia.sigaservices.app.AppConstants.PARAMETRO;
+
 import com.atos.utils.ClsLogging;
 import com.siga.envios.EnvioInformesGenericos;
 
@@ -37,7 +39,7 @@ public class SIGASvlProcesoGeneracionEnvio extends HttpServlet {
    		{
    			out.println("INICIO PROCESO AUTOMATICO DE GENERACION DE ENVIOS EN BACKGROUND");
 			
-   			EnvioInformesGenericos envios = new EnvioInformesGenericos();
+   			EnvioInformesGenericos envios = new EnvioInformesGenericos((String) request.getSession().getAttribute(PARAMETRO.LONGITUD_CODEJG.toString()));
    			envios.procesarAutomaticamenteGeneracionEnvios();
    			
    	        response.setContentType("text/html");

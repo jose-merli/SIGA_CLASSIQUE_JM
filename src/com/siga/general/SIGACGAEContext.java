@@ -14,8 +14,12 @@ import javax.servlet.http.HttpSession;
 import javax.transaction.UserTransaction;
 
 import org.apache.struts.action.ActionServlet;
+import org.redabogacia.sigaservices.app.AppConstants.MODULO;
+import org.redabogacia.sigaservices.app.AppConstants.PARAMETRO;
 import org.redabogacia.sigaservices.app.autogen.model.CenInstitucion;
+import org.redabogacia.sigaservices.app.autogen.model.GenParametros;
 import org.redabogacia.sigaservices.app.services.cen.CenInstitucionService;
+import org.redabogacia.sigaservices.app.services.gen.GenParametrosService;
 import org.redabogacia.sigaservices.app.util.PropertyReader;
 import org.redabogacia.sigaservices.app.util.ReadProperties;
 import org.redabogacia.sigaservices.app.util.SIGAReferences;
@@ -300,6 +304,20 @@ System.setProperties(properties);
 			setIdioma(new Long(idPersona),Integer.valueOf(bean.getLocation()),bean);
 			
 			tx.commit();
+			HttpSession ses= request.getSession();
+			if(ses!=null && ses.getAttribute(PARAMETRO.LONGITUD_CODEJG.toString())==null){
+				GenParametrosService genParametrosService = (GenParametrosService) bm.getService(GenParametrosService.class);
+				GenParametros genParametros = new GenParametros();
+				genParametros.setIdinstitucion(cenInstitucion.getIdinstitucion());
+				genParametros.setModulo(MODULO.SCS.toString());
+				genParametros.setParametro(PARAMETRO.LONGITUD_CODEJG.toString());
+				genParametros =  genParametrosService.getGenParametroInstitucionORvalor0(genParametros);
+				if (genParametros != null && genParametros.getValor() != null) {
+					ses.setAttribute(PARAMETRO.LONGITUD_CODEJG.toString(), genParametros.getValor());
+					ClsLogging.writeFileLog("Tamaño EJGs:"+genParametros.getValor(),1);
+				} 
+			}
+			
 		}
 		catch (Exception e) {
 			try { if (tx!=null) tx.rollback(); } catch(Exception el) {}

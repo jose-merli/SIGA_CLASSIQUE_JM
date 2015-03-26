@@ -16,6 +16,7 @@ import javax.servlet.http.HttpSession;
 import javax.transaction.UserTransaction;
 
 import org.apache.struts.action.ActionMapping;
+import org.redabogacia.sigaservices.app.AppConstants.PARAMETRO;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
@@ -447,7 +448,7 @@ public class ExpSeguimientoAction extends MasterAction {
 		
 		try{
 			UsrBean userBean = ((UsrBean)request.getSession().getAttribute(("USRBEAN")));   
-		    
+			String longitudNumEjg = (String) request.getSession().getAttribute(PARAMETRO.LONGITUD_CODEJG.toString());
 		    ExpAnotacionAdm anotAdm = new ExpAnotacionAdm(this.getUserBean(request));
 		    ExpSeguimientoForm form = (ExpSeguimientoForm)formulario;
 		    
@@ -503,7 +504,8 @@ public class ExpSeguimientoAction extends MasterAction {
 		    		hInst.put(CenInstitucionBean.C_IDINSTITUCION,userBean.getLocation());
 		    		CenInstitucionBean instBean = (CenInstitucionBean) instAdm.select(hInst).elementAt(0);
 		    		try{
-		    			alertaAdm.insertarAlerta(expBean,instBean.getAbreviatura()+" ha anhadido una anotación nueva");
+		    			
+		    			alertaAdm.insertarAlerta(expBean,instBean.getAbreviatura()+" ha anhadido una anotación nueva",longitudNumEjg);
 		    		}catch(Exception e){
 		    			throw new ClsExceptions(e,"Error al insertar una alerta"); 
 		    		}
@@ -519,7 +521,8 @@ public class ExpSeguimientoAction extends MasterAction {
 		    	
 		    	if (taBean.getMensaje()!=null && !taBean.getMensaje().equals("")){
 		    		try{
-		    			alertaAdm.insertarAlerta(expBean,taBean.getMensaje());
+		    			
+		    			alertaAdm.insertarAlerta(expBean,taBean.getMensaje(),longitudNumEjg);
 		    		}catch(Exception e){
 		    			throw new ClsExceptions(e,"Error al insertar una alerta"); 
 		    		}

@@ -25,6 +25,7 @@
 <%@ page import="java.util.Properties"%>
 <%@ page import="java.util.Vector"%>
 <%@ page import="java.util.Hashtable"%>
+<%@page import="org.redabogacia.sigaservices.app.AppConstants.PARAMETRO"%>
 <!-- JSP -->
 <% 
 	String app=request.getContextPath();
@@ -111,7 +112,7 @@
 							idTipoTurno   = request.getParameter("idTipoEJG");
 							idInstitucion = request.getParameter("IDINSTITUCION");
 							ScsEJGAdm adm = new ScsEJGAdm (usr);
-							hTitulo = adm.getTituloPantallaEJG(idInstitucion, anio, numero, idTipoTurno);
+							hTitulo = adm.getTituloPantallaEJG(idInstitucion, anio, numero, idTipoTurno,(String) request.getSession().getAttribute(PARAMETRO.LONGITUD_CODEJG.toString()));
 
 							if (hTitulo != null) {
 								t_anio      = (String)hTitulo.get(ScsEJGBean.C_ANIO);

@@ -21,6 +21,7 @@
 <%@ taglib uri = "struts-logic.tld" prefix="logic"%>
 
 <!-- IMPORTS -->
+<%@page import="org.redabogacia.sigaservices.app.AppConstants.PARAMETRO"%>
 <%@ page import="com.siga.beans.ScsEJGBean"%>
 <%@ page import="com.siga.administracion.SIGAConstants"%>
 <%@ page import="com.siga.gui.processTree.SIGAPTConstants"%>
@@ -30,6 +31,7 @@
 <%@ page import="com.siga.beans.*"%>
 <%@ page import="com.siga.Utilidades.*"%>
 <%@ page import="com.siga.gratuita.form.DefinirEJGForm"%>
+
 
 <!-- JSP -->
 <% 
@@ -112,7 +114,7 @@
 							ScsEJGAdm adm = new ScsEJGAdm(usr);
 
 							Hashtable hTitulo = adm.getTituloPantallaEJG(usr.getLocation(),
-									anio, numero, idTipoEJG);
+									anio, numero, idTipoEJG,(String) request.getSession().getAttribute(PARAMETRO.LONGITUD_CODEJG.toString()));
 
 							if (hTitulo != null) {
 								t_nombre = (String) hTitulo.get(ScsPersonaJGBean.C_NOMBRE);

@@ -24,6 +24,7 @@
 <%@ page import="com.siga.beans.*"%>
 <%@ page import="com.siga.Utilidades.*"%>
 <%@ page import="java.util.Hashtable"%>
+<%@page import="org.redabogacia.sigaservices.app.AppConstants.PARAMETRO"%>
 
 <% 	
 	HttpSession ses=request.getSession();
@@ -74,7 +75,7 @@
 				<%  String t_nombre = "", t_apellido1 = "", t_apellido2 = "", t_anio = "", t_numero = "", t_tipoEJG="";;
 					ScsEJGAdm adm = new ScsEJGAdm (usr);
 					
-					Hashtable hTitulo = adm.getTituloPantallaEJG(usr.getLocation(), anio, numero, idtipoejg);
+					Hashtable hTitulo = adm.getTituloPantallaEJG(usr.getLocation(), anio, numero, idtipoejg,(String) request.getSession().getAttribute(PARAMETRO.LONGITUD_CODEJG.toString()));
 					if (hTitulo != null) {
 						t_nombre    = (String)hTitulo.get(ScsPersonaJGBean.C_NOMBRE);
 						t_apellido1 = (String)hTitulo.get(ScsPersonaJGBean.C_APELLIDO1);

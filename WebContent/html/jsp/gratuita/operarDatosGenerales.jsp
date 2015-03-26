@@ -24,6 +24,7 @@
 <%@ page import="com.atos.utils.*"%>
 <%@ page import="com.siga.administracion.SIGAMasterTable"%>
 <%@ page import="com.siga.beans.*"%>
+<%@page import="org.redabogacia.sigaservices.app.AppConstants.PARAMETRO"%>
 <!-- JSP -->
 <% 
 String informeUnico =(String) request.getAttribute("informeUnico");
@@ -88,7 +89,7 @@ String informeUnico =(String) request.getAttribute("informeUnico");
    tipoEJG=(String)miHash.get("EJGIDTIPOEJG");
        
 		ScsEJGAdm EJGadm = new ScsEJGAdm (usr);
-		Hashtable hTituloEJG = EJGadm.getTituloPantallaEJG(usr.getLocation(), anioEJG, numeroEJG,tipoEJG);
+		Hashtable hTituloEJG = EJGadm.getTituloPantallaEJG(usr.getLocation(), anioEJG, numeroEJG,tipoEJG,(String) request.getSession().getAttribute(PARAMETRO.LONGITUD_CODEJG.toString()));
 
 		if (hTituloEJG != null) {
 			t_nombreEJG    = (String)hTituloEJG.get(ScsPersonaJGBean.C_NOMBRE);

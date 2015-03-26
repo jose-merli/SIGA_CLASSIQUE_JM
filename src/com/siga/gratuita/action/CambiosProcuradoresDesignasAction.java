@@ -11,6 +11,7 @@ import javax.transaction.UserTransaction;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.redabogacia.sigaservices.app.AppConstants.PARAMETRO;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
@@ -242,6 +243,7 @@ public class CambiosProcuradoresDesignasAction extends MasterAction {
 							throws ClsExceptions,SIGAException  {
 		
 		UsrBean usr = (UsrBean)request.getSession().getAttribute("USRBEAN");
+		String longitudNumEjg = (String) request.getSession().getAttribute(PARAMETRO.LONGITUD_CODEJG.toString());
 		HttpSession ses = request.getSession();
 		Hashtable hash = (Hashtable)ses.getAttribute("designaActual");
 		CambiosProcuradoresDesignasForm miform = (CambiosProcuradoresDesignasForm)formulario;
@@ -302,7 +304,7 @@ public class CambiosProcuradoresDesignasAction extends MasterAction {
 			miform.setNumeroDesigna("");
 			
 			ScsDesignaAdm desAdm = new ScsDesignaAdm(usr);
-			Vector datosProcuradoresEJGRel = desAdm.getDatosProcuradoresEJGRelacionados(instit, numero, turno, anio);
+			Vector datosProcuradoresEJGRel = desAdm.getDatosProcuradoresEJGRelacionados(instit, numero, turno, anio,longitudNumEjg);
 			request.setAttribute("datosProcuradoresEJGRel", datosProcuradoresEJGRel);
 			
 			
@@ -327,6 +329,7 @@ public class CambiosProcuradoresDesignasAction extends MasterAction {
 	throws ClsExceptions,SIGAException  {
 		
 		HttpSession ses = request.getSession();
+		String longitudNumEjg = (String) request.getSession().getAttribute(PARAMETRO.LONGITUD_CODEJG.toString());
 		UsrBean usr = (UsrBean)ses.getAttribute("USRBEAN");
 		com.siga.gratuita.form.CambiosProcuradoresDesignasForm miform = (CambiosProcuradoresDesignasForm)formulario;
 		UserTransaction tx=null;
@@ -390,7 +393,7 @@ public class CambiosProcuradoresDesignasAction extends MasterAction {
 			if(miform.getActualizaProcuradores() != null && miform.getActualizaProcuradores().equals("1")){
 				ScsDesignaAdm desAdm = new ScsDesignaAdm(usr);
 				ScsEJGAdm ejgAdm = new ScsEJGAdm(usr);
-				Vector datosProcuradoresEJGRel = desAdm.getDatosProcuradoresEJGRelacionados(instit, numero, turno, anio);	
+				Vector datosProcuradoresEJGRel = desAdm.getDatosProcuradoresEJGRelacionados(instit, numero, turno, anio,longitudNumEjg);	
 				ejgAdm.actualizarProcuradoresEJG(datosProcuradoresEJGRel,miform.getAplIdProcurador(),miform.getAplInstitProcurador(),fCambio,numeroDesigna);
 			}			
 			

@@ -17,6 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.redabogacia.sigaservices.app.AppConstants.PARAMETRO;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
@@ -194,6 +195,7 @@ public class BusquedaExpedientesAction extends MasterAction {
 		String forward = "resultado";
 		boolean isAvanzada = false;
 		try{
+			String longitudNumEjg = (String) request.getSession().getAttribute(PARAMETRO.LONGITUD_CODEJG.toString());
 			BusquedaExpedientesForm miFormulario = (BusquedaExpedientesForm)formulario; 
 			if(miFormulario.getAvanzada()!=null && miFormulario.getAvanzada().equals(ClsConstants.DB_TRUE)){
 				//forward = "resultadoAvanzada";
@@ -312,7 +314,7 @@ public class BusquedaExpedientesAction extends MasterAction {
 				}
 				
 				
-				resultado = expedienteAdm.getPaginadorAvanzadoExpedientes(miFormulario,user);
+				resultado = expedienteAdm.getPaginadorAvanzadoExpedientes(miFormulario,user,longitudNumEjg);
 				// Paso de parametros empleando la sesion
 				databackup.put("paginador",resultado);
 				if (resultado!=null){ 
@@ -728,7 +730,7 @@ public class BusquedaExpedientesAction extends MasterAction {
 			UsrBean user = ((UsrBean)request.getSession().getAttribute(("USRBEAN")));
 			BusquedaExpedientesForm form = (BusquedaExpedientesForm)formulario;
 	        
-			
+			String longitudNumEjg = (String) request.getSession().getAttribute(PARAMETRO.LONGITUD_CODEJG.toString()); 
 			ExpExpedienteAdm expedienteAdm = new ExpExpedienteAdm (this.getUserBean(request));
 			
 			
@@ -743,7 +745,7 @@ public class BusquedaExpedientesAction extends MasterAction {
 		    		String idTipoExp = (String) vCampos.get(2);
 					String anio = (String) vCampos.get(3);
 					String numero = (String) vCampos.get(4);
-					datos.addAll(expedienteAdm.getDatosInformeExpediente(idInstitucion, idInstitucionTipoExp, idTipoExp, anio, numero, null,null, false,false));
+					datos.addAll(expedienteAdm.getDatosInformeExpediente(idInstitucion, idInstitucionTipoExp, idTipoExp, anio, numero, null,null, false,false,longitudNumEjg));
 		    
 		    	
 		    

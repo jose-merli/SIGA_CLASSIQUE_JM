@@ -702,11 +702,12 @@ public class ScsPersonaJGAdm extends MasterBeanAdministrador {
 	 * Devuelve un vector con las relaciones de
 	 * @param idInstitucion
 	 * @param idPersona
+	 * @param longitudNumEjg 
 	 * @return
 	 * @throws ClsExceptions 
 	 */
 	public Vector getRelacionesPersonaJG(String idPersona, String idInstitucion,
-			String asuntoActual, String tipo, String anioActual, String numeroActual) throws ClsExceptions{
+			String asuntoActual, String tipo, String anioActual, String numeroActual, String longitudNumEjg ) throws ClsExceptions{
 		
 			GenParametrosAdm paramAdm = new GenParametrosAdm(this.usrbean);
 			String longitudNumero=paramAdm.getValor(idInstitucion, "SCS", "LONGITUD_CODDESIGNA", "5");
@@ -714,7 +715,7 @@ public class ScsPersonaJGAdm extends MasterBeanAdministrador {
 		Vector resultado=new Vector();
 		StringBuffer sql = new StringBuffer();
 		//aalg: INC_10642_SIGA. Añadir lpad en los números para que la comparación al hacer los minus sea correcta
-				sql.append(" select 'gratuita.operarEJG.literal.EJG' as asunto, e.anio as anio, lpad(e.numeJG,"+longitudNumero+",'0') as numero");
+				sql.append(" select 'gratuita.operarEJG.literal.EJG' as asunto, e.anio as anio, lpad(e.numeJG,"+longitudNumEjg+",'0') as numero");
 				sql.append("   from scs_ejg e, scs_personajg per, scs_unidadfamiliarejg uf ");
 				sql.append("  where per.idinstitucion = " + idInstitucion + " ");
 				sql.append("    and (per.idpersona = " + idPersona + " or per.idrepresentantejg = " + idPersona + ")");
@@ -727,7 +728,7 @@ public class ScsPersonaJGAdm extends MasterBeanAdministrador {
 				sql.append(" ");
 				sql.append(" union ");
 				sql.append(" ");
-				sql.append(" select 'gratuita.operarEJG.literal.EJG' as asunto, e.anio as anio, lpad(e.numeJG,"+longitudNumero+",'0') as numero");
+				sql.append(" select 'gratuita.operarEJG.literal.EJG' as asunto, e.anio as anio, lpad(e.numeJG,"+longitudNumEjg+",'0') as numero");
 				sql.append("   from scs_ejg e, scs_personajg per, scs_contrariosejg cont ");
 				sql.append("  where per.idinstitucion = " + idInstitucion + " ");
 				sql.append("    and (per.idpersona = " + idPersona + " or per.idrepresentantejg = " + idPersona + ")");
@@ -846,11 +847,12 @@ public class ScsPersonaJGAdm extends MasterBeanAdministrador {
 	 * Devuelve un vector con las relaciones de
 	 * @param idInstitucion
 	 * @param idPersona
+	 * @param longitudNumEjg 
 	 * @return
 	 * @throws ClsExceptions 
 	 */
 	public Vector getRelacionesPersonaJGAsistencia(String idPersona, String idInstitucion,
-			String tipo, String anioActual, String numeroActual) throws ClsExceptions{
+			String tipo, String anioActual, String numeroActual, String longitudNumEjg) throws ClsExceptions{
 		
 		
 			Vector resultado=new Vector();
@@ -861,7 +863,7 @@ public class ScsPersonaJGAdm extends MasterBeanAdministrador {
 			
 		
 			//sql.append(" select 'gratuita.operarEJG.literal.EJG' as asunto, e.anio as anio, lpad(e.numeJG,"+longitudNumero+",'0') as numero");
-			sql.append(" select 'gratuita.operarEJG.literal.EJG' as asunto, e.anio as anio, lpad(e.numeJG,"+longitudNumero+",'0') as numero");
+			sql.append(" select 'gratuita.operarEJG.literal.EJG' as asunto, e.anio as anio, lpad(e.numeJG,"+longitudNumEjg+",'0') as numero");
 			sql.append("   from scs_ejg e, scs_personajg per, scs_unidadfamiliarejg uf ");
 			sql.append("  where per.idinstitucion = " + idInstitucion + " ");
 			sql.append("    and (per.idpersona = " + idPersona + " or per.idrepresentantejg = " + idPersona + ")");
@@ -874,7 +876,7 @@ public class ScsPersonaJGAdm extends MasterBeanAdministrador {
 			sql.append(" ");
 			sql.append(" union ");
 			sql.append(" ");
-			sql.append(" select 'gratuita.operarEJG.literal.EJG' as asunto, e.anio as anio, lpad(e.numeJG,"+longitudNumero+",'0') as numero");
+			sql.append(" select 'gratuita.operarEJG.literal.EJG' as asunto, e.anio as anio, lpad(e.numeJG,"+longitudNumEjg+",'0') as numero");
 			sql.append("   from scs_ejg e, scs_personajg per, scs_contrariosejg cont ");
 			sql.append("  where per.idinstitucion = " + idInstitucion + " ");
 			sql.append("    and (per.idpersona = " + idPersona + " or per.idrepresentantejg = " + idPersona + ")");

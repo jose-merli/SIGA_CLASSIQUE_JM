@@ -27,7 +27,7 @@
 <%@ page import="com.siga.beans.ScsDelitoBean"%>
 <%@ page import="com.siga.beans.*"%>
 <%@ page import="com.siga.Utilidades.*"%>
-
+<%@page import="org.redabogacia.sigaservices.app.AppConstants.PARAMETRO"%>
 <!-- JSP -->
 <% 
 	String app=request.getContextPath(); 
@@ -444,7 +444,7 @@
 		String t_nombre = "", t_apellido1 = "", t_apellido2 = "", t_anio = "", t_numero = "", t_tipoEJG="";;
 		ScsEJGAdm adm = new ScsEJGAdm (usr);
 						
-		Hashtable hTitulo = adm.getTituloPantallaEJG(idInstitucion, anio, numero,idTipoEJG);
+		Hashtable hTitulo = adm.getTituloPantallaEJG(idInstitucion, anio, numero,idTipoEJG,(String) request.getSession().getAttribute(PARAMETRO.LONGITUD_CODEJG.toString()));
 		if (hTitulo != null) {
 			t_nombre    = (String)hTitulo.get(ScsPersonaJGBean.C_NOMBRE);
 			t_apellido1 = (String)hTitulo.get(ScsPersonaJGBean.C_APELLIDO1);

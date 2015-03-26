@@ -13,6 +13,7 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.redabogacia.sigaservices.app.AppConstants;
+import org.redabogacia.sigaservices.app.AppConstants.PARAMETRO;
 import org.redabogacia.sigaservices.app.autogen.mapper.ScsDocumentoejgMapper;
 import org.redabogacia.sigaservices.app.autogen.model.ScsDocumentacionejg;
 import org.redabogacia.sigaservices.app.autogen.model.ScsDocumentoejg;
@@ -454,7 +455,8 @@ public class DefinirDocumentacionEJGAction extends MasterAction {
 		
 		DefinirDocumentacionEJGForm miForm = (DefinirDocumentacionEJGForm) formulario;
 		ScsEJGAdm admi = new ScsEJGAdm(this.getUserBean(request)); 
-		Hashtable hTitulo = admi.getTituloPantallaEJG(miForm.getIdInstitucion(),	miForm.getAnio(),miForm.getNumero(), miForm.getIdTipoEJG());
+		String longitudNumEjg = (String) request.getSession().getAttribute(PARAMETRO.LONGITUD_CODEJG.toString());
+		Hashtable hTitulo = admi.getTituloPantallaEJG(miForm.getIdInstitucion(),	miForm.getAnio(),miForm.getNumero(), miForm.getIdTipoEJG(),longitudNumEjg);
 		StringBuffer solicitante = new StringBuffer();
 		solicitante.append((String) hTitulo.get(ScsPersonaJGBean.C_NOMBRE));
 		solicitante.append(" ");

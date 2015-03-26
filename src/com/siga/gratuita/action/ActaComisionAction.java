@@ -22,6 +22,7 @@ import javax.transaction.UserTransaction;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.redabogacia.sigaservices.app.AppConstants.PARAMETRO;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
@@ -282,6 +283,7 @@ public class ActaComisionAction extends MasterAction{
 	protected String editar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException, ClsExceptions {
 		ActaComisionForm actaForm = (ActaComisionForm) formulario;
 		UsrBean usr = (UsrBean)request.getSession().getAttribute("USRBEAN");
+		String longitudNumEjg = (String) request.getSession().getAttribute(PARAMETRO.LONGITUD_CODEJG.toString());
 		ScsActaComisionAdm actaAdm = new ScsActaComisionAdm(usr);
 		String idActa		 = "";
 		String idInstitucion = "";
@@ -305,7 +307,7 @@ public class ActaComisionAction extends MasterAction{
 		try {
 			// Con la clave recuperamos sus datos
 			datosActa = actaAdm.getDatosActa(idActa,anioActa,idInstitucion);
-			ejgsRelacionados = actaAdm.getListadoEJGActa(idActa,anioActa, idInstitucion);
+			ejgsRelacionados = actaAdm.getListadoEJGActa(idActa,anioActa, idInstitucion,longitudNumEjg);
 		} catch (Exception e) {
 			throwExcp("messages.general.error",new String[] {"modulo.gratuita"},e,null);
 		}
@@ -501,9 +503,11 @@ public class ActaComisionAction extends MasterAction{
 					(actaBean.getFechaResolucionCAJG()!=null&&!actaBean.getFechaResolucionCAJG().equalsIgnoreCase("")))||(fechaResOld!=null &&
 					actaBean.getFechaResolucionCAJG()!=null&&GstDate.compararFechas(actaBean.getFechaResolucionCAJG(), fechaResOld) !=0 ) ){
 				//
-				detalleEjgsPtesRetirar = getEJGsPtesRetirar(actaBean,usr);
+				String longitudNumEjg = (String) request.getSession().getAttribute(PARAMETRO.LONGITUD_CODEJG.toString());
+				detalleEjgsPtesRetirar = getEJGsPtesRetirar(actaBean,usr,longitudNumEjg);
 				if(validarObligatoriedadResolucion!=null && validarObligatoriedadResolucion.equals(ClsConstants.DB_TRUE)){
-					detalleEjgsNoResueltos =  getEJGsActaSinResolucion(actaBean,usr);
+					
+					detalleEjgsNoResueltos =  getEJGsActaSinResolucion(actaBean,usr,longitudNumEjg);
 				}
 				// Si no hay ejg pendientes de retirar y estan todos con resolucion y fundamento actualizamos la fecha de resolucion, si no dejamos la antigua
 				if(detalleEjgsNoResueltos==null && detalleEjgsPtesRetirar==null){
@@ -569,13 +573,14 @@ public class ActaComisionAction extends MasterAction{
 		return exito("messages.updated.success", request);
 	}
 	
-	private String getEJGsActaSinResolucion(ScsActaComisionBean actaBean,UsrBean usr) throws ClsExceptions{
+	private String getEJGsActaSinResolucion(ScsActaComisionBean actaBean,UsrBean usr,String longitudNumEjg) throws ClsExceptions{
 		ScsActaComisionAdm actaAdm = new ScsActaComisionAdm(usr);
 		String idActa		 = actaBean.getIdActa().toString();
 		String idInstitucion = actaBean.getIdInstitucion().toString();
 		String anioActa		 = actaBean.getAnioActa().toString();
 		StringBuffer detalleEjgsNoResueltos = new StringBuffer("");
-		Vector ejgsRelacionados = actaAdm.getListadoEJGActa(idActa,anioActa, idInstitucion);
+		
+		Vector ejgsRelacionados = actaAdm.getListadoEJGActa(idActa,anioActa, idInstitucion,longitudNumEjg);
 		for (int i = 0; i < ejgsRelacionados.size(); i++) {
 			Row row = (Row) ejgsRelacionados.get(i);
 			if((row.getString("IDTIPORATIFICACIONEJG")==null||row.getString("IDTIPORATIFICACIONEJG").equals(""))||(row.getString("IDFUNDAMENTOJURIDICO")==null||row.getString("IDFUNDAMENTOJURIDICO").equals(""))){
@@ -596,10 +601,10 @@ public class ActaComisionAction extends MasterAction{
 		
 	}
 	
-	private String getEJGsPtesRetirar(ScsActaComisionBean actaBean,UsrBean usr) throws  SIGAException, ClsExceptions{
+	private String getEJGsPtesRetirar(ScsActaComisionBean actaBean,UsrBean usr, String longitudNumEjg) throws  SIGAException, ClsExceptions{
 		ScsActaComisionAdm actaAdm = new ScsActaComisionAdm(usr);
 		StringBuffer detalleEjgsPteRetirar = new StringBuffer("");
-		Vector ejgsPteRetirar = actaAdm.getEJGsRetirados(actaBean.getIdInstitucion(),actaBean.getIdActa(), actaBean.getAnioActa());
+		Vector ejgsPteRetirar = actaAdm.getEJGsRetirados(actaBean.getIdInstitucion(),actaBean.getIdActa(), actaBean.getAnioActa(),longitudNumEjg);
 		for (int i = 0; i < ejgsPteRetirar.size(); i++) {
 			Hashtable row = (Hashtable) ejgsPteRetirar.get(i);
 				detalleEjgsPteRetirar.append((String)row.get("ANIO"));
@@ -781,6 +786,7 @@ public class ActaComisionAction extends MasterAction{
 		ActaComisionForm actaForm = (ActaComisionForm) miForm;
 		ScsActaComisionBean actaBean = new ScsActaComisionBean();
 		ScsActaComisionAdm actaAdm = new ScsActaComisionAdm(usr);
+		String longitudNumEjg = (String) request.getSession().getAttribute(PARAMETRO.LONGITUD_CODEJG.toString());
 		ScsEJGAdm ejgAdm = new ScsEJGAdm(usr);
 		ScsEstadoEJGAdm estadoAdm = new ScsEstadoEJGAdm(usr);
 		Vector listadoEJGs = new Vector<Hashtable>();
@@ -799,7 +805,7 @@ public class ActaComisionAction extends MasterAction{
 			tx.begin();
 			
 			// Recuperamos la lista de ejgs a retirar y los retiramos del acta
-			listadoEJGs = actaAdm.updateEJGsRetirados(actaBean.getIdInstitucion(),actaBean.getIdActa(), actaBean.getAnioActa());
+			listadoEJGs = actaAdm.updateEJGsRetirados(actaBean.getIdInstitucion(),actaBean.getIdActa(), actaBean.getAnioActa(),longitudNumEjg);
 			
 			for (Object element : listadoEJGs) {
 

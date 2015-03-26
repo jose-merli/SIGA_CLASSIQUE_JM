@@ -16,13 +16,17 @@ import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.redabogacia.sigaservices.app.AppConstants.MODULO;
+import org.redabogacia.sigaservices.app.AppConstants.PARAMETRO;
 import org.redabogacia.sigaservices.app.AppConstants.TipoIntercambioEnum;
 import org.redabogacia.sigaservices.app.autogen.model.EcomComunicacionresolucionajgWithBLOBs;
 import org.redabogacia.sigaservices.app.autogen.model.EcomDesignaprovisionalWithBLOBs;
 import org.redabogacia.sigaservices.app.autogen.model.EcomSolimpugresolucionajgWithBLOBs;
 import org.redabogacia.sigaservices.app.autogen.model.EcomSolsusprocedimientoWithBLOBs;
+import org.redabogacia.sigaservices.app.autogen.model.GenParametros;
 import org.redabogacia.sigaservices.app.autogen.model.ScsDesigna;
 import org.redabogacia.sigaservices.app.autogen.model.ScsEjg;
+import org.redabogacia.sigaservices.app.services.gen.GenParametrosService;
 import org.redabogacia.sigaservices.app.util.ReadProperties;
 import org.redabogacia.sigaservices.app.util.SIGAReferences;
 
@@ -132,6 +136,8 @@ import com.siga.informes.MasterWords;
 import com.siga.informes.form.InformesGenericosForm;
 import com.siga.servlets.SIGASvlProcesoAutomaticoRapido;
 
+import es.satec.businessManager.BusinessManager;
+
 /**
  * 
  * Se crea esta clase para gestionar las comunicaciones masivas Esta intimamente
@@ -143,6 +149,12 @@ import com.siga.servlets.SIGASvlProcesoAutomaticoRapido;
  */
 public class EnvioInformesGenericos extends MasterReport {
 
+	
+	
+	public EnvioInformesGenericos(String longitudNumEjg) {
+		super();
+		this.longitudNumEjg = longitudNumEjg;
+	}
 	private static Boolean alguienEjecutando = Boolean.FALSE;
 	private static Boolean algunaEjecucionDenegada = Boolean.FALSE;
 
@@ -174,6 +186,7 @@ public class EnvioInformesGenericos extends MasterReport {
 	
 	boolean algunRepresentanteLegal = false;
 	boolean algunInformeNoGenerado = false;
+	private String longitudNumEjg = "5";
 	
 	public String getDatosEnvios() {
 		return datosEnvios;
@@ -580,7 +593,7 @@ public class EnvioInformesGenericos extends MasterReport {
 			
 			Vector datosconsulta = scsDesignaAdm.getDatosSalidaOficio(
 					idinstitucion, idTurno, anio, numero, null, isSolicitantes, isContrarios,
-					idPersonaJG, idioma,idiomaExt,tipoDestinatarioInforme,agregarEtiqEJG);
+					idPersonaJG, idioma,idiomaExt,tipoDestinatarioInforme,agregarEtiqEJG,longitudNumEjg);
 			if(!isSolicitantes && datosconsulta.size()>0){
 				Hashtable registro = (Hashtable) datosconsulta.get(0);
 				if(registro.get("defendido")!=null){
@@ -631,7 +644,7 @@ public class EnvioInformesGenericos extends MasterReport {
 			boolean agregarEtiqDesigna=true;
 			Vector datosconsulta = ejgAdm.getDatosInformeEjg(
 					usrBean.getLocation(), idTipoEJG, anio, numero, isSolicitantes, isAcontrarios, 
-					idPersona,tipoDestinatario,isGenerarInformeSinDireccion,tipoDestinatarioInforme, agregarEtiqDesigna);
+					idPersona,tipoDestinatario,isGenerarInformeSinDireccion,tipoDestinatarioInforme, agregarEtiqDesigna,longitudNumEjg);
 			Hashtable<String,Vector> htIdiomasUF = new Hashtable<String, Vector>();
 			Hashtable<String,Vector> htIdiomasConyuge = new Hashtable<String,Vector>();
 			 if( datosconsulta.size()>0){
@@ -651,9 +664,9 @@ public class EnvioInformesGenericos extends MasterReport {
 						  regionConyuge =   htIdiomasConyuge.get(idioma);
 					 }else{
 						 regionUF = ejgAdm.getDatosRegionUF(usrBean.getLocation(),
-									idTipoEJG, anio, numero,idioma);
+									idTipoEJG, anio, numero,idioma,this.longitudNumEjg!=null?this.longitudNumEjg:"5");
 						 regionConyuge = ejgAdm.getDatosRegionConyuge(
-									usrBean.getLocation(), idTipoEJG, anio, numero,idioma);
+									usrBean.getLocation(), idTipoEJG, anio, numero,idioma,this.longitudNumEjg!=null?this.longitudNumEjg:"5");
 						 htIdiomasUF.put(idioma,regionUF);
 						 htIdiomasConyuge.put(idioma,regionConyuge);
 					 }
@@ -697,11 +710,11 @@ public class EnvioInformesGenericos extends MasterReport {
 			ScsActaComisionAdm actaAdm = new ScsActaComisionAdm(usrBean);
 			Vector vDatosInformeFinal = actaAdm.getDatosInforme(idInstitucion,idActa, anioActa);
 			
-			Vector vDatosEJGs = actaAdm.getEJGsInforme(idInstitucion, idActa, anioActa);
+			Vector vDatosEJGs = actaAdm.getEJGsInforme(idInstitucion, idActa, anioActa,this.longitudNumEjg!=null?longitudNumEjg:"5");
 			htDatosInforme.put("ejgs", vDatosEJGs);
 			
-			Vector vDatosEJGPendientes = actaAdm.getEJGsPendientes(idInstitucion, idActa, anioActa);
-			Vector vDatosEJGPendientesPonentes = actaAdm.getEJGsPendientesPonentes(idInstitucion, idActa, anioActa);
+			Vector vDatosEJGPendientes = actaAdm.getEJGsPendientes(idInstitucion, idActa, anioActa,this.longitudNumEjg!=null?longitudNumEjg:"5");
+			Vector vDatosEJGPendientesPonentes = actaAdm.getEJGsPendientesPonentes(idInstitucion, idActa, anioActa,this.longitudNumEjg!=null?longitudNumEjg:"5");
 
 			htDatosInforme.put("row", vDatosInformeFinal);
 			htDatosInforme.put("ejgspendientes", vDatosEJGPendientes);
@@ -1731,7 +1744,7 @@ public class EnvioInformesGenericos extends MasterReport {
 					datosInformeSeleccionado.put("idTipoInforme", (String)datosInforme.get("idTipoInforme"));
 					if(tipoDestinatario.equalsIgnoreCase(AdmInformeBean.TIPODESTINATARIO_SCSPERSONAJG)){
 						ScsDesignaAdm designaAdm = new ScsDesignaAdm(usrBean);
-						Vector solicitantesVector = designaAdm.getDefendidosDesignaInforme(idInstitucion, anio,idTurno, numero,idPersonaJG );
+						Vector solicitantesVector = designaAdm.getDefendidosDesignaInforme(idInstitucion, anio,idTurno, numero,idPersonaJG,longitudNumEjg );
 						if(solicitantesVector==null || solicitantesVector.size()==0)
 							throw new SIGAException("gratuita.envio.ordinario.noDestinatario");
 						for (int j = 0; j < solicitantesVector.size(); j++) {
@@ -2042,8 +2055,10 @@ public class EnvioInformesGenericos extends MasterReport {
 					String id = (String) datosInforme.get("numero");
 					if (idInstitucion!=null&&!"".equals(idInstitucion)&&idTipoEJG!=null&&!"".equals(idTipoEJG)&&
 							anio!=null&&!"".equals(anio)&&id!=null&&!"".equals(id)){
+						
+						 
 						ScsEJGAdm ejgAdm = new ScsEJGAdm(usrBean);
-						Hashtable datosEjg = ejgAdm.getDatosEjg(idInstitucion, anio, id, idTipoEJG);
+						Hashtable datosEjg = ejgAdm.getDatosEjg(idInstitucion, anio, id, idTipoEJG,this.longitudNumEjg!=null?longitudNumEjg:"5");
 						numero = datosEjg.get("CODIGO").toString();
 					}					
 					// END BNS
@@ -2294,7 +2309,14 @@ public class EnvioInformesGenericos extends MasterReport {
 		
 					} else {
 						ExpExpedienteAdm expedienteAdm = new ExpExpedienteAdm(usrBean);
-						datosInformeFinalVector = expedienteAdm.getDatosInformeExpediente(idInstitucion2,	idInstitucionTipoExp, idTipoExp,anio, numero, idPersona!=null?idPersona:idPersonaJG!=null?idPersonaJG:idProcurador,beanInforme.getDestinatarios(),true,aSolicitantes);
+						BusinessManager bm = BusinessManager.getInstance();
+						GenParametrosService genParametrosService = (GenParametrosService) bm.getService(GenParametrosService.class);
+						GenParametros genParametros = new GenParametros();
+						genParametros.setIdinstitucion(Short.valueOf(usrBean.getLocation()));
+						genParametros.setModulo(MODULO.SCS.toString());
+						genParametros.setParametro(PARAMETRO.LONGITUD_CODEJG.toString());
+						genParametros =  genParametrosService.getGenParametroInstitucionORvalor0(genParametros);
+						datosInformeFinalVector = expedienteAdm.getDatosInformeExpediente(idInstitucion2,	idInstitucionTipoExp, idTipoExp,anio, numero, idPersona!=null?idPersona:idPersonaJG!=null?idPersonaJG:idProcurador,beanInforme.getDestinatarios(),true,aSolicitantes,genParametros.getValor());
 						hashConsultasHechas.put(keyConsultasHechas,	datosInformeFinalVector);
 					}
 					
@@ -2985,7 +3007,7 @@ public class EnvioInformesGenericos extends MasterReport {
 	                    boolean isContrarios = false;
 	                    
 	                    String tipoDestinatarioInforme = beanInforme.getDestinatarios();
-	                    Vector designaVector = designaAdm.getDatosSalidaOficio(idInstitucion, idTurnoDesigna, anioDesigna, numeroDesigna, null, isSolicitantes,isContrarios, null, "1","ES",tipoDestinatarioInforme,agregarEtiqEJG);
+	                    Vector designaVector = designaAdm.getDatosSalidaOficio(idInstitucion, idTurnoDesigna, anioDesigna, numeroDesigna, null, isSolicitantes,isContrarios, null, "1","ES",tipoDestinatarioInforme,agregarEtiqEJG,longitudNumEjg);
 	                    Hashtable designaHash = (Hashtable) designaVector.get(0);
 	                   
 	                    if(beanInforme.getIdTipoIntercambioTelematico().toString().equals(TipoIntercambioEnum.ICA_SGP_COM_DES_PROV_ABG_PRO.getCodigo())){	                       
@@ -3018,7 +3040,7 @@ public class EnvioInformesGenericos extends MasterReport {
 	                        
 	                        
 	                        
-	                        Vector<Hashtable> ejgsAsociado = designaAdm.getDatosEJG(idInstitucion, numeroDesigna, idTurnoDesigna, anioDesigna);	        
+	                        Vector<Hashtable> ejgsAsociado = designaAdm.getDatosEJG(idInstitucion, numeroDesigna, idTurnoDesigna, anioDesigna,this.longitudNumEjg!=null?this.longitudNumEjg:"5");	        
 	                        StringBuffer descripcion = new StringBuffer();
 	                        descripcion.append(TipoIntercambioEnum.ICA_SGP_COM_DES_PROV_ABG_PRO.getDescripcion().split(":")[1]);
 	                        descripcion.append(" - ");
@@ -3091,7 +3113,7 @@ public class EnvioInformesGenericos extends MasterReport {
 	                    
 	                    boolean agregarEtiqDesigna=false;
 	                    
-	                    Vector ejgVector = ejgAdm.getDatosInformeEjg(usrBean.getLocation(), idTipoEJG, anioEJG, numeroEJG, false,false, null,null,true,AdmInformeBean.TIPODESTINATARIO_SCSJUZGADO,agregarEtiqDesigna);
+	                    Vector ejgVector = ejgAdm.getDatosInformeEjg(usrBean.getLocation(), idTipoEJG, anioEJG, numeroEJG, false,false, null,null,true,AdmInformeBean.TIPODESTINATARIO_SCSJUZGADO,agregarEtiqDesigna,longitudNumEjg);
 	                    Hashtable ejgHash = (Hashtable) ejgVector.get(0);
 	                   
 	                    if(beanInforme.getIdTipoIntercambioTelematico().toString().equals(TipoIntercambioEnum.ICA_SGP_COM_DES_PROV_ABG_PRO.getCodigo())){
@@ -3401,13 +3423,17 @@ public class EnvioInformesGenericos extends MasterReport {
 		// importante que el putAll este aqui y no antes.
 
 		datosInforme.putAll(htClavesProgramacion);
+		EnvEnviosAdm enviosAdm = new EnvEnviosAdm(usrBean);
 		if (alClavesDestinatario == null) {
 			for (int j = 0; j < vPlantillasInforme.size(); j++) {
 				AdmInformeBean beanInforme = (AdmInformeBean) vPlantillasInforme
 						.get(j);
 				// boolean isSolicitantes = beanInforme.getASolicitantes()!=null
 				// && beanInforme.getASolicitantes().equalsIgnoreCase("S");
-
+				if(j!=0){
+					envio.getEnviosBean().setIdEnvio(enviosAdm.getNewIdEnvio(usrBean));
+					
+				}
 				envio.generarEnvio(
 						destProgramInfBean.getIdPersona().toString(),
 						destProgramInfBean.getTipoDestinatario(), new Vector());
@@ -3450,6 +3476,10 @@ public class EnvioInformesGenericos extends MasterReport {
 						// beanInforme.getASolicitantes()!=null &&
 						// beanInforme.getASolicitantes().equalsIgnoreCase("S");
 						envio.setEjgs(ejgs);
+						if(j!=0){
+							envio.getEnviosBean().setIdEnvio(enviosAdm.getNewIdEnvio(usrBean));
+							
+						}
 						envio.generarEnvio(destProgramInfBean.getIdPersona()
 								.toString(), destProgramInfBean
 								.getTipoDestinatario(), ejgBean);
@@ -3462,6 +3492,10 @@ public class EnvioInformesGenericos extends MasterReport {
 						// boolean isSolicitantes =
 						// beanInforme.getASolicitantes()!=null &&
 						// beanInforme.getASolicitantes().equalsIgnoreCase("S");
+						if(j!=0){
+							envio.getEnviosBean().setIdEnvio(enviosAdm.getNewIdEnvio(usrBean));
+							
+						}
 						envio.setEjgs(ejgs);
 						envio.generarEnvio(destProgramInfBean.getIdPersona()
 								.toString(), destProgramInfBean
@@ -6977,7 +7011,7 @@ public class EnvioInformesGenericos extends MasterReport {
 				//Ini Mod MJM para que se muestren las etiquetas del informe designas en el mail
 				ScsDesignaAdm designaAdm = new ScsDesignaAdm(userBean);
 				String idPersonaJG = (String) datosInforme.get("idPersonaJG");
-				Vector solicitantesVector = designaAdm.getDefendidosDesignaInforme(idInstitucion, anio,idTurno, numero,idPersonaJG );
+				Vector solicitantesVector = designaAdm.getDefendidosDesignaInforme(idInstitucion, anio,idTurno, numero,idPersonaJG ,longitudNumEjg);
 				Hashtable hashConsultasHechas = new Hashtable();
 				
 				for (int j = 0; j < solicitantesVector.size(); j++){
@@ -9229,7 +9263,7 @@ public class EnvioInformesGenericos extends MasterReport {
 					usr.setComision(programIRPFBean.getEnvioProgramado().getComisionAJG()!=null&&programIRPFBean.getEnvioProgramado().getComisionAJG().toString().equals(ClsConstants.DB_TRUE)?true:false);
 					informeCertificadoIRPF.enviarCertificadoIRPFColegiado(usr,
 							programIRPFBean,
-							programIRPFBean.getEnvioProgramado());
+							programIRPFBean.getEnvioProgramado(),this.longitudNumEjg!=null?this.longitudNumEjg:"5");
 
 					programIRPFBean.setOriginalHash(admProgramiRPF
 							.beanToHashTable(programIRPFBean));
@@ -9282,7 +9316,7 @@ public class EnvioInformesGenericos extends MasterReport {
 		Vector vInfGenericosProgramados = admProgramInfGenericos
 				.getInformesGenericosProgramados(ClsConstants.DB_FALSE, null);
 
-		EnvioInformesGenericos envioInformeGenerico = new EnvioInformesGenericos();
+//		EnvioInformesGenericos envioInformeGenerico = new EnvioInformesGenericos(this.longitudNumEjg!=null?longitudNumEjg:"5");
 		if (vInfGenericosProgramados != null
 				&& vInfGenericosProgramados.size() > 0) {
 			ClsLogging.writeFileLogWithoutSession(
@@ -9314,8 +9348,7 @@ public class EnvioInformesGenericos extends MasterReport {
 
 						try {
 							usr.setUserName(String.valueOf(programInfGenericoBean.getUsuMod()));
-							envioInformeGenerico
-									.enviarInformeGenericoOrdinario(usr,
+							this.enviarInformeGenericoOrdinario(usr,
 											vDestinatarios,
 											programInfGenericoBean,
 											vPlantillas, programInfGenericoBean
@@ -9345,7 +9378,7 @@ public class EnvioInformesGenericos extends MasterReport {
 							try {
 								usr.setUserName(String.valueOf(programInfGenericoBean.getUsuMod()));
 //								transaction.begin();
-								envioInformeGenerico.enviarInformeGenerico(usr,
+								this.enviarInformeGenerico(usr,
 										destProgramInfBean,
 										programInfGenericoBean, vPlantillas,
 										programInfGenericoBean
@@ -9377,7 +9410,7 @@ public class EnvioInformesGenericos extends MasterReport {
 									.get(j);
 							try {
 								usr.setUserName(String.valueOf(programInfGenericoBean.getUsuMod()));
-								envioInformeGenerico.enviarInformeGenericoSms(
+								this.enviarInformeGenericoSms(
 										usr, destProgramInfBean,
 										programInfGenericoBean, vPlantillas,
 										programInfGenericoBean
@@ -9417,7 +9450,7 @@ public class EnvioInformesGenericos extends MasterReport {
 											if(isCodigoEJIS.equals("1")){
  												//Tiene codigo ejis
 												try {
-                                                    envioInformeGenerico.enviarInformeGenericoTelematico(usr,destProgramInfBean,programInfGenericoBean,vPlantillas, programInfGenericoBean.getEnvioProgramado());   
+                                                    this.enviarInformeGenericoTelematico(usr,destProgramInfBean,programInfGenericoBean,vPlantillas, programInfGenericoBean.getEnvioProgramado());   
                                                 
 												} catch (SIGAException e) {
                                                     ClsLogging.writeFileLogWithoutSession(" ----------ERROR ENVIO DE INFORMES GENERICOS PENDIENTES IDPERSONA: "	+ destProgramInfBean.getIdPersona() + " " + e.getLiteral(), 3);
@@ -9450,7 +9483,7 @@ public class EnvioInformesGenericos extends MasterReport {
 							//No tiene codigo ejis
 							if(destProgramInformesBeanOrdinarios.size()>0){
 								programInfGenericoBean.getEnvioProgramado().setIdTipoEnvios(new Integer(EnvTipoEnviosAdm.K_CORREO_ORDINARIO));
-								envioInformeGenerico.enviarInformeGenericoOrdinario(usr,destProgramInformesBeanOrdinarios,	programInfGenericoBean,vPlantillas, 
+								this.enviarInformeGenericoOrdinario(usr,destProgramInformesBeanOrdinarios,	programInfGenericoBean,vPlantillas, 
 										programInfGenericoBean.getEnvioProgramado());
 							}
 						} catch (Exception e) {
@@ -10299,7 +10332,7 @@ public class EnvioInformesGenericos extends MasterReport {
 		
 		Vector datosconsulta = scsDesignaAdm.getDatosSalidaOficio(
 				idinstitucion, idTurno, anio, numero, null, isSolicitantes, isContrarios,
-				idPersonaJG, idioma,idiomaExt,tipoDestinatarioInforme,agregarEtiqEJG);
+				idPersonaJG, idioma,idiomaExt,tipoDestinatarioInforme,agregarEtiqEJG,longitudNumEjg);
 		if(!isSolicitantes && datosconsulta.size()>0){
 			Hashtable registro = (Hashtable) datosconsulta.get(0);
 			if(registro.get("defendido")!=null){
@@ -10362,7 +10395,7 @@ public class EnvioInformesGenericos extends MasterReport {
 		boolean agregarEtiqDesigna=true;
 		Vector datosconsulta = ejgAdm.getDatosInformeEjg(
 				idInstitucion, idTipoEJG, anio, numero, isSolicitantes, isAcontrarios, 
-				idPersona,tipoDestinatario,isGenerarInformeSinDireccion,tipoDestinatarioInforme,agregarEtiqDesigna);
+				idPersona,tipoDestinatario,isGenerarInformeSinDireccion,tipoDestinatarioInforme,agregarEtiqDesigna,longitudNumEjg);
 		Hashtable<String,Vector> htIdiomasUF = new Hashtable<String, Vector>();
 		Hashtable<String,Vector> htIdiomasConyuge = new Hashtable<String,Vector>();
 		if(datosconsulta.size()>0){
@@ -10382,9 +10415,9 @@ public class EnvioInformesGenericos extends MasterReport {
 					regionConyuge =   htIdiomasConyuge.get(idioma);
 				}else{
 					regionUF = ejgAdm.getDatosRegionUF(idInstitucion,
-							idTipoEJG, anio, numero,idioma);
+							idTipoEJG, anio, numero,idioma,this.longitudNumEjg!=null?this.longitudNumEjg:"5");
 					regionConyuge = ejgAdm.getDatosRegionConyuge(
-							idInstitucion, idTipoEJG, anio, numero,idioma);
+							idInstitucion, idTipoEJG, anio, numero,idioma,this.longitudNumEjg!=null?this.longitudNumEjg:"5");
 					htIdiomasUF.put(idioma,regionUF);
 					htIdiomasConyuge.put(idioma,regionConyuge);
 				}

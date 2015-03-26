@@ -22,6 +22,7 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.json.JSONObject;
+import org.redabogacia.sigaservices.app.AppConstants.PARAMETRO;
 import org.redabogacia.sigaservices.app.exceptions.SIGAServiceException;
 import org.redabogacia.sigaservices.app.helper.DocuShareHelper;
 
@@ -963,7 +964,8 @@ public class ExpDatosGeneralesAction extends MasterAction
 				form.setTipoExpDisciplinario(fila.getString(ExpExpedienteBean.C_IDTIPOEJG));
 
 				ScsEJGAdm admEjg = new ScsEJGAdm(userBean);
-				Hashtable haste = admEjg.getDatosEjg(userBean.getLocation(), form.getAnioExpDisciplinario(), form.getNumExpDisciplinario(), form.getTipoExpDisciplinario());
+				String longitudNumEjg = (String) request.getSession().getAttribute(PARAMETRO.LONGITUD_CODEJG.toString());
+				Hashtable haste = admEjg.getDatosEjg(userBean.getLocation(), form.getAnioExpDisciplinario(), form.getNumExpDisciplinario(), form.getTipoExpDisciplinario(),longitudNumEjg);
 				String SUFIJO = (String) haste.get("SUFIJO");
 				String CODIGO = (String) haste.get("CODIGO");
 				String codigoEjg = null;

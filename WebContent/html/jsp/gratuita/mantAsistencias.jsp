@@ -23,7 +23,7 @@
 <%@ page import="com.siga.Utilidades.*"%>
 <%@ page import="java.util.*"%>
 <%@ page import="java.text.SimpleDateFormat"%>
-
+<%@page import="org.redabogacia.sigaservices.app.AppConstants.PARAMETRO"%>
 <!-- JSP -->
 <% 
 	String app=request.getContextPath(); 
@@ -783,7 +783,7 @@
 															ScsEJGAdm admEJG = new ScsEJGAdm(usr);
 											
 															Hashtable nombreInteresadoEJG = admEJG.getTituloPantallaEJG(usr.getLocation(),
-																	ANIOEJG, NUMEROEJG, IDTIPOEJG);
+																	ANIOEJG, NUMEROEJG, IDTIPOEJG,(String) request.getSession().getAttribute(PARAMETRO.LONGITUD_CODEJG.toString()));
 											
 															if (hTitulo != null) {
 																nombreIntEJG = (String) nombreInteresadoEJG.get(ScsPersonaJGBean.C_NOMBRE);

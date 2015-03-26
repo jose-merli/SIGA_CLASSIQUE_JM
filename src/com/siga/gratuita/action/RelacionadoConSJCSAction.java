@@ -13,6 +13,7 @@ import javax.transaction.UserTransaction;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.redabogacia.sigaservices.app.AppConstants.PARAMETRO;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
@@ -62,6 +63,7 @@ public class RelacionadoConSJCSAction extends MasterAction
 	protected String abrir(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, SIGAException 
 	{
 		try {
+			String longitudNumEjg = (String) request.getSession().getAttribute(PARAMETRO.LONGITUD_CODEJG.toString());
 			String relacionesDe = (String)request.getParameter("conceptoE");
 
 			Vector v = new Vector();
@@ -77,7 +79,7 @@ public class RelacionadoConSJCSAction extends MasterAction
 				idInstitucion = request.getParameter("IDINSTITUCION");
 				
 				ScsDesignaAdm designa = new ScsDesignaAdm (this.getUserBean(request));
-				v = designa.getRelacionadoCon(idInstitucion, anio, numero, idTipo);
+				v = designa.getRelacionadoCon(idInstitucion, anio, numero, idTipo,longitudNumEjg);
 				
 				// JBD INC_CAT_5 >>
 				// Para recuperar el nombre del letrado de cada relacion hemos añadido el IDLETRADO a getRelacionadoCon

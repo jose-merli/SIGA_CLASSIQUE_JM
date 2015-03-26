@@ -16,6 +16,7 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.redabogacia.sigaservices.app.AppConstants.PARAMETRO;
 import org.redabogacia.sigaservices.app.services.scs.ScsDesignaService;
 import org.redabogacia.sigaservices.app.vo.scs.EjgsDesignaVo;
 
@@ -163,6 +164,7 @@ public class MaestroDesignasAction extends MasterAction {
 			String filtrarModulos = adm.getValor(idInstitucion,"SCS","FILTRAR_MODULOS_PORFECHA_DESIGNACION", "");
 			request.setAttribute("filtrarModulos", filtrarModulos);
 			
+			
 			// Consulto la designa:					
 			Vector vDesignas = admDesigna.select(resultado);
 			beanDesigna = (ScsDesignaBean)vDesignas.get(0);
@@ -239,6 +241,10 @@ public class MaestroDesignasAction extends MasterAction {
 			designaEjg.setNumerodesigna(beanDesigna.getNumero());
 			designaEjg.setIdinstitucion(beanDesigna.getIdInstitucion().shortValue());
 			designaEjg.setIdturno(beanDesigna.getIdTurno());
+			GenParametrosAdm paramAdm = new GenParametrosAdm (usr);
+			String longitudEJG = paramAdm.getValor (usr.getLocation (), "SCS", "LONGITUD_CODEJG", "5");
+			designaEjg.setLongitudNumEjg(Short.valueOf(longitudEJG));
+			
 		
 			ScsDesignaService ejsDesignaService = (ScsDesignaService) bm.getService(ScsDesignaService.class);	
 			
@@ -1002,6 +1008,7 @@ public class MaestroDesignasAction extends MasterAction {
 		UsrBean usr = this.getUserBean(request);
 		String forward="actualizarDesigna";
 		MaestroDesignasForm miform = (MaestroDesignasForm)formulario;
+		String longitudNumEjg = (String) request.getSession().getAttribute(PARAMETRO.LONGITUD_CODEJG.toString());
 		ScsDesignaAdm admDesigna  = new ScsDesignaAdm(usr);
 		ScsTurnoAdm admTurno = new ScsTurnoAdm(usr);
 		/*String[] nombres =null;
@@ -1035,7 +1042,7 @@ public class MaestroDesignasAction extends MasterAction {
 		UtilidadesHash.set(filtro,ScsDesignaBean.C_IDINSTITUCION,		(String)usr.getLocation());
 		UtilidadesHash.set(filtro,ScsDesignaBean.C_IDTURNO,				miform.getIdTurno());
 		///Calculo de EJGs
-		Vector datos = admDesigna.getDatosEJG((String)usr.getLocation(), miform.getNumero(), miform.getIdTurno(), miform.getAnio());
+		Vector datos = admDesigna.getDatosEJG((String)usr.getLocation(), miform.getNumero(), miform.getIdTurno(), miform.getAnio(),longitudNumEjg);
 		// Recorrer los defendidos
 		List<ScsEJGBean> ejgList = new ArrayList<ScsEJGBean>();
 		for (int i = 0; i < datos.size(); i++) {
@@ -1043,7 +1050,7 @@ public class MaestroDesignasAction extends MasterAction {
 				String anio = (String) ((Hashtable) datos.get(i)).get("ANIO_EJG");
 				String numero = (String) ((Hashtable) datos.get(i)).get("NUMERO_EJG");
 				String tipo =(String) ((Hashtable) datos.get(i)).get("TIPO_EJG");
-				ejg = abrir(request, anio, numero, tipo);
+				ejg = abrir(request, anio, numero, tipo,longitudNumEjg);
 				ejgList.add(ejg);
 		}
 		///Calculo de EJGs
@@ -1179,7 +1186,7 @@ public class MaestroDesignasAction extends MasterAction {
 	}
 	
 	
-	protected ScsEJGBean abrir(HttpServletRequest request, String anio, String numero, String idtipoEjg) throws SIGAException {
+	protected ScsEJGBean abrir(HttpServletRequest request, String anio, String numero, String idtipoEjg, String longitudNumejg) throws SIGAException {
 		
 		
 		Hashtable ejg = null;
@@ -1208,7 +1215,7 @@ public class MaestroDesignasAction extends MasterAction {
 			
 			
 			// Ahora realizamos la consulta. Primero cogemos los campos que queremos recuperar 
-			String consulta = "select ejg.ANIO, ejg.NUMEJG,designa.ESTADO,ejg.IDTIPOEJG AS IDTIPOEJG,ejg.NUMERO_CAJG AS NUMERO_CAJG, ejg.NUMERO, turno.ABREVIATURA AS NOMBRETURNO, guardia.NOMBRE AS NOMBREGUARDIA, guardia.IDGUARDIA AS IDGUARDIA, " + UtilidadesMultidioma.getCampoMultidiomaSimple("tipoejg.DESCRIPCION",this.getUserBean(request).getLanguage()) + " AS TIPOEJG, ejg.IDTIPOEJGCOLEGIO AS IDTIPOEJGCOLEGIO," +
+			String consulta = "select ejg.ANIO, lpad(ejg.NUMEJG,"+longitudNumejg+",0) NUMEJG,designa.ESTADO,ejg.IDTIPOEJG AS IDTIPOEJG,ejg.NUMERO_CAJG AS NUMERO_CAJG, ejg.NUMERO, turno.ABREVIATURA AS NOMBRETURNO, guardia.NOMBRE AS NOMBREGUARDIA, guardia.IDGUARDIA AS IDGUARDIA, " + UtilidadesMultidioma.getCampoMultidiomaSimple("tipoejg.DESCRIPCION",this.getUserBean(request).getLanguage()) + " AS TIPOEJG, ejg.IDTIPOEJGCOLEGIO AS IDTIPOEJGCOLEGIO," +
 							  "decode(ejg.ORIGENAPERTURA,'M','Manual','S','SOJ','A','ASISTENCIA','DESIGNA'), ejg.IDPRETENSION as IDPRETENSION, ejg.IDINSTITUCION as IDINSTITUCION, ejg.idtipodictamenejg as IDTIPODICTAMENEJG, " + 
 							  "ejg.FECHAAPERTURA AS FECHAAPERTURA, personajg.NIF AS NIFASISTIDO, personajg.NOMBRE AS NOMBREASISTIDO, personajg.APELLIDO1 AS APELLIDO1ASISTIDO, personajg.APELLIDO2 AS APELLIDO2ASISTIDO, " +
 							  " (Select Decode(Ejg.Idtipoencalidad, Null,'', f_Siga_Getrecurso(Tipcal.Descripcion,"+ this.getUserBean(request).getLanguage() + ")) "+

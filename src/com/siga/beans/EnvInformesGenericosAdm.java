@@ -145,6 +145,7 @@ public class EnvInformesGenericosAdm extends MasterBeanAdministrador {
 			htCodigos.put(new Integer(keyContador), programInformes.getIdProgram());
 			select.append(" AND T.IDPROGRAM = :");
 			select.append(keyContador);
+			select.append(" ORDER BY I.ORDEN ");
 			
 			/*keyContador++;
 			htCodigos.put(new Integer(keyContador), programInformes.getIdInstitucion());

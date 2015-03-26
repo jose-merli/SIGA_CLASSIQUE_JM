@@ -865,7 +865,7 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 		return new Hashtable();
 	}
 	
-	public Vector getRelacionadoCon (String institucion, String anio, String numero, String idTipo) throws ClsExceptions,SIGAException 
+	public Vector getRelacionadoCon (String institucion, String anio, String numero, String idTipo,String longitudNumEjg ) throws ClsExceptions,SIGAException 
 	{
 		try {
 	            	            
@@ -902,10 +902,15 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 									 "e."+ScsEJGBean.C_IDPERSONA + " IDLETRADO, " +
 									 "TO_CHAR(e."+ScsEJGBean.C_GUARDIATURNO_IDTURNO + ") IDTURNO, " +
 									 "TO_CHAR(ed." + ScsEJGDESIGNABean.C_IDTURNO + ") IDTURNODESIGNA, "+
-									 "TO_CHAR(e."+ScsEJGBean.C_IDTIPOEJG + ") IDTIPO, " +
-									 "e."+ScsEJGBean.C_NUMEJG +  " CODIGO, " +
+									 "TO_CHAR(e."+ScsEJGBean.C_IDTIPOEJG + ") IDTIPO, " ;
+	       							if(longitudNumEjg!=null)
+	       								sql += "LPAD( e." + ScsEJGBean.C_NUMEJG + ", "+longitudNumEjg+",0) CODIGO ,";
+	       							else
+	       								sql+="e."+ScsEJGBean.C_NUMEJG +  " CODIGO, " ;
+									 
+									 
 
-									 "(SELECT " + ScsTurnoBean.C_ABREVIATURA + " FROM " + ScsTurnoBean.T_NOMBRETABLA + 
+									sql+= "(SELECT " + ScsTurnoBean.C_ABREVIATURA + " FROM " + ScsTurnoBean.T_NOMBRETABLA + 
 									 " WHERE " + ScsTurnoBean.C_IDTURNO + " = e." + ScsEJGBean.C_GUARDIATURNO_IDTURNO + 
 									 " AND " + ScsTurnoBean.C_IDINSTITUCION + " = e." + ScsEJGBean.C_IDINSTITUCION + ") DES_TURNO, " +
 
@@ -2169,7 +2174,7 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 	
 	
 			
-	public Vector getDatosSalidaOficio (String idInstitucion, String idturno, String anio, String numero, String codigoDesigna, boolean isSolicitantes, boolean isContrarios, String idPersonaJG, String idioma,String idiomaInforme, String tipoDestinatarioInforme, Boolean agregarEtiqEJG) throws ClsExceptions  
+	public Vector getDatosSalidaOficio (String idInstitucion, String idturno, String anio, String numero, String codigoDesigna, boolean isSolicitantes, boolean isContrarios, String idPersonaJG, String idioma,String idiomaInforme, String tipoDestinatarioInforme, Boolean agregarEtiqEJG, String longitudNumEjg) throws ClsExceptions  
 	{	 
 	Vector vSalida = null;
 		HelperInformesAdm helperInformes = new HelperInformesAdm();	
@@ -2188,7 +2193,7 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 //				String idiomaletrado = (String)registro.get("IDIOMA_LETRADO");			
 				String idInstitucionOrigen = (String)registro.get("IDINSTITUCIONORIGEN");
 								
-				Vector vDefendidos = getDefendidosDesignaSalidaOficio(idInstitucion,numeroDesigna,idTurno,anioDesigna,idPersonaJG, idPersona);
+				Vector vDefendidos = getDefendidosDesignaSalidaOficio(idInstitucion,numeroDesigna,idTurno,anioDesigna,idPersonaJG, idPersona,longitudNumEjg);
 				// ENTRA EN ESTE CODIGO SI ES UN INFORME QUE DESDOBLA POR SOLICITANTE
 				if(isSolicitantes){											
 					if(vDefendidos!=null && vDefendidos.size()>0){
@@ -2204,7 +2209,7 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 //								numEjgDefendido = (String) registroDefendido.get("NUMERO_EJG");
 							if(registroDefendido!=null && registroDefendido.get("NUMERO_EJG")!=null)
 								clone.put("NUMERO_EJG_DEFENDIDO", (String) registroDefendido.get("NUMERO_EJG"));
-							registroDefendido  = getregistrodatosDesigna(registro, idInstitucion,idioma,tipoDestinatarioInforme,agregarEtiqEJG, isSolicitantes, isContrarios);
+							registroDefendido  = getregistrodatosDesigna(registro, idInstitucion,idioma,tipoDestinatarioInforme,agregarEtiqEJG, isSolicitantes, isContrarios,longitudNumEjg);
 							/**Para saaber en que idioma se tiene que imprimer la carta de oficio**/
 							registroDefendido.put("CODIGOLENGUAJE", idiomaInforme);							
 							
@@ -2273,7 +2278,7 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 					// SI ENTRA AL ELSE NO TIENE DEFENDIDOS 
 					}else{						
 						
-						registro.putAll(getregistrodatosDesigna(registro, idInstitucion, idioma,tipoDestinatarioInforme,agregarEtiqEJG, isSolicitantes, isContrarios));
+						registro.putAll(getregistrodatosDesigna(registro, idInstitucion, idioma,tipoDestinatarioInforme,agregarEtiqEJG, isSolicitantes, isContrarios,longitudNumEjg));
 						
 						
 						// Control de datos para el informe
@@ -2322,7 +2327,7 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 				// ENTRA EN ESTE CODIGO SI ES UN INFORME QUE NO DESDOBLA POR SOLICITANTE
 				}else{	
 						
-					registro.putAll(getregistrodatosDesigna(registro, idInstitucion,idioma,tipoDestinatarioInforme,agregarEtiqEJG,  isSolicitantes, isContrarios));				
+					registro.putAll(getregistrodatosDesigna(registro, idInstitucion,idioma,tipoDestinatarioInforme,agregarEtiqEJG,  isSolicitantes, isContrarios,longitudNumEjg));				
 										
 					
 					if(vDefendidos!=null && vDefendidos.size()>0){
@@ -2562,103 +2567,22 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 		}
 	} //getDesignaSalidaOficio()
 	
-	public Vector getDefendidosDesignaSalidaOficio(String idInstitucion, String numero, String idTurno, String anio, String idPersonaJG,String idPersona)
+	public Vector getDefendidosDesignaSalidaOficio(String idInstitucion, String numero, String idTurno, String anio, String idPersonaJG,String idPersona, String longitudNumEjg)
 			throws ClsExceptions {
 		try {
 
-			Vector defendidos = getVectorDefendidosDesigna(idInstitucion, numero, idTurno, anio, idPersonaJG, idPersona);
+			Vector defendidos = getVectorDefendidosDesigna(idInstitucion, numero, idTurno, anio, idPersonaJG, idPersona,longitudNumEjg);
 //			Vector datos = getDatosEJGDefendidoDesigna(idInstitucion, numero, idTurno, anio);
 			if (defendidos != null && defendidos.size() > 0) {
-//				Hashtable htPrimerDefendido = (Hashtable) defendidos.get(0);
-//				int ejgs = Integer.parseInt((String)htPrimerDefendido.get("COUNT_EJG"));
-//				if (ejgs>=1) {
-//					// Recorrer los defendidos
-//					for (int i = 0; i < defendidos.size(); i++) {
-//						Hashtable htDefendido = (Hashtable) defendidos.get(0);
-//						if(htDefendido.get("ANIO_EJG") != null && !htDefendido.get("ANIO_EJG").equals("")){
-//							htDefendido.put("ANIO_EJG", (String) ((Hashtable) datos.get(0)).get("ANIO_EJG"));
-//						}else {
-//							htDefendido.put("ANIO_EJG", "");
-//						}
-//						if(htDefendido.get("NUMERO_EJG")!= null &&  !htDefendido.get("NUMERO_EJG").equals("")){
-//							htDefendido.put("NUMERO_EJG", (String) ((Hashtable) datos.get(0)).get("NUMERO_EJG"));
-//						}else{
-//							htDefendido.put("NUMERO_EJG", "");
-//						} 
-//					}
-//				}
+//				
 				return defendidos;
 
 			} else {
-				Vector solicitantes = getSolicitantesEJGDesigna(idInstitucion, numero, idTurno, anio, idPersonaJG);
+				Vector solicitantes = getSolicitantesEJGDesigna(idInstitucion, numero, idTurno, anio, idPersonaJG,longitudNumEjg);
 				return solicitantes;
 			}
 				
-			/*String sql = "SELECT INTERESADO.IDPERSONAJG IDPERSONAINTERESADO,INTERESADO.IDINSTITUCION,"+
-				" INTERESADO.IDTURNO,   INTERESADO.ANIO,   INTERESADO.NUMERO,"+
-				" DECODE((select count(EJGDES1.idinstitucion) from SCS_EJGDESIGNA EJGDES1"+
-				" where EJGDES1.IDINSTITUCION = :1"+
-				" and EJGDES1.ANIODESIGNA = :2"+
-				" and EJGDES1.IDTURNO = :3"+
-				" and EJGDES1.NUMERODESIGNA = :4),1,"+
-				" (select EJGDES.ANIOEJG || '/' || ejg.NUMEJG"+
-				" from scs_ejg ejg, scs_ejgdesigna ejgdes"+
-				" where ejg.anio = ejgdes.anioejg"+
-				" and ejg.numero = ejgdes.numeroejg"+
-				" and ejg.idinstitucion = ejgdes.idinstitucion"+
-				" and ejg.idtipoejg = ejgdes.idtipoejg"+
-				" AND ejgdes.IDINSTITUCION = :5"+
-				" and ejgdes.ANIODESIGNA = :6"+
-				" and ejgdes.IDTURNO = :7"+
-				" and ejgdes.NUMERODESIGNA = :8),"+
-				" DECODE(INTERESADO.ANIOEJG, NULL,'0'," +
-				"INTERESADO.ANIOEJG || '/' || INTERESADO.NUMEJG)) AS NUMERO_EJG,"+
-				" INTERESADO.NOMBRE || ' ' || INTERESADO.APELLIDO1 || ' ' ||"+
-				" INTERESADO.APELLIDO2 AS NOMBRE_DEFENDIDO,"+
-				" INTERESADO.NIF AS NIF_DEFENDIDO,"+				
-				" INTERESADO.DIRECCION AS DOMICILIO_DEFENDIDO,"+
-				" INTERESADO.CODIGOPOSTAL AS CP_DEFENDIDO,"+
-				" INTERESADO.NOMBRE_POB AS POBLACION_DEFENDIDO,"+
-				" INTERESADO.NOMBRE_PROV AS PROVINCIA_DEFENDIDO,"+
-				" INTERESADO.TELEFONO AS TELEFONO1_DEFENDIDO,"+
-				" DECODE(INTERESADO.SEXO,  null,  null,  'M','gratuita.personaEJG.sexo.mujer',"+
-				" 'gratuita.personaEJG.sexo.hombre') as SEXO_DEFENDIDO,"+				
-				" INTERESADO.IDLENGUAJE AS IDLENGUAJE_DEFENDIDO," +				
-				" (Select Decode(INTERESADO.Idtipoencalidad, Null,'', Tipcal.Descripcion) "+
-                              "  From Scs_Tipoencalidad Tipcal Where Tipcal.Idtipoencalidad = INTERESADO.Idtipoencalidad "+
-                              "  And Tipcal.Idinstitucion = INTERESADO.Calidadidinstitucion) AS CALIDAD_DEFENDIDO,"+               
-                " INTERESADO.OBSERVACIONES AS OBS_INTERESADO,"+
-				" INTERESADO.OBSERVACIONES AS OBS_DEFENDIDO,"+
-				" F_SIGA_GETCODIDIOMA(INTERESADO.IDLENGUAJE) AS CODIGOLENGUAJE,"+
-				"to_char(DECODE((select count(EJGDES1.idinstitucion) "+
-				"         from SCS_EJGDESIGNA EJGDES1 "+
-				"        where EJGDES1.IDINSTITUCION = :9 "+
-				"          and EJGDES1.ANIODESIGNA = :10 "+
-				"          and EJGDES1.IDTURNO = :11 "+
-				"          and EJGDES1.NUMERODESIGNA = :12), "+
-				"       1, "+
-				"       (select EJG.FECHARESOLUCIONCAJG "+
-				"          from scs_ejg ejg, scs_ejgdesigna ejgdes "+
-				"         where ejg.anio = ejgdes.anioejg "+
-				"           and ejg.numero = ejgdes.numeroejg "+
-				"           and ejg.idinstitucion = ejgdes.idinstitucion "+
-				"           and ejg.idtipoejg = ejgdes.idtipoejg "+
-				"           AND ejgdes.IDINSTITUCION = :13 "+
-				"           and ejgdes.ANIODESIGNA = :14 "+
-				"           and ejgdes.IDTURNO = :15 "+
-				"           and ejgdes.NUMERODESIGNA = :16), "+
-				"       DECODE(INTERESADO.FECHARESOLUCIONCAJG, "+
-				"              NULL, "+
-				"              '', "+
-				"              INTERESADO.FECHARESOLUCIONCAJG)), 'dd/mm/yyyy') AS FECHARESOLUCIONCAJG "+						
-				"   FROM V_SIGA_INTERESADOS_DESIGNA    INTERESADO"+
-				" WHERE INTERESADO.IDINSTITUCION = :17"+
-				" and INTERESADO.ANIO = :18"+
-				" and INTERESADO.IDTURNO = :19"+
-				" and INTERESADO.NUMERO = :20";
-				if (idPersonaJG!=null && !idPersonaJG.trim().equals("")) {
-					sql+= " and INTERESADO.IDPERSONAJG = :21";
-				}*/
+			
 			
 			
 		}
@@ -2667,7 +2591,7 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 		}
 	}
 	
-	public Vector getDefendidosDesignaInforme(String idInstitucion, String anio, String idTurno, String numero,String idPersonaJG)
+	public Vector getDefendidosDesignaInforme(String idInstitucion, String anio, String idTurno, String numero,String idPersonaJG, String longitudNumEjg)
 			throws ClsExceptions {
 		try {
 			ScsDefendidosDesignaAdm defendidosDesignaAdm = new ScsDefendidosDesignaAdm(usrbean);
@@ -2677,7 +2601,7 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 				return defendidos;
 
 			} else {
-				Vector solicitantes = getSolicitantesEJGDesigna(idInstitucion, numero, idTurno, anio,idPersonaJG);
+				Vector solicitantes = getSolicitantesEJGDesigna(idInstitucion, numero, idTurno, anio,idPersonaJG,longitudNumEjg);
 				return solicitantes;
 			}
 				
@@ -2690,7 +2614,7 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 	}
 	
 	
-	public Vector getVectorDefendidosDesigna(String idInstitucion, String numero, String idTurno, String anio, String idPersonaJG, String idPersona){
+	public Vector getVectorDefendidosDesigna(String idInstitucion, String numero, String idTurno, String anio, String idPersonaJG, String idPersona, Object longitudNumEjg){
 		Hashtable h = new Hashtable();
 		h.put(new Integer(1), idInstitucion);
 		h.put(new Integer(2), idTurno);
@@ -2744,7 +2668,10 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 		sql.append(" AND def.idpersona = ufa.idpersona  ");
 		sql.append(" and rownum = 1)  ");
 		sql.append(" AS ANIO_EJG,  ");
-		sql.append(" (SELECT (ejg.ANIO || '/' || ejg.NUMEJG)  ");
+		sql.append(" (SELECT (ejg.ANIO || '/' || LPAD(ejg.NUMEJG,");
+		sql.append(longitudNumEjg);
+		sql.append(",0)   ");
+		sql.append(")   ");
 		sql.append(" FROM SCS_EJG               ejg,  ");
 		sql.append(" Scs_Ejgdesigna        ejgdes,  ");
 		sql.append(" scs_unidadfamiliarejg ufa  ");
@@ -2828,7 +2755,7 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 		return defendidos;
 	}
 	
-	public Vector getSolicitantesEJGDesigna(String idInstitucion, String numero, String idTurno, String anio, String idPersonaJG) {
+	public Vector getSolicitantesEJGDesigna(String idInstitucion, String numero, String idTurno, String anio, String idPersonaJG, String longitudNumEjg) {
 
 		Vector solicitantes = null;
 		Hashtable h = new Hashtable();
@@ -2860,7 +2787,9 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 		sql.append(" DECODE(PERJG.SEXO, 'H','el','la') AS EL_LA_DEFENDIDO, ");
 		sql.append(" PERJG.IDLENGUAJE AS IDLENGUAJE_DEFENDIDO, ");		
 		sql.append(" ejg.anio ANIO_EJG,  ");
-		sql.append(" ejg.ANIO || '/' || ejg.NUMEJG AS NUMERO_EJG, ");
+		
+		
+		sql.append(" ejg.ANIO || '/' || lpad(ejg.NUMEJG,"+longitudNumEjg+",0) AS NUMERO_EJG, ");
 		sql.append(" to_char(ejg.FECHARESOLUCIONCAJG, 'dd/mm/yyyy') AS FECHARESOLUCIONCAJG, ");
 		sql.append(" CAL.DESCRIPCION AS CALIDAD_DEFENDIDO, ");
 		sql.append(" CAL.IDTIPOENCALIDAD ");
@@ -2917,7 +2846,7 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 	
 	
 	
-	public Vector getDatosEJGDefendidoDesigna(String idInstitucion, String numero, String idTurno, String anio) throws ClsExceptions {
+	public Vector getDatosEJGDefendidoDesigna(String idInstitucion, String numero, String idTurno, String anio, String longitudNumEjg) throws ClsExceptions {
 
 		Vector datos = null;
 		Hashtable h = new Hashtable();
@@ -2926,7 +2855,7 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 		h.put(new Integer(3), anio);
 		h.put(new Integer(4), numero);
 
-		StringBuffer sql = new StringBuffer("SELECT ejg.ANIO ANIO_EJG, (ejg.ANIO || '/' || ejg.NUMEJG) AS NUMERO_EJG ");
+		StringBuffer sql = new StringBuffer("SELECT ejg.ANIO ANIO_EJG, (ejg.ANIO || '/' || lpad(ejg.NUMEJG,"+longitudNumEjg+",0)) AS NUMERO_EJG ");
 		sql.append(" FROM SCS_EJG ejg, Scs_Ejgdesigna des ");
 		sql.append(" WHERE des.IDINSTITUCION = ejg.IDINSTITUCION ");
 		sql.append(" AND des.Idtipoejg = ejg.IDTIPOEJG ");
@@ -2947,7 +2876,7 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 		return datos;
 	}
 	
-	public Vector getDatosEJG(String idInstitucion, String numero, String idTurno, String anio) throws ClsExceptions {
+	public Vector getDatosEJG(String idInstitucion, String numero, String idTurno, String anio, String longitudNumEjg) throws ClsExceptions {
 
 		Vector datos = null;
 		Hashtable h = new Hashtable();
@@ -2957,7 +2886,7 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 		h.put(new Integer(4), numero);
 
 		StringBuffer sql = new StringBuffer("SELECT ejg.ANIO ANIO_EJG, ejg.numero AS NUMERO_EJG, ");
-		sql.append(" ejg.idtipoejg AS TIPO_EJG, ejg.numejg AS NUM_EJG ");
+		sql.append(" ejg.idtipoejg AS TIPO_EJG, lpad(ejg.numejg,"+longitudNumEjg+",0) AS NUM_EJG ");
 		sql.append(" FROM SCS_EJG ejg, Scs_Ejgdesigna des ");
 		sql.append(" WHERE des.IDINSTITUCION = ejg.IDINSTITUCION ");
 		sql.append(" AND des.Idtipoejg = ejg.IDTIPOEJG ");
@@ -3312,7 +3241,7 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 	  }
 	  
 	  
-	  public Vector getejgsdesigna(String idturno, String  numero, String anio, String idinstitucion) throws ClsExceptions{
+	  public Vector getejgsdesigna(String idturno, String  numero, String anio, String idinstitucion, String longitudNumEjg) throws ClsExceptions{
 		
 	  		Vector datos=new Vector();
 	       try {
@@ -3327,13 +3256,13 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 		        			" EJG.numero_cajg as NUMEROCAJG, " + 
 			            	" EJG.idpersona as IDPERSONA, " +
 		        			" TO_CHAR(EJG.FECHAAPERTURA, 'dd/mm/yyyy') AS FECHAAPERTURA_EJG, " +
-		        			" EJG.anio || '/' || EJG.numejg ANIONUMEROEJG, " +
-		        			" EJG.anio || '/' || EJG.numejg NUMERO_EJG, " +
-			            	" EJG.numejg || '/' || EJG.anio NUMEROANIOEJG, " +
+		        			" EJG.anio || '/' || lpad(EJG.numejg,"+longitudNumEjg+",0) ANIONUMEROEJG, " +
+		        			" EJG.anio || '/' || lpad(EJG.numejg,"+longitudNumEjg+",0) NUMERO_EJG, " +
+			            	" lpad(EJG.numejg,"+longitudNumEjg+",0)  || '/' || EJG.anio NUMEROANIOEJG, " +
 		        			" PROCU.NOMBRE || ' ' || PROCU.APELLIDOS1 || ' ' || PROCU.APELLIDOS2 AS PROCURADOR_EJG, " +
 			            	" EJG.anio ANIOEJG, " + 
 		        			" EJG.numero NUMEROEJG, " + 
-			            	" EJG.numejg NUMEJG, " + 
+			            	" lpad(EJG.numejg,"+longitudNumEjg+",0)  NUMEJG, " + 
 		        			" EJG.idtipoejg IDTIPOEJG, " +
 		        			" NVL2(EJG.IDACTA, ( " +
 								" SELECT TO_CHAR(ACTA.FECHARESOLUCION, 'dd/mm/yyyy') " +
@@ -3390,7 +3319,7 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 	   * valores: se le pasa los valores de el registro, institucion y el idioma que queremos que nos aparezca.
 	   * Devuelve: nos devuelve un hastable de todos los datos.
 	   * **/
-	  public Hashtable getregistrodatosDesigna(Hashtable registro,String idInstitucion, String idioma, String tipoDestinatarioInforme, boolean agregarEtiqEJG, boolean isSolicitantes, boolean isContrarios) throws ClsExceptions {
+	  public Hashtable getregistrodatosDesigna(Hashtable registro,String idInstitucion, String idioma, String tipoDestinatarioInforme, boolean agregarEtiqEJG, boolean isSolicitantes, boolean isContrarios,String longitudNunmEjg) throws ClsExceptions {
 //		  Hashtable vsalida=new Hashtable();	
 		  HelperInformesAdm helperInformes = new HelperInformesAdm();
 		  String numeroDesigna = (String)registro.get("NUMERO");
@@ -3456,7 +3385,7 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 			 * Se Saca el nombre del tramitador de la EJG relacionada con la designa, si hay mas de una EJG relacionado se saca
 			 * un listado de los tramitadores de cada EJG relacionada con la designa y entre parentesis el anio/numero cajg
 			 * **/
-			Vector ejgsdesingna=getejgsdesigna(idTurno, numeroDesigna, anioDesigna, idInstitucion);				
+			Vector ejgsdesingna=getejgsdesigna(idTurno, numeroDesigna, anioDesigna, idInstitucion,longitudNunmEjg);				
 			ScsEJGAdm ejgadm = new ScsEJGAdm(this.usrbean);
 			int tamanio= ejgsdesingna.size();
 			String Listadotramitador="";				
@@ -3553,7 +3482,7 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
                             boolean agregarEtiqDesigna=false;
                             ScsEJGAdm scsEJGAdm = new ScsEJGAdm(this.usrbean);
 
-                            Vector datosEjgVector=scsEJGAdm.getDatosInformeEjg(idInstitucion, (String)registroejg.get("IDTIPOEJG"), (String)registroejg.get("ANIOEJG"),(String)registroejg.get("NUMEROEJG"), isSolicitantes,isContrarios, null,null,true,tipoDestinatarioInforme, agregarEtiqDesigna);     
+                            Vector datosEjgVector=scsEJGAdm.getDatosInformeEjg(idInstitucion, (String)registroejg.get("IDTIPOEJG"), (String)registroejg.get("ANIOEJG"),(String)registroejg.get("NUMEROEJG"), isSolicitantes,isContrarios, null,null,true,tipoDestinatarioInforme, agregarEtiqDesigna,longitudNunmEjg);     
 
                             Hashtable datosEjgRel = new Hashtable();
                             boolean contieneContrarios=false;
@@ -3646,7 +3575,7 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
                             }
                             
                             //área de unidad familiar 
-                            Vector regionUF = scsEJGAdm.getDatosRegionUF(idInstitucion,(String)registroejg.get("IDTIPOEJG"), (String)registroejg.get("ANIOEJG"),(String)registroejg.get("NUMEROEJG"),idioma);
+                            Vector regionUF = scsEJGAdm.getDatosRegionUF(idInstitucion,(String)registroejg.get("IDTIPOEJG"), (String)registroejg.get("ANIOEJG"),(String)registroejg.get("NUMEROEJG"),idioma,longitudNunmEjg);
 						   
                             Hashtable datosregionUF = new Hashtable();
 						     Vector regionUFRenom = new Vector();
@@ -3679,7 +3608,7 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
  
                             //área de cónyuge
                             
-                            Vector regionConyuge = scsEJGAdm.getDatosRegionConyuge(idInstitucion,(String)registroejg.get("IDTIPOEJG"), (String)registroejg.get("ANIOEJG"),(String)registroejg.get("NUMEROEJG"),idioma);
+                            Vector regionConyuge = scsEJGAdm.getDatosRegionConyuge(idInstitucion,(String)registroejg.get("IDTIPOEJG"), (String)registroejg.get("ANIOEJG"),(String)registroejg.get("NUMEROEJG"),idioma,longitudNunmEjg);
                             
                             Hashtable datosregionConyuge = new Hashtable();
                             Vector regionConyugeRenom = new Vector();
@@ -4241,12 +4170,12 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 		return idJuzgado;                        
 	}
 	
-	public Vector getDatosProcuradoresEJGRelacionados(String idInstitucion, String numero, String idTurno, String anio) throws ClsExceptions {
+	public Vector getDatosProcuradoresEJGRelacionados(String idInstitucion, String numero, String idTurno, String anio, String longitudNumEjg) throws ClsExceptions {
 		Vector datos = null;
 
 		//SELECT
 		StringBuffer sql = new StringBuffer("SELECT ejg.idprocurador, ejg.idinstitucion_proc, ");
-		sql.append("  ejg.idtipoejg, ejg.idinstitucion, ejg.numero, ejg.numejg, ejg.anio      ");
+		sql.append("  ejg.idtipoejg, ejg.idinstitucion, ejg.numero, lpad(EJG.numejg,"+longitudNumEjg+",0) numejg, ejg.anio      ");
 		
 		//FROM 
 		sql.append(" FROM scs_ejg             ejg,   ");

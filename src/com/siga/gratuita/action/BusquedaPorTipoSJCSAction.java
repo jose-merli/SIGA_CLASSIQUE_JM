@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.redabogacia.sigaservices.app.AppConstants.PARAMETRO;
 
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ComodinBusquedas;
@@ -132,7 +133,7 @@ public class BusquedaPorTipoSJCSAction extends MasterAction
 		try {
 			// obtener institucion
 			UsrBean user = this.getUserBean(request);
-			
+			String longitudNumEjg = (String) request.getSession().getAttribute(PARAMETRO.LONGITUD_CODEJG.toString());
 			Hashtable miHash= new Hashtable();
 			
 			miHash.put("IDINSTITUCION",user.getLocation());
@@ -159,7 +160,7 @@ public class BusquedaPorTipoSJCSAction extends MasterAction
 			}
 			
 			ScsEJGAdm adm = new ScsEJGAdm(this.getUserBean(request));
-            Hashtable htConsultaBind  = adm.getBindBusquedaMantenimientoEJG(miHash,  new DefinirEJGForm(), TipoVentana.BUSQUEDA_EJG, user.getLocation());
+            Hashtable htConsultaBind  = adm.getBindBusquedaMantenimientoEJG(miHash,  new DefinirEJGForm(), TipoVentana.BUSQUEDA_EJG, user.getLocation(),longitudNumEjg);
             String consulta = (String) htConsultaBind.get("keyBindConsulta");
             Hashtable codigos = (Hashtable) htConsultaBind.get("keyBindCodigos");
 			

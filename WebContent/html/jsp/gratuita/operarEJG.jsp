@@ -24,6 +24,7 @@
 <%@ page import="com.atos.utils.*"%>
 <%@ page import="com.siga.Utilidades.*"%>
 <%@ page import="java.util.*"%>
+<%@page import="org.redabogacia.sigaservices.app.AppConstants.PARAMETRO"%>
 
 <!-- JSP -->
 <%
@@ -496,7 +497,7 @@
 									String t_nombre = "", t_apellido1 = "", t_apellido2 = "", t_anio = "", t_numero = "", t_tipoEJG = "", t_sufijo = "";
 										ScsEJGAdm adm = new ScsEJGAdm(usr);
 										Hashtable hTitulo = adm.getTituloPantallaEJG(idInstitucion,
-												ANIO, NUMERO, IDTIPOEJG);
+												ANIO, NUMERO, IDTIPOEJG,(String) request.getSession().getAttribute(PARAMETRO.LONGITUD_CODEJG.toString()));
 
 										if (hTitulo != null) {
 											t_nombre = (String) hTitulo.get(ScsPersonaJGBean.C_NOMBRE);

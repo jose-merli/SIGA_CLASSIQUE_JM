@@ -33,6 +33,7 @@
 <%@page import="java.util.Properties"%>
 <%@page import="java.util.Hashtable"%>
 <%@page import="java.util.ArrayList"%>
+<%@page import="org.redabogacia.sigaservices.app.AppConstants.PARAMETRO"%>
 
 <!-- JSP -->
 <%
@@ -1262,7 +1263,7 @@
 							String t_nombre = "", t_apellido1 = "", t_apellido2 = "", t_anio = "", t_numero = "", t_tipoEJG = "";;
 							ScsEJGAdm adm = new ScsEJGAdm(usr);
 
-							Hashtable hTitulo = adm.getTituloPantallaEJG(miform.getIdInstitucionEJG(), miform.getAnioEJG(), miform.getNumeroEJG(), miform.getIdTipoEJG());
+							Hashtable hTitulo = adm.getTituloPantallaEJG(miform.getIdInstitucionEJG(), miform.getAnioEJG(), miform.getNumeroEJG(), miform.getIdTipoEJG(),(String) request.getSession().getAttribute(PARAMETRO.LONGITUD_CODEJG.toString()));
 
 							if (hTitulo != null) {
 								t_nombre = (String) hTitulo.get(ScsPersonaJGBean.C_NOMBRE);

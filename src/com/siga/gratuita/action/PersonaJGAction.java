@@ -24,6 +24,7 @@ import net.sourceforge.ajaxtags.xml.AjaxXmlBuilder;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.redabogacia.sigaservices.app.AppConstants.PARAMETRO;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
@@ -1884,7 +1885,7 @@ public class PersonaJGAction extends MasterAction {
 		String action = (String)request.getServletPath();
 
 		try {
-
+			String longitudNumEjg = (String) request.getSession().getAttribute(PARAMETRO.LONGITUD_CODEJG.toString());
 	     	boolean nuevaPersona = false;
 	     	// Datos Persona
 			Hashtable persona= new Hashtable();
@@ -1997,7 +1998,7 @@ public class PersonaJGAction extends MasterAction {
 				anio = miform.getAnioASI();
 				numero = miform.getNumeroASI();
 				// Recuperamos las relaciones con otros asuntos
-				Vector relaciones = perAdm.getRelacionesPersonaJGAsistencia(miform.getIdPersonaJG(), user.getLocation(), tipo, anio, numero);
+				Vector relaciones = perAdm.getRelacionesPersonaJGAsistencia(miform.getIdPersonaJG(), user.getLocation(), tipo, anio, numero,longitudNumEjg);
 				// La busqueda es distinta porque no queremos que salgan los asuntos relacionados con la asistencia
 				if(relaciones!=null && relaciones.size()>0){
 					// Si encontramos alguna relacion tendremos que crear una persona nueva para no machacar los datos de la antigua
@@ -2028,7 +2029,7 @@ public class PersonaJGAction extends MasterAction {
 					numero = miform.getNumeroASI();
 					tipo = "";
 				}
-				Vector relaciones = perAdm.getRelacionesPersonaJG(miform.getIdPersonaJG(), user.getLocation(), relacion, tipo, anio, numero);
+				Vector relaciones = perAdm.getRelacionesPersonaJG(miform.getIdPersonaJG(), user.getLocation(), relacion, tipo, anio, numero,longitudNumEjg);
 				if(relaciones!=null && relaciones.size()>0){
 					miform.setModoGuardar(miform.getModo());
 					miform.setAccionGuardar("-");
@@ -3154,6 +3155,7 @@ public class PersonaJGAction extends MasterAction {
 		String nombreAnterior="";
 		String relacion= miform.getModoGuardar();
 		try {
+			String longitudNumEjg = (String) request.getSession().getAttribute(PARAMETRO.LONGITUD_CODEJG.toString());
 			String anio="";
 			String numero="";
 			String tipo="";
@@ -3175,7 +3177,7 @@ public class PersonaJGAction extends MasterAction {
 				numero = miform.getNumeroASI();
 				tipo = "";
 			}
-			relaciones = perAdm.getRelacionesPersonaJG(miform.getIdPersonaJG(), user.getLocation(), relacion, tipo, anio, numero);
+			relaciones = perAdm.getRelacionesPersonaJG(miform.getIdPersonaJG(), user.getLocation(), relacion, tipo, anio, numero,longitudNumEjg);
 			nombreAnterior = perAdm.getNombreApellidos(miform.getIdPersonaJG(), user.getLocation());
 		} catch (ClsExceptions e) {
 			// TODO Auto-generated catch block

@@ -19,6 +19,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.redabogacia.sigaservices.app.AppConstants.PARAMETRO;
 import org.redabogacia.sigaservices.app.util.ReadProperties;
 import org.redabogacia.sigaservices.app.util.SIGAReferences;
 
@@ -135,7 +136,7 @@ public class InformesGenericosAction extends MasterAction {
 			UsrBean usr = this.getUserBean(request);
 			//Obtenemos el formulario y sus datos:
 			InformesGenericosForm miform = (InformesGenericosForm)formulario;
-			EnvioInformesGenericos envioInformesGenericos = new EnvioInformesGenericos();
+			EnvioInformesGenericos envioInformesGenericos = new EnvioInformesGenericos((String) request.getSession().getAttribute(PARAMETRO.LONGITUD_CODEJG.toString()));
 			File ficheroSalida = null;
 			Vector informesRes = new Vector(); 
 			// Obtiene del campo idInforme los ids separados por ## y devuelve sus beans
@@ -197,7 +198,7 @@ public class InformesGenericosAction extends MasterAction {
 	protected String generaInfPersonalizableFacJG (ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) 
 	throws SIGAException, ClsExceptions{
 		UsrBean usr = this.getUserBean(request);
-		EnvioInformesGenericos envioInformesGenericos = new EnvioInformesGenericos();
+		EnvioInformesGenericos envioInformesGenericos = new EnvioInformesGenericos((String) request.getSession().getAttribute(PARAMETRO.LONGITUD_CODEJG.toString()));
 		InformesGenericosForm miform = (InformesGenericosForm) formulario;
 		Vector informesList = envioInformesGenericos.getPlantillasInforme(miform.getIdInforme(),"##",usr);
 		
@@ -220,7 +221,7 @@ public class InformesGenericosAction extends MasterAction {
 		InformeCertificadoIRPF informeIRPF = new InformeCertificadoIRPF();
 		File ficheroSalida=null;
 		try {
-			ficheroSalida = informeIRPF.getInformeIRPF(formulario, this.getUserBean(request));
+			ficheroSalida = informeIRPF.getInformeIRPF(formulario, this.getUserBean(request),(String) request.getSession().getAttribute(PARAMETRO.LONGITUD_CODEJG.toString()));
 
 		} catch (Exception e) {
 			throwExcp("messages.general.error",new String[] {"modulo.informes"},e,null);
@@ -249,7 +250,7 @@ public class InformesGenericosAction extends MasterAction {
 		}
 		boolean isAEnviar =  miForm.getEnviar()!=null && miForm.getEnviar().equals(ClsConstants.DB_TRUE);
 		boolean isADescargar =  miForm.getDescargar()!=null && miForm.getDescargar().equals(ClsConstants.DB_TRUE);
-		EnvioInformesGenericos informeGenerico = new EnvioInformesGenericos();
+		EnvioInformesGenericos informeGenerico = new EnvioInformesGenericos((String) request.getSession().getAttribute(PARAMETRO.LONGITUD_CODEJG.toString()));
 		
 		String accessEnvio="";
 		boolean isPermisoEnvio = true;
@@ -344,14 +345,14 @@ public class InformesGenericosAction extends MasterAction {
 		try {
 
 			UsrBean usr = this.getUserBean(request);
-
+			String longitudNumEjg = (String) request.getSession().getAttribute(PARAMETRO.LONGITUD_CODEJG.toString());
 			//Obtenemos el formulario y sus datos:
 			InformesGenericosForm miform = (InformesGenericosForm)formulario;
 			File ficheroSalida = null;
 			Vector informesRes = new Vector(); 
 			// Obtiene del campo idInforme los ids separados por ## y devuelve sus beans
 			InformeAbono admInf = new InformeAbono(usr);
-			EnvioInformesGenericos envioInformesGenericos = new EnvioInformesGenericos();
+			EnvioInformesGenericos envioInformesGenericos = new EnvioInformesGenericos((String) request.getSession().getAttribute(PARAMETRO.LONGITUD_CODEJG.toString()));
 			Vector plantillas = envioInformesGenericos.getPlantillasInforme(miform.getIdInforme(),"##",usr);
 			// Obtiene del campo datosInforme los campos del formulario primcipal
 			// para obtener la clave para el informe. LOs datos se obtienen en una cadena como los ocultos
@@ -390,7 +391,7 @@ public class InformesGenericosAction extends MasterAction {
 							anio= (String)aux.get("anio");
 							numero= (String)aux.get("numero");						
 							HelperInformesAdm helperInformes = new HelperInformesAdm();								
-							vSalida = ejgAdm.getCalificacionEjgSalida(idintitucionactual,idTipoEJG,anio, numero,idioma);
+							vSalida = ejgAdm.getCalificacionEjgSalida(idintitucionactual,idTipoEJG,anio, numero,idioma,longitudNumEjg);
 							/**Como accedemos al ejg por clave primaria solo nos saldra un registro**/
 							Hashtable registro = (Hashtable) vSalida.get(0);			
 							
@@ -508,14 +509,14 @@ public class InformesGenericosAction extends MasterAction {
 		StringBuffer avisoFicherosNoGenerado = new StringBuffer();
 		try {
 			UsrBean usr = this.getUserBean(request);
-
+			String longitudNumEjg = (String) request.getSession().getAttribute(PARAMETRO.LONGITUD_CODEJG.toString());
 			//Obtenemos el formulario y sus datos:
 			InformesGenericosForm miform = (InformesGenericosForm)formulario;
 			File ficheroSalida = null;
 			Vector informesRes = new Vector(); 
 			// Obtiene del campo idInforme los ids separados por ## y devuelve sus beans
 			InformeAbono admInf = new InformeAbono(usr); 
-			EnvioInformesGenericos envioInformesGenericos = new EnvioInformesGenericos();
+			EnvioInformesGenericos envioInformesGenericos = new EnvioInformesGenericos((String) request.getSession().getAttribute(PARAMETRO.LONGITUD_CODEJG.toString()));
 			Vector plantillas = envioInformesGenericos.getPlantillasInforme(miform.getIdInforme(),"##",usr);
 			
 			// Obtiene del campo datosInforme los campos del formulario primcipal
@@ -581,7 +582,7 @@ public class InformesGenericosAction extends MasterAction {
 										}
 										
 									Hashtable sojHashtable =definirSOJAdm.getDatosInformeSOJ(new Integer(usr.getLocation()),
-											new Integer(idTipoSOJ),new Integer(anio),new Integer(numero),idioma);
+											new Integer(idTipoSOJ),new Integer(anio),new Integer(numero),idioma,longitudNumEjg);
 
 									 
 
@@ -787,7 +788,7 @@ public class InformesGenericosAction extends MasterAction {
 			usr = this.getUserBean (request);
 			miform = (InformesGenericosForm) formulario;
 			//plantillas = infAdm.obtenerInformesTipo(idinstitucion, miform.getIdTipoInforme(), miform.getAsolicitantes(), miform.getDestinatarios());
-			EnvioInformesGenericos envioInformesGenericos = new EnvioInformesGenericos();
+			EnvioInformesGenericos envioInformesGenericos = new EnvioInformesGenericos((String) request.getSession().getAttribute(PARAMETRO.LONGITUD_CODEJG.toString()));
 			plantillas = envioInformesGenericos.getPlantillasInforme(miform.getIdInforme(),"##",usr);
 			// del merge (revisar)
 			datos = this.obtenerDatosFormulario (miform);
@@ -1451,7 +1452,7 @@ public class InformesGenericosAction extends MasterAction {
 		UsrBean userBean = ((UsrBean)request.getSession().getAttribute(("USRBEAN")));   
 		String idioma =  userBean.getLanguageExt();
 		String idiomaInt =  userBean.getLanguage();			
-		
+		String longitudNumEjg = (String) request.getSession().getAttribute(PARAMETRO.LONGITUD_CODEJG.toString());
 		MasterReport masterReport = new MasterReport();
 		Vector datos = masterReport.obtenerDatosFormulario(form.getDatosInforme().toUpperCase());
 		//IDINSTITUCION==2040##IDTIPO==1##ANIO==2012##NUMERO==80##IDTIPOINFORME==DEJG%%%;
@@ -1482,7 +1483,7 @@ public class InformesGenericosAction extends MasterAction {
 			GstDate gstDate = new GstDate();
 			String hoy = gstDate.parseDateToString(new Date(),"dd/MM/yyyy", this.getLocale(request));
 			ArrayList informesRes = new ArrayList(); 
-			EnvioInformesGenericos envioInformesGenericos = new EnvioInformesGenericos();
+			EnvioInformesGenericos envioInformesGenericos = new EnvioInformesGenericos((String) request.getSession().getAttribute(PARAMETRO.LONGITUD_CODEJG.toString()));
 			Vector plantillas = envioInformesGenericos.getPlantillasInforme(form.getIdInforme(),"@@",userBean);
 			
 			String presentador = null;
@@ -1503,7 +1504,7 @@ public class InformesGenericosAction extends MasterAction {
 
 
 			ScsDocumentacionEJGAdm scsDocumentacionEJGAdm = new ScsDocumentacionEJGAdm(getUserBean(request));
-			RowsContainer rowscontainer = scsDocumentacionEJGAdm.getDocumentacionEJG(idInstitucion, idTipoEJG, anio, numero, idiomaInt);
+			RowsContainer rowscontainer = scsDocumentacionEJGAdm.getDocumentacionEJG(idInstitucion, idTipoEJG, anio, numero, idiomaInt,longitudNumEjg);
 
 			if (rowscontainer == null || rowscontainer.size() == 0) {
 				throw new SIGAException("messages.informes.noDocumentos");

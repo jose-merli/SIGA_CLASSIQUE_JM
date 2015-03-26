@@ -21,6 +21,7 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.redabogacia.sigaservices.app.AppConstants.ESTADOS_EJG;
+import org.redabogacia.sigaservices.app.AppConstants.PARAMETRO;
 import org.redabogacia.sigaservices.app.util.ReadProperties;
 import org.redabogacia.sigaservices.app.util.SIGAReferences;
 
@@ -168,6 +169,7 @@ protected String buscarPor(ActionMapping mapping, MasterForm formulario, HttpSer
 		String consulta = "";
 		
 		try {
+			String longitudNumEjg = (String) request.getSession().getAttribute(PARAMETRO.LONGITUD_CODEJG.toString()); 
 			Vector claves = new Vector();
 			String seleccionados = request.getParameter("Seleccion");
 			
@@ -223,7 +225,7 @@ protected String buscarPor(ActionMapping mapping, MasterForm formulario, HttpSer
 					
 				//obtengo datos de la consulta 			
 				Vector datos = null;
-				Hashtable htConsultaBind  = admBean.getBindBusquedaMantenimientoEJG(miHash,  miForm, ScsEJGAdm.TipoVentana.BUSQUEDA_PREPARACION_CAJG, idInstitucion);
+				Hashtable htConsultaBind  = admBean.getBindBusquedaMantenimientoEJG(miHash,  miForm, ScsEJGAdm.TipoVentana.BUSQUEDA_PREPARACION_CAJG, idInstitucion,longitudNumEjg);
 				Vector v = admBean.getBusquedaMantenimientoEJG(htConsultaBind);
 				claves = sacarClavesEJG(v, getIDInstitucion(request));
 
