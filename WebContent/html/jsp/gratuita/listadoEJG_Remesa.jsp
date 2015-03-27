@@ -122,6 +122,8 @@
 				buttons+=",val,ws";//envio WebService GVasco
 			} else if (cajgConfig == 8) {
 				buttons+=",val,ws";//envio WebService GenValenciana
+			} else if (cajgConfig == 9) {
+				buttons+=",val,ws";//envio WebService EJIS
 			}
 		}
 	

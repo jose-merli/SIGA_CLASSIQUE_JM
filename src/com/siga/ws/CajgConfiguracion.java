@@ -24,6 +24,7 @@ public class CajgConfiguracion  {
 	public static final int TIPO_CAJG_XML_SANTIAGO = 6;
 	public static final int TIPO_CAJG_WEBSERVICE_PAISVASCO = 7;
 	public static final int TIPO_CAJG_WEBSERVICE_GENERALITAT_VALENCIANA = 8;
+	public static final int TIPO_CAJG_WEBSERVICE_EJIS_ANDALUCIA = 9;
 	
 	
 	private static final String PCAJG_ENVIO_WEBSERVICE_TIPO_CAJG3 = "PCAJG_ENVIO_WEBSERVICE_TIPO_CAJG3";

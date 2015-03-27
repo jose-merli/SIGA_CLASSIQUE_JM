@@ -101,6 +101,8 @@ import es.satec.businessManager.BusinessManager;
 public class DefinirRemesasCAJGAction extends MasterAction {
 	
 	private static final Logger log = Logger.getLogger(DefinirRemesasCAJGAction.class);
+	
+	private static final String VALUE_TRUE = "1";
 
 	/**
 	 * Funcion que atiende a las peticiones. Segun el valor del parametro modo
@@ -998,7 +1000,7 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 			aux2.put(ScsEJGBean.C_NUMERO, aux.get(ScsEJGBean.C_NUMERO));
 			aux2.put(ScsEJGBean.C_IDTIPOEJG, aux.get(ScsEJGBean.C_IDTIPOEJG));
 			aux2.put(ScsEJGBean.C_FECHAMODIFICACION, aux.get(ScsEJGBean.C_FECHAMODIFICACION));
-			aux2.put("SELECCIONADO", "1");
+			aux2.put("SELECCIONADO", VALUE_TRUE);
 			claves.addElement(aux2);
 		}
 		return claves;
@@ -1036,7 +1038,7 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 
 				if (anio.equals(anio_aux) && numero.equals(numero_aux) && idtipoejg.equals(aux_idtipoejg)) {
 					encontrado = true;
-					h.put("SELECCIONADO", "1");
+					h.put("SELECCIONADO", VALUE_TRUE);
 				}
 				j++;
 			}
@@ -1111,7 +1113,7 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 					Hashtable miHashaux = new Hashtable();
 					miHashaux = (Hashtable) v_seleccionadosSesion.get(i);
 					String seleccionado = (String) miHashaux.get("SELECCIONADO");
-					if (seleccionado.equals("1")) {
+					if (seleccionado.equals(VALUE_TRUE)) {
 						cuenta++;
 						String sql = " OR (EJG.ANIO = " + miHashaux.get(ScsEJGBean.C_ANIO) +
 								" AND EJG.NUMERO = " + miHashaux.get(ScsEJGBean.C_NUMERO) +
@@ -1262,7 +1264,7 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 				String filtrado = "";
 				if (idIncidenciasEnvio != null && !idIncidenciasEnvio.trim().equals("")) {
 					 
-					if (idIncidenciasEnvio.equals("1")) {//con errores
+					if (idIncidenciasEnvio.equals(VALUE_TRUE)) {//con errores
 						filtrado = " and (" + cuentaErrores + ") > 0";	
 					} else if (idIncidenciasEnvio.equals("2")) {//sin errores
 						filtrado = " and (" + cuentaErrores + ") = 0";
@@ -1806,7 +1808,7 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 		sigaWSClient.setIdInstitucion(idInstitucion);
 		sigaWSClient.setUsrBean(usrBean);
 		sigaWSClient.setIdRemesa(Integer.parseInt(idRemesa));
-		sigaWSClient.setSimular("1".equals(form.getSimular()));
+		sigaWSClient.setSimular(VALUE_TRUE.equals(form.getSimular()));
 		
 		GenParametrosAdm admParametros = new GenParametrosAdm(usrBean);		
 		String urlWS = admParametros.getValor(idInstitucion.toString(), "SCS", "PCAJG_WS_URL", "");
@@ -1849,7 +1851,7 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 		String idRemesa = formulario.getIdRemesa();
 		String mensaje = null;
 		
-		boolean simular = "1".equals(((DefinicionRemesas_CAJG_Form) formulario).getSimular());
+		boolean simular = VALUE_TRUE.equals(((DefinicionRemesas_CAJG_Form) formulario).getSimular());
 		
 		if (CajgConfiguracion.TIPO_CAJG_WEBSERVICE_PAISVASCO == tipoCAJG) {
 			PCAJGInsertaColaService pcajgInsertaColaService = (PCAJGInsertaColaService) getBusinessManager().getService(PCAJGInsertaColaService.class);
@@ -1873,7 +1875,19 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 						, UtilidadesString.getMensajeIdioma(getUserBean(request), GEN_RECURSOS.scs_mensaje_validando.getValor()));
 			}
 			
-			mensaje = getMensajeRespuesta(respuesta, request, simular);			
+			mensaje = getMensajeRespuesta(respuesta, request, simular);		
+		} else if (CajgConfiguracion.TIPO_CAJG_WEBSERVICE_EJIS_ANDALUCIA == tipoCAJG) {
+			PCAJGInsertaColaService pcajgInsertaColaService = (PCAJGInsertaColaService) getBusinessManager().getService(PCAJGInsertaColaService.class);
+			RESPUESTA_ENVIO_REMESA respuesta = null;
+			if (simular) {
+				respuesta = pcajgInsertaColaService.validaExpedientesEJIS(Short.valueOf(idInstitucion.toString()), Long.valueOf(idRemesa)
+						, UtilidadesString.getMensajeIdioma(getUserBean(request), GEN_RECURSOS.scs_mensaje_validando.getValor()));	
+			} else {
+				respuesta = pcajgInsertaColaService.enviaExpedientesEJIS(Short.valueOf(idInstitucion.toString()), Long.valueOf(idRemesa)
+						, UtilidadesString.getMensajeIdioma(getUserBean(request), GEN_RECURSOS.scs_mensaje_validando.getValor()));
+			}
+			
+			mensaje = getMensajeRespuesta(respuesta, request, simular);
 		} else {
 			ejecutaBackground(formulario, request, 0);	
 			if (simular) {
