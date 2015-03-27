@@ -72,7 +72,7 @@ public class GestionSolicitudesAction extends MasterAction {
 				}
 			
 				String accion = miForm.getModo();
-				if (accion == null) {
+				if (accion == null || accion.equals("")) {
 					mapDestino = inicio(mapping, miForm, request, response);
 					break;
 					

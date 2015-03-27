@@ -296,7 +296,7 @@
 					nombreCliente = nombreCliente + " " + UtilidadesHash.getString (peticion, CenPersonaBean.C_APELLIDOS1);
 					nombreCliente = nombreCliente + " " + UtilidadesHash.getString (peticion, CenPersonaBean.C_APELLIDOS2);
 					String fecha   = UtilidadesHash.getString (peticion, PysPeticionCompraSuscripcionBean.C_FECHA);
-					int numProgramada = new Integer(UtilidadesHash.getString (peticion, "NUM_PROGRAMADA")).intValue();
+					int numFacturada = new Integer(UtilidadesHash.getString (peticion, "NUM_FACTURADA")).intValue();
 					int numProductosFacturables = new Integer(UtilidadesHash.getString (peticion, "NUM_PRODUCTOS_FACTURABLES")).intValue();
 					int numCertificados  = new Integer(UtilidadesHash.getString (peticion, "NUM_CERTIFICADOS")).intValue();
 					int hayServicios     = new Integer(UtilidadesHash.getString (peticion, "HAY_SERVICIOS")).intValue();
@@ -333,19 +333,16 @@
 					// 4. Compruebo que no tenga certificados
 					// 5. Compruebo que no tenga servicios
 					// 6. Compruebo que tiene productos facturables
-					FilaExtElement[] elems;					
+					FilaExtElement[] elems = new FilaExtElement[3];
+					elems[0]=new FilaExtElement("editarConCertificado", "editarConCertificado", SIGAConstants.ACCESS_FULL);
+					elems[1]=new FilaExtElement("enviar", "enviar", SIGAConstants.ACCESS_FULL);
 					if ((idEstadoSol.trim().equals(String.valueOf(ClsConstants.ESTADO_PETICION_COMPRA_PENDIENTE)) || idEstadoSol.trim().equals(String.valueOf(ClsConstants.ESTADO_PETICION_COMPRA_PROCESADA))) && 
 							tipoSol.trim().equals("A") && 
-							numProgramada==0 && numCertificados==0 && hayServicios==0 && numProductosFacturables>0) {
-						elems = new FilaExtElement[3];
-						elems[0]=new FilaExtElement("editarConCertificado", "editarConCertificado", SIGAConstants.ACCESS_FULL);
-						elems[1]=new FilaExtElement("enviar", "enviar", SIGAConstants.ACCESS_FULL);
+							numFacturada==0 && numCertificados==0 && hayServicios==0 && numProductosFacturables>0) {
 						elems[2]=new FilaExtElement("facturacionrapida", "facturacionrapida", SIGAConstants.ACCESS_READ);
 						
 					} else {
-						elems = new FilaExtElement[2];
-						elems[0]=new FilaExtElement("editarConCertificado", "editarConCertificado", SIGAConstants.ACCESS_FULL);
-						elems[1]=new FilaExtElement("enviar", "enviar", SIGAConstants.ACCESS_FULL);
+						elems[2]=new FilaExtElement("download", "facturacionrapida", SIGAConstants.ACCESS_READ);
 					}
 %>
 							 		
