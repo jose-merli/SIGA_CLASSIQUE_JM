@@ -127,7 +127,8 @@
 					pys.solicitudCompra.literal.estadoPago,
 					pys.solicitudCompra.literal.importeAnticipado"  
 		columnSizes="20,14,17,6,9,8,10,11"
-		modal = "G">
+		modal = "G"
+		fixedHeight = "-1">
 		
 <% 				
 		int i = -1;
