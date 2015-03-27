@@ -3607,7 +3607,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 		    sql += C_IDINSTITUCION + " = " + idInst;
 			sql += " AND " + C_IDESTADO + " = " + EnvEstadoEnvioAdm.K_ESTADOENVIO_PENDIENTE_AUTOMATICO;
 			sql += " AND " + C_FECHAPROGRAMADA + " <= SYSDATE";
-			sql += " ORDER BY  " +EnvEnviosBean.C_IDENVIO;
+			
 		    //sql += " AND " + EnvEnviosBean.C_IDENVIO + " = 3732";
 					
 			enviosBeans = this.select(sql);
