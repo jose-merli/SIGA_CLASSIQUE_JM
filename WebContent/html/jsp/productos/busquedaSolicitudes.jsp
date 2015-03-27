@@ -2,6 +2,7 @@
 <html>
 <head>
 <!-- busquedaSolicitudes.jsp -->
+
 <!-- EJEMPLO DE VENTANA DE BUSQUEDA -->
 <!-- Contiene la zona de campos de busqueda o filtro y la barra  botones de
 	 busqueda, que ademas contiene el titulo de la busqueda o lista de resultados.
@@ -13,7 +14,7 @@
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-1"%>
 <meta http-equiv="Cache-Control" content="no-cache">
-<meta http-equiv="Conte nt-Type" content="text/html; charset=ISO-8859-1">
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <%@ page contentType="text/html" language="java" errorPage="/html/jsp/error/errorSIGA.jsp"%>
 
 <!-- TAGLIBS -->
@@ -29,6 +30,7 @@
 <%@ page import="com.siga.productos.form.GestionSolicitudesForm"%>
 <%@ page import="java.util.Properties"%>
 <%@ page import="java.util.ArrayList"%>
+<%@ page import="com.siga.Utilidades.UtilidadesHash"%>
 <!-- JSP -->
 <%  
 	String app=request.getContextPath();
@@ -121,15 +123,29 @@
 
 				<tr>				
 					<td class="labelText"><siga:Idioma key="pys.gestionSolicitudes.literal.fechaDesde"/></td>
-					<td>
-					<siga:Fecha nombreCampo="buscarFechaDesde" valorInicial="<%=fechaDesde%>"></siga:Fecha>
-					</td>
+					<td><siga:Fecha nombreCampo="buscarFechaDesde" valorInicial="<%=fechaDesde%>"/></td>
 		
 					<td class="labelText"><siga:Idioma key="pys.gestionSolicitudes.literal.fechaHasta"/></td>
-					<td>
-					<siga:Fecha nombreCampo="buscarFechaHasta" valorInicial="<%=fechaHasta%>" campoCargarFechaDesde="buscarFechaDesde"></siga:Fecha>
-					</td>
+					<td><siga:Fecha nombreCampo="buscarFechaHasta" valorInicial="<%=fechaHasta%>" campoCargarFechaDesde="buscarFechaDesde"/></td>
 					
+					<td class="labelText"><siga:Idioma key="pys.gestionSolicitudes.literal.estadoPago"/></td>				
+                 	<td>
+                 		<html:select name="GestionSolicitudesForm" property="estadoPago" styleId="estadoPago">
+                 			<html:option value=""></html:option>
+<%
+							Vector<Hashtable<String,Object>> vEstadosPago = (Vector<Hashtable<String,Object>>) request.getAttribute("vEstadosPago"); 	
+							for (int i=0; i<vEstadosPago.size(); i++) {
+								Hashtable<String,Object> hEstadoPago = (Hashtable<String,Object>) vEstadosPago.get(i);
+								String sEstadoPagoId = UtilidadesHash.getString(hEstadoPago, "IDRECURSO");
+								String sEstadoPagoDescripcion = UtilidadesHash.getString(hEstadoPago, "DESCRIPCION");
+									
+%>
+								<html:option value="<%=sEstadoPagoId%>"><%=sEstadoPagoDescripcion%></html:option>
+<%																			
+							}
+%>							                 		
+                 		</html:select>
+					</td>
 				</tr>
 		
 				<tr>				
@@ -190,7 +206,7 @@
 				sub();		
 				if (compararFecha (document.GestionSolicitudesForm.buscarFechaDesde, document.GestionSolicitudesForm.buscarFechaHasta) == 1) {
 				
-					mensaje = '<siga:Idioma key="messages.fechas.rangoFechas"/>'
+					mensaje = '<siga:Idioma key="messages.fechas.rangoFechas"/>';
 					
 					alert(mensaje);
 					fin();

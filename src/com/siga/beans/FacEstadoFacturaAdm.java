@@ -97,5 +97,25 @@ public class FacEstadoFacturaAdm extends MasterBeanAdministrador {
 		return htData;	
 	}
 
-
+	public Vector<Hashtable<String,Object>> obtenerEstadosPago(String idioma) throws ClsExceptions {
+		Vector<Hashtable<String,Object>> datos = new Vector<Hashtable<String,Object>>();
+		
+		String sql = "SELECT IDRECURSO, " +
+						" F_SIGA_GETRECURSO_ETIQUETA(IDRECURSO, " + idioma + ") AS DESCRIPCION " +
+					" FROM (" +
+							" SELECT " + FacEstadoFacturaBean.T_NOMBRETABLA + "." + FacEstadoFacturaBean.C_DESCRIPCION + " AS IDRECURSO " +						
+							" FROM " + FacEstadoFacturaBean.T_NOMBRETABLA +
+							" UNION SELECT 'estados.compra.pendiente' AS IDRECURSO FROM DUAL " +
+						" ) " +
+					"ORDER BY DESCRIPCION";
+		
+		try {
+			datos = this.selectGenerico(sql);
+			
+       } catch (Exception e) {
+       		throw new ClsExceptions (e, "Error al obtener los estados de los pagos");
+       }
+		
+       return datos;  
+	}
 }

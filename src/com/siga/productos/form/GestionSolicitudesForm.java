@@ -232,4 +232,11 @@ public class GestionSolicitudesForm extends MasterForm
 		return UtilidadesHash.getInteger(this.datos, "_IDCUENTA_");
 	}
 
+	public String getEstadoPago() {
+		return UtilidadesHash.getString(this.datos, "EstadoPago");
+	}
+	
+	public void setEstadoPago(String dato) {
+		UtilidadesHash.set(this.datos, "EstadoPago", dato);
+	}
 }

@@ -28,6 +28,7 @@ import com.siga.Utilidades.UtilidadesNumero;
 import com.siga.beans.CenColegiadoAdm;
 import com.siga.beans.CenColegiadoBean;
 import com.siga.beans.CenPersonaAdm;
+import com.siga.beans.FacEstadoFacturaAdm;
 import com.siga.beans.GenParametrosAdm;
 import com.siga.beans.PysCompraAdm;
 import com.siga.beans.PysCompraBean;
@@ -72,7 +73,7 @@ public class GestionSolicitudesAction extends MasterAction {
 			
 				String accion = miForm.getModo();
 				if (accion == null) {
-					mapDestino = "inicio";
+					mapDestino = inicio(mapping, miForm, request, response);
 					break;
 					
 				} else if (accion.equalsIgnoreCase("buscarInit")){
@@ -239,7 +240,7 @@ public class GestionSolicitudesAction extends MasterAction {
 			request.setAttribute("tipoSolicitud", tipoSolicitud);
 			/*******/
 			
-			Hashtable hash = new Hashtable ();
+			Hashtable<String,Object> hash = new Hashtable<String,Object>();
 			UtilidadesHash.set(hash, PysPeticionCompraSuscripcionBean.C_IDPETICION, idPeticion);
 			PysPeticionCompraSuscripcionAdm ppcsa = new PysPeticionCompraSuscripcionAdm (this.getUserBean(request));
 			Vector peticion = ppcsa.getPeticionDetalle (hash, idInstitucion);
@@ -562,7 +563,7 @@ public class GestionSolicitudesAction extends MasterAction {
 				PysSuscripcionAdm suscripcion = new PysSuscripcionAdm (this.getUserBean(request));
 				
 				//Recuperar el bean de BD
-				Hashtable claves = new Hashtable();
+				Hashtable<String,Object> claves = new Hashtable<String,Object>();
 				UtilidadesHash.set(claves, PysSuscripcionBean.C_IDINSTITUCION, idinstitucion);
 				UtilidadesHash.set(claves, PysSuscripcionBean.C_IDTIPOSERVICIOS, idTipoClave);
 				UtilidadesHash.set(claves, PysSuscripcionBean.C_IDPETICION, idPeticion);
@@ -589,7 +590,7 @@ public class GestionSolicitudesAction extends MasterAction {
 				PysCompraAdm compra = new PysCompraAdm(this.getUserBean(request));
 				
 				//Recuperar el bean de BD
-				Hashtable claves = new Hashtable();
+				Hashtable<String,Object> claves = new Hashtable<String,Object>();
 				UtilidadesHash.set(claves, PysCompraBean.C_IDINSTITUCION, idinstitucion);
 				UtilidadesHash.set(claves, PysCompraBean.C_IDTIPOPRODUCTO, idTipoClave);
 				UtilidadesHash.set(claves, PysCompraBean.C_IDPETICION, idPeticion);
@@ -643,5 +644,28 @@ public class GestionSolicitudesAction extends MasterAction {
 		return new Double(nuevoTotalAnticipado);
 	}
 
-	
+	/**
+	 * 
+	 * @param mapping
+	 * @param formulario
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws ClsExceptions
+	 * @throws SIGAException
+	 */
+	protected String inicio(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, SIGAException {
+		try {
+			UsrBean usuario = (UsrBean) request.getSession().getAttribute(("USRBEAN"));
+			
+			FacEstadoFacturaAdm admFacEstadoFactura = new FacEstadoFacturaAdm(usuario);
+			Vector<Hashtable<String,Object>> vEstadosPago = admFacEstadoFactura.obtenerEstadosPago(usuario.getLanguage());
+			request.setAttribute("vEstadosPago", vEstadosPago);
+			
+		}catch (Exception e) { 
+			throwExcp("messages.general.error", new String[] {"modulo.productos"}, e, null); 
+		}
+		
+		return "inicio";
+	}
 }
