@@ -294,8 +294,6 @@
 			</tr>
 		</table>
 	
-		<!-- INICIO ******* CAPA DE PRESENTACION ****** -->
-		
 		<html:form action="/PYS_GenerarSolicitudes.do" method="POST" target="_blank" type=""> 
 			<input type="hidden" name="modo" value=""> 
 			<input type="hidden" name="actionModal" value=""> 			
@@ -330,8 +328,7 @@
 							pys.solicitudCompra.literal.iva,
 							pys.solicitudCompra.literal.estadoPago,
 							pys.solicitudCompra.literal.importeAnticipado,"  
-				columnSizes="20,15,17,8,8,6,10,11,5"
-				fixedHeight="83%">
+				columnSizes="20,14,17,6,9,8,10,11,5">
 		
 <% 				
 				int i = -1;
@@ -449,7 +446,34 @@
 %>
 						</siga:FilaConIconos>
 <%		
-					}									
+					}	
+					
+					varIvaTotal = UtilidadesNumero.redondea (varIvaTotal, 2);
+					varPrecioTotal = UtilidadesNumero.redondea (varPrecioTotal, 2);
+%>
+					<tr class="listaNonEditSelected" style="height:30px">
+						<td>
+							<b><siga:Idioma key="facturacion.lineasFactura.literal.Total"/></b>
+							<siga:ToolTip id='ayudaTotalServicios' imagen='/SIGA/html/imagenes/botonAyuda.gif' texto='<%=UtilidadesString.mostrarDatoJSP(UtilidadesString.getMensajeIdioma(usrbean,"messages.servicios.precioServicios"))%>' />
+<%
+							if (noFact) { 
+%>
+								<siga:ToolTip id='ayudaNoFacturable' imagen='/SIGA/html/imagenes/botonAyuda.gif' texto='<%=UtilidadesString.mostrarDatoJSP(UtilidadesString.getMensajeIdioma(usrbean,"messages.pys.solicitudCompra.compraNoFacturable"))%>' />
+<%
+							}
+%>
+							
+						</td>
+						<td>&nbsp;</td>
+						<td>&nbsp;</td>
+						<td colspan="2" align="right"><input type="text" name="precioTotalTarjeta" value="<%=UtilidadesString.formatoImporte(varPrecioTotal)%> &euro;" style="background-color:transparent; font-weight:bold" class="boxConsultaNumber" readOnly="true" size="13"></td>
+						<td align="right"><input type="text" name="ivaTotalTarjeta" value="<%=UtilidadesString.formatoImporte(varIvaTotal)%> &euro;" style="background-color:transparent; font-weight:bold" class="boxConsultaNumber" readOnly="true" size="7"></td>
+						<td>&nbsp;</td>
+						<td>&nbsp;</td>
+						<td>&nbsp;</td>
+					</tr>	
+
+<%					
 			 	} else {
 %>
 					<tr class="notFound">
@@ -459,42 +483,6 @@
 			 	}
 %>
 			</siga:Table>
-		
-			<div id="camposRegistro1" style="position:absolute; width:100%; height:70px; z-index:2; bottom:70px; left:0px" align="center">
-
-<%
-				varIvaTotal = UtilidadesNumero.redondea (varIvaTotal, 2);
-				varPrecioTotal = UtilidadesNumero.redondea (varPrecioTotal, 2);
-%>
-
-				<div id="camposRegistro2" style="width:240px" align="center">	
-					<fieldset>		
-						<table>
-							<tr>
-								<td class="labelText" nowrap><siga:Idioma key="pys.solicitudCompra.literal.totalIVA"/></td>
-								<td class="labelTextValue">	<input type='text' name='ivaTotal' value="<%=UtilidadesString.formatoImporte(varIvaTotal)%>&nbsp;&euro;" class="boxConsultaNumber" readOnly=true size="20"></td>
-							</tr>
-							<tr>
-								<td class="labelText" nowrap><siga:Idioma key="pys.solicitudCompra.literal.total"/></td>
-								<td class="labelTextValue"><input type='text' name='precioTotal' value="<%=UtilidadesString.formatoImporte(varPrecioTotal)%>&nbsp;&euro;" class="boxConsultaNumber" readOnly=true size="20"></td>
-							</tr>
-						</table>
-					</fieldset>
-				</div>
-			
-				<table width="100%" align="center">
-					<tr>
-						<td class="labelTextCentro" colspan="2" align="center"><siga:Idioma key="messages.servicios.precioServicios"/></td>
-					</tr>
-					<!-- mhg - Mostramos el siguiente mensaje si tenemos productos no facturables -->
-					<%if (noFact){ %>
-					<tr>
-						<td class="labelTextCentro" colspan="2" align="center"><siga:Idioma key="messages.pys.solicitudCompra.compraNoFacturable"/></td>	
-					</tr>
-					<%}%>
-				</table>
-			<!-- FIN ******* BOTONES DE ACCIONES EN REGISTRO ****** -->
-			</div>
 		</html:form>
 	
 		<!-- Este formulario se emplea para abrir la ventana modal de modificación de los anticipos-->

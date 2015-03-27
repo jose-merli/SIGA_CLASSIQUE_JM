@@ -7,7 +7,7 @@
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-1"%>
 <meta http-equiv="Cache-Control" content="no-cache">
-<meta http-equiv="Conte nt-Type" content="text/html; charset=ISO-8859-1">
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <%@ page contentType="text/html" language="java" errorPage="/html/jsp/error/errorSIGA.jsp"%>
 
 <!-- TAGLIBS -->
@@ -160,7 +160,21 @@
 			}
  		}
 
-		if (!tieneArticulo) {
+		if (tieneArticulo) {
+			
+			varIvaTotalTarjeta = UtilidadesNumero.redondea (varIvaTotalTarjeta, 2);
+			varPrecioTotalTarjeta = UtilidadesNumero.redondea (varPrecioTotalTarjeta, 2);
+%>
+			<tr class="listaNonEditSelected" style="height:30px">
+				<td>
+					<b><siga:Idioma key="facturacion.lineasFactura.literal.Total"/></b>
+					<siga:ToolTip id='ayudaTotalServicios1' imagen='/SIGA/html/imagenes/botonAyuda.gif' texto='<%=UtilidadesString.mostrarDatoJSP(UtilidadesString.getMensajeIdioma(user,"messages.servicios.precioServicios"))%>' />
+				</td>
+				<td colspan="2" align="right"><input type="text" name="precioTotalTarjeta" value="<%=UtilidadesString.formatoImporte(varPrecioTotalTarjeta)%> &euro;" style="background-color:transparent; font-weight:bold" class="boxConsultaNumber" readOnly="true" size="13"></td>
+				<td align="right"><input type="text" name="ivaTotalTarjeta" value="<%=UtilidadesString.formatoImporte(varIvaTotalTarjeta)%> &euro;" style="background-color:transparent; font-weight:bold" class="boxConsultaNumber" readOnly="true" size="9"></td>
+			</tr>				
+<%			
+		} else {
 %>
   			<tr class="notFound">
   				<td class="titulitos"><siga:Idioma key="messages.noRecordFound"/></td>
@@ -169,20 +183,6 @@
 		}
 %>	
   	</siga:Table>		
-
-<%
-	varIvaTotalTarjeta = UtilidadesNumero.redondea (varIvaTotalTarjeta, 2);
-	varPrecioTotalTarjeta = UtilidadesNumero.redondea (varPrecioTotalTarjeta, 2);
-%>
-	<table align="center">
-		<tr>
-			<td class="labelText"><siga:Idioma key="pys.solicitudCompra.literal.totalIVA"/></td>					
-			<td class="labelText"><%=UtilidadesString.formatoImporte(varIvaTotalTarjeta)%>&nbsp;&euro;</td>
-			<td>&nbsp;&nbsp;</td>
-			<td class="labelText"><siga:Idioma key="pys.solicitudCompra.literal.total"/></td>
-			<td class="labelText"><%=UtilidadesString.formatoImporte(varPrecioTotalTarjeta)%>&nbsp;&euro;</td>
-		</tr>
-	 </table>
 						 
 	<div id="datosTarjeta" style="display:<%=visibilidadTarjeta%>; position:relative;">
 		 <table>
@@ -220,8 +220,7 @@
 		name="otro"
 		border="2"
 		columnNames="pys.solicitudCompra.literal.concepto,pys.solicitudCompra.literal.cantidad,pys.solicitudCompra.literal.precio,pys.solicitudCompra.literal.iva"  
-		columnSizes="50,20,20,10"
-		fixedHeight="90%">
+		columnSizes="50,20,20,10">
 <%			
 		boolean tieneArticulo = false;
 		for (int i = 0; i < arrayListaArticulosOrdenada.size(); i++) {
@@ -267,7 +266,21 @@
 			}
 		}
 
-		if (!tieneArticulo) {
+		if (tieneArticulo) {
+			
+			varIvaTotalOtro = UtilidadesNumero.redondea (varIvaTotalOtro, 2);
+			varPrecioTotalOtro = UtilidadesNumero.redondea (varPrecioTotalOtro, 2);
+%>
+			<tr class="listaNonEditSelected" style="height:30px">
+				<td>
+					<b><siga:Idioma key="facturacion.lineasFactura.literal.Total"/></b>
+					<siga:ToolTip id='ayudaTotalServicios2' imagen='/SIGA/html/imagenes/botonAyuda.gif' texto='<%=UtilidadesString.mostrarDatoJSP(UtilidadesString.getMensajeIdioma(user,"messages.servicios.precioServicios"))%>' />
+				</td>
+				<td colspan="2" align="right"><input type="text" name="precioTotalTarjeta" value="<%=UtilidadesString.formatoImporte(varPrecioTotalOtro)%> &euro;" style="background-color:transparent; font-weight:bold" class="boxConsultaNumber" readOnly="true" size="13"></td>
+				<td align="right"><input type="text" name="ivaTotalTarjeta" value="<%=UtilidadesString.formatoImporte(varIvaTotalOtro)%> &euro;" style="background-color:transparent; font-weight:bold" class="boxConsultaNumber" readOnly="true" size="9"></td>
+			</tr>				
+<%			
+		} else {
 %>
 	  		<tr class="notFound">
 	  			<td class="titulitos"><siga:Idioma key="messages.noRecordFound"/></td>
@@ -275,23 +288,7 @@
 <%
 		}
 %>
-	</siga:Table>					
-
-	<div style="position:absolute;bottom:30px;width:100%; height:60; z-index:2;" align="center">
-<%
-		varIvaTotalOtro = UtilidadesNumero.redondea (varIvaTotalOtro, 2);
-		varPrecioTotalOtro = UtilidadesNumero.redondea (varPrecioTotalOtro, 2);
-%>
-		<table>
-			<tr>
-				<td class="labelText"><siga:Idioma key="pys.solicitudCompra.literal.totalIVA"/></td>					
-				<td class="labelText"><%=UtilidadesString.formatoImporte(varIvaTotalOtro)%>&nbsp;&euro;</td>
-				<td>&nbsp;&nbsp;</td>
-				<td class="labelText"><siga:Idioma key="pys.solicitudCompra.literal.total"/></td>
-				<td class="labelText"><%=UtilidadesString.formatoImporte(varPrecioTotalOtro)%>&nbsp;&euro;</td>
-			</tr>
-		</table>
-	</div>		
+	</siga:Table>						
 		
 	<siga:ConjBotonesAccion botones="V,FC" clase="botonesDetalle"/>
 	

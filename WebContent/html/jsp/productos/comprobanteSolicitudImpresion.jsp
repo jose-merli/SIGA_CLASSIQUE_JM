@@ -126,8 +126,7 @@
 					pys.solicitudCompra.literal.iva,
 					pys.solicitudCompra.literal.estadoPago,
 					pys.solicitudCompra.literal.importeAnticipado"  
-		columnSizes="20,15,17,8,8,6,10,11"
-		fixedHeight="-1"
+		columnSizes="20,14,17,6,9,8,10,11"
 		modal = "G">
 		
 <% 				
@@ -215,7 +214,21 @@
 			  		<td align="right"><%=UtilidadesString.formatoImporte(importeAnticipado)%>&nbsp;&euro;</td>
 				</siga:FilaConIconos>
 <%		
-			}									
+			}				
+
+			varIvaTotal = UtilidadesNumero.redondea (varIvaTotal, 2);
+			varPrecioTotal = UtilidadesNumero.redondea (varPrecioTotal, 2);
+%>
+			<tr class="listaNonEditSelected" style="height:30px">
+				<td><b><siga:Idioma key="facturacion.lineasFactura.literal.Total"/></b></td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td colspan="2" align="right"><input type="text" name="precioTotalTarjeta" value="<%=UtilidadesString.formatoImporte(varPrecioTotal)%> &euro;" style="background-color:transparent; font-weight:bold" class="boxConsultaNumber" readOnly="true" size="13"></td>
+				<td align="right"><input type="text" name="ivaTotalTarjeta" value="<%=UtilidadesString.formatoImporte(varIvaTotal)%> &euro;" style="background-color:transparent; font-weight:bold" class="boxConsultaNumber" readOnly="true" size="7"></td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+			</tr>	
+<%			
 	 	} else {
 %>
 			<tr class="notFound">
@@ -225,36 +238,6 @@
 	 	}
 %>
 	</siga:Table>		
-
-<%
-	varIvaTotal = UtilidadesNumero.redondea (varIvaTotal, 2);
-	varPrecioTotal = UtilidadesNumero.redondea (varPrecioTotal, 2); 
-%>
-	<table width="280px" align="center">
-		<tr>
-			<td>
-				<fieldset>
-					<table>						
-						<tr>
-							<td class="labelText" nowrap><siga:Idioma key="pys.solicitudCompra.literal.totalIVA"/></td>
-							<td class="labelTextValue"><input type='text' name='ivaTotal' value="<%=UtilidadesString.formatoImporte(varIvaTotal)%>&nbsp;&euro;" class="boxConsultaNumber" readOnly=true size="20"></td>
-						</tr>
-						
-						<tr>
-							<td class="labelText" nowrap><siga:Idioma key="pys.solicitudCompra.literal.total"/></td>
-							<td class="labelTextValue"><input type='text' name='precioTotal' value="<%=UtilidadesString.formatoImporte(varPrecioTotal)%>&nbsp;&euro;" class="boxConsultaNumber" readOnly=true size="20"></td>
-						</tr>
-					</table>
-				</fieldset>
-			</td>
-		</tr>
-	</table>
-	
-	<table width="100%" align="center">
-		<tr>
-			<td class="labelTextCentro" colspan="2" align="center"><siga:Idioma key="messages.servicios.precioServicios"/></td>
-		</tr>
-	</table>
 					
 	<!-- INICIO: SUBMIT AREA -->
 	<!-- Obligatoria en todas las páginas-->

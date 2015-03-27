@@ -614,17 +614,13 @@
 			}			
 		}
 
-		String nombrecol1;
-		String tamanoCol1;
+		String nombrecol1="pys.solicitudCompra.literal.concepto,pys.solicitudCompra.literal.formaPago,pys.solicitudCompra.literal.nCuenta,pys.solicitudCompra.literal.cantidad,pys.solicitudCompra.literal.precio,pys.solicitudCompra.literal.periodicidad,pys.solicitudCompra.literal.iva";
+		String tamanoCol1="13,16,19,6,8,7,8";
 		int var=1;
 
 		if (!user.isLetrado()&&aprobarSolicitud.equals("S")) {			
-			nombrecol1="pys.solicitudCompra.literal.concepto,pys.solicitudCompra.literal.formaPago,pys.solicitudCompra.literal.nCuenta,pys.solicitudCompra.literal.cantidad,pys.solicitudCompra.literal.precio,pys.solicitudCompra.literal.periodicidad,pys.solicitudCompra.literal.iva,pys.solicitudCompra.literal.fechaEfectiva";  
-			tamanoCol1="13,16,19,8,8,7,7,13";
-			
-		} else {
-		   	nombrecol1="pys.solicitudCompra.literal.concepto,pys.solicitudCompra.literal.formaPago,pys.solicitudCompra.literal.nCuenta,pys.solicitudCompra.literal.cantidad,pys.solicitudCompra.literal.precio,pys.solicitudCompra.literal.periodicidad,pys.solicitudCompra.literal.iva";	  				
-		   	tamanoCol1="13,16,19,8,8,7,7";
+			nombrecol1 += ",pys.solicitudCompra.literal.fechaEfectiva";  
+			tamanoCol1 += ",13";
 		}
 		
 		if (tieneBotones) {
@@ -637,8 +633,7 @@
 			name="cabecera"
 			border="2"
 			columnNames="<%=nombrecol1%>"
-			columnSizes="<%=tamanoCol1%>"
-			fixedHeight="83%">
+			columnSizes="<%=tamanoCol1%>">
 
 <% 					
 			if(arrayListaArticulosOrdenada == null || arrayListaArticulosOrdenada.size()<1 ) { 	
@@ -879,40 +874,32 @@
 					</siga:FilaConIconos>
 <%		
 				} // for
+				
+				varIvaTotal = UtilidadesNumero.redondea (varIvaTotal, 2);
+				varPrecioTotal = UtilidadesNumero.redondea (varPrecioTotal, 2);		
+%>
+				<tr class="listaNonEditSelected" style="height:30px">
+					<td>
+						<b><siga:Idioma key="facturacion.lineasFactura.literal.Total"/></b>
+						<siga:ToolTip id='ayudaTotalServicios' imagen='/SIGA/html/imagenes/botonAyuda.gif' texto='<%=UtilidadesString.mostrarDatoJSP(UtilidadesString.getMensajeIdioma(user,"messages.servicios.precioServicios"))%>' />
+					</td>
+					<td>&nbsp;</td>
+					<td>&nbsp;</td>
+					<td colspan="2" align="right"><input type="text" name="precioTotal" value="<%=UtilidadesString.formatoImporte(varPrecioTotal)%>" style="background-color:transparent; font-weight:bold" class="boxConsultaNumber" readOnly="true" size="13"><b>&nbsp;&euro;</b></td>
+					<td>&nbsp;</td>
+					<td align="right"><input type="text" name="ivaTotal" value="<%=UtilidadesString.formatoImporte(varIvaTotal)%>" style="background-color:transparent; font-weight:bold" class="boxConsultaNumber" readOnly="true" size="6"><b>&nbsp;&euro;</b></td>
+<%					
+					if (!user.isLetrado() && aprobarSolicitud.equals("S")) {
+%>					
+						<td>&nbsp;</td>
+<%	
+					}
+%>
+				</tr>				
+<%						
 	 		} // else
 %>  			
-	  	</siga:Table>
-				
-		<div id="camposRegistro1" style="position:absolute; width:100%; height:70px; z-index:2; bottom:70px; left:0px" align="center">
-
-<%
-			varIvaTotal = UtilidadesNumero.redondea (varIvaTotal, 2);
-			varPrecioTotal = UtilidadesNumero.redondea (varPrecioTotal, 2);		
-%>		
-			<div id="camposRegistro2" style="width:240px" align="center">	
-				<fieldset>
-					<table>
-						<tr>
-							<td class="labelText" nowrap><siga:Idioma key="pys.solicitudCompra.literal.totalIVA"/></td>
-							<td class="labelTextValue"><input type='text' name='ivaTotal' value="<%=UtilidadesString.formatoImporte(varIvaTotal)%>" class="boxConsultaNumber" readOnly=true size="12">&nbsp;&euro;</td>
-						</tr>
-						
-						<tr>
-							<td class="labelText" nowrap><siga:Idioma key="pys.solicitudCompra.literal.total"/></td>
-							<td class="labelTextValue"><input type='text' name='precioTotal' value="<%=UtilidadesString.formatoImporte(varPrecioTotal)%>" class="boxConsultaNumber" readOnly=true size="12">&nbsp;&euro;</td>
-						</tr>
-					</table>
-				</fieldset>
-			</div>
-
-			<table width="100%" align="center">
-				<tr>
-					<td class="labelTextCentro" colspan="2" align="center">
-						<siga:Idioma key="messages.servicios.precioServicios"/>
-					</td>
-				</tr>
-			</table>
-		</div>		
+	  	</siga:Table>	
 	</html:form>
 
 	<siga:ConjBotonesAccion botones="<%=botones%>" clase="botonesDetalle"/> 			
