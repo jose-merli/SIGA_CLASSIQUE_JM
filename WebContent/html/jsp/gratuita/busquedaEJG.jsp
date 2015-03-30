@@ -978,114 +978,118 @@ if(usr.isComision()){
 			}
 		}		
 		
-		function buscar(){ 
-			
-			if (document.getElementById('chkBusquedaExactaSolicitante').checked){
-	           document.forms[0].valorBusquedaExactaSolicitante.value="1";
-	        }else{
-			   document.forms[0].valorBusquedaExactaSolicitante.value="0";
-			}
-			
-			
-			var tipoResol = jQuery("#idTipoResolucionEJG").val();
-			if(tipoResol){
-				if(true){
-					if(tipoResol.toString().substring(0,1)==','){
-						tipoResol = tipoResol.toString().substring(1);
-					}
-					document.forms[0].idTipoResolucion.value = tipoResol;
-				}
-			}else{
-				document.forms[0].idTipoResolucion.value = "";
-				
-			}
-			var nigAux = document.getElementById("nig").value;
-			nigAux = formateaNig(nigAux);
-			if(!validarNig(nigAux)){	
-				alert("<siga:Idioma key='gratuita.nig.formato'/>");
-				return false;
-					
-			}
-			document.forms[0].nig.value = nigAux; 
-			
-			
-			if(document.getElementById("idFundamentoJuridico"))
-				document.forms[0].idTipoFundamento.value = document.getElementById("idFundamentoJuridico").value;
-			
-			
-			
-				if ( document.getElementById("anio") && !validarObjetoAnio(document.getElementById("anio")) ){
-					alert("<siga:Idioma key='fecha.error.anio'/>");
-					return false;
-				}
-				if ( document.getElementById("anioCAJG") && !validarObjetoAnio(document.getElementById("anioCAJG")) ){
-					alert("<siga:Idioma key='gratuita.operarEJG.literal.CAJG'/> <siga:Idioma key='fecha.error.anio'/>");
-					return false;
-				}
-	
-				if((validarFecha(document.forms[0].fechaAperturaHasta.value))&&
-				   (validarFecha(document.forms[0].fechaAperturaDesde.value))&&
-				   (validarFecha(document.forms[0].fechaEstadoHasta.value))&&
-				   (validarFecha(document.forms[0].fechaEstadoDesde.value))&&
-				   (validarFecha(document.forms[0].fechaDictamenHasta.value))&&
-				   (validarFecha(document.forms[0].fechaDictamenDesde.value))&&
-				   (validarFecha(document.forms[0].fechaLimitePresentacionHasta.value))&&
-				   (validarFecha(document.forms[0].fechaLimitePresentacionDesde.value))){
-				
-					sub();
-					document.forms[0].modo.value = "buscarInit";
-					
-					<%if(ventanaCajg.equalsIgnoreCase("2")){%>
-						document.forms[0].modo.value = "buscarListosInicio";
-						document.forms[0].idRemesa.value=<%=idremesa%>;			
-					<%}%>
-					
-					<%if (!esComision){%>
-						document.forms[0].descripcionEstado.value = document.forms[0].estadoEJG[document.forms[0].estadoEJG.selectedIndex].text;
-					<%}%>
+	function buscar(){ 
 		
-					document.forms[0].guardiaTurnoIdTurno.value = document.forms[0].identificador.value;
-					if (isNaN(document.forms[0].anio.value)) {
-						fin();
-						alert('<siga:Idioma key="gratuita.busquedaEJG.literal.errorAnio"/>');
-					}
-					/*else if (isNaN(document.forms[0].numEJG.value)) {
-						alert('<siga:Idioma key="gratuita.busquedaEJG.literal.errorNumero"/>');
-					}  Podemos hacer la busqueda por este campo con comodines*/
-					else if (isNaN(document.forms[0].idPersona.value)) {
-						fin();
-						alert('<siga:Idioma key="gratuita.busquedaEJG.literal.errorIdPersona"/>');
-					}
-					else{ 
-						filtroSeleccionado = false;	
-						jQuery("#body").find('td input').each(function () {
-
-						
-							if (jQuery(this).val() != "" && jQuery(this).attr('type')!='checkbox' && jQuery(this).attr('type')!='button'){
-								filtroSeleccionado = true;
-							}
-						});	
-						if(!filtroSeleccionado){
-							jQuery("#body").find('td select').each(function () {
-								if (jQuery(this).val() != "" && jQuery(this).attr("name")!='dictaminado' ){
-									filtroSeleccionado = true;
-								}
-							});
-						}
-						if(!filtroSeleccionado){
-							
-							alert('<siga:Idioma key="errors.filter.required"/>');
-							fin();
-							return false;
-						}else{
-							document.forms[0].submit();
-						}
-					}
-				}else{
-					setFocusFormularios();
+		if (document.getElementById('chkBusquedaExactaSolicitante').checked){
+	    	document.forms[0].valorBusquedaExactaSolicitante.value="1";
+	    }else{
+			document.forms[0].valorBusquedaExactaSolicitante.value="0";
+		}
+			
+			
+		var tipoResol = jQuery("#idTipoResolucionEJG").val();
+		if(tipoResol){
+			if(true){
+				if(tipoResol.toString().substring(0,1)==','){
+					tipoResol = tipoResol.toString().substring(1);
 				}
-				jQuery("#nig").keyup();
-		}		
+				document.forms[0].idTipoResolucion.value = tipoResol;
+			}
+		}else{
+			document.forms[0].idTipoResolucion.value = "";
+				
+		}
+		var nigAux = document.getElementById("nig").value;
+		nigAux = formateaNig(nigAux);
+		if(!validarNig(nigAux)){	
+			alert("<siga:Idioma key='gratuita.nig.formato'/>");
+			return false;
+		}
+		document.forms[0].nig.value = nigAux; 
+		
+			
+		if(document.getElementById("idFundamentoJuridico"))
+			document.forms[0].idTipoFundamento.value = document.getElementById("idFundamentoJuridico").value;
+			
+			
+			
+		if ( document.getElementById("anio") && !validarObjetoAnio(document.getElementById("anio")) ){
+			alert("<siga:Idioma key='fecha.error.anio'/>");
+			return false;
+		}
+		if ( document.getElementById("anioCAJG") && !validarObjetoAnio(document.getElementById("anioCAJG")) ){
+			alert("<siga:Idioma key='gratuita.operarEJG.literal.CAJG'/> <siga:Idioma key='fecha.error.anio'/>");
+			return false;
+		}
+	
+		if((validarFecha(document.forms[0].fechaAperturaHasta.value))&&
+			   (validarFecha(document.forms[0].fechaAperturaDesde.value))&&
+			   (validarFecha(document.forms[0].fechaEstadoHasta.value))&&
+			   (validarFecha(document.forms[0].fechaEstadoDesde.value))&&
+			   (validarFecha(document.forms[0].fechaDictamenHasta.value))&&
+			   (validarFecha(document.forms[0].fechaDictamenDesde.value))&&
+			   (validarFecha(document.forms[0].fechaLimitePresentacionHasta.value))&&
+			   (validarFecha(document.forms[0].fechaLimitePresentacionDesde.value))){
+				
+			sub();
+			document.forms[0].modo.value = "buscarInit";
+					
+			<%if(ventanaCajg.equalsIgnoreCase("2")){%>
+					document.forms[0].modo.value = "buscarListosInicio";
+					document.forms[0].idRemesa.value=<%=idremesa%>;			
+			<%}%>
+						
+			<%if (!esComision){%>
+					document.forms[0].descripcionEstado.value = document.forms[0].estadoEJG[document.forms[0].estadoEJG.selectedIndex].text;
+			<%}%>
+			
+			document.forms[0].guardiaTurnoIdTurno.value = document.forms[0].identificador.value;
+			if (isNaN(document.forms[0].anio.value)) {
+				fin();
+				alert('<siga:Idioma key="gratuita.busquedaEJG.literal.errorAnio"/>');
+			}else if (isNaN(document.forms[0].idPersona.value)) {
+				fin();
+				alert('<siga:Idioma key="gratuita.busquedaEJG.literal.errorIdPersona"/>');
+			}else{ 
+				filtroSeleccionado = false;	
+				jQuery("#body").find('td input').each(function () {
+					if (jQuery(this).val() != "" && jQuery(this).attr('type')!='checkbox' && jQuery(this).attr('type')!='button'){
+						filtroSeleccionado = true;
+					}
+				});	
+				if(!filtroSeleccionado){
+					jQuery("#body").find('td select').each(function () {
+						if (jQuery(this).val() != "" && jQuery(this).attr("name")!='dictaminado' && jQuery(this).attr("id")!='idFundamentoJuridico'&& jQuery(this).attr("id")!='idTipoResolucionEJG'){
+
+							filtroSeleccionado = true;
+						}
+					});
+				}
+				if(!filtroSeleccionado){
+					if(document.getElementById("dictaminado").value!='I'){
+						filtroSeleccionado = true;
+					}
+					if(document.getElementById("idFundamentoJuridico") && document.getElementById("idFundamentoJuridico").value!=''){
+						filtroSeleccionado = true;
+					}
+					if(document.getElementById("idTipoResolucionEJG") && document.getElementById("idTipoResolucionEJG").value!=''){
+						filtroSeleccionado = true;
+					}
+						
+				}
+				if(!filtroSeleccionado){
+					alert('<siga:Idioma key="errors.filter.required"/>');
+					fin();
+					return false;
+				}else{
+					document.forms[0].submit();
+				}
+			}
+		}else{
+			setFocusFormularios();
+		}
+		jQuery("#nig").keyup();
+	}		
 		
 		//<!-- Funcion asociada a boton limpiar -->
 		function limpiar(){		
