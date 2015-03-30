@@ -120,10 +120,10 @@ public class MantenimientoAsistenciasAction extends MasterAction
 	protected String abrir(ActionMapping mapping, 		
 				MasterForm formulario, 
 				HttpServletRequest request, 
-				HttpServletResponse response, String longitudNumEjg) throws SIGAException 
+				HttpServletResponse response) throws SIGAException 
     {
 		String sEsFichaColegial = (String)request.getParameter("esFichaColegial");
-		
+		String longitudNumEjg = (String) request.getSession().getAttribute(PARAMETRO.LONGITUD_CODEJG.toString());
 		HttpSession ses = request.getSession();
 		UsrBean usr 	= (UsrBean)ses.getAttribute("USRBEAN");
 		String anio 	= (String) (request.getParameter("ANIO")!=null?request.getParameter("ANIO"):request.getSession().getAttribute("Asistencia_ANIO"));

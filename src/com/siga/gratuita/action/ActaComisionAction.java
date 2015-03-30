@@ -436,6 +436,7 @@ public class ActaComisionAction extends MasterAction{
 		ActaComisionForm actaForm = (ActaComisionForm) formulario;
 		ScsActaComisionBean actaBean = new ScsActaComisionBean();
 		ScsActaComisionAdm actaAdm = new ScsActaComisionAdm(usr);
+		String longitudNumEjg = (String) request.getSession().getAttribute(PARAMETRO.LONGITUD_CODEJG.toString());
 		ScsEJGAdm ejgAdm = new ScsEJGAdm(usr);
 		Vector listadoEJGs = new Vector();
 		UserTransaction tx=null;
@@ -503,7 +504,6 @@ public class ActaComisionAction extends MasterAction{
 					(actaBean.getFechaResolucionCAJG()!=null&&!actaBean.getFechaResolucionCAJG().equalsIgnoreCase("")))||(fechaResOld!=null &&
 					actaBean.getFechaResolucionCAJG()!=null&&GstDate.compararFechas(actaBean.getFechaResolucionCAJG(), fechaResOld) !=0 ) ){
 				//
-				String longitudNumEjg = (String) request.getSession().getAttribute(PARAMETRO.LONGITUD_CODEJG.toString());
 				detalleEjgsPtesRetirar = getEJGsPtesRetirar(actaBean,usr,longitudNumEjg);
 				if(validarObligatoriedadResolucion!=null && validarObligatoriedadResolucion.equals(ClsConstants.DB_TRUE)){
 					
@@ -573,13 +573,12 @@ public class ActaComisionAction extends MasterAction{
 		return exito("messages.updated.success", request);
 	}
 	
-	private String getEJGsActaSinResolucion(ScsActaComisionBean actaBean,UsrBean usr,String longitudNumEjg) throws ClsExceptions{
+	private String getEJGsActaSinResolucion(ScsActaComisionBean actaBean,UsrBean usr,String longitudNumEjg ) throws ClsExceptions{
 		ScsActaComisionAdm actaAdm = new ScsActaComisionAdm(usr);
 		String idActa		 = actaBean.getIdActa().toString();
 		String idInstitucion = actaBean.getIdInstitucion().toString();
 		String anioActa		 = actaBean.getAnioActa().toString();
 		StringBuffer detalleEjgsNoResueltos = new StringBuffer("");
-		
 		Vector ejgsRelacionados = actaAdm.getListadoEJGActa(idActa,anioActa, idInstitucion,longitudNumEjg);
 		for (int i = 0; i < ejgsRelacionados.size(); i++) {
 			Row row = (Row) ejgsRelacionados.get(i);
@@ -601,7 +600,7 @@ public class ActaComisionAction extends MasterAction{
 		
 	}
 	
-	private String getEJGsPtesRetirar(ScsActaComisionBean actaBean,UsrBean usr, String longitudNumEjg) throws  SIGAException, ClsExceptions{
+	private String getEJGsPtesRetirar(ScsActaComisionBean actaBean,UsrBean usr,String longitudNumEjg) throws  SIGAException, ClsExceptions{
 		ScsActaComisionAdm actaAdm = new ScsActaComisionAdm(usr);
 		StringBuffer detalleEjgsPteRetirar = new StringBuffer("");
 		Vector ejgsPteRetirar = actaAdm.getEJGsRetirados(actaBean.getIdInstitucion(),actaBean.getIdActa(), actaBean.getAnioActa(),longitudNumEjg);

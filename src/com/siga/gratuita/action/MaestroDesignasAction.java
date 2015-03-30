@@ -1050,7 +1050,7 @@ public class MaestroDesignasAction extends MasterAction {
 				String anio = (String) ((Hashtable) datos.get(i)).get("ANIO_EJG");
 				String numero = (String) ((Hashtable) datos.get(i)).get("NUMERO_EJG");
 				String tipo =(String) ((Hashtable) datos.get(i)).get("TIPO_EJG");
-				ejg = abrir(request, anio, numero, tipo,longitudNumEjg);
+				ejg = abrir(request, anio, numero, tipo);
 				ejgList.add(ejg);
 		}
 		///Calculo de EJGs
@@ -1186,7 +1186,7 @@ public class MaestroDesignasAction extends MasterAction {
 	}
 	
 	
-	protected ScsEJGBean abrir(HttpServletRequest request, String anio, String numero, String idtipoEjg, String longitudNumejg) throws SIGAException {
+	protected ScsEJGBean abrir(HttpServletRequest request, String anio, String numero, String idtipoEjg ) throws SIGAException {
 		
 		
 		Hashtable ejg = null;
@@ -1194,6 +1194,7 @@ public class MaestroDesignasAction extends MasterAction {
 		ScsEJGBean ejgBean=null;
 		try {
 			ejgBean = new ScsEJGBean();
+			String longitudNumEjg = (String) request.getSession().getAttribute(PARAMETRO.LONGITUD_CODEJG.toString());
 			Hashtable miHash = new Hashtable();
 			UsrBean usr=(UsrBean)request.getSession().getAttribute("USRBEAN");
 			String nombreTurnoAsistencia="", nombreGuardiaAsistencia="", consultaTurnoAsistencia="", consultaGuardiaAsistencia="";
@@ -1215,7 +1216,7 @@ public class MaestroDesignasAction extends MasterAction {
 			
 			
 			// Ahora realizamos la consulta. Primero cogemos los campos que queremos recuperar 
-			String consulta = "select ejg.ANIO, lpad(ejg.NUMEJG,"+longitudNumejg+",0) NUMEJG,designa.ESTADO,ejg.IDTIPOEJG AS IDTIPOEJG,ejg.NUMERO_CAJG AS NUMERO_CAJG, ejg.NUMERO, turno.ABREVIATURA AS NOMBRETURNO, guardia.NOMBRE AS NOMBREGUARDIA, guardia.IDGUARDIA AS IDGUARDIA, " + UtilidadesMultidioma.getCampoMultidiomaSimple("tipoejg.DESCRIPCION",this.getUserBean(request).getLanguage()) + " AS TIPOEJG, ejg.IDTIPOEJGCOLEGIO AS IDTIPOEJGCOLEGIO," +
+			String consulta = "select ejg.ANIO, lpad(ejg.NUMEJG,"+longitudNumEjg+",0) NUMEJG,designa.ESTADO,ejg.IDTIPOEJG AS IDTIPOEJG,ejg.NUMERO_CAJG AS NUMERO_CAJG, ejg.NUMERO, turno.ABREVIATURA AS NOMBRETURNO, guardia.NOMBRE AS NOMBREGUARDIA, guardia.IDGUARDIA AS IDGUARDIA, " + UtilidadesMultidioma.getCampoMultidiomaSimple("tipoejg.DESCRIPCION",this.getUserBean(request).getLanguage()) + " AS TIPOEJG, ejg.IDTIPOEJGCOLEGIO AS IDTIPOEJGCOLEGIO," +
 							  "decode(ejg.ORIGENAPERTURA,'M','Manual','S','SOJ','A','ASISTENCIA','DESIGNA'), ejg.IDPRETENSION as IDPRETENSION, ejg.IDINSTITUCION as IDINSTITUCION, ejg.idtipodictamenejg as IDTIPODICTAMENEJG, " + 
 							  "ejg.FECHAAPERTURA AS FECHAAPERTURA, personajg.NIF AS NIFASISTIDO, personajg.NOMBRE AS NOMBREASISTIDO, personajg.APELLIDO1 AS APELLIDO1ASISTIDO, personajg.APELLIDO2 AS APELLIDO2ASISTIDO, " +
 							  " (Select Decode(Ejg.Idtipoencalidad, Null,'', f_Siga_Getrecurso(Tipcal.Descripcion,"+ this.getUserBean(request).getLanguage() + ")) "+

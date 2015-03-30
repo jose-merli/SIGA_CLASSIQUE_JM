@@ -11,6 +11,7 @@ import javax.transaction.UserTransaction;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.redabogacia.sigaservices.app.AppConstants.PARAMETRO;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
@@ -249,11 +250,11 @@ protected String relacionarConEJG (boolean bCrear, MasterForm formulario, HttpSe
 	 * @return  String  Destino del action  
 	 * @exception  ClsExceptions  En cualquier caso de error
 	 */
-	protected String abrir(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response, String longitudNumejg) throws ClsExceptions, SIGAException
+	protected String abrir(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, SIGAException
 	{
 		try {
 			UsrBean usr = (UsrBean)request.getSession().getAttribute("USRBEAN");
-			
+			String longitudNumEjg = (String) request.getSession().getAttribute(PARAMETRO.LONGITUD_CODEJG.toString());
 			//Recogemos de la pestanha la designa insertada o la que se quiere consultar
 			//y los usamos para la consulta y además hacemos una hashtable y lo guardamos en session
 			Hashtable designaActual = new Hashtable();
@@ -267,7 +268,7 @@ protected String relacionarConEJG (boolean bCrear, MasterForm formulario, HttpSe
 			UtilidadesHash.set(designaActual,ScsDesignaBean.C_IDINSTITUCION,		(String)usr.getLocation());
 			UtilidadesHash.set(designaActual,ScsDesignaBean.C_IDTURNO,(((String)request.getParameter("IDTURNO")==null)||(((String)request.getParameter("IDTURNO")).equals(""))?(String)actual.get("IDTURNO"):(String)request.getParameter("IDTURNO")));			
 			ScsContrariosDesignaAdm contrariosAdm = new ScsContrariosDesignaAdm(this.getUserBean(request));
-			String consultaContrarios = " select ejg.idtipoejg idtipoejg, lpad(ejg.numejg,"+longitudNumejg+",0) codigo,ejg.numero numeroejg, des.anio anio, des.numero numero,des.idturno idturno, des.idinstitucion idinstitucion,"+
+			String consultaContrarios = " select ejg.idtipoejg idtipoejg, lpad(ejg.numejg,"+longitudNumEjg+",0) codigo,ejg.numero numeroejg, des.anio anio, des.numero numero,des.idturno idturno, des.idinstitucion idinstitucion,"+
 										" tur.nombre descripcionturno, "+UtilidadesMultidioma.getCampoMultidiomaSimple("tip.descripcion",this.getUserBean(request).getLanguage()) + " descripciontipoejg, "+UtilidadesMultidioma.getCampoMultidiomaSimple("tdic.descripcion",this.getUserBean(request).getLanguage()) + " estado, ejg.anio anioejg, tur.nombre turno"+
 										" from scs_ejg ejg, scs_designa des, scs_turno tur, scs_tipoejg tip, scs_tipodictamenejg tdic,scs_ejgdesigna ejgDes"+
 										" where ejgDes.Aniodesigna = des.anio"+

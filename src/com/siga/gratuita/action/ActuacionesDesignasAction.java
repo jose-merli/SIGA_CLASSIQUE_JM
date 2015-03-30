@@ -17,12 +17,15 @@ import javax.transaction.UserTransaction;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.redabogacia.sigaservices.app.AppConstants.PARAMETRO;
+import org.redabogacia.sigaservices.app.helper.SIGAServicesHelper;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.GstDate;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesHash;
+import com.siga.Utilidades.UtilidadesInformes;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.beans.CenPersonaBean;
 import com.siga.beans.FcsFacturacionJGBean;
@@ -450,13 +453,13 @@ public class ActuacionesDesignasAction extends MasterAction {
 			request.setAttribute("ejgs", vEjgRelacionado);
 			
 		    if ((vEjgRelacionado != null) && (vEjgRelacionado.size() == 1)) {
-		
-		     UtilidadesHash.set(hashDesigna,ScsEJGBean.C_NUMEJG,((ScsEJGBean)vEjgRelacionado.get(0)).getNumEJG());
-			 UtilidadesHash.set(hashDesigna,ScsEJGBean.C_IDTIPORATIFICACIONEJG,((ScsEJGBean)vEjgRelacionado.get(0)).getIdTipoRatificacionEJG());
-			 UtilidadesHash.set(hashDesigna,ScsEJGBean.C_FECHARATIFICACION,((ScsEJGBean)vEjgRelacionado.get(0)).getFechaRatificacion());
-			 UtilidadesHash.set(hashDesigna,ScsEJGBean.C_FECHANOTIFICACION,((ScsEJGBean)vEjgRelacionado.get(0)).getFechaNotificacion());
-			 UtilidadesHash.set(hashDesigna,ScsEJGBean.C_FECHAAUTO,((ScsEJGBean)vEjgRelacionado.get(0)).getFechaAuto());
-			 UtilidadesHash.set(hashDesigna,ScsEJGBean.C_IDTIPORESOLAUTO,((ScsEJGBean)vEjgRelacionado.get(0)).getIdTipoResolAuto());
+		    	String longitudNumEjg = (String) request.getSession().getAttribute(PARAMETRO.LONGITUD_CODEJG.toString());	
+			    UtilidadesHash.set(hashDesigna,ScsEJGBean.C_NUMEJG,SIGAServicesHelper.lpad(((ScsEJGBean)vEjgRelacionado.get(0)).getNumEJG(), Integer.parseInt(longitudNumEjg), '0'));
+				UtilidadesHash.set(hashDesigna,ScsEJGBean.C_IDTIPORATIFICACIONEJG,((ScsEJGBean)vEjgRelacionado.get(0)).getIdTipoRatificacionEJG());
+				UtilidadesHash.set(hashDesigna,ScsEJGBean.C_FECHARATIFICACION,((ScsEJGBean)vEjgRelacionado.get(0)).getFechaRatificacion());
+				UtilidadesHash.set(hashDesigna,ScsEJGBean.C_FECHANOTIFICACION,((ScsEJGBean)vEjgRelacionado.get(0)).getFechaNotificacion());
+				UtilidadesHash.set(hashDesigna,ScsEJGBean.C_FECHAAUTO,((ScsEJGBean)vEjgRelacionado.get(0)).getFechaAuto());
+				UtilidadesHash.set(hashDesigna,ScsEJGBean.C_IDTIPORESOLAUTO,((ScsEJGBean)vEjgRelacionado.get(0)).getIdTipoResolAuto());
 			 
 		    }
 			//Se muestra todas las Actuaciones de la designa.
