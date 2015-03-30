@@ -296,10 +296,8 @@
 					nombreCliente = nombreCliente + " " + UtilidadesHash.getString (peticion, CenPersonaBean.C_APELLIDOS1);
 					nombreCliente = nombreCliente + " " + UtilidadesHash.getString (peticion, CenPersonaBean.C_APELLIDOS2);
 					String fecha   = UtilidadesHash.getString (peticion, PysPeticionCompraSuscripcionBean.C_FECHA);
-					int numFacturada = new Integer(UtilidadesHash.getString (peticion, "NUM_FACTURADA")).intValue();
-					int numProductosFacturables = new Integer(UtilidadesHash.getString (peticion, "NUM_PRODUCTOS_FACTURABLES")).intValue();
-					int numCertificados  = new Integer(UtilidadesHash.getString (peticion, "NUM_CERTIFICADOS")).intValue();
-					int hayServicios     = new Integer(UtilidadesHash.getString (peticion, "HAY_SERVICIOS")).intValue();
+					// 0:Descarga; 1:SinIcono; 2: FacturacionRapida
+					int tipoIcono = new Integer(UtilidadesHash.getString (peticion, "TIPO_ICONO")).intValue();
 			 		String tipoSol = UtilidadesHash.getString (peticion, PysPeticionCompraSuscripcionBean.C_TIPOPETICION);
 			 		String tipoSolTexto ="";
 			 		String estadoSol = UtilidadesHash.getString (peticion, "DESCRIPCION_ESTADO");
@@ -336,13 +334,14 @@
 					FilaExtElement[] elems = new FilaExtElement[3];
 					elems[0]=new FilaExtElement("editarConCertificado", "editarConCertificado", SIGAConstants.ACCESS_FULL);
 					elems[1]=new FilaExtElement("enviar", "enviar", SIGAConstants.ACCESS_FULL);
-					if ((idEstadoSol.trim().equals(String.valueOf(ClsConstants.ESTADO_PETICION_COMPRA_PENDIENTE)) || idEstadoSol.trim().equals(String.valueOf(ClsConstants.ESTADO_PETICION_COMPRA_PROCESADA))) && 
-							tipoSol.trim().equals("A") && 
-							numFacturada==0 && numCertificados==0 && hayServicios==0 && numProductosFacturables>0) {
-						elems[2]=new FilaExtElement("facturacionrapida", "facturacionrapida", SIGAConstants.ACCESS_READ);
-						
-					} else {
-						elems[2]=new FilaExtElement("download", "facturacionrapida", SIGAConstants.ACCESS_READ);
+					if ((idEstadoSol.trim().equals(String.valueOf(ClsConstants.ESTADO_PETICION_COMPRA_PENDIENTE)) || idEstadoSol.trim().equals(String.valueOf(ClsConstants.ESTADO_PETICION_COMPRA_PROCESADA))) && tipoSol.trim().equals("A")) {
+						if (tipoIcono == 2) {
+							elems[2]=new FilaExtElement("facturacionrapida", "facturacionrapida", SIGAConstants.ACCESS_READ);		
+						} else {
+							if (tipoIcono == 0) {
+								elems[2]=new FilaExtElement("download", "facturacionrapida", SIGAConstants.ACCESS_READ);
+							}
+						}
 					}
 %>
 							 		
