@@ -136,64 +136,54 @@ public class GestionSolicitudesAction extends MasterAction {
 	 */
 	protected String buscarPor(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, SIGAException {
 		GestionSolicitudesForm miForm = (GestionSolicitudesForm) formulario;
-		PysPeticionCompraSuscripcionAdm ppcsa = new PysPeticionCompraSuscripcionAdm (this.getUserBean(request));
+		PysPeticionCompraSuscripcionAdm admPeticionCompraSuscripcion = new PysPeticionCompraSuscripcionAdm (this.getUserBean(request));
 		String idPaginador = getIdPaginador(super.paginador,getClass().getName());
 		request.setAttribute(ClsConstants.PARAM_PAGINACION,idPaginador);
 		try {
 			HashMap databackup=getPaginador(request, idPaginador);
-			if (databackup!=null){ 
+			if (databackup!=null) { 
 
 				PaginadorBind paginador = (PaginadorBind)databackup.get("paginador");
 				Vector datos=new Vector();
 				//Si no es la primera llamada, obtengo la página del request y la busco con el paginador
 				String pagina = (String)request.getParameter("pagina");
-				if (paginador!=null){	
-					if (pagina!=null){
+				if (paginador!=null) {	
+					if (pagina!=null) {
 						datos = paginador.obtenerPagina(Integer.parseInt(pagina));
-					}else{// cuando hemos editado un registro de la busqueda y volvemos a la paginacion
+					} else {// cuando hemos editado un registro de la busqueda y volvemos a la paginacion
 						datos = paginador.obtenerPagina((paginador.getPaginaActual()));
 					}
-					
-					
-				}	
+				}					
 				databackup.put("paginador",paginador);
+				datos = admPeticionCompraSuscripcion.obtenerDatosGestionSolicitud(datos);
 				databackup.put("datos",datos);
 
-			}else{	
+			} else {	
 				databackup=new HashMap();
 				
-				PaginadorBind paginador = ppcsa.getPeticionesPaginador(miForm, this.getIDInstitucion(request));
+				PaginadorBind paginador = admPeticionCompraSuscripcion.getPeticionesPaginador(miForm, this.getIDInstitucion(request));
 				int totalRegistros = paginador.getNumeroTotalRegistros();
-				if (totalRegistros==0){					
+				if (totalRegistros==0) {					
 					paginador =null;
 				}
 				databackup.put("paginador",paginador);
-				if (paginador!=null){ 
+				if (paginador!=null) { 
 					Vector datos = paginador.obtenerPagina(1);
-					
-					
+					datos = admPeticionCompraSuscripcion.obtenerDatosGestionSolicitud(datos);
 					databackup.put("datos",datos);
 					setPaginador(request, idPaginador, databackup);
-				} 	
-
-				
-
-
-
+				}
 			}
-		}catch (SIGAException e1) {
+			
+		} catch (SIGAException e1) {
 			// Excepcion procedente de obtenerPagina cuando se han borrado datos
 			 return exitoRefresco("error.messages.obtenerPagina",request);
-		}catch (Exception e) 
-		{
-			throw new SIGAException("messages.general.error",e,new String[] {"modulo.certificados"});
+			 
+		} catch (Exception e) {
+			throw new SIGAException("messages.general.error", e, new String[] {"modulo.certificados"});
 		} 
 		
-		
 		return "buscarPor";
-		
-		
-		
 	}
 	
 	/* (non-Javadoc)

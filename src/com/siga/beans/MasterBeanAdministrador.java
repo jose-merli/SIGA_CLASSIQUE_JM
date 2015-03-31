@@ -624,6 +624,27 @@ public abstract class MasterBeanAdministrador {
 		return datos;	
 	}
 	
+	/**
+	 * Obtiene el Hashtable del primer registro de la sentencia
+	 * @param sql
+	 * @return
+	 * @throws ClsExceptions
+	 */
+	public Hashtable<String,Object> selectGenericoHash(String sql) throws ClsExceptions {
+		Hashtable<String,Object> resultado = null;
+		
+		try { 
+			RowsContainer rc = new RowsContainer(); 
+			if (rc.query(sql) && rc.size()>0) {
+				Row fila = (Row) rc.get(0);
+				resultado = fila.getRow();
+			}
+		} catch (Exception e) {
+			throw new ClsExceptions (e,  e.getMessage() + "selectGenericoHash:" + sql);
+		}
+		return resultado;	
+	}	
+	
 	public Vector selectGenericoBind(String select, Hashtable codigos) throws ClsExceptions, SIGAException 
 	{
 		Vector datos = new Vector();

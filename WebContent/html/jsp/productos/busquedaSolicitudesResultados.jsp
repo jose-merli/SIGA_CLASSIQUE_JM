@@ -37,35 +37,23 @@
 	UsrBean usr=(UsrBean)request.getSession().getAttribute("USRBEAN");
 	/** PAGINADOR ***/
 	String idioma=usr.getLanguage().toUpperCase();
-	Vector resultado=null;
-	String paginaSeleccionada ="";
-	String totalRegistros ="";
-	String registrosPorPagina = "";
-	HashMap hm=new HashMap();
+	Vector<Hashtable<String,Object>> resultado = new Vector<Hashtable<String,Object>>();
+	String paginaSeleccionada = "0";
+	String totalRegistros = "0";
+	String registrosPorPagina = "0";
+	HashMap hm = new HashMap();
 	String idPaginador = (String)request.getAttribute(ClsConstants.PARAM_PAGINACION);
 	
 	if (ses.getAttribute(idPaginador)!=null){
 		hm = (HashMap)ses.getAttribute(idPaginador);
 	
-		if ( hm.get("datos")!=null && !hm.get("datos").equals("")){
-			resultado = (Vector)hm.get("datos");
+		if (hm.get("datos")!=null && !hm.get("datos").equals("")){
+			resultado = (Vector<Hashtable<String,Object>>)hm.get("datos");
 			PaginadorBind paginador = (PaginadorBind)hm.get("paginador");
 			paginaSeleccionada = String.valueOf(paginador.getPaginaActual());
 			totalRegistros = String.valueOf(paginador.getNumeroTotalRegistros());
 			registrosPorPagina = String.valueOf(paginador.getNumeroRegistrosPorPagina()); 
-	
-		} else {
-			resultado =new Vector();
-			paginaSeleccionada = "0";
-			totalRegistros = "0";
-			registrosPorPagina = "0";
 		}
-		
-	} else {
-		resultado =new Vector();
-		paginaSeleccionada = "0";
-		totalRegistros = "0";
-		registrosPorPagina = "0";
 	}
 	
 	String action=app+"/PYS_GestionarSolicitudes.do?noReset=true";
@@ -283,28 +271,26 @@
 <% 
 		} else { 	    	
 			for (int i = 1; i <= resultado.size(); i++)	{	
-				Row fila = (Row)resultado.get(i-1);
-				Hashtable peticion = (Hashtable) fila.getRow();
+				Hashtable<String,Object> hPeticionCompraSuscripcion = (Hashtable<String,Object>)resultado.get(i-1);
 							 
-				if (peticion != null) { 
-					Long idPeticion = UtilidadesHash.getLong (peticion, PysPeticionCompraSuscripcionBean.C_IDPETICION);
-					Integer idInstitucion = UtilidadesHash.getInteger (peticion, PysPeticionCompraSuscripcionBean.C_IDINSTITUCION);
-					Long idPersona = UtilidadesHash.getLong (peticion, CenPersonaBean.C_IDPERSONA);
+				if (hPeticionCompraSuscripcion != null) { 
+					Long idPeticion = UtilidadesHash.getLong (hPeticionCompraSuscripcion, PysPeticionCompraSuscripcionBean.C_IDPETICION);
+					Integer idInstitucion = UtilidadesHash.getInteger (hPeticionCompraSuscripcion, PysPeticionCompraSuscripcionBean.C_IDINSTITUCION);
+					Long idPersona = UtilidadesHash.getLong (hPeticionCompraSuscripcion, CenPersonaBean.C_IDPERSONA);
 
 					String nombreCliente = "";
-					nombreCliente = UtilidadesHash.getString (peticion, CenPersonaBean.C_NOMBRE);
-					nombreCliente = nombreCliente + " " + UtilidadesHash.getString (peticion, CenPersonaBean.C_APELLIDOS1);
-					nombreCliente = nombreCliente + " " + UtilidadesHash.getString (peticion, CenPersonaBean.C_APELLIDOS2);
-					String fecha   = UtilidadesHash.getString (peticion, PysPeticionCompraSuscripcionBean.C_FECHA);
-					// 0:Descarga; 1:SinIcono; 2: FacturacionRapida
-					int tipoIcono = new Integer(UtilidadesHash.getString (peticion, "TIPO_ICONO")).intValue();
-			 		String tipoSol = UtilidadesHash.getString (peticion, PysPeticionCompraSuscripcionBean.C_TIPOPETICION);
+					nombreCliente = UtilidadesHash.getString(hPeticionCompraSuscripcion, CenPersonaBean.C_NOMBRE) + 
+									" " + UtilidadesHash.getString(hPeticionCompraSuscripcion, CenPersonaBean.C_APELLIDOS1) + 
+									" " + UtilidadesHash.getString(hPeticionCompraSuscripcion, CenPersonaBean.C_APELLIDOS2);
+					String fecha = UtilidadesHash.getString(hPeticionCompraSuscripcion, PysPeticionCompraSuscripcionBean.C_FECHA);					
+					String sTipoIcono = UtilidadesHash.getString(hPeticionCompraSuscripcion, "TIPO_ICONO"); // 0:Descarga; 1:SinIcono; 2: FacturacionRapida
+			 		String tipoSol = UtilidadesHash.getString(hPeticionCompraSuscripcion, PysPeticionCompraSuscripcionBean.C_TIPOPETICION);
 			 		String tipoSolTexto ="";
-			 		String estadoSol = UtilidadesHash.getString (peticion, "DESCRIPCION_ESTADO");
-			 		String idEstadoSol = UtilidadesHash.getString (peticion, "IDESTADOPETICION");
+			 		String estadoSol = UtilidadesHash.getString(hPeticionCompraSuscripcion, "DESCRIPCION_ESTADO");
+			 		String idEstadoSol = UtilidadesHash.getString(hPeticionCompraSuscripcion, "IDESTADOPETICION");
 
 			 		if ((fecha == null) || fecha.equals("")) {       
-			 			fecha         = "&nbsp;"; 
+			 			fecha = "&nbsp;"; 
 			 		} else {
 			 			fecha = GstDate.getFormatedDateShort("", fecha);
 			 		}
@@ -312,10 +298,10 @@
 			 		if ((nombreCliente == null) || nombreCliente.equals("")) 
 			 			nombreCliente = "&nbsp;";
 			 			
-			 		if ((estadoSol == null)     || estadoSol.equals(""))     
+			 		if ((estadoSol == null) || estadoSol.equals(""))     
 			 			estadoSol = "&nbsp;";
 			 			
-			 		if ((tipoSol == null)       || tipoSol.equals("")) {     
+			 		if ((tipoSol == null) || tipoSol.equals("")) {     
 			 			tipoSol = "&nbsp;";	
 			 		} else {
 				 		if (tipoSol.equalsIgnoreCase(ClsConstants.TIPO_PETICION_COMPRA_ALTA)) {
@@ -335,10 +321,10 @@
 					elems[0]=new FilaExtElement("editarConCertificado", "editarConCertificado", SIGAConstants.ACCESS_FULL);
 					elems[1]=new FilaExtElement("enviar", "enviar", SIGAConstants.ACCESS_FULL);
 					if ((idEstadoSol.trim().equals(String.valueOf(ClsConstants.ESTADO_PETICION_COMPRA_PENDIENTE)) || idEstadoSol.trim().equals(String.valueOf(ClsConstants.ESTADO_PETICION_COMPRA_PROCESADA))) && tipoSol.trim().equals("A")) {
-						if (tipoIcono == 2) {
+						if (sTipoIcono!=null && sTipoIcono.equals("2")) {
 							elems[2]=new FilaExtElement("facturacionrapida", "facturacionrapida", SIGAConstants.ACCESS_READ);		
 						} else {
-							if (tipoIcono == 0) {
+							if (sTipoIcono!=null && sTipoIcono.equals("1")) {
 								elems[2]=new FilaExtElement("download", "facturacionrapida", SIGAConstants.ACCESS_READ);
 							}
 						}

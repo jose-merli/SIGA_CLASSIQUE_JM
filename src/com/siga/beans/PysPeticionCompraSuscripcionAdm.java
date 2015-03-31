@@ -143,64 +143,7 @@ public class PysPeticionCompraSuscripcionAdm extends MasterBeanAdministrador {
 							PysPeticionCompraSuscripcionBean.T_NOMBRETABLA + "." + PysPeticionCompraSuscripcionBean.C_IDPERSONA + ", " +
 							CenPersonaBean.T_NOMBRETABLA + "." + CenPersonaBean.C_NOMBRE + ", " +
 							CenPersonaBean.T_NOMBRETABLA + "." + CenPersonaBean.C_APELLIDOS1 + ", " +
-							CenPersonaBean.T_NOMBRETABLA + "." + CenPersonaBean.C_APELLIDOS2 + ", " +							
-		
-							// 0 -- Si tiene factura entonces poner icono para descarga
-							" CASE WHEN (" +
-								" ( " +
-									" SELECT COUNT(1) " +  
-									" FROM " + PysCompraBean.T_NOMBRETABLA + ", " +
-										FacFacturaBean.T_NOMBRETABLA +
-									" WHERE " + PysCompraBean.T_NOMBRETABLA + "." + PysCompraBean.C_IDINSTITUCION + " = " + PysPeticionCompraSuscripcionBean.T_NOMBRETABLA + "." + PysPeticionCompraSuscripcionBean.C_IDINSTITUCION +
-										" AND " + PysCompraBean.T_NOMBRETABLA + "." + PysCompraBean.C_IDPETICION + " = " + PysPeticionCompraSuscripcionBean.T_NOMBRETABLA + "." + PysPeticionCompraSuscripcionBean.C_IDPETICION +
-										" AND " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDINSTITUCION + " = " + PysCompraBean.T_NOMBRETABLA + "." + PysCompraBean.C_IDINSTITUCION +
-										" AND " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDFACTURA + " = " + PysCompraBean.T_NOMBRETABLA + "." + PysCompraBean.C_IDFACTURA +                                
-								" ) > 0) THEN 0 " +   
-										
-								// 1 -- Si tiene servicios entonces sin icono
-								" WHEN ( " +
-									" ( " +
-										" SELECT COUNT(1) " +
-										" FROM " + PysServiciosSolicitadosBean.T_NOMBRETABLA +
-										" WHERE " + PysServiciosSolicitadosBean.T_NOMBRETABLA + "." + PysServiciosSolicitadosBean.C_IDINSTITUCION + " = " + PysPeticionCompraSuscripcionBean.T_NOMBRETABLA + "." + PysPeticionCompraSuscripcionBean.C_IDINSTITUCION +
-											" AND " + PysServiciosSolicitadosBean.T_NOMBRETABLA + "." + PysServiciosSolicitadosBean.C_IDPETICION + " = " + PysPeticionCompraSuscripcionBean.T_NOMBRETABLA + "." + PysPeticionCompraSuscripcionBean.C_IDPETICION +
-									" ) > 0) THEN 1 " + 
-								
-								// 1 -- Si tiene certificados entonces sin icono
-								" WHEN ( " +
-									" ( " +
-										" SELECT COUNT(1) " +  
-										" FROM " + PysProductosSolicitadosBean.T_NOMBRETABLA + ", " +
-											PysProductosInstitucionBean.T_NOMBRETABLA +
-										" WHERE " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDINSTITUCION + " = " + PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_IDINSTITUCION +
-											" AND " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDTIPOPRODUCTO + " = " + PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_IDTIPOPRODUCTO +
-											" AND " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDPRODUCTO + " = " + PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_IDPRODUCTO +
-											" AND " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDPRODUCTOINSTITUCION + " = " + PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_IDPRODUCTOINSTITUCION +
-											" AND " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDINSTITUCION + " = " + PysPeticionCompraSuscripcionBean.T_NOMBRETABLA + "." + PysPeticionCompraSuscripcionBean.C_IDINSTITUCION +
-											" AND " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDPETICION + " = " + PysPeticionCompraSuscripcionBean.T_NOMBRETABLA + "." + PysPeticionCompraSuscripcionBean.C_IDPETICION +
-											" AND " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_ACEPTADO + " <> 'D' " +
-											" AND " + PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_TIPOCERTIFICADO + " IN ('C','M','D') " +
-									" ) > 0) THEN 1 " +  
-											
-								// 2 -- Si tiene productos facturables entonces poner icono para facturacion rapida
-								" WHEN ( " +
-									" ( " +					
-										" SELECT COUNT(1)" +
-										" FROM " + PysProductosSolicitadosBean.T_NOMBRETABLA +
-										" WHERE " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDINSTITUCION + " = " + PysPeticionCompraSuscripcionBean.T_NOMBRETABLA + "." + PysPeticionCompraSuscripcionBean.C_IDINSTITUCION +
-											" AND " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDPETICION + " = " + PysPeticionCompraSuscripcionBean.T_NOMBRETABLA + "." + PysPeticionCompraSuscripcionBean.C_IDPETICION +
-											" AND " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_ACEPTADO + " NOT IN ('B', 'D', 'P') " +
-									" ) > 0) THEN 2 " +          						
-								
-								// 1 -- Por defecto sin icono
-								" ELSE 1 END AS TIPO_ICONO, " +
-		
-								" ( " +
-									" SELECT " + UtilidadesMultidioma.getCampoMultidioma(PysEstadoPeticionBean.T_NOMBRETABLA + "." + PysEstadoPeticionBean.C_DESCRIPCION, this.usrbean.getLanguage()) + 
-									" FROM " + PysEstadoPeticionBean.T_NOMBRETABLA + 
-									" WHERE " + PysEstadoPeticionBean.T_NOMBRETABLA + "." + PysEstadoPeticionBean.C_IDESTADOPETICION + " = " + PysPeticionCompraSuscripcionBean.T_NOMBRETABLA + "." + PysPeticionCompraSuscripcionBean.C_IDESTADOPETICION + 
-								" ) AS DESCRIPCION_ESTADO " +
-									
+							CenPersonaBean.T_NOMBRETABLA + "." + CenPersonaBean.C_APELLIDOS2 +																
 						" FROM " + PysPeticionCompraSuscripcionBean.T_NOMBRETABLA + ", " + 
 							CenPersonaBean.T_NOMBRETABLA +
 						" WHERE " + PysPeticionCompraSuscripcionBean.T_NOMBRETABLA + "." + PysPeticionCompraSuscripcionBean.C_IDINSTITUCION + " = " + idInstitucion + 
@@ -639,6 +582,125 @@ public class PysPeticionCompraSuscripcionAdm extends MasterBeanAdministrador {
 		return b;	
 	}
 	
-
+	/**
+	 * Obtiene los datos extras de la pagina de gestion de solicitudes
+	 * @param vDatos
+	 * @return
+	 * @throws ClsExceptions
+	 */
+	public Vector<Hashtable<String,Object>> obtenerDatosGestionSolicitud (Vector vDatos) throws ClsExceptions {
+		Vector<Hashtable<String,Object>> vResultado = new Vector<Hashtable<String,Object>>();
+		try {
+			for (int i=0; i<vDatos.size(); i++) {
+				Row rDatos = (Row)vDatos.get(i);
+				Hashtable<String,Object> hDatos = rDatos.getRow();
+				
+				/* --------------- 1. Obtiene la descripcion del estado de la peticion -------------------------------- */
+				String sIdEstadoPeticion = UtilidadesHash.getString(hDatos, PysPeticionCompraSuscripcionBean.C_IDESTADOPETICION);
+				String sCampo = "DESCRIPCION_ESTADO";
+				String sql = "SELECT " + UtilidadesMultidioma.getCampoMultidioma(PysEstadoPeticionBean.T_NOMBRETABLA + "." + PysEstadoPeticionBean.C_DESCRIPCION, this.usrbean.getLanguage()) +
+								" FROM " + PysEstadoPeticionBean.T_NOMBRETABLA + 
+								" WHERE " + PysEstadoPeticionBean.T_NOMBRETABLA + "." + PysEstadoPeticionBean.C_IDESTADOPETICION + " = " + sIdEstadoPeticion;
+				
+				String sValorCampo = "";
+				Hashtable<String,Object> hResultado = this.selectGenericoHash(sql);
+				if (hResultado!=null) {
+					sValorCampo = UtilidadesHash.getString(hResultado, PysEstadoPeticionBean.C_DESCRIPCION);					
+				}
+				hDatos.put(sCampo, sValorCampo);
+				
+				/* --------------- 2.1. Obtiene datos para icono - Comprueba si tiene servicios -------------------------------- */
+				String sIdInstitucion = UtilidadesHash.getString(hDatos, PysPeticionCompraSuscripcionBean.C_IDINSTITUCION);
+				String sIdPeticion = UtilidadesHash.getString(hDatos, PysPeticionCompraSuscripcionBean.C_IDPETICION);
+				sCampo = "TIPO_ICONO";
+				sql = " SELECT COUNT(1) AS " + sCampo +
+						" FROM " + PysServiciosSolicitadosBean.T_NOMBRETABLA +
+						" WHERE " + PysServiciosSolicitadosBean.T_NOMBRETABLA + "." + PysServiciosSolicitadosBean.C_IDINSTITUCION + " = " + sIdInstitucion +
+							" AND " + PysServiciosSolicitadosBean.T_NOMBRETABLA + "." + PysServiciosSolicitadosBean.C_IDPETICION + " = " + sIdPeticion;
+				
+				boolean bBuscarIcono = true;
+				hResultado = this.selectGenericoHash(sql);
+				if (hResultado!=null) {
+					sValorCampo = UtilidadesHash.getString(hResultado, sCampo);
+					if (sValorCampo!=null && !sValorCampo.equals("0")) {
+						hDatos.put(sCampo, "0"); // Si tiene servicios => aparece sin icono (0)
+						bBuscarIcono = false;
+					}
+				}
+				
+				if (bBuscarIcono) {
+					/* --------------- 2.2. Obtiene datos para icono - Comprueba si tiene certificados -------------------------------- */
+					sql = " SELECT COUNT(1) AS " + sCampo +  
+							" FROM " + PysProductosSolicitadosBean.T_NOMBRETABLA + ", " +
+							PysProductosInstitucionBean.T_NOMBRETABLA +
+						" WHERE " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDINSTITUCION + " = " + PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_IDINSTITUCION +
+							" AND " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDTIPOPRODUCTO + " = " + PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_IDTIPOPRODUCTO +
+							" AND " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDPRODUCTO + " = " + PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_IDPRODUCTO +
+							" AND " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDPRODUCTOINSTITUCION + " = " + PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_IDPRODUCTOINSTITUCION +
+							" AND " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDINSTITUCION + " = " + sIdInstitucion +
+							" AND " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDPETICION + " = " + sIdPeticion +
+							" AND " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_ACEPTADO + " <> 'D' " +
+							" AND " + PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_TIPOCERTIFICADO + " IN ('C','M','D')";
+					
+					hResultado = this.selectGenericoHash(sql);
+					if (hResultado!=null) {
+						sValorCampo = UtilidadesHash.getString(hResultado, sCampo);
+						if (sValorCampo!=null && !sValorCampo.equals("0")) {
+							hDatos.put(sCampo, "0"); // Si tiene certificados => aparece sin icono (0)
+							bBuscarIcono = false;
+						}
+					}
+					
+					if (bBuscarIcono) {
+						/* --------------- 2.3. Obtiene datos para icono - Comprueba si tiene factura -------------------------------- */
+						sql = " SELECT COUNT(1) AS " + sCampo +   
+							" FROM " + PysCompraBean.T_NOMBRETABLA + ", " +
+								FacFacturaBean.T_NOMBRETABLA +
+							" WHERE " + PysCompraBean.T_NOMBRETABLA + "." + PysCompraBean.C_IDINSTITUCION + " = " + sIdInstitucion +
+								" AND " + PysCompraBean.T_NOMBRETABLA + "." + PysCompraBean.C_IDPETICION + " = " + sIdPeticion +
+								" AND " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDINSTITUCION + " = " + PysCompraBean.T_NOMBRETABLA + "." + PysCompraBean.C_IDINSTITUCION +
+								" AND " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDFACTURA + " = " + PysCompraBean.T_NOMBRETABLA + "." + PysCompraBean.C_IDFACTURA;
+						
+						hResultado = this.selectGenericoHash(sql);
+						if (hResultado!=null) {
+							sValorCampo = UtilidadesHash.getString(hResultado, sCampo);
+							if (sValorCampo!=null && !sValorCampo.equals("0")) {
+								hDatos.put(sCampo, "1"); // Si tiene factura => aparece icono para descarga (1)
+								bBuscarIcono = false;
+							}
+						}
+						
+						if (bBuscarIcono) {
+							/* --------------- 2.4. Obtiene datos para icono - Comprueba si tiene productos facturables -------------------------------- */
+							sql = " SELECT COUNT(1) AS " + sCampo +   
+									" FROM " + PysProductosSolicitadosBean.T_NOMBRETABLA +
+									" WHERE " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDINSTITUCION + " = " + sIdInstitucion +
+										" AND " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDPETICION + " = " + sIdPeticion +
+										" AND " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_ACEPTADO + " NOT IN ('B', 'D', 'P')";
+							
+							hResultado = this.selectGenericoHash(sql);
+							if (hResultado!=null) {
+								sValorCampo = UtilidadesHash.getString(hResultado, sCampo);
+								if (sValorCampo!=null && !sValorCampo.equals("0")) {
+									hDatos.put(sCampo, "2"); // Si tiene productos facturables => aparece icono para facturacion rapida (2)
+									bBuscarIcono = false;
+								}
+							}
+							
+							if (bBuscarIcono) {
+								hDatos.put(sCampo, "0"); // Por defecto => aparece sin icono (0)
+							}
+						}						
+					}					
+				}
+				
+				vResultado.add(hDatos);	
+			}
+			
+		} catch (Exception e) {
+			throw new ClsExceptions (e, "Erro al obtener los datos en obtenerDatosGestionSolicitud");
+		}
+		
+		return vResultado;
+	}
 }
- 
