@@ -8,15 +8,19 @@ package com.siga.beans;
 import java.text.ParseException;
 import java.util.Date;
 import java.util.Hashtable;
-
 import java.util.Vector;
-import com.atos.utils.*;
-import com.siga.Utilidades.*;
+
+import javax.transaction.UserTransaction;
+
+import com.atos.utils.ClsConstants;
+import com.atos.utils.ClsExceptions;
+import com.atos.utils.Row;
+import com.atos.utils.RowsContainer;
+import com.atos.utils.UsrBean;
+import com.siga.Utilidades.UtilidadesHash;
+import com.siga.Utilidades.UtilidadesString;
 import com.siga.general.EjecucionPLs;
 import com.siga.general.SIGAException;
-
-import javax.transaction.SystemException;
-import javax.transaction.UserTransaction;
 
 /**
 *
@@ -246,7 +250,7 @@ public class CenDatosColegialesEstadoAdm extends MasterBeanAdmVisible {
 	 * @return  Boolean - Resultado de la operacion  
 	 * @exception  SIGAException  En caso de error 
 	 */
-	public boolean insertarInhabilitacion (String idPersona, String idInstitucion, String motivo, String idioma) throws SIGAException, ClsExceptions 
+	public boolean insertarInhabilitacion (String idPersona, String idInstitucion, String motivo, String idioma, String fechaSancion) throws SIGAException, ClsExceptions 
 	{
 		boolean resultado = false;
 		CenColegiadoBean bean = new CenColegiadoBean();
@@ -262,7 +266,8 @@ public class CenDatosColegialesEstadoAdm extends MasterBeanAdmVisible {
 				CenDatosColegialesEstadoBean beanDatos = new CenDatosColegialesEstadoBean();
 				beanDatos.setIdPersona(new Long(idPersona));
 				beanDatos.setIdInstitucion(new Integer(idInstitucion));
-				beanDatos.setFechaEstado("sysdate");
+//				beanDatos.setFechaEstado("sysdate");
+				beanDatos.setFechaEstado(fechaSancion);
 				beanDatos.setIdEstado(new Integer(ClsConstants.ESTADO_COLEGIAL_INHABILITACION));
 				beanDatos.setObservaciones(motivo);
 				
@@ -273,7 +278,7 @@ public class CenDatosColegialesEstadoAdm extends MasterBeanAdmVisible {
 					// MAV 25/8/2005 Cambio por incidencia
 					if (motivo.equalsIgnoreCase("") || motivo.equalsIgnoreCase(" ")){
 						//motivo="Suspensión por apertura de expediente.";
-						motivo=UtilidadesString.getMensajeIdioma("ES","expedientes.alertas.literal.motivo1");
+						motivo=UtilidadesString.getMensajeIdioma(usrbean,"expedientes.alertas.literal.motivo1");
 					}
 					
 					CenHistoricoBean bHist = new CenHistoricoBean();
@@ -306,7 +311,7 @@ public class CenDatosColegialesEstadoAdm extends MasterBeanAdmVisible {
 	 * @return  Boolean - Resultado de la operacion  
 	 * @exception  SIGAException  En caso de error 
 	 */
-	public boolean insertarSuspension (String idPersona, String idInstitucion, String motivo, String idioma) throws SIGAException, ClsExceptions 
+	public boolean insertarSuspension (String idPersona, String idInstitucion, String motivo, String idioma, String fechaSancion) throws SIGAException, ClsExceptions 
 	{
 		boolean resultado = false;
 		CenColegiadoBean bean = new CenColegiadoBean();
@@ -322,7 +327,8 @@ public class CenDatosColegialesEstadoAdm extends MasterBeanAdmVisible {
 				CenDatosColegialesEstadoBean beanDatos = new CenDatosColegialesEstadoBean();
 				beanDatos.setIdPersona(new Long(idPersona));
 				beanDatos.setIdInstitucion(new Integer(idInstitucion));
-				beanDatos.setFechaEstado("sysdate");
+//				beanDatos.setFechaEstado("sysdate");
+				beanDatos.setFechaEstado(fechaSancion);
 				beanDatos.setIdEstado(new Integer(ClsConstants.ESTADO_COLEGIAL_SUSPENSION));
 				beanDatos.setObservaciones(motivo);
 				
@@ -333,7 +339,7 @@ public class CenDatosColegialesEstadoAdm extends MasterBeanAdmVisible {
 					// MAV 25/8/2005 Cambio por incidencia
 					if (motivo.equalsIgnoreCase("") || motivo.equalsIgnoreCase(" ")){
 						//motivo="Suspensión por apertura de expediente.";
-						motivo=UtilidadesString.getMensajeIdioma("ES","expedientes.alertas.literal.motivo4");
+						motivo=UtilidadesString.getMensajeIdioma(usrbean,"expedientes.alertas.literal.motivo4");
 					}
 					CenHistoricoBean bHist = new CenHistoricoBean();
 					bHist.setMotivo(motivo);
@@ -365,7 +371,7 @@ public class CenDatosColegialesEstadoAdm extends MasterBeanAdmVisible {
 	 * @return  Boolean - Resultado de la operacion  
 	 * @exception  SIGAException  En caso de error 
 	 */
-	public boolean insertarBajaColegial (String idPersona, String idInstitucion, String motivo, String idioma) throws SIGAException , ClsExceptions
+	public boolean insertarBajaColegial (String idPersona, String idInstitucion, String motivo, String idioma, String fechaSancion) throws SIGAException , ClsExceptions
 	{
 		boolean resultado = false;
 		CenColegiadoBean bean = new CenColegiadoBean();
@@ -380,7 +386,8 @@ public class CenDatosColegialesEstadoAdm extends MasterBeanAdmVisible {
 				CenDatosColegialesEstadoBean beanDatos = new CenDatosColegialesEstadoBean();
 				beanDatos.setIdPersona(new Long(idPersona));
 				beanDatos.setIdInstitucion(new Integer(idInstitucion));
-				beanDatos.setFechaEstado("sysdate");
+//				beanDatos.setFechaEstado("sysdate");
+				beanDatos.setFechaEstado(fechaSancion);
 				beanDatos.setIdEstado(new Integer(ClsConstants.ESTADO_COLEGIAL_BAJACOLEGIAL));
 				beanDatos.setObservaciones(motivo);
 				
@@ -389,7 +396,7 @@ public class CenDatosColegialesEstadoAdm extends MasterBeanAdmVisible {
 					// MAV 25/8/2005 Cambio por incidencia
 					if (motivo.equalsIgnoreCase("") || motivo.equalsIgnoreCase(" ")){
 						//motivo="Suspensión por apertura de expediente.";
-						motivo=UtilidadesString.getMensajeIdioma("ES","expedientes.alertas.literal.motivo2");
+						motivo=UtilidadesString.getMensajeIdioma(usrbean,"expedientes.alertas.literal.motivo2");
 					}
 					CenHistoricoBean bHist = new CenHistoricoBean();
 					bHist.setMotivo(motivo);
@@ -421,7 +428,7 @@ public class CenDatosColegialesEstadoAdm extends MasterBeanAdmVisible {
 	 * @return  Boolean - Resultado de la operacion  
 	 * @exception  SIGAException  En cualquier caso de error 
 	 */
-	public boolean insertarBajaEnEjercicio (String idPersona, String idInstitucion, String motivo, String idioma) throws SIGAException, ClsExceptions 
+	public boolean insertarBajaEnEjercicio (String idPersona, String idInstitucion, String motivo, String idioma, String fechaSancion) throws SIGAException, ClsExceptions 
 	{
 		boolean resultado = false;
 		CenColegiadoBean bean = new CenColegiadoBean();
@@ -437,7 +444,8 @@ public class CenDatosColegialesEstadoAdm extends MasterBeanAdmVisible {
 				CenDatosColegialesEstadoBean beanDatos = new CenDatosColegialesEstadoBean();
 				beanDatos.setIdPersona(new Long(idPersona));
 				beanDatos.setIdInstitucion(new Integer(idInstitucion));
-				beanDatos.setFechaEstado("sysdate");
+//				beanDatos.setFechaEstado("sysdate");
+				beanDatos.setFechaEstado(fechaSancion);
 				beanDatos.setIdEstado(new Integer(ClsConstants.ESTADO_COLEGIAL_SINEJERCER));
 				beanDatos.setObservaciones(motivo);
 				
@@ -449,7 +457,7 @@ public class CenDatosColegialesEstadoAdm extends MasterBeanAdmVisible {
 					// MAV 25/8/2005 Cambio por incidencia
 					if (motivo.equalsIgnoreCase("") || motivo.equalsIgnoreCase(" ")){
 						//motivo="Suspensión por apertura de expediente.";
-						motivo=UtilidadesString.getMensajeIdioma("ES","expedientes.alertas.literal.motivo3");
+						motivo=UtilidadesString.getMensajeIdioma(usrbean,"expedientes.alertas.literal.motivo3");
 					}
 					CenHistoricoBean bHist = new CenHistoricoBean();
 					bHist.setMotivo(motivo);

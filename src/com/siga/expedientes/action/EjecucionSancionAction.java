@@ -5,6 +5,7 @@
  */
 package com.siga.expedientes.action;
 
+import java.text.SimpleDateFormat;
 import java.util.Hashtable;
 import java.util.Vector;
 
@@ -14,9 +15,12 @@ import javax.transaction.UserTransaction;
 
 import org.apache.struts.action.ActionMapping;
 
+import com.atos.utils.ClsConstants;
+import com.atos.utils.GstDate;
 import com.atos.utils.UsrBean;
 import com.siga.beans.CenDatosColegialesEstadoAdm;
 import com.siga.beans.ExpExpedienteAdm;
+import com.siga.beans.ExpExpedienteBean;
 import com.siga.beans.ScsInscripcionTurnoAdm;
 import com.siga.expedientes.form.EjecucionSancionForm;
 import com.siga.general.MasterAction;
@@ -59,8 +63,10 @@ public class EjecucionSancionAction extends MasterAction {
 			Integer idInstitucion_tipoExpediente = (Integer)hEjSancion.get("IdInstitucion_tipoExpediente");
 			Integer IdTipoExpediente = (Integer)hEjSancion.get("IdTipoExpediente");
 			Integer numeroExpediente=(Integer)hEjSancion.get("numeroExpediente");
-			Integer anioExpediente=(Integer)hEjSancion.get("anioExpediente");		
-		
+			Integer anioExpediente=(Integer)hEjSancion.get("anioExpediente");
+			ExpExpedienteAdm expedienteAdm = new ExpExpedienteAdm(userBean); 
+			ExpExpedienteBean expedienteBean =  expedienteAdm.getExpediente(IdTipoExpediente.toString(), idInstitucion, idInstitucion_tipoExpediente.toString(),
+					anioExpediente.toString(), numeroExpediente.toString());
 			//Comienzo la transaccion:
 			tx.begin();
 			/*//aalg:se modifica primero el estado del denunciado que está grabado en exp_expediente
@@ -98,27 +104,30 @@ public class EjecucionSancionAction extends MasterAction {
 				if (form.isBajaTurno()){					
 					// Obligo a que no use internamente una transaccion.
 					ScsInscripcionTurnoAdm tAdm = new ScsInscripcionTurnoAdm(this.getUserBean(request));
-					tAdm.cancelarInscripcionesTurnosPersona(idPersona, idInstitucion, form.getMotivo(), "sysdate");
+					SimpleDateFormat sdf = new SimpleDateFormat(ClsConstants.DATE_FORMAT_JAVA);
+					
+					tAdm.cancelarInscripcionesTurnosPersona(idPersona, idInstitucion, form.getMotivo(), GstDate.getFormatedDateShort(sdf.parse(expedienteBean.getFechaInicialEstado())));
 				}
 				
 				if (form.isBajaColegial()){
 					CenDatosColegialesEstadoAdm c1Adm = new CenDatosColegialesEstadoAdm(this.getUserBean(request));
-					c1Adm.insertarBajaColegial(idPersona,idInstitucion,form.getMotivo(),this.getLenguaje(request));
+					c1Adm.insertarBajaColegial(idPersona,idInstitucion,form.getMotivo(),this.getLenguaje(request),expedienteBean.getFechaInicialEstado());
 				}
 				
+				SimpleDateFormat sdf = new SimpleDateFormat(ClsConstants.DATE_FORMAT_LONG_ENGLISH);
 				if (form.isBajaEjercicio()){
 					CenDatosColegialesEstadoAdm c2Adm = new CenDatosColegialesEstadoAdm(this.getUserBean(request));
-					c2Adm.insertarBajaEnEjercicio(idPersona,idInstitucion,form.getMotivo(),this.getLenguaje(request));
+					c2Adm.insertarBajaEnEjercicio(idPersona,idInstitucion,form.getMotivo(),this.getLenguaje(request),expedienteBean.getFechaInicialEstado());
 				}
 				
 				if (form.isInhabilitacion()){
 					CenDatosColegialesEstadoAdm c3Adm = new CenDatosColegialesEstadoAdm(this.getUserBean(request));
-					c3Adm.insertarInhabilitacion(idPersona,idInstitucion,form.getMotivo(),this.getLenguaje(request));
+					c3Adm.insertarInhabilitacion(idPersona,idInstitucion,form.getMotivo(),this.getLenguaje(request),expedienteBean.getFechaInicialEstado());
 				}
 				
 				if (form.isSuspension()){
 					CenDatosColegialesEstadoAdm c3Adm = new CenDatosColegialesEstadoAdm(this.getUserBean(request));
-					c3Adm.insertarSuspension(idPersona,idInstitucion,form.getMotivo(),this.getLenguaje(request));
+					c3Adm.insertarSuspension(idPersona,idInstitucion,form.getMotivo(),this.getLenguaje(request),expedienteBean.getFechaInicialEstado());
 				}				
 			}
 			//Fin de la transaccion:
