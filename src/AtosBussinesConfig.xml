@@ -114,7 +114,6 @@
 		<service interface="org.redabogacia.sigaservices.app.services.caj.PCAJGInsertaColaService" 			implementation="org.redabogacia.sigaservices.app.services.caj.impl.PCAJGInsertaColaServiceImpl"/>
 		<service interface="org.redabogacia.sigaservices.app.services.est.EstadisticasUserRegistryService"	implementation="org.redabogacia.sigaservices.app.services.est.impl.EstadisticasUserRegistryServiceImpl"/>
 		<service interface="org.redabogacia.sigaservices.app.services.scs.ScsTipoactuacioncostefijoService"	implementation="org.redabogacia.sigaservices.app.services.scs.impl.ScsTipoactuacioncostefijoServiceImpl"/>
-		<service interface="org.redabogacia.sigaservices.app.services.GenerarExcelService"					implementation="org.redabogacia.sigaservices.app.services.impl.GenerarExcelServiceImpl"/>
 		
 	</context>
 </configuration> 
