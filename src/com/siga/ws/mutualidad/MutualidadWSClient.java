@@ -561,21 +561,34 @@ public class MutualidadWSClient extends SIGAWSClientAbstract {
 	 * @param eCivil
 	 * @return
 	 */
-	private Integer parseaEstadoCivil(String eCivil) {
-		
+	private Integer parseaEstadoCivil(String eCivil) {		
 		int eCivilWS = 0;
 		int eCivilSIGA = 0;
 		if(!eCivil.equalsIgnoreCase("")){
 			eCivilSIGA = Integer.parseInt(eCivil);
 		}
+		
+		/** CR-Cambio en los valores de Estado civil 
+		 *  Los valores nuevos son:
+				Soltero -> 1
+				Casado	-> 2
+				Viudo 	-> 3
+				Separado 	-> 4
+				Divorciado 	-> 5
+				Desconocido -> 6
+				Pareja de Hecho -> 7
+		 */
+		
 		switch (eCivilSIGA){
-		case 1:	eCivilWS = 1; break; // Casado
-		case 2:	eCivilWS = 0; break; // Soltero
-		case 3:	eCivilWS = 2; break; // Viudo
-		case 4:	eCivilWS = 3; break; // Separado
-		case 5:	eCivilWS = 4; break; // Divorciado
-		default:eCivilWS = 5; break; // Desconocido
+			case 1:	eCivilWS = 2; break; // Casado
+			case 2:	eCivilWS = 1; break; // Soltero
+			case 3:	eCivilWS = 3; break; // Viudo
+			case 4:	eCivilWS = 4; break; // Separado
+			case 5:	eCivilWS = 5; break; // Divorciado
+			case 6:	eCivilWS = 7; break; // Pareja de hecho
+			default:eCivilWS = 6; break; // Desconocido
 		}
+		
 		return eCivilWS;
 	}
 	
