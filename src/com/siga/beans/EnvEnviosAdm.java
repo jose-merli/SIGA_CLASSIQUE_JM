@@ -372,16 +372,11 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 			}		
 			
 			// RGG CAMBIO DE ORDEN sql += " ORDER BY " + EN_DESCRIPCION;
-			sql += " ORDER BY " + EN_FECHACREACION + " DESC,"+EN_IDENVIO+" DESC";
+			sql += " ORDER BY "+EN_IDENVIO+" DESC";
 
 			ClsLogging.writeFileLog("EnvEnviosAdm -> QUERY: "+sql,10);
 
-			/*if (rc.queryNLS(sql)) {
-				for (int i = 0; i < rc.size(); i++)	{
-					Row fila = (Row) rc.get(i);
-					datos.add(fila);
-				}
-			}*/
+			
 			 Paginador paginador = new Paginador(sql);				
 				int totalRegistros = paginador.getNumeroTotalRegistros();
 				
