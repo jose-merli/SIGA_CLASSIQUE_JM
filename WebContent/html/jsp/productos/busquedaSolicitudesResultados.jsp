@@ -153,7 +153,8 @@
 		sub();
 		
 		var idPeticion = document.getElementById('oculto' + fila + '_1');
-	    var idInstitucion = document.getElementById('oculto' + fila + '_2');			          			    
+	    var idInstitucion = document.getElementById('oculto' + fila + '_2');
+	    var tipoIcono = document.getElementById('oculto' + fila + '_5');
 	    
 	    jQuery.ajax({ 
 			type: "POST",
@@ -166,7 +167,7 @@
 				// Recupera el identificador de la serie de facturacion
 				var idSerieFacturacion = json.idSerieFacturacion;		
 				
-				if (idSerieFacturacion==null || idSerieFacturacion=='') {
+				if (tipoIcono.value == "2" && (idSerieFacturacion==null || idSerieFacturacion=='')) {
 					//jQuery("#selectSeleccionSerieFacturacion")[0].innerHTML = json.aOptionsSeriesFacturacion[0];
 					jQuery("#selectSeleccionSerieFacturacion").find("option").detach();
 					jQuery("#selectSeleccionSerieFacturacion").append(json.aOptionsSeriesFacturacion[0]);
@@ -283,7 +284,7 @@
 									" " + UtilidadesHash.getString(hPeticionCompraSuscripcion, CenPersonaBean.C_APELLIDOS1) + 
 									" " + UtilidadesHash.getString(hPeticionCompraSuscripcion, CenPersonaBean.C_APELLIDOS2);
 					String fecha = UtilidadesHash.getString(hPeticionCompraSuscripcion, PysPeticionCompraSuscripcionBean.C_FECHA);					
-					String sTipoIcono = UtilidadesHash.getString(hPeticionCompraSuscripcion, "TIPO_ICONO"); // 0:Descarga; 1:SinIcono; 2: FacturacionRapida
+					String sTipoIcono = UtilidadesHash.getString(hPeticionCompraSuscripcion, "TIPO_ICONO"); // 0:SinIcono; 1:Descarga; 2:FacturacionRapida
 			 		String tipoSol = UtilidadesHash.getString(hPeticionCompraSuscripcion, PysPeticionCompraSuscripcionBean.C_TIPOPETICION);
 			 		String tipoSolTexto ="";
 			 		String estadoSol = UtilidadesHash.getString(hPeticionCompraSuscripcion, "DESCRIPCION_ESTADO");
@@ -346,6 +347,7 @@
 							<input type="hidden" id="oculto<%=i%>_2" value="<%=idInstitucion%>">
 							<input type="hidden" id="oculto<%=i%>_3" value="<%=tipoSol%>">
 							<input type="hidden" id="oculto<%=i%>_4" value="<%=idPersona%>">
+							<input type="hidden" id="oculto<%=i%>_5" value="<%=sTipoIcono%>">
 							 
 							<!-- ENVIOS 1 idSolicitud, 4 idPersona, 5 descripcion -->
 							<input type="hidden" name="oculto<%=""+(i)%>_5" value="<%=UtilidadesString.getMensajeIdioma(usr.getLanguage(),tipoSolTexto)%>">

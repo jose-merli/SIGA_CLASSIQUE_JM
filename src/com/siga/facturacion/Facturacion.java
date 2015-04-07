@@ -11,7 +11,6 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.sql.SQLTimeoutException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Enumeration;
@@ -71,9 +70,12 @@ import com.siga.beans.FacLineaFacturaBean;
 import com.siga.beans.FacPlantillaFacturacionAdm;
 import com.siga.beans.FacRenegociacionAdm;
 import com.siga.beans.FacRenegociacionBean;
+import com.siga.beans.FacSerieFacturacionAdm;
 import com.siga.beans.FacSerieFacturacionBean;
 import com.siga.beans.GenParametrosAdm;
+import com.siga.beans.PysCompraAdm;
 import com.siga.beans.PysCompraBean;
+import com.siga.beans.PysPeticionCompraSuscripcionAdm;
 import com.siga.beans.PysPeticionCompraSuscripcionBean;
 import com.siga.beans.PysTipoIvaAdm;
 import com.siga.beans.PysTipoIvaBean;
@@ -83,53 +85,31 @@ import com.siga.general.SIGAException;
 import com.siga.informes.InformeFactura;
 import com.siga.informes.InformePersonalizable;
 
-
-/**
- * @author juan.grau
- *
- */
-
-/**
- * @author juan.grau
- *
- * Window - Preferences - Java - Code Style - Code Templates
- */
 public class Facturacion {
     
     public FacFacturacionProgramadaBean programacionBean;
-//    private Integer idUsuario;
     private UsrBean usrbean=null;
-    
     private String consulta=null;
 
-	public void setConsulta(String consulta)
-	{
+	public void setConsulta(String consulta) {
 		this.consulta=consulta;
 	}
 	
-	public String getConsulta()
-	{
+	public String getConsulta() {
 		return this.consulta;
 	}
 	
-    /**
-     * @param programacionBean Bean del envío
-     * @param idUsuario id del usuario
-     */
-    public Facturacion(FacFacturacionProgramadaBean programacionBean /*, Integer idUsuario */)
-    {        
+    public Facturacion(FacFacturacionProgramadaBean programacionBean) {        
         this.programacionBean = programacionBean;
-//        this.idUsuario = idUsuario;	    
     }
  
-    public Facturacion(UsrBean usr)
-    {        
+    public Facturacion(UsrBean usr) {        
         this.programacionBean = null;
         this.usrbean = usr;
     }    	
 	
 	/**
-	 * Método estático para el procesado automático de facturacion (SIGASvlProcesoFacturacion)
+	 * Método para el procesado automático de facturacion (SIGASvlProcesoFacturacion)
 	 * 
 	 * @param idInstitucion
 	 * @param idUsuario
@@ -258,8 +238,7 @@ public class Facturacion {
 				nombreFichero = "LOG_FAC_CONFIRMACION_" + beanFacturacionProgramada.getIdSerieFacturacion() + "_" + beanFacturacionProgramada.getIdProgramacion() + ".log.xls"; 
 				log = new SIGALogging(pathFichero2 + sBarra2 + beanFacturacionProgramada.getIdInstitucion() + sBarra2 + nombreFichero);
 				try {
-					boolean esfacturacionRapida=false;
-					this.confirmarProgramacionFactura(beanFacturacionProgramada, request, false, log, true, false, 1,esfacturacionRapida);
+					this.confirmarProgramacionFactura(beanFacturacionProgramada, request, false, log, true, false, 1, false);
 					
 				} catch (ClsExceptions e) {
 					ClsLogging.writeFileLogError("@@@ Error controlado al confirmar facturas (Proceso automático):" + e.getMsg(), e, 3);
@@ -336,9 +315,8 @@ public class Facturacion {
 				nombreFichero = "LOG_FAC_CONFIRMACION_" + factBean.getIdSerieFacturacion() +"_"+ factBean.getIdProgramacion() +".log.xls"; 
 				log = new SIGALogging(pathFichero2+sBarra2+factBean.getIdInstitucion()+sBarra2+nombreFichero);
 				try {
-					boolean esFacturacionRapida=false;
-					confirmarProgramacionFactura(factBean, request, false, log, true, true, 1,esFacturacionRapida);
-					generarZip(factBean.getIdInstitucion().toString(), factBean.getIdSerieFacturacion().toString(), factBean.getIdProgramacion().toString());
+					confirmarProgramacionFactura(factBean, request, false, log, true, true, 1, false);
+					this.generarZip(factBean.getIdInstitucion().toString(), factBean.getIdSerieFacturacion().toString() + "_" + factBean.getIdProgramacion().toString());
 				} catch (ClsExceptions e) {
 					ClsLogging.writeFileLogError("@@@ Error controlado al confirmar facturas (Proceso automático):"+e.getMsg(),e,3);
 					
@@ -353,11 +331,6 @@ public class Facturacion {
 		}
 	}
 	
-	/**
-	 * 
-	 * @param request
-	 * @param idInstitucion
-	 */
 	public void generarPDFsYenviarFacturasProgramacion(HttpServletRequest request, String idInstitucion) {
 		UsrBean userBean = this.usrbean;
 		
@@ -419,8 +392,7 @@ public class Facturacion {
 		    		UtilidadesHash.set(hashNew, FacFacturacionProgramadaBean.C_IDESTADOCONFIRMACION, FacEstadoConfirmFactBean.CONFIRM_FINALIZADA);
 
 		    		UserTransaction tx = (UserTransaction) this.usrbean.getTransactionPesada();
-					boolean esFacturacionRapida=false;
-		    		this.generarPdfEnvioProgramacionFactura(factBean, request, log, factBean.getIdSerieFacturacion(), factBean.getIdProgramacion(), claves, hashNew, true, tx,esFacturacionRapida);
+		    		this.generarPdfEnvioProgramacionFactura(factBean, request, log, factBean.getIdSerieFacturacion(), factBean.getIdProgramacion(), claves, hashNew, true, tx);
 				
 				} catch (ClsExceptions e) {
 					ClsLogging.writeFileLogError("@@@ Error controlado al confirmar facturas (Proceso automático):"+e.getMsg(),e,3);
@@ -437,24 +409,13 @@ public class Facturacion {
 	}
 
 	
-	public void generarZip(String idInstitucion, String idSerieFacturacion, String idProgramacion) throws SIGAException, ClsExceptions{
-		String sRutaJava = "";
-		String sRutaTemporal = "";
-	    ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
-		sRutaJava = rp.returnProperty("facturacion.directorioFacturaPDFJava");
-		sRutaTemporal = rp.returnProperty("facturacion.directorioFisicoFacturaPDFJava") +
-		rp.returnProperty("facturacion.directorioFacturaPDFJava");
-
-		String sRutaFisicaJava = rp.returnProperty("facturacion.directorioFisicoFacturaPDFJava");
-
-		sRutaJava = sRutaFisicaJava +  sRutaJava;
+	public void generarZip(String idInstitucion, String nombreFichero) throws SIGAException, ClsExceptions{
+	    ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);		
+		String sRutaTemporal = rp.returnProperty("facturacion.directorioFisicoFacturaPDFJava") + rp.returnProperty("facturacion.directorioFacturaPDFJava") +
+								File.separator + idInstitucion + File.separator;
+		String sRutaJava = sRutaTemporal + nombreFichero + File.separator;
 
 		ArrayList<File> lista=new ArrayList<File>();
-
-		//String sNombreFichero = idSerieFacturacion + "_" + idProgramacion + ".zip";
-		sRutaJava += File.separator + idInstitucion	+ File.separator+ idSerieFacturacion+"_"+idProgramacion+ File.separator/*+ sNombreFichero*/;
-
-		sRutaTemporal += File.separator + idInstitucion+ File.separator;
 
 		//Control de que no exista el fichero a descargar:
 		File directorio = new File(sRutaJava);
@@ -469,7 +430,7 @@ public class Facturacion {
 				lista.add(fichero);
 			}
 			
-			doZip(sRutaTemporal,idSerieFacturacion+"_"+idProgramacion,lista);
+			doZip(sRutaTemporal, nombreFichero, lista);
 		}
 		
 		//Se eliminen las facturas existentes
@@ -482,8 +443,14 @@ public class Facturacion {
 		}
 	}
 	
-	
-	private void doZip(String rutaServidorDescargasZip, String nombreFicheroPDF, ArrayList<File> ficherosPDF) throws ClsExceptions	{
+	/**
+	 * 
+	 * @param rutaServidorDescargasZip
+	 * @param nombreFichero
+	 * @param ficherosPDF
+	 * @throws ClsExceptions
+	 */
+	public void doZip(String rutaServidorDescargasZip, String nombreFichero, ArrayList<File> ficherosPDF) throws ClsExceptions	{
 		// Generar Zip
 		File ficZip=null;
 		byte[] buffer = new byte[8192];
@@ -495,7 +462,7 @@ public class Facturacion {
 
 			if ((ficherosPDF!=null) && (ficherosPDF.size()>0)) {
 				
-				ficZip = new File(rutaServidorDescargasZip +  nombreFicheroPDF + ".zip");
+				ficZip = new File(rutaServidorDescargasZip +  nombreFichero + ".zip");
 
 				// RGG 
 				if (ficZip.exists()) {
@@ -738,10 +705,10 @@ public class Facturacion {
 
     		ClsLogging.writeFileLog("ENTRA A GENERAR Y ENVIAR",10);
     		
-    		boolean isGenerarPdf = beanP.getGenerarPDF() != null && beanP.getGenerarPDF().trim().equals("1");
+    		boolean isGenerarPdf = beanP.getGenerarPDF() != null && beanP.getGenerarPDF().trim().equals("1") && !esFacturacionRapida;
     		boolean isGenerarEnvio = beanP.getEnvio() != null && beanP.getEnvio().trim().equals("1") && (beanP.getRealizarEnvio()==null || beanP.getRealizarEnvio().toString().equalsIgnoreCase("1"));
     		if(isGenerarPdf){
-    			msjAviso = generarPdfEnvioProgramacionFactura(beanP,req,log,idSerieFacturacion, idProgramacion, claves, hashNew, isGenerarEnvio, tx,esFacturacionRapida);
+    			msjAviso = generarPdfEnvioProgramacionFactura(beanP,req,log,idSerieFacturacion, idProgramacion, claves, hashNew, isGenerarEnvio, tx);
     		}
 			
     	} catch (Exception e) {
@@ -790,8 +757,7 @@ public class Facturacion {
 	    		String [] claves,	
 	    		Hashtable<String,Object> hashFactura,
 	    		boolean isGenerarEnvio,
-	    		UserTransaction tx,
-    		boolean esFacturacionRapida)throws ClsExceptions, SIGAException, Exception {
+	    		UserTransaction tx)throws ClsExceptions, SIGAException, Exception {
     	
     	FacFacturacionProgramadaAdm facadm = new FacFacturacionProgramadaAdm(this.usrbean);
     	
@@ -817,7 +783,7 @@ public class Facturacion {
 	
 			//////////// ALMACENAR RAPIDA ////////////////
 			//En facturaciones rápidas, en compra de PYS no hay que generar el excel con el log
-			int errorAlmacenar = this.generaryEnviarProgramacionFactura(req, beanP.getIdInstitucion(), idSerieFacturacion, idProgramacion, isGenerarEnvio, log, esFacturacionRapida, tx);
+			int errorAlmacenar = this.generaryEnviarProgramacionFactura(req, beanP.getIdInstitucion(), idSerieFacturacion, idProgramacion, isGenerarEnvio, log, tx);
 			
 			////////////INICIO TRANSACCION ////////////////
 			if (tx!=null) 
@@ -924,7 +890,6 @@ public class Facturacion {
      * @param idProgramacion
      * @param bGenerarEnvios
      * @param log
-     * @param esFacturacionRapida
      * @param tx
 	 * @return int - Devuelve: - 0 si todo está correcto.
 	 * 						   - 1 si ha existido un error en el procesado de la factura.
@@ -939,7 +904,6 @@ public class Facturacion {
 			Long idProgramacion, 
 			boolean bGenerarEnvios, 
 			SIGALogging log,
-			boolean esFacturacionRapida,
 			UserTransaction tx
 		)  throws ClsExceptions, SIGAException {
 		
@@ -1021,12 +985,9 @@ public class Facturacion {
 			File rutaModelo=new File(rutaPlantilla);
 			//Comprobamos que exista la ruta y sino la creamos
 			if (!rutaModelo.exists()){
-
 				// ESCRIBO EN EL LOG
 				throw new SIGAException("messages.facturacion.almacenar.rutaPlantillaFacturaMal");					
 			}
-    		
-			
 			
 			ClsLogging.writeFileLog("ALMACENAR >> TERMINA DE OBTENER PLANTILLAS Y DATOS GENERALES",10);
 
@@ -1059,7 +1020,6 @@ public class Facturacion {
     		while (listaFacturas.hasMoreElements()){
     			boolean correcto=true;
     			try {
-
 	    			Hashtable<?,?> facturaHash=(Hashtable<?,?>)listaFacturas.nextElement();
 	    			idFactura=(String)facturaHash.get(FacFacturaBean.C_IDFACTURA);
 	    			String idPersona=(String)facturaHash.get(FacFacturaBean.C_IDPERSONA);
@@ -1081,9 +1041,7 @@ public class Facturacion {
 	    			
 	    			// TRY del proceso de generacion de la factura en PDF
 	    			try {
-	    				
 	    				// PROCESO DE CREAR EL PDF
-	    				
 	    				// RGG 15/02/2007 CAMBIOS PARA INFORME MASTER REPOR
 	    				InformeFactura inf = new InformeFactura(userbean);
 	    				File filePDF = inf.generarFactura(request,lenguaje.toUpperCase(),userbean.getLocation(),idFactura,nColegiado);
@@ -1103,13 +1061,7 @@ public class Facturacion {
     					ClsLogging.writeFileLog("ALMACENAR "+idFactura+" >> ERROR EN PROCESO DE FOP A PDF: "+ee.getLiteral(userbean.getLanguage()),10);
 	    				
 	    				// ESCRIBO EN EL LOG
-						
-    					if(!esFacturacionRapida)
-    						log.writeLogFactura("PDF",idPersona,numFactura,"Error en el proceso de generación de facturas PDF: "+ee.getLiteral(userbean.getLanguage()));
-    					else{
-    						String msj=UtilidadesString.getMensajeIdioma(userbean.getLanguage(), "message.facturacion.error.generacion.factura.pdf")+ee.getLiteral(userbean.getLanguage());
-    						throw new SIGAException(msj);
-    					}
+   						log.writeLogFactura("PDF",idPersona,numFactura,"Error en el proceso de generación de facturas PDF: "+ee.getLiteral(userbean.getLanguage()));
     					salida=1;
 	    	    		//Aunque nos ha fallado esta factura es posible que la siguiente, no.
 	    	    		//POR LO TANTO no cazamos la excepcion
@@ -1121,12 +1073,7 @@ public class Facturacion {
 	    				ClsLogging.writeFileLog("ALMACENAR "+idFactura+" >> ERROR EN PROCESO DE FOP A PDF: "+ee.toString(),10);
 	    				
 	    				// ESCRIBO EN EL LOG
-						if(!esFacturacionRapida)
-							log.writeLogFactura("PDF",idPersona,numFactura,"message.facturacion.error.generacion.factura.pdf"+ee.toString());
-						else{
-							String msj=UtilidadesString.getMensajeIdioma(userbean.getLanguage(),"message.facturacion.error.generacion.factura.pdf")+ee.toString();
-							throw new SIGAException(msj);
-						}
+						log.writeLogFactura("PDF",idPersona,numFactura,"message.facturacion.error.generacion.factura.pdf"+ee.toString());
 						salida=1;
 	    	    		//Aunque nos ha fallado esta factura es posible que la siguiente, no.
 	    	    		//POR LO TANTO no cazamos la excepcion
@@ -1138,8 +1085,8 @@ public class Facturacion {
 
 		    	    	
 	    			/***************    ENVIO FACTURAS *****************/
-	    			if (bGenerarEnvios && correcto && !esFacturacionRapida){
-	    				enviarProgramacionFactura(idPersona, institucion.toString(), idFactura, plantillaMail, nColegiado, numFactura,rutaAlmacen,log,esFacturacionRapida, salida, existeAlgunErrorEnvio, tx);
+	    			if (bGenerarEnvios && correcto) {
+	    				enviarProgramacionFactura(idPersona, institucion.toString(), idFactura, plantillaMail, nColegiado, numFactura,rutaAlmacen,log, salida, existeAlgunErrorEnvio, tx);
 	    			}
 
 
@@ -1151,9 +1098,7 @@ public class Facturacion {
    				}
     			
 				ClsLogging.writeFileLog("ALMACENAR "+idFactura+" >> PROCESO DE FACTURA OK ",10);
-
     		} // bucle
-    		 
     		
     		if(!existeAlgunErrorPdf){
     		
@@ -1208,37 +1153,25 @@ public class Facturacion {
 						} 
 					}	
 				}
-	    		
 	    		/********************************************************************************************************/
 	    		
 	    		// inc6666 - Si es correcto generamos el ZIP con todas las facturas
-				generarZip(institucion.toString(), serieFacturacion.toString(), idProgramacion.toString());
+				this.generarZip(institucion.toString(), serieFacturacion.toString() + "_" + idProgramacion.toString());
     		}
     				
 		}catch (SIGAException e) {
-			
 			ClsLogging.writeFileLog("ALMACENAR >> ERROR GENERAL EN LA FUNCION ALMACENAR: "+e.getLiteral(userbean.getLanguage()),10);
 
 			// ESCRIBO EN EL LOG un mensaje general con la descripcion de la excepcion
-			if(!esFacturacionRapida)
-				log.writeLogFactura("PDF/ENVIO","N/A","N/A","message.facturacion.error.generacion.envio.factura"+e.getLiteral(userbean.getLanguage()));
-			else
-				throw e;
+			log.writeLogFactura("PDF/ENVIO","N/A","N/A","message.facturacion.error.generacion.envio.factura"+e.getLiteral(userbean.getLanguage()));
 			existeAlgunErrorEnvio = true;
 			existeAlgunErrorPdf = true;
-			//throw e;
-		}catch (Exception e) {
 			
+		}catch (Exception e) {
 			ClsLogging.writeFileLog("ALMACENAR >> ERROR GENERAL EN LA FUNCION ALMACENAR: "+e.toString(),10);
 
 			// ESCRIBO EN EL LOG un mensaje general con la descripcion de la excepcion
-			if(!esFacturacionRapida)
-				log.writeLogFactura("PDF/ENVIO","N/A","N/A","message.facturacion.error.generacion.envio.factura"+e.toString());
-			else{
-				String msj=UtilidadesString.getMensajeIdioma(userbean.getLanguage(),"message.facturacion.error.generacion.envio.factura")+e.toString();
-				throw new SIGAException(msj);
-			
-			}
+			log.writeLogFactura("PDF/ENVIO","N/A","N/A","message.facturacion.error.generacion.envio.factura"+e.toString());
 			
 			existeAlgunErrorEnvio = true;
 			existeAlgunErrorPdf = true;
@@ -1251,12 +1184,8 @@ public class Facturacion {
 			salida = 0;
 		}else if(existeAlgunErrorPdf){
 			salida = 1;
-		}else if(existeAlgunErrorEnvio){
+		}else {
 			salida = 2;
-			
-		}else{
-			//IMPOSIBLE
-			
 		}
 		
 		return salida;
@@ -1272,7 +1201,6 @@ public class Facturacion {
 	 * @param numeroFactura
 	 * @param rutaAlmacen
 	 * @param log
-	 * @param esFacturacionRapida
 	 * @param salida
 	 * @param existeAlgunErrorEnvio
 	 */
@@ -1285,7 +1213,6 @@ public class Facturacion {
 			String numeroFactura, 
 			String rutaAlmacen,
 			SIGALogging log,
-			boolean esFacturacionRapida, 
 			int salida, 
 			boolean existeAlgunErrorEnvio,
 			UserTransaction tx
@@ -1326,7 +1253,6 @@ public class Facturacion {
 				 		}
 				 	}
 				 }
-				
 			}
 			
 			if(plantillaMail != null){
@@ -1370,12 +1296,7 @@ public class Facturacion {
 			
 			ClsLogging.writeFileLog("ALMACENAR "+idFactura+" >> ERROR EN PROCESO DE ENVIO: "+eee.getLiteral(userbean.getLanguage()),10);
     		// ESCRIBO EN EL LOG
-			if(!esFacturacionRapida)
-				log.writeLogFactura("ENVIO",idPersona,numeroFactura,"message.facturacion.error.envio.factura"+eee.getLiteral(userbean.getLanguage()));
-			else{
-				String msj=UtilidadesString.getMensajeIdioma(userbean.getLanguage(),"message.facturacion.error.envio.factura")+eee.getLiteral(userbean.getLanguage());
-				throw new SIGAException(msj);
-			}
+			log.writeLogFactura("ENVIO",idPersona,numeroFactura,"message.facturacion.error.envio.factura"+eee.getLiteral(userbean.getLanguage()));
 			salida=2;
 			//Aunque nos ha fallado esta factura es posible que la siguiente, no.
     		//POR LO TANTO no cazamos la excepcion
@@ -1391,20 +1312,13 @@ public class Facturacion {
     		
 			ClsLogging.writeFileLog("ALMACENAR "+idFactura+" >> ERROR EN PROCESO DE ENVIO: "+eee.toString(),10);
     		// ESCRIBO EN EL LOG
-			if(!esFacturacionRapida)
-				log.writeLogFactura("ENVIO",idPersona,numeroFactura,"message.facturacion.error.envio.factura"+eee.toString());
-			else{
-				String msj=UtilidadesString.getMensajeIdioma(userbean.getLanguage(),"message.facturacion.error.envio.factura")+eee.toString();
-				throw new SIGAException(msj);
-			}
+			log.writeLogFactura("ENVIO",idPersona,numeroFactura,"message.facturacion.error.envio.factura"+eee.toString());
 			salida=2;
 			//Aunque nos ha fallado esta factura es posible que la siguiente, no.
     		//POR LO TANTO no cazamos la excepcion
 			//throw eee;
 			existeAlgunErrorEnvio = true;
-    		
 		}
-		
 	}
 
 	/**
@@ -2288,4 +2202,176 @@ public class Facturacion {
 			throw e;
 		} 
 	}
+	
+	/**
+	 * Notas Jorge PT 118:
+     * - Productos y Servicios > Solicitudes > Compra/Subscripción (facturacion rapida)
+     * - Productos y Servicios > Gestión Solicitudes (facturacion rapida)
+     * - Certificados > Gestión de solicitudes (facturacion rapida)
+	 *  
+	 * Facturacion rapida de productos y certificados
+	 * 
+	 * @param idInstitucion
+	 * @param idPeticion
+	 * @param idSerieSeleccionada
+	 * @param idSolicitudCertificado
+	 * @param beanCompra
+	 * @param request
+	 * @throws Exception
+	 */
+	public void facturacionRapidaProductosCertificados(String idInstitucion, String idPeticion, String idSerieSeleccionada, String idSolicitudCertificado, PysCompraBean beanCompra, HttpServletRequest request) throws Exception {	
+	    UserTransaction tx = null;
+	    try {
+			UsrBean usr = this.usrbean;			
+			
+		    // administradores
+			PysCompraAdm admCompra = new PysCompraAdm(usr);
+			FacSerieFacturacionAdm admSerieFacturacion = new FacSerieFacturacionAdm(usr);
+			PysPeticionCompraSuscripcionAdm admPeticionCompraSuscripcion = new PysPeticionCompraSuscripcionAdm(usr);		    
+		    FacFacturaAdm admFactura = new FacFacturaAdm(usr);
+		    InformeFactura informe = new InformeFactura(usr);
+		    
+		    // BLOQUEAMOS LAS TABLAS DE COMPRA Y FACTURA EN ESTA TRANSACCIÓN PARA CONTROLAR LAS PETICIONES SIMULTANEAS
+		    tx = usr.getTransaction();
+		    tx.begin();
+		    admCompra.lockTable();
+		    admFactura.lockTable();
+		    
+		    // Obtengo la peticion de compra
+		    Hashtable<String, Object> hPeticionCompraSuscripcion = new Hashtable<String, Object>(); 
+		    hPeticionCompraSuscripcion.put("IDINSTITUCION",idInstitucion);
+		    hPeticionCompraSuscripcion.put("IDPETICION",idPeticion);		
+		    
+		    Vector<?> vPeticionCompraSuscripcion = admPeticionCompraSuscripcion.selectByPK(hPeticionCompraSuscripcion);		    
+		    PysPeticionCompraSuscripcionBean beanPeticionCompraSuscripcion = null;
+		    if (vPeticionCompraSuscripcion!=null && vPeticionCompraSuscripcion.size()>0) {
+		    	beanPeticionCompraSuscripcion = (PysPeticionCompraSuscripcionBean) vPeticionCompraSuscripcion.get(0);
+		    }		    			
+		        
+	        // LOCALIZO LAS COMPRAS (SI NO EXISTEN LAS GENERO)
+		    if (beanPeticionCompraSuscripcion.getIdEstadoPeticion().equals(new Integer(30))) { // Esta en estado baja		        
+		        throw new SIGAException("messages.facturacionRapidaCompra.estadoBaja");		   
+		        
+		    } else if (beanPeticionCompraSuscripcion.getIdEstadoPeticion().equals(new Integer(10))) { // Esta en estado pendiente. Hay que aprobarla		        
+		    	beanPeticionCompraSuscripcion = admPeticionCompraSuscripcion.aprobarPeticionCompra(beanPeticionCompraSuscripcion);
+		    }
+		    
+		    // Vectores necesarios para el proceso
+		    Vector<PysCompraBean> vCompras = new Vector<PysCompraBean>();
+		    Vector<Hashtable<String,Object>> vFacturas = new Vector<Hashtable<String,Object>>();	
+		    
+		    if (beanCompra!=null) { // CERTIFICADO
+		    	
+		    	if (beanCompra.getIdFactura()==null || beanCompra.getIdFactura().trim().equals("")) { // No esta facturado => vCompras => Tx
+		    		
+		    		// ANTES DE FACTURAR APUNTO EL IMPORTE TOTAL COMO IMPORTE ANTICIPADO
+				    double importe = UtilidadesNumero.redondea(beanCompra.getCantidad().intValue() * beanCompra.getImporteUnitario().doubleValue() * (1 + (beanCompra.getIdTipoIva().doubleValue() / 100)), 2);
+				    beanCompra.setImporteAnticipado(new Double(importe));
+				    if (!admCompra.updateDirect(beanCompra)) {
+				        throw new ClsExceptions("Error al actualizar el importe anticipado: " + admCompra.getError());
+				    }
+				    
+				    vCompras.add(beanCompra);
+				    
+		    	} else  { // Esta facturado => vFacturas => No Tx
+			    	// LIBERAMOS EL BLOQUEO EN LAS TABLAS Y LA TRANSACCIÓN
+			    	tx.rollback();
+			    	
+			    	// Obtiene los datos de la factura
+		        	vFacturas = admFactura.obtenerFacturasFacturacionRapida(beanCompra.getIdInstitucion().toString(), null, null, beanCompra.getIdFactura());
+			    
+			    	if (vFacturas==null || vFacturas.size()!=1) {
+			    		throw new SIGAException("messages.abonos.compensacionManual.noExisteFactura");
+			    	}
+			    }
+			    
+	        } else { // PRODUCTOS NO CERTIFICADOS
+	        	// Obtiene las facturas de una peticion de una solicitud de compra de productos
+	        	vFacturas = admFactura.obtenerFacturasFacturacionRapida(idInstitucion, idPeticion, null, null);
+	        	
+	        	if (vFacturas==null ||  vFacturas.size()==0) { // No esta facturado => vCompras => Tx
+	        		
+	        		vCompras = admCompra.obtenerComprasPeticion(beanPeticionCompraSuscripcion);    			   
+		        	if (vCompras.size()==0) {
+		        		throw new SIGAException("messages.facturacionRapidaCompra.noElementosFacturables");
+		        	}
+		        	
+	        	} else { // Esta facturado => vFacturas => No Tx
+	        		// LIBERAMOS EL BLOQUEO EN LAS TABLAS Y LA TRANSACCIÓN
+			    	tx.rollback();
+	        	}
+	        }
+	        
+	        if (vFacturas==null || vFacturas.size()==0) { // Compruebo si no tiene facturas asociadas a la peticion => vCompras => Tx
+	        		        	
+	        	// Obtiene la serie candidata
+			    FacSerieFacturacionBean beanSerieCandidata = null;
+	        	if (idSerieSeleccionada==null || idSerieSeleccionada.equals("")) {
+				    Vector<?> series =  admSerieFacturacion.obtenerSeriesAdecuadas(vCompras);
+				    if (series==null || series.size()!=1) {
+				    	// LIBERAMOS EL BLOQUEO DE LAS TABLAS Y LA TRANSACCIÓN
+				        throw new SIGAException("messages.facturacionRapidaCompra.noSerieAdecuada");
+				        
+				    } else if (series.size()==1) {
+				    	beanSerieCandidata = (FacSerieFacturacionBean)series.get(0);
+				    }
+				    
+		        } else { // Se ha seleccionado una serie			        			           
+			        Hashtable<String,String> hSerieFacturacion = new Hashtable<String,String>();
+			        hSerieFacturacion.put("IDINSTITUCION", idInstitucion);
+			        hSerieFacturacion.put("IDSERIEFACTURACION", idSerieSeleccionada);
+			        
+		            Vector<?> vSerieFacturacion = admSerieFacturacion.selectByPK(hSerieFacturacion);
+		            if (vSerieFacturacion!=null && vSerieFacturacion.size()>0) {
+		            	beanSerieCandidata = (FacSerieFacturacionBean)vSerieFacturacion.get(0);
+		            }
+		        }		        	
+
+			    // FACTURACION RAPIDA DESDE SERIE CANDIDATA (GENERACION)
+	        	FacFacturacionProgramadaBean programacion = this.procesarFacturacionRapidaCompras(beanPeticionCompraSuscripcion, vCompras, beanSerieCandidata);
+
+	        	// CONFIRMACION RAPIDA (en este caso la transacción se gestiona dentro la transaccion)
+			    this.confirmarProgramacionFactura(programacion, request, false, null, false, false, 0, true);
+			    
+			    if (beanCompra!=null) { // CERTIFICADO
+			    	// Obtiene las facturas de una solicitud de certificado
+		        	vFacturas = admFactura.obtenerFacturasFacturacionRapida(beanCompra.getIdInstitucion().toString(), null, idSolicitudCertificado, null);
+			    
+			    	if (vFacturas==null || vFacturas.size()!=1) {
+			    		throw new SIGAException("messages.abonos.compensacionManual.noExisteFactura");
+			    	}
+			    	
+			    } else {
+			    	// Obtiene las facturas de una peticion de una solicitud de compra de productos
+			    	vFacturas = admFactura.obtenerFacturasFacturacionRapida(idInstitucion, idPeticion, null, null);
+			    }
+			    
+			    if (Status.STATUS_ACTIVE  == tx.getStatus())
+	        		tx.commit();			    
+	        }
+				
+	        // GENERAR FICHERO			
+			File fichero = informe.generarZipFacturacionRapida(request, idInstitucion, idPeticion, vFacturas);
+			if (fichero == null) {
+				throw new ClsExceptions("Error al generar la factura. Fichero devuelto es nulo.");
+			}
+			
+			// DESCARGAR FICHERO
+			request.setAttribute("nombreFichero", fichero.getName());
+			request.setAttribute("rutaFichero", fichero.getPath());
+			request.setAttribute("generacionOK", "OK");
+			
+	    } catch (Exception e) { 
+			try { // Tratamiento rollback
+				if (Status.STATUS_ACTIVE  == tx.getStatus()){
+					tx.rollback();
+				}
+			} catch (Exception e3) {}	
+	    	
+			if (e instanceof ArrayIndexOutOfBoundsException)
+				throw new SIGAException("messages.facturacionRapida.error.Array"); 
+			else
+				throw e; 
+		}			
+	}		
 }

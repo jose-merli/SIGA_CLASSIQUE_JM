@@ -155,7 +155,7 @@ public class ConfirmarFacturacionAction extends MasterAction{
 		UsrBean usrBean = this.getUserBean(request);
 		FacFacturacionProgramadaAdm facturacionProgramadaAdm = new FacFacturacionProgramadaAdm(usrBean);
 		FacEstadoConfirmFactAdm admEstados = new FacEstadoConfirmFactAdm(usrBean);
-		Hashtable htEstados = admEstados.getEstadosConfirmacionFacturacion(usrBean.getLanguage());
+		Hashtable<String,Object> htEstados = admEstados.getEstadosConfirmacionFacturacion(usrBean.getLanguage());
 		request.setAttribute("ESTADOS",htEstados);
 		
 		try {
@@ -191,7 +191,6 @@ public class ConfirmarFacturacionAction extends MasterAction{
 				databackup=new HashMap();
 				 Paginador paginador = facturacionProgramadaAdm.getProgramacioneFacturacionPaginador(confirmarFacturacionForm);
 				if (paginador!=null&& paginador.getNumeroTotalRegistros()>0){
-					int totalRegistros = paginador.getNumeroTotalRegistros();
 					databackup.put("paginador",paginador);
 					Vector datos = paginador.obtenerPagina(1);
 					request.setAttribute("paginaSeleccionada", paginador.getPaginaActual());
@@ -241,7 +240,7 @@ public class ConfirmarFacturacionAction extends MasterAction{
 			
 			UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");
 			FacEstadoConfirmFactAdm admEstados = new FacEstadoConfirmFactAdm(user);
-			Hashtable htEstados = admEstados.getEstadosConfirmacionFacturacion(user.getLanguage());
+			Hashtable<String,Object> htEstados = admEstados.getEstadosConfirmacionFacturacion(user.getLanguage());
 			request.setAttribute("ESTADOS",htEstados);
 			
 			//Este select interno si devuelve un numero > 0 querra decir que debo pedir la fecha de cargo
@@ -355,7 +354,7 @@ public class ConfirmarFacturacionAction extends MasterAction{
 				Vector resultado = facturas.getFacturasDeFacturacionProgramada(idInstitucion, idSerieFacturacion, idProgramacion);
 				if(!resultado.isEmpty()){
 					//Se accede por clave referenciada de la tabla que hace join por lo que todos los registro tienen el mismo estado de generacion de pdf. Cogemos por tanto el estado del priemr registro
-					Hashtable hashPrimeraFacturaSerieProgramacion = (Hashtable)resultado.get(0); 
+					Hashtable<String,Object> hashPrimeraFacturaSerieProgramacion = (Hashtable<String,Object>)resultado.get(0); 
 					String estadoPDF  = UtilidadesHash.getString(hashPrimeraFacturaSerieProgramacion,FacFacturacionProgramadaBean.C_IDESTADOPDF);
 					if(estadoPDF.equals(FacEstadoConfirmFactBean.PDF_PROGRAMADA.toString())||estadoPDF.equals(FacEstadoConfirmFactBean.PDF_PROCESANDO.toString())){
 						String mensaje = UtilidadesString.getMensajeIdioma(user,"messages.facturacion.PDFFacturaYaProgramada");
@@ -674,7 +673,7 @@ public class ConfirmarFacturacionAction extends MasterAction{
 				if (bean.getIdTipoPlantillaMail() != null && !bean.getIdTipoPlantillaMail().equals("")){
 				  	Facturacion facturacion = new Facturacion(userBean);
 				  	UserTransaction tx = userBean.getTransaction();
-				  	int resultadoEnvioFacturacion = facturacion.generaryEnviarProgramacionFactura(request, bean.getIdInstitucion(), bean.getIdSerieFacturacion(), bean.getIdProgramacion(), true, null, false, tx);	
+				  	int resultadoEnvioFacturacion = facturacion.generaryEnviarProgramacionFactura(request, bean.getIdInstitucion(), bean.getIdSerieFacturacion(), bean.getIdProgramacion(), true, null, tx);	
 				  	String msjAviso = null;
 					switch (resultadoEnvioFacturacion) {
 						case 0: //NO HAY ERROR. SE HA GENERADO CORRECTAMENTE Y SE PROCESADO EL ENVIO
@@ -764,7 +763,7 @@ public class ConfirmarFacturacionAction extends MasterAction{
 			
 			
 			/** JPT - Control de fechas de presentación y cargo en ficheros SEPA **/
-			Hashtable hash = (Hashtable) vDatos.get(0);			
+			Hashtable<String,Object> hash = (Hashtable<String,Object>) vDatos.get(0);			
 			String fechaPresentacion = GstDate.getFormatedDateShort("es",(String)hash.get("FECHAPRESENTACION"));			
 			String fechaPrimerosRecibos = GstDate.getFormatedDateShort("es",(String)hash.get("FECHARECIBOSPRIMEROS"));
 			String fechaRecibosRecurrentes = GstDate.getFormatedDateShort("es",(String)hash.get("FECHARECIBOSRECURRENTES"));
@@ -851,7 +850,7 @@ public class ConfirmarFacturacionAction extends MasterAction{
 			Vector vDatos = admFacturacionProgramada.selectDatosFacturacion(sWhere, orden);			
 			
 			/** JPT - Control de fechas de presentación y cargo en ficheros SEPA **/
-			Hashtable hash = (Hashtable) vDatos.get(0);
+			Hashtable<String,Object> hash = (Hashtable<String,Object>) vDatos.get(0);
 			String fechaPresentacion = GstDate.getFormatedDateShort("es",(String)hash.get("FECHAPRESENTACION"));
 			String fechaPrimerosRecibos = "";
 			String fechaRecibosRecurrentes = "";
@@ -1135,7 +1134,7 @@ public class ConfirmarFacturacionAction extends MasterAction{
 			FacFacturacionProgramadaAdm adm = new FacFacturacionProgramadaAdm(this.getUserBean(request));
 			FacFacturacionProgramadaBean bean = getDatos(form, request);
 			Enumeration en = ((Vector)request.getSession().getAttribute("DATABACKUP")).elements();
-			Hashtable hash = (Hashtable)en.nextElement();
+			Hashtable<String,Object> hash = (Hashtable<String,Object>)en.nextElement();
 			
 			// Comprobamos si existe ese nombre para la institucion. Debe ser unico
 			String where="";

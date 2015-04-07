@@ -7,7 +7,6 @@
 package com.siga.productos.action;
 
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Enumeration;
@@ -16,7 +15,6 @@ import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.transaction.Status;
 import javax.transaction.UserTransaction;
 
 import org.apache.struts.action.ActionForm;
@@ -44,8 +42,6 @@ import com.siga.beans.CenPersonaBean;
 import com.siga.beans.EnvTipoEnviosAdm;
 import com.siga.beans.EnvTipoEnviosBean;
 import com.siga.beans.FacFacturaAdm;
-import com.siga.beans.FacFacturaBean;
-import com.siga.beans.FacFacturacionProgramadaBean;
 import com.siga.beans.FacSerieFacturacionAdm;
 import com.siga.beans.FacSerieFacturacionBean;
 import com.siga.beans.GenParametrosAdm;
@@ -73,7 +69,6 @@ import com.siga.general.EjecucionPLs;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
-import com.siga.informes.InformeFactura;
 import com.siga.productos.form.SolicitudCompraForm;
 
 
@@ -325,8 +320,7 @@ public class SolicitudCompraAction extends MasterAction{
 			
 			SolicitudCompraForm form = (SolicitudCompraForm) formulario;
 			CarroCompra carro = CarroCompraAdm.getCarroCompra(form.getIdPersona(), form.getIdInstitucion(), form.getIdInstitucionPresentador(), request);
-			Vector ocultos = new Vector();
-			ocultos = (Vector)form.getDatosTablaOcultos(0);	
+			Vector ocultos = form.getDatosTablaOcultos(0);	
 			
 			Integer idTipoArticulo = Integer.valueOf((String)ocultos.elementAt(0));				
 			Long idArticulo = Long.valueOf((String)ocultos.elementAt(1));
@@ -699,13 +693,10 @@ public class SolicitudCompraAction extends MasterAction{
 		return modo;	
 	} 
 	
-	
 	protected String buscarProducto(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		try{
-			 
-			
 			SolicitudCompraForm form =  (SolicitudCompraForm) formulario;
-			
+			UsrBean user=(UsrBean)request.getSession().getAttribute("USRBEAN");
 			
 			String select =""; 
 			String where="";
@@ -714,21 +705,6 @@ public class SolicitudCompraAction extends MasterAction{
 			request.getSession().removeAttribute("resultBusqueda");
 			request.getSession().removeAttribute("auxSolicitudCompraForm");
 			
-			/*CarroCompra carro = CarroCompraAdm.getCarroCompra(form.getIdPersona(), form.getIdInstitucion(), request);
-			
-			if(form.getConcepto()== null){	}
-			else if(form.getConcepto().equalsIgnoreCase("Producto")){				
-				carro.insertarProducto(Long.valueOf(form.getCategoriaProducto()), form.getProducto(), form.getTipoProducto());
-			}else if(form.getConcepto().equalsIgnoreCase("Servicio")){
-				carro.insertarServicio(Long.valueOf(form.getCategoriaServicio()), form.getServicio(), form.getTipoServicio());
-			}		
-			
-			request.setAttribute("existeCarro", "S");			
-			CarroCompraAdm.setCarroCompra(carro, request);	*/
-			
-		 UsrBean user=(UsrBean)request.getSession().getAttribute("USRBEAN");
-		 
-		
 		  if (!user.isLetrado()){//no es letrado
 			if (!form.getConcepto().equalsIgnoreCase("Servicio") ){// Productos y Certificados
 				select =" SELECT "+PysProductosInstitucionBean.C_IDTIPOPRODUCTO+" IDTIPOPRODUCTO, "+PysProductosInstitucionBean.C_IDPRODUCTO+" IDPRODUCTO, "+PysProductosInstitucionBean.C_IDPRODUCTOINSTITUCION+" IDPRODUCTOINSTITUCION, "+PysProductosInstitucionBean.C_IDINSTITUCION+", "+PysProductosInstitucionBean.C_DESCRIPCION;
@@ -759,7 +735,6 @@ public class SolicitudCompraAction extends MasterAction{
 					 if (form.getNombreProducto()!=null && !form.getNombreProducto().equalsIgnoreCase("") ){
 					 	where +=" AND "+ ComodinBusquedas.prepararSentenciaCompleta(form.getNombreProducto().trim(),PysProductosInstitucionBean.C_DESCRIPCION);
 					 }
-					
 				}
 				if (form.getConcepto().equalsIgnoreCase("Producto")){//producto
 				where+=" and (TIPOCERTIFICADO IS NULL) AND FECHABAJA IS NULL";
@@ -768,9 +743,6 @@ public class SolicitudCompraAction extends MasterAction{
 					where+=" and ((TIPOCERTIFICADO <> 'D' AND TIPOCERTIFICADO <> 'M' AND TIPOCERTIFICADO <> 'B')) AND FECHABAJA IS NULL";
 					consulta=select+" from "+PysProductosInstitucionBean.T_NOMBRETABLA+where;
 				}	
-					
-				
-					
 				
 			}else{//servicios
 				select =" SELECT "+PysServiciosInstitucionBean.C_IDTIPOSERVICIOS+" IDTIPOPRODUCTO, "+PysServiciosInstitucionBean.C_IDSERVICIO+" IDPRODUCTO, "+PysServiciosInstitucionBean.C_IDSERVICIOSINSTITUCION+" IDPRODUCTOINSTITUCION, "+PysServiciosInstitucionBean.C_IDINSTITUCION+", "+PysServiciosInstitucionBean.C_DESCRIPCION;
@@ -801,7 +773,6 @@ public class SolicitudCompraAction extends MasterAction{
 					 if (form.getNombreProducto()!=null && !form.getNombreProducto().equalsIgnoreCase("")){
 					 	where +=" AND  "+ComodinBusquedas.prepararSentenciaCompleta(form.getNombreProducto().trim(),PysServiciosInstitucionBean.C_DESCRIPCION);
 					 }
-					
 				}
 				
 				where+=" and AUTOMATICO = 0 AND FECHABAJA IS NULL";
@@ -847,9 +818,6 @@ public class SolicitudCompraAction extends MasterAction{
 					where+=" and SOLICITARALTA = 1 and ((TIPOCERTIFICADO <> 'D' AND TIPOCERTIFICADO <> 'M' AND TIPOCERTIFICADO <> 'B')) AND FECHABAJA IS NULL";
 					consulta=select+" from "+PysProductosInstitucionBean.T_NOMBRETABLA+where;
 				}	
-					
-				
-					
 				
 			}else{//Servicios
 				select =" SELECT "+PysServiciosInstitucionBean.C_IDTIPOSERVICIOS+" IDTIPOPRODUCTO, "+PysServiciosInstitucionBean.C_IDSERVICIO+" IDPRODUCTO, "+PysServiciosInstitucionBean.C_IDSERVICIOSINSTITUCION+" IDPRODUCTOINSTITUCION, "+PysServiciosInstitucionBean.C_IDINSTITUCION+", "+PysServiciosInstitucionBean.C_DESCRIPCION;
@@ -888,11 +856,6 @@ public class SolicitudCompraAction extends MasterAction{
 				
 			}
 		  }
-		 
-			
-		 	
-		 
-			
 			
 			RowsContainer rc=null;
 			rc = new RowsContainer();
@@ -902,20 +865,14 @@ public class SolicitudCompraAction extends MasterAction{
 				   for (int i = 0; i < rc.size(); i++){
 					 Row fila = (Row) rc.get(i);
 	                  resultado.add(fila);
-	                  
 	               }
-				   
 			}	
-			
-			
 		
 			// subimos a sesion el resultado de la consulta porque si se cambia de cliente se quiere seguir manteniendo los resultados obtenidos
 			request.getSession().setAttribute("resultBusqueda",resultado);
 			request.getSession().setAttribute("auxSolicitudCompraForm",form);
-				
 			
-		}
-		catch (Exception e) { 
+		} catch (Exception e) { 
 			throwExcp("messages.general.error",new String[] {"modulo.producto"},e,null); 
 		}		
 		return "buscarProducto";		
@@ -992,7 +949,6 @@ public class SolicitudCompraAction extends MasterAction{
 			
 		}catch (Exception e) { 
 			   throwExcp("messages.general.error",new String[] {"modulo.producto"},e,null); 
-			   
 		} 	
 		return null;
 	}
@@ -1268,13 +1224,13 @@ public class SolicitudCompraAction extends MasterAction{
 										String tipo = Articulo.CLASE_PRODUCTO == a.getClaseArticulo() ? "P" : "S";
 										if ("P".equals(tipo)){
 											PysCompraAdm compraAdm = new PysCompraAdm(user);
-											Hashtable hash = new Hashtable();
+											Hashtable<String,Object> hash = new Hashtable<String,Object>();
 											UtilidadesHash.set(hash,PysCompraBean.C_IDINSTITUCION,a.getIdInstitucion());
 											UtilidadesHash.set(hash,PysCompraBean.C_IDPETICION,a.getIdPeticion());
 											UtilidadesHash.set(hash,PysCompraBean.C_IDTIPOPRODUCTO,a.getIdTipo());
 											UtilidadesHash.set(hash,PysCompraBean.C_IDPRODUCTO,a.getIdArticulo());
 											UtilidadesHash.set(hash,PysCompraBean.C_IDPRODUCTOINSTITUCION,a.getIdArticuloInstitucion());
-											Vector compra = compraAdm.selectByPK(hash);
+											Vector<PysCompraBean> compra = compraAdm.selectByPK(hash);
 											if (compra!=null && compra.size()>0){
 												PysCompraBean compraBean=(PysCompraBean)compra.get(0);
 												a.setImporteAnticipado(compraBean.getImporteAnticipado());	
@@ -1282,20 +1238,19 @@ public class SolicitudCompraAction extends MasterAction{
 										}
 										else if ("S".equals(tipo)){
 											PysSuscripcionAdm suscripcionAdm = new PysSuscripcionAdm(user);
-											Hashtable hash = new Hashtable();
+											Hashtable<String,Object> hash = new Hashtable<String,Object>();
 											UtilidadesHash.set(hash,PysSuscripcionBean.C_IDINSTITUCION,a.getIdInstitucion());
 											UtilidadesHash.set(hash,PysSuscripcionBean.C_IDPETICION,a.getIdPeticion());
 											UtilidadesHash.set(hash,PysSuscripcionBean.C_IDTIPOSERVICIOS,a.getIdTipo());
 											UtilidadesHash.set(hash,PysSuscripcionBean.C_IDSERVICIO,a.getIdArticulo());
 											UtilidadesHash.set(hash,PysSuscripcionBean.C_IDSERVICIOSINSTITUCION,a.getIdArticuloInstitucion());
-											Vector suscripcion = suscripcionAdm.select(hash);
+											Vector<PysSuscripcionBean> suscripcion = suscripcionAdm.select(hash);
 											if (suscripcion!=null && suscripcion.size()>0){
 												PysSuscripcionBean suscripcionBean=(PysSuscripcionBean)suscripcion.get(0);
 												a.setImporteAnticipado(suscripcionBean.getImporteAnticipado());	
 											}
 										}
 									}
-									
 								}
 							}
 						}
@@ -1352,8 +1307,7 @@ public class SolicitudCompraAction extends MasterAction{
 			CenDireccionesAdm direccionesAdm = new CenDireccionesAdm(this.getUserBean(request));
 			EnvTipoEnviosAdm tipoEnvioAdm = new EnvTipoEnviosAdm(this.getUserBean(request));
 			
-			Vector certificado = new Vector();
-			certificado = (Vector)form.getDatosTablaOcultos(0);	
+			Vector certificado = form.getDatosTablaOcultos(0);	
 			String idTipoEnvio 	= "";
 			String idDireccion  = "";
 	//		Integer idTipoEnvio = Integer.valueOf((String)certificado.elementAt(1));
@@ -1384,8 +1338,6 @@ public class SolicitudCompraAction extends MasterAction{
 		  
 		return "consultarCertificado";
 	}
-			
-	
 	
 	private String rellenarConCeros(String arg, int longitud){
 		String salida = null;
@@ -1438,7 +1390,7 @@ public class SolicitudCompraAction extends MasterAction{
 		registros.put("numeroColegiado", admColegiado.getIdentificadorColegiado(bean));
 	
 		//Datos del carro de la compra:			
-		ArrayList arrayListaArticulosOrdenada = carro.getArrayListaArticulosOrdenada();
+		ArrayList<Articulo> arrayListaArticulosOrdenada = carro.getArrayListaArticulosOrdenada();
 		Vector<Hashtable<String, Object>> vListaPyS = new Vector<Hashtable<String, Object>>();
 		
 		for(int i=0; i < arrayListaArticulosOrdenada.size(); i++){
@@ -1532,153 +1484,33 @@ public class SolicitudCompraAction extends MasterAction{
 	 * @return  String  Destino del action o error en caso de no completar con exito.
 	 * @exception  SIGAException  En cualquier caso de error
 	 */					
-	protected String facturacionRapidaCompra(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, SIGAException {	
-	    UserTransaction tx = null;
-	    String salida = "";
+	protected String facturacionRapidaCompra(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {	
+	    String salida = "descarga";
 	    try {
-			UsrBean usr = this.getUserBean(request);
-			tx = usr.getTransaction();
-			
 		    // datos llamada
+	    	UsrBean usr = this.getUserBean(request);
 			SolicitudCompraForm formSolicitudCompra = (SolicitudCompraForm)formulario;
 		    Vector vOcultos = formSolicitudCompra.getDatosTablaOcultos(0);
+		    
 		    String idInstitucion = ((String)vOcultos.elementAt(0)).trim();
 	    	String idPeticion = ((String)vOcultos.elementAt(1)).trim();
-	    	String idSerieSeleccionada = ((String)vOcultos.elementAt(2)).trim();			
-		    
-		    // administradores
-			PysCompraAdm admCompra = new PysCompraAdm(usr);
-			FacSerieFacturacionAdm admSerieFacturacion = new FacSerieFacturacionAdm(usr);
-			PysPeticionCompraSuscripcionAdm admPeticionCompraSuscripcion = new PysPeticionCompraSuscripcionAdm(usr);		    
-		    FacFacturaAdm admFactura = new FacFacturaAdm(usr);
-		    Facturacion facturacion = new Facturacion(usr);
-		    InformeFactura informe = new InformeFactura(usr);
-		    
-		    //BNS: BLOQUEAMOS LAS TABLAS DE COMPRA Y FACTURA EN ESTA TRANSACCIÓN PARA CONTROLAR LAS PETICIONES SIMULTANEAS
-		    tx.begin();
-		    admCompra.lockTable();
-		    admFactura.lockTable();
-		    
-		    // Obtengo la peticion de compra
-		    Hashtable<String, Object> hPeticionCompraSuscripcion = new Hashtable<String, Object>(); 
-		    hPeticionCompraSuscripcion.put("IDINSTITUCION",idInstitucion);
-		    hPeticionCompraSuscripcion.put("IDPETICION",idPeticion);
-		    
-		    Vector<?> vPeticionCompraSuscripcion = admPeticionCompraSuscripcion.selectByPK(hPeticionCompraSuscripcion);		    
-		    PysPeticionCompraSuscripcionBean beanPeticionCompraSuscripcion = null;
-		    if (vPeticionCompraSuscripcion!=null && vPeticionCompraSuscripcion.size()>0) {
-		    	beanPeticionCompraSuscripcion = (PysPeticionCompraSuscripcionBean) vPeticionCompraSuscripcion.get(0);
-		    }		    			
-		        
-	        // PASO 0: LOCALIZO LAS COMPRAS (SI NO EXISTEN LAS GENERO)
-		    if (beanPeticionCompraSuscripcion.getIdEstadoPeticion().equals(new Integer(30))) { // Esta en estado baja		        
-		        throw new SIGAException("messages.facturacionRapidaCompra.estadoBaja");
-		        
-		    } else if (beanPeticionCompraSuscripcion.getIdEstadoPeticion().equals(new Integer(10))) { // Esta en estado pendiente. Hay que aprobarla		        
-		    	beanPeticionCompraSuscripcion = admPeticionCompraSuscripcion.aprobarPeticionCompra(beanPeticionCompraSuscripcion);
-		    }
-		    
-		    Vector<PysCompraBean> compras = admCompra.obtenerComprasPorPeticion(beanPeticionCompraSuscripcion);
-		    
-	        // RGG 206/05/2009 cambio por si los productos son no facturables.
-	        if (compras.size()==0) {
-	            throw new SIGAException("messages.facturacionRapidaCompra.noElementosFacturables");
-	        }
-		    
-/**************************************  INICIO PROCESO FACTURACIÓN RAPIDA *********************************************************/
-	        
-	        String idFactura = "";
-	        
-	        // PASO 1: OBTENER FACTURA
-	        PysCompraBean pysCompraBean = (PysCompraBean) compras.get(0);
-	        if (pysCompraBean.getIdFactura()==null || pysCompraBean.getIdFactura().equals("")){// Si despues de hacer la facturacion se vuelve a pulsar el boton, mostrará la factura asociada
-	        		        	
-	        	// Obtiene la serie candidata
-			    FacSerieFacturacionBean beanSerieCandidata = null;
-	        	if (idSerieSeleccionada==null || idSerieSeleccionada.equals("")) {
-				    Vector<?> series =  admSerieFacturacion.obtenerSeriesAdecuadas(compras);
-				    if (series==null || series.size()!=1) {
-				    	// LIBERAMOS EL BLOQUEO DE LAS TABLAS Y LA TRANSACCIÓN
-				        tx.rollback();
-				        throw new SIGAException("messages.facturacionRapidaCompra.noSerieAdecuada");
-				        
-				    } else if (series.size()==1) {
-				    	beanSerieCandidata = (FacSerieFacturacionBean)series.get(0);
-				    }
-				    
-		        } else { // Se ha seleccionado una serie			        			           
-			        Hashtable<String,String> hSerieFacturacion = new Hashtable<String,String>();
-			        hSerieFacturacion.put("IDINSTITUCION", idInstitucion);
-			        hSerieFacturacion.put("IDSERIEFACTURACION", idSerieSeleccionada);
-			        
-		            Vector<?> vSerieFacturacion = admSerieFacturacion.selectByPK(hSerieFacturacion);
-		            if (vSerieFacturacion!=null && vSerieFacturacion.size()>0) {
-		            	beanSerieCandidata = (FacSerieFacturacionBean)vSerieFacturacion.get(0);
-		            }
-		        }		        	
-
-			    // PASO 2: FACTURACION RAPIDA DESDE SERIE CANDIDATA (GENERACION)
-	        	FacFacturacionProgramadaBean programacion = facturacion.procesarFacturacionRapidaCompras(beanPeticionCompraSuscripcion, compras, beanSerieCandidata);
-			    
-			    // Aqui obtengo las facturas programadas
-			    Vector<?> vFacturas = admFactura.getFacturasProgramadas(programacion);
-				if (vFacturas==null || vFacturas.size()==0) { // Control extra de existencia de factura				
-				    throw new SIGAException("messages.facturacionRapida.noFactura");
-				} 			    
-			    
-			    FacFacturaBean beanFactura = (FacFacturaBean)vFacturas.get(0);
-			    idFactura = beanFactura.getIdFactura();
-		        
-			    // PASO 3: CONFIRMACION RAPIDA (en este caso la transacción se gestiona dentro la transaccion)
-			    boolean EsfacturacionRapida = true;
-			    facturacion.confirmarProgramacionFactura(programacion, request, false, null, false, false, 0,EsfacturacionRapida);
-			    
-			    if (Status.STATUS_ACTIVE  == tx.getStatus())
-			    	tx.commit();
-			    
-			} else {
-				// YA FACTURADA, SE DESCARGA LA FACTURA
-				tx.commit();
-				idFactura = pysCompraBean.getIdFactura();
-				
-				// Compruebo que existe la factura
-				Hashtable<String,String> hFactura=new Hashtable<String,String>();
-				hFactura.put(FacFacturaBean.C_IDINSTITUCION, pysCompraBean.getIdInstitucion().toString());
-				hFactura.put(FacFacturaBean.C_IDFACTURA, idFactura);
-				
-	  			Vector<?> vFactura = admFactura.selectByPK(hFactura);
-				if (vFactura==null || vFactura.size()==0) { // Control extra de existencia de factura				
-				    throw new SIGAException("messages.facturacionRapida.noFactura");
-				} 				
-			}
-				
-	        // PASO 4: GENERAR PDF			
-			File filePDF = informe.generarFacturaRapida(request, idInstitucion, idFactura, tx);
-			if (filePDF == null) {
-				throw new ClsExceptions("Error al generar la factura. Fichero devuelto es nulo.");
-			}
+	    	String idSerieSeleccionada = (String)vOcultos.elementAt(2);
+	    	if (idSerieSeleccionada!=null) {
+	    		idSerieSeleccionada = idSerieSeleccionada.trim();
+	    	}
 			
-			// PASO 5: DESCARGAR PDF
-			request.setAttribute("nombreFichero", filePDF.getName());
-			request.setAttribute("rutaFichero", filePDF.getPath());
-			request.setAttribute("generacionOK", "OK");
-			salida = "descarga";
-				
-		} catch (SIGAException es) {
-			throwExcp (es.getLiteral(), new String[] {"modulo.certificados"}, es, tx);
+	    	Facturacion fact = new Facturacion(usr);
+	    	fact.facturacionRapidaProductosCertificados(idInstitucion, idPeticion, idSerieSeleccionada, null, null, request);
 			
-		} catch (ArrayIndexOutOfBoundsException e){
-			throwExcp("messages.facturacionRapida.error.Array",new String[] {"modulo.certificados"},e,tx);
-			
-		} catch (ClsExceptions es) {
-			throwExcp (es.getMessage(), new String[] {"modulo.certificados"}, es, tx);	
-			
-		}catch (Exception e) { 
-			throwExcp("messages.general.error",new String[] {"modulo.certificados"},e,tx); 
+	    } catch (Exception e) { 
+			if (e instanceof SIGAException || e instanceof ClsExceptions)
+				throwExcp (e.getMessage(), new String[] {"modulo.producto"}, e, null); 
+			else
+				throwExcp("messages.general.error", new String[] {"modulo.producto"}, e, null); 
 		}
 		
 		return salida;
-	}
+	}	
 	
 	/** 
 	 * Recupera los datos de la compra, incluyendo el importe anticipado si corresponde. 
@@ -1705,7 +1537,7 @@ public class SolicitudCompraAction extends MasterAction{
 			//Recorremos los articulos del carro para obtener el importe anticipado.
 			//Solo se comprueban los articulos que al finalizar la compra se han marcado
 			//para poder anticipar importe.
-			ArrayList arrayListaArticulosOrdenada = carro.getArrayListaArticulosOrdenada();	
+			ArrayList<Articulo> arrayListaArticulosOrdenada = carro.getArrayListaArticulosOrdenada();	
 			Articulo a = null;
 			for(int i=0; i<arrayListaArticulosOrdenada.size(); i++){
 				a=(Articulo)arrayListaArticulosOrdenada.get(i);
@@ -1769,15 +1601,17 @@ public class SolicitudCompraAction extends MasterAction{
 		
 		// Obtiene las compras de la peticion
 		PysCompraAdm admCompra = new PysCompraAdm(usr);
-		Vector<PysCompraBean> vCompras = admCompra.obtenerComprasPorPeticion(beanPeticionCompraSuscripcion);
+		Vector<PysCompraBean> vCompras = admCompra.obtenerComprasPeticion(beanPeticionCompraSuscripcion);
 		
 		if (vCompras==null || vCompras.size()==0) {
 			throw new SIGAException("messages.facturacionRapidaCompra.noElementosFacturables");
 		}
 	    
-	    // Compruebo si esta facturada la compra
-		PysCompraBean beanCompra = (PysCompraBean) vCompras.get(0);
-	    if (beanCompra.getIdFactura()!=null && !beanCompra.getIdFactura().trim().equals("")) {	
+		// Obtiene las facturas de una peticion de una solicitud de compra de productos
+		FacFacturaAdm admFactura = new FacFacturaAdm(usr);
+		Vector<Hashtable<String,Object>> vFacturas = admFactura.obtenerFacturasFacturacionRapida(idInstitucion, idPeticion, null, null);
+			        
+		if (vFacturas!=null && vFacturas.size()>0) {// Compruebo si ya tiene facturas asociadas a la peticion
 	    	idSerieFacturacion = "Facturado"; // JPT: Esto sirve para indicar que ya esta facturado
 	    	
 	    } else {

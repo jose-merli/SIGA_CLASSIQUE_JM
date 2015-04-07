@@ -2,6 +2,7 @@
 <html>
 <head>
 <!-- aceptacionSolicitud.jsp -->
+
 <!-- CABECERA JSP -->
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-1"%>
@@ -609,23 +610,34 @@
 		boolean tieneBotones = false;
 		for (int i = 0; !tieneBotones && i < arrayListaArticulosOrdenada.size(); i++) {
 			Articulo a = (Articulo) arrayListaArticulosOrdenada.get(i);
-			if (a.getTipoCertificado() != null && !String.valueOf(a.getTipoCertificado()).equals("")) {	
+			if (a.getTipoCertificado()!=null && !String.valueOf(a.getTipoCertificado()).equals("")) {	
 				tieneBotones = true;
 			}			
 		}
+		
+		int elementoSeleccionadoFormaPago=1;
+		boolean tdFechaEfectiva = false;
 
-		String nombrecol1="pys.solicitudCompra.literal.concepto,pys.solicitudCompra.literal.formaPago,pys.solicitudCompra.literal.nCuenta,pys.solicitudCompra.literal.cantidad,pys.solicitudCompra.literal.precio,pys.solicitudCompra.literal.periodicidad,pys.solicitudCompra.literal.iva";
-		String tamanoCol1="13,16,19,6,8,7,8";
-		int var=1;
+		String nombrecol1="pys.solicitudCompra.literal.concepto,pys.solicitudCompra.literal.formaPago,pys.solicitudCompra.literal.nCuenta,pys.solicitudCompra.literal.cantidad,pys.solicitudCompra.literal.precio";
+		String tamanoCol1="13,16,20,6,8";
+		
+		if (!tieneBotones) { // NO ES CERTIFICADO
+			nombrecol1 += ",pys.solicitudCompra.literal.periodicidad";
+			tamanoCol1 += ",7";	
+		}
+		
+		nombrecol1 += ",pys.solicitudCompra.literal.iva";
+		tamanoCol1 += ",8";
 
-		if (!user.isLetrado()&&aprobarSolicitud.equals("S")) {			
+		if (!user.isLetrado()&&aprobarSolicitud.equals("S")) {		
+			tdFechaEfectiva = true;
 			nombrecol1 += ",pys.solicitudCompra.literal.fechaEfectiva";  
 			tamanoCol1 += ",13";
 		}
 		
-		if (tieneBotones) {
+		if (tieneBotones) { // ES CERTIFICADO
 			nombrecol1 += ",";
-			tamanoCol1 += ",10";
+			tamanoCol1 += ",9";
 		}
 %>
 
@@ -648,7 +660,7 @@
 <% 
 			} else {
 				botones = "V,CC";
-				int fila; 	 								
+				int fila; 	 					
 				for (int i = 0; i < arrayListaArticulosOrdenada.size(); i++) {
 					Articulo a = (Articulo) arrayListaArticulosOrdenada.get(i);							
 
@@ -768,11 +780,11 @@
 								if(nofacturable.equals(DB_FALSE)){
 									if (a.getClaseArticulo() == Articulo.CLASE_PRODUCTO) {
 %>									
-										<siga:ComboBD nombre="<%=formaPagoNombre%>" tipo="cmbFormaPagoProducto" clase="boxCombo"  parametro="<%=formaPago%>" elementoSel ="<%=var%>" accion="<%=parametroFuncion%>" ancho="<%=tamanoFormaPago%>"/>
+										<siga:ComboBD nombre="<%=formaPagoNombre%>" tipo="cmbFormaPagoProducto" clase="boxCombo"  parametro="<%=formaPago%>" elementoSel ="<%=elementoSeleccionadoFormaPago%>" accion="<%=parametroFuncion%>" ancho="<%=tamanoFormaPago%>"/>
 <%	
 									} else {	
 %>
-										<siga:ComboBD nombre="<%=formaPagoNombre%>" tipo="cmbFormaPagoServicio" clase="boxCombo"  parametro="<%=formaPago%>" elementoSel ="<%=var%>" accion="<%=parametroFuncion%>" ancho="<%=tamanoFormaPago%>"/>	
+										<siga:ComboBD nombre="<%=formaPagoNombre%>" tipo="cmbFormaPagoServicio" clase="boxCombo"  parametro="<%=formaPago%>" elementoSel ="<%=elementoSeleccionadoFormaPago%>" accion="<%=parametroFuncion%>" ancho="<%=tamanoFormaPago%>"/>	
 
 <%								
 									}
@@ -787,7 +799,7 @@
 		  				
 						<td align="center">								
 <%							
-							String tamanoCuentaCargo = tieneBotones ? "180" : "200";
+							String tamanoCuentaCargo = "200";
 							String parametro[] = new String[2];
    						 	parametro[0] = carro.getIdPersona().toString();
    						 	parametro[1] = idInstitucion.toString(); 
@@ -832,26 +844,32 @@
              
 		  				</td>
 		  				
-		  				<td>
-		  					<%=sPeriodicidad%>
-		  				</td>
+<%
+						if (!tieneBotones) { // NO ES CERTIFICADO
+%>							
+						
+		  					<td>
+		  						<%=sPeriodicidad%>
+		  					</td>
+<%
+						}
+%>
 		  				
 		  				<td align="center">
 		  					<input type='text' name='iva<%=String.valueOf(fila)%>' value="<%=UtilidadesNumero.formatoCampo(sIva)%>" class=listaNonEdit style="text-align:right;" readOnly=true style="border:none; background-color:transparent" size="2">% 
 		  				</td>
 		  				
-<%
-						if (!user.isLetrado()&& aprobarSolicitud.equals("S")) { 			  				
-							String fechaEfectiva="fechaEfectivaCompra" +fila;				
+<%						
+						if (tdFechaEfectiva) { 			  				
 %>
 			  				<td class="labelText">
-								<siga:Fecha nombreCampo="<%=fechaEfectiva%>" valorInicial="<%=fecha%>" readOnly="true" anchoTextField="9"></siga:Fecha>									
+								<siga:Fecha nombreCampo='<%="fechaEfectivaCompra" + fila%>' valorInicial="<%=fecha%>" readOnly="true" anchoTextField="9"></siga:Fecha>									
 							</td>
 <% 
 						}
 
-						if (tieneBotones) {
-							if (elems.length <= 0) { 
+						if (tieneBotones) { // ES CERTIFICADO
+							if (elems.length <= 0) { 								
 %>
 								<td></td>
 <%
@@ -886,10 +904,22 @@
 					<td>&nbsp;</td>
 					<td>&nbsp;</td>
 					<td colspan="2" align="right"><input type="text" name="precioTotal" value="<%=UtilidadesString.formatoImporte(varPrecioTotal)%>" style="background-color:transparent; font-weight:bold" class="boxConsultaNumber" readOnly="true" size="13"><b>&nbsp;&euro;</b></td>
-					<td>&nbsp;</td>
+<%
+					if (!tieneBotones) { // NO ES CERTIFICADO
+%>					
+						<td>&nbsp;</td>
+<%	
+					}
+%>
 					<td align="right"><input type="text" name="ivaTotal" value="<%=UtilidadesString.formatoImporte(varIvaTotal)%>" style="background-color:transparent; font-weight:bold" class="boxConsultaNumber" readOnly="true" size="6"><b>&nbsp;&euro;</b></td>
 <%					
-					if (!user.isLetrado() && aprobarSolicitud.equals("S")) {
+					if (tdFechaEfectiva) {
+%>					
+						<td>&nbsp;</td>
+<%	
+					}
+
+					if (tieneBotones) { // ES CERTIFICADO
 %>					
 						<td>&nbsp;</td>
 <%	

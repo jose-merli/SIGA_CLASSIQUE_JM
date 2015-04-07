@@ -29,14 +29,15 @@ import com.lowagie.text.pdf.PdfReader;
 import com.lowagie.text.pdf.PdfSignatureAppearance;
 import com.lowagie.text.pdf.PdfStamper;
 import com.siga.Utilidades.PaginadorBind;
+import com.siga.Utilidades.UtilidadesFecha;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesMultidioma;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.administracion.SIGAConstants;
+import com.siga.certificados.form.SIGASolicitudesCertificadosForm;
 import com.siga.general.SIGAException;
 
-public class CerSolicitudCertificadosAdm extends MasterBeanAdministrador
-{
+public class CerSolicitudCertificadosAdm extends MasterBeanAdministrador {
 	public static final String K_ESTADO_SOL_PEND="1";
 	public static final String K_ESTADO_SOL_APROBADO="2";
 	public static final String K_ESTADO_SOL_ENVIOP="3";
@@ -427,289 +428,171 @@ public class CerSolicitudCertificadosAdm extends MasterBeanAdministrador
         return getRutaCertificadoDirectorio(solicitud, sRutaBD) + File.separator + solicitud.getIdSolicitud() + ".pdf";
     }
 
-	public PaginadorBind buscarSolicitudes(String idInstitucion, String fechaDesde, String fechaHasta, String fechaEmisionDesde, 
-			String fechaEmisionHasta, String estadoSolicitud, String tipoCertificado, String numeroColegiado, String CIFNIF,
-			String nombre, String apellido1, String idInstitucionOrigen, String idInstitucionDestino, String idSolicitud,
-			String numeroCertificado) throws ClsExceptions, SIGAException {
-
+    /**
+     * 
+     * @param form
+     * @param idInstitucion
+     * @return
+     * @throws ClsExceptions
+     */
+	public PaginadorBind buscarSolicitudes(SIGASolicitudesCertificadosForm form, String idInstitucion) throws ClsExceptions {
 		try {
-			Hashtable codigos = new Hashtable();
-			int contador = 0;
-			int totalRegistros = 0;
+			String sql = "SELECT " + CerSolicitudCertificadosBean.T_NOMBRETABLA + "." + CerSolicitudCertificadosBean.C_FECHASOLICITUD + ", " +
+							CerSolicitudCertificadosBean.T_NOMBRETABLA + "." + CerSolicitudCertificadosBean.C_FECHAESTADO + ", " +
+							CerSolicitudCertificadosBean.T_NOMBRETABLA + "." + CerSolicitudCertificadosBean.C_FECHACOBRO + ", " +
+							CerSolicitudCertificadosBean.T_NOMBRETABLA + "." + CerSolicitudCertificadosBean.C_FECHAEMISIONCERTIFICADO + ", " +
+							CerSolicitudCertificadosBean.T_NOMBRETABLA + "." + CerSolicitudCertificadosBean.C_IDINSTITUCION + ", " +
+							CerSolicitudCertificadosBean.T_NOMBRETABLA + "." + CerSolicitudCertificadosBean.C_IDSOLICITUD + ", " +
+							CerSolicitudCertificadosBean.T_NOMBRETABLA + "." + CerSolicitudCertificadosBean.C_PPN_IDPRODUCTO + ", " +
+							CerSolicitudCertificadosBean.T_NOMBRETABLA + "." + CerSolicitudCertificadosBean.C_PPN_IDTIPOPRODUCTO + ", " +
+							CerSolicitudCertificadosBean.T_NOMBRETABLA + "." + CerSolicitudCertificadosBean.C_PPN_IDPRODUCTOINSTITUCION + ", " +
+							CerSolicitudCertificadosBean.T_NOMBRETABLA + "." + CerSolicitudCertificadosBean.C_IDINSTITUCIONORIGEN + ", " +
+							CerSolicitudCertificadosBean.T_NOMBRETABLA + "." + CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO + ", " +
+							CerSolicitudCertificadosBean.T_NOMBRETABLA + "." + CerSolicitudCertificadosBean.C_IDINSTITUCION_SOL + ", " +
+							CerSolicitudCertificadosBean.T_NOMBRETABLA + "." + CerSolicitudCertificadosBean.C_IDPERSONA_DES + ", " +
+							CerSolicitudCertificadosBean.T_NOMBRETABLA + "." + CerSolicitudCertificadosBean.C_IDPETICIONPRODUCTO + ", " +
+							CerSolicitudCertificadosBean.T_NOMBRETABLA + "." + CerSolicitudCertificadosBean.C_IDESTADOCERTIFICADO + ", " +
+							PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_TIPOCERTIFICADO + " AS TIPOCERTIFICADO2, " +					
+							PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_DESCRIPCION + " AS TIPOCERTIFICADO, " +
+							CenPersonaBean.T_NOMBRETABLA + "." + CenPersonaBean.C_APELLIDOS1 + " || ' ' || " + CenPersonaBean.T_NOMBRETABLA + "." + CenPersonaBean.C_APELLIDOS2 + " || ', ' || " + CenPersonaBean.T_NOMBRETABLA + "." + CenPersonaBean.C_NOMBRE + " AS CLIENTE, " +					
+							"INSO." + CenInstitucionBean.C_ABREVIATURA + " AS INSTITUCIONORIGEN, " +
+							"INSD." + CenInstitucionBean.C_ABREVIATURA + " AS INSTITUCIONDESTINO, " +					 
+							CerEstadoSoliCertifiBean.T_NOMBRETABLA + "." + CerEstadoSoliCertifiBean.C_DESCRIPCION + " AS ESTADOSOLICITUD, " + 					
+							CerEstadoCertificadoBean.T_NOMBRETABLA + "." + CerEstadoCertificadoBean.C_DESCRIPCION + " AS ESTADOCERTIFICADO " +
+						" FROM " + CerSolicitudCertificadosBean.T_NOMBRETABLA + ", " + 
+							PysProductosInstitucionBean.T_NOMBRETABLA + ", " + 
+							CenPersonaBean.T_NOMBRETABLA + ", " +
+							CenInstitucionBean.T_NOMBRETABLA + " INSO, " +
+							CenInstitucionBean.T_NOMBRETABLA + " INSD, " +
+							CerEstadoSoliCertifiBean.T_NOMBRETABLA + ", " +
+							CerEstadoCertificadoBean.T_NOMBRETABLA;
 
-			String sSQL = " SELECT     " + "SOL." + CerSolicitudCertificadosBean.C_FECHASOLICITUD + " AS FECHA, "
-					+ "SOL." + CerSolicitudCertificadosBean.C_FECHAESTADO + " AS FECHAESTADO, "
-					+ "SOL." + CerSolicitudCertificadosBean.C_FECHADESCARGA + " AS FECHADESCARGA, "
-					+ "SOL." + CerSolicitudCertificadosBean.C_FECHACOBRO + " AS FECHACOBRO, "
-					+ "SOL." + CerSolicitudCertificadosBean.C_CBO_CODIGO + " AS CODIGO_BANCO, "
-					+ "SOL." + CerSolicitudCertificadosBean.C_CODIGO_SUCURSAL + " AS CODIGO_SUCURSAL, "					
-					+ "SOL." + CerSolicitudCertificadosBean.C_FECHAENVIO + " AS FECHAENVIO, "
-					+ "SOL." + CerSolicitudCertificadosBean.C_FECHAEMISIONCERTIFICADO + " AS FECHAEMISION, "
-					+ "SOL." + CerSolicitudCertificadosBean.C_IDINSTITUCION + ", "
-					+ "SOL." + CerSolicitudCertificadosBean.C_IDINSTITUCIONDESTINO + ", "
-					+ "SOL." + CerSolicitudCertificadosBean.C_IDSOLICITUD + ", "
-					+ "SOL." + CerSolicitudCertificadosBean.C_PPN_IDPRODUCTO + ", "
-					+ "SOL." + CerSolicitudCertificadosBean.C_PPN_IDTIPOPRODUCTO + ", "
-					+ "SOL." + CerSolicitudCertificadosBean.C_PPN_IDPRODUCTOINSTITUCION + ", "
-					+ "PR." + PysProductosInstitucionBean.C_TIPOCERTIFICADO + " AS TIPOCERTIFICADO2, "
-					+ "SOL." + CerSolicitudCertificadosBean.C_IDINSTITUCIONORIGEN + ", "
-					+ "PR." + PysProductosInstitucionBean.C_DESCRIPCION + " AS TIPOCERTIFICADO, "
-					+ "PER." + CenPersonaBean.C_APELLIDOS1 + "||' '||PER." + CenPersonaBean.C_APELLIDOS2 + "||', '||PER." + CenPersonaBean.C_NOMBRE + " AS CLIENTE, "
-					+ "SOL." + CerSolicitudCertificadosBean.C_IDPERSONA_DES + " AS IDPERSONA, "
-					+ "INSO." + CenInstitucionBean.C_ABREVIATURA + " AS INSTITUCIONORIGEN, "
-					+ "INSD." + CenInstitucionBean.C_ABREVIATURA + " AS INSTITUCIONDESTINO, "
-					+ "SOL." + CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO + ", " 
-					+ "ES." + CerEstadoSoliCertifiBean.C_DESCRIPCION + " AS ESTADOSOLICITUD, " 
-					+ "SOL." + CerSolicitudCertificadosBean.C_IDESTADOCERTIFICADO + ", "
-					+ "EC." + CerEstadoCertificadoBean.C_DESCRIPCION + " AS ESTADOCERTIFICADO, " 
-					+ "SOL." + CerSolicitudCertificadosBean.C_IDPETICIONPRODUCTO + " AS IDPETICION" + ", "
-					+ "SOL." + CerSolicitudCertificadosBean.C_IDINSTITUCION_SOL + " AS IDINSTITUCION_SOL ";
-
-			sSQL += " FROM " + CerSolicitudCertificadosBean.T_NOMBRETABLA + " SOL, " 
-					+ PysProductosInstitucionBean.T_NOMBRETABLA + " PR, " 
-					+ CenPersonaBean.T_NOMBRETABLA + " PER, "
-					+ CenInstitucionBean.T_NOMBRETABLA + " INSO, "
-					+ CenInstitucionBean.T_NOMBRETABLA + " INSD, "
-					+ CerEstadoCertificadoBean.T_NOMBRETABLA + " EC, "
-					+ CerEstadoSoliCertifiBean.T_NOMBRETABLA + " ES ";
-
+			String numeroColegiado = form.getNumeroCertificado();
 			if (numeroColegiado != null && !numeroColegiado.equals("")) {
-				sSQL += ", " + CenColegiadoBean.T_NOMBRETABLA + " COL ";
+				sql += ", " + CenColegiadoBean.T_NOMBRETABLA;
 			}
 
-			sSQL += " WHERE ";
-			contador++;
-			codigos.put(new Integer(contador), idInstitucion);
-			sSQL += "SOL." + CerSolicitudCertificadosBean.C_IDINSTITUCION + "=:" + contador
-					+ " AND " + "SOL." + CerSolicitudCertificadosBean.C_IDPERSONA_DES + "=PER." + CenPersonaBean.C_IDPERSONA
-					+ " AND " + "SOL." + CerSolicitudCertificadosBean.C_IDINSTITUCION + "=PR." + PysProductosInstitucionBean.C_IDINSTITUCION
-					+ " AND " + "SOL." + CerSolicitudCertificadosBean.C_PPN_IDPRODUCTO + "=PR." + PysProductosInstitucionBean.C_IDPRODUCTO
-					+ " AND " + "SOL." + CerSolicitudCertificadosBean.C_PPN_IDTIPOPRODUCTO + "=PR." + PysProductosInstitucionBean.C_IDTIPOPRODUCTO
-					+ " AND " + "SOL." + CerSolicitudCertificadosBean.C_PPN_IDPRODUCTOINSTITUCION + "=PR." + PysProductosInstitucionBean.C_IDPRODUCTOINSTITUCION
-					+ " AND " + "SOL." + CerSolicitudCertificadosBean.C_IDINSTITUCIONORIGEN + "=INSO." + CenInstitucionBean.C_IDINSTITUCION + "(+)"
-					+ " AND " + "SOL." + CerSolicitudCertificadosBean.C_IDINSTITUCIONDESTINO + "=INSD." + CenInstitucionBean.C_IDINSTITUCION + "(+)"
-					+ " AND " + "SOL." + CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO + "=ES." + CerEstadoSoliCertifiBean.C_IDESTADOSOLICITUDCERTIFICADO
-					+ " AND " + "SOL." + CerSolicitudCertificadosBean.C_IDESTADOCERTIFICADO + "=EC." + CerEstadoCertificadoBean.C_IDESTADOCERTIFICADO;
+			sql += " WHERE " + CerSolicitudCertificadosBean.T_NOMBRETABLA + "." + CerSolicitudCertificadosBean.C_IDINSTITUCION + " = " + idInstitucion +
+					" AND " + CerSolicitudCertificadosBean.T_NOMBRETABLA + "." + CerSolicitudCertificadosBean.C_IDPERSONA_DES + " = " + CenPersonaBean.T_NOMBRETABLA + "." + CenPersonaBean.C_IDPERSONA +
+					" AND " + CerSolicitudCertificadosBean.T_NOMBRETABLA + "." + CerSolicitudCertificadosBean.C_IDINSTITUCION + " = " + PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_IDINSTITUCION +
+					" AND " + CerSolicitudCertificadosBean.T_NOMBRETABLA + "." + CerSolicitudCertificadosBean.C_PPN_IDPRODUCTO + " = " + PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_IDPRODUCTO +
+					" AND " + CerSolicitudCertificadosBean.T_NOMBRETABLA + "." + CerSolicitudCertificadosBean.C_PPN_IDTIPOPRODUCTO + " = " + PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_IDTIPOPRODUCTO +
+					" AND " + CerSolicitudCertificadosBean.T_NOMBRETABLA + "." + CerSolicitudCertificadosBean.C_PPN_IDPRODUCTOINSTITUCION + " = " + PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_IDPRODUCTOINSTITUCION +
+					" AND " + CerSolicitudCertificadosBean.T_NOMBRETABLA + "." + CerSolicitudCertificadosBean.C_IDINSTITUCIONORIGEN + " = INSO." + CenInstitucionBean.C_IDINSTITUCION + "(+)" +
+					" AND " + CerSolicitudCertificadosBean.T_NOMBRETABLA + "." + CerSolicitudCertificadosBean.C_IDINSTITUCIONDESTINO + " = INSD." + CenInstitucionBean.C_IDINSTITUCION + "(+)" +
+					" AND " + CerSolicitudCertificadosBean.T_NOMBRETABLA + "." + CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO + " = " + CerEstadoSoliCertifiBean.T_NOMBRETABLA + "." + CerEstadoSoliCertifiBean.C_IDESTADOSOLICITUDCERTIFICADO +
+					" AND " + CerSolicitudCertificadosBean.T_NOMBRETABLA + "." + CerSolicitudCertificadosBean.C_IDESTADOCERTIFICADO + " = " + CerEstadoCertificadoBean.T_NOMBRETABLA + "." + CerEstadoCertificadoBean.C_IDESTADOCERTIFICADO;
+			
+			String fDesde = form.getFechaDesde(); 
+			String fHasta = form.getFechaHasta(); 
+			if ((fDesde!=null && !fDesde.trim().equals("")) || (fHasta!=null && !fHasta.trim().equals(""))) {
+				fDesde = UtilidadesFecha.getFechaApruebaDeFormato(fDesde);
+				fHasta = UtilidadesFecha.getFechaApruebaDeFormato(fHasta);
+				sql += " AND " + GstDate.dateBetweenDesdeAndHasta(CerSolicitudCertificadosBean.C_FECHAESTADO, fDesde, fHasta);
+			}	
+			
+			fDesde = form.getFechaEmisionDesde(); 
+			fHasta = form.getFechaEmisionHasta(); 
+			if ((fDesde!=null && !fDesde.trim().equals("")) || (fHasta!=null && !fHasta.trim().equals(""))) {
+				fDesde = UtilidadesFecha.getFechaApruebaDeFormato(fDesde);
+				fHasta = UtilidadesFecha.getFechaApruebaDeFormato(fHasta);
+				sql += " AND " + GstDate.dateBetweenDesdeAndHasta(CerSolicitudCertificadosBean.C_FECHAEMISIONCERTIFICADO, fDesde, fHasta);
+			}	
 
-			if (fechaDesde != null && !fechaDesde.equals("")
-					|| fechaHasta != null && !fechaHasta.equals("")) {
-				// -------------- dateBetweenDesdeAndHastaBind
-				Vector v = GstDate.dateBetweenDesdeAndHastaBind(
-						CerSolicitudCertificadosBean.C_FECHAESTADO,
-						fechaDesde != null && !fechaDesde.equals("") ? GstDate.getApplicationFormatDate("", fechaDesde) : null, 
-						fechaHasta != null && !fechaHasta.equals("") ? GstDate.getApplicationFormatDate("", fechaHasta) : null, contador, codigos);
-				Integer in = (Integer) v.get(0);
-				String st = (String) v.get(1);
-				contador = in.intValue();
-				// --------------
-				sSQL += " AND " + st;
-			}
-			if (fechaEmisionDesde != null && !fechaEmisionDesde.equals("")
-					|| fechaEmisionHasta != null && !fechaEmisionHasta.equals("")) {
-				// -------------- dateBetweenDesdeAndHastaBind
-				Vector v = GstDate.dateBetweenDesdeAndHastaBind(
-						CerSolicitudCertificadosBean.C_FECHAEMISIONCERTIFICADO,
-						fechaEmisionDesde != null && !fechaEmisionDesde.equals("") ? GstDate.getApplicationFormatDate("", fechaEmisionDesde) : null, 
-						fechaEmisionHasta != null && !fechaEmisionHasta.equals("") ? GstDate.getApplicationFormatDate("", fechaEmisionHasta) : null, contador, codigos);
-				Integer in = (Integer) v.get(0);
-				String st = (String) v.get(1);
-				contador = in.intValue();
-				// --------------
-				sSQL += " AND " + st;
-			}
-			if ((estadoSolicitud != null && !estadoSolicitud.equals("") && !estadoSolicitud
-					.equals("99"))) {
-				contador++;
-				codigos.put(new Integer(contador), estadoSolicitud);
-				sSQL += " AND SOL." + CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO + "=:" + contador;
-			}
-			if ((estadoSolicitud != null && !estadoSolicitud.equals("") && estadoSolicitud .equals("99"))) {
-				sSQL += " AND SOL." + CerSolicitudCertificadosBean.C_FECHAENVIO + " IS NULL";
+			String estadoSolicitud = form.getEstado();
+			if (estadoSolicitud!=null && !estadoSolicitud.equals("") && !estadoSolicitud.equals("99")) {
+				sql += " AND " + CerSolicitudCertificadosBean.T_NOMBRETABLA + "." + CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO + " = " + estadoSolicitud;
+				
+			} else if (estadoSolicitud!=null && estadoSolicitud.equals("99")) {
+				sql += " AND " + CerSolicitudCertificadosBean.T_NOMBRETABLA + "." + CerSolicitudCertificadosBean.C_FECHAENVIO + " IS NULL";
 			}
 
-			// RGG CAMBIO PAR BUSCAR POR ID PRODUCTO
+			String tipoCertificado = form.getTipoCertificado();
 			if (tipoCertificado != null && !tipoCertificado.equals("")) {
-
 				String idTipoProducto = "";
 				String idProducto = "";
 				String idProductoInstitucion = "";
-				String codigo = tipoCertificado;
-				StringTokenizer st = new StringTokenizer(codigo, ",");
+				StringTokenizer st = new StringTokenizer(tipoCertificado, ",");
 				if (st.hasMoreElements()) {
 					idTipoProducto = (String) st.nextElement();
 					idProducto = (String) st.nextElement();
 					idProductoInstitucion = (String) st.nextElement();
 				}
-				contador++;
-				codigos.put(new Integer(contador), idTipoProducto);
-				sSQL += " AND (SOL."
-						+ CerSolicitudCertificadosBean.C_PPN_IDTIPOPRODUCTO
-						+ "=:" + contador;
-				contador++;
-				codigos.put(new Integer(contador), idProducto);
-				sSQL += " AND SOL."
-						+ CerSolicitudCertificadosBean.C_PPN_IDPRODUCTO + "=:"
-						+ contador;
-				contador++;
-				codigos.put(new Integer(contador), idProductoInstitucion);
-				sSQL += " AND SOL."
-						+ CerSolicitudCertificadosBean.C_PPN_IDPRODUCTOINSTITUCION
-						+ "=:" + contador + ") ";
+				sql += " AND " + CerSolicitudCertificadosBean.T_NOMBRETABLA + "." + CerSolicitudCertificadosBean.C_PPN_IDTIPOPRODUCTO + " = " + idTipoProducto;
+				sql += " AND " + CerSolicitudCertificadosBean.T_NOMBRETABLA + "." + CerSolicitudCertificadosBean.C_PPN_IDPRODUCTO + " = " + idProducto;
+				sql += " AND " + CerSolicitudCertificadosBean.T_NOMBRETABLA + "." + CerSolicitudCertificadosBean.C_PPN_IDPRODUCTOINSTITUCION + " = " + idProductoInstitucion;
 			}
 
-			if (numeroColegiado != null && !numeroColegiado.equals("")) {
-				sSQL += " AND "
-						+ ComodinBusquedas.tratarNumeroColegiado(
-								numeroColegiado, "COL."
-										+ CenColegiadoBean.C_NCOLEGIADO)
-						+ " AND SOL."
-						+ CerSolicitudCertificadosBean.C_IDINSTITUCION
-						+ "=COL." + CenColegiadoBean.C_IDINSTITUCION
-						+ " AND SOL."
-						+ CerSolicitudCertificadosBean.C_IDPERSONA_DES
-						+ "=COL." + CenColegiadoBean.C_IDPERSONA;
+			if (numeroColegiado!=null && !numeroColegiado.equals("")) {
+				sql += " AND " + ComodinBusquedas.tratarNumeroColegiado(numeroColegiado, CenColegiadoBean.T_NOMBRETABLA + "." + CenColegiadoBean.C_NCOLEGIADO) +
+						" AND " + CerSolicitudCertificadosBean.T_NOMBRETABLA + "." + CerSolicitudCertificadosBean.C_IDINSTITUCION + " = " + CenColegiadoBean.T_NOMBRETABLA + "." + CenColegiadoBean.C_IDINSTITUCION + 
+						" AND " + CerSolicitudCertificadosBean.T_NOMBRETABLA + "." + CerSolicitudCertificadosBean.C_IDPERSONA_DES + " = " + CenColegiadoBean.T_NOMBRETABLA + "." + CenColegiadoBean.C_IDPERSONA;
 			}
-
-			// Consulta sobre el campo NIF/CIF, si el usuario mete comodines la
-			// búsqueda es como se hacía siempre, en el caso
-			// de no meter comodines se ha creado un nuevo metodo
-			// ComodinBusquedas.preparaCadenaNIFSinComodin para que monte
-			// la consulta adecuada.
-			if (CIFNIF != null && !CIFNIF.equals("")) {
-				if (ComodinBusquedas.hasComodin(CIFNIF)) {
-					contador++;
-					sSQL += " AND "
-							+ ComodinBusquedas.prepararSentenciaCompletaBind(
-									CIFNIF.trim(), "PER."
-											+ CenPersonaBean.C_NIFCIF,
-									contador, codigos);
+			
+			// Consulta sobre el campo NIF/CIF, si el usuario mete comodines la búsqueda es como se hacía siempre, en el caso de no meter comodines se ha creado un nuevo metodo ComodinBusquedas.preparaCadenaNIFSinComodin para que monte la consulta adecuada.
+			String sCifNif = form.getCIFNIF();
+			if (sCifNif!=null && !sCifNif.trim().equals("")) {
+				if (ComodinBusquedas.hasComodin(sCifNif)){	
+					sql += " AND " + ComodinBusquedas.prepararSentenciaCompleta(sCifNif.trim(), CenPersonaBean.T_NOMBRETABLA + "." + CenPersonaBean.C_NIFCIF);
 				} else {
-					contador++;
-					sSQL += " AND "
-							+ ComodinBusquedas.prepararSentenciaNIFBind(CIFNIF,
-									"PER." + CenPersonaBean.C_NIFCIF, contador,
-									codigos);
+					sql += " AND " + ComodinBusquedas.prepararSentenciaNIF(sCifNif, " UPPER(" + CenPersonaBean.T_NOMBRETABLA + "." + CenPersonaBean.C_NIFCIF + ") ");
 				}
+			}			
+			
+			String nombre = form.getNombre();
+			if (nombre!=null && !nombre.trim().equals("")) {
+				sql += " AND " + ComodinBusquedas.prepararSentenciaCompleta(nombre.trim(), CenPersonaBean.T_NOMBRETABLA + "." + CenPersonaBean.C_NOMBRE);
+			}
+			
+			String apellido1 = form.getApellido1();
+			if (apellido1!=null && !apellido1.trim().equals("")) {
+				sql += " AND " + ComodinBusquedas.prepararSentenciaCompleta(apellido1.trim(), CenPersonaBean.T_NOMBRETABLA + "." + CenPersonaBean.C_APELLIDOS1);
+			}
+			
+			String idInstitucionOrigen = form.getIdInstitucionOrigen();
+			if (idInstitucionOrigen!=null && !idInstitucionOrigen.equals("")) {
+				sql += " AND " + CerSolicitudCertificadosBean.T_NOMBRETABLA + "." + CerSolicitudCertificadosBean.C_IDINSTITUCIONORIGEN + " = " + idInstitucionOrigen;
 			}
 
-			if (nombre != null && !nombre.equals("")) {
-				contador++;
-				sSQL += " AND "
-						+ ComodinBusquedas.prepararSentenciaCompletaBind(nombre
-								.trim(), "PER." + CenPersonaBean.C_NOMBRE,
-								contador, codigos);
+			String idInstitucionDestino = form.getIdInstitucionDestino();
+			if (idInstitucionDestino!=null && !idInstitucionDestino.equals("")) {
+				sql += " AND " + CerSolicitudCertificadosBean.T_NOMBRETABLA + "." + CerSolicitudCertificadosBean.C_IDINSTITUCIONDESTINO + " = " + idInstitucionDestino;
+			}
+			
+			String idSolicitud = form.getBuscarIdSolicitudCertif();
+			if (idSolicitud!=null && !idSolicitud.equals("")) {
+				sql += " AND " + CerSolicitudCertificadosBean.T_NOMBRETABLA + "." + CerSolicitudCertificadosBean.C_IDSOLICITUD + " = " + idSolicitud;
 			}
 
-			// cambio en criterios de busqueda (Apellidos1 representa a los dos
-			// apellidos)
-			if (apellido1 != null && !apellido1.equals("")) {
-				contador++;
-				sSQL += " AND EXISTS (SELECT 'X' FROM cen_persona per1 where  per.idpersona = per1.idpersona AND ( ";
-				sSQL += ComodinBusquedas.prepararSentenciaCompletaBind(
-						apellido1.trim(),
-						"per1." + CenPersonaBean.C_APELLIDOS1, contador,
-						codigos);
-				contador++;
-				sSQL += " OR "
-						+ ComodinBusquedas.prepararSentenciaCompletaBind(
-								apellido1.trim(), "per1."
-										+ CenPersonaBean.C_APELLIDOS2,
-								contador, codigos);
-				contador++;
-				sSQL += " OR "
-						+ ComodinBusquedas.prepararSentenciaCompletaBind(
-								apellido1.replaceAll(" ", ""), "replace(per1."
-										+ CenPersonaBean.C_APELLIDOS1
-										+ ",' ','')||replace(per1."
-										+ CenPersonaBean.C_APELLIDOS2
-										+ ",' ','')", contador, codigos);
-				sSQL += "))";
-
+			String numeroCertificado = form.getBuscarNumCertificadoCompra();
+			if (numeroCertificado!=null && !numeroCertificado.equals("")) {
+				sql += " AND ( " +
+								ComodinBusquedas.prepararSentenciaCompleta(numeroCertificado.trim(), 
+									" NVL(" + CerSolicitudCertificadosBean.T_NOMBRETABLA + "." + CerSolicitudCertificadosBean.C_PREFIJO_CER + ", '') || " +
+									" NVL(" + CerSolicitudCertificadosBean.T_NOMBRETABLA + "." + CerSolicitudCertificadosBean.C_CONTADOR_CER + ", '') || " +
+									" NVL(" + CerSolicitudCertificadosBean.T_NOMBRETABLA + "." + CerSolicitudCertificadosBean.C_SUFIJO_CER + ", '') ") +
+							" OR " +
+								ComodinBusquedas.prepararSentenciaCompleta(numeroCertificado.trim(),
+									" NVL(" + CerSolicitudCertificadosBean.T_NOMBRETABLA + "." + CerSolicitudCertificadosBean.C_PREFIJO_CER + ",'') || " +
+									" NVL(LPAD(" + CerSolicitudCertificadosBean.T_NOMBRETABLA + "." + CerSolicitudCertificadosBean.C_CONTADOR_CER + ", (" +
+											" SELECT NVL(" + AdmContadorBean.T_NOMBRETABLA + "." + AdmContadorBean.C_LONGITUDCONTADOR + ", 1) " +
+											" FROM " + AdmContadorBean.T_NOMBRETABLA + 
+											" WHERE " + PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_IDCONTADOR + " = " + AdmContadorBean.T_NOMBRETABLA + "." + AdmContadorBean.C_IDCONTADOR +
+													" AND " + PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_IDINSTITUCION + " = " + AdmContadorBean.T_NOMBRETABLA + "." + AdmContadorBean.C_IDINSTITUCION + 
+										"), '0'), '') || " +
+									" NVL(" + CerSolicitudCertificadosBean.T_NOMBRETABLA + "." + CerSolicitudCertificadosBean.C_SUFIJO_CER + ", '')") +
+							" ) ";
 			}
 
-			if (idSolicitud != null && !idSolicitud.equals("")) {
-				contador++;
-				codigos.put(new Integer(contador), idSolicitud);
-				sSQL += " AND SOL."
-						+ CerSolicitudCertificadosBean.C_IDSOLICITUD + "=:"
-						+ contador;
+			sql += " ORDER BY " + CerSolicitudCertificadosBean.C_IDSOLICITUD + " DESC ";
 
-			}
+			PaginadorBind paginador = new PaginadorBind(sql, new Hashtable());
 
-			if (idInstitucionOrigen != null && !idInstitucionOrigen.equals("")) {
-				contador++;
-				codigos.put(new Integer(contador), idInstitucionOrigen);
-				sSQL += " AND SOL."
-						+ CerSolicitudCertificadosBean.C_IDINSTITUCIONORIGEN
-						+ "=:" + contador;
-
-			}
-
-			if (idInstitucionDestino != null
-					&& !idInstitucionDestino.equals("")) {
-				contador++;
-				codigos.put(new Integer(contador), idInstitucionDestino);
-				sSQL += " AND SOL."
-						+ CerSolicitudCertificadosBean.C_IDINSTITUCIONDESTINO
-						+ "=:" + contador;
-			}
-
-			// El contador busca concatenando los tres campos del contador, sin
-			// formatear.x
-			if (numeroCertificado != null && !numeroCertificado.equals("")) {
-				contador++;
-				sSQL += " AND ( ("
-						+ ComodinBusquedas
-								.prepararSentenciaCompletaBind(
-										numeroCertificado.trim(),
-										"(NVL(SOL."
-												+ CerSolicitudCertificadosBean.C_PREFIJO_CER
-												+ ",'') || NVL(SOL."
-												+ CerSolicitudCertificadosBean.C_CONTADOR_CER
-												+ ",'') || NVL(SOL."
-												+ CerSolicitudCertificadosBean.C_SUFIJO_CER
-												+ ",''))", contador, codigos);
-				sSQL += ") ";
-				contador++;
-				sSQL += " OR ("
-						+ ComodinBusquedas
-								.prepararSentenciaCompletaBind(
-										numeroCertificado.trim(),
-										"(NVL(SOL."
-												+ CerSolicitudCertificadosBean.C_PREFIJO_CER
-												+ ",'') || NVL(LPAD (SOL."
-												+ CerSolicitudCertificadosBean.C_CONTADOR_CER
-												+ ",(select nvl("
-												+ AdmContadorBean.C_LONGITUDCONTADOR
-												+ ", 1) FROM "
-												+ AdmContadorBean.T_NOMBRETABLA
-												+ " WHERE PR."
-												+ PysProductosInstitucionBean.C_IDCONTADOR
-												+ " = "
-												+ AdmContadorBean.C_IDCONTADOR
-												+ " AND PR."
-												+ PysProductosInstitucionBean.C_IDINSTITUCION
-												+ " = "
-												+ AdmContadorBean.C_IDINSTITUCION
-												+ ") , '0'),'') || NVL(SOL."
-												+ CerSolicitudCertificadosBean.C_SUFIJO_CER
-												+ ",''))", contador, codigos);
-				sSQL += ") " + " )";
-			}
-
-			// RGG cambio de orden
-			sSQL += " ORDER BY "
-					+ CerSolicitudCertificadosBean.C_IDSOLICITUD + " DESC ";
-
-			PaginadorBind paginador = new PaginadorBind(sSQL, codigos);
-			totalRegistros = paginador.getNumeroTotalRegistros();
-
-			if (totalRegistros == 0) {
+			if (paginador.getNumeroTotalRegistros() == 0) {
 				paginador = null;
 			}
 
 			return paginador;
-
 		}
 
 		catch (Exception e) {
@@ -921,7 +804,6 @@ public class CerSolicitudCertificadosAdm extends MasterBeanAdministrador
     	
     	String sql;
 		RowsContainer rc = null;
-		int contador = 0;
 		Long id=null;
 		
 		try { rc = new RowsContainer(); }
@@ -1043,7 +925,6 @@ public class CerSolicitudCertificadosAdm extends MasterBeanAdministrador
  	}
  	
     public boolean tieneContador(String idInstitucion, String  idSolicitud) throws ClsExceptions{
-        RowsContainer rows=new RowsContainer();
         boolean salida = true; 
         Hashtable sol = new Hashtable();
         sol.put(CerSolicitudCertificadosBean.C_IDINSTITUCION,idInstitucion);
@@ -1061,7 +942,6 @@ public class CerSolicitudCertificadosAdm extends MasterBeanAdministrador
      	
  	
     public boolean esConsejo(String idInstitucion) throws ClsExceptions{
-        RowsContainer rows=new RowsContainer();
         boolean salida = false; 
         
         if (idInstitucion.equals("2000") || idInstitucion.substring(1,1).equals("3")) {
@@ -1084,7 +964,6 @@ public class CerSolicitudCertificadosAdm extends MasterBeanAdministrador
     			CenClienteAdm admCli = new CenClienteAdm(this.usrbean);
         		String where2 = " WHERE "+CenClienteBean.C_IDINSTITUCION + "=" + beanCer.getIdInstitucionOrigen() + " AND "+CenClienteBean.C_IDPERSONA+ "=" + beanCer.getIdPersona_Des();
         		Vector v2=admCli.select(where2);
-        		CenClienteBean beanCli = null;
         		if (v2!=null && v2.size()>0) {
         			salida = true;
         		} else {
@@ -1544,145 +1423,46 @@ public class CerSolicitudCertificadosAdm extends MasterBeanAdministrador
 		return salida;
     }
     
-    public PysCompraBean obtenerCompra(String idInstitucion, String idSolicitudCertificado) throws ClsExceptions 
-	{
-        PysCompraBean salida = null;
-    	try {
-    		String sql = " select com.idinstitucion IDINSTITUCION, com.idpeticion IDPETICION, com.idtipoproducto IDTIPOPRODUCTO, com.idproducto IDPRODUCTO, com.idproductoinstitucion IDPRODUCTOINSTITUCION " +
-    		    	" from cer_solicitudcertificados cer, pys_peticioncomprasuscripcion pet, pys_compra com " +
-		    	" where pet.idinstitucion=com.idinstitucion " +
-		    	" and pet.idpeticion = com.idpeticion " +
-		    	" and com.idtipoproducto = cer.ppn_idtipoproducto " +
-		    	" and com.idproducto = cer.ppn_idproducto " +
-		    	" and com.idproductoinstitucion = cer.ppn_idproductoinstitucion " +
-		    	" and pet.idinstitucion=cer.idinstitucion " +
-		    	" and pet.idpeticion=cer.idpeticionproducto " +
-		    	" and cer.idinstitucion=" + idInstitucion + 
-		    	" and cer.idsolicitud=" + idSolicitudCertificado;
-		    	
-    		Vector v = this.selectGenerico(sql);
-    		if (v.size()>0) {
-    			Hashtable h = (Hashtable) v.get(0);
-    			Hashtable ht = new Hashtable();
-        		ht.put(PysCompraBean.C_IDINSTITUCION,UtilidadesHash.getString(h, "IDINSTITUCION"));
-        		ht.put(PysCompraBean.C_IDPETICION,UtilidadesHash.getString(h, "IDPETICION"));
-        		ht.put(PysCompraBean.C_IDPRODUCTO,UtilidadesHash.getString(h, "IDPRODUCTO"));
-        		ht.put(PysCompraBean.C_IDPRODUCTOINSTITUCION,UtilidadesHash.getString(h, "IDPRODUCTOINSTITUCION"));
-        		ht.put(PysCompraBean.C_IDTIPOPRODUCTO,UtilidadesHash.getString(h, "IDTIPOPRODUCTO"));
-        		PysCompraAdm admCom = new PysCompraAdm(this.usrbean);
-        		Vector  v2 = admCom.selectByPK(ht);
-        		if (v2!=null && v2.size()>0) {
-        		    salida = (PysCompraBean)v2.get(0);
-        		}
-    		}
-
-    	} 
-    	catch (Exception e) {
-    		throw new ClsExceptions(e,"Error al obtener Historico.");
-    	}
-
-    	if (salida==null) {
-	        throw new ClsExceptions("No se ha encontrado la compra relacionada con la solicitud de certificado");
-	    }
-		
-    	return salida;
-    }
-    
-	public static Hashtable getDatosFacturaAsociada (String idInstitucion, String idTipoProducto, String idProducto, String idProductoInstitucion, String idPeticionProducto) throws ClsExceptions {
-		Hashtable salida = new Hashtable();
+    /**
+     * Obtiene datos de la factura del certificado
+     * @param hDatos
+     * @return
+     * @throws ClsExceptions
+     */
+	private Hashtable<String, Object> getDatosFacturaAsociada (Hashtable<String, Object> hDatos) throws ClsExceptions {
 	    try {
-		    Hashtable codigos = new Hashtable();
-		    codigos.put(new Integer(1),idInstitucion);
-		    codigos.put(new Integer(2),idTipoProducto);
-		    codigos.put(new Integer(3),idProducto);
-		    codigos.put(new Integer(4),idProductoInstitucion);
-		    codigos.put(new Integer(5),idPeticionProducto);
-		    String select =	"select SOL.IDINSTITUCION, SOL.ppn_idtipoproducto, SOL.ppn_idproducto, SOL.ppn_idproductoinstitucion,  SOL.idpeticionproducto, " +
-		        		" (select com.idfactura " +
-				        " from pys_peticioncomprasuscripcion pet, pys_compra com " +
-				        " where pet.idinstitucion = com.idinstitucion " +
-				        " and pet.idpeticion = com.idpeticion " +
-				        " and com.idtipoproducto = SOL.ppn_idtipoproducto " +
-				        " and com.idproducto = SOL.ppn_idproducto " +
-				        " and com.idproductoinstitucion = SOL.ppn_idproductoinstitucion " +
-				        " and pet.idinstitucion = SOL.idinstitucion " +
-				        " and pet.idpeticion = SOL.idpeticionproducto) as IDFACTURACOMPRA, " +
-				        " (select fa.NUMEROFACTURA " +
-				        " from fac_facturacionprogramada f, fac_factura fa " +
-				        " where f.idinstitucion = fa.idinstitucion " +
-				        " and f.idseriefacturacion = fa.idseriefacturacion " +
-				        " and f.idprogramacion = fa.idprogramacion " +
-				        " and fa.idinstitucion = SOL.IDINSTITUCION " +
-				        " and fa.idfactura = " +
-				        " (select com.idfactura " +
-				        "                   from pys_peticioncomprasuscripcion pet, pys_compra com " +
-				        " where pet.idinstitucion = com.idinstitucion " +
-				        " and pet.idpeticion = com.idpeticion " +
-				        "  and com.idtipoproducto = SOL.ppn_idtipoproducto " +
-				        "  and com.idproducto = SOL.ppn_idproducto " +
-				        "  and com.idproductoinstitucion = " +
-				        "      SOL.ppn_idproductoinstitucion " +
-				        "  and pet.idinstitucion = SOL.idinstitucion " +
-				        "  and pet.idpeticion = SOL.idpeticionproducto)) NUMEROFACTURA, " +
-				        " (select f.fechaconfirmacion " +
-				        " from fac_facturacionprogramada f, fac_factura fa " +
-				        " where f.idinstitucion = fa.idinstitucion " +
-				        " and f.idseriefacturacion = fa.idseriefacturacion " +
-				        " and f.idprogramacion = fa.idprogramacion " +
-				        " and fa.idinstitucion = SOL.IDINSTITUCION " +
-				        " and fa.idfactura = " +
-				        " (select com.idfactura " +
-				        " from pys_peticioncomprasuscripcion pet, pys_compra com " +
-				        " where pet.idinstitucion = com.idinstitucion " +
-				        "  and pet.idpeticion = com.idpeticion " +
-				        "  and com.idtipoproducto = SOL.ppn_idtipoproducto " +
-				        "  and com.idproducto = SOL.ppn_idproducto " +
-				        "  and com.idproductoinstitucion = " +
-				        "      SOL.ppn_idproductoinstitucion " +
-				        "  and pet.idinstitucion = SOL.idinstitucion " +
-				        "  and pet.idpeticion = SOL.idpeticionproducto)) FECHA_CONFIRMACION, " +
-				        " (select f.idestadopdf " +
-				        " from fac_facturacionprogramada f, fac_factura fa " +
-				        " where f.idinstitucion = fa.idinstitucion " +
-				        " and f.idseriefacturacion = fa.idseriefacturacion " +
-				        " and f.idprogramacion = fa.idprogramacion " +
-				        " and fa.idinstitucion = SOL.IDINSTITUCION " +
-				        " and fa.idfactura = " +
-				        " (select com.idfactura " +
-				        " from pys_peticioncomprasuscripcion pet, pys_compra com " +
-				        " where pet.idinstitucion = com.idinstitucion " +
-				        "  and pet.idpeticion = com.idpeticion " +
-				        "  and com.idtipoproducto = SOL.ppn_idtipoproducto " +
-				        "  and com.idproducto = SOL.ppn_idproducto " +
-				        "  and com.idproductoinstitucion = " +
-				        "      SOL.ppn_idproductoinstitucion " +
-				        "  and pet.idinstitucion = SOL.idinstitucion " +
-				        "  and pet.idpeticion = SOL.idpeticionproducto)) ESTADO_PDF " +
-				        " from cer_solicitudcertificados SOL " +   
-				        " where SOL.IDINSTITUCION=:1 " +
-				        " AND   SOL.ppn_idtipoproducto=:2 " +
-				        " AND   SOL.ppn_idproducto=:3 " +
-				        " AND   SOL.ppn_idproductoinstitucion=:4 " +
-				        " AND   SOL.idpeticionproducto=:5 ";
+		    String sql = "SELECT " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_NUMEROFACTURA + ", " +
+		    					FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDFACTURA +
+					        " FROM " + FacFacturaBean.T_NOMBRETABLA + ", " +
+					        	PysCompraBean.T_NOMBRETABLA +
+					        " WHERE " + PysCompraBean.T_NOMBRETABLA + "." + PysCompraBean.C_IDINSTITUCION + " = " + UtilidadesHash.getString(hDatos, CerSolicitudCertificadosBean.C_IDINSTITUCION) +
+								" AND " + PysCompraBean.T_NOMBRETABLA + "." + PysCompraBean.C_IDTIPOPRODUCTO + " = " + UtilidadesHash.getString(hDatos, CerSolicitudCertificadosBean.C_PPN_IDTIPOPRODUCTO) +
+								" AND " + PysCompraBean.T_NOMBRETABLA + "." + PysCompraBean.C_IDPRODUCTO + " = " + UtilidadesHash.getString(hDatos, CerSolicitudCertificadosBean.C_PPN_IDPRODUCTO) +
+								" AND " + PysCompraBean.T_NOMBRETABLA + "." + PysCompraBean.C_IDPRODUCTOINSTITUCION + " = " + UtilidadesHash.getString(hDatos, CerSolicitudCertificadosBean.C_PPN_IDPRODUCTOINSTITUCION) +
+								" AND " + PysCompraBean.T_NOMBRETABLA + "." + PysCompraBean.C_IDPETICION + " = " + UtilidadesHash.getString(hDatos, CerSolicitudCertificadosBean.C_IDPETICIONPRODUCTO) +
+					        	" AND " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDINSTITUCION + " = " + PysCompraBean.T_NOMBRETABLA + "." + PysCompraBean.C_IDINSTITUCION +
+								" AND " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDFACTURA + " = " + PysCompraBean.T_NOMBRETABLA + "." + PysCompraBean.C_IDFACTURA;
 
-			RowsContainer rc = new RowsContainer(); 
-			if (rc.queryBind(select,codigos)) {
-				if (rc.size()>0) {
-				    salida = (Hashtable)((Row) rc.get(0)).getRow();
-				}
-			}
-		}
-	    catch (Exception e) {
+		    Hashtable<String, Object> resultado = this.selectGenericoHash(sql);
+		    if (resultado!=null)  {
+		    	hDatos.put(FacFacturaBean.C_NUMEROFACTURA, UtilidadesHash.getString(resultado, FacFacturaBean.C_NUMEROFACTURA));
+		    	hDatos.put(FacFacturaBean.C_IDFACTURA, UtilidadesHash.getString(resultado, FacFacturaBean.C_IDFACTURA));
+		    } else  {
+		    	hDatos.put(FacFacturaBean.C_NUMEROFACTURA, "");
+		    	hDatos.put(FacFacturaBean.C_IDFACTURA, "");
+		    }
+		    
+		} catch (Exception e) {
 	        throw new ClsExceptions(e, "Error al obtener el estado de las facturas.");
 	    }
-		return salida;
+	    
+		return hDatos;
 	}   
 	
 	public int getNumeroCertificados(String idInstitucion, String idPersona) throws ClsExceptions{
     	
     	StringBuffer sql = new StringBuffer();
 		RowsContainer rc = null;
-		int contador = 0;
 		int id=0;
 		
 		try { rc = new RowsContainer(); }
@@ -1781,5 +1561,84 @@ public class CerSolicitudCertificadosAdm extends MasterBeanAdministrador
 		return isCNI;
 	}
 	
-	
+	/**
+	 * Obtiene los datos extras de la pagina de gestion de solicitudes
+	 * @param vDatos
+	 * @return 0:SinIcono; 1:Descarga; 2:FacturacionRapida
+	 * @throws ClsExceptions
+	 */
+	public Vector<Hashtable<String,Object>> obtenerDatosGestionCertificados (Vector vDatos) throws ClsExceptions {
+		Vector<Hashtable<String,Object>> vResultado = new Vector<Hashtable<String,Object>>();
+		try {
+			for (int i=0; i<vDatos.size(); i++) {
+				Row rDatos = (Row)vDatos.get(i);
+				Hashtable<String,Object> hDatos = rDatos.getRow();
+				
+				String sIdInstitucion = UtilidadesHash.getString(hDatos, CerSolicitudCertificadosBean.C_IDINSTITUCION);
+				String sIdPersona = UtilidadesHash.getString(hDatos, CerSolicitudCertificadosBean.C_IDPERSONA_DES);
+				String sIdPeticion = UtilidadesHash.getString(hDatos, CerSolicitudCertificadosBean.C_IDPETICIONPRODUCTO);
+				String sIdTipoProducto = UtilidadesHash.getString(hDatos, CerSolicitudCertificadosBean.C_PPN_IDTIPOPRODUCTO);
+				String sIdProducto = UtilidadesHash.getString(hDatos, CerSolicitudCertificadosBean.C_PPN_IDPRODUCTO);
+				String sIdProductoInstitucion = UtilidadesHash.getString(hDatos, CerSolicitudCertificadosBean.C_PPN_IDPRODUCTOINSTITUCION);
+				
+				hDatos = this.getDatosFacturaAsociada(hDatos);
+				
+				String letrado = CenClienteAdm.getEsLetrado(sIdPersona, sIdInstitucion);
+				hDatos.put("LETRADO", letrado);
+				
+				String cliente = CenClienteAdm.getEsCliente(sIdPersona, sIdInstitucion);
+				hDatos.put("CLIENTE", cliente);
+				
+				String estadoSolicitud = UtilidadesHash.getString(hDatos, "ESTADOSOLICITUD");
+				estadoSolicitud = UtilidadesMultidioma.getDatoMaestroIdioma(estadoSolicitud, this.usrbean);
+				hDatos.put("DESCRIPCION_ESTADOSOLICITUD", estadoSolicitud);
+				
+				String estadoCertificado = UtilidadesHash.getString(hDatos, "ESTADOCERTIFICADO");
+				estadoCertificado = UtilidadesMultidioma.getDatoMaestroIdioma(estadoCertificado, this.usrbean);
+				hDatos.put("DESCRIPCION_ESTADOCERTIFICADO", estadoCertificado);
+				
+				/* --------------- 1. Obtiene datos para icono - Comprueba si tiene factura -------------------------------- */
+				boolean bBuscarIcono = true;
+				String sCampo = "TIPO_ICONO";  // 0:SinIcono; 1:Descarga; 2:FacturacionRapida
+				String idFactura = UtilidadesHash.getString(hDatos, FacFacturaBean.C_IDFACTURA);
+				if (idFactura!=null && !idFactura.equals("")) { // Contiene factura
+					hDatos.put(sCampo, "1"); // Si tiene factura => aparece icono para descarga (1)
+					bBuscarIcono = false;
+				}
+				
+				if (bBuscarIcono) {
+					/* --------------- 2. Obtiene datos para icono - Comprueba si tiene productos facturables -------------------------------- */					
+					String sql = " SELECT COUNT(1) AS " + sCampo +   
+							" FROM " + PysProductosSolicitadosBean.T_NOMBRETABLA +
+							" WHERE " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDINSTITUCION + " = " + sIdInstitucion +								
+								" AND " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDTIPOPRODUCTO + " = " + sIdTipoProducto +
+								" AND " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDPRODUCTO + " = " + sIdProducto +
+								" AND " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDPRODUCTOINSTITUCION + " = " + sIdProductoInstitucion +
+								" AND " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDPETICION + " = " + sIdPeticion +
+								" AND " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_ACEPTADO + " NOT IN ('B', 'D', 'P') " +
+								" AND " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_NOFACTURABLE + " = 0 ";
+					
+					Hashtable<String,Object> hResultado = this.selectGenericoHash(sql);
+					if (hResultado!=null) {
+						String sValorCampo = UtilidadesHash.getString(hResultado, sCampo);
+						if (sValorCampo!=null && !sValorCampo.equals("0")) {
+							hDatos.put(sCampo, "2"); // Si tiene productos facturables => aparece icono para facturacion rapida (2)
+							bBuscarIcono = false;
+						}
+					}
+					
+					if (bBuscarIcono) {
+						hDatos.put(sCampo, "0"); // Por defecto => aparece sin icono (0)
+					}
+				}
+				
+				vResultado.add(hDatos);	
+			}
+			
+		} catch (Exception e) {
+			throw new ClsExceptions (e, "Erro al obtener los datos en obtenerDatosGestionSolicitud");
+		}
+		
+		return vResultado;
+	}		
 }

@@ -3355,5 +3355,62 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
 		} catch (Exception e) {
 			throw new ClsExceptions (e, "Error al actualizar la factura renegociada");
 		}                        
-	} //actualizarFacturaRenegociacion()		
+	} //actualizarFacturaRenegociacion()
+	
+    /**
+     * Obtiene las facturas de una petición de una solicitud de compra de productos, o bien de una solicitud de certificado, o bien de una factura
+     * @param idInstitucion
+     * @param idPeticion
+     * @param idSolicitudCertificado
+     * @param idFactura
+     * @return
+     * @throws ClsExceptions
+     */
+    public Vector<Hashtable<String,Object>> obtenerFacturasFacturacionRapida (String idInstitucion, String idPeticion, String idSolicitudCertificado, String idFactura) throws ClsExceptions {
+	    Vector<Hashtable<String,Object>> salida = new Vector<Hashtable<String,Object>>();
+	    try {
+	    	String sql = "SELECT DISTINCT " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDPERSONA + ", " +
+								FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDFACTURA + ", " +								
+								FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_NUMEROFACTURA + ", " +
+								FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDSERIEFACTURACION + ", " +
+								FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDPROGRAMACION +
+							" FROM " + FacFacturaBean.T_NOMBRETABLA +
+							" WHERE " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDINSTITUCION + " = " + idInstitucion;
+	    	
+	    	if (idFactura!=null && !idFactura.equals("")) {
+    			sql += " AND " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDFACTURA + " = " + idFactura;
+	    	
+	    	} else if (idSolicitudCertificado!=null && !idSolicitudCertificado.equals("")) {
+				sql += " AND EXISTS ( " +
+						" SELECT 1 " +
+						" FROM " + PysCompraBean.T_NOMBRETABLA + ", " +
+							CerSolicitudCertificadosBean.T_NOMBRETABLA +
+						" WHERE " + PysCompraBean.T_NOMBRETABLA + "." + PysCompraBean.C_IDINSTITUCION + " = " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDINSTITUCION +
+							" AND " + PysCompraBean.T_NOMBRETABLA + "." + PysCompraBean.C_IDFACTURA + " = " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDFACTURA +
+							" AND " + PysCompraBean.T_NOMBRETABLA + "." + PysCompraBean.C_IDINSTITUCION + " = " + CerSolicitudCertificadosBean.T_NOMBRETABLA + "." + CerSolicitudCertificadosBean.C_IDINSTITUCION +
+							" AND " + PysCompraBean.T_NOMBRETABLA + "." + PysCompraBean.C_IDPETICION + " = " + CerSolicitudCertificadosBean.T_NOMBRETABLA + "." + CerSolicitudCertificadosBean.C_IDPETICIONPRODUCTO +
+							" AND " + PysCompraBean.T_NOMBRETABLA + "." + PysCompraBean.C_IDTIPOPRODUCTO + " = " + CerSolicitudCertificadosBean.T_NOMBRETABLA + "." + CerSolicitudCertificadosBean.C_PPN_IDTIPOPRODUCTO +
+							" AND " + PysCompraBean.T_NOMBRETABLA + "." + PysCompraBean.C_IDPRODUCTO + " = " + CerSolicitudCertificadosBean.T_NOMBRETABLA + "." + CerSolicitudCertificadosBean.C_PPN_IDPRODUCTOINSTITUCION +
+							" AND " + PysCompraBean.T_NOMBRETABLA + "." + PysCompraBean.C_IDPRODUCTOINSTITUCION + " = " + CerSolicitudCertificadosBean.T_NOMBRETABLA + "." + CerSolicitudCertificadosBean.C_PPN_IDPRODUCTO +
+							" AND " + CerSolicitudCertificadosBean.T_NOMBRETABLA + "." + CerSolicitudCertificadosBean.C_IDSOLICITUD + " = " + idSolicitudCertificado +
+					" ) ";
+	    		
+	    	} else {
+				sql += " AND EXISTS ( " +
+							" SELECT 1 " +
+							" FROM " + PysCompraBean.T_NOMBRETABLA +
+							" WHERE " + PysCompraBean.T_NOMBRETABLA + "." + PysCompraBean.C_IDPETICION + " = " + idPeticion +
+								" AND " + PysCompraBean.T_NOMBRETABLA + "." + PysCompraBean.C_IDINSTITUCION + " = " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDINSTITUCION +
+								" AND " + PysCompraBean.T_NOMBRETABLA + "." + PysCompraBean.C_IDFACTURA + " = " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDFACTURA +
+						" ) ";
+	    	}
+					
+	        salida = this.getHashSQL(sql);
+	        
+		} catch(Exception e) {
+			throw new ClsExceptions(e,"Error al buscar las facturas asociadas a una peticion o factura.");
+		}
+    
+	    return salida;    	
+    }	
 }

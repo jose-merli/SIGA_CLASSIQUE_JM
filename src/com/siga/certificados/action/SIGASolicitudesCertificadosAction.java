@@ -12,7 +12,6 @@ import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.transaction.Status;
 import javax.transaction.UserTransaction;
 
 import org.apache.struts.action.ActionForm;
@@ -44,17 +43,13 @@ import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.GestorContadores;
 import com.siga.Utilidades.PaginadorBind;
-import com.siga.Utilidades.UtilidadesBDAdm;
 import com.siga.Utilidades.UtilidadesHash;
-import com.siga.Utilidades.UtilidadesNumero;
 import com.siga.Utilidades.UtilidadesString;
-import com.siga.administracion.SIGAConstants;
 import com.siga.beans.AdmUsuariosAdm;
 import com.siga.beans.AdmUsuariosBean;
 import com.siga.beans.CenBancosBean;
 import com.siga.beans.CenClienteAdm;
 import com.siga.beans.CenClienteBean;
-import com.siga.beans.CenColegiadoAdm;
 import com.siga.beans.CenCuentasBancariasBean;
 import com.siga.beans.CenInstitucionAdm;
 import com.siga.beans.CenInstitucionBean;
@@ -67,11 +62,6 @@ import com.siga.beans.CerPlantillasBean;
 import com.siga.beans.CerSolicitudCertificadosAdm;
 import com.siga.beans.CerSolicitudCertificadosBean;
 import com.siga.beans.CerSolicitudCertificadosTextoBean;
-import com.siga.beans.FacEstadoConfirmFactBean;
-import com.siga.beans.FacFacturaAdm;
-import com.siga.beans.FacFacturaBean;
-import com.siga.beans.FacFacturacionProgramadaAdm;
-import com.siga.beans.FacFacturacionProgramadaBean;
 import com.siga.beans.FacSerieFacturacionAdm;
 import com.siga.beans.FacSerieFacturacionBean;
 import com.siga.beans.GenParametrosAdm;
@@ -85,14 +75,12 @@ import com.siga.beans.PysProductosSolicitadosAdm;
 import com.siga.beans.PysProductosSolicitadosBean;
 import com.siga.beans.PysServiciosSolicitadosBean;
 import com.siga.certificados.Certificado;
-import com.siga.certificados.Plantilla;
 import com.siga.certificados.form.SIGASolicitudesCertificadosForm;
 import com.siga.facturacion.Facturacion;
 import com.siga.general.CenVisibilidad;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
-import com.siga.informes.InformeFactura;
 
 import es.satec.businessManager.BusinessManager;
 
@@ -275,7 +263,7 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 	        String idInstitucion = userBean.getLocation();
 	        
 	        GenParametrosAdm paramAdm = new GenParametrosAdm (userBean);
-	        CerSolicitudCertificadosAdm admSolicitud = new CerSolicitudCertificadosAdm(userBean);
+	        CerSolicitudCertificadosAdm admSolicitudCertificados = new CerSolicitudCertificadosAdm(userBean);
 	        
 			//Haria falta meter los parametros en con ClsConstants
 	        String permitir_factura_certificado = paramAdm.getValor (idInstitucion, "CER", ClsConstants.PERMITIR_FACTURA_CERTIFICADO, "");
@@ -303,6 +291,7 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 			    }	
 
 			    databackup.put("paginador",paginador);
+			    datos = admSolicitudCertificados.obtenerDatosGestionCertificados(datos);
 			    databackup.put("datos",datos);
 			
 	        } else { //obtengo datos de la consulta								        	 			
@@ -310,21 +299,7 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 	        		form.setBuscarIdSolicitudCertif(null);
 	        	}
 	
-	        	paginador = admSolicitud.buscarSolicitudes(idInstitucion,
-	                									  form.getFechaDesde(),
-	                									  form.getFechaHasta(),
-	                									  form.getFechaEmisionDesde(),
-	                									  form.getFechaEmisionHasta(),
-	                									  form.getEstado(),
-	                									  form.getTipoCertificado(),
-	                									  form.getNumeroCertificado(),
-	                									  form.getCIFNIF(),
-	                									  form.getNombre(),
-	                									  form.getApellido1(),
-	                									  form.getIdInstitucionOrigen(),
-	                									  form.getIdInstitucionDestino(),
-														  form.getBuscarIdSolicitudCertif(),
-														  form.getBuscarNumCertificadoCompra());  
+	        	paginador = admSolicitudCertificados.buscarSolicitudes(form, idInstitucion);  
 
 	        	ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
 	        	String numMaxReg = rp.returnProperty("certificados.numMaxRegistros");
@@ -332,6 +307,7 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 				databackup.put("paginador",paginador);
 				if (paginador!=null){ 
 				   datos = paginador.obtenerPagina(1);
+				   datos = admSolicitudCertificados.obtenerDatosGestionCertificados(datos);
 				   databackup.put("datos",datos);
 				   request.getSession().setAttribute("DATAPAGINADOR",databackup);
 				   
@@ -363,8 +339,6 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 
 	protected String borrar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, SIGAException 
 	{
-		
-		
 		UserTransaction tx=null;
 		try{
 			// Obtengo usuario y creo manejadores para acceder a las BBDD
@@ -386,7 +360,7 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 			tx.begin();
 			
 			// 1. Borramos la solicitud de certificado
-		    Hashtable hash = new Hashtable();
+		    Hashtable<String,Object> hash = new Hashtable<String,Object>();
 		    
 		    boolean tieneCompraFacturada = false;
 		    	    
@@ -516,7 +490,7 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
     		String tipoCertificado=((String)vOcultos.elementAt(11)).trim();
 
 
-    		Hashtable htSolicitud = new Hashtable();
+    		Hashtable<String,Object> htSolicitud = new Hashtable<String,Object>();
     		htSolicitud.put(CerSolicitudCertificadosBean.C_IDINSTITUCION, idInstitucion);
     		htSolicitud.put(CerSolicitudCertificadosBean.C_IDSOLICITUD, idSolicitud);
 
@@ -530,7 +504,7 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
     		String idInstitucionDestino = ""+beanSolicitud.getIdInstitucionDestino();
     		String idInstitucionColegiacion = ""+beanSolicitud.getIdInstitucionColegiacion();
     		CenInstitucionBean beanInstitucionOrigen = null;
-    		Hashtable htInstitucion = new Hashtable();
+    		Hashtable<String,Object> htInstitucion = new Hashtable<String,Object>();
     		if(!idInstitucionOrigen.equalsIgnoreCase("null") ){
     			htInstitucion.put(CenInstitucionBean.C_IDINSTITUCION, idInstitucionOrigen);
     			vDatos = admInstitucion.selectByPK(htInstitucion);
@@ -650,7 +624,7 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
     				beanProd = (PysProductosInstitucionBean) v.get(0);
     				idContador=beanProd.getIdContador();
     			}
-    			Hashtable contadorTablaHash=gc.getContador(new Integer(idInstitucion),idContador);
+    			Hashtable<String,Object> contadorTablaHash=gc.getContador(new Integer(idInstitucion),idContador);
 
     			// formateo el contador
     			Integer longitud= new Integer((contadorTablaHash.get("LONGITUDCONTADOR").toString()));
@@ -667,7 +641,7 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 
     		{
     			AdmUsuariosAdm adm = new AdmUsuariosAdm(this.getUserBean(request));
-    			Hashtable h = new Hashtable();
+    			Hashtable<String,Object> h = new Hashtable<String,Object>();
     			UtilidadesHash.set (h, AdmUsuariosBean.C_IDUSUARIO,     beanSolicitud.getUsuMod());
     			UtilidadesHash.set (h, AdmUsuariosBean.C_IDINSTITUCION, beanSolicitud.getIdInstitucion());
     			Vector v = adm.select(h);
@@ -687,7 +661,7 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 		String idPlantilla,String idPersona,File fIn,File fOut,String sRutaPlantillas,String idInstitucionOrigen,boolean usarIdInstitucion, UsrBean usr)throws ClsExceptions, SIGAException {
 	    
     	// OBTENEMOS LA SOLICITUD
-    	Hashtable htSolicitud = new Hashtable();
+    	Hashtable<String,Object> htSolicitud = new Hashtable<String,Object>();
 	    htSolicitud.put(CerSolicitudCertificadosBean.C_IDINSTITUCION, idInstitucion);
 	    htSolicitud.put(CerSolicitudCertificadosBean.C_IDSOLICITUD, idSolicitud);
 	    CerSolicitudCertificadosAdm admSolicitud = new CerSolicitudCertificadosAdm(this.getUserBean(request));
@@ -697,7 +671,7 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 	    
     	// HACEMOS UNO NUEVO PARA ACTUALIZAR EL ESTADO
         //Hashtable htOld = beanSolicitud.getOriginalHash();
-	    Hashtable htNew = beanSolicitud.getOriginalHash();
+	    Hashtable<String,Object> htNew = beanSolicitud.getOriginalHash();
 	    
 	    /// RGG 05/03/2007 CAMBIO DE CONTADORES /////////////////////
         boolean tieneContador=admSolicitud.tieneContador(idInstitucion,idSolicitud);
@@ -1355,7 +1329,7 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 		    String idInstitucion = ((String)vOcultos.elementAt(0)).trim();
 		    String idSolicitud = ((String)vOcultos.elementAt(1)).trim();
 		    
-		    Hashtable htSolicitud = new Hashtable();
+		    Hashtable<String,Object> htSolicitud = new Hashtable<String,Object>();
 		    htSolicitud.put(CerSolicitudCertificadosBean.C_IDINSTITUCION, idInstitucion);
 		    htSolicitud.put(CerSolicitudCertificadosBean.C_IDSOLICITUD, idSolicitud);
 		    
@@ -1397,7 +1371,7 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 		    tx.begin();
 	        if (idPeticion!=null && !idPeticion.equals("")){// Si existe idPeticion miramos si tambien existe un idFacturacion, si no existiera, borramos
 	        	                                            // el registro de la tabla PYS_COMPRA
-			    Hashtable htCompra = new Hashtable();
+			    Hashtable<String,Object> htCompra = new Hashtable<String,Object>();
 			    htCompra.put(PysCompraBean.C_IDINSTITUCION, idInstitucion);
 			    htCompra.put(PysCompraBean.C_IDPETICION, idPeticion);
 			    htCompra.put(PysCompraBean.C_IDPRODUCTO, idProducto);
@@ -1420,15 +1394,15 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 		    }	
 	       
 	        
-	        Hashtable htSolicitud = new Hashtable();
+	        Hashtable<String,Object> htSolicitud = new Hashtable<String,Object>();
 		    htSolicitud.put(CerSolicitudCertificadosBean.C_IDINSTITUCION, idInstitucion);
 		    htSolicitud.put(CerSolicitudCertificadosBean.C_IDSOLICITUD, idSolicitud);
 		    
 		    Vector vDatos = admSolicitud.selectByPK(htSolicitud);
 		    
 		    CerSolicitudCertificadosBean beanSolicitud = (CerSolicitudCertificadosBean)vDatos.elementAt(0);
-		    Hashtable htOld = beanSolicitud.getOriginalHash();
-		    Hashtable htNew = (Hashtable)htOld.clone();
+		    Hashtable<String,Object> htOld = beanSolicitud.getOriginalHash();
+		    Hashtable<String,Object> htNew = (Hashtable<String,Object>)htOld.clone();
 		    
 		    htNew.put(CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO, CerSolicitudCertificadosAdm.K_ESTADO_SOL_ANULADO);
 		    htNew.put(CerSolicitudCertificadosBean.C_FECHAESTADO, "sysdate");
@@ -1466,7 +1440,7 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 		    String idInstitucion = ((String)vOcultos.elementAt(0)).trim();
 		    String idSolicitud = ((String)vOcultos.elementAt(1)).trim();
 	
-		    Hashtable htSolicitud = new Hashtable();
+		    Hashtable<String,Object> htSolicitud = new Hashtable<String,Object>();
 		    htSolicitud.put(CerSolicitudCertificadosBean.C_IDINSTITUCION, idInstitucion);
 		    htSolicitud.put(CerSolicitudCertificadosBean.C_IDSOLICITUD, idSolicitud);
 		    
@@ -1479,8 +1453,8 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 		        throw new SIGAException("messages.certificados.error.solicitudyaaceptada");
 		    }
 	
-		    Hashtable htOld = beanSolicitud.getOriginalHash();
-		    Hashtable htNew = (Hashtable)htOld.clone();
+		    Hashtable<String,Object> htOld = beanSolicitud.getOriginalHash();
+		    Hashtable<String,Object> htNew = (Hashtable<String,Object>)htOld.clone();
 		    
 		    htNew.put(CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO, CerSolicitudCertificadosAdm.K_ESTADO_SOL_DENEGADO);
 		    htNew.put(CerSolicitudCertificadosBean.C_FECHAESTADO, "sysdate");
@@ -1518,7 +1492,7 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 		    String idInstitucion = ((String)vOcultos.elementAt(0)).trim();
 		    String idSolicitud = ((String)vOcultos.elementAt(1)).trim();
 		    
-		    Hashtable htSolicitud = new Hashtable();
+		    Hashtable<String,Object> htSolicitud = new Hashtable<String,Object>();
 		    htSolicitud.put(CerSolicitudCertificadosBean.C_IDINSTITUCION, idInstitucion);
 		    htSolicitud.put(CerSolicitudCertificadosBean.C_IDSOLICITUD, idSolicitud);
 		    //aalg: INC_10287_SIGA. Se unifica la manera de finalizar las solicitudes de certificados
@@ -1546,7 +1520,7 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 		    String idInstitucion = ((String)vOcultos.elementAt(0)).trim();
 		    String idSolicitud = ((String)vOcultos.elementAt(1)).trim();
 	
-		    Hashtable htSolicitud = new Hashtable();
+		    Hashtable<String,Object> htSolicitud = new Hashtable<String,Object>();
 		    htSolicitud.put(CerSolicitudCertificadosBean.C_IDINSTITUCION, idInstitucion);
 		    htSolicitud.put(CerSolicitudCertificadosBean.C_IDSOLICITUD, idSolicitud);
 		    
@@ -1604,7 +1578,7 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 		    
 		    CerPlantillasAdm admPlantilla = new CerPlantillasAdm(this.getUserBean(request));
 		    
-		    Hashtable htPlantilla = new Hashtable();
+		    Hashtable<String,Object> htPlantilla = new Hashtable<String,Object>();
 		    htPlantilla.put(CerPlantillasBean.C_IDINSTITUCION, idInstitucion);
 		    htPlantilla.put(CerPlantillasBean.C_IDTIPOPRODUCTO, idTipoProducto);
 		    htPlantilla.put(CerPlantillasBean.C_IDPRODUCTO, idProducto);
@@ -1663,7 +1637,7 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 		    
 		    CerPlantillasAdm admPlantilla = new CerPlantillasAdm(this.getUserBean(request));
 		    
-		    Hashtable htPlantilla = new Hashtable();
+		    Hashtable<String,Object> htPlantilla = new Hashtable<String,Object>();
 		    htPlantilla.put(CerPlantillasBean.C_IDINSTITUCION, idInstitucion);
 		    htPlantilla.put(CerPlantillasBean.C_IDTIPOPRODUCTO, idTipoProducto);
 		    htPlantilla.put(CerPlantillasBean.C_IDPRODUCTO, idProducto);
@@ -1743,7 +1717,7 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 		    CerSolicitudCertificadosAdm admSolicitud = new CerSolicitudCertificadosAdm(this.getUserBean(request));
 		    
 		    // obtengo la solicitud
-		    Hashtable ht = new Hashtable();
+		    Hashtable<String,Object> ht = new Hashtable<String,Object>();
 		    ht.put(CerSolicitudCertificadosBean.C_IDINSTITUCION,form.getIdInstitucion());
 		    ht.put(CerSolicitudCertificadosBean.C_IDSOLICITUD,form.getIdSolicitud());
 		    CerSolicitudCertificadosBean bean = null;
@@ -1873,20 +1847,16 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 
 	protected String copiarSanciones(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, SIGAException
 	{
-		
-		UserTransaction tx=null;
 		String salida ="";
 		try{
 			// Obtengo usuario y creo manejadores para acceder a las BBDD
 			UsrBean usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
-
-			tx=usr.getTransaction();
 			
 		    SIGASolicitudesCertificadosForm form = (SIGASolicitudesCertificadosForm)formulario;
 		    CerSolicitudCertificadosAdm admSolicitud = new CerSolicitudCertificadosAdm(this.getUserBean(request));
 		    
 		    // obtengo la solicitud
-		    Hashtable ht = new Hashtable();
+		    Hashtable<String,Object> ht = new Hashtable<String,Object>();
 		    ht.put(CerSolicitudCertificadosBean.C_IDINSTITUCION,form.getIdInstitucion());
 		    ht.put(CerSolicitudCertificadosBean.C_IDSOLICITUD,form.getIdSolicitud());
 		    CerSolicitudCertificadosBean bean = null;
@@ -1919,7 +1889,7 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 		    CerSolicitudCertificadosAdm admSolicitud = new CerSolicitudCertificadosAdm(this.getUserBean(request));
 		    
 		    // obtengo el historico
-		    Hashtable ht = new Hashtable();
+		    Hashtable<String,Object> ht = new Hashtable<String,Object>();
 		    ht.put(CerSolicitudCertificadosBean.C_IDINSTITUCION,form.getIdInstitucion());
 		    ht.put(CerSolicitudCertificadosBean.C_IDSOLICITUD,form.getIdSolicitud());
 		    CerSolicitudCertificadosBean bean = null;
@@ -1946,7 +1916,7 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 		    CerSolicitudCertificadosAdm admSolicitud = new CerSolicitudCertificadosAdm(this.getUserBean(request));
 		    
 		    // obtengo el historico
-		    Hashtable ht = new Hashtable();
+		    Hashtable<String,Object> ht = new Hashtable<String,Object>();
 		    ht.put(CerSolicitudCertificadosBean.C_IDINSTITUCION,form.getIdInstitucion());
 		    ht.put(CerSolicitudCertificadosBean.C_IDSOLICITUD,form.getIdSolicitud());
 		    CerSolicitudCertificadosBean bean = null;
@@ -1974,11 +1944,9 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 	    try {
 
 		    StringTokenizer st = null;
-		    int contadorReg=1;
 		    String tok=form.getIdsParaFinalizar();
 		    try {
 		    	st = new StringTokenizer(tok, ";");
-			    contadorReg=st.countTokens();
 		    } catch (java.util.NoSuchElementException nee) {
 		    	// solamente existe un token
 		    }
@@ -1990,19 +1958,19 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 			    	String to = (String)st.nextToken();
 			        StringTokenizer st2 = new StringTokenizer(to, "%%");
 		
-			        String fechaSolicitud = st2.nextToken();
+			        st2.nextToken();
 			        idSolicitud = st2.nextToken();
 			        st2.nextToken();
-			        String idTipoProducto = st2.nextToken();
-			        String idProducto = st2.nextToken();
-			        String idProductoInstitucion = st2.nextToken();
+			        st2.nextToken();
+			        st2.nextToken();
+			        st2.nextToken();
 			        String idInstitucion = st2.nextToken();
 			        // nos saltamos la persona
 			        st2.nextToken();
-			        String idInstitucionOrigen = st2.nextToken();
+			        st2.nextToken();
 
 			        /////////////////////////////////////////////////
-				    Hashtable htSolicitud = new Hashtable();
+				    Hashtable<String,Object> htSolicitud = new Hashtable<String,Object>();
 				    htSolicitud.put(CerSolicitudCertificadosBean.C_IDINSTITUCION, idInstitucion);
 				    htSolicitud.put(CerSolicitudCertificadosBean.C_IDSOLICITUD, idSolicitud);
 				    //aalg: INC_10287_SIGA. Se unifica la manera de finalizar las solicitudes de certificados
@@ -2024,13 +1992,12 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 	}
     
 	 //aalg: INC_10287_SIGA. Se unifica la manera de finalizar las solicitudes de certificados
-	protected void finalizarCertificado(Hashtable htSolicitud, HttpServletRequest request, HttpServletResponse response, int contErrores) 
+	protected void finalizarCertificado(Hashtable<String,Object> htSolicitud, HttpServletRequest request, HttpServletResponse response, int contErrores) 
 			throws SIGAException{
 		UsrBean userBean = ((UsrBean)request.getSession().getAttribute(("USRBEAN")));   
 	    UserTransaction tx = userBean.getTransactionPesada();
 	    String idInstitucion=(String)htSolicitud.get(CerSolicitudCertificadosBean.C_IDINSTITUCION);
 	    String idSolicitud=(String)htSolicitud.get(CerSolicitudCertificadosBean.C_IDSOLICITUD);
-	    String mensaje="";
         CerSolicitudCertificadosAdm admSolicitud = new CerSolicitudCertificadosAdm(this.getUserBean(request));
 		
         try{
@@ -2049,8 +2016,8 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 			        throw new SIGAException("messages.certificados.error.nogenerado");
 			    }
 
-			    Hashtable htOld = beanSolicitud.getOriginalHash();
-			    Hashtable htNew = (Hashtable)htOld.clone();
+			    Hashtable<String,Object> htOld = beanSolicitud.getOriginalHash();
+			    Hashtable<String,Object> htNew = (Hashtable<String,Object>)htOld.clone();
 			    htNew.put(CerSolicitudCertificadosBean.C_FECHAMODIFICACION,"sysdate");
 			    htNew.put(CerSolicitudCertificadosBean.C_FECHAESTADO,"sysdate");
 			    htNew.put(CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO, CerSolicitudCertificadosAdm.K_ESTADO_SOL_FINALIZADO);
@@ -2062,7 +2029,7 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 			        // YGE 07/09/2005 Si todo ha ido bien insertamos el registro en la tabla PysCompra
 			        // MAV 13/09/2005 Resolución incidencia
 			        
-			        Hashtable claves = new Hashtable();
+			        Hashtable<String,Object> claves = new Hashtable<String,Object>();
 					UtilidadesHash.set(claves, CerSolicitudCertificadosBean.C_IDINSTITUCION, idInstitucion);
 					UtilidadesHash.set(claves, CerSolicitudCertificadosBean.C_IDSOLICITUD, idSolicitud);
 					CerSolicitudCertificadosAdm solicitudAdm = new CerSolicitudCertificadosAdm(this.getUserBean(request));
@@ -2130,7 +2097,7 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 									else {
 										// obtener IDPERSONA de la Institucion  Destino o Facturable
 										CenInstitucionAdm cenInstitucion = new CenInstitucionAdm(this.getUserBean(request));
-										Hashtable datosInstitucion = new Hashtable();
+										Hashtable<String,Object> datosInstitucion = new Hashtable<String,Object>();
 										datosInstitucion.put(CenInstitucionBean.C_IDINSTITUCION,beanSolicitud.getIdInstitucionDestino());
 										Vector v_datosInstitucion = cenInstitucion.selectByPK(datosInstitucion);
 										CenInstitucionBean b = (CenInstitucionBean) v_datosInstitucion.get(0);
@@ -2140,7 +2107,7 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 										
 	//									 comprobamos que es cliente del colegio que finaliza el certificado
 										CenClienteAdm cenCliente=new CenClienteAdm(this.getUserBean(request));
-										Hashtable datosCliente = new Hashtable();
+										Hashtable<String,Object> datosCliente = new Hashtable<String,Object>();
 										datosCliente.put(CenClienteBean.C_IDINSTITUCION,beanSolicitud.getIdInstitucion());
 										datosCliente.put(CenClienteBean.C_IDPERSONA,b.getIdPersona());
 										Vector v_datosCliente=cenCliente.selectByPK(datosCliente);
@@ -2156,7 +2123,7 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 											RowsContainer rc = null;
 										  	rc = new RowsContainer(); 
 										  	int contador=0;
-										  	Hashtable codigos=new Hashtable();
+										  	Hashtable<Integer,Object> codigos=new Hashtable<Integer, Object>();
 										  	String sql="select C."+CenCuentasBancariasBean.C_IDCUENTA+
 											           " from "+CenCuentasBancariasBean.T_NOMBRETABLA+" C, "+CenBancosBean.T_NOMBRETABLA+" B"+
 	                                                   " where C."+CenCuentasBancariasBean.C_CBO_CODIGO+" = B."+CenBancosBean.C_CODIGO;
@@ -2204,7 +2171,7 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 								// RGG 29-04-2005 cambio para insertar la descripcion
 								// buscamos la descripcion
 								PysProductosInstitucionAdm pyspiAdm = new PysProductosInstitucionAdm(this.getUserBean(request));
-								Hashtable claves2 = new Hashtable();
+								Hashtable<String,Object> claves2 = new Hashtable<String,Object>();
 								claves2.put(PysProductosInstitucionBean.C_IDINSTITUCION,productoBean.getIdInstitucion());
 								claves2.put(PysProductosInstitucionBean.C_IDTIPOPRODUCTO,productoBean.getIdTipoProducto());
 								claves2.put(PysProductosInstitucionBean.C_IDPRODUCTO,productoBean.getIdProducto());
@@ -2213,7 +2180,7 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 								String descripcion = "";
 	//							 Obtenemos el nombre y apellidos del solicitante
 								CenPersonaAdm datosPersona=new CenPersonaAdm(this.getUserBean(request));
-								Hashtable hashPersona=new Hashtable();
+								Hashtable<String,Object> hashPersona=new Hashtable<String,Object>();
 								hashPersona.put(CenPersonaBean.C_IDPERSONA,productoSolicitadoBean.getIdPersona());
 								Vector  vpersona=datosPersona.selectByPK(hashPersona);
 								CenPersonaBean personaBean = (CenPersonaBean) vpersona.get(0);
@@ -2321,10 +2288,8 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 	 * @throws ClsExceptions
 	 * @throws SIGAException
 	 */
-	protected String facturacionRapida(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, SIGAException {
-	    UserTransaction tx = null;
-	    String mensaje="";
-	    String salida = "";
+	protected String facturacionRapida(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+	    String salida = "descarga";
 	    try {						
 	    	UsrBean usr = this.getUserBean(request);
 	    	
@@ -2333,274 +2298,23 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 		    Vector vOcultos = formSolicitudesCertificados.getDatosTablaOcultos(0);
 		    String idInstitucion = ((String)vOcultos.elementAt(0)).trim();
 	    	String idSolicitudCertificado = ((String)vOcultos.elementAt(1)).trim();
-	    	String idSerieSeleccionada = ((String)vOcultos.elementAt(2)).trim();
-		    
-		    // administradores
-		    CenClienteAdm admCliente = new CenClienteAdm(usr);
-		    CenColegiadoAdm admCol = new CenColegiadoAdm(usr);
-		    CerSolicitudCertificadosAdm admSolicitudCertificados = new CerSolicitudCertificadosAdm(usr);		    		   
-		    FacFacturaAdm admFactura = new FacFacturaAdm(usr);
-		    FacFacturacionProgramadaAdm admFacturacionProgramada = new FacFacturacionProgramadaAdm (usr);
-		    FacSerieFacturacionAdm admSerieFacturacion = new FacSerieFacturacionAdm(usr);
-		    PysCompraAdm admCompra = new PysCompraAdm(usr);		    
-		    PysPeticionCompraSuscripcionAdm admPeticionCompraSuscripcion = new PysPeticionCompraSuscripcionAdm(usr);
-		    Facturacion facturacion = new Facturacion(usr);
-		    InformeFactura inf = new InformeFactura(usr);	     		    
-		    
-		    // Transaccion
-			tx=usr.getTransaction();
-			tx.begin();
-		    
-		    // Bloqueamos las tablas de factura y compra
-		    admFactura.lockTable();
-		    admCompra.lockTable();
 		    
 		    // Obtengo la peticion de compra
-		    PysCompraBean beanCompra = admSolicitudCertificados.obtenerCompra(idInstitucion, idSolicitudCertificado);
+	    	PysCompraAdm admCompra = new PysCompraAdm(usr);
+		    PysCompraBean beanCompra = admCompra.obtenerCompraCertificado(idInstitucion, idSolicitudCertificado);
 		    
-		    // Compruebo SI esta facturada la compra
-		    if (beanCompra.getIdFactura()!=null && !beanCompra.getIdFactura().trim().equals("")) { // YA ESTÁ FACTURADA		    	
-		    	// LIBERAMOS EL BLOQUEO EN LAS TABLAS Y LA TRANSACCIÓN
-		    	tx.rollback();
-		    	
-		    	// Comprobamos si no esta confirmada la facturacion, la confirmamos	    		
-		    	FacFacturacionProgramadaBean b = admFacturacionProgramada.getFacturacionProgramadaDesdeCompra(beanCompra);
-		    	if (b != null) {
-			    	String fechaConfirmacion = b.getFechaConfirmacion(); 
-		    		if (fechaConfirmacion == null || fechaConfirmacion.equals("") || b.getIdEstadoPDF().intValue() != FacEstadoConfirmFactBean.PDF_FINALIZADA.intValue()) {
-					    try {
-					    	b.setGenerarPDF("1");// Si se entramos por facturacion rapida se obliga siempre al generarPDF
-					        boolean esfacturacionRapida = true;
-					    	facturacion.confirmarProgramacionFactura(b, request, true, null, true, true, 1,esfacturacionRapida);
-					        
-						} catch (SIGAException se) {
-							throw se;
-							
-					    } catch (ClsExceptions ce) {
-							throw ce;
-							
-					    } catch (Exception e) {
-							mensaje="messages.facturacionRapida.errorConfirmacion";
-							return exitoRefresco(mensaje,request);
-					    }
-		    		}
-		    	}
-
-		    	Hashtable<String,Object> hFactura = new Hashtable<String,Object>();
-	        	UtilidadesHash.set(hFactura,FacFacturaBean.C_IDINSTITUCION, beanCompra.getIdInstitucion());
-	        	UtilidadesHash.set(hFactura,FacFacturaBean.C_IDFACTURA, beanCompra.getIdFactura());	        	
-	        	Vector vFactura = admFactura.selectByPK(hFactura);
-	        	
-	        	if (vFactura!=null && vFactura.size()==1) {
-	        		FacFacturaBean beanFactura = (FacFacturaBean) vFactura.get(0);
-	        		
-	        		String idPersona = beanFactura.getIdPersona().toString();	    			
-	    			String lenguaje = admCliente.getLenguaje(beanFactura.getIdInstitucion().toString(),idPersona); // Obtenemos el lenguaje del cliente  
-	        		String nombreFactura="";
-	        		if (beanFactura.getNumeroFactura()!=null && !beanFactura.getNumeroFactura().equals("")){
-	        			nombreFactura=beanFactura.getNumeroFactura();
-	        		}else{
-	        			nombreFactura=beanFactura.getIdFactura();
-	        		}
-	        		
-					Hashtable htCol = admCol.obtenerDatosColegiado(usr.getLocation(), beanFactura.getIdPersona().toString(), usr.getLanguage());
-		  			String nColegiado = "";
-		  			if (htCol!=null && htCol.size()>0) {
-		  			    nColegiado = (String)htCol.get("NCOLEGIADO_LETRADO");
-		  			}	
-
-		  			File filePDF = inf.generarFactura(request, lenguaje.toUpperCase(), usr.getLocation(), beanFactura.getIdFactura(), nColegiado);
-		  			if (filePDF==null) {
-					    throw new ClsExceptions("Error al generar la factura. Fichero devuelto es nulo.");				
-		  			} else {
-						request.setAttribute("nombreFichero", filePDF.getName());
-						request.setAttribute("rutaFichero", filePDF.getAbsolutePath());
-						request.setAttribute("borrarFichero", "true");
-					}
-		  			
-					if (!filePDF.exists()){
-						throw new SIGAException("messages.general.error.ficheroNoExisteReintentar");
-					}
-				    return "descargaFichero";				    
-		  			/*****************/
-	        	} else {
-	        		throw new SIGAException("messages.abonos.compensacionManual.noExisteFactura");
-	        	}	        							
-		    }
-		   
-		    
-			// CONTROL DE NUMERO FACTURAS (MENSAJE)
-			if (request.getParameter("validado")==null || !request.getParameter("validado").equals("1")) {
-			    // hay que comprobar
-			    int numero = admCompra.compruebaNumeroFacturas(beanCompra);
-			    if (numero>1) {
-			        request.setAttribute("numeroFacturas",new Integer(numero));
-			        request.setAttribute("mensaje","messages.facturacionRapida.aviso.variasFacturas");
-			        salida = "preguntaNumeroFacturas";
-			        // LIBERAMOS EL BLOQUEO DE LAS TABLAS Y LA TRANSACCIÓN
-			        tx.rollback();
-			        return salida;
-			    }
-			}
-			
-			FacFacturacionProgramadaBean programacion = null;			    
-		    // PASO 0: ANTES DE FACTURAR APUNTO EL IMPORTE TOTAL COMO IMPORTE ANTICIPADO
-		    double importe = UtilidadesNumero.redondea(beanCompra.getCantidad().intValue() * beanCompra.getImporteUnitario().doubleValue() * (1 + (beanCompra.getIdTipoIva().doubleValue() / 100)), 2);
-		    beanCompra.setImporteAnticipado(new Double(importe));
-		    if (!admCompra.updateDirect(beanCompra)) {
-		    	// LIBERAMOS EL BLOQUEO DE LAS TABLAS Y LA TRANSACCIÓN
-		        tx.rollback();
-		        throw new ClsExceptions("Error al actualizar el importe anticipado: "+admCompra.getError());
-		    }
-		    
-		    // PASO 1: FACTURACION RAPIDA (GENERACION)
-		    Vector<PysCompraBean> vCompras = new Vector<PysCompraBean>();
-		    vCompras.add(beanCompra);
-		    
-		    // Obtengo la peticion de compra
-		    Hashtable<String, Object> hPeticionCompraSuscripcion = new Hashtable<String, Object>(); 
-		    hPeticionCompraSuscripcion.put("IDINSTITUCION", beanCompra.getIdInstitucion());
-		    hPeticionCompraSuscripcion.put("IDPETICION", beanCompra.getIdPeticion());
-		    
-		    Vector<?> vPeticionCompraSuscripcion = admPeticionCompraSuscripcion.selectByPK(hPeticionCompraSuscripcion);		    
-		    PysPeticionCompraSuscripcionBean beanPeticionCompraSuscripcion = null;
-		    if (vPeticionCompraSuscripcion!=null && vPeticionCompraSuscripcion.size()>0) {
-		    	beanPeticionCompraSuscripcion = (PysPeticionCompraSuscripcionBean) vPeticionCompraSuscripcion.get(0);
-		    }				    
-		    	        	
-        	// Obtiene la serie candidata
-		    FacSerieFacturacionBean beanSerieCandidata = null;
-        	if (idSerieSeleccionada==null || idSerieSeleccionada.equals("")) {
-			    Vector<?> series =  admSerieFacturacion.obtenerSeriesAdecuadas(vCompras);
-			    if (series==null || series.size()!=1) {
-			    	// LIBERAMOS EL BLOQUEO DE LAS TABLAS Y LA TRANSACCIÓN
-			        tx.rollback();
-			        throw new SIGAException("messages.facturacionRapidaCompra.noSerieAdecuada");
-			        
-			    } else if (series.size()==1) {
-			    	beanSerieCandidata = (FacSerieFacturacionBean)series.get(0);
-			    }
-			    
-	        } else { // Se ha seleccionado una serie			        			           
-		        Hashtable<String,String> hSerieFacturacion = new Hashtable<String,String>();
-		        hSerieFacturacion.put("IDINSTITUCION", idInstitucion);
-		        hSerieFacturacion.put("IDSERIEFACTURACION", idSerieSeleccionada);
-		        
-	            Vector<?> vSerieFacturacion = admSerieFacturacion.selectByPK(hSerieFacturacion);
-	            if (vSerieFacturacion!=null && vSerieFacturacion.size()>0) {
-	            	beanSerieCandidata = (FacSerieFacturacionBean)vSerieFacturacion.get(0);
-	            }
-	        }			    
-		    
-        	programacion = facturacion.procesarFacturacionRapidaCompras(beanPeticionCompraSuscripcion, vCompras, beanSerieCandidata);
-	        
-        	// PASO 3: CONFIRMACION RAPIDA (en este caso la transacción se gestiona dentro la transaccion)
-		    boolean esfacturacionRapida = true;
-        	facturacion.confirmarProgramacionFactura(programacion, request, true, null, true, false, 0,esfacturacionRapida);    
-		    
-		    if (Status.STATUS_ACTIVE  == tx.getStatus())
-		    	tx.commit();		    
-			
-			/*********************pdm***********/
-			 if (programacion.getGenerarPDF().trim().equals("1")) {
-				 // Volvemos a hacer la consulta sobre la tabla pyscompra para recuperar el idfactura
-				 beanCompra = admSolicitudCertificados.obtenerCompra(idInstitucion, idSolicitudCertificado);
-				 
-				 Hashtable<String,Object> hFactura = new Hashtable<String,Object>();
-				 UtilidadesHash.set(hFactura,FacFacturaBean.C_IDINSTITUCION, beanCompra.getIdInstitucion());
-				 UtilidadesHash.set(hFactura,FacFacturaBean.C_IDFACTURA, beanCompra.getIdFactura());
-				 Vector<?> vFacturas = admFactura.selectByPK(hFactura);
-		        	
-				/*************************************/
-				// devolver factura
-	     	    ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
-				String rutaAlmacen = rp.returnProperty("facturacion.directorioFisicoFacturaPDFJava")+rp.returnProperty("facturacion.directorioFacturaPDFJava") +
-										ClsConstants.FILE_SEP + idInstitucion + ClsConstants.FILE_SEP;
-			    String rutaServidor = Plantilla.obtenerPathNormalizado(rp.returnProperty("sjcs.directorioFisicoSJCSJava") + 
-		    							rp.returnProperty("sjcs.directorioSJCSJava")) + ClsConstants.FILE_SEP + idInstitucion;
-	
-				if (vFacturas==null || vFacturas.size()==0) {
-				    throw new SIGAException("messages.facturacionRapida.noFactura");
-				    
-				} else {					
-					if (vFacturas.size()==1) {
-						/*********************pdm***********/
-						FacFacturaBean fac = (FacFacturaBean) vFacturas.get(0);
-						
-						String nombreFactura="";
-						if (fac.getNumeroFactura()!=null && !fac.getNumeroFactura().equals("")){
-							nombreFactura=fac.getNumeroFactura();
-						} else {
-							nombreFactura=fac.getIdFactura();
-						}
-						
-						Hashtable htCol = admCol.obtenerDatosColegiado(this.getUserBean(request).getLocation(),fac.getIdPersona().toString(),this.getUserBean(request).getLanguage());
-						
-			  			String nColegiado = "";
-			  			if (htCol!=null && htCol.size()>0) {
-			  			    nColegiado = (String)htCol.get("NCOLEGIADO_LETRADO");
-			  			}
-			  			
-			  			String nombreFicheroAlmacen = UtilidadesString.validarNombreFichero(nColegiado+"-"+nombreFactura +".pdf");
-					    rutaAlmacen += ClsConstants.FILE_SEP + fac.getIdSerieFacturacion()+ "_" + fac.getIdProgramacion() + ClsConstants.FILE_SEP;
-					    /******************************************************************************************/
-					    
-					    File filePDF = new File(rutaAlmacen+ nombreFicheroAlmacen);
-					    if (!filePDF.exists())  {
-					    	return exito("messages.facturacionRapida.aviso.esperaDescarga",request);
-					    }
-					    request.setAttribute("nombreFichero", filePDF.getName());
-					    request.setAttribute("rutaFichero", filePDF.getPath());			
-					    request.setAttribute("borrarFichero", "true");
-					    salida = "descargaFichero";
-					    
-					} else {
-					    ArrayList ficherosPDF = new ArrayList();
-					    String nombreFactura="";
-					    for (int i=0;i<vFacturas.size();i++) {
-						    FacFacturaBean beanFactura = (FacFacturaBean) vFacturas.get(i);
-						   
-							 if (beanFactura.getNumeroFactura()!=null && !beanFactura.getNumeroFactura().equals("")){
-			        			nombreFactura=beanFactura.getNumeroFactura();
-			        		}else{
-			        			nombreFactura=beanFactura.getIdFactura();
-			        		}
-							 
-						    Hashtable htCol = admCol.obtenerDatosColegiado(usr.getLocation(), beanFactura.getIdPersona().toString(), usr.getLanguage());
-				  			String nColegiado = "";
-				  			if (htCol!=null && htCol.size()>0) {
-				  			    nColegiado = (String)htCol.get("NCOLEGIADO_LETRADO");
-				  			}	
-				  			
-						    String ruta = rutaAlmacen + UtilidadesString.validarNombreFichero(nColegiado+"-"+nombreFactura +".pdf");
-						    File filePDF = new File(ruta);
-						    ficherosPDF.add(filePDF);
-					    }
-					    
-						String nombreFicheroZIP="facturasGeneradas_" +UtilidadesBDAdm.getFechaCompletaBD("").replaceAll("/","").replaceAll(":","").replaceAll(" ","");
-						String rutaServidorDescargasZip=rutaServidor + File.separator;
-						
-						Plantilla.doZip(rutaServidorDescargasZip,nombreFicheroZIP,ficherosPDF);
-						File fileZIP = new File(rutaServidorDescargasZip+nombreFicheroZIP + ".zip");
-					    if (!fileZIP.exists())  {
-					        throw new SIGAException("messages.general.error.ficheroNoExiste");
-					    }
-					    request.setAttribute("nombreFichero", nombreFicheroZIP + ".zip");
-						request.setAttribute("rutaFichero", rutaServidorDescargasZip+nombreFicheroZIP + ".zip");			
-						request.setAttribute("borrarFichero", "true");			
-						salida = "descargaFichero";
-					}
-				}
-				
-			} else {
-			 	throw new SIGAException("No se ha generado el PDF");
-			}
+		    String idSerieSeleccionada = (String) vOcultos.elementAt(2);
+	    	if (idSerieSeleccionada!=null) {
+	    		idSerieSeleccionada = idSerieSeleccionada.trim();
+	    	}
+	    	Facturacion fact = new Facturacion(usr);
+	    	fact.facturacionRapidaProductosCertificados(beanCompra.getIdInstitucion().toString(), beanCompra.getIdPeticion().toString(), idSerieSeleccionada, idSolicitudCertificado, beanCompra, request);
 		
 		} catch (Exception e) { 
 			if (e instanceof SIGAException || e instanceof ClsExceptions)
-				throwExcp (e.getMessage(),new String[] {"modulo.certificados"},e,null); 
+				throwExcp (e.getMessage(), new String[] {"modulo.certificados"}, e, null); 
 			else
-				throwExcp("messages.general.error",new String[] {"modulo.certificados"},e,null); 
+				throwExcp("messages.general.error", new String[] {"modulo.certificados"}, e, null); 
 		}
 	    
 		return salida;
@@ -2610,7 +2324,7 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 	//e inmediatamente asigne en base de datos el número de certificado.
 	//todo dentro del método sincronizado para que no se puedan ejecutar varios a la vez.
 	public synchronized void obtenerContadorSinronizado(GestorContadores gc, String idInstitucion, String idContador, String idTipoProducto, String idProducto,
-			String idProductoInstitucion, boolean tieneContador, Hashtable htNew,
+			String idProductoInstitucion, boolean tieneContador, Hashtable<String,Object> htNew,
 			CerSolicitudCertificadosAdm admSolicitud, CerSolicitudCertificadosBean beanSolicitud,
 			String[] claves, String[] campos, UsrBean usr) {
 
@@ -2620,7 +2334,7 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 			tx = usr.getTransaction();
 			tx.begin();
 			// obteniendo registro de contador de BD
-			Hashtable contadorTablaHash = gc.getContador(new Integer(idInstitucion), idContador);
+			Hashtable<String,Object> contadorTablaHash = gc.getContador(new Integer(idInstitucion), idContador);
 
 			if (!tieneContador && contadorTablaHash.get("MODO").toString().equals("0")) {
 				// MODO REGISTRO. Se suponen siempre asi estos
@@ -2708,11 +2422,11 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 		JSONObject json = new JSONObject();
 		UsrBean usr = this.getUserBean(request);
 		FacSerieFacturacionAdm admSerieFacturacion = new FacSerieFacturacionAdm(usr);
-		CerSolicitudCertificadosAdm admSolicitudCertificados = new CerSolicitudCertificadosAdm(usr);
 		String idSerieFacturacion = "";	
 		
-	    // Obtengo la peticion de compra
-	    PysCompraBean beanCompra = admSolicitudCertificados.obtenerCompra(idInstitucion, idSolicitud);
+		// Obtengo la peticion de compra
+    	PysCompraAdm admCompra = new PysCompraAdm(usr);
+	    PysCompraBean beanCompra = admCompra.obtenerCompraCertificado(idInstitucion, idSolicitud);
 	    
 	    // Compruebo si esta facturada la compra
 	    if (beanCompra.getIdFactura()!=null && !beanCompra.getIdFactura().trim().equals("")) {	

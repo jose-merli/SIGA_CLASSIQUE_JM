@@ -542,7 +542,6 @@ public class PysPeticionCompraSuscripcionAdm extends MasterBeanAdministrador {
 				for (int i = 0; i < rc.size(); i++)	{		
 					Row fila = (Row) rc.get(i);
 					Hashtable registro = (Hashtable)fila.getRow();
-					Hashtable registro2 = new Hashtable();
 					if (registro != null) 
 						datos.add(registro);
 				}
@@ -585,7 +584,7 @@ public class PysPeticionCompraSuscripcionAdm extends MasterBeanAdministrador {
 	/**
 	 * Obtiene los datos extras de la pagina de gestion de solicitudes
 	 * @param vDatos
-	 * @return
+	 * @return 0:SinIcono; 1:Descarga; 2:FacturacionRapida
 	 * @throws ClsExceptions
 	 */
 	public Vector<Hashtable<String,Object>> obtenerDatosGestionSolicitud (Vector vDatos) throws ClsExceptions {
@@ -593,7 +592,7 @@ public class PysPeticionCompraSuscripcionAdm extends MasterBeanAdministrador {
 		try {
 			for (int i=0; i<vDatos.size(); i++) {
 				Row rDatos = (Row)vDatos.get(i);
-				Hashtable<String,Object> hDatos = rDatos.getRow();
+				Hashtable<String,Object> hDatos = rDatos.getRow();								
 				
 				/* --------------- 1. Obtiene la descripcion del estado de la peticion -------------------------------- */
 				String sIdEstadoPeticion = UtilidadesHash.getString(hDatos, PysPeticionCompraSuscripcionBean.C_IDESTADOPETICION);
@@ -676,7 +675,8 @@ public class PysPeticionCompraSuscripcionAdm extends MasterBeanAdministrador {
 									" FROM " + PysProductosSolicitadosBean.T_NOMBRETABLA +
 									" WHERE " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDINSTITUCION + " = " + sIdInstitucion +
 										" AND " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDPETICION + " = " + sIdPeticion +
-										" AND " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_ACEPTADO + " NOT IN ('B', 'D', 'P')";
+										" AND " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_ACEPTADO + " NOT IN ('B', 'D', 'P') " +
+										" AND " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_NOFACTURABLE + " = 0 ";
 							
 							hResultado = this.selectGenericoHash(sql);
 							if (hResultado!=null) {
