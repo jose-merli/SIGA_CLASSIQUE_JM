@@ -89,14 +89,16 @@
 	<script>
 		<!-- Refrescar -->
 		function refrescarLocal(){ 		
-			parent.buscar();
+ 			parent.buscar();
+			
 		}	
+
 	</script>	
 	
 </head>
 
 <body>
-		<html:form action="/CEN_MantenimientoGruposFijos.do" method="POST" target="submitArea">
+		<html:form action="/CEN_MantenimientoGruposFijos.do" method="POST" target="mainWorkArea">
 			<html:hidden styleId = "modo"  property = "modo" value = ""/>
 		</html:form>
 			
@@ -105,8 +107,7 @@
 			   border  = "1"
 			   columnNames="administracion.auditoria.institucion,
 			   			  gratuita.mantenimientoTablasMaestra.literal.nombre,"
-			   columnSizes = "40,50,10"
-			   modal = "m">
+			   columnSizes = "40,50,10">
 
 		<%  if ((resultado != null) && (resultado.size() > 0)){ %>
 	

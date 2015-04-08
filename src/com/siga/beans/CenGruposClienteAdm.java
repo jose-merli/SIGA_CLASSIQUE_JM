@@ -153,7 +153,7 @@ public class CenGruposClienteAdm extends MasterBeanAdministrador {
 			select += " F_SIGA_GETRECURSO(grupo."+CenGruposClienteBean.C_NOMBRE+", "+lenguaje+") "+CenGruposClienteBean.C_NOMBRE ;
 			
 			select += " , grupo."+CenGruposClienteBean.C_IDGRUPO;
-			
+			select += " , grupo."+CenGruposClienteBean.C_IDINSTITUCION;
 			//FROM:
 			select += " FROM "+CenGruposClienteBean.T_NOMBRETABLA+" grupo";
 

@@ -55,7 +55,6 @@
 
 	<html:form action="/CEN_MantenimientoGruposFijos.do" method="POST" target="resultado">
 		<html:hidden styleId="modo" property = "modo" value = "buscarPor"/>
-		<html:hidden styleId="accionModal" property = "actionModal" value = ""/>
 		<input type="hidden" id="limpiarFilaSeleccionada" name="limpiarFilaSeleccionada" value=""/>
 	
 		<table class="tablaCentralCampos" align="center">
@@ -101,16 +100,21 @@
 				sub();		
 				document.MantenimientoGruposFijosForm.modo.value = "buscarInit";
 				document.MantenimientoGruposFijosForm.submit();
+				fin();
 		}
 		
 		<!-- Funcion asociada a boton nuevo -->
 		function nuevo() 
 		{		
+			sub();		
 			document.MantenimientoGruposFijosForm.modo.value = "nuevo";
-			var resultado = ventaModalGeneral(document.MantenimientoGruposFijosForm.name,"M");
-			if (resultado) {
-				buscar();
-			}
+			document.MantenimientoGruposFijosForm.target="mainWorkArea"; 
+			document.MantenimientoGruposFijosForm.submit();
+			fin();
+		}
+		
+		function refrescarLocal(){
+			buscar();
 		}
 		
 	</script>

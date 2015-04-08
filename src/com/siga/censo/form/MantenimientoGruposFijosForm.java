@@ -11,18 +11,23 @@ import com.siga.Utilidades.UtilidadesHash;
 import com.siga.beans.CenGruposClienteBean;
 import com.siga.general.MasterForm;
 
+import org.apache.struts.upload.FormFile;
 /**
  * @author PDM
  * @since 01/09/2006
  *
  */
-public class MantenimientoGruposFijosForm extends MasterForm {
+public class MantenimientoGruposFijosForm  extends MasterForm {
 	
 	
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -1461823896375945763L;
+	private FormFile fichero;
+	private String nombrefichero;
+	private String directorio;
+	
 	// METODOS SET
 	public void setIdInstitucion(String dato) {
 		UtilidadesHash.set(this.datos, CenGruposClienteBean.C_IDINSTITUCION , dato);
@@ -33,8 +38,10 @@ public class MantenimientoGruposFijosForm extends MasterForm {
 	public void setIdGrupo(String dato) {
 		UtilidadesHash.set(this.datos, CenGruposClienteBean.C_IDGRUPO , dato);
 	}
-	
-	
+	public void setFichero(FormFile fichero){
+ 		this.fichero = fichero;
+ 	}
+ 	
 	// METODOS GET
 	public String getIdInstitucion() {
 		return UtilidadesHash.getString(this.datos, CenGruposClienteBean.C_IDINSTITUCION);
@@ -45,5 +52,20 @@ public class MantenimientoGruposFijosForm extends MasterForm {
 	public String getIdGrupo() {
 		return UtilidadesHash.getString(this.datos, CenGruposClienteBean.C_IDGRUPO);
 	}
-		
+	public FormFile getFichero	() 	{ 
+ 		return this.fichero;		
+ 	}
+	public String getNombrefichero() {
+		return nombrefichero;
+	}
+	public void setNombrefichero(String nombrefichero) {
+		this.nombrefichero = nombrefichero;
+	}
+	public String getDirectorio() {
+		return directorio;
+	}
+	public void setDirectorio(String directorio) {
+		this.directorio = directorio;
+	}
+
 }

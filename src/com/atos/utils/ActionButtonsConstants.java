@@ -105,8 +105,8 @@ public enum ActionButtonsConstants {
 	BORRARDICTAMENT ("BD","general.boton.borrarDictamen","borrarDictamen()",88),
 	RECALCULAR_FACTURACION ("rf","general.boton.recalcularFacturacion","accionRecalcularFacturacion()",89),
 	PAGAR_ABONOS_BANCO("pgban","facturacion.abonosPagos.boton.pagoBanco","accionPagarBanco()",90),
-	PAGAR_ABONOS_CAJA("pgcaj","facturacion.abonosPagos.boton.pagoCaja","accionPagarCaja()",91);
-	
+	PAGAR_ABONOS_CAJA("pgcaj","facturacion.abonosPagos.boton.pagoCaja","accionPagarCaja()",91),
+	DESCARGAR_PLANTILLA("dp","general.boton.descargar.plantilla","accionDescargarPlantilla()","idButtonDescPlant",92);
     private final String valor;   
 	private final String label;   
     private final String accion;

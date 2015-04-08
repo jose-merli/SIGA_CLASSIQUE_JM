@@ -11,30 +11,56 @@ package com.siga.censo.action;
  * Window - Preferences - Java - Code Style - Code Templates
  */
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.transaction.Status;
+import javax.transaction.SystemException;
 import javax.transaction.UserTransaction;
 
-
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.struts.action.ActionForm;
+import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.redabogacia.sigaservices.app.autogen.model.CenGruposFicheros;
+import org.redabogacia.sigaservices.app.exceptions.BusinessException;
+import org.redabogacia.sigaservices.app.helper.ExcelHelper;
+import org.redabogacia.sigaservices.app.services.cen.CenGruposFicherosService;
+import org.redabogacia.sigaservices.app.util.ReadProperties;
+import org.redabogacia.sigaservices.app.util.SIGAReferences;
+import org.redabogacia.sigaservices.app.vo.cen.CenGruposFicherosVo;
 
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.Paginador;
 import com.siga.Utilidades.UtilidadesBDAdm;
 import com.siga.Utilidades.UtilidadesHash;
+import com.siga.Utilidades.UtilidadesString;
 import com.siga.beans.CenGruposClienteAdm;
 import com.siga.beans.CenGruposClienteBean;
+import com.siga.beans.CenGruposClienteClienteAdm;
+import com.siga.beans.CenGruposClienteClienteBean;
+import com.siga.beans.CenHistoricoAdm;
+import com.siga.beans.CenHistoricoBean;
+import com.siga.beans.CenPersonaAdm;
+import com.siga.beans.CenPersonaBean;
 import com.siga.beans.GenRecursosCatalogosAdm;
 import com.siga.beans.GenRecursosCatalogosBean;
+import com.siga.censo.form.MantenimientoGruposFijosForm;
+import com.siga.general.EjecucionPLs;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
-import com.siga.censo.form.MantenimientoGruposFijosForm;
+
+import es.satec.businessManager.BusinessManager;
 
 /**
  * @author david.sanchez
@@ -42,6 +68,54 @@ import com.siga.censo.form.MantenimientoGruposFijosForm;
  *
  */
 public class MantenimientoGruposFijosAction extends MasterAction {
+	
+	
+	private String COL_NIFCIF = "NIF/CIF";
+	private String COL_NUMCOLEGIADO = "N.COLEGIADO";
+	private String COL_IDGRUPO = "ID.GRUPO";
+	private String COL_RESULTADO = "RESULTADO";
+	private String COL_ACCION = "ALTA(A)/BAJA(B)";
+	
+	protected ActionForward executeInternal(ActionMapping mapping,ActionForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException 
+	{
+		String mapDestino = "exception";
+		MasterForm miForm = null;
+		try { 
+			
+			
+			do {
+				miForm = (MasterForm) formulario;
+				if (miForm != null) {
+					String accion = miForm.getModo();
+					String modo = request.getParameter("modo");
+					if(modo!=null)
+						accion = modo;
+					if ((accion!=null)&&(accion.equalsIgnoreCase("abrirAlvolver"))){
+						mapDestino = abrirAlvolver(mapping, miForm, request, response);
+					}else if ((accion!=null)&& (accion.equalsIgnoreCase("generarPlantilla"))){
+						mapDestino = generarPlantillaExcel(mapping, miForm, request, response);
+					}else if ((accion!=null)&& (accion.equalsIgnoreCase("procesarFichero"))){
+						mapDestino = procesarFichero(mapping, miForm, request, response);
+					}else if ((accion!=null)&&(accion.equalsIgnoreCase("download"))){
+						mapDestino = download(mapping, miForm, request, response);
+					}else{
+						return super.executeInternal(mapping,formulario,request,response);
+					}
+				}
+			} while (false);
+			// Redireccionamos el flujo a la JSP correspondiente
+			if (mapDestino == null)	{ 
+				throw new ClsExceptions("El ActionMapping no puede ser nulo");
+			}
+			return mapping.findForward(mapDestino);
+		} 
+		catch (SIGAException es) {
+
+			throw es;
+		} catch (Exception e) {
+			throw new SIGAException("messages.general.error",e,new String[] {"modulo.gratuita"});
+		}
+	}
 	
 	/* (non-Javadoc)
 	 * @see com.siga.general.MasterAction#buscarPor(org.apache.struts.action.ActionMapping, com.siga.general.MasterForm, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
@@ -113,9 +187,19 @@ public class MantenimientoGruposFijosAction extends MasterAction {
 		
 		try {
 			MantenimientoGruposFijosForm miForm = (MantenimientoGruposFijosForm) formulario;
+			String	idInstitucionGrupos="";
+			String	idGrupo="";
 			
-			String	idInstitucionGrupos = (String)miForm.getDatosTablaOcultos(0).get(0);
-			String	idGrupo = (String)miForm.getDatosTablaOcultos(0).get(1);
+			if(miForm.getDatosTablaOcultos(0)==null){
+				Hashtable hashGrupModif=(Hashtable) request.getSession().getAttribute("DATABACKUP");
+				idInstitucionGrupos=(String)hashGrupModif.get("IDINSTITUCION");
+				idGrupo=(String)hashGrupModif.get("IDGRUPO");
+				
+			}else{
+				idInstitucionGrupos = (String)miForm.getDatosTablaOcultos(0).get(0);
+				idGrupo = (String)miForm.getDatosTablaOcultos(0).get(1);
+			}
+
 			UsrBean user= this.getUserBean(request);
 			CenGruposClienteAdm gruposFijosAdm = new CenGruposClienteAdm (user);
 			
@@ -126,8 +210,21 @@ public class MantenimientoGruposFijosAction extends MasterAction {
 				miForm.setDatos(hashGrupos);
 				request.getSession().setAttribute("DATABACKUP", hashGrupos);
 				
+				//Obtenemos los ficheros de carga masiva del grupo fijo (si existen)
+				BusinessManager bm = getBusinessManager();
+				CenGruposFicherosService fichgrupserv= (CenGruposFicherosService) bm.getService(CenGruposFicherosService.class);
+				CenGruposFicheros obj = new CenGruposFicheros();
+				obj.setIdinstitucionGrupo(Short.parseShort(hashGrupos.get("IDINSTITUCION").toString()));
+				obj.setIdgrupo(Short.parseShort(hashGrupos.get("IDGRUPO").toString()));
+				List<CenGruposFicherosVo> fichGrupoList = fichgrupserv.getList(obj);
+				
+				request.setAttribute("ficherosRel", fichGrupoList); 
+				
+
 			}
-			request.setAttribute("modo", modo);			
+			
+			request.setAttribute("modo", modo);		
+
 		}
 		catch (Exception e) { 
 			throwExcp("messages.general.error", new String[] {"modulo.gratuita"}, e, null); 
@@ -138,7 +235,7 @@ public class MantenimientoGruposFijosAction extends MasterAction {
 	/* (non-Javadoc)
 	 * @see com.siga.general.MasterAction#editar(org.apache.struts.action.ActionMapping, com.siga.general.MasterForm, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
 	 */
-	protected String editar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+	protected String editar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException, ClsExceptions {
 		String modo = "editar";
 		return this.obtenerDatos(modo,formulario,request);
 	}
@@ -146,7 +243,7 @@ public class MantenimientoGruposFijosAction extends MasterAction {
 	/* (non-Javadoc)
 	 * @see com.siga.general.MasterAction#editar(org.apache.struts.action.ActionMapping, com.siga.general.MasterForm, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
 	 */
-	protected String ver(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+	protected String ver(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException, ClsExceptions {
 		String modo = "ver";
 		return this.obtenerDatos(modo,formulario,request);
 	}
@@ -170,7 +267,7 @@ public class MantenimientoGruposFijosAction extends MasterAction {
 			hashGrupoModificado.put(CenGruposClienteBean.C_IDINSTITUCION,user.getLocation());
 
 			String idGrupo =  UtilidadesHash.getString(hashGrupoOriginal,CenGruposClienteBean.C_IDGRUPO);
-			String idInstitucion =  user.getLocation();
+			String idInstitucion =  UtilidadesHash.getString(hashGrupoOriginal,CenGruposClienteBean.C_IDINSTITUCION);
 			String nombreOrig=UtilidadesHash.getString(hashGrupoOriginal,CenGruposClienteBean.C_NOMBRE);
 			String nombreModif=UtilidadesHash.getString(hashGrupoModificado,CenGruposClienteBean.C_NOMBRE);
 			
@@ -217,10 +314,9 @@ public class MantenimientoGruposFijosAction extends MasterAction {
 			e.printStackTrace();
 			throwExcp("messages.general.error", new String[] {"modulo.gratuita"}, e, tx); 
 		} 
-		//request.setAttribute("sinrefresco", "1");// De momento no queremos que refresque la consulta porque al haber añadido la paginacion, si estabamos en la pagina 2, al refrescar volvemos a la 1
-											     // y queremos que nos siga manteniendo donde estabamos. En un futuro se arreglara esto (que refresque la consulta y permanezca en la pagina de la que 
-											     // viniamos.
-		return exitoModal("messages.updated.success", request);
+
+		request.setAttribute("modo","editar");
+		return exitoRefresco("messages.updated.success", request);
 	}
 
 	/* (non-Javadoc)
@@ -301,14 +397,22 @@ public class MantenimientoGruposFijosAction extends MasterAction {
 				
 				gruposFijosAdm.insert(beanGrupos);
 				tx.commit();
+
 			}else{
 				throw new SIGAException("gratuita.mantenimientoTablasMaestra.mensaje.grupoFijoDuplicado"); 
 			}
+			
+			Hashtable<String,Object> hashGrupos = new Hashtable<String,Object>();
+			hashGrupos.put(CenGruposClienteBean.C_IDGRUPO, beanGrupos.getIdGrupo().toString());
+			hashGrupos.put(CenGruposClienteBean.C_IDINSTITUCION, beanGrupos.getIdInstitucion().toString());
+			request.getSession().setAttribute("DATABACKUP", hashGrupos);
 		}
 		catch (Exception e) { 
 			throwExcp("messages.general.error", new String[] {"modulo.gratuita"}, e, tx); 
 		} 
-		return exitoModal("messages.inserted.success", request);
+		request.setAttribute("modo","editar");
+		return exitoRefresco("messages.inserted.success", request);
+		
 	}
 	
 	
@@ -334,23 +438,414 @@ public class MantenimientoGruposFijosAction extends MasterAction {
 			String nombreCampoDescripcion =  CenGruposClienteBean.C_NOMBRE;
 			String idRecurso = GenRecursosCatalogosAdm.getNombreIdRecurso(nombreTabla, nombreCampoDescripcion, new Integer(idInstitucionGrupo), idGrupo.toString());			
 			
-			tx.begin();
+			//Comprobamos si tiene colegiados relacionados
+			CenGruposClienteClienteAdm gruposClClAdm = new CenGruposClienteClienteAdm(this.getUserBean(request));
+			Hashtable grupoClClHash=new Hashtable();
+			grupoClClHash.put("IDINSTITUCION_GRUPO",idInstitucionGrupo);
+			grupoClClHash.put("IDGRUPO",idGrupo);
+			
+			Vector regGrupoPersonaV=gruposClClAdm.select(grupoClClHash);
+			
+			if((regGrupoPersonaV!=null)&&(regGrupoPersonaV.size()>0)){
+				throw new SIGAException ("messages.gratuita.error.eliminarProcedimiento");
+			}else{
+				//Si tiene documentos relacionados los eliminamos
+				BusinessManager bm = getBusinessManager();
+				CenGruposFicherosService fichgrupserv= (CenGruposFicherosService) bm.getService(CenGruposFicherosService.class);
+				CenGruposFicheros obj=new CenGruposFicheros();
+				obj.setIdgrupo(Short.parseShort(idGrupo));
+				obj.setIdinstitucionGrupo(Short.parseShort(idInstitucionGrupo));
+				fichgrupserv.delete(obj);
+				
+				//Borramos los ficheros físicamente 
+				ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+			    String pathFicheros = rp.returnProperty("gen.ficheros.path");
+			    StringBuffer directorioFichero = new StringBuffer(pathFicheros);
+				directorioFichero.append(this.getUserBean(request).getLocation());
+				directorioFichero.append(File.separator);
+				directorioFichero.append(rp.returnProperty("cen.ficheros.grupos.fijos"));
+				directorioFichero.append(File.separator);
+				directorioFichero.append("ficherosCarga");
+				directorioFichero.append(File.separator);
+				directorioFichero.append(idGrupo); 
+				StringBuffer pathFichero = new StringBuffer(directorioFichero);
+				
+				File path = new File(pathFichero.toString());
+				File[] subpath = path.listFiles();
+				if(subpath!=null){
+					for (int i = 0; i < subpath.length; i++) {
+						File[] fichList=subpath[i].listFiles();
+						if(fichList!=null){
+							for(int f = 0;f<fichList.length;f++){
+								fichList[f].delete();
+							}
+						}
+						subpath[i].delete();
+					}
+				}
+				path.delete();
+				
+				tx.begin();
 
-			if (idRecurso != null) {
-    			GenRecursosCatalogosAdm admRecCatalogos = new GenRecursosCatalogosAdm (this.getUserBean(request));
-	        	GenRecursosCatalogosBean recCatalogoBean = new GenRecursosCatalogosBean ();
-	        	recCatalogoBean.setIdRecurso(idRecurso);
-	        	if(!admRecCatalogos.delete(recCatalogoBean)) { 
-	        		throw new SIGAException ("error.messages.deleted");
-	        	}
+				if (idRecurso != null) {
+	    			GenRecursosCatalogosAdm admRecCatalogos = new GenRecursosCatalogosAdm (this.getUserBean(request));
+		        	GenRecursosCatalogosBean recCatalogoBean = new GenRecursosCatalogosBean ();
+		        	recCatalogoBean.setIdRecurso(idRecurso);
+		        	if(!admRecCatalogos.delete(recCatalogoBean)) { 
+		        		throw new SIGAException ("error.messages.deleted");
+		        	}
+				}
+				gruposFijosAdm.delete(claves);
+				tx.commit();
 			}
-			gruposFijosAdm.delete(claves);
-			tx.commit();
 		}
 		catch (Exception e) { 
 			throwExcp("messages.gratuita.error.eliminarProcedimiento", e, tx); 
 		}
 		return exitoRefresco("messages.deleted.success", request);
+	}
+	
+	protected String abrirAlvolver(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+		
+		return "inicio";
+	}
+	
+
+	private String generarPlantillaExcel(ActionMapping mapping, MasterForm miForm, HttpServletRequest request, HttpServletResponse response) {
+		
+		try{
+			
+			Vector datos = new Vector();
+			List cabecera=new ArrayList<String>();
+			
+			cabecera.add(COL_NUMCOLEGIADO);
+			cabecera.add(COL_NIFCIF);
+			cabecera.add(COL_IDGRUPO);
+			cabecera.add(COL_ACCION);
+
+			HSSFWorkbook excelPlant=ExcelHelper.generarLibroExcelUnaHoja(cabecera, datos, "Hoja 1",false);
+			
+			StringBuffer nombreFichero = new StringBuffer("PlantillaGruposFijos");
+			nombreFichero.append(".xls");
+			ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+			String rutaPlantilla = rp.returnProperty("cen.ficheros.grupos.fijos.temporal");
+		  
+    		File path = new File(rutaPlantilla);
+    		if(!path.exists())
+    			path.mkdirs();
+			    		
+			File output=new File(rutaPlantilla+File.separator+nombreFichero.toString());
+			
+			output.createNewFile();
+
+			FileOutputStream fileOut = new FileOutputStream(output);
+				
+			excelPlant.write(fileOut);
+			fileOut.flush();
+			fileOut.close();
+			
+			request.setAttribute("nombreFichero", output.getName());
+			request.setAttribute("rutaFichero", output.getPath());
+			request.setAttribute("borrarFichero", "true");			
+			request.setAttribute("generacionOK","OK");
+			request.setAttribute("accion","");
+			
+		}catch (BusinessException e) { 
+			try {
+				throwExcp("messages.general.error", new String[] {"modulo.censo"}, e, null);
+			} catch (SIGAException e1) {
+				e1.printStackTrace();
+			}
+		} catch (Exception e) { 
+			
+			try {
+				throwExcp("messages.general.error", new String[] {"modulo.censo"}, e, null);
+			} catch (SIGAException e1) {
+				e1.printStackTrace();
+			}
+			
+		} 
+		
+		return "descargaFicheroGlobal";
+
+}
+	
+	private String procesarFichero(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+		
+		try{
+			
+			MantenimientoGruposFijosForm miForm = (MantenimientoGruposFijosForm) formulario; 
+			UsrBean user=(UsrBean)request.getSession().getAttribute("USRBEAN");
+			Hashtable datosGrupo=(Hashtable)request.getSession().getAttribute("DATABACKUP");
+			HSSFWorkbook wb;
+			
+			try{
+				// A partir del stream creamos el workbook
+				wb = new HSSFWorkbook(miForm.getFichero().getInputStream());
+				
+				//Tiene que existir al menos un registro en el excel
+				if(wb.getSheetAt(0).getLastRowNum()==0)
+					throw new SIGAException(UtilidadesString.getMensajeIdioma(user,"censo.gestion.grupos.literal.tipo.fichero"));
+				
+			}catch (Exception e) {
+				throw new SIGAException(UtilidadesString.getMensajeIdioma(user,"censo.gestion.grupos.literal.tipo.fichero"));
+			}
+			
+			//Recuperamos el siguiente idfichero
+			BusinessManager bm = getBusinessManager();
+			CenGruposFicherosService fichgrupserv= (CenGruposFicherosService) bm.getService(CenGruposFicherosService.class);
+			Long idFichSig=fichgrupserv.selectSigId(Short.parseShort(user.getLocation()));
+			
+			ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+		    String pathFicheros = rp.returnProperty("gen.ficheros.path");
+		    StringBuffer directorioFichero = new StringBuffer(pathFicheros);
+			directorioFichero.append(user.getLocation());
+			directorioFichero.append(File.separator);
+			directorioFichero.append(rp.returnProperty("cen.ficheros.grupos.fijos"));
+			directorioFichero.append(File.separator);
+			directorioFichero.append("ficherosCarga");
+			//para cada grupo guardamos sus archivos en una carpeta para luego mostrarlos al consultar/editar el grupo
+			directorioFichero.append(File.separator);
+			directorioFichero.append(datosGrupo.get("IDGRUPO").toString()); 
+			directorioFichero.append(File.separator);
+			directorioFichero.append(idFichSig.toString()); 
+			StringBuffer pathFichero = new StringBuffer(directorioFichero);
+			File path = new File(pathFichero.toString());
+			path.mkdirs();
+			
+			//Guardamos el fichero subido en el directorio correspondiente
+			FileOutputStream fileGuardarOut = new FileOutputStream(pathFichero.toString()+File.separator+miForm.getFichero().getFileName());
+			fileGuardarOut.write(miForm.getFichero().getFileData());
+			fileGuardarOut.flush();
+			fileGuardarOut.close();
+			
+			//Creamos el fichero de log
+			StringBuffer nombreFichero = new StringBuffer(miForm.getFichero().getFileName().substring(0, miForm.getFichero().getFileName().lastIndexOf('.')));
+			nombreFichero.append("_");
+			nombreFichero.append( user.getUserName()+"_log");
+			nombreFichero.append(".xls");
+			FileOutputStream fileOut = new FileOutputStream(pathFichero.toString()+File.separator+nombreFichero.toString());
+			
+			//Se guarda el registro de los ficheros del grupo en base de datos
+			CenGruposFicheros obj=new CenGruposFicheros();
+			obj.setIdinstitucion(Short.parseShort(datosGrupo.get("IDINSTITUCION").toString()));
+			obj.setDirectorio(pathFichero.toString());
+			obj.setIdgrupo(Short.parseShort(datosGrupo.get("IDGRUPO").toString()));
+			obj.setIdinstitucionGrupo(Short.parseShort(datosGrupo.get("IDINSTITUCION").toString()));
+			obj.setNombrefichero(miForm.getFichero().getFileName());
+			obj.setNombreficherolog(nombreFichero.toString());
+			obj.setUsumodificacion(Integer.parseInt(user.getUserName()));
+			obj.setFechamodificacion(new Date());
+			fichgrupserv.insert(obj);
+			
+			Vector datos=new Vector();
+			try{
+			
+				datos=ExcelHelper.obtenerDatosFichExcel(wb,true);
+			
+			}catch (BusinessException e){
+				throw new SIGAException(UtilidadesString.getMensajeIdioma(user,"censo.mantenimientoGruposFijos.errorLectura.fich"));
+			}
+			Vector datosLog=new Vector();
+						
+			//Procesamos los datos
+			if ((datos!=null)&&(datos.size()>0))
+			{
+				for(int f=0; f<datos.size();f++){
+					Hashtable datosH=(Hashtable) datos.get(f);						
+					//creamos o eliminamos la relación de la persona con el grupo fijo
+					String msg=this.procesarRelGrupoFijo(datosH,datosGrupo,user);	
+					//Añadimos la columna que informa de como ha ido todo
+					datosH.put(COL_RESULTADO,msg); 				
+					//Guardamos los datos del fichero log
+					datosLog.add(datosH);
+				}
+			}
+
+			try{
+			
+				HSSFWorkbook excelLog=ExcelHelper.generarLibroExcelUnaHoja(null, datosLog, "Hoja 1",true);
+	
+				excelLog.write(fileOut);
+				fileOut.flush();
+				fileOut.close();
+			
+			}catch (Exception e){
+				throw new SIGAException(UtilidadesString.getMensajeIdioma(user,"messages.general.error.ficheroNoErrores"));
+			}
+
+		}catch (Exception e) { 
+			throwExcp("messages.general.error", new String[] {"modulo.censo"}, e, null);
+		}
+		request.setAttribute("modo","editar");
+		return exitoRefresco("messages.inserted.success", request);
+	}
+	
+	protected String procesarRelGrupoFijo(Hashtable datos,Hashtable datosGrupo, UsrBean user) {
+		
+		String msg="OK";
+		String msgErr="KO: ";
+		UserTransaction tx = null;
+		int accion;
+		try{
+
+			//Si el grupo que estamos editando es diferente del grupo informado en la columna del excel
+			if((datos.get(COL_IDGRUPO)==null)||(datos.get(COL_IDGRUPO).toString().isEmpty())||
+				(!datosGrupo.get("IDGRUPO").toString().equals(datos.get(COL_IDGRUPO).toString()))){
+				msgErr+=UtilidadesString.getMensajeIdioma(user,"censo.mantenimientoGruposFijos.error.fich.idGrupo");
+				return msgErr;
+			}
+			
+			//Obtenemos la persona
+			CenPersonaAdm personaAdm = new CenPersonaAdm(user);
+			CenPersonaBean personaBean=new CenPersonaBean();
+			
+			if((datos.get(COL_NIFCIF)==null)||(datos.get(COL_NIFCIF).toString().isEmpty())){
+				msgErr+=UtilidadesString.getMensajeIdioma(user,"censo.mantenimientoGruposFijos.error.fich.NIFCIF");
+				return msgErr;
+			}
+			
+			try{
+				personaBean =personaAdm.getPersona(datos.get(COL_NIFCIF).toString());
+			}catch (Exception e){
+				msgErr+=UtilidadesString.getMensajeIdioma(user,"censo.mantenimientoGruposFijos.error.fich.NIFCIF");
+				return msgErr;
+			}
+			
+			CenGruposClienteClienteBean bean = new CenGruposClienteClienteBean();
+			bean.setIdGrupo(Integer.parseInt(datosGrupo.get("IDGRUPO").toString()));
+			bean.setIdInstitucionGrupo(Integer.parseInt(datosGrupo.get("IDINSTITUCION").toString()));
+			bean.setIdInstitucion(Integer.parseInt(user.getLocation()));
+			bean.setIdPersona(personaBean.getIdPersona());
+
+			CenGruposClienteClienteAdm gruposClClAdm = new CenGruposClienteClienteAdm(user);
+			
+			Hashtable grupoClClHash=new Hashtable();
+			
+			grupoClClHash.put("IDINSTITUCION",user.getLocation());
+			grupoClClHash.put("IDPERSONA",personaBean.getIdPersona());
+			grupoClClHash.put("IDINSTITUCION_GRUPO",datosGrupo.get("IDINSTITUCION").toString());
+			grupoClClHash.put("IDGRUPO",datosGrupo.get("IDGRUPO").toString());
+			
+			if(datos.get(COL_ACCION).toString().equalsIgnoreCase("A")||(datos.get(COL_ACCION).toString().equalsIgnoreCase("ALTA"))){
+			
+			
+				Vector regGrupoPersonaV=gruposClClAdm.selectByPK(grupoClClHash);
+			
+				if((regGrupoPersonaV!=null)&&(regGrupoPersonaV.size()>0)){
+					msgErr+=UtilidadesString.getMensajeIdioma(user,"process.usuario.ya.asignado");
+					return msgErr;
+				}
+
+			}
+			//Lanzamos el proceso de revision de suscripciones del letrado 
+			//Comienzo control de transacciones
+			tx = user.getTransactionPesada();
+			tx.begin();	
+			
+			try{
+				
+				if(datos.get(COL_ACCION).toString().equalsIgnoreCase("A")||(datos.get(COL_ACCION).toString().equalsIgnoreCase("ALTA"))){
+					accion=CenHistoricoAdm.ACCION_INSERT;
+					gruposClClAdm.insert(bean);
+				}else{
+					accion=CenHistoricoAdm.ACCION_DELETE;
+					gruposClClAdm.delete(bean);
+				}
+				
+				try{
+					CenHistoricoAdm admHist = new CenHistoricoAdm (user);
+					admHist.insertCompleto((CenHistoricoBean)null, bean, accion, user.getUserName());
+				}catch (Exception e){
+					if (Status.STATUS_ACTIVE  == tx.getStatus()){
+						tx.rollback();
+					}
+					msgErr+=UtilidadesString.getMensajeIdioma(user,"censo.mantenimientoGruposFijos.error.fich.historico");
+					return msgErr;		
+				}
+			
+			}catch (Exception e){
+				if (Status.STATUS_ACTIVE  == tx.getStatus()){
+					tx.rollback();
+				}
+				
+				msgErr+=UtilidadesString.getMensajeIdioma(user,"messages.inserted.error");
+				return msgErr;
+				
+			}
+			
+			String resultado[] = EjecucionPLs.ejecutarPL_RevisionSuscripcionesLetrado(user.getLocation(),
+																					  personaBean.getIdPersona().toString(),
+																					  "",
+																					  ""+user.getUserName());
+			
+			if ((resultado == null) || (!resultado[0].equals("0") && !resultado[0].equals("100"))){
+				
+				if (Status.STATUS_ACTIVE  == tx.getStatus()){
+					tx.rollback();
+				}
+				
+				msgErr+=UtilidadesString.getMensajeIdioma(user,"censo.mantenimientoGruposFijos.error.fich.revision.suscripcion")+resultado[1];
+				return msgErr; //si hay error seguimos con el siguiente registro 
+			}	
+			
+			tx.commit();
+
+		}catch (Exception e) { 
+			try {
+				if (Status.STATUS_ACTIVE  == tx.getStatus()){
+					tx.rollback();
+				}
+			} catch (IllegalStateException e1) {
+				e1.printStackTrace();
+			} catch (SecurityException e1) {
+				e1.printStackTrace();
+			} catch (SystemException e1) {
+				e1.printStackTrace();
+			}
+			
+			return msgErr+=e.getMessage(); //si hay error seguimos con el siguiente registro
+		}
+
+		return msg;
+	}
+	
+	/**
+	 * Se va a realizar la descarga del fichero (DOWNLOAD).
+	 *
+	 * @param ActionMapping mapping Mapeador de las acciones.
+	 * @param MasterForm formulario: formulario del que se recoge la información.
+	 * @param HttpServletRequest request: información de entrada de la pagina original.
+	 * @param HttpServletResponse response: información de salida para la pagina destino. 
+	 * 
+	 * @return String que indicará la siguiente acción a llevar a cabo.  
+	 * 
+	 * @exception  ClsExceptions  En cualquier caso de error
+	 */
+	protected String download(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException 
+	{
+		String ficheroName = "";
+		String sRutaFisicaJava = "";
+		UsrBean user = null;
+		try {
+			user = (UsrBean) request.getSession().getAttribute("USRBEAN");
+			MantenimientoGruposFijosForm form = (MantenimientoGruposFijosForm)formulario;
+			ficheroName=form.getNombrefichero();
+			sRutaFisicaJava=form.getDirectorio();
+			File fich = new File(sRutaFisicaJava+File.separator+ficheroName);
+			if(fich==null || !fich.exists()){ 
+				throw new SIGAException("messages.general.error.ficheroNoExiste"); 
+			}
+			request.setAttribute("nombreFichero", fich.getName());
+			request.setAttribute("rutaFichero", fich.getPath());
+			request.setAttribute("borrarFichero", "false");			
+			request.setAttribute("generacionOK","OK");
+			request.setAttribute("accion","");
+			
+		} catch (Exception e) { 
+			throwExcp("messages.general.error",new String[] {"modulo.facturacion.previsionesFacturacion"},e,null); 
+		}
+		return "descargaFicheroGlobal";
 	}
 	
 }
