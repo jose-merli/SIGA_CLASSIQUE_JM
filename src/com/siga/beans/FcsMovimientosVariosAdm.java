@@ -712,7 +712,7 @@ public class FcsMovimientosVariosAdm extends MasterBeanAdministrador {
 			consultaSel =  consulta2;
 		}
 			
-		consultaSel += " order by nombre, orden, fecha_orden, idpagosjg ";
+		consultaSel += " order by nombre, orden, fecha_orden, idaplicacion desc ";
     
 		try {
 			Paginador paginador = new Paginador(consultaSel);
