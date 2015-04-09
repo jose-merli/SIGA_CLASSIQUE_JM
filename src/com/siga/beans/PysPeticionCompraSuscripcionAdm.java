@@ -553,32 +553,48 @@ public class PysPeticionCompraSuscripcionAdm extends MasterBeanAdministrador {
 		return datos;	
 	}
 	
-	public PysPeticionCompraSuscripcionBean aprobarPeticionCompra(PysPeticionCompraSuscripcionBean beanPeticion) throws ClsExceptions {
-	    PysPeticionCompraSuscripcionBean b = null;
+	/**
+	 * Aprueba la peticion de compra
+	 * @param vCompras
+	 * @return
+	 * @throws ClsExceptions
+	 */
+	public PysPeticionCompraSuscripcionBean aprobarCompras(Vector<PysCompraBean> vCompras) throws ClsExceptions {
+	    PysPeticionCompraSuscripcionBean beanPeticionCompraSuscripcion = null;
 		try { 
-		    PysProductosSolicitadosAdm productoSolAdm = new PysProductosSolicitadosAdm (this.usrbean);
-			
-		    Vector prod = productoSolAdm.obtenerProductosSolicitados(beanPeticion);
-		    for (int i=0;i<prod.size();i++) {
-			    // Producto
-		        PysProductosSolicitadosBean bP = (PysProductosSolicitadosBean) prod.get(i);
-		        if(bP.getIdFormaPago()!=null){ //Si no es NO FACTURABLE
-					if (!productoSolAdm.confirmarProducto(bP.getIdInstitucion(), bP.getIdPeticion(), bP.getIdTipoProducto(), bP.getIdProducto(), bP.getIdProductoInstitucion(), new Double(0),"0")) {
+		    PysProductosSolicitadosAdm admProductosSolicitados = new PysProductosSolicitadosAdm(this.usrbean);		    		   
+		    
+		    // Recorre las compras a aprobar
+		    for (int i=0; i<vCompras.size(); i++) {
+		    	PysCompraBean beanCompra = vCompras.get(i);
+		        
+		        if (beanCompra.getNoFacturable()!=null && beanCompra.getNoFacturable().equals("0")) { //Si no es NO FACTURABLE
+					if (!admProductosSolicitados.confirmarProducto(beanCompra.getIdInstitucion(), beanCompra.getIdPeticion(), beanCompra.getIdTipoProducto(), beanCompra.getIdProducto(), beanCompra.getIdProductoInstitucion(), new Double(0), "0")) {
 					    throw new ClsExceptions("Error al confirmar producto");
 					}
 		        }
 		    }
 		    
-		    Vector v = this.select("where idinstitucion="+beanPeticion.getIdInstitucion().toString()+ " AND idpeticion="+beanPeticion.getIdPeticion().toString());
-		    if (v!=null && v.size()>0) {
-		        b = (PysPeticionCompraSuscripcionBean) v.get(0);
+		    if (vCompras.size()>0) {
+		    	PysCompraBean beanCompra = vCompras.get(0);
+		    	
+		    	// Obtengo la peticion de compra
+			    Hashtable<String, Object> hPeticionCompraSuscripcion = new Hashtable<String, Object>(); 
+			    hPeticionCompraSuscripcion.put("IDINSTITUCION", beanCompra.getIdInstitucion());
+			    hPeticionCompraSuscripcion.put("IDPETICION", beanCompra.getIdPeticion());
+			    
+			    PysPeticionCompraSuscripcionAdm admPeticionCompraSuscripcion = new PysPeticionCompraSuscripcionAdm(this.usrbean);
+			    Vector<PysPeticionCompraSuscripcionBean> vPeticionCompraSuscripcion = admPeticionCompraSuscripcion.selectByPK(hPeticionCompraSuscripcion);		    
+			    if (vPeticionCompraSuscripcion!=null && vPeticionCompraSuscripcion.size()>0) {
+			    	beanPeticionCompraSuscripcion = vPeticionCompraSuscripcion.get(0);
+			    }
 		    }
 		    
-		} 
-		catch (Exception e) {
+		}  catch (Exception e) {
 			throw new ClsExceptions (e, "Erro al confirmar la peticion de compra o suscripcion");
 		}
-		return b;	
+		
+		return beanPeticionCompraSuscripcion;	
 	}
 	
 	/**

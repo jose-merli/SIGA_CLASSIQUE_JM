@@ -1500,7 +1500,7 @@ public class SolicitudCompraAction extends MasterAction{
 	    	}
 			
 	    	Facturacion fact = new Facturacion(usr);
-	    	fact.facturacionRapidaProductosCertificados(idInstitucion, idPeticion, idSerieSeleccionada, null, null, request);
+	    	fact.facturacionRapidaProductosCertificados(idInstitucion, idPeticion, idSerieSeleccionada, null, request);
 			
 	    } catch (Exception e) { 
 			if (e instanceof SIGAException || e instanceof ClsExceptions)
@@ -1594,14 +1594,9 @@ public class SolicitudCompraAction extends MasterAction{
 		UsrBean usr = this.getUserBean(request);		
 		String idSerieFacturacion = "";	
 		
-		// Crea el bean de la peticion
-		PysPeticionCompraSuscripcionBean beanPeticionCompraSuscripcion = new PysPeticionCompraSuscripcionBean();
-		beanPeticionCompraSuscripcion.setIdInstitucion(Integer.valueOf(idInstitucion));
-		beanPeticionCompraSuscripcion.setIdPeticion(Long.valueOf(idPeticion));
-		
 		// Obtiene las compras de la peticion
 		PysCompraAdm admCompra = new PysCompraAdm(usr);
-		Vector<PysCompraBean> vCompras = admCompra.obtenerComprasPeticion(beanPeticionCompraSuscripcion);
+		Vector<PysCompraBean> vCompras = admCompra.obtenerComprasPeticion(idInstitucion, idPeticion);
 		
 		if (vCompras==null || vCompras.size()==0) {
 			throw new SIGAException("messages.facturacionRapidaCompra.noElementosFacturables");
@@ -1609,7 +1604,7 @@ public class SolicitudCompraAction extends MasterAction{
 	    
 		// Obtiene las facturas de una peticion de una solicitud de compra de productos
 		FacFacturaAdm admFactura = new FacFacturaAdm(usr);
-		Vector<Hashtable<String,Object>> vFacturas = admFactura.obtenerFacturasFacturacionRapida(idInstitucion, idPeticion, null, null);
+		Vector<Hashtable<String,Object>> vFacturas = admFactura.obtenerFacturasFacturacionRapida(idInstitucion, idPeticion, null);
 			        
 		if (vFacturas!=null && vFacturas.size()>0) {// Compruebo si ya tiene facturas asociadas a la peticion
 	    	idSerieFacturacion = "Facturado"; // JPT: Esto sirve para indicar que ya esta facturado

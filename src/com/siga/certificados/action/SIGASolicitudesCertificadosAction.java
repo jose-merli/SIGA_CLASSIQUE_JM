@@ -2299,16 +2299,13 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 		    String idInstitucion = ((String)vOcultos.elementAt(0)).trim();
 	    	String idSolicitudCertificado = ((String)vOcultos.elementAt(1)).trim();
 		    
-		    // Obtengo la peticion de compra
-	    	PysCompraAdm admCompra = new PysCompraAdm(usr);
-		    PysCompraBean beanCompra = admCompra.obtenerCompraCertificado(idInstitucion, idSolicitudCertificado);
-		    
 		    String idSerieSeleccionada = (String) vOcultos.elementAt(2);
 	    	if (idSerieSeleccionada!=null) {
 	    		idSerieSeleccionada = idSerieSeleccionada.trim();
 	    	}
-	    	Facturacion fact = new Facturacion(usr);
-	    	fact.facturacionRapidaProductosCertificados(beanCompra.getIdInstitucion().toString(), beanCompra.getIdPeticion().toString(), idSerieSeleccionada, idSolicitudCertificado, beanCompra, request);
+	    	
+	    	Facturacion facturacion = new Facturacion(usr);
+	    	facturacion.facturacionRapidaProductosCertificados(idInstitucion, null, idSerieSeleccionada, idSolicitudCertificado, request);
 		
 		} catch (Exception e) { 
 			if (e instanceof SIGAException || e instanceof ClsExceptions)

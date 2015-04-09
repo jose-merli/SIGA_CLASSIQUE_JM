@@ -1334,7 +1334,7 @@ public class Facturacion {
      * @throws ClsExceptions
      * @throws SIGAException
      */
-    public FacFacturacionProgramadaBean procesarFacturacionRapidaCompras(PysPeticionCompraSuscripcionBean beanPeticionCompraSuscripcion, Vector<PysCompraBean> compras, FacSerieFacturacionBean beanSerieCandidata) throws ClsExceptions, SIGAException {
+    private FacFacturacionProgramadaBean procesarFacturacionRapidaCompras(PysPeticionCompraSuscripcionBean beanPeticionCompraSuscripcion, Vector<PysCompraBean> compras, FacSerieFacturacionBean beanSerieCandidata) throws ClsExceptions, SIGAException {
     	FacFacturacionProgramadaBean beanFacturacionProgramada = new FacFacturacionProgramadaBean();
     	
     	try {
@@ -2215,56 +2215,40 @@ public class Facturacion {
 	 * @param idPeticion
 	 * @param idSerieSeleccionada
 	 * @param idSolicitudCertificado
-	 * @param beanCompra
 	 * @param request
 	 * @throws Exception
 	 */
-	public void facturacionRapidaProductosCertificados(String idInstitucion, String idPeticion, String idSerieSeleccionada, String idSolicitudCertificado, PysCompraBean beanCompra, HttpServletRequest request) throws Exception {	
+	public void facturacionRapidaProductosCertificados(String idInstitucion, String idPeticion, String idSerieSeleccionada, String idSolicitudCertificado, HttpServletRequest request) throws Exception {	
 	    UserTransaction tx = null;
 	    try {
-			UsrBean usr = this.usrbean;			
+			UsrBean usr = this.usrbean;	
+			tx = usr.getTransaction();
 			
 		    // administradores
 			PysCompraAdm admCompra = new PysCompraAdm(usr);
 			FacSerieFacturacionAdm admSerieFacturacion = new FacSerieFacturacionAdm(usr);
 			PysPeticionCompraSuscripcionAdm admPeticionCompraSuscripcion = new PysPeticionCompraSuscripcionAdm(usr);		    
 		    FacFacturaAdm admFactura = new FacFacturaAdm(usr);
-		    InformeFactura informe = new InformeFactura(usr);
-		    
-		    // BLOQUEAMOS LAS TABLAS DE COMPRA Y FACTURA EN ESTA TRANSACCIÓN PARA CONTROLAR LAS PETICIONES SIMULTANEAS
-		    tx = usr.getTransaction();
-		    tx.begin();
-		    admCompra.lockTable();
-		    admFactura.lockTable();
-		    
-		    // Obtengo la peticion de compra
-		    Hashtable<String, Object> hPeticionCompraSuscripcion = new Hashtable<String, Object>(); 
-		    hPeticionCompraSuscripcion.put("IDINSTITUCION",idInstitucion);
-		    hPeticionCompraSuscripcion.put("IDPETICION",idPeticion);		
-		    
-		    Vector<?> vPeticionCompraSuscripcion = admPeticionCompraSuscripcion.selectByPK(hPeticionCompraSuscripcion);		    
-		    PysPeticionCompraSuscripcionBean beanPeticionCompraSuscripcion = null;
-		    if (vPeticionCompraSuscripcion!=null && vPeticionCompraSuscripcion.size()>0) {
-		    	beanPeticionCompraSuscripcion = (PysPeticionCompraSuscripcionBean) vPeticionCompraSuscripcion.get(0);
-		    }		    			
-		        
-	        // LOCALIZO LAS COMPRAS (SI NO EXISTEN LAS GENERO)
-		    if (beanPeticionCompraSuscripcion.getIdEstadoPeticion().equals(new Integer(30))) { // Esta en estado baja		        
-		        throw new SIGAException("messages.facturacionRapidaCompra.estadoBaja");		   
-		        
-		    } else if (beanPeticionCompraSuscripcion.getIdEstadoPeticion().equals(new Integer(10))) { // Esta en estado pendiente. Hay que aprobarla		        
-		    	beanPeticionCompraSuscripcion = admPeticionCompraSuscripcion.aprobarPeticionCompra(beanPeticionCompraSuscripcion);
-		    }
+		    InformeFactura informe = new InformeFactura(usr);		   
 		    
 		    // Vectores necesarios para el proceso
 		    Vector<PysCompraBean> vCompras = new Vector<PysCompraBean>();
 		    Vector<Hashtable<String,Object>> vFacturas = new Vector<Hashtable<String,Object>>();	
 		    
-		    if (beanCompra!=null) { // CERTIFICADO
+		    if (idSolicitudCertificado!=null) { // CERTIFICADO
 		    	
-		    	if (beanCompra.getIdFactura()==null || beanCompra.getIdFactura().trim().equals("")) { // No esta facturado => vCompras => Tx
-		    		
-		    		// ANTES DE FACTURAR APUNTO EL IMPORTE TOTAL COMO IMPORTE ANTICIPADO
+		    	// Obtiene las facturas de una solicitud de certificado
+	        	vFacturas = admFactura.obtenerFacturasFacturacionRapida(idInstitucion, null, idSolicitudCertificado);
+	        	
+	        	if (vFacturas==null ||  vFacturas.size()==0) { // No esta facturado => vCompras => Tx
+	        		// BLOQUEAMOS LA TABLA DE COMPRAS EN ESTA TRANSACCIÓN PARA CONTROLAR LAS PETICIONES SIMULTANEAS		    		
+				    tx.begin();
+				    admCompra.lockTable();
+				    
+				    // Obtengo la peticion de compra
+				    PysCompraBean beanCompra = admCompra.obtenerCompraCertificado(idInstitucion, idSolicitudCertificado);
+				    
+				    // ANTES DE FACTURAR APUNTO EL IMPORTE TOTAL COMO IMPORTE ANTICIPADO
 				    double importe = UtilidadesNumero.redondea(beanCompra.getCantidad().intValue() * beanCompra.getImporteUnitario().doubleValue() * (1 + (beanCompra.getIdTipoIva().doubleValue() / 100)), 2);
 				    beanCompra.setImporteAnticipado(new Double(importe));
 				    if (!admCompra.updateDirect(beanCompra)) {
@@ -2273,33 +2257,35 @@ public class Facturacion {
 				    
 				    vCompras.add(beanCompra);
 				    
-		    	} else  { // Esta facturado => vFacturas => No Tx
-			    	// LIBERAMOS EL BLOQUEO EN LAS TABLAS Y LA TRANSACCIÓN
-			    	tx.rollback();
-			    	
-			    	// Obtiene los datos de la factura
-		        	vFacturas = admFactura.obtenerFacturasFacturacionRapida(beanCompra.getIdInstitucion().toString(), null, null, beanCompra.getIdFactura());
-			    
-			    	if (vFacturas==null || vFacturas.size()!=1) {
-			    		throw new SIGAException("messages.abonos.compensacionManual.noExisteFactura");
-			    	}
-			    }
-			    
+				    // Obtengo la peticion del certificado
+				    idPeticion = beanCompra.getIdPeticion().toString();
+	        		
+	        	} else { // Esta facturado => vFacturas => No Tx
+	        		
+	        		// Obtengo los datos de la factura
+	        		Hashtable<String,Object> hFactura = vFacturas.get(0);
+	        		
+	        		// Obtengo la peticion del certificado
+	        		idPeticion = UtilidadesHash.getString(hFactura, PysCompraBean.C_IDPETICION);
+	        	} 
+		    	
 	        } else { // PRODUCTOS NO CERTIFICADOS
+	        	
 	        	// Obtiene las facturas de una peticion de una solicitud de compra de productos
-	        	vFacturas = admFactura.obtenerFacturasFacturacionRapida(idInstitucion, idPeticion, null, null);
+	        	vFacturas = admFactura.obtenerFacturasFacturacionRapida(idInstitucion, idPeticion, null);
 	        	
 	        	if (vFacturas==null ||  vFacturas.size()==0) { // No esta facturado => vCompras => Tx
 	        		
-	        		vCompras = admCompra.obtenerComprasPeticion(beanPeticionCompraSuscripcion);    			   
+	        		// BLOQUEAMOS LA TABLA DE COMPRAS EN ESTA TRANSACCIÓN PARA CONTROLAR LAS PETICIONES SIMULTANEAS	        		
+	        		tx.begin();
+	        		admCompra.lockTable();
+	        		
+	        		vCompras = admCompra.obtenerComprasPeticion(idInstitucion, idPeticion);    			   
 		        	if (vCompras.size()==0) {
 		        		throw new SIGAException("messages.facturacionRapidaCompra.noElementosFacturables");
 		        	}
 		        	
-	        	} else { // Esta facturado => vFacturas => No Tx
-	        		// LIBERAMOS EL BLOQUEO EN LAS TABLAS Y LA TRANSACCIÓN
-			    	tx.rollback();
-	        	}
+	        	} // else {} // Esta facturado => vFacturas => No Tx
 	        }
 	        
 	        if (vFacturas==null || vFacturas.size()==0) { // Compruebo si no tiene facturas asociadas a la peticion => vCompras => Tx
@@ -2325,7 +2311,29 @@ public class Facturacion {
 		            if (vSerieFacturacion!=null && vSerieFacturacion.size()>0) {
 		            	beanSerieCandidata = (FacSerieFacturacionBean)vSerieFacturacion.get(0);
 		            }
-		        }		        	
+		        }
+	        	
+	        	// Obtengo la peticion de compra
+			    Hashtable<String, Object> hPeticionCompraSuscripcion = new Hashtable<String, Object>(); 
+			    hPeticionCompraSuscripcion.put("IDINSTITUCION",idInstitucion);
+			    hPeticionCompraSuscripcion.put("IDPETICION",idPeticion);		
+			    
+			    Vector<PysPeticionCompraSuscripcionBean> vPeticionCompraSuscripcion = admPeticionCompraSuscripcion.selectByPK(hPeticionCompraSuscripcion);		    
+			    PysPeticionCompraSuscripcionBean beanPeticionCompraSuscripcion = null;
+			    if (vPeticionCompraSuscripcion!=null && vPeticionCompraSuscripcion.size()>0) {
+			    	beanPeticionCompraSuscripcion = vPeticionCompraSuscripcion.get(0);
+			    }		    			
+			    
+			    if (idSolicitudCertificado==null) { // PRODUCTOS NO CERTIFICADOS
+			    	
+			    	// LOCALIZO LAS COMPRAS (SI NO EXISTEN LAS GENERO)
+			    	if (beanPeticionCompraSuscripcion.getIdEstadoPeticion().equals(new Integer(30))) { // Esta en estado baja		        
+			    		throw new SIGAException("messages.facturacionRapidaCompra.estadoBaja");		   
+			        
+			    	} else if (beanPeticionCompraSuscripcion.getIdEstadoPeticion().equals(new Integer(10))) { // Esta en estado pendiente. Hay que aprobarla		        
+			    		beanPeticionCompraSuscripcion = admPeticionCompraSuscripcion.aprobarCompras(vCompras);
+			    	}
+			    }
 
 			    // FACTURACION RAPIDA DESDE SERIE CANDIDATA (GENERACION)
 	        	FacFacturacionProgramadaBean programacion = this.procesarFacturacionRapidaCompras(beanPeticionCompraSuscripcion, vCompras, beanSerieCandidata);
@@ -2333,22 +2341,21 @@ public class Facturacion {
 	        	// CONFIRMACION RAPIDA (en este caso la transacción se gestiona dentro la transaccion)
 			    this.confirmarProgramacionFactura(programacion, request, false, null, false, false, 0, true);
 			    
-			    if (beanCompra!=null) { // CERTIFICADO
-			    	// Obtiene las facturas de una solicitud de certificado
-		        	vFacturas = admFactura.obtenerFacturasFacturacionRapida(beanCompra.getIdInstitucion().toString(), null, idSolicitudCertificado, null);
-			    
-			    	if (vFacturas==null || vFacturas.size()!=1) {
-			    		throw new SIGAException("messages.abonos.compensacionManual.noExisteFactura");
-			    	}
+			    if (idSolicitudCertificado!=null) { // CERTIFICADO
 			    	
-			    } else {
+			    	// Obtiene las facturas de una solicitud de certificado
+		        	vFacturas = admFactura.obtenerFacturasFacturacionRapida(idInstitucion, null, idSolicitudCertificado);
+			    	
+			    } else { // PRODUCTOS NO CERTIFICADOS
+			    	
 			    	// Obtiene las facturas de una peticion de una solicitud de compra de productos
-			    	vFacturas = admFactura.obtenerFacturasFacturacionRapida(idInstitucion, idPeticion, null, null);
+			    	vFacturas = admFactura.obtenerFacturasFacturacionRapida(idInstitucion, idPeticion, null);
 			    }
 			    
 			    if (Status.STATUS_ACTIVE  == tx.getStatus())
 	        		tx.commit();			    
-	        }
+			    
+	        } else {} // Esta facturado => vFacturas => No Tx
 				
 	        // GENERAR FICHERO			
 			File fichero = informe.generarZipFacturacionRapida(request, idInstitucion, idPeticion, vFacturas);

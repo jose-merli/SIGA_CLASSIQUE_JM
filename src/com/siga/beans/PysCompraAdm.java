@@ -158,11 +158,12 @@ public class PysCompraAdm extends MasterBeanAdministrador {
 	
 	/**
 	 * Obtener las compras ordenadas de una peticion
-	 * @param beanPeticion
+	 * @param idInstitucion
+	 * @param idPeticion
 	 * @return
 	 * @throws ClsExceptions
 	 */
-	public Vector<PysCompraBean> obtenerComprasPeticion(PysPeticionCompraSuscripcionBean beanPeticion) throws ClsExceptions {
+	public Vector<PysCompraBean> obtenerComprasPeticion(String idInstitucion, String idPeticion) throws ClsExceptions {
 	    Vector<PysCompraBean> salida = new Vector<PysCompraBean>();
 	    try {
     		String[] campos = this.getCamposBean();
@@ -174,8 +175,8 @@ public class PysCompraAdm extends MasterBeanAdministrador {
 
     		sql += " FROM " + PysCompraBean.T_NOMBRETABLA + ", " +
 					PysProductosSolicitadosBean.T_NOMBRETABLA +
-        		" WHERE " + PysCompraBean.T_NOMBRETABLA + "." + PysCompraBean.C_IDINSTITUCION + " = " + beanPeticion.getIdInstitucion().toString() +
-        			" AND " + PysCompraBean.T_NOMBRETABLA + "." + PysCompraBean.C_IDPETICION + " = " + beanPeticion.getIdPeticion().toString() +
+        		" WHERE " + PysCompraBean.T_NOMBRETABLA + "." + PysCompraBean.C_IDINSTITUCION + " = " + idInstitucion +
+        			" AND " + PysCompraBean.T_NOMBRETABLA + "." + PysCompraBean.C_IDPETICION + " = " + idPeticion +
         			" AND " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDINSTITUCION + " = " + PysCompraBean.T_NOMBRETABLA + "." + PysCompraBean.C_IDINSTITUCION + 
         			" AND " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDPETICION + " = " + PysCompraBean.T_NOMBRETABLA + "." + PysCompraBean.C_IDPETICION +  
         			" AND " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDPRODUCTO + " = " + PysCompraBean.T_NOMBRETABLA + "." + PysCompraBean.C_IDPRODUCTO +  

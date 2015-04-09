@@ -2,6 +2,7 @@
 <html>
 <head>
 <!-- comprobanteSolicitud.jsp -->
+
 <!-- CABECERA JSP -->
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-1"%>
@@ -328,7 +329,7 @@
 							pys.solicitudCompra.literal.iva,
 							pys.solicitudCompra.literal.estadoPago,
 							pys.solicitudCompra.literal.importeAnticipado,"  
-				columnSizes="20,14,17,6,9,8,10,11,5">
+				columnSizes="22,14,18,6,9,8,9,9,5">
 		
 <% 				
 				int i = -1;

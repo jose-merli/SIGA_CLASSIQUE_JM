@@ -1080,14 +1080,21 @@ public class PysProductosSolicitadosAdm extends MasterBeanAdministrador {
 		return datos;	
 	}
 	
-
-	public Vector obtenerProductosSolicitados(PysPeticionCompraSuscripcionBean beanPeticion) throws ClsExceptions {
-		Vector salida = new Vector();
+	/**
+	 * Obtiene todos los productos solicitados de una peticion de compra
+	 * @param beanPeticion
+	 * @return
+	 * @throws ClsExceptions
+	 */
+	public Vector<PysProductosSolicitadosBean> obtenerProductosSolicitados(PysPeticionCompraSuscripcionBean beanPeticion) throws ClsExceptions {
+		Vector<PysProductosSolicitadosBean> salida = new Vector<PysProductosSolicitadosBean>();
 		try {
 			salida = this.select("where idinstitucion="+beanPeticion.getIdInstitucion().toString()+ " and idpeticion="+beanPeticion.getIdPeticion().toString());
+			
 		} catch(Exception e){
 			throw new ClsExceptions(e, "Error al obtener productos solicitados.");
 		}
+		
 		return salida;
 	}		
 	
