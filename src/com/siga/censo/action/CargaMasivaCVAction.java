@@ -1,12 +1,8 @@
 package com.siga.censo.action;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Hashtable;
 import java.util.List;
-import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -14,11 +10,9 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
-import org.apache.struts.upload.FormFile;
-import org.redabogacia.sigaservices.app.helper.cen.CargaMasivaDatosCV;
 import org.redabogacia.sigaservices.app.services.cen.SubtiposCVService;
+import org.redabogacia.sigaservices.app.services.cen.impl.CargaMasivaDatosCVImpl;
 import org.redabogacia.sigaservices.app.vo.cen.CargaMasivaDatosCVVo;
-import org.redabogacia.sigaservices.app.vo.scs.DocumentacionEjgVo;
 
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.UsrBean;
@@ -28,9 +22,6 @@ import com.siga.comun.VoUiService;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
-import com.siga.gratuita.form.DefinirDocumentacionEJGForm;
-import com.siga.gratuita.form.service.DocumentacionEjgVoService;
-import com.siga.tlds.FilaExtElement;
 
 import es.satec.businessManager.BusinessManager;
 /**
@@ -227,7 +218,7 @@ public class CargaMasivaCVAction extends MasterAction {
 	}
 	private String descargaEjemplo (ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
         	        
-		CargaMasivaDatosCV cargaMasivaDatosCV = new CargaMasivaDatosCV(); 
+		CargaMasivaDatosCVImpl cargaMasivaDatosCV = new CargaMasivaDatosCVImpl(); 
 //		Vector<Hashtable<String, Object>> datosVector = new Vector<Hashtable<String,Object>>();
 //		Hashtable<String, Object> elemento = new Hashtable<String, Object>();
 //		List<String> campos =  CargaMasivaDatosCV.CAMPOS;
@@ -235,7 +226,7 @@ public class CargaMasivaCVAction extends MasterAction {
 //			elemento.put(campos.get(i),"");
 //		} 
 //		datosVector.add(elemento);
-		File exampleFile =  cargaMasivaDatosCV.createExcelFile(CargaMasivaDatosCV.CAMPOS,null);
+		File exampleFile =  cargaMasivaDatosCV.createExcelFile(CargaMasivaDatosCVImpl.CAMPOS,null);
 		request.setAttribute("nombreFichero", exampleFile.getName());
 		request.setAttribute("rutaFichero", exampleFile.getPath());
 		request.setAttribute("accion", "");
@@ -246,7 +237,7 @@ public class CargaMasivaCVAction extends MasterAction {
 	
 	private String procesarFichero (ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		CargaMasivaCVForm tiposDatosCurricularesForm = (CargaMasivaCVForm) formulario;
-		CargaMasivaDatosCV cargaMasivaDatosCV = new CargaMasivaDatosCV(); 
+		CargaMasivaDatosCVImpl cargaMasivaDatosCV = new CargaMasivaDatosCVImpl(); 
 		
 		try {
 			if(tiposDatosCurricularesForm.getTheFile()!=null && tiposDatosCurricularesForm.getTheFile().getFileData()!=null && tiposDatosCurricularesForm.getTheFile().getFileData().length>0){
