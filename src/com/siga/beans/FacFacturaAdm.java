@@ -3391,8 +3391,8 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
 						" WHERE " + PysCompraBean.T_NOMBRETABLA + "." + PysCompraBean.C_IDINSTITUCION + " = " + CerSolicitudCertificadosBean.T_NOMBRETABLA + "." + CerSolicitudCertificadosBean.C_IDINSTITUCION +
 							" AND " + PysCompraBean.T_NOMBRETABLA + "." + PysCompraBean.C_IDPETICION + " = " + CerSolicitudCertificadosBean.T_NOMBRETABLA + "." + CerSolicitudCertificadosBean.C_IDPETICIONPRODUCTO +
 							" AND " + PysCompraBean.T_NOMBRETABLA + "." + PysCompraBean.C_IDTIPOPRODUCTO + " = " + CerSolicitudCertificadosBean.T_NOMBRETABLA + "." + CerSolicitudCertificadosBean.C_PPN_IDTIPOPRODUCTO +
-							" AND " + PysCompraBean.T_NOMBRETABLA + "." + PysCompraBean.C_IDPRODUCTO + " = " + CerSolicitudCertificadosBean.T_NOMBRETABLA + "." + CerSolicitudCertificadosBean.C_PPN_IDPRODUCTOINSTITUCION +
-							" AND " + PysCompraBean.T_NOMBRETABLA + "." + PysCompraBean.C_IDPRODUCTOINSTITUCION + " = " + CerSolicitudCertificadosBean.T_NOMBRETABLA + "." + CerSolicitudCertificadosBean.C_PPN_IDPRODUCTO +
+							" AND " + PysCompraBean.T_NOMBRETABLA + "." + PysCompraBean.C_IDPRODUCTO + " = " + CerSolicitudCertificadosBean.T_NOMBRETABLA + "." + CerSolicitudCertificadosBean.C_PPN_IDPRODUCTO +
+							" AND " + PysCompraBean.T_NOMBRETABLA + "." + PysCompraBean.C_IDPRODUCTOINSTITUCION + " = " + CerSolicitudCertificadosBean.T_NOMBRETABLA + "." + CerSolicitudCertificadosBean.C_PPN_IDPRODUCTOINSTITUCION +
 							" AND " + CerSolicitudCertificadosBean.T_NOMBRETABLA + "." + CerSolicitudCertificadosBean.C_IDSOLICITUD + " = " + idSolicitudCertificado +
 					" ) ";
 	    	}
