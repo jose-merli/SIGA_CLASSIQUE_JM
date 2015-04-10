@@ -33,8 +33,8 @@ public class CargaMasivaCVForm extends MasterForm {
 	FormFile theFile;
 	
 	String colegiadoNumero;
-	String colegiadoNif;
-	String colegiadoNombre;
+	String personaNif;
+	String personaNombre;
 	String tipoCVCod;
 	String tipoCVNombre;
 	String fechaInicio;
@@ -49,7 +49,7 @@ public class CargaMasivaCVForm extends MasterForm {
 	String fechaVerificacion;
 	String descripcion;
 	
-	
+	String error;
 	
 
 
@@ -171,27 +171,8 @@ public class CargaMasivaCVForm extends MasterForm {
 	/**
 	 * @return the colegiadoNif
 	 */
-	public String getColegiadoNif() {
-		return colegiadoNif;
-	}
-	/**
-	 * @param colegiadoNif the colegiadoNif to set
-	 */
-	public void setColegiadoNif(String colegiadoNif) {
-		this.colegiadoNif = colegiadoNif;
-	}
-	/**
-	 * @return the colegiadoNombre
-	 */
-	public String getColegiadoNombre() {
-		return colegiadoNombre;
-	}
-	/**
-	 * @param colegiadoNombre the colegiadoNombre to set
-	 */
-	public void setColegiadoNombre(String colegiadoNombre) {
-		this.colegiadoNombre = colegiadoNombre;
-	}
+	
+	
 	/**
 	 * @return the tipoCVCod
 	 */
@@ -324,6 +305,42 @@ public class CargaMasivaCVForm extends MasterForm {
 	 */
 	public void setSubtipoCV2Nombre(String subtipoCV2Nombre) {
 		this.subtipoCV2Nombre = subtipoCV2Nombre;
+	}
+	/**
+	 * @return the personaNif
+	 */
+	public String getPersonaNif() {
+		return personaNif;
+	}
+	/**
+	 * @param personaNif the personaNif to set
+	 */
+	public void setPersonaNif(String personaNif) {
+		this.personaNif = personaNif;
+	}
+	/**
+	 * @return the personaNombre
+	 */
+	public String getPersonaNombre() {
+		return personaNombre;
+	}
+	/**
+	 * @param personaNombre the personaNombre to set
+	 */
+	public void setPersonaNombre(String personaNombre) {
+		this.personaNombre = personaNombre;
+	}
+	/**
+	 * @return the error
+	 */
+	public String getError() {
+		return error;
+	}
+	/**
+	 * @param error the error to set
+	 */
+	public void setError(String error) {
+		this.error = error;
 	}
 	
 }

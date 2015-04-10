@@ -46,11 +46,11 @@ public class CargaMasivaDatosCVVoService implements VoUiService<CargaMasivaCVFor
 		if(objectForm.getIdInstitucion()!=null && !objectForm.getIdInstitucion().equals("")){
 			objectVo.setIdinstitucion(Short.valueOf(objectForm.getIdInstitucion()));
 		}
-		if(objectForm.getColegiadoNif()!=null && !objectForm.getColegiadoNif().equals(""))
-			objectVo.setColegiadoNif(objectForm.getColegiadoNif());
+		if(objectForm.getPersonaNif()!=null && !objectForm.getPersonaNif().equals(""))
+			objectVo.setPersonaNif(objectForm.getPersonaNif());
 
-		if(objectForm.getColegiadoNombre()!=null && !objectForm.getColegiadoNombre().equals(""))
-			objectVo.setColegiadoNombre(objectForm.getColegiadoNombre());
+		if(objectForm.getPersonaNombre()!=null && !objectForm.getPersonaNombre().equals(""))
+			objectVo.setPersonaNombre(objectForm.getPersonaNombre());
 		if(objectForm.getColegiadoNumero()!=null && !objectForm.getColegiadoNumero().equals(""))
 			objectVo.setColegiadoNumero(objectForm.getColegiadoNumero());
 		if(objectForm.getCreditos()!=null && !objectForm.getCreditos().equals(""))
@@ -105,6 +105,8 @@ public class CargaMasivaDatosCVVoService implements VoUiService<CargaMasivaCVFor
 
 		if(objectForm.getUsuario()!=null && !objectForm.getUsuario().equals(""))
 			objectVo.setUsuario(objectForm.getUsuario());
+		if(objectForm.getError()!=null && !objectForm.getError().equals(""))
+			objectVo.setError(objectForm.getError());
 
 		try {
 			if(objectForm.getTheFile()!=null && objectForm.getTheFile().getFileData()!=null && objectForm.getTheFile().getFileData().length>0){
@@ -136,11 +138,11 @@ public class CargaMasivaDatosCVVoService implements VoUiService<CargaMasivaCVFor
 		if(objectVo.getIdinstitucion()!=null && !objectVo.getIdinstitucion().equals("")){
 			objectForm.setIdInstitucion(objectVo.getIdinstitucion().toString());
 		}
-		if(objectVo.getColegiadoNif()!=null && !objectVo.getColegiadoNif().equals(""))
-			objectForm.setColegiadoNif(objectVo.getColegiadoNif());
+		if(objectVo.getPersonaNif()!=null && !objectVo.getPersonaNif().equals(""))
+			objectForm.setPersonaNif(objectVo.getPersonaNif());
 
-		if(objectVo.getColegiadoNombre()!=null && !objectVo.getColegiadoNombre().equals(""))
-			objectForm.setColegiadoNombre(objectVo.getColegiadoNombre());
+		if(objectVo.getPersonaNombre()!=null && !objectVo.getPersonaNombre().equals(""))
+			objectForm.setPersonaNombre(objectVo.getPersonaNombre());
 		if(objectVo.getColegiadoNumero()!=null && !objectVo.getColegiadoNumero().equals(""))
 			objectForm.setColegiadoNumero(objectVo.getColegiadoNumero());
 		if(objectVo.getCreditos()!=null && !objectVo.getCreditos().equals(""))
@@ -176,6 +178,8 @@ public class CargaMasivaDatosCVVoService implements VoUiService<CargaMasivaCVFor
 			objectForm.setTipoCVNombre(objectVo.getTipoCVNombre());
 		if(objectVo.getUsuario()!=null && !objectVo.getUsuario().equals(""))
 			objectForm.setUsuario(objectVo.getUsuario());
+		if(objectVo.getError()!=null && !objectVo.getError().equals(""))
+			objectForm.setError(objectVo.getError());
 		//		if(objectForm.getIdfichero()!=null && !objectForm.getIdfichero().equals("")){
 		//			objectVo.setIdFichero(objectForm.getIdfichero().toString());
 		//			objectVo.setExtensionArchivo(objectForm.getExtensionArchivo());

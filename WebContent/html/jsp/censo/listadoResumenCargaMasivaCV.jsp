@@ -49,8 +49,8 @@
 <siga:Table 
 	   	      name="tablaDatos"
 	   		  border="1"
-	   		  columnNames="colegiadoNumero,colegiadoNombre,tipoCVNombre,fechaInicio,fechaFin,subtipoCV1Nombre,subtipoCV2Nombre,fechaVerificacion"
-	   		  columnSizes="6,20,20,8,8,15,15,8"
+	   		  columnNames="colegiadoNumero,colegiadoNombre,tipoCVNombre,fechaInicio,fechaFin,subtipoCV1Nombre,subtipoCV2Nombre,fechaVerificacion,"
+	   		  columnSizes="6,20,15,8,8,15,15,8,5"
 	   		  
 	   		      >
 		<c:choose>
@@ -71,8 +71,8 @@
 	  				clase="listaNonEdit">
 						
 						<td align='left'><c:out value="${datoCV.colegiadoNumero}" /></td>
-						<!--td align='left'><c:out value="${datoCV.colegiadoNif}" /></td-->
-						<td align='left'><c:out value="${datoCV.colegiadoNombre}" /></td>
+						<!--td align='left'><c:out value="${datoCV.personaNif}" /></td-->
+						<td align='left'><c:out value="${datoCV.personaNombre}" /></td>
 						<!-- td align='left'><c:out value="${datoCV.tipoCVCod}" /></td-->
 						<td align='left'><c:out value="${datoCV.tipoCVNombre}" /></td>
 						<td align='left'><c:out value="${datoCV.fechaInicio}" /></td>
@@ -82,6 +82,7 @@
 						<!-- td align='left'><c:out value="${datoCV.subtipoCV2Cod}" /></td-->
 						<td align='left'><c:out value="${datoCV.subtipoCV2Nombre}" /></td>
 						<td align='left'><c:out value="${datoCV.creditos}" /></td>
+						<td align='left'><c:out value="${datoCV.error}" /></td>
 						<!--  td align='left'><c:out value="${datoCV.fechaVerificacion}" /></td-->
 						<!-- td align='left'><c:out value="${datoCV.descripcion}" /></td-->
 

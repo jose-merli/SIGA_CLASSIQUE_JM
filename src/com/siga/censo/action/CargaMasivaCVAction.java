@@ -10,8 +10,10 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.redabogacia.sigaservices.app.services.cen.CargaMasivaCV;
 import org.redabogacia.sigaservices.app.services.cen.SubtiposCVService;
 import org.redabogacia.sigaservices.app.services.cen.impl.CargaMasivaDatosCVImpl;
+import org.redabogacia.sigaservices.app.services.comun.CargaMasiva;
 import org.redabogacia.sigaservices.app.vo.cen.CargaMasivaDatosCVVo;
 
 import com.atos.utils.ClsExceptions;
@@ -218,7 +220,7 @@ public class CargaMasivaCVAction extends MasterAction {
 	}
 	private String descargaEjemplo (ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
         	        
-		CargaMasivaDatosCVImpl cargaMasivaDatosCV = new CargaMasivaDatosCVImpl(); 
+		CargaMasivaCV cargaMasivaDatosCV = (CargaMasivaCV) getBusinessManager().getService(CargaMasivaCV.class); 
 //		Vector<Hashtable<String, Object>> datosVector = new Vector<Hashtable<String,Object>>();
 //		Hashtable<String, Object> elemento = new Hashtable<String, Object>();
 //		List<String> campos =  CargaMasivaDatosCV.CAMPOS;
@@ -236,14 +238,17 @@ public class CargaMasivaCVAction extends MasterAction {
 	}
 	
 	private String procesarFichero (ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
-		CargaMasivaCVForm tiposDatosCurricularesForm = (CargaMasivaCVForm) formulario;
-		CargaMasivaDatosCVImpl cargaMasivaDatosCV = new CargaMasivaDatosCVImpl(); 
-		
+		CargaMasivaCVForm cargaMasivaCVForm = (CargaMasivaCVForm) formulario;
+		CargaMasivaCV cargaMasivaDatosCV = (CargaMasivaCV) getBusinessManager().getService(CargaMasivaCV.class);
+		UsrBean usrBean = this.getUserBean(request);
 		try {
-			if(tiposDatosCurricularesForm.getTheFile()!=null && tiposDatosCurricularesForm.getTheFile().getFileData()!=null && tiposDatosCurricularesForm.getTheFile().getFileData().length>0){
-				List<CargaMasivaDatosCVVo> cargaMasivaDatosCVList = cargaMasivaDatosCV.parseExcelFile(tiposDatosCurricularesForm.getTheFile().getFileData());
+			if(cargaMasivaCVForm.getTheFile()!=null && cargaMasivaCVForm.getTheFile().getFileData()!=null && cargaMasivaCVForm.getTheFile().getFileData().length>0){
+				List<CargaMasivaDatosCVVo> cargaMasivaDatosCVList = cargaMasivaDatosCV.parseExcelFile(cargaMasivaCVForm.getTheFile().getFileData(),Short.valueOf(usrBean.getLocation()));
 				VoUiService<CargaMasivaCVForm, CargaMasivaDatosCVVo> voService = new CargaMasivaDatosCVVoService();
 				request.setAttribute("listado", voService.getVo2FormList(cargaMasivaDatosCVList));
+				String identificadorFormularioBusqueda = getIdBusqueda(super.dataBusqueda,getClass().getName());
+				request.getSession().setAttribute(identificadorFormularioBusqueda,cargaMasivaCVForm.clone());
+				
 			}
 		}catch (Exception e) {
 			e.printStackTrace();
