@@ -28,7 +28,6 @@ import com.siga.Utilidades.UtilidadesNumero;
 import com.siga.beans.CenColegiadoAdm;
 import com.siga.beans.CenColegiadoBean;
 import com.siga.beans.CenPersonaAdm;
-import com.siga.beans.FacEstadoFacturaAdm;
 import com.siga.beans.GenParametrosAdm;
 import com.siga.beans.PysCompraAdm;
 import com.siga.beans.PysCompraBean;
@@ -73,7 +72,7 @@ public class GestionSolicitudesAction extends MasterAction {
 			
 				String accion = miForm.getModo();
 				if (accion == null || accion.equals("")) {
-					mapDestino = inicio(mapping, miForm, request, response);
+					mapDestino = abrir(mapping, miForm, request, response);
 					break;
 					
 				} else if (accion.equalsIgnoreCase("buscarInit")){
@@ -632,30 +631,5 @@ public class GestionSolicitudesAction extends MasterAction {
 			throw new SIGAException("messages.pys.solicitudCompra.errorAnticiparImporteSuperior");
 		}
 		return new Double(nuevoTotalAnticipado);
-	}
-
-	/**
-	 * 
-	 * @param mapping
-	 * @param formulario
-	 * @param request
-	 * @param response
-	 * @return
-	 * @throws ClsExceptions
-	 * @throws SIGAException
-	 */
-	protected String inicio(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, SIGAException {
-		try {
-			UsrBean usuario = (UsrBean) request.getSession().getAttribute(("USRBEAN"));
-			
-			FacEstadoFacturaAdm admFacEstadoFactura = new FacEstadoFacturaAdm(usuario);
-			Vector<Hashtable<String,Object>> vEstadosPago = admFacEstadoFactura.obtenerEstadosPago(usuario.getLanguage());
-			request.setAttribute("vEstadosPago", vEstadosPago);
-			
-		}catch (Exception e) { 
-			throwExcp("messages.general.error", new String[] {"modulo.productos"}, e, null); 
-		}
-		
-		return "inicio";
 	}
 }

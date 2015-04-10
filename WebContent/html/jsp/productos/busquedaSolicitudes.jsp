@@ -128,22 +128,13 @@
 					<td class="labelText"><siga:Idioma key="pys.gestionSolicitudes.literal.fechaHasta"/></td>
 					<td><siga:Fecha nombreCampo="buscarFechaHasta" valorInicial="<%=fechaHasta%>" campoCargarFechaDesde="buscarFechaDesde"/></td>
 					
-					<td class="labelText"><siga:Idioma key="pys.gestionSolicitudes.literal.estadoPago"/></td>				
+					<td class="labelText"><siga:Idioma key="pys.gestionSolicitudes.facturada.literal"/></td>				
                  	<td>
-                 		<html:select name="GestionSolicitudesForm" property="estadoPago" styleId="estadoPago">
-                 			<html:option value=""></html:option>
-<%
-							Vector<Hashtable<String,Object>> vEstadosPago = (Vector<Hashtable<String,Object>>) request.getAttribute("vEstadosPago"); 	
-							for (int i=0; i<vEstadosPago.size(); i++) {
-								Hashtable<String,Object> hEstadoPago = (Hashtable<String,Object>) vEstadosPago.get(i);
-								String sEstadoPagoId = UtilidadesHash.getString(hEstadoPago, "IDRECURSO");
-								String sEstadoPagoDescripcion = UtilidadesHash.getString(hEstadoPago, "DESCRIPCION");
-									
-%>
-								<html:option value="<%=sEstadoPagoId%>"><%=sEstadoPagoDescripcion%></html:option>
-<%																			
-							}
-%>							                 		
+                 		<html:select name="GestionSolicitudesForm" property="facturada" styleId="facturada">
+                 			<html:option value=""></html:option>                 			               		
+                 			<html:option value="0"><siga:Idioma key="pys.gestionSolicitudes.facturada.opcionSinFacturar"/></html:option>
+                 			<html:option value="1"><siga:Idioma key="pys.gestionSolicitudes.facturada.opcionParcial"/></html:option>
+                 			<html:option value="2"><siga:Idioma key="pys.gestionSolicitudes.facturada.opcionTotal"/></html:option>  
                  		</html:select>
 					</td>
 				</tr>

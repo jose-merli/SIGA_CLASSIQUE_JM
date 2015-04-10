@@ -7,8 +7,8 @@
 package com.siga.productos.form;
 
 import com.atos.utils.GstDate;
-import com.siga.general.MasterForm;
 import com.siga.Utilidades.UtilidadesHash;
+import com.siga.general.MasterForm;
 
 /**
  * @author daniel.campos
@@ -232,11 +232,11 @@ public class GestionSolicitudesForm extends MasterForm
 		return UtilidadesHash.getInteger(this.datos, "_IDCUENTA_");
 	}
 
-	public String getEstadoPago() {
-		return UtilidadesHash.getString(this.datos, "EstadoPago");
+	public String getFacturada() {
+		return UtilidadesHash.getString(this.datos, "Facturada");
 	}
 	
-	public void setEstadoPago(String dato) {
-		UtilidadesHash.set(this.datos, "EstadoPago", dato);
+	public void setFacturada(String dato) {
+		UtilidadesHash.set(this.datos, "Facturada", dato);
 	}
 }

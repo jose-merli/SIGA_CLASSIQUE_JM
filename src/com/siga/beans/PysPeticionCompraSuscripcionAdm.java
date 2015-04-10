@@ -202,35 +202,81 @@ public class PysPeticionCompraSuscripcionAdm extends MasterBeanAdministrador {
 						" ) ";
 			}
 			
-			// Compruebo si existe el estado del pago en los productos o servicios
-			if (datos.getEstadoPago()!=null && !datos.getEstadoPago().equals("")) {
-				sql += " AND ( " +
-							" EXISTS ( " +
-								" SELECT 1 " +
-								" FROM " + PysProductosSolicitadosBean.T_NOMBRETABLA +
-								" WHERE " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDINSTITUCION + " = " + PysPeticionCompraSuscripcionBean.T_NOMBRETABLA + "." + PysPeticionCompraSuscripcionBean.C_IDINSTITUCION +
-									" AND " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDPETICION + " = " + PysPeticionCompraSuscripcionBean.T_NOMBRETABLA + "." + PysPeticionCompraSuscripcionBean.C_IDPETICION +                  
-									" AND '" + datos.getEstadoPago() + "' = F_SIGA_ESTADOCOMPRA ( " +
-										PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDINSTITUCION + ", " +
-										PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDPETICION + ", " +
-										PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDPRODUCTO + ", " +
-										PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDTIPOPRODUCTO + ", " +
-										PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDPRODUCTOINSTITUCION + 
-									" ) " +
-							" ) OR EXISTS ( " +
-								" SELECT 1 " +
-								" FROM " + PysServiciosSolicitadosBean.T_NOMBRETABLA +
-								" WHERE " + PysServiciosSolicitadosBean.T_NOMBRETABLA + "." + PysServiciosSolicitadosBean.C_IDINSTITUCION + " = " + PysPeticionCompraSuscripcionBean.T_NOMBRETABLA + "." + PysPeticionCompraSuscripcionBean.C_IDINSTITUCION +
-									" AND " + PysServiciosSolicitadosBean.T_NOMBRETABLA + "." + PysServiciosSolicitadosBean.C_IDPETICION + " = " + PysPeticionCompraSuscripcionBean.T_NOMBRETABLA + "." + PysPeticionCompraSuscripcionBean.C_IDPETICION +                  
-									" AND '" + datos.getEstadoPago() + "' = F_SIGA_ESTADOSUSCRIPCION ( " +
-										PysServiciosSolicitadosBean.T_NOMBRETABLA + "." + PysServiciosSolicitadosBean.C_IDINSTITUCION + ", " +
-										PysServiciosSolicitadosBean.T_NOMBRETABLA + "." + PysServiciosSolicitadosBean.C_IDPETICION + ", " +
-										PysServiciosSolicitadosBean.T_NOMBRETABLA + "." + PysServiciosSolicitadosBean.C_IDSERVICIO + ", " +
-										PysServiciosSolicitadosBean.T_NOMBRETABLA + "." + PysServiciosSolicitadosBean.C_IDTIPOSERVICIOS + ", " +
-										PysServiciosSolicitadosBean.T_NOMBRETABLA + "." + PysServiciosSolicitadosBean.C_IDSERVICIOSINSTITUCION + 
-									" ) " +
-							" ) " +
+			// Compruebo el estado facturado de la solicitud
+			if (datos.getFacturada()!=null && !datos.getFacturada().equals("")) {
+				
+				String sqlPysFacturados = " ( " + 
+						" SELECT 1 " + // Productos facturados    
+						" FROM " + PysCompraBean.T_NOMBRETABLA +								
+						" WHERE " + PysCompraBean.T_NOMBRETABLA + "." + PysCompraBean.C_IDINSTITUCION + " = " + PysPeticionCompraSuscripcionBean.T_NOMBRETABLA + "." + PysPeticionCompraSuscripcionBean.C_IDINSTITUCION + 
+							" AND " + PysCompraBean.T_NOMBRETABLA + "." + PysCompraBean.C_IDPETICION + " = " + PysPeticionCompraSuscripcionBean.T_NOMBRETABLA + "." + PysPeticionCompraSuscripcionBean.C_IDPETICION + 
+							" AND " + PysCompraBean.T_NOMBRETABLA + "." + PysCompraBean.C_IDFACTURA + " IS NOT NULL " +							
+						" UNION " +
+						" SELECT 1 " + // Servicios facturados   
+						" FROM " + PysSuscripcionBean.T_NOMBRETABLA + ", " + 
+							FacFacturacionSuscripcionBean.T_NOMBRETABLA +
+						" WHERE " + PysSuscripcionBean.T_NOMBRETABLA + "." + PysSuscripcionBean.C_IDINSTITUCION + " = " + PysPeticionCompraSuscripcionBean.T_NOMBRETABLA + "." + PysPeticionCompraSuscripcionBean.C_IDINSTITUCION + 
+							" AND " + PysSuscripcionBean.T_NOMBRETABLA + "." + PysSuscripcionBean.C_IDPETICION + " = " + PysPeticionCompraSuscripcionBean.T_NOMBRETABLA + "." + PysPeticionCompraSuscripcionBean.C_IDPETICION +
+							" AND " + FacFacturacionSuscripcionBean.T_NOMBRETABLA + "." + FacFacturacionSuscripcionBean.C_IDINSTITUCION + " = " + PysSuscripcionBean.T_NOMBRETABLA + "." + PysSuscripcionBean.C_IDINSTITUCION +
+							" AND " + FacFacturacionSuscripcionBean.T_NOMBRETABLA + "." + FacFacturacionSuscripcionBean.C_IDTIPOSERVICIOS + " = " + PysSuscripcionBean.T_NOMBRETABLA + "." + PysSuscripcionBean.C_IDTIPOSERVICIOS +
+							" AND " + FacFacturacionSuscripcionBean.T_NOMBRETABLA + "." + FacFacturacionSuscripcionBean.C_IDSERVICIO + " = " + PysSuscripcionBean.T_NOMBRETABLA + "." + PysSuscripcionBean.C_IDSERVICIO +
+							" AND " + FacFacturacionSuscripcionBean.T_NOMBRETABLA + "." + FacFacturacionSuscripcionBean.C_IDSERVICIOSINSTITUCION + " = " + PysSuscripcionBean.T_NOMBRETABLA + "." + PysSuscripcionBean.C_IDSERVICIOSINSTITUCION +
+							" AND " + FacFacturacionSuscripcionBean.T_NOMBRETABLA + "." + FacFacturacionSuscripcionBean.C_IDSUSCRIPCION + " = " + PysSuscripcionBean.T_NOMBRETABLA + "." + PysSuscripcionBean.C_IDSUSCRIPCION +									
+					" ) ";
+				
+				if (datos.getFacturada().equals("0")) { // Opcion Sin Facturar
+					sql += " AND NOT EXISTS " + sqlPysFacturados;
+					
+				} else { // Opciones facturadas
+					sql += " AND EXISTS " + sqlPysFacturados;
+					
+					String sqlPysNoFacturados = " ( " +
+							" SELECT 1 " + // Productos facturables no facturados    
+							" FROM " + PysCompraBean.T_NOMBRETABLA + ", " + 
+								PysProductosSolicitadosBean.T_NOMBRETABLA +
+							" WHERE " + PysCompraBean.T_NOMBRETABLA + "." + PysCompraBean.C_IDINSTITUCION + " = " + PysPeticionCompraSuscripcionBean.T_NOMBRETABLA + "." + PysPeticionCompraSuscripcionBean.C_IDINSTITUCION + 
+								" AND " + PysCompraBean.T_NOMBRETABLA + "." + PysCompraBean.C_IDPETICION + " = " + PysPeticionCompraSuscripcionBean.T_NOMBRETABLA + "." + PysPeticionCompraSuscripcionBean.C_IDPETICION + 
+								" AND " + PysCompraBean.T_NOMBRETABLA + "." + PysCompraBean.C_IDFACTURA + " IS NULL " +
+								" AND " + PysCompraBean.T_NOMBRETABLA + "." + PysCompraBean.C_NOFACTURABLE + " = 0 " +
+								" AND " + PysCompraBean.T_NOMBRETABLA + "." + PysCompraBean.C_FECHABAJA + " IS NULL " +
+								" AND " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDINSTITUCION + " = " + PysCompraBean.T_NOMBRETABLA + "." + PysCompraBean.C_IDINSTITUCION +
+								" AND " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDPETICION + " = " + PysCompraBean.T_NOMBRETABLA + "." + PysCompraBean.C_IDPETICION + 
+								" AND " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDPRODUCTO + " = " + PysCompraBean.T_NOMBRETABLA + "." + PysCompraBean.C_IDPRODUCTO +
+								" AND " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDPRODUCTOINSTITUCION + " = " + PysCompraBean.T_NOMBRETABLA + "." + PysCompraBean.C_IDPRODUCTOINSTITUCION +
+								" AND " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDTIPOPRODUCTO + " = " + PysCompraBean.T_NOMBRETABLA + "." + PysCompraBean.C_IDTIPOPRODUCTO +
+								" AND " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_ACEPTADO + " NOT IN ('B', 'D') " +
+								" AND " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_NOFACTURABLE + " = 0 " +
+							" UNION " +
+							" SELECT 1 " + // Servicios facturables no facturados    
+							" FROM " + PysSuscripcionBean.T_NOMBRETABLA + ", " + 
+									PysServiciosSolicitadosBean.T_NOMBRETABLA + 
+							" WHERE " + PysSuscripcionBean.T_NOMBRETABLA + "." + PysSuscripcionBean.C_IDINSTITUCION + " = " + PysPeticionCompraSuscripcionBean.T_NOMBRETABLA + "." + PysPeticionCompraSuscripcionBean.C_IDINSTITUCION + 
+								" AND " + PysSuscripcionBean.T_NOMBRETABLA + "." + PysSuscripcionBean.C_IDPETICION + " = " + PysPeticionCompraSuscripcionBean.T_NOMBRETABLA + "." + PysPeticionCompraSuscripcionBean.C_IDPETICION +
+								" AND " + PysSuscripcionBean.T_NOMBRETABLA + "." + PysSuscripcionBean.C_FECHABAJA + " IS NULL " +
+								" AND " + PysServiciosSolicitadosBean.T_NOMBRETABLA + "." + PysServiciosSolicitadosBean.C_IDINSTITUCION + " = " + PysSuscripcionBean.T_NOMBRETABLA + "." + PysSuscripcionBean.C_IDINSTITUCION +
+								" AND " + PysServiciosSolicitadosBean.T_NOMBRETABLA + "." + PysServiciosSolicitadosBean.C_IDPETICION + " = " + PysSuscripcionBean.T_NOMBRETABLA + "." + PysSuscripcionBean.C_IDPETICION +
+								" AND " + PysServiciosSolicitadosBean.T_NOMBRETABLA + "." + PysServiciosSolicitadosBean.C_IDTIPOSERVICIOS + " = " + PysSuscripcionBean.T_NOMBRETABLA + "." + PysSuscripcionBean.C_IDTIPOSERVICIOS +
+								" AND " + PysServiciosSolicitadosBean.T_NOMBRETABLA + "." + PysServiciosSolicitadosBean.C_IDSERVICIO + " = " + PysSuscripcionBean.T_NOMBRETABLA + "." + PysSuscripcionBean.C_IDSERVICIO +
+								" AND " + PysServiciosSolicitadosBean.T_NOMBRETABLA + "." + PysServiciosSolicitadosBean.C_IDSERVICIOSINSTITUCION + " = " + PysSuscripcionBean.T_NOMBRETABLA + "." + PysSuscripcionBean.C_IDSERVICIOSINSTITUCION +
+								" AND " + PysServiciosSolicitadosBean.T_NOMBRETABLA + "." + PysServiciosSolicitadosBean.C_ACEPTADO + " NOT IN ('B', 'D') " +
+								" AND NOT EXISTS ( " + 
+									" SELECT 1 " +
+									" FROM " + FacFacturacionSuscripcionBean.T_NOMBRETABLA +
+									" WHERE " + FacFacturacionSuscripcionBean.T_NOMBRETABLA + "." + FacFacturacionSuscripcionBean.C_IDINSTITUCION + " = " + PysSuscripcionBean.T_NOMBRETABLA + "." + PysSuscripcionBean.C_IDINSTITUCION +
+										" AND " + FacFacturacionSuscripcionBean.T_NOMBRETABLA + "." + FacFacturacionSuscripcionBean.C_IDTIPOSERVICIOS + " = " + PysSuscripcionBean.T_NOMBRETABLA + "." + PysSuscripcionBean.C_IDTIPOSERVICIOS +
+										" AND " + FacFacturacionSuscripcionBean.T_NOMBRETABLA + "." + FacFacturacionSuscripcionBean.C_IDSERVICIO + " = " + PysSuscripcionBean.T_NOMBRETABLA + "." + PysSuscripcionBean.C_IDSERVICIO +
+										" AND " + FacFacturacionSuscripcionBean.T_NOMBRETABLA + "." + FacFacturacionSuscripcionBean.C_IDSERVICIOSINSTITUCION + " = " + PysSuscripcionBean.T_NOMBRETABLA + "." + PysSuscripcionBean.C_IDSERVICIOSINSTITUCION +
+										" AND " + FacFacturacionSuscripcionBean.T_NOMBRETABLA + "." + FacFacturacionSuscripcionBean.C_IDSUSCRIPCION + " = " + PysSuscripcionBean.T_NOMBRETABLA + "." + PysSuscripcionBean.C_IDSUSCRIPCION +
+								" ) " +
 						" ) ";
+					
+					if (datos.getFacturada().equals("1")) { // Opcion facturada parcialmente
+						sql += " AND EXISTS " + sqlPysNoFacturados;
+						
+					} else { // Opcion facturada totalmente
+						sql += " AND NOT EXISTS " + sqlPysNoFacturados;
+					}
+				}
 			}
 
 			sql += " ORDER BY " + PysPeticionCompraSuscripcionBean.T_NOMBRETABLA + "." + PysPeticionCompraSuscripcionBean.C_FECHA + " DESC , " + 
@@ -654,7 +700,7 @@ public class PysPeticionCompraSuscripcionAdm extends MasterBeanAdministrador {
 							" AND " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDPRODUCTOINSTITUCION + " = " + PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_IDPRODUCTOINSTITUCION +
 							" AND " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDINSTITUCION + " = " + sIdInstitucion +
 							" AND " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDPETICION + " = " + sIdPeticion +
-							" AND " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_ACEPTADO + " <> 'D' " +
+							" AND " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_ACEPTADO + " NOT IN ('B', 'D') " +
 							" AND " + PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_TIPOCERTIFICADO + " IN ('C','M','D')";
 					
 					hResultado = this.selectGenericoHash(sql);
@@ -688,11 +734,19 @@ public class PysPeticionCompraSuscripcionAdm extends MasterBeanAdministrador {
 						if (bBuscarIcono) {
 							/* --------------- 2.4. Obtiene datos para icono - Comprueba si tiene productos facturables -------------------------------- */
 							sql = " SELECT COUNT(1) AS " + sCampo +   
-									" FROM " + PysProductosSolicitadosBean.T_NOMBRETABLA +
+									" FROM " + PysCompraBean.T_NOMBRETABLA + ", " +
+										PysProductosSolicitadosBean.T_NOMBRETABLA +
 									" WHERE " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDINSTITUCION + " = " + sIdInstitucion +
 										" AND " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDPETICION + " = " + sIdPeticion +
 										" AND " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_ACEPTADO + " NOT IN ('B', 'D', 'P') " +
-										" AND " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_NOFACTURABLE + " = 0 ";
+										" AND " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_NOFACTURABLE + " = 0 " +
+										" AND " + PysCompraBean.T_NOMBRETABLA + "." + PysCompraBean.C_IDINSTITUCION + " = " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDINSTITUCION +
+										" AND " + PysCompraBean.T_NOMBRETABLA + "." + PysCompraBean.C_IDPETICION + " = " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDPETICION +
+										" AND " + PysCompraBean.T_NOMBRETABLA + "." + PysCompraBean.C_IDPRODUCTO + " = " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDPRODUCTO +
+										" AND " + PysCompraBean.T_NOMBRETABLA + "." + PysCompraBean.C_IDPRODUCTOINSTITUCION + " = " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDPRODUCTOINSTITUCION +
+										" AND " + PysCompraBean.T_NOMBRETABLA + "." + PysCompraBean.C_IDTIPOPRODUCTO + " = " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDTIPOPRODUCTO +
+										" AND " + PysCompraBean.T_NOMBRETABLA + "." + PysCompraBean.C_NOFACTURABLE + " = 0 " +
+										" AND " + PysCompraBean.T_NOMBRETABLA + "." + PysCompraBean.C_FECHABAJA + " IS NULL ";
 							
 							hResultado = this.selectGenericoHash(sql);
 							if (hResultado!=null) {
