@@ -353,11 +353,14 @@
 						idArticuloInstitucion = UtilidadesHash.getLong (productoServicio, PysProductosSolicitadosBean.C_IDPRODUCTOINSTITUCION);
 						aceptado = UtilidadesHash.getString(productoServicio, PysServiciosSolicitadosBean.C_ACEPTADO);										
 						estado = UtilidadesProductosServicios.getEstadoProductoServicio(aceptado);
-						String aux = UtilidadesHash.getString(productoServicio, "ANTICIPAR");
+						String aux = UtilidadesHash.getString(productoServicio, "ANTICIPAR");						
 						
 						if (aux.indexOf("#") != -1){
-							anticipar = Integer.parseInt(aux.split("#")[0]);
-							importeAnticipado = Double.parseDouble(aux.split("#")[1]);
+							String[] arrayAux = aux.split("#");
+							anticipar = Integer.parseInt(arrayAux[0]);
+							if (arrayAux.length>1) {
+								importeAnticipado = Double.parseDouble(aux.split("#")[1]);
+							}
 							
 						} else {
 							anticipar = Integer.valueOf(aux).intValue();
