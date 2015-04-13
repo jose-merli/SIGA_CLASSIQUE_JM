@@ -27,14 +27,14 @@ public class CargaMasivaDatosCVVoService implements VoUiService<CargaMasivaCVFor
 	@Override
 	public List<CargaMasivaCVForm> getVo2FormList(
 			List<CargaMasivaDatosCVVo> voList) {
-		List<CargaMasivaCVForm> CargaMasivaCVForms = new ArrayList<CargaMasivaCVForm>();
+		List<CargaMasivaCVForm> cargaMasivaCVForms = new ArrayList<CargaMasivaCVForm>();
 		CargaMasivaCVForm cargaMasivaCVForm   = null;
 		for (CargaMasivaDatosCVVo objectVo : voList) {
 			cargaMasivaCVForm = getVo2Form(objectVo);
-			CargaMasivaCVForms.add(cargaMasivaCVForm);
+			cargaMasivaCVForms.add(cargaMasivaCVForm);
 
 		}
-		return CargaMasivaCVForms;
+		return cargaMasivaCVForms;
 	}
 
 	/* (non-Javadoc)
@@ -180,6 +180,8 @@ public class CargaMasivaDatosCVVoService implements VoUiService<CargaMasivaCVFor
 			objectForm.setUsuario(objectVo.getUsuario());
 		if(objectVo.getError()!=null && !objectVo.getError().equals(""))
 			objectForm.setError(objectVo.getError());
+		else
+			objectForm.setError("");
 		//		if(objectForm.getIdfichero()!=null && !objectForm.getIdfichero().equals("")){
 		//			objectVo.setIdFichero(objectForm.getIdfichero().toString());
 		//			objectVo.setExtensionArchivo(objectForm.getExtensionArchivo());

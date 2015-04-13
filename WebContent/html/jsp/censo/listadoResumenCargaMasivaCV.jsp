@@ -27,6 +27,11 @@
 			document.forms['CargaMasivaCVForm'].target = "mainWorkArea";
 			document.forms['CargaMasivaCVForm'].submit();
 	}
+	function accionGuardar() {
+		document.forms['CargaMasivaCVForm'].modo.value="processExcelFile";
+		document.forms['CargaMasivaCVForm'].target = "submitArea";
+		document.forms['CargaMasivaCVForm'].submit();
+	}
 	
 	
 	</script>
@@ -36,13 +41,14 @@
 <bean:define id="path" name="org.apache.struts.action.mapping.instance" property="path" scope="request"/>
 <html:form action="${path}"   target="submitArea">
   	<html:hidden property="modo"/>
+  	<html:hidden property="rutaFichero"/>
 </html:form>
 
 
 <table class="tablaTitulo" align="center">
 		<tr>
 		<td class="titulitos">
-			Procesado de fichero para la carga masiva
+			Procesado el fichero para la carga masiva <c:out value="${CargaMasivaCVForm.rutaFichero}"/>
 		</td>
 		</tr>
 		</table>
@@ -61,6 +67,7 @@
 			</tr>
 		</c:when>
 		<c:otherwise>
+			<c:set var="botones" value="V,G" />
 			<c:forEach items="${listado}" var="datoCV" varStatus="status">
 				<siga:FilaConIconos	fila='${status.count}'
 	  				pintarEspacio="no"
@@ -81,9 +88,20 @@
 						<td align='left'><c:out value="${datoCV.subtipoCV1Nombre}" /></td>
 						<!-- td align='left'><c:out value="${datoCV.subtipoCV2Cod}" /></td-->
 						<td align='left'><c:out value="${datoCV.subtipoCV2Nombre}" /></td>
-						<td align='left'><c:out value="${datoCV.creditos}" /></td>
-						<td align='left'><c:out value="${datoCV.error}" /></td>
-						<!--  td align='left'><c:out value="${datoCV.fechaVerificacion}" /></td-->
+						<td align='left'><c:out value="${datoCV.fechaVerificacion}" /></td>
+						<td align='left'>
+							<c:choose>
+								<c:when test="${datoCV.error!=''}">
+								<c:set var="botones" value="V" />
+									Error!
+								</c:when>
+								<c:otherwise>
+									&nbsp;
+								</c:otherwise>
+							</c:choose>
+						</td>
+						
+						<!--  td align='left'><c:out value="${datoCV.creditos}" /></td-->
 						<!-- td align='left'><c:out value="${datoCV.descripcion}" /></td-->
 
 
@@ -93,7 +111,7 @@
 	</c:choose>
 
 </siga:Table>
-<siga:ConjBotonesAccion botones="V,G" />
+<siga:ConjBotonesAccion botones="${botones}" />
 <iframe name="submitArea" src="<html:rewrite page='/html/jsp/general/blank.jsp'/>" 	style="display: none" />
 </body>
 

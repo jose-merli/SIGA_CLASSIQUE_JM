@@ -86,7 +86,9 @@
 			fin();
 			return false;
 		}*/
-		document.forms['CargaMasivaCVForm'].modo.value = 'procesarFichero';
+	
+		document.forms['CargaMasivaCVForm'].rutaFichero.value  = document.forms['CargaMasivaCVForm'].theFile.value;
+		document.forms['CargaMasivaCVForm'].modo.value = 'parseExcelFile';
 		document.forms['CargaMasivaCVForm'].submit();
 	}
 	
@@ -100,6 +102,8 @@
 	<html:form action="${path}"  method="POST" enctype="multipart/form-data" target="mainWorkArea">
 		<html:hidden property="modo"/>
 		<html:hidden property="idInstitucion"/>
+		<html:hidden property="rutaFichero"/>
+		
 			<table width="100%" border="0">
 				<tr>
 					<td width="150x"></td>
@@ -124,7 +128,7 @@
 					<td class="labelText">
 						<siga:Idioma key="administracion.informes.literal.archivo" />&nbsp;
 					</td>
-					<td><html:file property="theFile" styleClass="boxCombo" style="width:500px;" />
+					<td><html:file  property="theFile" styleClass="boxCombo"  style="width:500px;" />
 					</td>
 					<td class="tdBotones">
 						<input  type="button" alt="Procesar Fichero"
