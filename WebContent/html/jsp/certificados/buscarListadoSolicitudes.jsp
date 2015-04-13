@@ -83,33 +83,37 @@
 			parent.buscar();
 		}
 
-		function anular(fila) {
-			subicono('iconoboton_anular'+fila);
-			var datos = document.getElementById('tablaDatosDinamicosD');
-		    datos.value = ""; 
-		    preparaDatos(fila,'tablaDatos', datos);
+		function anular(fila) { // PIDE CONFIRMACION
+			if(confirm('<siga:Idioma key="facturacion.seleccionSerie.literal.anularCertificado"/>')) { 
+				sub();
+				var datos = document.getElementById('tablaDatosDinamicosD');
+		    	datos.value = ""; 
+		    	preparaDatos(fila,'tablaDatos', datos);
 			   	
-		   	var auxTarget = document.forms[0].target;
-		   	document.forms[0].target="submitArea";
-		   	document.forms[0].modo.value = "anular";
-		   	document.forms[0].submit();
-		   	document.forms[0].target=auxTarget;
-		   	finsubicono('iconoboton_anular'+fila);
+		   		var auxTarget = document.forms[0].target;
+		   		document.forms[0].target="submitArea";
+		   		document.forms[0].modo.value = "anular";
+		   		document.forms[0].submit();
+		   		document.forms[0].target=auxTarget;
+		   		fin();
+			}
 		}
 		
-		function generar(fila) {
-			subicono('iconoboton_generar'+fila);
-		   	var datos = document.getElementById('tablaDatosDinamicosD');
-		    datos.value = ""; 
-		    preparaDatos(fila,'tablaDatos', datos);
-
-			var oCheck = document.getElementsByName("chkPDF");
-			SolicitudesCertificadosForm.idsTemp.value=oCheck[fila-1].value;
-			// PDM Ahora se hace una comprobacion previa, si solo existe una plantilla no se muestra la ventana modal y se genera directamente el certificado, si hay mas de una se muestra la ventana modal para elegir una plantilla.
-			SolicitudesCertificadosForm.modo.value="comprobarNumPlantillas";
-			SolicitudesCertificadosForm.target="submitArea";
-			SolicitudesCertificadosForm.submit();
-			finsubicono('iconoboton_generar'+fila);
+		function generar(fila) { // PIDE CONFIRMACION
+			if(confirm('<siga:Idioma key="facturacion.seleccionSerie.literal.generarCertificado"/>')) { 
+				sub();
+			   	var datos = document.getElementById('tablaDatosDinamicosD');
+			    datos.value = ""; 
+			    preparaDatos(fila,'tablaDatos', datos);
+	
+				var oCheck = document.getElementsByName("chkPDF");
+				SolicitudesCertificadosForm.idsTemp.value=oCheck[fila-1].value;
+				// PDM Ahora se hace una comprobacion previa, si solo existe una plantilla no se muestra la ventana modal y se genera directamente el certificado, si hay mas de una se muestra la ventana modal para elegir una plantilla.
+				SolicitudesCertificadosForm.modo.value="comprobarNumPlantillas";
+				SolicitudesCertificadosForm.target="submitArea";
+				SolicitudesCertificadosForm.submit();
+		   		fin();
+			}
 		}
 
 		function enviar(fila) {	
@@ -143,33 +147,36 @@
 		   	}
 		}
 
-		function denegar(fila) {
-			subicono('iconoboton_denegar'+fila);
-
-		   	var datos = document.getElementById('tablaDatosDinamicosD');
-		    datos.value = ""; 
-		    preparaDatos(fila,'tablaDatos', datos);
-		   	
-		   	var auxTarget = document.forms[0].target;
-		   	document.forms[0].target="submitArea";
-		   	document.forms[0].modo.value = "denegar";
-		   	document.forms[0].submit();
-		   	document.forms[0].target=auxTarget;
-		   	finsubicono('iconoboton_denegar'+fila);
+		function denegar(fila) { // PIDE CONFIRMACION
+			if(confirm('<siga:Idioma key="facturacion.seleccionSerie.literal.denegarCertificado"/>')) { 
+				sub();
+			   	var datos = document.getElementById('tablaDatosDinamicosD');
+			    datos.value = ""; 
+			    preparaDatos(fila,'tablaDatos', datos);
+			   	
+			   	var auxTarget = document.forms[0].target;
+			   	document.forms[0].target="submitArea";
+			   	document.forms[0].modo.value = "denegar";
+			   	document.forms[0].submit();
+			   	document.forms[0].target=auxTarget;
+		   		fin();
+			}
 		}
 
-		function finalizar(fila) {
-			subicono('iconoboton_finalizar'+fila);
-		   	var datos = document.getElementById('tablaDatosDinamicosD');
-		    datos.value = ""; 
-		    preparaDatos(fila,'tablaDatos', datos);
-		   	
-		   	var auxTarget = document.forms[0].target;
-		   	document.forms[0].target="submitArea";
-		   	document.forms[0].modo.value = "finalizar";
-		   	document.forms[0].submit();
-		   	document.forms[0].target=auxTarget;
-		   	finsubicono('iconoboton_finalizar'+fila);
+		function finalizar(fila) { // PIDE CONFIRMACION
+			if(confirm('<siga:Idioma key="facturacion.seleccionSerie.literal.finalizarCertificado"/>')) { 
+				sub();
+			   	var datos = document.getElementById('tablaDatosDinamicosD');
+			    datos.value = ""; 
+			    preparaDatos(fila,'tablaDatos', datos);
+			   	
+			   	var auxTarget = document.forms[0].target;
+			   	document.forms[0].target="submitArea";
+			   	document.forms[0].modo.value = "finalizar";
+			   	document.forms[0].submit();
+			   	document.forms[0].target=auxTarget;
+			   	fin();
+			}
 		}
 
 		function download(fila) {
@@ -226,78 +233,93 @@
 			document.forms[0].submit();
 		}
            
-		function facturacionrapida(fila) {
+		function facturacionrapida(fila) { // PIDE CONFIRMACION
+			if(confirm('<siga:Idioma key="facturacion.seleccionSerie.literal.facturacionRapidaCertificado"/>')) {
+				sub();
+				
+			    var idInstitucion = document.getElementById('oculto' + fila + '_1');			          		
+			    var idSolicitud = document.getElementById('oculto' + fila + '_2');
+			    var idPersona = document.getElementById('oculto' + fila + '_4');
+			    var idProducto = document.getElementById('oculto' + fila + '_7');
+			    var idTipoProducto = document.getElementById('oculto' + fila + '_8');		    
+			    
+			    jQuery.ajax({ 
+					type: "POST",
+					url: "/SIGA/CER_GestionSolicitudes.do?modo=getAjaxSeleccionSerieFacturacion",				
+					data: "idInstitucion=" + idInstitucion.value + "&idTipoProducto=" + idTipoProducto.value + "&idProducto=" + idProducto.value + "&idSolicitud=" + idSolicitud.value + "&idPersona=" + idPersona.value,
+					dataType: "json",
+					contentType: "application/x-www-form-urlencoded;charset=UTF-8",
+					success: function(json){							
+							
+						// Recupera el identificador de la serie de facturacion
+						var idSerieFacturacion = json.idSerieFacturacion;		
+						
+						if (idSerieFacturacion==null || idSerieFacturacion=='') {
+							//jQuery("#selectSeleccionSerieFacturacion")[0].innerHTML = json.aOptionsSeriesFacturacion[0];
+							jQuery("#selectSeleccionSerieFacturacion").find("option").detach();
+							jQuery("#selectSeleccionSerieFacturacion").append(json.aOptionsSeriesFacturacion[0]);
+							
+							fin();
+							jQuery("#divSeleccionSerieFacturacion").dialog(
+								{
+									height: 220,
+									width: 550,
+									modal: true,
+									resizable: false,
+									buttons: {
+										"<%=sBotonGuardarCerrar%>": function() {
+											sub();
+											idSerieFacturacion = jQuery("#selectSeleccionSerieFacturacion").val();
+											if (idSerieFacturacion==null || idSerieFacturacion=='') {
+												alert('<siga:Idioma key="messages.facturacion.seleccionSerie.noSeleccion"/>');
+												fin();
+												
+											} else {
+												jQuery(this).dialog("close");
+												document.forms[0].target = "submitArea";
+												document.forms[0].tablaDatosDinamicosD.value = idInstitucion.value + ',' + idSolicitud.value + ',' + idSerieFacturacion;
+												document.forms[0].modo.value = "facturacionRapida";
+											   	document.forms[0].submit();	
+											   	window.setTimeout("fin()",5000,"Javascript");
+											}
+										},
+										"<%=sBotonCerrar%>": function() {
+											jQuery(this).dialog("close");
+										}
+									}
+								}
+							);
+							jQuery(".ui-widget-overlay").css("opacity","0");														
+							
+						} else {
+							document.forms[0].target = "submitArea";
+							document.forms[0].tablaDatosDinamicosD.value = idInstitucion.value + ',' + idSolicitud.value + ',' + idSerieFacturacion;	
+							document.forms[0].modo.value = "facturacionRapida";
+						   	document.forms[0].submit();		
+						   	window.setTimeout("fin()",5000,"Javascript");
+						}							
+					},
+					
+					error: function(e){
+						alert("<%=sError%>");
+						fin();
+					}
+				});
+			}			   
+		}
+		
+		function descargarFactura(fila) { // PIDE CONFIRMACION
 			sub();
 			
 		    var idInstitucion = document.getElementById('oculto' + fila + '_1');			          		
 		    var idSolicitud = document.getElementById('oculto' + fila + '_2');
-		    var idPersona = document.getElementById('oculto' + fila + '_4');
-		    var idProducto = document.getElementById('oculto' + fila + '_7');
-		    var idTipoProducto = document.getElementById('oculto' + fila + '_8');		    
 		    
-		    jQuery.ajax({ 
-				type: "POST",
-				url: "/SIGA/CER_GestionSolicitudes.do?modo=getAjaxSeleccionSerieFacturacion",				
-				data: "idInstitucion=" + idInstitucion.value + "&idTipoProducto=" + idTipoProducto.value + "&idProducto=" + idProducto.value + "&idSolicitud=" + idSolicitud.value + "&idPersona=" + idPersona.value,
-				dataType: "json",
-				contentType: "application/x-www-form-urlencoded;charset=UTF-8",
-				success: function(json){							
-						
-					// Recupera el identificador de la serie de facturacion
-					var idSerieFacturacion = json.idSerieFacturacion;		
-					
-					if (idSerieFacturacion==null || idSerieFacturacion=='') {
-						//jQuery("#selectSeleccionSerieFacturacion")[0].innerHTML = json.aOptionsSeriesFacturacion[0];
-						jQuery("#selectSeleccionSerieFacturacion").find("option").detach();
-						jQuery("#selectSeleccionSerieFacturacion").append(json.aOptionsSeriesFacturacion[0]);
-						
-						fin();
-						jQuery("#divSeleccionSerieFacturacion").dialog(
-							{
-								height: 220,
-								width: 550,
-								modal: true,
-								resizable: false,
-								buttons: {
-									"<%=sBotonGuardarCerrar%>": function() {
-										sub();
-										idSerieFacturacion = jQuery("#selectSeleccionSerieFacturacion").val();
-										if (idSerieFacturacion==null || idSerieFacturacion=='') {
-											alert('<siga:Idioma key="messages.facturacion.seleccionSerie.noSeleccion"/>');
-											fin();
-											
-										} else {
-											jQuery(this).dialog("close");
-											document.forms[0].target = "submitArea";
-											document.forms[0].tablaDatosDinamicosD.value = idInstitucion.value + ',' + idSolicitud.value + ',' + idSerieFacturacion;
-											document.forms[0].modo.value = "facturacionRapida";
-										   	document.forms[0].submit();	
-										   	window.setTimeout("fin()",5000,"Javascript");
-										}
-									},
-									"<%=sBotonCerrar%>": function() {
-										jQuery(this).dialog("close");
-									}
-								}
-							}
-						);
-						jQuery(".ui-widget-overlay").css("opacity","0");														
-						
-					} else {
-						document.forms[0].target = "submitArea";
-						document.forms[0].tablaDatosDinamicosD.value = idInstitucion.value + ',' + idSolicitud.value + ',' + idSerieFacturacion;	
-						document.forms[0].modo.value = "facturacionRapida";
-					   	document.forms[0].submit();		
-					   	window.setTimeout("fin()",5000,"Javascript");
-					}							
-				},
-				
-				error: function(e){
-					alert("<%=sError%>");
-					fin();
-				}
-			});			    
-			}           
+			document.forms[0].target = "submitArea";
+			document.forms[0].tablaDatosDinamicosD.value = idInstitucion.value + ',' + idSolicitud.value + ',Facturado';	
+			document.forms[0].modo.value = "facturacionRapida";
+		   	document.forms[0].submit();		
+		   	window.setTimeout("fin()",5000,"Javascript");
+		}		
 	</script>
 </head>
 
@@ -448,7 +470,7 @@
 					if (sTipoIcono!=null && sTipoIcono.equals("2")) {
 						elems[7]=new FilaExtElement("facturacionrapida", "facturacionrapida", SIGAConstants.ACCESS_READ);
 					} else if (sTipoIcono!=null && sTipoIcono.equals("1")) {
-						elems[7]=new FilaExtElement("download", "facturacionrapida", "Descargar Factura", SIGAConstants.ACCESS_READ);
+						elems[7]=new FilaExtElement("download", "descargarFactura", "Descargar Factura", SIGAConstants.ACCESS_READ);
 					}										
 				}				
 					
