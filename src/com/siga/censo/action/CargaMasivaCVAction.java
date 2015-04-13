@@ -1,9 +1,7 @@
 package com.siga.censo.action;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,12 +11,11 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
-import org.apache.struts.upload.FormFile;
+import org.redabogacia.sigaservices.app.exceptions.BusinessException;
 import org.redabogacia.sigaservices.app.helper.SIGAServicesHelper;
 import org.redabogacia.sigaservices.app.services.cen.CargaMasivaCV;
 import org.redabogacia.sigaservices.app.services.cen.SubtiposCVService;
 import org.redabogacia.sigaservices.app.services.cen.impl.CargaMasivaDatosCVImpl;
-import org.redabogacia.sigaservices.app.services.comun.CargaMasiva;
 import org.redabogacia.sigaservices.app.vo.cen.CargaMasivaDatosCVVo;
 
 import com.atos.utils.ClsExceptions;
@@ -64,7 +61,9 @@ public class CargaMasivaCVAction extends MasterAction {
 					}else if ( accion.equalsIgnoreCase("descargaEjemplo")){
 						mapDestino = descargaEjemplo (mapping, miForm, request, response);
 					}
-					
+					else if ( accion.equalsIgnoreCase("downloadExcelError")){
+						mapDestino = downloadExcelError (mapping, miForm, request, response);
+					}
 					else if ( accion.equalsIgnoreCase("processExcelFile")){
 						mapDestino = processExcelFile (mapping, miForm, request, response);
 					}else if ( accion.equalsIgnoreCase("actualizar")){
@@ -200,7 +199,30 @@ public class CargaMasivaCVAction extends MasterAction {
 	
 	
 	
-	
+	private String downloadExcelError (ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+		CargaMasivaCVForm cargaMasivaCVForm = (CargaMasivaCVForm) formulario;
+		CargaMasivaCV cargaMasivaDatosCV = (CargaMasivaCV) getBusinessManager().getService(CargaMasivaCV.class);
+		UsrBean usrBean = this.getUserBean(request);
+		
+			
+//			List<CargaMasivaDatosCVVo> cargaMasivaDatosCVList = cargaMasivaDatosCV.parseExcelFile(SIGAServicesHelper.getBytes(cargaMasivaCVForm.getRutaFichero()),Short.valueOf(usrBean.getLocation()));
+		File logFile;
+		try {
+			logFile = cargaMasivaDatosCV.getLogExcelFile(SIGAServicesHelper.getBytes(cargaMasivaCVForm.getRutaFichero()),Short.valueOf(usrBean.getLocation()));
+			request.setAttribute("nombreFichero", logFile.getName());
+			request.setAttribute("rutaFichero", logFile.getPath());
+			request.setAttribute("accion", "");
+		} catch (Exception e) {
+			throw new SIGAException("Error al obtener el fichero de Log",e);
+		} 
+		
+		
+		return "descargaFichero";
+		
+		
+						
+
+	}
 	private String processExcelFile (ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		CargaMasivaCVForm cargaMasivaCVForm = (CargaMasivaCVForm) formulario;
 		CargaMasivaCV cargaMasivaDatosCV = (CargaMasivaCV) getBusinessManager().getService(CargaMasivaCV.class);
