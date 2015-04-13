@@ -234,13 +234,12 @@
 							<li><siga:Idioma key="censo.gestion.grupos.literal.ncolegiado"/></li>
 							<li><siga:Idioma key="censo.gestion.grupos.literal.NIFCIF"/></li>
 							<li><siga:Idioma key="censo.gestion.grupos.literal.identificador.grupo.fijo"/></li>
-						</ul>
-						<html:button property="idButton" styleId="idButtonDescPlant" styleClass="button" onclick="accionDescargarPlant()">
-							<siga:Idioma key="general.boton.descargar.plantilla" />
-						</html:button>
-						<br><br>
+						</ul>		
 						<html:file property="fichero"  name="MantenimientoGruposFijosForm" size="90" styleId="uploadBox" styleClass="box" accept="application/vnd.ms-excel"  ></html:file>
  						<input type="button" alt="Procesar" name="botonProcesar" onclick="accionProcesar()" class="button" value="Procesar"> 	
+ 						<html:button property="idButton" styleId="idButtonDescPlant" styleClass="button" onclick="accionDescargarPlant()">
+							<siga:Idioma key="general.boton.descargar.plantilla" />
+						</html:button>
  						</div> 
 						</table>
 					</siga:ConjCampos>	
