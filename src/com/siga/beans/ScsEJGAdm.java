@@ -3885,6 +3885,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			sql.append(" INTERESADO.CODIGOPOSTAL AS CP_DEFENDIDO, ");
 			sql.append(" INTERESADO.NOMBRE_POB AS POBLACION_DEFENDIDO, ");
 			sql.append(" INTERESADO.TELEFONO AS TELEFONO1_DEFENDIDO, ");
+			sql.append(" INTERESADO.TELEFONOLIST AS LISTA_TELEFONOS_INTERESADO, ");
 			sql.append(" INTERESADO.NIF AS NIF_DEFENDIDO, ");
 			sql.append(" INTERESADO.NOMBRE_PROV AS PROVINCIA_DEFENDIDO, ");
 			sql.append(" (SELECT tg.descripcion FROM Scs_Tipogrupolaboral tg  WHERE tg.idinstitucion = "+idInstitucion+" ");

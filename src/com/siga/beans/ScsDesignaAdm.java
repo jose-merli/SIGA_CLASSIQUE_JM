@@ -2073,25 +2073,6 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 		}
 	}
 	
-	
-	public Vector getListadoTelefonosInteresadoSalidaOficio(String idPersonaJG,String idInstitucion) throws ClsExceptions  
-	{
-		try {
-			Hashtable h = new Hashtable();	
-			h.put(new Integer(1), idInstitucion);
-			h.put(new Integer(2), idPersonaJG);
-			
-			String sql="SELECT st.nombretelefono as NOMBRETELEFONO,st.numerotelefono  as NUMEROTELEFONO "+
-			" FROM SCS_TELEFONOSPERSONA st "+
-			" WHERE st.IDINSTITUCION = :1 AND st.IDPERSONA = :2 ";			
-			HelperInformesAdm helperInformes = new HelperInformesAdm();	
-			return helperInformes.ejecutaConsultaBind(sql, h);
-		}
-		catch (Exception e) {
-			throw new ClsExceptions (e, "Error al obtener la informacion sobre las getDireccionPersonalLetrado");
-		}
-	}
-	
 	public Vector getActuacionDesignaSalidaOficio (String idInstitucion, String numero, String turno, String anio) throws ClsExceptions  
 	{
 		try {
@@ -2243,21 +2224,6 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 							}else{
 								registroDefendido.put("NOMBRE_PAIS", "");
 							}
-							//Listado de Telefonos de interesados de Designas
-							if((String)registroDefendido.get("IDPERSONAINTERESADO")!=null && !((String)registroDefendido.get("IDPERSONAINTERESADO")).trim().equals("")){
-								Vector aux = getListadoTelefonosInteresadoSalidaOficio((String)registroDefendido.get("IDPERSONAINTERESADO"),idInstitucion);
-								String tInteresado = "";								
-								for (int i=0;i<aux.size();i++) {
-									Hashtable reg = (Hashtable) aux.get(i);
-					             	tInteresado+= (String) reg.get("NOMBRETELEFONO") + ": ";	
-									tInteresado+= (String) reg.get("NUMEROTELEFONO") + "; ";						 
-								}
-								if (tInteresado.length()>0) tInteresado = tInteresado.substring(0,tInteresado.length()-2);
-								registroDefendido.put("LISTA_TELEFONOS_INTERESADO", tInteresado);
-							} else {
-								registroDefendido.put("LISTA_TELEFONOS_INTERESADO", "");
-								registroDefendido.put("IDPERSONAINTERESADO", "");
-							}
 							
 							Vector estadodCivilDefendidoVector = getEstadoCivilDesignaDefendido(idInstitucion,idturno, anio, numero,(String)registroDefendido.get("IDPERSONAINTERESADO"),idioma);
 							String estadoCivilDefendido = "";
@@ -2375,21 +2341,6 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 								helperInformes.completarHashSalida(registroDefendido,helperInformes.ejecutaFuncionSalida(htCodigo, "F_SIGA_GETRECURSO", "NOMBRE_PAIS"));
 							}else{
 								registroDefendido.put("NOMBRE_PAIS", "");
-							}
-							//Listado de Telefonos de interesados de Designas
-							if((String)registroDefendido.get("IDPERSONAINTERESADO")!=null && !((String)registroDefendido.get("IDPERSONAINTERESADO")).trim().equals("")){
-								Vector aux = getListadoTelefonosInteresadoSalidaOficio((String)registroDefendido.get("IDPERSONAINTERESADO"),idInstitucion);
-								String tInteresado = "";								
-								for (int i=0;i<aux.size();i++) {
-									Hashtable reg = (Hashtable) aux.get(i);
-					             	tInteresado+= (String) reg.get("NOMBRETELEFONO") + ": ";	
-									tInteresado+= (String) reg.get("NUMEROTELEFONO") + "; ";						 
-								}
-								if (tInteresado.length()>0) tInteresado = tInteresado.substring(0,tInteresado.length()-2);
-								registroDefendido.put("LISTA_TELEFONOS_INTERESADO", tInteresado);
-							} else {
-								registroDefendido.put("LISTA_TELEFONOS_INTERESADO", "");
-								registroDefendido.put("IDPERSONAINTERESADO", "");
 							}
 							
 							Vector estadodCivilDefendidoVector = getEstadoCivilDesignaDefendido(idInstitucion,idturno, anio, numero,(String)registroDefendido.get("IDPERSONAINTERESADO"),idioma);
@@ -2643,6 +2594,7 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 		sql.append(" WHERE TEL2.IDINSTITUCION = PERJG.IDINSTITUCION ");
 		sql.append(" AND TEL2.IDPERSONA = PERJG.IDPERSONA ");
 		sql.append(" AND ROWNUM < 2) AS TELEFONO1_DEFENDIDO, ");
+		sql.append("(SELECT WMSYS.WM_CONCAT(LTEL.NOMBRETELEFONO||':'||LTEL.NUMEROTELEFONO) from SCS_TELEFONOSPERSONA LTEL WHERE LTEL.IDINSTITUCION = PERJG.IDINSTITUCION AND LTEL.IDPERSONA = PERJG.IDPERSONA) AS LISTA_TELEFONOS_INTERESADO,");
 		sql.append(" PERJG.NIF AS NIF_DEFENDIDO, ");
 		sql.append(" DECODE(PERJG.SEXO,  null,  null,  'M','gratuita.personaEJG.sexo.mujer','gratuita.personaEJG.sexo.hombre') AS SEXO_DEFENDIDO, ");
 		sql.append(" DECODE(PERJG.SEXO, 'H','o','a') AS O_A_DEFENDIDO, ");
@@ -2781,6 +2733,7 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 		sql.append(" WHERE TEL2.IDINSTITUCION = PERJG.IDINSTITUCION ");
 		sql.append(" AND TEL2.IDPERSONA = PERJG.IDPERSONA ");
 		sql.append(" AND ROWNUM < 2) AS TELEFONO1_DEFENDIDO, ");
+		sql.append("(SELECT WMSYS.WM_CONCAT(LTEL.NOMBRETELEFONO||':'||LTEL.NUMEROTELEFONO) from SCS_TELEFONOSPERSONA LTEL WHERE LTEL.IDINSTITUCION = PERJG.IDINSTITUCION AND LTEL.IDPERSONA = PERJG.IDPERSONA) AS LISTA_TELEFONOS_INTERESADO,");
 		sql.append(" PERJG.NIF AS NIF_DEFENDIDO, ");
 		sql.append(" DECODE(PERJG.SEXO,  null,  null,  'M','gratuita.personaEJG.sexo.mujer','gratuita.personaEJG.sexo.hombre') AS SEXO_DEFENDIDO, ");
 		sql.append(" DECODE(PERJG.SEXO, 'H','o','a') AS O_A_DEFENDIDO, ");
