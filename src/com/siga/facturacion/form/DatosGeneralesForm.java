@@ -22,6 +22,7 @@ public class DatosGeneralesForm extends MasterForm {
 	private static final long serialVersionUID = -5641929929812522853L;
 	private String idPlantillaMail, idTipoPlantillaMail, idSerieFacturacionPrevia;
 	private String[] formaPagoAutomática;
+	private String visible;
 
 	// Metodos Set (Formulario (*.jsp))
 	public void setIdInstitucion (Integer id) {
@@ -219,5 +220,12 @@ public class DatosGeneralesForm extends MasterForm {
 	public void setIdSerieFacturacionPrevia(String idSerieFacturacionPrevia) {
 		this.idSerieFacturacionPrevia = idSerieFacturacionPrevia;
 	}
- 
+
+	public String getVisible() {
+		return visible;
+	}
+
+	public void setVisible(String visible) {
+		this.visible = visible;
+	}
 }

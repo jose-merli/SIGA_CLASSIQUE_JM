@@ -14,7 +14,6 @@ import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesBDAdm;
 import com.siga.Utilidades.UtilidadesHash;
-import com.siga.general.SIGAException;
 
 
 public class FacSerieFacturacionAdm extends MasterBeanAdministrador {
@@ -37,12 +36,13 @@ public class FacSerieFacturacionAdm extends MasterBeanAdministrador {
 							FacSerieFacturacionBean.C_CTACLIENTES,
 							FacSerieFacturacionBean.C_CTAINGRESOS,
 							FacSerieFacturacionBean.C_OBSERVACIONES,
-							FacSerieFacturacionBean.C_TIPOSERIE,
-							FacSerieFacturacionBean.C_FECHAMODIFICACION,
-							FacSerieFacturacionBean.C_USUMODIFICACION,
+							FacSerieFacturacionBean.C_TIPOSERIE,							
 							FacSerieFacturacionBean.C_IDTIPOPLANTILLAMAIL,
 							FacSerieFacturacionBean.C_IDTIPOENVIOS,
-							FacSerieFacturacionBean.C_IDSERIEFACTURACIONPREVIA};
+							FacSerieFacturacionBean.C_IDSERIEFACTURACIONPREVIA,
+							FacSerieFacturacionBean.C_VISIBLE,
+							FacSerieFacturacionBean.C_FECHAMODIFICACION,
+							FacSerieFacturacionBean.C_USUMODIFICACION};
 		return campos;
 	}
 
@@ -57,25 +57,26 @@ public class FacSerieFacturacionAdm extends MasterBeanAdministrador {
 		
 		try {
 			bean = new FacSerieFacturacionBean();
-			bean.setIdInstitucion		(UtilidadesHash.getInteger(hash, FacSerieFacturacionBean.C_IDINSTITUCION));
-			bean.setIdSerieFacturacion	(UtilidadesHash.getLong(hash, FacSerieFacturacionBean.C_IDSERIEFACTURACION));
-			bean.setIdPlantilla			(UtilidadesHash.getInteger(hash,FacSerieFacturacionBean.C_IDPLANTILLA));
-			bean.setDescripcion			(UtilidadesHash.getString(hash, FacSerieFacturacionBean.C_DESCRIPCION));
-			bean.setEnvioFactura		(UtilidadesHash.getString(hash, FacSerieFacturacionBean.C_ENVIOFACTURA));
-			bean.setGenerarPDF			(UtilidadesHash.getString(hash, FacSerieFacturacionBean.C_GENERARPDF));
-			bean.setNombreAbreviado	 	(UtilidadesHash.getString(hash, FacSerieFacturacionBean.C_NOMBREABREVIADO));
-			bean.setIdContador	 		(UtilidadesHash.getString(hash, FacSerieFacturacionBean.C_IDCONTADOR));
-			bean.setConfigDeudor		(UtilidadesHash.getString(hash, FacSerieFacturacionBean.C_CONFDEUDOR));
-			bean.setConfigIngresos		(UtilidadesHash.getString(hash, FacSerieFacturacionBean.C_CONFINGRESOS));
-			bean.setCuentaClientes		(UtilidadesHash.getString(hash, FacSerieFacturacionBean.C_CTACLIENTES));
-			bean.setCuentaIngresos		(UtilidadesHash.getString(hash, FacSerieFacturacionBean.C_CTAINGRESOS));
-			bean.setObservaciones		(UtilidadesHash.getString(hash, FacSerieFacturacionBean.C_OBSERVACIONES));
-			bean.setTipoSerie			(UtilidadesHash.getString(hash, FacSerieFacturacionBean.C_TIPOSERIE));
-			bean.setFechaMod			(UtilidadesHash.getString(hash, FacSerieFacturacionBean.C_FECHAMODIFICACION));
-			bean.setUsuMod				(UtilidadesHash.getInteger(hash,FacSerieFacturacionBean.C_USUMODIFICACION));
-			bean.setIdTipoPlantillaMail	(UtilidadesHash.getInteger(hash,FacSerieFacturacionBean.C_IDTIPOPLANTILLAMAIL));
-			bean.setIdTipoEnvios		(UtilidadesHash.getInteger(hash,FacSerieFacturacionBean.C_IDTIPOENVIOS));
-			bean.setIdSerieFacturacionPrevia	(UtilidadesHash.getLong(hash, FacSerieFacturacionBean.C_IDSERIEFACTURACIONPREVIA));
+			bean.setIdInstitucion(UtilidadesHash.getInteger(hash, FacSerieFacturacionBean.C_IDINSTITUCION));
+			bean.setIdSerieFacturacion(UtilidadesHash.getLong(hash, FacSerieFacturacionBean.C_IDSERIEFACTURACION));
+			bean.setIdPlantilla(UtilidadesHash.getInteger(hash,FacSerieFacturacionBean.C_IDPLANTILLA));
+			bean.setDescripcion(UtilidadesHash.getString(hash, FacSerieFacturacionBean.C_DESCRIPCION));
+			bean.setEnvioFactura(UtilidadesHash.getString(hash, FacSerieFacturacionBean.C_ENVIOFACTURA));
+			bean.setGenerarPDF(UtilidadesHash.getString(hash, FacSerieFacturacionBean.C_GENERARPDF));
+			bean.setNombreAbreviado(UtilidadesHash.getString(hash, FacSerieFacturacionBean.C_NOMBREABREVIADO));
+			bean.setIdContador(UtilidadesHash.getString(hash, FacSerieFacturacionBean.C_IDCONTADOR));
+			bean.setConfigDeudor(UtilidadesHash.getString(hash, FacSerieFacturacionBean.C_CONFDEUDOR));
+			bean.setConfigIngresos(UtilidadesHash.getString(hash, FacSerieFacturacionBean.C_CONFINGRESOS));
+			bean.setCuentaClientes(UtilidadesHash.getString(hash, FacSerieFacturacionBean.C_CTACLIENTES));
+			bean.setCuentaIngresos(UtilidadesHash.getString(hash, FacSerieFacturacionBean.C_CTAINGRESOS));
+			bean.setObservaciones(UtilidadesHash.getString(hash, FacSerieFacturacionBean.C_OBSERVACIONES));
+			bean.setTipoSerie(UtilidadesHash.getString(hash, FacSerieFacturacionBean.C_TIPOSERIE));			
+			bean.setIdTipoPlantillaMail(UtilidadesHash.getInteger(hash,FacSerieFacturacionBean.C_IDTIPOPLANTILLAMAIL));
+			bean.setIdTipoEnvios(UtilidadesHash.getInteger(hash,FacSerieFacturacionBean.C_IDTIPOENVIOS));
+			bean.setIdSerieFacturacionPrevia(UtilidadesHash.getLong(hash, FacSerieFacturacionBean.C_IDSERIEFACTURACIONPREVIA));
+			bean.setVisible(UtilidadesHash.getString(hash, FacSerieFacturacionBean.C_VISIBLE));
+			bean.setFechaMod(UtilidadesHash.getString(hash, FacSerieFacturacionBean.C_FECHAMODIFICACION));
+			bean.setUsuMod(UtilidadesHash.getInteger(hash,FacSerieFacturacionBean.C_USUMODIFICACION));
 		}
 		catch (Exception e) { 
 			bean = null;	
@@ -103,12 +104,13 @@ public class FacSerieFacturacionAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(htData, FacSerieFacturacionBean.C_CTACLIENTES, b.getCuentaClientes());
 			UtilidadesHash.set(htData, FacSerieFacturacionBean.C_CTAINGRESOS, b.getCuentaIngresos());
 			UtilidadesHash.set(htData, FacSerieFacturacionBean.C_OBSERVACIONES, b.getObservaciones());
-			UtilidadesHash.set(htData, FacSerieFacturacionBean.C_TIPOSERIE, b.getTipoSerie());
-			UtilidadesHash.set(htData, FacSerieFacturacionBean.C_FECHAMODIFICACION, b.getFechaMod());
-			UtilidadesHash.set(htData, FacSerieFacturacionBean.C_USUMODIFICACION, b.getUsuMod());			
+			UtilidadesHash.set(htData, FacSerieFacturacionBean.C_TIPOSERIE, b.getTipoSerie());					
 			UtilidadesHash.set(htData, FacSerieFacturacionBean.C_IDTIPOPLANTILLAMAIL, b.getIdTipoPlantillaMail());
 			UtilidadesHash.set(htData, FacSerieFacturacionBean.C_IDTIPOENVIOS, b.getIdTipoEnvios());
 			UtilidadesHash.set(htData, FacSerieFacturacionBean.C_IDSERIEFACTURACIONPREVIA, b.getIdSerieFacturacionPrevia());
+			UtilidadesHash.set(htData, FacSerieFacturacionBean.C_VISIBLE, b.getVisible());
+			UtilidadesHash.set(htData, FacSerieFacturacionBean.C_FECHAMODIFICACION, b.getFechaMod());
+			UtilidadesHash.set(htData, FacSerieFacturacionBean.C_USUMODIFICACION, b.getUsuMod());
 		}
 		catch (Exception e) {
 			htData = null;
@@ -300,50 +302,33 @@ public class FacSerieFacturacionAdm extends MasterBeanAdministrador {
 	 * @param  idProdInst - identificador del producto institucion	  
 	 * @param  internet - descripcion de la forma de pago 
 	 * @return  Vector - Filas seleccionadas  
-	 * @exception  ClsExceptions, SIGAException
+	 * @exception  ClsExceptions
 	 */
-	public Vector<Row> obtenerFormasPago (String idInstitucion, String idSerieFacturacion) throws ClsExceptions, SIGAException {
-		   Vector<Row> datos=new Vector<Row>();
-	       try {
-	            RowsContainer rc = new RowsContainer(); 
-	            String sql ="SELECT " +
-	            			FacSerieFacturacionBean.T_NOMBRETABLA + "." + FacSerieFacturacionBean.C_IDINSTITUCION  + "," +
-	            			FacSerieFacturacionBean.T_NOMBRETABLA + "." + FacSerieFacturacionBean.C_IDSERIEFACTURACION + "," +
-	            			FacFormaPagoSerieBean.T_NOMBRETABLA + "." + FacFormaPagoSerieBean.C_IDFORMAPAGO + "," +
-	            			FacFormaPagoSerieBean.T_NOMBRETABLA + "." + FacFormaPagoSerieBean.C_FECHAMODIFICACION + ", " +
-	            			FacFormaPagoSerieBean.T_NOMBRETABLA + "." + FacFormaPagoSerieBean.C_USUMODIFICACION +
-							" FROM " + FacSerieFacturacionBean.T_NOMBRETABLA + ", " + FacFormaPagoSerieBean.T_NOMBRETABLA + 
-							" WHERE " +
-							FacSerieFacturacionBean.T_NOMBRETABLA +"."+ FacSerieFacturacionBean.C_IDINSTITUCION + "=" + idInstitucion +
-							" AND " +
-							FacSerieFacturacionBean.T_NOMBRETABLA +"."+ FacSerieFacturacionBean.C_IDSERIEFACTURACION + "=" + idSerieFacturacion +
-	            			" AND " +							
-	            			FacSerieFacturacionBean.T_NOMBRETABLA +"."+ FacSerieFacturacionBean.C_IDINSTITUCION + "=" + FacFormaPagoSerieBean.T_NOMBRETABLA + "." + PysFormaPagoProductoBean.C_IDINSTITUCION + "(+)" +
-							" AND " +
-							FacSerieFacturacionBean.T_NOMBRETABLA +"."+ FacSerieFacturacionBean.C_IDSERIEFACTURACION + "=" + FacFormaPagoSerieBean.T_NOMBRETABLA + "." + FacFormaPagoSerieBean.C_IDSERIEFACTURACION  + "(+)";
-					
-							
-	            if (rc.find(sql)) {
-	               for (int i = 0; i < rc.size(); i++){
-	                  Row fila = (Row) rc.get(i);
-	                  datos.add(fila);
-	               }
-	            } 
-	       }
-		   catch (Exception e) {
-	       		if (e instanceof SIGAException){
-	       			throw (SIGAException)e;
-	       		}
-	       		else{
-	       			throw new ClsExceptions(e,"Error al obtener las formas de pago relacionadas.");
-	       		}	
-		   }
-	       return datos;                        
-	    }	
+	public Vector<Hashtable<String, Object>> obtenerFormasPago (String idInstitucion, String idSerieFacturacion) throws ClsExceptions {
+		Vector<Hashtable<String, Object>> datos = new Vector<Hashtable<String, Object>>();
+		try {
+			String sql = "SELECT " + FacSerieFacturacionBean.T_NOMBRETABLA + "." + FacSerieFacturacionBean.C_IDINSTITUCION  + ", " +
+            				FacSerieFacturacionBean.T_NOMBRETABLA + "." + FacSerieFacturacionBean.C_IDSERIEFACTURACION + ", " +
+            				FacFormaPagoSerieBean.T_NOMBRETABLA + "." + FacFormaPagoSerieBean.C_IDFORMAPAGO + ", " +
+            				FacFormaPagoSerieBean.T_NOMBRETABLA + "." + FacFormaPagoSerieBean.C_FECHAMODIFICACION + ", " +
+            				FacFormaPagoSerieBean.T_NOMBRETABLA + "." + FacFormaPagoSerieBean.C_USUMODIFICACION +
+						" FROM " + FacSerieFacturacionBean.T_NOMBRETABLA + ", " + FacFormaPagoSerieBean.T_NOMBRETABLA + 
+						" WHERE " + FacSerieFacturacionBean.T_NOMBRETABLA +"."+ FacSerieFacturacionBean.C_IDINSTITUCION + " = " + idInstitucion +
+							" AND " + FacSerieFacturacionBean.T_NOMBRETABLA +"."+ FacSerieFacturacionBean.C_IDSERIEFACTURACION + " = " + idSerieFacturacion +
+							" AND " + FacSerieFacturacionBean.T_NOMBRETABLA +"."+ FacSerieFacturacionBean.C_IDINSTITUCION + " = " + FacFormaPagoSerieBean.T_NOMBRETABLA + "." + PysFormaPagoProductoBean.C_IDINSTITUCION + "(+) " +
+							" AND " + FacSerieFacturacionBean.T_NOMBRETABLA +"."+ FacSerieFacturacionBean.C_IDSERIEFACTURACION + " = " + FacFormaPagoSerieBean.T_NOMBRETABLA + "." + FacFormaPagoSerieBean.C_IDSERIEFACTURACION  + "(+) ";
+	            
+			datos = this.getHashSQL(sql);
+	            
+		} catch (Exception e) {
+			throw new ClsExceptions(e,"Error al obtener las formas de pago relacionadas.");	
+		}
+	       
+       return datos;                        
+    }	
 	
 	/** 
-	 * Recoge las formas de pago relacionadas con un determinado registro por sus claves <br/>
-	 * y su atributo Internet
+	 * Recoge las formas de pago relacionadas con un determinado registro por sus claves y su atributo Internet
 	 * @param  idInst - identificador de la institucion 
 	 * @param  idTipoProd - identificador del tipo de producto
 	 * @param  idProd - identificador del producto	 
@@ -352,40 +337,24 @@ public class FacSerieFacturacionAdm extends MasterBeanAdministrador {
 	 * @return  Vector - Filas seleccionadas  
 	 * @exception  ClsExceptions, SIGAException
 	 */
-	public Vector<Row> obtenerIdPago (String idInstitucion, String idSerieFacturacion) throws ClsExceptions, SIGAException {
-	   Vector<Row> datos=new Vector<Row>();
+	public Vector<Hashtable<String, Object>> obtenerIdPago (String idInstitucion, String idSerieFacturacion) throws ClsExceptions {
+		Vector<Hashtable<String, Object>> datos = new Vector<Hashtable<String, Object>>();
        try {
-            RowsContainer rc = new RowsContainer(); 
-            String sql ="SELECT " +
-	    			FacSerieFacturacionBean.T_NOMBRETABLA + "." + FacSerieFacturacionBean.C_IDINSTITUCION  + "," +
-	    			FacSerieFacturacionBean.T_NOMBRETABLA + "." + FacSerieFacturacionBean.C_IDSERIEFACTURACION + "," +
-	    			FacFormaPagoSerieBean.T_NOMBRETABLA + "." + FacFormaPagoSerieBean.C_IDFORMAPAGO + 				
+            String sql ="SELECT " + FacSerieFacturacionBean.T_NOMBRETABLA + "." + FacSerieFacturacionBean.C_IDINSTITUCION  + "," +
+	    					FacSerieFacturacionBean.T_NOMBRETABLA + "." + FacSerieFacturacionBean.C_IDSERIEFACTURACION + "," +
+	    					FacFormaPagoSerieBean.T_NOMBRETABLA + "." + FacFormaPagoSerieBean.C_IDFORMAPAGO + 				
 						" FROM " + FacSerieFacturacionBean.T_NOMBRETABLA + ", " + FacFormaPagoSerieBean.T_NOMBRETABLA + 
-						" WHERE " +
-						FacSerieFacturacionBean.T_NOMBRETABLA +"."+ FacSerieFacturacionBean.C_IDINSTITUCION + "=" + idInstitucion +
-						" AND " +
-						FacSerieFacturacionBean.T_NOMBRETABLA +"."+ FacSerieFacturacionBean.C_IDSERIEFACTURACION + "=" + idSerieFacturacion +
-            			" AND " +							
-            			FacSerieFacturacionBean.T_NOMBRETABLA +"."+ FacSerieFacturacionBean.C_IDINSTITUCION + "=" + FacFormaPagoSerieBean.T_NOMBRETABLA + "." + PysFormaPagoProductoBean.C_IDINSTITUCION + "(+)" +
-						" AND " +
-						FacSerieFacturacionBean.T_NOMBRETABLA +"."+ FacSerieFacturacionBean.C_IDSERIEFACTURACION + "=" + FacFormaPagoSerieBean.T_NOMBRETABLA + "." + FacFormaPagoSerieBean.C_IDSERIEFACTURACION  + "(+)";
-				
-						
-            if (rc.find(sql)) {
-               for (int i = 0; i < rc.size(); i++){
-                  Row fila = (Row) rc.get(i);
-                  datos.add(fila);
-               }
-            } 
-       }
-	   catch (Exception e) {
-       		if (e instanceof SIGAException){
-       			throw (SIGAException)e;
-       		}
-       		else{
-       			throw new ClsExceptions(e,"Error al obtener las formas de pago relacionadas.");
-       		}	
-	   }
+						" WHERE " + FacSerieFacturacionBean.T_NOMBRETABLA +"."+ FacSerieFacturacionBean.C_IDINSTITUCION + "=" + idInstitucion +
+						" AND " + FacSerieFacturacionBean.T_NOMBRETABLA +"."+ FacSerieFacturacionBean.C_IDSERIEFACTURACION + "=" + idSerieFacturacion +
+            			" AND " + FacSerieFacturacionBean.T_NOMBRETABLA +"."+ FacSerieFacturacionBean.C_IDINSTITUCION + "=" + FacFormaPagoSerieBean.T_NOMBRETABLA + "." + PysFormaPagoProductoBean.C_IDINSTITUCION + "(+)" +
+						" AND " + FacSerieFacturacionBean.T_NOMBRETABLA +"."+ FacSerieFacturacionBean.C_IDSERIEFACTURACION + "=" + FacFormaPagoSerieBean.T_NOMBRETABLA + "." + FacFormaPagoSerieBean.C_IDSERIEFACTURACION  + "(+)";
+            
+			datos = this.getHashSQL(sql);
+            
+		} catch (Exception e) {
+			throw new ClsExceptions(e,"Error al obtener las formas de pago relacionadas.");	
+		}
+	       
        return datos;                        
     }
 	

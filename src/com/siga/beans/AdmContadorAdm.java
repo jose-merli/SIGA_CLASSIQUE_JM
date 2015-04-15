@@ -231,7 +231,7 @@ public class AdmContadorAdm extends MasterBeanAdministrador
 	 * Borra el contador que esta relacionado con la serie
 	 * si no es general ni tiene otras relaciones
 	 */
-	public void borrarContadorLibre(String idInstitucion, String idContador)
+	public boolean borrarContadorLibre(String idInstitucion, String idContador)
 			throws ClsExceptions {
 
 		String delete = 
@@ -243,7 +243,7 @@ public class AdmContadorAdm extends MasterBeanAdministrador
 			"   AND IDCONTADOR NOT IN (SELECT IDCONTADOR " +
 			"                            FROM FAC_SERIEFACTURACION) ";
 
-		this.deleteSQL(delete);
+		return this.deleteSQL(delete);
 	}
 
 }

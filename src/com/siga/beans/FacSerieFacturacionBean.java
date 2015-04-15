@@ -1,29 +1,13 @@
-/*
- * VERSIONES:
- * yolanda.garcia - 15-11-2004 - Creación
- */
-
 package com.siga.beans;
 
 
 public class FacSerieFacturacionBean extends MasterBean {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 3143948645003008848L;
-
-	/* Variables */
 	private Integer idInstitucion, idPlantilla, idTipoPlantillaMail, idTipoEnvios;
-	
 	private Long idSerieFacturacion,idSerieFacturacionPrevia;
-	
-	private String 	descripcion, nombreAbreviado, envioFactura,generarPDF, idContador, 
-
-					configDeudor, configIngresos, cuentaIngresos, cuentaClientes,tipoSerie, observaciones;
-
+	private String 	descripcion, nombreAbreviado, envioFactura,generarPDF, idContador, configDeudor, configIngresos, cuentaIngresos, cuentaClientes,tipoSerie, observaciones, visible;
 	private String[] formaPagoAutomática;				
-
 
 	/* Nombre tabla */
 	static public String T_NOMBRETABLA = "FAC_SERIEFACTURACION";
@@ -47,68 +31,55 @@ public class FacSerieFacturacionBean extends MasterBean {
 	static public final String C_IDTIPOENVIOS		 = "IDTIPOENVIOS";
 	static public final String C_IDFORMAPAGO	     = "IDFORMAPAGO";
 	static public final String C_IDSERIEFACTURACIONPREVIA  = "IDSERIEFACTURACIONPREVIA";
+	static public final String C_VISIBLE  = "VISIBLE";
 	
 	// Metodos SET
-	public void setIdInstitucion (Integer id)		{ this.idInstitucion = id; }
-	public void setIdSerieFacturacion (Long id)		{ this.idSerieFacturacion = id; }
-	public void setIdPlantilla (Integer id)			{ this.idPlantilla = id; }
-	public void setDescripcion (String d)			{ this.descripcion = d; }
-	public void setNombreAbreviado (String n)		{ this.nombreAbreviado = n; }
-	public void setEnvioFactura (String n)			{ this.envioFactura = n; }
-	public void setGenerarPDF (String n)			{ this.generarPDF = n; }
-	public void setIdContador (String n)			{ this.idContador = n; }
-	public void setConfigDeudor(String configDeudor) 	 {	this.configDeudor = configDeudor;		}
-	public void setConfigIngresos(String configIngresos) {	this.configIngresos = configIngresos;	}
-	public void setCuentaClientes(String cuentaClientes) {	this.cuentaClientes = cuentaClientes;	}
-	public void setCuentaIngresos(String cuentaIngresos) {	this.cuentaIngresos = cuentaIngresos;	}
-	public void setObservaciones (String d)			     { this.observaciones = d; }
-	public void setTipoSerie(String valor) {	this.tipoSerie = valor;	}
-	public void setFormaPagoAutomática(String[] formaPagoAutomática) {this.formaPagoAutomática = formaPagoAutomática;}
-
+	public void setIdInstitucion (Integer dato) {this.idInstitucion = dato;}
+	public void setIdSerieFacturacion (Long dato) {this.idSerieFacturacion = dato;}
+	public void setIdPlantilla (Integer dato) {this.idPlantilla = dato;}
+	public void setDescripcion (String dato) {this.descripcion = dato;}
+	public void setNombreAbreviado (String dato) {this.nombreAbreviado = dato;}
+	public void setEnvioFactura (String dato) {this.envioFactura = dato;}
+	public void setGenerarPDF (String dato) {this.generarPDF = dato;}
+	public void setIdContador (String dato) {this.idContador = dato;}
+	public void setConfigDeudor(String dato) {this.configDeudor = dato;}
+	public void setConfigIngresos(String dato) {this.configIngresos = dato;}
+	public void setCuentaClientes(String dato) {this.cuentaClientes = dato;}
+	public void setCuentaIngresos(String dato) {this.cuentaIngresos = dato;}
+	public void setObservaciones (String dato) {this.observaciones = dato;}
+	public void setTipoSerie(String dato) {this.tipoSerie = dato;}
+	public void setIdTipoPlantillaMail(Integer dato) {this.idTipoPlantillaMail = dato;}
+	public void setIdTipoEnvios(Integer dato) {this.idTipoEnvios = dato;}
+	public void setIdSerieFacturacionPrevia(Long dato) {this.idSerieFacturacionPrevia = dato;}	
+	public void setVisible(String dato) {this.visible = dato;}
+	
+	public void setFormaPagoAutomática(String[] dato) {this.formaPagoAutomática = dato;}
 	
 	// Metodos GET
-	public Integer getIdInstitucion 		()	{ return this.idInstitucion; }
-	public Long getIdSerieFacturacion		()	{ return this.idSerieFacturacion; }
-	public Integer getIdPlantilla			()	{ return this.idPlantilla; }
-	public String  getDescripcion 			()	{ return this.descripcion; }
-	public String  getNombreAbreviado		()	{ return this.nombreAbreviado; }
-	public String  getEnvioFactura			()	{ return this.envioFactura; }
-	public String  getGenerarPDF			()	{ return this.generarPDF; }
-	public String  getIdContador			()	{ return this.idContador; }
-	public String getConfigDeudor			()  { return configDeudor;	}
-	public String getConfigIngresos			()  { return configIngresos;	}
-	public String getCuentaClientes			()  { return cuentaClientes;	}
-	public String getCuentaIngresos			()  { return cuentaIngresos;	}
-	public String  getObservaciones 	    ()	{ return this.observaciones; }
-	public String getTipoSerie			()  { return tipoSerie;	}
-	
-	public Integer getIdTipoPlantillaMail() {
-		return idTipoPlantillaMail;
-	}
-	public void setIdTipoPlantillaMail(Integer idTipoPlantillaMail) {
-		this.idTipoPlantillaMail = idTipoPlantillaMail;
-	}
-	
-	public Integer getIdTipoEnvios() {
-		return idTipoEnvios;
-	}
-	public void setIdTipoEnvios(Integer idTipoEnvios) {
-		this.idTipoEnvios = idTipoEnvios;
-	}	
+	public Integer getIdInstitucion() {return this.idInstitucion;}
+	public Long getIdSerieFacturacion()	{return this.idSerieFacturacion;}
+	public Integer getIdPlantilla() {return this.idPlantilla;}
+	public String getDescripcion() {return this.descripcion;}
+	public String getNombreAbreviado() {return this.nombreAbreviado;}
+	public String getEnvioFactura() {return this.envioFactura;}
+	public String getGenerarPDF() {return this.generarPDF;}
+	public String getIdContador() {return this.idContador;}
+	public String getConfigDeudor() {return configDeudor;}
+	public String getConfigIngresos() {return configIngresos;}
+	public String getCuentaClientes() {return cuentaClientes;}
+	public String getCuentaIngresos() {return cuentaIngresos;}
+	public String getObservaciones() {return this.observaciones;}
+	public String getTipoSerie() {return tipoSerie;}	
+	public Integer getIdTipoPlantillaMail() {return idTipoPlantillaMail;}
+	public Integer getIdTipoEnvios() {return idTipoEnvios;}
+	public Long getIdSerieFacturacionPrevia() {return idSerieFacturacionPrevia;}
+	public String getVisible() {return visible;}
 	
 	public String[] getFormaPagoAutomática() {
-		
-		// Al cmabiar el tipo de campo en la jsp es necesario partir la cadena
+		// Al cambiar el tipo de campo en la jsp es necesario partir la cadena
 		if (formaPagoAutomática.length == 1) {
 			return formaPagoAutomática[0].split(",");
 		}		
 		return formaPagoAutomática;
 	}
-	public Long getIdSerieFacturacionPrevia() {
-		return idSerieFacturacionPrevia;
-	}
-	public void setIdSerieFacturacionPrevia(Long idSerieFacturacionPrevia) {
-		this.idSerieFacturacionPrevia = idSerieFacturacionPrevia;
-	}	
-	
 }
