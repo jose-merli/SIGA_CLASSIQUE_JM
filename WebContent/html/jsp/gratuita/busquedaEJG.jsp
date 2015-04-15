@@ -565,7 +565,7 @@ if(usr.isComision()){
 				</td>
 				<td style="vertical-align:middle">
 					<% if(esComision){%>
-						<siga:Select id="estadoEJG" queryId="getEstadosEjgComision" selectedIds="<%=idEstado%>" />
+						<siga:Select id="estadoEJG" queryId="getEstadosEjgComision" selectedIds="<%=idEstado%>"  />
 					<% }else{ %>
 						<siga:Select id="estadoEJG" queryId="getEstadosEjg" selectedIds="<%=idEstado%>" />
 					<% } %>
@@ -1053,7 +1053,7 @@ if(usr.isComision()){
 			}else{ 
 				filtroSeleccionado = false;	
 				jQuery("#body").find('td input').each(function () {
-					if (jQuery(this).val() != "" && jQuery(this).attr('type')!='checkbox' && jQuery(this).attr('type')!='button'){
+					if (jQuery(this).val() != "" && jQuery(this).attr('type')!='checkbox' && jQuery(this).attr('type')!='button' && jQuery(this).attr('readonly')!='readonly'){
 						filtroSeleccionado = true;
 					}
 				});	
