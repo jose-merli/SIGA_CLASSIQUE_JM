@@ -1436,18 +1436,21 @@
 </form> 
 <!-- FIN: MantenimientoProductosForm miguel.villegas 3-02-2005 -->
 
-<!-- INICIO: DatosGeneralesForm (Yolanda Garcia 03-02-2005) -->
-        <form name="DatosGeneralesForm">
-  <field property = "nombreAbreviado" depends = "required"> 
-   <arg0 key="facturacion.datosGenerales.literal.nombreAbreviado"/>      
-  </field>
-      <field property = "descripcion" depends = "required"> 
-       <arg0 key="facturacion.datosGenerales.literal.descripcion"/>     
-      </field>
-      <field property = "idPlantilla" depends = "required"> 
-       <arg0 key="facturacion.datosGenerales.literal.plantilla"/>     
-      </field>
-       </form>
+<!-- INICIO: com.siga.productos.form.MantenimientoProductosForm (Yolanda Garcia 03-02-2005) -->
+	<form name="DatosGeneralesForm">
+  		<field property="nombreAbreviado" depends="required"> 
+ 			<arg0 key="facturacion.datosGenerales.literal.nombreAbreviado"/>      
+  		</field>
+      	<field property="descripcion" depends="required"> 
+       		<arg0 key="facturacion.datosGenerales.literal.descripcion"/>     
+      	</field>
+      	<field property="idPlantilla" depends="required"> 
+       		<arg0 key="facturacion.datosGenerales.literal.plantilla"/>     
+      	</field>
+      	<field property="visible" depends="required"> 
+       		<arg0 key="facturacion.datosGenerales.literal.visible"/>     
+      	</field>      	
+	</form>
  <!-- FIN: DatosGeneralesForm (Yolanda Garcia 03-02-2005) -->
  
  <!-- INICIO: TiposProductosForm (Yolanda Garcia 03-02-2005) -->
