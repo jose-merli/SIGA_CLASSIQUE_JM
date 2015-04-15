@@ -304,7 +304,7 @@
 <%
 									} else {
 %>
-										<html:text name="DatosGeneralesForm" styleId="nombreAbreviado"  property="nombreAbreviado"  size="20" maxlength="20" styleClass="boxMayuscula" value="<%=sAbreviatura%>" readonly="false"/>
+										<html:text name="DatosGeneralesForm" styleId="nombreAbreviado"  property="nombreAbreviado" size="20" maxlength="20" styleClass="boxMayuscula" value="<%=sAbreviatura%>" readonly="false"/>
 <%
 									}
 %>
@@ -315,7 +315,7 @@
 <%
 									if (!bEditable) {
 %>
-										<html:text name="DatosGeneralesForm" styleId="plantilla"  property="plantilla" size="100" maxlength="100" styleClass="boxComboConsulta" value="<%=sPlantilla%>" readonly="true"/>
+										<html:text name="DatosGeneralesForm" styleId="plantilla"  property="plantilla" style="width:400px" maxlength="100" styleClass="boxComboConsulta" value="<%=sPlantilla%>" readonly="true"/>
 <%
 									} else {
 										String dato[] = new String[1];
@@ -323,7 +323,7 @@
 										ArrayList aPlantilla = new ArrayList();
 										aPlantilla.add(iPlantilla.toString());
 %>
-										<siga:ComboBD nombre = "idPlantilla" tipo="cmbPlantilla" elementoSel ="<%=aPlantilla%>" clase="boxCombo" parametro="<%=dato%>"/>
+										<siga:ComboBD nombre = "idPlantilla" tipo="cmbPlantilla" elementoSel ="<%=aPlantilla%>" clase="boxCombo" parametro="<%=dato%>" ancho="400"/>
 <%
 									}
 %>
@@ -331,10 +331,10 @@
 								
 								<td class="labelText"><siga:Idioma key="facturacion.datosGenerales.literal.visible"/>&nbsp;(*)</td>
 								<td>
-									<html:select property="visible" name="DatosGeneralesForm" styleClass="boxCombo" style="width:60px;" value="<%=sVisible%>">
+									<html:select property="visible" name="DatosGeneralesForm" styleClass="boxCombo" style="width:60px;" value="<%=sVisible%>" disabled="<%=!bEditable%>">
 										<html:option value="S"><siga:Idioma key="general.yes"/></html:option>
 										<html:option value="N"><siga:Idioma key="general.no"/></html:option>
-									</html:select>							
+									</html:select>			
 								</td>								
 							</tr>
 												

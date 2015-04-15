@@ -157,7 +157,7 @@ public class DatosGeneralesAction extends MasterAction{
 			FacSerieFacturacionAdm admSerieFacturacion =  new FacSerieFacturacionAdm(user);			
 			GenParametrosAdm admParametros = new GenParametrosAdm(user);
 			
-			/** ---------- 1. VERIFICA EXISTENCIA DE LA SERIE DE FACTURACION ----------*/			
+			/** ---------- 1. VERIFICA EXISTENCIA DEL NOMBRE ABREVIADO DE LA SERIE DE FACTURACION ----------*/			
 			String idInstitucion = user.getLocation();
 			String nombreAbreviado = formDatosGenerales.getNombreAbreviado();
 			String where = " WHERE " + FacSerieFacturacionBean.T_NOMBRETABLA + "." +  FacSerieFacturacionBean.C_IDINSTITUCION + " = " + idInstitucion +
@@ -265,7 +265,7 @@ public class DatosGeneralesAction extends MasterAction{
 				throw new SIGAException("messages.inserted.error");
 			}
 				
-			for (int i=1; i<arrayFormasPagoAuto.length; i++) {
+			for (int i=0; i<arrayFormasPagoAuto.length; i++) {
 				String sFormaPago = arrayFormasPagoAuto[i];							
 				
 				if (sFormaPago!=null && !sFormaPago.equals("") && !sFormaPago.equals("-1")) {
@@ -284,13 +284,14 @@ public class DatosGeneralesAction extends MasterAction{
 				
 			// Almacenamos en sesion el registro de la serie de facturación
 			Hashtable<String,Object> backupSerFac = new Hashtable<String,Object>();
-			backupSerFac.put("IDINSTITUCION", idInstitucion);
-			backupSerFac.put("IDSERIEFACTURACION", Long.valueOf(nuevoidSerieFacturacion));
-			backupSerFac.put("IDPLANTILLA", formDatosGenerales.getIdPlantilla());
-			backupSerFac.put("DESCRIPCION", formDatosGenerales.getDescripcion());
-			backupSerFac.put("NOMBREABREVIADO", formDatosGenerales.getNombreAbreviado());
-			backupSerFac.put("OBSERVACIONES", formDatosGenerales.getObservaciones());
-			backupSerFac.put("VISIBLE", formDatosGenerales.getVisible());
+			UtilidadesHash.set(backupSerFac, "IDINSTITUCION", idInstitucion);
+			UtilidadesHash.set(backupSerFac, "IDSERIEFACTURACION",nuevoidSerieFacturacion);
+			UtilidadesHash.set(backupSerFac, "IDPLANTILLA",formDatosGenerales.getIdPlantilla());
+			UtilidadesHash.set(backupSerFac, "IDTIPOPLANTILLAMAIL", idTipoPlantillaMail);
+			UtilidadesHash.set(backupSerFac, "DESCRIPCION",formDatosGenerales.getDescripcion());
+			UtilidadesHash.set(backupSerFac, "NOMBREABREVIADO",formDatosGenerales.getNombreAbreviado());
+			UtilidadesHash.set(backupSerFac, "OBSERVACIONES", formDatosGenerales.getObservaciones());
+			UtilidadesHash.set(backupSerFac, "VISIBLE", formDatosGenerales.getVisible());
 			request.getSession().setAttribute("DATABACKUP", backupSerFac);
 			
 			request.getSession().setAttribute("idSerieFacturacion", nuevoidSerieFacturacion);
@@ -342,6 +343,17 @@ public class DatosGeneralesAction extends MasterAction{
 						
 			String idTipoPlantillaMail = null;
 			FacSerieFacturacionBean beanSerieFacturacionBeanOld = vSerieFacturacion.get(0);
+			
+			if (!beanSerieFacturacionBeanOld.getNombreAbreviado().equals(formDatosGenerales.getNombreAbreviado())) {
+				/** ---------- 2. VERIFICA EXISTENCIA DEL NOMBRE ABREVIADO DE LA SERIE DE FACTURACION ----------*/			
+				String where = " WHERE " + FacSerieFacturacionBean.T_NOMBRETABLA + "." +  FacSerieFacturacionBean.C_IDINSTITUCION + " = " + idInstitucion +
+					 				" AND " + FacSerieFacturacionBean.T_NOMBRETABLA + "." + FacSerieFacturacionBean.C_NOMBREABREVIADO + " = '" + formDatosGenerales.getNombreAbreviado() + "'";
+				vSerieFacturacion = admSerieFacturacion.select(where);
+				
+				if (vSerieFacturacion!=null && vSerieFacturacion.size()>0) {
+					throw new SIGAException("facturacion.datosGenerales.literal.mensajeExisteNombreAbreviadoSerFac");
+				}				
+			}
 						
 			Hashtable<String,Object> hashOld =  new Hashtable<String,Object>();				
 			hashOld.put(FacSerieFacturacionBean.C_IDINSTITUCION, idInstitucion);
@@ -390,7 +402,7 @@ public class DatosGeneralesAction extends MasterAction{
 			if (formDatosGenerales.getConfigurarContador()!=null && formDatosGenerales.getConfigurarContador().equals("on")) {
 				if (formDatosGenerales.getContadorExistente().equals("")) {
 					
-					/** ---------- 2. OBTIENE NUEVO CONTADOR ----------*/
+					/** ---------- 3. OBTIENE NUEVO CONTADOR ----------*/
 					// cogemos el nuevo. (de los tres campos)						
 					String nuevoIdContador = "FAC_" + sIdSerieFacturacion + "_" + admContador.obtenerNuevoMax(idInstitucion);
 
@@ -421,7 +433,7 @@ public class DatosGeneralesAction extends MasterAction{
 			        htContador.put(AdmContadorBean.C_FECHACREACION,"SYSDATE");
 			        htContador.put(AdmContadorBean.C_USUCREACION,(new Integer(user.getUserName())));			
 			        
-			        /** ---------- 3. INSERTA ADM_CONTADOR ----------*/
+			        /** ---------- 4. INSERTA ADM_CONTADOR ----------*/
 			        if (!admContador.insert(htContador)){
 			        	throw new SIGAException("messages.updated.error");
 					}
@@ -440,18 +452,18 @@ public class DatosGeneralesAction extends MasterAction{
 				hashNew.put(FacSerieFacturacionBean.C_IDCONTADOR, formDatosGenerales.getIdContador());
 			}
 					
-			/** ---------- 4. ACTUALIZA FAC_SERIEFACTURACION ----------*/
+			/** ---------- 5. ACTUALIZA FAC_SERIEFACTURACION ----------*/
 			if (!admSerieFacturacion.update(hashNew, hashOld)) {
 				throw new SIGAException("messages.updated.error");
 			}
 
-			/** ---------- 5. ELIMINA ADM_CONTADOR ----------*/
+			/** ---------- 6. ELIMINA ADM_CONTADOR ----------*/
 			// Borramos el contador que estaba relacionado si no es general ni tiene otras relaciones
 			if (eliminarContador && !admContador.borrarContadorLibre(idInstitucion, formDatosGenerales.getIdContador())) {
 				throw new SIGAException("messages.updated.error");
 			}
 
-			/** ---------- 6. ELIMINA FAC_SERIEFACTURACION_BANCO ----------*/					
+			/** ---------- 7. ELIMINA FAC_SERIEFACTURACION_BANCO ----------*/					
 			// borro los bancos asociados a la serie de facturacion
 			if (!admBancoInstitucion.borrarBancosSerieFacturacion(idInstitucion, sIdSerieFacturacion)) {
 				throw new SIGAException("messages.updated.error");
@@ -479,23 +491,24 @@ public class DatosGeneralesAction extends MasterAction{
 				else
 					idsufijo = idBancoConSuf.split(",")[1];
 
-				/** ---------- 7. INSERTA FAC_SERIEFACTURACION_BANCO ----------*/	
+				/** ---------- 8. INSERTA FAC_SERIEFACTURACION_BANCO ----------*/	
 				if (!admBancoInstitucion.insertaBancosSerieFacturacion(idInstitucion, sIdSerieFacturacion, idBanco, idsufijo)) {
 					throw new SIGAException("messages.updated.error");
 				}
 			}		
 			
-			/** ---------- 8. OBTIENE LAS FORMAS DE PAGO DE LA SERIE DE FACTURACION ----------*/
+			/** ---------- 9. OBTIENE LAS FORMAS DE PAGO DE LA SERIE DE FACTURACION ----------*/
 			// Obtengo el IDSERVICIOSINSTITUCION y los campos SOLICITARBAJA y SOLICITARALTA si no fueron seleccionados
-			Vector<Hashtable<String, Object>> vFormasPago = admSerieFacturacion.obtenerIdPago(idInstitucion, sIdSerieFacturacion);
+			Vector<Hashtable<String, Object>> vFormasPago = admSerieFacturacion.obtenerFormasPago(idInstitucion, sIdSerieFacturacion);
 	    				
 			if (vFormasPago!=null && vFormasPago.size()>0) {				
 		    	for (int contFormasPago=0; contFormasPago<vFormasPago.size(); contFormasPago++){
 		    		Hashtable<String, Object> hFormaPago = vFormasPago.get(contFormasPago);
-		    		/** ---------- 9. ELIMINA FAC_FORMAPAGOSERIE ----------*/
-					if (!admFormaPagoSerie.delete(hFormaPago)) {
-						throw new SIGAException("messages.updated.error");
-					}
+		    				
+		    		/** ---------- 10. ELIMINA FAC_FORMAPAGOSERIE ----------*/
+	    			if (!admFormaPagoSerie.delete(hFormaPago)) {
+	    				throw new SIGAException("messages.updated.error");
+	    			}
 				}
 			}
 	    				
@@ -504,7 +517,7 @@ public class DatosGeneralesAction extends MasterAction{
 	    		throw new SIGAException("messages.updated.error");
 	    	}
 	    		
-			for (int i=1; i<arrayFormasPagoAuto.length; i++) {
+			for (int i=0; i<arrayFormasPagoAuto.length; i++) {
 				String sFormaPago = arrayFormasPagoAuto[i];
 				
 				if (sFormaPago!=null && !sFormaPago.equals("") && !sFormaPago.equals("-1")) {
@@ -513,7 +526,7 @@ public class DatosGeneralesAction extends MasterAction{
 					hFormaPago.put(FacSerieFacturacionBean.C_IDSERIEFACTURACION, sIdSerieFacturacion);
 					hFormaPago.put(FacSerieFacturacionBean.C_IDFORMAPAGO, sFormaPago);
 		
-					/** ---------- 10. INSERTA FAC_FORMAPAGOSERIE ---------- */
+					/** ---------- 11. INSERTA FAC_FORMAPAGOSERIE ---------- */
 					if (!admFormaPagoSerie.insert(hFormaPago)) {
 						throw new SIGAException("messages.updated.error");
 					}
@@ -524,14 +537,14 @@ public class DatosGeneralesAction extends MasterAction{
 			
 		    // Almacenamos en sesion el registro de la serie de facturacion
 			Hashtable<String,Object> backupSerFac = new Hashtable<String,Object>();
-			backupSerFac.put("IDINSTITUCION",idInstitucion);
-			backupSerFac.put("IDSERIEFACTURACION",sIdSerieFacturacion);
-			backupSerFac.put("IDPLANTILLA",formDatosGenerales.getIdPlantilla());
-			backupSerFac.put("IDTIPOPLANTILLAMAIL", idTipoPlantillaMail);
-			backupSerFac.put("DESCRIPCION",formDatosGenerales.getDescripcion());
-			backupSerFac.put("NOMBREABREVIADO",formDatosGenerales.getNombreAbreviado());
-			backupSerFac.put("OBSERVACIONES", formDatosGenerales.getObservaciones());
-			backupSerFac.put("VISIBLE", formDatosGenerales.getVisible());
+			UtilidadesHash.set(backupSerFac, "IDINSTITUCION", idInstitucion);
+			UtilidadesHash.set(backupSerFac, "IDSERIEFACTURACION",sIdSerieFacturacion);
+			UtilidadesHash.set(backupSerFac, "IDPLANTILLA",formDatosGenerales.getIdPlantilla());
+			UtilidadesHash.set(backupSerFac, "IDTIPOPLANTILLAMAIL", idTipoPlantillaMail);
+			UtilidadesHash.set(backupSerFac, "DESCRIPCION",formDatosGenerales.getDescripcion());
+			UtilidadesHash.set(backupSerFac, "NOMBREABREVIADO",formDatosGenerales.getNombreAbreviado());
+			UtilidadesHash.set(backupSerFac, "OBSERVACIONES", formDatosGenerales.getObservaciones());
+			UtilidadesHash.set(backupSerFac, "VISIBLE", formDatosGenerales.getVisible());
 			request.getSession().setAttribute("DATABACKUP",backupSerFac);
 			
 		} catch (Exception e) { 

@@ -292,41 +292,6 @@ public class FacSerieFacturacionAdm extends MasterBeanAdministrador {
 		return salida;
 	}	
 	
-	
-	/** 
-	 * Recoge las formas de pago relacionadas con un determinado registro por sus claves <br/>
-	 * y su atributo Internet
-	 * @param  idInst - identificador de la institucion 
-	 * @param  idTipoProd - identificador del tipo de producto
-	 * @param  idProd - identificador del producto	 
-	 * @param  idProdInst - identificador del producto institucion	  
-	 * @param  internet - descripcion de la forma de pago 
-	 * @return  Vector - Filas seleccionadas  
-	 * @exception  ClsExceptions
-	 */
-	public Vector<Hashtable<String, Object>> obtenerFormasPago (String idInstitucion, String idSerieFacturacion) throws ClsExceptions {
-		Vector<Hashtable<String, Object>> datos = new Vector<Hashtable<String, Object>>();
-		try {
-			String sql = "SELECT " + FacSerieFacturacionBean.T_NOMBRETABLA + "." + FacSerieFacturacionBean.C_IDINSTITUCION  + ", " +
-            				FacSerieFacturacionBean.T_NOMBRETABLA + "." + FacSerieFacturacionBean.C_IDSERIEFACTURACION + ", " +
-            				FacFormaPagoSerieBean.T_NOMBRETABLA + "." + FacFormaPagoSerieBean.C_IDFORMAPAGO + ", " +
-            				FacFormaPagoSerieBean.T_NOMBRETABLA + "." + FacFormaPagoSerieBean.C_FECHAMODIFICACION + ", " +
-            				FacFormaPagoSerieBean.T_NOMBRETABLA + "." + FacFormaPagoSerieBean.C_USUMODIFICACION +
-						" FROM " + FacSerieFacturacionBean.T_NOMBRETABLA + ", " + FacFormaPagoSerieBean.T_NOMBRETABLA + 
-						" WHERE " + FacSerieFacturacionBean.T_NOMBRETABLA +"."+ FacSerieFacturacionBean.C_IDINSTITUCION + " = " + idInstitucion +
-							" AND " + FacSerieFacturacionBean.T_NOMBRETABLA +"."+ FacSerieFacturacionBean.C_IDSERIEFACTURACION + " = " + idSerieFacturacion +
-							" AND " + FacSerieFacturacionBean.T_NOMBRETABLA +"."+ FacSerieFacturacionBean.C_IDINSTITUCION + " = " + FacFormaPagoSerieBean.T_NOMBRETABLA + "." + PysFormaPagoProductoBean.C_IDINSTITUCION + "(+) " +
-							" AND " + FacSerieFacturacionBean.T_NOMBRETABLA +"."+ FacSerieFacturacionBean.C_IDSERIEFACTURACION + " = " + FacFormaPagoSerieBean.T_NOMBRETABLA + "." + FacFormaPagoSerieBean.C_IDSERIEFACTURACION  + "(+) ";
-	            
-			datos = this.getHashSQL(sql);
-	            
-		} catch (Exception e) {
-			throw new ClsExceptions(e,"Error al obtener las formas de pago relacionadas.");	
-		}
-	       
-       return datos;                        
-    }	
-	
 	/** 
 	 * Recoge las formas de pago relacionadas con un determinado registro por sus claves y su atributo Internet
 	 * @param  idInst - identificador de la institucion 
@@ -337,17 +302,17 @@ public class FacSerieFacturacionAdm extends MasterBeanAdministrador {
 	 * @return  Vector - Filas seleccionadas  
 	 * @exception  ClsExceptions, SIGAException
 	 */
-	public Vector<Hashtable<String, Object>> obtenerIdPago (String idInstitucion, String idSerieFacturacion) throws ClsExceptions {
+	public Vector<Hashtable<String, Object>> obtenerFormasPago (String idInstitucion, String idSerieFacturacion) throws ClsExceptions {
 		Vector<Hashtable<String, Object>> datos = new Vector<Hashtable<String, Object>>();
        try {
-            String sql ="SELECT " + FacSerieFacturacionBean.T_NOMBRETABLA + "." + FacSerieFacturacionBean.C_IDINSTITUCION  + "," +
-	    					FacSerieFacturacionBean.T_NOMBRETABLA + "." + FacSerieFacturacionBean.C_IDSERIEFACTURACION + "," +
+            String sql ="SELECT " + FacSerieFacturacionBean.T_NOMBRETABLA + "." + FacSerieFacturacionBean.C_IDINSTITUCION  + ", " +
+	    					FacSerieFacturacionBean.T_NOMBRETABLA + "." + FacSerieFacturacionBean.C_IDSERIEFACTURACION + ", " +
 	    					FacFormaPagoSerieBean.T_NOMBRETABLA + "." + FacFormaPagoSerieBean.C_IDFORMAPAGO + 				
 						" FROM " + FacSerieFacturacionBean.T_NOMBRETABLA + ", " + FacFormaPagoSerieBean.T_NOMBRETABLA + 
-						" WHERE " + FacSerieFacturacionBean.T_NOMBRETABLA +"."+ FacSerieFacturacionBean.C_IDINSTITUCION + "=" + idInstitucion +
-						" AND " + FacSerieFacturacionBean.T_NOMBRETABLA +"."+ FacSerieFacturacionBean.C_IDSERIEFACTURACION + "=" + idSerieFacturacion +
-            			" AND " + FacSerieFacturacionBean.T_NOMBRETABLA +"."+ FacSerieFacturacionBean.C_IDINSTITUCION + "=" + FacFormaPagoSerieBean.T_NOMBRETABLA + "." + PysFormaPagoProductoBean.C_IDINSTITUCION + "(+)" +
-						" AND " + FacSerieFacturacionBean.T_NOMBRETABLA +"."+ FacSerieFacturacionBean.C_IDSERIEFACTURACION + "=" + FacFormaPagoSerieBean.T_NOMBRETABLA + "." + FacFormaPagoSerieBean.C_IDSERIEFACTURACION  + "(+)";
+						" WHERE " + FacSerieFacturacionBean.T_NOMBRETABLA + "." + FacSerieFacturacionBean.C_IDINSTITUCION + " = " + idInstitucion +
+							" AND " + FacSerieFacturacionBean.T_NOMBRETABLA + "." + FacSerieFacturacionBean.C_IDSERIEFACTURACION + " = " + idSerieFacturacion +
+							" AND " + FacSerieFacturacionBean.T_NOMBRETABLA + "." + FacSerieFacturacionBean.C_IDINSTITUCION + " = " + FacFormaPagoSerieBean.T_NOMBRETABLA + "." + PysFormaPagoProductoBean.C_IDINSTITUCION +
+							" AND " + FacSerieFacturacionBean.T_NOMBRETABLA + "." + FacSerieFacturacionBean.C_IDSERIEFACTURACION + " = " + FacFormaPagoSerieBean.T_NOMBRETABLA + "." + FacFormaPagoSerieBean.C_IDSERIEFACTURACION;
             
 			datos = this.getHashSQL(sql);
             
