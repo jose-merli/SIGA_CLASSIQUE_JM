@@ -300,11 +300,11 @@
 <%
 									if (!bEditable) {
 %>
-										<html:text name="DatosGeneralesForm" styleId="nombreAbreviado"  property="nombreAbreviado" size="20" maxlength="20" styleClass="boxConsulta" value="<%=sAbreviatura%>" readonly="true"/>
+										<html:text name="DatosGeneralesForm" styleId="nombreAbreviado" property="nombreAbreviado" size="20" maxlength="20" styleClass="boxConsulta" value="<%=sAbreviatura%>" readonly="true"/>
 <%
 									} else {
 %>
-										<html:text name="DatosGeneralesForm" styleId="nombreAbreviado"  property="nombreAbreviado" size="20" maxlength="20" styleClass="boxMayuscula" value="<%=sAbreviatura%>" readonly="false"/>
+										<html:text name="DatosGeneralesForm" styleId="nombreAbreviado" property="nombreAbreviado" size="20" maxlength="20" styleClass="boxMayuscula" value="<%=sAbreviatura%>" readonly="false"/>
 <%
 									}
 %>
@@ -681,6 +681,6 @@
 %>
 	</siga:Table>												
 
-	<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
+	<iframe name="submitArea" src="<html:rewrite page='/html/jsp/general/blank.jsp'/>" style="display: none"></iframe>
 </body>
 </html>

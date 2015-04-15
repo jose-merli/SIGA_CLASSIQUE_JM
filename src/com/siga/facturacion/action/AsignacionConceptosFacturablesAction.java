@@ -42,10 +42,10 @@ import com.siga.beans.FacTiposProduIncluEnFactuAdm;
 import com.siga.beans.FacTiposProduIncluEnFactuBean;
 import com.siga.beans.FacTiposServInclsEnFactAdm;
 import com.siga.beans.FacTiposServInclsEnFactBean;
+import com.siga.beans.PysProductosBean;
 import com.siga.beans.PysServiciosBean;
 import com.siga.beans.PysTipoServiciosBean;
 import com.siga.beans.PysTiposProductosBean;
-import com.siga.beans.PysProductosBean;
 import com.siga.facturacion.form.AsignacionConceptosFacturablesForm;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
@@ -116,11 +116,14 @@ public class AsignacionConceptosFacturablesAction extends MasterAction
 			String tipoServicio = formFact.getTipoServicio();
 			String grupoClienteFijo = formFact.getGrupoClienteFijo();
 			String grupoClientesDinamico = formFact.getGrupoClientesDinamico();
+			String visible = formFact.getVisible();
 			
-			String where = 	" where ";
-			
-			where += FacSerieFacturacionBean.T_NOMBRETABLA+"."+ FacSerieFacturacionBean.C_IDINSTITUCION+"="+idInstitucion +
-					 " AND (" + FacSerieFacturacionBean.T_NOMBRETABLA+"."+ FacSerieFacturacionBean.C_TIPOSERIE+"='G' OR "+FacSerieFacturacionBean.T_NOMBRETABLA+"."+ FacSerieFacturacionBean.C_TIPOSERIE+" IS NULL) ";
+			String where = " WHERE " + FacSerieFacturacionBean.T_NOMBRETABLA + "." + FacSerieFacturacionBean.C_IDINSTITUCION + " = " + idInstitucion +
+					 			" AND (" + FacSerieFacturacionBean.T_NOMBRETABLA + "." + FacSerieFacturacionBean.C_TIPOSERIE + " = 'G' OR " + FacSerieFacturacionBean.T_NOMBRETABLA + "." + FacSerieFacturacionBean.C_TIPOSERIE + " IS NULL) ";
+
+			if (visible!=null && !visible.equals("")) {
+				where += " AND " + FacSerieFacturacionBean.T_NOMBRETABLA + "." + FacSerieFacturacionBean.C_VISIBLE + " = '" + visible + "' ";
+			}
 			
 			if (nombreAbreviado!=null && !nombreAbreviado.trim().equals("")) {
 				where += " and "+ComodinBusquedas.prepararSentenciaCompleta(nombreAbreviado.trim(),FacSerieFacturacionBean.T_NOMBRETABLA+"."+FacSerieFacturacionBean.C_NOMBREABREVIADO);
@@ -176,6 +179,7 @@ public class AsignacionConceptosFacturablesAction extends MasterAction
 			hashFormulario.put("TIPOSERVICIO",tipoServicio);
 			hashFormulario.put("GRUPOCLIENTEFIJO",grupoClienteFijo);
 			hashFormulario.put("GRUPOCLIENTESDINAMICO",grupoClientesDinamico);
+			hashFormulario.put("VISIBLE",visible);
 			hashFormulario.put("INICIARBUSQUEDA","SI");
 			request.getSession().setAttribute("DATOSFORMULARIO",hashFormulario);
 		} 
@@ -259,6 +263,7 @@ public class AsignacionConceptosFacturablesAction extends MasterAction
 				backupSerFac.put("IDPLANTILLA", beanSerie.getIdPlantilla());
 				backupSerFac.put("DESCRIPCION", beanSerie.getDescripcion());
 				backupSerFac.put("NOMBREABREVIADO", beanSerie.getNombreAbreviado());
+				backupSerFac.put("VISIBLE", beanSerie.getVisible());
 				request.getSession().setAttribute("DATABACKUP",backupSerFac);
 			}
 			
