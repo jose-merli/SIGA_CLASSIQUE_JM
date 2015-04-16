@@ -17,15 +17,18 @@
 <%@ taglib uri="struts-logic.tld" prefix="logic"%>
 <%@ taglib uri="struts-tiles.tld" prefix="tiles" %>
 
+<%@ page import="com.atos.utils.UsrBean"%>
 <%@ page import="com.siga.administracion.SIGAConstants"%>
 <%@ page import="com.siga.tlds.FilaExtElement"%>
 <%@ page import="com.siga.Utilidades.UtilidadesHash"%>
+<%@ page import="com.siga.Utilidades.UtilidadesMultidioma"%>
 <%@ page import="com.siga.Utilidades.UtilidadesString"%>
 <%@ page import="java.util.Hashtable"%>
 <%@ page import="java.util.Vector"%>
 
 <!-- JSP -->
 <% 
+	UsrBean userBean = (UsrBean)request.getSession().getAttribute("USRBEAN");
 	Vector vDatosTab = (Vector)request.getAttribute("datosTab");
 	request.removeAttribute("datosTab");
 %>
@@ -46,8 +49,8 @@
 			parent.buscar();
 		}
 		
-		function solicitarbaja(fila, id) {			
-			if(confirm('<siga:Idioma key="facturacion.busquedaSeriesFacturacion.literal.solicitarBaja"/>')) { 
+		function darBaja(fila, id) {			
+			if(confirm('<siga:Idioma key="facturacion.busquedaSeriesFacturacion.literal.darBaja"/>')) { 
 				sub();				
 				if (typeof id == 'undefined')
 					id='tabladatos';
@@ -62,8 +65,8 @@
 			}			
 		}
 		
-		function solicitaralta(fila, id) {						
-			if(confirm('<siga:Idioma key="facturacion.busquedaSeriesFacturacion.literal.solicitarAlta"/>')) { 
+		function darAlta(fila, id) {						
+			if(confirm('<siga:Idioma key="facturacion.busquedaSeriesFacturacion.literal.darAlta"/>')) { 
 				sub();
 				if (typeof id == 'undefined')
 					id='tabladatos';
@@ -108,13 +111,20 @@
 	   			FilaExtElement[] elems = new FilaExtElement[1];
 	   			
 	   			if (sFechaBaja==null || sFechaBaja.equals("")) {
-	   				elems[0]=new FilaExtElement("solicitarbaja","solicitarbaja",SIGAConstants.ACCESS_READ);
+	   				String tituloIcono = UtilidadesMultidioma.getDatoMaestroIdioma("facturacion.busquedaSeriesFacturacion.icono.darBaja", userBean);
+	   				elems[0]=new FilaExtElement("solicitarbaja", "darBaja", tituloIcono, SIGAConstants.ACCESS_READ);
 	   			} else {
-	   				elems[0]=new FilaExtElement("solicitaralta","solicitaralta",SIGAConstants.ACCESS_READ);
+	   				String tituloIcono = UtilidadesMultidioma.getDatoMaestroIdioma("facturacion.busquedaSeriesFacturacion.icono.darAlta", userBean);
+	   				elems[0]=new FilaExtElement("solicitaralta", "darAlta", tituloIcono, SIGAConstants.ACCESS_READ);
 	   			}
 	   			
+	   			String sTipoSerie = UtilidadesHash.getString(miHash, "TIPOSERIE");
+	   			String sIconos = "C,E,B";
+	   			if (sTipoSerie.equals("G")) {		   			
+	   				sIconos = "C,E"; // No permimitmos borrar si es la genérica.
+	   			}	   			
 %>
-				<siga:FilaConIconos fila='<%=String.valueOf(i+1)%>' botones='C,E,B' elementos='<%=elems%>' pintarEspacio="no" clase="listaNonEdit">
+				<siga:FilaConIconos fila='<%=String.valueOf(i+1)%>' botones='<%=sIconos%>' elementos='<%=elems%>' pintarEspacio="no" clase="listaNonEdit">
 					<td>
 						<input type="hidden" name="oculto<%=""+(i+1)%>_1" value="<%=miHash.get("IDSERIEFACTURACION")%>">
 						<input type="hidden" name="oculto<%=""+(i+1)%>_2" value="<%=miHash.get("USUMODIFICACION")%>">
