@@ -40,7 +40,7 @@ public class FacSerieFacturacionAdm extends MasterBeanAdministrador {
 							FacSerieFacturacionBean.C_IDTIPOPLANTILLAMAIL,
 							FacSerieFacturacionBean.C_IDTIPOENVIOS,
 							FacSerieFacturacionBean.C_IDSERIEFACTURACIONPREVIA,
-							FacSerieFacturacionBean.C_VISIBLE,
+							FacSerieFacturacionBean.C_FECHABAJA,
 							FacSerieFacturacionBean.C_FECHAMODIFICACION,
 							FacSerieFacturacionBean.C_USUMODIFICACION};
 		return campos;
@@ -74,7 +74,7 @@ public class FacSerieFacturacionAdm extends MasterBeanAdministrador {
 			bean.setIdTipoPlantillaMail(UtilidadesHash.getInteger(hash,FacSerieFacturacionBean.C_IDTIPOPLANTILLAMAIL));
 			bean.setIdTipoEnvios(UtilidadesHash.getInteger(hash,FacSerieFacturacionBean.C_IDTIPOENVIOS));
 			bean.setIdSerieFacturacionPrevia(UtilidadesHash.getLong(hash, FacSerieFacturacionBean.C_IDSERIEFACTURACIONPREVIA));
-			bean.setVisible(UtilidadesHash.getString(hash, FacSerieFacturacionBean.C_VISIBLE));
+			bean.setFechaBaja(UtilidadesHash.getString(hash, FacSerieFacturacionBean.C_FECHABAJA));
 			bean.setFechaMod(UtilidadesHash.getString(hash, FacSerieFacturacionBean.C_FECHAMODIFICACION));
 			bean.setUsuMod(UtilidadesHash.getInteger(hash,FacSerieFacturacionBean.C_USUMODIFICACION));
 		}
@@ -108,7 +108,7 @@ public class FacSerieFacturacionAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(htData, FacSerieFacturacionBean.C_IDTIPOPLANTILLAMAIL, b.getIdTipoPlantillaMail());
 			UtilidadesHash.set(htData, FacSerieFacturacionBean.C_IDTIPOENVIOS, b.getIdTipoEnvios());
 			UtilidadesHash.set(htData, FacSerieFacturacionBean.C_IDSERIEFACTURACIONPREVIA, b.getIdSerieFacturacionPrevia());
-			UtilidadesHash.set(htData, FacSerieFacturacionBean.C_VISIBLE, b.getVisible());
+			UtilidadesHash.set(htData, FacSerieFacturacionBean.C_FECHABAJA, b.getFechaBaja());
 			UtilidadesHash.set(htData, FacSerieFacturacionBean.C_FECHAMODIFICACION, b.getFechaMod());
 			UtilidadesHash.set(htData, FacSerieFacturacionBean.C_USUMODIFICACION, b.getUsuMod());
 		}
@@ -127,17 +127,18 @@ public class FacSerieFacturacionAdm extends MasterBeanAdministrador {
 	}
 
 	protected String[] getCamposSelect() {
-		String [] campos = {"DISTINCT "+FacSerieFacturacionBean.T_NOMBRETABLA+"."+FacSerieFacturacionBean.C_IDINSTITUCION+" IDINSTITUCION", 		
-							FacSerieFacturacionBean.T_NOMBRETABLA+"."+FacSerieFacturacionBean.C_IDSERIEFACTURACION+" IDSERIEFACTURACION",
-							FacSerieFacturacionBean.T_NOMBRETABLA+"."+FacSerieFacturacionBean.C_IDPLANTILLA+" IDPLANTILLA",
-							FacSerieFacturacionBean.T_NOMBRETABLA+"."+FacSerieFacturacionBean.C_IDTIPOPLANTILLAMAIL+" IDTIPOPLANTILLAMAIL", 	
-							FacSerieFacturacionBean.T_NOMBRETABLA+"."+FacSerieFacturacionBean.C_DESCRIPCION+" DESCRIPCION",
-							FacSerieFacturacionBean.T_NOMBRETABLA+"."+FacSerieFacturacionBean.C_NOMBREABREVIADO+" NOMBREABREVIADO",	
-							FacSerieFacturacionBean.T_NOMBRETABLA+"."+FacSerieFacturacionBean.C_TIPOSERIE+" TIPOSERIE",	
-							FacSerieFacturacionBean.T_NOMBRETABLA+"."+FacSerieFacturacionBean.C_IDCONTADOR+" IDCONTADOR",	
-							FacSerieFacturacionBean.T_NOMBRETABLA+"."+FacSerieFacturacionBean.C_FECHAMODIFICACION+" FECHAMODIFICACION",
-							FacSerieFacturacionBean.T_NOMBRETABLA+"."+FacSerieFacturacionBean.C_USUMODIFICACION+" USUMODIFICACION",
-							FacSerieFacturacionBean.T_NOMBRETABLA+"."+FacSerieFacturacionBean.C_IDSERIEFACTURACIONPREVIA+" IDSERIEFACTURACIONPREVIA"};
+		String [] campos = {"DISTINCT " + FacSerieFacturacionBean.T_NOMBRETABLA + "." + FacSerieFacturacionBean.C_IDINSTITUCION + " AS IDINSTITUCION", 		
+										  FacSerieFacturacionBean.T_NOMBRETABLA + "." + FacSerieFacturacionBean.C_IDSERIEFACTURACION + " AS IDSERIEFACTURACION",
+										  FacSerieFacturacionBean.T_NOMBRETABLA + "." + FacSerieFacturacionBean.C_IDSERIEFACTURACIONPREVIA + " AS IDSERIEFACTURACIONPREVIA",
+										  FacSerieFacturacionBean.T_NOMBRETABLA + "." + FacSerieFacturacionBean.C_IDPLANTILLA + " AS IDPLANTILLA",
+										  FacSerieFacturacionBean.T_NOMBRETABLA + "." + FacSerieFacturacionBean.C_IDTIPOPLANTILLAMAIL + " AS IDTIPOPLANTILLAMAIL", 	
+										  FacSerieFacturacionBean.T_NOMBRETABLA + "." + FacSerieFacturacionBean.C_DESCRIPCION + " AS DESCRIPCION",
+										  FacSerieFacturacionBean.T_NOMBRETABLA + "." + FacSerieFacturacionBean.C_NOMBREABREVIADO + " AS NOMBREABREVIADO",	
+										  FacSerieFacturacionBean.T_NOMBRETABLA + "." + FacSerieFacturacionBean.C_TIPOSERIE + " AS TIPOSERIE",	
+										  FacSerieFacturacionBean.T_NOMBRETABLA + "." + FacSerieFacturacionBean.C_IDCONTADOR + " AS IDCONTADOR",
+										  FacSerieFacturacionBean.T_NOMBRETABLA + "." + FacSerieFacturacionBean.C_FECHABAJA + " AS FECHABAJA",	
+										  FacSerieFacturacionBean.T_NOMBRETABLA + "." + FacSerieFacturacionBean.C_FECHAMODIFICACION + " AS FECHAMODIFICACION",
+										  FacSerieFacturacionBean.T_NOMBRETABLA + "." + FacSerieFacturacionBean.C_USUMODIFICACION + " AS USUMODIFICACION"};
 		return campos;
 	}
 	

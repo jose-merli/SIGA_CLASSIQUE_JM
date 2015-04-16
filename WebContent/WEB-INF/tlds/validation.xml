@@ -1447,9 +1447,6 @@
       	<field property="idPlantilla" depends="required"> 
        		<arg0 key="facturacion.datosGenerales.literal.plantilla"/>     
       	</field>
-      	<field property="visible" depends="required"> 
-       		<arg0 key="facturacion.datosGenerales.literal.visible"/>     
-      	</field>      	
 	</form>
  <!-- FIN: DatosGeneralesForm (Yolanda Garcia 03-02-2005) -->
  

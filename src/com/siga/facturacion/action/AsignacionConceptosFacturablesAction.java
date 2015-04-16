@@ -17,6 +17,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.transaction.UserTransaction;
 
+import org.apache.struts.action.ActionForm;
+import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
 import com.atos.utils.ClsExceptions;
@@ -51,8 +53,45 @@ import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
 
-public class AsignacionConceptosFacturablesAction extends MasterAction
-{	
+public class AsignacionConceptosFacturablesAction extends MasterAction {
+	
+	public ActionForward executeInternal (ActionMapping mapping, ActionForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+
+		String mapDestino = "exception";
+		MasterForm miForm = null;
+		try { 
+			do {
+				miForm = (MasterForm) formulario;
+				if (miForm == null) {
+					break;
+				}
+				
+				String accion = miForm.getModo();
+
+		  		if (accion!=null && (accion.equalsIgnoreCase("solicitaralta") || accion.equalsIgnoreCase("solicitarbaja"))){
+					mapDestino = this.gestionarEstado(mapping, miForm, request, response, accion);
+					break;
+					
+				} else {
+					return super.executeInternal(mapping, formulario, request, response);
+				}
+			} while (false);
+			
+			// Redireccionamos el flujo a la JSP correspondiente
+			if (mapDestino == null) { 
+			    throw new ClsExceptions("El ActionMapping no puede ser nulo","","0","GEN00","15");
+			}
+			
+			return mapping.findForward(mapDestino);
+			
+		} catch (SIGAException es) {
+			throw es;
+			
+		} catch (Exception e) {
+			throw new SIGAException("messages.general.error",e,new String[] {"modulo.facturacion.asignacionConceptos"});
+		}
+	}	
+	
 	/**
 	 * Es el metodo inicial que se ejecuta al entrar a la pantalla de busqueda.
 	 * Limpia la sesion de los datos del formulario.
@@ -116,13 +155,16 @@ public class AsignacionConceptosFacturablesAction extends MasterAction
 			String tipoServicio = formFact.getTipoServicio();
 			String grupoClienteFijo = formFact.getGrupoClienteFijo();
 			String grupoClientesDinamico = formFact.getGrupoClientesDinamico();
-			String visible = formFact.getVisible();
+			String estado = formFact.getEstado();
 			
 			String where = " WHERE " + FacSerieFacturacionBean.T_NOMBRETABLA + "." + FacSerieFacturacionBean.C_IDINSTITUCION + " = " + idInstitucion +
 					 			" AND (" + FacSerieFacturacionBean.T_NOMBRETABLA + "." + FacSerieFacturacionBean.C_TIPOSERIE + " = 'G' OR " + FacSerieFacturacionBean.T_NOMBRETABLA + "." + FacSerieFacturacionBean.C_TIPOSERIE + " IS NULL) ";
 
-			if (visible!=null && !visible.equals("")) {
-				where += " AND " + FacSerieFacturacionBean.T_NOMBRETABLA + "." + FacSerieFacturacionBean.C_VISIBLE + " = '" + visible + "' ";
+			if (estado!=null && estado.equals("A")) {
+				where += " AND " + FacSerieFacturacionBean.T_NOMBRETABLA + "." + FacSerieFacturacionBean.C_FECHABAJA + " IS NULL ";
+				
+			} else if (estado!=null && estado.equals("B")) {
+				where += " AND " + FacSerieFacturacionBean.T_NOMBRETABLA + "." + FacSerieFacturacionBean.C_FECHABAJA + " IS NOT NULL ";
 			}
 			
 			if (nombreAbreviado!=null && !nombreAbreviado.trim().equals("")) {
@@ -179,7 +221,7 @@ public class AsignacionConceptosFacturablesAction extends MasterAction
 			hashFormulario.put("TIPOSERVICIO",tipoServicio);
 			hashFormulario.put("GRUPOCLIENTEFIJO",grupoClienteFijo);
 			hashFormulario.put("GRUPOCLIENTESDINAMICO",grupoClientesDinamico);
-			hashFormulario.put("VISIBLE",visible);
+			hashFormulario.put("ESTADO",estado);
 			hashFormulario.put("INICIARBUSQUEDA","SI");
 			request.getSession().setAttribute("DATOSFORMULARIO",hashFormulario);
 		} 
@@ -263,7 +305,6 @@ public class AsignacionConceptosFacturablesAction extends MasterAction
 				backupSerFac.put("IDPLANTILLA", beanSerie.getIdPlantilla());
 				backupSerFac.put("DESCRIPCION", beanSerie.getDescripcion());
 				backupSerFac.put("NOMBREABREVIADO", beanSerie.getNombreAbreviado());
-				backupSerFac.put("VISIBLE", beanSerie.getVisible());
 				request.getSession().setAttribute("DATABACKUP",backupSerFac);
 			}
 			
@@ -536,4 +577,95 @@ public class AsignacionConceptosFacturablesAction extends MasterAction
 			
 		return "pestanasFacturacion";
 	}
+	
+	protected String solicitaralta(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+		UserTransaction tx = null;
+		try {
+			UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");
+			
+			Vector vOcultos = formulario.getDatosTablaOcultos(0);
+			String idSerieFacturacion = (String)vOcultos.elementAt(0);
+			String idInstitucion = (String)vOcultos.elementAt(6);
+			
+			if (idInstitucion==null || idInstitucion.equals("") || idSerieFacturacion==null || idSerieFacturacion.equals("")) {
+				throw new SIGAException("messages.updated.error");
+			}
+			
+			Hashtable<String,Object> hSerieFacturacion =  new Hashtable<String,Object>();				
+			hSerieFacturacion.put(FacSerieFacturacionBean.C_IDINSTITUCION, idInstitucion);
+			hSerieFacturacion.put(FacSerieFacturacionBean.C_IDSERIEFACTURACION, idSerieFacturacion);
+			hSerieFacturacion.put(FacSerieFacturacionBean.C_FECHABAJA, "");
+			
+			String[] claves = {FacSerieFacturacionBean.C_IDINSTITUCION, FacSerieFacturacionBean.C_IDSERIEFACTURACION};
+			String[] campos = {FacSerieFacturacionBean.C_FECHABAJA, FacSerieFacturacionBean.C_FECHAMODIFICACION, FacSerieFacturacionBean.C_USUMODIFICACION};
+			
+			tx = user.getTransaction();
+			tx.begin();
+			
+			FacSerieFacturacionAdm admSerieFacturacion = new FacSerieFacturacionAdm(user);
+			if (!admSerieFacturacion.updateDirect(hSerieFacturacion, claves, campos)) {
+				throw new SIGAException("messages.updated.error");
+			}
+			
+			tx.commit();
+			
+		} catch (Exception e) { 
+		   throwExcp("messages.general.error",new String[] {"modulo.facturacion.asignacionConceptos"}, e, tx); 
+		}		
+			
+		return exitoRefresco("messages.updated.success", request);	
+	}		
+	
+	/**
+	 * Gestiona el estado de una serie de facturacion
+	 * @param mapping
+	 * @param formulario
+	 * @param request
+	 * @param response
+	 * @param accion
+	 * @return
+	 * @throws SIGAException
+	 */
+	protected String gestionarEstado(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response, String accion) throws SIGAException {
+		UserTransaction tx = null;
+		try {
+			UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");
+			
+			Vector vOcultos = formulario.getDatosTablaOcultos(0);
+			String idSerieFacturacion = (String)vOcultos.elementAt(0);
+			String idInstitucion = (String)vOcultos.elementAt(6);
+			
+			if (idInstitucion==null || idInstitucion.equals("") || idSerieFacturacion==null || idSerieFacturacion.equals("")) {
+				throw new SIGAException("messages.updated.error");
+			}
+			
+			Hashtable<String,Object> hSerieFacturacion =  new Hashtable<String,Object>();				
+			hSerieFacturacion.put(FacSerieFacturacionBean.C_IDINSTITUCION, idInstitucion);
+			hSerieFacturacion.put(FacSerieFacturacionBean.C_IDSERIEFACTURACION, idSerieFacturacion);
+			
+			if (accion!=null && accion.equals("solicitarbaja"))
+				hSerieFacturacion.put(FacSerieFacturacionBean.C_FECHABAJA, "SYSDATE");
+			else
+				hSerieFacturacion.put(FacSerieFacturacionBean.C_FECHABAJA, "");
+			
+			
+			String[] claves = {FacSerieFacturacionBean.C_IDINSTITUCION, FacSerieFacturacionBean.C_IDSERIEFACTURACION};
+			String[] campos = {FacSerieFacturacionBean.C_FECHABAJA, FacSerieFacturacionBean.C_FECHAMODIFICACION, FacSerieFacturacionBean.C_USUMODIFICACION};
+			
+			tx = user.getTransaction();
+			tx.begin();
+			
+			FacSerieFacturacionAdm admSerieFacturacion = new FacSerieFacturacionAdm(user);
+			if (!admSerieFacturacion.updateDirect(hSerieFacturacion, claves, campos)) {
+				throw new SIGAException("messages.updated.error");
+			}
+			
+			tx.commit();
+			
+		} catch (Exception e) { 
+		   throwExcp("messages.general.error",new String[] {"modulo.facturacion.asignacionConceptos"}, e, tx); 
+		}		
+			
+		return exitoRefresco("messages.updated.success", request);	
+	}	
 }

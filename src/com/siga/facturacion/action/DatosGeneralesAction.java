@@ -194,7 +194,6 @@ public class DatosGeneralesAction extends MasterAction{
 			beanSerieFacturacion.setCuentaIngresos(admParametros.getValor(idInstitucion, "FAC", "CONTABILIDAD_VENTAS", ""));
 			
 			/** ---------- 5. INSERTA FAC_SERIEFACTURACION ---------- */
-			String visible = formDatosGenerales.getVisible();
 			String envioFacturas = formDatosGenerales.getEnvioFacturas(); 				
 			
 			beanSerieFacturacion.setIdInstitucion(Integer.valueOf(idInstitucion));
@@ -202,7 +201,6 @@ public class DatosGeneralesAction extends MasterAction{
 			beanSerieFacturacion.setIdPlantilla(formDatosGenerales.getIdPlantilla());
 			beanSerieFacturacion.setDescripcion(formDatosGenerales.getDescripcion());
 			beanSerieFacturacion.setObservaciones(formDatosGenerales.getObservaciones());
-			beanSerieFacturacion.setVisible(visible!=null && !visible.equals("") ? visible : "S"); // Por defecto visible
 			beanSerieFacturacion.setNombreAbreviado(nombreAbreviado);				
 			beanSerieFacturacion.setEnvioFactura(envioFacturas!=null && !envioFacturas.equals("") ? "1" : "0");								
 			if (beanSerieFacturacion.getEnvioFactura().equals("1")) { 
@@ -291,7 +289,6 @@ public class DatosGeneralesAction extends MasterAction{
 			UtilidadesHash.set(backupSerFac, "DESCRIPCION",formDatosGenerales.getDescripcion());
 			UtilidadesHash.set(backupSerFac, "NOMBREABREVIADO",formDatosGenerales.getNombreAbreviado());
 			UtilidadesHash.set(backupSerFac, "OBSERVACIONES", formDatosGenerales.getObservaciones());
-			UtilidadesHash.set(backupSerFac, "VISIBLE", formDatosGenerales.getVisible());
 			request.getSession().setAttribute("DATABACKUP", backupSerFac);
 			
 			request.getSession().setAttribute("idSerieFacturacion", nuevoidSerieFacturacion);
@@ -362,7 +359,6 @@ public class DatosGeneralesAction extends MasterAction{
 			hashOld.put(FacSerieFacturacionBean.C_NOMBREABREVIADO, beanSerieFacturacionBeanOld.getNombreAbreviado());
 			hashOld.put(FacSerieFacturacionBean.C_DESCRIPCION, beanSerieFacturacionBeanOld.getDescripcion());
 			hashOld.put(FacSerieFacturacionBean.C_OBSERVACIONES, beanSerieFacturacionBeanOld.getObservaciones());
-			hashOld.put(FacSerieFacturacionBean.C_VISIBLE, beanSerieFacturacionBeanOld.getVisible());
 				
 			Hashtable<String,Object> hashNew = new Hashtable<String,Object>();
 			hashNew.put(FacSerieFacturacionBean.C_IDINSTITUCION, idInstitucion);
@@ -371,7 +367,6 @@ public class DatosGeneralesAction extends MasterAction{
 			hashNew.put(FacSerieFacturacionBean.C_NOMBREABREVIADO, formDatosGenerales.getNombreAbreviado());
 			hashNew.put(FacSerieFacturacionBean.C_DESCRIPCION, formDatosGenerales.getDescripcion());
 			hashNew.put(FacSerieFacturacionBean.C_OBSERVACIONES, formDatosGenerales.getObservaciones());
-			hashNew.put(FacSerieFacturacionBean.C_VISIBLE, formDatosGenerales.getVisible());
 			
 			String envio = (formDatosGenerales.getEnvioFacturas()!=null && !formDatosGenerales.getEnvioFacturas().equals("") ? "1" : "0");
 			hashNew.put(FacSerieFacturacionBean.C_ENVIOFACTURA, envio);
@@ -544,7 +539,6 @@ public class DatosGeneralesAction extends MasterAction{
 			UtilidadesHash.set(backupSerFac, "DESCRIPCION",formDatosGenerales.getDescripcion());
 			UtilidadesHash.set(backupSerFac, "NOMBREABREVIADO",formDatosGenerales.getNombreAbreviado());
 			UtilidadesHash.set(backupSerFac, "OBSERVACIONES", formDatosGenerales.getObservaciones());
-			UtilidadesHash.set(backupSerFac, "VISIBLE", formDatosGenerales.getVisible());
 			request.getSession().setAttribute("DATABACKUP",backupSerFac);
 			
 		} catch (Exception e) { 

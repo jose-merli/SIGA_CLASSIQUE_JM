@@ -73,8 +73,8 @@ public class AsignacionConceptosFacturablesForm extends MasterForm{
  		UtilidadesHash.set(datos, FacSerieFacturacionBean.C_IDCONTADOR, dato);
  	}
  	
- 	public void setVisible(String dato) {
-		UtilidadesHash.set(datos, "VISIBLE", dato);
+ 	public void setEstado(String dato) {
+		UtilidadesHash.set(datos, "ESTADO", dato);
 	}
  	
 	// Metodos Get 1 por campo Formulario (*.jsp)
@@ -130,7 +130,7 @@ public class AsignacionConceptosFacturablesForm extends MasterForm{
  		return UtilidadesHash.getString(datos, FacSerieFacturacionBean.C_IDCONTADOR);  
  	}
  	
-	public String getVisible() {
-		return UtilidadesHash.getString(datos, "VISIBLE");
+	public String getEstado() {
+		return UtilidadesHash.getString(datos, "ESTADO");
 	}
 }

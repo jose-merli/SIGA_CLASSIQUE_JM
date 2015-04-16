@@ -23,11 +23,8 @@
 
 <!-- JSP -->
 <%  
-	String app=request.getContextPath();
-	HttpSession ses=request.getSession();
-	
 	Hashtable datosFormulario = new Hashtable();
-	String nombreAbreviado="", descripcion="", tipoProducto="", tipoServicio="", grupoClienteFijo="", grupoClientesDinamico="", iniciarBusqueda="", sVisible="";
+	String nombreAbreviado="", descripcion="", tipoProducto="", tipoServicio="", grupoClienteFijo="", grupoClientesDinamico="", iniciarBusqueda="", sEstado="";
 	if (request.getSession().getAttribute("DATOSFORMULARIO")!=null) {
 		datosFormulario = (Hashtable)request.getSession().getAttribute("DATOSFORMULARIO");
 		nombreAbreviado = datosFormulario.get("NOMBREABREVIADO")==null?"":(String)datosFormulario.get("NOMBREABREVIADO");
@@ -36,7 +33,7 @@
 		tipoServicio = datosFormulario.get("TIPOSERVICIO")==null?"":(String)datosFormulario.get("TIPOSERVICIO");
 		grupoClienteFijo = datosFormulario.get("GRUPOCLIENTEFIJO")==null?"":(String)datosFormulario.get("GRUPOCLIENTEFIJO");
 		grupoClientesDinamico = datosFormulario.get("GRUPOCLIENTESDINAMICO")==null?"":(String)datosFormulario.get("GRUPOCLIENTESDINAMICO");
-		sVisible = datosFormulario.get("VISIBLE")==null ? "" : (String)datosFormulario.get("VISIBLE");
+		sEstado = datosFormulario.get("ESTADO")==null ? "" : (String)datosFormulario.get("ESTADO");
 		iniciarBusqueda = datosFormulario.get("INICIARBUSQUEDA")==null?"":(String)datosFormulario.get("INICIARBUSQUEDA");		
 	}	
 %>	
@@ -67,12 +64,12 @@
     							<td class="labelText" nowrap><siga:Idioma key="facturacion.busquedaSeriesFacturacion.literal.nombreAbreviado"/></td>
 								<td><html:text name="AsignacionConceptosFacturablesForm" property="nombreAbreviado" size="20" maxlength="20" styleClass="boxMayuscula" value="<%=nombreAbreviado%>"/></td>
 								
-								<td class="labelText" nowrap><siga:Idioma key="facturacion.datosGenerales.literal.visible"/></td>
+								<td class="labelText" nowrap><siga:Idioma key="facturacion.datosGenerales.literal.estado"/></td>
 								<td>
-									<html:select property="visible" name="DatosGeneralesForm" styleClass="boxCombo" style="width:60px;" value="<%=sVisible%>">
+									<html:select property="estado" name="DatosGeneralesForm" styleClass="boxCombo" style="width:60px;" value="<%=sEstado%>">
 										<html:option value="">&nbsp;</html:option>
-										<html:option value="S"><siga:Idioma key="general.yes"/></html:option>
-										<html:option value="N"><siga:Idioma key="general.no"/></html:option>
+										<html:option value="A"><siga:Idioma key="facturacion.datosGenerales.literal.estado.alta"/></html:option>
+										<html:option value="B"><siga:Idioma key="facturacion.datosGenerales.literal.estado.baja"/></html:option>
 									</html:select>			
 								</td>									
 							</tr>

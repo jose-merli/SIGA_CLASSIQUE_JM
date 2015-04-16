@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<!-- datosGenerales.jsp -->
+<!-- facturacion/datosGenerales.jsp -->
 
 <!-- CABECERA JSP -->
 <meta http-equiv="Expires" content="0">
@@ -44,7 +44,7 @@
 	ArrayList<String> aPlantillaEnviosSeleccionada = new ArrayList<String>();
 	ArrayList<String> aSerieSeleccionada = new ArrayList<String>();
 	Integer iPlantilla=new Integer(-1);
-	String sAbreviatura="", sDescripcion="", idSerieFacturacion="", enviarFacturas="", generarPDF="", observaciones="", sPlantilla="", sVisible="S";
+	String sAbreviatura="", sDescripcion="", idSerieFacturacion="", enviarFacturas="", generarPDF="", observaciones="", sPlantilla="", sFechaBaja="";
 	FacSerieFacturacionBean beanSerieFacturacion = (FacSerieFacturacionBean) request.getAttribute("beanSerieFacturacion");	
 	if (beanSerieFacturacion!=null) {		
 		sAbreviatura = beanSerieFacturacion.getNombreAbreviado();
@@ -54,7 +54,7 @@
 		enviarFacturas = beanSerieFacturacion.getEnvioFactura();
 		generarPDF = beanSerieFacturacion.getGenerarPDF();
 		observaciones = beanSerieFacturacion.getObservaciones();
-		sVisible = (beanSerieFacturacion.getVisible()!=null && beanSerieFacturacion.getVisible().equals("N") ? "N" : "S");
+		sFechaBaja = (beanSerieFacturacion.getFechaBaja()!=null ? beanSerieFacturacion.getFechaBaja() : "");
 		if (beanSerieFacturacion.getIdSerieFacturacionPrevia()!=null) {
 			String idSeriePrevia = beanSerieFacturacion.getIdSerieFacturacionPrevia().toString();
 			aSerieSeleccionada.add(idSeriePrevia.toString());				
@@ -329,12 +329,19 @@
 %>
 								</td>								
 								
-								<td class="labelText"><siga:Idioma key="facturacion.datosGenerales.literal.visible"/>&nbsp;(*)</td>
+								<td class="labelText" nowrap><siga:Idioma key="facturacion.datosGenerales.literal.estado"/></td>
 								<td>
-									<html:select property="visible" name="DatosGeneralesForm" styleClass="boxCombo" style="width:60px;" value="<%=sVisible%>" disabled="<%=!bEditable%>">
-										<html:option value="S"><siga:Idioma key="general.yes"/></html:option>
-										<html:option value="N"><siga:Idioma key="general.no"/></html:option>
-									</html:select>			
+<%
+									if (sFechaBaja==null || sFechaBaja.equals("")) {
+%>								
+										<siga:Idioma key="facturacion.datosGenerales.literal.estado.alta"/>
+<%
+									} else {
+%>										
+										<siga:Idioma key="facturacion.datosGenerales.literal.estado.baja"/>
+<%
+									}
+%>																			
 								</td>								
 							</tr>
 												

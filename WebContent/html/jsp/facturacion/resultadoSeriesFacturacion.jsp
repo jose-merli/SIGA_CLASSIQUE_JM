@@ -3,10 +3,6 @@
 <head>
 <!-- resultadoSeriesFacturacion.jsp -->
 
-<!-- VENTANA LISTA DE CABECERAS FIJAS -->
-<!-- Contiene el contenido del frame de una pantalla de detalle multiregistro
-     Utilizando tags pinta una lista con cabeceras fijas -->
-	 
 <!-- CABECERA JSP -->
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-1"%>
@@ -16,29 +12,21 @@
 
 <!-- TAGLIBS -->
 <%@ taglib uri="libreria_SIGA.tld" prefix="siga"%>
-<%@ taglib uri = "struts-bean.tld" prefix="bean"%>
-<%@ taglib uri = "struts-html.tld" prefix="html"%>
-<%@ taglib uri = "struts-logic.tld" prefix="logic"%>
-<%@ taglib uri = "struts-tiles.tld" prefix="tiles" %>
+<%@ taglib uri="struts-bean.tld" prefix="bean"%>
+<%@ taglib uri="struts-html.tld" prefix="html"%>
+<%@ taglib uri="struts-logic.tld" prefix="logic"%>
+<%@ taglib uri="struts-tiles.tld" prefix="tiles" %>
 
 <%@ page import="com.siga.administracion.SIGAConstants"%>
-<%@ page import="com.atos.utils.UsrBean"%>
-<%@ page import="com.atos.utils.Row"%>
-<%@ page import="com.atos.utils.ClsLogging" %>
-<%@ page import="com.siga.beans.*"%>
-<%@ page import="com.siga.Utilidades.*"%>
-<%@ page import="java.util.Properties"%>
-<%@ page import="java.util.Vector"%>
+<%@ page import="com.siga.tlds.FilaExtElement"%>
+<%@ page import="com.siga.Utilidades.UtilidadesHash"%>
+<%@ page import="com.siga.Utilidades.UtilidadesString"%>
 <%@ page import="java.util.Hashtable"%>
+<%@ page import="java.util.Vector"%>
 
 <!-- JSP -->
 <% 
-	String app=request.getContextPath();
-	HttpSession ses=request.getSession();
-	
-	
-	Vector vDatosTab = null;
-	vDatosTab = (Vector)request.getAttribute("datosTab");
+	Vector vDatosTab = (Vector)request.getAttribute("datosTab");
 	request.removeAttribute("datosTab");
 %>
 
@@ -47,32 +35,52 @@
 	
 	<!-- Incluido jquery en siga.js -->
 	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js?v=${sessionScope.VERSIONJS}'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/validacionStruts.js'/>"></script>
 		
-	<!-- INICIO: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->
-	<!-- Validaciones en Cliente -->
-	<!-- El nombre del formulario se obtiene del struts-config -->
 	<html:javascript formName="AsignacionConceptosFacturablesForm" staticJavascript="false" />  
-	<script src="<%=app%>/html/js/validacionStruts.js" type="text/javascript"></script>
-	<!-- FIN: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->
 
-	<!-- INICIO: TITULO Y LOCALIZACION -->
-	<!-- Escribe el título y localización en la barra de título del frame principal -->
 	<siga:TituloExt titulo="facturacion.asignacionDeConceptosFacturables.titulo" localizacion="facturacion.busquedaSeriesFacturacion.literal.localizacion"/>
-	<!-- FIN: TITULO Y LOCALIZACION -->
 	
 	<script>
 		function refrescarLocal() {
 			parent.buscar();
 		}
+		
+		function solicitarbaja(fila, id) {			
+			if(confirm('<siga:Idioma key="facturacion.busquedaSeriesFacturacion.literal.solicitarBaja"/>')) { 
+				sub();				
+				if (typeof id == 'undefined')
+					id='tabladatos';
+				preparaDatos(fila,id);
+				
+				var auxTarget = document.forms[0].target;
+				document.forms[0].target = "submitArea";
+				document.forms[0].modo.value = "solicitarbaja";
+				document.forms[0].submit();
+				document.forms[0].target = auxTarget;
+				fin();
+			}			
+		}
+		
+		function solicitaralta(fila, id) {						
+			if(confirm('<siga:Idioma key="facturacion.busquedaSeriesFacturacion.literal.solicitarAlta"/>')) { 
+				sub();
+				if (typeof id == 'undefined')
+					id='tabladatos';
+				preparaDatos(fila,id);
+				
+				var auxTarget = document.forms[0].target;
+				document.forms[0].target = "submitArea";
+				document.forms[0].modo.value = "solicitaralta";
+				document.forms[0].submit();
+				document.forms[0].target = auxTarget;
+				fin();
+			}
+		}
 	</script>
 </head>
 
 <body class="tablaCentralCampos">
-
-	<!-- INICIO: LISTA DE VALORES -->
-	<!-- Tratamiento del tagTabla y tagFila para la formacion de la lista de cabeceras fijas -->
-
-	<!-- Formulario de la lista de detalle multiregistro -->
 	<html:form action="/FAC_AsignacionConceptosFacturables.do" target="mainWorkArea" method="POST" style="display:none">
 		<html:hidden property = "modo"  styleId = "modo"  value = "success"/>
 		<input type="hidden" name="actionModal"  id="actionModal"  value="">
@@ -92,17 +100,21 @@
 			</tr>	
 <%	
 		} else {
-			// INICIO: ZONA DE REGISTROS
-			// Aqui se iteran los diferentes registros de la lista
 			for (int i=0; i<vDatosTab.size(); i++) {
-	   			Hashtable miHash = (Hashtable)vDatosTab.elementAt(i);
-	   			String bots = "C,E,B";
-	   			if (((String)miHash.get("TIPOSERIE")).equals("G")) {
-		   			// No permimitmos borrar si es la genérica.
-	   				bots = "C,E";
+	   			Hashtable miHash = (Hashtable) vDatosTab.get(i);
+	   			
+	   			String sFechaBaja = UtilidadesHash.getString(miHash, "FECHABAJA");
+	   			
+	   			FilaExtElement[] elems = new FilaExtElement[1];
+	   			
+	   			if (sFechaBaja==null || sFechaBaja.equals("")) {
+	   				elems[0]=new FilaExtElement("solicitarbaja","solicitarbaja",SIGAConstants.ACCESS_READ);
+	   			} else {
+	   				elems[0]=new FilaExtElement("solicitaralta","solicitaralta",SIGAConstants.ACCESS_READ);
 	   			}
+	   			
 %>
-				<siga:FilaConIconos fila='<%=""+(i+1)%>' botones="<%=bots %>" clase="listaNonEdit">
+				<siga:FilaConIconos fila='<%=String.valueOf(i+1)%>' botones='C,E,B' elementos='<%=elems%>' pintarEspacio="no" clase="listaNonEdit">
 					<td>
 						<input type="hidden" name="oculto<%=""+(i+1)%>_1" value="<%=miHash.get("IDSERIEFACTURACION")%>">
 						<input type="hidden" name="oculto<%=""+(i+1)%>_2" value="<%=miHash.get("USUMODIFICACION")%>">
@@ -117,16 +129,10 @@
 				</siga:FilaConIconos>
 <%
 			}
-			// FIN REGISTRO
-			// FIN: ZONA DE REGISTROS
 		}
 %>
 	</siga:Table>
-	<!-- FIN: LISTA DE VALORES -->
 		
-	<!-- INICIO: SUBMIT AREA -->
-	<!-- Obligatoria en todas las páginas-->
-	<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
-	<!-- FIN: SUBMIT AREA -->
+	<iframe name="submitArea" src="<html:rewrite page='/html/jsp/general/blank.jsp'/>" style="display: none"></iframe>
 </body>
 </html>
