@@ -573,7 +573,7 @@
 						<% if(nuevo) {
 								dato[0] = usr.getLocation().toString();
 						%>
-				    		<siga:ComboBD nombre="idSerieFacturacion" tipo="cmbSerieFacturacion" parametro="<%=dato%>" clase="boxCombo" accion="cambiaSerie();" obligatorio="true"/>
+				    		<siga:ComboBD nombre="idSerieFacturacion" tipo="cmbSerieFacturacionAlta" parametro="<%=dato%>" clase="boxCombo" accion="cambiaSerie();" obligatorio="true"/>
 						<% } else { %>
 							<html:hidden property="idSerieFacturacion" value='<%=LSerieFacturacion.toString()%>'/>
 							<html:text property="serieFacturacionDes" value='<%=sSerieFacturacionDesc%>' size="60" styleClass="boxConsulta" readonly="true" />
