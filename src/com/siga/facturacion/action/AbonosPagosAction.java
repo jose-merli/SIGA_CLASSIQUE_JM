@@ -1611,11 +1611,7 @@ public class AbonosPagosAction extends MasterAction {
 			MasterForm formulario, 
 			HttpServletRequest request, 
 			HttpServletResponse response) throws ClsExceptions, SIGAException ,Exception {
-	
-			Short idPagosJG=0;
-			if(Integer.parseInt(request.getParameter("idPagoJG").toString())>0)
-				idPagosJG=1;
-			
+
 			FacAbonoAdm adm = new FacAbonoAdm(this.getUserBean(request));
 			String idInstitucion=request.getParameter("idInstitucion").toString();
 			Vector entrada=adm.getAbono(idInstitucion,request.getParameter("idAbono").toString());
@@ -1628,7 +1624,7 @@ public class AbonosPagosAction extends MasterAction {
 			        select +=" WHERE ";
 					select +=CenCuentasBancariasBean.C_IDINSTITUCION+"="+idInstitucion;
 					select +=" AND "+CenCuentasBancariasBean.C_IDPERSONA+"="+idPersona;
-					select +=" AND "+CenCuentasBancariasBean.C_ABONOSJCS+"="+idPagosJG;
+					select +=" AND "+CenCuentasBancariasBean.C_ABONOSJCS+"="+Integer.parseInt(request.getParameter("idPagoJG"));
 					select +=" AND "+CenCuentasBancariasBean.C_FECHABAJA+" IS NULL";
 					select +=" AND "+CenCuentasBancariasBean.C_ABONOCARGO+" IN('A','T')";
 					select +=" ORDER BY DESCRIPCION";

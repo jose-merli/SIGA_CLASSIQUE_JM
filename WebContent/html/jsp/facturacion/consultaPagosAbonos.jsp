@@ -49,7 +49,9 @@
 	String modo=(String)request.getAttribute("ACCION"); // Obtengo la accion anterior
 	String idInstitucion=(String)request.getAttribute("IDINSTITUCION"); // Obtengo el identificador de la institucion
 	String idFactura=(String)request.getAttribute("IDFACTURA"); // Obtengo el identificador de la institucion
-	String idPagoJG = (String)request.getAttribute("idPagoJG"); // Obtengo el identificador del pago
+	String idPagoJG ="0";
+	if((request.getAttribute("idPagoJG")!=null)&&(!request.getAttribute("idPagoJG").toString().isEmpty()))
+		idPagoJG="1"; // Obtengo el identificador del pago
 	
 	Vector datosPagos= new Vector();
 	Hashtable datosTotales= new Hashtable();
@@ -296,19 +298,19 @@
 			<tr>
 				<% if ((new Double(pendiente).doubleValue()>0)&&(modo.equalsIgnoreCase("editar"))){ %>
 					<td class="misBotones" width="10%">
-						<input type="button" alt="compensarFactura"  id="idButton" onclick="return compensacionFacturaManual();" class="button" value='<siga:Idioma key="facturacion.abonosPagos.boton.compensacionManual"/>'>
+						<input type="button" alt="compensarFactura"  id="idButton" onclick="compensacionFacturaManual()" class="button" value='<siga:Idioma key="facturacion.abonosPagos.boton.compensacionManual"/>'>
 					</td>
 					<td class="misBotones" width="10%">
-						<input type="button" alt="compensarFactura"  id="idButton" onclick="return compensarFactura();" class="button" value='<siga:Idioma key="facturacion.abonosPagos.boton.compensacion"/>'>
+						<input type="button" alt="compensarFactura"  id="idButton" onclick="return compensarFactura()" class="button" value='<siga:Idioma key="facturacion.abonosPagos.boton.compensacion"/>'>
 					</td>
 					<td class="misBotones" width="10%">
-						<input type="button" alt="pagarCaja"  id="idButton" onclick="return pagarCaja();" class="button" value='<siga:Idioma key="facturacion.abonosPagos.boton.pagoCaja"/>'>
+						<input type="button" alt="pagarCaja"  id="idButton" onclick="pagarCaja()" class="button" value='<siga:Idioma key="facturacion.abonosPagos.boton.pagoCaja"/>'>
 					</td>
 					<td class="misBotones" width="30%">
 						<% if (!((String)datosTotales.get(FacAbonoBean.C_IDCUENTA)).equalsIgnoreCase("")){ %>
-							<input type="button" alt="pagarBanco"  id="idButton" onclick="return pagarBanco();" class="button" value='<siga:Idioma key="facturacion.abonosPagos.boton.cambioBanco"/>'>
+							<input type="button" alt="pagarBanco"  id="idButton" onclick="pagarBanco()" class="button" value='<siga:Idioma key="facturacion.abonosPagos.boton.cambioBanco"/>'>
 						<% } else { %>
-							<input type="button" alt="pagarBanco"  id="idButton" onclick="return pagarBanco();" class="button" value='<siga:Idioma key="facturacion.abonosPagos.boton.pagoBanco"/>'>
+							<input type="button" alt="pagarBanco"  id="idButton" onclick="pagarBanco()" class="button" value='<siga:Idioma key="facturacion.abonosPagos.boton.pagoBanco"/>'>
 						<% } %>
 					</td>
 							
