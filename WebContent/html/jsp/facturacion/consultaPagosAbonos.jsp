@@ -50,7 +50,6 @@
 	String idInstitucion=(String)request.getAttribute("IDINSTITUCION"); // Obtengo el identificador de la institucion
 	String idFactura=(String)request.getAttribute("IDFACTURA"); // Obtengo el identificador de la institucion
 	String idPagoJG = (String)request.getAttribute("idPagoJG"); // Obtengo el identificador del pago
-	String idPersona = (String)request.getAttribute("IDPERSONA"); // Obtengo el identificador del pago
 	
 	Vector datosPagos= new Vector();
 	Hashtable datosTotales= new Hashtable();
@@ -321,7 +320,7 @@
 			</tr>
 		</table>
 	</div>			
-		
+		 
 	<!-- ******* BOTONES DE ACCIONES EN REGISTRO ****** -->
 	<!-- Aqui comienza la zona de botones de acciones -->
 	<!-- INICIO: BOTONES REGISTRO -->
