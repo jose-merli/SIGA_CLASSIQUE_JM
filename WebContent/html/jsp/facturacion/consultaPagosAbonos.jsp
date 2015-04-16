@@ -50,6 +50,7 @@
 	String idInstitucion=(String)request.getAttribute("IDINSTITUCION"); // Obtengo el identificador de la institucion
 	String idFactura=(String)request.getAttribute("IDFACTURA"); // Obtengo el identificador de la institucion
 	String idPagoJG = (String)request.getAttribute("idPagoJG"); // Obtengo el identificador del pago
+	String idPersona = (String)request.getAttribute("IDPERSONA"); // Obtengo el identificador del pago
 	
 	Vector datosPagos= new Vector();
 	Hashtable datosTotales= new Hashtable();
@@ -366,16 +367,43 @@
 			}
 		}
 		
-		// Funcion asociada a boton pagarCaja
+		// Funcion asociada a boton pagarBanco
 		function pagarBanco() {						
-			sub();	
-			document.forms[0].modo.value='pagarBanco';
-			var resultado = ventaModalGeneral("AbonosPagosForm","P");
-			fin();
-			if (resultado=="MODIFICADO")
-			{
-				refrescarLocal();
-			}
+			var mensajeGeneralError='<%=UtilidadesString.mostrarDatoJSP(UtilidadesString.getMensajeIdioma(usr, "messages.general.error"))%>';
+			var idPagoJG=<%=idPagoJG%>;
+			var idInstitucion=<%=idInstitucion%>;
+			var idAbono=<%=idAbono%>;
+			jQuery.ajax({ //Comunicacion jQuery hacia JSP  
+   				type: "POST",
+				url: "/SIGA/FAC_AbonosPagos.do?modo=existeCuentaSJCSAjax",
+				dataType: "json",
+				data: "idPagoJG="+idPagoJG+"&idAbono="+idAbono+"&idInstitucion="+idInstitucion,
+				contentType: "application/x-www-form-urlencoded;charset=UTF-8",
+				success: function(json){	
+					if(json.msgCuentaSJCS!=null || json.msgCuentaSJCS=="1"){
+						var mensaje = "<siga:Idioma key='facturacion.abonos.error.noExisteCuenta'/>";
+						alert (unescape(mensaje),"error");
+						return false;
+					}else{ 
+						
+						sub();	
+						document.forms[0].modo.value='pagarBanco';
+						var resultado = ventaModalGeneral("AbonosPagosForm","P");
+						fin();
+						if (resultado=="MODIFICADO")
+						{
+							refrescarLocal();
+						}
+					}
+					
+					fin();
+				},
+				error: function(e){
+					alert(unescape(mensajeGeneralError),"error");
+					fin();
+				}
+			});
+
 		}
 
 		function refrescarLocal() {

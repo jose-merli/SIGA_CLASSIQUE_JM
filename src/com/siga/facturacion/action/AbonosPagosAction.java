@@ -26,6 +26,7 @@ import javax.transaction.UserTransaction;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.json.JSONObject;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
@@ -104,8 +105,10 @@ public class AbonosPagosAction extends MasterAction {
 					mapDestino = validarFacturaCompensacionManual(mapping, miForm, request, response);
 				}else if (accion.equalsIgnoreCase("pagarVariosAbonos")){
 					mapDestino = pagarVariosAbonos(mapping, miForm, request, response);
-				}
-				else {
+				}else if ( accion.equalsIgnoreCase("existeCuentaSJCSAjax")){
+					existeCuentaSJCSAjax (mapping, miForm, request, response);
+					return null;	
+				}else {
 					return super.executeInternal(mapping,
 							      formulario,
 							      request, 
@@ -172,7 +175,7 @@ public class AbonosPagosAction extends MasterAction {
 
 			//idPagoJG:Esto es para saber si estamos en abonos de SJCS en Censo > Ficha > Turno Oficio > Facturaciones > Pagos
 			request.setAttribute("idPagoJG", ((Row)seleccionados.firstElement()).getRow().get("IDPAGOSJG"));
-						
+			
 			// Paso de parametros empleando request
 			request.setAttribute("IDABONO", idAbono);
 			request.setAttribute("IDFACTURA", idFactura);
@@ -396,7 +399,7 @@ public class AbonosPagosAction extends MasterAction {
 			
 			if(vCuentas.size()==0)
 				throw new SIGAException("facturacion.abonos.error.noExisteCuenta");
-				
+			
 			List cuentasListFinal= new ArrayList();
 			Hashtable cuentash=new Hashtable();
 			for (int c = 0; c < vCuentas.size(); c++){
@@ -1604,5 +1607,43 @@ public class AbonosPagosAction extends MasterAction {
 	return pagoInsertado;
 	}
 	
+	protected void existeCuentaSJCSAjax (ActionMapping mapping, 		
+			MasterForm formulario, 
+			HttpServletRequest request, 
+			HttpServletResponse response) throws ClsExceptions, SIGAException ,Exception {
 	
+			Short idPagosJG=0;
+			if(Integer.parseInt(request.getParameter("idPagoJG").toString())>0)
+				idPagosJG=1;
+			
+			FacAbonoAdm adm = new FacAbonoAdm(this.getUserBean(request));
+			String idInstitucion=request.getParameter("idInstitucion").toString();
+			Vector entrada=adm.getAbono(idInstitucion,request.getParameter("idAbono").toString());
+			Hashtable registro=((Row)entrada.firstElement()).getRow();
+			String idPersona=registro.get(FacAbonoBean.C_IDPERSONA).toString();
+			
+			String  select = "SELECT "+CenCuentasBancariasBean.C_IDCUENTA+" AS ID ,";
+			        select +=" F_SIGA_FORMATOIBAN("+CenCuentasBancariasBean.C_IBAN+") as DESCRIPCION ";
+			        select +=" FROM "+CenCuentasBancariasBean.T_NOMBRETABLA;
+			        select +=" WHERE ";
+					select +=CenCuentasBancariasBean.C_IDINSTITUCION+"="+idInstitucion;
+					select +=" AND "+CenCuentasBancariasBean.C_IDPERSONA+"="+idPersona;
+					select +=" AND "+CenCuentasBancariasBean.C_ABONOSJCS+"="+idPagosJG;
+					select +=" AND "+CenCuentasBancariasBean.C_FECHABAJA+" IS NULL";
+					select +=" AND "+CenCuentasBancariasBean.C_ABONOCARGO+" IN('A','T')";
+					select +=" ORDER BY DESCRIPCION";
+					
+			CenCuentasBancariasAdm cuentasAdm=new CenCuentasBancariasAdm(this.getUserBean(request));
+			Vector vCuentas=cuentasAdm.selectGenerico(select);
+			JSONObject json = new JSONObject();
+			if(vCuentas.size()==0)
+				json.put("msgCuentaSJCS","1");
+
+			// json.
+			response.setContentType("text/x-json;charset=UTF-8");
+			response.setHeader("Cache-Control", "no-cache");
+			response.setHeader("Content-Type", "application/json");
+		    response.setHeader("X-JSON", json.toString());
+			response.getWriter().write(json.toString()); 
+	}	
 }
