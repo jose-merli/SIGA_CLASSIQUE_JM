@@ -40,6 +40,10 @@ public class SubtiposCVVoService implements VoUiService<SubtiposCVForm, Subtipos
 			tiposDatosCurricularesVo.setIdtipocv(Short.valueOf(objectForm.getIdTipoCV()));
 		if(objectForm.getTipoDescripcion()!=null && !objectForm.getTipoDescripcion().equals(""))
 			tiposDatosCurricularesVo.setDescripcion(objectForm.getTipoDescripcion());
+		if(objectForm.getCodigoExt()!=null && !objectForm.getCodigoExt().equals(""))
+			tiposDatosCurricularesVo.setCodigoext(objectForm.getCodigoExt());
+		
+		
 		
 		if(objectForm.getSubTipo()!=null && objectForm.getSubTipo().equals(SUBTIPOCV1)){
 			if(objectForm.getSubTipo1IdTipo()!=null && !objectForm.getSubTipo1IdTipo().equals(""))
@@ -119,6 +123,9 @@ public class SubtiposCVVoService implements VoUiService<SubtiposCVForm, Subtipos
 		
 		if(objectVo.getDescripcion()!=null && !objectVo.getDescripcion().equals(""))
 			objectForm.setTipoDescripcion(objectVo.getDescripcion());
+		
+		if(objectVo.getCodigoext()!=null && !objectVo.getCodigoext().equals(""))
+			objectForm.setCodigoExt(objectVo.getCodigoext());
 		
 		if(objectVo.getSubTipo1IdInstitucion()!=null && !objectVo.getSubTipo1IdInstitucion().equals(""))
 			objectForm.setSubTipo1IdInstitucion(objectVo.getSubTipo1IdInstitucion().toString());

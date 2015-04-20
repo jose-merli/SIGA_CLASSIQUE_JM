@@ -18,11 +18,12 @@
 	
 	<table id='listadoArchivosCab' border='1' width='100%' cellspacing='0' cellpadding='0'>
 		<tr class ='tableTitle'>
-			<td align='center' width='30%'><b><bean:message key="censo.tiposDatosCurriculares.tipo.literal"/></b></td>
-			<td align='center' width='20%'><b><bean:message key="censo.tiposDatosCurriculares.subtipo1.literal"/></b></td>
-			<td align='center' width='10%'><b>Cod</b></td>
-			<td align='center' width='15%'><b><bean:message key="censo.tiposDatosCurriculares.subtipo2.literal"/></b></td>
-			<td align='center' width='10%'><b>Cod</b></td>
+			<td align='center' width='22%'><b><bean:message key="censo.tiposDatosCurriculares.tipo.literal"/></b></td>
+			<td align='center' width='8%'><b>Cod</b></td>
+			<td align='center' width='22%'><b><bean:message key="censo.tiposDatosCurriculares.subtipo1.literal"/></b></td>
+			<td align='center' width='8%'><b>Cod</b></td>
+			<td align='center' width='17%'><b><bean:message key="censo.tiposDatosCurriculares.subtipo2.literal"/></b></td>
+			<td align='center' width='8%'><b>Cod</b></td>
 			<td align='center' width='10%'>&nbsp;</td>
 		</tr>
 	</table>
@@ -34,11 +35,12 @@
 		<c:choose>
 		<c:when test="${empty tiposDatosCurriculares}">
 			<tr>
-					<td width='30%'></td>
-					<td width='20%'></td>
-					<td width='10%'></td>
-					<td width='15%'></td>
-					<td width='10%'></td>
+					<td width='22%'></td>
+					<td width='8%'></td>
+					<td width='22%'></td>
+					<td width='8%'></td>
+					<td width='17%'></td>
+					<td width='8%'></td>
 					<td width='10%'></td>
 				</tr>
 		
@@ -48,11 +50,12 @@
 		</c:when>
 		<c:otherwise>
 			<tr>
-				<td width='30%'></td>
-					<td width='20%'></td>
-					<td width='10%'></td>
-					<td width='15%'></td>
-					<td width='10%'></td>
+					<td width='22%'></td>
+					<td width='8%'></td>
+					<td width='22%'></td>
+					<td width='8%'></td>
+					<td width='17%'></td>
+					<td width='8%'></td>
 					<td width='10%'></td>
 			</tr>
 			<c:forEach items="${tiposDatosCurriculares}" var="tiposDatosCurricular" varStatus="status">
@@ -77,9 +80,13 @@
 						<input type="hidden" id="subTipo2CodigoExt_${status.count}" value="${tiposDatosCurricular.subTipo2CodigoExt}"/>
 						<input type="hidden" id="subTipo2Descripcion_${status.count}" value="${tiposDatosCurricular.subTipo2Descripcion}"/>
 						<input type="hidden" id="subTipo2IdRecursoDescripcion_${status.count}" value="${tiposDatosCurricular.subTipo2IdRecursoDescripcion}"/>
+						<c:out value="${tiposDatosCurricular.tipoDescripcion}"/>&nbsp;
 						
-						<c:out value="${tiposDatosCurricular.tipoDescripcion}"/>
  					</td>
+ 					<td align='left'>
+ 					<c:out value="${tiposDatosCurricular.codigoExt}"/>
+						
+					</td>
  					<td align='left'>
 						<c:out value="${tiposDatosCurricular.subTipo1Descripcion}"/>&nbsp;
 					</td>
