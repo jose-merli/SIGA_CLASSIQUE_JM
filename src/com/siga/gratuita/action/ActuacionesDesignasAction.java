@@ -1029,7 +1029,7 @@ public class ActuacionesDesignasAction extends MasterAction {
 		ScsActuacionDesignaAdm actuacionDesignaAdm = new ScsActuacionDesignaAdm(this.getUserBean(request));
 		boolean ok = false;
 		String forward = null;
-
+		
 		try {
 			ScsDesignaBean sdb = null;
 	        try {
@@ -1046,6 +1046,13 @@ public class ActuacionesDesignasAction extends MasterAction {
 			        if (dActuacion.compareTo(dDesgina) < 0) {
 			            return exito("messages.error.acreditacionFechaNoValida",request);			            
 			        }
+			        if(sdb.getNIG() == null || sdb.getNIG().equals("")){     				
+			        	if (miform.getNig()!=null && !miform.getNig().equals("")){
+			        		sdb.setNIG(miform.getNig());
+			        		designaAdm.updateDirect(sdb);
+			        	}
+			        }
+			        
 		        }
 		    }			    
 	        catch (Exception e) { }
