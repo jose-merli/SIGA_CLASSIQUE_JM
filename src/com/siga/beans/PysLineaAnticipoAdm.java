@@ -12,7 +12,6 @@ import java.util.Vector;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
-
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;
@@ -253,7 +252,7 @@ public class PysLineaAnticipoAdm extends MasterBeanAdministrador {
 	 * @return  Vector - Vector de retorno  
 	 * @exception  ClsExceptions  En cualquier caso de error
 	 */
-	public static double getGastadoLineasAnticipo (String idInstitucion, String idPersona, String idAnticipo) throws ClsExceptions{
+	public static double getGastadoLineasAnticipo (String idInstitucion, String idPersona, String idAnticipo) throws ClsExceptions {
 		double salida = 0.0;
 		Hashtable codigos = new Hashtable();
 		int contador = 0;
@@ -288,5 +287,33 @@ public class PysLineaAnticipoAdm extends MasterBeanAdministrador {
 		}
 		return salida;	
 	}
-	
+
+	/**
+	 * Obtiene una nueva linea de anticipo
+	 * @param idInstitucion
+	 * @param idPersona
+	 * @param idAnticipo
+	 * @return
+	 * @throws ClsExceptions
+	 */
+	public String obtieneNuevaLineaAnticipo (String idInstitucion, String idPersona, String idAnticipo) throws ClsExceptions {
+		String resultado = null;
+		try {
+			String sql = "SELECT NVL(MAX(" + PysLineaAnticipoBean.C_IDLINEA + "), 0) + 1 AS " + PysLineaAnticipoBean.C_IDLINEA +
+						" FROM " + PysLineaAnticipoBean.T_NOMBRETABLA + 
+						" WHERE " + PysLineaAnticipoBean.C_IDINSTITUCION + " = " + idInstitucion +
+							" AND " + PysLineaAnticipoBean.C_IDPERSONA + " = " + idPersona +
+							" AND " + PysLineaAnticipoBean.C_IDANTICIPO + " = " + idAnticipo;
+			
+			Hashtable<String,Object> hSql = this.selectGenericoHash(sql);
+			if (hSql!=null) {
+				resultado = UtilidadesHash.getString(hSql, PysLineaAnticipoBean.C_IDLINEA);
+			}
+	        
+		} catch(Exception e) {
+			throw new ClsExceptions(e,"Error al obtener una nueva linea de anticipo.");
+		}
+	    
+		return resultado;
+	}
 }

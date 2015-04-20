@@ -19,7 +19,9 @@ import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsLogging;
 import com.atos.utils.GstStringTokenizer;
+import com.atos.utils.UsrBean;
 import com.siga.Utilidades.PaginadorBind;
+import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesNumero;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.beans.CenClienteAdm;
@@ -30,6 +32,7 @@ import com.siga.beans.GenParametrosAdm;
 import com.siga.beans.PysAnticipoLetradoAdm;
 import com.siga.beans.PysAnticipoLetradoBean;
 import com.siga.beans.PysLineaAnticipoAdm;
+import com.siga.beans.PysLineaAnticipoBean;
 import com.siga.beans.PysServicioAnticipoAdm;
 import com.siga.beans.PysServicioAnticipoBean;
 import com.siga.beans.PysServiciosInstitucionAdm;
@@ -93,7 +96,11 @@ public class AnticiposClienteAction extends MasterAction {
 						//borrar Servicios
 						mapDestino = abrir(mapping, miForm, request, response);
 						
-					}else {
+					} else if (accion.equalsIgnoreCase("darbaja")) {
+						mapDestino = this.darBaja(mapping, miForm, request, response, accion);
+						break;
+						
+					} else {
 						return super.executeInternal(mapping,formulario,request,response);
 					}
 				}
@@ -788,5 +795,64 @@ public class AnticiposClienteAction extends MasterAction {
 		
 	}
 
+	/**
+	 * Dar de baja (liquidar/anular) un anticipo usado pero con importe pendiente
+	 * @param mapping
+	 * @param formulario
+	 * @param request
+	 * @param response
+	 * @param accion
+	 * @return
+	 * @throws SIGAException
+	 */
+	protected String darBaja(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response, String accion) throws SIGAException {
+		UserTransaction tx = null;
+		try {
+			UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");
+			
+			// Obtiene los datos ocultos del formulario
+			Vector<?> vOcultos = formulario.getDatosTablaOcultos(0);
+			String idInstitucion = (String)vOcultos.elementAt(0);
+			String idPersona = (String)vOcultos.elementAt(1);
+			String idAnticipo = (String)vOcultos.elementAt(2);
+			Double dRestante = new Double((String)vOcultos.elementAt(3));
+			
+			// Comprueba que obtiene todos los datos necesarios para realizar la baja logica
+			if (idInstitucion==null || idInstitucion.equals("") || 
+				idPersona==null || idPersona.equals("") || 
+				idAnticipo==null || idAnticipo.equals("") || 
+				dRestante==null || dRestante==0) {
+				throw new SIGAException("messages.updated.error");
+			}
+			
+			// Obtiene una nueva linea de anticipo
+			PysLineaAnticipoAdm admLineaAnticipo = new PysLineaAnticipoAdm(user);
+			String nuevoIdLineaAnticipo = admLineaAnticipo.obtieneNuevaLineaAnticipo(idInstitucion, idPersona, idAnticipo);
+			
+			// Genera un hash de PYS_LINEAANTICIPO
+			Hashtable<String,Object> hLineaAnticipo =  new Hashtable<String,Object>();
+			UtilidadesHash.set(hLineaAnticipo, PysLineaAnticipoBean.C_IDINSTITUCION, idInstitucion);
+			UtilidadesHash.set(hLineaAnticipo, PysLineaAnticipoBean.C_IDPERSONA, idPersona);
+			UtilidadesHash.set(hLineaAnticipo, PysLineaAnticipoBean.C_IDANTICIPO, idAnticipo);
+			UtilidadesHash.set(hLineaAnticipo, PysLineaAnticipoBean.C_IDLINEA, nuevoIdLineaAnticipo);
+			UtilidadesHash.set(hLineaAnticipo, PysLineaAnticipoBean.C_LIQUIDACION, "1");
+			UtilidadesHash.set(hLineaAnticipo, PysLineaAnticipoBean.C_FECHAEFECTIVA, "SYSDATE");
+			UtilidadesHash.set(hLineaAnticipo, PysLineaAnticipoBean.C_IMPORTEANTICIPADO, dRestante);
+			
+			tx = user.getTransaction();
+			tx.begin();
+			
+			// Realizo la insercion y compruebo que ha ido bien
+			if (!admLineaAnticipo.insert(hLineaAnticipo))  {
+				throw new SIGAException("messages.updated.error");
+			}
+			
+			tx.commit();
+			
+		} catch (Exception e) { 
+		   throwExcp("messages.general.error",new String[] {"modulo.censo"}, e, tx); 
+		}		
+			
+		return exitoRefresco("messages.updated.success", request);	
+	}	
 }
-
