@@ -18,10 +18,10 @@
 	
 	<table id='listadoArchivosCab' border='1' width='100%' cellspacing='0' cellpadding='0'>
 		<tr class ='tableTitle'>
-			<td align='center' width='30%'><b>Fecha Carga</b></td>
-			<td align='center' width='20%'><b>Usuario</b></td>
-			<td align='center' width='20%'><b>Nombre fichero</b></td>
-			<td align='center' width='15%'><b>Registros</b></td>
+			<td align='center' width='30%'><b><siga:Idioma key="cargaMasivaDatosCurriculares.fechaCarga.literal"/></b></td>
+			<td align='center' width='20%'><b><siga:Idioma key="cargaMasivaDatosCurriculares.usuario.literal"/></b></td>
+			<td align='center' width='20%'><b><siga:Idioma key="cargaMasivaDatosCurriculares.nombreFichero.literal"/></b></td>
+			<td align='center' width='15%'><b><siga:Idioma key="cargaMasivaDatosCurriculares.numRegistros.literal"/></b></td>
 			<td align='center' width='10%'>&nbsp;</td>
 		</tr>
 	</table>
@@ -41,7 +41,7 @@
 			</tr>
 		
 			<tr class="notFound">
-		   		<td colspan="4" class="titulitos"><siga:Idioma key="messages.noRecordFound"/></td>
+		   		<td colspan="5" class="titulitos"><siga:Idioma key="messages.noRecordFound"/></td>
 			</tr>
 		</c:when>
 		<c:otherwise>
@@ -64,6 +64,8 @@
 					<td align='left'>
 						<input type="hidden" id="idInstitucion_${status.count}" value="${cargaMasivaCV.idInstitucion}"/>
 						<input type="hidden" id="idCargaMasivaCV_${status.count}" value="${cargaMasivaCV.idCargaMasivaCV}"/>
+						<input type="hidden" id="idFichero_${status.count}" value="${cargaMasivaCV.idFichero}"/>
+						<input type="hidden" id="idFicheroLog_${status.count}" value="${cargaMasivaCV.idFicheroLog}"/>
 						<c:out value="${cargaMasivaCV.fechaCarga}"/>
  					</td>
  					<td align='left'>

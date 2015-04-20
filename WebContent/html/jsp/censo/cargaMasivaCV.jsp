@@ -76,22 +76,40 @@
 	}
 	
 	function downloadExample() {
-		document.forms['CargaMasivaCVForm'].modo.value = 'descargaEjemplo';
+		document.forms['CargaMasivaCVForm'].modo.value = 'downloadExample';
 		document.forms['CargaMasivaCVForm'].submit();
 		
 	}
 		
-	function processFile() {
-		/*if(document.forms['CargaMasivaCVForm'].theFile && document.forms['CargaMasivaCVForm'].theFile.value!='' && !TestFileType(document.forms['CargaMasivaCVForm'].theFile.value, ['XLS','XLSX'])){
+	function parseExcelFile() {
+		if(document.forms['CargaMasivaCVForm'].theFile && document.forms['CargaMasivaCVForm'].theFile.value!='' && !TestFileType(document.forms['CargaMasivaCVForm'].theFile.value, ['XLS'])){
 			fin();
 			return false;
-		}*/
+		}
 	
 		document.forms['CargaMasivaCVForm'].rutaFichero.value  = document.forms['CargaMasivaCVForm'].theFile.value;
 		document.forms['CargaMasivaCVForm'].modo.value = 'parseExcelFile';
 		document.forms['CargaMasivaCVForm'].submit();
+		
 	}
-	
+	function download(fila) {
+		var idFichero = document.getElementById("idFichero_"+fila).value;
+		var idInstitucion = document.getElementById("idInstitucion_"+fila).value;
+		document.forms['CargaMasivaCVForm'].idInstitucion.value = idInstitucion;
+		document.forms['CargaMasivaCVForm'].idFichero.value = idFichero;
+		document.forms['CargaMasivaCVForm'].modo.value = 'downloadExcelProcessed';
+		document.forms['CargaMasivaCVForm'].submit();
+		
+	}
+	function descargaLog(fila) {
+		var idFicheroLog = document.getElementById("idFicheroLog_"+fila).value;
+		var idInstitucion = document.getElementById("idInstitucion_"+fila).value;
+		document.forms['CargaMasivaCVForm'].idInstitucion.value = idInstitucion;
+		document.forms['CargaMasivaCVForm'].idFicheroLog.value = idFicheroLog;
+		document.forms['CargaMasivaCVForm'].modo.value = 'downloadExcelLog';
+		document.forms['CargaMasivaCVForm'].submit();
+		
+	}
 	
 	
 </script>
@@ -103,6 +121,8 @@
 		<html:hidden property="modo"/>
 		<html:hidden property="idInstitucion"/>
 		<html:hidden property="rutaFichero"/>
+		<html:hidden property="idFichero"/>
+		<html:hidden property="idFicheroLog"/>
 		
 			<table width="100%" border="0">
 				<tr>
@@ -115,7 +135,7 @@
 				
 				<tr>
 					<td class="labelText">
-						<bean:message  key="censo.tiposDatosCurriculares.tipo.literal"/>
+						<siga:Idioma  key="cargaMasivaDatosCurriculares.fechaCarga.literal"/>
 					</td>
 					<td>
 						<siga:Fecha nombreCampo="fechaCarga" valorInicial="${CargaMasivaCVForm.fechaCarga}"/>
@@ -128,22 +148,21 @@
 					<td class="labelText">
 						<siga:Idioma key="administracion.informes.literal.archivo" />&nbsp;
 					</td>
-					<td><html:file  property="theFile" styleClass="boxCombo"  style="width:500px;" />
+					<td><html:file  property="theFile" styleClass="boxCombo"  style="width:400px;" />
 					</td>
 					<td class="tdBotones">
-						<input  type="button" alt="Procesar Fichero"
-							 onclick="return processFile();"
-							class="button" name="idButton" value="Procesar Fichero"></input>
+						<input  type="button" alt="<siga:Idioma key="general.boton.procesaFichero" />"
+							 onclick="return parseExcelFile();"
+							class="button" name="idButton" value="<siga:Idioma key="general.boton.procesaFichero" />"></input>
 					</td>
-
 					<td class="tdBotones">
-						<input type="button" alt="DescargarEjemplo"  onClick="downloadExample()" class="button" name="idButton" value="DescargarEjemplo"/>
+						<input type="button" alt='<siga:Idioma key="general.boton.descargaFicheroModelo" />'  onClick="downloadExample()" class="button" name="idButton" value="<siga:Idioma key="general.boton.descargaFicheroModelo" />"/>
 					</td>
 				</tr>
 
 				
 			</table>
-		<siga:ConjBotonesBusqueda botones="B"  titulo="censo.tiposDatosCurriculares.busqueda"/>
+		<siga:ConjBotonesBusqueda botones="B"  titulo="cargaMasivaDatosCurriculares.busqueda"/>
 		<div id="divListado"></div>	
 	</html:form>
 

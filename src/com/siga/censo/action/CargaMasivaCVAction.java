@@ -1,9 +1,9 @@
 package com.siga.censo.action;
 
 import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.List;
+import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -16,6 +16,7 @@ import org.redabogacia.sigaservices.app.helper.SIGAServicesHelper;
 import org.redabogacia.sigaservices.app.services.cen.CargaMasivaCV;
 import org.redabogacia.sigaservices.app.services.cen.SubtiposCVService;
 import org.redabogacia.sigaservices.app.services.cen.impl.CargaMasivaDatosCVImpl;
+import org.redabogacia.sigaservices.app.services.gen.FicherosService;
 import org.redabogacia.sigaservices.app.vo.cen.CargaMasivaDatosCVVo;
 
 import com.atos.utils.ClsExceptions;
@@ -37,7 +38,7 @@ import es.satec.businessManager.BusinessManager;
  *
  */
 public class CargaMasivaCVAction extends MasterAction {
-	
+
 	protected ActionForward executeInternal(ActionMapping mapping,ActionForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		String mapDestino = "exception";
 		CargaMasivaCVForm miForm = null;
@@ -49,25 +50,24 @@ public class CargaMasivaCVAction extends MasterAction {
 					String modo = request.getParameter("modo");
 					if(modo!=null)
 						accion = modo;
-					
+
 					if (accion == null || accion.equals("") || accion.equalsIgnoreCase("abrir")){
 						mapDestino = inicio (mapping, miForm, request, response);
 					}else if ( accion.equalsIgnoreCase("getAjaxBusqueda")){
 						mapDestino = getAjaxBusqueda (mapping, miForm, request, response);
-					}else if ( accion.equalsIgnoreCase("nuevo")){
-						mapDestino = nuevoSubtiposCV (mapping, miForm, request, response);
 					}else if ( accion.equalsIgnoreCase("parseExcelFile")){
 						mapDestino = parseExcelFile (mapping, miForm, request, response);
-					}else if ( accion.equalsIgnoreCase("descargaEjemplo")){
-						mapDestino = descargaEjemplo (mapping, miForm, request, response);
-					}
-					else if ( accion.equalsIgnoreCase("downloadExcelError")){
+					}else if ( accion.equalsIgnoreCase("downloadExample")){
+						mapDestino = downloadExample (mapping, miForm, request, response);
+					}else if ( accion.equalsIgnoreCase("downloadExcelError")){
 						mapDestino = downloadExcelError (mapping, miForm, request, response);
+					}else if ( accion.equalsIgnoreCase("downloadExcelProcessed")){
+						mapDestino = downloadExcelProcessed(mapping, miForm, request, response);
+					}else if ( accion.equalsIgnoreCase("downloadExcelLog")){
+						mapDestino = downloadExcelLog(mapping, miForm, request, response);
 					}
 					else if ( accion.equalsIgnoreCase("processExcelFile")){
 						mapDestino = processExcelFile (mapping, miForm, request, response);
-					}else if ( accion.equalsIgnoreCase("actualizar")){
-						mapDestino = actualizarSubtiposCV (mapping, miForm, request, response);
 					}else if ( accion.equalsIgnoreCase("volver")){
 						mapDestino = volver (mapping, miForm, request, response);
 					}else {
@@ -75,27 +75,27 @@ public class CargaMasivaCVAction extends MasterAction {
 					}
 				}
 			} while (false);
-			
+
 			// Redireccionamos el flujo a la JSP correspondiente
 			if (mapDestino == null)	{ 
 				throw new ClsExceptions("El ActionMapping no puede ser nulo");
 			}
-			
+
 			return mapping.findForward(mapDestino);
-			
+
 		} catch (SIGAException es) {
 			throw es;
-			
+
 		} catch (Exception e) {
 			throw new SIGAException("messages.general.error",e,new String[] {"modulo.gratuita"});
 		}
 	}
-	
+
 	private String inicio (ActionMapping mapping, 		
-				MasterForm formulario, 
-				HttpServletRequest request, 
-				HttpServletResponse response) throws ClsExceptions, SIGAException 
-				{
+			MasterForm formulario, 
+			HttpServletRequest request, 
+			HttpServletResponse response) throws ClsExceptions, SIGAException 
+			{
 		CargaMasivaCVForm miForm = (CargaMasivaCVForm) formulario;
 		miForm.clear();
 		UsrBean usrBean = this.getUserBean(request);
@@ -105,25 +105,21 @@ public class CargaMasivaCVAction extends MasterAction {
 		BusinessManager bm = getBusinessManager();
 		SubtiposCVService tiposDatosCurricularesService = (SubtiposCVService) bm.getService(SubtiposCVService.class);
 		request.setAttribute("maestroTiposCV", tiposDatosCurricularesService.getMaestroTiposCV(this.getUserBean(request).getLanguage()));
-		
+
 		return "inicio";
 	}
 	private String volver (ActionMapping mapping, 		
 			MasterForm formulario, 
 			HttpServletRequest request, 
-			HttpServletResponse response) throws SIGAException 
-			{
+			HttpServletResponse response) throws SIGAException{
+		
 		CargaMasivaCVForm miForm = (CargaMasivaCVForm) formulario;
 		miForm.clear();
-		UsrBean usrBean = this.getUserBean(request);
 		String identificadorFormularioBusqueda = getIdBusqueda(super.dataBusqueda,getClass().getName());
 		CargaMasivaCVForm cargaMasivaCVForm = (CargaMasivaCVForm) request.getSession().getAttribute(identificadorFormularioBusqueda);
 		miForm.setFechaCarga(cargaMasivaCVForm.getFechaCarga());
 		miForm.setIdInstitucion(cargaMasivaCVForm.getIdInstitucion());
 		miForm.setModo("vuelta");
-		
-		
-        
 		return "inicio";
 	}
 
@@ -137,179 +133,197 @@ public class CargaMasivaCVAction extends MasterAction {
 	 * @throws SIGAException 
 	 */
 	private String getAjaxBusqueda (ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
-			CargaMasivaCVForm cargaMasivaCVForm = (CargaMasivaCVForm) formulario;
-			String idInstitucion = request.getParameter("idInstitucion");
-			String fechaCarga = request.getParameter("fechaCarga");
-	        cargaMasivaCVForm.setIdInstitucion(idInstitucion);
-	        if(fechaCarga!=null)
-	        	cargaMasivaCVForm.setFechaCarga(fechaCarga);
-	        	        
-	        String identificadorFormularioBusqueda = getIdBusqueda(super.dataBusqueda,getClass().getName());
-			request.getSession().setAttribute(identificadorFormularioBusqueda,cargaMasivaCVForm.clone());
-			List<CargaMasivaCVForm> tiposDatosCurricularesForms = null;
-			tiposDatosCurricularesForms = new ArrayList<CargaMasivaCVForm>();
-			CargaMasivaCVForm cargaMasivaCVTest = new CargaMasivaCVForm();
-			cargaMasivaCVTest.setFechaCarga("25/10/2015");
-			cargaMasivaCVTest.setNombreFichero("CArga de Curso de Spring");
-			cargaMasivaCVTest.setUsuario("Jorge Torres Acosta");
-			cargaMasivaCVTest.setNumRegistros("69");
-			tiposDatosCurricularesForms.add(cargaMasivaCVTest);
-			
-			request.setAttribute("listado", tiposDatosCurricularesForms);
-	       /* BusinessManager bm = getBusinessManager();
-			SubtiposCVService tiposDatosCurricularesService = (SubtiposCVService) bm.getService(SubtiposCVService.class);
-			VoUiService<CargaMasivaCVForm, SubtiposCVVo> voService = new SubtiposCVVoService();
-			
-			try {
-				SubtiposCVVo tiposDatosCurricularesVo = voService.getForm2Vo(tiposDatosCurricularesForm);
-				tiposDatosCurricularesVo.setIdioma(this.getUserBean(request).getLanguage());
-				tiposDatosCurricularesForms =  voService.getVo2FormList(tiposDatosCurricularesService.getList(tiposDatosCurricularesVo));
-				request.setAttribute("tiposDatosCurriculares", tiposDatosCurricularesForms);
-				request.setAttribute("maestroTiposCV", tiposDatosCurricularesService.getMaestroTiposCV(this.getUserBean(request).getLanguage()));
-				
-				return "listado";
-			}catch (Exception e){
-				tiposDatosCurricularesForms = new ArrayList<CargaMasivaCVForm>();
-				request.setAttribute("tiposDatosCurriculares", tiposDatosCurricularesForms);
-				String error = UtilidadesString.getMensajeIdioma(this.getUserBean(request),"messages.general.errorExcepcion");
-				throw new SIGAException(error,e);
-				
-			}*/
-			return "listado";
-							
+		CargaMasivaCVForm cargaMasivaCVForm = (CargaMasivaCVForm) formulario;
+		String idInstitucion = request.getParameter("idInstitucion");
+		String fechaCarga = request.getParameter("fechaCarga");
+		cargaMasivaCVForm.setIdInstitucion(idInstitucion);
+		if(fechaCarga!=null)
+			cargaMasivaCVForm.setFechaCarga(fechaCarga);
 
-		}
-	
-	private String nuevoSubtiposCV (ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
-		CargaMasivaCVForm tiposDatosCurricularesForm = (CargaMasivaCVForm) formulario;
-		try {
-			String idInstitucion = request.getParameter("idInstitucion");
-			tiposDatosCurricularesForm.clear();
-			tiposDatosCurricularesForm.setIdInstitucion(idInstitucion);
-			tiposDatosCurricularesForm.setModo("insertar");
-			
-		}catch (Exception e){
-			throw new SIGAException("messages.general.error", e , new String[] {"modulo.gratuita"});
-			
-		}
-		request.setAttribute("titulo","sjcs.solicitudaceptadacentralita.validacion.titulo");
-		return "editar";
+		String identificadorFormularioBusqueda = getIdBusqueda(super.dataBusqueda,getClass().getName());
+		request.getSession().setAttribute(identificadorFormularioBusqueda,cargaMasivaCVForm.clone());
+
+		CargaMasivaCV cargaMasivaDatosCV = (CargaMasivaCV) getBusinessManager().getService(CargaMasivaCV.class);
+		VoUiService<CargaMasivaCVForm, CargaMasivaDatosCVVo> voService = new CargaMasivaDatosCVVoService();
+		List<CargaMasivaDatosCVVo> cargaMasivaDatosCVVos =  cargaMasivaDatosCV.getCargasMasivasCV(voService.getForm2Vo(cargaMasivaCVForm));
+		request.setAttribute("listado", voService.getVo2FormList(cargaMasivaDatosCVVos));
+		
+		return "listado";
+
 
 	}
-	
-	
-	
+
+
+
 	private String downloadExcelError (ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+		String forward = "descargaFichero";
 		CargaMasivaCVForm cargaMasivaCVForm = (CargaMasivaCVForm) formulario;
 		CargaMasivaCV cargaMasivaDatosCV = (CargaMasivaCV) getBusinessManager().getService(CargaMasivaCV.class);
 		UsrBean usrBean = this.getUserBean(request);
-		
-			
-//			List<CargaMasivaDatosCVVo> cargaMasivaDatosCVList = cargaMasivaDatosCV.parseExcelFile(SIGAServicesHelper.getBytes(cargaMasivaCVForm.getRutaFichero()),Short.valueOf(usrBean.getLocation()));
-		File logFile;
+
+		File errorFile;
 		try {
-			logFile = cargaMasivaDatosCV.getLogExcelFile(SIGAServicesHelper.getBytes(cargaMasivaCVForm.getRutaFichero()),Short.valueOf(usrBean.getLocation()));
-			request.setAttribute("nombreFichero", logFile.getName());
-			request.setAttribute("rutaFichero", logFile.getPath());
+			CargaMasivaDatosCVVo cargaMasivaDatosCVVo = new CargaMasivaDatosCVVo();
+			cargaMasivaDatosCVVo.setIdinstitucion(Short.valueOf(usrBean.getLocation()));
+			cargaMasivaDatosCVVo.setExcelBytes(SIGAServicesHelper.getBytes(cargaMasivaCVForm.getRutaFichero()));
+			cargaMasivaDatosCVVo.setCodIdioma(usrBean.getLanguage());
+			
+			errorFile = cargaMasivaDatosCV.getErrorExcelFile(cargaMasivaDatosCVVo);
+			request.setAttribute("nombreFichero", errorFile.getName());
+			request.setAttribute("rutaFichero", errorFile.getPath());
 			request.setAttribute("accion", "");
+		} catch (BusinessException e) {
+			throwExcp(e.getMessage(), e,null);
 		} catch (Exception e) {
-			throw new SIGAException("Error al obtener el fichero de Log",e);
-		} 
-		
-		
-		return "descargaFichero";
-		
-		
-						
+			throwExcp("messages.general.error", new String[] { "modulo.gratuita"}, e, null);
+		}
+		return forward;
 
 	}
+	private String downloadExcelProcessed (ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+		String forward = "descargaFichero";
+		try {
+			CargaMasivaCVForm cargaMasivaCVForm = (CargaMasivaCVForm) formulario;
+			FicherosService ficherosService = (FicherosService)  getBusinessManager().getService(FicherosService.class);
+			File file = ficherosService.getFile(Long.valueOf(cargaMasivaCVForm.getIdFichero()), Short.valueOf(cargaMasivaCVForm.getIdInstitucion()));
+			request.setAttribute("nombreFichero", file.getName());
+			request.setAttribute("rutaFichero", file.getPath());
+			request.setAttribute("accion", "");
+
+
+		}catch (BusinessException e) {
+			throwExcp(e.getMessage(), e,null);
+		} catch (Exception e) {
+			throwExcp("messages.general.error", new String[] { "modulo.gratuita"}, e, null);
+		}
+		return forward;
+	}
+
+
+	protected String downloadExcelLog(ActionMapping mapping,
+			MasterForm formulario, HttpServletRequest request,
+			HttpServletResponse response) throws SIGAException {
+		String forward = "descargaFichero";
+		try {
+			CargaMasivaCVForm cargaMasivaCVForm = (CargaMasivaCVForm) formulario;
+			cargaMasivaCVForm.setCodIdioma(this.getUserBean(request).getLanguage());
+			FicherosService ficherosService = (FicherosService)  getBusinessManager().getService(FicherosService.class);
+			File file = ficherosService.getFile(Long.valueOf(cargaMasivaCVForm.getIdFicheroLog()), Short.valueOf(cargaMasivaCVForm.getIdInstitucion()));
+			request.setAttribute("nombreFichero", file.getName());
+			request.setAttribute("rutaFichero", file.getPath());
+			request.setAttribute("accion", "");
+
+
+		}catch (BusinessException e) {
+			
+			throwExcp(e.getMessage(), e,null);
+		} catch (Exception e) {
+			throwExcp("messages.general.error", new String[] { "modulo.gratuita"}, e, null);
+		}
+
+		return forward;
+	}
+
 	private String processExcelFile (ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		CargaMasivaCVForm cargaMasivaCVForm = (CargaMasivaCVForm) formulario;
 		CargaMasivaCV cargaMasivaDatosCV = (CargaMasivaCV) getBusinessManager().getService(CargaMasivaCV.class);
 		UsrBean usrBean = this.getUserBean(request);
 		try {
-			
-//			List<CargaMasivaDatosCVVo> cargaMasivaDatosCVList = cargaMasivaDatosCV.parseExcelFile(SIGAServicesHelper.getBytes(cargaMasivaCVForm.getRutaFichero()),Short.valueOf(usrBean.getLocation()));
-			cargaMasivaDatosCV.processExcelFile(SIGAServicesHelper.getBytes(cargaMasivaCVForm.getRutaFichero()),Short.valueOf(usrBean.getLocation())); 
-			
-				
-			
-		}catch (Exception e) {
-			e.printStackTrace();
+
+			//			List<CargaMasivaDatosCVVo> cargaMasivaDatosCVList = cargaMasivaDatosCV.parseExcelFile(SIGAServicesHelper.getBytes(cargaMasivaCVForm.getRutaFichero()),Short.valueOf(usrBean.getLocation()));
+			CargaMasivaDatosCVVo cargaMasivaDatosCVVo = new CargaMasivaDatosCVVo();
+			cargaMasivaDatosCVVo.setCodIdioma(usrBean.getLanguage());
+			cargaMasivaDatosCVVo.setIdinstitucion(Short.valueOf(usrBean.getLocation()));
+			String nombreFichero = cargaMasivaCVForm.getRutaFichero().substring(cargaMasivaCVForm.getRutaFichero().lastIndexOf("\\")+1); 
+			cargaMasivaDatosCVVo.setNombreFichero(nombreFichero);
+			cargaMasivaDatosCVVo.setUsuario(usrBean.getUserName());
+			cargaMasivaDatosCVVo.setExcelBytes(SIGAServicesHelper.getBytes(cargaMasivaCVForm.getRutaFichero()));
+
+			cargaMasivaDatosCV.processExcelFile(cargaMasivaDatosCVVo); 
+
+		}catch (BusinessException e) {
+			throwExcp(e.getMessage(), e,null);
+		} catch (Exception e) {
+			throwExcp("messages.general.error", new String[] { "modulo.gratuita"}, e, null);
 		}
-		
+
 
 		return exitoRefresco("messages.inserted.success",request);
-						
+
 
 	}
-	private String descargaEjemplo (ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
-        	        
+	private String downloadExample (ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+
 		CargaMasivaCV cargaMasivaDatosCV = (CargaMasivaCV) getBusinessManager().getService(CargaMasivaCV.class); 
-//		Vector<Hashtable<String, Object>> datosVector = new Vector<Hashtable<String,Object>>();
-//		Hashtable<String, Object> elemento = new Hashtable<String, Object>();
-//		List<String> campos =  CargaMasivaDatosCV.CAMPOS;
-//		for (int i = 0; i < campos.size(); i++) {
-//			elemento.put(campos.get(i),"");
-//		} 
-//		datosVector.add(elemento);
-		File exampleFile =  cargaMasivaDatosCV.createExcelFile(CargaMasivaDatosCVImpl.CAMPOSEJEMPLO,null);
+		Vector<Hashtable<String, Object>> datosVector = new Vector<Hashtable<String,Object>>();
+		Hashtable<String, Object> datosHashtable =  new Hashtable<String, Object>();
+		datosHashtable.put(CargaMasivaDatosCVVo.COLEGIADONUMERO,"nnnnnn");
+		datosHashtable.put(CargaMasivaDatosCVVo.PERSONANIF,"nnnnnnnna" );
+		datosHashtable.put(CargaMasivaDatosCVVo.C_FECHAINICIO,"nn/nn/nnnn" );
+		datosHashtable.put(CargaMasivaDatosCVVo.C_FECHAFIN, "nn/nn/nnnn" );
+		datosHashtable.put(CargaMasivaDatosCVVo.C_CREDITOS, "nnn");
+		datosHashtable.put(CargaMasivaDatosCVVo.FECHAVERIFICACION, "nn/nn/nnnn");
+		datosHashtable.put(CargaMasivaDatosCVVo.C_DESCRIPCION,"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" );
+		datosHashtable.put(CargaMasivaDatosCVVo.TIPOCVCOD, "aaa");
+		datosHashtable.put(CargaMasivaDatosCVVo.SUBTIPOCV1COD,"aaa");
+		datosHashtable.put(CargaMasivaDatosCVVo.SUBTIPOCV2COD,"aaa");
+		datosVector.add(datosHashtable);
+		datosHashtable =  new Hashtable<String, Object>();
+		datosHashtable.put(CargaMasivaDatosCVVo.COLEGIADONUMERO,"Opcional. Si nulo nif requerido");
+		datosHashtable.put(CargaMasivaDatosCVVo.PERSONANIF,"Opcional. Si nulo colegiadonumero requerido" );
+		datosHashtable.put(CargaMasivaDatosCVVo.C_FECHAINICIO,"Requerido" );
+		datosHashtable.put(CargaMasivaDatosCVVo.C_FECHAFIN, "Requerido" );
+		datosHashtable.put(CargaMasivaDatosCVVo.C_CREDITOS, "Requerido");
+		datosHashtable.put(CargaMasivaDatosCVVo.FECHAVERIFICACION, "Requerido");
+		datosHashtable.put(CargaMasivaDatosCVVo.C_DESCRIPCION,"Requerido" );
+		datosHashtable.put(CargaMasivaDatosCVVo.TIPOCVCOD, "Requerido");
+		datosHashtable.put(CargaMasivaDatosCVVo.SUBTIPOCV1COD,"Opcional");
+		datosHashtable.put(CargaMasivaDatosCVVo.SUBTIPOCV2COD,"Opcional");
+		datosVector.add(datosHashtable);
+			 
+			 
+		File exampleFile =  cargaMasivaDatosCV.createExcelFile(CargaMasivaDatosCVImpl.CAMPOSEJEMPLO,datosVector);
 		request.setAttribute("nombreFichero", exampleFile.getName());
 		request.setAttribute("rutaFichero", exampleFile.getPath());
 		request.setAttribute("accion", "");
 		return "descargaFichero";
-						
 
 	}
-	
-	
-	
+
 	private String parseExcelFile (ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		CargaMasivaCVForm cargaMasivaCVForm = (CargaMasivaCVForm) formulario;
 		CargaMasivaCV cargaMasivaDatosCV = (CargaMasivaCV) getBusinessManager().getService(CargaMasivaCV.class);
 		UsrBean usrBean = this.getUserBean(request);
+		cargaMasivaCVForm.setCodIdioma(usrBean.getLanguage());
 		try {
 			if(cargaMasivaCVForm.getTheFile()!=null && cargaMasivaCVForm.getTheFile().getFileData()!=null && cargaMasivaCVForm.getTheFile().getFileData().length>0){
-				List<CargaMasivaDatosCVVo> cargaMasivaDatosCVList = cargaMasivaDatosCV.parseExcelFile(cargaMasivaCVForm.getTheFile().getFileData(),Short.valueOf(usrBean.getLocation()));
+				
+				CargaMasivaDatosCVVo cargaMasivaDatosCVVo = new CargaMasivaDatosCVVo();
+				cargaMasivaDatosCVVo.setIdinstitucion(Short.valueOf(usrBean.getLocation()));
+				cargaMasivaDatosCVVo.setExcelBytes(cargaMasivaCVForm.getTheFile().getFileData());
+
+				List<CargaMasivaDatosCVVo> cargaMasivaDatosCVList = cargaMasivaDatosCV.parseExcelFile(cargaMasivaDatosCVVo);
 				VoUiService<CargaMasivaCVForm, CargaMasivaDatosCVVo> voService = new CargaMasivaDatosCVVoService();
 				request.setAttribute("listado", voService.getVo2FormList(cargaMasivaDatosCVList));
 				String identificadorFormularioBusqueda = getIdBusqueda(super.dataBusqueda,getClass().getName());
 				request.getSession().setAttribute(identificadorFormularioBusqueda,cargaMasivaCVForm.clone());
-				
+
 			}
-		}catch (Exception e) {
-			e.printStackTrace();
+		}catch (BusinessException e) {
+			return error(e.getMessage(),new ClsExceptions(e.toString()),request);
+		} catch (Exception e) {
+			throwExcp("messages.general.error", new String[] { "modulo.gratuita"}, e, null);
 		}
-		
+
 		return "listadoResumen";
-						
+
 
 	}
-	
-	private String actualizarSubtiposCV (ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
-		CargaMasivaCVForm tiposDatosCurricularesForm = (CargaMasivaCVForm) formulario;
-/*		BusinessManager bm = getBusinessManager();
-        SubtiposCVService tiposDatosCurricularesService = (SubtiposCVService) bm.getService(SubtiposCVService.class);
-        VoUiService<CargaMasivaCVForm, SubtiposCVVo> voService = new SubtiposCVVoService();
-		try {
-			SubtiposCVVo tiposDatosCurricularesVo = voService.getForm2Vo(tiposDatosCurricularesForm);
-			tiposDatosCurricularesVo.setUsumodificacion(Integer.valueOf(this.getUserBean(request).getUserName()));
-			tiposDatosCurricularesVo.setIdioma(this.getUserBean(request).getLanguage());
-			tiposDatosCurricularesService.actualizarSubtiposCV(tiposDatosCurricularesVo);
-		}catch (Exception e){
-			throw new SIGAException("messages.general.error", e , new String[] {"modulo.gratuita"});
-			
-		}
-*/
-		return exitoRefresco("messages.updated.success",request);
-						
 
-	}
-	
-	
-	
 
-	
-	
-	
+
+
+
+
+
 }

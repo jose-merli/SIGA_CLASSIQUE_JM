@@ -352,6 +352,8 @@
 		<form-bean name="ComunicacionesForm" type="com.siga.gratuita.form.ComunicacionesForm"/>
 		<form-bean name="SolicitudAceptadaCentralitaForm" type="com.siga.gratuita.form.SolicitudAceptadaCentralitaForm"/>
 		<form-bean name="SubtiposCVForm" type="com.siga.censo.form.SubtiposCVForm"/>
+		<form-bean name="CargaMasivaCVForm" type="com.siga.censo.form.CargaMasivaCVForm"/>
+		
 		
 		
 	</form-beans>
@@ -2783,7 +2785,7 @@
 		</action>
 
 		<!-- ***** Justicia Gratuita / Configurar Turnos / EJG ***** -->
-		<action path="/JGR_EJG" type="com.siga.gratuita.action.DefinirEJGAction" name="DefinirEJGForm" >
+		<action path="/JGR_EJG" type="com.siga.gratuita.action.DefinirEJGAction" name="DefinirEJGForm"  >
 			<forward name="inicio" path="/html/jsp/gratuita/busquedaEJG.jsp?ventanaCajg=0"/>
 			<forward name="insertarEJG" path="/html/jsp/gratuita/insertarEJG.jsp"/>
 			<forward name="busquedaAutomatica" path="/html/jsp/gratuita/recargarModalInsercionEJG.jsp"/>
@@ -3482,6 +3484,11 @@
 		<action path="/CEN_GestionSubtiposCV" type="com.siga.censo.action.GestionSubtiposCVAction" name="SubtiposCVForm" scope="request">
 			<forward name="inicio" path="/html/jsp/censo/gestionSubtiposCV.jsp"/>
 			<forward name="listado" path="/html/jsp/censo/listadoSubtiposCV.jsp"/>
+		</action>
+		<action path="/CEN_CargaMasivaCV" type="com.siga.censo.action.CargaMasivaCVAction" name="CargaMasivaCVForm" scope="request">
+			<forward name="inicio" path="/html/jsp/censo/cargaMasivaCV.jsp"/>
+			<forward name="listado" path="/html/jsp/censo/listadoCargaMasivaCV.jsp"/>
+			<forward name="listadoResumen" path="/html/jsp/censo/listadoResumenCargaMasivaCV.jsp"/>
 		</action>
 		<!-- ****************************************************************************
 -->

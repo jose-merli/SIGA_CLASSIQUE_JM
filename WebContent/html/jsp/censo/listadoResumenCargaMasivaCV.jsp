@@ -32,6 +32,14 @@
 		document.forms['CargaMasivaCVForm'].target = "submitArea";
 		document.forms['CargaMasivaCVForm'].submit();
 	}
+	function refrescarLocal() {
+		accionVolver();
+	}
+	function accionDownload() {
+		document.forms['CargaMasivaCVForm'].modo.value="downloadExcelError";
+		document.forms['CargaMasivaCVForm'].target = "submitArea";
+		document.forms['CargaMasivaCVForm'].submit();
+	}
 	
 	
 	</script>
@@ -48,19 +56,23 @@
 <table class="tablaTitulo" align="center">
 		<tr>
 		<td class="titulitos">
-			Procesado el fichero para la carga masiva <c:out value="${CargaMasivaCVForm.rutaFichero}"/>
+			<siga:Idioma key="cargaMasivaDatosCurriculares.ficheroProcesado.literal"/><c:out value="${CargaMasivaCVForm.rutaFichero}"/>
 		</td>
 		</tr>
 		</table>
 <siga:Table 
 	   	      name="tablaDatos"
 	   		  border="1"
-	   		  columnNames="colegiadoNumero,colegiadoNombre,tipoCVNombre,fechaInicio,fechaFin,subtipoCV1Nombre,subtipoCV2Nombre,fechaVerificacion,"
-	   		  columnSizes="6,20,15,8,8,15,15,8,5"
+	   		  
+	   		  columnNames="cargaMasivaDatosCurriculares.cliente.literal,censo.datosCV.literal.tipo,censo.datosCV.literal.fechaInicio,
+	   		  	censo.datosCV.literal.fechaFin,censo.tiposDatosCurriculares.subtipo1.literal,censo.tiposDatosCurriculares.subtipo2.literal,
+	   		  	censo.consultaDatosCV.literal.fechaVerificacion,"
+	   		  columnSizes="19,18,8,8,17,17,8,6"
 	   		  
 	   		      >
 		<c:choose>
 		<c:when test="${empty listado}">
+		<c:set var="botones" value="V" />
 		
 			<tr class="notFound">
 		   		<td class="titulitos"><siga:Idioma key="messages.noRecordFound"/></td>
@@ -77,22 +89,17 @@
 		  			visibleBorrado="false"
 	  				clase="listaNonEdit">
 						
-						<td align='left'><c:out value="${datoCV.colegiadoNumero}" /></td>
-						<!--td align='left'><c:out value="${datoCV.personaNif}" /></td-->
 						<td align='left'><c:out value="${datoCV.personaNombre}" /></td>
-						<!-- td align='left'><c:out value="${datoCV.tipoCVCod}" /></td-->
 						<td align='left'><c:out value="${datoCV.tipoCVNombre}" /></td>
 						<td align='left'><c:out value="${datoCV.fechaInicio}" /></td>
 						<td align='left'><c:out value="${datoCV.fechaFin}" /></td>
-						<!-- td align='left'><c:out value="${datoCV.subtipoCV1Cod}" /></td-->
 						<td align='left'><c:out value="${datoCV.subtipoCV1Nombre}" /></td>
-						<!-- td align='left'><c:out value="${datoCV.subtipoCV2Cod}" /></td-->
 						<td align='left'><c:out value="${datoCV.subtipoCV2Nombre}" /></td>
 						<td align='left'><c:out value="${datoCV.fechaVerificacion}" /></td>
 						<td align='left'>
 							<c:choose>
 								<c:when test="${datoCV.error!=''}">
-								<c:set var="botones" value="V" />
+								<c:set var="botones" value="V,D" />
 									Error!
 								</c:when>
 								<c:otherwise>

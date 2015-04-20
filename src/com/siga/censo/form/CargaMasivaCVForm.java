@@ -23,36 +23,39 @@ public class CargaMasivaCVForm extends MasterForm {
 	/**
 	 * Es la institucion de consulta
 	 */
-	String idInstitucion;
-	String idCargaMasivaCV;
-	String fechaCarga;
-	String usuario;
-	String nombreFichero;
-	String numRegistros;
+	private String idInstitucion;
+	private String idCargaMasivaCV;
+	private String fechaCarga;
+	private String usuario;
+	private String nombreFichero;
+	private String numRegistros;
 	private FilaExtElement[] elementosFila;
-	FormFile theFile;
+	private FormFile theFile;
 	
-	String colegiadoNumero;
-	String personaNif;
-	String personaNombre;
-	String tipoCVCod;
-	String tipoCVNombre;
-	String fechaInicio;
-	String fechaFin;
-	String subtipoCV1Cod;
-	String subtipoCV1Nombre;
-	String subtipoCV2Cod;
-	String subtipoCV2Nombre;
+	private String colegiadoNumero;
+	private String personaNif;
+	private String personaNombre;
+	private String tipoCVCod;
+	private String tipoCVNombre;
+	private String fechaInicio;
+	private String fechaFin;
+	private String subtipoCV1Cod;
+	private String subtipoCV1Nombre;
+	private String subtipoCV2Cod;
+	private String subtipoCV2Nombre;
 	
 	
-	String creditos;
-	String fechaVerificacion;
-	String descripcion;
+	private String creditos;
+	private String fechaVerificacion;
+	private String descripcion;
 	
-	String error;
+	private String error;
 	
-
-
+	
+	private String idFichero;
+	private String idFicheroLog;
+	
+	private String codIdioma; 
 	
 	
 	/**
@@ -341,6 +344,42 @@ public class CargaMasivaCVForm extends MasterForm {
 	 */
 	public void setError(String error) {
 		this.error = error;
+	}
+	/**
+	 * @return the idFichero
+	 */
+	public String getIdFichero() {
+		return idFichero;
+	}
+	/**
+	 * @param idFichero the idFichero to set
+	 */
+	public void setIdFichero(String idFichero) {
+		this.idFichero = idFichero;
+	}
+	/**
+	 * @return the idFicheroLog
+	 */
+	public String getIdFicheroLog() {
+		return idFicheroLog;
+	}
+	/**
+	 * @param idFicheroLog the idFicheroLog to set
+	 */
+	public void setIdFicheroLog(String idFicheroLog) {
+		this.idFicheroLog = idFicheroLog;
+	}
+	/**
+	 * @return the codIdioma
+	 */
+	public String getCodIdioma() {
+		return codIdioma;
+	}
+	/**
+	 * @param codIdioma the codIdioma to set
+	 */
+	public void setCodIdioma(String codIdioma) {
+		this.codIdioma = codIdioma;
 	}
 	
 }

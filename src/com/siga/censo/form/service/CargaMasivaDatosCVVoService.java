@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.redabogacia.sigaservices.app.vo.cen.CargaMasivaDatosCVVo;
-import org.redabogacia.sigaservices.app.vo.gen.FicheroVo;
 
 import com.siga.censo.form.CargaMasivaCVForm;
 import com.siga.comun.VoUiService;
@@ -46,6 +45,13 @@ public class CargaMasivaDatosCVVoService implements VoUiService<CargaMasivaCVFor
 		if(objectForm.getIdInstitucion()!=null && !objectForm.getIdInstitucion().equals("")){
 			objectVo.setIdinstitucion(Short.valueOf(objectForm.getIdInstitucion()));
 		}
+		if(objectForm.getIdFichero()!=null && !objectForm.getIdFichero().equals("")){
+			objectVo.setIdFichero(Long.valueOf(objectForm.getIdFichero()));
+		}
+		if(objectForm.getIdFicheroLog()!=null && !objectForm.getIdFicheroLog().equals("")){
+			objectVo.setIdFicheroLog(Long.valueOf(objectForm.getIdFicheroLog()));
+		}
+		
 		if(objectForm.getPersonaNif()!=null && !objectForm.getPersonaNif().equals(""))
 			objectVo.setPersonaNif(objectForm.getPersonaNif());
 
@@ -83,7 +89,7 @@ public class CargaMasivaDatosCVVoService implements VoUiService<CargaMasivaCVFor
 				e1.printStackTrace();
 			}
 		if(objectForm.getIdCargaMasivaCV()!=null && !objectForm.getIdCargaMasivaCV().equals(""))
-			objectVo.setIdCargaMasivaCV(Long.valueOf(objectForm.getIdCargaMasivaCV()));
+			objectVo.setIdCargaMasivaCV(Integer.valueOf(objectForm.getIdCargaMasivaCV()));
 
 		if(objectForm.getNombreFichero()!=null && !objectForm.getNombreFichero().equals(""))
 			objectVo.setNombreFichero(objectForm.getNombreFichero());
@@ -107,24 +113,8 @@ public class CargaMasivaDatosCVVoService implements VoUiService<CargaMasivaCVFor
 			objectVo.setUsuario(objectForm.getUsuario());
 		if(objectForm.getError()!=null && !objectForm.getError().equals(""))
 			objectVo.setError(objectForm.getError());
-
-		try {
-			if(objectForm.getTheFile()!=null && objectForm.getTheFile().getFileData()!=null && objectForm.getTheFile().getFileData().length>0){
-				FicheroVo ficheroLogVo = new FicheroVo();
-				objectVo.setFicheroLog(ficheroLogVo);
-
-				ficheroLogVo.setFichero(objectForm.getTheFile().getFileData());
-				ficheroLogVo.setDescripcion(objectForm.getNombreFichero());
-				ficheroLogVo.setNombre(objectForm.getNombreFichero());
-				if(objectForm.getTheFile().getFileName().lastIndexOf(".")!=-1)
-					ficheroLogVo.setExtension(objectForm.getTheFile().getFileName().substring(objectForm.getTheFile().getFileName().lastIndexOf(".")+1));
-
-
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		} 	
-
+		
+		objectVo.setCodIdioma(objectForm.getCodIdioma());
 		return objectVo;
 	}
 
@@ -137,6 +127,12 @@ public class CargaMasivaDatosCVVoService implements VoUiService<CargaMasivaCVFor
 
 		if(objectVo.getIdinstitucion()!=null && !objectVo.getIdinstitucion().equals("")){
 			objectForm.setIdInstitucion(objectVo.getIdinstitucion().toString());
+		}
+		if(objectVo.getIdFichero()!=null && !objectVo.getIdFichero().equals("")){
+			objectForm.setIdFichero(objectVo.getIdFichero().toString());
+		}
+		if(objectVo.getIdFicheroLog()!=null && !objectVo.getIdFicheroLog().equals("")){
+			objectForm.setIdFicheroLog(objectVo.getIdFicheroLog().toString());
 		}
 		if(objectVo.getPersonaNif()!=null && !objectVo.getPersonaNif().equals(""))
 			objectForm.setPersonaNif(objectVo.getPersonaNif());
@@ -182,15 +178,8 @@ public class CargaMasivaDatosCVVoService implements VoUiService<CargaMasivaCVFor
 			objectForm.setError(objectVo.getError());
 		else
 			objectForm.setError("");
-		//		if(objectForm.getIdfichero()!=null && !objectForm.getIdfichero().equals("")){
-		//			objectVo.setIdFichero(objectForm.getIdfichero().toString());
-		//			objectVo.setExtensionArchivo(objectForm.getExtensionArchivo());
-		//			objectVo.setDirectorioArchivo(objectForm.getDirectorioArchivo());
-		//			objectVo.setNombreArchivo(objectForm.getNombreArchivo());
-		//			objectVo.setDescripcionArchivo(objectForm.getDescripcionArchivo());
-		//			
-		//			objectVo.setFechaArchivo(sdf.format(objectForm.getFechaArchivo()));
-		//		}
+		
+		objectForm.setCodIdioma(objectVo.getCodIdioma());
 		return objectForm;
 	}
 
