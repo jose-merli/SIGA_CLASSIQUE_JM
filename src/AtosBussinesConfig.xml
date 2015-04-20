@@ -114,9 +114,10 @@
 		<service interface="org.redabogacia.sigaservices.app.services.caj.PCAJGInsertaColaService" 			implementation="org.redabogacia.sigaservices.app.services.caj.impl.PCAJGInsertaColaServiceImpl"/>
 		<service interface="org.redabogacia.sigaservices.app.services.est.EstadisticasUserRegistryService"	implementation="org.redabogacia.sigaservices.app.services.est.impl.EstadisticasUserRegistryServiceImpl"/>
 		<service interface="org.redabogacia.sigaservices.app.services.scs.ScsTipoactuacioncostefijoService"	implementation="org.redabogacia.sigaservices.app.services.scs.impl.ScsTipoactuacioncostefijoServiceImpl"/>
-		<service interface="org.redabogacia.sigaservices.app.services.cen.CargaMasivaCV" 	implementation="org.redabogacia.sigaservices.app.services.cen.impl.CargaMasivaDatosCVImpl"/>
+		<service interface="org.redabogacia.sigaservices.app.services.cen.CargaMasivaCV" 	                implementation="org.redabogacia.sigaservices.app.services.cen.impl.CargaMasivaDatosCVImpl"/>
 		
 		<service interface="org.redabogacia.sigaservices.app.services.cen.CenGruposFicherosService"			implementation="org.redabogacia.sigaservices.app.services.cen.impl.CenGruposFicherosServiceImpl"/>
+		<service interface="org.redabogacia.sigaservices.app.services.adm.AdmUsuariosService"			    implementation="org.redabogacia.sigaservices.app.services.adm.impl.AdmUsuariosServiceImpl"/>
 		
 	</context>
 </configuration> 
