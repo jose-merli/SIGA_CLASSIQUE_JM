@@ -158,7 +158,7 @@
 							<siga:Idioma key="envios.plantillas.literal.cuerpo"/>
 						</td>
 						<td>
-							<html:textarea property="cuerpo" rows="35" value="<%=sCuerpo%>" styleClass="box"  style="width:640" readonly="<%=bReadOnly%>"/>
+							<html:textarea property="cuerpo" rows="33" value="<%=sCuerpo%>" styleClass="box"  style="width:640px" readonly="<%=bReadOnly%>"/>
 						</td>
 					</tr>
 				</table>

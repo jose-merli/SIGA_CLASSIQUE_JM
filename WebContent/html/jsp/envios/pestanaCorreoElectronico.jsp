@@ -129,7 +129,7 @@
 							<siga:Idioma key="envios.plantillas.literal.cuerpo"/>
 						</td>
 						<td colspan="2">
-							<html:textarea property="cuerpo" rows="35" style="width:640" readonly="${!PlantillasEnviosCorreoElectronicoForm.editable}"/>
+							<html:textarea property="cuerpo" rows="33" style="width:640px" readonly="${!PlantillasEnviosCorreoElectronicoForm.editable}"/>
 						</td>
 						
 						
