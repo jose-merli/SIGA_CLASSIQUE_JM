@@ -4977,6 +4977,10 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 							//solo hay uno ya que filtramos por PK
 							Hashtable registroDefendidoConDatos = (Hashtable) defendidoVector.get(0);
 							clone.putAll(registroDefendidoConDatos);
+							
+							if(registroDefendidoConDatos.get("IDREPRESENTANTEJG")!=null)
+								registro.put("IDREPRESENTANTEJG",registroDefendidoConDatos.get("IDREPRESENTANTEJG").toString());
+							
 							registroDefendido  = getregistrodatosEjg(idInstitucion,tipoEjg,anioEjg,numeroEjg,idioma,idPersonaJG,registro,agregarEtiqDesigna);
 
 
@@ -6721,6 +6725,65 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			//registro.put("PARRAFO_PROCURADOR", parrafoProcurador);								
 			registro.put("PARRAFO_LETRADO_PROCURADOR", parrafoLetrado+"\r"+parrafoProcurador);
 			
+			
+			if((registro.get("IDREPRESENTANTEJG")!=null)&&(!registro.get("IDREPRESENTANTEJG").toString().isEmpty())){
+									
+				String IdpersonaRepresentante=(String)registro.get("IDREPRESENTANTEJG");
+				ScsPersonaJGAdm scsPersonaJGAdm=new ScsPersonaJGAdm(this.usrbean);
+				Hashtable representanteLegalDefendido = scsPersonaJGAdm.getDatosPersonaJG(IdpersonaRepresentante,idInstitucion);
+				registro.put("NOMBRE_REPR_DEF", (String) representanteLegalDefendido.get("NOMBRE_PJG"));
+				registro.put("NOMBRE_REPR_DEF_MAYUS", ((String) representanteLegalDefendido.get("NOMBRE_PJG")).toUpperCase());
+				registro.put("APELLIDO1_REPR_DEF", (String) representanteLegalDefendido.get("APELLIDO1_PJG"));
+				registro.put("APELLIDO1_REPR_DEF_MAYUS", ((String) representanteLegalDefendido.get("APELLIDO1_PJG")).toUpperCase());
+				registro.put("APELLIDO2_REPR_DEF", (String) representanteLegalDefendido.get("APELLIDO2_PJG"));
+				registro.put("APELLIDO2_REPR_DEF_MAYUS", ((String) representanteLegalDefendido.get("APELLIDO2_PJG")).toUpperCase());
+				String sexoRepr_def = UtilidadesString.getMensajeIdioma(usrbean, (String) representanteLegalDefendido.get("SEXO_PJG"));		
+				registro.put("SEXO_REPR_DEF",sexoRepr_def);
+				registro.put("O_A_REPR_DEF", (String) representanteLegalDefendido.get("O_A_PJG"));
+				registro.put("EL_LA_REPR_DEF", (String) representanteLegalDefendido.get("EL_LA_PJG"));
+				registro.put("NIFCIF_REPR_DEF", (String) representanteLegalDefendido.get("NIF_PJG"));
+				registro.put("IDPERSONA_REPR_DEF", (String) representanteLegalDefendido.get("IDPERSONA_PJG"));
+				registro.put("IDDIRECCION_REPR_DEF", (String) representanteLegalDefendido.get("IDDIRECCION_PJG"));
+				registro.put("DOMICILIO_REPR_DEF", (String) representanteLegalDefendido.get("DOMICILIO_PJG"));
+				registro.put("CODIGOPOSTAL_REPR_DEF", (String) representanteLegalDefendido.get("CP_PJG"));
+				registro.put("TELEFONO1_REPR_DEF", (String) representanteLegalDefendido.get("TELEFONO1_PJG"));
+				registro.put("TELEFONO2_REPR_DEF", (String) representanteLegalDefendido.get("TELEFONO2_PJG"));
+				registro.put("MOVIL_REPR_DEF", (String) representanteLegalDefendido.get("MOVIL_PJG"));
+				registro.put("LISTA_TELEFONOS_REPR_DEF", (String) representanteLegalDefendido.get("LISTA_TELEFONOS_REPR"));
+				registro.put("FAX1_REPR_DEF", (String) representanteLegalDefendido.get("FAX_PJG"));
+				registro.put("CORREOELECTRONICO_REPR_DEF", (String) representanteLegalDefendido.get("CORREOELECTRONICO_PJG"));
+				registro.put("NOMBRE_POBLACION_REPR_DEF", (String) representanteLegalDefendido.get("POBLACION_PJG"));
+				registro.put("NOMBRE_PROVINCIA_REPR_DEF", (String) representanteLegalDefendido.get("PROVINCIA_PJG"));
+				
+				
+			}else{
+			
+				registro.put("NOMBRE_REPR_DEF", "");
+				registro.put("NOMBRE_REPR_DEF_MAYUS", "");
+				registro.put("APELLIDO1_REPR_DEF", "");
+				registro.put("APELLIDO1_REPR_DEF_MAYUS","");
+				registro.put("APELLIDO2_REPR_DEF", "");
+				registro.put("APELLIDO2_REPR_DEF_MAYUS", "");
+				registro.put("SEXO_REPR_DEF", "");
+				registro.put("O_A_REPR_DEF", "");
+				registro.put("EL_LA_REPR_DEF", "");
+				registro.put("NIFCIF_REPR_DEF", "");
+				registro.put("IDPERSONA_REPR_DEF", "");
+				registro.put("IDDIRECCION_REPR_DEF", "");
+				registro.put("DOMICILIO_REPR_DEF", "");
+				registro.put("CODIGOPOSTAL_REPR_DEF","");
+				registro.put("TELEFONO1_REPR_DEF", "");
+				registro.put("TELEFONO2_REPR_DEF", "");
+				registro.put("MOVIL_REPR_DEF", "");
+				registro.put("LISTA_TELEFONOS_REPR_DEF", "");
+				registro.put("FAX1_REPR_DEF", "");
+				registro.put("CORREOELECTRONICO_REPR_DEF", "");
+				registro.put("NOMBRE_POBLACION_REPR_DEF","");
+				registro.put("NOMBRE_PROVINCIA_REPR_DEF", "");
+				
+				
+			}
+
 		} catch (SIGAException se) {
 			throw se;
 			

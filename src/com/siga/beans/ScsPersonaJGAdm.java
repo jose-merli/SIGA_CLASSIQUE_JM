@@ -1031,7 +1031,7 @@ public class ScsPersonaJGAdm extends MasterBeanAdministrador {
 	  		sqlBuffer.append("NVL(PER.NOMBRE, '') NOMBRE_PJG, ");
 	  		sqlBuffer.append("NVL(PER.APELLIDO1, '') APELLIDO1_PJG, ");
 	  		sqlBuffer.append("NVL(PER.APELLIDO2, '') APELLIDO2_PJG, ");
-	  		sqlBuffer.append("NVL2(VIA.DESCRIPCION, F_SIGA_GETRECURSO(VIA.DESCRIPCION, "+this.usrbean.getLanguage()+"), '') || ");
+	  		sqlBuffer.append("NVL2(VIA.DESCRIPCION, F_SIGA_GETRECURSO(VIA.DESCRIPCION, "+ this.usrbean.getLanguage()+"), '') || ");
 	  		sqlBuffer.append("NVL2(PER.DIRECCION, ' ' || PER.DIRECCION, '') || ");
 	  		sqlBuffer.append("NVL2(PER.NUMERODIR, ' ' || PER.NUMERODIR, '') || ");
 	  		sqlBuffer.append("NVL2(PER.ESCALERADIR, ' ' || PER.ESCALERADIR, '') || ");
@@ -1061,6 +1061,11 @@ public class ScsPersonaJGAdm extends MasterBeanAdministrador {
 	  		sqlBuffer.append("WHERE ST.IDINSTITUCION = PER.IDINSTITUCION ");
 	  		sqlBuffer.append("AND ST.IDPERSONA = PER.IDPERSONA ");
 	  		sqlBuffer.append("AND ST.PREFERENTESMS = 1) MOVIL_PJG, ");
+	  		
+	  		sqlBuffer.append("(SELECT WMSYS.WM_CONCAT(LTEL.NOMBRETELEFONO||':'||LTEL.NUMEROTELEFONO) ");
+	  		sqlBuffer.append("FROM SCS_TELEFONOSPERSONA LTEL ");
+	  		sqlBuffer.append("WHERE LTEL.IDINSTITUCION = PER.IDINSTITUCION AND LTEL.IDPERSONA=PER.IDPERSONA) LISTA_TELEFONOS_REPR, ");
+
 	  		sqlBuffer.append("PER.Fax FAX_PJG, ");
 	  		sqlBuffer.append("PER.CORREOELECTRONICO CORREOELECTRONICO_PJG ");
 	  		sqlBuffer.append("FROM SCS_PERSONAJG   PER, ");
@@ -1074,7 +1079,7 @@ public class ScsPersonaJGAdm extends MasterBeanAdministrador {
 	  		sqlBuffer.append("AND PROV.IDPROVINCIA(+) = PER.IDPROVINCIA ");
 	  		sqlBuffer.append("AND PER.IDINSTITUCION = ");
 	  		sqlBuffer.append(idInstitucion);
-	  		sqlBuffer.append("AND PER.IDPERSONA = ");
+	  		sqlBuffer.append(" AND PER.IDPERSONA = ");
 	  		sqlBuffer.append(idPersonaJG);
 	  		
 
