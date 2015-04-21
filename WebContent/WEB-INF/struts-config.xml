@@ -353,9 +353,6 @@
 		<form-bean name="SolicitudAceptadaCentralitaForm" type="com.siga.gratuita.form.SolicitudAceptadaCentralitaForm"/>
 		<form-bean name="SubtiposCVForm" type="com.siga.censo.form.SubtiposCVForm"/>
 		<form-bean name="CargaMasivaCVForm" type="com.siga.censo.form.CargaMasivaCVForm"/>
-		
-		
-		
 	</form-beans>
 
 
@@ -2569,6 +2566,8 @@
 			<forward name="modalRegistro" path="/html/jsp/gratuita/modalRegistro_DefinirCalendarioGuardia.jsp"/>
 			<forward name="modalConsulta" path="/html/jsp/gratuita/modalConsulta_DefinirCalendarioGuardia.jsp"/>
 			<forward name="anular" path="/html/jsp/gratuita/modalAnularValidacionCabeceraGuardia.jsp"/>
+			<forward name="cargaFicheroCalendarios" path="/html/jsp/gratuita/cargaFicheroCalendarios.jsp"/>
+			<forward name="procesarFicheroCalendario" path="/JGR_ProgramacionCalendarios.do?modo=procesarFicheroCalendario"/>
 		</action>
 
 		<!-- ***** Justicia Gratuita / Definir Lista de Guardias ***** -->
@@ -3383,7 +3382,7 @@
 			<forward name="listadoTramosRetencion" path="/html/jsp/facturacionSJCS/listadoTramosRetencion.jsp"/>
 		</action>
 		
-		<action path="/JGR_ProgramacionCalendarios" type="com.siga.gratuita.action.GestionProgramacionCalendariosAction" name="ProgramacionCalendariosForm" >
+		<action path="/JGR_ProgramacionCalendarios" type="com.siga.gratuita.action.GestionProgramacionCalendariosAction" name="ProgrCalendariosForm" >
 			<forward name="inicio" path="/html/jsp/gratuita/pestanasProgramacionCalendarios.jsp"/>
 		</action>
 		<action path="/JGR_ProgrCalendariosProgr" type="com.siga.gratuita.action.GestionProgramacionCalendariosAction" name="ProgrCalendariosForm" >
