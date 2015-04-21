@@ -29,7 +29,6 @@ public interface ProgramacionCalendariosService extends BusinessService{
 	public ScsProgCalendariosBean getProgrCalendario(ProgrCalendariosForm progrCalendariosForm, UsrBean usrBean)throws ClsExceptions;
 	public void modificaProgrCalendarios(ProgrCalendariosForm progrCalendariosForm, UsrBean usrBean)throws ClsExceptions;
 	public List<HcoConfProgrCalendarioForm> getHcoProgrCalendarios(ProgrCalendariosForm progrCalendariosForm ,UsrBean usrBean) throws ClsExceptions;
-//	public void ejecutaProgrCalendarios(UsrBean usrBean)throws ClsExceptions,SIGAException;
 	public void adelantarProgrCalendarios(ProgrCalendariosForm progrCalendariosForm,UsrBean usrBean)throws ClsExceptions;
 	public void reprogramarCalendarios(ProgrCalendariosForm progrCalendariosForm,UsrBean usrBean)throws ClsExceptions;
 	public void cancelarGeneracionCalendarios(ProgrCalendariosForm progrCalendariosForm,UsrBean usrBean)throws ClsExceptions;
@@ -40,11 +39,6 @@ public interface ProgramacionCalendariosService extends BusinessService{
 	public List<ScsTurnoBean> getTurnos(String idInstitucion,UsrBean usrBean) throws ClsExceptions ;
 	public List<ScsGuardiasTurnoBean> getGuardiasTurnos(Integer idTurno,Integer idInstitucion, boolean b,UsrBean usrBean) throws ClsExceptions ;
 	public List<DefinirCalendarioGuardiaForm> getCalendarios(DefinirCalendarioGuardiaForm calendarioGuardiaForm, UsrBean usrBean)throws ClsExceptions;
-	
-	
-	
-	
-	
-
+	public void insertaProgrCalendariosFicheroCarga(int idFicheroCalendario, int idInstitucion, UsrBean usrBean) throws ClsExceptions;
 	
 }

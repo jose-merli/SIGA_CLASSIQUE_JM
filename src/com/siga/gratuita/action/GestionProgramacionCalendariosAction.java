@@ -1,5 +1,6 @@
 package com.siga.gratuita.action;
 
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -11,6 +12,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.redabogacia.sigaservices.app.util.ReadProperties;
+import org.redabogacia.sigaservices.app.util.SIGAReferences;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
@@ -52,29 +55,26 @@ public class GestionProgramacionCalendariosAction extends MasterAction {
 					String modo = request.getParameter("modo");
 					if(modo!=null)
 						accion = modo;
-					if (accion == null || accion.equalsIgnoreCase("") || accion.equalsIgnoreCase("abrir")){
-						mapDestino = inicio (mapping, miForm, request, response);
-					}else if ( accion.equalsIgnoreCase("actualizarConfiguracion")){
-						mapDestino = actualizarConfiguracion (mapping, miForm, request, response);
-						
-					}else if ( accion.equalsIgnoreCase("getAjaxBusquedaConfConjuntoGuardias")){
+					if (accion == null || accion.equalsIgnoreCase("") || accion.equalsIgnoreCase("abrir")) {
+						mapDestino = inicio(mapping, miForm, request, response);
+					} else if (accion.equalsIgnoreCase("abrirVolver") || modo.equalsIgnoreCase("procesarFicheroCalendario")) {
+						request.setAttribute("elementoActivo", 2);
+						mapDestino = inicio(mapping, miForm, request, response);						
+					} else if (accion.equalsIgnoreCase("actualizarConfiguracion")) {
+						mapDestino = actualizarConfiguracion(mapping, miForm, request, response);
+					} else if (accion.equalsIgnoreCase("getAjaxBusquedaConfConjuntoGuardias")) {
 						request.setAttribute("accion", "actualizacion");
-						mapDestino = getAjaxBusquedaConfConjuntoGuardias (mapping, miForm, request, response);
-					}else if ( accion.equalsIgnoreCase("getAjaxBusquedaConfConjuntoGuardiasProgr")){
+						mapDestino = getAjaxBusquedaConfConjuntoGuardias(mapping, miForm, request, response);
+					} else if (accion.equalsIgnoreCase("getAjaxBusquedaConfConjuntoGuardiasProgr")) {
 						request.setAttribute("accion", "consulta");
-						mapDestino = getAjaxBusquedaConfConjuntoGuardias (mapping, miForm, request, response);
-					}else if ( accion.equalsIgnoreCase("insertarConjuntoGuardias")){
+						mapDestino = getAjaxBusquedaConfConjuntoGuardias(mapping, miForm, request, response);
+					} else if (accion.equalsIgnoreCase("insertarConjuntoGuardias")) {
 						mapDestino = insertarConjuntoGuardias(mapping, miForm, request, response);
-						
-						
-					}else if ( accion.equalsIgnoreCase("borrarConjuntoGuardias")){
+					} else if (accion.equalsIgnoreCase("borrarConjuntoGuardias")) {
 						mapDestino = borrarConjuntoGuardias(mapping, miForm, request, response);
-						
-						
-					}
-					else if ( accion.equalsIgnoreCase("insertarConfiguracionConjuntoGuardias")){
+					} else if (accion.equalsIgnoreCase("insertarConfiguracionConjuntoGuardias")) {
 						mapDestino = insertarConfiguracionConjuntoGuardias(mapping, miForm, request, response);
-					}else if ( accion.equalsIgnoreCase("getAjaxBusquedaProgrCalendarios")){
+					} else if ( accion.equalsIgnoreCase("getAjaxBusquedaProgrCalendarios")){
 						mapDestino = getAjaxBusquedaProgrCalendarios (mapping, miForm, request, response);
 					}else if ( accion.equalsIgnoreCase("nuevaProgrCalendarios")){
 						mapDestino = nuevaProgrCalendarios (mapping, miForm, request, response);
@@ -96,24 +96,19 @@ public class GestionProgramacionCalendariosAction extends MasterAction {
 						mapDestino = cancelarGeneracionCalendarios (mapping, miForm, request, response);
 					}else if ( accion.equalsIgnoreCase("borrarProgrCalendarios")){
 						mapDestino = borrarProgrCalendarios (mapping, miForm, request, response);
-					}else if ( accion.equalsIgnoreCase("getAjaxBusquedaCalendarios")){
-						mapDestino = getAjaxBusquedaCalendarios (mapping, miForm, request, response);
-					}
-					
-					else if ( accion.equalsIgnoreCase("getAjaxBusquedaHcoProgramacion")){
-						mapDestino = getAjaxBusquedaHcoProgramacion (mapping, miForm, request, response);
-					}else if ( accion.equalsIgnoreCase("borrarHcoProgramacion")){
-						mapDestino = borrarHcoProgramacion (mapping, miForm, request, response);
-					}else if ( accion.equalsIgnoreCase("getAjaxGuardias")){
-						getAjaxGuardias (mapping, miForm, request, response);
+					} else if (accion.equalsIgnoreCase("getAjaxBusquedaCalendarios")) {
+						mapDestino = getAjaxBusquedaCalendarios(mapping, miForm, request, response);
+					} else if (accion.equalsIgnoreCase("getAjaxBusquedaHcoProgramacion")) {
+						mapDestino = getAjaxBusquedaHcoProgramacion(mapping, miForm, request, response);
+					} else if (accion.equalsIgnoreCase("borrarHcoProgramacion")) {
+						mapDestino = borrarHcoProgramacion(mapping, miForm, request, response);
+					} else if (accion.equalsIgnoreCase("getAjaxGuardias")) {
+						getAjaxGuardias(mapping, miForm, request, response);
 						return null;
-					}
-					
-										
-					
-					
-					else {
-						return super.executeInternal(mapping,formulario,request,response);
+					} else if (accion.equalsIgnoreCase("descargarLogCargaMasiva")) {
+						mapDestino = descargarLog(mapping, miForm, request, response);
+					} else {
+						return super.executeInternal(mapping, formulario, request, response);
 					}
 				}
 			} while (false);
@@ -131,613 +126,486 @@ public class GestionProgramacionCalendariosAction extends MasterAction {
 		}
 	}
 
-	protected String inicio (ActionMapping mapping, 		
-			MasterForm formulario, 
-			HttpServletRequest request, 
-			HttpServletResponse response) throws ClsExceptions, SIGAException 
-			{
+	protected String inicio(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, SIGAException {
 		MasterForm miForm = (MasterForm) formulario;
-		if(miForm instanceof ConfConjuntoGuardiasForm)
+		if (miForm instanceof ConfConjuntoGuardiasForm)
 			return inicioConfiguracion(mapping, formulario, request, response);
-		else if(miForm instanceof ProgrCalendariosForm)
-		return inicioProgramacion(mapping, formulario, request, response);
-		else if(miForm instanceof DefinirCalendarioGuardiaForm)
+		else if (miForm instanceof ProgrCalendariosForm)
+			return inicioProgramacion(mapping, formulario, request, response);
+		else if (miForm instanceof DefinirCalendarioGuardiaForm)
 			return inicioCalendarios(mapping, formulario, request, response);
-		
-		else 
+		else
 			return "inicio";
-		
 	}
-	protected String actualizarConfiguracion (ActionMapping mapping, 		
-			MasterForm formulario, 
-			HttpServletRequest request, 
-			HttpServletResponse response) throws ClsExceptions, SIGAException 
-	{
+	
+	protected String actualizarConfiguracion(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, SIGAException {
 		ConfConjuntoGuardiasForm confConjuntoGuardiasForm = (ConfConjuntoGuardiasForm) formulario;
 		UsrBean usrBean = this.getUserBean(request);
 		BusinessManager bm = getBusinessManager();
-		ProgramacionCalendariosService programacionCalendariosService = (ProgramacionCalendariosService)bm.getService(ProgramacionCalendariosService.class);
-		//Aqui vuelve detras de la insercion. Buscaremos el ultmo registro insertado
-//		if(confConjuntoGuardiasForm.getIdConjuntoGuardia()==null||confConjuntoGuardiasForm.getIdConjuntoGuardia().equals("")){
-			ConjuntoGuardiasForm ConjuntoGuardiasForm = programacionCalendariosService.getUltimoConjuntoGuardiaInsertado(usrBean.getLocation(),usrBean);
-			confConjuntoGuardiasForm.setIdConjuntoGuardia(ConjuntoGuardiasForm.getIdConjuntoGuardia());
-//		}		
-		
-		List<ConjuntoGuardiasForm> ConjuntoGuardiasForms = programacionCalendariosService.getConjuntosGuardia(usrBean.getLocation(),usrBean);
+		ProgramacionCalendariosService programacionCalendariosService = (ProgramacionCalendariosService) bm.getService(ProgramacionCalendariosService.class);
+		// Aqui vuelve detras de la insercion. Buscaremos el ultmo registro insertado
+		ConjuntoGuardiasForm ConjuntoGuardiasForm = programacionCalendariosService.getUltimoConjuntoGuardiaInsertado(usrBean.getLocation(), usrBean);
+		confConjuntoGuardiasForm.setIdConjuntoGuardia(ConjuntoGuardiasForm.getIdConjuntoGuardia());
+
+		List<ConjuntoGuardiasForm> ConjuntoGuardiasForms = programacionCalendariosService.getConjuntosGuardia(usrBean.getLocation(), usrBean);
 		request.setAttribute("ConjuntoGuardiasForms", ConjuntoGuardiasForms);
-		
-		
-			
+
 		return "inicio";
 	}
-	protected String inicioConfiguracion (ActionMapping mapping, 		
-			MasterForm formulario, 
-			HttpServletRequest request, 
-			HttpServletResponse response) throws ClsExceptions, SIGAException 
-	{
+
+	protected String inicioConfiguracion(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, SIGAException {
 		UsrBean usrBean = this.getUserBean(request);
 		BusinessManager bm = getBusinessManager();
-		ProgramacionCalendariosService programacionCalendariosService = (ProgramacionCalendariosService)bm.getService(ProgramacionCalendariosService.class);
-		List<ConjuntoGuardiasForm> ConjuntoGuardiasForms = programacionCalendariosService.getConjuntosGuardia(usrBean.getLocation(),usrBean);
+		ProgramacionCalendariosService programacionCalendariosService = (ProgramacionCalendariosService) bm.getService(ProgramacionCalendariosService.class);
+		List<ConjuntoGuardiasForm> ConjuntoGuardiasForms = programacionCalendariosService.getConjuntosGuardia(usrBean.getLocation(), usrBean);
 		request.setAttribute("ConjuntoGuardiasForms", ConjuntoGuardiasForms);
-		
-			
+
 		return "inicio";
-		
 	}
-	protected String insertarConfiguracionConjuntoGuardias (ActionMapping mapping, 		
-			MasterForm formulario, 
-			HttpServletRequest request, 
-			HttpServletResponse response) throws ClsExceptions, SIGAException 
-			{
+
+	protected String insertarConfiguracionConjuntoGuardias(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, SIGAException {
 		ConfConjuntoGuardiasForm confConjuntoGuardiasForm = (ConfConjuntoGuardiasForm) formulario;
 		UsrBean usrBean = this.getUserBean(request);
 		confConjuntoGuardiasForm.setIdInstitucion(usrBean.getLocation());
-		String forward="exception";
+		String forward = "exception";
 		try {
 			BusinessManager bm = getBusinessManager();
-			ProgramacionCalendariosService programacionCalendariosService = (ProgramacionCalendariosService)bm.getService(ProgramacionCalendariosService.class);
-			programacionCalendariosService.insertarConfiguracionConjuntoGuardias(confConjuntoGuardiasForm,usrBean);
-			
-			forward = exitoRefresco("messages.updated.success",request);
-			
-			
+			ProgramacionCalendariosService programacionCalendariosService = (ProgramacionCalendariosService) bm.getService(ProgramacionCalendariosService.class);
+			programacionCalendariosService.insertarConfiguracionConjuntoGuardias(confConjuntoGuardiasForm, usrBean);
+
+			forward = exitoRefresco("messages.updated.success", request);
+
 		} catch (Exception e) {
-			throwExcp("messages.general.errorExcepcion", e, null); 
+			throwExcp("messages.general.errorExcepcion", e, null);
 		}
+		
 		return forward;
-		
-		
 	}
-	
-	protected String insertarConjuntoGuardias (ActionMapping mapping, 		
-			MasterForm formulario, 
-			HttpServletRequest request, 
-			HttpServletResponse response) throws ClsExceptions, SIGAException 
-			{
+
+	protected String insertarConjuntoGuardias(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, SIGAException {
 		ConjuntoGuardiasForm ConjuntoGuardiasForm = (ConjuntoGuardiasForm) formulario;
 		UsrBean usrBean = this.getUserBean(request);
 		ConjuntoGuardiasForm.setIdInstitucion(usrBean.getLocation());
-		String forward="exception";
+		String forward = "exception";
 		try {
 			BusinessManager bm = getBusinessManager();
-			ProgramacionCalendariosService programacionCalendariosService = (ProgramacionCalendariosService)bm.getService(ProgramacionCalendariosService.class);
-			programacionCalendariosService.insertaConjuntoGuardias(ConjuntoGuardiasForm,usrBean);
-			forward = exitoRefresco("messages.updated.success",request);
-			
-			
+			ProgramacionCalendariosService programacionCalendariosService = (ProgramacionCalendariosService) bm.getService(ProgramacionCalendariosService.class);
+			programacionCalendariosService.insertaConjuntoGuardias(ConjuntoGuardiasForm, usrBean);
+			forward = exitoRefresco("messages.updated.success", request);
+
 		} catch (Exception e) {
-			throwExcp("messages.general.errorExcepcion", e, null); 
+			throwExcp("messages.general.errorExcepcion", e, null);
 		}
+		
 		return forward;
-		
-		
 	}
-	
-	protected String borrarConjuntoGuardias (ActionMapping mapping, 		
-			MasterForm formulario, 
-			HttpServletRequest request, 
-			HttpServletResponse response) throws ClsExceptions, SIGAException 
-			{
+
+	protected String borrarConjuntoGuardias(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, SIGAException {
 		ConjuntoGuardiasForm ConjuntoGuardiasForm = (ConjuntoGuardiasForm) formulario;
 		UsrBean usrBean = this.getUserBean(request);
 		ConjuntoGuardiasForm.setIdInstitucion(usrBean.getLocation());
-		String forward="exception";
+		String forward = "exception";
 		try {
 			BusinessManager bm = getBusinessManager();
-			ProgramacionCalendariosService programacionCalendariosService = (ProgramacionCalendariosService)bm.getService(ProgramacionCalendariosService.class);
-			programacionCalendariosService.borrarConjuntoGuardias(ConjuntoGuardiasForm,usrBean);
-			forward = exitoRefresco("messages.deleted.success",request);
-			
-			
+			ProgramacionCalendariosService programacionCalendariosService = (ProgramacionCalendariosService) bm.getService(ProgramacionCalendariosService.class);
+			programacionCalendariosService.borrarConjuntoGuardias(ConjuntoGuardiasForm, usrBean);
+			forward = exitoRefresco("messages.deleted.success", request);
+
 		} catch (Exception e) {
-			throwExcp("messages.general.errorExcepcion", e, null); 
+			throwExcp("messages.general.errorExcepcion", e, null);
 		}
+		
 		return forward;
-		
-		
 	}
-	protected String getAjaxBusquedaConfConjuntoGuardias (ActionMapping mapping, 		
-			MasterForm formulario, 
-			HttpServletRequest request, 
-			HttpServletResponse response) throws ClsExceptions,Exception 
-			{
+
+	protected String getAjaxBusquedaConfConjuntoGuardias(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, Exception {
 		ConfConjuntoGuardiasForm confConjuntoGuardiasForm = (ConfConjuntoGuardiasForm) formulario;
 		UsrBean usrBean = this.getUserBean(request);
 		confConjuntoGuardiasForm.setIdInstitucion(usrBean.getLocation());
-		
+
 		String forward = "listadoConfConjuntoGuardias";
 		try {
 			BusinessManager bm = getBusinessManager();
-			ProgramacionCalendariosService programacionCalendariosService = (ProgramacionCalendariosService)bm.getService(ProgramacionCalendariosService.class);
-			if(confConjuntoGuardiasForm.getIdConjuntoGuardia()!=null && !confConjuntoGuardiasForm.getIdConjuntoGuardia().equals("")){
-				boolean isMostrarSoloGuardiasConfiguradas = confConjuntoGuardiasForm.getMostrarSoloGuardiasConfiguradas()!=null && confConjuntoGuardiasForm.getMostrarSoloGuardiasConfiguradas().equalsIgnoreCase("true");
-				List<ConfConjuntoGuardiasForm> confConjuntoGuardiasForms = programacionCalendariosService.getConfiguracionConjuntoGuardias(confConjuntoGuardiasForm,isMostrarSoloGuardiasConfiguradas,usrBean);
+			ProgramacionCalendariosService programacionCalendariosService = (ProgramacionCalendariosService) bm.getService(ProgramacionCalendariosService.class);
+			if (confConjuntoGuardiasForm.getIdConjuntoGuardia() != null && !confConjuntoGuardiasForm.getIdConjuntoGuardia().equals("")) {
+				boolean isMostrarSoloGuardiasConfiguradas = confConjuntoGuardiasForm.getMostrarSoloGuardiasConfiguradas() != null && confConjuntoGuardiasForm.getMostrarSoloGuardiasConfiguradas().equalsIgnoreCase("true");
+				List<ConfConjuntoGuardiasForm> confConjuntoGuardiasForms = programacionCalendariosService.getConfiguracionConjuntoGuardias(confConjuntoGuardiasForm, isMostrarSoloGuardiasConfiguradas, usrBean);
 				request.setAttribute("confConjuntoGuardiasForms", confConjuntoGuardiasForms);
-			}else{
+			} else {
 				request.setAttribute("confConjuntoGuardiasForms", new ArrayList<ConfConjuntoGuardiasForm>());
 			}
 			request.setAttribute("error", "");
 		} catch (ClsExceptions e) {
 			request.setAttribute("confConjuntoGuardiasForms", new ArrayList<ConfConjuntoGuardiasForm>());
-			request.setAttribute("error", UtilidadesString.getMensajeIdioma(usrBean,"messages.general.errorExcepcion"));
-		}catch (Exception e){
+			request.setAttribute("error", UtilidadesString.getMensajeIdioma(usrBean, "messages.general.errorExcepcion"));
+		} catch (Exception e) {
 			request.setAttribute("confConjuntoGuardiasForms", new ArrayList<ConfConjuntoGuardiasForm>());
-			request.setAttribute("error", UtilidadesString.getMensajeIdioma(usrBean,"messages.general.errorExcepcion"));
+			request.setAttribute("error", UtilidadesString.getMensajeIdioma(usrBean, "messages.general.errorExcepcion"));
 		}
+		
 		return forward;
 	}
-	protected String getAjaxBusquedaHcoProgramacion (ActionMapping mapping, 		
-			MasterForm formulario, 
-			HttpServletRequest request, 
-			HttpServletResponse response) throws ClsExceptions,Exception 
-			{
+
+	protected String getAjaxBusquedaHcoProgramacion(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, Exception {
 		ProgrCalendariosForm progrCalendariosForm = (ProgrCalendariosForm) formulario;
-		//HcoConfProgrCalendarioForm hcoConfProgrCalendarioForm = (HcoConfProgrCalendarioForm) formulario;
 		UsrBean usrBean = this.getUserBean(request);
 		progrCalendariosForm.setIdInstitucion(usrBean.getLocation());
-		
+
 		String forward = "listadoHcoProgrCalendarios";
 		try {
 			BusinessManager bm = getBusinessManager();
-			ProgramacionCalendariosService programacionCalendariosService = (ProgramacionCalendariosService)bm.getService(ProgramacionCalendariosService.class);
+			ProgramacionCalendariosService programacionCalendariosService = (ProgramacionCalendariosService) bm.getService(ProgramacionCalendariosService.class);
 
-			List<HcoConfProgrCalendarioForm> hcoConfProgrCalendarioForms = programacionCalendariosService.getHcoProgrCalendarios(progrCalendariosForm,usrBean);
-				request.setAttribute("hcoConfProgrCalendarioForms", hcoConfProgrCalendarioForms);
-				request.setAttribute("error", "");
+			List<HcoConfProgrCalendarioForm> hcoConfProgrCalendarioForms = programacionCalendariosService.getHcoProgrCalendarios(progrCalendariosForm, usrBean);
+			request.setAttribute("hcoConfProgrCalendarioForms", hcoConfProgrCalendarioForms);
+			request.setAttribute("error", "");
 
 		} catch (ClsExceptions e) {
 			request.setAttribute("hcoConfProgrCalendarioForms", new ArrayList<HcoConfProgrCalendarioForm>());
-			request.setAttribute("error", UtilidadesString.getMensajeIdioma(usrBean,"messages.general.errorExcepcion"));
-		}catch (Exception e){
+			request.setAttribute("error", UtilidadesString.getMensajeIdioma(usrBean, "messages.general.errorExcepcion"));
+		} catch (Exception e) {
 			request.setAttribute("hcoConfProgrCalendarioForms", new ArrayList<HcoConfProgrCalendarioForm>());
-			request.setAttribute("error", UtilidadesString.getMensajeIdioma(usrBean,"messages.general.errorExcepcion"));
+			request.setAttribute("error", UtilidadesString.getMensajeIdioma(usrBean, "messages.general.errorExcepcion"));
 		}
+		
 		return forward;
 	}
-	
-	
-	
-	
-	protected String getAjaxBusquedaCalendarios (ActionMapping mapping, 		
-			MasterForm formulario, 
-			HttpServletRequest request, 
-			HttpServletResponse response) throws ClsExceptions,Exception 
-			{
+
+	protected String getAjaxBusquedaCalendarios(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, Exception {
 		DefinirCalendarioGuardiaForm calendarioGuardiaForm = (DefinirCalendarioGuardiaForm) formulario;
 		UsrBean usrBean = this.getUserBean(request);
 		calendarioGuardiaForm.setIdInstitucion(usrBean.getLocation());
-		
+
 		String forward = "listadoCalendarios";
 		try {
 			BusinessManager bm = getBusinessManager();
-			ProgramacionCalendariosService programacionCalendariosService = (ProgramacionCalendariosService)bm.getService(ProgramacionCalendariosService.class);
-			List<DefinirCalendarioGuardiaForm> calendarioGuardiaForms = programacionCalendariosService.getCalendarios(calendarioGuardiaForm,usrBean);
+			ProgramacionCalendariosService programacionCalendariosService = (ProgramacionCalendariosService) bm.getService(ProgramacionCalendariosService.class);
+			List<DefinirCalendarioGuardiaForm> calendarioGuardiaForms = programacionCalendariosService.getCalendarios(calendarioGuardiaForm, usrBean);
 			request.setAttribute("calendariosForms", calendarioGuardiaForms);
 			request.setAttribute("error", "");
 		} catch (ClsExceptions e) {
 			request.setAttribute("calendariosForms", new ArrayList<DefinirCalendarioGuardiaForm>());
-			request.setAttribute("error", UtilidadesString.getMensajeIdioma(usrBean,"messages.general.errorExcepcion"));
-	
-		}catch (Exception e){
+			request.setAttribute("error", UtilidadesString.getMensajeIdioma(usrBean, "messages.general.errorExcepcion"));
+
+		} catch (Exception e) {
 			request.setAttribute("calendariosForms", new ArrayList<DefinirCalendarioGuardiaForm>());
-			request.setAttribute("error", UtilidadesString.getMensajeIdioma(usrBean,"messages.general.errorExcepcion"));
-			
+			request.setAttribute("error", UtilidadesString.getMensajeIdioma(usrBean, "messages.general.errorExcepcion"));
+
 		}
+		
 		return forward;
 	}
-	
-	protected String getAjaxBusquedaProgrCalendarios (ActionMapping mapping, 		
-			MasterForm formulario, 
-			HttpServletRequest request, 
-			HttpServletResponse response) throws ClsExceptions,Exception 
-			{
+
+	protected String getAjaxBusquedaProgrCalendarios(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, Exception {
 		ProgrCalendariosForm progrCalendariosForm = (ProgrCalendariosForm) formulario;
 		UsrBean usrBean = this.getUserBean(request);
 		progrCalendariosForm.setIdInstitucion(usrBean.getLocation());
-		
+
 		String forward = "listadoProgrCalendarios";
 		try {
 			BusinessManager bm = getBusinessManager();
-			ProgramacionCalendariosService programacionCalendariosService = (ProgramacionCalendariosService)bm.getService(ProgramacionCalendariosService.class);
-			List<ProgrCalendariosForm> progrCalendariosForms = programacionCalendariosService.getProgramacionCalendarios(progrCalendariosForm,usrBean);
+			ProgramacionCalendariosService programacionCalendariosService = (ProgramacionCalendariosService) bm.getService(ProgramacionCalendariosService.class);
+			List<ProgrCalendariosForm> progrCalendariosForms = programacionCalendariosService.getProgramacionCalendarios(progrCalendariosForm, usrBean);
 			request.setAttribute("progrCalendariosForms", progrCalendariosForms);
 			request.setAttribute("error", "");
 		} catch (ClsExceptions e) {
 			request.setAttribute("progrCalendariosForms", new ArrayList<ProgrCalendariosForm>());
-			request.setAttribute("error", UtilidadesString.getMensajeIdioma(usrBean,"messages.general.errorExcepcion"));
-			
+			request.setAttribute("error", UtilidadesString.getMensajeIdioma(usrBean, "messages.general.errorExcepcion"));
 
-	
-		}catch (Exception e){
+		} catch (Exception e) {
 			request.setAttribute("progrCalendariosForms", new ArrayList<ProgrCalendariosForm>());
-			request.setAttribute("error", UtilidadesString.getMensajeIdioma(usrBean,"messages.general.errorExcepcion"));
-			
+			request.setAttribute("error", UtilidadesString.getMensajeIdioma(usrBean, "messages.general.errorExcepcion"));
+
 		}
+		
 		return forward;
 	}
 	
-	protected String inicioProgramacion (ActionMapping mapping, 		
-			MasterForm formulario, 
-			HttpServletRequest request, 
-			HttpServletResponse response) throws ClsExceptions, SIGAException 
-	{
+	protected String inicioProgramacion(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, SIGAException {
 		UsrBean usrBean = this.getUserBean(request);
 		BusinessManager bm = getBusinessManager();
-		ProgrCalendariosForm form = (ProgrCalendariosForm)formulario;
-		ProgramacionCalendariosService programacionCalendariosService = (ProgramacionCalendariosService)bm.getService(ProgramacionCalendariosService.class);
-		List<ConjuntoGuardiasForm> ConjuntoGuardiasForms = programacionCalendariosService.getConjuntosGuardia(usrBean.getLocation(),usrBean);
+		ProgrCalendariosForm form = (ProgrCalendariosForm) formulario;
+		ProgramacionCalendariosService programacionCalendariosService = (ProgramacionCalendariosService) bm.getService(ProgramacionCalendariosService.class);
+		List<ConjuntoGuardiasForm> ConjuntoGuardiasForms = programacionCalendariosService.getConjuntosGuardia(usrBean.getLocation(), usrBean);
 		request.setAttribute("ConjuntoGuardiasForms", ConjuntoGuardiasForms);
-		//form.setIdConjuntoGuardia("");
 		form.clear();
-			
+
 		return "inicio";
-		
 	}
-	protected String inicioCalendarios (ActionMapping mapping, 		
-			MasterForm formulario, 
-			HttpServletRequest request, 
-			HttpServletResponse response) throws ClsExceptions, SIGAException 
-	{
+
+	protected String inicioCalendarios(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, SIGAException {
 		UsrBean usrBean = this.getUserBean(request);
 		BusinessManager bm = getBusinessManager();
-		ProgramacionCalendariosService programacionCalendariosService = (ProgramacionCalendariosService)bm.getService(ProgramacionCalendariosService.class);
+		ProgramacionCalendariosService programacionCalendariosService = (ProgramacionCalendariosService) bm.getService(ProgramacionCalendariosService.class);
 		DefinirCalendarioGuardiaForm miForm = (DefinirCalendarioGuardiaForm) formulario;
 		miForm.setIdInstitucion(usrBean.getLocation());
 		miForm.setIdTurnoCalendario("");
 		miForm.setIdGuardiaCalendario("");
-		
-		List<ScsTurnoBean> alTurnos =  programacionCalendariosService.getTurnos(usrBean.getLocation(),usrBean);
-		if(alTurnos==null)
+
+		List<ScsTurnoBean> alTurnos = programacionCalendariosService.getTurnos(usrBean.getLocation(), usrBean);
+		if (alTurnos == null)
 			alTurnos = new ArrayList<ScsTurnoBean>();
 		miForm.setTurnos(alTurnos);
 		miForm.setGuardias(new ArrayList<ScsGuardiasTurnoBean>());
 		request.setAttribute("calendarioForms", new ArrayList<DefinirCalendarioGuardiaForm>());
-			
+
 		return "inicio";
-		
 	}
-	private void getAjaxGuardias (ActionMapping mapping, 		
-			MasterForm formulario, 
-			HttpServletRequest request, 
-			HttpServletResponse response) throws ClsExceptions, SIGAException ,Exception
-			{
+
+	private void getAjaxGuardias(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, SIGAException, Exception {
 		DefinirCalendarioGuardiaForm miForm = (DefinirCalendarioGuardiaForm) formulario;
 		UsrBean usrBean = this.getUserBean(request);
-		//Sacamos las guardias si hay algo selccionado en el turno
+		// Sacamos las guardias si hay algo selccionado en el turno
 		BusinessManager bm = getBusinessManager();
-		ProgramacionCalendariosService programacionCalendariosService = (ProgramacionCalendariosService)bm.getService(ProgramacionCalendariosService.class);
-		
+		ProgramacionCalendariosService programacionCalendariosService = (ProgramacionCalendariosService) bm.getService(ProgramacionCalendariosService.class);
+
 		List<ScsGuardiasTurnoBean> alGuardias = null;
-		if(miForm.getIdTurnoCalendario()!= null && !miForm.getIdTurnoCalendario().equals("-1")&& !miForm.getIdTurnoCalendario().equals("")){
-			alGuardias = programacionCalendariosService.getGuardiasTurnos(new Integer(miForm.getIdTurnoCalendario()),new Integer(usrBean.getLocation()),true,usrBean);
+		if (miForm.getIdTurnoCalendario() != null && !miForm.getIdTurnoCalendario().equals("-1") && !miForm.getIdTurnoCalendario().equals("")) {
+			alGuardias = programacionCalendariosService.getGuardiasTurnos(new Integer(miForm.getIdTurnoCalendario()), new Integer(usrBean.getLocation()), true, usrBean);
 		}
-		if(alGuardias==null){
+		if (alGuardias == null) {
 			alGuardias = new ArrayList<ScsGuardiasTurnoBean>();
-			
+
 		}
-		respuestaAjax(new AjaxCollectionXmlBuilder<ScsGuardiasTurnoBean>(), alGuardias,response);
-		
+		respuestaAjax(new AjaxCollectionXmlBuilder<ScsGuardiasTurnoBean>(), alGuardias, response);
 	}
-	protected String nuevaProgrCalendarios (ActionMapping mapping, 		
-			MasterForm formulario, 
-			HttpServletRequest request, 
-			HttpServletResponse response) throws ClsExceptions, SIGAException 
-	{
+
+	protected String nuevaProgrCalendarios(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, SIGAException {
 		UsrBean usrBean = this.getUserBean(request);
 		BusinessManager bm = getBusinessManager();
-		ProgramacionCalendariosService programacionCalendariosService = (ProgramacionCalendariosService)bm.getService(ProgramacionCalendariosService.class);
-		List<ConjuntoGuardiasForm> ConjuntoGuardiasForms = programacionCalendariosService.getConjuntosGuardia(usrBean.getLocation(),usrBean);
+		ProgramacionCalendariosService programacionCalendariosService = (ProgramacionCalendariosService) bm.getService(ProgramacionCalendariosService.class);
+		List<ConjuntoGuardiasForm> ConjuntoGuardiasForms = programacionCalendariosService.getConjuntosGuardia(usrBean.getLocation(), usrBean);
 		request.setAttribute("ConjuntoGuardiasForms", ConjuntoGuardiasForms);
 		ProgrCalendariosForm progrCalendariosFormEdicion = new ProgrCalendariosForm();
 		progrCalendariosFormEdicion.setModo("insertarProgrCalendarios");
-		
-		//Seteamos la fecha sysdate para la hora de programacion (con horas y minuto)
+
+		// Seteamos la fecha sysdate para la hora de programacion (con horas y minuto)
 		Date date = new Date();
 		SimpleDateFormat sdf = new SimpleDateFormat(ClsConstants.DATE_FORMAT_SHORT_SPANISH);
 		progrCalendariosFormEdicion.setFechaProgramacion(sdf.format(date));
 		progrCalendariosFormEdicion.setHoraProgramacion(String.valueOf(date.getHours()));
 		progrCalendariosFormEdicion.setMinutoProgramacion(String.valueOf(date.getMinutes()));
-		
-		request.setAttribute("ProgrCalendariosFormEdicion",progrCalendariosFormEdicion);
-		return "editarProgrCalendarios";
-		
-	}
-	
-	protected String insertarProgrCalendarios (ActionMapping mapping, 		
-			MasterForm formulario, 
-			HttpServletRequest request, 
-			HttpServletResponse response) throws ClsExceptions, SIGAException 
-			{
 
+		request.setAttribute("ProgrCalendariosFormEdicion", progrCalendariosFormEdicion);
+		return "editarProgrCalendarios";
+	}
+
+	protected String insertarProgrCalendarios(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, SIGAException {
 		UsrBean usrBean = this.getUserBean(request);
-		String forward="exception";
+		String forward = "exception";
 		try {
 			BusinessManager bm = getBusinessManager();
-			ProgramacionCalendariosService programacionCalendariosService = (ProgramacionCalendariosService)bm.getService(ProgramacionCalendariosService.class);
+			ProgramacionCalendariosService programacionCalendariosService = (ProgramacionCalendariosService) bm.getService(ProgramacionCalendariosService.class);
 			ProgrCalendariosForm progrCalendariosForm = (ProgrCalendariosForm) formulario;
 			progrCalendariosForm.setIdInstitucion(usrBean.getLocation());
 			progrCalendariosForm.setEstado("0");
-			
-			programacionCalendariosService.insertaProgrCalendarios(progrCalendariosForm,usrBean);
-			forward = exitoModal("messages.updated.success",request);
-			
+
+			programacionCalendariosService.insertaProgrCalendarios(progrCalendariosForm, usrBean);
+			forward = exitoModal("messages.updated.success", request);
+
 		} catch (Exception e) {
-			throwExcp("messages.general.errorExcepcion", e, null); 
+			throwExcp("messages.general.errorExcepcion", e, null);
 		}
 		return forward;
 	}
-	
-	
-	protected String consultarProgrCalendarios (ActionMapping mapping, 		
-			MasterForm formulario, 
-			HttpServletRequest request, 
-			HttpServletResponse response) throws ClsExceptions, SIGAException 
-	{
+
+	protected String consultarProgrCalendarios(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, SIGAException {
 		UsrBean usrBean = this.getUserBean(request);
 		BusinessManager bm = getBusinessManager();
-		ProgramacionCalendariosService programacionCalendariosService = (ProgramacionCalendariosService)bm.getService(ProgramacionCalendariosService.class);
-		List<ConjuntoGuardiasForm> ConjuntoGuardiasForms = programacionCalendariosService.getConjuntosGuardia(usrBean.getLocation(),usrBean);
+		ProgramacionCalendariosService programacionCalendariosService = (ProgramacionCalendariosService) bm.getService(ProgramacionCalendariosService.class);
+		List<ConjuntoGuardiasForm> ConjuntoGuardiasForms = programacionCalendariosService.getConjuntosGuardia(usrBean.getLocation(), usrBean);
 		request.setAttribute("ConjuntoGuardiasForms", ConjuntoGuardiasForms);
 		ProgrCalendariosForm progrCalendariosForm = (ProgrCalendariosForm) formulario;
 		progrCalendariosForm.setIdInstitucion(usrBean.getLocation());
-		ScsProgCalendariosBean progCalendariosBean =  programacionCalendariosService.getProgrCalendario(progrCalendariosForm,  usrBean);
+		ScsProgCalendariosBean progCalendariosBean = programacionCalendariosService.getProgrCalendario(progrCalendariosForm, usrBean);
 		ProgrCalendariosForm progrCalendariosFormEdicion = progCalendariosBean.getProgrCalendariosForm();
 		progrCalendariosFormEdicion.setModo("consultarProgrCalendarios");
-		request.setAttribute("ProgrCalendariosFormEdicion",progrCalendariosFormEdicion);
-			
+		request.setAttribute("ProgrCalendariosFormEdicion", progrCalendariosFormEdicion);
+
 		return "editarProgrCalendarios";
-		
 	}
-	protected String editarProgrCalendarios (ActionMapping mapping, 		
-			MasterForm formulario, 
-			HttpServletRequest request, 
-			HttpServletResponse response) throws ClsExceptions, SIGAException 
-	{
+
+	protected String editarProgrCalendarios(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, SIGAException {
 		UsrBean usrBean = this.getUserBean(request);
 		BusinessManager bm = getBusinessManager();
-		ProgramacionCalendariosService programacionCalendariosService = (ProgramacionCalendariosService)bm.getService(ProgramacionCalendariosService.class);
-		List<ConjuntoGuardiasForm> ConjuntoGuardiasForms = programacionCalendariosService.getConjuntosGuardia(usrBean.getLocation(),usrBean);
+		ProgramacionCalendariosService programacionCalendariosService = (ProgramacionCalendariosService) bm.getService(ProgramacionCalendariosService.class);
+		List<ConjuntoGuardiasForm> ConjuntoGuardiasForms = programacionCalendariosService.getConjuntosGuardia(usrBean.getLocation(), usrBean);
 		request.setAttribute("ConjuntoGuardiasForms", ConjuntoGuardiasForms);
 		ProgrCalendariosForm progrCalendariosForm = (ProgrCalendariosForm) formulario;
 		progrCalendariosForm.setIdInstitucion(usrBean.getLocation());
-		ScsProgCalendariosBean progCalendariosBean =  programacionCalendariosService.getProgrCalendario(progrCalendariosForm,  usrBean);
+		ScsProgCalendariosBean progCalendariosBean = programacionCalendariosService.getProgrCalendario(progrCalendariosForm, usrBean);
 		ProgrCalendariosForm progrCalendariosFormEdicion = progCalendariosBean.getProgrCalendariosForm();
 		progrCalendariosFormEdicion.setModo("modificarProgrCalendarios");
-		request.setAttribute("ProgrCalendariosFormEdicion",progrCalendariosFormEdicion);
-			
-		return "editarProgrCalendarios";
-		
-	}
-	protected String modificarProgrCalendarios (ActionMapping mapping, 		
-			MasterForm formulario, 
-			HttpServletRequest request, 
-			HttpServletResponse response) throws ClsExceptions, SIGAException 
-			{
+		request.setAttribute("ProgrCalendariosFormEdicion", progrCalendariosFormEdicion);
 
+		return "editarProgrCalendarios";
+	}
+
+	protected String modificarProgrCalendarios(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, SIGAException {
 		UsrBean usrBean = this.getUserBean(request);
-		String forward="exception";
+		String forward = "exception";
 		try {
 			BusinessManager bm = getBusinessManager();
-			ProgramacionCalendariosService programacionCalendariosService = (ProgramacionCalendariosService)bm.getService(ProgramacionCalendariosService.class);
+			ProgramacionCalendariosService programacionCalendariosService = (ProgramacionCalendariosService) bm.getService(ProgramacionCalendariosService.class);
 			ProgrCalendariosForm progrCalendariosForm = (ProgrCalendariosForm) formulario;
 			progrCalendariosForm.setIdInstitucion(usrBean.getLocation());
 			// se supone que solo se modifican los programados
 			progrCalendariosForm.setEstado("0");
-			
-			
-			
-			programacionCalendariosService.modificaProgrCalendarios(progrCalendariosForm,usrBean);
-			forward = exitoModal("messages.updated.success",request);
-			
+
+			programacionCalendariosService.modificaProgrCalendarios(progrCalendariosForm, usrBean);
+			forward = exitoModal("messages.updated.success", request);
+
 		} catch (Exception e) {
-			throwExcp("messages.general.errorExcepcion", e, null); 
+			throwExcp("messages.general.errorExcepcion", e, null);
 		}
 		return forward;
 	}
-	protected String borrarHcoProgramacion (ActionMapping mapping, 		
-			MasterForm formulario, 
-			HttpServletRequest request, 
-			HttpServletResponse response) throws ClsExceptions, SIGAException 
-			{
 
+	protected String borrarHcoProgramacion(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, SIGAException {
 		UsrBean usrBean = this.getUserBean(request);
-		String forward="exception";
+		String forward = "exception";
 		try {
 			BusinessManager bm = getBusinessManager();
-			ProgramacionCalendariosService programacionCalendariosService = (ProgramacionCalendariosService)bm.getService(ProgramacionCalendariosService.class);
-			HcoConfProgrCalendarioForm  hcoConfProgrCalendarioForm= (HcoConfProgrCalendarioForm) formulario;
+			ProgramacionCalendariosService programacionCalendariosService = (ProgramacionCalendariosService) bm.getService(ProgramacionCalendariosService.class);
+			HcoConfProgrCalendarioForm hcoConfProgrCalendarioForm = (HcoConfProgrCalendarioForm) formulario;
 			hcoConfProgrCalendarioForm.setIdInstitucion(usrBean.getLocation());
-			
-			programacionCalendariosService.borrarHcoProgramacion(hcoConfProgrCalendarioForm,usrBean);
-			forward = exitoRefresco("messages.updated.success",request);
-			
+
+			programacionCalendariosService.borrarHcoProgramacion(hcoConfProgrCalendarioForm, usrBean);
+			forward = exitoRefresco("messages.updated.success", request);
+
 		} catch (Exception e) {
-			throwExcp("messages.general.errorExcepcion", e, null); 
+			throwExcp("messages.general.errorExcepcion", e, null);
 		}
 		return forward;
 	}
-	
-	
-	
-	protected String cancelarGeneracionCalendarios (ActionMapping mapping, 		
-			MasterForm formulario, 
-			HttpServletRequest request, 
-			HttpServletResponse response) throws ClsExceptions, SIGAException 
-			{
 
-		
+	protected String cancelarGeneracionCalendarios(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, SIGAException {
 		UsrBean usrBean = this.getUserBean(request);
 		try {
-			
+
 			BusinessManager bm = getBusinessManager();
-			ProgramacionCalendariosService programacionCalendariosService = (ProgramacionCalendariosService)bm.getService(ProgramacionCalendariosService.class);
+			ProgramacionCalendariosService programacionCalendariosService = (ProgramacionCalendariosService) bm.getService(ProgramacionCalendariosService.class);
 			ProgrCalendariosForm progrCalendariosForm = (ProgrCalendariosForm) formulario;
-			
-			
-			/*ScsProgrCalendariosAdm progrCalendariosAdm = new ScsProgrCalendariosAdm(usrBean);
-			try {
-				progrCalendariosAdm.iniciarServicioProgramacion(usrBean);	
-			} catch (Exception e) {
-				throw new ClsExceptions(e.toString());
-			}
-			*/
-			programacionCalendariosService.cancelarGeneracionCalendarios(progrCalendariosForm,usrBean);
-			
-		} catch (Exception e){
-			throwExcp("messages.general.errorExcepcion", e, null); 				
+
+			programacionCalendariosService.cancelarGeneracionCalendarios(progrCalendariosForm, usrBean);
+
+		} catch (Exception e) {
+			throwExcp("messages.general.errorExcepcion", e, null);
 		}
-		
-		return exitoRefresco("messages.updated.success",request);
-	}
-	protected String borrarProgrCalendarios (ActionMapping mapping, 		
-			MasterForm formulario, 
-			HttpServletRequest request, 
-			HttpServletResponse response) throws ClsExceptions, SIGAException 
-			{
 
-		
+		return exitoRefresco("messages.updated.success", request);
+	}
+
+	protected String borrarProgrCalendarios(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, SIGAException {
 		UsrBean usrBean = this.getUserBean(request);
 		try {
-			
+
 			BusinessManager bm = getBusinessManager();
-			ProgramacionCalendariosService programacionCalendariosService = (ProgramacionCalendariosService)bm.getService(ProgramacionCalendariosService.class);
+			ProgramacionCalendariosService programacionCalendariosService = (ProgramacionCalendariosService) bm.getService(ProgramacionCalendariosService.class);
 			ProgrCalendariosForm progrCalendariosForm = (ProgrCalendariosForm) formulario;
-			
-			
-			/*ScsProgrCalendariosAdm progrCalendariosAdm = new ScsProgrCalendariosAdm(usrBean);
-			try {
-				progrCalendariosAdm.iniciarServicioProgramacion(usrBean);	
-			} catch (Exception e) {
-				throw new ClsExceptions(e.toString());
-			}
-			*/
-			programacionCalendariosService.borrarProgrCalendarios(progrCalendariosForm,usrBean);
-			
-		} catch (Exception e){
-			throwExcp("messages.general.errorExcepcion", e, null); 				
+			programacionCalendariosService.borrarProgrCalendarios(progrCalendariosForm, usrBean);
+
+		} catch (Exception e) {
+			throwExcp("messages.general.errorExcepcion", e, null);
 		}
-		
-		return exitoRefresco("messages.deleted.success",request);
-	}
-	protected String reprogramarCalendarios (ActionMapping mapping, 		
-			MasterForm formulario, 
-			HttpServletRequest request, 
-			HttpServletResponse response) throws ClsExceptions, SIGAException 
-			{
 
-		
+		return exitoRefresco("messages.deleted.success", request);
+	}
+
+	protected String reprogramarCalendarios(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, SIGAException {
 		UsrBean usrBean = this.getUserBean(request);
 		try {
-			
+
 			BusinessManager bm = getBusinessManager();
-			ProgramacionCalendariosService programacionCalendariosService = (ProgramacionCalendariosService)bm.getService(ProgramacionCalendariosService.class);
+			ProgramacionCalendariosService programacionCalendariosService = (ProgramacionCalendariosService) bm.getService(ProgramacionCalendariosService.class);
 			ProgrCalendariosForm progrCalendariosForm = (ProgrCalendariosForm) formulario;
-			
-			
-			/*ScsProgrCalendariosAdm progrCalendariosAdm = new ScsProgrCalendariosAdm(usrBean);
-			try {
-				progrCalendariosAdm.iniciarServicioProgramacion(usrBean);	
-			} catch (Exception e) {
-				throw new ClsExceptions(e.toString());
-			}
-			*/
-			programacionCalendariosService.reprogramarCalendarios(progrCalendariosForm,usrBean);
-			
-		} catch (Exception e){
-			throwExcp("messages.general.errorExcepcion", e, null); 				
+			programacionCalendariosService.reprogramarCalendarios(progrCalendariosForm, usrBean);
+
+		} catch (Exception e) {
+			throwExcp("messages.general.errorExcepcion", e, null);
 		}
-		
-		return exitoRefresco("messages.updated.success",request);
-	}
-	
-	protected String adelantarProgrCalendarios (ActionMapping mapping, 		
-			MasterForm formulario, 
-			HttpServletRequest request, 
-			HttpServletResponse response) throws ClsExceptions, SIGAException 
-			{
 
-		
+		return exitoRefresco("messages.updated.success", request);
+	}
+
+	protected String adelantarProgrCalendarios(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, SIGAException {
 		UsrBean usrBean = this.getUserBean(request);
 		try {
-			
+
 			BusinessManager bm = getBusinessManager();
-			ProgramacionCalendariosService programacionCalendariosService = (ProgramacionCalendariosService)bm.getService(ProgramacionCalendariosService.class);
+			ProgramacionCalendariosService programacionCalendariosService = (ProgramacionCalendariosService) bm.getService(ProgramacionCalendariosService.class);
 			ProgrCalendariosForm progrCalendariosForm = (ProgrCalendariosForm) formulario;
-			
-			
-			/*ScsProgrCalendariosAdm progrCalendariosAdm = new ScsProgrCalendariosAdm(usrBean);
-			try {
-				progrCalendariosAdm.iniciarServicioProgramacion(usrBean);	
-			} catch (Exception e) {
-				throw new ClsExceptions(e.toString());
-			}
-			*/
-			programacionCalendariosService.adelantarProgrCalendarios(progrCalendariosForm,usrBean);
-			
-		} catch (Exception e){
-			throwExcp("messages.general.errorExcepcion", e, null); 				
+			programacionCalendariosService.adelantarProgrCalendarios(progrCalendariosForm, usrBean);
+
+		} catch (Exception e) {
+			throwExcp("messages.general.errorExcepcion", e, null);
 		}
-		
-		return exitoRefresco("messages.updated.success",request);
-	}
-	protected String ejecutarProgramacion (ActionMapping mapping, 		
-			MasterForm formulario, 
-			HttpServletRequest request, 
-			HttpServletResponse response) throws ClsExceptions, SIGAException 
-			{
 
-		
+		return exitoRefresco("messages.updated.success", request);
+	}
+
+	protected String ejecutarProgramacion(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, SIGAException {
 		UsrBean usrBean = this.getUserBean(request);
 		try {
-			
+
 			BusinessManager bm = getBusinessManager();
-			ProgramacionCalendariosService programacionCalendariosService = (ProgramacionCalendariosService)bm.getService(ProgramacionCalendariosService.class);
+			ProgramacionCalendariosService programacionCalendariosService = (ProgramacionCalendariosService) bm.getService(ProgramacionCalendariosService.class);
 			ProgrCalendariosForm progrCalendariosForm = (ProgrCalendariosForm) formulario;
-			ScsProgCalendariosBean progCalendariosBean =  programacionCalendariosService.getProgrCalendario(progrCalendariosForm,  usrBean);
+			ScsProgCalendariosBean progCalendariosBean = programacionCalendariosService.getProgrCalendario(progrCalendariosForm, usrBean);
 			progrCalendariosForm.setIdInstitucion(usrBean.getLocation());
-			
-//			programacionCalendariosService.ejecutaProgrCalendarios(usrBean);
-			
-		} catch (Exception e){
-			throwExcp("messages.general.errorExcepcion", e, null); 				
+
+		} catch (Exception e) {
+			throwExcp("messages.general.errorExcepcion", e, null);
 		}
-		
+
 		return "exito";
 	}
-	
-	
-	protected String refrescar (ActionMapping mapping, 		
-			MasterForm formulario, 
-			HttpServletRequest request, 
-			HttpServletResponse response) throws ClsExceptions, SIGAException{
-		
+
+	protected String refrescar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, SIGAException {
 		return "exito";
 	}
-	
-	
-	
-	
-	
+
+	/**
+	 * Descarga el fichero de Log.
+	 * 
+	 * @param mapping
+	 * @param formulario
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws SIGAException
+	 */
+	private String descargarLog(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+		String forward = "descargaFichero";
+		String sFicheroLog = null;
+		try {
+			ProgrCalendariosForm progrCalendariosForm = (ProgrCalendariosForm) formulario;
+			UsrBean user = ((UsrBean) request.getSession().getAttribute(("USRBEAN")));
+			String idInstitucion = progrCalendariosForm.getIdInstitucion();
+			String idProgrCalendario = progrCalendariosForm.getIdProgrCalendario();
+			sFicheroLog = getDirectorioFicheroLog(idInstitucion) + File.separator + "LOG_" + idInstitucion + "_" + idProgrCalendario + ".log.xls";
+			File fichero = new File(sFicheroLog);
+			if (fichero == null || !fichero.exists()) {
+				throw new SIGAException("messages.general.error.ficheroNoExiste");
+			}
+			request.setAttribute("nombreFichero", fichero.getName());
+			request.setAttribute("rutaFichero", fichero.getPath());
+
+		} catch (Exception e) {
+			throwExcp("messages.general.error", new String[] { "modulo.envios" }, e, null);
+		}
+		return forward;
+	}
+
+	private String getDirectorioFicheroLog(String idInstitucion) {
+		ReadProperties rp = new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+		String pathFicheros = rp.returnProperty("gen.ficheros.path");
+		StringBuffer directorioFichero = new StringBuffer(pathFicheros);
+		directorioFichero.append(idInstitucion);
+		directorioFichero.append(File.separator);
+		String directorio = rp.returnProperty("scs.ficheros.ficheroCalendario");
+		directorioFichero.append(directorio);
+		return directorioFichero.toString();
+	}	
 	
 }

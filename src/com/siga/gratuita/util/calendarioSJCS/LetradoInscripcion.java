@@ -1,7 +1,8 @@
 package com.siga.gratuita.util.calendarioSJCS;
 
 import java.util.ArrayList;
-import java.util.Map;
+
+import org.redabogacia.sigaservices.app.vo.scs.CargaMasivaCalendariosVo;
 
 import com.atos.utils.ClsExceptions;
 import com.siga.beans.CenBajasTemporalesBean;
@@ -74,6 +75,17 @@ public class LetradoInscripcion implements Cloneable
 		this.grupo = inscripcionGuardia.getGrupo();
 		this.ordenGrupo = inscripcionGuardia.getOrdenGrupo();
 	}	
+	
+	public LetradoInscripcion(CargaMasivaCalendariosVo cargaMasivaCalendariosVo) throws ClsExceptions
+	{
+		// inicializando letrado
+		this.idPersona = cargaMasivaCalendariosVo.getIdPersona();
+		this.idInstitucion = cargaMasivaCalendariosVo.getIdInstitucion();
+		this.idTurno = cargaMasivaCalendariosVo.getIdTurno();
+		this.idGuardia = cargaMasivaCalendariosVo.getIdGuardia();
+		this.posicion = cargaMasivaCalendariosVo.getPosicion();
+	}		
+	
 	public LetradoInscripcion(ScsInscripcionTurnoBean inscripcionTurno) throws ClsExceptions
 	{
 		// inicializando letrado

@@ -2,6 +2,8 @@ package com.siga.gratuita.form;
 
 import java.util.List;
 
+import org.apache.struts.upload.FormFile;
+
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.GstDate;
 import com.siga.Utilidades.UtilidadesHash;
@@ -141,6 +143,8 @@ public class DefinirCalendarioGuardiaForm extends MasterForm
 	List<ScsGuardiasTurnoBean> guardias;
 	private String botones;
 	private FilaExtElement[] elementosFila;
+	private String nombreCalendario;
+	private FormFile ficheroCalendario;
 
 	public DefinirTurnosForm getTurno() {
 		return turno;
@@ -237,7 +241,17 @@ public class DefinirCalendarioGuardiaForm extends MasterForm
 	public void setElementosFila(FilaExtElement[] elementosFila) {
 		this.elementosFila = elementosFila;
 	}
+	public String getNombreCalendario() {
+		return nombreCalendario;
+	}
+	public void setNombreCalendario(String nombreCalendario) {
+		this.nombreCalendario = nombreCalendario;
+	}
+	public FormFile getFicheroCalendario() {
+		return ficheroCalendario;
+	}
+	public void setFicheroCalendario(FormFile ficheroCalendario) {
+		this.ficheroCalendario = ficheroCalendario;
+	}
 	
-	
-
 }

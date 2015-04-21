@@ -2,6 +2,7 @@ package com.siga.gratuita.action;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Map;
@@ -14,8 +15,13 @@ import javax.transaction.UserTransaction;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.redabogacia.sigaservices.app.helper.SIGAServicesHelper;
+import org.redabogacia.sigaservices.app.services.gen.FicherosService;
+import org.redabogacia.sigaservices.app.services.scs.CargaMasivaCalendariosService;
 import org.redabogacia.sigaservices.app.util.ReadProperties;
 import org.redabogacia.sigaservices.app.util.SIGAReferences;
+import org.redabogacia.sigaservices.app.vo.gen.FicheroVo;
+import org.redabogacia.sigaservices.app.vo.scs.CargaMasivaCalendariosVo;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
@@ -48,8 +54,11 @@ import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
 import com.siga.gratuita.form.DefinirCalendarioGuardiaForm;
+import com.siga.gratuita.service.ProgramacionCalendariosService;
 import com.siga.gratuita.util.calendarioSJCS.CalendarioSJCS;
 import com.siga.gratuita.util.calendarioSJCS.LetradoInscripcion;
+
+import es.satec.businessManager.BusinessManager;
 
 /**
  * Maneja las acciones que se pueden realizar sobre las tablas SCS_CALENDARIOGUARDIAS. <br>
@@ -108,6 +117,12 @@ public class DefinirCalendarioGuardiaAction extends MasterAction
 				mapDestino = realizarAnulacion(mapping, miForm, request, response);						
 			} else if (accion.equalsIgnoreCase("descargarLog")){
 				mapDestino = descargarLog(mapping, miForm, request, response);
+			} else if (accion.equalsIgnoreCase("cargaFicheroCalendarios")){
+				mapDestino = cargaFicheroCalendarios(mapping, miForm, request, response);
+			} else if (accion.equalsIgnoreCase("uploadFicheroCalendarios")){
+				mapDestino = uploadFicheroCalendarios(mapping, miForm, request, response);	
+			} else if (accion.equalsIgnoreCase("descargaFicheroModelo")){
+				mapDestino = descargaFicheroModelo(mapping, miForm, request, response);	
 			} else {			
 				return super.executeInternal(mapping,
 						formulario,
@@ -1776,6 +1791,119 @@ public class DefinirCalendarioGuardiaAction extends MasterAction
 		return forward;
 	}
 
+	/**
+	 * @param mapping
+	 * @param miForm
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws SIGAException 
+	 */
+	private String uploadFicheroCalendarios(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+		UsrBean user = (UsrBean) this.getUserBean(request);
+		DefinirCalendarioGuardiaForm miForm = (DefinirCalendarioGuardiaForm) formulario;		
+		
+		try {
+
+			/** Almacenamos el fichero en nuestro SF y guardamos su informacion de acceso **/
+			FicherosService ficherosService = (FicherosService) getBusinessManager().getService(FicherosService.class);
+			FicheroVo ficheroVo = new FicheroVo();
+
+			String directorioFichero = getDirectorioFichero( user.getLocation());
+			ficheroVo.setDirectorio(directorioFichero);
+			ficheroVo.setDescripcion(miForm.getObservaciones());
+			ficheroVo.setIdinstitucion(new Short(user.getLocation()));
+			ficheroVo.setFichero(miForm.getFicheroCalendario().getFileData());
+
+			if (miForm.getFicheroCalendario().getFileName().lastIndexOf(".") != -1)
+				ficheroVo.setExtension(miForm.getFicheroCalendario().getFileName().substring(miForm.getFicheroCalendario().getFileName().lastIndexOf(".") + 1));
+
+			ficheroVo.setUsumodificacion(Integer.valueOf(user.getUserName()));
+			ficheroVo.setFechamodificacion(new Date());
+			ficherosService.insert(ficheroVo);
+			SIGAServicesHelper.uploadFichero(ficheroVo.getDirectorio(), ficheroVo.getNombre(), ficheroVo.getFichero());
+			
+			/** Creamos el registro para la programacion del calendario **/
+			ProgramacionCalendariosService programacionCalendariosService = (ProgramacionCalendariosService) getBusinessManager().getService(ProgramacionCalendariosService.class);
+			programacionCalendariosService.insertaProgrCalendariosFicheroCarga(ficheroVo.getIdfichero().intValue(),new Integer(user.getLocation()),user);
+
+		} catch (Exception e) {
+			throwExcp("messages.general.error", new String[] {"modulo.envios"}, e, null);
+		}
+		
+		return "procesarFicheroCalendario";
+	}
 	
+	private String getDirectorioFichero(String idInstitucion) {
+		ReadProperties rp = new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+		String pathFicheros = rp.returnProperty("gen.ficheros.path");
+		StringBuffer directorioFichero = new StringBuffer(pathFicheros);
+		directorioFichero.append(idInstitucion);
+		directorioFichero.append(File.separator);
+		String directorio = rp.returnProperty("scs.ficheros.ficheroCalendario");
+		directorioFichero.append(directorio);
+
+		return directorioFichero.toString();
+	}
+
+	/**
+	 * @param mapping
+	 * @param miForm
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	private String cargaFicheroCalendarios(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) {
+		// Controles
+		UsrBean usr = (UsrBean) this.getUserBean(request);
+		DefinirCalendarioGuardiaForm miForm = (DefinirCalendarioGuardiaForm) formulario;
+		return "cargaFicheroCalendarios";
+	}	
+	
+	private String descargaFicheroModelo(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+		UsrBean usr = (UsrBean) this.getUserBean(request);
+		DefinirCalendarioGuardiaForm miForm = (DefinirCalendarioGuardiaForm) formulario;
+		String idInstitucion = usr.getLocation();
+		String idTurno = miForm.getIdTurno();
+		String idGuardia = miForm.getIdGuardia();
+
+		try {			
+			/** Obtenemos los datos rellenados por el usuario **/
+			Vector<Hashtable<String,Object>> datos = new Vector<Hashtable<String,Object>>();
+			Hashtable<String,Object> hash = new Hashtable<String,Object>();	
+			
+			if(idTurno != null && !idTurno.equals("")){
+				ScsTurnoAdm turnoAdm = new ScsTurnoAdm(usr);
+				String turnoFiltro = (String) UtilidadesString.createHashMap(idTurno).get("idturno");		
+				String nombreTurno = turnoAdm.getNombreTurnoJSP(idInstitucion, turnoFiltro);
+				hash.put(CargaMasivaCalendariosVo.C_TURNO, nombreTurno);
+			
+				if(idGuardia != null && !idGuardia.equals("")){
+					ScsGuardiasTurnoAdm guardiasAdm = new ScsGuardiasTurnoAdm(usr);
+					String nombreGuardia = guardiasAdm.getNombreGuardiaJSP(idInstitucion, turnoFiltro, idGuardia);
+					hash.put(CargaMasivaCalendariosVo.C_GUARDIA, nombreGuardia);
+				}
+			}
+
+			if(miForm.getFechaInicio() != null && !miForm.getFechaInicio().equals("")){
+				hash.put(CargaMasivaCalendariosVo.C_FECHA, miForm.getFechaInicio());
+			}
+			
+			datos.add(hash);
+			
+			/** Realizamos la creacción y descarga del fichero modelo **/
+			BusinessManager bm = getBusinessManager();
+			CargaMasivaCalendariosService carga = (CargaMasivaCalendariosService) bm.getService(CargaMasivaCalendariosService.class);
+			File exampleFile = carga.createExcelFile(CargaMasivaCalendariosService.CAMPOS, datos);
+			request.setAttribute("nombreFichero", exampleFile.getName());
+			request.setAttribute("rutaFichero", exampleFile.getPath());
+			request.setAttribute("accion", "");
+			
+		} catch (Exception e) {
+			throwExcp("messages.general.error", new String[] { "modulo.envios" }, e, null);
+		}
+		
+		return "descargaFichero";
+	}	
 
 }

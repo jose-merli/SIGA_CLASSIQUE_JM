@@ -1,6 +1,8 @@
 package com.siga.gratuita.action;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Enumeration;
@@ -13,6 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.transaction.UserTransaction;
 
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
@@ -74,6 +77,8 @@ import com.siga.gratuita.util.calendarioSJCS.CalendarioSJCS;
 import com.siga.gratuita.util.calendarioSJCS.LetradoInscripcion;
 import com.siga.informes.InformeBusquedaDesignas;
 import com.siga.ws.CajgConfiguracion;
+
+import es.satec.businessManager.BusinessManager;
 
 
 
@@ -451,7 +456,8 @@ public class BusquedaDesignasAction extends MasterAction {
 		String consulta= "";
 
 		try {
-
+			
+			
 			if (request.getSession().getAttribute("DATAPAGINADOR")!=null){ 
 				databackup = (HashMap)request.getSession().getAttribute("DATAPAGINADOR");
 				PaginadorBind paginador = (PaginadorBind)databackup.get("paginador");
@@ -1548,7 +1554,6 @@ public class BusquedaDesignasAction extends MasterAction {
 			HttpServletRequest request, HttpServletResponse response)
 	throws ClsExceptions,SIGAException  {
 		
-		
 		ScsDesignaAdm desigAdm=new ScsDesignaAdm(this.getUserBean(request));
 		UsrBean usr = (UsrBean)request.getSession().getAttribute("USRBEAN");
 		BuscarDesignasForm miFormulario =(BuscarDesignasForm)formulario;
@@ -1567,7 +1572,7 @@ public class BusquedaDesignasAction extends MasterAction {
 		String consulta= "";
 
 		try {
-
+				
 			//Si es seleccionar todos esta variable no vandra nula y ademas nos traera el numero de pagina 
 			//donde nos han marcado el seleccionar todos(asi evitamos meter otra variable)
 			boolean isSeleccionarTodos = miFormulario.getSeleccionarTodos()!=null 

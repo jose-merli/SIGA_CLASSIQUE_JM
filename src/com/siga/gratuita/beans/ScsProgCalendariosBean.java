@@ -46,10 +46,12 @@ import com.siga.gratuita.form.ProgrCalendariosForm;
 		static public final String C_ESTADO = "ESTADO";
 		static public final String C_FECHAMODIFICACION = "FECHAMODIFICACION";
 		static public final String C_USUMODIFICACION = "USUMODIFICACION";
+		static public final String C_IDFICHEROCALENDARIO = "IDFICHEROCALENDARIO";
 		
 		private Long idProgrCalendario;
 		private Long idConjuntoGuardia;
 		private Integer idInstitucion;
+		private Integer idFicheroCalendario;
 		private String fechaProgramacion;
 		private Short estado;
 		private String fechaCalInicio;
@@ -141,5 +143,12 @@ import com.siga.gratuita.form.ProgrCalendariosForm;
 		public void setEstado(Short estado) {
 			this.estado = estado;
 		}
+		public Integer getIdFicheroCalendario() {
+			return idFicheroCalendario;
+		}
+		public void setIdFicheroCalendario(Integer idFicheroCalendario) {
+			this.idFicheroCalendario = idFicheroCalendario;
+		}
+		
 		
 }

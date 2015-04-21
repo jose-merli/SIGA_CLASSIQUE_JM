@@ -167,8 +167,11 @@ public class ProgrCalendariosForm extends MasterForm {
 		case 2:case 4:
 //			botones  = "B,C";
 			elementosFila = new FilaExtElement[3];
-			elementosFila[2]=new FilaExtElement("generar","reprogramarCalendarios", "gratuita.calendarios.programacion.estado.reprogramar.accion", SIGAConstants.ACCESS_READ);
-	
+			if(this.getIdConjuntoGuardia().equals(ClsConstants.TIPO_CONJUNTOGUARDIAS_CARGA_MASIVA)){
+				elementosFila[2] = new FilaExtElement("descargaLog", "descargaLog",SIGAConstants.ACCESS_READ);
+			}else{
+				elementosFila[2]=new FilaExtElement("generar","reprogramarCalendarios", "gratuita.calendarios.programacion.estado.reprogramar.accion", SIGAConstants.ACCESS_READ);
+			}
 			break;
 		case 3:
 			

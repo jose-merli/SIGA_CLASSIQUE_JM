@@ -38,6 +38,7 @@ public class ScsProgrCalendariosAdm extends MasterBeanAdministrador{
 				ScsProgCalendariosBean.C_FECHA_PROGRAMACION,
 				ScsProgCalendariosBean.C_FECHACALINICIO,
 				ScsProgCalendariosBean.C_FECHACALFIN,
+				ScsProgCalendariosBean.C_IDFICHEROCALENDARIO,
 				
 				ScsProgCalendariosBean.C_FECHAMODIFICACION,
 				ScsProgCalendariosBean.C_USUMODIFICACION
@@ -76,9 +77,8 @@ public class ScsProgrCalendariosAdm extends MasterBeanAdministrador{
 			bean.setFechaCalFin(			UtilidadesHash.getString(hash, ScsProgCalendariosBean.C_FECHACALFIN));
 			bean.setEstado(			UtilidadesHash.getShort(hash, ScsProgCalendariosBean.C_ESTADO));
 			bean.setFechaMod		(UtilidadesHash.getString(hash, ScsProgCalendariosBean.C_FECHAMODIFICACION));
-			
-			
 			bean.setUsuMod			(UtilidadesHash.getInteger(hash, ScsProgCalendariosBean.C_USUMODIFICACION));
+			bean.setIdFicheroCalendario(UtilidadesHash.getInteger(hash, ScsProgCalendariosBean.C_IDFICHEROCALENDARIO));
 		}
 		catch (Exception e) { 
 			bean = null;	
@@ -99,6 +99,7 @@ public class ScsProgrCalendariosAdm extends MasterBeanAdministrador{
 			UtilidadesHash.set(htData, ScsProgCalendariosBean.C_FECHA_PROGRAMACION, 	b.getFechaProgramacion());
 			UtilidadesHash.set(htData, ScsProgCalendariosBean.C_FECHACALINICIO, 	b.getFechaCalInicio());
 			UtilidadesHash.set(htData, ScsProgCalendariosBean.C_FECHACALFIN, 	b.getFechaCalFin());
+			UtilidadesHash.set(htData, ScsProgCalendariosBean.C_IDFICHEROCALENDARIO, 	b.getIdFicheroCalendario());
 			
 			UtilidadesHash.set(htData, ScsProgCalendariosBean.C_USUMODIFICACION, 	b.getUsuMod());
 			UtilidadesHash.set(htData, ScsProgCalendariosBean.C_FECHAMODIFICACION, 	b.getFechaMod());
@@ -169,23 +170,8 @@ public class ScsProgrCalendariosAdm extends MasterBeanAdministrador{
 			
 		}
 		
-		
-		
-		
-		
 		sql.append(" ORDER BY PC.FECHAPROGRAMACION ");
 		
-		
-		
-		
-		
-		
-    	
-    	
-//		sql.append(" ORDER BY DESCRIPCION");
-		
-		
-	
     	List<ProgrCalendariosForm> progrCalendariosForms = null;
     	try {
 			RowsContainer rc = new RowsContainer(); 
@@ -241,11 +227,6 @@ public class ScsProgrCalendariosAdm extends MasterBeanAdministrador{
 		sql.append(" SELECT * FROM (SELECT PC.* ");
 		sql.append(" FROM SCS_PROG_CALENDARIOS PC ");
 		sql.append(" WHERE ");
-//		sql.append(" PC.IDINSTITUCION = :");
-//		contador++;
-//		sql.append(contador);
-//		codigosHashtable.put(new Integer(contador),idInstitucion);
-		
 		
 		sql.append(" PC.ESTADO IN ( :");
 		contador++;
@@ -262,6 +243,7 @@ public class ScsProgrCalendariosAdm extends MasterBeanAdministrador{
 		sql.append(" )");
 
 		sql.append(" AND PC.FECHAPROGRAMACION < SYSDATE ");
+		sql.append(" AND PC.IDFICHEROCALENDARIO IS NULL ");
 		
 		sql.append(" ORDER BY PC.FECHAPROGRAMACION,PC.ESTADO) ");
 		sql.append(" WHERE ROWNUM = 1 ");
@@ -283,6 +265,7 @@ public class ScsProgrCalendariosAdm extends MasterBeanAdministrador{
 
     	return progCalendariosBean;
     }
+	
 	public void iniciarServicioProgramacion(UsrBean usrBean) throws ClsExceptions{
 		ScsProgrCalendariosAdm progrCalendariosAdm = new ScsProgrCalendariosAdm(usrBean);
 		ScsHcoConfProgrCalendariosAdm hcoConfProgrCalendariosAdm = new ScsHcoConfProgrCalendariosAdm(usrBean);
@@ -363,8 +346,48 @@ public class ScsProgrCalendariosAdm extends MasterBeanAdministrador{
 		
 	}
 	
-		
-	
-	
+	public ScsProgCalendariosBean getNextProgrCalendarioFicheroCarga() throws ClsExceptions {
+		Hashtable codigosHashtable = new Hashtable();
+		int contador = 0;
+		StringBuffer sql = new StringBuffer();
+		sql.append(" SELECT * FROM (SELECT PC.* ");
+		sql.append(" FROM SCS_PROG_CALENDARIOS PC ");
+		sql.append(" WHERE ");
+
+		sql.append(" PC.ESTADO IN ( :");
+		contador++;
+		sql.append(contador);
+		codigosHashtable.put(new Integer(contador), ScsProgCalendariosBean.estadoProcesando);
+		sql.append(",:");
+		contador++;
+		sql.append(contador);
+		codigosHashtable.put(new Integer(contador), ScsProgCalendariosBean.estadoProgramado);
+		sql.append(",:");
+		contador++;
+		sql.append(contador);
+		codigosHashtable.put(new Integer(contador), ScsProgCalendariosBean.estadoReprogramado);
+		sql.append(" )");
+
+		sql.append(" AND PC.FECHAPROGRAMACION < SYSDATE ");
+		sql.append(" AND PC.IDFICHEROCALENDARIO IS NOT NULL ");
+
+		sql.append(" ORDER BY PC.FECHAPROGRAMACION,PC.ESTADO) ");
+		sql.append(" WHERE ROWNUM = 1 ");
+
+		ScsProgCalendariosBean progCalendariosBean = null;
+		try {
+			RowsContainer rc = new RowsContainer();
+			if (rc.findBind(sql.toString(), codigosHashtable)) {
+				Row fila = (Row) rc.get(0);
+				Hashtable<String, Object> htFila = fila.getRow();
+				progCalendariosBean = (ScsProgCalendariosBean) this.hashTableToBean(htFila);
+			}
+
+		} catch (Exception e) {
+			throw new ClsExceptions(e, "Error al ejecutar consulta.");
+		}
+
+		return progCalendariosBean;
+	}
 
 }

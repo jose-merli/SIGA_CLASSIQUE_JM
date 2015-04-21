@@ -708,6 +708,9 @@ MDB Microsoft Access Database
 	  public static final String ERROR_AVISO = "errorConAviso";
 	  public static final String SMS_AVISO_ESTADO = "msjAvisoEstado";
 	  
+	  // Tipo prog calendario carga masiva por Excel
+	  public static final String TIPO_CONJUNTOGUARDIAS_CARGA_MASIVA = "0";
+	  
 	  
   public ClsConstants() {
   }

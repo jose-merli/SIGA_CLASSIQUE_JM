@@ -118,6 +118,18 @@
 			document.ProgrCalendariosForm.modo.value="cancelarGeneracionCalendarios";
 			document.ProgrCalendariosForm.submit();
 		}
+		
+		function accionCargarFichero() {
+			document.DefinirCalendarioGuardiaForm.modo.value="cargaFicheroCalendarios";
+			document.DefinirCalendarioGuardiaForm.submit();
+		}	
+		
+		function descargaLog(fila) {
+			var idProgrCalendario = document.getElementById("idProgrCalendario_"+fila).value;
+			document.ProgrCalendariosForm.idProgrCalendario.value = idProgrCalendario;
+			document.ProgrCalendariosForm.modo.value="descargarLogCargaMasiva";
+			document.ProgrCalendariosForm.submit();
+		}		
 	</script>
 </head>
  
@@ -190,6 +202,9 @@
 				&nbsp;
 			</td>
 			<td class="tdBotones">
+				<input type="button" alt="<siga:Idioma key="general.boton.cargarFichero"/>"  id="idButton" onclick="return accionCargarFichero();" class="button" name="idButton" value="<siga:Idioma key="general.boton.cargarFichero"/>">
+			</td>			
+			<td class="tdBotones">
 				<input type="button" alt="<siga:Idioma key="general.boton.new"/>"  id="idButton" onclick="return accionNuevaProgrCalendarios();" class="button" name="idButton" value="<siga:Idioma key="general.boton.new"/>">
 			</td>
 			<td class="tdBotones">
@@ -213,6 +228,9 @@
 
 	<!-- FIN: CAMPOS DE BUSQUEDA-->
 	<!-- Formularios auxiliares -->
+	<html:form action="/JGR_DefinirCalendarioGuardia.do"  method="POST" target="mainWorkArea">
+		<html:hidden property="modo" value="modo"/>
+	</html:form>	
 			
 	<!-- FIN: BOTONES BUSQUEDA -->
 	<iframe name="submitArea" src="<html:rewrite page='/html/jsp/general/blank.jsp'/>" style="display: none"></iframe>

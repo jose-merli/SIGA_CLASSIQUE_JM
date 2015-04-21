@@ -21,7 +21,12 @@
 <!-- JSP -->
 
 	
-
+<%
+	Integer elementoActivo = 1;	
+	if(request.getAttribute("elementoActivo") != null){
+		elementoActivo = (Integer)request.getAttribute("elementoActivo");
+	}
+%>
 
 <!-- HEAD -->
 
@@ -75,7 +80,7 @@
 	<siga:PestanasExt 
 			pestanaId="PROGGUAR" 
 			target="mainPestanas"
-			elementoactivo="1"
+			elementoactivo="<%=elementoActivo%>"
 	/>
 
 <!-- FIN: CONJUNTO DE PESTAÑAS (LINEA) -->

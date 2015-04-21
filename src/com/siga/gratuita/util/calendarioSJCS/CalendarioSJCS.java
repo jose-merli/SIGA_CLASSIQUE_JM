@@ -24,6 +24,7 @@ import javax.transaction.UserTransaction;
 import org.omg.CosTransactions.Status;
 import org.redabogacia.sigaservices.app.util.ReadProperties;
 import org.redabogacia.sigaservices.app.util.SIGAReferences;
+import org.redabogacia.sigaservices.app.vo.scs.CargaMasivaCalendariosVo;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
@@ -1871,9 +1872,7 @@ public class CalendarioSJCS
 				'.'));
 	}
 
-	public int crearCalendario(
-			ScsCalendarioGuardiasBean calendarioGuardiasBean, UsrBean usr)
-			throws ClsExceptions, SIGAException {
+	public int crearCalendario(ScsCalendarioGuardiasBean calendarioGuardiasBean, UsrBean usr) throws ClsExceptions, SIGAException {
 		return crearCalendario(calendarioGuardiasBean.getIdInstitucion(),
 				calendarioGuardiasBean.getIdTurno(),
 				calendarioGuardiasBean.getIdGuardia(),
@@ -1883,7 +1882,6 @@ public class CalendarioSJCS
 				calendarioGuardiasBean.getIdTurnoPrincipal(),
 				calendarioGuardiasBean.getIdGuardiaPrincipal(),
 				calendarioGuardiasBean.getIdCalendarioGuardiasPrincipal(), usr);
-
 	}
 
 	/**
@@ -2441,5 +2439,112 @@ public class CalendarioSJCS
 			throw new SIGAException("Error al borrar la copia de la cola de guardias de grupos de un calendario");
 		}	
 	}		
+	
+	/**
+	 * Genera las cabeceras de guardias del calendario, a partir de un fichero excel de carga
+	 * Cuando la guardia no es por grupos
+	 */
+	public void generarCalendarioCargaFichero(List<CargaMasivaCalendariosVo> datosExcel, String observaciones, UsrBean usr) throws SIGAException, ClsExceptions {
+		// Controles generales
+		this.usrBean = usr;
+		CenBajasTemporalesAdm bajasAdm = new CenBajasTemporalesAdm(this.usrBean);
+		ScsSaltosCompensacionesAdm scAdm = new ScsSaltosCompensacionesAdm(this.usrBean);
+
+		// Variables generales
+		Integer idCalendario = null;
+		ArrayList<String> diasGuardia, primerPeriodo, segundoPeriodo; // Periodo o dia de guardia para rellenar con letrado
+		HashMap<Long, TreeMap<String,CenBajasTemporalesBean>> hmBajasTemporales;
+		HashMap<Long, ArrayList<LetradoInscripcion>> hmPersonasConSaltos; // Lista de saltos
+		ArrayList<LetradoInscripcion> alLetradosOrdenados; // Cola de letrados en la guardia
+		SimpleDateFormat sdf = new SimpleDateFormat(ClsConstants.DATE_FORMAT_JAVA);
+		SimpleDateFormat sdf2 = new SimpleDateFormat("dd/MM/yyyy");
+		LogFileWriter log = null;	
+		ArrayList<String> lineaLog = null;
+
+		try {			
+			if(datosExcel!= null && datosExcel.size() > 0) {				
+				CargaMasivaCalendariosVo primerRegistro = datosExcel.get(0);
+				Integer idInstitucion = primerRegistro.getIdInstitucion();
+				Integer idTurno = primerRegistro.getIdTurno();
+				Integer idGuardia = primerRegistro.getIdGuardia();
+				String fechaInicio = sdf.format(primerRegistro.getFechaInicioCalendario());
+				String fechaFin = sdf.format(datosExcel.get(datosExcel.size() - 1).getFechaInicioCalendario());
+				String primerDia = sdf2.format(primerRegistro.getFechaInicioCalendario());
+				String ultimoDia = sdf2.format(datosExcel.get(datosExcel.size() - 1).getFechaInicioCalendario());				
+			
+				/** Creamos el Calendario **/
+				lineaLog = new ArrayList<String>();
+				lineaLog.add("Creando calendario para:");
+				lineaLog.add("Guardia " + primerRegistro.getNombreGuardia());
+				ScsCalendarioGuardiasBean calendarioGuardiasBean = new ScsCalendarioGuardiasBean(idInstitucion,idTurno,idGuardia, null,fechaInicio,fechaFin,observaciones,null,null,null);
+				idCalendario = crearCalendario(calendarioGuardiasBean, this.usrBean);
+				
+				/** Creamos el regstro del Log **/
+				ReadProperties rp = new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+				log = LogFileWriter.getLogFileWriter(rp.returnProperty("sjcs.directorioFisicoGeneracionCalendarios") + File.separator + idInstitucion, 
+						getNombreFicheroLogCalendario(idTurno, idGuardia, idCalendario, fechaInicio, fechaFin));
+				log.clear();				
+				
+				if (idCalendario > 0) {
+					calendarioGuardiasBean.setIdCalendarioGuardias(idCalendario);
+					lineaLog.add("OK");
+				} else {
+					lineaLog.add("Fallo. Puede que ya exista el calendario");
+				}
+				log.addLog(lineaLog);
+
+				/** Inicializamos el calendario antes de generarlo **/
+				this.inicializaParaMatriz(idInstitucion,idTurno,idGuardia,idCalendario,null, this.usrBean, log);
+	
+				log.addLog(new String[] { "INICIO generacion", primerRegistro.getNombreGuardia()+ " (" + primerDia + " - " + ultimoDia + ")" });
+			
+				/** Obteniendo bajas temporales por letrado **/
+				hmBajasTemporales = bajasAdm.getLetradosDiasBajaTemporal(this.idInstitucion, this.idTurno, this.idGuardia, primerDia, ultimoDia);
+				log.addLog(new String[] {"Bajas Temporales", hmBajasTemporales.toString()});
+				
+				/** Obteniendo los saltos por letrado **/
+				hmPersonasConSaltos = scAdm.getSaltos(this.idInstitucion, this.idTurno, this.idGuardia);
+				log.addLog(new String[] {"Saltos", hmPersonasConSaltos.toString()});
+					
+				LetradoInscripcion letradoInscripcion = null;
+				for(CargaMasivaCalendariosVo vo: datosExcel){
+					letradoInscripcion = new LetradoInscripcion(vo);
+					diasGuardia = new ArrayList<String>();
+					diasGuardia.add(sdf2.format(vo.getFechaInicioCalendario()));
+					log.addLog(new String[] {"Dias", diasGuardia.toString()});		
+					
+					/** Comprobamos las restricciones del calendario **/
+					if (comprobarRestriccionesLetradoCola(letradoInscripcion, diasGuardia, hmPersonasConSaltos, hmBajasTemporales)) {
+						log.addLog(new String[] { "Letrado seleccionado", vo.toString() });
+						
+						/** Creamos la lista ordeada de letrados segun la carga de calendarios por fichero **/					
+						alLetradosOrdenados = new ArrayList<LetradoInscripcion>();
+						alLetradosOrdenados.add(letradoInscripcion);
+										
+						if (alLetradosOrdenados == null || alLetradosOrdenados.size() == 0)
+							throw new SIGAException("No existe cola de letrados de guardia");
+						
+						/** Guardamos las guardias en BD y empezamos a generar el calendario **/
+						this.almacenarAsignacionGuardia(idCalendario, alLetradosOrdenados, diasGuardia, null,UtilidadesString.getMensajeIdioma(this.usrBean, "gratuita.literal.comentario.sustitucion"));			
+						log.addLog(new String[] { "Letrado Asignado", "OK"});
+						
+					} else {
+						log.addLog(new String[] { "Letrado no valido", letradoInscripcion.toString()});
+					}
+				}
+				
+				log.addLog(new String[] { "FIN generacion" });
+			}
+
+		} catch (SIGAException e) {
+			throw e;
+		} catch (Exception e) {
+			throw new ClsExceptions(e, "");
+		} finally {
+			/** Escribiendo fichero de log **/
+			if (log != null)
+				log.flush();
+		}
+	} // generarCalendarioCargaFichero()	
 	
 }
