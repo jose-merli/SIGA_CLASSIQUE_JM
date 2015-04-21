@@ -36,7 +36,7 @@ public class SIGASvlProcesoFacturacion extends HttpServlet
 		Facturacion fac;
 		CenInstitucionBean beanInstitucion = null;
 		String idinstitucion = "";
-		Vector vInstituciones;
+		Vector<CenInstitucionBean> vInstituciones;
 		Date momentoInicio, momentoActual;
 		long minutosTranscurridos, minutosQueFaltanAntesDeSiguienteAutomaticoFacturacion, minutosEntreCadaProcesoAutomaticoFacturacion;
 		long duracionMediaFacturacion = 5;
@@ -53,7 +53,7 @@ public class SIGASvlProcesoFacturacion extends HttpServlet
 			CenInstitucionAdm admInstitucion = new CenInstitucionAdm(usr); // Esta controlado que no necesita usrbean
 			vInstituciones = admInstitucion.obtenerInstitucionesAlta();
 			if (vInstituciones == null) {
-				vInstituciones = new Vector();
+				vInstituciones = new Vector<CenInstitucionBean>();
 			}
 
 			// guardando el momento de inicio

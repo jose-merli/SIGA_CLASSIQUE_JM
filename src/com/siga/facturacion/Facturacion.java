@@ -12,6 +12,7 @@ import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -620,7 +621,7 @@ public class Facturacion {
 	    			resultadoConfirmar = ClsMngBBDD.callPLProcedure("{call PKG_SIGA_FACTURACION.CONFIRMACIONFACTURACION(?,?,?,?,?,?)}", 2, param_in_confirmacion);
 	    			String codretorno = resultadoConfirmar[0];
 	    			
-	    			if (codretorno.equals("-33")){
+	    			if (codretorno.equals("-205")){
 	    				throw new SIGAException ("messages.facturacion.confirmar.contadorRepetido");
 	    			}
 	    			if (!codretorno.equals("0")){
@@ -1416,12 +1417,13 @@ public class Facturacion {
         	resultado = ClsMngBBDD.callPLProcedure("{call PKG_SIGA_FACTURACION.GENERACIONFACTURACION(?,?,?,?,?,?,?,?,?)}", 2, param_in);
         	
         	// Compruebo que ha finalizado correctamente
+        	String[] codigosErrorFormato = {"-201", "-202", "-203", "-204"};
         	String codretorno = resultado[0];
-        	if (codretorno.equals("-201")){
+        	if (Arrays.asList(codigosErrorFormato).contains(codretorno)){		
         		throw new SIGAException (resultado[1]);
         		
         	} else if (!codretorno.equals("0")){
-        		throw new ClsExceptions ("Error al generar la Facturación rapida: "+resultado[1]);
+        		throw new ClsExceptions ("Error al generar la Facturación rapida: " + resultado[1]);
         	}
         	
         	// Desbloquea la facturacion programada
@@ -1981,7 +1983,8 @@ public class Facturacion {
 
 			String codretorno = resultado[0];
 			
-        	if (codretorno.equals("-201")){
+			String[] codigosErrorFormato = {"-201", "-202", "-203", "-204"};
+        	if (Arrays.asList(codigosErrorFormato).contains(codretorno)){
         		ClsLogging.writeFileLog("### Fin GENERACION (Serie:" + idSerieFacturacion + "; IdProgramacion:" + idProgramacion + "), finalizada con errores", 7);				
 				throw new ClsExceptions(resultado[1] + "(Serie:" + idSerieFacturacion + "; IdProgramacion:" + idProgramacion + "; CodigoError:" + codretorno + ")");
 			
