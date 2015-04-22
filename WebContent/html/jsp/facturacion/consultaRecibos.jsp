@@ -299,7 +299,7 @@
 							<input type="hidden" id="devolucionManual_<%=(i+1)%>_3" value="<%=idFactura%>">
 							<input type="hidden" id="devolucionManual_<%=(i+1)%>_4" value="<%=idRecibo%>">
 							
-							<select id="devolucionManual_<%=(i+1)%>_5" styleClass="boxCombo" onchange="cambiarMotivo(<%=(i+1)%>)" style="width:250px; display:none"> 
+							<select id="devolucionManual_<%=(i+1)%>_5" styleClass="boxCombo" onchange="cambiarMotivo(<%=(i+1)%>)" style="width:250px; <%if (!isChecked) {%>display:none<%}%>"> 
 <%
 								for (int j=0; j<vMotivos.size(); j++) {
 									Hashtable hMotivo = (Hashtable) vMotivos.get(j);
