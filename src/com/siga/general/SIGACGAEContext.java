@@ -4,6 +4,7 @@ package com.siga.general;
 //import java.net.URL;
 //import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Properties;
@@ -17,8 +18,10 @@ import org.apache.struts.action.ActionServlet;
 import org.redabogacia.sigaservices.app.AppConstants.MODULO;
 import org.redabogacia.sigaservices.app.AppConstants.PARAMETRO;
 import org.redabogacia.sigaservices.app.autogen.model.CenInstitucion;
+import org.redabogacia.sigaservices.app.autogen.model.EstUserRegistry;
 import org.redabogacia.sigaservices.app.autogen.model.GenParametros;
 import org.redabogacia.sigaservices.app.services.cen.CenInstitucionService;
+import org.redabogacia.sigaservices.app.services.est.EstadisticasUserRegistryService;
 import org.redabogacia.sigaservices.app.services.gen.GenParametrosService;
 import org.redabogacia.sigaservices.app.util.PropertyReader;
 import org.redabogacia.sigaservices.app.util.ReadProperties;
@@ -291,6 +294,18 @@ System.setProperties(properties);
 				}
 				bean.setLocation(""+comision.getIdinstitucion());
 			}
+			
+			/****************** CR - INSERTAMOS EN LA TABLA EST_USER_REGISTRY PARA LAS ESTADISTICAS DEL BI **********************/
+			EstUserRegistry registroUser = new EstUserRegistry();
+			registroUser.setIdusuario(new Integer(bean.getUserName()));
+			registroUser.setIdinstitucion(new Short(bean.getLocation()));
+			if(bean.getProfile()!=null)
+				registroUser.setIdperfil(Arrays.toString(bean.getProfile()));
+			else
+				registroUser.setIdperfil("-");
+			EstadisticasUserRegistryService userRegistryService = (EstadisticasUserRegistryService) bm.getService(EstadisticasUserRegistryService.class);		
+			userRegistryService.insert(registroUser);
+			/*****************************************************************************************************************/				
 			
 			
 			/* Obtenemos idPersona que corresponde al nif y lo mentemos en el bean del
