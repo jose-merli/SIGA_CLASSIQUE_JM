@@ -409,11 +409,7 @@
 				<td colspan="6">
 					<siga:ConjCampos leyenda="facturacion.cuentasBancarias.configuracionFicherosAdeudo" desplegable="true" oculto="true">
 						<table border="0">
-						
-<%
-	if (tiposFicherosAdeudo!=null && (tiposFicherosAdeudo.equals("1") || tiposFicherosAdeudo.equals("2"))) {
-%>						
-							<tr>
+							<tr <%if (tiposFicherosAdeudo==null || tiposFicherosAdeudo.equals("0")) {%> style="display:none;" <% } %>>
 								<td class="labelText">
 									<siga:Idioma key="facturacion.cuentasBancarias.configuracionFicherosEsquema.titulo"/>&nbsp;(*)
 								</td>
@@ -425,9 +421,6 @@
 									</html:select>
 								</td>
 							</tr>	
-<% 
-	}
-%>							
 							
 							<tr>
 								<td class="labelText">
@@ -444,10 +437,7 @@
 								</td>
 							</tr>
 							
-<%
-	if (tiposFicherosAdeudo!=null && (tiposFicherosAdeudo.equals("1") || tiposFicherosAdeudo.equals("2"))) {
-%>								
-							<tr>
+							<tr <%if (tiposFicherosAdeudo==null || tiposFicherosAdeudo.equals("0")) {%> style="display:none;" <% } %>>
 								<td class="labelText">
 									<siga:Idioma key="facturacion.cuentasBancarias.configuracionLugarEsquemaSecuencia.titulo"/>&nbsp;(*)
 									<siga:ToolTip id='ayudaLugarEsquemaSecuencia' imagen='/SIGA/html/imagenes/botonAyuda.gif' texto='<%=UtilidadesString.mostrarDatoJSP(UtilidadesString.getMensajeIdioma(usuario,"facturacion.cuentasBancarias.configuracionLugarEsquemaSecuencia.ayuda"))%>' />
@@ -459,9 +449,6 @@
 									</html:select>
 								</td>
 							</tr>		
-<% 
-	}
-%>																			
 						</table>
 					</siga:ConjCampos>
 				</td>
