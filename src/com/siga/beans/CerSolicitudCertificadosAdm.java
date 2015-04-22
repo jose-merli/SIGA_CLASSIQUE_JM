@@ -1581,8 +1581,6 @@ public class CerSolicitudCertificadosAdm extends MasterBeanAdministrador {
 				String sIdProducto = UtilidadesHash.getString(hDatos, CerSolicitudCertificadosBean.C_PPN_IDPRODUCTO);
 				String sIdProductoInstitucion = UtilidadesHash.getString(hDatos, CerSolicitudCertificadosBean.C_PPN_IDPRODUCTOINSTITUCION);
 				
-				hDatos = this.getDatosFacturaAsociada(hDatos);
-				
 				String letrado = CenClienteAdm.getEsLetrado(sIdPersona, sIdInstitucion);
 				hDatos.put("LETRADO", letrado);
 				
@@ -1597,38 +1595,44 @@ public class CerSolicitudCertificadosAdm extends MasterBeanAdministrador {
 				estadoCertificado = UtilidadesMultidioma.getDatoMaestroIdioma(estadoCertificado, this.usrbean);
 				hDatos.put("DESCRIPCION_ESTADOCERTIFICADO", estadoCertificado);
 				
-				/* --------------- 1. Obtiene datos para icono - Comprueba si tiene factura -------------------------------- */
-				boolean bBuscarIcono = true;
 				String sCampo = "TIPO_ICONO";  // 0:SinIcono; 1:Descarga; 2:FacturacionRapida
-				String idFactura = UtilidadesHash.getString(hDatos, FacFacturaBean.C_IDFACTURA);
-				if (idFactura!=null && !idFactura.equals("")) { // Contiene factura
-					hDatos.put(sCampo, "1"); // Si tiene factura => aparece icono para descarga (1)
-					bBuscarIcono = false;
-				}
-				
-				if (bBuscarIcono) {
-					/* --------------- 2. Obtiene datos para icono - Comprueba si tiene productos facturables -------------------------------- */					
-					String sql = " SELECT COUNT(1) AS " + sCampo +   
-							" FROM " + PysProductosSolicitadosBean.T_NOMBRETABLA +
-							" WHERE " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDINSTITUCION + " = " + sIdInstitucion +								
-								" AND " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDTIPOPRODUCTO + " = " + sIdTipoProducto +
-								" AND " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDPRODUCTO + " = " + sIdProducto +
-								" AND " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDPRODUCTOINSTITUCION + " = " + sIdProductoInstitucion +
-								" AND " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDPETICION + " = " + sIdPeticion +
-								" AND " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_ACEPTADO + " NOT IN ('B', 'D', 'P') " +
-								" AND " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_NOFACTURABLE + " = 0 ";
+				if (sIdPeticion==null) {
+					hDatos.put(sCampo, "0"); // Por defecto => aparece sin icono (0)
+				} else {
+					hDatos = this.getDatosFacturaAsociada(hDatos);
+					/* --------------- 1. Obtiene datos para icono - Comprueba si tiene factura -------------------------------- */
+					boolean bBuscarIcono = true;
 					
-					Hashtable<String,Object> hResultado = this.selectGenericoHash(sql);
-					if (hResultado!=null) {
-						String sValorCampo = UtilidadesHash.getString(hResultado, sCampo);
-						if (sValorCampo!=null && !sValorCampo.equals("0")) {
-							hDatos.put(sCampo, "2"); // Si tiene productos facturables => aparece icono para facturacion rapida (2)
-							bBuscarIcono = false;
-						}
+					String idFactura = UtilidadesHash.getString(hDatos, FacFacturaBean.C_IDFACTURA);
+					if (idFactura!=null && !idFactura.equals("")) { // Contiene factura
+						hDatos.put(sCampo, "1"); // Si tiene factura => aparece icono para descarga (1)
+						bBuscarIcono = false;
 					}
 					
 					if (bBuscarIcono) {
-						hDatos.put(sCampo, "0"); // Por defecto => aparece sin icono (0)
+						/* --------------- 2. Obtiene datos para icono - Comprueba si tiene productos facturables -------------------------------- */					
+						String sql = " SELECT COUNT(1) AS " + sCampo +   
+								" FROM " + PysProductosSolicitadosBean.T_NOMBRETABLA +
+								" WHERE " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDINSTITUCION + " = " + sIdInstitucion +								
+									" AND " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDTIPOPRODUCTO + " = " + sIdTipoProducto +
+									" AND " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDPRODUCTO + " = " + sIdProducto +
+									" AND " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDPRODUCTOINSTITUCION + " = " + sIdProductoInstitucion +
+									" AND " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDPETICION + " = " + sIdPeticion +
+									" AND " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_ACEPTADO + " NOT IN ('B', 'D', 'P') " +
+									" AND " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_NOFACTURABLE + " = 0 ";
+						
+						Hashtable<String,Object> hResultado = this.selectGenericoHash(sql);
+						if (hResultado!=null) {
+							String sValorCampo = UtilidadesHash.getString(hResultado, sCampo);
+							if (sValorCampo!=null && !sValorCampo.equals("0")) {
+								hDatos.put(sCampo, "2"); // Si tiene productos facturables => aparece icono para facturacion rapida (2)
+								bBuscarIcono = false;
+							}
+						}
+						
+						if (bBuscarIcono) {
+							hDatos.put(sCampo, "0"); // Por defecto => aparece sin icono (0)
+						}
 					}
 				}
 				
