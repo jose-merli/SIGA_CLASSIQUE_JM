@@ -274,7 +274,7 @@
 								<td width="140px"><siga:Fecha nombreCampo="buscarFechaDesde" valorInicial="<%=form.getBuscarFechaDesde()%>"/></td>
 		
 								<td width="120px" class="labelText"><siga:Idioma key="facturacion.buscarFactura.literal.FechaHasta"/></td>
-								<td><siga:Fecha nombreCampo="buscarFechaHasta" campoCargarFechaDesde="buscarFechaDesde" valorInicial="<%=form.getBuscarFechaHasta()%>"/></td>
+								<td><siga:Fecha nombreCampo="buscarFechaHasta" valorInicial="<%=form.getBuscarFechaHasta()!=null%>"/></td>
 							</tr>
 		
 							<tr>				
