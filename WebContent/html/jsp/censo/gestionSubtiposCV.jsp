@@ -53,7 +53,12 @@
 	
 	
 	function buscarTipos() {
-		
+		var buts = document.getElementsByTagName("input");
+		for ( var b = 0; b < buts.length; b++) {
+			if (buts[b].type == 'button') {
+				jQuery(buts[b]).attr("disabled", "disabled");
+			}
+		}
 		var idInstitucion = document.SubtiposCVForm.idInstitucion.value;
 		var tipoDescripcion = document.SubtiposCVForm.tipoDescripcion.value;
 		var subTipo1Descripcion = document.SubtiposCVForm.subTipo1Descripcion.value;
@@ -72,10 +77,11 @@
             url: "/SIGA/CEN_GestionSubtiposCV.do?modo=getAjaxBusqueda",
             data: data,
             success: function(response){
+            	fin();
                 jQuery('#divListado').html(response);
             },
             error: function(e){
-            	
+            	fin();
                 alert('Error: ' + e);
             }
         });
