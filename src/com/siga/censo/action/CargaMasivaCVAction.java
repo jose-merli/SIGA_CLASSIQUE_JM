@@ -164,14 +164,8 @@ public class CargaMasivaCVAction extends MasterAction {
 		File errorFile;
 		try {
 			CargaMasivaDatosCVVo cargaMasivaDatosCVVo = new CargaMasivaDatosCVVo();
-			
-			String identificadorFormularioBusqueda = getIdBusqueda(super.dataBusqueda,getClass().getName());
-			CargaMasivaCVForm cargaMasivaCVFormSesion = (CargaMasivaCVForm) request.getSession().getAttribute(identificadorFormularioBusqueda);
-			
-			
-			
 			cargaMasivaDatosCVVo.setIdinstitucion(Short.valueOf(usrBean.getLocation()));
-			cargaMasivaDatosCVVo.setExcelBytes(cargaMasivaCVFormSesion.getTheFile().getFileData());
+			cargaMasivaDatosCVVo.setExcelBytes(SIGAServicesHelper.getBytes(cargaMasivaCVForm.getRutaFichero()));
 			cargaMasivaDatosCVVo.setCodIdioma(usrBean.getLanguage());
 			
 			errorFile = cargaMasivaDatosCV.getErrorExcelFile(cargaMasivaDatosCVVo);
@@ -240,7 +234,7 @@ public class CargaMasivaCVAction extends MasterAction {
 			CargaMasivaDatosCVVo cargaMasivaDatosCVVo = new CargaMasivaDatosCVVo();
 			cargaMasivaDatosCVVo.setCodIdioma(usrBean.getLanguage());
 			cargaMasivaDatosCVVo.setIdinstitucion(Short.valueOf(usrBean.getLocation()));
-			String nombreFichero = cargaMasivaCVForm.getRutaFichero().substring(cargaMasivaCVForm.getRutaFichero().lastIndexOf("\\")+1); 
+			String nombreFichero = cargaMasivaCVForm.getNombreFichero().substring(cargaMasivaCVForm.getNombreFichero().lastIndexOf("\\")+1); 
 			cargaMasivaDatosCVVo.setNombreFichero(nombreFichero);
 			cargaMasivaDatosCVVo.setUsuario(usrBean.getUserName());
 			cargaMasivaDatosCVVo.setExcelBytes(SIGAServicesHelper.getBytes(cargaMasivaCVForm.getRutaFichero()));
@@ -303,6 +297,8 @@ public class CargaMasivaCVAction extends MasterAction {
 		cargaMasivaCVForm.setCodIdioma(usrBean.getLanguage());
 		try {
 			if(cargaMasivaCVForm.getTheFile()!=null && cargaMasivaCVForm.getTheFile().getFileData()!=null && cargaMasivaCVForm.getTheFile().getFileData().length>0){
+				File file = SIGAServicesHelper.createTemporalFile(cargaMasivaCVForm.getTheFile().getFileData(), "xls"); 
+				cargaMasivaCVForm.setRutaFichero(file.getAbsolutePath());
 				
 				CargaMasivaDatosCVVo cargaMasivaDatosCVVo = new CargaMasivaDatosCVVo();
 				cargaMasivaDatosCVVo.setIdinstitucion(Short.valueOf(usrBean.getLocation()));
@@ -313,6 +309,7 @@ public class CargaMasivaCVAction extends MasterAction {
 				request.setAttribute("listado", voService.getVo2FormList(cargaMasivaDatosCVList));
 				String identificadorFormularioBusqueda = getIdBusqueda(super.dataBusqueda,getClass().getName());
 				request.getSession().setAttribute(identificadorFormularioBusqueda,cargaMasivaCVForm.clone());
+				
 
 			}
 		}catch (BusinessException e) {

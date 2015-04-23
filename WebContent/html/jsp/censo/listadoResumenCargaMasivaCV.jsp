@@ -28,6 +28,7 @@
 			document.forms['CargaMasivaCVForm'].submit();
 	}
 	function accionGuardar() {
+		sub();
 		document.forms['CargaMasivaCVForm'].modo.value="processExcelFile";
 		document.forms['CargaMasivaCVForm'].target = "submitArea";
 		document.forms['CargaMasivaCVForm'].submit();
@@ -50,16 +51,17 @@
 <html:form action="${path}"   target="submitArea">
   	<html:hidden property="modo"/>
   	<html:hidden property="rutaFichero"/>
+  	<html:hidden property="nombreFichero"/>
 </html:form>
 
-
 <table class="tablaTitulo" align="center">
-		<tr>
-		<td class="titulitos">
-			<siga:Idioma key="cargaMasivaDatosCurriculares.ficheroProcesado.literal"/><c:out value="${CargaMasivaCVForm.rutaFichero}"/>
-		</td>
-		</tr>
-		</table>
+	<tr>
+	<td class="titulitos">
+		<siga:Idioma key="cargaMasivaDatosCurriculares.ficheroProcesado.literal"/><c:out value="${CargaMasivaCVForm.nombreFichero}"/>
+	</td>
+	</tr>
+</table>
+		
 <siga:Table 
 	   	      name="tablaDatos"
 	   		  border="1"

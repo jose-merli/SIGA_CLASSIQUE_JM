@@ -89,7 +89,7 @@
 			return false;
 		}
 		sub();
-		document.forms['CargaMasivaCVForm'].rutaFichero.value  = document.forms['CargaMasivaCVForm'].theFile.value;
+		document.forms['CargaMasivaCVForm'].nombreFichero.value = document.forms['CargaMasivaCVForm'].theFile.value;
 		document.forms['CargaMasivaCVForm'].modo.value = 'parseExcelFile';
 		document.forms['CargaMasivaCVForm'].submit();
 		
@@ -122,7 +122,7 @@
 	<html:form action="${path}"  method="POST" enctype="multipart/form-data" target="mainWorkArea">
 		<html:hidden property="modo"/>
 		<html:hidden property="idInstitucion"/>
-		<html:hidden property="rutaFichero"/>
+		<html:hidden property="nombreFichero"/>
 		<html:hidden property="idFichero"/>
 		<html:hidden property="idFicheroLog"/>
 		<siga:ConjCampos leyenda="censo.fichaCliente.datosCV.cabecera">
