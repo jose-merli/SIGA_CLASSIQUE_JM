@@ -115,15 +115,10 @@
 		
 		
 		function accionProcesar() {
-			
-			if(document.getElementById("uploadBox").value != "") {
+			if(document.forms[0].fichero.value != "") {
 				sub();
-				
 				var mensaje = "<siga:Idioma key='censo.mantenimientoGruposFijos.confirmarCarga'/> ";
-					
-				//Preguntamos si queremos subir los datos del fichero o no							
-				if (confirm(mensaje)) 
-				{
+				if (confirm(mensaje)){
 					document.forms[0].modo.value="procesarFichero";	
 					var alerta = "<siga:Idioma key='censo.mantenimientoGruposFijos.procesandoFichero'/> ";
 					alert(alerta);
@@ -132,6 +127,7 @@
 				} else{
 					fin();
 				}	
+				
 			}else{
 				var mensaje = "<siga:Idioma key='censo.mantenimientoGruposFijos.seleccionarFichero'/>";
 				alert(mensaje);
@@ -204,98 +200,83 @@
 			<tr>
 				<td>
 					<siga:ConjCampos leyenda="censo.datosGruposFijos.literal.GruposFijos">
-						<table class="tablaCampos" border="0" width="100%">	
+						<table class="tablaCampos" border="0" width="100%">
 							<tr>
-								<td class="labelText">
-									<siga:Idioma key="gratuita.mantenimientoTablasMaestra.literal.nombre"/>&nbsp;(*)
+								<td class="labelText"><siga:Idioma
+										key="gratuita.mantenimientoTablasMaestra.literal.nombre" />&nbsp;(*)
 								</td>
-								<td>
-									<html:text name="MantenimientoGruposFijosForm" property="nombre" size="80" maxlength="100" readonly="<%=desactivado %>" styleClass="<%=estilo%>"></html:text>
+								<td><html:text name="MantenimientoGruposFijosForm"
+										property="nombre" size="80" maxlength="100"
+										readonly="<%=desactivado %>" styleClass="<%=estilo%>"></html:text>
 								</td>
 							</tr>
 							<%if (!modo.equalsIgnoreCase("NUEVO")) { %>
 							<tr>
-								<td class="labelText">
-									<siga:Idioma key="censo.gestion.grupos.literal.identificador"/>
-								</td>
-								<td>
-									<html:text name="MantenimientoGruposFijosForm" property="idGrupo" size="80" maxlength="100" readonly="true" styleClass="boxConsulta"></html:text>
-								</td>
+								<td class="labelText"><siga:Idioma key="censo.gestion.grupos.literal.identificador" /></td>
+								<td><html:text name="MantenimientoGruposFijosForm" property="idGrupo" size="80" maxlength="100" readonly="true"	styleClass="boxConsulta"></html:text></td>
 							</tr>
 							<%}%>
-					</table>
-					<%if (!modo.equalsIgnoreCase("NUEVO")&&(!modo.equalsIgnoreCase("VER"))) { %>
-					<siga:ConjCampos leyenda="censo.gestion.grupos.literal.importar">
-						<table class="tablaCampos" border="0" width="100%">
-						<div name="divSubida" class="labelTextValue" style="padding-left:30px;padding-top:30px;width:90%; height:90%;">
-						<p><siga:Idioma key="censo.gestion.grupos.literal.tipo.fichero"/><br>
-						   <siga:Idioma key="censo.gestion.grupos.literal.campos"/></p>
-						<ul>
-							<li><siga:Idioma key="censo.gestion.grupos.literal.ncolegiado"/></li>
-							<li><siga:Idioma key="censo.gestion.grupos.literal.NIFCIF"/></li>
-							<li><siga:Idioma key="censo.gestion.grupos.literal.identificador.grupo.fijo"/></li>
-						</ul>		
-						<html:file property="fichero"  name="MantenimientoGruposFijosForm" size="90" styleId="uploadBox" styleClass="box" accept="application/vnd.ms-excel"  ></html:file>
- 						<input type="button" alt="Procesar" name="botonProcesar" onclick="accionProcesar()" class="button" value="Procesar"> 	
- 						<html:button property="idButton" styleId="idButtonDescPlant" styleClass="button" onclick="accionDescargarPlant()">
-							<siga:Idioma key="general.boton.descargar.plantilla" />
-						</html:button>
- 						</div> 
 						</table>
-					</siga:ConjCampos>	
+					</siga:ConjCampos>
+						
+					<%if (!modo.equalsIgnoreCase("NUEVO")&&(!modo.equalsIgnoreCase("VER"))) { %>
+						<siga:ConjCampos leyenda="censo.gestion.grupos.literal.importar">
+							<table class="tablaCampos" border="0" width="100%">
+								<tr>
+									<td class="labelText">
+										<siga:Idioma key="administracion.informes.literal.archivo" />&nbsp;
+									</td>
+									<td>
+										<html:file property="fichero" styleClass="boxCombo" style="width:400px;" />
+									</td>
+									<td class="tdBotones">
+										<input  type="button" alt="<siga:Idioma key="general.boton.procesaFichero" />"  onclick="return accionProcesar();"
+											class="button" name="idButton" value="<siga:Idioma key="general.boton.procesaFichero" />"></input>
+									</td>
+									<td class="tdBotones">
+										<input type="button" alt='<siga:Idioma key="general.boton.descargaFicheroModelo" />'  onClick="accionDescargarPlant()" class="button" name="idButtonDescPlant" value="<siga:Idioma key="general.boton.descargaFicheroModelo" />"/>
+									</td>
+								</tr>							
+							</table>
+						</siga:ConjCampos>
 					<%}%>
-				</siga:ConjCampos>	
 				</td>
 			</tr>
-			<%if (!modo.equalsIgnoreCase("NUEVO")){%>
-			<tr>
-				<td>
-					<siga:ConjCampos leyenda="censo.datosGruposFijos.literal.ficheros">
-					<table width="50%"  border="0" align="center"><tr><td>
-						<c:choose>
-						<c:when test="${ficherosRel.size()==0}">
-						<tr class="notFound" align="center">
-				   			<td class="titulitos">
-				   				<siga:Idioma key="messages.noRecordFound"/>
-				   			</td>
-						</tr>
-			    		</c:when>
-			    		<c:otherwise>
+		</table>
+		
+		<c:if test="${ficherosRel.size()>0}">
+			<siga:ConjCampos leyenda="censo.datosGruposFijos.literal.ficheros">
+				<div align="center" >
+					<table width="100%"  border="0" ><tr><td>
 			    		<siga:Table 
 							name="tablaDatos"
 							border="1"
 							columnNames="administracion.informes.literal.archivo.fecha,administracion.informes.literal.archivo.usuario,administracion.informes.literal.archivo.nombre,"
 							columnSizes="15,15,30,10"
-							fixedHeight="500">
-						<c:forEach items="${ficherosRel}" var="ficheros" varStatus="status">								
-						<%  FilaExtElement[] elems=new FilaExtElement[2];
-							elems[0]=new FilaExtElement("download","download",SIGAConstants.ACCESS_READ); 		
-							elems[1]=new FilaExtElement("descargaLog","descargaLog",SIGAConstants.ACCESS_READ); %>		
-						<siga:FilaConIconos fila="${status.count}"			    
-				  			pintarEspacio="no"
-				  			visibleBorrado="N"
-				  			visibleEdicion="N"
-				  			visibleConsulta="N"
-				  			clase="listaNonEdit" elementos="<%=elems%>" botones="">
-							<td><input type="hidden" name="oculto${status.count}_1" value="${ficheros.directorio}">
-								<input type="hidden" name="oculto${status.count}_2" value="${ficheros.nombrefichero}">
-								<input type="hidden" name="oculto${status.count}_3" value="${ficheros.nombreficherolog}">
-							<fmt:formatDate value="${ficheros.fechamodificacion}" var="fechaFormat" type="date" pattern="dd/MM/yyyy"/><c:out value="${fechaFormat}"></c:out></td>
-							<td><c:out value="${ficheros.nombreUsuario}"></c:out></td>
-							<td><c:out value="${ficheros.nombrefichero}"></c:out></td>
-						</siga:FilaConIconos>	
-					   </c:forEach>
-					   </siga:Table>
-					   </c:otherwise>
-					   </c:choose>
-					</tr></td>
-					</table>
-					</siga:ConjCampos>	
-				</td>
-			</tr>
-			<%}%>
-		</table>
-		
+							fixedHeight="150">
+							<c:forEach items="${ficherosRel}" var="ficheros" varStatus="status">								
+								<%  FilaExtElement[] elems=new FilaExtElement[2];
+									elems[0]=new FilaExtElement("download","download",SIGAConstants.ACCESS_READ); 		
+									elems[1]=new FilaExtElement("descargaLog","descargaLog",SIGAConstants.ACCESS_READ); %>		
+								<siga:FilaConIconos fila="${status.count}"			    
+						  			pintarEspacio="no"
+						  			visibleBorrado="N"
+						  			visibleEdicion="N"
+						  			visibleConsulta="N"
+						  			clase="listaNonEdit" elementos="<%=elems%>" botones="">
+									<td><input type="hidden" name="oculto${status.count}_1" value="${ficheros.directorio}">
+										<input type="hidden" name="oculto${status.count}_2" value="${ficheros.nombrefichero}">
+										<input type="hidden" name="oculto${status.count}_3" value="${ficheros.nombreficherolog}">
+									<fmt:formatDate value="${ficheros.fechamodificacion}" var="fechaFormat" type="date" pattern="dd/MM/yyyy"/><c:out value="${fechaFormat}"></c:out></td>
+									<td><c:out value="${ficheros.nombreUsuario}"></c:out></td>
+									<td><c:out value="${ficheros.nombrefichero}"></c:out></td>
+								</siga:FilaConIconos>	
+						   </c:forEach>
+					  	 </siga:Table>
+					 </td></tr></table>
+				</div>
+			</siga:ConjCampos>
+		</c:if>
 		</html:form>
 	<!-- FIN: CAMPOS -->
 

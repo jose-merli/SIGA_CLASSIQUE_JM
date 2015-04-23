@@ -14,6 +14,7 @@ package com.siga.censo.action;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -33,6 +34,7 @@ import org.apache.struts.action.ActionMapping;
 import org.redabogacia.sigaservices.app.autogen.model.CenGruposFicheros;
 import org.redabogacia.sigaservices.app.exceptions.BusinessException;
 import org.redabogacia.sigaservices.app.helper.ExcelHelper;
+import org.redabogacia.sigaservices.app.helper.SIGAServicesHelper;
 import org.redabogacia.sigaservices.app.services.cen.CenGruposFicherosService;
 import org.redabogacia.sigaservices.app.util.ReadProperties;
 import org.redabogacia.sigaservices.app.util.SIGAReferences;
@@ -70,11 +72,13 @@ import es.satec.businessManager.BusinessManager;
 public class MantenimientoGruposFijosAction extends MasterAction {
 	
 	
-	private String COL_NIFCIF = "NIF/CIF";
-	private String COL_NUMCOLEGIADO = "N.COLEGIADO";
-	private String COL_IDGRUPO = "ID.GRUPO";
-	private String COL_RESULTADO = "RESULTADO";
-	private String COL_ACCION = "ALTA(A)/BAJA(B)";
+	private static String COL_NIFCIF = "NIF/CIF";
+	private static String COL_NUMCOLEGIADO = "N.COLEGIADO";
+	private static String COL_IDGRUPO = "ID.GRUPO";
+	private static String COL_RESULTADO = "RESULTADO";
+	private static String COL_ACCION = "ALTA(A)/BAJA(B)";
+	
+	public static final List<String> CAMPOS = Arrays.asList(COL_NIFCIF,COL_NUMCOLEGIADO,COL_IDGRUPO,COL_RESULTADO,COL_ACCION);	
 	
 	protected ActionForward executeInternal(ActionMapping mapping,ActionForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException 
 	{
@@ -125,58 +129,45 @@ public class MantenimientoGruposFijosAction extends MasterAction {
 			MantenimientoGruposFijosForm miForm = (MantenimientoGruposFijosForm) formulario;
 			UsrBean user=(UsrBean)request.getSession().getAttribute("USRBEAN");	
 			
-			
 	        /***** PAGINACION*****/
-	        HashMap databackup=new HashMap();
-		    if (request.getSession().getAttribute("DATAPAGINADOR")!=null){ 
-			 		databackup = (HashMap)request.getSession().getAttribute("DATAPAGINADOR");
-				     Paginador paginador = (Paginador)databackup.get("paginador");
-				     Vector datos=new Vector();
-				
-				
-				//Si no es la primera llamada, obtengo la página del request y la busco con el paginador
-				String pagina = (String)request.getParameter("pagina");
-				
-				 
-				
-				
-				if (pagina!=null){
+			HashMap databackup = new HashMap();
+			if (request.getSession().getAttribute("DATAPAGINADOR") != null) {
+				databackup = (HashMap) request.getSession().getAttribute("DATAPAGINADOR");
+				Paginador paginador = (Paginador) databackup.get("paginador");
+				Vector datos = new Vector();
+
+				// Si no es la primera llamada, obtengo la página del request y la busco con el paginador
+				String pagina = (String) request.getParameter("pagina");
+
+				if (pagina != null) {
 					datos = paginador.obtenerPagina(Integer.parseInt(pagina));
-				}else{// cuando hemos editado un registro de la busqueda y volvemos a la paginacion
+				} else {// cuando hemos editado un registro de la busqueda y volvemos a la paginacion
 					datos = paginador.obtenerPagina((paginador.getPaginaActual()));
 				}
-				
-				
-				
-				
-				databackup.put("paginador",paginador);
-				databackup.put("datos",datos);
-				
-		   }else{	
-				
-		  	    databackup=new HashMap();
-		        Paginador resultado = null;
+
+				databackup.put("paginador", paginador);
+				databackup.put("datos", datos);
+
+			} else {
+				databackup = new HashMap();
+				Paginador resultado = null;
 				Vector datos = null;
-				CenGruposClienteAdm gruposFijosAdm = new CenGruposClienteAdm (user);
-				
+				CenGruposClienteAdm gruposFijosAdm = new CenGruposClienteAdm(user);
+
 				String nombre = miForm.getNombre();
 				String idInstitucion = user.getLocation();
-				Paginador ResulGruposFijos = gruposFijosAdm.busquedaGruposFijos(nombre,idInstitucion,user.getLanguage());
-				databackup.put("paginador",ResulGruposFijos);
-				if (ResulGruposFijos!=null){ 
-				   datos = ResulGruposFijos.obtenerPagina(1);
-				   databackup.put("datos",datos);
-				   request.getSession().setAttribute("DATAPAGINADOR",databackup);
-				}   
-				
-				
-				
-		   }	
-		
+				Paginador ResulGruposFijos = gruposFijosAdm.busquedaGruposFijos(nombre, idInstitucion, user.getLanguage());
+				databackup.put("paginador", ResulGruposFijos);
+				if (ResulGruposFijos != null) {
+					datos = ResulGruposFijos.obtenerPagina(1);
+					databackup.put("datos", datos);
+					request.getSession().setAttribute("DATAPAGINADOR", databackup);
+				}
+			}
+
+		} catch (Exception e) {
+			throwExcp("messages.general.error", new String[] { "modulo.gratuita" }, e, null);
 		}
-		catch (Exception e) { 
-			throwExcp("messages.general.error", new String[] {"modulo.gratuita"}, e, null);
-		} 
 		return "buscarPor";
 	}
 
@@ -184,51 +175,48 @@ public class MantenimientoGruposFijosAction extends MasterAction {
 	 * @see com.siga.general.MasterAction#editar(org.apache.struts.action.ActionMapping, com.siga.general.MasterForm, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
 	 */
 	protected String obtenerDatos(String modo, MasterForm formulario, HttpServletRequest request) throws SIGAException {
-		
 		try {
 			MantenimientoGruposFijosForm miForm = (MantenimientoGruposFijosForm) formulario;
-			String	idInstitucionGrupos="";
-			String	idGrupo="";
-			
-			if(miForm.getDatosTablaOcultos(0)==null){
-				Hashtable hashGrupModif=(Hashtable) request.getSession().getAttribute("DATABACKUP");
-				idInstitucionGrupos=(String)hashGrupModif.get("IDINSTITUCION");
-				idGrupo=(String)hashGrupModif.get("IDGRUPO");
-				
-			}else{
-				idInstitucionGrupos = (String)miForm.getDatosTablaOcultos(0).get(0);
-				idGrupo = (String)miForm.getDatosTablaOcultos(0).get(1);
+			String idInstitucionGrupos = "";
+			String idGrupo = "";
+
+			if (miForm.getDatosTablaOcultos(0) == null) {
+				Hashtable hashGrupModif = (Hashtable) request.getSession().getAttribute("DATABACKUP");
+				idInstitucionGrupos = (String) hashGrupModif.get("IDINSTITUCION");
+				idGrupo = (String) hashGrupModif.get("IDGRUPO");
+
+			} else {
+				idInstitucionGrupos = (String) miForm.getDatosTablaOcultos(0).get(0);
+				idGrupo = (String) miForm.getDatosTablaOcultos(0).get(1);
 			}
 
-			UsrBean user= this.getUserBean(request);
-			CenGruposClienteAdm gruposFijosAdm = new CenGruposClienteAdm (user);
-			
-			Vector vGruposFijos = gruposFijosAdm.busquedaGrupofijo(idInstitucionGrupos, idGrupo,user.getLanguage());
-			
+			UsrBean user = this.getUserBean(request);
+			CenGruposClienteAdm gruposFijosAdm = new CenGruposClienteAdm(user);
+
+			Vector vGruposFijos = gruposFijosAdm.busquedaGrupofijo(idInstitucionGrupos, idGrupo, user.getLanguage());
+
 			if (vGruposFijos.size() == 1) {
 				Hashtable hashGrupos = (Hashtable) vGruposFijos.get(0);
 				miForm.setDatos(hashGrupos);
 				request.getSession().setAttribute("DATABACKUP", hashGrupos);
-				
-				//Obtenemos los ficheros de carga masiva del grupo fijo (si existen)
+
+				// Obtenemos los ficheros de carga masiva del grupo fijo (si
+				// existen)
 				BusinessManager bm = getBusinessManager();
-				CenGruposFicherosService fichgrupserv= (CenGruposFicherosService) bm.getService(CenGruposFicherosService.class);
+				CenGruposFicherosService fichgrupserv = (CenGruposFicherosService) bm.getService(CenGruposFicherosService.class);
 				CenGruposFicheros obj = new CenGruposFicheros();
 				obj.setIdinstitucionGrupo(Short.parseShort(hashGrupos.get("IDINSTITUCION").toString()));
 				obj.setIdgrupo(Short.parseShort(hashGrupos.get("IDGRUPO").toString()));
 				List<CenGruposFicherosVo> fichGrupoList = fichgrupserv.getList(obj);
-				
-				request.setAttribute("ficherosRel", fichGrupoList); 
-				
 
+				request.setAttribute("ficherosRel", fichGrupoList);
 			}
-			
-			request.setAttribute("modo", modo);		
 
+			request.setAttribute("modo", modo);
+
+		} catch (Exception e) {
+			throwExcp("messages.general.error", new String[] { "modulo.gratuita" }, e, null);
 		}
-		catch (Exception e) { 
-			throwExcp("messages.general.error", new String[] {"modulo.gratuita"}, e, null); 
-		} 
 		return "editar";
 	}
 	
@@ -303,8 +291,6 @@ public class MantenimientoGruposFijosAction extends MasterAction {
 		        	}
 				}
 				
-				//gruposFijosAdm.update(hashGrupoModificado, hashGrupoOriginal);
-				
 				tx.commit();
 			}else{
 				throw new SIGAException("gratuita.mantenimientoTablasMaestra.mensaje.grupoFijoDuplicado"); 
@@ -325,15 +311,13 @@ public class MantenimientoGruposFijosAction extends MasterAction {
 	protected String nuevo(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		String modo = "nuevo";
 		try {
-			request.setAttribute("modo", modo);	
+			request.setAttribute("modo", modo);
 			MantenimientoGruposFijosForm miForm = (MantenimientoGruposFijosForm) formulario;
 			miForm.setNombre("");
-			
-			
+
+		} catch (Exception e) {
+			throwExcp("messages.general.error", new String[] { "modulo.gratuita" }, e, null);
 		}
-		catch (Exception e) { 
-			throwExcp("messages.general.error", new String[] {"modulo.gratuita"}, e, null); 
-		} 
 		return "editar";
 	}
 	
@@ -341,29 +325,29 @@ public class MantenimientoGruposFijosAction extends MasterAction {
 	/* (non-Javadoc)
 	 * @see com.siga.general.MasterAction#insertar(org.apache.struts.action.ActionMapping, com.siga.general.MasterForm, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
 	 */
-	protected String insertar(ActionMapping mapping, MasterForm formulario,	HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+	protected String insertar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		UserTransaction tx = null;
-		
+
 		try {
 			tx = this.getUserBean(request).getTransaction();
 			MantenimientoGruposFijosForm miForm = (MantenimientoGruposFijosForm) formulario;
-			UsrBean user=(UsrBean)request.getSession().getAttribute("USRBEAN");
-			
+			UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");
+
 			CenGruposClienteBean beanGrupos = new CenGruposClienteBean();
-			CenGruposClienteAdm gruposFijosAdm = new CenGruposClienteAdm (this.getUserBean(request));
-			
-			String idInstitucion=user.getLocation();
-			String nombre=miForm.getNombre();
-			
+			CenGruposClienteAdm gruposFijosAdm = new CenGruposClienteAdm(this.getUserBean(request));
+
+			String idInstitucion = user.getLocation();
+			String nombre = miForm.getNombre();
+
 			beanGrupos.setIdInstitucion(new Integer(idInstitucion));
-			
+
 			String nombreTabla = CenGruposClienteBean.T_NOMBRETABLA;
 			String nombreCampoDescripcion = CenGruposClienteBean.C_NOMBRE;
-			
-			Integer pkRecursoGrupo =  gruposFijosAdm.getNuevoIdGrupo(user.getLocation());
+
+			Integer pkRecursoGrupo = gruposFijosAdm.getNuevoIdGrupo(user.getLocation());
 			beanGrupos.setIdGrupo(pkRecursoGrupo);
 			String idRecurso = GenRecursosCatalogosAdm.getNombreIdRecurso(nombreTabla, nombreCampoDescripcion, new Integer(idInstitucion), pkRecursoGrupo.toString());
-			if(idRecurso==null)
+			if (idRecurso == null)
 				throw new SIGAException("error.messages.sinConfiguracionMultiIdioma");
 			beanGrupos.setNombre(idRecurso.toString());
 
@@ -371,48 +355,41 @@ public class MantenimientoGruposFijosAction extends MasterAction {
 			htPkTabl.put(CenGruposClienteBean.C_IDGRUPO, pkRecursoGrupo);
 			Hashtable htSignos = new Hashtable();
 			htSignos.put(CenGruposClienteBean.C_IDGRUPO, "<>");
-			
-			
-			boolean isClaveUnicaMultiIdioma = UtilidadesBDAdm.isClaveUnicaMultiIdioma(idInstitucion,nombre,nombreCampoDescripcion,
-					htPkTabl,htSignos,nombreTabla,4,user.getLanguage());
-			
-			
-			if(isClaveUnicaMultiIdioma){
+
+			boolean isClaveUnicaMultiIdioma = UtilidadesBDAdm.isClaveUnicaMultiIdioma(idInstitucion, nombre, nombreCampoDescripcion, htPkTabl, htSignos, nombreTabla, 4, user.getLanguage());
+
+			if (isClaveUnicaMultiIdioma) {
 				tx.begin();
-				
-    			String idRecursoAlias = GenRecursosCatalogosAdm.getNombreIdRecursoAlias(nombreTabla, nombreCampoDescripcion,  new Integer(idInstitucion), pkRecursoGrupo.toString());
-	        	GenRecursosCatalogosAdm admRecCatalogos = new GenRecursosCatalogosAdm (this.getUserBean(request));
-	        	GenRecursosCatalogosBean recCatalogoBean = new GenRecursosCatalogosBean ();
-	        	recCatalogoBean.setCampoTabla(nombreCampoDescripcion);
-	        	recCatalogoBean.setDescripcion(nombre);
-		        recCatalogoBean.setIdInstitucion(this.getIDInstitucion(request));
-	        	recCatalogoBean.setIdRecurso(idRecurso);
-	        	recCatalogoBean.setIdRecursoAlias(idRecursoAlias);
-	        	recCatalogoBean.setNombreTabla(nombreTabla);
-	        	if(!admRecCatalogos.insert(recCatalogoBean, user.getLanguageInstitucion())) 
-	        		throw new SIGAException ("messages.inserted.error");
-        	
-	        	
-	        	
-				
+
+				String idRecursoAlias = GenRecursosCatalogosAdm.getNombreIdRecursoAlias(nombreTabla, nombreCampoDescripcion, new Integer(idInstitucion), pkRecursoGrupo.toString());
+				GenRecursosCatalogosAdm admRecCatalogos = new GenRecursosCatalogosAdm(this.getUserBean(request));
+				GenRecursosCatalogosBean recCatalogoBean = new GenRecursosCatalogosBean();
+				recCatalogoBean.setCampoTabla(nombreCampoDescripcion);
+				recCatalogoBean.setDescripcion(nombre);
+				recCatalogoBean.setIdInstitucion(this.getIDInstitucion(request));
+				recCatalogoBean.setIdRecurso(idRecurso);
+				recCatalogoBean.setIdRecursoAlias(idRecursoAlias);
+				recCatalogoBean.setNombreTabla(nombreTabla);
+				if (!admRecCatalogos.insert(recCatalogoBean, user.getLanguageInstitucion()))
+					throw new SIGAException("messages.inserted.error");
+
 				gruposFijosAdm.insert(beanGrupos);
 				tx.commit();
 
-			}else{
-				throw new SIGAException("gratuita.mantenimientoTablasMaestra.mensaje.grupoFijoDuplicado"); 
+			} else {
+				throw new SIGAException("gratuita.mantenimientoTablasMaestra.mensaje.grupoFijoDuplicado");
 			}
-			
-			Hashtable<String,Object> hashGrupos = new Hashtable<String,Object>();
+
+			Hashtable<String, Object> hashGrupos = new Hashtable<String, Object>();
 			hashGrupos.put(CenGruposClienteBean.C_IDGRUPO, beanGrupos.getIdGrupo().toString());
 			hashGrupos.put(CenGruposClienteBean.C_IDINSTITUCION, beanGrupos.getIdInstitucion().toString());
 			request.getSession().setAttribute("DATABACKUP", hashGrupos);
+		} catch (Exception e) {
+			throwExcp("messages.general.error", new String[] { "modulo.gratuita" }, e, tx);
 		}
-		catch (Exception e) { 
-			throwExcp("messages.general.error", new String[] {"modulo.gratuita"}, e, tx); 
-		} 
-		request.setAttribute("modo","editar");
+		request.setAttribute("modo", "editar");
 		return exitoRefresco("messages.inserted.success", request);
-		
+
 	}
 	
 	
@@ -448,6 +425,7 @@ public class MantenimientoGruposFijosAction extends MasterAction {
 			
 			if((regGrupoPersonaV!=null)&&(regGrupoPersonaV.size()>0)){
 				throw new SIGAException ("messages.gratuita.error.eliminarProcedimiento");
+			
 			}else{
 				//Si tiene documentos relacionados los eliminamos
 				BusinessManager bm = getBusinessManager();
@@ -506,90 +484,42 @@ public class MantenimientoGruposFijosAction extends MasterAction {
 	}
 	
 	protected String abrirAlvolver(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
-		
 		return "inicio";
 	}
 	
 
-	private String generarPlantillaExcel(ActionMapping mapping, MasterForm miForm, HttpServletRequest request, HttpServletResponse response) {
-		
-		try{
-			
+	private String generarPlantillaExcel(ActionMapping mapping, MasterForm miForm, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+		try {
 			Vector datos = new Vector();
-			List cabecera=new ArrayList<String>();
-			
-			cabecera.add(COL_NUMCOLEGIADO);
-			cabecera.add(COL_NIFCIF);
-			cabecera.add(COL_IDGRUPO);
-			cabecera.add(COL_ACCION);
+			File excelPlant = ExcelHelper.createExcelFile(CAMPOS, datos);
 
-			HSSFWorkbook excelPlant=ExcelHelper.generarLibroExcelUnaHoja(cabecera, datos, "Hoja 1",false);
-			
 			StringBuffer nombreFichero = new StringBuffer("PlantillaGruposFijos");
 			nombreFichero.append(".xls");
-			ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+			ReadProperties rp = new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
 			String rutaPlantilla = rp.returnProperty("cen.ficheros.grupos.fijos.temporal");
-		  
-    		File path = new File(rutaPlantilla);
-    		if(!path.exists())
-    			path.mkdirs();
-			    		
-			File output=new File(rutaPlantilla+File.separator+nombreFichero.toString());
-			
-			output.createNewFile();
+			File output = new File(rutaPlantilla + File.separator + nombreFichero.toString());
+			excelPlant.renameTo(output);
 
-			FileOutputStream fileOut = new FileOutputStream(output);
-				
-			excelPlant.write(fileOut);
-			fileOut.flush();
-			fileOut.close();
-			
 			request.setAttribute("nombreFichero", output.getName());
 			request.setAttribute("rutaFichero", output.getPath());
-			request.setAttribute("borrarFichero", "true");			
-			request.setAttribute("generacionOK","OK");
-			request.setAttribute("accion","");
-			
-		}catch (BusinessException e) { 
-			try {
-				throwExcp("messages.general.error", new String[] {"modulo.censo"}, e, null);
-			} catch (SIGAException e1) {
-				e1.printStackTrace();
-			}
-		} catch (Exception e) { 
-			
-			try {
-				throwExcp("messages.general.error", new String[] {"modulo.censo"}, e, null);
-			} catch (SIGAException e1) {
-				e1.printStackTrace();
-			}
-			
-		} 
-		
-		return "descargaFicheroGlobal";
+			request.setAttribute("borrarFichero", "true");
+			request.setAttribute("generacionOK", "OK");
+			request.setAttribute("accion", "");
 
-}
+		} catch (BusinessException e) {
+			throwExcp("messages.general.error", new String[] { "modulo.censo" }, e, null);
+		} catch (Exception e) {
+			throwExcp("messages.general.error", new String[] { "modulo.censo" }, e, null);
+		}
+
+		return "descargaFicheroGlobal";
+	}
 	
 	private String procesarFichero(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
-		
 		try{
-			
 			MantenimientoGruposFijosForm miForm = (MantenimientoGruposFijosForm) formulario; 
 			UsrBean user=(UsrBean)request.getSession().getAttribute("USRBEAN");
 			Hashtable datosGrupo=(Hashtable)request.getSession().getAttribute("DATABACKUP");
-			HSSFWorkbook wb;
-			
-			try{
-				// A partir del stream creamos el workbook
-				wb = new HSSFWorkbook(miForm.getFichero().getInputStream());
-				
-				//Tiene que existir al menos un registro en el excel
-				if(wb.getSheetAt(0).getLastRowNum()==0)
-					throw new SIGAException(UtilidadesString.getMensajeIdioma(user,"censo.gestion.grupos.literal.tipo.fichero"));
-				
-			}catch (Exception e) {
-				throw new SIGAException(UtilidadesString.getMensajeIdioma(user,"censo.gestion.grupos.literal.tipo.fichero"));
-			}
 			
 			//Recuperamos el siguiente idfichero
 			BusinessManager bm = getBusinessManager();
@@ -613,12 +543,6 @@ public class MantenimientoGruposFijosAction extends MasterAction {
 			File path = new File(pathFichero.toString());
 			path.mkdirs();
 			
-			//Guardamos el fichero subido en el directorio correspondiente
-			FileOutputStream fileGuardarOut = new FileOutputStream(pathFichero.toString()+File.separator+miForm.getFichero().getFileName());
-			fileGuardarOut.write(miForm.getFichero().getFileData());
-			fileGuardarOut.flush();
-			fileGuardarOut.close();
-			
 			//Creamos el fichero de log
 			StringBuffer nombreFichero = new StringBuffer(miForm.getFichero().getFileName().substring(0, miForm.getFichero().getFileName().lastIndexOf('.')));
 			nombreFichero.append("_");
@@ -638,51 +562,33 @@ public class MantenimientoGruposFijosAction extends MasterAction {
 			obj.setFechamodificacion(new Date());
 			fichgrupserv.insert(obj);
 			
-			Vector datos=new Vector();
-			try{
-			
-				datos=ExcelHelper.obtenerDatosFichExcel(wb,true);
-			
-			}catch (BusinessException e){
-				throw new SIGAException(UtilidadesString.getMensajeIdioma(user,"censo.mantenimientoGruposFijos.errorLectura.fich"));
-			}
+			Vector datos = ExcelHelper.parseExcelFile(miForm.getFichero().getFileData(),true);
 			Vector datosLog=new Vector();
-						
-			//Procesamos los datos
-			if ((datos!=null)&&(datos.size()>0))
-			{
-				for(int f=0; f<datos.size();f++){
-					Hashtable datosH=(Hashtable) datos.get(f);						
-					//creamos o eliminamos la relación de la persona con el grupo fijo
-					String msg=this.procesarRelGrupoFijo(datosH,datosGrupo,user);	
-					//Añadimos la columna que informa de como ha ido todo
-					datosH.put(COL_RESULTADO,msg); 				
-					//Guardamos los datos del fichero log
+
+			// Procesamos los datos
+			if (datos != null && datos.size() > 0) {
+				for (int f = 0; f < datos.size(); f++) {
+					Hashtable datosH = (Hashtable) datos.get(f);
+					// creamos o eliminamos la relación de la persona con el grupo fijo
+					String msg = this.procesarRelGrupoFijo(datosH, datosGrupo, user);
+					// Añadimos la columna que informa de como ha ido todo
+					datosH.put(COL_RESULTADO, msg);
+					// Guardamos los datos del fichero log
 					datosLog.add(datosH);
 				}
 			}
 
-			try{
-			
-				HSSFWorkbook excelLog=ExcelHelper.generarLibroExcelUnaHoja(null, datosLog, "Hoja 1",true);
-	
-				excelLog.write(fileOut);
-				fileOut.flush();
-				fileOut.close();
-			
-			}catch (Exception e){
-				throw new SIGAException(UtilidadesString.getMensajeIdioma(user,"messages.general.error.ficheroNoErrores"));
-			}
+			ExcelHelper.createExcelFile(CAMPOS, datosLog);
+			request.setAttribute("modo","editar");
 
 		}catch (Exception e) { 
 			throwExcp("messages.general.error", new String[] {"modulo.censo"}, e, null);
 		}
-		request.setAttribute("modo","editar");
+		
 		return exitoRefresco("messages.inserted.success", request);
 	}
 	
 	protected String procesarRelGrupoFijo(Hashtable datos,Hashtable datosGrupo, UsrBean user) {
-		
 		String msg="OK";
 		String msgErr="KO: ";
 		UserTransaction tx = null;
@@ -700,7 +606,7 @@ public class MantenimientoGruposFijosAction extends MasterAction {
 			CenPersonaAdm personaAdm = new CenPersonaAdm(user);
 			CenPersonaBean personaBean=new CenPersonaBean();
 			
-			if((datos.get(COL_NIFCIF)==null)||(datos.get(COL_NIFCIF).toString().isEmpty())){
+			if(datos.get(COL_NIFCIF)==null || !((String)datos.get(COL_NIFCIF)).equals("")){
 				msgErr+=UtilidadesString.getMensajeIdioma(user,"censo.mantenimientoGruposFijos.error.fich.NIFCIF");
 				return msgErr;
 			}
@@ -728,15 +634,11 @@ public class MantenimientoGruposFijosAction extends MasterAction {
 			grupoClClHash.put("IDGRUPO",datosGrupo.get("IDGRUPO").toString());
 			
 			if(datos.get(COL_ACCION).toString().equalsIgnoreCase("A")||(datos.get(COL_ACCION).toString().equalsIgnoreCase("ALTA"))){
-			
-			
 				Vector regGrupoPersonaV=gruposClClAdm.selectByPK(grupoClClHash);
-			
 				if((regGrupoPersonaV!=null)&&(regGrupoPersonaV.size()>0)){
 					msgErr+=UtilidadesString.getMensajeIdioma(user,"process.usuario.ya.asignado");
 					return msgErr;
 				}
-
 			}
 			//Lanzamos el proceso de revision de suscripciones del letrado 
 			//Comienzo control de transacciones
@@ -744,7 +646,6 @@ public class MantenimientoGruposFijosAction extends MasterAction {
 			tx.begin();	
 			
 			try{
-				
 				if(datos.get(COL_ACCION).toString().equalsIgnoreCase("A")||(datos.get(COL_ACCION).toString().equalsIgnoreCase("ALTA"))){
 					accion=CenHistoricoAdm.ACCION_INSERT;
 					gruposClClAdm.insert(bean);
@@ -774,13 +675,8 @@ public class MantenimientoGruposFijosAction extends MasterAction {
 				
 			}
 			
-			String resultado[] = EjecucionPLs.ejecutarPL_RevisionSuscripcionesLetrado(user.getLocation(),
-																					  personaBean.getIdPersona().toString(),
-																					  "",
-																					  ""+user.getUserName());
-			
-			if ((resultado == null) || (!resultado[0].equals("0") && !resultado[0].equals("100"))){
-				
+			String resultado[] = EjecucionPLs.ejecutarPL_RevisionSuscripcionesLetrado(user.getLocation(), personaBean.getIdPersona().toString(), "", "" + user.getUserName());
+			if ((resultado == null) || (!resultado[0].equals("0") && !resultado[0].equals("100"))) {
 				if (Status.STATUS_ACTIVE  == tx.getStatus()){
 					tx.rollback();
 				}
@@ -822,8 +718,7 @@ public class MantenimientoGruposFijosAction extends MasterAction {
 	 * 
 	 * @exception  ClsExceptions  En cualquier caso de error
 	 */
-	protected String download(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException 
-	{
+	protected String download(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		String ficheroName = "";
 		String sRutaFisicaJava = "";
 		UsrBean user = null;
