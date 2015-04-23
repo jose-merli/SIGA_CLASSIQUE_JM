@@ -386,37 +386,40 @@
 	<html:form action="${path}"  method="POST" target="mainWorkArea">
 		<html:hidden property="modo"/>
 		<html:hidden property="idInstitucion"/>
-			<table width="100%" border="0">
-				<tr>
-					<td width="150x"></td>
-					<td width="110x"></td>
-					<td width="110x"></td>
-					<td width="110x"></td>
-					<td width="150x"></td>
-					<td width="330x"></td>
-				</tr>
-				
-				<tr>
-					<td class="labelText">
-						<bean:message  key="censo.tiposDatosCurriculares.tipo.literal"/>
-					</td>
-					<td>
-						<html:text property="tipoDescripcion" size="10" maxlength="10" styleClass="box"  />
-					</td>
-					<td class="labelText">
-						<bean:message key="censo.tiposDatosCurriculares.subtipo1.literal"/>
-					</td>
-					<td>
-						<html:text property="subTipo1Descripcion" size="10" maxlength="10" styleClass="box"  />
-					</td>
-					<td class="labelText">
-						<bean:message key="censo.tiposDatosCurriculares.subtipo2.literal"/>
-					</td>
-					<td>
-						<html:text property="subTipo2Descripcion" size="10" maxlength="10" styleClass="box"  />
-					</td>
-				</tr>
-			</table>
+			<siga:ConjCampos leyenda="general.criterios">
+			
+				<table width="100%" border="0">
+					<tr>
+						<td width="150x"></td>
+						<td width="110x"></td>
+						<td width="110x"></td>
+						<td width="110x"></td>
+						<td width="150x"></td>
+						<td width="330x"></td>
+					</tr>
+					
+					<tr>
+						<td class="labelText">
+							<bean:message  key="censo.tiposDatosCurriculares.tipo.literal"/>
+						</td>
+						<td>
+							<html:text property="tipoDescripcion" size="10" maxlength="10" styleClass="box"  />
+						</td>
+						<td class="labelText">
+							<bean:message key="censo.tiposDatosCurriculares.subtipo1.literal"/>
+						</td>
+						<td>
+							<html:text property="subTipo1Descripcion" size="10" maxlength="10" styleClass="box"  />
+						</td>
+						<td class="labelText">
+							<bean:message key="censo.tiposDatosCurriculares.subtipo2.literal"/>
+						</td>
+						<td>
+							<html:text property="subTipo2Descripcion" size="10" maxlength="10" styleClass="box"  />
+						</td>
+					</tr>
+				</table>
+			</siga:ConjCampos>
 		<siga:ConjBotonesBusqueda botones="B,N"  titulo="censo.tiposDatosCurriculares.busqueda"/>
 		<div id="divListado"></div>	
 	</html:form>
