@@ -295,6 +295,18 @@ System.setProperties(properties);
 				bean.setLocation(""+comision.getIdinstitucion());
 			}
 			
+			/* Obtenemos idPersona que corresponde al nif y lo mentemos en el bean del
+			 * usuario.
+			*/
+			//@long idPersona=setPersona(obUsu.getNif().toUpperCase(),bean,obUsu.getNombre().toUpperCase());
+			long idPersona=setPersona(user.getUsu_nif().toUpperCase(),bean,user.getPfiNombre().toUpperCase());
+			/* Obtenemos el lenguaje de inicio de sesion. El bean ya debe tener la
+			 * institucion establecida.
+			*/
+			setIdioma(new Long(idPersona),Integer.valueOf(bean.getLocation()),bean);
+			
+			tx.commit();
+			
 			/****************** CR - INSERTAMOS EN LA TABLA EST_USER_REGISTRY PARA LAS ESTADISTICAS DEL BI **********************/
 			EstUserRegistry registroUser = new EstUserRegistry();
 			registroUser.setIdusuario(new Integer(bean.getUserName()));
@@ -307,18 +319,6 @@ System.setProperties(properties);
 			userRegistryService.insert(registroUser);
 			/*****************************************************************************************************************/				
 			
-			
-			/* Obtenemos idPersona que corresponde al nif y lo mentemos en el bean del
-			 * usuario.
-			*/
-			//@long idPersona=setPersona(obUsu.getNif().toUpperCase(),bean,obUsu.getNombre().toUpperCase());
-			long idPersona=setPersona(user.getUsu_nif().toUpperCase(),bean,user.getPfiNombre().toUpperCase());
-			/* Obtenemos el lenguaje de inicio de sesion. El bean ya debe tener la
-			 * institucion establecida.
-			*/
-			setIdioma(new Long(idPersona),Integer.valueOf(bean.getLocation()),bean);
-			
-			tx.commit();
 			HttpSession ses= request.getSession();
 			if(ses!=null && ses.getAttribute(PARAMETRO.LONGITUD_CODEJG.toString())==null){
 				GenParametrosService genParametrosService = (GenParametrosService) bm.getService(GenParametrosService.class);
