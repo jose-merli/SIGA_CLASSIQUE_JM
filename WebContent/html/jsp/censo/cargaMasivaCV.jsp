@@ -46,7 +46,7 @@
 	
 	
 	function buscarCargasMasivas() {
-		
+		sub();
 		var idInstitucion = document.CargaMasivaCVForm.idInstitucion.value;
 		var fechaCarga = document.CargaMasivaCVForm.fechaCarga.value;
 		
@@ -60,10 +60,12 @@
             url: "/SIGA/CEN_CargaMasivaCV.do?modo=getAjaxBusqueda",
             data: data,
             success: function(response){
-                jQuery('#divListado').html(response);
+                fin();
+            	jQuery('#divListado').html(response);
+                
             },
             error: function(e){
-            	
+            	fin();
                 alert('Error: ' + e);
             }
         });
@@ -86,7 +88,7 @@
 			fin();
 			return false;
 		}
-	
+		sub();
 		document.forms['CargaMasivaCVForm'].rutaFichero.value  = document.forms['CargaMasivaCVForm'].theFile.value;
 		document.forms['CargaMasivaCVForm'].modo.value = 'parseExcelFile';
 		document.forms['CargaMasivaCVForm'].submit();
@@ -123,6 +125,7 @@
 		<html:hidden property="rutaFichero"/>
 		<html:hidden property="idFichero"/>
 		<html:hidden property="idFicheroLog"/>
+		<siga:ConjCampos leyenda="censo.fichaCliente.datosCV.cabecera">
 		
 			<table width="100%" border="0">
 				<tr>
@@ -162,6 +165,7 @@
 
 				
 			</table>
+			</siga:ConjCampos>
 		<siga:ConjBotonesBusqueda botones="B"  titulo="cargaMasivaDatosCurriculares.busqueda"/>
 		<div id="divListado"></div>	
 	</html:form>
