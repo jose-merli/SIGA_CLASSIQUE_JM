@@ -91,6 +91,7 @@ public class CargaMasivaCVForm extends MasterForm {
 		CargaMasivaCVForm miForm = new CargaMasivaCVForm();
 		miForm.setIdInstitucion(this.getIdInstitucion());
 		miForm.setFechaCarga(this.getFechaCarga());
+		miForm.setTheFile(this.getTheFile());
 		return miForm;
 	}
 	/**

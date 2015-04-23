@@ -164,8 +164,14 @@ public class CargaMasivaCVAction extends MasterAction {
 		File errorFile;
 		try {
 			CargaMasivaDatosCVVo cargaMasivaDatosCVVo = new CargaMasivaDatosCVVo();
+			
+			String identificadorFormularioBusqueda = getIdBusqueda(super.dataBusqueda,getClass().getName());
+			CargaMasivaCVForm cargaMasivaCVFormSesion = (CargaMasivaCVForm) request.getSession().getAttribute(identificadorFormularioBusqueda);
+			
+			
+			
 			cargaMasivaDatosCVVo.setIdinstitucion(Short.valueOf(usrBean.getLocation()));
-			cargaMasivaDatosCVVo.setExcelBytes(SIGAServicesHelper.getBytes(cargaMasivaCVForm.getRutaFichero()));
+			cargaMasivaDatosCVVo.setExcelBytes(cargaMasivaCVFormSesion.getTheFile().getFileData());
 			cargaMasivaDatosCVVo.setCodIdioma(usrBean.getLanguage());
 			
 			errorFile = cargaMasivaDatosCV.getErrorExcelFile(cargaMasivaDatosCVVo);
