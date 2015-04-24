@@ -489,7 +489,7 @@ public class AtosProgramacionCalendariosService extends JtaBusinessServiceTempla
 					
 					/** Creamos el regstro del Log **/
 					ReadProperties rp = new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
-					log = LogFileWriter.getLogFileWriter(getDirectorioFicheroLog(progCalendariosBean.getIdInstitucion()), "LOG_" + progCalendariosBean.getIdInstitucion() + "_" + progCalendariosBean.getIdProgrCalendario());
+					log = LogFileWriter.getLogFileWriter(getDirectorioFicheroLog(progCalendariosBean.getIdInstitucion()), "LOG_" + progCalendariosBean.getIdInstitucion() + "_" + progCalendariosBean.getIdFicheroCalendario());
 					log.clear();				
 					
 					/** Obtenemos el documento **/
@@ -511,6 +511,9 @@ public class AtosProgramacionCalendariosService extends JtaBusinessServiceTempla
 						if(ficheroCargaExcel != null && ficheroCargaExcel.length() > 0){
 							CargaMasivaCalendariosService carga = (CargaMasivaCalendariosService) bm.getService(CargaMasivaCalendariosService.class);
 							List<CargaMasivaCalendariosVo> datosExcel = carga.parseExcelFile(SIGAServicesHelper.getBytes(ficheroCargaExcel), progCalendariosBean.getIdInstitucion().shortValue(),fileLog);
+							// Si no ha ocurrido errores en la carga del excel eliminamos el fichero log 
+							fileLog=null;
+							
 							String observacion = "";
 							if(ficheroVo.getDescripcion()!=null){
 								observacion = ficheroVo.getDescripcion();
@@ -536,10 +539,17 @@ public class AtosProgramacionCalendariosService extends JtaBusinessServiceTempla
 				//ESTADO ERROR
 				progCalendariosBean.setEstado(ScsProgCalendariosBean.estadoError);
 				progrCalendariosAdm.updateEstado(progCalendariosBean);
+				String msgError = e.getMessage();
+				if(e instanceof SIGAException){
+					msgError = ((SIGAException) e).getLiteral();
+				}
 				
-				/** Escribimos el log de cada fila del fichero de carga **/
-				for (ArrayList<String> lineLog : fileLog) {
-					log.addLog(lineLog);
+				/** Escribimos el log de cada fila del fichero de carga si hubiera habido errores **/
+				log.addLog(new String[] {"ERROR OCURRIDO: ", msgError});
+				if(fileLog!=null){
+					for (ArrayList<String> lineLog : fileLog) {
+						log.addLog(lineLog);
+					}
 				}
 				log.flush();
 			}

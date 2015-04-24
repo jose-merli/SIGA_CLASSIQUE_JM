@@ -105,6 +105,8 @@ public class GestionProgramacionCalendariosAction extends MasterAction {
 					} else if (accion.equalsIgnoreCase("getAjaxGuardias")) {
 						getAjaxGuardias(mapping, miForm, request, response);
 						return null;
+					} else if (accion.equalsIgnoreCase("descargarExcelOriginal")) {
+						mapDestino = descargarExcelOriginal(mapping, miForm, request, response);						
 					} else if (accion.equalsIgnoreCase("descargarLogCargaMasiva")) {
 						mapDestino = descargarLog(mapping, miForm, request, response);
 					} else {
@@ -547,7 +549,6 @@ public class GestionProgramacionCalendariosAction extends MasterAction {
 	protected String ejecutarProgramacion(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, SIGAException {
 		UsrBean usrBean = this.getUserBean(request);
 		try {
-
 			BusinessManager bm = getBusinessManager();
 			ProgramacionCalendariosService programacionCalendariosService = (ProgramacionCalendariosService) bm.getService(ProgramacionCalendariosService.class);
 			ProgrCalendariosForm progrCalendariosForm = (ProgrCalendariosForm) formulario;
@@ -578,12 +579,14 @@ public class GestionProgramacionCalendariosAction extends MasterAction {
 	private String descargarLog(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		String forward = "descargaFichero";
 		String sFicheroLog = null;
+		UsrBean usrBean = this.getUserBean(request);
 		try {
+			BusinessManager bm = getBusinessManager();
+			ProgramacionCalendariosService programacionCalendariosService = (ProgramacionCalendariosService) bm.getService(ProgramacionCalendariosService.class);
 			ProgrCalendariosForm progrCalendariosForm = (ProgrCalendariosForm) formulario;
-			UsrBean user = ((UsrBean) request.getSession().getAttribute(("USRBEAN")));
+			ScsProgCalendariosBean progCalendariosBean = programacionCalendariosService.getProgrCalendario(progrCalendariosForm, usrBean);
 			String idInstitucion = progrCalendariosForm.getIdInstitucion();
-			String idProgrCalendario = progrCalendariosForm.getIdProgrCalendario();
-			sFicheroLog = getDirectorioFicheroLog(idInstitucion) + File.separator + "LOG_" + idInstitucion + "_" + idProgrCalendario + ".log.xls";
+			sFicheroLog = getDirectorioFicheroCarga(idInstitucion) + File.separator + "LOG_" + idInstitucion + "_" + progCalendariosBean.getIdFicheroCalendario() + ".log.xls";
 			File fichero = new File(sFicheroLog);
 			if (fichero == null || !fichero.exists()) {
 				throw new SIGAException("messages.general.error.ficheroNoExiste");
@@ -596,8 +599,42 @@ public class GestionProgramacionCalendariosAction extends MasterAction {
 		}
 		return forward;
 	}
+	
+	/**
+	 * Descarga el fichero de Log.
+	 * 
+	 * @param mapping
+	 * @param formulario
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws SIGAException
+	 */
+	private String descargarExcelOriginal(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+		String forward = "descargaFichero";
+		String sFichero = null;
+		UsrBean usrBean = this.getUserBean(request);
+		try {
+			BusinessManager bm = getBusinessManager();
+			ProgramacionCalendariosService programacionCalendariosService = (ProgramacionCalendariosService) bm.getService(ProgramacionCalendariosService.class);
+			ProgrCalendariosForm progrCalendariosForm = (ProgrCalendariosForm) formulario;
+			ScsProgCalendariosBean progCalendariosBean = programacionCalendariosService.getProgrCalendario(progrCalendariosForm, usrBean);
+			String idInstitucion = progrCalendariosForm.getIdInstitucion();
+			sFichero = getDirectorioFicheroCarga(idInstitucion) + File.separator + idInstitucion + "_" + progCalendariosBean.getIdFicheroCalendario() + ".xls";
+			File fichero = new File(sFichero);
+			if (fichero == null || !fichero.exists()) {
+				throw new SIGAException("messages.general.error.ficheroNoExiste");
+			}
+			request.setAttribute("nombreFichero", fichero.getName());
+			request.setAttribute("rutaFichero", fichero.getPath());
 
-	private String getDirectorioFicheroLog(String idInstitucion) {
+		} catch (Exception e) {
+			throwExcp("messages.general.error", new String[] { "modulo.envios" }, e, null);
+		}
+		return forward;
+	}	
+
+	private String getDirectorioFicheroCarga(String idInstitucion) {
 		ReadProperties rp = new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
 		String pathFicheros = rp.returnProperty("gen.ficheros.path");
 		StringBuffer directorioFichero = new StringBuffer(pathFicheros);

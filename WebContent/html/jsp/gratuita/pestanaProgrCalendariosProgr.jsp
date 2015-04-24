@@ -129,6 +129,13 @@
 			document.ProgrCalendariosForm.idProgrCalendario.value = idProgrCalendario;
 			document.ProgrCalendariosForm.modo.value="descargarLogCargaMasiva";
 			document.ProgrCalendariosForm.submit();
+		}	
+		
+		function download(fila) {
+			var idProgrCalendario = document.getElementById("idProgrCalendario_"+fila).value;
+			document.ProgrCalendariosForm.idProgrCalendario.value = idProgrCalendario;
+			document.ProgrCalendariosForm.modo.value="descargarExcelOriginal";
+			document.ProgrCalendariosForm.submit();
 		}		
 	</script>
 </head>

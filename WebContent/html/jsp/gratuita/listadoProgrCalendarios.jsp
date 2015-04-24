@@ -36,7 +36,7 @@
 	
 	<siga:Table
 		name="listadoProgr"
-		columnSizes="15,15,15,15,27,13"
+		columnSizes="15,15,13,13,28,16"
 		columnNames="gratuita.calendarios.programacion.fechaProgramada,
 			gratuita.calendarios.programacion.estado,
 			general.literal.desde,

@@ -154,33 +154,35 @@ public class ProgrCalendariosForm extends MasterForm {
 		switch (Integer.parseInt(estado)) {
 		
 		case 0:
-//			botones  = "B,E";
 			elementosFila = new FilaExtElement[3];
 			elementosFila[2]=new FilaExtElement("generar",  "adelantarProgrCalendarios", "gratuita.calendarios.programacion.estado.programar.accion", SIGAConstants.ACCESS_READ);
 
 			break;
 		case 1 : 
-//			botones  = "C";
 			elementosFila = new FilaExtElement[2];
 			elementosFila[1]=new FilaExtElement("cancelar",  "cancelarGeneracionCalendarios", "gratuita.calendarios.programacion.estado.cancelar.accion", SIGAConstants.ACCESS_READ);
 			break;
 		case 2:case 4:
-//			botones  = "B,C";
-			elementosFila = new FilaExtElement[3];
 			if(this.getIdConjuntoGuardia().equals(ClsConstants.TIPO_CONJUNTOGUARDIAS_CARGA_MASIVA)){
-				elementosFila[2] = new FilaExtElement("descargaLog", "descargaLog",SIGAConstants.ACCESS_READ);
+				elementosFila = new FilaExtElement[4];
+				elementosFila[2]=new FilaExtElement("download","download",SIGAConstants.ACCESS_READ); 	
+				elementosFila[3] = new FilaExtElement("descargaLog", "descargaLog",SIGAConstants.ACCESS_READ);
 			}else{
+				elementosFila = new FilaExtElement[3];
 				elementosFila[2]=new FilaExtElement("generar","reprogramarCalendarios", "gratuita.calendarios.programacion.estado.reprogramar.accion", SIGAConstants.ACCESS_READ);
 			}
 			break;
 		case 3:
 			
-//			botones  = "B,C";
-			elementosFila = new FilaExtElement[2];
 			
+			if(this.getIdConjuntoGuardia().equals(ClsConstants.TIPO_CONJUNTOGUARDIAS_CARGA_MASIVA)){
+				elementosFila = new FilaExtElement[3];
+				elementosFila[2]=new FilaExtElement("download","download",SIGAConstants.ACCESS_READ); 
+			}else{
+				elementosFila = new FilaExtElement[2];
+			}			
 			break;
 		case 5:
-//			botones  = "B,C";
 			elementosFila = new FilaExtElement[2];
 
 			break;
