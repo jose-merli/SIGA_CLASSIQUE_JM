@@ -32,33 +32,34 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <!-- JSP -->
 <% 
-		String app=request.getContextPath(); 
-		
-		String estilo="box";
-		boolean desactivado = true;
-		String accion = "";
-		String modo = (String)request.getAttribute("modo");	
-		String parametro[] = new String[1];
-		String botones="";
+	String app=request.getContextPath(); 
+	
+	String estilo="box";
+	boolean desactivado = true;
+	String accion = "";
+	String modo = (String)request.getAttribute("modo");	
+	String parametro[] = new String[1];
+	String botones="";
+	
 	// Formulario
 	MantenimientoGruposFijosForm formulario = (MantenimientoGruposFijosForm) request.getAttribute("MantenimientoGruposFijosForm");
-		if (modo.equalsIgnoreCase("EDITAR")) {
-			desactivado  = false;
-			estilo = "box";
-			accion = "modificar";
-			botones="V,G";
-		} else {
-				if (modo.equalsIgnoreCase("NUEVO")) {
-						desactivado = false;
-						accion = "insertar";
-					    botones="V,G";
-				} else { //MODO=VER
-						desactivado  = true;
-						estilo = "boxConsulta";
-						accion = "ver";
-						botones="V";
-				}
+	if (modo.equalsIgnoreCase("EDITAR")) {
+		desactivado  = false;
+		estilo = "box";
+		accion = "modificar";
+		botones="V,G";
+	} else {
+		if (modo.equalsIgnoreCase("NUEVO")) {
+				desactivado = false;
+				accion = "insertar";
+			    botones="V,G";
+		} else { //MODO=VER
+				desactivado  = true;
+				estilo = "boxConsulta";
+				accion = "ver";
+				botones="V";
 		}
+	}
 
 %>
 
@@ -82,7 +83,6 @@
 	<!-- Aqui se reescriben las funciones que vayamos a utilizar -->
 	<script language="JavaScript">
 	
-	<!-- Asociada al boton Volver -->
 		function accionVolver(){ 
 			sub();
 			document.MantenimientoGruposFijosForm.target="mainWorkArea";
@@ -100,7 +100,6 @@
 			
 		}
 
-		<!-- Asociada al boton GuardarCerrar -->
 		function accionGuardar(){
 			sub();
 			if (validateMantenimientoGruposFijosForm(document.getElementById("MantenimientoGruposFijosForm"))) {
@@ -112,8 +111,6 @@
 			}
 		}		
 		
-		
-		
 		function accionProcesar() {
 			if(document.forms[0].fichero.value != "") {
 				sub();
@@ -123,7 +120,6 @@
 					var alerta = "<siga:Idioma key='censo.mantenimientoGruposFijos.procesandoFichero'/> ";
 					alert(alerta);
 					document.forms[0].submit();	
-					fin();
 				} else{
 					fin();
 				}	
@@ -132,7 +128,6 @@
 				var mensaje = "<siga:Idioma key='censo.mantenimientoGruposFijos.seleccionarFichero'/>";
 				alert(mensaje);
 			}
-
 		}
 		
 		function accionDescargarPlant(){
@@ -144,8 +139,6 @@
 		
 		function download(fila)
 		{
-			
-			
 			var datos;
 			datos = document.getElementById('tablaDatosDinamicosD');
 			datos.value = ""; 
@@ -253,7 +246,7 @@
 							border="1"
 							columnNames="administracion.informes.literal.archivo.fecha,administracion.informes.literal.archivo.usuario,administracion.informes.literal.archivo.nombre,"
 							columnSizes="15,15,30,10"
-							fixedHeight="150">
+							fixedHeight="300">
 							<c:forEach items="${ficherosRel}" var="ficheros" varStatus="status">								
 								<%  FilaExtElement[] elems=new FilaExtElement[2];
 									elems[0]=new FilaExtElement("download","download",SIGAConstants.ACCESS_READ); 		
