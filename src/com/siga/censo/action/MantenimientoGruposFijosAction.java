@@ -78,7 +78,8 @@ public class MantenimientoGruposFijosAction extends MasterAction {
 	private static String COL_RESULTADO = "RESULTADO";
 	private static String COL_ACCION = "ALTA(A)/BAJA(B)";
 	
-	public static final List<String> CAMPOS = Arrays.asList(COL_NIFCIF,COL_NUMCOLEGIADO,COL_IDGRUPO,COL_RESULTADO,COL_ACCION);	
+	public static final List<String> CAMPOS_MODELO = Arrays.asList(COL_NIFCIF,COL_NUMCOLEGIADO,COL_IDGRUPO,COL_ACCION);
+	public static final List<String> CAMPOS_LOG = Arrays.asList(COL_NIFCIF,COL_NUMCOLEGIADO,COL_IDGRUPO,COL_ACCION,COL_RESULTADO);
 	
 	protected ActionForward executeInternal(ActionMapping mapping,ActionForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException 
 	{
@@ -491,7 +492,7 @@ public class MantenimientoGruposFijosAction extends MasterAction {
 	private String generarPlantillaExcel(ActionMapping mapping, MasterForm miForm, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		try {
 			Vector datos = new Vector();
-			File excelPlant = ExcelHelper.createExcelFile(CAMPOS, datos);
+			File excelPlant = ExcelHelper.createExcelFile(CAMPOS_MODELO, datos);
 
 			StringBuffer nombreFichero = new StringBuffer("PlantillaGruposFijos");
 			nombreFichero.append(".xls");
@@ -534,21 +535,28 @@ public class MantenimientoGruposFijosAction extends MasterAction {
 			directorioFichero.append(rp.returnProperty("cen.ficheros.grupos.fijos"));
 			directorioFichero.append(File.separator);
 			directorioFichero.append("ficherosCarga");
-			//para cada grupo guardamos sus archivos en una carpeta para luego mostrarlos al consultar/editar el grupo
-			directorioFichero.append(File.separator);
-			directorioFichero.append(datosGrupo.get("IDGRUPO").toString()); 
-			directorioFichero.append(File.separator);
-			directorioFichero.append(idFichSig.toString()); 
 			StringBuffer pathFichero = new StringBuffer(directorioFichero);
-			File path = new File(pathFichero.toString());
-			path.mkdirs();
 			
-			//Creamos el fichero de log
+			//Guardamos el fichero subido en el directorio correspondiente
 			StringBuffer nombreFichero = new StringBuffer(miForm.getFichero().getFileName().substring(0, miForm.getFichero().getFileName().lastIndexOf('.')));
 			nombreFichero.append("_");
-			nombreFichero.append( user.getUserName()+"_log");
+			nombreFichero.append(datosGrupo.get("IDGRUPO").toString());
+			nombreFichero.append("_");
+			nombreFichero.append(idFichSig.toString());
 			nombreFichero.append(".xls");
-			FileOutputStream fileOut = new FileOutputStream(pathFichero.toString()+File.separator+nombreFichero.toString());
+			FileOutputStream fileGuardarOut = new FileOutputStream(pathFichero.toString()+File.separator+nombreFichero.toString());
+			fileGuardarOut.write(miForm.getFichero().getFileData());
+			fileGuardarOut.flush();
+			fileGuardarOut.close();			
+			
+			//Creamos el fichero de log
+			StringBuffer nombreFicheroLog = new StringBuffer("LOG_"+miForm.getFichero().getFileName().substring(0, miForm.getFichero().getFileName().lastIndexOf('.')));
+			nombreFicheroLog.append("_");
+			nombreFicheroLog.append(datosGrupo.get("IDGRUPO").toString());
+			nombreFicheroLog.append("_");
+			nombreFicheroLog.append(idFichSig.toString());
+			nombreFicheroLog.append(".xls");
+			File fileOut = new File(pathFichero.toString()+File.separator+nombreFicheroLog.toString());
 			
 			//Se guarda el registro de los ficheros del grupo en base de datos
 			CenGruposFicheros obj=new CenGruposFicheros();
@@ -556,8 +564,8 @@ public class MantenimientoGruposFijosAction extends MasterAction {
 			obj.setDirectorio(pathFichero.toString());
 			obj.setIdgrupo(Short.parseShort(datosGrupo.get("IDGRUPO").toString()));
 			obj.setIdinstitucionGrupo(Short.parseShort(datosGrupo.get("IDINSTITUCION").toString()));
-			obj.setNombrefichero(miForm.getFichero().getFileName());
-			obj.setNombreficherolog(nombreFichero.toString());
+			obj.setNombrefichero(nombreFichero.toString());
+			obj.setNombreficherolog(nombreFicheroLog.toString());
 			obj.setUsumodificacion(Integer.parseInt(user.getUserName()));
 			obj.setFechamodificacion(new Date());
 			fichgrupserv.insert(obj);
@@ -578,7 +586,8 @@ public class MantenimientoGruposFijosAction extends MasterAction {
 				}
 			}
 
-			ExcelHelper.createExcelFile(CAMPOS, datosLog);
+			File excelLog = ExcelHelper.createExcelFile(CAMPOS_LOG, datosLog);
+			excelLog.renameTo(fileOut);
 			request.setAttribute("modo","editar");
 
 		}catch (Exception e) { 
@@ -606,7 +615,7 @@ public class MantenimientoGruposFijosAction extends MasterAction {
 			CenPersonaAdm personaAdm = new CenPersonaAdm(user);
 			CenPersonaBean personaBean=new CenPersonaBean();
 			
-			if(datos.get(COL_NIFCIF)==null || !((String)datos.get(COL_NIFCIF)).equals("")){
+			if(datos.get(COL_NIFCIF)==null || ((String)datos.get(COL_NIFCIF)).equals("")){
 				msgErr+=UtilidadesString.getMensajeIdioma(user,"censo.mantenimientoGruposFijos.error.fich.NIFCIF");
 				return msgErr;
 			}
@@ -724,21 +733,21 @@ public class MantenimientoGruposFijosAction extends MasterAction {
 		UsrBean user = null;
 		try {
 			user = (UsrBean) request.getSession().getAttribute("USRBEAN");
-			MantenimientoGruposFijosForm form = (MantenimientoGruposFijosForm)formulario;
-			ficheroName=form.getNombrefichero();
-			sRutaFisicaJava=form.getDirectorio();
-			File fich = new File(sRutaFisicaJava+File.separator+ficheroName);
-			if(fich==null || !fich.exists()){ 
-				throw new SIGAException("messages.general.error.ficheroNoExiste"); 
+			MantenimientoGruposFijosForm form = (MantenimientoGruposFijosForm) formulario;
+			ficheroName = form.getNombrefichero();
+			sRutaFisicaJava = form.getDirectorio();
+			File fich = new File(sRutaFisicaJava + File.separator + ficheroName);
+			if (fich == null || !fich.exists()) {
+				throw new SIGAException("messages.general.error.ficheroNoExiste");
 			}
 			request.setAttribute("nombreFichero", fich.getName());
 			request.setAttribute("rutaFichero", fich.getPath());
-			request.setAttribute("borrarFichero", "false");			
-			request.setAttribute("generacionOK","OK");
-			request.setAttribute("accion","");
-			
-		} catch (Exception e) { 
-			throwExcp("messages.general.error",new String[] {"modulo.facturacion.previsionesFacturacion"},e,null); 
+			request.setAttribute("borrarFichero", "false");
+			request.setAttribute("generacionOK", "OK");
+			request.setAttribute("accion", "");
+
+		} catch (Exception e) {
+			throwExcp("messages.general.error", new String[] { "modulo.facturacion.previsionesFacturacion" }, e, null);
 		}
 		return "descargaFicheroGlobal";
 	}
