@@ -512,7 +512,7 @@
 						<input type="hidden" name="oculto<%=""+(i+1)%>_2" value="<%=idSolicitud%>">
 						<input type="hidden" name="oculto<%=""+(i+1)%>_3" value="<%=fechaSolicitud%>">
 						<input type="hidden" name="oculto<%=""+(i+1)%>_4" value="<%=idPersona%>"> 
-						<input type="hidden" name="oculto<%=""+(i+1)%>_5" value="<%=tipoCertificado%>">
+						<input type="hidden" name="oculto<%=""+(i+1)%>_5" value="<%=tipoCertificado.replaceAll(",", ".")%>">
 						<input type="hidden" name="oculto<%=""+(i+1)%>_6" value="<%=idPeticionAux%>">
 						<input type="hidden" name="oculto<%=""+(i+1)%>_7" value="<%=idProducto%>">
 						<input type="hidden" name="oculto<%=""+(i+1)%>_8" value="<%=idTipoProducto%>">

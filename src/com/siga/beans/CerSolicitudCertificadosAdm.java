@@ -1618,7 +1618,7 @@ public class CerSolicitudCertificadosAdm extends MasterBeanAdministrador {
 									" AND " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDPRODUCTO + " = " + sIdProducto +
 									" AND " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDPRODUCTOINSTITUCION + " = " + sIdProductoInstitucion +
 									" AND " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDPETICION + " = " + sIdPeticion +
-									" AND " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_ACEPTADO + " NOT IN ('B', 'D', 'P') " +
+									" AND " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_ACEPTADO + " NOT IN ('B', 'D') " +
 									" AND " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_NOFACTURABLE + " = 0 ";
 						
 						Hashtable<String,Object> hResultado = this.selectGenericoHash(sql);
