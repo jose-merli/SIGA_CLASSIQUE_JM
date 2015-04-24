@@ -183,8 +183,16 @@
 		<input type="hidden" property="id" styleId="id"   >
 		<input type="hidden" id="regBajaLogica"  name="regBajaLogica" value="<%=sIncluirBajaLogica%>">
 	</html:form>
+	<table class="tablaTitulo" align="center">
+	<tr>
+	<td class="titulitos">
+		<siga:Idioma key="general.boton.aniadirTipoAsistencia"/>
+	</td>
+	</tr>
+</table>
+	
 	<siga:Table name="tablaResultados" border="1"
-		columnNames="<input type='checkbox' name='chkGeneral' id='chkGeneral' onclick='cargarChecksTodos(this)' />,
+		columnNames=",
 	   				administracion.catalogos.maestros.literal.tipos.asistencias,
 	   				administracion.catalogos.maestros.literal.tipo.actuaciones,
 	   				administracion.catalogos.costesFijos.importe"
@@ -288,7 +296,9 @@
 				clase="paginator" 
 				divStyle="position:absolute; width:100%; height:20; z-index:3; bottom:30px; left: 0px"
 				distanciaPaginas=""
-				action="<%=action%>" />
+				action="<%=action%>" 
+				preFunction="preFunction" />
+				
 															
 	
 	 <%}%>	
@@ -347,7 +357,7 @@
 	   	
 		jQuery("input[name=sel]:not(:checked)").each(function(){
 			jQuery("#importeCosteFijo_" + this.id).hide();
-			document.getElementById("chkGeneral").checked=false;
+			
 	   	})
 
 		ObjArray.toString();
@@ -435,14 +445,32 @@
 				} 
 			}
 	   
-	   if (todos==1){
-			document.getElementById("chkGeneral").checked=true;
-		}else{
-			document.getElementById("chkGeneral").checked=false;
-		}
+	  
 
 	}
-   	
+	function preFunction(pagina){
+		
+		var isModificado = false;
+		
+		var checks = document.getElementsByName("sel");
+	  	for (i = 0; i < checks.length; i++) {
+			if(checks[i].checked){
+				isModificado =true;
+				continue;
+			} 
+		}
+		 if(isModificado){
+			if (confirm('<siga:Idioma key="gratuita.informeJustificacionMasiva.confirmar.guardarAlCambiarPagina"/>')){
+				return false;
+			}else{
+				return true;
+			}
+		}else{
+			return true;
+		}
+		
+
+	}
 	</script>
 	
 	</body>
