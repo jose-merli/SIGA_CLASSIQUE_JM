@@ -648,6 +648,11 @@ public class MantenimientoGruposFijosAction extends MasterAction {
 			grupoClClHash.put("IDINSTITUCION_GRUPO",datosGrupo.get("IDINSTITUCION").toString());
 			grupoClClHash.put("IDGRUPO",datosGrupo.get("IDGRUPO").toString());
 			
+			if(datos.get(COL_ACCION)==null || ((String)datos.get(COL_ACCION)).equals("") || (!((String)datos.get(COL_ACCION)).equals("A") && !((String)datos.get(COL_ACCION)).equals("B") )){
+				msgErr+=UtilidadesString.getMensajeIdioma(user,"censo.mantenimientoGruposFijos.error.fich.accion");
+				return msgErr;
+			}			
+			
 			if(datos.get(COL_ACCION).toString().equalsIgnoreCase("A")||(datos.get(COL_ACCION).toString().equalsIgnoreCase("ALTA"))){
 				Vector regGrupoPersonaV=gruposClClAdm.selectByPK(grupoClClHash);
 				if((regGrupoPersonaV!=null)&&(regGrupoPersonaV.size()>0)){
