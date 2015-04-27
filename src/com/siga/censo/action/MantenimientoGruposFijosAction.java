@@ -625,6 +625,9 @@ public class MantenimientoGruposFijosAction extends MasterAction {
 			
 			try{
 				personaBean =personaAdm.getPersona(datos.get(COL_NIFCIF).toString());
+				if (personaBean ==null){
+					throw new Exception();
+				}
 			}catch (Exception e){
 				msgErr+=UtilidadesString.getMensajeIdioma(user,"censo.mantenimientoGruposFijos.error.fich.NIFCIF");
 				return msgErr;

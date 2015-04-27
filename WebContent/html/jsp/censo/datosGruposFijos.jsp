@@ -246,7 +246,7 @@
 							border="1"
 							columnNames="administracion.informes.literal.archivo.fecha,administracion.informes.literal.archivo.usuario,administracion.informes.literal.archivo.nombre,"
 							columnSizes="15,15,30,10"
-							fixedHeight="300">
+							fixedHeight="600">
 							<c:forEach items="${ficherosRel}" var="ficheros" varStatus="status">								
 								<%  FilaExtElement[] elems=new FilaExtElement[2];
 									elems[0]=new FilaExtElement("download","download",SIGAConstants.ACCESS_READ); 		
@@ -260,7 +260,7 @@
 									<td><input type="hidden" name="oculto${status.count}_1" value="${ficheros.directorio}">
 										<input type="hidden" name="oculto${status.count}_2" value="${ficheros.nombrefichero}">
 										<input type="hidden" name="oculto${status.count}_3" value="${ficheros.nombreficherolog}">
-									<fmt:formatDate value="${ficheros.fechamodificacion}" var="fechaFormat" type="date" pattern="dd/MM/yyyy"/><c:out value="${fechaFormat}"></c:out></td>
+									<fmt:formatDate value="${ficheros.fechamodificacion}" var="fechaFormat" type="date" pattern="dd/MM/yyyy HH:mm:ss"/><c:out value="${fechaFormat}"></c:out></td>
 									<td><c:out value="${ficheros.nombreUsuario}"></c:out></td>
 									<td><c:out value="${ficheros.nombrefichero}"></c:out></td>
 								</siga:FilaConIconos>	
