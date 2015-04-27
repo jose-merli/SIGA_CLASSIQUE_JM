@@ -217,7 +217,7 @@
 							<table class="tablaCampos" border="0" width="100%">
 								<tr>
 									<td class="labelText">
-										<siga:Idioma key="administracion.informes.literal.archivo" />&nbsp;
+										<siga:Idioma key="pys.cargaProductos.literal.fichero"/>&nbsp;(*)
 									</td>
 									<td>
 										<html:file property="fichero" styleClass="boxCombo" style="width:400px;" />
