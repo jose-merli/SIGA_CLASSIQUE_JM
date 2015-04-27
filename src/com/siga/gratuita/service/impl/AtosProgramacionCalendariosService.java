@@ -510,7 +510,7 @@ public class AtosProgramacionCalendariosService extends JtaBusinessServiceTempla
 						File ficheroCargaExcel = new File(pathFichero.toString());	
 						if(ficheroCargaExcel != null && ficheroCargaExcel.length() > 0){
 							CargaMasivaCalendariosService carga = (CargaMasivaCalendariosService) bm.getService(CargaMasivaCalendariosService.class);
-							ClsLogging.writeFileLogWithoutSession("PARSEO DEL CALENDARIO "+ progCalendariosBean.getIdInstitucion() + "_" + progCalendariosBean.getIdFicheroCalendario(), 3);
+							ClsLogging.writeFileLogWithoutSession("PARSEO DEL FICHERO CALENDARIO "+ progCalendariosBean.getIdInstitucion() + "_" + progCalendariosBean.getIdFicheroCalendario(), 3);
 							List<CargaMasivaCalendariosVo> datosExcel = carga.parseExcelFile(SIGAServicesHelper.getBytes(ficheroCargaExcel), progCalendariosBean.getIdInstitucion().shortValue(),fileLog);
 							// Si no ha ocurrido errores en la carga del excel eliminamos el fichero log 
 							fileLog=null;
@@ -521,7 +521,7 @@ public class AtosProgramacionCalendariosService extends JtaBusinessServiceTempla
 							}
 							
 							/** Generamos el calendario **/	
-							ClsLogging.writeFileLogWithoutSession("GENERACION DEL CALENDARIO "+ficheroVo.getIdinstitucion()+"_"+ficheroVo.getIdfichero(), 3);
+							ClsLogging.writeFileLogWithoutSession("GENERACION DEL CALENDARIO "+progCalendariosBean.getIdInstitucion() + "_" + progCalendariosBean.getIdFicheroCalendario(), 3);
 							CalendarioSJCS calendarioSJCS = new CalendarioSJCS();
 							calendarioSJCS.generarCalendarioCargaFichero(datosExcel,observacion,usrBean);
 							
@@ -533,19 +533,22 @@ public class AtosProgramacionCalendariosService extends JtaBusinessServiceTempla
 							progCalendariosBean.setFechaCalFin(GstDate.getApplicationFormatDate("", ultimoDia));
 							progCalendariosBean.setEstado(ScsProgCalendariosBean.estadoFinalizado);
 							progrCalendariosAdm.updateDirect(progCalendariosBean);							
-							ClsLogging.writeFileLogWithoutSession("CALENDARIO GENERADO"+ficheroVo.getIdinstitucion()+"_"+ficheroVo.getIdfichero(), 3);
+							ClsLogging.writeFileLogWithoutSession("CALENDARIO GENERADO"+progCalendariosBean.getIdInstitucion() + "_" + progCalendariosBean.getIdFicheroCalendario(), 3);
 						}
 					}
 				}
 
 			} catch (Exception e) {
 				//ESTADO ERROR
-				ClsLogging.writeFileLogWithoutSession("ERROR EN CALENDARIO"+ progCalendariosBean.getIdInstitucion() + "_" + progCalendariosBean.getIdFicheroCalendario(), 3);
+				ClsLogging.writeFileLogWithoutSession("ERROR EN CALENDARIO: "+ progCalendariosBean.getIdInstitucion() + "_" + progCalendariosBean.getIdFicheroCalendario(), 3);
 				progCalendariosBean.setEstado(ScsProgCalendariosBean.estadoError);
 				progrCalendariosAdm.updateEstado(progCalendariosBean);
 				String msgError = e.getMessage();
 				if(e instanceof SIGAException){
 					msgError = ((SIGAException) e).getLiteral();
+				} else if (e instanceof ClsExceptions){
+					ClsExceptions d = ((ClsExceptions) e);
+					msgError = d.getMessage();
 				}
 				
 				/** Escribimos el log de cada fila del fichero de carga si hubiera habido errores **/
