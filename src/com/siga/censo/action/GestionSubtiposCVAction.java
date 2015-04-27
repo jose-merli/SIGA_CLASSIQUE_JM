@@ -255,6 +255,9 @@ public class GestionSubtiposCVAction extends MasterAction {
 			tiposDatosCurricularesVo.setUsumodificacion(Integer.valueOf(this.getUserBean(request).getUserName()));
 			tiposDatosCurricularesVo.setIdioma(this.getUserBean(request).getLanguage());
 			tiposDatosCurricularesService.actualizarSubtiposCV(tiposDatosCurricularesVo);
+		}catch (BusinessException e){
+			return errorRefresco(e.getMessage(),new ClsExceptions(e.toString()),request);
+			
 		}catch (Exception e){
 			throw new SIGAException("messages.general.error", e , new String[] {"modulo.gratuita"});
 			

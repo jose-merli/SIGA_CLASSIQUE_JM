@@ -53,12 +53,14 @@
 	
 	
 	function buscarTipos() {
-		var buts = document.getElementsByTagName("input");
+		/*var buts = document.getElementsByTagName("input");
 		for ( var b = 0; b < buts.length; b++) {
 			if (buts[b].type == 'button') {
 				jQuery(buts[b]).attr("disabled", "disabled");
 			}
-		}
+		}*/
+		
+		sub();
 		var idInstitucion = document.SubtiposCVForm.idInstitucion.value;
 		var tipoDescripcion = document.SubtiposCVForm.tipoDescripcion.value;
 		var subTipo1Descripcion = document.SubtiposCVForm.subTipo1Descripcion.value;
@@ -78,6 +80,7 @@
             data: data,
             success: function(response){
             	fin();
+            	
                 jQuery('#divListado').html(response);
             },
             error: function(e){
@@ -88,6 +91,7 @@
     }
 	
 	function nuevo(){
+		jQuery("#idTipoCVInsercion").val("");
 		jQuery("#subTipoDescripcionInsercion").val("");
 		jQuery("#subTipoCodigoExtInsercion").val("");
 		
@@ -132,7 +136,11 @@
 			
 		}
 		if(document.forms['FormularioGestion'].subTipoDescripcion.value==''){
-			error += "<siga:Idioma key='errors.required' arg0='censo.tiposDatosCurriculares.descripcion.literal'/>";
+			error += "<siga:Idioma key='errors.required' arg0='censo.tiposDatosCurriculares.descripcion.literal'/>"+ '\n';
+			
+		}
+		if(document.forms['FormularioGestion'].subTipoCodigoExt.value==''){
+			error += "<siga:Idioma key='errors.required' arg0='censo.tiposDatosCurriculares.codExterno.literal'/>";
 			
 		}
 		
@@ -150,69 +158,7 @@
 	}
 	
 	
-	function editar(fila) {
-		
-		var idInstitucion = 'idInstitucion_' + fila ;
-		var idTipoCV = 'idTipoCV_' + fila ;
-		var descripcion = 'descripcion_' + fila ;
-		var subTipo1IdTipo = 'subTipo1IdTipo_' + fila ;
-		var subTipo1IdInstitucion = 'subTipo1IdInstitucion_' + fila ;
-		var subTipo1CodigoExt = 'subTipo1CodigoExt_' + fila ;
-		var subTipo1Descripcion = 'subTipo1Descripcion_' + fila ;
-		var subTipo1IdRecursoDescripcion = 'subTipo1IdRecursoDescripcion_' + fila ;
-		
-		var subTipo2IdTipo = 'subTipo2IdTipo_' + fila ;
-		var subTipo2IdInstitucion = 'subTipo2IdInstitucion_' + fila ;
-		var subTipo2CodigoExt = 'subTipo2CodigoExt_' + fila ;
-		var subTipo2Descripcion = 'subTipo2Descripcion_' + fila ;
-		var subTipo2IdRecursoDescripcion = 'subTipo2IdRecursoDescripcion_' + fila ;
-		
-		
-		jQuery("#idInstitucion").val(jQuery("#"+idInstitucion).val());
-		jQuery("#idTipoCVEdicion").val(jQuery("#"+idTipoCV).val());
-		jQuery("#descripcionEdicion").val(jQuery("#"+descripcion).val());
-		
-		if(jQuery("#"+idInstitucion).val()!=jQuery("#"+subTipo1IdInstitucion).val()){
-			jQuery("#divSubtipo1Edicion").hide();
-		}else{
-			jQuery("#divSubtipo1Edicion").show();
-			jQuery("#subTipo1IdTipoEdicion").val(jQuery("#"+subTipo1IdTipo).val());
-			jQuery("#subTipo1CodigoExtEdicion").val(jQuery("#"+subTipo1CodigoExt).val());
-			jQuery("#subTipo1DescripcionEdicion").val(jQuery("#"+subTipo1Descripcion).val());
-			jQuery("#subTipo1IdRecursoDescripcionEdicion").val(jQuery("#"+subTipo1IdRecursoDescripcion).val());
-		}
-		if(jQuery("#"+subTipo2IdTipo).val()=='' ||jQuery("#"+idInstitucion).val()!=jQuery("#"+subTipo2IdInstitucion).val()){
-			jQuery("#divSubtipo2Edicion").hide();
-			jQuery("#divAvisoSubtipo2Edicion").hide();
-		}else{
-			jQuery("#divSubtipo2Edicion").show();
-			jQuery("#divAvisoSubtipo2Edicion").show();
-			jQuery("#subTipo2IdTipoEdicion").val(jQuery("#"+subTipo2IdTipo).val());
-			jQuery("#subTipo2CodigoExtEdicion").val(jQuery("#"+subTipo2CodigoExt).val());
-			jQuery("#subTipo2DescripcionEdicion").val(jQuery("#"+subTipo2Descripcion).val());
-			jQuery("#subTipo2IdRecursoDescripcionEdicion").val(jQuery("#"+subTipo2IdRecursoDescripcion).val());
-		}
-		document.FormularioGestion.modo.value = "actualizar";
-		
-		
-		jQuery("#dialogoEdicion").dialog(
-				{
-				      height: 270,
-				      width: 525,
-				      modal: true,
-				      resizable: false,
-				      buttons: {
-				    	  "Guardar": { id: 'Actualizar', text: '<siga:Idioma key="general.boton.guardar"/>', click: function(){ accionActualizar(); }},
-				          "Cerrar": { id: 'Cerrar', text: '<siga:Idioma key="general.boton.close"/>', click: function(){closeDialog('dialogoEdicion');}}
-				      }
-				}
-			);
-			
-		jQuery(".ui-widget-overlay").css("opacity","0");
-		
-		
-		
-	 }
+	
 	
 	function accionActualizar(){
 		
@@ -240,14 +186,23 @@
 		if(document.forms['FormularioGestion'].subTipo1IdTipo.value!==''){
 			if(document.forms['FormularioGestion'].subTipo1Descripcion.value==''){
 				error += "<siga:Idioma key='errors.required' arg0='censo.tiposDatosCurriculares.descripcion.literal'/>"+ '\n';
-				
 			}
+			if(document.forms['FormularioGestion'].subTipo1CodigoExt.value==''){
+				error += "<siga:Idioma key='errors.required' arg0='censo.tiposDatosCurriculares.codExterno.literal'/>"+ '\n';
+			}
+			
+			
+			
 		}
 		if(document.forms['FormularioGestion'].subTipo2IdTipo.value!==''){
 			if(document.forms['FormularioGestion'].subTipo2Descripcion.value==''){
 				error += "<siga:Idioma key='errors.required' arg0='censo.tiposDatosCurriculares.descripcion.literal'/>"+ '\n';
 				
 			}
+			if(document.forms['FormularioGestion'].subTipo2CodigoExt.value==''){
+				error += "<siga:Idioma key='errors.required' arg0='censo.tiposDatosCurriculares.codExterno.literal'/>"+ '\n';
+			}
+			
 		}
 		
 		
@@ -271,71 +226,9 @@
 		closeDialog('dialogoEdicion');
 		document.forms['FormularioGestion'].submit();
 		
+		
 	}
-	function borrar(fila) {		
-		var idInstitucion = 'idInstitucion_' + fila ;
-		var idTipoCV = 'idTipoCV_' + fila ;
-		var descripcion = 'descripcion_' + fila ;
-		
-		var subTipo1IdTipo = 'subTipo1IdTipo_' + fila ;
-		var subTipo1IdInstitucion = 'subTipo1IdInstitucion_' + fila ;
-		var subTipo1CodigoExt = 'subTipo1CodigoExt_' + fila ;
-		var subTipo1Descripcion = 'subTipo1Descripcion_' + fila ;
-		var subTipo1IdRecursoDescripcion = 'subTipo1IdRecursoDescripcion_' + fila ;
-		
-		
-		var subTipo2IdTipo = 'subTipo2IdTipo_' + fila ;
-		var subTipo2IdInstitucion = 'subTipo2IdInstitucion_' + fila ;
-		var subTipo2CodigoExt = 'subTipo2CodigoExt_' + fila ;
-		var subTipo2Descripcion = 'subTipo2Descripcion_' + fila ;
-		var subTipo2IdRecursoDescripcion = 'subTipo2IdRecursoDescripcion_' + fila ;
-		
-		jQuery("#idInstitucion").val(jQuery("#"+idInstitucion).val());
-		jQuery("#idTipoCVBorrado").val(jQuery("#"+idTipoCV).val());
-		jQuery("#descripcionBorrado").val(jQuery("#"+descripcion).val());
-		
-		if(jQuery("#"+idInstitucion).val()!=jQuery("#"+subTipo1IdInstitucion).val()){
-			jQuery("#divSubtipo1Borrado").hide();
-		}else{
-			jQuery("#divSubtipo1Borrado").show();
-			jQuery("#subTipo1IdTipoBorrado").val(jQuery("#"+subTipo1IdTipo).val());
-			jQuery("#subTipo1CodigoExtBorrado").val(jQuery("#"+subTipo1CodigoExt).val());
-			jQuery("#subTipo1DescripcionBorrado").val(jQuery("#"+subTipo1Descripcion).val());
-			jQuery("#subTipo1IdRecursoDescripcionBorrado").val(jQuery("#"+subTipo1IdRecursoDescripcion).val());
-		}
-		
-		if(jQuery("#"+subTipo2IdTipo).val()=='' ||jQuery("#"+idInstitucion).val()!=jQuery("#"+subTipo2IdInstitucion).val()){
-			jQuery("#divSubtipo2Borrado").hide();
-			jQuery("#divAvisoSubtipo2Borrado").hide();
-		}else{
-			jQuery("#divSubtipo2Borrado").show();
-			jQuery("#divAvisoSubtipo2Borrado").show();
-			jQuery("#subTipo2IdTipoBorrado").val(jQuery("#"+subTipo2IdTipo).val());
-			jQuery("#subTipo2CodigoExtBorrado").val(jQuery("#"+subTipo2CodigoExt).val());
-			jQuery("#subTipo2DescripcionBorrado").val(jQuery("#"+subTipo2Descripcion).val());
-			jQuery("#subTipo2IdRecursoDescripcionBorrado").val(jQuery("#"+subTipo2IdRecursoDescripcion).val());
-		}
-		document.FormularioGestion.modo.value = "borrar";
-		
-		
-		jQuery("#dialogoBorrado").dialog(
-				{
-				      height: 270,
-				      width: 525,
-				      modal: true,
-				      resizable: false,
-				      buttons: {
-				    	  "Guardar": { id: 'Borrar', text: '<siga:Idioma key="general.boton.borrar"/>', click: function(){ accionBorrar(); }},
-				          "Cerrar": { id: 'Cerrar', text: '<siga:Idioma key="general.boton.close"/>', click: function(){closeDialog('dialogoBorrado');}}
-				      }
-				}
-			);
-			
-		jQuery(".ui-widget-overlay").css("opacity","0");
-		
-		
-		
-	 }
+	
 	function accionBorrar(){
 		
 		document.forms['FormularioGestion'].idTipoCV.value = jQuery("#idTipoCVBorrado").val();  
@@ -358,7 +251,7 @@
 			
 		}
 		if(document.forms['FormularioGestion'].subTipo.value ==''){
-			error += "<siga:Idioma key='errors.required' arg0='censo.tiposDatosCurriculares.tipo.literal'/>";
+			error += "<siga:Idioma key='errors.required' arg0='censo.tiposDatosCurriculares.subtipo.literal'/>";
 		}
 		if (error!=''){
 			alert(error);
@@ -374,13 +267,15 @@
 		msjConfirmacion +=	'<siga:Idioma key="messages.deleteConfirmation"/>';
 		if (!confirm(msjConfirmacion))
 			return false;
+		
 		closeDialog('dialogoBorrado');
 		document.forms['FormularioGestion'].submit();
+		
 		
 	}
 </script>
 </head>
-<body>
+<body >
 	<!-- INICIO: CAMPOS DE BUSQUEDA-->
 	<bean:define id="path" name="org.apache.struts.action.mapping.instance" property="path" scope="request"/>
 	<html:form action="${path}"  method="POST" target="mainWorkArea">
@@ -421,7 +316,7 @@
 				</table>
 			</siga:ConjCampos>
 		<siga:ConjBotonesBusqueda botones="B,N"  titulo="censo.tiposDatosCurriculares.busqueda"/>
-		<div id="divListado"></div>	
+		<div id="divListado" ></div>	
 	</html:form>
 
 <html:form action="${path}"  name="FormularioGestion" type ="com.siga.censo.form.SubtiposCVForm" target="submitArea">
@@ -445,8 +340,7 @@
 		<html:hidden property="subTipo2IdRecursoDescripcion" value=""/>
 </html:form>
 
-<div id="dialogoInsercion"  title='<bean:message key="general.dialog.titulo"/>' style="display:none">
-<div class="labelText" id="tituloDialogo" align="center" ><bean:message key="censo.tiposDatosCurriculares.dialogo.insercion"/></div>
+<div id="dialogoInsercion"  title='<bean:message key="censo.tiposDatosCurriculares.dialogo.insercion"/>' style="display:none">
 <div>&nbsp;</div>
 
   	<siga:ConjCampos >
@@ -481,8 +375,7 @@
 
 </div>
 
-<div id="dialogoEdicion" title='<bean:message key="general.dialog.titulo"/>' style="display:none;">
-<div id="tituloDialogo" class="labelText"><bean:message key="censo.tiposDatosCurriculares.dialogo.edicion"/></div>
+<div id="dialogoEdicion" title='<bean:message key="censo.tiposDatosCurriculares.dialogo.edicion"/>' style="display:none;">
 <div >&nbsp; </div>
   	<siga:ConjCampos >
 			<div class="labelText">
@@ -510,8 +403,7 @@
 
 </div>
 
-<div id="dialogoBorrado" title='<bean:message key="general.dialog.titulo"/>' style="display:none; ">
-<div id="tituloDialogo" class="labelText" ><bean:message key="censo.tiposDatosCurriculares.dialogo.borrado"/></div>
+<div id="dialogoBorrado" title='<bean:message key="censo.tiposDatosCurriculares.dialogo.borrado"/>' style="display:none; ">
 <div  >&nbsp; </div>
   	<siga:ConjCampos >
 			<div class="labelText">
