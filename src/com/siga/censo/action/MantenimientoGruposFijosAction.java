@@ -536,6 +536,9 @@ public class MantenimientoGruposFijosAction extends MasterAction {
 			directorioFichero.append(File.separator);
 			directorioFichero.append("ficherosCarga");
 			StringBuffer pathFichero = new StringBuffer(directorioFichero);
+			File path = new File(pathFichero.toString());
+			if(!path.exists())
+				path.mkdirs();
 			
 			//Guardamos el fichero subido en el directorio correspondiente
 			StringBuffer nombreFichero = new StringBuffer(miForm.getFichero().getFileName().substring(0, miForm.getFichero().getFileName().lastIndexOf('.')));
