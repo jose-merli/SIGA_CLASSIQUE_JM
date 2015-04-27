@@ -209,17 +209,21 @@
 							typeof jQueryTop("#mainWorkArea")[0].contentWindow != "undefined" && 
 							typeof jQueryTop("#mainWorkArea")[0].contentWindow.jQuery != "undefined"){
 						var mainWorkAreaJquery = jQueryTop("#mainWorkArea")[0].contentWindow.jQuery;
+						try{
 						mainWorkAreaJquery.blockUI({
 							message: '<div id="barraBloqueante"><span class="labelText">'+msg+'</span><br><img src="<%=app%>/html/imagenes/loadingBar.gif"/></div>', 
 							css:{border:0, background:'transparent'},
 							overlayCSS: { backgroundColor:'#FFF', opacity: .0} });
-						/* NO ES NECESARIO SOLO BLOQUEA mainWorkArea EL MENÚ SIGUE FUNCIONANDO
+						}catch(mensa){
+							jQuery("#divEspera").show();
+						}
+						/* NO ES  NECESARIO SOLO BLOQUEA mainWorkArea EL MENÚ SIGUE FUNCIONANDO
 						mainWorkAreaJquery("#barraBloqueante").click(function() { 
 							mainWorkAreaJquery.unblockUI(); 
 							console.debug("[barraBloqueante] CLICK blockUI");
 						});
 						*/
-						console.debug("[mainSub] blockUI");
+						//console.debug("[mainSub] blockUI");
 					} else
 						jQuery("#divEspera").show();
 					bloqueado=true;
@@ -232,8 +236,12 @@
 							typeof jQueryTop("#mainWorkArea")[0].contentWindow != "undefined" && 
 							typeof jQueryTop("#mainWorkArea")[0].contentWindow.jQuery != "undefined"){
 						var mainWorkAreaJquery = jQueryTop("#mainWorkArea")[0].contentWindow.jQuery;
-						mainWorkAreaJquery.unblockUI();
-						console.debug("[mainFin] unblockUI");
+						try{
+							mainWorkAreaJquery.unblockUI();
+						}catch(mensa){
+							
+						}
+						//console.debug("[mainFin] unblockUI");
 					}
 					jQuery("#divEspera").hide();
 					bloqueado=false; 
