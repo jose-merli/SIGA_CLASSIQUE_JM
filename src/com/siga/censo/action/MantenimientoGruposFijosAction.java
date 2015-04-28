@@ -604,107 +604,122 @@ public class MantenimientoGruposFijosAction extends MasterAction {
 		String msg="OK";
 		String msgErr="KO: ";
 		UserTransaction tx = null;
-		int accion;
+		int accion=-1;
 		try{
 
-			//Si el grupo que estamos editando es diferente del grupo informado en la columna del excel
-			if((datos.get(COL_IDGRUPO)==null)||(datos.get(COL_IDGRUPO).toString().isEmpty())||
-				(!datosGrupo.get("IDGRUPO").toString().equals(datos.get(COL_IDGRUPO).toString()))){
+			/** 1. Comprobacion que se ha rellenado y existe el grupo **/
+			if((datos.get(COL_IDGRUPO)==null) || ((String)datos.get(COL_IDGRUPO)).equals("")|| (!datosGrupo.get("IDGRUPO").toString().equals(datos.get(COL_IDGRUPO).toString()))){
 				msgErr+=UtilidadesString.getMensajeIdioma(user,"censo.mantenimientoGruposFijos.error.fich.idGrupo");
 				return msgErr;
 			}
 			
-			//Obtenemos la persona
-			CenPersonaAdm personaAdm = new CenPersonaAdm(user);
-			CenPersonaBean personaBean=new CenPersonaBean();
-			
+			/** 2. Comprobacion que se ha rellenado el NIF y existe el colegiado **/
 			if(datos.get(COL_NIFCIF)==null || ((String)datos.get(COL_NIFCIF)).equals("")){
 				msgErr+=UtilidadesString.getMensajeIdioma(user,"censo.mantenimientoGruposFijos.error.fich.NIFCIF");
 				return msgErr;
 			}
 			
-			try{
-				personaBean =personaAdm.getPersona(datos.get(COL_NIFCIF).toString());
-				if (personaBean ==null){
+			/** 3. Comprobacion que se ha rellenado la columna ACCION y se ha rellenado correctamente con A o B **/
+			if (datos.get(COL_ACCION) == null || ((String) datos.get(COL_ACCION)).equals("") || (!((String) datos.get(COL_ACCION)).equals("A") && !((String) datos.get(COL_ACCION)).equals("B"))) {
+				msgErr += UtilidadesString.getMensajeIdioma(user, "censo.mantenimientoGruposFijos.error.fich.accion");
+				return msgErr;
+			}			
+			
+			
+			/****************    AQUI PONDREMOS LA NUEVA OBTENCION DEL IDPERSONA SEGUN LA TABLA EPLICADA EN LA REUNION ***********************/
+			Long idPersona = null;
+			CenPersonaAdm personaAdm = new CenPersonaAdm(user);
+			CenPersonaBean personaBean = null;
+
+			try {
+				personaBean = personaAdm.getPersona(datos.get(COL_NIFCIF).toString());
+				if (personaBean != null) {
+					idPersona = personaBean.getIdPersona(); 
+				}else{
 					throw new Exception();
 				}
-			}catch (Exception e){
-				msgErr+=UtilidadesString.getMensajeIdioma(user,"censo.mantenimientoGruposFijos.error.fich.NIFCIF");
+			} catch (Exception e) {
+				msgErr += UtilidadesString.getMensajeIdioma(user, "censo.mantenimientoGruposFijos.error.fich.NIFCIF");
 				return msgErr;
 			}
+			/******************************************************    FIN   *******************************************************************/
 			
+			CenGruposClienteClienteAdm gruposClClAdm = new CenGruposClienteClienteAdm(user);
+			Hashtable grupoClClHash=new Hashtable();
+			grupoClClHash.put("IDINSTITUCION",user.getLocation());
+			grupoClClHash.put("IDPERSONA",idPersona);
+			grupoClClHash.put("IDINSTITUCION_GRUPO",datosGrupo.get("IDINSTITUCION").toString());
+			grupoClClHash.put("IDGRUPO",datosGrupo.get("IDGRUPO").toString());
+			
+			/** 4. Comprobacion que la persona no está asignada ya al grupo  **/
+			if (datos.get(COL_ACCION).toString().equalsIgnoreCase("A")) {
+				Vector regGrupoPersonaV = gruposClClAdm.selectByPK(grupoClClHash);
+				if (regGrupoPersonaV != null && regGrupoPersonaV.size() > 0) {
+					msgErr += UtilidadesString.getMensajeIdioma(user, "process.usuario.ya.asignado");
+					return msgErr;
+				}
+			}
+
+			/** 5. Comprobacion que la persona existe en el grupo donde se quiere dar de baja  **/
+			if (datos.get(COL_ACCION).toString().equalsIgnoreCase("B")) {
+				Vector regGrupoPersonaV = gruposClClAdm.selectByPK(grupoClClHash);
+				if (regGrupoPersonaV == null || regGrupoPersonaV.size() < 1) {
+					msgErr += UtilidadesString.getMensajeIdioma(user, "process.usuario.noexiste");
+					return msgErr;
+				}
+			}
+			
+			
+			/** 6. Una vez superadas todas las comprobaciones iniciales, se procede a realizar la operacion en cada caso  **/
+			tx = user.getTransaction();
 			CenGruposClienteClienteBean bean = new CenGruposClienteClienteBean();
 			bean.setIdGrupo(Integer.parseInt(datosGrupo.get("IDGRUPO").toString()));
 			bean.setIdInstitucionGrupo(Integer.parseInt(datosGrupo.get("IDINSTITUCION").toString()));
 			bean.setIdInstitucion(Integer.parseInt(user.getLocation()));
-			bean.setIdPersona(personaBean.getIdPersona());
+			bean.setIdPersona(idPersona);
+			tx.begin();
 
-			CenGruposClienteClienteAdm gruposClClAdm = new CenGruposClienteClienteAdm(user);
-			
-			Hashtable grupoClClHash=new Hashtable();
-			
-			grupoClClHash.put("IDINSTITUCION",user.getLocation());
-			grupoClClHash.put("IDPERSONA",personaBean.getIdPersona());
-			grupoClClHash.put("IDINSTITUCION_GRUPO",datosGrupo.get("IDINSTITUCION").toString());
-			grupoClClHash.put("IDGRUPO",datosGrupo.get("IDGRUPO").toString());
-			
-			if(datos.get(COL_ACCION)==null || ((String)datos.get(COL_ACCION)).equals("") || (!((String)datos.get(COL_ACCION)).equals("A") && !((String)datos.get(COL_ACCION)).equals("B") )){
-				msgErr+=UtilidadesString.getMensajeIdioma(user,"censo.mantenimientoGruposFijos.error.fich.accion");
-				return msgErr;
-			}			
-			
-			if(datos.get(COL_ACCION).toString().equalsIgnoreCase("A")||(datos.get(COL_ACCION).toString().equalsIgnoreCase("ALTA"))){
-				Vector regGrupoPersonaV=gruposClClAdm.selectByPK(grupoClClHash);
-				if((regGrupoPersonaV!=null)&&(regGrupoPersonaV.size()>0)){
-					msgErr+=UtilidadesString.getMensajeIdioma(user,"process.usuario.ya.asignado");
-					return msgErr;
-				}
-			}
-			//Lanzamos el proceso de revision de suscripciones del letrado 
-			//Comienzo control de transacciones
-			tx = user.getTransactionPesada();
-			tx.begin();	
-			
-			try{
-				if(datos.get(COL_ACCION).toString().equalsIgnoreCase("A")||(datos.get(COL_ACCION).toString().equalsIgnoreCase("ALTA"))){
-					accion=CenHistoricoAdm.ACCION_INSERT;
+			try {
+				if (datos.get(COL_ACCION).toString().equalsIgnoreCase("A")) {
+					accion = CenHistoricoAdm.ACCION_INSERT;
 					gruposClClAdm.insert(bean);
-				}else{
-					accion=CenHistoricoAdm.ACCION_DELETE;
+				} else if (datos.get(COL_ACCION).toString().equalsIgnoreCase("B")) {
+					accion = CenHistoricoAdm.ACCION_DELETE;
 					gruposClClAdm.delete(bean);
 				}
-				
-				try{
-					CenHistoricoAdm admHist = new CenHistoricoAdm (user);
-					admHist.insertCompleto((CenHistoricoBean)null, bean, accion, user.getUserName());
-				}catch (Exception e){
-					if (Status.STATUS_ACTIVE  == tx.getStatus()){
+
+				try {
+					CenHistoricoAdm admHist = new CenHistoricoAdm(user);
+					admHist.insertCompleto((CenHistoricoBean) null, bean, accion, user.getUserName());
+
+				} catch (Exception e) {
+					if (Status.STATUS_ACTIVE == tx.getStatus()) {
 						tx.rollback();
 					}
-					msgErr+=UtilidadesString.getMensajeIdioma(user,"censo.mantenimientoGruposFijos.error.fich.historico");
-					return msgErr;		
+					msgErr += UtilidadesString.getMensajeIdioma(user, "censo.mantenimientoGruposFijos.error.fich.historico");
+					return msgErr;
 				}
-			
-			}catch (Exception e){
-				if (Status.STATUS_ACTIVE  == tx.getStatus()){
+
+			} catch (Exception e) {
+				if (Status.STATUS_ACTIVE == tx.getStatus()) {
 					tx.rollback();
 				}
-				
-				msgErr+=UtilidadesString.getMensajeIdioma(user,"messages.inserted.error");
+
+				msgErr += UtilidadesString.getMensajeIdioma(user, "messages.inserted.error");
 				return msgErr;
-				
+
 			}
 			
+			/** 7. Lanzamos el proceso de revision de suscripciones del letrado **/
 			String resultado[] = EjecucionPLs.ejecutarPL_RevisionSuscripcionesLetrado(user.getLocation(), personaBean.getIdPersona().toString(), "", "" + user.getUserName());
 			if ((resultado == null) || (!resultado[0].equals("0") && !resultado[0].equals("100"))) {
-				if (Status.STATUS_ACTIVE  == tx.getStatus()){
+				if (Status.STATUS_ACTIVE == tx.getStatus()) {
 					tx.rollback();
 				}
-				
-				msgErr+=UtilidadesString.getMensajeIdioma(user,"censo.mantenimientoGruposFijos.error.fich.revision.suscripcion")+resultado[1];
-				return msgErr; //si hay error seguimos con el siguiente registro 
-			}	
-			
+				msgErr += UtilidadesString.getMensajeIdioma(user, "censo.mantenimientoGruposFijos.error.fich.revision.suscripcion") + resultado[1];
+				return msgErr;
+			}
+
 			tx.commit();
 
 		}catch (Exception e) { 
