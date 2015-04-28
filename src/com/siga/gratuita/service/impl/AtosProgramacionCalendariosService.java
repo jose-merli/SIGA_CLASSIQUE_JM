@@ -6,6 +6,10 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+import javax.transaction.SystemException;
+import javax.transaction.UserTransaction;
+import javax.transaction.Status;
+
 import org.redabogacia.sigaservices.app.helper.SIGAServicesHelper;
 import org.redabogacia.sigaservices.app.services.gen.FicherosService;
 import org.redabogacia.sigaservices.app.services.scs.CargaMasivaCalendariosService;
@@ -470,6 +474,7 @@ public class AtosProgramacionCalendariosService extends JtaBusinessServiceTempla
 		ScsProgCalendariosBean progCalendariosBean = progrCalendariosAdm.getNextProgrCalendarioFicheroCarga();
 		LogFileWriter log = null;
 		List <ArrayList<String>> fileLog = new ArrayList<ArrayList<String>>();
+		UserTransaction tx = null;
 		
 		if(progCalendariosBean!=null){
 			try {
@@ -521,6 +526,9 @@ public class AtosProgramacionCalendariosService extends JtaBusinessServiceTempla
 							}
 							
 							/** Generamos el calendario **/	
+							tx = usrBean.getTransactionPesada();
+							tx.begin();
+											
 							ClsLogging.writeFileLogWithoutSession("GENERACION DEL CALENDARIO "+progCalendariosBean.getIdInstitucion() + "_" + progCalendariosBean.getIdFicheroCalendario(), 3);
 							CalendarioSJCS calendarioSJCS = new CalendarioSJCS();
 							calendarioSJCS.generarCalendarioCargaFichero(datosExcel,observacion,usrBean);
@@ -534,31 +542,45 @@ public class AtosProgramacionCalendariosService extends JtaBusinessServiceTempla
 							progCalendariosBean.setEstado(ScsProgCalendariosBean.estadoFinalizado);
 							progrCalendariosAdm.updateDirect(progCalendariosBean);							
 							ClsLogging.writeFileLogWithoutSession("CALENDARIO GENERADO"+progCalendariosBean.getIdInstitucion() + "_" + progCalendariosBean.getIdFicheroCalendario(), 3);
+							tx.commit();
 						}
 					}
 				}
 
 			} catch (Exception e) {
 				//ESTADO ERROR
-				ClsLogging.writeFileLogWithoutSession("ERROR EN CALENDARIO: "+ progCalendariosBean.getIdInstitucion() + "_" + progCalendariosBean.getIdFicheroCalendario(), 3);
-				progCalendariosBean.setEstado(ScsProgCalendariosBean.estadoError);
-				progrCalendariosAdm.updateEstado(progCalendariosBean);
-				String msgError = e.getMessage();
-				if(e instanceof SIGAException){
-					msgError = ((SIGAException) e).getLiteral();
-				} else if (e instanceof ClsExceptions){
-					ClsExceptions d = ((ClsExceptions) e);
-					msgError = d.getMessage();
-				}
-				
-				/** Escribimos el log de cada fila del fichero de carga si hubiera habido errores **/
-				log.addLog(new String[] {"ERROR OCURRIDO: ", msgError});
-				if(fileLog!=null){
-					for (ArrayList<String> lineLog : fileLog) {
-						log.addLog(lineLog);
+				try {
+					if (tx!=null && Status.STATUS_ACTIVE == tx.getStatus()){
+						tx.rollback();
 					}
-				}
-				log.flush();
+					
+					ClsLogging.writeFileLogWithoutSession("ERROR EN CALENDARIO: "+ progCalendariosBean.getIdInstitucion() + "_" + progCalendariosBean.getIdFicheroCalendario(), 3);
+					progCalendariosBean.setEstado(ScsProgCalendariosBean.estadoError);
+					progrCalendariosAdm.updateEstado(progCalendariosBean);
+					String msgError = e.getMessage();
+					if(e instanceof SIGAException){
+						msgError = ((SIGAException) e).getLiteral();
+					} else if (e instanceof ClsExceptions){
+						ClsExceptions d = ((ClsExceptions) e);
+						msgError = d.getMessage();
+					}
+					
+					/** Escribimos el log de cada fila del fichero de carga si hubiera habido errores **/
+					log.addLog(new String[] {"ERROR OCURRIDO: ", msgError});
+					if(fileLog!=null){
+						for (ArrayList<String> lineLog : fileLog) {
+							log.addLog(lineLog);
+						}
+					}
+					log.flush();					
+					
+				} catch (IllegalStateException e1) {
+					e1.printStackTrace();
+				} catch (SecurityException e1) {
+					e1.printStackTrace();
+				} catch (SystemException e1) {
+					e1.printStackTrace();
+				}			
 			}
 		}
 	}		
