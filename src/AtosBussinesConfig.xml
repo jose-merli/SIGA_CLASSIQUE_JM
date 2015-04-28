@@ -118,6 +118,7 @@
 		<service interface="org.redabogacia.sigaservices.app.services.scs.CargaMasivaCalendariosService"	implementation="org.redabogacia.sigaservices.app.services.scs.impl.CargaMasivaCalendariosServiceImpl"/>		
 		<service interface="org.redabogacia.sigaservices.app.services.cen.CenGruposFicherosService"			implementation="org.redabogacia.sigaservices.app.services.cen.impl.CenGruposFicherosServiceImpl"/>
 		<service interface="org.redabogacia.sigaservices.app.services.adm.AdmUsuariosService"			    implementation="org.redabogacia.sigaservices.app.services.adm.impl.AdmUsuariosServiceImpl"/>
+		<service interface="org.redabogacia.sigaservices.app.services.cen.CenClienteService" 				implementation="org.redabogacia.sigaservices.app.services.cen.impl.CenClienteServiceImpl"/>
 		
 	</context>
 </configuration> 
