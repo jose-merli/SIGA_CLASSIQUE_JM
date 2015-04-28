@@ -565,6 +565,10 @@ public class AtosProgramacionCalendariosService extends JtaBusinessServiceTempla
 						msgError = d.getMessage();
 					}
 					
+					if(msgError==null || msgError.equals("")){
+						msgError = "Ha fallado el intento de la carga masiva del calendario. Consulte con el Administrador.";
+					}
+					
 					/** Escribimos el log de cada fila del fichero de carga si hubiera habido errores **/
 					log.addLog(new String[] {"ERROR OCURRIDO: ", msgError});
 					if(fileLog!=null){
