@@ -57,7 +57,7 @@
 <table class="tablaTitulo" align="center">
 	<tr>
 	<td class="titulitos">
-		<siga:Idioma key="cargaMasivaDatosCurriculares.ficheroProcesado.literal"/><c:out value="${CargaMasivaCVForm.nombreFichero}"/>
+		<siga:Idioma key="cargaMasivaDatosCurriculares.ficheroProcesado.literal"/>
 	</td>
 	</tr>
 </table>
@@ -102,7 +102,7 @@
 							<c:choose>
 								<c:when test="${datoCV.error!=''}">
 								<c:set var="botones" value="V,D" />
-									Error!
+									Error
 								</c:when>
 								<c:otherwise>
 									&nbsp;
