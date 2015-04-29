@@ -117,8 +117,6 @@
 				var mensaje = "<siga:Idioma key='censo.mantenimientoGruposFijos.confirmarCarga'/> ";
 				if (confirm(mensaje)){
 					document.forms[0].modo.value="procesarFichero";	
-					var alerta = "<siga:Idioma key='censo.mantenimientoGruposFijos.procesandoFichero'/> ";
-					alert(alerta);
 					document.forms[0].submit();	
 				} else{
 					fin();
@@ -246,7 +244,7 @@
 							border="1"
 							columnNames="administracion.informes.literal.archivo.fecha,administracion.informes.literal.archivo.usuario,administracion.informes.literal.archivo.nombre,"
 							columnSizes="15,15,30,10"
-							fixedHeight="600">
+							fixedHeight="610">
 							<c:forEach items="${ficherosRel}" var="ficheros" varStatus="status">								
 								<%  FilaExtElement[] elems=new FilaExtElement[2];
 									elems[0]=new FilaExtElement("download","download",SIGAConstants.ACCESS_READ); 		

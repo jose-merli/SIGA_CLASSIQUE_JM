@@ -35,6 +35,7 @@ import org.redabogacia.sigaservices.app.autogen.model.CenGruposFicheros;
 import org.redabogacia.sigaservices.app.exceptions.BusinessException;
 import org.redabogacia.sigaservices.app.helper.ExcelHelper;
 import org.redabogacia.sigaservices.app.helper.SIGAServicesHelper;
+import org.redabogacia.sigaservices.app.services.cen.CenClienteService;
 import org.redabogacia.sigaservices.app.services.cen.CenGruposFicherosService;
 import org.redabogacia.sigaservices.app.util.ReadProperties;
 import org.redabogacia.sigaservices.app.util.SIGAReferences;
@@ -401,10 +402,8 @@ public class MantenimientoGruposFijosAction extends MasterAction {
 		UserTransaction tx = null;
 		
 		try {
-			MantenimientoGruposFijosForm miForm = (MantenimientoGruposFijosForm) formulario;
-			
-			tx = this.getUserBean(request).getTransaction();
-						
+			MantenimientoGruposFijosForm miForm = (MantenimientoGruposFijosForm) formulario;			
+			tx = this.getUserBean(request).getTransaction();						
 			String	idInstitucionGrupo = (String)miForm.getDatosTablaOcultos(0).get(0);
 			String	idGrupo = (String)miForm.getDatosTablaOcultos(0).get(1);
 			
@@ -420,8 +419,7 @@ public class MantenimientoGruposFijosAction extends MasterAction {
 			CenGruposClienteClienteAdm gruposClClAdm = new CenGruposClienteClienteAdm(this.getUserBean(request));
 			Hashtable grupoClClHash=new Hashtable();
 			grupoClClHash.put("IDINSTITUCION_GRUPO",idInstitucionGrupo);
-			grupoClClHash.put("IDGRUPO",idGrupo);
-			
+			grupoClClHash.put("IDGRUPO",idGrupo);			
 			Vector regGrupoPersonaV=gruposClClAdm.select(grupoClClHash);
 			
 			if((regGrupoPersonaV!=null)&&(regGrupoPersonaV.size()>0)){
@@ -604,6 +602,7 @@ public class MantenimientoGruposFijosAction extends MasterAction {
 		String msg="OK";
 		String msgErr="KO: ";
 		UserTransaction tx = null;
+		Long idPersona = null;
 		int accion=-1;
 		try{
 
@@ -613,9 +612,21 @@ public class MantenimientoGruposFijosAction extends MasterAction {
 				return msgErr;
 			}
 			
-			/** 2. Comprobacion que se ha rellenado el NIF y existe el colegiado **/
-			if(datos.get(COL_NIFCIF)==null || ((String)datos.get(COL_NIFCIF)).equals("")){
-				msgErr+=UtilidadesString.getMensajeIdioma(user,"censo.mantenimientoGruposFijos.error.fich.NIFCIF");
+			/** 2. Comprobacion que se ha rellenado el NIF o NUM_COLEGIADO y existe el colegiado **/
+			if ((datos.get(COL_NIFCIF) != null && !((String) datos.get(COL_NIFCIF)).equals("")) || (datos.get(COL_NUMCOLEGIADO) != null && !((String) datos.get(COL_NUMCOLEGIADO)).equals(""))) {
+				try {
+					CenClienteService cenClienteService = (CenClienteService) BusinessManager.getInstance().getService(CenClienteService.class);
+					idPersona = cenClienteService.getIdPersona((String) datos.get(COL_NUMCOLEGIADO), (String) datos.get(COL_NIFCIF), Short.valueOf(user.getLocation()));
+					if (idPersona == null) {
+						throw new Exception();
+					}
+				} catch (Exception e) {
+					msgErr += UtilidadesString.getMensajeIdioma(user, "censo.mantenimientoGruposFijos.error.fich.NIFCIF");
+					return msgErr;
+				}
+				
+			} else {
+				msgErr += UtilidadesString.getMensajeIdioma(user, "censo.mantenimientoGruposFijos.error.fich.NIFCIF");
 				return msgErr;
 			}
 			
@@ -624,25 +635,6 @@ public class MantenimientoGruposFijosAction extends MasterAction {
 				msgErr += UtilidadesString.getMensajeIdioma(user, "censo.mantenimientoGruposFijos.error.fich.accion");
 				return msgErr;
 			}			
-			
-			
-			/****************    AQUI PONDREMOS LA NUEVA OBTENCION DEL IDPERSONA SEGUN LA TABLA EPLICADA EN LA REUNION ***********************/
-			Long idPersona = null;
-			CenPersonaAdm personaAdm = new CenPersonaAdm(user);
-			CenPersonaBean personaBean = null;
-
-			try {
-				personaBean = personaAdm.getPersona(datos.get(COL_NIFCIF).toString());
-				if (personaBean != null) {
-					idPersona = personaBean.getIdPersona(); 
-				}else{
-					throw new Exception();
-				}
-			} catch (Exception e) {
-				msgErr += UtilidadesString.getMensajeIdioma(user, "censo.mantenimientoGruposFijos.error.fich.NIFCIF");
-				return msgErr;
-			}
-			/******************************************************    FIN   *******************************************************************/
 			
 			CenGruposClienteClienteAdm gruposClClAdm = new CenGruposClienteClienteAdm(user);
 			Hashtable grupoClClHash=new Hashtable();
@@ -668,7 +660,6 @@ public class MantenimientoGruposFijosAction extends MasterAction {
 					return msgErr;
 				}
 			}
-			
 			
 			/** 6. Una vez superadas todas las comprobaciones iniciales, se procede a realizar la operacion en cada caso  **/
 			tx = user.getTransaction();
@@ -707,11 +698,10 @@ public class MantenimientoGruposFijosAction extends MasterAction {
 
 				msgErr += UtilidadesString.getMensajeIdioma(user, "messages.inserted.error");
 				return msgErr;
-
 			}
 			
 			/** 7. Lanzamos el proceso de revision de suscripciones del letrado **/
-			String resultado[] = EjecucionPLs.ejecutarPL_RevisionSuscripcionesLetrado(user.getLocation(), personaBean.getIdPersona().toString(), "", "" + user.getUserName());
+			String resultado[] = EjecucionPLs.ejecutarPL_RevisionSuscripcionesLetrado(user.getLocation(), idPersona.toString(), "", "" + user.getUserName());
 			if ((resultado == null) || (!resultado[0].equals("0") && !resultado[0].equals("100"))) {
 				if (Status.STATUS_ACTIVE == tx.getStatus()) {
 					tx.rollback();
@@ -735,7 +725,7 @@ public class MantenimientoGruposFijosAction extends MasterAction {
 				e1.printStackTrace();
 			}
 			
-			return msgErr+=e.getMessage(); //si hay error seguimos con el siguiente registro
+			return msgErr+=e.getMessage();
 		}
 
 		return msg;
