@@ -145,9 +145,10 @@ public class CargaMasivaDatosCVVoService implements VoUiService<CargaMasivaCVFor
 			objectForm.setCreditos(objectVo.getCreditos().toString());
 		if(objectVo.getDescripcion()!=null && !objectVo.getDescripcion().equals(""))
 			objectForm.setDescripcion(objectVo.getDescripcion());
-		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 		if(objectVo.getFechaCarga()!=null && !objectVo.getFechaCarga().equals(""))
 			objectForm.setFechaCarga(sdf.format(objectVo.getFechaCarga()));
+		sdf = new SimpleDateFormat("dd/MM/yyyy");
 		if(objectVo.getFechafin()!=null && !objectVo.getFechafin().equals(""))
 			objectForm.setFechaFin(sdf.format(objectVo.getFechafin()));
 		if(objectVo.getFechainicio()!=null && !objectVo.getFechainicio().equals(""))
