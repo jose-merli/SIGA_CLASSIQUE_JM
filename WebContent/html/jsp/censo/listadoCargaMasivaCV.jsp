@@ -15,43 +15,21 @@
 <%@ taglib uri="struts-logic.tld" prefix="logic"%>
 <%@ taglib uri="c.tld" prefix="c"%>
 
-	
-	<table id='listadoArchivosCab' border='1' width='100%' cellspacing='0' cellpadding='0'>
-		<tr class ='tableTitle'>
-			<td align='center' width='30%'><b><siga:Idioma key="cargaMasivaDatosCurriculares.fechaCarga.literal"/></b></td>
-			<td align='center' width='20%'><b><siga:Idioma key="cargaMasivaDatosCurriculares.usuario.literal"/></b></td>
-			<td align='center' width='20%'><b><siga:Idioma key="cargaMasivaDatosCurriculares.nombreFichero.literal"/></b></td>
-			<td align='center' width='15%'><b><siga:Idioma key="cargaMasivaDatosCurriculares.numRegistros.literal"/></b></td>
-			<td align='center' width='10%'>&nbsp;</td>
-		</tr>
-	</table>
 
-<div id='listadoArchivosDiv' style='height:595px; width: 100%; overflow-y: auto;overflow-x: hidden; '>
-
-<table class="tablaCampos" id='listadoArchivos' border='1' align='center' width='100%' cellspacing='0' cellpadding='0'	>
+<siga:Table 
+			   name="tablaDatos"
+			   border="1"
+			      columnNames="cargaMasivaDatosCurriculares.fechaCarga.literal,cargaMasivaDatosCurriculares.usuario.literal,
+			      	cargaMasivaDatosCurriculares.nombreFichero.literal,cargaMasivaDatosCurriculares.numRegistros.literal,"
+		   columnSizes="20,34,26,12,8">
 	
 		<c:choose>
 		<c:when test="${empty listado}">
-			<tr>
-				<td width='30%'></td>
-				<td width='20%'></td>
-				<td width='20%'></td>
-				<td width='15%'></td>
-				<td width='10%'></td>
-			</tr>
-		
 			<tr class="notFound">
-		   		<td colspan="5" class="titulitos"><siga:Idioma key="messages.noRecordFound"/></td>
+			   	<td class="titulitos"><siga:Idioma key="messages.noRecordFound"/></td>
 			</tr>
 		</c:when>
 		<c:otherwise>
-			<tr>
-				<td width='30%'></td>
-				<td width='20%'></td>
-				<td width='20%'></td>
-				<td width='15%'></td>
-				<td width='10%'></td>
-			</tr>
 			<c:forEach items="${listado}" var="cargaMasivaCV" varStatus="status">
 				<siga:FilaConIconos	fila='${status.count}'
 	  				pintarEspacio="no"
@@ -83,9 +61,9 @@
 		</c:otherwise>
 	</c:choose>
 
-</table>
+</siga:Table>
 
-</div>
+
 
 
 
