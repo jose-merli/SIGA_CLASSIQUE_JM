@@ -1,6 +1,9 @@
 package com.siga.censo.action;
 
+import java.sql.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -144,13 +147,11 @@ public class GestionSubtiposCVAction extends MasterAction {
 	private String getAjaxBusqueda (ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 			SubtiposCVForm tiposDatosCurricularesForm = (SubtiposCVForm) formulario;
 			String idInstitucion = request.getParameter("idInstitucion");
-			String tipoDescripcion = request.getParameter("tipoDescripcion");
+			String idTipoCVBusqueda = request.getParameter("idTipoCVBusqueda");
 			String subTipo1Descripcion = request.getParameter("subTipo1Descripcion");
 			String subTipo2Descripcion = request.getParameter("subTipo2Descripcion");
 				        
 	        tiposDatosCurricularesForm.setIdInstitucion(idInstitucion);
-	        if(tipoDescripcion!=null)
-	        	tiposDatosCurricularesForm.setTipoDescripcion(tipoDescripcion.trim());
 	        if(subTipo1Descripcion!=null)
 	        	tiposDatosCurricularesForm.setSubTipo1Descripcion(subTipo1Descripcion.trim());
 	        if(subTipo2Descripcion!=null)
@@ -165,6 +166,8 @@ public class GestionSubtiposCVAction extends MasterAction {
 			List<SubtiposCVForm> tiposDatosCurricularesForms = null;
 			try {
 				SubtiposCVVo tiposDatosCurricularesVo = voService.getForm2Vo(tiposDatosCurricularesForm);
+				if(idTipoCVBusqueda!=null && !idTipoCVBusqueda.equals(""))
+					tiposDatosCurricularesVo.setIdtipocv(Short.valueOf(idTipoCVBusqueda));
 				tiposDatosCurricularesVo.setIdioma(this.getUserBean(request).getLanguage());
 				tiposDatosCurricularesForms =  voService.getVo2FormList(tiposDatosCurricularesService.getList(tiposDatosCurricularesVo));
 				request.setAttribute("tiposDatosCurriculares", tiposDatosCurricularesForms);
@@ -233,7 +236,13 @@ public class GestionSubtiposCVAction extends MasterAction {
 			tiposDatosCurricularesVo.setUsumodificacion(Integer.valueOf(this.getUserBean(request).getUserName()));
 			tiposDatosCurricularesService.insertarSubtiposCV(tiposDatosCurricularesVo);
 		}catch (BusinessException e){
-			return errorRefresco(e.getMessage(),new ClsExceptions(e.toString()),request);
+			String msgError = null;
+			if(e.getParams()!=null)
+				msgError = UtilidadesString.getMensajeIdioma(this.getUserBean(request), e.getMessage(), Arrays.copyOf(e.getParams(),e.getParams().length,String[].class));
+			else
+				msgError = e.getMessage();
+			
+			return errorRefresco(msgError,new ClsExceptions(e.toString()),request);
 			
 		}
 		catch (Exception e){
@@ -256,7 +265,13 @@ public class GestionSubtiposCVAction extends MasterAction {
 			tiposDatosCurricularesVo.setIdioma(this.getUserBean(request).getLanguage());
 			tiposDatosCurricularesService.actualizarSubtiposCV(tiposDatosCurricularesVo);
 		}catch (BusinessException e){
-			return errorRefresco(e.getMessage(),new ClsExceptions(e.toString()),request);
+			String msgError = null;
+			if(e.getParams()!=null)
+				msgError = UtilidadesString.getMensajeIdioma(this.getUserBean(request), e.getMessage(), Arrays.copyOf(e.getParams(),e.getParams().length,String[].class));
+			else
+				msgError = e.getMessage();
+			
+			return errorRefresco(msgError,new ClsExceptions(e.toString()),request);
 			
 		}catch (Exception e){
 			throw new SIGAException("messages.general.error", e , new String[] {"modulo.gratuita"});

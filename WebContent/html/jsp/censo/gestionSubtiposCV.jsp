@@ -43,31 +43,30 @@
 	jQuery.noConflict();
 	
 	function refrescarLocal(){
+		if(jQuery("#dialogoInsercion:visible").length)
+			closeDialog('dialogoInsercion');
+		if(jQuery("#dialogoEdicion:visible").length)
+			closeDialog('dialogoEdicion');
+		if(jQuery("#dialogoBorrado:visible").length)
+			closeDialog('dialogoBorrado');
 		buscarTipos();
 	}
-	
-	
+	function refrescarLocalConError(){
+		//Este metodo no hay que borrarlo porque si no entra por refrescarlocal
+	}
 	function buscar() {
 		return buscarTipos();
 	}
-	
-	
 	function buscarTipos() {
-		/*var buts = document.getElementsByTagName("input");
-		for ( var b = 0; b < buts.length; b++) {
-			if (buts[b].type == 'button') {
-				jQuery(buts[b]).attr("disabled", "disabled");
-			}
-		}*/
-		
 		sub();
 		var idInstitucion = document.SubtiposCVForm.idInstitucion.value;
-		var tipoDescripcion = document.SubtiposCVForm.tipoDescripcion.value;
+		
+		var idTipoCVBusqueda = document.SubtiposCVForm.idTipoCVBusqueda.value;
 		var subTipo1Descripcion = document.SubtiposCVForm.subTipo1Descripcion.value;
 		var subTipo2Descripcion = document.SubtiposCVForm.subTipo2Descripcion.value;
 		var data = "idInstitucion="+idInstitucion;
-		if(tipoDescripcion!='')
-			data += "&tipoDescripcion="+tipoDescripcion;
+		if(idTipoCVBusqueda!='')
+			data += "&idTipoCVBusqueda="+idTipoCVBusqueda;
 		if(subTipo1Descripcion!='')
 			data += "&subTipo1Descripcion="+subTipo1Descripcion;
 		if(subTipo2Descripcion!='')
@@ -119,9 +118,6 @@
 	
 	function accionInsercion(){
 		//sub();
-		
-		
-		
 		document.forms['FormularioGestion'].idTipoCV.value =jQuery('select#idTipoCVInsercion option:selected').val();  
 		document.forms['FormularioGestion'].subTipo.value = jQuery('input:radio[name=subTipoInsercion]:checked').val();
 		document.forms['FormularioGestion'].subTipoDescripcion.value = jQuery("#subTipoDescripcionInsercion").val();
@@ -149,16 +145,14 @@
 			//fin();
 			return false;
 		}
-		closeDialog('dialogoInsercion');
+		 
+		//closeDialog('dialogoInsercion'); Los dialogos los cierra el refrescar local
 		document.forms['FormularioGestion'].submit();
 		
 	}
 	function closeDialog(dialogo){
 		 jQuery("#"+dialogo).dialog("close"); 
 	}
-	
-	
-	
 	
 	function accionActualizar(){
 		
@@ -184,30 +178,44 @@
 		error = '';
 		
 		if(document.forms['FormularioGestion'].subTipo1IdTipo.value!==''){
+			
+			
+			errorSubtipo1 = '';
 			if(document.forms['FormularioGestion'].subTipo1Descripcion.value==''){
-				error += "<siga:Idioma key='errors.required' arg0='censo.tiposDatosCurriculares.descripcion.literal'/>"+ '\n';
+				errorSubtipo1 = '1';
+				//error += "<siga:Idioma key='errors.required' arg0='censo.tiposDatosCurriculares.descripcion.literal'/>"+ '\n';
 			}
 			if(document.forms['FormularioGestion'].subTipo1CodigoExt.value==''){
-				error += "<siga:Idioma key='errors.required' arg0='censo.tiposDatosCurriculares.codExterno.literal'/>"+ '\n';
+				errorSubtipo1 = '1';
+				//error += "<siga:Idioma key='errors.required' arg0='censo.tiposDatosCurriculares.codExterno.literal'/>"+ '\n';
+			}
+			if(errorSubtipo1!=''){
+				error = "<siga:Idioma key='censo.tiposDatosCurriculares.subtipo1.literal' />";
+				error += ". ";
+				error += "<siga:Idioma key='messages.consultas.error.ValoresVacios' />"+'\n';
 			}
 			
 			
 			
 		}
 		if(document.forms['FormularioGestion'].subTipo2IdTipo.value!==''){
+			errorSubtipo2 = '';
 			if(document.forms['FormularioGestion'].subTipo2Descripcion.value==''){
-				error += "<siga:Idioma key='errors.required' arg0='censo.tiposDatosCurriculares.descripcion.literal'/>"+ '\n';
+				//error += "<siga:Idioma key='errors.required' arg0='censo.tiposDatosCurriculares.descripcion.literal'/>"+ '\n';
+				errorSubtipo2 = '1';
 				
 			}
 			if(document.forms['FormularioGestion'].subTipo2CodigoExt.value==''){
-				error += "<siga:Idioma key='errors.required' arg0='censo.tiposDatosCurriculares.codExterno.literal'/>"+ '\n';
+				errorSubtipo2 = '1';
+				//error += "<siga:Idioma key='errors.required' arg0='censo.tiposDatosCurriculares.codExterno.literal'/>"+ '\n';
+			}
+			if(errorSubtipo2!=''){
+				error += "<siga:Idioma key='censo.tiposDatosCurriculares.subtipo2.literal' />";
+				error += ". ";
+				error += "<siga:Idioma key='messages.consultas.error.ValoresVacios' />"+'\n';
 			}
 			
 		}
-		
-		
-		
-		
 		if (error!=''){
 			alert(error);
 			//fin();
@@ -223,7 +231,7 @@
 		if (!confirm(msjConfirmacion))
 			return false;
 		
-		closeDialog('dialogoEdicion');
+		//closeDialog('dialogoEdicion'); Los dialogos los cierra el refrescar local
 		document.forms['FormularioGestion'].submit();
 		
 		
@@ -268,7 +276,7 @@
 		if (!confirm(msjConfirmacion))
 			return false;
 		
-		closeDialog('dialogoBorrado');
+		//closeDialog('dialogoBorrado'); Los dialogos los cierra el refrescar local
 		document.forms['FormularioGestion'].submit();
 		
 		
@@ -297,8 +305,13 @@
 						<td class="labelText">
 							<bean:message  key="censo.tiposDatosCurriculares.tipo.literal"/>
 						</td>
-						<td>
-							<html:text property="tipoDescripcion" size="10" maxlength="10" styleClass="box"  />
+						<td class="labelText">
+							<select id="idTipoCVBusqueda" class="boxCombo">
+								<option value=""></option>
+								<c:forEach items="${maestroTiposCV}" var="tipoCV"> 
+									<option value="${tipoCV.idtipocv}">${tipoCV.descripcion}</option>
+								</c:forEach>
+							</select>
 						</td>
 						<td class="labelText">
 							<bean:message key="censo.tiposDatosCurriculares.subtipo1.literal"/>
@@ -415,14 +428,14 @@
 				<label for="subTipo1Borrado"  class="labelText" style="width:90px;float:left"><bean:message key="censo.tiposDatosCurriculares.subtipo1.literal"/></label>
 				<input type="hidden" id="subTipo1IdTipoBorrado" />
 				<input type="radio" name="subTipoBorrado" value="1" /> 
-    			<input type="text" id="subTipo1DescripcionBorrado"  maxlength="100" size="35" />
+    			<input type="text" id="subTipo1DescripcionBorrado" readonly="readonly"  maxlength="100" size="35" />
     			<input type="hidden" id="subTipo1IdRecursoDescripcionBorrado" />
    			</div>
    			<div id="divSubtipo2Borrado" class="labelText">
     			<label for="subTipo2Borrado"  class="labelText" style="width:90px;float:left"><bean:message key="censo.tiposDatosCurriculares.subtipo2.literal"/></label> 
     			<input type="hidden" id="subTipo2IdTipoBorrado" />
 				<input type="radio" name="subTipoBorrado" value="2" />
-    			<input type="text" id="subTipo2DescripcionBorrado"  maxlength="100" size="35" />
+    			<input type="text" id="subTipo2DescripcionBorrado" readonly="readonly"  maxlength="100" size="35" />
     			<input type="hidden" id="subTipo2IdRecursoDescripcionBorrado" />
    			</div>
    			<div id="divAvisoSubtipo2Borrado"></div>

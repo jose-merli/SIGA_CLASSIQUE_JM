@@ -459,7 +459,7 @@ public abstract class MasterAction extends SIGAAuxAction {
 		} else {
 			request.setAttribute("mensaje", e.getMessage());
 		}
-		return "exito"; 
+		return "error"; 
 	} 
 	
 	/** 

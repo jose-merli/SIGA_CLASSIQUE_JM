@@ -30,6 +30,7 @@ public class SubtiposCVForm extends MasterForm {
 	String subTipo2IdInstitucion;
 	String tipoDescripcion;
 	String idTipoCV;
+	String idTipoCVBusqueda;
 	String codigoExt;
 	String subTipo;
 	String subTipoDescripcion;
@@ -283,6 +284,18 @@ public class SubtiposCVForm extends MasterForm {
 	 */
 	public void setCodigoExt(String codigoExt) {
 		this.codigoExt = codigoExt;
+	}
+	/**
+	 * @return the idTipoCVBusqueda
+	 */
+	public String getIdTipoCVBusqueda() {
+		return idTipoCVBusqueda;
+	}
+	/**
+	 * @param idTipoCVBusqueda the idTipoCVBusqueda to set
+	 */
+	public void setIdTipoCVBusqueda(String idTipoCVBusqueda) {
+		this.idTipoCVBusqueda = idTipoCVBusqueda;
 	}
 
 	

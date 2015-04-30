@@ -361,6 +361,7 @@
 		<forward name="refresh" path="/html/jsp/general/genericLoadForm.jsp"/>
 		<forward name="notImplemented" path="/notImplemented.do"/>
 		<forward name="exito" path="/html/jsp/general/exito.jsp"/>
+		<forward name="error" path="/html/jsp/general/error.jsp"/>
 		<forward name="exitoDescarga" path="/html/jsp/general/exitoDescarga.jsp"/>
 		<forward name="exitoConString" path="/html/jsp/general/exitoConString.jsp"/>
 		<forward name="exitoParametros" path="/html/jsp/general/exitoParametros.jsp"/>
