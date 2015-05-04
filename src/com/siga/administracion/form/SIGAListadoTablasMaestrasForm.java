@@ -2,13 +2,8 @@ package com.siga.administracion.form;
 
 import com.siga.general.MasterForm;
 
-public class SIGAListadoTablasMaestrasForm extends MasterForm
-{
-/**
-	 * 
-	 */
+public class SIGAListadoTablasMaestrasForm extends MasterForm {
 	private static final long serialVersionUID = 8202162975401945276L;
-	//    private String modo="";
     private String codigoRegistro="";
     private String codigoRegistroExt="";
     private String descripcionRegistro="";
@@ -36,17 +31,7 @@ public class SIGAListadoTablasMaestrasForm extends MasterForm
     private String textoPlantillas;
     private String datosConf;
     private String regBajaLogica;
-    
-//    public String getModo() 
-//    {
-//        return modo;
-//    }
-//    
-//    public void setModo(String modo) 
-//    {
-//        this.modo = modo;
-//    }
-    
+    private String editable;
     
     public String getDatosConf() {
 		return datosConf;
@@ -254,8 +239,6 @@ public class SIGAListadoTablasMaestrasForm extends MasterForm
 		this.idCampoCodigoRel = idCampoCodigoRel;
 	}
 
-	
-
 	public String getNumeroTextoPlantillas() {
 		return numeroTextoPlantillas;
 	}
@@ -288,6 +271,6 @@ public class SIGAListadoTablasMaestrasForm extends MasterForm
 		this.textoPlantillas = textoPlantillas;
 	}
 
-	
-	
+ 	public String getEditable () {return this.editable;}
+ 	public void setEditable (String dato) {this.editable = dato;}
 }

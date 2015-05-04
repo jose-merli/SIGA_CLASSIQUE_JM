@@ -257,20 +257,19 @@ public class ScsActuacionAsistCosteFijoAdm extends MasterBeanAdministrador {
 		this.deleteDirect(htCosteABorrar,clavesCosteABorrar);
 		
 	}
+	
 	public void insertarCosteActuacionAsistencia(ScsActuacionAsistenciaBean actuacionAsistenciaBean, Integer idCosteFijo) throws ClsExceptions{
-		ScsActuacionAsistCosteFijoBean actuacionAsistCosteFijoBean = new ScsActuacionAsistCosteFijoBean();
-		Hashtable hashCoste = new Hashtable();
-		hashCoste.put(ScsActuacionAsistCosteFijoBean.C_IDINSTITUCION, actuacionAsistenciaBean.getIdInstitucion());
-		hashCoste.put(ScsActuacionAsistCosteFijoBean.C_ANIO, actuacionAsistenciaBean.getAnio());
-		hashCoste.put(ScsActuacionAsistCosteFijoBean.C_NUMERO, actuacionAsistenciaBean.getNumero());
-		hashCoste.put(ScsActuacionAsistCosteFijoBean.C_IDACTUACION, actuacionAsistenciaBean.getIdActuacion());
-		hashCoste.put(ScsActuacionAsistCosteFijoBean.C_IDTIPOACTUACION, actuacionAsistenciaBean.getIdTipoActuacion());
-		hashCoste.put(ScsActuacionAsistCosteFijoBean.C_IDTIPOASISTENCIA, actuacionAsistenciaBean.getIdTipoAsistencia());
-		hashCoste.put(ScsActuacionAsistCosteFijoBean.C_IDCOSTEFIJO, idCosteFijo);
-		insert(hashCoste);
-
-		
+		Hashtable<String,Object> hCoste = new Hashtable<String,Object>();
+		hCoste.put(ScsActuacionAsistCosteFijoBean.C_IDINSTITUCION, actuacionAsistenciaBean.getIdInstitucion());
+		hCoste.put(ScsActuacionAsistCosteFijoBean.C_ANIO, actuacionAsistenciaBean.getAnio());
+		hCoste.put(ScsActuacionAsistCosteFijoBean.C_NUMERO, actuacionAsistenciaBean.getNumero());
+		hCoste.put(ScsActuacionAsistCosteFijoBean.C_IDACTUACION, actuacionAsistenciaBean.getIdActuacion());
+		hCoste.put(ScsActuacionAsistCosteFijoBean.C_IDTIPOACTUACION, actuacionAsistenciaBean.getIdTipoActuacion());
+		hCoste.put(ScsActuacionAsistCosteFijoBean.C_IDTIPOASISTENCIA, actuacionAsistenciaBean.getIdTipoAsistencia());
+		hCoste.put(ScsActuacionAsistCosteFijoBean.C_IDCOSTEFIJO, idCosteFijo);
+		insert(hCoste);
 	}
+	
 	public Integer getTipoCosteFijoActuacion(ScsActuacionAsistenciaBean actuacionAsistenciaBean)throws ClsExceptions{
 
 		Hashtable<Integer, Object> htCodigos = new Hashtable<Integer, Object>();
@@ -332,44 +331,41 @@ public class ScsActuacionAsistCosteFijoAdm extends MasterBeanAdministrador {
 		
 	}
 	
-	
 	/**
-	 * Devuelve un vector con los tipos de asistencias incluidas en la configuración de un coste fijo
-	 * ordenadas por descripción
+	 * Devuelve un vector con los tipos de asistencias incluidas en la configuración de un coste fijo ordenadas por descripcion
 	 * @param idInstitucion
 	 * @param idCosteFijo
+	 * @param hist
+	 * @param idioma
 	 * @return
+	 * @throws ClsExceptions
 	 */
-	public Vector getTiposAsistenciasCosteFijo (String idInstitucion, String idCosteFijo, boolean hist, String lang) throws ClsExceptions{
-
-		Vector resultado=new Vector();
-		
-		StringBuilder select = new StringBuilder();
-		select.append("SELECT TAS.IDTIPOASISTENCIA AS IDTIPOASISTENCIA,");	
-		select.append("(SELECT F_SIGA_GETRECURSO(DESCRIPCION,"+lang+") ");	
-		select.append("   FROM SCS_TIPOASISTENCIACOLEGIO ");	
-		select.append("   WHERE IDINSTITUCION= TAS.IDINSTITUCION");	
-		select.append("     AND IDTIPOASISTENCIACOLEGIO=TAS.IDTIPOASISTENCIA) AS DESCRIPCION,");
-		select.append(" REPLACE(TO_CHAR(NVL(SUM(TAS.IMPORTE),0),'9999999999.99'),'.',',') AS IMPORTE ");	
-		select.append("  FROM SCS_TIPOACTUACIONCOSTEFIJO TAS ");
-		select.append("  WHERE TAS.IDINSTITUCION= "+idInstitucion);
-		select.append("    AND TAS.IDCOSTEFIJO= "+idCosteFijo);
-		
-		if(hist)
-			select.append("    AND TAS.FECHABAJA IS NOT NULL ");
-		else
-			select.append("    AND TAS.FECHABAJA IS NULL ");
-		
-		select.append("    GROUP BY TAS.IDINSTITUCION,TAS.IDTIPOASISTENCIA ");
-		select.append("    ORDER BY DESCRIPCION");
-
+	public Vector<Hashtable<String,Object>> getTiposAsistenciasCosteFijo (String idInstitucion, String idCosteFijo, boolean hist, String idioma) throws ClsExceptions{
+		Vector<Hashtable<String,Object>> resultado = new Vector<Hashtable<String,Object>>();
 		try {
-			resultado = (Vector) super.selectGenerico(select.toString());
+			String sql = "SELECT DISTINCT SCS_TIPOACTUACIONCOSTEFIJO.IDTIPOASISTENCIA, " +
+							" ( " +
+								" SELECT F_SIGA_GETRECURSO(SCS_TIPOASISTENCIACOLEGIO.DESCRIPCION, " + idioma + ")" +
+								" FROM SCS_TIPOASISTENCIACOLEGIO " +
+								" WHERE SCS_TIPOASISTENCIACOLEGIO.IDINSTITUCION = SCS_TIPOACTUACIONCOSTEFIJO.IDINSTITUCION " +
+									" AND SCS_TIPOASISTENCIACOLEGIO.IDTIPOASISTENCIACOLEGIO = SCS_TIPOACTUACIONCOSTEFIJO.IDTIPOASISTENCIA " +
+							" ) AS DESCRIPCION " +
+						" FROM SCS_TIPOACTUACIONCOSTEFIJO " +
+						" WHERE SCS_TIPOACTUACIONCOSTEFIJO.IDINSTITUCION = " + idInstitucion +
+							" AND SCS_TIPOACTUACIONCOSTEFIJO.IDCOSTEFIJO = " + idCosteFijo;
+
+			if (!hist) {
+				sql += " AND SCS_TIPOACTUACIONCOSTEFIJO.FECHABAJA IS NULL";
+			}
+			
+			sql += " ORDER BY 2";
+			
+			resultado = this.selectGenerico(sql);
+
 		} catch (Exception e) {
-			throw new ClsExceptions(e, "Error en ScsActuacionAsistCosteFijo.getTiposAsistenciasCosteFijo()" + select.toString());
+			throw new ClsExceptions(e, "Error en ScsActuacionAsistCosteFijo.getTiposAsistenciasCosteFijo()");
 		}		
 		
 		return resultado;
 	}
-	
 }

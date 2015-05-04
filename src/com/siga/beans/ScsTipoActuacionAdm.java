@@ -12,7 +12,6 @@ import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;
-import com.siga.Utilidades.paginadores.PaginadorBind;
 
 /**
  * Implementa las operaciones sobre la base de datos, es decir: select, insert, update... a la tabla SCS_HITOFACTURABLEGUARDIA
@@ -203,7 +202,6 @@ public class ScsTipoActuacionAdm extends MasterBeanAdministrador {
 		
 	}
 	
-	
 	/**
 	 * Devuelve un vector con los tipos de asistencias/actuaciones disponibles 
 	 * para configurar un coste fijo:
@@ -214,103 +212,73 @@ public class ScsTipoActuacionAdm extends MasterBeanAdministrador {
 	 * solamente los tipos de asistencias (y sus tipos de actuaciones) que no están relacionadas
 	 * con el coste fijo
 	 * Los registros se ordenan por descripción
+	 * 
 	 * @param idInstitucion
 	 * @param idCosteFijo
+	 * @param idTipoAsistencia
+	 * @param regBajaLog
+	 * @param idioma
 	 * @return
+	 * @throws ClsExceptions
 	 */
-	public PaginadorBind getTiposAsistTiposActDispCosteFijo (String idInstitucion, String idCosteFijo, String idTipoAsistencia,boolean regBajaLog, String lang) throws ClsExceptions{
-
-		String select="";	
-		String from ="";	
-		String where="";	
-		String orderBy ="";	
-		String selectContar="";	
-		Hashtable codigosBind = new Hashtable();
-		int contador = 0;
+	public Vector<Hashtable<String,Object>> getTiposAsistTiposActDispCosteFijo (String idInstitucion, String idCosteFijo, String idTipoAsistencia, boolean regBajaLog, String idioma) throws ClsExceptions {
+		Vector<Hashtable<String,Object>> resultado = new Vector<Hashtable<String,Object>>();
+		
 		try {
-			select+="SELECT TAS.IDTIPOASISTENCIA, ";	 
-			select+="       TAS.IDTIPOACTUACION, ";	 
-			select+="F_SIGA_GETRECURSO(TAS.DESCRIPCION,"+lang+") AS DSTIPOACTUACION,"; 
-			select+="(SELECT F_SIGA_GETRECURSO(DESCRIPCION,"+lang+") ";
-			select+="   FROM SCS_TIPOASISTENCIACOLEGIO ";
-			contador++;
-			codigosBind.put(new Integer(contador),idInstitucion.toString());
-			select+="  WHERE IDINSTITUCION=:"+contador;
-			select+="    AND IDTIPOASISTENCIACOLEGIO=TAS.IDTIPOASISTENCIA) AS DSTIPOASISTENCIA,";
-			select+="(SELECT COUNT(*) ";
-			select+="   FROM SCS_TIPOACTUACIONCOSTEFIJO ";
-			select+="  WHERE IDINSTITUCION=TAS.IDINSTITUCION ";
-			select+="    AND IDTIPOASISTENCIA=TAS.IDTIPOASISTENCIA ";
-			select+="    AND IDTIPOACTUACION=TAS.IDTIPOACTUACION ";
-			contador++;
-			codigosBind.put(new Integer(contador),idCosteFijo.toString());
-			select+="    AND IDCOSTEFIJO=:"+contador+") AS SELECCIONADO, ";	
-			select+="(SELECT REPLACE(TO_CHAR(NVL(IMPORTE,0),'9999999999.99'),'.',',') ";
-			select+="   FROM SCS_TIPOACTUACIONCOSTEFIJO ";
-			select+="  WHERE IDINSTITUCION=TAS.IDINSTITUCION ";
-			select+="    AND IDTIPOASISTENCIA=TAS.IDTIPOASISTENCIA ";
-			select+="    AND IDTIPOACTUACION=TAS.IDTIPOACTUACION ";
-			contador++;
-			codigosBind.put(new Integer(contador),idCosteFijo.toString());
-			select+="    AND IDCOSTEFIJO=:"+contador+") AS IMPORTECOSTE, ";
-			select+="    TAS.IDINSTITUCION, ";
-			select+="    TAS.IMPORTE, ";
-			select+="    TAS.IMPORTEMAXIMO ";
-			from+="  FROM SCS_TIPOACTUACION TAS ";
-			contador++;
-			codigosBind.put(new Integer(contador),idInstitucion.toString());
-			where+=" WHERE TAS.IDINSTITUCION=:"+contador;
-		
-			//Estamos editando o consultando un tipo de asistencia relacionada con el coste fijo
-			if((idTipoAsistencia!=null)&&(!idTipoAsistencia.equals(""))){
-				contador++;
-				codigosBind.put(new Integer(contador),idTipoAsistencia.toString());
-				where+="   AND TAS.IDTIPOASISTENCIA=:"+contador;
-			//Estamos relacionando un nuevo tipo de asistencia con el coste fijo
-			}else{
-			    where+="   AND NOT EXISTS (SELECT 1 ";
-			    where+="                     FROM SCS_TIPOACTUACIONCOSTEFIJO ACF ";
-			    where+="                    WHERE ACF.IDINSTITUCION=TAS.IDINSTITUCION ";
-			    where+="                      AND ACF.IDTIPOASISTENCIA=TAS.IDTIPOASISTENCIA ";
-			    where+="                      AND ACF.IDTIPOACTUACION=TAS.IDTIPOACTUACION ";
-			    contador++;
-				codigosBind.put(new Integer(contador),idCosteFijo.toString());
-			    where+="                      AND ACF.IDCOSTEFIJO=:"+contador+")";
-
+			String sql = "SELECT SCS_TIPOACTUACION.IDINSTITUCION, " + 
+							" SCS_TIPOACTUACION.IDTIPOASISTENCIA, " + 
+							" SCS_TIPOACTUACION.IDTIPOACTUACION, " +
+							" F_SIGA_GETRECURSO(SCS_TIPOACTUACION.DESCRIPCION, " + idioma + ") AS DSTIPOACTUACION, " +
+							" ( " + 
+								" SELECT F_SIGA_GETRECURSO(SCS_TIPOASISTENCIACOLEGIO.DESCRIPCION, " + idioma + ") " +
+								" FROM SCS_TIPOASISTENCIACOLEGIO " + 
+								" WHERE SCS_TIPOASISTENCIACOLEGIO.IDINSTITUCION = SCS_TIPOACTUACION.IDINSTITUCION " +
+									" AND SCS_TIPOASISTENCIACOLEGIO.IDTIPOASISTENCIACOLEGIO = SCS_TIPOACTUACION.IDTIPOASISTENCIA " +
+							" ) AS DSTIPOASISTENCIA, " +
+							" ( " +
+								" SELECT REPLACE(NVL(SCS_TIPOACTUACIONCOSTEFIJO.IMPORTE,0),'.',',') " +
+								" FROM SCS_TIPOACTUACIONCOSTEFIJO " +
+								" WHERE SCS_TIPOACTUACIONCOSTEFIJO.IDINSTITUCION = SCS_TIPOACTUACION.IDINSTITUCION " +
+									" AND SCS_TIPOACTUACIONCOSTEFIJO.IDTIPOASISTENCIA = SCS_TIPOACTUACION.IDTIPOASISTENCIA " +
+									" AND SCS_TIPOACTUACIONCOSTEFIJO.IDTIPOACTUACION = SCS_TIPOACTUACION.IDTIPOACTUACION " +
+									" AND SCS_TIPOACTUACIONCOSTEFIJO.IDCOSTEFIJO = " + idCosteFijo + 
+							" ) AS IMPORTECOSTE " +
+						" FROM SCS_TIPOACTUACION " +
+						" WHERE SCS_TIPOACTUACION.IDINSTITUCION = " + idInstitucion;
+			
+			if (idTipoAsistencia!=null && !idTipoAsistencia.equals("")) {
+				sql += " AND SCS_TIPOACTUACION.IDTIPOASISTENCIA = " + idTipoAsistencia;
+			
+			} else { //Estamos relacionando un nuevo tipo de asistencia con el coste fijo
+				sql += " AND NOT EXISTS ( " +
+							" SELECT 1 " +
+							" FROM SCS_TIPOACTUACIONCOSTEFIJO " +
+							" WHERE SCS_TIPOACTUACIONCOSTEFIJO.IDINSTITUCION = SCS_TIPOACTUACION.IDINSTITUCION " +
+								" AND SCS_TIPOACTUACIONCOSTEFIJO.IDTIPOASISTENCIA = SCS_TIPOACTUACION.IDTIPOASISTENCIA " +
+								" AND SCS_TIPOACTUACIONCOSTEFIJO.IDTIPOACTUACION = SCS_TIPOACTUACION.IDTIPOACTUACION " +
+								" AND SCS_TIPOACTUACIONCOSTEFIJO.IDCOSTEFIJO = " + idCosteFijo +
+						" ) ";
 			}
 			
-			//Las relaciones que están de baja no las mostramos. Si tienen fecha de baja es porque 
-			//si se elimina la relación en SCS_TIPOACTUACIONCOSTEFIJO entre tipo asistencia-tipo actuación-coste fijo 
-			//si existe un registro en SCS_ACTUACIONASISTCOSTEFIJO se da de baja lógica en vez de realizar el borrado físico  
-			where+="   AND EXISTS (SELECT 1 ";
-		    where+="                     FROM SCS_TIPOACTUACIONCOSTEFIJO ACF ";
-		    where+="                    WHERE ACF.IDINSTITUCION=TAS.IDINSTITUCION ";
-		    where+="                      AND ACF.IDTIPOASISTENCIA=TAS.IDTIPOASISTENCIA ";
-		    where+="                      AND ACF.IDTIPOACTUACION=TAS.IDTIPOACTUACION ";
-		   
-		    if(regBajaLog)
-		    	where+="                      AND ACF.FECHABAJA IS NOT NULL) ";
-		    else
-		    	where+="                      AND ACF.FECHABAJA IS NULL) ";
-			
-			orderBy+=" ORDER BY DSTIPOASISTENCIA,DSTIPOACTUACION ASC";
-
-			selectContar+=" SELECT 1 "+from+where;
-			select+=from+where+orderBy;
-	
-			PaginadorBind resultado = new PaginadorBind(select,selectContar,codigosBind);				
-			int totalRegistros = resultado.getNumeroTotalRegistros();
-			
-			if (totalRegistros==0){					
-				resultado =null;
+			if (!regBajaLog) {
+				sql += " AND EXISTS ( " +
+						" SELECT 1 " +
+						" FROM SCS_TIPOACTUACIONCOSTEFIJO " +
+						" WHERE SCS_TIPOACTUACIONCOSTEFIJO.IDINSTITUCION = SCS_TIPOACTUACION.IDINSTITUCION " +
+							" AND SCS_TIPOACTUACIONCOSTEFIJO.IDTIPOASISTENCIA = SCS_TIPOACTUACION.IDTIPOASISTENCIA " +
+							" AND SCS_TIPOACTUACIONCOSTEFIJO.IDTIPOACTUACION = SCS_TIPOACTUACION.IDTIPOACTUACION " +
+							" AND SCS_TIPOACTUACIONCOSTEFIJO.FECHABAJA IS NULL" +
+					" ) ";			
 			}
 			
-			return resultado;
-						
+			sql += " ORDER BY DSTIPOASISTENCIA, DSTIPOACTUACION ASC";
+			
+			resultado = this.selectGenerico(sql);
+
 		} catch (Exception e) {
-			throw new ClsExceptions(e, "Error en ScsActuacionAsistCosteFijo.getTiposAsistTiposActDispCosteFijo()" + select);
-		}		
-
-	}
+			throw new ClsExceptions(e, "Error en ScsTipoActuacionAdm.getTiposAsistTiposActDispCosteFijo()");
+		}	
 		
+		return resultado;
+	}
 }
