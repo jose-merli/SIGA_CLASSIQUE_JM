@@ -358,31 +358,6 @@
 		</table>
 	</html:form>
 <%
-	if (!bNuevo && sNombreTabla.equals("SCS_COSTEFIJO")) { 
-%> 
-		<div style="position: absolute; left: 400px; bottom: 5px; z-index: 99;">
-			<table align="center" border="0">
-				<tr>
-					<td class="labelText">
-						<siga:Idioma key="censo.consultaRegistrosBajaLogica.literal" /> 
-<%
-						if (bIncluirBajaLogica) { 
-%>
-							<input type="checkbox" name="regBajaLogica"  onclick="incluirRegBajaLogica(this);" checked> 
-<%
-						} else { 
-%>
-							<input type="checkbox" name="regBajaLogica" onclick="incluirRegBajaLogica(this);"> 
-<%
-						} 
-%>
-					</td>
-				</tr>
-			</table>
-		</div>
-<%
-	}
-
 	String botones = bEditable ? "V,R,G" : "V";
 	if (!bNuevo && bEditable && sNombreTabla.equals("SCS_COSTEFIJO")) {
 		botones+=",aa";
