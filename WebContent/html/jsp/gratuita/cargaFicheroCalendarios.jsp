@@ -45,75 +45,55 @@
 	<html:form action="/JGR_DefinirCalendarioGuardia.do"   method="POST" target="submitArea" enctype="multipart/form-data">
 		<siga:ConjCampos leyenda="Datos Plantilla Fichero Modelo">
 			<table class="tablaCampos" align="center" cellpadding="0" cellpadding="0" width="100%" border="0">
-			
 				<tr>
 					<td class="labelText">
-						<siga:Idioma key="gratuita.busquedaEJG.literal.turno" />
+						<siga:Idioma key="gratuita.busquedaEJG.literal.turno" />&nbsp;(*)
 					</td>					
 					<td>
 						<siga:Select id="idTurno" queryParamId="idturno" queryId="getTurnos" width="355" childrenIds="idGuardia" />
 					</td>
 					
 					<td class="labelText">
-						<siga:Idioma key="gratuita.busquedaEJG.literal.guardia" />
+						<siga:Idioma key="gratuita.busquedaEJG.literal.guardia" />&nbsp;(*)
 					</td>
 					<td>
 						<siga:Select id="idGuardia" queryId="getGuardiasDeTurno" width="355" parentQueryParamIds="idturno"/>
 					</td>
 				</tr>
 				
-				<tr>				
-					<td class="labelText">
-						Nombre Calendario
-					</td>
-					<td colspan="3">					
-						<html:text name="DefinirCalendarioGuardiaForm" property="nombreCalendario" size="55" maxlength="100" />
-					</td>
-				</tr>				
-			
-				<tr>				
-					<td class="labelText">
-						<siga:Idioma key="gratuita.calendarios.programacion.fechaCalendario"/>
-					</td>
-					<td>					
-						<siga:Fecha nombreCampo="fechaInicio"></siga:Fecha>	
-					</td>
+				<tr>		
+					<td class="tdBotones" colspan="4" align="center">
+						<input type="button" alt="<siga:Idioma key="general.boton.descargaFicheroModelo"/>" id="idButton" onclick="return descargarModelo();" class="button" value="<siga:Idioma key="general.boton.descargaFicheroModelo"/>">
+					</td>					
 				</tr>
-				
-
-				<tr>
-					<td class="labelText" colspan="2">
-						<siga:Idioma key="gratuita.modalNuevo_DefinirCalendarioGuardia.literal.observaciones"/>:
-					</td>
-				</tr>
-				<tr>
-					<td class="labelText" colspan="4">
-						<html:textarea name="DefinirCalendarioGuardiaForm" onkeydown="cuenta(this,1024)" onchange="cuenta(this,1024)" property="observaciones" cols="200" rows="5" style="overflow:auto" styleClass="boxCombo" value="" readonly="false" ></html:textarea>
-					</td>
-				</tr>		
-						
 			</table>
 		</siga:ConjCampos>
 		
 		 <siga:ConjCampos leyenda="Carga Fichero">
-			<table   align="left" cellpadding="0" cellpadding="0">
+			<table align="left" cellpadding="0" cellpadding="0">
 				<html:hidden property = "modo" value = ""/>
 					<tr>
-						<!-- CLIENTE -->
+						<td class="labelText" colspan="2">
+							<siga:Idioma key="gratuita.modalNuevo_DefinirCalendarioGuardia.literal.observaciones"/>:
+						</td>
+					</tr>
+					
+					<tr>
+						<td class="labelText" colspan="5">
+							<html:textarea name="DefinirCalendarioGuardiaForm" onkeydown="cuenta(this,1024)" onchange="cuenta(this,1024)" property="observaciones" cols="200" rows="5" style="overflow:auto" styleClass="boxCombo" value="" readonly="false" ></html:textarea>
+						</td>
+					</tr>						
+					<tr>
 						<td class="labelText" >
 							<siga:Idioma key="pys.cargaProductos.literal.fichero"/>&nbsp;(*)
 						</td>				
-						<td>
-							<html:file name="DefinirCalendarioGuardiaForm"  property="ficheroCalendario" size="60" styleClass="box"></html:file>
+						<td colspan="3">
+							<html:file name="DefinirCalendarioGuardiaForm"  property="ficheroCalendario" size="90" styleClass="box"></html:file>
 						</td>
 						
 						<td class="tdBotones">
 							<input type="button" alt="<siga:Idioma key="general.boton.cargarFichero"/>" id="idButton" onclick="return upload();" class="button" value="<siga:Idioma key="general.boton.cargarFichero"/>">
 						</td>
-						
-						<td class="tdBotones">
-							<input type="button" alt="<siga:Idioma key="general.boton.descargaFicheroModelo"/>" id="idButton" onclick="return descargarModelo();" class="button" value="<siga:Idioma key="general.boton.descargaFicheroModelo"/>">
-						</td>			
 					</tr>
 			</table>
 		</siga:ConjCampos>	
@@ -122,6 +102,7 @@
 	<script language="JavaScript">	
 		function upload() {
 			sub();
+			
 			if(document.DefinirCalendarioGuardiaForm.ficheroCalendario.value==''){
 				error = "<siga:Idioma key='errors.required' arg0='administracion.informes.literal.archivo'/>";
 				alert(error);
@@ -140,6 +121,19 @@
 		}	
 		
 		function descargarModelo() {	
+			if(document.DefinirCalendarioGuardiaForm.idTurno.selectedIndex < 1){
+				error = "<siga:Idioma key='errors.required' arg0='gratuita.busquedaEJG.literal.turno'/>"+ '\n';
+				alert(error);
+				fin();
+				return;
+			}
+
+			if(document.DefinirCalendarioGuardiaForm.idGuardia.selectedIndex < 1){
+				error = "<siga:Idioma key='errors.required' arg0='gratuita.busquedaEJG.literal.guardia'/>"+ '\n';
+				alert(error);
+				fin();
+				return;
+			}			
 			document.DefinirCalendarioGuardiaForm.modo.value = "descargaFicheroModelo";
 			document.DefinirCalendarioGuardiaForm.submit();
 		}	

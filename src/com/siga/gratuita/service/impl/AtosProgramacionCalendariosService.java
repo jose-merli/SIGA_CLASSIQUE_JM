@@ -472,8 +472,10 @@ public class AtosProgramacionCalendariosService extends JtaBusinessServiceTempla
 		getBusinessManager().endTransaction();
 		ScsProgrCalendariosAdm progrCalendariosAdm = new ScsProgrCalendariosAdm(usrBean);
 		ScsProgCalendariosBean progCalendariosBean = progrCalendariosAdm.getNextProgrCalendarioFicheroCarga();
+		ScsHcoConfProgrCalendariosAdm hcoConfProgrCalendariosAdm = new ScsHcoConfProgrCalendariosAdm(usrBean);
+		ScsHcoConfProgCalendariosBean hcoConfProgCalendariosBean = new ScsHcoConfProgCalendariosBean();
 		LogFileWriter log = null;
-		List <ArrayList<String>> fileLog = new ArrayList<ArrayList<String>>();
+		List<ArrayList<String>> fileLog = new ArrayList<ArrayList<String>>();
 		UserTransaction tx = null;
 		
 		if(progCalendariosBean!=null){
@@ -525,15 +527,34 @@ public class AtosProgramacionCalendariosService extends JtaBusinessServiceTempla
 								observacion = ficheroVo.getDescripcion();
 							}
 							
+							/** INSERTAMOS LOS DATOS DEL HCOCONFCALENDARIO QUE SE VAN A MOSTRAR AL CONSULTAR LA PROGRAMACION **/
+							Integer idTurno = datosExcel.get(0).getIdTurno();
+							Integer idGuardia = datosExcel.get(0).getIdGuardia();
+							hcoConfProgCalendariosBean.setIdConjuntoGuardia((long) 0);
+							hcoConfProgCalendariosBean.setIdGuardia(idGuardia);
+							hcoConfProgCalendariosBean.setIdProgrCalendario(progCalendariosBean.getIdProgrCalendario());
+							hcoConfProgCalendariosBean.setIdInstitucion(progCalendariosBean.getIdInstitucion());
+							hcoConfProgCalendariosBean.setIdTurno(idTurno);
+							hcoConfProgCalendariosBean.setOrden((short)1);				
+							hcoConfProgCalendariosBean.setEstado(ScsHcoConfProgCalendariosBean.estadoProcesando);
+							hcoConfProgrCalendariosAdm.insert(hcoConfProgCalendariosBean);								
+							
 							/** Generamos el calendario **/	
 							tx = usrBean.getTransactionPesada();
 							tx.begin();
 											
 							ClsLogging.writeFileLogWithoutSession("GENERACION DEL CALENDARIO "+progCalendariosBean.getIdInstitucion() + "_" + progCalendariosBean.getIdFicheroCalendario(), 3);
 							CalendarioSJCS calendarioSJCS = new CalendarioSJCS();
-							calendarioSJCS.generarCalendarioCargaFichero(datosExcel,observacion,usrBean);
+							fileLog = new ArrayList<ArrayList<String>>();
+							calendarioSJCS.generarCalendarioCargaFichero(datosExcel,observacion,usrBean, fileLog);
+							// Si no ha ocurrido errores en la generacion del calendario eliminamos el fichero log 
+							fileLog=null;
+
+							/** ACTUALIZAMOS LOS DATOS DEL HCOCONFCALENDARIO QUE SE VAN A MOSTRAR AL CONSULTAR LA PROGRAMACION **/
+							hcoConfProgCalendariosBean.setEstado(ScsHcoConfProgCalendariosBean.estadoFinalizado);
+							hcoConfProgrCalendariosAdm.updateEstado(hcoConfProgCalendariosBean);							
 							
-							/** ACTUALIZAMOS LOS DATOS DEL CALENDARIO QUE SE VAN A MOSTRAR EN EL LISTADO (FECHAS Y ESTADO)**/
+							/** ACTUALIZAMOS LOS DATOS DEL CALENDARIO QUE SE VAN A MOSTRAR EN EL LISTADO (FECHAS Y ESTADO) **/
 							SimpleDateFormat sdf2 = new SimpleDateFormat("dd/MM/yyyy");
 							String primerDia = sdf2.format(datosExcel.get(0).getFechaInicioCalendario());
 							String ultimoDia = sdf2.format(datosExcel.get(datosExcel.size() - 1).getFechaInicioCalendario());							
@@ -541,7 +562,7 @@ public class AtosProgramacionCalendariosService extends JtaBusinessServiceTempla
 							progCalendariosBean.setFechaCalFin(GstDate.getApplicationFormatDate("", ultimoDia));
 							progCalendariosBean.setEstado(ScsProgCalendariosBean.estadoFinalizado);
 							progrCalendariosAdm.updateDirect(progCalendariosBean);							
-							ClsLogging.writeFileLogWithoutSession("CALENDARIO GENERADO"+progCalendariosBean.getIdInstitucion() + "_" + progCalendariosBean.getIdFicheroCalendario(), 3);
+							ClsLogging.writeFileLogWithoutSession("CALENDARIO GENERADO "+progCalendariosBean.getIdInstitucion() + "_" + progCalendariosBean.getIdFicheroCalendario(), 3);
 							tx.commit();
 						}
 					}
@@ -553,13 +574,18 @@ public class AtosProgramacionCalendariosService extends JtaBusinessServiceTempla
 					if (tx!=null && Status.STATUS_ACTIVE == tx.getStatus()){
 						tx.rollback();
 					}
+
+					ClsLogging.writeFileLogWithoutSession("ERROR EN CALENDARIO: " + progCalendariosBean.getIdInstitucion() + "_" + progCalendariosBean.getIdFicheroCalendario(), 3);
 					
-					ClsLogging.writeFileLogWithoutSession("ERROR EN CALENDARIO: "+ progCalendariosBean.getIdInstitucion() + "_" + progCalendariosBean.getIdFicheroCalendario(), 3);
+					/** ACTUALIZAMOS LOS CODIGOS DE ERROR **/
+					hcoConfProgCalendariosBean.setEstado(ScsHcoConfProgCalendariosBean.estadoError);
+					hcoConfProgrCalendariosAdm.updateEstado(hcoConfProgCalendariosBean);
 					progCalendariosBean.setEstado(ScsProgCalendariosBean.estadoError);
 					progrCalendariosAdm.updateEstado(progCalendariosBean);
+					
 					String msgError = e.getMessage();
 					if(e instanceof SIGAException){
-						msgError = ((SIGAException) e).getLiteral();
+						msgError = UtilidadesString.getMensajeIdioma(usrBean, ((SIGAException) e).getLiteral());
 					} else if (e instanceof ClsExceptions){
 						ClsExceptions d = ((ClsExceptions) e);
 						msgError = d.getMessage();
@@ -570,12 +596,14 @@ public class AtosProgramacionCalendariosService extends JtaBusinessServiceTempla
 					}
 					
 					/** Escribimos el log de cada fila del fichero de carga si hubiera habido errores **/
-					log.addLog(new String[] {"ERROR OCURRIDO: ", msgError});
+					log.addLog(new String[] {"CAUSA: ", msgError});
+					log.addLog(new String[] {" ", " "});
 					if(fileLog!=null){
 						for (ArrayList<String> lineLog : fileLog) {
 							log.addLog(lineLog);
 						}
 					}
+					
 					log.flush();					
 					
 				} catch (IllegalStateException e1) {
