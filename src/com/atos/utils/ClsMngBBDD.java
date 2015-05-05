@@ -5,6 +5,7 @@ import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.SQLTimeoutException;
 import java.sql.Statement;
 import java.sql.Types;
 import java.util.Enumeration;
@@ -543,12 +544,16 @@ public final class ClsMngBBDD {
 			try {
 				cs.execute();
 				break;
+				
+			} catch (SQLTimeoutException tex) {
+				throw tex;
 	
 			} catch (SQLException ex) {
 				if (ex.getErrorCode() != 4068 || intento == 2) { // JPT: 4068 es un error de descompilado (la segunda vez deberia funcionar)
 					throw ex;
 				}
 			}
+
 		}      
 
       for(int i=0;i<outParameters;i++){
@@ -557,6 +562,12 @@ public final class ClsMngBBDD {
       }
       cs.close();
       return result;
+      
+    }catch(SQLTimeoutException ex){
+        String msg= "TimedOutException: "+ex.getMessage().substring(0,ex.getMessage().length() - 1);
+        String p=functionDefinition;
+        p=p.substring(p.indexOf("=")+1,p.indexOf("(?"));
+        throw new ClsExceptions(ex,msg,p,"0","GEN00","20");      
     }catch(SQLException ex){
         String msg=ex.getMessage().substring(0,ex.getMessage().length() - 1);
         String p=functionDefinition;
