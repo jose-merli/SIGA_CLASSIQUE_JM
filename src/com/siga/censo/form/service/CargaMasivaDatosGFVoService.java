@@ -5,30 +5,30 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.redabogacia.sigaservices.app.vo.cen.CargaMasivaDatosCVVo;
+import org.redabogacia.sigaservices.app.vo.cen.CargaMasivaDatosGFVo;
 
-import com.siga.censo.form.CargaMasivaCVForm;
+import com.siga.censo.form.CargaMasivaGFForm;
 import com.siga.comun.VoUiService;
 
 /**
  * 
  * @author jorgeta 
- * @date   08/04/2015
+ * @date   04/05/2015
  *
  * La imaginación es más importante que el conocimiento
  *
  */
-public class CargaMasivaDatosCVVoService implements VoUiService<CargaMasivaCVForm, CargaMasivaDatosCVVo> {
+public class CargaMasivaDatosGFVoService implements VoUiService<CargaMasivaGFForm, CargaMasivaDatosGFVo> {
 
 	/* (non-Javadoc)
 	 * @see com.siga.comun.VoUiService#getVo2FormList(java.util.List)
 	 */
 	@Override
-	public List<CargaMasivaCVForm> getVo2FormList(
-			List<CargaMasivaDatosCVVo> voList) {
-		List<CargaMasivaCVForm> cargaMasivaCVForms = new ArrayList<CargaMasivaCVForm>();
-		CargaMasivaCVForm cargaMasivaCVForm   = null;
-		for (CargaMasivaDatosCVVo objectVo : voList) {
+	public List<CargaMasivaGFForm> getVo2FormList(
+			List<CargaMasivaDatosGFVo> voList) {
+		List<CargaMasivaGFForm> cargaMasivaCVForms = new ArrayList<CargaMasivaGFForm>();
+		CargaMasivaGFForm cargaMasivaCVForm   = null;
+		for (CargaMasivaDatosGFVo objectVo : voList) {
 			cargaMasivaCVForm = getVo2Form(objectVo);
 			cargaMasivaCVForms.add(cargaMasivaCVForm);
 
@@ -40,8 +40,16 @@ public class CargaMasivaDatosCVVoService implements VoUiService<CargaMasivaCVFor
 	 * @see com.siga.comun.VoUiService#getForm2Vo(java.lang.Object)
 	 */
 	@Override
-	public CargaMasivaDatosCVVo getForm2Vo(CargaMasivaCVForm objectForm) {
-		CargaMasivaDatosCVVo objectVo = new CargaMasivaDatosCVVo(); 
+	public CargaMasivaDatosGFVo getForm2Vo(CargaMasivaGFForm objectForm) {
+		CargaMasivaDatosGFVo objectVo = new CargaMasivaDatosGFVo(); 
+		if(objectForm.getIdGrupo()!=null && !objectForm.getIdGrupo().equals("")){
+			objectVo.setIdGrupo(Short.valueOf(objectForm.getIdGrupo()));
+		}
+		if(objectForm.getNombreGrupo()!=null && !objectForm.getNombreGrupo().equals("")){
+			objectVo.setNombreGrupo(objectForm.getNombreGrupo());
+		}
+		
+		
 		if(objectForm.getIdInstitucion()!=null && !objectForm.getIdInstitucion().equals("")){
 			objectVo.setIdInstitucion(Short.valueOf(objectForm.getIdInstitucion()));
 		}
@@ -59,32 +67,11 @@ public class CargaMasivaDatosCVVoService implements VoUiService<CargaMasivaCVFor
 			objectVo.setPersonaNombre(objectForm.getPersonaNombre());
 		if(objectForm.getColegiadoNumero()!=null && !objectForm.getColegiadoNumero().equals(""))
 			objectVo.setColegiadoNumero(objectForm.getColegiadoNumero());
-		if(objectForm.getCreditos()!=null && !objectForm.getCreditos().equals(""))
-			objectVo.setCreditos(Long.valueOf(objectForm.getCreditos()));
-		if(objectForm.getDescripcion()!=null && !objectForm.getDescripcion().equals(""))
-			objectVo.setDescripcion(objectForm.getDescripcion());
+		
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 		if(objectForm.getFechaCarga()!=null && !objectForm.getFechaCarga().equals(""))
 			try {
 				objectVo.setFechaCarga(sdf.parse(objectForm.getFechaCarga()));
-			} catch (ParseException e1) {
-				e1.printStackTrace();
-			}
-		if(objectForm.getFechaFin()!=null && !objectForm.getFechaFin().equals(""))
-			try {
-				objectVo.setFechafin(sdf.parse(objectForm.getFechaFin()));
-			} catch (ParseException e1) {
-				e1.printStackTrace();
-			}
-		if(objectForm.getFechaInicio()!=null && !objectForm.getFechaInicio().equals(""))
-			try {
-				objectVo.setFechainicio(sdf.parse(objectForm.getFechaInicio()));
-			} catch (ParseException e1) {
-				e1.printStackTrace();
-			}
-		if(objectForm.getFechaVerificacion()!=null && !objectForm.getFechaVerificacion().equals(""))
-			try {
-				objectVo.setFechamovimiento(sdf.parse(objectForm.getFechaVerificacion()));
 			} catch (ParseException e1) {
 				e1.printStackTrace();
 			}
@@ -95,20 +82,6 @@ public class CargaMasivaDatosCVVoService implements VoUiService<CargaMasivaCVFor
 			objectVo.setNombreFichero(objectForm.getNombreFichero());
 		if(objectForm.getNumRegistros()!=null && !objectForm.getNumRegistros().equals(""))
 			objectVo.setNumRegistros(Short.valueOf(objectForm.getNumRegistros()));
-		if(objectForm.getSubtipoCV1Cod()!=null && !objectForm.getSubtipoCV1Cod().equals(""))
-			objectVo.setSubtipoCV1Cod(objectForm.getSubtipoCV1Cod());
-		if(objectForm.getSubtipoCV1Nombre()!=null && !objectForm.getSubtipoCV1Nombre().equals(""))
-			objectVo.setSubtipoCV1Nombre(objectForm.getSubtipoCV1Nombre());
-		if(objectForm.getSubtipoCV2Cod()!=null && !objectForm.getSubtipoCV2Cod().equals(""))
-			objectVo.setSubtipoCV2Cod(objectForm.getSubtipoCV2Cod());
-		if(objectForm.getSubtipoCV2Nombre()!=null && !objectForm.getSubtipoCV2Nombre().equals(""))
-			objectVo.setSubtipoCV2Nombre(objectForm.getSubtipoCV2Nombre());
-
-		if(objectForm.getTipoCVCod()!=null && !objectForm.getTipoCVCod().equals(""))
-			objectVo.setTipoCVCod(objectForm.getTipoCVCod());
-		if(objectForm.getTipoCVNombre()!=null && !objectForm.getTipoCVNombre().equals(""))
-			objectVo.setTipoCVNombre(objectForm.getTipoCVNombre());
-
 		if(objectForm.getUsuario()!=null && !objectForm.getUsuario().equals(""))
 			objectVo.setUsuario(objectForm.getUsuario());
 		if(objectForm.getError()!=null && !objectForm.getError().equals(""))
@@ -122,9 +95,16 @@ public class CargaMasivaDatosCVVoService implements VoUiService<CargaMasivaCVFor
 	 * @see com.siga.comun.VoUiService#getVo2Form(java.lang.Object)
 	 */
 	@Override
-	public CargaMasivaCVForm getVo2Form(CargaMasivaDatosCVVo objectVo) {
-		CargaMasivaCVForm objectForm = new CargaMasivaCVForm();
+	public CargaMasivaGFForm getVo2Form(CargaMasivaDatosGFVo objectVo) {
+		CargaMasivaGFForm objectForm = new CargaMasivaGFForm();
 
+		if(objectVo.getIdGrupo()!=null && !objectVo.getIdGrupo().equals("")){
+			objectForm.setIdGrupo(objectVo.getIdGrupo().toString());
+		}
+		if(objectVo.getNombreGrupo()!=null && !objectVo.getNombreGrupo().equals("")){
+			objectForm.setNombreGrupo(objectVo.getNombreGrupo());
+		}
+		
 		if(objectVo.getIdInstitucion()!=null && !objectVo.getIdInstitucion().equals("")){
 			objectForm.setIdInstitucion(objectVo.getIdInstitucion().toString());
 		}
@@ -141,38 +121,17 @@ public class CargaMasivaDatosCVVoService implements VoUiService<CargaMasivaCVFor
 			objectForm.setPersonaNombre(objectVo.getPersonaNombre());
 		if(objectVo.getColegiadoNumero()!=null && !objectVo.getColegiadoNumero().equals(""))
 			objectForm.setColegiadoNumero(objectVo.getColegiadoNumero());
-		if(objectVo.getCreditos()!=null && !objectVo.getCreditos().equals(""))
-			objectForm.setCreditos(objectVo.getCreditos().toString());
-		if(objectVo.getDescripcion()!=null && !objectVo.getDescripcion().equals(""))
-			objectForm.setDescripcion(objectVo.getDescripcion());
+
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 		if(objectVo.getFechaCarga()!=null && !objectVo.getFechaCarga().equals(""))
 			objectForm.setFechaCarga(sdf.format(objectVo.getFechaCarga()));
 		sdf = new SimpleDateFormat("dd/MM/yyyy");
-		if(objectVo.getFechafin()!=null && !objectVo.getFechafin().equals(""))
-			objectForm.setFechaFin(sdf.format(objectVo.getFechafin()));
-		if(objectVo.getFechainicio()!=null && !objectVo.getFechainicio().equals(""))
-			objectForm.setFechaInicio(sdf.format(objectVo.getFechainicio()));
-		if(objectVo.getFechamovimiento()!=null && !objectVo.getFechamovimiento().equals(""))
-			objectForm.setFechaVerificacion(sdf.format(objectVo.getFechamovimiento()));
 		if(objectVo.getIdCargaMasivaCV()!=null && !objectVo.getIdCargaMasivaCV().equals(""))
 			objectForm.setIdCargaMasivaCV(objectVo.getIdCargaMasivaCV().toString());
 		if(objectVo.getNombreFichero()!=null && !objectVo.getNombreFichero().equals(""))
 			objectForm.setNombreFichero(objectVo.getNombreFichero());
 		if(objectVo.getNumRegistros()!=null && !objectVo.getNumRegistros().equals(""))
 			objectForm.setNumRegistros(objectVo.getNumRegistros().toString());
-		if(objectVo.getSubtipoCV1Cod()!=null && !objectVo.getSubtipoCV1Cod().equals(""))
-			objectForm.setSubtipoCV1Cod(objectVo.getSubtipoCV1Cod());
-		if(objectVo.getSubtipoCV1Nombre()!=null && !objectVo.getSubtipoCV1Nombre().equals(""))
-			objectForm.setSubtipoCV1Nombre(objectVo.getSubtipoCV1Nombre());
-		if(objectVo.getSubtipoCV2Cod()!=null && !objectVo.getSubtipoCV2Cod().equals(""))
-			objectForm.setSubtipoCV2Cod(objectVo.getSubtipoCV2Cod());
-		if(objectVo.getSubtipoCV2Nombre()!=null && !objectVo.getSubtipoCV2Nombre().equals(""))
-			objectForm.setSubtipoCV2Nombre(objectVo.getSubtipoCV2Nombre());
-		if(objectVo.getTipoCVCod()!=null && !objectVo.getTipoCVCod().equals(""))
-			objectForm.setTipoCVCod(objectVo.getTipoCVCod());
-		if(objectVo.getTipoCVNombre()!=null && !objectVo.getTipoCVNombre().equals(""))
-			objectForm.setTipoCVNombre(objectVo.getTipoCVNombre());
 		if(objectVo.getUsuario()!=null && !objectVo.getUsuario().equals(""))
 			objectForm.setUsuario(objectVo.getUsuario());
 		if(objectVo.getError()!=null && !objectVo.getError().equals(""))
@@ -188,8 +147,8 @@ public class CargaMasivaDatosCVVoService implements VoUiService<CargaMasivaCVFor
 	 * @see com.siga.comun.VoUiService#getVo2Form(java.lang.Object, java.lang.Object)
 	 */
 	@Override
-	public CargaMasivaCVForm getVo2Form(CargaMasivaDatosCVVo objectVo,
-			CargaMasivaCVForm objectForm) {
+	public CargaMasivaGFForm getVo2Form(CargaMasivaDatosGFVo objectVo,
+			CargaMasivaGFForm objectForm) {
 		// TODO Auto-generated method stub
 		return null;
 	}

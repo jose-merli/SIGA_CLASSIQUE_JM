@@ -119,6 +119,8 @@
 		<service interface="org.redabogacia.sigaservices.app.services.cen.CenGruposFicherosService"			implementation="org.redabogacia.sigaservices.app.services.cen.impl.CenGruposFicherosServiceImpl"/>
 		<service interface="org.redabogacia.sigaservices.app.services.adm.AdmUsuariosService"			    implementation="org.redabogacia.sigaservices.app.services.adm.impl.AdmUsuariosServiceImpl"/>
 		<service interface="org.redabogacia.sigaservices.app.services.cen.CenClienteService" 				implementation="org.redabogacia.sigaservices.app.services.cen.impl.CenClienteServiceImpl"/>
+		<service interface="org.redabogacia.sigaservices.app.services.cen.CargaMasivaGF" 					implementation="org.redabogacia.sigaservices.app.services.cen.impl.CargaMasivaDatosGFImpl"/>
+		<service interface="org.redabogacia.sigaservices.app.services.gen.GenRecursosService" 					implementation="org.redabogacia.sigaservices.app.services.gen.impl.GenRecursosServiceImpl"/>
 		
 	</context>
 </configuration> 

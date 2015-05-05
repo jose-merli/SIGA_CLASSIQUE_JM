@@ -18,7 +18,7 @@ import com.siga.comun.VoUiService;
  * La imaginación es más importante que el conocimiento
  *
  */
-public class CargaMasivaDatosCVVoService implements VoUiService<CargaMasivaCVForm, CargaMasivaDatosCVVo> {
+public class CargaMasivaVoService implements VoUiService<CargaMasivaCVForm, CargaMasivaDatosCVVo> {
 
 	/* (non-Javadoc)
 	 * @see com.siga.comun.VoUiService#getVo2FormList(java.util.List)

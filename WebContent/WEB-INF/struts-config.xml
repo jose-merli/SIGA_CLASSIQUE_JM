@@ -353,6 +353,8 @@
 		<form-bean name="SolicitudAceptadaCentralitaForm" type="com.siga.gratuita.form.SolicitudAceptadaCentralitaForm"/>
 		<form-bean name="SubtiposCVForm" type="com.siga.censo.form.SubtiposCVForm"/>
 		<form-bean name="CargaMasivaCVForm" type="com.siga.censo.form.CargaMasivaCVForm"/>
+		<form-bean name="CargaMasivaGFForm" type="com.siga.censo.form.CargaMasivaGFForm"/>
+		
 	</form-beans>
 
 
@@ -3488,6 +3490,12 @@
 			<forward name="listado" path="/html/jsp/censo/listadoCargaMasivaCV.jsp"/>
 			<forward name="listadoResumen" path="/html/jsp/censo/listadoResumenCargaMasivaCV.jsp"/>
 		</action>
+		<action path="/CEN_CargaMasivaGF" type="com.siga.censo.action.CargaMasivaGFAction" name="CargaMasivaGFForm" scope="request">
+			<forward name="inicio" path="/html/jsp/censo/cargaMasivaGF.jsp"/>
+			<forward name="listado" path="/html/jsp/censo/listadoCargaMasivaGF.jsp"/>
+			<forward name="listadoResumen" path="/html/jsp/censo/listadoResumenCargaMasivaGF.jsp"/>
+		</action>
+		
 		<!-- ****************************************************************************
 -->
 		<!-- *****************************  FIN ACTION MENÚS ****************************
