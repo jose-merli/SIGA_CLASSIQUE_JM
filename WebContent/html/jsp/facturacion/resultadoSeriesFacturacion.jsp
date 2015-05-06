@@ -93,7 +93,7 @@
 	   	name="tabladatos"
 		border="1"
    		columnNames="facturacion.resultadoSeriesFacturacion.literal.nombreAbreviado,facturacion.resultadoSeriesFacturacion.literal.descripcion,"
-   		columnSizes="30,55,12">
+   		columnSizes="30,55,15">
 
 <%
 		if (vDatosTab==null || vDatosTab.size()==0)	{
