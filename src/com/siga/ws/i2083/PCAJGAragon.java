@@ -1587,7 +1587,7 @@ public class PCAJGAragon extends SIGAWSClientAbstract implements PCAJGConstantes
 
 		} catch (Exception e) {
 			tx.rollback();
-			escribeLogRemesa("Se ha producido un error en el envío WebService");
+			escribeLogRemesa("Se ha producido un error la generar el fichero");
 			ClsLogging.writeFileLogError("Error en el envío WebService", e, 3);			
 		} finally {			
 			
