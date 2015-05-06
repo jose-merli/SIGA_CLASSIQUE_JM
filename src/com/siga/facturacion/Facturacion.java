@@ -624,6 +624,11 @@ public class Facturacion {
 	    			if (codretorno.equals("-205")){
 	    				throw new SIGAException ("messages.facturacion.confirmar.contadorRepetido");
 	    			}
+	    			
+	    			if (codretorno.equals("-208")){
+	    				throw new SIGAException("messages.facturacion.confirmacion.errorPdf");	
+	    			}	
+	    			
 	    			if (!codretorno.equals("0")){
 	    				throw new ClsExceptions ("Error al generar números de facturación: "+resultadoConfirmar[1]);
 	    			}
