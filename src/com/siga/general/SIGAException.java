@@ -122,7 +122,7 @@ public class SIGAException extends ClsExcBase  {
 	}
 	
 	public String getSubLiteral(String idioma) {
-		if (literal_2!=null)
+		if (literal_2!=null && !literal_2.equals(""))
 			return UtilidadesString.getMensajeIdioma(idioma,literal_2);
 		return null;
 	}
