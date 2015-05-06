@@ -93,9 +93,7 @@ public class ColegiarAction extends MasterAction
 			}
 			return mapping.findForward(mapDestino);
 		} catch (SIGAException es) {
-			es.setSubLiteral("");
 			throw es;
-//			throwExcp (es.getLiteral(), new String[] {"modulo.censo"}, es, tx);
 		} catch (Exception e) {
 			throw new SIGAException("messages.general.error",e,new String[] {"modulo.censo"});
 		}
