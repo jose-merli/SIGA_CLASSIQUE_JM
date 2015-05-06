@@ -6,8 +6,10 @@
 package com.siga.facturacion.action;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
@@ -565,11 +567,17 @@ public class FicheroBancarioPagosAction extends MasterAction{
 				    		    	
 	    	//Se borrar todos los ficheros que contengan el identificador del disquete de cargos
 			File directorioFicheros = new File(pathFichero);
-	    	if (directorioFicheros.exists()){
+	    	if (directorioFicheros.exists() && directorioFicheros.isDirectory()){
 		    	File[] ficheros = directorioFicheros.listFiles();
 		    	for (int x=0; x<ficheros.length; x++){
-		    		if (ficheros[x].getName().startsWith(idDisqueteCargos + ".")) {
-		    			ficheros[x].delete();
+		    		String nombreFichero = ficheros[x].getName();
+		    		if (nombreFichero.startsWith(idDisqueteCargos + ".")) {
+		    			SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
+						nombreFichero = sdf.format(new Date()) + "_" + nombreFichero;
+		    			
+		    			File newFile = new File(directorioFicheros, nombreFichero);
+		    			ficheros[x].renameTo(newFile);
+		    			//ficheros[x].delete(); JPT (06/05/2015): No se borran por miedo, prefiero generar una copia
 		    		}	    		
 		    	}
 	    	} 
