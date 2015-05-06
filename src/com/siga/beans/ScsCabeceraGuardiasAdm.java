@@ -972,5 +972,34 @@ public class ScsCabeceraGuardiasAdm extends MasterBeanAdministrador {
 		
 	}
 
+	/**
+	 * @param idInstitucion
+	 * @param idTurno
+	 * @param idGuardia
+	 * @param idCalendario
+	 * @return
+	 * @throws SIGAException 
+	 */
+	public Hashtable getFechasMinMaxCalendario(Integer idInstitucion, Integer idTurno, Integer idGuardia, Integer idCalendario) throws SIGAException {
+		String consulta = "";
+		Hashtable hash = new Hashtable<String, String>();
+		try {
+			consulta = "SELECT min(fechainicio) as FECHA_MIN, max(fechainicio) as FECHA_MAX ";
+			consulta += " FROM " + ScsCabeceraGuardiasBean.T_NOMBRETABLA;
+			consulta += " WHERE " + ScsCabeceraGuardiasBean.C_IDINSTITUCION + "=" + idInstitucion;
+			consulta += " AND " + ScsCabeceraGuardiasBean.C_IDTURNO + "=" + idTurno;
+			consulta += " AND " + ScsCabeceraGuardiasBean.C_IDGUARDIA + "=" + idGuardia;
+			consulta += " AND " + ScsCabeceraGuardiasBean.C_IDCALENDARIOGUARDIAS + "=" + idCalendario;
+
+			Vector v = this.selectGenerico(consulta);
+			Hashtable cabecera = new Hashtable();
+			if (v != null && !v.isEmpty()) {
+				hash = (Hashtable) v.firstElement();
+			}
+		} catch (Exception e) {
+			throw new SIGAException("Error encontrado al obtener los dias minimos y maximos del calendario");
+		}
+		return hash;
+	}
 
 }

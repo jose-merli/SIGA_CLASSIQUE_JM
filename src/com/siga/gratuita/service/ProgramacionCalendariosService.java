@@ -19,7 +19,7 @@ import es.satec.businessManager.BusinessService;
 
 public interface ProgramacionCalendariosService extends BusinessService{
 	public Object executeService(Object... parameters) throws BusinessException;
-	public List<ConjuntoGuardiasForm> getConjuntosGuardia(String idInstitucion,UsrBean usrBean)throws ClsExceptions;
+	public List<ConjuntoGuardiasForm> getConjuntosGuardia(String idInstitucion,UsrBean usrBean, boolean conCargaMasiva)throws ClsExceptions;
 	public ConjuntoGuardiasForm getUltimoConjuntoGuardiaInsertado(String idInstitucion,UsrBean usrBean)throws ClsExceptions;
 	public List<ConfConjuntoGuardiasForm> getConfiguracionConjuntoGuardias(ConfConjuntoGuardiasForm confConjuntoGuardiasForm,boolean isMostrarSoloGuardiasConfiguradas,UsrBean usrBean) throws ClsExceptions ;
 	public void insertaConjuntoGuardias(ConjuntoGuardiasForm ConjuntoGuardiasForm,UsrBean usrBean)throws ClsExceptions, SIGAException;
@@ -39,6 +39,6 @@ public interface ProgramacionCalendariosService extends BusinessService{
 	public List<ScsTurnoBean> getTurnos(String idInstitucion,UsrBean usrBean) throws ClsExceptions ;
 	public List<ScsGuardiasTurnoBean> getGuardiasTurnos(Integer idTurno,Integer idInstitucion, boolean b,UsrBean usrBean) throws ClsExceptions ;
 	public List<DefinirCalendarioGuardiaForm> getCalendarios(DefinirCalendarioGuardiaForm calendarioGuardiaForm, UsrBean usrBean)throws ClsExceptions;
-	public void insertaProgrCalendariosFicheroCarga(int idFicheroCalendario, int idInstitucion, UsrBean usrBean) throws ClsExceptions;
+	public void insertaProgrCalendariosFicheroCarga(int idFicheroCalendario, int idInstitucion, UsrBean usrBean, String fechaDesde, String fechaHasta) throws ClsExceptions;
 	
 }

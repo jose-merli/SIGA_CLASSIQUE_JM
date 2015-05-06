@@ -60,7 +60,7 @@
 						<siga:Select id="idGuardia" queryId="getGuardiasDeTurno" width="355" parentQueryParamIds="idturno"/>
 					</td>
 				</tr>
-				
+				<tr><td colspan="4">&nbsp;</td></tr>				
 				<tr>		
 					<td class="tdBotones" colspan="4" align="center">
 						<input type="button" alt="<siga:Idioma key="general.boton.descargaFicheroModelo"/>" id="idButton" onclick="return descargarModelo();" class="button" value="<siga:Idioma key="general.boton.descargaFicheroModelo"/>">
@@ -72,8 +72,25 @@
 		 <siga:ConjCampos leyenda="Carga Fichero">
 			<table align="left" cellpadding="0" cellpadding="0">
 				<html:hidden property = "modo" value = ""/>
+					<tr>				
+						<td class="labelText" nowrap>
+							<siga:Idioma key="gratuita.calendarios.programacion.fechaCalendario"/>
+							<siga:Idioma key='general.literal.desde'/>&nbsp;(*)
+						</td>
+						<td>					
+							<siga:Fecha nombreCampo="fechaInicio"></siga:Fecha>	
+						</td>
+						
+						<td class="labelText">
+							<siga:Idioma key='general.literal.hasta'/>&nbsp;(*)	
+						</td>
+						<td>					
+							<siga:Fecha nombreCampo="fechaFin"></siga:Fecha>
+						</td>					
+					</tr>				
+					
 					<tr>
-						<td class="labelText" colspan="2">
+						<td class="labelText">
 							<siga:Idioma key="gratuita.modalNuevo_DefinirCalendarioGuardia.literal.observaciones"/>:
 						</td>
 					</tr>
@@ -88,7 +105,7 @@
 							<siga:Idioma key="pys.cargaProductos.literal.fichero"/>&nbsp;(*)
 						</td>				
 						<td colspan="3">
-							<html:file name="DefinirCalendarioGuardiaForm"  property="ficheroCalendario" size="90" styleClass="box"></html:file>
+							<html:file name="DefinirCalendarioGuardiaForm"  property="ficheroCalendario" size="85" styleClass="box"></html:file>
 						</td>
 						
 						<td class="tdBotones">
@@ -102,6 +119,27 @@
 	<script language="JavaScript">	
 		function upload() {
 			sub();
+			
+			if(document.DefinirCalendarioGuardiaForm.fechaInicio.value==''){
+				error = "<siga:Idioma key='errors.required' arg0='gratuita.calendarios.programacion.fechaCalendario' arg1='general.literal.desde'/>";
+				alert(error);
+				fin();
+				return;
+			}
+			
+			if(document.DefinirCalendarioGuardiaForm.fechaFin.value==''){
+				error = "<siga:Idioma key='errors.required' arg0='gratuita.calendarios.programacion.fechaCalendario' arg1='general.literal.hasta'/>";
+				alert(error);
+				fin();
+				return;
+			}	
+			
+			if(document.DefinirCalendarioGuardiaForm.fechaInicio.value >= document.DefinirCalendarioGuardiaForm.fechaFin.value){
+				error = "<siga:Idioma key='messages.fechas.rangoFechas'/>";
+				alert(error);
+				fin();
+				return;
+			}
 			
 			if(document.DefinirCalendarioGuardiaForm.ficheroCalendario.value==''){
 				error = "<siga:Idioma key='errors.required' arg0='administracion.informes.literal.archivo'/>";

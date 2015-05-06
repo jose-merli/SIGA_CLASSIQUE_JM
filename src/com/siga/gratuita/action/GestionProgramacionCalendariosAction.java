@@ -149,7 +149,7 @@ public class GestionProgramacionCalendariosAction extends MasterAction {
 		ConjuntoGuardiasForm ConjuntoGuardiasForm = programacionCalendariosService.getUltimoConjuntoGuardiaInsertado(usrBean.getLocation(), usrBean);
 		confConjuntoGuardiasForm.setIdConjuntoGuardia(ConjuntoGuardiasForm.getIdConjuntoGuardia());
 
-		List<ConjuntoGuardiasForm> ConjuntoGuardiasForms = programacionCalendariosService.getConjuntosGuardia(usrBean.getLocation(), usrBean);
+		List<ConjuntoGuardiasForm> ConjuntoGuardiasForms = programacionCalendariosService.getConjuntosGuardia(usrBean.getLocation(), usrBean, false);
 		request.setAttribute("ConjuntoGuardiasForms", ConjuntoGuardiasForms);
 
 		return "inicio";
@@ -159,7 +159,7 @@ public class GestionProgramacionCalendariosAction extends MasterAction {
 		UsrBean usrBean = this.getUserBean(request);
 		BusinessManager bm = getBusinessManager();
 		ProgramacionCalendariosService programacionCalendariosService = (ProgramacionCalendariosService) bm.getService(ProgramacionCalendariosService.class);
-		List<ConjuntoGuardiasForm> ConjuntoGuardiasForms = programacionCalendariosService.getConjuntosGuardia(usrBean.getLocation(), usrBean);
+		List<ConjuntoGuardiasForm> ConjuntoGuardiasForms = programacionCalendariosService.getConjuntosGuardia(usrBean.getLocation(), usrBean, false);
 		request.setAttribute("ConjuntoGuardiasForms", ConjuntoGuardiasForms);
 
 		return "inicio";
@@ -328,7 +328,7 @@ public class GestionProgramacionCalendariosAction extends MasterAction {
 		BusinessManager bm = getBusinessManager();
 		ProgrCalendariosForm form = (ProgrCalendariosForm) formulario;
 		ProgramacionCalendariosService programacionCalendariosService = (ProgramacionCalendariosService) bm.getService(ProgramacionCalendariosService.class);
-		List<ConjuntoGuardiasForm> ConjuntoGuardiasForms = programacionCalendariosService.getConjuntosGuardia(usrBean.getLocation(), usrBean);
+		List<ConjuntoGuardiasForm> ConjuntoGuardiasForms = programacionCalendariosService.getConjuntosGuardia(usrBean.getLocation(), usrBean, true);
 		request.setAttribute("ConjuntoGuardiasForms", ConjuntoGuardiasForms);
 		form.clear();
 
@@ -376,7 +376,7 @@ public class GestionProgramacionCalendariosAction extends MasterAction {
 		UsrBean usrBean = this.getUserBean(request);
 		BusinessManager bm = getBusinessManager();
 		ProgramacionCalendariosService programacionCalendariosService = (ProgramacionCalendariosService) bm.getService(ProgramacionCalendariosService.class);
-		List<ConjuntoGuardiasForm> ConjuntoGuardiasForms = programacionCalendariosService.getConjuntosGuardia(usrBean.getLocation(), usrBean);
+		List<ConjuntoGuardiasForm> ConjuntoGuardiasForms = programacionCalendariosService.getConjuntosGuardia(usrBean.getLocation(), usrBean, false);
 		request.setAttribute("ConjuntoGuardiasForms", ConjuntoGuardiasForms);
 		ProgrCalendariosForm progrCalendariosFormEdicion = new ProgrCalendariosForm();
 		progrCalendariosFormEdicion.setModo("insertarProgrCalendarios");
@@ -415,7 +415,7 @@ public class GestionProgramacionCalendariosAction extends MasterAction {
 		UsrBean usrBean = this.getUserBean(request);
 		BusinessManager bm = getBusinessManager();
 		ProgramacionCalendariosService programacionCalendariosService = (ProgramacionCalendariosService) bm.getService(ProgramacionCalendariosService.class);
-		List<ConjuntoGuardiasForm> ConjuntoGuardiasForms = programacionCalendariosService.getConjuntosGuardia(usrBean.getLocation(), usrBean);
+		List<ConjuntoGuardiasForm> ConjuntoGuardiasForms = programacionCalendariosService.getConjuntosGuardia(usrBean.getLocation(), usrBean, true);
 		request.setAttribute("ConjuntoGuardiasForms", ConjuntoGuardiasForms);
 		ProgrCalendariosForm progrCalendariosForm = (ProgrCalendariosForm) formulario;
 		progrCalendariosForm.setIdInstitucion(usrBean.getLocation());
@@ -431,7 +431,7 @@ public class GestionProgramacionCalendariosAction extends MasterAction {
 		UsrBean usrBean = this.getUserBean(request);
 		BusinessManager bm = getBusinessManager();
 		ProgramacionCalendariosService programacionCalendariosService = (ProgramacionCalendariosService) bm.getService(ProgramacionCalendariosService.class);
-		List<ConjuntoGuardiasForm> ConjuntoGuardiasForms = programacionCalendariosService.getConjuntosGuardia(usrBean.getLocation(), usrBean);
+		List<ConjuntoGuardiasForm> ConjuntoGuardiasForms = programacionCalendariosService.getConjuntosGuardia(usrBean.getLocation(), usrBean, true);
 		request.setAttribute("ConjuntoGuardiasForms", ConjuntoGuardiasForms);
 		ProgrCalendariosForm progrCalendariosForm = (ProgrCalendariosForm) formulario;
 		progrCalendariosForm.setIdInstitucion(usrBean.getLocation());

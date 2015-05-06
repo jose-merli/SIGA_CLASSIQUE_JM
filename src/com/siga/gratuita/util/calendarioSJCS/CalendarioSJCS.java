@@ -2419,7 +2419,7 @@ public class CalendarioSJCS
 	 * Genera las cabeceras de guardias del calendario, a partir de un fichero excel de carga
 	 * Cuando la guardia no es por grupos
 	 */
-	public void generarCalendarioCargaFichero(List<CargaMasivaCalendariosVo> datosExcel, String observaciones, UsrBean usr, Object logProgramacion) throws SIGAException, ClsExceptions {
+	public void generarCalendarioCargaFichero(List<CargaMasivaCalendariosVo> datosExcel, String observaciones, UsrBean usr, Object logProgramacion, String fechaInicio, String fechaFin) throws SIGAException, ClsExceptions {
 		// Controles generales
 		this.usrBean = usr;
 		CenBajasTemporalesAdm bajasAdm = new CenBajasTemporalesAdm(this.usrBean);
@@ -2431,7 +2431,6 @@ public class CalendarioSJCS
 		HashMap<Long, TreeMap<String,CenBajasTemporalesBean>> hmBajasTemporales;
 		HashMap<Long, ArrayList<LetradoInscripcion>> hmPersonasConSaltos; // Lista de saltos
 		ArrayList<LetradoInscripcion> alLetradosOrdenados; // Cola de letrados en la guardia
-		SimpleDateFormat sdf = new SimpleDateFormat(ClsConstants.DATE_FORMAT_JAVA);
 		SimpleDateFormat sdf2 = new SimpleDateFormat("dd/MM/yyyy");
 		
 		/** Log para los problemas en la programacion del calendario **/
@@ -2442,6 +2441,10 @@ public class CalendarioSJCS
 		/** Log para el proceso de generacion del calendario **/
 		LogFileWriter log = null;	
 		ArrayList<String> lineaLog = null;
+		
+		/** Fechas incio y fin calendario **/
+		String primerDia = GstDate.getFormatedDateShort(usr.getLanguage(), fechaInicio);
+		String ultimoDia = GstDate.getFormatedDateShort(usr.getLanguage(), fechaFin);
 
 		try {			
 			if(datosExcel!= null && datosExcel.size() > 0) {				
@@ -2449,10 +2452,6 @@ public class CalendarioSJCS
 				Integer idInstitucion = primerRegistro.getIdInstitucion();
 				Integer idTurno = primerRegistro.getIdTurno();
 				Integer idGuardia = primerRegistro.getIdGuardia();
-				String fechaInicio = sdf.format(primerRegistro.getFechaInicioCalendario());
-				String fechaFin = sdf.format(datosExcel.get(datosExcel.size() - 1).getFechaInicioCalendario());
-				String primerDia = sdf2.format(primerRegistro.getFechaInicioCalendario());
-				String ultimoDia = sdf2.format(datosExcel.get(datosExcel.size() - 1).getFechaInicioCalendario());	
 				
 				/** Creamos el Calendario **/
 				lineaLog = new ArrayList<String>();
@@ -2500,7 +2499,7 @@ public class CalendarioSJCS
 				for(CargaMasivaCalendariosVo vo: datosExcel){
 					letradoInscripcion = new LetradoInscripcion(vo);
 					diasGuardia = new ArrayList<String>();
-					diasGuardia.add(sdf2.format(vo.getFechaInicioCalendario()));
+					diasGuardia.add(sdf2.format(vo.getFechaCalendario()));
 					log.addLog(new String[] {"Dias", diasGuardia.toString()});		
 					
 					/** Comprobamos las restricciones del calendario **/
@@ -2529,11 +2528,20 @@ public class CalendarioSJCS
 						
 					} catch (SIGAException se) {
 						erroresEncontrados = true;
-						lineaLogErrorProgramacion.add("Error encontrado para el "+ vo.toString() + " el dia" + diasGuardia.get(0) + ": " +  UtilidadesString.getMensajeIdioma(usrBean, se.getLiteral()));
+						lineaLogErrorProgramacion.add("Error encontrado para el "+ vo.toString() + " el dia " + diasGuardia.get(0) + ": " +  UtilidadesString.getMensajeIdioma(usrBean, se.getLiteral()));
 						logFileErrorProgramacion.add(lineaLogErrorProgramacion);
 					}
 				}
 				
+				/** POR ULTIMO COMPROBAMOS QUE LAS FECHAS DEL CALENDARIO COINCIDEN CON LAS CONFIGURADAS POR INTERFAZ. EN CASO INCORRECTO SE INFORMA AL USUARIO PERO NO SE ELIMINA EL CALENDARIO **/
+				ScsCabeceraGuardiasAdm admCabeceraGuardias = new ScsCabeceraGuardiasAdm(this.usrBean);
+				Hashtable fechasMinMax = admCabeceraGuardias.getFechasMinMaxCalendario(idInstitucion,idTurno,idGuardia,idCalendario);
+				String fechaMin =  GstDate.getFormatedDateShort(usr.getLanguage(),(String)fechasMinMax.get("FECHA_MIN"));
+				String fechaMax =  GstDate.getFormatedDateShort(usr.getLanguage(),(String)fechasMinMax.get("FECHA_MAX"));		
+				if(!fechaMin.equals(primerDia) || !fechaMax.equals(ultimoDia)){
+					log.addLog(new String[] {"AVISO: Faltan o sobran días en el Excel cargado", "Fecha desde indicada: "+primerDia+", Primera fecha cargada: "+fechaMin+". Fecha hasta indicada: "+ultimoDia+", Última fecha cargada: "+fechaMax+"."});	
+				}
+
 				log.addLog(new String[] { "FIN GENERACION" });
 			}
 

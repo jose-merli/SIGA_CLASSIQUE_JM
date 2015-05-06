@@ -1825,7 +1825,7 @@ public class DefinirCalendarioGuardiaAction extends MasterAction
 			
 			/** Creamos el registro para la programacion del calendario **/
 			ProgramacionCalendariosService programacionCalendariosService = (ProgramacionCalendariosService) getBusinessManager().getService(ProgramacionCalendariosService.class);
-			programacionCalendariosService.insertaProgrCalendariosFicheroCarga(ficheroVo.getIdfichero().intValue(),new Integer(user.getLocation()),user);
+			programacionCalendariosService.insertaProgrCalendariosFicheroCarga(ficheroVo.getIdfichero().intValue(),new Integer(user.getLocation()),user, miForm.getFechaInicio(),miForm.getFechaFin());
 
 		} catch (Exception e) {
 			throwExcp("messages.general.error", new String[] {"modulo.envios"}, e, null);
