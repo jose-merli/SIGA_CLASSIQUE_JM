@@ -34,9 +34,6 @@
   	
   	
 <siga:Titulo  titulo="menu.cen.subtiposDatosCurriculares" localizacion="censo.tiposDatosCurriculares.localizacion"/>
-
-
-
 		
 
 <script type="text/javascript">
@@ -100,6 +97,19 @@
 	}
 	
 	function openDialog(){
+		
+		document.forms['FormularioGestion'].subTipo1IdTipo.value = "";
+		document.forms['FormularioGestion'].subTipo1IdInstitucion.value = "";
+		document.forms['FormularioGestion'].subTipo1CodigoExt.value = "";
+		document.forms['FormularioGestion'].subTipo1Descripcion.value = "";
+		document.forms['FormularioGestion'].subTipo1IdRecursoDescripcion.value = "";
+		
+		document.forms['FormularioGestion'].subTipo2IdTipo.value = "";
+		document.forms['FormularioGestion'].subTipo2IdInstitucion.value = "";
+		document.forms['FormularioGestion'].subTipo2CodigoExt.value = "";
+		document.forms['FormularioGestion'].subTipo2Descripcion.value = "";
+		document.forms['FormularioGestion'].subTipo2IdRecursoDescripcion.value  = "";
+		
 		jQuery("#dialogoInsercion").dialog(
 				{
 				      height: 270,
