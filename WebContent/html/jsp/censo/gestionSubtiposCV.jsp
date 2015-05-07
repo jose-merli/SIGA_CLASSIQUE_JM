@@ -61,13 +61,18 @@
 		var idTipoCVBusqueda = document.SubtiposCVForm.idTipoCVBusqueda.value;
 		var subTipo1Descripcion = document.SubtiposCVForm.subTipo1Descripcion.value;
 		var subTipo2Descripcion = document.SubtiposCVForm.subTipo2Descripcion.value;
+		var todos = "";
+		if(document.SubtiposCVForm.todos && document.SubtiposCVForm.todos.value)
+			todos = document.SubtiposCVForm.todos.checked;
 		var data = "idInstitucion="+idInstitucion;
+		data += "&todos="+todos;
 		if(idTipoCVBusqueda!='')
 			data += "&idTipoCVBusqueda="+idTipoCVBusqueda;
 		if(subTipo1Descripcion!='')
 			data += "&subTipo1Descripcion="+subTipo1Descripcion;
 		if(subTipo2Descripcion!='')
 			data += "&subTipo2Descripcion="+subTipo2Descripcion;
+		
         
 	    
 	   	jQuery.ajax({
@@ -303,12 +308,16 @@
 			
 				<table width="100%" border="0">
 					<tr>
-						<td width="150x"></td>
-						<td width="110x"></td>
-						<td width="110x"></td>
-						<td width="110x"></td>
-						<td width="150x"></td>
-						<td width="330x"></td>
+						<td width="10%"></td>
+						<td width="15%"></td>
+						<td width="10%"></td>
+						<td width="15%"></td>
+						<td width="10%"></td>
+						<td width="15%"></td>
+						<c:if test="${SubtiposCVForm.idInstitucion==2000 }">
+							<td width="8%"></td>
+							<td width="2%"></td>
+						</c:if>
 					</tr>
 					
 					<tr>
@@ -327,14 +336,31 @@
 							<bean:message key="censo.tiposDatosCurriculares.subtipo1.literal"/>
 						</td>
 						<td>
-							<html:text property="subTipo1Descripcion" size="10" maxlength="10" styleClass="box"  />
+							<html:text property="subTipo1Descripcion" size="15" maxlength="15" styleClass="box"  />
 						</td>
 						<td class="labelText">
 							<bean:message key="censo.tiposDatosCurriculares.subtipo2.literal"/>
 						</td>
 						<td>
-							<html:text property="subTipo2Descripcion" size="10" maxlength="10" styleClass="box"  />
+							<html:text property="subTipo2Descripcion" size="15" maxlength="15" styleClass="box"  />
 						</td>
+						<c:choose>
+							<c:when test="${SubtiposCVForm.idInstitucion==2000 }">
+								<td class="labelText">
+									<siga:Idioma key="general.combo.todos"/>
+								</td>				
+								<td>
+									<html:checkbox property="todos" />
+								</td>
+							</c:when>
+							<c:otherwise>
+								<td colspan="2">&nbsp;</td>
+							</c:otherwise>
+							
+							
+						</c:choose>
+						
+						
 					</tr>
 				</table>
 			</siga:ConjCampos>
@@ -369,7 +395,7 @@
   	<siga:ConjCampos >
   		
 			<div class="labelText">
-				<label for="idTipoCVInsercion"   style="width:90px;float:left"><bean:message key="censo.tiposDatosCurriculares.tipo.literal"/></label>
+				<label for="idTipoCVInsercion"   style="width:90px;float:left;color: black"><bean:message key="censo.tiposDatosCurriculares.tipo.literal"/></label>
 				<select id="idTipoCVInsercion" >
 					<option value=""><siga:Idioma key="general.combo.seleccionar" />	</option>
 					<c:forEach items="${maestroTiposCV}" var="tipoCV"> 
@@ -379,17 +405,17 @@
 				<!--  siga:Select queryId="getCenTiposCv" id="idTipoCV" required="true" /-->
 			</div>
 			<div class="labelText">
-				<label for="subTipo1Insercion"   style="width:100px;float:left"><bean:message key="censo.tiposDatosCurriculares.subtipo1.literal"/></label>
+				<label for="subTipo1Insercion"   style="width:100px;float:left;color: black"><bean:message key="censo.tiposDatosCurriculares.subtipo1.literal"/></label>
 				<input type="radio" name="subTipoInsercion" id="subTipoInsercion" checked="checked"  value="1"/> 
-				<label for="subTipo2Insercion"  ><bean:message key="censo.tiposDatosCurriculares.subtipo2.literal"/></label> 
+				<label for="subTipo2Insercion" style="color: black" ><bean:message key="censo.tiposDatosCurriculares.subtipo2.literal"/></label> 
 				<input type="radio" name="subTipoInsercion" id="subTipoInsercion"  value="2" />
 			</div>
 			<div class="labelText">
-    			<label for="subTipoCodigoExtInsercion"  style="width:100px;float:left"><bean:message key="censo.tiposDatosCurriculares.codExterno.literal"/></label>
+    			<label for="subTipoCodigoExtInsercion"  style="width:100px;float:left;color: black"><bean:message key="censo.tiposDatosCurriculares.codExterno.literal"/></label>
     			<input type="text" id="subTipoCodigoExtInsercion" maxlength="10" size="20" />
    			</div>
 			<div class="labelText">
-    			<label for="subTipoDescripcionInsercion"   style="width:100px;float:left"><bean:message key="censo.tiposDatosCurriculares.descripcion.literal"/></label>
+    			<label for="subTipoDescripcionInsercion"   style="width:100px;float:left;color: black"><bean:message key="censo.tiposDatosCurriculares.descripcion.literal"/></label>
     			<input type="text" id="subTipoDescripcionInsercion"  maxlength="100" size="40" />
    			</div>
    			
@@ -402,12 +428,12 @@
 <div >&nbsp; </div>
   	<siga:ConjCampos >
 			<div class="labelText">
-				<label for="idTipoCVEdicion"  style="width:90px;float:left"><bean:message key="censo.tiposDatosCurriculares.tipo.literal"/></label>
+				<label for="idTipoCVEdicion"  style="width:90px;float:left;color: black"><bean:message key="censo.tiposDatosCurriculares.tipo.literal"/></label>
 				<input type="hidden" id="idTipoCVEdicion" />
 				<input type="text" style="border: none;" id="descripcionEdicion" readonly="readonly" />
 			</div>
 			<div id="divSubtipo1Edicion" class="labelText">
-    			<label for="subTipo1Edicion" style="width:90px;float:left"><bean:message key="censo.tiposDatosCurriculares.subtipo1.literal"/></label>
+    			<label for="subTipo1Edicion" style="width:90px;float:left;color: black"><bean:message key="censo.tiposDatosCurriculares.subtipo1.literal"/></label>
     			<input type="hidden" id="subTipo1IdTipoEdicion" />
     			<input type="text" id="subTipo1CodigoExtEdicion" maxlength="10" size="6"/>
     			<input type="text" id="subTipo1DescripcionEdicion"  maxlength="100" size="35"/>
@@ -415,7 +441,7 @@
     			
    			</div>
    			<div id="divSubtipo2Edicion" class="labelText">
-    			<label for="subTipo2Edicion" style="width:90px;float:left"><bean:message key="censo.tiposDatosCurriculares.subtipo2.literal"/></label>
+    			<label for="subTipo2Edicion" style="width:90px;float:left;color: black"><bean:message key="censo.tiposDatosCurriculares.subtipo2.literal"/></label>
     			<input type="hidden" id="subTipo2IdTipoEdicion" />
     			<input type="text" id="subTipo2CodigoExtEdicion" maxlength="10" size="6"  />
     			<input type="text" id="subTipo2DescripcionEdicion"  maxlength="100" size="35" />
@@ -430,19 +456,19 @@
 <div  >&nbsp; </div>
   	<siga:ConjCampos >
 			<div class="labelText">
-				<label for="idTipoCVBorrado"  class="labelText" style="width:90px;float:left"><bean:message key="censo.tiposDatosCurriculares.tipo.literal"/></label>
+				<label for="idTipoCVBorrado"  class="labelText" style="width:90px;float:left;color: black"><bean:message key="censo.tiposDatosCurriculares.tipo.literal"/></label>
 				<input type="hidden" id="idTipoCVBorrado" />
 				<input type="text" style="border: none;"  id="descripcionBorrado" readonly="readonly" />
 			</div>
 			<div id="divSubtipo1Borrado" class="labelText">
-				<label for="subTipo1Borrado"  class="labelText" style="width:90px;float:left"><bean:message key="censo.tiposDatosCurriculares.subtipo1.literal"/></label>
+				<label for="subTipo1Borrado"  class="labelText" style="width:90px;float:left;color: black"><bean:message key="censo.tiposDatosCurriculares.subtipo1.literal"/></label>
 				<input type="hidden" id="subTipo1IdTipoBorrado" />
 				<input type="radio" name="subTipoBorrado" value="1" /> 
     			<input type="text" id="subTipo1DescripcionBorrado" readonly="readonly"  maxlength="100" size="35" />
     			<input type="hidden" id="subTipo1IdRecursoDescripcionBorrado" />
    			</div>
    			<div id="divSubtipo2Borrado" class="labelText">
-    			<label for="subTipo2Borrado"  class="labelText" style="width:90px;float:left"><bean:message key="censo.tiposDatosCurriculares.subtipo2.literal"/></label> 
+    			<label for="subTipo2Borrado"  class="labelText" style="width:90px;float:left;color: black"><bean:message key="censo.tiposDatosCurriculares.subtipo2.literal"/></label> 
     			<input type="hidden" id="subTipo2IdTipoBorrado" />
 				<input type="radio" name="subTipoBorrado" value="2" />
     			<input type="text" id="subTipo2DescripcionBorrado" readonly="readonly"  maxlength="100" size="35" />

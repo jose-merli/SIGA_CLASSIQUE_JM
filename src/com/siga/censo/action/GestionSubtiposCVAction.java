@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.redabogacia.sigaservices.app.AppConstants;
 import org.redabogacia.sigaservices.app.exceptions.BusinessException;
 import org.redabogacia.sigaservices.app.services.cen.SubtiposCVService;
 import org.redabogacia.sigaservices.app.vo.cen.SubtiposCVVo;
@@ -148,8 +149,12 @@ public class GestionSubtiposCVAction extends MasterAction {
 			String idTipoCVBusqueda = request.getParameter("idTipoCVBusqueda");
 			String subTipo1Descripcion = request.getParameter("subTipo1Descripcion");
 			String subTipo2Descripcion = request.getParameter("subTipo2Descripcion");
+			String todos = request.getParameter("todos");
 				        
 	        tiposDatosCurricularesForm.setIdInstitucion(idInstitucion);
+	        if(Short.parseShort(tiposDatosCurricularesForm.getIdInstitucion())==AppConstants.IDINSTITUCION_2000)
+	        	tiposDatosCurricularesForm.setTodos(UtilidadesString.stringToBoolean(todos)?"1":"0");
+	        
 	        if(subTipo1Descripcion!=null)
 	        	tiposDatosCurricularesForm.setSubTipo1Descripcion(subTipo1Descripcion.trim());
 	        if(subTipo2Descripcion!=null)
@@ -167,6 +172,8 @@ public class GestionSubtiposCVAction extends MasterAction {
 				if(idTipoCVBusqueda!=null && !idTipoCVBusqueda.equals(""))
 					tiposDatosCurricularesVo.setIdtipocv(Short.valueOf(idTipoCVBusqueda));
 				tiposDatosCurricularesVo.setIdioma(this.getUserBean(request).getLanguage());
+				
+				
 				tiposDatosCurricularesForms =  voService.getVo2FormList(tiposDatosCurricularesService.getList(tiposDatosCurricularesVo));
 				request.setAttribute("tiposDatosCurriculares", tiposDatosCurricularesForms);
 				request.setAttribute("maestroTiposCV", tiposDatosCurricularesService.getMaestroTiposCV(this.getUserBean(request).getLanguage()));
@@ -186,7 +193,6 @@ public class GestionSubtiposCVAction extends MasterAction {
 	  
 	private String editarSubtiposCV (ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		SubtiposCVForm tiposDatosCurricularesForm = (SubtiposCVForm) formulario;
-        BusinessManager bm = getBusinessManager();
 		VoUiService<SubtiposCVForm, SubtiposCVVo> voService = new SubtiposCVVoService();
 		try {
 			SubtiposCVVo tiposDatosCurricularesVo =  null;// tiposDatosCurricularesService.getSolicitudAceptada(voService.getForm2Vo(tiposDatosCurricularesForm));

@@ -43,6 +43,7 @@ public class SubtiposCVForm extends MasterForm {
 	
 	private FilaExtElement[] elementosFila;
 	private String botones;
+	private String todos;
 	
 	/**
 	 * @return the idInstitucion
@@ -296,6 +297,18 @@ public class SubtiposCVForm extends MasterForm {
 	 */
 	public void setIdTipoCVBusqueda(String idTipoCVBusqueda) {
 		this.idTipoCVBusqueda = idTipoCVBusqueda;
+	}
+	/**
+	 * @return the todos
+	 */
+	public String getTodos() {
+		return todos;
+	}
+	/**
+	 * @param todos the todos to set
+	 */
+	public void setTodos(String todos) {
+		this.todos = todos;
 	}
 
 	

@@ -3,6 +3,7 @@ package com.siga.censo.form.service;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.redabogacia.sigaservices.app.AppConstants;
 import org.redabogacia.sigaservices.app.vo.cen.SubtiposCVVo;
 
 import com.siga.censo.form.SubtiposCVForm;
@@ -42,6 +43,8 @@ public class SubtiposCVVoService implements VoUiService<SubtiposCVForm, Subtipos
 			tiposDatosCurricularesVo.setDescripcion(objectForm.getTipoDescripcion());
 		if(objectForm.getCodigoExt()!=null && !objectForm.getCodigoExt().equals(""))
 			tiposDatosCurricularesVo.setCodigoext(objectForm.getCodigoExt());
+		if(objectForm.getTodos()!=null && !objectForm.getTodos().equals(""))
+			tiposDatosCurricularesVo.setTodos(objectForm.getTodos());
 		
 		
 		
@@ -118,6 +121,10 @@ public class SubtiposCVVoService implements VoUiService<SubtiposCVForm, Subtipos
 		
 		if(objectVo.getIdInstitucion()!=null && !objectVo.getIdInstitucion().equals(""))
 			objectForm.setIdInstitucion(objectVo.getIdInstitucion().toString());
+		if(objectVo.getTodos()!=null && !objectVo.getTodos().equals(""))
+			objectForm.setTodos(objectVo.getTodos());
+		
+		
 		if(objectVo.getIdtipocv()!=null && !objectVo.getIdtipocv().equals(""))
 			objectForm.setIdTipoCV(objectVo.getIdtipocv().toString());
 		
@@ -131,8 +138,16 @@ public class SubtiposCVVoService implements VoUiService<SubtiposCVForm, Subtipos
 			objectForm.setSubTipo1IdInstitucion(objectVo.getSubTipo1IdInstitucion().toString());
 		if(objectVo.getSubTipo1IdTipo()!=null && !objectVo.getSubTipo1IdTipo().equals(""))
 			objectForm.setSubTipo1IdTipo(objectVo.getSubTipo1IdTipo().toString());
-		if(objectVo.getSubTipo1Descripcion()!=null && !objectVo.getSubTipo1Descripcion().equals(""))
-			objectForm.setSubTipo1Descripcion(objectVo.getSubTipo1Descripcion());
+		if(objectVo.getSubTipo1Descripcion()!=null && !objectVo.getSubTipo1Descripcion().equals("")){
+			
+			if(objectVo.getIdInstitucion()!=null && objectVo.getIdInstitucion().shortValue()==AppConstants.IDINSTITUCION_2000
+					&& objectVo.getSubTipo1IdInstitucion().shortValue()!=AppConstants.IDINSTITUCION_2000
+					){
+				objectForm.setSubTipo1Descripcion(objectVo.getSubTipo1Descripcion()+" ("+objectVo.getAbreviaturaInstitucion1()+")");
+			}else{
+				objectForm.setSubTipo1Descripcion(objectVo.getSubTipo1Descripcion());
+			}
+		}
 		if(objectVo.getSubTipo1IdRecursoDescripcion()!=null && !objectVo.getSubTipo1IdRecursoDescripcion().equals(""))
 			objectForm.setSubTipo1IdRecursoDescripcion(objectVo.getSubTipo1IdRecursoDescripcion());
 		if(objectVo.getSubTipo1CodigoExt()!=null && !objectVo.getSubTipo1CodigoExt().equals(""))
@@ -143,8 +158,17 @@ public class SubtiposCVVoService implements VoUiService<SubtiposCVForm, Subtipos
 			objectForm.setSubTipo2IdInstitucion(objectVo.getSubTipo2IdInstitucion().toString());
 		if(objectVo.getSubTipo2IdTipo()!=null && !objectVo.getSubTipo2IdTipo().equals(""))
 			objectForm.setSubTipo2IdTipo(objectVo.getSubTipo2IdTipo().toString());
-		if(objectVo.getSubTipo2Descripcion()!=null && !objectVo.getSubTipo2Descripcion().equals(""))
-			objectForm.setSubTipo2Descripcion(objectVo.getSubTipo2Descripcion());
+		if(objectVo.getSubTipo2Descripcion()!=null && !objectVo.getSubTipo2Descripcion().equals("")){
+			if(objectVo.getIdInstitucion()!=null && objectVo.getIdInstitucion().shortValue()==AppConstants.IDINSTITUCION_2000
+					&& objectVo.getSubTipo2IdInstitucion().shortValue()!=AppConstants.IDINSTITUCION_2000
+					){
+				objectForm.setSubTipo2Descripcion(objectVo.getSubTipo2Descripcion()+" ("+objectVo.getAbreviaturaInstitucion2()+")");
+			}else{
+				objectForm.setSubTipo2Descripcion(objectVo.getSubTipo2Descripcion());
+			}
+			
+		}
+			
 		if(objectVo.getSubTipo2IdRecursoDescripcion()!=null && !objectVo.getSubTipo2IdRecursoDescripcion().equals(""))
 			objectForm.setSubTipo2IdRecursoDescripcion(objectVo.getSubTipo2IdRecursoDescripcion());
 		if(objectVo.getSubTipo2CodigoExt()!=null && !objectVo.getSubTipo2CodigoExt().equals(""))
