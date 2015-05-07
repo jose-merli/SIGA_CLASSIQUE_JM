@@ -71,7 +71,7 @@
         });
     }
 	function inicio() {
-		if(document.forms['CargaMasivaCVForm'].modo.value == 'vuelta'){
+		if(document.forms['CargaMasivaCVForm'].modo.value == 'vuelta' && document.forms['CargaMasivaCVForm'].idInstitucion.value!=''){
 			buscarCargasMasivas();
 			document.forms['CargaMasivaCVForm'].modo.value = '';
 		}
@@ -84,6 +84,12 @@
 	}
 		
 	function parseExcelFile() {
+		if(!document.forms['CargaMasivaCVForm'].theFile || document.forms['CargaMasivaCVForm'].theFile.value==''){
+			error = "<siga:Idioma key='errors.required' arg0='administracion.informes.literal.archivo'/>";
+			alert(error);
+			fin();
+			return false;
+		}
 		if(document.forms['CargaMasivaCVForm'].theFile && document.forms['CargaMasivaCVForm'].theFile.value!='' && !TestFileType(document.forms['CargaMasivaCVForm'].theFile.value, ['XLS'])){
 			fin();
 			return false;

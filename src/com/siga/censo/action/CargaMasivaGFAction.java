@@ -112,8 +112,10 @@ public class CargaMasivaGFAction extends MasterAction {
 		miForm.clear();
 		String identificadorFormularioBusqueda = getIdBusqueda(super.dataBusqueda,getClass().getName());
 		CargaMasivaGFForm cargaMasivaGFForm = (CargaMasivaGFForm) request.getSession().getAttribute(identificadorFormularioBusqueda);
-		miForm.setFechaCarga(cargaMasivaGFForm.getFechaCarga());
-		miForm.setIdInstitucion(cargaMasivaGFForm.getIdInstitucion());
+		if(cargaMasivaGFForm!=null){
+			miForm.setFechaCarga(cargaMasivaGFForm.getFechaCarga());
+			miForm.setIdInstitucion(cargaMasivaGFForm.getIdInstitucion());
+		}
 		miForm.setModo("vuelta");
 		return "inicio";
 	}
@@ -287,7 +289,7 @@ public class CargaMasivaGFAction extends MasterAction {
 			if(cargaMasivaGFForm.getTheFile()!=null && cargaMasivaGFForm.getTheFile().getFileData()!=null && cargaMasivaGFForm.getTheFile().getFileData().length>0){
 				File file = SIGAServicesHelper.createTemporalFile(cargaMasivaGFForm.getTheFile().getFileData(), "xls"); 
 				cargaMasivaGFForm.setRutaFichero(file.getAbsolutePath());
-				
+				cargaMasivaGFForm.setNombreFichero(cargaMasivaGFForm.getTheFile().getFileName());
 				CargaMasivaDatosGFVo cargaMasivaDatosGFVo = new CargaMasivaDatosGFVo();
 				cargaMasivaDatosGFVo.setIdInstitucion(Short.valueOf(usrBean.getLocation()));
 				cargaMasivaDatosGFVo.setExcelBytes(cargaMasivaGFForm.getTheFile().getFileData());
@@ -302,7 +304,7 @@ public class CargaMasivaGFAction extends MasterAction {
 
 			}
 		}catch (BusinessException e) {
-			return error(e.getMessage(),new ClsExceptions(e.toString()),request);
+			throwExcp(e.getMessage(), e,null);
 		} catch (Exception e) {
 			throwExcp("messages.general.error", new String[] { "modulo.gratuita"}, e, null);
 		}

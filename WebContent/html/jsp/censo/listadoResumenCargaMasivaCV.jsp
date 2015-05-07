@@ -36,6 +36,7 @@
 	function refrescarLocal() {
 		accionVolver();
 	}
+	
 	function accionDownload() {
 		document.forms['CargaMasivaCVForm'].modo.value="downloadExcelError";
 		document.forms['CargaMasivaCVForm'].target = "submitArea";
@@ -57,7 +58,7 @@
 <table class="tablaTitulo" align="center">
 	<tr>
 	<td class="titulitos">
-		<siga:Idioma key="cargaMasivaDatosCurriculares.ficheroProcesado.literal"/>
+		<siga:Idioma key="cargaMasivaDatosCurriculares.ficheroProcesado.literal"/>&nbsp;<c:out value="${CargaMasivaCVForm.nombreFichero}" />
 	</td>
 	</tr>
 </table>

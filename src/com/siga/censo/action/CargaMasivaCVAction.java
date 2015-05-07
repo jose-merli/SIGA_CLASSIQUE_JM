@@ -108,10 +108,14 @@ public class CargaMasivaCVAction extends MasterAction {
 		
 		CargaMasivaCVForm miForm = (CargaMasivaCVForm) formulario;
 		miForm.clear();
+		UsrBean usrBean = this.getUserBean(request);
+		miForm.setIdInstitucion(usrBean.getLocation());
 		String identificadorFormularioBusqueda = getIdBusqueda(super.dataBusqueda,getClass().getName());
 		CargaMasivaCVForm cargaMasivaCVForm = (CargaMasivaCVForm) request.getSession().getAttribute(identificadorFormularioBusqueda);
-		miForm.setFechaCarga(cargaMasivaCVForm.getFechaCarga());
-		miForm.setIdInstitucion(cargaMasivaCVForm.getIdInstitucion());
+		if(cargaMasivaCVForm!=null){
+			miForm.setFechaCarga(cargaMasivaCVForm.getFechaCarga());
+			miForm.setIdInstitucion(cargaMasivaCVForm.getIdInstitucion());
+		}
 		miForm.setModo("vuelta");
 		return "inicio";
 	}
@@ -292,11 +296,11 @@ public class CargaMasivaCVAction extends MasterAction {
 			if(cargaMasivaCVForm.getTheFile()!=null && cargaMasivaCVForm.getTheFile().getFileData()!=null && cargaMasivaCVForm.getTheFile().getFileData().length>0){
 				File file = SIGAServicesHelper.createTemporalFile(cargaMasivaCVForm.getTheFile().getFileData(), "xls"); 
 				cargaMasivaCVForm.setRutaFichero(file.getAbsolutePath());
-				
+				cargaMasivaCVForm.setNombreFichero(cargaMasivaCVForm.getTheFile().getFileName());
 				CargaMasivaDatosCVVo cargaMasivaDatosCVVo = new CargaMasivaDatosCVVo();
 				cargaMasivaDatosCVVo.setIdInstitucion(Short.valueOf(usrBean.getLocation()));
 				cargaMasivaDatosCVVo.setExcelBytes(cargaMasivaCVForm.getTheFile().getFileData());
-
+				
 				List<CargaMasivaDatosCVVo> cargaMasivaDatosCVList = cargaMasivaDatosCV.parseExcelFile(cargaMasivaDatosCVVo);
 				VoUiService<CargaMasivaCVForm, CargaMasivaDatosCVVo> voService = new CargaMasivaDatosCVVoService();
 				request.setAttribute("listado", voService.getVo2FormList(cargaMasivaDatosCVList));
@@ -306,8 +310,8 @@ public class CargaMasivaCVAction extends MasterAction {
 
 			}
 		}catch (BusinessException e) {
-			return error(e.getMessage(),new ClsExceptions(e.toString()),request);
-		} catch (Exception e) {
+			throwExcp(e.getMessage(), e,null);
+		}  catch (Exception e) {
 			throwExcp("messages.general.error", new String[] { "modulo.gratuita"}, e, null);
 		}
 

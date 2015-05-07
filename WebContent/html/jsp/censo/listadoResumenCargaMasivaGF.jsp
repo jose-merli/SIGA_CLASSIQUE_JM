@@ -57,7 +57,7 @@
 <table class="tablaTitulo" align="center">
 	<tr>
 	<td class="titulitos">
-		<siga:Idioma key="cargaMasivaDatosCurriculares.ficheroProcesado.literal"/>
+		<siga:Idioma key="cargaMasivaDatosCurriculares.ficheroProcesado.literal"/>&nbsp;<c:out value="${CargaMasivaGFForm.nombreFichero}" />
 	</td>
 	</tr>
 </table>
