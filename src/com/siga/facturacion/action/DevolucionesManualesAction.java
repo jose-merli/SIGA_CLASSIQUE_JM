@@ -297,6 +297,10 @@ public class DevolucionesManualesAction extends MasterAction{
 			ArrayList clavesRegSeleccinados = new ArrayList();
 			String seleccionados = request.getParameter("Seleccion"); // idDisqueteCargos||idFacturaIncluidaEnDisquete||idFactura||idRecibo||idMotivo, ...
 			
+			if (seleccionados==null || seleccionados.equals("")) {
+				seleccionados = form.getRecibos(); // idDisqueteCargos||idFacturaIncluidaEnDisquete||idFactura||idRecibo||idMotivo, ...
+			}
+			
 			// Inicialmente pongo todos los elementos deseleccionados
 			form.setRegistrosSeleccionados(new ArrayList());
 			

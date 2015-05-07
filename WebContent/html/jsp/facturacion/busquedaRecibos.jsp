@@ -68,135 +68,6 @@
 	<html:javascript formName="DevolucionesManualesForm" staticJavascript="false" />  
 </head>
 
-<script language="JavaScript">
-
-	function buscarPaginador() {		
-		jQuery("#numeroNifTagBusquedaPersonas").val("<%=sIdentificacionTitular%>");
-		jQuery("#nombrePersona").val("<%=sNombreTitular%>");
-		document.DevolucionesManualesForm.modo.value="BuscarInicio";
-		document.DevolucionesManualesForm.target="resultado";	
-		document.DevolucionesManualesForm.submit();	
-	}
-	
-	function mensaje() {
-<% 		
-		if (form.getHayMotivos().equals("0")) { 
-%>
-			// NO HAY MOTIVOS
-			var m = '<siga:Idioma key="messages.fact.error.motivosNoCargados"/>';
-			alert(m);
-			return false;
-<% 		
-		} 
-%>	
-	}
-	
-	// Funcion asociada a boton buscarCliente
-	function refrescarLocal() {
-		buscar();				
-	}
-
-	// Funcion asociada a boton buscar
-	function buscar(modo) {
-		sub();		
-		mensaje();
-		
-		jQuery("#nombreTitular").val(jQuery("#nombrePersona").val());
-		jQuery("#identificacionTitular").val(jQuery("#numeroNifTagBusquedaPersonas").val());
-		
-		// Rango Fechas (desde / hasta)
-		if (compararFecha (document.DevolucionesManualesForm.fechaCargoDesde, document.DevolucionesManualesForm.fechaCargoHasta) == 1) {
-			mensaje = '<siga:Idioma key="messages.fechas.rangoFechas"/>';
-			alert(mensaje);
-			return false;
-		}
-		
-		if (modo) {
-			document.DevolucionesManualesForm.modo.value = modo;
-			
-		} else {
-			var checkTodos = jQuery("#resultado").contents().find("#chkGeneral");
-			if (!checkTodos.exists() || !checkTodos[0].checked) {
-				document.DevolucionesManualesForm.seleccionarTodos.value = "";
-			}
-			document.DevolucionesManualesForm.modo.value = "BuscarInicio";
-		}
-		
-		document.DevolucionesManualesForm.target="resultado";	
-		document.DevolucionesManualesForm.submit();
-	}
-	
-	function seleccionarTodos(pagina) {
-		document.DevolucionesManualesForm.seleccionarTodos.value = pagina;
-		buscar('buscar');				
-	}	
-
-	// Asociada al boton ProcesarDevoluciones
-	function accionProcesarDevoluciones() {		
-		sub();
-		
-		var numeroFacturasSeleccionadas =  jQuery("#resultado").contents().find("#registrosSeleccionadosPaginador").val();
-		
-		if (numeroFacturasSeleccionadas==null || numeroFacturasSeleccionadas == 0) {
-			var mensaje2 = '<siga:Idioma key="messages.fact.error.noRecibos"/>';
-			alert(mensaje2);
-			fin();
-			return false;
-			
-		} else if (numeroFacturasSeleccionadas>1000) {
-			alert ('<siga:Idioma key="facturacion.devolucionManual.error.devolverMilFacturas"/>');
-			fin();
-			return false;
-		}
-		
-		jQuery("#dialogFechaDevolucion").val("");
-        jQuery("#dialogAplicarComisiones").prop('checked', false);
-		
-        fin();
-		jQuery("#divDatosDevolucionManual").dialog({
-			height: 170,
-			width: 400,
-			modal: true,
-			resizable: false,
-			buttons: {
-				"<%=sDialogBotonGuardarCerrar%>": function() {
-					sub();
-					var dialogFechaDevolucion = jQuery("#dialogFechaDevolucion");
-					
-					if (!dialogFechaDevolucion.exists() || dialogFechaDevolucion.val()=="") {
-						var mensaje = "<siga:Idioma key='errors.required' arg0='facturacion.devolucionManual.fechaDevolucion'/>";
-						alert(mensaje);
-						fin();
-						return false;
-					}					
-					
-					var datosFacturasSeleccionadas =  jQuery("#resultado").contents().find("#registrosSeleccionados").val();
-					document.DevolucionesManualesForm.recibos.value = datosFacturasSeleccionadas;
-					document.DevolucionesManualesForm.fechaDevolucion.value = dialogFechaDevolucion.val();
-					document.DevolucionesManualesForm.aplicarComisiones.value = jQuery("#dialogAplicarComisiones").val();					
-					
-					document.DevolucionesManualesForm.target = "submitArea";
-					document.DevolucionesManualesForm.modo.value = "insertar";																				
-					document.DevolucionesManualesForm.submit();
-					
-					window.setTimeout("fin()",5000,"Javascript");
-				},
-				"<%=sDialogBotonCerrar%>": function() {
-					cerrarDialog();
-				}
-			}
-		});
-		jQuery(".ui-widget-overlay").css("opacity","0");	
-	}	
-	
-	function cerrarDialog(){
-		if (jQuery("#divDatosDevolucionManual").hasClass('ui-dialog-content')) {
-		 jQuery("#divDatosDevolucionManual").dialog("close"); 
-		}
-	}
-
-</script>
-
 <body onload="ajusteAltoBotones('resultado'); <%=funcionBuscar%>">
 	<html:form action="/FAC_DevolucionesManual.do?noReset=true" method="POST" target="resultado">
 		<html:hidden property="modo" value = ""/>
@@ -213,16 +84,16 @@
 		<div id="divDatosDevolucionManual" title="<siga:Idioma key='facturacion.devolucionManual.datosDevolucion'/>" style="display:none">
 			<table align="left">
 				<tr>		
-					<td class="labelText" nowrap>
+					<td class="labelText" nowrap style="color:black">
 						<siga:Idioma key="facturacion.devolucionManual.fechaDevolucion"/>&nbsp;(*)
 					</td>
 					<td>
-						<siga:Fecha nombreCampo="dialogFechaDevolucion" valorInicial="" anchoTextField="8" />
+						<siga:Fecha nombreCampo="dialogFechaDevolucion" valorInicial="" />
 					</td>
 				</tr>		
 				
 				<tr>
-					<td class="labelText">
+					<td class="labelText" style="color:black">
 						<siga:Idioma key="facturacion.devolucionManual.aplicarComisiones"/>
 					</td>
 					<td>
@@ -236,7 +107,7 @@
 			<table>
 				<tr>
 					<td class="labelText"><siga:Idioma key="facturacion.devolucionManual.numeroFactura"/></td>
-					<td><html:text styleClass="box" property="numeroFactura" maxlength="12" /></td>
+					<td><html:text styleClass="box" property="numeroFactura" styleId="numeroFactura" maxlength="12" /></td>
 <%
 					if (esConsejo) {
 %>	
@@ -261,10 +132,10 @@
 
 				<tr>							
 					<td class="labelText" width="80px"><siga:Idioma key="facturacion.devolucionManual.numeroRecibo"/></td>
-					<td><html:text styleClass="box" property="numeroRecibo" maxlength="12" /></td>
+					<td><html:text styleClass="box" property="numeroRecibo" styleId="numeroRecibo" maxlength="12" /></td>
 				
 					<td class="labelText" width="80px"><siga:Idioma key="facturacion.devolucionManual.numeroRemesa"/></td>
-					<td><html:text styleClass="box" property="numeroRemesa" size='10' maxlength="12" /></td>
+					<td><html:text styleClass="box" property="numeroRemesa" styleId="numeroRemesa" size='10' maxlength="12" /></td>
 
 					<td class="labelText"  width="170px"><siga:Idioma key="facturacion.devolucionManual.fechaCargoDesde"/></td>
 					<td nowrap><siga:Fecha  nombreCampo="fechaCargoDesde" valorInicial="<%=form.getFechaCargoDesde()%>"/></td>
@@ -290,6 +161,156 @@
  	
 	<!-- BOTONES ACCION: PD Procesar devoluciones -->	 
 	<siga:ConjBotonesAccion botones="PD" />
+	
+	<script language="JavaScript">
+	
+		function buscarPaginador() {		
+			jQuery("#numeroNifTagBusquedaPersonas").val("<%=sIdentificacionTitular%>");
+			jQuery("#nombrePersona").val("<%=sNombreTitular%>");
+			document.DevolucionesManualesForm.modo.value="BuscarInicio";
+			document.DevolucionesManualesForm.target="resultado";	
+			document.DevolucionesManualesForm.submit();	
+		}
+		
+		function mensaje() {
+	<% 		
+			if (form.getHayMotivos().equals("0")) { 
+	%>
+				// NO HAY MOTIVOS
+				var m = '<siga:Idioma key="messages.fact.error.motivosNoCargados"/>';
+				alert(m);
+				return false;
+	<% 		
+			} 
+	%>	
+		}
+		
+		// Funcion asociada a boton buscarCliente
+		function refrescarLocal() {
+			buscar();				
+		}
+	
+		// Funcion asociada a boton buscar
+		function buscar(modo) {
+			sub();		
+			mensaje();
+			
+			jQuery("#nombreTitular").val(jQuery("#nombrePersona").val());
+			jQuery("#identificacionTitular").val(jQuery("#numeroNifTagBusquedaPersonas").val());
+			
+			// Rango Fechas (desde / hasta)
+			if (compararFecha (document.DevolucionesManualesForm.fechaCargoDesde, document.DevolucionesManualesForm.fechaCargoHasta) == 1) {
+				var texto = '<siga:Idioma key="messages.fechas.rangoFechas"/>';
+				alert(texto);
+				fin();
+				return false;
+			}
+			
+			var datosFiltro = "";
+			datosFiltro += jQuery("#numeroFactura").val();
+			datosFiltro += jQuery("#numeroNifTagBusquedaPersonas").val();
+			datosFiltro += jQuery("#nombrePersona").val();
+			if (jQuery("#destinatario").exists())
+				datosFiltro += jQuery("#destinatario").val();
+			datosFiltro += jQuery("#numeroRecibo").val();
+			datosFiltro += jQuery("#numeroRemesa").val();
+			datosFiltro += jQuery("#fechaCargoDesde").val();
+			datosFiltro += jQuery("#fechaCargoHasta").val();
+			
+			if (datosFiltro == "") {
+				var texto = '<siga:Idioma key="errors.filter.required"/>';
+				alert(texto);
+				fin();
+				return false;
+			}
+			
+			if (modo) {
+				document.DevolucionesManualesForm.modo.value = modo;
+				
+			} else {
+				var checkTodos = jQuery("#resultado").contents().find("#chkGeneral");
+				if (!checkTodos.exists() || !checkTodos[0].checked) {
+					document.DevolucionesManualesForm.seleccionarTodos.value = "";
+				}
+				document.DevolucionesManualesForm.modo.value = "BuscarInicio";
+			}
+			
+			document.DevolucionesManualesForm.recibos.value="";
+			document.DevolucionesManualesForm.target="resultado";	
+			document.DevolucionesManualesForm.submit();
+		}
+		
+		function seleccionarTodos(pagina) {
+			document.DevolucionesManualesForm.seleccionarTodos.value = pagina;
+			buscar('buscar');				
+		}	
+	
+		// Asociada al boton ProcesarDevoluciones
+		function accionProcesarDevoluciones() {		
+			sub();
+			
+			var numeroFacturasSeleccionadas =  jQuery("#resultado").contents().find("#registrosSeleccionadosPaginador").val();
+			
+			if (numeroFacturasSeleccionadas==null || numeroFacturasSeleccionadas == 0) {
+				var mensaje2 = '<siga:Idioma key="messages.fact.error.noRecibos"/>';
+				alert(mensaje2);
+				fin();
+				return false;
+				
+			} else if (numeroFacturasSeleccionadas>1000) {
+				alert ('<siga:Idioma key="facturacion.devolucionManual.error.devolverMilFacturas"/>');
+				fin();
+				return false;
+			}
+			
+			jQuery("#dialogFechaDevolucion").val("");
+	        jQuery("#dialogAplicarComisiones").prop('checked', false);
+			
+	        fin();
+			jQuery("#divDatosDevolucionManual").dialog({
+				height: 180,
+				width: 400,
+				modal: true,
+				resizable: false,
+				buttons: {
+					"<%=sDialogBotonGuardarCerrar%>": function() {
+						sub();
+						var dialogFechaDevolucion = jQuery("#dialogFechaDevolucion");
+						
+						if (!dialogFechaDevolucion.exists() || dialogFechaDevolucion.val()=="") {
+							var mensaje = "<siga:Idioma key='errors.required' arg0='facturacion.devolucionManual.fechaDevolucion'/>";
+							alert(mensaje);
+							fin();
+							return false;
+						}					
+						
+						var datosFacturasSeleccionadas =  jQuery("#resultado").contents().find("#registrosSeleccionados").val();
+						document.DevolucionesManualesForm.recibos.value = datosFacturasSeleccionadas;
+						document.DevolucionesManualesForm.fechaDevolucion.value = dialogFechaDevolucion.val();
+						document.DevolucionesManualesForm.aplicarComisiones.value = jQuery("#dialogAplicarComisiones").val();					
+						
+						document.DevolucionesManualesForm.target = "submitArea";
+						document.DevolucionesManualesForm.modo.value = "insertar";																				
+						document.DevolucionesManualesForm.submit();
+						
+						window.setTimeout("fin()",5000,"Javascript");
+					},
+					"<%=sDialogBotonCerrar%>": function() {
+						cerrarDialog();
+					}
+				}
+			});
+			jQuery(".ui-widget-overlay").css("opacity","0");	
+		}	
+		
+		function cerrarDialog(){
+			if (jQuery("#divDatosDevolucionManual").hasClass('ui-dialog-content')) {
+			 jQuery("#divDatosDevolucionManual").dialog("close"); 
+			}
+		}
+	
+	</script>
+	
 			
 	<iframe name="submitArea" src="<html:rewrite page='/html/jsp/general/blank.jsp'/>" style="display: none"></iframe>
 </body>

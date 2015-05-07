@@ -96,9 +96,10 @@
 		if (jQuery(idFactura).exists()) {
 			datos.value = jQuery(idFactura).val();
 		}
-	   	
+					   
 	   	var auxTarget = document.DevolucionesManualesForm.target;
-	   	document.DevolucionesManualesForm.target = "mainWorkArea";
+	   	document.DevolucionesManualesForm.target = "mainWorkArea"
+	   	document.DevolucionesManualesForm.recibos.value = jQuery("#registrosSeleccionados").val();
 	   	document.DevolucionesManualesForm.modo.value = "ver";
 	   	document.DevolucionesManualesForm.submit();
 	   	document.DevolucionesManualesForm.target = auxTarget;
@@ -212,6 +213,7 @@
 <body onload="cargarChecks();checkTodos();">
 	<html:form action="/FAC_DevolucionesManual.do?noReset=true" method="POST" style="display:none">
 		<html:hidden styleId="modo"  property="modo" value=""/>
+		<html:hidden property="recibos"/>
 		<html:hidden styleId="registrosSeleccionados"  property="registrosSeleccionados" />
 		<html:hidden styleId="datosPaginador"  property="datosPaginador" />
 		<html:hidden styleId="seleccionarTodos"  property="seleccionarTodos" />
@@ -221,10 +223,10 @@
 	<siga:Table 
 	   name="tablaResultados"
 	   border="1"
-	   columnNames="<input type='checkbox' name='checkGeneral'  id='checkGeneral' onclick='cargarChecksTodos(this)'/>,
-	   						facturacion.devolucionManual.numeroRemesa,
-	   						facturacion.devolucionManual.numeroRecibo,
+	   columnNames="<input type='checkbox' name='checkGeneral'  id='checkGeneral' onclick='cargarChecksTodos(this)'/>,	   						
 	   						facturacion.devolucionManual.numeroFactura,
+	   						facturacion.devolucionManual.numeroRecibo,	   						
+	   						facturacion.devolucionManual.numeroRemesa,
 	   						facturacion.devolucionManual.titular,
 	   						facturacion.devolucionManual.importe,
 	   						facturacion.devolucionManual.motivos,"
@@ -285,12 +287,10 @@
 <%
 							}
 %>						
-						</td>
-						<td>
-							<%=UtilidadesString.mostrarDatoJSP(idDisqueteCargos)%>
-						</td>
-						<td><%=UtilidadesString.mostrarDatoJSP(idRecibo)%></td>
+						</td>						
 						<td><%=UtilidadesString.mostrarDatoJSP(numFactura)%></td>
+						<td><%=UtilidadesString.mostrarDatoJSP(idRecibo)%></td>
+						<td><%=UtilidadesString.mostrarDatoJSP(idDisqueteCargos)%></td>						
 						<td><%=UtilidadesString.mostrarDatoJSP(nombreFinal)%></td>
 						<td align="right"><%=UtilidadesString.mostrarDatoJSP(UtilidadesString.formatoImporte(importe))%>&nbsp;&euro;</td>
 						<td>
@@ -299,7 +299,7 @@
 							<input type="hidden" id="devolucionManual_<%=(i+1)%>_3" value="<%=idFactura%>">
 							<input type="hidden" id="devolucionManual_<%=(i+1)%>_4" value="<%=idRecibo%>">
 							
-							<select id="devolucionManual_<%=(i+1)%>_5" styleClass="boxCombo" onchange="cambiarMotivo(<%=(i+1)%>)" style="width:250px; <%if (!isChecked) {%>display:none<%}%>"> 
+							<select id="devolucionManual_<%=(i+1)%>_5" class="boxCombo" onchange="cambiarMotivo(<%=(i+1)%>)" style="width:250px; <%if (!isChecked) {%>display:none<%}%>"> 
 <%
 								for (int j=0; j<vMotivos.size(); j++) {
 									Hashtable hMotivo = (Hashtable) vMotivos.get(j);
