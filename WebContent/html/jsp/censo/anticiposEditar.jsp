@@ -89,7 +89,13 @@
 		// Asociada al boton GuardarCerrar
 		function accionGuardarCerrar() {
 			sub();		
-			document.forms[0].importeAnticipado.value=document.forms[0].importeAnticipado.value.replace(/,/,".");
+<% 
+			if (modo.equals("insertar"))  { 
+%>					
+				document.forms[0].importeAnticipado.value=document.forms[0].importeAnticipado.value.replace(/,/,".");
+<%
+			}
+%>
 			if (validateAnticiposClienteForm(document.AnticiposClienteForm)){
 				document.forms[0].modo.value="<%=modo%>";
 				document.forms[0].submit();					
@@ -193,7 +199,10 @@
 <% 
 								} else { 
 %>								
-									<td align="right"><%=UtilidadesString.formatoImporte(importeAnticipado)%>&nbsp;&euro;</td>
+									<td align="right">
+										<html:hidden name="AnticiposClienteForm" property="importeAnticipado" value="<%=importeAnticipado%>"/>
+										<%=UtilidadesString.formatoImporte(importeAnticipado)%>&nbsp;&euro;
+									</td>
 <%
 								}
 
