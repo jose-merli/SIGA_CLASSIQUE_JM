@@ -111,71 +111,6 @@
 			}
 		}		
 		
-		function accionProcesar() {
-			if(document.forms[0].fichero.value != "") {
-				sub();
-				var mensaje = "<siga:Idioma key='censo.mantenimientoGruposFijos.confirmarCarga'/> ";
-				if (confirm(mensaje)){
-					document.forms[0].modo.value="procesarFichero";	
-					document.forms[0].submit();	
-				} else{
-					fin();
-				}	
-				
-			}else{
-				var mensaje = "<siga:Idioma key='censo.mantenimientoGruposFijos.seleccionarFichero'/>";
-				alert(mensaje);
-			}
-		}
-		
-		function accionDescargarPlant(){
-			sub();
-			document.MantenimientoGruposFijosForm.modo.value = "generarPlantilla";
-			document.MantenimientoGruposFijosForm.submit();
-			fin();
-		}
-		
-		function download(fila)
-		{
-			var datos;
-			datos = document.getElementById('tablaDatosDinamicosD');
-			datos.value = ""; 
-			var i, j;
-			var tabla;
-			tabla = document.getElementById('tablaDatos');
-  			var aux1 = 'oculto' + fila + '_1';
-   			var oculto1 = document.getElementById(aux1);
-  			var aux2 = 'oculto' + fila + '_2';
-   			var oculto2 = document.getElementById(aux2);
-   			sub();
-   			document.MantenimientoGruposFijosForm.directorio.value = oculto1.value;
-   			document.MantenimientoGruposFijosForm.nombrefichero.value = oculto2.value;
-   			document.MantenimientoGruposFijosForm.modo.value = "download";
-   			document.MantenimientoGruposFijosForm.submit();
-			fin();
-			
-		}
-		
-		function descargaLog(fila)
-		{
-			var datos;
-			datos = document.getElementById('tablaDatosDinamicosD');
-			datos.value = ""; 
-			var i, j;
-			var tabla;
-			tabla = document.getElementById('tablaDatos');
-  			var aux1 = 'oculto' + fila + '_1';
-   			var oculto1 = document.getElementById(aux1);
-  			var aux2 = 'oculto' + fila + '_3';
-   			var oculto2 = document.getElementById(aux2);
-   			sub();
-   			document.forms[0].directorio.value = oculto1.value;
-   			document.forms[0].nombrefichero.value = oculto2.value;
-   			document.forms[0].modo.value = "download";
-   			document.forms[0].submit();
-   			fin();
-		}
-		
 	</script>	
 </head>
 
@@ -209,71 +144,13 @@
 							<%}%>
 						</table>
 					</siga:ConjCampos>
-						
-					<%if (!modo.equalsIgnoreCase("NUEVO")&&(!modo.equalsIgnoreCase("VER"))) { %>
-						<siga:ConjCampos leyenda="censo.gestion.grupos.literal.importar">
-							<table class="tablaCampos" border="0" width="100%">
-								<tr>
-									<td class="labelText">
-										<siga:Idioma key="pys.cargaProductos.literal.fichero"/>&nbsp;(*)
-									</td>
-									<td>
-										<html:file property="fichero" styleClass="boxCombo" style="width:400px;" />
-									</td>
-									<td class="tdBotones">
-										<input  type="button" alt="<siga:Idioma key="general.boton.procesaFichero" />"  onclick="return accionProcesar();"
-											class="button" name="idButton" value="<siga:Idioma key="general.boton.procesaFichero" />"></input>
-									</td>
-									<td class="tdBotones">
-										<input type="button" alt='<siga:Idioma key="general.boton.descargaFicheroModelo" />'  onClick="accionDescargarPlant()" class="button" name="idButtonDescPlant" value="<siga:Idioma key="general.boton.descargaFicheroModelo" />"/>
-									</td>
-								</tr>							
-							</table>
-						</siga:ConjCampos>
-					<%}%>
 				</td>
 			</tr>
 		</table>
-		
-		<c:if test="${ficherosRel.size()>0}">
-			<siga:ConjCampos leyenda="censo.datosGruposFijos.literal.ficheros">
-				<div align="center" >
-					<table width="100%"  border="0" ><tr><td>
-			    		<siga:Table 
-							name="tablaDatos"
-							border="1"
-							columnNames="administracion.informes.literal.archivo.fecha,administracion.informes.literal.archivo.usuario,administracion.informes.literal.archivo.nombre,"
-							columnSizes="15,15,30,10"
-							fixedHeight="610">
-							<c:forEach items="${ficherosRel}" var="ficheros" varStatus="status">								
-								<%  FilaExtElement[] elems=new FilaExtElement[2];
-									elems[0]=new FilaExtElement("download","download",SIGAConstants.ACCESS_READ); 		
-									elems[1]=new FilaExtElement("descargaLog","descargaLog",SIGAConstants.ACCESS_READ); %>		
-								<siga:FilaConIconos fila="${status.count}"			    
-						  			pintarEspacio="no"
-						  			visibleBorrado="N"
-						  			visibleEdicion="N"
-						  			visibleConsulta="N"
-						  			clase="listaNonEdit" elementos="<%=elems%>" botones="">
-									<td><input type="hidden" name="oculto${status.count}_1" value="${ficheros.directorio}">
-										<input type="hidden" name="oculto${status.count}_2" value="${ficheros.nombrefichero}">
-										<input type="hidden" name="oculto${status.count}_3" value="${ficheros.nombreficherolog}">
-									<fmt:formatDate value="${ficheros.fechamodificacion}" var="fechaFormat" type="date" pattern="dd/MM/yyyy HH:mm:ss"/><c:out value="${fechaFormat}"></c:out></td>
-									<td><c:out value="${ficheros.nombreUsuario}"></c:out></td>
-									<td><c:out value="${ficheros.nombrefichero}"></c:out></td>
-								</siga:FilaConIconos>	
-						   </c:forEach>
-					  	 </siga:Table>
-					 </td></tr></table>
-				</div>
-			</siga:ConjCampos>
-		</c:if>
-		</html:form>
-	<!-- FIN: CAMPOS -->
-
+	</html:form>
+	<!-- FIN: CAMPOS -->		
+	
 	<siga:ConjBotonesAccion botones="<%=botones%>" modo="<%=accion%>" clase="botonesDetalle" />
-
-
 
 <!-- FIN ******* CAPA DE PRESENTACION ****** -->
 			
