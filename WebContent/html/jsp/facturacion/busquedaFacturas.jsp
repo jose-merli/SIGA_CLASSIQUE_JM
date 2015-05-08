@@ -149,8 +149,33 @@
 					alert(mensaje);
 					fin();
 					return false;
-					
 				}
+				
+				var datosFiltro = "";
+				datosFiltro += jQuery("#buscarNumeroFactura").val();
+				datosFiltro += jQuery("#buscarFechaDesde").val();
+				datosFiltro += jQuery("#buscarFechaHasta").val();
+				
+				datosFiltro += jQuery("#buscarIdSerieFacturacion").val();
+				datosFiltro += jQuery("#buscarFechaGeneracion").val();
+				datosFiltro += jQuery("#buscarIdEstado").val();
+				
+				datosFiltro += jQuery("#buscarFormaPago").val();
+				datosFiltro += jQuery("#buscarConfirmada").val();
+				datosFiltro += jQuery("#buscarContabilizada").val();
+				
+				datosFiltro += jQuery("#numeroNifTagBusquedaPersonas").val();
+				datosFiltro += jQuery("#nombrePersona").val();								
+				if (jQuery("#deudor").exists())
+					datosFiltro += jQuery("#deudor").val();
+				
+				if (datosFiltro == "") {
+					var texto = '<siga:Idioma key="errors.filter.required"/>';
+					alert(texto);
+					fin();
+					return false;
+				}				
+				
 				document.BusquedaFacturaForm.modo.value = "buscarInit";
 				document.BusquedaFacturaForm.submit();
 			}else{
@@ -268,7 +293,7 @@
 						<table class="tablaCampos" align="center"  cellspacing=0 cellpadding=0>
 							<tr>				
 								<td width="140px" class="labelText"><siga:Idioma key="facturacion.buscarFactura.literal.NumeroFactura"/></td>
-								<td width="230px"><html:text styleClass="box" property="buscarNumeroFactura" maxlength="20"/></td>
+								<td width="230px"><html:text styleClass="box" property="buscarNumeroFactura" styleId="buscarNumeroFactura" maxlength="20"/></td>
 
 								<td width="140px" class="labelText"><siga:Idioma key="facturacion.buscarFactura.literal.FechaDesde"/></td>
 								<td width="140px"><siga:Fecha nombreCampo="buscarFechaDesde" valorInicial="<%=form.getBuscarFechaDesde()%>"/></td>
@@ -291,7 +316,7 @@
 							<tr>
 								<td class="labelText"><siga:Idioma key="facturacion.buscarFactura.literal.FormaPago"/></td>
 								<td>
-									<html:select name="BusquedaFacturaForm" property="buscarFormaPago" styleClass="boxCombo">
+									<html:select name="BusquedaFacturaForm" property="buscarFormaPago" styleId="buscarFormaPago" styleClass="boxCombo">
 										<html:option value=""></html:option>
 										<html:option value="<%=String.valueOf(ClsConstants.TIPO_CARGO_BANCO)%>"><siga:Idioma key="facturacion.buscarFactura.literal.Banco"/></html:option>
 										<html:option value="<%=String.valueOf(ClsConstants.TIPO_CARGO_CAJA)%>"><siga:Idioma key="facturacion.buscarFactura.literal.Caja"/></html:option>
@@ -300,7 +325,7 @@
 
 								<td class="labelText"><siga:Idioma key="facturacion.buscarFactura.literal.Confirmada"/></td>
 								<td>
-									<html:select name="BusquedaFacturaForm" property="buscarConfirmada" styleClass="boxCombo">
+									<html:select name="BusquedaFacturaForm" property="buscarConfirmada" styleId="buscarConfirmada" styleClass="boxCombo">
 										<html:option value=""></html:option>
 										<html:option value="<%=String.valueOf(ClsConstants.DB_TRUE)%>"><siga:Idioma key="facturacion.buscarFactura.literal.Sí"/></html:option>
 										<html:option value="<%=String.valueOf(ClsConstants.DB_FALSE)%>"><siga:Idioma key="facturacion.buscarFactura.literal.No"/></html:option>
@@ -309,7 +334,7 @@
 
 								<td class="labelText"><siga:Idioma key="facturacion.buscarFactura.literal.Contabilizada"/></td>
 								<td>
-									<html:select name="BusquedaFacturaForm" property="buscarContabilizada" styleClass="boxCombo">
+									<html:select name="BusquedaFacturaForm" property="buscarContabilizada" styleId="buscarContabilizada" styleClass="boxCombo">
 										<html:option value=""></html:option>
 										<html:option value="<%=String.valueOf(ClsConstants.DB_TRUE)%>"><siga:Idioma key="facturacion.buscarFactura.literal.Sí"/></html:option>
 										<html:option value="<%=String.valueOf(ClsConstants.DB_FALSE)%>"><siga:Idioma key="facturacion.buscarFactura.literal.No"/></html:option>
