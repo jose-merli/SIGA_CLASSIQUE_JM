@@ -1596,7 +1596,7 @@ public class CerSolicitudCertificadosAdm extends MasterBeanAdministrador {
 				hDatos.put("DESCRIPCION_ESTADOCERTIFICADO", estadoCertificado);
 				
 				String sCampo = "TIPO_ICONO";  // 0:SinIcono; 1:Descarga; 2:FacturacionRapida
-				if (sIdPeticion==null) {
+				if (sIdPeticion==null || sIdPeticion.equals("")) {
 					hDatos.put(sCampo, "0"); // Por defecto => aparece sin icono (0)
 				} else {
 					hDatos = this.getDatosFacturaAsociada(hDatos);
