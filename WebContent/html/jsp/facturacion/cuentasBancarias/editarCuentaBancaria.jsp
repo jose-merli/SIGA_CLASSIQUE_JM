@@ -407,14 +407,14 @@
 			
 			<tr>
 				<td colspan="6">
-					<siga:ConjCampos leyenda="facturacion.cuentasBancarias.configuracionFicherosAdeudo" desplegable="true" oculto="true">
+					<siga:ConjCampos leyenda="facturacion.uso.cuenta" desplegable="true">
 						<table border="0">
 							<tr <%if (tiposFicherosAdeudo==null || tiposFicherosAdeudo.equals("0")) {%> style="display:none;" <% } %>>
 								<td class="labelText">
 									<siga:Idioma key="facturacion.cuentasBancarias.configuracionFicherosEsquema.titulo"/>&nbsp;(*)
 								</td>
-								<td>
-									<html:select name="CuentasBancariasForm" property="configuracionFicherosEsquema" styleId="configuracionFicherosEsquema">
+								<td colspan="3">
+									<html:select name="CuentasBancariasForm" property="configuracionFicherosEsquema" styleId="configuracionFicherosEsquema" styleClass="boxCombo">
 										<html:option value="0"><siga:Idioma key="facturacion.cuentasBancarias.configuracionFicherosEsquema.opcion1"/></html:option>
 										<html:option value="1"><siga:Idioma key="facturacion.cuentasBancarias.configuracionFicherosEsquema.opcion2"/></html:option>
 										<html:option value="2"><siga:Idioma key="facturacion.cuentasBancarias.configuracionFicherosEsquema.opcion3"/></html:option>
@@ -426,8 +426,8 @@
 								<td class="labelText">
 									<siga:Idioma key="facturacion.cuentasBancarias.configuracionFicherosSecuencia.titulo"/>&nbsp;(*)
 								</td>
-								<td>
-									<html:select name="CuentasBancariasForm" property="configuracionFicherosSecuencia" styleId="configuracionFicherosSecuencia">
+								<td colspan="3">
+									<html:select name="CuentasBancariasForm" property="configuracionFicherosSecuencia" styleId="configuracionFicherosSecuencia" styleClass="boxCombo">
 										<html:option value="0"><siga:Idioma key="facturacion.cuentasBancarias.configuracionFicherosSecuencia.opcion1"/></html:option>
 										<!-- Lo ha pedido Pamplona R1412_0072 -->
 										<html:option value="1"><siga:Idioma key="facturacion.cuentasBancarias.configuracionFicherosSecuencia.opcion2"/></html:option>
@@ -442,47 +442,34 @@
 									<siga:Idioma key="facturacion.cuentasBancarias.configuracionLugarEsquemaSecuencia.titulo"/>&nbsp;(*)
 									<siga:ToolTip id='ayudaLugarEsquemaSecuencia' imagen='/SIGA/html/imagenes/botonAyuda.gif' texto='<%=UtilidadesString.mostrarDatoJSP(UtilidadesString.getMensajeIdioma(usuario,"facturacion.cuentasBancarias.configuracionLugarEsquemaSecuencia.ayuda"))%>' />
 								</td>
-								<td>
-									<html:select name="CuentasBancariasForm" property="configuracionLugarEsquemaSecuencia" styleId="configuracionLugarEsquemaSecuencia">
+								<td colspan="3">
+									<html:select name="CuentasBancariasForm" property="configuracionLugarEsquemaSecuencia" styleId="configuracionLugarEsquemaSecuencia" styleClass="boxCombo">
 										<html:option value="0"><siga:Idioma key="facturacion.cuentasBancarias.configuracionLugarEsquemaSecuencia.opcionBloqueAcreedor"/></html:option>
 										<html:option value="1"><siga:Idioma key="facturacion.cuentasBancarias.configuracionLugarEsquemaSecuencia.opcionRegistroIndividual"/></html:option>
 									</html:select>
 								</td>
 							</tr>		
-						</table>
-					</siga:ConjCampos>
-				</td>
-			</tr>			
-			
-			<tr>
-				<td colspan="6">
-					<siga:ConjCampos leyenda="facturacion.uso.cuenta">
-						<table>
+
 							<tr>
-								<td class="labelText">
-									<siga:Idioma key="facturacion.cuentasBancarias.uso.sjcs"/>
-								</td>								
-								<td> 
-									<html:checkbox name="CuentasBancariasForm" styleId="sjcs" property="sjcs" value="1" onclick="habilitarDeshabCombo()"></html:checkbox>
-								</td>
-								<td class="labelText" nowrap>
-								<siga:Idioma key="facturacion.sufijos.literal.sufijo"/>
-								</td>
+								<td class="labelText"><siga:Idioma key="facturacion.cuentasBancarias.uso.sjcs"/></td>								
+								<td><html:checkbox name="CuentasBancariasForm" styleId="sjcs" property="sjcs" value="1" onclick="habilitarDeshabCombo()"/></td>
+								
+								<td class="labelText" nowrap><siga:Idioma key="facturacion.sufijos.literal.sufijo"/></td>
 								<td>
-								<html:select styleId="comboSufijossjcs" property="idSufijosjcs" value="${CuentasBancariasForm.idSufijosjcs}" styleClass="boxCombo" style="width:200px;">
-									<html:option value=""><c:out value=""/></html:option>
-									<c:forEach items="${listaSufijos}" var="sufijoCmb">
-										<html:option value="${sufijoCmb.idSufijo}">
-										<c:if	test="${sufijoCmb.sufijo.trim().length()>0}">
-											<c:out value="${sufijoCmb.sufijo} ${sufijoCmb.concepto}"/>
-										</c:if>
-										<c:if	test="${sufijoCmb.sufijo.trim().length()==0}">
-											&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<c:out value="${sufijoCmb.concepto}"/>
-										</c:if>
-										</html:option>
-									</c:forEach>
-								</html:select>	
-							</td>
+									<html:select styleId="comboSufijossjcs" property="idSufijosjcs" value="${CuentasBancariasForm.idSufijosjcs}" styleClass="boxCombo" style="width:200px;">
+										<html:option value=""><c:out value=""/></html:option>
+										<c:forEach items="${listaSufijos}" var="sufijoCmb">
+											<html:option value="${sufijoCmb.idSufijo}">
+												<c:if test="${sufijoCmb.sufijo.trim().length()>0}">
+													<c:out value="${sufijoCmb.sufijo} ${sufijoCmb.concepto}"/>
+												</c:if>
+												<c:if test="${sufijoCmb.sufijo.trim().length()==0}">
+													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<c:out value="${sufijoCmb.concepto}"/>
+												</c:if>
+											</html:option>
+										</c:forEach>
+									</html:select>	
+								</td>
 							</tr> 		
 						</table>
 					</siga:ConjCampos>
