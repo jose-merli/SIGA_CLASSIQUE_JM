@@ -130,7 +130,7 @@
 					
 					<td class="labelText"><siga:Idioma key="pys.gestionSolicitudes.facturada.literal"/></td>				
                  	<td>
-                 		<html:select name="GestionSolicitudesForm" property="facturada" styleId="facturada">
+                 		<html:select name="GestionSolicitudesForm" property="facturada" styleId="facturada" styleClass="boxCombo">
                  			<html:option value=""></html:option>                 			               		
                  			<html:option value="0"><siga:Idioma key="pys.gestionSolicitudes.facturada.opcionSinFacturar"/></html:option>
                  			<html:option value="1"><siga:Idioma key="pys.gestionSolicitudes.facturada.opcionParcial"/></html:option>

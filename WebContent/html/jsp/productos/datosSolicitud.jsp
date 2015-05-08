@@ -551,8 +551,8 @@
 					<td><b><siga:Idioma key="pys.gestionSolicitudes.literal.total"/></b></td>
 					<td>&nbsp;</td>
 					<td>&nbsp;</td>
-					<td colspan="2" align="right"><input type="text" name="precioTotal" value="<%=UtilidadesString.formatoImporte(precioTotal)%>&nbsp;&euro;" style="background-color:transparent; font-weight:bold" class="boxConsultaNumber" readOnly="true" size="13"></td>
-					<td align="right"><input type="text" name="ivaTotal" value="<%=UtilidadesString.formatoImporte(ivaTotal)%>&nbsp;&euro;" style="background-color:transparent; font-weight:bold" class="boxConsultaNumber" readOnly="true" size="7"></td>
+					<td colspan="2" align="right"><input type="text" name="precioTotal" value="<%=UtilidadesString.formatoImporte(precioTotal)%>&nbsp;&euro;" style="background-color:transparent; font-weight:bold; color:black" class="boxConsultaNumber" readOnly="true" size="13"></td>
+					<td align="right"><input type="text" name="ivaTotal" value="<%=UtilidadesString.formatoImporte(ivaTotal)%>&nbsp;&euro;" style="background-color:transparent; font-weight:bold; color:black" class="boxConsultaNumber" readOnly="true" size="7"></td>
 					<td>&nbsp;</td>
 					<td>&nbsp;</td>
 					<td>&nbsp;</td>

@@ -170,8 +170,8 @@
 					<b><siga:Idioma key="facturacion.lineasFactura.literal.Total"/></b>
 					<siga:ToolTip id='ayudaTotalServicios1' imagen='/SIGA/html/imagenes/botonAyuda.gif' texto='<%=UtilidadesString.mostrarDatoJSP(UtilidadesString.getMensajeIdioma(user,"messages.servicios.precioServicios"))%>' />
 				</td>
-				<td colspan="2" align="right"><input type="text" name="precioTotalTarjeta" value="<%=UtilidadesString.formatoImporte(varPrecioTotalTarjeta)%> &euro;" style="background-color:transparent; font-weight:bold" class="boxConsultaNumber" readOnly="true" size="13"></td>
-				<td align="right"><input type="text" name="ivaTotalTarjeta" value="<%=UtilidadesString.formatoImporte(varIvaTotalTarjeta)%> &euro;" style="background-color:transparent; font-weight:bold" class="boxConsultaNumber" readOnly="true" size="9"></td>
+				<td colspan="2" align="right"><input type="text" name="precioTotalTarjeta" value="<%=UtilidadesString.formatoImporte(varPrecioTotalTarjeta)%> &euro;" style="background-color:transparent; font-weight:bold; color:black" class="boxConsultaNumber" readOnly="true" size="13"></td>
+				<td align="right"><input type="text" name="ivaTotalTarjeta" value="<%=UtilidadesString.formatoImporte(varIvaTotalTarjeta)%> &euro;" style="background-color:transparent; font-weight:bold; color:black" class="boxConsultaNumber" readOnly="true" size="9"></td>
 			</tr>				
 <%			
 		} else {
@@ -276,8 +276,8 @@
 					<b><siga:Idioma key="facturacion.lineasFactura.literal.Total"/></b>
 					<siga:ToolTip id='ayudaTotalServicios2' imagen='/SIGA/html/imagenes/botonAyuda.gif' texto='<%=UtilidadesString.mostrarDatoJSP(UtilidadesString.getMensajeIdioma(user,"messages.servicios.precioServicios"))%>' />
 				</td>
-				<td colspan="2" align="right"><input type="text" name="precioTotalTarjeta" value="<%=UtilidadesString.formatoImporte(varPrecioTotalOtro)%> &euro;" style="background-color:transparent; font-weight:bold" class="boxConsultaNumber" readOnly="true" size="13"></td>
-				<td align="right"><input type="text" name="ivaTotalTarjeta" value="<%=UtilidadesString.formatoImporte(varIvaTotalOtro)%> &euro;" style="background-color:transparent; font-weight:bold" class="boxConsultaNumber" readOnly="true" size="9"></td>
+				<td colspan="2" align="right"><input type="text" name="precioTotalTarjeta" value="<%=UtilidadesString.formatoImporte(varPrecioTotalOtro)%> &euro;" style="background-color:transparent; font-weight:bold; color:black" class="boxConsultaNumber" readOnly="true" size="13"></td>
+				<td align="right"><input type="text" name="ivaTotalTarjeta" value="<%=UtilidadesString.formatoImporte(varIvaTotalOtro)%> &euro;" style="background-color:transparent; font-weight:bold; color:black" class="boxConsultaNumber" readOnly="true" size="9"></td>
 			</tr>				
 <%			
 		} else {

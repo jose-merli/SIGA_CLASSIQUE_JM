@@ -826,11 +826,11 @@
 %>
 						</td>
 						
-		  				<td align="center">
+		  				<td align="right">
 							<input type='text' name='cantidad<%=String.valueOf(fila)%>' value="<%=sCantidad%>" maxlength="5" class="box" styleClass="box" style="text-align:right;" size="3" <%=desactivado%> onBlur="validarCantidadOnBlur(this)">
 		  				</td>
 		  				
-		  				<td align="center">
+		  				<td align="right">
 							<% // Producto
 							   if (a.getClaseArticulo() == Articulo.CLASE_PRODUCTO) {%><% if (bModPrecio) {%>
 									<input type='text' name='precio<%=String.valueOf(fila)%>' value="<%=UtilidadesNumero.formatoCampo(sPrecio)%>" class="boxNumber" size="6" onBlur="validarPrecioOnBlur(this)">
@@ -855,7 +855,7 @@
 						}
 %>
 		  				
-		  				<td align="center">
+		  				<td align="right">
 		  					<input type='text' name='iva<%=String.valueOf(fila)%>' value="<%=UtilidadesNumero.formatoCampo(sIva)%>" class=listaNonEdit style="text-align:right;" readOnly=true style="border:none; background-color:transparent" size="2">% 
 		  				</td>
 		  				
@@ -903,7 +903,7 @@
 					</td>
 					<td>&nbsp;</td>
 					<td>&nbsp;</td>
-					<td colspan="2" align="right"><input type="text" name="precioTotal" value="<%=UtilidadesString.formatoImporte(varPrecioTotal)%>" style="background-color:transparent; font-weight:bold" class="boxConsultaNumber" readOnly="true" size="13"><b>&nbsp;&euro;</b></td>
+					<td colspan="2" align="right"><input type="text" name="precioTotal" value="<%=UtilidadesString.formatoImporte(varPrecioTotal)%>" style="background-color:transparent; font-weight:bold; color:black" class="boxConsultaNumber" readOnly="true" size="13"><b>&nbsp;&euro;</b></td>
 <%
 					if (!tieneBotones) { // NO ES CERTIFICADO
 %>					
@@ -911,7 +911,7 @@
 <%	
 					}
 %>
-					<td align="right"><input type="text" name="ivaTotal" value="<%=UtilidadesString.formatoImporte(varIvaTotal)%>" style="background-color:transparent; font-weight:bold" class="boxConsultaNumber" readOnly="true" size="6"><b>&nbsp;&euro;</b></td>
+					<td align="right"><input type="text" name="ivaTotal" value="<%=UtilidadesString.formatoImporte(varIvaTotal)%>" style="background-color:transparent; font-weight:bold; color:black" class="boxConsultaNumber" readOnly="true" size="6"><b>&nbsp;&euro;</b></td>
 <%					
 					if (tdFechaEfectiva) {
 %>					

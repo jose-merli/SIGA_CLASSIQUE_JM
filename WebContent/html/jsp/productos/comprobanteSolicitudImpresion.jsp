@@ -224,8 +224,8 @@
 				<td><b><siga:Idioma key="facturacion.lineasFactura.literal.Total"/></b></td>
 				<td>&nbsp;</td>
 				<td>&nbsp;</td>
-				<td colspan="2" align="right"><input type="text" name="precioTotalTarjeta" value="<%=UtilidadesString.formatoImporte(varPrecioTotal)%> &euro;" style="background-color:transparent; font-weight:bold" class="boxConsultaNumber" readOnly="true" size="13"></td>
-				<td align="right"><input type="text" name="ivaTotalTarjeta" value="<%=UtilidadesString.formatoImporte(varIvaTotal)%> &euro;" style="background-color:transparent; font-weight:bold" class="boxConsultaNumber" readOnly="true" size="7"></td>
+				<td colspan="2" align="right"><input type="text" name="precioTotalTarjeta" value="<%=UtilidadesString.formatoImporte(varPrecioTotal)%> &euro;" style="background-color:transparent; font-weight:bold; color:black" class="boxConsultaNumber" readOnly="true" size="13"></td>
+				<td align="right"><input type="text" name="ivaTotalTarjeta" value="<%=UtilidadesString.formatoImporte(varIvaTotal)%> &euro;" style="background-color:transparent; font-weight:bold; color:black" class="boxConsultaNumber" readOnly="true" size="7"></td>
 				<td>&nbsp;</td>
 				<td>&nbsp;</td>
 			</tr>	
