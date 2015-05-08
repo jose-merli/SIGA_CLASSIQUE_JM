@@ -294,7 +294,7 @@ public class DevolucionesManualesAction extends MasterAction{
 			DevolucionesManualesForm form = (DevolucionesManualesForm) formulario;
 			boolean isSeleccionarTodos = form.getSeleccionarTodos()!=null && !form.getSeleccionarTodos().equals("");			
 			
-			ArrayList clavesRegSeleccinados = new ArrayList();
+			ArrayList clavesRegSeleccionados = new ArrayList();
 			String seleccionados = request.getParameter("Seleccion"); // idDisqueteCargos||idFacturaIncluidaEnDisquete||idFactura||idRecibo||idMotivo, ...
 			
 			if (seleccionados==null || seleccionados.equals("")) {
@@ -305,10 +305,10 @@ public class DevolucionesManualesAction extends MasterAction{
 			form.setRegistrosSeleccionados(new ArrayList());
 			
 			if (seleccionados!=null && !seleccionados.equals("")) {
-				ArrayList alRegistros = actualizarSelecionados(this.clavesBusqueda, seleccionados, clavesRegSeleccinados);
+				ArrayList alRegistros = actualizarSelecionados(this.clavesBusqueda, seleccionados, clavesRegSeleccionados);
 				if (alRegistros != null) {
-					clavesRegSeleccinados = alRegistros;
-					form.setRegistrosSeleccionados(clavesRegSeleccinados);
+					clavesRegSeleccionados = alRegistros;
+					form.setRegistrosSeleccionados(clavesRegSeleccionados);
 				}
 			}			
 			
@@ -359,9 +359,9 @@ public class DevolucionesManualesAction extends MasterAction{
 				
 				if (recibos!=null){ 
 					if(isSeleccionarTodos){
-						clavesRegSeleccinados = new ArrayList((Collection) admFacturaIncluidaEnDisquete.selectGenericoNLS(recibos.getQueryInicio())); // Query completa
-						aniadeClavesBusqueda(this.clavesBusqueda,clavesRegSeleccinados);						
-						form.setRegistrosSeleccionados(clavesRegSeleccinados);
+						clavesRegSeleccionados = new ArrayList((Collection) admFacturaIncluidaEnDisquete.selectGenericoNLS(recibos.getQueryInicio())); // Query completa
+						aniadeClavesBusqueda(this.clavesBusqueda,clavesRegSeleccionados);						
+						form.setRegistrosSeleccionados(clavesRegSeleccionados);
 						if (form.getSeleccionarTodos()!=null && !form.getSeleccionarTodos().equals("")) {
 							datos = recibos.obtenerPagina(Integer.parseInt(form.getSeleccionarTodos()));
 						} else {
@@ -450,5 +450,4 @@ public class DevolucionesManualesAction extends MasterAction{
 		
 		return "descargaFichero";	
 	}
-	
 }

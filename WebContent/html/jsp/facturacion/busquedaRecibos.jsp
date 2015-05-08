@@ -167,7 +167,7 @@
 		function buscarPaginador() {		
 			jQuery("#numeroNifTagBusquedaPersonas").val("<%=sIdentificacionTitular%>");
 			jQuery("#nombrePersona").val("<%=sNombreTitular%>");
-			document.DevolucionesManualesForm.modo.value="BuscarInicio";
+			document.DevolucionesManualesForm.modo.value="buscar";
 			document.DevolucionesManualesForm.target="resultado";	
 			document.DevolucionesManualesForm.submit();	
 		}
@@ -308,9 +308,7 @@
 			 jQuery("#divDatosDevolucionManual").dialog("close"); 
 			}
 		}
-	
 	</script>
-	
 			
 	<iframe name="submitArea" src="<html:rewrite page='/html/jsp/general/blank.jsp'/>" style="display: none"></iframe>
 </body>

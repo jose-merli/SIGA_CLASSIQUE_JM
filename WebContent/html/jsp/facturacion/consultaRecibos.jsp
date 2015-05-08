@@ -40,35 +40,19 @@
 	String idioma = userBean.getLanguage().toUpperCase();
 	
 	/** PAGINADOR ***/
-	String paginaSeleccionada ="";
-	String totalRegistros ="";	
-	String registrosPorPagina = "";	
-	Vector resultado = null;	
+	String paginaSeleccionada="0", totalRegistros="0", registrosPorPagina="0";	
+	Vector resultado = new Vector();	
 	
-	if (datosPaginador!=null) {
-	 	if (datosPaginador.get("datos")!=null && !datosPaginador.get("datos").equals("")) {
-	  		resultado = (Vector)datosPaginador.get("datos");
-	 
-	  		PaginadorCaseSensitive paginador = (PaginadorCaseSensitive)datosPaginador.get("paginador");
-			paginaSeleccionada = String.valueOf(paginador.getPaginaActual());
-	 		totalRegistros = String.valueOf(paginador.getNumeroTotalRegistros());
-	 		registrosPorPagina = String.valueOf(paginador.getNumeroRegistrosPorPagina());
-	 		
-	 	} else {
-	  		resultado = new Vector();
-	  		paginaSeleccionada = "0";	
-	 		totalRegistros = "0";	
-	 		registrosPorPagina = "0";
-	 	}
-	 	
-	} else {
-      	resultado = new Vector();
-	  	paginaSeleccionada = "0";	
-	 	totalRegistros = "0";	
-	 	registrosPorPagina = "0";
+	if (datosPaginador!=null && datosPaginador.get("datos")!=null && !datosPaginador.get("datos").equals("")) {
+  		resultado = (Vector)datosPaginador.get("datos");
+ 
+  		PaginadorCaseSensitive paginador = (PaginadorCaseSensitive)datosPaginador.get("paginador");
+		paginaSeleccionada = String.valueOf(paginador.getPaginaActual());
+ 		totalRegistros = String.valueOf(paginador.getNumeroTotalRegistros());
+ 		registrosPorPagina = String.valueOf(paginador.getNumeroRegistrosPorPagina());
 	}	 
 	
-	String action = app + "/FAC_DevolucionesManual.do";
+	String action = app + "/FAC_DevolucionesManual.do?noReset=true";
 	
 	Vector vMotivos = (Vector) request.getAttribute("vMotivos"); 	
 	String idMotivoDevolucion = (String) request.getAttribute("motivoDevolucion"); 	
@@ -81,134 +65,6 @@
 	<!-- Incluido jquery en siga.js -->
 	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js?v=${sessionScope.VERSIONJS}'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
 </head>
-
-<script>
-	// Refrescar
-	function refrescarLocal(){ 		
-		parent.buscar();
-	}	
-    
-	function verfactura(fila) {
-		var datos = document.getElementById('tablaDatosDinamicosD');
-		datos.value = "";
-		
-		var idFactura = jQuery("#devolucionManual_" + fila + "_3");
-		if (jQuery(idFactura).exists()) {
-			datos.value = jQuery(idFactura).val();
-		}
-					   
-	   	var auxTarget = document.DevolucionesManualesForm.target;
-	   	document.DevolucionesManualesForm.target = "mainWorkArea"
-	   	document.DevolucionesManualesForm.recibos.value = jQuery("#registrosSeleccionados").val();
-	   	document.DevolucionesManualesForm.modo.value = "ver";
-	   	document.DevolucionesManualesForm.submit();
-	   	document.DevolucionesManualesForm.target = auxTarget;
-	}
-	
-	var ObjArray = new Array();
-	
-	Array.prototype.indexOf = function(s) {
-		for (var x=0; x<this.length; x++) 
-			if (this[x].indexOf(s) > -1) 
-				return x;
-			return -1;
-	};
-	
-	function checkTodos() {
-		var vCheckGeneral = jQuery("input[id=checkDevolucion]:not(:checked)").exists();
-		jQuery("#checkGeneral").prop('checked', !vCheckGeneral);	
-   	}		
-   
-	function pulsarCheck(obj) {
-		var fila = obj.value;		
-		var idDisqueteCargos = jQuery("#devolucionManual_" + fila + "_1").val();
-		var idFacturaIncluidaEnDisquete = jQuery("#devolucionManual_" + fila + "_2").val();
-		var idFactura = jQuery("#devolucionManual_" + fila + "_3").val();
-		var idRecibo = jQuery("#devolucionManual_" + fila + "_4").val();
-		var idMotivo = jQuery("#devolucionManual_" + fila + "_5").val();
-		var valorPK = idDisqueteCargos + "<%=separador%>" + idFacturaIncluidaEnDisquete + "<%=separador%>";
-		var valores = idDisqueteCargos + "<%=separador%>" + idFacturaIncluidaEnDisquete + "<%=separador%>" + idFactura + "<%=separador%>" + idRecibo + "<%=separador%>" + idMotivo;
-		
-		if (!obj.checked) {	
-			var indice = ObjArray.indexOf(valorPK);
-			if (indice >= 0) {
-				ObjArray.splice(indice,1);
-			}
-			jQuery("#devolucionManual_" + fila + "_5").hide();
-			
-		} else {
-			var indice = ObjArray.indexOf(valorPK);
-			if (indice >= 0) {
-				ObjArray.splice(indice,1);
-			}
-			ObjArray.push(valores);
-			jQuery("#devolucionManual_" + fila + "_5").show();
-		}
-		
-		seleccionados1 = ObjArray; // Variable del paginador
-		jQuery("#registrosSeleccionados").val(ObjArray);
-		jQuery("#registrosSeleccionadosPaginador").val(ObjArray.length); // Variable del paginador
-		checkTodos();
-	}
-	
-	function cargarChecks(){
-<%
-		if (registrosSeleccionados!=null) {			
-   			for (int i=0; i<registrosSeleccionados.size(); i++) {	   		 	
-   				Hashtable hRegistroSeleccionado = (Hashtable) registrosSeleccionados.get(i);
-   				String sRegistroSeleccionado = UtilidadesHash.getString(hRegistroSeleccionado, "CLAVE");
-%>
-				var aux = '<%=sRegistroSeleccionado%>';
-				ObjArray.push(aux);
-<%
-			} 
-   		}
-%>
-  
-		seleccionados1 = ObjArray; // Variable del paginador
-		jQuery("#registrosSeleccionados").val(ObjArray);
-		jQuery("#registrosSeleccionadosPaginador").val(ObjArray.length); // Variable del paginador
-		
-		parent.cerrarDialog();
-	}
-	
-	function cargarChecksTodos(obj) {  		
-  		var conf = confirm('<siga:Idioma key="paginador.message.marcarDesmarcar"/>');
-   	   	
-	   	if (conf) {			
-		   	if (obj.checked){
-		   		parent.seleccionarTodos('<%=paginaSeleccionada%>');			   	 	
-				
-			} else {								
-				jQuery("input[id=checkDevolucion]:checked").prop('checked', false);	
-				
-				ObjArray = new Array();
-				seleccionados1 = ObjArray; // Variable del paginador
-			   	jQuery("#registrosSeleccionados").val(ObjArray);
-				jQuery("#registrosSeleccionadosPaginador").val(ObjArray.length); // Variable del paginador
-			 }
-	   	  
-		} else {
-  			if (obj.checked) {
-  				jQuery("input[id=checkDevolucion]:not(:checked)").each(function(){
-					jQuery(this).prop('checked', true);
-					pulsarCheck(this);
-				});	  				
-			   	
-			} else {
-				jQuery("input[id=checkDevolucion]:checked").each(function(){
-					jQuery(this).prop('checked', false);
-					pulsarCheck(this);
-				});
-			}
-		}
-	 }
-	
-	function cambiarMotivo(fila) {
-		pulsarCheck(jQuery("input[name=checkDevolucion_" + fila + "]")[0]);
-	}
-</script>
-
 
 <body onload="cargarChecks();checkTodos();">
 	<html:form action="/FAC_DevolucionesManual.do?noReset=true" method="POST" style="display:none">
@@ -349,10 +205,136 @@
 						action="<%=action%>" />					
 <%
 	}
-%>	
+%>
 
-	<!-- INICIO: SUBMIT AREA -->
-	<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
-	<!-- FIN: SUBMIT AREA -->
+<script>
+	// Refrescar
+	function refrescarLocal(){ 		
+		parent.buscar();
+	}	
+    
+	function verfactura(fila) {
+		var datos = document.getElementById('tablaDatosDinamicosD');
+		datos.value = "";
+		
+		var idFactura = jQuery("#devolucionManual_" + fila + "_3");
+		if (jQuery(idFactura).exists()) {
+			datos.value = jQuery(idFactura).val();
+		}
+					   
+	   	var auxTarget = document.DevolucionesManualesForm.target;
+	   	document.DevolucionesManualesForm.target = "mainWorkArea"
+	   	document.DevolucionesManualesForm.recibos.value = jQuery("#registrosSeleccionados").val();
+	   	document.DevolucionesManualesForm.modo.value = "ver";
+	   	document.DevolucionesManualesForm.submit();
+	   	document.DevolucionesManualesForm.target = auxTarget;
+	}
+	
+	var ObjArray = new Array();
+	
+	Array.prototype.indexOf = function(s) {
+		for (var x=0; x<this.length; x++) 
+			if (this[x].indexOf(s) > -1) 
+				return x;
+			return -1;
+	};
+	
+	function checkTodos() {
+		var vCheckGeneral = jQuery("input[id=checkDevolucion]:not(:checked)").exists();
+		jQuery("#checkGeneral").prop('checked', !vCheckGeneral);	
+   	}		
+   
+	function pulsarCheck(obj) {
+		var fila = obj.value;		
+		var idDisqueteCargos = jQuery("#devolucionManual_" + fila + "_1").val();
+		var idFacturaIncluidaEnDisquete = jQuery("#devolucionManual_" + fila + "_2").val();
+		var idFactura = jQuery("#devolucionManual_" + fila + "_3").val();
+		var idRecibo = jQuery("#devolucionManual_" + fila + "_4").val();
+		var idMotivo = jQuery("#devolucionManual_" + fila + "_5").val();
+		var valorPK = idDisqueteCargos + "<%=separador%>" + idFacturaIncluidaEnDisquete + "<%=separador%>";
+		var valores = idDisqueteCargos + "<%=separador%>" + idFacturaIncluidaEnDisquete + "<%=separador%>" + idFactura + "<%=separador%>" + idRecibo + "<%=separador%>" + idMotivo;
+		
+		if (!obj.checked) {	
+			var indice = ObjArray.indexOf(valorPK);
+			if (indice >= 0) {
+				ObjArray.splice(indice,1);
+			}
+			jQuery("#devolucionManual_" + fila + "_5").hide();
+			
+		} else {
+			var indice = ObjArray.indexOf(valorPK);
+			if (indice >= 0) {
+				ObjArray.splice(indice,1);
+			}
+			ObjArray.push(valores);
+			jQuery("#devolucionManual_" + fila + "_5").show();
+		}
+		
+		seleccionados1 = ObjArray; // Variable del paginador
+		jQuery("#registrosSeleccionados").val(ObjArray);
+		jQuery("#registrosSeleccionadosPaginador").val(ObjArray.length); // Variable del paginador
+		checkTodos();
+	}
+	
+	function cargarChecks(){
+<%
+		if (registrosSeleccionados!=null) {			
+   			for (int i=0; i<registrosSeleccionados.size(); i++) {	   		 	
+   				Hashtable hRegistroSeleccionado = (Hashtable) registrosSeleccionados.get(i);
+   				String sRegistroSeleccionado = UtilidadesHash.getString(hRegistroSeleccionado, "CLAVE");
+%>
+				var aux = '<%=sRegistroSeleccionado%>';
+				ObjArray.push(aux);
+<%
+			} 
+   		}
+%>
+  
+		seleccionados1 = ObjArray; // Variable del paginador
+		jQuery("#registrosSeleccionados").val(ObjArray);
+		jQuery("#registrosSeleccionadosPaginador").val(ObjArray.length); // Variable del paginador
+		
+		parent.cerrarDialog();
+	}
+	
+	function cargarChecksTodos(obj) {  		
+  		var conf = confirm('<siga:Idioma key="paginador.message.marcarDesmarcar"/>');
+   	   	
+	   	if (conf) {			
+		   	if (obj.checked){
+		   		parent.seleccionarTodos('<%=paginaSeleccionada%>');			   	 	
+				
+			} else {								
+				jQuery("input[id=checkDevolucion]:checked").prop('checked', false);	
+				
+				ObjArray = new Array();
+				seleccionados1 = ObjArray; // Variable del paginador
+			   	jQuery("#registrosSeleccionados").val(ObjArray);
+				jQuery("#registrosSeleccionadosPaginador").val(ObjArray.length); // Variable del paginador
+			 }
+	   	  
+		} else {
+  			if (obj.checked) {
+  				jQuery("input[id=checkDevolucion]:not(:checked)").each(function(){
+					jQuery(this).prop('checked', true);
+					pulsarCheck(this);
+				});	  				
+			   	
+			} else {
+				jQuery("input[id=checkDevolucion]:checked").each(function(){
+					jQuery(this).prop('checked', false);
+					pulsarCheck(this);
+				});
+			}
+		}
+	 }
+	
+	function cambiarMotivo(fila) {
+		pulsarCheck(jQuery("input[name=checkDevolucion_" + fila + "]")[0]);
+	}
+</script>
+	
+
+	<iframe name="submitArea" src="<html:rewrite page='/html/jsp/general/blank.jsp'/>" style="display: none"></iframe>
 </body>
 </html>
