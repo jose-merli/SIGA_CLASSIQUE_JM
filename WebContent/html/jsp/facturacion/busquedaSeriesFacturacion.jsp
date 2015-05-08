@@ -24,7 +24,7 @@
 <!-- JSP -->
 <%  
 	Hashtable datosFormulario = new Hashtable();
-	String nombreAbreviado="", descripcion="", tipoProducto="", tipoServicio="", grupoClienteFijo="", grupoClientesDinamico="", iniciarBusqueda="", sEstado="";
+	String nombreAbreviado="", descripcion="", tipoProducto="", tipoServicio="", grupoClienteFijo="", grupoClientesDinamico="", iniciarBusqueda="", sEstado="A";
 	if (request.getSession().getAttribute("DATOSFORMULARIO")!=null) {
 		datosFormulario = (Hashtable)request.getSession().getAttribute("DATOSFORMULARIO");
 		nombreAbreviado = datosFormulario.get("NOMBREABREVIADO")==null?"":(String)datosFormulario.get("NOMBREABREVIADO");

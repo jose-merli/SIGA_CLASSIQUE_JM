@@ -110,18 +110,20 @@
 	   			
 	   			FilaExtElement[] elems = new FilaExtElement[1];
 	   			
+	   			String sIconos = "C";
 	   			if (sFechaBaja==null || sFechaBaja.equals("")) {
 	   				String tituloIcono = UtilidadesMultidioma.getDatoMaestroIdioma("facturacion.busquedaSeriesFacturacion.icono.darBaja", userBean);
 	   				elems[0]=new FilaExtElement("solicitarbaja", "darBaja", tituloIcono, SIGAConstants.ACCESS_READ);
+	   				sIconos += ",E";
 	   			} else {
 	   				String tituloIcono = UtilidadesMultidioma.getDatoMaestroIdioma("facturacion.busquedaSeriesFacturacion.icono.darAlta", userBean);
 	   				elems[0]=new FilaExtElement("solicitaralta", "darAlta", tituloIcono, SIGAConstants.ACCESS_READ);
 	   			}
 	   			
 	   			String sTipoSerie = UtilidadesHash.getString(miHash, "TIPOSERIE");
-	   			String sIconos = "C,E,B";
-	   			if (sTipoSerie.equals("G")) {		   			
-	   				sIconos = "C,E"; // No permimitmos borrar si es la genérica.
+	   			
+	   			if (!sTipoSerie.equals("G")) {		   			
+	   				sIconos += ",B"; // No permimitmos borrar si es la genérica.
 	   			}	   			
 %>
 				<siga:FilaConIconos fila='<%=String.valueOf(i+1)%>' botones='<%=sIconos%>' elementos='<%=elems%>' pintarEspacio="no" clase="listaNonEdit">
