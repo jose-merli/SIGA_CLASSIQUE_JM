@@ -487,6 +487,7 @@ public class DevolucionesAction extends MasterAction {
 		boolean correcto = true;		
 		String[] codigosErrorFormato = {"20000", "5399", "5402"};
 		String codretorno;
+		String resultado[];
 
 		try{
 			// Obtengo usuario y creo manejadores para acceder a las BBDD
@@ -565,7 +566,7 @@ public class DevolucionesAction extends MasterAction {
 			tx.begin();		
 
 			// Llamada a PL     		
-			String resultado[] = actualizacionTablasDevoluciones(miForm.getIdInstitucion(), rutaOracle, identificador + ".d19", user.getLanguageInstitucion(), user.getUserName());
+			resultado = actualizacionTablasDevoluciones(miForm.getIdInstitucion(), rutaOracle, identificador + ".d19", user.getLanguageInstitucion(), user.getUserName());
 			codretorno = resultado[0];
 			String fechaDevolucion = resultado[2];
 			
@@ -676,13 +677,17 @@ public class DevolucionesAction extends MasterAction {
 			} else { 			
 				if (correcto){					
 					tx.commit();
+					
+					request.setAttribute("parametrosArray", resultado);
+					request.setAttribute("modal","");							
+					return "exitoParametros";
 	
-					if (isTodasRenegociadas) {
+					/*if (isTodasRenegociadas) {
 						result=exitoModal("facturacion.nuevoFichero.literal.procesoCorrecto",request);
 						
 					} else {
 						result=exitoModal("facturacion.renegociar.aviso.noTodasRenegociadas",request);
-					}
+					}*/
 					
 				} else {
 					tx.rollback();		
@@ -804,6 +809,7 @@ public class DevolucionesAction extends MasterAction {
 		
 		String[] codigosErrorFormato = {"20000", "5399", "5402"};
 		String codretorno;
+		String resultado[];
 		try {
 			// Obtengo usuario y creo manejadores para acceder a las BBDD
 			UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");							
@@ -833,7 +839,7 @@ public class DevolucionesAction extends MasterAction {
 			identificador = devolucionesAdm.getNuevoID(idInstitucion).toString();
 			
 			// Llamada a PL			
-			String resultado[] = actualizacionTablasDevoluciones(miForm.getIdInstitucion(), rutaOracle, identificador + ".d19", user.getLanguageInstitucion(), user.getUserName());
+			resultado = actualizacionTablasDevoluciones(miForm.getIdInstitucion(), rutaOracle, identificador + ".d19", user.getLanguageInstitucion(), user.getUserName());
 			codretorno = resultado[0];
 			String fechaDevolucion = resultado[2];			
 			
@@ -938,13 +944,16 @@ public class DevolucionesAction extends MasterAction {
 			
 			if (correcto){					
 				tx.commit();
+				
+				request.setAttribute("parametrosArray", resultado);
+				return "exitoParametros";				
 
-				if (isTodasRenegociadas) {
+				/*if (isTodasRenegociadas) {
 					result=exitoRefresco("facturacion.nuevoFichero.literal.procesoCorrecto",request);
 					
 				} else {
 					result=exitoRefresco("facturacion.renegociar.aviso.noTodasRenegociadas",request);
-				}
+				}*/
 				
 			} else {
 				tx.rollback();		

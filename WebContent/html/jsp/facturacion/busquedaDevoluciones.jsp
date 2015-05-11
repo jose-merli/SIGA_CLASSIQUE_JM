@@ -199,9 +199,15 @@
 		function procesarNuevoFichero() {
 			document.forms[0].modo.value='nuevo';							
 			var resultado = ventaModalGeneral("DevolucionesForm","M");
-			if (resultado=="MODIFICADO") {
-				refrescarLocal();
-			}
+			
+			if (resultado!=undefined) {								
+				var resultadoFinal = resultado[1];
+				if (resultadoFinal!='') {
+					var sms = "<siga:Idioma key='facturacion.busquedaDevolucion.mensaje.generacionDisquetesDevoluciones' arg0='" + resultadoFinal + "'/>";
+					alert(sms);
+					buscar();
+				}
+			}			
 		}
 		
 		function refrescarLocal() {
