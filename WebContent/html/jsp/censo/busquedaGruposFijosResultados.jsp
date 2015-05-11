@@ -34,7 +34,6 @@
 	String idioma=userBean.getLanguage().toUpperCase();
 	
 	String idInstitucion = userBean.getLocation();
-	//Vector vGruposFijos = (Vector) request.getAttribute("vGruposFijos");
 	/** PAGINADOR ***/
 	Vector resultado=null;
 	
@@ -87,12 +86,9 @@
 	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js?v=${sessionScope.VERSIONJS}'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
 
 	<script>
-		<!-- Refrescar -->
 		function refrescarLocal(){ 		
  			parent.buscar();
-			
 		}	
-
 	</script>	
 	
 </head>
@@ -100,16 +96,16 @@
 <body>
 		<html:form action="/CEN_MantenimientoGruposFijos.do" method="POST" target="mainWorkArea">
 			<html:hidden styleId = "modo"  property = "modo" value = ""/>
+			<html:hidden property = "busquedaNombre" />
 		</html:form>
 			
 			<siga:Table 
 			   name = "tablaResultados"
 			   border  = "1"
-			   columnNames="administracion.auditoria.institucion,
-			   			  gratuita.mantenimientoTablasMaestra.literal.nombre,"
+			   columnNames="administracion.auditoria.institucion, gratuita.mantenimientoTablasMaestra.literal.nombre,"
 			   columnSizes = "40,50,10">
 
-		<%  if ((resultado != null) && (resultado.size() > 0)){ %>
+		<%  if (resultado != null && resultado.size() > 0){ %>
 	
 				<%	 for (int i = 1; i <= resultado.size(); i++) { 
 							
@@ -125,9 +121,9 @@
 									String botones=(idInstitucion.equals(idInstitucionGrupo)?"E,C,B":"C");
    	 		%>
 									<siga:FilaConIconos fila='<%=""+i%>' botones='<%=botones%>' visibleConsulta="false" clase="listaNonEdit"> 
-									<td><!-- Datos ocultos tabla -->
-											<input type="hidden" id="oculto<%=i%>_1" value="<%=idInstitucionGrupo%>">
-											<input type="hidden" id="oculto<%=i%>_2" value="<%=idGrupo%>">
+									<td>
+										<input type="hidden" id="oculto<%=i%>_1" value="<%=idInstitucionGrupo%>">
+										<input type="hidden" id="oculto<%=i%>_2" value="<%=idGrupo%>">
 											<%=UtilidadesString.mostrarDatoJSP(nombreInstitucion)%>
 									</td>
 									<td>

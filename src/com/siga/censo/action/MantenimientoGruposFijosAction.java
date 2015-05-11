@@ -139,7 +139,7 @@ public class MantenimientoGruposFijosAction extends MasterAction {
 				Vector datos = null;
 				CenGruposClienteAdm gruposFijosAdm = new CenGruposClienteAdm(user);
 
-				String nombre = miForm.getNombre();
+				String nombre = miForm.getBusquedaNombre();
 				String idInstitucion = user.getLocation();
 				Paginador ResulGruposFijos = gruposFijosAdm.busquedaGruposFijos(nombre, idInstitucion, user.getLanguage());
 				databackup.put("paginador", ResulGruposFijos);
@@ -366,10 +366,11 @@ public class MantenimientoGruposFijosAction extends MasterAction {
 			hashGrupos.put(CenGruposClienteBean.C_IDGRUPO, beanGrupos.getIdGrupo().toString());
 			hashGrupos.put(CenGruposClienteBean.C_IDINSTITUCION, beanGrupos.getIdInstitucion().toString());
 			request.getSession().setAttribute("DATABACKUP", hashGrupos);
+			request.setAttribute("modo", "editar");
 		} catch (Exception e) {
 			throwExcp("messages.general.error", new String[] { "modulo.gratuita" }, e, tx);
 		}
-		request.setAttribute("modo", "editar");
+		
 		return exitoRefresco("messages.inserted.success", request);
 
 	}
@@ -463,6 +464,7 @@ public class MantenimientoGruposFijosAction extends MasterAction {
 	}
 	
 	protected String abrirAlvolver(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+		request.setAttribute("buscarVolver", "buscarVolver");
 		return "inicio";
 	}
 	

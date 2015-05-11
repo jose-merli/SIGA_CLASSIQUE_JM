@@ -23,7 +23,7 @@
 <%  
 	String app=request.getContextPath();
 	HttpSession ses=request.getSession();
-		
+	String buscarVolver = (String) request.getAttribute("buscarVolver");		
 %>	
 	
 
@@ -67,7 +67,7 @@
 									<siga:Idioma key="gratuita.mantenimientoTablasMaestra.literal.nombre"/>
 								</td>
 								<td>
-									<html:text name="MantenimientoGruposFijosForm" property="nombre" size="100" styleClass="box"></html:text>
+									<html:text name="MantenimientoGruposFijosForm" styleId="busquedaNombre" property="busquedaNombre" size="100" styleClass="box"></html:text>
 								</td>
 							</tr>
 						</table>
@@ -93,6 +93,12 @@
 	
 	<!-- INICIO: SCRIPTS BOTONES BUSQUEDA -->
 	<script language="JavaScript">
+	
+		jQuery(document).ready(function () {
+			<% if(buscarVolver!=null && buscarVolver.equals("buscarVolver")) { %>
+				buscar();
+			<%	} %>
+		});		
 
 		<!-- Funcion asociada a boton buscar -->
 		function buscar() 

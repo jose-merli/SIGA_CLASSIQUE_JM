@@ -122,6 +122,7 @@
 		<html:hidden property = "modo" />
 		<html:hidden property = "directorio" />
 		<html:hidden property = "nombrefichero" />
+		<html:hidden property = "busquedaNombre" />
 		<table class="tablaCentralCampos" align="center">
 			<tr>
 				<td>
