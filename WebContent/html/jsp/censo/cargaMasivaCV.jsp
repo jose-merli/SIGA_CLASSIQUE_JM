@@ -85,7 +85,7 @@
 		
 	function parseExcelFile() {
 		if(!document.forms['CargaMasivaCVForm'].theFile || document.forms['CargaMasivaCVForm'].theFile.value==''){
-			error = "<siga:Idioma key='errors.required' arg0='administracion.informes.literal.archivo'/>";
+			error = "<siga:Idioma key='errors.required' arg0='administracion.confInterfaz.fichero'/>";
 			alert(error);
 			fin();
 			return false;
@@ -155,7 +155,7 @@
 				
 				<tr>
 					<td class="labelText">
-						<siga:Idioma key="administracion.informes.literal.archivo" />&nbsp;
+						<siga:Idioma key="administracion.confInterfaz.fichero" />&nbsp;
 					</td>
 					<td><html:file  property="theFile" styleClass="boxCombo"  style="width:400px;" />
 					</td>

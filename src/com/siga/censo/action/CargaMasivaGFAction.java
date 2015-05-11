@@ -271,7 +271,7 @@ public class CargaMasivaGFAction extends MasterAction {
 		datosVector.add(datosHashtable);
 			 
 			 
-		File exampleFile =  cargaMasivaDatosGF.createExcelFile(CargaMasivaDatosGFImpl.CAMPOSEJEMPLO,datosVector);
+		File exampleFile =  cargaMasivaDatosGF.createExcelFile(CargaMasivaDatosGFImpl.CAMPOSEJEMPLO, datosVector);
 		request.setAttribute("nombreFichero", exampleFile.getName());
 		request.setAttribute("rutaFichero", exampleFile.getPath());
 		request.setAttribute("accion", "");
