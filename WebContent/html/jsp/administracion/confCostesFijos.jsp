@@ -22,14 +22,7 @@
     
     Vector<Hashtable<String,Object>> vDatos = (Vector<Hashtable<String,Object>>) request.getAttribute("vDatos");
     Integer modoC = Integer.parseInt(request.getAttribute("modoConsulta").toString());
-	
-    String sIncluirBajaLogica = "false";
-	if(request.getAttribute("bIncluirRegistrosConBajaLogica")!=null){
-		sIncluirBajaLogica = (String) request.getAttribute("bIncluirRegistrosConBajaLogica");
-	}
-    
 	String botonera = (modoC!=1 ? "V,G" : "V");
-
     String editable = String.valueOf(request.getAttribute("editable"));
     String modo = (editable.equals("1") ? "Editar" : "Ver");
 %>	
@@ -46,7 +39,6 @@
 	<html:form action="/ADM_GestionarTablasMaestras.do" method="POST" target="mainWorkArea">
 		<input type="hidden" id="actionModal" name="actionModal" value="">
 		<input type="hidden" property="id" styleId="id">
-		<input type="hidden" id="regBajaLogica" name="regBajaLogica" value="<%=sIncluirBajaLogica%>">
 		<html:hidden property="datosConf"/>
 		<html:hidden property="modo" styleId="modo" value="<%=modo%>" />		
 		<html:hidden property="registrosSeleccionados" styleId="registrosSeleccionados"/>
@@ -98,7 +90,10 @@
 <%
 						if (modoC!=1) {
 %>			
-							<td align="center"><input type="text" name="importeCosteFijo" id="importeCosteFijo_<%=""+i%>" value="<%=UtilidadesString.formatoImporte(importeCosteFijo)%>" class="box" style="text-align:right;<%if (!isChecked){%>display:none<%}%>" /></td>
+							<td align="center">
+								<input type="text" name="importeCosteFijo" id="importeCosteFijo_<%=""+i%>" value="<%=UtilidadesString.formatoImporte(importeCosteFijo)%>" 
+									class="box" style="text-align:right;<%if (!isChecked){%>display:none<%}%>" 
+									maxlength="13" onBlur="validarPrecioOnBlur(this)"/></td>
 <%
 						} else {
 %>
@@ -126,6 +121,81 @@
 	<iframe name="submitArea" src="<html:rewrite page='/html/jsp/general/blank.jsp'/>" style="display: none"></iframe>
 
 	<script language="javascript">
+		function convertirAFormato(numero){
+			numero = numero.trim();
+			while (numero.indexOf(" ",0)>=0) {
+				numero = numero.replace(" ","");
+			}		
+			
+			while (numero.indexOf(",",0)>=0) {
+				numero = numero.replace(",",".");
+			}				
+			
+			while (numero.indexOf(".",0)>=0 && numero.indexOf(".",numero.indexOf(".",0)+1)>=0) {
+				numero = numero.replace(".", "");
+			}  			
+				
+			var numeroNumber = new Number(numero);
+			
+			if (isNaN(numeroNumber)) {
+				return "0";
+			}
+			
+			return numero;	
+		}		
+	
+		function errorValidarPrecio (valor) {
+			// No es valido si es nulo
+			// No es valido si no tiene longitud
+			// No es valido si tiene blancos
+			// No es valido si no es numero
+			// No es valido si es menor o igual que cero
+			// No es valido si tiene mas de dos decimales
+			// No es valido si tiene mas de ocho numeros de la parte entera
+			if (valor==null || valor.value==null || valor.value=='' || valor.value.indexOf(" ")!=-1)				
+				return true;
+				
+			var valorFormateado = valor.value;
+			
+			while (valorFormateado.indexOf(",",0)>=0) {
+				valorFormateado = valorFormateado.replace(",",".");
+			}				
+			
+			while (valorFormateado.indexOf(".",0)>=0 && valorFormateado.indexOf(".",valorFormateado.indexOf(".",0)+1)>=0) {
+				valorFormateado = valorFormateado.replace(".", "");
+			}  	
+							
+			if (isNaN(valorFormateado) || eval(valorFormateado)<=0)
+				return true;	
+				
+			var indiceSimboloDecimal = valorFormateado.indexOf(".");
+			if (indiceSimboloDecimal!=-1) {
+				if (valorFormateado.length - indiceSimboloDecimal > 3) {
+					return true
+				}
+				
+				if (indiceSimboloDecimal > 8) {
+					return true
+				}
+				
+			} else { // No tiene simbolo decimal
+				if (valorFormateado.length > 8) {
+					return true
+				}
+			}
+			
+			return false;
+		}			
+	
+		function validarPrecioOnBlur(valor) {
+ 			if (errorValidarPrecio(valor)) {
+				var mensaje = "<siga:Idioma key='administracion.catalogos.costesFijos.importe'/> <siga:Idioma key='messages.campoNoCorrecto.error'/>";
+				alert (mensaje);   
+				valor.focus();
+			}	
+		} 	
+				
+	
 		function accionVolver() {		
 			sub();
 			listadoTablasMaestrasForm.target = "mainWorkArea";
@@ -165,29 +235,6 @@
 				return false;
 			}
 		}
-			
-		function convertirAFormato(numero){
-			numero = numero.trim();
-			while (numero.indexOf(" ",0)>=0) {
-				numero = numero.replace(" ","");
-			}		
-			
-			while (numero.indexOf(",",0)>=0) {
-				numero = numero.replace(",",".");
-			}				
-			
-			while (numero.indexOf(".",0)>=0 && numero.length-numero.indexOf(".",0)>3) {
-				numero = numero.replace(".", "");
-			}  			
-				
-			var numeroNumber = new Number(numero);
-			
-			if (isNaN(numeroNumber)) {
-				return "0";
-			}
-			
-			return numero;	
-		}		
 	
 		function pulsarCheck(obj,fila){
 			if (!obj.checked){

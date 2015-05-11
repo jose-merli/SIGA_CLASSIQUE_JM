@@ -216,12 +216,11 @@ public class ScsTipoActuacionAdm extends MasterBeanAdministrador {
 	 * @param idInstitucion
 	 * @param idCosteFijo
 	 * @param idTipoAsistencia
-	 * @param regBajaLog
 	 * @param idioma
 	 * @return
 	 * @throws ClsExceptions
 	 */
-	public Vector<Hashtable<String,Object>> getTiposAsistTiposActDispCosteFijo (String idInstitucion, String idCosteFijo, String idTipoAsistencia, boolean regBajaLog, String idioma) throws ClsExceptions {
+	public Vector<Hashtable<String,Object>> getTiposAsistTiposActDispCosteFijo (String idInstitucion, String idCosteFijo, String idTipoAsistencia, String idioma) throws ClsExceptions {
 		Vector<Hashtable<String,Object>> resultado = new Vector<Hashtable<String,Object>>();
 		
 		try {
@@ -258,17 +257,6 @@ public class ScsTipoActuacionAdm extends MasterBeanAdministrador {
 								" AND SCS_TIPOACTUACIONCOSTEFIJO.IDTIPOACTUACION = SCS_TIPOACTUACION.IDTIPOACTUACION " +
 								" AND SCS_TIPOACTUACIONCOSTEFIJO.IDCOSTEFIJO = " + idCosteFijo +
 						" ) ";
-			}
-			
-			if (!regBajaLog) {
-				sql += " AND EXISTS ( " +
-						" SELECT 1 " +
-						" FROM SCS_TIPOACTUACIONCOSTEFIJO " +
-						" WHERE SCS_TIPOACTUACIONCOSTEFIJO.IDINSTITUCION = SCS_TIPOACTUACION.IDINSTITUCION " +
-							" AND SCS_TIPOACTUACIONCOSTEFIJO.IDTIPOASISTENCIA = SCS_TIPOACTUACION.IDTIPOASISTENCIA " +
-							" AND SCS_TIPOACTUACIONCOSTEFIJO.IDTIPOACTUACION = SCS_TIPOACTUACION.IDTIPOACTUACION " +
-							" AND SCS_TIPOACTUACIONCOSTEFIJO.FECHABAJA IS NULL" +
-					" ) ";			
 			}
 			
 			sql += " ORDER BY DSTIPOASISTENCIA, DSTIPOACTUACION ASC";

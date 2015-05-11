@@ -335,12 +335,11 @@ public class ScsActuacionAsistCosteFijoAdm extends MasterBeanAdministrador {
 	 * Devuelve un vector con los tipos de asistencias incluidas en la configuración de un coste fijo ordenadas por descripcion
 	 * @param idInstitucion
 	 * @param idCosteFijo
-	 * @param hist
 	 * @param idioma
 	 * @return
 	 * @throws ClsExceptions
 	 */
-	public Vector<Hashtable<String,Object>> getTiposAsistenciasCosteFijo (String idInstitucion, String idCosteFijo, boolean hist, String idioma) throws ClsExceptions{
+	public Vector<Hashtable<String,Object>> getTiposAsistenciasCosteFijo (String idInstitucion, String idCosteFijo, String idioma) throws ClsExceptions{
 		Vector<Hashtable<String,Object>> resultado = new Vector<Hashtable<String,Object>>();
 		try {
 			String sql = "SELECT DISTINCT SCS_TIPOACTUACIONCOSTEFIJO.IDTIPOASISTENCIA, " +
@@ -352,13 +351,8 @@ public class ScsActuacionAsistCosteFijoAdm extends MasterBeanAdministrador {
 							" ) AS DESCRIPCION " +
 						" FROM SCS_TIPOACTUACIONCOSTEFIJO " +
 						" WHERE SCS_TIPOACTUACIONCOSTEFIJO.IDINSTITUCION = " + idInstitucion +
-							" AND SCS_TIPOACTUACIONCOSTEFIJO.IDCOSTEFIJO = " + idCosteFijo;
-
-			if (!hist) {
-				sql += " AND SCS_TIPOACTUACIONCOSTEFIJO.FECHABAJA IS NULL";
-			}
-			
-			sql += " ORDER BY 2";
+							" AND SCS_TIPOACTUACIONCOSTEFIJO.IDCOSTEFIJO = " + idCosteFijo +
+						" ORDER BY 2";
 			
 			resultado = this.selectGenerico(sql);
 

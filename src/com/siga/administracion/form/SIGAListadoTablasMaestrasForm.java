@@ -30,19 +30,10 @@ public class SIGAListadoTablasMaestrasForm extends MasterForm {
     private String numeroTextoPlantillas;
     private String textoPlantillas;
     private String datosConf;
-    private String regBajaLogica;
     private String editable;
     
     public String getDatosConf() {
 		return datosConf;
-	}
-
-	public String getRegBajaLogica() {
-		return regBajaLogica;
-	}
-
-	public void setRegBajaLogica(String regBajaLogica) {
-		this.regBajaLogica = regBajaLogica;
 	}
 
 	public void setDatosConf(String datosConf) {

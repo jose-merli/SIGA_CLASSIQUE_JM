@@ -26,7 +26,6 @@ import com.atos.utils.ComodinBusquedas;
 import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
-import com.siga.Utilidades.UtilidadesString;
 import com.siga.Utilidades.paginadores.Paginador;
 import com.siga.administracion.form.SIGAListadoTablasMaestrasForm;
 import com.siga.beans.GenRecursosCatalogosAdm;
@@ -848,14 +847,8 @@ public class SIGAListadoTablasMaestrasAction extends MasterAction
 	        	
 	        	ScsActuacionAsistCosteFijoAdm actAsisCostAdm = new ScsActuacionAsistCosteFijoAdm (userBean);
 	        	List<Hashtable<String,Object>> tiposAsistenciasRelList= new ArrayList<Hashtable<String,Object>>();
-	        	boolean regBajaLog=false;
 	        	
-	        	if(form.getRegBajaLogica()!=null){
-	        		regBajaLog=UtilidadesString.stringToBoolean(form.getRegBajaLogica());
-	        		request.setAttribute("bIncluirRegistrosConBajaLogica", form.getRegBajaLogica());
-	        	}
-	        	
-	        	Vector<Hashtable<String,Object>> tiposAsistenciasRelV = actAsisCostAdm.getTiposAsistenciasCosteFijo(userBean.getLocation(), sCodigoExt,regBajaLog,userBean.getLanguage());
+	        	Vector<Hashtable<String,Object>> tiposAsistenciasRelV = actAsisCostAdm.getTiposAsistenciasCosteFijo(userBean.getLocation(), sCodigoExt,userBean.getLanguage());
         	
 	        	if (tiposAsistenciasRelV!=null) {
 	        		for(int t=0; t<tiposAsistenciasRelV.size(); t++){
@@ -1005,19 +998,13 @@ public class SIGAListadoTablasMaestrasAction extends MasterAction
 						
 			request.setAttribute("editable", form.getEditable());
 			
-			boolean regBajaLog=false;
 			String idTipoAsistencia = "";
 			if (request.getParameter("modo")!=null && !request.getParameter("modo").equals("abrirConfiguracionCosteFijo")) {
 				idTipoAsistencia = form.getId();
-				//Si estamos consultando/editando un registro en baja lógica
-				if(form.getRegBajaLogica()!=null){
-	        		regBajaLog = UtilidadesString.stringToBoolean(form.getRegBajaLogica());
-	        		request.setAttribute("bIncluirRegistrosConBajaLogica", form.getRegBajaLogica());
-				}
 			}			
 			
 			ScsTipoActuacionAdm admTipoActuacion = new ScsTipoActuacionAdm (userBean);
-			Vector<Hashtable<String,Object>> vDatos = admTipoActuacion.getTiposAsistTiposActDispCosteFijo(userBean.getLocation(), idCosteFijo, idTipoAsistencia, regBajaLog, userBean.getLanguage());
+			Vector<Hashtable<String,Object>> vDatos = admTipoActuacion.getTiposAsistTiposActDispCosteFijo(userBean.getLocation(), idCosteFijo, idTipoAsistencia, userBean.getLanguage());
 			request.setAttribute("vDatos", vDatos);
 			
 		} catch (Exception e) {
