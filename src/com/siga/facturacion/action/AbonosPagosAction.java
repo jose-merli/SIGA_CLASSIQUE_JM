@@ -354,7 +354,6 @@ public class AbonosPagosAction extends MasterAction {
 	 * @exception  SIGAException  En cualquier caso de error
 	 */
 	protected String pagarBanco(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
-		
 		String result="";
 
 		try {
@@ -363,10 +362,10 @@ public class AbonosPagosAction extends MasterAction {
 
 			result="pagarBanco";
 			AbonosPagosForm form = (AbonosPagosForm) formulario;
-			FacAbonoAdm adm = new FacAbonoAdm(this.getUserBean(request));
+			FacAbonoAdm admAbono = new FacAbonoAdm(this.getUserBean(request));
 			
-			entrada=adm.getAbono(form.getIdInstitucion(),form.getIdAbono());
-			registro=((Row)entrada.firstElement()).getRow();
+			entrada = admAbono.getAbono(form.getIdInstitucion(),form.getIdAbono());
+			registro = ((Row)entrada.firstElement()).getRow();
 			
 			// Paso valores asociados al registro			
 			request.setAttribute("IDABONO", form.getIdAbono());
@@ -375,27 +374,19 @@ public class AbonosPagosAction extends MasterAction {
 			request.setAttribute("PAGOPENDIENTE", form.getPagoPendiente());
 			request.setAttribute("IDPERSONA", registro.get(FacAbonoBean.C_IDPERSONA));
 			
-			//Se recupera la cuenta bancaria del colegiado porque en el alta no se inserta después de la incidencia INC_11904_SIGA
-			//request.setAttribute("IDCUENTA", registro.get(FacAbonoBean.C_IDCUENTA));
-			//Los abonos SJCS se pagarán a la cuenta SJCS 
-			//Los abonos no SJCS se pagarán a la cuenta no SJCS
-			Integer abonoSjcs=0;
-			if((registro.get(FacAbonoBean.C_IDPAGOSJG)!=null)&&(!registro.get(FacAbonoBean.C_IDPAGOSJG).toString().isEmpty()))
-				abonoSjcs=1;
-
-			String  select = "SELECT "+CenCuentasBancariasBean.C_IDCUENTA+" AS ID ,";
-			        select +=" F_SIGA_FORMATOIBAN("+CenCuentasBancariasBean.C_IBAN+") as DESCRIPCION ";
-			        select +=" FROM "+CenCuentasBancariasBean.T_NOMBRETABLA;
-			        select +=" WHERE ";
-					select +=CenCuentasBancariasBean.C_IDINSTITUCION+"="+form.getIdInstitucion();
-					select +=" AND "+CenCuentasBancariasBean.C_IDPERSONA+"="+registro.get(FacAbonoBean.C_IDPERSONA);
-					select +=" AND "+CenCuentasBancariasBean.C_ABONOSJCS+"="+abonoSjcs;
-					select +=" AND "+CenCuentasBancariasBean.C_FECHABAJA+" IS NULL";
-					select +=" AND "+CenCuentasBancariasBean.C_ABONOCARGO+" IN('A','T')";
-					select +=" ORDER BY DESCRIPCION";
+			String sql = "SELECT " + CenCuentasBancariasBean.C_IDCUENTA + " AS ID, " +
+							" F_SIGA_FORMATOIBAN(" + CenCuentasBancariasBean.C_IBAN + ") as DESCRIPCION " +
+						" FROM " + CenCuentasBancariasBean.T_NOMBRETABLA + 
+						" WHERE " + CenCuentasBancariasBean.C_IDINSTITUCION + " = " + form.getIdInstitucion() +
+							" AND " + CenCuentasBancariasBean.C_IDPERSONA + " = " + registro.get(FacAbonoBean.C_IDPERSONA) +					
+							" AND " + CenCuentasBancariasBean.C_FECHABAJA + " IS NULL" +
+							(registro.get(FacAbonoBean.C_IDPAGOSJG)!=null && !registro.get(FacAbonoBean.C_IDPAGOSJG).toString().equals("") 
+								? " AND " + CenCuentasBancariasBean.C_ABONOSJCS + " = '1'" 
+								: " AND " + CenCuentasBancariasBean.C_ABONOCARGO + " IN ('A','T')") +
+						" ORDER BY DESCRIPCION";
 					
 			CenCuentasBancariasAdm cuentasAdm=new CenCuentasBancariasAdm(this.getUserBean(request));
-			Vector vCuentas=cuentasAdm.selectGenerico(select);
+			Vector vCuentas=cuentasAdm.selectGenerico(sql);
 			
 			if(vCuentas.size()==0)
 				throw new SIGAException("facturacion.abonos.error.noExisteCuenta");
@@ -408,11 +399,11 @@ public class AbonosPagosAction extends MasterAction {
 			}
 	
 			request.setAttribute("listaCuentas", cuentasListFinal);
-			Hashtable cuentaSelh= (Hashtable) vCuentas.get(0);
+			Hashtable cuentaSelh = (Hashtable) vCuentas.get(0);
 			request.setAttribute("idCuentaSel", cuentaSelh.get("ID"));
 			
 		} catch (Exception e) { 
-			if((e instanceof SIGAException)||(e instanceof ClsExceptions))
+			if (e instanceof SIGAException || e instanceof ClsExceptions)
 				throwExcp (e.getMessage(),new String[] {"modulo.facturacion"},e,null); 
 			else
 				throwExcp("messages.general.error",new String[] {"modulo.facturacion"},e,null); 			
