@@ -28,63 +28,55 @@
 <%@ page import="java.util.Vector"%>
 <%@ page import="java.util.Hashtable"%>
 
-<%	String app = request.getContextPath();
-    HttpSession ses=request.getSession();
-    UsrBean userBean = ((UsrBean)ses.getAttribute(("USRBEAN")));
-	String idioma=userBean.getLanguage().toUpperCase();
-	
+<%
+	String app = request.getContextPath();
+	HttpSession ses = request.getSession();
+	UsrBean userBean = ((UsrBean) ses.getAttribute(("USRBEAN")));
+	String idioma = userBean.getLanguage().toUpperCase();
 	String idInstitucion = userBean.getLocation();
+
 	/** PAGINADOR ***/
-	Vector resultado=null;
-	
-	String paginaSeleccionada ="";
-	
-	String totalRegistros ="";
-	
+	Vector resultado = null;
+	String paginaSeleccionada = "";
+	String totalRegistros = "";
 	String registrosPorPagina = "";
-	HashMap hm=new HashMap();
-	if (ses.getAttribute("DATAPAGINADOR")!=null){
+	HashMap hm = new HashMap();
 
-	 hm = (HashMap)ses.getAttribute("DATAPAGINADOR");
+	if (ses.getAttribute("DATAPAGINADOR") != null) {
+		hm = (HashMap) ses.getAttribute("DATAPAGINADOR");
+		if (hm.get("datos") != null && !hm.get("datos").equals("")) {
+			resultado = (Vector) hm.get("datos");
+			Paginador paginador = (Paginador) hm.get("paginador");
+			paginaSeleccionada = String.valueOf(paginador.getPaginaActual());
+			totalRegistros = String.valueOf(paginador.getNumeroTotalRegistros());
+			registrosPorPagina = String.valueOf(paginador.getNumeroRegistrosPorPagina());
+		} else {
+			resultado = new Vector();
+			paginaSeleccionada = "0";
+			totalRegistros = "0";
+			registrosPorPagina = "0";
+		}
+	} else {
+		resultado = new Vector();
+		paginaSeleccionada = "0";
+		totalRegistros = "0";
+		registrosPorPagina = "0";
+	}
 
-	
-	 if ( hm.get("datos")!=null && !hm.get("datos").equals("")){
-	  resultado = (Vector)hm.get("datos");
-	  Paginador paginador = (Paginador)hm.get("paginador");
-	 	paginaSeleccionada = String.valueOf(paginador.getPaginaActual());
-	 	totalRegistros = String.valueOf(paginador.getNumeroTotalRegistros());
-	 	registrosPorPagina = String.valueOf(paginador.getNumeroRegistrosPorPagina()); 
-	 }
-	 else{
-	  resultado =new Vector();
-	  paginaSeleccionada = "0";
-	 	totalRegistros = "0";
-	 	registrosPorPagina = "0";
-	 }
-	}else{
-      resultado =new Vector();
-	  paginaSeleccionada = "0";
-	 	totalRegistros = "0";
-	 	registrosPorPagina = "0";
-    }	
-	
-	String action=app+"/CEN_MantenimientoGruposFijos.do";
-    /**************/
+	String action = app + "/CEN_MantenimientoGruposFijos.do";
+	/**************/
 %>
 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 
-
 	<title><siga:Idioma key="pys.gestionSolicitudes.titulo"/></title>
 	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
 	
 	<!-- Incluido jquery en siga.js -->
 	
 	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js?v=${sessionScope.VERSIONJS}'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
-
 	<script>
 		function refrescarLocal(){ 		
  			parent.buscar();
@@ -94,70 +86,57 @@
 </head>
 
 <body>
-		<html:form action="/CEN_MantenimientoGruposFijos.do" method="POST" target="mainWorkArea">
-			<html:hidden styleId = "modo"  property = "modo" value = ""/>
-			<html:hidden property = "busquedaNombre" />
-		</html:form>
-			
-			<siga:Table 
-			   name = "tablaResultados"
-			   border  = "1"
-			   columnNames="administracion.auditoria.institucion, gratuita.mantenimientoTablasMaestra.literal.nombre,"
-			   columnSizes = "40,50,10">
+	<html:form action="/CEN_MantenimientoGruposFijos.do" method="POST" target="mainWorkArea">
+		<html:hidden styleId = "modo"  property = "modo" value = ""/>
+		<html:hidden property = "busquedaNombre" />
+	</html:form>
 
-		<%  if (resultado != null && resultado.size() > 0){ %>
+	<siga:Table name="tablaResultados" border="1"
+		columnNames="administracion.auditoria.institucion, gratuita.mantenimientoTablasMaestra.literal.nombre,censo.gestion.grupos.literal.identificador,"
+		columnSizes="35,45,10,10">
+
+		<%
+			if (resultado != null && resultado.size() > 0) {
+				for (int i = 1; i <= resultado.size(); i++) {
+					Row fila = (Row) resultado.elementAt(i - 1);
+					Hashtable hashGrupos = (Hashtable) fila.getRow();
+					if (hashGrupos != null) {
+						String idInstitucionGrupo = (String) hashGrupos.get("IDINSTITUCION");
+						String nombreInstitucion = (String) hashGrupos.get("INSTITUCION");
+						String idGrupo = (String) hashGrupos.get("IDGRUPO");
+						String nombre = (String) hashGrupos.get(CenGruposClienteBean.C_NOMBRE);
+						String identificador = (String) hashGrupos.get(CenGruposClienteBean.C_IDGRUPO);
+						String botones = (idInstitucion.equals(idInstitucionGrupo) ? "E,C,B" : "C");
+		%>
+					<siga:FilaConIconos fila='<%="" + i%>' botones='<%=botones%>' visibleConsulta="false" clase="listaNonEdit">
+						<td>
+							<input type="hidden" id="oculto<%=i%>_1" value="<%=idInstitucionGrupo%>"> <input type="hidden" id="oculto<%=i%>_2" value="<%=idGrupo%>"> <%=UtilidadesString.mostrarDatoJSP(nombreInstitucion)%>
+						</td>
+						<td><%=UtilidadesString.mostrarDatoJSP(nombre)%></td>
+						<td align="right"><%=UtilidadesString.mostrarDatoJSP(identificador)%> </td>
+					</siga:FilaConIconos>
+			
+		<%			} // if
+				} // for
+				
+			} else { %>
+				<tr class="notFound">
+					<td class="titulitos"><siga:Idioma key="messages.noRecordFound" /></td>
+				</tr>
+		<%	}	%>
 	
-				<%	 for (int i = 1; i <= resultado.size(); i++) { 
-							
-							// Hashtable hashGrupos = (Hashtable) vGruposFijos.get(i-1);
-							Row fila = (Row)resultado.elementAt(i-1);
-						    Hashtable hashGrupos = (Hashtable) fila.getRow();
-							 if (hashGrupos != null){ 
-									String idInstitucionGrupo = (String)hashGrupos.get("IDINSTITUCION");
-									String nombreInstitucion = (String)hashGrupos.get("INSTITUCION");
-									String idGrupo = (String)hashGrupos.get("IDGRUPO");
-									String nombre = (String)hashGrupos.get(CenGruposClienteBean.C_NOMBRE);
-									
-									String botones=(idInstitucion.equals(idInstitucionGrupo)?"E,C,B":"C");
-   	 		%>
-									<siga:FilaConIconos fila='<%=""+i%>' botones='<%=botones%>' visibleConsulta="false" clase="listaNonEdit"> 
-									<td>
-										<input type="hidden" id="oculto<%=i%>_1" value="<%=idInstitucionGrupo%>">
-										<input type="hidden" id="oculto<%=i%>_2" value="<%=idGrupo%>">
-											<%=UtilidadesString.mostrarDatoJSP(nombreInstitucion)%>
-									</td>
-									<td>
-										<%=UtilidadesString.mostrarDatoJSP(nombre)%>
-									</td>
-									
-									</siga:FilaConIconos>
-							 		
-			<%	 		 } // if
-				 	 }  // for  
-			%>
-	
-	<% } else { %>
-		<tr class="notFound">
-   			<td class="titulitos"><siga:Idioma key="messages.noRecordFound"/></td>
-		</tr>
+	</siga:Table>
+
+	<% if (hm.get("datos") != null && !hm.get("datos").equals("")) { %>
+		<siga:Paginador totalRegistros="<%=totalRegistros%>"
+			registrosPorPagina="<%=registrosPorPagina%>"
+			paginaSeleccionada="<%=paginaSeleccionada%>" idioma="<%=idioma%>"
+			modo="buscarPor" clase="paginator"
+			divStyle="position:absolute; width:100%; height:20; z-index:3; bottom:0px; left: 0px"
+			distanciaPaginas="" action="<%=action%>" />
 	<% } %>
-			</siga:Table>
 
-			
-			<%if ( hm.get("datos")!=null && !hm.get("datos").equals("")){%>
-	     
-		        <siga:Paginador totalRegistros="<%=totalRegistros%>" 
-								registrosPorPagina="<%=registrosPorPagina%>" 
-								paginaSeleccionada="<%=paginaSeleccionada%>" 
-								idioma="<%=idioma%>"
-								modo="buscarPor"								
-								clase="paginator" 
-								divStyle="position:absolute; width:100%; height:20; z-index:3; bottom:0px; left: 0px"
-								distanciaPaginas=""
-								action="<%=action%>" />
-      <%  }%>
-
-<!-- INICIO: SUBMIT AREA -->
+	<!-- INICIO: SUBMIT AREA -->
 <iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
 <!-- FIN: SUBMIT AREA -->
 
