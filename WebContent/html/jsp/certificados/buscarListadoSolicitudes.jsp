@@ -100,20 +100,17 @@
 		}
 		
 		function generar(fila) { // PIDE CONFIRMACION
-			if(confirm('<siga:Idioma key="facturacion.seleccionSerie.literal.generarCertificado"/>')) { 
-				sub();
-			   	var datos = document.getElementById('tablaDatosDinamicosD');
-			    datos.value = ""; 
-			    preparaDatos(fila,'tablaDatos', datos);
-	
-				var oCheck = document.getElementsByName("chkPDF");
-				SolicitudesCertificadosForm.idsTemp.value=oCheck[fila-1].value;
-				// PDM Ahora se hace una comprobacion previa, si solo existe una plantilla no se muestra la ventana modal y se genera directamente el certificado, si hay mas de una se muestra la ventana modal para elegir una plantilla.
-				SolicitudesCertificadosForm.modo.value="comprobarNumPlantillas";
-				SolicitudesCertificadosForm.target="submitArea";
-				SolicitudesCertificadosForm.submit();
-		   		fin();
-			}
+			sub();
+		   	var datos = document.getElementById('tablaDatosDinamicosD');
+		    datos.value = ""; 
+		    preparaDatos(fila,'tablaDatos', datos);
+
+			var oCheck = document.getElementsByName("chkPDF");
+			SolicitudesCertificadosForm.idsTemp.value=oCheck[fila-1].value;
+			// PDM Ahora se hace una comprobacion previa, si solo existe una plantilla no se muestra la ventana modal y se genera directamente el certificado, si hay mas de una se muestra la ventana modal para elegir una plantilla.
+			SolicitudesCertificadosForm.modo.value="comprobarNumPlantillas";
+			SolicitudesCertificadosForm.target="submitArea";
+			SolicitudesCertificadosForm.submit();
 		}
 
 		function enviar(fila) {	
