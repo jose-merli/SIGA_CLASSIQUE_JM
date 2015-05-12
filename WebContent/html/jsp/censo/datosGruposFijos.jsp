@@ -29,11 +29,10 @@
 <%@ page import="com.siga.tlds.FilaExtElement"%>
 <%@ page import="com.atos.utils.*"%>
 <%@ page import="com.siga.Utilidades.*"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+
 <!-- JSP -->
 <% 
 	String app=request.getContextPath(); 
-	
 	String estilo="box";
 	boolean desactivado = true;
 	String accion = "";
@@ -63,15 +62,10 @@
 
 %>
 
-
-
 <!-- HEAD -->
-
 		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
-	
 	<!-- Incluido jquery en siga.js -->
-	
 	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js?v=${sessionScope.VERSIONJS}'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
 
 
@@ -129,18 +123,19 @@
 					<siga:ConjCampos leyenda="censo.datosGruposFijos.literal.GruposFijos">
 						<table class="tablaCampos" border="0" width="100%">
 							<tr>
-								<td class="labelText"><siga:Idioma
-										key="gratuita.mantenimientoTablasMaestra.literal.nombre" />&nbsp;(*)
+								<td class="labelText">
+									<siga:Idioma key="gratuita.mantenimientoTablasMaestra.literal.nombre" />&nbsp;(*)
 								</td>
-								<td><html:text name="MantenimientoGruposFijosForm"
-										property="nombre" size="80" maxlength="100"
-										readonly="<%=desactivado %>" styleClass="<%=estilo%>"></html:text>
+								<td>
+									<html:text name="MantenimientoGruposFijosForm" property="nombre" size="80" maxlength="100" readonly="<%=desactivado %>" styleClass="<%=estilo%>" />
 								</td>
 							</tr>
 							<%if (!modo.equalsIgnoreCase("NUEVO")) { %>
 							<tr>
 								<td class="labelText"><siga:Idioma key="censo.gestion.grupos.literal.identificador" /></td>
-								<td><html:text name="MantenimientoGruposFijosForm" property="idGrupo" size="80" maxlength="100" readonly="true"	styleClass="boxConsulta"></html:text></td>
+								<td>
+									<html:text name="MantenimientoGruposFijosForm" property="idGrupo" size="80" maxlength="100" readonly="true"	styleClass="boxConsulta"/>
+								</td>
 							</tr>
 							<%}%>
 						</table>
@@ -151,7 +146,7 @@
 	</html:form>
 	<!-- FIN: CAMPOS -->		
 	
-	<siga:ConjBotonesAccion botones="<%=botones%>" modo="<%=accion%>" clase="botonesDetalle" />
+	<siga:ConjBotonesAccion botones="<%=botones%>" modo="<%=accion%>" clase="botonesDetalle"/>
 
 <!-- FIN ******* CAPA DE PRESENTACION ****** -->
 			
