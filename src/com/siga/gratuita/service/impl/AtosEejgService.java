@@ -191,7 +191,7 @@ public class AtosEejgService extends JtaBusinessServiceTemplate
 		
 		return mapInformes;
 	}
-	public Map<Integer, Map<String, String>> getDatosInformeEejgMultiplesEjg(String datosMultiplesEjg,UsrBean usr){
+	public Map<Integer, Map<String, String>> getDatosInformeEejgMultiplesEjg(String datosMultiplesEjg,String longitudNumEjg,UsrBean usr){
 		InformeEejg informe = new InformeEejg (usr);
 		Vector<Hashtable<String, String>> vDatosMultiplesEjg = null;
 		try {
@@ -252,7 +252,7 @@ public class AtosEejgService extends JtaBusinessServiceTemplate
 			unidadFamiliar.setPeticionEejg(peticionEejg);
 			List<DefinirUnidadFamiliarEJGForm> alUnidadFamiliar = null;
 			try {
-				alUnidadFamiliar = admUnidadFamiliar.getUnidadFamiliar(unidadFamiliar.getUnidadFamiliarEjgForm(), usr).getUnidadFamiliar();
+				alUnidadFamiliar = admUnidadFamiliar.getUnidadFamiliar(unidadFamiliar.getUnidadFamiliarEjgForm(),longitudNumEjg, usr).getUnidadFamiliar();
 			} catch (ClsExceptions e) {
 				throw new BusinessException(e.getMessage());
 			}

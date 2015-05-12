@@ -829,7 +829,7 @@ public class EnvioInformesGenericos extends MasterReport {
 			Hashtable htCabeceraInforme = null;
 			Hashtable htPersonas = admDesignas
 					.getPersonasSalidaInformeJustificacion(
-							informeJustificacionMasivaForm, true);
+							informeJustificacionMasivaForm, this.longitudNumEjg!=null?longitudNumEjg:"5",true);
 			if (htPersonas == null || htPersonas.size() < 1) {
 				throw new SIGAException("messages.informes.ficheroVacio");
 
@@ -8254,7 +8254,7 @@ public class EnvioInformesGenericos extends MasterReport {
 	
 					Hashtable htPersonas = admDesignas
 							.getPersonasSalidaInformeJustificacion(
-									informeJustificacionMasivaForm, false);
+									informeJustificacionMasivaForm,this.longitudNumEjg!=null?this.longitudNumEjg:"5", false);
 	
 					String idioma = null;
 					

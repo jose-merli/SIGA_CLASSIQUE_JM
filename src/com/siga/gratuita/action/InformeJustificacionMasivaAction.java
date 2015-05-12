@@ -16,6 +16,7 @@ import javax.transaction.UserTransaction;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.redabogacia.sigaservices.app.AppConstants.PARAMETRO;
 import org.redabogacia.sigaservices.app.util.ReadProperties;
 import org.redabogacia.sigaservices.app.util.SIGAReferences;
 
@@ -661,6 +662,7 @@ public class InformeJustificacionMasivaAction extends MasterAction {
 			request.setAttribute("CAMBIAR_COLOR", (cambiarColorEjgs!=null && cambiarColorEjgs.equalsIgnoreCase(ClsConstants.DB_TRUE)));
 		}
 		
+		
 		String editarDesignaLetrados = paramAdm.getValor (usrBean.getLocation (), ClsConstants.MODULO_SJCS, ClsConstants.GEN_PARAM_JUSTIFICACION_EDITAR_DESIGNA_LETRADOS, "0");
 		
 		request.setAttribute("EDITAR_DESIGNA_LETRADOS",editarDesignaLetrados);
@@ -756,8 +758,8 @@ public class InformeJustificacionMasivaAction extends MasterAction {
 				f.setIncluirEjgNoFavorable(codIncluirEjgNoFavorable);
 				f.setIncluirEjgSinResolucion(codIncluirEjgSinResolucion);
 				
-				
-				 PaginadorBind paginador = admDesignas.getDesignasJustificacionPaginador(f,false);
+				String longitudNumEjg = (String) request.getSession().getAttribute(PARAMETRO.LONGITUD_CODEJG.toString());
+				 PaginadorBind paginador = admDesignas.getDesignasJustificacionPaginador(f,longitudNumEjg,false);
 				
 				
 				if (paginador!=null&& paginador.getNumeroTotalRegistros()>0){

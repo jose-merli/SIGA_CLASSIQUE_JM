@@ -129,9 +129,7 @@ public class ScsUnidadFamiliarEJGAdm extends MasterBeanAdministrador {
 	 */
 	public Hashtable prepararInsert (Hashtable entrada)throws ClsExceptions 
 	{
-		String values;	
 		RowsContainer rc = null;		
-		int contador = 0;
 		
 		try { 
 			rc = new RowsContainer();		
@@ -159,9 +157,7 @@ public class ScsUnidadFamiliarEJGAdm extends MasterBeanAdministrador {
 	
 	public ScsUnidadFamiliarEJGBean prepararInsert (ScsUnidadFamiliarEJGBean entrada)throws ClsExceptions 
 	{
-		String values;	
 		RowsContainer rc = null;		
-		int contador = 0;
 		
 		try { 
 			rc = new RowsContainer();		
@@ -361,7 +357,7 @@ public class ScsUnidadFamiliarEJGAdm extends MasterBeanAdministrador {
 		return this.selectGenerico(consultaTUF);
 	}
 	
-	public DefinirUnidadFamiliarEJGForm getUnidadFamiliar(DefinirUnidadFamiliarEJGForm unidadFamiliarForm,UsrBean usrBean)throws ClsExceptions{
+	public DefinirUnidadFamiliarEJGForm getUnidadFamiliar(DefinirUnidadFamiliarEJGForm unidadFamiliarForm,String longitudNumEjg,UsrBean usrBean)throws ClsExceptions{
 		
 		
 		ScsEJGBean ejg = unidadFamiliarForm.getEjg();
@@ -383,6 +379,8 @@ public class ScsUnidadFamiliarEJGAdm extends MasterBeanAdministrador {
 		sql.append(" ,eejg.idpeticion , eejg.estado ,eejg.idxml ,eejg.idpeticion, eejg.csv ");
 		sql.append(" ,eejg.idioma ,eejg.fechaconsulta,TO_CHAR(eejg.fechapeticion,'DD/MM/YYYY') FECHAPETICION ");
 		sql.append(" ,USU.DESCRIPCION DESCRIPCIONUSUARIO,USU.NIF NIFUSUARIO ");
+		sql.append(",LPAD( " + ScsEJGBean.C_NUMEJG + ", "+longitudNumEjg+",0)" + ScsEJGBean.C_NUMEJG) ;
+		
 		
 		sql.append(" FROM SCS_UNIDADFAMILIAREJG familia, SCS_PERSONAJG persona,scs_ejg ejg, scs_eejg_peticiones eejg,ADM_USUARIOS USU ");
 		sql.append(" WHERE familia.IDINSTITUCION = :");
@@ -464,6 +462,7 @@ public class ScsUnidadFamiliarEJGAdm extends MasterBeanAdministrador {
     			for (int i = 0; i < rc.size(); i++){
             		Row fila = (Row) rc.get(i);
             		Hashtable<String, Object> htFila=fila.getRow();
+            		ejg.setNumEJG((String)htFila.get(ScsEJGBean.C_NUMEJG));
             		unidadFamiliar = (ScsUnidadFamiliarEJGBean)this.hashTableToBean(htFila);
             		personaJG = (ScsPersonaJGBean) admPersonaJG.hashTableToBean(htFila);
             		

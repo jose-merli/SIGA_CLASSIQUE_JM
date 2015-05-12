@@ -19,6 +19,7 @@ import javax.transaction.UserTransaction;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.redabogacia.sigaservices.app.AppConstants.PARAMETRO;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
@@ -185,10 +186,7 @@ public class DefinirUnidadFamiliarEJGAction extends MasterAction {
 	}
 	
 	protected String editar2(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
-		Vector resultado = null;
 		Vector resultadoTF = new Vector();
-		String idinstitucion = "";
-		String idpersona = "";
 		UsrBean usr 			= (UsrBean)request.getSession().getAttribute("USRBEAN");
 		DefinirUnidadFamiliarEJGForm miForm = (DefinirUnidadFamiliarEJGForm)formulario;
 		ScsTelefonosPersonaJGAdm admBeanTlf =  new ScsTelefonosPersonaJGAdm(this.getUserBean(request));
@@ -336,8 +334,6 @@ public class DefinirUnidadFamiliarEJGAction extends MasterAction {
 			else 
 			{
 				ScsPersonaJGAdm admBeanPersona =  new ScsPersonaJGAdm(this.getUserBean(request));
-				ScsEJGAdm admBeanEJG =  new ScsEJGAdm(this.getUserBean(request));
-				Vector ejg = new Vector();				
 								
 				miHash.put(ScsPersonaJGBean.C_FECHANACIMIENTO,GstDate.getApplicationFormatDate(usr.getLanguage(),miHash.get(ScsPersonaJGBean.C_FECHANACIMIENTO).toString()));
 				
@@ -439,7 +435,6 @@ public class DefinirUnidadFamiliarEJGAction extends MasterAction {
 		UserTransaction tx=null;		
 		Hashtable miHash = new Hashtable(), hashOld = new Hashtable();		
 		DefinirUnidadFamiliarEJGForm miForm = (DefinirUnidadFamiliarEJGForm)formulario;		
-		ScsPersonaJGBean persona = new ScsPersonaJGBean();		
 		String forward = "";
 		
 		try {
@@ -447,9 +442,6 @@ public class DefinirUnidadFamiliarEJGAction extends MasterAction {
 			miHash = miForm.getDatos();
 			ScsPersonaJGAdm admBeanPersona =  new ScsPersonaJGAdm(this.getUserBean(request));
 			ScsUnidadFamiliarEJGAdm admUnidadFamiliar = new ScsUnidadFamiliarEJGAdm(this.getUserBean(request));
-			Vector ejg = new Vector();
-			Vector unidad = new Vector();
-						
 			miHash.put(ScsPersonaJGBean.C_FECHANACIMIENTO,GstDate.getApplicationFormatDate(usr.getLanguage(),miHash.get(ScsPersonaJGBean.C_FECHANACIMIENTO).toString()));
 			
 			tx=usr.getTransaction();
@@ -520,7 +512,6 @@ public class DefinirUnidadFamiliarEJGAction extends MasterAction {
 		UsrBean usr=(UsrBean)request.getSession().getAttribute("USRBEAN");
 		UserTransaction tx=null;
 		
-		Vector ocultos = formulario.getDatosTablaOcultos(0);			
 		ScsUnidadFamiliarEJGAdm admBean =  new ScsUnidadFamiliarEJGAdm(this.getUserBean(request));
 		DefinirUnidadFamiliarEJGForm miForm = (DefinirUnidadFamiliarEJGForm) formulario; 
 		
@@ -558,6 +549,7 @@ public class DefinirUnidadFamiliarEJGAction extends MasterAction {
 
 		
 		try {
+			String longitudNumEjg = (String) request.getSession().getAttribute(PARAMETRO.LONGITUD_CODEJG.toString());
 			ScsEJGAdm admEJG = new ScsEJGAdm(this.getUserBean(request));
 			Hashtable<String, Object> miHash = new Hashtable<String, Object>();
 			UsrBean usr=(UsrBean)request.getSession().getAttribute("USRBEAN");	
@@ -630,7 +622,7 @@ public class DefinirUnidadFamiliarEJGAction extends MasterAction {
 			if (ejg.getIdPersonaJG()!=null ){
 				ScsUnidadFamiliarEJGAdm admUnidadFamiliar = new ScsUnidadFamiliarEJGAdm(usr);;
 
-				miForm = admUnidadFamiliar.getUnidadFamiliar(miForm, usr);
+				miForm = admUnidadFamiliar.getUnidadFamiliar(miForm, longitudNumEjg,usr);
 				
 				
 			}
@@ -755,7 +747,8 @@ public class DefinirUnidadFamiliarEJGAction extends MasterAction {
 		try {
 			BusinessManager bm = getBusinessManager();
 			EejgService eEjgS = (EejgService)bm.getService(EejgService.class);
-			Map<Integer, Map<String, String>> mapInformeEejg = eEjgS.getDatosInformeEejgMultiplesEjg(miForm.getDatosInforme(),usr);
+			String longitudNumEjg = (String) request.getSession().getAttribute(PARAMETRO.LONGITUD_CODEJG.toString());
+			Map<Integer, Map<String, String>> mapInformeEejg = eEjgS.getDatosInformeEejgMultiplesEjg(miForm.getDatosInforme(),longitudNumEjg,usr);
 			if(mapInformeEejg==null || mapInformeEejg.size()==0){
 				//mhg - Inc 9/08/2012
 				//return exitoModalSinRefresco("gratuita.eejg.message.ningunInforme", request);

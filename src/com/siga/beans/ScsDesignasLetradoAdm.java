@@ -180,15 +180,15 @@ public class ScsDesignasLetradoAdm extends MasterBeanAdministrador {
 	}
 	
 	
-	private PaginadorBind getDesignasPendientesJustificacionPaginador(InformeJustificacionMasivaForm formulario,boolean isInforme)throws ClsExceptions,SIGAException {
+	private PaginadorBind getDesignasPendientesJustificacionPaginador(InformeJustificacionMasivaForm formulario,String longitudNumEjg,boolean isInforme)throws ClsExceptions,SIGAException {
 		PaginadorBind paginador=null;
 		try {
 			Acumulador acumula = new Acumulador();
-			List<DesignaForm> designasList = getDesignasJustificacion(formulario,acumula,isInforme);
+			List<DesignaForm> designasList = getDesignasJustificacion(formulario,acumula,longitudNumEjg,isInforme);
 			
 			if(designasList!=null && designasList.size()>0){
 				Hashtable codigosHashtable = new Hashtable();
-				String sqlDesignas = getQueryDesignasPendientesJustificacion(designasList,formulario,codigosHashtable,isInforme);
+				String sqlDesignas = getQueryDesignasPendientesJustificacion(designasList,formulario,codigosHashtable,longitudNumEjg,isInforme);
 				paginador = new PaginadorBind(sqlDesignas.toString(),codigosHashtable);
 			 }else{
 				 paginador = null;
@@ -198,7 +198,8 @@ public class ScsDesignasLetradoAdm extends MasterBeanAdministrador {
 		}
 		return paginador;                        
 	}
-	private String getQueryBaseDesignasPendientesJustificacion(String tipoResolucionDesigna,InformeJustificacionMasivaForm formulario, boolean isInforme,Hashtable codigos){
+	private String getQueryBaseDesignasPendientesJustificacion(String tipoResolucionDesigna,InformeJustificacionMasivaForm formulario, 
+			boolean isInforme,Hashtable codigos, String longitudNumEjg ){
 		
 		
 	    int contador=codigos.size();
@@ -215,7 +216,9 @@ public class ScsDesignasLetradoAdm extends MasterBeanAdministrador {
 		contador++;
 		codigos.put(new Integer(contador),formulario.getIdInstitucion());
 		sql.append(contador);
-		sql.append(",d.idturno,d.anio,d.numero) AS EXPEDIENTES, ");
+		sql.append(",d.idturno,d.anio,d.numero,");
+		sql.append(Integer.parseInt(longitudNumEjg));
+		sql.append(") AS EXPEDIENTES, ");
 		sql.append(" TO_CHAR(D.FECHAENTRADA,'dd/mm/yyyy') FECHADESIGNA, ");
 		sql.append(" TO_CHAR(D.FECHAENTRADA,'yyyy_mm_dd') FECHAORDEN, ");
 		sql.append(" D.NUMPROCEDIMIENTO ASUNTO, ");
@@ -288,13 +291,13 @@ public class ScsDesignasLetradoAdm extends MasterBeanAdministrador {
 		
 	}
 	
-private String getQueryDesignasPendientesJustificacion(List<DesignaForm> designasList,InformeJustificacionMasivaForm formulario,Hashtable codigosHashtable,boolean isInforme) throws ClsExceptions{
+private String getQueryDesignasPendientesJustificacion(List<DesignaForm> designasList,InformeJustificacionMasivaForm formulario,Hashtable codigosHashtable,String longitudNumEjg,boolean isInforme) throws ClsExceptions{
 		
 		int contador = 0;
 		ReadProperties rp3= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
 		StringBuffer sqlDesignas = new StringBuffer();
 		sqlDesignas.append(" SELECT * from (");
-		sqlDesignas.append(getQueryBaseDesignasPendientesJustificacion(this.resolucionDesignaFavorable, formulario, isInforme, codigosHashtable));
+		sqlDesignas.append(getQueryBaseDesignasPendientesJustificacion(this.resolucionDesignaFavorable, formulario, isInforme, codigosHashtable,longitudNumEjg));
 		String codIncluirEjgNoFavorable = formulario.getIncluirEjgNoFavorable();
 		String codIncluirEjgSinResolucion = formulario.getIncluirEjgSinResolucion();
 		String codIncluirSinEJG = formulario.getIncluirSinEJG();
@@ -303,21 +306,21 @@ private String getQueryDesignasPendientesJustificacion(List<DesignaForm> designa
 		// o cuando la restriccion nos lo diga
 		if(!formulario.isActivarRestriccionesFicha() || (codIncluirEjgPteCAJG!=null && !codIncluirEjgPteCAJG.equals(ClsConstants.DB_FALSE))){
 			sqlDesignas.append(" UNION ");
-			sqlDesignas.append(getQueryBaseDesignasPendientesJustificacion(this.resolucionDesignaPteCAJG, formulario, isInforme, codigosHashtable));
+			sqlDesignas.append(getQueryBaseDesignasPendientesJustificacion(this.resolucionDesignaPteCAJG, formulario, isInforme, codigosHashtable,longitudNumEjg));
 		}
 		
 		if(!formulario.isActivarRestriccionesFicha() || (codIncluirEjgNoFavorable!=null && !codIncluirEjgNoFavorable.equals(ClsConstants.DB_FALSE))){
 			sqlDesignas.append(" UNION ");
-			sqlDesignas.append(getQueryBaseDesignasPendientesJustificacion(this.resolucionDesignaNoFavorable, formulario, isInforme, codigosHashtable));
+			sqlDesignas.append(getQueryBaseDesignasPendientesJustificacion(this.resolucionDesignaNoFavorable, formulario, isInforme, codigosHashtable,longitudNumEjg));
 		}
 		if(!formulario.isActivarRestriccionesFicha() ||(codIncluirEjgSinResolucion!=null && !codIncluirEjgSinResolucion.equals(ClsConstants.DB_FALSE))){
 			sqlDesignas.append(" UNION ");
-			sqlDesignas.append(getQueryBaseDesignasPendientesJustificacion(this.resolucionDesignaSinResolucion, formulario, isInforme, codigosHashtable));
+			sqlDesignas.append(getQueryBaseDesignasPendientesJustificacion(this.resolucionDesignaSinResolucion, formulario, isInforme, codigosHashtable,longitudNumEjg));
 			
 		}
 		if(!formulario.isActivarRestriccionesFicha() ||(codIncluirSinEJG!=null && !codIncluirSinEJG.equals(ClsConstants.DB_FALSE))){
 			sqlDesignas.append(" UNION ");
-			sqlDesignas.append(getQueryBaseDesignasPendientesJustificacion(this.resolucionDesignaSinEjg, formulario, isInforme, codigosHashtable));
+			sqlDesignas.append(getQueryBaseDesignasPendientesJustificacion(this.resolucionDesignaSinEjg, formulario, isInforme, codigosHashtable,longitudNumEjg));
 			
 		}
 		
@@ -356,11 +359,11 @@ private String getQueryDesignasPendientesJustificacion(List<DesignaForm> designa
 	
 	
 	
-	private PaginadorBind getTodasDesignasJustificacionPaginador(InformeJustificacionMasivaForm formulario,boolean isInforme)throws ClsExceptions,SIGAException {
+	private PaginadorBind getTodasDesignasJustificacionPaginador(InformeJustificacionMasivaForm formulario,String longitudNumEjg,boolean isInforme)throws ClsExceptions,SIGAException {
 		PaginadorBind paginador=null;
 		try {
 			Hashtable codigosHashtable = new Hashtable();
-			String queryDesignas = getQueryJustificacion(formulario,isInforme, codigosHashtable);
+			String queryDesignas = getQueryJustificacion(formulario,isInforme, codigosHashtable, longitudNumEjg);
 			paginador = new PaginadorBind(queryDesignas,codigosHashtable);
 		} catch (Exception e) {
 			throw new ClsExceptions (e, "Error al ejecutar consulta getTodasDesignasJustificacionPaginador.");
@@ -368,36 +371,36 @@ private String getQueryDesignasPendientesJustificacion(List<DesignaForm> designa
 		return paginador;                        
 	}
 	
-	public PaginadorBind getDesignasJustificacionPaginador(InformeJustificacionMasivaForm formulario,boolean isInforme) throws ClsExceptions, SIGAException{
+	public PaginadorBind getDesignasJustificacionPaginador(InformeJustificacionMasivaForm formulario,String longitudNumEjg,boolean isInforme) throws ClsExceptions, SIGAException{
 		PaginadorBind paginador=null;
 		boolean isMostrarJustificacionesPtes = formulario.getMostrarTodas()!=null && formulario.getMostrarTodas().equals("true");
 		if(isMostrarJustificacionesPtes){
-			paginador = getDesignasPendientesJustificacionPaginador(formulario, isInforme);
+			paginador = getDesignasPendientesJustificacionPaginador(formulario,longitudNumEjg, isInforme);
 		}else{
-			paginador = getTodasDesignasJustificacionPaginador(formulario, isInforme);
+			paginador = getTodasDesignasJustificacionPaginador(formulario, longitudNumEjg, isInforme);
 		}
 		return paginador;                        
 	}	
 	
 	
-	private Vector getDesignasLetradoJustificacion (InformeJustificacionMasivaForm formulario,Acumulador	acumula,boolean isInforme)  throws ClsExceptions, SIGAException 
+	private Vector getDesignasLetradoJustificacion (InformeJustificacionMasivaForm formulario,Acumulador	acumula,String longitudNumEjg,boolean isInforme)  throws ClsExceptions, SIGAException 
 	{
 		boolean isMostrarJustificacionesPtes = formulario.getMostrarTodas()!=null && formulario.getMostrarTodas().equals("true");
 		
 		if(isMostrarJustificacionesPtes){
 			
 			
-			List<DesignaForm> designasList = getDesignasJustificacion(formulario,acumula,isInforme);
+			List<DesignaForm> designasList = getDesignasJustificacion(formulario,acumula,longitudNumEjg,isInforme);
 			
 			if(designasList!=null && designasList.size()>0){
 				Hashtable codigosHashtable = new Hashtable();
-				String sqlDesignas = getQueryDesignasPendientesJustificacion(designasList,formulario,codigosHashtable,isInforme);
+				String sqlDesignas = getQueryDesignasPendientesJustificacion(designasList,formulario,codigosHashtable,longitudNumEjg,isInforme);
 				return this.selectGenericoBind(sqlDesignas, codigosHashtable);
 			}else 
 				return new Vector();
 		}else{
 			Hashtable codigosHashtable = new Hashtable();
-			String sqlDesignas = getQueryJustificacion(formulario,isInforme,codigosHashtable);
+			String sqlDesignas = getQueryJustificacion(formulario,isInforme,codigosHashtable,longitudNumEjg);
 			return this.selectGenericoBind(sqlDesignas, codigosHashtable);
 			
 		}
@@ -408,7 +411,7 @@ private String getQueryDesignasPendientesJustificacion(List<DesignaForm> designa
 	
 	
 	
-	public Hashtable getPersonasSalidaInformeJustificacion(InformeJustificacionMasivaForm formulario,boolean isInforme) throws ClsExceptions  
+	public Hashtable getPersonasSalidaInformeJustificacion(InformeJustificacionMasivaForm formulario,String longitudNumEjg,boolean isInforme) throws ClsExceptions  
 	{	 
 		
 		Hashtable htPersona = new Hashtable();
@@ -424,7 +427,7 @@ private String getQueryDesignasPendientesJustificacion(List<DesignaForm> designa
 			//vSalida = new Vector();	
 			ClsLogging.writeFileLog(Calendar.getInstance().getTimeInMillis() + ",==> SIGA: INICIO Consultas Justificacion",10);
 			Acumulador acumula = new Acumulador();
-			Vector vDesigna = getDesignasLetradoJustificacion(formulario,acumula,isInforme);
+			Vector vDesigna = getDesignasLetradoJustificacion(formulario,acumula,longitudNumEjg,isInforme);
 			
 			for (int j = 0; j < vDesigna.size(); j++) {
 				
@@ -646,7 +649,7 @@ private String getQueryDesignasPendientesJustificacion(List<DesignaForm> designa
 
 	}
 	
-	public List<DesignaForm> getDesignasJustificacion(InformeJustificacionMasivaForm formulario,Acumulador acumula,boolean isInforme) throws ClsExceptions  
+	public List<DesignaForm> getDesignasJustificacion(InformeJustificacionMasivaForm formulario,Acumulador acumula,String longitudNumEjg,boolean isInforme) throws ClsExceptions  
 	{	 
 		
 		Hashtable htPersona = new Hashtable();
@@ -667,7 +670,7 @@ private String getQueryDesignasPendientesJustificacion(List<DesignaForm> designa
 		
 		try {
 			//vSalida = new Vector();	
-			designaList = getDesignas(formulario,isInforme); 
+			designaList = getDesignas(formulario,longitudNumEjg,isInforme); 
 			DesignaForm designaForm = null;
 			designaFormList = new ArrayList<DesignaForm>();
 			Iterator iteDesignas = designaList.iterator();
@@ -962,10 +965,10 @@ private String getQueryDesignasPendientesJustificacion(List<DesignaForm> designa
 	}
 	
 	
-	private List<Hashtable> getDesignas(InformeJustificacionMasivaForm formulario,boolean isInforme)  throws ClsExceptions, SIGAException 
+	private List<Hashtable> getDesignas(InformeJustificacionMasivaForm formulario,String longitudNumEjg,boolean isInforme)  throws ClsExceptions, SIGAException 
 	{
 	    Hashtable codigos = new Hashtable();
-		String sql = getQueryJustificacion(formulario,isInforme, codigos);
+		String sql = getQueryJustificacion(formulario,isInforme, codigos,longitudNumEjg);
 	
 		return (Vector<Hashtable>)this.selectGenericoBind(sql, codigos);
 	}
@@ -1200,7 +1203,7 @@ private String getQueryDesignasPendientesJustificacion(List<DesignaForm> designa
 		
 	}
 	
-	private String getQueryBaseJustificacion(String tipoResolucionDesigna,InformeJustificacionMasivaForm formulario, boolean isInforme,Hashtable codigos){
+	private String getQueryBaseJustificacion(String tipoResolucionDesigna,InformeJustificacionMasivaForm formulario, boolean isInforme,Hashtable codigos,String longitudNumEjg){
 		StringBuffer extra = new StringBuffer("");
 		
 		boolean isMostrarJustificacionesPtes = formulario.getMostrarTodas()!=null && formulario.getMostrarTodas().equals("true");
@@ -1223,7 +1226,9 @@ private String getQueryDesignasPendientesJustificacion(List<DesignaForm> designa
 			contador++;
 			codigos.put(new Integer(contador),formulario.getIdInstitucion());
 			sql.append(contador);
-			sql.append(",d.idturno,d.anio,d.numero) AS EXPEDIENTES, ");
+			sql.append(",d.idturno,d.anio,d.numero,");
+			sql.append(Integer.parseInt(longitudNumEjg));
+			sql.append(") AS EXPEDIENTES, ");
 			sql.append(" D.NUMPROCEDIMIENTO ASUNTO, ");
 			sql.append(" f_siga_getdefendidosdesigna(:");
 			contador++;
@@ -1436,7 +1441,7 @@ private String getQueryDesignasPendientesJustificacion(List<DesignaForm> designa
 		return sql.toString();
 		
 	}
-	private String getQueryJustificacion(InformeJustificacionMasivaForm formulario, boolean isInforme,Hashtable codigos)throws ClsExceptions{
+	private String getQueryJustificacion(InformeJustificacionMasivaForm formulario, boolean isInforme,Hashtable codigos,String longitudNumEjg)throws ClsExceptions{
 		
 		StringBuffer extra = new StringBuffer("");
 		
@@ -1457,7 +1462,7 @@ private String getQueryDesignasPendientesJustificacion(List<DesignaForm> designa
 		
 		
 		sql.append(" SELECT * from (");
-		sql.append(getQueryBaseJustificacion(this.resolucionDesignaFavorable, formulario, isInforme, codigos));
+		sql.append(getQueryBaseJustificacion(this.resolucionDesignaFavorable, formulario, isInforme, codigos,longitudNumEjg));
 		String codIncluirEjgNoFavorable = formulario.getIncluirEjgNoFavorable();
 		String codIncluirEjgSinResolucion = formulario.getIncluirEjgSinResolucion();
 		String codIncluirSinEJG = formulario.getIncluirSinEJG();
@@ -1466,20 +1471,20 @@ private String getQueryDesignasPendientesJustificacion(List<DesignaForm> designa
 		// o cuando la restriccion nos lo diga
 		if(!formulario.isActivarRestriccionesFicha() || (codIncluirEjgPteCAJG!=null && !codIncluirEjgPteCAJG.equals(ClsConstants.DB_FALSE))){
 			sql.append(" UNION ");
-			sql.append(getQueryBaseJustificacion(this.resolucionDesignaPteCAJG, formulario, isInforme, codigos));
+			sql.append(getQueryBaseJustificacion(this.resolucionDesignaPteCAJG, formulario, isInforme, codigos,longitudNumEjg));
 		}
 		if(!formulario.isActivarRestriccionesFicha() || (codIncluirEjgNoFavorable!=null && !codIncluirEjgNoFavorable.equals(ClsConstants.DB_FALSE))){
 			sql.append(" UNION ");
-			sql.append(getQueryBaseJustificacion(this.resolucionDesignaNoFavorable, formulario, isInforme, codigos));
+			sql.append(getQueryBaseJustificacion(this.resolucionDesignaNoFavorable, formulario, isInforme, codigos,longitudNumEjg));
 		}
 		if(!formulario.isActivarRestriccionesFicha() ||(codIncluirEjgSinResolucion!=null && !codIncluirEjgSinResolucion.equals(ClsConstants.DB_FALSE))){
 			sql.append(" UNION ");
-			sql.append(getQueryBaseJustificacion(this.resolucionDesignaSinResolucion, formulario, isInforme, codigos));
+			sql.append(getQueryBaseJustificacion(this.resolucionDesignaSinResolucion, formulario, isInforme, codigos,longitudNumEjg));
 			
 		}
 		if(!formulario.isActivarRestriccionesFicha() ||(codIncluirSinEJG!=null && !codIncluirSinEJG.equals(ClsConstants.DB_FALSE))){
 			sql.append(" UNION ");
-			sql.append(getQueryBaseJustificacion(this.resolucionDesignaSinEjg, formulario, isInforme, codigos));
+			sql.append(getQueryBaseJustificacion(this.resolucionDesignaSinEjg, formulario, isInforme, codigos,longitudNumEjg));
 			
 		}
 		
