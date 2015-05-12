@@ -1060,6 +1060,7 @@ public class MaestroDesignasAction extends MasterAction {
 		
 		Hashtable letradoHashtable = admDesigna.obtenerLetradoDesigna((String)usr.getLocation(), miform.getIdTurno(), miform.getAnio(), miform.getNumero());
 		miform.setLetrado(UtilidadesHash.getString(letradoHashtable, "NCOLEGIADO")+" "+UtilidadesHash.getString(letradoHashtable, "NOMBRE"));
+		miform.setIdLetradoDesignado(UtilidadesHash.getString(letradoHashtable, "IDPERSONA"));
 		Hashtable pkTurnoHashtable = new Hashtable();
 		pkTurnoHashtable.put(ScsTurnoBean.C_IDTURNO, miform.getIdTurno());
 		pkTurnoHashtable.put(ScsTurnoBean.C_IDINSTITUCION, (String)usr.getLocation());
@@ -1120,7 +1121,7 @@ public class MaestroDesignasAction extends MasterAction {
 			
 			if(miform.getIdProcedimiento()!=null && !miform.getIdProcedimiento().equals("")&& !miform.getIdProcedimiento().equals("-1")){
 				htDesigna.put(ScsDesignaBean.C_IDPROCEDIMIENTO,miform.getIdProcedimiento());
-				if(usr.isLetrado()){
+//				if(usr.isLetrado()){
 					fksDesignaHashtable = new Hashtable<String, Object>();
 					fksDesignaHashtable.put("TABLA_FK", ScsProcedimientosBean.T_NOMBRETABLA);
 					fksDesignaHashtable.put("SALIDA_FK", ScsProcedimientosBean.C_NOMBRE);
@@ -1129,27 +1130,26 @@ public class MaestroDesignasAction extends MasterAction {
 					
 					
 					fksDesignaMap.put(ScsDesignaBean.C_IDPROCEDIMIENTO,fksDesignaHashtable);
-				}
-				//htDesigna.put();
+//				}
 			}
 			if(miform.getIdJuzgado()!=null && !miform.getIdJuzgado().equals("")&& !miform.getIdJuzgado().equals("-1")){
 				htDesigna.put(ScsDesignaBean.C_IDJUZGADO, miform.getIdJuzgado());
 				htDesigna.put(ScsDesignaBean.C_IDINSTITUCIONJUZGADO, usr.getLocation());
-				if(usr.isLetrado()){
+//				if(usr.isLetrado()){
 					fksDesignaHashtable = new Hashtable<String, Object>();
 					fksDesignaHashtable.put("TABLA_FK", ScsJuzgadoBean.T_NOMBRETABLA);
 					fksDesignaHashtable.put("SALIDA_FK", ScsJuzgadoBean.C_NOMBRE);
 					fksDesignaHashtable.put(ScsJuzgadoBean.C_IDINSTITUCION, usr.getLocation());
 					fksDesignaHashtable.put(ScsJuzgadoBean.C_IDJUZGADO, miform.getIdJuzgado());
 					fksDesignaMap.put(ScsDesignaBean.C_IDJUZGADO,fksDesignaHashtable);
-				}
+//				}
 				
 			}
 			if (miform.getNig() == null)
 				htDesigna.put(ScsDesignaBean.C_NIG,"");
 			else
 				htDesigna.put(ScsDesignaBean.C_NIG,miform.getNig());
-			if(usr.isLetrado()){
+//			if(usr.isLetrado()){
 				Vector designaPKVector =  designaAdm.selectByPK(htDesigna);
 				ScsDesignaBean scsDesignaBean = (ScsDesignaBean) designaPKVector.get(0);
 				Hashtable designaOriginalHashtable = scsDesignaBean.getOriginalHash();
@@ -1174,10 +1174,10 @@ public class MaestroDesignasAction extends MasterAction {
 				htDesigna.put("fks", fksDesignaMap);
 				List<String> ocultarClaveList = new ArrayList<String>();
 				ocultarClaveList.add(ScsDesignaBean.C_IDINSTITUCIONJUZGADO);
-				designaAdm.updateDirectHistorico(htDesigna, clavesDesigna, camposDesigna,scsDesignaBean.getOriginalHash(),ocultarClaveList);
-			}
-			else
-				designaAdm.updateDirect(htDesigna, clavesDesigna, camposDesigna);
+				designaAdm.updateDirectHistorico(new Long(miform.getIdLetradoDesignado()), htDesigna, clavesDesigna, camposDesigna,scsDesignaBean.getOriginalHash(),ocultarClaveList);
+//			}
+//			else
+//				designaAdm.updateDirect(htDesigna, clavesDesigna, camposDesigna);
 
 		}catch(Exception e){
 			throwExcp("messages.general.error", new String[] {"modulo.gratuita"}, e, null); 

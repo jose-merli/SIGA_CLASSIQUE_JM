@@ -864,7 +864,7 @@ public class ActuacionesDesignasAction extends MasterAction {
 			//Obtener el colegiado designdo activo en la fecha de la actuacion
 			//en lugar del colegiado designado actualmente	
 			ScsDesignasLetradoAdm sdla = new ScsDesignasLetradoAdm(usr);
-			Integer idPersonaActuacion = sdla.obtenerColegiadoDesignadoEnFecha(sdb,miform.getFechaActuacion());
+			Long idPersonaActuacion = sdla.obtenerColegiadoDesignadoEnFecha(sdb,miform.getFechaActuacion());
 			if (idPersonaActuacion == null)
 				return exitoModal("messages.error.designacion.sinLetradoAsignado", request); 
 			hash.put(ScsActuacionDesignaBean.C_IDPERSONACOLEGIADO, idPersonaActuacion);
@@ -917,11 +917,11 @@ public class ActuacionesDesignasAction extends MasterAction {
 			//Valido que el nuevo estado de la acreditacion es correcto:
 			if (multiplesAcreditaciones || this.comprobarAcreditacion(nuevoEstado, false, hash, request, bAplicarRestriccionesActuaciones)) {
 				tx.begin();
-				if(usr.isLetrado()){
+//				if(usr.isLetrado()){
 					hash.put("fks", fksActuacionMap);
-					actuacionDesignaAdm.insertHistorico(hash,getListCamposOcultarHistorico(),ClsConstants.TIPO_CAMBIO_HISTORICO_DESIGNACIONALTAACTUACION);
-				}else
-					actuacionDesignaAdm.insert(hash);
+					actuacionDesignaAdm.insertHistorico(idPersonaActuacion, hash,getListCamposOcultarHistorico(),ClsConstants.TIPO_CAMBIO_HISTORICO_DESIGNACIONALTAACTUACION);
+//				}else
+//					actuacionDesignaAdm.insert(hash);
 				tx.commit();
 				String mensaje = cambiaLetradoDesigna == true ? "gratuita.designas.actuaciones.exitoConCambioLetrado" : "messages.updated.success";
 				forward = exitoModal(mensaje,request); 
@@ -1185,7 +1185,7 @@ public class ActuacionesDesignasAction extends MasterAction {
 			//Obtener el colegiado designdo activo en la fecha de la actuacion
 			//en lugar del colegiado designado actualmente	
 			ScsDesignasLetradoAdm sdla = new ScsDesignasLetradoAdm(usr);
-			Integer idPersonaActuacion = sdla.obtenerColegiadoDesignadoEnFecha(sdb,miform.getFechaActuacion());
+			Long idPersonaActuacion = sdla.obtenerColegiadoDesignadoEnFecha(sdb,miform.getFechaActuacion());
 			if (idPersonaActuacion == null)
 				return exitoModal("messages.error.designacion.sinLetradoAsignado", request); 
 			actuacionModificada.put(ScsActuacionDesignaBean.C_IDPERSONACOLEGIADO, idPersonaActuacion);

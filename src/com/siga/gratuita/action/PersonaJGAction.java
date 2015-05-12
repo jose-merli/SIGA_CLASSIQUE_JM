@@ -201,7 +201,8 @@ public class PersonaJGAction extends MasterAction {
 			
 			UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");
 	     	PersonaJGForm miform = (PersonaJGForm)formulario;
-			
+	     	String action = (String)request.getServletPath();
+	     	boolean isFichaColegial = action.equalsIgnoreCase("/JGR_ContrariosAsistenciaPerJGLetrado.do");
 			// para la clave de la persona JG
 			String idInstitucionJG="", idPersonaJG="";
 			// para la clave de la persona JG (caso de representante)
@@ -318,7 +319,9 @@ public class PersonaJGAction extends MasterAction {
 							ht.put(ScsContrariosAsistenciaBean.C_ANIO,idAnioAsistencia);
 							ht.put(ScsContrariosAsistenciaBean.C_NUMERO,idNumeroAsistencia);
 							ht.put(ScsContrariosAsistenciaBean.C_IDPERSONA,idPersonaJG);
-							if(user.isLetrado()){
+							
+							if(isFichaColegial){
+								ScsAsistenciasAdm scsAsistenciaAdm = new ScsAsistenciasAdm(user);
 								Hashtable<String, Object> asistenciaHashtable = new Hashtable<String, Object>();
 								asistenciaHashtable.put(ScsAsistenciasBean.C_ANIO,idAnioAsistencia);
 								asistenciaHashtable.put(ScsAsistenciasBean.C_NUMERO,idNumeroAsistencia);
@@ -336,7 +339,9 @@ public class PersonaJGAction extends MasterAction {
 								fksAsistenciaHashtable.put(ScsPersonaJGBean.C_IDPERSONA, idPersonaJG);
 								fksAsistenciaMap.put("Contrario",fksAsistenciaHashtable);
 								asistenciaHashtable.put("fks", fksAsistenciaMap);
-								if(!adm.deleteConHistorico(ht,null,campos,asistenciaHashtable))
+								Hashtable<String, Object> asistenciaOriginalHashtable = scsAsistenciaAdm.getHashAsistenciaOriginalParaHistorico(asistenciaHashtable,false, user);
+								
+								if(!adm.deleteConHistorico(Long.valueOf((String)asistenciaOriginalHashtable.get("IDPERSONACOLEGIADO")), ht,null,campos,asistenciaHashtable))
 									throw new ClsExceptions("Error al borrar contrarios asistencia");
 							}else{					
 							
@@ -1993,6 +1998,7 @@ public class PersonaJGAction extends MasterAction {
 			String anio="";
 			String numero="";
 			String tipo="";
+			boolean isFichaColegial = action.equalsIgnoreCase("/JGR_AsistidoAsistenciaLetrado.do") || action.equalsIgnoreCase("/JGR_ContrariosAsistenciaPerJGLetrado.do") ;
 			if((action.equalsIgnoreCase("/JGR_AsistidoAsistenciaLetrado.do"))){
 				// Caso especial para el asistido desde la ficha colegial 
 				anio = miform.getAnioASI();
@@ -2129,7 +2135,7 @@ public class PersonaJGAction extends MasterAction {
 			} else if (relacion.equalsIgnoreCase("guardarDesigna")){
 				mapDestino = guardarRelacionDesigna(mapping, form, request, response);
 			} else if (relacion.equalsIgnoreCase("guardarAsistencia")){
-				mapDestino = guardarRelacionAsistencia(mapping, form, request, response);
+				mapDestino = guardarRelacionAsistencia(mapping, form, request, response,isFichaColegial);
 			} else if (relacion.equalsIgnoreCase("guardarContrariosEjg")){
 				mapDestino = guardarRelacionContrariosEjg(mapping, form, request, response);	
 			} else if (relacion.equalsIgnoreCase("guardarPersona")){
@@ -2742,22 +2748,22 @@ public class PersonaJGAction extends MasterAction {
 			ActionMapping mapping, 		
 			MasterForm formulario, 
 			HttpServletRequest request, 
-			HttpServletResponse response) throws SIGAException 
+			HttpServletResponse response,boolean isFichacolegial) throws SIGAException 
 	{
 			String result = "";
 		try {
 			
 			UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");
 	     	PersonaJGForm miform = (PersonaJGForm)formulario;
-
+	     	
+			
 	     	// clave de la asistencia
 			String idInstitucionASI=miform.getIdInstitucionASI();
 			String anioASI=miform.getAnioASI();
 			String numeroASI=miform.getNumeroASI();
 
 	     	// Datos Persona
-			Hashtable persona= new Hashtable();
-			
+//			Hashtable persona= new Hashtable();
 			ScsContrariosAsistenciaAdm contrariosAsistenciaAdm= new ScsContrariosAsistenciaAdm(this.getUserBean(request));
 			Hashtable contrarioAsistenciaHash = new Hashtable();
 			if(miform.getConceptoE().equals(PersonaJGAction.ASISTENCIA_CONTRARIOS)) {
@@ -2783,58 +2789,60 @@ public class PersonaJGAction extends MasterAction {
 			asistenciaHashtable.put(ScsAsistenciasBean.C_NUMERO,numeroASI);
 			Vector v = admASI.selectByPK(asistenciaHashtable);
 			boolean isCambioAsistido = true;
+			ScsAsistenciasBean beanASI = null;
 			if (v!=null && v.size()>0) {
-				ScsAsistenciasBean beanASI= (ScsAsistenciasBean) v.get(0);
-				if (miform.getConceptoE().equals(PersonaJGAction.ASISTENCIA_ASISTIDO)) {
-					// compruebo si ha cambiado el id persona para la relacion
-					if (beanASI.getIdPersonaJG()!=null && !beanASI.getIdPersonaJG().equals(new Integer(miform.getIdPersonaJG()))) {
-						// guardo el idpersona anterior para buscar las relaciones y actualizarlas
-						idPersonaAnterior = beanASI.getIdPersonaJG().toString();
-					} else {
-						// si no el que borrare sera el mismo, el actual
-						if(beanASI.getIdPersonaJG()!=null)
-							isCambioAsistido = false;
-						idPersonaAnterior = miform.getIdPersonaJG();
-					}
-				} else 
-				if (miform.getConceptoE().equals(PersonaJGAction.ASISTENCIA_CONTRARIOS)) {
-					// en este caso lo cojo del databackup de asistenciacontrario, si esxiste
-					Hashtable oldUF = (Hashtable) dataBackup.get(ScsContrariosAsistenciaBean.T_NOMBRETABLA);
-					if (oldUF!=null) {
-						idPersonaAnterior = (String) oldUF.get(ScsContrariosAsistenciaBean.C_IDPERSONA);
-					} else {
-						idPersonaAnterior = null;
-					}
+				beanASI= (ScsAsistenciasBean) v.get(0);
+			}
+			if (miform.getConceptoE().equals(PersonaJGAction.ASISTENCIA_ASISTIDO)) {
+				// compruebo si ha cambiado el id persona para la relacion
+				if (beanASI.getIdPersonaJG()!=null && !beanASI.getIdPersonaJG().equals(new Integer(miform.getIdPersonaJG()))) {
+					// guardo el idpersona anterior para buscar las relaciones y actualizarlas
+					idPersonaAnterior = beanASI.getIdPersonaJG().toString();
+				} else {
+					// si no el que borrare sera el mismo, el actual
+					if(beanASI.getIdPersonaJG()!=null)
+						isCambioAsistido = false;
+					idPersonaAnterior = miform.getIdPersonaJG();
 				}
-				
-				
-				if (miform.getConceptoE().equals(PersonaJGAction.ASISTENCIA_ASISTIDO)) {
-					// actualizo la personaJG, que sera el interesado en este caso. 
+			} else 
+			if (miform.getConceptoE().equals(PersonaJGAction.ASISTENCIA_CONTRARIOS)) {
+				// en este caso lo cojo del databackup de asistenciacontrario, si esxiste
+				Hashtable oldUF = (Hashtable) dataBackup.get(ScsContrariosAsistenciaBean.T_NOMBRETABLA);
+				if (oldUF!=null) {
+					idPersonaAnterior = (String) oldUF.get(ScsContrariosAsistenciaBean.C_IDPERSONA);
+				} else {
+					idPersonaAnterior = null;
+				}
+			}
+			
+			
+			if (miform.getConceptoE().equals(PersonaJGAction.ASISTENCIA_ASISTIDO)) {
+				// actualizo la personaJG, que sera el interesado en este caso. 
 
-					if(user.isLetrado() && isCambioAsistido){
-						asistenciaHashtable.put(ScsAsistenciasBean.C_IDPERSONAJG, new Integer(miform.getIdPersonaJG()));
-						String[] campos = {ScsAsistenciasBean.C_IDPERSONAJG};
-						Map<String,Hashtable<String, Object>> fksAsistenciaMap = new HashMap<String, Hashtable<String,Object>>(); 
-						//Como el turno es obligarotio
-						Hashtable<String, Object> fksAsistenciaHashtable = new Hashtable<String, Object>();
-						
-						fksAsistenciaHashtable.put("TABLA_FK", ScsPersonaJGBean.T_NOMBRETABLA);
-						fksAsistenciaHashtable.put("SALIDA_FK", ScsPersonaJGBean.C_NOMBRE+"||' '||"+ScsPersonaJGBean.C_APELLIDO1+"||' '||"+ScsPersonaJGBean.C_APELLIDO2  );
-						fksAsistenciaHashtable.put(ScsPersonaJGBean.C_IDINSTITUCION, idInstitucionASI);
-						fksAsistenciaHashtable.put(ScsPersonaJGBean.C_IDPERSONA, new Integer(miform.getIdPersonaJG()));
-						fksAsistenciaMap.put(ScsAsistenciasBean.C_IDPERSONAJG,fksAsistenciaHashtable);
-						asistenciaHashtable.put("fks", fksAsistenciaMap);
-						
-						admASI.updateDirecConHistoricoInsert(null,campos,asistenciaHashtable);
-					}else{
-						beanASI.setIdPersonaJG(new Integer(miform.getIdPersonaJG()));
+				if(isFichacolegial && isCambioAsistido){
+					asistenciaHashtable.put(ScsAsistenciasBean.C_IDPERSONAJG, new Integer(miform.getIdPersonaJG()));
+					String[] campos = {ScsAsistenciasBean.C_IDPERSONAJG};
+					Map<String,Hashtable<String, Object>> fksAsistenciaMap = new HashMap<String, Hashtable<String,Object>>(); 
+					//Como el turno es obligarotio
+					Hashtable<String, Object> fksAsistenciaHashtable = new Hashtable<String, Object>();
 					
-						if (!admASI.updateDirect(beanASI)) {
-							throw new ClsExceptions("Error en update Asistencia. " + admASI.getError());
-						}
+					fksAsistenciaHashtable.put("TABLA_FK", ScsPersonaJGBean.T_NOMBRETABLA);
+					fksAsistenciaHashtable.put("SALIDA_FK", ScsPersonaJGBean.C_NOMBRE+"||' '||"+ScsPersonaJGBean.C_APELLIDO1+"||' '||"+ScsPersonaJGBean.C_APELLIDO2  );
+					fksAsistenciaHashtable.put(ScsPersonaJGBean.C_IDINSTITUCION, idInstitucionASI);
+					fksAsistenciaHashtable.put(ScsPersonaJGBean.C_IDPERSONA, new Integer(miform.getIdPersonaJG()));
+					fksAsistenciaMap.put(ScsAsistenciasBean.C_IDPERSONAJG,fksAsistenciaHashtable);
+					asistenciaHashtable.put("fks", fksAsistenciaMap);
+					
+					admASI.updateDirecConHistoricoInsert(beanASI.getIdPersonaColegiado().longValue(),null,campos,asistenciaHashtable);
+				}else{
+					beanASI.setIdPersonaJG(new Integer(miform.getIdPersonaJG()));
+				
+					if (!admASI.updateDirect(beanASI)) {
+						throw new ClsExceptions("Error en update Asistencia. " + admASI.getError());
 					}
 				}
 			}
+			
 			
 			
 			if(miform.getConceptoE().equals(PersonaJGAction.ASISTENCIA_CONTRARIOS)) {
@@ -2884,7 +2892,7 @@ public class PersonaJGAction extends MasterAction {
 						Hashtable  old = (Hashtable) dataBackup.get(ScsContrariosAsistenciaBean.T_NOMBRETABLA);
 						
 						if (old!=null) {
-							if(user.isLetrado()){
+							if(isFichacolegial){
 								
 								
 								asistenciaHashtable.put("Contrario",old.get(ScsContrariosAsistenciaBean.C_IDPERSONA));
@@ -2899,7 +2907,7 @@ public class PersonaJGAction extends MasterAction {
 								fksAsistenciaHashtable.put(ScsPersonaJGBean.C_IDPERSONA, old.get(ScsContrariosAsistenciaBean.C_IDPERSONA));
 								fksAsistenciaMap.put("Contrario",fksAsistenciaHashtable);
 								asistenciaHashtable.put("fks", fksAsistenciaMap);
-								if(!adm.deleteConHistorico(old,null,campos,asistenciaHashtable))
+								if(!adm.deleteConHistorico(beanASI.getIdPersonaColegiado().longValue(), old,null,campos,asistenciaHashtable))
 									throw new ClsExceptions("Error al borrar contrarios asistencia");
 								
 							}else{
@@ -2910,7 +2918,7 @@ public class PersonaJGAction extends MasterAction {
 						} 
 					}
 					// Insert con los nuevos valores
-					if(user.isLetrado()){
+					if(isFichacolegial){
 						
 						asistenciaHashtable.put("Contrario",contrarioAsistenciaHash.get(ScsContrariosAsistenciaBean.C_IDPERSONA));
 						String[] campos = {"Contrario"};
@@ -2924,7 +2932,7 @@ public class PersonaJGAction extends MasterAction {
 						fksAsistenciaHashtable.put(ScsPersonaJGBean.C_IDPERSONA, contrarioAsistenciaHash.get(ScsContrariosAsistenciaBean.C_IDPERSONA));
 						fksAsistenciaMap.put("Contrario",fksAsistenciaHashtable);
 						asistenciaHashtable.put("fks", fksAsistenciaMap);
-						if(!adm.insertConHistorico(contrarioAsistenciaHash,null,campos,asistenciaHashtable))
+						if(!adm.insertConHistorico(beanASI.getIdPersonaColegiado().longValue(), contrarioAsistenciaHash,null,campos,asistenciaHashtable))
 							throw new ClsExceptions("Error al borrar contrarios asistencia");
 						
 					}else{

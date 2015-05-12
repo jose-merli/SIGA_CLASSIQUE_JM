@@ -227,7 +227,7 @@ public class ScsContrariosAsistenciaAdm extends MasterBeanAdministrador {
 	       }
 	       return datos;                        
 	    }
-	public boolean insertConHistorico(Hashtable contrarioAsistenciaHashtable, String[] claves, String [] campos,Hashtable asistenciaHashtable) throws ClsExceptions{
+	public boolean insertConHistorico(Long idPersona, Hashtable contrarioAsistenciaHashtable, String[] claves, String [] campos,Hashtable asistenciaHashtable) throws ClsExceptions{
 		
 		boolean isInsertado = this.insert(contrarioAsistenciaHashtable);
 		CenHistoricoAdm cenHistoricoAdm = new CenHistoricoAdm(usrbean);
@@ -241,14 +241,14 @@ public class ScsContrariosAsistenciaAdm extends MasterBeanAdministrador {
 		historicoHashtable.put(CenHistoricoBean.C_MOTIVO, motivo.toString());
 		CenHistoricoAdm admHis = new CenHistoricoAdm (this.usrbean);
 		if(isInsertado)
-			isInsertado = admHis.auditoriaColegiados(motivo.toString(), ClsConstants.TIPO_CAMBIO_HISTORICO_ASISTENCIAMODIFICACION,asistenciaHashtable, 
+			isInsertado = admHis.auditoriaColegiados(idPersona, motivo.toString(), ClsConstants.TIPO_CAMBIO_HISTORICO_ASISTENCIAMODIFICACION,asistenciaHashtable, 
 				null, campos,new ArrayList<String>(), CenHistoricoAdm.ACCION_INSERT, usrbean.getLanguage(), false); 
 		
 		return isInsertado;
 		
 		
 	}
-	public boolean deleteConHistorico(Hashtable contrarioAsistenciaHashtable, String[] claves, String [] campos,Hashtable asistenciaHashtable) throws ClsExceptions{
+	public boolean deleteConHistorico(Long idPersona, Hashtable contrarioAsistenciaHashtable, String[] claves, String [] campos,Hashtable asistenciaHashtable) throws ClsExceptions{
 		boolean isBorrado = this.delete(contrarioAsistenciaHashtable);
 		CenHistoricoAdm cenHistoricoAdm = new CenHistoricoAdm(usrbean);
 		Hashtable historicoHashtable = new Hashtable();
@@ -261,7 +261,7 @@ public class ScsContrariosAsistenciaAdm extends MasterBeanAdministrador {
 		historicoHashtable.put(CenHistoricoBean.C_MOTIVO, motivo.toString());
 		CenHistoricoAdm admHis = new CenHistoricoAdm (this.usrbean);
 		if(isBorrado)
-			isBorrado = admHis.auditoriaColegiados(motivo.toString(), ClsConstants.TIPO_CAMBIO_HISTORICO_ASISTENCIAMODIFICACION,asistenciaHashtable, 
+			isBorrado = admHis.auditoriaColegiados(idPersona,motivo.toString(), ClsConstants.TIPO_CAMBIO_HISTORICO_ASISTENCIAMODIFICACION,asistenciaHashtable, 
 				null, campos,new ArrayList<String>(), CenHistoricoAdm.ACCION_DELETE, usrbean.getLanguage(), false); 
 		
 		return isBorrado;

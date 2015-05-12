@@ -4354,7 +4354,7 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 		return datos;
 	}
 	
-	public void updateDirectHistorico(Hashtable designaHashtable, String[] claves, String [] clavesCampos,Hashtable  designaOriginalHashtable,List<String> ocultarClaveList) throws ClsExceptions {
+	public void updateDirectHistorico(Long idPersona,Hashtable designaHashtable, String[] claves, String [] clavesCampos,Hashtable  designaOriginalHashtable,List<String> ocultarClaveList) throws ClsExceptions {
 		UserTransaction tx = usrbean.getTransaction();
 		try {
 			
@@ -4373,7 +4373,7 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 			historicoHashtable.put(CenHistoricoBean.C_MOTIVO, motivo.toString());
 			CenHistoricoAdm admHis = new CenHistoricoAdm (this.usrbean);
 			 
-			boolean isInsertado = admHis.auditoriaColegiados(motivo.toString(), ClsConstants.TIPO_CAMBIO_HISTORICO_DESIGNACIONMODIFICACION,designaHashtable, 
+			boolean isInsertado = admHis.auditoriaColegiados(idPersona,motivo.toString(), ClsConstants.TIPO_CAMBIO_HISTORICO_DESIGNACIONMODIFICACION,designaHashtable, 
 					designaOriginalHashtable, clavesCampos,ocultarClaveList, CenHistoricoAdm.ACCION_UPDATE, usrbean.getLanguage(), false); 
 			tx.commit();	
 			

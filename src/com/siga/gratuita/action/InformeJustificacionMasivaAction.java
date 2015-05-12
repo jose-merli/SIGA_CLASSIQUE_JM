@@ -449,17 +449,14 @@ public class InformeJustificacionMasivaAction extends MasterAction {
 						ScsDesignaBean scsDesignaBean = scsDesignaHashtable.get(pkDesignacion.toString());
 						UtilidadesHash.set(hashActuacion, ScsActuacionDesignaBean.C_NIG, scsDesignaBean.getNIG()!=null?scsDesignaBean.getNIG():"");
 						
-						if(user.isLetrado()){
+//						if(user.isLetrado()){
 							List<String> ocultarClaveList = getListCamposOcultarHistorico();
 							hashActuacion.put("fks", fksActuacionMap);							hashActuacion.put("scsDesignaBean", scsDesignaBean);
-							actuacionDesginaAdm.insertHistorico(hashActuacion,ocultarClaveList,ClsConstants.TIPO_CAMBIO_HISTORICO_DESIGNACIONJUSTIFICACION);
-						}
-						else
-							actuacionDesginaAdm.insert(hashActuacion);
-						
-						
-	
-											
+							actuacionDesginaAdm.insertHistorico(new Long(idPersona), hashActuacion,ocultarClaveList,ClsConstants.TIPO_CAMBIO_HISTORICO_DESIGNACIONJUSTIFICACION);
+//						}
+//						else
+//							actuacionDesginaAdm.insert(hashActuacion);
+//						
 					}else{
 						List<String> camposList = new ArrayList<String>();
 						UtilidadesHash.set(hashActuacion,

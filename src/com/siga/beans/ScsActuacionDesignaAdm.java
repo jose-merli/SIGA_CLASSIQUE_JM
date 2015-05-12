@@ -1060,7 +1060,7 @@ public class ScsActuacionDesignaAdm extends MasterBeanAdministrador {
 	}
 	
 	
-	public void insertHistorico(Hashtable actuacionDesignaHashtable,List<String> ocultarClaveList, int tipoCambio) throws ClsExceptions {
+	public void insertHistorico(Long idPersona,Hashtable actuacionDesignaHashtable,List<String> ocultarClaveList, int tipoCambio) throws ClsExceptions {
 		
 		this.insert(actuacionDesignaHashtable);	
 		
@@ -1079,7 +1079,7 @@ public class ScsActuacionDesignaAdm extends MasterBeanAdministrador {
 		motivo.append(designaBean.getCodigo());
 
 		CenHistoricoAdm admHis = new CenHistoricoAdm (this.usrbean);
-		boolean isInsertado = admHis.auditoriaColegiados(motivo.toString(), tipoCambio,actuacionDesignaHashtable, 
+		boolean isInsertado = admHis.auditoriaColegiados(idPersona,motivo.toString(), tipoCambio,actuacionDesignaHashtable, 
 				null, this.getCamposActualizablesBean(),ocultarClaveList, CenHistoricoAdm.ACCION_INSERT, usrbean.getLanguage(), false); 
 			
 			

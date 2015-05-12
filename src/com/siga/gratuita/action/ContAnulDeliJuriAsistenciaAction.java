@@ -10,6 +10,7 @@ import org.apache.struts.action.ActionMapping;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.GstDate;
 import com.atos.utils.UsrBean;
+import com.siga.Utilidades.UtilidadesString;
 import com.siga.beans.ScsAsistenciasAdm;
 import com.siga.beans.ScsAsistenciasBean;
 import com.siga.general.MasterAction;
@@ -283,9 +284,9 @@ public class ContAnulDeliJuriAsistenciaAction extends MasterAction {
 			{
 				String[] campos = {ScsAsistenciasBean.C_DATOSDEFENSAJURIDICA};
 				hash.put(ScsAsistenciasBean.C_DATOSDEFENSAJURIDICA,miForm.getDatosDefensaJuridica());
-				if(usr.isLetrado()){
+				if(UtilidadesString.stringToBoolean(sEsFichaColegial)){
 					Hashtable<String, Object> asistenciaOriginalHashtable = scsAsistenciaAdm.getHashAsistenciaOriginalParaHistorico(hash,false, usr);
-					scsAsistenciaAdm.updateDirectHistorico(hash,null,campos,asistenciaOriginalHashtable);
+					scsAsistenciaAdm.updateDirectHistorico(Long.valueOf((String)asistenciaOriginalHashtable.get("IDPERSONACOLEGIADO")), hash,null,campos,asistenciaOriginalHashtable);
 				}else
 					scsAsistenciaAdm.updateDirect(hash,null,campos);
 			}

@@ -861,7 +861,7 @@ public class ScsAsistenciasAdm extends MasterBeanAdministrador {
 	       return datos;                        
 	    }
 	
-	public void insertarNuevaAsistencia(String idInstitucion, String anio, String numero, String fecha, String idTurno, String idGuardia, String idTipoAsistencia, String idTipoAsistenciaColegio, String idPersona, String estadoAsistencia, String fechaSolicitud,short idOrigenAsistencia) throws ClsExceptions
+	public void insertarNuevaAsistencia(String idInstitucion, String anio, String numero, String fecha, String idTurno, String idGuardia, String idTipoAsistencia, String idTipoAsistenciaColegio, String idPersona, String estadoAsistencia, String fechaSolicitud,short idOrigenAsistencia,boolean isFichaColegial) throws ClsExceptions
 	{
 		
 			Hashtable asistenciaHashtable = new Hashtable();
@@ -881,7 +881,8 @@ public class ScsAsistenciasAdm extends MasterBeanAdministrador {
 			
 			if(!this.insert(asistenciaHashtable))
 				throw new ClsExceptions(this.getError());
-			if(this.usrbean.isLetrado()){
+			
+			if(isFichaColegial){
 				StringBuffer motivo = new StringBuffer();
 				motivo.append(UtilidadesString.getMensajeIdioma(this.usrbean, "gratuita.generalDesigna.literal.asistencia"));
 				motivo.append(" ");
@@ -916,7 +917,7 @@ public class ScsAsistenciasAdm extends MasterBeanAdministrador {
 				asistenciaHashtable.put("fks", fksActuacionMap);
 
 				CenHistoricoAdm admHis = new CenHistoricoAdm (this.usrbean);
-				boolean isInsertado = admHis.auditoriaColegiados(motivo.toString(), ClsConstants.TIPO_CAMBIO_HISTORICO_ASISTENCIAALTA ,asistenciaHashtable, 
+				boolean isInsertado = admHis.auditoriaColegiados(Long.valueOf(idPersona),motivo.toString(), ClsConstants.TIPO_CAMBIO_HISTORICO_ASISTENCIAALTA ,asistenciaHashtable, 
 						null, this.getCamposActualizablesBean(),getListCamposOcultarHistoricoAltaAsistencia(), CenHistoricoAdm.ACCION_INSERT, usrbean.getLanguage(), false); 
 			}
 			
@@ -2117,7 +2118,7 @@ public  List<ScsAsistenciasBean> getAsistenciasVolantesExpres(VolantesExpressVo 
 		
 		
 	}
-	public boolean updateDirectHistorico(Hashtable asistenciaHashtable, String[] claves, String [] campos,Hashtable asistenciaOriginalHashtable) throws ClsExceptions{
+	public boolean updateDirectHistorico(Long idPersona,Hashtable asistenciaHashtable, String[] claves, String [] campos,Hashtable asistenciaOriginalHashtable) throws ClsExceptions{
 		
 		boolean isActualizado = this.updateDirect(asistenciaHashtable,  claves, campos);
 		CenHistoricoAdm cenHistoricoAdm = new CenHistoricoAdm(usrbean);
@@ -2131,14 +2132,14 @@ public  List<ScsAsistenciasBean> getAsistenciasVolantesExpres(VolantesExpressVo 
 		historicoHashtable.put(CenHistoricoBean.C_MOTIVO, motivo.toString());
 		CenHistoricoAdm admHis = new CenHistoricoAdm (this.usrbean);
 		if(isActualizado)
-			isActualizado = admHis.auditoriaColegiados(motivo.toString(), ClsConstants.TIPO_CAMBIO_HISTORICO_ASISTENCIAMODIFICACION,asistenciaHashtable, 
+			isActualizado = admHis.auditoriaColegiados(idPersona,motivo.toString(), ClsConstants.TIPO_CAMBIO_HISTORICO_ASISTENCIAMODIFICACION,asistenciaHashtable, 
 				asistenciaOriginalHashtable, campos,getListCamposOcultarHistoricoModificarDatosGeneralesAsistencia(), CenHistoricoAdm.ACCION_UPDATE, usrbean.getLanguage(), false); 
 		
 		return isActualizado;
 		
 		
 	}
-	public boolean updateDirecConHistoricoInsert(String[] claves, String [] campos,Hashtable asistenciaHashtable) throws ClsExceptions{
+	public boolean updateDirecConHistoricoInsert(Long idPersona,String[] claves, String [] campos,Hashtable asistenciaHashtable) throws ClsExceptions{
 		
 		boolean isInsertado = this.updateDirect(asistenciaHashtable,  claves, campos);
 		CenHistoricoAdm cenHistoricoAdm = new CenHistoricoAdm(usrbean);
@@ -2152,7 +2153,7 @@ public  List<ScsAsistenciasBean> getAsistenciasVolantesExpres(VolantesExpressVo 
 		historicoHashtable.put(CenHistoricoBean.C_MOTIVO, motivo.toString());
 		CenHistoricoAdm admHis = new CenHistoricoAdm (this.usrbean);
 		if(isInsertado)
-			isInsertado = admHis.auditoriaColegiados(motivo.toString(), ClsConstants.TIPO_CAMBIO_HISTORICO_ASISTENCIAMODIFICACION,asistenciaHashtable, 
+			isInsertado = admHis.auditoriaColegiados(idPersona, motivo.toString(), ClsConstants.TIPO_CAMBIO_HISTORICO_ASISTENCIAMODIFICACION,asistenciaHashtable, 
 				null, campos,new ArrayList<String>(), CenHistoricoAdm.ACCION_INSERT, usrbean.getLanguage(), false); 
 		
 		return isInsertado;

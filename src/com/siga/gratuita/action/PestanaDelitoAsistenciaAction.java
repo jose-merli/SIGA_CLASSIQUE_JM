@@ -13,6 +13,7 @@ import org.apache.struts.action.ActionMapping;
 
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.UsrBean;
+import com.siga.Utilidades.UtilidadesString;
 import com.siga.beans.ScsAsistenciasAdm;
 import com.siga.beans.ScsAsistenciasBean;
 import com.siga.beans.ScsDelitoBean;
@@ -66,6 +67,7 @@ public class PestanaDelitoAsistenciaAction extends MasterAction {
 			miForm.setNumero(new Integer(numero));
 			miForm.setAnio(new Integer(anio));
 			miForm.setDelito(delito);
+			
 		} catch (Exception e){
 			throwExcp("messages.general.error",e,null);
 		}
@@ -196,7 +198,7 @@ public class PestanaDelitoAsistenciaAction extends MasterAction {
 			beanDelitoAsistencia.setUsuMod(new Integer(usr.getUserName()));
 						
 			
-			if(usr.isLetrado()){
+			if(UtilidadesString.stringToBoolean(sEsFichaColegial)){
 				Hashtable<String, Object> asistenciaHashtable = new Hashtable<String, Object>();
 				asistenciaHashtable.put(ScsAsistenciasBean.C_ANIO,anio);
 				asistenciaHashtable.put(ScsAsistenciasBean.C_NUMERO,numero);
@@ -204,6 +206,7 @@ public class PestanaDelitoAsistenciaAction extends MasterAction {
 				
 				asistenciaHashtable.put(ScsDelitosAsistenciaBean.C_IDDELITO,idDelito);
 				ScsAsistenciasAdm scsAsistenciaAdm = new ScsAsistenciasAdm(usr);
+				Hashtable<String, Object> asistenciaOriginalHashtable = scsAsistenciaAdm.getHashAsistenciaOriginalParaHistorico(asistenciaHashtable,false, usr);
 				String[] campos = {ScsDelitosAsistenciaBean.C_IDDELITO};
 				Map<String,Hashtable<String, Object>> fksAsistenciaMap = new HashMap<String, Hashtable<String,Object>>(); 
 				//Como el turno es obligarotio
@@ -217,7 +220,7 @@ public class PestanaDelitoAsistenciaAction extends MasterAction {
 				
 				asistenciaHashtable.put("fks", fksAsistenciaMap);
 				tx.begin();
-				admDelitoAsistencia.insertConHistorico(beanDelitoAsistencia,null,campos,asistenciaHashtable);
+				admDelitoAsistencia.insertConHistorico(Long.valueOf((String)asistenciaOriginalHashtable.get("IDPERSONACOLEGIADO")), beanDelitoAsistencia,null,campos,asistenciaHashtable);
 				tx.commit();
 			}else
 				admDelitoAsistencia.insert(beanDelitoAsistencia);
@@ -265,13 +268,16 @@ public class PestanaDelitoAsistenciaAction extends MasterAction {
 			beanDelitoAsistencia.setIdInstitucion(idInstitucion);
 			beanDelitoAsistencia.setNumero(numero);
 						
-			if(usr.isLetrado()){
+			if(UtilidadesString.stringToBoolean(sEsFichaColegial)){
 				Hashtable<String, Object> asistenciaHashtable = new Hashtable<String, Object>();
 				asistenciaHashtable.put(ScsAsistenciasBean.C_ANIO,anio);
 				asistenciaHashtable.put(ScsAsistenciasBean.C_NUMERO,numero);
 				asistenciaHashtable.put(ScsAsistenciasBean.C_IDINSTITUCION,idInstitucion);
 				
 				asistenciaHashtable.put(ScsDelitosAsistenciaBean.C_IDDELITO,idDelito);
+				ScsAsistenciasAdm scsAsistenciaAdm = new ScsAsistenciasAdm(usr);
+				Hashtable<String, Object> asistenciaOriginalHashtable = scsAsistenciaAdm.getHashAsistenciaOriginalParaHistorico(asistenciaHashtable,false, usr);
+				
 				String[] campos = {ScsDelitosAsistenciaBean.C_IDDELITO};
 				Map<String,Hashtable<String, Object>> fksAsistenciaMap = new HashMap<String, Hashtable<String,Object>>(); 
 				//Como el turno es obligarotio
@@ -285,7 +291,7 @@ public class PestanaDelitoAsistenciaAction extends MasterAction {
 				
 				asistenciaHashtable.put("fks", fksAsistenciaMap);
 				tx.begin();
-				admDelitoAsistencia.deleteConHistorico(beanDelitoAsistencia,null,campos,asistenciaHashtable);
+				admDelitoAsistencia.deleteConHistorico(Long.valueOf((String)asistenciaOriginalHashtable.get("IDPERSONACOLEGIADO")), beanDelitoAsistencia,null,campos,asistenciaHashtable);
 				tx.commit();
 			}else
 				admDelitoAsistencia.delete(beanDelitoAsistencia);
@@ -338,10 +344,10 @@ public class PestanaDelitoAsistenciaAction extends MasterAction {
 			
 			String[] campos = {ScsAsistenciasBean.C_DELITOSIMPUTADOS};
 
-			if(usr.isLetrado()){
+			if(UtilidadesString.stringToBoolean(sEsFichaColegial)){
 				Hashtable<String, Object> asistenciaOriginalHashtable = admAsistencias.getHashAsistenciaOriginalParaHistorico(hashAsistencia,false, usr);
 				tx.begin();
-				admAsistencias.updateDirectHistorico(hashAsistencia,null,campos,asistenciaOriginalHashtable);
+				admAsistencias.updateDirectHistorico( Long.valueOf((String)asistenciaOriginalHashtable.get("IDPERSONACOLEGIADO")),hashAsistencia,null,campos,asistenciaOriginalHashtable);
 				tx.commit();
 			}else
 				admAsistencias.updateDirect(hashAsistencia,null,campos);

@@ -484,7 +484,9 @@ public class ActuacionesAsistenciaAction extends MasterAction {
 		
 		String forward="exception";
 		try {
-			
+			String action = (String)request.getServletPath();
+			boolean esFichaColegial = action.equalsIgnoreCase("/JGR_ActuacionAsistenciaLetrado.do");
+			 	
 			BusinessManager bm = getBusinessManager();
 			AsistenciasService asistenciasService = (AsistenciasService)bm.getService(AsistenciasService.class);
 			String codigoPrision = actuacionAsistenciaFormEdicion.getIdPrision();
@@ -501,7 +503,7 @@ public class ActuacionesAsistenciaAction extends MasterAction {
 			asistenciasService.insertarActuacionAsistencia(actuacionAsistenciaFormEdicion, usrBean);
 			
 			
-			if(usrBean.isLetrado()){
+			if(esFichaColegial){
 			
 				CenHistoricoAdm cenHistoricoAdm = new CenHistoricoAdm(usrBean);
 				Hashtable historicoHashtable = new Hashtable();
@@ -536,8 +538,10 @@ public class ActuacionesAsistenciaAction extends MasterAction {
 				String []clavesStrings = new String[clavesList.size()];
 				clavesList.toArray(clavesStrings);
 				try {
+					ScsAsistenciasAdm scsAsistenciaAdm = new ScsAsistenciasAdm(usrBean);
+					Hashtable<String, Object> asistenciaOriginalHashtable = scsAsistenciaAdm.getHashAsistenciaOriginalParaHistorico(actuacionAsistenciaHashtable,false, usrBean);
 					//COMO NO ESTAMOS EN TRANSACCION CON LO DE ARRIBA , SI FALLA LA INSERCION DEL HISTORICO BORRAMOS LA ACTUACION
-					boolean	isInsertado = cenHistoricoAdm.auditoriaColegiados(motivo.toString(), ClsConstants.TIPO_CAMBIO_HISTORICO_ASISTENCIAALTAACTUACION,
+					boolean	isInsertado = cenHistoricoAdm.auditoriaColegiados(Long.valueOf((String)asistenciaOriginalHashtable.get("IDPERSONACOLEGIADO")), motivo.toString(), ClsConstants.TIPO_CAMBIO_HISTORICO_ASISTENCIAALTAACTUACION,
 							actuacionAsistenciaHashtable,null,clavesStrings ,getListCamposOcultarHistorico(), CenHistoricoAdm.ACCION_INSERT, usrBean.getLanguage(), false);
 					
 					if(!isInsertado)

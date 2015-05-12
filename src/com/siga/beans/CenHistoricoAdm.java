@@ -1301,7 +1301,7 @@ public class CenHistoricoAdm extends MasterBeanAdministrador
 		}
 	}
 	
-	public boolean auditoriaColegiados( String motivo, int tipoCambio,Hashtable objectHashtable, Hashtable originalObjectHashtable,
+	public boolean auditoriaColegiados(Long idPersona, String motivo, int tipoCambio,Hashtable objectHashtable, Hashtable originalObjectHashtable,
 			String [] claves, List<String> ocultarClaveList,int accion, String idioma, boolean isCGAE) throws ClsExceptions
 	{
 		try {
@@ -1309,10 +1309,10 @@ public class CenHistoricoAdm extends MasterBeanAdministrador
 			
 			CenHistoricoBean beanHistorico = new CenHistoricoBean();
 			beanHistorico.setIdInstitucion(Integer.parseInt(this.usrbean.getLocation()));
-			beanHistorico.setIdPersona(this.usrbean.getIdPersona());
+			beanHistorico.setIdPersona(idPersona);
 			beanHistorico.setMotivo(motivo);
 			beanHistorico.setIdTipoCambio(tipoCambio);
-			beanHistorico.setUsuMod(ClsConstants.USUMODIFICACION_AUTOMATICO); 
+			beanHistorico.setUsuMod(Integer.valueOf(this.usrbean.getUserName())); 
 			beanHistorico.setDescripcion(getDescripcion(objectHashtable, originalObjectHashtable, claves, ocultarClaveList,accion, idioma));
 			if ((beanHistorico.getFechaEfectiva() == null) || (beanHistorico.getFechaEfectiva().equals(""))) 
 				beanHistorico.setFechaEfectiva("SYSDATE");

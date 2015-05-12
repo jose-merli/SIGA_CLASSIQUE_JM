@@ -213,6 +213,8 @@ ul#tabs li.actual {
 	<html:hidden name="MaestroDesignasForm" property="idTurno"/>
 	<html:hidden name="MaestroDesignasForm" property="procedimiento"/>
 	<html:hidden name="MaestroDesignasForm" property="fichaColegial"/>
+	<html:hidden name="MaestroDesignasForm" property="idLetradoDesignado"/>
+	
 	
 	<table class="tablaCentralCampos" height="420" align="center">
 
@@ -222,31 +224,37 @@ ul#tabs li.actual {
 				<table class="tablaCampos" align="center" cellpadding="0"
 					cellpadding="0" width="100%" border="0">
 					<tr>
+						<td width="15%" ></td>
+						<td  width="35%"></td>
+						<td  width="15%"></td>
+						<td  width="35%"></td>
+					</tr>
+					<tr>
 						<td class="labelText"><siga:Idioma key="facturacion.ano" />/<siga:Idioma key="gratuita.busquedaDesignas.literal.codigo" />
 						</td>
-						<td class="labelText"><html:text name="MaestroDesignasForm"
-							property="codigo" size="10" maxlength="10"
-							styleClass="boxConsulta" readonly="true"></html:text>
+						<td class="labelTextValor">
+							<c:out value="${MaestroDesignasForm.codigo}"/>
 						</td>
 
 
-						<td class="labelText"><siga:Idioma
+						<td class="labelText">
+						<siga:Idioma
 							key='sjcs.designa.general.letrado' /></td>
-						<td><html:text name="MaestroDesignasForm" property="letrado"
-							styleClass="boxConsulta" readonly="true" style="width: 400" /></td>
+						<td>
+							<c:out value="${MaestroDesignasForm.letrado}"/>
+						</td>
+						
 					</tr>
 					<tr>
 						<td class="labelText"><siga:Idioma
 							key="gratuita.busquedaSOJ.literal.turno" /></td>
-						<td><html:text name="MaestroDesignasForm" property="turno"
-							styleClass="boxConsulta" readonly="true"></html:text></td>
+						<td><c:out value="${MaestroDesignasForm.turno}"/></td>
 						<td class="labelText"><siga:Idioma
 							key="gratuita.inicio_PestanaCalendarioGuardias.literal.fecha" />
 						</td>
 						<!-- JBD 16/2/2009 INC-5682-SIGA -->
 
-						<td><html:text name="MaestroDesignasForm" property="fecha"
-							size="10" maxlength="10" styleClass="boxConsulta" readonly="true"></html:text>
+						<td><c:out value="${MaestroDesignasForm.fecha}"/>
 						</td>
 
 						<!-- JBD 16/2/2009 INC-5682-SIGA -->

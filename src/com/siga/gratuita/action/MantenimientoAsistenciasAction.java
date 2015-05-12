@@ -490,6 +490,7 @@ public class MantenimientoAsistenciasAction extends MasterAction
 			
 //			String fecha = GstDate.getApplicationFormatDate(usr.getLanguage(),);
 			boolean esFichaColegial  = UtilidadesString.stringToBoolean(request.getParameter("esFichaColegial").toString());
+			
 
 
 			//-------------------------------------------------------------------------------------------
@@ -545,7 +546,7 @@ public class MantenimientoAsistenciasAction extends MasterAction
 			String numero = asistencias.getNumeroAsistencia(usr.getLocation(), Integer.parseInt(anio));
 			String estadoAsistencia = "1";	// Activo
 			
-			asistencias.insertarNuevaAsistencia(usr.getLocation(), anio,numero, fechaTotal, idTurno, idGuardia, idTipoAsistencia, idTipoAsistenciaColegio,idPersona, estadoAsistencia, fechaSolicitud,usr.isLetrado()?AppConstants.ORIGENASISTENCIA.SIGACOLEGIADO.getCodigo():AppConstants.ORIGENASISTENCIA.SIGACOLEGIO.getCodigo());
+			asistencias.insertarNuevaAsistencia(usr.getLocation(), anio,numero, fechaTotal, idTurno, idGuardia, idTipoAsistencia, idTipoAsistenciaColegio,idPersona, estadoAsistencia, fechaSolicitud,usr.isLetrado()?AppConstants.ORIGENASISTENCIA.SIGACOLEGIADO.getCodigo():AppConstants.ORIGENASISTENCIA.SIGACOLEGIO.getCodigo(),esFichaColegial);
 
 			// Si estamos clonando puede que necesitemos meter el juzgado y comisaria
 			// Esto lo hacemos con un update por no modificar el insert, que podria dar problemas ya que se llama desde mas sitios
@@ -630,6 +631,7 @@ public class MantenimientoAsistenciasAction extends MasterAction
 	{
 		String forward = "";
 		String sEsFichaColegial = (String)request.getParameter("esFichaColegial");
+		boolean isFichacolegial = sEsFichaColegial!=null && UtilidadesString.stringToBoolean(sEsFichaColegial);
 		UserTransaction tx = null;
 		try
 		{
@@ -696,7 +698,7 @@ public class MantenimientoAsistenciasAction extends MasterAction
 			asistenciaHashtable.put(ScsAsistenciasBean.C_NUMERO,miForm.getNumero());
 			asistenciaHashtable.put(ScsAsistenciasBean.C_IDINSTITUCION,usr.getLocation());
 			Hashtable<String, Object> asistenciaOriginalHashtable = null;
-			if(usr.isLetrado()){
+			if(isFichacolegial){
 				asistenciaOriginalHashtable = scsAsistenciaAdm.getHashAsistenciaOriginalParaHistorico(asistenciaHashtable, true,usr);
 				asistenciaHashtable = scsAsistenciaAdm.actualizaHashAsistenciaParaHistorico(asistenciaHashtable, usr);
 			}
@@ -772,8 +774,8 @@ public class MantenimientoAsistenciasAction extends MasterAction
 				fechaSolicitud = simpleDateFormat2.format(myCalendar.getTime());
 				UtilidadesHash.set(asistenciaHashtable, ScsAsistenciasBean.C_FECHASOLICITUD, fechaSolicitud);
 			}			
-			if(usr.isLetrado())
-				scsAsistenciaAdm.updateDirectHistorico(asistenciaHashtable,null,campos,asistenciaOriginalHashtable);
+			if(isFichacolegial)
+				scsAsistenciaAdm.updateDirectHistorico(Long.valueOf((String)asistenciaOriginalHashtable.get("IDPERSONACOLEGIADO")),asistenciaHashtable,null,campos,asistenciaOriginalHashtable);
 			else
 				scsAsistenciaAdm.updateDirect(asistenciaHashtable,null,campos);
 			

@@ -45,6 +45,7 @@ public class MaestroDesignasForm extends MasterForm {
 	private String FECHAOFICIOJUZGADO 	= 	"FECHAOFICIOJUZGADO";	
 	private String procedimiento;
 	private String letrado;
+	private String idLetradoDesignado;
 	private String nig;
 	private List<ScsJuzgadoBean> juzgados;  
 	/**
@@ -535,6 +536,18 @@ public class MaestroDesignasForm extends MasterForm {
 	}
 	public void setOrigen(String origen) {
 		this.origen = origen;
+	}
+	/**
+	 * @return the idLetradoDesignado
+	 */
+	public String getIdLetradoDesignado() {
+		return idLetradoDesignado;
+	}
+	/**
+	 * @param idLetradoDesignado the idLetradoDesignado to set
+	 */
+	public void setIdLetradoDesignado(String idLetradoDesignado) {
+		this.idLetradoDesignado = idLetradoDesignado;
 	}
 	
 }

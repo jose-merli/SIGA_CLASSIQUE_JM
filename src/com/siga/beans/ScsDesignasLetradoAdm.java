@@ -624,7 +624,7 @@ private String getQueryDesignasPendientesJustificacion(List<DesignaForm> designa
 	 * @return
 	 * @throws ClsExceptions 
 	 */
-	public Integer obtenerColegiadoDesignadoEnFecha(ScsDesignaBean sdb, String fecha) throws ClsExceptions {
+	public Long obtenerColegiadoDesignadoEnFecha(ScsDesignaBean sdb, String fecha) throws ClsExceptions {
 		try {
 			String sql = "select * " +
 						 "  from scs_designasletrado " +
@@ -638,7 +638,7 @@ private String getQueryDesignasPendientesJustificacion(List<DesignaForm> designa
 
 			Vector vector = selectGenerico(sql);
 		    if ((vector != null) && (vector.size() == 1)) {
-		    	return new Integer((String)((Hashtable)vector.get(0)).get("IDPERSONA"));
+		    	return new Long((String)((Hashtable)vector.get(0)).get("IDPERSONA"));
 		    }
 
 			return null;
