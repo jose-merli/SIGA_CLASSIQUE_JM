@@ -6,8 +6,11 @@
 package com.siga.facturacion.action;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Vector;
@@ -160,6 +163,20 @@ public class DevolucionesManualesAction extends MasterAction{
 
 			// limpio la session
 			request.getSession().removeAttribute("FacturaVolver");
+			
+			// Calculo la fecha desde hace dos anios
+			Calendar calendar = Calendar.getInstance();
+			calendar.setTime(new Date());
+			if (calendar.get(Calendar.MONTH)==Calendar.FEBRUARY && calendar.get(Calendar.DAY_OF_MONTH)==29) {
+				calendar.set(Calendar.DAY_OF_MONTH, 28);
+			}
+			calendar.set(Calendar.YEAR, calendar.get(Calendar.YEAR)-2);
+			
+			SimpleDateFormat formateo = new SimpleDateFormat("dd/MM/yyyy");
+			String fechaDesde = formateo.format(calendar.getTime());
+			
+			if (form != null)
+				form.setFechaCargoDesde(fechaDesde);
 
 		} catch (Exception e) { 
 		   throwExcp("messages.general.error",new String[] {"modulo.facturacion"},e,null); 

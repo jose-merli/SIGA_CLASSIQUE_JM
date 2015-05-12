@@ -86,7 +86,7 @@
 	   						facturacion.devolucionManual.titular,
 	   						facturacion.devolucionManual.importe,
 	   						facturacion.devolucionManual.motivos,"
-	   columnSizes = "4,8,8,15,25,8,26,6">
+	   columnSizes = "4,15,8,8,25,8,26,6">
 <%
 		if ((resultado != null) && (resultado.size() > 0)) { 
 			for (int i = 0; i < resultado.size(); i++) { 							
