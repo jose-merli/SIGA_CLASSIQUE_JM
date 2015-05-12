@@ -5,9 +5,9 @@
 
 <!-- CABECERA JSP -->
 <meta http-equiv="Expires" content="0">
-<meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-1"%>
+<meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-15"%>
 <meta http-equiv="Cache-Control" content="no-cache">
-<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-15">
 <%@ page contentType="text/html" language="java" errorPage="/html/jsp/error/errorSIGA.jsp"%>
 
 <!-- TAGLIBS -->
@@ -83,8 +83,8 @@
 */		
 	int factura = ClsConstants.TIPO_FORMAPAGO_FACTURA;
 	int tarjeta = ClsConstants.TIPO_FORMAPAGO_TARJETA;
-	double varIvaTotal = 0;
-	double varPrecioTotal = 0;	
+	int iCantidadTotal=0;
+	double dNetoTotal=0, dIvaTotal=0, dPrecioTotal=0;
 	String parametroFuncion;
 	String formaPagoNombre;
 	String sIdCuenta;
@@ -523,8 +523,10 @@
  		 		
  		function calcularImporte(){ 		
  			f = document.solicitudCompraForm;
- 			varIvaTotal=0;
- 			varPrecioTotal=0;
+ 			var vCantidadTotal=0;
+ 			var vNetoTotal=0;
+ 			var vIvaTotal=0;
+ 			var vPrecioTotal=0;
 
  			for (var j=1; j < <%=arrayListaArticulosOrdenada.size()%>+1; j++) { 
  			
@@ -536,15 +538,19 @@
 	 				iva=eval("f.iva" + j);
 	 				precio.value = precio.value.replace(/,/,".");
 					iva.value = iva.value.replace(/,/,".");
-					if (!isNaN(parseFloat(precio.value))) {			
-						varIvaTotal = varIvaTotal + roundNumber(cantidad.value * precio.value * iva.value / 100, 2);
-						varPrecioTotal = varPrecioTotal + roundNumber(cantidad.value * precio.value * (1 + (iva.value / 100)), 2);
+					if (!isNaN(parseFloat(precio.value))) {
+						vCantidadTotal = vCantidadTotal + eval(cantidad.value);
+						vNetoTotal = vNetoTotal + cantidad.value * precio.value;
+						vIvaTotal = vIvaTotal + roundNumber(cantidad.value * precio.value * iva.value / 100, 2);
+						vPrecioTotal = vPrecioTotal + roundNumber(cantidad.value * precio.value * (1 + (iva.value / 100)), 2);
 					}					
 	 			}
 
  			}
- 			f.ivaTotal.value = convertirAFormato(varIvaTotal);
- 			f.precioTotal.value = convertirAFormato(varPrecioTotal); 			
+ 			f.cantidadTotal.value = vCantidadTotal;
+ 			f.netoTotal.value = convertirAFormato(vNetoTotal) + " ¤"; 	
+ 			f.ivaTotal.value = convertirAFormato(vIvaTotal) + " ¤";
+ 			f.precioTotal.value = convertirAFormato(vPrecioTotal) + " ¤"; 			
  		}
 
 		//Debe llamarse accionConfirmarCompra
@@ -728,8 +734,10 @@
 					}
 
 					if (datos == null || (datos!=null && nofacturable.equals(DB_FALSE))) {
-						varIvaTotal = varIvaTotal + UtilidadesNumero.redondea(a.getCantidad() * precio * iva / 100, 2);
-						varPrecioTotal = varPrecioTotal + UtilidadesNumero.redondea(a.getCantidad() * precio * (1 + (iva / 100)), 2);	
+						iCantidadTotal += a.getCantidad(); 
+						dNetoTotal += a.getCantidad() * precio;  
+						dIvaTotal += UtilidadesNumero.redondea(a.getCantidad() * precio * iva / 100, 2);
+						dPrecioTotal += UtilidadesNumero.redondea(a.getCantidad() * precio * (1 + (iva / 100)), 2);	
 					}				
 
 									
@@ -893,25 +901,55 @@
 <%		
 				} // for
 				
-				varIvaTotal = UtilidadesNumero.redondea (varIvaTotal, 2);
-				varPrecioTotal = UtilidadesNumero.redondea (varPrecioTotal, 2);		
+				dIvaTotal = UtilidadesNumero.redondea (dIvaTotal, 2);
+				dPrecioTotal = UtilidadesNumero.redondea (dPrecioTotal, 2);		
 %>
 				<tr class="listaNonEditSelected" style="height:30px">
-					<td>
-						<b><siga:Idioma key="facturacion.lineasFactura.literal.Total"/></b>
-						<siga:ToolTip id='ayudaTotalServicios' imagen='/SIGA/html/imagenes/botonAyuda.gif' texto='<%=UtilidadesString.mostrarDatoJSP(UtilidadesString.getMensajeIdioma(user,"messages.servicios.precioServicios"))%>' />
+					<td>&nbsp;</td>
+					<td>&nbsp;</td>
+					<td>&nbsp;</td>
+					<td colspan="<%if (!tieneBotones){%>4<%} else {%>3<%}%>" align="center">
+						<table border="0" cellpadding="5" cellspacing="0">
+							<tr class="listaNonEditSelected">
+								<td class="labelText" style="color:black; border:0px; text-align:center; vertical-align:middle">
+									<siga:Idioma key="facturacion.lineasFactura.literal.Total"/>																	
+								</td>
+								<td class="labelText" style="border:0px">
+									<siga:ToolTip id='ayudaTotalServicios' imagen='/SIGA/html/imagenes/botonAyuda.gif' texto='<%=UtilidadesString.mostrarDatoJSP(UtilidadesString.getMensajeIdioma(user,"messages.servicios.precioServicios"))%>' />									
+								</td>						
+							</tr>
+						
+							<tr class="listaNonEditSelected">
+								<td class="labelText" style="color:black; text-align:right; border:0px" nowrap><siga:Idioma key="pys.solicitudCompra.literal.cantidad"/></td>
+								<td class="labelText" style="border:0px">
+									<input type="text" name="cantidadTotal" value="<%=iCantidadTotal%>" style="background-color:transparent; font-weight:bold; color:black; text-align:left" class="boxConsultaNumber" readOnly="true" size="13">
+								</td>
+							</tr>							
+						
+							<tr class="listaNonEditSelected">
+								<td class="labelText" style="color:black; text-align:right; border:0px" nowrap>
+									<siga:Idioma key="pys.solicitudCompra.literal.totalImporteNeto"/>									
+								</td>
+								<td class="labelText" style="border:0px">
+									<input type="text" name="netoTotal" value="<%=UtilidadesString.formatoImporte(dNetoTotal)%> &euro;" style="background-color:transparent; font-weight:bold; color:black; text-align:left" class="boxConsultaNumber" readOnly="true" size="13">
+								</td>
+							</tr>						
+							
+							<tr class="listaNonEditSelected">
+								<td class="labelText" style="color:black; text-align:right; border:0px" nowrap><siga:Idioma key="pys.solicitudCompra.literal.iva"/></td>
+								<td class="labelText" style="border:0px">
+									<input type="text" name="ivaTotal" value="<%=UtilidadesString.formatoImporte(dIvaTotal)%> &euro;" style="background-color:transparent; font-weight:bold; color:black; text-align:left" class="boxConsultaNumber" readOnly="true" size="13">
+								</td>
+							</tr>
+							
+							<tr class="listaNonEditSelected" border="0">
+								<td class="labelText" style="color:black; text-align:right; border:0px" nowrap><siga:Idioma key="pys.solicitudCompra.literal.totalImporte"/></td>
+								<td class="labelText" style="border:0px">
+									<input type="text" name="precioTotal" value="<%=UtilidadesString.formatoImporte(dPrecioTotal)%> &euro;" style="background-color:transparent; font-weight:bold; color:black; text-align:left" class="boxConsultaNumber" readOnly="true" size="13">
+								</td>
+							</tr>
+						</table>
 					</td>
-					<td>&nbsp;</td>
-					<td>&nbsp;</td>
-					<td colspan="2" align="right"><input type="text" name="precioTotal" value="<%=UtilidadesString.formatoImporte(varPrecioTotal)%>" style="background-color:transparent; font-weight:bold; color:black" class="boxConsultaNumber" readOnly="true" size="13"><b>&nbsp;&euro;</b></td>
-<%
-					if (!tieneBotones) { // NO ES CERTIFICADO
-%>					
-						<td>&nbsp;</td>
-<%	
-					}
-%>
-					<td align="right"><input type="text" name="ivaTotal" value="<%=UtilidadesString.formatoImporte(varIvaTotal)%>" style="background-color:transparent; font-weight:bold; color:black" class="boxConsultaNumber" readOnly="true" size="6"><b>&nbsp;&euro;</b></td>
 <%					
 					if (tdFechaEfectiva) {
 %>					

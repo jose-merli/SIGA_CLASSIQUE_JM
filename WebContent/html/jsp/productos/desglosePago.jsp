@@ -5,9 +5,9 @@
 
 <!-- CABECERA JSP -->
 <meta http-equiv="Expires" content="0">
-<meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-1"%>
+<meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-15"%>
 <meta http-equiv="Cache-Control" content="no-cache">
-<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-15">
 <%@ page contentType="text/html" language="java" errorPage="/html/jsp/error/errorSIGA.jsp"%>
 
 <!-- TAGLIBS -->
@@ -22,10 +22,10 @@
 <%@ page import = "com.siga.Utilidades.*"%>
 <%@ page import = "com.atos.utils.*"%>
 <%@ page import = "com.siga.general.*"%>
-<%@ page import="com.siga.Utilidades.UtilidadesNumero"%>
-<%@ page import="java.util.Properties"%>
-<%@ page import="java.util.Vector"%>
-<%@ page import="java.util.ArrayList"%>
+<%@ page import = "com.siga.Utilidades.UtilidadesNumero"%>
+<%@ page import = "java.util.Properties"%>
+<%@ page import = "java.util.Vector"%>
+<%@ page import = "java.util.ArrayList"%>
 
 <!-- JSP -->
 <% 
@@ -43,12 +43,11 @@
 	ArrayList arrayListaArticulosOrdenada = carro.getArrayListaArticulosOrdenada();	
 	
 	int tarjeta = ClsConstants.TIPO_FORMAPAGO_TARJETA;
-		
-	double varIvaTotalTarjeta = 0;
-	double varPrecioTotalTarjeta = 0;
 	
-	double varIvaTotalOtro = 0;
-	double varPrecioTotalOtro = 0;
+	int iCantidadTotalTarjeta=0;
+	double dNetoTotalTarjeta=0, dIvaTotalTarjeta=0, dPrecioTotalTarjeta=0;
+	int iCantidadTotalOtro=0;
+	double dNetoTotalOtro=0, dIvaTotalOtro=0, dPrecioTotalOtro=0;
 	
 	String sPrecio;
 	String sPeriodicidad;
@@ -132,8 +131,10 @@
 			if (a.getIdFormaPago() != null && a.getIdFormaPago().intValue() == tarjeta) {			
 				double precio = a.getPrecio().doubleValue();
 				double iva = a.getValorIva().doubleValue();
-				varIvaTotalTarjeta = varIvaTotalTarjeta + UtilidadesNumero.redondea(a.getCantidad() * precio * iva / 100, 2);
-				varPrecioTotalTarjeta = varPrecioTotalTarjeta + UtilidadesNumero.redondea(a.getCantidad() * precio * (1 + (iva / 100)), 2);
+				iCantidadTotalTarjeta += a.getCantidad();
+				dNetoTotalTarjeta += a.getCantidad() * precio;
+				dIvaTotalTarjeta += UtilidadesNumero.redondea(a.getCantidad() * precio * iva / 100, 2);
+				dPrecioTotalTarjeta += UtilidadesNumero.redondea(a.getCantidad() * precio * (1 + (iva / 100)), 2);
 				
 				sPeriodicidad = "";
 				sPrecio = "-";
@@ -162,17 +163,54 @@
 
 		if (tieneArticulo) {
 			
-			varIvaTotalTarjeta = UtilidadesNumero.redondea (varIvaTotalTarjeta, 2);
-			varPrecioTotalTarjeta = UtilidadesNumero.redondea (varPrecioTotalTarjeta, 2);
+			dIvaTotalTarjeta = UtilidadesNumero.redondea (dIvaTotalTarjeta, 2);
+			dPrecioTotalTarjeta = UtilidadesNumero.redondea (dPrecioTotalTarjeta, 2);
 %>
 			<tr class="listaNonEditSelected" style="height:30px">
-				<td>
-					<b><siga:Idioma key="facturacion.lineasFactura.literal.Total"/></b>
-					<siga:ToolTip id='ayudaTotalServicios1' imagen='/SIGA/html/imagenes/botonAyuda.gif' texto='<%=UtilidadesString.mostrarDatoJSP(UtilidadesString.getMensajeIdioma(user,"messages.servicios.precioServicios"))%>' />
-				</td>
-				<td colspan="2" align="right"><input type="text" name="precioTotalTarjeta" value="<%=UtilidadesString.formatoImporte(varPrecioTotalTarjeta)%> &euro;" style="background-color:transparent; font-weight:bold; color:black" class="boxConsultaNumber" readOnly="true" size="13"></td>
-				<td align="right"><input type="text" name="ivaTotalTarjeta" value="<%=UtilidadesString.formatoImporte(varIvaTotalTarjeta)%> &euro;" style="background-color:transparent; font-weight:bold; color:black" class="boxConsultaNumber" readOnly="true" size="9"></td>
-			</tr>				
+				<td>&nbsp;</td>
+				<td colspan="3" align="center">
+					<table border="0" cellpadding="5" cellspacing="0">
+						<tr class="listaNonEditSelected">
+							<td class="labelText" style="color:black; text-align:center; border:0px; vertical-align:middle">
+								<siga:Idioma key="facturacion.lineasFactura.literal.Total"/>																	
+							</td>
+							<td style="border:0px">
+								<siga:ToolTip id='ayudaTotalTarjeta' imagen='/SIGA/html/imagenes/botonAyuda.gif' texto='<%=UtilidadesString.mostrarDatoJSP(UtilidadesString.getMensajeIdioma(user,"messages.servicios.precioServicios"))%>' />									
+							</td>						
+						</tr>
+					
+						<tr class="listaNonEditSelected">
+							<td class="labelText" style="color:black; text-align:right; border:0px" nowrap><siga:Idioma key="pys.solicitudCompra.literal.cantidad"/></td>
+							<td class="labelText" style="border:0px">
+								<input type="text" name="cantidadTotalTarjeta" value="<%=iCantidadTotalTarjeta%>" style="background-color:transparent; font-weight:bold; color:black; text-align:left" class="boxConsultaNumber" readOnly="true" size="13">
+							</td>
+						</tr>							
+					
+						<tr class="listaNonEditSelected">
+							<td class="labelText" style="color:black; text-align:right; border:0px" nowrap>
+								<siga:Idioma key="pys.solicitudCompra.literal.totalImporteNeto"/>									
+							</td>
+							<td class="labelText" style="border:0px">
+								<input type="text" name="netoTotalTarjeta" value="<%=UtilidadesString.formatoImporte(dNetoTotalTarjeta)%> &euro;" style="background-color:transparent; font-weight:bold; color:black; text-align:left" class="boxConsultaNumber" readOnly="true" size="13">
+							</td>
+						</tr>						
+						
+						<tr class="listaNonEditSelected">
+							<td class="labelText" style="color:black; text-align:right; border:0px" nowrap><siga:Idioma key="pys.solicitudCompra.literal.iva"/></td>
+							<td class="labelText" style="border:0px">
+								<input type="text" name="ivaTotalTarjeta" value="<%=UtilidadesString.formatoImporte(dIvaTotalTarjeta)%> &euro;" style="background-color:transparent; font-weight:bold; color:black; text-align:left" class="boxConsultaNumber" readOnly="true" size="13">
+							</td>
+						</tr>
+						
+						<tr class="listaNonEditSelected" border="0">
+							<td class="labelText" style="color:black; text-align:right; border:0px" nowrap><siga:Idioma key="pys.solicitudCompra.literal.totalImporte"/></td>
+							<td class="labelText" style="border:0px">
+								<input type="text" name="precioTotalTarjeta" value="<%=UtilidadesString.formatoImporte(dPrecioTotalTarjeta)%> &euro;" style="background-color:transparent; font-weight:bold; color:black; text-align:left" class="boxConsultaNumber" readOnly="true" size="13">
+							</td>
+						</tr>
+					</table>
+				</td>				
+			</tr>						
 <%			
 		} else {
 %>
@@ -231,8 +269,10 @@
 				double precio = a.getPrecio().doubleValue();
 				double iva = a.getValorIva().doubleValue();
 				if(a.getIdFormaPago() != null){
-					varIvaTotalOtro = varIvaTotalOtro + UtilidadesNumero.redondea(a.getCantidad() * precio * iva / 100, 2);
-					varPrecioTotalOtro = varPrecioTotalOtro + UtilidadesNumero.redondea(a.getCantidad() * precio * (1 + (iva / 100)), 2);
+					iCantidadTotalOtro += a.getCantidad();
+					dNetoTotalOtro += a.getCantidad() * precio;
+					dIvaTotalOtro += UtilidadesNumero.redondea(a.getCantidad() * precio * iva / 100, 2);
+					dPrecioTotalOtro += UtilidadesNumero.redondea(a.getCantidad() * precio * (1 + (iva / 100)), 2);
 				}
 				
 				sPeriodicidad = "";
@@ -267,17 +307,53 @@
 		}
 
 		if (tieneArticulo) {
-			
-			varIvaTotalOtro = UtilidadesNumero.redondea (varIvaTotalOtro, 2);
-			varPrecioTotalOtro = UtilidadesNumero.redondea (varPrecioTotalOtro, 2);
+			dIvaTotalOtro = UtilidadesNumero.redondea (dIvaTotalOtro, 2);
+			dPrecioTotalOtro = UtilidadesNumero.redondea (dPrecioTotalOtro, 2);
 %>
 			<tr class="listaNonEditSelected" style="height:30px">
-				<td>
-					<b><siga:Idioma key="facturacion.lineasFactura.literal.Total"/></b>
-					<siga:ToolTip id='ayudaTotalServicios2' imagen='/SIGA/html/imagenes/botonAyuda.gif' texto='<%=UtilidadesString.mostrarDatoJSP(UtilidadesString.getMensajeIdioma(user,"messages.servicios.precioServicios"))%>' />
-				</td>
-				<td colspan="2" align="right"><input type="text" name="precioTotalTarjeta" value="<%=UtilidadesString.formatoImporte(varPrecioTotalOtro)%> &euro;" style="background-color:transparent; font-weight:bold; color:black" class="boxConsultaNumber" readOnly="true" size="13"></td>
-				<td align="right"><input type="text" name="ivaTotalTarjeta" value="<%=UtilidadesString.formatoImporte(varIvaTotalOtro)%> &euro;" style="background-color:transparent; font-weight:bold; color:black" class="boxConsultaNumber" readOnly="true" size="9"></td>
+				<td>&nbsp;</td>
+				<td colspan="3" align="center">
+					<table border="0" cellpadding="5" cellspacing="0">
+						<tr class="listaNonEditSelected">
+							<td class="labelText" style="color:black; text-align:center; border:0px; vertical-align:middle">
+								<siga:Idioma key="facturacion.lineasFactura.literal.Total"/>																	
+							</td>
+							<td style="border:0px">
+								<siga:ToolTip id='ayudaTotalOtros' imagen='/SIGA/html/imagenes/botonAyuda.gif' texto='<%=UtilidadesString.mostrarDatoJSP(UtilidadesString.getMensajeIdioma(user,"messages.servicios.precioServicios"))%>' />									
+							</td>						
+						</tr>
+					
+						<tr class="listaNonEditSelected">
+							<td class="labelText" style="color:black; text-align:right; border:0px" nowrap><siga:Idioma key="pys.solicitudCompra.literal.cantidad"/></td>
+							<td class="labelText" style="border:0px">
+								<input type="text" name="cantidadTotalOtros" value="<%=iCantidadTotalOtro%>" style="background-color:transparent; font-weight:bold; color:black; text-align:left" class="boxConsultaNumber" readOnly="true" size="13">
+							</td>
+						</tr>							
+					
+						<tr class="listaNonEditSelected">
+							<td class="labelText" style="color:black; text-align:right; border:0px" nowrap>
+								<siga:Idioma key="pys.solicitudCompra.literal.totalImporteNeto"/>									
+							</td>
+							<td class="labelText" style="border:0px">
+								<input type="text" name="netoTotalOtros" value="<%=UtilidadesString.formatoImporte(dNetoTotalOtro)%> &euro;" style="background-color:transparent; font-weight:bold; color:black; text-align:left" class="boxConsultaNumber" readOnly="true" size="13">
+							</td>
+						</tr>						
+						
+						<tr class="listaNonEditSelected">
+							<td class="labelText" style="color:black; text-align:right; border:0px" nowrap><siga:Idioma key="pys.solicitudCompra.literal.iva"/></td>
+							<td class="labelText" style="border:0px">
+								<input type="text" name="ivaTotalOtros" value="<%=UtilidadesString.formatoImporte(dIvaTotalOtro)%> &euro;" style="background-color:transparent; font-weight:bold; color:black; text-align:left" class="boxConsultaNumber" readOnly="true" size="13">
+							</td>
+						</tr>
+						
+						<tr class="listaNonEditSelected" border="0">
+							<td class="labelText" style="color:black; text-align:right; border:0px" nowrap><siga:Idioma key="pys.solicitudCompra.literal.totalImporte"/></td>
+							<td class="labelText" style="border:0px">
+								<input type="text" name="precioTotalOtros" value="<%=UtilidadesString.formatoImporte(dPrecioTotalOtro)%> &euro;" style="background-color:transparent; font-weight:bold; color:black; text-align:left" class="boxConsultaNumber" readOnly="true" size="13">
+							</td>
+						</tr>
+					</table>
+				</td>				
 			</tr>				
 <%			
 		} else {

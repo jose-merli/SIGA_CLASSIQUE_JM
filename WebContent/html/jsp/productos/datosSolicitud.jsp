@@ -29,8 +29,8 @@
 	Vector peticion = (Vector) request.getAttribute("peticion");
 	UsrBean usrbean = (UsrBean)session.getAttribute(ClsConstants.USERBEAN);
 	
-	double ivaTotal = 0;
-	double precioTotal = 0;
+	int iCantidadTotal=0;
+	double dNetoTotal=0, dIvaTotal=0, dPrecioTotal=0;
 	String tipoPeticion = "";
 	
 	String nombreUsu = (String) request.getAttribute("nombreUsuario");
@@ -421,8 +421,10 @@
 					importeUnitario = UtilidadesNumero.redondea(cantidad * precio * (1 + (iva / 100)), 2);
 					
 					if(idFormaPago!=null){
-						ivaTotal = ivaTotal + UtilidadesNumero.redondea(cantidad * precio * iva / 100, 2);
-						precioTotal = precioTotal + importeUnitario;
+						iCantidadTotal += cantidad;
+						dNetoTotal += cantidad * precio;
+						dIvaTotal += UtilidadesNumero.redondea(cantidad * precio * iva / 100, 2);
+						dPrecioTotal += importeUnitario;
 					}
 				
 					tipoPeticion = UtilidadesHash.getString(productoServicio, PysPeticionCompraSuscripcionBean.C_TIPOPETICION);
@@ -543,23 +545,62 @@
 			}  // for
 				
 			if (tipoPeticion.equalsIgnoreCase(ClsConstants.TIPO_PETICION_COMPRA_ALTA)) {	
-			
-				ivaTotal = UtilidadesNumero.redondea (ivaTotal, 2);
-				precioTotal = UtilidadesNumero.redondea (precioTotal, 2);		
+				dIvaTotal = UtilidadesNumero.redondea (dIvaTotal, 2);
+				dPrecioTotal = UtilidadesNumero.redondea (dPrecioTotal, 2);		
 %>
 				<tr class="listaNonEditSelected" style="height:30px">
-					<td><b><siga:Idioma key="pys.gestionSolicitudes.literal.total"/></b></td>
-					<td>&nbsp;</td>
-					<td>&nbsp;</td>
-					<td colspan="2" align="right"><input type="text" name="precioTotal" value="<%=UtilidadesString.formatoImporte(precioTotal)%>&nbsp;&euro;" style="background-color:transparent; font-weight:bold; color:black" class="boxConsultaNumber" readOnly="true" size="13"></td>
-					<td align="right"><input type="text" name="ivaTotal" value="<%=UtilidadesString.formatoImporte(ivaTotal)%>&nbsp;&euro;" style="background-color:transparent; font-weight:bold; color:black" class="boxConsultaNumber" readOnly="true" size="7"></td>
 					<td>&nbsp;</td>
 					<td>&nbsp;</td>
 					<td>&nbsp;</td>
+					<td colspan="3" align="center">
+						<table border="0" cellpadding="5" cellspacing="0">
+							<tr class="listaNonEditSelected">
+								<td class="labelText" style="color:black; text-align:center; border:0px; vertical-align:middle">
+									<siga:Idioma key="facturacion.lineasFactura.literal.Total"/>																	
+								</td>
+									<td style="border:0px">
+										<siga:ToolTip id='ayudaTotal' imagen='/SIGA/html/imagenes/botonAyuda.gif' texto='<%=UtilidadesString.mostrarDatoJSP(UtilidadesString.getMensajeIdioma(usrbean,"messages.servicios.precioServicios"))%>' />
+									</td>									
+							</tr>
+						
+							<tr class="listaNonEditSelected">
+								<td class="labelText" style="color:black; text-align:right; border:0px" nowrap><siga:Idioma key="pys.solicitudCompra.literal.cantidad"/></td>
+								<td class="labelText" style="border:0px">
+									<input type="text" name="cantidadTotal" value="<%=iCantidadTotal%>" style="background-color:transparent; font-weight:bold; color:black; text-align:left" class="boxConsultaNumber" readOnly="true" size="13">
+								</td>
+							</tr>							
+						
+							<tr class="listaNonEditSelected">
+								<td class="labelText" style="color:black; text-align:right; border:0px" nowrap>
+									<siga:Idioma key="pys.solicitudCompra.literal.totalImporteNeto"/>									
+								</td>
+								<td class="labelText" style="border:0px">
+									<input type="text" name="netoTotal" value="<%=UtilidadesString.formatoImporte(dNetoTotal)%> &euro;" style="background-color:transparent; font-weight:bold; color:black; text-align:left" class="boxConsultaNumber" readOnly="true" size="13">
+								</td>
+							</tr>						
+							
+							<tr class="listaNonEditSelected">
+								<td class="labelText" style="color:black; text-align:right; border:0px" nowrap><siga:Idioma key="pys.solicitudCompra.literal.iva"/></td>
+								<td class="labelText" style="border:0px">
+									<input type="text" name="ivaTotal" value="<%=UtilidadesString.formatoImporte(dIvaTotal)%> &euro;" style="background-color:transparent; font-weight:bold; color:black; text-align:left" class="boxConsultaNumber" readOnly="true" size="13">
+								</td>
+							</tr>
+							
+							<tr class="listaNonEditSelected" border="0">
+								<td class="labelText" style="color:black; text-align:right; border:0px" nowrap><siga:Idioma key="pys.solicitudCompra.literal.totalImporte"/></td>
+								<td class="labelText" style="border:0px">
+									<input type="text" name="precioTotal" value="<%=UtilidadesString.formatoImporte(dPrecioTotal)%> &euro;" style="background-color:transparent; font-weight:bold; color:black; text-align:left" class="boxConsultaNumber" readOnly="true" size="13">
+								</td>
+							</tr>
+						</table>
+					</td>		
 					<td>&nbsp;</td>
 					<td>&nbsp;</td>
 					<td>&nbsp;</td>
-				</tr>				
+					<td>&nbsp;</td>
+					<td>&nbsp;</td>
+					<td>&nbsp;</td>		
+				</tr>							
 <%					 	 
 			}
 		} else {	 	 
