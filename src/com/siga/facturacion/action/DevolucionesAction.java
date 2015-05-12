@@ -946,7 +946,8 @@ public class DevolucionesAction extends MasterAction {
 				tx.commit();
 				
 				request.setAttribute("parametrosArray", resultado);
-				return "exitoParametros";				
+				request.setAttribute("modal","");							
+				return "exitoParametros";			
 
 				/*if (isTodasRenegociadas) {
 					result=exitoRefresco("facturacion.nuevoFichero.literal.procesoCorrecto",request);
