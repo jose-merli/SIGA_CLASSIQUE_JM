@@ -27,55 +27,55 @@ import com.siga.comun.VoUiService;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
+
 /**
  * 
- * @author jorgeta 
- * @date   04/05/2015
- *
- * La imaginación es más importante que el conocimiento
- *
+ * @author jorgeta
+ * @date 04/05/2015
+ * 
+ *       La imaginación es más importante que el conocimiento
+ * 
  */
 public class CargaMasivaGFAction extends MasterAction {
 
-	protected ActionForward executeInternal(ActionMapping mapping,ActionForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+	protected ActionForward executeInternal(ActionMapping mapping, ActionForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		String mapDestino = "exception";
 		CargaMasivaGFForm miForm = null;
-		try { 
+		try {
 			do {
 				miForm = (CargaMasivaGFForm) formulario;
 				if (miForm != null) {
 					String accion = miForm.getModo();
 					String modo = request.getParameter("modo");
-					if(modo!=null)
+					if (modo != null)
 						accion = modo;
 
-					if (accion == null || accion.equals("") || accion.equalsIgnoreCase("abrir")){
-						mapDestino = inicio (mapping, miForm, request, response);
-					}else if ( accion.equalsIgnoreCase("getAjaxBusqueda")){
-						mapDestino = getAjaxBusqueda (mapping, miForm, request, response);
-					}else if ( accion.equalsIgnoreCase("parseExcelFile")){
-						mapDestino = parseExcelFile (mapping, miForm, request, response);
-					}else if ( accion.equalsIgnoreCase("downloadExample")){
-						mapDestino = downloadExample (mapping, miForm, request, response);
-					}else if ( accion.equalsIgnoreCase("downloadExcelError")){
-						mapDestino = downloadExcelError (mapping, miForm, request, response);
-					}else if ( accion.equalsIgnoreCase("downloadExcelProcessed")){
+					if (accion == null || accion.equals("") || accion.equalsIgnoreCase("abrir")) {
+						mapDestino = inicio(mapping, miForm, request, response);
+					} else if (accion.equalsIgnoreCase("getAjaxBusqueda")) {
+						mapDestino = getAjaxBusqueda(mapping, miForm, request, response);
+					} else if (accion.equalsIgnoreCase("parseExcelFile")) {
+						mapDestino = parseExcelFile(mapping, miForm, request, response);
+					} else if (accion.equalsIgnoreCase("downloadExample")) {
+						mapDestino = downloadExample(mapping, miForm, request, response);
+					} else if (accion.equalsIgnoreCase("downloadExcelError")) {
+						mapDestino = downloadExcelError(mapping, miForm, request, response);
+					} else if (accion.equalsIgnoreCase("downloadExcelProcessed")) {
 						mapDestino = downloadExcelProcessed(mapping, miForm, request, response);
-					}else if ( accion.equalsIgnoreCase("downloadExcelLog")){
+					} else if (accion.equalsIgnoreCase("downloadExcelLog")) {
 						mapDestino = downloadExcelLog(mapping, miForm, request, response);
-					}
-					else if ( accion.equalsIgnoreCase("processExcelFile")){
-						mapDestino = processExcelFile (mapping, miForm, request, response);
-					}else if ( accion.equalsIgnoreCase("volver")){
-						mapDestino = volver (mapping, miForm, request, response);
-					}else {
-						return super.executeInternal(mapping,formulario,request,response);
+					} else if (accion.equalsIgnoreCase("processExcelFile")) {
+						mapDestino = processExcelFile(mapping, miForm, request, response);
+					} else if (accion.equalsIgnoreCase("volver")) {
+						mapDestino = volver(mapping, miForm, request, response);
+					} else {
+						return super.executeInternal(mapping, formulario, request, response);
 					}
 				}
 			} while (false);
 
 			// Redireccionamos el flujo a la JSP correspondiente
-			if (mapDestino == null)	{ 
+			if (mapDestino == null) {
 				throw new ClsExceptions("El ActionMapping no puede ser nulo");
 			}
 
@@ -85,34 +85,27 @@ public class CargaMasivaGFAction extends MasterAction {
 			throw es;
 
 		} catch (Exception e) {
-			throw new SIGAException("messages.general.error",e,new String[] {"modulo.gratuita"});
+			throw new SIGAException("messages.general.error", e, new String[] { "modulo.gratuita" });
 		}
 	}
 
-	private String inicio (ActionMapping mapping, 		
-			MasterForm formulario, 
-			HttpServletRequest request, 
-			HttpServletResponse response) throws ClsExceptions, SIGAException 
-			{
+	private String inicio(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, SIGAException {
 		CargaMasivaGFForm miForm = (CargaMasivaGFForm) formulario;
 		miForm.clear();
 		UsrBean usrBean = this.getUserBean(request);
 		miForm.setIdInstitucion(usrBean.getLocation());
-		String identificadorFormularioBusqueda = getIdBusqueda(super.dataBusqueda,getClass().getName());
+		String identificadorFormularioBusqueda = getIdBusqueda(super.dataBusqueda, getClass().getName());
 		request.getSession().removeAttribute(identificadorFormularioBusqueda);
 
 		return "inicio";
 	}
-	private String volver (ActionMapping mapping, 		
-			MasterForm formulario, 
-			HttpServletRequest request, 
-			HttpServletResponse response) throws SIGAException{
-		
+
+	private String volver(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		CargaMasivaGFForm miForm = (CargaMasivaGFForm) formulario;
 		miForm.clear();
-		String identificadorFormularioBusqueda = getIdBusqueda(super.dataBusqueda,getClass().getName());
+		String identificadorFormularioBusqueda = getIdBusqueda(super.dataBusqueda, getClass().getName());
 		CargaMasivaGFForm cargaMasivaGFForm = (CargaMasivaGFForm) request.getSession().getAttribute(identificadorFormularioBusqueda);
-		if(cargaMasivaGFForm!=null){
+		if (cargaMasivaGFForm != null) {
 			miForm.setFechaCarga(cargaMasivaGFForm.getFechaCarga());
 			miForm.setIdInstitucion(cargaMasivaGFForm.getIdInstitucion());
 		}
@@ -127,167 +120,147 @@ public class CargaMasivaGFAction extends MasterAction {
 	 * @param request
 	 * @param response
 	 * @return
-	 * @throws SIGAException 
+	 * @throws SIGAException
 	 */
-	private String getAjaxBusqueda (ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+	private String getAjaxBusqueda(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		CargaMasivaGFForm cargaMasivaGFForm = (CargaMasivaGFForm) formulario;
 		String idInstitucion = request.getParameter("idInstitucion");
 		String fechaCarga = request.getParameter("fechaCarga");
 		cargaMasivaGFForm.setIdInstitucion(idInstitucion);
-		if(fechaCarga!=null)
+		if (fechaCarga != null)
 			cargaMasivaGFForm.setFechaCarga(fechaCarga);
 
-		String identificadorFormularioBusqueda = getIdBusqueda(super.dataBusqueda,getClass().getName());
-		request.getSession().setAttribute(identificadorFormularioBusqueda,cargaMasivaGFForm.clone());
+		String identificadorFormularioBusqueda = getIdBusqueda(super.dataBusqueda, getClass().getName());
+		request.getSession().setAttribute(identificadorFormularioBusqueda, cargaMasivaGFForm.clone());
 
 		CargaMasivaGF cargaMasivaDatosGF = (CargaMasivaGF) getBusinessManager().getService(CargaMasivaGF.class);
 		VoUiService<CargaMasivaGFForm, CargaMasivaDatosGFVo> voService = new CargaMasivaDatosGFVoService();
-		List<CargaMasivaDatosGFVo> cargaMasivaDatosGFVos =  cargaMasivaDatosGF.getCargasMasivas(voService.getForm2Vo(cargaMasivaGFForm));
+		List<CargaMasivaDatosGFVo> cargaMasivaDatosGFVos = cargaMasivaDatosGF.getCargasMasivas(voService.getForm2Vo(cargaMasivaGFForm));
 		request.setAttribute("listado", voService.getVo2FormList(cargaMasivaDatosGFVos));
-		
+
 		return "listado";
-
-
 	}
 
-
-
-	private String downloadExcelError (ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+	private String downloadExcelError(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		String forward = "descargaFichero";
 		CargaMasivaGFForm cargaMasivaGFForm = (CargaMasivaGFForm) formulario;
 		CargaMasivaGF cargaMasivaDatosGF = (CargaMasivaGF) getBusinessManager().getService(CargaMasivaGF.class);
 		UsrBean usrBean = this.getUserBean(request);
-
 		File errorFile;
 		try {
 			CargaMasivaDatosGFVo cargaMasivaDatosGFVo = new CargaMasivaDatosGFVo();
 			cargaMasivaDatosGFVo.setIdInstitucion(Short.valueOf(usrBean.getLocation()));
 			cargaMasivaDatosGFVo.setExcelBytes(SIGAServicesHelper.getBytes(cargaMasivaGFForm.getRutaFichero()));
 			cargaMasivaDatosGFVo.setCodIdioma(usrBean.getLanguage());
-			
+
 			errorFile = cargaMasivaDatosGF.getErrorExcelFile(cargaMasivaDatosGFVo);
 			request.setAttribute("nombreFichero", errorFile.getName());
 			request.setAttribute("rutaFichero", errorFile.getPath());
 			request.setAttribute("accion", "");
+			
 		} catch (BusinessException e) {
-			throwExcp(e.getMessage(), e,null);
+			throwExcp(e.getMessage(), e, null);
 		} catch (Exception e) {
-			throwExcp("messages.general.error", new String[] { "modulo.gratuita"}, e, null);
+			throwExcp("messages.general.error", new String[] { "modulo.gratuita" }, e, null);
 		}
 		return forward;
 
 	}
-	private String downloadExcelProcessed (ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+
+	private String downloadExcelProcessed(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		String forward = "descargaFichero";
 		try {
 			CargaMasivaGFForm cargaMasivaGFForm = (CargaMasivaGFForm) formulario;
-			FicherosService ficherosService = (FicherosService)  getBusinessManager().getService(FicherosService.class);
+			FicherosService ficherosService = (FicherosService) getBusinessManager().getService(FicherosService.class);
 			File file = ficherosService.getFile(Long.valueOf(cargaMasivaGFForm.getIdFichero()), Short.valueOf(cargaMasivaGFForm.getIdInstitucion()));
 			request.setAttribute("nombreFichero", file.getName());
 			request.setAttribute("rutaFichero", file.getPath());
 			request.setAttribute("accion", "");
 
-
-		}catch (BusinessException e) {
-			throwExcp(e.getMessage(), e,null);
+		} catch (BusinessException e) {
+			throwExcp(e.getMessage(), e, null);
 		} catch (Exception e) {
-			throwExcp("messages.general.error", new String[] { "modulo.gratuita"}, e, null);
+			throwExcp("messages.general.error", new String[] { "modulo.gratuita" }, e, null);
 		}
 		return forward;
 	}
 
-
-	protected String downloadExcelLog(ActionMapping mapping,
-			MasterForm formulario, HttpServletRequest request,
-			HttpServletResponse response) throws SIGAException {
+	protected String downloadExcelLog(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		String forward = "descargaFichero";
 		try {
 			CargaMasivaGFForm cargaMasivaGFForm = (CargaMasivaGFForm) formulario;
 			cargaMasivaGFForm.setCodIdioma(this.getUserBean(request).getLanguage());
-			FicherosService ficherosService = (FicherosService)  getBusinessManager().getService(FicherosService.class);
+			FicherosService ficherosService = (FicherosService) getBusinessManager().getService(FicherosService.class);
 			File file = ficherosService.getFile(Long.valueOf(cargaMasivaGFForm.getIdFicheroLog()), Short.valueOf(cargaMasivaGFForm.getIdInstitucion()));
 			request.setAttribute("nombreFichero", file.getName());
 			request.setAttribute("rutaFichero", file.getPath());
 			request.setAttribute("accion", "");
 
-
-		}catch (BusinessException e) {
-			
-			throwExcp(e.getMessage(), e,null);
+		} catch (BusinessException e) {
+			throwExcp(e.getMessage(), e, null);
 		} catch (Exception e) {
-			throwExcp("messages.general.error", new String[] { "modulo.gratuita"}, e, null);
+			throwExcp("messages.general.error", new String[] { "modulo.gratuita" }, e, null);
 		}
 
 		return forward;
 	}
 
-	private String processExcelFile (ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+	private String processExcelFile(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		CargaMasivaGFForm cargaMasivaGFForm = (CargaMasivaGFForm) formulario;
 		CargaMasivaGF cargaMasivaDatosGF = (CargaMasivaGF) getBusinessManager().getService(CargaMasivaGF.class);
 		UsrBean usrBean = this.getUserBean(request);
 		try {
-
-			//			List<CargaMasivaDatosGFVo> cargaMasivaDatosGFList = cargaMasivaDatosGF.parseExcelFile(SIGAServicesHelper.getBytes(cargaMasivaGFForm.getRutaFichero()),Short.valueOf(usrBean.getLocation()));
 			CargaMasivaDatosGFVo cargaMasivaDatosGFVo = new CargaMasivaDatosGFVo();
 			cargaMasivaDatosGFVo.setCodIdioma(usrBean.getLanguage());
 			cargaMasivaDatosGFVo.setIdInstitucion(Short.valueOf(usrBean.getLocation()));
-			String nombreFichero = cargaMasivaGFForm.getNombreFichero().substring(cargaMasivaGFForm.getNombreFichero().lastIndexOf("\\")+1); 
+			String nombreFichero = cargaMasivaGFForm.getNombreFichero().substring(cargaMasivaGFForm.getNombreFichero().lastIndexOf("\\") + 1);
 			cargaMasivaDatosGFVo.setNombreFichero(nombreFichero);
 			cargaMasivaDatosGFVo.setUsuario(usrBean.getUserName());
 			cargaMasivaDatosGFVo.setExcelBytes(SIGAServicesHelper.getBytes(cargaMasivaGFForm.getRutaFichero()));
+			cargaMasivaDatosGF.processExcelFile(cargaMasivaDatosGFVo);
 
-			cargaMasivaDatosGF.processExcelFile(cargaMasivaDatosGFVo); 
-
-		}catch (BusinessException e) {
-			throwExcp(e.getMessage(), e,null);
+		} catch (BusinessException e) {
+			throwExcp(e.getMessage(), e, null);
 		} catch (Exception e) {
-			throwExcp("messages.general.error", new String[] { "modulo.gratuita"}, e, null);
+			throwExcp("messages.general.error", new String[] { "modulo.gratuita" }, e, null);
 		}
 
-
-		return exitoRefresco("messages.inserted.success",request);
-
-
+		return exitoRefresco("messages.inserted.success", request);
 	}
-	private String downloadExample (ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 
-		CargaMasivaGF cargaMasivaDatosGF = (CargaMasivaGF) getBusinessManager().getService(CargaMasivaGF.class); 
-		Vector<Hashtable<String, Object>> datosVector = new Vector<Hashtable<String,Object>>();
-		Hashtable<String, Object> datosHashtable =  new Hashtable<String, Object>();
-		datosHashtable.put(CargaMasivaDatosGFVo.COLEGIADONUMERO,"nnnnnn");
-		datosHashtable.put(CargaMasivaDatosGFVo.PERSONANIF,"nnnnnnnna" );
-		datosHashtable.put(CargaMasivaDatosGFVo.C_IDGRUPO,"nnn" );
-		datosHashtable.put(CargaMasivaDatosGFVo.ACCION,"A/B" );
-		
-		
+	private String downloadExample(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+		CargaMasivaGF cargaMasivaDatosGF = (CargaMasivaGF) getBusinessManager().getService(CargaMasivaGF.class);
+		Vector<Hashtable<String, Object>> datosVector = new Vector<Hashtable<String, Object>>();
+		Hashtable<String, Object> datosHashtable = new Hashtable<String, Object>();
+		datosHashtable.put(CargaMasivaDatosGFVo.COLEGIADONUMERO, "nnnnnn");
+		datosHashtable.put(CargaMasivaDatosGFVo.PERSONANIF, "nnnnnnnna");
+		datosHashtable.put(CargaMasivaDatosGFVo.C_IDGRUPO, "nnn");
+		datosHashtable.put(CargaMasivaDatosGFVo.ACCION, "A/B");
 		datosVector.add(datosHashtable);
-		datosHashtable =  new Hashtable<String, Object>();
-		datosHashtable.put(CargaMasivaDatosGFVo.COLEGIADONUMERO,"Opcional. Si nulo nif/cif requerido");
-		datosHashtable.put(CargaMasivaDatosGFVo.PERSONANIF,"Opcional. Si nulo colegiadonumero requerido" );
+
+		datosHashtable = new Hashtable<String, Object>();
+		datosHashtable.put(CargaMasivaDatosGFVo.COLEGIADONUMERO, "Opcional. Si nulo nif/cif requerido");
+		datosHashtable.put(CargaMasivaDatosGFVo.PERSONANIF, "Opcional. Si nulo colegiadonumero requerido");
 		datosHashtable.put(CargaMasivaDatosGFVo.C_IDGRUPO, "Requerido");
 		datosHashtable.put(CargaMasivaDatosGFVo.ACCION, "Requerido");
-		
-		
 		datosVector.add(datosHashtable);
-			 
-			 
-		File exampleFile =  cargaMasivaDatosGF.createExcelFile(CargaMasivaDatosGFImpl.CAMPOSEJEMPLO, datosVector);
+
+		File exampleFile = cargaMasivaDatosGF.createExcelFile(CargaMasivaDatosGFImpl.CAMPOSEJEMPLO, datosVector);
 		request.setAttribute("nombreFichero", exampleFile.getName());
 		request.setAttribute("rutaFichero", exampleFile.getPath());
 		request.setAttribute("accion", "");
 		return "descargaFichero";
-
 	}
 
-	private String parseExcelFile (ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+	private String parseExcelFile(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		CargaMasivaGFForm cargaMasivaGFForm = (CargaMasivaGFForm) formulario;
 		CargaMasivaGF cargaMasivaDatosGF = (CargaMasivaGF) getBusinessManager().getService(CargaMasivaGF.class);
 		UsrBean usrBean = this.getUserBean(request);
 		cargaMasivaGFForm.setCodIdioma(usrBean.getLanguage());
-		
+
 		try {
-			if(cargaMasivaGFForm.getTheFile()!=null && cargaMasivaGFForm.getTheFile().getFileData()!=null && cargaMasivaGFForm.getTheFile().getFileData().length>0){
-				File file = SIGAServicesHelper.createTemporalFile(cargaMasivaGFForm.getTheFile().getFileData(), "xls"); 
+			if (cargaMasivaGFForm.getTheFile() != null && cargaMasivaGFForm.getTheFile().getFileData() != null && cargaMasivaGFForm.getTheFile().getFileData().length > 0) {
+				File file = SIGAServicesHelper.createTemporalFile(cargaMasivaGFForm.getTheFile().getFileData(), "xls");
 				cargaMasivaGFForm.setRutaFichero(file.getAbsolutePath());
 				cargaMasivaGFForm.setNombreFichero(cargaMasivaGFForm.getTheFile().getFileName());
 				CargaMasivaDatosGFVo cargaMasivaDatosGFVo = new CargaMasivaDatosGFVo();
@@ -298,26 +271,16 @@ public class CargaMasivaGFAction extends MasterAction {
 				List<CargaMasivaDatosGFVo> cargaMasivaDatosGFList = cargaMasivaDatosGF.parseExcelFile(cargaMasivaDatosGFVo);
 				VoUiService<CargaMasivaGFForm, CargaMasivaDatosGFVo> voService = new CargaMasivaDatosGFVoService();
 				request.setAttribute("listado", voService.getVo2FormList(cargaMasivaDatosGFList));
-				String identificadorFormularioBusqueda = getIdBusqueda(super.dataBusqueda,getClass().getName());
-				request.getSession().setAttribute(identificadorFormularioBusqueda,cargaMasivaGFForm.clone());
-				
-
+				String identificadorFormularioBusqueda = getIdBusqueda(super.dataBusqueda, getClass().getName());
+				request.getSession().setAttribute(identificadorFormularioBusqueda, cargaMasivaGFForm.clone());
 			}
-		}catch (BusinessException e) {
-			throwExcp(e.getMessage(), e,null);
+			
+		} catch (BusinessException e) {
+			throwExcp(e.getMessage(), e, null);
 		} catch (Exception e) {
-			throwExcp("messages.general.error", new String[] { "modulo.gratuita"}, e, null);
+			throwExcp("messages.general.error", new String[] { "modulo.gratuita" }, e, null);
 		}
-
 		return "listadoResumen";
-
-
 	}
-
-
-
-
-
-
 
 }
