@@ -97,7 +97,7 @@
 						<siga:Idioma key="facturacion.devolucionManual.aplicarComisiones"/>
 					</td>
 					<td>
-						<input type="checkbox" id="dialogAplicarComisiones" value="<%=ClsConstants.DB_TRUE%>">
+						<input type="checkbox" id="dialogAplicarComisiones">
 					</td>
 				</tr>			
 			</table>			
@@ -287,7 +287,11 @@
 						var datosFacturasSeleccionadas =  jQuery("#resultado").contents().find("#registrosSeleccionados").val();
 						document.DevolucionesManualesForm.recibos.value = datosFacturasSeleccionadas;
 						document.DevolucionesManualesForm.fechaDevolucion.value = dialogFechaDevolucion.val();
-						document.DevolucionesManualesForm.aplicarComisiones.value = jQuery("#dialogAplicarComisiones").val();					
+						if (jQuery("#dialogAplicarComisiones").is(':checked')) {
+							document.DevolucionesManualesForm.aplicarComisiones.value = "<%=ClsConstants.DB_TRUE%>";
+						} else {
+							document.DevolucionesManualesForm.aplicarComisiones.value = "<%=ClsConstants.DB_FALSE%>";
+						}
 						
 						document.DevolucionesManualesForm.target = "submitArea";
 						document.DevolucionesManualesForm.modo.value = "insertar";																				
