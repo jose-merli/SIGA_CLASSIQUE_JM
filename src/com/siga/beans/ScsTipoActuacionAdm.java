@@ -243,7 +243,13 @@ public class ScsTipoActuacionAdm extends MasterBeanAdministrador {
 									" AND SCS_TIPOACTUACIONCOSTEFIJO.IDCOSTEFIJO = " + idCosteFijo + 
 							" ) AS IMPORTECOSTE " +
 						" FROM SCS_TIPOACTUACION " +
-						" WHERE SCS_TIPOACTUACION.IDINSTITUCION = " + idInstitucion;
+						" WHERE SCS_TIPOACTUACION.IDINSTITUCION = " + idInstitucion +
+							" AND EXISTS ( " + // JPT: Debe existir el tipo de asistencia del colegiado para mostrarse 
+								" SELECT 1 " +
+								" FROM SCS_TIPOASISTENCIACOLEGIO " +
+								" WHERE SCS_TIPOASISTENCIACOLEGIO.IDINSTITUCION = SCS_TIPOACTUACION.IDINSTITUCION " +
+									" AND SCS_TIPOASISTENCIACOLEGIO.IDTIPOASISTENCIACOLEGIO = SCS_TIPOACTUACION.IDTIPOASISTENCIA " +
+							" ) ";
 			
 			if (idTipoAsistencia!=null && !idTipoAsistencia.equals("")) {
 				sql += " AND SCS_TIPOACTUACION.IDTIPOASISTENCIA = " + idTipoAsistencia;
@@ -256,7 +262,7 @@ public class ScsTipoActuacionAdm extends MasterBeanAdministrador {
 								" AND SCS_TIPOACTUACIONCOSTEFIJO.IDTIPOASISTENCIA = SCS_TIPOACTUACION.IDTIPOASISTENCIA " +
 								" AND SCS_TIPOACTUACIONCOSTEFIJO.IDTIPOACTUACION = SCS_TIPOACTUACION.IDTIPOACTUACION " +
 								" AND SCS_TIPOACTUACIONCOSTEFIJO.IDCOSTEFIJO = " + idCosteFijo +
-						" ) ";
+						" ) ";						
 			}
 			
 			sql += " ORDER BY DSTIPOASISTENCIA, DSTIPOACTUACION ASC";

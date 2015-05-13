@@ -352,6 +352,12 @@ public class ScsActuacionAsistCosteFijoAdm extends MasterBeanAdministrador {
 						" FROM SCS_TIPOACTUACIONCOSTEFIJO " +
 						" WHERE SCS_TIPOACTUACIONCOSTEFIJO.IDINSTITUCION = " + idInstitucion +
 							" AND SCS_TIPOACTUACIONCOSTEFIJO.IDCOSTEFIJO = " + idCosteFijo +
+							" AND EXISTS ( " + // JPT: Debe existir el tipo de asistencia del colegiado para mostrarse 
+								" SELECT 1 " +
+								" FROM SCS_TIPOASISTENCIACOLEGIO " +
+								" WHERE SCS_TIPOASISTENCIACOLEGIO.IDINSTITUCION = SCS_TIPOACTUACIONCOSTEFIJO.IDINSTITUCION " +
+									" AND SCS_TIPOASISTENCIACOLEGIO.IDTIPOASISTENCIACOLEGIO = SCS_TIPOACTUACIONCOSTEFIJO.IDTIPOASISTENCIA " +
+							" ) " +
 						" ORDER BY 2";
 			
 			resultado = this.selectGenerico(sql);
