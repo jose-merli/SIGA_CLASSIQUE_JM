@@ -50,7 +50,8 @@ public class DatosCVForm extends MasterForm
 	public void setFechaInicio(String fechaInicio) {
 		try {
 			fechaInicio = GstDate.getApplicationFormatDate("",fechaInicio);
-			this.datos.put(CenDatosCVBean.C_FECHAINICIO, fechaInicio);
+			if(fechaInicio!=null)
+				this.datos.put(CenDatosCVBean.C_FECHAINICIO, fechaInicio);
 		}
 		catch (Exception e) {
 			e.printStackTrace();
