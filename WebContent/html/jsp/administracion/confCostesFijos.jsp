@@ -16,6 +16,8 @@
 <%@ page import="com.siga.beans.ScsActuacionAsistCosteFijoBean"%>
 <%@ page import="com.siga.Utilidades.UtilidadesString"%>
 <%@ page import="com.siga.Utilidades.UtilidadesHash"%>
+<%@ page import="java.util.Hashtable"%>
+<%@ page import="java.util.Vector"%>
 
 <% 
 	HttpSession ses = request.getSession();

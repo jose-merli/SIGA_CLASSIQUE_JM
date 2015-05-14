@@ -26,6 +26,9 @@
 <%@ page import="com.siga.Utilidades.UtilidadesString"%>
 <%@ page import="com.siga.Utilidades.UtilidadesHash"%>
 <%@ page import="com.siga.Utilidades.PaginadorBind"%>
+<%@ page import="java.util.Hashtable"%>
+<%@ page import="java.util.HashMap"%>
+<%@ page import="java.util.Vector"%>
 
 <%
 	Boolean isPermitirFacturaCertificado = (Boolean)request.getAttribute("isPermitirFacturaCertificado");

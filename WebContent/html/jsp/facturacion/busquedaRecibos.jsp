@@ -18,6 +18,7 @@
 <%@ page import="com.siga.facturacion.form.DevolucionesManualesForm"%>
 <%@ page import="com.siga.Utilidades.UtilidadesString"%>
 <%@ page import="com.atos.utils.ClsConstants"%>
+<%@ page import="java.util.ArrayList"%>
 
 <%  
 	HttpSession ses=request.getSession();

@@ -18,6 +18,7 @@
 <%@ page import="com.atos.utils.Row"%>
 <%@ page import="com.atos.utils.UsrBean"%>
 <%@ page import="com.siga.Utilidades.UtilidadesString"%>
+<%@ page import="java.util.ArrayList"%>
 
 <% 
 	HttpSession ses = request.getSession();
