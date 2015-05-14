@@ -105,23 +105,50 @@ public class AtosInformesService extends JtaBusinessServiceTemplate
 		StringBuffer directorio = null;
 		
 		if(informeForm.getClaseTipoInforme().equals(AdmTipoInformeBean.CLASETIPOINFORME_GENERICO)){
-			ReadProperties rp3= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
-			final String directorioFisicoPlantillaInformesJava = rp3.returnProperty("informes.directorioFisicoPlantillaInformesJava");
-			final String directorioPlantillaInformesJava = rp3.returnProperty("informes.directorioPlantillaInformesJava");
-			
-			directorio = new StringBuffer(directorioFisicoPlantillaInformesJava);
-			directorio.append(directorioPlantillaInformesJava);
-			directorio.append(ClsConstants.FILE_SEP);
-//			directorio.append(informeForm.getIdInstitucion());
-			if(informeForm.getIdInstitucion().equals("0")){
-				directorio.append("2000");
-			}else{
-				directorio.append(informeForm.getIdInstitucion());
+			if(informeForm.getIdTipoInforme().equalsIgnoreCase("CERPA")||informeForm.getIdTipoInforme().equalsIgnoreCase("FACJ2")){
+				
+				ReadProperties rp3= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+				final String directorioFisicoPlantillaInformesJava = rp3.returnProperty("informes.directorioFisicoPlantillaInformesJava");
+				directorio = new StringBuffer(directorioFisicoPlantillaInformesJava);
+				directorio.append(ClsConstants.FILE_SEP);
+				directorio.append(informeForm.getDirectorio());
+				directorio.append(ClsConstants.FILE_SEP);
+	//			directorio.append(informeForm.getIdInstitucion());
+				if(informeForm.getIdInstitucion().equals("0")){
+					directorio.append("2000");
+				}else{
+					directorio.append(informeForm.getIdInstitucion());
+				}
+				
+				directorio.append(ClsConstants.FILE_SEP);
+				
+				
+				
+				
+				
+				
+				
+				
+				
+			} else{
+				ReadProperties rp3= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+				final String directorioFisicoPlantillaInformesJava = rp3.returnProperty("informes.directorioFisicoPlantillaInformesJava");
+				final String directorioPlantillaInformesJava = rp3.returnProperty("informes.directorioPlantillaInformesJava");
+				
+				directorio = new StringBuffer(directorioFisicoPlantillaInformesJava);
+				directorio.append(directorioPlantillaInformesJava);
+				directorio.append(ClsConstants.FILE_SEP);
+	//			directorio.append(informeForm.getIdInstitucion());
+				if(informeForm.getIdInstitucion().equals("0")){
+					directorio.append("2000");
+				}else{
+					directorio.append(informeForm.getIdInstitucion());
+				}
+				
+				directorio.append(ClsConstants.FILE_SEP);
+				
+				directorio.append(informeForm.getDirectorio());
 			}
-			
-			directorio.append(ClsConstants.FILE_SEP);
-			
-			directorio.append(informeForm.getDirectorio());
 			
 		}else if(informeForm.getClaseTipoInforme().equals(AdmTipoInformeBean.CLASETIPOINFORME_PERSONALIZABLE)||informeForm.getClaseTipoInforme().equals(AdmTipoInformeBean.CLASETIPOINFORME_CONSULTAS)){
 			ReadProperties rp3= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
