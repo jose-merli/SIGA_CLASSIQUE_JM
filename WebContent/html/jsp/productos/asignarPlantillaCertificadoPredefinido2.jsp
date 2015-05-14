@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-<!-- asignarPlantillaCertificado2.jsp -->
+<!-- asignarPlantillaCertificadoPredefinido2.jsp -->
+
 <!-- Certificado ordinario -->
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-1"%>
@@ -69,7 +70,7 @@
 			//}
 		}		
 
-		<!-- Asociada al boton Aceptar -->
+		// Asociada al boton Aceptar
 		function accionAceptar()
 		{
 			//var aux=document.forms[0].idPlantilla.value;
