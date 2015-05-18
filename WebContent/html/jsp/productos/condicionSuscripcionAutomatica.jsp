@@ -235,7 +235,8 @@
 		// => idCampo = idCampo,tipoCampo,idTabla
 		// => idOperador = idOperador,simbolo
 		function buscarErrores() {
-			var auxiliar = global.substring(1,global.length); // Quito el primer asterisco					
+			var auxiliar = global.substring(1,global.length); // Quito el primer asterisco
+			var mensaje = "";
 			while (auxiliar.length>0) {				
 				var posicion = auxiliar.indexOf("*");
 				var datos = "";
@@ -255,11 +256,17 @@
 					//var operador = datos.substring(0, datos.indexOf("_"));
 					datos = datos.substring(datos.indexOf("_") + 1);
 					var valor = datos.substring(0, datos.indexOf("_"));
-					var mensaje = "<siga:Idioma key='errors.required' arg0='" + valor + "'/>";
-					alert(mensaje);
-					return false;					
+					if (mensaje == "")
+						mensaje = "<siga:Idioma key='errors.required' arg0='" + valor + "'/>";
+					else
+						mensaje = mensaje + "\n<siga:Idioma key='errors.required' arg0='" + valor + "'/>";				
 				}
 			}			
+			
+			if (mensaje != "") {
+				alert(mensaje);
+				return false;	
+			}
 			return true;
 		}	
 		
