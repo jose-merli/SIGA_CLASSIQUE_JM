@@ -90,411 +90,439 @@
 	ses.setAttribute("AUX_servicioInstitucion", servicioInstitucion);
 %>	
 
-
-
 	<!-- HEAD -->
-	
-		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
-	
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
 	<!-- Incluido jquery en siga.js -->
-	
 	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js?v=${sessionScope.VERSIONJS}'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
-		<script type="text/javascript" src="<html:rewrite page='/html/jsp/general/validacionSIGA.jsp'/>"></script>	
-		<script type="text/javascript" src="<html:rewrite page='/html/js/validacionStruts.js'/>"></script>
-		
-		<script language="JavaScript">
-				
-			function cambiarTipo(obj) {
-				document.forms[0].modo.value="abrirAvanzada";
-				document.forms[0].target="frameOperadorValor";
-				document.forms[0].submit();
-			}
+	<script type="text/javascript" src="<html:rewrite page='/html/jsp/general/validacionSIGA.jsp'/>"></script>	
+	<script type="text/javascript" src="<html:rewrite page='/html/js/validacionStruts.js'/>"></script>
 
-			function validacionPosterior(){
-				var envio=true;	
-				var mensaje="";
+	<!-- INICIO: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->
+	<!-- Validaciones en Cliente -->
+	<!-- El nombre del formulario se obtiene del struts-config -->
+	<html:javascript formName="MantenimientoServiciosForm" staticJavascript="false" />  	
+</head>
 
-				if (document.forms[0].precio.value==""){
-					mensaje+='<siga:Idioma key="pys.mantenimientoServicios.literal.precio"/> <siga:Idioma key="messages.campoObligatorio.error"/>\n';
-					envio=false;
-				}
-				
-				if ((document.forms[0].precio.value<0) || (document.forms[0].precio.value>99999999) || (isNaN(document.forms[0].precio.value))){
-					mensaje+='<siga:Idioma key="messages.pys.mantenimientoProductos.errorPrecio"/>\n';
-					envio=false;
-				}
-				
-				//Comprobar periodicidad
-				if (document.forms[0].periodicidad.value==""){
-					mensaje+='<siga:Idioma key="pys.mantenimientoServicios.literal.periodicidad"/> <siga:Idioma key="messages.campoObligatorio.error"/>';
-					envio=false;
-				}								
-				
-				if (!envio){
-					alert(mensaje);
-				}
-				
-				return envio;				
-			}	
+<body onBeforeUnLoad="accionCerrar();">
 
-			function revisarCheckPrecioDefecto()  {
-				if(document.getElementById("precioDefecto").checked) {
-					// borro los criterios
-					global = "";
-					document.frameResultado.location.href="/SIGA/html/jsp/productos/definirCriteriosCliente.jsp?resultado=\""+global+"\"";
-					// inhabilito los combos
-					jQuery("#conector").attr("disabled","disabled");
-					document.getElementById("conector").className="boxConsulta";
-						document.getElementById("conector").value="";
-					jQuery("#campo").attr("disabled","disabled");
-					document.getElementById("campo").className="boxConsulta";
-					document.getElementById("campo").value="";
-					jQuery("#idButton").attr("disabled","disabled");
-					document.frameOperadorValor.location.href="/SIGA/html/jsp/productos/criteriosClienteFrame.jsp";
+	<!-- TITULO -->
+	<!-- Barra de titulo actualizable desde los mantenimientos -->
+	<table class="tablaTitulo">
+		<tr>
+			<td id="titulo" class="titulitosDatos">
+				<siga:Idioma key="pys.mantenimientoServicios.literal.titulo1"/>
+			</td>
+		</tr>
+	</table>
 
-				} else {
-					// habilito los combos
-					jQuery("#conector").removeAttr("disabled");
-					document.getElementById("conector").className="boxCombo";
-					document.getElementById("conector").value="";
-					jQuery("#campo").removeAttr("disabled");
-					document.getElementById("campo").className="boxCombo";
-					document.getElementById("campo").value="";
-					jQuery("#idButton").removeAttr("disabled");
-					document.frameOperadorValor.location.href="/SIGA/html/jsp/productos/criteriosClienteFrame.jsp";				
-				}
-			}			
-		</script>		
+	<html:form action="/PYS_MantenimientoServicios.do" method="POST" target="submitArea">
+		<html:hidden property = "modo" value = ""/>
+		<html:hidden property="idInstitucion" value="<%=institucion%>"/>
+		<html:hidden property="idTipoServicios" value="<%=tipoServicio%>"/>
+		<html:hidden property="idServicio" value="<%=servicio%>"/>
+		<html:hidden property="idServiciosInstitucion" value="<%=servicioInstitucion%>"/>
+		<html:hidden property="criterios" value=""/>
 
-		<!-- INICIO: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->
-		<!-- Validaciones en Cliente -->
-		<!-- El nombre del formulario se obtiene del struts-config -->
-		<html:javascript formName="MantenimientoServiciosForm" staticJavascript="false" />  	
-	</head>
-
-	<body onBeforeUnLoad="accionCerrar();">
-
-			<!-- TITULO -->
-			<!-- Barra de titulo actualizable desde los mantenimientos -->
-			<table class="tablaTitulo">
-				<tr>
-					<td id="titulo" class="titulitosDatos">
-						<siga:Idioma key="pys.mantenimientoServicios.literal.titulo1"/>
+		<siga:ConjCampos leyenda="pys.mantenimientoServicios.leyenda">
+			<table class="tablaCampos" border="0">
+				<!-- FILA -->
+				<tr>				
+					<td class="labelText">
+						<siga:Idioma key="pys.mantenimientoServicios.literal.precio"/>&nbsp;(*)
+					</td>				
+					<td class="labelText" width="110px">
+						<% if (modo.equalsIgnoreCase("insertar")){%>
+				  			<html:text property="precio" styleClass="boxNumber" maxlength="11" size="10" value="" />&nbsp;&euro;
+				  			
+						<% } else { %>
+							<% if (modo.equalsIgnoreCase("modificar")){ %>
+								<html:text property="precio" styleClass="boxNumber" size="10" maxlength="11" value="<%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero.formatoCampo(precio))%>" />&nbsp;&euro;
+								
+							<% } else { %>
+								<html:text property="precio" styleClass="boxConsulta" size="10" value="<%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero.formatoCampo(precio))%>" readonly="true" />&nbsp;&euro;
+							<% } %>								  		
+						<% } %>
 					</td>
-				</tr>
-			</table>
-
-			<div>
-				<html:form action="/PYS_MantenimientoServicios.do" method="POST" target="submitArea">
-					<html:hidden property = "modo" value = ""/>
-					<html:hidden property="idInstitucion" value="<%=institucion%>"/>
-					<html:hidden property="idTipoServicios" value="<%=tipoServicio%>"/>
-					<html:hidden property="idServicio" value="<%=servicio%>"/>
-					<html:hidden property="idServiciosInstitucion" value="<%=servicioInstitucion%>"/>
-					<html:hidden property="criterios" value=""/>
-
-					<siga:ConjCampos leyenda="pys.mantenimientoServicios.leyenda">
-						<table class="tablaCampos" border="0">
-							<!-- FILA -->
-							<tr>				
-								<td class="labelText">
-									<siga:Idioma key="pys.mantenimientoServicios.literal.precio"/>&nbsp;(*)
-								</td>				
-								<td class="labelText" width="110px">
-									<% if (modo.equalsIgnoreCase("insertar")){%>
-							  			<html:text property="precio" styleClass="boxNumber" maxlength="11" size="10" value="" />&nbsp;&euro;
-							  			
-									<% } else { %>
-										<% if (modo.equalsIgnoreCase("modificar")){ %>
-											<html:text property="precio" styleClass="boxNumber" size="10" maxlength="11" value="<%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero.formatoCampo(precio))%>" />&nbsp;&euro;
-											
-										<% } else { %>
-											<html:text property="precio" styleClass="boxConsulta" size="10" value="<%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero.formatoCampo(precio))%>" readonly="true" />&nbsp;&euro;
-										<% } %>								  		
-									<% } %>
-								</td>
-								
-								<td class="labelText">
-									<siga:Idioma key="pys.mantenimientoServicios.literal.periodicidad"/>&nbsp;(*)
-								</td>
-								<td class="labelText" width="120px">
-									<% if (modo.equalsIgnoreCase("insertar")){%>
-										<siga:ComboBD nombre = "periodicidad" tipo="cmbPeriodicidad" clase="boxCombo" obligatorio="true" ancho="110"/>
-										
-									<% } else { %>
-										<% if (modo.equalsIgnoreCase("modificar")){ %>
-											<siga:ComboBD nombre = "periodicidad" tipo="cmbPeriodicidad" clase="boxConsulta" obligatorio="true" elementoSel="<%=vPeriodicidad%>" readonly="true" ancho="110"/>
-											
-										<% } else { %>
-											<siga:ComboBD nombre = "periodicidad" tipo="cmbPeriodicidad" clase="boxConsulta" obligatorio="true" elementoSel="<%=vPeriodicidad%>" readonly="true" ancho="110"/>
-										<% } %>								  		
-									<% } %>
-								</td>
-								
-								<td class="labelText">
-									<siga:Idioma key="pys.mantenimientoCategorias.literal.descripcion"/>
-								</td>				
-								<td class="labelText">
-									<% if (modo.equalsIgnoreCase("insertar")){%>
-										<html:text property="descripcion" styleClass="box" maxlength="100" size="29" value="" />
-										
-									<% } else { %>
-										<% if (modo.equalsIgnoreCase("modificar")){ %> 
-											 <% if ("&nbsp;".equals(UtilidadesString.mostrarDatoJSP(sDescripcion))) {%>
-												<html:text property="descripcion" styleClass="box" size="29" maxlength="100" value="" />
-												
-											<% } else { %>
-												<html:text property="descripcion" styleClass="box" size="29" maxlength="100" value="<%=sDescripcion%>" />
-											<% } %>	
-										
-										<% } else { %>
-											<html:text property="descripcion" styleClass="boxConsulta" size="29" value="<%=sDescripcion%>" readonly="true" />
-										<% } %>								  		
-									<% } %>
-								</td>	
-											
-								<td class="labelText" width="120px">
-									<siga:Idioma key="productos.mantenimientoProductos.literal.precioDefecto"/>
-								</td>
-								<td class="labelText">
-									<% if (modo.equalsIgnoreCase("insertar")) {	%>
-										<input type="checkbox" name="precioDefecto" value="1" onClick="revisarCheckPrecioDefecto();" >
-										
-									<% } else { %>
-										<% if (queryPorDefecto) {%>
-											<input type="checkbox" name="precioDefecto" value="1" onClick="revisarCheckPrecioDefecto();" checked disabled>
-											
-										<% } else { %>
-											<input type="checkbox" name="precioDefecto" value="1" disabled>
-										<% } %>
-									<% } %>
-								</td>																																	
-							</tr>
+					
+					<td class="labelText">
+						<siga:Idioma key="pys.mantenimientoServicios.literal.periodicidad"/>&nbsp;(*)
+					</td>
+					<td class="labelText" width="120px">
+						<% if (modo.equalsIgnoreCase("insertar")){%>
+							<siga:ComboBD nombre = "periodicidad" tipo="cmbPeriodicidad" clase="boxCombo" obligatorio="true" ancho="110"/>
 							
-							<!-- FILA -->
-							<%if (!(modo.equalsIgnoreCase("consulta"))&&!(queryPorDefecto)){%>
+						<% } else { %>
+							<% if (modo.equalsIgnoreCase("modificar")){ %>
+								<siga:ComboBD nombre = "periodicidad" tipo="cmbPeriodicidad" clase="boxConsulta" obligatorio="true" elementoSel="<%=vPeriodicidad%>" readonly="true" ancho="110"/>
+								
+							<% } else { %>
+								<siga:ComboBD nombre = "periodicidad" tipo="cmbPeriodicidad" clase="boxConsulta" obligatorio="true" elementoSel="<%=vPeriodicidad%>" readonly="true" ancho="110"/>
+							<% } %>								  		
+						<% } %>
+					</td>
+					
+					<td class="labelText">
+						<siga:Idioma key="pys.mantenimientoCategorias.literal.descripcion"/>
+					</td>				
+					<td class="labelText">
+						<% if (modo.equalsIgnoreCase("insertar")){%>
+							<html:text property="descripcion" styleClass="box" maxlength="100" size="29" value="" />
+							
+						<% } else { %>
+							<% if (modo.equalsIgnoreCase("modificar")){ %> 
+								 <% if ("&nbsp;".equals(UtilidadesString.mostrarDatoJSP(sDescripcion))) {%>
+									<html:text property="descripcion" styleClass="box" size="29" maxlength="100" value="" />
+									
+								<% } else { %>
+									<html:text property="descripcion" styleClass="box" size="29" maxlength="100" value="<%=sDescripcion%>" />
+								<% } %>	
+							
+							<% } else { %>
+								<html:text property="descripcion" styleClass="boxConsulta" size="29" value="<%=sDescripcion%>" readonly="true" />
+							<% } %>								  		
+						<% } %>
+					</td>	
+								
+					<td class="labelText" width="120px">
+						<siga:Idioma key="productos.mantenimientoProductos.literal.precioDefecto"/>
+					</td>
+					<td class="labelText">
+						<% if (modo.equalsIgnoreCase("insertar")) {	%>
+							<input type="checkbox" name="precioDefecto" value="1" onClick="revisarCheckPrecioDefecto();" >
+							
+						<% } else { %>
+							<% if (queryPorDefecto) {%>
+								<input type="checkbox" name="precioDefecto" value="1" onClick="revisarCheckPrecioDefecto();" checked disabled>
+								
+							<% } else { %>
+								<input type="checkbox" name="precioDefecto" value="1" disabled>
+							<% } %>
+						<% } %>
+					</td>																																	
+				</tr>
+				
+				<!-- FILA -->
+				<%if (!(modo.equalsIgnoreCase("consulta"))&&!(queryPorDefecto)){%>
+					<tr>
+						<td colspan="8">																	 		
+							<table width="100%"> 
 								<tr>
-									<td colspan="8">																	 		
-										<table width="100%"> 
-											<tr>
-												<td class="labelText">
-													<siga:Idioma key="pys.mantenimientoServicios.literal.conector"/>
-												</td>
-												<td class="labelText">
-													<select name = "conector" class="boxCombo" id="conector">
-											  			<option value=""></option>
-														<option value="Y">Y</option>
-														<option value="O">O</option>
-													</select>
-												</td>
-												
-												<td class="labelText">														
-													<siga:Idioma key="pys.mantenimientoServicios.literal.campo"/>
-												</td>
-												<td class="labelText">
-													<siga:ComboBD nombre="campo" tipo="cmbCamposConsulta" clase="boxCombo" obligatorio="false" accion="cambiarTipo(this)"/>
-												</td>
-												
-												<td>
-											  		<iframe src="<html:rewrite page='/html/jsp/productos/criteriosClienteFrame.jsp'/>"
-														id="frameOperadorValor"
-														name="frameOperadorValor" 
-														scrolling="no"
-														frameborder="0"
-														marginheight="0"
-														marginwidth="0"					 
-														style="width:480px; height:30px; z-index:2; left: 0px">
-													</iframe>
-												</td>
-											</tr>
-										</table>
+									<td class="labelText">
+										<siga:Idioma key="pys.mantenimientoServicios.literal.conector"/>
+									</td>
+									<td class="labelText">
+										<select name = "conector" class="boxCombo" id="conector">
+								  			<option value=""></option>
+											<option value="Y">Y</option>
+											<option value="O">O</option>
+										</select>
+									</td>
+									
+									<td class="labelText">														
+										<siga:Idioma key="pys.mantenimientoServicios.literal.campo"/>
+									</td>
+									<td class="labelText">
+										<siga:ComboBD nombre="campo" tipo="cmbCamposConsulta" clase="boxCombo" obligatorio="false" accion="cambiarTipo(this)"/>
+									</td>
+									
+									<td>
+								  		<iframe src="<html:rewrite page='/html/jsp/productos/criteriosClienteFrame.jsp'/>"
+											id="frameOperadorValor"
+											name="frameOperadorValor" 
+											scrolling="no"
+											frameborder="0"
+											marginheight="0"
+											marginwidth="0"					 
+											style="width:480px; height:30px; z-index:2; left: 0px">
+										</iframe>
 									</td>
 								</tr>
-							<%}%>
-						</table>	
-					</siga:ConjCampos>
-				</html:form>
-			</div>
+							</table>
+						</td>
+					</tr>
+				<%}%>
+			</table>	
+		</siga:ConjCampos>
+	</html:form>
 
-			<siga:ConjBotonesAccion clase="botonesSeguido" botones='<%=botonNuevo%>' modo='<%=modo%>'  modal="G"/>			
+	<siga:ConjBotonesAccion clase="botonesSeguido" botones='<%=botonNuevo%>' modo='<%=modo%>'  modal="G"/>			
 					
-			<iframe src="/SIGA/html/jsp/productos/definirCriteriosCliente.jsp?resultado='<%=resultado%>'"
-				id="frameResultado"
-				name="frameResultado"
-				scrolling="no"
-				frameborder="0"
-				marginheight="0"
-				marginwidth="0"
-				class="frameGeneral"
-				style="height:480px;"></iframe>
+	<iframe src="/SIGA/html/jsp/productos/definirCriteriosCliente.jsp?resultado='<%=resultado%>'"
+			id="frameResultado"
+			name="frameResultado"
+			scrolling="no"
+			frameborder="0"
+			marginheight="0"
+			marginwidth="0"
+			class="frameGeneral"
+			style="height:480px;"></iframe>
 
-			<siga:ConjBotonesAccion botones='<%=botones%>' modo='<%=modo%>'  modal="G" clase="botonesDetalle"/>
+	<siga:ConjBotonesAccion botones='<%=botones%>' modo='<%=modo%>'  modal="G" clase="botonesDetalle"/>
 
-			<!-- INICIO: SCRIPTS BOTONES -->
-			<!-- Aqui se reescriben las funciones que vayamos a utilizar -->
-			<script language="JavaScript">
-				var global ="<%=resultado%>";
+	<!-- INICIO: SCRIPTS BOTONES -->
+	<!-- Aqui se reescriben las funciones que vayamos a utilizar -->
+	<script language="JavaScript">
+		var global ="<%=resultado%>";
+		
+		function cambiarTipo(obj) {
+			document.forms[0].modo.value="abrirAvanzada";
+			document.forms[0].target="frameOperadorValor";
+			document.forms[0].submit();
+		}
 
-				function incluirParentesis() {
-					var mensaje='<siga:Idioma key="messages.pys.consulta.parentesisIncorrectos"/>';
-					var checkAbrir=document.frameResultado.document.getElementsByName("chkParentesisAbrir");
-					var checkCerrar=document.frameResultado.document.getElementsByName("chkParentesisCerrar");
-					var todos = global;
-					var nuevo = "";
-					var uno="";
-					var contador=0;
-					var validador=0;
-					var indice=1;
-					var final=0;
+		function validacionPosterior(){
+			var envio=true;	
+			var mensaje="";
+
+			if (document.forms[0].precio.value==""){
+				mensaje+='<siga:Idioma key="pys.mantenimientoServicios.literal.precio"/> <siga:Idioma key="messages.campoObligatorio.error"/>\n';
+				envio=false;
+			}
+			
+			if ((document.forms[0].precio.value<0) || (document.forms[0].precio.value>99999999) || (isNaN(document.forms[0].precio.value))){
+				mensaje+='<siga:Idioma key="messages.pys.mantenimientoProductos.errorPrecio"/>\n';
+				envio=false;
+			}
+			
+			//Comprobar periodicidad
+			if (document.forms[0].periodicidad.value==""){
+				mensaje+='<siga:Idioma key="pys.mantenimientoServicios.literal.periodicidad"/> <siga:Idioma key="messages.campoObligatorio.error"/>';
+				envio=false;
+			}								
+			
+			if (!envio){
+				alert(mensaje);
+			}
+			
+			return envio;				
+		}	
+
+		function revisarCheckPrecioDefecto()  {
+			if(document.getElementById("precioDefecto").checked) {
+				// borro los criterios
+				global = "";
+				document.frameResultado.location.href="/SIGA/html/jsp/productos/definirCriteriosCliente.jsp?resultado=\""+global+"\"";
+				// inhabilito los combos
+				jQuery("#conector").attr("disabled","disabled");
+				document.getElementById("conector").className="boxConsulta";
+					document.getElementById("conector").value="";
+				jQuery("#campo").attr("disabled","disabled");
+				document.getElementById("campo").className="boxConsulta";
+				document.getElementById("campo").value="";
+				jQuery("#idButton").attr("disabled","disabled");
+				document.frameOperadorValor.location.href="/SIGA/html/jsp/productos/criteriosClienteFrame.jsp";
+
+			} else {
+				// habilito los combos
+				jQuery("#conector").removeAttr("disabled");
+				document.getElementById("conector").className="boxCombo";
+				document.getElementById("conector").value="";
+				jQuery("#campo").removeAttr("disabled");
+				document.getElementById("campo").className="boxCombo";
+				document.getElementById("campo").value="";
+				jQuery("#idButton").removeAttr("disabled");
+				document.frameOperadorValor.location.href="/SIGA/html/jsp/productos/criteriosClienteFrame.jsp";				
+			}
+		}			
+		
+
+		function incluirParentesis() {
+			var mensaje='<siga:Idioma key="messages.pys.consulta.parentesisIncorrectos"/>';
+			var checkAbrir=document.frameResultado.document.getElementsByName("chkParentesisAbrir");
+			var checkCerrar=document.frameResultado.document.getElementsByName("chkParentesisCerrar");
+			var todos = global;
+			var nuevo = "";
+			var uno="";
+			var contador=0;
+			var validador=0;
+			var indice=1;
+			var final=0;
+			
+			while (todos.length>0) {
+				final = todos.indexOf("*",indice);
+				
+				if (final!=-1) {
+					uno = todos.substring(indice,final);
+					todos = todos.substring(final,todos.length);
 					
-					while (todos.length>0) {
-						final = todos.indexOf("*",indice);
-						
-						if (final!=-1) {
-							uno = todos.substring(indice,final);
-							todos = todos.substring(final,todos.length);
-							
-						} else {
-							uno = todos.substring(1,todos.length);
-							todos = "";
-						}
-						//tratamiento de uno
-						var abrir ="0";
-						var cerrar="0";
-						
-						if (checkAbrir[contador].checked) {
-							abrir="1";
-							validador=validador+1;
-						}
-						
-						if (checkCerrar[contador].checked) {
-							cerrar="1";
-							validador=validador-1;
-							
-							if (validador<0) {
-								alert(mensaje);
-								return false;
-							}
-						}
-						
-						nuevo = nuevo + "*" + uno.substring(0,uno.length-4) + abrir + "_" + cerrar + "_";
-	
-						contador = contador + 1;
-					}
-					global = nuevo;
+				} else {
+					uno = todos.substring(1,todos.length);
+					todos = "";
+				}
+				//tratamiento de uno
+				var abrir ="0";
+				var cerrar="0";
+				
+				if (checkAbrir[contador].checked) {
+					abrir="1";
+					validador=validador+1;
+				}
+				
+				if (checkCerrar[contador].checked) {
+					cerrar="1";
+					validador=validador-1;
 					
-					if (validador!=0) {
+					if (validador<0) {
 						alert(mensaje);
 						return false;
 					}
-					return true;
-				}
-			
-				// Asociada al boton Guardar
-				function accionGuardarCerrar() {					
-					sub();
-					document.forms[0].precio.value=document.forms[0].precio.value.replace(/,/,".");
-					
-					// tratamiento de global para meter el valor de los parentesis y ademas validar.
-					if (!incluirParentesis()) {
-						fin();
-						return false;
-					}
-					
-					document.forms[0].criterios.value=global;		
-					document.forms[0].target="submitArea";	
-					if (validacionPosterior()){							
-						<% if (modo.equalsIgnoreCase("modificar")){ %>
-							document.forms[0].modo.value="modificarCriterio";
-							
-						<% } else { %>
-							if(document.forms[0].precioDefecto.checked) {
-								document.forms[0].modo.value="insertarCriterioConPrecioPorDefecto";
-								
-							} else {
-								document.forms[0].modo.value="insertarCriterio";
-							}
-						<% } %>	
-						document.forms[0].submit();
-						
-					} else {
-						fin();
-						return false;
-					}		
-				}
-	
-				// Asociada al boton Restablecer
-				function accionRestablecer() {		
-					document.forms[0].reset();
-				}
-		
-				// Asociada al boton Nuevo
-				function accionNuevo() {				
-					if (document.forms[0].campo.selectedIndex>0){
-						if ((global!="")&&(document.forms[0].conector.selectedIndex==0)){
-							alert('<siga:Idioma key="pys.mantenimientoServicios.literal.conector"/> <siga:Idioma key="messages.campoObligatorio.error"/>');
-							
-						} else {
-							var operador =  window.frames["frameOperadorValor"].document.all.item("operador");
-							var operadorT = operador[operador.selectedIndex].text;
-							var operadorV = operador[operador.selectedIndex].value;
-								
-							var valorT = jQuery("#frameOperadorValor").contents().find("#valorTexto").val();
-							var valorV = jQuery("#frameOperadorValor").contents().find("#valorId").val();
-								//window.frames["frameOperadorValor"].document.all.item("valorFinal").value.replace(/,/,".");
-					    
-							var conect = document.forms[0].conector[document.forms[0].conector.selectedIndex].value;
-							var campoV = document.forms[0].campo[document.forms[0].campo.selectedIndex].value;
-							var campoT = document.forms[0].campo[document.forms[0].campo.selectedIndex].text;
-							global = global + "*" + conect + "_" + campoT + "_" + operadorT + "_" + valorT + "_" + campoV + "_" +  operadorV + "_" +valorV+"_0_0_";						
-							global = global.replace("#","$");
-							document.frameResultado.location.href="/SIGA/html/jsp/productos/definirCriteriosCliente.jsp?resultado=\""+global+"\"";
-						}
-						
-					} else {
-						alert('<siga:Idioma key="pys.mantenimientoServicios.literal.campo"/> <siga:Idioma key="messages.campoObligatorio.error"/>');
-					}
 				}
 				
-				function borrarFila(fila) {
-					var auxiliar = global;
-					var auxiliarResultado = "";
-					var contadorCriterio = 1;
-					var seguir = true;
+				nuevo = nuevo + "*" + uno.substring(0,uno.length-4) + abrir + "_" + cerrar + "_";
+
+				contador = contador + 1;
+			}
+			global = nuevo;
+			
+			if (validador!=0) {
+				alert(mensaje);
+				return false;
+			}
+			return true;
+		}
+		
+		// Formato:
+		// *conector_campo_operador_valor_idCampo_idOperador_idValor_abrirPar_cerrarPar_ERROR
+		// => idCampo = idCampo,tipoCampo,idTabla
+		// => idOperador = idOperador,simbolo
+		function buscarErrores() {
+			var auxiliar = global.substring(1,global.length); // Quito el primer asterisco					
+			while (auxiliar.length>0) {				
+				var posicion = auxiliar.indexOf("*");
+				var datos = "";
+				if (posicion>0) {
+					datos = auxiliar.substring(0, posicion);
+					auxiliar = auxiliar.substring(posicion+1);
+				} else {
+					datos = auxiliar;
+					auxiliar = "";
+				}
+				var datosError = datos.substring(datos.length-5);
+				if (datosError == "ERROR") {
+					//var conector = datos.substring(0, datos.indexOf("_"));
+					datos = datos.substring(datos.indexOf("_") + 1);
+					//var campo = datos.substring(0, datos.indexOf("_"));
+					datos = datos.substring(datos.indexOf("_") + 1);
+					//var operador = datos.substring(0, datos.indexOf("_"));
+					datos = datos.substring(datos.indexOf("_") + 1);
+					var valor = datos.substring(0, datos.indexOf("_"));
+					var mensaje = "<siga:Idioma key='errors.required' arg0='" + valor + "'/>";
+					alert(mensaje);
+					return false;					
+				}
+			}			
+			return true;
+		}		
+	
+		// Asociada al boton Guardar
+		function accionGuardarCerrar() {					
+			sub();
+			document.forms[0].precio.value=document.forms[0].precio.value.replace(/,/,".");
+			
+			// Busca si hay algun dato erroneo antes de guardar
+			if (!buscarErrores()) {
+				fin();
+				return false;
+			}			
+			
+			// tratamiento de global para meter el valor de los parentesis y ademas validar.
+			if (!incluirParentesis()) {
+				fin();
+				return false;
+			}
+			
+			document.forms[0].criterios.value=global;		
+			document.forms[0].target="submitArea";	
+			if (validacionPosterior()){							
+				<% if (modo.equalsIgnoreCase("modificar")){ %>
+					document.forms[0].modo.value="modificarCriterio";
 					
-					while (seguir==true) { 
-						if (contadorCriterio!=fila) {
-							auxiliar = auxiliar.substring(1,auxiliar.length);
-							if (auxiliar.indexOf("*")>0)auxiliarResultado = auxiliarResultado + "*" + auxiliar.substring(0,auxiliar.indexOf("*"));
-							else auxiliarResultado = auxiliarResultado + "*" + auxiliar.substring(0,auxiliar.length);
-						}
-						auxiliar = auxiliar.substring(1,auxiliar.length);
-						seguir = auxiliar.indexOf("*") > 0;
-						if (seguir==true) 
-							auxiliar = auxiliar.substring(auxiliar.indexOf("*"),auxiliar.length);
-						contadorCriterio++;
+				<% } else { %>
+					if(document.forms[0].precioDefecto.checked) {
+						document.forms[0].modo.value="insertarCriterioConPrecioPorDefecto";
+						
+					} else {
+						document.forms[0].modo.value="insertarCriterio";
 					}
-					global = auxiliarResultado;
+				<% } %>	
+				document.forms[0].submit();
+				
+			} else {
+				fin();
+				return false;
+			}		
+		}
+
+		// Asociada al boton Restablecer
+		function accionRestablecer() {		
+			document.forms[0].reset();
+		}
+
+		// Asociada al boton Nuevo
+		function accionNuevo() {				
+			if (document.forms[0].campo.selectedIndex>0){
+				if ((global!="")&&(document.forms[0].conector.selectedIndex==0)){
+					alert('<siga:Idioma key="pys.mantenimientoServicios.literal.conector"/> <siga:Idioma key="messages.campoObligatorio.error"/>');
+					
+				} else {
+					var operador =  window.frames["frameOperadorValor"].document.all.item("operador");
+					var operadorT = operador[operador.selectedIndex].text;
+					var operadorV = operador[operador.selectedIndex].value;
+						
+					var valorT = jQuery("#frameOperadorValor").contents().find("#valorTexto").val();
+					var valorV = jQuery("#frameOperadorValor").contents().find("#valorId").val();
+						//window.frames["frameOperadorValor"].document.all.item("valorFinal").value.replace(/,/,".");
+			    
+					var conect = document.forms[0].conector[document.forms[0].conector.selectedIndex].value;
+					var campoV = document.forms[0].campo[document.forms[0].campo.selectedIndex].value;
+					var campoT = document.forms[0].campo[document.forms[0].campo.selectedIndex].text;
+					global = global + "*" + conect + "_" + campoT + "_" + operadorT + "_" + valorT + "_" + campoV + "_" +  operadorV + "_" +valorV+"_0_0_";						
+					global = global.replace("#","$");
 					document.frameResultado.location.href="/SIGA/html/jsp/productos/definirCriteriosCliente.jsp?resultado=\""+global+"\"";
 				}
 				
-				// Asociada al boton Cerrar
-				function accionCerrar() {
-					document.forms[0].modo.value="cerrarCriterio";
-					document.forms[0].submit();
-					window.top.close();
-					return true;
-				}
-			</script>
-				
-			<!-- FIN: SCRIPTS BOTONES -->			
-			<!-- FIN ******* CAPA DE PRESENTACION ****** -->
+			} else {
+				alert('<siga:Idioma key="pys.mantenimientoServicios.literal.campo"/> <siga:Idioma key="messages.campoObligatorio.error"/>');
+			}
+		}
+		
+		function borrarFila(fila) {
+			var auxiliar = global;
+			var auxiliarResultado = "";
+			var contadorCriterio = 1;
+			var seguir = true;
 			
-			<!-- INICIO: SUBMIT AREA -->
-			<!-- Obligatoria en todas las páginas-->
-			<iframe name="submitArea" src="<html:rewrite page='/html/jsp/general/blank.jsp'/>" style="display:none"></iframe>
-			<!-- FIN: SUBMIT AREA -->
-	</body>
+			while (seguir==true) { 
+				if (contadorCriterio!=fila) {
+					auxiliar = auxiliar.substring(1,auxiliar.length);
+					if (auxiliar.indexOf("*")>0)auxiliarResultado = auxiliarResultado + "*" + auxiliar.substring(0,auxiliar.indexOf("*"));
+					else auxiliarResultado = auxiliarResultado + "*" + auxiliar.substring(0,auxiliar.length);
+				}
+				auxiliar = auxiliar.substring(1,auxiliar.length);
+				seguir = auxiliar.indexOf("*") > 0;
+				if (seguir==true) 
+					auxiliar = auxiliar.substring(auxiliar.indexOf("*"),auxiliar.length);
+				contadorCriterio++;
+			}
+			global = auxiliarResultado;
+			document.frameResultado.location.href="/SIGA/html/jsp/productos/definirCriteriosCliente.jsp?resultado=\""+global+"\"";
+		}
+		
+		// Asociada al boton Cerrar
+		function accionCerrar() {
+			document.forms[0].modo.value="cerrarCriterio";
+			document.forms[0].submit();
+			window.top.close();
+			return true;
+		}
+	</script>
+	<!-- FIN: SCRIPTS BOTONES -->			
+	<!-- FIN ******* CAPA DE PRESENTACION ****** -->
+	
+	<!-- INICIO: SUBMIT AREA -->
+	<!-- Obligatoria en todas las páginas-->
+	<iframe name="submitArea" src="<html:rewrite page='/html/jsp/general/blank.jsp'/>" style="display:none"></iframe>
+	<!-- FIN: SUBMIT AREA -->
+</body>
 </html>
-

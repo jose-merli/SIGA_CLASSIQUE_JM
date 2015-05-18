@@ -1099,11 +1099,11 @@ public class MantenimientoServiciosAction extends MasterAction {
 			Vector<Object> resultadoIdCriterios = new Vector<Object>();
 			
 			/* Cada criterio tiene el siguiente formato
-			 * *conector_campo_operador_valor_idCampo_idOperador_idValor_abrirPar_cerrarPar
+			 * *conector_campo_operador_valor_idCampo_idOperador_idValor_abrirPar_cerrarPar_ERROR
 			 * => idCampo = idCampo,tipoCampo,idTabla
 			 * => idOperador = idOperador,simbolo
 			 * 
-			 * * conector _ campo               _ operador      _ valor      _ idCampo   _ idOperador _ idValor    _ abrirPar _ cerrarPar _
+			 * * conector _ campo               _ operador      _ valor      _ idCampo   _ idOperador _ idValor    _ abrirPar _ cerrarPar _ ERROR
 			 * *          _ AÑOS COLEGIACION    _ igual a       _ 1          _ 222,N,28  _ 4,=        _ 1          _ 0        _ 0         _
 			 * * O        _ AÑOS COLEGIACION    _ distinto      _ 2          _ 222,N,28  _ 8,!=       _ 2          _ 0        _ 0         _
 			 * * O        _ AÑOS COLEGIACION    _ menor que     _ 3          _ 222,N,28  _ 9,<        _ 3          _ 0        _ 0         _
@@ -1487,7 +1487,7 @@ public class MantenimientoServiciosAction extends MasterAction {
 			Vector<Object> vCriterios = new Vector<Object>();
 			Vector<Object> vIdCriterios = new Vector<Object>();
 			Vector<Object> vTablas = new Vector<Object>();
-			if ((criterios != null)&&(!criterios.equals(""))){
+			if (criterios != null && !criterios.equals("")) {
 				Vector<Vector<Object>> resultado = this.getVectorCriteriosTablas(criterios, request);
 				vCriterios = (Vector<Object>)resultado.get(0);
 				vTablas = (Vector<Object>)resultado.get(1);
@@ -1506,8 +1506,8 @@ public class MantenimientoServiciosAction extends MasterAction {
 				esInsercion = true;
 			}
 			else nuevoIdConsulta = (String)hash.get(PysPreciosServiciosBean.C_IDCONSULTA);
-			if ((criterios != null)&&(!criterios.equals(""))){
-				query = UtilidadesProductosServicios.getQuery( vTablas, vCriterios);
+			if (criterios!=null && !criterios.equals("")) {
+				query = UtilidadesProductosServicios.getQuery(vTablas, vCriterios);
 				//cambiamos @IDINSTITUCION@	 por el IdInstitucion correcto
 				if (query.indexOf("@IDGRUPO@")!=-1){
 					query=UtilidadesString.replaceAllIgnoreCase(query,"@IDGRUPO@",""+null+",2000");
@@ -1979,7 +1979,7 @@ public class MantenimientoServiciosAction extends MasterAction {
 	 * Obtiene los criterios de una consulta
 	 * 
 	 * Formato:
-	 * *conector_campo_operador_valor_idCampo_idOperador_idValor_abrirPar_cerrarPar
+	 * *conector_campo_operador_valor_idCampo_idOperador_idValor_abrirPar_cerrarPar_ERROR
 	 * => idCampo = idCampo,tipoCampo,idTabla
 	 * => idOperador = idOperador,simbolo
 	 * 
@@ -2021,16 +2021,16 @@ public class MantenimientoServiciosAction extends MasterAction {
 										" ORDER BY " + ConCriterioConsultaBean.T_NOMBRETABLA + "." + ConCriterioConsultaBean.C_ORDEN + " ASC";
 			
 			ConCriterioConsultaAdm criteriosAdm = new ConCriterioConsultaAdm(usr);
+			ConCampoConsultaAdm camposAdm = new ConCampoConsultaAdm(usr);
 			Vector<Hashtable<String,Object>> vCriterios = criteriosAdm.selectGenerico(consultaCriterios);
 			
 			//creamos el String
 			for (int cont=0; cont<vCriterios.size(); cont++){
 				Hashtable<String,Object> criterio = vCriterios.get(cont);
+				boolean contieneError = false;
 
 				//Ahora tenemos todos los campos a falta del idValor
 				//Ejecutamos la selectAyuda del campo, y recuperamos el ID para el valor con descripcion = al valor que ya tenemos
-				ConCampoConsultaAdm camposAdm = new ConCampoConsultaAdm(usr);
-			
 				//Si tenemos la select buscamos el idvalor: 
 				String con = (String)criterio.get("SELECTAYUDA");
 				if (con!=null && ! con.equals("")) {					
@@ -2050,35 +2050,35 @@ public class MantenimientoServiciosAction extends MasterAction {
 					}
 					
 					// JPT (27-02-2015): Si no lo encuentra lo pongo en blanco
-					if (!criterio.containsKey("IDVALOR"))
-						criterio.put("VALOR", "");
+					if (!criterio.containsKey("IDVALOR")) {
+						//criterio.put("VALOR", "");
+						contieneError = true;
+					}
 				}
 				
 				/** Formato:
-				* *conector_campo_operador_valor_idCampo_idOperador_idValor_abrirPar_cerrarPar
+				* *conector_campo_operador_valor_idCampo_idOperador_idValor_abrirPar_cerrarPar_ERROR
 				* => idCampo = idCampo,tipoCampo,idTabla
 				* => idOperador = idOperador,simbolo*/
 				String abrirPar = (String)criterio.get("ABRIRPAR");
 				String cerrarPar = (String)criterio.get("CERRARPAR");
-				if (abrirPar!=null && abrirPar.equals("1")) abrirPar="1"; else abrirPar="0";
-				if (cerrarPar!=null && cerrarPar.equals("1")) cerrarPar="1"; else cerrarPar="0";
+				abrirPar = (abrirPar!=null && abrirPar.equals("1") ? "1" : "0");
+				cerrarPar = (cerrarPar!=null && cerrarPar.equals("1") ? "1" : "0");
 				
 				if (!criterio.containsKey("IDVALOR"))
 					criterio.put("IDVALOR", criterio.get("VALOR"));
 				
 				String conector = (criterio.containsKey("CONECTOR")?(String)criterio.get("CONECTOR"):" ");
 				sCriterios += "*" + conector + "_" +
-										(String)criterio.get("CAMPO")+"_"+
-										(String)criterio.get("DESCRIPCION")+"_"+
-										(((String)criterio.get("VALOR")).equalsIgnoreCase("NULL")?"":(String)criterio.get("VALOR"))+"_"+
-										(String)criterio.get("IDCAMPO")+","+
-										(String)criterio.get("TIPOCAMPO")+","+
-										(String)criterio.get("IDTABLA")+"_"+
-										(String)criterio.get("OPERADOR")+","+
-										(String)criterio.get("SIMBOLO")+"_"+
-										(((String)criterio.get("IDVALOR")).equalsIgnoreCase("NULL")?"":(String)criterio.get("IDVALOR"))+"_"+
-										abrirPar+"_"+
-										cerrarPar+"_";
+										(String)criterio.get("CAMPO") +"_" +
+										(String)criterio.get("DESCRIPCION") + "_" +
+										(((String)criterio.get("VALOR")).equalsIgnoreCase("NULL") ? "" : (String)criterio.get("VALOR")) + "_" +
+										(String)criterio.get("IDCAMPO") + "," + (String)criterio.get("TIPOCAMPO") + "," + (String)criterio.get("IDTABLA") + "_" +
+										(String)criterio.get("OPERADOR") + "," + (String)criterio.get("SIMBOLO") + "_" +
+										(((String)criterio.get("IDVALOR")).equalsIgnoreCase("NULL") ? "" : (String)criterio.get("IDVALOR")) + "_" +
+										abrirPar + "_" +
+										cerrarPar + "_" + 
+										(contieneError ? "ERROR" : "");
 			}
 		} catch(Exception e){
 			e.printStackTrace();
