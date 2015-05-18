@@ -311,10 +311,12 @@ System.setProperties(properties);
 			EstUserRegistry registroUser = new EstUserRegistry();
 			registroUser.setIdusuario(new Integer(bean.getUserName()));
 			registroUser.setIdinstitucion(new Short(bean.getLocation()));
-			if(bean.getProfile()!=null)
-				registroUser.setIdperfil(Arrays.toString(bean.getProfile()));
-			else
+			if (bean.getProfile() != null) {
+				String perfiles = Arrays.toString(bean.getProfile());
+				registroUser.setIdperfil(perfiles.substring(1, perfiles.length() - 1));
+			} else {
 				registroUser.setIdperfil("-");
+			}
 			EstadisticasUserRegistryService userRegistryService = (EstadisticasUserRegistryService) bm.getService(EstadisticasUserRegistryService.class);		
 			userRegistryService.insert(registroUser);
 			/*****************************************************************************************************************/				
