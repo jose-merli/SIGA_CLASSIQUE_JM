@@ -932,7 +932,7 @@ public class BusquedaCensoAction extends MasterAction {
 			String fax = miform.getFax1().replace("\u00a0"," ").trim();		
 			String pais = miform.getPais().replace("\u00a0"," ").trim();				
 			
-			String tratamiento = "";
+			String tratamiento = miform.getTratamiento().replace("\u00a0"," ").trim();	
 			if(cli != null && cli.getIdTratamiento()!=null){
 				tratamiento = cli.getIdTratamiento().toString().replace("\u00a0"," ").trim();
 			}
