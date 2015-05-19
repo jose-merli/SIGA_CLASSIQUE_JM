@@ -161,7 +161,7 @@
 					  facturacion.ficheroBancarioPagos.literal.Origen,
 					  facturacion.ficheroBancarioPagos.literal.nFacturas,
 					  facturacion.ficheroBancarioPagos.literal.importeTotalRemesa,"			  			
-		columnSizes="8,20,23,18,6,8,11"
+		columnSizes="7,20,23,18,6,9,11"
 		modal="M"> 		  
 		
 <%
@@ -231,7 +231,7 @@
 		idioma="<%=idioma%>"
 		modo="buscar"								
 		clase="paginator" 
-		divStyle="position:absolute; width:100%; height:20; z-index:3;left: 0px"
+		divStyle="position:absolute; width:100%; height:40; z-index:3;left: 0px"
 		distanciaPaginas=""
 		action="<%=action%>" />
 <%
