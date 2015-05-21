@@ -49,34 +49,10 @@
 	<!-- Incluido jquery en siga.js -->
 	
 	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js?v=${sessionScope.VERSIONJS}'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
-		<script type="text/javascript" src="<html:rewrite page='/html/jsp/general/validacionSIGA.jsp'/>"></script>	
-	
-		<script language="JavaScript">
-			function cambiar(){		
-				var oper_aux= operador.value.split(",");			
-				
-				if (oper_aux[0]==<%=ClsConstants.ESVACIO_ALFANUMERICO%> || oper_aux[0]==<%=ClsConstants.ESVACIO_NUMERICO%> || oper_aux[0]==<%=ClsConstants.ESVACIO_FECHA%>) {						
-						jQuery("#divSinVacio").hide();
-						jQuery("#comboVacio").show();
-						pasarvalor(jQuery("#comboVacio").find("option:selected").text(), jQuery("#comboVacio").val());
-	
-				} else {
-					jQuery("#comboVacio").hide();
-					jQuery("#divSinVacio").show();							
-					if (jQuery("#valorCombo").exists()) {
-						pasarvalor(jQuery("#valorCombo").find("option:selected").text(), jQuery("#valorCombo").val());
-					}
-				}
-			}
-			
-			function pasarvalor(valorTexto, valorId) {	
-				jQuery("#valorTexto").val(valorTexto);
-				jQuery("#valorId").val(valorId);
-			}
-		</script>
-	</head>
+	<script type="text/javascript" src="<html:rewrite page='/html/jsp/general/validacionSIGA.jsp'/>"></script>	
+</head>
 
-<body class="BodyIframe" onload="cambiar();">
+<body class="BodyIframe">
 	<table align="center" cellspacing="0" border="0" width="100%">
 		<tr>
 			<td class="labelText" >
@@ -160,5 +136,37 @@
 			</td>
 		</tr>
 	</table>
+	
+	<script language="JavaScript">
+		jQuery(document).ready(function () {
+			jQuery("#comboVacio").hide();				
+			jQuery("#divSinVacio").show();
+			if (jQuery("#valorCombo").exists()) {
+				pasarvalor(jQuery("#valorCombo").find("option:selected").text(), jQuery("#valorCombo").val());
+			}
+		});		
+	
+		function cambiar(){
+			var oper_aux= operador.value.split(",");			
+			
+			if (oper_aux[0]==<%=ClsConstants.ESVACIO_ALFANUMERICO%> || oper_aux[0]==<%=ClsConstants.ESVACIO_NUMERICO%> || oper_aux[0]==<%=ClsConstants.ESVACIO_FECHA%>) {						
+					jQuery("#divSinVacio").hide();
+					jQuery("#comboVacio").show();
+					pasarvalor(jQuery("#comboVacio").find("option:selected").text(), jQuery("#comboVacio").val());
+
+			} else {
+				jQuery("#comboVacio").hide();
+				jQuery("#divSinVacio").show();							
+				if (jQuery("#valorCombo").exists()) {
+					pasarvalor(jQuery("#valorCombo").find("option:selected").text(), jQuery("#valorCombo").val());
+				}
+			}
+		}
+		
+		function pasarvalor(valorTexto, valorId) {
+			jQuery("#valorTexto").val(valorTexto);
+			jQuery("#valorId").val(valorId);
+		}
+		</script>	
 </body>
 </html>
