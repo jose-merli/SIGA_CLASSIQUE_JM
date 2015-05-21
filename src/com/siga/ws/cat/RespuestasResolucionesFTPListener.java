@@ -3,7 +3,6 @@
  */
 package com.siga.ws.cat;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.Hashtable;
@@ -13,10 +12,13 @@ import javax.management.Notification;
 import javax.management.NotificationListener;
 import javax.servlet.ServletContextEvent;
 
+import org.redabogacia.sigaservices.app.AppConstants;
+import org.redabogacia.sigaservices.app.autogen.model.EcomCola;
+import org.redabogacia.sigaservices.app.services.ecom.EcomColaService;
+
 import weblogic.management.timer.Timer;
 
 import com.atos.utils.ClsConstants;
-import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsLogging;
 import com.atos.utils.JhDate;
 import com.atos.utils.UsrBean;
@@ -24,6 +26,8 @@ import com.ibm.icu.util.Calendar;
 import com.siga.beans.GenParametrosAdm;
 import com.siga.beans.eejg.ScsEejgPeticionesBean;
 import com.siga.servlets.SIGAContextListenerAdapter;
+
+import es.satec.businessManager.BusinessManager;
 
 /**
  * @author angelcpe
@@ -165,7 +169,8 @@ public class RespuestasResolucionesFTPListener extends SIGAContextListenerAdapte
 						if ("1".equals(activo)) {
 							pcajgXmlResponse.setIdInstitucion(Integer.parseInt(idInstitucion));
 							try {
-								pcajgXmlResponse.execute();
+								pcajgXmlResponse.execute();								
+								recuperaPDFs(Short.parseShort(idInstitucion));
 							} catch (Exception e) {
 								ClsLogging.writeFileLogError("Se ha producido un error al tratar las respuestas o resoluciones de la institución " + idInstitucion, e, 3);
 							}								
@@ -177,5 +182,14 @@ public class RespuestasResolucionesFTPListener extends SIGAContextListenerAdapte
 		} catch (Exception e) {
 			ClsLogging.writeFileLogError("Error en RespuestasResolucionesFTPListener.handleNotification", e, 3);
 		}
+	}
+
+
+	private void recuperaPDFs(short idinstitucion) {
+		EcomColaService ecomColaService = (EcomColaService) BusinessManager.getInstance().getService(EcomColaService.class);				
+		EcomCola ecomCola = new EcomCola();
+		ecomCola.setIdinstitucion(idinstitucion);
+		ecomCola.setIdoperacion(AppConstants.OPERACION.CAT_RESOLUCIONES_PDF.getId());
+		ecomColaService.insertaColaConsultaResoluciones(ecomCola);
 	}
 }

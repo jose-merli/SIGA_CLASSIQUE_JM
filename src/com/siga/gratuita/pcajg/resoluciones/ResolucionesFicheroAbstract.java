@@ -9,6 +9,7 @@ import org.redabogacia.sigaservices.app.util.ReadProperties;
 import org.redabogacia.sigaservices.app.util.SIGAReferences;
 
 import com.siga.general.SIGAException;
+import com.siga.ws.CajgConfiguracion;
 
 public abstract class ResolucionesFicheroAbstract {
 	
@@ -38,7 +39,14 @@ public abstract class ResolucionesFicheroAbstract {
 		return rutaAlmacen + File.separator + rp.returnProperty("cajg.directorioResolucionesArchivos");
 	}
 	
-	public static String getExtension(String idInstitucion) {				
-		return EXTENSION_PDF;
+	public static String getExtension(String idInstitucion) {
+		try {
+			if (CajgConfiguracion.TIPO_CAJG_TXT_ALCALA == CajgConfiguracion.getTipoCAJG(Integer.parseInt(idInstitucion))) {
+				return "." + EXTENSION_PDF;
+			}
+		} catch (Exception e) {
+			
+		}
+		return "";
 	}
 }

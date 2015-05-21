@@ -14,6 +14,8 @@ import javax.transaction.UserTransaction;
 
 import org.redabogacia.sigaservices.app.AppConstants.ESTADOS_EJG;
 import org.redabogacia.sigaservices.app.helper.SIGAServicesHelper;
+import org.redabogacia.sigaservices.app.helper.ftp.FtpPcajgAbstract;
+import org.redabogacia.sigaservices.app.helper.ftp.FtpPcajgFactory;
 import org.redabogacia.sigaservices.app.util.ReadProperties;
 import org.redabogacia.sigaservices.app.util.SIGAReferences;
 
@@ -33,8 +35,6 @@ import com.siga.general.SIGAException;
 import com.siga.gratuita.action.DefinirRemesasCAJGAction;
 import com.siga.ws.PCAJGConstantes;
 import com.siga.ws.SIGAWSClientAbstract;
-import com.siga.ws.cat.ftp.FtpPcajgAbstract;
-import com.siga.ws.cat.ftp.FtpPcajgFactory;
 import com.siga.ws.pcajg.cat.xsd.DatosContactoDocument.DatosContacto;
 import com.siga.ws.pcajg.cat.xsd.DatosDomicilioDocument.DatosDomicilio;
 import com.siga.ws.pcajg.cat.xsd.DatosPersonaDocument.DatosPersona;
@@ -1257,7 +1257,7 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 						}
 					}
 					//si todo ha ido bien subimos los ficheros
-					ftpPcajgAbstract = FtpPcajgFactory.getInstance(usr, String.valueOf(getIdInstitucion()));
+					ftpPcajgAbstract = FtpPcajgFactory.getInstance((short)getIdInstitucion());
 					escribeLogRemesa("Conectando al servidor FTP");			
 					ftpPcajgAbstract.connect();				
 				

@@ -200,7 +200,7 @@ public class DefinirRatificacionEJGAction extends MasterAction {
 	
 	private File getFicheroPDF(String idInstitucion, String docResolucion) {
 		File file = new File(ResolucionesFicheroAbstract.getDirectorioArchivos(idInstitucion));
-		file = new File(file, docResolucion + "." + ResolucionesFicheroAbstract.getExtension(idInstitucion));
+		file = new File(file, docResolucion + ResolucionesFicheroAbstract.getExtension(idInstitucion));
 		if (!file.exists()) {
 			file = null;
 		}		

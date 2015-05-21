@@ -20,6 +20,8 @@ import javax.transaction.UserTransaction;
 import org.apache.xmlbeans.XmlException;
 import org.apache.xmlbeans.XmlOptions;
 import org.redabogacia.sigaservices.app.helper.SIGAServicesHelper;
+import org.redabogacia.sigaservices.app.helper.ftp.FtpPcajgAbstract;
+import org.redabogacia.sigaservices.app.helper.ftp.FtpPcajgFactory;
 import org.redabogacia.sigaservices.app.util.ReadProperties;
 import org.redabogacia.sigaservices.app.util.SIGAReferences;
 
@@ -38,8 +40,6 @@ import com.siga.beans.ScsEJGAdm;
 import com.siga.beans.ScsEJGBean;
 import com.siga.ws.PCAJGConstantes;
 import com.siga.ws.SIGAWSClientAbstract;
-import com.siga.ws.cat.ftp.FtpPcajgAbstract;
-import com.siga.ws.cat.ftp.FtpPcajgFactory;
 import com.siga.ws.pcajg.cat.xsd.IntercambioDocument;
 import com.siga.ws.pcajg.cat.xsd.IntercambioDocument.Intercambio;
 import com.siga.ws.pcajg.cat.xsd.IntercambioDocument.Intercambio.InformacionIntercambio;
@@ -91,7 +91,7 @@ public class PCAJGxmlResponse extends SIGAWSClientAbstract implements PCAJGConst
 			String comienzoFicheroIEE_GEN = "IEE_GEN_" + getIdInstitucion() + "_";			
 			String comienzoFicheroIR_GEN = "IR_GEN_" + getIdInstitucion() + "_";
 			
-			ftpPcajgAbstract = FtpPcajgFactory.getInstance(getUsrBean(), String.valueOf(getIdInstitucion()));
+			ftpPcajgAbstract = FtpPcajgFactory.getInstance((short)getIdInstitucion());
 			escribeLogRemesa("Conectando con el servidor FTP");
 			ftpPcajgAbstract.connect();	
 			
