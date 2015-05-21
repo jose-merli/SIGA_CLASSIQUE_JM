@@ -248,14 +248,13 @@ public class SIGAListadoTablasMaestrasAction extends MasterAction
 			int totalRegistros = paginador.getNumeroTotalRegistros();
 			
 			if (totalRegistros==0){					
-				paginador =null;
+				paginador = null;
 			} else {
 				paginador.getNumeroRegistrosPorPagina();	    		
 	    		paginador.obtenerPagina(1);
+	    		hTablaMaestra.put("paginador", paginador);
 			}
-			
-			hTablaMaestra.put("paginador", paginador);
-			
+					
         } catch (Exception e) {
 			 this.throwExcp("error.messages.application",e,null);
 		}
