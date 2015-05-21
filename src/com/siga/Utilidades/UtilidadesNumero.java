@@ -21,9 +21,9 @@ public class UtilidadesNumero {
 
 	static public double redondea (double numero, int precision) {
 		if (numero<0)
-			return -1 * Math.round(Math.round(-1 * numero * Math.pow(10, precision + 1)) / Math.pow(10, 1)) / Math.pow(10, precision);
+			return -1 * Math.round(-1 * numero * Math.pow(10, precision)) / Math.pow(10, precision);
 		else
-			return Math.round(Math.round(numero * Math.pow(10, precision + 1)) / Math.pow(10, 1)) / Math.pow(10, precision);
+			return Math.round(numero * Math.pow(10, precision)) / Math.pow(10, precision);
 	}
 	 
 	static public float redondea (float numero, int precision) {
