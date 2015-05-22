@@ -149,6 +149,7 @@
 		<input type="hidden" name="regBajaLogica" id="regBajaLogica" value="<%=sIncluirBajaLogica%>">		
 		<input type="hidden" name="tipoCodigo" value="<%=sTipoCodigo%>">
 		<input type="hidden" name="tipoCodigoExt" value="<%=sTipoCodigoExt%>">
+		<input type="hidden" name="ponerBajaLogica" id="ponerBajaLogica" value="<%=ponerBaja%>">		
 			
 		<table class="tablaCentralCampos" align="center" border="0">
 			<tr>		
@@ -217,7 +218,7 @@
 								<tr>
 									<td class="labelText"><siga:Idioma key="general.baja"/></td>
 									<td class="labelTextValue">
-										<input type="checkbox" name="ponerBajaLogica" style="" onclick="darDeBaja(this);" value="<%=ponerBaja%>" 
+										<input type="checkbox" id="checkPonerBajaLogica" name="checkPonerBajaLogica"
 											<% if (!bEditable && !bNuevo) { %> disabled <% } %> 											 
 											<% if (fechaBaja!=null && !fechaBaja.equals("")) { %> checked <% } %>
 										>
@@ -440,6 +441,14 @@
 				error += (error==''?'':'\n') + validacodigo;
 			
 			if (error=='') {
+				
+				// JPT: No funcionaba la baja
+				if (jQuery("#checkPonerBajaLogica").is(':checked')) {
+					jQuery("#ponerBajaLogica").val("S");
+				} else {
+					jQuery("#ponerBajaLogica").val("N");
+				}
+				
 				listadoTablasMaestrasForm.modo.value="<%=miModo%>";
 				listadoTablasMaestrasForm.submit();		
 				fin();					
@@ -461,14 +470,6 @@
 			}
 			return "";
 		}
-	
- 		function darDeBaja (o) {
- 			if (o.checked) {
- 				listadoTablasMaestrasForm.ponerBajaLogica.value = "S";
-			} else {
-				listadoTablasMaestrasForm.ponerBajaLogica.value = "N";
-			}
- 		}
 		 		
 		function accionVolver(){		
 			sub();
