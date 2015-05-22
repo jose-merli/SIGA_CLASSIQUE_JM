@@ -131,6 +131,7 @@
 	<listener><listener-class>com.siga.ws.i2055.ResolucionesListener</listener-class></listener>
 	<listener><listener-class>com.siga.ws.i2055.DesignacionProcuradorListener</listener-class></listener>
 	<listener><listener-class>com.siga.ws.i2064.ResolucionesListener</listener-class></listener>
+	<listener><listener-class>com.siga.ws.i2032.PCAJGPaisVascoResoluciones</listener-class></listener>
 	<listener><listener-class>com.siga.ws.cen.CargaCensoWSListener</listener-class></listener>
 	<listener><listener-class>com.siga.ws.mutualidad.MutualidadEnvioCertificadosFnalizadosListener</listener-class></listener>
 	
