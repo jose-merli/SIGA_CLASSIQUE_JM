@@ -242,7 +242,7 @@ public class ScsContrariosAsistenciaAdm extends MasterBeanAdministrador {
 		CenHistoricoAdm admHis = new CenHistoricoAdm (this.usrbean);
 		if(isInsertado)
 			isInsertado = admHis.auditoriaColegiados(idPersona, motivo.toString(), ClsConstants.TIPO_CAMBIO_HISTORICO_ASISTENCIAMODIFICACION,asistenciaHashtable, 
-				null, campos,new ArrayList<String>(), CenHistoricoAdm.ACCION_INSERT, usrbean.getLanguage(), false); 
+				null, campos,new ArrayList<String>(),null, CenHistoricoAdm.ACCION_INSERT, usrbean.getLanguage(), false); 
 		
 		return isInsertado;
 		
@@ -262,7 +262,7 @@ public class ScsContrariosAsistenciaAdm extends MasterBeanAdministrador {
 		CenHistoricoAdm admHis = new CenHistoricoAdm (this.usrbean);
 		if(isBorrado)
 			isBorrado = admHis.auditoriaColegiados(idPersona,motivo.toString(), ClsConstants.TIPO_CAMBIO_HISTORICO_ASISTENCIAMODIFICACION,asistenciaHashtable, 
-				null, campos,new ArrayList<String>(), CenHistoricoAdm.ACCION_DELETE, usrbean.getLanguage(), false); 
+				null, campos,new ArrayList<String>(),null, CenHistoricoAdm.ACCION_DELETE, usrbean.getLanguage(), false); 
 		
 		return isBorrado;
 		

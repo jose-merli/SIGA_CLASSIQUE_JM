@@ -1174,7 +1174,12 @@ public class MaestroDesignasAction extends MasterAction {
 				htDesigna.put("fks", fksDesignaMap);
 				List<String> ocultarClaveList = new ArrayList<String>();
 				ocultarClaveList.add(ScsDesignaBean.C_IDINSTITUCIONJUZGADO);
-				designaAdm.updateDirectHistorico(new Long(miform.getIdLetradoDesignado()), htDesigna, clavesDesigna, camposDesigna,scsDesignaBean.getOriginalHash(),ocultarClaveList);
+				if (miform.getAnioProcedimiento() == null)
+					ocultarClaveList.add(ScsDesignaBean.C_ANIOPROCEDIMIENTO);
+				Hashtable<String, String> cambiarNombreSalidaHashtable = new Hashtable<String, String>();
+				cambiarNombreSalidaHashtable.put(ScsDesignaBean.C_IDPROCEDIMIENTO,"IDMODULO");
+				
+				designaAdm.updateDirectHistorico(new Long(miform.getIdLetradoDesignado()), htDesigna, clavesDesigna, camposDesigna,scsDesignaBean.getOriginalHash(),ocultarClaveList,cambiarNombreSalidaHashtable);
 //			}
 //			else
 //				designaAdm.updateDirect(htDesigna, clavesDesigna, camposDesigna);

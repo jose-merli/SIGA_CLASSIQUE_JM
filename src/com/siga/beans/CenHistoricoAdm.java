@@ -385,7 +385,7 @@ public class CenHistoricoAdm extends MasterBeanAdministrador
 	            			" WHERE "+ AdmUsuariosBean.T_NOMBRETABLA + "." + AdmUsuariosBean.C_IDUSUARIO + " = " + CenHistoricoBean.T_NOMBRETABLA  + "." + CenHistoricoBean.C_USUMODIFICACION+
 							" AND "+CenHistoricoBean.T_NOMBRETABLA +"."+ CenHistoricoBean.C_IDINSTITUCION+" = "+AdmUsuariosBean.T_NOMBRETABLA+"."+AdmUsuariosBean.C_IDINSTITUCION + ") " + 
 	            			" AS NOMBRE_USU_MOD"+
-							" FROM " + CenHistoricoBean.T_NOMBRETABLA + ", " + AdmUsuariosBean.T_NOMBRETABLA + 
+							" FROM " + CenHistoricoBean.T_NOMBRETABLA + 
 							" WHERE " +
 							CenHistoricoBean.T_NOMBRETABLA +"."+ CenHistoricoBean.C_IDPERSONA + "=" + idPers +
 							" AND " +
@@ -1302,7 +1302,7 @@ public class CenHistoricoAdm extends MasterBeanAdministrador
 	}
 	
 	public boolean auditoriaColegiados(Long idPersona, String motivo, int tipoCambio,Hashtable objectHashtable, Hashtable originalObjectHashtable,
-			String [] claves, List<String> ocultarClaveList,int accion, String idioma, boolean isCGAE) throws ClsExceptions
+			String [] claves, List<String> ocultarClaveList,Hashtable<String, String> cambiarNombreSalidaHashtable,int accion, String idioma, boolean isCGAE) throws ClsExceptions
 	{
 		try {
 			
@@ -1313,7 +1313,7 @@ public class CenHistoricoAdm extends MasterBeanAdministrador
 			beanHistorico.setMotivo(motivo);
 			beanHistorico.setIdTipoCambio(tipoCambio);
 			beanHistorico.setUsuMod(Integer.valueOf(this.usrbean.getUserName())); 
-			beanHistorico.setDescripcion(getDescripcion(objectHashtable, originalObjectHashtable, claves, ocultarClaveList,accion, idioma));
+			beanHistorico.setDescripcion(getDescripcion(objectHashtable, originalObjectHashtable, claves, ocultarClaveList,cambiarNombreSalidaHashtable,accion, idioma));
 			if ((beanHistorico.getFechaEfectiva() == null) || (beanHistorico.getFechaEfectiva().equals(""))) 
 				beanHistorico.setFechaEfectiva("SYSDATE");
 			if ((beanHistorico.getFechaEntrada()  == null) || (beanHistorico.getFechaEntrada().equals(""))) 
@@ -1332,7 +1332,7 @@ public class CenHistoricoAdm extends MasterBeanAdministrador
 		}
 	}
 	
-	private String getDescripcion(Hashtable objectHashtable, Hashtable originalObjectHashtable, String[] claves, List<String> ocultarClaveList,int accion, String idioma) throws SIGAException{
+	private String getDescripcion(Hashtable objectHashtable, Hashtable originalObjectHashtable, String[] claves, List<String> ocultarClaveList,Hashtable<String, String> cambiarNombreSalidaHashtable,int accion, String idioma) throws SIGAException{
 		StringBuffer descripcion = new StringBuffer();
 		switch (accion) {
 			case ACCION_INSERT:	
@@ -1349,7 +1349,7 @@ public class CenHistoricoAdm extends MasterBeanAdministrador
 				break;
 		}
 		
-		descripcion.append(getDescripcionClaveValor(objectHashtable, claves,ocultarClaveList,idioma));
+		descripcion.append(getDescripcionClaveValor(objectHashtable, claves,ocultarClaveList,cambiarNombreSalidaHashtable,idioma));
 		if(accion!=ACCION_UPDATE && descripcion.length()>4000)
 			throw new SIGAException("lA DESCRIPCION ES DEMASIADO LARGA. NO PUEDE LLEGAR HASTA AQUI");
 		
@@ -1357,10 +1357,10 @@ public class CenHistoricoAdm extends MasterBeanAdministrador
 		if (accion == ACCION_UPDATE) {
 			descripcion.append(UtilidadesString.getMensajeIdioma(idioma, "historico.literal.registroAnterior"));
 			descripcion.append("\n");
-			descripcion.append(getDescripcionClaveValor(originalObjectHashtable, claves,ocultarClaveList,idioma));
+			descripcion.append(getDescripcionClaveValor(originalObjectHashtable, claves,ocultarClaveList,cambiarNombreSalidaHashtable,idioma));
 		}
 		if(descripcion.length()>4000){
-			return getDescripcionCorta(objectHashtable,originalObjectHashtable, claves,ocultarClaveList,accion, idioma, descripcion.length()-MAX_NUM_CARACTERES_DESCRIPCION);
+			return getDescripcionCorta(objectHashtable,originalObjectHashtable, claves,ocultarClaveList,cambiarNombreSalidaHashtable, accion, idioma, descripcion.length()-MAX_NUM_CARACTERES_DESCRIPCION);
 		}else{
 			return descripcion.toString();	
 		}
@@ -1417,7 +1417,7 @@ public class CenHistoricoAdm extends MasterBeanAdministrador
 		}
 		
 	}
-	private String getDescripcionCorta(Hashtable objectHashtable, Hashtable originalObjectHashtable, String[] claves, List<String> ocultarClaveList, int accion, String idioma,int numCaracteresCortar){
+	private String getDescripcionCorta(Hashtable objectHashtable, Hashtable originalObjectHashtable, String[] claves, List<String> ocultarClaveList,Hashtable<String, String> cambiarNombreSalidaHashtable, int accion, String idioma,int numCaracteresCortar){
 		if(!objectHashtable.containsKey("DESCRIPCION") && !objectHashtable.containsKey("OBSERVACIONES"))
 			throw new BusinessException("No tiene campo descripcion ni observaciones por lo que no se puede acortar");
 		//Asumimos que solo tendra una
@@ -1443,11 +1443,11 @@ public class CenHistoricoAdm extends MasterBeanAdministrador
 				descripcion.append("\n");
 				break;
 		}
-		descripcion.append(getDescripcionClaveValor(objectHashtable, claves,ocultarClaveList, idioma)); 
+		descripcion.append(getDescripcionClaveValor(objectHashtable, claves,ocultarClaveList,cambiarNombreSalidaHashtable, idioma)); 
 		if (accion == ACCION_UPDATE) {
 			descripcion.append(UtilidadesString.getMensajeIdioma(idioma, "historico.literal.registroAnterior"));
 			descripcion.append("\n");
-			descripcion.append(getDescripcionClaveValor(originalObjectHashtable, claves,ocultarClaveList, idioma));
+			descripcion.append(getDescripcionClaveValor(originalObjectHashtable, claves,ocultarClaveList,cambiarNombreSalidaHashtable, idioma));
 		}
 		return descripcion.toString();
 	}
@@ -1630,7 +1630,7 @@ public class CenHistoricoAdm extends MasterBeanAdministrador
 	}
 	
 	
-	private String getDescripcionClaveValor (Hashtable hashtable,String[] claves,List<String> ocultarClaveList ,String idioma) 
+	private String getDescripcionClaveValor (Hashtable hashtable,String[] claves,List<String> ocultarClaveList ,Hashtable<String,String> cambiarNombreSalidaHashtable,String idioma) 
 	{
 		StringBuffer descripcion =  new StringBuffer();
 		Map<String,Hashtable<String, Object>> fksDesignaMap = (Map<String, Hashtable<String, Object>>) hashtable.get("fks");
@@ -1639,7 +1639,10 @@ public class CenHistoricoAdm extends MasterBeanAdministrador
 			if(!ocultarClaveList.contains(claves[i])){
 				String clave = claves[i];
 				descripcion.append("  - ");
-				descripcion.append(UtilidadesString.getPrimeraMayuscula(clave));
+				if(cambiarNombreSalidaHashtable!=null && cambiarNombreSalidaHashtable.containsKey(clave))
+					descripcion.append(UtilidadesString.getPrimeraMayuscula(cambiarNombreSalidaHashtable.get(clave)));
+				else
+					descripcion.append(UtilidadesString.getPrimeraMayuscula(clave));
 				descripcion.append(": ");
 				Object valor = hashtable.get(clave); 
 				if(valor!=null){
@@ -1658,7 +1661,15 @@ public class CenHistoricoAdm extends MasterBeanAdministrador
 								Vector vFK =  this.getHashSQL(getQueryFK(fksDesignaMap.get(clave), idioma));
 								if(vFK!=null && vFK.size()==1){
 									Hashtable htFK = (Hashtable)vFK.get(0);
-									descripcion.append(htFK.get("SALIDA_FK").toString());
+									Object claveAux = fksDesignaMap.get(clave).get(clave);
+									if(claveAux!=null){
+										descripcion.append(claveAux.toString());
+										descripcion.append(" (");
+										descripcion.append(htFK.get("SALIDA_FK").toString());
+										descripcion.append(")");
+									}else{
+										descripcion.append(htFK.get("SALIDA_FK").toString());
+									}
 								}else{
 									throw new ClsExceptions("Hay clave primaria de la FK mal configurada");
 								}

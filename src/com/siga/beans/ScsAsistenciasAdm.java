@@ -918,7 +918,7 @@ public class ScsAsistenciasAdm extends MasterBeanAdministrador {
 
 				CenHistoricoAdm admHis = new CenHistoricoAdm (this.usrbean);
 				boolean isInsertado = admHis.auditoriaColegiados(Long.valueOf(idPersona),motivo.toString(), ClsConstants.TIPO_CAMBIO_HISTORICO_ASISTENCIAALTA ,asistenciaHashtable, 
-						null, this.getCamposActualizablesBean(),getListCamposOcultarHistoricoAltaAsistencia(), CenHistoricoAdm.ACCION_INSERT, usrbean.getLanguage(), false); 
+						null, this.getCamposActualizablesBean(),getListCamposOcultarHistoricoAltaAsistencia(),null, CenHistoricoAdm.ACCION_INSERT, usrbean.getLanguage(), false); 
 			}
 			
 		
@@ -2131,9 +2131,12 @@ public  List<ScsAsistenciasBean> getAsistenciasVolantesExpres(VolantesExpressVo 
 		motivo.append(asistenciaHashtable.get(ScsAsistenciasBean.C_NUMERO));
 		historicoHashtable.put(CenHistoricoBean.C_MOTIVO, motivo.toString());
 		CenHistoricoAdm admHis = new CenHistoricoAdm (this.usrbean);
-		if(isActualizado)
+		if(isActualizado){
+			Hashtable<String, String> cambiarNombreSalidaHashtable = new Hashtable<String, String>();
+			UtilidadesHash.set(cambiarNombreSalidaHashtable, ScsAsistenciasBean.C_IDPRETENSION, "IDPROCEDIMIENTO");
 			isActualizado = admHis.auditoriaColegiados(idPersona,motivo.toString(), ClsConstants.TIPO_CAMBIO_HISTORICO_ASISTENCIAMODIFICACION,asistenciaHashtable, 
-				asistenciaOriginalHashtable, campos,getListCamposOcultarHistoricoModificarDatosGeneralesAsistencia(), CenHistoricoAdm.ACCION_UPDATE, usrbean.getLanguage(), false); 
+				asistenciaOriginalHashtable, campos,getListCamposOcultarHistoricoModificarDatosGeneralesAsistencia(),cambiarNombreSalidaHashtable, CenHistoricoAdm.ACCION_UPDATE, usrbean.getLanguage(), false);
+		}
 		
 		return isActualizado;
 		
@@ -2152,9 +2155,12 @@ public  List<ScsAsistenciasBean> getAsistenciasVolantesExpres(VolantesExpressVo 
 		motivo.append(asistenciaHashtable.get(ScsAsistenciasBean.C_NUMERO));
 		historicoHashtable.put(CenHistoricoBean.C_MOTIVO, motivo.toString());
 		CenHistoricoAdm admHis = new CenHistoricoAdm (this.usrbean);
-		if(isInsertado)
+		if(isInsertado){
+			Hashtable<String, String> cambiarNombreSalidaHashtable = new Hashtable<String, String>();
+			UtilidadesHash.set(cambiarNombreSalidaHashtable, ScsAsistenciasBean.C_IDPERSONAJG, "ASISTIDO");
 			isInsertado = admHis.auditoriaColegiados(idPersona, motivo.toString(), ClsConstants.TIPO_CAMBIO_HISTORICO_ASISTENCIAMODIFICACION,asistenciaHashtable, 
-				null, campos,new ArrayList<String>(), CenHistoricoAdm.ACCION_INSERT, usrbean.getLanguage(), false); 
+				null, campos,new ArrayList<String>(),cambiarNombreSalidaHashtable, CenHistoricoAdm.ACCION_INSERT, usrbean.getLanguage(), false);
+		}
 		
 		return isInsertado;
 		

@@ -165,7 +165,7 @@
 						
 					</td>				
 					<td>
-						<html:text property="motivo" size="20" maxlength="20" styleClass="box" value = "" />
+						<html:text property="motivo" size="20" maxlength="50" styleClass="box" value = "" />
 					</td>
 					
 					<td class="labelText">

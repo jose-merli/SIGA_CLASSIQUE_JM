@@ -542,7 +542,7 @@ public class ActuacionesAsistenciaAction extends MasterAction {
 					Hashtable<String, Object> asistenciaOriginalHashtable = scsAsistenciaAdm.getHashAsistenciaOriginalParaHistorico(actuacionAsistenciaHashtable,false, usrBean);
 					//COMO NO ESTAMOS EN TRANSACCION CON LO DE ARRIBA , SI FALLA LA INSERCION DEL HISTORICO BORRAMOS LA ACTUACION
 					boolean	isInsertado = cenHistoricoAdm.auditoriaColegiados(Long.valueOf((String)asistenciaOriginalHashtable.get("IDPERSONACOLEGIADO")), motivo.toString(), ClsConstants.TIPO_CAMBIO_HISTORICO_ASISTENCIAALTAACTUACION,
-							actuacionAsistenciaHashtable,null,clavesStrings ,getListCamposOcultarHistorico(), CenHistoricoAdm.ACCION_INSERT, usrBean.getLanguage(), false);
+							actuacionAsistenciaHashtable,null,clavesStrings , getListCamposOcultarHistorico(),null, CenHistoricoAdm.ACCION_INSERT, usrBean.getLanguage(), false);
 					
 					if(!isInsertado)
 						throw new Exception();

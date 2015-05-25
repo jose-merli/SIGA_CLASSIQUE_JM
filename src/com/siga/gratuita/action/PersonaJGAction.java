@@ -2830,6 +2830,7 @@ public class PersonaJGAction extends MasterAction {
 					fksAsistenciaHashtable.put("SALIDA_FK", ScsPersonaJGBean.C_NOMBRE+"||' '||"+ScsPersonaJGBean.C_APELLIDO1+"||' '||"+ScsPersonaJGBean.C_APELLIDO2  );
 					fksAsistenciaHashtable.put(ScsPersonaJGBean.C_IDINSTITUCION, idInstitucionASI);
 					fksAsistenciaHashtable.put(ScsPersonaJGBean.C_IDPERSONA, new Integer(miform.getIdPersonaJG()));
+					//fksAsistenciaHashtable.put(ScsAsistenciasBean.C_IDPERSONAJG, new Integer(miform.getIdPersonaJG()));
 					fksAsistenciaMap.put(ScsAsistenciasBean.C_IDPERSONAJG,fksAsistenciaHashtable);
 					asistenciaHashtable.put("fks", fksAsistenciaMap);
 					

@@ -226,7 +226,6 @@ public class ScsDelitosAsistenciaAdm extends MasterBeanAdministrador {
 	public boolean insertConHistorico(Long idPersona, ScsDelitosAsistenciaBean beanDelitoAsistencia, String[] claves, String [] campos,Hashtable asistenciaHashtable) throws ClsExceptions{
 		
 		boolean isInsertado = this.insert(beanDelitoAsistencia);
-		CenHistoricoAdm cenHistoricoAdm = new CenHistoricoAdm(usrbean);
 		Hashtable historicoHashtable = new Hashtable();
 		StringBuffer motivo = new StringBuffer();
 		motivo.append(UtilidadesString.getMensajeIdioma(this.usrbean, "gratuita.generalDesigna.literal.asistencia"));
@@ -238,7 +237,7 @@ public class ScsDelitosAsistenciaAdm extends MasterBeanAdministrador {
 		CenHistoricoAdm admHis = new CenHistoricoAdm (this.usrbean);
 		if(isInsertado)
 			isInsertado = admHis.auditoriaColegiados(idPersona,motivo.toString(), ClsConstants.TIPO_CAMBIO_HISTORICO_ASISTENCIAMODIFICACION,asistenciaHashtable, 
-				null, campos,new ArrayList<String>(), CenHistoricoAdm.ACCION_INSERT, usrbean.getLanguage(), false); 
+				null, campos,new ArrayList<String>(),null, CenHistoricoAdm.ACCION_INSERT, usrbean.getLanguage(), false); 
 		
 		return isInsertado;
 		
@@ -247,7 +246,7 @@ public class ScsDelitosAsistenciaAdm extends MasterBeanAdministrador {
 	public boolean deleteConHistorico(Long idPersona,ScsDelitosAsistenciaBean beanDelitoAsistencia, String[] claves, String [] campos,Hashtable asistenciaHashtable) throws ClsExceptions{
 		
 		boolean isBorrado = this.delete(beanDelitoAsistencia);
-		CenHistoricoAdm cenHistoricoAdm = new CenHistoricoAdm(usrbean);
+		
 		Hashtable historicoHashtable = new Hashtable();
 		StringBuffer motivo = new StringBuffer();
 		motivo.append(UtilidadesString.getMensajeIdioma(this.usrbean, "gratuita.generalDesigna.literal.asistencia"));
@@ -259,7 +258,7 @@ public class ScsDelitosAsistenciaAdm extends MasterBeanAdministrador {
 		CenHistoricoAdm admHis = new CenHistoricoAdm (this.usrbean);
 		if(isBorrado)
 			isBorrado = admHis.auditoriaColegiados(idPersona,motivo.toString(), ClsConstants.TIPO_CAMBIO_HISTORICO_ASISTENCIAMODIFICACION,asistenciaHashtable, 
-				null, campos,new ArrayList<String>(), CenHistoricoAdm.ACCION_DELETE, usrbean.getLanguage(), false); 
+				null, campos,new ArrayList<String>(),null, CenHistoricoAdm.ACCION_DELETE, usrbean.getLanguage(), false); 
 		
 		return isBorrado;
 		

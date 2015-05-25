@@ -338,14 +338,14 @@ public class InformeJustificacionMasivaAction extends MasterAction {
 						UtilidadesHash.set(hashActuacion,
 								ScsActuacionDesignaBean.C_IDINSTITUCIONJUZGADO,
 								idInstitucion);
-						if(user.isLetrado()){
+//						if(user.isLetrado()){
 							fksActuacionHashtable = new Hashtable<String, Object>();
 							fksActuacionHashtable.put("TABLA_FK", ScsJuzgadoBean.T_NOMBRETABLA);
 							fksActuacionHashtable.put("SALIDA_FK", ScsJuzgadoBean.C_NOMBRE);
 							fksActuacionHashtable.put(ScsJuzgadoBean.C_IDINSTITUCION, idInstitucion);
 							fksActuacionHashtable.put(ScsJuzgadoBean.C_IDJUZGADO, idJuzgado);
 							fksActuacionMap.put(ScsActuacionDesignaBean.C_IDJUZGADO,fksActuacionHashtable);
-						}
+//						}
 						
 	//					UtilidadesHash.set(hashActuacion,
 	//							ScsActuacionDesignaBean.C_FECHAMODIFICACION,
@@ -362,7 +362,7 @@ public class InformeJustificacionMasivaAction extends MasterAction {
 								ScsActuacionDesignaBean.C_IDINSTITUCIONPROCEDIMIENTO,
 								idInstitucion);
 						
-						if(user.isLetrado()){
+//						if(user.isLetrado()){
 							fksActuacionHashtable = new Hashtable<String, Object>();
 							fksActuacionHashtable.put("TABLA_FK", ScsProcedimientosBean.T_NOMBRETABLA);
 							fksActuacionHashtable.put("SALIDA_FK", ScsProcedimientosBean.C_NOMBRE);
@@ -371,7 +371,7 @@ public class InformeJustificacionMasivaAction extends MasterAction {
 							
 							
 							fksActuacionMap.put(ScsActuacionDesignaBean.C_IDPROCEDIMIENTO,fksActuacionHashtable);
-						}
+//						}
 	
 						UtilidadesHash.set(
 								hashActuacion,
@@ -388,7 +388,7 @@ public class InformeJustificacionMasivaAction extends MasterAction {
 						UtilidadesHash.set(hashActuacion,
 								ScsActuacionDesignaBean.C_IDACREDITACION,
 								idAcreditacion);
-						if(user.isLetrado()){
+//						if(user.isLetrado()){
 							fksActuacionHashtable = new Hashtable<String, Object>();
 							fksActuacionHashtable.put("TABLA_FK", ScsAcreditacionBean.T_NOMBRETABLA);
 							fksActuacionHashtable.put("SALIDA_FK", ScsAcreditacionBean.C_DESCRIPCION);
@@ -396,7 +396,7 @@ public class InformeJustificacionMasivaAction extends MasterAction {
 							
 							
 							fksActuacionMap.put(ScsActuacionDesignaBean.C_IDACREDITACION,fksActuacionHashtable);
-						}
+//						}
 						UtilidadesHash.set(hashActuacion,
 								ScsActuacionDesignaBean.C_FECHA,
 								GstDate.getApplicationFormatDate("", fechaJustificacion));

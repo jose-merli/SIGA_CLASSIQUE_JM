@@ -168,7 +168,7 @@
 										</td>				
 										<td colspan="2">
 											<% if (remitente.equalsIgnoreCase("insertar")){%>
-												<siga:ComboBD nombre = "cmbCambioHistorico" tipo="cmbCambioHistorico" clase="boxCombo" obligatorio="true"/>
+												<siga:ComboBD nombre = "cmbCambioHistorico" tipo="cmbCambioHistoricoNoAutomatico" clase="boxCombo" obligatorio="true"/>
 											<% } else { %>
 												 <% if (remitente.equalsIgnoreCase("modificar")){ %>
 													<% if (vSel.isEmpty()){int i=0;%>
@@ -193,11 +193,11 @@
 												<siga:Fecha  nombreCampo= "fechaEntrada"  posicionX="150" posicionY="50"/>
 											<% } else { %>
 					  							<% if (remitente.equalsIgnoreCase("modificar")){ %>
-			  										<% String fecha=GstDate.getFormatedDateShort("",row.getString(CenHistoricoBean.C_FECHAENTRADA)); %>
+			  										<% String fecha=GstDate.getFormatedDateLong("",row.getString(CenHistoricoBean.C_FECHAENTRADA)); %>
 			  										<siga:Fecha  nombreCampo= "fechaEntrada" valorInicial="<%=fecha%>"  posicionX="150" posicionY="50"/>
 			  															
 						  					 	<% } else { %>
-											 		<% String fecha=GstDate.getFormatedDateShort("",row.getString(CenHistoricoBean.C_FECHAENTRADA));%>	
+											 		<% String fecha=GstDate.getFormatedDateLong("",row.getString(CenHistoricoBean.C_FECHAENTRADA));%>	
 													<siga:Fecha  nombreCampo= "fechaEntrada" valorInicial="<%=fecha%>" disabled="true"  posicionX="150" posicionY="50"/>
 											 	<% } %>				  					 
 							  				<% } %>														
