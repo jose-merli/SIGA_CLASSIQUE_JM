@@ -248,13 +248,13 @@ public class SIGAListadoTablasMaestrasAction extends MasterAction
 			int totalRegistros = paginador.getNumeroTotalRegistros();
 			
 			if (totalRegistros==0){					
-				paginador = null;
+				paginador =null;
 			} else {
 				paginador.getNumeroRegistrosPorPagina();	    		
 	    		paginador.obtenerPagina(1);
 	    		hTablaMaestra.put("paginador", paginador);
 			}
-					
+			
         } catch (Exception e) {
 			 this.throwExcp("error.messages.application",e,null);
 		}
@@ -350,7 +350,8 @@ public class SIGAListadoTablasMaestrasAction extends MasterAction
 	}
 	
 	private String insertarRegistroMaestro(String idInstitucion,SIGAListadoTablasMaestrasForm form,UsrBean userBean) throws ClsExceptions, SIGAException {
-		String strTextoPlantillas =  form.getNumeroTextoPlantillas();
+		//String strTextoPlantillas =  form.getNumeroTextoPlantillas();
+		String strTextoPlantillas =  form.getTextoPlantillas();
         
         String [] textoPlantillasArray = null;
         if(strTextoPlantillas!=null &&!strTextoPlantillas.equals("")){
@@ -483,7 +484,8 @@ public class SIGAListadoTablasMaestrasAction extends MasterAction
 	}
 	
 	private void modificarRegistroMaestro(String idInstitucion,SIGAListadoTablasMaestrasForm form,int aceptaBaja,UsrBean userBean) throws ClsExceptions, SIGAException {
-		String strTextoPlantillas =  form.getNumeroTextoPlantillas();
+		//String strTextoPlantillas =  form.getNumeroTextoPlantillas();
+		String strTextoPlantillas =  form.getTextoPlantillas();
         int tamañoTexto = 0;
         
         String [] textoPlantillasArray = null;

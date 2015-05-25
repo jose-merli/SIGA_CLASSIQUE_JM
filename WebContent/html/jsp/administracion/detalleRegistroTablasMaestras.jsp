@@ -145,11 +145,12 @@
 		<input type="hidden" name="nombreCampoDescripcion" value="<%=sNombreCampoDescripcion%>">
 		<input type="hidden" name="nombreTablaMaestra" value="<%=sNombreTabla%>">
 		<input type="hidden" name="numeroTextoPlantillas" id="numeroTextoPlantillas" value="<%=numeroTextoPlantillas%>">
+		<input type="hidden" name="textoPlantillas" id="textoPlantillas" value="<%=numeroTextoPlantillas%>">
 		<input type="hidden" name="queryTablaRel" id="queryTablaRel" value="<%=querycombo%>">
 		<input type="hidden" name="regBajaLogica" id="regBajaLogica" value="<%=sIncluirBajaLogica%>">		
 		<input type="hidden" name="tipoCodigo" value="<%=sTipoCodigo%>">
 		<input type="hidden" name="tipoCodigoExt" value="<%=sTipoCodigoExt%>">
-		<input type="hidden" name="ponerBajaLogica" id="ponerBajaLogica" value="<%=ponerBaja%>">		
+		<input type="hidden" name="ponerBajaLogica" id="ponerBajaLogica" value="<%=ponerBaja%>">
 			
 		<table class="tablaCentralCampos" align="center" border="0">
 			<tr>		
@@ -423,7 +424,7 @@
 					textoPlantillas += textoi +"%%";
 				}
 			}
-			listadoTablasMaestrasForm.numeroTextoPlantillas.value = textoPlantillas;
+			listadoTablasMaestrasForm.textoPlantillas.value = textoPlantillas;
 			
 			var error = '';
 			if(document.getElementById("idTablaRel").value!="null"){
@@ -448,7 +449,7 @@
 				} else {
 					jQuery("#ponerBajaLogica").val("N");
 				}
-				
+							
 				listadoTablasMaestrasForm.modo.value="<%=miModo%>";
 				listadoTablasMaestrasForm.submit();		
 				fin();					
@@ -470,7 +471,7 @@
 			}
 			return "";
 		}
-		 		
+			
 		function accionVolver(){		
 			sub();
 			<%ses.setAttribute("refrescar","S");
