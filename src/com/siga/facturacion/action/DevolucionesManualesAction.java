@@ -267,17 +267,20 @@ public class DevolucionesManualesAction extends MasterAction{
 				    	
 						// Identificamos los disquetes devueltos asociados al fichero de devoluciones
 						FacLineaDevoluDisqBancoAdm admLDDB= new FacLineaDevoluDisqBancoAdm(user);
-						FacLineaDevoluDisqBancoBean beanDevolucion = admLDDB.obtenerDevolucionManual(idInstitucion, sIdDisquetesDevolucion);
+						Vector<FacLineaDevoluDisqBancoBean> vDevoluciones = admLDDB.obtenerDevoluciones(idInstitucion, sIdDisquetesDevolucion, true);
 						
 						// Aplicamos la comision a cada devolucion
-						facturacion.aplicarComisionAFactura (idInstitucion, beanDevolucion, aplicaComisiones, user, fechaDevolucionHora);
+						for (int d=0; d<vDevoluciones.size(); d++) {
+							FacLineaDevoluDisqBancoBean lineaDevolucion = (FacLineaDevoluDisqBancoBean) vDevoluciones.get(d);
+							facturacion.aplicarComisionAFactura (idInstitucion, lineaDevolucion, aplicaComisiones, user, fechaDevolucionHora);
+						}
 					}				
 			    }
 				
-			} else 	if (retornoDevolucionManual[0].equals("5404")) {
+			} else if (retornoDevolucionManual[0].equals("5404")) {
 				throw new SIGAException("facturacion.devolucionManual.error.fechaDevolucion");
 								
-			} else  {
+			} else {
 				throw new ClsExceptions("Fichero de devoluciones manuales: Error en el proceso de actualicacion de tablas de devolucion. RETORNO: " + retornoDevolucionManual);
 			}  
 			

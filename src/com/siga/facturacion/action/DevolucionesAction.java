@@ -625,9 +625,9 @@ public class DevolucionesAction extends MasterAction {
 				    	
 						// Identificamos los disquetes devueltos asociados al fichero de devoluciones
 						FacLineaDevoluDisqBancoAdm admLDDB= new FacLineaDevoluDisqBancoAdm(user);
-						Vector vDevoluciones = admLDDB.obtenerDevolucionesFichero(idInstitucion, identificador);
+						Vector<FacLineaDevoluDisqBancoBean> vDevoluciones = admLDDB.obtenerDevoluciones(idInstitucion, identificador, true);
 						
-						// Aplicamos la comision a cada devolusion
+						// Aplicamos la comision a cada devolucion
 						for (int d=0; d<vDevoluciones.size(); d++) {
 							FacLineaDevoluDisqBancoBean lineaDevolucion = (FacLineaDevoluDisqBancoBean)vDevoluciones.get(d);
 							facturacion.aplicarComisionAFactura (idInstitucion, lineaDevolucion, miForm.getComisiones(), user, fechaDevolucion);
@@ -898,9 +898,9 @@ public class DevolucionesAction extends MasterAction {
 				    	
 						// Identificamos los disquetes devueltos asociados al fichero de devoluciones
 						FacLineaDevoluDisqBancoAdm admLDDB= new FacLineaDevoluDisqBancoAdm(user);
-						Vector vDevoluciones = admLDDB.obtenerDevolucionesFichero(idInstitucion, identificador);
+						Vector<FacLineaDevoluDisqBancoBean> vDevoluciones = admLDDB.obtenerDevoluciones(idInstitucion, identificador, true);
 						
-						// Aplicamos la comision a cada devolusion
+						// Aplicamos la comision a cada devolucion
 						for (int d=0; d<vDevoluciones.size(); d++) {
 							FacLineaDevoluDisqBancoBean lineaDevolucion = (FacLineaDevoluDisqBancoBean)vDevoluciones.get(d);
 							facturacion.aplicarComisionAFactura (idInstitucion, lineaDevolucion, miForm.getComisiones(), user, fechaDevolucion);
