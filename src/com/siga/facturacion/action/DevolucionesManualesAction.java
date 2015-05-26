@@ -267,7 +267,7 @@ public class DevolucionesManualesAction extends MasterAction{
 				    	
 						// Identificamos los disquetes devueltos asociados al fichero de devoluciones
 						FacLineaDevoluDisqBancoAdm admLDDB= new FacLineaDevoluDisqBancoAdm(user);
-						Vector<FacLineaDevoluDisqBancoBean> vDevoluciones = admLDDB.obtenerDevoluciones(idInstitucion, sIdDisquetesDevolucion, true);
+						Vector<FacLineaDevoluDisqBancoBean> vDevoluciones = admLDDB.obtenerDevoluciones(idInstitucion, sIdDisquetesDevolucion, false);
 						
 						// Aplicamos la comision a cada devolucion
 						for (int d=0; d<vDevoluciones.size(); d++) {
