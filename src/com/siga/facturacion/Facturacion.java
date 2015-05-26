@@ -937,6 +937,26 @@ public class Facturacion {
 			String sPlantilla = vPlantillas.firstElement().toString();
 						
 		    ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+
+			//TODO Esta comprobacion de rutas no me parece correcta: deberia pasarse la ruta de o a algun metodo y no hacerlo aqui como en una isla sin relacion con nada a la vista		    
+			// Obtencion de la ruta donde se almacenan temporalmente los ficheros formato FOP			
+		    String rutaTemporal = rp.returnProperty("facturacion.directorioFisicoTemporalFacturasJava")+rp.returnProperty("facturacion.directorioTemporalFacturasJava");
+    		String barraTemporal = "";
+    		if (rutaTemporal.indexOf("/") > -1){ 
+    			barraTemporal = "/";
+    		}
+    		if (rutaTemporal.indexOf("\\") > -1){ 
+    			barraTemporal = "\\";
+    		}    		
+    		rutaTemporal += barraTemporal+institucion.toString();
+			File rutaFOP=new File(rutaTemporal);
+			//Comprobamos que exista la ruta y sino la creamos
+			if (!rutaFOP.exists()){
+				if(!rutaFOP.mkdirs()){
+					// ESCRIBO EN EL LOG
+					throw new SIGAException("messages.facturacion.almacenar.rutaTemporalMal");					
+				}
+			}
     		
 			// Obtencion de la ruta donde se almacenan las facturas en formato PDF			
 			String idserieidprogramacion = serieFacturacion.toString()+"_" + idProgramacion.toString();

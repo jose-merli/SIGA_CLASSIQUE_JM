@@ -496,6 +496,49 @@ public class FacFacturacionProgramadaAdm extends MasterBeanAdministrador {
 			} else { 
 				String plantilla=plantillas.firstElement().toString();
 
+				//TODO Esta comprobacion de rutas no me parece correcta: deberia pasarse la ruta de o a algun metodo y no hacerlo aqui como en una isla sin relacion con nada a la vista
+				// Obtencion de la ruta donde se almacenan temporalmente los ficheros formato FOP			
+			    String rutaTemporal = p.returnProperty("facturacion.directorioFisicoTemporalFacturasJava")+p.returnProperty("facturacion.directorioTemporalFacturasJava");
+	    		String barraTemporal = "";
+	    		if (rutaTemporal.indexOf("/") > -1){ 
+	    			barraTemporal = "/";
+	    		}
+	    		if (rutaTemporal.indexOf("\\") > -1){ 
+	    			barraTemporal = "\\";
+	    		}    		
+	    		rutaTemporal += barraTemporal+institucion.toString();
+				File rutaFOP=new File(rutaTemporal);
+				if (!rutaFOP.exists()) {
+	    			v.add("messages.facturacion.comprueba.noPathTemporalFacturas"); // No existe el path temporal de facturas
+	    		} else 
+	    		if (!rutaFOP.canWrite()) {
+	    			v.add("messages.facturacion.comprueba.noPermisosPathFicheroBancario"); // El path temporal de facturas no tiene los permisos adecuados.
+	    		} 
+			
+
+	    		//hay que borrar este comentario, Carlos
+				// Obtencion de la ruta donde se almacenan las facturas en formato PDF			
+//			    String rutaAlmacen = p.returnProperty("facturacion.directorioFisicoFacturaPDFJava")+p.returnProperty("facturacion.directorioFacturaPDFJava");
+//	    		String barraAlmacen = "";
+//	    		String nombreFicheroAlmacen = "";
+//	    		if (rutaAlmacen.indexOf("/") > -1){ 
+//	    			barraAlmacen = "/";
+//	    		}
+//	    		if (rutaAlmacen.indexOf("\\") > -1){ 
+//	    			barraAlmacen = "\\";
+//	    		}    		
+	/**/   		
+//	    		rutaAlmacen += barraAlmacen+institucion.toString()+barraAlmacen+idserieidprogramacion;
+				
+				/*File rutaPDF=new File(rutaAlmacen);
+				rutaPDF.mkdirs();
+				if (!rutaPDF.exists()) {
+	    			v.add("messages.facturacion.comprueba.noPathFacturas") ; // No existe el path de las facturas
+	    		} else 
+	    		if (!rutaPDF.canWrite()) {
+	    			v.add("messages.facturacion.comprueba.noPermisosPathFacturas"); // El path de facturas no tiene los permisos adecuados.
+	    		} */
+
 				// Obtencion de la ruta de donde se obtiene la plantilla adecuada			
 			    String rutaPlantilla = p.returnProperty("facturacion.directorioFisicoPlantillaFacturaJava")+p.returnProperty("facturacion.directorioPlantillaFacturaJava");
 			    String barraPlantilla="";
