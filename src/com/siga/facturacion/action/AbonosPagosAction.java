@@ -32,10 +32,10 @@ import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.Row;
 import com.atos.utils.UsrBean;
+import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesNumero;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.beans.CenCuentasBancariasAdm;
-import com.siga.beans.CenCuentasBancariasBean;
 import com.siga.beans.CenInstitucionAdm;
 import com.siga.beans.CenPersonaAdm;
 import com.siga.beans.CenPersonaBean;
@@ -374,32 +374,21 @@ public class AbonosPagosAction extends MasterAction {
 			request.setAttribute("PAGOPENDIENTE", form.getPagoPendiente());
 			request.setAttribute("IDPERSONA", registro.get(FacAbonoBean.C_IDPERSONA));
 			
-			String sql = "SELECT " + CenCuentasBancariasBean.C_IDCUENTA + " AS ID, " +
-							" F_SIGA_FORMATOIBAN(" + CenCuentasBancariasBean.C_IBAN + ") as DESCRIPCION " +
-						" FROM " + CenCuentasBancariasBean.T_NOMBRETABLA + 
-						" WHERE " + CenCuentasBancariasBean.C_IDINSTITUCION + " = " + form.getIdInstitucion() +
-							" AND " + CenCuentasBancariasBean.C_IDPERSONA + " = " + registro.get(FacAbonoBean.C_IDPERSONA) +					
-							" AND " + CenCuentasBancariasBean.C_FECHABAJA + " IS NULL" +
-							(registro.get(FacAbonoBean.C_IDPAGOSJG)!=null && !registro.get(FacAbonoBean.C_IDPAGOSJG).toString().equals("") 
-								? " AND " + CenCuentasBancariasBean.C_ABONOSJCS + " = '1'" 
-								: " AND " + CenCuentasBancariasBean.C_ABONOCARGO + " IN ('A','T')") +
-						" ORDER BY DESCRIPCION";
-					
-			CenCuentasBancariasAdm cuentasAdm=new CenCuentasBancariasAdm(this.getUserBean(request));
-			Vector vCuentas=cuentasAdm.selectGenerico(sql);
+			CenCuentasBancariasAdm admCuentasBancarias = new CenCuentasBancariasAdm(this.getUserBean(request));
+			Vector<Hashtable<String,Object>> vCuentas = admCuentasBancarias.obtenerCuentasAbonos(form.getIdInstitucion(), UtilidadesHash.getString(registro, FacAbonoBean.C_IDPERSONA) , UtilidadesHash.getString(registro, FacAbonoBean.C_IDPAGOSJG));
 			
-			if(vCuentas.size()==0)
+			if (vCuentas.size()==0)
 				throw new SIGAException("facturacion.abonos.error.noExisteCuenta");
 			
 			List cuentasListFinal= new ArrayList();
 			Hashtable cuentash=new Hashtable();
 			for (int c = 0; c < vCuentas.size(); c++){
-				cuentash = (Hashtable) vCuentas.get(c);
+				cuentash = vCuentas.get(c);
 				cuentasListFinal.add(cuentash);
 			}
 	
 			request.setAttribute("listaCuentas", cuentasListFinal);
-			Hashtable cuentaSelh = (Hashtable) vCuentas.get(0);
+			Hashtable cuentaSelh = vCuentas.get(0);
 			request.setAttribute("idCuentaSel", cuentaSelh.get("ID"));
 			
 		} catch (Exception e) { 
@@ -1123,176 +1112,146 @@ public class AbonosPagosAction extends MasterAction {
 	 * @return  String  Destino del action  
 	 * @exception  SIGAException  En cualquier caso de error
 	 */
+	protected String pagarVariosAbonos (ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, SIGAException {
+		try {
+			UsrBean user = (UsrBean)request.getSession().getAttribute("USRBEAN");			
+			String idInstitucion=user.getLocation();
+			FacAbonoAdm abonoAdm=new FacAbonoAdm(user);
+			
+			AbonosPagosForm form = (AbonosPagosForm) formulario;
+			String datosAbonos = form.getAbonos();
+			Integer abonosNoTratados=0;
+			Integer abonosTratados=0;
+			Integer abonosSeleccionados=0;
+			boolean pagoVariosAbonos=true;
+			FacAbonoAdm abAdm=new FacAbonoAdm(user);
+			CenCuentasBancariasAdm cuentasAdm=new CenCuentasBancariasAdm(user);
+			
+			if (datosAbonos != null && !datosAbonos.equals("")) {
+				String arrayAbonos[] = datosAbonos.split(";");
 	
-	protected String pagarVariosAbonos (ActionMapping mapping, 		
-			MasterForm formulario, 
-			HttpServletRequest request, 
-			HttpServletResponse response) throws ClsExceptions, SIGAException 
-			{
-		
-	try {
-		
-		UsrBean user=(UsrBean)request.getSession().getAttribute("USRBEAN");			
-		String idInstitucion=user.getLocation();
-		FacAbonoAdm abonoAdm=new FacAbonoAdm(user);
-		
-		AbonosPagosForm form = (AbonosPagosForm) formulario;
-		String datosAbonos = form.getAbonos();
-		Integer abonosNoTratados=0;
-		Integer abonosTratados=0;
-		Integer abonosSeleccionados=0;
-		boolean pagoVariosAbonos=true;
-		FacAbonoAdm abAdm=new FacAbonoAdm(user);
-		CenCuentasBancariasAdm cuentasAdm=new CenCuentasBancariasAdm(user);
-		
-		if (datosAbonos != null && !datosAbonos.equals("")) {
-			String arrayAbonos[] = datosAbonos.split(";");
-
-			if (arrayAbonos.length<1) {
-				throw new SIGAException("Error al obtener las facturas");
-			};
-			
-			abonosSeleccionados=arrayAbonos.length;
-			
-			for (int i=0; i<arrayAbonos.length; i++) {
-			
-				String idAbono = arrayAbonos[i];
-			
-				if(arrayAbonos.length==1)
-					pagoVariosAbonos=false;
+				if (arrayAbonos.length<1) {
+					throw new SIGAException("Error al obtener las facturas");
+				};
 				
-				//Recupero el importe pendiente por abonar
-				Hashtable htA = new Hashtable();
-				htA.put(FacAbonoBean.C_IDINSTITUCION, idInstitucion);
-				htA.put(FacAbonoBean.C_IDABONO, idAbono);
-				Vector vAbono = abAdm.selectByPK(htA);
-				FacAbonoBean bAbono = null;
-				if (vAbono != null && vAbono.size() > 0) {
-					bAbono = (FacAbonoBean) vAbono.get(0);
-				}
-
-				//Si el abono ya ha sido pagado 
-				if(bAbono.getEstado()==1){
+				abonosSeleccionados = arrayAbonos.length;
+				
+				for (int i=0; i<arrayAbonos.length; i++) {
+					String idAbono = arrayAbonos[i];
+				
 					if(arrayAbonos.length==1)
-							throw new SIGAException("facturacion.abonos.error.abonoPagado");
-				
-				}else{
-					//Si el importe del abono es cero
-					if(bAbono.getImpTotalNeto().doubleValue() <=0){
-						if(arrayAbonos.length==1)
+						pagoVariosAbonos=false;
+					
+					//Recupero el importe pendiente por abonar
+					Hashtable htA = new Hashtable();
+					htA.put(FacAbonoBean.C_IDINSTITUCION, idInstitucion);
+					htA.put(FacAbonoBean.C_IDABONO, idAbono);
+					Vector vAbono = abAdm.selectByPK(htA);
+					FacAbonoBean bAbono = null;
+					if (vAbono != null && vAbono.size() > 0) {
+						bAbono = (FacAbonoBean) vAbono.get(0);
+					}
+	
+					//Si el abono ya ha sido pagado 
+					if (bAbono.getEstado()==1) {
+						if (arrayAbonos.length==1)
+								throw new SIGAException("facturacion.abonos.error.abonoPagado");
+					
+					} else {
+						//Si el importe del abono es cero
+						if (bAbono.getImpTotalNeto().doubleValue()<=0) {
+							if (arrayAbonos.length==1)
 								throw new SIGAException("facturacion.abonos.error.abonoSinImporte");
-					
-					}else{
-					
-						//Si no tiene importe pendiente
-						if(bAbono.getImpPendientePorAbonar().doubleValue() <=0){
-							if(arrayAbonos.length==1)
+						
+						} else {
+							//Si no tiene importe pendiente
+							if (bAbono.getImpPendientePorAbonar().doubleValue()<=0) {
+								if (arrayAbonos.length==1)
 									throw new SIGAException("facturacion.abonos.error.importePendiente");
-						}else{
-							form.setIdInstitucion(idInstitucion);
-							form.setIdAbono(idAbono);
-							
-							if((bAbono.getIdFactura()!=null)||(!bAbono.getIdFactura().isEmpty()))	
-								form.setIdFactura(bAbono.getIdFactura());
-							
-							if(form.TipoPago().equals("caja"))
-							{
-								//Si se seleccionó un abono solamente el importe lo introduce el usuario,
-								//si hay varios se hará el pago el abono por el importe pendiente que tenga el abono
-								if(form.getImporte().isEmpty())
-									form.setImporte(bAbono.getImpPendientePorAbonar().toString());
 								
-								//Inserto el pago por caja
-								boolean abonoPagado=this.insertarPagoCaja(form,user,pagoVariosAbonos);
+							} else {
+								form.setIdInstitucion(idInstitucion);
+								form.setIdAbono(idAbono);
 								
-								if(abonoPagado)
-									abonosTratados++;
-							}else{
-							
-								//Se obtiene la cuenta, si la persona tiene más de una cuenta no se realiza el pago
-								//Los abonos SJCS se pagarán a la cuenta SJCS 
-								//Los abonos no SJCS se pagarán a la cuenta no SJCS
-								if(bAbono.getIdPagosJG()==null)
-									bAbono.setIdPagosJG(0);
+								if (bAbono.getIdFactura()!=null || !bAbono.getIdFactura().equals(""))	
+									form.setIdFactura(bAbono.getIdFactura());
 								
-								String  where=" Where ";
-										where +=CenCuentasBancariasBean.C_IDINSTITUCION+"="+idInstitucion;
-										where +=" AND "+CenCuentasBancariasBean.C_IDPERSONA+"="+bAbono.getIdPersona();
-										where +=" AND "+CenCuentasBancariasBean.C_ABONOSJCS+"="+bAbono.getIdPagosJG();
-										where +=" AND "+CenCuentasBancariasBean.C_FECHABAJA+" IS NULL";
-										where +=" AND "+CenCuentasBancariasBean.C_ABONOCARGO+" IN('A','T')";
-								
-								Vector vCuentas=cuentasAdm.select(where);
-								
-								if (vCuentas.size() >0) {
+								if (form.TipoPago().equals("caja")) {
+									//Si se seleccionó un abono solamente el importe lo introduce el usuario,
+									//si hay varios se hará el pago el abono por el importe pendiente que tenga el abono
+									if (form.getImporte().equals(""))
+										form.setImporte(bAbono.getImpPendientePorAbonar().toString());
 									
-									if(vCuentas.size()>1)
-									{
+									//Inserto el pago por caja
+									boolean abonoPagado=this.insertarPagoCaja(form,user,pagoVariosAbonos);
+									
+									if (abonoPagado)
+										abonosTratados++;
+								
+								} else {
+									CenCuentasBancariasAdm admCuentasBancarias = new CenCuentasBancariasAdm(this.getUserBean(request));
+									Vector<Hashtable<String,Object>> vCuentas = admCuentasBancarias.obtenerCuentasAbonos(idInstitucion, String.valueOf(bAbono.getIdPersona()), String.valueOf(bAbono.getIdPagosJG()));
+									
+									if (vCuentas.size() >0) {
+										if (vCuentas.size()>1) {
+											if(arrayAbonos.length==1)
+												throw new SIGAException("facturacion.abonos.error.masDeUnaCuenta");
+											
+										} else {
+											Hashtable<String,Object> hCuentas = vCuentas.get(0);
+											
+											form.setIdPersona(bAbono.getIdPersona().toString());
+											form.setNumeroCuenta(UtilidadesHash.getString(hCuentas, "ID"));
+											
+											//Inserto el pago por banco
+											boolean abonoPagado = this.insertarPagoBanco(form,user,pagoVariosAbonos);
+											
+											if (abonoPagado)
+												abonosTratados++;
+										}
+									
+									//No tiene cuentas asociadas
+									} else {
 										if(arrayAbonos.length==1)
-											throw new SIGAException("facturacion.abonos.error.masDeUnaCuenta");
-										
-									}else{
-										
-										CenCuentasBancariasBean bCuentas = (CenCuentasBancariasBean) vCuentas.get(0);
-										
-										form.setIdPersona(bAbono.getIdPersona().toString());
-										form.setNumeroCuenta(bCuentas.getIdCuenta().toString());
-										
-										//Inserto el pago por banco
-										boolean abonoPagado=this.insertarPagoBanco(form,user,pagoVariosAbonos);
-										
-										if(abonoPagado)
-											abonosTratados++;
+											throw new SIGAException("facturacion.abonos.error.noExisteCuenta");
 									}
-									
-								
-								//No tiene cuentas asociadas
-								}else{
-									if(arrayAbonos.length==1)
-										throw new SIGAException("facturacion.abonos.error.noExisteCuenta");
 								}
-
 							}
-							
 						}
 					}
 				}
 			}
+			
+			String tipoAlert="";
+			String mensaje="";
+			
+			abonosNoTratados = abonosNoTratados-abonosTratados;
+			
+			 if (abonosTratados==abonosSeleccionados) {
+		    	// No hay errores
+		    	String[] datos = {""+abonosTratados,""+abonosSeleccionados};
+		    	tipoAlert="success";
+		    	mensaje = UtilidadesString.getMensaje("facturacion.abonos.mensaje.abonosPagados", datos, user.getLanguage());
+		    
+		    } else {
+		    	tipoAlert=abonosTratados==0?"error":"warning";
+		    	// Hay errores en la generacion de los abonos
+		    	String[] datos = {""+abonosTratados,""+abonosSeleccionados};
+		    	mensaje = UtilidadesString.getMensaje("facturacion.abonos.mensaje.abonosPagados", datos, user.getLanguage());
+		    }
+			 
+			request.setAttribute("estiloMensaje",tipoAlert);	
+			request.setAttribute("mensaje",mensaje);	
+	
+		} catch (Exception e){
+			if (e instanceof SIGAException || e instanceof ClsExceptions)
+				throwExcp (e.getMessage(),new String[] {"modulo.facturacion"},e,null); 
+			else
+				throwExcp("messages.general.error",new String[] {"modulo.facturacion"},e,null); 			
+		}
+	
+		 return "exitoConString";
 	}
-		
-	String tipoAlert="";
-	String mensaje="";
-	
-	abonosNoTratados=abonosNoTratados-abonosTratados;
-	
-	
-	 if (abonosTratados==abonosSeleccionados) {
-    	// No hay errores
-    	String[] datos = {""+abonosTratados,""+abonosSeleccionados};
-    	tipoAlert="success";
-    	mensaje = UtilidadesString.getMensaje("facturacion.abonos.mensaje.abonosPagados", datos, user.getLanguage());
-    
-    } else {
-    	tipoAlert=abonosTratados==0?"error":"warning";
-    	// Hay errores en la generacion de los abonos
-    	String[] datos = {""+abonosTratados,""+abonosSeleccionados};
-    	mensaje = UtilidadesString.getMensaje("facturacion.abonos.mensaje.abonosPagados", datos, user.getLanguage());
-    }
-	 
-	request.setAttribute("estiloMensaje",tipoAlert);	
-	request.setAttribute("mensaje",mensaje);	
-
-	}catch (Exception e){
-		if((e instanceof SIGAException)||(e instanceof ClsExceptions))
-			throwExcp (e.getMessage(),new String[] {"modulo.facturacion"},e,null); 
-		else
-			throwExcp("messages.general.error",new String[] {"modulo.facturacion"},e,null); 			
-	}
-
-	 return "exitoConString";
-		
-	
-}
 	
 	/** 
 	 *  MJM: Abonos Masivos
@@ -1607,21 +1566,12 @@ public class AbonosPagosAction extends MasterAction {
 			String idInstitucion=request.getParameter("idInstitucion").toString();
 			Vector entrada=adm.getAbono(idInstitucion,request.getParameter("idAbono").toString());
 			Hashtable registro=((Row)entrada.firstElement()).getRow();
-			String idPersona=registro.get(FacAbonoBean.C_IDPERSONA).toString();
+			String idPersona = UtilidadesHash.getString(registro, FacAbonoBean.C_IDPERSONA);
+			String idPagoJG = String.valueOf(Integer.parseInt(request.getParameter("idPagoJG")));
 			
-			String  select = "SELECT "+CenCuentasBancariasBean.C_IDCUENTA+" AS ID ,";
-			        select +=" F_SIGA_FORMATOIBAN("+CenCuentasBancariasBean.C_IBAN+") as DESCRIPCION ";
-			        select +=" FROM "+CenCuentasBancariasBean.T_NOMBRETABLA;
-			        select +=" WHERE ";
-					select +=CenCuentasBancariasBean.C_IDINSTITUCION+"="+idInstitucion;
-					select +=" AND "+CenCuentasBancariasBean.C_IDPERSONA+"="+idPersona;
-					select +=" AND "+CenCuentasBancariasBean.C_ABONOSJCS+"="+Integer.parseInt(request.getParameter("idPagoJG"));
-					select +=" AND "+CenCuentasBancariasBean.C_FECHABAJA+" IS NULL";
-					select +=" AND "+CenCuentasBancariasBean.C_ABONOCARGO+" IN('A','T')";
-					select +=" ORDER BY DESCRIPCION";
-					
-			CenCuentasBancariasAdm cuentasAdm=new CenCuentasBancariasAdm(this.getUserBean(request));
-			Vector vCuentas=cuentasAdm.selectGenerico(select);
+			CenCuentasBancariasAdm admCuentasBancarias = new CenCuentasBancariasAdm(this.getUserBean(request));
+			Vector<Hashtable<String,Object>> vCuentas = admCuentasBancarias.obtenerCuentasAbonos(idInstitucion, idPersona, idPagoJG);
+			
 			JSONObject json = new JSONObject();
 			if(vCuentas.size()==0)
 				json.put("msgCuentaSJCS","1");

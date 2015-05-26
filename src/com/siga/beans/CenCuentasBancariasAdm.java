@@ -257,7 +257,6 @@ public class CenCuentasBancariasAdm extends MasterBeanAdmVisible {
 	public CenCuentasBancariasBean selectCuentaCargo(Long idPersona, Integer idInstitucion) throws ClsExceptions, SIGAException{
 		CenCuentasBancariasBean salida = null;
 		try{			
-			RowsContainer rc = null;
 			String where = " WHERE " + CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_IDPERSONA + " = " + idPersona +
 			" AND " + CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_IDINSTITUCION + " = " + idInstitucion + 
 			" AND " + CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_ABONOCARGO + " in ('T','C')"+
@@ -287,7 +286,6 @@ public class CenCuentasBancariasAdm extends MasterBeanAdmVisible {
 	public CenCuentasBancariasBean selectPrimeraCuentaCargo(Long idPersona, Integer idInstitucion) throws ClsExceptions, SIGAException{
 		CenCuentasBancariasBean salida = null;
 		try{			
-			RowsContainer rc = null;
 			String where = " WHERE " + CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_IDPERSONA + " = " + idPersona +
 			" AND " + CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_IDINSTITUCION + " = " + idInstitucion + 
 			" AND " + CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_FECHABAJA+ " IS NULL " + 
@@ -308,7 +306,6 @@ public class CenCuentasBancariasAdm extends MasterBeanAdmVisible {
 	public ArrayList getCuentasAbono(Long idPersona, Integer idInstitucion) throws ClsExceptions, SIGAException{
 		ArrayList alCuentasAbono = null;
 		try{			
-			RowsContainer rc = null;
 			String where = " WHERE " + CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_IDPERSONA + " = " + idPersona +
 			" AND " + CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_IDINSTITUCION + " = " + idInstitucion + 
 			" AND " + CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_FECHABAJA+ " IS NULL " + 
@@ -1014,8 +1011,6 @@ public class CenCuentasBancariasAdm extends MasterBeanAdmVisible {
 				
 		try {
 			
-			Hashtable codigosHashtable = new Hashtable();
-			int contador = 0;
 			RowsContainer rc = new RowsContainer();
 			String sql = new String();
 			
@@ -1153,8 +1148,6 @@ public class CenCuentasBancariasAdm extends MasterBeanAdmVisible {
 				
 		try {
 			
-			Hashtable codigosHashtable = new Hashtable();
-			int contador = 0;
 			RowsContainer rc = new RowsContainer();
 			String sql = new String();
 			
@@ -1242,4 +1235,33 @@ public class CenCuentasBancariasAdm extends MasterBeanAdmVisible {
 	
 		return idCuenta;
 	}	
+	
+	/**
+	 * Obtiene las lineas de devoluciones
+	 * @param institucion
+	 * @param idPersona
+	 * @param idPagoJG
+	 * @return
+	 * @throws ClsExceptions
+	 */
+	public Vector<Hashtable<String,Object>> obtenerCuentasAbonos (String institucion, String idPersona, String idPagoJG) throws ClsExceptions {
+		Vector<Hashtable<String,Object>> vCuentas = new Vector<Hashtable<String,Object>>();
+       try {
+            String sql = "SELECT " + CenCuentasBancariasBean.C_IDCUENTA + " AS ID, " +
+					" F_SIGA_FORMATOIBAN(" + CenCuentasBancariasBean.C_IBAN + ") as DESCRIPCION " +
+				" FROM " + CenCuentasBancariasBean.T_NOMBRETABLA + 
+				" WHERE " + CenCuentasBancariasBean.C_IDINSTITUCION + " = " + institucion +
+					" AND " + CenCuentasBancariasBean.C_IDPERSONA + " = " + idPersona +					
+					" AND " + CenCuentasBancariasBean.C_FECHABAJA + " IS NULL" +
+					(idPagoJG!=null && !idPagoJG.equals("") && !idPagoJG.equals("null") ? " AND " + CenCuentasBancariasBean.C_ABONOSJCS + " = '1'" : " AND " + CenCuentasBancariasBean.C_ABONOCARGO + " IN ('A','T')") +
+				" ORDER BY 2";
+            
+			vCuentas = this.selectGenerico(sql);
+            
+       } catch (Exception e) {
+       		throw new ClsExceptions (e, "Error al obtener las cuentas de abonos.");
+       }
+       
+       return vCuentas;                        
+    }		
 }
