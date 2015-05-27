@@ -143,15 +143,17 @@ public class GestionInformesAction extends MasterAction {
 		
 		// Recuperamos los filtros de busqueda
 		InformeForm filtrosForm = informeForm.getFiltrosBusqueda(); 
-		informeForm.setModo("volver");
-		informeForm.setIdTipoInforme(filtrosForm.getIdTipoInforme());
-		informeForm.setTiposInforme(filtrosForm.getTiposInforme());
-		informeForm.setIdInstitucion(filtrosForm.getIdInstitucion());
-		informeForm.setInstituciones(filtrosForm.getInstituciones());
-		informeForm.setAlias(filtrosForm.getAlias());
-		informeForm.setVisible(filtrosForm.getVisible());
-		informeForm.setDestinatarios(filtrosForm.getDestinatarios());
-		informeForm.setASolicitantes(filtrosForm.getASolicitantes());
+		if(filtrosForm != null){
+			informeForm.setModo("volver");
+			informeForm.setIdTipoInforme(filtrosForm.getIdTipoInforme());
+			informeForm.setTiposInforme(filtrosForm.getTiposInforme());
+			informeForm.setIdInstitucion(filtrosForm.getIdInstitucion());
+			informeForm.setInstituciones(filtrosForm.getInstituciones());
+			informeForm.setAlias(filtrosForm.getAlias());
+			informeForm.setVisible(filtrosForm.getVisible());
+			informeForm.setDestinatarios(filtrosForm.getDestinatarios());
+			informeForm.setASolicitantes(filtrosForm.getASolicitantes());
+		}
 		
 		UsrBean usrBean = this.getUserBean(request);
 		informeForm.setUsrBean(usrBean);
