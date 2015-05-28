@@ -2229,6 +2229,14 @@ public  List<ScsAsistenciasBean> getAsistenciasVolantesExpres(VolantesExpressVo 
 			fksAsistenciaHashtable.put(ScsActuacionDesignaBean.C_IDINSTITUCION, asistenciaHashtable.get(ScsAsistenciasBean.C_IDINSTITUCION));
 			fksAsistenciaMap.put(ScsAsistenciasBean.C_IDPRETENSION,fksAsistenciaHashtable);
 		}
+		if(asistenciaHashtable.get(ScsAsistenciasBean.C_IDPRETENSION)!=null && !asistenciaHashtable.get(ScsAsistenciasBean.C_IDPRETENSION).toString().equals("")){
+			fksAsistenciaHashtable = new Hashtable<String, Object>();
+			fksAsistenciaHashtable.put("TABLA_FK", "SCS_PRETENSION");
+			fksAsistenciaHashtable.put("SALIDA_FK", "DESCRIPCION");
+			fksAsistenciaHashtable.put(ScsActuacionDesignaBean.C_IDPRETENSION, asistenciaHashtable.get(ScsAsistenciasBean.C_IDPRETENSION));
+			fksAsistenciaHashtable.put(ScsActuacionDesignaBean.C_IDINSTITUCION, asistenciaHashtable.get(ScsAsistenciasBean.C_IDINSTITUCION));
+			fksAsistenciaMap.put(ScsAsistenciasBean.C_IDPRETENSION,fksAsistenciaHashtable);
+		}
 		asistenciaHashtable.put("fks", fksAsistenciaMap);
 		return asistenciaHashtable;
 	}

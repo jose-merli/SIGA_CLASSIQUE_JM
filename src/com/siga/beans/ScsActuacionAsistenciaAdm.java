@@ -536,7 +536,7 @@ public class ScsActuacionAsistenciaAdm extends MasterBeanAdministrador {
         }
         return new Integer(valor);        
     }
-	public Hashtable<String , Object> actualizaHashActuacionAsistenciaParaHistorico(Hashtable<String, Object> actuacionAsistenciaHashtable,UsrBean usr) throws ClsExceptions{
+	public Hashtable<String , Object> actualizaHashActuacionAsistenciaParaHistorico(Hashtable<String, Object> actuacionAsistenciaHashtable, UsrBean usr) throws ClsExceptions{
 		
 		Map<String,Hashtable<String, Object>> fksAsistenciaMap = new HashMap<String, Hashtable<String,Object>>(); 
 		//Como el turno es obligarotio
@@ -596,5 +596,7 @@ public class ScsActuacionAsistenciaAdm extends MasterBeanAdministrador {
 		actuacionAsistenciaHashtable.put("fks", fksAsistenciaMap);
 		return actuacionAsistenciaHashtable;
 	}
+
+	
 
 }

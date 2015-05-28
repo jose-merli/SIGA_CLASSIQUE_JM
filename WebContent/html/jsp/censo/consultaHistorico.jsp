@@ -146,10 +146,10 @@
 								<%=UtilidadesString.mostrarDatoJSP(row.getString(CenTipoCambioBean.C_DESCRIPCION))%>		
 							</td>
 							<td>
-								<%=UtilidadesString.mostrarDatoJSP(GstDate.getFormatedDateShort(usr.getLanguage(),row.getString(CenHistoricoBean.C_FECHAENTRADA)))%>
+								<%=UtilidadesString.mostrarDatoJSP(GstDate.getFormatedDateMedium(usr.getLanguage(),row.getString(CenHistoricoBean.C_FECHAENTRADA)))%>
 							</td>  	
 							<td>
-								<%=UtilidadesString.mostrarDatoJSP(GstDate.getFormatedDateShort(usr.getLanguage(),row.getString(CenHistoricoBean.C_FECHAEFECTIVA)))%>
+								<%=UtilidadesString.mostrarDatoJSP(GstDate.getFormatedDateMedium(usr.getLanguage(),row.getString(CenHistoricoBean.C_FECHAEFECTIVA)))%>
 							</td>  	
 														
 							<td>							

@@ -2827,7 +2827,7 @@ public class PersonaJGAction extends MasterAction {
 					Hashtable<String, Object> fksAsistenciaHashtable = new Hashtable<String, Object>();
 					
 					fksAsistenciaHashtable.put("TABLA_FK", ScsPersonaJGBean.T_NOMBRETABLA);
-					fksAsistenciaHashtable.put("SALIDA_FK", ScsPersonaJGBean.C_NOMBRE+"||' '||"+ScsPersonaJGBean.C_APELLIDO1+"||' '||"+ScsPersonaJGBean.C_APELLIDO2  );
+					fksAsistenciaHashtable.put("SALIDA_FK",ScsPersonaJGBean.C_NIF+"||' '||"+ ScsPersonaJGBean.C_NOMBRE+"||' '||"+ScsPersonaJGBean.C_APELLIDO1+"||' '||"+ScsPersonaJGBean.C_APELLIDO2  );
 					fksAsistenciaHashtable.put(ScsPersonaJGBean.C_IDINSTITUCION, idInstitucionASI);
 					fksAsistenciaHashtable.put(ScsPersonaJGBean.C_IDPERSONA, new Integer(miform.getIdPersonaJG()));
 					//fksAsistenciaHashtable.put(ScsAsistenciasBean.C_IDPERSONAJG, new Integer(miform.getIdPersonaJG()));
@@ -2903,7 +2903,7 @@ public class PersonaJGAction extends MasterAction {
 								Hashtable<String, Object> fksAsistenciaHashtable = new Hashtable<String, Object>();
 								
 								fksAsistenciaHashtable.put("TABLA_FK", ScsPersonaJGBean.T_NOMBRETABLA);
-								fksAsistenciaHashtable.put("SALIDA_FK", ScsPersonaJGBean.C_NOMBRE+"||' '||"+ScsPersonaJGBean.C_APELLIDO1+"||' '||"+ScsPersonaJGBean.C_APELLIDO2  );
+								fksAsistenciaHashtable.put("SALIDA_FK", ScsPersonaJGBean.C_NIF+"||' '||"+ScsPersonaJGBean.C_NOMBRE+"||' '||"+ScsPersonaJGBean.C_APELLIDO1+"||' '||"+ScsPersonaJGBean.C_APELLIDO2  );
 								fksAsistenciaHashtable.put(ScsPersonaJGBean.C_IDINSTITUCION, idInstitucionASI);
 								fksAsistenciaHashtable.put(ScsPersonaJGBean.C_IDPERSONA, old.get(ScsContrariosAsistenciaBean.C_IDPERSONA));
 								fksAsistenciaMap.put("Contrario",fksAsistenciaHashtable);
@@ -2928,7 +2928,7 @@ public class PersonaJGAction extends MasterAction {
 						Hashtable<String, Object> fksAsistenciaHashtable = new Hashtable<String, Object>();
 						
 						fksAsistenciaHashtable.put("TABLA_FK", ScsPersonaJGBean.T_NOMBRETABLA);
-						fksAsistenciaHashtable.put("SALIDA_FK", ScsPersonaJGBean.C_NOMBRE+"||' '||"+ScsPersonaJGBean.C_APELLIDO1+"||' '||"+ScsPersonaJGBean.C_APELLIDO2  );
+						fksAsistenciaHashtable.put("SALIDA_FK", ScsPersonaJGBean.C_NIF+"||' '||"+ScsPersonaJGBean.C_NOMBRE+"||' '||"+ScsPersonaJGBean.C_APELLIDO1+"||' '||"+ScsPersonaJGBean.C_APELLIDO2  );
 						fksAsistenciaHashtable.put(ScsPersonaJGBean.C_IDINSTITUCION, idInstitucionASI);
 						fksAsistenciaHashtable.put(ScsPersonaJGBean.C_IDPERSONA, contrarioAsistenciaHash.get(ScsContrariosAsistenciaBean.C_IDPERSONA));
 						fksAsistenciaMap.put("Contrario",fksAsistenciaHashtable);

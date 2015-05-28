@@ -313,8 +313,8 @@ public class CenHistoricoAdm extends MasterBeanAdministrador
 						  CenHistoricoBean.T_NOMBRETABLA +"."+ CenHistoricoBean.C_IDTIPOCAMBIO + "=" + tipoCambio;									 
 				}
 				if (motivo!=null &&  !motivo.trim().equals("")){								 
-					sql +=" AND " +
-						  CenHistoricoBean.T_NOMBRETABLA +"."+ CenHistoricoBean.C_MOTIVO + " like '%" + motivo+"%'";									 
+					sql +=" AND LOWER(" +
+						  CenHistoricoBean.T_NOMBRETABLA +"."+ CenHistoricoBean.C_MOTIVO + ") like '%" + motivo.trim().toLowerCase()+"%'";									 
 				}
 				
 				String auxFechaInicio = "";
@@ -1668,7 +1668,11 @@ public class CenHistoricoAdm extends MasterBeanAdministrador
 										descripcion.append(htFK.get("SALIDA_FK").toString());
 										descripcion.append(")");
 									}else{
+										descripcion.append(valor.toString());
+										descripcion.append(" (");
 										descripcion.append(htFK.get("SALIDA_FK").toString());
+										descripcion.append(")");
+										
 									}
 								}else{
 									throw new ClsExceptions("Hay clave primaria de la FK mal configurada");
@@ -1720,7 +1724,6 @@ public class CenHistoricoAdm extends MasterBeanAdministrador
 //		return sql.toString();
 		
 	}
-		
 	
 	private boolean omitirClave (String s) 
 	{

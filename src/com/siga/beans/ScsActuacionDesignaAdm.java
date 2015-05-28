@@ -1081,6 +1081,9 @@ public class ScsActuacionDesignaAdm extends MasterBeanAdministrador {
 		CenHistoricoAdm admHis = new CenHistoricoAdm (this.usrbean);
 		Hashtable<String, String> cambiarNombreSalidaHashtable = new Hashtable<String, String>();
 		cambiarNombreSalidaHashtable.put(ScsActuacionDesignaBean.C_NUMEROASUNTO, "NUMEROACTUACION");
+		cambiarNombreSalidaHashtable.put(ScsActuacionDesignaBean.C_IDPROCEDIMIENTO, "IDMODULO");
+		cambiarNombreSalidaHashtable.put(ScsActuacionDesignaBean.C_IDPRETENSION, "IDPROCEDIMIENTO");
+		
 		
 		boolean isInsertado = admHis.auditoriaColegiados(idPersona,motivo.toString(), tipoCambio,actuacionDesignaHashtable, 
 				null, this.getCamposActualizablesBean(),ocultarClaveList,cambiarNombreSalidaHashtable, CenHistoricoAdm.ACCION_INSERT, usrbean.getLanguage(), false); 

@@ -67,9 +67,10 @@
 	String	botones="V,G,R";
 
 	String nombreUsuMod = "";
+	UsrBean userBean = (UsrBean)request.getSession().getAttribute("USRBEAN");
 	try { 	
 		if (remitente.equalsIgnoreCase("insertar")) {
-			UsrBean userBean = (UsrBean)request.getSession().getAttribute("USRBEAN");
+			
 			Hashtable h = userBean.getDatosUsuario ();
 			if (h != null) {
 				nombreUsuMod = (String)h.get("NOMBRE_USUARIO");		
@@ -193,12 +194,13 @@
 												<siga:Fecha  nombreCampo= "fechaEntrada"  posicionX="150" posicionY="50"/>
 											<% } else { %>
 					  							<% if (remitente.equalsIgnoreCase("modificar")){ %>
-			  										<% String fecha=GstDate.getFormatedDateLong("",row.getString(CenHistoricoBean.C_FECHAENTRADA)); %>
+			  										<% String fecha=GstDate.getFormatedDateMedium(userBean.getLanguage(),row.getString(CenHistoricoBean.C_FECHAENTRADA)); %>
 			  										<siga:Fecha  nombreCampo= "fechaEntrada" valorInicial="<%=fecha%>"  posicionX="150" posicionY="50"/>
 			  															
 						  					 	<% } else { %>
-											 		<% String fecha=GstDate.getFormatedDateLong("",row.getString(CenHistoricoBean.C_FECHAENTRADA));%>	
-													<siga:Fecha  nombreCampo= "fechaEntrada" valorInicial="<%=fecha%>" disabled="true"  posicionX="150" posicionY="50"/>
+											 		<% String fecha=GstDate.getFormatedDateMedium(userBean.getLanguage(),row.getString(CenHistoricoBean.C_FECHAENTRADA));%>
+											 		<%=fecha %>	
+													
 											 	<% } %>				  					 
 							  				<% } %>														
 										</td>
@@ -213,12 +215,12 @@
 																		
 						  					<% } else { %>
 			  									<% if (remitente.equalsIgnoreCase("modificar")){ %>
-			  										<% String fecha=GstDate.getFormatedDateShort("",row.getString(CenHistoricoBean.C_FECHAEFECTIVA));%>
+			  										<% String fecha=GstDate.getFormatedDateMedium(userBean.getLanguage(),row.getString(CenHistoricoBean.C_FECHAEFECTIVA));%>
 			  										<siga:Fecha  nombreCampo= "fechaEfectiva" valorInicial="<%=fecha%>"  posicionX="150" posicionY="50"/>
 			  																
 				  							 	<% }else{ %>
-									 				<% String fecha=GstDate.getFormatedDateShort("",row.getString(CenHistoricoBean.C_FECHAEFECTIVA));%>	
-													<siga:Fecha  nombreCampo= "fechaEfectiva" valorInicial="<%=fecha%>" disabled="true"  posicionX="150" posicionY="50"/>
+									 				<% String fecha=GstDate.getFormatedDateMedium(userBean.getLanguage(),row.getString(CenHistoricoBean.C_FECHAEFECTIVA));%>	
+													<%=fecha %>	
 												 <% } %>				  					 				  					 
 				  							<% } %>														
 										</td>

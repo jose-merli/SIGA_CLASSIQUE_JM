@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Map;
 import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
@@ -589,40 +590,118 @@ public class ActuacionesAsistenciaAction extends MasterAction {
 	}
 
 	
-	protected String modificar(ActionMapping mapping, 
-			MasterForm formulario,
-			HttpServletRequest request, 
-			HttpServletResponse response)throws ClsExceptions,SIGAException  {
+	protected String modificar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, SIGAException {
 
 		UsrBean usrBean = this.getUserBean(request);
-		ActuacionAsistenciaForm actuacionAsistenciaFormEdicion 	= (ActuacionAsistenciaForm)formulario;
+		ActuacionAsistenciaForm actuacionAsistenciaFormEdicion = (ActuacionAsistenciaForm) formulario;
 
-		
-		String forward="exception";
+		String forward = "exception";
 		try {
-			
+
+			String action = (String) request.getServletPath();
+			boolean esFichaColegial = action.equalsIgnoreCase("/JGR_ActuacionAsistenciaLetrado.do");
+			Hashtable actuacionAsistenciaOriginalHashtable = null;
+			if (esFichaColegial) {
+
+				actuacionAsistenciaOriginalHashtable = new Hashtable();
+				actuacionAsistenciaOriginalHashtable.put(ScsActuacionAsistenciaBean.C_ANIO, actuacionAsistenciaFormEdicion.getAnio());
+				actuacionAsistenciaOriginalHashtable.put(ScsActuacionAsistenciaBean.C_NUMERO, actuacionAsistenciaFormEdicion.getNumero());
+				actuacionAsistenciaOriginalHashtable.put(ScsActuacionAsistenciaBean.C_IDINSTITUCION, actuacionAsistenciaFormEdicion.getIdInstitucion());
+				actuacionAsistenciaOriginalHashtable.put(ScsActuacionAsistenciaBean.C_IDACTUACION, actuacionAsistenciaFormEdicion.getIdActuacion());
+
+				ScsActuacionAsistenciaAdm scsActuacionAsistenciaAdm = new ScsActuacionAsistenciaAdm(usrBean);
+				Vector actuacionAsistenciaPKVector = scsActuacionAsistenciaAdm.selectByPK(actuacionAsistenciaOriginalHashtable);
+				ScsActuacionAsistenciaBean actuacionAsistenciaBean = (ScsActuacionAsistenciaBean) actuacionAsistenciaPKVector.get(0);
+
+				actuacionAsistenciaOriginalHashtable = scsActuacionAsistenciaAdm.beanToHashTable(actuacionAsistenciaBean);
+				actuacionAsistenciaOriginalHashtable = scsActuacionAsistenciaAdm.actualizaHashActuacionAsistenciaParaHistorico(actuacionAsistenciaOriginalHashtable, usrBean);
+				//Como al modificar la actuacion se modifica la tabla del coste fijo no podemos sacar la descripcion despues, por lo tanto lo hacemos ahora
+				Map<String,Hashtable<String, Object>> fksAsistenciaMap = (Map<String, Hashtable<String, Object>>) actuacionAsistenciaOriginalHashtable.get("fks");
+				ScsActuacionAsistCosteFijoAdm scsActuacionAsistCosteFijoAdm = new ScsActuacionAsistCosteFijoAdm(usrBean);
+				Integer idCosteFijo = scsActuacionAsistCosteFijoAdm.getTipoCosteFijoActuacion(actuacionAsistenciaBean);
+				if(idCosteFijo!=null && !idCosteFijo.equals("")){
+					Hashtable<String, Object> fksAsistenciaHashtable = new Hashtable<String, Object>();
+					fksAsistenciaHashtable.put("TABLA_FK","SCS_COSTEFIJO");
+					fksAsistenciaHashtable.put("SALIDA_FK", "DESCRIPCION");
+					fksAsistenciaHashtable.put("IDINSTITUCION",  actuacionAsistenciaFormEdicion.getIdInstitucion());
+					fksAsistenciaHashtable.put("IDCOSTEFIJO", idCosteFijo);
+					fksAsistenciaMap.put("COSTEFIJO",fksAsistenciaHashtable);
+					actuacionAsistenciaOriginalHashtable.put("COSTEFIJO", idCosteFijo);
+				}else{
+					fksAsistenciaMap.remove("COSTEFIJO");
+					actuacionAsistenciaOriginalHashtable.put("COSTEFIJO", "");
+				}
+			}
+
 			BusinessManager bm = getBusinessManager();
-			AsistenciasService asistenciasService = (AsistenciasService)bm.getService(AsistenciasService.class);
+			AsistenciasService asistenciasService = (AsistenciasService) bm.getService(AsistenciasService.class);
 			String codigoPrision = actuacionAsistenciaFormEdicion.getIdPrision();
-			if(codigoPrision!=null && !codigoPrision.equals("")){
+			if (codigoPrision != null && !codigoPrision.equals("")) {
 				String[] prision = codigoPrision.split(",");
 				String idPrision = prision[1];
 				String idInstitucionPrision = prision[0];
 				actuacionAsistenciaFormEdicion.setIdPrision(idPrision);
 				actuacionAsistenciaFormEdicion.setIdInstitucionPris(idInstitucionPrision);
 			}
-			//No hay campo en el formulario y no admite nulos. Por defecto 0
+			// No hay campo en el formulario y no admite nulos. Por defecto 0
 			actuacionAsistenciaFormEdicion.setAcuerdoExtrajudicial("0");
-			
+
 			asistenciasService.modificarActuacionAsistencia(actuacionAsistenciaFormEdicion, usrBean);
+
+			if (esFichaColegial) {
+
+				CenHistoricoAdm cenHistoricoAdm = new CenHistoricoAdm(usrBean);
+				Hashtable historicoHashtable = new Hashtable();
+
+				StringBuffer motivo = new StringBuffer();
+				motivo.append(UtilidadesString.getMensajeIdioma(usrBean, "gratuita.generalDesigna.literal.asistencia"));
+				motivo.append(" ");
+				motivo.append(actuacionAsistenciaFormEdicion.getAnio());
+				motivo.append("/");
+				motivo.append(actuacionAsistenciaFormEdicion.getNumero());
+				historicoHashtable.put(CenHistoricoBean.C_MOTIVO, motivo.toString());
+
+				Hashtable actuacionAsistenciaHashtable = new Hashtable();
+				actuacionAsistenciaHashtable.put(ScsActuacionAsistenciaBean.C_ANIO, actuacionAsistenciaFormEdicion.getAnio());
+				actuacionAsistenciaHashtable.put(ScsActuacionAsistenciaBean.C_NUMERO, actuacionAsistenciaFormEdicion.getNumero());
+				actuacionAsistenciaHashtable.put(ScsActuacionAsistenciaBean.C_IDINSTITUCION, actuacionAsistenciaFormEdicion.getIdInstitucion());
+				actuacionAsistenciaHashtable.put(ScsActuacionAsistenciaBean.C_IDACTUACION, actuacionAsistenciaFormEdicion.getIdActuacion());
+
+				ScsActuacionAsistenciaAdm scsActuacionAsistenciaAdm = new ScsActuacionAsistenciaAdm(usrBean);
+				Vector actuacionAsistenciaPKVector = scsActuacionAsistenciaAdm.selectByPK(actuacionAsistenciaHashtable);
+				ScsActuacionAsistenciaBean actuacionAsistenciaBean = (ScsActuacionAsistenciaBean) actuacionAsistenciaPKVector.get(0);
+
+				actuacionAsistenciaHashtable = scsActuacionAsistenciaAdm.beanToHashTable(actuacionAsistenciaBean);
+				actuacionAsistenciaHashtable = scsActuacionAsistenciaAdm.actualizaHashActuacionAsistenciaParaHistorico(actuacionAsistenciaHashtable, usrBean);
+				List<String> clavesList = new ArrayList<String>();
+				clavesList.addAll(Arrays.asList(scsActuacionAsistenciaAdm.getCamposBean()));
+
+				clavesList.add("COSTEFIJO");
+				String[] clavesStrings = new String[clavesList.size()];
+				clavesList.toArray(clavesStrings);
+				try {
+					ScsAsistenciasAdm scsAsistenciaAdm = new ScsAsistenciasAdm(usrBean);
+					Hashtable<String, Object> asistenciaOriginalHashtable = scsAsistenciaAdm.getHashAsistenciaOriginalParaHistorico(actuacionAsistenciaHashtable, false, usrBean);
+					// COMO NO ESTAMOS EN TRANSACCION CON LO DE ARRIBA , SI FALLA LA INSERCION DEL HISTORICO BORRAMOS LA ACTUACION
+					boolean isInsertado = cenHistoricoAdm.auditoriaColegiados(Long.valueOf((String) asistenciaOriginalHashtable.get("IDPERSONACOLEGIADO")), motivo.toString(), ClsConstants.TIPO_CAMBIO_HISTORICO_ASISTENCIAALTAACTUACION, actuacionAsistenciaHashtable, actuacionAsistenciaOriginalHashtable, clavesStrings, getListCamposOcultarHistorico(), null, CenHistoricoAdm.ACCION_UPDATE, usrBean.getLanguage(), false);
+
+					if (!isInsertado)
+						throw new Exception();
+				} catch (Exception e) {
+					asistenciasService.borrarActuacionAsistencia(actuacionAsistenciaFormEdicion, usrBean);
+					throw new SIGAException("Error al insertar en histórico");
+				}
+
+			}
+
 			actuacionAsistenciaFormEdicion.setModo("abrir");
-			forward = exitoModal("messages.updated.success",request);
+			forward = exitoModal("messages.updated.success", request);
 		} catch (Exception e) {
-			throwExcp("messages.general.errorExcepcion", e, null); 
+			throwExcp("messages.general.errorExcepcion", e, null);
 		}
 		return forward;
 	}
-	
+
 	/** 
 	 *  Funcion que atiende la accion borrar
 	 * @param  mapping - Mapeo de los struts

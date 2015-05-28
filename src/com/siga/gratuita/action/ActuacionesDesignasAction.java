@@ -725,14 +725,14 @@ public class ActuacionesDesignasAction extends MasterAction {
 				idInstitucionPrision = new Integer(prision.substring(prision.indexOf(",")+1));
 				hash.put(ScsActuacionDesignaBean.C_IDPRISION, idPrision);
 				hash.put(ScsActuacionDesignaBean.C_IDINSTITUCIONPRISION, idInstitucionPrision);
-				if(usr.isLetrado()){
+//				if(usr.isLetrado()){
 					fksActuacionHashtable = new Hashtable<String, Object>();
 					fksActuacionHashtable.put("TABLA_FK", ScsPrisionBean.T_NOMBRETABLA);
 					fksActuacionHashtable.put("SALIDA_FK", ScsPrisionBean.C_NOMBRE);
 					fksActuacionHashtable.put(ScsPrisionBean.C_IDINSTITUCION, idInstitucionPrision);
 					fksActuacionHashtable.put(ScsPrisionBean.C_IDPRISION, idPrision);
 					fksActuacionMap.put(ScsActuacionDesignaBean.C_IDPRISION,fksActuacionHashtable);
-				}
+//				}
 				
 				
 			} else {
@@ -742,7 +742,7 @@ public class ActuacionesDesignasAction extends MasterAction {
 			String pretension = miform.getPretension();
 			if (pretension!=null && !pretension.equals("")){
 				hash.put(ScsActuacionDesignaBean.C_IDPRETENSION, pretension);
-				if(usr.isLetrado()){
+//				if(usr.isLetrado()){
 					fksActuacionHashtable = new Hashtable<String, Object>();
 					fksActuacionHashtable.put("TABLA_FK", "SCS_PRETENSION");
 					fksActuacionHashtable.put("SALIDA_FK", "DESCRIPCION");
@@ -751,7 +751,7 @@ public class ActuacionesDesignasAction extends MasterAction {
 					
 					
 					fksActuacionMap.put(ScsActuacionDesignaBean.C_IDPRETENSION,fksActuacionHashtable);
-				}
+//				}
 				
 				
 			} else {
@@ -789,14 +789,14 @@ public class ActuacionesDesignasAction extends MasterAction {
 				idInstitucionJuzgado = new Integer(juzgado[1]);
 				hash.put(ScsActuacionDesignaBean.C_IDJUZGADO, idJuzgado);
 				hash.put(ScsActuacionDesignaBean.C_IDINSTITUCIONJUZGADO, idInstitucionJuzgado);
-				if(usr.isLetrado()){
+//				if(usr.isLetrado()){
 					fksActuacionHashtable = new Hashtable<String, Object>();
 					fksActuacionHashtable.put("TABLA_FK", ScsJuzgadoBean.T_NOMBRETABLA);
 					fksActuacionHashtable.put("SALIDA_FK", ScsJuzgadoBean.C_NOMBRE);
 					fksActuacionHashtable.put(ScsJuzgadoBean.C_IDINSTITUCION, idInstitucionJuzgado);
 					fksActuacionHashtable.put(ScsJuzgadoBean.C_IDJUZGADO, idJuzgado);
 					fksActuacionMap.put(ScsActuacionDesignaBean.C_IDJUZGADO,fksActuacionHashtable);
-				}
+//				}
 				
 			} else {
 				hash.put(ScsActuacionDesignaBean.C_IDJUZGADO, "");
@@ -812,7 +812,7 @@ public class ActuacionesDesignasAction extends MasterAction {
 				idInstitucionProcedimiento = new Integer(procedimiento.substring(procedimiento.indexOf(",")+1));
 				hash.put(ScsActuacionDesignaBean.C_IDPROCEDIMIENTO, idProcedimiento.toString());
 				hash.put(ScsActuacionDesignaBean.C_IDINSTITUCIONPROCEDIMIENTO, idInstitucionProcedimiento);
-				if(usr.isLetrado()){
+//				if(usr.isLetrado()){
 					fksActuacionHashtable = new Hashtable<String, Object>();
 					fksActuacionHashtable.put("TABLA_FK", ScsProcedimientosBean.T_NOMBRETABLA);
 					fksActuacionHashtable.put("SALIDA_FK", ScsProcedimientosBean.C_NOMBRE);
@@ -821,7 +821,7 @@ public class ActuacionesDesignasAction extends MasterAction {
 					
 					
 					fksActuacionMap.put(ScsActuacionDesignaBean.C_IDPROCEDIMIENTO,fksActuacionHashtable);
-				}
+//				}
 			} else {
 				hash.put(ScsActuacionDesignaBean.C_IDPROCEDIMIENTO, "");
 				hash.put(ScsActuacionDesignaBean.C_IDINSTITUCIONPROCEDIMIENTO, "");
@@ -834,7 +834,7 @@ public class ActuacionesDesignasAction extends MasterAction {
 			if (acreditacion!=null && !acreditacion.equals("")){
 				idAcreditacion = new Integer(acreditacion);				
 				hash.put(ScsActuacionDesignaBean.C_IDACREDITACION, idAcreditacion);	
-				if(usr.isLetrado()){
+//				if(usr.isLetrado()){
 					fksActuacionHashtable = new Hashtable<String, Object>();
 					fksActuacionHashtable.put("TABLA_FK", ScsAcreditacionBean.T_NOMBRETABLA);
 					fksActuacionHashtable.put("SALIDA_FK", ScsAcreditacionBean.C_DESCRIPCION);
@@ -842,7 +842,7 @@ public class ActuacionesDesignasAction extends MasterAction {
 					
 					
 					fksActuacionMap.put(ScsActuacionDesignaBean.C_IDACREDITACION,fksActuacionHashtable);
-				}
+//				}
 			} else {
 				hash.put(ScsActuacionDesignaBean.C_IDACREDITACION, "");				
 			}		
