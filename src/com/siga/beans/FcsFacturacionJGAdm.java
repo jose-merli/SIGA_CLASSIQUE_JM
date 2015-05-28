@@ -694,26 +694,25 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 	 * @return boolean true si es cierto
 	 */
 	
-	public Integer insertarRegularizacion (String idInstitucion, String idFacturacion, String nombre)throws ClsExceptions, SIGAException 
-	{
+	public Integer insertarRegularizacion(String idInstitucion, String idFacturacion, String nombre) throws ClsExceptions, SIGAException {
 		Integer nuevoIdFacturacion = null;
-		
+
 		// control de estado
-		if (this.checkFacturacionRegularizacion(idInstitucion,idFacturacion)) {
+		if (this.checkFacturacionRegularizacion(idInstitucion, idFacturacion)) {
 			throw new SIGAException("messages.factSJCS.error.regularizacionAbierta");
 		}
-		
+
 		// busco a que facturacion pertenece
 		Hashtable criterios = new Hashtable();
-		criterios.put(FcsFacturacionJGBean.C_IDFACTURACION,idFacturacion);
-		criterios.put(FcsFacturacionJGBean.C_IDINSTITUCION,idInstitucion);
+		criterios.put(FcsFacturacionJGBean.C_IDFACTURACION, idFacturacion);
+		criterios.put(FcsFacturacionJGBean.C_IDINSTITUCION, idInstitucion);
 		Vector res = this.select(criterios);
 		FcsFacturacionJGBean bean = null;
-		if (res!=null && res.size()>0) {
+		if (res != null && res.size() > 0) {
 			bean = (FcsFacturacionJGBean) res.get(0);
 		}
-		
-		if (bean!=null) {
+
+		if (bean != null) {
 			// creo la nueva facturacion
 			bean.setIdFacturacion_regulariza(bean.getIdFacturacion());
 			nuevoIdFacturacion = this.getNuevoId(idInstitucion);
@@ -725,35 +724,34 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 			bean.setImporteTotal(new Double(0));
 			bean.setNombre(nombre);
 			bean.setRegularizacion(ClsConstants.DB_TRUE);
+			bean.setNombreFisico(null);
+			bean.setIdecomcola(null);
 			// la inserto
 			if (!this.insert(bean)) {
 				throw new SIGAException(this.getError());
 			}
 			
 			// inserto los grupos hito
-			
 			RowsContainer rc = null;
 			String consulta =	" SELECT IDINSTITUCION, IDFACTURACION, IDGRUPOFACTURACION, IDHITOGENERAL FROM FCS_FACT_GRUPOFACT_HITO " +
 								" WHERE IDINSTITUCION=" + idInstitucion + " AND IDFACTURACION="+idFacturacion;
 			try{
 				rc = this.find(consulta);
-				if (rc!=null) {
+				if (rc != null) {
 					FcsFactGrupoFactHitoAdm admGrupoHito = new FcsFactGrupoFactHitoAdm(this.usrbean);
-					if (rc.size()>0) {
-						for (int i = 0; i<rc.size(); i++){
+					if (rc.size() > 0) {
+						for (int i = 0; i < rc.size(); i++) {
 							Row fila = (Row) rc.get(i);
-							Hashtable registro = (Hashtable)fila.getRow();
-//							registro.put("FECHAMODIFICACION","SYSDATE");
-//							registro.put("USUMODIFICACION",this.usuModificacion);
-							registro.put("IDFACTURACION",nuevoIdFacturacion);
+							Hashtable registro = (Hashtable) fila.getRow();
+							registro.put("IDFACTURACION", nuevoIdFacturacion);
 							if (!admGrupoHito.insert(registro)) {
 								throw new SIGAException(this.getError());
 							}
 						}
 					}
 				}
-			}catch(Exception e){
-				throw new ClsExceptions (e, "Error al consultar grupos");
+			} catch (Exception e) {
+				throw new ClsExceptions(e, "Error al consultar grupos");
 			}
 
 			// inserto el estado
@@ -762,10 +760,8 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 			beanEstado.setIdFacturacion(nuevoIdFacturacion);
 			beanEstado.setIdInstitucion(new Integer(idInstitucion));
 			beanEstado.setFechaEstado("SYSDATE");
-			beanEstado.setIdOrdenEstado(1);//al inicio sera un uno ya que sera el primero
-//			beanEstado.setFechaMod("SYSDATE");
-//			beanEstado.setUsuMod(this.usuModificacion);
-			beanEstado.setIdEstadoFacturacion(new Integer(ESTADO_FACTURACION.ESTADO_FACTURACION_ABIERTA.getCodigo()));		
+			beanEstado.setIdOrdenEstado(1);// al inicio sera un uno ya que sera el primero
+			beanEstado.setIdEstadoFacturacion(new Integer(ESTADO_FACTURACION.ESTADO_FACTURACION_ABIERTA.getCodigo()));
 			if (!admEstado.insert(beanEstado)) {
 				throw new SIGAException(this.getError());
 			}
