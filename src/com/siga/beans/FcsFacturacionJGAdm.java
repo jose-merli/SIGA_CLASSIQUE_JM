@@ -713,21 +713,27 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 		}
 
 		if (bean != null) {
-			// creo la nueva facturacion
-			bean.setIdFacturacion_regulariza(bean.getIdFacturacion());
+			// creo la nueva facturacion 
+			FcsFacturacionJGBean regularizaBean = new FcsFacturacionJGBean();
 			nuevoIdFacturacion = this.getNuevoId(idInstitucion);
-			bean.setIdFacturacion(nuevoIdFacturacion);
-			bean.setImporteEJG(new Double(0));
-			bean.setImporteGuardia(new Double(0));
-			bean.setImporteOficio(new Double(0));
-			bean.setImporteSOJ(new Double(0));
-			bean.setImporteTotal(new Double(0));
-			bean.setNombre(nombre);
-			bean.setRegularizacion(ClsConstants.DB_TRUE);
-			bean.setNombreFisico(null);
-			bean.setIdecomcola(null);
+			regularizaBean.setIdFacturacion(nuevoIdFacturacion);
+			regularizaBean.setIdFacturacion_regulariza(bean.getIdFacturacion());
+			regularizaBean.setIdInstitucion(bean.getIdInstitucion());
+			regularizaBean.setFechaDesde(bean.getFechaDesde());
+			regularizaBean.setFechaHasta(bean.getFechaHasta());
+			regularizaBean.setNombre(nombre);
+			regularizaBean.setRegularizacion(ClsConstants.DB_TRUE);
+			regularizaBean.setPrevision(bean.getPrevision());
+		/** CR - en local esto no funciona, por tanto como es lo mismo se inserta a null 
+			regularizaBean.setImporteEJG(UtilidadesNumero.getDouble("0"));
+			regularizaBean.setImporteGuardia(UtilidadesNumero.getDouble("0"));
+			regularizaBean.setImporteOficio(UtilidadesNumero.getDouble("0"));
+			regularizaBean.setImporteSOJ(UtilidadesNumero.getDouble("0"));
+			regularizaBean.setImporteTotal(UtilidadesNumero.getDouble("0"));
+		**/			
+			Hashtable hashRegularizacion = this.beanToHashTable(regularizaBean);
 			// la inserto
-			if (!this.insert(bean)) {
+			if (!this.insert(hashRegularizacion)) {
 				throw new SIGAException(this.getError());
 			}
 			
