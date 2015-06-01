@@ -139,12 +139,13 @@
 	
 	 
 			//Asociada al boton GuardarCerrar
-			function accionGuardarCerrar() 
-			{		
-				if (validateRegularizacionForm(document.forms[0])) 
-				{
+			function accionGuardarCerrar(){		
+				sub();
+				if (validateRegularizacionForm(document.forms[0])){
 					document.forms[0].modo.value="insertar";
 					document.forms[0].submit();
+				}else{
+					fin();
 				}
 			}
 	
