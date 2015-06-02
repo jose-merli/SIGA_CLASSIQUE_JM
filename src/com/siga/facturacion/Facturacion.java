@@ -2257,8 +2257,15 @@ public class Facturacion {
 				    // Obtengo la peticion de compra
 				    PysCompraBean beanCompra = admCompra.obtenerCompraCertificado(idInstitucion, idSolicitudCertificado);
 				    
+					Hashtable<String,Object> hTipoIva = new Hashtable<String,Object>();
+					hTipoIva.put(PysTipoIvaBean.C_IDTIPOIVA, beanCompra.getIdTipoIva());
+					
+					PysTipoIvaAdm admTipoIva = new PysTipoIvaAdm(usr);
+					Vector<?> vTipoIva = admTipoIva.selectByPK(hTipoIva);
+					PysTipoIvaBean beanTipoIva = (PysTipoIvaBean) vTipoIva.firstElement();	
+				    
 				    // ANTES DE FACTURAR APUNTO EL IMPORTE TOTAL COMO IMPORTE ANTICIPADO
-				    double importe = UtilidadesNumero.redondea(beanCompra.getCantidad().intValue() * beanCompra.getImporteUnitario().doubleValue() * (1 + (beanCompra.getIdTipoIva().doubleValue() / 100)), 2);
+				    double importe = UtilidadesNumero.redondea(beanCompra.getCantidad().intValue() * beanCompra.getImporteUnitario().doubleValue() * (1 + (Float.valueOf(beanTipoIva.getValor()).doubleValue() / 100)), 2);
 				    beanCompra.setImporteAnticipado(new Double(importe));
 				    if (!admCompra.updateDirect(beanCompra)) {
 				        throw new ClsExceptions("Error al actualizar el importe anticipado: " + admCompra.getError());
