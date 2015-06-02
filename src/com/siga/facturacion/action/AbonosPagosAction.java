@@ -374,8 +374,11 @@ public class AbonosPagosAction extends MasterAction {
 			request.setAttribute("PAGOPENDIENTE", form.getPagoPendiente());
 			request.setAttribute("IDPERSONA", registro.get(FacAbonoBean.C_IDPERSONA));
 			
+			String sPagoJG = UtilidadesHash.getString(registro, FacAbonoBean.C_IDPAGOSJG);
+			boolean bPagosJG = sPagoJG!=null && !sPagoJG.equals("") && !sPagoJG.equals("null") && !sPagoJG.equals("0");
+			
 			CenCuentasBancariasAdm admCuentasBancarias = new CenCuentasBancariasAdm(this.getUserBean(request));
-			Vector<Hashtable<String,Object>> vCuentas = admCuentasBancarias.obtenerCuentasAbonos(form.getIdInstitucion(), UtilidadesHash.getString(registro, FacAbonoBean.C_IDPERSONA) , UtilidadesHash.getString(registro, FacAbonoBean.C_IDPAGOSJG));
+			Vector<Hashtable<String,Object>> vCuentas = admCuentasBancarias.obtenerCuentasAbonos(form.getIdInstitucion(), UtilidadesHash.getString(registro, FacAbonoBean.C_IDPERSONA), bPagosJG);
 			
 			if (vCuentas.size()==0)
 				throw new SIGAException("facturacion.abonos.error.noExisteCuenta");
@@ -1189,8 +1192,11 @@ public class AbonosPagosAction extends MasterAction {
 										abonosTratados++;
 								
 								} else {
+									Integer iPagosJG = bAbono.getIdPagosJG();
+									boolean bPagosJG = iPagosJG!=null && !iPagosJG.equals(0);
+									
 									CenCuentasBancariasAdm admCuentasBancarias = new CenCuentasBancariasAdm(this.getUserBean(request));
-									Vector<Hashtable<String,Object>> vCuentas = admCuentasBancarias.obtenerCuentasAbonos(idInstitucion, String.valueOf(bAbono.getIdPersona()), String.valueOf(bAbono.getIdPagosJG()));
+									Vector<Hashtable<String,Object>> vCuentas = admCuentasBancarias.obtenerCuentasAbonos(idInstitucion, String.valueOf(bAbono.getIdPersona()), bPagosJG);
 									
 									if (vCuentas.size() >0) {
 										if (vCuentas.size()>1) {
@@ -1567,10 +1573,12 @@ public class AbonosPagosAction extends MasterAction {
 			Vector entrada=adm.getAbono(idInstitucion,request.getParameter("idAbono").toString());
 			Hashtable registro=((Row)entrada.firstElement()).getRow();
 			String idPersona = UtilidadesHash.getString(registro, FacAbonoBean.C_IDPERSONA);
-			String idPagoJG = String.valueOf(Integer.parseInt(request.getParameter("idPagoJG")));
+			
+			Integer iPagosJG = Integer.parseInt(request.getParameter("idPagoJG"));
+			boolean bPagosJG = iPagosJG!=null && !iPagosJG.equals(0);
 			
 			CenCuentasBancariasAdm admCuentasBancarias = new CenCuentasBancariasAdm(this.getUserBean(request));
-			Vector<Hashtable<String,Object>> vCuentas = admCuentasBancarias.obtenerCuentasAbonos(idInstitucion, idPersona, idPagoJG);
+			Vector<Hashtable<String,Object>> vCuentas = admCuentasBancarias.obtenerCuentasAbonos(idInstitucion, idPersona, bPagosJG);
 			
 			JSONObject json = new JSONObject();
 			if(vCuentas.size()==0)

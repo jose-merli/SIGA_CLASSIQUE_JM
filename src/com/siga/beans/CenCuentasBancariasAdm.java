@@ -1240,11 +1240,11 @@ public class CenCuentasBancariasAdm extends MasterBeanAdmVisible {
 	 * Obtiene las lineas de devoluciones
 	 * @param institucion
 	 * @param idPersona
-	 * @param idPagoJG
+	 * @param bPagosJG
 	 * @return
 	 * @throws ClsExceptions
 	 */
-	public Vector<Hashtable<String,Object>> obtenerCuentasAbonos (String institucion, String idPersona, String idPagoJG) throws ClsExceptions {
+	public Vector<Hashtable<String,Object>> obtenerCuentasAbonos (String institucion, String idPersona, boolean bPagosJG) throws ClsExceptions {
 		Vector<Hashtable<String,Object>> vCuentas = new Vector<Hashtable<String,Object>>();
        try {
             String sql = "SELECT " + CenCuentasBancariasBean.C_IDCUENTA + " AS ID, " +
@@ -1253,7 +1253,7 @@ public class CenCuentasBancariasAdm extends MasterBeanAdmVisible {
 				" WHERE " + CenCuentasBancariasBean.C_IDINSTITUCION + " = " + institucion +
 					" AND " + CenCuentasBancariasBean.C_IDPERSONA + " = " + idPersona +					
 					" AND " + CenCuentasBancariasBean.C_FECHABAJA + " IS NULL" +
-					(idPagoJG!=null && !idPagoJG.equals("") && !idPagoJG.equals("null") ? " AND " + CenCuentasBancariasBean.C_ABONOSJCS + " = '1'" : " AND " + CenCuentasBancariasBean.C_ABONOCARGO + " IN ('A','T')") +
+					(bPagosJG ? " AND " + CenCuentasBancariasBean.C_ABONOSJCS + " = '1'" : " AND " + CenCuentasBancariasBean.C_ABONOCARGO + " IN ('A','T')") +
 				" ORDER BY 2";
             
 			vCuentas = this.selectGenerico(sql);
