@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Map;
 import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
@@ -30,6 +31,7 @@ import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.beans.AdmLenguajesAdm;
 import com.siga.beans.CenColegiadoAdm;
+import com.siga.beans.CenHistoricoAdm;
 import com.siga.beans.CenPersonaAdm;
 import com.siga.beans.ScsActuacionAsistenciaAdm;
 import com.siga.beans.ScsActuacionAsistenciaBean;
@@ -41,6 +43,9 @@ import com.siga.beans.ScsContrariosAsistenciaBean;
 import com.siga.beans.ScsDelitosAsistenciaAdm;
 import com.siga.beans.ScsDelitosAsistenciaBean;
 import com.siga.beans.ScsGuardiasColegiadoAdm;
+import com.siga.beans.ScsGuardiasTurnoBean;
+import com.siga.beans.ScsTipoAsistenciaColegioBean;
+import com.siga.beans.ScsTurnoBean;
 import com.siga.certificados.Plantilla;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
@@ -494,7 +499,7 @@ public class BusquedaAsistenciasLetradoAction extends MasterAction {
 	protected String borrar(ActionMapping mapping, MasterForm formulario,
 			HttpServletRequest request, HttpServletResponse response)
 			throws SIGAException  {
-
+		boolean esFichaColegial  = UtilidadesString.stringToBoolean(request.getParameter("esFichaColegial").toString());
 		HttpSession ses = request.getSession();
 		UsrBean usr 	= (UsrBean)ses.getAttribute("USRBEAN");
 		ScsAsistenciasAdm admAsistencia = new ScsAsistenciasAdm(this.getUserBean(request));
@@ -619,7 +624,23 @@ public class BusquedaAsistenciasLetradoAction extends MasterAction {
 							}
 						}
 					}
+					if(esFichaColegial){
+						StringBuffer motivo = new StringBuffer();
+						motivo.append(UtilidadesString.getMensajeIdioma(usr, "gratuita.generalDesigna.literal.asistencia"));
+						motivo.append(" ");
+						motivo.append(anio);
+						motivo.append("/");
+						motivo.append(numero);
+						motivo.append(". Registro eliminado");
+						
+						
 
+						CenHistoricoAdm admHis = new CenHistoricoAdm (usr);
+						boolean isInsertado = admHis.auditoriaColegiados(Long.valueOf((String)hashAsistencia.get(ScsAsistenciasBean.C_IDPERSONACOLEGIADO)),motivo.toString(), ClsConstants.TIPO_CAMBIO_HISTORICO_ASISTENCIAMODIFICACION ,hashAsistencia, 
+								hashAsistencia, null,new ArrayList<String>() ,new Hashtable<String, String>(), CenHistoricoAdm.ACCION_DELETE, usr.getLanguage(), false); 
+					}
+					
+					
 					if (result) {
 						request.setAttribute("mensaje","messages.deleted.success");
 						tx.commit();

@@ -1348,8 +1348,10 @@ public class CenHistoricoAdm extends MasterBeanAdministrador
 				descripcion.append("\n");
 				break;
 		}
-		
-		descripcion.append(getDescripcionClaveValor(objectHashtable, claves,ocultarClaveList,cambiarNombreSalidaHashtable,idioma));
+		if(accion!=ACCION_DELETE)
+			descripcion.append(getDescripcionClaveValor(objectHashtable, claves,ocultarClaveList,cambiarNombreSalidaHashtable,idioma));
+		else
+			descripcion.append(getDescripcionBorrado(objectHashtable,ocultarClaveList,cambiarNombreSalidaHashtable));
 		if(accion!=ACCION_UPDATE && descripcion.length()>4000)
 			throw new SIGAException("lA DESCRIPCION ES DEMASIADO LARGA. NO PUEDE LLEGAR HASTA AQUI");
 		
@@ -1368,6 +1370,33 @@ public class CenHistoricoAdm extends MasterBeanAdministrador
 		
 		
 	}
+	/**
+	 * @param objectHashtable
+	 * @return
+	 */
+	private String getDescripcionBorrado(Hashtable objectHashtable, List<String> ocultarClaveList, Hashtable<String,String> cambiarNombreSalidaHashtable) {
+		StringBuffer descripcion =  new StringBuffer();
+		Iterator ite = objectHashtable.keySet().iterator();
+		while (ite.hasNext()) {
+			String key = (String) ite.next();
+			if(!ocultarClaveList.contains(key)){
+				descripcion.append("  - ");
+				if(cambiarNombreSalidaHashtable!=null && cambiarNombreSalidaHashtable.containsKey(key))
+					descripcion.append(UtilidadesString.getPrimeraMayuscula(cambiarNombreSalidaHashtable.get(key)));
+				else
+					descripcion.append(UtilidadesString.getPrimeraMayuscula(key));
+				descripcion.append(": ");
+				String elemento = (String) objectHashtable.get(key);
+				descripcion.append(elemento);
+				descripcion.append("\n");
+				
+			}
+			
+		}
+		
+		return descripcion.toString();
+	}
+
 	private void recortarrCampoLargo(Hashtable objectHashtable, Hashtable originalObjectHashtable,String clave,int numCaracteresCortar){
 		//Vamos a ver cuanto tenemos que acortar proporcianalmente al nuevo o al viejo
 		String observaciones = (String)objectHashtable.get(clave);

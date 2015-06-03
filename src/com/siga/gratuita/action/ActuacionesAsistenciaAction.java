@@ -722,10 +722,63 @@ public class ActuacionesAsistenciaAction extends MasterAction {
 		
 		String forward="exception";
 		try {
-			
+			String action = (String) request.getServletPath();
+			boolean esFichaColegial = action.equalsIgnoreCase("/JGR_ActuacionAsistenciaLetrado.do");
 			BusinessManager bm = getBusinessManager();
 			AsistenciasService asistenciasService = (AsistenciasService)bm.getService(AsistenciasService.class);
+			Hashtable actuacionAsistenciaOriginalHashtable = null;
+			if(esFichaColegial){
+				Hashtable actuacionAsistenciaHashtable = new Hashtable();
+				actuacionAsistenciaHashtable.put(ScsActuacionAsistenciaBean.C_ANIO, actuacionAsistenciaFormEdicion.getAnio());
+				actuacionAsistenciaHashtable.put(ScsActuacionAsistenciaBean.C_NUMERO, actuacionAsistenciaFormEdicion.getNumero());
+				actuacionAsistenciaHashtable.put(ScsActuacionAsistenciaBean.C_IDINSTITUCION, actuacionAsistenciaFormEdicion.getIdInstitucion());
+				actuacionAsistenciaHashtable.put(ScsActuacionAsistenciaBean.C_IDACTUACION, actuacionAsistenciaFormEdicion.getIdActuacion());
+				ScsActuacionAsistenciaAdm scsActuacionAsistenciaAdm = new ScsActuacionAsistenciaAdm(usrBean);
+				Vector actuacionAsistenciaPKVector = scsActuacionAsistenciaAdm.selectByPK(actuacionAsistenciaHashtable);
+				ScsActuacionAsistenciaBean actuacionAsistenciaBean = (ScsActuacionAsistenciaBean) actuacionAsistenciaPKVector.get(0);
+
+				actuacionAsistenciaOriginalHashtable = scsActuacionAsistenciaAdm.beanToHashTable(actuacionAsistenciaBean);
+				
+
+			}
+			
 			asistenciasService.borrarActuacionAsistencia(actuacionAsistenciaFormEdicion, usrBean);
+			
+			if (esFichaColegial) {
+
+				CenHistoricoAdm cenHistoricoAdm = new CenHistoricoAdm(usrBean);
+				Hashtable historicoHashtable = new Hashtable();
+
+				StringBuffer motivo = new StringBuffer();
+				motivo.append(UtilidadesString.getMensajeIdioma(usrBean, "gratuita.generalDesigna.literal.asistencia"));
+				motivo.append(" ");
+				motivo.append(actuacionAsistenciaFormEdicion.getAnio());
+				motivo.append("/");
+				motivo.append(actuacionAsistenciaFormEdicion.getNumero());
+				motivo.append(". Actuación ");
+				motivo.append(actuacionAsistenciaFormEdicion.getIdActuacion());
+				motivo.append(". Registro Eliminado ");
+				historicoHashtable.put(CenHistoricoBean.C_MOTIVO, motivo.toString());
+			
+				try {
+					ScsAsistenciasAdm scsAsistenciaAdm = new ScsAsistenciasAdm(usrBean);
+//					Hashtable<String, Object> asistenciaOriginalHashtable = scsAsistenciaAdm.getHashAsistenciaOriginalParaHistorico(actuacionAsistenciaHashtable, false, usrBean);
+					// COMO NO ESTAMOS EN TRANSACCION CON LO DE ARRIBA , SI FALLA LA INSERCION DEL HISTORICO BORRAMOS LA ACTUACION
+					Hashtable<String, Object> asistenciaOriginalHashtable = scsAsistenciaAdm.getHashAsistenciaOriginalParaHistorico(actuacionAsistenciaOriginalHashtable, false, usrBean);
+					
+					boolean isInsertado = cenHistoricoAdm.auditoriaColegiados(Long.valueOf((String) asistenciaOriginalHashtable.get("IDPERSONACOLEGIADO")), 
+							motivo.toString(), ClsConstants.TIPO_CAMBIO_HISTORICO_ASISTENCIAALTAACTUACION, 
+							actuacionAsistenciaOriginalHashtable, actuacionAsistenciaOriginalHashtable, null, new ArrayList<String>() ,new Hashtable<String, String>(),  CenHistoricoAdm.ACCION_DELETE, usrBean.getLanguage(), false);
+
+					if (!isInsertado)
+						throw new Exception();
+				} catch (Exception e) {
+					throw new SIGAException("Error al insertar en histórico");
+				}
+
+			}
+			
+			
 			forward = exitoRefresco("messages.deleted.success",request);
 		} catch (Exception e) {
 			actuacionAsistenciaFormEdicion.setModo("abrir");
