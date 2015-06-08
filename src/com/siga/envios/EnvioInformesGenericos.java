@@ -2157,6 +2157,8 @@ public class EnvioInformesGenericos extends MasterReport {
 //							identificador.append("_");
 //							*/
 							identificador.append(i);
+							identificador.append("_");
+							identificador.append(k);
 							
 							for (int x = 0; x < regionUF.size(); x++) {
 								String idPersonaRegion = ((Hashtable)(regionUF.get(x))).get("IDPERSONAJG").toString();
