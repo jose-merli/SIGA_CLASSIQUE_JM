@@ -449,11 +449,9 @@ public class EnvioInformesGenericos extends MasterReport {
 				direcciones = enviosAdm.getDirecciones(
 						String.valueOf(idInstitucion), idPersona, "2");
 
-				CenPersonaAdm personaAdm = new CenPersonaAdm(usrBean);
 				Hashtable htPersona = new Hashtable();
 				htPersona.put(CenPersonaBean.C_IDPERSONA, idPersona);
-				CenPersonaBean persona = (CenPersonaBean) ((Vector) personaAdm
-						.selectByPK(htPersona)).get(0);
+			
 
 				if (direcciones != null && direcciones.size() > 0) {
 					Hashtable htDir = (Hashtable) direcciones.firstElement();
@@ -537,7 +535,6 @@ public class EnvioInformesGenericos extends MasterReport {
 				String[] lComunicacionesMesLetra = sComunicacionesMesLetra
 						.split("\n\r");
 				int k;
-				int p;
 				for (k = 0; k < lComunicaciones.length && k < 5; k++) {
 					fila.put("FECHA_" + (k + 1) + "COMUNICACION",
 							lComunicaciones[k]);
@@ -2118,10 +2115,8 @@ public class EnvioInformesGenericos extends MasterReport {
 						
 						
 						for (int k = 0; k < datosInformeEjg.size(); k++) {
-							
-
 							Hashtable datosInformeK = (Hashtable) datosInformeEjg.get(k);
-							
+							String idSolicitantePrinciapl = (String)datosInformeK.get("DEST_IDPERSONA");
 //							idioma =(String) datosInformeK.get("idioma");
 							idiomaExt =(String) datosInformeK.get("idiomaExt");
 							Vector regionUF = (Vector) datosInformeK.get("unidadfamiliar");
@@ -2137,6 +2132,7 @@ public class EnvioInformesGenericos extends MasterReport {
 							Hashtable htDatosInforme = new Hashtable();
 							htDatosInforme.put("row", datosInformeK);
 							htDatosInforme.put("unidadfamiliar", regionUF);
+							
 							htDatosInforme.put("conyuge", regionConyuge);
 							if(regionDefendido!=null)
 								htDatosInforme.put("defendido", regionDefendido);
@@ -2151,14 +2147,28 @@ public class EnvioInformesGenericos extends MasterReport {
 							identificador.append("_");
 							identificador.append(numero);
 							identificador.append("_");
-							// jbd // R1406_0080 
-							/*
-							identificador.append(idTipoEJG);
-							identificador.append("_");
-							*/
+							
+							
+//							identificador.append(vDocumentos.size());
+//							identificador.append("_");
+//							// jbd // R1406_0080 
+//							/*
+//							identificador.append(idTipoEJG);
+//							identificador.append("_");
+//							*/
 							identificador.append(i);
-							identificador.append("_");
-							identificador.append(k);
+							
+							for (int x = 0; x < regionUF.size(); x++) {
+								String idPersonaRegion = ((Hashtable)(regionUF.get(x))).get("IDPERSONAJG").toString();
+								if (idPersonaRegion!=null && idSolicitantePrinciapl!=null && idPersonaRegion.equalsIgnoreCase(idSolicitantePrinciapl)) {
+									identificador.append("_");
+									identificador.append(x);
+									break;
+								}
+								
+							}
+//							identificador.append(k);
+							
 
 							File fileDocumento = getInformeGenerico(
 									beanInforme, htDatosInforme, idiomaExt,
