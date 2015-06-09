@@ -2340,16 +2340,13 @@ public class Facturacion {
 			    	beanPeticionCompraSuscripcion = vPeticionCompraSuscripcion.get(0);
 			    }		    			
 			    
-			    if (idSolicitudCertificado==null) { // PRODUCTOS NO CERTIFICADOS
-			    	
-			    	// LOCALIZO LAS COMPRAS (SI NO EXISTEN LAS GENERO)
-			    	if (beanPeticionCompraSuscripcion.getIdEstadoPeticion().equals(new Integer(30))) { // Esta en estado baja		        
-			    		throw new SIGAException("messages.facturacionRapidaCompra.estadoBaja");		   
-			        
-			    	} else if (beanPeticionCompraSuscripcion.getIdEstadoPeticion().equals(new Integer(10))) { // Esta en estado pendiente. Hay que aprobarla		        
-			    		beanPeticionCompraSuscripcion = admPeticionCompraSuscripcion.aprobarCompras(vCompras);
-			    	}
-			    }
+		    	// LOCALIZO LAS COMPRAS (SI NO EXISTEN LAS GENERO)
+		    	if (beanPeticionCompraSuscripcion.getIdEstadoPeticion().equals(new Integer(30))) { // Esta en estado baja		        
+		    		throw new SIGAException("messages.facturacionRapidaCompra.estadoBaja");		   
+		        
+		    	} else if (beanPeticionCompraSuscripcion.getIdEstadoPeticion().equals(new Integer(10))) { // Esta en estado pendiente. Hay que aprobarla		        
+		    		beanPeticionCompraSuscripcion = admPeticionCompraSuscripcion.aprobarCompras(vCompras);
+		    	}
 
 			    // FACTURACION RAPIDA DESDE SERIE CANDIDATA (GENERACION)
 	        	FacFacturacionProgramadaBean programacion = this.procesarFacturacionRapidaCompras(beanPeticionCompraSuscripcion, vCompras, beanSerieCandidata);
