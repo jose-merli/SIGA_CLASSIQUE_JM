@@ -143,6 +143,8 @@
 			+ (String) request.getAttribute("bIncluirRegistrosConBajaLogica") + "&nombre=" + nombre + "&idInstitucion=" + idInstitucion
 			+ "&idPersona=" + idPersona.toString() + "&numero=" + numero + "&idInstitucion=" + idInstitucion + "&idInstUsuario="
 			+ idInstUsuario + "&accion=" + accion;
+	
+	String tipoFichaColegial ="";
 %>
 
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
@@ -174,11 +176,13 @@
 	localizacion="censo.fichaLetrado.facturacion.localizacion" />
 <%
 	} else if (path.equals("/JGR_AbonosClienteSJCS")) {
+		tipoFichaColegial = "SJCS";
 %>
 <siga:Titulo titulo="pestana.fichaCliente.justiciagratuita.pagos"
 	localizacion="censo.fichaCliente.sjcs.to.facturacion.localizacion" />
 <%
 	} else {
+		tipoFichaColegial = "FACT";
 %>
 <siga:TituloExt titulo="censo.fichaCliente.facturacion.abonos.cabecera"
 	localizacion="censo.fichaCliente.facturacion.abonos.localizacion" />
@@ -225,6 +229,7 @@
 				<html:hidden styleId="idPersona" property="idPersona" value="<%=idPersona.toString()%>"/>
 				<html:hidden styleId="idInstitucion" property="idInstitucion"  value="<%=idInstitucion%>"/>
 				<html:hidden styleId="accion" property="accion" value="<%=accion%>"/>
+				<html:hidden styleId="tipoFichaColegial" property="tipoFichaColegial" value="<%=tipoFichaColegial%>"/>
 				
 			<!-- RGG: cambio a formularios ligeros -->
 			<input type="hidden" id="actionModal" name="actionModal" value="">
@@ -455,7 +460,6 @@
 		}
 		function accionImprimir() {		
 			var idPago = "idPago"+1;
-			
 			if(document.getElementById(idPago)!=null &&  document.getElementById(idPago).value!=''){
 				document.AbonosClienteForm.modo.value = 'imprimir';
 				document.AbonosClienteForm.target = "submitArea";
