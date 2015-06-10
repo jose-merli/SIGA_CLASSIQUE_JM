@@ -611,16 +611,13 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 	 */
 
 	protected String exportar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, SIGAException {
-		
         Vector datos = new Vector();
-        
         CenPersonaBean beanPersona = new CenPersonaBean();
         Vector direccionesPersona = new Vector();
         Vector colegiacionesPersona = new Vector();
         Hashtable estadoColegial = new Hashtable();
         Row estadoColegialRw = new Row();
         Hashtable colegiacionHt = new Hashtable();
-        
         Vector vec = new Vector();
         Hashtable per = new Hashtable();
         formulario.setModo("abrir");
@@ -636,12 +633,10 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 			Hashtable tablaDatos = new Hashtable();
 			String idTipoPersona = null;
 			EnvEnviosAdm enviosAdm = new EnvEnviosAdm(user);
-			//enviosAdm.getNewIdEnvio(user);
-			//Vector resultadoBusqueda=form.getResultadoBusqueda();
-			int seleccionados = Integer.parseInt(form.getSeleccionados());
+
 			tablaDatos=this.datosPersonas(mapping, formulario, request, response);
 			int personas = (Integer)tablaDatos.get("numeroPersonas");
-	        for (int i = 0; i < seleccionados; i++) {
+	        for (int i = 0; i <= personas -1; i++) {
 	        	per=new Hashtable();
 	        	// Recuperamos los datos de la persona (una tabla hash inicialmente ideada para mostrarse en gestionarDuplicados.jsp)
 	        	datosPersona = (Hashtable) tablaDatos.get("persona"+i);
@@ -718,6 +713,7 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 	        	}
 	        	
 			}
+	        
 	        if(vec!=null)
 	        	datos.addAll(vec);
 	        String[] cabeceras = null;
@@ -737,11 +733,8 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 			request.setAttribute("cabeceras",cabeceras);
 			request.setAttribute("descripcion", "duplicados"+"_"+UtilidadesString.formatoFecha(new Date(),"yyyyMMddhhmmss"));
 						
-			
-		} 
-		catch (Exception e) { 
-			
-			throwExcp("facturacion.consultaMorosos.errorInformes", new String[] {"modulo.facturacion"}, e, null); 
+		} catch (Exception e) {
+			throwExcp("facturacion.consultaMorosos.errorInformes", new String[] { "modulo.facturacion" }, e, null);
 		}
 
 		return "generaExcel";
@@ -757,11 +750,7 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 	 * @return  String  Destino del action  
 	 * @exception  ClsExceptions  En cualquier caso de error
 	 */
-	protected Hashtable datosPersonas ( ActionMapping mapping, 		
-										MasterForm formulario, 
-										HttpServletRequest request, 
-										HttpServletResponse response) throws SIGAException
-	{
+	protected Hashtable datosPersonas(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		Vector similares = new Vector();
 		Vector colegiaciones = new Vector();
 		CenPersonaAdm admPersona = new CenPersonaAdm(this.getUserBean(request));
@@ -774,31 +763,24 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 		// Vamos a leer los datos de la bbdd para cargarlos en la ventana de consulta de colegiaciones 
 		try {
 			MantenimientoDuplicadosForm miFormulario = (MantenimientoDuplicadosForm)formulario;
-			//ArrayList clavesRegSeleccinados = (ArrayList) miFormulario.getRegistrosSeleccionados();
-			//aalg-----------
 			Vector vdatos=new Vector();
 			HashMap databackup = (HashMap) miFormulario.getDatosPaginador();
-			String seleccionados ="";
+			String conjuntoPersonasBusqueda ="";
 			PaginadorBind paginador = (PaginadorBind)databackup.get("paginador");
 			for (int i=1;i<=paginador.getNumeroPaginas();i++){
 				vdatos = paginador.obtenerPagina(i);
 				for (int j=0;j<vdatos.size();j++){
 					Hashtable hdatos = (Hashtable)vdatos.get(j);
-					seleccionados += "null||" + (String)hdatos.get("IDPERSONA") + ",";
+					conjuntoPersonasBusqueda += "null||" + (String)hdatos.get("IDPERSONA") + ",";
 				}
 			}
-			seleccionados = seleccionados.substring(0, seleccionados.length()-1);
+			conjuntoPersonasBusqueda = conjuntoPersonasBusqueda.substring(0, conjuntoPersonasBusqueda.length()-1);
 			
-			//aalg-----------
-			//String seleccionados = request.getParameter("registrosSeleccionados");
-			if(seleccionados == null||seleccionados.equalsIgnoreCase(""))
-				seleccionados = miFormulario.getSeleccion();
-			// Los seleccionados deberian ser 2, separados por comas
-			if (seleccionados != null && !seleccionados.equalsIgnoreCase("")) {
-				String[] registros = UtilidadesString.split(seleccionados, ",");
-				for (int i=0; i<registros.length;i++){
-					
-					Hashtable hashPersona = new Hashtable(); // Aqui meteremos todos los datos de la persona
+			if (conjuntoPersonasBusqueda != null && !conjuntoPersonasBusqueda.equalsIgnoreCase("")) {
+				String[] registros = UtilidadesString.split(conjuntoPersonasBusqueda, ",");
+				for (int i=0; i<registros.length;i++){					
+					// Aqui meteremos todos los datos de la persona
+					Hashtable hashPersona = new Hashtable(); 
 					
 					// Las claves de cada registro estan separadas por ||
 					String[] claves = UtilidadesString.split(registros[i], "||");
@@ -837,8 +819,6 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 								estado.getRow().put("FECHAESTADO", UtilidadesString.formatoFecha(estado.getRow().get("FECHAESTADO").toString(),ClsConstants.DATE_FORMAT_JAVA,ClsConstants.DATE_FORMAT_SHORT_SPANISH));
 								hashColegiacion.put("estadoColegiacion", estado);
 							}
-							//hashColegiacion.put("certificados", admCertificados.get);
-							
 							colegiacionesPersona.add(hashColegiacion);
 						}
 						hashPersona.put("datosColegiales", colegiacionesPersona);
@@ -859,8 +839,7 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 							dir.put("FECHAMODIFICACION", UtilidadesString.formatoFecha(dir.get("FECHAMODIFICACION").toString(),ClsConstants.DATE_FORMAT_JAVA,ClsConstants.DATE_FORMAT_SHORT_SPANISH));
 						
 						}
-						hashPersona.put("datosDirecciones", vDirecciones);
-						
+						hashPersona.put("datosDirecciones", vDirecciones);						
 						int cert = admCertificados.getNumeroCertificados("2000",idPersona);
 						
 					}else{
@@ -870,11 +849,9 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 					datos.put("persona"+i, hashPersona);
 					datos.put("numeroPersonas", i+1);
 				}
-				
 			}
-		}
-		catch (Exception e) {
-			throwExcp("messages.general.error",new String[] {"modulo.censo"},e,null);
+		} catch (Exception e) {
+			throwExcp("messages.general.error", new String[] { "modulo.censo" }, e, null);
 		}
 		return datos;
 	}

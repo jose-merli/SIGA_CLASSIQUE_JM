@@ -226,32 +226,18 @@
 	}
 
 	function accionExportar(){
-		
-		
-		
-		
-		if(document.getElementById('seleccionados') && document.getElementById('seleccionados').value>'100'){
-			 if(!confirm("Hay muchos registros. El proceso de exportación puede tardar varios minutos."))
+		sub();
+		if(<%=nRegistros%> > 100){
+			 if(!confirm("Hay muchos registros. El proceso de exportación puede tardar varios minutos. ¿Desea continuar?")){
+				 fin();
 				 return false;
-			
+			 }			
 		}
-			sub();
-			//seleccionarTodo();
-			// document.getElementById('seleccionados').value=<%=totalRegistros%>;
-			document.forms[0].modo.value="exportar";
 			
-			document.forms[0].target="submitArea";
-			//document.forms[0].submit();
-			
-			var res = ventaModalGeneral(document.forms[0].name,"P");
-			
-			
-			fin();
-			
-			
-			//document.getElementById('seleccionados').value=0;
-			//desmarcar();
-		
+		document.forms[0].modo.value="exportar";
+		document.forms[0].target="submitArea";
+	  	document.forms[0].submit();
+		fin();
 	}
 
 	function seleccionarTodo(){
