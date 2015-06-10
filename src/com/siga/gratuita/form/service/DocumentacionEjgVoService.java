@@ -139,41 +139,37 @@ public class DocumentacionEjgVoService implements VoUiService<DefinirDocumentaci
 		DefinirDocumentacionEJGForm definirDocumentacionEJGForm = new DefinirDocumentacionEJGForm();
 		definirDocumentacionEJGForm.setIdInstitucion(objectVo.getIdinstitucion().toString());
 		definirDocumentacionEJGForm.setAnio(objectVo.getAnio().toString());
-		
 		definirDocumentacionEJGForm.setIdTipoEJG(objectVo.getIdtipoejg().toString());
-		
 		definirDocumentacionEJGForm.setNumero(objectVo.getNumero().toString());
 		definirDocumentacionEJGForm.setIdDocumentacion(objectVo.getIddocumentacion().toString());
 		definirDocumentacionEJGForm.setIdDocumento(objectVo.getIddocumento().toString());
 		definirDocumentacionEJGForm.setIdTipoDocumento(objectVo.getIdtipodocumento().toString());
-		
-		
 		definirDocumentacionEJGForm.setIdPresentador(objectVo.getIdPresentador());
-		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-		if(objectVo.getFechaentrega()!=null && !objectVo.getFechaentrega().equals(""))
-			definirDocumentacionEJGForm.setFechaEntrega(sdf.format(objectVo.getFechaentrega()));
-		if(objectVo.getFechalimite()!=null && !objectVo.getFechalimite().equals(""))
-			definirDocumentacionEJGForm.setFechaLimite(sdf.format(objectVo.getFechalimite()));
-		if(objectVo.getRegentrada()!=null && !objectVo.getRegentrada().equals(""))
-			definirDocumentacionEJGForm.setRegEntrada(objectVo.getRegentrada());
-		if(objectVo.getRegsalida()!=null && !objectVo.getRegsalida().equals(""))
-			definirDocumentacionEJGForm.setRegSalida(objectVo.getRegsalida());
-		if(objectVo.getDocumentacion()!=null && !objectVo.getDocumentacion().equals(""))
-			definirDocumentacionEJGForm.setDocumentacion(objectVo.getDocumentacion());
 		
-		if(objectVo.getNumEjg()!=null && !objectVo.getNumEjg().equals(""))
+		if (objectVo.getFechaEntrega() != null && !objectVo.getFechaEntrega().equals(""))
+			definirDocumentacionEJGForm.setFechaEntrega(objectVo.getFechaEntrega());
+		if (objectVo.getFechaLimite() != null && !objectVo.getFechaLimite().equals(""))
+			definirDocumentacionEJGForm.setFechaLimite(objectVo.getFechaLimite());
+		if (objectVo.getRegentrada() != null && !objectVo.getRegentrada().equals(""))
+			definirDocumentacionEJGForm.setRegEntrada(objectVo.getRegentrada());
+		if (objectVo.getRegsalida() != null && !objectVo.getRegsalida().equals(""))
+			definirDocumentacionEJGForm.setRegSalida(objectVo.getRegsalida());
+		if (objectVo.getDocumentacion() != null && !objectVo.getDocumentacion().equals(""))
+			definirDocumentacionEJGForm.setDocumentacion(objectVo.getDocumentacion());
+
+		if (objectVo.getNumEjg() != null && !objectVo.getNumEjg().equals(""))
 			definirDocumentacionEJGForm.setNumEjg(objectVo.getNumEjg());
-		if(objectVo.getIdfichero()!=null && !objectVo.getIdfichero().equals("")){
+		
+		if (objectVo.getIdfichero() != null && !objectVo.getIdfichero().equals("")) {
+			SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 			definirDocumentacionEJGForm.setIdFichero(objectVo.getIdfichero().toString());
 			definirDocumentacionEJGForm.setExtensionArchivo(objectVo.getExtensionArchivo());
 			definirDocumentacionEJGForm.setDirectorioArchivo(objectVo.getDirectorioArchivo());
 			definirDocumentacionEJGForm.setNombreArchivo(objectVo.getNombreArchivo());
 			definirDocumentacionEJGForm.setDescripcionArchivo(objectVo.getDescripcionArchivo());
-			
 			definirDocumentacionEJGForm.setFechaArchivo(sdf.format(objectVo.getFechaArchivo()));
 		}
-		
-			
+
 		return definirDocumentacionEJGForm;
 	}
 
