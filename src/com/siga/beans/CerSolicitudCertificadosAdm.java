@@ -1585,7 +1585,7 @@ public class CerSolicitudCertificadosAdm extends MasterBeanAdministrador {
 				hDatos.put("LETRADO", letrado);
 				
 				String cliente = CenClienteAdm.getEsCliente(sIdPersona, sIdInstitucion);
-				hDatos.put("CLIENTE", cliente);
+				hDatos.put("ESCLIENTE", cliente);
 				
 				String estadoSolicitud = UtilidadesHash.getString(hDatos, "ESTADOSOLICITUD");
 				estadoSolicitud = UtilidadesMultidioma.getDatoMaestroIdioma(estadoSolicitud, this.usrbean);

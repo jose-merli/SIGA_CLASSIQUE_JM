@@ -415,7 +415,7 @@
 		  		String idInstitucionSol = UtilidadesHash.getString(hDatos, CerSolicitudCertificadosBean.C_IDINSTITUCION_SOL);
 		  		boolean bSolicitudColegio = idInstitucionSol!=null && !idInstitucionSol.equals(CerSolicitudCertificadosAdm.IDCGAE) && !idInstitucionSol.substring(0,2).equals("30");
 		  		
-		  		String sCliente = UtilidadesHash.getString(hDatos, "CLIENTE");
+		  		String sCliente = UtilidadesHash.getString(hDatos, "ESCLIENTE");
 		  		boolean esCliente = sCliente!=null && sCliente.equalsIgnoreCase("S");
 		  		
 				FilaExtElement[] elems = new FilaExtElement[8];					
