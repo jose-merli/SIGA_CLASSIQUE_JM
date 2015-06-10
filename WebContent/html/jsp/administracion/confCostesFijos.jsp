@@ -75,7 +75,7 @@
 					importeCosteFijo = importeCosteFijo.replace(",", ".");
 					
 					String vCheck = idTipoAsist + "||" + idTipoAct;
-					boolean isChecked = (importeCosteFijo!=null && !importeCosteFijo.equals("") && !importeCosteFijo.equals("0"));
+					boolean isChecked = (importeCosteFijo!=null && !importeCosteFijo.equals(""));
 %>		
 				
 					<siga:FilaConIconos fila='<%=""+i%>' botones="false" visibleBorrado="false" visibleConsulta="false" visibleEdicion="false" pintarEspacio="no" clase="listaNonEdit">			
@@ -123,51 +123,11 @@
 	<iframe name="submitArea" src="<html:rewrite page='/html/jsp/general/blank.jsp'/>" style="display: none"></iframe>
 
 	<script language="javascript">
-		function convertirAFormato(numero){
-			numero = numero.trim();
-			while (numero.indexOf(" ",0)>=0) {
-				numero = numero.replace(" ","");
-			}		
+		function tieneError (valorFormateado) {
+			if (valorFormateado==null || valorFormateado=="")				
+				return true;			
 			
-			while (numero.indexOf(",",0)>=0) {
-				numero = numero.replace(",",".");
-			}				
-			
-			while (numero.indexOf(".",0)>=0 && numero.indexOf(".",numero.indexOf(".",0)+1)>=0) {
-				numero = numero.replace(".", "");
-			}  			
-				
-			var numeroNumber = new Number(numero);
-			
-			if (isNaN(numeroNumber)) {
-				return "0";
-			}
-			
-			return numero;	
-		}		
-	
-		function errorValidarPrecio (valor) {
-			// No es valido si es nulo
-			// No es valido si no tiene longitud
-			// No es valido si tiene blancos
-			// No es valido si no es numero
-			// No es valido si es menor o igual que cero
-			// No es valido si tiene mas de dos decimales
-			// No es valido si tiene mas de ocho numeros de la parte entera
-			if (valor==null || valor.value==null || valor.value=='' || valor.value.indexOf(" ")!=-1)				
-				return true;
-				
-			var valorFormateado = valor.value;
-			
-			while (valorFormateado.indexOf(",",0)>=0) {
-				valorFormateado = valorFormateado.replace(",",".");
-			}				
-			
-			while (valorFormateado.indexOf(".",0)>=0 && valorFormateado.indexOf(".",valorFormateado.indexOf(".",0)+1)>=0) {
-				valorFormateado = valorFormateado.replace(".", "");
-			}  	
-							
-			if (isNaN(valorFormateado) || eval(valorFormateado)<=0)
+			if (isNaN(valorFormateado) || eval(valorFormateado)<0)
 				return true;	
 				
 			var indiceSimboloDecimal = valorFormateado.indexOf(".");
@@ -187,13 +147,60 @@
 			}
 			
 			return false;
+		}
+	
+		function convertirAFormato(numero){
+			numero = numero.trim();
+			while (numero.indexOf(" ",0)>=0) {
+				numero = numero.replace(" ","");
+			}		
+			
+			while (numero.indexOf(",",0)>=0) {
+				numero = numero.replace(",",".");
+			}				
+			
+			while (numero.indexOf(".",0)>=0 && numero.indexOf(".",numero.indexOf(".",0)+1)>=0) {
+				numero = numero.replace(".", "");
+			}  			
+			
+			if (tieneError(numero)) {
+				return -1;
+			}
+			
+			return numero;	
+		}		
+	
+		function errorValidarPrecio (valor) {
+			// No es valido si es nulo
+			// No es valido si no tiene longitud
+			// No es valido si no es numero
+			// No es valido si es menor que cero
+			// No es valido si tiene mas de dos decimales
+			// No es valido si tiene mas de ocho numeros de la parte entera
+			if (valor==null || valor.value==null || valor.value=='')				
+				return true;					
+				
+			var valorFormateado = valor.value;
+			
+			while (valorFormateado.indexOf(" ",0)>=0) {
+				valorFormateado = valorFormateado.replace(" ","");
+			}				
+			
+			while (valorFormateado.indexOf(",",0)>=0) {
+				valorFormateado = valorFormateado.replace(",",".");
+			}				
+			
+			while (valorFormateado.indexOf(".",0)>=0 && valorFormateado.indexOf(".",valorFormateado.indexOf(".",0)+1)>=0) {
+				valorFormateado = valorFormateado.replace(".", "");
+			}  	
+			
+			return tieneError(valorFormateado);
 		}			
 	
 		function validarPrecioOnBlur(valor) {
  			if (errorValidarPrecio(valor)) {
 				var mensaje = "<siga:Idioma key='administracion.catalogos.costesFijos.importe'/> <siga:Idioma key='messages.campoNoCorrecto.error'/>";
 				alert (mensaje);   
-				valor.focus();
 			}	
 		} 	
 				
@@ -214,7 +221,7 @@
 				if (checks[i].checked) {
 					var importe = jQuery("#importeCosteFijo_" + checks[i].id).val();
 					importe = convertirAFormato(importe);
-					if (importe<=0) {						
+					if (importe<0) {						
 						var mensaje = '<siga:Idioma key="administracion.catalogos.costesFijos.error.importe"/>';
 						alert(mensaje);
 						fin();
