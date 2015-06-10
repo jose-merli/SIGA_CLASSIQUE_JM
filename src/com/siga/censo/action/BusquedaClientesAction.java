@@ -1754,25 +1754,18 @@ public class BusquedaClientesAction extends MasterAction {
 	 * @exception  ClsExceptions  En cualquier caso de error
 	 */	
 	
-	public String tagBusquedaPersona ( ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException 
-	{
-		String select="";
-		String tipo="";
-		String nif="";
-//		String ncolegiado="";
+	public String tagBusquedaPersona(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+		String select = "";
+		String tipo = "";
+		String nif = "";
 		UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");
-
 		BusquedaClientesForm miForm = (BusquedaClientesForm) formulario;
 		CenClienteAdm clienteAdm = new CenClienteAdm(user);
-		Vector resultado=new Vector();
-		//if (request.getAttribute("tipo")!=null){
-        	tipo=miForm.getTipoBus();
-        //}
-        //if (request.getAttribute("nif")!=null){
-        	nif=miForm.getNumeroNif();
-        	if(nif!=null)
-        		nif = nif.trim();
-        //}
+		Vector resultado = new Vector();
+		tipo = miForm.getTipoBus();
+		nif = miForm.getNumeroNif();
+		if (nif != null)
+			nif = nif.trim();
 		
 		if(tipo.equals("colegiado")){
 			select="Select cl.idpersona, p.nombre, p.apellidos1, p.apellidos2, "+
@@ -1783,53 +1776,49 @@ public class BusquedaClientesAction extends MasterAction {
 					" where cl.idpersona = p.idpersona"+
 					" and cl.idpersona = c.idpersona"+
 					" and cl.idinstitucion = c.idinstitucion";
-					boolean esComision = user.isComision();
-					boolean esComisionMultiple = user.getInstitucionesComision()!=null &&user.getInstitucionesComision().length>1;
-				
-					if(esComision && esComisionMultiple){
-						select += " and c.idinstitucion in (";
-						for (int i = 0; i < user.getInstitucionesComision().length; i++) {
-							select += user.getInstitucionesComision()[i];
-							if(i!=user.getInstitucionesComision().length-1)
-								select += ", ";
-							
-						}
-						select += " )";
-						
-					}else{
-						select += " and c.idinstitucion="+user.getLocation();
-					}
-				
-			
+			boolean esComision = user.isComision();
+			boolean esComisionMultiple = user.getInstitucionesComision() != null && user.getInstitucionesComision().length > 1;
+
+			if (esComision && esComisionMultiple) {
+				select += " and c.idinstitucion in (";
+				for (int i = 0; i < user.getInstitucionesComision().length; i++) {
+					select += user.getInstitucionesComision()[i];
+					if (i != user.getInstitucionesComision().length - 1)
+						select += ", ";
+				}
+				select += " )";
+
+			} else {
+				select += " and c.idinstitucion=" + user.getLocation();
+			}
+
+			select += " and f_siga_calculoncolegiado(cl.idinstitucion,cl.idpersona) ='"+nif+"'"+ 
+					  " and rownum<2"+
+					  " order by residente desc, ejerciente desc";
 					
-					
-					select += " and f_siga_calculoncolegiado(cl.idinstitucion,cl.idpersona) ='"+nif+"'"+ 
-					" and rownum<2"+
-					" order by residente desc, ejerciente desc";
 		}else if(tipo.equals("personas")){
 			select="Select cl.idpersona, p.nombre, p.apellidos1, p.apellidos2, " +
-					" decode(f_siga_gettipocliente(cl.idpersona,cl.idinstitucion,sysdate),20,1,0) as ejerciente," +
-					" c.situacionresidente as residente," +
+					" '-' as ejerciente," +
+					" '-' as residente," +
 					" f_siga_calculoncolegiado(cl.idinstitucion,cl.idpersona) as ncolegiado" +
-					" from cen_colegiado c, cen_cliente cl, cen_persona p" +
+					" from cen_cliente cl, cen_persona p" +
 					" where cl.idpersona = p.idpersona" +
-					" and cl.idpersona = c.idpersona" +
-					//" and cl.idinstitucion = c.idinstitucion" +
-					" and cl.idinstitucion="+user.getLocation()+
 					" and p.nifcif='"+nif+"'"+
-					" and rownum<2" +
-					" order by residente desc, ejerciente desc";			
+					" and rownum<2" ;
 		}
+		
 		try {
 			resultado = clienteAdm.selectGenerico(select);
-			request.setAttribute("RESULTADO",resultado);
+			request.setAttribute("RESULTADO", resultado);
 
-		} catch (Exception  e) {
-			throwExcp("messages.general.error",new String[] {"tagBusquedaPersonas"},e,null);
+		} catch (Exception e) {
+			throwExcp("messages.general.error", new String[] { "tagBusquedaPersonas" }, e, null);
 		}
 
 		return "buscarPersonas";
-	}	
+	}
+	
+	
 	protected String generaExcel(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, SIGAException {
 		
 		
