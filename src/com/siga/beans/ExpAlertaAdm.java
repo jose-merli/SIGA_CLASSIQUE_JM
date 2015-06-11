@@ -384,7 +384,7 @@ public class ExpAlertaAdm extends MasterBeanAdministrador {
     	return datos;
     }
 
-    public boolean insertarAlerta(ExpExpedienteBean expBean, String texto,String longitudNumEjg) throws ClsExceptions 
+    public boolean insertarAlerta(ExpExpedienteBean expBean, String texto) throws ClsExceptions 
 	{
 		try{	
     		ExpAlertaBean alertaBean = new ExpAlertaBean();
@@ -413,7 +413,7 @@ public class ExpAlertaAdm extends MasterBeanAdministrador {
 			
 	        if (this.insert(alertaBean)){
 	        	if(tipoExpedienteBean.getEnviarAvisos()!=null && tipoExpedienteBean.getEnviarAvisos().intValue()==Integer.parseInt(ClsConstants.DB_TRUE)){
-	        		EnvioInformesGenericos envio = new EnvioInformesGenericos(longitudNumEjg);
+	        		EnvioInformesGenericos envio = new EnvioInformesGenericos();
 	        		envio.enviarAvisoAlerta(tipoExpedienteBean,alertaBean, this.usrbean);
 	        	}
 	        	return true;

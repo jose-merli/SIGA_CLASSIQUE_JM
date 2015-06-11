@@ -872,7 +872,7 @@ public class DefinirEnviosAction extends MasterAction {
 				fechaProg += " " + new Date().getHours() + ":" + new Date().getMinutes() + ":" + new Date().getSeconds();
 
 				tx.begin();
-				EnvioInformesGenericos envioInformesGenericos = new EnvioInformesGenericos((String) request.getSession().getAttribute(PARAMETRO.LONGITUD_CODEJG.toString()));
+				EnvioInformesGenericos envioInformesGenericos = new EnvioInformesGenericos();
 				if (form.getIdTipoInforme().equalsIgnoreCase(EnvioInformesGenericos.comunicacionesDesigna)){
 					envioInformesGenericos.gestionarComunicacionDesignas(form,  request.getLocale(), userBean);
 					isEnvioBatch = envioInformesGenericos.isEnvioBatch();
@@ -2301,7 +2301,7 @@ public class DefinirEnviosAction extends MasterAction {
 			form.setFechaProgramada(sdf.format(Calendar.getInstance().getTime()));
 			form.setNombre(TipoIntercambioEnum.ICA_SGP_ENV_SOL_SUSP_PROC.getDescripcion().split(":")[1]);
 			form.setIdTipoInforme((String)result.get("IDTIPOINFORME"));
-			EnvioInformesGenericos envioInformesGenericos = new EnvioInformesGenericos((String) request.getSession().getAttribute(PARAMETRO.LONGITUD_CODEJG.toString()));
+			EnvioInformesGenericos envioInformesGenericos = new EnvioInformesGenericos();
 			envioInformesGenericos.gestionarComunicacionDesignas(form,  request.getLocale(), usr);
 			boolean isEnvioBatch = envioInformesGenericos.isEnvioBatch();
 			if(isEnvioBatch){

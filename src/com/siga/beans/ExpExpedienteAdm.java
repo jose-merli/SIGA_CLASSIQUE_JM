@@ -1586,7 +1586,7 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 						    	longitudNumEjg = longitudNumEjgHashtable.get(fila1.getString("IDINSTITUCION"));
 						    }
 					        
-					        if (!cambioEstadoAutomatico(expBean,longitudNumEjg)) {
+					        if (!cambioEstadoAutomatico(expBean)) {
 					            throw new SIGAException("1.No se ha cambiado el estado. "+this.getError());
 					        }
 					        ClsLogging.writeFileLog("1.Cambio de estado.",7);
@@ -1648,23 +1648,7 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 						
 						
 						
-					    if(!longitudNumEjgHashtable.containsKey(fila1.getString("IDINSTITUCION"))){
-							GenParametros genParametros = new GenParametros();
-							genParametros.setIdinstitucion(new Short(fila1.getString("IDINSTITUCION")));
-							genParametros.setModulo(MODULO.SCS.toString());
-							genParametros.setParametro(PARAMETRO.LONGITUD_CODEJG.toString());
-							genParametros =  genParametrosService.getGenParametroInstitucionORvalor0(genParametros);
-							if (genParametros != null && genParametros.getValor() != null) {
-								longitudNumEjg = genParametros.getValor();
-							}
-							longitudNumEjgHashtable.put(fila1.getString("IDINSTITUCION"), longitudNumEjg);
-					    }else{
-					    	longitudNumEjg = longitudNumEjgHashtable.get(fila1.getString("IDINSTITUCION"));
-					    }
-					    
-						
-						
-				        if (!alertaAdm.insertarAlerta(expBean,UtilidadesString.getMensajeIdioma(this.usrbean,"expedientes.alertasyanotaciones.mensajes.expedienteCaducado"),longitudNumEjg)) {
+				        if (!alertaAdm.insertarAlerta(expBean,UtilidadesString.getMensajeIdioma(this.usrbean,"expedientes.alertasyanotaciones.mensajes.expedienteCaducado"))) {
 				            throw new ClsExceptions("2.Error al insertar alarma. "+alertaAdm.getError());
 				        }
 				        ClsLogging.writeFileLog("2.Alerta insertada.",7);
@@ -1730,7 +1714,7 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 					    }else{
 					    	longitudNumEjg = longitudNumEjgHashtable.get(fila1.getString("IDINSTITUCION"));
 					    }
-				        if (!alertaAdm.insertarAlerta(expBean,UtilidadesString.getMensajeIdioma(cenInstitucionBean.getIdLenguaje(),"expedientes.alertasyanotaciones.mensajes.estadoFinal") + " ("+fila1.getString("NOMBRE")+")",longitudNumEjg)) {
+				        if (!alertaAdm.insertarAlerta(expBean,UtilidadesString.getMensajeIdioma(cenInstitucionBean.getIdLenguaje(),"expedientes.alertasyanotaciones.mensajes.estadoFinal") + " ("+fila1.getString("NOMBRE")+")")) {
 				            throw new ClsExceptions("3.Error al insertar alarma. "+alertaAdm.getError());
 				        }
 				        ClsLogging.writeFileLog("3.Alerta insertada.",7);
@@ -1851,7 +1835,7 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 						    }else{
 						    	longitudNumEjg = longitudNumEjgHashtable.get(fila1.getString("IDINSTITUCION"));
 						    }
-							if (!alertaAdm.insertarAlerta(expBean,UtilidadesString.getMensajeIdioma(cenInstitucionBean.getIdLenguaje(),"expedientes.alertasyanotaciones.mensajes.antelacionFase",new String[] {GstDate.getFormatedDateShort("ES",fila1.getString("FECHAFINALFASE"))}) + " ("+fila1.getString("NOMBRE")+")",longitudNumEjg)) {
+							if (!alertaAdm.insertarAlerta(expBean,UtilidadesString.getMensajeIdioma(cenInstitucionBean.getIdLenguaje(),"expedientes.alertasyanotaciones.mensajes.antelacionFase",new String[] {GstDate.getFormatedDateShort("ES",fila1.getString("FECHAFINALFASE"))}) + " ("+fila1.getString("NOMBRE")+")")) {
 					            throw new ClsExceptions("5.Error al insertar alarma. "+alertaAdm.getError());
 					        }
 					        ClsLogging.writeFileLog("5.Alerta insertada.",7);
@@ -1936,7 +1920,7 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 						    }else{
 						    	longitudNumEjg = longitudNumEjgHashtable.get(fila1.getString("IDINSTITUCION"));
 						    }
-							if (!alertaAdm.insertarAlerta(expBean,UtilidadesString.getMensajeIdioma(cenInstitucionBean.getIdLenguaje(),"expedientes.alertasyanotaciones.mensajes.aviso6")+" "+GstDate.getFormatedDateShort("ES",fila1.getString("FECHAFINALESTADO"))+". ("+fila1.getString("NOMBRE")+")",longitudNumEjg)) {
+							if (!alertaAdm.insertarAlerta(expBean,UtilidadesString.getMensajeIdioma(cenInstitucionBean.getIdLenguaje(),"expedientes.alertasyanotaciones.mensajes.aviso6")+" "+GstDate.getFormatedDateShort("ES",fila1.getString("FECHAFINALESTADO"))+". ("+fila1.getString("NOMBRE")+")")) {
 					            throw new ClsExceptions("6.Error al insertar alarma. "+alertaAdm.getError());
 					        }
 					        ClsLogging.writeFileLog("6.Alerta insertada.",7);
@@ -2004,7 +1988,7 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 						    	longitudNumEjg = longitudNumEjgHashtable.get(fila1.getString("IDINSTITUCION"));
 						    }
 							
-							if (!alertaAdm.insertarAlerta(expBean,UtilidadesString.getMensajeIdioma(cenInstitucionBean.getIdLenguaje(),"expedientes.alertasyanotaciones.mensajes.aviso7")+" "+GstDate.getFormatedDateShort("ES",fila1.getString("FECHACADUCIDAD"))+".", longitudNumEjg)) {
+							if (!alertaAdm.insertarAlerta(expBean,UtilidadesString.getMensajeIdioma(cenInstitucionBean.getIdLenguaje(),"expedientes.alertasyanotaciones.mensajes.aviso7")+" "+GstDate.getFormatedDateShort("ES",fila1.getString("FECHACADUCIDAD"))+".")) {
 					            throw new ClsExceptions("7.Error al insertar alarma. "+alertaAdm.getError());
 					        }
 					        ClsLogging.writeFileLog("7.Alerta insertada.",7);
@@ -2033,7 +2017,7 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 		}
 	}
 	
-	public boolean cambioEstadoAutomatico(ExpExpedienteBean expBean, String longitudNumEjg) throws ClsExceptions{
+	public boolean cambioEstadoAutomatico(ExpExpedienteBean expBean) throws ClsExceptions{
 	    
 	    boolean resultado = true;
 	    
@@ -2092,7 +2076,7 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 				        	plazoAdm.establecerFechaFinal(expBean);
 				        }catch(Exception e){
 				        	expBean.setFechaFinalEstado(null);
-				        	alertaAdm.insertarAlerta(expBean,"Se ha anulado la fecha final del estado",longitudNumEjg);
+				        	alertaAdm.insertarAlerta(expBean,"Se ha anulado la fecha final del estado");
 				        }
 
 				        cambioEstado(expBean,expEstOld,expEstNew,true);

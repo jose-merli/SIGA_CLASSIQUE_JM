@@ -505,7 +505,7 @@ public class ExpSeguimientoAction extends MasterAction {
 		    		CenInstitucionBean instBean = (CenInstitucionBean) instAdm.select(hInst).elementAt(0);
 		    		try{
 		    			
-		    			alertaAdm.insertarAlerta(expBean,instBean.getAbreviatura()+" ha anhadido una anotación nueva",longitudNumEjg);
+		    			alertaAdm.insertarAlerta(expBean,instBean.getAbreviatura()+" ha anhadido una anotación nueva");
 		    		}catch(Exception e){
 		    			throw new ClsExceptions(e,"Error al insertar una alerta"); 
 		    		}
@@ -522,7 +522,7 @@ public class ExpSeguimientoAction extends MasterAction {
 		    	if (taBean.getMensaje()!=null && !taBean.getMensaje().equals("")){
 		    		try{
 		    			
-		    			alertaAdm.insertarAlerta(expBean,taBean.getMensaje(),longitudNumEjg);
+		    			alertaAdm.insertarAlerta(expBean,taBean.getMensaje());
 		    		}catch(Exception e){
 		    			throw new ClsExceptions(e,"Error al insertar una alerta"); 
 		    		}

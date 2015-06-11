@@ -113,7 +113,7 @@ public class EntradaEnviosAction extends MasterAction {
 			BusinessManager businessManager =  BusinessManager.getInstance();
 			EntradaEnviosService entradaEnviosService = (EntradaEnviosService) businessManager.getService(EntradaEnviosService.class);
 			EnvEntradaEnviosWithBLOBs entradaEnviosWithBLOBs = entradaEnviosService.getEntradaEnviosWithBlobs(entradaEnviosForm);
-			EnvioInformesGenericos informe = new EnvioInformesGenericos((String) request.getSession().getAttribute(PARAMETRO.LONGITUD_CODEJG.toString()));
+			EnvioInformesGenericos informe = new EnvioInformesGenericos();
 			AdmInformeBean infBean = new AdmInformeBean();
 			File xslTransform = null;
 			infBean.setDirectorio("sigp_ca");
@@ -371,7 +371,7 @@ public class EntradaEnviosAction extends MasterAction {
 			definirEnviosForm.setFechaProgramada(sdf.format(Calendar.getInstance().getTime()));
 			definirEnviosForm.setNombre(TipoIntercambioEnum.ICA_SGP_ENV_SOL_SUSP_PROC.getDescripcion().split(":")[1]);
 			definirEnviosForm.setIdTipoInforme((String)result.get("IDTIPOINFORME"));
-			EnvioInformesGenericos envioInformesGenericos = new EnvioInformesGenericos((String) request.getSession().getAttribute(PARAMETRO.LONGITUD_CODEJG.toString()));
+			EnvioInformesGenericos envioInformesGenericos = new EnvioInformesGenericos();
 			envioInformesGenericos.gestionarComunicacionDesignas(definirEnviosForm,  request.getLocale(), usr);
 
 			SIGASvlProcesoAutomaticoRapido.NotificarAhora(SIGASvlProcesoAutomaticoRapido.procesoGeneracionEnvio);

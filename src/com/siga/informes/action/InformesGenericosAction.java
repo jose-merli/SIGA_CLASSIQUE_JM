@@ -136,7 +136,7 @@ public class InformesGenericosAction extends MasterAction {
 			UsrBean usr = this.getUserBean(request);
 			//Obtenemos el formulario y sus datos:
 			InformesGenericosForm miform = (InformesGenericosForm)formulario;
-			EnvioInformesGenericos envioInformesGenericos = new EnvioInformesGenericos((String) request.getSession().getAttribute(PARAMETRO.LONGITUD_CODEJG.toString()));
+			EnvioInformesGenericos envioInformesGenericos = new EnvioInformesGenericos();
 			File ficheroSalida = null;
 			Vector informesRes = new Vector(); 
 			// Obtiene del campo idInforme los ids separados por ## y devuelve sus beans
@@ -198,7 +198,7 @@ public class InformesGenericosAction extends MasterAction {
 	protected String generaInfPersonalizableFacJG (ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) 
 	throws SIGAException, ClsExceptions{
 		UsrBean usr = this.getUserBean(request);
-		EnvioInformesGenericos envioInformesGenericos = new EnvioInformesGenericos((String) request.getSession().getAttribute(PARAMETRO.LONGITUD_CODEJG.toString()));
+		EnvioInformesGenericos envioInformesGenericos = new EnvioInformesGenericos();
 		InformesGenericosForm miform = (InformesGenericosForm) formulario;
 		Vector informesList = envioInformesGenericos.getPlantillasInforme(miform.getIdInforme(),"##",usr);
 		
@@ -250,7 +250,7 @@ public class InformesGenericosAction extends MasterAction {
 		}
 		boolean isAEnviar =  miForm.getEnviar()!=null && miForm.getEnviar().equals(ClsConstants.DB_TRUE);
 		boolean isADescargar =  miForm.getDescargar()!=null && miForm.getDescargar().equals(ClsConstants.DB_TRUE);
-		EnvioInformesGenericos informeGenerico = new EnvioInformesGenericos((String) request.getSession().getAttribute(PARAMETRO.LONGITUD_CODEJG.toString()));
+		EnvioInformesGenericos informeGenerico = new EnvioInformesGenericos();
 		
 		String accessEnvio="";
 		boolean isPermisoEnvio = true;
@@ -352,7 +352,7 @@ public class InformesGenericosAction extends MasterAction {
 			Vector informesRes = new Vector(); 
 			// Obtiene del campo idInforme los ids separados por ## y devuelve sus beans
 			InformeAbono admInf = new InformeAbono(usr);
-			EnvioInformesGenericos envioInformesGenericos = new EnvioInformesGenericos((String) request.getSession().getAttribute(PARAMETRO.LONGITUD_CODEJG.toString()));
+			EnvioInformesGenericos envioInformesGenericos = new EnvioInformesGenericos();
 			Vector plantillas = envioInformesGenericos.getPlantillasInforme(miform.getIdInforme(),"##",usr);
 			// Obtiene del campo datosInforme los campos del formulario primcipal
 			// para obtener la clave para el informe. LOs datos se obtienen en una cadena como los ocultos
@@ -516,7 +516,7 @@ public class InformesGenericosAction extends MasterAction {
 			Vector informesRes = new Vector(); 
 			// Obtiene del campo idInforme los ids separados por ## y devuelve sus beans
 			InformeAbono admInf = new InformeAbono(usr); 
-			EnvioInformesGenericos envioInformesGenericos = new EnvioInformesGenericos((String) request.getSession().getAttribute(PARAMETRO.LONGITUD_CODEJG.toString()));
+			EnvioInformesGenericos envioInformesGenericos = new EnvioInformesGenericos();
 			Vector plantillas = envioInformesGenericos.getPlantillasInforme(miform.getIdInforme(),"##",usr);
 			
 			// Obtiene del campo datosInforme los campos del formulario primcipal
@@ -788,7 +788,7 @@ public class InformesGenericosAction extends MasterAction {
 			usr = this.getUserBean (request);
 			miform = (InformesGenericosForm) formulario;
 			//plantillas = infAdm.obtenerInformesTipo(idinstitucion, miform.getIdTipoInforme(), miform.getAsolicitantes(), miform.getDestinatarios());
-			EnvioInformesGenericos envioInformesGenericos = new EnvioInformesGenericos((String) request.getSession().getAttribute(PARAMETRO.LONGITUD_CODEJG.toString()));
+			EnvioInformesGenericos envioInformesGenericos = new EnvioInformesGenericos();
 			plantillas = envioInformesGenericos.getPlantillasInforme(miform.getIdInforme(),"##",usr);
 			// del merge (revisar)
 			datos = this.obtenerDatosFormulario (miform);
@@ -1483,7 +1483,7 @@ public class InformesGenericosAction extends MasterAction {
 			GstDate gstDate = new GstDate();
 			String hoy = gstDate.parseDateToString(new Date(),"dd/MM/yyyy", this.getLocale(request));
 			ArrayList informesRes = new ArrayList(); 
-			EnvioInformesGenericos envioInformesGenericos = new EnvioInformesGenericos((String) request.getSession().getAttribute(PARAMETRO.LONGITUD_CODEJG.toString()));
+			EnvioInformesGenericos envioInformesGenericos = new EnvioInformesGenericos();
 			Vector plantillas = envioInformesGenericos.getPlantillasInforme(form.getIdInforme(),"@@",userBean);
 			
 			String presentador = null;

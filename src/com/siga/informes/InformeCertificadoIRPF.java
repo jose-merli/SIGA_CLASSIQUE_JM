@@ -84,7 +84,7 @@ public class InformeCertificadoIRPF extends MasterReport
 		InformesGenericosForm miform = (InformesGenericosForm) formulario;
 
 		//obteniendo del campo idInforme los ids separados por ## y devuelviendo sus beans
-		EnvioInformesGenericos envioInformesGenericos = new EnvioInformesGenericos(longitudNumEjg);
+		EnvioInformesGenericos envioInformesGenericos = new EnvioInformesGenericos();
 		Vector plantillas = envioInformesGenericos.getPlantillasInforme(miform.getIdInforme(),"##", usr);
 
 		String idPersona = null;
@@ -353,7 +353,7 @@ public class InformeCertificadoIRPF extends MasterReport
 	}
 	public void enviarCertificadoIRPFColegiado(UsrBean usrBean,
 			EnvProgramIRPFBean programIRPFBean,
-			EnvEnvioProgramadoBean envioProgramadoBean,String longitudNumEjg)
+			EnvEnvioProgramadoBean envioProgramadoBean)
 	throws ClsExceptions, SIGAException
 	{
 		Envio envio = new Envio(usrBean, envioProgramadoBean.getNombre());
@@ -376,7 +376,7 @@ public class InformeCertificadoIRPF extends MasterReport
 		} else {
 			enviosBean.setIdPlantilla(null);
 		}
-		EnvioInformesGenericos envioInformesGenericos = new EnvioInformesGenericos(longitudNumEjg);
+		EnvioInformesGenericos envioInformesGenericos = new EnvioInformesGenericos();
 		Vector plantillasVector = envioInformesGenericos.getPlantillasInforme(programIRPFBean
 				.getPlantillas(),"##",usrBean);
 		Vector vDocumentos = getDocumentosAEnviar(plantillasVector , programIRPFBean.getPeriodo().toString(),
