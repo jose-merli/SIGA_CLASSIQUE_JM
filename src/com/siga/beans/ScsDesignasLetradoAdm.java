@@ -1106,14 +1106,25 @@ private String getQueryDesignasPendientesJustificacion(List<DesignaForm> designa
 			sql.append(" EJG.IDTIPORESOLAUTO NOT IN (");
 			sql.append(ClsConstants.IDTIPO_RESOLUCIONAUTO_MODYCONCEDER);
 			sql.append("))))");
-			sql.append(" AND NOT (( EJG.IDTIPORATIFICACIONEJG IN ( ");
+			
+			sql.append(" AND NOT EXISTS ");
+			sql.append("(SELECT 1 ");
+			sql.append("        FROM SCS_EJG EJG, SCS_EJGDESIGNA EJGDES ");
+			sql.append("        WHERE EJGDES.IDINSTITUCION = EJG.IDINSTITUCION ");
+			sql.append("         AND EJGDES.IDTIPOEJG = EJG.IDTIPOEJG ");
+			sql.append("         AND EJGDES.ANIOEJG = EJG.ANIO ");
+			sql.append("         AND EJGDES.NUMEROEJG = EJG.NUMERO ");
+			sql.append("  AND EJG.Fecharesolucioncajg is not null ");
+			
+			
+			sql.append(" AND ( (  EJG.IDTIPORATIFICACIONEJG IN ( ");
 			sql.append(TIPO_RESOLUCION_DENEGADO);
 			sql.append(" , ");
 			sql.append(TIPO_RESOLUCION_ARCHIVO);
 			sql.append(" , ");			
 			sql.append(TIPO_RESOLUCION_DEVUELTO_COLEGIO);
 			sql.append(" , ");
-			sql.append(TIPO_RESOLUCION_MODIFICADO_DENEGADO);				
+			sql.append(TIPO_RESOLUCION_MODIFICADO_DENEGADO);	
 			sql.append(" ) ");
 			sql.append(" AND EJG.IDTIPORESOLAUTO IS NOT NULL ");
 			sql.append(" AND EJG.IDTIPORESOLAUTO IN (");
@@ -1130,12 +1141,45 @@ private String getQueryDesignasPendientesJustificacion(List<DesignaForm> designa
 			sql.append(" , ");
 			sql.append(TIPO_RESOLUCION_MOD_RECONOCIDO80_CON_NOMBRAMIENTO);
 			sql.append(" , ");
-			sql.append(TIPO_RESOLUCION_MOD_RECONOCIDO80_SIN_NOMBRAMIENTO);				
+			sql.append(TIPO_RESOLUCION_MOD_RECONOCIDO80_SIN_NOMBRAMIENTO);			
 			sql.append(" ) ");
 			sql.append(" AND (EJG.IDTIPORESOLAUTO IS NULL OR ");
 			sql.append(" EJG.IDTIPORESOLAUTO NOT IN (");
 			sql.append(ClsConstants.IDTIPO_RESOLUCIONAUTO_MODYDENEGAR);
-			sql.append("))))) EJGS ");
+			sql.append(" ))))");
+			sql.append(" )");
+			
+//			sql.append(" AND NOT (( EJG.IDTIPORATIFICACIONEJG IN ( ");
+//			sql.append(TIPO_RESOLUCION_DENEGADO);
+//			sql.append(" , ");
+//			sql.append(TIPO_RESOLUCION_ARCHIVO);
+//			sql.append(" , ");			
+//			sql.append(TIPO_RESOLUCION_DEVUELTO_COLEGIO);
+//			sql.append(" , ");
+//			sql.append(TIPO_RESOLUCION_MODIFICADO_DENEGADO);				
+//			sql.append(" ) ");
+//			sql.append(" AND EJG.IDTIPORESOLAUTO IS NOT NULL ");
+//			sql.append(" AND EJG.IDTIPORESOLAUTO IN (");
+//			sql.append(ClsConstants.IDTIPO_RESOLUCIONAUTO_MODYCONCEDER);
+//			sql.append(	"))"); 
+//			sql.append(" OR (EJG.IDTIPORATIFICACIONEJG IN (");
+//			sql.append(TIPO_RESOLUCION_RECONOCIDO100);
+//			sql.append(" , ");
+//			sql.append(TIPO_RESOLUCION_RECONOCIDO80);
+//			sql.append(" , ");
+//			sql.append(TIPO_RESOLUCION_MOD_RECONOCIDO100_CON_NOMBRAMIENTO);
+//			sql.append(" , ");
+//			sql.append(TIPO_RESOLUCION_MOD_RECONOCIDO100_SIN_NOMBRAMIENTO);
+//			sql.append(" , ");
+//			sql.append(TIPO_RESOLUCION_MOD_RECONOCIDO80_CON_NOMBRAMIENTO);
+//			sql.append(" , ");
+//			sql.append(TIPO_RESOLUCION_MOD_RECONOCIDO80_SIN_NOMBRAMIENTO);				
+//			sql.append(" ) ");
+//			sql.append(" AND (EJG.IDTIPORESOLAUTO IS NULL OR ");
+//			sql.append(" EJG.IDTIPORESOLAUTO NOT IN (");
+//			sql.append(ClsConstants.IDTIPO_RESOLUCIONAUTO_MODYDENEGAR);
+//			sql.append("))))" +
+			sql.append(") EJGS ");
 			
 		}
 		return sql.toString();
