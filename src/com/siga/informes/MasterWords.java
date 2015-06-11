@@ -352,10 +352,15 @@ public class MasterWords
 							Vector aux = (Vector)o;
 							doc = sustituyeRegionDocumento(doc,clave,aux);
 						}else*/
-						if (!(o instanceof String)) {
-							o = (String)o;
+//						if (!(o instanceof String)) {
+//							o = o.toString();
+//						}
+						try {
+							builder.write(o.toString().trim());	
+						} catch (Exception e) {
+							e.printStackTrace();
 						}
-						builder.write(((String)o).trim());	
+							
 					}
 					
 				
