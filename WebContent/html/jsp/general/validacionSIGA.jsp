@@ -134,47 +134,45 @@ function formatearDocumentoIdentidad(campoDocIdentidad, validar, tipoDocIdentida
 
 // END BNS 05/12/2012
 
-function ValidaCIF (cif)
-{   
-    var pares = 0; 
-    var impares = 0; 
-    var suma; 
-    var ultima; 
-    var unumero; 
-    var uletra = new Array("J", "A", "B", "C", "D", "E", "F", "G", "H", "I"); 
-    var xxx; 
-     
+// JPT (11/06/2015): Se copia el metodo que valida el CIF de consultaDatosGeneralesNoColegiado.jsp
+function ValidaCIF(cif) {
+	var pares = 0; 
+	var impares = 0; 
+   	var suma; 
+   	var ultima; 
+   	var unumero;
+   	var letraCif = new Array("J", "A", "B", "X","X","X","F", "G","X","X");  
+   	var cadenaCif; 
     
-    cif = cif.toUpperCase(); 
+   	cif = cif.toUpperCase(); 
+    
+   	var regular = new RegExp(/^[ABCDEFGHJKLMNPQS]\d\d\d\d\d\d\d[0-9,A-J]$/g); 
+	if (!regular.exec(cif)) 
+		return false; 
+           
+	ultima = cif.substr(8,1); 
+
+	for (var cont = 1 ; cont < 7 ; cont ++) { 
+		cadenaCif = (2 * parseInt(cif.substr(cont++,1))).toString() + "0"; 
+		impares += parseInt(cadenaCif.substr(0,1)) + parseInt(cadenaCif.substr(1,1)); 
+		pares += parseInt(cif.substr(cont,1)); 
+	} 
+	cadenaCif = (2 * parseInt(cif.substr(cont,1))).toString() + "0"; 
+	impares += parseInt(cadenaCif.substr(0,1)) + parseInt(cadenaCif.substr(1,1)); 
+       
+	suma = (pares + impares).toString(); 
+	unumero = parseInt(suma.substr(suma.length - 1, 1)); 
+	unumero = (10 - unumero).toString(); 
+	if (unumero == 10) 
+		unumero = 0; 
      
-    var regular =/^[ABCDEFGHKLMNPQS]\d\d\d\d\d\d\d[0-9,A-J]$/g; 
-    if (!regular.exec(cif)) {
-	 	alert(mensajeCifNif);
-	 	return false; 
-	}
-          
-    ultima = cif.substr(8,1); 
- 
-    for (var cont = 1 ; cont < 7 ; cont ++){ 
-         xxx = (2 * parseInt(cif.substr(cont++,1))).toString() + 0; 
-         impares += parseInt(xxx.substr(0,1)) + parseInt(xxx.substr(1,1)); 
-         pares += parseInt(cif.substr(cont,1)); 
-    } 
-     xxx = (2 * parseInt(cif.substr(cont,1))).toString(); 
-     impares += parseInt(xxx.substr(0,1)) + parseInt(0 + xxx.substr(1,1)); 
-      
-     suma = (pares + impares).toString(); 
-     unumero = parseInt(suma.substr(suma.length - 1, 1)); 
-     unumero = (10 - unumero).toString(); 
-     if(unumero == 10) unumero = 0; 
-      
-     if ((ultima == unumero) || (ultima == uletra[unumero])) {
-         return true; 
-	 } else {
-		 alert(mensajeCifNif);
-         return false; 
-     }
-} 
+	if (ultima == unumero || ultima == letraCif[unumero]) {         
+		var primerCaracter = cif.substr(0,1);         
+		return (primerCaracter=="A" || primerCaracter=="B" || primerCaracter=="F" || primerCaracter=="G" || primerCaracter=="J");       		 
+	} else {
+		return false;
+	} 
+}//fin ValidaCIF 	
 
   function esNIFCorrecto(nif, validaNIFCIF){
   
@@ -529,20 +527,24 @@ function str_replace(search, replace, subject) {
     return sa ? s : s[0];
 } 			  		
 
-
-
-
-function validarNIFCIF (tipo, num) {
-	/*if (tipo == <%=ClsConstants.TIPO_IDENTIFICACION_CIF %>)   return ValidaCIF (num);			 com.atos.utils.ClsConstants.TIPO_IDENTIFICACION_CIF*/
-	if (tipo == <%=ClsConstants.TIPO_IDENTIFICACION_NIF %>){// com.atos.utils.ClsConstants.TIPO_IDENTIFICACION_NIF o com.atos.utils.ClsConstants.TIPO_IDENTIFICACION_CIF
-	   if (!esNIFCorrecto(num,true)){
-	   	 return ValidaCIF (num);
-	   }else{ 
-	     return true;
-	   }
+function validarNIFCIF (tipo, num) {	
+	if (tipo == <%=ClsConstants.TIPO_IDENTIFICACION_NIF%>) {
+	   	if (!esNIFCorrecto(num,true)){
+			return ValidaCIF (num);
+	   	} else { 
+	     	return true;
+	   	}
 	}   
-	if (tipo == <%=ClsConstants.TIPO_IDENTIFICACION_TRESIDENTE %>)   return validaNIE (num);	// com.atos.utils.ClsConstants.TIPO_IDENTIFICACION_TRESIDENTE
-	if (tipo == <%=ClsConstants.TIPO_IDENTIFICACION_PASAPORTE %>)   return true;	// com.atos.utils.ClsConstants.TIPO_IDENTIFICACION_PASAPORTE
+	
+	if (tipo == <%=ClsConstants.TIPO_IDENTIFICACION_CIF%>) 
+		return ValidaCIF (num);
+	
+	if (tipo == <%=ClsConstants.TIPO_IDENTIFICACION_TRESIDENTE%>)   
+		return validaNIE (num);
+		
+	if (tipo == <%=ClsConstants.TIPO_IDENTIFICACION_PASAPORTE%>)
+		return true;
+		
 	return false;
 }
 
