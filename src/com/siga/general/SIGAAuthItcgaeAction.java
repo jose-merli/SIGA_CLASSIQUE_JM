@@ -48,6 +48,8 @@ import com.siga.beans.CenInstitucionLenguajesAdm;
 import com.siga.beans.CenInstitucionLenguajesBean;
 import com.siga.beans.CenPersonaAdm;
 import com.siga.beans.CenPersonaBean;
+import com.siga.beans.EstUserRegistryAdm;
+import com.siga.beans.EstUserRegistryBean;
 import com.siga.beans.GenParametrosAdm;
 
 import es.satec.businessManager.BusinessManager;
@@ -132,13 +134,23 @@ public class SIGAAuthItcgaeAction extends Action
 		
 		
 		/****************** CR - INSERTAMOS EN LA TABLA EST_USER_REGISTRY PARA LAS ESTADISTICAS DEL BI **********************/
-		EstUserRegistry registroUser = new EstUserRegistry();
-		registroUser.setIdusuario(new Integer(usrbean.getUserName()));
-		registroUser.setIdinstitucion(new Short(usrbean.getLocation()));
-		registroUser.setIdperfil(profile);
+//		EstUserRegistry registroUser = new EstUserRegistry();
+//		registroUser.setIdusuario(new Integer(usrbean.getUserName()));
+//		registroUser.setIdinstitucion(new Short(usrbean.getLocation()));
+//		registroUser.setIdperfil(profile);
+//		
+//		EstadisticasUserRegistryService userRegistryService = (EstadisticasUserRegistryService) BusinessManager.getInstance().getService(EstadisticasUserRegistryService.class);		
+//		userRegistryService.insert(registroUser);
 		
-		EstadisticasUserRegistryService userRegistryService = (EstadisticasUserRegistryService) BusinessManager.getInstance().getService(EstadisticasUserRegistryService.class);		
-		userRegistryService.insert(registroUser);
+		EstUserRegistryAdm userRegistryAdm = new EstUserRegistryAdm(usrbean);
+		EstUserRegistryBean userRegistryBean = new EstUserRegistryBean();
+		userRegistryBean.setIdUsuario(new Integer(usrbean.getUserName()));
+		userRegistryBean.setIdInstitucion(new Integer(usrbean.getLocation()));
+		userRegistryBean.setFechaRegistro("SYSDATE");
+		userRegistryBean.setIdPerfil(profile);
+		if(!userRegistryAdm.insertarRegistroUser(userRegistryBean)){
+			ClsLogging.writeFileLog("***** ERROR AL REGISTRAR UN USUARIO EN EL EST_USER_REGISTRY *****",1);
+		}
 		/*****************************************************************************************************************/		
 
 		//Comprobamos si es comision multiple

@@ -59,6 +59,8 @@ import com.siga.beans.CenInstitucionLenguajesAdm;
 import com.siga.beans.CenInstitucionLenguajesBean;
 import com.siga.beans.CenPersonaAdm;
 import com.siga.beans.CenPersonaBean;
+import com.siga.beans.EstUserRegistryAdm;
+import com.siga.beans.EstUserRegistryBean;
 import com.siga.beans.GenParametrosAdm;
 
 import es.satec.businessManager.BusinessManager;
@@ -308,7 +310,7 @@ System.setProperties(properties);
 			tx.commit();
 			
 			/****************** CR - INSERTAMOS EN LA TABLA EST_USER_REGISTRY PARA LAS ESTADISTICAS DEL BI **********************/
-			EstUserRegistry registroUser = new EstUserRegistry();
+			/*EstUserRegistry registroUser = new EstUserRegistry();
 			registroUser.setIdusuario(new Integer(bean.getUserName()));
 			registroUser.setIdinstitucion(new Short(bean.getLocation()));
 			if (bean.getProfile() != null) {
@@ -318,7 +320,23 @@ System.setProperties(properties);
 				registroUser.setIdperfil("-");
 			}
 			EstadisticasUserRegistryService userRegistryService = (EstadisticasUserRegistryService) bm.getService(EstadisticasUserRegistryService.class);		
-			userRegistryService.insert(registroUser);
+			userRegistryService.insert(registroUser);*/
+			
+			EstUserRegistryAdm userRegistryAdm = new EstUserRegistryAdm(bean);
+			EstUserRegistryBean userRegistryBean = new EstUserRegistryBean();
+			userRegistryBean.setIdUsuario(new Integer(bean.getUserName()));
+			userRegistryBean.setIdInstitucion(new Integer(bean.getLocation()));
+			userRegistryBean.setFechaRegistro("SYSDATE");
+			if (bean.getProfile() != null) {
+				String perfiles = Arrays.toString(bean.getProfile());
+				userRegistryBean.setIdPerfil(perfiles.substring(1, perfiles.length() - 1));
+			} else {
+				userRegistryBean.setIdPerfil("-");
+			}			
+			
+			if(!userRegistryAdm.insertarRegistroUser(userRegistryBean)){
+				ClsLogging.writeFileLog("***** ERROR AL REGISTRAR UN USUARIO EN EL EST_USER_REGISTRY *****",1);
+			}
 			/*****************************************************************************************************************/				
 			
 			HttpSession ses= request.getSession();
