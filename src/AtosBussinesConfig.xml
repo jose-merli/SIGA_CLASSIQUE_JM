@@ -112,7 +112,6 @@
 		<service interface="org.redabogacia.sigaservices.app.services.helper.SigaServiceHelperService" 		implementation="org.redabogacia.sigaservices.app.services.helper.impl.SigaServiceHelperServiceImpl"/>
 		<service interface="org.redabogacia.sigaservices.app.services.cen.SubtiposCVService" 				implementation="org.redabogacia.sigaservices.app.services.cen.impl.SubtiposCVServiceImpl"/>
 		<service interface="org.redabogacia.sigaservices.app.services.caj.PCAJGInsertaColaService" 			implementation="org.redabogacia.sigaservices.app.services.caj.impl.PCAJGInsertaColaServiceImpl"/>
-		<service interface="org.redabogacia.sigaservices.app.services.est.EstadisticasUserRegistryService"	implementation="org.redabogacia.sigaservices.app.services.est.impl.EstadisticasUserRegistryServiceImpl"/>
 		<service interface="org.redabogacia.sigaservices.app.services.scs.ScsTipoactuacioncostefijoService"	implementation="org.redabogacia.sigaservices.app.services.scs.impl.ScsTipoactuacioncostefijoServiceImpl"/>
 		<service interface="org.redabogacia.sigaservices.app.services.cen.CargaMasivaCV" 					implementation="org.redabogacia.sigaservices.app.services.cen.impl.CargaMasivaDatosCVImpl"/>
 		<service interface="org.redabogacia.sigaservices.app.services.scs.CargaMasivaCalendariosService"	implementation="org.redabogacia.sigaservices.app.services.scs.impl.CargaMasivaCalendariosServiceImpl"/>		
@@ -121,7 +120,7 @@
 		<service interface="org.redabogacia.sigaservices.app.services.cen.CenClienteService" 				implementation="org.redabogacia.sigaservices.app.services.cen.impl.CenClienteServiceImpl"/>
 		<service interface="org.redabogacia.sigaservices.app.services.cen.CargaMasivaGF" 					implementation="org.redabogacia.sigaservices.app.services.cen.impl.CargaMasivaDatosGFImpl"/>
 		<service interface="org.redabogacia.sigaservices.app.services.gen.GenRecursosService" 					implementation="org.redabogacia.sigaservices.app.services.gen.impl.GenRecursosServiceImpl"/>
-		
+		<service interface="org.redabogacia.sigaservices.app.services.est.EstadisticasUserRegistryService"	implementation="org.redabogacia.sigaservices.app.services.est.impl.EstadisticasUserRegistryServiceImpl"/>
 	</context>
 </configuration> 
 	
