@@ -176,13 +176,13 @@
 	localizacion="censo.fichaLetrado.facturacion.localizacion" />
 <%
 	} else if (path.equals("/JGR_AbonosClienteSJCS")) {
-		tipoFichaColegial = "SJCS";
+		tipoFichaColegial = ClsConstants.TIPO_ABONO_JUSTICIA_GRATUITA";
 %>
 <siga:Titulo titulo="pestana.fichaCliente.justiciagratuita.pagos"
 	localizacion="censo.fichaCliente.sjcs.to.facturacion.localizacion" />
 <%
 	} else {
-		tipoFichaColegial = "FACT";
+		tipoFichaColegial = ClsConstants.TIPO_ABONO_FACTURACION;
 %>
 <siga:TituloExt titulo="censo.fichaCliente.facturacion.abonos.cabecera"
 	localizacion="censo.fichaCliente.facturacion.abonos.localizacion" />
