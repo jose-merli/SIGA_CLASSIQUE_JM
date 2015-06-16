@@ -68,12 +68,11 @@ public class InformeColegiadosPagos extends MasterReport {
 		
 
 		String cuenta=(String)htAux.get("CUENTA_CORRIENTE");
-		if (cuenta==null || cuenta.equals("")) {
-			String delimIni=CTR+"INI_TODO_CUENTA"+CTR;
+		/*if (cuenta==null || cuenta.equals("")) {
+			/*String delimIni=CTR+"INI_TODO_CUENTA"+CTR;
 			String delimFin=CTR+"FIN_TODO_CUENTA"+CTR;
-			String sAux="";
-			//plantillaFO=UtilidadesString.reemplazaEntreMarcasCon(plantillaFO, delimIni, delimFin,sAux);
-		}else{
+			plantillaFO=UtilidadesString.reemplazaEntreMarcasCon(plantillaFO, delimIni, delimFin,sAux);
+		}else{*/
 			// JBD 03/02/2009 Si hemos obtenido una cuenta debemos ocultar el numero con asteriscos (INC-5635)
 			// Nos aseguramos de que el IBAN este completo
 			if(cuenta.length()>=15){
@@ -90,7 +89,7 @@ public class InformeColegiadosPagos extends MasterReport {
 				htAux.put("CUENTA_CORRIENTE", numero+ " " +banco);
 				
 			}
-		}
+		/*}*/
 		htDatos.putAll(htAux);
 		
 		//Datos de las Asistencias
@@ -388,7 +387,7 @@ public class InformeColegiadosPagos extends MasterReport {
 					+ " AND GU.IDTURNO = TU.IDTURNO "
 					+ " AND GU.IDGUARDIA = FA.IDGUARDIA "
 					// Eliminamos las asistencias de importe 0
-					+ " AND FA.PRECIOAPLICADO > 0.0 " 
+					+ " AND FA.PRECIOAPLICADO + FA.PRECIOCOSTESFIJOS > 0.0 " 
 				+ " ORDER BY FA.FECHAINICIO, GU.NOMBRE, TU.NOMBRE, FA.IDAPUNTE";
 	 
 			RowsContainer rc=new RowsContainer();
@@ -826,10 +825,8 @@ public class InformeColegiadosPagos extends MasterReport {
 		double dTotalOficio=0;
 		double dTotalFactOficio=0;
 		double dCompensadoCaja=0;
-		String pcOficio=null;
 		String fechaPago=null;
 		double sTotalLiquidacion = 0;
-		String pcAsistencia;
 		
 		try {
 			// Porcentajes DEL PAGO y periodo del pago
@@ -850,8 +847,8 @@ public class InformeColegiadosPagos extends MasterReport {
 			if(rc!=null && rc.size()>0){
 				Row r=(Row)rc.get(0);
 				result=r.getRow();
-				pcAsistencia=(String)r.getString("PORCENTAJE_ASISTENCIA");
-				pcOficio=(String)r.getString("PORCENTAJE_TURNOS");
+				//String pcAsistencia=(String)r.getString("PORCENTAJE_ASISTENCIA");
+				//String pcOficio=(String)r.getString("PORCENTAJE_TURNOS");
 			}
 			
 			//Obtiene el importe del compensado o pagado por caja o rectificativo
