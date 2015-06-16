@@ -358,7 +358,7 @@ public class MasterWords
 						try {
 							builder.write(o.toString().trim());	
 						} catch (Exception e) {
-							e.printStackTrace();
+							ClsLogging.writeFileLog("ERROR al llegar el vector de la region. continua...",3);
 						}
 							
 					}
