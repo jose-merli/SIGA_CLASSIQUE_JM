@@ -448,7 +448,7 @@ public class ExpSeguimientoAction extends MasterAction {
 		
 		try{
 			UsrBean userBean = ((UsrBean)request.getSession().getAttribute(("USRBEAN")));   
-			String longitudNumEjg = (String) request.getSession().getAttribute(PARAMETRO.LONGITUD_CODEJG.toString());
+			
 		    ExpAnotacionAdm anotAdm = new ExpAnotacionAdm(this.getUserBean(request));
 		    ExpSeguimientoForm form = (ExpSeguimientoForm)formulario;
 		    

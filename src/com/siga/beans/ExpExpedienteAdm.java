@@ -1530,8 +1530,8 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 	    RowsContainer rc1 = new RowsContainer();
 
 	    try {
-       		Hashtable<String, String> longitudNumEjgHashtable = new Hashtable<String, String>();
-       		String longitudNumEjg = "5";
+//       		Hashtable<String, String> longitudNumEjgHashtable = new Hashtable<String, String>();
+//       		String longitudNumEjg = "5";
        		GenParametrosService genParametrosService = (GenParametrosService)BusinessManager.getInstance().getService(GenParametrosService.class);
 			/////////////////////////////////////////////
 			/// CONTROL 1: CAMBIOS DE ESTADO  
@@ -1572,20 +1572,7 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 							    throw new ClsExceptions("1.Error al insertar anotacion. "+anotacionAdm.getError());
 							}
 					        ClsLogging.writeFileLog("1.Anotacion insertada.",7);
-					        if(!longitudNumEjgHashtable.containsKey(fila1.getString("IDINSTITUCION"))){
-								GenParametros genParametros = new GenParametros();
-								genParametros.setIdinstitucion(new Short(fila1.getString("IDINSTITUCION")));
-								genParametros.setModulo(MODULO.SCS.toString());
-								genParametros.setParametro(PARAMETRO.LONGITUD_CODEJG.toString());
-								genParametros =  genParametrosService.getGenParametroInstitucionORvalor0(genParametros);
-								if (genParametros != null && genParametros.getValor() != null) {
-									longitudNumEjg = genParametros.getValor();
-								}
-								longitudNumEjgHashtable.put(fila1.getString("IDINSTITUCION"), longitudNumEjg);
-						    }else{
-						    	longitudNumEjg = longitudNumEjgHashtable.get(fila1.getString("IDINSTITUCION"));
-						    }
-					        
+					       
 					        if (!cambioEstadoAutomatico(expBean)) {
 					            throw new SIGAException("1.No se ha cambiado el estado. "+this.getError());
 					        }
@@ -1701,19 +1688,7 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 						
 						// Nueva alerta de aviso de que está en un estado final.
 						ExpExpedienteBean expBean=this.getExpediente(fila1.getString("IDTIPOEXPEDIENTE"),fila1.getString("IDINSTITUCION"),fila1.getString("IDINSTITUCION_TIPOEXPEDIENTE"),fila1.getString("ANIOEXPEDIENTE"),fila1.getString("NUMEROEXPEDIENTE"));
-						if(!longitudNumEjgHashtable.containsKey(fila1.getString("IDINSTITUCION"))){
-							GenParametros genParametros = new GenParametros();
-							genParametros.setIdinstitucion(new Short(fila1.getString("IDINSTITUCION")));
-							genParametros.setModulo(MODULO.SCS.toString());
-							genParametros.setParametro(PARAMETRO.LONGITUD_CODEJG.toString());
-							genParametros =  genParametrosService.getGenParametroInstitucionORvalor0(genParametros);
-							if (genParametros != null && genParametros.getValor() != null) {
-								longitudNumEjg = genParametros.getValor();
-							}
-							longitudNumEjgHashtable.put(fila1.getString("IDINSTITUCION"), longitudNumEjg);
-					    }else{
-					    	longitudNumEjg = longitudNumEjgHashtable.get(fila1.getString("IDINSTITUCION"));
-					    }
+						
 				        if (!alertaAdm.insertarAlerta(expBean,UtilidadesString.getMensajeIdioma(cenInstitucionBean.getIdLenguaje(),"expedientes.alertasyanotaciones.mensajes.estadoFinal") + " ("+fila1.getString("NOMBRE")+")")) {
 				            throw new ClsExceptions("3.Error al insertar alarma. "+alertaAdm.getError());
 				        }
@@ -1822,19 +1797,7 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 							
 							// Nueva alerta de aviso de vencimiento de la fase
 							ExpExpedienteBean expBean=this.getExpediente(fila1.getString("IDTIPOEXPEDIENTE"),fila1.getString("IDINSTITUCION"),fila1.getString("IDINSTITUCION_TIPOEXPEDIENTE"),fila1.getString("ANIOEXPEDIENTE"),fila1.getString("NUMEROEXPEDIENTE"));
-							if(!longitudNumEjgHashtable.containsKey(fila1.getString("IDINSTITUCION"))){
-								GenParametros genParametros = new GenParametros();
-								genParametros.setIdinstitucion(new Short(fila1.getString("IDINSTITUCION")));
-								genParametros.setModulo(MODULO.SCS.toString());
-								genParametros.setParametro(PARAMETRO.LONGITUD_CODEJG.toString());
-								genParametros =  genParametrosService.getGenParametroInstitucionORvalor0(genParametros);
-								if (genParametros != null && genParametros.getValor() != null) {
-									longitudNumEjg = genParametros.getValor();
-								}
-								longitudNumEjgHashtable.put(fila1.getString("IDINSTITUCION"), longitudNumEjg);
-						    }else{
-						    	longitudNumEjg = longitudNumEjgHashtable.get(fila1.getString("IDINSTITUCION"));
-						    }
+							
 							if (!alertaAdm.insertarAlerta(expBean,UtilidadesString.getMensajeIdioma(cenInstitucionBean.getIdLenguaje(),"expedientes.alertasyanotaciones.mensajes.antelacionFase",new String[] {GstDate.getFormatedDateShort("ES",fila1.getString("FECHAFINALFASE"))}) + " ("+fila1.getString("NOMBRE")+")")) {
 					            throw new ClsExceptions("5.Error al insertar alarma. "+alertaAdm.getError());
 					        }
@@ -1907,19 +1870,7 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 							
 							// Nueva alerta de aviso de vencimiento del estado
 							ExpExpedienteBean expBean=this.getExpediente(fila1.getString("IDTIPOEXPEDIENTE"),fila1.getString("IDINSTITUCION"),fila1.getString("IDINSTITUCION_TIPOEXPEDIENTE"),fila1.getString("ANIOEXPEDIENTE"),fila1.getString("NUMEROEXPEDIENTE"));
-							if(!longitudNumEjgHashtable.containsKey(fila1.getString("IDINSTITUCION"))){
-								GenParametros genParametros = new GenParametros();
-								genParametros.setIdinstitucion(new Short(fila1.getString("IDINSTITUCION")));
-								genParametros.setModulo(MODULO.SCS.toString());
-								genParametros.setParametro(PARAMETRO.LONGITUD_CODEJG.toString());
-								genParametros =  genParametrosService.getGenParametroInstitucionORvalor0(genParametros);
-								if (genParametros != null && genParametros.getValor() != null) {
-									longitudNumEjg = genParametros.getValor();
-								}
-								longitudNumEjgHashtable.put(fila1.getString("IDINSTITUCION"), longitudNumEjg);
-						    }else{
-						    	longitudNumEjg = longitudNumEjgHashtable.get(fila1.getString("IDINSTITUCION"));
-						    }
+							
 							if (!alertaAdm.insertarAlerta(expBean,UtilidadesString.getMensajeIdioma(cenInstitucionBean.getIdLenguaje(),"expedientes.alertasyanotaciones.mensajes.aviso6")+" "+GstDate.getFormatedDateShort("ES",fila1.getString("FECHAFINALESTADO"))+". ("+fila1.getString("NOMBRE")+")")) {
 					            throw new ClsExceptions("6.Error al insertar alarma. "+alertaAdm.getError());
 					        }
@@ -1974,19 +1925,7 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 							// Nueva alerta de aviso de vencimiento del estado
 							ExpExpedienteBean expBean=this.getExpediente(fila1.getString("IDTIPOEXPEDIENTE"),fila1.getString("IDINSTITUCION"),fila1.getString("IDINSTITUCION_TIPOEXPEDIENTE"),fila1.getString("ANIOEXPEDIENTE"),fila1.getString("NUMEROEXPEDIENTE"));
 	
-							if(!longitudNumEjgHashtable.containsKey(fila1.getString("IDINSTITUCION"))){
-								GenParametros genParametros = new GenParametros();
-								genParametros.setIdinstitucion(new Short(fila1.getString("IDINSTITUCION")));
-								genParametros.setModulo(MODULO.SCS.toString());
-								genParametros.setParametro(PARAMETRO.LONGITUD_CODEJG.toString());
-								genParametros =  genParametrosService.getGenParametroInstitucionORvalor0(genParametros);
-								if (genParametros != null && genParametros.getValor() != null) {
-									longitudNumEjg = genParametros.getValor();
-								}
-								longitudNumEjgHashtable.put(fila1.getString("IDINSTITUCION"), longitudNumEjg);
-						    }else{
-						    	longitudNumEjg = longitudNumEjgHashtable.get(fila1.getString("IDINSTITUCION"));
-						    }
+							
 							
 							if (!alertaAdm.insertarAlerta(expBean,UtilidadesString.getMensajeIdioma(cenInstitucionBean.getIdLenguaje(),"expedientes.alertasyanotaciones.mensajes.aviso7")+" "+GstDate.getFormatedDateShort("ES",fila1.getString("FECHACADUCIDAD"))+".")) {
 					            throw new ClsExceptions("7.Error al insertar alarma. "+alertaAdm.getError());

@@ -221,7 +221,7 @@ public class InformesGenericosAction extends MasterAction {
 		InformeCertificadoIRPF informeIRPF = new InformeCertificadoIRPF();
 		File ficheroSalida=null;
 		try {
-			ficheroSalida = informeIRPF.getInformeIRPF(formulario, this.getUserBean(request),(String) request.getSession().getAttribute(PARAMETRO.LONGITUD_CODEJG.toString()));
+			ficheroSalida = informeIRPF.getInformeIRPF(formulario, this.getUserBean(request));
 
 		} catch (Exception e) {
 			throwExcp("messages.general.error",new String[] {"modulo.informes"},e,null);

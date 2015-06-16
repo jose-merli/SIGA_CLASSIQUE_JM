@@ -68,7 +68,7 @@ public class InformeCertificadoIRPF extends MasterReport
 	}
 
 	public File getInformeIRPF(MasterForm formulario,
-			UsrBean usr,String longitudNumEjg)
+			UsrBean usr)
 	throws SIGAException, Exception
 	{
 		//Lista de informes generados
