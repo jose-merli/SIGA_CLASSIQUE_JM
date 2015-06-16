@@ -10,7 +10,6 @@ import java.util.Vector;
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ComodinBusquedas;
-import com.atos.utils.GstDate;
 import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
@@ -139,9 +138,7 @@ public class FcsMovimientosVariosAdm extends MasterBeanAdministrador {
 	
 	public Hashtable prepararInsert (Hashtable entrada)throws ClsExceptions 
 	{
-		String values;	
 		RowsContainer rc = null;
-		int contador = 0;
 		
 		try { rc = new RowsContainer(); }
 		catch(Exception e) { e.printStackTrace(); }
@@ -323,9 +320,8 @@ public class FcsMovimientosVariosAdm extends MasterBeanAdministrador {
 	public void desasignarPago(String idInstitucion, String idPago) throws ClsExceptions {
 		FcsMovimientosVariosAdm fcsMovimientosVariosAdm = new FcsMovimientosVariosAdm(this.usrbean);
 		Hashtable registroBD, registroCopia;
-		String where = null;
 		Vector vRegistros;
-		FcsMovimientosVariosBean beanBD, beanCopia;
+		FcsMovimientosVariosBean beanBD;
 
 		//query con la select a ejecutar
 		String consulta = " SELECT M." + FcsMovimientosVariosBean.C_MOTIVO + " " + FcsMovimientosVariosBean.C_MOTIVO + ","+
@@ -411,8 +407,6 @@ public class FcsMovimientosVariosAdm extends MasterBeanAdministrador {
 	 */
 
 	public Paginador consultaBusqueda (Hashtable datos) throws ClsExceptions{
-		Vector v = new Vector();
-		
 		/*******************************         CONSULTA APLICADOS                           ******************************/
 		String consulta = " select ";
 	
@@ -475,8 +469,8 @@ public class FcsMovimientosVariosAdm extends MasterBeanAdministrador {
 		 				" , "+ FcsMovimientosVariosBean.T_NOMBRETABLA + "." +FcsMovimientosVariosBean.C_IDFACTURACION + " IDFACTURACION "+
 						" , "+ FcsMovimientosVariosBean.T_NOMBRETABLA + "." +FcsMovimientosVariosBean.C_IDGRUPOFACTURACION + " IDGRUPOFACTURACION "+
 						" , "+ FcsFacturacionJGBean.T_NOMBRETABLA + "." +FcsFacturacionJGBean.C_NOMBRE + " NOMBREFACTURACION "+
-						" ,F_SIGA_GETRECURSO( "+ ScsGrupoFacturacionBean.T_NOMBRETABLA + "." +ScsGrupoFacturacionBean.C_NOMBRE + ","+this.usrbean.getLanguage()+") NOMBREGRUPOFACTURACION ";
-                   		
+						" ,F_SIGA_GETRECURSO( "+ ScsGrupoFacturacionBean.T_NOMBRETABLA + "." +ScsGrupoFacturacionBean.C_NOMBRE + ","+this.usrbean.getLanguage()+") NOMBREGRUPOFACTURACION," +
+						FcsAplicaMovimientosVariosBean.T_NOMBRETABLA + "." + FcsAplicaMovimientosVariosBean.C_IDAPLICACION;
 		
 		String tablas = " from "+
 						" "  + FcsMovimientosVariosBean.T_NOMBRETABLA + 
@@ -508,7 +502,6 @@ public class FcsMovimientosVariosAdm extends MasterBeanAdministrador {
 								ScsGrupoFacturacionBean.T_NOMBRETABLA + "." + ScsGrupoFacturacionBean.C_IDINSTITUCION +
 								" and " + FcsMovimientosVariosBean.T_NOMBRETABLA + "." + FcsMovimientosVariosBean.C_IDGRUPOFACTURACION + " = " +
 								ScsGrupoFacturacionBean.T_NOMBRETABLA + "." + ScsGrupoFacturacionBean.C_IDGRUPOFACTURACION;										
-
 		
 		String where =  " where " + FcsMovimientosVariosBean.T_NOMBRETABLA + "." + FcsMovimientosVariosBean.C_IDINSTITUCION + "=" + (String)datos.get("IDINSTITUCION");
 		
@@ -550,71 +543,9 @@ public class FcsMovimientosVariosAdm extends MasterBeanAdministrador {
 		
 		consulta += campos + tablas + where;
 		
-		
 		/*******************************         CONSULTA PENDIENTES         ***********************************/
 		String consulta2 = " select ";
 	
-		String campos2 = //Pago Asociado:
-						FcsPagosJGBean.T_NOMBRETABLA + "." + FcsPagosJGBean.C_NOMBRE + " PAGOASOCIADO," +
-						FcsAplicaMovimientosVariosBean.T_NOMBRETABLA + "." + FcsAplicaMovimientosVariosBean.C_IDPAGOSJG + " " + FcsAplicaMovimientosVariosBean.C_IDPAGOSJG + "," +
-						//Orden dependiendo de si el importe del movimiento es positivo o negativo. Los importes positivos irán primero y los negativos despues
-						FcsMovimientosVariosBean.T_NOMBRETABLA + "." + FcsMovimientosVariosBean.C_FECHAALTA + " fecha_orden, "
-						+ "case when (" + FcsMovimientosVariosBean.T_NOMBRETABLA + "." + FcsMovimientosVariosBean.C_CANTIDAD + " > 0) "
-						+ "then '1' "
-						+ "else '2' "
-						+ "end orden, "	+							
-						//Numero de Colegiado o Comunitario segun proceda:
-						" (CASE "+CenColegiadoBean.T_NOMBRETABLA+"."+CenColegiadoBean.C_COMUNITARIO+" WHEN '"+ClsConstants.DB_FALSE+"' THEN "+CenColegiadoBean.T_NOMBRETABLA+"."+CenColegiadoBean.C_NCOLEGIADO+" ELSE "+CenColegiadoBean.T_NOMBRETABLA+"."+CenColegiadoBean.C_NCOMUNITARIO+" END ) AS NUMERO, "+
-						//Nombre:
-						" (" + CenPersonaBean.T_NOMBRETABLA + "." + CenPersonaBean.C_APELLIDOS1 +"||' '||"
-						+ CenPersonaBean.T_NOMBRETABLA + "." + CenPersonaBean.C_APELLIDOS2 +"||' '||"
-						+ CenPersonaBean.T_NOMBRETABLA + "." + CenPersonaBean.C_NOMBRE + ") NOMBRE," +
-						//NIF:
-						" " + CenPersonaBean.T_NOMBRETABLA + "." + CenPersonaBean.C_NIFCIF + " NIF," +
-						//Número de Colegiado
-						" " + CenColegiadoBean.T_NOMBRETABLA + "." + CenColegiadoBean.C_NCOLEGIADO + " NCOLEGIADO," +
-						//Número Comunitario
-						" " + CenColegiadoBean.T_NOMBRETABLA + "." + CenColegiadoBean.C_NCOMUNITARIO + " NCOMUNITARIO," +
-						//Institución
-						" " + FcsMovimientosVariosBean.T_NOMBRETABLA + "." + FcsMovimientosVariosBean.C_IDINSTITUCION + " IDINSTITUCION," +
-						//Identificador de Persona
-						" " + FcsMovimientosVariosBean.T_NOMBRETABLA + "." + FcsMovimientosVariosBean.C_IDPERSONA + " IDPERSONA," +
-						//Cantidad del Movimiento
-						" " + FcsMovimientosVariosBean.T_NOMBRETABLA + "." + FcsMovimientosVariosBean.C_CANTIDAD + " CANTIDAD," +
-						//Cantidad Aplicada
-						" " + FcsAplicaMovimientosVariosBean.T_NOMBRETABLA + "." + FcsAplicaMovimientosVariosBean.C_IMPORTEAPLICADO + " cantidadAplicada," +
-						//Cantidad restante con respecto a la aplicación y, a lo que se ha aplicado hasta el momento
-						" (" + FcsMovimientosVariosBean.T_NOMBRETABLA + "." + FcsMovimientosVariosBean.C_CANTIDAD + " - " +
-						" (select (sum(aplica."+ FcsAplicaMovimientosVariosBean.C_IMPORTEAPLICADO + "))" +
-						" from " + FcsAplicaMovimientosVariosBean.T_NOMBRETABLA + " aplica" +
-						" where " + FcsAplicaMovimientosVariosBean.T_NOMBRETABLA + "." + FcsAplicaMovimientosVariosBean.C_IDINSTITUCION + "=" +
-						" aplica." + FcsAplicaMovimientosVariosBean.C_IDINSTITUCION + " and" +
-						" " + FcsAplicaMovimientosVariosBean.T_NOMBRETABLA + "." + FcsAplicaMovimientosVariosBean.C_IDMOVIMIENTO + "=" +
-						" aplica." + FcsAplicaMovimientosVariosBean.C_IDMOVIMIENTO +
-						" and aplica." + FcsAplicaMovimientosVariosBean.C_IDAPLICACION + "<=" + 
-						" " + FcsAplicaMovimientosVariosBean.T_NOMBRETABLA + "." + FcsAplicaMovimientosVariosBean.C_IDAPLICACION + ")) cantidadRestante," + 
-						//Fecha de alta del movimiento
-						" " + FcsMovimientosVariosBean.T_NOMBRETABLA + "." + FcsMovimientosVariosBean.C_FECHAALTA + " FECHAALTA," +
-						//Descripcion del Movimiento
-						" " + FcsMovimientosVariosBean.T_NOMBRETABLA + "." + FcsMovimientosVariosBean.C_DESCRIPCION + " MOVIMIENTO," +
-						//Identificador del movimiento
-						" " + FcsMovimientosVariosBean.T_NOMBRETABLA + "." + FcsMovimientosVariosBean.C_IDMOVIMIENTO + " IDMOVIMIENTO," +
-						//Identificador del Estado en el que se encuentra el pago
-						" (select " + FcsPagosEstadosPagosBean.T_NOMBRETABLA + "." + FcsPagosEstadosPagosBean.C_IDESTADOPAGOSJG + 
-						" from " + FcsPagosEstadosPagosBean.T_NOMBRETABLA +  
-						" where " + FcsPagosEstadosPagosBean.T_NOMBRETABLA + "." + FcsPagosEstadosPagosBean.C_FECHAESTADO + 
-						" = (select max(estado.fechaestado) from" +
-						" " + FcsPagosEstadosPagosBean.T_NOMBRETABLA + " estado" + 
-						" where estado." + FcsPagosEstadosPagosBean.C_IDINSTITUCION + " = " + FcsAplicaMovimientosVariosBean.T_NOMBRETABLA + "." + FcsAplicaMovimientosVariosBean.C_IDINSTITUCION +
-						" and estado." + FcsPagosEstadosPagosBean.C_IDPAGOSJG + " = " + FcsAplicaMovimientosVariosBean.T_NOMBRETABLA + "." + FcsAplicaMovimientosVariosBean.C_IDPAGOSJG + ") " +
-						" and " + FcsPagosEstadosPagosBean.T_NOMBRETABLA + "." + FcsPagosEstadosPagosBean.C_IDINSTITUCION + " = " + FcsAplicaMovimientosVariosBean.T_NOMBRETABLA + "." + FcsAplicaMovimientosVariosBean.C_IDINSTITUCION +
-						" and " + FcsPagosEstadosPagosBean.T_NOMBRETABLA + "." + FcsPagosEstadosPagosBean.C_IDPAGOSJG + " = " + FcsAplicaMovimientosVariosBean.T_NOMBRETABLA + "." + FcsAplicaMovimientosVariosBean.C_IDPAGOSJG +
-						") IDESTADOPAGOSJG"+
-						" , "+ FcsMovimientosVariosBean.T_NOMBRETABLA + "." +FcsMovimientosVariosBean.C_IDFACTURACION + " IDFACTURACION "+
-						" , "+ FcsMovimientosVariosBean.T_NOMBRETABLA + "." +FcsMovimientosVariosBean.C_IDGRUPOFACTURACION + " IDGRUPOFACTURACION "+
-			
-						" , "+ FcsFacturacionJGBean.T_NOMBRETABLA + "." +FcsFacturacionJGBean.C_NOMBRE + " NOMBREFACTURACION "+
-						" ,F_SIGA_GETRECURSO( "+ ScsGrupoFacturacionBean.T_NOMBRETABLA + "." +ScsGrupoFacturacionBean.C_NOMBRE + ","+this.usrbean.getLanguage()+") NOMBREGRUPOFACTURACION ";
 		String tablas2 = " from "+
 						" "  + FcsMovimientosVariosBean.T_NOMBRETABLA + 
 						" inner join " + CenColegiadoBean.T_NOMBRETABLA + 
@@ -645,12 +576,6 @@ public class FcsMovimientosVariosAdm extends MasterBeanAdministrador {
 								ScsGrupoFacturacionBean.T_NOMBRETABLA + "." + ScsGrupoFacturacionBean.C_IDINSTITUCION +
 								" and " + FcsMovimientosVariosBean.T_NOMBRETABLA + "." + FcsMovimientosVariosBean.C_IDGRUPOFACTURACION + " = " +
 								ScsGrupoFacturacionBean.T_NOMBRETABLA + "." + ScsGrupoFacturacionBean.C_IDGRUPOFACTURACION;
-								
-						
-						
-						
-		
-							
 	
 		String where2 = " where " + 				
 						" (" + FcsMovimientosVariosBean.T_NOMBRETABLA + "." + FcsMovimientosVariosBean.C_CANTIDAD + " - " +
@@ -692,9 +617,7 @@ public class FcsMovimientosVariosAdm extends MasterBeanAdministrador {
 			where2 += " and "+ FcsMovimientosVariosBean.T_NOMBRETABLA + "." +FcsMovimientosVariosBean.C_IDGRUPOFACTURACION + " = " + idGrupoFacturacion.trim() + " ";
 		}
 		
-		
-		
-		consulta2 += campos2 + tablas2 + where2;
+		consulta2 += campos + tablas2 + where2;
 		
 		String mostrar = "1"; //Por defecto ponemos solo los aplicados		
 		if(datos.get("MOSTRARMOVIMIENTOS") != null && !((String)datos.get("MOSTRARMOVIMIENTOS")).equals("")){
