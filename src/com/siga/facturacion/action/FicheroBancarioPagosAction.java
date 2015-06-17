@@ -539,7 +539,7 @@ public class FicheroBancarioPagosAction extends MasterAction{
 		UserTransaction tx			= null;
 		
 		try{	
-			tx = usr.getTransaction(); 
+			tx = usr.getTransactionPesada(); 
 			tx.begin();
 		    ReadProperties p = new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
 			pathFichero = p.returnProperty(keyPath);
