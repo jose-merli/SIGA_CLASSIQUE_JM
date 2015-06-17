@@ -851,30 +851,32 @@ public class DatosGeneralesAction extends MasterAction {
 	 */
 	protected String modificar (ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException 
 	{
-		Hashtable hashOriginal = new Hashtable(); 		
+		Hashtable hashOriginal, hash; 		
 		UserTransaction tx = null;
 		
 		try {		
 			// Obtengo usuario y creo manejadores para acceder a las BBDD
 			UsrBean usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
-			CenClienteAdm adminCli=new CenClienteAdm(this.getUserBean(request));
-			CenPersonaAdm adminPer=new CenPersonaAdm(this.getUserBean(request));
-			CenColegiadoAdm admColegiado = new CenColegiadoAdm(this.getUserBean(request));
+			CenClienteAdm adminCli = new CenClienteAdm(usr);
+			CenPersonaAdm adminPer = new CenPersonaAdm(usr);
  			
 			// Obtengo los datos del formulario
 			DatosGeneralesForm miForm = (DatosGeneralesForm)formulario;
+			String idInstitucion = miForm.getIdInstitucion();
+			String idPersona = miForm.getIdPersona();
+			String numIdentificacion = miForm.getNumIdentificacion();
 			
 			
-			/** CR - Si eres colegiado ya NO se podrá guardar 'Otros' como tipo de identificacion **/
+			// Si es colegiado ya NO se podrá guardar 'Otros' como tipo de identificacion
 			if (miForm.getCliente().equalsIgnoreCase("No Colegiado")) {
-				if (miForm.getNumIdentificacion() == null || miForm.getNumIdentificacion().equals("")) {
+				if (numIdentificacion == null || numIdentificacion.equals("")) {
 					String numIdent = (String) getIdenHistorico(mapping, miForm, request, response, 1, usr.getLocation());
 					miForm.setNumIdentificacion(numIdent);
 					miForm.setTipoIdentificacion("50");
 				}
 				
 			} else {
-				if (miForm.getTipoIdentificacion() == null || miForm.getTipoIdentificacion().equals("")	|| miForm.getTipoIdentificacion().equals("50")) {
+				if (("" + miForm.getTipoIdentificacion()).equals("50")) {
 					throw new SIGAException("messages.error.datosGenerales.tipoiden.otros");
 				}
 			}
@@ -904,13 +906,13 @@ public class DatosGeneralesAction extends MasterAction {
 		    		throw new SIGAException("messages.error.imagen.tipoNoCorrecto");
 		    	}
 		    	
-		    	nombreFoto = miForm.getNumIdentificacion() + extension;
+		    	nombreFoto = "" + numIdentificacion + extension;
 		    	OutputStream bos = null;
 		    	try {			
 		    		//retrieve the file data
 		    		stream = foto.getInputStream();
 		    		//write the file to the file specified
-		    		String idInstitucion=miForm.getIdInstitucion();
+		    		
 		    		File camino = new File (pathImagenes + File.separator + idInstitucion);
 		    		camino.mkdirs();
 		    		bos = new FileOutputStream(pathImagenes + File.separator + idInstitucion +File.separator+nombreFoto );
@@ -937,16 +939,27 @@ public class DatosGeneralesAction extends MasterAction {
 		    	}
 		    }
 		    
-			// Cargo la tabla hash con los valores del formulario para insertar en la BBDD
-			Hashtable hash = miForm.getDatos();
-			hash.put(CenHistoricoBean.C_IDPERSONA, miForm.getIdPersona());
-			hash.put(CenHistoricoBean.C_IDINSTITUCION, miForm.getIdInstitucion());
-			boolean isColegiado = false;
-			try {
-					isColegiado = admColegiado.existeColegiado(new Integer(miForm.getIdInstitucion()),miForm.getNumColegiado(),miForm.getNumColegiado())!=null;	
-			} catch (Exception e) {
-				isColegiado = false;
+			// Cargo una hastable con los valores originales del registro sobre el que se realizará la modificacion						
+			hashOriginal=(Hashtable)request.getSession().getAttribute("DATABACKUP");
+			
+			// primero compruebo la existencia del nif
+			// pero solamente cuando ha cambiado el NIF
+			String nifAnterior = (String) hashOriginal.get(CenPersonaBean.C_NIFCIF); 
+			String nifNuevo = numIdentificacion.toUpperCase();	
+			nifAnterior =UtilidadesString.LTrim(nifAnterior,"0");
+			nifNuevo =UtilidadesString.LTrim(nifNuevo,"0");			
+			//if(nifNuevo.length()<9)
+				//nifNuevo = UtilidadesString.relleno("0",9 - nifNuevo.length()) + nifNuevo;  
+			if (nifAnterior!=null && !nifAnterior.toUpperCase().equals(nifNuevo)) {
+				if (adminPer.existeNifPersona(numIdentificacion, miForm.getNombre(), miForm.getApellido1(), miForm.getApellido2())) {
+				      throw new SIGAException("messages.censo.nifcifExiste");
+				}
 			}
+			
+			// Cargo la tabla hash con los valores del formulario para insertar en la BBDD
+			hash = miForm.getDatos();
+			hash.put(CenHistoricoBean.C_IDPERSONA, idPersona);
+			hash.put(CenHistoricoBean.C_IDINSTITUCION, idInstitucion);
 			
 			// guardo en el hash el path de la imagen para grabar en cliente
 			if (nombreFoto!=null && !nombreFoto.equals("")) {
@@ -958,24 +971,7 @@ public class DatosGeneralesAction extends MasterAction {
 			
 			hash.put(CenClienteBean.C_FECHAALTA,GstDate.getApplicationFormatDate("",miForm.getFechaAlta()));	
 			
-			// Cargo una hastable con los valores originales del registro sobre el que se realizará la modificacion						
-			hashOriginal=(Hashtable)request.getSession().getAttribute("DATABACKUP");
-			
-			// primero compruebo la existencia del nif
-			// pero solamente cuando ha cambiado el NIF
-			String nifAnterior = (String) hashOriginal.get(CenPersonaBean.C_NIFCIF); 
-			String nifNuevo = (String)miForm.getNumIdentificacion().toUpperCase();	
-			nifAnterior =UtilidadesString.LTrim(nifAnterior,"0");
-			nifNuevo =UtilidadesString.LTrim(nifNuevo,"0");			
-			//if(nifNuevo.length()<9)
-				//nifNuevo = UtilidadesString.relleno("0",9 - nifNuevo.length()) + nifNuevo;  
-			if (nifAnterior!=null && !nifAnterior.toUpperCase().equals(nifNuevo)) {
-				if (adminPer.existeNifPersona(miForm.getNumIdentificacion(), miForm.getNombre(), miForm.getApellido1(), miForm.getApellido2())) {
-				      throw new SIGAException("messages.censo.nifcifExiste");
-				}
-			}
-			
-			hash.put(CenPersonaBean.C_NIFCIF,miForm.getNumIdentificacion().toUpperCase());
+			hash.put(CenPersonaBean.C_NIFCIF, numIdentificacion.toUpperCase());
 			
 			if(hash.get(CenPersonaBean.C_NOMBRE)!=null) 
 				hash.put(CenPersonaBean.C_NOMBRE, ((String)hash.get(CenPersonaBean.C_NOMBRE)).trim());
@@ -994,42 +990,25 @@ public class DatosGeneralesAction extends MasterAction {
 
 		
 			// insert de la parte de cliente
-			
-			//**************************************************************
-			// SI EL UPDATE DEVUELVE FALSE ES QUE NO EXISTE REGISTRO EN BBDD
-			//
 			if (!adminCli.update(hash,hashOriginal)) {
-				//LMS 21/08/2006
-				//Cambio por el nuevo uso de subLiteral en SIGAException.
-				//SIGAException exc=new SIGAException("messages.err.noseque.datosgenerales.de.alguien");
-				//exc.setSubLiteral("messages.censo.clientenoexiste.bbdd");
-				
 				SIGAException exc=new SIGAException("messages.censo.clientenoexiste.bbdd");
 				throw exc;
 			}
 			
 			// insert de la parte de persona
 			if (!adminPer.update(hash,hashOriginal)) {
-				//LMS 21/08/2006
-				//Cambio por el nuevo uso de subLiteral en SIGAException.
-				//SIGAException exc=new SIGAException("messages.err.noseque.datosgenerales.de.alguien");
-				//exc.setSubLiteral("messages.censo.personanoexiste.bbdd");
-				
 				SIGAException exc=new SIGAException("messages.censo.personanoexiste.bbdd");
 				throw exc;
 			}
 			
-			
 			// insert unico para el historico
-			// no hace falta hashHist.put(CenHistoricoBean.C_IDHISTORICO, adminHist.getNuevoID(hash).toString());			
-			// Cargo una nueva tabla hash para insertar en la tabla de historico
 			Hashtable hashHist = new Hashtable();			
 			hashHist.put(CenHistoricoBean.C_MOTIVO, miForm.getMotivo());
 			//mhg
 			if (nombreFoto==null || nombreFoto.equals("")) {
 				hash.put(CenClienteBean.C_FOTOGRAFIA, hashOriginal.get(CenClienteBean.C_FOTOGRAFIA));	
 			}
-			CenHistoricoAdm admHis = new CenHistoricoAdm (this.getUserBean(request));
+			CenHistoricoAdm admHis = new CenHistoricoAdm (usr);
 			
 			//Se inserta el histórico de los datos de CenPersona
 			if (!admHis.insertCompleto (hashHist, hash, hashOriginal, "CenPersonaBean", CenHistoricoAdm.ACCION_UPDATE, this.getLenguaje(request))) {
@@ -1041,31 +1020,23 @@ public class DatosGeneralesAction extends MasterAction {
 				throw new ClsExceptions(admHis.getError());
 			}		
 			
-			String apareceRedAbogacia = (String)hash.get(CenClienteBean.C_NOAPARECERREDABOGACIA);
-			String apareceRedAbogaciaOld = (String)hashOriginal.get(CenClienteBean.C_NOAPARECERREDABOGACIA);
-			//String is = CenClienteBean.c_t
-			if(isColegiado && apareceRedAbogacia!=null && apareceRedAbogaciaOld!=null && !apareceRedAbogaciaOld.equalsIgnoreCase(apareceRedAbogacia)){
-				//insertando en la cola de modificacion de datos para Consejos
-				CenColaCambioLetradoAdm colaAdm = new CenColaCambioLetradoAdm (this.getUserBean (request));
-				if (! colaAdm.insertarCambioEnCola(ClsConstants.COLA_CAMBIO_LETRADO_LOPD,
-						new Integer(miForm.getIdInstitucion()), new Long(miForm.getIdPersona()), new Long(apareceRedAbogacia)))
+			// lanzando revision de datos para copiar a consejos
+			CenColaCambioLetradoAdm colaAdm = new CenColaCambioLetradoAdm (usr);
+			if (! colaAdm.insertarCambioEnCola(ClsConstants.COLA_CAMBIO_LETRADO_LOPD, new Integer(idInstitucion), new Long(idPersona), null)) {
 				throw new SIGAException (colaAdm.getError ());
 			}
 			
 			// Lanzamos el proceso de revision de suscripciones del letrado 
-			String resultado[] = EjecucionPLs.ejecutarPL_RevisionSuscripcionesLetrado(miForm.getIdInstitucion(),
-																					  miForm.getIdPersona(),
-																					  "",
-																					  ""+this.getUserName(request));
+			String resultado[] = EjecucionPLs.ejecutarPL_RevisionSuscripcionesLetrado(idInstitucion, idPersona, "", ""+this.getUserName(request));
 			if ((resultado == null) || (!resultado[0].equals("0")))
 				throw new ClsExceptions ("Error al ejecutar el PL PKG_SERVICIOS_AUTOMATICOS.PROCESO_REVISION_LETRADO"+resultado[1]);
 			
 			tx.commit();
 
 			//Mandamos los datos para refrescar:
-			request.setAttribute("mensaje","messages.updated.success");
-			request.setAttribute("idPersona",miForm.getIdPersona());
-			request.setAttribute("idInstitucion",miForm.getIdInstitucion());
+			request.setAttribute("mensaje", "messages.updated.success");
+			request.setAttribute("idPersona", idPersona);
+			request.setAttribute("idInstitucion", idInstitucion);
 			String tipo = "";
 			// Si el tipo es null lo ponemos a personal:
 			if (request.getParameter("tipo")!=null && !request.getParameter("tipo").equals("")){
