@@ -1,40 +1,16 @@
 
 package com.siga.beans;
 
-import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.Hashtable;
-import java.util.List;
-import java.util.Vector;
-
-import javax.servlet.http.HttpServletRequest;
-
-import org.redabogacia.sigaservices.app.util.ReadProperties;
-import org.redabogacia.sigaservices.app.util.SIGAReferences;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
-import com.atos.utils.ClsMngBBDD;
-import com.atos.utils.ComodinBusquedas;
 import com.atos.utils.GstDate;
-import com.atos.utils.GstStringTokenizer;
-import com.atos.utils.Row;
-import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
-import com.siga.Utilidades.GestorContadores;
 import com.siga.Utilidades.Paginador;
-import com.siga.Utilidades.PaginadorBind;
-import com.siga.Utilidades.UtilidadesBDAdm;
 import com.siga.Utilidades.UtilidadesHash;
-import com.siga.Utilidades.UtilidadesMultidioma;
-import com.siga.Utilidades.UtilidadesNumero;
-import com.siga.Utilidades.UtilidadesString;
-import com.siga.censo.action.Direccion;
 import com.siga.censo.form.MantenimientoMandatosForm;
-import com.siga.general.CenVisibilidad;
-import com.siga.general.EjecucionPLs;
 import com.siga.general.SIGAException;
-import com.siga.informes.InformeCertificadosEspeciales;
 
 
 /**
@@ -203,122 +179,145 @@ public class CenMandatosAdm extends MasterBeanAdmVisible
 	 * @return java.util.Vector Vector de tablas hash  
 	 */
 	public Paginador getClientesMandatos(String idInstitucion, MantenimientoMandatosForm formulario, String idioma) throws ClsExceptions, SIGAException {
-
-		Integer idTipoCVSubtipo1 = null;
-		Integer idInstitucionSubtipo1=null;
-		Integer idTipoCVSubtipo2 = null;
-		Integer idInstitucionSubtipo2=null;
-	  	
 	  	// Acceso a BBDD
-		try { 
+		try {
+			String sql = "SELECT F_SIGA_GETNCOL_NCOM(" + CenMandatosCuentasBancariasBean.T_NOMBRETABLA + "." + CenMandatosCuentasBancariasBean.C_IDINSTITUCION + ", " + CenPersonaBean.T_NOMBRETABLA + "." + CenPersonaBean.C_IDPERSONA + ") AS NCOLEGIADO," +
+				CenPersonaBean.T_NOMBRETABLA + "." + CenPersonaBean.C_NIFCIF + "," +
+				CenPersonaBean.T_NOMBRETABLA + "." + CenPersonaBean.C_IDPERSONA + "," +
+				CenPersonaBean.T_NOMBRETABLA + "." + CenPersonaBean.C_NOMBRE + "," +
+				" DECODE(" + CenPersonaBean.T_NOMBRETABLA + "." + CenPersonaBean.C_APELLIDOS1 + ", '#NA', '', " + CenPersonaBean.T_NOMBRETABLA + "." + CenPersonaBean.C_APELLIDOS1 + "|| ' ' || " + CenPersonaBean.T_NOMBRETABLA + "." + CenPersonaBean.C_APELLIDOS2 + ") AS APELLIDOS," +
+				CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_IBAN + "," +
+				CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_TITULAR + "," +
+				" DECODE(" + CenMandatosCuentasBancariasBean.T_NOMBRETABLA + "." + CenMandatosCuentasBancariasBean.C_TIPOMANDATO + ", 0, 'SERVICIOS', 1, 'PRODUCTOS') AS TIPOMANDATO," +
+				CenMandatosCuentasBancariasBean.T_NOMBRETABLA + "." + CenMandatosCuentasBancariasBean.C_REFMANDATOSEPA + " AS REFERENCIA," +
+				CenMandatosCuentasBancariasBean.T_NOMBRETABLA + "." + CenMandatosCuentasBancariasBean.C_FIRMA_FECHA + " AS FECHAFIRMA," +
+				CenMandatosCuentasBancariasBean.T_NOMBRETABLA + "." + CenMandatosCuentasBancariasBean.C_FIRMA_LUGAR + " AS LUGARFIRMA," +
+				CenMandatosCuentasBancariasBean.T_NOMBRETABLA + "." + CenMandatosCuentasBancariasBean.C_IDCUENTA + "," +
+				CenMandatosCuentasBancariasBean.T_NOMBRETABLA + "." + CenMandatosCuentasBancariasBean.C_IDMANDATO +			
+			" FROM " + CenMandatosCuentasBancariasBean.T_NOMBRETABLA + "," +
+				CenPersonaBean.T_NOMBRETABLA + "," + 
+				CenCuentasBancariasBean.T_NOMBRETABLA +			
+			" WHERE " + CenPersonaBean.T_NOMBRETABLA + "." + CenPersonaBean.C_IDPERSONA + " = " + CenMandatosCuentasBancariasBean.T_NOMBRETABLA + "." + CenMandatosCuentasBancariasBean.C_IDPERSONA +
+				" AND " + CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_IDINSTITUCION + " = " + CenMandatosCuentasBancariasBean.T_NOMBRETABLA + "." + CenMandatosCuentasBancariasBean.C_IDINSTITUCION +
+				" AND " + CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_IDPERSONA + " = " + CenMandatosCuentasBancariasBean.T_NOMBRETABLA + "." + CenMandatosCuentasBancariasBean.C_IDPERSONA +
+				" AND " + CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_IDCUENTA + " = " + CenMandatosCuentasBancariasBean.T_NOMBRETABLA + "." + CenMandatosCuentasBancariasBean.C_IDCUENTA +
+				" AND " + CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_FECHABAJA + " IS NULL" +
+				" AND " + CenMandatosCuentasBancariasBean.T_NOMBRETABLA + "." + CenMandatosCuentasBancariasBean.C_IDINSTITUCION + " = " + usrbean.getLocation();
 			
-			StringBuilder sql = new StringBuilder();
-			
-			
-			sql.append("SELECT f_siga_getncol_ncom("+usrbean.getLocation()+", PER.IDPERSONA) NCOLEGIADO,");
-			sql.append(" PER.NIFCIF NIFCIF,");
-			sql.append(" PER.IDPERSONA IDPERSONA,");
-			sql.append(" PER.NOMBRE NOMBRE,");
-			sql.append(" DECODE(PER.APELLIDOS1,'#NA','',PER.APELLIDOS1 || ' ' || PER.APELLIDOS2) APELLIDOS,");
-			sql.append(" CUENTA.IBAN IBAN,");
-			sql.append(" CUENTA.TITULAR TITULAR,");
-			sql.append(" DECODE(MAN.TIPOMANDATO, 0, 'SERVICIOS', 1, 'PRODUCTOS') TIPOMANDATO,");
-			sql.append(" MAN.REFMANDATOSEPA REFERENCIA,");
-			sql.append(" MAN.FIRMA_FECHA FECHAFIRMA,");
-			sql.append(" MAN.FIRMA_LUGAR LUGARFIRMA,");
-			sql.append(" MAN.IDCUENTA IDCUENTA, ");
-			sql.append(" MAN.IDMANDATO IDMANDATO ");
-
-			sql.append(" FROM (select MANDATO.*, tipomandato as tipo from CEN_MANDATOS_CUENTASBANCARIAS MANDATO) MAN, CEN_PERSONA PER, CEN_CUENTASBANCARIAS CUENTA ");
-
-			sql.append(" WHERE PER.IDPERSONA = MAN.IDPERSONA ");
-			sql.append(" AND CUENTA.IDINSTITUCION = MAN.IDINSTITUCION ");
-			sql.append(" AND CUENTA.IDPERSONA = MAN.IDPERSONA ");
-			sql.append(" AND CUENTA.IDCUENTA = MAN.IDCUENTA ");
-			sql.append(" AND CUENTA.FECHABAJA IS NULL ");
-			sql.append(" AND MAN.IDINSTITUCION = "+usrbean.getLocation());
-			if(formulario.getChkPendientesFirmar()!=null && formulario.getChkPendientesFirmar().equalsIgnoreCase("1")){
-				sql.append(" AND MAN.FIRMA_FECHA IS NULL ");
+			if (formulario.getChkPendientesFirmar()!=null && formulario.getChkPendientesFirmar().equalsIgnoreCase("1")){
+				sql += " AND " + CenMandatosCuentasBancariasBean.T_NOMBRETABLA + "." + CenMandatosCuentasBancariasBean.C_FIRMA_FECHA + " IS NULL";
 			}
 			// Aplicamos los filtros de busqueda
 
 			if (formulario.getNombrePersona()!=null && !formulario.getNombrePersona().trim().equals("")) {
-				sql.append(" AND UPPER(PER.NOMBRE) LIKE '%"+formulario.getNombrePersona().toUpperCase()+"%' ");
-			}
-			if (formulario.getApellido1()!=null && !formulario.getApellido1().trim().equals("")) {
-				sql.append(" AND UPPER(PER.APELLIDOS1) LIKE '%"+formulario.getApellido1().toUpperCase()+"%' ");
-			}
-			if (formulario.getApellido2()!=null && !formulario.getApellido2().trim().equals("")) {
-				sql.append(" AND UPPER(PER.APELLIDOS2) LIKE '%"+formulario.getApellido2().toUpperCase()+"%' ");
-			}
-			if (formulario.getNif()!=null && !formulario.getNif().trim().equals("")) {
-				sql.append(" AND UPPER(PER.NIFCIF) LIKE '%"+formulario.getNif().toUpperCase()+"%' ");
+				sql += " AND UPPER(" + CenPersonaBean.T_NOMBRETABLA + "." + CenPersonaBean.C_NOMBRE + ") LIKE '%" + formulario.getNombrePersona().toUpperCase() + "%'";
 			}
 			
-			if (formulario.getFechaFirmaInicio()!=null && !formulario.getFechaFirmaInicio().trim().equals("")) {
-				sql.append(" AND MAN.FIRMA_FECHA >=TO_DATE('"+formulario.getFechaFirmaInicio()+"','DD/MM/YYYY') ");
+			if (formulario.getApellido1()!=null && !formulario.getApellido1().trim().equals("")) {
+				sql += " AND UPPER(" + CenPersonaBean.T_NOMBRETABLA + "." + CenPersonaBean.C_APELLIDOS1 + ") LIKE '%" + formulario.getApellido1().toUpperCase() + "%'";
 			}
-			if (formulario.getFechaFirmaFin()!=null && !formulario.getFechaFirmaFin().trim().equals("")) {
-				sql.append(" AND MAN.FIRMA_FECHA <=TO_DATE('"+formulario.getFechaFirmaFin()+"','DD/MM/YYYY') ");
+			
+			if (formulario.getApellido2()!=null && !formulario.getApellido2().trim().equals("")) {
+				sql += " AND UPPER(" + CenPersonaBean.T_NOMBRETABLA + "." + CenPersonaBean.C_APELLIDOS2 + ") LIKE '%" + formulario.getApellido2().toUpperCase() + "%'";
 			}
-			if (formulario.getFechaModInicio()!=null && !formulario.getFechaModInicio().trim().equals("")) {
-				sql.append(" AND CUENTA.FECHAMODIFICACION >=TO_DATE('"+formulario.getFechaModInicio()+"','DD/MM/YYYY') ");
+			
+			if (formulario.getNif()!=null && !formulario.getNif().trim().equals("")) {
+				sql += " AND UPPER(" + CenPersonaBean.T_NOMBRETABLA + "." + CenPersonaBean.C_NIFCIF + ") LIKE '%" + formulario.getNif().toUpperCase() + "%'";
 			}
-			if (formulario.getFechaModFin()!=null && !formulario.getFechaModFin().trim().equals("")) {
-				sql.append(" AND CUENTA.FECHAMODIFICACION <=TO_DATE('"+formulario.getFechaModFin()+"','DD/MM/YYYY') ");
+			
+			
+			/* Inicio - Control CEN_MANDATOS_CUENTASBANCARIAS.FIRMA_FECHA Inicio .. Fin */
+			String dFechaDesde = null, dFechaHasta = null;
+			if (formulario.getFechaFirmaInicio()!=null && !formulario.getFechaFirmaInicio().trim().equals(""))
+			    dFechaDesde = GstDate.getApplicationFormatDate("",formulario.getFechaFirmaInicio());
+			
+			if (formulario.getFechaFirmaFin()!=null && !formulario.getFechaFirmaFin().trim().equals(""))
+				dFechaHasta = GstDate.getApplicationFormatDate("",formulario.getFechaFirmaFin());
+			
+			if (dFechaDesde!=null || dFechaHasta!=null){
+			    sql += " AND " + GstDate.dateBetweenDesdeAndHasta(CenMandatosCuentasBancariasBean.T_NOMBRETABLA + "." + CenMandatosCuentasBancariasBean.C_FIRMA_FECHA, dFechaDesde, dFechaHasta);
 			}
+			/* Fin - Control CEN_MANDATOS_CUENTASBANCARIAS.FIRMA_FECHA Inicio .. Fin */
+			
+			
+			/* Inicio - Control CEN_CUENTASBANCARIAS.FECHAMODIFICACION Inicio .. Fin */
+			dFechaDesde = null;
+			dFechaHasta = null;
+			if (formulario.getFechaModInicio()!=null && !formulario.getFechaModInicio().trim().equals(""))
+			    dFechaDesde = GstDate.getApplicationFormatDate("",formulario.getFechaModInicio());
+			
+			if (formulario.getFechaModFin()!=null && !formulario.getFechaModFin().trim().equals(""))
+				dFechaHasta = GstDate.getApplicationFormatDate("",formulario.getFechaModFin());
+			
+			if (dFechaDesde!=null || dFechaHasta!=null){
+			    sql += " AND " + GstDate.dateBetweenDesdeAndHasta(CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_FECHAMODIFICACION, dFechaDesde, dFechaHasta);
+			}			
+			/* Fin - Control CEN_CUENTASBANCARIAS.FECHAMODIFICACION Inicio .. Fin */
+			
+			
 			if (formulario.getTipoMandato()!=null && !formulario.getTipoMandato().trim().equals("")) {
-				sql.append(" AND MAN.TIPOMANDATO='"+formulario.getTipoMandato()+"'");
+				sql += " AND " + CenMandatosCuentasBancariasBean.T_NOMBRETABLA + "." + CenMandatosCuentasBancariasBean.C_TIPOMANDATO + " = '" + formulario.getTipoMandato() + "'";
 			}
+			
 			if (formulario.getTipoCliente()!=null && !formulario.getTipoCliente().trim().equals("")) {
-				if(formulario.getTipoCliente().equalsIgnoreCase("C")){
-					sql.append(" AND exists (select 1 from cen_colegiado col where col.idpersona=per.idpersona and col.idinstitucion=man.idinstitucion)");
+				
+				if (formulario.getTipoCliente().equalsIgnoreCase("C")){
+				
+					sql += " AND EXISTS (" +
+							" SELECT 1 " +
+							" FROM " + CenColegiadoBean.T_NOMBRETABLA +
+							" WHERE " + CenColegiadoBean.T_NOMBRETABLA + "." + CenColegiadoBean.C_IDPERSONA + " = " + CenPersonaBean.T_NOMBRETABLA + "." + CenPersonaBean.C_IDPERSONA +
+								" AND " + CenColegiadoBean.T_NOMBRETABLA + "." + CenColegiadoBean.C_IDINSTITUCION + " = " + CenMandatosCuentasBancariasBean.T_NOMBRETABLA + "." + CenMandatosCuentasBancariasBean.C_IDINSTITUCION;					
 					if (formulario.getNumeroColegiado()!=null && !formulario.getNumeroColegiado().trim().equals("")) {
-						sql.append(" AND f_siga_getncol_ncom("+usrbean.getLocation()+", PER.IDPERSONA)=");
-						sql.append(formulario.getNumeroColegiado());
+						sql += " AND DECODE(" + CenColegiadoBean.T_NOMBRETABLA + "." + CenColegiadoBean.C_COMUNITARIO + ", 1, " + CenColegiadoBean.T_NOMBRETABLA + "." + CenColegiadoBean.C_NCOMUNITARIO + ", " + CenColegiadoBean.T_NOMBRETABLA + "." + CenColegiadoBean.C_NCOLEGIADO + ") = " + formulario.getNumeroColegiado();
 					}
-					 if (formulario.getTipoColegiado()!=null && !formulario.getTipoColegiado().equals("")){
-						 String sqlColegiado="";
-						 	if (formulario.getTipoColegiado().equals(String.valueOf(ClsConstants.ESTADO_COLEGIAL_ALTA))){
-						 		
-						 		sqlColegiado = " AND 1 in (select 1 from "+CenDatosColegialesEstadoBean.T_NOMBRETABLA+
-	                              " where "+CenDatosColegialesEstadoBean.T_NOMBRETABLA+"."+CenDatosColegialesEstadoBean.C_IDINSTITUCION+" = man."+CenClienteBean.C_IDINSTITUCION+
-	                              " and "+CenDatosColegialesEstadoBean.C_IDPERSONA+"=man."+CenClienteBean.C_IDPERSONA+
-	                              " and "+CenDatosColegialesEstadoBean.C_FECHAESTADO+" = (select max("+CenDatosColegialesEstadoBean.C_FECHAESTADO+")"+
-	                              " from "+CenDatosColegialesEstadoBean.T_NOMBRETABLA+
-								  " where "+ CenDatosColegialesEstadoBean.C_IDINSTITUCION+" = man."+CenClienteBean.C_IDINSTITUCION+
-								  " and "+CenDatosColegialesEstadoBean.C_IDPERSONA+"=man."+CenClienteBean.C_IDPERSONA;
-							  
-						 		sqlColegiado += " and "+CenDatosColegialesEstadoBean.C_FECHAESTADO+" <= sysdate)";
-						 		sqlColegiado += " and "+CenDatosColegialesEstadoBean.C_IDESTADO+" in ("+ClsConstants.ESTADO_COLEGIAL_EJERCIENTE+","+ClsConstants.ESTADO_COLEGIAL_SINEJERCER+"))";
-							  
-						 	} else{
-						 		sqlColegiado = " AND exists(select 1"+ 
-				                  " from "+CenDatosColegialesEstadoBean.T_NOMBRETABLA+
-				                  " where "+CenDatosColegialesEstadoBean.T_NOMBRETABLA+"."+CenDatosColegialesEstadoBean.C_IDINSTITUCION+" = man."+CenClienteBean.C_IDINSTITUCION+
-				                  " and "+CenDatosColegialesEstadoBean.C_IDPERSONA+"=man."+CenClienteBean.C_IDPERSONA+
-				                  " and "+CenDatosColegialesEstadoBean.C_FECHAESTADO+" = (select max("+CenDatosColegialesEstadoBean.C_FECHAESTADO+")"+
-				                  " from "+CenDatosColegialesEstadoBean.T_NOMBRETABLA+
-								  " where "+ CenDatosColegialesEstadoBean.C_IDINSTITUCION+" = man."+CenClienteBean.C_IDINSTITUCION+
-								  " and "+CenDatosColegialesEstadoBean.C_IDPERSONA+"=man."+CenClienteBean.C_IDPERSONA;
-						 	
-						 		sqlColegiado +=" and "+CenDatosColegialesEstadoBean.C_FECHAESTADO+" <=sysdate)";
-						 		sqlColegiado +=" and "+CenDatosColegialesEstadoBean.C_IDESTADO+" in ("+formulario.getTipoColegiado()+"))";	
-						 	}
-						 	sql.append(sqlColegiado);
-						 }
-				}else if(formulario.getTipoCliente().equalsIgnoreCase("N")){
-					sql.append(" AND NOT exists (select 1 from cen_colegiado col where col.idpersona=per.idpersona and col.idinstitucion=man.idinstitucion)");
-					if (formulario.getTipoNoColegiado()!=null && !formulario.getTipoNoColegiado().equalsIgnoreCase("")){
-						sql.append(" AND exists (select 1 from cen_nocolegiado nocol where nocol.idpersona=per.idpersona and nocol.idinstitucion=man.idinstitucion");
-						sql.append(" and nocol.tipo='"+formulario.getTipoNoColegiado()+"')");
+					sql += ")";
+					
+					if (formulario.getTipoColegiado()!=null && !formulario.getTipoColegiado().trim().equals("")) {
+						sql += " AND EXISTS (" + 
+	 							" SELECT 1" + 
+	 							" FROM " + CenDatosColegialesEstadoBean.T_NOMBRETABLA +
+	 							" WHERE " + CenDatosColegialesEstadoBean.T_NOMBRETABLA + "." + CenDatosColegialesEstadoBean.C_IDINSTITUCION + " = " + CenMandatosCuentasBancariasBean.T_NOMBRETABLA + "." + CenMandatosCuentasBancariasBean.C_IDINSTITUCION +
+	 								" AND " + CenDatosColegialesEstadoBean.T_NOMBRETABLA + "." + CenDatosColegialesEstadoBean.C_IDPERSONA + " = " + CenMandatosCuentasBancariasBean.T_NOMBRETABLA + "." + CenMandatosCuentasBancariasBean.C_IDPERSONA +
+	 								" AND " + CenDatosColegialesEstadoBean.T_NOMBRETABLA + "." + CenDatosColegialesEstadoBean.C_IDESTADO + 
+	 									(
+											formulario.getTipoColegiado().equals(String.valueOf(ClsConstants.ESTADO_COLEGIAL_ALTA)) 
+	 											? " IN (" + ClsConstants.ESTADO_COLEGIAL_EJERCIENTE + ", " + ClsConstants.ESTADO_COLEGIAL_SINEJERCER + ")"
+												: " = " + formulario.getTipoColegiado() 
+										) +
+	 								" AND " + CenDatosColegialesEstadoBean.T_NOMBRETABLA + "." + CenDatosColegialesEstadoBean.C_FECHAESTADO + " = (" + 
+	 									" SELECT MAX(CDCE." + CenDatosColegialesEstadoBean.C_FECHAESTADO + ")" +
+	 									" FROM " + CenDatosColegialesEstadoBean.T_NOMBRETABLA + " CDCE " + 
+	 									" WHERE CDCE." + CenDatosColegialesEstadoBean.C_IDINSTITUCION + " = " + CenMandatosCuentasBancariasBean.T_NOMBRETABLA + "." + CenMandatosCuentasBancariasBean.C_IDINSTITUCION +
+	 										" AND CDCE." + CenDatosColegialesEstadoBean.C_IDPERSONA + " = " + CenMandatosCuentasBancariasBean.T_NOMBRETABLA + "." + CenMandatosCuentasBancariasBean.C_IDPERSONA +
+	 										" AND CDCE." + CenDatosColegialesEstadoBean.C_FECHAESTADO + " <= SYSDATE " +
+	 								")" +
+	 							")";
+					 }
+					 
+				} else if (formulario.getTipoCliente().equalsIgnoreCase("N")) {
+					sql += " AND NOT EXISTS (" +
+								" SELECT 1 " +
+								" FROM " + CenColegiadoBean.T_NOMBRETABLA +
+								" WHERE " + CenColegiadoBean.T_NOMBRETABLA + "." + CenColegiadoBean.C_IDPERSONA + " = " + CenPersonaBean.T_NOMBRETABLA + "." + CenPersonaBean.C_IDPERSONA +
+									" AND " + CenColegiadoBean.T_NOMBRETABLA + "." + CenColegiadoBean.C_IDINSTITUCION + " = " + CenMandatosCuentasBancariasBean.T_NOMBRETABLA + "." + CenMandatosCuentasBancariasBean.C_IDINSTITUCION +
+							" ) ";
+					
+					if (formulario.getTipoNoColegiado()!=null && !formulario.getTipoNoColegiado().trim().equals("")) {
+						sql += " AND NOT EXISTS (" +
+									" SELECT 1 " +
+									" FROM " + CenNoColegiadoBean.T_NOMBRETABLA +
+									" WHERE " + CenNoColegiadoBean.T_NOMBRETABLA + "." + CenNoColegiadoBean.C_IDPERSONA + " = " + CenPersonaBean.T_NOMBRETABLA + "." + CenPersonaBean.C_IDPERSONA +
+										" AND " + CenNoColegiadoBean.T_NOMBRETABLA + "." + CenNoColegiadoBean.C_IDINSTITUCION + " = " + CenMandatosCuentasBancariasBean.T_NOMBRETABLA + "." + CenMandatosCuentasBancariasBean.C_IDINSTITUCION +
+										" AND " + CenNoColegiadoBean.T_NOMBRETABLA + "." + CenNoColegiadoBean.C_TIPO + " = '" + formulario.getTipoNoColegiado() + "'" + 
+								" ) ";
 					}
 				}
 			}
 
-			sql.append(" Order by APELLIDOS asc, nombre asc ");			
+			sql += " ORDER BY APELLIDOS ASC, " + CenPersonaBean.C_NOMBRE + " ASC";			
 			
-			Paginador paginador = new Paginador(sql.toString());				
+			Paginador paginador = new Paginador(sql);				
 			int totalRegistros = paginador.getNumeroTotalRegistros();
 			
 			if (totalRegistros==0){					
