@@ -176,7 +176,7 @@
 	localizacion="censo.fichaLetrado.facturacion.localizacion" />
 <%
 	} else if (path.equals("/JGR_AbonosClienteSJCS")) {
-		tipoFichaColegial = ClsConstants.TIPO_ABONO_JUSTICIA_GRATUITA";
+		tipoFichaColegial = ClsConstants.TIPO_ABONO_JUSTICIA_GRATUITA;
 %>
 <siga:Titulo titulo="pestana.fichaCliente.justiciagratuita.pagos"
 	localizacion="censo.fichaCliente.sjcs.to.facturacion.localizacion" />
