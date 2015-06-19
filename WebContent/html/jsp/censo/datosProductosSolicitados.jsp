@@ -36,14 +36,15 @@
 	ArrayList nCuentaSel = new ArrayList();
 
 	String formaPagoParam[] = new String[4];
-	String nCuentaParam[] = new String[2];
+	String nCuentaParam[] = new String[3];
 
 	DatosFacturacionForm formulario = (DatosFacturacionForm)request.getAttribute("datosFacturacionForm");
-	nCuentaParam[0] = formulario.getIdPersona();
-	nCuentaParam[1] = formulario.getIdInstitucion();
+	nCuentaParam[0] = formulario.getIdInstitucion();
+	nCuentaParam[1] = formulario.getIdPersona();	
+	nCuentaParam[2] = (String)request.getAttribute("CenDatosIdCuentaSel");
+	nCuentaSel.add(nCuentaParam[2]);
 
 	formaPagoSel.add((String)request.getAttribute("CenDatosIdFormaPagoSel"));
-	nCuentaSel.add((String)request.getAttribute("CenDatosIdCuentaSel"));
 	String idPeticion = (String)request.getAttribute("CenDatosIdPeticion");
 	
 	String pagoBancario = new Integer(ClsConstants.TIPO_FORMAPAGO_FACTURA).toString();
@@ -151,7 +152,7 @@
 									<siga:Idioma key="cen.consultaProductos.literal.formaPago"/>
 								</td>				
 								<td>
-									<siga:ComboBD accion="verCuentas();" nombre = "formaPago" tipo="cmbFormaPagoProductoClave" clase="box" obligatorio="true" elementoSel="<%=formaPagoSel %>"  parametro="<%=formaPagoParam %>" obligatorioSinTextoSeleccionar="true"/>
+									<siga:ComboBD accion="verCuentas();" nombre = "formaPago" tipo="cmbFormaPagoProductoClave" clase="box" obligatorio="true" elementoSel="<%=formaPagoSel%>"  parametro="<%=formaPagoParam%>" obligatorioSinTextoSeleccionar="true"/>
 								</td>
 							</tr>				
 

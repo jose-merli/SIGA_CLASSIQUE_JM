@@ -226,7 +226,7 @@
 				String descripcionEstadoProducto = UtilidadesString.mostrarDatoJSP((String) registro.get("DESCRIPCIONESTADOPRODUCTO"));
 				
 				if (identifCuenta == null || identifCuenta.equals("")) {
-					identifCuenta = " ";
+					identifCuenta = "0";
 				}				
 				
 				if (fecha == null || fecha.equals("")) {
