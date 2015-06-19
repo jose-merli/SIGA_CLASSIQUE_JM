@@ -9,6 +9,8 @@ package com.siga.beans;
  */
 public class EstUserRegistryBean extends MasterBean {
 
+	private static final long serialVersionUID = 7035160563301031628L;
+	
 	// Variables
 	private Integer idUsuario;
 	private Integer idInstitucion;
