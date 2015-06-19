@@ -2182,18 +2182,12 @@ public class EnvioInformesGenericos extends MasterReport {
 							identificador.append(i);
 							identificador.append("_");
 							identificador.append(k);
-							
-							for (int x = 0; x < regionUF.size(); x++) {
-								String idPersonaRegion = ((Hashtable)(regionUF.get(x))).get("IDPERSONAJG").toString();
-								if (idPersonaRegion!=null && idSolicitantePrinciapl!=null && idPersonaRegion.equalsIgnoreCase(idSolicitantePrinciapl)) {
-									identificador.append("_");
-									identificador.append(x);
-									break;
-								}
+							identificador.append("_");
+							String hoy = UtilidadesString.formatoFecha(new Date(),"yyyyMMddhhmmssSSS");
+							identificador.append(hoy);
 								
-							}
-//							identificador.append(k);
 							
+														
 
 							File fileDocumento = getInformeGenerico(
 									beanInforme, htDatosInforme, idiomaExt,
