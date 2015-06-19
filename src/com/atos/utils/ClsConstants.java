@@ -251,8 +251,9 @@ public class ClsConstants {
 	
 	// MAV 06/05/2005
 	// Tipo de Abono
-	public static final String TIPO_ABONO_FACTURACION	= "FC";
+	public static final String TIPO_ABONO_FACTURACION		= "FC";
 	public static final String TIPO_ABONO_JUSTICIA_GRATUITA	= "JG";
+	public static final String TIPO_ABONO_DESDE_FICHA		= "FICHA";
 	
 	// Estado peticion compra
 	public static final String INICIOFINALPONDERADO_INICIO	= "I";
