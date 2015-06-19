@@ -41,15 +41,9 @@
 <%@ page import="java.util.Enumeration"%>
 <!-- JSP -->
 
-
-
 <!-- HEAD -->
 
-
-
-
-<bean:define id="path" name="org.apache.struts.action.mapping.instance"
-	property="path" scope="request" />
+<bean:define id="path" name="org.apache.struts.action.mapping.instance" property="path" scope="request" />
 <%
 	String app = request.getContextPath();
 	HttpSession ses = request.getSession();
@@ -144,7 +138,7 @@
 			+ "&idPersona=" + idPersona.toString() + "&numero=" + numero + "&idInstitucion=" + idInstitucion + "&idInstUsuario="
 			+ idInstUsuario + "&accion=" + accion;
 	
-	String tipoFichaColegial ="";
+	String tipoFichaColegial = ClsConstants.TIPO_ABONO_DESDE_FICHA;
 %>
 
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
@@ -176,13 +170,11 @@
 	localizacion="censo.fichaLetrado.facturacion.localizacion" />
 <%
 	} else if (path.equals("/JGR_AbonosClienteSJCS")) {
-		tipoFichaColegial = ClsConstants.TIPO_ABONO_JUSTICIA_GRATUITA;
 %>
 <siga:Titulo titulo="pestana.fichaCliente.justiciagratuita.pagos"
 	localizacion="censo.fichaCliente.sjcs.to.facturacion.localizacion" />
 <%
 	} else {
-		tipoFichaColegial = ClsConstants.TIPO_ABONO_FACTURACION;
 %>
 <siga:TituloExt titulo="censo.fichaCliente.facturacion.abonos.cabecera"
 	localizacion="censo.fichaCliente.facturacion.abonos.localizacion" />
@@ -382,7 +374,7 @@
 						<siga:Idioma key="censo.consultaRegistrosBajaLogica.literal"/>
 						
 						<%
-													if (bIncluirBajaLogica) {
+							if (bIncluirBajaLogica) {
 												%>
 							<input type="checkbox" name="incluirRegistrosConBajaLogica"  id="incluirRegistrosConBajaLogica"  onclick="incluirRegBajaLogica(this);" checked>
 						<%
@@ -459,12 +451,10 @@
 			document.AbonosClienteForm.submit();
 		}
 		function accionImprimir() {		
-			var idPago = "idPago"+1;
-			if(document.getElementById(idPago)!=null &&  document.getElementById(idPago).value!=''){
-				document.AbonosClienteForm.modo.value = 'imprimir';
-				document.AbonosClienteForm.target = "submitArea";
-				document.AbonosClienteForm.submit();
-			}
+			sub();
+			document.AbonosClienteForm.modo.value = 'imprimir';
+			document.AbonosClienteForm.target = "submitArea";
+			document.AbonosClienteForm.submit();
 		}	
 	 
 		function creaFormInformeFacturaRectificativa() {
@@ -473,8 +463,7 @@
 	
 
 	
-	function download(fila)
-	{
+	function download(fila) {
 		var idPago = "idPago"+fila;
 		
 		if(document.getElementById(idPago).value!=''){

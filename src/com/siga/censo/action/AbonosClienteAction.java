@@ -497,7 +497,7 @@ public class AbonosClienteAction extends MasterAction {
 				
 				/** CR - Dependiendo en qué ventana estemos el informe personalizble sacará unos datos u otros **/
 				String tipoFichaColegial = (String) request.getParameter("tipoFichaColegial");
-				if(tipoFichaColegial != null && tipoFichaColegial.equals(ClsConstants.TIPO_ABONO_JUSTICIA_GRATUITA)){
+				if(tipoFichaColegial != null && tipoFichaColegial.equals(ClsConstants.TIPO_ABONO_DESDE_FICHA)){
 					cabeceras = new String[8];
 					cabeceras[0] = "FECHA";
 					cabeceras[1] = "NUMEROABONO";
