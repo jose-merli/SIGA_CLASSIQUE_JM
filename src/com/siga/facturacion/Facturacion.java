@@ -678,15 +678,16 @@ public class Facturacion {
 	    				} catch (Exception e2) {}
 	    			} 			
 	
+	    			String sms;
 	    			if (e instanceof SIGAException) {
 	    				SIGAException e2 = (SIGAException) e;
-	    				ClsLogging.writeFileLog("ERROR AL CONFIRMAR Y PRESENTAR: "+UtilidadesString.getMensajeIdioma(this.usrbean.getLanguage(),e2.getLiteral()),10);
-	    				log.writeLogFactura("CONFIRMACION","N/A","N/A","Error en proceso de confirmación: "+UtilidadesString.getMensajeIdioma(this.usrbean.getLanguage(),e2.getLiteral()));
+	    				sms = UtilidadesString.getMensajeIdioma(this.usrbean.getLanguage(), e2.getLiteral());	    				
 	    				
 	    			} else {
-	    				ClsLogging.writeFileLog("ERROR AL CONFIRMAR Y PRESENTAR: " + e.toString(),10);
-	    				log.writeLogFactura("CONFIRMACION","N/A","N/A","Error en proceso de confirmación: "+ e.toString());
+	    				sms = e.toString();
 	    			}
+	    			ClsLogging.writeFileLog("ERROR AL CONFIRMAR Y PRESENTAR: " + sms, 10);
+    				log.writeLogFactura("CONFIRMACION","N/A","N/A","Error en proceso de confirmación: " + sms);
 	
 	    			//////////// INICIO TRANSACCION ////////////////
 	    			if (tx!=null)
@@ -702,7 +703,7 @@ public class Facturacion {
 	    			//////////// FIN TRANSACCION ////////////////
 	
 	    			ClsLogging.writeFileLog("CAMBIA ESTADO A FINALIZADA ERRORES.",10);
-	    			throw new ClsExceptions("Error al confirmar facturacion rápida. " + e.getMessage());
+	    			throw new ClsExceptions("Error al confirmar facturacion rápida. " + sms);
 	    		}
 
     		} else {
