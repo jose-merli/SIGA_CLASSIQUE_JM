@@ -633,11 +633,39 @@ public class BusquedaAsistenciasLetradoAction extends MasterAction {
 						motivo.append(numero);
 						motivo.append(". Registro eliminado");
 						
+						Map<String,Hashtable<String, Object>> fksActuacionMap = new HashMap<String, Hashtable<String,Object>>(); 
+						//Como el turno es obligarotio
+						Hashtable<String, Object> fksActuacionHashtable = new Hashtable<String, Object>();
+						fksActuacionHashtable.put("TABLA_FK", ScsTurnoBean.T_NOMBRETABLA);
+						fksActuacionHashtable.put("SALIDA_FK", ScsTurnoBean.C_NOMBRE);
+						fksActuacionHashtable.put(ScsTurnoBean.C_IDINSTITUCION, UtilidadesHash.getString(hashAsistencia, ScsAsistenciasBean.C_IDINSTITUCION));
+						fksActuacionHashtable.put(ScsTurnoBean.C_IDTURNO, UtilidadesHash.getString(hashAsistencia, ScsAsistenciasBean.C_IDTURNO));
+						fksActuacionMap.put(ScsAsistenciasBean.C_IDTURNO,fksActuacionHashtable);
 						
+						fksActuacionHashtable = new Hashtable<String, Object>();
+						fksActuacionHashtable.put("TABLA_FK", ScsGuardiasTurnoBean.T_NOMBRETABLA);
+						fksActuacionHashtable.put("SALIDA_FK", ScsGuardiasTurnoBean.C_NOMBRE);
+						fksActuacionHashtable.put(ScsGuardiasTurnoBean.C_IDINSTITUCION, UtilidadesHash.getString(hashAsistencia, ScsAsistenciasBean.C_IDINSTITUCION));
+						fksActuacionHashtable.put(ScsGuardiasTurnoBean.C_IDTURNO, UtilidadesHash.getString(hashAsistencia, ScsAsistenciasBean.C_IDTURNO));
+						fksActuacionHashtable.put(ScsGuardiasTurnoBean.C_IDGUARDIA, UtilidadesHash.getString(hashAsistencia, ScsAsistenciasBean.C_IDGUARDIA));
+						fksActuacionMap.put(ScsAsistenciasBean.C_IDGUARDIA,fksActuacionHashtable);
+						
+						fksActuacionHashtable = new Hashtable<String, Object>();
+						fksActuacionHashtable.put("TABLA_FK", ScsTipoAsistenciaColegioBean.T_NOMBRETABLA);
+						fksActuacionHashtable.put("SALIDA_FK", ScsTipoAsistenciaColegioBean.C_DESCRIPCION);
+						fksActuacionHashtable.put(ScsTipoAsistenciaColegioBean.C_IDINSTITUCION, UtilidadesHash.getString(hashAsistencia, ScsAsistenciasBean.C_IDINSTITUCION));
+						fksActuacionHashtable.put(ScsTipoAsistenciaColegioBean.C_IDTIPOASISTENCIACOLEGIO, UtilidadesHash.getString(hashAsistencia, ScsAsistenciasBean.C_IDTIPOASISTENCIACOLEGIO));
+						fksActuacionMap.put(ScsAsistenciasBean.C_IDTIPOASISTENCIACOLEGIO,fksActuacionHashtable);
+			
+						
+						hashAsistencia.put("fks", fksActuacionMap);
 
 						CenHistoricoAdm admHis = new CenHistoricoAdm (usr);
 						boolean isInsertado = admHis.auditoriaColegiados(Long.valueOf((String)hashAsistencia.get(ScsAsistenciasBean.C_IDPERSONACOLEGIADO)),motivo.toString(), ClsConstants.TIPO_CAMBIO_HISTORICO_ASISTENCIAMODIFICACION ,hashAsistencia, 
-								hashAsistencia, null,new ArrayList<String>() ,new Hashtable<String, String>(), CenHistoricoAdm.ACCION_DELETE, usr.getLanguage(), false); 
+								hashAsistencia, null,admAsistencia.getListCamposOcultarHistoricoAltaAsistencia() ,new Hashtable<String, String>(), CenHistoricoAdm.ACCION_DELETE, usr.getLanguage(), false);
+						
+						
+						
 					}
 					
 					

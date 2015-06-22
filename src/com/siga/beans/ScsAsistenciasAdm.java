@@ -923,7 +923,7 @@ public class ScsAsistenciasAdm extends MasterBeanAdministrador {
 			
 		
 	}
-	private List<String> getListCamposOcultarHistoricoAltaAsistencia(){
+	public List<String> getListCamposOcultarHistoricoAltaAsistencia(){
 		List<String> ocultarClaveList = new ArrayList<String>();
 		ocultarClaveList.add(ScsAsistenciasBean.C_IDINSTITUCION);
 		ocultarClaveList.add(ScsAsistenciasBean.C_IDTIPOASISTENCIA);  
@@ -958,6 +958,13 @@ public class ScsAsistenciasAdm extends MasterBeanAdministrador {
 		ocultarClaveList.add(ScsAsistenciasBean.C_IDPRETENSION);
 		ocultarClaveList.add(ScsAsistenciasBean.C_IDESTADOASISTENCIA);
 		ocultarClaveList.add(ScsAsistenciasBean.C_IDORIGENASISTENCIA);
+		ocultarClaveList.add("ASISTIDOSOLICITAJG");
+		ocultarClaveList.add("ASISTIDOAUTORIZAEEJG");
+		ocultarClaveList.add("FECHAESTADOASISTENCIA");
+		ocultarClaveList.add("CODIGO");
+		ocultarClaveList.add("IDSOLICITUDCENTRALITA");
+		ocultarClaveList.add("IDTIPOASISTIDO");
+
 		
 		return ocultarClaveList;
 	}

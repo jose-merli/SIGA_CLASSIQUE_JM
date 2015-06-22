@@ -1351,7 +1351,7 @@ public class CenHistoricoAdm extends MasterBeanAdministrador
 		if(accion!=ACCION_DELETE)
 			descripcion.append(getDescripcionClaveValor(objectHashtable, claves,ocultarClaveList,cambiarNombreSalidaHashtable,idioma));
 		else
-			descripcion.append(getDescripcionBorrado(objectHashtable,ocultarClaveList,cambiarNombreSalidaHashtable));
+			descripcion.append(getDescripcionBorrado(objectHashtable,ocultarClaveList,cambiarNombreSalidaHashtable,idioma));
 		if(accion!=ACCION_UPDATE && descripcion.length()>4000)
 			throw new SIGAException("lA DESCRIPCION ES DEMASIADO LARGA. NO PUEDE LLEGAR HASTA AQUI");
 		
@@ -1374,26 +1374,65 @@ public class CenHistoricoAdm extends MasterBeanAdministrador
 	 * @param objectHashtable
 	 * @return
 	 */
-	private String getDescripcionBorrado(Hashtable objectHashtable, List<String> ocultarClaveList, Hashtable<String,String> cambiarNombreSalidaHashtable) {
-		StringBuffer descripcion =  new StringBuffer();
+	private String getDescripcionBorrado(Hashtable objectHashtable, List<String> ocultarClaveList, Hashtable<String, String> cambiarNombreSalidaHashtable, String idioma) {
+		StringBuffer descripcion = new StringBuffer();
+		Map<String, Hashtable<String, Object>> fksDesignaMap = (Map<String, Hashtable<String, Object>>) objectHashtable.get("fks");
+		if (fksDesignaMap != null)
+			objectHashtable.remove("fks");
+
 		Iterator ite = objectHashtable.keySet().iterator();
 		while (ite.hasNext()) {
 			String key = (String) ite.next();
-			if(!ocultarClaveList.contains(key)){
+			if (!ocultarClaveList.contains(key)) {
 				descripcion.append("  - ");
-				if(cambiarNombreSalidaHashtable!=null && cambiarNombreSalidaHashtable.containsKey(key))
+				if (cambiarNombreSalidaHashtable != null && cambiarNombreSalidaHashtable.containsKey(key))
 					descripcion.append(UtilidadesString.getPrimeraMayuscula(cambiarNombreSalidaHashtable.get(key)));
 				else
 					descripcion.append(UtilidadesString.getPrimeraMayuscula(key));
 				descripcion.append(": ");
-				String elemento = (String) objectHashtable.get(key);
-				descripcion.append(elemento);
-				descripcion.append("\n");
-				
+				if (objectHashtable.get(key) instanceof String) {
+					String elemento = (String) objectHashtable.get(key);
+
+					if (fksDesignaMap != null && fksDesignaMap.containsKey(key)) {
+
+						try {
+							Vector vFK = this.getHashSQL(getQueryFK(fksDesignaMap.get(key), idioma));
+							if (vFK != null && vFK.size() == 1) {
+								Hashtable htFK = (Hashtable) vFK.get(0);
+								Object claveAux = fksDesignaMap.get(key).get(key);
+								if (claveAux != null) {
+									descripcion.append(claveAux.toString());
+									descripcion.append(" (");
+									descripcion.append(htFK.get("SALIDA_FK").toString());
+									descripcion.append(")");
+									descripcion.append("\n");
+								} else {
+									descripcion.append(elemento);
+									descripcion.append(" (");
+									descripcion.append(htFK.get("SALIDA_FK").toString());
+									descripcion.append(")");
+									descripcion.append("\n");
+
+								}
+							} else {
+								throw new ClsExceptions("Hay clave primaria de la FK mal configurada");
+							}
+						} catch (ClsExceptions e) {
+							e.printStackTrace();
+							descripcion.append(elemento);
+							descripcion.append("\n");
+						}
+					} else {
+						descripcion.append(elemento);
+						descripcion.append("\n");
+					}
+
+				}
+
 			}
-			
+
 		}
-		
+
 		return descripcion.toString();
 	}
 
