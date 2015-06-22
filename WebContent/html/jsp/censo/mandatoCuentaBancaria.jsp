@@ -148,22 +148,24 @@
 			
 			if (jQuery("input[id=esquema]:checked").val() == 2 && !jQuery("#autorizacionB2BCheck")[0].checked) {
 				errores += "<siga:Idioma key='errors.required' arg0='censo.fichaCliente.datosBancarios.autorizacion.b2b'/>"+ '\n';				 
-			}						
-			
-			if (jQuery("#deudorTipoId").val()=="<%=ClsConstants.TIPO_IDENTIFICACION_NIF%>" || jQuery("#deudorTipoId").val()=="<%=ClsConstants.TIPO_IDENTIFICACION_CIF%>") {
-				if (!validarNIFCIF(jQuery("#deudorTipoId").val(), jQuery("#deudorId").val())) {
-					errores += "<siga:Idioma key='errors.invalid' arg0='censo.fichaCliente.datosBancarios.identificador'/>"+ '\n';
-				}
-			
-			} else if (jQuery("#deudorTipoId").val()=="<%=ClsConstants.TIPO_IDENTIFICACION_TRESIDENTE%>") {
-				if (!validaNIE(jQuery("#deudorId").val())) {
-					errores += "<siga:Idioma key='errors.invalid' arg0='censo.fichaCliente.datosBancarios.identificador'/>"+ '\n';	
-				}
-			}				
+			}			
 			
 			if (jQuery("#deudorTipoId").val()=="" || jQuery("#deudorId").val() == "") {
-				errores += "<siga:Idioma key='errors.required' arg0='censo.fichaCliente.datosBancarios.identificador'/>"+ '\n';				
-			}			
+				errores += "<siga:Idioma key='errors.required' arg0='censo.fichaCliente.datosBancarios.identificador'/>"+ '\n';
+				
+			} else {						
+				if (jQuery("#deudorTipoId").val()=="<%=ClsConstants.TIPO_IDENTIFICACION_NIF%>" || jQuery("#deudorTipoId").val()=="<%=ClsConstants.TIPO_IDENTIFICACION_CIF%>") {
+					if (!validarNIFCIF(jQuery("#deudorTipoId").val(), jQuery("#deudorId").val())) {
+						errores += "<siga:Idioma key='errors.invalid' arg0='censo.fichaCliente.datosBancarios.identificador'/>"+ '\n';
+					}
+				
+				} else if (jQuery("#deudorTipoId").val()=="<%=ClsConstants.TIPO_IDENTIFICACION_TRESIDENTE%>") {
+					if (!validaNIE(jQuery("#deudorId").val())) {
+						errores += "<siga:Idioma key='errors.invalid' arg0='censo.fichaCliente.datosBancarios.identificador'/>"+ '\n';	
+					}
+				}				
+			}
+			
 			
 			if (errores != "") {
 				alert(errores);
