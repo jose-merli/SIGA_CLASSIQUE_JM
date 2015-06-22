@@ -504,6 +504,7 @@
 	 		}
  			
 			if (!salida) {
+				calcularImporte();
 				var mensaje = "<siga:Idioma key="pys.solicitudCompra.literal.numeroCertificadosMal"/>";
 				alert (mensaje);	
 			}
