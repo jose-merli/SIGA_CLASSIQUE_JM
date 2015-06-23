@@ -4516,14 +4516,12 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 		h.put(new Integer(2), tipoEjg);
 		h.put(new Integer(3), anioEjg);
 		h.put(new Integer(4), numeroEjg);
-//		String textoNoConsta = UtilidadesMultidioma.getCampoMultidioma("informes.sjcs.parentesco.noConsta",idioma);
-		String textoSolicitante = UtilidadesMultidioma.getDatoMaestroIdioma("gratuita.busquedaSOJ.literal.solicitante",idioma);
 		StringBuffer sql = new StringBuffer();		
 		sql.append(" SELECT decode(PER2.APELLIDO2, null,PER2.APELLIDO1,PER2.APELLIDO1 || ' ' || PER2.APELLIDO2) || ', ' || ");
 		sql.append(" 	PER2.NOMBRE as CONYUGE_UF,PER2.NIF as NIF_CONYUGE_UF,(select f_siga_getrecurso(descripcion, "+idioma+") from scs_parentesco paren where paren.idinstitucion = ufa.idinstitucion and paren.idparentesco = UFA.Idparentesco) as PARENTESCO_UF, ");
 		sql.append(" 	trunc(months_between(sysdate, PER2.FECHANACIMIENTO) / 12) as EDAD_UF,  UFA.IDINSTITUCION, UFA.IDTIPOEJG, UFA.ANIO,UFA.NUMERO, UFA.IDPERSONA IDPERSONAJG, EJG3.CALIDAD AS CALIDAD, ");
 		sql.append("    EJG3.IDTIPOENCALIDAD AS IDTIPOENCALIDAD,EJG3.CALIDADIDINSTITUCION AS CALIDADIDINSTITUCION,");
-		sql.append("    decode(UFA.SOLICITANTE,1, '"+textoSolicitante+"', null) AS SOLICITANTE, ");
+		sql.append("    decode(UFA.SOLICITANTE,1, f_siga_getrecurso_etiqueta('gratuita.busquedaSOJ.literal.solicitante',"+idioma+"), null) AS SOLICITANTE, ");
 		sql.append("	PER2.NOMBRE, PER2.APELLIDO1,PER2.APELLIDO2, PER2.DIRECCION, PER2.CODIGOPOSTAL, POB.NOMBRE AS NOMBRE_POB,");
 		sql.append("    PROV.NOMBRE AS NOMBRE_PROV, PAIS.NOMBRE AS NOMBRE_PAIS, EJG3.ANIO AS ANIOEJG, lpad(EJG3.NUMEJG,"+longitudNumEjg+",0) as NUMEJG, PER2.SEXO, PER2.IDLENGUAJE,");
 		sql.append("    (SELECT TEL2.NUMEROTELEFONO FROM SCS_TELEFONOSPERSONA TEL2 WHERE TEL2.IDINSTITUCION = UFA.IDINSTITUCION AND TEL2.IDPERSONA = UFA.IDPERSONA AND ROWNUM < 2) AS TELEFONO, PER2.OBSERVACIONES");
@@ -4564,16 +4562,12 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 		h.put(new Integer(3), anioEjg);
 		h.put(new Integer(4), numeroEjg);
 			
-		String textoNoConsta = UtilidadesMultidioma.getDatoMaestroIdioma("informes.sjcs.parentesco.noConsta",idioma);
-		String textoSolicitante = UtilidadesMultidioma.getDatoMaestroIdioma("gratuita.busquedaSOJ.literal.solicitante",idioma);
-		
-		
 		StringBuffer sql = new StringBuffer();		
 		sql.append(" SELECT decode(PER2.APELLIDO2, null,PER2.APELLIDO1,PER2.APELLIDO1 || ' ' || PER2.APELLIDO2) || ', ' || ");
-		sql.append("    PER2.NOMBRE as NOMBRE_UF, PER2.NIF as NIF_UF, decode(ufa.idparentesco, null, '"+textoNoConsta+"',(select f_siga_getrecurso(descripcion, "+idioma+") from scs_parentesco paren where paren.idinstitucion = ufa.idinstitucion and paren.idparentesco = UFA.Idparentesco)) as PARENTESCO_UF,");
+		sql.append("    PER2.NOMBRE as NOMBRE_UF, PER2.NIF as NIF_UF, decode(ufa.idparentesco, null, f_siga_getrecurso_etiqueta('informes.sjcs.parentesco.noConsta',"+idioma+"),(select f_siga_getrecurso(descripcion, "+idioma+") from scs_parentesco paren where paren.idinstitucion = ufa.idinstitucion and paren.idparentesco = UFA.Idparentesco)) as PARENTESCO_UF,");
 		sql.append("    trunc(months_between(sysdate, PER2.FECHANACIMIENTO) / 12) as EDAD_UF,  UFA.IDINSTITUCION, UFA.IDTIPOEJG, UFA.ANIO,UFA.NUMERO, UFA.IDPERSONA IDPERSONAJG, EJG3.CALIDAD AS CALIDAD, ");
 		sql.append("    EJG3.IDTIPOENCALIDAD AS IDTIPOENCALIDAD,EJG3.CALIDADIDINSTITUCION AS CALIDADIDINSTITUCION, ");
-		sql.append("    decode(UFA.SOLICITANTE,1, '"+textoSolicitante+"', null) AS SOLICITANTE, ");
+		sql.append("    decode(UFA.SOLICITANTE,1, f_siga_getrecurso_etiqueta('gratuita.busquedaSOJ.literal.solicitante',"+idioma+"), null) AS SOLICITANTE, ");
 		sql.append("    PER2.NOMBRE, PER2.APELLIDO1,PER2.APELLIDO2, PER2.DIRECCION, PER2.CODIGOPOSTAL, POB.NOMBRE AS NOMBRE_POB,");
 		sql.append("    PROV.NOMBRE AS NOMBRE_PROV, PAIS.NOMBRE AS NOMBRE_PAIS, EJG3.ANIO AS ANIOEJG,lpad(EJG3.NUMEJG,"+longitudNumEjg+",0) as NUMEJG, PER2.SEXO, PER2.IDLENGUAJE,");
 		sql.append("    (SELECT TEL2.NUMEROTELEFONO FROM SCS_TELEFONOSPERSONA TEL2 WHERE TEL2.IDINSTITUCION = UFA.IDINSTITUCION AND TEL2.IDPERSONA = UFA.IDPERSONA AND ROWNUM < 2) AS TELEFONO, PER2.OBSERVACIONES");
@@ -4771,7 +4765,6 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 
 								registro.put("APELLIDO2_DEST", (String) registro.get("APELLIDOS2_D_LETRADO_DESIGNADO"));
 								registro.put("APELLIDO2_DEST_MAYUS", ((String) registro.get("APELLIDOS2_D_LETRADO_DESIGNADO")).toUpperCase());
-
 								registro.put("SEXO_DEST", (String) registro.get("SEXO_LETRADO_DESIGNADO"));
 								registro.put("O_A_DEST", (String) registro.get("O_A_LETRADO_DESIGNADO"));
 								registro.put("EL_LA_DEST", (String) registro.get("EL_LA_LETRADO_DESIGNADO"));
@@ -4786,6 +4779,11 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 								registro.put("TELEFONO2_DEST", (String) registro.get("TELEFONO2_LETRADO_DESIGNADO"));
 								registro.put("MOVIL_DEST", (String) registro.get("MOVIL_LETRADO_DESIGNADO"));
 								registro.put("FAX1_DEST", (String) registro.get("FAX_LETRADO_DESIGNADO"));
+								registro.put("FAX2_DEST", (String) registro.get("FAX2_LETRADO_DESIGNADO"));
+								registro.put("NOMBRE_PAIS_DEST", "");
+								registro.put("TRATAMIENTO_DEST","");
+								
+								
 
 								registro.put("CORREOELECTRONICO_DEST", (String) registro.get("EMAIL_LETRADO_DESIGNADO"));
 								registro.put("PAGINAWEB_DEST", (String) registro.get("PAGINAWEB_LETRADO_DESIGNADO"));
@@ -4834,7 +4832,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 							registro.put("TELEFONO1_CONTRARIO", "");
 							if(contrariosEjgVector!=null && contrariosEjgVector.size()>0){
 								registro.put("contrarios", contrariosEjgVector);
-							}	
+							}
 
 							if(vDefendidos!=null && vDefendidos.size()>0){
 								if(((String)( ((Hashtable) vDefendidos.get(0)).get("IDPERSONA"))).trim().equalsIgnoreCase(""))continue;
@@ -4910,6 +4908,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 							registro.put("O_A_CONTRARIO", "");
 							registro.put("NIF_CONTRARIO", "");
 							registro.put("TELEFONO1_CONTRARIO", "");
+							
 							
 						}
 
@@ -5014,7 +5013,11 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 								clone.put("APELLIDO1_DEST_MAYUS", ((String) representanteLegalDefendido.get("APELLIDO1_PJG")).toUpperCase());
 								clone.put("APELLIDO2_DEST", (String) representanteLegalDefendido.get("APELLIDO2_PJG"));
 								clone.put("APELLIDO2_DEST_MAYUS", ((String) representanteLegalDefendido.get("APELLIDO2_PJG")).toUpperCase());
-								clone.put("SEXO_DEST", (String) representanteLegalDefendido.get("SEXO_PJG"));
+								if(representanteLegalDefendido.get("SEXO_PJG")!=null)
+									clone.put("SEXO_DEST", UtilidadesString.getMensajeIdioma(idioma, (String) representanteLegalDefendido.get("SEXO_PJG")) );
+								else
+									clone.put("SEXO_DEST", "");
+								
 								clone.put("O_A_DEST", (String) representanteLegalDefendido.get("O_A_PJG"));
 								clone.put("EL_LA_DEST", (String) representanteLegalDefendido.get("EL_LA_PJG"));
 								clone.put("NIFCIF_DEST", (String) representanteLegalDefendido.get("NIF_PJG"));
@@ -5026,6 +5029,9 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 								clone.put("TELEFONO2_DEST", (String) representanteLegalDefendido.get("TELEFONO2_PJG"));
 								clone.put("MOVIL_DEST", (String) representanteLegalDefendido.get("MOVIL_PJG"));
 								clone.put("FAX1_DEST", (String) representanteLegalDefendido.get("FAX_PJG"));
+								registro.put("FAX2_DEST", "");
+								registro.put("NOMBRE_PAIS_DEST", "");
+								registro.put("TRATAMIENTO_DEST","");
 							
 								clone.put("CORREOELECTRONICO_DEST", (String) representanteLegalDefendido.get("CORREOELECTRONICO_PJG"));
 							
@@ -5040,7 +5046,12 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 								clone.put("APELLIDO1_DEST_MAYUS", ((String) clone.get("APELLIDO1_PJG")).toUpperCase());
 								clone.put("APELLIDO2_DEST", (String) clone.get("APELLIDO2_PJG"));
 								clone.put("APELLIDO2_DEST_MAYUS", ((String) clone.get("APELLIDO2_PJG")).toUpperCase());
-								clone.put("SEXO_DEST", (String) clone.get("SEXOINTERESADO"));
+								
+								if(clone.get("SEXOINTERESADO")!=null)
+									clone.put("SEXO_DEST", UtilidadesString.getMensajeIdioma(idioma, (String) clone.get("SEXOINTERESADO")) );
+								else
+									clone.put("SEXO_DEST", "");
+								
 								clone.put("O_A_DEST", (String) clone.get("O_A_INTERESADO"));
 								clone.put("EL_LA_DEST", (String) clone.get("EL_LA_INTERESADO"));
 								clone.put("NIFCIF_DEST", (String) clone.get("NIF_DEFENDIDO"));
@@ -5052,7 +5063,9 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 								clone.put("TELEFONO2_DEST", (String) clone.get("TELEFONO2_PJG"));
 								clone.put("MOVIL_DEST", (String) clone.get("MOVIL_PJG"));
 								clone.put("FAX1_DEST", (String) clone.get("FAX_PJG"));
-								//									clone.put("FAX2_DEST", (String) representanteLegalDefendido.get("FAX_PJG"));
+								registro.put("FAX2_DEST", "");
+								registro.put("NOMBRE_PAIS_DEST", "");
+								registro.put("TRATAMIENTO_DEST","");
 								clone.put("CORREOELECTRONICO_DEST", (String) clone.get("CORREOELECTRONICO_PJG"));
 								//								clone.put("PAGINAWEB_DEST", (String) clone.get("PAGINAWEB"));
 								//									clone.put("POBLACIONEXTRANJERA_DEST", (String) clone.get("POBLACIONEXTRANJERA"));
@@ -5127,7 +5140,12 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 								clone.put("APELLIDO1_DEST_MAYUS", ((String) representanteLegalContrario.get("APELLIDO1_PJG")).toUpperCase());
 								clone.put("APELLIDO2_DEST", (String) representanteLegalContrario.get("APELLIDO2_PJG"));
 								clone.put("APELLIDO2_DEST_MAYUS", ((String) representanteLegalContrario.get("APELLIDO2_PJG")).toUpperCase());
-								clone.put("SEXO_DEST", (String) representanteLegalContrario.get("SEXO_PJG"));
+								
+								if(representanteLegalContrario.get("SEXO_PJG")!=null)
+									clone.put("SEXO_DEST", UtilidadesString.getMensajeIdioma(idioma, (String) representanteLegalContrario.get("SEXO_PJG")) );
+								else
+									clone.put("SEXO_DEST", "");
+								
 								clone.put("O_A_DEST", (String) representanteLegalContrario.get("O_A_PJG"));
 								clone.put("EL_LA_DEST", (String) representanteLegalContrario.get("EL_LA_PJG"));
 								clone.put("NIFCIF_DEST", (String) representanteLegalContrario.get("NIF_PJG"));
@@ -5139,7 +5157,9 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 								clone.put("TELEFONO2_DEST", (String) representanteLegalContrario.get("TELEFONO2_PJG"));
 								clone.put("MOVIL_DEST", (String) representanteLegalContrario.get("MOVIL_PJG"));
 								clone.put("FAX1_DEST", (String) representanteLegalContrario.get("FAX_PJG"));
-								clone.put("FAX2_DEST", (String) representanteLegalContrario.get("FAX_PJG"));
+								registro.put("FAX2_DEST", "");
+								registro.put("NOMBRE_PAIS_DEST", "");
+								registro.put("TRATAMIENTO_DEST","");
 								clone.put("CORREOELECTRONICO_DEST", (String) representanteLegalContrario.get("CORREOELECTRONICO_PJG"));
 								clone.put("NOMBRE_POBLACION_DEST", (String) representanteLegalContrario.get("POBLACION_PJG"));
 								clone.put("NOMBRE_PROVINCIA_DEST", (String) representanteLegalContrario.get("PROVINCIA_PJG"));
@@ -5156,7 +5176,12 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 								clone.put("APELLIDO1_DEST_MAYUS", ((String) clone.get("APELLIDO1_PJG")).toUpperCase());
 								clone.put("APELLIDO2_DEST", (String) clone.get("APELLIDO2_PJG"));
 								clone.put("APELLIDO2_DEST_MAYUS", ((String) clone.get("APELLIDO2_PJG")).toUpperCase());
-								clone.put("SEXO_DEST", (String) clone.get("SEXO_PJG"));
+								
+								if(clone.get("SEXO_PJG")!=null)
+									clone.put("SEXO_DEST", UtilidadesString.getMensajeIdioma(idioma, (String) clone.get("SEXO_PJG")) );
+								else
+									clone.put("SEXO_DEST", "");
+								
 								clone.put("O_A_DEST", (String) clone.get("O_A_PJG"));
 								clone.put("EL_LA_DEST", (String) clone.get("EL_LA_PJG"));
 								clone.put("NIFCIF_DEST", (String) clone.get("NIF_PJG"));
@@ -5168,6 +5193,9 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 								clone.put("TELEFONO2_DEST", (String) clone.get("TELEFONO2_PJG"));
 								clone.put("MOVIL_DEST", (String) clone.get("MOVIL_PJG"));
 								clone.put("FAX1_DEST", (String) clone.get("FAX_PJG"));
+								registro.put("FAX2_DEST", "");
+								registro.put("NOMBRE_PAIS_DEST", "");
+								registro.put("TRATAMIENTO_DEST","");
 								clone.put("CORREOELECTRONICO_DEST", (String) clone.get("CORREOELECTRONICO_PJG"));
 								clone.put("NOMBRE_POBLACION_DEST", (String) clone.get("POBLACION_PJG"));
 								clone.put("NOMBRE_PROVINCIA_DEST", (String) clone.get("PROVINCIA_PJG"));
@@ -5274,7 +5302,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 							registro.put("TELEFONO1_CONTRARIO", "");
 							if(contrariosEjgVector!=null && contrariosEjgVector.size()>0){
 								registro.put("contrarios", contrariosEjgVector);
-							}	
+							}
 
 							if(vDefendidos!=null && vDefendidos.size()>0){
 								if(((String)( ((Hashtable) vDefendidos.get(0)).get("IDPERSONA"))).trim().equalsIgnoreCase(""))continue;
@@ -5307,6 +5335,8 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 									clone.put("APELLIDO1_DEST_MAYUS","");
 									clone.put("APELLIDO2_DEST","");
 									clone.put("APELLIDO2_DEST_MAYUS", "");
+									
+									
 									clone.put("SEXO_DEST","");
 									clone.put("O_A_DEST", "");
 									clone.put("EL_LA_DEST", "");
@@ -5318,6 +5348,9 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 									clone.put("TELEFONO2_DEST", "");
 									clone.put("MOVIL_DEST", (String) clone.get("MOVIL_JUZGADO"));
 									clone.put("FAX1_DEST", (String) clone.get("FAX1_JUZGADO"));
+									registro.put("FAX2_DEST", "");
+									registro.put("NOMBRE_PAIS_DEST", "");
+									registro.put("TRATAMIENTO_DEST","");
 									clone.put("CORREOELECTRONICO_DEST", (String) clone.get("EMAIL_JUZGADO"));
 									clone.put("PAGINAWEB_DEST", "");
 									clone.put("POBLACIONEXTRANJERA_DEST","");
@@ -5356,6 +5389,9 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 							registro.put("TELEFONO2_DEST", "");
 							registro.put("MOVIL_DEST", (String) registro.get("MOVIL_JUZGADO"));
 							registro.put("FAX1_DEST", (String) registro.get("FAX1_JUZGADO"));
+							registro.put("FAX2_DEST", "");
+							registro.put("NOMBRE_PAIS_DEST", "");
+							registro.put("TRATAMIENTO_DEST","");
 
 							registro.put("CORREOELECTRONICO_DEST", (String) registro.get("EMAIL_JUZGADO"));
 							registro.put("PAGINAWEB_DEST", "");
@@ -5388,7 +5424,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 						
 						if(contrariosEjgVector!=null && contrariosEjgVector.size()>0){
 							registro.put("contrarios", contrariosEjgVector);
-						}
+						}	
 
 						registro.put("PARRAFO_LETRADO_PROCURADOR", "");
 
@@ -5440,6 +5476,9 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 						registro.put("TELEFONO2_DEST", "");
 						registro.put("MOVIL_DEST", (String) registro.get("MOVIL_JUZGADO"));
 						registro.put("FAX1_DEST", (String) registro.get("FAX1_JUZGADO"));
+						registro.put("FAX2_DEST", "");
+						registro.put("NOMBRE_PAIS_DEST", "");
+						registro.put("TRATAMIENTO_DEST","");
 
 						registro.put("CORREOELECTRONICO_DEST", (String) registro.get("EMAIL_JUZGADO"));
 						registro.put("PAGINAWEB_DEST", "");
@@ -5584,7 +5623,6 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(registro, "NCOLEGIADO_LETRADO", "");
 			UtilidadesHash.set(registro, "NOMBRE_LETRADO", "");
 			UtilidadesHash.set(registro, "NIFCIF_LETRADO", "");
-			UtilidadesHash.set(registro, "SEXO_LETRADO", "");
 			UtilidadesHash.set(registro, "DOMICILIO_LETRADO", "");
 			UtilidadesHash.set(registro, "CP_LETRADO", "");
 			UtilidadesHash.set(registro, "POBLACION_LETRADO", "");
@@ -5595,6 +5633,10 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(registro, "TELEFONO1_LETRADO", "");
 			UtilidadesHash.set(registro, "TELEFONO2_LETRADO", "");
 			UtilidadesHash.set(registro, "MOVIL_LETRADO", "");
+			UtilidadesHash.set(registro, "SEXO_LETRADO", "");
+			UtilidadesHash.set(registro, "O_A_LETRADO", "");
+			UtilidadesHash.set(registro, "EL_LA_LETRADO", "");
+						
 		}
 	}
 	
