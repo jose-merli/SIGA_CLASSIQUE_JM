@@ -141,10 +141,10 @@ function ValidaCIF(cif) {
    	var suma; 
    	var ultima; 
    	var unumero;
-   	var letraCif = new Array("J", "A", "B", "X","X","X","F", "G","X","X");  
+   	var letraCif = new Array("J", "A", "B", "C", "D", "E", "F", "G", "H", "I");
    	var cadenaCif; 
     
-   	cif = cif.toUpperCase(); 
+   	cif = cif.toUpperCase();   	   	
     
    	var regular = new RegExp(/^[ABCDEFGHJKLMNPQS]\d\d\d\d\d\d\d[0-9,A-J]$/g); 
 	if (!regular.exec(cif)) 
@@ -164,11 +164,10 @@ function ValidaCIF(cif) {
 	unumero = parseInt(suma.substr(suma.length - 1, 1)); 
 	unumero = (10 - unumero).toString(); 
 	if (unumero == 10) 
-		unumero = 0; 
+		unumero = 0;	 
      
 	if (ultima == unumero || ultima == letraCif[unumero]) {         
-		var primerCaracter = cif.substr(0,1);         
-		return (primerCaracter=="A" || primerCaracter=="B" || primerCaracter=="F" || primerCaracter=="G" || primerCaracter=="J");       		 
+		return true;    		 
 	} else {
 		return false;
 	} 
