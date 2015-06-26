@@ -68,7 +68,6 @@
 			document.forms[0].modo.value = "download";
 			document.forms[0].target = "submitArea";
 			document.forms[0].submit();
-			fin();
 		}
 		
 		function accionImprimir() 
