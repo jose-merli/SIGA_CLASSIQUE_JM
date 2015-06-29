@@ -179,52 +179,171 @@ public class CenMandatosAdm extends MasterBeanAdmVisible
 	 * @return java.util.Vector Vector de tablas hash  
 	 */
 	public Paginador getClientesMandatos(String idInstitucion, MantenimientoMandatosForm formulario, String idioma) throws ClsExceptions, SIGAException {
-	  	// Acceso a BBDD
 		try {
-			String sql = "SELECT F_SIGA_GETNCOL_NCOM(" + CenMandatosCuentasBancariasBean.T_NOMBRETABLA + "." + CenMandatosCuentasBancariasBean.C_IDINSTITUCION + ", " + CenPersonaBean.T_NOMBRETABLA + "." + CenPersonaBean.C_IDPERSONA + ") AS NCOLEGIADO," +
-				CenPersonaBean.T_NOMBRETABLA + "." + CenPersonaBean.C_NIFCIF + "," +
-				CenPersonaBean.T_NOMBRETABLA + "." + CenPersonaBean.C_IDPERSONA + "," +
-				CenPersonaBean.T_NOMBRETABLA + "." + CenPersonaBean.C_NOMBRE + "," +
-				" DECODE(" + CenPersonaBean.T_NOMBRETABLA + "." + CenPersonaBean.C_APELLIDOS1 + ", '#NA', '', " + CenPersonaBean.T_NOMBRETABLA + "." + CenPersonaBean.C_APELLIDOS1 + "|| ' ' || " + CenPersonaBean.T_NOMBRETABLA + "." + CenPersonaBean.C_APELLIDOS2 + ") AS APELLIDOS," +
-				CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_IBAN + "," +
-				CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_TITULAR + "," +
-				" DECODE(" + CenMandatosCuentasBancariasBean.T_NOMBRETABLA + "." + CenMandatosCuentasBancariasBean.C_TIPOMANDATO + ", 0, 'SERVICIOS', 1, 'PRODUCTOS') AS TIPOMANDATO," +
-				CenMandatosCuentasBancariasBean.T_NOMBRETABLA + "." + CenMandatosCuentasBancariasBean.C_REFMANDATOSEPA + " AS REFERENCIA," +
-				CenMandatosCuentasBancariasBean.T_NOMBRETABLA + "." + CenMandatosCuentasBancariasBean.C_FIRMA_FECHA + " AS FECHAFIRMA," +
-				CenMandatosCuentasBancariasBean.T_NOMBRETABLA + "." + CenMandatosCuentasBancariasBean.C_FIRMA_LUGAR + " AS LUGARFIRMA," +
-				CenMandatosCuentasBancariasBean.T_NOMBRETABLA + "." + CenMandatosCuentasBancariasBean.C_IDCUENTA + "," +
-				CenMandatosCuentasBancariasBean.T_NOMBRETABLA + "." + CenMandatosCuentasBancariasBean.C_IDMANDATO +			
-			" FROM " + CenMandatosCuentasBancariasBean.T_NOMBRETABLA + "," +
-				CenPersonaBean.T_NOMBRETABLA + "," + 
-				CenCuentasBancariasBean.T_NOMBRETABLA +			
-			" WHERE " + CenPersonaBean.T_NOMBRETABLA + "." + CenPersonaBean.C_IDPERSONA + " = " + CenMandatosCuentasBancariasBean.T_NOMBRETABLA + "." + CenMandatosCuentasBancariasBean.C_IDPERSONA +
-				" AND " + CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_IDINSTITUCION + " = " + CenMandatosCuentasBancariasBean.T_NOMBRETABLA + "." + CenMandatosCuentasBancariasBean.C_IDINSTITUCION +
-				" AND " + CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_IDPERSONA + " = " + CenMandatosCuentasBancariasBean.T_NOMBRETABLA + "." + CenMandatosCuentasBancariasBean.C_IDPERSONA +
-				" AND " + CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_IDCUENTA + " = " + CenMandatosCuentasBancariasBean.T_NOMBRETABLA + "." + CenMandatosCuentasBancariasBean.C_IDCUENTA +
-				" AND " + CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_FECHABAJA + " IS NULL" +
-				" AND " + CenMandatosCuentasBancariasBean.T_NOMBRETABLA + "." + CenMandatosCuentasBancariasBean.C_IDINSTITUCION + " = " + usrbean.getLocation();
+			StringBuilder sql = new StringBuilder();
+			sql.append("SELECT F_SIGA_GETNCOL_NCOM(");
+			sql.append(CenMandatosCuentasBancariasBean.T_NOMBRETABLA);
+			sql.append(".");
+			sql.append(CenMandatosCuentasBancariasBean.C_IDINSTITUCION);
+			sql.append(", ");
+			sql.append(CenPersonaBean.T_NOMBRETABLA);
+			sql.append(".");
+			sql.append(CenPersonaBean.C_IDPERSONA);
+			sql.append(") AS NCOLEGIADO,");			
+			sql.append(CenPersonaBean.T_NOMBRETABLA);
+			sql.append(".");
+			sql.append(CenPersonaBean.C_NIFCIF);
+			sql.append(",");
+			sql.append(CenPersonaBean.T_NOMBRETABLA);
+			sql.append(".");
+			sql.append(CenPersonaBean.C_IDPERSONA);
+			sql.append(",");
+			sql.append(CenPersonaBean.T_NOMBRETABLA);
+			sql.append(".");
+			sql.append(CenPersonaBean.C_NOMBRE);
+			sql.append(",");
+			sql.append(" DECODE(");
+			sql.append(CenPersonaBean.T_NOMBRETABLA);
+			sql.append(".");
+			sql.append(CenPersonaBean.C_APELLIDOS1);
+			sql.append(", '#NA', '', ");
+			sql.append(CenPersonaBean.T_NOMBRETABLA);
+			sql.append(".");
+			sql.append(CenPersonaBean.C_APELLIDOS1);
+			sql.append("|| ' ' || ");
+			sql.append(CenPersonaBean.T_NOMBRETABLA);
+			sql.append(".");
+			sql.append(CenPersonaBean.C_APELLIDOS2);
+			sql.append(") AS APELLIDOS,");
+			sql.append(CenCuentasBancariasBean.T_NOMBRETABLA);
+			sql.append(".");
+			sql.append(CenCuentasBancariasBean.C_IBAN);
+			sql.append(",");
+			sql.append(CenCuentasBancariasBean.T_NOMBRETABLA);
+			sql.append(".");
+			sql.append(CenCuentasBancariasBean.C_TITULAR);
+			sql.append(",");
+			sql.append(" DECODE(");
+			sql.append(CenMandatosCuentasBancariasBean.T_NOMBRETABLA);
+			sql.append(".");
+			sql.append(CenMandatosCuentasBancariasBean.C_TIPOMANDATO);
+			sql.append(", 0, 'SERVICIOS', 1, 'PRODUCTOS') AS TIPOMANDATO,");
+			sql.append(CenMandatosCuentasBancariasBean.T_NOMBRETABLA);
+			sql.append(".");
+			sql.append(CenMandatosCuentasBancariasBean.C_REFMANDATOSEPA);
+			sql.append(" AS REFERENCIA,");
+			sql.append(CenMandatosCuentasBancariasBean.T_NOMBRETABLA);
+			sql.append(".");
+			sql.append(CenMandatosCuentasBancariasBean.C_FIRMA_FECHA);
+			sql.append(" AS FECHAFIRMA,");
+			sql.append(CenMandatosCuentasBancariasBean.T_NOMBRETABLA);
+			sql.append(".");
+			sql.append(CenMandatosCuentasBancariasBean.C_FIRMA_LUGAR);
+			sql.append(" AS LUGARFIRMA,");
+			sql.append(CenMandatosCuentasBancariasBean.T_NOMBRETABLA);
+			sql.append(".");
+			sql.append(CenMandatosCuentasBancariasBean.C_IDCUENTA);
+			sql.append(",");
+			sql.append(CenMandatosCuentasBancariasBean.T_NOMBRETABLA);
+			sql.append(".");
+			sql.append(CenMandatosCuentasBancariasBean.C_IDMANDATO);			
+			sql.append(" FROM ");
+			sql.append(CenMandatosCuentasBancariasBean.T_NOMBRETABLA);
+			sql.append(",");
+			sql.append(CenPersonaBean.T_NOMBRETABLA);
+			sql.append(","); 
+			sql.append(CenCuentasBancariasBean.T_NOMBRETABLA);			
+			sql.append(" WHERE ");
+			sql.append(CenPersonaBean.T_NOMBRETABLA);
+			sql.append(".");
+			sql.append(CenPersonaBean.C_IDPERSONA);
+			sql.append(" = ");
+			sql.append(CenMandatosCuentasBancariasBean.T_NOMBRETABLA);
+			sql.append(".");
+			sql.append(CenMandatosCuentasBancariasBean.C_IDPERSONA);
+			sql.append(" AND ");
+			sql.append(CenCuentasBancariasBean.T_NOMBRETABLA);
+			sql.append(".");
+			sql.append(CenCuentasBancariasBean.C_IDINSTITUCION);
+			sql.append(" = ");
+			sql.append(CenMandatosCuentasBancariasBean.T_NOMBRETABLA);
+			sql.append(".");
+			sql.append(CenMandatosCuentasBancariasBean.C_IDINSTITUCION);
+			sql.append(" AND ");
+			sql.append(CenCuentasBancariasBean.T_NOMBRETABLA);
+			sql.append(".");
+			sql.append(CenCuentasBancariasBean.C_IDPERSONA);
+			sql.append(" = ");
+			sql.append(CenMandatosCuentasBancariasBean.T_NOMBRETABLA);
+			sql.append(".");
+			sql.append(CenMandatosCuentasBancariasBean.C_IDPERSONA);
+			sql.append(" AND ");
+			sql.append(CenCuentasBancariasBean.T_NOMBRETABLA);
+			sql.append(".");
+			sql.append(CenCuentasBancariasBean.C_IDCUENTA);
+			sql.append(" = ");
+			sql.append(CenMandatosCuentasBancariasBean.T_NOMBRETABLA);
+			sql.append(".");
+			sql.append(CenMandatosCuentasBancariasBean.C_IDCUENTA);
+			sql.append(" AND ");
+			sql.append(CenCuentasBancariasBean.T_NOMBRETABLA);
+			sql.append(".");
+			sql.append(CenCuentasBancariasBean.C_FECHABAJA);
+			sql.append(" IS NULL");
+			sql.append(" AND ");
+			sql.append(CenMandatosCuentasBancariasBean.T_NOMBRETABLA);
+			sql.append(".");
+			sql.append(CenMandatosCuentasBancariasBean.C_IDINSTITUCION);
+			sql.append(" = ");
+			sql.append(usrbean.getLocation());
 			
 			if (formulario.getChkPendientesFirmar()!=null && formulario.getChkPendientesFirmar().equalsIgnoreCase("1")){
-				sql += " AND " + CenMandatosCuentasBancariasBean.T_NOMBRETABLA + "." + CenMandatosCuentasBancariasBean.C_FIRMA_FECHA + " IS NULL";
+				sql.append(" AND ");
+				sql.append(CenMandatosCuentasBancariasBean.T_NOMBRETABLA);
+				sql.append(".");
+				sql.append(CenMandatosCuentasBancariasBean.C_FIRMA_FECHA);
+				sql.append(" IS NULL");
 			}
-			// Aplicamos los filtros de busqueda
 
 			if (formulario.getNombrePersona()!=null && !formulario.getNombrePersona().trim().equals("")) {
-				sql += " AND UPPER(" + CenPersonaBean.T_NOMBRETABLA + "." + CenPersonaBean.C_NOMBRE + ") LIKE '%" + formulario.getNombrePersona().toUpperCase() + "%'";
+				sql.append(" AND UPPER(");
+				sql.append(CenPersonaBean.T_NOMBRETABLA);
+				sql.append(".");
+				sql.append(CenPersonaBean.C_NOMBRE);
+				sql.append(") LIKE '%");
+				sql.append(formulario.getNombrePersona().toUpperCase());
+				sql.append("%'");;
 			}
 			
 			if (formulario.getApellido1()!=null && !formulario.getApellido1().trim().equals("")) {
-				sql += " AND UPPER(" + CenPersonaBean.T_NOMBRETABLA + "." + CenPersonaBean.C_APELLIDOS1 + ") LIKE '%" + formulario.getApellido1().toUpperCase() + "%'";
+				sql.append(" AND UPPER(");
+				sql.append(CenPersonaBean.T_NOMBRETABLA);
+				sql.append(".");
+				sql.append(CenPersonaBean.C_APELLIDOS1);
+				sql.append(") LIKE '%");
+				sql.append(formulario.getApellido1().toUpperCase());
+				sql.append("%'");
 			}
 			
 			if (formulario.getApellido2()!=null && !formulario.getApellido2().trim().equals("")) {
-				sql += " AND UPPER(" + CenPersonaBean.T_NOMBRETABLA + "." + CenPersonaBean.C_APELLIDOS2 + ") LIKE '%" + formulario.getApellido2().toUpperCase() + "%'";
+				sql.append(" AND UPPER(");
+				sql.append(CenPersonaBean.T_NOMBRETABLA);
+				sql.append(".");
+				sql.append(CenPersonaBean.C_APELLIDOS2);
+				sql.append(") LIKE '%");
+				sql.append(formulario.getApellido2().toUpperCase());
+				sql.append("%'");
 			}
 			
 			if (formulario.getNif()!=null && !formulario.getNif().trim().equals("")) {
-				sql += " AND UPPER(" + CenPersonaBean.T_NOMBRETABLA + "." + CenPersonaBean.C_NIFCIF + ") LIKE '%" + formulario.getNif().toUpperCase() + "%'";
+				sql.append(" AND UPPER(");
+				sql.append(CenPersonaBean.T_NOMBRETABLA);
+				sql.append(".");
+				sql.append(CenPersonaBean.C_NIFCIF);
+				sql.append(") LIKE '%");
+				sql.append(formulario.getNif().toUpperCase());
+				sql.append("%'");;
 			}
-			
 			
 			/* Inicio - Control CEN_MANDATOS_CUENTASBANCARIAS.FIRMA_FECHA Inicio .. Fin */
 			String dFechaDesde = null, dFechaHasta = null;
@@ -235,10 +354,10 @@ public class CenMandatosAdm extends MasterBeanAdmVisible
 				dFechaHasta = GstDate.getApplicationFormatDate("",formulario.getFechaFirmaFin());
 			
 			if (dFechaDesde!=null || dFechaHasta!=null){
-			    sql += " AND " + GstDate.dateBetweenDesdeAndHasta(CenMandatosCuentasBancariasBean.T_NOMBRETABLA + "." + CenMandatosCuentasBancariasBean.C_FIRMA_FECHA, dFechaDesde, dFechaHasta);
+				sql.append(" AND ");
+				sql.append(GstDate.dateBetweenDesdeAndHasta(CenMandatosCuentasBancariasBean.T_NOMBRETABLA + "." + CenMandatosCuentasBancariasBean.C_FIRMA_FECHA, dFechaDesde, dFechaHasta));
 			}
 			/* Fin - Control CEN_MANDATOS_CUENTASBANCARIAS.FIRMA_FECHA Inicio .. Fin */
-			
 			
 			/* Inicio - Control CEN_CUENTASBANCARIAS.FECHAMODIFICACION Inicio .. Fin */
 			dFechaDesde = null;
@@ -250,74 +369,189 @@ public class CenMandatosAdm extends MasterBeanAdmVisible
 				dFechaHasta = GstDate.getApplicationFormatDate("",formulario.getFechaModFin());
 			
 			if (dFechaDesde!=null || dFechaHasta!=null){
-			    sql += " AND " + GstDate.dateBetweenDesdeAndHasta(CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_FECHAMODIFICACION, dFechaDesde, dFechaHasta);
+				sql.append(" AND ");
+				sql.append(GstDate.dateBetweenDesdeAndHasta(CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_FECHAMODIFICACION, dFechaDesde, dFechaHasta));
 			}			
 			/* Fin - Control CEN_CUENTASBANCARIAS.FECHAMODIFICACION Inicio .. Fin */
 			
-			
 			if (formulario.getTipoMandato()!=null && !formulario.getTipoMandato().trim().equals("")) {
-				sql += " AND " + CenMandatosCuentasBancariasBean.T_NOMBRETABLA + "." + CenMandatosCuentasBancariasBean.C_TIPOMANDATO + " = '" + formulario.getTipoMandato() + "'";
+				sql.append(" AND ");
+				sql.append(CenMandatosCuentasBancariasBean.T_NOMBRETABLA);
+				sql.append(".");
+				sql.append(CenMandatosCuentasBancariasBean.C_TIPOMANDATO);
+				sql.append(" = '");
+				sql.append(formulario.getTipoMandato());
+				sql.append("'");
 			}
 			
-			if (formulario.getTipoCliente()!=null && !formulario.getTipoCliente().trim().equals("")) {
-				
-				if (formulario.getTipoCliente().equalsIgnoreCase("C")){
-				
-					sql += " AND EXISTS (" +
-							" SELECT 1 " +
-							" FROM " + CenColegiadoBean.T_NOMBRETABLA +
-							" WHERE " + CenColegiadoBean.T_NOMBRETABLA + "." + CenColegiadoBean.C_IDPERSONA + " = " + CenPersonaBean.T_NOMBRETABLA + "." + CenPersonaBean.C_IDPERSONA +
-								" AND " + CenColegiadoBean.T_NOMBRETABLA + "." + CenColegiadoBean.C_IDINSTITUCION + " = " + CenMandatosCuentasBancariasBean.T_NOMBRETABLA + "." + CenMandatosCuentasBancariasBean.C_IDINSTITUCION;					
+			if (formulario.getTipoCliente()!=null && !formulario.getTipoCliente().trim().equals("")) {				
+				if (formulario.getTipoCliente().equalsIgnoreCase("C")){				
+					sql.append(" AND EXISTS (");
+					sql.append(" SELECT 1 ");
+					sql.append(" FROM ");
+					sql.append(CenColegiadoBean.T_NOMBRETABLA);
+					sql.append(" WHERE ");
+					sql.append(CenColegiadoBean.T_NOMBRETABLA);
+					sql.append(".");
+					sql.append(CenColegiadoBean.C_IDPERSONA);
+					sql.append(" = ");
+					sql.append(CenPersonaBean.T_NOMBRETABLA);
+					sql.append(".");
+					sql.append(CenPersonaBean.C_IDPERSONA);
+					sql.append(" AND ");
+					sql.append(CenColegiadoBean.T_NOMBRETABLA);
+					sql.append(".");
+					sql.append(CenColegiadoBean.C_IDINSTITUCION);
+					sql.append(" = ");
+					sql.append(CenMandatosCuentasBancariasBean.T_NOMBRETABLA);
+					sql.append(".");
+					sql.append(CenMandatosCuentasBancariasBean.C_IDINSTITUCION);
+					
 					if (formulario.getNumeroColegiado()!=null && !formulario.getNumeroColegiado().trim().equals("")) {
-						sql += " AND DECODE(" + CenColegiadoBean.T_NOMBRETABLA + "." + CenColegiadoBean.C_COMUNITARIO + ", 1, " + CenColegiadoBean.T_NOMBRETABLA + "." + CenColegiadoBean.C_NCOMUNITARIO + ", " + CenColegiadoBean.T_NOMBRETABLA + "." + CenColegiadoBean.C_NCOLEGIADO + ") = " + formulario.getNumeroColegiado();
+						sql.append(" AND DECODE(");
+						sql.append(CenColegiadoBean.T_NOMBRETABLA);
+						sql.append(".");
+						sql.append(CenColegiadoBean.C_COMUNITARIO);
+						sql.append(", 1, ");
+						sql.append(CenColegiadoBean.T_NOMBRETABLA);
+						sql.append(".");
+						sql.append(CenColegiadoBean.C_NCOMUNITARIO);
+						sql.append(", ");
+						sql.append(CenColegiadoBean.T_NOMBRETABLA);
+						sql.append(".");
+						sql.append(CenColegiadoBean.C_NCOLEGIADO);
+						sql.append(") = ");
+						sql.append(formulario.getNumeroColegiado());
 					}
-					sql += ")";
+					sql.append(")");
 					
 					if (formulario.getTipoColegiado()!=null && !formulario.getTipoColegiado().trim().equals("")) {
-						sql += " AND EXISTS (" + 
-	 							" SELECT 1" + 
-	 							" FROM " + CenDatosColegialesEstadoBean.T_NOMBRETABLA +
-	 							" WHERE " + CenDatosColegialesEstadoBean.T_NOMBRETABLA + "." + CenDatosColegialesEstadoBean.C_IDINSTITUCION + " = " + CenMandatosCuentasBancariasBean.T_NOMBRETABLA + "." + CenMandatosCuentasBancariasBean.C_IDINSTITUCION +
-	 								" AND " + CenDatosColegialesEstadoBean.T_NOMBRETABLA + "." + CenDatosColegialesEstadoBean.C_IDPERSONA + " = " + CenMandatosCuentasBancariasBean.T_NOMBRETABLA + "." + CenMandatosCuentasBancariasBean.C_IDPERSONA +
-	 								" AND " + CenDatosColegialesEstadoBean.T_NOMBRETABLA + "." + CenDatosColegialesEstadoBean.C_IDESTADO + 
-	 									(
-											formulario.getTipoColegiado().equals(String.valueOf(ClsConstants.ESTADO_COLEGIAL_ALTA)) 
-	 											? " IN (" + ClsConstants.ESTADO_COLEGIAL_EJERCIENTE + ", " + ClsConstants.ESTADO_COLEGIAL_SINEJERCER + ")"
-												: " = " + formulario.getTipoColegiado() 
-										) +
-	 								" AND " + CenDatosColegialesEstadoBean.T_NOMBRETABLA + "." + CenDatosColegialesEstadoBean.C_FECHAESTADO + " = (" + 
-	 									" SELECT MAX(CDCE." + CenDatosColegialesEstadoBean.C_FECHAESTADO + ")" +
-	 									" FROM " + CenDatosColegialesEstadoBean.T_NOMBRETABLA + " CDCE " + 
-	 									" WHERE CDCE." + CenDatosColegialesEstadoBean.C_IDINSTITUCION + " = " + CenMandatosCuentasBancariasBean.T_NOMBRETABLA + "." + CenMandatosCuentasBancariasBean.C_IDINSTITUCION +
-	 										" AND CDCE." + CenDatosColegialesEstadoBean.C_IDPERSONA + " = " + CenMandatosCuentasBancariasBean.T_NOMBRETABLA + "." + CenMandatosCuentasBancariasBean.C_IDPERSONA +
-	 										" AND CDCE." + CenDatosColegialesEstadoBean.C_FECHAESTADO + " <= SYSDATE " +
-	 								")" +
-	 							")";
+						sql.append(" AND EXISTS ("); 
+						sql.append(" SELECT 1"); 
+						sql.append(" FROM ");
+						sql.append(CenDatosColegialesEstadoBean.T_NOMBRETABLA);
+						sql.append(" WHERE ");
+						sql.append(CenDatosColegialesEstadoBean.T_NOMBRETABLA);
+						sql.append(".");
+						sql.append(CenDatosColegialesEstadoBean.C_IDINSTITUCION);
+						sql.append(" = ");
+						sql.append(CenMandatosCuentasBancariasBean.T_NOMBRETABLA);
+						sql.append(".");
+						sql.append(CenMandatosCuentasBancariasBean.C_IDINSTITUCION);
+						sql.append(" AND ");
+						sql.append(CenDatosColegialesEstadoBean.T_NOMBRETABLA);
+						sql.append(".");
+						sql.append(CenDatosColegialesEstadoBean.C_IDPERSONA);
+						sql.append(" = ");
+						sql.append(CenMandatosCuentasBancariasBean.T_NOMBRETABLA);
+						sql.append(".");
+						sql.append(CenMandatosCuentasBancariasBean.C_IDPERSONA);
+						sql.append(" AND ");
+						sql.append(CenDatosColegialesEstadoBean.T_NOMBRETABLA);
+						sql.append(".");
+						sql.append(CenDatosColegialesEstadoBean.C_IDESTADO); 
+						
+						if (formulario.getTipoColegiado().equals(String.valueOf(ClsConstants.ESTADO_COLEGIAL_ALTA))) {
+							sql.append(" IN (");
+							sql.append(ClsConstants.ESTADO_COLEGIAL_EJERCIENTE);
+							sql.append(", ");
+							sql.append(ClsConstants.ESTADO_COLEGIAL_SINEJERCER);
+							sql.append(")");
+						} else {
+							sql.append(" = ");
+							sql.append(formulario.getTipoColegiado()); 
+						}
+						sql.append(" AND ");
+						sql.append(CenDatosColegialesEstadoBean.T_NOMBRETABLA);
+						sql.append(".");
+						sql.append(CenDatosColegialesEstadoBean.C_FECHAESTADO);
+						sql.append(" = ("); 
+						sql.append(" SELECT MAX(CDCE.");
+						sql.append(CenDatosColegialesEstadoBean.C_FECHAESTADO);
+						sql.append(")");
+						sql.append(" FROM ");
+						sql.append(CenDatosColegialesEstadoBean.T_NOMBRETABLA);
+						sql.append(" CDCE "); 
+						sql.append(" WHERE CDCE.");
+						sql.append(CenDatosColegialesEstadoBean.C_IDINSTITUCION);
+						sql.append(" = ");
+						sql.append(CenMandatosCuentasBancariasBean.T_NOMBRETABLA);
+						sql.append(".");
+						sql.append(CenMandatosCuentasBancariasBean.C_IDINSTITUCION);
+						sql.append(" AND CDCE.");
+						sql.append(CenDatosColegialesEstadoBean.C_IDPERSONA);
+						sql.append(" = ");
+						sql.append(CenMandatosCuentasBancariasBean.T_NOMBRETABLA);
+						sql.append(".");
+						sql.append(CenMandatosCuentasBancariasBean.C_IDPERSONA);
+						sql.append(" AND CDCE.");
+						sql.append(CenDatosColegialesEstadoBean.C_FECHAESTADO);
+						sql.append(" <= SYSDATE ");
+						sql.append(")");
+						sql.append(")");
 					 }
 					 
 				} else if (formulario.getTipoCliente().equalsIgnoreCase("N")) {
-					sql += " AND NOT EXISTS (" +
-								" SELECT 1 " +
-								" FROM " + CenColegiadoBean.T_NOMBRETABLA +
-								" WHERE " + CenColegiadoBean.T_NOMBRETABLA + "." + CenColegiadoBean.C_IDPERSONA + " = " + CenPersonaBean.T_NOMBRETABLA + "." + CenPersonaBean.C_IDPERSONA +
-									" AND " + CenColegiadoBean.T_NOMBRETABLA + "." + CenColegiadoBean.C_IDINSTITUCION + " = " + CenMandatosCuentasBancariasBean.T_NOMBRETABLA + "." + CenMandatosCuentasBancariasBean.C_IDINSTITUCION +
-							" ) ";
+					sql.append(" AND NOT EXISTS (");
+					sql.append(" SELECT 1 ");
+					sql.append(" FROM ");
+					sql.append(CenColegiadoBean.T_NOMBRETABLA);
+					sql.append(" WHERE ");
+					sql.append(CenColegiadoBean.T_NOMBRETABLA);
+					sql.append(".");
+					sql.append(CenColegiadoBean.C_IDPERSONA);
+					sql.append(" = ");
+					sql.append(CenPersonaBean.T_NOMBRETABLA);
+					sql.append(".");
+					sql.append(CenPersonaBean.C_IDPERSONA);
+					sql.append(" AND ");
+					sql.append(CenColegiadoBean.T_NOMBRETABLA);
+					sql.append(".");
+					sql.append(CenColegiadoBean.C_IDINSTITUCION);
+					sql.append(" = ");
+					sql.append(CenMandatosCuentasBancariasBean.T_NOMBRETABLA);
+					sql.append(".");
+					sql.append(CenMandatosCuentasBancariasBean.C_IDINSTITUCION);
+					sql.append(" ) ");
 					
 					if (formulario.getTipoNoColegiado()!=null && !formulario.getTipoNoColegiado().trim().equals("")) {
-						sql += " AND NOT EXISTS (" +
-									" SELECT 1 " +
-									" FROM " + CenNoColegiadoBean.T_NOMBRETABLA +
-									" WHERE " + CenNoColegiadoBean.T_NOMBRETABLA + "." + CenNoColegiadoBean.C_IDPERSONA + " = " + CenPersonaBean.T_NOMBRETABLA + "." + CenPersonaBean.C_IDPERSONA +
-										" AND " + CenNoColegiadoBean.T_NOMBRETABLA + "." + CenNoColegiadoBean.C_IDINSTITUCION + " = " + CenMandatosCuentasBancariasBean.T_NOMBRETABLA + "." + CenMandatosCuentasBancariasBean.C_IDINSTITUCION +
-										" AND " + CenNoColegiadoBean.T_NOMBRETABLA + "." + CenNoColegiadoBean.C_TIPO + " = '" + formulario.getTipoNoColegiado() + "'" + 
-								" ) ";
+						sql.append(" AND NOT EXISTS (");
+						sql.append(" SELECT 1 ");
+						sql.append(" FROM ");
+						sql.append(CenNoColegiadoBean.T_NOMBRETABLA);
+						sql.append(" WHERE ");
+						sql.append(CenNoColegiadoBean.T_NOMBRETABLA);
+						sql.append(".");
+						sql.append(CenNoColegiadoBean.C_IDPERSONA);
+						sql.append(" = ");
+						sql.append(CenPersonaBean.T_NOMBRETABLA);
+						sql.append(".");
+						sql.append(CenPersonaBean.C_IDPERSONA);
+						sql.append(" AND ");
+						sql.append(CenNoColegiadoBean.T_NOMBRETABLA);
+						sql.append(".");
+						sql.append(CenNoColegiadoBean.C_IDINSTITUCION);
+						sql.append(" = ");
+						sql.append(CenMandatosCuentasBancariasBean.T_NOMBRETABLA);
+						sql.append(".");
+						sql.append(CenMandatosCuentasBancariasBean.C_IDINSTITUCION);
+						sql.append(" AND ");
+						sql.append(CenNoColegiadoBean.T_NOMBRETABLA);
+						sql.append(".");
+						sql.append(CenNoColegiadoBean.C_TIPO);
+						sql.append(" = '");
+						sql.append(formulario.getTipoNoColegiado());
+						sql.append("'"); 
+						sql.append(" ) ");
 					}
 				}
 			}
 
-			sql += " ORDER BY APELLIDOS ASC, " + CenPersonaBean.C_NOMBRE + " ASC";			
+			sql.append(" ORDER BY APELLIDOS ASC, ");
+			sql.append(CenPersonaBean.C_NOMBRE);
+			sql.append(" ASC");			
 			
-			Paginador paginador = new Paginador(sql);				
+			Paginador paginador = new Paginador(sql.toString());				
 			int totalRegistros = paginador.getNumeroTotalRegistros();
 			
 			if (totalRegistros==0){					
