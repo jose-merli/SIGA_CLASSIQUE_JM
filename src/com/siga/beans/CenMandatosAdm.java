@@ -420,8 +420,9 @@ public class CenMandatosAdm extends MasterBeanAdmVisible
 						sql.append(CenColegiadoBean.T_NOMBRETABLA);
 						sql.append(".");
 						sql.append(CenColegiadoBean.C_NCOLEGIADO);
-						sql.append(") = ");
+						sql.append(") = '");
 						sql.append(formulario.getNumeroColegiado());
+						sql.append("'");
 					}
 					sql.append(")");
 					
