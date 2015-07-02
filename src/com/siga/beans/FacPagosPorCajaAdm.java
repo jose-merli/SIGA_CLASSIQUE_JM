@@ -194,437 +194,1146 @@ public class FacPagosPorCajaAdm extends MasterBeanAdministrador {
 		 */
 		String listaFacturasComision = (esProcesoMasivo ? idFactura : EjecucionPLs.obtenerListaFacturasComision(idInstitucion.toString(), idFactura));
 		
-		// Obteneción emisión factura
-		String consulta1 = "";    
+		StringBuilder consulta = new StringBuilder();  
 		if (esProcesoMasivo) {
-			consulta1 = " SELECT facturaActual." + FacFacturaBean.C_FECHAEMISION + " AS FECHA ";			
+			consulta.append("SELECT TO_CHAR(MAX(FECHA), '");
+			consulta.append(ClsConstants.DATE_FORMAT_SHORT_SPANISH);
+			consulta.append("') AS ULTIMAFECHA FROM ( ");
 		} else {
-			consulta1 = " SELECT 0 AS IDTABLA, " +
-				   	" F_SIGA_GETRECURSO_ETIQUETA('facturacion.pagosFactura.accion.emisionFactura'," + this.usrbean.getLanguage() + ") " +
-				   		" || ' (' || facturaActual." + FacFacturaBean.C_NUMEROFACTURA + " || ') ' AS TABLA, " +
-				   	" ( " + 
-				   		" SELECT F_SIGA_GETRECURSO_ETIQUETA (" + FacEstadoFacturaBean.T_NOMBRETABLA + "." + FacEstadoFacturaBean.C_DESCRIPCION + "," + this.usrbean.getLanguage() + ") " +
-				   		" FROM " + FacEstadoFacturaBean.T_NOMBRETABLA +
-				   		" WHERE " + FacEstadoFacturaBean.C_IDESTADO + " = " + ClsConstants.ESTADO_FACTURA_ENREVISION +
-				   	") AS ESTADO, " +
-				   " facturaActual." + FacFacturaBean.C_FECHAEMISION + " AS FECHA, " +
-				   " facturaActual." + FacFacturaBean.C_FECHAMODIFICACION + " AS FECHA_ORDEN, " +
-				   " NVL(facturaActual." + FacFacturaBean.C_IMPTOTAL + " - facturaAnterior." + FacFacturaBean.C_IMPTOTALPAGADO + ", facturaActual." + FacFacturaBean.C_IMPTOTAL + ") AS IMPORTE, " +
-				   " facturaActual." + FacFacturaBean.C_IDFACTURA + " AS IDFACTURA, " +
-				   " '' AS ANULACIONCOMISION, " +
-				   " '' AS DEVUELTA, " +
-				   " '' AS TARJETA, " +
-				   " 0 AS IDABONO_IDCUENTA, " +
-				   " '' AS NUMEROABONO, " + 
-				   " 0 AS IDPAGO, " +
-				   " '' AS NOMBREBANCO ";
+			consulta.append("SELECT IDTABLA, TABLA, ESTADO, FECHA, FECHA_ORDEN, IMPORTE, IDFACTURA, ANULACIONCOMISION, DEVUELTA, TARJETA, IDABONO_IDCUENTA, NUMEROABONO, IDPAGO, NOMBREBANCO FROM ( ");
+		}		
+		
+		// Obtencion emision factura		
+		if (esProcesoMasivo) {
+			consulta.append(" SELECT facturaActual.");
+			consulta.append(FacFacturaBean.C_FECHAEMISION);
+			consulta.append(" AS FECHA ");			
+		} else {			
+			consulta.append(" SELECT 0 AS IDTABLA, ");
+			consulta.append(" F_SIGA_GETRECURSO_ETIQUETA('facturacion.pagosFactura.accion.emisionFactura',");
+			consulta.append(this.usrbean.getLanguage());
+			consulta.append(") ");
+			consulta.append(" || ' (' || facturaActual.");
+			consulta.append(FacFacturaBean.C_NUMEROFACTURA);
+			consulta.append(" || ') ' AS TABLA, ");
+			consulta.append(" ( "); 
+			consulta.append(" SELECT F_SIGA_GETRECURSO_ETIQUETA (");
+			consulta.append(FacEstadoFacturaBean.T_NOMBRETABLA);
+			consulta.append(".");
+			consulta.append(FacEstadoFacturaBean.C_DESCRIPCION);
+			consulta.append(",");
+			consulta.append(this.usrbean.getLanguage());
+			consulta.append(") ");
+			consulta.append(" FROM ");
+			consulta.append(FacEstadoFacturaBean.T_NOMBRETABLA);
+			consulta.append(" WHERE ");
+			consulta.append(FacEstadoFacturaBean.C_IDESTADO);
+			consulta.append(" = ");
+			consulta.append(ClsConstants.ESTADO_FACTURA_ENREVISION);
+			consulta.append(") AS ESTADO, ");
+			consulta.append(" facturaActual.");
+			consulta.append(FacFacturaBean.C_FECHAEMISION);
+			consulta.append(" AS FECHA, ");
+			consulta.append(" facturaActual.");
+			consulta.append(FacFacturaBean.C_FECHAMODIFICACION);
+			consulta.append(" AS FECHA_ORDEN, ");
+			consulta.append(" NVL(facturaActual.");
+			consulta.append(FacFacturaBean.C_IMPTOTAL);
+			consulta.append(" - facturaAnterior.");
+			consulta.append(FacFacturaBean.C_IMPTOTALPAGADO);
+			consulta.append(", facturaActual.");
+			consulta.append(FacFacturaBean.C_IMPTOTAL);
+			consulta.append(") AS IMPORTE, ");
+			consulta.append(" facturaActual.");
+			consulta.append(FacFacturaBean.C_IDFACTURA);
+			consulta.append(" AS IDFACTURA, ");
+			consulta.append(" '' AS ANULACIONCOMISION, ");
+			consulta.append(" '' AS DEVUELTA, ");
+			consulta.append(" '' AS TARJETA, ");
+			consulta.append(" 0 AS IDABONO_IDCUENTA, ");
+			consulta.append(" '' AS NUMEROABONO, "); 
+			consulta.append(" 0 AS IDPAGO, ");
+			consulta.append(" '' AS NOMBREBANCO ");
 		}
-		consulta1 += " FROM " + FacFacturaBean.T_NOMBRETABLA + " facturaActual, " +
-						FacFacturaBean.T_NOMBRETABLA + " facturaAnterior " +
-					" WHERE facturaActual." + FacFacturaBean.C_IDINSTITUCION + " = " + idInstitucion + 
-						" AND facturaActual." + FacFacturaBean.C_IDFACTURA + " IN (" + listaFacturasComision + ") " +
-						" AND facturaAnterior." + FacFacturaBean.C_IDINSTITUCION + "(+) = facturaActual." + FacFacturaBean.C_IDINSTITUCION +
-						" AND facturaAnterior." + FacFacturaBean.C_IDFACTURA + "(+) = facturaActual." + FacFacturaBean.C_COMISIONIDFACTURA;    
+		consulta.append(" FROM ");
+		consulta.append(FacFacturaBean.T_NOMBRETABLA);
+		consulta.append(" facturaActual, ");
+		consulta.append(FacFacturaBean.T_NOMBRETABLA);
+		consulta.append(" facturaAnterior ");
+		consulta.append(" WHERE facturaActual.");
+		consulta.append(FacFacturaBean.C_IDINSTITUCION);
+		consulta.append(" = ");
+		consulta.append(idInstitucion); 
+		consulta.append(" AND facturaActual.");
+		consulta.append(FacFacturaBean.C_IDFACTURA);
+		consulta.append(" IN (");
+		consulta.append(listaFacturasComision);
+		consulta.append(") ");
+		consulta.append(" AND facturaAnterior.");
+		consulta.append(FacFacturaBean.C_IDINSTITUCION);
+		consulta.append("(+) = facturaActual.");
+		consulta.append(FacFacturaBean.C_IDINSTITUCION);
+		consulta.append(" AND facturaAnterior.");
+		consulta.append(FacFacturaBean.C_IDFACTURA);
+		consulta.append("(+) = facturaActual.");
+		consulta.append(FacFacturaBean.C_COMISIONIDFACTURA);    
 
-		// Obteneción confirmacion factura
-		String consulta10 = "";    
+		// Obtencion confirmacion factura
 		if (esProcesoMasivo) {		
-			consulta10 = " UNION SELECT DECODE(facturaActual." + FacFacturaBean.C_COMISIONIDFACTURA + ", NULL, " +
-					   			FacFacturacionProgramadaBean.T_NOMBRETABLA + "." + FacFacturacionProgramadaBean.C_FECHACONFIRMACION + ", " +
-					   			" facturaActual." + FacFacturaBean.C_FECHAEMISION + ") AS FECHA ";
+			consulta.append(" UNION SELECT DECODE(facturaActual.");
+			consulta.append(FacFacturaBean.C_COMISIONIDFACTURA);
+			consulta.append(", NULL, ");
+			consulta.append(FacFacturacionProgramadaBean.T_NOMBRETABLA);
+			consulta.append(".");
+			consulta.append(FacFacturacionProgramadaBean.C_FECHACONFIRMACION);
+			consulta.append(", ");
+			consulta.append(" facturaActual.");
+			consulta.append(FacFacturaBean.C_FECHAEMISION);
+			consulta.append(") AS FECHA ");
 			
 		} else {
-			consulta10 = " UNION SELECT 1 AS IDTABLA, " +
-						   " F_SIGA_GETRECURSO_ETIQUETA('facturacion.pagosFactura.accion.confirmacionFactura'," + this.usrbean.getLanguage() + ") AS TABLA, " +
-						   " F_SIGA_GETRECURSO_ETIQUETA('facturacion.pagosFactura.estado.pendienteCobro'," + this.usrbean.getLanguage() + ") AS ESTADO, " +
-						   " DECODE(facturaActual." + FacFacturaBean.C_COMISIONIDFACTURA + ", NULL, " +
-						   		FacFacturacionProgramadaBean.T_NOMBRETABLA + "." + FacFacturacionProgramadaBean.C_FECHACONFIRMACION + ", " +
-						   		" facturaActual." + FacFacturaBean.C_FECHAEMISION + ") AS FECHA, " +
-						   " facturaActual." + FacFacturaBean.C_FECHAMODIFICACION + " AS FECHA_ORDEN, " +
-						   " NVL(facturaActual." + FacFacturaBean.C_IMPTOTAL + " - facturaAnterior." + FacFacturaBean.C_IMPTOTALPAGADO + ", facturaActual." + FacFacturaBean.C_IMPTOTAL + ") AS IMPORTE, " +
-						   " facturaActual." + FacFacturaBean.C_IDFACTURA + " AS IDFACTURA, " +
-						   " '' AS ANULACIONCOMISION, " +
-						   " '' AS DEVUELTA, " +
-						   " '' AS TARJETA, " +
-						   " 0 AS IDABONO_IDCUENTA, " +
-						   " '' AS NUMEROABONO, " + 
-						   " 0 AS IDPAGO, " +
-						   " '' AS NOMBREBANCO ";  
+			consulta.append(" UNION SELECT 1 AS IDTABLA, ");
+			consulta.append(" F_SIGA_GETRECURSO_ETIQUETA('facturacion.pagosFactura.accion.confirmacionFactura',");
+			consulta.append(this.usrbean.getLanguage());
+			consulta.append(") AS TABLA, ");
+			
+			consulta.append(" DECODE(NVL(facturaActual.");
+			consulta.append(FacFacturaBean.C_IMPTOTAL);
+			consulta.append(" - facturaAnterior.");
+			consulta.append(FacFacturaBean.C_IMPTOTALPAGADO);
+			consulta.append(", facturaActual.");
+			consulta.append(FacFacturaBean.C_IMPTOTAL);
+			consulta.append("),0,(");			
+			consulta.append(" SELECT F_SIGA_GETRECURSO_ETIQUETA (");
+			consulta.append(FacEstadoFacturaBean.T_NOMBRETABLA);
+			consulta.append(".");
+			consulta.append(FacEstadoFacturaBean.C_DESCRIPCION);
+			consulta.append(",");
+			consulta.append(this.usrbean.getLanguage());
+			consulta.append(") ");
+			consulta.append(" FROM ");
+			consulta.append(FacEstadoFacturaBean.T_NOMBRETABLA);
+			consulta.append(" WHERE ");
+			consulta.append(FacEstadoFacturaBean.C_IDESTADO);
+			consulta.append(" = ");
+			consulta.append(ClsConstants.ESTADO_FACTURA_PAGADA); 
+			consulta.append(" ),"); 			
+			consulta.append(" F_SIGA_GETRECURSO_ETIQUETA('facturacion.pagosFactura.estado.pendienteCobro',");
+			consulta.append(this.usrbean.getLanguage());
+			consulta.append(")) AS ESTADO, ");
+			consulta.append(" DECODE(facturaActual.");
+			consulta.append(FacFacturaBean.C_COMISIONIDFACTURA);
+			consulta.append(", NULL, ");
+			consulta.append(FacFacturacionProgramadaBean.T_NOMBRETABLA);
+			consulta.append(".");
+			consulta.append(FacFacturacionProgramadaBean.C_FECHACONFIRMACION);
+			consulta.append(", ");
+			consulta.append(" facturaActual.");
+			consulta.append(FacFacturaBean.C_FECHAEMISION);
+			consulta.append(") AS FECHA, ");
+			consulta.append(" facturaActual.");
+			consulta.append(FacFacturaBean.C_FECHAMODIFICACION);
+			consulta.append(" AS FECHA_ORDEN, ");
+			consulta.append(" NVL(facturaActual.");
+			consulta.append(FacFacturaBean.C_IMPTOTAL);
+			consulta.append(" - facturaAnterior.");
+			consulta.append(FacFacturaBean.C_IMPTOTALPAGADO);
+			consulta.append(", facturaActual.");
+			consulta.append(FacFacturaBean.C_IMPTOTAL);
+			consulta.append(") AS IMPORTE, ");
+			consulta.append(" facturaActual.");
+			consulta.append(FacFacturaBean.C_IDFACTURA);
+			consulta.append(" AS IDFACTURA, ");
+			consulta.append(" '' AS ANULACIONCOMISION, ");
+			consulta.append(" '' AS DEVUELTA, ");
+			consulta.append(" '' AS TARJETA, ");
+			consulta.append(" 0 AS IDABONO_IDCUENTA, ");
+			consulta.append(" '' AS NUMEROABONO, "); 
+			consulta.append(" 0 AS IDPAGO, ");
+			consulta.append(" '' AS NOMBREBANCO ");  
 		}
-		consulta10 += " FROM " + FacFacturaBean.T_NOMBRETABLA + " facturaActual, " + 
-							FacFacturaBean.T_NOMBRETABLA + " facturaAnterior, " +
-							FacFacturacionProgramadaBean.T_NOMBRETABLA + 
-						" WHERE facturaActual." + FacFacturaBean.C_IDINSTITUCION + " = " + FacFacturacionProgramadaBean.T_NOMBRETABLA + "." + FacFacturacionProgramadaBean.C_IDINSTITUCION +
-							" AND facturaActual." + FacFacturaBean.C_IDSERIEFACTURACION + " = " + FacFacturacionProgramadaBean.T_NOMBRETABLA + "." + FacFacturacionProgramadaBean.C_IDSERIEFACTURACION + 
-							" AND facturaActual." + FacFacturaBean.C_IDPROGRAMACION + " = " + FacFacturacionProgramadaBean.T_NOMBRETABLA + "." + FacFacturacionProgramadaBean.C_IDPROGRAMACION +
-							" AND facturaActual." + FacFacturaBean.C_IDINSTITUCION + " = " + idInstitucion + 
-							" AND facturaActual." + FacFacturaBean.C_IDFACTURA + " IN (" + listaFacturasComision + ") " +
-							" AND facturaAnterior." + FacFacturaBean.C_IDINSTITUCION + "(+) = facturaActual." + FacFacturaBean.C_IDINSTITUCION +
-							" AND facturaAnterior." + FacFacturaBean.C_IDFACTURA + "(+) = facturaActual." + FacFacturaBean.C_COMISIONIDFACTURA;   			
+		consulta.append(" FROM ");
+		consulta.append(FacFacturaBean.T_NOMBRETABLA);
+		consulta.append(" facturaActual, "); 
+		consulta.append(FacFacturaBean.T_NOMBRETABLA);
+		consulta.append(" facturaAnterior, ");
+		consulta.append(FacFacturacionProgramadaBean.T_NOMBRETABLA); 
+		consulta.append(" WHERE facturaActual.");
+		consulta.append(FacFacturaBean.C_IDINSTITUCION);
+		consulta.append(" = ");
+		consulta.append(FacFacturacionProgramadaBean.T_NOMBRETABLA);
+		consulta.append(".");
+		consulta.append(FacFacturacionProgramadaBean.C_IDINSTITUCION);
+		consulta.append(" AND facturaActual.");
+		consulta.append(FacFacturaBean.C_IDSERIEFACTURACION);
+		consulta.append(" = ");
+		consulta.append(FacFacturacionProgramadaBean.T_NOMBRETABLA);
+		consulta.append(".");
+		consulta.append(FacFacturacionProgramadaBean.C_IDSERIEFACTURACION); 
+		consulta.append(" AND facturaActual.");
+		consulta.append(FacFacturaBean.C_IDPROGRAMACION);
+		consulta.append(" = ");
+		consulta.append(FacFacturacionProgramadaBean.T_NOMBRETABLA);
+		consulta.append(".");
+		consulta.append(FacFacturacionProgramadaBean.C_IDPROGRAMACION);
+		consulta.append(" AND facturaActual.");
+		consulta.append(FacFacturaBean.C_IDINSTITUCION);
+		consulta.append(" = ");
+		consulta.append(idInstitucion); 
+		consulta.append(" AND facturaActual.");
+		consulta.append(FacFacturaBean.C_IDFACTURA);
+		consulta.append(" IN (");
+		consulta.append(listaFacturasComision);
+		consulta.append(") ");
+		consulta.append(" AND facturaAnterior.");
+		consulta.append(FacFacturaBean.C_IDINSTITUCION);
+		consulta.append("(+) = facturaActual.");
+		consulta.append(FacFacturaBean.C_IDINSTITUCION);
+		consulta.append(" AND facturaAnterior.");
+		consulta.append(FacFacturaBean.C_IDFACTURA);
+		consulta.append("(+) = facturaActual.");
+		consulta.append(FacFacturaBean.C_COMISIONIDFACTURA);   		
+		consulta.append(" AND facturaActual.");
+		consulta.append(FacFacturaBean.C_NUMEROFACTURA);
+		consulta.append(" IS NOT NULL ");
 		
 		// Obtención de anticipos aplicados a una factura
-		String consulta2 = "";    
 		if (esProcesoMasivo) {
-			consulta2 = " UNION SELECT " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_FECHAEMISION + " AS FECHA ";			
+			consulta.append(" UNION SELECT ");
+			consulta.append(FacFacturaBean.T_NOMBRETABLA);
+			consulta.append(".");
+			consulta.append(FacFacturaBean.C_FECHAEMISION);
+			consulta.append(" AS FECHA ");			
 		
 		} else {
-			consulta2 = " UNION SELECT 2 AS IDTABLA, " +
-						 	" F_SIGA_GETRECURSO_ETIQUETA('facturacion.pagosFactura.accion.aplicarAnticipo'," + this.usrbean.getLanguage() + ") AS TABLA, " +
-						 	" CASE " +
-						 		" WHEN (" + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IMPTOTAL + " > " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IMPTOTALANTICIPADO + ") THEN " + 
-						 			" F_SIGA_GETRECURSO_ETIQUETA('facturacion.pagosFactura.estado.pendienteCobro'," + this.usrbean.getLanguage() + ") " + 
-					 			" ELSE " +
-						 			" ( " +
-						 				" SELECT F_SIGA_GETRECURSO_ETIQUETA (" + FacEstadoFacturaBean.T_NOMBRETABLA + "." + FacEstadoFacturaBean.C_DESCRIPCION + "," + this.usrbean.getLanguage() + ") " +
-						 				" FROM " + FacEstadoFacturaBean.T_NOMBRETABLA +
-						 				" WHERE " + FacEstadoFacturaBean.C_IDESTADO + " = " + ClsConstants.ESTADO_FACTURA_PAGADA +
-						 			" ) " +
-			 				" END AS ESTADO, " +
-			 				FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_FECHAEMISION + " AS FECHA, " +
-			 				FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_FECHAMODIFICACION + " AS FECHA_ORDEN, " +
-			 				FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IMPTOTALANTICIPADO + " AS IMPORTE, " +
-			 				FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDFACTURA + " AS IDFACTURA, " +
-			 				" '' AS ANULACIONCOMISION, " +
-			 				" '' AS DEVUELTA, " +
-							   " '' AS TARJETA, " +
-							   " 0 AS IDABONO_IDCUENTA, " +
-							   " '' AS NUMEROABONO, " + 
-							   " 0 AS IDPAGO, " +
-							   " '' AS NOMBREBANCO ";
+			consulta.append(" UNION SELECT 2 AS IDTABLA, ");
+			consulta.append(" F_SIGA_GETRECURSO_ETIQUETA('facturacion.pagosFactura.accion.aplicarAnticipo',");
+			consulta.append(this.usrbean.getLanguage());
+			consulta.append(") AS TABLA, ");
+			consulta.append(" CASE ");
+			consulta.append(" WHEN (");
+			consulta.append(FacFacturaBean.T_NOMBRETABLA);
+			consulta.append(".");
+			consulta.append(FacFacturaBean.C_IMPTOTAL);
+			consulta.append(" > ");
+			consulta.append(FacFacturaBean.T_NOMBRETABLA);
+			consulta.append(".");
+			consulta.append(FacFacturaBean.C_IMPTOTALANTICIPADO);
+			consulta.append(") THEN "); 
+			consulta.append(" F_SIGA_GETRECURSO_ETIQUETA('facturacion.pagosFactura.estado.pendienteCobro',");
+			consulta.append(this.usrbean.getLanguage());
+			consulta.append(") "); 
+			consulta.append(" ELSE ");
+			consulta.append(" ( ");
+			consulta.append(" SELECT F_SIGA_GETRECURSO_ETIQUETA (");
+			consulta.append(FacEstadoFacturaBean.T_NOMBRETABLA);
+			consulta.append(".");
+			consulta.append(FacEstadoFacturaBean.C_DESCRIPCION);
+			consulta.append(",");
+			consulta.append(this.usrbean.getLanguage());
+			consulta.append(") ");
+			consulta.append(" FROM ");
+			consulta.append(FacEstadoFacturaBean.T_NOMBRETABLA);
+			consulta.append(" WHERE ");
+			consulta.append(FacEstadoFacturaBean.C_IDESTADO);
+			consulta.append(" = ");
+			consulta.append(ClsConstants.ESTADO_FACTURA_PAGADA);
+			consulta.append(" ) ");
+			consulta.append(" END AS ESTADO, ");
+			consulta.append(FacFacturaBean.T_NOMBRETABLA);
+			consulta.append(".");
+			consulta.append(FacFacturaBean.C_FECHAEMISION);
+			consulta.append(" AS FECHA, ");
+			consulta.append(FacFacturaBean.T_NOMBRETABLA);
+			consulta.append(".");
+			consulta.append(FacFacturaBean.C_FECHAMODIFICACION);
+			consulta.append(" AS FECHA_ORDEN, ");
+			consulta.append(FacFacturaBean.T_NOMBRETABLA);
+			consulta.append(".");
+			consulta.append(FacFacturaBean.C_IMPTOTALANTICIPADO);
+			consulta.append(" AS IMPORTE, ");
+			consulta.append(FacFacturaBean.T_NOMBRETABLA);
+			consulta.append(".");
+			consulta.append(FacFacturaBean.C_IDFACTURA);
+			consulta.append(" AS IDFACTURA, ");
+			consulta.append(" '' AS ANULACIONCOMISION, ");
+			consulta.append(" '' AS DEVUELTA, ");
+			consulta.append(" '' AS TARJETA, ");
+			consulta.append(" 0 AS IDABONO_IDCUENTA, ");
+			consulta.append(" '' AS NUMEROABONO, "); 
+			consulta.append(" 0 AS IDPAGO, ");
+			consulta.append(" '' AS NOMBREBANCO ");
 		}
-		consulta2 += " FROM " + FacFacturaBean.T_NOMBRETABLA + 
-					" WHERE " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDINSTITUCION + " = " + idInstitucion + 
-						" AND " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDFACTURA + " IN (" + listaFacturasComision + ") " +
-						" AND " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IMPTOTALANTICIPADO + " > 0 ";
+		consulta.append(" FROM ");
+		consulta.append(FacFacturaBean.T_NOMBRETABLA); 
+		consulta.append(" WHERE ");
+		consulta.append(FacFacturaBean.T_NOMBRETABLA);
+		consulta.append(".");
+		consulta.append(FacFacturaBean.C_IDINSTITUCION);
+		consulta.append(" = ");
+		consulta.append(idInstitucion); 
+		consulta.append(" AND ");
+		consulta.append(FacFacturaBean.T_NOMBRETABLA);
+		consulta.append(".");
+		consulta.append(FacFacturaBean.C_IDFACTURA);
+		consulta.append(" IN (");
+		consulta.append(listaFacturasComision);
+		consulta.append(") ");
+		consulta.append(" AND ");
+		consulta.append(FacFacturaBean.T_NOMBRETABLA);
+		consulta.append(".");
+		consulta.append(FacFacturaBean.C_IMPTOTALANTICIPADO);
+		consulta.append(" > 0 ");
 					
-		// Obtención pagos por caja
-		String consulta3 = "";    
+		// Obtencion pagos por caja
 		if (esProcesoMasivo) {
-			consulta3 = " UNION SELECT " + FacPagosPorCajaBean.T_NOMBRETABLA + "." + FacPagosPorCajaBean.C_FECHA + " AS FECHA ";
+			consulta.append(" UNION SELECT ");
+			consulta.append(FacPagosPorCajaBean.T_NOMBRETABLA);
+			consulta.append(".");
+			consulta.append(FacPagosPorCajaBean.C_FECHA);
+			consulta.append(" AS FECHA ");
 			
 		} else  {
-			consulta3 = " UNION SELECT 4 AS IDTABLA, " +
-				 		 	" F_SIGA_GETRECURSO_ETIQUETA('facturacion.pagosFactura.accion.pagosCaja'," + this.usrbean.getLanguage() + ") AS TABLA, " +
-				 		 	" CASE " +
-				 		 		" WHEN ( " +
-				 		 			" ( " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IMPTOTAL + " - " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IMPTOTALANTICIPADO + ") > " +
-			 		 				" ( " + 
-			 		 					" SELECT SUM(pagocaja2." + FacPagosPorCajaBean.C_IMPORTE + ") " +
-			 		 					" FROM " + FacPagosPorCajaBean.T_NOMBRETABLA + " pagocaja2 " + 
-			 		 					" WHERE pagocaja2." + FacPagosPorCajaBean.C_IDINSTITUCION + " = " + idInstitucion + 
-			 		 						" AND pagocaja2." + FacPagosPorCajaBean.C_IDFACTURA + " = " + FacPagosPorCajaBean.T_NOMBRETABLA  + "." + FacFacturaBean.C_IDFACTURA +
-			 		 						" AND pagocaja2." + FacPagosPorCajaBean.C_IDPAGOPORCAJA + " <= " + FacPagosPorCajaBean.T_NOMBRETABLA  + "." + FacPagosPorCajaBean.C_IDPAGOPORCAJA +
-	 		 						" ) " + 
- 		 						" ) THEN " +
-	 		 						" ( " +
-		 		 						" SELECT F_SIGA_GETRECURSO_ETIQUETA (" + FacEstadoFacturaBean.T_NOMBRETABLA + "." + FacEstadoFacturaBean.C_DESCRIPCION + "," + this.usrbean.getLanguage() + ") " +
-		 		 						" FROM "  + FacEstadoFacturaBean.T_NOMBRETABLA +
-		 		 						" WHERE " + FacEstadoFacturaBean.C_IDESTADO + " = " + ClsConstants.ESTADO_FACTURA_CAJA + 
-	 		 						" ) " +
- 		 						" ELSE " +
-	 		 						" ( " +
-	 		 							" SELECT F_SIGA_GETRECURSO_ETIQUETA (" + FacEstadoFacturaBean.T_NOMBRETABLA + "." + FacEstadoFacturaBean.C_DESCRIPCION + "," + this.usrbean.getLanguage() + ") " +
-	 		 							" FROM "  + FacEstadoFacturaBean.T_NOMBRETABLA +
-	 		 							" WHERE " + FacEstadoFacturaBean.C_IDESTADO + " = " + ClsConstants.ESTADO_FACTURA_PAGADA + 
- 		 							" ) " +
-	 		 					" END AS ESTADO, " +
-	 		 					FacPagosPorCajaBean.T_NOMBRETABLA + "." + FacPagosPorCajaBean.C_FECHA + " AS FECHA, " +
-	 		 					FacPagosPorCajaBean.T_NOMBRETABLA + "." + FacPagosPorCajaBean.C_FECHAMODIFICACION + " AS FECHA_ORDEN, " +
-	 		 					FacPagosPorCajaBean.T_NOMBRETABLA + "." + FacPagosPorCajaBean.C_IMPORTE + " AS IMPORTE, " +
-	 		 					FacPagosPorCajaBean.T_NOMBRETABLA + "." + FacPagosPorCajaBean.C_IDFACTURA + " AS IDFACTURA, " +
-	 		 					" '' AS ANULACIONCOMISION, " +
-	 		 					" '' AS DEVUELTA, " +
-	 		 					FacPagosPorCajaBean.T_NOMBRETABLA + "." + FacPagosPorCajaBean.C_TARJETA + " AS TARJETA, " +
-	 		 					FacPagosPorCajaBean.T_NOMBRETABLA + "." + FacPagosPorCajaBean.C_IDABONO + " AS IDABONO_IDCUENTA, " +
-	 		 					" ( " +
-	 		 						" SELECT " + FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_NUMEROABONO +
-	 		 						" FROM " + FacAbonoBean.T_NOMBRETABLA +
-	 		 						" WHERE " + FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDINSTITUCION +  " = " + FacPagosPorCajaBean.T_NOMBRETABLA + "." + FacPagosPorCajaBean.C_IDINSTITUCION +
-	 		 							" AND " + FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDABONO + " = " + FacPagosPorCajaBean.T_NOMBRETABLA + "." + FacPagosPorCajaBean.C_IDABONO +
-	 		 					" ) AS NUMEROABONO, " +
-	 		 					FacPagosPorCajaBean.T_NOMBRETABLA + "." + FacPagosPorCajaBean.C_IDPAGOPORCAJA + " AS IDPAGO, "+
-	 		 					"'' AS NOMBREBANCO ";
+			consulta.append(" UNION SELECT 4 AS IDTABLA, ");
+			consulta.append(" F_SIGA_GETRECURSO_ETIQUETA('facturacion.pagosFactura.accion.pagosCaja',");
+			consulta.append(this.usrbean.getLanguage());
+			consulta.append(") AS TABLA, ");
+			consulta.append(" CASE ");
+			consulta.append(" WHEN ( ");
+			consulta.append(" ( ");
+			consulta.append(FacFacturaBean.T_NOMBRETABLA);
+			consulta.append(".");
+			consulta.append(FacFacturaBean.C_IMPTOTAL);
+			consulta.append(" - ");
+			consulta.append(FacFacturaBean.T_NOMBRETABLA);
+			consulta.append(".");
+			consulta.append(FacFacturaBean.C_IMPTOTALANTICIPADO);
+			consulta.append(") > ");
+			consulta.append(" ( "); 
+			consulta.append(" SELECT SUM(pagocaja2.");
+			consulta.append(FacPagosPorCajaBean.C_IMPORTE);
+			consulta.append(") ");
+			consulta.append(" FROM ");
+			consulta.append(FacPagosPorCajaBean.T_NOMBRETABLA);
+			consulta.append(" pagocaja2 "); 
+			consulta.append(" WHERE pagocaja2.");
+			consulta.append(FacPagosPorCajaBean.C_IDINSTITUCION);
+			consulta.append(" = ");
+			consulta.append(idInstitucion); 
+			consulta.append(" AND pagocaja2.");
+			consulta.append(FacPagosPorCajaBean.C_IDFACTURA);
+			consulta.append(" = ");
+			consulta.append(FacPagosPorCajaBean.T_NOMBRETABLA);
+			consulta.append(".");
+			consulta.append(FacFacturaBean.C_IDFACTURA);
+			consulta.append(" AND pagocaja2.");
+			consulta.append(FacPagosPorCajaBean.C_IDPAGOPORCAJA);
+			consulta.append(" <= ");
+			consulta.append(FacPagosPorCajaBean.T_NOMBRETABLA);
+			consulta.append(".");
+			consulta.append(FacPagosPorCajaBean.C_IDPAGOPORCAJA);
+			consulta.append(" ) "); 
+			consulta.append(" ) THEN ");
+			consulta.append(" ( ");
+			consulta.append(" SELECT F_SIGA_GETRECURSO_ETIQUETA (");
+			consulta.append(FacEstadoFacturaBean.T_NOMBRETABLA);
+			consulta.append(".");
+			consulta.append(FacEstadoFacturaBean.C_DESCRIPCION);
+			consulta.append(",");
+			consulta.append(this.usrbean.getLanguage());
+			consulta.append(") ");
+			consulta.append(" FROM ");
+			consulta.append(FacEstadoFacturaBean.T_NOMBRETABLA);
+			consulta.append(" WHERE ");
+			consulta.append(FacEstadoFacturaBean.C_IDESTADO);
+			consulta.append(" = ");
+			consulta.append(ClsConstants.ESTADO_FACTURA_CAJA); 
+			consulta.append(" ) ");
+			consulta.append(" ELSE ");
+			consulta.append(" ( ");
+			consulta.append(" SELECT F_SIGA_GETRECURSO_ETIQUETA (");
+			consulta.append(FacEstadoFacturaBean.T_NOMBRETABLA);
+			consulta.append(".");
+			consulta.append(FacEstadoFacturaBean.C_DESCRIPCION);
+			consulta.append(",");
+			consulta.append(this.usrbean.getLanguage());
+			consulta.append(") ");
+			consulta.append(" FROM ");
+			consulta.append(FacEstadoFacturaBean.T_NOMBRETABLA);
+			consulta.append(" WHERE ");
+			consulta.append(FacEstadoFacturaBean.C_IDESTADO);
+			consulta.append(" = ");
+			consulta.append(ClsConstants.ESTADO_FACTURA_PAGADA); 
+			consulta.append(" ) ");
+			consulta.append(" END AS ESTADO, ");
+			consulta.append(FacPagosPorCajaBean.T_NOMBRETABLA);
+			consulta.append(".");
+			consulta.append(FacPagosPorCajaBean.C_FECHA);
+			consulta.append(" AS FECHA, ");
+			consulta.append(FacPagosPorCajaBean.T_NOMBRETABLA);
+			consulta.append(".");
+			consulta.append(FacPagosPorCajaBean.C_FECHAMODIFICACION);
+			consulta.append(" AS FECHA_ORDEN, ");
+			consulta.append(FacPagosPorCajaBean.T_NOMBRETABLA);
+			consulta.append(".");
+			consulta.append(FacPagosPorCajaBean.C_IMPORTE);
+			consulta.append(" AS IMPORTE, ");
+			consulta.append(FacPagosPorCajaBean.T_NOMBRETABLA);
+			consulta.append(".");
+			consulta.append(FacPagosPorCajaBean.C_IDFACTURA);
+			consulta.append(" AS IDFACTURA, ");
+			consulta.append(" '' AS ANULACIONCOMISION, ");
+			consulta.append(" '' AS DEVUELTA, ");
+			consulta.append(FacPagosPorCajaBean.T_NOMBRETABLA);
+			consulta.append(".");
+			consulta.append(FacPagosPorCajaBean.C_TARJETA);
+			consulta.append(" AS TARJETA, ");
+			consulta.append(FacPagosPorCajaBean.T_NOMBRETABLA);
+			consulta.append(".");
+			consulta.append(FacPagosPorCajaBean.C_IDABONO);
+			consulta.append(" AS IDABONO_IDCUENTA, ");
+			consulta.append(" ( ");
+			consulta.append(" SELECT ");
+			consulta.append(FacAbonoBean.T_NOMBRETABLA);
+			consulta.append(".");
+			consulta.append(FacAbonoBean.C_NUMEROABONO);
+			consulta.append(" FROM ");
+			consulta.append(FacAbonoBean.T_NOMBRETABLA);
+			consulta.append(" WHERE ");
+			consulta.append(FacAbonoBean.T_NOMBRETABLA);
+			consulta.append(".");
+			consulta.append(FacAbonoBean.C_IDINSTITUCION);
+			consulta.append(" = ");
+			consulta.append(FacPagosPorCajaBean.T_NOMBRETABLA);
+			consulta.append(".");
+			consulta.append(FacPagosPorCajaBean.C_IDINSTITUCION);
+			consulta.append(" AND ");
+			consulta.append(FacAbonoBean.T_NOMBRETABLA);
+			consulta.append(".");
+			consulta.append(FacAbonoBean.C_IDABONO);
+			consulta.append(" = ");
+			consulta.append(FacPagosPorCajaBean.T_NOMBRETABLA);
+			consulta.append(".");
+			consulta.append(FacPagosPorCajaBean.C_IDABONO);
+			consulta.append(" ) AS NUMEROABONO, ");
+			consulta.append(FacPagosPorCajaBean.T_NOMBRETABLA);
+			consulta.append(".");
+			consulta.append(FacPagosPorCajaBean.C_IDPAGOPORCAJA);
+			consulta.append(" AS IDPAGO, ");
+			consulta.append("'' AS NOMBREBANCO ");
 		}
-		consulta3 += " FROM " + FacPagosPorCajaBean.T_NOMBRETABLA + ", " + 
-							FacFacturaBean.T_NOMBRETABLA +
-						" WHERE " + FacPagosPorCajaBean.T_NOMBRETABLA + "." + FacPagosPorCajaBean.C_IDINSTITUCION + " = " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDINSTITUCION + 
-							" AND " + FacPagosPorCajaBean.T_NOMBRETABLA + "." + FacPagosPorCajaBean.C_IDFACTURA + " = " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDFACTURA +
-							" AND " + FacPagosPorCajaBean.T_NOMBRETABLA + "." + FacPagosPorCajaBean.C_IDINSTITUCION + " = " + idInstitucion + 
-							" AND " + FacPagosPorCajaBean.T_NOMBRETABLA + "." + FacPagosPorCajaBean.C_IDFACTURA + " IN (" + listaFacturasComision + ") " +
-							" AND " + FacPagosPorCajaBean.T_NOMBRETABLA + "." + FacPagosPorCajaBean.C_IDABONO + " IS NULL ";
+		consulta.append(" FROM ");
+		consulta.append(FacPagosPorCajaBean.T_NOMBRETABLA);
+		consulta.append(", "); 
+		consulta.append(FacFacturaBean.T_NOMBRETABLA);
+		consulta.append(" WHERE ");
+		consulta.append(FacPagosPorCajaBean.T_NOMBRETABLA);
+		consulta.append(".");
+		consulta.append(FacPagosPorCajaBean.C_IDINSTITUCION);
+		consulta.append(" = ");
+		consulta.append(FacFacturaBean.T_NOMBRETABLA);
+		consulta.append(".");
+		consulta.append(FacFacturaBean.C_IDINSTITUCION); 
+		consulta.append(" AND ");
+		consulta.append(FacPagosPorCajaBean.T_NOMBRETABLA);
+		consulta.append(".");
+		consulta.append(FacPagosPorCajaBean.C_IDFACTURA);
+		consulta.append(" = ");
+		consulta.append(FacFacturaBean.T_NOMBRETABLA);
+		consulta.append(".");
+		consulta.append(FacFacturaBean.C_IDFACTURA);
+		consulta.append(" AND ");
+		consulta.append(FacPagosPorCajaBean.T_NOMBRETABLA);
+		consulta.append(".");
+		consulta.append(FacPagosPorCajaBean.C_IDINSTITUCION);
+		consulta.append(" = ");
+		consulta.append(idInstitucion); 
+		consulta.append(" AND ");
+		consulta.append(FacPagosPorCajaBean.T_NOMBRETABLA);
+		consulta.append(".");
+		consulta.append(FacPagosPorCajaBean.C_IDFACTURA);
+		consulta.append(" IN (");
+		consulta.append(listaFacturasComision);
+		consulta.append(") ");
+		consulta.append(" AND ");
+		consulta.append(FacPagosPorCajaBean.T_NOMBRETABLA);
+		consulta.append(".");
+		consulta.append(FacPagosPorCajaBean.C_IDABONO);
+		consulta.append(" IS NULL ");
 		
-		// Otención pagos por banco
-		String consulta4 = "";    
+		// Otencion pagos por banco
 		if (esProcesoMasivo) {
-			consulta4 = " UNION SELECT cargos." +  FacDisqueteCargosBean.C_FECHACREACION + " AS FECHA ";			
+			consulta.append(" UNION SELECT cargos.");
+			consulta.append(FacDisqueteCargosBean.C_FECHACREACION);
+			consulta.append(" AS FECHA ");			
 		} else  {
-			consulta4 = " UNION SELECT 4 AS IDTABLA, " +
-							" F_SIGA_GETRECURSO_ETIQUETA('facturacion.pagosFactura.accion.pagoBanco'," + this.usrbean.getLanguage() + ") AS TABLA, " +
-							" ( " +
-								" SELECT F_SIGA_GETRECURSO_ETIQUETA (" + FacEstadoFacturaBean.T_NOMBRETABLA + "." + FacEstadoFacturaBean.C_DESCRIPCION + "," + this.usrbean.getLanguage() + ") " +
-								" FROM "  + FacEstadoFacturaBean.T_NOMBRETABLA +
-								" WHERE " + FacEstadoFacturaBean.C_IDESTADO + " = " + ClsConstants.ESTADO_FACTURA_PAGADA + 
-							" ) AS ESTADO, " + 
-							" cargos." +  FacDisqueteCargosBean.C_FECHACREACION + " AS FECHA, " +
-							" cargos." + FacDisqueteCargosBean.C_FECHACREACION + " AS FECHA_ORDEN, " +							   
-							" incluidadisquete." + FacFacturaIncluidaEnDisqueteBean.C_IMPORTE + " AS IMPORTE, " +
-							" incluidadisquete." + FacFacturaIncluidaEnDisqueteBean.C_IDFACTURA + " AS IDFACTURA, " +
-							" '' AS ANULACIONCOMISION, " +
-							" incluidadisquete." + FacFacturaIncluidaEnDisqueteBean.C_DEVUELTA + " AS DEVUELTA, " +
-							" '' AS TARJETA, " +
-							" incluidadisquete." + FacFacturaIncluidaEnDisqueteBean.C_IDCUENTA + " AS IDABONO_IDCUENTA, " +
-							" '' AS NUMEROABONO, " +
-							" 0 AS IDPAGO, "+
-							" ( " +
-								" SELECT banco.nombre || ' nº ' || cuenta." + CenCuentasBancariasBean.C_IBAN + 
-								" FROM " + CenCuentasBancariasBean.T_NOMBRETABLA + " cuenta," + 
-									CenBancosBean.T_NOMBRETABLA + " banco" +
-								" WHERE cuenta." + CenCuentasBancariasBean.C_CBO_CODIGO + " = banco." + CenBancosBean.C_CODIGO +
-									" AND cuenta." + CenCuentasBancariasBean.C_IDINSTITUCION + " = " + idInstitucion +
-									" AND cuenta." + CenCuentasBancariasBean.C_IDPERSONA + " = " + idPersona +
-									" AND cuenta." + CenCuentasBancariasBean.C_IDCUENTA + " = incluidadisquete." + FacFacturaIncluidaEnDisqueteBean.C_IDCUENTA +
-							" ) as NOMBREBANCO";
+			consulta.append(" UNION SELECT 4 AS IDTABLA, ");
+			consulta.append(" F_SIGA_GETRECURSO_ETIQUETA('facturacion.pagosFactura.accion.pagoBanco',");
+			consulta.append(this.usrbean.getLanguage());
+			consulta.append(") AS TABLA, ");
+			consulta.append(" ( ");
+			consulta.append(" SELECT F_SIGA_GETRECURSO_ETIQUETA (");
+			consulta.append(FacEstadoFacturaBean.T_NOMBRETABLA);
+			consulta.append(".");
+			consulta.append(FacEstadoFacturaBean.C_DESCRIPCION);
+			consulta.append(",");
+			consulta.append(this.usrbean.getLanguage());
+			consulta.append(") ");
+			consulta.append(" FROM ");
+			consulta.append(FacEstadoFacturaBean.T_NOMBRETABLA);
+			consulta.append(" WHERE ");
+			consulta.append(FacEstadoFacturaBean.C_IDESTADO);
+			consulta.append(" = ");
+			consulta.append(ClsConstants.ESTADO_FACTURA_PAGADA); 
+			consulta.append(" ) AS ESTADO, "); 
+			consulta.append(" cargos.");
+			consulta.append(FacDisqueteCargosBean.C_FECHACREACION);
+			consulta.append(" AS FECHA, ");
+			consulta.append(" cargos.");
+			consulta.append(FacDisqueteCargosBean.C_FECHACREACION);
+			consulta.append(" AS FECHA_ORDEN, ");						   
+			consulta.append(" incluidadisquete.");
+			consulta.append(FacFacturaIncluidaEnDisqueteBean.C_IMPORTE);
+			consulta.append(" AS IMPORTE, ");
+			consulta.append(" incluidadisquete.");
+			consulta.append(FacFacturaIncluidaEnDisqueteBean.C_IDFACTURA);
+			consulta.append(" AS IDFACTURA, ");
+			consulta.append(" '' AS ANULACIONCOMISION, ");
+			consulta.append(" incluidadisquete.");
+			consulta.append(FacFacturaIncluidaEnDisqueteBean.C_DEVUELTA);
+			consulta.append(" AS DEVUELTA, ");
+			consulta.append(" '' AS TARJETA, ");
+			consulta.append(" incluidadisquete.");
+			consulta.append(FacFacturaIncluidaEnDisqueteBean.C_IDCUENTA);
+			consulta.append(" AS IDABONO_IDCUENTA, ");
+			consulta.append(" '' AS NUMEROABONO, ");
+			consulta.append(" 0 AS IDPAGO, ");
+			consulta.append(" ( ");
+			consulta.append(" SELECT banco.nombre || ' nº ' || cuenta.");
+			consulta.append(CenCuentasBancariasBean.C_IBAN); 
+			consulta.append(" FROM ");
+			consulta.append(CenCuentasBancariasBean.T_NOMBRETABLA);
+			consulta.append(" cuenta,"); 
+			consulta.append(CenBancosBean.T_NOMBRETABLA);
+			consulta.append(" banco");
+			consulta.append(" WHERE cuenta.");
+			consulta.append(CenCuentasBancariasBean.C_CBO_CODIGO);
+			consulta.append(" = banco.");
+			consulta.append(CenBancosBean.C_CODIGO);
+			consulta.append(" AND cuenta.");
+			consulta.append(CenCuentasBancariasBean.C_IDINSTITUCION);
+			consulta.append(" = ");
+			consulta.append(idInstitucion);
+			consulta.append(" AND cuenta.");
+			consulta.append(CenCuentasBancariasBean.C_IDPERSONA);
+			consulta.append(" = ");
+			consulta.append(idPersona);
+			consulta.append(" AND cuenta.");
+			consulta.append(CenCuentasBancariasBean.C_IDCUENTA);
+			consulta.append(" = incluidadisquete.");
+			consulta.append(FacFacturaIncluidaEnDisqueteBean.C_IDCUENTA);
+			consulta.append(" ) as NOMBREBANCO");
 		}
-		consulta4 += " FROM " + FacFacturaIncluidaEnDisqueteBean.T_NOMBRETABLA + " incluidadisquete, " +  
-							FacDisqueteCargosBean.T_NOMBRETABLA + " cargos, " + 
-							FacFacturaBean.T_NOMBRETABLA + " factura " + 
-						" WHERE incluidadisquete." + FacFacturaIncluidaEnDisqueteBean.C_IDINSTITUCION + " = cargos." + FacDisqueteCargosBean.C_IDINSTITUCION +
-                        	" AND incluidadisquete."+ FacFacturaIncluidaEnDisqueteBean.C_IDDISQUETECARGOS + " = cargos." + FacDisqueteCargosBean.C_IDDISQUETECARGOS +
-                        	" AND incluidadisquete." + FacFacturaIncluidaEnDisqueteBean.C_IDINSTITUCION + " = factura." + FacFacturaBean.C_IDINSTITUCION +
-                        	" AND incluidadisquete." + FacFacturaIncluidaEnDisqueteBean.C_IDFACTURA + " = factura." + FacFacturaBean.C_IDFACTURA +
-                        	" AND incluidadisquete." + FacFacturaIncluidaEnDisqueteBean.C_IDINSTITUCION + " = " + idInstitucion + 
-                        	" AND incluidadisquete." + FacFacturaIncluidaEnDisqueteBean.C_IDFACTURA + " IN (" + listaFacturasComision + ") ";   
+		consulta.append(" FROM ");
+		consulta.append(FacFacturaIncluidaEnDisqueteBean.T_NOMBRETABLA);
+		consulta.append(" incluidadisquete, ");  
+		consulta.append(FacDisqueteCargosBean.T_NOMBRETABLA);
+		consulta.append(" cargos, "); 
+		consulta.append(FacFacturaBean.T_NOMBRETABLA);
+		consulta.append(" factura "); 
+		consulta.append(" WHERE incluidadisquete.");
+		consulta.append(FacFacturaIncluidaEnDisqueteBean.C_IDINSTITUCION);
+		consulta.append(" = cargos.");
+		consulta.append(FacDisqueteCargosBean.C_IDINSTITUCION);
+		consulta.append(" AND incluidadisquete.");
+		consulta.append(FacFacturaIncluidaEnDisqueteBean.C_IDDISQUETECARGOS);
+		consulta.append(" = cargos.");
+		consulta.append(FacDisqueteCargosBean.C_IDDISQUETECARGOS);
+		consulta.append(" AND incluidadisquete.");
+		consulta.append(FacFacturaIncluidaEnDisqueteBean.C_IDINSTITUCION);
+		consulta.append(" = factura.");
+		consulta.append(FacFacturaBean.C_IDINSTITUCION);
+		consulta.append(" AND incluidadisquete.");
+		consulta.append(FacFacturaIncluidaEnDisqueteBean.C_IDFACTURA);
+		consulta.append(" = factura.");
+		consulta.append(FacFacturaBean.C_IDFACTURA);
+		consulta.append(" AND incluidadisquete.");
+		consulta.append(FacFacturaIncluidaEnDisqueteBean.C_IDINSTITUCION);
+		consulta.append(" = ");
+		consulta.append(idInstitucion); 
+		consulta.append(" AND incluidadisquete.");
+		consulta.append(FacFacturaIncluidaEnDisqueteBean.C_IDFACTURA);
+		consulta.append(" IN (");
+		consulta.append(listaFacturasComision);
+		consulta.append(") ");   
 
-		// Obtención devoluciones
-		String consulta5 = "";    
+		// Obtencion devoluciones
 		if (esProcesoMasivo) {
-			consulta5 = " UNION SELECT devoluciones." + FacDisqueteDevolucionesBean.C_FECHAGENERACION + " AS FECHA ";					
+			consulta.append(" UNION SELECT devoluciones.");
+			consulta.append(FacDisqueteDevolucionesBean.C_FECHAGENERACION);
+			consulta.append(" AS FECHA ");					
 		} else {
-			consulta5 = " UNION SELECT 4 AS IDTABLA, " +
-							" F_SIGA_GETRECURSO_ETIQUETA('facturacion.pagosFactura.accion.devolucion'," + this.usrbean.getLanguage() + ") || ' (' || lineadevolucion.DESCRIPCIONMOTIVOS || ')' AS TABLA, " +
-							" ( " +
-								" SELECT F_SIGA_GETRECURSO_ETIQUETA (" + FacEstadoFacturaBean.T_NOMBRETABLA + "." + FacEstadoFacturaBean.C_DESCRIPCION + "," + this.usrbean.getLanguage() + ") " +
-								" FROM "  + FacEstadoFacturaBean.T_NOMBRETABLA +
-								" WHERE " + FacEstadoFacturaBean.C_IDESTADO + " = " + ClsConstants.ESTADO_FACTURA_DEVUELTA +
-							" ) AS ESTADO, " +			
-							" devoluciones." + FacDisqueteDevolucionesBean.C_FECHAGENERACION + " AS FECHA, " +
-							" devoluciones." + FacDisqueteDevolucionesBean.C_FECHAMODIFICACION + " AS FECHA_ORDEN, " + 					 		 
-							" incluidadisquete." + FacFacturaIncluidaEnDisqueteBean.C_IMPORTE + " AS IMPORTE, " + 
-							" incluidadisquete." + FacFacturaIncluidaEnDisqueteBean.C_IDFACTURA + " AS IDFACTURA, " +
-							" '' AS ANULACIONCOMISION, " +
-							" incluidadisquete." + FacFacturaIncluidaEnDisqueteBean.C_DEVUELTA + " AS DEVUELTA, " +
-							" '' AS TARJETA, " +
-							" incluidadisquete." + FacFacturaIncluidaEnDisqueteBean.C_IDCUENTA + " AS IDABONO_IDCUENTA, " +
-							" '' AS NUMEROABONO, " +
-							" 0 AS IDPAGO, " +
-							" ( " +
-								" SELECT banco.nombre || ' nº ' || cuenta." + CenCuentasBancariasBean.C_IBAN + 
-								" FROM " + CenCuentasBancariasBean.T_NOMBRETABLA + " cuenta," + 
-									CenBancosBean.T_NOMBRETABLA + " banco" +
-								" WHERE cuenta." + CenCuentasBancariasBean.C_CBO_CODIGO + " = banco." + CenBancosBean.C_CODIGO +
-									" AND cuenta." + CenCuentasBancariasBean.C_IDINSTITUCION + " = " + idInstitucion +
-									" AND cuenta." + CenCuentasBancariasBean.C_IDPERSONA + " = " + idPersona +
-									" AND cuenta." + CenCuentasBancariasBean.C_IDCUENTA + " = incluidadisquete." + FacFacturaIncluidaEnDisqueteBean.C_IDCUENTA +
-							" ) as NOMBREBANCO";									
+			consulta.append(" UNION SELECT 4 AS IDTABLA, ");
+			consulta.append(" F_SIGA_GETRECURSO_ETIQUETA('facturacion.pagosFactura.accion.devolucion',");
+			consulta.append(this.usrbean.getLanguage());
+			consulta.append(") || ' (' || lineadevolucion.DESCRIPCIONMOTIVOS || ')' AS TABLA, ");
+			consulta.append(" ( ");
+			consulta.append(" SELECT F_SIGA_GETRECURSO_ETIQUETA (");
+			consulta.append(FacEstadoFacturaBean.T_NOMBRETABLA);
+			consulta.append(".");
+			consulta.append(FacEstadoFacturaBean.C_DESCRIPCION);
+			consulta.append(",");
+			consulta.append(this.usrbean.getLanguage());
+			consulta.append(") ");
+			consulta.append(" FROM ");
+			consulta.append(FacEstadoFacturaBean.T_NOMBRETABLA);
+			consulta.append(" WHERE ");
+			consulta.append(FacEstadoFacturaBean.C_IDESTADO);
+			consulta.append(" = ");
+			consulta.append(ClsConstants.ESTADO_FACTURA_DEVUELTA);
+			consulta.append(" ) AS ESTADO, ");			
+			consulta.append(" devoluciones.");
+			consulta.append(FacDisqueteDevolucionesBean.C_FECHAGENERACION);
+			consulta.append(" AS FECHA, ");
+			consulta.append(" devoluciones.");
+			consulta.append(FacDisqueteDevolucionesBean.C_FECHAMODIFICACION);
+			consulta.append(" AS FECHA_ORDEN, "); 					 		 
+			consulta.append(" incluidadisquete.");
+			consulta.append(FacFacturaIncluidaEnDisqueteBean.C_IMPORTE);
+			consulta.append(" AS IMPORTE, "); 
+			consulta.append(" incluidadisquete.");
+			consulta.append(FacFacturaIncluidaEnDisqueteBean.C_IDFACTURA);
+			consulta.append(" AS IDFACTURA, ");
+			consulta.append(" '' AS ANULACIONCOMISION, ");
+			consulta.append(" incluidadisquete.");
+			consulta.append(FacFacturaIncluidaEnDisqueteBean.C_DEVUELTA);
+			consulta.append(" AS DEVUELTA, ");
+			consulta.append(" '' AS TARJETA, ");
+			consulta.append(" incluidadisquete.");
+			consulta.append(FacFacturaIncluidaEnDisqueteBean.C_IDCUENTA);
+			consulta.append(" AS IDABONO_IDCUENTA, ");
+			consulta.append(" '' AS NUMEROABONO, ");
+			consulta.append(" 0 AS IDPAGO, ");
+			consulta.append(" ( ");
+			consulta.append(" SELECT banco.nombre || ' nº ' || cuenta.");
+			consulta.append(CenCuentasBancariasBean.C_IBAN); 
+			consulta.append(" FROM ");
+			consulta.append(CenCuentasBancariasBean.T_NOMBRETABLA);
+			consulta.append(" cuenta,"); 
+			consulta.append(CenBancosBean.T_NOMBRETABLA);
+			consulta.append(" banco");
+			consulta.append(" WHERE cuenta.");
+			consulta.append(CenCuentasBancariasBean.C_CBO_CODIGO);
+			consulta.append(" = banco.");
+			consulta.append(CenBancosBean.C_CODIGO);
+			consulta.append(" AND cuenta.");
+			consulta.append(CenCuentasBancariasBean.C_IDINSTITUCION);
+			consulta.append(" = ");
+			consulta.append(idInstitucion);
+			consulta.append(" AND cuenta.");
+			consulta.append(CenCuentasBancariasBean.C_IDPERSONA);
+			consulta.append(" = ");
+			consulta.append(idPersona);
+			consulta.append(" AND cuenta.");
+			consulta.append(CenCuentasBancariasBean.C_IDCUENTA);
+			consulta.append(" = incluidadisquete.");
+			consulta.append(FacFacturaIncluidaEnDisqueteBean.C_IDCUENTA);
+			consulta.append(" ) as NOMBREBANCO");									
 		}
-		consulta5 += " FROM " + FacFacturaIncluidaEnDisqueteBean.T_NOMBRETABLA + " incluidadisquete, " + 
-							FacLineaDevoluDisqBancoBean.T_NOMBRETABLA + " lineadevolucion, " + 
-							FacDisqueteDevolucionesBean.T_NOMBRETABLA + " devoluciones, " + 
-							FacFacturaBean.T_NOMBRETABLA + " factura " + 
-						" WHERE incluidadisquete." + FacFacturaIncluidaEnDisqueteBean.C_IDINSTITUCION + " = lineadevolucion." + FacLineaDevoluDisqBancoBean.C_IDINSTITUCION + 
-							" AND incluidadisquete." + FacFacturaIncluidaEnDisqueteBean.C_IDDISQUETECARGOS + " = lineadevolucion." + FacLineaDevoluDisqBancoBean.C_IDDISQUETECARGOS + 
-							" AND incluidadisquete." + FacFacturaIncluidaEnDisqueteBean.C_IDFACTURAINCLUIDAENDISQUETE + " = lineadevolucion." + FacLineaDevoluDisqBancoBean.C_IDFACTURAINCLUIDAENDISQUETE + 
-							" AND lineadevolucion." + FacLineaDevoluDisqBancoBean.C_IDINSTITUCION + " = devoluciones." + FacDisqueteDevolucionesBean.C_IDINSTITUCION +
-							" AND lineadevolucion." + FacLineaDevoluDisqBancoBean.C_IDDISQUETEDEVOLUCIONES + " = devoluciones." + FacDisqueteDevolucionesBean.C_IDDISQUETEDEVOLUCIONES + 
-							" AND incluidadisquete." + FacFacturaIncluidaEnDisqueteBean.C_IDINSTITUCION + " = factura." + FacFacturaBean.C_IDINSTITUCION +
-							" AND incluidadisquete." + FacFacturaIncluidaEnDisqueteBean.C_IDFACTURA + " = factura." + FacFacturaBean.C_IDFACTURA + 
-							" AND incluidadisquete." + FacFacturaIncluidaEnDisqueteBean.C_IDINSTITUCION + " = " + idInstitucion + 
-							" AND incluidadisquete." + FacFacturaIncluidaEnDisqueteBean.C_IDFACTURA + " IN (" + listaFacturasComision + ") ";   			
+		consulta.append(" FROM ");
+		consulta.append(FacFacturaIncluidaEnDisqueteBean.T_NOMBRETABLA);
+		consulta.append(" incluidadisquete, "); 
+		consulta.append(FacLineaDevoluDisqBancoBean.T_NOMBRETABLA);
+		consulta.append(" lineadevolucion, "); 
+		consulta.append(FacDisqueteDevolucionesBean.T_NOMBRETABLA);
+		consulta.append(" devoluciones, "); 
+		consulta.append(FacFacturaBean.T_NOMBRETABLA);
+		consulta.append(" factura "); 
+		consulta.append(" WHERE incluidadisquete.");
+		consulta.append(FacFacturaIncluidaEnDisqueteBean.C_IDINSTITUCION);
+		consulta.append(" = lineadevolucion.");
+		consulta.append(FacLineaDevoluDisqBancoBean.C_IDINSTITUCION); 
+		consulta.append(" AND incluidadisquete.");
+		consulta.append(FacFacturaIncluidaEnDisqueteBean.C_IDDISQUETECARGOS);
+		consulta.append(" = lineadevolucion.");
+		consulta.append(FacLineaDevoluDisqBancoBean.C_IDDISQUETECARGOS); 
+		consulta.append(" AND incluidadisquete.");
+		consulta.append(FacFacturaIncluidaEnDisqueteBean.C_IDFACTURAINCLUIDAENDISQUETE);
+		consulta.append(" = lineadevolucion.");
+		consulta.append(FacLineaDevoluDisqBancoBean.C_IDFACTURAINCLUIDAENDISQUETE); 
+		consulta.append(" AND lineadevolucion.");
+		consulta.append(FacLineaDevoluDisqBancoBean.C_IDINSTITUCION);
+		consulta.append(" = devoluciones.");
+		consulta.append(FacDisqueteDevolucionesBean.C_IDINSTITUCION);
+		consulta.append(" AND lineadevolucion.");
+		consulta.append(FacLineaDevoluDisqBancoBean.C_IDDISQUETEDEVOLUCIONES);
+		consulta.append(" = devoluciones.");
+		consulta.append(FacDisqueteDevolucionesBean.C_IDDISQUETEDEVOLUCIONES); 
+		consulta.append(" AND incluidadisquete.");
+		consulta.append(FacFacturaIncluidaEnDisqueteBean.C_IDINSTITUCION);
+		consulta.append(" = factura.");
+		consulta.append(FacFacturaBean.C_IDINSTITUCION);
+		consulta.append(" AND incluidadisquete.");
+		consulta.append(FacFacturaIncluidaEnDisqueteBean.C_IDFACTURA);
+		consulta.append(" = factura.");
+		consulta.append(FacFacturaBean.C_IDFACTURA); 
+		consulta.append(" AND incluidadisquete.");
+		consulta.append(FacFacturaIncluidaEnDisqueteBean.C_IDINSTITUCION);
+		consulta.append(" = ");
+		consulta.append(idInstitucion); 
+		consulta.append(" AND incluidadisquete.");
+		consulta.append(FacFacturaIncluidaEnDisqueteBean.C_IDFACTURA);
+		consulta.append(" IN (");
+		consulta.append(listaFacturasComision);
+		consulta.append(") ");   			
 		
-		// Obtención renegociaciones
-		String consulta6 = "";    
+		// Obtencion renegociaciones
 		if (esProcesoMasivo) {
-			consulta6 = " UNION SELECT renegociacion." + FacRenegociacionBean.C_FECHARENEGOCIACION + " AS FECHA ";			
+			consulta.append(" UNION SELECT renegociacion.");
+			consulta.append(FacRenegociacionBean.C_FECHARENEGOCIACION);
+			consulta.append(" AS FECHA ");			
 		} else {
-			consulta6 = " UNION SELECT 4 AS IDTABLA, " +
-							" F_SIGA_GETRECURSO_ETIQUETA('facturacion.pagosFactura.accion.renegociacion'," + this.usrbean.getLanguage() + ") || ' ' || renegociacion.comentario AS TABLA, " +
-							" CASE " +
-								" WHEN (renegociacion." + FacRenegociacionBean.C_IDCUENTA + " is null) THEN " +
-									" ( " +
-										" SELECT F_SIGA_GETRECURSO_ETIQUETA (" + FacEstadoFacturaBean.T_NOMBRETABLA + "." + FacEstadoFacturaBean.C_DESCRIPCION + "," + this.usrbean.getLanguage() + ") " +
-										" FROM "  + FacEstadoFacturaBean.T_NOMBRETABLA +
-										" WHERE " + FacEstadoFacturaBean.C_IDESTADO + " = " + ClsConstants.ESTADO_FACTURA_CAJA +
-									" ) " +
-								" ELSE " +
-									" ( " +
-										" SELECT F_SIGA_GETRECURSO_ETIQUETA (" + FacEstadoFacturaBean.T_NOMBRETABLA + "." + FacEstadoFacturaBean.C_DESCRIPCION + "," + this.usrbean.getLanguage() + ") " +
-										" FROM "  + FacEstadoFacturaBean.T_NOMBRETABLA +
-										" WHERE " + FacEstadoFacturaBean.C_IDESTADO + " = " + ClsConstants.ESTADO_FACTURA_BANCO +
-									" ) " +
-							" END as ESTADO, " +						
-							" renegociacion." + FacRenegociacionBean.C_FECHARENEGOCIACION + " AS FECHA, " + 
-							" renegociacion." + FacRenegociacionBean.C_FECHAMODIFICACION + " AS FECHA_ORDEN, " + 					 		 
-							" renegociacion." + FacRenegociacionBean.C_IMPORTE + " AS IMPORTE, " + 
-							" renegociacion." + FacRenegociacionBean.C_IDFACTURA + " AS IDFACTURA, " +
-							" '' AS ANULACIONCOMISION, " +
-							" '' AS DEVUELTA, '' AS TARJETA, " +
-							" 0 AS IDABONO_IDCUENTA, " +
-							" '' AS NUMEROABONO, " +
-							" 0 AS IDPAGO, " +
-							" ( " +
-								" SELECT banco.nombre || ' nº ' || cuenta." + CenCuentasBancariasBean.C_IBAN + 
-								" FROM " + CenCuentasBancariasBean.T_NOMBRETABLA + " cuenta," + 
-									CenBancosBean.T_NOMBRETABLA + " banco, " + 
-									FacRenegociacionBean.T_NOMBRETABLA + " renegocia2 " +
-								" WHERE cuenta." + CenCuentasBancariasBean.C_CBO_CODIGO + " = banco." + CenBancosBean.C_CODIGO +
-									" AND cuenta." + CenCuentasBancariasBean.C_IDINSTITUCION + " = " + idInstitucion +
-									" AND cuenta." + CenCuentasBancariasBean.C_IDPERSONA + " = " + idPersona +
-									" AND renegociacion." + FacRenegociacionBean.C_IDINSTITUCION + " = renegocia2." + FacRenegociacionBean.C_IDINSTITUCION +
-									" AND renegociacion." + FacRenegociacionBean.C_IDFACTURA + " = renegocia2." + FacRenegociacionBean.C_IDFACTURA +
-									" AND renegociacion." + FacRenegociacionBean.C_IDRENEGOCIACION + " = renegocia2." + FacRenegociacionBean.C_IDRENEGOCIACION +
-									" AND cuenta." + CenCuentasBancariasBean.C_IDCUENTA + " = renegocia2." + FacRenegociacionBean.C_IDCUENTA + 
-							") as NOMBREBANCO";
+			consulta.append(" UNION SELECT 4 AS IDTABLA, ");
+			consulta.append(" F_SIGA_GETRECURSO_ETIQUETA('facturacion.pagosFactura.accion.renegociacion',");
+			consulta.append(this.usrbean.getLanguage());
+			consulta.append(") || ' ' || renegociacion.comentario AS TABLA, ");
+			consulta.append(" CASE ");
+			consulta.append(" WHEN (renegociacion.");
+			consulta.append(FacRenegociacionBean.C_IDCUENTA);
+			consulta.append(" is null) THEN ");
+			consulta.append(" ( ");
+			consulta.append(" SELECT F_SIGA_GETRECURSO_ETIQUETA (");
+			consulta.append(FacEstadoFacturaBean.T_NOMBRETABLA);
+			consulta.append(".");
+			consulta.append(FacEstadoFacturaBean.C_DESCRIPCION);
+			consulta.append(",");
+			consulta.append(this.usrbean.getLanguage());
+			consulta.append(") ");
+			consulta.append(" FROM ");
+			consulta.append(FacEstadoFacturaBean.T_NOMBRETABLA);
+			consulta.append(" WHERE ");
+			consulta.append(FacEstadoFacturaBean.C_IDESTADO);
+			consulta.append(" = ");
+			consulta.append(ClsConstants.ESTADO_FACTURA_CAJA);
+			consulta.append(" ) ");
+			consulta.append(" ELSE ");
+			consulta.append(" ( ");
+			consulta.append(" SELECT F_SIGA_GETRECURSO_ETIQUETA (");
+			consulta.append(FacEstadoFacturaBean.T_NOMBRETABLA);
+			consulta.append(".");
+			consulta.append(FacEstadoFacturaBean.C_DESCRIPCION);
+			consulta.append(",");
+			consulta.append(this.usrbean.getLanguage());
+			consulta.append(") ");
+			consulta.append(" FROM ");
+			consulta.append(FacEstadoFacturaBean.T_NOMBRETABLA);
+			consulta.append(" WHERE ");
+			consulta.append(FacEstadoFacturaBean.C_IDESTADO);
+			consulta.append(" = ");
+			consulta.append(ClsConstants.ESTADO_FACTURA_BANCO);
+			consulta.append(" ) ");
+			consulta.append(" END as ESTADO, ");						
+			consulta.append(" renegociacion.");
+			consulta.append(FacRenegociacionBean.C_FECHARENEGOCIACION);
+			consulta.append(" AS FECHA, "); 
+			consulta.append(" renegociacion.");
+			consulta.append(FacRenegociacionBean.C_FECHAMODIFICACION);
+			consulta.append(" AS FECHA_ORDEN, "); 					 		 
+			consulta.append(" renegociacion.");
+			consulta.append(FacRenegociacionBean.C_IMPORTE);
+			consulta.append(" AS IMPORTE, "); 
+			consulta.append(" renegociacion.");
+			consulta.append(FacRenegociacionBean.C_IDFACTURA);
+			consulta.append(" AS IDFACTURA, ");
+			consulta.append(" '' AS ANULACIONCOMISION, ");
+			consulta.append(" '' AS DEVUELTA, '' AS TARJETA, ");
+			consulta.append(" 0 AS IDABONO_IDCUENTA, ");
+			consulta.append(" '' AS NUMEROABONO, ");
+			consulta.append(" 0 AS IDPAGO, ");
+			consulta.append(" ( ");
+			consulta.append(" SELECT banco.nombre || ' nº ' || cuenta.");
+			consulta.append(CenCuentasBancariasBean.C_IBAN); 
+			consulta.append(" FROM ");
+			consulta.append(CenCuentasBancariasBean.T_NOMBRETABLA);
+			consulta.append(" cuenta,"); 
+			consulta.append(CenBancosBean.T_NOMBRETABLA);
+			consulta.append(" banco, "); 
+			consulta.append(FacRenegociacionBean.T_NOMBRETABLA);
+			consulta.append(" renegocia2 ");
+			consulta.append(" WHERE cuenta.");
+			consulta.append(CenCuentasBancariasBean.C_CBO_CODIGO);
+			consulta.append(" = banco.");
+			consulta.append(CenBancosBean.C_CODIGO);
+			consulta.append(" AND cuenta.");
+			consulta.append(CenCuentasBancariasBean.C_IDINSTITUCION);
+			consulta.append(" = ");
+			consulta.append(idInstitucion);
+			consulta.append(" AND cuenta.");
+			consulta.append(CenCuentasBancariasBean.C_IDPERSONA);
+			consulta.append(" = ");
+			consulta.append(idPersona);
+			consulta.append(" AND renegociacion.");
+			consulta.append(FacRenegociacionBean.C_IDINSTITUCION);
+			consulta.append(" = renegocia2.");
+			consulta.append(FacRenegociacionBean.C_IDINSTITUCION);
+			consulta.append(" AND renegociacion.");
+			consulta.append(FacRenegociacionBean.C_IDFACTURA);
+			consulta.append(" = renegocia2.");
+			consulta.append(FacRenegociacionBean.C_IDFACTURA);
+			consulta.append(" AND renegociacion.");
+			consulta.append(FacRenegociacionBean.C_IDRENEGOCIACION);
+			consulta.append(" = renegocia2.");
+			consulta.append(FacRenegociacionBean.C_IDRENEGOCIACION);
+			consulta.append(" AND cuenta.");
+			consulta.append(CenCuentasBancariasBean.C_IDCUENTA);
+			consulta.append(" = renegocia2.");
+			consulta.append(FacRenegociacionBean.C_IDCUENTA); 
+			consulta.append(") as NOMBREBANCO");
 		}
-		consulta6 += " FROM " + FacFacturaBean.T_NOMBRETABLA + " factura," + 
-							FacRenegociacionBean.T_NOMBRETABLA + " renegociacion " + 
-						" WHERE renegociacion." + FacRenegociacionBean.C_IDINSTITUCION + " = factura." + FacFacturaBean.C_IDINSTITUCION +
-							" AND renegociacion." + FacRenegociacionBean.C_IDFACTURA + " = factura." + FacFacturaBean.C_IDFACTURA + 
-							" AND renegociacion." + FacRenegociacionBean.C_IDINSTITUCION + " = " + idInstitucion + 
-							" AND renegociacion." + FacRenegociacionBean.C_IDFACTURA + " IN (" + listaFacturasComision + ") ";   	
+		consulta.append(" FROM ");
+		consulta.append(FacFacturaBean.T_NOMBRETABLA);
+		consulta.append(" factura,"); 
+		consulta.append(FacRenegociacionBean.T_NOMBRETABLA);
+		consulta.append(" renegociacion "); 
+		consulta.append(" WHERE renegociacion.");
+		consulta.append(FacRenegociacionBean.C_IDINSTITUCION);
+		consulta.append(" = factura.");
+		consulta.append(FacFacturaBean.C_IDINSTITUCION);
+		consulta.append(" AND renegociacion.");
+		consulta.append(FacRenegociacionBean.C_IDFACTURA);
+		consulta.append(" = factura.");
+		consulta.append(FacFacturaBean.C_IDFACTURA); 
+		consulta.append(" AND renegociacion.");
+		consulta.append(FacRenegociacionBean.C_IDINSTITUCION);
+		consulta.append(" = ");
+		consulta.append(idInstitucion); 
+		consulta.append(" AND renegociacion.");
+		consulta.append(FacRenegociacionBean.C_IDFACTURA);
+		consulta.append(" IN (");
+		consulta.append(listaFacturasComision);
+		consulta.append(") ");   	
 		
-		// Obtención anulaciones
-		String consulta7 = "";    
+		// Obtencion anulaciones
 		if (!esProcesoMasivo) { // JPT: Si esta anulada no se puede renegociar, ni devolver (ganamos rendimiento)
-			consulta7 = " UNION SELECT 5 AS IDTABLA, " +
-							" F_SIGA_GETRECURSO_ETIQUETA('facturacion.pagosFactura.accion.anulacion'," + this.usrbean.getLanguage() + ") AS TABLA, " +
-							" ( " +
-								" SELECT F_SIGA_GETRECURSO_ETIQUETA (" + FacEstadoFacturaBean.T_NOMBRETABLA + "." + FacEstadoFacturaBean.C_DESCRIPCION + "," + this.usrbean.getLanguage() + ") " +
-								" FROM "  + FacEstadoFacturaBean.T_NOMBRETABLA +
-								" WHERE " + FacEstadoFacturaBean.C_IDESTADO + " = " + ClsConstants.ESTADO_FACTURA_ANULADA +
-							" ) AS ESTADO, " +					
-							" abono." + FacAbonoBean.C_FECHA + " AS FECHA, " +
-							" abono." + FacAbonoBean.C_FECHAMODIFICACION + " AS FECHA_ORDEN, " +
-							 //Tiene que salir el importe por el que se anuló la fac (si hay compensaciones previas no se corresponde con el imp. total abonado)
-							" pgCaja." + FacPagosPorCajaBean.C_IMPORTE + " AS IMPORTE, " +
-							" factura." + FacFacturaBean.C_IDFACTURA + " AS IDFACTURA, " +
-							" '' AS ANULACIONCOMISION, " +
-							" '' AS DEVUELTA, " +
-							" '' AS TARJETA, " +
-							" factura." + FacFacturaBean.C_IDCUENTA + " AS IDABONO_IDCUENTA, " +
-							" abono." + FacAbonoBean.C_NUMEROABONO + " AS NUMEROABONO, " +
-							" 0 AS IDPAGO, "+
-							" ( " +
-								" SELECT banco.nombre || ' nº ' || cuenta." + CenCuentasBancariasBean.C_IBAN + 
-								" FROM " + CenCuentasBancariasBean.T_NOMBRETABLA + " cuenta," + 
-									CenBancosBean.T_NOMBRETABLA + " banco" +
-								" WHERE cuenta." + CenCuentasBancariasBean.C_CBO_CODIGO + " = banco." + CenBancosBean.C_CODIGO +
-									" AND cuenta." + CenCuentasBancariasBean.C_IDINSTITUCION + " = " + idInstitucion +
-									" AND cuenta." + CenCuentasBancariasBean.C_IDPERSONA + " = " + idPersona +
-									" AND cuenta." + CenCuentasBancariasBean.C_IDCUENTA + " = factura." + FacFacturaBean.C_IDCUENTA +
-							" ) as NOMBREBANCO" +
-						" FROM " + FacFacturaBean.T_NOMBRETABLA + " factura, " + 
-							FacAbonoBean.T_NOMBRETABLA + " abono, " + 
-							FacPagosPorCajaBean.T_NOMBRETABLA + " pgCaja " + 
-						" WHERE factura." + FacFacturaBean.C_IDINSTITUCION + " = abono." + FacAbonoBean.C_IDINSTITUCION + 
-							" AND factura." + FacFacturaBean.C_IDFACTURA + " = abono." + FacAbonoBean.C_IDFACTURA +  
-							" AND factura." + FacFacturaBean.C_IDINSTITUCION + " = " + idInstitucion + 
-							" AND factura."   + FacFacturaBean.C_IDFACTURA + " IN (" + listaFacturasComision + ") "+
-							" AND pgCaja."+ FacPagosPorCajaBean.C_IDFACTURA+ " = factura."   + FacFacturaBean.C_IDFACTURA+ 
-							" AND pgCaja."+ FacPagosPorCajaBean.C_IDABONO+ " = abono."   + FacAbonoBean.C_IDABONO+ 
-							" AND pgCaja."+ FacPagosPorCajaBean.C_IDINSTITUCION+ " = abono."   + FacFacturaBean.C_IDINSTITUCION;
+			consulta.append(" UNION SELECT 5 AS IDTABLA, ");
+			consulta.append(" F_SIGA_GETRECURSO_ETIQUETA('facturacion.pagosFactura.accion.anulacion',");
+			consulta.append(this.usrbean.getLanguage());
+			consulta.append(") AS TABLA, ");
+			consulta.append(" ( ");
+			consulta.append(" SELECT F_SIGA_GETRECURSO_ETIQUETA (");
+			consulta.append(FacEstadoFacturaBean.T_NOMBRETABLA);
+			consulta.append(".");
+			consulta.append(FacEstadoFacturaBean.C_DESCRIPCION);
+			consulta.append(",");
+			consulta.append(this.usrbean.getLanguage());
+			consulta.append(") ");
+			consulta.append(" FROM ");
+			consulta.append(FacEstadoFacturaBean.T_NOMBRETABLA);
+			consulta.append(" WHERE ");
+			consulta.append(FacEstadoFacturaBean.C_IDESTADO);
+			consulta.append(" = ");
+			consulta.append(ClsConstants.ESTADO_FACTURA_ANULADA);
+			consulta.append(" ) AS ESTADO, ");					
+			consulta.append(" abono.");
+			consulta.append(FacAbonoBean.C_FECHA);
+			consulta.append(" AS FECHA, ");
+			consulta.append(" abono.");
+			consulta.append(FacAbonoBean.C_FECHAMODIFICACION);
+			consulta.append(" AS FECHA_ORDEN, ");
+			//Tiene que salir el importe por el que se anulo la fac (si hay compensaciones previas no se corresponde con el imp. total abonado)
+			consulta.append(" pgCaja.");
+			consulta.append(FacPagosPorCajaBean.C_IMPORTE);
+			consulta.append(" AS IMPORTE, ");
+			consulta.append(" factura.");
+			consulta.append(FacFacturaBean.C_IDFACTURA);
+			consulta.append(" AS IDFACTURA, ");
+			consulta.append(" '' AS ANULACIONCOMISION, ");
+			consulta.append(" '' AS DEVUELTA, ");
+			consulta.append(" '' AS TARJETA, ");
+			consulta.append(" factura.");
+			consulta.append(FacFacturaBean.C_IDCUENTA);
+			consulta.append(" AS IDABONO_IDCUENTA, ");
+			consulta.append(" abono.");
+			consulta.append(FacAbonoBean.C_NUMEROABONO);
+			consulta.append(" AS NUMEROABONO, ");
+			consulta.append(" 0 AS IDPAGO, ");
+			consulta.append(" ( ");
+			consulta.append(" SELECT banco.nombre || ' nº ' || cuenta.");
+			consulta.append(CenCuentasBancariasBean.C_IBAN); 
+			consulta.append(" FROM ");
+			consulta.append(CenCuentasBancariasBean.T_NOMBRETABLA);
+			consulta.append(" cuenta,"); 
+			consulta.append(CenBancosBean.T_NOMBRETABLA);
+			consulta.append(" banco");
+			consulta.append(" WHERE cuenta.");
+			consulta.append(CenCuentasBancariasBean.C_CBO_CODIGO);
+			consulta.append(" = banco.");
+			consulta.append(CenBancosBean.C_CODIGO);
+			consulta.append(" AND cuenta.");
+			consulta.append(CenCuentasBancariasBean.C_IDINSTITUCION);
+			consulta.append(" = ");
+			consulta.append(idInstitucion);
+			consulta.append(" AND cuenta.");
+			consulta.append(CenCuentasBancariasBean.C_IDPERSONA);
+			consulta.append(" = ");
+			consulta.append(idPersona);
+			consulta.append(" AND cuenta.");
+			consulta.append(CenCuentasBancariasBean.C_IDCUENTA);
+			consulta.append(" = factura.");
+			consulta.append(FacFacturaBean.C_IDCUENTA);
+			consulta.append(" ) as NOMBREBANCO");
+			consulta.append(" FROM ");
+			consulta.append(FacFacturaBean.T_NOMBRETABLA);
+			consulta.append(" factura, "); 
+			consulta.append(FacAbonoBean.T_NOMBRETABLA);
+			consulta.append(" abono, "); 
+			consulta.append(FacPagosPorCajaBean.T_NOMBRETABLA);
+			consulta.append(" pgCaja "); 
+			consulta.append(" WHERE factura.");
+			consulta.append(FacFacturaBean.C_IDINSTITUCION);
+			consulta.append(" = abono.");
+			consulta.append(FacAbonoBean.C_IDINSTITUCION); 
+			consulta.append(" AND factura.");
+			consulta.append(FacFacturaBean.C_IDFACTURA);
+			consulta.append(" = abono.");
+			consulta.append(FacAbonoBean.C_IDFACTURA);  
+			consulta.append(" AND factura.");
+			consulta.append(FacFacturaBean.C_IDINSTITUCION);
+			consulta.append(" = ");
+			consulta.append(idInstitucion); 
+			consulta.append(" AND factura.");
+			consulta.append(FacFacturaBean.C_IDFACTURA);
+			consulta.append(" IN (");
+			consulta.append(listaFacturasComision);
+			consulta.append(") ");
+			consulta.append(" AND pgCaja.");
+			consulta.append(FacPagosPorCajaBean.C_IDFACTURA);
+			consulta.append(" = factura.");
+			consulta.append(FacFacturaBean.C_IDFACTURA); 
+			consulta.append(" AND pgCaja.");
+			consulta.append(FacPagosPorCajaBean.C_IDABONO);
+			consulta.append(" = abono.");
+			consulta.append(FacAbonoBean.C_IDABONO); 
+			consulta.append(" AND pgCaja.");
+			consulta.append(FacPagosPorCajaBean.C_IDINSTITUCION);
+			consulta.append(" = abono.");
+			consulta.append(FacFacturaBean.C_IDINSTITUCION);
 		}
 		
-		// Obtención anulaciones de comision (si la encuentra siempre es la ultima linea de la factura)
-		String consulta71 = "";    
+		// Obtencion anulaciones de comision (si la encuentra siempre es la ultima linea de la factura)
 		if (!esProcesoMasivo) { // JPT: Si esta anulada no se puede renegociar, ni devolver (ganamos rendimiento)
-			consulta71 = " UNION SELECT 5 AS IDTABLA, " +
-							" F_SIGA_GETRECURSO_ETIQUETA('facturacion.pagosFactura.accion.anulacion'," + this.usrbean.getLanguage() + ") || " +
-								" ' (' || F_SIGA_GETRECURSO_ETIQUETA('facturacion.pagosFactura.accion.anulacionComision'," + this.usrbean.getLanguage() + ") || ')' AS TABLA, " +
-							" ( " +
-								" SELECT F_SIGA_GETRECURSO_ETIQUETA (" + FacEstadoFacturaBean.T_NOMBRETABLA + "." + FacEstadoFacturaBean.C_DESCRIPCION + "," + this.usrbean.getLanguage() + ") " +
-								" FROM "  + FacEstadoFacturaBean.T_NOMBRETABLA +
-								" WHERE " + FacEstadoFacturaBean.C_IDESTADO + " = " + ClsConstants.ESTADO_FACTURA_ANULADA +
-							" ) AS ESTADO, " +					
-							" facturaPosterior." + FacFacturaBean.C_FECHAEMISION + " AS FECHA, " +
-							" facturaActual." + FacFacturaBean.C_FECHAMODIFICACION + " AS FECHA_ORDEN, " +
-							" facturaActual." + FacFacturaBean.C_IMPTOTALPORPAGAR + " AS IMPORTE, " + 
-							" facturaActual." + FacFacturaBean.C_IDFACTURA + " AS IDFACTURA, " +
-							" '1' AS ANULACIONCOMISION, " +
-							" '' AS DEVUELTA, " +
-							" '' AS TARJETA, " +
-							" facturaActual." + FacFacturaBean.C_IDCUENTA + " AS IDABONO_IDCUENTA, " +
-							" '' AS NUMEROABONO, " + 
-							" 0 AS IDPAGO, "+
-							" ( " +
-								" SELECT banco.nombre || ' nº ' || cuenta." + CenCuentasBancariasBean.C_IBAN + 
-								" FROM " + CenCuentasBancariasBean.T_NOMBRETABLA + " cuenta," + 
-									CenBancosBean.T_NOMBRETABLA + " banco" +
-								" WHERE cuenta." + CenCuentasBancariasBean.C_CBO_CODIGO + " = banco." + CenBancosBean.C_CODIGO +
-									" AND cuenta." + CenCuentasBancariasBean.C_IDINSTITUCION + " = " + idInstitucion +
-									" AND cuenta." + CenCuentasBancariasBean.C_IDPERSONA + " = " + idPersona +
-									" AND cuenta." + CenCuentasBancariasBean.C_IDCUENTA + " = facturaActual." + FacFacturaBean.C_IDCUENTA +
-							" ) as NOMBREBANCO" +
-						" FROM " + FacFacturaBean.T_NOMBRETABLA + " facturaActual, " + 
-							FacFacturaBean.T_NOMBRETABLA + " facturaPosterior " +	
-						" WHERE facturaActual." + FacFacturaBean.C_IDINSTITUCION + " = " + idInstitucion + 
-							" AND facturaActual." + FacFacturaBean.C_IDFACTURA + " IN (" + listaFacturasComision + ") " +
-							" AND facturaPosterior." + FacFacturaBean.C_IDINSTITUCION + " = facturaActual." + FacFacturaBean.C_IDINSTITUCION +
-							" AND facturaPosterior." + FacFacturaBean.C_COMISIONIDFACTURA + " = facturaActual." + FacFacturaBean.C_IDFACTURA +
-							" AND facturaActual." + FacFacturaBean.C_ESTADO + " = " + ClsConstants.ESTADO_FACTURA_ANULADA;
+			consulta.append(" UNION SELECT 5 AS IDTABLA, ");
+			consulta.append(" F_SIGA_GETRECURSO_ETIQUETA('facturacion.pagosFactura.accion.anulacion',");
+			consulta.append(this.usrbean.getLanguage());
+			consulta.append(") || ");
+			consulta.append(" ' (' || F_SIGA_GETRECURSO_ETIQUETA('facturacion.pagosFactura.accion.anulacionComision',");
+			consulta.append(this.usrbean.getLanguage());
+			consulta.append(") || ')' AS TABLA, ");
+			consulta.append(" ( ");
+			consulta.append(" SELECT F_SIGA_GETRECURSO_ETIQUETA (");
+			consulta.append(FacEstadoFacturaBean.T_NOMBRETABLA);
+			consulta.append(".");
+			consulta.append(FacEstadoFacturaBean.C_DESCRIPCION);
+			consulta.append(",");
+			consulta.append(this.usrbean.getLanguage());
+			consulta.append(") ");
+			consulta.append(" FROM ");
+			consulta.append(FacEstadoFacturaBean.T_NOMBRETABLA);
+			consulta.append(" WHERE ");
+			consulta.append(FacEstadoFacturaBean.C_IDESTADO);
+			consulta.append(" = ");
+			consulta.append(ClsConstants.ESTADO_FACTURA_ANULADA);
+			consulta.append(" ) AS ESTADO, ");					
+			consulta.append(" facturaPosterior.");
+			consulta.append(FacFacturaBean.C_FECHAEMISION);
+			consulta.append(" AS FECHA, ");
+			consulta.append(" facturaActual.");
+			consulta.append(FacFacturaBean.C_FECHAMODIFICACION);
+			consulta.append(" AS FECHA_ORDEN, ");
+			consulta.append(" facturaActual.");
+			consulta.append(FacFacturaBean.C_IMPTOTALPORPAGAR);
+			consulta.append(" AS IMPORTE, "); 
+			consulta.append(" facturaActual.");
+			consulta.append(FacFacturaBean.C_IDFACTURA);
+			consulta.append(" AS IDFACTURA, ");
+			consulta.append(" '1' AS ANULACIONCOMISION, ");
+			consulta.append(" '' AS DEVUELTA, ");
+			consulta.append(" '' AS TARJETA, ");
+			consulta.append(" facturaActual.");
+			consulta.append(FacFacturaBean.C_IDCUENTA);
+			consulta.append(" AS IDABONO_IDCUENTA, ");
+			consulta.append(" '' AS NUMEROABONO, "); 
+			consulta.append(" 0 AS IDPAGO, ");
+			consulta.append(" ( ");
+			consulta.append(" SELECT banco.nombre || ' nº ' || cuenta.");
+			consulta.append(CenCuentasBancariasBean.C_IBAN); 
+			consulta.append(" FROM ");
+			consulta.append(CenCuentasBancariasBean.T_NOMBRETABLA);
+			consulta.append(" cuenta,"); 
+			consulta.append(CenBancosBean.T_NOMBRETABLA);
+			consulta.append(" banco");
+			consulta.append(" WHERE cuenta.");
+			consulta.append(CenCuentasBancariasBean.C_CBO_CODIGO);
+			consulta.append(" = banco.");
+			consulta.append(CenBancosBean.C_CODIGO);
+			consulta.append(" AND cuenta.");
+			consulta.append(CenCuentasBancariasBean.C_IDINSTITUCION);
+			consulta.append(" = ");
+			consulta.append(idInstitucion);
+			consulta.append(" AND cuenta.");
+			consulta.append(CenCuentasBancariasBean.C_IDPERSONA);
+			consulta.append(" = ");
+			consulta.append(idPersona);
+			consulta.append(" AND cuenta.");
+			consulta.append(CenCuentasBancariasBean.C_IDCUENTA);
+			consulta.append(" = facturaActual.");
+			consulta.append(FacFacturaBean.C_IDCUENTA);
+			consulta.append(" ) as NOMBREBANCO");
+			consulta.append(" FROM ");
+			consulta.append(FacFacturaBean.T_NOMBRETABLA);
+			consulta.append(" facturaActual, "); 
+			consulta.append(FacFacturaBean.T_NOMBRETABLA);
+			consulta.append(" facturaPosterior ");	
+			consulta.append(" WHERE facturaActual.");
+			consulta.append(FacFacturaBean.C_IDINSTITUCION);
+			consulta.append(" = ");
+			consulta.append(idInstitucion); 
+			consulta.append(" AND facturaActual.");
+			consulta.append(FacFacturaBean.C_IDFACTURA);
+			consulta.append(" IN (");
+			consulta.append(listaFacturasComision);
+			consulta.append(") ");
+			consulta.append(" AND facturaPosterior.");
+			consulta.append(FacFacturaBean.C_IDINSTITUCION);
+			consulta.append(" = facturaActual.");
+			consulta.append(FacFacturaBean.C_IDINSTITUCION);
+			consulta.append(" AND facturaPosterior.");
+			consulta.append(FacFacturaBean.C_COMISIONIDFACTURA);
+			consulta.append(" = facturaActual.");
+			consulta.append(FacFacturaBean.C_IDFACTURA);
+			consulta.append(" AND facturaActual.");
+			consulta.append(FacFacturaBean.C_ESTADO);
+			consulta.append(" = ");
+			consulta.append(ClsConstants.ESTADO_FACTURA_ANULADA);
 		}
 		
 		//Abonos SJCS->compensaciones factura
-		String consulta8 = "";    
 		if (esProcesoMasivo) { 
-			consulta8 = " UNION SELECT pc." + FacPagoAbonoEfectivoBean.C_FECHA + " AS FECHA ";			
+			consulta.append(" UNION SELECT pc.");
+			consulta.append(FacPagoAbonoEfectivoBean.C_FECHA);
+			consulta.append(" AS FECHA ");			
 		} else {
-			consulta8 = " UNION SELECT 4 AS IDTABLA, " +
-							" F_SIGA_GETRECURSO_ETIQUETA('facturacion.pagosFactura.accion.compensacion'," + this.usrbean.getLanguage() + ") AS TABLA, " +
-							" F_SIGA_GETRECURSO_ETIQUETA('facturacion.pagosFactura.estado.compensacion'," + this.usrbean.getLanguage() + ") AS ESTADO, " +					
-							" pc." + FacPagoAbonoEfectivoBean.C_FECHA + " AS FECHA, " +
-					 		" pc." + FacPagoAbonoEfectivoBean.C_FECHAMODIFICACION + " AS FECHA_ORDEN, " +
-				  			" pc." + FacPagoAbonoEfectivoBean.C_IMPORTE + " AS IMPORTE, " + 
-				  			" pc." + FacAbonoBean.C_IDFACTURA + " AS IDFACTURA, " +
-				  			" '' AS ANULACIONCOMISION, " +
-							" '' AS DEVUELTA, " +
-							" '' AS TARJETA, " +
-							" ab." + FacAbonoBean.C_IDCUENTA + " AS IDABONO_IDCUENTA, " +
-							" ab." + FacAbonoBean.C_NUMEROABONO + " AS NUMEROABONO, " +
-							" pc." + FacPagosPorCajaBean.C_IDPAGOPORCAJA + " AS IDPAGO, "+
-							" ( " +
-								" SELECT banco.nombre || ' nº ' || cuenta." + CenCuentasBancariasBean.C_IBAN + 
-								" FROM " + CenCuentasBancariasBean.T_NOMBRETABLA + " cuenta," + 
-									CenBancosBean.T_NOMBRETABLA + " banco" +
-								" WHERE cuenta." + CenCuentasBancariasBean.C_CBO_CODIGO + " = banco." + CenBancosBean.C_CODIGO +
-									" AND cuenta." + CenCuentasBancariasBean.C_IDINSTITUCION + " = " + idInstitucion +
-									" AND cuenta." + CenCuentasBancariasBean.C_IDPERSONA + " = " + idPersona +
-									" AND cuenta." + CenCuentasBancariasBean.C_IDCUENTA + " = ab." + FacAbonoBean.C_IDCUENTA +
-							" ) as NOMBREBANCO";				
+			consulta.append(" UNION SELECT 4 AS IDTABLA, ");
+			consulta.append(" F_SIGA_GETRECURSO_ETIQUETA('facturacion.pagosFactura.accion.compensacion',");
+			consulta.append(this.usrbean.getLanguage());
+			consulta.append(") AS TABLA, ");
+			consulta.append(" F_SIGA_GETRECURSO_ETIQUETA('facturacion.pagosFactura.estado.compensacion',");
+			consulta.append(this.usrbean.getLanguage());
+			consulta.append(") AS ESTADO, ");					
+			consulta.append(" pc.");
+			consulta.append(FacPagoAbonoEfectivoBean.C_FECHA);
+			consulta.append(" AS FECHA, ");
+			consulta.append(" pc.");
+			consulta.append(FacPagoAbonoEfectivoBean.C_FECHAMODIFICACION);
+			consulta.append(" AS FECHA_ORDEN, ");
+			consulta.append(" pc.");
+			consulta.append(FacPagoAbonoEfectivoBean.C_IMPORTE);
+			consulta.append(" AS IMPORTE, "); 
+			consulta.append(" pc.");
+			consulta.append(FacAbonoBean.C_IDFACTURA);
+			consulta.append(" AS IDFACTURA, ");
+			consulta.append(" '' AS ANULACIONCOMISION, ");
+			consulta.append(" '' AS DEVUELTA, ");
+			consulta.append(" '' AS TARJETA, ");
+			consulta.append(" ab.");
+			consulta.append(FacAbonoBean.C_IDCUENTA);
+			consulta.append(" AS IDABONO_IDCUENTA, ");
+			consulta.append(" ab.");
+			consulta.append(FacAbonoBean.C_NUMEROABONO);
+			consulta.append(" AS NUMEROABONO, ");
+			consulta.append(" pc.");
+			consulta.append(FacPagosPorCajaBean.C_IDPAGOPORCAJA);
+			consulta.append(" AS IDPAGO, ");
+			consulta.append(" ( ");
+			consulta.append(" SELECT banco.nombre || ' nº ' || cuenta.");
+			consulta.append(CenCuentasBancariasBean.C_IBAN); 
+			consulta.append(" FROM ");
+			consulta.append(CenCuentasBancariasBean.T_NOMBRETABLA);
+			consulta.append(" cuenta,"); 
+			consulta.append(CenBancosBean.T_NOMBRETABLA);
+			consulta.append(" banco");
+			consulta.append(" WHERE cuenta.");
+			consulta.append(CenCuentasBancariasBean.C_CBO_CODIGO);
+			consulta.append(" = banco.");
+			consulta.append(CenBancosBean.C_CODIGO);
+			consulta.append(" AND cuenta.");
+			consulta.append(CenCuentasBancariasBean.C_IDINSTITUCION);
+			consulta.append(" = ");
+			consulta.append(idInstitucion);
+			consulta.append(" AND cuenta.");
+			consulta.append(CenCuentasBancariasBean.C_IDPERSONA);
+			consulta.append(" = ");
+			consulta.append(idPersona);
+			consulta.append(" AND cuenta.");
+			consulta.append(CenCuentasBancariasBean.C_IDCUENTA);
+			consulta.append(" = ab.");
+			consulta.append(FacAbonoBean.C_IDCUENTA);
+			consulta.append(" ) as NOMBREBANCO");				
 		}
-		consulta8 += " FROM " + FacAbonoBean.T_NOMBRETABLA + " ab, " + 
-							FacPagosPorCajaBean.T_NOMBRETABLA + " pc, " + 
-							FacPagoAbonoEfectivoBean.T_NOMBRETABLA + " aef " + 
-						" WHERE pc." + FacPagosPorCajaBean.C_IDINSTITUCION + " = aef." + FacPagoAbonoEfectivoBean.C_IDINSTITUCION + 
-							" AND pc." + FacPagosPorCajaBean.C_IDINSTITUCION + " = ab." + FacAbonoBean.C_IDINSTITUCION + 
-							" AND pc." + FacPagosPorCajaBean.C_IDINSTITUCION + " = " + idInstitucion + 
-							" AND pc." + FacPagosPorCajaBean.C_IDFACTURA + " IN (" + listaFacturasComision + ") " +
-							" AND pc." + FacPagosPorCajaBean.C_IDABONO + " = aef." + FacPagoAbonoEfectivoBean.C_IDABONO + 
-							" AND pc." + FacPagosPorCajaBean.C_IDABONO + " = ab." + FacAbonoBean.C_IDABONO + 
-							" AND pc." + FacPagosPorCajaBean.C_IDPAGOABONO + " = aef." + FacPagoAbonoEfectivoBean.C_IDPAGOABONO + 
-							" AND (ab." +FacAbonoBean.C_IDFACTURA + " <> pc." + FacPagosPorCajaBean.C_IDFACTURA + " OR ab." + FacAbonoBean.C_IDFACTURA + " is null) " +
-							" AND ab." + FacAbonoBean.C_IDPAGOSJG + " IS NOT NULL ";
-		
-		String consultaFinal = consulta1 + consulta10 + consulta2 + consulta3 + consulta4 + consulta5 + consulta6 + consulta7 + consulta71 + consulta8;
+		consulta.append(" FROM ");
+		consulta.append(FacAbonoBean.T_NOMBRETABLA);
+		consulta.append(" ab, "); 
+		consulta.append(FacPagosPorCajaBean.T_NOMBRETABLA);
+		consulta.append(" pc, "); 
+		consulta.append(FacPagoAbonoEfectivoBean.T_NOMBRETABLA);
+		consulta.append(" aef "); 
+		consulta.append(" WHERE pc.");
+		consulta.append(FacPagosPorCajaBean.C_IDINSTITUCION);
+		consulta.append(" = aef.");
+		consulta.append(FacPagoAbonoEfectivoBean.C_IDINSTITUCION); 
+		consulta.append(" AND pc.");
+		consulta.append(FacPagosPorCajaBean.C_IDINSTITUCION);
+		consulta.append(" = ab.");
+		consulta.append(FacAbonoBean.C_IDINSTITUCION); 
+		consulta.append(" AND pc.");
+		consulta.append(FacPagosPorCajaBean.C_IDINSTITUCION);
+		consulta.append(" = ");
+		consulta.append(idInstitucion); 
+		consulta.append(" AND pc.");
+		consulta.append(FacPagosPorCajaBean.C_IDFACTURA);
+		consulta.append(" IN (");
+		consulta.append(listaFacturasComision);
+		consulta.append(") ");
+		consulta.append(" AND pc.");
+		consulta.append(FacPagosPorCajaBean.C_IDABONO);
+		consulta.append(" = aef.");
+		consulta.append(FacPagoAbonoEfectivoBean.C_IDABONO); 
+		consulta.append(" AND pc.");
+		consulta.append(FacPagosPorCajaBean.C_IDABONO);
+		consulta.append(" = ab.");
+		consulta.append(FacAbonoBean.C_IDABONO); 
+		consulta.append(" AND pc.");
+		consulta.append(FacPagosPorCajaBean.C_IDPAGOABONO);
+		consulta.append(" = aef.");
+		consulta.append(FacPagoAbonoEfectivoBean.C_IDPAGOABONO); 
+		consulta.append(" AND (ab.");
+		consulta.append(FacAbonoBean.C_IDFACTURA);
+		consulta.append(" <> pc.");
+		consulta.append(FacPagosPorCajaBean.C_IDFACTURA);
+		consulta.append(" OR ab.");
+		consulta.append(FacAbonoBean.C_IDFACTURA);
+		consulta.append(" is null) ");
+		consulta.append(" AND ab.");
+		consulta.append(FacAbonoBean.C_IDPAGOSJG);
+		consulta.append(" IS NOT NULL ");
 		
 		if (esProcesoMasivo) {
-			consultaFinal = "SELECT TO_CHAR(MAX(FECHA), '" + ClsConstants.DATE_FORMAT_SHORT_SPANISH + "') AS ULTIMAFECHA FROM ( " + consultaFinal + " ) ";			
+			consulta.append(" ) ");			
 		} else {
-			consultaFinal = "SELECT IDTABLA, TABLA, ESTADO, FECHA, FECHA_ORDEN, IMPORTE, IDFACTURA, ANULACIONCOMISION, DEVUELTA, TARJETA, IDABONO_IDCUENTA, NUMEROABONO, IDPAGO, NOMBREBANCO FROM ( " +
-								consultaFinal +					
-							" ) ORDER BY TO_NUMBER(IDFACTURA) ASC, IDTABLA ASC, TO_CHAR(FECHA, 'YYYYMMDD') ASC, FECHA_ORDEN ASC, IDPAGO ASC, DEVUELTA ASC";						
+			consulta.append(" ) ORDER BY TO_NUMBER(IDFACTURA) ASC, IDTABLA ASC, TO_CHAR(FECHA, 'YYYYMMDD') ASC, FECHA_ORDEN ASC, IDPAGO ASC, DEVUELTA ASC");						
 		}
 		
-		return consultaFinal;
+		return consulta.toString();
 	}
 	
 	/**
