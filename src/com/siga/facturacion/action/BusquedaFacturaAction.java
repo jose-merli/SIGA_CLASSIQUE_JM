@@ -136,8 +136,14 @@ public class BusquedaFacturaAction extends MasterAction {
 			SimpleDateFormat formateo = new SimpleDateFormat("dd/MM/yyyy");
 			String fechaDesde = formateo.format(calendar.getTime());
 			
-			if (miFormSession != null)
-				miFormSession.setBuscarFechaDesde(fechaDesde);
+			if (miFormSession != null) {
+				String fechaDesdeSesion = miFormSession.getBuscarFechaDesde();
+				if (fechaDesdeSesion==null || fechaDesdeSesion.equals("")) {
+					miFormSession.setBuscarFechaDesde(fechaDesde); 
+				} else {
+					fechaDesde = fechaDesdeSesion;
+				}
+			}
 				
 			if (miForm != null)
 				miForm.setBuscarFechaDesde(fechaDesde);
