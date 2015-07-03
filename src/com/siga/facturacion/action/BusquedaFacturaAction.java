@@ -134,19 +134,20 @@ public class BusquedaFacturaAction extends MasterAction {
 			calendar.set(Calendar.YEAR, calendar.get(Calendar.YEAR)-2);
 			
 			SimpleDateFormat formateo = new SimpleDateFormat("dd/MM/yyyy");
-			String fechaDesde = formateo.format(calendar.getTime());
+			String fechaDesde = formateo.format(calendar.getTime());			
+			
+			if (miForm != null) {
+				String fechaDesdeFormulario = miForm.getBuscarFechaDesde();
+				if (fechaDesdeFormulario==null || fechaDesdeFormulario.equals("")) {
+					miForm.setBuscarFechaDesde(fechaDesde); 
+				} else {
+					fechaDesde = fechaDesdeFormulario;
+				}				
+			}
 			
 			if (miFormSession != null) {
-				String fechaDesdeSesion = miFormSession.getBuscarFechaDesde();
-				if (fechaDesdeSesion==null || fechaDesdeSesion.equals("")) {
-					miFormSession.setBuscarFechaDesde(fechaDesde); 
-				} else {
-					fechaDesde = fechaDesdeSesion;
-				}
+				miFormSession.setBuscarFechaDesde(fechaDesde);
 			}
-				
-			if (miForm != null)
-				miForm.setBuscarFechaDesde(fechaDesde);
 			
 		} catch (Exception e) {
 			throwExcp("messages.general.error",new String[] {"modulo.facturacion"}, e, null); 
