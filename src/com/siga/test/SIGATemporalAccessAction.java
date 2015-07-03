@@ -186,34 +186,8 @@ public class SIGATemporalAccessAction extends Action
 		String sInsti="";
 		String idLenguaje = null; 
 		String idLenguajeExt = null; 
-		boolean isAplicarLOPD = false;
-		if (cli!=null) {
-			// Es cliente, obtenemos su idioma
-			idLenguaje = cli.getIdLenguaje();
-			isAplicarLOPD = cli.getNoAparacerRedAbogacia() != null && cli.getNoAparacerRedAbogacia().equals(ClsConstants.DB_TRUE);
-			if(isAplicarLOPD){
-				request.setAttribute("mensaje","mensaje.error.lopd");
-				return mapping.findForward("accesodenegado");
-			}
-			
-		} 
-		else {
-			//aalg. INC_10707_SIGA. No es cliente, lo obtenemos de la tabla de usuario
-			idLenguaje = usu.getIdLenguaje();
-			// No es cliente, lo obtenemos de la institucion
-//			Hashtable ht2 = new Hashtable();
-//			ht2.put(CenInstitucionBean.C_IDINSTITUCION,location);
-//			CenInstitucionAdm ins = new CenInstitucionAdm(usrbean);
-//			Vector v4 = ins.selectByPK(ht2);
-//			if (v4!=null && v4.size()>0) {
-//				CenInstitucionBean in = (CenInstitucionBean) v4.get(0);
-//				idLenguaje=in.getIdLenguaje();
-//				sInsti="(Obtenido de Institucion)";
-//			}
-			
-			//idLenguaje = idLenguajeInstitucion;
-			//sInsti = "(Obtenido de Institucion)";
-		}
+		// Si es cliente, obtenemos su idioma, si no, lo obtenemos del definido internamente en el usuario
+		idLenguaje = cli!=null ? cli.getIdLenguaje() : usu.getIdLenguaje();
 
 		{	// Verficamos si el idioma del usuario esta traducido
 			CenInstitucionLenguajesAdm admLen = new CenInstitucionLenguajesAdm (usrbean);
@@ -297,12 +271,6 @@ public class SIGATemporalAccessAction extends Action
 		return mapping.findForward(result);
 	}	
 
-//	private void printTraza (String m) {
-//		System.out.println ("----------------------------------------------------------------------");
-//		System.out.println (m);
-//		System.out.println ("----------------------------------------------------------------------");
-//	}
-	
 	/*
 	 * Verifica si el usuario del certificado esta dado de alta en la institucion del 
 	 * usrbean (la seleccionada pantalla en combos)
