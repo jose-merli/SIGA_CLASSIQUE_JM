@@ -86,7 +86,7 @@
 	   						facturacion.devolucionManual.titular,
 	   						facturacion.devolucionManual.importe,
 	   						facturacion.devolucionManual.motivos,"
-	   columnSizes = "4,15,8,8,25,8,26,6">
+	   columnSizes = "4,15,8,8,25,10,24,6">
 <%
 		if ((resultado != null) && (resultado.size() > 0)) { 
 			for (int i = 0; i < resultado.size(); i++) { 							
@@ -155,7 +155,7 @@
 							<input type="hidden" id="devolucionManual_<%=(i+1)%>_3" value="<%=idFactura%>">
 							<input type="hidden" id="devolucionManual_<%=(i+1)%>_4" value="<%=idRecibo%>">
 							
-							<select id="devolucionManual_<%=(i+1)%>_5" class="boxCombo" onchange="cambiarMotivo(<%=(i+1)%>)" style="width:250px; <%if (!isChecked) {%>display:none<%}%>"> 
+							<select id="devolucionManual_<%=(i+1)%>_5" class="boxCombo" onchange="cambiarMotivo(<%=(i+1)%>)" style="width:240px; <%if (!isChecked) {%>display:none<%}%>"> 
 <%
 								for (int j=0; j<vMotivos.size(); j++) {
 									Hashtable hMotivo = (Hashtable) vMotivos.get(j);
