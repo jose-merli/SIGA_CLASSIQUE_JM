@@ -4,6 +4,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.List;
 
 import org.redabogacia.sigaservices.app.util.ReadProperties;
 import org.redabogacia.sigaservices.app.util.SIGAReferences;
@@ -14,8 +15,6 @@ import com.atos.utils.ClsLogging;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesBDAdm;
 import com.siga.beans.GenParametrosAdm;
-import com.siga.ws.i2064.je.error.ErrorNegocioWS;
-import com.siga.ws.i2064.je.error.ErrorValidacionXML;
 
 public abstract class InformeXML {
 	protected static String PCAJG_WS_JE_URL = "PCAJG_WS_JE_URL";
@@ -101,7 +100,7 @@ public abstract class InformeXML {
 			+ UtilidadesBDAdm.getFechaCompletaBD("").replaceAll("/", "").replaceAll(":", "").replaceAll(" ", "");
 	}
 	
-	public abstract File execute(String directorio, String nombreSalida, String idInstitucion, String idFacturacion, UsrBean usrBean) throws Exception;
+	public abstract List<File> execute(String directorio, String nombreSalida, String idInstitucion, String idFacturacion, UsrBean usrBean) throws Exception;
 	public abstract void envioWS(String idInstitucion, String idFacturacion);
 
 	protected String getCabeceraLog() {

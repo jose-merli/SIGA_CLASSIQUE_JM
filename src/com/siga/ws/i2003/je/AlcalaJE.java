@@ -18,8 +18,6 @@ import com.atos.utils.UsrBean;
 import com.siga.Utilidades.GestorContadores;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.ws.InformeXML;
-import com.siga.ws.i2064.je.error.ErrorNegocioWS;
-import com.siga.ws.i2064.je.error.ErrorValidacionXML;
 
 public class AlcalaJE extends InformeXML implements PCAJGConstantes {
 
@@ -68,10 +66,12 @@ public class AlcalaJE extends InformeXML implements PCAJGConstantes {
 	}
 	
 	@Override
-	public File execute(String directorio, String nombreSalida, String idInstitucion, String idFacturacion, UsrBean usrBean) throws Exception {
+	public List<File> execute(String directorio, String nombreSalida, String idInstitucion, String idFacturacion, UsrBean usrBean) throws Exception {
 		this.idInstitucion = idInstitucion;
 		this.idFacturacion = idFacturacion;
 		this.usrBean = usrBean;
+		
+		List<File> listaFicheros = new ArrayList<File>();
 		
 		try {
 			init();	
@@ -91,11 +91,13 @@ public class AlcalaJE extends InformeXML implements PCAJGConstantes {
 			rellenaFichero(file);			
 			ClsLogging.writeFileLog("Generando fichero txt en: " + file.getAbsolutePath(), 3);
 	
+			listaFicheros.add(file);
+			
 			if (closeLogFile()) {
-				return getFileInformeIncidencias(idInstitucion, idFacturacion);
-			} else {
-				return file;
+				listaFicheros.add(getFileInformeIncidencias(idInstitucion, idFacturacion));
 			}
+
+			return listaFicheros;
 		} finally {
 			closeLogFile();
 		}

@@ -88,7 +88,7 @@ public abstract class SIGAListenerAbstract extends SIGAContextListenerAdapter im
     }
 	
 	
-	private void iniciaTimer() throws Exception {
+	private void iniciaTimer() {
 		timer = new Timer();
 		
 		
@@ -169,11 +169,14 @@ public abstract class SIGAListenerAbstract extends SIGAContextListenerAdapter im
 				actualizaProximaEjecucion();	
 			}		
 			
-			pararTimer();
-			iniciaTimer();
+			
 					
 		} catch (Exception e) {
+			log.error("Error en el listener que maneja el parámetro " + getFechaHoraInicioParam(), e);
 			ClsLogging.writeFileLogError("Error en handleNotification", e, 3);
+		} finally {
+			pararTimer();
+			iniciaTimer();
 		}
 	}
 	

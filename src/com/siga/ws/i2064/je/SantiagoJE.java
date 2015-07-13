@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
@@ -219,9 +220,11 @@ public class SantiagoJE extends InformeXML implements PCAJGConstantes {
 	}
 
 	@Override
-	public File execute(String directorio, String nombreSalida, String idInstitucion, String idFacturacion, UsrBean usrBean) throws Exception {
+	public List<File> execute(String directorio, String nombreSalida, String idInstitucion, String idFacturacion, UsrBean usrBean) throws Exception {
 
-		try {			
+		try {		
+			List<File> listaFicheros = new ArrayList<File>();
+			
 			String rutaAlm = getDirectorioSalida(directorio, idInstitucion);			
 			File file = new File(rutaAlm);
 			file.delete();
@@ -243,10 +246,11 @@ public class SantiagoJE extends InformeXML implements PCAJGConstantes {
 			ClsLogging.writeFileLog("Generando fichero xml en: " + file.getAbsolutePath(), 3);
 
 			if (closeLogFile()) {
-				return getFileInformeIncidencias(idInstitucion, idFacturacion);
+				listaFicheros.add(getFileInformeIncidencias(idInstitucion, idFacturacion));
 			} else {
-				return file;
+				listaFicheros.add(file);
 			}
+			return listaFicheros;
 		} finally {
 			closeLogFile();
 		}
