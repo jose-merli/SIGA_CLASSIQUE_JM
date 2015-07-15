@@ -208,7 +208,7 @@
 				botones = "LC,GM";
 			}
 			
-			if(idEstado.intValue() == ESTADO_FACTURACION.ESTADO_FACTURACION_EJECUTADA.getCodigo() && bBorrar)
+			if(idEstado.intValue() == ESTADO_FACTURACION.ESTADO_FACTURACION_EJECUTADA.getCodigo() && bBorrar && !bRegularizacion)
 				botones += ",RF";
 		}
 		
