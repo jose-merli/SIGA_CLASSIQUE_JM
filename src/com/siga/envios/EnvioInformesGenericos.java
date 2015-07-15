@@ -1377,10 +1377,12 @@ public class EnvioInformesGenericos extends MasterReport {
 	public Vector getDocumentosAEnviar(Hashtable datosInforme,
 			Vector vPlantillas, UsrBean usrBean, int tipoDocumento,
 			String tipoComunicacion) throws ClsExceptions, SIGAException {
-		
+//		
 		String idInstitucion = (String) datosInforme.get("idinstitucion");
 		if (idInstitucion == null)
 			idInstitucion = (String) datosInforme.get("idInstitucion");
+		if (idInstitucion == null)
+			idInstitucion = usrBean.getLocation();
 		
 		String longitudNumEjg = "5";
 		GenParametrosService genParametrosService = (GenParametrosService) BusinessManager.getInstance().getService(GenParametrosService.class);
