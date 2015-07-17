@@ -973,118 +973,80 @@ private String getQueryDesignasPendientesJustificacion(List<DesignaForm> designa
 		return (Vector<Hashtable>)this.selectGenericoBind(sql, codigos);
 	}
 	
-	
-	private String getQueryEjgs(String tipoResolucionDesigna){
-		 ReadProperties rp3= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
-		GenParametrosAdm paramAdm = new GenParametrosAdm (usrbean);
+	/** 
+	 * Obtiene la subquery para obtener los EJGs
+	 * 
+	 * @param tipoResolucionDesigna
+	 * @return
+	 */
+	private String getQueryEjgs (String tipoResolucionDesigna)
+	{
+		// comprobando entrada
+		if (! (tipoResolucionDesigna.equals(this.resolucionDesignaFavorable) || 
+				tipoResolucionDesigna.equals(this.resolucionDesignaPteCAJG) || 
+				tipoResolucionDesigna.equals(this.resolucionDesignaNoFavorable)) ) {
+			return "";
+		}
+		
+		// obteniendo las propiedades que nos indican los tipos de resoluciones
+		ReadProperties rp3= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+		final String TIPO_RESOLUCION_DENEGADO = rp3.returnProperty("codigo.general.scstiporesolucion.idtiporesolucion.denegado");
+		final String TIPO_RESOLUCION_ARCHIVO = rp3.returnProperty("codigo.general.scstiporesolucion.idtiporesolucion.archivo");
+		final String TIPO_RESOLUCION_DEVUELTO_COLEGIO = rp3.returnProperty("codigo.general.scstiporesolucion.idtiporesolucion.devuelto");
+		final String TIPO_RESOLUCION_MODIFICADO_DENEGADO = rp3.returnProperty("codigo.general.scstiporesolucion.idtiporesolucion.modificadoydenegado");
+		final String LISTA_RESOLUCIONES_NEGATIVAS = TIPO_RESOLUCION_DENEGADO +","+ TIPO_RESOLUCION_ARCHIVO +","+ 
+													TIPO_RESOLUCION_DEVUELTO_COLEGIO +","+ TIPO_RESOLUCION_MODIFICADO_DENEGADO;
+
+		final String TIPO_RESOLUCION_RECONOCIDO100 = rp3.returnProperty("codigo.general.scstiporesolucion.idtiporesolucion.reconocido100");
+		final String TIPO_RESOLUCION_RECONOCIDO80 = rp3.returnProperty("codigo.general.scstiporesolucion.idtiporesolucion.reconocido80");
+		final String TIPO_RESOLUCION_MOD_RECONOCIDO100_CON_NOMBRAMIENTO = rp3.returnProperty("codigo.general.scstiporesolucion.idtiporesolucion.modreconocido100_connombramiento");
+		final String TIPO_RESOLUCION_MOD_RECONOCIDO100_SIN_NOMBRAMIENTO = rp3.returnProperty("codigo.general.scstiporesolucion.idtiporesolucion.modreconocido100_sinnombramiento");
+		final String TIPO_RESOLUCION_MOD_RECONOCIDO80_CON_NOMBRAMIENTO = rp3.returnProperty("codigo.general.scstiporesolucion.idtiporesolucion.modreconocido80_connombramiento");
+		final String TIPO_RESOLUCION_MOD_RECONOCIDO80_SIN_NOMBRAMIENTO = rp3.returnProperty("codigo.general.scstiporesolucion.idtiporesolucion.modreconocido80_sinnombramiento");
+		final String LISTA_RESOLUCIONES_POSITIVAS = TIPO_RESOLUCION_RECONOCIDO100 +","+ TIPO_RESOLUCION_RECONOCIDO80 +","+ 
+													TIPO_RESOLUCION_MOD_RECONOCIDO100_CON_NOMBRAMIENTO +","+ TIPO_RESOLUCION_MOD_RECONOCIDO100_SIN_NOMBRAMIENTO +","+ 
+													TIPO_RESOLUCION_MOD_RECONOCIDO80_CON_NOMBRAMIENTO +","+ TIPO_RESOLUCION_MOD_RECONOCIDO80_SIN_NOMBRAMIENTO;
+		
+		final String TIPO_RESOLUCION_PTE_CAJG = rp3.returnProperty("codigo.general.scstiporesolucion.idtiporesolucion.pendientecajg");
+
+		// iniciando la consulta de EJGs resueltos
 		StringBuffer sql = new StringBuffer();
-		if(tipoResolucionDesigna.equals(this.resolucionDesignaFavorable)){
-			final String TIPO_RESOLUCION_RECONOCIDO100 = rp3.returnProperty("codigo.general.scstiporesolucion.idtiporesolucion.reconocido100");
-			final String TIPO_RESOLUCION_RECONOCIDO80 = rp3.returnProperty("codigo.general.scstiporesolucion.idtiporesolucion.reconocido80");
-			final String TIPO_RESOLUCION_DENEGADO = rp3.returnProperty("codigo.general.scstiporesolucion.idtiporesolucion.denegado");
-			final String TIPO_RESOLUCION_ARCHIVO = rp3.returnProperty("codigo.general.scstiporesolucion.idtiporesolucion.archivo");
-			
-			//NUEVOS TIPOS DE RESOLUCION
-			final String TIPO_RESOLUCION_DEVUELTO_COLEGIO = rp3.returnProperty("codigo.general.scstiporesolucion.idtiporesolucion.devuelto");
-			final String TIPO_RESOLUCION_MODIFICADO_DENEGADO = rp3.returnProperty("codigo.general.scstiporesolucion.idtiporesolucion.modificadoydenegado");
-			final String TIPO_RESOLUCION_MOD_RECONOCIDO100_CON_NOMBRAMIENTO = rp3.returnProperty("codigo.general.scstiporesolucion.idtiporesolucion.modreconocido100_connombramiento");
-			final String TIPO_RESOLUCION_MOD_RECONOCIDO100_SIN_NOMBRAMIENTO = rp3.returnProperty("codigo.general.scstiporesolucion.idtiporesolucion.modreconocido100_sinnombramiento");
-			final String TIPO_RESOLUCION_MOD_RECONOCIDO80_CON_NOMBRAMIENTO = rp3.returnProperty("codigo.general.scstiporesolucion.idtiporesolucion.modreconocido80_connombramiento");
-			final String TIPO_RESOLUCION_MOD_RECONOCIDO80_SIN_NOMBRAMIENTO = rp3.returnProperty("codigo.general.scstiporesolucion.idtiporesolucion.modreconocido80_sinnombramiento");
-			
-			sql.append(", (SELECT EJGDES.IDINSTITUCION, EJGDES.IDTURNO, EJGDES.ANIODESIGNA, EJGDES.NUMERODESIGNA ");
-			sql.append("        FROM SCS_EJG EJG, SCS_EJGDESIGNA EJGDES ");
-			sql.append("        WHERE EJGDES.IDINSTITUCION = EJG.IDINSTITUCION ");
-			sql.append("         AND EJGDES.IDTIPOEJG = EJG.IDTIPOEJG ");
-			sql.append("         AND EJGDES.ANIOEJG = EJG.ANIO ");
-			sql.append("         AND EJGDES.NUMEROEJG = EJG.NUMERO ");
-			sql.append("  AND EJG.Fecharesolucioncajg is not null ");
-			
-			
+		sql.append(", (SELECT EJGDES.IDINSTITUCION, EJGDES.IDTURNO, EJGDES.ANIODESIGNA, EJGDES.NUMERODESIGNA ");
+		sql.append("     FROM SCS_EJG EJG, SCS_EJGDESIGNA EJGDES ");
+		sql.append("    WHERE EJGDES.IDINSTITUCION = EJG.IDINSTITUCION ");
+		sql.append("      AND EJGDES.IDTIPOEJG = EJG.IDTIPOEJG ");
+		sql.append("      AND EJGDES.ANIOEJG = EJG.ANIO ");
+		sql.append("      AND EJGDES.NUMEROEJG = EJG.NUMERO ");
+		sql.append("      AND EJG.Fecharesolucioncajg is not null ");
+		
+		// dependiendo del tipo de resolucion
+		if(tipoResolucionDesigna.equals(this.resolucionDesignaFavorable))
+		{
 			sql.append(" AND ( (  EJG.IDTIPORATIFICACIONEJG IN ( ");
-			sql.append(TIPO_RESOLUCION_DENEGADO);
-			sql.append(" , ");
-			sql.append(TIPO_RESOLUCION_ARCHIVO);
-			sql.append(" , ");			
-			sql.append(TIPO_RESOLUCION_DEVUELTO_COLEGIO);
-			sql.append(" , ");
-			sql.append(TIPO_RESOLUCION_MODIFICADO_DENEGADO);	
+			sql.append(LISTA_RESOLUCIONES_NEGATIVAS);	
 			sql.append(" ) ");
 			sql.append(" AND EJG.IDTIPORESOLAUTO IS NOT NULL ");
 			sql.append(" AND EJG.IDTIPORESOLAUTO IN (");
 			sql.append(ClsConstants.IDTIPO_RESOLUCIONAUTO_MODYCONCEDER);
 			sql.append(	"))"); 
 			sql.append(" OR (EJG.IDTIPORATIFICACIONEJG IN (");
-			sql.append(TIPO_RESOLUCION_RECONOCIDO100);
-			sql.append(" , ");
-			sql.append(TIPO_RESOLUCION_RECONOCIDO80);
-			sql.append(" , ");
-			sql.append(TIPO_RESOLUCION_MOD_RECONOCIDO100_CON_NOMBRAMIENTO);
-			sql.append(" , ");
-			sql.append(TIPO_RESOLUCION_MOD_RECONOCIDO100_SIN_NOMBRAMIENTO);
-			sql.append(" , ");
-			sql.append(TIPO_RESOLUCION_MOD_RECONOCIDO80_CON_NOMBRAMIENTO);
-			sql.append(" , ");
-			sql.append(TIPO_RESOLUCION_MOD_RECONOCIDO80_SIN_NOMBRAMIENTO);			
+			sql.append(LISTA_RESOLUCIONES_POSITIVAS);			
 			sql.append(" ) ");
 			sql.append(" AND (EJG.IDTIPORESOLAUTO IS NULL OR ");
 			sql.append(" EJG.IDTIPORESOLAUTO NOT IN (");
 			sql.append(ClsConstants.IDTIPO_RESOLUCIONAUTO_MODYDENEGAR);
 			sql.append(" ))))");
-			sql.append(" ) EJGS ");
 	
-		}else if(tipoResolucionDesigna.equals(this.resolucionDesignaPteCAJG)){
-			
-			final String TIPO_RESOLUCION_PTE_CAJG = rp3.returnProperty("codigo.general.scstiporesolucion.idtiporesolucion.pendientecajg");
-			
-			sql.append(" , (SELECT EJGDES.IDINSTITUCION, EJGDES.IDTURNO, EJGDES.ANIODESIGNA, EJGDES.NUMERODESIGNA ");
-			sql.append("         FROM SCS_EJG EJG, SCS_EJGDESIGNA EJGDES ");
-			sql.append("         WHERE EJGDES.IDINSTITUCION = EJG.IDINSTITUCION ");
-			sql.append("                  AND EJGDES.IDTIPOEJG = EJG.IDTIPOEJG ");
-			sql.append("                 AND EJGDES.ANIOEJG = EJG.ANIO ");
-			sql.append("                  AND EJGDES.NUMEROEJG = EJG.NUMERO ");
-			sql.append("  AND EJG.Fecharesolucioncajg is not null ");
+		} else if(tipoResolucionDesigna.equals(this.resolucionDesignaPteCAJG))
+		{
 			sql.append(" AND EJG.IDTIPORATIFICACIONEJG IN (");
 			sql.append(TIPO_RESOLUCION_PTE_CAJG);
+			sql.append(" ) ");
 			
-			sql.append(" )) EJGS ");
-                            
-		}
-		else if(tipoResolucionDesigna.equals(this.resolucionDesignaNoFavorable)){
-			final String TIPO_RESOLUCION_DENEGADO = rp3.returnProperty("codigo.general.scstiporesolucion.idtiporesolucion.denegado");
-			final String TIPO_RESOLUCION_ARCHIVO = rp3.returnProperty("codigo.general.scstiporesolucion.idtiporesolucion.archivo");
-			final String TIPO_RESOLUCION_PTE_CAJG = rp3.returnProperty("codigo.general.scstiporesolucion.idtiporesolucion.pendientecajg");
-			final String TIPO_RESOLUCION_RECONOCIDO100 = rp3.returnProperty("codigo.general.scstiporesolucion.idtiporesolucion.reconocido100");
-			final String TIPO_RESOLUCION_RECONOCIDO80 = rp3.returnProperty("codigo.general.scstiporesolucion.idtiporesolucion.reconocido80");
-			
-			//NUEVOS TIPOS DE RESOLUCION
-			final String TIPO_RESOLUCION_DEVUELTO_COLEGIO = rp3.returnProperty("codigo.general.scstiporesolucion.idtiporesolucion.devuelto");
-			final String TIPO_RESOLUCION_MODIFICADO_DENEGADO = rp3.returnProperty("codigo.general.scstiporesolucion.idtiporesolucion.modificadoydenegado");
-			final String TIPO_RESOLUCION_MOD_RECONOCIDO100_CON_NOMBRAMIENTO = rp3.returnProperty("codigo.general.scstiporesolucion.idtiporesolucion.modreconocido100_connombramiento");
-			final String TIPO_RESOLUCION_MOD_RECONOCIDO100_SIN_NOMBRAMIENTO = rp3.returnProperty("codigo.general.scstiporesolucion.idtiporesolucion.modreconocido100_sinnombramiento");
-			final String TIPO_RESOLUCION_MOD_RECONOCIDO80_CON_NOMBRAMIENTO = rp3.returnProperty("codigo.general.scstiporesolucion.idtiporesolucion.modreconocido80_connombramiento");
-			final String TIPO_RESOLUCION_MOD_RECONOCIDO80_SIN_NOMBRAMIENTO = rp3.returnProperty("codigo.general.scstiporesolucion.idtiporesolucion.modreconocido80_sinnombramiento");
-			
-			
-			sql.append(" , (SELECT EJGDES.IDINSTITUCION, EJGDES.IDTURNO, EJGDES.ANIODESIGNA, EJGDES.NUMERODESIGNA ");
-			sql.append("         FROM SCS_EJG EJG, SCS_EJGDESIGNA EJGDES ");
-			sql.append("         WHERE EJGDES.IDINSTITUCION = EJG.IDINSTITUCION ");
-			sql.append("                  AND EJGDES.IDTIPOEJG = EJG.IDTIPOEJG ");
-			sql.append("                 AND EJGDES.ANIOEJG = EJG.ANIO ");
-			sql.append("                AND EJGDES.NUMEROEJG = EJG.NUMERO ");
-			sql.append("  AND EJG.Fecharesolucioncajg is not null ");
+		} else if(tipoResolucionDesigna.equals(this.resolucionDesignaNoFavorable))
+		{
 			sql.append(" AND ((EJG.IDTIPORATIFICACIONEJG IN (");
-			sql.append(TIPO_RESOLUCION_RECONOCIDO100);
-			sql.append(",");
-			sql.append(TIPO_RESOLUCION_RECONOCIDO80);
-			sql.append(" , ");
-			sql.append(TIPO_RESOLUCION_MOD_RECONOCIDO100_CON_NOMBRAMIENTO);
-			sql.append(" , ");
-			sql.append(TIPO_RESOLUCION_MOD_RECONOCIDO100_SIN_NOMBRAMIENTO);
-			sql.append(" , ");
-			sql.append(TIPO_RESOLUCION_MOD_RECONOCIDO80_CON_NOMBRAMIENTO);
-			sql.append(" , ");
-			sql.append(TIPO_RESOLUCION_MOD_RECONOCIDO80_SIN_NOMBRAMIENTO);				
+			sql.append(LISTA_RESOLUCIONES_POSITIVAS);				
 			sql.append(",");
 			sql.append(TIPO_RESOLUCION_PTE_CAJG);
 			sql.append(")");
@@ -1093,14 +1055,7 @@ private String getQueryDesignasPendientesJustificacion(List<DesignaForm> designa
 			sql.append(ClsConstants.IDTIPO_RESOLUCIONAUTO_MODYDENEGAR);
 			sql.append("))");
 			sql.append(" OR  (EJG.IDTIPORATIFICACIONEJG IN (");
-			sql.append(TIPO_RESOLUCION_DENEGADO);
-			sql.append(",");
-			sql.append(TIPO_RESOLUCION_ARCHIVO);
-			sql.append(" , ");			
-			sql.append(TIPO_RESOLUCION_DEVUELTO_COLEGIO);
-			sql.append(" , ");
-			sql.append(TIPO_RESOLUCION_MODIFICADO_DENEGADO);	
-			
+			sql.append(LISTA_RESOLUCIONES_NEGATIVAS);	
 			sql.append(")");
 			sql.append(" AND (EJG.IDTIPORESOLAUTO IS NULL OR ");
 			sql.append(" EJG.IDTIPORESOLAUTO NOT IN (");
@@ -1108,61 +1063,54 @@ private String getQueryDesignasPendientesJustificacion(List<DesignaForm> designa
 			sql.append("))))");
 			
 			
-			
+			// y que no existe otro ejg
 			sql.append(" AND NOT EXISTS ");
-			sql.append("(SELECT 1 ");
-			sql.append("        FROM SCS_EJG EJGDISTINTO ");
-			sql.append("        WHERE  ");
+			sql.append("     (SELECT 1 ");
+			sql.append("        FROM SCS_EJG EJGDISTINTO, SCS_EJGDESIGNA EJGDESDISTINTO ");
+			sql.append("       WHERE EJGDESDISTINTO.IDINSTITUCION = EJGDISTINTO.IDINSTITUCION ");
+			sql.append("         AND EJGDESDISTINTO.IDTIPOEJG = EJGDISTINTO.IDTIPOEJG ");
+			sql.append("         AND EJGDESDISTINTO.ANIOEJG = EJGDISTINTO.ANIO ");
+			sql.append("         AND EJGDESDISTINTO.NUMEROEJG = EJGDISTINTO.NUMERO ");
 			
-			sql.append(" (EJG.IDTIPOEJG <> EJGDISTINTO.IDTIPOEJG  ");
-			sql.append(" OR EJG.ANIO <> EJGDISTINTO.ANIO  ");
-			sql.append(" OR EJG.NUMERO <> EJGDISTINTO.NUMERO )  ");
+			// [otro ejg...] distinto
+			sql.append("         AND EJG.IDINSTITUCION = EJGDISTINTO.IDINSTITUCION ");
+			sql.append("         AND (EJG.IDTIPOEJG <> EJGDISTINTO.IDTIPOEJG ");
+			sql.append("           OR EJG.ANIO <> EJGDISTINTO.ANIO ");
+			sql.append("           OR EJG.NUMERO <> EJGDISTINTO.NUMERO ) ");
 	                 
-			sql.append("        AND EJGDES.IDINSTITUCION = EJGDISTINTO.IDINSTITUCION ");
-			sql.append("         AND EJGDES.IDTIPOEJG = EJGDISTINTO.IDTIPOEJG ");
-			sql.append("         AND EJGDES.ANIOEJG = EJGDISTINTO.ANIO ");
-			sql.append("         AND EJGDES.NUMEROEJG = EJGDISTINTO.NUMERO ");
-			sql.append("  AND EJGDISTINTO.Fecharesolucioncajg is not null ");
+			// [otro ejg...] relacionado con la misma designacion [que el ejg que estamos buscando inicialmente]
+			sql.append("         AND EJGDES.IDINSTITUCION = EJGDESDISTINTO.IDINSTITUCION ");
+			sql.append("         AND EJGDES.IDTURNO = EJGDESDISTINTO.IDTURNO ");
+			sql.append("         AND EJGDES.ANIODESIGNA = EJGDESDISTINTO.ANIODESIGNA ");
+			sql.append("         AND EJGDES.NUMERODESIGNA = EJGDESDISTINTO.NUMERODESIGNA ");
 			
-			
-			sql.append(" AND ( (  EJGDISTINTO.IDTIPORATIFICACIONEJG IN ( ");
-			sql.append(TIPO_RESOLUCION_DENEGADO);
-			sql.append(" , ");
-			sql.append(TIPO_RESOLUCION_ARCHIVO);
-			sql.append(" , ");			
-			sql.append(TIPO_RESOLUCION_DEVUELTO_COLEGIO);
-			sql.append(" , ");
-			sql.append(TIPO_RESOLUCION_MODIFICADO_DENEGADO);	
-			sql.append(" ) ");
-			sql.append(" AND EJGDISTINTO.IDTIPORESOLAUTO IS NOT NULL ");
-			sql.append(" AND EJGDISTINTO.IDTIPORESOLAUTO IN (");
-			sql.append(ClsConstants.IDTIPO_RESOLUCIONAUTO_MODYCONCEDER);
-			sql.append(	"))"); 
-			sql.append(" OR (EJGDISTINTO.IDTIPORATIFICACIONEJG IN (");
-			sql.append(TIPO_RESOLUCION_RECONOCIDO100);
-			sql.append(" , ");
-			sql.append(TIPO_RESOLUCION_RECONOCIDO80);
-			sql.append(" , ");
-			sql.append(TIPO_RESOLUCION_MOD_RECONOCIDO100_CON_NOMBRAMIENTO);
-			sql.append(" , ");
-			sql.append(TIPO_RESOLUCION_MOD_RECONOCIDO100_SIN_NOMBRAMIENTO);
-			sql.append(" , ");
-			sql.append(TIPO_RESOLUCION_MOD_RECONOCIDO80_CON_NOMBRAMIENTO);
-			sql.append(" , ");
-			sql.append(TIPO_RESOLUCION_MOD_RECONOCIDO80_SIN_NOMBRAMIENTO);			
-			sql.append(" ) ");
-			sql.append(" AND (EJGDISTINTO.IDTIPORESOLAUTO IS NULL OR ");
-			sql.append(" EJGDISTINTO.IDTIPORESOLAUTO NOT IN (");
-			sql.append(ClsConstants.IDTIPO_RESOLUCIONAUTO_MODYDENEGAR);
-			sql.append(" ))))");
-			sql.append(" )");
-			
-			sql.append(") EJGS ");
+			// [otro ejg...] que sea favorable (bueno, con todas las opciones de favorabilidad)
+			sql.append("         AND EJGDISTINTO.Fecharesolucioncajg is not null ");
+			sql.append("         AND ( (  EJGDISTINTO.IDTIPORATIFICACIONEJG IN ( ");
+			sql.append(                                                         LISTA_RESOLUCIONES_NEGATIVAS);	
+			sql.append("                                                        ) ");
+			sql.append("                  AND EJGDISTINTO.IDTIPORESOLAUTO IS NOT NULL ");
+			sql.append("                  AND EJGDISTINTO.IDTIPORESOLAUTO = ");
+			sql.append(                                                   ClsConstants.IDTIPO_RESOLUCIONAUTO_MODYCONCEDER);
+			sql.append("               )"); 
+			sql.append("           OR (EJGDISTINTO.IDTIPORATIFICACIONEJG IN (");
+			sql.append(                                                      LISTA_RESOLUCIONES_POSITIVAS);			
+			sql.append("                                                     ) ");
+			sql.append("                AND (EJGDISTINTO.IDTIPORESOLAUTO IS NULL OR ");
+			sql.append("                     EJGDISTINTO.IDTIPORESOLAUTO <> ");
+			sql.append(                                                     ClsConstants.IDTIPO_RESOLUCIONAUTO_MODYDENEGAR);
+			sql.append("                     ) ");
+			sql.append("               ) ");
+			sql.append("            ) ");
+			sql.append("      )"); // fin de "y que no existe otro ejg"
 			
 		}
-		return sql.toString();
 		
-	}
+		// finalizando la consulta de EJGs resueltos
+		sql.append(") EJGS ");
+		
+		return sql.toString();
+	} // getQueryEjgs()
 	
 	private String getQueryWhereResolucion(String tipoResolucionDesigna){
 		 ReadProperties rp3= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
