@@ -526,6 +526,11 @@ public class FcsMovimientosVariosAdm extends MasterBeanAdministrador {
 			where += " AND " + FcsAplicaMovimientosVariosBean.T_NOMBRETABLA + "." + FcsAplicaMovimientosVariosBean.C_IDPAGOSJG + "=" + idPago; 	
 		}
 
+		String idPersona = (String)datos.get("IDPERSONA");
+		if (idPersona != null && !idPersona.equals("")) {
+			where += " and "+ CenPersonaBean.T_NOMBRETABLA + "." +CenPersonaBean.C_IDPERSONA + " = " + idPersona.trim() + " ";
+		}
+		
 		String idFacturacion = (String)datos.get("IDFACTURACION");
 		if (idFacturacion != null && !idFacturacion.equals("")) {
 			where += " and "+ FcsMovimientosVariosBean.T_NOMBRETABLA + "." +FcsMovimientosVariosBean.C_IDFACTURACION + " = " + idFacturacion.trim() + " ";
@@ -600,6 +605,10 @@ public class FcsMovimientosVariosAdm extends MasterBeanAdministrador {
 			where2 += " AND " + FcsAplicaMovimientosVariosBean.T_NOMBRETABLA + "." + FcsAplicaMovimientosVariosBean.C_IDPAGOSJG + "=" + idPago; 	
 		}
 
+		if (idPersona != null && !idPersona.equals("")) {
+			where2 += " and "+ CenPersonaBean.T_NOMBRETABLA + "." +CenPersonaBean.C_IDPERSONA + " = " + idPersona.trim() + " ";
+		}
+		
 		if (idFacturacion != null && !idFacturacion.equals("")) {
 			where2 += " and "+ FcsMovimientosVariosBean.T_NOMBRETABLA + "." +FcsMovimientosVariosBean.C_IDFACTURACION + " = " + idFacturacion.trim() + " ";
 		}
