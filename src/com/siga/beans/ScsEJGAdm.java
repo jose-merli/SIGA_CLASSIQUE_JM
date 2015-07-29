@@ -5082,8 +5082,8 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 								String idLetradoTramitadorEjg  = (String)registro.get("IDPERSONATRAMITADOR");
 								actualizarDatosLetradoTramitador(idLetradoTramitadorEjg,idInstitucion,clone);
 
-								actualizarDatosFechaRemitidoComision(idInstitucion, tipoEjg, anioEjg, numeroEjg, idioma, registro);
-								actualizarDatosFechaReunionActa(idInstitucion, tipoEjg, anioEjg, numeroEjg, idioma, registro);
+								actualizarDatosFechaRemitidoComision(idInstitucion, tipoEjg, anioEjg, numeroEjg, idioma, clone);
+								actualizarDatosFechaReunionActa(idInstitucion, tipoEjg, anioEjg, numeroEjg, idioma, clone);
 
 
 
