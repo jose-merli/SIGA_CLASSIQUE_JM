@@ -43,7 +43,8 @@ public class ScsEstadoEJGAdm extends MasterBeanAdministrador
 				ScsEstadoEJGBean.C_USUMODIFICACION,
 				ScsEstadoEJGBean.C_OBSERVACIONES,
 				ScsEstadoEJGBean.C_AUTOMATICO,
-				ScsEstadoEJGBean.C_PROPIETARIOCOMISION
+				ScsEstadoEJGBean.C_PROPIETARIOCOMISION,
+				ScsEstadoEJGBean.C_FECHABAJA
 		};
 		
 		return campos;
@@ -201,8 +202,8 @@ public class ScsEstadoEJGAdm extends MasterBeanAdministrador
 					   " and ( estadoejg.idestadoporejg)="+ 
 					                               "(SELECT max(ultimoestado.idestadoporejg)"+
 					                                  " from SCS_ESTADOEJG ultimoestado"+
-					                                 " where ultimoestado.IDINSTITUCION ="+
-					                                       " estadoejg.IDINSTITUCION"+
+					                                 " where  ultimoestado.FECHABAJA IS NULL AND "+
+					                                 " ultimoestado.IDINSTITUCION estadoejg.IDINSTITUCION"+
 					                                   " and ultimoestado.IDTIPOEJG ="+
 					                                      " estadoejg.IDTIPOEJG"+
 					                                   " and ultimoestado.ANIO = estadoejg.ANIO"+
@@ -362,6 +363,7 @@ public class ScsEstadoEJGAdm extends MasterBeanAdministrador
 		query.append("   AND estado.IDTIPOEJG =:2");
 		query.append("   AND estado.ANIO =:3");
 		query.append("   AND estado.NUMERO =:4");
+		query.append("   AND estado.FECHABAJA IS NULL ");
 		query.append(" ORDER BY ESTADO.FECHAINICIO asc, ESTADO.IDESTADOPOREJG asc");
 		v = this.selectGenericoBind(query.toString(), claves);
 		

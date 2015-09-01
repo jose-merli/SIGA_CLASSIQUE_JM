@@ -65,7 +65,7 @@
 					//fin();
 					return false;
 				}
-				if (!TestFileType(document.MantenimientoCertificadosPlantillasForm.theFile.value, ['ZIP', 'FO'])){
+				if (!TestFileType(document.MantenimientoCertificadosPlantillasForm.theFile.value, ['ZIP', 'FO','DOC'])){
 					//fin();
 					return false;
 				}

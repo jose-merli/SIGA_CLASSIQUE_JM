@@ -275,17 +275,17 @@
 		</siga:Table>
 
 		<!-- Check para pasar a modo historico donde se muestran los turnos dados de baja -->
-		<div style="position: absolute; left: 400px; bottom: 5px; z-index: 99;">
-			<table align="center" border="0">
+		<div style="position: absolute; left: 400px; width:140px; bottom: 0px; z-index: 99;">
+			<table align="center" border="0" class="botonesSeguido">
 				<tr>
 					<td class="labelText">
 						<siga:Idioma key="gratuita.gestionInscripciones.vertodas" /> 
-						<% if (bIncluirBajaLogica.equals("S")) { %>
+						<%if (bIncluirBajaLogica.equals("S")) {%>
 							<input type="checkbox" name="bajaLogica" onclick="incluirRegBajaLogica(this);" checked> 
-						<% } else { %>
+						<%} else {%>
 							<input type="checkbox" name="bajaLogica" onclick="incluirRegBajaLogica(this);"> 
-						<% } %>
-					</td>
+						<%}%>
+ 					</td>
 				</tr>
 			</table>
 		</div>

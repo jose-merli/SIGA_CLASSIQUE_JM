@@ -369,12 +369,25 @@
 									<siga:ComboBD nombre="comboFases" tipo="cmbFases" elementoSel="<%=vFase%>" clase="boxCombo" obligatorio="false" accion="Hijo:comboEstados" hijo="t" ancho="200"/>
 								</td>
 			
-								<td class="labelText" width="66px">
+								<td class="labelText" width="70px">
 									<siga:Idioma key="expedientes.auditoria.literal.estado" />
 								</td>
 								<td>
 									<siga:ComboBD nombre="comboEstados" tipo="cmbEstados" elementoSel="<%=vEstado%>" clase="boxCombo" obligatorio="false" hijo="t" ancho="200" />
 								</td>
+								<td class="labelText" width="70px">
+									F. Estado Desde
+								</td>								
+								<td>
+									<siga:Fecha nombreCampo="fechaEstadoDesde" valorInicial="<%=form.getFechaEstadoDesde()%>" />
+								</td>		
+								<td class="labelText" width="40px">
+									Hasta
+								</td>								
+								<td>
+									<siga:Fecha nombreCampo="fechaEstadoHasta" valorInicial="<%=form.getFechaEstadoHasta()%>" />
+								</td>								
+											
 							</tr>
 						</table>
 					</td>
@@ -556,6 +569,8 @@
 			document.getElementById("nombreParte").value = "";
 			document.getElementById("primerApellidoParte").value = "";
 			document.getElementById("segundoApellidoParte").value = "";
+			document.getElementById("fechaEstadoDesde").value = "";
+			document.getElementById("fechaEstadoHasta").value = "";			
 			document.getElementById("rol").value = "";
 			
 			document.forms[0].submit();	

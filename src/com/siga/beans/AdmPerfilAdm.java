@@ -1,6 +1,7 @@
 package com.siga.beans;
 
 import java.util.*;
+
 import com.atos.utils.*;
 import com.siga.Utilidades.*;
 
@@ -99,23 +100,30 @@ public class AdmPerfilAdm extends MasterBeanAdministrador
 		return htData;
 	}
 
+	/**
+	 * Ordenamos por orden alfabético
+	 */
     protected String[] getOrdenCampos()
     {
-        return null;
+    	String[] campos = {AdmPerfilBean.C_DESCRIPCION};
+    	return campos;
     }
     
-    /*public boolean borrarRoles(String idInstitucion)
-    {
-        try
-        {
-            return true;
-        }
-        
-        catch(Exception e)
-        {
-            e.printStackTrace();
-            
-            return false;
-        }
-    }*/
+    /**
+     * Devuelve todos los prosibles perfiles de una institucion
+     * @param idInstitucion
+     * @return
+     */
+    @SuppressWarnings("unchecked")
+	public Vector<AdmPerfilBean> getPerfiles(String idInstitucion){
+    	Vector<AdmPerfilBean> perfiles = null;
+    	try {
+    		perfiles = select(" WHERE " + AdmPerfilBean.C_IDINSTITUCION + " = '" + idInstitucion + "'");
+		} catch (Exception e) {
+			perfiles=null;
+		}
+
+    	return perfiles;
+    }
+
 }

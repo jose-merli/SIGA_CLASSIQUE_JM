@@ -50,6 +50,8 @@
 
 	String DB_TRUE = ClsConstants.DB_TRUE;
 	String DB_FALSE = ClsConstants.DB_FALSE;
+	int tam_max_codigo_postal = ClsConstants.TAM_MAX_CODIGO_POSTAL;
+	int tam_min_codigo_postal = ClsConstants.TAM_MIN_CODIGO_POSTAL;
 
 	String nombreUsu = (String) request.getAttribute("nombrePersona");
 	String numero = (String) request.getAttribute("numero");
@@ -162,8 +164,7 @@
 			idProvincia.add(String.valueOf(htData.get(CenDireccionesBean.C_IDPROVINCIA)));
 			sIdprovincia = String.valueOf(htData.get(CenDireccionesBean.C_IDPROVINCIA));
 			idPoblacion.add(String.valueOf(htData.get(CenDireccionesBean.C_IDPOBLACION)));
-			ididPais = (htData.get(CenDireccionesBean.C_IDPAIS) == null || String.valueOf(htData.get(CenDireccionesBean.C_IDPAIS)).equals("")) ? ClsConstants.ID_PAIS_ESPANA
-					: String.valueOf(htData.get(CenDireccionesBean.C_IDPAIS));
+			ididPais = String.valueOf(htData.get(CenDireccionesBean.C_IDPAIS));
 			idPais.add(ididPais);
 		}
 	} else {
@@ -232,22 +233,14 @@
 <script language="JavaScript">
 	
 		var idEspana='<%=ClsConstants.ID_PAIS_ESPANA%>';
-		
+		var paisGlobal='<%=ididPais%>';
 		jQuery(function(){
 			jQuery("#pais").on("change", function(){
 				selPais(jQuery(this).val());
 				
 				if(trim(document.consultaDireccionesForm.codigoPostal.value) != "")
-					if(trim(document.consultaDireccionesForm.pais.value)!=idEspana)
+					if(trim(document.consultaDireccionesForm.pais.value)!=idEspana && trim(document.consultaDireccionesForm.pais.value) != "")
 						jQuery("#codigoPostal").val("");
-			});
-			jQuery("#provincia").on("change", function(){
-				
-					if(trim(document.consultaDireccionesForm.provincia.value) != ""){
-						if(trim(document.consultaDireccionesForm.codigoPostal.value).substring(0,2)!=trim(document.consultaDireccionesForm.provincia.value).substring(0,2))
-							jQuery("#codigoPostal").val(jQuery(this).val() + "000");
-							
-					}
 			});
 		});
 		
@@ -256,11 +249,29 @@
 			window.top.close();
 		}	
 		//Asociada al boton Restablecer -->
-		function accionRestablecer(){		
+		function accionRestablecer(){
 			if(confirm('<siga:Idioma key="messages.confirm.cancel"/>')) {
 				document.all.consultaDireccionesForm.reset();
-			}						
-		}			
+				comprobarAsterico();
+				selPais(<%=ididPais%>);
+				jQuery("#provincia").change();
+				
+				<%if(ididPais.equals(ClsConstants.ID_PAIS_ESPANA) || "".equals(ididPais)){%>	
+						document.consultaDireccionesForm.codigoPostal.value='<%=codigoPostal%>';
+						createProvince();
+				<%}else{%>
+					var codpostal = '<%=codigoPostal%>';
+					var poblacionExtAux = '<%=poblacionExt%>';
+					if(codpostal == null){
+						document.consultaDireccionesForm.codigoPostal.value="";
+					}else{
+						document.consultaDireccionesForm.codigoPostal.value=codpostal;
+					}
+					document.getElementById("poblacionExt").value=poblacionExtAux;
+					createProvince();
+				<%}%>
+			}		
+		}
 	
 	    function validateConsultaDireccionesFormAux(form) {                                                                   
 	       	return validateMaxLength(form) && validateMask(form); 
@@ -308,46 +319,67 @@
 	    }
 	    
 	    
-	    function selPais(valor) {                                                                   
-		   if (valor!="" && valor!=idEspana) {
+	    function selPais(valor) {
+	    	
+		   if (valor!=null && valor!="" && valor!=idEspana) {
+			  
 		   		document.getElementById("poblacion").value="";
 		   		document.getElementById("provincia").value="";
-			   	jQuery("#provincia").attr("disabled","disabled");
+				//Ocultamos la provincia
+				jQuery("#provinciaSinAsterisco").hide();
+				jQuery("#provinciaText").hide();
+				jQuery("#codigoPostal").val("");	
+				jQuery("#provincia").val(jQuery("#provincia option:first").val());
+				jQuery("#provinciaText").val("");
+				jQuery("#provincia").change();	
 			   	//aalg: se quita la marca de obligatoriedad
 			   	document.getElementById("provinciaSinAsterisco").className="labelText";
-				document.getElementById("provinciaConAsterisco").className="ocultar";
 				document.getElementById("poblacionEspanola").className="ocultar";
 				document.getElementById("poblacionExtranjera").className="";
+				document.getElementById("poblacionExt").value="";
 	       } else {
+	    	 
 		   		document.getElementById("poblacionExt").value="";
-				jQuery("#provincia").removeAttr("disabled");
+				//Mostramos la provincia
+				jQuery("#provinciaSinAsterisco").show();
+				jQuery("#provinciaText").show();
+				//Para el caso de que venga null, sino se pone mostrará por pantalla en el campo codigo postal undefined
+				if((paisGlobal != "") && (paisGlobal !=idEspana))
+						jQuery("#codigoPostal").val("");				
 				document.getElementById("poblacionEspanola").className="";
 				document.getElementById("poblacionExtranjera").className="ocultar";
 				//aalg: se restaura la marca de obligatoriedad si es pertinente
-				comprobarTelefonoAsterico();
+				comprobarAsterico();
+				
 	       }
+		   paisGlobal=jQuery("#pais").val();
 	    }
 		
 		function selPaisInicio() {
 			var valor = document.getElementById("pais").value;
-			if (valor!="" && valor!=idEspana) {
+			if (valor!=null && valor!="" && valor!=idEspana) {
 		   		document.getElementById("poblacion").value="";
 		   		document.getElementById("provincia").value="";
+		   		//Ocultamos la provincia
+		   		jQuery("#provinciaSinAsterisco").hide();
+				jQuery("#provinciaText").hide();
 			   	//aalg: se quita la marca de obligatoriedad
 			   	document.getElementById("provinciaSinAsterisco").className="labelText";
-				document.getElementById("provinciaConAsterisco").className="ocultar";
 				document.getElementById("poblacionEspanola").className="ocultar";
 				document.getElementById("poblacionExtranjera").className="";
 	       } else {
+	    	   
 		   		document.getElementById("poblacionExt").value="";
 				document.getElementById("poblacionEspanola").className="";
-				document.getElementById("poblacionExtranjera").className="ocultar";
+				document.getElementById("poblacionExtranjera").className="ocultar";		
+				//Mostramos la provincia
+				jQuery("#provinciaText").show();
 				//aalg: se restaura la marca de obligatoriedad si es pertinente
-				comprobarTelefonoAsterico();
+				comprobarAsterico();
 	       }
 		}
 		
-		function comprobarTelefonoAsterico() {
+		function comprobarAsterico() {
 			var checkGuardia = false;
 			var checkPostal = false;
 			var oCheck = document.getElementsByName("checkTipoDireccion");
@@ -378,8 +410,6 @@
 				document.getElementById("direccionConAsterisco").className="labelText";
 				document.getElementById("cpSinAsterisco").className="ocultar";
 				document.getElementById("cpConAsterisco").className="labelText";
-				document.getElementById("provinciaSinAsterisco").className="ocultar";
-				document.getElementById("provinciaConAsterisco").className="labelText";
 				document.getElementById("poblacionSinAsterisco").className="ocultar";
 				document.getElementById("poblacionConAsterisco").className="labelText";
 				document.getElementById("paisSinAsterisco").className="ocultar";
@@ -390,8 +420,6 @@
 				document.getElementById("direccionConAsterisco").className="ocultar";
 				document.getElementById("cpSinAsterisco").className="labelText";
 				document.getElementById("cpConAsterisco").className="ocultar";
-				document.getElementById("provinciaSinAsterisco").className="labelText";
-				document.getElementById("provinciaConAsterisco").className="ocultar";
 				document.getElementById("poblacionSinAsterisco").className="labelText";
 				document.getElementById("poblacionConAsterisco").className="ocultar";
 				document.getElementById("paisSinAsterisco").className="labelText";
@@ -485,7 +513,7 @@
 		   
 		   if((document.consultaDireccionesForm.preferenteMail.checked) && 
 					 (trim(document.consultaDireccionesForm.correoElectronico.value)=="")) {
-					
+				
 	 				 var mensaje = "<siga:Idioma key="censo.datosDireccion.literal.correo"/> <siga:Idioma key="messages.campoObligatorio.error"/>";
 	 				 alert (mensaje);
 	 				 fin();
@@ -505,6 +533,27 @@
 					(trim(document.consultaDireccionesForm.codigoPostal.value)=="")) {
 					
 	 				 var mensaje = "<siga:Idioma key="censo.datosDireccion.literal.cp"/> <siga:Idioma key="messages.campoObligatorio.error"/>";
+	 				 alert (mensaje);
+	 				 fin();
+					 return false;
+				}
+				var value = trim(document.consultaDireccionesForm.codigoPostal.value);
+				// Si es obligatorio el codigo postal e introduce menos de 5
+				
+				if((jQuery("#cpConAsterisco").attr("class") != "ocultar")  &&
+					(value.length<<%=tam_max_codigo_postal%>)) {
+					
+	 				 var mensaje = "<siga:Idioma key="censo.datosDireccion.literal.cp"/> <siga:Idioma key="messages.cp.tamanyo"/>";
+	 				 alert (mensaje);
+	 				 fin();
+					 return false;
+				}
+				
+				//Si no es obligatorio pero introduce campo tampoco puede ser menos de 5. 
+				if((jQuery("#cpConAsterisco").attr("class") == "ocultar") &&
+						((value.length>=<%=tam_min_codigo_postal%>)&&(value.length < <%=tam_max_codigo_postal%>))) {
+					
+	 				 var mensaje = "<siga:Idioma key="censo.datosDireccion.literal.cp"/> <siga:Idioma key="messages.cp.tamanyo"/>";
 	 				 alert (mensaje);
 	 				 fin();
 					 return false;
@@ -564,6 +613,31 @@
 					fin();
 					return false;
 				}
+			}else{
+				
+				//Cuando no es obligatoria la dirección postal pero se introduce.
+				var Primary = document.consultaDireccionesForm.codigoPostal.value;
+				if(Primary != null && Primary != "" && (Primary.length<5)){
+					 var mensaje = "<siga:Idioma key="censo.datosDireccion.literal.cp"/> <siga:Idioma key="messages.cp.tamanyo"/>";
+	 				 alert (mensaje);
+	 				 fin();
+					 return false;
+				}else{
+					//Si es vacio o españa se comprueba que sea un codigo postal válido, sino se admite cualquier valor
+					if(trim(document.consultaDireccionesForm.pais.value)==idEspana || trim(document.consultaDireccionesForm.pais.value)==""){
+						var idProvincia	= Primary.substring(0,2);
+						//Comprobamos que exista los dos primeros dígitos del c.p con algún elemento de la lista de provincia
+						if (jQuery("#provincia").val() != idProvincia){
+							if (!jQuery("#provincia").find("option[value='"+idProvincia+"']").exists()){
+								var mensaje = "<siga:Idioma key="censo.datosDireccion.noSeEncuentraProvincia"/>";
+				 				alert (mensaje+document.consultaDireccionesForm.codigoPostal.value);
+			 				 	fin();
+							 	return false;
+							} 
+						} 
+					}
+				}
+				
 			}
 
 
@@ -589,6 +663,7 @@
 					document.consultaDireccionesForm.modo.value = "guardarInsertarHistorico";
 				<%}%>	
 				document.consultaDireccionesForm.target = "submitArea";
+				document.consultaDireccionesForm.idProvinciaHidden.value=jQuery("#provincia").val();
 				document.consultaDireccionesForm.submit();
 			}else{
 				fin();
@@ -596,7 +671,7 @@
 		}
 
 		//Asociada al boton GuardarCerrar
-		function accionGuardarCerrar() {		
+		function accionGuardarCerrar() {
            sub();
            document.consultaDireccionesForm.telefono1.value=eliminarBlancos(trim(document.consultaDireccionesForm.telefono1.value));
 		   document.consultaDireccionesForm.telefono2.value=eliminarBlancos(trim(document.consultaDireccionesForm.telefono2.value));
@@ -668,8 +743,8 @@
 					fin();
 					return false;
 			}
-		   
-		   if((document.consultaDireccionesForm.preferenteMail.checked) && 
+			
+		 if((document.consultaDireccionesForm.preferenteMail.checked) && 
 					 (trim(document.consultaDireccionesForm.correoElectronico.value)=="")) {
 					
 	 				 var mensaje = "<siga:Idioma key="censo.datosDireccion.literal.correo"/> <siga:Idioma key="messages.campoObligatorio.error"/>";
@@ -678,7 +753,7 @@
 				 
 					 return false;
 				}
-				if((document.consultaDireccionesForm.preferenteCorreo.checked) && 
+			if((document.consultaDireccionesForm.preferenteCorreo.checked) && 
 					 (trim(document.consultaDireccionesForm.domicilio.value)=="")) {
 					 
 	 				 var mensaje = "<siga:Idioma key="censo.datosDireccion.literal.direccion"/> <siga:Idioma key="messages.campoObligatorio.error"/>";
@@ -691,6 +766,27 @@
 					(trim(document.consultaDireccionesForm.codigoPostal.value)=="")) {
 					
 	 				 var mensaje = "<siga:Idioma key="censo.datosDireccion.literal.cp"/> <siga:Idioma key="messages.campoObligatorio.error"/>";
+	 				 alert (mensaje);
+	 				 fin();
+					 return false;
+				}
+				var value = trim(document.consultaDireccionesForm.codigoPostal.value);
+				//Si es obligatorio el codigo postal e introduce menos de 5
+				
+				if((jQuery("#cpConAsterisco").attr("class") != "ocultar")  &&
+					(value.length<<%=tam_max_codigo_postal%>)) {
+					
+	 				 var mensaje = "<siga:Idioma key="censo.datosDireccion.literal.cp"/> <siga:Idioma key="messages.cp.tamanyo"/>";
+	 				 alert (mensaje);
+	 				 fin();
+					 return false;
+				}
+				
+				//Si no es obligatorio pero introduce campo tampoco puede ser menos de 5. 
+				if((jQuery("#cpConAsterisco").attr("class") == "ocultar") &&
+						((value.length>=<%=tam_min_codigo_postal%>)&&(value.length<<%=tam_max_codigo_postal%>))) {
+					
+	 				 var mensaje = "<siga:Idioma key="censo.datosDireccion.literal.cp"/> <siga:Idioma key="messages.cp.tamanyo"/>";
 	 				 alert (mensaje);
 	 				 fin();
 					 return false;
@@ -738,20 +834,46 @@
 						 return false;
 					}
 	         
-
-			if(checkPostal) {
+			
+			if(checkPostal) {	
 				// valido que sea una direccion postal
 				if((trim(document.consultaDireccionesForm.domicilio.value)=="") ||
 					((trim(document.consultaDireccionesForm.pais.value)==idEspana) && (trim(document.consultaDireccionesForm.provincia.value)=="")) ||
 					((trim(document.consultaDireccionesForm.pais.value)==idEspana) && (trim(document.consultaDireccionesForm.poblacion.value)=="")) ||
 					(trim(document.consultaDireccionesForm.codigoPostal.value)=="")) {
+					
 				
 					var mensaje = "<siga:Idioma key="messages.obligatorioPostal.error"/>";
 					alert(mensaje);
 					fin();
 					return false;
 				}
-			}
+			}else{
+				//Cuando no es obligatorio la dirección postal pero se introduce.
+				var Primary = document.consultaDireccionesForm.codigoPostal.value;
+				if(Primary != null && Primary != "" && (Primary.length<5)){
+					var mensaje = "<siga:Idioma key="censo.datosDireccion.literal.cp"/> <siga:Idioma key="messages.cp.tamanyo"/>";
+	 				 alert (mensaje);
+	 				 fin();
+					 return false;
+				}else{
+					//Si es vacio o españa se comprueba que sea un codigo postal válido, sino se admite cualquier valor
+					if(trim(document.consultaDireccionesForm.pais.value)==idEspana || trim(document.consultaDireccionesForm.pais.value)==""){
+						var idProvincia	= Primary.substring(0,2);
+						//Comprobamos que exista los dos primeros dígitos del c.p con algún elemento de la lista de provincia
+						if (jQuery("#provincia").val() != idProvincia){
+							if (!jQuery("#provincia").find("option[value='"+idProvincia+"']").exists()){
+								var mensaje = "<siga:Idioma key="censo.datosDireccion.noSeEncuentraProvincia"/>";
+				 				alert (mensaje+document.consultaDireccionesForm.codigoPostal.value);
+			 				 	fin();
+							 	return false;
+							} 
+						} 
+					}
+				}
+				
+				
+			}	
 
 
 			////////////////////////////////////
@@ -769,7 +891,7 @@
 				fin();
 				return false;
 			}
-			
+		
 			if (datos[0] == 1) { // Boton Guardar
 				document.consultaDireccionesForm.motivo.value = datos[1];
 				<%if (modo.equals("editar")) {%>
@@ -778,6 +900,7 @@
 				document.consultaDireccionesForm.modo.value = "insertar";
 				<%}%>
 				document.consultaDireccionesForm.target = "submitArea";
+				document.consultaDireccionesForm.idProvinciaHidden.value=jQuery("#provincia").val();
 				document.consultaDireccionesForm.submit();
 			} else {
 				fin();
@@ -790,30 +913,52 @@
 	}
 
 	function createProvince() {
-		if (trim(document.consultaDireccionesForm.pais.value) == idEspana) {
+		
+		if (trim(document.consultaDireccionesForm.pais.value) == idEspana || trim(document.consultaDireccionesForm.pais.value) == "" ) {
+			
 			var Primary = document.consultaDireccionesForm.codigoPostal.value;
-			if ((Primary == null) || (Primary == 0)) {
+			if ((Primary == null) || (Primary == "")) {
+				//Inicializamos todo
+				jQuery("#provincia").val(jQuery("#provincia option:first").val());
+				jQuery("#provinciaText").val("");
+				jQuery("#provincia").change();
 				return;
-			}
-			while(Primary.length<5){
-				Primary="0"+Primary;
-			}	  
-			var idProvincia	= Primary.substring(0,2);
-			if (jQuery("#provincia").val() != idProvincia){
-				if (jQuery("#provincia").find("option[value='"+idProvincia+"']").exists()){
-					jQuery("#provincia").val(idProvincia);
-					jQuery("#provincia").change();
-				} else {
-					alert("No se ha encontrado provincia para el código postal: " + document.consultaDireccionesForm.codigoPostal.value);
-				}
 			} 
+			if(Primary.length<5){
+				 var mensaje = "<siga:Idioma key="censo.datosDireccion.literal.cp"/> <siga:Idioma key="messages.cp.tamanyo"/>";
+ 				 alert (mensaje);
+ 				 fin();
+				 return false;
+			}else{
+				var idProvincia	= Primary.substring(0,2);
+				//Comprobamos que exista los dos primeros dígitos del c.p con algún elemento de la lista de provincia
+				if (jQuery("#provincia").val() != idProvincia){
+					if (jQuery("#provincia").find("option[value='"+idProvincia+"']").exists()){
+						jQuery("#provincia").val(idProvincia);
+						jQuery("#provinciaText").val( jQuery("#provincia option:selected").text());
+						document.consultaDireccionesForm.idProvinciaHidden.value=idProvincia;
+						jQuery("#poblacion").val(jQuery("#poblacion option:first").val());
+					 	jQuery("#provincia").change();
+					 	
+					} else {
+						var mensaje = "<siga:Idioma key="censo.datosDireccion.noSeEncuentraProvincia"/>";
+		 				alert (mensaje+document.consultaDireccionesForm.codigoPostal.value);
+						//Inicializamos todo
+						jQuery("#provincia").val(jQuery("#provincia option:first").val());
+						jQuery("#provinciaText").val("");
+						jQuery("#provincia").change();
+	 				 	fin();
+					 	return false;
+					}
+				} 
+			}
 		
 		}
 	}       
 	</script>
 </head>
 
-<body onload="comprobarTelefonoAsterico();selPaisInicio();">
+<body onload="comprobarAsterico();selPaisInicio();">
 
 	<!-- TITULO -->
 	<table class="tablaTitulo" cellspacing="0">
@@ -861,6 +1006,8 @@
 				name="idDireccionesFacturacion" value="" />	
 			<html:hidden property="vieneDe" styleId="vieneDe" />
 			<html:hidden styleId="tipoAcceso"  property="tipoAcceso" />
+			<html:hidden styleId="idProvinciaHidden"  property="idProvinciaHidden" />
+			
 
 			<%
 				if (editarCampos) {
@@ -915,7 +1062,7 @@
 																		}
 															%> 
 																		<input type=checkbox name="checkTipoDireccion" id="checkTipoDireccion" value="<%=idTipoDireccion1%>"
-																			<%=activarCheck%> onclick="comprobarTelefonoAsterico()"
+																			<%=activarCheck%> onclick="comprobarAsterico()"
 																			<%=desactivarCheckTipos%> /> 
 																		<%=UtilidadesString.mostrarDatoJSP(descripcion)%>
 															<br> 
@@ -973,34 +1120,11 @@
 											value="<%=domicilio%>" styleClass="<%=clase%>"
 											readOnly="<%=desactivado%>"></html:textarea>
 									</td>
-									<td class="labelText" width="180px" id="cpSinAsterisco" nowrap>
-										<siga:Idioma key="censo.datosDireccion.literal.cp" />&nbsp;
-									</td>
-									<td class="ocultar" width="180px" id="cpConAsterisco" nowrap>
-										<siga:Idioma key="censo.datosDireccion.literal.cp" />&nbsp;(*)
-									</td>
-									<td>
-										<%
-											if (editarCampos) {
-										%>
-										<html:text name="consultaDireccionesForm" styleId="codigoPostal"
-											property="codigoPostal" value="<%=codigoPostal%>"
-											maxlength="5" size="5" styleClass="<%=clase%>"
-											onChange="createProvince()"></html:text> 
-										<%
- 											} else {
- 										%> 
- 										<html:text name="consultaDireccionesForm" styleId="codigoPostal"
-											property="codigoPostal" value="<%=codigoPostal%>"
-											maxlength="5" size="5" styleClass="<%=clase%>"
-											readOnly="<%=desactivado%>"></html:text> 
-										<%
- 											}
- 										%>
-									</td>
+									
 								</tr>
 
 								<tr>
+									
 									<td class="labelText" width="180px" id="paisSinAsterisco">
 										<siga:Idioma key="censo.datosDireccion.literal.pais2" />&nbsp;
 									</td>
@@ -1027,28 +1151,48 @@
 								</tr>
 
 								<tr>
+									<td class="labelText" width="180px" id="cpSinAsterisco" nowrap>
+										<siga:Idioma key="censo.datosDireccion.literal.cp" />&nbsp;
+									</td>
+									<td class="ocultar" width="180px" id="cpConAsterisco" nowrap>
+										<siga:Idioma key="censo.datosDireccion.literal.cp" />&nbsp;(*)
+									</td>
+									<td>
+										<%
+											if (editarCampos) {
+										%>
+										<html:text name="consultaDireccionesForm" styleId="codigoPostal"
+											property="codigoPostal" value="<%=codigoPostal%>"
+											maxlength="5" size="5" styleClass="<%=clase%>"
+											onChange="createProvince()"></html:text> 
+										<%
+ 											} else {
+ 										%> 
+ 										<html:text name="consultaDireccionesForm" styleId="codigoPostal"
+											property="codigoPostal" value="<%=codigoPostal%>"
+											maxlength="5" size="5" styleClass="<%=clase%>"
+											readOnly="<%=desactivado%>"></html:text> 
+										<%
+ 											}
+ 										%>
+									</td>
 									<td class="labelText" id="provinciaSinAsterisco">
 										<siga:Idioma key="censo.datosDireccion.literal.provincia" />&nbsp;
 									</td>
-									<td class="ocultar" id="provinciaConAsterisco">
-										<siga:Idioma key="censo.datosDireccion.literal.provincia" />&nbsp;(*)
-									</td>
-									<td id="provinciaEspanola">
-										<%
-											if (editarCampos) {
-										%> 
+									<td id="provinciaEspanola" style="display: none;">
+										
 										<siga:ComboBD nombre="provincia"
 											tipo="provincia" clase="boxCombo" obligatorio="false"
-											elementoSel="<%=idProvincia%>" accion="Hijo:poblacion" /> <%
- 											} else {
-										 %> 
- 										<html:text property="provincia" value="<%=provincia%>" styleId="provincia"
-											size="40" styleClass="<%=clase%>" readOnly="<%=desactivado%>">
-										</html:text>
-										<%
-											}
-										%>
+											elementoSel="<%=idProvincia%>" accion="Hijo:poblacion" /> 
+									
 									</td>
+									<td>
+										<input id="provinciaText" class="boxConsulta" type="text" value="<%=provincia%>" readonly="readonly" tabindex="-1" style="width: 200px" />
+									</td>
+									
+								</tr>
+						
+								<tr>
 									<td class="labelText" id="poblacionSinAsterisco">
 										<siga:Idioma key="censo.datosDireccion.literal.poblacion" />&nbsp;
 									</td>
@@ -1077,7 +1221,6 @@
 										</html:text>
 									</td>
 								</tr>
-
 								<tr>
 									<td class="labelText" id="telefonoSinAsterisco">
 										<siga:Idioma key="censo.datosDireccion.literal.telefono1" />&nbsp;

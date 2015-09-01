@@ -1247,21 +1247,21 @@ ul#tabs li {
   padding-left: 8px;
   list-style: none;
   margin-right: 1px;
-  background-color: #839852;
   font-size: 13px;
   font-weight: normal;
   color: #ffffff;
+  background: url(pestana.gif) no-repeat right;
 }
 ul#tabs li.actual {
   height: 24px;
   width: 80px;
-  background-color: #839852;
   font-size: 13px;
   font-weight: normal;
   color: #ffffff;
   text-decoration: none;
   border-left-width: 2px;
-  border-left-color: #c6d1ab;
+  border-left-color: #4477aa;
+  background: url(pestahover.gif) no-repeat right;
 }
 ul#tabs li a {
   display: block;

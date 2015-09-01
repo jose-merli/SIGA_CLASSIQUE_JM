@@ -1011,30 +1011,7 @@ public class MaestroDesignasAction extends MasterAction {
 		String longitudNumEjg = (String) request.getSession().getAttribute(PARAMETRO.LONGITUD_CODEJG.toString());
 		ScsDesignaAdm admDesigna  = new ScsDesignaAdm(usr);
 		ScsTurnoAdm admTurno = new ScsTurnoAdm(usr);
-		/*String[] nombres =null;
-		///Saco los EJG
-		HashMap databackup=getPaginador(request, paginadorPenstania);
-		List<DesignaForm> designaFormList = new ArrayList<DesignaForm>();
-		DefinirEJGForm expedientes= new DefinirEJGForm();
-		if (databackup!=null){ 
-			designaFormList = (List<DesignaForm>)databackup.get("datos");
-			for (int i = 0; i < designaFormList.size(); i++) {
-				DesignaForm designaRow = designaFormList.get(i);
-				if(designaRow.getNumero().equalsIgnoreCase(miform.getNumero()) && 
-						designaRow.getAnio().equalsIgnoreCase(miform.getAnio())){
-					List<DefinirEJGForm> ejgList  = (List<DefinirEJGForm>) designaRow.getExpedientes();
-					for (int j = 0; j < ejgList.size(); j++) {
-						expedientes=ejgList.get(j);
-						Hashtable expe = expedientes.getDatos();
-						String numEjg= (String) expe.get("NOMBRE");
-						
-					}
-				}
-			}
-			
-		}
-		//databackup.set("datos",designaFormList);
-		 */
+		
 		Hashtable filtro = new Hashtable();
 
 		UtilidadesHash.set(filtro,ScsDesignaBean.C_ANIO, 				miform.getAnio());
@@ -1051,6 +1028,10 @@ public class MaestroDesignasAction extends MasterAction {
 				String numero = (String) ((Hashtable) datos.get(i)).get("NUMERO_EJG");
 				String tipo =(String) ((Hashtable) datos.get(i)).get("TIPO_EJG");
 				ejg = abrir(request, anio, numero, tipo);
+				 //Damos formato a la fecha de ratificacion
+				  if(ejg.getFechaRatificacion()!= null && !"".equalsIgnoreCase(ejg.getFechaRatificacion())){ 
+					  ejg.setFechaRatificacion(GstDate.getFormatedDateShort("",ejg.getFechaRatificacion()));
+				  }
 				ejgList.add(ejg);
 		}
 		///Calculo de EJGs
@@ -1248,6 +1229,8 @@ public class MaestroDesignasAction extends MasterAction {
 							  ",ejg."+ScsEJGBean.C_GUARDIATURNO_IDTURNO + " IDTURNO " +
 							  ",ejg."+ScsEJGBean.C_SUFIJO + " SUFIJO " + 
 							  ",ejg."+ScsEJGBean.C_IDORIGENCAJG + " IDORIGENCAJG " + 
+							  ",ejg.IDTIPORATIFICACIONEJG"+
+							  ",ejg.fechaRatificacion"+
 							  ",designa.codigo codigo";
 			// Ahora las tablas de donde se sacan los campos
 			consulta += " from scs_ejg ejg, scs_personajg personajg, cen_colegiado colegiado, scs_turno turno, scs_guardiasturno guardia, " +
@@ -1305,13 +1288,14 @@ public class MaestroDesignasAction extends MasterAction {
 			String idcomiInsti= "";
 			String idjuzgadoInsti= "";
 			String idInsti= "";
+			String descripcionDictamen="";
 			
 			try{
 				ejg = (Hashtable)resultado.get(0);
 			}catch (Exception e) {
 				throwExcp("error.general.yanoexiste",e,null);
 			}
-			String estado = "", nombre="",apellido1="",apellido2="",nombreSolicita="",observa = "",calidad="",nproc="",numDili="", anioproc ="";;
+			String estado = "", nombre="",apellido1="",apellido2="",nombreSolicita="",observa = "",calidad="",nproc="",numDili="", anioproc ="", idTipoRatificacionEJG="",fechaRatificacion ="";
 			if (!resultado.isEmpty()) {apellido1 =(String) ((Hashtable)resultado.get(0)).get("APELLIDO1ASISTIDO");}		
 			if (!resultado.isEmpty()) {apellido2 = (String)((Hashtable)resultado.get(0)).get("APELLIDO2ASISTIDO");}		
 			if (!resultado.isEmpty()) {nombre = (String) ((Hashtable)resultado.get(0)).get("NOMBREASISTIDO");}	
@@ -1336,6 +1320,9 @@ public class MaestroDesignasAction extends MasterAction {
 			if (!resultado.isEmpty()) {idjuzgadoInsti = (String)((Hashtable)resultado.get(0)).get("JUZGADOIDINSTITUCION");}
 			if (!resultado.isEmpty()) {idcomiInsti = (String)((Hashtable)resultado.get(0)).get("COMISARIAIDINSTITUCION");}						
 			if (!resultado.isEmpty()) {idInsti = (String)((Hashtable)resultado.get(0)).get("IDINSTITUCION");}
+			if (!resultado.isEmpty()) {idTipoRatificacionEJG = (String)((Hashtable)resultado.get(0)).get("IDTIPORATIFICACIONEJG");}
+			if (!resultado.isEmpty()) {fechaRatificacion = (String)((Hashtable)resultado.get(0)).get("FECHARATIFICACION");}
+			
 			
 			String pretension = "", comisaria = "",origen ="", juzgado="";
 			if(idpreten!=null && !idpreten.trim().equals("")){
@@ -1366,6 +1353,15 @@ public class MaestroDesignasAction extends MasterAction {
 				
 				//Puede que esta consulta no devuelva valores, por tanto hay que controlarlo
 				if (!resultado.isEmpty()) { origen = (String)((Hashtable)resultado.get(0)).get("DESCRIPCION");}
+			}
+			
+			if(dictamen != null && !"".equalsIgnoreCase(dictamen)){
+				String descripcionDictamenQuery= "select f_siga_getrecurso(descripcion,1) as descripcion from scs_tipodictamenejg  where idinstitucion ="+idInsti+" and idtipodictamenejg="+dictamen;
+				resultado.clear();
+				resultado = admBean.selectGenerico(descripcionDictamenQuery);
+				
+				if (!resultado.isEmpty()) { descripcionDictamen = (String)((Hashtable)resultado.get(0)).get("DESCRIPCION");}
+				
 			}
 			if(idjuzgado!=null && !idjuzgado.trim().equals("")){
 				String comboJuzgados="SELECT IDJUZGADO || ',' || IDINSTITUCION AS ID,decode(j.fechabaja, null ,j.NOMBRE || ' (' || p.nombre || ')'," +
@@ -1430,16 +1426,18 @@ public class MaestroDesignasAction extends MasterAction {
 				ejg.put(ScsEJGBean.C_NUMERO_CAJG,num);
 			if(origen!=null)
 				ejg.put(ScsEJGBean.C_ORIGENAPERTURA,origen);
-			if(fechapresen!=null  && !fechapresen.trim().equals(""))
-				ejg.put(ScsEJGBean.C_FECHAPRESENTACION,fechapresen.substring(0, 10));
-			if(fechalimite!=null&& !fechalimite.trim().equals(""))
-				ejg.put(ScsEJGBean.C_FECHALIMITEPRESENTACION,fechalimite.substring(0, 10));
-
+			if(fechapresen!=null  && !fechapresen.trim().equals("")){
+				ejg.put(ScsEJGBean.C_FECHAPRESENTACION,GstDate.getFormatedDateShort("",fechapresen));
+			}
+			if(fechalimite!=null&& !fechalimite.trim().equals("")){
+				ejg.put(ScsEJGBean.C_FECHALIMITEPRESENTACION,GstDate.getFormatedDateShort("",fechalimite));
+			}
 			if(dictamen!=null)
 				ejg.put(ScsEJGBean.C_DICTAMEN,dictamen);
-			
-			if(fechaapertura!=null && !fechaapertura.trim().equals(""))
-				ejg.put(ScsEJGBean.C_FECHAAPERTURA,fechaapertura.substring(0, 10));
+		
+			if(fechaapertura!=null && !fechaapertura.trim().equals("")){
+				ejg.put(ScsEJGBean.C_FECHAAPERTURA,GstDate.getFormatedDateShort("",fechaapertura));
+			}
 			if(nombreSolicita!=null)
 				ejg.put(ScsEJGBean.C_TIPOLETRADO,nombreSolicita);
 
@@ -1461,8 +1459,8 @@ public class MaestroDesignasAction extends MasterAction {
 			ejgBean =(ScsEJGBean) admBean.hashTableToBean(ejg);
 			if(tipoejg!=null)
 				ejgBean.setDeTipoEjg(tipoejg);
-			if(estadoEjg!=null)
-				ejgBean.setEstadoEjg(estadoEjg);
+			if(estado!=null)
+				ejgBean.setEstadoEjg(estado);
 			if(observa!=null)
 				ejgBean.setTipoEjgCol(observa);
 			if(origen!=null)
@@ -1473,13 +1471,19 @@ public class MaestroDesignasAction extends MasterAction {
 				ejgBean.setDescripcionJuzgado(juzgado);
 			if(pretension!=null)
 				ejgBean.setDescripcionPretension(pretension);
-			
+			if(idTipoRatificacionEJG!=null && !"".equalsIgnoreCase(idTipoRatificacionEJG))
+				ejgBean.setIdTipoRatificacionEJG(Integer.parseInt(idTipoRatificacionEJG));
+			if(fechaRatificacion!=null && !"".equalsIgnoreCase(fechaRatificacion))
+				ejgBean.setFechaRatificacion(fechaRatificacion);
+			if(descripcionDictamen !=null && !"".equalsIgnoreCase(descripcionDictamen))
+				ejgBean.setDescripcionDictamen(descripcionDictamen); 
 
 		} catch (Exception e) {
 			   throwExcp("messages.general.error",e,null);
 		}			
 		return ejgBean;	
 	}
+
 
 	
 }

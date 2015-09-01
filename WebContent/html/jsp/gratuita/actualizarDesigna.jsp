@@ -20,6 +20,20 @@
 <%@ taglib uri="c.tld" prefix="c"%>
 <%@ taglib uri="ajaxtags.tld" prefix="ajax" %>
 
+<!-- IMPORTS -->
+<%@ page import="com.siga.administracion.SIGAConstants"%>
+<%@ page import="com.atos.utils.*"%>
+
+<!-- JSP -->
+<%  
+	String app=request.getContextPath();
+	HttpSession ses=request.getSession();
+		
+	UsrBean usrbean = (UsrBean)session.getAttribute(ClsConstants.USERBEAN);
+	
+	String dato[] = { (String) usrbean.getLocation() };
+%>
+
 
 
 <!-- HEAD -->
@@ -35,11 +49,6 @@
 	<script type="text/javascript" src="<html:rewrite page='/html/js/overlibmws/overlibmws.js'/>"></script>
 	<script type="text/javascript" src="<html:rewrite page='/html/js/ajaxtags.js'/>"></script>
 
-<style type="text/css">
-ul#tabs li.actual {
-	font-weight: bold;
-}
-</style>
 <script>
 
 	function cambiarJuzgado() {
@@ -345,10 +354,10 @@ ul#tabs li.actual {
 								<table class="tablaCampos" align="center" cellpadding="0"
 									cellpadding="0" width="100%" border="0">
 								<tr>
-										<td colspan="2"   class="labelText" style="width:100px;">	
+										<td colspan="1"   class="labelText" style="width:100px;">	
 											<siga:Idioma key='gratuita.operarEJG.literal.interesado'/>
 										</td>
-										<td colspan="4" class="labelTextValue" style="width:300px;">	
+										<td colspan="5" class="labelTextValue" style="width:300px;">	
 										<c:out		value="${ejg2.tipoLetrado}" />
 
 										</td>
@@ -367,7 +376,7 @@ ul#tabs li.actual {
 									<td  class="labelTextValue" colspan="3" style="width:200px;">	
 											<c:out		value="${ejg2.estadoEjg}" />	
 									</td>	
-								</tr>
+								</tr>							
 								<tr>
 									<td class="labelText" width="100px">	
 										<siga:Idioma key='gratuita.operarEJG.literal.tipo'/>
@@ -387,14 +396,14 @@ ul#tabs li.actual {
 									<siga:Idioma key='gratuita.operarEJG.literal.fechaPresentacion'/>&nbsp;
 								</td>
 								<td  class="labelTextValue" width="15%">
-									<c:out		value="${ejg2.fechaPresentacion}" />	
+									<c:out	value="${ejg2.fechaPresentacion}" />	
 								</td>
 								<td class="labelText" nowrap width="20%">
 												<siga:Idioma key='gratuita.operarEJG.literal.fechaLimitePresentacion'/>
 								</td>
 								<td  class="labelTextValue" width="15%">
 								
-								<c:out		value="${ejg2.fechaLimitePresentacion}" />	
+								<c:out	value="${ejg2.fechaLimitePresentacion}" />	
 								</td>
 							</tr>
 							<tr>
@@ -417,83 +426,106 @@ ul#tabs li.actual {
 								<siga:Idioma key='gratuita.busquedaEJG.dictamen'/>
 								</td> 
 								<td  class="labelTextValue">
-								<c:out		value="${ejg2.dictamen}" />	
+								<c:out		value="${ejg2.descripcionDictamen}" />	
 								</td>	
 							</td>
 							</tr>
-								<tr><td colspan="6">   &nbsp;</td></tr>
-								</table>
-
 								
+																
+								<tr><td colspan="6">   &nbsp;</td></tr>
+								
+								</table>
 								<table class="tablaCampos" align="center" cellpadding="0"
-									cellpadding="0" width="100%" border="0">
-									
-									<tr>
-									<td  id="titulo" class="titulitosDatos"  colspan="4" class="labelText" >
-									<siga:Idioma key='pestana.justiciagratuitadesigna.defensajuridica'/></td>
-									
-									</tr>
-									<tr><td style="width:100px;"> &nbsp;</td>
-									<td style="width:100px;">  &nbsp;</td>
-									<td style="width:100px;">  &nbsp;</td>
-									<td style="width:100px;"> &nbsp;</td>
-									</tr>
-									<tr>
-										<td class="labelText"><siga:Idioma key='gratuita.mantAsistencias.literal.numeroDiligencia'/></td>
-										<td class="labelTextValue">
-										<c:out value="${ejg2.numeroDiligencia}" />	
-										
-										</td> 
-										<td class="labelText"><siga:Idioma key='gratuita.mantAsistencias.literal.centroDetencion'/></td>
-										<td  class="labelTextValue" >	
-												<c:out value="${ejg2.descripcionComisaria}" />
-										</td>
-										
-									</tr>
-									<tr>
-										<td class="labelText" ><siga:Idioma key='gratuita.mantAsistencias.literal.numeroProcedimiento'/></td>
-										<td class="labelTextValue">
-										<c:out		value="${ejg2.numeroProcedimiento}" />	
-										</td>
-										<td class="labelText">	
-										 <siga:Idioma key="gratuita.mantenimientoTablasMaestra.literal.juzgado"/>
-										</td>	 
-										<td  class="labelTextValue">	
-										<c:out		value="${ejg2.descripcionJuzgado}" />
+										cellpadding="0" style="width:100%;" border="0">		
+								<tr>
+										<td class="labelText" style="width:25%;">
+											<siga:Idioma key="gratuita.operarRatificacion.literal.tipoRatificacion"/>
 										</td>	
-									</tr>
-									<tr>
-										<td class="labelText">
-											<siga:Idioma key='gratuita.operarEJG.literal.observacionesAsunto'/>
+										<td class="labelTextValue"  style="width:25%;">
+										<c:choose>
+											<c:when test="${ejg2.idTipoRatificacionEJG != null && ejg2.idTipoRatificacionEJG !=''}">
+												<siga:ComboBD nombre="idTipoRatificacionEJG" tipo="tipoResolucionTodos" ancho="200" clase="boxConsulta" parametro="<%=dato%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  elementoSel="${ejg2.idTipoRatificacionEJG}" readonly="true"/>			
+											</c:when>
+										</c:choose>
 										</td>
-										<td  class="labelTextValue">	
-										<c:out		value="${ejg2.observaciones}" />
+										<td class="labelText"  style="width:25%;">
+											<siga:Idioma key="gratuita.operarRatificacion.literal.fechaRatificacion"/>
 										</td>
-										<td class="labelText">
-											<siga:Idioma key='gratuita.general.literal.comentariosDelitos'/>
-										</td>
-										<td   class="labelTextValue">	
-										<c:out		value="${ejg2.delitos}" />
-										</td>		
-									</tr>			
-									<tr>
-										<td  class="labelText">	
-											<siga:Idioma key='gratuita.personaJG.literal.calidad'/>
-										</td>		
-										
-										<td class="labelTextValue">					
-												<c:out		value="${ejg2.calidad}" />										
-										</td>	
-
-										<td class="labelText">	
-											<siga:Idioma key='gratuita.actuacionesDesigna.literal.pretensiones'/>
-										</td>	
-										<td class="labelTextValue" >
-										<c:out		value="${ejg2.descripcionPretension}" />	
+											
+										<td class="labelTextValue"  style="width:25%;">
+										<c:choose>
+											<c:when test="${ejg2.fechaRatificacion != null && ejg2.fechaRatificacion !=''}">
+												<html:text name="DefinirEJGForm" property="fechaRatificacion" size="10" styleClass="boxConsulta" value="${ejg2.fechaRatificacion}" disabled="false" readonly="true"/>				
+											</c:when>
+										</c:choose>
 										</td>
 									</tr>
+									<tr><td colspan="6">   &nbsp;</td></tr>
+								</table>
+								<fieldset>
+									<legend>
+										<siga:Idioma key="pestana.justiciagratuitadesigna.defensajuridica"/>
+									</legend>
+									<table class="tablaCampos" align="center" cellpadding="0"
+										cellpadding="0" width="100%" border="0">
 									
-									</table>
+										<tr>
+											<td class="labelText"><siga:Idioma key='gratuita.mantAsistencias.literal.numeroDiligencia'/></td>
+											<td class="labelTextValue">
+											<c:out value="${ejg2.numeroDiligencia}" />	
+											
+											</td> 
+											<td class="labelText"><siga:Idioma key='gratuita.mantAsistencias.literal.centroDetencion'/></td>
+											<td  class="labelTextValue" >	
+													<c:out value="${ejg2.descripcionComisaria}" />
+											</td>
+											
+										</tr>
+										<tr>
+											<td class="labelText" ><siga:Idioma key='gratuita.mantAsistencias.literal.numeroProcedimiento'/></td>
+											<td class="labelTextValue">
+											<c:out		value="${ejg2.numeroProcedimiento}" />	
+											</td>
+											<td class="labelText">	
+											 <siga:Idioma key="gratuita.mantenimientoTablasMaestra.literal.juzgado"/>
+											</td>	 
+											<td  class="labelTextValue">	
+											<c:out		value="${ejg2.descripcionJuzgado}" />
+											</td>	
+										</tr>
+										<tr>
+											<td class="labelText">
+												<siga:Idioma key='gratuita.operarEJG.literal.observacionesAsunto'/>
+											</td>
+											<td  class="labelTextValue">	
+											<c:out		value="${ejg2.observaciones}" />
+											</td>
+											<td class="labelText">
+												<siga:Idioma key='gratuita.general.literal.comentariosDelitos'/>
+											</td>
+											<td   class="labelTextValue">	
+											<c:out		value="${ejg2.delitos}" />
+											</td>		
+										</tr>			
+										<tr>
+											<td  class="labelText">	
+												<siga:Idioma key='gratuita.personaJG.literal.calidad'/>
+											</td>		
+											
+											<td class="labelTextValue">					
+													<c:out		value="${ejg2.calidad}" />										
+											</td>	
+	
+											<td class="labelText">	
+												<siga:Idioma key='gratuita.actuacionesDesigna.literal.pretensiones'/>
+											</td>	
+											<td class="labelTextValue" >
+											<c:out		value="${ejg2.descripcionPretension}" />	
+											</td>
+										</tr>
+										
+										</table>
+								  </fieldset>
 								</div>
 							</logic:iterate>
 						</logic:notEmpty>	

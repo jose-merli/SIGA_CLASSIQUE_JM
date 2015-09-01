@@ -1,18 +1,86 @@
 package com.siga.administracion.action;
 
+import java.io.IOException;
 import java.util.*;
 
 import com.atos.utils.*;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonParser;
 import com.siga.beans.*;
 import com.siga.general.*;
+import com.siga.gratuita.form.ActaComisionForm;
 import com.siga.ws.CajgConfiguracion;
 
 import javax.servlet.http.*;
+
+import org.apache.commons.collections.map.HashedMap;
 import org.apache.struts.action.*;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import com.siga.administracion.form.*;
 
 public class SIGAListadoUsuariosAction extends MasterAction
 {
+	
+	@Override
+	protected ActionForward executeInternal(ActionMapping mapping,
+			ActionForm formulario, HttpServletRequest request,
+			HttpServletResponse response) throws SIGAException {
+
+		String mapDestino = "exception";
+		MasterForm miForm = null;
+
+		try {
+			miForm = (MasterForm) formulario;
+			if (miForm == null) {
+				return mapping.findForward(mapDestino);
+			}
+
+			String accion = miForm.getModo();
+
+			if (accion == null || accion.equalsIgnoreCase("")
+					|| accion.equalsIgnoreCase("abrir")) {
+				mapDestino = abrir(mapping, miForm, request, response);
+			} else if (accion.equalsIgnoreCase("buscar")) {
+				mapDestino = buscar(mapping, miForm, request, response);
+			} else if (accion.equalsIgnoreCase("modificar")) {
+				mapDestino = modificar(mapping, miForm, request, response);
+			} else if (accion.equalsIgnoreCase("borrar")) {
+				mapDestino = borrar(mapping, miForm, request, response);
+			} else if (accion.equalsIgnoreCase("getPerfilesUsuario")) {
+				getPerfiles(mapping, miForm, request, response);
+				return null;
+			} else if (accion.equalsIgnoreCase("setDatosUsuario")) {
+				setDatosUsuario(mapping, miForm, request, response);
+				return null;
+			} else {
+				return super.executeInternal(mapping, formulario, request,
+						response);
+			}
+
+			// Redireccionamos el flujo a la JSP correspondiente
+			if (mapDestino == null) {
+				// mapDestino = "exception";
+				if (miForm.getModal().equalsIgnoreCase("TRUE")) {
+					request.setAttribute("exceptionTarget", "parent.modal");
+				}
+
+				throw new ClsExceptions("El ActionMapping no puede ser nulo",
+						"", "0", "GEN00", "15");
+			}
+
+		} catch (SIGAException es) {
+			throw es;
+		} catch (Exception e) {
+			throw new SIGAException("messages.general.error", e,
+					new String[] { "modulo.censo" }); // o el recurso del modulo
+														// que sea
+		}
+		return mapping.findForward(mapDestino);
+	}
+
+
 	protected String abrir(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions
 	{
 		return "abrir";
@@ -24,32 +92,26 @@ public class SIGAListadoUsuariosAction extends MasterAction
         UsrBean userBean = ((UsrBean)request.getSession().getAttribute(("USRBEAN")));
         AdmUsuariosAdm usuariosAdm = new AdmUsuariosAdm (this.getUserBean(request));
         
-        String institucion = userBean.getLocation();
-        String descripcion = form.getDescripcion();
-        String activo = form.getActivoConsulta();
-
-        String where = " WHERE ";
+        String institucion = userBean.getLocation();       
         
-        where += AdmUsuariosBean.C_IDINSTITUCION + " = " + institucion;
-        where += (descripcion!=null && !descripcion.equals("")) ? " AND "+ComodinBusquedas.prepararSentenciaCompleta(descripcion.trim(),AdmUsuariosBean.C_DESCRIPCION ) : "";
-        where += (activo!=null && !activo.equals("")) ? " AND " + AdmUsuariosBean.C_ACTIVO + " = '" + activo + "'" : "";
-
-        Vector datos = usuariosAdm.selectNLS(where);
+        //Vector datos = usuariosAdm.selectNLS(where);
+        Vector datos = usuariosAdm.getBusquedaUsuarios(userBean.getLocation(), form.getDescripcion(), form.getIdRolBusqueda(), form.getNIF(), form.getActivoConsulta());
+        
+        
+        // Añadimos a la request los perfiles de la institución 
+        AdmPerfilAdm perfilAdm = new AdmPerfilAdm(this.getUserBean(request));
+        Vector perfiles = perfilAdm.getPerfiles(institucion);
+        
+        AdmRolAdm rolAdm = new AdmRolAdm(this.getUserBean(request));
+        Vector roles=rolAdm.select();
         
         request.setAttribute("datos", datos);
+        request.setAttribute("perfiles", perfiles);
+        request.setAttribute("roles", roles);
         
         return "buscar";
 	}
 
-	protected String editar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions 
-	{
-	    return mostrarRegistro(mapping, formulario, request, response, true);
-	}
-
-	protected String ver(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions 
-	{
-	    return mostrarRegistro(mapping, formulario, request, response, false);
-	}
 
 	protected String modificar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions 
 	{
@@ -57,42 +119,23 @@ public class SIGAListadoUsuariosAction extends MasterAction
         UsrBean userBean = ((UsrBean)request.getSession().getAttribute(("USRBEAN")));
         AdmUsuariosAdm usuariosAdm = new AdmUsuariosAdm (this.getUserBean(request));
         
-        Hashtable hashOld = (Hashtable)request.getSession().getAttribute("DATABACKUP");
-        
-        Hashtable hashNew = (Hashtable)hashOld.clone();
 	    
-	    hashNew.put(AdmUsuariosBean.C_ACTIVO, form.getActivo());
-	    hashNew.put(AdmUsuariosBean.C_CODIGOEXT, form.getCodigoExt());
+	    AdmUsuariosBean bean = new AdmUsuariosBean();
+	    bean.setIdInstitucion(Integer.valueOf(form.getIdInstitucion()));
+	    bean.setIdUsuario(Integer.valueOf(form.getIdUsuario()));
+	    bean.setActivo(form.getActivo().equalsIgnoreCase("on")?"S":"N");
+	    bean.setCodigoExt(form.getCodigoExt());
 	    
-        if (usuariosAdm.update(hashNew, hashOld))
-        {
-            request.setAttribute("mensaje","messages.updated.success");
-            request.removeAttribute("DATABACKUP");
+	    String [] campos={AdmUsuariosBean.C_ACTIVO,AdmUsuariosBean.C_CODIGOEXT};
+	    String [] claves=null;
 
-            String mensaje = "El Usuario \"" + (String)hashNew.get(AdmUsuariosBean.C_DESCRIPCION) + "\" (NIF: " +
-            	             (String)hashNew.get(AdmUsuariosBean.C_NIF)+") ha sido ";	
-			
-            if (form.getActivo().equalsIgnoreCase("S"))
-            {
-                mensaje+="activado";
-			}
-            
-            else 
-            {
-				mensaje+="desactivado";
-			}
-            
-			CLSAdminLog.escribirLogAdmin(request,mensaje);
+        if (usuariosAdm.updateDirect(bean, claves, campos)){
+        	//usuariosAdm.updateGruposUsuario(bean.getIdUsuario().toString(), bean.getIdInstitucion().toString(), form.getGruposUsuario());
+            return exitoRefresco("messages.updated.success", request);
+        }else{
+            return exito("messages.updated.error", request);
         }
-        
-        else
-        {
-            request.setAttribute("mensaje","messages.updated.error");
-        }
-
-        request.setAttribute("modal","1");
 	    
-        return "exito";
 	}
 
 	protected String borrar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions
@@ -133,67 +176,91 @@ public class SIGAListadoUsuariosAction extends MasterAction
 	    return "exito";
 	}
 
-	protected String mostrarRegistro(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response, boolean bEditable) throws ClsExceptions
-	{
-        SIGAListadoUsuariosForm form = (SIGAListadoUsuariosForm)formulario;
-        UsrBean userBean = ((UsrBean)request.getSession().getAttribute(("USRBEAN")));
-        
-        AdmUsuariosBean usuariosBean = new AdmUsuariosBean();
-        
-		Vector vVisibles = form.getDatosTablaVisibles(0);
-		Vector vOcultos = form.getDatosTablaOcultos(0);		
-
-        String idUsuario = (String)vOcultos.elementAt(0);
-        String idInstitucion = (String)vOcultos.elementAt(1);
-        String descripcion = (String)vOcultos.elementAt(2);
-        String idLenguaje = (String)vOcultos.elementAt(3);
-        String nif = (String)vOcultos.elementAt(4);
-        String activo = (String)vOcultos.elementAt(5);
-        String grupos = (String)vOcultos.elementAt(6);
-        String fechaAlta = (String)vOcultos.elementAt(7);
-        String usuMod = (String)vOcultos.elementAt(8);
-        String fechaMod = (String)vOcultos.elementAt(9);
-        String codigoExt = (String)vOcultos.elementAt(10);
-        
-        usuariosBean.setIdUsuario(new Integer(idUsuario));
-        usuariosBean.setIdInstitucion(new Integer(idInstitucion));
-        usuariosBean.setDescripcion(descripcion);
-        usuariosBean.setIdLenguaje(idLenguaje);
-        usuariosBean.setNIF(nif);
-        usuariosBean.setActivo(activo);
-        usuariosBean.setGrupos(grupos);
-        usuariosBean.setFechaAlta(fechaAlta);
-        usuariosBean.setUsuMod(new Integer(usuMod));
-        usuariosBean.setFechaMod(fechaMod);
-        usuariosBean.setCodigoExt(codigoExt);
-
-        Vector datos = new Vector();
-        datos.add(usuariosBean);
-        datos.add(descripcion);
-        
-        request.setAttribute("datos", datos);
-        request.setAttribute("editable", bEditable ? "1" : "0");
-        
-        int valorPcajgActivo=CajgConfiguracion.getTipoCAJG(new Integer(userBean.getLocation()));
-		request.setAttribute("PCAJG_ACTIVO", valorPcajgActivo);
-        
-        if (bEditable)
-        {
-            Hashtable hashBackUp = new Hashtable();
-            
-            hashBackUp.put(AdmUsuariosBean.C_IDUSUARIO, idUsuario);
-            hashBackUp.put(AdmUsuariosBean.C_IDINSTITUCION, idInstitucion);
-            hashBackUp.put(AdmUsuariosBean.C_DESCRIPCION, descripcion);
-            hashBackUp.put(AdmUsuariosBean.C_IDLENGUAJE, idLenguaje);
-            hashBackUp.put(AdmUsuariosBean.C_NIF, nif);
-            hashBackUp.put(AdmUsuariosBean.C_ACTIVO, activo);
-            hashBackUp.put(AdmUsuariosBean.C_FECHA_ALTA, fechaAlta);
-            hashBackUp.put(AdmUsuariosBean.C_USUMODIFICACION, usuMod);
-            hashBackUp.put(AdmUsuariosBean.C_FECHAMODIFICACION, fechaMod);
-            
-            request.getSession().setAttribute("DATABACKUP", hashBackUp);
-        }
-
-		return "mostrar";
+	
+	private void getPerfiles(ActionMapping mapping, MasterForm miForm,
+			HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, SIGAException, IOException {
+		
+		
+		AdmUsuariosEfectivosPerfilAdm perfilesAdm = new AdmUsuariosEfectivosPerfilAdm(this.getUserBean(request));
+		
+		String idUsuario = (String)request.getParameter("idUsuario");
+		String idInstitucion = (String)request.getParameter("idInstitucion");
+		if (idUsuario==null||idUsuario.trim().equalsIgnoreCase("")||idInstitucion==null||idInstitucion.trim().equalsIgnoreCase(""))
+			throw new SIGAException("No se han podido recuperar los datos del usuario");	
+				
+		Vector<HashMap<String,String>> perfiles = perfilesAdm.getPerfilesRolesUsuarios(idInstitucion, idUsuario);
+		
+		JSONObject json = new JSONObject();				
+		try {
+			json.put("perfilesrol", perfiles);
+		} catch (JSONException e) {
+			throw new SIGAException("No se han podido recuperar los datos del usuario");
+		}
+		
+		// json.
+		response.setContentType("text/x-json;charset=UTF-8");
+		 response.setHeader("Cache-Control", "no-cache");
+		 response.setHeader("Content-Type", "application/json");
+		 response.setHeader("X-JSON", json.toString());
+		 response.getWriter().write(json.toString()); 
+		
 	}
+	
+	private void setDatosUsuario(ActionMapping mapping, MasterForm miForm,
+			HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, SIGAException, IOException, JSONException {
+		
+		AdmUsuariosEfectivosPerfilAdm perfilesAdm = new AdmUsuariosEfectivosPerfilAdm(this.getUserBean(request));
+		
+		String idUsuario = (String)request.getParameter("idUsuario");
+		String idInstitucion = (String)request.getParameter("idInstitucion");
+		boolean activo = Boolean.parseBoolean(request.getParameter("activo"));
+		String codigoExt = (String)request.getParameter("codigoExt");
+		String perfilesAlta = (String)request.getParameter("perfilesAlta");
+		String perfilesBaja = (String)request.getParameter("perfilesBaja");
+		
+		if (idUsuario==null||idUsuario.trim().equalsIgnoreCase("")||idInstitucion==null||idInstitucion.trim().equalsIgnoreCase(""))
+			throw new SIGAException("No se han podido recuperar los datos del usuario");	
+					
+		AdmUsuariosAdm usuariosAdm = new AdmUsuariosAdm(this.getUserBean(request));
+		AdmUsuariosBean bean = new AdmUsuariosBean();
+	    bean.setIdInstitucion(Integer.valueOf(idInstitucion));
+	    bean.setIdUsuario(Integer.valueOf(idUsuario));
+	    bean.setActivo(activo?"S":"N");
+	    bean.setCodigoExt(codigoExt);
+		
+	    String [] campos={AdmUsuariosBean.C_ACTIVO,AdmUsuariosBean.C_CODIGOEXT};
+	    String [] claves=null;
+
+	    JSONObject json = new JSONObject();
+	    
+        if (usuariosAdm.updateDirect(bean, claves, campos)){
+        	json.put("msg", "Usuario actualizado correctamente");
+        }else{
+        	json.put("msg", "No se ha podido actualizar el usuario");
+        }
+        
+		JsonParser parser = new JsonParser();
+		JsonArray arrayPerfilesAlta = parser.parse(perfilesAlta).getAsJsonArray();
+		JsonArray rolPerfil;
+		for (int i = 0; i < arrayPerfilesAlta.size(); i++) {
+			// Cada perfil viene como [codRol,codPerfil]
+			rolPerfil=arrayPerfilesAlta.get(i).getAsJsonArray();
+			perfilesAdm.setPerfilRolUsuario(idUsuario, idInstitucion, rolPerfil.get(0).getAsString(), rolPerfil.get(1).getAsString());
+		}
+		
+		JsonArray arrayPerfilesBaja = parser.parse(perfilesBaja).getAsJsonArray();
+		for (int i = 0; i < arrayPerfilesBaja.size(); i++) {
+			// Cada perfil viene como [codRol,codPerfil]
+			rolPerfil=arrayPerfilesBaja.get(i).getAsJsonArray();
+			perfilesAdm.deletePerfilRolUsuario(idUsuario, idInstitucion, rolPerfil.get(0).getAsString(), rolPerfil.get(1).getAsString());
+		}
+		
+		// json.
+		response.setContentType("text/x-json;charset=UTF-8");
+		 response.setHeader("Cache-Control", "no-cache");
+		 response.setHeader("Content-Type", "application/json");
+		 response.setHeader("X-JSON", json.toString());
+		 response.getWriter().write(json.toString()); 
+	}
+	
 }

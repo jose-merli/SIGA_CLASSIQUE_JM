@@ -30,6 +30,7 @@ public class ScsEstadoEJGBean extends MasterBean
 	static public final String	C_OBSERVACIONES		= "OBSERVACIONES";
 	static public final String	C_AUTOMATICO		= "AUTOMATICO";
 	static public final String	C_PROPIETARIOCOMISION		= "PROPIETARIOCOMISION";
+	static public final String	C_FECHABAJA		= "FECHABAJA";
 	
 	
 	//////////////////// ATRIBUTOS ////////////////////

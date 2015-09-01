@@ -146,5 +146,45 @@ public class AdmUsuariosAdm extends MasterBeanAdministrador
 		}
 
 	}
-    
+	
+	/**
+	 * Realiza la búsqueda de usuarios por los criterios recibidos
+	 * @param idInstitucion
+	 * @param nombre
+	 * @param rol
+	 * @param nif
+	 * @param activo
+	 * @return
+	 */
+	public Vector<Hashtable<String, String>> getBusquedaUsuarios(String idInstitucion, String nombre, String rol, String nif, String activo){
+		Vector<Hashtable<String, String>> datos = new Vector<Hashtable<String, String>>();
+		
+		StringBuffer query = new StringBuffer();
+		query.append(" SELECT u.*, ");
+		query.append(" f_siga_roles_usuario(u.idinstitucion, u.idusuario) as GRUPOS ");
+		query.append(" FROM ADM_USUARIOS u ");
+		query.append(" WHERE u.IDINSTITUCION ="); query.append(idInstitucion);
+		if(!nombre.equalsIgnoreCase("")){
+			query.append(" AND "+ComodinBusquedas.prepararSentenciaCompleta(nombre.trim(),AdmUsuariosBean.C_DESCRIPCION ));
+		}
+		if(!activo.equalsIgnoreCase("")){
+			query.append(" AND u." + AdmUsuariosBean.C_ACTIVO + " = '" + activo +"'");		
+		}
+		if(!nif.equalsIgnoreCase("")){
+			query.append(" and u.nif like '%"+ nif +"%'");
+        }
+        if(!rol.equalsIgnoreCase("")){
+        	query.append(" and exists (select 1 from adm_perfil_rol rol, adm_usuario_efectivo uef where rol.idinstitucion = u.idinstitucion and rol.idrol = uef.idrol ");
+        	query.append(" and uef.idinstitucion = rol.idinstitucion and uef.idusuario = u.idusuario and rol.idrol="+ rol + ")");
+        }
+		query.append(" ORDER by u.descripcion");
+		
+		try {
+			datos=this.selectGenericoNLS(query.toString());
+		} catch (ClsExceptions e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return datos;
+	}
 }

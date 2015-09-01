@@ -102,7 +102,7 @@ public class CuentaBancariaVoService implements VoUiService<CuentasBancariasForm
 			objectVo.setIban(objectForm.getIBAN());
 		
 		if (objectForm.getIdSufijosjcs()!=null && !objectForm.getIdSufijosjcs().toString().equals("0"))
-			objectVo.setIdsufijosjcs(objectForm.getIdSufijosjcs());
+			objectVo.setIdsufijosjcs(Short.valueOf(objectForm.getIdSufijosjcs().toString()));
 		
 		// JPT (19-08-2014): Nuevos valores para la comision
 		if (objectForm.getComisionimporte()!=null && !objectForm.getComisionimporte().equals(""))
@@ -115,11 +115,13 @@ public class CuentaBancariaVoService implements VoUiService<CuentasBancariasForm
 			objectVo.setComisioncuentacontable(objectForm.getComisioncuentacontable());
 		
 		if (objectForm.getConfiguracionFicherosEsquema()!=null && !objectForm.getConfiguracionFicherosEsquema().equals(""))
-			objectVo.setConfigficherosesquema(new BigDecimal(objectForm.getConfiguracionFicherosEsquema()));
+			objectVo.setConfigficherosesquema(new Short(objectForm.getConfiguracionFicherosEsquema()));
 		if (objectForm.getConfiguracionFicherosSecuencia()!=null && !objectForm.getConfiguracionFicherosSecuencia().equals(""))
-			objectVo.setConfigficherossecuencia(new BigDecimal(objectForm.getConfiguracionFicherosSecuencia()));
+			objectVo.setConfigficherossecuencia(new Short(objectForm.getConfiguracionFicherosSecuencia()));
 		if (objectForm.getConfiguracionLugarEsquemaSecuencia()!=null && !objectForm.getConfiguracionLugarEsquemaSecuencia().equals(""))
-			objectVo.setConfiglugaresquemasecuencia(new BigDecimal(objectForm.getConfiguracionLugarEsquemaSecuencia()));
+			objectVo.setConfiglugaresquemasecuencia(new Short(objectForm.getConfiguracionLugarEsquemaSecuencia()));
+		if (objectForm.getConfiguracionConceptoAmpliado()!=null && !objectForm.getConfiguracionConceptoAmpliado().equals(""))
+			objectVo.setConfigconceptoampliado(new Short(objectForm.getConfiguracionConceptoAmpliado()));
 			
 		return objectVo;
 	}
@@ -173,7 +175,7 @@ public class CuentaBancariaVoService implements VoUiService<CuentasBancariasForm
 			cuentasBancariasForm.setUso(String.valueOf(objectVo.getUso()));
 
 			if(objectVo.getIdsufijosjcs()!=null&&!objectVo.getIdsufijosjcs().toString().equals("0"))
-				cuentasBancariasForm.setIdSufijosjcs(objectVo.getIdsufijosjcs());
+				cuentasBancariasForm.setIdSufijosjcs(Integer.valueOf(objectVo.getIdsufijosjcs().toString()));
 			
 			// JPT (19-08-2014): Nuevos valores para la comision
 			if (objectVo.getComisionimporte()!=null)
@@ -191,6 +193,8 @@ public class CuentaBancariaVoService implements VoUiService<CuentasBancariasForm
 				cuentasBancariasForm.setConfiguracionFicherosSecuencia(objectVo.getConfigficherossecuencia().toString());
 			if (objectVo.getConfiglugaresquemasecuencia()!=null)
 				cuentasBancariasForm.setConfiguracionLugarEsquemaSecuencia(objectVo.getConfiglugaresquemasecuencia().toString());
+			if (objectVo.getConfigconceptoampliado()!=null)
+				cuentasBancariasForm.setConfiguracionConceptoAmpliado(objectVo.getConfigconceptoampliado().toString());
 			
 		return cuentasBancariasForm;
 	}

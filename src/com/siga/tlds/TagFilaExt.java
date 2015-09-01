@@ -110,6 +110,7 @@ public class TagFilaExt extends TagFila {
 			aux = "<img id=\"iconoboton_"+ accion + this.fila + "\" src=\"" + path + "/html/imagenes/b" + icono + "_off.gif\" " +
 				  "style=\"cursor:pointer;\" " +
 				  "alt=\"" + UtilidadesString.getMensajeIdioma(usrBean, alt) + "\" " +
+				  "class=\"botonesIcoTabla\" " +
 				  "name=\"iconoFila\" " +
 				  "title=\"" + UtilidadesString.getMensajeIdioma(usrBean, alt) + "\" " +
 				  "border=\"0\" " +
@@ -121,6 +122,7 @@ public class TagFilaExt extends TagFila {
 		else {
 			aux = "<img id=\"iconoboton_"+ accion + this.fila + "\"  src=\"" + path + "/html/imagenes/b" + icono + "_disable.gif\" " +
 				  "alt=\"" + UtilidadesString.getMensajeIdioma(usrBean, alt) + "\" " +
+				  "class=\"botonesIcoTabla\" " +
 				  "title=\"" + UtilidadesString.getMensajeIdioma(usrBean, alt) + "\" " +
 				  "name=\"" + accion + "_" + this.fila + "\" " +
 				  "border=\"0\"" +

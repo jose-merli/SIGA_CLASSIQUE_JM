@@ -559,7 +559,6 @@ public class EjecucionPLs {
 	//TODO aaa Revisar como se debe hacer la llamada al PL
 	
 	public static String ejecutarPLPKG_SIGA_FECHA_EN_LETRA(String fecha, String tipo, String idioma) throws ClsExceptions{
-		Object[] param_in; //Parametros de entrada del PL
 		String fechaEnLetra= null; //Parametros de salida del PL
 	
 		try {
@@ -575,20 +574,15 @@ public class EjecucionPLs {
 			Hashtable hashQuery = UtilidadesBDAdm.ejecutaQuery(query.toString());
 			fechaEnLetra = (String) hashQuery.get("FECHA");
 			
-			
-			////resultado = null;
-			/*param_in = new Object[3];
+			/*Object[] param_in = new Object[3]; //Parametros de entrada del PL
 			param_in[0] = fecha;
 			param_in[1] = tipo;
 			param_in[2] = idioma;
 		        
 			//Ejecucion del PL
-		    
-			resultado = ClsMngBBDD.callPLFunction("call PKG_SIGA_FECHA_EN_LETRA.f_siga_fechacompletaenletra (?,?,?,?)", param_in);
-			*/
+			ClsMngBBDD.callPLFunction("call PKG_SIGA_FECHA_EN_LETRA.f_siga_fechacompletaenletra (?,?,?,?)", param_in);*/
 			
 		} catch (Exception e){
-			//resultado = e.getMessage(); //ERROR P_CODRETORNO
 	    	throw new ClsExceptions(e.getMessage());//resultado[1] = "ERROR"; //ERROR P_DATOSERROR        	
 		}
 	    
@@ -596,7 +590,6 @@ public class EjecucionPLs {
 	    return fechaEnLetra;
 	}
 	public static String ejecutarF_SIGA_NUMEROENLETRA (String numero, String idioma) throws ClsExceptions{
-		Object[] param_in; //Parametros de entrada del PL
 		String numeroEnLetra= null; //Parametros de salida del PL
 	
 		try {
@@ -610,119 +603,23 @@ public class EjecucionPLs {
 			Hashtable hashQuery = UtilidadesBDAdm.ejecutaQuery(query.toString());
 			numeroEnLetra = (String) hashQuery.get("NUMERO");
 			
-			
-			////resultado = null;
-			/*param_in = new Object[3];
+			/*Object[] param_in = new Object[3]; //Parametros de entrada del PL
 			param_in[0] = fecha;
 			param_in[1] = tipo;
 			param_in[2] = idioma;
 		        
 			//Ejecucion del PL
-		    
-			resultado = ClsMngBBDD.callPLFunction("call PKG_SIGA_FECHA_EN_LETRA.f_siga_fechacompletaenletra (?,?,?,?)", param_in);
-			*/
+			ClsMngBBDD.callPLFunction("call PKG_SIGA_FECHA_EN_LETRA.f_siga_fechacompletaenletra (?,?,?,?)", param_in);*/
 			
 		} catch (Exception e){
-			//resultado = e.getMessage(); //ERROR P_CODRETORNO
 	    	throw new ClsExceptions(e.getMessage());//resultado[1] = "ERROR"; //ERROR P_DATOSERROR        	
 		}
 	    
 	    //Resultado del PL        
 	    return numeroEnLetra;
 	}
-	
 
-	/**
-	 * PL para aplicar las retenciones.
-	 * @param idInstitucion
-	 * @param idPago
-	 * @return
-	 * @throws ClsExceptions
-	 */
-	public static String[] ejecutarF_SIGA_OBTENER_ANTICIPOS2(
-			String idinstitucion, String idTipoClave, String idClave,
-			String idClaveInstitucion, String tipo, String idPeticion,
-			String idPersona) throws ClsExceptions{
-		Object[] param_in; 			//Parametros de entrada del PL
-		String resultado[] = null; 	//Parametros de salida del PL
-	
-		try {
-			resultado = new String[1];
-			param_in  = new Object[7];
-			param_in[0] = idinstitucion;
-			param_in[1] = idTipoClave;
-			param_in[2] = idClave;
-			param_in[3] = idClaveInstitucion;
-			param_in[4] = tipo;
-			param_in[5] = idPeticion;
-			param_in[6] = idPersona;
-			
-			// Ejecucion del PL
-		    resultado = ClsMngBBDD.callPLFunction(
-		    		"{call F_SIGA_OBTENER_ANTICIPOS (?,?,?,?,?,?,?)}", 
-		    		1, param_in);
-		    if("".equals(resultado[0])){
-				resultado = new String[2];
-				resultado[0] = "-1";     
-		    	resultado[1] = "ERROR. F_SIGA_OBTENER_ANTICIPOS no devuelve valores";
-		    	return resultado;
-
-		    }
-		    
-		    return resultado[0].split("#");
-		} 		
-		catch (Exception e){
-			resultado = new String[2];
-			resultado[0] = "-1";     
-	    	resultado[1] = "ERROR al ejecutar F_SIGA_OBTENER_ANTICIPOS";
-	    	return resultado;
-		}
-	    	    
-	}
-
-public static String[] ejecutarF_SIGA_OBTENER_ANTICIPOS (
-		String idinstitucion, String idTipoClave, String idClave,
-		String idClaveInstitucion, String tipo, String idPeticion,
-		String idPersona) throws ClsExceptions{
-
-	String resultado= null; //Parametros de salida del PL
-
-	try {
-		StringBuffer query = new StringBuffer();
-		query.append("SELECT F_SIGA_OBTENER_ANTICIPOS (");
-		query.append(idinstitucion);
-		query.append(",");
-		query.append(idTipoClave);
-		query.append(",");
-		query.append(idClave);
-		query.append(",");
-		query.append(idClaveInstitucion);
-		query.append(",");
-		query.append("'"+tipo+"'");
-		query.append(",");
-		query.append(idPeticion);
-		query.append(",");
-		query.append("'"+idPersona+"'");
-		query.append(") RESULTADO from dual ");
-		
-		Hashtable hashQuery = UtilidadesBDAdm.ejecutaQuery(query.toString());
-		
-		resultado = (String) hashQuery.get("RESULTADO");
-		
-		if ("".equals(resultado)){
-			return null;
-		}
-		
-		return resultado.split("#");
-
-	} catch (Exception e){
-    	throw new ClsExceptions(e.getMessage());       	
-	}
-      
-}
-
-
-public static String[] ejecutarF_SIGA_COMPROBAR_ANTICIPAR (
+	public static String[] ejecutarF_SIGA_COMPROBAR_ANTICIPAR (
 		String idinstitucion, String idTipoClave, String idClave,
 		String idClaveInstitucion, String tipo, String idPeticion,
 		String idPersona, String precioIva) throws ClsExceptions{

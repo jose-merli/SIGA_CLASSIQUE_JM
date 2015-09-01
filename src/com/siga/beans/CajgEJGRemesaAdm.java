@@ -153,6 +153,7 @@ public class CajgEJGRemesaAdm extends MasterBeanAdministrador {
 					" and estado.idestadoporejg = (select max(estadoEJG.idestadoporejg)" +
 					" FROM scs_estadoejg estadoEJG where estado.idinstitucion = estadoEJG.idinstitucion" +
 					" and estado.anio = estadoEJG.anio" +
+					" and estadoEJG.fechabaja is null " +
 					" and estado.numero = estadoEJG.numero" +
 					" and estado.idtipoejg = estadoEJG.idtipoejg)" +
 					" and estado.idestadoporejg <> " + ESTADOS_EJG.REMITIDO_COMISION.getCodigo();

@@ -203,7 +203,7 @@
 		<td class="labelText">
 			<siga:Idioma key="pestana.justiciagratuitaejg.documentacion"/><c:out value="${ClsConstants.ACCESS_FULL}"></c:out>
 		</td>
-		<td class="labelText" colspan="3">
+		<td colspan="3">
 			<c:choose>
 				<c:when test="${accionModo=='ver'}">
 				<html:textarea property="documentacion"  rows="6" cols="60" style="width:600" styleClass="boxConsulta" readonly="true"/>

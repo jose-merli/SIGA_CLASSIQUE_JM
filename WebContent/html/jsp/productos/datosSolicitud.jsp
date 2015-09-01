@@ -6,24 +6,30 @@
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-1"%>
 <meta http-equiv="Cache-Control" content="no-cache">
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<%@ page contentType="text/html" language="java" errorPage="/html/jsp/error/errorSIGA.jsp"%>
 
-<%@taglib uri = "struts-tiles.tld" prefix="tiles" %>
-<%@taglib uri = "struts-bean.tld" prefix="bean" %>
-<%@taglib uri = "struts-html.tld" prefix="html" %>
-<%@taglib uri = "libreria_SIGA.tld" prefix="siga" %>
+<%@taglib uri="struts-tiles.tld" prefix="tiles" %>
+<%@taglib uri="struts-bean.tld" prefix="bean" %>
+<%@taglib uri="struts-html.tld" prefix="html" %>
+<%@taglib uri="libreria_SIGA.tld" prefix="siga" %>
 
+<%@ page import="com.siga.administracion.SIGAConstants"%>
+<%@ page import="com.atos.utils.ClsConstants"%>
+<%@ page import="com.atos.utils.GstDate"%>
+<%@ page import="com.atos.utils.UsrBean"%>
+<%@ page import="com.siga.beans.PysPeticionCompraSuscripcionBean"%>
 <%@ page import="com.siga.beans.PysProductosSolicitadosBean"%>
 <%@ page import="com.siga.beans.PysServiciosSolicitadosBean"%>
-<%@ page import="com.siga.beans.PysPeticionCompraSuscripcionBean"%>
-<%@ page import="com.siga.Utilidades.*"%>
-<%@ page import="com.atos.utils.ClsConstants"%>
+<%@ page import="com.siga.productos.form.GestionSolicitudesForm"%>
 <%@ page import="com.siga.tlds.FilaExtElement"%>
-<%@ page import="com.siga.administracion.SIGAConstants"%>
-<%@ page import="com.atos.utils.UsrBean"%>
-<%@ page import="com.atos.utils.GstDate"%>
+<%@ page import="com.siga.Utilidades.UtilidadesBDAdm"%>
+<%@ page import="com.siga.Utilidades.UtilidadesHash"%>
 <%@ page import="com.siga.Utilidades.UtilidadesNumero"%>
-<%@ page import="java.util.Vector"%>
+<%@ page import="com.siga.Utilidades.UtilidadesProductosServicios"%> 
+<%@ page import="com.siga.Utilidades.UtilidadesString"%>
 <%@ page import="java.util.Hashtable"%>
+<%@ page import="java.util.Vector"%>
 
 <%   	 
 	Vector peticion = (Vector) request.getAttribute("peticion");
@@ -37,212 +43,98 @@
 	String numeroColegiado = (String) request.getAttribute("nColegiado");
 	String idPersona = String.valueOf((Long) request.getAttribute("idPersona"));
 	String tipoSolicitud = (String) request.getAttribute("tipoSolicitud");
-	String siCierroVentanaRefresco = ""; // (String) request.getSession().getAttribute("DATABACKUP");
+	String sidPeticion = String.valueOf((Long) request.getAttribute("idPeticion"));
+	String sIdInstitucion = usrbean.getLocation();
+	String siCierroVentanaRefresco = "";
 	String fechaEfectiva="";
 	boolean letrado=usrbean.isLetrado();
+
+	String busquedaVolver = (String)request.getSession().getAttribute("CenBusquedaClientesTipo");
+	String sDialogBotonCerrar = UtilidadesString.mostrarDatoJSP(UtilidadesString.getMensajeIdioma(usrbean, "general.boton.close"));
+	String sDialogBotonGuardarCerrar = UtilidadesString.mostrarDatoJSP(UtilidadesString.getMensajeIdioma(usrbean, "general.boton.guardarCerrar"));	
+	String fecha = UtilidadesBDAdm.getFechaBD("");
+	
+	// JPT (14-08-2015): Necesario para que al volver recargue los datos de las fechas
+	GestionSolicitudesForm formGestionSolicitudes = (GestionSolicitudesForm) session.getAttribute("GestionSolicitudesForm");
+	String fechaDesde="", fechaHasta="";
+	if (formGestionSolicitudes != null) {
+		fechaDesde = formGestionSolicitudes.getBuscarFechaDesde();
+		if (fechaDesde != null) {
+			fechaDesde = GstDate.getFormatedDateShort("", fechaDesde);
+		}
+		
+		fechaHasta = formGestionSolicitudes.getBuscarFechaHasta();
+		if (fechaHasta!=null) {
+			fechaHasta = GstDate.getFormatedDateShort("", fechaHasta);
+		}
+	}
 %>
 
 	<title><siga:Idioma key="pys.gestionSolicitudes.titulo"/></title>
-	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
+	<link rel="stylesheet" href="<html:rewrite page='/html/js/jquery.ui/css/smoothness/jquery-ui-1.10.3.custom.min.css'/>">
 	
-	<!-- Incluido jquery en siga.js -->
-	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js?v=${sessionScope.VERSIONJS}'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-1.9.1.js?v=${sessionScope.VERSIONJS}'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js?v=${sessionScope.VERSIONJS}'/>"></script>		
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-ui-1.10.3.custom.min.js?v=${sessionScope.VERSIONJS}'/>"></script>
 	<script type="text/javascript" src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
 </head>
 
-<!-- Aqui se reescriben las funciones que vayamos a utilizar -->
-<script language="JavaScript">
-
-	// Refrescar
-	function refrescarLocal() { 		
-			top.cargaContenidoModal();
-	}	
-
-	// Asociada al boton Cerrar
-	function accionCerrar() {
-		top.cierraConParametros("MODIFICADO");
-	}	
-	
-	// Asociada al boton Cerrar
-	function accionImprimir() { 		
-		window.print();
-	}	
-	
-	function confirmarSolicitudCompra (fila) {
-	  	sub();
-   			
-		document.forms[0].modo.value = "fechaEfectiva";
-		var fecha=ventaModalGeneral(document.forms[0].name, "S");   			
-    	
-     	window.top.focus();
-     	if (fecha!=null) { 
-  	  		document.forms[0].fechaEfectiva.value=fecha;
-        } else {   
-        	fin();   
-	  		return;
-		} 
-  
-	  	var existePrecioAsociado=document.getElementById('oculto' + fila + '_' + 10);
-	  	if (existePrecioAsociado.value == "0") { 
-			var mensaje='<siga:Idioma key="messages.pys.gestionSolicitud.errorProductoSinPrecio"/>';
-			alert(mensaje);
-			fin();
-			return(false);
-	  	} else {
-			// Cogemos la forma de pago
-			var aux = 'oculto' + fila + '_' + 7;
-			var oculto = document.getElementById(aux);
-			if (oculto == null) { 
-		  		fin();
-			    return false;
-			}
-		    
-			var idFormaPago = oculto.value; 
-		
-		    //PAGO CON CUENTA BANCARIA
-			if (idFormaPago == <%=ClsConstants.TIPO_FORMAPAGO_FACTURA%>){	
-				// Cogemos el numero de cuenta
-			    aux = 'oculto' + fila + '_' + 9;	   
-			    var idCuenta = document.getElementById(aux);	
-			    
-<% 
-				if (tipoPeticion.equalsIgnoreCase(ClsConstants.TIPO_PETICION_COMPRA_ALTA)) { 
-%>
-	
-			    	if (idCuenta.value == "null" || idCuenta.value == null || idCuenta.value == "") {
-						// Abrimos la ventana para recuperar el numero de cuenta
-						document.forms[0].modo.value = "modificarCuenta";				
-						var resultado = ventaModalGeneral("GestionSolicitudesForm","P");					
-						if (resultado!= undefined && resultado[0]!=undefined) {
-							aux = 'cuenta' + fila;	
-							var nCuenta = document.getElementById(aux);	
-							document.GestionSolicitudesForm.idCuenta.value = resultado[0];					
-							nCuenta.value=resultado[1];			
-						} else {
-							fin();
-							return false;
-						}				
-			    	}
-<% 
-				} 
-%>
-			} //Fin pago con cuenta bancaria
-						
-			return miSubmitFormConModo (fila, "confirmar");
-		}	//Fin de que existe precio
-	}
-
-	function denegarSolicitudCompra (fila) {
-		var existePrecioAsociado=document.getElementById('oculto' + fila + '_' + 10);
-		sub();
-		if(confirm("<siga:Idioma key="messages.pys.solicitudCompra.confirmarDenegar"/>")){
-	    	if (existePrecioAsociado.value == "0") { 
-				var mensaje='<siga:Idioma key="messages.pys.solicitudCompra.errorProductoSinPrecio"/>';
-				alert(mensaje);
-				fin();
-				return(false);
-	    	}else{
-				return miSubmitFormConModo (fila, "denegar");
-			}	
-		}else{
-			fin();
-		}
-	}
-	
-	function miSubmitFormConModo (fila, modo) {
-		var datos;
-		datos = document.getElementById('tablaDatosDinamicosD');
-		datos.value = ""; 
-		var j = 1;
-		var flag = true;
-		while (flag) {
-		  var aux = 'oculto' + fila + '_' + j;
-		  var oculto = document.getElementById(aux);
-		  if (oculto == null)  { flag = false; }
-		  else { datos.value = datos.value + oculto.value + ','; }
-		  j++;
-		}
-		datos.value = datos.value + "%";
-	  
-	   document.forms[0].modo.value = modo;
-	   document.forms[0].submit();
-	}
-	
-	
-	function consultarcert(fila) {   
-	  	var aux = 'oculto' + fila + '_2'; 
-	  	var oculto = document.getElementById(aux);
-	  	aux='oculto' + fila + '_11';
-	  	var nombre=document.getElementById(aux);
-	  	aux='oculto' + fila + '_4';
-	  	var idproducto=document.getElementById(aux);
-	  	aux='oculto' + fila + '_5';
-	  	var idproductoInstitucion=document.getElementById(aux);
-	  	aux='oculto' + fila + '_6';
-	  	var idTipoproducto=document.getElementById(aux);
-	  	document.forms[0].idSolicitud.value=oculto.value;
-	  	document.forms[0].concepto.value=nombre.value;
-	  	cierraConParametros("@#@#"+document.forms[0].concepto.value+"#@#"+idproducto.value+"#@#"+idproductoInstitucion.value+"#@#"+idTipoproducto.value);  
-	}
-     
-    //Muestra la ventana de anticipo de importes
- 	function anticiparImporte (fila) {
- 		var aux = 'oculto' + fila + '_6'; 
- 		var idTipoClave = document.getElementById(aux).value;
-
- 		var aux = 'oculto' + fila + '_4'; 
- 		var idClave = document.getElementById(aux).value;
-
- 		var aux = 'oculto' + fila + '_5'; 
- 		var idClaveInstitucion = document.getElementById(aux).value;
-
- 		var aux = 'oculto' + fila + '_2'; 
- 		var idPeticion = document.getElementById(aux).value;
-
- 		var productoOservicio = document.getElementById('oculto' + fila + '_1').value;
-
- 		if (productoOservicio=="servicio"){
- 			tipo = 'S';
- 		}
- 		else{
- 			tipo = 'P';
- 		}
- 			
- 		//actualizar los datos del formulario de mostrar anticipos
- 		document.getElementById("MostrarAnticiposForm").idTipoClave.value = idTipoClave;
- 		document.getElementById("MostrarAnticiposForm").idClave.value = idClave;
- 		document.getElementById("MostrarAnticiposForm").idClaveInstitucion.value = idClaveInstitucion;
- 		document.getElementById("MostrarAnticiposForm").idPeticion.value = idPeticion;
- 		document.getElementById("MostrarAnticiposForm").tipo.value = tipo;
-
- 		ventaModalGeneral("MostrarAnticiposForm","P");					
-
- 		refrescarLocal();
-   	} 	
-</script>
-
 <body>
+	<div id="divImporteAnticipado" title="<siga:Idioma key='pys.solicitudCompra.literal.importeAnticipado'/>" style="display:none">
+		<table align="left">
+			<tr>
+				<td class="labelText" nowrap>
+					<siga:Idioma key="pys.mantenimientoServicios.literal.nuevoImporteAnticipado"/>&nbsp;(*)
+				</td>
+				<td class="labelText">		
+					<input type="text" id="textImporteAnticipado" name="textImporteAnticipado" class="box" style="background-color:transparent; color:black; text-align:right" value=""/>&nbsp;&euro;
+				</td>
+			</tr>		
+		
+			<tr>
+				<td class="labelText" nowrap>
+					<siga:Idioma key="pys.mantenimientoServicios.literal.precioSolicitud"/>
+				</td>
+				<td class="labelText" align="right">
+					<input type="text" id="textPrecioSolicitud" name="textPrecioSolicitud" class="boxConsulta" style="background-color:transparent; font-weight:bold; color:black; text-align:right" value="" readOnly="true"/>&nbsp;&euro;	
+				</td>
+			</tr>						
+		</table>			
+	</div>	
+	
+	<div id="divConfirmarSolicitud" title="<siga:Idioma key='pys.mantenimientoServicios.literal.fechaEfectiva'/>" style="display:none">
+		<table align="left">
+			<tr>
+				<td class="labelText" nowrap>
+					<siga:Idioma key="pys.mantenimientoServicios.literal.fecha"/>&nbsp;(*)
+				</td>
+				<td><siga:Fecha nombreCampo="fechaEfectivaDiv" valorInicial="<%=fecha%>" anchoTextField="10"/></td>
+			</tr>		
+			</tr>						
+		</table>			
+	</div>		
 
-	<!-- TITULO -->
 	<table class="tablaTitulo" cellspacing="0">
 		<tr>
 			<td id="titulo" class="titulosPeq">
 <% 
 				if (!tipoSolicitud.equals("BAJA")) {  
 %>  
-					<siga:Idioma key="pys.gestionSolicitudes.titulo2"/> &nbsp;&nbsp;<%=UtilidadesString.mostrarDatoJSP(nombreUsu)%>&nbsp;&nbsp;
+					<siga:Idioma key="pys.gestionSolicitudes.titulo2"/>&nbsp;<%=UtilidadesString.mostrarDatoJSP(nombreUsu)%>					
 <% 
 				} else { 
 %>
-					<siga:Idioma key="pys.gestionSolicitudes.titulo3"/> &nbsp;&nbsp;<%=UtilidadesString.mostrarDatoJSP(nombreUsu)%>&nbsp;&nbsp;
+					<siga:Idioma key="pys.gestionSolicitudes.titulo3"/>&nbsp;<%=UtilidadesString.mostrarDatoJSP(nombreUsu)%>					
 <% 
 				} 
-				
-				if ((numeroColegiado != null) && (!numeroColegiado.equalsIgnoreCase(""))) { 
 %>
-					<siga:Idioma key="censo.fichaCliente.literal.colegiado"/>&nbsp;&nbsp;<%=UtilidadesString.mostrarDatoJSP(numeroColegiado)%>
+				&nbsp;-&nbsp;
+<%				
+				if (numeroColegiado != null && !numeroColegiado.equalsIgnoreCase("")) { 
+%>
+					<siga:Idioma key="censo.fichaCliente.literal.colegiado"/>&nbsp;<%=UtilidadesString.mostrarDatoJSP(numeroColegiado)%>
 <% 
 				} else { 
 %>
@@ -250,19 +142,37 @@
 <% 
 				} 
 %>
+				&nbsp;-&nbsp;<siga:Idioma key="pys.gestionSolicitudes.literal.idPeticion"/>&nbsp;<%=UtilidadesString.mostrarDatoJSP(sidPeticion)%>
 			</td> 
 		</tr>
 	</table>
 
 	<html:form action="/PYS_GestionarSolicitudes.do" method="POST" target="submitArea" style="display:none">		
-		<input type="hidden" name="idSolicitud" value=""> 
-		<input type="hidden" name="concepto" value=""> 
-		<html:hidden property = "modo" value = ""/>
-		<html:hidden property = "importeAnticipado" value = ""/>
-		<html:hidden property = "idCuenta" value = ""/>
-		<html:hidden property = "idPersona" value = "<%=idPersona%>"/>
+		<input type="hidden" name="idSolicitud" value="<%=sidPeticion%>"> 
+		<input type="hidden" name="concepto" value="">
+		<input type="hidden" name="idProducto"  id="idProducto" value="">
+		<input type="hidden" name="idProductoInstitucion"  id="idProductoInstitucion" value="">
+		<input type="hidden" name="idTipoProducto"  id="idTipoProducto" value=""> 
+		<html:hidden property="modo" value = ""/>
+		<html:hidden property="importeAnticipado" value=""/>
+		<html:hidden property="idCuenta" value=""/>
+		<html:hidden property="idPersona" value="<%=idPersona%>"/>
+		<html:hidden property="idInstitucion" value="<%=sIdInstitucion%>"/>
+		<input type="hidden" name="tipoSolicitud" value="<%=tipoSolicitud%>"/>
 		<input type="hidden" name="actionModal" value="">
 		<input type="hidden" name="fechaEfectiva" value="<%=fechaEfectiva%>">
+		
+		<html:hidden name="GestionSolicitudesForm" property="buscarTipoPeticion"/>
+		<html:hidden name="GestionSolicitudesForm" property="buscarIdPeticionCompra"/>
+		<html:hidden name="GestionSolicitudesForm" property="buscarEstadoPeticion"/>
+		<html:hidden name="GestionSolicitudesForm" property="buscarFechaDesde" value="<%=fechaDesde%>"/>
+		<html:hidden name="GestionSolicitudesForm" property="buscarFechaHasta" value="<%=fechaHasta%>"/>
+		<html:hidden name="GestionSolicitudesForm" property="facturada"/>
+		<html:hidden name="GestionSolicitudesForm" property="buscarNColegiado"/>		
+		<html:hidden name="GestionSolicitudesForm" property="buscarNifcif"/>
+		<html:hidden name="GestionSolicitudesForm" property="buscarNombre"/>
+		<html:hidden name="GestionSolicitudesForm" property="buscarApellido1"/>
+		<html:hidden name="GestionSolicitudesForm" property="buscarApellido2"/>
 	</html:form>	
 	
 <%
@@ -284,22 +194,20 @@
 	sColumnNames += "pys.solicitarBaja.literal.fechaEfectiva," +
 			"pys.gestionSolicitudes.literal.importeAnticipado,";		
 %>	
-				
 	<siga:Table 
 		name="tablaResultados"
 		border="2"
 		columnNames="<%=sColumnNames%>"
-		columnSizes="13,9,17,5,7,8,7,7,6,7,7,7">
-
+		columnSizes="13,9,17,5,9,6,7,7,6,7,7,7">
 <% 
 		if (peticion != null && peticion.size() > 0) { 
 			for (int i = 0; i < peticion.size(); i++) { 
-				FilaExtElement[] elementos=new FilaExtElement[2];
-				 Hashtable productoServicio = (Hashtable) peticion.get(i);
+				FilaExtElement[] elementos = new FilaExtElement[2];
+				Hashtable productoServicio = (Hashtable) peticion.get(i);
 
 				//Fecha Efectiva:
 				fechaEfectiva = (String) productoServicio.get("FECHAEFEC");
-				if (fechaEfectiva==null || fechaEfectiva.equals("")) {
+				if (fechaEfectiva==null || fechaEfectiva.trim().equals("")) { 
 					fechaEfectiva = "&nbsp;";
 				} else {
 					fechaEfectiva = GstDate.getFormatedDateShort(usrbean.getLanguage(),fechaEfectiva);
@@ -307,7 +215,7 @@
 									
 				if (productoServicio != null){ 
 					Long idPeticion, idArticulo, idArticuloInstitucion;
-					Integer idInstitucion,idTipoArticulo, idCuenta, idTipoEnvios;
+					Integer idInstitucion, idTipoArticulo, idCuenta, idTipoEnvios;
 					String estado;
 					int cantidad;
 					double precio, importeUnitario;
@@ -329,15 +237,17 @@
 					//El importeAnticipado será < 0 si no se puede anticipar, en caso contrario contendrá el valor del importe anticipado actual.
 					//esta variable se usa tanto para decidir si mostrar o no el botón de "anticipar" como el valor actual del anticipo.
 					int anticipar = -1;
-					double importeAnticipado = 0.0;
+					double importeAnticipado = -1;
 				
 					// Producto
 					if (tipoTablaPetion.trim().equalsIgnoreCase("PRODUCTO")) {					  
 						productoOServicio = "producto";
 						
-						if(idTipoEnvios == null){	
-							elementos[0]=new FilaExtElement("confirmarSolicitudCompra", "confirmarSolicitudCompra", SIGAConstants.ACCESS_FULL);
-							elementos[1]=new FilaExtElement("denegarSolicitudCompra", "denegarSolicitudCompra", SIGAConstants.ACCESS_FULL);
+						if (idTipoEnvios == null) { // No es certificado
+							if (fechaEfectiva==null || fechaEfectiva.equals("&nbsp;") || fechaEfectiva.trim().equals("")) { // No tiene fecha efectiva
+								elementos[0]=new FilaExtElement("confirmarSolicitudCompra", "confirmarSolicitudCompra", SIGAConstants.ACCESS_FULL);
+								elementos[1]=new FilaExtElement("denegarSolicitudCompra", "denegarSolicitudCompra", SIGAConstants.ACCESS_FULL);
+							}
 							
 						} else { //Certificados
 						   	if (!idTipoEnvios.equals("")) {						   
@@ -351,7 +261,7 @@
 						idTipoArticulo = UtilidadesHash.getInteger (productoServicio, PysProductosSolicitadosBean.C_IDTIPOPRODUCTO);
 						idArticulo = UtilidadesHash.getLong (productoServicio, PysProductosSolicitadosBean.C_IDPRODUCTO);
 						idArticuloInstitucion = UtilidadesHash.getLong (productoServicio, PysProductosSolicitadosBean.C_IDPRODUCTOINSTITUCION);
-						aceptado = UtilidadesHash.getString(productoServicio, PysServiciosSolicitadosBean.C_ACEPTADO);										
+						aceptado = UtilidadesHash.getString(productoServicio, PysServiciosSolicitadosBean.C_ACEPTADO);
 						estado = UtilidadesProductosServicios.getEstadoProductoServicio(aceptado);
 						String aux = UtilidadesHash.getString(productoServicio, "ANTICIPAR");						
 						
@@ -381,19 +291,19 @@
 					
 					// Servicio
 					} else {
-						if (fechaEfectiva==null||fechaEfectiva.equals("&nbsp;")||fechaEfectiva.equals(" ")||fechaEfectiva.equals("")) { 
+						if (fechaEfectiva==null || fechaEfectiva.equals("&nbsp;") || fechaEfectiva.trim().equals("")) { // No tiene fecha efectiva 
 							elementos[0]=new FilaExtElement("confirmarSolicitudCompra", "confirmarSolicitudCompra", SIGAConstants.ACCESS_FULL);
 							elementos[1]=new FilaExtElement("denegarSolicitudCompra", "denegarSolicitudCompra", SIGAConstants.ACCESS_FULL);
 					  	}	
 				
 						productoOServicio = "servicio";
-						idPeticion 			= UtilidadesHash.getLong (productoServicio, PysServiciosSolicitadosBean.C_IDPETICION);
-						idInstitucion 	= UtilidadesHash.getInteger (productoServicio, PysServiciosSolicitadosBean.C_IDINSTITUCION);
-						idTipoArticulo 	= UtilidadesHash.getInteger (productoServicio, PysServiciosSolicitadosBean.C_IDTIPOSERVICIOS);
-						idArticulo 			= UtilidadesHash.getLong (productoServicio, PysServiciosSolicitadosBean.C_IDSERVICIO);
+						idPeticion = UtilidadesHash.getLong (productoServicio, PysServiciosSolicitadosBean.C_IDPETICION);
+						idInstitucion = UtilidadesHash.getInteger (productoServicio, PysServiciosSolicitadosBean.C_IDINSTITUCION);
+						idTipoArticulo = UtilidadesHash.getInteger (productoServicio, PysServiciosSolicitadosBean.C_IDTIPOSERVICIOS);
+						idArticulo = UtilidadesHash.getLong (productoServicio, PysServiciosSolicitadosBean.C_IDSERVICIO);
 						idArticuloInstitucion = UtilidadesHash.getLong (productoServicio, PysServiciosSolicitadosBean.C_IDSERVICIOSINSTITUCION);
 						aceptado = UtilidadesHash.getString(productoServicio, PysServiciosSolicitadosBean.C_ACEPTADO);										
-						estado 					= UtilidadesProductosServicios.getEstadoProductoServicio(aceptado);
+						estado = UtilidadesProductosServicios.getEstadoProductoServicio(aceptado);
 						String aux = UtilidadesHash.getString(productoServicio, "ANTICIPAR");
 						if (aux.indexOf("#") != -1){
 							anticipar = Integer.parseInt(aux.split("#")[0]);
@@ -420,7 +330,7 @@
 					// Calculamos el precio total y el total del iva
 					importeUnitario = UtilidadesNumero.redondea(cantidad * precio * (1 + (iva / 100)), 2);
 					
-					if(idFormaPago!=null){
+					if (idFormaPago!=null) {
 						iCantidadTotal += cantidad;
 						dNetoTotal += cantidad * precio;
 						dIvaTotal += UtilidadesNumero.redondea(cantidad * precio * iva / 100, 2);
@@ -429,17 +339,14 @@
 				
 					tipoPeticion = UtilidadesHash.getString(productoServicio, PysPeticionCompraSuscripcionBean.C_TIPOPETICION);
 					
-					if ((idTipoEnvios == null) && (!aceptado.equalsIgnoreCase(ClsConstants.PRODUCTO_PENDIENTE))) {	
-						//Comprueba si debe añadir el botón de anticipar importe
-						if(anticipar > 0){
-							elementos=new FilaExtElement[2];
-							elementos[0]=new FilaExtElement("anticiparImporte", "anticiparImporte", SIGAConstants.ACCESS_FULL);
-						} else {
-						   elementos = null;
-						}
+					if (tipoTablaPetion.trim().equalsIgnoreCase("PRODUCTO") && // Producto
+							idTipoEnvios == null && // No es certificado
+							idFormaPago!=null && // Tiene forma de pago 
+							aceptado.equals(ClsConstants.PRODUCTO_ACEPTADO) && // Esta aceptado 
+							(anticipar>0 || importeAnticipado > 0.0)) { // Se puede anticipar o ya tiene anticipo
+						elementos[0]=new FilaExtElement("anticiparImporte", "anticiparImporte", SIGAConstants.ACCESS_FULL);
 					}									
 	%>
-
 					<siga:FilaConIconos fila='<%=""+(i+1)%>' botones='' clase='listaNonEdit' elementos='<%=elementos%>' visibleConsulta='no' visibleEdicion='no' visibleBorrado='no' pintarEspacio='no'>
 						<td>
 							<input type="hidden" id="oculto<%=i+1%>_1" value="<%=productoOServicio%>">
@@ -455,6 +362,8 @@
 							<input type="hidden" id="oculto<%=i+1%>_11" value="<%=concepto%>">
 							<input type="hidden" id="oculto<%=i+1%>_12" value="<%=fechaEfectiva%>">
 							<input type="hidden" id="oculto<%=i+1%>_13" value="<%=importeAnticipado%>">
+							<input type="hidden" id="oculto<%=i+1%>_14" value="<%=importeUnitario%>">
+							<input type="hidden" id="oculto<%=i+1%>_15" value="<%=tipoSolicitud%>">
 							<%=UtilidadesString.mostrarDatoJSP(concepto.replaceAll("\r\n", " ").replaceAll("\n\r", " "))%>
 						</td>
 			
@@ -475,7 +384,6 @@
 						<td><%=UtilidadesString.mostrarIBANConAsteriscos(nCuenta)%></td>
 			 
 						<td align="right"><%=cantidad%></td> 
-		
 <% 
 						if (UtilidadesHash.getDouble (productoServicio, "VALOR")!=null) { 
 %>
@@ -489,12 +397,13 @@
 								}
 %>					
 							</td>
+							
 							<td align="right"><%=UtilidadesNumero.formatoCampo(iva)%> %</td> 
 <% 
 						} else { 
 %>
-							<td>- </td>
-							<td>- </td> 
+							<td>-</td>
+							<td>-</td> 
 <% 
 						} 
 %>						
@@ -532,14 +441,28 @@
 %>
 						</td> 
 <%
-						if (elementos == null) { 
+							if (elementos == null || elementos.length <= 0){ 
 %>
-							<td>&nbsp;</td>
+								<td></td>
 <%
-						} 
+							} else {
+								boolean pintarCelda = true;
+								int l = 0;
+								while (pintarCelda && l < elementos.length){
+									if (elementos[l] != null) {
+										pintarCelda = false;
+									}
+									l++;
+								}
+								
+								if (pintarCelda) {
+%>
+									<td></td>
+<%
+								}
+							}
 %>
 					</siga:FilaConIconos>
-							 		
 <%	 	
 				} // if
 			}  // for
@@ -548,29 +471,29 @@
 				dIvaTotal = UtilidadesNumero.redondea (dIvaTotal, 2);
 				dPrecioTotal = UtilidadesNumero.redondea (dPrecioTotal, 2);		
 %>
-				<tr class="listaNonEditSelected" style="height:30px">
+				<tr id="total1" class="listaNonEditSelected" style="height:30px">
 					<td>&nbsp;</td>
 					<td>&nbsp;</td>
 					<td>&nbsp;</td>
 					<td colspan="3" align="center">
 						<table border="0" cellpadding="5" cellspacing="0">
-							<tr class="listaNonEditSelected">
+							<tr id="total2" class="listaNonEditSelected">
 								<td class="labelText" style="color:black; text-align:center; border:0px; vertical-align:middle">
 									<siga:Idioma key="facturacion.lineasFactura.literal.Total"/>																	
 								</td>
-									<td style="border:0px">
-										<siga:ToolTip id='ayudaTotal' imagen='/SIGA/html/imagenes/botonAyuda.gif' texto='<%=UtilidadesString.mostrarDatoJSP(UtilidadesString.getMensajeIdioma(usrbean,"messages.servicios.precioServicios"))%>' />
-									</td>									
+								<td style="border:0px">
+									<siga:ToolTip id='ayudaTotal' imagen='/SIGA/html/imagenes/botonAyuda.gif' texto='<%=UtilidadesString.mostrarDatoJSP(UtilidadesString.getMensajeIdioma(usrbean,"messages.servicios.precioServicios"))%>' />
+								</td>									
 							</tr>
 						
-							<tr class="listaNonEditSelected">
+							<tr id="total3" class="listaNonEditSelected">
 								<td class="labelText" style="color:black; text-align:right; border:0px" nowrap><siga:Idioma key="pys.solicitudCompra.literal.cantidad"/></td>
 								<td class="labelText" style="border:0px">
 									<input type="text" name="cantidadTotal" value="<%=iCantidadTotal%>" style="background-color:transparent; font-weight:bold; color:black; text-align:left" class="boxConsultaNumber" readOnly="true" size="13">
 								</td>
 							</tr>							
 						
-							<tr class="listaNonEditSelected">
+							<tr id="total4" class="listaNonEditSelected">
 								<td class="labelText" style="color:black; text-align:right; border:0px" nowrap>
 									<siga:Idioma key="pys.solicitudCompra.literal.totalImporteNeto"/>									
 								</td>
@@ -579,14 +502,14 @@
 								</td>
 							</tr>						
 							
-							<tr class="listaNonEditSelected">
+							<tr id="total5" class="listaNonEditSelected">
 								<td class="labelText" style="color:black; text-align:right; border:0px" nowrap><siga:Idioma key="pys.solicitudCompra.literal.iva"/></td>
 								<td class="labelText" style="border:0px">
 									<input type="text" name="ivaTotal" value="<%=UtilidadesString.formatoImporte(dIvaTotal)%> &euro;" style="background-color:transparent; font-weight:bold; color:black; text-align:left" class="boxConsultaNumber" readOnly="true" size="13">
 								</td>
 							</tr>
 							
-							<tr class="listaNonEditSelected" border="0">
+							<tr id="total6" class="listaNonEditSelected" border="0">
 								<td class="labelText" style="color:black; text-align:right; border:0px" nowrap><siga:Idioma key="pys.solicitudCompra.literal.totalImporte"/></td>
 								<td class="labelText" style="border:0px">
 									<input type="text" name="precioTotal" value="<%=UtilidadesString.formatoImporte(dPrecioTotal)%> &euro;" style="background-color:transparent; font-weight:bold; color:black; text-align:left" class="boxConsultaNumber" readOnly="true" size="13">
@@ -613,19 +536,210 @@
 %>
 	</siga:Table>
 
-	<siga:ConjBotonesAccion botones="C,I" modo=''  modal="G" clase="botonesDetalle"/>
-
+	<siga:ConjBotonesAccion botones="V,I" modo=''  modal="G" clase="botonesDetalle"/>
+	
 	<!-- Este formulario se emplea para abrir la ventana modal de modificación de los anticipos-->
 	<html:form styleId="MostrarAnticiposForm" action="/PYS_GestionarSolicitudes.do" method="POST" target="submitArea" style="display:none">
 	    <input type="hidden" name="idTipoClave" value="">
 		<input type="hidden" name="idClave" value=""> 
 		<input type="hidden" name="idClaveInstitucion" value=""> 
-		<input type="hidden" name="idPeticion" value=""> 
+		<input type="hidden" name="idPeticion"> 
 		<input type="hidden" name="idPersona" value="<%=idPersona%>"> 
 		<input type="hidden" name="tipo" value=""> 
-		<input type="hidden" name="modo" value="mostrarAnticipos"> 
+		<input type="hidden" name="totalAnticipado" value=""/>
+		<input type="hidden" name="precioSolicitud" value=""/>
+		<input type="hidden" name="nuevoImporteAnticipado" value=""/>	
+		<input type="hidden" name="modo" value="guardarAnticipos"> 
 		<input type="hidden" name="actionModal" value="">
 	</html:form>	
+	
+	<%@ include file="/html/jsp/censo/includeVolver.jspf" %>
+
+	<script language="JavaScript">
+		// Refrescar
+		function refrescarLocal() { 		
+			document.forms[0].modo.value = "Editar";
+			document.forms[0].target = "mainWorkArea";
+			document.forms[0].submit();
+		}	
+		
+		// Asociada al boton Imprimir
+		function accionImprimir() { 		
+			var url = "/SIGA/PYS_GestionarSolicitudes.do?modo=editarImpresion&idInstitucion=<%=sIdInstitucion%>&idPersona=<%=idPersona%>&idPeticion=<%=sidPeticion%>&tipoSolicitud=<%=tipoSolicitud%>";			
+			window.open(url, '_blank');
+		}	
+		
+		function confirmarSolicitudCompra (fila) {
+		  	var fecha = null;
+		  	
+ 	 		jQuery("#divConfirmarSolicitud").dialog(
+				{
+					height: 175,
+					width: 400,
+					modal: true,
+					resizable: false,
+					buttons: {
+						"<%=sDialogBotonGuardarCerrar%>": function() {
+							if (jQuery("#fechaEfectivaDiv").val()=="") {
+								var msg="<siga:Idioma key="messages.servicios.fechaEfectivaObligatoria"/>";
+								alert(msg);
+								return false;							
+							}
+							jQuery(this).dialog("close");
+							fecha = jQuery("#fechaEfectivaDiv").val();
+							postConfirmarSolicitudCompra (fila, fecha);
+						},
+						"<%=sDialogBotonCerrar%>": function() {
+							jQuery(this).dialog("close");
+						}
+					}
+				}
+			);
+			jQuery(".ui-widget-overlay").css("opacity","0");	 				
+			jQuery("[id^=total]").addClass("listaNonEditSelected"); // Actualiza el color de los totales		  	
+		}		
+		
+		function postConfirmarSolicitudCompra (fila, fecha) {
+			sub();
+	     	document.forms[0].fechaEfectiva.value = fecha;
+		  	var existePrecioAsociado = jQuery("#oculto" + fila + "_10");
+		  	if (existePrecioAsociado.val() == "0") { 
+				var mensaje='<siga:Idioma key="messages.pys.gestionSolicitud.errorProductoSinPrecio"/>';
+				alert(mensaje);
+				fin();
+				return(false);
+				
+		  	} else {
+				return miSubmitFormConModo (fila, "confirmar");
+			}
+		}
+	
+		function denegarSolicitudCompra (fila) {
+			sub();			
+			if (confirm("<siga:Idioma key="messages.pys.solicitudCompra.confirmarDenegar"/>")) {
+				var existePrecioAsociado = jQuery("#oculto" + fila + "_10");
+		    	if (existePrecioAsociado.val() == "0") { 
+					var mensaje='<siga:Idioma key="messages.pys.solicitudCompra.errorProductoSinPrecio"/>';
+					alert(mensaje);
+					fin();
+					return(false);
+					
+		    	} else {
+					return miSubmitFormConModo (fila, "denegar");
+				}	
+			} else {
+				fin();
+			}
+			jQuery("[id^=total]").addClass("listaNonEditSelected"); // Actualiza el color de los totales
+		}
+		
+		function miSubmitFormConModo (fila, modo) {
+			var datos = document.getElementById('tablaDatosDinamicosD');
+			datos.value = ""; 
+			var j = 1;
+			var flag = true;
+			while (flag) {
+				var dato = jQuery("#oculto" + fila + "_" + j);
+			  	if (dato.exists())  {
+			  		datos.value = datos.value + dato.val() + ','; 				  
+				} else { 
+					flag = false; 					
+				}
+			  	j++;
+			}
+			datos.value = datos.value + "%";		  
+		   	document.forms[0].modo.value = modo;
+		   	document.forms[0].submit();
+		}
+		
+		function consultarcert(fila) {   
+		  	var idPeticion = jQuery("#oculto" + fila + "_2");
+		  	var idArticulo = jQuery("#oculto" + fila + "_4");
+		  	var idArticuloInstitucion = jQuery("#oculto" + fila + "_5");
+		  	var idTipoArticulo = jQuery("#oculto" + fila + "_6");
+		  	var concepto = jQuery("#oculto" + fila + "_11");
+		  	
+		  	document.forms[0].idSolicitud.value = idPeticion.val();		  	
+		  	document.forms[0].idProducto.value = idArticulo.val();
+		  	document.forms[0].idProductoInstitucion.value = idArticuloInstitucion.val();
+		  	document.forms[0].idTipoProducto.value = idTipoArticulo.val();
+		  	document.forms[0].concepto.value = concepto.val();
+	 		
+	 		document.forms[0].action = "/SIGA/CER_GestionSolicitudes.do?buscar=true";
+     		document.forms[0].target = "mainWorkArea";
+     		document.forms[0].modo.value = "abrir";
+     		document.forms[0].submit();
+		}
+		
+		function anticiparImporte(fila){ 	
+ 			jQuery("#textImporteAnticipado").val(jQuery("#oculto" + fila + "_13").val());
+ 			jQuery("#textPrecioSolicitud").val(jQuery("#oculto" + fila + "_14").val());
+ 			
+ 	 		jQuery("#divImporteAnticipado").dialog(
+				{
+					height: 200,
+					width: 500,
+					modal: true,
+					resizable: false,
+					buttons: {
+						"<%=sDialogBotonGuardarCerrar%>": function() {
+							if (!validarImporteAnticipado()){
+								return;
+							}
+							jQuery(this).dialog("close");
+							guardarImporteAnticipado(fila);
+						},
+						"<%=sDialogBotonCerrar%>": function() {
+							jQuery(this).dialog("close");
+						}
+					}
+				}
+			);
+			jQuery(".ui-widget-overlay").css("opacity","0");	 				
+			jQuery("[id^=total]").addClass("listaNonEditSelected"); // Actualiza el color de los totales
+ 		} 	
+	 		
+		function validarImporteAnticipado(){
+			var vImporteAnticipado = jQuery("#textImporteAnticipado").val();			
+			vImporteAnticipado = vImporteAnticipado.replace(/,/,".");
+			jQuery("#textImporteAnticipado").val(vImporteAnticipado);
+			var valorImporteAnticipado = parseFloat(vImporteAnticipado);
+			
+			var vPrecioSolicitud = jQuery("#textPrecioSolicitud").val();
+			vPrecioSolicitud = vPrecioSolicitud.replace(/,/,".");
+			jQuery("#textPrecioSolicitud").val(vPrecioSolicitud);
+			var valorPrecioSolicitud = parseFloat(vPrecioSolicitud);
+		
+			if (isNaN(valorImporteAnticipado) || valorImporteAnticipado < 0 ){
+				alert('<siga:Idioma key="messages.pys.solicitudCompra.errorAnticiparImporteNoValido"/>');
+				return false;
+			}
+			
+			if (valorPrecioSolicitud < valorImporteAnticipado){
+				alert('<siga:Idioma key="messages.pys.solicitudCompra.errorAnticiparImporteSuperior"/>');
+				return false;
+			}
+			
+			return true;
+		} 	 		
+	 		
+		function guardarImporteAnticipado(fila) {	 
+			var formAnticipos = document.getElementById("MostrarAnticiposForm");
+			formAnticipos.idTipoClave.value = jQuery("#oculto" + fila + "_6").val();
+			formAnticipos.idClave.value = jQuery("#oculto" + fila + "_4").val();
+			formAnticipos.idClaveInstitucion.value = jQuery("#oculto" + fila + "_5").val();
+			formAnticipos.idPeticion.value = jQuery("#oculto" + fila + "_2").val();			
+			if (jQuery("#oculto" + fila + "_1").val()=="servicio")
+				formAnticipos.tipo.value = "S";
+			else
+				formAnticipos.tipo.value = "P";
+			formAnticipos.totalAnticipado.value = jQuery("#oculto" + fila + "_13").val();
+			formAnticipos.precioSolicitud.value = jQuery("#textPrecioSolicitud").val();
+			formAnticipos.nuevoImporteAnticipado.value = jQuery("#textImporteAnticipado").val();
+			formAnticipos.modo.value = "guardarAnticipos";
+			formAnticipos.submit();
+		}	
+	</script>
 
 	<iframe name="submitArea" src="<html:rewrite page='/html/jsp/general/blank.jsp'/>" style="display: none"></iframe>
 </body>

@@ -1336,7 +1336,7 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 		    Vector vDatos = admSolicitud.selectByPK(htSolicitud);
 		    
 		    CerSolicitudCertificadosBean solBean = (CerSolicitudCertificadosBean)vDatos.elementAt(0);
-		    String sRutaBd = admSolicitud.getRutaCertificadoFichero(solBean,admSolicitud.getRutaCertificadoDirectorioBD(solBean));
+		    String sRutaBd = admSolicitud.getRutaCertificadoFichero(solBean,admSolicitud.getRutaCertificadoDirectorioBD(solBean.getIdInstitucion()));
 		    
 		    request.setAttribute("ruta", sRutaBd);	    
 	    
@@ -1506,54 +1506,40 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 	    return "exito";
 	}
 
-	protected String descargar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, SIGAException
-	{
-		UserTransaction tx=null;
-		try{
+	protected String descargar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, SIGAException {
+		UserTransaction tx = null;
+		try {
 			// Obtengo usuario y creo manejadores para acceder a las BBDD
 			UsrBean usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
 
-			SIGASolicitudesCertificadosForm form = (SIGASolicitudesCertificadosForm)formulario;
-	        CerSolicitudCertificadosAdm admSolicitud = new CerSolicitudCertificadosAdm(usr);
-	        Vector vOcultos = form.getDatosTablaOcultos(0);
-	        
-		    String idInstitucion = ((String)vOcultos.elementAt(0)).trim();
-		    String idSolicitud = ((String)vOcultos.elementAt(1)).trim();
-	
-		    Hashtable<String,Object> htSolicitud = new Hashtable<String,Object>();
-		    htSolicitud.put(CerSolicitudCertificadosBean.C_IDINSTITUCION, idInstitucion);
-		    htSolicitud.put(CerSolicitudCertificadosBean.C_IDSOLICITUD, idSolicitud);
-		    
-		    Vector vDatos = admSolicitud.selectByPK(htSolicitud);
-		    
-		    CerSolicitudCertificadosBean beanSolicitud = (CerSolicitudCertificadosBean)vDatos.elementAt(0);
+			SIGASolicitudesCertificadosForm form = (SIGASolicitudesCertificadosForm) formulario;
+			CerSolicitudCertificadosAdm admSolicitud = new CerSolicitudCertificadosAdm(usr);
+			Vector vOcultos = form.getDatosTablaOcultos(0);
 
-		    File fCertificado = admSolicitud.recuperarCertificado(beanSolicitud);
-			
-		    if(fCertificado==null || !fCertificado.exists()){
-		    	throw new SIGAException("messages.general.error.ficheroNoExiste"); 
-		    }
+			String idInstitucion = ((String) vOcultos.elementAt(0)).trim();
+			String idSolicitud = ((String) vOcultos.elementAt(1)).trim();
 
-			// Comienzo control de transacciones
-			tx = usr.getTransaction();
+			Hashtable<String, Object> htSolicitud = new Hashtable<String, Object>();
+			htSolicitud.put(CerSolicitudCertificadosBean.C_IDINSTITUCION, idInstitucion);
+			htSolicitud.put(CerSolicitudCertificadosBean.C_IDSOLICITUD, idSolicitud);
 
-		    tx.begin();
-		    
-		    beanSolicitud.setFechaDescarga("SYSDATE");
-		    if (!admSolicitud.updateDirect(beanSolicitud)) {
-		    	throw new ClsExceptions("Error al actualizar la fecha de descarga: "+admSolicitud.getError());
-		    }
+			Vector vDatos = admSolicitud.selectByPK(htSolicitud);
 
-		    request.setAttribute("nombreFichero", fCertificado.getName());
-		    request.setAttribute("rutaFichero", fCertificado.getPath());
-		    
-		    tx.commit();
-		
-		} 
-		catch (Exception e) { 
-			throwExcp("messages.general.error",new String[] {"modulo.certificados"},e,tx); 
+			CerSolicitudCertificadosBean solicitudCertificadoBean = (CerSolicitudCertificadosBean) vDatos.elementAt(0);
+
+			File fCertificado = admSolicitud.recuperarCertificado(solicitudCertificadoBean);
+
+			if (fCertificado == null || !fCertificado.exists()) {
+				throw new SIGAException("messages.general.error.ficheroNoExiste");
+			}
+
+			request.setAttribute("nombreFichero", admSolicitud.getNombreFicheroSalida(solicitudCertificadoBean));
+			request.setAttribute("rutaFichero", fCertificado.getPath());
+
+		} catch (Exception e) {
+			throwExcp("messages.general.error", new String[] { "modulo.certificados" }, e, tx);
 		}
-		
+
 		return "descargaFichero";
 	}
 
@@ -2360,6 +2346,19 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 				htNew.put(CerSolicitudCertificadosBean.C_PREFIJO_CER, (String) contadorTablaHash.get("PREFIJO"));
 				htNew.put(CerSolicitudCertificadosBean.C_SUFIJO_CER, (String) contadorTablaHash.get("SUFIJO"));
 				htNew.put(CerSolicitudCertificadosBean.C_CONTADOR_CER, contadorFinalSugerido);
+				
+				beanSolicitud.setPrefijoCer((String) contadorTablaHash.get("PREFIJO"));
+				beanSolicitud.setSufijoCer((String) contadorTablaHash.get("SUFIJO"));
+				beanSolicitud.setContadorCer(contadorFinalSugerido);
+			}else{
+				//si tiene contador hay que setear el contador final sugerido
+				Integer longitud = new Integer((contadorTablaHash.get("LONGITUDCONTADOR").toString()));
+				int longitudContador = longitud.intValue();
+				
+				String contadorFinalSugerido = UtilidadesString.formatea(contadorTablaHash.get("CONTADOR").toString(), longitudContador, true);
+				beanSolicitud.setContadorCer(contadorFinalSugerido);
+				
+				
 			}
 			//aalg: se añade la carga en base de datos dentro de la sincronización para evitar la pérdida de número de certificado
 			//inc_10359_siga

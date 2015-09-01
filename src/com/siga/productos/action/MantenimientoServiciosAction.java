@@ -659,12 +659,11 @@ public class MantenimientoServiciosAction extends MasterAction {
 		try {		
 			// Obtengo usuario y creo manejadores para acceder a las BBDD
 			String fechaEfectiva=(String)request.getParameter("fechaEfectiva");
-			GstDate gstDate = new GstDate();
 			
 			//inc-5907: Controlamos que no venga a nulo la fecha efectiva porque hay veces que se llama al proceso automatico
 			//de suscripcion y al venir a nulo salta error en la aplicación.
 			if (fechaEfectiva==null ||fechaEfectiva.equals("")){
-				fechaEfectiva=gstDate.parseDateToString(new Date(),"dd/MM/yyyy", this.getLocale(request));
+				fechaEfectiva=GstDate.parseDateToString(new Date(),"dd/MM/yyyy", this.getLocale(request));
 			}
 			UsrBean usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
 			PysServiciosInstitucionAdm admin=new PysServiciosInstitucionAdm(usr);

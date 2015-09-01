@@ -59,54 +59,57 @@
 <%		} else if (busquedaVolver.equals("BP")) {  %>
 
 <% 		} else if (busquedaVolver.equals("NADA")) {  /* ficha colegial*/ %>
-<% 		
-		} else if (busquedaVolver.equals("P")) {
-%>
-<% 		
-		} else if (busquedaVolver.equals("VC")) { %>
-			
+
+<%		} else if (busquedaVolver.equals("P")) { %>
+
+<%		} else if (busquedaVolver.equals("VC")) { %>
+						
 <% 		} else if (busquedaVolver.equals("GS")) {  %>
 			<html:form  action="/CER_GestionSolicitudes.do" method="POST" target="mainWorkArea">
 				<html:hidden property="modo" value="abrir"/>
 			</html:form>
+			
 <% 		} else if (busquedaVolver.equals("BUSQUEDA_LETRADO")) {  %>
 			<html:form  action="/CEN_BusquedaLetradosNew.do" method="POST" target="mainWorkArea">
 				<html:hidden property="accion" value="buscar"/>
 				<html:hidden property="deleteForm" value="true"/>
 				<html:hidden property="id" value=""/>
 			</html:form>
+			
 <% 		} else if (busquedaVolver.equals("BUSQUEDA_COLEGIADO") || busquedaVolver.equals("BUSQUEDA_COLEGIADO_AV")) {  %>
 			<html:form  action="/CEN_BusquedaColegiados.do" method="POST" target="mainWorkArea">
 				<html:hidden property="accion" value="buscar"/>
 				<html:hidden property="deleteForm" value="true"/>
 				<html:hidden property="id" value=""/>
 			</html:form>
+			
 			<!-- aalg: para volver a la pantalla de personas duplicadas -->
 <% 		} else if (busquedaVolver.equals("DUPLICADOS")) {  %>
 			<html:form  action="/CEN_MantenimientoDuplicados.do" method="POST" target="mainWorkArea">
 				<html:hidden property="modo" value="buscarPor"/>
 			</html:form>
+			
 <% 		} else if (busquedaVolver.equals("CARGA_CENSO_WS")) {  %>			
 			<html:form action="/CEN_EdicionRemesas.do?noReset=true" method="POST" target="mainWorkArea">
 					<html:hidden property="volver" value="true"/>
 					<html:hidden property="modo" value="${EdicionRemesaForm.accion}"/>
 			</html:form>
+			
 <% 		} else { %>
 			<html:form  action="/CEN_BusquedaClientes.do" method="POST" target="mainWorkArea">
 			<html:hidden  name="busquedaClientesForm" property="modo"/>
 			<html:hidden  name="busquedaClientesForm" property="avanzada"/>
 			</html:form>
 <%			
-			} 
- 		} 
+		} 
+ 	} 
 %>
 
 <!-- script para la función volver -->
 <script language="javascript">
 
 		//Asociada al boton Volver
-		function accionVolver() 
-		{
+		function accionVolver() {
 <%
  			if (!busquedaVolver.equals("volverNo")) { 
  				if (busquedaVolver.equals("A")) { 
@@ -185,12 +188,16 @@
 					document.MantenimientoDuplicadosForm.submit();
 <%				} else if (busquedaVolver.equals("CARGA_CENSO_WS")) {	%>
 					document.EdicionRemesaForm.submit();
+<% 				} else if (busquedaVolver.equals("PGS")) {  %>
+					document.MostrarAnticiposForm.action = "/SIGA/PYS_GestionarSolicitudes.do" + "?noReset=true&buscar=true";
+					document.MostrarAnticiposForm.modo.value="abrir";
+					document.MostrarAnticiposForm.target="mainWorkArea";
+					document.MostrarAnticiposForm.submit();						
 <% 				} else if (busquedaVolver.equals("GS")) {	%>
 					document.SolicitudesCertificadosForm.action = "/SIGA/CER_GestionSolicitudes.do" + "?noReset=true&buscar=true";
 					document.SolicitudesCertificadosForm.submit();
 <%				}
-				}%>
+			}
+%>
 		}
-		
 </script>
-

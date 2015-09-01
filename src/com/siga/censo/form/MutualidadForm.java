@@ -14,10 +14,6 @@ import com.siga.general.MasterForm;
  */
  public class MutualidadForm extends MasterForm {
  	
-	 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -176213764040299738L;
 	private String idSolicitud;
 	private String idSolicitudAceptada;
@@ -40,7 +36,6 @@ import com.siga.general.MasterForm;
 	private String idEstadoCivil;
 	private String colegio;
 	
-	
 	private String idPais;
 	private String idProvincia;
 	private String idPoblacion;
@@ -56,7 +51,6 @@ import com.siga.general.MasterForm;
 	
 	private String titular;
 	private String idBanco;
-	
 	private String cboCodigo;
 	private String codigoSucursal;
 	private String digitoControl;
@@ -83,13 +77,7 @@ import com.siga.general.MasterForm;
 	List<ValueKeyVO> opcionesCobertura;
 	List<ValueKeyVO> beneficiarios;
 	List<ValueKeyVO> asistenciasSanitarias;
-	
-//	Map<String, String> periodicidadesPago;
-//	Map<String, String> opcionesCobertura;
-//	Map<String, String> beneficiarios;
-//	Map<String, String> asistenciasSanitarias;
-	
-	
+	List<ValueKeyVO> estadosCiviles;
 	
 	private String fechaNacimientoConyuge;
 	private String numeroHijos;
@@ -708,7 +696,11 @@ import com.siga.general.MasterForm;
 	public void setColegio(String colegio) {
 		this.colegio = colegio;
 	}
-	
-	
-	
-}
+	public List<ValueKeyVO> getEstadosCiviles() {
+		return estadosCiviles;
+	}
+	public void setEstadosCiviles(List<ValueKeyVO> estadosCiviles) {
+		this.estadosCiviles = estadosCiviles;
+	}
+
+ }

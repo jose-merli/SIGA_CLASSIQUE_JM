@@ -42,6 +42,7 @@ public class FacBancoInstitucionAdm extends MasterBeanAdministrador {
 							FacBancoInstitucionBean.C_CONFIGFICHEROSESQUEMA,
 							FacBancoInstitucionBean.C_CONFIGFICHEROSSECUENCIA,
 							FacBancoInstitucionBean.C_CONFIGLUGARESQUEMASECUENCIA,
+							FacBancoInstitucionBean.C_CONFIGCONCEPTOAMPLIADO,
 							FacBancoInstitucionBean.C_USUMODIFICACION,
 							FacBancoInstitucionBean.C_FECHAMODIFICACION};
 		return campos;
@@ -76,6 +77,7 @@ public class FacBancoInstitucionAdm extends MasterBeanAdministrador {
 			bean.setConfigFicherosEsquema		(UtilidadesHash.getString(hash, FacBancoInstitucionBean.C_CONFIGFICHEROSESQUEMA));
 			bean.setConfigFicherosSecuencia		(UtilidadesHash.getString(hash, FacBancoInstitucionBean.C_CONFIGFICHEROSSECUENCIA));
 			bean.setConfigLugarEsquemaSecuencia	(UtilidadesHash.getString(hash, FacBancoInstitucionBean.C_CONFIGLUGARESQUEMASECUENCIA));
+			bean.setConfigConceptoAmpliado		(UtilidadesHash.getString(hash, FacBancoInstitucionBean.C_CONFIGCONCEPTOAMPLIADO));
 			bean.setFechaMod					(UtilidadesHash.getString(hash, FacBancoInstitucionBean.C_FECHAMODIFICACION));
 			bean.setUsuMod						(UtilidadesHash.getInteger(hash, FacBancoInstitucionBean.C_USUMODIFICACION));
 			
@@ -111,6 +113,7 @@ public class FacBancoInstitucionAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(htData, FacBancoInstitucionBean.C_CONFIGFICHEROSESQUEMA, b.getConfigFicherosEsquema());
 			UtilidadesHash.set(htData, FacBancoInstitucionBean.C_CONFIGFICHEROSSECUENCIA, b.getConfigFicherosSecuencia());
 			UtilidadesHash.set(htData, FacBancoInstitucionBean.C_CONFIGLUGARESQUEMASECUENCIA, b.getConfigLugarEsquemaSecuencia());
+			UtilidadesHash.set(htData, FacBancoInstitucionBean.C_CONFIGCONCEPTOAMPLIADO, b.getConfigConceptoAmpliado());
 			UtilidadesHash.set(htData, FacBancoInstitucionBean.C_FECHAMODIFICACION, b.getFechaMod());
 			UtilidadesHash.set(htData, FacBancoInstitucionBean.C_USUMODIFICACION, b.getUsuMod());
 			

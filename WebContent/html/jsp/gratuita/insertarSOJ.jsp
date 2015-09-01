@@ -154,7 +154,7 @@
 					<siga:Idioma key="gratuita.busquedaSOJ.literal.turno"/>
 				</td>
 				<td class="labelText" colspan="4">
-					<siga:ComboBD nombre = "identificador" tipo="turnosSinBaja"  clase="boxCombo" obligatorio="false" accion="Hijo:idGuardia;" parametro="<%=dato%>" ancho="550"/>
+					<siga:ComboBD nombre = "identificador" tipo="turnosSOJSinBaja"  clase="boxCombo" obligatorio="false" accion="Hijo:idGuardia;" parametro="<%=dato%>" ancho="550"/>
 				</td>
 			</tr>
 			<tr>

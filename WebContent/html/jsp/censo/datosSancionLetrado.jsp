@@ -22,6 +22,9 @@
 <%@ page import = "com.siga.beans.*"%>
 <%@ page import = "com.siga.Utilidades.UtilidadesString"%>
 <%@ page import = "com.atos.utils.*"%>
+<%@ page import = "java.util.Properties"%>
+<%@ page import = "java.util.Hashtable"%>
+<%@ page import = "java.util.ArrayList"%>
 
 <!-- JSP -->
 <% 
@@ -39,6 +42,7 @@
 	String botonesAccion = "";
 	String readonly = "false";  // para el combo
 	boolean breadonly = false;  // para lo que no es combo
+	String modo = (String)request.getAttribute("accion");	
 	// caso de accion
 	if (formulario.getModo().equals("Ver")) {
 		// caso de consulta
@@ -46,13 +50,17 @@
 		estiloCombo = "boxConsulta";
 		readonly = "true";
 		breadonly = true;
-		botonesAccion = "C";
+		botonesAccion = "V";
 	} else {
 		estiloCaja = "box";
 		estiloCombo = "boxCombo";
 		readonly = "false";
 		breadonly = false;
-		botonesAccion = "Y,C";
+		if (formulario.getModo().equals("nuevo")){
+			botonesAccion = "V,G";			
+		}else{
+			botonesAccion = "V,G,I";
+		}
 	}	
 	
 	Hashtable registro = (Hashtable) request.getAttribute("registro");
@@ -103,7 +111,6 @@
 		tipoSancionSel.add((String)registro.get("IDTIPOSANCION"));
 	}
 
-
 	String idPersona=(!idPersonaFinal.equals(""))?idPersonaFinal:"";
 	String idSancion=(registro.get("IDSANCION")!=null)?(String)registro.get("IDSANCION"):"";
 	String idInstitucionAlta=(registro.get("IDINSTITUCION")!=null)?(String)registro.get("IDINSTITUCION"):"";
@@ -123,29 +130,14 @@
 	String observaciones=(registro.get("OBSERVACIONES")!=null)?(String)registro.get("OBSERVACIONES"):"";
 	String chkArchivada=(registro.get("CHKARCHIVADA")!=null)?(String)registro.get("CHKARCHIVADA"):"";
 	String fechaArchivada=(registro.get("FECHAARCHIVADA")!=null)?GstDate.getFormatedDateShort(idioma,(String)registro.get("FECHAARCHIVADA")):"";
-
-	String modo="modificar";
-	if (formulario.getModo().equals("nuevo")) {
-		modo="insertar";
-	}
-	
-
 	
 %>
 
-<%@page import="java.util.Properties"%>
-<%@page import="java.util.Hashtable"%>
-<%@page import="java.util.ArrayList"%>
-
-
 <!-- HEAD -->
 
-
-		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
-	
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
 	<!-- Incluido jquery en siga.js -->
-	
 	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js?v=${sessionScope.VERSIONJS}'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
 
 	<!-- INICIO: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->
@@ -159,10 +151,27 @@
 	<!-- Aqui se reescriben las funciones que vayamos a utilizar -->
 
 	<script language="JavaScript">
-		function accionCerrar(){ 			 
-			window.top.close();
-		}		
-		function accionGuardarCerrar(){ 	
+		function accionVolver(){ 	
+			<% if (pestanaColegiacion!=null && pestanaColegiacion.equals("1")) { %>
+				document.busquedaClientesForm.action = "/SIGA/CEN_BusquedaClientes.do" + "?noReset=true&buscar=true";
+				document.busquedaClientesForm.modo.value="abrirConParametros";
+				document.busquedaClientesForm.submit();			
+			<% } else { %>
+				document.SancionesLetradoForm.modo.value="abrirVolver";
+				document.SancionesLetradoForm.target="mainWorkArea";
+				document.SancionesLetradoForm.submit();		
+			<% } %>
+		}	
+		
+		function refrescarLocal(){
+			sub();
+			document.SancionesLetradoForm.target="mainWorkArea";
+			document.SancionesLetradoForm.modo.value = "editar";
+			document.SancionesLetradoForm.submit();
+			fin();
+		}
+		
+		function accionGuardar(){ 	
 			sub();
 			
 			if (compararFecha(document.SancionesLetradoForm.fechaInicio,document.SancionesLetradoForm.fechaFin)==1){
@@ -171,15 +180,26 @@
 				return false;
 			}
 			if (validateSancionesLetradoForm(document.forms[0])) {
-				document.forms[0].modo.value="<%=modo%>";
-				document.forms[0].submit();
+				if(validarChecksFechas()){
+					document.forms[0].modo.value="<%=modo%>";
+					document.forms[0].submit();
+				}			
 			}else{
 				fin();
 				return false;
 			}
 		}	
 		
-
+		function accionImprimir(){ 	
+			<% if (!formulario.getModo().equals("nuevo")) { %>
+				idInstitucion  = <%=idInstitucionAlta%>;			
+				idSancion  = <%=idSancion%>;
+				idPersona  = <%=idPersona%>;
+	 		   	datos = "idInstitucion=="+idInstitucion +"##idSancion=="+idSancion + "##idPersona==" +idPersona+"##idTipoInforme==SANC%%%";
+	 		  	document.InformesGenericosForm.datosInforme.value=datos;
+	 		  	document.InformesGenericosForm.submit();
+ 		  	<% } %>
+		}	
 	 	
 		function checkRehabilitado() {
 			var v = document.getElementById('rehabilitado');
@@ -227,10 +247,35 @@
 				v.value='';
 			}
 		}
+		
+		function validarChecksFechas() {
+			var fechaFirmeza = document.getElementById('firmeza').value;
+			var chkFirmeza = document.getElementById('chkFirmeza');
 			
-		
-		
-				
+			var fechaRehabilitado = document.getElementById('rehabilitado').value;
+			var chkRehabilitado  = document.getElementById('chkRehabilitado');		
+			
+			var fechaArchivo = document.getElementById('fechaArchivada').value;
+			var chkArchivada  = document.getElementById('chkArchivada');	
+			
+			var error = "";
+			
+			if((fechaFirmeza!='' && chkFirmeza.checked!=true) || (chkFirmeza.checked==true && fechaFirmeza == '')){
+				error += "<siga:Idioma key="censo.sancionesLetrado.error.firmeza"/>" + '\n';
+			}			
+					
+			if((fechaArchivo!='' && chkArchivada.checked!=true) || (chkArchivada.checked==true && fechaArchivo == '')){
+				error += "<siga:Idioma key="censo.sancionesLetrado.error.fechaArchivo"/>" + '\n';
+			}			
+			
+			if (error != null && error != ""){
+				alert(error);
+				fin();
+				return false
+			}
+			
+			return true;
+		}		
 	</script>	
 
 	<!-- INICIO: TITULO Y LOCALIZACION 	-->	
@@ -261,7 +306,7 @@
 		<tr>				
 			<td>
 
-				<siga:ConjCampos leyenda="censo.busquedaSancionesLetrado.literal.datos">
+				<siga:ConjCampos leyenda="censo.busquedaSancionesLetrado.literal.datos" >
 
 					<table class="tablaCampos" align="center">							
 						<!-- FILA -->
@@ -269,7 +314,7 @@
 							<td class="labelText">
 								<siga:Idioma key="censo.busquedaSancionesLetrado.literal.ncolegiado"/> &nbsp;(*)
 							</td>
-							<td colspan="3">
+							<td colspan="3"  style="padding-left:25px;">
 								<!-- RGG - SELECCION DE COLEGIADO -->
 								<script language="JavaScript">	
 									function buscarCliente () 
@@ -304,7 +349,7 @@
 									 necesidad de seleccionarlo por el botón -->
 								<html:hidden name="SancionesLetradoForm" property="idPersona" size="8" maxlength="80" styleClass="boxConsulta" value="<%=idPersona%>"></html:hidden>
 								<html:text property="nif" size="10" maxlength="50" styleClass="boxConsulta" value="<%=nif%>" readOnly="true"></html:text>
-								<html:text property="nombreMostrado" size="50" maxlength="150" styleClass="boxConsulta" value="<%=nombrePersona%>" readOnly="true"></html:text>
+								<html:text property="nombreMostrado" size="80" maxlength="150" styleClass="boxConsulta" value="<%=nombrePersona%>" readOnly="true"></html:text>
 								<!-- FIN - RGG - SELECCION DE COLEGIADO -->
 							</td>
 						</tr>				
@@ -312,7 +357,7 @@
 							<td class="labelText">
 								<siga:Idioma key="censo.busquedaSancionesLetrado.literal.tipoSancion"/> &nbsp;(*)
 							</td>
-							<td colspan="3">
+							<td colspan="3"  style="padding-left:25px;">
 								<siga:ComboBD nombre = "tipoSancion" ancho="200"  tipo="cmbTipoSancion" readonly="<%=readonly%>" clase="<%=estiloCombo %>" obligatorio="true" elementoSel="<%=tipoSancionSel %>"/>
 							</td>
 						</tr>
@@ -320,83 +365,71 @@
 							<td class="labelText">
 								<siga:Idioma key="censo.busquedaSancionesLetrado.literal.colegio"/> &nbsp;(*)
 							</td>
-							<td colspan="3">
+							<td style="padding-left:25px;">
 								<siga:ComboBD nombre = "nombreInstitucion" ancho="200" tipo="cmbInstitucionesAbreviadas"  readonly="<%=readonly%>" clase="<%=estiloCombo %>" obligatorio="true" elementoSel="<%=colegioSel %>"/>
 							</td>
-						</tr>
-						<tr>		
+							
 							<td class="labelText">
 								<siga:Idioma key="censo.BusquedaSancionesLetrado.literal.refColegio"/>
 							</td>
-							<td >
+							<td style="padding-left:25px;">
 								<html:text property="refColegio" size="20" maxlength="50" styleClass="<%=estiloCaja %>" readOnly="<%=breadonly%>" value="<%=refColegio%>"></html:text>
-							</td>
+							</td>							
 						</tr>
+						
 						<tr>		
 							<td class="labelText">
-								<siga:Idioma key="gratuita.BusquedaSancionesLetrado.literal.fechaImposicion"/>
-							</td>
-							<td >
-								<% if (!formulario.getModo().equals("Ver")) { %>
-								<siga:Fecha  nombreCampo= "fechaImposicion" valorInicial="<%=fechaImposicion%>"/>
-								<% }else{ %>
-								<siga:Fecha  nombreCampo= "fechaImposicion" valorInicial="<%=fechaImposicion%>" disabled="true"/>
-								<% } %>
-							</td>
-							<td class="labelText">
-								<siga:Idioma key="censo.BusquedaSancionesLetrado.literal.refCGAE"/>
-							</td>
-							<td>
-								<html:text  property="refCGAE" size="20" maxlength="50" styleClass="<%=estiloCaja %>" readOnly="<%=breadonly%>" value="<%=refCGAE%>" ></html:text>
-							</td>
-						</tr>
-						<tr>		
-						<td class="labelText">
 								<siga:Idioma key="gratuita.BusquedaSancionesLetrado.literal.fechaAcuerdo"/>
 							</td>
-							<td >
+							<td  style="padding-left:25px;">
 								<% if (!formulario.getModo().equals("Ver")) { %>
 									 <siga:Fecha  nombreCampo= "fechaAcuerdo" valorInicial="<%=fechaAcuerdo%>" />
 								<% }else{ %>
 									<siga:Fecha  nombreCampo= "fechaAcuerdo" valorInicial="<%=fechaAcuerdo%>" disabled="true"/>
 								<% } %>									
+							</td>						
+						
+							<% if(	(Integer.parseInt(user.getLocation()) == 2000) || (Integer.parseInt(user.getLocation()) >= 3000)) { %>		
+								<td class="labelText">
+									<siga:Idioma key="censo.BusquedaSancionesLetrado.literal.refCGAE"/>
+								</td>
+								<td style="padding-left:25px;">
+									<html:text  property="refCGAE" size="20" maxlength="50" styleClass="<%=estiloCaja %>" readOnly="<%=breadonly%>" value="<%=refCGAE%>" ></html:text>
+								</td>
+							<% }else{%>
+								<html:hidden  name="SancionesLetradoForm" property="refCGAE"/>
+							<%}%>
+						</tr>
+
+						
+						<tr>		
+							<td class="labelText">
+								<siga:Idioma key="gratuita.BusquedaSancionesLetrado.literal.firmeza"/>
+							</td>
+							<td>
+								<% if (!formulario.getModo().equals("Ver")) { %>
+								<input type="checkbox" name="chkFirmeza" value="1" onclick="return fechaFirmeza();"  <%=(chkFirmeza.equals("1"))?"checked":""%> />
+								<siga:Fecha  nombreCampo= "firmeza" valorInicial="<%=fechaFirmeza%>"/>
+								<% }else { %>
+								<input type="checkbox" disabled="disabled" name="chkFirmeza" value="1" onclick="return fechaFirmeza();"  <%=(chkFirmeza.equals("1"))?"checked":""%> />
+								<siga:Fecha  nombreCampo= "firmeza" valorInicial="<%=fechaFirmeza%>" disabled="true"/>
+								<%} %>
+								
 							</td>
 							<td class="labelText">
-								<siga:Idioma key="gratuita.BusquedaSancionesLetrado.literal.fechaResolucion"/>
+								<siga:Idioma key="gratuita.BusquedaSancionesLetrado.literal.rehabilitado"/>
 							</td>
 							<td >
 								<% if (!formulario.getModo().equals("Ver")) { %>
-								 <siga:Fecha  nombreCampo= "fechaResolucion" valorInicial="<%=fechaResolucion%>" />
-								<% }else{ %>
-								 <siga:Fecha  nombreCampo= "fechaResolucion" valorInicial="<%=fechaResolucion%>" disabled="true"/>
-								<% } %>
-								
+									<input type="checkbox" name="chkRehabilitado" value="1" onclick="return fechaRehabilitado();"  <%=(chkRehabilitado.equals("1"))?"checked":""%> />
+									<siga:Fecha  nombreCampo= "rehabilitado" valorInicial="<%=fechaRehabilitado%>"/>								
+								<% }else {%>	
+									<input type="checkbox" disabled="disabled"  name="chkRehabilitado" value="1" onclick="return fechaRehabilitado();"  <%=(chkRehabilitado.equals("1"))?"checked":""%> />
+									<siga:Fecha  nombreCampo= "rehabilitado" valorInicial="<%=fechaRehabilitado%>" disabled="true"/>								
+								<%}%>
 							</td>
-						</tr>
-											
-						<tr>
-							<td class="labelText" colspan="2">
-								<siga:Idioma key="gratuita.BusquedaSancionesLetrado.literal.texto"/>
-							</td>
-							<td class="labelText" colspan="2">
-								<siga:Idioma key="gratuita.BusquedaSancionesLetrado.literal.observaciones"/>
-							</td>
-						</tr>
-						<tr>		
-							<td  colspan="2">
-						     	&nbsp;&nbsp;<html:textarea property="texto" 
-						     		onKeyDown="cuenta(this,3500)" onChange="cuenta(this,3500)"
-						     		style="overflow-y:auto; overflow-x:hidden; width:400px; height:200px; resize:none;" 
-						     		readOnly="<%=breadonly%>" styleclass="<%=estiloCaja %>" value="<%=texto%>"></html:textarea> 
-							</td>
-							<td colspan="2" valign="top">
-						     	&nbsp;&nbsp;<html:textarea property="observaciones"
-						     		onKeyDown="cuenta(this,3500)" onChange="cuenta(this,3500)"
-						     		style="overflow-y:auto; overflow-x:hidden; width:400px; height:200px; resize:none;" 
-						     		readOnly="<%=breadonly%>" styleclass="<%=estiloCaja%>" value="<%=observaciones%>"></html:textarea> 
-							</td>
-						</tr>
-						
+						</tr>						
+										
 						<tr>		
 							<td class="labelText">
 								<siga:Idioma key="gratuita.BusquedaSancionesLetrado.literal.fechaInicio"/>
@@ -419,51 +452,52 @@
 								<% } %>
 							</td>
 						</tr>
-
+						
+						<% if(tienepermisoArchivo.equals("1")){%>
+							<tr>
+							<td class="labelText">
+									<siga:Idioma key="gratuita.BusquedaSancionesLetrado.literal.fArchivada"/>
+								</td>
+								<td>					
+									<% if (!formulario.getModo().equals("Ver")) { %>
+										<input type="checkbox" name="chkArchivada" value="1" onclick="return fechaArchivo();" <%=(chkArchivada.equals("1"))?"checked":""%> />
+										<siga:Fecha  nombreCampo= "fechaArchivada" valorInicial="<%=fechaArchivada%>"/>			
+									<% }else {%>														
+										<input type="checkbox" disabled="disabled"  name="chkArchivada" value="1" onclick="return fechaArchivo();" <%=(chkArchivada.equals("1"))?"checked":""%> />
+										<siga:Fecha  nombreCampo= "fechaArchivada" valorInicial="<%=fechaArchivada%>" disabled="true"/>			
+									<%}%>
+								</td>							
+						   </tr>	
+					   <%}%>						
+											
+						<tr>
+							<td class="labelText" colspan="4">
+								<siga:Idioma key="gratuita.BusquedaSancionesLetrado.literal.texto"/>
+							</td>
 						<tr>		
-							<td class="labelText">
-								<siga:Idioma key="gratuita.BusquedaSancionesLetrado.literal.firmeza"/>
-							</td>
-							<td >
-								<% if (!formulario.getModo().equals("Ver")) { %>
-								<input type="checkbox" name="chkFirmeza" value="1" onclick="return fechaFirmeza();"  <%=(chkFirmeza.equals("1"))?"checked":""%> />
-								<siga:Fecha  nombreCampo= "firmeza" valorInicial="<%=fechaFirmeza%>"/>
-								<% }else { %>
-								<input type="checkbox" disabled="disabled" name="chkFirmeza" value="1" onclick="return fechaFirmeza();"  <%=(chkFirmeza.equals("1"))?"checked":""%> />
-								<siga:Fecha  nombreCampo= "firmeza" valorInicial="<%=fechaFirmeza%>" disabled="true"/>
-								<%} %>
-								
-							</td>
-							<td class="labelText">
-								<siga:Idioma key="gratuita.BusquedaSancionesLetrado.literal.rehabilitado"/>
-							</td>
-							<td >
-								<% if (!formulario.getModo().equals("Ver")) { %>
-									<input type="checkbox" name="chkRehabilitado" value="1" onclick="return fechaRehabilitado();"  <%=(chkRehabilitado.equals("1"))?"checked":""%> />
-									<siga:Fecha  nombreCampo= "rehabilitado" valorInicial="<%=fechaRehabilitado%>"/>								
-								<% }else {%>	
-									<input type="checkbox" disabled="disabled"  name="chkRehabilitado" value="1" onclick="return fechaRehabilitado();"  <%=(chkRehabilitado.equals("1"))?"checked":""%> />
-									<siga:Fecha  nombreCampo= "rehabilitado" valorInicial="<%=fechaRehabilitado%>" disabled="true"/>								
-								<%}%>
+							<td  colspan="4">
+						     	&nbsp;&nbsp;<html:textarea property="texto" 
+						     		onKeyDown="cuenta(this,3500)" onChange="cuenta(this,3500)"
+						     		style="overflow-y:auto; overflow-x:hidden; width:875px; height:175px; resize:none;" 
+						     		readOnly="<%=breadonly%>" styleclass="<%=estiloCaja %>" value="<%=texto%>"></html:textarea> 
+							</td>							
+						</tr>
+						
+						
+						<tr>							
+							<td class="labelText" colspan="4">
+								<siga:Idioma key="gratuita.BusquedaSancionesLetrado.literal.observaciones"/>
 							</td>
 						</tr>
-						<% if(tienepermisoArchivo.equals("1")){%>
-						<tr>
-						<td class="labelText">
-								<siga:Idioma key="gratuita.BusquedaSancionesLetrado.literal.fArchivada"/>
+						<tr>		
+							<td colspan="4" valign="top">
+						     	&nbsp;&nbsp;<html:textarea property="observaciones"
+						     		onKeyDown="cuenta(this,3500)" onChange="cuenta(this,3500)"
+						     		style="overflow-y:auto; overflow-x:hidden; width:875px; height:50px; resize:none;" 
+						     		readOnly="<%=breadonly%>" styleclass="<%=estiloCaja%>" value="<%=observaciones%>"></html:textarea> 
 							</td>
-							<td >					
-								
-								<% if (!formulario.getModo().equals("Ver")) { %>
-									<input type="checkbox" name="chkArchivada" value="1" onclick="return fechaArchivo();" <%=(chkArchivada.equals("1"))?"checked":""%> />
-									<siga:Fecha  nombreCampo= "fechaArchivada" valorInicial="<%=fechaArchivada%>"/>			
-								<% }else {%>														
-									<input type="checkbox" disabled="disabled"  name="chkArchivada" value="1" onclick="return fechaArchivo();" <%=(chkArchivada.equals("1"))?"checked":""%> />
-									<siga:Fecha  nombreCampo= "fechaArchivada" valorInicial="<%=fechaArchivada%>" disabled="true"/>			
-								<%}%>
-							</td>							
-					   </tr>	
-					   <%}%>
+						</tr>
+
 		   		</table>
 				</siga:ConjCampos>
 			</td>
@@ -492,8 +526,20 @@
 		<input type="hidden" name="modo" value="abrirBusquedaModal">
 		<input type="hidden" name="clientes"	value="1">
 		<input type="hidden" name="busquedaSancion" value="1">
-		
 	</html:form>
+	
+	<html:form  action="/CEN_BusquedaClientes.do" method="POST" target="mainWorkArea">
+		<html:hidden  name="busquedaClientesForm" property="modo"/>
+	</html:form>	
+	
+	<html:form action="/INF_InformesGenericos" method="post" target="submitArea">
+		<html:hidden property="idInstitucion" value = "<%=idInstitucionAlta%>"/>
+		<html:hidden property="idTipoInforme" value="SANC"/>
+		<html:hidden property="enviar" value="0"/>
+		<html:hidden property="descargar" value="1"/>
+		<html:hidden property="datosInforme"/>
+		<html:hidden property="modo" value = "preSeleccionInformes"/>
+	</html:form>	
 		
 <!-- INICIO: SUBMIT AREA -->
 <!-- Obligatoria en todas las páginas-->

@@ -412,7 +412,7 @@ public class FicheroBancarioPagosAction extends MasterAction{
 			tx.begin();
 			resultado = ClsMngBBDD.callPLProcedure("{call PKG_SIGA_CARGOS.PRESENTACION(?,?,?,?,?,?,?,?,?,?,?,?,?,?)}", 3, param_in_banco);
 			
-			String[] codigosErrorFormato = {"5412", "5413", "5414", "5415", "5416", "5417", "5418"};
+			String[] codigosErrorFormato = {"5412", "5413", "5414", "5415", "5416", "5417", "5418", "5421", "5422"};
 			if(Arrays.asList(codigosErrorFormato).contains(resultado[1])){
 				throw new SIGAException(resultado[2]);
 				
@@ -637,7 +637,7 @@ public class FicheroBancarioPagosAction extends MasterAction{
 			String resultado[] = new String[2];
 			resultado = ClsMngBBDD.callPLProcedure("{call PKG_SIGA_CARGOS.Regenerar_Presentacion(?,?,?,?,?,?,?,?,?,?,?)}", 2, param_in_banco);	
 		
-			String[] codigosErrorFormato = {"5412", "5413", "5414", "5415", "5416", "5417", "5418"};
+			String[] codigosErrorFormato = {"5412", "5413", "5414", "5415", "5416", "5417", "5418", "5421", "5422"};
 			if(Arrays.asList(codigosErrorFormato).contains(resultado[0])){
 				throw new SIGAException(resultado[1]);
 				

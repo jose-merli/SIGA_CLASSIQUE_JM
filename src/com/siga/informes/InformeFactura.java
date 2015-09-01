@@ -21,6 +21,7 @@ import com.siga.Utilidades.UtilidadesString;
 import com.siga.beans.AdmLenguajesAdm;
 import com.siga.beans.CenClienteAdm;
 import com.siga.beans.CenColegiadoAdm;
+import com.siga.beans.CenPersonaAdm;
 import com.siga.beans.FacFacturaAdm;
 import com.siga.beans.FacFacturaBean;
 import com.siga.beans.FacLineaFacturaAdm;
@@ -112,6 +113,9 @@ public class InformeFactura extends MasterReport {
 	 */
 	public File generarFactura (HttpServletRequest request, String idioma, String institucion, String idFactura, String nColegiado) throws ClsExceptions,SIGAException {
 		File fPdf = null;
+		String idPersonaFactura ="";
+		String nombreColegiado ="";
+		String idserieidprogramacion="";
 			
 		try {
 		    ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
@@ -126,8 +130,11 @@ public class InformeFactura extends MasterReport {
 			//obtener plantilla
 			FacFacturaAdm facAdm= new FacFacturaAdm(usrbean);
 			Vector<Row> v = facAdm.getFactura(institucion,idFactura);
-			Hashtable<String, Object> ht =null;
+			CenPersonaAdm personaAdm = new CenPersonaAdm(usrbean);
+	
+			Hashtable<String, Object> ht =null;	
 			String modelo ="";
+			String nombrePDF = null;
 			if (v!=null && v.size()>0) {
 				ht = ((Row) v.get(0)).getRow(); 
 				FacPlantillaFacturacionAdm plAdm= new FacPlantillaFacturacionAdm(usrbean);
@@ -135,13 +142,45 @@ public class InformeFactura extends MasterReport {
 				if (vv!=null && vv.size()>0) {
 					modelo=(String)vv.get(0);
 				}
+				// obtener ruta almacen
+				idserieidprogramacion = ht.get(FacFacturaBean.C_IDSERIEFACTURACION).toString()+"_" + ht.get(FacFacturaBean.C_IDPROGRAMACION).toString();
+				
+
+				//Recuperamos el id de la factura y con ello el nombre de la persona
+				idPersonaFactura = (String)ht.get(FacFacturaBean.C_IDPERSONA);
+				//Del id persona recuperamos sus nombre y apellidos
+				nombreColegiado = personaAdm.obtenerNombreApellidos(idPersonaFactura);
+				
+				
+				if(nombreColegiado != null && !"".equalsIgnoreCase(nombreColegiado)){
+					nombreColegiado = UtilidadesString.eliminarAcentosYCaracteresEspeciales(nombreColegiado);	
+				}else{
+					nombreColegiado="";
+				}
+				
+				//para las facturas que estan generadas pero no confirmadas por lo que no tienen número
+				//se le pondra de nombre del idfactura y se borrará una vez descargada
+				if(UtilidadesHash.getString(ht,FacFacturaBean.C_NUMEROFACTURA)==null ||UtilidadesHash.getString(ht,FacFacturaBean.C_NUMEROFACTURA).equals("")){
+					if(nColegiado != null && !"".equalsIgnoreCase(nColegiado)){
+						nombrePDF =nombreColegiado +"-"+ nColegiado + "-"+(String) ht.get(FacFacturaBean.C_IDFACTURA);
+					}else{
+						//si nColegiado es vacio se quita para evitar que salga dos guiones nombreColegiado--numeracion
+						nombrePDF =nombreColegiado +"-"+(String) ht.get(FacFacturaBean.C_IDFACTURA);
+					}
+					request.setAttribute("borrarFichero", "true");
+				}else{
+					if(nColegiado != null && !"".equalsIgnoreCase(nColegiado)){
+						nombrePDF=nombreColegiado +"-"+nColegiado + "-"+(String) ht.get(FacFacturaBean.C_NUMEROFACTURA);
+					}else{
+						//si nColegiado es vacio se quita para evitar que salga dos guiones nombreColegiado--numeracion
+						nombrePDF=nombreColegiado +"-"+(String) ht.get(FacFacturaBean.C_NUMEROFACTURA);
+					}
+				}	
+				
 			}
 			String rutaPlantilla = rp.returnProperty("facturacion.directorioFisicoPlantillaFacturaJava")+rp.returnProperty("facturacion.directorioPlantillaFacturaJava");
 			rutaPlantilla += ClsConstants.FILE_SEP+institucion.toString()+ClsConstants.FILE_SEP+modelo;
 			String nombrePlantilla="factura"+"_"+idiomaExt+".fo";
-			
-			// obtener ruta almacen
-			String idserieidprogramacion = ht.get(FacFacturaBean.C_IDSERIEFACTURACION).toString()+"_" + ht.get(FacFacturaBean.C_IDPROGRAMACION).toString();
 
 			String rutaAlmacen = rp.returnProperty("facturacion.directorioFisicoFacturaPDFJava")+rp.returnProperty("facturacion.directorioFacturaPDFJava");
     		rutaAlmacen += ClsConstants.FILE_SEP+institucion.toString()+ClsConstants.FILE_SEP+idserieidprogramacion;
@@ -155,15 +194,7 @@ public class InformeFactura extends MasterReport {
 				}
 			}
 			rutaAlmacen+=ClsConstants.FILE_SEP;
-			String nombrePDF=nColegiado + "-"+(String) ht.get(FacFacturaBean.C_NUMEROFACTURA);
-			
-			//para las facturas que estan generadas pero no confirmadas por lo que no tienen número
-			//se le pondra de nombre del idfactura y se borrará una vez descargada
-			if(UtilidadesHash.getString(ht,FacFacturaBean.C_NUMEROFACTURA)==null ||UtilidadesHash.getString(ht,FacFacturaBean.C_NUMEROFACTURA).equals("")){
-				nombrePDF = nColegiado + "-"+(String) ht.get(FacFacturaBean.C_IDFACTURA);
-				request.setAttribute("borrarFichero", "true");
-			}
-			
+					
 			// utilizamos la ruta de la plantilla para el temporal
 			String rutaServidorTmp=rutaPlantilla+ClsConstants.FILE_SEP+"tmp_factura_"+System.currentTimeMillis();
 			
@@ -184,6 +215,43 @@ public class InformeFactura extends MasterReport {
 		
         return fPdf;
 	}
+	
+	public File generarFacturaFirmada (HttpServletRequest request, String idioma, String institucion, String idFactura, String nColegiado) throws ClsExceptions,SIGAException {
+		File filePDF =  generarFactura(request, idioma, institucion, idFactura, nColegiado);
+		
+		if (filePDF==null) {
+			throw new ClsExceptions("Error al generar la factura. Fichero devuelto es nulo.");				
+		} else {
+		    ClsLogging.writeFileLog("DESPUES DE LA GENERACION DE LA FACTURA: "+filePDF.getAbsolutePath(),10);
+		    ClsLogging.writeFileLog("Existe el fichero: "+((filePDF.exists())?"SI":"NO"),10);
+		}
+//
+		FacFacturaAdm facfactura=new FacFacturaAdm(usrbean);
+		facfactura.firmarPDF(filePDF,institucion);
+		
+        return filePDF;
+	}
+	
+	
+	/**
+	 * @param request
+	 * @param idInstitucion
+	 * @param idPeticion
+	 * @param vFacturas
+	 * @return
+	 */
+	public File generarInformeFacturacionRapida(HttpServletRequest request, String idInstitucion, String idPeticion, Vector<Hashtable<String, Object>> vFacturas) throws ClsExceptions, SIGAException {
+		File fichero = null;
+		/** Si se trata solo de una factura, se devuelve directamente el fichero PDF **/
+		if (vFacturas != null && vFacturas.size() == 1) {
+			fichero = generarPDFFacturacionRapida(request, idInstitucion, (Hashtable<String, Object>) vFacturas.get(0));
+		} else {
+			/** Si generan mas de una factura, se genera un zip con todas las facturas (PDF) **/
+			fichero = generarZipFacturacionRapida(request, idInstitucion, idPeticion, vFacturas);
+		}
+
+		return fichero;
+	}		
 	
 	/**
 	 * Genera un zip con las facturas de los productos o certificados
@@ -228,43 +296,25 @@ public class InformeFactura extends MasterReport {
 			ArrayList<Hashtable<String,Object>> arrayDatosFacturas = new ArrayList<Hashtable<String,Object>>();
 			
 			// Recorre las facturas asociadas a una peticion
-			for (int i=0; i<vFacturas.size(); i++) {
-				
-				// Obtiene los datos de la factura
-				Hashtable<String,Object> hFactura = (Hashtable<String,Object>) vFacturas.get(i);
-				String idPersona = UtilidadesHash.getString(hFactura, FacFacturaBean.C_IDPERSONA);
-				String idFactura = UtilidadesHash.getString(hFactura, FacFacturaBean.C_IDFACTURA);
-				String idSerieFacturacion = UtilidadesHash.getString(hFactura, FacFacturaBean.C_IDSERIEFACTURACION);
-				String idProgramacion = UtilidadesHash.getString(hFactura, FacFacturaBean.C_IDPROGRAMACION);
-				
-				// Obtenemos el numero de colegiado
-    			CenColegiadoAdm admColegiado = new CenColegiadoAdm(usrbean);
-	  			Hashtable<String,Object> hColegiado = admColegiado.obtenerDatosColegiado(usrbean.getLocation(), idPersona, usrbean.getLanguage());		  			
-	  			String nColegiado = "";
-	  			if (hColegiado!=null && hColegiado.size()>0) {
-	  			    nColegiado = UtilidadesHash.getString(hColegiado,"NCOLEGIADO_LETRADO");
-	  			}	
-				
-				// Obtenemos el lenguaje del cliente 
-    			CenClienteAdm admCliente = new CenClienteAdm(usrbean);
-    			String lenguaje = admCliente.getLenguaje(idInstitucion, idPersona);
-				
-    			// Generamos el fichero pdf de la factura
-				InformeFactura inf = new InformeFactura(usrbean);	
-				File ficheroPdf = inf.generarFactura(request, lenguaje.toUpperCase(), usrbean.getLocation(), idFactura, nColegiado);
-				
+			for (int i = 0; i < vFacturas.size(); i++) {
+				/** Generamos cada PDF de la facturacion para ir añadiendolo al ZIP **/
+				Hashtable<String, Object> hFactura = (Hashtable<String, Object>) vFacturas.get(i);
+				File ficheroPdf = generarPDFFacturacionRapida(request, idInstitucion, hFactura);
+
 				// Comprobamos que exista el fichero pdf de la factura
-	  			if (ficheroPdf==null) {
-				    throw new ClsExceptions("Error al generar la factura. Fichero devuelto es nulo.");
-	  			} else if (!ficheroPdf.exists()){
+				if (ficheroPdf == null) {
+					throw new ClsExceptions("Error al generar la factura. Fichero devuelto es nulo.");
+				} else if (!ficheroPdf.exists()) {
 					throw new SIGAException("messages.general.error.ficheroNoExisteReintentar");
 				}
-				
+
 				// Si llega a este punto, o bien existia el fichero previamente, o bien lo hemos generado => Lo incluimos en el array con los pdf del zip
 				listaFicherosPDF.add(ficheroPdf);
-				
+
 				// Genera un array con los ficheros y ruta de su carpeta
-				Hashtable<String,Object> hDatosFactura = new Hashtable<String,Object>();
+				Hashtable<String, Object> hDatosFactura = new Hashtable<String, Object>();
+				String idSerieFacturacion = UtilidadesHash.getString(hFactura, FacFacturaBean.C_IDSERIEFACTURACION);
+				String idProgramacion = UtilidadesHash.getString(hFactura, FacFacturaBean.C_IDPROGRAMACION);
 				hDatosFactura.put("Fichero", ficheroPdf);
 				hDatosFactura.put("RutaCarpeta", rutaAlmacen + File.separator + idSerieFacturacion + "_" + idProgramacion);
 				arrayDatosFacturas.add(hDatosFactura);
@@ -291,9 +341,53 @@ public class InformeFactura extends MasterReport {
 			throw ex;
 			
 		} catch (Exception e) {
-			throw new ClsExceptions(e,"Error al generar el informe: " + e.getLocalizedMessage());
+			throw new ClsExceptions(e,"Error al generar el ZIP de una facturacion rapida: " + e.getLocalizedMessage());
 		} 
 		
         return ficheroZip;
 	}
+	
+	/**
+	 * @param request
+	 * @param idInstitucion
+	 * @param idPeticion
+	 * @param vFacturas
+	 * @return
+	 */
+	public File generarPDFFacturacionRapida(HttpServletRequest request, String idInstitucion, Hashtable<String, Object> hFactura) throws ClsExceptions, SIGAException {
+		File ficheroPDF = null;
+		try {
+			// Obtiene los datos de la factura
+			String idPersona = UtilidadesHash.getString(hFactura, FacFacturaBean.C_IDPERSONA);
+			String idFactura = UtilidadesHash.getString(hFactura, FacFacturaBean.C_IDFACTURA);
+
+			// Obtenemos el numero de colegiado
+			CenColegiadoAdm admColegiado = new CenColegiadoAdm(usrbean);
+			Hashtable<String, Object> hColegiado = admColegiado.obtenerDatosColegiado(usrbean.getLocation(), idPersona, usrbean.getLanguage());
+			String nColegiado = "";
+			if (hColegiado != null && hColegiado.size() > 0) {
+				nColegiado = UtilidadesHash.getString(hColegiado, "NCOLEGIADO_LETRADO");
+			}
+
+			// Obtenemos el lenguaje del cliente
+			CenClienteAdm admCliente = new CenClienteAdm(usrbean);
+			String lenguaje = admCliente.getLenguaje(idInstitucion, idPersona);
+
+			// Generamos el fichero pdf de la factura
+			InformeFactura inf = new InformeFactura(usrbean);
+			ficheroPDF = inf.generarFactura(request, lenguaje.toUpperCase(), usrbean.getLocation(), idFactura, nColegiado);
+
+		} catch (SIGAException se) {
+			throw se;
+
+		} catch (ClsExceptions ex) {
+			throw ex;
+
+		} catch (Exception e) {
+			throw new ClsExceptions(e, "Error al generar el PDF de una facturacion rapida: " + e.getLocalizedMessage());
+		}
+
+		return ficheroPDF;
+	}
+	
 }

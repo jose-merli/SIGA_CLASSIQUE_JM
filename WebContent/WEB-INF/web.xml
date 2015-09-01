@@ -134,9 +134,11 @@
 	<listener><listener-class>com.siga.ws.i2032.PCAJGPaisVascoResoluciones</listener-class></listener>
 	<listener><listener-class>com.siga.ws.cen.CargaCensoWSListener</listener-class></listener>
 	<listener><listener-class>com.siga.ws.mutualidad.MutualidadEnvioCertificadosFnalizadosListener</listener-class></listener>
-	
+	<listener><listener-class>com.siga.servlets.SIGASvlEnvioCorreoPeriodicoSancionesCGAEListener</listener-class></listener>
+		
 	<listener><listener-class>com.siga.servlets.SIGASvlProcesoAutomaticoGeneracionCalendarios</listener-class></listener>
 	<listener><listener-class>com.siga.servlets.SIGASvlProcesoAutomaticoFacturacionSJCS</listener-class></listener>
+	<listener><listener-class>com.siga.servlets.SIGASvlEnvioCorreoAlertasIntentosEEJGListener</listener-class></listener>
 
 
 	<servlet>

@@ -104,40 +104,24 @@
 				<html:hidden property="idSolicitud" value="" />
 				<html:hidden property="idEnvio" value="" />
 				<html:hidden property="nombre" value="kk" />
-
 				<html:hidden property="idEnvioBuscar" value="" />
-
 				<html:hidden property="idsParaEnviar" />
 				<html:hidden property="acuseRecibo" value="0" />
+				<html:hidden property="colegio" value="o" />
 
 				<tr>
-					<td><siga:ConjCampos
-							leyenda="envios.certificados.literal.destinatario">
-							<table class="tablaCampos" align="center" border="0">
-								<tr>
-									<td class="labelText" width="180"><siga:Idioma
-											key="envios.definir.literal.institucionOrigen" /></td>
-									<td align="left"><input type="radio" name="colegio"
-										value="o" checked></td>
-								</tr>
-								<tr>
-									<td class="labelText"><siga:Idioma
-											key="envios.definir.literal.institucionDestino" /></td>
-									<td align="left"><input type="radio" name="colegio"
-										value="d"></td>
-								</tr>
-							</table>
-						</siga:ConjCampos> <siga:ConjCampos leyenda="envios.certificados.literal.confEnvio">
+					<td>
+					<siga:ConjCampos leyenda="envios.certificados.literal.confEnvio">
 						
 							<table class="tablaCampos" align="center" border="0">
 							<tr>	
-				<td width="25%"></td>
-				<td width="40%"></td>
-				<td width="30%"></td>
-				<td width="10%"></td>
-				
-						
-		</tr>	
+								<td width="25%"></td>
+								<td width="40%"></td>
+								<td width="30%"></td>
+								<td width="10%"></td>
+								
+										
+							</tr>	
 								<tr>
 									<td class="labelText"><siga:Idioma
 											key="envios.definir.literal.tipoenvio" />&nbsp;(*)</td>
@@ -200,7 +184,7 @@
 		 La propiedad modal dice el tamanho de la ventana (M,P,G)
 	-->
 
-		<siga:ConjBotonesAccion botones="Y,C" modal="P" />
+		<siga:ConjBotonesAccion botones="D,Y,C" modal="P" />
 
 
 	<!-- INICIO: SCRIPTS BOTONES -->
@@ -211,7 +195,8 @@
 		<!-- Asociada al boton GuardarCerrar -->
 		function accionGuardarCerrar() 
 		{	
-			sub();	
+			sub();
+			document.DefinirEnviosForm.modo.value = 'insertarEnvioModalCertificado';
 			if (validateDefinirEnviosForm(document.DefinirEnviosForm)){
 				var insTipoEnvio = document.forms[0].comboTipoEnvio.value;
 				var opcion_array=insTipoEnvio.split(",");
@@ -220,8 +205,7 @@
 				else
 					document.DefinirEnviosForm.acuseRecibo.value = "0";
 				
-				var f = document.DefinirEnviosForm.name;
-				window.frames.submitArea.location = '<%=app%>/html/jsp/general/loadingWindowOpener.jsp?formName=' + f + '&msg=messages.wait';
+				document.DefinirEnviosForm.submit();
 			} else {
 				fin();
 			}
@@ -267,8 +251,16 @@
 			}
 			
 		} 
+		function accionDownload() 
+		{
+			sub();	
+			document.DefinirEnviosForm.modo.value = 'download';
+			document.DefinirEnviosForm.submit();
+		}
 	
-
+		function refrescarLocal() {
+			
+		}
 	</script>
 	
 	<!-- FIN: SCRIPTS BOTONES -->

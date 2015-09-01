@@ -3992,6 +3992,9 @@ public class CenClienteAdm extends MasterBeanAdmVisible
 	    			
 	    		}
 				htDatos.put("NOTAS_DESFAVORABLES",descSancion.toString());
+			}else{
+				htDatos.put("NOTAS_DESFAVORABLES","");
+				
 			}
 			
 			//Vemos si hay que incluir las deudas
@@ -4053,6 +4056,9 @@ public class CenClienteAdm extends MasterBeanAdmVisible
 	    		}
 		        
 				htDatos.put("DEUDAS",descMorosos.toString());
+				
+			}else{
+				htDatos.put("DEUDAS","");
 				
 			}
 			

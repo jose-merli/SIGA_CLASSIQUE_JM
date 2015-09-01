@@ -28,6 +28,7 @@ import com.atos.utils.UsrBean;
 import com.lowagie.text.pdf.PdfReader;
 import com.lowagie.text.pdf.PdfSignatureAppearance;
 import com.lowagie.text.pdf.PdfStamper;
+import com.siga.Utilidades.GestorContadores;
 import com.siga.Utilidades.PaginadorBind;
 import com.siga.Utilidades.UtilidadesFecha;
 import com.siga.Utilidades.UtilidadesHash;
@@ -276,7 +277,7 @@ public class CerSolicitudCertificadosAdm extends MasterBeanAdministrador {
 
         try
         {
-            String sRutaBD = getRutaCertificadoDirectorioBD(solicitud);
+            String sRutaBD = getRutaCertificadoDirectorioBD(solicitud.getIdInstitucion());
 
             if (sRutaBD.equals(""))
             {
@@ -353,7 +354,7 @@ public class CerSolicitudCertificadosAdm extends MasterBeanAdministrador {
     {
         try
         {
-            String sRutaBD = getRutaCertificadoDirectorioBD(solicitud);
+            String sRutaBD = getRutaCertificadoDirectorioBD(solicitud.getIdInstitucion());
 
             if (sRutaBD.equals(""))
             {
@@ -373,7 +374,7 @@ public class CerSolicitudCertificadosAdm extends MasterBeanAdministrador {
     {
         try
         {
-            String sRutaBD = getRutaCertificadoDirectorioBD(solicitud);
+            String sRutaBD = getRutaCertificadoDirectorioBD(solicitud.getIdInstitucion());
 
             if (sRutaBD.equals(""))
             {
@@ -391,7 +392,7 @@ public class CerSolicitudCertificadosAdm extends MasterBeanAdministrador {
         }
     }
 
-    public String getRutaCertificadoDirectorioBD(CerSolicitudCertificadosBean solicitud)
+    public String getRutaCertificadoDirectorioBD(Integer idInstitucion)
     {
         String sRuta="";
 
@@ -399,7 +400,7 @@ public class CerSolicitudCertificadosAdm extends MasterBeanAdministrador {
         {
             GenParametrosAdm admParametros = new GenParametrosAdm(this.usrbean);
 
-            sRuta = admParametros.getValor(""+solicitud.getIdInstitucion(), "CER" ,"PATH_CERTIFICADOS", "");
+            sRuta = admParametros.getValor(""+idInstitucion, "CER" ,"PATH_CERTIFICADOS", "");
 
             if (sRuta==null)
             {
@@ -422,11 +423,61 @@ public class CerSolicitudCertificadosAdm extends MasterBeanAdministrador {
 
         return sRutaBD + File.separator + solicitud.getIdInstitucion() + File.separator + anhoSolicitud + File.separator + mesSolicitud;
     }
-
     public String getRutaCertificadoFichero(CerSolicitudCertificadosBean solicitud, String sRutaBD)
     {
         return getRutaCertificadoDirectorio(solicitud, sRutaBD) + File.separator + solicitud.getIdSolicitud() + ".pdf";
     }
+
+	public String getNombreFicheroSalida(CerSolicitudCertificadosBean solicitudCertificadoBean) throws ClsExceptions, SIGAException {
+		PysProductosInstitucionAdm admProd = new PysProductosInstitucionAdm(this.usrbean);
+		Hashtable<String, Object> productoInstitucionPKHashtable = new Hashtable<String, Object>();
+		productoInstitucionPKHashtable.put(PysProductosInstitucionBean.C_IDINSTITUCION, solicitudCertificadoBean.getIdInstitucion());
+		productoInstitucionPKHashtable.put(PysProductosInstitucionBean.C_IDTIPOPRODUCTO, solicitudCertificadoBean.getPpn_IdTipoProducto());
+		productoInstitucionPKHashtable.put(PysProductosInstitucionBean.C_IDPRODUCTO, solicitudCertificadoBean.getPpn_IdProducto());
+		productoInstitucionPKHashtable.put(PysProductosInstitucionBean.C_IDPRODUCTOINSTITUCION, solicitudCertificadoBean.getPpn_IdProductoInstitucion());
+
+		Vector productoInstitucionPKVector = admProd.selectByPK(productoInstitucionPKHashtable);
+		if (productoInstitucionPKVector == null || productoInstitucionPKVector.size() < 1) {
+			throw new SIGAException("No se ha encontrado el producto");
+		}
+		PysProductosInstitucionBean beanProd = (PysProductosInstitucionBean) productoInstitucionPKVector.get(0);
+		GestorContadores gc = new GestorContadores(this.usrbean);
+		Hashtable<String, Object> contadorTablaHash = gc.getContador(solicitudCertificadoBean.getIdInstitucion(), beanProd.getIdContador());
+		Integer longitud = new Integer((contadorTablaHash.get("LONGITUDCONTADOR").toString()));
+
+		CenPersonaAdm personaAdm = new CenPersonaAdm(this.usrbean);
+		// Obtenemos el nombre de la persona
+		String nombreColegiado = personaAdm.obtenerNombreApellidos(String.valueOf(solicitudCertificadoBean.getIdPersona_Des()));
+
+		// Si es distinto de null y de vacio eliminamos los caracteres
+		// problemáticos
+		if (nombreColegiado != null && !"".equalsIgnoreCase(nombreColegiado)) {
+			nombreColegiado = UtilidadesString.eliminarAcentosYCaracteresEspeciales(nombreColegiado);
+			solicitudCertificadoBean.setNombrePersona_Des(nombreColegiado);
+		} else {
+			solicitudCertificadoBean.setNombrePersona_Des("");
+		}
+		StringBuilder nombreFicheroSalida = new StringBuilder();
+		nombreFicheroSalida.append(solicitudCertificadoBean.getNombrePersona_Des());
+		nombreFicheroSalida.append("-");
+		nombreFicheroSalida.append(solicitudCertificadoBean.getPrefijoCer().replaceAll("/", ""));
+		if(solicitudCertificadoBean.getPrefijoCer() != null && !"".equalsIgnoreCase(solicitudCertificadoBean.getPrefijoCer())){
+			nombreFicheroSalida.append("_");
+		}	
+		Integer contadorSugerido = new Integer(solicitudCertificadoBean.getContadorCer());
+		String contadorFinalSugerido = UtilidadesString.formatea(contadorSugerido, longitud, true);
+		nombreFicheroSalida.append(contadorFinalSugerido);
+		if(solicitudCertificadoBean.getSufijoCer() !=null && !"".equalsIgnoreCase(solicitudCertificadoBean.getSufijoCer())){
+			nombreFicheroSalida.append("_");
+			nombreFicheroSalida.append(solicitudCertificadoBean.getSufijoCer().replaceAll("/", ""));
+		}
+		nombreFicheroSalida.append("-");
+		nombreFicheroSalida.append(solicitudCertificadoBean.getIdSolicitud());
+		nombreFicheroSalida.append(".pdf");
+
+		return nombreFicheroSalida.toString();
+
+	}
 
     /**
      * 

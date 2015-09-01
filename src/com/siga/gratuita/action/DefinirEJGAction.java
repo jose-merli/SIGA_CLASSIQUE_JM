@@ -4,11 +4,9 @@
 
 package com.siga.gratuita.action;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
@@ -40,7 +38,6 @@ import com.siga.Utilidades.PaginadorBind;
 import com.siga.Utilidades.UtilidadesBDAdm;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;
-import com.siga.beans.AdmLenguajesAdm;
 import com.siga.beans.CenColegiadoAdm;
 import com.siga.beans.CenPersonaAdm;
 import com.siga.beans.ExpExpedienteAdm;
@@ -93,7 +90,6 @@ import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
 import com.siga.gratuita.form.DefinirEJGForm;
-import com.siga.informes.InformeDefinirEJG;
 
 import es.satec.businessManager.BusinessManager;
 
@@ -144,10 +140,6 @@ public class DefinirEJGAction extends MasterAction
 					miForm.reset(new String[]{"registrosSeleccionados","datosPaginador","seleccionarTodos"});
 					request.getSession().removeAttribute("DATAPAGINADOR");
 					mapDestino = buscarPor(mapping, miForm, request, response); 
-				}else if (accion.equalsIgnoreCase("generarCarta")){
-					mapDestino = generarCarta(mapping, miForm, request, response);
-				}else if (accion.equalsIgnoreCase("finalizarCarta")){
-					mapDestino = finalizarCarta(mapping, miForm, request, response);
 				}else if ( accion.equalsIgnoreCase("getAjaxTurnos")){
 					ClsLogging.writeFileLog("DEFINIR EJG:getAjaxTurnos", 10);
 					getAjaxTurnos(mapping, miForm, request, response);
@@ -1556,150 +1548,8 @@ public class DefinirEJGAction extends MasterAction
     } 
 	
 	
-	/**
-	 * @param mapping Mapeador de las acciones. De tipo ActionMapping.
-	 * @param formulario del que se recoge la información. De tipo MasterForm.
-	 * @param request Información de sesión. De tipo HttpServletRequest
-	 * @param response De tipo HttpServletResponse
-	 * @return String que indicará la siguiente acción a llevar a cabo. 
-	 */
-	protected String generarCarta(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException  {
-	    
-		try{
-			DefinirEJGForm miForm =(DefinirEJGForm)formulario;
-			
-			// Guardo el formulario en sesión para poder fijar a quienes hay que enviar la carta
-			request.getSession().setAttribute("DATABACKUP", miForm.getDatos());
-		}
-		catch (Exception e) 
-		{
-			throw new SIGAException("messages.general.error",e,new String[] {"modulo.gratuita"});
-		} 
-        return "recogidaDatos";
-	}
 	
-	/**
-	 * @param mapping Mapeador de las acciones. De tipo ActionMapping.
-	 * @param formulario del que se recoge la información. De tipo MasterForm.
-	 * @param request Información de sesión. De tipo HttpServletRequest
-	 * @param response De tipo HttpServletResponse
-	 * @return String que indicará la siguiente acción a llevar a cabo. 
-	 */
-	protected String finalizarCarta(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException  {
-	    
-		UsrBean usr = (UsrBean)request.getSession().getAttribute("USRBEAN");
-		String institucion =usr.getLocation();
-		String idioma = usr.getLanguage().toUpperCase();
-
-		String resultado="recogidaDatos";
-		
-		Vector vResultado= new Vector();
-		ArrayList ficherosPDF= new ArrayList();
-		File rutaFin=null;
-		File rutaTmp=null;
-		int numeroCarta=0;
-			
-		try {
-			//obtener plantilla
-		    ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
-//			ReadProperties rp = new ReadProperties("SIGA.properties");			
-		    String rutaPlantilla = Plantilla.obtenerPathNormalizado(rp.returnProperty("sjcs.directorioFisicoCartaEJGJava")+rp.returnProperty("sjcs.directorioCartaEJGJava"))+ClsConstants.FILE_SEP+institucion;
-		    
-		    // RGG cambio de codigos 
-		    String lenguajeExt ="es";
-		    AdmLenguajesAdm al = new AdmLenguajesAdm(this.getUserBean(request));
-		    lenguajeExt=al.getLenguajeExt(idioma);
-		    
-		    String nombrePlantilla="plantillaCartaEJG_"+lenguajeExt+".fo";
-		    
-		    
-		    InformeDefinirEJG informe = new InformeDefinirEJG();
-			String contenidoPlantilla = informe.obtenerContenidoPlantilla(rutaPlantilla,nombrePlantilla);
-			
-		    //obtener la ruta de descarga
-		    String rutaServidor =
-		    	Plantilla.obtenerPathNormalizado(rp.returnProperty("sjcs.directorioFisicoSJCSJava")+rp.returnProperty("sjcs.directorioSJCSJava"))+
-		    	ClsConstants.FILE_SEP+institucion;
-			rutaFin=new File(rutaServidor);
-			if (!rutaFin.exists()){
-				if(!rutaFin.mkdirs()){
-					throw new SIGAException("facturacion.nuevoFichero.literal.errorAcceso");					
-				}
-			}    
-			String rutaServidorTmp=rutaServidor+ClsConstants.FILE_SEP+"tmp_ejg_"+System.currentTimeMillis();
-			rutaTmp=new File(rutaServidorTmp);
-			if(!rutaTmp.mkdirs()){
-				throw new SIGAException("facturacion.nuevoFichero.literal.errorAcceso");					
-			}
-			
-		    //obtener los datos comunes
-		    Hashtable datosComunes= this.obtenerDatosComunes(request);
-			
-			//buscar los registros seleccionados
-			Hashtable miHash= (Hashtable) request.getSession().getAttribute("DATABACKUP");
-		
-			
-			ScsEJGAdm admEJG =  new ScsEJGAdm(this.getUserBean(request));
-			vResultado = admEJG.getDatosCartaEJG(miHash);
-			
-			if (vResultado!=null && !vResultado.isEmpty()){
-				boolean correcto=true;
-				Enumeration listaEJGs=vResultado.elements();
-	    		
-				while(correcto && listaEJGs.hasMoreElements()){
-					Hashtable datosBaseEJG=(Hashtable)listaEJGs.nextElement();
-					datosBaseEJG.putAll(datosComunes);
-					File fPdf = informe.generarInforme(request,datosBaseEJG,rutaServidorTmp,contenidoPlantilla,rutaServidorTmp,"cartasEJG_" +numeroCarta);
-					correcto=(fPdf!=null);
-					if(correcto){
-						ficherosPDF.add(fPdf);
-						numeroCarta++;
-					}
-				}
-				
-				if(correcto){
-					// Ubicacion de la carpeta donde se crean los ficheros PDF:
-					String nombreFicheroPDF="cartasEJG_" +UtilidadesBDAdm.getFechaCompletaBD("").replaceAll("/","").replaceAll(":","").replaceAll(" ","");
-					String rutaServidorDescargasZip=rutaServidor + File.separator;
-					
-					Plantilla.doZip(rutaServidorDescargasZip,nombreFicheroPDF,ficherosPDF);
-					request.setAttribute("nombreFichero", nombreFicheroPDF + ".zip");
-					request.setAttribute("rutaFichero", rutaServidorDescargasZip+nombreFicheroPDF + ".zip");			
-					request.setAttribute("borrarFichero", "true");			
-					
-					//resultado = "descargaFichero";				
-					request.setAttribute("generacionOK","OK");			
-					resultado = "recogidaDatos";
-				}else{
-					request.setAttribute("generacionOK","ERROR");			
-					resultado = "recogidaDatos";
-				}
-				
-			}else{
-				resultado=exitoModalSinRefresco("gratuita.retenciones.noResultados",request);
-			}
-			
-		}catch (Exception e) {
-			throwExcp("messages.general.error",new String[] {"modulo.gratuita"},e,null);
-		} finally{ 
-			if(rutaTmp!=null){
-				Plantilla.borrarDirectorio(rutaTmp);
-			}
-		}
-        return resultado;
-	}
 	
-	/**
-	 * 
-	 */
-    protected String download(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, SIGAException 
-    {
-        DefinirEJGForm miForm =(DefinirEJGForm)formulario;
-		request.setAttribute("nombreFichero", miForm.getFicheroDownload());
-		request.setAttribute("rutaFichero", miForm.getRutaFicheroDownload());			
-		request.setAttribute("borrarFichero", miForm.getBorrarFicheroDownload());			
-        return "descargaFichero";
-    }
     
 	/**
 	 * Este método reemplaza los valores comunes en las plantillas FO

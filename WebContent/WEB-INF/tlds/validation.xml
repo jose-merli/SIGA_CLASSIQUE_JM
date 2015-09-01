@@ -37,7 +37,6 @@
 				<field 	property = "tipoSolicitud" 		   depends = "required"> 			<arg0 key="censo.SolicitudIncorporacion.literal.solicitudDe"/>				</field>
 				<field 	property = "fechaSolicitud" 		   depends = "required"> 			<arg0 key="censo.SolicitudIncorporacion.literal.fechaSolicitud"/>			</field>
 	  			<field 	property = "tipoColegiacion" 	   depends = "required"> 			<arg0 key="censo.SolicitudIncorporacion.literal.tipoColegiacion"/> 		</field>
-				<field 	property = "tipoDon" 				   depends = "required"> 			<arg0 key="censo.SolicitudIncorporacion.literal.tratamiento"/> 				</field>
 				<field 	property = "tipoIdentificacion" 	   depends = "required"> 			<arg0 key="censo.SolicitudIncorporacion.literal.tipoIdentificacion"/> 	    </field>
 				<field 	property = "NIFCIF" 				   depends = "required"> 			<arg0 key="censo.SolicitudIncorporacion.literal.nifcif"/>						</field>
 				<field 	property = "nombre" 				   depends = "required"> 			<arg0 key="censo.SolicitudIncorporacion.literal.nombre"/> 					</field>
@@ -4604,6 +4603,10 @@
           <field property = "correoElectronico" depends = "required">
                  <arg0 key="censo.mutualidad.literal.email"/>
          </field>
+         
+          <field property = "idEstadoCivil" depends = "required">
+                 <arg0 key="censo.SolicitudIncorporacion.literal.estadoCivil"/>
+         </field>         
  
           <field property = "codigoPostal" depends = "required,maxlength,minlength,mask"> 	
 					<arg0 key="censo.mutualidad.literal.codigoPostal"/>

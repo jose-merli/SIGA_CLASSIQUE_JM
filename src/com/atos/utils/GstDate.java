@@ -77,7 +77,7 @@ public class GstDate {
 		return dat;
 	}
 
-	public String parseDateToString(Date date, String format, Locale locale)
+	public static String parseDateToString(Date date, String format, Locale locale)
 			throws ClsExceptions {
 		String dat = "";
 		SimpleDateFormat sdf = new SimpleDateFormat(format, locale);

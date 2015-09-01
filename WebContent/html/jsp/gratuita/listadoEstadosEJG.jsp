@@ -35,7 +35,7 @@
 	String app=request.getContextPath();
 	HttpSession ses=request.getSession(true);
 	UsrBean usr=(UsrBean)request.getSession().getAttribute("USRBEAN");
-		
+	
 	Vector obj = (Vector) request.getAttribute("resultado");
 	String accion = (String)request.getSession().getAttribute("accion");	
 		
@@ -47,7 +47,7 @@
 	else {
 		botonesPie = "V,N";
 	}
-	
+	boolean booVerHistorico =  UtilidadesString.stringToBoolean((String)request.getAttribute("verHistorico"));
 	Hashtable fila = new Hashtable();
 	
 	try {		
@@ -87,6 +87,8 @@
 		<input type="hidden" name="anio" value="<%=anio%>">
 		<input type="hidden" name="numero" value="<%=numero%>">
 		<input type="hidden" name="idInstitucion" value="<%=idInstitucion%>">
+		<input type="hidden" name="verHistorico" >
+		
 	</html:form>
 		
 	<table class="tablaTitulo" cellspacing="0">
@@ -118,16 +120,23 @@
 			</td>
 		</tr>
 	</table>
+	<%
+	String columnNames = "";
+	String columnSize = "";
+	if(booVerHistorico){
+		columnNames = "gratuita.operarEJG.literal.fecha,general.baja,certificados.solicitudes.literal.fechaEstado, pestana.justiciagratuitaejg.estados, pestana.justiciagratuitaejg.observaciones, pestana.justiciagratuitaejg.automatico, Prop.,";
+		columnSize ="12,5,10,28,25,5,5,10";
+	}else{
+		columnNames = "certificados.solicitudes.literal.fechaEstado, pestana.justiciagratuitaejg.estados, pestana.justiciagratuitaejg.observaciones, pestana.justiciagratuitaejg.automatico,  Prop.,";
+		columnSize ="22,30,28,5,5,10";
+	}
 	
+	%>
 	<siga:Table 		   
 	   name="listadoDocumentacion"
 	   border="2"
-	   columnNames="gratuita.operarEJG.literal.fecha,
-				   pestana.justiciagratuitaejg.estados,
-				   pestana.justiciagratuitaejg.observaciones,
-				   pestana.justiciagratuitaejg.automatico,
-				   Propietario,"
-	   columnSizes="10,25,35,10,10,10"
+	   columnNames="<%=columnNames %>"
+	   columnSizes="<%=columnSize %>"
 	   modal="P">
 	   
 <%
@@ -150,7 +159,7 @@
 
 				if (automatico.equals("1")){
 					automatico="Si";
-					stPropietario="";
+					//stPropietario="";
 					blAutomatico=true;
 				} else {
 					automatico="No";
@@ -158,7 +167,7 @@
 				}
 				
 				if((usr.isComision()&&blPropietarioComision)||(!usr.isComision()&&!blPropietarioComision)){
-					if (!blAutomatico) {
+					if (!blAutomatico && (fila.get("FECHABAJA")==null ||fila.get("FECHABAJA").equals("")) ) {
 					 	botones="C,E,B";
 					} else {
 					 	botones="C";
@@ -168,15 +177,25 @@
 				}
 %>				
 				<siga:FilaConIconos fila='<%=String.valueOf(recordNumber)%>' pintarEspacio="false"  visibleConsulta="false" botones="<%=botones%>" clase="listaNonEdit" modo="<%=accion%>">
+					
+					<%if(booVerHistorico){%>
+						<td>
+							<%=GstDate.getFormatedDateMedium("",fila.get("FECHAMODIFICACION").toString())%>&nbsp;
+						</td>
+						<td>
+							<%=fila.get("FECHABAJA")!=null &&!fila.get("FECHABAJA").equals("")?"Si":"No" %>&nbsp;
+						</td>
+						
+					<%}%>
 					<td>
 						<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_1" value="<%=fila.get("IDESTADOPOREJG")%>">
-					    <input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_2" value="<%=fila.get("AUTOMATICO")%>"> 
+					    <input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_2" value="<%=fila.get("AUTOMATICO")%>">
 						<%=GstDate.getFormatedDateShort("",fila.get("FECHAINICIO").toString())%>&nbsp;
 					</td>
 					<td><%=fila.get("DESCRIPCION")%>&nbsp;</td>
 					<td><%=fila.get("OBSERVACIONES")%>&nbsp;</td>
-					<td><%=automatico%>&nbsp;</td>
-					<td><%=stPropietario%>&nbsp; </td>
+					<td align="center"><%=automatico%>&nbsp;</td>
+					<td align="center"><%=stPropietario%>&nbsp; </td>
 				</siga:FilaConIconos>		
 <% 
 				recordNumber++;		   
@@ -191,7 +210,23 @@
 		}
 %>
 	</siga:Table>	
-
+	<div style="position:absolute; left:400px;bottom:30px;z-index:99;">
+				<table align="center" border="0">
+					<tr>
+						<td class="labelText">
+							<siga:Idioma key="censo.consultaRegistrosBajaLogica.literal"/>
+							
+							<%if (booVerHistorico) { %>
+								<input type="checkbox" id="verHistorico" name="verHistorico" onclick="verHistorico(this);" checked/>
+							<%} else {%>
+								<input type="checkbox" id="verHistorico" name="verHistorico" onclick="verHistorico(this);"/>
+							<%}%>
+							
+								
+						</td>							
+					</tr>
+				</table>
+			</div>
 	
 	<!-- Obligatoria en todas las páginas-->
 	<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
@@ -200,7 +235,18 @@
 	<!-- ******* BOTONES DE ACCIONES EN REGISTRO ****** -->
 	<siga:ConjBotonesAccion botones="<%=botonesPie %>" clase="botonesDetalle" modo="<%=accion%>"/>
 	
-	<script type="text/javascript">			
+	<script type="text/javascript">		
+	
+		function verHistorico(o) {
+			if (o.checked) {
+				document.DefinirEstadosEJGForm.verHistorico.value = "1";
+			} else {
+				document.DefinirEstadosEJGForm.verHistorico.value = "0";
+			}
+			document.DefinirEstadosEJGForm.modo.value = "abrir";
+			document.DefinirEstadosEJGForm.submit();
+		}
+	
 		//Asociada al boton Cerrar
 		function accionVolver() {
 			document.forms[0].idInstitucion.value = "<%=usr.getLocation()%>";
@@ -218,7 +264,7 @@
 		}
 		
 		function buscar() {
-				document.forms[0].modo.value = "abrirAvanzada";
+				document.forms[0].modo.value = "abrir";
 				document.forms[0].submit();
 		}
 	</script>

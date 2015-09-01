@@ -19,7 +19,7 @@ public class BusquedaFacturaForm extends MasterForm
 	 */
 	private static final long serialVersionUID = -3831777869399250036L;
 	private String incluirRegistrosConBajaLogica;
-	
+	private String facturas="";
 	
 	public void setIdPersona (String dato) { 
 		try {
@@ -121,6 +121,14 @@ public class BusquedaFacturaForm extends MasterForm
 	}
 	public void setIncluirRegistrosConBajaLogica(String s) {
 		this.incluirRegistrosConBajaLogica = s;
+	}
+
+	public String getFacturas() {
+		return facturas;
+	}
+
+	public void setFacturas(String facturas) {
+		this.facturas = facturas;
 	}
 }
 

@@ -3,54 +3,40 @@
 <head>
 <!-- comprobanteSolicitudImpresion.jsp -->
 
-<!-- CABECERA JSP -->
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-1"%>
 <meta http-equiv="Cache-Control" content="no-store">
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <%@ page contentType="text/html" language="java" errorPage="/html/jsp/error/errorSIGA.jsp"%>
 
-<!-- TAGLIBS -->
-<%@ taglib uri = "libreria_SIGA.tld" 	prefix = "siga"%>
-<%@ taglib uri = "struts-bean.tld"  	prefix = "bean"%>
-<%@ taglib uri = "struts-html.tld" 		prefix = "html"%>
-<%@ taglib uri = "struts-logic.tld" 	prefix = "logic"%>
+<%@ taglib uri="libreria_SIGA.tld" prefix="siga"%>
+<%@ taglib uri="struts-bean.tld" prefix="bean"%>
+<%@ taglib uri="struts-html.tld" prefix="html"%>
+<%@ taglib uri="struts-logic.tld" prefix="logic"%>
 
-<!-- IMPORTS -->
-<%@ page import = "com.siga.administracion.SIGAConstants"%>
-<%@ page import = "com.siga.gui.processTree.SIGAPTConstants"%>
-<%@ page import = "com.siga.beans.PysProductosSolicitadosBean"%>
-<%@ page import = "com.siga.beans.PysServiciosSolicitadosBean"%>
-<%@ page import = "com.siga.beans.PysServiciosInstitucionBean"%>
-<%@ page import = "com.siga.Utilidades.*"%>
-<%@ page import = "com.atos.utils.*"%>
-<%@ page import = "com.siga.general.*"%>
-<%@ page import = "java.util.*"%>
-<%@ page import = "com.siga.tlds.FilaExtElement"%>
+<%@ page import="com.atos.utils.ClsConstants"%>
+<%@ page import="com.siga.beans.PysProductosSolicitadosBean"%>
+<%@ page import="com.siga.beans.PysServiciosSolicitadosBean"%>
+<%@ page import="com.siga.general.Articulo"%>
+<%@ page import="com.siga.Utilidades.UtilidadesHash"%>
+<%@ page import="com.siga.Utilidades.UtilidadesNumero"%> 
+<%@ page import="com.siga.Utilidades.UtilidadesString"%>
 
-<!-- JSP -->
 <% 
-	String app=request.getContextPath();
-	HttpSession ses=request.getSession();
-	
-	//UsrBean user=(UsrBean)request.getSession().getAttribute("USRBEAN");
-		
+	String app = request.getContextPath();
+
 	//Variable que me indica si vengo de un error. En tal caso muestro el error.
 	String error  = request.getAttribute("error")==null?"NO":(String)request.getAttribute("error");
 
-	String DB_TRUE=ClsConstants.DB_TRUE;
-	String DB_FALSE=ClsConstants.DB_FALSE;	
-	int tarjeta = ClsConstants.TIPO_FORMAPAGO_TARJETA;
 	int iCantidadTotal=0;
 	double dNetoTotal=0, dIvaTotal=0, dPrecioTotal=0;
 	
 	//Datos del Action:
-	Hashtable htData = new Hashtable();
 	Vector vListaPyS = new Vector();
 	String idPeticion="", nombrePersona="", numero="", fecha="";
 	//Si no hay error recupero los datos del request:
 	if (error.equals("NO")) {
-		htData = (Hashtable)request.getAttribute("resultados");
+		Hashtable htData = (Hashtable)request.getAttribute("resultados");
 		vListaPyS = (Vector)htData.get("vListaPyS");
 		idPeticion = String.valueOf((Long)htData.get("idPeticion"));
 		nombrePersona=(String)htData.get("nombrePersona");
@@ -58,30 +44,12 @@
 		fecha = (String)htData.get("fecha"); 	
 	}
 %>
-
-
-<!-- HEAD -->
-
-
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js?v=${sessionScope.VERSIONJS}'/>"></script>
 	
-	<!-- Incluido jquery en siga.js -->
-	
-	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js?v=${sessionScope.VERSIONJS}'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
-
-	<!-- Aqui se reescriben las funciones que vayamos a utilizar -->
-	
-	<script language="JavaScript">		
- 		
- 		function accionImprimir(){
-	 		window.print();
- 		}
- 		
-	</script>	
-	
-	<!-- INICIO: TITULO Y LOCALIZACION 	-->	
-
+	<siga:Titulo titulo="pys.solicitudCompra.cabecera" localizacion="pys.solicitudCompra.ruta"/>
 </head>
 
 <body onLoad="accionImprimir();">
@@ -89,10 +57,14 @@
 	<table class="tablaTitulo" align="center" height="20" cellpadding="0" cellspacing="0">
 		<tr>
 			<td class="titulosPeq">
-				<siga:Idioma key="pys.solicitudCompra.titulo2"/> &nbsp;&nbsp;<%=UtilidadesString.mostrarDatoJSP(nombrePersona)%> &nbsp;&nbsp;
-			    <%if(!numero.equalsIgnoreCase("")){%>
+				<siga:Idioma key="pys.solicitudCompra.titulo2"/> &nbsp;&nbsp;<%=UtilidadesString.mostrarDatoJSP(nombrePersona)%>&nbsp;&nbsp;
+<%
+				if (!numero.equalsIgnoreCase("")) {
+%>
 						<siga:Idioma key="censo.fichaCliente.literal.colegiado"/>&nbsp;&nbsp;<%=UtilidadesString.mostrarDatoJSP(numero)%>
-				<%} %>			
+<%
+				}
+%>			
 			</td>
 		</tr>
 	</table>
@@ -127,8 +99,7 @@
 					pys.solicitudCompra.literal.estadoPago,
 					pys.solicitudCompra.literal.importeAnticipado"  
 		columnSizes="20,14,17,6,9,8,10,11"
-		modal = "G"
-		fixedHeight = "-1">
+		fixedHeight="-1">
 		
 <% 				
 		int i = -1;
@@ -141,25 +112,17 @@
 				String cuenta = UtilidadesString.mostrarDatoJSP(UtilidadesHash.getString(hash, "DESCRIPCION_CUENTA"));						
 				Integer clase = UtilidadesHash.getInteger(hash, "CLASE");
 				String letraClase = (clase.intValue() == Articulo.CLASE_PRODUCTO ? "P" : "S");
-				String idPeticionArticulo="", idArticulo="", idArticuloInstitucion="", idTipoClave="", descripcion="", periodicidad="", idFormaPago="";
+				String descripcion="", periodicidad="", idFormaPago="";
 				double precio;
 				int cantidad;
 				if (letraClase.equals("P")) {
 					precio = UtilidadesHash.getDouble(hash, PysProductosSolicitadosBean.C_VALOR).doubleValue();														
-					idPeticionArticulo = UtilidadesHash.getString(hash, PysProductosSolicitadosBean.C_IDPETICION);
-					idArticulo = UtilidadesHash.getString(hash, PysProductosSolicitadosBean.C_IDPRODUCTO);
-					idArticuloInstitucion = UtilidadesHash.getString(hash, PysProductosSolicitadosBean.C_IDPRODUCTOINSTITUCION);
-					idTipoClave = UtilidadesHash.getString(hash, PysProductosSolicitadosBean.C_IDTIPOPRODUCTO);
 					descripcion = UtilidadesString.mostrarDatoJSP(UtilidadesHash.getString(hash, "DESCRIPCION_ARTICULO").replaceAll("\r\n", " ").replaceAll("\n\r", " "));
 					cantidad = UtilidadesHash.getInteger(hash, PysProductosSolicitadosBean.C_CANTIDAD).intValue();
 					idFormaPago = UtilidadesHash.getString(hash, PysProductosSolicitadosBean.C_IDFORMAPAGO);
 					
 				} else  {
 					precio = UtilidadesHash.getDouble(hash, "PRECIOSSERVICIOS").doubleValue();
-					idPeticionArticulo = UtilidadesHash.getString(hash, PysServiciosSolicitadosBean.C_IDPETICION);
-					idArticulo = UtilidadesHash.getString(hash, PysServiciosSolicitadosBean.C_IDSERVICIO);
-					idArticuloInstitucion = UtilidadesHash.getString(hash, PysServiciosSolicitadosBean.C_IDSERVICIOSINSTITUCION);
-					idTipoClave = UtilidadesHash.getString(hash, PysServiciosSolicitadosBean.C_IDTIPOSERVICIOS);
 					descripcion = UtilidadesString.mostrarDatoJSP(UtilidadesHash.getString(hash, "DESCRIPCION_ARTICULO").replaceAll("\r\n", " ").replaceAll("\n\r", " ")) + " " + UtilidadesString.mostrarDatoJSP(UtilidadesHash.getString(hash, "SERVICIO_DESCRIPCION_PRECIO"));
 					periodicidad = " / " + UtilidadesString.mostrarDatoJSP(UtilidadesHash.getString(hash, "PERIODICIDAD"));
 					cantidad = UtilidadesHash.getInteger(hash, PysServiciosSolicitadosBean.C_CANTIDAD).intValue();
@@ -181,14 +144,7 @@
 				double importeAnticipado = aux != null ? aux.doubleValue() : 0.0;
 %>
 				<siga:FilaConIconos fila='<%=""+(i+1)%>' botones="" clase="listaNonEdit" visibleConsulta='no' visibleEdicion='no' visibleBorrado='no' pintarEspacio='no'>							
-					<td>
-						<input type="hidden" name="oculto<%=i+1%>_idArticulo" value="<%=idArticulo%>">
-					    <input type="hidden" name="oculto<%=i+1%>_idArticuloInstitucion" value="<%=idArticuloInstitucion%>">
-					    <input type="hidden" name="oculto<%=i+1%>_idPeticion" value="<%=idPeticionArticulo%>">
-					    <input type="hidden" name="oculto<%=i+1%>_idTipoClave" value="<%=idTipoClave%>">
-					    <input type="hidden" name="oculto<%=i+1%>_tipo" value="<%=letraClase%>">
-	  					<%=descripcion%>						  								
-	  				</td>
+					<td><%=descripcion%></td>
 	  				<td><%=UtilidadesString.mostrarDatoJSP(UtilidadesHash.getString(hash, "DESCRIPCION_FORMAPAGO"))%></td>
 	  				<td><%=UtilidadesString.mostrarIBANConAsteriscos(cuenta)%></td>
 	  				<td align="right"><%=cantidad%></td>
@@ -198,7 +154,7 @@
 <%
 						try {
 							int estado = Integer.parseInt(idFormaPago); 
-							if(estado==tarjeta) { 
+							if(estado==ClsConstants.TIPO_FORMAPAGO_TARJETA) { 
 %>
 								<siga:Idioma key="pys.estadoPago.pagado"/>
 <%
@@ -276,11 +232,51 @@
 <%
 	 	}
 %>
-	</siga:Table>		
+	</siga:Table>
+	
+	<div id="divEspera" title="Espere por favor" style="z-index:100;position:absolute;display:none;top:45%;left:50%">
+		<div style="position:relative;left:-50%">
+			<br><img src="<%=app%>/html/imagenes/loadingBar.gif"/>
+		</div>
+	</div>
+	
+	<script language="JavaScript">
+		var bloqueado=false;
+	
+		function mainSub(msg){
+			if(!bloqueado){
+				if (typeof msg == "undefined")
+					msg = "";
+				try{
+					jQuery.blockUI({
+						message: '<div id="barraBloqueante"><span class="labelText">'+msg+'</span><br><img src="<%=app%>/html/imagenes/loadingBar.gif"/></div>', 
+						css:{border:0, background:'transparent'},
+						overlayCSS: {backgroundColor:'#FFF', opacity: .0} 
+					});
+				} catch(e){
+					jQuery("#divEspera").show();
+				}
+				bloqueado=true;
+			}
+		}
+	
+		function mainFin(){
+			if(bloqueado){
+				try{
+					jQuery.unblockUI();
+				} catch(e){
+				}
+				jQuery("#divEspera").hide();
+				bloqueado=false; 
+			} 
+		}
+			
+ 		function accionImprimir(){
+	 		window.print();
+ 		}
+ 		
+	</script>	
 					
-	<!-- INICIO: SUBMIT AREA -->
-	<!-- Obligatoria en todas las páginas-->
-	<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
-	<!-- FIN: SUBMIT AREA -->
+	<iframe name="submitArea" src="<html:rewrite page='/html/jsp/general/blank.jsp'/>" style="display: none"></iframe>
 </body>
 </html>

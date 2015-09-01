@@ -18,14 +18,15 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.redabogacia.sigaservices.app.AppConstants.PARAMETRO;
+import org.redabogacia.sigaservices.app.autogen.model.ScsTiporesolauto;
 import org.redabogacia.sigaservices.app.helper.SIGAServicesHelper;
+import org.redabogacia.sigaservices.app.services.scs.ScsTipoResolucionAutoService;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.GstDate;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesHash;
-import com.siga.Utilidades.UtilidadesInformes;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.beans.CenPersonaBean;
 import com.siga.beans.FcsFacturacionJGBean;
@@ -53,6 +54,8 @@ import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
 import com.siga.gratuita.form.ActuacionesDesignasForm;
 import com.siga.ws.CajgConfiguracion;
+
+import es.satec.businessManager.BusinessManager;
 
 
 /**
@@ -443,25 +446,56 @@ public class ActuacionesDesignasAction extends MasterAction {
 			
 			ScsActuacionDesignaAdm designaAdm = new ScsActuacionDesignaAdm (this.getUserBean(request));	
 			//consultamos las designas
-			Hashtable hashDesigna =  (Hashtable)(designaAdm.getConsultaDesigna(hashDatosDesigna, request)).get(0);		
-			UtilidadesHash.set(hashEJG,ScsEJGBean.C_IDINSTITUCION,(String)hashDesigna.get("IDINSTITUCION"));
-			UtilidadesHash.set(hashEJG,ScsEJGBean.C_NUMERO,(String)hashDesigna.get("NUMEROEJG"));
-			UtilidadesHash.set(hashEJG,ScsEJGBean.C_ANIO,(String)hashDesigna.get("ANIOEJG"));
-			UtilidadesHash.set(hashEJG,ScsEJGBean.C_IDTIPOEJG,(String)hashDesigna.get("IDTIPOEJG"));
-			Vector vEjgRelacionado=(Vector)ejgAdm.selectByPK(hashEJG);
+			Vector hashDesignaVectorObtenerlosEjG =  (Vector)(designaAdm.getConsultaDesigna(hashDatosDesigna, request));	
 			
-			request.setAttribute("ejgs", vEjgRelacionado);
+			List<ScsEJGBean> ejgList = new ArrayList<ScsEJGBean>();
+			ScsEJGBean ejg = new ScsEJGBean();
+			if(hashDesignaVectorObtenerlosEjG != null && hashDesignaVectorObtenerlosEjG.size()>0){
+				for (int i = 0; i<hashDesignaVectorObtenerlosEjG.size(); i++){
+					Hashtable aux = (Hashtable) hashDesignaVectorObtenerlosEjG.get(i);
+					//Parámetros para obtener el EJG
+					UtilidadesHash.set(hashEJG,ScsEJGBean.C_IDINSTITUCION,(String)aux.get("IDINSTITUCION"));
+					UtilidadesHash.set(hashEJG,ScsEJGBean.C_NUMERO,(String)aux.get("NUMEROEJG"));
+					UtilidadesHash.set(hashEJG,ScsEJGBean.C_ANIO,(String)aux.get("ANIOEJG"));
+					UtilidadesHash.set(hashEJG,ScsEJGBean.C_IDTIPOEJG,(String)aux.get("IDTIPOEJG"));
+					
+					//Obtenemos los datos del ejg
+					Vector vEjgRelacionado=(Vector)ejgAdm.selectByPK(hashEJG);		
+				    ejg = (ScsEJGBean) vEjgRelacionado.get(0);
+				   
+				    //Añadimos 0 en el caso de que el tamaño del número de EJG no llegue al mínimo
+				    if(ejg.getNumEJG() !=null && !"".equalsIgnoreCase(ejg.getNumEJG())){
+				    	   String longitudNumEjg = (String) request.getSession().getAttribute(PARAMETRO.LONGITUD_CODEJG.toString());	
+				    	   ejg.setNumEJG(SIGAServicesHelper.lpad(ejg.getNumEJG(), Integer.parseInt(longitudNumEjg), '0'));
+				    }
+				 
+				    
+				    //Si el ejg tiene resolucionAuto, obtenemos su desripción
+				    if(ejg.getIdTipoResolAuto() != null && ejg.getIdTipoResolAuto()>=0){
+					    BusinessManager bm = getBusinessManager();
+						ScsTipoResolucionAutoService tipoResolucionAutoService = (ScsTipoResolucionAutoService)bm.getService(ScsTipoResolucionAutoService.class);
+						List<ScsTiporesolauto> scsTipoResolucionAuto= tipoResolucionAutoService.getTiposResolucionAutoDescripcionById(Integer.parseInt(usr.getLanguage()), ejg.getIdTipoRatificacionEJG());
+						ejg.setNombreTipoResolAuto(scsTipoResolucionAuto.get(0).getDescripcion());
+					}
+				  //Damos formato a la fecha
+				  if(ejg.getFechaRatificacion()!= null && !"".equalsIgnoreCase(ejg.getFechaRatificacion())){
+					  ejg.setFechaRatificacion(GstDate.getFormatedDateShort("",ejg.getFechaRatificacion()));
+				  }
+				  if(ejg.getFechaAuto()!= null && !"".equalsIgnoreCase(ejg.getFechaAuto())){
+					  ejg.setFechaAuto(GstDate.getFormatedDateShort("",ejg.getFechaAuto()));
+				  }
+				  //Insertamos el ejg a la lista
+					ejgList.add(ejg);
+				 
+					aux = new Hashtable();
+					ejg = new ScsEJGBean();
+				}
+			}
+	
+			miform.setEjgs(ejgList);
+
+			Hashtable hashDesigna =  (Hashtable)(designaAdm.getConsultaDesigna(hashDatosDesigna, request)).get(0);
 			
-		    if ((vEjgRelacionado != null) && (vEjgRelacionado.size() == 1)) {
-		    	String longitudNumEjg = (String) request.getSession().getAttribute(PARAMETRO.LONGITUD_CODEJG.toString());	
-			    UtilidadesHash.set(hashDesigna,ScsEJGBean.C_NUMEJG,SIGAServicesHelper.lpad(((ScsEJGBean)vEjgRelacionado.get(0)).getNumEJG(), Integer.parseInt(longitudNumEjg), '0'));
-				UtilidadesHash.set(hashDesigna,ScsEJGBean.C_IDTIPORATIFICACIONEJG,((ScsEJGBean)vEjgRelacionado.get(0)).getIdTipoRatificacionEJG());
-				UtilidadesHash.set(hashDesigna,ScsEJGBean.C_FECHARATIFICACION,((ScsEJGBean)vEjgRelacionado.get(0)).getFechaRatificacion());
-				UtilidadesHash.set(hashDesigna,ScsEJGBean.C_FECHANOTIFICACION,((ScsEJGBean)vEjgRelacionado.get(0)).getFechaNotificacion());
-				UtilidadesHash.set(hashDesigna,ScsEJGBean.C_FECHAAUTO,((ScsEJGBean)vEjgRelacionado.get(0)).getFechaAuto());
-				UtilidadesHash.set(hashDesigna,ScsEJGBean.C_IDTIPORESOLAUTO,((ScsEJGBean)vEjgRelacionado.get(0)).getIdTipoResolAuto());
-			 
-		    }
 			//Se muestra todas las Actuaciones de la designa.
 		    Vector vAct = designaAdm.getConsultaActuacion(hashDatosDesigna, request);
 		    Hashtable hashActuacion = new Hashtable();

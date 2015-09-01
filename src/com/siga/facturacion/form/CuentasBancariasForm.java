@@ -53,6 +53,7 @@ public class CuentasBancariasForm extends MasterForm {
 	private String configuracionFicherosEsquema;	
 	private String configuracionFicherosSecuencia;	
 	private String configuracionLugarEsquemaSecuencia;
+	private String configuracionConceptoAmpliado;
 	
 	// JPT (19-08-2014): Nuevos valores para la comision
 	String comisionimporte, idTipoIva, comisiondescripcion, comisioncuentacontable;
@@ -294,5 +295,11 @@ public class CuentasBancariasForm extends MasterForm {
 	public void setIbanSerie(String ibanSerie) {
 		this.ibanSerie = ibanSerie;
 	}
-	
+	public String getConfiguracionConceptoAmpliado() {
+		return configuracionConceptoAmpliado;
+	}
+	public void setConfiguracionConceptoAmpliado(
+			String configuracionConceptoAmpliado) {
+		this.configuracionConceptoAmpliado = configuracionConceptoAmpliado;
+	}
 }

@@ -27,6 +27,7 @@
 	String app=request.getContextPath();
 	String generacionOK = (String)request.getAttribute("generacionOK");
 	String avisoFicherosNoGenerado = (String)request.getAttribute("avisoFicherosNoGenerado");
+	String aviso = (String)request.getAttribute("aviso");
 	String rutaFichero = (String)request.getAttribute("rutaFichero");
 	String borrarFichero = (String)request.getAttribute("borrarFichero");
 	String borrarDirectorio = (String)request.getAttribute("borrarDirectorio");
@@ -46,18 +47,23 @@
 	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js?v=${sessionScope.VERSIONJS}'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
 	<script>
 	function init(){
-	<% if  (generacionOK!=null && generacionOK.equalsIgnoreCase("OK")) { %>
-		//alert();
-		
-		<% if  (avisoFicherosNoGenerado!=null && !avisoFicherosNoGenerado.equalsIgnoreCase("")){ %>
-			alert('<siga:Idioma key="messages.informes.listaErrorGeneracion"/>'+'\n\n\n'+'<%=avisoFicherosNoGenerado.trim()%>');
-		<%}%>
-		
-		// document.forms[0].modo.value="descargar";
-		document.forms[0].submit();
-	<% } else { %>
-	 	alert('<siga:Idioma key="messages.informes.errorGeneracion"/>');
-	<% } %>		
+		<%if  (generacionOK!=null && generacionOK.equalsIgnoreCase("OK")) { %>
+				
+			<% if  (avisoFicherosNoGenerado!=null && !avisoFicherosNoGenerado.equalsIgnoreCase("")){ %>
+				alert('<siga:Idioma key="messages.informes.listaErrorGeneracion"/>'+'\n\n\n'+'<%=avisoFicherosNoGenerado.trim()%>');
+			<%}else if  (aviso!=null && !aviso.equalsIgnoreCase("")){%>
+				alert('<siga:Idioma key="<%=aviso.trim()%>"/>');
+			<%}%>
+			document.forms[0].submit();
+		<%}else{%>
+			<%if  (avisoFicherosNoGenerado!=null && !avisoFicherosNoGenerado.equalsIgnoreCase("")){ %>
+				alert('<siga:Idioma key="messages.informes.listaErrorGeneracion"/>'+'\n\n\n'+'<%=avisoFicherosNoGenerado.trim()%>');
+			<%}else if  (aviso!=null && !aviso.equalsIgnoreCase("")){%>
+				alert('<siga:Idioma key="<%=aviso.trim()%>"/>');
+			<%}else{%>
+	 			alert('<siga:Idioma key="messages.informes.errorGeneracion"/>');
+			<%}
+		}%>		
 	}
 	</script>
 

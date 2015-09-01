@@ -20,9 +20,29 @@ public class SancionesLetradoForm extends MasterForm{
 	private String FechaFinArchivada;
 	
 	
-
+	public void clear() {
+		setModo("");
+	}
 	
-
+	public SancionesLetradoForm clone() {
+		SancionesLetradoForm miForm = new SancionesLetradoForm();
+		miForm.setNombreInstitucionBuscar(this.getNombreInstitucionBuscar());
+		miForm.setTipoSancionBuscar(this.getTipoSancionBuscar());
+		miForm.setRefCGAE(this.getRefCGAE());
+		miForm.setRefColegio(this.getRefColegio());
+		miForm.setColegiadoBuscar(this.getColegiadoBuscar());
+		miForm.setChkRehabilitado(this.getChkRehabilitado());
+		miForm.setMostrarTiposFechas(this.getMostrarTiposFechas());
+		miForm.setFechaInicioBuscar(this.getFechaInicioBuscar());
+		miForm.setFechaFinBuscar(this.getFechaFinBuscar());
+		miForm.setMostrarSanciones(this.getMostrarSanciones());
+		miForm.setFechaInicioArchivada(this.getFechaInicioArchivada());
+		miForm.setFechaFinArchivada(this.getFechaFinArchivada());
+		return miForm;
+	}
+	
+	
+	
 	//	metodos set de los campos del formulario
 	public void setNombreInstitucionBuscar(String valor) {
 		UtilidadesHash.set(this.datos, "NombreInstitucionBuscar", valor);
@@ -281,7 +301,7 @@ public class SancionesLetradoForm extends MasterForm{
 		return MostrarTiposFechas;
 	}
 
-		public String getFechaInicioArchivada() {
+	public String getFechaInicioArchivada() {
 		return FechaInicioArchivada;
 	}
 

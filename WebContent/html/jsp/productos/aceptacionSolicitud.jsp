@@ -721,17 +721,19 @@
 						sIva = a.getValorIva().toString();
 					}
 						
-					Vector datos=pysproductosinstitucion.obtenerInfoProducto(
-						String.valueOf(idInstitucion),
-						String.valueOf((Integer)a.getIdTipo()),
-						String.valueOf((Long)a.getIdArticulo()),
-						String.valueOf((Long)a.getIdArticuloInstitucion()));   							
-
-					String nofacturable="";
-					try{
-						nofacturable=(String)((Row)datos.get(0)).getRow().get(PysProductosInstitucionBean.C_NOFACTURABLE);
-					}catch(Exception e){
-						nofacturable="0";
+					Vector datos=null;   							
+					String nofacturable="0";
+					if (a.getClaseArticulo() == Articulo.CLASE_PRODUCTO) {
+						datos = pysproductosinstitucion.obtenerInfoProducto(
+								String.valueOf(idInstitucion),
+								String.valueOf((Integer)a.getIdTipo()),
+								String.valueOf((Long)a.getIdArticulo()),
+								String.valueOf((Long)a.getIdArticuloInstitucion()));   	
+						
+						try {
+							nofacturable=(String)((Row)datos.get(0)).getRow().get(PysProductosInstitucionBean.C_NOFACTURABLE);
+						}catch(Exception e){
+						}
 					}
 
 					if (datos == null || (datos!=null && nofacturable.equals(DB_FALSE))) {
@@ -740,7 +742,6 @@
 						dIvaTotal += UtilidadesNumero.redondea(a.getCantidad() * precio * iva / 100, 2);
 						dPrecioTotal += UtilidadesNumero.redondea(a.getCantidad() * precio * (1 + (iva / 100)), 2);	
 					}				
-
 									
 					fila=i+1;	
 					parametroFuncion = "obtenerCuenta(" + fila + ")";
@@ -785,23 +786,22 @@
 							
 							String tamanoFormaPago = tieneBotones ? "150" : "160";
 
-							if (datos != null) {
-								if(nofacturable.equals(DB_FALSE)){
-									if (a.getClaseArticulo() == Articulo.CLASE_PRODUCTO) {
+							if (a.getClaseArticulo() == Articulo.CLASE_PRODUCTO) {
+								if (datos != null) {
+									if (nofacturable.equals(DB_FALSE)) {									
 %>									
 										<siga:ComboBD nombre="<%=formaPagoNombre%>" tipo="cmbFormaPagoProducto" clase="boxCombo"  parametro="<%=formaPago%>" elementoSel ="<%=elementoSeleccionadoFormaPago%>" accion="<%=parametroFuncion%>" ancho="<%=tamanoFormaPago%>"/>
 <%	
 									} else {	
 %>
-										<siga:ComboBD nombre="<%=formaPagoNombre%>" tipo="cmbFormaPagoServicio" clase="boxCombo"  parametro="<%=formaPago%>" elementoSel ="<%=elementoSeleccionadoFormaPago%>" accion="<%=parametroFuncion%>" ancho="<%=tamanoFormaPago%>"/>	
-
+										<siga:Idioma key="estados.compra.noFacturable"/>
 <%								
 									}
-								} else{
+								}
+							} else {
 %>
-								   <siga:Idioma key="estados.compra.noFacturable"/>&nbsp;
-										
-<%								}	
+								<siga:ComboBD nombre="<%=formaPagoNombre%>" tipo="cmbFormaPagoServicio" clase="boxCombo"  parametro="<%=formaPago%>" elementoSel ="<%=elementoSeleccionadoFormaPago%>" accion="<%=parametroFuncion%>" ancho="<%=tamanoFormaPago%>"/>	   
+<%							
 							}
 %>				
 		  				</td>

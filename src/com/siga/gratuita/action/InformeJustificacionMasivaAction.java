@@ -48,7 +48,6 @@ import com.siga.envios.EnvioInformesGenericos;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
-import com.siga.gratuita.form.DefinirEJGForm;
 import com.siga.gratuita.form.DesignaForm;
 import com.siga.gratuita.form.InformeJustificacionMasivaForm;
 import com.siga.gratuita.pcajg.resoluciones.ResolucionesFicheroAbstract;
@@ -145,7 +144,6 @@ public class InformeJustificacionMasivaAction extends MasterAction {
 			HttpServletResponse response) throws ClsExceptions, SIGAException 
 			{
 		
-		String modo = (String) request.getSession().getAttribute("modo");
 		InformeJustificacionMasivaForm form = (InformeJustificacionMasivaForm) formulario;
 		form.clear();
 		UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");
@@ -736,7 +734,6 @@ public class InformeJustificacionMasivaAction extends MasterAction {
 
 			}else{	
 				databackup=new HashMap();
-				String keyPersona =f.getIdPersona();
 				
 				//Haria falta meter los parametros en con ClsConstants
 				String cod_Fact_ja_2005 = paramAdm.getValor (usrBean.getLocation (), "SCS", ClsConstants.GEN_PARAM_FACT_JA_2005, "");
@@ -760,7 +757,6 @@ public class InformeJustificacionMasivaAction extends MasterAction {
 				
 				
 				if (paginador!=null&& paginador.getNumeroTotalRegistros()>0){
-					int totalRegistros = paginador.getNumeroTotalRegistros();
 					databackup.put("paginador",paginador);
 					Vector datos = paginador.obtenerPagina(1);
 					
@@ -811,10 +807,8 @@ public class InformeJustificacionMasivaAction extends MasterAction {
 			request.setAttribute("fechaHasta", f.getFechaHasta());
 		}
 		//metemos al formulario la fecha de hoy por defecto
-		GstDate gstDate = new GstDate();
-		
 		if(f.getFecha()==null || f.getFecha().equalsIgnoreCase("")){
-			String fecha = gstDate.parseDateToString(new Date(),"dd/MM/yyyy", this.getLocale(request)); 
+			String fecha = GstDate.parseDateToString(new Date(),"dd/MM/yyyy", this.getLocale(request)); 
 			f.setFecha(fecha);
 		}
 		String informeUnico = ClsConstants.DB_TRUE;
@@ -848,24 +842,6 @@ public class InformeJustificacionMasivaAction extends MasterAction {
 		
 		
 		return "listadoPaginado";
-	}
-	
-	private String getExpediente(List<DefinirEJGForm> ejgList){
-		StringBuffer expedientes = new StringBuffer("");
-		if(ejgList!=null && ejgList.size()>0){
-			for(DefinirEJGForm ejgForm:ejgList){
-				expedientes.append(ejgForm.getNombre());
-				expedientes.append(", ");
-				
-			}
-			//quitamos la ltima coma
-			expedientes.delete(expedientes.lastIndexOf(","), expedientes.length());
-			
-		}
-		
-		
-		return expedientes.toString();
-		
 	}
 	
 	protected String download (ActionMapping mapping,

@@ -20,6 +20,7 @@ import java.io.Writer;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -983,6 +984,29 @@ public class UtilidadesString {
 			}
 		}
 		
+		public static String getFileContent(File file,String charsetName)throws ClsExceptions{
+			String content =null;
+		
+			if (!file.exists()){
+				throw new ClsExceptions("El fichero "+file.getName()+" no existe");
+			}
+			InputStream is= null;
+			try {
+				is=new FileInputStream(file);
+				int nBytes = is.available();
+				byte buffer[] = new byte[nBytes];
+				is.read(buffer, 0, nBytes);
+				content = new String(buffer,charsetName);
+				is.close();
+				return content;
+			} catch (IOException e) {
+			    try {
+			        is.close();
+			    } catch (Exception eee) {}
+				throw new ClsExceptions(e,"facturacion.nuevoFichero.literal.errorLectura");			    
+			}
+		}
+		
 		/**
 		 * Establece el contenido de un fichero
 		 * @param file Objeto fichero
@@ -1747,5 +1771,24 @@ public class UtilidadesString {
 			return "";
 		
 	}
-		 
+		
+	
+	/**
+	 * Función que elimina acentos y caracteres especiales de una cadena de texto.
+	 * @param input
+	 * @return cadena de texto limpia de acentos y caracteres especiales.
+	 */
+	public static String eliminarAcentosYCaracteresEspeciales(String input) {
+		// Cadena de caracteres original a sustituir.
+		String original = "áàäéèëíìïóòöúùuñÁÀÄÉÈËÍÌÏÓÒÖÚÙÜÑçÇ!\"#$%&'()*+-,./:;<=>?@[\\]^_`{|}~";	
+
+		// Cadena de caracteres ASCII que reemplazarán los originales.
+		String ascii = "aaaeeeiiiooouuunAAAEEEIIIOOOUUUNcC                                ";
+		String output = input;
+		for (int i = 0; i < original.length(); i++) {
+			// Reemplazamos los caracteres especiales.
+			output = output.replace(original.charAt(i), ascii.charAt(i));
+		}// for i
+		return output;
+	}
 }

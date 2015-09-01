@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html class="bluewhite">
 <head>
 <!-- ventanaModal.jsp -->
 <!-- CABECERA JSP -->
@@ -127,14 +127,8 @@
 		</script>
 </head>
 
-<body class="tablaCentralCampos sinScroll" onLoad="cargaContenidoModal();">
+<body class="tablaCentralCampos sinScroll" onLoad="cargaContenidoModal();" style='width:100%;height:100%'>
 	<div id="main_overlay" class="overlay" style="display:none;z-index: 50;"></div>
-	<table>
-	<tr>
-		<td class="labelTextValor"><c:out value="Conectando con la Mutua de la Abogacía..." /> </td>
-	</tr>
-	</table>
-	
 	<!-- IFRAME GENERAL -->
 	<iframe align="center" src="<%=app%>/html/jsp/general/loadingWindow.jsp?msg=<%=msg%>"
 					id="modal"

@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
@@ -34,6 +35,7 @@ import com.siga.beans.EnvEnviosBean;
 import com.siga.beans.EnvTipoEnviosAdm;
 import com.siga.beans.EnvTipoEnviosBean;
 import com.siga.certificados.Plantilla;
+import com.siga.envios.Documento;
 import com.siga.envios.form.DocumentosForm;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
@@ -95,72 +97,55 @@ public class DocumentosAction extends MasterAction
     	} 
 	}
 
-    protected String download(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException
-    {
-    	File fDocumento = null;
-    	try 
-    	{
-    		UsrBean usrBean = this.getUserBean(request);
-    		DocumentosForm form = (DocumentosForm)formulario;
-    		String idInstitucion = this.getUserBean(request).getLocation();
-            String idEnvio = (String)request.getParameter("idEnvio");
-    		Hashtable htPk = new Hashtable();
-    		htPk.put(EnvDestinatariosBean.C_IDINSTITUCION,idInstitucion);
-    		htPk.put(EnvDestinatariosBean.C_IDENVIO,idEnvio);        
+	protected String download(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+		try {
+			UsrBean usrBean = this.getUserBean(request);
+			DocumentosForm form = (DocumentosForm) formulario;
+			String idInstitucion = this.getUserBean(request).getLocation();
+			String idEnvio = (String) request.getParameter("idEnvio");
+			// Recupero el bean del envio para mostrar el nombre y el tipo
+			
+			EnvDocumentosAdm docAdm = new EnvDocumentosAdm(usrBean);
+			Vector vOcultos = form.getDatosTablaOcultos(0);
+			String idDocumento = (String) vOcultos.elementAt(2);
+			
+			File fDocumento  = docAdm.getFile(idInstitucion, idEnvio, idDocumento);
+			Hashtable documentosPkHashtable = new Hashtable();
+			documentosPkHashtable.put(EnvDocumentosBean.C_IDINSTITUCION, idInstitucion);
+			documentosPkHashtable.put(EnvDocumentosBean.C_IDENVIO, idEnvio);
+			documentosPkHashtable.put(EnvDocumentosBean.C_IDDOCUMENTO, idDocumento);
+			Vector documentoPkVector = docAdm.selectByPK(documentosPkHashtable);
+			EnvDocumentosBean documentosBean = (EnvDocumentosBean) documentoPkVector.get(0);
+			String nombreOriginal = documentosBean.getPathDocumento();
+			if (documentosBean.getDescripcion() != null) {
+				boolean tieneextension = documentosBean.getDescripcion().lastIndexOf(".") == documentosBean.getDescripcion().length() - 4;
+				if (tieneextension)
+					nombreOriginal = documentosBean.getDescripcion();
 
-    		//Recupero el bean del envio para mostrar el nombre y el tipo
-    		EnvEnviosAdm envioAdm = new EnvEnviosAdm (usrBean);
-    		EnvTipoEnviosAdm tipoAdm = new EnvTipoEnviosAdm (usrBean);
-    		Vector envio = envioAdm.selectByPK(htPk);        
-    		EnvEnviosBean envioBean = (EnvEnviosBean)envio.get(0);
-
-
-    		/*if(envioBean.getIdTipoEnvios().intValue()==EnvEnviosAdm.TIPO_TELEMATICO ){
-    			BusinessManager bm = getBusinessManager();
-    			AtosEnviosService enviosService = (AtosEnviosService)bm.getService(AtosEnviosService.class);
-    			File pdfIntercambio =  enviosService.getPdfIntercambio(idEnvio, idInstitucion, usrBean);
-    			request.setAttribute("rutaFichero", pdfIntercambio.getPath());
-				request.setAttribute("nombreFichero", pdfIntercambio.getName());
-				request.setAttribute("borrarFichero", "true");
-
-    		}else{
-*/
-
-    			EnvDocumentosAdm docAdm = new EnvDocumentosAdm(usrBean);	
+			}
 
 
-    			Vector vOcultos = form.getDatosTablaOcultos(0);
-    			String idDocumento = (String)vOcultos.elementAt(2);			
-    			String nombreOriginal = (String)vOcultos.elementAt(3);			
-    			String pathDocumentosAdjuntos = "";		
-    			try {
-    				pathDocumentosAdjuntos = envioAdm.getPathEnvio(idInstitucion,idEnvio);
-    			} catch (Exception e) {
-    				new ClsExceptions (e, "Error al recuperar el envio");
-    			}
-    			String rutaAlm = pathDocumentosAdjuntos + ClsConstants.FILE_SEP;				
+			if (fDocumento == null || !fDocumento.exists()) {
+				EnvEnviosAdm envioAdm = new EnvEnviosAdm(usrBean);
+				String pathDocumentosAdjuntos = envioAdm.getPathEnvio(idInstitucion, idEnvio);
+				String rutaAlm = pathDocumentosAdjuntos + ClsConstants.FILE_SEP;
+				File fdocumento1 = new File(rutaAlm + nombreOriginal);				
+				if (!fdocumento1.exists()) {
+					throw new SIGAException("messages.general.error.ficheroNoExiste");
+				} else {
+					request.setAttribute("rutaFichero", fdocumento1.getPath());
+					request.setAttribute("nombreFichero", nombreOriginal);
+				}
+			} else {
+				request.setAttribute("rutaFichero", fDocumento.getPath());
+				request.setAttribute("nombreFichero", nombreOriginal);
+			}
+		} catch (Exception e) {
+			throwExcp("messages.general.error", new String[] { "modulo.envios" }, e, null);
+		}
 
-    			fDocumento = docAdm.getFile(idInstitucion,idEnvio,idDocumento);
-    			File fdocumento1 = new File(rutaAlm+nombreOriginal);
-    			if(fDocumento==null || !fDocumento.exists()){
-    				if(!fdocumento1.exists()){
-    					throw new SIGAException("messages.general.error.ficheroNoExiste");
-    				}else{
-    					request.setAttribute("rutaFichero", fdocumento1.getPath());
-    					request.setAttribute("nombreFichero", nombreOriginal);
-    				}
-    			}else{
-    				request.setAttribute("rutaFichero", fDocumento.getPath());
-    				request.setAttribute("nombreFichero", nombreOriginal);
-    			}
-//    		}
-    	} 		
-    	catch (Exception e) { 
-    		throwExcp("messages.general.error",new String[] {"modulo.envios"},e,null);
-    	}
-
-    	return "descargaFichero";
-    }
+		return "descargaFichero";
+	}
 	
 	protected String abrir(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException
 	{
@@ -515,133 +500,95 @@ public class DocumentosAction extends MasterAction
 	 * @return  String  Destino del action  
 	 * @exception  ClsExceptions  En cualquier caso de error
 	 */
-	protected String descargarEnv(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException
-	{
-	     File fDocumento = null;
-	    try 
-		{
-	    	UsrBean usr = this.getUserBean(request);
-			DocumentosForm form = (DocumentosForm)formulario;
-			EnvDocumentosAdm docAdm = new EnvDocumentosAdm(this.getUserBean(request));			 
-            EnvDestinatariosBean destBean = null;
-            Vector informesRes = new Vector(); 
-            File ficheroSalida = null;
-            String idInstitucion = (String) usr.getLocation();
-			String idEnvio = (String) form.getIdEnvio();			
+	protected String descargarEnv(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+
+		try {
+			UsrBean usr = this.getUserBean(request);
+			DocumentosForm form = (DocumentosForm) formulario;
+			EnvDocumentosAdm docAdm = new EnvDocumentosAdm(this.getUserBean(request));
+			File ficheroSalida = null;
+			String idInstitucion = (String) usr.getLocation();
+			String idEnvio = (String) form.getIdEnvio();
 			Hashtable ht = new Hashtable();
-			Hashtable clonDatoscomunes = new Hashtable();
-			Hashtable datoscomunes=new Hashtable();
-			ht.put(EnvDocumentosBean.C_IDINSTITUCION,idInstitucion);
-			ht.put(EnvDocumentosBean.C_IDENVIO,idEnvio);
-			Vector vDocs = docAdm.select(ht);	
-			EnvEnviosAdm envioAdm = new EnvEnviosAdm(usr);	
+			ht.put(EnvDocumentosBean.C_IDINSTITUCION, idInstitucion);
+			ht.put(EnvDocumentosBean.C_IDENVIO, idEnvio);
+			Vector vDocs = docAdm.select(ht);
+			EnvEnviosAdm envioAdm = new EnvEnviosAdm(usr);
 			String pathDocumentosAdjuntos = "";
 			try {
-			   pathDocumentosAdjuntos = envioAdm.getPathEnvio(idInstitucion,idEnvio);
-		  	} catch (Exception e) {
-		   		new ClsExceptions (e, "Error al recuperar el envio");
-		   	}
-										
-			if (vDocs!=null){				
-				if (vDocs.size()==1){
-					try{	/*Se verifica que exista el fichero y si existe se saca por pantalla ya que solo es un archivo.*/
-						for (int i=0;i<vDocs.size();i++){			
-						 EnvDocumentosBean docBean = (EnvDocumentosBean)vDocs.elementAt(i);
-						 String idDocumento = (String)docBean.getIdDocumento().toString();							
-						 String Descripcion= (String) docBean.getDescripcion();	
-						 String Pathdocumento= (String) docBean.getPathDocumento();
-						 
-						 String nombrePlantilla=idInstitucion+"_"+idEnvio+"_"+idDocumento;
-						 String rutaAlm = pathDocumentosAdjuntos + ClsConstants.FILE_SEP;					
-						 String direccionPlantilla=rutaAlm+nombrePlantilla;				
-						 String direccionPlantilla1=rutaAlm+Descripcion;	
-						 File archivo = new 	File(direccionPlantilla);						
-						 File f2 = new File(direccionPlantilla1);
-						 fDocumento = docAdm.getFile(idInstitucion,idEnvio,idDocumento);
-						 File fdocumento1 = new File(rutaAlm+Pathdocumento);
-						 if(fDocumento==null || !fDocumento.exists()){
-						  if(!fdocumento1.exists()){
-								throw new SIGAException("messages.general.error.ficheroNoExiste");
-						  }else{
-							 request.setAttribute("rutaFichero", fdocumento1.getPath());
-							 request.setAttribute("nombreFichero", Descripcion);
-						  }
-						}else{
-						  request.setAttribute("rutaFichero", fDocumento.getPath());
-						  request.setAttribute("nombreFichero", Descripcion);
-						}
-								
-						}
-					 } catch (Exception e) { 
-					       throwExcp("messages.general.error",new String[] {"modulo.envios"},e,null);
-					}
-				}else{/** se recorre los datos ya que hay mas de un fichero y se van sacando una a uno para guardarlos en un vector
-				 		   y posteriormente se leera dicho vector para guardarlo en un zip.
-				 	  **/		
-						for (int i=0;i<vDocs.size();i++){			
-						EnvDocumentosBean docBean = (EnvDocumentosBean)vDocs.elementAt(i);		
-					 	String Descripcion= (String)docBean.getDescripcion();
+				pathDocumentosAdjuntos = envioAdm.getPathEnvio(idInstitucion, idEnvio);
+			} catch (Exception e) {
+				new ClsExceptions(e, "Error al recuperar el envio");
+			}
+			List<Documento> documentosList = null;
+			if (vDocs != null) {
+				if (vDocs.size() == 1) {
+					for (int i = 0; i < vDocs.size(); i++) {
+						EnvDocumentosBean docBean = (EnvDocumentosBean) vDocs.elementAt(i);
 						String idDocumento = (String) docBean.getIdDocumento().toString();
-						String Pathdocumento= (String) docBean.getPathDocumento();
-						String nombrePlantilla=idInstitucion+"_"+idEnvio+"_"+idDocumento;
-						String rutaAlm = pathDocumentosAdjuntos + ClsConstants.FILE_SEP;					
-						String direccionPlantilla=rutaAlm+nombrePlantilla;		
-						String direccionPlantilla1=rutaAlm+ Pathdocumento;	
-						File archivo = new 	File(rutaAlm+nombrePlantilla);						
+						String Descripcion = (String) docBean.getDescripcion();
+						String Pathdocumento = (String) docBean.getPathDocumento();
+
+						String nombrePlantilla = idInstitucion + "_" + idEnvio + "_" + idDocumento;
+						String rutaAlm = pathDocumentosAdjuntos + ClsConstants.FILE_SEP;
+						String direccionPlantilla = rutaAlm + nombrePlantilla;
+						String direccionPlantilla1 = rutaAlm + Descripcion;
+						File archivo = new File(direccionPlantilla);
 						File f2 = new File(direccionPlantilla1);
-					    fDocumento = docAdm.getFile(idInstitucion,idEnvio,idDocumento);					
-					    if(fDocumento==null || !fDocumento.exists()){					    	
-					    	  if(!f2.exists()){
-					 			throw new SIGAException("messages.general.error.ficheroNoExiste");
-					    	  }
-						}									   
-						//Renombramos el archivo con el nombre que tiene el f2
-						UtilidadesFicheros.copyFile(archivo, f2);
-						
-						/**Se guarda en el vector de informeRes los datos de los diferentes archivos**/
-						informesRes.add(f2);
-					}
-					}//FIN DEL ELSE
-				
-						/**Aqui recorremos un vector y guardamos los datos del fichero para posteriormente realizar un zip.
-					   		**/	
-					if (informesRes.size()!=0) {					
-					  try{							    	
-							ArrayList ficherosPDF= new ArrayList();
-							for (int i=0;i<informesRes.size();i++){								
-								 File f = (File) informesRes.get(i);							 
-								 ficherosPDF.add(f);	
+						File fDocumento = docAdm.getFile(idInstitucion, idEnvio, idDocumento);
+						File fdocumento1 = new File(rutaAlm + Pathdocumento);
+						if (fDocumento == null || !fDocumento.exists()) {
+							if (!fdocumento1.exists()) {
+								throw new SIGAException("messages.general.error.ficheroNoExiste");
+							} else {
+								request.setAttribute("rutaFichero", fdocumento1.getPath());
+								request.setAttribute("nombreFichero", Descripcion);
 							}
-							
-							String nombreFicheroZIP= idInstitucion+"_"+ idEnvio +"_" +UtilidadesBDAdm.getFechaCompletaBD("").replaceAll("/","").replaceAll(":","").replaceAll(" ","");
-							String rutaServidorDescargasZip = pathDocumentosAdjuntos;
-							rutaServidorDescargasZip += ClsConstants.FILE_SEP+idInstitucion+ClsConstants.FILE_SEP+"temp"+ File.separator;
-							File ruta = new File(rutaServidorDescargasZip);
-							ruta.mkdirs();
-							Plantilla.doZip(rutaServidorDescargasZip,nombreFicheroZIP,ficherosPDF, false);				
-							ficheroSalida = new File(rutaServidorDescargasZip + nombreFicheroZIP + ".zip");				
-							
-							//Borramos los ficheros clonados
-							for (int i=0;i<informesRes.size();i++){								
-								File f = (File) informesRes.get(i);							 
-								f.delete();
-							}
-							
-							request.setAttribute("nombreFichero", ficheroSalida.getName());
-							request.setAttribute("rutaFichero", ficheroSalida.getPath());
-							request.setAttribute("borrarFichero", "true");
-							
-						  } catch (Exception e) { 
-								throwExcp("messages.general.error",new String[] {"modulo.envios"},e,null);
-						     }  
+						} else {
+							request.setAttribute("rutaFichero", fDocumento.getPath());
+							request.setAttribute("nombreFichero", Descripcion);
 						}
+
 					}
-		} 		
-		catch (Exception e) { 
-            throwExcp("messages.general.error",new String[] {"modulo.envios"},e,null);
+
+				} else {
+					documentosList = new ArrayList<Documento>();
+					for (int i = 0; i < vDocs.size(); i++) {
+						EnvDocumentosBean docBean = (EnvDocumentosBean) vDocs.elementAt(i);
+						String Descripcion = (String) docBean.getDescripcion();
+						String idDocumento = (String) docBean.getIdDocumento().toString();
+						String Pathdocumento = (String) docBean.getPathDocumento();
+						String rutaAlm = pathDocumentosAdjuntos + ClsConstants.FILE_SEP;
+						String direccionPlantilla1 = rutaAlm + Pathdocumento;
+						File f2 = new File(direccionPlantilla1);
+						File fDocumento = docAdm.getFile(idInstitucion, idEnvio, idDocumento);
+						if (fDocumento == null || !fDocumento.exists()) {
+							if (!f2.exists()) {
+								throw new SIGAException("messages.general.error.ficheroNoExiste");
+							}
+						}
+						boolean tieneExtension = docBean.getDescripcion().lastIndexOf(".") == docBean.getDescripcion().length() - 4;
+						if (!tieneExtension)
+							Descripcion = docBean.getPathDocumento();
+						Documento documento = new Documento(fDocumento, Descripcion);
+						documentosList.add(documento);
+					}
+					if (documentosList.size() != 0) {
+
+						String nombreFicheroZIP = idInstitucion + "_" + idEnvio + "_" + UtilidadesBDAdm.getFechaCompletaBD("").replaceAll("/", "").replaceAll(":", "").replaceAll(" ", "")+".zip";
+						ficheroSalida = UtilidadesFicheros.doZip(nombreFicheroZIP, documentosList);
+						request.setAttribute("nombreFichero", ficheroSalida.getName());
+						request.setAttribute("rutaFichero", ficheroSalida.getPath());
+						request.setAttribute("borrarFichero", "true");
+
+					}
+				}// FIN DEL ELSE
+			}
+		} catch (Exception e) {
+			throwExcp("messages.general.error", new String[] { "modulo.envios" }, e, null);
 		}
-				
-		return "descargaFichero";  
+
+		return "descargaFichero";
 	}
 	
 }

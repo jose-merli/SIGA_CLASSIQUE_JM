@@ -123,10 +123,6 @@ public class DefinirCAJGAction extends MasterAction {
 				// Abrir
 				if (accion == null || accion.equalsIgnoreCase("") || accion.equalsIgnoreCase("abrir")){
 					mapDestino = abrir(mapping, miForm, request, response);						
-				}else if (accion.equalsIgnoreCase("generarCarta")){
-					mapDestino = generarCarta(mapping, miForm, request, response);
-				}else if (accion.equalsIgnoreCase("finalizarCarta")){
-					mapDestino = finalizarCarta(mapping, miForm, request, response);
 				}else if (accion.equalsIgnoreCase("listosParaComision")){
 					mapDestino = listosParaComision(mapping, miForm, request, response);
 				}else {
@@ -1095,116 +1091,7 @@ protected String buscarPor(ActionMapping mapping, MasterForm formulario, HttpSer
         return "recogidaDatos";
 	}
 	
-	/**
-	 * @param mapping Mapeador de las acciones. De tipo ActionMapping.
-	 * @param formulario del que se recoge la información. De tipo MasterForm.
-	 * @param request Información de sesión. De tipo HttpServletRequest
-	 * @param response De tipo HttpServletResponse
-	 * @return String que indicará la siguiente acción a llevar a cabo. 
-	 */
-	protected String finalizarCarta(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException  {
-	    
-		UsrBean usr = (UsrBean)request.getSession().getAttribute("USRBEAN");
-		String institucion =usr.getLocation();
-		String idioma = usr.getLanguage().toUpperCase();
-
-		String resultado="recogidaDatos";
-		
-		Vector vResultado= new Vector();
-		ArrayList ficherosPDF= new ArrayList();
-		File rutaFin=null;
-		File rutaTmp=null;
-		int numeroCarta=0;
-			
-		try {
-			//obtener plantilla
-		    ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
-//			ReadProperties rp = new ReadProperties("SIGA.properties");			
-		    String rutaPlantilla = Plantilla.obtenerPathNormalizado(rp.returnProperty("sjcs.directorioFisicoCartaEJGJava")+rp.returnProperty("sjcs.directorioCartaEJGJava"))+ClsConstants.FILE_SEP+institucion;
-		    
-		    // RGG cambio de codigos 
-		    String lenguajeExt ="es";
-		    AdmLenguajesAdm al = new AdmLenguajesAdm(this.getUserBean(request));
-		    lenguajeExt=al.getLenguajeExt(idioma);
-		    
-		    String nombrePlantilla="plantillaCartaEJG_"+lenguajeExt+".fo";
-		    
-		    
-		    InformeDefinirEJG informe = new InformeDefinirEJG();
-			String contenidoPlantilla = informe.obtenerContenidoPlantilla(rutaPlantilla,nombrePlantilla);
-			
-		    //obtener la ruta de descarga
-		    String rutaServidor =
-		    	Plantilla.obtenerPathNormalizado(rp.returnProperty("sjcs.directorioFisicoSJCSJava")+rp.returnProperty("sjcs.directorioSJCSJava"))+
-		    	ClsConstants.FILE_SEP+institucion;
-			rutaFin=new File(rutaServidor);
-			if (!rutaFin.exists()){
-				if(!rutaFin.mkdirs()){
-					throw new SIGAException("facturacion.nuevoFichero.literal.errorAcceso");					
-				}
-			}    
-			String rutaServidorTmp=rutaServidor+ClsConstants.FILE_SEP+"tmp_ejg_"+System.currentTimeMillis();
-			rutaTmp=new File(rutaServidorTmp);
-			if(!rutaTmp.mkdirs()){
-				throw new SIGAException("facturacion.nuevoFichero.literal.errorAcceso");					
-			}
-			
-		    //obtener los datos comunes
-		    Hashtable datosComunes= this.obtenerDatosComunes(request);
-			
-			//buscar los registros seleccionados
-			Hashtable miHash= (Hashtable) request.getSession().getAttribute("DATABACKUP");
-		
-			
-			ScsEJGAdm admEJG =  new ScsEJGAdm(this.getUserBean(request));
-			vResultado = admEJG.getDatosCartaEJG(miHash);
-			
-			if (vResultado!=null && !vResultado.isEmpty()){
-				boolean correcto=true;
-				Enumeration listaEJGs=vResultado.elements();
-	    		
-				while(correcto && listaEJGs.hasMoreElements()){
-					Hashtable datosBaseEJG=(Hashtable)listaEJGs.nextElement();
-					datosBaseEJG.putAll(datosComunes);
-					File fPdf = informe.generarInforme(request,datosBaseEJG,rutaServidorTmp,contenidoPlantilla,rutaServidorTmp,"cartasEJG_" +numeroCarta);
-					correcto=(fPdf!=null);
-					if(correcto){
-						ficherosPDF.add(fPdf);
-						numeroCarta++;
-					}
-				}
-				
-				if(correcto){
-					// Ubicacion de la carpeta donde se crean los ficheros PDF:
-					String nombreFicheroPDF="cartasEJG_" +UtilidadesBDAdm.getFechaCompletaBD("").replaceAll("/","").replaceAll(":","").replaceAll(" ","");
-					String rutaServidorDescargasZip=rutaServidor + File.separator;
-					
-					Plantilla.doZip(rutaServidorDescargasZip,nombreFicheroPDF,ficherosPDF);
-					request.setAttribute("nombreFichero", nombreFicheroPDF + ".zip");
-					request.setAttribute("rutaFichero", rutaServidorDescargasZip+nombreFicheroPDF + ".zip");			
-					request.setAttribute("borrarFichero", "true");			
-					
-					//resultado = "descargaFichero";				
-					request.setAttribute("generacionOK","OK");			
-					resultado = "recogidaDatos";
-				}else{
-					request.setAttribute("generacionOK","ERROR");			
-					resultado = "recogidaDatos";
-				}
-				
-			}else{
-				resultado=exitoModalSinRefresco("gratuita.retenciones.noResultados",request);
-			}
-			
-		}catch (Exception e) {
-			throwExcp("messages.general.error",new String[] {"modulo.gratuita"},e,null);
-		} finally{ 
-			if(rutaTmp!=null){
-				Plantilla.borrarDirectorio(rutaTmp);
-			}
-		}
-        return resultado;
-	}
+	
 	
 	/**
 	 * 
@@ -1562,70 +1449,5 @@ protected String buscarPor(ActionMapping mapping, MasterForm formulario, HttpSer
 	}
 	
 	
-	protected String consultaMaximaFechaModificacionEJG(Hashtable ht,ScsEstadoEJGAdm admBean)throws SIGAException  {
-		String fecha="";
-		int idinstitucion=Integer.parseInt((String)ht.get("IDINSTITUCION"));
-		int idtipoejg=Integer.parseInt((String)ht.get("IDTIPOEJG"));
-		int anio=Integer.parseInt((String)ht.get("ANIO"));
-		int numero=Integer.parseInt((String)ht.get("NUMERO"));
-		
-		String sql="SELECT MAX(FECHA) AS FECHAMAXIMA "+
-			"FROM (select max(fechamodificacion) as FECHA "+
-		          "from scs_estadoejg "+
-		         "where idinstitucion = "+idinstitucion+" "+
-		           "and idtipoejg = "+idtipoejg+" "+
-		           "and anio = "+anio+" "+
-		           "and numero =  "+numero+" "+
-		        "union "+
-		        "select fechamodificacion as FECHA "+
-		          "from scs_ejg "+
-		         "where idinstitucion = "+idinstitucion+" "+
-		           "and idtipoejg = "+idtipoejg+" "+
-		           "and anio = "+anio+" "+
-		           "and numero = "+numero+" "+
-		        "union "+
-		        "select max(fechamodificacion) as FECHA "+
-		          "from scs_unidadfamiliarejg "+
-		         "where idinstitucion = "+idinstitucion+" "+
-		           "and idtipoejg = "+idtipoejg+" "+
-		           "and anio = "+anio+" "+
-		           "and numero = "+numero+" "+
-		        "union "+
-		        "select max(fechamodificacion) as FECHA "+
-		          "from scs_documentacionejg "+
-		         "where idinstitucion = "+idinstitucion+" "+
-		           "and idtipoejg = "+idtipoejg+" "+
-		           "and anio = "+anio+" "+
-		           "and numero = "+numero+" "+
-		        "union "+
-		        "select max(fechamodificacion) as FECHA "+
-		          "from scs_contrariosejg "+
-		         "where idinstitucion = "+idinstitucion+" "+
-		           "and idtipoejg = "+idtipoejg+" "+
-		           "and anio = "+anio+" "+
-		           "and numero = "+numero+" "+
-		        "union "+
-		        "select max(fechamodificacion) as FECHA "+
-		          "from scs_delitosejg "+
-		         "where idinstitucion = "+idinstitucion+" "+
-		           "and idtipoejg = "+idtipoejg+" "+
-		           "and anio = "+anio+" "+
-		           "and numero = "+numero+")";
-		try{
-			
-			RowsContainer rc = new RowsContainer();
-			
-			if(rc.find(sql)){
-				Row r=(Row)rc.get(0);
-				fecha=r.getString("FECHAMAXIMA");	
-			}
-			
-		}
-		catch (Exception e) {
-			throwExcp("messages.general.error",new String[] {"modulo.gratuita"},e,null);
-		}
-		
-		
-		return fecha;
-	}
+	
 }

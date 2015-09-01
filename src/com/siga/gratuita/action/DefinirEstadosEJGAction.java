@@ -167,10 +167,7 @@ public class DefinirEstadosEJGAction extends MasterAction
 			miHash.put(ScsEstadoEJGBean.C_AUTOMATICO,ClsConstants.DB_FALSE);
 			if(usr.isComision())
 				miHash.put(ScsEstadoEJGBean.C_PROPIETARIOCOMISION,ClsConstants.DB_TRUE);
-			tx = usr.getTransaction ();
-			tx.begin ();
 			admBean.insert (miHash);
-			tx.commit ();
 		} catch (Exception e) {
 			throwExcp ("messages.general.error",
 					new String[] {"modulo.gratuita"}, e, tx);
@@ -202,10 +199,7 @@ public class DefinirEstadosEJGAction extends MasterAction
 			admBean.prepararUpdate (miHash);
 			if(usr.isComision())
 				miHash.put(ScsEstadoEJGBean.C_PROPIETARIOCOMISION,ClsConstants.DB_TRUE);
-			tx = usr.getTransaction ();
-			tx.begin ();
 			admBean.updateDirect(miHash,null,null);
-			tx.commit ();
 		} catch (Exception e) {
 			throwExcp ("messages.general.error",
 					new String[] {"modulo.gratuita"}, e, tx);
@@ -240,11 +234,10 @@ public class DefinirEstadosEJGAction extends MasterAction
 			miHash.put (ScsEstadoEJGBean.C_ANIO, miForm.getAnio ());
 			miHash.put (ScsEstadoEJGBean.C_NUMERO, miForm.getNumero ());
 			miHash.put (ScsEstadoEJGBean.C_IDINSTITUCION, miForm.getIdInstitucion());
+			miHash.put ("FECHABAJA", "SYSDATE");
+			String[]campos = new String[]{"FECHABAJA"};
+			admBean.updateDirect(miHash,null,campos);		    
 			
-			tx = usr.getTransaction ();
-			tx.begin ();
-			admBean.delete (miHash);		    
-			tx.commit ();
 		} catch (Exception e) {
 			   throwExcp("messages.deleted.error",e,tx);
 		}
@@ -285,11 +278,25 @@ public class DefinirEstadosEJGAction extends MasterAction
 		DefinirEstadosEJGForm miForm = (DefinirEstadosEJGForm) formulario;
 		String accion = request.getSession ().getAttribute ("accion").toString ();
 		
+		
+		String idInstitucion = null;
 		//rellenando el hash de consulta
-		UtilidadesHash.set(miHash,"ANIO",request.getParameter("ANIO").toString());
-		UtilidadesHash.set(miHash,"NUMERO",request.getParameter("NUMERO").toString());
-		UtilidadesHash.set(miHash,"IDTIPOEJG",request.getParameter("IDTIPOEJG").toString());
-		UtilidadesHash.set(miHash,"IDINSTITUCION",request.getParameter("IDINSTITUCION").toString());
+		if(request.getParameter("ANIO")!=null){
+			UtilidadesHash.set(miHash,"ANIO",request.getParameter("ANIO").toString());
+			UtilidadesHash.set(miHash,"NUMERO",request.getParameter("NUMERO").toString());
+			UtilidadesHash.set(miHash,"IDTIPOEJG",request.getParameter("IDTIPOEJG").toString());
+			UtilidadesHash.set(miHash,"IDINSTITUCION",request.getParameter("IDINSTITUCION").toString());
+			idInstitucion = request.getParameter("IDINSTITUCION").toString();
+		}else{
+		
+			miHash.put ("ANIO", miForm.getAnio ());
+			miHash.put ("NUMERO", miForm.getNumero ());
+			miHash.put ("IDTIPOEJG", miForm.getIdTipoEJG ());
+			miHash.put (ScsEstadoEJGBean.C_IDINSTITUCION, miForm.getIdInstitucion());
+			idInstitucion = miForm.getIdInstitucion();
+			
+		}
+		request.setAttribute ("DATOSEJG", miHash);
 		
 		
 		String consulta = 
@@ -301,14 +308,22 @@ public class DefinirEstadosEJGAction extends MasterAction
 			"   AND estado.IDINSTITUCION = "+UtilidadesHash.getString(miHash,"IDINSTITUCION")+" " +
 			"   AND estado.IDTIPOEJG = "+UtilidadesHash.getString(miHash,"IDTIPOEJG")+" " +
 			"   AND estado.ANIO = "+UtilidadesHash.getString(miHash,"ANIO")+" " +
-			"   AND estado.NUMERO = "+UtilidadesHash.getString(miHash,"NUMERO")+" " +
+			"   AND estado.NUMERO = "+UtilidadesHash.getString(miHash,"NUMERO")+" " ;
+		if(miForm.getVerHistorico()!=null && miForm.getVerHistorico().equalsIgnoreCase(ClsConstants.DB_TRUE)){
+			request.setAttribute("verHistorico", miForm.getVerHistorico());
+			consulta += " ORDER BY ESTADO.IDESTADOPOREJG asc ";
+		}else{
+			request.setAttribute("verHistorico", ClsConstants.DB_FALSE);
+			consulta += " and fechabaja is null "+
 			" ORDER BY ESTADO.FECHAINICIO asc, ESTADO.IDESTADOPOREJG asc";
+		}
+//			" ";
 		
 		try {
 			GenParametrosAdm paramAdm = new GenParametrosAdm (usr);
 			
 			
-			String prefijoExpedienteCajg = paramAdm.getValor (request.getParameter("IDINSTITUCION").toString(), ClsConstants.MODULO_SJCS, ClsConstants.GEN_PARAM_PREFIJO_EXPEDIENTES_CAJG, " ");
+			String prefijoExpedienteCajg = paramAdm.getValor (idInstitucion, ClsConstants.MODULO_SJCS, ClsConstants.GEN_PARAM_PREFIJO_EXPEDIENTES_CAJG, " ");
 			request.setAttribute("PREFIJOEXPEDIENTECAJG",prefijoExpedienteCajg);
 			
 			v = admBean.selectGenerico (consulta);
@@ -321,49 +336,5 @@ public class DefinirEstadosEJGAction extends MasterAction
 		return "inicio";
 	} //abrir ()
 	
-	/** 
-	 * Devuelve la lista de Estados EJG
-	 */
-	protected String abrirAvanzada (ActionMapping mapping,
-									MasterForm formulario,
-									HttpServletRequest request,
-									HttpServletResponse response)
-			throws SIGAException
-	{
-		//Controles generales
-		UsrBean usr = (UsrBean) request.getSession ().getAttribute ("USRBEAN");
-		ScsEstadoEJGAdm admBean =  new ScsEstadoEJGAdm (usr);		
-		
-		Vector v = new Vector ();
-		Hashtable miHash = new Hashtable ();
-		DefinirEstadosEJGForm miForm = (DefinirEstadosEJGForm) formulario;
-
-		miHash.put ("ANIO", miForm.getAnio ());
-		miHash.put ("NUMERO", miForm.getNumero ());
-		miHash.put ("IDTIPOEJG", miForm.getIdTipoEJG ());
-		miHash.put (ScsEstadoEJGBean.C_IDINSTITUCION, miForm.getIdInstitucion());
-		
-		request.setAttribute ("DATOSEJG", miHash);
-		
-		String consulta =
-			"SELECT estado.*, " +
-			"       "+UtilidadesMultidioma.getCampoMultidioma ("estadoejg.DESCRIPCION", usr.getLanguage ())+" " +
-			"  FROM SCS_ESTADOEJG estado, SCS_MAESTROESTADOSEJG estadoejg " +
-			" WHERE estado.IDESTADOEJG = estadoejg.IDESTADOEJG " +
-			"   AND estado.IDINSTITUCION = "+miHash.get ("IDINSTITUCION")+" " +
-			"   AND estado.IDTIPOEJG = "+miHash.get ("IDTIPOEJG")+" " +
-			"   AND estado.ANIO = "+miHash.get ("ANIO")+" " +
-			"   AND estado.NUMERO = "+miHash.get ("NUMERO")+" " +
-			" ORDER BY ESTADO.FECHAINICIO asc, ESTADO.IDESTADOPOREJG asc";
-		
-		try {			
-			v = admBean.selectGenerico (consulta);			
-			request.setAttribute ("resultado",v);	
-			request.setAttribute ("accion", formulario.getModo ());		
-		} catch (Exception e) {
-			   throwExcp("messages.general.error",e,null);
-		}
-		
-		return "inicio";
-	} //abrirAvanzada ()
+	
 }

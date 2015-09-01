@@ -491,36 +491,7 @@ protected String insertar (ActionMapping mapping,
 			
 			//estableciendo los datos de la direccion (desde el formulario 
 			// de la interfaz principalmente) para la posterior insercion
-			beanDir.setCodigoPostal (miForm.getCodigoPostal ());
-			beanDir.setCorreoElectronico (miForm.getCorreoElectronico ());
-			beanDir.setDomicilio (miForm.getDomicilio ());
-			beanDir.setFax1 (miForm.getFax1 ());
-			beanDir.setFax2 (miForm.getFax2 ());
-			beanDir.setFechaBaja (miForm.getFechaBaja ());
-			beanDir.setIdInstitucion (miForm.getIDInstitucion ());
-			beanDir.setIdPais (miForm.getPais ());
-			if (miForm.getPais ().equals ("")) {
-				miForm.setPais (ClsConstants.ID_PAIS_ESPANA);
-			}
-			if (miForm.getPais().equals (ClsConstants.ID_PAIS_ESPANA)) {
-				beanDir.setIdPoblacion (miForm.getPoblacion ());
-				beanDir.setIdProvincia (miForm.getProvincia ());
-				beanDir.setPoblacionExtranjera ("");
-			} else {
-				beanDir.setPoblacionExtranjera (miForm.getPoblacionExt ());
-				beanDir.setIdPoblacion ("");
-				beanDir.setIdProvincia ("");
-			}
-			beanDir.setIdPersona (miForm.getIDPersona ());
-			beanDir.setMovil (miForm.getMovil ());
-			beanDir.setPaginaweb (miForm.getPaginaWeb ());
-			beanDir.setPreferente (this.campoPreferenteBooleanToString
-					(miForm.getPreferenteMail (), 
-					miForm.getPreferenteCorreo (), 
-					miForm.getPreferenteFax (),
-					miForm.getPreferenteSms ()));
-			beanDir.setTelefono1 (miForm.getTelefono1 ());
-			beanDir.setTelefono2 (miForm.getTelefono2 ());
+			poblarObjeto(miForm,beanDir);
 				
 			String motivo = "";
 			if(miForm.getMotivo ()!=null){
@@ -606,36 +577,7 @@ protected String insertar (ActionMapping mapping,
 			
 			//estableciendo los datos de la direccion (desde el formulario 
 			// de la interfaz principalmente) para la posterior insercion
-			beanDir.setCodigoPostal (miForm.getCodigoPostal ());
-			beanDir.setCorreoElectronico (miForm.getCorreoElectronico ());
-			beanDir.setDomicilio (miForm.getDomicilio ());
-			beanDir.setFax1 (miForm.getFax1 ());
-			beanDir.setFax2 (miForm.getFax2 ());
-			beanDir.setFechaBaja (miForm.getFechaBaja ());
-			beanDir.setIdPais (miForm.getPais ());
-			if (miForm.getPais ().equals ("")) {
-				miForm.setPais (ClsConstants.ID_PAIS_ESPANA);
-			}
-			if (miForm.getPais ().equals (ClsConstants.ID_PAIS_ESPANA)) {
-				beanDir.setIdPoblacion (miForm.getPoblacion ());
-				beanDir.setIdProvincia (miForm.getProvincia ());
-				beanDir.setPoblacionExtranjera ("");
-			} else {
-				beanDir.setPoblacionExtranjera (miForm.getPoblacionExt ());
-				beanDir.setIdPoblacion ("");
-				beanDir.setIdProvincia ("");
-			}
-			beanDir.setMovil (miForm.getMovil ());
-			beanDir.setPaginaweb (miForm.getPaginaWeb ());
-			beanDir.setPreferente (this.campoPreferenteBooleanToString 
-					(miForm.getPreferenteMail (), 
-					miForm.getPreferenteCorreo (), 
-					miForm.getPreferenteFax (), 
-					miForm.getPreferenteSms ()));
-			beanDir.setTelefono1 (miForm.getTelefono1 ());
-			beanDir.setTelefono2 (miForm.getTelefono2 ());
-			beanDir.setIdPersona (miForm.getIDPersona ());
-			beanDir.setIdInstitucion (miForm.getIDInstitucion ());
+			poblarObjeto(miForm,beanDir);
 			beanDir.setIdDireccion (miForm.getIdDireccion ());
 			beanDir.setOriginalHash ((Hashtable) request.getSession ().getAttribute ("DATABACKUP"));
 			// Se llama a la interfaz Direccion para insertar una nueva direccion
@@ -965,9 +907,6 @@ protected String insertar (ActionMapping mapping,
 			t = usr.getTransactionPesada();
 			t.begin ();
 			
-			beanDir.setIdPersona (miForm.getIDPersona ());
-			beanDir.setIdInstitucion (miForm.getIDInstitucion ());
-			
 			/*  BORRADO CON HISTORICO  */
 			
 			// Se comprueba en el formulario porque se puede venir de sitios distintos
@@ -999,35 +938,7 @@ protected String insertar (ActionMapping mapping,
 		
 			//estableciendo los datos de la direccion (desde el formulario 
 			// de la interfaz principalmente) para la posterior insercion
-			beanDir.setCodigoPostal (miForm.getCodigoPostal ());
-			beanDir.setCorreoElectronico (miForm.getCorreoElectronico ());
-			beanDir.setDomicilio (miForm.getDomicilio ());
-			beanDir.setFax1 (miForm.getFax1 ());
-			beanDir.setFax2 (miForm.getFax2 ());
-			beanDir.setFechaBaja (miForm.getFechaBaja ());
-			beanDir.setIdInstitucion (miForm.getIDInstitucion ());
-			beanDir.setIdPais (miForm.getPais ());
-			if (miForm.getPais ().equals ("")) {
-				miForm.setPais (ClsConstants.ID_PAIS_ESPANA);
-			}
-			if (miForm.getPais().equals (ClsConstants.ID_PAIS_ESPANA)) {
-				beanDir.setIdPoblacion (miForm.getPoblacion ());
-				beanDir.setIdProvincia (miForm.getProvincia ());
-				beanDir.setPoblacionExtranjera ("");
-			} else {
-				beanDir.setPoblacionExtranjera (miForm.getPoblacionExt ());
-				beanDir.setIdPoblacion ("");
-				beanDir.setIdProvincia ("");
-			}
-			beanDir.setMovil (miForm.getMovil ());
-			beanDir.setPaginaweb (miForm.getPaginaWeb ());
-			beanDir.setPreferente (this.campoPreferenteBooleanToString
-					(miForm.getPreferenteMail (), 
-					miForm.getPreferenteCorreo (), 
-					miForm.getPreferenteFax (),
-					miForm.getPreferenteSms ()));
-			beanDir.setTelefono1 (miForm.getTelefono1 ());
-			beanDir.setTelefono2 (miForm.getTelefono2 ());
+			poblarObjeto(miForm,beanDir);
 			
 			String motivo = "";
 			if(miForm.getMotivo ()!=null){
@@ -1096,5 +1007,42 @@ protected String insertar (ActionMapping mapping,
 		return "seleccion";
 		}
 	
+	
+	/**
+	 * Método encargado de volcar la información del objeto tipo DireccionesForm al objeto tipo CenDireccionesBean
+	 * @param miForm,beanDir
+	 * @throws SIGAException
+	 */
+	private void poblarObjeto(DireccionesForm miForm,CenDireccionesBean beanDir)
+			throws SIGAException {
+
+		beanDir.setIdPersona(miForm.getIDPersona());
+		beanDir.setCodigoPostal(miForm.getCodigoPostal());
+		beanDir.setCorreoElectronico(miForm.getCorreoElectronico());
+		beanDir.setDomicilio(miForm.getDomicilio());
+		beanDir.setFax1(miForm.getFax1());
+		beanDir.setFax2(miForm.getFax2());
+		beanDir.setFechaBaja(miForm.getFechaBaja());
+		beanDir.setIdInstitucion(miForm.getIDInstitucion());
+		beanDir.setIdPais(miForm.getPais());
+		if (miForm.getPais().equals(ClsConstants.ID_PAIS_ESPANA)
+				|| miForm.getPais().equals("")) {
+			beanDir.setIdPoblacion(miForm.getPoblacion());
+			beanDir.setIdProvincia(miForm.getIdProvinciaHidden());
+			beanDir.setPoblacionExtranjera("");
+		} else {
+			beanDir.setPoblacionExtranjera(miForm.getPoblacionExt());
+			beanDir.setIdPoblacion("");
+			beanDir.setIdProvincia("");
+		}
+		beanDir.setMovil(miForm.getMovil());
+		beanDir.setPaginaweb(miForm.getPaginaWeb());
+		beanDir.setPreferente(this.campoPreferenteBooleanToString(
+				miForm.getPreferenteMail(), miForm.getPreferenteCorreo(),
+				miForm.getPreferenteFax(), miForm.getPreferenteSms()));
+		beanDir.setTelefono1(miForm.getTelefono1());
+		beanDir.setTelefono2(miForm.getTelefono2());
+
+	}
 	
 }

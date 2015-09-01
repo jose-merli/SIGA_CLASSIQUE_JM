@@ -697,21 +697,46 @@ MDB Microsoft Access Database
 	public static final int IDCAMPO_TIPOEXPEDIENTE_SOLICITANTEEJG = 19;
 	public static final int IDCAMPO_TIPOEXPEDIENTE_RELACIONEXPEDIENTE = 20;	
 
-	 // proceso RegTel
-	  public static String IDPROCESO_DESTINATARIOSEXPEDIENTE="11P";
-	  
-	  public static int IDTIPO_RESOLUCIONAUTO_MODYDENEGAR=3;
-	  public static int IDTIPO_RESOLUCIONAUTO_MODYCONCEDER=1;
-	  
+	// proceso RegTel
+	public static String IDPROCESO_DESTINATARIOSEXPEDIENTE = "11P";
+
+	public static int IDTIPO_RESOLUCIONAUTO_MODYDENEGAR = 3;
+	public static int IDTIPO_RESOLUCIONAUTO_MODYCONCEDER = 1;
+
+	public static final String ENVIO = "1";
+
+	public static final String ERROR_AVISO = "errorConAviso";
+	public static final String SMS_AVISO_ESTADO = "msjAvisoEstado";
+
+	// Tipo prog calendario carga masiva por Excel
+	public static final String TIPO_CONJUNTOGUARDIAS_CARGA_MASIVA = "0";
+
+	// Sanciones Letrados
+	public static final int TIPO_SANCION_APERCIBIMIENTO = 1;
+	public static final int TIPO_SANCION_ARCHIVO = 2;
+	public static final int TIPO_SANCION_CUOTAS = 3;
+	public static final int TIPO_SANCION_EXPULSIÓN = 4;
+	public static final int TIPO_SANCION_REPRESIÓN_PRIVADA = 5;
+	public static final int TIPO_SANCION_SANCIÓN_JUDICIAL = 6;
+	public static final int TIPO_SANCION_SANCIÓN_1 = 7;
+	public static final int TIPO_SANCION_SUSPENSIÓN = 8;
+	public static final int TIPO_SANCION_DESCONOCIDA = 9;
 	
-	  public static final String ENVIO="1";
-	  
-	  public static final String ERROR_AVISO = "errorConAviso";
-	  public static final String SMS_AVISO_ESTADO = "msjAvisoEstado";
-	  
-	  // Tipo prog calendario carga masiva por Excel
-	  public static final String TIPO_CONJUNTOGUARDIAS_CARGA_MASIVA = "0";
-	  
+	
+	//28052015 Tamaño codigo postal
+	public static final int TAM_MAX_CODIGO_POSTAL = 5;
+	public static final int TAM_MIN_CODIGO_POSTAL = 1;
+	
+	//08062015 Género
+	public static String GENERO_NEUTRO = "N";
+	public static String CERO = "0";
+	public static String GENERO_MUJER = "M";
+	public static String GENERO_HOMBRE = "H";
+	public static String ID_SRA="5";
+	public static String ID_SR="4";
+	public static String ID_SR_SRA="15";
+	
+	
 	  
   public ClsConstants() {
   }

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html class="blueback">
 <head>
 <!-- main.jsp -->
 <!-- EJEMPLO DE VENTANA PRINCIPAL DE LA APLICACION -->
@@ -8,7 +8,6 @@
 	 cada mantenimiento mostrado en la zona de trabajo.
 	 Tiene por lo tanto una zona de trabajo enla que se muestran todos los mantenimientos
 -->
-
 
 <!-- CABECERA JSP -->
 <%@ page pageEncoding="ISO-8859-1"%>
@@ -19,7 +18,7 @@
 <!-- TAGLIBS -->
 <%@ taglib uri="struts-bean.tld" prefix="bean"%>
 <%@ taglib uri="struts-tiles.tld" prefix="tiles"%>
-<%@ taglib uri = "struts-html.tld" prefix="html"%>
+<%@ taglib uri ="struts-html.tld" prefix="html"%>
 <%@ taglib uri="libreria_SIGA.tld" prefix="siga"%>
 
 <!-- IMPORTS -->
@@ -100,8 +99,6 @@
 	<script type="text/javascript" src="<html:rewrite page='/html/dropdownchecklist/ui.dropdownchecklist-1.4-min.js'/>"></script>
 	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js?v=${sessionScope.VERSIONJS}'/>"></script>
 	<script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>	
-	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-ui-1.10.3.custom.min.js?v=${sessionScope.VERSIONJS}'/>"></script>
-	<link rel="stylesheet" href="<html:rewrite page='/html/js/jquery.ui/css/smoothness/jquery-ui-1.10.3.custom.min.css'/>">
 	
 	<style type="text/css">
 	.notice-wrap {
@@ -153,7 +150,7 @@
 				
 				return false;
 			}
-			
+
 			function usuario()
 			{
 				MM_swapImage('AbrirUsuario','','<%=app%>/html/imagenes/botonUsuario_activo.gif',1);
@@ -209,21 +206,17 @@
 							typeof jQueryTop("#mainWorkArea")[0].contentWindow != "undefined" && 
 							typeof jQueryTop("#mainWorkArea")[0].contentWindow.jQuery != "undefined"){
 						var mainWorkAreaJquery = jQueryTop("#mainWorkArea")[0].contentWindow.jQuery;
-						try{
 						mainWorkAreaJquery.blockUI({
 							message: '<div id="barraBloqueante"><span class="labelText">'+msg+'</span><br><img src="<%=app%>/html/imagenes/loadingBar.gif"/></div>', 
 							css:{border:0, background:'transparent'},
 							overlayCSS: { backgroundColor:'#FFF', opacity: .0} });
-						}catch(mensa){
-							jQuery("#divEspera").show();
-						}
-						/* NO ES  NECESARIO SOLO BLOQUEA mainWorkArea EL MENÚ SIGUE FUNCIONANDO
+						/* NO ES NECESARIO SOLO BLOQUEA mainWorkArea EL MENÚ SIGUE FUNCIONANDO
 						mainWorkAreaJquery("#barraBloqueante").click(function() { 
 							mainWorkAreaJquery.unblockUI(); 
 							console.debug("[barraBloqueante] CLICK blockUI");
 						});
 						*/
-						//console.debug("[mainSub] blockUI");
+						console.debug("[mainSub] blockUI");
 					} else
 						jQuery("#divEspera").show();
 					bloqueado=true;
@@ -236,12 +229,8 @@
 							typeof jQueryTop("#mainWorkArea")[0].contentWindow != "undefined" && 
 							typeof jQueryTop("#mainWorkArea")[0].contentWindow.jQuery != "undefined"){
 						var mainWorkAreaJquery = jQueryTop("#mainWorkArea")[0].contentWindow.jQuery;
-						try{
-							mainWorkAreaJquery.unblockUI();
-						}catch(mensa){
-							
-						}
-						//console.debug("[mainFin] unblockUI");
+						mainWorkAreaJquery.unblockUI();
+						console.debug("[mainFin] unblockUI");
 					}
 					jQuery("#divEspera").hide();
 					bloqueado=false; 
@@ -260,102 +249,80 @@
 </head>
 
 <body class="tableCabecera"
-	onLoad="inicio();<%=onLoad%>;ajusteAlto('mainWorkArea');showModals()">
+	onLoad="inicio();<%=onLoad%>;ajusteAlto('mainWorkArea');">
 	
 	<!-- MENU PRINCIPAL -->
+	
+	
+<div class="cabeceraGnal"> <%--/*h*/ Defino una capa que englobe la cabecera --%> 
+
 	<!-- Esto pinta el menu principal en funcion de los permisos del userBean -->
 	<script src="<%=app%>/html/js/coolmenus4.jsp" type="text/javascript"></script>
 
-	<div id="modalAviso" style="display:none">
-		<span>
-		Microsoft ha solventado la problemática con las ventanas emergentes de su actualización KB3008923.
-		<br>
-		<br>Ahora se recomienda la instalación de la actualización <b><a href="http://support.microsoft.com/kb/3025390" target="_new">KB3025390</a>.</b>
-
-		</span>
-
-	</div>
-	
-	<div id="modalDialog" style="display:none">
-		<span>Su versión del navegador tiene inhabilitada la funcionalidad de ventanas emergentes <b>modales</b>. Esto afecta al correcto funcionamiento de este aplicativo en su navegador.
-		<br>Estamos trabajando para evitar este inconveniente.Mientras tanto le sugerimos que utilice otro navegador:
-		<ul>
-		<li>Internet Explorer</li>
-		<li>FireFox</li>
-		</ul>
-		</span>
-		<span>
-		Realizar una configuración avanzada permite volver a habilitar las ventanas emergentes en Chrome v. 37 y superiores. Podéis consultar más detalles en nuestra <a href="http://wiki.redabogacia.org/index.php/Chrome_v37" target="_new">wiki</a>.
-		<br><br>
-		Disculpe las molestias.
-		</span>
-	</div>
-	<div style="position: absolute; top: 1px; z-index: 50;">
-		<tiles:insert page="/menu.do" flush="true" />
-	</div>
+		<div style="position: absolute; top: 1px; z-index: 50;">
+			<tiles:insert page="/menu.do" flush="true" />
+		</div>
 
 	<!-- CABECERA GENERAL -->
-	<div id="img1"
-		style="position: absolute; left: 0px; top: 0px; text-align: center; vertical-align: middle; height: 78px; width: 170px; z-index: 2">
-		<img id="logoImg" src="<%=logo%>" style="vertical-align: middle;">
-	</div>
-	<div id="img2"
-		style="position: absolute; left: 0px; top: 0px; text-align: center; height: 78px; width: 170px; z-index: -1; background-color: transparent;">
-		<img id="logoSIGA" align="bottom"
-			src="<%=app%>/html/imagenes/logoSIGA.png">
-	</div>
-
-<div style="position: absolute; left: 180px; top: 50px; z-index: 5;">
-		<table border=0 cellspacing=0 cellpadding=0>
-			<tr>
-			<td width="300px">
-			<a href="javascript://"  class="imageLink" onclick="return version();" >
-				<img src="<%=app%>/html/imagenes/botonVersion.gif" alt="<siga:Idioma key="general.icono.version"/>" align="middle" border="0">
-				&nbsp;<siga:Idioma key="general.icono.version"/>
-			</a>
-			</td>
-			<td width="175px">
-				<a href="javascript://" class="imageLink" onclick="return usuario();" onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('AbrirUsuario','','<%=app%>/html/imagenes/botonUsuario_ilum.gif',1)">
-				<img src="<%=app%>/html/imagenes/botonUsuario.gif" alt="<siga:Idioma key="general.boton.usuario"/>" align="middle" name="AbrirUsuario"  border="0">
-				&nbsp;<siga:Idioma key="general.boton.usuario"/>
-			</a>
-			</td>
-			<td width="175px">
-			<a href="javascript://" class="imageLink" onclick="return ayuda();" onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('AbrirAyuda','','<%=app%>/html/imagenes/botonAyuda_ilum.gif',1)">
-				<img src="<%=app%>/html/imagenes/botonAyuda.gif" alt="<siga:Idioma key="general.boton.ayuda"/>" align="middle" name="AbrirAyuda"  border="0">
-				&nbsp;<siga:Idioma key="general.boton.ayuda"/>
-			</a>
-			</td>
-			<td width="175px">
-			<a href="javascript://" class="imageLink" onclick="return cerrarSession();" onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('closeSession','','<%=app%>/html/imagenes/botonSession_ilum.gif',1)">
-				<img src="<%=app%>/html/imagenes/botonSession.gif" alt="<siga:Idioma key="general.cerrarSesion"/>" align="middle" name="closeSession"  border="0">
-				&nbsp;<siga:Idioma key="general.cerrarSesion"/>
-			</a>
-			</td>
-			</tr>
-			</table>
+		<div id="img1" style="position: absolute;z-index:2; width:168px;text-align: center">
+			<img id="logoImg" src="<%=logo%>" style="vertical-align: middle;">
 		</div>
+		<div id="img2" style="position: absolute; top: 1px;"><img id="logoSIGA" align="top"src="<%=app%>/html/imagenes/logoSIGA.png"></div>
+	
+		<div style="position: absolute; left: 180px; top: 48px; z-index: 5;">
+			<table border=0 cellspacing=0 cellpadding=0>
+				<tr>
+				<td width="300px">
+				<a href="javascript://"  class="imageLink" onclick="return version();" onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('AbrirVersiones','','<%=app%>/html/imagenes/botonVersion.gif',1)" >
+					<img src="<%=app%>/html/imagenes/botonVersion.gif" alt="<siga:Idioma key="general.icono.version"/>" align="middle" name="AbrirVersiones" border="0">
+					&nbsp;<siga:Idioma key="general.icono.version"/>
+				</a>
+				</td>
+				<td width="175px">
+					<a href="javascript://" class="imageLink" onclick="return usuario();" onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('AbrirUsuario','','<%=app%>/html/imagenes/botonUsuario_ilum.gif',1)">
+					<img src="<%=app%>/html/imagenes/botonUsuario_ilum.gif" alt="<siga:Idioma key="general.boton.usuario"/>" align="middle" name="AbrirUsuario"  border="0">
+					&nbsp;<siga:Idioma key="general.boton.usuario"/>
+				</a>
+				</td>
+				<td width="175px">
+				<a href="javascript://" class="imageLink" onclick="return ayuda();" onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('AbrirAyuda','','<%=app%>/html/imagenes/botonAyuda_activo.gif',1)">
+					<img src="<%=app%>/html/imagenes/botonAyuda_activo.gif" alt="<siga:Idioma key="general.boton.ayuda"/>" align="middle" name="AbrirAyuda"  border="0">
+					&nbsp;<siga:Idioma key="general.boton.ayuda"/>
+				</a>
+				</td>
+				<td width="175px">
+				<a href="javascript://" class="imageLink" onclick="return cerrarSession();" onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('closeSession','','<%=app%>/html/imagenes/botonSession.gif',1)">
+					<img src="<%=app%>/html/imagenes/botonCerrar_activo.gif" alt="<siga:Idioma key="general.cerrarSesion"/>" align="middle" name="closeSession"  border="0">
+					&nbsp;<siga:Idioma key="general.cerrarSesion"/>
+				</a>
+				</td>
+				</tr>
+				</table>
+		</div>
+	
+			<!-- TITULO -->
+
+			<!-- Barra de titulo actualizable desde los mantenimientos -->
 
 		<!-- TITULO -->
 		<!-- Barra de titulo actualizable desde los mantenimientos -->
+
+</div>
 		<div id="posicionTitulo" class="posicionTitulo">
 			<table class="tablaTitulo" cellspacing="0">
 			<tr>
-				<td class="titulosLeft" width="50%">
-				&nbsp;&nbsp;<input id="barraNavegacion" class="boxCabecera" type="text" name="navegacion" value="" readonly onchange="pushGA()">
-				</td>
-				<td id="titulo" class="titulos"  width="50%">
+						<td class="titulos" width="50%"><input id="barraNavegacion" class="boxCabecera" type="text" name="navegacion" value="" readonly onchange="pushGA()"></td>	
+			<td id="titulo" class="titulos titGrande" width="50%">				
 				&nbsp;
 				</td>
 			</tr>
 			</table>
 		</div>
-
 	<!-- INICIO: IFRAME PRINCIPAL -->
 
 	<!-- Iframe donde se ejecutan todos los mantenimientos -->
 	<iframe src="<%=app%>/html/jsp/general/entrada.jsp" id="mainWorkArea"
-		name="mainWorkArea" frameborder="0" scrolling="no"
+		name="mainWorkArea" frameborder="0" scrolling="no" 
 		class="posicionPrincipal"> </iframe>
 
 	<!-- FIN: IFRAME PRINCIPAL -->
@@ -392,54 +359,11 @@
 		$("#dialog-message").scrollTop(0);
 	}
 	
-	function showModal(){
-		jQuery("#modalDialog").dialog({
-	      	height: 370,
-	      	width: 600,
-	      	modal: true,
-	      	title:'Su navegador no soporta ventanas modales',
-	      	resizable: false,
-	      	buttons : {
-	      		'<siga:Idioma key="global.boton.aceptar"/>': function() {$(this).dialog("close");}
-			}
-		});	
-	}
-		
-	function showModals(){
-		if (!(window.showModalDialog)){
-			showModal();
-		}else if (isIE11()){
-			showAvisoModal();
-		}
-	}
-
-	function isIE11(){
-	    return !!(navigator.userAgent.indexOf('Trident/7', 0)>0);
-	  }
-	
-	 function showAvisoModal(){
-		 /*
-		 jQuery("#modalAviso").dialog({
-				height: 220,
-				width: 580,
-				modal: true,
-				title:'Solventado problema compatibilidad con Internet Explorer 11',
-				resizable: false,
-				buttons : {
-					'<siga:Idioma key="global.boton.aceptar"/>': function() {$(this).dialog("close");}
-				}
-			});
-		 */
-	 }
-	
 </script>
-
-
 <div id="main_overlay" class="overlay" style="display:none;z-index: 50;"></div>
 	<div id="divEspera" title="Espere por favor" style="z-index:100; position:absolute;vertical-align: center;display:none; top:45%; left:450px">
 		<span class="labelText"></span><br><img src="<%=app%>/html/imagenes/loadingBar.gif"/><span id="barraBloqueante">&nbsp;</span>
 	</div>
-
 	
 </body>
 </html>

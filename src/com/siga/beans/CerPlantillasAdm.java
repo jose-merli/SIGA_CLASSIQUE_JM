@@ -213,7 +213,7 @@ public class CerPlantillasAdm extends MasterBeanAdministrador
    	        						 String idPlantilla,
    	        						 File fPlantilla,
    	        						 boolean bPorDefecto,
-   	        						 boolean bZIP) throws SIGAException, ClsExceptions
+   	        						 boolean bZIP,String extension) throws SIGAException, ClsExceptions
    	{
    	    try {
    	    	
@@ -267,6 +267,7 @@ public class CerPlantillasAdm extends MasterBeanAdministrador
 	
 		    else
 		    {
+		    	htDatos.remove("FECHAMODIFICACION");
 		        Vector vDatos = select(htDatos);
 	
 		        CerPlantillasBean beanPlantilla = (CerPlantillasBean)vDatos.elementAt(0);
@@ -282,11 +283,12 @@ public class CerPlantillasAdm extends MasterBeanAdministrador
 	
 	        if (bGrabarFicheroPlantilla)
 	        {
-	            if (!grabarFicheroPlantilla(idInstitucion, idTipoProducto, idProducto, idProductoInstitucion, idPlantilla2, fPlantilla, bZIP))
+	            if (!grabarFicheroPlantilla(idInstitucion, idTipoProducto, idProducto, idProductoInstitucion, idPlantilla2, fPlantilla, bZIP,extension))
 	            {
 	                if (bInsertDB)
 	                {
-	        	        Vector vDatos = select(htDatos);
+	                	htDatos.remove("FECHAMODIFICACION");
+	                	Vector vDatos = select(htDatos);
 	
 	        	        CerPlantillasBean beanPlantilla = (CerPlantillasBean)vDatos.elementAt(0);
 	
@@ -319,7 +321,7 @@ public class CerPlantillasAdm extends MasterBeanAdministrador
 				 						   String idProductoInstitucion,
 				 						   String idPlantilla,
 				 						   File fPlantilla,
-				 						   boolean bZIP) throws SIGAException, ClsExceptions
+				 						   boolean bZIP,String extension) throws SIGAException, ClsExceptions
    	{
    	    BufferedWriter bw = null;
    	    BufferedReader br = null; 
@@ -475,8 +477,9 @@ public class CerPlantillasAdm extends MasterBeanAdministrador
 
 	        else
 	        {
-	            File fFicheroDestino = new File(sNombreFinal);
-
+	            if(extension.equals("doc"))
+	            	sNombreFinal = sNombreFinal +"."+ extension;
+	        	File fFicheroDestino = new File(sNombreFinal);
 	            fPlantilla.renameTo(fFicheroDestino);
 	        }
 
@@ -659,10 +662,15 @@ public class CerPlantillasAdm extends MasterBeanAdministrador
    	{
    	    try
    	    {
-   	   	    String sCompuesto = idTipoProducto + "_" + idProducto + "_" + idProductoInstitucion + "_" + idPlantilla;
+   	    	String sCompuesto = idTipoProducto + "_" + idProducto + "_" + idProductoInstitucion + "_" + idPlantilla;
    	   	    String sNombreFinal = getPathPlantillasFromDB() + File.separator + idInstitucion + File.separator + sCompuesto;
-
-   	        return new File(sNombreFinal);
+   	    	StringBuffer rutaCompletaFicheroDoc = new StringBuffer(sNombreFinal);
+			rutaCompletaFicheroDoc.append(".doc");
+			File fileDoc = new File(rutaCompletaFicheroDoc.toString());
+			if (fileDoc.exists()) 
+				return fileDoc;
+			else
+				return new File(sNombreFinal);
    	    }
 
    	    catch(Exception e)
@@ -865,172 +873,148 @@ public class CerPlantillasAdm extends MasterBeanAdministrador
 
 	    return htDatos;
 	}*/
-	public Hashtable darFormatoCampos(String idIntitucion, String idTipoProducto, String idProducto, 
-			String idProductoInstitucion, String idPlantilla,String idioma, Hashtable ht) throws ClsExceptions
-	{
-	    Hashtable htDatos = new Hashtable();
+	public Hashtable darFormatoCampos(String idIntitucion, String idTipoProducto, String idProducto, String idProductoInstitucion, String idPlantilla, String idioma, Hashtable ht) throws ClsExceptions {
+		Hashtable htDatos = new Hashtable();
 
-	    try
-	    {
-	        CerProducInstiCampCertifAdm admAdm = new CerProducInstiCampCertifAdm(this.usrbean);
+		try {
+			CerProducInstiCampCertifAdm admAdm = new CerProducInstiCampCertifAdm(this.usrbean);
 
-	        Vector vCampos = admAdm.obtenerCampos(idIntitucion, idTipoProducto, idProducto, idProductoInstitucion);
+			Vector vCampos = admAdm.obtenerCampos(idIntitucion, idTipoProducto, idProducto, idProductoInstitucion);
 
-	        String sNombreCampo="";
-	        String sValorCampo="";
+			String sNombreCampo = "";
+			String sValorCampo = "";
 
-	        for (int i=0; i<vCampos.size(); i++)
-	        {
-	            Hashtable htAux = (Hashtable)vCampos.elementAt(i);
+			for (int i = 0; i < vCampos.size(); i++) {
+				Hashtable htAux = (Hashtable) vCampos.elementAt(i);
 
-			    String sIdNombre = (String)htAux.get(CerCamposCertificadosBean.C_IDCAMPOCERTIFICADO);
-			    String sTipoCampo= (String)htAux.get(CerCamposCertificadosBean.C_TIPOCAMPO);
-			    String sCapturarDatos = (String)htAux.get(CerCamposCertificadosBean.C_CAPTURARDATOS);
-			    String sNombre = (String)htAux.get(CerCamposCertificadosBean.C_NOMBRE);
-			    String sValor = (String)htAux.get(CerProducInstiCampCertifBean.C_VALOR);
-			    String sIdFormato = (String)htAux.get(CerFormatosBean.C_IDFORMATO);
-			    String sFormato = (String)htAux.get(CerFormatosBean.C_FORMATO);
-			    String sDescripcion = (String)htAux.get(CerFormatosBean.C_DESCRIPCION);
+				String sIdNombre = (String) htAux.get(CerCamposCertificadosBean.C_IDCAMPOCERTIFICADO);
+				String sTipoCampo = (String) htAux.get(CerCamposCertificadosBean.C_TIPOCAMPO);
+				String sCapturarDatos = (String) htAux.get(CerCamposCertificadosBean.C_CAPTURARDATOS);
+				String sNombre = (String) htAux.get(CerCamposCertificadosBean.C_NOMBRE);
+				String sValor = (String) htAux.get(CerProducInstiCampCertifBean.C_VALOR);
+				String sIdFormato = (String) htAux.get(CerFormatosBean.C_IDFORMATO);
+				String sFormato = (String) htAux.get(CerFormatosBean.C_FORMATO);
+				String sDescripcion = (String) htAux.get(CerFormatosBean.C_DESCRIPCION);
 
-			    sNombreCampo=sNombre;
-			    sValorCampo = (sCapturarDatos!=null && sCapturarDatos.equalsIgnoreCase("S")) ? sValor : (String)ht.get(sNombre);
+				sNombreCampo = sNombre;
+				sValorCampo = (sCapturarDatos != null && sCapturarDatos.equalsIgnoreCase("S")) ? sValor : (String) ht.get(sNombre);
 
-			    if (sValorCampo==null || sValorCampo.equals(""))
-			    {
-			        sValorCampo="";
-			    }
+				if (sValorCampo == null || sValorCampo.equals("")) {
+					sValorCampo = "";
+				}
 
-			    else
-			    {
-		            if (sTipoCampo.equals(CerCamposCertificadosAdm.T_ALFANUMERICO))
-		            {
-		                if (sIdFormato.equals(CerFormatosAdm.K_TODO_MAYUSCULAS))
-		                {
-		                    sValorCampo=sValorCampo.toUpperCase();
-		                }
+				else {
+					if (sTipoCampo.equals(CerCamposCertificadosAdm.T_ALFANUMERICO)) {
+						if (sIdFormato.equals(CerFormatosAdm.K_TODO_MAYUSCULAS)) {
+							sValorCampo = sValorCampo.toUpperCase();
+						}
 
-		                else if (sIdFormato.equals(CerFormatosAdm.K_TODO_MINUSCULAS))
-		                {
-		                    sValorCampo=sValorCampo.toLowerCase();
-		                }
+						else if (sIdFormato.equals(CerFormatosAdm.K_TODO_MINUSCULAS)) {
+							sValorCampo = sValorCampo.toLowerCase();
+						}
 
-		                else if (sIdFormato.equals(CerFormatosAdm.K_PRIMERA_MAYUSCULA))
-		                {
-		                	
-		                     sValorCampo = sValorCampo.substring(0,1).toUpperCase() + sValorCampo.substring(1).toLowerCase();
-		                	
-		                }
+						else if (sIdFormato.equals(CerFormatosAdm.K_PRIMERA_MAYUSCULA)) {
 
-		                else if (sIdFormato.equals(CerFormatosAdm.K_PRIMERAS_MAYUSCULAS))
-		                {
-		                    StringTokenizer st = new StringTokenizer(sValorCampo, " ");
-		                    sValorCampo="";
+							sValorCampo = sValorCampo.substring(0, 1).toUpperCase() + sValorCampo.substring(1).toLowerCase();
 
-		                    while (st.hasMoreTokens())
-		                    {
-		                        String token = st.nextToken();
+						}
 
-		                        sValorCampo += token.substring(0,1).toUpperCase() + token.substring(1).toLowerCase();
-		                        sValorCampo += " ";
-		                    }
-		                }
+						else if (sIdFormato.equals(CerFormatosAdm.K_PRIMERAS_MAYUSCULAS)) {
+							StringTokenizer st = new StringTokenizer(sValorCampo, " ");
+							sValorCampo = "";
 
-		                /*else
-		                {
-		                    throw new ClsExceptions(null, "Error al dar formato a los campos");
-		                }*/
-		            }
+							while (st.hasMoreTokens()) {
+								String token = st.nextToken();
 
-		            /*else if (sTipoCampo.equals(CerCamposCertificadosAdm.T_NUMERICO))
-		            {
-		                try
-		                {
-		                    //De momento no se hace nada.
-		                }
+								sValorCampo += token.substring(0, 1).toUpperCase() + token.substring(1).toLowerCase();
+								sValorCampo += " ";
+							}
+						}
 
-		                catch(Exception e)
-		                {
-		                    throw new ClsExceptions(e, "Error al dar formato numérico");
-		                }
-		            }*/
+						/*
+						 * else { throw new ClsExceptions(null,
+						 * "Error al dar formato a los campos"); }
+						 */
+					}
 
-		            else if (sTipoCampo.equals(CerCamposCertificadosAdm.T_FECHA))
-		            {
-		                /*try
-		                {
-		                    SimpleDateFormat sdf=new SimpleDateFormat("dd/MM/yyyy");
+					/*
+					 * else if
+					 * (sTipoCampo.equals(CerCamposCertificadosAdm.T_NUMERICO))
+					 * { try { //De momento no se hace nada. }
+					 * 
+					 * catch(Exception e) { throw new ClsExceptions(e,
+					 * "Error al dar formato numérico"); } }
+					 */
 
-		                    Date out = sdf.parse(sValorCampo);
+					else if (sTipoCampo.equals(CerCamposCertificadosAdm.T_FECHA)) {
+						/*
+						 * try { SimpleDateFormat sdf=new
+						 * SimpleDateFormat("dd/MM/yyyy");
+						 * 
+						 * Date out = sdf.parse(sValorCampo);
+						 * 
+						 * sValorCampo=sdf.format(out); }
+						 * 
+						 * catch(Exception e) { throw new ClsExceptions(e,
+						 * "Error al dar formato fecha"); }
+						 */
+						// Si es del tipo dia de mes de anio utilizaremos el
+						// procedimiento
+						// PKG_SIGA_FECHA_EN_LETRA.f_siga_fechacompletaenletra
+						try {
+							SimpleDateFormat sdf = new SimpleDateFormat(ClsConstants.DATE_FORMAT_JAVA);
 
-		                    sValorCampo=sdf.format(out);
-		                }
+							Date out = sdf.parse(sValorCampo);
 
-		                catch(Exception e)
-		                {
-		                    throw new ClsExceptions(e, "Error al dar formato fecha");
-		                }*/
-		                //Si es del tipo dia de mes de anio utilizaremos el procedimiento
-		            	// PKG_SIGA_FECHA_EN_LETRA.f_siga_fechacompletaenletra
-		                try
-		                {
-		                    SimpleDateFormat sdf = new SimpleDateFormat(ClsConstants.DATE_FORMAT_JAVA);
+							Locale locale;
+							SimpleDateFormat sdfout;
 
-		                    Date out = sdf.parse(sValorCampo);
-		                    
-		                    
-		                    Locale locale;
-	                        SimpleDateFormat sdfout;
-	                        
-		                    if (sFormato==null||sFormato.equals("")||((sFormato!=null && sFormato.equalsIgnoreCase("dia de mes de anio"))||(sFormato!=null && sFormato.equalsIgnoreCase("dd 'de ' MMMMM ' de ' yyyy")))){
-		                        locale = new Locale("ES");
-		                        sdfout = new SimpleDateFormat("dd/MM/yyyy",locale);
-		                    } else {
-		                    
-		                        //Obtenemos el idioma
-		                        if (sFormato.indexOf("%%")==-1){
-			                        locale = new Locale("ES","es");
-			                        sdfout = new SimpleDateFormat(sFormato,locale);
-		                        } else {
-		                            String language = sFormato.substring(sFormato.length()-2, sFormato.length());
-		                            sFormato = sFormato.substring(0,sFormato.length()-4);
-		                            locale = new Locale("ES",language);			                        
-		                        }
-		                        sdfout = new SimpleDateFormat(sFormato,locale);
-		                    }
-		                    if(sFormato!=null && sFormato.equalsIgnoreCase("dia de mes de anio")){
-		                    	
-	                        String fecha = sdfout.format(out);
-		                    	sValorCampo = EjecucionPLs.ejecutarPLPKG_SIGA_FECHA_EN_LETRA(fecha,"dma",idioma);
-		                    	//sValorCampo =  rc[0];
-		                    }else if (sFormato!=null && sFormato.equalsIgnoreCase("dd 'de ' MMMMM ' de ' yyyy")){
-		                    	String fecha = sdfout.format(out);
-		                    	sValorCampo = EjecucionPLs.ejecutarPLPKG_SIGA_FECHA_EN_LETRA(fecha,"m",idioma);
-		                    }
-		                    else
-		                    	sValorCampo=sdfout.format(out);
-		                	}
+							if (sFormato == null || sFormato.equals("") || ((sFormato != null && sFormato.equalsIgnoreCase("dia de mes de anio")) || (sFormato != null && sFormato.equalsIgnoreCase("dd 'de ' MMMMM ' de ' yyyy")))) {
+								locale = new Locale("ES");
+								sdfout = new SimpleDateFormat("dd/MM/yyyy", locale);
+							} else {
 
-		                catch(Exception e)
-		                {
-		                    throw new ClsExceptions(e, "Error al dar formato fecha");
-		                }
-		            }
+								// Obtenemos el idioma
+								if (sFormato.indexOf("%%") == -1) {
+									locale = new Locale("ES", "es");
+									sdfout = new SimpleDateFormat(sFormato, locale);
+								} else {
+									String language = sFormato.substring(sFormato.length() - 2, sFormato.length());
+									sFormato = sFormato.substring(0, sFormato.length() - 4);
+									locale = new Locale("ES", language);
+								}
+								sdfout = new SimpleDateFormat(sFormato, locale);
+							}
+							if (sFormato != null && sFormato.equalsIgnoreCase("dia de mes de anio")) {
 
-		            else
-		            {
-		                throw new ClsExceptions(null, "Error al dar formato a los campos");
-		            }
-			    }
+								String fecha = sdfout.format(out);
+								sValorCampo = EjecucionPLs.ejecutarPLPKG_SIGA_FECHA_EN_LETRA(fecha, "dma", idioma);
+								// sValorCampo = rc[0];
+							} else if (sFormato != null && sFormato.equalsIgnoreCase("dd 'de ' MMMMM ' de ' yyyy")) {
+								String fecha = sdfout.format(out);
+								sValorCampo = EjecucionPLs.ejecutarPLPKG_SIGA_FECHA_EN_LETRA(fecha, "m", idioma);
+							} else
+								sValorCampo = sdfout.format(out);
+						}
 
-			    htDatos.put(sNombreCampo, sValorCampo);
-	        }
-	    }
+						catch (Exception e) {
+							throw new ClsExceptions(e, "Error al dar formato fecha");
+						}
+					}
 
-	    catch(Exception e)
-	    {
-	        throw new ClsExceptions(e, "Error al dar formato a los campos");
-	    }
+					else {
+						throw new ClsExceptions(null, "Error al dar formato a los campos");
+					}
+				}
 
-	    return htDatos;
+				htDatos.put(sNombreCampo, sValorCampo);
+			}
+		}
+
+		catch (Exception e) {
+			throw new ClsExceptions(e, "Error al dar formato a los campos");
+		}
+
+		return htDatos;
 	}
 }

@@ -35,10 +35,7 @@ import com.siga.beans.PysPeticionCompraSuscripcionAdm;
 import com.siga.beans.PysPeticionCompraSuscripcionBean;
 import com.siga.beans.PysProductosSolicitadosAdm;
 import com.siga.beans.PysServiciosSolicitadosAdm;
-import com.siga.beans.PysSuscripcionAdm;
-import com.siga.beans.PysSuscripcionBean;
 import com.siga.general.Articulo;
-import com.siga.general.EjecucionPLs;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
@@ -91,25 +88,16 @@ public class GestionSolicitudesAction extends MasterAction {
 					mapDestino = denegar(mapping, miForm, request, response);
 					break;
 				
-				// Obtener el numero de cuenta
-				} else if (accion.equalsIgnoreCase("modificarCuenta")){
-					mapDestino = modificarCuenta(mapping, miForm, request, response);
-					break;
-				
-				// Obtener el numero de cuenta
-				} else if (accion.equalsIgnoreCase("mostrarAnticipos")){
-					mapDestino = mostrarAnticipos(mapping, miForm, request, response);
-					break;
-				
-				// Obtener el numero de cuenta
+				// Actualiza el importe del anticipo
 				} else if (accion.equalsIgnoreCase("guardarAnticipos")){
 					mapDestino = guardarAnticipos(mapping, miForm, request, response);
 					break;
 				
-				} else if (accion.equalsIgnoreCase("fechaEfectiva")){
-					mapDestino = "fechaEfectiva";
+				} else if (accion.equalsIgnoreCase("editarImpresion")){
+					mapDestino = editarImpresion(mapping, miForm, request, response);
 					break;
 				}
+				
 
 				return super.executeInternal(mapping, formulario, request, response);
 				
@@ -190,8 +178,14 @@ public class GestionSolicitudesAction extends MasterAction {
 	 */
 	protected String abrir(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, SIGAException {
 		try {
-			// miro a ver si tengo que ejecutar 
-			//la busqueda una vez presentada la pagina
+			GestionSolicitudesForm formGestionSolicitudes = (GestionSolicitudesForm) formulario;
+			
+			String accion = formGestionSolicitudes.getModo();
+			if (accion==null || accion.trim().equals("")) { // Compruebo si accedo por primera vez
+				formGestionSolicitudes.setBuscarEstadoPeticion("10"); //10=Estado pendiente, que es el estado que queremos que aparezca seleccionado por defecto en el combo
+			}
+			
+			// miro a ver si tengo que ejecutar la busqueda una vez presentada la pagina
 			String buscar = request.getParameter("buscar");
 			request.setAttribute("buscar",buscar);
 			String idSolicitud="";
@@ -207,10 +201,13 @@ public class GestionSolicitudesAction extends MasterAction {
 	        }
 	        request.setAttribute("idSolicitudCertificado",idSolicitudCertificado);
 	        
-		}
-		catch (Exception e) { 
+	        // Establezco el valor para el boton volver 
+ 			request.getSession().setAttribute("CenBusquedaClientesTipo","PGS"); // PYS_GestionarSolicitudes
+	        
+		} catch (Exception e) { 
 			throwExcp("messages.general.error",new String[] {"modulo.productos"},e,null); 
 		} 
+		
 		return "inicio";
 	}
 	
@@ -221,35 +218,60 @@ public class GestionSolicitudesAction extends MasterAction {
 		try {
 			GestionSolicitudesForm miForm = (GestionSolicitudesForm) formulario;
 			
-			Long 	idPeticion    = new Long ((String)miForm.getDatosTablaOcultos(0).get(0));
-			Integer idInstitucion = new Integer ((String)miForm.getDatosTablaOcultos(0).get(1));
-			Long 	idPersona     = new Long ((String)miForm.getDatosTablaOcultos(0).get(3));
-			/** INC-2782**/
-			String  tipoSolicitud =(String)miForm.getDatosTablaOcultos(0).get(4);
-			request.setAttribute("tipoSolicitud", tipoSolicitud);
-			/*******/
+			Vector vOcultos = miForm.getDatosTablaOcultos(0);
+			Long idPeticion, idPersona;
+			Integer idInstitucion;
+			String tipoSolicitud;	
 			
-			Hashtable<String,Object> hash = new Hashtable<String,Object>();
-			UtilidadesHash.set(hash, PysPeticionCompraSuscripcionBean.C_IDPETICION, idPeticion);
-			PysPeticionCompraSuscripcionAdm ppcsa = new PysPeticionCompraSuscripcionAdm (this.getUserBean(request));
-			Vector peticion = ppcsa.getPeticionDetalle (hash, idInstitucion);
-			request.setAttribute("peticion", peticion);
+			if (vOcultos==null || vOcultos.get(0).toString().equals("producto") || vOcultos.get(0).toString().equals("servicio")) { // Refrescar del Editar
+				idPeticion = new Long(request.getParameter("idSolicitud"));
+				idInstitucion = miForm.getIdInstitucion();
+				idPersona = miForm.getIdPersona();
+				tipoSolicitud = request.getParameter("tipoSolicitud");
+			} else {
+				idPeticion = new Long ((String) vOcultos.get(0));
+				idInstitucion = new Integer ((String) vOcultos.get(1));
+				idPersona = new Long ((String) vOcultos.get(3));
+				tipoSolicitud = (String) vOcultos.get(4);
+			}
 			
-			// Obtengo los datos de la persona, su Numero de colegiado y su nombre
-			CenPersonaAdm personaAdm = new CenPersonaAdm(this.getUserBean(request));			
-			String nombre = personaAdm.obtenerNombreApellidos(String.valueOf(idPersona));		
-			CenColegiadoAdm colegiadoAdm = new CenColegiadoAdm(this.getUserBean(request));
-			CenColegiadoBean datosColegiales = colegiadoAdm.getDatosColegiales(idPersona, idInstitucion);
-			String numero = colegiadoAdm.getIdentificadorColegiado(datosColegiales);
-			request.setAttribute("nColegiado", numero);
-			request.setAttribute("nombreUsuario", nombre);
-			request.setAttribute("idPersona", idPersona);
-			request.setAttribute("idPeticion", idPeticion);
-		}
-		catch (Exception e) { 
+			this.editarComun(request, idInstitucion, idPersona, idPeticion, tipoSolicitud);
+			
+		} catch (Exception e) { 
 			throwExcp("messages.general.error", new String[] {"modulo.productos"}, e, null); 
 		} 
+		
 		return "editar";
+	}
+	
+	/**
+	 * Realiza la impresion de los datos de la edicion de una solicitud
+	 * @param mapping
+	 * @param formulario
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws ClsExceptions
+	 * @throws SIGAException
+	 */
+	protected String editarImpresion(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, SIGAException {
+		try {
+			String sIdInstitucion = request.getParameter("idInstitucion");
+			String sIdPersona = request.getParameter("idPersona");
+			String sIdPeticion = request.getParameter("idPeticion");
+			String sTipoSolicitud = request.getParameter("tipoSolicitud");
+			
+			Integer idInstitucion = new Integer (sIdInstitucion);
+			Long idPersona = new Long (sIdPersona);
+			Long idPeticion = new Long (sIdPeticion);
+			
+			this.editarComun(request, idInstitucion, idPersona, idPeticion, sTipoSolicitud);
+			
+		} catch (Exception e) { 
+			throwExcp("messages.general.error", new String[] {"modulo.productos"}, e, null); 
+		} 
+		
+		return "editarImpresion";
 	}
 	
 	/**
@@ -437,87 +459,6 @@ public class GestionSolicitudesAction extends MasterAction {
 	}
 	
 	/**
-	 * Funcion que abre una ventana para introducir el nº de Cuenta
-	 * @param mapping
-	 * @param formulario
-	 * @param request
-	 * @param response
-	 * @return
-	 * @throws ClsExceptions
-	 * @throws SIGAException
-	 */
-	protected String modificarCuenta(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, SIGAException {
-		
-		String forward = "modificarCuenta";	
-
-		try {
-			GestionSolicitudesForm miForm = (GestionSolicitudesForm) formulario;
-			Long  idPersona=miForm.getIdPersona();	
-			Integer idinstitucion = this.getIDInstitucion(request);
-			
-			request.setAttribute("idInstitucion", idinstitucion.toString());
-			request.setAttribute("idPersona", idPersona.toString());					
-		}catch (Exception e) { 
-			throwExcp("messages.general.error", new String[] {"modulo.productos"}, e, null); 
-		}
-		return forward;
-	}
-	
-	
-	
-	/**
-	 * Recupera el importe anticipado y el precio de una solicitud de compra y los
-	 * envia a la página de anticipar importe.
-	 * @param mapping
-	 * @param formulario
-	 * @param request
-	 * @param response
-	 * @return
-	 * @throws ClsExceptions
-	 * @throws SIGAException
-	 */
-	protected String mostrarAnticipos(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, SIGAException {
-		
-		String forward = "mostrarAnticipos";	
-
-		try {
-			Integer idinstitucion = this.getIDInstitucion(request);
-			String idTipoClave = (String) request.getParameter("idTipoClave");
-			String idClave = (String) request.getParameter("idClave");
-			String idClaveInstitucion = (String) request.getParameter("idClaveInstitucion");
-			String tipo = (String) request.getParameter("tipo");
-			String idPeticion = (String) request.getParameter("idPeticion");
-			String idPersona = (String) request.getParameter("idPersona");
-			
-			String [] resultado = EjecucionPLs.ejecutarF_SIGA_OBTENER_ANTICIPOS(
-							idinstitucion.toString(),
-							idTipoClave,
-							idClave,
-							idClaveInstitucion,
-							tipo,
-							idPeticion,
-							idPersona);
-			if (resultado == null){
-				throw new SIGAException("update.compare.diferencias");
-			}
-
-			request.setAttribute("totalAnticipado", resultado[1]);
-			request.setAttribute("precioSolicitud", resultado[0]);
-			request.setAttribute("idTipoClave", idTipoClave);
-			request.setAttribute("idClave", idClave);
-			request.setAttribute("idClaveInstitucion", idClaveInstitucion);
-			request.setAttribute("tipo", tipo);
-			request.setAttribute("idPeticion", idPeticion);
-			request.setAttribute("idPersona", idPersona);
-			
-				
-		}catch (Exception e) { 
-			throwExcp("messages.general.error", new String[] {"modulo.productos"}, e, null); 
-		}
-		return forward;
-	}
-
-	/**
 	 * Comprueba que la suma del total anticipado y el nuevo anticipo no superan
 	 * el precio de la solicitud de compra y guarda, en su caso, el nuevo total anticipado.
 	 * @param mapping
@@ -533,7 +474,7 @@ public class GestionSolicitudesAction extends MasterAction {
 		UserTransaction tx = null;
 		
 	    try {
-		    userBean = ((UsrBean)request.getSession().getAttribute(("USRBEAN")));
+		    userBean = this.getUserBean(request);
 		    tx = userBean.getTransaction();
 		    
 			Integer idinstitucion = this.getIDInstitucion(request);
@@ -547,38 +488,11 @@ public class GestionSolicitudesAction extends MasterAction {
 			String precioSolicitud = (String) request.getParameter("precioSolicitud");
 			String nuevoImporteAnticipado = (String) request.getParameter("nuevoImporteAnticipado");
 
-			//guarda en BD el importe anticipado actualizado
-			if ("S".equals(tipo)){
-				PysSuscripcionAdm suscripcion = new PysSuscripcionAdm (this.getUserBean(request));
+			// JPT (20-07-2015): Solo actualiza el anticipo de los productos
+			if ("P".equals(tipo)){
+				PysCompraAdm compra = new PysCompraAdm(userBean);
 				
-				//Recuperar el bean de BD
-				Hashtable<String,Object> claves = new Hashtable<String,Object>();
-				UtilidadesHash.set(claves, PysSuscripcionBean.C_IDINSTITUCION, idinstitucion);
-				UtilidadesHash.set(claves, PysSuscripcionBean.C_IDTIPOSERVICIOS, idTipoClave);
-				UtilidadesHash.set(claves, PysSuscripcionBean.C_IDPETICION, idPeticion);
-				UtilidadesHash.set(claves, PysSuscripcionBean.C_IDSERVICIOSINSTITUCION, idClaveInstitucion);
-				UtilidadesHash.set(claves, PysSuscripcionBean.C_IDSERVICIO, idClave);
-
-				tx.begin();
-				
-				Vector vectorBeans = suscripcion.selectForUpdate(claves);
-				PysSuscripcionBean bean = (PysSuscripcionBean)vectorBeans.get(0);
-
-				
-				//Inicializar el nuevo importe anticipado
-				Double nuevoTotalAnticipado = validaImporteAnticipado(
-						bean.getImporteAnticipado(), precioSolicitud, nuevoImporteAnticipado, totalAnticipado);
-				bean.setImporteAnticipado(nuevoTotalAnticipado);
-
-				if(!suscripcion.update(bean)){
-					throw new SIGAException ("Error actualizando compra: " + suscripcion.getError());
-				}
-				tx.commit();
-			}
-			else{
-				PysCompraAdm compra = new PysCompraAdm(this.getUserBean(request));
-				
-				//Recuperar el bean de BD
+				//Recupera el bean de BD
 				Hashtable<String,Object> claves = new Hashtable<String,Object>();
 				UtilidadesHash.set(claves, PysCompraBean.C_IDINSTITUCION, idinstitucion);
 				UtilidadesHash.set(claves, PysCompraBean.C_IDTIPOPRODUCTO, idTipoClave);
@@ -587,49 +501,86 @@ public class GestionSolicitudesAction extends MasterAction {
 				UtilidadesHash.set(claves, PysCompraBean.C_IDPRODUCTO, idClave);
 
 				tx.begin();
+				Vector<PysCompraBean> vectorBeans = compra.selectForUpdate(claves);
+				PysCompraBean bean = vectorBeans.get(0);
 				
-				Vector vectorBeans = compra.selectForUpdate(claves);
-				PysCompraBean bean = (PysCompraBean)vectorBeans.get(0);
 				//Inicializar el nuevo importe anticipado
-				Double nuevoTotalAnticipado = validaImporteAnticipado(
-						bean.getImporteAnticipado(), precioSolicitud, nuevoImporteAnticipado,totalAnticipado);
+				Double nuevoTotalAnticipado = this.validaImporteAnticipado(bean.getImporteAnticipado(), precioSolicitud, nuevoImporteAnticipado,totalAnticipado);
 				bean.setImporteAnticipado(nuevoTotalAnticipado);
 
-				if(!compra.update(bean)){
+				if (!compra.update(bean)) {
 					throw new SIGAException ("Error actualizando compra: " + compra.getError());
 				}
 				tx.commit();
 			}	
 
 
-		}catch (Exception e) { 
+		} catch (Exception e) { 
 			throwExcp("messages.general.error", new String[] {"modulo.productos"}, e, tx); 
 		}
 		
-		return 	exitoModal("", request);
+		return 	exitoRefresco("messages.updated.success", request);
 	}
 
-	private Double validaImporteAnticipado(Double totalAnticipadoBD,
-			String precioSolicitud, String nuevoImporteAnticipado, String totalAnticipado)
-			throws SIGAException {
+	/**
+	 * Realiza una serie de validaciones del importe anticipado
+	 * @param totalAnticipadoBD
+	 * @param precioSolicitud
+	 * @param nuevoImporteAnticipado
+	 * @param totalAnticipado
+	 * @return
+	 * @throws SIGAException
+	 */
+	private Double validaImporteAnticipado(Double totalAnticipadoBD, String precioSolicitud, String nuevoImporteAnticipado, String totalAnticipado) throws SIGAException {
 
 		//valida que el dato del importeAnticipado en BD y en el formulario son consistentes
 		//para que se vuelva a cargar la ventana si no lo son.
 		if (Double.valueOf(totalAnticipado).doubleValue() != totalAnticipadoBD.doubleValue() ){
 			throw new SIGAException("update.compare.diferencias");
 		}
+
 		//calcula el nuevo importe anticipado
 		double nuevoTotalAnticipado;
 		try{
-			nuevoTotalAnticipado = totalAnticipadoBD.doubleValue()+Double.valueOf(nuevoImporteAnticipado).doubleValue();
-		}
-		catch(Exception e){
+			nuevoTotalAnticipado = Double.valueOf(nuevoImporteAnticipado).doubleValue();
+		} catch(Exception e){
 			throw new SIGAException("messages.pys.solicitudCompra.errorAnticiparImporteNoValido");
 		}
+		
 		//valida que el nuevo total anticipado no supere al precio de la solicitud		
 		if (Double.valueOf(precioSolicitud).doubleValue() < UtilidadesNumero.redondea(nuevoTotalAnticipado,2)){
 			throw new SIGAException("messages.pys.solicitudCompra.errorAnticiparImporteSuperior");
 		}
 		return new Double(nuevoTotalAnticipado);
 	}
+	
+	private void editarComun(HttpServletRequest request, Integer idInstitucion, Long idPersona, Long idPeticion, String tipoSolicitud) throws ClsExceptions, SIGAException {
+		try {
+			UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");
+			
+			CenColegiadoAdm colegiadoAdm = new CenColegiadoAdm(user);
+			CenPersonaAdm personaAdm = new CenPersonaAdm(user);
+			PysPeticionCompraSuscripcionAdm ppcsa = new PysPeticionCompraSuscripcionAdm (user);
+						
+			request.setAttribute("idPersona", idPersona);
+			request.setAttribute("idPeticion", idPeticion);
+			request.setAttribute("tipoSolicitud", tipoSolicitud);
+			
+			Hashtable<String,Object> hash = new Hashtable<String,Object>();
+			UtilidadesHash.set(hash, PysPeticionCompraSuscripcionBean.C_IDPETICION, idPeticion);			
+			Vector peticion = ppcsa.getPeticionDetalle (hash, idInstitucion);
+			request.setAttribute("peticion", peticion);
+			
+			// Obtengo los datos de la persona, su Numero de colegiado y su nombre					
+			String nombre = personaAdm.obtenerNombreApellidos(String.valueOf(idPersona));
+			request.setAttribute("nombreUsuario", nombre);
+			
+			CenColegiadoBean datosColegiales = colegiadoAdm.getDatosColegiales(idPersona, idInstitucion);
+			String numero = colegiadoAdm.getIdentificadorColegiado(datosColegiales);
+			request.setAttribute("nColegiado", numero);			
+			
+		} catch (Exception e) { 
+			throwExcp("messages.general.error", new String[] {"modulo.productos"}, e, null); 
+		} 
+	}	
 }

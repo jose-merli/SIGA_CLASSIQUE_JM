@@ -33,6 +33,9 @@ public class CenSancionBean extends MasterBean{
 	private Integer	idInstitucionSancion;	
 	private String	fechaArchivada;
 	private String	chkArchivada;
+	private String	fechaTraspaso;
+	private Integer	idSancionOrigen;
+	private Integer	idInstitucionOrigen;
 
 	/* Nombre de Tabla*/
 	static public String T_NOMBRETABLA = "CEN_SANCION";
@@ -58,6 +61,10 @@ public class CenSancionBean extends MasterBean{
 	static public final String  C_IDINSTITUCIONSANCION = "IDINSTITUCIONSANCION";
 	static public final String  C_CHKARCHIVADA = "CHKARCHIVADA";
 	static public final String  C_FECHAARCHIVADA = "FECHAARCHIVADA"; 
+	static public final String  C_FECHATRASPASO = "FECHATRASPASO"; 
+	static public final String 	C_IDSANCIONORIGEN = "IDSANCIONORIGEN";
+	static public final String  C_IDINSTITUCIONORIGEN = "IDINSTITUCIONORIGEN";
+	static public final String  C_FECHAENVIADO = "FECHAENVIADO";
 
 	/**
 	 * @return 
@@ -318,5 +325,24 @@ public class CenSancionBean extends MasterBean{
 	public void setChkArchivada(String chkArchivada) {
 		this.chkArchivada = chkArchivada;
 	}
+	public String getFechaTraspaso() {
+		return fechaTraspaso;
+	}
+	public void setFechaTraspaso(String fechaTraspaso) {
+		this.fechaTraspaso = fechaTraspaso;
+	}
+	public Integer getIdSancionOrigen() {
+		return idSancionOrigen;
+	}
+	public void setIdSancionOrigen(Integer idSancionOrigen) {
+		this.idSancionOrigen = idSancionOrigen;
+	}
+	public Integer getIdInstitucionOrigen() {
+		return idInstitucionOrigen;
+	}
+	public void setIdInstitucionOrigen(Integer idInstitucionOrigen) {
+		this.idInstitucionOrigen = idInstitucionOrigen;
+	}
+
 	
 }

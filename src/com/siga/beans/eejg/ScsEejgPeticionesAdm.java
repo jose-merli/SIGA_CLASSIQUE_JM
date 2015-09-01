@@ -556,7 +556,38 @@ public class ScsEejgPeticionesAdm extends MasterBeanAdministrador {
 		
 	}
 	
+	/**
+	 * 
+	 * @param horas2
+	 * @return
+	 * @throws ClsExceptions
+	 */
+	public boolean existenSolicitudesErroneasEnvioAlerta() throws ClsExceptions {
+		/** CR - Se consultan en BBDD las solicitudes que tengan 3 o más intentos de solictidu de info **/
+		boolean existen = false;
+		List<ScsEejgPeticionesBean> list = select(getWherePeticionesErroneasEnvioAlerta());
+		if (list != null && list.size() > 0)
+			existen = true;
+
+		return existen;
+	}
 	
 	
-	
+	/**
+	 * 
+	 * @param horas
+	 * @return
+	 * @throws ClsExceptions 
+	 * @throws  
+	 */
+	public String getWherePeticionesErroneasEnvioAlerta() throws ClsExceptions{
+		UsrBean usrBean = new UsrBean();
+		usrBean.setUserName(String.valueOf(ClsConstants.USUMODIFICACION_AUTOMATICO));		
+		GenParametrosAdm admParametros = new GenParametrosAdm(usrBean);		
+		String numeroIntentosAlertasPendienteInfo = admParametros.getValor(ScsEejgPeticionesBean.INSTITUCION_PARAMETROS_EEJG, "SCS", "EEJG_NUMERO_INTENTOS_ENVIOALERTAS_PENDIENTE_INFO", "3");
+		StringBuffer where = new StringBuffer(" WHERE "+ ScsEejgPeticionesBean.C_NUMEROINTENTOSCONSULTA + " < " + 5);
+		where.append(" AND " + ScsEejgPeticionesBean.C_NUMEROINTENTOSPENDIENTEINFO + " > " + numeroIntentosAlertasPendienteInfo);
+		where.append(" AND " + ScsEejgPeticionesBean.C_ESTADO  + " = " + EEJG_ESTADO.PENDIENTE_INFO.getId());
+		return where.toString();
+	}	
 }

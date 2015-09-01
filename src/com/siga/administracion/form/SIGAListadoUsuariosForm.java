@@ -19,6 +19,12 @@ public class SIGAListadoUsuariosForm extends MasterForm
     private String activo="N";
     private String fechaAlta="";
     private String codigoExt="";
+    private String nombreBusqueda="";
+	private String idGrupoBusqueda="";
+	private String idRolBusqueda="";
+	private String gruposUsuario="";
+	    
+    
     
 //    public String getModo() 
 //    {
@@ -126,5 +132,45 @@ public class SIGAListadoUsuariosForm extends MasterForm
 	public void setCodigoExt(String codigoExt) {
 		this.codigoExt = codigoExt;
 	}
+	
+	public String getNombreBusqueda()
+    {
+        return nombreBusqueda;
+    }
+    
+    public void setNombreBusqueda(String nombreBusqueda)
+    {
+        this.nombreBusqueda = nombreBusqueda;
+    }
+
+    public String getIdGrupoBusqueda() 
+    {
+        return idGrupoBusqueda;
+    }
+    
+    public void setIdGrupoBusqueda(String idGrupoBusqueda)
+    {
+        this.idGrupoBusqueda = idGrupoBusqueda;
+    }
+
+    public String getIdRolBusqueda() 
+    {
+        return idRolBusqueda;
+    }
+    
+    public void setIdRolBusqueda(String idRolBusqueda)
+    {
+        this.idRolBusqueda = idRolBusqueda;
+    }
+
+	public String getGruposUsuario() {
+		return gruposUsuario;
+	}
+
+	public void setGruposUsuario(String gruposUsuario) {
+		this.gruposUsuario = gruposUsuario;
+	}
+    
+    
     
 }

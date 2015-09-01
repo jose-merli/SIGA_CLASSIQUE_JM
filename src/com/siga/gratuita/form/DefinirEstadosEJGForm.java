@@ -16,7 +16,9 @@ import com.siga.general.MasterForm;
 	/*
 	 * Metodos SET
 	 */
+	 public String verHistorico = "0";
 	
+
 	/**
 	 * 
 	 */
@@ -139,6 +141,12 @@ import com.siga.general.MasterForm;
 	 * @return String 
 	 */
 	public String getObservaciones			()		{ return this.datos.get(ScsEstadoEJGBean.C_OBSERVACIONES).toString();	}
+	public String getVerHistorico() {
+		return verHistorico;
+	}
+	public void setVerHistorico(String verHistorico) {
+		this.verHistorico = verHistorico;
+	}
 		
 		
 }

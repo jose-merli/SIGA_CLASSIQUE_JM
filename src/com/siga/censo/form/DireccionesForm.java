@@ -33,7 +33,19 @@ public class DireccionesForm extends MasterForm{
 	String vieneDe;
 	String nombre;
 	String tipoAcceso;
+	String idProvinciaHidden;
 	
+	
+	
+	
+	public String getIdProvinciaHidden() {
+		return idProvinciaHidden;
+	}
+
+	public void setIdProvinciaHidden(String idProvinciaHidden) {
+		this.idProvinciaHidden = idProvinciaHidden;
+	}
+
 	/**
 	 * @return the tipoAcceso
 	 */

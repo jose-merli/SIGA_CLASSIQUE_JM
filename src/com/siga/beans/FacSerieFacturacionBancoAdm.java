@@ -112,8 +112,8 @@ public class FacSerieFacturacionBancoAdm extends MasterBeanAdmVisible {
 	 * @return  Vector - Filas seleccionadas  
 	 * @exception  ClsExceptions, SIGAException
 	 */
-	public Vector getBancosSufijosSeries (Integer idInstitucion) throws ClsExceptions, SIGAException {
-		   Vector datos=new Vector();
+	public Vector<Row> getBancosSufijosSeries (Integer idInstitucion) throws ClsExceptions, SIGAException {
+		   Vector<Row> datos=new Vector<Row>();
 	       try {
 	            
 	    	   	RowsContainer rc = new RowsContainer(); 

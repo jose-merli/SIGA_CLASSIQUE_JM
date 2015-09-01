@@ -177,16 +177,19 @@
 				document.forms[0].target="resultado";	
 				document.forms[0].submit();	
 		}
-		function accionGuardarCerrar() 
-		{		
-			sub();
+		
+		function accionGuardarCerrar() {		
+			sub();			
 			var datos = "";
 			var validados = document.resultado.document.getElementsByName("validado");
-			if (validados.type !="checkbox") {
+			var seleccionado = false;
 			
-				for (i = 0; i < validados.length; i++){
-		
-					if (validados[i].checked==1){
+			if (validados.type !="checkbox") {
+				
+				for (var i = 0; i < validados.length; i++) {
+					
+					if (validados[i].checked==1) {
+						seleccionado = true;
 						var j=i+1;
 						var aux="solicita_"+j+"_1";
 						var idinstitucion=document.resultado.document.getElementById(aux);
@@ -197,18 +200,20 @@
 						aux="solicita_"+j+"_4";
 						var idservicioinstitucion=document.resultado.document.getElementById(aux);
 						datos=datos + idinstitucion.value + "##" + idtiposervicio.value + "##" + idservicio.value + "##" + idservicioinstitucion.value + "%%";
-							
 					}	
 				}		
+				
 			} else {
 			   if (validados.checked==1){
-						var j=1;
-						var aux="solicita_"+j;
-						var solicitado=document.resultado.document.getElementById(aux);
-						datos=datos + solicitado.value + "%";						
-					}	
+				   seleccionado = true;
+					var j=1;
+					var aux="solicita_"+j;
+					var solicitado=document.resultado.document.getElementById(aux);
+					datos=datos + solicitado.value + "%";						
+				}	
 			}
-			if (validados.length > 0){
+			
+			if (seleccionado) {
 				document.AnticiposClienteForm.serviciosSeleccionados.value = datos;		
 				document.AnticiposClienteForm.modo.value = "guardarServicios";
 				document.AnticiposClienteForm.target = "submitArea";

@@ -26,7 +26,6 @@
 <% 	
 	String app=request.getContextPath(); 
 	HttpSession ses=request.getSession();
-	
 	UsrBean userBean = (UsrBean)request.getSession().getAttribute("USRBEAN");
 	
 
@@ -142,11 +141,10 @@
 					<td>
 						<%=UtilidadesString.mostrarDatoJSP(b.getModulo())%>
 					</td>				
-					<td>
+					<td title='<%=UtilidadesString.mostrarDatoJSP(UtilidadesString.getMensajeIdioma (userBean, b.getIdRecurso()).replaceAll("\\\\n", ""))%>'>
 						<%=UtilidadesString.mostrarDatoJSP(b.getParametro())%>
 					</td>
-					<td>
-						<siga:ToolTip id='<%=(""+i)%>' imagen='<%=nombreImagen%>' texto='<%=UtilidadesString.mostrarDatoJSP(UtilidadesString.getMensajeIdioma (userBean, b.getIdRecurso()))%>' />
+					<td title='<%=UtilidadesString.mostrarDatoJSP(UtilidadesString.getMensajeIdioma (userBean, b.getIdRecurso()).replaceAll("\\\\n", ""))%>'>
 						<input type="hidden" value="<%=UtilidadesString.mostrarDatoJSP(b.getValor())%>" id="valorOriginal_<%=i%>" >
 						<input type="text"   value="<%=UtilidadesString.mostrarDatoJSP(b.getValor())%>" id="valor_<%=i%>" disabled size="50">
 					</td>

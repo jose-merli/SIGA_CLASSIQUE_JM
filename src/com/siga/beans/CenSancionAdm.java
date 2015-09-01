@@ -67,7 +67,11 @@ public class CenSancionAdm extends MasterBeanAdministrador {
 				CenSancionBean.C_USUMODIFICACION,
 				CenSancionBean.C_FECHAMODIFICACION, 
 				CenSancionBean.C_CHKARCHIVADA,
-				CenSancionBean.C_FECHAARCHIVADA
+				CenSancionBean.C_FECHAARCHIVADA,
+				CenSancionBean.C_FECHATRASPASO,
+				CenSancionBean.C_FECHAENVIADO,
+				CenSancionBean.C_IDSANCIONORIGEN,
+				CenSancionBean.C_IDINSTITUCIONORIGEN
 				};
 		return campos;
 	}	
@@ -78,13 +82,12 @@ public class CenSancionAdm extends MasterBeanAdministrador {
 	 */
 	
 	public String[] getClavesBean() {
-		String[] campos = {	CenSancionBean.C_IDSANCION,CenSancionBean.C_IDPERSONA};
+		String[] campos = { CenSancionBean.C_IDSANCION, CenSancionBean.C_IDPERSONA, CenSancionBean.C_IDINSTITUCION };
 		return campos;
 	}
 
-	
 	public String[] getClavesBeans() {
-		String[] campos = {	CenSancionBean.C_IDINSTITUCION,CenSancionBean.C_IDSANCION, CenSancionBean.C_CHKREHABILITADO};
+		String[] campos = { CenSancionBean.C_IDINSTITUCION, CenSancionBean.C_IDSANCION, CenSancionBean.C_CHKREHABILITADO };
 		return campos;
 	}
 	
@@ -95,35 +98,38 @@ public class CenSancionAdm extends MasterBeanAdministrador {
 	 */
 	public MasterBean hashTableToBean(Hashtable hash) throws ClsExceptions {
 		CenSancionBean bean = null;
-		try{
+		try {
 			bean = new CenSancionBean();
-			bean.setIdSancion(UtilidadesHash.getInteger(hash,CenSancionBean.C_IDSANCION));
-			bean.setIdPersona(UtilidadesHash.getInteger(hash,CenSancionBean.C_IDPERSONA));
-			bean.setIdTipoSancion(UtilidadesHash.getInteger(hash,CenSancionBean.C_IDTIPOSANCION));
-			bean.setIdInstitucion(UtilidadesHash.getInteger(hash,CenSancionBean.C_IDINSTITUCION));
-			bean.setIdInstitucionSancion(UtilidadesHash.getInteger(hash,CenSancionBean.C_IDINSTITUCIONSANCION));
-			bean.setRefColegio(UtilidadesHash.getString(hash,CenSancionBean.C_REFCOLEGIO));
-			bean.setRefCGAE(UtilidadesHash.getString(hash,CenSancionBean.C_REFCGAE));
-			bean.setFechaAcuerdo(UtilidadesHash.getString(hash,CenSancionBean.C_FECHAACUERDO));
-			bean.setFechaFin(UtilidadesHash.getString(hash,CenSancionBean.C_FECHAFIN));
-			bean.setFechaInicio(UtilidadesHash.getString(hash,CenSancionBean.C_FECHAINICIO));
-			bean.setFechaFirmeza(UtilidadesHash.getString(hash,CenSancionBean.C_FECHAFIRMEZA));
-			bean.setChkFirmeza(UtilidadesHash.getString(hash,CenSancionBean.C_CHKFIRMEZA));
-			bean.setFechaRehabilitado(UtilidadesHash.getString(hash,CenSancionBean.C_FECHAREHABILITADO));
-			bean.setChkRehabilitado(UtilidadesHash.getString(hash,CenSancionBean.C_CHKREHABILITADO));
-			bean.setFechaResolucion(UtilidadesHash.getString(hash,CenSancionBean.C_FECHARESOLUCION));
-			bean.setFechaImposicion(UtilidadesHash.getString(hash,CenSancionBean.C_FECHAIMPOSICION));
-			bean.setTexto(UtilidadesHash.getString(hash,CenSancionBean.C_TEXTO));
-			bean.setObservaciones(UtilidadesHash.getString(hash,CenSancionBean.C_OBSERVACIONES));
+			bean.setIdSancion(UtilidadesHash.getInteger(hash, CenSancionBean.C_IDSANCION));
+			bean.setIdPersona(UtilidadesHash.getInteger(hash, CenSancionBean.C_IDPERSONA));
+			bean.setIdTipoSancion(UtilidadesHash.getInteger(hash, CenSancionBean.C_IDTIPOSANCION));
+			bean.setIdInstitucion(UtilidadesHash.getInteger(hash, CenSancionBean.C_IDINSTITUCION));
+			bean.setIdInstitucionSancion(UtilidadesHash.getInteger(hash, CenSancionBean.C_IDINSTITUCIONSANCION));
+			bean.setRefColegio(UtilidadesHash.getString(hash, CenSancionBean.C_REFCOLEGIO));
+			bean.setRefCGAE(UtilidadesHash.getString(hash, CenSancionBean.C_REFCGAE));
+			bean.setFechaAcuerdo(UtilidadesHash.getString(hash, CenSancionBean.C_FECHAACUERDO));
+			bean.setFechaFin(UtilidadesHash.getString(hash, CenSancionBean.C_FECHAFIN));
+			bean.setFechaInicio(UtilidadesHash.getString(hash, CenSancionBean.C_FECHAINICIO));
+			bean.setFechaFirmeza(UtilidadesHash.getString(hash, CenSancionBean.C_FECHAFIRMEZA));
+			bean.setChkFirmeza(UtilidadesHash.getString(hash, CenSancionBean.C_CHKFIRMEZA));
+			bean.setFechaRehabilitado(UtilidadesHash.getString(hash, CenSancionBean.C_FECHAREHABILITADO));
+			bean.setChkRehabilitado(UtilidadesHash.getString(hash, CenSancionBean.C_CHKREHABILITADO));
+			bean.setFechaResolucion(UtilidadesHash.getString(hash, CenSancionBean.C_FECHARESOLUCION));
+			bean.setFechaImposicion(UtilidadesHash.getString(hash, CenSancionBean.C_FECHAIMPOSICION));
+			bean.setTexto(UtilidadesHash.getString(hash, CenSancionBean.C_TEXTO));
+			bean.setObservaciones(UtilidadesHash.getString(hash, CenSancionBean.C_OBSERVACIONES));
 			bean.setFechaMod(UtilidadesHash.getString(hash, CenSancionBean.C_FECHAMODIFICACION));
-			bean.setUsuMod(UtilidadesHash.getInteger(hash,CenSancionBean.C_USUMODIFICACION));
-			bean.setChkArchivada(UtilidadesHash.getString(hash,CenSancionBean.C_CHKARCHIVADA));
-			bean.setFechaArchivada(UtilidadesHash.getString(hash,CenSancionBean.C_FECHAARCHIVADA));
-					
-		}
-		catch(Exception e){
+			bean.setUsuMod(UtilidadesHash.getInteger(hash, CenSancionBean.C_USUMODIFICACION));
+			bean.setChkArchivada(UtilidadesHash.getString(hash, CenSancionBean.C_CHKARCHIVADA));
+			bean.setFechaArchivada(UtilidadesHash.getString(hash, CenSancionBean.C_FECHAARCHIVADA));
+			bean.setFechaTraspaso(UtilidadesHash.getString(hash, CenSancionBean.C_FECHATRASPASO));
+			bean.setFechaTraspaso(UtilidadesHash.getString(hash, CenSancionBean.C_FECHAENVIADO));
+			bean.setIdSancionOrigen(UtilidadesHash.getInteger(hash, CenSancionBean.C_IDSANCIONORIGEN));
+			bean.setIdInstitucionOrigen(UtilidadesHash.getInteger(hash, CenSancionBean.C_IDINSTITUCIONORIGEN));
+
+		} catch (Exception e) {
 			bean = null;
-			throw new ClsExceptions (e, "Error al construir el bean a partir del hashTable");
+			throw new ClsExceptions(e, "Error al construir el bean a partir del hashTable");
 		}
 		return bean;
 	}
@@ -160,11 +166,13 @@ public class CenSancionAdm extends MasterBeanAdministrador {
 			hash.put(CenSancionBean.C_FECHAMODIFICACION, b.getFechaMod());
 			hash.put(CenSancionBean.C_FECHAARCHIVADA, b.getFechaArchivada());
 			hash.put(CenSancionBean.C_CHKARCHIVADA, b.getChkArchivada());
-			
-		}
-		catch (Exception e){
+			hash.put(CenSancionBean.C_FECHATRASPASO, b.getFechaTraspaso());
+			UtilidadesHash.setForCompare(hash, CenSancionBean.C_IDSANCIONORIGEN, b.getIdSancionOrigen());
+			UtilidadesHash.setForCompare(hash, CenSancionBean.C_IDINSTITUCIONORIGEN, b.getIdInstitucionOrigen());
+
+		} catch (Exception e) {
 			hash = null;
-			throw new ClsExceptions (e, "Error al construir el hashTable a partir del bean");			
+			throw new ClsExceptions(e, "Error al construir el hashTable a partir del bean");
 		}
 		return hash;
 	}
@@ -211,6 +219,10 @@ public class CenSancionAdm extends MasterBeanAdministrador {
 			" " +CenSancionBean.T_NOMBRETABLA+"."+CenSancionBean.C_FECHAIMPOSICION+",  " +
 			" " +CenSancionBean.T_NOMBRETABLA+"."+CenSancionBean.C_REFCGAE+",  " +
 			" " +CenSancionBean.T_NOMBRETABLA+"."+CenSancionBean.C_FECHAARCHIVADA+", " +
+			" " +CenSancionBean.T_NOMBRETABLA+"."+CenSancionBean.C_IDSANCIONORIGEN+",  " +
+			" " +CenSancionBean.T_NOMBRETABLA+"."+CenSancionBean.C_IDSANCIONORIGEN+",  " +
+			" " +CenSancionBean.T_NOMBRETABLA+"."+CenSancionBean.C_FECHATRASPASO+", " +			
+			" " +CenSancionBean.T_NOMBRETABLA+"."+CenSancionBean.C_FECHAENVIADO+", " +			
 			" " +CenSancionBean.T_NOMBRETABLA+"."+CenSancionBean.C_CHKARCHIVADA+" " +
             " FROM " + 
 			CenSancionBean.T_NOMBRETABLA + ", " + 
@@ -277,7 +289,12 @@ public class CenSancionAdm extends MasterBeanAdministrador {
 			" " +CenSancionBean.T_NOMBRETABLA+"."+CenSancionBean.C_FECHAREHABILITADO+", " +
 			" " +CenSancionBean.T_NOMBRETABLA+"."+CenSancionBean.C_FECHARESOLUCION+", " +
 			" " +CenSancionBean.T_NOMBRETABLA+"."+CenSancionBean.C_FECHAIMPOSICION+", " +
+			" " +CenSancionBean.T_NOMBRETABLA+"."+CenSancionBean.C_IDSANCIONORIGEN+",  " +
+			" " +CenSancionBean.T_NOMBRETABLA+"."+CenSancionBean.C_IDINSTITUCIONORIGEN+",  " +
+			" " +CenSancionBean.T_NOMBRETABLA+"."+CenSancionBean.C_FECHATRASPASO+", " +	
+			" " +CenSancionBean.T_NOMBRETABLA+"."+CenSancionBean.C_FECHAENVIADO+", " +	
 			" " +CenSancionBean.T_NOMBRETABLA+"."+CenSancionBean.C_REFCGAE+",  " +
+			" " +CenSancionBean.T_NOMBRETABLA+"."+CenSancionBean.C_REFCOLEGIO+",  " +
 			" " +CenSancionBean.T_NOMBRETABLA+"."+CenSancionBean.C_CHKARCHIVADA+"  " +
             " FROM " + 
 			CenSancionBean.T_NOMBRETABLA + ", " + 
@@ -321,7 +338,7 @@ public class CenSancionAdm extends MasterBeanAdministrador {
 			if (!form.getNombreInstitucionBuscar().trim().equals("")) {
 				sql += " AND " + CenSancionBean.T_NOMBRETABLA +"."+ CenSancionBean.C_IDINSTITUCIONSANCION+ "=" + form.getNombreInstitucionBuscar();						 										
 			} 
-			if (!form.getColegiadoBuscar().trim().equals("")) {
+			if (form.getColegiadoBuscar() != null && !form.getColegiadoBuscar().trim().equals("")) {
 				sql += " AND " + CenSancionBean.T_NOMBRETABLA +"."+ CenSancionBean.C_IDPERSONA+ "=" + form.getColegiadoBuscar();						 										
 			}
 			
@@ -418,8 +435,11 @@ public class CenSancionAdm extends MasterBeanAdministrador {
 			}
 			
 			
-			if (!form.getRefCGAE().trim().equals("")) {
+			if (form.getRefCGAE() != null && !form.getRefCGAE().trim().equals("")) {
 				sql += " AND " + ComodinBusquedas.prepararSentenciaCompleta(form.getRefCGAE().trim(),CenSancionBean.T_NOMBRETABLA +"."+ CenSancionBean.C_REFCGAE) ;						 										
+			}
+			if (form.getRefColegio() != null && !form.getRefColegio().trim().equals("")) {
+				sql += " AND " + ComodinBusquedas.prepararSentenciaCompleta(form.getRefColegio().trim(),CenSancionBean.T_NOMBRETABLA +"."+ CenSancionBean.C_REFCOLEGIO) ;						 										
 			}
 			if (form.getChkRehabilitado()!=null){
 				chkRehabilitado ="1";
@@ -473,8 +493,7 @@ public class CenSancionAdm extends MasterBeanAdministrador {
 	 * @return se muestra un resultado con un numero si tiene permiso.
 	 * @throws ClsExceptions
 	 */
-public String getTienePermisoArchivación(String idInstitucion,
-			String usuario) throws ClsExceptions {
+	public String getTienePermisoArchivación(String idInstitucion, String usuario) throws ClsExceptions {
 		String permiso = "";
 		RowsContainer rc = new RowsContainer();
 		try {
@@ -524,47 +543,41 @@ public String getTienePermisoArchivación(String idInstitucion,
 	 * @return entero con el numero de archivadas.
 	 * @throws ClsExceptions
 	 */
-public int getArchivar (String Sentencia, String fechaArchivada) throws ClsExceptions, SIGAException {
-	
-	  CenSancionAdm sancionesAdm = new CenSancionAdm(this.usrbean);
-	  CenSancionBean sancionesBean = new CenSancionBean();
-	try {
-		
-		  Vector sanciones= sancionesAdm.select(Sentencia);               
-               int nSanciones=sanciones.size();
-               for(int i=0;i<sanciones.size();i++)
-               {
-            	   sancionesBean = (CenSancionBean)sanciones.elementAt(i);
-			
-            	   sancionesBean.setChkArchivada("1");          	 
-            	   sancionesBean.setFechaArchivada(GstDate.getApplicationFormatDate ("",fechaArchivada)); 
-            	   String datosCambiar[] = new String[2];
-				   datosCambiar[0]=CenSancionBean.C_CHKARCHIVADA;			
-				   datosCambiar[1]=CenSancionBean.C_FECHAARCHIVADA;					
-					if(!sancionesAdm.updateDirect(sancionesBean,sancionesAdm.getClavesBeans(),datosCambiar))
-						throw new ClsExceptions(sancionesAdm.getError());
-				}
-            return nSanciones;
-		
-	  } catch(ClsExceptions e){
-			throw e; 
-		} catch(Exception e){
-			throw new ClsExceptions(e,e.toString()); 
+	public int getArchivar(String Sentencia, String fechaArchivada) throws ClsExceptions, SIGAException {
+		CenSancionAdm sancionesAdm = new CenSancionAdm(this.usrbean);
+		CenSancionBean sancionesBean = new CenSancionBean();
+		try {
+
+			Vector sanciones = sancionesAdm.select(Sentencia);
+			int nSanciones = sanciones.size();
+			for (int i = 0; i < sanciones.size(); i++) {
+				sancionesBean = (CenSancionBean) sanciones.elementAt(i);
+
+				sancionesBean.setChkArchivada("1");
+				sancionesBean.setFechaArchivada(GstDate.getApplicationFormatDate("", fechaArchivada));
+				String datosCambiar[] = new String[2];
+				datosCambiar[0] = CenSancionBean.C_CHKARCHIVADA;
+				datosCambiar[1] = CenSancionBean.C_FECHAARCHIVADA;
+				if (!sancionesAdm.updateDirect(sancionesBean, sancionesAdm.getClavesBeans(), datosCambiar))
+					throw new ClsExceptions(sancionesAdm.getError());
+			}
+			return nSanciones;
+
+		} catch (ClsExceptions e) {
+			throw e;
+		} catch (Exception e) {
+			throw new ClsExceptions(e, e.toString());
 		}
-	
-	
-}//getArchivar()*/
+
+	}// getArchivar()*/
  
- 
- 
- 
- public String getSentenciaSanciones(SancionesLetradoForm form, String idinstitucion) throws ClsExceptions{
-				
-		String chkRehabilitado="";
-		String tipofecha="";
-		String sql ="";
-		
-		try{			
+	public String getSentenciaSanciones(SancionesLetradoForm form, String idinstitucion) throws ClsExceptions {
+
+		String chkRehabilitado = "";
+		String tipofecha = "";
+		String sql = "";
+
+		try {		
 				sql= " WHERE ";               
              	sql += "(nvl (" + CenSancionBean.T_NOMBRETABLA +"."+ CenSancionBean.C_CHKARCHIVADA+ ",0)=0";
              	sql += " OR (nvl (" + CenSancionBean.T_NOMBRETABLA +"."+ CenSancionBean.C_CHKARCHIVADA+",0)=1";
@@ -698,6 +711,54 @@ public int getArchivar (String Sentencia, String fechaArchivada) throws ClsExcep
 		}
 		return sql;
  }
+
+
+	/**
+	 * @param usrBean
+	 * @param datosInforme
+	 * @return
+	 * @throws ClsExceptions 
+	 */
+	public Hashtable getDatosInformeSancionLetrado(UsrBean usrBean, String idPersona, String idInstitucion, String idSancion) throws ClsExceptions {
+		Hashtable hash=null;
+		try{
+            String sql ="SELECT " +
+				" NVL( " +CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_NOMBRE+",' ') || ' ' || NVL( " +CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_APELLIDOS1+",' ') || ' ' || NVL( " +CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_APELLIDOS2+",'') AS NOMBRE_LETRADO, " +
+				" " +CenTipoSancionBean.T_NOMBRETABLA+"."+CenTipoSancionBean.C_DESCRIPCION+" AS TIPOSANCION, " +
+				" " +CenInstitucionBean.T_NOMBRETABLA+"."+CenInstitucionBean.C_ABREVIATURA+" AS INSTITUCION_SANCIONADOR, " +
+				" " +CenSancionBean.T_NOMBRETABLA+"."+CenSancionBean.C_REFCGAE+",  " +
+				" " +CenSancionBean.T_NOMBRETABLA+"."+CenSancionBean.C_REFCOLEGIO+",  " +				
+				" " +CenSancionBean.T_NOMBRETABLA+"."+CenSancionBean.C_CHKFIRMEZA+", " +
+				" TO_CHAR(" +CenSancionBean.T_NOMBRETABLA+"."+CenSancionBean.C_FECHAINICIO+",'dd/mm/yyyy') AS FECHAINICIO, " +
+				" TO_CHAR(" +CenSancionBean.T_NOMBRETABLA+"."+CenSancionBean.C_FECHAFIN+",'dd/mm/yyyy') AS FECHAFIN, " +
+				" TO_CHAR(" +CenSancionBean.T_NOMBRETABLA+"."+CenSancionBean.C_FECHAFIRMEZA+",'dd/mm/yyyy') AS FECHAFIRMEZA, " +
+				" TO_CHAR(" +CenSancionBean.T_NOMBRETABLA+"."+CenSancionBean.C_FECHAACUERDO+",'dd/mm/yyyy') AS FECHAACUERDO, " +
+				" " +CenSancionBean.T_NOMBRETABLA+"."+CenSancionBean.C_CHKREHABILITADO+", " +
+				" TO_CHAR(" +CenSancionBean.T_NOMBRETABLA+"."+CenSancionBean.C_FECHAREHABILITADO+",'dd/mm/yyyy') AS FECHAREHABILITADO, " +
+				" TO_CHAR(" +CenSancionBean.T_NOMBRETABLA+"."+CenSancionBean.C_FECHAARCHIVADA+",'dd/mm/yyyy') AS FECHAARCHIVADA, " +
+				" " +CenSancionBean.T_NOMBRETABLA+"."+CenSancionBean.C_CHKARCHIVADA+", " +
+				" " +CenSancionBean.T_NOMBRETABLA+"."+CenSancionBean.C_TEXTO+", " +
+				" " +CenSancionBean.T_NOMBRETABLA+"."+CenSancionBean.C_OBSERVACIONES+" " +
+           
+			" FROM " + 
+				CenSancionBean.T_NOMBRETABLA + ", " + CenPersonaBean.T_NOMBRETABLA + ", " +	CenTipoSancionBean.T_NOMBRETABLA + ", " +CenInstitucionBean.T_NOMBRETABLA + " " + 
+			
+			" WHERE " + CenSancionBean.T_NOMBRETABLA +"."+ CenSancionBean.C_IDINSTITUCIONSANCION+ "=" + CenInstitucionBean.T_NOMBRETABLA +"."+ CenInstitucionBean.C_IDINSTITUCION +  						 										
+				" AND " + CenSancionBean.T_NOMBRETABLA +"."+ CenSancionBean.C_IDPERSONA+ "=" + CenPersonaBean.T_NOMBRETABLA +"."+ CenPersonaBean.C_IDPERSONA + 
+				" AND " + CenSancionBean.T_NOMBRETABLA +"."+ CenSancionBean.C_IDTIPOSANCION+ "=" + CenTipoSancionBean.T_NOMBRETABLA +"."+ CenTipoSancionBean.C_IDTIPOSANCION; 
+			
+	            // filtro por institucion mia
+				sql += " AND " + CenSancionBean.T_NOMBRETABLA +"."+ CenSancionBean.C_IDINSTITUCION+ "=" + idInstitucion;				 										
+	            // filtro por persona mia
+				sql += " AND " + CenSancionBean.T_NOMBRETABLA +"."+ CenSancionBean.C_IDPERSONA+ "=" + idPersona;						 										
+	            // filtro por sancion mia
+				sql += " AND " + CenSancionBean.T_NOMBRETABLA +"."+ CenSancionBean.C_IDSANCION+ "=" + idSancion;			
+			
+			hash = this.selectGenericoHash(sql);
+			
+		} catch (Exception e) {
+			throw new ClsExceptions(e, "Error al obtener las sanciones del letrado");
+		}
+		return hash;
+	}
 }
-
-

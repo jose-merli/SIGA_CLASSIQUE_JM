@@ -321,215 +321,238 @@ public class VleLetradosSigaAdm extends MasterBeanAdmVisible
 		}
 	}
 	
-	public PaginadorBind getClientesCensoArticulo27 (String idInstitucionBuscar, String idInstitucionActual, BusquedaCensoForm formulario, String idioma) throws ClsExceptions, SIGAException {
+	public PaginadorBind getClientesCensoArticulo27 (String idInstitucionBuscar, String idInstitucionActual, BusquedaCensoForm formulario) throws ClsExceptions, SIGAException {
 		Vector clientes = new Vector();
 		String sqlClientes = "";
 		int contador = 0;
 		Hashtable codigos = new Hashtable();
+		
 		try {
 			
-			if(formulario.getNif() != null && !formulario.getNif().equals("")){ //BUSQUEDA POR NIF
-				
-				if(formulario.getMultiple() != null && formulario.getMultiple().equalsIgnoreCase("s")){ //BUSQUEDA MULTIPLE 
-					sqlClientes = "SELECT vc.id_letrado, vc.id_colegio, vc.num_colegiado,vc.residencia, vc.ejerciente, vc.descripcion,vc.idtratamiento, "
-							+"		  vc.nombre, vc.apellido1, vc.apellido2, vc.num_doc,vc.idtipoidentificacion,vc.sexo, "
-						    +"        TO_CHAR(vc.fecha_alta, 'dd/MM/yyyy') AS fecha_alta, '-' AS DIR_PROFESIONAL, '-' AS COD_POSTAL, '-' AS pais, '-' AS provincia, '-' AS idpoblacion, '-' AS POBLACION, '-' AS TELEFONO, '-' AS FAX, '-' AS MAIL "
-							+" FROM V_CENSO_COLEGIADOS vc WHERE 1 = 1 ";
+			/** LO PRIMERO QUE HACEMOS ES PASAR TODOS LOS CAMPOS DE IDNETIFICACION A MAYUSCULAS PARA COMPARAR CON LAS VISTAS **/
+			String nombre = null;
+			if (formulario.getNombre() != null && !formulario.getNombre().trim().equals("")) {// Nombre relleno
+				nombre = formulario.getNombre().toUpperCase();
+			}
+			String apellido1 = null;
+			if (formulario.getApellido1() != null && !formulario.getApellido1().trim().equals("")) {// Apellido1 relleno
+				apellido1 = formulario.getApellido1().toUpperCase();
+			}
+			String apellido2 = null;
+			if (formulario.getApellido2() != null && !formulario.getApellido2().trim().equals("")) {// Apellido2 relleno
+				apellido2 = formulario.getApellido2().toUpperCase();
+			}
+			
+			if(formulario.getNif() != null && !formulario.getNif().equals("")){ //BUSQUEDA POR NIF				
+				if(formulario.getMultiple() != null && formulario.getMultiple().equalsIgnoreCase("s")){ //BUSQUEDA MULTIPLE
 					
+				   //NUESTRO COLEGIO
+					sqlClientes = "SELECT vc.id_letrado, vc.id_colegio, vc.num_colegiado,vc.residencia, vc.ejerciente, vc.descripcion,vc.idtratamiento as tratamiento, "
+								+"		  vc.nombre, vc.apellido1, vc.apellido2, vc.num_doc,vc.idtipoidentificacion,vc.sexo, TO_CHAR(vc.fecha_alta, 'dd/MM/yyyy') AS fecha_alta, '-' AS DIR_PROFESIONAL,"
+							    +"        '-' AS COD_POSTAL, '-' AS pais, '-' AS provincia, '-' AS idpoblacion, '-' AS POBLACION, '-' AS TELEFONO, '-' AS FAX, '-' AS MAIL "
+								+" FROM V_CENSO_COLEGIADOS vc WHERE vc.id_colegio = "+idInstitucionActual;
 					sqlClientes += " AND (UPPER(vc.num_doc)) = (UPPER('"+formulario.getNif()+"')) "; 
 					
+					sqlClientes += " UNION ";
+				
+					// RESTO DE COLEGIOS
+					sqlClientes+="SELECT C.id_letrado, C.id_colegio, C.num_colegiado, " + "C.residencia, C.ejerciente,c.descripcion,C.tratamiento, " + 
+								  	" L.nombre, L.apellido1,L.apellido2,L.num_doc,L.idtipoidentificacion, L.sexo, TO_CHAR(C.fecha_alta, 'dd/MM/yyyy') AS fecha_alta, " + 
+								  	" L.DIR_PROFESIONAL, L.COD_POSTAL, L.IDPAIS, L.IDPROVINCIA, L.IDPOBLACION,L.POBLACION, L.TELEFONO, L.FAX, L.MAIL " + 
+								  " FROM  V_CENSO_COLEGIACIONES C, V_CENSO_LETRADOS L "+
+								  " WHERE C.id_letrado=L.id_letrado " + 
+								   " AND C.id_colegio <> " + idInstitucionActual;
+					sqlClientes += " AND (UPPER(L.num_doc)) = (UPPER('"+formulario.getNif()+"')) "; 				  
+					
 				}else{ //BUSQUEDA EN LA VISTA PUBLICA
-					sqlClientes = "SELECT C.id_letrado, C.id_colegio, C.num_colegiado, " +
-								"C.residencia, C.ejerciente,c.descripcion, C.tratamiento, " +
-								" L.nombre, L.apellido1,L.apellido2,L.num_doc,L.idtipoidentificacion,L.sexo, TO_CHAR(C.fecha_alta, 'dd/MM/yyyy') AS fecha_alta, "+
-								" L.DIR_PROFESIONAL, L.COD_POSTAL, L.IDPAIS pais, L.IDPROVINCIA provincia, L.IDPOBLACION idpoblacion, L.poblacion POBLACION, L.TELEFONO, L.FAX, L.MAIL "+
-							  "FROM  V_CENSO_COLEGIACIONES C, V_CENSO_LETRADOS L where C.id_letrado=L.id_letrado ";
+					sqlClientes = "SELECT C.id_letrado, C.id_colegio, C.num_colegiado, C.residencia, C.ejerciente,c.descripcion, C.tratamiento, " +
+								  "		L.nombre, L.apellido1,L.apellido2,L.num_doc,L.idtipoidentificacion,L.sexo, TO_CHAR(C.fecha_alta, 'dd/MM/yyyy') AS fecha_alta, "+
+								  " 	L.DIR_PROFESIONAL, L.COD_POSTAL, L.IDPAIS pais, L.IDPROVINCIA provincia, L.IDPOBLACION idpoblacion, L.poblacion POBLACION, L.TELEFONO, L.FAX, L.MAIL "+
+								  " FROM  V_CENSO_COLEGIACIONES C, V_CENSO_LETRADOS L where C.id_letrado=L.id_letrado ";
 				
 			    	sqlClientes += " AND (UPPER(L.num_doc)) = (UPPER('"+formulario.getNif()+"')) "; 
 				}
 				
-			}else if ( (idInstitucionBuscar!= null && !idInstitucionBuscar.trim().equals(""))  && !(idInstitucionBuscar.trim().equals(idInstitucionActual)) ) { //SE HA SELECCIONADO UN COLEGIO DISTINTO AL ACTUAL
-			
+			} else if (idInstitucionBuscar != null && !idInstitucionBuscar.trim().equals("") && !idInstitucionBuscar.trim().equals(idInstitucionActual)) { // SE HA SELECCIONADO UN COLEGIO DISTINTO AL ACTUAL
 				sqlClientes = "SELECT C.id_letrado, C.id_colegio, C.num_colegiado, " +
-							"C.residencia, C.ejerciente,c.descripcion, C.tratamiento, " +
-							" L.nombre, L.apellido1,L.apellido2,L.num_doc,L.idtipoidentificacion,L.sexo, TO_CHAR(C.fecha_alta, 'dd/MM/yyyy') AS fecha_alta, "+
-							" L.DIR_PROFESIONAL, L.COD_POSTAL, L.IDPAIS pais, L.IDPROVINCIA provincia, L.IDPOBLACION idpoblacion, L.poblacion POBLACION, L.TELEFONO, L.FAX, L.MAIL "+
-						  "FROM  V_CENSO_COLEGIACIONES C, V_CENSO_LETRADOS L where C.id_letrado=L.id_letrado ";
+							  "		C.residencia, C.ejerciente,c.descripcion, C.tratamiento, " +
+							  "		L.nombre, L.apellido1,L.apellido2,L.num_doc,L.idtipoidentificacion,L.sexo, TO_CHAR(C.fecha_alta, 'dd/MM/yyyy') AS fecha_alta, "+
+							  "		L.DIR_PROFESIONAL, L.COD_POSTAL, L.IDPAIS pais, L.IDPROVINCIA provincia, L.IDPOBLACION idpoblacion, L.poblacion POBLACION, L.TELEFONO, L.FAX, L.MAIL "+
+							  " FROM  V_CENSO_COLEGIACIONES C, V_CENSO_LETRADOS L where C.id_letrado=L.id_letrado ";
 			
     		   //Se buscan los colegiados del colegio seleccionado
-	       		contador++;
-	       		codigos.put(new Integer(contador),idInstitucionBuscar.trim());
-	       		sqlClientes += "    AND C.id_colegio = :"+contador;
-			       
-		        if (formulario.getNumeroColegiado()!=null && !formulario.getNumeroColegiado().trim().equals("")) {
-		          	contador++;
-		          	codigos.put(new Integer(contador),formulario.getNumeroColegiado().trim());
-		          	sqlClientes += " AND LTRIM(C.num_colegiado,'0') = LTRIM(:"+contador+",'0') " ;	
-		        } 
-	
-	  	        if (formulario.getNombre() != null && !formulario.getNombre().trim().equals("")) {
-  		       		contador++;
-  		       		sqlClientes += " AND ("+ComodinBusquedas.prepararSentenciaCompletaBind(formulario.getNombre().trim(),"L.nombre",contador,codigos )+") ";
-	  	        }
-		  	       
-	  	        if ((formulario.getApellido1()!= null && !formulario.getApellido1().trim().equals("")) && (formulario.getApellido2()!= null && !formulario.getApellido2().trim().equals(""))) {// Los dos campos rellenos
-	  	    	  	contador++;
-	  	       		sqlClientes += " AND ((("+ComodinBusquedas.prepararSentenciaCompletaBind(formulario.getApellido1().trim(),"L.apellido1",contador,codigos )+")";
-	  	       		
-		  	       	contador++;
-	  	       		sqlClientes += " AND ("+ComodinBusquedas.prepararSentenciaCompletaBind(formulario.getApellido2().trim(),"L.apellido2",contador,codigos)+"))";
-	  	       	    contador++;
-		       		sqlClientes += " OR ("+ComodinBusquedas.prepararSentenciaCompletaBind(formulario.getApellido1().trim()+"% %"+formulario.getApellido2().trim() ,"L.apellido1",contador,codigos )+"))";
-	
-	  	        }else if (formulario.getApellido1()!= null && !formulario.getApellido1().trim().equals("")) {//Apellido1 relleno
-	  	       		contador++;	
-	  	       		sqlClientes += " AND ("+ComodinBusquedas.prepararSentenciaCompletaBind(formulario.getApellido1().trim(),"L.apellido1",contador,codigos )+" OR (L.apellido1||' '||L.apellido2 LIKE '%"+UtilidadesBDAdm.validateChars(formulario.getApellido1().trim())+"%')) ";
-		  	       		
-	  	       }else if (formulario.getApellido2()!= null && !formulario.getApellido2().trim().equals("")) {//Apellido2 relleno
-	  	       		contador++;
-	  	       		sqlClientes += " AND (("+ComodinBusquedas.prepararSentenciaCompletaBind(formulario.getApellido2().trim(),"L.apellido2",contador,codigos)+") ";
-	  	       		contador++;	
-	  	       	    sqlClientes += " OR ("+ComodinBusquedas.prepararSentenciaCompletaBind(" "+formulario.getApellido2().trim(),"L.apellido1",contador,codigos)+ ")  )";
-	  	       }
+				contador++;
+				codigos.put(new Integer(contador), idInstitucionBuscar.trim());
+				sqlClientes += "    AND C.id_colegio = :" + contador;
+
+				if (formulario.getNumeroColegiado() != null && !formulario.getNumeroColegiado().trim().equals("")) {
+					contador++;
+					codigos.put(new Integer(contador), formulario.getNumeroColegiado().trim());
+					sqlClientes += " AND LTRIM(C.num_colegiado,'0') = LTRIM(:" + contador + ",'0') ";
+				}
+
+				if (nombre != null && !nombre.trim().equals("")) {
+					contador++;
+					sqlClientes += " AND (" + ComodinBusquedas.prepararSentenciaCompletaBind(nombre.trim(), "L.nombre", contador, codigos) + ") ";
+				}
+
+				if ((apellido1 != null && !apellido1.trim().equals("")) && (apellido2 != null && !apellido2.trim().equals(""))) {// Los dos campos rellenos
+					contador++;
+					sqlClientes += " AND (((" + ComodinBusquedas.prepararSentenciaCompletaBind(apellido1.trim(), "L.apellido1", contador, codigos) + ")";
+
+					contador++;
+					sqlClientes += " AND (" + ComodinBusquedas.prepararSentenciaCompletaBind(apellido2.trim(), "L.apellido2", contador, codigos) + "))";
+					contador++;
+					sqlClientes += " OR (" + ComodinBusquedas.prepararSentenciaCompletaBind(apellido1.trim() + "% %" + apellido2.trim(), "L.apellido1", contador, codigos) + "))";
+
+				} else if (apellido1 != null && !apellido1.trim().equals("")) {// Apellido1 relleno
+					contador++;
+					sqlClientes += " AND (" + ComodinBusquedas.prepararSentenciaCompletaBind(apellido1.trim(), "L.apellido1", contador, codigos) 
+								 + " OR (L.apellido1||' '||L.apellido2 LIKE '%" + UtilidadesBDAdm.validateChars(apellido1.trim()) + "%')) ";
+
+				} else if (apellido2 != null && !apellido2.trim().equals("")) {// Apellido2 relleno
+					contador++;
+					sqlClientes += " AND ((" + ComodinBusquedas.prepararSentenciaCompletaBind(apellido2.trim(), "L.apellido2", contador, codigos) + ") ";
+					contador++;
+					sqlClientes += " OR (" + ComodinBusquedas.prepararSentenciaCompletaBind(" " + apellido2.trim(), "L.apellido1", contador, codigos) + ")  )";
+				}
 	  	        
 			
-		   } else { //SE HA SELECCIONADO EL COLEGIO ACTUAL
-				
+		   } else { //SE HA SELECCIONADO EL COLEGIO ACTUAL				
 			   //COLEGIADOS
 				sqlClientes = "SELECT vc.id_letrado, vc.id_colegio, vc.num_colegiado,vc.residencia, vc.ejerciente, vc.descripcion,vc.idtratamiento, "
-							+"		  vc.nombre, vc.apellido1, vc.apellido2, vc.num_doc,vc.idtipoidentificacion,vc.sexo, "
-						    +"        TO_CHAR(vc.fecha_alta, 'dd/MM/yyyy') AS fecha_alta, '-' AS DIR_PROFESIONAL, '-' AS COD_POSTAL, '-' AS pais, '-' AS provincia, '-' AS idpoblacion, '-' AS POBLACION, '-' AS TELEFONO, '-' AS FAX, '-' AS MAIL "
+							+"		  vc.nombre, vc.apellido1, vc.apellido2, vc.num_doc,vc.idtipoidentificacion,vc.sexo, TO_CHAR(vc.fecha_alta, 'dd/MM/yyyy') AS fecha_alta, '-' AS DIR_PROFESIONAL,"
+						    +"        '-' AS COD_POSTAL, '-' AS pais, '-' AS provincia, '-' AS idpoblacion, '-' AS POBLACION, '-' AS TELEFONO, '-' AS FAX, '-' AS MAIL "
 							+" FROM V_CENSO_COLEGIADOS vc WHERE 1 = 1 ";
-			
-				if(idInstitucionBuscar!= null && !idInstitucionBuscar.trim().equals("")){ 
+
+				if (idInstitucionBuscar != null && !idInstitucionBuscar.trim().equals("")) {
 					contador++;
 					codigos.put(new Integer(contador), idInstitucionActual.trim());
 					sqlClientes += "    AND vc.id_colegio = :" + contador;
 				}
-			       
-		        if (formulario.getNumeroColegiado()!=null && !formulario.getNumeroColegiado().trim().equals("")) {
-		          	contador++;
-		          	codigos.put(new Integer(contador),formulario.getNumeroColegiado().trim());
-		          	sqlClientes += " AND LTRIM(vc.num_colegiado,'0') = LTRIM(:"+contador+",'0') " ;	
-		        } 
-	
-				if (formulario.getNombre() != null && !formulario.getNombre().trim().equals("")) {
-						contador++;
-						sqlClientes += " AND ("	+ ComodinBusquedas.prepararSentenciaCompletaBind(formulario.getNombre().trim(), "vc.nombre", contador, codigos)	+ ") ";
+
+				if (formulario.getNumeroColegiado() != null && !formulario.getNumeroColegiado().trim().equals("")) {
+					contador++;
+					codigos.put(new Integer(contador), formulario.getNumeroColegiado().trim());
+					sqlClientes += " AND LTRIM(vc.num_colegiado,'0') = LTRIM(:" + contador + ",'0') ";
 				}
-					
-				if ((formulario.getApellido1() != null && !formulario.getApellido1().trim().equals("")) && (formulario.getApellido2() != null && !formulario.getApellido2().trim().equals(""))) {// Los dos campos rellenos
+
+				if (nombre != null && !nombre.trim().equals("")) {
 					contador++;
-					sqlClientes += " AND ((("
-							+ ComodinBusquedas.prepararSentenciaCompletaBind(formulario.getApellido1().trim(), "vc.apellido1", contador,
-									codigos) + ")";
-	
+					sqlClientes += " AND (" + ComodinBusquedas.prepararSentenciaCompletaBind(nombre.trim(), "vc.nombre", contador, codigos) + ") ";
+				}
+
+				if ((apellido1 != null && !apellido1.trim().equals("")) && (apellido2 != null && !apellido2.trim().equals(""))) {// Los dos campos rellenos
 					contador++;
-					sqlClientes += " AND ("
-							+ ComodinBusquedas.prepararSentenciaCompletaBind(formulario.getApellido2().trim(), "vc.apellido2", contador,
-									codigos) + "))";
+					sqlClientes += " AND (((" + ComodinBusquedas.prepararSentenciaCompletaBind(apellido1.trim(), "vc.apellido1", contador, codigos) + ")";
+
 					contador++;
-					sqlClientes += " OR ("
-							+ ComodinBusquedas.prepararSentenciaCompletaBind(formulario.getApellido1().trim() + "% %"
-									+ formulario.getApellido2().trim(), "vc.apellido1", contador, codigos) + "))";
-	
-				} else if (formulario.getApellido1() != null && !formulario.getApellido1().trim().equals("")) {//Apellido1 relleno
+					sqlClientes += " AND (" + ComodinBusquedas.prepararSentenciaCompletaBind(apellido2.trim(), "vc.apellido2", contador, codigos) + "))";
 					contador++;
-					sqlClientes += " AND (" + ComodinBusquedas.prepararSentenciaCompletaBind(formulario.getApellido1().trim(), "vc.apellido1", contador,
-									codigos) + " OR (vc.apellido1||' '||vc.apellido2 LIKE '%"
-								+ UtilidadesBDAdm.validateChars(formulario.getApellido1().trim()) + "%')) ";
-	
-				} else if (formulario.getApellido2() != null && !formulario.getApellido2().trim().equals("")) {//Apellido2 relleno
+					sqlClientes += " OR (" + ComodinBusquedas.prepararSentenciaCompletaBind(apellido1.trim() + "% %" + apellido2.trim(), "vc.apellido1", contador, codigos) + "))";
+
+				} else if (apellido1 != null && !apellido1.trim().equals("")) {// Apellido1 relleno
 					contador++;
-					sqlClientes += " AND (("
-							+ ComodinBusquedas.prepararSentenciaCompletaBind(formulario.getApellido2().trim(), "vc.apellido2", contador,
-									codigos) + ") ";
+					sqlClientes += " AND (" + ComodinBusquedas.prepararSentenciaCompletaBind(apellido1.trim(), "vc.apellido1", contador, codigos) 
+								 + " OR (vc.apellido1||' '||vc.apellido2 LIKE '%" + UtilidadesBDAdm.validateChars(apellido1.trim()) + "%')) ";
+
+				} else if (apellido2 != null && !apellido2.trim().equals("")) {// Apellido2 relleno
 					contador++;
-					sqlClientes += " OR ("
-							+ ComodinBusquedas.prepararSentenciaCompletaBind(" " + formulario.getApellido2().trim(), "vc.apellido1",
-									contador, codigos) + ")  )";
-				}	   
+					sqlClientes += " AND ((" + ComodinBusquedas.prepararSentenciaCompletaBind(apellido2.trim(), "vc.apellido2", contador, codigos) + ") ";
+					contador++;
+					sqlClientes += " OR (" + ComodinBusquedas.prepararSentenciaCompletaBind(" " + apellido2.trim(), "vc.apellido1", contador, codigos) + ")  )";
+				}
 	  	          	  	       			       
-		  	   	if (formulario.getNumeroColegiado() == null || formulario.getNumeroColegiado().equals("")) { //NO COLEGIADOS
-					sqlClientes += " UNION " +
-	
-					"  SELECT nc.id_letrado, nc.id_colegio, 'No Colegiado', 'No Colegiado', 'No Colegiado', nc.descripcion,nc.idtratamiento, "
-					+"		  nc.nombre, nc.apellido1, nc.apellido2, nc.num_doc,nc.idtipoidentificacion,nc.sexo, "
-				    +"        '-' AS fecha_alta, '-' AS DIR_PROFESIONAL, '-' AS COD_POSTAL, '-' AS pais, '-' AS provincia, '-' AS idpoblacion, '-' AS POBLACION, '-' AS TELEFONO, '-' AS FAX, '-' AS MAIL "
-					+" FROM V_CENSO_NOCOLEGIADOS nc WHERE 1 = 1 ";
-	
-					contador++;
-					codigos.put(new Integer(contador), idInstitucionActual.trim());
-					sqlClientes += "    AND nc.id_colegio = :" + contador;
-					
-					if (formulario.getNombre() != null && !formulario.getNombre().trim().equals("")) {
+				if (formulario.getNumeroColegiado() == null || formulario.getNumeroColegiado().equals("")) { // NO COLEGIADOS
+					if (formulario.getMultiple() == null || !formulario.getMultiple().equalsIgnoreCase("s")) { // NO BUSQUEDA MULTIPLE
+						sqlClientes += " UNION " +
+		
+						"  SELECT nc.id_letrado, nc.id_colegio, 'No Colegiado', 'No Colegiado', 'No Colegiado', nc.descripcion,nc.idtratamiento, "
+						+"		  nc.nombre, nc.apellido1, nc.apellido2, nc.num_doc,nc.idtipoidentificacion,nc.sexo,'-' AS fecha_alta, "
+					    +"        '-' AS DIR_PROFESIONAL, '-' AS COD_POSTAL, '-' AS pais, '-' AS provincia, '-' AS idpoblacion, '-' AS POBLACION, '-' AS TELEFONO, '-' AS FAX, '-' AS MAIL "
+						+" FROM V_CENSO_NOCOLEGIADOS nc WHERE NOT EXISTS (SELECT * FROM cen_colegiado WHERE idpersona = nc.id_letrado) ";
+		
 						contador++;
-						sqlClientes += " AND ("	+ ComodinBusquedas.prepararSentenciaCompletaBind(formulario.getNombre().trim(), "nc.nombre", contador, codigos)	+ ") ";
-					}
-					
-					if ((formulario.getApellido1() != null && !formulario.getApellido1().trim().equals("")) && (formulario.getApellido2() != null && !formulario.getApellido2().trim().equals(""))) {// Los dos campos rellenos
-						contador++;
-						sqlClientes += " AND ((("
-								+ ComodinBusquedas.prepararSentenciaCompletaBind(formulario.getApellido1().trim(), "nc.apellido1", contador,
-										codigos) + ")";
-	
-						contador++;
-						sqlClientes += " AND ("
-								+ ComodinBusquedas.prepararSentenciaCompletaBind(formulario.getApellido2().trim(), "nc.apellido2", contador,
-										codigos) + "))";
-						contador++;
-						sqlClientes += " OR ("
-								+ ComodinBusquedas.prepararSentenciaCompletaBind(formulario.getApellido1().trim() + "% %"
-										+ formulario.getApellido2().trim(), "nc.apellido1", contador, codigos) + "))";
-	
-					} else if (formulario.getApellido1() != null && !formulario.getApellido1().trim().equals("")) {//Apellido1 relleno
-						contador++;
-						sqlClientes += " AND (" + ComodinBusquedas.prepararSentenciaCompletaBind(formulario.getApellido1().trim(), "nc.apellido1", contador,
-										codigos) + " OR (nc.apellido1||' '||nc.apellido2 LIKE '%"
-									+ UtilidadesBDAdm.validateChars(formulario.getApellido1().trim()) + "%')) ";
-	
-					} else if (formulario.getApellido2() != null && !formulario.getApellido2().trim().equals("")) {//Apellido2 relleno
-						contador++;
-						sqlClientes += " AND (("
-								+ ComodinBusquedas.prepararSentenciaCompletaBind(formulario.getApellido2().trim(), "nc.apellido2", contador,
-										codigos) + ") ";
-						contador++;
-						sqlClientes += " OR ("
-								+ ComodinBusquedas.prepararSentenciaCompletaBind(" " + formulario.getApellido2().trim(), "nc.apellido1",
-										contador, codigos) + ")  )";
+						codigos.put(new Integer(contador), idInstitucionActual.trim());
+						sqlClientes += "    AND nc.id_colegio = :" + contador;
+
+						if (nombre != null && !nombre.trim().equals("")) {
+							contador++;
+							sqlClientes += " AND (" + ComodinBusquedas.prepararSentenciaCompletaBind(nombre.trim(), "nc.nombre", contador, codigos) + ") ";
+						}
+
+						if ((apellido1 != null && !apellido1.trim().equals("")) && (apellido2 != null && !apellido2.trim().equals(""))) {// Los dos campos rellenos
+							contador++;
+							sqlClientes += " AND (((" + ComodinBusquedas.prepararSentenciaCompletaBind(apellido1.trim(), "nc.apellido1", contador, codigos) + ")";
+
+							contador++;
+							sqlClientes += " AND (" + ComodinBusquedas.prepararSentenciaCompletaBind(apellido2.trim(), "nc.apellido2", contador, codigos) + "))";
+							contador++;
+							sqlClientes += " OR (" + ComodinBusquedas.prepararSentenciaCompletaBind(apellido1.trim() + "% %" + apellido2.trim(), "nc.apellido1", contador, codigos) + "))";
+
+						} else if (apellido1 != null && !apellido1.trim().equals("")) {// Apellido1 relleno
+							contador++;
+							sqlClientes += " AND (" + ComodinBusquedas.prepararSentenciaCompletaBind(apellido1.trim(), "nc.apellido1", contador, codigos) 
+									     + " OR (nc.apellido1||' '||nc.apellido2 LIKE '%" + UtilidadesBDAdm.validateChars(apellido1.trim()) + "%')) ";
+
+						} else if (apellido2 != null && !apellido2.trim().equals("")) {// Apellido2 relleno
+							contador++;
+							sqlClientes += " AND ((" + ComodinBusquedas.prepararSentenciaCompletaBind(apellido2.trim(), "nc.apellido2", contador, codigos) + ") ";
+							contador++;
+							sqlClientes += " OR (" + ComodinBusquedas.prepararSentenciaCompletaBind(" " + apellido2.trim(), "nc.apellido1", contador, codigos) + ")  )";
+						}
 					}
 				}
-		   }
-			sqlClientes+= "  ORDER BY apellido1 , apellido2, nombre";	       
+			}
+			
+			sqlClientes += "  ORDER BY apellido1 , apellido2, nombre";
 			PaginadorBind paginado = new PaginadorBind(sqlClientes, codigos);
-	
+
 			int totalRegistros = paginado.getNumeroTotalRegistros();
 			if (totalRegistros == 0) {
 				paginado = null;
 			}
-	
+
 			return paginado;
-			
+
 		} catch (Exception e) {
 			throw new ClsExceptions(e, "Error obteniendo clientes ");
-		}		
+		}
 	}
-	
+
 	public Hashtable getBusquedPorNIF(String NIF, String idInstitucionActual) throws ClsExceptions, SIGAException {
 		String sqlClientes = "";
 		Hashtable registro = null;
 		RowsContainer rc = null;
-
+		String idInstitucionColegio = this.usrbean.getLocation();
 		try {
-			sqlClientes = "SELECT C.id_letrado, C.id_colegio, C.num_colegiado, " +
-							"C.residencia, C.ejerciente,c.descripcion,C.tratamiento, " +
-							" L.nombre, L.apellido1,L.apellido2,L.num_doc,L.idtipoidentificacion, L.sexo, TO_CHAR(C.fecha_alta, 'dd/MM/yyyy') AS fecha_alta, "+
-							" L.DIR_PROFESIONAL, L.COD_POSTAL, L.IDPAIS, L.IDPROVINCIA, L.IDPOBLACION,L.POBLACION, L.TELEFONO, L.FAX, L.MAIL "+
-						  "FROM  V_CENSO_COLEGIACIONES C, V_CENSO_LETRADOS L where C.id_letrado=L.id_letrado ";
-					  
+			
+			if (idInstitucionActual.trim().equals(idInstitucionColegio)) {//SE HA SELECCIONADO EL COLEGIO ACTUAL				
+			   //COLEGIADOS
+				sqlClientes = "SELECT vc.id_letrado, vc.id_colegio, vc.num_colegiado,vc.residencia, vc.ejerciente, vc.descripcion,vc.idtratamiento as tratamiento, "
+							+"		  vc.nombre, vc.apellido1, vc.apellido2, vc.num_doc,vc.idtipoidentificacion,vc.sexo, TO_CHAR(vc.fecha_alta, 'dd/MM/yyyy') AS fecha_alta, '-' AS DIR_PROFESIONAL,"
+						    +"        '-' AS COD_POSTAL, '-' AS pais, '-' AS provincia, '-' AS idpoblacion, '-' AS POBLACION, '-' AS TELEFONO, '-' AS FAX, '-' AS MAIL "
+							+" FROM V_CENSO_COLEGIADOS vc WHERE vc.id_colegio = "+idInstitucionActual;
+				if (NIF != null && !NIF.trim().equals("")) {
+					sqlClientes += " AND UPPER(vc.num_doc)= UPPER('" + NIF + "')";
+				}
+				
+				sqlClientes += " UNION ";
+			
+			
+		   }
+
+			// SE HA SELECCIONADO OTRO COLEGIO
+			sqlClientes+="SELECT C.id_letrado, C.id_colegio, C.num_colegiado, C.residencia, C.ejerciente,c.descripcion,C.tratamiento as tratamiento, " + 
+						  	" L.nombre, L.apellido1,L.apellido2,L.num_doc,L.idtipoidentificacion, L.sexo, TO_CHAR(C.fecha_alta, 'dd/MM/yyyy') AS fecha_alta, " + 
+						  	" L.DIR_PROFESIONAL, L.COD_POSTAL, L.IDPAIS, L.IDPROVINCIA, L.IDPOBLACION,L.POBLACION, L.TELEFONO, L.FAX, L.MAIL " + 
+						  " FROM  V_CENSO_COLEGIACIONES C, V_CENSO_LETRADOS L "+
+						  " WHERE C.id_letrado=L.id_letrado " + 
+						  	" AND C.id_colegio <> " + idInstitucionColegio;
 			if (NIF != null && !NIF.trim().equals("")) {
-				sqlClientes += " AND UPPER(L.num_doc)= UPPER('" + NIF +"')";
-			}
+				sqlClientes += " AND UPPER(L.num_doc)= UPPER('" + NIF + "')";
+			}					  
+
 
 			sqlClientes += "  ORDER BY apellido1 , apellido2, nombre";
 			// RGG cambio visibilidad

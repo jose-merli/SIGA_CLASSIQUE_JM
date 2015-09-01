@@ -148,15 +148,15 @@
 			<!-- Tratamiento del tagTabla y tagFila para la formacion de la lista 
 				 de cabeceras fijas -->
 			<%
-			String columnas =  "censo.consultaExpedientes.literal.tipoExpediente,censo.consultaExpedientes.literal.sancionado,"+
+			String columnas =  "expedientes.auditoria.literal.nexpediente,censo.consultaExpedientes.literal.tipoExpediente,censo.consultaExpedientes.literal.sancionado,"+
 		  			   "censo.consultaExpedientes.literal.sancionFinalizada,censo.consultaExpedientes.literal.fechaCaducidad,"+
 		  			   "censo.consultaExpedientes.literal.motivo";
-			String tamanios = "20,13,13,17,25";
+			String tamanios = "10,20,11,11,11,25";
 			if(idPersona.equals(idUsr)){
-				columnas =  "censo.consultaExpedientes.literal.tipoExpediente,censo.consultaExpedientes.literal.sancionado,"+
+				columnas =  "expedientes.auditoria.literal.nexpediente,censo.consultaExpedientes.literal.tipoExpediente,censo.consultaExpedientes.literal.sancionado,"+
 			  			   "censo.consultaExpedientes.literal.sancionFinalizada,censo.consultaExpedientes.literal.fechaCaducidad,"+
 			  			   "censo.consultaExpedientes.literal.motivo,";
-				tamanios = "20,13,13,17,25,12";
+				tamanios = "10,20,11,11,11,25,12";
 			}
 			%>
 			<siga:Table 
@@ -205,9 +205,12 @@
 								<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_4" value="<%=row.getString(ExpExpedienteBean.C_NUMEROEXPEDIENTE)%>">
 								<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_5" value="<%=row.getString(ExpExpedienteBean.C_ANIOEXPEDIENTE)%>">
 								<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_6" value="<%=row.getString(ExpExpedienteBean.C_IDTIPOEXPEDIENTE)%>">
+								<%=UtilidadesString.mostrarDatoJSP(row.getString(ExpExpedienteBean.C_ANIOEXPEDIENTE))%>&nbsp;/&nbsp;<%=UtilidadesString.mostrarDatoJSP(row.getString(ExpExpedienteBean.C_NUMEROEXPEDIENTE))%>
+							</td>
+							<td>								
 								<%=UtilidadesString.mostrarDatoJSP(row.getString("TIPOEXPEDIENTE"))%>
 							</td>
-							<td >
+							<td>
 								<% if (row.getString("SANCIONADO").equalsIgnoreCase("S")){%>
 									<siga:Idioma key="general.yes"/>
 								<% } else { %>

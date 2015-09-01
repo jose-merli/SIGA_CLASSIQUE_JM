@@ -2,142 +2,189 @@
 <html>
 <head>
 <!-- cargaProductos.jsp -->
+<!-- CABECERA JSP -->
 <meta http-equiv="Expires" content="0">
-<meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-1"%>
+<meta http-equiv="Pragma" content="no-cache">
+<%@ page pageEncoding="ISO-8859-1"%>
 <meta http-equiv="Cache-Control" content="no-cache">
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <%@ page contentType="text/html" language="java" errorPage="/html/jsp/error/errorSIGA.jsp"%>
 
-<%@ taglib uri = "libreria_SIGA.tld" prefix="siga"%>
-<%@ taglib uri = "struts-bean.tld" prefix="bean"%>
-<%@ taglib uri = "struts-html.tld" prefix="html"%>
-<%@ taglib uri = "struts-logic.tld" prefix="logic"%>
-
-<%@ page import = "com.siga.administracion.SIGAConstants"%>
-<%@ page import = "com.siga.gui.processTree.SIGAPTConstants"%>
-<%@ page import = "com.siga.Utilidades.UtilidadesString"%>
-
-<%@ page import="com.siga.productos.form.CargaProductosForm"%>
-<%@ page import = "com.atos.utils.*"%>
-<%@ page import = "com.siga.general.*"%>
-<%@ page import="java.util.Properties"%>
-<%
-	String app=request.getContextPath();
-	HttpSession ses=request.getSession();
-	
-
-	UsrBean user=(UsrBean)request.getSession().getAttribute("USRBEAN");
-
-	String delimitador = (String)request.getAttribute("DELIMITADOR");
-	
-	CargaProductosForm formulario = (CargaProductosForm)request.getAttribute("cargaProductosForm");
-%>
+<!-- TAGLIBS -->
+<%@ taglib uri="libreria_SIGA.tld" prefix="siga"%>
+<%@ taglib uri="struts-bean.tld" prefix="bean"%>
+<%@ taglib uri="struts-html.tld" prefix="html"%>
+<%@ taglib uri="struts-logic.tld" prefix="logic"%>
+<%@ taglib uri="c.tld" prefix="c"%>
 
 
-	
-		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
+	<!-- HEAD -->
+<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
 	
 	<!-- Incluido jquery en siga.js -->
 	
-	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js?v=${sessionScope.VERSIONJS}'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
-		<script src="<%=app%>/html/js/validacionStruts.js" type="text/javascript"></script>
-		
-		<!-- INICIO: TITULO Y LOCALIZACION -->
-		<!-- Escribe el título y localización en la barra de título del frame principal -->
-		<siga:Titulo 
-			titulo="pys.cargaProductos.titulo" 
-			localizacion="pys.cargaProductos.localizacion"/>
-		<!-- FIN: TITULO Y LOCALIZACION -->
+	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js?v=${sessionScope.VERSIONJS}'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/validacionStruts.js'/>" ></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/jsp/general/validacionSIGA.jsp'/>"></script>
+  	
+	<siga:Titulo titulo="pys.cargaProductos.titulo"	localizacion="pys.cargaProductos.localizacion"/>		
 
-		<!-- INICIO: SCRIPTS BOTONES BUSQUEDA -->
-		<script language="JavaScript">
+<script type="text/javascript">
+	jQuery.noConflict();
+	
+	function refrescarLocal(){
+		buscarCargasMasivas();
+	}
+	
+	
+	function buscar() {
+		return buscarCargasMasivas();
+	}
+	
+	
+	function buscarCargasMasivas() {
+		sub();
+		var idInstitucion = document.CargaProductosForm.idInstitucion.value;
+		var fechaCarga = document.CargaProductosForm.fechaCarga.value;
 		
-			function accionGuardar() 
-			{
-				$('#botonProcesar').attr('disabled','');
-				sub();
-				var mensaje = "<siga:Idioma key="pys.cargaProductos.literal.mensajeAviso"/> ";
+		var data = "idInstitucion="+idInstitucion;
+		if(fechaCarga!='')
+			data += "&fechaCarga="+fechaCarga;
+		
+	    
+	   	jQuery.ajax({
+        	type: "POST",
+            url: "/SIGA/PYS_CargaProductos.do?modo=getAjaxBusqueda",
+            data: data,
+            success: function(response){
+                fin();
+            	jQuery('#divListado').html(response);
+                
+            },
+            error: function(e){
+            	fin();
+                alert('Error: ' + e);
+            }
+        });
+    }
+	function inicio() {
+		if(document.forms['CargaProductosForm'].modo.value == 'vuelta' && document.forms['CargaProductosForm'].idInstitucion.value!=''){
+			buscarCargasMasivas();
+			document.forms['CargaProductosForm'].modo.value = '';
+		}
+	}
+	
+	function downloadExample() {
+		document.forms['CargaProductosForm'].modo.value = 'downloadExample';
+		document.forms['CargaProductosForm'].submit();
+		
+	}
+		
+	function parseExcelFile() {
+		if(!document.forms['CargaProductosForm'].theFile || document.forms['CargaProductosForm'].theFile.value==''){
+			error = "<siga:Idioma key='errors.required' arg0='administracion.confInterfaz.fichero'/>";
+			alert(error);
+			fin();
+			return false;
+		}
+		
+		if(document.forms['CargaProductosForm'].theFile && document.forms['CargaProductosForm'].theFile.value!='' && !TestFileType(document.forms['CargaProductosForm'].theFile.value, ['XLS'])){
+			fin();
+			return false;
+		}
+		sub();
+		document.forms['CargaProductosForm'].nombreFichero.value = document.forms['CargaProductosForm'].theFile.value;
+		document.forms['CargaProductosForm'].modo.value = 'parseExcelFile';
+		document.forms['CargaProductosForm'].submit();
+		
+	}
+	function download(fila) {
+		var idFichero = document.getElementById("idFichero_"+fila).value;
+		var idInstitucion = document.getElementById("idInstitucion_"+fila).value;
+		document.forms['CargaProductosForm'].idInstitucion.value = idInstitucion;
+		document.forms['CargaProductosForm'].idFichero.value = idFichero;
+		document.forms['CargaProductosForm'].modo.value = 'downloadExcelProcessed';
+		document.forms['CargaProductosForm'].submit();
+		
+	}
+	function descargaLog(fila) {
+		var idFicheroLog = document.getElementById("idFicheroLog_"+fila).value;
+		var idInstitucion = document.getElementById("idInstitucion_"+fila).value;
+		document.forms['CargaProductosForm'].idInstitucion.value = idInstitucion;
+		document.forms['CargaProductosForm'].idFicheroLog.value = idFicheroLog;
+		document.forms['CargaProductosForm'].modo.value = 'downloadExcelLog';
+		document.forms['CargaProductosForm'].submit();
+		
+	}
+	
+	
+</script>
+</head>
+<body onload="inicio();">
+	<!-- INICIO: CAMPOS DE BUSQUEDA-->
+	<bean:define id="path" name="org.apache.struts.action.mapping.instance" property="path" scope="request"/>
+	<html:form action="${path}"  method="POST" enctype="multipart/form-data" target="mainWorkArea">
+		<html:hidden property="modo"/>
+		<html:hidden property="idInstitucion"/>
+		<html:hidden property="nombreFichero"/>
+		<html:hidden property="idFichero"/>
+		<html:hidden property="idFicheroLog"/>
+		<siga:ConjCampos leyenda="censo.cargaProductos.cabecera">
+		
+			<table width="100%" border="0">
+				<tr>
+					<td width="150x"></td>
+					<td width="110x"></td>
+					<td width="110x"></td>
+					<td width="110x"></td>
 					
-				//Preguntamos si queremos subir los datos del fichero o no							
-				if (confirm(mensaje)) 
-				{
-					f= document.CargaProductosForm;
-					
-			    	f.modo.value = "guardarFich";
-					f.submit();						
-				} 													
-			}
-
-			//Cada vez que se llame a este método se limpiara el objeto file								
-			function refrescarLocal()
-			{	
-				document.all.CargaProductosForm.reset();
+				</tr>
 				
-			}
-			
-		</script>
-		<!-- FIN: SCRIPTS BOTONES -->
-	</head>
+				<tr>
+					<td class="labelText">
+						<siga:Idioma  key="cargaMasivaDatosCurriculares.fechaCarga.literal"/>
+					</td>
+					<td>
+						<siga:Fecha nombreCampo="fechaCarga" valorInicial="${CargaProductosForm.fechaCarga}"/>
+					</td>
+					<td width="110x"></td>
+					<td width="110x"></td>
+				</tr>
+				
+				<tr>
+					<td class="labelText">
+						<siga:Idioma key="administracion.confInterfaz.fichero" />&nbsp;
+					</td>
+					<td><html:file  property="theFile" styleClass="boxCombo"  style="width:400px;" />
+					</td>
+					<td class="tdBotones">
+						<input  type="button" alt="<siga:Idioma key="general.boton.procesaFichero" />"
+							 onclick="return parseExcelFile();"
+							class="button" name="idButton" value="<siga:Idioma key="general.boton.procesaFichero" />"></input>
+					</td>
+					<td class="tdBotones">
+						<input type="button" alt='<siga:Idioma key="general.boton.descargaFicheroModelo" />'  onClick="downloadExample()" class="button" name="idButton" value="<siga:Idioma key="general.boton.descargaFicheroModelo" />"/>
+					</td>
+				</tr>
 
-	<body onload="ajusteAlto('divAyuda');">
-		<siga:ConjCampos leyenda="pys.cargaProductos.titulo">
-			<table   align="left" cellpadding="0" cellpadding="0">
-				<html:form  action="/PYS_CargaProductos.do" method="POST" target="submitArea" enctype="multipart/form-data" >
-				<html:hidden property = "modo" value = ""/>
-					<tr>
-						<!-- CLIENTE -->
-						<td class="labelText" >
-							<siga:Idioma key="pys.cargaProductos.literal.fichero"/>&nbsp;(*)
-						</td>				
-						<td >
-							<html:file name="CargaProductosForm"  property="fichero" size="90" styleClass="box"  onchange="$('#botonProcesar').removeAttr('disabled');"></html:file>
-						</td>
-					</tr>
-				</html:form>
+				
 			</table>
-		</siga:ConjCampos>				
-		<div name="divAyuda" class="labelTextValue" style="padding-left:30px;padding-top:30px;width:100%; height:90%; overflow-y:scroll">
-		<p>El fichero de carga de compras debe ser un fichero de texto, con una linea por cada compra.</p>
-		<p>Los campos necesarios para poder efectuar la compra son los siguientes:</p>
-		<ul>
-			<li>Número de colegiado (Opcional)</li>
-			<li>NIF/CIF del cliente</li>
-			<li>Apellidos y nombre del cliente</li>
-			<li>Cantidad del producto</li>
-			<li>Nombre del producto</li>
-			<li>Identificador de la Categoría</li>
-			<li>Identificador del Tipo de Producto</li>
-			<li>Identificador del Producto</li>
-		</ul>
-		<p>Todos los campos, salvo el Número de colegiado, son obligatorios y se deben separar usando el caracter reservado <b><%=delimitador%></b></p> 
-		<p>Los identificadores de los productos pueden obtenerse en la ficha del producto.</p>
-		<p class="labelText">Ejemplo</p>
-		<div class="labelTextValue" style="padding-left:20px; padding-bottom:30px;">
-		<%=delimitador%> 34620345B <%=delimitador%> Alonso García, Nieves <%=delimitador%> 1 <%=delimitador%> Cuota incorporación <%=delimitador%> 9 <%=delimitador%> 3 <%=delimitador%> 1<br>
-		543545 <%=delimitador%> 85345671A <%=delimitador%> Pérez López, Antonio <%=delimitador%> 1 <%=delimitador%> Carnet Colegial A.C.A <%=delimitador%> 15 <%=delimitador%> 3 <%=delimitador%> 1<br>
-		543545 <%=delimitador%> 85345671A <%=delimitador%> Pérez López, Antonio <%=delimitador%> 1 <%=delimitador%> Cuota Consejo <%=delimitador%> 1 <%=delimitador%> 6 <%=delimitador%> 6<br>
-		543545 <%=delimitador%> 85345671A <%=delimitador%> Pérez López, Antonio <%=delimitador%> 3 <%=delimitador%> Cuotas atrasadas <%=delimitador%> 5 <%=delimitador%> 2 <%=delimitador%> 2<br>
-		<%=delimitador%> 64564536K <%=delimitador%> Construcciones S.A. <%=delimitador%> 6 <%=delimitador%> Fax <%=delimitador%> 3 <%=delimitador%> 7 <%=delimitador%> 8<br>
+			</siga:ConjCampos>
+		<siga:ConjBotonesBusqueda botones="B"  titulo="cargaMasivaProductos.busqueda"/>
+		<div id="divListado"></div>	
+	</html:form>
 
-		</div>
-		<p>Si el fichero es correcto se realizarán las compras y quedarán validadas.</p>
-		<p>Si hay algun error se mostrará un LOG con los fallos a corregir. No se realizarán las compras hasta que el fichero cargado sea correcto.</p>
-		<p>&nbsp;</p>
-		</div>
-		
+<html:form action="${path}"  name="FormularioCarga" type ="com.siga.productos.form.CargaProductosForm" target="submitArea">
+  		<html:hidden property="modo"/>
+		<html:hidden property="idInstitucion" value='${CargaProductosForm.idInstitucion}' />
+</html:form>
 
-		<table id="tablaBotonesDetalle" class="botonesDetalle" align="center">
-			<tr>
-				<td style="width: 900px;">&nbsp;</td>
-				<td class="tdBotones">
-					<input type="button" alt='<siga:Idioma key="general.boton.new"/>'
-					name='idButton' id="botonProcesar" onclick="return accionGuardar();" class="button" disabled
-						value='Procesar Fichero'>				
-				</td>		
-		   </tr>
-	  </table>
+<script>
 
-		<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
-	</body>
+</script>
+
+<!-- FIN: BOTONES BUSQUEDA -->
+<iframe name="submitArea" src="<html:rewrite page='/html/jsp/general/blank.jsp'/>" 	style="display: none" />
+</body>
 </html>

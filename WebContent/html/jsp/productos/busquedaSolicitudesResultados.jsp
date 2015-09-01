@@ -6,28 +6,28 @@
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-1"%>
 <meta http-equiv="Cache-Control" content="no-cache">
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <%@ page contentType="text/html" language="java" errorPage="/html/jsp/error/errorSIGA.jsp"%>
 
-<%@taglib uri =	"struts-tiles.tld" 			prefix="tiles"%>
-<%@taglib uri =	"struts-bean.tld" 			prefix="bean"%>
-<%@taglib uri = "struts-html.tld" 			prefix="html"%>
-<%@taglib uri = "libreria_SIGA.tld" 		prefix="siga"%>
+<%@taglib uri="struts-tiles.tld" prefix="tiles"%>
+<%@taglib uri="struts-bean.tld" prefix="bean"%>
+<%@taglib uri="struts-html.tld" prefix="html"%>
+<%@taglib uri="libreria_SIGA.tld" prefix="siga"%>
 
-<%@ page import="com.siga.beans.PysPeticionCompraSuscripcionBean"%>
-<%@ page import="com.siga.beans.CenPersonaBean"%>
-<%@ page import="com.siga.Utilidades.UtilidadesHash"%>
-<%@ page import="com.siga.Utilidades.UtilidadesString"%>
 <%@ page import="com.atos.utils.ClsConstants"%>
 <%@ page import="com.atos.utils.GstDate"%>
 <%@ page import="com.atos.utils.UsrBean"%>
 <%@ page import="com.siga.administracion.SIGAConstants"%>
-<%@ page import="com.siga.tlds.FilaExtElement"%>
-<%@ page import="java.util.Vector"%>
-<%@ page import="java.util.HashMap"%>
+<%@ page import="com.siga.beans.CenPersonaBean"%>
+<%@ page import="com.siga.beans.PysPeticionCompraSuscripcionBean"%>
+<%@ page import="com.siga.productos.form.GestionSolicitudesForm"%>
+<%@ page import="com.siga.Utilidades.UtilidadesHash"%>
+<%@ page import="com.siga.Utilidades.UtilidadesString"%>
 <%@ page import="com.siga.Utilidades.PaginadorBind"%>
-<%@ page import="com.atos.utils.Row"%>
+<%@ page import="com.siga.tlds.FilaExtElement"%>
+<%@ page import="java.util.HashMap"%>
 <%@ page import="java.util.Hashtable"%>
+<%@ page import="java.util.Vector"%>
 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 
@@ -63,6 +63,20 @@
 	String sDialogError= UtilidadesString.mostrarDatoJSP(UtilidadesString.getMensajeIdioma(usr, "messages.general.error"));
 	String sDialogBotonCerrar = UtilidadesString.mostrarDatoJSP(UtilidadesString.getMensajeIdioma(usr, "general.boton.close"));
 	String sDialogBotonGuardarCerrar = UtilidadesString.mostrarDatoJSP(UtilidadesString.getMensajeIdioma(usr, "general.boton.guardarCerrar")); 	
+	
+	GestionSolicitudesForm formGestionSolicitudes = (GestionSolicitudesForm) ses.getAttribute("GestionSolicitudesForm");
+	String fechaDesde="", fechaHasta="";
+	if (formGestionSolicitudes != null) {
+		fechaDesde = formGestionSolicitudes.getBuscarFechaDesde();
+		if (fechaDesde != null) {
+			fechaDesde = GstDate.getFormatedDateShort("", fechaDesde);
+		}
+		
+		fechaHasta = formGestionSolicitudes.getBuscarFechaHasta();
+		if (fechaHasta!=null) {
+			fechaHasta = GstDate.getFormatedDateShort("", fechaHasta);
+		}
+	}
 %>
 
 	<title><siga:Idioma key="pys.gestionSolicitudes.titulo"/></title>
@@ -77,159 +91,27 @@
 	<script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
 </head>
 
-<script>
-	// Refrescar
-	function refrescarLocal(){ 		
-		parent.buscar();
-	}	
-
-	function enviar(fila) {
-	   	
-	   	var auxSol = 'oculto' + fila + '_1';
-	    var idSolic = document.getElementById(auxSol);			          		
-	   				   	
-	   	var auxPers = 'oculto' + fila + '_4';
-	    var idPers = document.getElementById(auxPers);	
-	    	    
-	    var auxDesc = 'oculto' + fila + '_5';
-	    var desc = document.getElementById(auxDesc);			    
-	    
-	    document.DefinirEnviosForm.idSolicitud.value=idSolic.value;
-	   	document.DefinirEnviosForm.idPersona.value=idPers.value;
-	   	document.DefinirEnviosForm.descEnvio.value="Solicitud "+desc.value;
-	   	
-	   	document.DefinirEnviosForm.modo.value='envioModal';		   	
-	   	var resultado = ventaModalGeneral("DefinirEnviosForm","P");
-		
-	   	if (resultado==undefined||resultado[0]==undefined ||resultado[0]=="M"){			   		
-	   	} else {
-	   		
-	   		var idEnvio = resultado[0];
-		    var idTipoEnvio = resultado[1];
-		    var nombreEnvio = resultado[2];				    
-		    
-		   	document.DefinirEnviosForm.tablaDatosDinamicosD.value=idEnvio + ',' + idTipoEnvio + '%' + nombreEnvio;		
-		   	document.DefinirEnviosForm.modo.value='editar';
-		   	document.DefinirEnviosForm.submit();
-	   	}
-	}
-	
- 	function editarConCertificado(fila) {
-   		var datos;
-   		datos = document.getElementById('tablaDatosDinamicosD');
-   		datos.value = ""; 
-   		preparaDatos(fila, 'tablaResultados',datos);
-   
-   		document.forms[0].modo.value = "Editar";
-   
-   		var resultado = ventaModalGeneral(document.forms[0].name,"G");
-
-   		if (resultado) {
-  	 		if (resultado[0] && resultado[0]!="@") {  	 		
-  	 			refrescarLocal();
-  	 		
-   			} else if (resultado=="MODIFICADO") {
-      			refrescarLocal();
-      		
-   	    	} else {
-		  		var listaValores = resultado.split("#@#");//nombreCertificado #@# idproducto #@# idptoductoInstitucion #@# idTipoProducto
-			  	document.forms[0].concepto.value=listaValores[1];
-			  	document.forms[0].idProducto.value=listaValores[2];
-			  	document.forms[0].idProductoInstitucion.value=listaValores[3];
-			  	document.forms[0].idTipoProducto.value=listaValores[4];		
-		
-		 		var aux = 'oculto' + fila + '_1'; 
-	     		var oculto = document.getElementById(aux);
-		 		document.forms[0].idSolicitud.value=oculto.value;
-		 		document.forms[0].action="<%=app %>/CER_GestionSolicitudes.do?buscar=true";
-	     		document.forms[0].target = "mainWorkArea";
-	     		document.forms[0].modo.value="abrir";
-	     		document.forms[0].submit();
-			}
-   		}
- 	}
- 	
-	function facturacionrapida(fila) {
-		sub();
-		
-		var idPeticion = document.getElementById('oculto' + fila + '_1');
-	    var idInstitucion = document.getElementById('oculto' + fila + '_2');
-	    var tipoIcono = document.getElementById('oculto' + fila + '_5');
-	    
-	    jQuery.ajax({ 
-			type: "POST",
-			url: "/SIGA/PYS_GenerarSolicitudes.do?modo=getAjaxSeleccionSerieFacturacion",				
-			data: "idInstitucion=" + idInstitucion.value + "&idPeticion=" + idPeticion.value,
-			dataType: "json",
-			contentType: "application/x-www-form-urlencoded;charset=UTF-8",
-			success: function(json){							
-					
-				// Recupera el identificador de la serie de facturacion
-				var idSerieFacturacion = json.idSerieFacturacion;		
-				
-				if (tipoIcono.value == "2" && (idSerieFacturacion==null || idSerieFacturacion=='')) {
-					//jQuery("#selectSeleccionSerieFacturacion")[0].innerHTML = json.aOptionsSeriesFacturacion[0];
-					jQuery("#selectSeleccionSerieFacturacion").find("option").detach();
-					jQuery("#selectSeleccionSerieFacturacion").append(json.aOptionsSeriesFacturacion[0]);
-					
-					fin();
-					jQuery("#divSeleccionSerieFacturacion").dialog(
-						{
-							height: 220,
-							width: 550,
-							modal: true,
-							resizable: false,
-							buttons: {
-								"<%=sDialogBotonGuardarCerrar%>": function() {
-									sub();
-									idSerieFacturacion = jQuery("#selectSeleccionSerieFacturacion").val();
-									if (idSerieFacturacion==null || idSerieFacturacion=='') {
-										alert('<siga:Idioma key="messages.facturacion.seleccionSerie.noSeleccion"/>');
-										fin();
-										
-									} else {
-										jQuery(this).dialog("close");
-										document.solicitudCompraForm.target = "submitArea";
-										document.solicitudCompraForm.tablaDatosDinamicosD.value = idInstitucion.value + ',' + idPeticion.value + ',' + idSerieFacturacion;
-										document.solicitudCompraForm.modo.value = "facturacionRapidaCompra";
-										document.solicitudCompraForm.submit();
-										window.setTimeout("fin()",5000,"Javascript");
-									}
-								},
-								"<%=sDialogBotonCerrar%>": function() {
-									jQuery(this).dialog("close");
-								}
-							}
-						}
-					);
-					jQuery(".ui-widget-overlay").css("opacity","0");														
-					
-				} else {
-					document.solicitudCompraForm.target = "submitArea";
-					document.solicitudCompraForm.tablaDatosDinamicosD.value = idInstitucion.value + ',' + idPeticion.value + ',' + idSerieFacturacion;	
-					document.solicitudCompraForm.modo.value = "facturacionRapidaCompra";
-					document.solicitudCompraForm.submit();
-					window.setTimeout("fin()",5000,"Javascript");
-				}											
-			},
-			
-			error: function(e){
-				alert("<%=sDialogError%>");
-				fin();
-			}
-		});			    
-	}            	
-</script>
-
 <body>
 	<html:form action="/PYS_GestionarSolicitudes.do" method="POST">
-		<html:hidden property = "modo" value = ""/>
-		<input type="hidden" name="concepto"  id="concepto" value=""> 
-    	<input type="hidden" name="idSolicitud"  id="idSolicitud" value="">
-		<input type="hidden" name="idProducto"  id="idProducto" value="">
-		<input type="hidden" name="idProductoInstitucion"  id="idProductoInstitucion" value="">
-		<input type="hidden" name="idTipoProducto"  id="idTipoProducto" value="">
-		<input type="hidden" name="actionModal"  id="actionModal" value="">
+		<html:hidden property="modo" value=""/>
+		<input type="hidden" name="concepto" id="concepto" value=""> 
+    	<input type="hidden" name="idSolicitud" id="idSolicitud" value="">
+		<input type="hidden" name="idProducto" id="idProducto" value="">
+		<input type="hidden" name="idProductoInstitucion" id="idProductoInstitucion" value="">
+		<input type="hidden" name="idTipoProducto" id="idTipoProducto" value="">
+		<input type="hidden" name="actionModal" id="actionModal" value="">
+		
+		<html:hidden name="GestionSolicitudesForm" property="buscarTipoPeticion"/>
+		<html:hidden name="GestionSolicitudesForm" property="buscarIdPeticionCompra"/>
+		<html:hidden name="GestionSolicitudesForm" property="buscarEstadoPeticion"/>
+		<html:hidden name="GestionSolicitudesForm" property="buscarFechaDesde" value="<%=fechaDesde%>"/>
+		<html:hidden name="GestionSolicitudesForm" property="buscarFechaHasta" value="<%=fechaHasta%>"/>
+		<html:hidden name="GestionSolicitudesForm" property="facturada"/>
+		<html:hidden name="GestionSolicitudesForm" property="buscarNColegiado"/>		
+		<html:hidden name="GestionSolicitudesForm" property="buscarNifcif"/>
+		<html:hidden name="GestionSolicitudesForm" property="buscarNombre"/>
+		<html:hidden name="GestionSolicitudesForm" property="buscarApellido1"/>
+		<html:hidden name="GestionSolicitudesForm" property="buscarApellido2"/>
 	</html:form>	
 
 	<div id="divSeleccionSerieFacturacion" title="<siga:Idioma key='facturacion.seleccionSerie.titulo'/>" style="display:none">
@@ -286,23 +168,23 @@
 					String fecha = UtilidadesHash.getString(hPeticionCompraSuscripcion, PysPeticionCompraSuscripcionBean.C_FECHA);					
 					String sTipoIcono = UtilidadesHash.getString(hPeticionCompraSuscripcion, "TIPO_ICONO"); // 0:SinIcono; 1:Descarga; 2:FacturacionRapida
 			 		String tipoSol = UtilidadesHash.getString(hPeticionCompraSuscripcion, PysPeticionCompraSuscripcionBean.C_TIPOPETICION);
-			 		String tipoSolTexto ="";
+			 		String tipoSolTexto = "";
 			 		String estadoSol = UtilidadesHash.getString(hPeticionCompraSuscripcion, "DESCRIPCION_ESTADO");
 			 		String idEstadoSol = UtilidadesHash.getString(hPeticionCompraSuscripcion, "IDESTADOPETICION");
 
-			 		if ((fecha == null) || fecha.equals("")) {       
+			 		if (fecha == null || fecha.equals("")) {       
 			 			fecha = "&nbsp;"; 
 			 		} else {
 			 			fecha = GstDate.getFormatedDateShort("", fecha);
 			 		}
 			 		
-			 		if ((nombreCliente == null) || nombreCliente.equals("")) 
+			 		if (nombreCliente == null || nombreCliente.equals("")) 
 			 			nombreCliente = "&nbsp;";
 			 			
-			 		if ((estadoSol == null) || estadoSol.equals(""))     
+			 		if (estadoSol == null || estadoSol.equals(""))     
 			 			estadoSol = "&nbsp;";
 			 			
-			 		if ((tipoSol == null) || tipoSol.equals("")) {     
+			 		if (tipoSol == null || tipoSol.equals("")) {     
 			 			tipoSol = "&nbsp;";	
 			 		} else {
 				 		if (tipoSol.equalsIgnoreCase(ClsConstants.TIPO_PETICION_COMPRA_ALTA)) {
@@ -321,7 +203,7 @@
 					FilaExtElement[] elems = new FilaExtElement[3];
 					elems[0]=new FilaExtElement("editarConCertificado", "editarConCertificado", SIGAConstants.ACCESS_FULL);
 					elems[1]=new FilaExtElement("enviar", "enviar", SIGAConstants.ACCESS_FULL);
-					if ((idEstadoSol.trim().equals(String.valueOf(ClsConstants.ESTADO_PETICION_COMPRA_PENDIENTE)) || idEstadoSol.trim().equals(String.valueOf(ClsConstants.ESTADO_PETICION_COMPRA_PROCESADA))) && tipoSol.trim().equals("A")) {
+					if (idEstadoSol.trim().equals(String.valueOf(ClsConstants.ESTADO_PETICION_COMPRA_PROCESADA)) && tipoSol.trim().equals("A")) {
 						if (sTipoIcono!=null && sTipoIcono.equals("2")) {
 							elems[2]=new FilaExtElement("facturacionrapida", "facturacionrapida", SIGAConstants.ACCESS_READ);		
 						} else {
@@ -331,7 +213,6 @@
 						}
 					}
 %>
-							 		
 					<siga:FilaConIconos fila='<%=""+i%>' 
 						botones="" 
 						visibleConsulta="false" 
@@ -365,7 +246,6 @@
 		}//else
 %>
 	</siga:Table>
-	
 <%
 	if ( hm.get("datos")!=null && !hm.get("datos").equals("")) {
 %>
@@ -381,7 +261,6 @@
 <%
 	}
 %>	
-
 	<!-- Formulario para la creacion de envio -->
 	<html:form action="/ENV_DefinirEnvios.do" method="POST" target="mainWorkArea">
 		<html:hidden styleId = "actionModal"  property = "actionModal" value = ""/>
@@ -396,5 +275,122 @@
 		<input type="hidden" name="actionModal" value=""> 
 		<html:hidden styleId = "tablaDatosDinamicosD"  property = "tablaDatosDinamicosD" value=""/>
 	</html:form>
+	
+	<script>
+		// Refrescar
+		function refrescarLocal(){ 		
+			parent.buscar();
+		}	
+	
+		function enviar(fila) {
+		   	
+		   	var auxSol = 'oculto' + fila + '_1';
+		    var idSolic = document.getElementById(auxSol);			          		
+		   				   	
+		   	var auxPers = 'oculto' + fila + '_4';
+		    var idPers = document.getElementById(auxPers);	
+		    	    
+		    var auxDesc = 'oculto' + fila + '_5';
+		    var desc = document.getElementById(auxDesc);			    
+		    
+		    document.DefinirEnviosForm.idSolicitud.value=idSolic.value;
+		   	document.DefinirEnviosForm.idPersona.value=idPers.value;
+		   	document.DefinirEnviosForm.descEnvio.value="Solicitud "+desc.value;
+		   	
+		   	document.DefinirEnviosForm.modo.value='envioModal';		   	
+		   	var resultado = ventaModalGeneral("DefinirEnviosForm","P");
+			
+		   	if (resultado==undefined || resultado[0]==undefined ||resultado[0]=="M"){			   		
+		   	} else {
+		   		var idEnvio = resultado[0];
+			    var idTipoEnvio = resultado[1];
+			    var nombreEnvio = resultado[2];				    
+			    
+			   	document.DefinirEnviosForm.tablaDatosDinamicosD.value=idEnvio + ',' + idTipoEnvio + '%' + nombreEnvio;		
+			   	document.DefinirEnviosForm.modo.value='editar';
+			   	document.DefinirEnviosForm.submit();
+		   	}
+		}
+		
+	 	function editarConCertificado(fila) {
+	   		var datos;
+	   		datos = document.getElementById('tablaDatosDinamicosD');
+	   		datos.value = ""; 
+	   		preparaDatos(fila, 'tablaResultados',datos);
+	   		
+	   		document.forms[0].target = "mainWorkArea";
+	   		document.forms[0].modo.value = "Editar";
+	   		document.forms[0].submit();
+	 	}
+	 	
+		function facturacionrapida(fila) {
+			sub();
+			
+			var idPeticion = document.getElementById('oculto' + fila + '_1');
+		    var idInstitucion = document.getElementById('oculto' + fila + '_2');
+		    var tipoIcono = document.getElementById('oculto' + fila + '_5');
+		    
+		    jQuery.ajax({ 
+				type: "POST",
+				url: "/SIGA/PYS_GenerarSolicitudes.do?modo=getAjaxSeleccionSerieFacturacion",				
+				data: "idInstitucion=" + idInstitucion.value + "&idPeticion=" + idPeticion.value,
+				dataType: "json",
+				contentType: "application/x-www-form-urlencoded;charset=UTF-8",
+				success: function(json){							
+						
+					// Recupera el identificador de la serie de facturacion
+					var idSerieFacturacion = json.idSerieFacturacion;		
+					
+					if (tipoIcono.value == "2" && (idSerieFacturacion==null || idSerieFacturacion=='')) {
+						//jQuery("#selectSeleccionSerieFacturacion")[0].innerHTML = json.aOptionsSeriesFacturacion[0];
+						jQuery("#selectSeleccionSerieFacturacion").find("option").detach();
+						jQuery("#selectSeleccionSerieFacturacion").append(json.aOptionsSeriesFacturacion[0]);
+						
+						fin();
+						jQuery("#divSeleccionSerieFacturacion").dialog(
+							{
+								height: 220,
+								width: 550,
+								modal: true,
+								resizable: false,
+								buttons: {
+									"<%=sDialogBotonGuardarCerrar%>": function() {
+										sub();
+										idSerieFacturacion = jQuery("#selectSeleccionSerieFacturacion").val();
+										if (idSerieFacturacion==null || idSerieFacturacion=='') {
+											alert('<siga:Idioma key="messages.facturacion.seleccionSerie.noSeleccion"/>');
+											fin();
+											
+										} else {
+											jQuery(this).dialog("close");
+											document.solicitudCompraForm.target = "submitArea";
+											document.solicitudCompraForm.tablaDatosDinamicosD.value = idInstitucion.value + ',' + idPeticion.value + ',' + idSerieFacturacion;
+											document.solicitudCompraForm.modo.value = "facturacionRapidaCompra";
+											document.solicitudCompraForm.submit();
+										}
+									},
+									"<%=sDialogBotonCerrar%>": function() {
+										jQuery(this).dialog("close");
+									}
+								}
+							}
+						);
+						jQuery(".ui-widget-overlay").css("opacity","0");														
+						
+					} else {
+						document.solicitudCompraForm.target = "submitArea";
+						document.solicitudCompraForm.tablaDatosDinamicosD.value = idInstitucion.value + ',' + idPeticion.value + ',' + idSerieFacturacion;	
+						document.solicitudCompraForm.modo.value = "facturacionRapidaCompra";
+						document.solicitudCompraForm.submit();
+					}											
+				},
+				
+				error: function(e){
+					alert("<%=sDialogError%>");
+					fin();
+				}
+			});			    
+		}            	
+	</script>	
 </body>
 </html>

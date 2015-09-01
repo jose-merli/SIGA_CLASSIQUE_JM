@@ -407,26 +407,13 @@
 			
 			<tr>
 				<td colspan="6">
-					<siga:ConjCampos leyenda="facturacion.uso.cuenta" desplegable="true">
+					<siga:ConjCampos leyenda="facturacion.uso.ficherosAdeudos" desplegable="true">
 						<table border="0">
-							<tr <%if (tiposFicherosAdeudo==null || tiposFicherosAdeudo.equals("0")) {%> style="display:none;" <% } %>>
-								<td class="labelText">
-									<siga:Idioma key="facturacion.cuentasBancarias.configuracionFicherosEsquema.titulo"/>&nbsp;(*)
-								</td>
-								<td colspan="3">
-									<html:select name="CuentasBancariasForm" property="configuracionFicherosEsquema" styleId="configuracionFicherosEsquema" styleClass="boxCombo">
-										<html:option value="0"><siga:Idioma key="facturacion.cuentasBancarias.configuracionFicherosEsquema.opcion1"/></html:option>
-										<html:option value="1"><siga:Idioma key="facturacion.cuentasBancarias.configuracionFicherosEsquema.opcion2"/></html:option>
-										<html:option value="2"><siga:Idioma key="facturacion.cuentasBancarias.configuracionFicherosEsquema.opcion3"/></html:option>
-									</html:select>
-								</td>
-							</tr>	
-							
 							<tr>
-								<td class="labelText">
+								<td class="labelText" nowrap>
 									<siga:Idioma key="facturacion.cuentasBancarias.configuracionFicherosSecuencia.titulo"/>&nbsp;(*)
 								</td>
-								<td colspan="3">
+								<td>
 									<html:select name="CuentasBancariasForm" property="configuracionFicherosSecuencia" styleId="configuracionFicherosSecuencia" styleClass="boxCombo">
 										<html:option value="0"><siga:Idioma key="facturacion.cuentasBancarias.configuracionFicherosSecuencia.opcion1"/></html:option>
 										<!-- Lo ha pedido Pamplona R1412_0072 -->
@@ -434,22 +421,50 @@
 										<!-- Lo ha pedido Sant Feliu R1501_0007 -->
 										<html:option value="2"><siga:Idioma key="facturacion.cuentasBancarias.configuracionFicherosSecuencia.opcionRCUR"/></html:option>
 									</html:select>
+								</td>							
+							
+								<td  nowrap class="labelText" <%if (tiposFicherosAdeudo==null || tiposFicherosAdeudo.equals("0")) {%> style="display:none;" <% } %>>
+									<siga:Idioma key="facturacion.cuentasBancarias.configuracionFicherosEsquema.titulo"/>&nbsp;(*)
+								</td>
+								<td <%if (tiposFicherosAdeudo==null || tiposFicherosAdeudo.equals("0")) {%> style="display:none;" <% } %>>
+									<html:select name="CuentasBancariasForm" property="configuracionFicherosEsquema" styleId="configuracionFicherosEsquema" styleClass="boxCombo" style="width:225px">
+										<html:option value="0"><siga:Idioma key="facturacion.cuentasBancarias.configuracionFicherosEsquema.opcion1"/></html:option>
+										<html:option value="1"><siga:Idioma key="facturacion.cuentasBancarias.configuracionFicherosEsquema.opcion2"/></html:option>
+										<html:option value="2"><siga:Idioma key="facturacion.cuentasBancarias.configuracionFicherosEsquema.opcion3"/></html:option>
+									</html:select>
 								</td>
 							</tr>
 							
 							<tr <%if (tiposFicherosAdeudo==null || tiposFicherosAdeudo.equals("0")) {%> style="display:none;" <% } %>>
-								<td class="labelText">
+								<td class="labelText" nowrap>
 									<siga:Idioma key="facturacion.cuentasBancarias.configuracionLugarEsquemaSecuencia.titulo"/>&nbsp;(*)
-									<siga:ToolTip id='ayudaLugarEsquemaSecuencia' imagen='/SIGA/html/imagenes/botonAyuda.gif' texto='<%=UtilidadesString.mostrarDatoJSP(UtilidadesString.getMensajeIdioma(usuario,"facturacion.cuentasBancarias.configuracionLugarEsquemaSecuencia.ayuda"))%>' />
 								</td>
-								<td colspan="3">
+								<td title='<%=UtilidadesString.mostrarDatoJSP(UtilidadesString.getMensajeIdioma (usuario, "facturacion.cuentasBancarias.configuracionLugarEsquemaSecuencia.ayuda").replaceAll("\\\\n", ""))%>'>
 									<html:select name="CuentasBancariasForm" property="configuracionLugarEsquemaSecuencia" styleId="configuracionLugarEsquemaSecuencia" styleClass="boxCombo">
 										<html:option value="0"><siga:Idioma key="facturacion.cuentasBancarias.configuracionLugarEsquemaSecuencia.opcionBloqueAcreedor"/></html:option>
 										<html:option value="1"><siga:Idioma key="facturacion.cuentasBancarias.configuracionLugarEsquemaSecuencia.opcionRegistroIndividual"/></html:option>
 									</html:select>
 								</td>
-							</tr>		
-
+								
+								<td class="labelText" nowrap>
+									<siga:Idioma key="facturacion.cuentasBancarias.configuracionConcepto.titulo"/>&nbsp;(*)
+								</td>
+								<td title='<%=UtilidadesString.mostrarDatoJSP(UtilidadesString.getMensajeIdioma (usuario, "facturacion.cuentasBancarias.configuracionConcepto.ayuda").replaceAll("\\\\n", ""))%>'>
+									<html:select name="CuentasBancariasForm" property="configuracionConceptoAmpliado" styleId="configuracionConceptoAmpliado" styleClass="boxCombo">
+										<html:option value="0"><siga:Idioma key="facturacion.cuentasBancarias.configuracionConcepto.normal"/></html:option>
+										<html:option value="1"><siga:Idioma key="facturacion.cuentasBancarias.configuracionConcepto.ampliado"/></html:option>
+									</html:select>
+								</td>
+							</tr>
+						</table>
+					</siga:ConjCampos>
+				</td>
+			</tr>									
+							
+			<tr>
+				<td colspan="6">
+					<siga:ConjCampos leyenda="facturacion.uso.ficherosTransferencias" desplegable="true">																
+						<table border="0">
 							<tr>
 								<td class="labelText"><siga:Idioma key="facturacion.cuentasBancarias.uso.sjcs"/></td>								
 								<td><html:checkbox name="CuentasBancariasForm" styleId="sjcs" property="sjcs" value="1" onclick="habilitarDeshabCombo()"/></td>

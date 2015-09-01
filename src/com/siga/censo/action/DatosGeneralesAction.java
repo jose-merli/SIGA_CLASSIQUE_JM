@@ -2794,7 +2794,7 @@ public class DatosGeneralesAction extends MasterAction {
 				databackup=new HashMap();
 				//Haria falta meter los parametros en con ClsConstants
 
-				PaginadorBind paginador = cliente.getClientesCensoArticulo27 (idInstitucion,user.getLocation(),null, user.getLanguage());
+				PaginadorBind paginador = cliente.getClientesCensoArticulo27 (idInstitucion,user.getLocation(),null);
 				
 				
 				if (paginador!=null&& paginador.getNumeroTotalRegistros()>0){

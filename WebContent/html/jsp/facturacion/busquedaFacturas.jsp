@@ -264,11 +264,41 @@
 			document.AltaAbonosForm.target = "submitArea";
 			document.AltaAbonosForm.modo.value="anularFacturas";
 			document.AltaAbonosForm.submit();
-			fin();
 			jQuery("#idBotonesBusqueda").removeAttr("disabled");
 			jQuery("#idBotonesAccion").removeAttr("disabled");
 		}
-	
+		function accionDescargarSel(fila) {
+			sub();
+			document.BusquedaFacturaForm.facturas.value = '';
+			numElementosSeleccionados = window.frames.resultado.ObjArray.length;
+			if(numElementosSeleccionados==0 ){
+				alert("<siga:Idioma key='general.message.seleccionar' />");
+				fin();
+				return false;
+				
+			}else if(numElementosSeleccionados>50 ){
+				confirmar = "<siga:Idioma key='general.confirmar.demora' arg0='"+numElementosSeleccionados+"'/>";
+				if(!confirm(confirmar)){
+					fin();
+					return false;
+				}
+			}
+			for (var i=0; i<window.frames.resultado.ObjArray.length; i++) {
+				
+				if (document.BusquedaFacturaForm.facturas.value=="") {
+					document.BusquedaFacturaForm.facturas.value += window.frames.resultado.ObjArray[i];						
+				} else {
+					document.BusquedaFacturaForm.facturas.value += ";" +  window.frames.resultado.ObjArray[i];
+				}
+		
+			}
+			document.BusquedaFacturaForm.target = "submitArea";
+			document.BusquedaFacturaForm.modo.value="descargaFacturas";
+			document.BusquedaFacturaForm.submit();
+		
+		}
+		
+		
 		function seleccionarTodos(pagina) {
 			document.forms[0].seleccionarTodos.value = pagina;
 			buscar('buscarPor');				
@@ -285,6 +315,8 @@
 		<html:hidden property="titular" styleId="titular" />										
 		<html:hidden property="nombreTitular" styleId="nombreTitular" />
 		<html:hidden property="identificacionTitular" styleId="identificacionTitular" />
+		<html:hidden property="facturas" styleId="facturas" value="" />
+		
 	
 		<table class="tablaCentralCampos" align="center">
 			<tr>
@@ -417,7 +449,7 @@
 	<iframe align="center" src="<html:rewrite page='/html/jsp/general/blank.jsp'/>" id="resultado" name="resultado" scrolling="no" frameborder="0" marginheight="0" marginwidth="0" class="frameGeneral"></iframe>
 	
 	<!-- BOTONES ACCION: an: "Anular" -->	 
-	<siga:ConjBotonesAccion botones="an"/>
+	<siga:ConjBotonesAccion botones="an,dse"/>
 	<!-- FIN: BOTONES ACCION -->
 			
 	<!-- INICIO: SUBMIT AREA -->

@@ -394,7 +394,8 @@ public class MutualidadWSClient extends SIGAWSClientAbstract {
 		dp.setAsistenciaSanitaria(Integer.parseInt(ht.get("asistenciaSanitaria")));
 		
 		dp.setEjerciente(parseaEjerciente(ht.get("ejerciente")));
-		dp.setEstadoCivil(parseaEstadoCivil(ht.get("estadoCivil")));
+		/** CR - Ya no se parsea el estado civil, ya que viene los datos del combo de la mutualidad **/
+		dp.setEstadoCivil(Integer.parseInt(ht.get("estadoCivil")));
 		
 		if(ht.get("fechaNacimiento")!=null && !ht.get("fechaNacimiento").equalsIgnoreCase("")){
 		    Calendar cal = Calendar.getInstance();

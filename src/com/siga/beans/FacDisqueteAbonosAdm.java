@@ -42,11 +42,13 @@ public class FacDisqueteAbonosAdm  extends MasterBeanAdministrador {
 				FacDisqueteAbonosBean.C_IDDISQUETEABONO,
 				FacDisqueteAbonosBean.C_BANCOS_CODIGO,
 				FacDisqueteAbonosBean.C_FECHA,
+				FacDisqueteAbonosBean.C_FECHAEJECUCION,
 				FacDisqueteAbonosBean.C_NOMBREFICHERO,
 				FacDisqueteAbonosBean.C_FCS,
 				FacDisqueteAbonosBean.C_FECHAMODIFICACION,
 				FacDisqueteAbonosBean.C_USUMODIFICACION,
-				FacDisqueteAbonosBean.C_NUMEROLINEAS};
+				FacDisqueteAbonosBean.C_NUMEROLINEAS,
+				FacDisqueteAbonosBean.C_IDSUFIJO};
 		return campos;
 	}
 
@@ -83,11 +85,13 @@ public class FacDisqueteAbonosAdm  extends MasterBeanAdministrador {
 			bean.setIdDisqueteAbono		(UtilidadesHash.getLong(hash, FacDisqueteAbonosBean.C_IDDISQUETEABONO));
 			bean.setBancosCodigo		(UtilidadesHash.getString(hash, FacDisqueteAbonosBean.C_BANCOS_CODIGO));
 			bean.setFecha				(UtilidadesHash.getString(hash, FacDisqueteAbonosBean.C_FECHA));
+			bean.setFechaEjecucion		(UtilidadesHash.getString(hash, FacDisqueteAbonosBean.C_FECHAEJECUCION));
 			bean.setNombreFichero		(UtilidadesHash.getString(hash, FacDisqueteAbonosBean.C_NOMBREFICHERO));
 			bean.setNombreFichero		(UtilidadesHash.getString(hash, FacDisqueteAbonosBean.C_FCS));
 			bean.setFechaMod			(UtilidadesHash.getString(hash, FacDisqueteAbonosBean.C_FECHAMODIFICACION));
 			bean.setUsuMod				(UtilidadesHash.getInteger(hash, FacDisqueteAbonosBean.C_USUMODIFICACION));
 			bean.setNumeroLineas		(UtilidadesHash.getInteger(hash, FacDisqueteAbonosBean.C_NUMEROLINEAS));
+			bean.setIdSufijo			(UtilidadesHash.getInteger(hash, FacDisqueteAbonosBean.C_IDSUFIJO));
 		}
 		catch (Exception e) { 
 			bean = null;	
@@ -112,12 +116,13 @@ public class FacDisqueteAbonosAdm  extends MasterBeanAdministrador {
 			UtilidadesHash.set(htData, FacDisqueteAbonosBean.C_IDDISQUETEABONO, b.getIdDisqueteAbono());
 			UtilidadesHash.set(htData, FacDisqueteAbonosBean.C_BANCOS_CODIGO, b.getBancosCodigo());
 			UtilidadesHash.set(htData, FacDisqueteAbonosBean.C_FECHA, b.getFecha());
+			UtilidadesHash.set(htData, FacDisqueteAbonosBean.C_FECHAEJECUCION, b.getFechaEjecucion());
 			UtilidadesHash.set(htData, FacDisqueteAbonosBean.C_NOMBREFICHERO, b.getNombreFichero());
 			UtilidadesHash.set(htData, FacDisqueteAbonosBean.C_FCS, b.getFCS());
 			UtilidadesHash.set(htData, FacDisqueteAbonosBean.C_FECHAMODIFICACION, b.getFechaMod());
 			UtilidadesHash.set(htData, FacDisqueteAbonosBean.C_USUMODIFICACION, b.getUsuMod());
 			UtilidadesHash.set(htData, FacDisqueteAbonosBean.C_NUMEROLINEAS, b.getNumeroLineas());
-			
+			UtilidadesHash.set(htData, FacDisqueteAbonosBean.C_IDSUFIJO, b.getIdSufijo());
 		}
 		catch (Exception e) {
 			htData = null;

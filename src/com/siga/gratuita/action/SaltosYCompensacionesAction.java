@@ -21,9 +21,6 @@ import com.atos.utils.ClsLogging;
 import com.atos.utils.GstDate;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesHash;
-import com.siga.beans.ScsCalendarioGuardiasAdm;
-import com.siga.beans.ScsGuardiasTurnoAdm;
-import com.siga.beans.ScsGuardiasTurnoBean;
 import com.siga.beans.ScsSaltoCompensacionGrupoAdm;
 import com.siga.beans.ScsSaltoCompensacionGrupoBean;
 import com.siga.beans.ScsSaltosCompensacionesAdm;
@@ -97,22 +94,10 @@ public class SaltosYCompensacionesAction extends MasterAction {
 		//Si viene idpersona la fila seleccionada no es de grupos
 		if(idGrupoGuardia.equals("null")){
 			ScsSaltosCompensacionesAdm admSaltosYCompensaciones = new ScsSaltosCompensacionesAdm(this.getUserBean(request));
-
-			ScsCalendarioGuardiasAdm admCalendarioGuardia = new ScsCalendarioGuardiasAdm(this.getUserBean(request));
-			ScsGuardiasTurnoAdm admGuardiasTurno = new ScsGuardiasTurnoAdm(this.getUserBean(request));
-
 			Hashtable miHash = new Hashtable();
-			Hashtable backupHash = new Hashtable();
-
-			UsrBean usr;
-			Vector registros = new Vector();
-
 			Vector visibles = new Vector();
-			String motivos = "", fechaCumplimiento = "";
 
 			try {
-				usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
-
 				// Obtengo los datos del formulario:
 				visibles = miForm.getDatosTablaVisibles(0);
 
@@ -169,21 +154,11 @@ public class SaltosYCompensacionesAction extends MasterAction {
 		SaltosYCompensacionesForm miForm = (SaltosYCompensacionesForm) formulario;
 		ScsSaltoCompensacionGrupoAdm admSaltosYCompensaciones = new ScsSaltoCompensacionGrupoAdm(this.getUserBean(request));
 		
-		ScsCalendarioGuardiasAdm admCalendarioGuardia = new ScsCalendarioGuardiasAdm(this.getUserBean(request));
-		ScsGuardiasTurnoAdm admGuardiasTurno = new ScsGuardiasTurnoAdm(this.getUserBean(request));
-		 
 		Hashtable miHash = new Hashtable();
-		Hashtable backupHash = new Hashtable();
-		
-		UsrBean usr;
-		Vector registros = new Vector();
 		Vector ocultos = new Vector();
 		Vector visibles = new Vector();
-		String motivos="", fechaCumplimiento="";
 		
 		try {
-			usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
-	
 			//Obtengo los datos del formulario:
 			ocultos = miForm.getDatosTablaOcultos(0);
 			visibles = miForm.getDatosTablaVisibles(0);
@@ -264,10 +239,9 @@ public class SaltosYCompensacionesAction extends MasterAction {
 		catch (Exception e) {
 			throwExcp("messages.select.error",e,null);
 		}
-		GstDate gstDate = new GstDate();
 		
 		if(miForm.getFecha()==null || miForm.getFecha().equalsIgnoreCase("")){
-			String fecha = gstDate.parseDateToString(new Date(),"dd/MM/yyyy", this.getLocale(request)); 
+			String fecha = GstDate.parseDateToString(new Date(),"dd/MM/yyyy", this.getLocale(request)); 
 			miForm.setFecha(fecha);
 		}
 			return "mantenimiento";
@@ -296,10 +270,9 @@ public class SaltosYCompensacionesAction extends MasterAction {
 		catch (Exception e) {
 			throwExcp("messages.select.error",e,null);
 		}
-		GstDate gstDate = new GstDate();
 		
 		if(miForm.getFecha()==null || miForm.getFecha().equalsIgnoreCase("")){
-			String fecha = gstDate.parseDateToString(new Date(),"dd/MM/yyyy", this.getLocale(request)); 
+			String fecha = GstDate.parseDateToString(new Date(),"dd/MM/yyyy", this.getLocale(request)); 
 			miForm.setFecha(fecha);
 		}
 			return "mantenimientoGrupos";
@@ -381,13 +354,12 @@ public class SaltosYCompensacionesAction extends MasterAction {
 		UsrBean usr = null;
 		UserTransaction tx = null;
 		Hashtable miHash = new Hashtable();
-		String idGuardia = "", idSaltosTurno="", idInstitucion="", idTurno="";
+		String idSaltosTurno="";
 		
 		try {			
 			usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
 			tx = usr.getTransaction();
 			
-			idInstitucion = usr.getLocation();
 			String ids = miForm.getIdGrupoGuardia();
 			String[] reg = ids.split(",");
 			String salto = miForm.getSalto();
@@ -583,11 +555,8 @@ public class SaltosYCompensacionesAction extends MasterAction {
 
 			String forward = "exito";
 			Hashtable registro = new Hashtable();
-			UsrBean usr = null;
 
 			try {
-				usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
-
 				// Relleno el hash con los datos clave a borrar
 				UtilidadesHash.set(registro, ScsSaltosCompensacionesBean.C_IDINSTITUCION, (String) ocultos.get(0));
 				UtilidadesHash.set(registro, ScsSaltosCompensacionesBean.C_IDTURNO, (String) ocultos.get(1));
@@ -626,11 +595,8 @@ public class SaltosYCompensacionesAction extends MasterAction {
 		String forward = "exito";
 		Hashtable registro = new Hashtable();		
 		Vector ocultos = new Vector();		
-		UsrBean usr = null;
 
 		try {
-			usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
-			
 			//Relleno el hash con los datos clave a borrar
 			ocultos = miForm.getDatosTablaOcultos(0);
 			UtilidadesHash.set(registro,ScsSaltoCompensacionGrupoBean.C_IDINSTITUCION,(String)ocultos.get(0));

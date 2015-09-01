@@ -262,7 +262,6 @@ function habilitarCampos(isHabilitar) {
 <html:hidden property="idTipoIdentificacion"/>
 <html:hidden property="idSexo"/>
 <html:hidden property="idTratamiento"/>
-<html:hidden property="idEstadoCivil"/>
 <html:hidden property="idTipoSolicitud"/>
 <html:hidden property="idSolicitudIncorporacion"/>
 <html:hidden property="tipoIdentificacion"/>
@@ -418,8 +417,22 @@ function habilitarCampos(isHabilitar) {
 				</tr>
 
 				<tr>
-					<td class="labelText"><siga:Idioma key="censo.SolicitudIncorporacion.literal.estadoCivil" /></td>
-					<td class="labelTextValor"><c:out value="${MutualidadForm.estadoCivil}" />
+					<td class="labelText"><siga:Idioma key="censo.SolicitudIncorporacion.literal.estadoCivil" />&nbsp;(*)</td>
+					<td class="labelTextValor">
+						<c:choose>
+							<c:when test="${MutualidadForm.modo=='insertar'}">
+								<html:select styleClass="${estiloCombo}" name="MutualidadForm" property="idEstadoCivil" styleId="idEstadoCivil" style="width:250px;" value="">
+									<html:option value=""><siga:Idioma key="general.combo.seleccionar" /></html:option>
+									<bean:define id="estadosCiviles" name="MutualidadForm" property="estadosCiviles" type="java.util.List" />
+								<html:optionsCollection name="estadosCiviles" value="key" label="value" />
+								</html:select>
+							</c:when>
+							<c:otherwise>
+								<html:hidden property="idEstadoCivil" />
+								<html:text property="estadoCivil"  styleClass="${estiloText}" ></html:text>
+							</c:otherwise>
+						</c:choose>	
+					</td>
 					
 					<td class="labelText"><siga:Idioma key="censo.consultaDatosGenerales.literal.sexo" /> </td>
 					<td class="labelTextValor" width="15%">
@@ -1150,6 +1163,11 @@ function habilitarCampos(isHabilitar) {
 		jQuery('#datosSolicitud :input').addClass('boxConsulta');
 		jQuery('#datosSolicitud :input').removeClass('boxCombo');
 		jQuery('#datosSolicitud :input').removeClass('box');
+		
+		jQuery('#idEstadoCivil').attr('readOnly', 'readOnly');
+		jQuery('#idEstadoCivil').addClass('boxConsulta');
+		jQuery('#idEstadoCivil').removeClass('boxCombo');
+		jQuery('#idEstadoCivil').removeClass('box');
 	}
 	
 
@@ -1158,6 +1176,10 @@ function habilitarCampos(isHabilitar) {
 		jQuery('#datosSolicitud :input').removeAttr('readOnly');
 		jQuery('#datosSolicitud :input').removeClass('boxConsulta');
 		jQuery('#datosSolicitud :input').addClass('box');
+		
+		jQuery('#idEstadoCivil').removeAttr('readOnly');
+		jQuery('#idEstadoCivil').removeClass('boxConsulta');
+		jQuery('#idEstadoCivil').addClass('box');		
 		jQuery('#capitalCobertura').addClass('boxConsulta');
 		jQuery('#cuotaCobertura').addClass('boxConsulta');
 	}

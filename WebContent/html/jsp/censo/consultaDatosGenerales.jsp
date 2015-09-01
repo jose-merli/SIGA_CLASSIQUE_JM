@@ -93,7 +93,6 @@
 	
 	
 	// Definicion de variables a usar en la JSP
-	ArrayList tratamientoSel = new ArrayList();
 	ArrayList tipoIdentificacionSel = new ArrayList();
 	ArrayList estadoCivilSel = new ArrayList();
 	ArrayList idiomaSel = new ArrayList();
@@ -128,6 +127,7 @@
 	String checkFallecido="";
 	String edad= "";
 	String estadoColegial = ""; 
+	String idTratamiento = "";
 	estadoColegial = (String) request.getAttribute("ESTADOCOLEGIAL");
 	int tipoIdenNIF = ClsConstants.TIPO_IDENTIFICACION_NIF;
     int tipoIdenCIF = ClsConstants.TIPO_IDENTIFICACION_CIF;
@@ -344,6 +344,7 @@
 	function formateaNIF(valorX) {
     		var longitud=9;
     		var salida='';
+    		valorX = quitarCeros(valorX);
     		
     		if(isNumero(valorX)==true)
     			longitud=8;
@@ -636,8 +637,7 @@
  
 		//algoritmo para comprobacion de codigos tipo CIF
 		suma = parseInt(a[2])+parseInt(a[4])+parseInt(a[6]);
-		for (i = 1; i < 8; i += 2)
-		{
+		for (var i = 1; i < 8; i += 2) {
 			temp1 = 2 * parseInt(a[i]);
 			temp1 += '';
 			temp1 = temp1.substring(0,1);
@@ -751,8 +751,59 @@ function str_replace(search, replace, subject) {
 		<%}%>			
 	}
 		
-		
-		
+	
+		//Función encargada de obtener los tratamientos a partir del sexo seleccionado
+	
+		function obtenerTratamientos (idSexo,idTratamiento){
+			//Limpiamos el combo tratamiento para que no se sumen los resultados
+			jQuery("#tratamiento").html("");
+
+			jQuery.ajax({  
+		           type: "POST",
+		           url: "/SIGA/CEN_Censo.do?modo=getTratamientoAPartirDelSexo",
+		           data: "idSexo="+idSexo,
+		           dataType: "json",
+		           success:  function(json) {
+		        	   jQuery("#tratamiento").append('<option value="">'+"--Seleccionar"+'</option>');
+		           
+		        		jQuery.each(json, function(index, value) {
+		        			jQuery("#tratamiento").append('<option value='+value.id+'>'+value.descripcion+'</option>');
+		        		   });
+		        		
+		        		// Realizado para que se marque por defecto un valor cada vez que se cambie de sexo
+		        		//Si tratamiento trae valor.
+		        		
+		        		if(idTratamiento != null && idTratamiento !=""){
+		        			jQuery('#tratamiento > option[value='+idTratamiento+']').attr('selected', 'selected');
+			        		jQuery('#textTratamiento').val(jQuery("#tratamiento option:selected").text());
+		        		}else{//Si no trae valor por defecto si es mujer tendrá que salir seleccionado Sra, si es hombre Sr.
+		        			
+		        			var id_sr = "<%=ClsConstants.ID_SR%>";
+		        			var id_sra = "<%=ClsConstants.ID_SRA%>";
+		        			var id_sr_sra = "<%=ClsConstants.ID_SR_SRA%>";
+		        			
+		        			if(idSexo == "<%=ClsConstants.GENERO_HOMBRE%>"){
+		        				jQuery('#tratamiento > option[value='+id_sr+']').attr('selected', 'selected');
+				        		jQuery('#textTratamiento').val(jQuery("#tratamiento option:selected").text());
+		        			}else{
+		        				if(idSexo == "<%=ClsConstants.GENERO_MUJER%>"){
+		        					jQuery('#tratamiento > option[value='+id_sra+']').attr('selected', 'selected');
+					        		jQuery('#textTratamiento').val(jQuery("#tratamiento option:selected").text());
+		        				}else{//Neutro
+		        					jQuery('#tratamiento > option[value='+id_sr_sra+']').attr('selected', 'selected');
+					        		jQuery('#textTratamiento').val(jQuery("#tratamiento option:selected").text());
+		        				}
+		        			}
+		        		}
+       		
+		           },
+		           error: function(xml,msg){
+		        	   alert("Error: "+msg);
+		           }
+		        }); 
+				
+		}
+	
 		</script>
 
 		<!-- INICIO: TITULO Y LOCALIZACION -->
@@ -785,12 +836,10 @@ function str_replace(search, replace, subject) {
 				<siga:ConjBotonesAccion botones="V"  clase="botonesDetalle"  />
 		<% } %>
 	
-<% } else { %>
+<% } else { 
+	
+	if (!formulario.getAccion().equalsIgnoreCase("NUEVO")) {
 
-
-	<body class="tablaCentralCampos" onload="adaptaTamanoFoto();buscarGrupos();mostrarMensaje();">
-
-<%		if (!formulario.getAccion().equalsIgnoreCase("NUEVO")) {
 			// cuando NO es nuevo
 			
 			// SOLO VA A TENER UN REGISTRO 
@@ -849,6 +898,8 @@ function str_replace(search, replace, subject) {
 			if (cuentaContable==null) cuentaContable=""; 
 			sexo = (String) registro.get(CenPersonaBean.C_SEXO);
 			if (sexo==null) sexo=""; 
+			//Si es vacio es que estamos hablando de que el sexo es neutro
+			if ("".equalsIgnoreCase(sexo)) sexo=ClsConstants.GENERO_NEUTRO;
 			idioma = (String) registro.get(CenClienteBean.C_IDLENGUAJE);
 			if (idioma==null) idioma=""; 
 			estadoCivil = (String) registro.get(CenPersonaBean.C_IDESTADOCIVIL);
@@ -861,7 +912,7 @@ function str_replace(search, replace, subject) {
 			if (edad==null) edad=""; 
 	
 			// combos
-			tratamientoSel.add((String) registro.get(CenClienteBean.C_IDTRATAMIENTO));
+			idTratamiento = (String) registro.get(CenClienteBean.C_IDTRATAMIENTO);
 			String idtipoidentificacion = (String) registro.get(CenPersonaBean.C_IDTIPOIDENTIFICACION);
 			tipoIdentificacionSel.add(idtipoidentificacion);
 			paramsTipoIdenJSON = "{\"idtipoidentificacion\":\""+idtipoidentificacion+"\"}";
@@ -881,7 +932,10 @@ function str_replace(search, replace, subject) {
 	boolean camposReadonly = true;
 	if (!breadonly && bDatosGeneralesEditables)
 		camposReadonly = false;
-%>
+	%>
+
+	<body class="tablaCentralCampos" onload="adaptaTamanoFoto();buscarGrupos();mostrarMensaje();obtenerTratamientos ('<%=sexo%>','<%=idTratamiento%>');">
+
 
 	<!-- INICIO: TITULO OPCIONAL DE LA TABLA -->
 	<table class="tablaTitulo" align="center" cellspacing="0">
@@ -1039,9 +1093,9 @@ function str_replace(search, replace, subject) {
 					<% } %>
 					&nbsp;
 					<% if (!breadonly && bDatosGeneralesEditables) { %>
-				      <html:text name="datosGeneralesForm" property="numIdentificacion" size="20" styleClass="box" value="<%=nIdentificacion %>" onfocus="generaNumOtro();" onBlur="formatearDocumento();"></html:text>&nbsp;
+				      <html:text name="datosGeneralesForm" property="numIdentificacion" size="20"  maxlength="20" styleClass="box" value="<%=nIdentificacion %>" onfocus="generaNumOtro();" onBlur="formatearDocumento();"/>&nbsp;
 					<% } else { %>
-					  <html:text name="datosGeneralesForm" property="numIdentificacion" size="20" styleClass="boxConsulta" value="<%=nIdentificacion %>" readonly="true" onBlur="formatearDocumento();"></html:text>
+					  <html:text name="datosGeneralesForm" property="numIdentificacion" size="20" styleClass="boxConsulta" value="<%=nIdentificacion %>" readonly="true" onBlur="formatearDocumento();"/>
 					<% } %>
 					</td>
 				</tr>
@@ -1056,22 +1110,50 @@ function str_replace(search, replace, subject) {
 				<siga:ConjCampos leyenda="censo.general.literal.informacionOrganizacion">
 				<table class="tablaCampos" align="center" cellpadding="0" cellpadding="0">
 				<tr>
+					<!-- SEXO -->
+					<td class="labelText">
+						<siga:Idioma key="censo.consultaDatosGenerales.literal.sexo"/>
+					</td>				
+					<td>
+					<% 
+						String ssexo = "";
+						if (sexo.equals(ClsConstants.TIPO_SEXO_HOMBRE)) ssexo = UtilidadesString.getMensajeIdioma(user, "censo.sexo.hombre");
+						if (sexo.equals(ClsConstants.TIPO_SEXO_MUJER)) ssexo = UtilidadesString.getMensajeIdioma(user, "censo.sexo.mujer");
+					%>
+					<% if (!breadonly && bDatosGeneralesEditables) { %>
+						<!-- option select -->
+						<html:select name="datosGeneralesForm" property="sexo" style = "null" styleClass = "<%=estiloCaja %>" value="<%=sexo %>" onchange="obtenerTratamientos(this.value,'')">
+						    <html:option value="0" >&nbsp;</html:option>
+							<html:option value="<%=ClsConstants.TIPO_SEXO_HOMBRE %>" ><siga:Idioma key="censo.sexo.hombre"/></html:option>
+							<html:option value="<%=ClsConstants.TIPO_SEXO_MUJER %>" ><siga:Idioma key="censo.sexo.mujer"/></html:option>
+						</html:select>						
+					<% } else { %>
+						<html:hidden  name="datosGeneralesForm" property="sexo" value="<%=sexo %>"/>
+						<html:text name="datosGeneralesForm" property="ssexo" size="20" styleClass="boxConsulta" value="<%=ssexo %>" readonly="true" ></html:text>
+					<% } %>
+					</td>
 					<!-- TRATAMIENTO -->
 					<td class="labelText" style="width:170px">
 						<siga:Idioma key="censo.consultaDatosGenerales.literal.tratamiento"/>&nbsp;(*)
 					</td>
 					<td  style="width:200px">
-						<siga:Select id="tratamiento" 
-									queryId="getTratamientos"
-									selectedIds="<%=tratamientoSel%>"
-									readOnly="<%=readonly%>"
-									required="true"/>
+						<% if (!breadonly && bDatosGeneralesEditables) { %>
+							<html:select styleId="tratamiento" styleClass="boxCombo" style="width:190px;" property="tratamiento" >		
+							</html:select>
+						<% } else { %>
+							
+							<html:select styleId="tratamiento" styleClass="boxCombo" style="width:190px; display:none" property="tratamiento" >		
+							</html:select>
+						    <html:text name="datosGeneralesForm" property="tratamiento" styleId="textTratamiento" size="20" styleClass="boxConsulta" value="" readonly="true" ></html:text>
+						<% } %>
 					</td>
+				</tr>
+				<tr>
+					<!-- NOMBRE -->
 					<td class="labelText" style="width:170px">
 						<siga:Idioma key="censo.consultaDatosGenerales.literal.nombre"/>&nbsp;(*)
 					</td>
 					
-					<!-- NOMBRE -->
 					<td>
 					<% if (!breadonly && bDatosGeneralesEditables) { %>
 						<html:text name="datosGeneralesForm" property="nombre" size="20" maxlength="100" styleClass="box" style='width:190px;' value="<%=nombre %>"  ></html:text>
@@ -1079,7 +1161,6 @@ function str_replace(search, replace, subject) {
 						<html:text name="datosGeneralesForm" property="nombre" size="20" maxlength="100" styleClass="boxConsulta" style='width:190px;' value="<%=nombre %>" readonly="true" ></html:text>
 					<% } %>
 					</td>
-				</tr>
 				<tr>
 					<!-- APELLIDO1 -->
 					<td class="labelText">
@@ -1104,6 +1185,8 @@ function str_replace(search, replace, subject) {
 						<html:text name="datosGeneralesForm" property="apellido2" size="20" maxlength="100" styleClass="boxConsulta" style='width:190px;' value="<%=apellido2 %>" readonly="true" ></html:text>
 					<% } %>
 					</td>
+					
+				
 				</tr>
 				<tr>
 					<!-- FECHA DE NACIMIENTO -->
@@ -1117,7 +1200,16 @@ function str_replace(search, replace, subject) {
 					<siga:Fecha  nombreCampo= "fechaNacimiento" valorInicial="<%=fechaNacimiento %>" disabled="true"/>
 					<% } %>
 					</td>
+					
+					<td class="labelText">
+						<siga:Idioma key="censo.consultaDatosGenerales.literal.edad"/>
+					</td>				
+					<td class="boxConsulta">
+						<%=edad%>
+					</td>
 				
+				</tr>
+				<tr>
 					<!-- LUGAR NACIMIENTO -->
 					<td class="labelText">
 						<siga:Idioma key="censo.consultaDatosGenerales.literal.nacido"/>
@@ -1129,8 +1221,6 @@ function str_replace(search, replace, subject) {
 						<html:text name="datosGeneralesForm" property="lugarNacimiento" size="20" maxlength="100" styleClass="boxConsulta" style='width:190px;' value="<%=nacido %>" readonly="true" ></html:text>
 					<% } %>
 					</td>
-				</tr>
-				<tr>
 					<!-- ESTADO CIVIL -->
 					<td class="labelText">
 						<siga:Idioma key="censo.consultaDatosGenerales.literal.estadoCivil"/>
@@ -1142,37 +1232,9 @@ function str_replace(search, replace, subject) {
 									readOnly="<%=String.valueOf(camposReadonly)%>"/>					
 					</td>
 				
-					<!-- SEXO -->
-					<td class="labelText">
-						<siga:Idioma key="censo.consultaDatosGenerales.literal.sexo"/>&nbsp;(*)
-					</td>				
-					<td>
-					<% 
-						String ssexo = "";
-						if (sexo.equals(ClsConstants.TIPO_SEXO_HOMBRE)) ssexo = UtilidadesString.getMensajeIdioma(user, "censo.sexo.hombre");
-						if (sexo.equals(ClsConstants.TIPO_SEXO_MUJER)) ssexo = UtilidadesString.getMensajeIdioma(user, "censo.sexo.mujer");
-					%>
-					<% if (!breadonly && bDatosGeneralesEditables) { %>
-						<!-- option select -->
-						<html:select name="datosGeneralesForm" property="sexo" style = "null" styleClass = "<%=estiloCaja %>" value="<%=sexo %>" >
-						    <html:option value="0" >&nbsp;</html:option>
-							<html:option value="<%=ClsConstants.TIPO_SEXO_HOMBRE %>" ><siga:Idioma key="censo.sexo.hombre"/></html:option>
-							<html:option value="<%=ClsConstants.TIPO_SEXO_MUJER %>" ><siga:Idioma key="censo.sexo.mujer"/></html:option>
-						</html:select>						
-					<% } else { %>
-						<html:hidden  name="datosGeneralesForm" property="sexo" value="<%=sexo %>"/>
-						<html:text name="datosGeneralesForm" property="ssexo" size="20" styleClass="boxConsulta" value="<%=ssexo %>" readonly="true" ></html:text>
-					<% } %>
-					</td>
 				
 				</tr>
 				<tr>
-					<td class="labelText">
-						<siga:Idioma key="censo.consultaDatosGenerales.literal.edad"/>
-					</td>				
-					<td class="boxConsulta">
-						<%=edad%>
-					</td>
 					<% if (!bDatosGeneralesEditables && !esLetrado && !institucionParam[0].equals("2000")) { %> 
 					<td class="labelText">
 						<img src="<%=app%>/html/imagenes/help.gif" 
@@ -1350,16 +1412,18 @@ function str_replace(search, replace, subject) {
 			<td style="width:300px">
 						<!-- GRUPO CLIENTE -->
 						<!-- INICIO: IFRAME LISTA RESULTADOS -->
+						<siga:ConjCampos>
 						<iframe align="center" src="<%=app%>/html/jsp/general/blank.jsp"
 										id="resultado"
 										name="resultado" 
 										scrolling="no"
-										frameborder="1"
+										frameborder="0"
 										marginheight="0"
 										marginwidth="0"					 
 										style="width:100%; height:100%;">
 						</iframe>
 						<!-- FIN: IFRAME LISTA RESULTADOS -->
+						</siga:ConjCampos>
 			</td>
 		</tr>
 		</table>
@@ -1438,7 +1502,9 @@ function str_replace(search, replace, subject) {
 
 		// Asociada al boton Restablecer
 		function accionRestablecer() {
-			document.forms[0].reset();	
+			document.forms[0].reset();
+			//Debemos de restaurar también el valor del campo creado automáticamente
+			obtenerTratamientos ('<%=sexo%>','<%=idTratamiento%>');
 		}
 
 		function habilitarBoton() {
@@ -1474,10 +1540,7 @@ function str_replace(search, replace, subject) {
 		
 		function validarFormulario() {
 	
-			if (datosGeneralesForm.sexo.value=='0'){
-				alert ('<siga:Idioma key="censo.fichaCliente.literal.sexo"/>');
-			   	return false;
-			}
+			
 			if (validateDatosGeneralesForm(document.forms[0]))
 			{
 				var rc	= true;
@@ -1486,10 +1549,14 @@ function str_replace(search, replace, subject) {
 				if ((tipoIden == <%=tipoIdenNIF%>))
 				{
 					rc = validarNIFCIF(tipoIden, document.datosGeneralesForm.numIdentificacion.value);
+					if(rc==false){
+						alert("<siga:Idioma key='messages.nif.comprobacion.digitos.error'/>");
+					}
 				}
 				else if((tipoIden == "<%=ClsConstants.TIPO_IDENTIFICACION_TRESIDENTE%>") )
 				{
 					rc=validaNIE(document.datosGeneralesForm.numIdentificacion.value);
+					
 				}
 				else if((tipoIden == "<%=ClsConstants.TIPO_IDENTIFICACION_PASAPORTE%>") && (document.forms[0].numIdentificacion.value=="") )
 				{
@@ -1531,11 +1598,12 @@ function str_replace(search, replace, subject) {
 
 				if (validarFormulario()	&&	TestFileType(document.forms[0].foto.value, ['GIF', 'JPG', 'PNG', 'JPEG'])) {
 				<%	if (!formulario.getAccion().equals("nuevo")) { %>
+					var datos;
 					<% if (!bOcultarHistorico) { %>
-							var datos = showModalDialog("<%=app%>/html/jsp/general/ventanaMotivoHistorico.jsp","","dialogHeight:230px;dialogWidth:520px;help:no;scroll:no;status:no;");
+							datos = showModalDialog("<%=app%>/html/jsp/general/ventanaMotivoHistorico.jsp","","dialogHeight:230px;dialogWidth:520px;help:no;scroll:no;status:no;");
 							window.top.focus();
 						<% } else { %>
-								var datos = new Array();
+								datos = new Array();
 								datos[0] = 1;
 								datos[1] = "";
 						<% } %>

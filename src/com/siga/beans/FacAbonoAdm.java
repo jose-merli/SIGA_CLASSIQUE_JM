@@ -20,9 +20,12 @@ import com.siga.general.SIGAException;
 */
 public class FacAbonoAdm extends MasterBeanAdministrador {
 
-	public static int DESTINATARIOABONO_SOCIEDAD = 0;
-	public static int DESTINATARIOABONO_SJCS = 1;
-	public static int DESTINATARIOABONO_NORMAL = 2;
+	public static final int ESTADO_PAGADO = 1;
+	public static final int ESTADO_PENDIENTE_BANCO = 5;
+	public static final int ESTADO_PENDIENTE_CAJA = 6;
+	public static final int DESTINATARIOABONO_SOCIEDAD = 0;
+	public static final int DESTINATARIOABONO_SJCS = 1;
+	public static final int DESTINATARIOABONO_NORMAL = 2;
 	
 	private static String baseSqlAbonosSJCSpendientes = new String ( 
 		" FROM " + FacAbonoBean.T_NOMBRETABLA + "," + CenCuentasBancariasBean.T_NOMBRETABLA + "," + FcsPagosJGBean.T_NOMBRETABLA +
@@ -1018,8 +1021,8 @@ public class FacAbonoAdm extends MasterBeanAdministrador {
 	 * @return  Vector - Fila seleccionada  
 	 * @exception  ClsExceptions  En cualquier caso de error
 	 */
-	public Vector getAbonosBanco (Integer institucion, String codigoBanco, Integer Idsufijo) throws ClsExceptions,SIGAException {
-		   Vector datos=new Vector();
+	public Vector<Row> getAbonosBanco (Integer institucion, String codigoBanco, Integer Idsufijo) throws ClsExceptions,SIGAException {
+		   Vector<Row> datos=new Vector<Row>();
 	       try {
 	            RowsContainer rc = new RowsContainer(); 
 	            String sql ="SELECT " +				
@@ -1336,8 +1339,8 @@ public class FacAbonoAdm extends MasterBeanAdministrador {
 	 * @return  Vector - Fila seleccionada  
 	 * @exception  ClsExceptions  En cualquier caso de error
 	 */
-	public Vector getAbonosBancoSjcs (String institucion, String codigoBanco, Integer idsufijo) throws ClsExceptions,SIGAException {
-		Vector datos=new Vector();
+	public Vector<Row> getAbonosBancoSjcs (String institucion, String codigoBanco, Integer idsufijo) throws ClsExceptions,SIGAException {
+		Vector<Row> datos=new Vector<Row>();
 		Hashtable codigos = new Hashtable();
 		try {
 
@@ -1661,8 +1664,8 @@ public class FacAbonoAdm extends MasterBeanAdministrador {
 	 * @return  Vector - Fila seleccionada  
 	 * @exception  ClsExceptions  En cualquier caso de error
 	 */
-	public Vector getBancosSufijosSJCS (String institucion) throws ClsExceptions,SIGAException {
-		   Vector datos=new Vector();
+	public Vector<Row> getBancosSufijosSJCS (String institucion) throws ClsExceptions,SIGAException {
+		   Vector<Row> datos=new Vector<Row>();
 		   Hashtable codigos = new Hashtable();
 	       try {    	   
 
@@ -1677,7 +1680,9 @@ public class FacAbonoAdm extends MasterBeanAdministrador {
 						    "(SELECT CEN.NOMBRE FROM CEN_BANCOS CEN WHERE CEN.CODIGO="+FacBancoInstitucionBean.T_NOMBRETABLA + "."+FacBancoInstitucionBean.C_COD_BANCO+") AS BANCO, "+
 						    "(SELECT COUNT (1) FROM FAC_SERIEFACTURACION_BANCO SFB WHERE SFB.IDINSTITUCION=" +
 						    	FacBancoInstitucionBean.T_NOMBRETABLA + "."+FacBancoInstitucionBean.C_IDINSTITUCION + " AND SFB.BANCOS_CODIGO=" + 
-						    	FacBancoInstitucionBean.T_NOMBRETABLA + "."+FacBancoInstitucionBean.C_BANCOS_CODIGO + ") AS SELECCIONADO "+
+						    	FacBancoInstitucionBean.T_NOMBRETABLA + "."+FacBancoInstitucionBean.C_BANCOS_CODIGO + ") AS SELECCIONADO, "+
+					    	FcsPagosJGBean.T_NOMBRETABLA+"."+FcsPagosJGBean.C_IDPROPSEPA +", "+
+					    	FcsPagosJGBean.T_NOMBRETABLA+"."+FcsPagosJGBean.C_IDPROPOTROS +" "+
 				            " FROM " + FacAbonoBean.T_NOMBRETABLA + "," + CenCuentasBancariasBean.T_NOMBRETABLA + "," + FcsPagosJGBean.T_NOMBRETABLA + "," + FacBancoInstitucionBean.T_NOMBRETABLA + 
 				            "," + FacSufijoBean.T_NOMBRETABLA +
 							" WHERE " +		FacAbonoBean.T_NOMBRETABLA +"."+ FacAbonoBean.C_IDINSTITUCION + "=" + institucion +

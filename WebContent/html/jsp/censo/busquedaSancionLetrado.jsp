@@ -30,25 +30,33 @@
 	HttpSession ses=request.getSession();
 		
 	UsrBean user=(UsrBean)request.getSession().getAttribute("USRBEAN");
-
+	SancionesLetradoForm formulario = (SancionesLetradoForm)request.getAttribute("SancionesLetradoForm");
 	String tienepermisoArchivo = (String) request.getAttribute("tienepermiso");
+	String volver = (String) request.getAttribute("volver");
 	
 	String idPersonaBusqueda="";
 	String busquedaCliente="";
 	String nifCliente="";
 	String fechaInicioArchivada = "";
 	String fechaFinArchivada="";
-			
+	
 	// Si el cliente es un letrado, le establezco a el como parte de la busqueda
 	if (user.isLetrado()) {
 		idPersonaBusqueda=String.valueOf(user.getIdPersona());
 		CenPersonaAdm admPersona=new CenPersonaAdm(user);
 		busquedaCliente=admPersona.obtenerNombreApellidos(idPersonaBusqueda);
 		nifCliente = admPersona.obtenerNIF(idPersonaBusqueda);
-	}			
+	} else if (formulario.getColegiadoBuscar()!= null && !formulario.getColegiadoBuscar().equals("")){
+		idPersonaBusqueda=String.valueOf(formulario.getColegiadoBuscar());
+		CenPersonaAdm admPersona=new CenPersonaAdm(user);
+		busquedaCliente=admPersona.obtenerNombreApellidos(idPersonaBusqueda);
+		nifCliente = admPersona.obtenerNIF(idPersonaBusqueda);		
+	}
 
-	// locales
-	SancionesLetradoForm formulario = (SancionesLetradoForm)request.getSession().getAttribute("SancionesLetradoForm");
+	ArrayList selSancion = new ArrayList();
+	ArrayList selColegio = new ArrayList();
+	selSancion.add (formulario.getTipoSancionBuscar());	
+	selColegio.add (formulario.getNombreInstitucionBuscar());	
 %>	
 
 	<!-- HEAD -->
@@ -92,33 +100,52 @@
 						<siga:Idioma key="censo.busquedaSancionesLetrado.literal.colegio"/>
 					</td>
 					<td>
-						<siga:ComboBD nombre = "nombreInstitucionBuscar" tipo="cmbInstitucionesAbreviadas" clase="boxCombo" obligatorio="false"/>			
+						<siga:ComboBD nombre = "nombreInstitucionBuscar" tipo="cmbInstitucionesAbreviadas" clase="boxCombo" obligatorio="false" elementoSel="<%=selColegio%>"/>			
 					</td>		
 					
 					<td class="labelText">
 						<siga:Idioma key="censo.busquedaSancionesLetrado.literal.tipoSancion"/>
 					</td>				
 					<td>
-						<siga:ComboBD nombre = "tipoSancionBuscar" tipo="cmbTipoSancion"  clase="boxCombo" obligatorio="false"/>
+						<siga:ComboBD nombre = "tipoSancionBuscar" tipo="cmbTipoSancion"  clase="boxCombo" obligatorio="false" elementoSel="<%=selSancion%>"/>
 					</td>
+			</tr>
+				<tr>
+				<% if(!ClsConstants.esColegio(user.getLocation())) { %>		
+						<td class="labelText">
+							<siga:Idioma key="censo.BusquedaSancionesLetrado.literal.refCGAE"/>															
+						</td>						
+						<td>				
+	   						<html:text property="refCGAE" size="20" maxlength="50" styleClass="box" readOnly="false" value='${SancionesLetradoForm.refCGAE}'/>
+						</td>	
+				<% } %>
 					
+				
 					<td class="labelText">
-						<siga:Idioma key="censo.BusquedaSancionesLetrado.literal.refCGAE"/>															
-					</td>						
-					<td>				
-   						<html:text property="refCGAE" size="20" maxlength="50" styleClass="box" readOnly="false" />
-
-
-						<!-- Si la busqueda se realiza por idPersona, el campo numeroLetrado no puede modificarse, en cambio
-	 					si la busqueda se realiza mediante el campo numeroLetrado se podría modificar por pantalla sin
-	 					necesidad de seleccionarlo por el botón -->
-						<html:hidden name="SancionesLetradoForm" property="colegiadoBuscar" size="8" maxlength="80" styleClass="boxConsulta" value = "<%=idPersonaBusqueda%>" readOnly="true"></html:hidden>
-						<html:hidden property = "colegiadoBuscar" value = "<%=idPersonaBusqueda%>"/>			
-					</td>	
-				</tr>
+						<siga:Idioma key="censo.BusquedaSancionesLetrado.literal.refColegio2"/>
+					</td>
+					<td >
+						<html:text property="refColegio" size="20" maxlength="50" styleClass="box" readOnly="false" value='${SancionesLetradoForm.refColegio}'></html:text>
+					</td>
+				</tr>	
+				
 
 				<tr>
 					<td id="busquedaLetrado" class="labelText" colspan="6">
+							<!-- Si la busqueda se realiza por idPersona, el campo numeroLetrado no puede modificarse, en cambio
+		 					si la busqueda se realiza mediante el campo numeroLetrado se podría modificar por pantalla sin
+		 					necesidad de seleccionarlo por el botón -->
+							<html:hidden name="SancionesLetradoForm" property="colegiadoBuscar" size="8" maxlength="80" styleClass="boxConsulta" value = "<%=idPersonaBusqueda%>" readOnly="true"></html:hidden>
+							<html:hidden property = "colegiadoBuscar" value = "<%=idPersonaBusqueda%>"/>		
+							<script type="text/javascript">
+								jQuery(document).ready(function () {		
+									<% if(idPersonaBusqueda!=null && !idPersonaBusqueda.trim().equals("")) { %>
+											jQuery("#nombrePersona").val("<%=busquedaCliente%>");
+											jQuery("#numeroNifTagBusquedaPersonas").val("<%=nifCliente%>");	
+									<% } %>
+								});	
+							</script>	
+					
 						<% if(user.isLetrado()) { %>
 							<siga:BusquedaPersona tipo="personas" titulo="gratuita.seleccionColegiadoJG.literal.titulo" anchoNum="10" anchoDesc="50" idPersona="colegiadoBuscar"></siga:BusquedaPersona>
 						<% } else { %>
@@ -155,14 +182,14 @@
 						<siga:Idioma key="facturacion.consultamorosos.literal.desde"/>	
 					</td>	
 					<td>
-						<siga:Fecha  nombreCampo= "fechaInicioBuscar"/>
+						<siga:Fecha  nombreCampo= "fechaInicioBuscar" valorInicial="${SancionesLetradoForm.fechaInicioBuscar}"/>
 					</td>	
 
 					<td class="labelText">
 						<siga:Idioma key="gratuita.busquedaSOJ.literal.hasta"/>
 					</td>
 					<td>
-						<siga:Fecha  nombreCampo= "fechaFinBuscar" campoCargarFechaDesde="fechaInicioBuscar"/>
+						<siga:Fecha  nombreCampo= "fechaFinBuscar" valorInicial="${SancionesLetradoForm.fechaFinBuscar}"/>
 					</td>			
 				</tr>	
 
@@ -181,14 +208,14 @@
 						  	<siga:Idioma key="facturacion.consultamorosos.literal.desde"/>&nbsp;&nbsp;
 						</td>
 						<td>
-						  	<siga:Fecha  nombreCampo= "fechaInicioArchivada"/>
+						  	<siga:Fecha  nombreCampo= "fechaInicioArchivada" valorInicial="${SancionesLetradoForm.fechaInicioArchivada}"/>
 						</td>
 
 						<td class="labelText">
 						  	<siga:Idioma key="gratuita.busquedaSOJ.literal.hasta"/>&nbsp;&nbsp;
 						</td>
 						<td>
-						  	<siga:Fecha  nombreCampo= "fechaFinArchivada" campoCargarFechaDesde="fechaInicioArchivada"/>
+						  	<siga:Fecha  nombreCampo= "fechaFinArchivada" valorInicial="${SancionesLetradoForm.fechaFinArchivada}"/>
 						</td>
 					</tr>
 				<% } else { %>
@@ -210,29 +237,37 @@
 
 	<!-- INICIO: SCRIPTS BOTONES BUSQUEDA -->
 	<script language="JavaScript">
-
-		function buscar() {					
+		jQuery(document).ready(function () {		
+			<%	if(volver!=null && volver.trim().equals("volver")) {  %>
+					document.forms[0].modo.value="buscarInit";
+					document.forms[0].target="resultado";	
+					document.forms[0].submit();	
+			<%	}  %>
+		});	
+		
+		function buscar() {		
+			sub();
 			 if ((document.forms[0].mostrarTiposFechas.value=="") && ((document.forms[0].fechaInicioBuscar.value!="")||(document.forms[0].fechaFinBuscar.value!=""))){ 
 				alert ('<siga:Idioma key="general.message.tipoFecha"/>');
+				fin();
 				return false;
-				}
+			}
 			document.forms[0].modo.value="buscarInit";
 			document.forms[0].target="resultado";	
 			document.forms[0].submit();	
 		}
 
-		function nuevo()  {		
+		function nuevo()  {	
+			sub();
 			document.forms[0].modo.value="nuevo";
-			var resultado=ventaModalGeneral(document.forms[0].name,"G");
-			if (resultado!=undefined && resultado=="MODIFICADO")
-			{
-				buscar();
-			}
+			document.forms[0].target="mainWorkArea";
+			document.forms[0].submit();	
 		}
 				
 		// Funcion asociada a boton limpiar
 		function limpiar()  {		
 			document.forms[0].reset();
+			document.getElementById('colegiadoBuscar').value = "";
 		}									
 	</script>	
 	<!-- FIN: SCRIPTS BOTONES BUSQUEDA -->

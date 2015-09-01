@@ -480,10 +480,14 @@
 			
 			if (((numero !="") && isNaN(numero))||((anio !="") && isNaN(anio))) {
 				alert('<siga:Idioma key="expedientes.busquedaExpedientes.literal.errorNumeroExpediente"/>');
+				fin();
+				return;
 			}
 
 			if (((numeroExpDis !="") && isNaN(numeroExpDis)) || ((anioExpDis !="") && isNaN(anioExpDis))) {
-				alert('<siga:Idioma key="expedientes.busquedaExpedientes.literal.errorNumeroExpDisciplinario"/>');				
+				alert('<siga:Idioma key="expedientes.busquedaExpedientes.literal.errorNumeroExpDisciplinario"/>');	
+				fin();
+				return;				
 			}
 
 			document.forms[0].avanzada.value="<%=ClsConstants.DB_FALSE%>";

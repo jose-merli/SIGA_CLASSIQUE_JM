@@ -1,14 +1,18 @@
 package com.siga.beans;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Vector;
 
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsLogging;
+import com.atos.utils.GstDate;
 import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
-import com.siga.Utilidades.*;
+import com.siga.Utilidades.UtilidadesHash;
+import com.siga.gratuita.vos.SIGADocumentacionEjgVo;
 
 //Clase: ScsDocumentacionEJGAdm 
 //Autor: julio.vicente@atosorigin.com
@@ -221,23 +225,20 @@ public class ScsDocumentacionEJGAdm extends MasterBeanAdministrador {
 			htData.put(ScsDocumentacionEJGBean.C_IDINSTITUCION, String.valueOf(b.getIdInstitucion()));
 			htData.put(ScsDocumentacionEJGBean.C_IDTIPOEJG, b.getIdTipoEJG());
 			htData.put(ScsDocumentacionEJGBean.C_ANIO, b.getAnio());
-			htData.put(ScsDocumentacionEJGBean.C_FECHAENTREGA, String.valueOf(b.getFechaEntrega()));
-			htData.put(ScsDocumentacionEJGBean.C_FECHALIMITE, String.valueOf(b.getFechaLimite()));
-			htData.put(ScsDocumentacionEJGBean.C_IDDOCUMENTACION, b.getIdDocumentacion());
-			htData.put(ScsDocumentacionEJGBean.C_DOCUMENTACION, b.getDocumentacion());			
-			htData.put(ScsDocumentacionEJGBean.C_FECHAMODIFICACION, b.getFechaMod());
-			htData.put(ScsDocumentacionEJGBean.C_USUMODIFICACION, String.valueOf(b.getUsuMod()));
-			htData.put(ScsDocumentacionEJGBean.C_NUMERO, String.valueOf(b.getNumero()));
-			htData.put(ScsDocumentacionEJGBean.C_REGENTRADA, String.valueOf(b.getRegEntrada()));
-			htData.put(ScsDocumentacionEJGBean.C_REGSALIDA, String.valueOf(b.getRegSalida()));
-			htData.put(ScsDocumentacionEJGBean.C_PRESENTADOR, String.valueOf(b.getPresentador()));
-			htData.put(ScsDocumentacionEJGBean.C_IDPRESENTADORMAESTRO, String.valueOf(b.getIdPresentadorMaestro()));
-			htData.put(ScsDocumentacionEJGBean.C_IDDOCUMENTO, String.valueOf(b.getIdDocumento()));
-			htData.put(ScsDocumentacionEJGBean.C_IDTIPODOCUMENTO, String.valueOf(b.getIdTipoDocumento()));
-			htData.put(ScsDocumentacionEJGBean.C_IDFICHERO, String.valueOf(b.getIdFichero()));
-		}
-		catch (Exception e){
-			 throw new ClsExceptions(e,"EXCEPCION EN TRANSFORMAR EL BEAN A HASHTABLE");
+			UtilidadesHash.setForCompare(htData, ScsDocumentacionEJGBean.C_FECHAENTREGA, GstDate.getApplicationFormatDate("",b.getFechaEntrega()));
+			UtilidadesHash.setForCompare(htData, ScsDocumentacionEJGBean.C_FECHALIMITE, GstDate.getApplicationFormatDate("",b.getFechaLimite()));
+			UtilidadesHash.setForCompare(htData, ScsDocumentacionEJGBean.C_IDDOCUMENTACION, b.getIdDocumentacion());
+			UtilidadesHash.setForCompare(htData, ScsDocumentacionEJGBean.C_DOCUMENTACION, b.getDocumentacion());
+			UtilidadesHash.setForCompare(htData, ScsDocumentacionEJGBean.C_NUMERO, String.valueOf(b.getNumero()));
+			UtilidadesHash.setForCompare(htData, ScsDocumentacionEJGBean.C_REGENTRADA, String.valueOf(b.getRegEntrada()));
+			UtilidadesHash.setForCompare(htData, ScsDocumentacionEJGBean.C_REGSALIDA, String.valueOf(b.getRegSalida()));
+			UtilidadesHash.setForCompare(htData, ScsDocumentacionEJGBean.C_PRESENTADOR, String.valueOf(b.getPresentador()));
+			UtilidadesHash.setForCompare(htData, ScsDocumentacionEJGBean.C_IDPRESENTADORMAESTRO, String.valueOf(b.getIdPresentadorMaestro()));
+			UtilidadesHash.setForCompare(htData, ScsDocumentacionEJGBean.C_IDDOCUMENTO, String.valueOf(b.getIdDocumento()));
+			UtilidadesHash.setForCompare(htData, ScsDocumentacionEJGBean.C_IDTIPODOCUMENTO, String.valueOf(b.getIdTipoDocumento()));
+			UtilidadesHash.setForCompare(htData, ScsDocumentacionEJGBean.C_IDFICHERO, String.valueOf(b.getIdFichero()));
+		} catch (Exception e) {
+			throw new ClsExceptions(e, "EXCEPCION EN TRANSFORMAR EL BEAN A HASHTABLE");
 		}
 		return htData;
 	}
@@ -509,5 +510,134 @@ public class ScsDocumentacionEJGAdm extends MasterBeanAdministrador {
 		int copiados =  row.updateSQL(sqlUpdate);
 		ClsLogging.writeFileLog("Registros de " + ScsDocumentacionEJGBean.T_NOMBRETABLA + " copiados = " + copiados, 10);
 		return copiados;
+	}
+
+	/******************************     METODOS IMPORTADOS DE MYBATIS   **********************************/
+
+	/**
+	 * @param documentacionEjgVo
+	 * @return
+	 * @throws ClsExceptions 
+	 */
+	public ScsDocumentacionEJGBean select(SIGADocumentacionEjgVo documentacionEjgVo) throws ClsExceptions {
+		ScsDocumentacionEJGBean documentacionEJGBean = null;
+		Hashtable<String, Object> hash = new Hashtable<String, Object>();
+		hash.put(ScsDocumentacionEJGBean.C_IDDOCUMENTACION, documentacionEjgVo.getIdDocumentacion());
+		hash.put(ScsDocumentacionEJGBean.C_IDINSTITUCION, documentacionEjgVo.getIdInstitucion());
+		try {
+			Vector vector = this.select(hash);
+			if (vector != null && vector.size() > 0) {
+				documentacionEJGBean =  (ScsDocumentacionEJGBean) vector.get(0);
+			}
+
+		} catch (ClsExceptions e) {
+			throw new ClsExceptions(e, "Error al ejecutar el 'select' en ScsDocumentacionEJGAdm");
+		}
+
+		return documentacionEJGBean;
+	}
+	
+	/** 
+	 * Prepara una tabla hash para insertarla en la tabla. <br/>
+	 * Obtiene el campo IDDOCUMENTACION, <br/>	 
+	 * @return  Long  - IdSolicitud secuencial  
+	 * @exception  ClsExceptions  En cualquier caso de error
+	 */	
+	public Integer getNuevoId() throws ClsExceptions {
+		RowsContainer rc = null;
+		Integer id = null;
+		String sql = " SELECT SEQ_SCS_DOCUMENTACIONEJG.NEXTVAL FROM DUAL ";
+
+		try {
+			rc = new RowsContainer();
+			if (rc.find(sql)) {
+				Row fila = (Row) rc.get(0);
+				id = Integer.valueOf((String) fila.getRow().get("NEXTVAL"));
+			}
+
+		} catch (ClsExceptions e) {
+			throw new ClsExceptions(e, "Error al ejecutar el 'getNuevoId' en BBDD");
+		}
+		return id;
+	}
+
+
+	/**
+	 * @param params
+	 * @return
+	 * @throws ClsExceptions 
+	 */
+	public List<ScsDocumentacionEJGExtendedBean> getListadoDocumentacionEJG(Hashtable<String, Object> params) throws ClsExceptions {
+		List<ScsDocumentacionEJGExtendedBean> list = new ArrayList<ScsDocumentacionEJGExtendedBean>();
+		RowsContainer rc = null;
+		String sql = "   SELECT DE.*, " +
+					      "  	DECODE(PERSONA.IDPERSONA, NULL, 'IDMAESTROPRESENTADOR_' || MAESTROPRESENTADOR.IDPRESENTADOR, " +
+					      "         'IDPERSONAJG_' || PERSONA.IDPERSONA) IDPRESENTADOR, " +
+					      
+					      "  	DECODE(PERSONA.IDPERSONA,  NULL, " +
+					      "         F_SIGA_GETRECURSO(MAESTROPRESENTADOR.DESCRIPCION, " + (String)params.get("codIdioma") +"), " +
+					      "         PERSONA.NOMBRE || ' ' || PERSONA.APELLIDO1 || ' ' || " +
+					      "         PERSONA.APELLIDO2 || ' (' || " +
+					      "         DECODE((SELECT 1 " +
+					      "                  FROM DUAL " +
+					      "                 WHERE PERSONA.IDPERSONA = FAMILIA.IDPERSONA " +
+					      "                    OR FAMILIA.SOLICITANTE = 1), " +
+					      "                1, " +
+					      "                F_SIGA_GETRECURSO_ETIQUETA('gratuita.busquedaEJG.literal.solicitante', " +
+					      "                                            " + (String)params.get("codIdioma") +"), " +
+					      "                (SELECT F_SIGA_GETRECURSO(SCS_PARENTESCO.DESCRIPCION, " + (String)params.get("codIdioma") +") " +
+					      "                   FROM SCS_PARENTESCO " +
+					      "                  WHERE SCS_PARENTESCO.IDINSTITUCION = " +
+					      "                        FAMILIA.IDINSTITUCION " +
+					      "                    AND SCS_PARENTESCO.IDPARENTESCO = " +
+					      "                        FAMILIA.IDPARENTESCO)) || ')') AS DESCPRESENTADOR, " +
+					      
+					      "  	D.ABREVIATURA DOCUMENTOABREVIATURA " +
+						  " FROM SCS_DOCUMENTACIONEJG  DE, " +
+						  "      SCS_DOCUMENTOEJG      D, " +
+						  "      SCS_UNIDADFAMILIAREJG FAMILIA, " +
+						  "      SCS_PERSONAJG         PERSONA, " +
+						  "      SCS_PRESENTADOR       MAESTROPRESENTADOR " +
+						  " WHERE DE.IDTIPODOCUMENTO = D.IDTIPODOCUMENTOEJG " +
+						  "  	AND DE.IDINSTITUCION = D.IDINSTITUCION " +
+						  "  	AND DE.IDDOCUMENTO = D.IDDOCUMENTOEJG " +
+						  "  	AND FAMILIA.IDPERSONA = PERSONA.IDPERSONA(+) " +
+						  "  	AND FAMILIA.IDINSTITUCION = PERSONA.IDINSTITUCION(+) " +
+						  "  	AND DE.IDINSTITUCION = FAMILIA.IDINSTITUCION(+) " +
+						  "  	AND DE.IDTIPOEJG = FAMILIA.IDTIPOEJG(+) " +
+						  "  	AND DE.ANIO = FAMILIA.ANIO(+) " +
+						  "  	AND DE.NUMERO = FAMILIA.NUMERO(+) " +
+						  "  	AND DE.PRESENTADOR = FAMILIA.IDPERSONA(+) " +
+						  "  	AND DE.IDMAESTROPRESENTADOR = MAESTROPRESENTADOR.IDPRESENTADOR(+) " +
+						  "  	AND DE.IDINSTITUCION = MAESTROPRESENTADOR.IDINSTITUCION(+) " +
+						  "  	AND DE.IDINSTITUCION = " + (Integer)params.get("idInstitucion")  +
+						  " 	AND DE.IDTIPOEJG = " + (Integer)params.get("idTipoEJG")  +
+						  "  	AND DE.ANIO = " + (Integer)params.get("anio")  +
+						  "  	AND DE.NUMERO =" + (Integer)params.get("numero")  +
+						  "  ORDER BY PRESENTADOR ";
+   
+
+
+		try {
+			rc = new RowsContainer();
+			if (rc.find(sql)) {
+            	for (int i = 0; i < rc.size(); i++){
+                  Row fila = (Row) rc.get(i);
+                  Hashtable hash = fila.getRow();
+                  ScsDocumentacionEJGBean bean = (ScsDocumentacionEJGBean)this.hashTableToBean(hash);
+                  ScsDocumentacionEJGExtendedBean extendedBean = new ScsDocumentacionEJGExtendedBean();
+                  extendedBean.setDocumentacionEJGBean(bean);
+                  extendedBean.setIdPresentador((String) hash.get("IDPRESENTADOR"));
+                  extendedBean.setDescPresentador((String) hash.get("DESCPRESENTADOR"));
+                  extendedBean.setDocumentoAbreviatura((String) hash.get("DOCUMENTOABREVIATURA"));
+                  list.add(extendedBean);
+               }
+			}
+
+		} catch (ClsExceptions e) {
+			throw new ClsExceptions(e, "Error al ejecutar el 'getNuevoId' en BBDD");
+		}
+		
+		return list;
 	}
 }

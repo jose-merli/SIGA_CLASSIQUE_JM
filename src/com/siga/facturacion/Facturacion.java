@@ -2383,7 +2383,7 @@ public class Facturacion {
 	        } else {} // Esta facturado => vFacturas => No Tx
 				
 	        // GENERAR FICHERO			
-			File fichero = informe.generarZipFacturacionRapida(request, idInstitucion, idPeticion, vFacturas);
+			File fichero = informe.generarInformeFacturacionRapida(request, idInstitucion, idPeticion, vFacturas);
 			if (fichero == null) {
 				throw new ClsExceptions("Error al generar la factura. Fichero devuelto es nulo.");
 			}

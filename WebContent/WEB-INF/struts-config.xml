@@ -844,7 +844,6 @@
 		<action path="/CEN_AnticiposCliente" type="com.siga.censo.action.AnticiposClienteAction" name="AnticiposClienteForm"  scope="request">
 			<forward name="abrir" path="/html/jsp/censo/anticiposCliente.jsp"/>
 			<forward name="editar" path="/html/jsp/censo/anticiposEditar.jsp"/>
-			<forward name="servicios" path="/html/jsp/censo/anticiposServicios.jsp"/>
 			<forward name="abrirFacturas" path="/html/jsp/censo/anticiposUsado.jsp"/>
 			<forward name="facturas" path="/html/jsp/censo/anticiposFacturas.jsp"/>
 			<forward name="abrirServicios" path="/html/jsp/censo/busquedaServiciosAnticipos.jsp"/>
@@ -1397,6 +1396,8 @@
 		<!-- ***** Productos y Servicios / Carga Productos ***** -->
 		<action path="/PYS_CargaProductos" type="com.siga.productos.action.CargaProductosAction" name="CargaProductosForm" scope="request" validate="false">
 			<forward name="abrir" path="/html/jsp/productos/cargaProductos.jsp"/>
+			<forward name="listado" path="/html/jsp/productos/listadoCargaMasivaProductos.jsp"/>
+			<forward name="listadoResumen" path="/html/jsp/productos/listadoResumenCargaMasivaProductos.jsp"/>			
 		</action>
 
 		<!-- ***** Productos y Servicios / Mantenimiento / Servicios ***** -->
@@ -1453,12 +1454,9 @@
 			<forward name="buscarInit" path="/html/jsp/productos/busquedaSolicitudesResultados.jsp" />
 			<forward name="buscarPor" path="/html/jsp/productos/busquedaSolicitudesResultados.jsp"/>
 			<forward name="editar" path="/html/jsp/productos/datosSolicitud.jsp"/>
+			<forward name="editarImpresion" path="/html/jsp/productos/datosSolicitudImpresion.jsp"/>
 			<forward name="confirmar" path="/html/jsp/productos/datosSolicitud.jsp"/>
 			<forward name="denegar" path="/html/jsp/productos/datosSolicitud.jsp"/>
-			<forward name="modificarCuenta" path="/html/jsp/productos/seleccionCuentaBancaria.jsp"/>
-			<forward name="mostrarAnticipos" path="/html/jsp/productos/anticiparImporte.jsp"/>
-			<forward name="guardarAnticipos" path="/html/jsp/productos/anticiparImporte.jsp"/>
-			<forward name="fechaEfectiva" path="/html/jsp/productos/ventanaFechaEfectiva.jsp"/>
 		</action>
 
 		<!-- ***** Productos y Servicios / Informes ***** -->
@@ -2792,7 +2790,6 @@
 			<forward name="listarEJG" path="/html/jsp/gratuita/listadoEJG.jsp"/>
 			<forward name="ver" path="/html/jsp/gratuita/pestanaEJG.jsp"/>
 			<forward name="editar" path="/html/jsp/gratuita/pestanaEJG.jsp"/>
-			<forward name="recogidaDatos" path="/html/jsp/gratuita/datosCartaEJG.jsp"/>
 			<forward name="exitoEJG" path="/html/jsp/gratuita/exitoEJG.jsp"/>
 		</action>
 
@@ -2862,11 +2859,6 @@
 			<forward name="asuntosPersonaJGModal" path="/html/jsp/gratuita/asuntosPersonaJGModal.jsp"/>			
 		</action>
 		
-<!--
-		<action path="/JGR_InteresadoEJG" type="com.siga.gratuita.action.DefinirInteresadoEJGAction" name="DefinirInteresadoEJGForm" scope="request">
-			<forward name="inicio" path="/html/jsp/gratuita/operarInteresadoEJG.jsp"/>
-		</action>
--->
 		<action path="/JGR_InteresadoEJG" type="com.siga.gratuita.action.PersonaJGAction" name="PersonaJGForm" scope="request">
 			<forward name="personaJG" path="/html/jsp/gratuita/personaJG.jsp"/>
 			<forward name="buscarNIF" path="/html/jsp/gratuita/personasJGOculta.jsp"/>			
@@ -3008,8 +3000,7 @@
 			<forward name="busquedaAutomatica" path="/html/jsp/gratuita/recargarModalInsercionEJG.jsp"/>
 			<forward name="listarEJG" path="/html/jsp/gratuita/listadoCAJG_EJG.jsp"/>
 			<forward name="ver" path="/html/jsp/gratuita/pestanaEJG.jsp"/>
-			<forward name="editar" path="/html/jsp/gratuita/pestanaEJG.jsp"/>
-			<forward name="recogidaDatos" path="/html/jsp/gratuita/datosCartaEJG.jsp"/>
+			<forward name="editar" path="/html/jsp/gratuita/pestanaEJG.jsp"/>	
 			<forward name="exitoEJG" path="/html/jsp/gratuita/exitoEJG.jsp"/>
 		</action>
 		<!-- ***** Justicia Gratuita / e_comunicaciones / Gestion ***** -->
@@ -3437,6 +3428,9 @@
 		</action>		
 		
 		<action path="/GEN_Juzgados" type="com.siga.general.JuzgadosAction" scope="request">
+		</action>
+		
+		<action path="/CEN_Censo" type="com.siga.censo.action.CensoAction" scope="request">
 		</action>
 		
 		<action path="/GEN_Comisarias" type="com.siga.general.ComisariasAction" scope="request">

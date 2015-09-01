@@ -4,6 +4,7 @@
  */
 package com.siga.facturacion.action;
 
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -11,28 +12,46 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.List;
+import java.util.Locale;
 import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.transaction.UserTransaction;
 
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.redabogacia.sigaservices.app.util.ReadProperties;
+import org.redabogacia.sigaservices.app.util.SIGAReferences;
 
+import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
+import com.atos.utils.ClsLogging;
+import com.atos.utils.GstDate;
 import com.atos.utils.Row;
+import com.atos.utils.UsrBean;
 import com.siga.Utilidades.PaginadorBind;
+import com.siga.Utilidades.UtilidadesFicheros;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;
+import com.siga.beans.CenColegiadoAdm;
+import com.siga.beans.CenDireccionesAdm;
+import com.siga.beans.CerSolicitudCertificadosAdm;
+import com.siga.beans.CerSolicitudCertificadosBean;
 import com.siga.beans.FacAbonoAdm;
 import com.siga.beans.FacAbonoBean;
 import com.siga.beans.FacFacturaAdm;
 import com.siga.beans.FacFacturaBean;
+import com.siga.envios.Documento;
+import com.siga.envios.form.DefinirEnviosForm;
+import com.siga.facturacion.form.AltaAbonosForm;
 import com.siga.facturacion.form.BusquedaFacturaForm;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
+import com.siga.informes.InformeFactura;
 
 /**
  * @author daniel.campos
@@ -62,11 +81,16 @@ public class BusquedaFacturaAction extends MasterAction {
 					miForm.reset(mapping,request);
 					request.getSession().removeAttribute("DATAPAGINADOR");
 					mapDestino = abrir(mapping, miForm, request, response);						
-				}else if (accion.equalsIgnoreCase("buscarInit")){
+				}
+				else if (accion.equalsIgnoreCase("buscarInit")){
 					miForm.reset(new String[]{"registrosSeleccionados","datosPaginador","seleccionarTodos"});
 					request.getSession().removeAttribute("DATAPAGINADOR");
 					mapDestino = buscarPor(mapping, miForm, request, response); 
-				}else {
+				}else if (accion.equalsIgnoreCase("descargaFacturas")){
+					mapDestino = descargaFacturas(mapping, miForm, request, response); 
+				}
+				
+				else {
 					return super.executeInternal(mapping,
 							      formulario,
 							      request, 
@@ -373,4 +397,249 @@ public class BusquedaFacturaAction extends MasterAction {
 		}
 		return "administrarPestanas";
 	}
+	
+	protected String descargaFacturas(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+
+		try {
+
+			UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");
+			String idInstitucion = user.getLocation();
+			FacFacturaAdm facturaAdm = new FacFacturaAdm(user);
+			CenDireccionesAdm direccionAdm = new CenDireccionesAdm(this.getUserBean(request));
+			BusquedaFacturaForm form = (BusquedaFacturaForm) formulario;
+			String datosFacturas = form.getFacturas();
+			InformeFactura inf = new InformeFactura(user);
+			StringBuilder errores = new StringBuilder("");
+			List<Documento> documentosList = new ArrayList<Documento>();
+			if (datosFacturas != null && !datosFacturas.equals("")) {
+				String arrayFacturas[] = datosFacturas.split(";");
+				if (arrayFacturas.length < 1) {
+					throw new SIGAException("Error al obtener las facturas");
+				}
+
+				for (int i = 0; i < arrayFacturas.length; i++) {
+					StringBuilder datosSolicitudError = null;
+					File filePDF = null;
+					String datosFactura = arrayFacturas[i];
+
+					String idFactura = datosFactura.substring(0, datosFactura.indexOf("||"));
+					String numfactura = datosFactura.substring(datosFactura.indexOf("||") + 2, datosFactura.lastIndexOf("||"));
+
+					Hashtable datosFacturaHash = new Hashtable();
+					datosFacturaHash.put(FacFacturaBean.C_IDINSTITUCION, idInstitucion);
+					datosFacturaHash.put(FacFacturaBean.C_IDFACTURA, idFactura);
+					Vector vFactura = facturaAdm.selectByPK(datosFacturaHash);
+					FacFacturaBean idPersona = (FacFacturaBean) vFactura.get(0);
+					String idPersonaFactura = idPersona.getIdPersona().toString();
+					CenColegiadoAdm admCol = new CenColegiadoAdm(this.getUserBean(request));
+					Hashtable htCol = admCol.obtenerDatosColegiado(idInstitucion, idPersonaFactura, this.getUserBean(request).getLanguage());
+					String nColegiado = "";
+					if (htCol != null && htCol.size() > 0) {
+						nColegiado = (String) UtilidadesHash.getString(htCol, "NCOLEGIADO_LETRADO");
+					}
+					Hashtable direccion = direccionAdm.getEntradaDireccionEspecifica(idPersonaFactura, idInstitucion, "" + ClsConstants.TIPO_DIRECCION_FACTURACION);
+					if (direccion.size() == 0) {
+						// Si no hay direccion de despacho (porque es un no colegiado), miramos su direccion de correo
+						direccion = direccionAdm.getEntradaDireccionEspecifica(idPersonaFactura, idInstitucion, "" + ClsConstants.TIPO_DIRECCION_DESPACHO);
+					}
+					if (direccion.size() == 0) {
+						direccion = direccionAdm.getEntradaDireccionEspecifica(idPersonaFactura, idInstitucion, "" + ClsConstants.TIPO_DIRECCION_CENSOWEB);
+					}
+					if (direccion.size() > 0) {
+						ClsLogging.writeFileLog("ANTES DE LA GENERACION DE LA FACTURA. ", 10);
+						filePDF = inf.generarFacturaFirmada(request, user.getLanguage().toUpperCase(), idInstitucion, idFactura, nColegiado);
+						if (filePDF == null) {
+							datosSolicitudError = new StringBuilder();
+							datosSolicitudError.append("[Num. Factura:");
+							datosSolicitudError.append(numfactura);
+							datosSolicitudError.append("],");
+							errores.append(datosSolicitudError);
+							
+						} else {
+							filePDF.deleteOnExit();
+							ClsLogging.writeFileLog("DESPUES DE LA GENERACION DE LA FACTURA: " + filePDF.getAbsolutePath(), 10);
+							ClsLogging.writeFileLog("Existe el fichero: " + ((filePDF.exists()) ? "SI" : "NO"), 10);
+						}
+					} else {
+						datosSolicitudError = new StringBuilder();
+						datosSolicitudError.append("[Num. Factura:");
+						datosSolicitudError.append(numfactura);
+						datosSolicitudError.append("],");
+						
+						errores.append(datosSolicitudError);
+					}
+					if (datosSolicitudError == null) {
+						Documento documento = new Documento(filePDF, filePDF.getName());
+						documentosList.add(documento);
+					}
+
+				}
+			}
+			
+			if (documentosList.size() > 0) {
+				if(documentosList.size()==1){
+					request.setAttribute("nombreFichero", documentosList.get(0).getDescripcion());
+					request.setAttribute("rutaFichero",  documentosList.get(0).getDocumento().getPath());
+				}else{
+					ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+					StringBuilder pathDirectorioTemporal = new StringBuilder();
+					
+					pathDirectorioTemporal.append(rp.returnProperty("facturacion.directorioFisicoFacturaPDFJava"));
+					pathDirectorioTemporal.append(rp.returnProperty("facturacion.directorioFacturaPDFJava"));
+					pathDirectorioTemporal.append(ClsConstants.FILE_SEP);
+					pathDirectorioTemporal.append(idInstitucion);
+					pathDirectorioTemporal.append(ClsConstants.FILE_SEP);
+					pathDirectorioTemporal.append("tmp");
+					
+					StringBuilder pathZip = new StringBuilder(pathDirectorioTemporal);
+					File directorio = new File(pathZip.toString());
+					if (!directorio.exists())
+						directorio.mkdir();
+					pathZip.append(File.separatorChar);
+					pathZip.append("Facturas");
+					pathZip.append(GstDate.parseDateToString(new Date(),"yyyyMMdd_hhmm",new Locale("ES")));
+					pathZip.append(".zip");
+					
+					
+					File filezip = UtilidadesFicheros.doZip(pathZip.toString(), documentosList);
+					filezip.deleteOnExit();
+					
+					for (int i=0; i<documentosList.size(); i++) {
+						Documento documento = documentosList.get(i);
+						documento.getDocumento().delete();
+						File carpetaFicheroPdf = new File(documento.getDocumento().getParent());
+						if(carpetaFicheroPdf.listFiles().length==0)
+							carpetaFicheroPdf.delete();
+					}
+					
+					request.setAttribute("nombreFichero", filezip.getName());
+					request.setAttribute("rutaFichero", filezip.getPath());
+					
+					
+				}
+				request.setAttribute("borrarFichero", "true");
+				request.setAttribute("generacionOK", "OK");
+
+			} else {
+				ClsLogging.writeFileLog("No hay ficheros que descargar ", 3);
+			}
+			if (!errores.toString().equals(""))
+				request.setAttribute("avisoFicherosNoGenerado", errores.toString());
+			return "descarga";
+
+		} catch (Exception e) {
+			throwExcp("messages.general.error", new String[] { "modulo.facturacion" }, e, null);
+		}
+		return "exception";
+	}
+	
+	
+	protected String descargaFacturasNew(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+
+		UsrBean userBean = ((UsrBean) request.getSession().getAttribute(("USRBEAN")));
+		UserTransaction tx = userBean.getTransactionLigera();
+		DefinirEnviosForm form = (DefinirEnviosForm) formulario;
+
+		ReadProperties rp = new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+
+		try {
+
+			// Obtenemos el certificado
+			CerSolicitudCertificadosAdm admCer = new CerSolicitudCertificadosAdm(userBean);
+			CerSolicitudCertificadosAdm admSolicitud = new CerSolicitudCertificadosAdm(userBean);
+			StringBuilder pathDirectorioTemporal = new StringBuilder(admSolicitud.getRutaCertificadoDirectorioBD(2000));
+			pathDirectorioTemporal.append(ClsConstants.FILE_SEP);
+			pathDirectorioTemporal.append("tmp");
+			List<Documento> documentosList = new ArrayList<Documento>();
+			List<CerSolicitudCertificadosBean> cerSolicitudCertificadosBeans = new ArrayList<CerSolicitudCertificadosBean>();
+			StringBuilder errores = new StringBuilder("");
+			String[] lineas = form.getIdsParaEnviar().split(";");
+			for (int i = 0; i < lineas.length; i++) {
+				StringBuilder datosSolicitudError = null;
+				try {
+					String[] campos = lineas[i].split("%%");
+					String nombreSolicitud = "";
+					if (campos.length > 1) {
+						String idInstitucion = campos[6];
+
+						String idSolicitud = campos[1];
+
+						Hashtable<String, Object> htSolicitud = new Hashtable<String, Object>();
+						htSolicitud.put(CerSolicitudCertificadosBean.C_IDINSTITUCION, idInstitucion);
+						htSolicitud.put(CerSolicitudCertificadosBean.C_IDSOLICITUD, idSolicitud);
+
+						Vector vDatos = admSolicitud.selectByPK(htSolicitud);
+
+						CerSolicitudCertificadosBean beanSolicitud = (CerSolicitudCertificadosBean) vDatos.elementAt(0);
+
+						File certificadoFile = admSolicitud.recuperarCertificado(beanSolicitud);
+						
+						
+
+						if (certificadoFile == null || !certificadoFile.exists()) {
+							datosSolicitudError = new StringBuilder();
+							datosSolicitudError.append("[Institucion:");
+							datosSolicitudError.append(idInstitucion);
+							datosSolicitudError.append(", solicitud:");
+							datosSolicitudError.append(idSolicitud);
+							datosSolicitudError.append("],");
+							errores.append(datosSolicitudError);
+							throw new SIGAException("messages.general.error.ficheroNoExiste");
+						}
+						
+						
+						
+						beanSolicitud.setFechaDescarga("SYSDATE");
+						Documento certificado = new Documento(certificadoFile,admSolicitud.getNombreFicheroSalida(beanSolicitud));
+						documentosList.add(certificado);
+						beanSolicitud.setCertificado(certificado);
+						cerSolicitudCertificadosBeans.add(beanSolicitud);
+						
+
+						
+					}
+
+				} catch (SIGAException e) {
+					ClsLogging.writeFileLog("Error descarga Certificado" + datosSolicitudError.toString() + " Error: " + e.getLiteral(userBean.getLanguage()), 3);
+				}
+			}
+			tx.begin();
+			for (CerSolicitudCertificadosBean cerSolicitudCertificadosBean : cerSolicitudCertificadosBeans) {
+
+				if (!admSolicitud.updateDirect(cerSolicitudCertificadosBean)) {
+					throw new ClsExceptions("Error al actualizar la fecha de descarga: " + admSolicitud.getError());
+				}
+			}
+			tx.commit();
+			String aviso = null;
+			
+			if (documentosList.size() > 0) {
+				
+				StringBuilder pathZip = new StringBuilder(pathDirectorioTemporal);
+				File directorio = new File(pathZip.toString());
+				if (!directorio.exists())
+					directorio.createNewFile();
+				pathZip.append(File.separatorChar);
+				pathZip.append("Certificados.zip");
+
+				File filezip = UtilidadesFicheros.doZip(pathZip.toString(), documentosList);
+				filezip.deleteOnExit();
+				request.setAttribute("nombreFichero", filezip.getName());
+				request.setAttribute("rutaFichero", filezip.getPath());
+				request.setAttribute("borrarFichero", "true");
+				request.setAttribute("generacionOK", "OK");
+
+			} else {
+				ClsLogging.writeFileLog("No hay ficheros que descargar ", 3);
+			}
+			if (!errores.toString().equals(""))
+				request.setAttribute("avisoFicherosNoGenerado", errores.toString());
+			return "descarga";
+
+		} catch (Exception e) {
+			this.throwExcp("messages.general.error", new String[] { "modulo.envios" }, e, tx);
+		}
+		return "exception";
+	}
+	
 }

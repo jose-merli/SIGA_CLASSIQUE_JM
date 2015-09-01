@@ -478,13 +478,40 @@ public class BusquedaExpedientesForm extends MasterForm {
 	public void setIdMateria(String idMateria) {
 		UtilidadesHash.set(this.datos,"idMateria", idMateria);
 	}
+	
+	
+ 	public String getFechaEstadoDesde () 	{ 
+ 		return UtilidadesHash.getString(this.datos, "FechaEstadoDesde");		
+ 	}
+ 	
+ 	public void setFechaEstadoDesde (String dato) { 
+ 		try {
+ 			UtilidadesHash.set(this.datos,"FechaEstadoDesde", dato);
+ 		} catch (Exception e) {
+ 			// escribimos la traza de momento
+ 			e.printStackTrace();
+ 		}
+ 	}
+ 		
+ 	public String getFechaEstadoHasta () 	{ 
+ 		return UtilidadesHash.getString(this.datos, "FechaEstadoHasta");		
+ 	}
+ 	
+ 	public void setFechaEstadoHasta (String dato) { 
+ 		try {
+ 			UtilidadesHash.set(this.datos,"FechaEstadoHasta", dato);
+ 		} catch (Exception e) {
+ 			// escribimos la traza de momento
+ 			e.printStackTrace();
+ 		}
+ 	} 	
+	
 	private String otrasPretensiones="";
 	// OTRAS FUNCIONES 
 	String idPretension;
 	String idProcedimiento;
 	String idInstProcedimiento;
 	String idInstJuzgado;
-
 
 	public String getOtrasPretensiones() {
 		return otrasPretensiones;
@@ -516,6 +543,5 @@ public class BusquedaExpedientesForm extends MasterForm {
 	public void setIdInstJuzgado(String idInstJuzgado) {
 		this.idInstJuzgado = idInstJuzgado;
 	}
-	
 
 }

@@ -83,6 +83,7 @@ public enum ActionButtonsConstants {
 	LOG_FACTURACION ("lf","general.boton.descargaLogFacturacion","descargaLogFacturacion()",69),
 	CERRAR ("c","general.boton.close","accionCerrar()",70),
 	ENVIAR_SEL ("es","general.boton.enviarSel","accionEnviarSel()",71),
+	
 	VALIDA_REMESA("val","general.boton.validarRemesa","validarRemesa(this)", "idButtonValidarRemesa",71),
 	ENVIO_FTP ("ftp","general.boton.envioFTP","envioFTP(this)", "idButtonEnvioFTP",72),
 	RESPUESTA_FTP ("respFTP","general.boton.respuestaFTP","respuestaFTP(this)", "idButtonRespuestaFTP",73),
@@ -106,7 +107,11 @@ public enum ActionButtonsConstants {
 	RECALCULAR_FACTURACION ("rf","general.boton.recalcularFacturacion","accionRecalcularFacturacion()",89),
 	PAGAR_ABONOS_BANCO("pgban","facturacion.abonosPagos.boton.pagoBanco","accionPagarBanco()",90),
 	PAGAR_ABONOS_CAJA("pgcaj","facturacion.abonosPagos.boton.pagoCaja","accionPagarCaja()",91),
-	DESCARGAR_PLANTILLA("dp","general.boton.descargar.plantilla","accionDescargarPlantilla()","idButtonDescPlant",92);
+	DESCARGAR_PLANTILLA("dp","general.boton.descargar.plantilla","accionDescargarPlantilla()","idButtonDescPlant",92),
+	DESCARGAR_SEL ("dse","facturacion.facturasMasivo.descarga","accionDescargarSel()",93);
+	
+
+	
     private final String valor;   
 	private final String label;   
     private final String accion;

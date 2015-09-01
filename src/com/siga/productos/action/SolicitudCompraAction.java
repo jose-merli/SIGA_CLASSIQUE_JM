@@ -587,6 +587,11 @@ public class SolicitudCompraAction extends MasterAction{
 			UsrBean user=(UsrBean)request.getSession().getAttribute("USRBEAN");				
 				
 			CarroCompra carro = (CarroCompra)request.getSession().getAttribute(CarroCompraAdm.nombreCarro);
+			
+			// JPT (07-07-2015): Si tiene peticion es que ya se ha finalizado anteriormente
+			if (carro.getIdPeticion()!=null) {
+				return this.mostrarCompra(mapping, formulario, request, response);
+			}
 		
 			//Almaceno el carro en sesion con el UsrBean y el NumOperacion:
 			carro.setUsrBean(user);
@@ -615,7 +620,7 @@ public class SolicitudCompraAction extends MasterAction{
 			//Eliminamos de sesion el carro:
 			//request.getSession().removeAttribute(CarroCompraAdm.nombreCarro);		
 			
-			GenParametrosAdm parametrosAdm = new GenParametrosAdm(this.getUserBean(request));
+			GenParametrosAdm parametrosAdm = new GenParametrosAdm(user);
 			String aprobarSolicitud=parametrosAdm.getValor(user.getLocation(), ClsConstants.MODULO_PRODUCTOS, "APROBAR_SOLICITUD_COMPRA", "S");
 			
 			if(!user.isLetrado()&&aprobarSolicitud.equals("S")){
@@ -635,6 +640,7 @@ public class SolicitudCompraAction extends MasterAction{
 						request.setAttribute("ARTICULO",a);
 						if(a.getTipoCertificado()==null || "".equals(a.getTipoCertificado())){ //Si no es certificado
 							gestionSolicitudes.confirmar(mapping,formulario,request,response);
+							
 							//si se confirma la compra, se mostrará el botón de anticipar 
 							//si el artículo tiene como forma de pago "EN METALICO"
 							if (a.getIdFormaPago() != null && a.getIdFormaPago().intValue() == 30){
@@ -642,8 +648,9 @@ public class SolicitudCompraAction extends MasterAction{
 								a.setImporteAnticipado(new Double(0));								
 							}
 						}
+						
 						//mhg - INC_10528_SIGA Si algún producto de la compra es no facturable le pasamos un valor al jsp
-						if(a.getIdFormaPago() == null)
+						if(a.getIdFormaPago()==null)
 							request.setAttribute("noFacturable",true);
 					}
 				}
@@ -1539,24 +1546,41 @@ public class SolicitudCompraAction extends MasterAction{
 			//para poder anticipar importe.
 			ArrayList<Articulo> arrayListaArticulosOrdenada = carro.getArrayListaArticulosOrdenada();	
 			Articulo a = null;
+			boolean comprobarFacturacion = true;
 			for(int i=0; i<arrayListaArticulosOrdenada.size(); i++){
 				a=(Articulo)arrayListaArticulosOrdenada.get(i);
 				//Si no es certificado y se puede anticipar
 				if( (a.getTipoCertificado()==null || "".equals(a.getTipoCertificado())) && 
-					a.getAnticipar() != null && a.getAnticipar().booleanValue()) {
-					String tipo = Articulo.CLASE_PRODUCTO == a.getClaseArticulo() ? "P" : "S";
-					String aux[] = EjecucionPLs.ejecutarF_SIGA_COMPROBAR_ANTICIPAR(
-							a.getIdInstitucion().toString(), 
-							a.getIdTipo().toString(), 
-							a.getIdArticulo().toString(), 
-							a.getIdArticuloInstitucion().toString(), 
-							tipo, 
-							a.getIdPeticion().toString(),
-							carro.getIdPersona().toString(),
-							a.getPrecio().toString() + "#" + a.getValorIva().toString());
-					if (aux != null){
-						a.setAnticipar(Boolean.valueOf("1".equals(aux[0])));
-						a.setImporteAnticipado(Double.valueOf(aux[1]));
+					a.getAnticipar()!=null && a.getAnticipar().booleanValue()) {
+					
+					if (comprobarFacturacion && a.getIdFormaPago()!=null) {// Compruebo que es un producto facturable
+						comprobarFacturacion = false;
+						
+						// Obtengo las facturas de la peticion de compra o suscripcion
+						FacFacturaAdm admFactura = new FacFacturaAdm(usr);
+						Vector<Hashtable<String,Object>> vFacturas = admFactura.obtenerFacturasFacturacionRapida(a.getIdInstitucion().toString(), a.getIdPeticion().toString(), null);
+		        	
+						if (vFacturas!=null && vFacturas.size()>0) { // Compruebo si se ha facturado							
+							request.setAttribute("PYS_Facturado",Boolean.TRUE);	
+						}
+					}
+
+					// JPT (20-07-2015): Solo se puede anticipar productos
+					if (Articulo.CLASE_PRODUCTO == a.getClaseArticulo()) {
+						String aux[] = EjecucionPLs.ejecutarF_SIGA_COMPROBAR_ANTICIPAR(
+								a.getIdInstitucion().toString(), 
+								a.getIdTipo().toString(), 
+								a.getIdArticulo().toString(), 
+								a.getIdArticuloInstitucion().toString(), 
+								"P", 
+								a.getIdPeticion().toString(),
+								carro.getIdPersona().toString(),
+								a.getPrecio().toString() + "#" + a.getValorIva().toString());
+						
+						if (aux!=null && aux.length>0 && aux[0]!=null && !aux[0].startsWith("-")) {
+							a.setAnticipar(Boolean.valueOf("1".equals(aux[0])));
+							a.setImporteAnticipado(Double.valueOf(aux[1]));
+						}
 					}
 				}
 			}

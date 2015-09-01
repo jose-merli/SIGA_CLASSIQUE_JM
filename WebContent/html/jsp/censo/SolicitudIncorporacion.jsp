@@ -85,7 +85,7 @@
 			if(document.getElementById("tipoIdentificacion").value==""){
 				errores += "<siga:Idioma key='errors.required' arg0='censo.SolicitudIncorporacion.literal.nifcif'/>"+ '\n';
 			}
-			if(document.getElementById("tipoDon").value==""){
+			if(document.getElementById("tipoDon").value==""  && jQuery("#labelTratamiento").css('visibility') != "hidden"){
 				errores += "<siga:Idioma key='errors.required' arg0='censo.SolicitudIncorporacion.literal.tratamiento'/>" + '\n';
 			}
 			if(document.getElementById("nombre").value==""){
@@ -96,9 +96,6 @@
 			}
 			if(document.getElementById("fechaNacimiento").value==""){
 				errores += "<siga:Idioma key='errors.required' arg0='censo.SolicitudIncorporacion.literal.fechaNacimiento'/>" + '\n';
-			}
-			if(document.getElementById("sexo").value=="0"){
-				errores += "<siga:Idioma key='errors.required' arg0='censo.consultaDatosGenerales.literal.sexo'/>" + '\n';
 			}
 			if(document.getElementById("domicilio").value==""){
 				errores += "<siga:Idioma key='errors.required' arg0='censo.SolicitudIncorporacion.literal.domicilio'/>" + '\n';
@@ -289,6 +286,7 @@
 			document.getElementById("modo").value = "";
 			document.getElementById("SolicitudIncorporacionForm").reset();
 			cargaPais("");
+			obtenerTratamientos ('0','');
 		}
 	}
 	
@@ -979,10 +977,67 @@
 				elementoPoblacionDiv.hide();
 			}		
 		} 
-	} 			
+	} 	
+	
+	//Función encargada de obtener los tratamientos a partir del sexo seleccionado
+	
+	function obtenerTratamientos (idSexo,idTratamiento){
+		//Limpiamos el combo tratamiento para que no se sumen los resultados
+				jQuery("#tratamiento").html("");
+					
+					jQuery.ajax({  
+				           type: "POST",
+				           url: "/SIGA/CEN_Censo.do?modo=getTratamientoAPartirDelSexo",
+				           data: "idSexo="+idSexo,
+				           dataType: "json",
+				           success:  function(json) {
+				        	
+				        	   jQuery("#tratamiento").append('<option value="">'+"--Seleccionar"+'</option>');
+				           
+				        		jQuery.each(json, function(index, value) {
+				        			jQuery("#tratamiento").append('<option value='+value.id+'>'+value.descripcion+'</option>');
+				        		   });
+				        		
+				        		// Realizado para que se marque por defecto un valor cada vez que se cambie de sexo
+				        		//Si tratamiento trae valor.
+				        	
+				        		if(idTratamiento != null && idTratamiento !=""){
+				        			jQuery('#tratamiento > option[value='+idTratamiento+']').attr('selected', 'selected');
+					        		jQuery('#textTratamiento').val(jQuery("#tratamiento option:selected").text());
+				        		}else{//Si no trae valor por defecto si es mujer tendrá que salir seleccionado Sra, si es hombre Sr.
+				        			
+				        			var id_sr = "<%=ClsConstants.ID_SR%>";
+				        			var id_sra = "<%=ClsConstants.ID_SRA%>";
+				        			var id_sr_sra = "<%=ClsConstants.ID_SR_SRA%>";
+				        			
+				        			if(idSexo == "<%=ClsConstants.GENERO_HOMBRE%>"){
+				        				jQuery('#tratamiento > option[value='+id_sr+']').attr('selected', 'selected');
+						        		jQuery('#textTratamiento').val(jQuery("#tratamiento option:selected").text());
+				        			}else{
+				        				if(idSexo == "<%=ClsConstants.GENERO_MUJER%>"){
+				        					jQuery('#tratamiento > option[value='+id_sra+']').attr('selected', 'selected');
+							        		jQuery('#textTratamiento').val(jQuery("#tratamiento option:selected").text());
+				        				}else{//Neutro
+				        					
+				        		
+				        					jQuery('#tratamiento > option[value='+id_sr_sra+']').attr('selected', 'selected');
+							        		jQuery('#textTratamiento').val(jQuery("#tratamiento option:selected").text());
+				        				};
+				        			}
+				        		}
+				        		
+				        		
+				           },
+				           error: function(xml,msg){
+				        	   alert("Error: "+msg);
+				           }
+				        }); 
+			
+			
+	}
 </script>
 
-<body onLoad="cargaPais('');">
+<body onLoad="cargaPais('');obtenerTratamientos ('0','');">
 	<html:form action="/SIN_SolicitudIncorporacion.do" focus="tipoSolicitud" styleId="SolicitudIncorporacionForm">
 		<html:hidden styleId="modo" property="modo" value="" />
 		<html:hidden property="editarIdSolicitud" styleId="editarIdSolicitud" value="" />
@@ -1041,7 +1096,7 @@
 					<td class="labelText">
 						<siga:Idioma key='censo.SolicitudIncorporacion.literal.nifcif'/>&nbsp;(*)
 					</td>
-					<td colspan="5">
+						<td colspan="5">
 						<siga:Select id="tipoIdentificacion" 
 								queryId="getTiposIdentificacionSinCIFNiOtros"
 								width="100"
@@ -1061,35 +1116,46 @@
 							<img src="<html:rewrite page='/html/imagenes/comprobar.gif'/>" border="0" onclick="obtenerLetra();" style="cursor:hand" height="20px">
 						</span>
 					</td>
+					
 				</tr>				
-				<tr>		
+				<tr>	
 					<td class="labelText">
-						<siga:Idioma key='censo.SolicitudIncorporacion.literal.tratamiento'/>&nbsp;(*)
+						<siga:Idioma key='censo.consultaDatosGenerales.literal.sexo'/>
 					</td>
 					<td>
-						<siga:ComboBD nombre="tipoDon" tipo="tratamiento" ancho="100" clase="<%=estiloCombo%>" obligatorio="true" />
-					</td>				
-					
+						<html:select name="SolicitudIncorporacionForm" property="sexo" style="width:115px" styleClass="<%=estiloCombo%>" onchange="obtenerTratamientos(this.value,'')" >
+					        <html:option value="0" >&nbsp;</html:option>
+							<html:option value="<%=ClsConstants.TIPO_SEXO_HOMBRE%>"><siga:Idioma key="censo.sexo.hombre"/></html:option>
+							<html:option value="<%=ClsConstants.TIPO_SEXO_MUJER%>"><siga:Idioma key="censo.sexo.mujer"/></html:option>
+						</html:select>	
+					</td>
 					<td class="labelText">
 						<siga:Idioma key='censo.SolicitudIncorporacion.literal.nombre'/>&nbsp;(*)
 					</td>
 					<td>
-						<html:text property="nombre" style="width:170" maxlength="100" styleClass="<%=estiloBox%>" value=""/>
+						<html:text property="nombre" style="width:100px" maxlength="100" styleClass="<%=estiloBox%>" value=""/>
 					</td>						
 					
 					<td class="labelText">
 						<siga:Idioma key='censo.consultaDatosGenerales.literal.apellidos'/>&nbsp;(*)
 					</td>
 					<td>
-						<html:text property="apellido1" style="width:170" maxlength="100" styleClass="<%=estiloBox%>" value=""/>
+						<html:text property="apellido1" style="width:160px" maxlength="100" styleClass="<%=estiloBox%>" value=""/>
 					</td>
 					<td>
-						<html:text property="apellido2" style="width:170" maxlength="100" styleClass="<%=estiloBox%>" value=""/>
+						<html:text property="apellido2" style="width:160px" maxlength="100" styleClass="<%=estiloBox%>" value=""/>
 					</td>
 				</tr>
 				<tr>
+					<td class="labelText" id="labelTratamiento">
+						<siga:Idioma key='censo.SolicitudIncorporacion.literal.tratamiento' />&nbsp;(*)
+					</td>
+					<td id="comboTratamiento">
+						<html:select styleId="tratamiento" styleClass="boxCombo" style="width:115px;" property="tipoDon" >		
+						</html:select>
+					</td>	
 					<td class="labelText">
-						<siga:Idioma key='censo.SolicitudIncorporacion.literal.fechaNacimiento'/>&nbsp;(*)
+						<siga:Idioma key='censo.SolicitudIncorporacion.literal.FNacimiento'/>&nbsp;(*)
 					</td>						
 					<td>
 						<siga:Fecha nombreCampo="fechaNacimiento" valorInicial=""/>
@@ -1099,18 +1165,7 @@
 						<siga:Idioma key='censo.SolicitudIncorporacion.literal.estadoCivil'/>
 					</td>
 					<td>
-						<siga:ComboBD nombre="estadoCivil" tipo="estadoCivil" ancho="100" clase="<%=estiloCombo%>" />
-					</td>
-					
-					<td class="labelText">
-						<siga:Idioma key='censo.consultaDatosGenerales.literal.sexo'/>&nbsp;(*)
-					</td>
-					<td>
-						<html:select name="SolicitudIncorporacionForm" property="sexo" style="width:75px" styleClass="<%=estiloCombo%>" >
-					        <html:option value="0" >&nbsp;</html:option>
-							<html:option value="<%=ClsConstants.TIPO_SEXO_HOMBRE%>"><siga:Idioma key="censo.sexo.hombre"/></html:option>
-							<html:option value="<%=ClsConstants.TIPO_SEXO_MUJER%>"><siga:Idioma key="censo.sexo.mujer"/></html:option>
-						</html:select>	
+						<siga:ComboBD nombre="estadoCivil" tipo="estadoCivil" ancho="120" clase="<%=estiloCombo%>" />
 						&nbsp;&nbsp;
 						<span class="labelText">
 						<siga:Idioma key='censo.SolicitudIncorporacion.literal.naturalDe'/>

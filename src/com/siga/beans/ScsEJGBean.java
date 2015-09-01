@@ -33,6 +33,7 @@ public class ScsEJGBean extends MasterBean{
 	private String	delitos;
 	private String	dictamen;
 	private String	fechaDictamen;
+	private String  descripcionDictamen;
 	private String	ratificacionDictamen;
 	private String	fechaRatificacion;
 	private Integer idTipoDictamenEJG;
@@ -67,6 +68,7 @@ public class ScsEJGBean extends MasterBean{
 	private String fechaPresentacionPonente;
 	
 	private Integer idTipoRatificacionEJG;
+	private String nombreTipoRatificacionEJG;
 
  	private String fechaAuto;
 	private String fechaNotificacion;
@@ -77,6 +79,7 @@ public class ScsEJGBean extends MasterBean{
 
 	private Integer idFundamentoJuridico;
 	private Integer idTipoResolAuto;
+	private String  nombreTipoResolAuto;
 	private Integer idTipoSentidoAuto;
  
 	private String numeroDiligencia;
@@ -1067,8 +1070,23 @@ public class ScsEJGBean extends MasterBean{
 	public void setMaestroEstadoEJG(ScsMaestroEstadosEJGBean maestroEstadoEJG) {
 		this.maestroEstadoEJG = maestroEstadoEJG;
 	}
-	
-	
-	
+	public String getNombreTipoRatificacionEJG() {
+		return nombreTipoRatificacionEJG;
+	}
+	public void setNombreTipoRatificacionEJG(String nombreTipoRatificacionEJG) {
+		this.nombreTipoRatificacionEJG = nombreTipoRatificacionEJG;
+	}
+	public String getNombreTipoResolAuto() {
+		return nombreTipoResolAuto;
+	}
+	public void setNombreTipoResolAuto(String nombreTipoResolAuto) {
+		this.nombreTipoResolAuto = nombreTipoResolAuto;
+	}
+	public String getDescripcionDictamen() {
+		return descripcionDictamen;
+	}
+	public void setDescripcionDictamen(String descripcionDictamen) {
+		this.descripcionDictamen = descripcionDictamen;
+	}
 	
 }

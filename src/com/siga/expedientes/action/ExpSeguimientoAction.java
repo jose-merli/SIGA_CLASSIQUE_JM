@@ -16,7 +16,6 @@ import javax.servlet.http.HttpSession;
 import javax.transaction.UserTransaction;
 
 import org.apache.struts.action.ActionMapping;
-import org.redabogacia.sigaservices.app.AppConstants.PARAMETRO;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
@@ -342,8 +341,7 @@ public class ExpSeguimientoAction extends MasterAction {
 		    ExpSeguimientoForm form = (ExpSeguimientoForm)formulario;
 		    form.setDescripcion("");
 		  //metemos al formulario la fecha de hoy por defecto
-			GstDate gstDate = new GstDate();
-			String fecha = gstDate.parseDateToString(new Date(),"dd/MM/yyyy", this.getLocale(request)); 
+			String fecha = GstDate.parseDateToString(new Date(),"dd/MM/yyyy", this.getLocale(request)); 
 			form.setFecha(fecha);
 			
 		    

@@ -635,17 +635,22 @@ public class DevolucionesAction extends MasterAction {
 					}
 				}
 				
+			} else if (codretorno.equals("5420")) {
+				tx.rollback();		
+				request.setAttribute("mensaje", resultado[1]);
+				return "nuevo";					
+				
 			} else if(codretorno.equalsIgnoreCase("5397")){ // El fichero no se ha encontrado.
 				tx.rollback();
 				request.setAttribute("mensaje","facturacion.nuevoFichero.literal.confirmarReintentar");
 				return "mostrarVentana";
 				
-			} else 	if (codretorno.equals("5404")) {
+			} else if (codretorno.equals("5404")) {
 				tx.rollback();		
 				request.setAttribute("mensaje", "facturacion.devolucionManual.error.fechaDevolucion");
 				return "nuevo";
 				
-			} else 	if (codretorno.equals("5405")) {
+			} else if (codretorno.equals("5405")) {
 				tx.rollback();		
 				request.setAttribute("mensaje", "facturacion.devolucionManual.error.importeDevolucion");
 				return "nuevo";				
@@ -908,17 +913,22 @@ public class DevolucionesAction extends MasterAction {
 					}
 				}	
 				
+			} else if (codretorno.equals("5420")) {
+				tx.rollback();		
+				request.setAttribute("mensaje", resultado[1]);
+				return "nuevo";					
+				
 			} else if(codretorno.equalsIgnoreCase("5397")){ // El fichero no se ha encontrado.
 				tx.rollback();
 				request.setAttribute("mensaje","facturacion.nuevoFichero.literal.confirmarReintentar");
 				return "mostrarVentana";
 				
-			} else 	if (codretorno.equals("5404")) {
+			} else if (codretorno.equals("5404")) {
 				tx.rollback();		
 				request.setAttribute("mensaje", "facturacion.devolucionManual.error.fechaDevolucion");
 				return "nuevo";
 				
-			} else 	if (codretorno.equals("5405")) {
+			} else if (codretorno.equals("5405")) {
 				tx.rollback();		
 				request.setAttribute("mensaje", "facturacion.devolucionManual.error.importeDevolucion");
 				return "nuevo";				

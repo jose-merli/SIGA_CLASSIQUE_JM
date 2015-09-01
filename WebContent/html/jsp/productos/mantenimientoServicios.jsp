@@ -355,10 +355,10 @@
 									</td>
 									<td class="labelText" colspan="3">
 										<% if (modo=="insertar"){%>
-											<html:text property="cuentaContable" styleClass="box" size="20" value="" />
+											<html:text property="cuentaContable" styleClass="box" size="20" maxlength="20" value="" />
 										<% } else { %>
 											<% if (modo=="modificar"){ %>
-												<html:text property="cuentaContable" styleClass="box" size="20" value="<%=row.getString(PysServiciosInstitucionBean.C_CUENTACONTABLE)%>" />
+												<html:text property="cuentaContable" styleClass="box" size="20" maxlength="20" value="<%=row.getString(PysServiciosInstitucionBean.C_CUENTACONTABLE)%>" />
 												
 											<% } else { %>
 												<html:text property="cuentaContable" styleClass="boxConsulta" size="20" value="<%=row.getString(PysServiciosInstitucionBean.C_CUENTACONTABLE)%>" readonly="true" />
@@ -373,11 +373,11 @@
 										</td>
 										<td class="labelText">
 											<% if (modo=="insertar"){%>
-									  			<html:text property="descripcion" styleClass="box" size="30" />
+									  			<html:text property="descripcion" styleClass="box" size="30" maxlength="100" />
 									  			
 									  		<% } else { %>
 												<% if (modo=="modificar"){ %>
-													<html:text property="descripcion" styleClass="box" size="30" value="<%=row.getString(PysServiciosInstitucionBean.C_DESCRIPCION)%>" />
+													<html:text property="descripcion" styleClass="box" size="30" maxlength="100" value="<%=row.getString(PysServiciosInstitucionBean.C_DESCRIPCION)%>" />
 													
 												<% } else { %>
 													<html:text property="descripcion" styleClass="boxConsulta" size="30" value="<%=row.getString(PysServiciosInstitucionBean.C_DESCRIPCION)%>" readonly="true" />

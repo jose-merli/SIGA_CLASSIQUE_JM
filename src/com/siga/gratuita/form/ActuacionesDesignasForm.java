@@ -2,7 +2,8 @@ package com.siga.gratuita.form;
 
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.general.MasterForm;
-
+import com.siga.beans.ScsEJGBean;
+import java.util.List;
 /**
  * @author ruben.fernandez
  * @since 3/2/2005
@@ -46,6 +47,7 @@ public class ActuacionesDesignasForm extends MasterForm {
 	protected String numeroProcedimiento = "NUMEROPROCEDIMIENTO";
 	protected String nig = "NIG";
 	private String idMotivoCambio = "IDMOTIVOCAMBIO";
+	private List<ScsEJGBean> ejgs;  	
 	
 	private boolean fichaColegial = false;
 	public boolean getFichaColegial() {
@@ -495,6 +497,12 @@ public class ActuacionesDesignasForm extends MasterForm {
 
 	public void setIdMotivoCambio(String idMotivoCambio) {		
 		this.datos.put(this.idMotivoCambio, idMotivoCambio);
+	}
+	public List<ScsEJGBean> getEjgs() {
+		return ejgs;
+	}
+	public void setEjgs(List<ScsEJGBean> ejgs) {
+		this.ejgs = ejgs;
 	}	
 
 }

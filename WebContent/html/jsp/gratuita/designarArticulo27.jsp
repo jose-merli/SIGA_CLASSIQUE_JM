@@ -177,7 +177,7 @@
 		}
 		
 		function buscarDesignados (){
-
+			
 			if ((document.getElementById('colegiadoen').value 			== null || document.getElementById('colegiadoen').value == "") &&
 				(document.datosGeneralesForm.numIdentificacion.value 	== null || document.datosGeneralesForm.numIdentificacion.value == "") &&	
 				(document.datosGeneralesForm.nombre.value 				== null || document.datosGeneralesForm.nombre.value == "") &&
@@ -264,12 +264,14 @@
 				
 				datosGeneralesForm.tipoIdentificacion.value = resultado[21]; 
 
-				//Informacion adicional
+				//Informacion adicional				
 				datosGeneralesForm.sexo.value=resultado[14];
+				obtenerTratamientos (resultado[14],resultado[15]);
 				datosGeneralesForm.lugarNacimiento.value=resultado[18];
 				datosGeneralesForm.fechaNacimiento.value=resultado[19];
 				datosGeneralesForm.estadoCivil.value = resultado[22];
 				datosGeneralesForm.idioma.value = resultado[23];
+				
 
 				//Datos direcciones
 				if(resultado[1] != "<%=idInstitucionActual%>"){
@@ -290,7 +292,8 @@
 						document.busquedaCensoModalForm.poblacionValue.value = resultado[8];
 						document.getElementById("poblacion").value = resultado[8];
 						document.getElementById("provincia").value = resultado[9];
-						document.getElementById("provincia").onchange();
+						jQuery("#provinciaText").val(jQuery( "#provincia option:selected" ).text());
+						document.getElementById("provincia").onchange();					
 					}
 					
 					document.getElementById("checkTipoDireccion_4").checked = "checked";
@@ -631,7 +634,7 @@
 	} 		
 
 	function bloquearDireccion(){
-
+	
 		//Datos direccion
 		jQuery("#domicilio").attr("disabled","disabled");
 	   	jQuery("#codigoPostal").attr("disabled","disabled");
@@ -716,6 +719,7 @@
 		document.getElementById("domicilio").value 			= "";
 		document.getElementById("codigoPostal").value 		= "";
 		document.getElementById("pais").value 				= "";
+		jQuery("#provinciaSinAsterisco").show();
 		document.getElementById("provincia").value 			= "";
 		document.getElementById("provincia").onchange();
 		document.getElementById("poblacionExt").value 		= "";
@@ -789,10 +793,11 @@
 
 		if (document.datosGeneralesForm.pais.value != "" && document.datosGeneralesForm.pais.value != idEspana) {
 			datosGeneralesForm.poblacionExt.value=document.datosGeneralesForm.poblacionExt.value;
-			cargarProvincias(document.datosGeneralesForm.pais.value);
+			cargarProvinciasRecargaNoEditable(document.datosGeneralesForm.pais.value);
 		}else{
 			poblacionSeleccionada = document.busquedaCensoModalForm.poblacionValue.value;
-			document.getElementById("provincia").onchange();
+			jQuery("#provinciaText").val(jQuery( "#provincia option:selected" ).text());
+			document.getElementById("provincia").onchange();	
 			jQuery("#poblacion").attr("disabled","disabled");
 		}
 
@@ -859,7 +864,7 @@
 			document.getElementById("textomod").style.display="block";
 			
 			//Se bloquean los datos de direccion. Solo se podrán mdficar en la ficha del letrado.
-			bloquearDireccion();
+			setTimeout(bloquearDireccion,2000);
 		}			
 
 	}
@@ -869,7 +874,6 @@
 	}
 	
 	function postAccionBusquedaNIF(){
-
 		if(document.busquedaCensoModalForm.existeNIF.value != null && document.busquedaCensoModalForm.existeNIF.value == "S"){
 			if (bLoadSelected){				
 				datosGeneralesForm.numIdentificacion.onchange();
@@ -897,12 +901,14 @@
 				}
 			}
 			
-		}else{				
+		}else{			
 			if(datosGeneralesForm.idPersona.value != null && datosGeneralesForm.idPersona.value != ""){ //EXISTE LA PERSONA
 				if(document.busquedaCensoModalForm.multiple.value != null && document.busquedaCensoModalForm.multiple.value != "S"){ //UNICO REGISTRO
 					ponerIconoIdentPersona(true);
 					formatearDocumento();
 					document.getElementById("tipoIdentificacion").value = document.busquedaCensoModalForm.idTipoIdentificacion.value;
+					//sexo
+					obtenerTratamientos(datosGeneralesForm.sexo.value,document.getElementById("tratamiento").value);
 
 					//Datos direcciones
 					if(datosGeneralesForm.idInstitucion.value != "<%=idInstitucionActual%>"){
@@ -914,12 +920,13 @@
 						//Quitamos los salto de linea a la dirección
 						document.getElementById("domicilio").value 			= document.busquedaCensoModalForm.direccion.value.replace(/\r\n|\r|\n/g, " ");
 						
-						selPais(datosGeneralesForm.pais.value);	
+						selPais(datosGeneralesForm.pais.value);						
 						if (datosGeneralesForm.pais.value != "" && datosGeneralesForm.pais.value != idEspana){
 							datosGeneralesForm.poblacionExt.value=datosGeneralesForm.poblacionExt.value;
 							
 						}else{					
 							poblacionSeleccionada = document.busquedaCensoModalForm.poblacionValue.value;
+							jQuery("#provinciaText").val(jQuery( "#provincia option:selected" ).text());
 							document.getElementById("provincia").onchange();
 							document.getElementById("poblacion").value = datosGeneralesForm.poblacion.value;		
 						}
@@ -969,6 +976,8 @@
 					buscarDesignados ();
 				}				
 			}else{ //NO EXISTE LA PERSONA
+				//sexo
+				obtenerTratamientos("0","");
 				ponerIconoIdentPersona(false);
 				limpiarDireccion();
 				if(document.busquedaCensoModalForm.textoAlerta.value != null && document.busquedaCensoModalForm.textoAlerta.value != ""){
@@ -1023,7 +1032,7 @@
 			<%}%>
 		}
 		if (jQuery("#direcciones option").length > 1){
-			bloquearDireccion();
+			setTimeout(bloquearDireccion,2000);
 		}
 		document.busquedaCensoModalForm.poblacionValue.value = "";
 		document.getElementById("direcciones").onchange();
@@ -1035,6 +1044,105 @@
 		jQuery("#colegiadoen").change();
 		datosGeneralesForm.numIdentificacion.onchange();
 	}
+	
+//Función encargada de obtener los tratamientos a partir del sexo seleccionado
+	
+	function obtenerTratamientos (idSexo,idTratamiento){
+		//Limpiamos el combo tratamiento para que no se sumen los resultados
+				jQuery("#tratamiento").html("");
+				
+					jQuery.ajax({  
+				           type: "POST",
+				           url: "/SIGA/CEN_Censo.do?modo=getTratamientoAPartirDelSexo",
+				           data: "idSexo="+idSexo,
+				           dataType: "json",
+				           success:  function(json) {
+				        	
+				        	   jQuery("#tratamiento").append('<option value="">'+"--Seleccionar"+'</option>');
+				           
+				        		jQuery.each(json, function(index, value) {
+				        			jQuery("#tratamiento").append('<option value='+value.id+'>'+value.descripcion+'</option>');
+				        		   });
+				        		
+				        		// Realizado para que se marque por defecto un valor cada vez que se cambie de sexo
+				        		//Si tratamiento trae valor.
+				        	
+				        		if(idTratamiento != null && idTratamiento !=""){
+				        			jQuery('#tratamiento > option[value='+idTratamiento+']').attr('selected', 'selected');
+					        	
+				        		}else{//Si no trae valor por defecto si es mujer tendrá que salir seleccionado Sra, si es hombre Sr.
+				        			
+				        			var id_sr = "<%=ClsConstants.ID_SR%>";
+				        			var id_sra = "<%=ClsConstants.ID_SRA%>";
+				        			var id_sr_sra = "<%=ClsConstants.ID_SR_SRA%>";
+				        			
+				        			if(idSexo == "<%=ClsConstants.GENERO_HOMBRE%>"){
+				        				jQuery('#tratamiento > option[value='+id_sr+']').attr('selected', 'selected');
+						        		
+				        			}else{
+				        				if(idSexo == "<%=ClsConstants.GENERO_MUJER%>"){
+				        					jQuery('#tratamiento > option[value='+id_sra+']').attr('selected', 'selected');
+							        	
+				        				}else{//Neutro
+				        					
+				        		
+				        					jQuery('#tratamiento > option[value='+id_sr_sra+']').attr('selected', 'selected');
+							        		
+				        				};
+				        			}
+				        		}
+				        		
+				        		
+				           },
+				           error: function(xml,msg){
+				        	   alert("Error: "+msg);
+				           }
+				        }); 
+			
+	}
+	
+	function createProvince() {
+		
+			if (trim(document.datosGeneralesForm.pais.value) == idEspana || trim(document.datosGeneralesForm.pais.value) == "" ) {
+				var Primary = document.datosGeneralesForm.codigoPostal.value;
+				if ((Primary == null) || (Primary == "")) {
+					//Inicializamos todo
+					jQuery("#provincia").val(jQuery("#provincia option:first").val());
+					jQuery("#provinciaText").val("");
+					jQuery("#provincia").change();
+					jQuery("#poblacion").html("");
+					return;
+				} 
+				if(Primary.length<5){
+					 var mensaje = "<siga:Idioma key="censo.datosDireccion.literal.cp"/> <siga:Idioma key="messages.cp.tamanyo"/>";
+	 				 alert (mensaje);
+	 				 fin();
+					 return false;
+				}else{
+					var idProvincia	= Primary.substring(0,2);
+					//Comprobamos que exista los dos primeros dígitos del c.p con algún elemento de la lista de provincia
+					if (jQuery("#provincia").val() != idProvincia){
+						if (jQuery("#provincia").find("option[value='"+idProvincia+"']").exists()){
+							jQuery("#provincia").val(idProvincia);
+							jQuery("#provinciaText").val( jQuery("#provincia option:selected").text());
+							jQuery("#poblacion").val(jQuery("#poblacion option:first").val());
+							document.getElementById("provincia").onchange();
+					 	
+						} else {
+							var mensaje = "<siga:Idioma key="censo.datosDireccion.noSeEncuentraProvincia"/>";
+			 				alert (mensaje+document.datosGeneralesForm.codigoPostal.value);
+							//Inicializamos todo
+							jQuery("#provincia").val(jQuery("#provincia option:first").val());
+							jQuery("#provinciaText").val("");
+							jQuery("#provincia").change();
+							fin();
+						 	return false;
+						}
+					} 
+				}
+			
+			}
+		}       
 		</script>
 
 	</head>
@@ -1172,7 +1280,7 @@
 							<siga:Idioma key="censo.consultaDatosGenerales.literal.sexo" />&nbsp;
 						</td>
 						<td class="ocultar" id="sexoConAsterisco">
-							<siga:Idioma key="censo.consultaDatosGenerales.literal.sexo" />&nbsp;(*)
+							<siga:Idioma key="censo.consultaDatosGenerales.literal.sexo" />&nbsp;
 						</td>						
 
 						<td>
@@ -1181,14 +1289,21 @@
 							if (sexo.equals(ClsConstants.TIPO_SEXO_HOMBRE)) ssexo = UtilidadesString.getMensajeIdioma(user, "censo.sexo.hombre");
 							if (sexo.equals(ClsConstants.TIPO_SEXO_MUJER)) ssexo = UtilidadesString.getMensajeIdioma(user, "censo.sexo.mujer"); %>
 							<!-- option select -->
-							<html:select name="datosGeneralesForm" property="sexo" styleId="sexo" style = "null" styleClass = "<%=estiloCaja %>" value="<%=sexo %>"  readonly="<%=breadonly %>" >
+							<html:select name="datosGeneralesForm" property="sexo" styleId="sexo" style = "null" styleClass = "<%=estiloCaja %>" value="<%=sexo %>"  readonly="<%=breadonly %>" onchange="obtenerTratamientos(this.value,'')">
 							    <html:option value="0" >&nbsp;</html:option>
 								<html:option value="<%=ClsConstants.TIPO_SEXO_HOMBRE %>" ><siga:Idioma key="censo.sexo.hombre"/></html:option>
 								<html:option value="<%=ClsConstants.TIPO_SEXO_MUJER %>" ><siga:Idioma key="censo.sexo.mujer"/></html:option>
 							</html:select>						
 						</td>
 					</tr>
-					<tr>		
+					<tr>	
+						<!-- IDIOMA -->
+						<td class="labelText">
+							<siga:Idioma key="censo.consultaDatosGenerales.literal.idiomacomunicaciones"/>&nbsp;(*)
+						</td>
+						<td>
+							<siga:ComboBD nombre = "idioma" tipo="cmbIdiomaInstitucion" parametro="<%=institucionParam%>" clase="<%=estiloCaja %>" obligatorio="true" elementoSel="<%=idiomaSel %>"  readonly="<%=readonly %>" />
+						</td>	
 						<!-- TRATAMIENTO -->
 						<td class="labelText" style="width:170px">
 							<siga:Idioma key="censo.consultaDatosGenerales.literal.tratamiento"/>&nbsp;(*)
@@ -1197,13 +1312,7 @@
 							<siga:ComboBD nombre = "tratamiento" tipo="cmbTratamiento"  clase="<%=estiloCaja %>" obligatorio="true" readonly="<%=readonly %>" />						
 						</td>
 					
-						<!-- IDIOMA -->
-						<td class="labelText">
-							<siga:Idioma key="censo.consultaDatosGenerales.literal.idiomacomunicaciones"/>&nbsp;(*)
-						</td>
-						<td>
-							<siga:ComboBD nombre = "idioma" tipo="cmbIdiomaInstitucion" parametro="<%=institucionParam%>" clase="<%=estiloCaja %>" obligatorio="true" elementoSel="<%=idiomaSel %>"  readonly="<%=readonly %>" />
-						</td>
+					
 					</tr>
 				</table>
 			</siga:ConjCampos>
@@ -1274,15 +1383,6 @@
 							<html:textarea cols="70" rows="2" name="datosGeneralesForm" property="domicilio" styleId="domicilio"
 							onKeyDown="cuenta(this,100)" onChange="cuenta(this,100)" styleClass="box"></html:textarea>
 						</td>
-						<td class="labelText" id="cpSinAsterisco" nowrap>
-							<siga:Idioma key="censo.datosDireccion.literal.cp" />&nbsp;
-						</td>
-						<td class="ocultar" id="cpConAsterisco" nowrap><siga:Idioma
-							key="censo.datosDireccion.literal.cp" />&nbsp;(*)
-						</td>
-						<td>
-							<html:text name="datosGeneralesForm" styleId="codigoPostal" property="codigoPostal" maxlength="5" size="5" styleClass="box"></html:text>
-						</td>
 					</tr>
 
 					<tr>
@@ -1301,19 +1401,32 @@
 					</tr>
 
 					<tr>
+						<td class="labelText" id="cpSinAsterisco" nowrap>
+							<siga:Idioma key="censo.datosDireccion.literal.cp" />&nbsp;
+						</td>
+						<td class="ocultar" id="cpConAsterisco" nowrap><siga:Idioma
+							key="censo.datosDireccion.literal.cp" />&nbsp;(*)
+						</td>
+						<td>
+							<html:text name="datosGeneralesForm" styleId="codigoPostal" property="codigoPostal" maxlength="5" size="5" styleClass="box" onChange="createProvince()"></html:text>
+						</td>
 						<td class="labelText" id="provinciaSinAsterisco">
 							<siga:Idioma key="censo.datosDireccion.literal.provincia" />&nbsp;
 						</td>
-						<td class="ocultar" id="provinciaConAsterisco">
-							<siga:Idioma key="censo.datosDireccion.literal.provincia" />&nbsp;(*)
-						</td>
-						<td id="provinciaEspanola">
+					
+						<td id="provinciaEspanola" style="display: none;">
 							<html:select name="datosGeneralesForm" styleId="provincia" styleClass="boxCombo"  property="provincia" onchange="cargarPoblaciones(this);" style="wdth:150">
 									<html:option value="">&nbsp;</html:option>
 								    <html:optionsCollection name="busquedaCensoModalForm" property="provincias" value="idNombre" label="nombre" />
 							</html:select>							
 						</td>
-						<td class="labelText" id="poblacionSinAsterisco">
+						<td>
+							<input id="provinciaText" class="boxConsulta" type="text" readonly="readonly" tabindex="-1" style="width: 200px" />
+						</td>
+					
+					</tr>
+					<tr>
+							<td class="labelText" id="poblacionSinAsterisco">
 							<siga:Idioma
 							key="censo.datosDireccion.literal.poblacion" />&nbsp;
 						</td>
@@ -1322,7 +1435,7 @@
 							key="censo.datosDireccion.literal.poblacion" />&nbsp;(*)
 						</td>
 						<td id="poblacionEspanola">
-							<html:select name="datosGeneralesForm" styleId="poblacion" styleClass="boxCombo"  property="poblacion" style="width:180">
+							<html:select name="datosGeneralesForm" styleId="poblacion" styleClass="boxCombo"  property="poblacion" style="width:280">
 									<html:option value="-1"><siga:Idioma key="general.combo.seleccionar"/></html:option>
 							</html:select>							
 						</td>
@@ -1603,11 +1716,6 @@
 		   	return false;
 		}
 		
-		if ((datosGeneralesForm.idPersona.value == "" || datosGeneralesForm.idPersona.value==null)  && (datosGeneralesForm.sexo.value=='0' || datosGeneralesForm.sexo.value=='')){
-			alert ('<siga:Idioma key="messages.campos.required"/> <siga:Idioma key="censo.consultaDatosGenerales.literal.sexo"/>');
-		   	return false;
-		}
-		
 		if (trim(document.getElementById("tratamiento").value)=="") {
 			alert ('<siga:Idioma key="messages.campos.required"/> <siga:Idioma key="censo.consultaDatosGenerales.literal.tratamiento"/>');
 		   	return false;
@@ -1764,11 +1872,13 @@
 				jQuery("#provincia").attr("disabled","disabled");
 				document.getElementById("poblacionEspanola").className="ocultar";
 				document.getElementById("poblacionExtranjera").className="";
+				jQuery("#provinciaSinAsterisco").hide();
 	       } else {
 		   		document.getElementById("poblacionExt").value="";
 				jQuery("#provincia").removeAttr("disabled");
 				document.getElementById("poblacionEspanola").className="";
 				document.getElementById("poblacionExtranjera").className="ocultar";
+				jQuery("#provinciaSinAsterisco").show();
 	       }
 	    }
 		
@@ -1784,7 +1894,6 @@
 			document.getElementById("cpSinAsterisco").className="labelText";
 			document.getElementById("cpConAsterisco").className="ocultar";
 			document.getElementById("provinciaSinAsterisco").className="labelText";
-			document.getElementById("provinciaConAsterisco").className="ocultar";
 			document.getElementById("poblacionSinAsterisco").className="labelText";
 			document.getElementById("poblacionConAsterisco").className="ocultar";
 			document.getElementById("paisSinAsterisco").className="labelText";
@@ -1845,6 +1954,29 @@
 						fin();
 						return false;
 					}
+				}else{
+					//Cuando no es obligatorio la dirección postal pero se introduce.
+					var Primary = document.datosGeneralesForm.codigoPostal.value;
+					if(Primary != null && Primary != "" && (Primary.length<5)){
+						 var mensaje = "<siga:Idioma key="censo.datosDireccion.literal.cp"/> <siga:Idioma key="messages.cp.tamanyo"/>";
+		 				 alert (mensaje);
+		 				 fin();
+						 return false;
+					}else{
+						//Si es vacio o españa se comprueba que sea un codigo postal válido, sino se admite cualquier valor
+						if(trim(document.datosGeneralesForm.pais.value)==idEspana || trim(document.datosGeneralesForm.pais.value)==""){
+							var idProvincia	= Primary.substring(0,2);
+							//Comprobamos que exista los dos primeros dígitos del c.p con algún elemento de la lista de provincia
+							if (jQuery("#provincia").val() != idProvincia){
+								if (!jQuery("#provincia").find("option[value='"+idProvincia+"']").exists()){
+									var mensaje = "<siga:Idioma key="censo.datosDireccion.noSeEncuentraProvincia"/>";
+					 				alert (mensaje+document.datosGeneralesForm.codigoPostal.value);
+				 				 	fin();
+								 	return false;
+								} 
+							} 
+						}
+					}	
 				}
 
 				//////////////////////////////////////  FIN VALIDACION TIPO DIRECCION  //////////////////////////////
@@ -1976,11 +2108,48 @@
 				jQuery("#provincia").removeAttr("disabled");
 				jQuery("#poblacionEspanola").show();
 				jQuery("#poblacionExtranjera").hide();
+				jQuery("#provinciaSinAsterisco").show();
+				
+				
 			} else {
+				jQuery("#provinciaText").val("");
 				jQuery("#provincia").attr("disabled", "disabled");
 				jQuery("#provincia").val("-1");
 				jQuery("#poblacionEspanola").hide();
-				jQuery("#poblacionExtranjera").show();
+				jQuery("#poblacionExtranjera").show();		
+				jQuery("#provinciaSinAsterisco").hide();
+				jQuery("#poblacionExt").val("");
+				jQuery("#codigoPostal").val("");
+				jQuery("#poblacion").html("");
+				
+				
+				
+				
+			}
+		}
+		
+		function cargarProvinciasRecargaNoEditable(comboPais){
+			var idPais = jQuery(comboPais).val();
+			if (idPais == idEspana || idPais == ""){
+				restablecerComboPoblacion();
+				jQuery("#provincia").removeAttr("disabled");
+				jQuery("#poblacionEspanola").show();
+				jQuery("#poblacionExtranjera").hide();
+				jQuery("#provinciaSinAsterisco").show();
+				
+				
+			} else {
+				jQuery("#provinciaText").val("");
+				jQuery("#provincia").attr("disabled", "disabled");
+				jQuery("#provincia").val("-1");
+				jQuery("#poblacionEspanola").hide();
+				jQuery("#poblacionExtranjera").show();		
+				jQuery("#provinciaSinAsterisco").hide();
+				jQuery("#poblacion").html("");
+				
+				
+				
+				
 			}
 		}
 		
@@ -2002,7 +2171,7 @@
 						dataType: "json"}).done(function(json){
 							var nombrePoblacion = json.nombrePoblacion;	
 							
-							document.getElementById("poblacionEspanola").innerHTML = "<input type='text' id='poblacion_display' disabled='disabled' value='"+nombrePoblacion+"'/><input type='hidden' name='poblacion' id='poblacion' value='"+document.busquedaCensoModalForm.poblacionValue.value+"'/>";
+							document.getElementById("poblacionEspanola").innerHTML = "<input type='text' class='boxConsulta' style='width: 200px' id='poblacion_display' readonly='readonly' value='"+nombrePoblacion+"'/><input type='hidden' name='poblacion' id='poblacion' value='"+document.busquedaCensoModalForm.poblacionValue.value+"'/>";
 							if (nombrePoblacion == "Error B.D.")
 								recargarPoblacionesDeProvincia(html_idPoblacion, idProvincia);
 						}).fail(function( jqXHR, textStatus, errorThrown){
@@ -2049,7 +2218,7 @@
 			}
 		}
 		
-	    function actualizar(){	     
+	    function actualizar(){			
 		    document.forms[1].modificarPreferencias.value="1";
 		    document.forms[1].modificarDireccionesCensoWeb.value="0";
 		    document.forms[1].control.value="0";   

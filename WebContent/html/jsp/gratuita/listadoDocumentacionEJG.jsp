@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <%@page import="java.util.ArrayList"%>
-<%@page import="org.redabogacia.sigaservices.app.vo.scs.DocumentacionEjgVo"%>
+<%@page import="com.siga.gratuita.vos.SIGADocumentacionEjgVo"%>
 <html>
 <head>
 <!-- listadoDocumentacionEJG.jsp -->
@@ -34,7 +34,6 @@
 	else {
 		botonesFila = "C,E,B";
 	}
-	
 	
 	String informeUnico =(String) request.getAttribute("informeUnico");
 %>
@@ -92,17 +91,13 @@
 		   
   	<% if (obj.size()>0){
 	    	int recordNumber=1;
-	    	while (recordNumber-1 < obj.size())
-			{			
-	    		DocumentacionEjgVo documentacionEjgVo = (DocumentacionEjgVo)obj.get(recordNumber-1);
-					
-				
-										
+	    	while (recordNumber-1 < obj.size())	{			
+	    		SIGADocumentacionEjgVo documentacionEjgVo = (SIGADocumentacionEjgVo)obj.get(recordNumber-1);
 			%>				
 					<siga:FilaConIconos fila='<%=String.valueOf(recordNumber)%>' botones="<%=botonesFila%>" clase="listaNonEdit" >
 					
-					<td><input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_1" value="<%=documentacionEjgVo.getIddocumentacion()%>">
-					<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_2" value="<%=documentacionEjgVo.getIdinstitucion()%>">
+					<td><input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_1" value="<%=documentacionEjgVo.getIdDocumentacion()%>">
+					<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_2" value="<%=documentacionEjgVo.getIdInstitucion()%>">
 					
 					
 							<%=documentacionEjgVo.getFechaLimite()==null||documentacionEjgVo.getFechaLimite().equals("")?"&nbsp;":documentacionEjgVo.getFechaLimite()%>
@@ -114,11 +109,11 @@
 						
 					</td>
 					<td>
-					<%=documentacionEjgVo.getRegentrada()==null||documentacionEjgVo.getRegentrada().equals("")?"&nbsp;":documentacionEjgVo.getRegentrada()%>
+					<%=documentacionEjgVo.getRegEntrada()==null||documentacionEjgVo.getRegEntrada().equals("")?"&nbsp;":documentacionEjgVo.getRegEntrada()%>
 					
 					</td>					
 					<td>
-					<%=documentacionEjgVo.getRegsalida()==null||documentacionEjgVo.getRegsalida().equals("")?"&nbsp;":documentacionEjgVo.getRegsalida()%>
+					<%=documentacionEjgVo.getRegSalida()==null||documentacionEjgVo.getRegSalida().equals("")?"&nbsp;":documentacionEjgVo.getRegSalida()%>
 					
 					</td>
 					<td>

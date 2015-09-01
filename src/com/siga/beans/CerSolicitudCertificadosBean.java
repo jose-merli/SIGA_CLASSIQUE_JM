@@ -1,5 +1,9 @@
 package com.siga.beans;
 
+import java.io.File;
+
+import com.siga.envios.Documento;
+
 public class CerSolicitudCertificadosBean extends MasterBean
 {
 	/**
@@ -44,6 +48,12 @@ public class CerSolicitudCertificadosBean extends MasterBean
 	private String codigo_sucursal;
 	
 	private String aceptaCesionMutualidad;
+	
+	private String nombrePersona_Des;                 //Nombre del destinaterio
+	private Documento certificado;
+	private String productoDescripcion;
+	private String institucionAbreviatura; 
+
 
 	/* Nombre campos de la tabla */
 	static public final String C_IDINSTITUCION = "IDINSTITUCION";
@@ -87,7 +97,7 @@ public class CerSolicitudCertificadosBean extends MasterBean
     static public final String C_ACEPTACESIONMUTUALIDAD   = "ACEPTACESIONMUTUALIDAD";   
 
 	static public final String T_NOMBRETABLA = "CER_SOLICITUDCERTIFICADOS";
-
+	
     public Integer getIdInstitucion()
     {
         return idInstitucion;
@@ -380,6 +390,40 @@ public class CerSolicitudCertificadosBean extends MasterBean
 
 	public void setAceptaCesionMutualidad(String check) {
 		this.aceptaCesionMutualidad = check;
+	}
+
+	public String getNombrePersona_Des() {
+		return nombrePersona_Des;
+	}
+
+	public void setNombrePersona_Des(String nombrePersona_Des) {
+		this.nombrePersona_Des = nombrePersona_Des;
+	}
+
+	
+
+	public String getProductoDescripcion() {
+		return productoDescripcion;
+	}
+
+	public void setProductoDescripcion(String productoDescripcion) {
+		this.productoDescripcion = productoDescripcion;
+	}
+
+	public String getInstitucionAbreviatura() {
+		return institucionAbreviatura;
+	}
+
+	public void setInstitucionAbreviatura(String institucionAbreviatura) {
+		this.institucionAbreviatura = institucionAbreviatura;
+	}
+
+	public Documento getCertificado() {
+		return certificado;
+	}
+
+	public void setCertificado(Documento certificado) {
+		this.certificado = certificado;
 	}
 
 }

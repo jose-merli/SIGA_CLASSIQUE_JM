@@ -32,6 +32,7 @@ import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.Paginador;
+import com.siga.Utilidades.UtilidadesBDAdm;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.expedientes.form.BusquedaExpedientesForm;
@@ -316,14 +317,7 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 	
 	
 	
-	public Paginador getPaginadorAvanzadoExpedientes(BusquedaExpedientesForm form,UsrBean userBean,String longitudNumEjg) throws ClsExceptions 
-	{
-		//Hashtable codigosBind = new Hashtable();
-		//int contador=0;
-		//NOMBRES COLUMNAS PARA LA JOIN
-		//Tabla cen_persona
-		//NOMBRES COLUMNAS PARA LA JOIN
-		//Tabla cen_persona
+	public Paginador getPaginadorAvanzadoExpedientes(BusquedaExpedientesForm form, UsrBean userBean, String longitudNumEjg) throws ClsExceptions {
 
 		//Tabla exp_parte
 		String PA_IDINSTITUCION="PA."+ExpPartesBean.C_IDINSTITUCION;
@@ -422,31 +416,18 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 		String asunto = form.getAsunto();
 		String fase = form.getFase();
 		String estado = form.getEstado();
+		String fechaEstadoDesde = "", fechaEstadoHasta = "";
+		if (form.getFechaEstadoDesde()!= null && !form.getFechaEstadoDesde().equals(""))
+			fechaEstadoDesde = GstDate.getApplicationFormatDate("", form.getFechaEstadoDesde()); 
+		if (form.getFechaEstadoHasta()!= null && !form.getFechaEstadoHasta().equals(""))
+			fechaEstadoHasta = GstDate.getApplicationFormatDate("", form.getFechaEstadoHasta());
 		
 		String nombreParte = form.getNombreParte();
 		String ap1Parte = form.getPrimerApellidoParte();
 		String ap2Parte = form.getSegundoApellidoParte();
 		String observaciones = form.getObservaciones();
 		String rol = form.getRol();
-//		String numAsunto = form.getNumAsunto();
-//		String idMateria = null; 
-//		String idArea = null;
-//		if(form.getIdMateria()!=null && !form.getIdMateria().equals("")){
-//			
-//			idMateria = form.getIdMateria();
-//			idArea =form.getIdArea();
-//		}
-//		String idJuzgado = null;
-//		String idInstJuzgado = null;
-//		if(form.getJuzgado()!=null && !form.getJuzgado().equals("")){
-//			idJuzgado = form.getJuzgado();
-//			idInstJuzgado = form.getIdInstJuzgado();
-//		}
-//		
-//		String otrasPretensiones = form.getOtrasPretensiones();
-//		String idPretension = form.getIdPretension();
-//		String idProcedimiento = form.getIdProcedimiento();
-//		String idInstProcedimiento = form.getIdInstProcedimiento();
+
 		
 		boolean hayPartes = ((nombreParte!=null &&!nombreParte.equals("")) || (ap1Parte!=null && !ap1Parte.equals(""))
 				|| (ap2Parte!=null && !ap2Parte.equals("")) || (rol!=null && !rol.equals("")));
@@ -459,14 +440,6 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 
 		//join de las tablas EXPEDIENTE E, TIPOEXPEDIENTE T, PERSONA P, ESTADOS ES, INSTITUCION I
 		where += (institucion!=null && !institucion.equals("")) ? " E." + ExpExpedienteBean.C_IDINSTITUCION + " = " + institucion : " E." + ExpExpedienteBean.C_IDINSTITUCION + " IN (" +instMenorRango+ ")";
-		//BEGIN BNS
-		/*
-		where += " AND E."+ExpExpedienteBean.C_IDINSTITUCION_TIPOEXPEDIENTE+" = "+T_IDINSTITUCION+"(+)";
-		where += " AND E."+ExpExpedienteBean.C_IDTIPOEXPEDIENTE+" = "+T_IDTIPOEXPEDIENTE+"(+)";
-
-		where += " AND E."+ExpExpedienteBean.C_IDINSTITUCION+" = "+I_IDINSTITUCION+"(+)";
-		*/
-		//END BNS
 		
 		if (esGeneral){
 			where += " AND T."+ExpTipoExpedienteBean.C_ESGENERAL+"='S'";
@@ -499,14 +472,13 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 			     " AND E."+ExpExpedienteBean.C_IDINSTITUCION+" = ES."+ExpEstadosBean.C_IDINSTITUCION+"(+) "+
 			     " AND E."+ExpExpedienteBean.C_IDTIPOEXPEDIENTE+" = ES."+ExpEstadosBean.C_IDTIPOEXPEDIENTE+"(+) "+
 			     " AND E."+ExpExpedienteBean.C_IDESTADO+" = ES."+ExpEstadosBean.C_IDESTADO+"(+) ";
-		//where += (form.getJuzgado()!=null && !form.getJuzgado().equals("")) ? " AND E."+ExpExpedienteBean.C_IDINSTITUCION_JUZGADO+" = juz." + ScsJuzgadoBean.C_IDINSTITUCION+"(+)": "";
 
 		//campos de búsqueda
 		where += (idinstitucion_tipoexpediente!=null && !idinstitucion_tipoexpediente.equals("")) ? " AND E." + ExpExpedienteBean.C_IDINSTITUCION_TIPOEXPEDIENTE + " = " + idinstitucion_tipoexpediente : "";
 		where += (tipoExpediente!=null && !tipoExpediente.equals("")) ? " AND E." + ExpExpedienteBean.C_IDTIPOEXPEDIENTE + " = " + tipoExpediente : "";
 
 
-		where += (numeroExpediente!=null && !numeroExpediente.equals("")) ? " AND "+ComodinBusquedas.prepararSentenciaCompleta(numeroExpediente.trim(),"E." + ExpExpedienteBean.C_NUMEROEXPEDIENTE ): "";
+		where += (numeroExpediente!=null && !numeroExpediente.equals("") && UtilidadesBDAdm.esNumerico(numeroExpediente.trim())) ? " AND  E." + ExpExpedienteBean.C_NUMEROEXPEDIENTE + ComodinBusquedas.prepararSentenciaExacta(numeroExpediente.trim()) : "";
 
 
 		where += (anioExpediente!=null && !anioExpediente.equals("")) ? " AND "+ComodinBusquedas.prepararSentenciaCompleta(anioExpediente.trim(),"E." + ExpExpedienteBean.C_ANIOEXPEDIENTE): "";
@@ -533,39 +505,19 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 		where += (estado!=null && !estado.equals("")) ? " AND E." + ExpExpedienteBean.C_IDESTADO + " = " + estado : "";
 		where += (form.getIdMateria()!=null && !form.getIdMateria().equals("")) ? " AND E." + ExpExpedienteBean.C_IDMATERIA + " = " + form.getIdMateria() : "";
 		where += (form.getIdArea()!=null && !form.getIdArea().equals("")) ? " AND E." + ExpExpedienteBean.C_IDAREA + " = " + form.getIdArea() : "";
-		//where += (form.getJuzgado()!=null && !form.getJuzgado().equals("")) ? " AND juz." + ScsJuzgadoBean.C_IDJUZGADO + " = " + form.getJuzgado()+" AND juz." + ScsJuzgadoBean.C_IDINSTITUCION + " = " + form.getIdInstJuzgado() : "";
 		where += (form.getJuzgado()!=null && !form.getJuzgado().equals("")) ? " AND e." + ExpExpedienteBean.C_JUZGADO + " = " + form.getJuzgado()+" AND e." + ExpExpedienteBean.C_IDINSTITUCION_JUZGADO + " = " + form.getIdInstJuzgado() : "";
 		where += (form.getNumAsunto()!=null && !form.getNumAsunto().equals("")) ? " AND "+ComodinBusquedas.prepararSentenciaCompleta(form.getNumAsunto().trim(),"E." + ExpExpedienteBean.C_NUMASUNTO): "";
 		where += (form.getOtrasPretensiones()!=null && !form.getOtrasPretensiones().equals("")) ? " AND E." + ExpExpedienteBean.C_OTRASPRETENSIONES + " = '" + form.getOtrasPretensiones()+"'" : "";
 		where += (form.getIdPretension()!=null && !form.getIdPretension().equals("")) ? " AND E." + ExpExpedienteBean.C_IDPRETENSION + " = " + form.getIdPretension() : "";
 		where += (form.getIdProcedimiento()!=null && !form.getIdProcedimiento().equals("")) ? " AND E." + ExpExpedienteBean.C_PROCEDIMIENTO + " = " + form.getIdProcedimiento()+ " AND E." + ExpExpedienteBean.C_IDINSTITUCION_PROCEDIMIENTO + " = " + form.getIdInstProcedimiento() : "";
-
+		/** CR - Filtramos por fecha estado **/
+		where += ((fechaEstadoDesde!=null && !fechaEstadoDesde.equals("")) || (fechaEstadoHasta!=null && !fechaEstadoHasta.equals(""))) ? " AND " + GstDate.dateBetweenDesdeAndHasta(ExpExpedienteBean.C_FECHAINICIALESTADO,fechaEstadoDesde,fechaEstadoHasta) : "";
+		
 		if((nombreDenunciado!=null && !nombreDenunciado.equals(""))||(ap1Denunciado!=null && !ap1Denunciado.equals(""))||(ap2Denunciado!=null && !ap2Denunciado.equals(""))){
 			StringBuffer sqlDenunciado = new StringBuffer();
-
-			 	
 			 String hay_nombre_denunciado = (nombreDenunciado!=null && !nombreDenunciado.equals("")) ?  ComodinBusquedas.prepararSentenciaCompleta(nombreDenunciado.trim(),"per.nombre" ): "";
 			 String hay_ap1_denunciado = (ap1Denunciado!=null && !ap1Denunciado.equals("")) ?  ComodinBusquedas.prepararSentenciaCompleta(ap1Denunciado.trim(),"per.apellidos1" ): "";
 			 String hay_ap2_denunciado = (ap2Denunciado!=null && !ap2Denunciado.equals("")) ?  ComodinBusquedas.prepararSentenciaCompleta(ap2Denunciado.trim(),"per.apellidos2" ): "";
-			 //BEGIN BNS
-			 /*
-			 sqlDenunciado.append(" AND (E.");
-			 sqlDenunciado.append(ExpExpedienteBean.C_IDPERSONA);
-			 sqlDenunciado.append(" IN (SELECT ");
-			 sqlDenunciado.append(CenPersonaBean.C_IDPERSONA);
-			 sqlDenunciado.append(" FROM ");
-			 sqlDenunciado.append(CenPersonaBean.T_NOMBRETABLA);
-			 sqlDenunciado.append(" per WHERE ");
-			 sqlDenunciado.append(" 1=1 ");
-			 sqlDenunciado.append((!hay_nombre_denunciado.equals("")) ? " and "+ hay_nombre_denunciado : "");
-			 sqlDenunciado.append((!hay_ap1_denunciado.equals("")) ? " and "+hay_ap1_denunciado : "");
-			 sqlDenunciado.append((!hay_ap2_denunciado.equals("")) ? " and "+hay_ap2_denunciado : "");
-			 sqlDenunciado.append(" ) ");
-			 
-			 
-			 sqlDenunciado.append(" or (select count(*) ");
-			 */
-			 //END BNS
 			 sqlDenunciado.append(" and (select count(*) ");
 			 sqlDenunciado.append(" from exp_denunciado ddo,cen_persona per ");
 			 sqlDenunciado.append(" where ddo.IDINSTITUCION = E.IDINSTITUCION ");
@@ -582,9 +534,6 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 			 sqlDenunciado.append(" ) > 0 ");
 			 where += sqlDenunciado.toString();
 		}
-		
-		
-		
 		
 		if((nombreDenunciante!=null && !nombreDenunciante.equals(""))||(ap1Denunciante!=null && !ap1Denunciante.equals(""))||(ap2Denunciante!=null && !ap2Denunciante.equals(""))){
 			StringBuffer sqlDenunciante = new StringBuffer();
@@ -610,11 +559,6 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 			 where += sqlDenunciante.toString();
 		}
 		
-		
-		
-		
-		
-		
 		if(form.getCampoConfigurado()!=null && !form.getCampoConfigurado().equals("")){
 		where += " AND (select count(*) from exp_camposvalor cv where " +
 				" cv.IDINSTITUCION = E.IDINSTITUCION	and	" +
@@ -625,7 +569,6 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 				"'%" +
 				form.getCampoConfigurado().toLowerCase()+
 				"%')>0";
-		
 		}
 		
 		String hay_nombre_parte = (nombreParte!=null && !nombreParte.equals("")) ? ComodinBusquedas.prepararSentenciaCompleta(nombreParte.trim(),CenPersonaBean.C_NOMBRE ): "";

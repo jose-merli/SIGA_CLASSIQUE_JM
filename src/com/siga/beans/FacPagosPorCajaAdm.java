@@ -1041,8 +1041,8 @@ public class FacPagosPorCajaAdm extends MasterBeanAdministrador {
 			consulta.append(FacAbonoBean.C_FECHAMODIFICACION);
 			consulta.append(" AS FECHA_ORDEN, ");
 			//Tiene que salir el importe por el que se anulo la fac (si hay compensaciones previas no se corresponde con el imp. total abonado)
-			consulta.append(" pgCaja.");
-			consulta.append(FacPagosPorCajaBean.C_IMPORTE);
+			consulta.append(" abono.");
+			consulta.append(FacAbonoBean.C_IMPTOTAL);
 			consulta.append(" AS IMPORTE, ");
 			consulta.append(" factura.");
 			consulta.append(FacFacturaBean.C_IDFACTURA);
@@ -1106,18 +1106,6 @@ public class FacPagosPorCajaAdm extends MasterBeanAdministrador {
 			consulta.append(" IN (");
 			consulta.append(listaFacturasComision);
 			consulta.append(") ");
-			consulta.append(" AND pgCaja.");
-			consulta.append(FacPagosPorCajaBean.C_IDFACTURA);
-			consulta.append(" = factura.");
-			consulta.append(FacFacturaBean.C_IDFACTURA); 
-			consulta.append(" AND pgCaja.");
-			consulta.append(FacPagosPorCajaBean.C_IDABONO);
-			consulta.append(" = abono.");
-			consulta.append(FacAbonoBean.C_IDABONO); 
-			consulta.append(" AND pgCaja.");
-			consulta.append(FacPagosPorCajaBean.C_IDINSTITUCION);
-			consulta.append(" = abono.");
-			consulta.append(FacFacturaBean.C_IDINSTITUCION);
 		}
 		
 		// Obtencion anulaciones de comision (si la encuentra siempre es la ultima linea de la factura)
@@ -1355,7 +1343,6 @@ public class FacPagosPorCajaAdm extends MasterBeanAdministrador {
 				Vector resultados = new Vector (); 
 				
 				Double pendiente=new Double(0);
-				Double devolucionReneg=new Double(0);
 				Double importePago=new Double(0);
 				Double auxPendiente=new Double(0);
 				String tabla="";

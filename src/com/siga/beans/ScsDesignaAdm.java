@@ -3876,8 +3876,7 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 			htCodigo.put(new Integer(5), idPersona);
 			
 			//Si no se encuentra info en cen_colegiado (Art.27) se busca en cen_nocolegiado
-			//if(registro.get("NCOLEGIADO_LETRADO") != null && !((String)registro.get("NCOLEGIADO_LETRADO")).equals("")){
-			if(institucionOrigen!=null && !institucionOrigen.trim().equals("")){
+			if((institucionOrigen!=null && !institucionOrigen.trim().equals("")) || (registro.get("NCOLEGIADO_LETRADO")== null || ((String)registro.get("NCOLEGIADO_LETRADO")).trim().equals(""))){
 				helperInformes.completarHashSalida(registro,getLetradoSalidaOficioArt27(htCodigo));
 			} else {
 				helperInformes.completarHashSalida(registro,getLetradoSalidaOficio(htCodigo));

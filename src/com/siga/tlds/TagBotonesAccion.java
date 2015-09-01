@@ -214,6 +214,7 @@ public class TagBotonesAccion extends TagSupport {
 			out.println("<table class=\""+this.clase+"\" id=\"idBotonesAccion\"  align=\"center\">");
 			out.println("<tr>");
 			if (this.titulo!=null && !titulo.equals("")) {
+				//out.println("<td class=\"titulitos "+this.clase+"\">");
 				out.println("<td class=\"titulitos\">");
 				out.println(UtilidadesString.getMensajeIdioma(usrbean, this.titulo));
 				out.println("</td>");			
@@ -224,7 +225,8 @@ public class TagBotonesAccion extends TagSupport {
 				printButton(usrbean, out, ActionButtonsConstants.VOLVER);
 			}
 
-			out.println("<td  style=\"width:900px;\">");
+			//out.println("<td class=\""+this.clase+"\" style=\"width:900px;\">");
+			out.println("<td class=\"tdBotones\" style=\"width:900px;\">");
 			out.println("&nbsp;");
 			out.println("</td>");
 			if(this.isOrdenar())
@@ -238,6 +240,7 @@ public class TagBotonesAccion extends TagSupport {
 				case IMPRIMIR_APAISADO:
 					if (tipoAcceso.equalsIgnoreCase(SIGAPTConstants.ACCESS_FULL) && 
 							this.valoresEdicion.contains(this.modo)) {  					
+						//out.println("<td class=\"tdBotones "+this.clase+" labelText\">");
 						out.println("<td class=\"tdBotones\">");
 						out.println("<acronym title=\""+UtilidadesString.getMensajeIdioma(usrbean, "general.aviso.imprimirApaisado")+"\" >");
 						out.print("<input type=\"button\" alt=\""+UtilidadesString.getMensajeIdioma(usrbean, "general.aviso.imprimirApaisado") +"\"  name=\"idButton\" onclick=\"return accionImprimirApaisado();\" class=\"button\" value=\"");
@@ -316,8 +319,8 @@ public class TagBotonesAccion extends TagSupport {
 									out.println("}");
 									out.println("</script>");
 
-									out.println("<td class=\"tdBotones\">");
-									out.print("<input type=\"button\" alt=\""+UtilidadesString.getMensajeIdioma(usrbean, beanBot.getNombreBoton()) +"\"  id=\"idButton\" onclick=\"return accionBA"+contador+"();\" class=\"button\" value=\"");
+									//out.println("<td class=\"tdBotones "+this.clase+" labelText\">");
+									out.println("<td class=\"tdBotones\">");									out.print("<input type=\"button\" alt=\""+UtilidadesString.getMensajeIdioma(usrbean, beanBot.getNombreBoton()) +"\"  id=\"idButton\" onclick=\"return accionBA"+contador+"();\" class=\"button\" value=\"");
 									out.print(UtilidadesString.getMensajeIdioma(usrbean,beanBot.getNombreBoton()));
 									out.println("\">");
 									out.println("</td>");
@@ -352,6 +355,7 @@ public class TagBotonesAccion extends TagSupport {
 	
 	
 	private void printButton(UsrBean usrbean, PrintWriter out, ActionButtonsConstants abc) {
+		//out.println("<td class=\" tdBotones labelText\">");
 		out.println("<td class=\"tdBotones\">");
 		out.print("<input type=\"button\" alt=\""+UtilidadesString.getMensajeIdioma(usrbean, abc.getLabel()) +"\"  id=\"" + abc.getIdBoton() +"\" onclick=\"return "+abc.getAccion()+";\" class=\"button\" name=\"idButton\" value=\"");
 		out.print(UtilidadesString.getMensajeIdioma(usrbean,abc.getLabel()));

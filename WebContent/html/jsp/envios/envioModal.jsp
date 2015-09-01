@@ -114,7 +114,7 @@
 	
 </head>
 
-<body onload="recargarCombos();inicio();<%=noExistDatos%>">
+<body class="posicionModalPeque" onload="recargarCombos();inicio();<%=noExistDatos%>">
 
 <!-- INICIO ******* CAPA DE PRESENTACION ****** -->
 <!-- dentro de esta capa se tienen que situar los diferentes componentes 

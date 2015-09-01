@@ -6,7 +6,9 @@
  */
 package com.siga.beans;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Vector;
 
 import com.atos.utils.ClsExceptions;
@@ -197,14 +199,13 @@ public class ScsDocumentoEJGAdm extends MasterBeanAdministrador {
 	}
 	
 	
-	public Vector getListaDocumentoEjg(Hashtable htPkTabl,String lenguaje) throws ClsExceptions {
-		
-		Vector datos = new Vector();				
+	public Vector getListaDocumentoEjg(Hashtable htPkTabl, String lenguaje) throws ClsExceptions {
+		Vector datos = new Vector();
 		StringBuffer sql = new StringBuffer();
 		Hashtable htCodigos = new Hashtable();
 		int contador = 0;
-		String idInstitucion = (String)htPkTabl.get(ScsDocumentoEJGBean.C_IDINSTITUCION);
-		String idTipoDoc = (String)htPkTabl.get(ScsDocumentoEJGBean.C_IDTIPODOCUMENTOEJG);
+		String idInstitucion = (String) htPkTabl.get(ScsDocumentoEJGBean.C_IDINSTITUCION);
+		String idTipoDoc = (String) htPkTabl.get(ScsDocumentoEJGBean.C_IDTIPODOCUMENTOEJG);
 		sql.append(" SELECT IDINSTITUCION, IDTIPODOCUMENTOEJG, ABREVIATURA, ");
 		sql.append(" F_SIGA_GETRECURSO(");
 		sql.append(ScsDocumentoEJGBean.C_DESCRIPCION);
@@ -213,28 +214,45 @@ public class ScsDocumentoEJGAdm extends MasterBeanAdministrador {
 		sql.append(") ");
 		sql.append(ScsTipoDocumentoEJGBean.C_DESCRIPCION);
 		sql.append(" , IDDOCUMENTOEJG ");
-		//sql.append(ScsTipoDocumentoEJGBean.C_CODIGOEXT);		
 		sql.append(" FROM scs_documentoejg  WHERE IDTIPODOCUMENTOEJG = :");
 		contador++;
 		htCodigos.put(new Integer(contador), idTipoDoc);
 		sql.append(contador);
 		sql.append(" AND IDINSTITUCION = :");
 		contador++;
-		htCodigos.put(new Integer(contador),idInstitucion );
+		htCodigos.put(new Integer(contador), idInstitucion);
 		sql.append(contador);
-		sql.append(" ORDER BY ABREVIATURA, DESCRIPCION ");   
-		try {						
-			
-			 datos = this.selectGenericoBind(sql.toString(),htCodigos);			
-			
-		} 
-		catch (Exception e) { 	
-			throw new ClsExceptions (e, "Error al ejecutar el 'select' en B.D., en la funcion getListaDocumentoEjg()"); 
+		sql.append(" ORDER BY ABREVIATURA, DESCRIPCION ");
+		try {
+			datos = this.selectGenericoBind(sql.toString(), htCodigos);
+		} catch (Exception e) {
+			throw new ClsExceptions(e, "Error al ejecutar el 'select' en B.D., en la funcion getListaDocumentoEjg()");
 		}
 		return datos;
 	}
-	
-		
-	
+
+	/**
+	 * @param miHash
+	 * @param language
+	 * @return
+	 * @throws ClsExceptions 
+	 */
+	public List<ScsDocumentoEJGBean> getListadoDocumentosEjg(Hashtable miHash) throws ClsExceptions {
+		List<ScsDocumentoEJGBean> list = new ArrayList<ScsDocumentoEJGBean>();
+		try {
+			Vector vector = this.select(miHash);
+			if (vector != null && vector.size() > 0) {
+			 	for (int i = 0; i < vector.size(); i++){
+			 		ScsDocumentoEJGBean documentoEJGBean =  (ScsDocumentoEJGBean) vector.get(i);
+			 		list.add(documentoEJGBean);
+			 	}
+			}
+
+		} catch (ClsExceptions e) {
+			throw new ClsExceptions(e, "Error al ejecutar el 'select' en ScsDocumentacionEJGAdm");
+		}
+
+		return list;
+	}
 	
 }

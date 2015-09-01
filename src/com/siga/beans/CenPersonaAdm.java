@@ -1483,5 +1483,75 @@ public class CenPersonaAdm extends MasterBeanAdmVisible {
 		}
 		return null;
 	}
+	
+	public Vector getColegiadoSalidaArticulo27(String idPersonaDesigna, String aliasSalida) throws ClsExceptions {
+		try {
+			Hashtable htCodigos = new Hashtable();
+			int keyContador = 0;
+			StringBuffer sql = new StringBuffer();
+			sql.append(" SELECT NULL AS NCOLEGIADO");
+			sql.append("_");
+			sql.append(aliasSalida);
+			sql.append(" ,PER.NOMBRE AS NOMBRE_D");
+
+			sql.append("_");
+			sql.append(aliasSalida);
+			sql.append(" ,PER.APELLIDOS1 AS APELLIDOS1_D");
+
+			sql.append("_");
+			sql.append(aliasSalida);
+			sql.append(" ,PER.APELLIDOS2 AS APELLIDOS2_D");
+
+			sql.append("_");
+			sql.append(aliasSalida);
+
+			sql.append(" ,PER.NOMBRE || ' ' || PER.APELLIDOS1 || ' ' ||PER.APELLIDOS2 AS NOMBRE");
+
+			sql.append("_");
+			sql.append(aliasSalida);
+			sql.append(" ,substr(PER.NOMBRE || ' ' || PER.APELLIDOS1,1,31)  AS N_APELLI_1");
+
+			sql.append("_");
+
+			sql.append(aliasSalida);
+
+			sql.append(" ,substr(PER.NOMBRE || ' ' || PER.APELLIDOS1|| ' ' || PER.APELLIDOS2,1,31)  AS N_APEL_1_2");
+
+			sql.append("_");
+
+			sql.append(aliasSalida);
+
+			sql.append(" ,substr(PER.APELLIDOS1|| ' ' || PER.APELLIDOS2 || ', ' ||PER.NOMBRE  ,1,31)  AS APEL_1_2_N");
+
+			sql.append("_");
+
+			sql.append(aliasSalida);
+
+			sql.append(" ,DECODE(PER.SEXO, null, null,'M','gratuita.personaEJG.sexo.mujer','gratuita.personaEJG.sexo.hombre') AS SEXO_ST");
+			sql.append("_");
+			sql.append(aliasSalida);
+			
+			sql.append("  ,DECODE(PER.SEXO,'H','o','a') as O_A");
+			sql.append("  ,DECODE(PER.SEXO,'H','el','la') as EL_LA");
+			sql.append(",PER.NIFCIF AS NIFCIF");
+			sql.append("_");
+			sql.append(aliasSalida);
+			
+			sql.append(" FROM CEN_PERSONA PER ");
+			sql.append(" WHERE ");
+
+			keyContador++;
+			htCodigos.put(new Integer(keyContador), idPersonaDesigna);
+			sql.append(" PER.IDPERSONA = :");
+			sql.append(keyContador);
+
+			HelperInformesAdm helperInformes = new HelperInformesAdm();
+			return helperInformes.ejecutaConsultaBind(sql.toString(), htCodigos);
+
+		} catch (Exception e) {
+			throw new ClsExceptions(e, "Error ScsEJGAdm.getColegiadoSalida.");
+		}
+	}
+	
 }
 	

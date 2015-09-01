@@ -17,7 +17,7 @@ public class FacBancoInstitucionBean extends MasterBean {
 	private Integer idInstitucion, idsufijosjcs;
 	private String 	bancosCodigo, codBanco, codSucursal, numeroCuenta, fechaBaja, asientoContable, digitoControl, sjcs, iban;	
 	private Double comisionImporte, idTipoIva;
-	private String comisionDescripcion, comisionCuentaContable, configFicherosEsquema, configFicherosSecuencia, configLugarEsquemaSecuencia;
+	private String comisionDescripcion, comisionCuentaContable, configFicherosEsquema, configFicherosSecuencia, configLugarEsquemaSecuencia, configConceptoAmpliado;
 	
 	/* Nombre tabla */
 	static public String T_NOMBRETABLA = "FAC_BANCOINSTITUCION";
@@ -40,7 +40,8 @@ public class FacBancoInstitucionBean extends MasterBean {
 	static public final String C_COMISIONCUENTACONTABLE		= "COMISIONCUENTACONTABLE";
 	static public final String C_CONFIGFICHEROSESQUEMA		= "CONFIGFICHEROSESQUEMA";	
 	static public final String C_CONFIGFICHEROSSECUENCIA	= "CONFIGFICHEROSSECUENCIA";	
-	static public final String C_CONFIGLUGARESQUEMASECUENCIA	= "CONFIGLUGARESQUEMASECUENCIA";	
+	static public final String C_CONFIGLUGARESQUEMASECUENCIA	= "CONFIGLUGARESQUEMASECUENCIA";
+	static public final String C_CONFIGCONCEPTOAMPLIADO		= "CONFIGCONCEPTOAMPLIADO";
 
 	/* Métodos get */
 	public String getBancosCodigo() {
@@ -158,5 +159,10 @@ public class FacBancoInstitucionBean extends MasterBean {
 	public void setConfigLugarEsquemaSecuencia(String configLugarEsquemaSecuencia) {
 		this.configLugarEsquemaSecuencia = configLugarEsquemaSecuencia;
 	}
-	
+	public String getConfigConceptoAmpliado() {
+		return configConceptoAmpliado;
+	}
+	public void setConfigConceptoAmpliado(String configConceptoAmpliado) {
+		this.configConceptoAmpliado = configConceptoAmpliado;
+	}	
 }

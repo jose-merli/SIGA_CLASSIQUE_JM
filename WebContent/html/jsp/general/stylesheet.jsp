@@ -1057,17 +1057,17 @@ A.imageLink:active {
 	width: 670px;
 }
 
-.tablaCentralCamposMedia {
+.tablaCentralCampos {
 	background-color: #<%=src2.get("color.background")%>;
 	width: 100%;
 }
 
-.tablaCentralCamposGrande {
+.tablaCentralCampos {
 	background-color: #<%=src2.get("color.background")%>;
 	width: 100%;
 }
 
-.tablaCentralCamposPeque {
+.tablaCentralCampos {
 	background-color: #<%=src2.get("color.background")%>;
 	width: 100%;
 }

@@ -395,14 +395,13 @@
 						<%}%>
 					</td>
 					
-					<td class="labelText"  width="120px">
+					<td class="labelText"  colspan="2">
 						<siga:Idioma key="gratuita.EJG.resolucion.refAuto"/>&nbsp;&nbsp;&nbsp;
-					</td>
-					<td>
+					
 						<%if (accion.equalsIgnoreCase("ver")){%>
-							<html:text name="DefinirEJGForm" property="refAuto" size="10" styleClass="boxConsulta" value="<%=refA%>" readonly="false" disabled="false"></html:text>
+							<html:text name="DefinirEJGForm" property="refAuto" size="40" styleClass="boxConsulta" value="<%=refA%>" readonly="false" disabled="false"></html:text>
 						<%} else {%>
-							<html:text name="DefinirEJGForm" property="refAuto" size="10" styleClass="box" value="<%=refA%>" readonly="false" disabled="false"></html:text>
+							<html:text name="DefinirEJGForm" property="refAuto" size="40" styleClass="box" value="<%=refA%>" readonly="false" disabled="false" maxlength="250"></html:text>
 						<%}%>
 					</td>
 				</tr>

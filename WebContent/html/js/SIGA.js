@@ -3601,8 +3601,9 @@ function ajusteAltoMain(nObj, menos) {
 			}
 			
 			if (nObj == 'mainWorkArea') {
-				//alert("ajusteAltoMain mainWorkArea " +  document.body.offsetHeight + " - " + jQuery('#posicionTitulo', window.top.document).height() + " - " + jQuery('#posicionTitulo', window.top.document).offset().top);				
-				hCont =  windowHeight - jQuery('#posicionTitulo', window.top.document).height() - jQuery('#posicionTitulo', window.top.document).offset().top;
+				//alertStop("ajusteAltoMain mainWorkArea " +  document.body.offsetHeight + " - " + jQuery('#posicionTitulo', window.top.document).height() + " - " + jQuery('#posicionTitulo', window.top.document).offset().top);				
+				//hCont =  windowHeight - jQuery('#posicionTitulo', window.top.document).height() - jQuery('#posicionTitulo', window.top.document).offset().top - jQuery('#posicionTitulo', window.top.document).height()+5;
+				hCont =  windowHeight - jQuery("#mainWorkArea").offset().top-4;// - jQuery('#posicionTitulo', window.top.document).height() - jQuery('#posicionTitulo', window.top.document).offset().top - jQuery('#posicionTitulo', window.top.document).height()+5;
 				//alert("final iframe mainWorkArea : "+hCont);
 				if (hCont > 0){
 					jQuery(obj).height(hCont);

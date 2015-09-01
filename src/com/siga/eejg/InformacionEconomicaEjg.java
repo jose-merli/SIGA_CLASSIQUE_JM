@@ -4,16 +4,24 @@ import java.net.ConnectException;
 import java.util.List;
 
 import org.apache.axis.AxisFault;
+import org.redabogacia.sigaservices.app.AppConstants;
 import org.redabogacia.sigaservices.app.AppConstants.EEJG_ESTADO;
+import org.redabogacia.sigaservices.app.AppConstants.GEN_PROPERTIES;
+import org.redabogacia.sigaservices.app.AppConstants.MODULO;
+import org.redabogacia.sigaservices.app.AppConstants.PARAMETRO;
+import org.redabogacia.sigaservices.app.services.gen.GenParametrosService;
+import org.redabogacia.sigaservices.app.services.helper.SigaServiceHelperService;
 
 import com.atos.utils.ClsConstants;
-import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsLogging;
 import com.atos.utils.UsrBean;
+import com.siga.Utilidades.UtilidadesString;
 import com.siga.beans.GenParametrosAdm;
 import com.siga.beans.eejg.ScsEejgPeticionesAdm;
 import com.siga.beans.eejg.ScsEejgPeticionesBean;
 import com.siga.ws.CajgConfiguracion;
+
+import es.satec.businessManager.BusinessManager;
 
 public class InformacionEconomicaEjg {
 	
@@ -123,7 +131,7 @@ private static Boolean alguienEjecutando=Boolean.FALSE;
 		List<ScsEejgPeticionesBean> listaPeticiones = scsPeticionesAdm.getSolicitudesPendientes(horas);
 		int numeroErrores = 0;
 		
-		if (listaPeticiones != null && listaPeticiones.size()>0 ) {
+		if (listaPeticiones != null && listaPeticiones.size()>0) {
 			
 			int NUM_ERROR_CONEXION = Integer.parseInt(admParametros.getValor(ScsEejgPeticionesBean.INSTITUCION_PARAMETROS_EEJG, "SCS", "EEJG_NUMERO_ERRORES_CONEXION", ""));
 			int NUMERO_REINTENTOS_CONSULTA = Integer.parseInt(admParametros.getValor(ScsEejgPeticionesBean.INSTITUCION_PARAMETROS_EEJG, "SCS", "EEJG_NUMERO_REINTENTOS_CONSULTA", ""));
@@ -164,6 +172,7 @@ private static Boolean alguienEjecutando=Boolean.FALSE;
 						}
 						scsEejgPeticionesBean.setFechaConsulta("SYSDATE");
 					} else {
+						
 						if (scsEejgPeticionesBean.getNumeroIntentosConsulta() >= NUMERO_REINTENTOS_CONSULTA ||
 								scsEejgPeticionesBean.getNumeroIntentosPendienteInfo() >= NUMERO_REINTENTOS_PENDIENTEINFO) {					
 							scsEejgPeticionesBean.setEstado((int)EEJG_ESTADO.ERROR_CONSULTA_INFO.getId());
@@ -172,10 +181,8 @@ private static Boolean alguienEjecutando=Boolean.FALSE;
 					scsPeticionesAdm.updateDirect(scsEejgPeticionesBean);
 				}
 			}
-			
 		}
+		
 	}
 
-
-	
 }

@@ -75,7 +75,7 @@ public class InformeColegiadosPagos extends MasterReport {
 		}else{*/
 			// JBD 03/02/2009 Si hemos obtenido una cuenta debemos ocultar el numero con asteriscos (INC-5635)
 			// Nos aseguramos de que el IBAN este completo
-			if(cuenta.length()>=15){
+			if (cuenta!=null && cuenta.length()>=15){
 				//YA NO VIENE CONCATENADA, YA QUE NO SABEMOS EL TAMAÑO EXACTO DEL IBAN. CONCATENAMOS EN EL PUT			
 
 				// Ocultamos con asteriscos el numero de cuenta
@@ -297,14 +297,13 @@ public class InformeColegiadosPagos extends MasterReport {
 				idCuenta=r.getString("IDCUENTA");
 			}	
 			
-			if (!(idCuenta==null || idCuenta.equals(""))){
+			if (idCuenta!=null && !idCuenta.equals("")) {
 				// Datos Bancarios de la sociedad o persona
 			    sql = "SELECT DECODE(CUEN.IBAN, NULL, '', CUEN.IBAN) CUENTA_CORRIENTE,    "+   
 			    	"		  DECODE(Substr(Ban.Nombre, 1, 1), '~', '', Ban.Nombre) BANCO_CUENTA "+
 			    	" FROM CEN_CUENTASBANCARIAS CUEN, " +
 			    		" CEN_BANCOS BAN " +
 			    	" WHERE BAN.CODIGO = CUEN.CBO_CODIGO " +
-			    		" AND CUEN.FECHABAJA IS NULL " +
 			    		" AND CUEN.Idcuenta = " + idCuenta +
 			    		" AND CUEN.IDINSTITUCION = " + idInstitucion +
 			    		" AND CUEN.IDPERSONA = " + idPerDestino;

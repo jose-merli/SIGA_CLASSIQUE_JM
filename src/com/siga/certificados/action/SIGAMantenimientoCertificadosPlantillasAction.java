@@ -1,17 +1,36 @@
 package com.siga.certificados.action;
 
-import java.io.*;
-import java.util.*;
-import com.atos.utils.*;
-import com.siga.beans.*;
-import com.siga.general.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.Date;
+import java.util.Hashtable;
+import java.util.Vector;
 
-import javax.servlet.http.*;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.transaction.UserTransaction;
 
-import org.apache.struts.action.*;
-import org.apache.struts.upload.*;
-import com.siga.certificados.form.*;
+import org.apache.struts.action.ActionForm;
+import org.apache.struts.action.ActionForward;
+import org.apache.struts.action.ActionMapping;
+import org.apache.struts.upload.FormFile;
+
+import com.atos.utils.ClsExceptions;
+import com.atos.utils.ClsLogging;
+import com.atos.utils.ComodinBusquedas;
+import com.atos.utils.UsrBean;
+import com.siga.beans.CerPlantillasAdm;
+import com.siga.beans.CerPlantillasBean;
+import com.siga.beans.GenParametrosAdm;
+import com.siga.beans.GenParametrosBean;
+import com.siga.beans.PysProductosInstitucionAdm;
+import com.siga.beans.PysProductosInstitucionBean;
+import com.siga.certificados.form.SIGAMantenimientoCertificadosPlantillasForm;
+import com.siga.general.MasterAction;
+import com.siga.general.MasterForm;
+import com.siga.general.SIGAException;
 
 public class SIGAMantenimientoCertificadosPlantillasAction extends MasterAction
 {
@@ -60,53 +79,49 @@ public class SIGAMantenimientoCertificadosPlantillasAction extends MasterAction
     	} 
 	}
 
-	protected String download(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException
-	{
-	    File fPlantilla = null;
-	    
-		try 
-		{
-			SIGAMantenimientoCertificadosPlantillasForm form = (SIGAMantenimientoCertificadosPlantillasForm)formulario;
+	protected String download(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+		File fPlantilla = null;
+
+		try {
+			SIGAMantenimientoCertificadosPlantillasForm form = (SIGAMantenimientoCertificadosPlantillasForm) formulario;
 
 			Vector vOcultos = form.getDatosTablaOcultos(0);
 
-			String idInstitucion = (String)vOcultos.elementAt(0);
-			String idTipoProducto = (String)vOcultos.elementAt(1);
-			String idProducto = (String)vOcultos.elementAt(2);
-			String idProductoInstitucion = (String)vOcultos.elementAt(3);
-			String idPlantilla = (String)vOcultos.elementAt(4);
-			
-	    	//String sNombrePlantilla = idTipoProducto + "_" + idProducto + "_" + idProductoInstitucion + "_" + idPlantilla + ".zip";
-	    	//String sRutaPlantilla = getPathPlantillasFromDB() + File.separator + form.getIdInstitucion();
-			//String sNombreFichero=sRutaPlantilla + File.separator + sNombrePlantilla;
-			
+			String idInstitucion = (String) vOcultos.elementAt(0);
+			String idTipoProducto = (String) vOcultos.elementAt(1);
+			String idProducto = (String) vOcultos.elementAt(2);
+			String idProductoInstitucion = (String) vOcultos.elementAt(3);
+			String idPlantilla = (String) vOcultos.elementAt(4);
+
 			CerPlantillasAdm admPlantilla = new CerPlantillasAdm(this.getUserBean(request));
 			fPlantilla = admPlantilla.descargarPlantilla(idInstitucion, idTipoProducto, idProducto, idProductoInstitucion, idPlantilla);
-			
-			/*Ya se comprueba en descargarPlantilla
-			 * if(fPlantilla==null || !fPlantilla.exists()){
-				throw new SIGAException("messages.general.error.ficheroNoExiste"); 
-			}*/
 
 			String nombreFichero = fPlantilla.getName();
-			if (fPlantilla.getName().indexOf(".zip")==-1){
-			    nombreFichero = nombreFichero + ".fo";
-			}else{
-				nombreFichero = fPlantilla.getName();
-			}
-			request.setAttribute("nombreFichero", nombreFichero);
-			request.setAttribute("rutaFichero", fPlantilla.getPath());
 
+			StringBuffer rutaCompletaFicheroDoc = new StringBuffer(fPlantilla.getPath());
+			rutaCompletaFicheroDoc.append(".doc");
+			File fileDoc = new File(rutaCompletaFicheroDoc.toString());
+			if (fileDoc.exists()) {
+				nombreFichero = nombreFichero + ".doc";
+				request.setAttribute("nombreFichero", nombreFichero);
+				request.setAttribute("rutaFichero", fileDoc.getPath());
+			} else {
+				if (fPlantilla.getName().indexOf(".zip") == -1) {
+					nombreFichero = nombreFichero + ".fo";
+				} else {
+					nombreFichero = fPlantilla.getName();
+				}
+				request.setAttribute("nombreFichero", nombreFichero);
+				request.setAttribute("rutaFichero", fPlantilla.getPath());
+			}
+
+		} catch (Exception e) {
+			throwExcp("messages.certificados.error.descargarplantilla", null, null);
 		}
-		catch (Exception e) 
-		{ 
-		  	throwExcp("messages.certificados.error.descargarplantilla", null, null); 
-		}
-		
-		
+
 		return "descargaFichero";
 	}
-	
+
 	protected String abrir(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions
 	{
 	    SIGAMantenimientoCertificadosPlantillasForm form = (SIGAMantenimientoCertificadosPlantillasForm)formulario;
@@ -290,55 +305,65 @@ public class SIGAMantenimientoCertificadosPlantillasAction extends MasterAction
 		    SIGAMantenimientoCertificadosPlantillasForm form = (SIGAMantenimientoCertificadosPlantillasForm)formulario;
 
 		    FormFile theFile = form.getTheFile();
-
-			String sNombreFicheroTemporal="";
-			File fPlantilla=null;
-			boolean bZIP=theFile.getContentType().equals(sContentTypeZIP);
+		    File fPlantilla=null;
+		    String extension =  "";
+		    boolean bZIP = false;
+		    if(theFile!=null &&  theFile.getFileName()!=null && !theFile.getFileName().equals("")){
+		   
+			    String[] nombreFicheroStrings = theFile.getFileName().split("\\.");
+			    
+			    
+			    if(nombreFicheroStrings!=null && nombreFicheroStrings.length>0){
+			    	extension = nombreFicheroStrings[1];
+			    }
+				String sNombreFicheroTemporal="";
+				
+				bZIP=theFile.getContentType().equals(sContentTypeZIP);
+		
+			    if(theFile==null || theFile.getFileSize()<1){ 
+	//		    	throw new SIGAException("messages.general.error.ficheroNoExiste");
+					ClsLogging.writeFileLog("SIGAMantenimientoCertificadosPlantillasAction.grabar() FICHERO VACIO ",10);
 	
-		    if(theFile==null || theFile.getFileSize()<1){ 
-//		    	throw new SIGAException("messages.general.error.ficheroNoExiste");
-				ClsLogging.writeFileLog("SIGAMantenimientoCertificadosPlantillasAction.grabar() FICHERO VACIO ",10);
-
-		    }else{
-		    	InputStream stream =null;
-		    	String sNombrePlantilla = form.getIdTipoProducto() + "_" + form.getIdProducto() + "_" + form.getIdProductoInstitucion();
-		    	String sDirectorio = getPathPlantillasFromDB(this.getUserBean(request)) + File.separator + form.getIdInstitucion();
-		    	
-		    	File fDirectorio = new File(sDirectorio);
-
-		    	fDirectorio.mkdirs();
-		    	
-		    	OutputStream bos = null;
-		    	try 
-		    	{			
-		    		stream = theFile.getInputStream();
-		    		sNombreFicheroTemporal=sDirectorio + File.separator + "#" + sNombrePlantilla + "_" + (new Date()).getTime() + ".tmp";
-					ClsLogging.writeFileLog("SIGAMantenimientoCertificadosPlantillasAction.grabar() sNombreFicheroTemporal="+sNombreFicheroTemporal,10);
-
-		    		bos = new FileOutputStream(sNombreFicheroTemporal);
-		    		int bytesRead = 0;
-		    		byte[] buffer = new byte[8192];
+			    }else{
+			    	InputStream stream =null;
+			    	String sNombrePlantilla = form.getIdTipoProducto() + "_" + form.getIdProducto() + "_" + form.getIdProductoInstitucion();
+			    	String sDirectorio = getPathPlantillasFromDB(this.getUserBean(request)) + File.separator + form.getIdInstitucion();
+			    	
+			    	File fDirectorio = new File(sDirectorio);
 	
-		    		while ((bytesRead = stream.read(buffer, 0, 8192)) != -1) 
-		    		{
-		    			bos.write(buffer, 0, bytesRead);
-		    		}
-		    		
-		    		fPlantilla = new File(sNombreFicheroTemporal);
-		    		fPlantilla.deleteOnExit();
-		    	} 
-		    	
-		    	catch (Exception e) 
-		    	{
-		    		throw new ClsExceptions(e,"Error al copiar la plantilla del certificado.");
-		    	    //request.setAttribute("mensaje","messages.updated.error");
-		    	}
-		    	finally {
-		    		bos.close();
-		    		stream.close();
-		    	}
+			    	fDirectorio.mkdirs();
+			    	
+			    	OutputStream bos = null;
+			    	try 
+			    	{			
+			    		stream = theFile.getInputStream();
+			    		sNombreFicheroTemporal=sDirectorio + File.separator + "#" + sNombrePlantilla + "_" + (new Date()).getTime() + ".tmp";
+						ClsLogging.writeFileLog("SIGAMantenimientoCertificadosPlantillasAction.grabar() sNombreFicheroTemporal="+sNombreFicheroTemporal,10);
+	
+			    		bos = new FileOutputStream(sNombreFicheroTemporal);
+			    		int bytesRead = 0;
+			    		byte[] buffer = new byte[8192];
+		
+			    		while ((bytesRead = stream.read(buffer, 0, 8192)) != -1) 
+			    		{
+			    			bos.write(buffer, 0, bytesRead);
+			    		}
+			    		
+			    		fPlantilla = new File(sNombreFicheroTemporal);
+			    		fPlantilla.deleteOnExit();
+			    	} 
+			    	
+			    	catch (Exception e) 
+			    	{
+			    		throw new ClsExceptions(e,"Error al copiar la plantilla del certificado.");
+			    	    //request.setAttribute("mensaje","messages.updated.error");
+			    	}
+			    	finally {
+			    		bos.close();
+			    		stream.close();
+			    	}
+			    }
 		    }
-	        
 	        CerPlantillasAdm admPlantilla = new CerPlantillasAdm(this.getUserBean(request));
 	
 	        String descripcionPlantilla=form.getDescripcion();
@@ -352,7 +377,7 @@ public class SIGAMantenimientoCertificadosPlantillasAction extends MasterAction
 	        ClsLogging.writeFileLog("SIGAMantenimientoCertificadosPlantillasAction.grabar() COMIENZO DE IMPORTAR PLANTILLA ",10);
 
 	        tx.begin();	        
-	        if (admPlantilla.importarPlantilla(descripcionPlantilla, idInstitucion, idTipoProducto, idProducto, idProductoInstitucion, idPlantilla, fPlantilla, bPorDefecto, bZIP))
+	        if (admPlantilla.importarPlantilla(descripcionPlantilla, idInstitucion, idTipoProducto, idProducto, idProductoInstitucion, idPlantilla, fPlantilla, bPorDefecto, bZIP,extension))
 	        {
 	        	ClsLogging.writeFileLog("SIGAMantenimientoCertificadosPlantillasAction.grabar() OK IMPORTAR PLANTILLA",10);
 

@@ -35,7 +35,6 @@ import com.siga.beans.ScsContrariosDesignaAdm;
 import com.siga.beans.ScsContrariosDesignaBean;
 import com.siga.beans.ScsDefendidosDesignaAdm;
 import com.siga.beans.ScsDefendidosDesignaBean;
-import com.siga.beans.ScsDesignaBean;
 import com.siga.beans.ScsDesignasProcuradorAdm;
 import com.siga.beans.ScsEJGAdm;
 import com.siga.beans.ScsEJGBean;
@@ -43,7 +42,6 @@ import com.siga.beans.ScsEJGDESIGNAAdm;
 import com.siga.beans.ScsEJGDESIGNABean;
 import com.siga.beans.ScsGuardiasTurnoAdm;
 import com.siga.beans.ScsGuardiasTurnoBean;
-import com.siga.beans.ScsPersonaJGAdm;
 import com.siga.beans.ScsProcuradorAdm;
 import com.siga.beans.ScsProcuradorBean;
 import com.siga.beans.ScsSaltosCompensacionesAdm;
@@ -56,7 +54,6 @@ import com.siga.certificados.Plantilla;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
-import com.siga.gratuita.form.DefinirEJGForm;
 import com.siga.gratuita.form.DefinirMantenimientoEJGForm;
 import com.siga.informes.InformeDefinirMantenimientoEJG;
 import com.siga.ws.CajgConfiguracion;
@@ -200,7 +197,6 @@ public class DefinirMantenimientoEJGAction extends MasterAction
 			// Dependiendo de donde vengamos tenemos que modificar unos campos u otros.
 			UsrBean usr 	= (UsrBean)request.getSession().getAttribute("USRBEAN");
 			tx = usr.getTransaction();
-			String idinstitucion=usr.getLocation();
 			ScsEJGAdm ejgAdm = new ScsEJGAdm(usr);
 			DefinirMantenimientoEJGForm miForm 	= (DefinirMantenimientoEJGForm)formulario;
 
@@ -322,16 +318,15 @@ public class DefinirMantenimientoEJGAction extends MasterAction
 			String idInstitucionSJCS=usr.getLocation();
 			String idTurnoSJCS=miForm.getIdTurnoEJG();
 			String idGuardiaSJCS=miForm.getIdGuardiaEJG();
-			String anioSJCS=miForm.getAnio();
-			String numeroSJCS=miForm.getNumero();
+			
 			String idPersonaSJCS=request.getParameter("idPersona");
 			String origenSJCS = "gratuita.operarEJG.boton.EditarEJG"; 
 			//-----------------------------------------------------
 			
 			
 			// Obtención parametros de la busqueda SJCS (FIJOS, NO TOCAR)
-			String flagSalto = request.getParameter("flagSalto");
-			String flagCompensacion = request.getParameter("flagCompensacion");
+
+
 			String checkSalto = request.getParameter("checkSalto");
 			//String checkCompensacion = request.getParameter("checkCompensacion");
 			String motivoSaltoSJCS = UtilidadesString.getMensajeIdioma(usr,"gratuita.literal.insertarSaltoPor") + " " +
@@ -366,7 +361,6 @@ public class DefinirMantenimientoEJGAction extends MasterAction
 		
 			UserTransaction tx = null;
 			Hashtable hash = new Hashtable();
-			Hashtable hashTemporal = new Hashtable();	
 			
 			try
 			{		
@@ -503,35 +497,10 @@ public class DefinirMantenimientoEJGAction extends MasterAction
 				//-----------------------------------------------------
 				// obtencion de valores a utilizar (MODIFICAR SEGUN ACTION)
 				String idInstitucionSJCS=usr.getLocation();
-				String idTurnoSJCS=miForm.getIdTurnoEJG();
-				String anioSJCS=miForm.getAnio();
-				String numeroSJCS=miForm.getNumero();
-//				String idPersonaSJCS=request.getParameter("idPersona");
-				String origenSJCS = "gratuita.operarEJG.boton.EditarEJG"; 
+				 
 				//-----------------------------------------------------
 				
-				
-				// Obtención parametros de la busqueda SJCS (FIJOS, NO TOCAR)
-//				String flagSalto = request.getParameter("flagSalto");
-//				String flagCompensacion = request.getParameter("flagCompensacion");
-//				String checkSalto = request.getParameter("checkSalto");
-				//String checkCompensacion = request.getParameter("checkCompensacion");
-//				String motivoSaltoSJCS = UtilidadesString.getMensajeIdioma(usr,"gratuita.literal.insertarSaltoPor") + " " +
-//				UtilidadesString.getMensajeIdioma(usr,origenSJCS);
-				//String motivoCompensacionSJCS = UtilidadesString.getMensajeIdioma(usr,"gratuita.literal.insertarCompensacionPor") + " " +
-				//UtilidadesString.getMensajeIdioma(usr,origenSJCS);
-				
-				// Aplicar cambios (COMENTAR LO QUE NO PROCEDA) Revisar que no se hace algo ya en el action. 
-//				BusquedaClientesFiltrosAdm admFiltros = new BusquedaClientesFiltrosAdm(this.getUserBean(request)); 
-				// Primero: Actualiza si ha sido automático o manual (Designaciones)0
-				//admFiltros.actualizaManualDesigna(idInstitucionSJCS,idTurnoSJCS,idPersonaSJCS,anioSJCS, numeroSJCS, flagSalto,flagCompensacion);
-				// Segundo: Tratamiento de último (Designaciones)
-				//admFiltros.tratamientoUltimo(idInstitucionSJCS,idTurnoSJCS,idPersonaSJCS,flagSalto,flagCompensacion);
-				// Tercero: Generación de salto (Designaciones y asistencias)
-//				admFiltros.crearSalto(idInstitucionSJCS,idTurnoSJCS,idGuardiaSJCS,idPersonaSJCS,checkSalto, motivoSaltoSJCS);
-				// Cuarto: Generación de compensación (Designaciones NO ALTAS)
-				//admFiltros.crearCompensacion(idInstitucionSJCS,idTurnoSJCS,idGuardiaSJCS,idPersonaSJCS,checkCompensacion,motivoCompensacionSJCS);
-				///////////////////////////////////////////////////////////////////////////////////////////
+	
 				
 				tx.commit();					
 				
@@ -729,10 +698,7 @@ public class DefinirMantenimientoEJGAction extends MasterAction
 			request.setAttribute("DESIGNAS",designas);
 			
 			
-//			consulta = "SELECT " + UtilidadesMultidioma.getCampoMultidioma("descripcion",this.getUserBean(request).getLanguage()) + " FROM SCS_MAESTROESTADOSEJG WHERE IDESTADOEJG = ( SELECT DISTINCT IDESTADOEJG " +
-//					   "FROM SCS_ESTADOEJG ejg1 WHERE ejg1.idtipoejg = " + miHash.get("IDTIPOEJG") + " and ejg1.idinstitucion = " + miHash.get("IDINSTITUCION") + " and ejg1.anio = " + miHash.get("ANIO") + " and ejg1.numero = " + miHash.get("NUMERO") + " and ejg1.fechainicio =( SELECT MAX(FECHAINICIO) FROM SCS_ESTADOEJG ejg WHERE ejg.idtipoejg = " 
-//					   + miHash.get("IDTIPOEJG") + " and ejg.idinstitucion = " + miHash.get("IDINSTITUCION") + " and ejg.anio = " + miHash.get("ANIO") + " and ejg.numero = " + miHash.get("NUMERO") + ") and rownum=1 )";
-			
+
 			consulta = "SELECT F_SIGA_GETRECURSO(F_SIGA_GET_ULTIMOESTADOEJG(" +
 					miHash.get("IDINSTITUCION") +
 					", " + miHash.get("IDTIPOEJG") +
@@ -823,7 +789,6 @@ public class DefinirMantenimientoEJGAction extends MasterAction
 					tienepermisos=false;
 				for (int  j = 0; j < v2.size(); j++){
 					Hashtable h2 = new Hashtable();
-					Vector vPersona = new Vector();
 					h2 = (Hashtable)v2.get(j);
 					request.setAttribute("anioExpe", h2.get("ANIO"));
 					request.setAttribute("codigoExpe", h2.get("CODIGO"));
@@ -838,62 +803,7 @@ public class DefinirMantenimientoEJGAction extends MasterAction
 		}
 	}
 		
-	protected String abrirAvanzada(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
-		
-		try {
-			DefinirEJGForm miForm = (DefinirEJGForm)formulario;			
-			
-			ScsEJGAdm admBean =  new ScsEJGAdm(this.getUserBean(request));
-			//Entramos al formulario en modo 'modificación'
-			request.getSession().setAttribute("accion","modificar");
-		
-			String consulta =" select ejg.ANIO, ejg.NUMERO, turno.ABREVIATURA AS NOMBRETURNO, guardia.NOMBRE AS NOMBREGUARDIA, tipoejg.DESCRIPCION AS TIPOEJG, decode(ejg.ORIGENAPERTURA,'M','Manual','S','SOJ','A','ASISTENCIA','DESIGNA'), ejg.FECHAAPERTURA, " + UtilidadesMultidioma.getCampoMultidioma("estadoejg.DESCRIPCION",this.getUserBean(request).getLanguage()) + ", personajg.NIF, personajg.NOMBRE, personajg.APELLIDO1, personajg.APELLIDO2, ejg.IDTIPOEJGCOLEGIO AS IDTIPOEJGCOLEGIO," +
-						     " decode(ejg.CALIDAD,'D','DEMANDANTE','DEMANDADO'), ejg.CALIDAD, colegiado.NCOLEGIADO, persona.NOMBRE, persona.APELLIDOS1, persona.APELLIDOS2, soj.ANIOSOJ, soj.NUMEROSOJ, " + UtilidadesMultidioma.getCampoMultidioma("tiposoj.DESCRIPCION",this.getUserBean(request).getLanguage()) + ", soj.FECHAAPERTURA, ejg.ASISTENCIA_ANIO, ejg.ASISTENCIA_NUMERO, asistencia.FECHAHORA, ejg.DESIGNA_ANIO," +
-						     " ejg.DESIGNA_NUMERO, designa.FECHAENTRADA AS FECHAAPERTURA, tipoejgcolegio.DESCRIPCION, ejg.FECHAPRESENTACION, ejg.PROCURADORNECESARIO, ejg.OBSERVACIONES, ejg.DELITOS " +
-							 " from scs_ejg ejg, scs_personajg personajg, cen_colegiado colegiado, scs_turno turno, scs_guardiasturno guardia, scs_maestroestadosejg estadoejg, scs_estadoejg  estado, scs_soj soj, scs_designa designa, scs_tipoejg tipoejg, scs_tiposoj tiposoj, scs_asistencia asistencia, scs_tipoejgcolegio tipoejgcolegio, cen_persona persona " +
-							 " where ejg.idinstitucion = turno.idinstitucion and " +
-						     " ejg.guardiaturno_idturno = turno.idturno and " +
-						     " ejg.idinstitucion = guardia.idinstitucion and " +
-						     " ejg.guardiaturno_idguardia = guardia.idguardia and " +
-						     " estado.idinstitucion (+)= ejg.idinstitucion and " +
-						     " estado.idtipoejg (+)= ejg.idtipoejg and " +
-						     " estado.anio (+)= ejg.anio and " +
-						     " estado.numero (+)= ejg.numero and " +      
-						     " estado.idtipoejg = estadoejg.idestadoejg and " +
-						     " personajg.idinstitucion (+)= ejg.idinstitucion and " +
-						     " personajg.idpersona (+)= ejg.idpersonajg and " +
-						     " ejg.idinstitucion = colegiado.idinstitucion and " +
-						     " ejg.idpersona = colegiado.idpersona and " +
-						     " soj.idinstitucion (+)= ejg.idinstitucion and " +
-						     " soj.idtiposoj (+)= ejg.soj_idtiposoj and " +
-						     " asistencia.idinstitucion (+)= ejg.idinstitucion and " +
-						     " asistencia.anio (+)= ejg.anio and " +
-						     " asistencia.numero (+)= ejg.numero and " +      
-						     " designa.idinstitucion (+)= ejg.idinstitucion and " +
-						     " designa.anio (+)= ejg.anio and " +
-						     " designa.numero (+)= ejg.numero and " + 
-						     " designa.idturno (+)= ejg.guardiaturno_idturno and " + 
-						     " tipoejgcolegio.idinstitucion (+)= ejg.idinstitucion and " +
-						     " tipoejgcolegio.idtipoejgcolegio (+)= ejg.idtipoejgcolegio ";
-			
-			consulta += " and ejg.idtipoejg = " + miForm.getIdTipoEJG() + " and ejg.idinstitucion = " + miForm.getIdInstitucion() + " and ejg.anio = " + miForm.getAnio() + " and ejg.numero = " + miForm.getNumero();
-			
-			Hashtable miHash = new Hashtable();
-			miHash.put(ScsEJGBean.C_IDTIPOEJG,miForm.getIdTipoEJG());
-			miHash.put(ScsEJGBean.C_IDINSTITUCION,miForm.getIdInstitucion());
-			miHash.put(ScsEJGBean.C_ANIO,miForm.getAnio());
-			miHash.put(ScsEJGBean.C_NUMERO,miForm.getNumero());
-			
-			// Volvemos a obtener de base de datos la información, para que se la más actúal que hay en la base de datos			
-			Vector resultado = admBean.selectGenerico(consulta);
-			ScsEJGBean ejg = (ScsEJGBean)resultado.get(0);
-			
-			request.setAttribute("EJGDATA",admBean.beanToHashTable(ejg));
-		} catch (Exception e) {
-			   throwExcp("messages.general.error",e,null);
-		}			
-		return "editar";
-	}
+	
 	
 	protected String borrarRelacionarConAsistencia(MasterForm formulario, HttpServletRequest request) throws SIGAException{
 		
@@ -1029,41 +939,13 @@ public class DefinirMantenimientoEJGAction extends MasterAction
 	{
 		try {
 			DefinirMantenimientoEJGForm miForm 	= (DefinirMantenimientoEJGForm)formulario;
-			Hashtable datosEJG=miForm.getDatos();
 			
-			ScsPersonaJGAdm personaAdm=new ScsPersonaJGAdm(this.getUserBean(request));
 			
 			Hashtable miHash = new Hashtable ();
 			Vector contrarios=new Vector();
 			Vector testigo=new Vector();
 			Hashtable contrariosHash = new Hashtable ();
-/*
-			UtilidadesHash.set(miHash, ScsEJGBean.C_IDINSTITUCION, 	miForm.getIdInstitucion());
-			UtilidadesHash.set(miHash, ScsEJGBean.C_IDTIPOEJG, 		miForm.getIdTipoEJG());
-			UtilidadesHash.set(miHash, ScsEJGBean.C_NUMERO, 		miForm.getNumero());
-			UtilidadesHash.set(miHash, ScsEJGBean.C_ANIO, 			miForm.getNumero());
-
-			if (bCrear) {
-				// Creamos la relacion
-				UtilidadesHash.set(miHash, ScsEJGBean.C_DESIGNA_ANIO, 	miForm.getDesigna_anio());
-				UtilidadesHash.set(miHash, ScsEJGBean.C_DESIGNA_NUMERO, miForm.getDesigna_numero());
-				UtilidadesHash.set(miHash, ScsEJGBean.C_DESIGNA_IDTURNO,miForm.getDesigna_turno());
-			}
-			else {
-				// Borramos la relacion
-				UtilidadesHash.set(miHash, ScsEJGBean.C_DESIGNA_ANIO, 	"");
-				UtilidadesHash.set(miHash, ScsEJGBean.C_DESIGNA_NUMERO, "");
-				UtilidadesHash.set(miHash, ScsEJGBean.C_DESIGNA_IDTURNO,"");
-			}
-
-			String [] campos = {ScsEJGBean.C_DESIGNA_ANIO, ScsEJGBean.C_DESIGNA_NUMERO, ScsEJGBean.C_DESIGNA_IDTURNO};
-			ScsEJGAdm ejgAdm = new ScsEJGAdm(this.getUserBean(request));  
-			if (!ejgAdm.updateDirect(miHash, null, campos)) {
-				throw new ClsExceptions ("Error de la relacion EJG - Designación");
-			}
-
-*/
-			
+		
 			ScsEJGDESIGNAAdm ejgDesignaAdm = new ScsEJGDESIGNAAdm(this.getUserBean(request)); 
 			ScsContrariosDesignaAdm contrariosAdm =new ScsContrariosDesignaAdm(this.getUserBean(request));
 			
@@ -1110,7 +992,6 @@ public class DefinirMantenimientoEJGAction extends MasterAction
 				   defendidosDesignaBean.setCalidad((String)miForm.getDatos().get("CALIDAD"));				   
 				}*/
 				String idtipocalidad= (String)miForm.getIdTipoenCalidad();
-				String calidadIdinstitucion= (String)miForm.getCalidadIdinstitucion();
 				if (idtipocalidad!=null && !idtipocalidad.equals("")){
 					defendidosDesignaBean.setIdTipoenCalidad(new Integer(idtipocalidad));
 					defendidosDesignaBean.setCalidadIdinstitucion(new Integer(idtipocalidad));

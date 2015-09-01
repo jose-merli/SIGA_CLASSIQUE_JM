@@ -474,21 +474,20 @@
 			
 			
 			<!-- Check para pasar a modo historico donde se muestran los turnos dados de baja -->
-			<div style="position:absolute; left:400px;bottom:30px;z-index:99;">
-				<table align="center" border="0">
-					<tr>
-						<td class="labelText">
-							<siga:Idioma key="censo.consultaRegistrosBajaLogica.literal"/>
-							
-							<%if (bIncluirBajaLogica) { %>
-								<input type="checkbox" id="bajaLogica" name="bajaLogica" onclick="incluirRegBajaLogica(this);" checked/>
-							<%} else {%>
-								<input type="checkbox" id="bajaLogica" name="bajaLogica" onclick="incluirRegBajaLogica(this);"/>
-							<%}%>
-						</td>							
-					</tr>
-				</table>
-			</div>
+		<div style="position: absolute; left: 400px; width:140px; bottom: 0px; z-index: 99;">
+			<table align="center" border="0" class="botonesSeguido">
+				<tr>
+					<td class="labelText">
+						<siga:Idioma key="censo.consultaRegistrosBajaLogica.literal" /> 
+						<%if (bIncluirBajaLogica) {%>
+							<input type="checkbox" name="bajaLogica" onclick="incluirRegBajaLogica(this);" checked> 
+						<%} else {%>
+							<input type="checkbox" name="bajaLogica" onclick="incluirRegBajaLogica(this);"> 
+						<%}%>
+ 					</td>
+				</tr>
+			</table>
+		</div>
 		<%}
 		
 		// consultamos si el colegiado esta dado de baja

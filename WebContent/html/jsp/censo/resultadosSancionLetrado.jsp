@@ -47,7 +47,6 @@
 	UsrBean usrbean = (UsrBean)session.getAttribute(ClsConstants.USERBEAN);
 	String idioma=usrbean.getLanguage().toUpperCase();
 	String accion=(String)request.getAttribute("ACCION");
-	
 	String activarFilaSel = (String)request.getAttribute("activarFilaSel");	
 
 	String valorCheckPersona = "";
@@ -56,10 +55,8 @@
 	}
 	
 	String tienepermisoArchivo = (String)request.getAttribute("tienepermisoArchivo");
-	
- //	SancionesLetradoForm miform = (SancionesLetradoForm)request.getAttribute("miform");
-
 	String tamaño="position:absolute; width:100%; height:20; z-index:3; bottom:0px; left: 0px";
+	
 	// miro si estamos en la pestaña de datos de colegiacion
 	String pestanaColegiacion = "1";
 	String personaColegiacion = "";
@@ -85,8 +82,9 @@
 	String registrosPorPagina = "";
 	HashMap hm=new HashMap();
 	String action="";
-	if (pestanaColegiacion!=null && !pestanaColegiacion.equals("1")) {	// si no estamos en el pestana de colegiacion, mostramos el paginador
+	String targetVentana = "mainWorkArea";
 	
+	if (pestanaColegiacion!=null && !pestanaColegiacion.equals("1")) {// si no estamos en el pestana de colegiacion, mostramos el paginador	
 		/** PAGINADOR ***/
 		if (ses.getAttribute("DATAPAGINADOR")!=null){
 	 		hm = (HashMap)ses.getAttribute("DATAPAGINADOR");
@@ -117,6 +115,7 @@
     	
 	} else {
        resultado = (Vector) request.getAttribute("resultado");
+       targetVentana = "mainPestanas";
 	}
 	
 	String botones="false";
@@ -138,6 +137,13 @@
 		function refrescarLocal() {
 			parent.buscar();
 		}	
+		
+		function accionNuevo()  {	
+			sub();
+			document.forms[0].modo.value="nuevo";
+			document.forms[0].target="mainWorkArea";
+			document.forms[0].submit();	
+		}		
 	</script>
 </head>
 
@@ -147,10 +153,10 @@
 	<!-- Tratamiento del tagTabla y tagFila para la formacion de la lista  de cabeceras fijas -->
 	
 	<!-- Formulario de la lista de detalle multiregistro -->
-	<html:form action="/CEN_SancionesLetrado.do?noReset=true" target="mainPestanas" method="POST" style="display:none">
+	<html:form action="/CEN_SancionesLetrado.do?noReset=true" target="<%=targetVentana %>" method="POST" style="display:none">
 		<html:hidden styleId = "modo"  property = "modo" value = "" />
 		<html:hidden styleId = "formulario"  property = "formulario" value = "" />
-		<input type="hidden" id= "accionModal"  name= "accionModal" value = "">
+		<html:hidden styleId = "hiddenFrame"  property = "hiddenFrame"  value = "1"/>
 		<input type="hidden" id= "pestanaColegiacion" name= "pestanaColegiacion"  value = "<%=pestanaColegiacion %>">
 		<input type="hidden" id= "personaColegiacion" name= "personaColegiacion" value = "<%=personaColegiacion %>">
 		<input type="hidden" id= "institucionColegiacion" name= "institucionColegiacion"  value = "<%=institucionColegiacion %>">
@@ -160,6 +166,7 @@
 		<html:hidden styleId="nombreInstitucionBuscar"  property="nombreInstitucionBuscar" />
 		<html:hidden styleId="tipoSancionBuscar"  property="tipoSancionBuscar" />
 		<html:hidden styleId="refCGAE"  property="refCGAE" />
+		<html:hidden styleId="refColegio"  property="refColegio" />
 		<html:hidden styleId="colegiadoBuscar"  property="colegiadoBuscar" />
 		<html:hidden styleId="chkRehabilitado"  property="chkRehabilitado" />
 		<html:hidden styleId="mostrarTiposFechas"  property="mostrarTiposFechas" />			
@@ -170,30 +177,33 @@
 		<html:hidden styleId="fechaFinArchivada" property="fechaFinArchivada"/>
 	</html:form>
 	
-	<table  class="tablaTitulo" cellpadding="0" cellspacing="0">
-		<tr>
-	   		<td class="titulosPeq">
-	       		<siga:Idioma key="censo.consultaDatosColegiacion.literal.sancionesLetrado"/>
-			</td>
-		</tr>
-	</table>	
- 
 <%
 	String tamanosCol = "";
 	String nombresCol = "";
-	tamanosCol="8,26,12,6,8,8,10,10,12";
-	nombresCol+="censo.busquedaSancionesLetrado.literal.colegio,";
-	nombresCol+="censo.busquedaSancionesLetrado.literal.ncolegiado,censo.busquedaSancionesLetrado.literal.tipoSancion,";
-	nombresCol+="censo.BusquedaSancionesLetrado.literal.refCGAE,gratuita.BusquedaSancionesLetrado.literal.fechaInicio,";
-	nombresCol+="gratuita.BusquedaSancionesLetrado.literal.fechaFin, gratuita.BusquedaSancionesLetrado.literal.rehabilitado, gratuita.BusquedaSancionesLetrado.literal.firmeza,";				  
- %>
+	//Es consejo
+	if(	(Integer.parseInt(usrbean.getLocation()) == 2000) || (Integer.parseInt(usrbean.getLocation()) >= 3000)){
+		tamanosCol="8,24,8,6,6,8,8,10,10,12";
+		nombresCol+="censo.busquedaSancionesLetrado.literal.colegio,";
+		nombresCol+="censo.busquedaSancionesLetrado.literal.ncolegiado,censo.busquedaSancionesLetrado.literal.tipoSancion,";
+		nombresCol+="censo.BusquedaSancionesLetrado.literal.refCGAE,censo.BusquedaSancionesLetrado.literal.refColegio2,gratuita.BusquedaSancionesLetrado.literal.fechaInicio,";
+		nombresCol+="gratuita.BusquedaSancionesLetrado.literal.fechaFin, gratuita.BusquedaSancionesLetrado.literal.rehabilitado, gratuita.BusquedaSancionesLetrado.literal.firmeza,";				  
+
+	}
+	//Es colegiado
+	else{
+		tamanosCol="8,26,12,6,8,8,10,10,12";
+		nombresCol+="censo.busquedaSancionesLetrado.literal.colegio,";
+		nombresCol+="censo.busquedaSancionesLetrado.literal.ncolegiado,censo.busquedaSancionesLetrado.literal.tipoSancion,";
+		nombresCol+="censo.BusquedaSancionesLetrado.literal.refColegio2,gratuita.BusquedaSancionesLetrado.literal.fechaInicio,";
+		nombresCol+="gratuita.BusquedaSancionesLetrado.literal.fechaFin, gratuita.BusquedaSancionesLetrado.literal.rehabilitado, gratuita.BusquedaSancionesLetrado.literal.firmeza,";				  
+	}
+		%>
 
 	<siga:Table 
 	   	name="tablaDatos"
 	   	border="1"
 	   	columnNames="<%=nombresCol%>"
-	   	columnSizes="<%=tamanosCol%>"
-	   	modal="G">
+	   	columnSizes="<%=tamanosCol%>">
 		   
 	<!-- INICIO: ZONA DE REGISTROS -->
 	<!-- Aqui se iteran los diferentes registros de la lista -->
@@ -216,13 +226,6 @@
 				}else{
 				   registro = (Hashtable) resultado.get(i);
 				}  
-				// permisos de acceso
-				String permisos="C,E,B";
-				/*if (accion.equals("ver")){
-				   permisos = "C";
-				}else{
-				   permisos = "C,E,B";
-				}*/
 				
 				UsrBean user = (UsrBean) ses.getAttribute("USRBEAN");
 				String modo = "edicion";
@@ -241,9 +244,20 @@
 				String fechaFirmeza=(String)registro.get("FECHAFIRMEZA");
 				String chkRehabilitado=(((String)registro.get("CHKREHABILITADO")).equals("1"))?"gratuita.operarEJG.literal.si":"gratuita.operarEJG.literal.no";
 				String chkFirmeza=(((String)registro.get("CHKFIRMEZA")).equals("1"))?"gratuita.operarEJG.literal.si":"gratuita.operarEJG.literal.no";
+				String refColegio=(String)registro.get("REFCOLEGIO");
 				String refCGAE=(String)registro.get("REFCGAE");
 				String chkArchivada=(String)registro.get("CHKARCHIVADA");   
+				String idSancionOrigen=(String)registro.get("IDSANCIONORIGEN");				
 				String cont = new Integer(i+1).toString();			
+				
+				// Permisos de acceso
+				String permisos="";
+				if(ClsConstants.esConsejoGeneral(idInstitucionAlta) && idSancionOrigen != null && !idSancionOrigen.equals("")){
+					//Si se trata de una sancion traspasada al CGAE solo se puede consultar
+					permisos="C";				
+				} else {
+					permisos="C,E,B";					
+				}
 %>
 
 				<!-- REGISTRO  -->
@@ -267,11 +281,17 @@
 						<%=UtilidadesString.mostrarDatoJSP(tipoSancion) %>
 					</td>
 					
+					<% if(	(Integer.parseInt(user.getLocation()) == 2000) || (Integer.parseInt(user.getLocation()) >= 3000)) { %>	
+						<td>			
+							<%=UtilidadesString.mostrarDatoJSP(refCGAE)   %>
+						</td>
+					<%} %>
 					<td>
-						<%=UtilidadesString.mostrarDatoJSP(refCGAE) %>
+						 <%=UtilidadesString.mostrarDatoJSP(refColegio) %>
 					</td>
-					
 					<td>
+					
+							
 						<%=UtilidadesString.mostrarDatoJSP(GstDate.getFormatedDateShort(idioma,fechaInicio)) %>
 					</td>
 					
@@ -295,15 +315,6 @@
 %>			
 	</siga:Table>
 
-<%
-	if (tienepermisoArchivo.equals("1")){
-		tamaño="position:absolute; width:100%; height:20; z-index:3; bottom:30px; left: 0px";
-%>
-		<siga:ConjBotonesAccion botones="ar" />
-<%
-	}
-%>			
-
 	<!-- INICIO: BOTONES ACCION -->  
 <%  
 	if (accion!=null && accion!="null"){
@@ -321,29 +332,6 @@
 %> 	
 	<!-- FIN: BOTONES ACCION -->
 	
-	<!-- INICIO: SCRIPTS BOTONES ACCION -->
-	<script language="JavaScript">
-		function accionNuevo() {		
-			document.forms[0].modo.value="nuevo";
-			var resultado=ventaModalGeneral(document.forms[0].name,"G");
-			if (resultado!=undefined && resultado=="MODIFICADO")
-			{
-				refrescarLocal();
-			}
-		}
-
-	 	function accionArchivar(){
-			//alert("document.SancionesLetradoForm.tipoSancionBuscar.value"+document.SancionesLetradoForm.tipoSancionBuscar.value); 
-			document.forms[0].modo.value = "fecha";		
-			document.forms[0].target = "mainPestanas";
-			var resultado=ventaModalGeneral(document.forms[0].name,"P");	
-			if (resultado!=undefined && resultado=="MODIFICADO") {
-				refrescarLocal();
-			}		
-		}
-	</script>
-	<!-- FIN: SCRIPTS BOTONES ACCION -->			
-		
 <%
 	if (pestanaColegiacion!=null && !pestanaColegiacion.equals("1")) {	
 		if ( hm.get("datos")!=null && !hm.get("datos").equals("")){

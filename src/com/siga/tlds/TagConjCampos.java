@@ -111,9 +111,9 @@ public class TagConjCampos extends TagSupport {
 			
 			out.println("	<!-- SUBCONJUNTO DE DATOS -->");
 			if (oculto){
-				out.println("<fieldset class='legendNoBorder,"+getClase()+"'>");
+				out.println("<fieldset class='legendNoBorder'>");
 			}else{
-				out.println("<fieldset class='"+getClase()+"'>");
+				out.println("<fieldset>");
 			}
 			if (this.leyenda!=null) {
 				

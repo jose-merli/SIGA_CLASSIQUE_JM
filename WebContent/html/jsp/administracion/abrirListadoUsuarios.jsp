@@ -3,9 +3,9 @@
 <head>
 <!-- abrirListadoUsuarios.jsp -->
 <meta http-equiv="Expires" content="0">
-<meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-1"%>
+<meta http-equiv="Pragma" content="no-cache"> 
 <meta http-equiv="Cache-Control" content="no-cache">
-<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+
 <%@ page contentType="text/html" language="java" errorPage="/html/jsp/error/errorSIGA.jsp"%>
 
 <%@ taglib uri = "libreria_SIGA.tld" prefix="siga"%>
@@ -43,30 +43,51 @@
 			//Funcion asociada a boton buscar
 			function buscar() 
 			{
+				
+				var bBuscar=true;
+				
 				sub();
-				listadoUsuariosForm.modo.value="buscar";
-				listadoUsuariosForm.submit();
+				if (listadoUsuariosForm.descripcion.value=="" &&
+					listadoUsuariosForm.idRolBusqueda.value=="" &&
+					listadoUsuariosForm.NIF.value=="")
+				{
+					if (!confirm("<siga:Idioma key="administracion.grupos.asignarUsuariosGrupo.literal.busquedaCostosa"/>"))
+					{
+						bBuscar=false;
+						fin();
+					}
+				}
+				
+				if (bBuscar)
+				{
+					listadoUsuariosForm.modo.value="buscar";
+					listadoUsuariosForm.submit();
+				}
 			}
+			
 		</script>
 		<!-- FIN: SCRIPTS BOTONES -->
 	</head>
 
 	<body onLoad="ajusteAlto('resultado');">
+
+			<fieldset>
 			<table class="tablaCentralCampos" align="center">
 				<html:form action="/ADM_GestionarUsuarios.do" method="POST" target="resultado">
-					<input type="hidden" name="modo" value="inicio">
+					<input type="hidden" name="modo" value="">
 					<input type="hidden" name="limpiarFilaSeleccionada" value="">
 
-					<tr>				
-						<td class="labelText">
-							<siga:Idioma key="administracion.usuarios.literal.nombre"/>
-						</td>				
-						<td>
-							<html:text name="listadoUsuariosForm" property="descripcion" size="50" maxlength="50" styleClass="box"/>
-						</td>
-						<td class="labelText">
-							<siga:Idioma key="administracion.usuarios.literal.activo"/>
-						</td>
+					<tr>	
+						<td class="labelText"><siga:Idioma key="administracion.grupos.asignarUsuariosGrupo.literal.nombre"/></td>				
+						<td><html:text name="listadoUsuariosForm" property="descripcion" size="30" maxlength="50" styleClass="box"/></td>
+						
+						<td class="labelText"><siga:Idioma key="administracion.usuarios.literal.NIF"/></td>				
+						<td><html:text name="listadoUsuariosForm" property="NIF" size="15" maxlength="10" styleClass="box"/></td>
+									
+						<td class="labelText"><siga:Idioma key="administracion.grupos.asignarUsuariosGrupo.literal.rol"/></td>				
+						<td><siga:Select queryId="getRoles" id="idRolBusqueda"/></td>
+
+						<td class="labelText"><siga:Idioma key="administracion.usuarios.literal.activo"/></td>
 						<td>
 							<html:select name="listadoUsuariosForm" property="activoConsulta" styleClass="boxCombo">
 								<option value=""></option>
@@ -77,6 +98,7 @@
 					</tr>
 				</html:form>
 			</table>
+			</fieldset>
 			
 
 			<!-- V Volver, B Buscar, A Avanzada, S Simple, N Nuevo registro, L Limpiar, R Borrar Log -->

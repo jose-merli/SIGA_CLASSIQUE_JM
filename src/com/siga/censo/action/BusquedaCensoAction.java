@@ -1087,97 +1087,80 @@ public class BusquedaCensoAction extends MasterAction {
 		return "resultadoCenso";
 	}
 	
-	protected String buscarTodosArt27Modal(ActionMapping mapping, MasterForm formulario,
-			HttpServletRequest request, HttpServletResponse response)
-			throws ClsExceptions, SIGAException {
-		
-		
+	protected String buscarTodosArt27Modal(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, SIGAException {
 		UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");
-		
-		// casting del formulario
-		BusquedaCensoForm miFormulario = (BusquedaCensoForm)formulario;
-		String idInstitucion = miFormulario.getColegiadoen();	
-		// busqueda de clientes
+		BusquedaCensoForm miFormulario = (BusquedaCensoForm) formulario;
 		VleLetradosSigaAdm cliente = new VleLetradosSigaAdm(this.getUserBean(request));
-		
-		if (request.getParameter("busquedaSancion")!=null && request.getParameter("busquedaSancion").equals("1")){
-			request.setAttribute("busquedaSancion","1");
-			
-		}
-		
-		request.setAttribute(ClsConstants.PARAM_PAGINACION,paginadorModal);
-		request.setAttribute("si",UtilidadesString.getMensajeIdioma(user, "general.yes"));
-		request.setAttribute("no",UtilidadesString.getMensajeIdioma(user, "general.no"));
-	
-		
-		
-		try {
-			HashMap databackup=getPaginador(request, paginadorModal);
-			if (databackup!=null){ 
 
-				PaginadorBind paginador = (PaginadorBind)databackup.get("paginador");
-				
-				//Si no es la primera llamada, obtengo la página del request y la busco con el paginador
-				String pagina = (String)request.getParameter("pagina");
-				if (paginador!=null){	
-					Vector datos=new Vector();
-					if (pagina!=null){
+		try {
+			if (request.getParameter("busquedaSancion") != null && request.getParameter("busquedaSancion").equals("1")) {
+				request.setAttribute("busquedaSancion", "1");
+			}		
+			request.setAttribute(ClsConstants.PARAM_PAGINACION, paginadorModal);
+			request.setAttribute("si", UtilidadesString.getMensajeIdioma(user, "general.yes"));
+			request.setAttribute("no", UtilidadesString.getMensajeIdioma(user, "general.no"));
+			HashMap databackup = getPaginador(request, paginadorModal);
+			
+			if (databackup != null) {
+				PaginadorBind paginador = (PaginadorBind) databackup.get("paginador");
+
+				// Si no es la primera llamada, obtengo la página del request y la busco con el paginador
+				String pagina = (String) request.getParameter("pagina");
+				if (paginador != null) {
+					Vector datos = new Vector();
+					if (pagina != null) {
 						datos = paginador.obtenerPagina(Integer.parseInt(pagina));
-					}else{// cuando hemos editado un registro de la busqueda y volvemos a la paginacion
+					} else {
+						// cuando hemos editado un registro de la busqueda y volvemos a la paginacion
 						datos = paginador.obtenerPagina((paginador.getPaginaActual()));
 					}
-					 
 					request.setAttribute("letradoList", datos);
 					request.setAttribute("paginaSeleccionada", paginador.getPaginaActual());
 					request.setAttribute("totalRegistros", paginador.getNumeroTotalRegistros());
 					request.setAttribute("registrosPorPagina", paginador.getNumeroRegistrosPorPagina());
-					databackup.put("paginador",paginador);
-					databackup.put("datos",datos);
-				}else{
+					databackup.put("paginador", paginador);
+					databackup.put("datos", datos);
+
+				} else {
 					request.setAttribute("letradoList", new Vector());
-					databackup.put("datos",new Vector());
-					
+					databackup.put("datos", new Vector());
 					request.setAttribute("paginaSeleccionada", 1);
 					request.setAttribute("totalRegistros", 0);
-					request.setAttribute("registrosPorPagina",1);
+					request.setAttribute("registrosPorPagina", 1);
 					setPaginador(request, paginadorModal, databackup);
-					
-				}	
-				
+				}
 
-			}else{	
-				databackup=new HashMap();
-				//Haria falta meter los parametros en con ClsConstants
+			} else {
+				databackup = new HashMap();
+				String idInstitucionColegiado = miFormulario.getColegiadoen();
+				PaginadorBind paginador = cliente.getClientesCensoArticulo27(idInstitucionColegiado, user.getLocation(), miFormulario);
 
-				PaginadorBind paginador = cliente.getClientesCensoArticulo27(idInstitucion,user.getLocation(),miFormulario, user.getLanguage());
-				
-				if (paginador!=null&& paginador.getNumeroTotalRegistros()>0){
+				if (paginador != null && paginador.getNumeroTotalRegistros() > 0) {
 					int totalRegistros = paginador.getNumeroTotalRegistros();
-					databackup.put("paginador",paginador);
+					databackup.put("paginador", paginador);
 					Vector datos = paginador.obtenerPagina(1);
 					request.setAttribute("paginaSeleccionada", paginador.getPaginaActual());
 					request.setAttribute("totalRegistros", paginador.getNumeroTotalRegistros());
 					request.setAttribute("registrosPorPagina", paginador.getNumeroRegistrosPorPagina());
 					request.setAttribute("letradoList", datos);
-					databackup.put("datos",datos);
-					
+					databackup.put("datos", datos);
 					setPaginador(request, paginadorModal, databackup);
-				}else{
-					databackup.put("datos",new Vector());
+				} else {
+					databackup.put("datos", new Vector());
 					request.setAttribute("paginaSeleccionada", 1);
 					request.setAttribute("totalRegistros", 0);
-					request.setAttribute("registrosPorPagina",1);
+					request.setAttribute("registrosPorPagina", 1);
 					request.setAttribute("letradoList", new Vector());
 					setPaginador(request, paginadorModal, databackup);
-				} 	
+				}
 			}
-		}catch (SIGAException e1) {
-			// Excepcion procedente de obtenerPagina cuando se han borrado datos
-			 return exitoRefresco("error.messages.obtenerPagina",request);
-		}catch (Exception e) 
-		{
-			throw new SIGAException("messages.general.error",e,new String[] {"modulo.gratuita"});
-		} 
+			
+		} catch (SIGAException e1) {
+			return exitoRefresco("error.messages.obtenerPagina", request);
+		} catch (Exception e) {
+			throw new SIGAException("messages.general.error", e, new String[] { "modulo.gratuita" });
+		}
+		
 		return "resultadoCenso";
 	}
 	
@@ -1389,7 +1372,7 @@ public class BusquedaCensoAction extends MasterAction {
 						
 						if(infoCliente != null){ //Existe un registro en el CENSO						
 							miForm.setIdPersona((String)infoCliente.get("ID_LETRADO"));
-							miForm.setColegiadoen((String)infoCliente.get("ID_COLEGIO"));
+							miForm.setColegiadoen(idInstitucionBuscar);
 							miForm.setNumeroColegiado((String)infoCliente.get("NUM_COLEGIADO"));
 							miForm.setApellido2((String)infoCliente.get("APELLIDO2"));
 							miForm.setApellido1((String)infoCliente.get("APELLIDO1"));
@@ -1527,13 +1510,9 @@ public class BusquedaCensoAction extends MasterAction {
 							}else{ //EL LETRADO NO ES DE NUESTRO COLEGIO						
 								col = colAdm.existeColegiadoOtraInstitucion(idPersona, new Integer(idInstitucion));							
 								if(col != null){ //EL CLIENTE ES COLEGIADO EN OTRO COLEGIO
-									if(col.getNColegiado()!=null &&!col.getNColegiado().equals("")){
-										miForm.setNumeroColegiado(col.getNColegiado());
-									}else{
-										miForm.setNumeroColegiado(col.getNComunitario());
-									}
-									miForm.setColegiadoen(""+col.getIdInstitucion());
-									miForm.setIdInstitucion(""+col.getIdInstitucion());
+									miForm.setNumeroColegiado("No Colegiado"); //Esto se poner porque adrian lo ha dicho. CR piensa que deberia estar vacio este campo.
+									miForm.setColegiadoen(idInstitucion);
+									miForm.setIdInstitucion("");
 									
 								}else{ //EL CLIENTE ES NO COLEGIADO EN OTRO COLEGIO
 									nCol = nColAdm.existeNoColegiado(idPersona);
@@ -1544,8 +1523,8 @@ public class BusquedaCensoAction extends MasterAction {
 											miForm.setNif("");
 										}else{ //NO COLEGIADOS DE TIPO PERSONA
 											miForm.setNumeroColegiado("No Colegiado");
-											miForm.setColegiadoen(""+nCol.getIdInstitucion());
-											miForm.setIdInstitucion(""+nCol.getIdInstitucion());
+											miForm.setColegiadoen(idInstitucion);
+											miForm.setIdInstitucion("");
 										}
 									}
 								}

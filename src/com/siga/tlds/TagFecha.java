@@ -116,6 +116,7 @@ public class TagFecha extends TagSupport {
 			regional = usrbean.getLanguageExt().toLowerCase();
 			sDatepicker += " data-regional=\""+	regional +"\"";
 			sDatepicker += " />";
+			sDatepicker += "<script>jQuery('#"+ this.styleId +"').parent().css('white-space','nowrap');</script>";
 			out.print(sDatepicker);			
 		} catch (Exception e) {
 			e.printStackTrace();

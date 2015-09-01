@@ -45,7 +45,7 @@
 	ArrayList<String> aPlantillaEnviosSeleccionada = new ArrayList<String>();
 	ArrayList<String> aSerieSeleccionada = new ArrayList<String>();
 	Integer iPlantilla=new Integer(-1);
-	String sAbreviatura="", sDescripcion="", idSerieFacturacion="", enviarFacturas="", generarPDF="", observaciones="", sPlantilla="", sFechaBaja="";
+	String sAbreviatura="", sDescripcion="", idSerieFacturacion="-1", idSeriePrevia="-1", enviarFacturas="", generarPDF="", observaciones="", sPlantilla="", sFechaBaja="";
 	FacSerieFacturacionBean beanSerieFacturacion = (FacSerieFacturacionBean) request.getAttribute("beanSerieFacturacion");	
 	if (beanSerieFacturacion!=null) {		
 		sAbreviatura = beanSerieFacturacion.getNombreAbreviado();
@@ -57,7 +57,7 @@
 		observaciones = beanSerieFacturacion.getObservaciones();
 		sFechaBaja = (beanSerieFacturacion.getFechaBaja()!=null ? beanSerieFacturacion.getFechaBaja() : "");
 		if (beanSerieFacturacion.getIdSerieFacturacionPrevia()!=null) {
-			String idSeriePrevia = beanSerieFacturacion.getIdSerieFacturacionPrevia().toString();
+			idSeriePrevia = beanSerieFacturacion.getIdSerieFacturacionPrevia().toString();
 			aSerieSeleccionada.add(idSeriePrevia.toString());				
 		}
 		
@@ -87,9 +87,10 @@
 	String parametro[] = new String[1];
 	parametro[0] = user.getLocation();
 	
-	String datoSerie[] = new String[2];
+	String datoSerie[] = new String[3];
 	datoSerie[0] = idInstitucion;
 	datoSerie[1] = idSerieFacturacion;
+	datoSerie[2] = idSeriePrevia;
 	
 	// Informacion sobre formas de pago automática
 	// Obtener informacion para rellenar en caso de modificacion o consulta
@@ -356,7 +357,7 @@
 <%
 									} else {
 %>
-										<html:text name="DatosGeneralesForm" styleId="descripcion"  property="descripcion" size="100" maxlength="100" styleClass="boxCombo" value="<%=sDescripcion%>" readonly="false"/>
+										<html:text name="DatosGeneralesForm" styleId="descripcion"  property="descripcion" size="100" maxlength="100" styleClass="box" value="<%=sDescripcion%>" readonly="false"/>
 <%
 									}
 %>
@@ -538,8 +539,10 @@
 					<siga:ConjCampos leyenda="facturacion.serios.literal.formaPago">
 						<table align="center" border="0">
 							<tr>
-								<td width="60%" class="labelText"><siga:Idioma key="facturacion.serios.literal.formaPagoSeleccionar" />:</td>
-								<td width="40%" class="labelText" align="right">
+								<td width="60%" class="labelText" title='<%=UtilidadesString.mostrarDatoJSP(UtilidadesString.getMensajeIdioma (user, "facturacion.seriesFacturacion.formaPago.ayuda").replaceAll("\\\\n", ""))%>'>
+									<siga:Idioma key="facturacion.serios.literal.formaPagoSeleccionar"/>
+								</td>
+								<td width="40%" class="labelText" align="right" title='<%=UtilidadesString.mostrarDatoJSP(UtilidadesString.getMensajeIdioma (user, "facturacion.seriesFacturacion.formaPago.ayuda").replaceAll("\\\\n", ""))%>'>
 <%
 									if (aFormasPago.isEmpty()) {
 										if (accion != "ver") {
@@ -580,10 +583,10 @@
 						<siga:ConjCampos leyenda="facturacion.serios.literal.formaPago">
 							<table width="100%" align="center" border="0">
 								<tr>
-									<td width="60%" class="labelText" align="left">
-										<siga:Idioma key="facturacion.serios.literal.formaPagoSeleccionar" />:  
+									<td width="60%" class="labelText" align="left" title='<%=UtilidadesString.mostrarDatoJSP(UtilidadesString.getMensajeIdioma (user, "facturacion.seriesFacturacion.formaPago.ayuda").replaceAll("\\\\n", ""))%>'>
+										<siga:Idioma key="facturacion.serios.literal.formaPagoSeleccionar" /> 
 									</td>
-									<td width="40%" class="labelText" align="right">
+									<td width="40%" class="labelText" align="right" title='<%=UtilidadesString.mostrarDatoJSP(UtilidadesString.getMensajeIdioma (user, "facturacion.seriesFacturacion.formaPago.ayuda").replaceAll("\\\\n", ""))%>'>
 										<siga:ComboBD nombre="formaPagoAutomática" tipo="cmbFormaPagoAutomaticoSerie" clase="boxCombo" filasMostrar="4" seleccionMultiple="true" elementoSel="<%=0%>" obligatorio="true"/>
 									</td> 
 								</tr>

@@ -1177,39 +1177,7 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 				" AND (1 = 0");
 	}
 
-	protected String consultaMaximaFechaModificacionEJG(Hashtable ht, ScsEstadoEJGAdm admBean) throws SIGAException {
-		String fecha = "";
-		int idinstitucion = Integer.parseInt((String) ht.get("IDINSTITUCION"));
-		int idtipoejg = Integer.parseInt((String) ht.get("IDTIPOEJG"));
-		int anio = Integer.parseInt((String) ht.get("ANIO"));
-		int numero = Integer.parseInt((String) ht.get("NUMERO"));
-
-		String sql = "SELECT MAX(FECHA) AS FECHAMAXIMA " + "FROM (select max(fechamodificacion) as FECHA " + "from scs_estadoejg " + "where idinstitucion = "
-				+ idinstitucion + " " + "and idtipoejg = " + idtipoejg + " " + "and anio = " + anio + " " + "and numero =  " + numero + " " + "union "
-				+ "select fechamodificacion as FECHA " + "from scs_ejg " + "where idinstitucion = " + idinstitucion + " " + "and idtipoejg = " + idtipoejg
-				+ " " + "and anio = " + anio + " " + "and numero = " + numero + " " + "union " + "select max(fechamodificacion) as FECHA "
-				+ "from scs_unidadfamiliarejg " + "where idinstitucion = " + idinstitucion + " " + "and idtipoejg = " + idtipoejg + " " + "and anio = " + anio
-				+ " " + "and numero = " + numero + " " + "union " + "select max(fechamodificacion) as FECHA " + "from scs_documentacionejg "
-				+ "where idinstitucion = " + idinstitucion + " " + "and idtipoejg = " + idtipoejg + " " + "and anio = " + anio + " " + "and numero = " + numero
-				+ " " + "union " + "select max(fechamodificacion) as FECHA " + "from scs_contrariosejg " + "where idinstitucion = " + idinstitucion + " "
-				+ "and idtipoejg = " + idtipoejg + " " + "and anio = " + anio + " " + "and numero = " + numero + " " + "union "
-				+ "select max(fechamodificacion) as FECHA " + "from scs_delitosejg " + "where idinstitucion = " + idinstitucion + " " + "and idtipoejg = "
-				+ idtipoejg + " " + "and anio = " + anio + " " + "and numero = " + numero + ")";
-		try {
-
-			RowsContainer rc = new RowsContainer();
-
-			if (rc.find(sql)) {
-				Row r = (Row) rc.get(0);
-				fecha = r.getString("FECHAMAXIMA");
-			}
-
-		} catch (Exception e) {
-			throwExcp("messages.general.error", new String[] { "modulo.gratuita" }, e, null);
-		}
-
-		return fecha;
-	}
+	
 
 	protected String buscarPorEJG(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 

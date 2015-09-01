@@ -280,20 +280,23 @@
  	}%>
 	</siga:Table>
 
-	<% if (!usr.isLetrado()){%>
-	<div style="position: absolute; left: 400px; bottom: 5px; z-index: 99;">
-		<table align="center" border="0">
-			<tr>
-				<td class="labelText"><siga:Idioma
-						key="censo.consultaRegistrosBajaLogica.literal" /> <% if (bIncluirBajaLogica) { %>
-					<input type="checkbox" name="bajaLogica"
-					onclick="incluirRegBajaLogica(this);" checked> <% } else { %>
-					<input type="checkbox" name="bajaLogica"
-					onclick="incluirRegBajaLogica(this);"> <% } %></td>
-			</tr>
-		</table>
-	</div>
-	<%}%>
+
+<%if (!usr.isLetrado()) {%>
+		<div style="position: absolute; left: 400px; width:200px; bottom: 0px; z-index: 99;">
+			<table align="center" border="0" class="botonesSeguido">
+				<tr>
+					<td class="labelText">
+						<siga:Idioma key="censo.consultaRegistrosBajaLogica.literal" /> 
+						<%if (bIncluirBajaLogica) {%>
+							<input type="checkbox" name="bajaLogica" onclick="incluirRegBajaLogica(this);" checked> 
+						<%} else {%>
+							<input type="checkbox" name="bajaLogica" onclick="incluirRegBajaLogica(this);"> 
+						<%}%>
+ 					</td>
+				</tr>
+			</table>
+		</div>
+<%}%>
 
 	<siga:ConjBotonesAccion botones="<%=botones%>" modo="<%=accion%>"
 		clase="botonesDetalle" />

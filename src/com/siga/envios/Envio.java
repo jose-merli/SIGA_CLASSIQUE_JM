@@ -1007,7 +1007,7 @@ public EnvDestinatariosBean addDestinatario(String idPersona,String tipoDestinat
      * @return boolean: true si tiene una direccion (se obtiene en addDestinatarioCertificado)
      * @throws SIGAException
      */
-    public boolean generarEnvioCertificado(String idPersona, Vector documentos, String idSolicitud, EnvEnviosBean envBean, boolean existePersonaOrigen)	throws ClsExceptions 
+    public boolean generarEnvioCertificado(String idPersona, Vector documentos,  EnvEnviosBean envBean)	throws ClsExceptions 
 	{
 		boolean ok = true;
 		
@@ -1025,7 +1025,7 @@ public EnvDestinatariosBean addDestinatario(String idPersona,String tipoDestinat
 					enviosBean.getIdPlantillaEnvios());
 	        
 	        //Anhadimos el destinatario y sus documentos:
-	        ok = this.addDestinatarioCertificado(idPersona,documentos,idSolicitud, envBean, existePersonaOrigen);
+	        ok = this.addDestinatarioCertificado(idPersona,documentos,envBean);
 	        
 	        /* RGG 20-09-2005 Ahora no cambiamos el estado a falta de una nueva definicion. 
 	         * El certificado queda enviado pero no cambia su estado de finalizado. 
@@ -1050,6 +1050,49 @@ public EnvDestinatariosBean addDestinatario(String idPersona,String tipoDestinat
 		}
 		return ok;
 	}
+    public boolean generarEnvioCertificado(String idPersona, Vector documentos, String idSolicitud, EnvEnviosBean envBean, boolean existePersonaOrigen)	throws ClsExceptions 
+   	{
+   		boolean ok = true;
+   		
+   		try {
+   	        EnvEnviosAdm envAdm = new EnvEnviosAdm(this.usrBean);
+   	      //aalg: INC_06541_SIGA. incluir el usuario de modificación al generar el envío
+   	        enviosBean.setUsuMod(Integer.valueOf(this.usrBean.getUserName()));
+   	        //Insertamos el envio:
+   	        envAdm.insert(enviosBean);
+   	        
+   	        // Copiamos los datos la plantilla, incluidos los remitentes
+   	        envAdm.copiarCamposPlantilla(enviosBean.getIdInstitucion(), 
+   					enviosBean.getIdEnvio(), 
+   					enviosBean.getIdTipoEnvios(),
+   					enviosBean.getIdPlantillaEnvios());
+   	        
+   	        //Anhadimos el destinatario y sus documentos:
+   	        ok = this.addDestinatarioCertificado(idPersona,documentos,idSolicitud, envBean, existePersonaOrigen);
+   	        
+   	        /* RGG 20-09-2005 Ahora no cambiamos el estado a falta de una nueva definicion. 
+   	         * El certificado queda enviado pero no cambia su estado de finalizado. 
+   	        //Cambiamos el estado de la solicitud de certificado a 'Envio Programado'
+   	        CerSolicitudCertificadosAdm solAdm = new CerSolicitudCertificadosAdm(idUsuario);
+   	        Hashtable htPk = new Hashtable();
+   	        htPk.put(CerSolicitudCertificadosBean.C_IDINSTITUCION,enviosBean.getIdInstitucion());
+   	        htPk.put(CerSolicitudCertificadosBean.C_IDSOLICITUD,idSolicitud);
+   	        CerSolicitudCertificadosBean solBean = (CerSolicitudCertificadosBean)solAdm.selectByPKForUpdate(htPk).firstElement();
+   	        solBean.setIdEstadoSolicitudCertificado(Integer.valueOf(CerSolicitudCertificadosAdm.K_ESTADO_SOL_ENVIOP));
+   	        solAdm.update(solBean);
+   	        */
+   		} 
+   		catch (ClsExceptions e){
+   			throw e;
+   		}
+   		catch (SIGAException e){
+   			throw new ClsExceptions(e, e.getLiteral());
+   		}
+   		catch (Exception e){
+   			throw new ClsExceptions(e,"Error en Envio.generarEnvioCertificado");
+   		}
+   		return ok;
+   	}
 	
     public boolean generarEnvioFactura(String idPersona, Vector documentos, String idFactura) throws ClsExceptions 
 	{
@@ -1081,13 +1124,67 @@ public EnvDestinatariosBean addDestinatario(String idPersona,String tipoDestinat
 	 * Metodo que adjunta documentos (normalmente un certificado) a un destinatario
 	 * Siempre crea el destinatario, no existía previamente
 	 */
-	public boolean addDestinatarioCertificado (String idPersona,
-											   Vector documentos,
-											   String idSolicitud,
-											   EnvEnviosBean envBean,
-											   boolean existePersonaOrigen)
-			throws SIGAException
-	{
+	public boolean addDestinatarioCertificado(String idPersona, Vector documentos, EnvEnviosBean envBean) throws SIGAException {
+		EnvDestinatariosBean destBean;
+
+		CenDireccionesAdm dirAdm;
+		CenDireccionesBean dirBean;
+		CenPersonaAdm personaAdm;
+
+		boolean ok;
+
+		try {
+			// obteniendo nombre y apellidos de la persona para escribir en
+			// envio
+			personaAdm = new CenPersonaAdm(this.usrBean);
+			CenPersonaBean cenPersonaBean = personaAdm.getPersonaPorId(idPersona);
+			String nombre = cenPersonaBean.getNombre();
+			String apellidos1 = cenPersonaBean.getApellido1();
+			String apellidos2 = cenPersonaBean.getApellido2();
+			destBean = new EnvDestinatariosBean();
+			destBean.setIdEnvio(enviosBean.getIdEnvio());
+			destBean.setIdInstitucion(enviosBean.getIdInstitucion());
+			destBean.setIdPersona(Long.valueOf(idPersona));
+			destBean.setApellidos1(apellidos1);
+			destBean.setApellidos2(apellidos2);
+			destBean.setNombre(nombre);
+
+			// obteniendo la direccion
+			dirAdm = new CenDireccionesAdm(this.usrBean);
+
+			dirBean = dirAdm.obtenerDireccionPorTipo(idPersona, "2000", envBean.getIdTipoEnvios().toString());
+
+			if (dirBean != null) {
+				destBean.setDomicilio(dirBean.getDomicilio());
+				destBean.setIdPoblacion(dirBean.getIdPoblacion());
+				destBean.setIdProvincia(dirBean.getIdProvincia());
+				destBean.setIdPais(dirBean.getIdPais());
+				if (destBean.getIdPais().equals(""))
+					destBean.setIdPais(ClsConstants.ID_PAIS_ESPANA);
+				destBean.setPoblacionExtranjera(dirBean.getPoblacionExtranjera());
+				destBean.setCodigoPostal(dirBean.getCodigoPostal());
+				destBean.setCorreoElectronico(dirBean.getCorreoElectronico());
+				destBean.setFax1(dirBean.getFax1());
+				destBean.setFax2(dirBean.getFax2());
+				destBean.setMovil(dirBean.getMovil());
+				ok = true;
+			} else
+				ok = false;
+
+			// anyadiendo el destinatario y los documentos adjuntos
+			this.addDestinatarioIndividualDocAdjuntos(destBean, documentos, true /* crearDestinatario */, true);
+
+			return ok;
+		} catch (SIGAException e) {
+			throw e;
+		} catch (ClsExceptions e) {
+			throw new SIGAException(e);
+		} catch (Exception e) {
+			throw new SIGAException("messages.general.error", e);
+		}
+	} // addDestinatarioCertificado ()
+	
+	public boolean addDestinatarioCertificado(String idPersona, Vector documentos, String idSolicitud, EnvEnviosBean envBean, boolean existePersonaOrigen) throws SIGAException {
 		EnvDestinatariosBean destBean;
 		CerSolicitudCertificadosAdm solCerAdm;
 		CerSolicitudCertificadosBean solCerBean;
@@ -1096,88 +1193,77 @@ public EnvDestinatariosBean addDestinatario(String idPersona,String tipoDestinat
 		CenDireccionesAdm dirAdm;
 		CenDireccionesBean dirBean;
 		CenPersonaAdm personaAdm;
-		
+
 		boolean ok;
-		
-		try
-		{
-			//obteniendo bean de solicitud
-			solCerAdm = new CerSolicitudCertificadosAdm (this.usrBean);
+
+		try {
+			// obteniendo bean de solicitud
+			solCerAdm = new CerSolicitudCertificadosAdm(this.usrBean);
 			Hashtable htPk = new Hashtable();
-			htPk.put (CerSolicitudCertificadosBean.C_IDINSTITUCION, enviosBean.getIdInstitucion());
-			htPk.put (CerSolicitudCertificadosBean.C_IDSOLICITUD, idSolicitud);
-			solCerBean = (CerSolicitudCertificadosBean) solCerAdm.selectByPK (htPk).firstElement();
-			
-			//obteniendo bean de producto para saber el tipo
-			admProd = new PysProductosInstitucionAdm (this.usrBean);
+			htPk.put(CerSolicitudCertificadosBean.C_IDINSTITUCION, enviosBean.getIdInstitucion());
+			htPk.put(CerSolicitudCertificadosBean.C_IDSOLICITUD, idSolicitud);
+			solCerBean = (CerSolicitudCertificadosBean) solCerAdm.selectByPK(htPk).firstElement();
+
+			// obteniendo bean de producto para saber el tipo
+			admProd = new PysProductosInstitucionAdm(this.usrBean);
 			Hashtable htPk2 = new Hashtable();
-			htPk2.put (PysProductosInstitucionBean.C_IDINSTITUCION, solCerBean.getIdInstitucion());
-			htPk2.put (PysProductosInstitucionBean.C_IDTIPOPRODUCTO, solCerBean.getPpn_IdTipoProducto());
-			htPk2.put (PysProductosInstitucionBean.C_IDPRODUCTO, solCerBean.getPpn_IdProducto());
-			htPk2.put (PysProductosInstitucionBean.C_IDPRODUCTOINSTITUCION, solCerBean.getPpn_IdProductoInstitucion());
-			beanProd = (PysProductosInstitucionBean) admProd.selectByPK (htPk2).firstElement();
-			
-			//obteniendo nombre y apellidos de la persona para escribir en envio
-			personaAdm = new CenPersonaAdm (this.usrBean);
-			String nombre = personaAdm.obtenerNombre (String.valueOf (idPersona));
-			String apellidos1 = personaAdm.obtenerApellidos1 (String.valueOf (idPersona));
-			String apellidos2 = personaAdm.obtenerApellidos2 (String.valueOf (idPersona));
+			htPk2.put(PysProductosInstitucionBean.C_IDINSTITUCION, solCerBean.getIdInstitucion());
+			htPk2.put(PysProductosInstitucionBean.C_IDTIPOPRODUCTO, solCerBean.getPpn_IdTipoProducto());
+			htPk2.put(PysProductosInstitucionBean.C_IDPRODUCTO, solCerBean.getPpn_IdProducto());
+			htPk2.put(PysProductosInstitucionBean.C_IDPRODUCTOINSTITUCION, solCerBean.getPpn_IdProductoInstitucion());
+			beanProd = (PysProductosInstitucionBean) admProd.selectByPK(htPk2).firstElement();
+
+			// obteniendo nombre y apellidos de la persona para escribir en
+			// envio
+			personaAdm = new CenPersonaAdm(this.usrBean);
+			String nombre = personaAdm.obtenerNombre(String.valueOf(idPersona));
+			String apellidos1 = personaAdm.obtenerApellidos1(String.valueOf(idPersona));
+			String apellidos2 = personaAdm.obtenerApellidos2(String.valueOf(idPersona));
 			destBean = new EnvDestinatariosBean();
-			destBean.setIdEnvio (enviosBean.getIdEnvio());
-			destBean.setIdInstitucion (enviosBean.getIdInstitucion());
-			destBean.setIdPersona (Long.valueOf (idPersona));
-			destBean.setApellidos1 (apellidos1);
-			destBean.setApellidos2 (apellidos2);
-			destBean.setNombre (nombre);
-			
-			//obteniendo la direccion
+			destBean.setIdEnvio(enviosBean.getIdEnvio());
+			destBean.setIdInstitucion(enviosBean.getIdInstitucion());
+			destBean.setIdPersona(Long.valueOf(idPersona));
+			destBean.setApellidos1(apellidos1);
+			destBean.setApellidos2(apellidos2);
+			destBean.setNombre(nombre);
+
+			// obteniendo la direccion
 			dirAdm = new CenDireccionesAdm(this.usrBean);
-			if (beanProd.getTipoCertificado().equals ("C") ||
-				beanProd.getTipoCertificado().equals ("M") ||
-				beanProd.getTipoCertificado().equals ("D"))
-			{
-				dirBean = dirAdm.obtenerDireccionPorTipo (idPersona,
-						solCerBean.getIdInstitucion().toString(),
-						envBean.getIdTipoEnvios().toString());
-				
+			if (beanProd.getTipoCertificado().equals("C") || beanProd.getTipoCertificado().equals("M") || beanProd.getTipoCertificado().equals("D")) {
+				dirBean = dirAdm.obtenerDireccionPorTipo(idPersona, solCerBean.getIdInstitucion().toString(), envBean.getIdTipoEnvios().toString());
+
 				if (dirBean != null) {
-					destBean.setDomicilio (dirBean.getDomicilio());
-					destBean.setIdPoblacion (dirBean.getIdPoblacion());
-					destBean.setIdProvincia (dirBean.getIdProvincia());
-					destBean.setIdPais (dirBean.getIdPais());
+					destBean.setDomicilio(dirBean.getDomicilio());
+					destBean.setIdPoblacion(dirBean.getIdPoblacion());
+					destBean.setIdProvincia(dirBean.getIdProvincia());
+					destBean.setIdPais(dirBean.getIdPais());
 					if (destBean.getIdPais().equals(""))
-						destBean.setIdPais (ClsConstants.ID_PAIS_ESPANA);
-					destBean.setPoblacionExtranjera (dirBean.getPoblacionExtranjera());
-					destBean.setCodigoPostal (dirBean.getCodigoPostal());
-					destBean.setCorreoElectronico (dirBean.getCorreoElectronico());
-					destBean.setFax1 (dirBean.getFax1());
-					destBean.setFax2 (dirBean.getFax2());
+						destBean.setIdPais(ClsConstants.ID_PAIS_ESPANA);
+					destBean.setPoblacionExtranjera(dirBean.getPoblacionExtranjera());
+					destBean.setCodigoPostal(dirBean.getCodigoPostal());
+					destBean.setCorreoElectronico(dirBean.getCorreoElectronico());
+					destBean.setFax1(dirBean.getFax1());
+					destBean.setFax2(dirBean.getFax2());
 					destBean.setMovil(dirBean.getMovil());
-					
+
 					ok = true;
-				}
-				else
+				} else
 					ok = false;
-			}
-			else
+			} else
 				ok = false;
-			
-			//anyadiendo el destinatario y los documentos adjuntos
-			this.addDestinatarioIndividualDocAdjuntos (destBean, documentos,
-					true /*crearDestinatario*/, true);
-			
+
+			// anyadiendo el destinatario y los documentos adjuntos
+			this.addDestinatarioIndividualDocAdjuntos(destBean, documentos, true /* crearDestinatario */, true);
+
 			return ok;
-		}
-		catch (SIGAException e) {
+		} catch (SIGAException e) {
 			throw e;
+		} catch (ClsExceptions e) {
+			throw new SIGAException(e);
+		} catch (Exception e) {
+			throw new SIGAException("messages.general.error", e);
 		}
-		catch (ClsExceptions e) {
-			throw new SIGAException (e);
-		}
-		catch (Exception e) {
-			throw new SIGAException ("messages.general.error", e);
-		}
-	} //addDestinatarioCertificado ()
+	} // a
     
     public boolean addDestinatarioFactura(String idPersona, Vector documentos, String idFactura) throws SIGAException {
 	    boolean ok = true;
