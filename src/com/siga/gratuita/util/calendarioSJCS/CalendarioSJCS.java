@@ -733,26 +733,30 @@ public class CalendarioSJCS
 		return true;
 	} // comprobarRestriccionesLetradoCompensado()
 	
-	private boolean comprobarRestriccionesLetradoCola(LetradoInscripcion letradoGuardia,
-			ArrayList<String> diasGuardia,
-			HashMap<Long, ArrayList<LetradoInscripcion>> hmPersonasConSaltos,
-			HashMap<Long, TreeMap<String,CenBajasTemporalesBean>> hmBajasTemporales) throws ClsExceptions, SIGAException
-	{
+	
+	private boolean comprobarRestriccionesLetradoCola(LetradoInscripcion letradoGuardia, ArrayList<String> diasGuardia, HashMap<Long, 
+			ArrayList<LetradoInscripcion>> hmPersonasConSaltos, HashMap<Long, TreeMap<String, CenBajasTemporalesBean>> hmBajasTemporales) throws ClsExceptions, SIGAException {
+		return comprobarRestriccionesLetradoCola(letradoGuardia, diasGuardia, hmPersonasConSaltos, hmBajasTemporales, false);
+	}
+	
+	private boolean comprobarRestriccionesLetradoCola(LetradoInscripcion letradoGuardia, ArrayList<String> diasGuardia, HashMap<Long, ArrayList<LetradoInscripcion>> hmPersonasConSaltos,
+			HashMap<Long, TreeMap<String, CenBajasTemporalesBean>> hmBajasTemporales, boolean ficheroCarga) throws ClsExceptions, SIGAException {
+		
 		// Controles
 		ScsSaltoCompensacionGrupoAdm saltosCompenGruposAdm = new ScsSaltoCompensacionGrupoAdm(this.usrBean);
 
 		// si esta de vacaciones, ...
 		if (isLetradoBajaTemporal(hmBajasTemporales.get(letradoGuardia.getIdPersona()), diasGuardia, letradoGuardia)) {
-			log.addLog(new String[] {"Encontrado Baja temporal", letradoGuardia.toString(), diasGuardia.toString()});
-			if (letradoGuardia.getGrupo() == null || letradoGuardia.getGrupo().toString().equals(""))
-				// ... crear un salto cumplido (como si fuera un log)
-				insertarNuevoSaltoBT(letradoGuardia, diasGuardia, "Cumplido en dia de guardia " + diasGuardia.get(0));
-			else
-				// ... crear un salto cumplido (como si fuera un log)
-				saltosCompenGruposAdm.crearSaltoBT(letradoGuardia.getGrupo().toString(), diasGuardia.get(0), "Cumplido en dia de guardia " + diasGuardia.get(0),
-						idInstitucion.toString(), idTurno.toString(), idGuardia.toString(), 
-						idCalendarioGuardias.toString(), this.idCalendarioGuardias.toString(), letradoGuardia.getBajaTemporal());
+			log.addLog(new String[] { "Encontrado Baja temporal", letradoGuardia.toString(), diasGuardia.toString() });
 
+			if (!ficheroCarga) {
+				if (letradoGuardia.getGrupo() == null || letradoGuardia.getGrupo().toString().equals(""))
+					// ... crear un salto cumplido (como si fuera un log)
+					insertarNuevoSaltoBT(letradoGuardia, diasGuardia, "Cumplido en dia de guardia " + diasGuardia.get(0));
+				else
+					// ... crear un salto cumplido (como si fuera un log)
+					saltosCompenGruposAdm.crearSaltoBT(letradoGuardia.getGrupo().toString(), diasGuardia.get(0), "Cumplido en dia de guardia " + diasGuardia.get(0), idInstitucion.toString(), idTurno.toString(), idGuardia.toString(), idCalendarioGuardias.toString(), this.idCalendarioGuardias.toString(), letradoGuardia.getBajaTemporal());
+			}
 			return false; // y no seleccionar
 		}
 
@@ -760,60 +764,65 @@ public class CalendarioSJCS
 		List<LetradoInscripcion> alSaltos;
 		if (letradoGuardia.getGrupo() == null || letradoGuardia.getGrupo().toString().equals("")) {
 			if ((alSaltos = hmPersonasConSaltos.get(letradoGuardia.getIdPersona())) != null) {
-				log.addLog(new String[] {"Encontrado Salto", letradoGuardia.toString()});
-				
-				// ... compensar uno
-				cumplirSaltoCompensacion(letradoGuardia, diasGuardia, ClsConstants.SALTOS, ":id="+this.idCalendarioGuardias.toString()+":Cumplido en fecha ("+diasGuardia.get(0)+"):finid="+this.idCalendarioGuardias.toString()+":");
-				alSaltos.remove(0);
-				if (alSaltos.size() == 0)
-					hmPersonasConSaltos.remove(letradoGuardia.getIdPersona());
+				log.addLog(new String[] { "Encontrado Salto", letradoGuardia.toString() });
+
+				if (!ficheroCarga) {
+					// ... compensar uno
+					cumplirSaltoCompensacion(letradoGuardia, diasGuardia, ClsConstants.SALTOS, ":id=" + this.idCalendarioGuardias.toString() + ":Cumplido en fecha (" + diasGuardia.get(0) + "):finid=" + this.idCalendarioGuardias.toString() + ":");
+					alSaltos.remove(0);
+					if (alSaltos.size() == 0)
+						hmPersonasConSaltos.remove(letradoGuardia.getIdPersona());
+
+				}
 				return false; // y no seleccionar
 			}
-		}
-		else if ((alSaltos = hmPersonasConSaltos.get(new Long(letradoGuardia.getGrupo()))) != null) {
-			log.addLog(new String[] {"Encontrado Salto de grupo"});
-			
-			// ... compensar uno
-			saltosCompenGruposAdm.cumplirSaltoCompensacion(alSaltos.get(0).getIdSaltoCompensacionGrupo(),
-					diasGuardia.get(0), ":id="+this.idCalendarioGuardias.toString()+":Cumplido en fecha ("+diasGuardia.get(0)+"):finid="+this.idCalendarioGuardias.toString()+":", idInstitucion.toString(), idTurno.toString(),
-					idGuardia.toString(), idCalendarioGuardias.toString());
-			alSaltos.remove(0);
-			if (alSaltos.size() == 0)
-				hmPersonasConSaltos.remove(new Long(letradoGuardia.getGrupo()));
+
+		} else if ((alSaltos = hmPersonasConSaltos.get(new Long(letradoGuardia.getGrupo()))) != null) {
+			log.addLog(new String[] { "Encontrado Salto de grupo" });
+
+			if (!ficheroCarga) {
+				// ... compensar uno
+				saltosCompenGruposAdm.cumplirSaltoCompensacion(alSaltos.get(0).getIdSaltoCompensacionGrupo(), diasGuardia.get(0), ":id=" + this.idCalendarioGuardias.toString() + ":Cumplido en fecha (" + diasGuardia.get(0) + "):finid=" + this.idCalendarioGuardias.toString() + ":", idInstitucion.toString(), idTurno.toString(), idGuardia.toString(), idCalendarioGuardias.toString());
+				alSaltos.remove(0);
+				if (alSaltos.size() == 0)
+					hmPersonasConSaltos.remove(new Long(letradoGuardia.getGrupo()));
+			}
 			return false; // y no seleccionar
 		}
 
 		// si hay incompatibilidad, ...
 		if (isIncompatible(letradoGuardia, diasGuardia)) {
-			log.addLog(new String[] {"Encontrado Incompatibilidad", letradoGuardia.toString(), diasGuardia.toString()});
-			java.util.Date date = new java.util.Date(); 
-			java.text.SimpleDateFormat sdf=new java.text.SimpleDateFormat("dd/MM/yyyy");
-			String motivo = "Registro automático ("+sdf.format(new Date())+") por incompatibilidad en ";
-			if (diasGuardia.size() > 1){
-				motivo += "días de guardia: ";
-				for(String diaGuardia : diasGuardia){
-					motivo += diaGuardia + ", ";
+			log.addLog(new String[] { "Encontrado Incompatibilidad", letradoGuardia.toString(), diasGuardia.toString() });
+
+			if (!ficheroCarga) {
+				java.util.Date date = new java.util.Date();
+				java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("dd/MM/yyyy");
+				String motivo = "Registro automático (" + sdf.format(new Date()) + ") por incompatibilidad en ";
+				if (diasGuardia.size() > 1) {
+					motivo += "días de guardia: ";
+					for (String diaGuardia : diasGuardia) {
+						motivo += diaGuardia + ", ";
+					}
+					motivo = motivo.substring(0, motivo.length() - 2);
+				} else {
+					motivo += "día de guardia: " + diasGuardia.get(0);
 				}
-				motivo = motivo.substring(0, motivo.length() - 2);
-			} else {
-				motivo += "día de guardia: "+diasGuardia.get(0);
+				
+				if (letradoGuardia.getGrupo() == null || letradoGuardia.getGrupo().toString().equals("")) {
+					// ... crear compensacion
+					// BNS INC_07349_SIGA
+					insertarNuevoSaltoCompensacion(letradoGuardia, diasGuardia, ClsConstants.COMPENSACIONES, motivo);
+				} else {
+					// ... crear compensacion
+					saltosCompenGruposAdm.crearSaltoCompensacion(letradoGuardia.getGrupo().toString(), diasGuardia.get(0), motivo, idInstitucion.toString(), idTurno.toString(), idGuardia.toString(), idCalendarioGuardias.toString(), ClsConstants.COMPENSACIONES);
+				}
 			}
-			if (letradoGuardia.getGrupo() == null || letradoGuardia.getGrupo().toString().equals("")) {
-				// ... crear compensacion
-				//BNS INC_07349_SIGA 				
-				insertarNuevoSaltoCompensacion(letradoGuardia, diasGuardia, ClsConstants.COMPENSACIONES, motivo);
-			}
-			else {
-				// ... crear compensacion
-				saltosCompenGruposAdm.crearSaltoCompensacion(letradoGuardia.getGrupo().toString(), 
-						diasGuardia.get(0), motivo, idInstitucion.toString(), idTurno.toString(), 
-						idGuardia.toString(), idCalendarioGuardias.toString(), ClsConstants.COMPENSACIONES);
-			}
+			
 			return false; // y no seleccionar
 		}
 
 		// una vez comprobado todo, se selecciona a este letrado
-		log.addLog(new String[] {"Letrado ok", letradoGuardia.toString()});
+		log.addLog(new String[] { "Letrado ok", letradoGuardia.toString() });
 		return true;
 	} // comprobarRestriccionesLetradoCola()
 	
@@ -2503,7 +2512,7 @@ public class CalendarioSJCS
 					log.addLog(new String[] {"Dias", diasGuardia.toString()});		
 					
 					/** Comprobamos las restricciones del calendario **/
-					if (comprobarRestriccionesLetradoCola(letradoInscripcion, diasGuardia, hmPersonasConSaltos, hmBajasTemporales)) {
+					if (comprobarRestriccionesLetradoCola(letradoInscripcion, diasGuardia, hmPersonasConSaltos, hmBajasTemporales, true)) {
 						log.addLog(new String[] { "Dia de guardia correcto", vo.toString() });
 					} else {
 						log.addLog(new String[] { "Dia de guardia con problemas", letradoInscripcion.toString()});
