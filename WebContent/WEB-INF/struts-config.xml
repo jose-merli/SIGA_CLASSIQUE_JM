@@ -3489,6 +3489,13 @@
 			<forward name="listado" path="/html/jsp/censo/listadoCargaMasivaGF.jsp"/>
 			<forward name="listadoResumen" path="/html/jsp/censo/listadoResumenCargaMasivaGF.jsp"/>
 		</action>
+		<!-- ***** Censo > Ficha > Turno Oficio >  PreAsistencia ***** -->
+		<action path="/JGR_PreAsistenciasLetrado"  type="com.siga.gratuita.action.GestionSolicitudesAceptadasCentralitaAction" name="SolicitudAceptadaCentralitaForm" scope="request">
+			<forward name="inicio" path="/html/jsp/gratuita/gestionSolitudesAceptadasCentralita.jsp"/>
+			<forward name="listado" path="/html/jsp/gratuita/listadoSolicitudesAceptadasCentralita.jsp"/>
+			<forward name="consultarSolicitudAceptada" path="/html/jsp/gratuita/editarSolicitudAceptadaCentralita.jsp"/>
+			<forward name="validarSolicitudAceptada" path="/html/jsp/gratuita/editarSolicitudAceptadaCentralita.jsp"/>
+    	</action>
 		
 		<!-- ****************************************************************************
 -->
