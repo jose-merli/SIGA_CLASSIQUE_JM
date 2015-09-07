@@ -34,7 +34,7 @@
 		
 
 		<!-- INICIO: TITULO Y LOCALIZACION -->
-		<siga:TituloExt  titulo="menu.sjcs.solicitudesAceptadasCentralita" localizacion="sjcs.solicitudaceptadacentralita.localizacion"/>
+		
 		
 
 <script type="text/javascript">
@@ -112,18 +112,10 @@
 		return buscarSolicitudesAceptadas();
 	}
 	
-	
-	
-	
-	
-	
 	function buscarSolicitudesAceptadas() {
 		
-		
-		
-		
         var idInstitucion = document.SolicitudAceptadaCentralitaForm.idInstitucion.value;
-        var idLlamada = document.SolicitudAceptadaCentralitaForm.idLlamada.value;
+        var numAvisoCV = document.SolicitudAceptadaCentralitaForm.numAvisoCV.value;
         var idEstado = document.SolicitudAceptadaCentralitaForm.idEstado.value;
         var idTurno = document.SolicitudAceptadaCentralitaForm.idTurno.value;
         var idGuardia = document.SolicitudAceptadaCentralitaForm.idGuardia.value;
@@ -146,14 +138,14 @@
         }else
         	data += "&idEstado="+idEstado;
 
-        if(idLlamada!=''){
-        	if(!isInteger(idLlamada)){
+        if(numAvisoCV!=''){
+        	if(!isInteger(numAvisoCV)){
         		error = "<siga:Idioma key='errors.integer' arg0='gratuita.busquedaAsistencias.literal.idAvisoCentralita'/>"+ '\n';
             	alert(error);
             	return false;
         		
         	}
-        	data += "&idLlamada="+idLlamada;
+        	data += "&numAvisoCV="+numAvisoCV;
         }
         if(idTurno!='' && idGuardia==''){
         	error = "<siga:Idioma key='errors.required' arg0='gratuita.busquedaAsistencias.literal.guardia'/>"+ '\n';
@@ -206,18 +198,21 @@
         });
     }
 	
-	function validar(fila) {				
+	function confirmar(fila) {		
 		var idSolicitudAceptada = 'idSolicitudAceptada_' + fila ;
 		var idInstitucion = 'idInstitucion_' + fila ;
-		document.forms['SolicitudAceptadaCentralitaFormAValidar'].target = 'mainWorkArea';
 		document.forms['SolicitudAceptadaCentralitaFormAValidar'].idInstitucion.value = document.getElementById(idInstitucion).value;
 	   	document.forms['SolicitudAceptadaCentralitaFormAValidar'].idSolicitudAceptada.value = document.getElementById(idSolicitudAceptada).value;
 	 	document.forms['SolicitudAceptadaCentralitaFormAValidar'].modo.value = "editarSolicitudAceptada";
+	 	if(jQuery('#fichaColegial').val()=='0') 
+			document.forms['SolicitudAceptadaCentralitaFormAValidar'].target = 'mainWorkArea';
+		else
+			document.forms['SolicitudAceptadaCentralitaFormAValidar'].target = 'mainPestanas';
+	 	
 	 	document.forms['SolicitudAceptadaCentralitaFormAValidar'].submit();
 	 }
 	
 	function denegar(fila) {		
-		
 		if (!confirm('<siga:Idioma key="sjcs.solicitudaceptadacentralita.mensaje.denegar"/>'))
 			return false;
 		
@@ -226,14 +221,19 @@
 		document.forms['SolicitudAceptadaCentralitaFormAValidar'].idInstitucion.value = document.getElementById(idInstitucion).value;
 	   	document.forms['SolicitudAceptadaCentralitaFormAValidar'].idSolicitudAceptada.value = document.getElementById(idSolicitudAceptada).value;
 	 	document.forms['SolicitudAceptadaCentralitaFormAValidar'].modo.value = "denegarSolicitudAceptada";
+	 	if(jQuery('#fichaColegial').val()=='1') 
+			document.forms['SolicitudAceptadaCentralitaFormAValidar'].target = 'mainPestanas';
+	 	
 	 	document.forms['SolicitudAceptadaCentralitaFormAValidar'].submit();
 	 }
-	function activar(fila) {				
+	function activar(fila) {		
 		var idSolicitudAceptada = 'idSolicitudAceptada_' + fila ;
 		var idInstitucion = 'idInstitucion_' + fila ;
 		document.forms['SolicitudAceptadaCentralitaFormAValidar'].idInstitucion.value = document.getElementById(idInstitucion).value;
 	   	document.forms['SolicitudAceptadaCentralitaFormAValidar'].idSolicitudAceptada.value = document.getElementById(idSolicitudAceptada).value;
 	 	document.forms['SolicitudAceptadaCentralitaFormAValidar'].modo.value = "activarSolicitudAceptadaDenegada";
+	 	if(jQuery('#fichaColegial').val()=='1') 
+			document.forms['SolicitudAceptadaCentralitaFormAValidar'].target = 'mainPestanas';
 	 	document.forms['SolicitudAceptadaCentralitaFormAValidar'].submit();
 	 }
 	function marcarDesmarcarTodos(o) { 
@@ -244,6 +244,7 @@
 		}
   	 }
   	function accionMasiva(modoAccionMasiva) {
+  		
 		var ele = document.getElementsByName('chkSolicitud');
 		
 		var datosMasivos='';
@@ -254,12 +255,15 @@
 		    	var idInstitucionFila = 'idInstitucion_' + filaTabla ;
 		    	var idSolicitudAceptadaFila = 'idSolicitudAceptada_' + filaTabla ;
 				var idLlamadaFila = 'idLlamada_' + filaTabla ;
-				var fechaLlamada = 'fechaLlamada_' + filaTabla ;
+				var fechaLlamadaFila = 'fechaLlamada_' + filaTabla ;
+				var numAvisoFila = 'numAviso_' + filaTabla ;
 				
+				numAviso = document.getElementById(numAvisoFila).value;
+				fechaLlamada = document.getElementById(fechaLlamadaFila).value;
 				idLlamada = document.getElementById(idLlamadaFila).value;
 				idSolicitudAceptada = document.getElementById(idSolicitudAceptadaFila).value;
 			   	idInstitucion = document.getElementById(idInstitucionFila).value;
-			   	datosMasivos = datosMasivos +","+ idInstitucion+"##"+idSolicitudAceptada+"##"+idLlamada+"##"+fechaLlamada+""; 			
+			   	datosMasivos = datosMasivos +","+ idInstitucion+"##"+idSolicitudAceptada+"##"+idLlamada+"##"+numAviso+"##"+fechaLlamada+""; 			
 			}			
 		}
 
@@ -276,6 +280,10 @@
 		datosMasivos=datosMasivos.substring(1);
 		document.forms['SolicitudAceptadaCentralitaFormAValidar'].datosMasivos.value=datosMasivos;
 		document.forms['SolicitudAceptadaCentralitaFormAValidar'].modo.value=modoAccionMasiva;
+		
+		if(jQuery('#fichaColegial').val()=='1') 
+			document.forms['SolicitudAceptadaCentralitaFormAValidar'].target = 'mainPestanas';
+		
 		document.forms['SolicitudAceptadaCentralitaFormAValidar'].submit();		
 	}
   	
@@ -284,7 +292,11 @@
 	function consultaInscripcion(fila) {
 		var idSolicitudAceptada = 'idSolicitudAceptada_' + fila ;
 		var idInstitucion = 'idInstitucion_' + fila ;
-		document.forms['SolicitudAceptadaCentralitaFormAValidar'].target = 'mainWorkArea';
+		
+		if(jQuery('#fichaColegial').val()=='0') 
+			document.forms['SolicitudAceptadaCentralitaFormAValidar'].target = 'mainWorkArea';
+		else
+			document.forms['SolicitudAceptadaCentralitaFormAValidar'].target = 'mainPestanas';
 		document.forms['SolicitudAceptadaCentralitaFormAValidar'].idInstitucion.value = document.getElementById(idInstitucion).value;
 	   	document.forms['SolicitudAceptadaCentralitaFormAValidar'].idSolicitudAceptada.value = document.getElementById(idSolicitudAceptada).value;
 	 	document.forms['SolicitudAceptadaCentralitaFormAValidar'].modo.value = "consultarSolicitudAceptada";
@@ -297,21 +309,42 @@
 		}
 		//Ponemos el colegiado si hubiera
 		onChangeColegiado();
+		
 		buscarSolicitudesAceptadas();
 		
 	}	
 			
 		</script>
 	</head>
+<c:choose> 
+<c:when test="${fichaColegial=='0'}">
+	<siga:TituloExt  titulo="menu.sjcs.solicitudesAceptadasCentralita" localizacion="sjcs.solicitudaceptadacentralita.localizacion"/>	
+	</c:when>
+	<c:otherwise>
+		<siga:Titulo  titulo="sjcs.solicitudaceptadacentralita.preasistencias" localizacion="censo.fichaCliente.sjcs.localizacion"/>
+		<table class="tablaTitulo" cellspacing="0">
+			<tr>
+				<td class="titulitosDatos"><siga:Idioma
+						key="sjcs.solicitudaceptadacentralita.preasistencias" /> <c:out
+						value="${SolicitudAceptadaCentralitaForm.descripcionColegiado}"></c:out>
+					
+				</td>
+			</tr>
+		</table>
+	</c:otherwise>
 
+</c:choose>
 	<body onload="return inicio();">
 		<c:set var="parametrosComboComisaria" value="{\"idcomisaria\":\"-1\"}"/>
 		<input type="hidden" id="mensajeSuccess" value="${mensajeSuccess}"/>
+		<input type="hidden" id="fichaColegial" value="${fichaColegial}"/>
 			
 		<!-- INICIO: CAMPOS DE BUSQUEDA-->
 		<bean:define id="path" name="org.apache.struts.action.mapping.instance" property="path" scope="request"/>
 		<html:form action="${path}"  method="POST" target="mainWorkArea">
-			<html:hidden property="modo"/>
+			
+		
+			<html:hidden  property="modo"/>
 			<html:hidden property="idInstitucion"/>
 			
 
@@ -330,7 +363,7 @@
 						</td>
 						<td>
 						
-							<html:text property="idLlamada" size="11" maxlength="11" styleClass="box"  />
+							<html:text property="numAvisoCV" size="11" maxlength="11" styleClass="box"  />
 								
 						</td>
 						
@@ -436,57 +469,100 @@
 					
 					</tr>
 					
+					
+					
+					
 					<tr>
-						<td colspan="6">
-							<siga:ConjCampos leyenda="gratuita.seleccionColegiadoJG.literal.titulo">
-								<table align="left">
-									<tr>
-										<td class="labelText">
-											<siga:Idioma key="gratuita.seleccionColegiadoJG.literal.colegiado"/>
+					<html:hidden property="idPersona" />
+					<c:choose>
+					<c:when test="${fichaColegial=='0'}">
+						<tr>
+							<td colspan="6">
+								<siga:ConjCampos leyenda="gratuita.seleccionColegiadoJG.literal.titulo">
+									<table align="left">
+										<tr>
+											<td class="labelText">
+												<siga:Idioma key="gratuita.seleccionColegiadoJG.literal.colegiado"/>
+												
+											</td>
+											<td>
+												
+												<html:text styleId="colegiadoNumero" property="colegiadoNumero" size="4" maxlength="9" styleClass="box" onchange="return onChangeColegiado();" />
+											</td>
 											
-										</td>
-										<td>
-											<html:hidden property="idPersona"/>
-											<html:text styleId="colegiadoNumero" property="colegiadoNumero" size="4" maxlength="9" styleClass="box" onchange="return onChangeColegiado();" />
-										</td>
-										
-										<td>
-											<html:text styleId="colegiadoNombre" property="colegiadoNombre" size="50" maxlength="50" styleClass="box" readonly="true" />
-										</td>
-										<td>
-											<!-- Boton buscar --> 
-											<input type="button" class="button" id="idButton" name="Buscar" value="<siga:Idioma key='general.boton.search'/>" onClick="buscarColegiado();" /> 
-											<!-- Boton limpiar -->
-											&nbsp;<input type="button" class="button" id="idButton" name="Limpiar" value="<siga:Idioma key='general.boton.clear'/>" onClick="limpiarColegiado();" />
-										</td>
-									</tr>
-								</table>
-							</siga:ConjCampos>
-						</td>
+											<td>
+												<html:text styleId="colegiadoNombre" property="colegiadoNombre" size="50" maxlength="50" styleClass="box" readonly="true" />
+											</td>
+											<td>
+												<!-- Boton buscar --> 
+												<input type="button" class="button" id="idButton" name="Buscar" value="<siga:Idioma key='general.boton.search'/>" onClick="buscarColegiado();" /> 
+												<!-- Boton limpiar -->
+												&nbsp;<input type="button" class="button" id="idButton" name="Limpiar" value="<siga:Idioma key='general.boton.clear'/>" onClick="limpiarColegiado();" />
+											</td>
+										</tr>
+									</table>
+								</siga:ConjCampos>
+							</td>
+						</tr>
+					</c:when>
+					<c:otherwise>
+					<html:hidden property="colegiadoNumero" />
+					<html:hidden property="colegiadoNombre" />
+					</c:otherwise>
+					</c:choose>
 					</tr>
+					
 				</table>				
 			</siga:ConjCampos>
 	
 			<siga:ConjBotonesBusqueda botones="B"  titulo="menu.sjcs.solicitudesAceptadasCentralita"/>
 			<div id="divListado"></div>	
-			<table class="botonesDetalle" align="center">
-				<tr>
-					<td style="width: 900px;">
-						&nbsp;
-					</td>
-					
-					<td class="tdBotones">
-						<input type="button" alt="<siga:Idioma key='sjcs.solicitudaceptadacentralita.boton.denegarSolicitud'/>"  id="idDenegarSolicitudAceptada" onclick="return accionMasiva('denegarSolicitudesAceptadas');" class="button" style="display: none" name="idButton"   value="<siga:Idioma key='sjcs.solicitudaceptadacentralita.boton.denegarSolicitud'/>">
-					</td>
-					<td class="tdBotones">
-						<input type="button" alt="<siga:Idioma key='sjcs.solicitudaceptadacentralita.boton.activarSolicitud'/>"  id="idActivarSolicitudAceptadaDenegada" onclick="return accionMasiva('activarSolicitudesAceptadasDenegadas');" style="display: none" class="button" name="idButton"    value="<siga:Idioma key='sjcs.solicitudaceptadacentralita.boton.activarSolicitud'/>">
-					</td>
-					<td class="tdBotones">
-						<input type="button" alt="<siga:Idioma key='sjcs.solicitudaceptadacentralita.boton.validarSolicitud'/>"	id="idValidarSolicitudAceptada" onclick="return accionMasiva('guardarSolicitudesAceptadas');" class="button" style="display: none"  name="idButton" value="<siga:Idioma key='sjcs.solicitudaceptadacentralita.boton.validarSolicitud'/>" />
-					</td>
-					
-				</tr>
-			</table>
+			
+			
+			
+			<c:choose> 
+				<c:when test="${fichaColegial=='0'}">
+					<table class="botonesDetalle" align="center">
+						<tr>
+							<td style="width: 900px;">
+								&nbsp;
+							</td>
+							
+							<td class="tdBotones">
+								<input type="button" alt="<siga:Idioma key='sjcs.solicitudaceptadacentralita.boton.denegarSolicitud'/>"  id="idDenegarSolicitudAceptada" onclick="return accionMasiva('denegarSolicitudesAceptadas');" class="button" style="display: none" name="idButton"   value="<siga:Idioma key='sjcs.solicitudaceptadacentralita.boton.denegarSolicitud'/>">
+							</td>
+							<td class="tdBotones">
+								<input type="button" alt="<siga:Idioma key='sjcs.solicitudaceptadacentralita.boton.activarSolicitud'/>"  id="idActivarSolicitudAceptadaDenegada" onclick="return accionMasiva('activarSolicitudesAceptadasDenegadas');" style="display: none" class="button" name="idButton"    value="<siga:Idioma key='sjcs.solicitudaceptadacentralita.boton.activarSolicitud'/>">
+							</td>
+							<td class="tdBotones">
+								<input type="button" alt="<siga:Idioma key='sjcs.solicitudaceptadacentralita.boton.validarSolicitud'/>"	id="idValidarSolicitudAceptada" onclick="return accionMasiva('guardarSolicitudesAceptadas');" class="button" style="display: none"  name="idButton" value="<siga:Idioma key='sjcs.solicitudaceptadacentralita.boton.validarSolicitud'/>" />
+							</td>
+							
+						</tr>
+					</table>	
+				</c:when>
+				<c:otherwise>
+					<table class="botonesDetalle" align="center">
+						<tr>
+							<td style="width: 900px;">
+								&nbsp;
+							</td>
+							
+							<td class="tdBotones">
+								<input type="button" alt="<siga:Idioma key='sjcs.solicitudaceptadacentralita.boton.denegarSolicitud'/>"  id="idDenegarSolicitudAceptada" onclick="return accionMasiva('denegarSolicitudesAceptadas');" class="button" style="display: none" name="idButton"   value="<siga:Idioma key='sjcs.solicitudaceptadacentralita.boton.denegarSolicitud'/>">
+							</td>
+							<td class="tdBotones">
+								<input type="button" alt="<siga:Idioma key='sjcs.solicitudaceptadacentralita.boton.activarSolicitud'/>"  id="idActivarSolicitudAceptadaDenegada" onclick="return accionMasiva('activarSolicitudesAceptadasDenegadas');" style="display: none" class="button" name="idButton"    value="<siga:Idioma key='sjcs.solicitudaceptadacentralita.boton.activarSolicitud'/>">
+							</td>
+							
+							
+						</tr>
+					</table>	
+				</c:otherwise>
+			
+			</c:choose>
+			
+			
 		</html:form>
 		
 		<!-- FIN: CAMPOS DE BUSQUEDA-->

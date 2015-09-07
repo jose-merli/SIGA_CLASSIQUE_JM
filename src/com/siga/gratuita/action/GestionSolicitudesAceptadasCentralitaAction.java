@@ -2,6 +2,7 @@ package com.siga.gratuita.action;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
@@ -11,10 +12,12 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.redabogacia.sigaservices.app.AppConstants;
 import org.redabogacia.sigaservices.app.exceptions.BusinessException;
 import org.redabogacia.sigaservices.app.services.scs.ScsSolicitudesAcpetadasService;
 import org.redabogacia.sigaservices.app.vo.scs.SolicitudAceptadaCentralitaVo;
 
+import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesString;
@@ -110,9 +113,53 @@ public class GestionSolicitudesAceptadasCentralitaAction extends MasterAction {
 		request.setAttribute("parametrosComboTipoAsistencia",parametrosComboTipoAsistencia);
 		String identificadorFormularioBusqueda = getIdBusqueda(super.dataBusqueda,getClass().getName());
 		request.getSession().removeAttribute(identificadorFormularioBusqueda);
+
+		actualizarDatosFicha(mapping.getPath(),miForm,  request);
 		
 		return "inicio";
 	}
+	private void actualizarDatosFicha(String pathAccion,SolicitudAceptadaCentralitaForm miForm,HttpServletRequest request){
+		if(pathAccion.equals("/JGR_PreAsistenciasLetrado")){
+			UsrBean usrBean = this.getUserBean(request);
+			String idPersona = (String)request.getSession().getAttribute("idPersonaTurno");
+			miForm.setIdPersona(idPersona);
+			StringBuilder descripcioncolegiado = new StringBuilder();
+			String nombrePestanha=null, numeroPestanha=null, estadoColegial=null;
+			try {
+				Hashtable datosColegiado = (Hashtable)request.getSession().getAttribute("DATOSCOLEGIADO");
+				nombrePestanha = (String)datosColegiado.get("NOMBRECOLEGIADO");
+				numeroPestanha = (String)datosColegiado.get("NUMEROCOLEGIADO");
+				estadoColegial = (String)datosColegiado.get("ESTADOCOLEGIAL");
+				descripcioncolegiado.append(nombrePestanha);
+				descripcioncolegiado.append(" ");
+				descripcioncolegiado.append(UtilidadesString.getMensajeIdioma(usrBean, "censo.fichaCliente.literal.colegiado"));
+				descripcioncolegiado.append(" ");
+				descripcioncolegiado.append(numeroPestanha);
+				descripcioncolegiado.append(" ");
+				descripcioncolegiado.append("(");
+				if(estadoColegial!=null && !estadoColegial.equals("")){
+					descripcioncolegiado.append(estadoColegial);
+				}else{
+					
+					descripcioncolegiado.append(UtilidadesString.getMensajeIdioma(usrBean, "censo.busquedaClientes.literal.sinEstadoColegial"));
+					
+				}
+				descripcioncolegiado.append(")");
+				miForm.setDescripcionColegiado(descripcioncolegiado.toString());
+				miForm.setColegiadoNombre(nombrePestanha);
+				miForm.setColegiadoNumero(numeroPestanha);
+				
+			} catch (Exception e){
+				nombrePestanha = "";
+				numeroPestanha = "";
+				miForm.setDescripcionColegiado("");
+			}
+			
+		}
+		request.setAttribute("fichaColegial",pathAccion.equals("/JGR_PreAsistenciasLetrado")?AppConstants.DB_TRUE:AppConstants.DB_FALSE);
+		
+	}
+	
 	private String volver (ActionMapping mapping, 		
 			MasterForm formulario, 
 			HttpServletRequest request, 
@@ -149,6 +196,9 @@ public class GestionSolicitudesAceptadasCentralitaAction extends MasterAction {
 		List<String> idJuzgadoSelected = new ArrayList<String>();
 		idJuzgadoSelected.add(miForm.getIdJuzgado());
 		request.setAttribute("idJuzgadoSelected",idJuzgadoSelected);
+		
+		
+		actualizarDatosFicha(mapping.getPath(),miForm,  request);
         
 		return "inicio";
 	}
@@ -165,7 +215,7 @@ public class GestionSolicitudesAceptadasCentralitaAction extends MasterAction {
 	private String getAjaxBusqueda (ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 			SolicitudAceptadaCentralitaForm solicitudAceptadaCentralitaForm = (SolicitudAceptadaCentralitaForm) formulario;
 			String idInstitucion = request.getParameter("idInstitucion");
-			String idLlamada = request.getParameter("idLlamada");
+			String numAvisoCV = request.getParameter("numAvisoCV");
 			String idEstado = request.getParameter("idEstado");
 			String idTurno = request.getParameter("idTurno");
 	        String idGuardia = request.getParameter("idGuardia");
@@ -177,7 +227,7 @@ public class GestionSolicitudesAceptadasCentralitaAction extends MasterAction {
 	        String colegiadoNumero = request.getParameter("colegiadoNumero");
 	        
 	        solicitudAceptadaCentralitaForm.setIdInstitucion(idInstitucion);
-	        solicitudAceptadaCentralitaForm.setIdLlamada(idLlamada);
+	        solicitudAceptadaCentralitaForm.setNumAvisoCV(numAvisoCV);
 	        solicitudAceptadaCentralitaForm.setIdEstado(idEstado);
 	        solicitudAceptadaCentralitaForm.setIdTurno(idTurno);
 	        solicitudAceptadaCentralitaForm.setIdGuardia(idGuardia);
@@ -219,11 +269,11 @@ public class GestionSolicitudesAceptadasCentralitaAction extends MasterAction {
 	  
 	private String editarSolicitudAceptada (ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		SolicitudAceptadaCentralitaForm solicitudAceptadaCentralitaForm = (SolicitudAceptadaCentralitaForm) formulario;
+		UsrBean usrBean = this.getUserBean(request);
         BusinessManager bm = getBusinessManager();
 		ScsSolicitudesAcpetadasService scsSolicitudesAcpetadasService = (ScsSolicitudesAcpetadasService) bm.getService(ScsSolicitudesAcpetadasService.class);
 		VoUiService<SolicitudAceptadaCentralitaForm, SolicitudAceptadaCentralitaVo> voService = new SolicitudAceptadaCentralitaVoService();
 		try {
-			
 			
 			
 			SolicitudAceptadaCentralitaVo solicitudAceptadaCentralitaVoForm = voService.getForm2Vo(solicitudAceptadaCentralitaForm);
@@ -265,9 +315,9 @@ public class GestionSolicitudesAceptadasCentralitaAction extends MasterAction {
 				juzgadoJsonMap.put("idinstitucion", solicitudAceptadaCentralitaForm.getIdInstitucion());
 				
 			}
+			
 			String paramJuzgadosTurnos = UtilidadesString.createJsonString(juzgadoJsonMap);
 	        request.setAttribute("paramJuzgadosTurnos",paramJuzgadosTurnos);
-			
 			
 			
 			List<String> idComisariaSelected = new ArrayList<String>();
@@ -289,12 +339,16 @@ public class GestionSolicitudesAceptadasCentralitaAction extends MasterAction {
 			jsonMap.put("idTurno", idTurnoLlamada);
 			jsonMap.put("idGuardia", solicitudAceptadaCentralitaForm.getIdGuardia());
 			jsonMap.put("fechaGuardia", solicitudAceptadaCentralitaForm.getFechaGuardia());
+			jsonMap.put("idPersona", solicitudAceptadaCentralitaForm.getIdPersona());
 			
 			request.setAttribute("parametrosComboColegiadosGuardia",UtilidadesString.createJsonString(jsonMap));
 			
 			List<String> idColegiadoGuardiaSelected = new ArrayList<String>();
 			idColegiadoGuardiaSelected.add(solicitudAceptadaCentralitaForm.getIdPersona());
 			request.setAttribute("idColegiadoGuardiaSelected",idColegiadoGuardiaSelected);
+			request.setAttribute("idColegiadoGuardiaSeleccionado",solicitudAceptadaCentralitaForm.getIdPersona());
+			request.setAttribute("nombreColegiadoGuardiaSeleccionado",solicitudAceptadaCentralitaForm.getColegiadoNombre());
+			
 			
 			solicitudAceptadaCentralitaForm.setModo("editarSolicitudAceptada");
 		}catch (Exception e){
@@ -304,6 +358,8 @@ public class GestionSolicitudesAceptadasCentralitaAction extends MasterAction {
 		request.setAttribute("titulo","sjcs.solicitudaceptadacentralita.validacion.titulo");
 		request.setAttribute("tituloLocalizacion","sjcs.solicitudaceptadacentralita.validacion");
 		request.setAttribute("localizacion","sjcs.solicitudaceptadacentralita.localizacion");
+		
+		actualizarDatosFicha(mapping.getPath(),solicitudAceptadaCentralitaForm,  request);
 		
 		
 		return "validarSolicitudAceptada";
@@ -367,11 +423,13 @@ public class GestionSolicitudesAceptadasCentralitaAction extends MasterAction {
 			String idInstitucion = datosSolicitudAceptada[0];
 			String idSolicitudAceptada = datosSolicitudAceptada[1];
 			String idLlamada = datosSolicitudAceptada[2];
-			String fechaLlamada = datosSolicitudAceptada[3];
+			String numAviso  = datosSolicitudAceptada[3];
+			String fechaLlamada = datosSolicitudAceptada[4];
 			solicitudAceptadaCentralitaForm2= new SolicitudAceptadaCentralitaForm();
 			solicitudAceptadaCentralitaForm2.setIdInstitucion(idInstitucion);
 			solicitudAceptadaCentralitaForm2.setIdSolicitudAceptada(idSolicitudAceptada);
 			solicitudAceptadaCentralitaForm2.setIdLlamada(idLlamada);
+			solicitudAceptadaCentralitaForm2.setNumAvisoCV(numAviso);
 			solicitudAceptadaCentralitaForm2.setFechaLlamadaHoras(fechaLlamada);
 			solicitudAceptadaCentralitaList.add(voService.getForm2Vo(solicitudAceptadaCentralitaForm2));
 			 
@@ -480,6 +538,7 @@ public class GestionSolicitudesAceptadasCentralitaAction extends MasterAction {
 	}
 	private String consultarSolicitudAceptada (ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		SolicitudAceptadaCentralitaForm solicitudAceptadaCentralitaForm = (SolicitudAceptadaCentralitaForm) formulario;
+		UsrBean usrBean = this.getUserBean(request);
         BusinessManager bm = getBusinessManager();
 		ScsSolicitudesAcpetadasService scsSolicitudesAcpetadasService = (ScsSolicitudesAcpetadasService) bm.getService(ScsSolicitudesAcpetadasService.class);
 		VoUiService<SolicitudAceptadaCentralitaForm, SolicitudAceptadaCentralitaVo> voService = new SolicitudAceptadaCentralitaVoService();
@@ -528,7 +587,8 @@ public class GestionSolicitudesAceptadasCentralitaAction extends MasterAction {
 		request.setAttribute("titulo","sjcs.solicitudaceptadacentralita.consulta.titulo");
 		request.setAttribute("tituloLocalizacion","sjcs.solicitudaceptadacentralita.consulta");
 		request.setAttribute("localizacion","sjcs.solicitudaceptadacentralita.localizacion");
-
+		actualizarDatosFicha(mapping.getPath(),solicitudAceptadaCentralitaForm,  request);
+		
 		return "consultarSolicitudAceptada";
 		
 

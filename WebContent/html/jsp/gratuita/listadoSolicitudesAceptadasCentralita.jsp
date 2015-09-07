@@ -53,17 +53,20 @@
 						value="${solicitudAceptadaCentralita.fechaLlamadaHoras}">
 						<input
 						type="checkbox" value="${status.count}" name="chkSolicitud">
+						<input type="hidden"
+						id="numAviso_${status.count}"
+						value="${solicitudAceptadaCentralita.numAvisoCV}">
 					</td>
 					<td align="right"><c:out
-							value="${solicitudAceptadaCentralita.idLlamada}"></c:out></td>
+							value="${solicitudAceptadaCentralita.numAvisoCV}"></c:out></td>
 					<td align='left'><c:out
 							value="${solicitudAceptadaCentralita.descripcionColegiado}"></c:out>
 					</td>
-					<td align='left'><c:out
+					<td align='left'><c:out value="${SolicitudAceptadaCentralitaForm.idGuardia}"/>&nbsp;<c:out
 							value="${solicitudAceptadaCentralita.nombreGuardia}"></c:out></td>
 					<td align='left'><c:out
 							value="${solicitudAceptadaCentralita.fechaLlamadaHoras}"></c:out></td>
-					<td align='left'><c:out
+					<td align='left'><c:out value="${SolicitudAceptadaCentralitaForm.idCentroDetencion}"/>&nbsp;<c:out
 							value="${solicitudAceptadaCentralita.nombreCentroDetencion}"></c:out></td>
 					<td align='left'><c:out
 							value="${solicitudAceptadaCentralita.descripcionEstado}"></c:out></td>

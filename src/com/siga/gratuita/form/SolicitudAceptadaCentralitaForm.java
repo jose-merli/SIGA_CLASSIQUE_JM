@@ -66,7 +66,7 @@ public class SolicitudAceptadaCentralitaForm extends MasterForm {
 	
 	String fechaLlamadaHoras;
 	
-	
+	String numAvisoCV;
 	
 	
 	/**
@@ -855,13 +855,13 @@ public class SolicitudAceptadaCentralitaForm extends MasterForm {
 			case 0:
 				elementosFila =  new FilaExtElement[3];
 				elementosFila[0]=new FilaExtElement("consultaInscripcion","consultaInscripcion",SIGAConstants.ACCESS_FULL);
-				elementosFila[1]=new FilaExtElement("validar","validar",SIGAConstants.ACCESS_FULL);
+				elementosFila[1]=new FilaExtElement("confirmar","confirmar",SIGAConstants.ACCESS_FULL);
 				elementosFila[2]=new FilaExtElement("denegar","denegar",SIGAConstants.ACCESS_FULL);
 			break;
 			case 1:
 				elementosFila =  new FilaExtElement[2];
 				elementosFila[0]=new FilaExtElement("consultaInscripcion","consultaInscripcion",SIGAConstants.ACCESS_FULL);
-				elementosFila[1]=new FilaExtElement("validar","validar",SIGAConstants.ACCESS_FULL);
+				elementosFila[1]=new FilaExtElement("confirmar","confirmar",SIGAConstants.ACCESS_FULL);
 				break;
 			case 2:
 				elementosFila =  new FilaExtElement[2];
@@ -940,6 +940,16 @@ public class SolicitudAceptadaCentralitaForm extends MasterForm {
 	 */
 	public void setIdLlamada(String idLlamada) {
 		this.idLlamada = idLlamada;
+	}
+
+
+	public String getNumAvisoCV() {
+		return numAvisoCV;
+	}
+
+
+	public void setNumAvisoCV(String numAvisoCV) {
+		this.numAvisoCV = numAvisoCV;
 	}
 	
 	

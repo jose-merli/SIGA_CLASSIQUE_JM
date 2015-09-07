@@ -89,7 +89,11 @@
 	function accionVolver() 
 	{		
 		document.forms['SolicitudAceptadaCentralitaForm'].modo.value="volver";
-		document.forms['SolicitudAceptadaCentralitaForm'].target = "mainWorkArea";
+		if(jQuery('#fichaColegial').val()=='0') 
+			document.forms['SolicitudAceptadaCentralitaForm'].target = 'mainWorkArea';
+		else
+			document.forms['SolicitudAceptadaCentralitaForm'].target = 'mainPestanas';
+		
 		document.forms['SolicitudAceptadaCentralitaForm'].submit();
 	}
 	function accionGuardar() 
@@ -99,6 +103,7 @@
 			fin();
 			return false;
 		}
+		
 		if((document.forms['SolicitudAceptadaCentralitaForm'].solicitanteNombre.value!="")||
 		  (document.forms['SolicitudAceptadaCentralitaForm'].solicitanteApellido1.value!="")||
 		  (document.forms['SolicitudAceptadaCentralitaForm'].solicitanteApellido2.value!="")||
@@ -127,8 +132,21 @@
 			}
 			
 		}
-		document.forms['SolicitudAceptadaCentralitaForm'].target.value="submitArea";
+		
+		if(jQuery('#fichaColegial').val()=='0') 
+			document.forms['SolicitudAceptadaCentralitaForm'].target.value="submitArea";
+		else
+			document.forms['SolicitudAceptadaCentralitaForm'].target = 'mainPestanas';
+		
 		document.forms['SolicitudAceptadaCentralitaForm'].modo.value="guardarSolicitudAceptada";
+		
+		document.getElementById('idTurno').disabled ='';
+		document.getElementById('idGuardia').disabled='';
+		document.getElementById('idTipoAsistenciaColegio').disabled ='';
+		document.getElementById('idComisaria').disabled ='';
+		document.getElementById('idJuzgado').disabled ='';
+		document.getElementById('idPersona').disabled ='';
+		
 		document.forms['SolicitudAceptadaCentralitaForm'].submit();
 		
 	}
@@ -232,36 +250,9 @@
 	
 </script>
 </head>
-
-<body onload="inicio();">
-
-	<c:set var="parametrosComboComisaria" value="{\"idcomisaria\":\"-1\"}"/>
-	<c:set var="readonlyText" value="true" />
-	<c:set var="disabledSelect" value="true" />
-	<c:set var="estiloText" value="boxConsulta" />
-	<c:set var="estiloSelect" value="boxComboConsulta" />
-	<input type="hidden" id="mensajeSuccess" value="${mensajeSuccess}"/>
-	<!-- INICIO: CAMPOS DE BUSQUEDA-->
-	<bean:define id="path" name="org.apache.struts.action.mapping.instance" property="path" scope="request"/>
-	<html:javascript formName="SolicitudAceptadaCentralitaForm" staticJavascript="false" />
-	<html:form action="${path}"  method="POST" target="mainWorkArea">
-		<html:hidden property="modo"/>
-		<html:hidden property="idInstitucion"/>
-		<html:hidden property="idSolicitudAceptada"/>
-		<html:hidden property="idLlamada"/>
-		<html:hidden property="jsonVolver"/>
-		<html:hidden property="solicitantePais" value="191"/>
-		<html:hidden property="fechaLlamadaHoras" value="${SolicitudAceptadaCentralitaForm.fechaLlamadaHoras}"/>
-		<c:if	test="${(SolicitudAceptadaCentralitaForm.idEstado=='0' && SolicitudAceptadaCentralitaForm.modo=='editarSolicitudAceptada')
-			||(SolicitudAceptadaCentralitaForm.idEstado=='1' && SolicitudAceptadaCentralitaForm.modo=='editarSolicitudAceptada')}">
-			<c:set var="estiloText" value="box" />
-			<c:set var="estiloSelect" value="boxCombo" />
-			<c:set var="readonlyText" value="" />
-			<c:set var="disabledSelect" value="" />
-					
-		</c:if>
+<c:choose> 
+	<c:when test="${fichaColegial=='0'}">
 		<siga:Titulo  titulo="${tituloLocalizacion}" localizacion="${localizacion}"/>
-		
 		<table class="tablaTitulo" cellspacing="0" height="32">
 			<tr>
 				<td id="titulo" class="titulosPeq">
@@ -270,6 +261,58 @@
 				</td>
 			</tr>
 		</table>
+	</c:when>
+	<c:otherwise>
+		
+		<table class="tablaTitulo" cellspacing="0">
+			<tr>
+				<td class="titulitosDatos"><siga:Idioma
+						key="sjcs.solicitudaceptadacentralita.preasistencias" /> <c:out
+						value="${SolicitudAceptadaCentralitaForm.descripcionColegiado}"></c:out>
+					
+				</td>
+			</tr>
+		</table>
+	</c:otherwise>
+
+</c:choose>
+<body onload="inicio();">
+
+	<c:set var="parametrosComboComisaria" value="{\"idcomisaria\":\"-1\"}"/>
+	<c:set var="readonlyText" value="true" />
+	<c:set var="disabledSelect" value="true" />
+	<c:set var="estiloText" value="boxConsulta" />
+	<c:set var="estiloSelect" value="boxComboConsulta" />
+	<c:set var="botonesListadoAsistencias" value="" />
+	<input type="hidden" id="mensajeSuccess" value="${mensajeSuccess}"/>
+	<input type="hidden" id="fichaColegial" value="${fichaColegial}"/>
+	<!-- INICIO: CAMPOS DE BUSQUEDA-->
+	<bean:define id="path" name="org.apache.struts.action.mapping.instance" property="path" scope="request"/>
+	<html:javascript formName="SolicitudAceptadaCentralitaForm" staticJavascript="false" />
+	<html:form action="${path}"  method="POST" target="mainWorkArea">
+		<input type="hidden" id ="idColegiadoGuardiaSeleccionado" name="idColegiadoGuardiaSeleccionado" value="${idColegiadoGuardiaSeleccionado}">
+		<input type="hidden" id ="nombreColegiadoGuardiaSeleccionado" name="nombreColegiadoGuardiaSeleccionado" value="${nombreColegiadoGuardiaSeleccionado}">
+		
+		<html:hidden property="modo"/>
+		<html:hidden property="idInstitucion"/>
+		<html:hidden property="idSolicitudAceptada"/>
+		<html:hidden property="idLlamada"/>
+		<html:hidden property="jsonVolver"/>
+		<html:hidden property="solicitantePais" value="191"/>
+		<html:hidden property="fechaLlamadaHoras" value="${SolicitudAceptadaCentralitaForm.fechaLlamadaHoras}"/>
+		
+		<c:if	test="${fichaColegial=='0'}">
+			<c:set var="estiloText" value="box" />
+			<c:set var="estiloSelect" value="boxCombo" />
+			<c:set var="readonlyText" value="" />
+			<c:set var="disabledSelect" value="" />
+			<c:set var="botonesListadoAsistencias" value="C,E" />
+			
+					
+		</c:if>
+		
+		
+		
 
 		<siga:ConjCampos leyenda="gratuita.gestionInscripciones.datosSolicitud.leyenda">
 			<table width="100%" border="0">
@@ -286,7 +329,7 @@
 						<siga:Idioma key="gratuita.busquedaAsistencias.literal.idAvisoCentralita"/>
 					</td>
 					<td class="labelTextValor">
-						<c:out value="${SolicitudAceptadaCentralitaForm.idLlamada}"/>
+						<c:out value="${SolicitudAceptadaCentralitaForm.numAvisoCV}"/>
 							
 					</td>
 					<td class="labelText">
@@ -329,7 +372,7 @@
 						<siga:Idioma key="gratuita.busquedaAsistencias.literal.guardia" />
 					</td >
 					<td colspan="2" class="labelTextValor">
-						<c:out value="${SolicitudAceptadaCentralitaForm.nombreGuardia}"/>
+						<c:out value="${SolicitudAceptadaCentralitaForm.idGuardia}"/>&nbsp;<c:out value="${SolicitudAceptadaCentralitaForm.nombreGuardia}"/>
 						
 					</td>
 				</tr>
@@ -339,7 +382,7 @@
 					</td>
 											
 					<td colspan="3" class="labelTextValor">
-						<c:out value="${SolicitudAceptadaCentralitaForm.nombreCentroDetencion}"/>
+						<c:out value="${SolicitudAceptadaCentralitaForm.idCentroDetencion}"/>&nbsp;<c:out value="${SolicitudAceptadaCentralitaForm.nombreCentroDetencion}"/>
 					</td>
 					
 				</tr>
@@ -359,7 +402,7 @@
 							<siga:Idioma key='gratuita.busquedaAsistencias.literal.fechaAsistencia'/>&nbsp;(*)
 						</td>
 						<td colspan = "3">
-							<siga:Fecha styleId="fechaGuardia" nombreCampo="fechaGuardia" valorInicial="${SolicitudAceptadaCentralitaForm.fechaGuardia}" postFunction="accionCalendario();"/>
+							<siga:Fecha styleId="fechaGuardia" nombreCampo="fechaGuardia" valorInicial="${SolicitudAceptadaCentralitaForm.fechaGuardia}" disabled="${disabledSelect}" postFunction="accionCalendario();"/>
 						</td>
 					</tr>
 				
@@ -383,8 +426,8 @@
 						<td class="labelText">
 							<siga:Idioma key="gratuita.volantesExpres.literal.letradosGuardia" />(*)&nbsp;
 						</td>
-						<td colspan = "3">
-							<siga:Select queryId="getColegiadosGuardia" id="idPersona" parentQueryParamIds="idGuardia"  params="${parametrosComboColegiadosGuardia}" selectedIds="${idColegiadoGuardiaSelected}" required="true" />
+						<td colspan = "3" >
+							<siga:Select queryId="getColegiadosGuardia" id="idPersona" parentQueryParamIds="idGuardia" width="350" params="${parametrosComboColegiadosGuardia}" selectedIds="${idColegiadoGuardiaSelected}" required="true" cssClass="${estiloSelect}" disabled="${disabledSelect}"/>
 						</td>
 					</tr>
 					
@@ -649,7 +692,7 @@
 					
 					<c:forEach items="${solicitudesAceptadasCentralita}" var="solicitudAceptadaCentralita" varStatus="status">
 						<siga:FilaConIconos	fila='${status.count}'
-			  				botones="C,E" 
+			  				botones="${botonesListadoAsistencias}" 
 			  				pintarEspacio="no"
 			  				visibleConsulta="si"
 			  				visibleEdicion = "si"
@@ -681,6 +724,8 @@
 			
 			
 			</siga:Table>
+			
+			
 		<table class="botonesDetalle" align="center">
 				<tr>
 				<td class="tdBotones">
@@ -720,10 +765,10 @@
 		<c:otherwise>
 			<table class="botonesDetalle" align="center">
 				<tr>
-				<td class="tdBotones">
-					<input type="button" alt="Volver"  id="idButton" onclick="return accionVolver();" class="button" name="idButton" value="Volver">
-				</td>	
-				<td style="width: 900px;">
+					<td class="tdBotones">
+						<input type="button" alt="Volver"  id="idButton" onclick="return accionVolver();" class="button" name="idButton" value="Volver">
+					</td>	
+					<td style="width: 900px;">
 						&nbsp;
 					</td>
 					
@@ -785,16 +830,23 @@
 	}
 	function activarSolicitudAceptada() {	
 	 	document.forms['SolicitudAceptadaCentralitaForm'].modo.value = "activarSolicitudAceptadaDenegadaVolver";
+	 	if(jQuery('#fichaColegial').val()=='1') 
+			document.forms['SolicitudAceptadaCentralitaForm'].target = 'mainPestanas';
 	 	document.forms['SolicitudAceptadaCentralitaForm'].submit();
 	}
 	function denegarSolicitudAceptada() {	
 		if (!confirm('<siga:Idioma key="sjcs.solicitudaceptadacentralita.mensaje.denegar"/>'))
 			return false;
 	 	document.forms['SolicitudAceptadaCentralitaForm'].modo.value = "denegarSolicitudAceptadaVolver";
+	 	if(jQuery('#fichaColegial').val()=='1') 
+			document.forms['SolicitudAceptadaCentralitaForm'].target = 'mainPestanas';
+	 	
 	 	document.forms['SolicitudAceptadaCentralitaForm'].submit();
 	}
 	function validarSolicitudAceptada() {	
 	 	document.forms['SolicitudAceptadaCentralitaForm'].modo.value = "validarSolicitudAceptada";
+	 	if(jQuery('#fichaColegial').val()=='1') 
+			document.forms['SolicitudAceptadaCentralitaForm'].target = 'mainPestanas';
 	 	document.forms['SolicitudAceptadaCentralitaForm'].submit();
 	}
 	
@@ -803,7 +855,19 @@
 		if(document.getElementById("mensajeSuccess") && document.getElementById("mensajeSuccess").value!=''){
 			alert(document.getElementById("mensajeSuccess").value,'success');
 		}
+		idpersonaseleccionadacombo = jQuery("#idPersona").val();
+		idpersonaaniadircombo = jQuery("#idColegiadoGuardiaSeleccionado").val();
 		
+		
+		if(idpersonaseleccionadacombo!=idpersonaaniadircombo){
+			nombreColegiadoGuardiaSeleccionado = '<siga:Idioma key="gratuita.literal.letrado.refuerzo"/>'+' '+jQuery("#nombreColegiadoGuardiaSeleccionado").val();
+			jQuery("#idPersona").append(jQuery('<option>', {
+			    value: idpersonaaniadircombo,
+			    text: nombreColegiadoGuardiaSeleccionado,
+			    selected:true
+			}));
+			
+		}
 		
 	}	
 	

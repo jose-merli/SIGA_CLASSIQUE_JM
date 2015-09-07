@@ -42,6 +42,9 @@ public class SolicitudAceptadaCentralitaVoService implements VoUiService<Solicit
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 		if(objectForm.getIdInstitucion()!=null && !objectForm.getIdInstitucion().equals(""))
 			solicitudAceptadaCentralitaVo.setIdinstitucion(Short.valueOf(objectForm.getIdInstitucion()));
+		if(objectForm.getNumAvisoCV()!=null)
+			solicitudAceptadaCentralitaVo.setNumAvisoCV(Long.parseLong(objectForm.getNumAvisoCV()));
+		
 		if(objectForm.getColegiadoNumero()!=null && !objectForm.getColegiadoNumero().equals(""))
 			solicitudAceptadaCentralitaVo.setNumerocolegiado(objectForm.getColegiadoNumero());
 		if(objectForm.getIdPersona()!=null && !objectForm.getIdPersona().equals(""))
@@ -163,6 +166,9 @@ public class SolicitudAceptadaCentralitaVoService implements VoUiService<Solicit
 		SimpleDateFormat sdfddmmyyyyhhmm = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 		if(objectVo.getIdinstitucion()!=null)
 			solicitudAceptadaCentralitaForm.setIdInstitucion(objectVo.getIdinstitucion().toString());
+		if(objectVo.getNumAvisoCV()!=null)
+			solicitudAceptadaCentralitaForm.setNumAvisoCV(objectVo.getNumAvisoCV().toString());
+		
 		if(objectVo.getNumerocolegiado()!=null && !objectVo.getNumerocolegiado().equals("")){
 			StringBuffer descripcionColegiado = new StringBuffer("");
 			if(objectVo.getColegiadoNombre()!=null){
@@ -209,7 +215,7 @@ public class SolicitudAceptadaCentralitaVoService implements VoUiService<Solicit
 			solicitudAceptadaCentralitaForm.setIdSolicitudAceptada(objectVo.getIdsolicitud().toString());
 		if(objectVo.getIdllamada()!=null && !objectVo.getIdllamada().equals(""))
 			solicitudAceptadaCentralitaForm.setIdLlamada(objectVo.getIdllamada().toString());
-		
+		solicitudAceptadaCentralitaForm.setIdCentroDetencion(objectVo.getIdcentrodetencion());
 		if(objectVo.getIdtipocentrodetencion()!=null && objectVo.getIdtipocentrodetencion().equals(String.valueOf(AppConstants.LUGARACTUACION_CENTRODETENCION))){
 			if(objectVo.getIdcentrodetencion()!=null && !objectVo.getIdcentrodetencion().equals("")){
 				solicitudAceptadaCentralitaForm.setIdComisaria(objectVo.getIdcentrodetencion()+","+objectVo.getIdinstitucion());

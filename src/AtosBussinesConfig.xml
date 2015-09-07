@@ -125,6 +125,10 @@
 		<service interface="org.redabogacia.sigaservices.app.services.pys.CargaMasivaProductos"				implementation="org.redabogacia.sigaservices.app.services.pys.impl.CargaMasivaProductosImpl"/>
 		<service interface="org.redabogacia.sigaservices.app.services.est.EstadisticasUserRegistryService"	implementation="org.redabogacia.sigaservices.app.services.est.impl.EstadisticasUserRegistryServiceImpl"/>
 		<service interface="org.redabogacia.sigaservices.app.services.scs.ScsEEJGPeticionesService"			implementation="org.redabogacia.sigaservices.app.services.scs.impl.ScsEEJGPeticionesServiceImpl"/>
+		<service interface="org.redabogacia.sigaservices.app.services.scs.ScsComisariaService" 												implementation="org.redabogacia.sigaservices.app.services.scs.impl.ScsComisariaServiceImpl"/>
+		
+		
+		
 	</context>
 </configuration> 
 	

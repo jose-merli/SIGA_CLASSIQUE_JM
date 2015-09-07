@@ -1479,9 +1479,11 @@ public class ScsAsistenciasAdm extends MasterBeanAdministrador {
 			
 			if(solicIdenCV!= null && !solicIdenCV.equals("")) {
 				sql += " AND EXISTS (SELECT 1 ";
-				sql += "		 FROM SCS_SOLICITUD_ACEPTADA SA ";
+				sql += "		 FROM SCS_SOLICITUD_ACEPTADA SA,CV_LLAMADA LL ";
 				sql += "		 WHERE A.IDSOLICITUDCENTRALITA = sa.idsolicitud ";
-				sql += "		 AND SA.IDLLAMADA = "+solicIdenCV+") ";
+				sql += "         AND SA.IDINSTITUCION = A.IDINSTITUCION ";
+				sql += "         AND SA.IDLLAMADA = LL.IDLLAMADA ";
+				sql += "		 AND LL.NUMAVISOCV = "+solicIdenCV+") ";
 			}			
 					  		
 			sql += " ORDER BY " + ScsAsistenciasBean.C_IDINSTITUCION+" desc, " + ScsAsistenciasBean.C_ANIO+" desc, "+ScsAsistenciasBean.C_NUMERO+" desc";
