@@ -311,8 +311,8 @@
 		<div id="posicionTitulo" class="posicionTitulo">
 			<table class="tablaTitulo" cellspacing="0">
 			<tr>
-						<td class="titulos" width="50%"><input id="barraNavegacion" class="boxCabecera" type="text" name="navegacion" value="" readonly onchange="pushGA()"></td>	
-			<td id="titulo" class="titulos titGrande" width="50%">				
+				<td class="titulos" width="60%"><input id="barraNavegacion" class="boxCabecera" type="text" name="navegacion" value="" readonly onchange="pushGA()"></td>	
+				<td id="titulo" class="titulos titGrande" width="40%">				
 				&nbsp;
 				</td>
 			</tr>
