@@ -95,7 +95,7 @@ public class SIGAListadoUsuariosAction extends MasterAction
         String institucion = userBean.getLocation();       
         
         //Vector datos = usuariosAdm.selectNLS(where);
-        Vector datos = usuariosAdm.getBusquedaUsuarios(userBean.getLocation(), form.getDescripcion(), form.getIdRolBusqueda(), form.getNIF(), form.getActivoConsulta());
+        Vector datos = usuariosAdm.getBusquedaUsuarios(userBean.getLocation(), form.getDescripcion(), form.getIdRolBusqueda(),form.getIdGrupoBusqueda(), form.getNIF(), form.getActivoConsulta());
         
         
         // Añadimos a la request los perfiles de la institución 

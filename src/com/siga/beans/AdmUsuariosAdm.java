@@ -156,7 +156,7 @@ public class AdmUsuariosAdm extends MasterBeanAdministrador
 	 * @param activo
 	 * @return
 	 */
-	public Vector<Hashtable<String, String>> getBusquedaUsuarios(String idInstitucion, String nombre, String rol, String nif, String activo){
+	public Vector<Hashtable<String, String>> getBusquedaUsuarios(String idInstitucion, String nombre, String rol, String grupo, String nif, String activo){
 		Vector<Hashtable<String, String>> datos = new Vector<Hashtable<String, String>>();
 		
 		StringBuffer query = new StringBuffer();
@@ -176,6 +176,10 @@ public class AdmUsuariosAdm extends MasterBeanAdministrador
         if(!rol.equalsIgnoreCase("")){
         	query.append(" and exists (select 1 from adm_perfil_rol rol, adm_usuario_efectivo uef where rol.idinstitucion = u.idinstitucion and rol.idrol = uef.idrol ");
         	query.append(" and uef.idinstitucion = rol.idinstitucion and uef.idusuario = u.idusuario and rol.idrol="+ rol + ")");
+        }
+        if(!grupo.equalsIgnoreCase("")){
+        	query.append(" and exists (select 1 from ADM_USUARIOS_EFECTIVOS_PERFIL uep where uep.idinstitucion = u.idinstitucion ");
+        	query.append(" and uep.idusuario = u.idusuario and uep.idperfil = '"+ grupo + "')");
         }
 		query.append(" ORDER by u.descripcion");
 		

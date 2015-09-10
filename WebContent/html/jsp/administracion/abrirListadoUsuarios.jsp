@@ -49,6 +49,7 @@
 				sub();
 				if (listadoUsuariosForm.descripcion.value=="" &&
 					listadoUsuariosForm.idRolBusqueda.value=="" &&
+					listadoUsuariosForm.idGrupoBusqueda.value=="" &&
 					listadoUsuariosForm.NIF.value=="")
 				{
 					if (!confirm("<siga:Idioma key="administracion.grupos.asignarUsuariosGrupo.literal.busquedaCostosa"/>"))
@@ -79,13 +80,17 @@
 
 					<tr>	
 						<td class="labelText"><siga:Idioma key="administracion.grupos.asignarUsuariosGrupo.literal.nombre"/></td>				
-						<td><html:text name="listadoUsuariosForm" property="descripcion" size="30" maxlength="50" styleClass="box"/></td>
+						<td><html:text name="listadoUsuariosForm" property="descripcion" size="40" maxlength="50" styleClass="box"/></td>
 						
 						<td class="labelText"><siga:Idioma key="administracion.usuarios.literal.NIF"/></td>				
-						<td><html:text name="listadoUsuariosForm" property="NIF" size="15" maxlength="10" styleClass="box"/></td>
-									
+						<td colspan="3"><html:text name="listadoUsuariosForm" property="NIF" size="15" maxlength="10" styleClass="box"/></td>
+					</tr>
+					<tr>									
 						<td class="labelText"><siga:Idioma key="administracion.grupos.asignarUsuariosGrupo.literal.rol"/></td>				
 						<td><siga:Select queryId="getRoles" id="idRolBusqueda"/></td>
+						
+						<td class="labelText"><siga:Idioma key="administracion.grupos.asignarUsuariosGrupo.literal.grupo"/></td>				
+						<td><siga:Select queryId="getPerfilesDeInstitucion" id="idGrupoBusqueda"/></td>
 
 						<td class="labelText"><siga:Idioma key="administracion.usuarios.literal.activo"/></td>
 						<td>
