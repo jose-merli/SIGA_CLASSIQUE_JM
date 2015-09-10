@@ -58,7 +58,7 @@
 		function obtenerColor() {		
 			if(<%=color%>!= null){
 				indiceColor=parseInt(<%=color%>)-1;
-				document.all.confInterfazForm.idColor[indiceColor].checked=true;
+				jQuery('input[name=idColor][value='+<%=color%>+']').prop("checked",true);
 			}
 		}
 		
@@ -113,13 +113,13 @@
 	<table WIDTH="100%" align="left" valign="top">
 		<tr>
 
-		<td align="left" valign="top" >
+		<td align="left" valign="top" width="33%">
 
 
 	<siga:ConjCampos leyenda="confInterfaz.esquemaColores.oscuros">
 	<br>
 		
-		<table border="1" cellspacing="0" cellpadding="0" width="90%" align="center">
+		<table border="0" cellspacing="0" cellpadding="0" width="90%" align="center">
 		  <tr>
 		    <td>
 		      <table border=0 cellspacing=0 cellpadding=0>
@@ -184,12 +184,12 @@
 	
 <!-- COLORES FORNDOS CLAROS -->
 
-		<td align="left">
+		<td align="left" width="33%">
 
 	<siga:ConjCampos leyenda="confInterfaz.esquemaColores.claros">
 	<br>
 		
-		<table border="1" cellspacing="0" cellpadding="0" width="90%" align="center">
+		<table border="0" cellspacing="0" cellpadding="0" width="90%" align="center">
 		  <tr>
 		    <td valign="top">
 		      <table border=0 cellspacing=0 cellpadding=0>
@@ -260,7 +260,7 @@
 	<siga:ConjCampos leyenda="confInterfaz.esquemaColores.contraste">
 	<br>
 		
-		<table border="1" cellspacing="0" cellpadding="0" width="65%" align="center">
+		<table border="0" cellspacing="0" cellpadding="0" width="65%" align="center">
 		  <tr>
 		    <td valign="top">
 		      <table valign="top" border="0" width="100%" cellspacing=0 cellpadding=0>
@@ -270,6 +270,28 @@
 				  <td width="13%" bgcolor="#222222">&nbsp;<br>&nbsp;</td>
 				  <td width="13%" bgcolor="#BBBBBB">&nbsp;<br>&nbsp;</td>
 				  <td width="13%" bgcolor="#DDDDDD">&nbsp;<br>&nbsp;</td>
+				  <td width="13%" bgcolor="#FFFFFF">&nbsp;<br>&nbsp;</td>
+		  	    </tr>
+		  	  </table>
+		    </td>
+		  </tr>
+		</table>
+		<br>		
+	</siga:ConjCampos>
+	
+	<siga:ConjCampos leyenda="Colores BETA">
+	<br>
+		
+		<table border="0" cellspacing="0" cellpadding="0" width="65%" align="center">
+		  <tr>
+		    <td valign="top">
+		      <table valign="top" border="0" width="100%" cellspacing=0 cellpadding=0>
+		        <tr>
+		  		  <td width="8%"><html:radio name="confInterfazForm" property="idColor" value="0"></html:radio></td>
+				  <td width="13%" bgcolor="#FFFFFF">&nbsp;<br>&nbsp;</td>
+				  <td width="13%" bgcolor="#405975">&nbsp;<br>&nbsp;</td>
+				  <td width="13%" bgcolor="#7a96b6">&nbsp;<br>&nbsp;</td>
+				  <td width="13%" bgcolor="#ced9e6">&nbsp;<br>&nbsp;</td>
 				  <td width="13%" bgcolor="#FFFFFF">&nbsp;<br>&nbsp;</td>
 		  	    </tr>
 		  	  </table>
