@@ -66,7 +66,7 @@
 							value="${solicitudAceptadaCentralita.nombreGuardia}"></c:out></td>
 					<td align='left'><c:out
 							value="${solicitudAceptadaCentralita.fechaLlamadaHoras}"></c:out></td>
-					<td align='left'><c:out value="${SolicitudAceptadaCentralitaForm.idCentroDetencion}"/>&nbsp;<c:out
+					<td align='left'><c:out value="${solicitudAceptadaCentralita.idCentroDetencion}"/>&nbsp;<c:out
 							value="${solicitudAceptadaCentralita.nombreCentroDetencion}"></c:out></td>
 					<td align='left'><c:out
 							value="${solicitudAceptadaCentralita.descripcionEstado}"></c:out></td>

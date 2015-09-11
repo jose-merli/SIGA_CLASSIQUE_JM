@@ -13,7 +13,13 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.redabogacia.sigaservices.app.AppConstants;
+import org.redabogacia.sigaservices.app.autogen.model.ScsComisaria;
+import org.redabogacia.sigaservices.app.autogen.model.ScsComisariaExample;
+import org.redabogacia.sigaservices.app.autogen.model.ScsJuzgado;
+import org.redabogacia.sigaservices.app.autogen.model.ScsJuzgadoExample;
 import org.redabogacia.sigaservices.app.exceptions.BusinessException;
+import org.redabogacia.sigaservices.app.services.scs.ScsComisariaService;
+import org.redabogacia.sigaservices.app.services.scs.ScsJuzgadoService;
 import org.redabogacia.sigaservices.app.services.scs.ScsSolicitudesAcpetadasService;
 import org.redabogacia.sigaservices.app.vo.scs.SolicitudAceptadaCentralitaVo;
 
@@ -286,6 +292,9 @@ public class GestionSolicitudesAceptadasCentralitaAction extends MasterAction {
 			solicitudAceptadaCentralitaVoForm.setIdioma(this.getUserBean(request).getLanguage());
 			SolicitudAceptadaCentralitaVo solicitudAceptadaCentralitaVo =   scsSolicitudesAcpetadasService.getSolicitudAceptada(solicitudAceptadaCentralitaVoForm);
 			solicitudAceptadaCentralitaForm.clear();
+			
+			
+			
 			solicitudAceptadaCentralitaForm  = voService.getVo2Form(solicitudAceptadaCentralitaVo,solicitudAceptadaCentralitaForm);
 			
 			String idTurnoLlamada = "-1";
@@ -310,6 +319,40 @@ public class GestionSolicitudesAceptadasCentralitaAction extends MasterAction {
 			idGuardiaSelected.add(solicitudAceptadaCentralitaForm.getIdGuardia());
 			request.setAttribute("idGuardiaSelected",idGuardiaSelected);
 			
+			Long idSolictanteCentralita= null;
+			if(solicitudAceptadaCentralitaVo.getIdcentrodetencion()!=null){
+				switch (Short.valueOf(solicitudAceptadaCentralitaVo.getIdtipocentrodetencion())) {
+					case AppConstants.LUGARACTUACION_JUZGADO:
+						ScsJuzgadoService juzgadoService = (ScsJuzgadoService) BusinessManager.getInstance().getService(ScsJuzgadoService.class);
+						ScsJuzgadoExample juzgadoExample = new ScsJuzgadoExample();
+						juzgadoExample.createCriteria().andIdinstitucionEqualTo(solicitudAceptadaCentralitaVo.getIdinstitucion()).andCodigoextEqualTo(solicitudAceptadaCentralitaVo.getIdcentrodetencion());
+						List<ScsJuzgado> list =  juzgadoService.getList(juzgadoExample);
+						if(list!=null && list.size()>0){
+							idSolictanteCentralita = list.get(0).getIdjuzgado();
+							
+						}
+						if(idSolictanteCentralita!=null)
+							solicitudAceptadaCentralitaForm.setIdJuzgado(idSolictanteCentralita+","+solicitudAceptadaCentralitaVo.getIdinstitucion());
+						else
+							solicitudAceptadaCentralitaForm.setIdJuzgado(null);
+					break;
+					case AppConstants.LUGARACTUACION_CENTRODETENCION:
+						ScsComisariaService comisariaService = (ScsComisariaService) BusinessManager.getInstance().getService(ScsComisariaService.class);
+						ScsComisariaExample comisariaExample = new ScsComisariaExample();
+						comisariaExample.createCriteria().andIdinstitucionEqualTo(solicitudAceptadaCentralitaVo.getIdinstitucion()).andCodigoextEqualTo(solicitudAceptadaCentralitaVo.getIdcentrodetencion());
+						List<ScsComisaria> listComisarias =  comisariaService.getList(comisariaExample);
+						if(listComisarias!=null && listComisarias.size()>0)
+							idSolictanteCentralita = listComisarias.get(0).getIdcomisaria();
+						if(idSolictanteCentralita!=null){
+							solicitudAceptadaCentralitaForm.setIdComisaria(idSolictanteCentralita+","+solicitudAceptadaCentralitaVo.getIdinstitucion());
+						}else{
+							solicitudAceptadaCentralitaForm.setIdComisaria(null);
+						}
+						break;
+				default:
+					break;
+				}
+			}
 			
 			
 			Map<String, String> juzgadoJsonMap = new HashMap<String, String>();
@@ -324,11 +367,14 @@ public class GestionSolicitudesAceptadasCentralitaAction extends MasterAction {
 			
 			String paramJuzgadosTurnos = UtilidadesString.createJsonString(juzgadoJsonMap);
 	        request.setAttribute("paramJuzgadosTurnos",paramJuzgadosTurnos);
-			
-			
-			List<String> idComisariaSelected = new ArrayList<String>();
-			idComisariaSelected.add(solicitudAceptadaCentralitaForm.getIdComisaria());
-			request.setAttribute("idComisariaSelected",idComisariaSelected);
+	        List<String> idComisariaSelected = new ArrayList<String>();
+	        if(solicitudAceptadaCentralitaForm.getIdComisaria()!=null){
+				
+				idComisariaSelected.add(solicitudAceptadaCentralitaForm.getIdComisaria());
+				request.setAttribute("idComisariaSelected",idComisariaSelected);
+	        }else{
+	        	request.setAttribute("idComisariaSelected",idComisariaSelected);
+	        }
 			
 			List<String> idJuzgadoSelected = new ArrayList<String>();
 			idJuzgadoSelected.add(paramJuzgadosTurnos);
