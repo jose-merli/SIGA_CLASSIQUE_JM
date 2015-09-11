@@ -735,10 +735,11 @@
 						&nbsp;
 					</td>
 					
-					
-					<td class="tdBotones">
-						<input type="button" alt="<siga:Idioma key='sjcs.solicitudaceptadacentralita.boton.validarSolicitud'/>"	id="idValidarSolicitudAceptada" onclick="return validarSolicitudAceptada();" class="button"   name="idButton" value="<siga:Idioma key='sjcs.solicitudaceptadacentralita.boton.validarSolicitud'/>" />
-					</td>
+					<c:if	test="${SolicitudAceptadaCentralitaForm.modo!='consultarSolicitudAceptada'}">
+						<td class="tdBotones">
+							<input type="button" alt="<siga:Idioma key='sjcs.solicitudaceptadacentralita.boton.validarSolicitud'/>"	id="idValidarSolicitudAceptada" onclick="return validarSolicitudAceptada();" class="button"   name="idButton" value="<siga:Idioma key='sjcs.solicitudaceptadacentralita.boton.validarSolicitud'/>" />
+						</td>
+					</c:if>
 					
 				</tr>
 			</table>
@@ -753,9 +754,11 @@
 						&nbsp;
 					</td>
 					
-					<td class="tdBotones">
-						<input type="button" alt="<siga:Idioma key='sjcs.solicitudaceptadacentralita.boton.activarSolicitud'/>"  id="idActivarSolicitudAceptadaDenegada" onclick="return activarSolicitudAceptada();" class="button" name="idButton"    value="<siga:Idioma key='sjcs.solicitudaceptadacentralita.boton.activarSolicitud'/>">
-					</td>
+					<c:if	test="${SolicitudAceptadaCentralitaForm.modo!='consultarSolicitudAceptada'}">
+						<td class="tdBotones">
+							<input type="button" alt="<siga:Idioma key='sjcs.solicitudaceptadacentralita.boton.activarSolicitud'/>"  id="idActivarSolicitudAceptadaDenegada" onclick="return activarSolicitudAceptada();" class="button" name="idButton"    value="<siga:Idioma key='sjcs.solicitudaceptadacentralita.boton.activarSolicitud'/>">
+						</td>
+					</c:if>
 						
 					
 				</tr>
@@ -772,12 +775,14 @@
 						&nbsp;
 					</td>
 					
-					<td class="tdBotones">
-						<input type="button" alt="<siga:Idioma key='sjcs.solicitudaceptadacentralita.boton.denegarSolicitud'/>"  id="idDenegarSolicitudAceptada" onclick="return denegarSolicitudAceptada();" class="button" name="idButton"   value="<siga:Idioma key='sjcs.solicitudaceptadacentralita.boton.denegarSolicitud'/>">
-					</td>
-					<td class="tdBotones">
-						<input type="button" alt="<siga:Idioma key='sjcs.solicitudaceptadacentralita.boton.validarSolicitud'/>"	id="idValidarSolicitudAceptada" onclick="return validarSolicitudAceptada();" class="button"   name="idButton" value="<siga:Idioma key='sjcs.solicitudaceptadacentralita.boton.validarSolicitud'/>" />
-					</td>
+					<c:if test="${SolicitudAceptadaCentralitaForm.modo!='consultarSolicitudAceptada'}">
+						<td class="tdBotones">
+							<input type="button" alt="<siga:Idioma key='sjcs.solicitudaceptadacentralita.boton.denegarSolicitud'/>"  id="idDenegarSolicitudAceptada" onclick="return denegarSolicitudAceptada();" class="button" name="idButton"   value="<siga:Idioma key='sjcs.solicitudaceptadacentralita.boton.denegarSolicitud'/>">
+						</td>
+						<td class="tdBotones">
+							<input type="button" alt="<siga:Idioma key='sjcs.solicitudaceptadacentralita.boton.validarSolicitud'/>"	id="idValidarSolicitudAceptada" onclick="return validarSolicitudAceptada();" class="button"   name="idButton" value="<siga:Idioma key='sjcs.solicitudaceptadacentralita.boton.validarSolicitud'/>" />
+						</td>
+					</c:if>
 					
 				</tr>
 			</table>

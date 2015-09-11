@@ -338,6 +338,7 @@
 		<c:set var="parametrosComboComisaria" value="{\"idcomisaria\":\"-1\"}"/>
 		<input type="hidden" id="mensajeSuccess" value="${mensajeSuccess}"/>
 		<input type="hidden" id="fichaColegial" value="${fichaColegial}"/>
+		<input type="hidden" id="accessType" value="${accessType}"/>
 			
 		<!-- INICIO: CAMPOS DE BUSQUEDA-->
 		<bean:define id="path" name="org.apache.struts.action.mapping.instance" property="path" scope="request"/>
@@ -528,15 +529,17 @@
 								&nbsp;
 							</td>
 							
-							<td class="tdBotones">
-								<input type="button" alt="<siga:Idioma key='sjcs.solicitudaceptadacentralita.boton.denegarSolicitud'/>"  id="idDenegarSolicitudAceptada" onclick="return accionMasiva('denegarSolicitudesAceptadas');" class="button" style="display: none" name="idButton"   value="<siga:Idioma key='sjcs.solicitudaceptadacentralita.boton.denegarSolicitud'/>">
-							</td>
-							<td class="tdBotones">
-								<input type="button" alt="<siga:Idioma key='sjcs.solicitudaceptadacentralita.boton.activarSolicitud'/>"  id="idActivarSolicitudAceptadaDenegada" onclick="return accionMasiva('activarSolicitudesAceptadasDenegadas');" style="display: none" class="button" name="idButton"    value="<siga:Idioma key='sjcs.solicitudaceptadacentralita.boton.activarSolicitud'/>">
-							</td>
-							<td class="tdBotones">
-								<input type="button" alt="<siga:Idioma key='sjcs.solicitudaceptadacentralita.boton.validarSolicitud'/>"	id="idValidarSolicitudAceptada" onclick="return accionMasiva('guardarSolicitudesAceptadas');" class="button" style="display: none"  name="idButton" value="<siga:Idioma key='sjcs.solicitudaceptadacentralita.boton.validarSolicitud'/>" />
-							</td>
+							<c:if test="${accessType == 'Acceso Total'}">							
+								<td class="tdBotones">
+									<input type="button" alt="<siga:Idioma key='sjcs.solicitudaceptadacentralita.boton.denegarSolicitud'/>"  id="idDenegarSolicitudAceptada" onclick="return accionMasiva('denegarSolicitudesAceptadas');" class="button" style="display: none" name="idButton"   value="<siga:Idioma key='sjcs.solicitudaceptadacentralita.boton.denegarSolicitud'/>">
+								</td>
+								<td class="tdBotones">
+									<input type="button" alt="<siga:Idioma key='sjcs.solicitudaceptadacentralita.boton.activarSolicitud'/>"  id="idActivarSolicitudAceptadaDenegada" onclick="return accionMasiva('activarSolicitudesAceptadasDenegadas');" style="display: none" class="button" name="idButton"    value="<siga:Idioma key='sjcs.solicitudaceptadacentralita.boton.activarSolicitud'/>">
+								</td>
+								<td class="tdBotones">
+									<input type="button" alt="<siga:Idioma key='sjcs.solicitudaceptadacentralita.boton.validarSolicitud'/>"	id="idValidarSolicitudAceptada" onclick="return accionMasiva('guardarSolicitudesAceptadas');" class="button" style="display: none"  name="idButton" value="<siga:Idioma key='sjcs.solicitudaceptadacentralita.boton.validarSolicitud'/>" />
+								</td>
+							</c:if>
 							
 						</tr>
 					</table>	

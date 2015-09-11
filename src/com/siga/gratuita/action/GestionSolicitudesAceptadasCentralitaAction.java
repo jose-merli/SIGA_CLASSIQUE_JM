@@ -116,6 +116,9 @@ public class GestionSolicitudesAceptadasCentralitaAction extends MasterAction {
 
 		actualizarDatosFicha(mapping.getPath(),miForm,  request);
 		
+		String accessType = testAccess(request.getContextPath() + "/JGR_GestionSolicitudesAceptadasCentralita.do", null, request);
+		request.setAttribute("accessType",accessType);		
+		
 		return "inicio";
 	}
 	private void actualizarDatosFicha(String pathAccion,SolicitudAceptadaCentralitaForm miForm,HttpServletRequest request){
