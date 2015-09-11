@@ -166,7 +166,7 @@ public class GestionSolicitudesAceptadasCentralitaAction extends MasterAction {
 	private String volver (ActionMapping mapping, 		
 			MasterForm formulario, 
 			HttpServletRequest request, 
-			HttpServletResponse response) throws SIGAException 
+			HttpServletResponse response) throws  ClsExceptions, SIGAException 
 			{
 		SolicitudAceptadaCentralitaForm miForm = (SolicitudAceptadaCentralitaForm) formulario;
 		miForm.clear();
@@ -174,6 +174,7 @@ public class GestionSolicitudesAceptadasCentralitaAction extends MasterAction {
 		SolicitudAceptadaCentralitaForm solicitudAceptadaCentralitaForm = (SolicitudAceptadaCentralitaForm) request.getSession().getAttribute(identificadorFormularioBusqueda);
 		miForm.setIdInstitucion(solicitudAceptadaCentralitaForm.getIdInstitucion());
         miForm.setIdLlamada(solicitudAceptadaCentralitaForm.getIdLlamada());
+        miForm.setNumAvisoCV(solicitudAceptadaCentralitaForm.getNumAvisoCV());
         miForm.setIdEstado(solicitudAceptadaCentralitaForm.getIdEstado());
         miForm.setIdTurno(solicitudAceptadaCentralitaForm.getIdTurno());
         miForm.setIdGuardia(solicitudAceptadaCentralitaForm.getIdGuardia());
@@ -202,7 +203,9 @@ public class GestionSolicitudesAceptadasCentralitaAction extends MasterAction {
 		
 		
 		actualizarDatosFicha(mapping.getPath(),miForm,  request);
-        
+		String accessType = testAccess(request.getContextPath() + "/JGR_GestionSolicitudesAceptadasCentralita.do", null, request);
+		request.setAttribute("accessType",accessType);		
+		
 		return "inicio";
 	}
 
@@ -459,14 +462,14 @@ public class GestionSolicitudesAceptadasCentralitaAction extends MasterAction {
 
 	}
 	
-	private String guardarSolicitudAceptada (ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+	private String guardarSolicitudAceptada (ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException, ClsExceptions {
 		SolicitudAceptadaCentralitaForm solicitudAceptadaCentralitaForm = (SolicitudAceptadaCentralitaForm) formulario;
 		BusinessManager bm = getBusinessManager();
         ScsSolicitudesAcpetadasService scsSolicitudesAcpetadasService = (ScsSolicitudesAcpetadasService) bm.getService(ScsSolicitudesAcpetadasService.class);
         VoUiService<SolicitudAceptadaCentralitaForm, SolicitudAceptadaCentralitaVo> voService = new SolicitudAceptadaCentralitaVoService();
 		try {
 			
-			scsSolicitudesAcpetadasService.guardarSolicitudAceptada(voService.getForm2Vo(solicitudAceptadaCentralitaForm));
+			scsSolicitudesAcpetadasService.guardarSolicitudAceptada(voService.getForm2Vo(solicitudAceptadaCentralitaForm),true);
 		}catch (Exception e){
 			throw new SIGAException("messages.general.error", e , new String[] {"modulo.gratuita"});
 			

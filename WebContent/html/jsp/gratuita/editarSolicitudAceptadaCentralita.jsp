@@ -281,6 +281,7 @@
 	<c:set var="parametrosComboComisaria" value="{\"idcomisaria\":\"-1\"}"/>
 	<c:set var="readonlyText" value="true" />
 	<c:set var="disabledSelect" value="true" />
+	<c:set var="displaynone" value="display:none" />
 	<c:set var="estiloText" value="boxConsulta" />
 	<c:set var="estiloSelect" value="boxComboConsulta" />
 	<c:set var="botonesListadoAsistencias" value="" />
@@ -304,6 +305,7 @@
 		<c:if	test="${fichaColegial=='0'}">
 			<c:set var="estiloText" value="box" />
 			<c:set var="estiloSelect" value="boxCombo" />
+			<c:set var="displaynone" value="" />
 			<c:set var="readonlyText" value="" />
 			<c:set var="disabledSelect" value="" />
 			<c:set var="botonesListadoAsistencias" value="C,E" />
@@ -422,7 +424,8 @@
 							<siga:Select queryId="getGuardiasConColegGuardia" id="idGuardia"  parentQueryParamIds="idturno" queryParamId="idGuardia" params="${paramsGuardiasDeTurno}" selectedIds="${idGuardiaSelected}" required="true" width="300" childrenIds="idPersona" cssClass="${estiloSelect}" disabled="${disabledSelect}"/>
 						</td>
 					</tr>
-					<tr>
+
+					<tr style="${displaynone}">
 						<td class="labelText">
 							<siga:Idioma key="gratuita.volantesExpres.literal.letradosGuardia" />(*)&nbsp;
 						</td>
@@ -430,6 +433,7 @@
 							<siga:Select queryId="getColegiadosGuardia" id="idPersona" parentQueryParamIds="idGuardia" width="350" params="${parametrosComboColegiadosGuardia}" selectedIds="${idColegiadoGuardiaSelected}" required="true" cssClass="${estiloSelect}" disabled="${disabledSelect}"/>
 						</td>
 					</tr>
+
 					
 					
 					<c:if	test="${SolicitudAceptadaCentralitaForm.modo!='consultarSolicitudAceptada'}">

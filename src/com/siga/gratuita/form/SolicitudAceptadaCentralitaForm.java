@@ -893,6 +893,7 @@ public class SolicitudAceptadaCentralitaForm extends MasterForm {
 		idPersona = null;
 		idTurno = null;
 		idGuardia = null;
+		numAvisoCV = null;
 		colegiadoNumero = null;
 		colegiadoNombre = null;
 		idCentroDetencion = null;
@@ -909,6 +910,7 @@ public class SolicitudAceptadaCentralitaForm extends MasterForm {
 		miForm.setIdInstitucion(this.getIdInstitucion());
         miForm.setIdSolicitudAceptada(this.getIdSolicitudAceptada());
         miForm.setIdLlamada(this.getIdLlamada());
+        miForm.setNumAvisoCV(this.getNumAvisoCV());
         miForm.setIdEstado(this.getIdEstado());
         miForm.setIdTurno(this.getIdTurno());
         miForm.setIdGuardia(this.getIdGuardia());

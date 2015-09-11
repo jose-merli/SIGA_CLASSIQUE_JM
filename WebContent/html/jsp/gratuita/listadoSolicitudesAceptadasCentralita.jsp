@@ -62,7 +62,7 @@
 					<td align='left'><c:out
 							value="${solicitudAceptadaCentralita.descripcionColegiado}"></c:out>
 					</td>
-					<td align='left'><c:out value="${SolicitudAceptadaCentralitaForm.idGuardia}"/>&nbsp;<c:out
+					<td align='left'><c:out value="${solicitudAceptadaCentralita.idGuardia}"/>&nbsp;<c:out
 							value="${solicitudAceptadaCentralita.nombreGuardia}"></c:out></td>
 					<td align='left'><c:out
 							value="${solicitudAceptadaCentralita.fechaLlamadaHoras}"></c:out></td>

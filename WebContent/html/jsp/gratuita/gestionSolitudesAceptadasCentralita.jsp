@@ -152,6 +152,8 @@
     		alert(error);
     		return false;
         }
+        if(idTurno!='')
+        	data += "&idTurno="+idTurno;
         if(idGuardia!='')
         	data += "&idGuardia="+idGuardia;
         if(fechaDesde!='')
