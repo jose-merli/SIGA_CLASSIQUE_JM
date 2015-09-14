@@ -122,7 +122,7 @@
 	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js?v=${sessionScope.VERSIONJS}'/>"></script>
 	<script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
 	
-	<siga:TituloExt titulo="administracion.catalogos.titulo.datos.generales" localizacion="administracion.catalogos.localizacion.datos.generales"/>
+	<siga:TituloExt titulo="<%=sAliasTabla%>" localizacion="administracion.catalogos.localizacion.datos.generales"/>
 </head>
 
 <body>
@@ -192,13 +192,13 @@
 										if (bNuevo){
 %>
 											<td class="labelTextValue">
-												<input type="text" name="descripcionRegistro" class="box" value="" size="<%=sLengthDescripcion%>" maxlength="<%=sMaxLengthDescripcion%>">
+												<input type="text" name="descripcionRegistro" class="box" value="" size="120" maxlength="<%=sMaxLengthDescripcion%>">
 											</td>										
 <% 		
 										} else {
 %>
 											<td class="labelTextValue">
-												<input type="text" name="descripcionRegistro" class="box" value="<%=descAux%>" size="<%=sLengthDescripcion%>" maxlength="<%=sMaxLengthDescripcion%>">
+												<input type="text" name="descripcionRegistro" class="box" value="<%=descAux%>" size="120" maxlength="<%=sMaxLengthDescripcion%>">
 											</td>										
 <%		
 										}													
