@@ -177,20 +177,17 @@
 		}
 	
 		function consultar(fila,id){
-			abrir(fila);
+			abrir(fila, false);
 			jQuery('#divVentanaModal input').prop('disabled',true);
-	 		jQuery('#btGuardarCerrar').hide();
 		}
 	
 	 	function editar(fila, id) {
-	 		abrir(fila);
+	 		abrir(fila, true);
 	 		filaSel=fila;
 	 		jQuery('#divVentanaModal input').prop('disabled',false);
-	 		jQuery('#btGuardarCerrar').show();
 	 	}
 	 	
-	 	function abrir(fila) {
-	 		
+	 	function abrir(fila, guardar) {
 			jQuery("#editNombre").html(jQuery("#oculto"+fila+"_3").val());
 			jQuery("#editNif").html(jQuery("#oculto"+fila+"_5").val());
 			jQuery("#editFechaAlta").html(jQuery("#oculto"+fila+"_8").val());
@@ -198,12 +195,12 @@
 	
 			jQuery("#checkActivo").prop('checked', jQuery("#oculto"+fila+"_6").val()=='S');
 
-			rellenarChecks(jQuery("#oculto"+fila+"_1").val(),jQuery("#oculto"+fila+"_2").val(),fila);
+			rellenarChecks(jQuery("#oculto"+fila+"_1").val(),jQuery("#oculto"+fila+"_2").val(),fila, guardar);
 
 		 }
 
 
-	 	function rellenarChecks(idUsuario, idInstitucion, fila){
+	 	function rellenarChecks(idUsuario, idInstitucion, fila, guardar){
 	 		jQuery('.liTab').hide();
 	 		jQuery(".checkSelected").removeClass("checkSelected");
 	 		jQuery(".checkUnselected").removeClass("checkUnselected");
@@ -253,7 +250,7 @@
 				      buttons :  { 
 				    	     "btGuardarCerrar" : {
 				    	         text: "Guardar y cerrar",
-				    	         id: "btGuardarCerrar",
+				    	         id: "btGuardarYCerrar",
 				    	         click: function(){
 				    	        	 guardarDatos(fila);
 				    	        	 }   
@@ -271,6 +268,10 @@
 			 		jQuery("#divRoles").css('border','0');
 			 		jQuery(".ui-widget-overlay").css("opacity","0");
 			 		jQuery(".ui-tabs .ui-tabs-panel").css("padding",'0 2 0 2');
+			 		
+			 		if(guardar==0){
+			 			jQuery('#btGuardarYCerrar').hide() ;
+			 		}
 			 		if((jQuery(window).height()-150)<jQuery("#divVentanaModal").height()){
 			 			jQuery("#divVentanaModal").height(jQuery(window).height()-150);
 			 		}
