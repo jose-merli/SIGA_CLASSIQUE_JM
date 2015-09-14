@@ -74,7 +74,7 @@ fieldset {
     font-size: 13px;
     text-align: left;
     vertical-align: top;
-    margin:0.7em 0.7em 0 0.7em;
+    margin:0.1em 0.7em 0.1em 0.7em;
     width: auto;
     float:both;
 	padding-bottom: 2px;
@@ -131,7 +131,7 @@ a.disabled {
   font-size: 13px;
   padding-left: 10px;
   padding-right: 10px;
-  padding-top: 2px;
+  padding-top: 4px;
   padding-bottom: 1px;
   vertical-align: top;
 }
@@ -161,7 +161,7 @@ a.disabled {
   font-size: 13px;
   padding-left: 10px;
   padding-right: 10px;
-  padding-top: 2px;
+  padding-top: 4px;
   padding-bottom: 1px;
   vertical-align: top;
 }
@@ -172,7 +172,7 @@ a.disabled {
   font-weight: normal;
   padding-left: 10px;
   padding-right: 10px;
-  padding-top: 2px;
+  padding-top: 4px;
   padding-bottom: 1px;
   vertical-align: top;
   cursor: default;
@@ -540,7 +540,6 @@ thead.Cabeceras {
   vertical-align: top;
   text-align: right;
   color: #222222;
-  background-color: #ced9e6;
   border: 0px solid #222222;
   padding-top: 2px;
   padding-bottom: 1px;
@@ -552,8 +551,6 @@ thead.Cabeceras {
   padding-left: 5px;
   vertical-align: top;
   text-align: left;
-  background-color: #ced9e6;
-  background-color: #4477aa;
   margin-top: -4px;
   border: 0px solid #222222;
   padding-top: 2px;
@@ -1231,10 +1228,7 @@ A.imageLink:active {
 .posicionTitulo {
     position: relative;
 	  min-width:1000px;
-	  max-width:1300px;
-    z-index: 5;
-    top:-5px;
-    padding-bottom: 2px;
+	  max-width:1300px;;
 }
 .posicionBusquedaSolo {
   background-color: #ffffff;
@@ -1268,7 +1262,7 @@ A.imageLink:active {
 .pestanaTD {
     height: 16px;
     white-space: nowrap;
-    padding-top: 10px;
+    padding-top: 6px;
 }
 .pestanaTD a {
     background-color: #d1e3f7;
@@ -1901,7 +1895,7 @@ div.tableTitle {
 }
 table tbody tr td {
     padding-bottom: 0;
-    padding-top: 4px;
+    padding-top: 2px;
 }
 /*
 .tablaCentralCampos table#tablaBotonesDetalle.botonesDetalle tbody tr td.tdBotones,
