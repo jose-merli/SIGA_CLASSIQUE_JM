@@ -88,7 +88,7 @@
 		</tr>
 		</table>
 		<fieldset>
-		<table  class="tablaCentralCamposPeque"  align="center">
+		<table  class="tablaCentralCampos"  align="center" id="tablaDefensa">
 		<html:form action="/JGR_DefensaJuridiciaDesignas.do" method="post" target="submitArea">
 		<html:hidden property = "modo" value = ""/>
 		<html:hidden property="idTurno" value = '<%=(String)hash.get("IDTURNO")%>'/>
