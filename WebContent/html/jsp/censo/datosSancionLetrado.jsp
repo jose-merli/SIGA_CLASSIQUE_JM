@@ -260,9 +260,11 @@
 			
 			var error = "";
 			
-			if((fechaFirmeza!='' && chkFirmeza.checked!=true) || (chkFirmeza.checked==true && fechaFirmeza == '')){
+			var idInstitucion  = <%=user.getLocation()%>;	
+			
+			if((fechaFirmeza!='' && chkFirmeza.checked!=true) || (chkFirmeza.checked==true && fechaFirmeza == '' &&  idInstitucion != '2000')){
 				error += "<siga:Idioma key="censo.sancionesLetrado.error.firmeza"/>" + '\n';
-			}			
+			}		
 					
 			if((fechaArchivo!='' && chkArchivada.checked!=true) || (chkArchivada.checked==true && fechaArchivo == '')){
 				error += "<siga:Idioma key="censo.sancionesLetrado.error.fechaArchivo"/>" + '\n';

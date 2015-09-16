@@ -309,8 +309,13 @@ public class SancionesLetradoAction extends MasterAction
 			}
 
 			if (checkFirmeza) {
-				if (miForm.getFechaInicio() != null && !miForm.getFechaInicio().equals("") && miForm.getFechaFin() != null && !miForm.getFechaFin().equals("")) {
+				if(ClsConstants.esConsejoGeneral(idinstitucion)){
 					UtilidadesHash.set(hash, CenSancionBean.C_CHKFIRMEZA, "1");
+					
+				/** Se comprueba si están rellenas la fecha inicio y fin de firmeza SOLO si es colegio **/
+				}else if (ClsConstants.esColegio(idinstitucion) && miForm.getFechaInicio() != null && !miForm.getFechaInicio().equals("") && miForm.getFechaFin() != null && !miForm.getFechaFin().equals("")) {
+					UtilidadesHash.set(hash, CenSancionBean.C_CHKFIRMEZA, "1");
+					
 				} else {
 					throw new SIGAException("censo.sancionesLetrado.error.fechasInicioFinFirmeza");
 				}				
@@ -425,7 +430,7 @@ public class SancionesLetradoAction extends MasterAction
 		if(miForm.getTipoSancion() != null && !miForm.getTipoSancion().equals(String.valueOf(ClsConstants.TIPO_SANCION_APERCIBIMIENTO))){
 			//2ª Condicion: Sancion sea firme
 			if (checkFirmeza) {
-				// 2.1 Condicion: Obligatorio Fecha Firmeza
+				// 2.1 Condicion: Obligatorio Fecha Firmeza SOLO en colegios
 				if (miForm.getFirmeza() != null && !miForm.getFirmeza().equals("")) {
 					// 2.2 Condicion: Obligatorio Fecha Inicio y Fecha Fin
 					if (miForm.getFechaInicio() != null && !miForm.getFechaInicio().equals("") && miForm.getFechaFin() != null && !miForm.getFechaFin().equals("")) {
@@ -550,7 +555,7 @@ public class SancionesLetradoAction extends MasterAction
 	   		throwExcp("messages.general.error",new String[] {"modulo.censo"},e,tx);
    	   }
 		
-	   return exitoRefresco("messages.inserted.success", request);
+	   return exito("messages.inserted.success", request);
 	}
 	
 	/**
