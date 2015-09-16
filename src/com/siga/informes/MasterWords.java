@@ -350,42 +350,51 @@ public class MasterWords {
 		}
 		return doc;
 	}
-
+	
+	
+	
 	public Document sustituyeDocumento(Document doc, Hashtable<String, Object> dato) throws ClsExceptions {
 
 		try {
-
-			Iterator iterador = dato.keySet().iterator();
-			while (iterador.hasNext()) {
-				String clave = (String) iterador.next();
-				Object o = dato.get(clave);
-				if (o instanceof Vector) {
-					Vector aux = (Vector) o;
-					doc = sustituyeRegionDocumento(doc, clave, aux);
-					iterador.remove();
-				}
-
-			}
-
-			iterador = dato.keySet().iterator();
-			DocumentBuilder builder = new DocumentBuilder(doc);
-			while (iterador.hasNext()) {
-				String clave = (String) iterador.next();
-
-				while (builder.moveToMergeField(clave)) {
-					Object o = dato.get(clave);
-					try {
-						builder.write(o.toString().trim());
-					} catch (Exception e) {
-						ClsLogging.writeFileLog("ERROR en el tipo de objetos  precargar informes aspose.words: " + e.toString(), 3);
+			
+			Enumeration<String> claves2=dato.keys();
+            while(claves2.hasMoreElements()){
+                String clave = (String) claves2.nextElement();
+                Object o = dato.get(clave);
+                if (o instanceof Vector) {
+                    Vector aux = (Vector)o;
+                    doc = sustituyeRegionDocumento(doc,clave,aux);
+                   
+                }
+            }
+			
+			Enumeration<String> claves=dato.keys();
+			DocumentBuilder builder=new DocumentBuilder(doc);
+			while(claves.hasMoreElements()){
+				
+				String clave = (String) claves.nextElement();
+				while(builder.moveToMergeField(clave))
+					{
+						Object o = dato.get(clave);
+						/*if (o instanceof Vector) {
+							Vector aux = (Vector)o;
+							doc = sustituyeRegionDocumento(doc,clave,aux);
+						}else*/
+//						if (!(o instanceof String)) {
+//							o = o.toString();
+//						}
+						try {
+							builder.write(o.toString().trim());	
+						} catch (Exception e) {
+							ClsLogging.writeFileLog("ERROR al llegar el vector de la region. continua...",3);
+						}
+							
 					}
-
-				}
-
+					
+				
 			}
-
 		} catch (Exception e) {
-			throw new ClsExceptions(e, "Error al rellenar informe");
+			throw new ClsExceptions(e,"Error al rellenar informe");
 		}
 		return doc;
 	}
