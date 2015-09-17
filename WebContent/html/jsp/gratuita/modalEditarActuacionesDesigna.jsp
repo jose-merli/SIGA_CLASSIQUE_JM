@@ -802,7 +802,7 @@
 				</table>
 		</siga:ConjCampos>
 		
-		<c:if test="${not empty ActuacionesDesignasForm.ejgs}">
+		<c:if test="false">
 				<siga:ConjCampos leyenda="gratuita.operarEJG.literal.expedienteEJG" >
 					<div id="panel" style="width:100%;  height: 100px; ">
 						<ul id="tabs" style="width:100%;">
