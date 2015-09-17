@@ -203,7 +203,7 @@ public class ScsEstadoEJGAdm extends MasterBeanAdministrador
 					                               "(SELECT max(ultimoestado.idestadoporejg)"+
 					                                  " from SCS_ESTADOEJG ultimoestado"+
 					                                 " where  ultimoestado.FECHABAJA IS NULL AND "+
-					                                 " ultimoestado.IDINSTITUCION estadoejg.IDINSTITUCION"+
+					                                 " ultimoestado.IDINSTITUCION  = estadoejg.IDINSTITUCION"+
 					                                   " and ultimoestado.IDTIPOEJG ="+
 					                                      " estadoejg.IDTIPOEJG"+
 					                                   " and ultimoestado.ANIO = estadoejg.ANIO"+
