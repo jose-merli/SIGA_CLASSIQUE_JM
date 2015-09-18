@@ -470,7 +470,10 @@
 									<%}%>
 								</td>							
 						   </tr>	
-					   <%}%>						
+							<% }else{%>
+								<html:hidden  name="SancionesLetradoForm" property="chkArchivada"/>
+								<html:hidden  name="SancionesLetradoForm" property="fechaArchivada"/>
+							<%}%>					
 											
 						<tr>
 							<td class="labelText" colspan="4">
