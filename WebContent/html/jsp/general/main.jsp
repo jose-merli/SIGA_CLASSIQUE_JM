@@ -94,11 +94,10 @@
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
 	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.js'/>"></script>
-	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-ui-1.10.3.custom.min.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-ui-1.10.3.custom.min.js?v=${sessionScope.VERSIONJS}'/>"></script>
 	<!-- <script type="text/javascript" src="<html:rewrite page='/html/js/jquery.blockUI.js'/>"></script> -->
 	<script type="text/javascript" src="<html:rewrite page='/html/dropdownchecklist/ui.dropdownchecklist-1.4-min.js'/>"></script>
 	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js?v=${sessionScope.VERSIONJS}'/>"></script>
-	<script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>	
 	
 	<style type="text/css">
 	.notice-wrap {
@@ -206,17 +205,15 @@
 							typeof jQueryTop("#mainWorkArea")[0].contentWindow != "undefined" && 
 							typeof jQueryTop("#mainWorkArea")[0].contentWindow.jQuery != "undefined"){
 						var mainWorkAreaJquery = jQueryTop("#mainWorkArea")[0].contentWindow.jQuery;
-						mainWorkAreaJquery.blockUI({
-							message: '<div id="barraBloqueante"><span class="labelText">'+msg+'</span><br><img src="<%=app%>/html/imagenes/loadingBar.gif"/></div>', 
-							css:{border:0, background:'transparent'},
-							overlayCSS: { backgroundColor:'#FFF', opacity: .0} });
-						/* NO ES NECESARIO SOLO BLOQUEA mainWorkArea EL MENÚ SIGUE FUNCIONANDO
-						mainWorkAreaJquery("#barraBloqueante").click(function() { 
-							mainWorkAreaJquery.unblockUI(); 
-							console.debug("[barraBloqueante] CLICK blockUI");
-						});
-						*/
-						console.debug("[mainSub] blockUI");
+						try{
+							mainWorkAreaJquery.blockUI({
+								message: '<div id="barraBloqueante"><span class="labelText">'+msg+'</span><br><img src="<%=app%>/html/imagenes/loadingBar.gif"/></div>', 
+								css:{border:0, background:'transparent'},
+								overlayCSS: { backgroundColor:'#FFF', opacity: .0} });
+						}catch (e) {
+							console.debug("[mainSub] blockUI");
+						}
+						
 					} else
 						jQuery("#divEspera").show();
 					bloqueado=true;
@@ -229,8 +226,11 @@
 							typeof jQueryTop("#mainWorkArea")[0].contentWindow != "undefined" && 
 							typeof jQueryTop("#mainWorkArea")[0].contentWindow.jQuery != "undefined"){
 						var mainWorkAreaJquery = jQueryTop("#mainWorkArea")[0].contentWindow.jQuery;
-						mainWorkAreaJquery.unblockUI();
-						console.debug("[mainFin] unblockUI");
+						try {
+							mainWorkAreaJquery.unblockUI();
+						} catch (e) {
+							console.debug("[mainFin] unblockUI");
+						}
 					}
 					jQuery("#divEspera").hide();
 					bloqueado=false; 
