@@ -25,6 +25,8 @@
 <%@ page import="java.util.Properties"%>
 <%@ page import="java.util.ArrayList"%>
 <%@ page import="java.util.Hashtable"%>
+<%@ page import="java.util.List"%>
+<%@ page import="com.siga.gratuita.form.ActuacionesDesignasForm"%>
 
 
 <!-- JSP -->
@@ -802,7 +804,13 @@
 				</table>
 		</siga:ConjCampos>
 		
-		<c:if test="false">
+		<c:if test="${not empty ActuacionesDesignasForm.ejgs}">
+		<%
+			ActuacionesDesignasForm form = (ActuacionesDesignasForm) request.getSession().getAttribute("ActuacionesDesignasForm");
+			int i = 0;
+			if(form != null){
+				List<ScsEJGBean> listadoEjgs = form.getEjgs();	
+		%>
 				<siga:ConjCampos leyenda="gratuita.operarEJG.literal.expedienteEJG" >
 					<div id="panel" style="width:100%;  height: 100px; ">
 						<ul id="tabs" style="width:100%;">
@@ -826,11 +834,18 @@
 										<td class="labelTextValue">
 										<c:choose>
 										<c:when test="${ejg2.idTipoRatificacionEJG != null && ejg2.idTipoRatificacionEJG !=''}">
-													<siga:ComboBD nombre="idTipoRatificacionEJG" tipo="tipoResolucionTodos" ancho="300" clase="boxConsulta" parametro="<%=dato%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  elementoSel="${ejg2.idTipoRatificacionEJG}" readonly="true"/>				
+									<% 
+										ArrayList selTipoRatificacion = new ArrayList();
+										ScsEJGBean ejg = (ScsEJGBean) listadoEjgs.get(i++);
+										selTipoRatificacion.add (ejg.getIdTipoRatificacionEJG() + "," + usr.getLocation());	
+									%>	
+													<siga:ComboBD nombre="idTipoRatificacionEJG" tipo="tipoResolucionTodos" ancho="300" clase="boxConsulta" parametro="<%=dato%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  elementoSel="<%=selTipoRatificacion%>" readonly="true"/>				
 											</c:when>
 											<c:otherwise>
 												-
-										
+												<% 
+														i++;
+												%>
 											</c:otherwise>
 										</c:choose>
 										</td>
@@ -887,7 +902,8 @@
 								ajusteAlto('panelEJGs');
 							</script>
 						</div>
-			</siga:ConjCampos> 	
+			</siga:ConjCampos> 
+			<% } %>	
 			</c:if>
 	
 	

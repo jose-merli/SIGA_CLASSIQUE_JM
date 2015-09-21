@@ -23,6 +23,10 @@
 <!-- IMPORTS -->
 <%@ page import="com.siga.administracion.SIGAConstants"%>
 <%@ page import="com.atos.utils.*"%>
+<%@ page import="java.util.List"%>
+<%@ page import="com.siga.gratuita.form.MaestroDesignasForm"%>
+<%@ page import="com.siga.beans.ScsEJGBean"%>
+
 
 <!-- JSP -->
 <%  
@@ -349,6 +353,14 @@
 					<div id="paneles">
 
 					<logic:notEmpty name="MaestroDesignasForm" property="ejgs">
+					<%
+						MaestroDesignasForm form = (MaestroDesignasForm) request.getAttribute("MaestroDesignasForm");
+						int i = 0;
+						List<ScsEJGBean> listadoEjgs = null;
+						if(form != null){
+							listadoEjgs = form.getEjgs();
+						}
+					%>
 						<logic:iterate name="MaestroDesignasForm" property="ejgs" id="ejg2" indexId="index2">
 							<div id="panel_${index2}" style="display: inline;overflow-y: auto;overflow-x: hidden;">
 								<table class="tablaCampos" align="center" cellpadding="0"
@@ -435,6 +447,7 @@
 								<tr><td colspan="6">   &nbsp;</td></tr>
 								
 								</table>
+							<% if(form != null){%>	
 								<table class="tablaCampos" align="center" cellpadding="0"
 										cellpadding="0" style="width:100%;" border="0">		
 								<tr>
@@ -444,8 +457,23 @@
 										<td class="labelTextValue"  style="width:25%;">
 										<c:choose>
 											<c:when test="${ejg2.idTipoRatificacionEJG != null && ejg2.idTipoRatificacionEJG !=''}">
-												<siga:ComboBD nombre="idTipoRatificacionEJG" tipo="tipoResolucionTodos" ancho="200" clase="boxConsulta" parametro="<%=dato%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  elementoSel="${ejg2.idTipoRatificacionEJG}" readonly="true"/>			
+													<% 
+															ArrayList selTipoRatificacion = new ArrayList();
+															ScsEJGBean ejg = (ScsEJGBean) listadoEjgs.get(i++);
+															selTipoRatificacion.add (ejg.getIdTipoRatificacionEJG() + "," + usrbean.getLocation());
+														
+													%>	
+												
+												<siga:ComboBD nombre="idTipoRatificacionEJG" tipo="tipoResolucionTodos" ancho="200" clase="boxConsulta" parametro="<%=dato%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  elementoSel="<%=selTipoRatificacion%>" readonly="true"/>			
 											</c:when>
+											<c:otherwise>
+												-
+												<% 
+													
+														i++;
+													
+												%>
+											</c:otherwise>
 										</c:choose>
 										</td>
 										<td class="labelText"  style="width:25%;">
@@ -462,6 +490,7 @@
 									</tr>
 									<tr><td colspan="6">   &nbsp;</td></tr>
 								</table>
+								<% }%>	
 								<fieldset>
 									<legend>
 										<siga:Idioma key="pestana.justiciagratuitadesigna.defensajuridica"/>

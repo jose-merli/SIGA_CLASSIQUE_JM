@@ -461,32 +461,35 @@ public class ActuacionesDesignasAction extends MasterAction {
 					
 					//Obtenemos los datos del ejg
 					Vector vEjgRelacionado=(Vector)ejgAdm.selectByPK(hashEJG);		
-				    ejg = (ScsEJGBean) vEjgRelacionado.get(0);
-				   
-				    //Añadimos 0 en el caso de que el tamaño del número de EJG no llegue al mínimo
-				    if(ejg.getNumEJG() !=null && !"".equalsIgnoreCase(ejg.getNumEJG())){
-				    	   String longitudNumEjg = (String) request.getSession().getAttribute(PARAMETRO.LONGITUD_CODEJG.toString());	
-				    	   ejg.setNumEJG(SIGAServicesHelper.lpad(ejg.getNumEJG(), Integer.parseInt(longitudNumEjg), '0'));
-				    }
-				 
-				    
-				    //Si el ejg tiene resolucionAuto, obtenemos su desripción
-				    if(ejg.getIdTipoResolAuto() != null && ejg.getIdTipoResolAuto()>=0){
-					    BusinessManager bm = getBusinessManager();
-						ScsTipoResolucionAutoService tipoResolucionAutoService = (ScsTipoResolucionAutoService)bm.getService(ScsTipoResolucionAutoService.class);
-						List<ScsTiporesolauto> scsTipoResolucionAuto= tipoResolucionAutoService.getTiposResolucionAutoDescripcionById(Integer.parseInt(usr.getLanguage()), ejg.getIdTipoRatificacionEJG());
-						ejg.setNombreTipoResolAuto(scsTipoResolucionAuto.get(0).getDescripcion());
+					if(vEjgRelacionado != null &&  vEjgRelacionado.size()>0){
+					    ejg = (ScsEJGBean) vEjgRelacionado.get(0);
+					   
+					    //Añadimos 0 en el caso de que el tamaño del número de EJG no llegue al mínimo
+					    if(ejg.getNumEJG() !=null && !"".equalsIgnoreCase(ejg.getNumEJG())){
+					    	   String longitudNumEjg = (String) request.getSession().getAttribute(PARAMETRO.LONGITUD_CODEJG.toString());	
+					    	   ejg.setNumEJG(SIGAServicesHelper.lpad(ejg.getNumEJG(), Integer.parseInt(longitudNumEjg), '0'));
+					    }
+					 
+					    
+					    //Si el ejg tiene resolucionAuto, obtenemos su desripción
+					    if(ejg.getIdTipoResolAuto() != null && ejg.getIdTipoResolAuto()>=0){
+						    BusinessManager bm = getBusinessManager();
+							ScsTipoResolucionAutoService tipoResolucionAutoService = (ScsTipoResolucionAutoService)bm.getService(ScsTipoResolucionAutoService.class);
+							List<ScsTiporesolauto> scsTipoResolucionAuto= tipoResolucionAutoService.getTiposResolucionAutoDescripcionById(Integer.parseInt(usr.getLanguage()), ejg.getIdTipoResolAuto());
+							if(scsTipoResolucionAuto != null && scsTipoResolucionAuto.size()>0){
+								ejg.setNombreTipoResolAuto(scsTipoResolucionAuto.get(0).getDescripcion());
+							}
+						}
+					  //Damos formato a la fecha
+					  if(ejg.getFechaRatificacion()!= null && !"".equalsIgnoreCase(ejg.getFechaRatificacion())){
+						  ejg.setFechaRatificacion(GstDate.getFormatedDateShort("",ejg.getFechaRatificacion()));
+					  }
+					  if(ejg.getFechaAuto()!= null && !"".equalsIgnoreCase(ejg.getFechaAuto())){
+						  ejg.setFechaAuto(GstDate.getFormatedDateShort("",ejg.getFechaAuto()));
+					  }
+					  //Insertamos el ejg a la lista
+						ejgList.add(ejg);
 					}
-				  //Damos formato a la fecha
-				  if(ejg.getFechaRatificacion()!= null && !"".equalsIgnoreCase(ejg.getFechaRatificacion())){
-					  ejg.setFechaRatificacion(GstDate.getFormatedDateShort("",ejg.getFechaRatificacion()));
-				  }
-				  if(ejg.getFechaAuto()!= null && !"".equalsIgnoreCase(ejg.getFechaAuto())){
-					  ejg.setFechaAuto(GstDate.getFormatedDateShort("",ejg.getFechaAuto()));
-				  }
-				  //Insertamos el ejg a la lista
-					ejgList.add(ejg);
-				 
 					aux = new Hashtable();
 					ejg = new ScsEJGBean();
 				}
@@ -619,26 +622,54 @@ public class ActuacionesDesignasAction extends MasterAction {
 
 			Vector vDes = ((Vector)designaAdm.ejecutaSelect(consultaDesigna));
 			
-			if(vDes.size() > 0){
-				designaActual = (Hashtable)vDes.get(0);
-				UtilidadesHash.set(hashEJG,ScsEJGBean.C_IDINSTITUCION,(String)designaActual.get("IDINSTITUCION"));
-				UtilidadesHash.set(hashEJG,ScsEJGBean.C_NUMERO,(String)designaActual.get("NUMEROEJG"));
-				UtilidadesHash.set(hashEJG,ScsEJGBean.C_ANIO,(String)designaActual.get("ANIOEJG"));
-				UtilidadesHash.set(hashEJG,ScsEJGBean.C_IDTIPOEJG,(String)designaActual.get("IDTIPOEJG"));
+			List ejgs = new Vector();
+			ScsEJGBean ejg = new ScsEJGBean();
+			if(vDes != null && vDes.size() > 0){
+				for (int i = 0; i < vDes.size(); i++) {
+					designaActual = (Hashtable)vDes.get(i);
+					UtilidadesHash.set(hashEJG,ScsEJGBean.C_IDINSTITUCION,(String)designaActual.get("IDINSTITUCION"));
+					UtilidadesHash.set(hashEJG,ScsEJGBean.C_NUMERO,(String)designaActual.get("NUMEROEJG"));
+					UtilidadesHash.set(hashEJG,ScsEJGBean.C_ANIO,(String)designaActual.get("ANIOEJG"));
+					UtilidadesHash.set(hashEJG,ScsEJGBean.C_IDTIPOEJG,(String)designaActual.get("IDTIPOEJG"));
+					Vector vEjgRelacionado=(Vector)ejgAdm.selectByPK(hashEJG);
+					
+					if(vEjgRelacionado != null &&  vEjgRelacionado.size()>0){
+							ejg = (ScsEJGBean) vEjgRelacionado.get(0);
+							
+							  //Añadimos 0 en el caso de que el tamaño del número de EJG no llegue al mínimo
+						    if(ejg.getNumEJG() !=null && !"".equalsIgnoreCase(ejg.getNumEJG())){
+						    	   String longitudNumEjg = (String) request.getSession().getAttribute(PARAMETRO.LONGITUD_CODEJG.toString());	
+						    	   ejg.setNumEJG(SIGAServicesHelper.lpad(ejg.getNumEJG(), Integer.parseInt(longitudNumEjg), '0'));
+						    }
+						 
+						    
+						    //Si el ejg tiene resolucionAuto, obtenemos su desripción
+						    if(ejg.getIdTipoResolAuto() != null && ejg.getIdTipoResolAuto()>=0){
+							    BusinessManager bm = getBusinessManager();
+								ScsTipoResolucionAutoService tipoResolucionAutoService = (ScsTipoResolucionAutoService)bm.getService(ScsTipoResolucionAutoService.class);
+								List<ScsTiporesolauto> scsTipoResolucionAuto= tipoResolucionAutoService.getTiposResolucionAutoDescripcionById(Integer.parseInt(usr.getLanguage()), ejg.getIdTipoResolAuto());
+								if(scsTipoResolucionAuto != null && scsTipoResolucionAuto.size()>0){
+									ejg.setNombreTipoResolAuto(scsTipoResolucionAuto.get(0).getDescripcion());
+								}
+							}
+						  //Damos formato a la fecha
+						  if(ejg.getFechaRatificacion()!= null && !"".equalsIgnoreCase(ejg.getFechaRatificacion())){
+							  ejg.setFechaRatificacion(GstDate.getFormatedDateShort("",ejg.getFechaRatificacion()));
+						  }
+						  if(ejg.getFechaAuto()!= null && !"".equalsIgnoreCase(ejg.getFechaAuto())){
+							  ejg.setFechaAuto(GstDate.getFormatedDateShort("",ejg.getFechaAuto()));
+						  }
+					}
+					ejgs.addAll(vEjgRelacionado);
+					ejg = new ScsEJGBean();
+					
+				}
+				
 			}
 
-			Vector vEjgRelacionado=(Vector)ejgAdm.selectByPK(hashEJG);
 			
-		    if ((vEjgRelacionado != null) && (vEjgRelacionado.size() == 1)) {
-		
-			 UtilidadesHash.set(designaActual,ScsEJGBean.C_IDTIPORATIFICACIONEJG,((ScsEJGBean)vEjgRelacionado.get(0)).getIdTipoRatificacionEJG());
-			 UtilidadesHash.set(designaActual,ScsEJGBean.C_FECHARATIFICACION,((ScsEJGBean)vEjgRelacionado.get(0)).getFechaRatificacion());
-			 UtilidadesHash.set(designaActual,ScsEJGBean.C_FECHANOTIFICACION,((ScsEJGBean)vEjgRelacionado.get(0)).getFechaNotificacion());
-		     UtilidadesHash.set(designaActual,ScsEJGBean.C_NUMEJG,((ScsEJGBean)vEjgRelacionado.get(0)).getNumEJG());
-			 UtilidadesHash.set(designaActual,ScsEJGBean.C_FECHAAUTO,((ScsEJGBean)vEjgRelacionado.get(0)).getFechaAuto());
-			 UtilidadesHash.set(designaActual,ScsEJGBean.C_IDTIPORESOLAUTO,((ScsEJGBean)vEjgRelacionado.get(0)).getIdTipoResolAuto());
-			 
-		    }
+			miform.setEjgs(ejgs);
+
 			designaActual = actuacionDesignaAdm.prepararInsert(designaActual);
 			int valorPcajgActivo=CajgConfiguracion.getTipoCAJG(new Integer(usr.getLocation()));
 			GenParametrosAdm adm = new GenParametrosAdm (this.getUserBean(request));
