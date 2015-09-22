@@ -608,6 +608,7 @@ public class ActuacionesDesignasAction extends MasterAction {
 								" and deslet.idturno = des.idturno"+
 								" and per.idpersona = deslet.idpersona"+
 								" and col.idpersona = per.idpersona"+
+								" and col.idinstitucion = des.idinstitucion "+
 								" and tur.idinstitucion = des.idinstitucion"+
 								" and tur.idturno = des.idturno"+
 								" and des."+ ScsDesignaBean.C_IDINSTITUCION +"="+(String)usr.getLocation()+
