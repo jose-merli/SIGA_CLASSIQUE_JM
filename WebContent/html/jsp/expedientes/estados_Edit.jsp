@@ -149,7 +149,7 @@
 										<siga:Idioma key="expedientes.tiposexpedientes.literal.automatico"/>
 									</td>
 									<td>
-										<html:checkbox name="EstadosForm" property="automatico" styleId="automatico" disabled="<%=!bEditable%>"/>
+										<html:checkbox name="EstadosForm" property="automatico" styleId="automatico" disabled="<%=!bEditable || estadosBean.getIdEstadoSiguiente() == null%>"/>
 									</td>									
 								</tr>
 								
@@ -210,11 +210,11 @@
 				 								clase = "boxCombo";
 				 							} 
 %>
-				 							<siga:ComboBD nombre="idInst_idExp_idFase_idEstadoSig" tipo="cmbEstadosSiguientes" elementoSel="<%=estadoSel%>" clase="<%=clase%>" ancho="450" parametro="<%=parametros%>" obligatorio="false" readonly="<%=readOnly%>" />
+				 							<siga:ComboBD nombre="idInst_idExp_idFase_idEstadoSig" tipo="cmbEstadosSiguientes" elementoSel="<%=estadoSel%>" clase="<%=clase%>" ancho="450" parametro="<%=parametros%>" obligatorio="false" readonly="<%=readOnly%>" accion="cambiaSiguienteEstado(this.value)" />
 <% 
 										} else { 
 %>
-											<siga:ComboBD nombre="idInst_idExp_idFase_idEstadoSig" tipo="cmbEstadosSiguientesTodos" clase="boxCombo" parametro="<%=parametros%>" ancho="450" obligatorio="false"/>
+											<siga:ComboBD nombre="idInst_idExp_idFase_idEstadoSig" tipo="cmbEstadosSiguientesTodos" clase="boxCombo" parametro="<%=parametros%>" ancho="450" obligatorio="false" accion="cambiaSiguienteEstado(this.value)" />
 <% 
 										} 
 %>				
@@ -768,7 +768,18 @@
 				
 				controlChecks();			
 			}		
- 			
+			
+			function cambiaSiguienteEstado (idEstado) {
+				if (idEstado != null && idEstado != "") {
+					// Si hay estado, el usuario podra marcar para que pase de estado automaticamente
+					jQuery("#automatico").prop('disabled', false);
+				} else {
+					// Como no hay estado siguiente, el usuario no podra marcar el check automatico
+					jQuery("#automatico").prop('disabled', true);
+					jQuery("#automatico").prop('checked', false);
+				}
+			}
+			
  			jQuery(document).ready(function(){
 <%
 				if (!modo.equalsIgnoreCase("Nuevo")) {

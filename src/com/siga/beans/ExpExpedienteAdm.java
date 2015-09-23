@@ -1489,11 +1489,16 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 			       " 0, "+
 			       " E.FECHAPRORROGAESTADO, "+
 			       " E.FECHAFINALESTADO) as FECHAFINAL "+
-			       " FROM EXP_EXPEDIENTE E , exp_tipoexpediente t, exp_campotipoexpediente c "+
+			       " FROM EXP_EXPEDIENTE E , exp_tipoexpediente t, exp_campotipoexpediente c, exp_estado est "+
 			       " where E.Idinstitucion_Tipoexpediente=t.idinstitucion "+
 			       " and   E.IDTIPOEXPEDIENTE = t.idtipoexpediente "+
 			       " and   E.Idinstitucion_Tipoexpediente=c.idinstitucion "+
 			       " and   E.IDTIPOEXPEDIENTE = c.idtipoexpediente "+
+			       " And   e.Idtipoexpediente = est.Idtipoexpediente "+
+			       " And e.Idinstitucion_Tipoexpediente = est.Idinstitucion "+
+			       " And e.Idfase = est.Idfase "+
+			       " and   e.idestado = est.idestado "+
+			       " and   est.esautomatico = 'S' and est.idestado_siguiente is not null"+
 			       " and   c.idcampo = 3 "+
 			       " and   c.visible = 'S' "+
 			       " and  E.ALERTAGENERADA <> 'S' "+
@@ -1851,7 +1856,7 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 			sqlAvisoCaducidad.append(" AND E.IDTIPOEXPEDIENTE = TIPO.IDTIPOEXPEDIENTE ");
 			sqlAvisoCaducidad.append(" AND E.ALERTACADUCIDADGENERADA = 'N' ");
 			sqlAvisoCaducidad.append(" and nvl(TIPO.DIASANTELACIONCAD, 0) > 0 ");
-			sqlAvisoCaducidad.append(" ) DATOS WHERE SYSDATE >nvl(FECHACADUCIDAD, sysdate) ");
+			sqlAvisoCaducidad.append(" ) DATOS WHERE SYSDATE >nvl(DATOS.FECHACADUCIDAD - DATOS.DIASANTELACION, sysdate) ");
 			
 			
 			rc1 = new RowsContainer();
