@@ -929,28 +929,36 @@ public class DatosFacturacionAction extends MasterAction {
 	 * @throws ClsExceptions
 	 */
 	private Vector actualizarProductosPaginados(String idPersona, Vector datos, UsrBean usrBean) throws ClsExceptions {
+		PysProductosSolicitadosAdm productosAdm = new PysProductosSolicitadosAdm(usrBean);
+		
 		for (int i=0; i<datos.size(); i++) {
 			Row fila = (Row)datos.get(i);
 			Hashtable registro = (Hashtable) fila.getRow();
 			
-			String idInstitucion = (String) registro.get(PysCompraBean.C_IDINSTITUCION);
-			String idPeticion = (String) registro.get(PysCompraBean.C_IDPETICION);
-			String idTipoProducto = (String) registro.get(PysCompraBean.C_IDTIPOPRODUCTO);
-			String idProducto = (String) registro.get(PysCompraBean.C_IDPRODUCTO);
-			String idProductoInstitucion = (String) registro.get(PysCompraBean.C_IDPRODUCTOINSTITUCION);
-			
-			// Obtiene FECHAEFEC
-			PysProductosSolicitadosAdm productosAdm = new PysProductosSolicitadosAdm(usrBean);
-			Vector vFechaEfectiva = productosAdm.getFechaEfectivaCompraProducto(idInstitucion, idTipoProducto, idProducto, idProductoInstitucion, idPeticion, idPersona);
-			registro = completarHashSalida(registro, vFechaEfectiva);
-			
-			// Obtiene ESTADOPAGO
-			String estadoCompra = productosAdm.getEstadoCompra(idInstitucion, idTipoProducto, idProducto, idProductoInstitucion, idPeticion);
-			String decripcionEstadoCompra = UtilidadesString.getMensajeIdioma(usrBean, estadoCompra);
-			UtilidadesHash.set(registro, "ESTADOCOMPRA", estadoCompra);
-			UtilidadesHash.set(registro, "DESCRIPCIONESTADOCOMPRA", decripcionEstadoCompra);
-			
+			String idInstitucion = (String) registro.get(PysProductosSolicitadosBean.C_IDINSTITUCION);
+			String idPeticion = (String) registro.get(PysProductosSolicitadosBean.C_IDPETICION);
+			String idTipoProducto = (String) registro.get(PysProductosSolicitadosBean.C_IDTIPOPRODUCTO);
+			String idProducto = (String) registro.get(PysProductosSolicitadosBean.C_IDPRODUCTO);
+			String idProductoInstitucion = (String) registro.get(PysProductosSolicitadosBean.C_IDPRODUCTOINSTITUCION);
 			String sAceptado = UtilidadesHash.getString(registro, PysProductosSolicitadosBean.C_ACEPTADO);
+			String existePysCompra = (String) registro.get("EXISTE_PYS_COMPRA");
+									
+			if (existePysCompra!=null && !existePysCompra.equals("")) {
+			
+				// Obtiene FECHAEFEC				
+				Vector vFechaEfectiva = productosAdm.getFechaEfectivaCompraProducto(idInstitucion, idTipoProducto, idProducto, idProductoInstitucion, idPeticion, idPersona);
+				registro = completarHashSalida(registro, vFechaEfectiva);
+				
+				// Obtiene ESTADOPAGO
+				String estadoCompra = productosAdm.getEstadoCompra(idInstitucion, idTipoProducto, idProducto, idProductoInstitucion, idPeticion);
+				String decripcionEstadoCompra = UtilidadesString.getMensajeIdioma(usrBean, estadoCompra);
+				UtilidadesHash.set(registro, "ESTADOCOMPRA", estadoCompra);
+				UtilidadesHash.set(registro, "DESCRIPCIONESTADOCOMPRA", decripcionEstadoCompra);
+				
+			} else {
+				UtilidadesHash.set(registro, "DESCRIPCIONESTADOCOMPRA", UtilidadesString.getMensajeIdioma(usrBean, "estados.compra.pendiente"));
+			}
+			
 			String estadoProducto = UtilidadesProductosServicios.getEstadoProductoServicio(sAceptado);
 			String descripcionEstadoProducto = UtilidadesString.getMensajeIdioma(usrBean, estadoProducto);
 			UtilidadesHash.set(registro, "DESCRIPCIONESTADOPRODUCTO", descripcionEstadoProducto);

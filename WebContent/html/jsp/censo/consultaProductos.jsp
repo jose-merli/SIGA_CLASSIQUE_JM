@@ -185,7 +185,7 @@
 	   				cen.consultaProductos.literal.estadoFactura,
 	   				cen.consultaProductos.literal.estadoProducto,
 	   				pys.solicitarBaja.literal.fechaEfectiva,"
-	   	columnSizes="8,6,17,9,18,5,8,7,7,8,7"
+	   	columnSizes="7,6,17,9,18,6,8,7,7,7,8"
 	   	modal="P">
 			
 <%
@@ -203,24 +203,24 @@
 				Row fila = (Row)resultado.elementAt(i);
 				Hashtable registro = (Hashtable) fila.getRow(); 
 				
-				String idPeticion = UtilidadesString.mostrarDatoJSP((String) registro.get(PysCompraBean.C_IDPETICION));
-				String idProducto = (String) registro.get(PysCompraBean.C_IDPRODUCTO);
-				String idProductoInstitucion = (String) registro.get(PysCompraBean.C_IDPRODUCTOINSTITUCION);
-				String idTipoProducto = (String) registro.get(PysCompraBean.C_IDTIPOPRODUCTO);	
-				
-				String idFormaPago = (String) registro.get(PysCompraBean.C_IDFORMAPAGO);
-				String identifCuenta = (String) registro.get(PysCompraBean.C_IDCUENTA);
-				String iva = ((String) registro.get("VALORIVA"))==null ? "0" : (String) registro.get("VALORIVA");
-				// PysPeticionCompraSuscripcionBean.C_TIPOPETICION
-				String fecha = (String) registro.get(PysPeticionCompraSuscripcionBean.C_FECHA);
+				String idPeticion = UtilidadesString.mostrarDatoJSP((String) registro.get(PysProductosSolicitadosBean.C_IDPETICION));
+				String idProducto = (String) registro.get(PysProductosSolicitadosBean.C_IDPRODUCTO);
+				String idProductoInstitucion = (String) registro.get(PysProductosSolicitadosBean.C_IDPRODUCTOINSTITUCION);
+				String idTipoProducto = (String) registro.get(PysProductosSolicitadosBean.C_IDTIPOPRODUCTO);	
 				String cantidad = UtilidadesString.mostrarDatoJSP((String) registro.get(PysProductosSolicitadosBean.C_CANTIDAD));
 				String precio = UtilidadesString.mostrarDatoJSP((String) registro.get(PysProductosSolicitadosBean.C_VALOR));
 				String aceptado = UtilidadesString.mostrarDatoJSP((String) registro.get(PysProductosSolicitadosBean.C_ACEPTADO)); 
-				String nofacturable = (String) registro.get(PysProductosSolicitadosBean.C_NOFACTURABLE);
-				String formaPago = UtilidadesString.mostrarDatoJSP((String) registro.get("FORMAPAGO"));		
-				String concepto = UtilidadesString.mostrarDatoJSP((String) registro.get("CONCEPTO"));
+				String nofacturable = (String) registro.get(PysProductosSolicitadosBean.C_NOFACTURABLE);				
+				String fecha = (String) registro.get(PysPeticionCompraSuscripcionBean.C_FECHA);			
+				
+				String concepto = UtilidadesString.mostrarDatoJSP((String) registro.get("CONCEPTO"));				
+				String iva = ((String) registro.get("VALORIVA"))==null ? "0" : (String) registro.get("VALORIVA");				
+				String idFormaPago = (String) registro.get(PysProductosSolicitadosBean.C_IDFORMAPAGO);				
+				String identifCuenta = (String) registro.get(PysProductosSolicitadosBean.C_IDCUENTA);			
+				String formaPago = UtilidadesString.mostrarDatoJSP((String) registro.get("FORMAPAGO"));						
 				String idCuenta = (String) registro.get("NCUENTA");
-				String fechaEfectiva = (String) registro.get("FECHAEFEC");
+				
+				String fechaEfectiva = (String) registro.get("FECHAEFEC");				
 				String estadoCompra = UtilidadesString.mostrarDatoJSP((String) registro.get("ESTADOCOMPRA"));
 				String descripcionEstadoCompra = UtilidadesString.mostrarDatoJSP((String) registro.get("DESCRIPCIONESTADOCOMPRA"));
 				String descripcionEstadoProducto = UtilidadesString.mostrarDatoJSP((String) registro.get("DESCRIPCIONESTADOPRODUCTO"));
