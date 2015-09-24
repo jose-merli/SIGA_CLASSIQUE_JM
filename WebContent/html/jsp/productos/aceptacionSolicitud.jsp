@@ -92,7 +92,6 @@
 	String sTipoCertificado;
 	String sIdTipoEnvios;
 	String sIdDireccion;
-	String sCuenta;	
 	String sCantidad;
 	String sPrecio;
 	String sPeriodicidad;
@@ -288,23 +287,16 @@
 			formaPago.value=pago[pago.selectedIndex].text; 					   
  		}
 		
-		function errorValidarCantidad (valor) {
-			// No es valido si es nulo
-			// No es valido si no tiene longitud
-			// No es valido si tiene blancos
-			// No es valido si no es numero
-			// No es valido si es menor o igual que cero
-			// No es valido si tiene algun punto o coma
-			if (valor==null || valor.value==null || valor.value=='' || valor.value.indexOf(" ")!=-1)
-				return true;
-			else {
-				var valorFormateado = valor.value;
-				valorFormateado = valorFormateado.replace(",", ".");
-				if (isNaN(valorFormateado) || eval(valorFormateado)<=0 || valorFormateado.indexOf(".")>-1)
-					return true;					
-			}
-			
-			return false;
+		function errorValidarCantidad (valor, tipo) {						
+			return valor==null || // No es valido si es nulo
+				valor.value==null || // No es valido si es nulo
+				valor.value=='' || // No es valido si no tiene longitud 
+				valor.value.indexOf(" ")!=-1 || // No es valido si tiene blancos 
+				valor.value.indexOf(",")!=-1 || // No es valido si tiene comas 
+				valor.value.indexOf(".")!=-1 || // No es valido si tiene puntos
+				isNaN(valor.value) || // No es valido si no es numero
+				(tipo==<%=Articulo.CLASE_PRODUCTO%> && eval(valor.value)==0) || // En caso de validar un producto, no puede tener el valor cero
+				(tipo==<%=Articulo.CLASE_SERVICIO%> && eval(valor.value)<=0); // En caso de validar un servicio, no puede tener un valor menor o igual que cero
 		}		
 		
 		function errorValidarPrecio (valor) {
@@ -326,8 +318,8 @@
 			return false;
 		}		
 		
- 		function validarCantidadOnBlur(valor) { 		
- 			if (errorValidarCantidad(valor)) { 
+ 		function validarCantidadOnBlur(valor,tipo) { 		
+ 			if (errorValidarCantidad(valor,tipo)) { 
 				var mensaje = "<siga:Idioma key="pys.solicitudCompra.literal.cantidad"/> <siga:Idioma key="messages.campoNoCorrecto.error"/>";
 				alert (mensaje);
 				valor.focus();
@@ -352,8 +344,9 @@
 			f = document.solicitudCompraForm; 	
  			for (var j=1; j < <%=arrayListaArticulosOrdenada.size()%>+1; j++) { 
  				cantidad=eval("f.cantidad" + j);
+ 				tipo = document.getElementById("oculto" + j + "_4").value;
  				
- 				if (errorValidarCantidad(cantidad)) { 
+ 				if (errorValidarCantidad(cantidad,tipo)) { 
  					nombre = document.getElementById("nombreArticulo" + j);
 	 				var mensaje = nombre.value + ": <siga:Idioma key="messages.pys.mantenimientoProductos.errorCantidad"/>";
 					alert (mensaje);
@@ -403,31 +396,6 @@
 	 		}	 		
 	 		return true;
  		}
-	 	
-	 	function validarFormaPagoANTIGUO(){
-	 		f = document.solicitudCompraForm; 
-	 		auxTarjeta="N";			
- 			for (var j=1; j < <%=arrayListaArticulosOrdenada.size()%>+1; j++) { 
- 				pago=eval("f.formaPago" + j);
-				if (pago.value==null || pago.value=="") { 				
-					var mensaje = "<siga:Idioma key="pys.solicitudCompra.literal.formaPago"/> <siga:Idioma key="messages.campoObligatorio.error"/>";
-					alert (mensaje);	
-					return false;	 	
-				}	else if(pago.value==<%=tarjeta%>) {
-						auxTarjeta="S";
-				}			
-	 		}
- 			
-	 		if (auxTarjeta=="S") {
-	 			f.modo.value  = "validarTarjeta"; 		
-				var resultado = ventaModalGeneral("solicitudCompraForm","P");
-				if (resultado == null) return;
-				if (resultado[0] == 0) return;
-				var mensaje = "<siga:Idioma key="messages.pys.solicitudCompra.conexionTPV"/>";
-				alert (mensaje);	 
-	 		}
-	 		return true;
-	 	}	 	   
 
 	 	function validarFormaPago(){	 		
 	 		f = document.solicitudCompraForm; 
@@ -622,7 +590,6 @@
 			}			
 		}
 		
-		int elementoSeleccionadoFormaPago=1;
 		boolean tdFechaEfectiva = false;
 
 		String nombrecol1="pys.solicitudCompra.literal.concepto,pys.solicitudCompra.literal.formaPago,pys.solicitudCompra.literal.nCuenta,pys.solicitudCompra.literal.cantidad,pys.solicitudCompra.literal.precio";
@@ -703,11 +670,6 @@
 						sIdFormaPago.add(String.valueOf((Integer)a.getIdFormaPago()));
 					}
 
-					sCuenta = "";								
-					if (a.getNumeroCuenta()!= null) {
-						sCuenta = a.getNumeroCuenta();
-					}
-							
 					sCantidad = Integer.toString(a.getCantidad());						
 					sPeriodicidad = UtilidadesString.mostrarDatoJSP(a.getPeriodicidad());
 					if (a.getPrecio()!= null) {
@@ -788,20 +750,34 @@
 
 							if (a.getClaseArticulo() == Articulo.CLASE_PRODUCTO) {
 								if (datos != null) {
-									if (nofacturable.equals(DB_FALSE)) {									
+									if (nofacturable.equals(DB_FALSE)) {	
+										if (a.getIdFormaPago()!= null) {
 %>									
-										<siga:ComboBD nombre="<%=formaPagoNombre%>" tipo="cmbFormaPagoProducto" clase="boxCombo"  parametro="<%=formaPago%>" elementoSel ="<%=elementoSeleccionadoFormaPago%>" accion="<%=parametroFuncion%>" ancho="<%=tamanoFormaPago%>"/>
+											<siga:ComboBD nombre="<%=formaPagoNombre%>" tipo="cmbFormaPagoProducto" clase="boxCombo" parametro="<%=formaPago%>" elementoSel="<%=sIdFormaPago%>" accion="<%=parametroFuncion%>" ancho="<%=tamanoFormaPago%>"/>
+											
 <%	
+										} else {
+%>											
+											<siga:ComboBD nombre="<%=formaPagoNombre%>" tipo="cmbFormaPagoProducto" clase="boxCombo" parametro="<%=formaPago%>" elementoSel="<%=1%>" accion="<%=parametroFuncion%>" ancho="<%=tamanoFormaPago%>"/>
+<%											
+										}
 									} else {	
 %>
 										<siga:Idioma key="estados.compra.noFacturable"/>
 <%								
 									}
 								}
-							} else {
+								
+							} else { // Servicio
+								if (a.getIdFormaPago()!= null) {								
 %>
-								<siga:ComboBD nombre="<%=formaPagoNombre%>" tipo="cmbFormaPagoServicio" clase="boxCombo"  parametro="<%=formaPago%>" elementoSel ="<%=elementoSeleccionadoFormaPago%>" accion="<%=parametroFuncion%>" ancho="<%=tamanoFormaPago%>"/>	   
-<%							
+									<siga:ComboBD nombre="<%=formaPagoNombre%>" tipo="cmbFormaPagoServicio" clase="boxCombo" parametro="<%=formaPago%>" elementoSel="<%=sIdFormaPago%>" accion="<%=parametroFuncion%>" ancho="<%=tamanoFormaPago%>"/>
+<%	
+								} else {
+%>											
+									<siga:ComboBD nombre="<%=formaPagoNombre%>" tipo="cmbFormaPagoServicio" clase="boxCombo" parametro="<%=formaPago%>" elementoSel="<%=1%>" accion="<%=parametroFuncion%>" ancho="<%=tamanoFormaPago%>"/>
+<%											
+								}					
 							}
 %>				
 		  				</td>
@@ -836,7 +812,7 @@
 						</td>
 						
 		  				<td align="right">
-							<input type='text' name='cantidad<%=String.valueOf(fila)%>' value="<%=sCantidad%>" maxlength="5" class="box" styleClass="box" style="text-align:right;" size="3" <%=desactivado%> onBlur="validarCantidadOnBlur(this)">
+							<input type='text' name='cantidad<%=String.valueOf(fila)%>' value="<%=sCantidad%>" maxlength="5" class="box" styleClass="box" style="text-align:right;" size="3" <%=desactivado%> onBlur="validarCantidadOnBlur(this,<%=a.getClaseArticulo()%>)">
 		  				</td>
 		  				
 		  				<td align="right">

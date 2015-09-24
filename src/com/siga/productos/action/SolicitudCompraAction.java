@@ -1027,12 +1027,18 @@ public class SolicitudCompraAction extends MasterAction{
 						}					
 					}
 					
-					// acumulando subtotales por tipo
-					claveTipo = articulo.getIdTipo()+"_"+articulo.getIdArticulo()+"_"+articulo.getIdInstitucion()+"_"+articulo.getIdFormaPago();
-					if ((subtotal = subtotalesPorTipo.get(claveTipo)) == null)
-						subtotal = new Double(0);
-					subtotal += UtilidadesNumero.redondea(articulo.getCantidad() * articulo.getPrecio() * (1 + iva / 100), 2);
-					subtotalesPorTipo.put(claveTipo, subtotal);
+					if (claseArticulo == Articulo.CLASE_PRODUCTO) { // Los servicios no pueden tener cantidades negativas
+						// acumulando subtotales por tipo
+						claveTipo = articulo.getIdTipo() + "_" + 
+									articulo.getIdArticulo() + "_" +
+									articulo.getIdInstitucion() + "_" + 
+									articulo.getIdFormaPago() + "_" + 
+									articulo.getIdCuenta();
+						if ((subtotal = subtotalesPorTipo.get(claveTipo)) == null)
+							subtotal = new Double(0);
+						subtotal += UtilidadesNumero.redondea(articulo.getCantidad() * articulo.getPrecio() * (1 + iva / 100), 2);
+						subtotalesPorTipo.put(claveTipo, subtotal);
+					}
 				}
 				
 				// comprobando que los subtotales por tipo tienen importe positivo
