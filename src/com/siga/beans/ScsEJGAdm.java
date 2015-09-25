@@ -2119,23 +2119,25 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 //			consulta += " AND ACTA." + ScsActaComisionBean.C_ANIOACTA + " = EJG." + ScsEJGBean.C_ANIOACTA;
 //			consulta += " AND ACTA." + ScsActaComisionBean.C_IDACTA + " = EJG." + ScsEJGBean.C_IDACTA;
 //			consulta += " AND ACTA." + ScsActaComisionBean.C_IDINSTITUCION + " = EJG." + ScsEJGBean.C_IDINSTITUCIONACTA;
-			
+			contador++;
+			codigos.put(new Integer(contador),usrbean.getIdInstitucionComision());
+			consulta += " AND EJG." + ScsEJGBean.C_IDINSTITUCIONACTA+ " = :"+contador;
 			if ((miHash.containsKey("ANIOACTA")) && (!miHash.get("ANIOACTA").toString().equals(""))) {
 				contador++;
 				codigos.put(new Integer(contador),UtilidadesHash.getString(miHash,"ANIOACTA"));
 				consulta += " AND EJG." + ScsEJGBean.C_ANIOACTA + " = :" + contador;
 			}
-			
 			if ((miHash.containsKey("NUMEROACTA")) && (!miHash.get("NUMEROACTA").toString().equals(""))) {
 				contador++;
 				codigos.put(new Integer(contador),UtilidadesHash.getString(miHash,"NUMEROACTA"));
-				consulta += " AND EJG." + ScsEJGBean.C_IDACTA+ " = :"+contador;
+				consulta += " AND EJG.IDACTA IN "; 
+				consulta += "(SELECT AC.IDACTA FROM SCS_ACTACOMISION AC ";
+				consulta += "WHERE AC.IDINSTITUCION = EJG.IDINSTITUCIONACTA  ";
+				consulta += "AND AC.ANIOACTA = EJG.ANIOACTA  ";
+				consulta += "AND AC.NUMEROACTA = :"+contador;
+				consulta += ")";
+				
 			}
-			contador++;
-			codigos.put(new Integer(contador),usrbean.getIdInstitucionComision());
-			consulta += " AND EJG." + ScsEJGBean.C_IDINSTITUCIONACTA+ " = :"+contador;
-			
-			
 		}
 
 		if ((miHash.containsKey("CREADODESDE")) && (!miHash.get("CREADODESDE").toString().equals(""))) {
