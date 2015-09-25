@@ -1532,6 +1532,12 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 			if (fCertificado == null || !fCertificado.exists()) {
 				throw new SIGAException("messages.general.error.ficheroNoExiste");
 			}
+			
+			solicitudCertificadoBean.setFechaDescarga("SYSDATE");
+		    if (!admSolicitud.updateDirect(solicitudCertificadoBean)) {
+		    	throw new ClsExceptions("Error al actualizar la fecha de descarga: "+admSolicitud.getError());
+		    }
+		    
 
 			request.setAttribute("nombreFichero", admSolicitud.getNombreFicheroSalida(solicitudCertificadoBean));
 			request.setAttribute("rutaFichero", fCertificado.getPath());
