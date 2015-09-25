@@ -33,7 +33,7 @@
 <!-- JSP -->
 <%
 	UsrBean usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
-	boolean esComision = usr.isComision();
+	boolean esComision = usr.isComision(); 
 	boolean esComisionMultiple = usr.getInstitucionesComision()!=null &&usr.getInstitucionesComision().length>1;
 	String idInstitucionComision = usr.getIdInstitucionComision().toString();
 	HttpSession ses = request.getSession();
@@ -708,7 +708,7 @@ if(usr.isComision()){
 
 			<tr>
 				<td class="labelText" style="vertical-align:middle" width="100px">
-					<siga:Idioma key='gratuita.operarEJG.literal.CAJG'/><br><siga:Idioma key='gratuita.operarEJG.literal.anio'/>/<siga:Idioma key='gratuita.busquedaEJG.literal.codigo'/>
+					<siga:Idioma key='gratuita.operarEJG.literal.CAJG'/>&nbsp;<siga:Idioma key='gratuita.operarEJG.literal.anio'/>/<siga:Idioma key='gratuita.busquedaEJG.literal.codigo'/>
 				</td>
 				<td style="vertical-align:middle">
 					<html:text name="<%=formulario%>" styleClass="box" property="anioCAJG"  style="width:40px" maxlength="4" value="<%=cajgAnio%>" />
@@ -717,7 +717,7 @@ if(usr.isComision()){
 				</td>
 							
 				<td class="labelText" style="vertical-align:middle" width="140px">
-					<siga:Idioma key='gratuita.operarEJG.literal.acta'/><br><siga:Idioma key='gratuita.operarEJG.literal.anio'/>/<siga:Idioma key='gratuita.busquedaEJG.literal.codigo'/>
+					<siga:Idioma key='gratuita.operarEJG.literal.acta'/>&nbsp;<siga:Idioma key='gratuita.operarEJG.literal.anio'/>/<siga:Idioma key='gratuita.busquedaEJG.literal.codigo'/>
 				</td>
 				<td colspan="3" style="vertical-align:middle">
 					<html:text name="<%=formulario%>" styleClass="box" property="anioActa"  style="width:40px" maxlength="4" value="<%=anioActa%>" />
