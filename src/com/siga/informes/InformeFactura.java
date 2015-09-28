@@ -113,9 +113,6 @@ public class InformeFactura extends MasterReport {
 	 */
 	public File generarFactura (HttpServletRequest request, String idioma, String institucion, String idFactura, String nColegiado) throws ClsExceptions,SIGAException {
 		File fPdf = null;
-		String idPersonaFactura ="";
-		String nombreColegiado ="";
-		String idserieidprogramacion="";
 			
 		try {
 		    ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
@@ -130,11 +127,8 @@ public class InformeFactura extends MasterReport {
 			//obtener plantilla
 			FacFacturaAdm facAdm= new FacFacturaAdm(usrbean);
 			Vector<Row> v = facAdm.getFactura(institucion,idFactura);
-			CenPersonaAdm personaAdm = new CenPersonaAdm(usrbean);
-	
-			Hashtable<String, Object> ht =null;	
+			Hashtable<String, Object> ht =null;
 			String modelo ="";
-			String nombrePDF = null;
 			if (v!=null && v.size()>0) {
 				ht = ((Row) v.get(0)).getRow(); 
 				FacPlantillaFacturacionAdm plAdm= new FacPlantillaFacturacionAdm(usrbean);
@@ -142,45 +136,13 @@ public class InformeFactura extends MasterReport {
 				if (vv!=null && vv.size()>0) {
 					modelo=(String)vv.get(0);
 				}
-				// obtener ruta almacen
-				idserieidprogramacion = ht.get(FacFacturaBean.C_IDSERIEFACTURACION).toString()+"_" + ht.get(FacFacturaBean.C_IDPROGRAMACION).toString();
-				
-
-				//Recuperamos el id de la factura y con ello el nombre de la persona
-				idPersonaFactura = (String)ht.get(FacFacturaBean.C_IDPERSONA);
-				//Del id persona recuperamos sus nombre y apellidos
-				nombreColegiado = personaAdm.obtenerNombreApellidos(idPersonaFactura);
-				
-				
-				if(nombreColegiado != null && !"".equalsIgnoreCase(nombreColegiado)){
-					nombreColegiado = UtilidadesString.eliminarAcentosYCaracteresEspeciales(nombreColegiado);	
-				}else{
-					nombreColegiado="";
-				}
-				
-				//para las facturas que estan generadas pero no confirmadas por lo que no tienen número
-				//se le pondra de nombre del idfactura y se borrará una vez descargada
-				if(UtilidadesHash.getString(ht,FacFacturaBean.C_NUMEROFACTURA)==null ||UtilidadesHash.getString(ht,FacFacturaBean.C_NUMEROFACTURA).equals("")){
-					if(nColegiado != null && !"".equalsIgnoreCase(nColegiado)){
-						nombrePDF =nombreColegiado +"-"+ nColegiado + "-"+(String) ht.get(FacFacturaBean.C_IDFACTURA);
-					}else{
-						//si nColegiado es vacio se quita para evitar que salga dos guiones nombreColegiado--numeracion
-						nombrePDF =nombreColegiado +"-"+(String) ht.get(FacFacturaBean.C_IDFACTURA);
-					}
-					request.setAttribute("borrarFichero", "true");
-				}else{
-					if(nColegiado != null && !"".equalsIgnoreCase(nColegiado)){
-						nombrePDF=nombreColegiado +"-"+nColegiado + "-"+(String) ht.get(FacFacturaBean.C_NUMEROFACTURA);
-					}else{
-						//si nColegiado es vacio se quita para evitar que salga dos guiones nombreColegiado--numeracion
-						nombrePDF=nombreColegiado +"-"+(String) ht.get(FacFacturaBean.C_NUMEROFACTURA);
-					}
-				}	
-				
 			}
 			String rutaPlantilla = rp.returnProperty("facturacion.directorioFisicoPlantillaFacturaJava")+rp.returnProperty("facturacion.directorioPlantillaFacturaJava");
 			rutaPlantilla += ClsConstants.FILE_SEP+institucion.toString()+ClsConstants.FILE_SEP+modelo;
 			String nombrePlantilla="factura"+"_"+idiomaExt+".fo";
+			
+			// obtener ruta almacen
+			String idserieidprogramacion = ht.get(FacFacturaBean.C_IDSERIEFACTURACION).toString()+"_" + ht.get(FacFacturaBean.C_IDPROGRAMACION).toString();
 
 			String rutaAlmacen = rp.returnProperty("facturacion.directorioFisicoFacturaPDFJava")+rp.returnProperty("facturacion.directorioFacturaPDFJava");
     		rutaAlmacen += ClsConstants.FILE_SEP+institucion.toString()+ClsConstants.FILE_SEP+idserieidprogramacion;
@@ -194,7 +156,25 @@ public class InformeFactura extends MasterReport {
 				}
 			}
 			rutaAlmacen+=ClsConstants.FILE_SEP;
-					
+			String nombrePDF="";
+			if(nColegiado != null && !"".equalsIgnoreCase(nColegiado)){
+				nombrePDF=nColegiado + "-"+(String) ht.get(FacFacturaBean.C_NUMEROFACTURA);
+			}else{
+				nombrePDF=(String) ht.get(FacFacturaBean.C_NUMEROFACTURA);
+			}
+			
+			
+			//para las facturas que estan generadas pero no confirmadas por lo que no tienen número
+			//se le pondra de nombre del idfactura y se borrará una vez descargada
+			if(UtilidadesHash.getString(ht,FacFacturaBean.C_NUMEROFACTURA)==null ||UtilidadesHash.getString(ht,FacFacturaBean.C_NUMEROFACTURA).equals("")){
+				if(nColegiado != null && !"".equalsIgnoreCase(nColegiado)){
+					nombrePDF = nColegiado + "-"+(String) ht.get(FacFacturaBean.C_IDFACTURA);
+				}else{
+					nombrePDF = (String) ht.get(FacFacturaBean.C_IDFACTURA);
+				}
+				request.setAttribute("borrarFichero", "true");
+			}
+			
 			// utilizamos la ruta de la plantilla para el temporal
 			String rutaServidorTmp=rutaPlantilla+ClsConstants.FILE_SEP+"tmp_factura_"+System.currentTimeMillis();
 			

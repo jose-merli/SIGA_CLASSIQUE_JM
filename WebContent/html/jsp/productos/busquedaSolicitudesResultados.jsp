@@ -389,7 +389,8 @@
 					alert("<%=sDialogError%>");
 					fin();
 				}
-			});			    
+			});	
+		    fin();
 		}            	
 	</script>	
 </body>

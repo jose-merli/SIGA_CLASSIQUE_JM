@@ -38,6 +38,7 @@ import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.beans.CenColegiadoAdm;
 import com.siga.beans.CenDireccionesAdm;
+import com.siga.beans.CenPersonaAdm;
 import com.siga.beans.CerSolicitudCertificadosAdm;
 import com.siga.beans.CerSolicitudCertificadosBean;
 import com.siga.beans.FacAbonoAdm;
@@ -403,6 +404,7 @@ public class BusquedaFacturaAction extends MasterAction {
 		try {
 
 			UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");
+			CenPersonaAdm personaAdm = new CenPersonaAdm(user);
 			String idInstitucion = user.getLocation();
 			FacFacturaAdm facturaAdm = new FacFacturaAdm(user);
 			CenDireccionesAdm direccionAdm = new CenDireccionesAdm(this.getUserBean(request));
@@ -469,7 +471,15 @@ public class BusquedaFacturaAction extends MasterAction {
 						errores.append(datosSolicitudError);
 					}
 					if (datosSolicitudError == null) {
+						String nombreColegiado = personaAdm.obtenerNombreApellidos(idPersonaFactura);
 						Documento documento = new Documento(filePDF, filePDF.getName());
+						if(nombreColegiado != null && !"".equalsIgnoreCase(nombreColegiado)){
+							nombreColegiado = UtilidadesString.eliminarAcentosYCaracteresEspeciales(nombreColegiado)+"-";	
+						}else{
+							nombreColegiado="";
+						}
+						
+						documento.setDescripcion(nombreColegiado+documento.getDescripcion());
 						documentosList.add(documento);
 					}
 
@@ -490,7 +500,6 @@ public class BusquedaFacturaAction extends MasterAction {
 					pathDirectorioTemporal.append(idInstitucion);
 					pathDirectorioTemporal.append(ClsConstants.FILE_SEP);
 					pathDirectorioTemporal.append("tmp");
-					
 					StringBuilder pathZip = new StringBuilder(pathDirectorioTemporal);
 					File directorio = new File(pathZip.toString());
 					if (!directorio.exists())
@@ -511,7 +520,7 @@ public class BusquedaFacturaAction extends MasterAction {
 						if(carpetaFicheroPdf.listFiles().length==0)
 							carpetaFicheroPdf.delete();
 					}
-					
+		
 					request.setAttribute("nombreFichero", filezip.getName());
 					request.setAttribute("rutaFichero", filezip.getPath());
 					
@@ -525,7 +534,7 @@ public class BusquedaFacturaAction extends MasterAction {
 			}
 			if (!errores.toString().equals(""))
 				request.setAttribute("avisoFicherosNoGenerado", errores.toString());
-			return "descarga";
+			return "descargaFichero";
 
 		} catch (Exception e) {
 			throwExcp("messages.general.error", new String[] { "modulo.facturacion" }, e, null);

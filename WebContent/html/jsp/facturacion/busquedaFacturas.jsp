@@ -295,7 +295,7 @@
 			document.BusquedaFacturaForm.target = "submitArea";
 			document.BusquedaFacturaForm.modo.value="descargaFacturas";
 			document.BusquedaFacturaForm.submit();
-		
+			fin();
 		}
 		
 		

@@ -24,8 +24,10 @@ import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsLogging;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesHash;
+import com.siga.Utilidades.UtilidadesString;
 import com.siga.beans.CenColegiadoAdm;
 import com.siga.beans.CenDireccionesAdm;
+import com.siga.beans.CenPersonaAdm;
 import com.siga.beans.FacFacturaAdm;
 import com.siga.beans.FacFacturaBean;
 import com.siga.facturacion.form.GestionarFacturaForm;
@@ -187,6 +189,7 @@ public class GestionarFacturaDatosGeneralesAction extends MasterAction{
 			Hashtable facturaOrigen = (Hashtable) request.getSession().getAttribute("DATABACKUP");
 			idFactura=(String)facturaOrigen.get(FacFacturaBean.C_IDFACTURA);
 			UsrBean usr = (UsrBean)request.getSession().getAttribute("USRBEAN");
+			CenPersonaAdm personaAdm = new CenPersonaAdm(usr);
 			String institucion =usr.getLocation();
 			
 			// RGG 15/02/2007 CAMBIOS PARA INFORME MASTER REPOR
@@ -234,7 +237,14 @@ public class GestionarFacturaDatosGeneralesAction extends MasterAction{
 				FacFacturaAdm facfactura=new FacFacturaAdm(usr);
 				facfactura.firmarPDF(filePDF,institucion);
 				
-				request.setAttribute("nombreFichero", filePDF.getName());
+				String nombreColegiado = personaAdm.obtenerNombreApellidos(idPersonaFactura);
+				if(nombreColegiado != null && !"".equalsIgnoreCase(nombreColegiado)){
+					nombreColegiado = UtilidadesString.eliminarAcentosYCaracteresEspeciales(nombreColegiado)+"-";	
+				}else{
+					nombreColegiado="";
+				}
+				
+				request.setAttribute("nombreFichero",nombreColegiado+filePDF.getName());
 				request.setAttribute("rutaFichero", filePDF.getPath());			
 	
 	
@@ -248,7 +258,7 @@ public class GestionarFacturaDatosGeneralesAction extends MasterAction{
 			throwExcp("messages.general.error", new String[] {"modulo.facturacion"}, e,null); 
 		}				
 		request.setAttribute("generacionOK","OK");
-		return "descarga";
+		return "descargaFichero";
 	}
 	
 	

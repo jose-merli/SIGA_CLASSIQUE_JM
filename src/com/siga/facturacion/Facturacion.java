@@ -2239,7 +2239,8 @@ public class Facturacion {
 			FacSerieFacturacionAdm admSerieFacturacion = new FacSerieFacturacionAdm(usr);
 			PysPeticionCompraSuscripcionAdm admPeticionCompraSuscripcion = new PysPeticionCompraSuscripcionAdm(usr);		    
 		    FacFacturaAdm admFactura = new FacFacturaAdm(usr);
-		    InformeFactura informe = new InformeFactura(usr);		   
+		    InformeFactura informe = new InformeFactura(usr);	
+		    CenPersonaAdm personaAdm = new CenPersonaAdm(usr);
 		    
 		    // Vectores necesarios para el proceso
 		    Vector<PysCompraBean> vCompras = new Vector<PysCompraBean>();
@@ -2389,7 +2390,22 @@ public class Facturacion {
 			}
 			
 			// DESCARGAR FICHERO
-			request.setAttribute("nombreFichero", fichero.getName());
+			String nombreColegiado ="";
+			if(vFacturas != null &&  vFacturas.size()>0){
+			Hashtable<String,Object> obj = vFacturas.get(0);
+			String idPersona = (String)obj.get("IDPERSONA");
+		    nombreColegiado ="";
+			if(idPersona != null && !"".equalsIgnoreCase(idPersona)){
+				 nombreColegiado = personaAdm.obtenerNombreApellidos(idPersona);
+				if(nombreColegiado != null && !"".equalsIgnoreCase(nombreColegiado)){
+					nombreColegiado = UtilidadesString.eliminarAcentosYCaracteresEspeciales(nombreColegiado)+"-";	
+				}else{
+					nombreColegiado="";
+				}
+			}
+			}
+			
+			request.setAttribute("nombreFichero",nombreColegiado+ fichero.getName());
 			request.setAttribute("rutaFichero", fichero.getPath());
 			request.setAttribute("generacionOK", "OK");
 			
