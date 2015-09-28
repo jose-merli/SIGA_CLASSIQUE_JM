@@ -7,6 +7,7 @@
 package com.siga.Utilidades;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
@@ -20,11 +21,37 @@ import java.text.NumberFormat;
 public class UtilidadesNumero {
 
 	static public double redondea (double numero, int precision) {
-		if (numero<0)
-			return -1 * Math.round(-1 * numero * Math.pow(10, precision)) / Math.pow(10, precision);
-		else
-			return Math.round(numero * Math.pow(10, precision)) / Math.pow(10, precision);
-	}
+		
+		// Calcula el signo
+		BigDecimal bdSigno = new BigDecimal("1");
+		if (numero<0) {
+			bdSigno = new BigDecimal("-1");
+		}
+				
+		// Calcula la precision
+		BigDecimal bdPrecision = new BigDecimal("1");
+		for (int i=0; i<precision; i++) {
+			bdPrecision = bdPrecision.multiply(new BigDecimal("10"));
+		}
+		
+		BigDecimal bCalculo = BigDecimal.valueOf(numero); // Conversion double to BigDecimal
+		
+		bCalculo = bCalculo.multiply(bdSigno); // Control inicial del signo
+		
+		bCalculo = bCalculo.multiply(bdPrecision); // Pone la parte decimal dentro de la precision como entero
+		
+		bCalculo = bCalculo.add(new BigDecimal("0.5")); // Sumo 0.5
+		
+		RoundingMode RM = RoundingMode.DOWN;
+		bCalculo = bCalculo.setScale(0, RM); // Obtengo la parte entera		
+		//bCalculo = BigDecimal.valueOf(bCalculo.intValue()); 
+		
+		bCalculo = bCalculo.divide(bdPrecision); // Vuelvo a poner la parte decimal
+		
+		bCalculo = bCalculo.multiply(bdSigno); // Control final del signo
+		
+		return bCalculo.doubleValue(); 
+	}	
 	 
 	static public float redondea (float numero, int precision) {
 	    double d = numero;
