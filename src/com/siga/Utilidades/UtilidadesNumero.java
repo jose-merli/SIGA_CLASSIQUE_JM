@@ -22,6 +22,9 @@ public class UtilidadesNumero {
 
 	static public double redondea (double numero, int precision) {
 		
+		if (Double.isNaN(numero)) // Contolo NaN 
+			return 0.0;
+		
 		// Calcula el signo
 		BigDecimal bdSigno = new BigDecimal("1");
 		if (numero<0) {
