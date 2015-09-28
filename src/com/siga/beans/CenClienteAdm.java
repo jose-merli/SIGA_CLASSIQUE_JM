@@ -4103,122 +4103,131 @@ public class CenClienteAdm extends MasterBeanAdmVisible
 	}
 
 	/**
-	 * Devuelve la cuenta de abono para una persona, comprobando si
-	 * representa a una sociedad o a sí mismo 
-	 * @param idInstitucion, es el identificador de la institucion.
-	 * @param idPersona, es el identificador de la persona. 
-	 * @return  ArrayList con 0.- idInstitucion, 1.- idPersona, 3.- Cuenta de abono
+	 * Devuelve la cuenta de abono para una persona, comprobando si representa a una sociedad o a si mismo 
+	 * 
+	 * @param idInstitucion
+	 * @param idPersona 
+	 * @return ArrayList (0=idInstitucion; 1=idPersona; 3=idCuentaAbonoSJCS)
 	 * <br> Si la cuenta es -1 es que pasa a pagar por caja  
-	 * @exception  ClsExceptions, SIGAException  En cualquier caso de error
+	 * @exception  ClsExceptions En cualquier caso de error
 	 */	
-	public ArrayList getCuentaAbono(String idInstitucion, String idPersona) throws ClsExceptions, SIGAException{
-
+	public ArrayList getCuentaAbonoSJCS(String idInstitucion, String idPersona) throws ClsExceptions {
 		ArrayList salida = new ArrayList();
-		try{
+		salida.add(idInstitucion);
+		try {
             RowsContainer rc = new RowsContainer(); 
-            RowsContainer rc2 = new RowsContainer();
-            Row fila = null;
-            int contador = 0;
             Hashtable hFila = null;
-            Hashtable codigos = new Hashtable();
-  //No se está teniendo en cuenta que la cuenta tenga el check de abonoSJCS=1 sólo que exista cuenta de AbonoCargo o Abono
-            String sql ="SELECT " + CenComponentesBean.C_IDINSTITUCION + ", " + CenComponentesBean.C_IDPERSONA + ", " + CenComponentesBean.C_IDCUENTA + 
-						" FROM " + CenComponentesBean.T_NOMBRETABLA;
-			            contador++;
-						codigos.put(new Integer(contador),idPersona);	
-						sql += " WHERE " + CenComponentesBean.C_CEN_CLIENTE_IDPERSONA + "=:" + contador;
-						contador++;
-						codigos.put(new Integer(contador),idInstitucion);
-						sql += " AND " + CenComponentesBean.C_IDINSTITUCION + "=:" + contador;
-						sql += " AND " + CenComponentesBean.C_IDINSTITUCION + "=" + CenComponentesBean.C_CEN_CLIENTE_IDINSTITUCION +  
-						" AND " + CenComponentesBean.C_SOCIEDAD + "='" + ClsConstants.DB_TRUE + "'";  
+            StringBuilder sql = new StringBuilder();
+            
+            // Buscamos si la persona pertenece a una sociedad y no tiene de baja la relacion
+            sql.append("SELECT ");
+            sql.append(CenComponentesBean.C_IDPERSONA);
+            sql.append(", ");
+            sql.append(CenComponentesBean.C_IDCUENTA);
+            sql.append(" FROM ");
+            sql.append(CenComponentesBean.T_NOMBRETABLA);
+            sql.append(" WHERE ");
+            sql.append(CenComponentesBean.C_IDINSTITUCION);
+            sql.append(" = ");
+            sql.append(idInstitucion);
+            sql.append(" AND ");
+            sql.append(CenComponentesBean.C_CEN_CLIENTE_IDPERSONA);
+            sql.append(" = ");
+            sql.append(idPersona);
+            sql.append(" AND ");
+            sql.append(CenComponentesBean.C_IDINSTITUCION);
+            sql.append(" = ");
+            sql.append(CenComponentesBean.C_CEN_CLIENTE_IDINSTITUCION);
+            sql.append(" AND ");
+            sql.append(CenComponentesBean.C_SOCIEDAD);
+            sql.append(" = '");
+            sql.append(ClsConstants.DB_TRUE);
+            sql.append("' AND ");
+            sql.append(CenComponentesBean.C_FECHABAJA);
+            sql.append(" IS NULL");
 												
-			rc = this.findBind(sql,codigos); 
-			if (rc!=null && rc.size()>0) {
-
-				// tiene registros en componentes
-				fila = (Row) rc.get(0);
-				hFila = fila.getRow();
+			rc = this.find(sql.toString()); 
+			if (rc!=null && rc.size()>0) { // Tiene registros activos en componentes
+				hFila = ((Row) rc.get(0)).getRow();
+				String sIdPersonaSociedad = (String) hFila.get(CenComponentesBean.C_IDPERSONA);
 				Object oIdCuenta = hFila.get(CenComponentesBean.C_IDCUENTA);
-				String IdPersona_sociedad = (String) hFila.get(CenComponentesBean.C_IDPERSONA);
-				if (oIdCuenta!=null) {
+				salida.add(sIdPersonaSociedad);
 				
-					// tiene cuenta de abono asociada
-					salida.add((String)hFila.get(CenComponentesBean.C_IDINSTITUCION));
-					salida.add((String)hFila.get(CenComponentesBean.C_IDPERSONA));
-					salida.add((String)hFila.get(CenComponentesBean.C_IDCUENTA));
-				} else {
-
-					// No tiene cuenta, hay que buscarla en la sociedad
-					int contador2=0;
-					Hashtable codigos2 = new Hashtable();
-					String sql2 ="SELECT " + CenCuentasBancariasBean.C_IDINSTITUCION + ", " + CenCuentasBancariasBean.C_IDPERSONA + ", " + CenCuentasBancariasBean.C_IDCUENTA + 
-					" FROM " + CenCuentasBancariasBean.T_NOMBRETABLA;
-		            contador2++;
-					codigos2.put(new Integer(contador2),idInstitucion);
-		            sql2 += " WHERE " + CenCuentasBancariasBean.C_IDINSTITUCION + "=:" + contador2;
-		            contador2++;
-					codigos2.put(new Integer(contador2),IdPersona_sociedad);
-					sql2 += " AND " + CenCuentasBancariasBean.C_IDPERSONA + "=:" + contador2;
-					sql2 += " AND " + CenCuentasBancariasBean.C_FECHABAJA + " is null ";   
-					sql2 += " AND (" + CenCuentasBancariasBean.C_ABONOCARGO + "='" + ClsConstants.TIPO_CUENTA_ABONO_CARGO + "'" +   
-					" OR " + CenCuentasBancariasBean.C_ABONOCARGO + "='" + ClsConstants.TIPO_CUENTA_ABONO + "')" +   
-					" ORDER BY " + CenCuentasBancariasBean.C_ABONOSJCS + " DESC " + CenCuentasBancariasBean.C_FECHAMODIFICACION + " DESC ";   
+				if (oIdCuenta!=null) {// Tiene una cuenta de abono asociada			
+					
+					sql = new StringBuilder(); // Comprobamos que la cuenta siga activa y sea ABONOSJSCS=1					
+					sql.append("SELECT ");
+					sql.append(CenCuentasBancariasBean.C_IDCUENTA); 
+					sql.append(" FROM ");
+					sql.append(CenCuentasBancariasBean.T_NOMBRETABLA);
+					sql.append(" WHERE ");
+					sql.append(CenCuentasBancariasBean.C_IDINSTITUCION);
+					sql.append(" = ");
+					sql.append(idInstitucion);
+					sql.append(" AND ");
+					sql.append(CenCuentasBancariasBean.C_IDPERSONA);
+					sql.append(" = ");
+					sql.append(sIdPersonaSociedad);
+					sql.append(" AND ");
+					sql.append(CenCuentasBancariasBean.C_FECHABAJA);
+					sql.append(" IS NULL AND ");
+					sql.append(CenCuentasBancariasBean.C_ABONOSJCS);
+					sql.append(" = '1' AND ");
+					sql.append(CenCuentasBancariasBean.C_IDCUENTA);
+					sql.append(" = ");
+					sql.append(oIdCuenta);
 														
-					rc2 = this.findBind(sql2,codigos2); 
-					if (rc2!=null && rc2.size()>0) {
-
-						// la sociedad tienen cuenta
-						Row fila2 = (Row) rc2.get(0);
-						Hashtable hFila2 = fila2.getRow();
-						salida.add((String)hFila2.get(CenCuentasBancariasBean.C_IDINSTITUCION));
-						salida.add((String)hFila2.get(CenCuentasBancariasBean.C_IDPERSONA));
-						salida.add((String)hFila2.get(CenCuentasBancariasBean.C_IDCUENTA));
-					} else {
-						salida.add((String)hFila.get(CenComponentesBean.C_IDINSTITUCION));
-						salida.add((String)hFila.get(CenComponentesBean.C_IDPERSONA));
+					rc = this.find(sql.toString()); 
+					if (rc!=null && rc.size()>0) { // La sociedad tiene una cuenta de abono activa y es AbonoSJCS=1
+						salida.add(oIdCuenta);
+						
+					} else { // La sociedad tiene cuenta de abono de baja o es AbonoSJCS=0
 						salida.add("-1"); // paga por caja
-					}
+					}					
+					
+				} else { // No tiene una cuenta la sociedad
+					salida.add("-1"); // paga por caja
 				}
 				
-			} 
-			else {
-				// actua por cuenta propia
-				int contador2=0;
-				Hashtable codigos2 = new Hashtable();
-				String sql2 ="SELECT " + CenCuentasBancariasBean.C_IDINSTITUCION + ", " + CenCuentasBancariasBean.C_IDPERSONA + ", " + CenCuentasBancariasBean.C_IDCUENTA + 
-				" FROM " + CenCuentasBancariasBean.T_NOMBRETABLA;
-	            contador2++;
-				codigos2.put(new Integer(contador2),idInstitucion);
-				sql2 += " WHERE " + CenCuentasBancariasBean.C_IDINSTITUCION + "=:" + contador2;
-				contador2++;
-				codigos2.put(new Integer(contador2),idPersona);
-				sql2 += " AND " + CenCuentasBancariasBean.C_IDPERSONA + "=:" + contador2;
-				sql2 += " AND " + CenCuentasBancariasBean.C_FECHABAJA + " is null ";   
-				sql2 += " AND (" + CenCuentasBancariasBean.C_ABONOCARGO + "='" + ClsConstants.TIPO_CUENTA_ABONO_CARGO + "'" +   
-				" OR " + CenCuentasBancariasBean.C_ABONOCARGO + "='" + ClsConstants.TIPO_CUENTA_ABONO + "')" +   
-				" ORDER BY " + CenCuentasBancariasBean.C_ABONOSJCS + " DESC ";   
-													
-				rc2 = this.findBind(sql2,codigos2); 
-				if (rc2!=null && rc2.size()>0) {
-
-					// el cliente tiene cuenta
-					Row fila2 = (Row) rc2.get(0);
-					Hashtable hFila2 = fila2.getRow();
-					salida.add((String)hFila2.get(CenCuentasBancariasBean.C_IDINSTITUCION));
-					salida.add((String)hFila2.get(CenCuentasBancariasBean.C_IDPERSONA)); 
-					salida.add((String)hFila2.get(CenCuentasBancariasBean.C_IDCUENTA));
-				} 
-				else {
-					salida.add(idInstitucion);
-					salida.add(idPersona);
+			} else { // No tiene registro en componentes, y por lo tanto, hay que buscar una cuenta bancaria activa de la persona con AbonoSJCS=1
+				salida.add(idPersona);
+				
+				sql = new StringBuilder();					
+				sql.append("SELECT ");
+				sql.append(CenCuentasBancariasBean.C_IDCUENTA); 
+				sql.append(" FROM ");
+				sql.append(CenCuentasBancariasBean.T_NOMBRETABLA);
+				sql.append(" WHERE ");
+				sql.append(CenCuentasBancariasBean.C_IDINSTITUCION);
+				sql.append(" = ");
+				sql.append(idInstitucion);
+				sql.append(" AND ");
+				sql.append(CenCuentasBancariasBean.C_IDPERSONA);
+				sql.append(" = ");
+				sql.append(idPersona);
+				sql.append(" AND ");
+				sql.append(CenCuentasBancariasBean.C_FECHABAJA);
+				sql.append(" IS NULL AND ");   
+				sql.append(CenCuentasBancariasBean.C_ABONOSJCS);
+				sql.append(" = '1' ");
+				sql.append(" ORDER BY ");
+				sql.append(CenCuentasBancariasBean.C_FECHAMODIFICACION);
+				sql.append(" DESC "); 
+				
+				rc = this.find(sql.toString()); 
+				if (rc!=null && rc.size()>0) { // La persona tiene alguna cuenta de AbonoSJCS=1 activa
+					hFila = ((Row) rc.get(0)).getRow();
+					salida.add((String)hFila.get(CenCuentasBancariasBean.C_IDCUENTA));
+					
+				} else { // La persona no tiene ninguna cuenta de AbonoSJCS=1 activa
 					salida.add("-1"); // paga por caja
 				}
 			}
+			
+		} catch(Exception e) {
+			throw new ClsExceptions (e, "Error al obtener la cuenta de abono SJCS");
 		}
-		catch(Exception e) {
-			throw new ClsExceptions (e, "Error al obtener la cuenta de abono");
-		}
+		
 		return salida;
 	}	
 

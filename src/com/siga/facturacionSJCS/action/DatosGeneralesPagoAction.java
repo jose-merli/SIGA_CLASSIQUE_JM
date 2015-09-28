@@ -9,7 +9,6 @@
 
 package com.siga.facturacionSJCS.action;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -21,8 +20,6 @@ import java.util.Vector;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.transaction.UserTransaction;
-
-import oracle.sql.DATE;
 
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
@@ -1418,8 +1415,7 @@ public class DatosGeneralesPagoAction extends MasterAction {
 				idPersonaDestino = pcBean.getIdPerDestino().toString();
 
 				CenClienteAdm clienteAdm = new CenClienteAdm(usr);
-				ArrayList cuenta = clienteAdm.getCuentaAbono(idInstitucion,
-						(idPersonaDestino));
+				ArrayList cuenta = clienteAdm.getCuentaAbonoSJCS(idInstitucion, idPersonaDestino);
 
 				idCuenta = cuenta.get(2).toString().equals("-1") ? "null"
 						: cuenta.get(2).toString();
