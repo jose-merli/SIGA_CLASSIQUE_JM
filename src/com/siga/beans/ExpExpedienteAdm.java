@@ -1856,7 +1856,7 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 			sqlAvisoCaducidad.append(" AND E.IDTIPOEXPEDIENTE = TIPO.IDTIPOEXPEDIENTE ");
 			sqlAvisoCaducidad.append(" AND E.ALERTACADUCIDADGENERADA = 'N' ");
 			sqlAvisoCaducidad.append(" and nvl(TIPO.DIASANTELACIONCAD, 0) > 0 ");
-			sqlAvisoCaducidad.append(" ) DATOS WHERE SYSDATE >nvl(DATOS.FECHACADUCIDAD - DATOS.DIASANTELACION, sysdate) ");
+			sqlAvisoCaducidad.append(" ) DATOS WHERE SYSDATE >nvl(DATOS.FECHACADUCIDAD, sysdate) - DATOS.DIASANTELACION ");
 			
 			
 			rc1 = new RowsContainer();
