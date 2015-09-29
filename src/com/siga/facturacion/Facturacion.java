@@ -514,6 +514,81 @@ public class Facturacion {
 		
 	}
     
+	
+	/**
+	 * 
+	 * @param rutaServidorDescargasZip
+	 * @param nombreFichero
+	 * @param ficherosPDF
+	 * @throws ClsExceptions
+	 */
+	public void doZipGeneracionRapida(String rutaServidorDescargasZip, String nombreFichero, ArrayList<File> ficherosPDF,String nombreFicherosAdjuntos) throws ClsExceptions	{
+		// Generar Zip
+		File ficZip=null;
+		byte[] buffer = new byte[8192];
+		int leidos;
+		ZipOutputStream outTemp = null;
+		
+		try {
+		    ClsLogging.writeFileLog("DESCARGA DE FACTURAS: numero de facturas = "+ficherosPDF.size(),10);
+
+			if ((ficherosPDF!=null) && (ficherosPDF.size()>0)) {
+				
+				ficZip = new File(rutaServidorDescargasZip +  nombreFichero + ".zip");
+
+				// RGG 
+				if (ficZip.exists()) {
+				    ficZip.delete();
+				    ClsLogging.writeFileLog("DESCARGA DE FACTURAS: el fichero zip ya existia. Se elimina",10);
+				}
+				
+				outTemp = new ZipOutputStream(new FileOutputStream(ficZip));
+				
+				for (int i=0; i<ficherosPDF.size(); i++)
+				{
+
+				    File auxFile = (File)ficherosPDF.get(i);
+				    ClsLogging.writeFileLog("DESCARGA DE FACTURAS: fichero numero "+i+" longitud="+auxFile.length(),10);
+					if (auxFile.exists()) {
+						ZipEntry ze = null;
+						if(nombreFicherosAdjuntos != null && !"".equalsIgnoreCase(nombreFicherosAdjuntos)){
+							 ze = new ZipEntry(nombreFicherosAdjuntos+"-"+auxFile.getName());
+						}else{
+							 ze = new ZipEntry(auxFile.getName());
+						}
+						outTemp.putNextEntry(ze);
+						FileInputStream fis=new FileInputStream(auxFile);
+						
+						buffer = new byte[8192];
+						
+						while ((leidos = fis.read(buffer, 0, buffer.length)) > 0)
+						{
+							outTemp.write(buffer, 0, leidos);
+						}
+						
+						fis.close();
+						outTemp.closeEntry();
+					}
+				}
+			    ClsLogging.writeFileLog("DESCARGA DE FACTURAS: ok ",10);
+				
+				outTemp.close();
+
+			}
+		} catch (FileNotFoundException e) {
+			throw new ClsExceptions(e,"Error al crear fichero zip");
+		} catch (IOException e) {
+			throw new ClsExceptions(e,"Error al crear fichero zip");
+		}
+		finally {
+			try {
+				outTemp.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		
+	}
     /**
      * Notas Jorge PT 118:
      * - Productos y Servicios > Solicitudes > Compra/Subscripción (facturacion rapida)
@@ -2404,8 +2479,13 @@ public class Facturacion {
 				}
 			}
 			}
-			
-			request.setAttribute("nombreFichero",nombreColegiado+ fichero.getName());
+			int inicio = fichero.getName().indexOf(".zip");
+			//Si es -1 no es un fichero zip
+			if(inicio == -1){
+				request.setAttribute("nombreFichero",nombreColegiado+ fichero.getName());
+			}else{
+				request.setAttribute("nombreFichero",fichero.getName());
+			}
 			request.setAttribute("rutaFichero", fichero.getPath());
 			request.setAttribute("generacionOK", "OK");
 			

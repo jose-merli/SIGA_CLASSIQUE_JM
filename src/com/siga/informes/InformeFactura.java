@@ -302,7 +302,11 @@ public class InformeFactura extends MasterReport {
 
 			// Generamos el fichero zip con todas las facturas asociadas a la solicitud
 			Facturacion facturacion = new Facturacion(usrbean);
-			facturacion.doZip(rutaAlmacen + File.separator, idPeticion, listaFicherosPDF);
+			//Obtenemos el bean del envio: 
+			CenPersonaAdm admPersona = new CenPersonaAdm(usrbean);
+			
+			facturacion.doZipGeneracionRapida(rutaAlmacen + File.separator, idPeticion, listaFicherosPDF,
+					UtilidadesString.eliminarAcentosYCaracteresEspeciales(admPersona.obtenerNombreApellidos((String)vFacturas.get(0).get("IDPERSONA"))));
 			
 			// Recorre los ficheros generados para eliminarlos 
 			for (int i=0; i<arrayDatosFacturas.size(); i++) {
