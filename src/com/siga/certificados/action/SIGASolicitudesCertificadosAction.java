@@ -2281,7 +2281,7 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 	 * @throws SIGAException
 	 */
 	protected String facturacionRapida(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
-	    String salida = "descargaFichero";
+	    String salida = "descarga";
 	    try {						
 	    	UsrBean usr = this.getUserBean(request);
 	    	

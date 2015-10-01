@@ -507,7 +507,12 @@ public abstract class SIGAAuxAction extends SIGAActionBase{
 			if(fichero==null || !fichero.exists()){
 				throw new SIGAException("messages.general.error.ficheroNoExiste"); 
 			}
-			request.setAttribute("nombreFichero", fichero.getName());
+			//Si viene el nombre del fichero le ponemos el nombre que venga y sino le ponemos el nombre por defecto del archivo
+			if(miform.getNombreFichero() != null && !"".equalsIgnoreCase(miform.getNombreFichero())){
+				request.setAttribute("nombreFichero", miform.getNombreFichero());
+			}else{
+				request.setAttribute("nombreFichero", fichero.getName());
+			}	
 			request.setAttribute("rutaFichero", fichero.getPath());
 			request.setAttribute("borrarFichero","true");
 

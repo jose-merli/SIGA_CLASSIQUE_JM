@@ -258,7 +258,7 @@ public class GestionarFacturaDatosGeneralesAction extends MasterAction{
 			throwExcp("messages.general.error", new String[] {"modulo.facturacion"}, e,null); 
 		}				
 		request.setAttribute("generacionOK","OK");
-		return "descargaFichero";
+		return "descarga";
 	}
 	
 	

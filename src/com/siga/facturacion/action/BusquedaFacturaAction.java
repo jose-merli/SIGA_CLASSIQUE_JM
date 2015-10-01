@@ -534,7 +534,7 @@ public class BusquedaFacturaAction extends MasterAction {
 			}
 			if (!errores.toString().equals(""))
 				request.setAttribute("avisoFicherosNoGenerado", errores.toString());
-			return "descargaFichero";
+			return "descarga";
 
 		} catch (Exception e) {
 			throwExcp("messages.general.error", new String[] { "modulo.facturacion" }, e, null);

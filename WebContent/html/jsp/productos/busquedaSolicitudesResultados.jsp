@@ -368,7 +368,6 @@
 											document.solicitudCompraForm.modo.value = "facturacionRapidaCompra";
 											document.solicitudCompraForm.submit();
 										}
-										fin();
 									},
 									"<%=sDialogBotonCerrar%>": function() {
 										jQuery(this).dialog("close");
@@ -391,7 +390,6 @@
 					fin();
 				}
 			});	
-		    fin();
 		}            	
 	</script>	
 </body>

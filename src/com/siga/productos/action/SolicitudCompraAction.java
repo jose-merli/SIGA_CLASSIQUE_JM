@@ -1498,7 +1498,7 @@ public class SolicitudCompraAction extends MasterAction{
 	 * @exception  SIGAException  En cualquier caso de error
 	 */					
 	protected String facturacionRapidaCompra(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {	
-	    String salida = "descargaFichero";
+	    String salida = "descarga";
 	    try {
 		    // datos llamada
 	    	UsrBean usr = this.getUserBean(request);

@@ -31,7 +31,7 @@
 	String rutaFichero = (String)request.getAttribute("rutaFichero");
 	String borrarFichero = (String)request.getAttribute("borrarFichero");
 	String borrarDirectorio = (String)request.getAttribute("borrarDirectorio");
-	
+	String nombreFichero = (String)request.getAttribute("nombreFichero");
 %>	
 <%@page import="org.apache.struts.action.ActionMapping"%>
 
@@ -79,6 +79,7 @@
 	<html:form action="<%=path%>" method="POST" target="submitArea22">
 	<html:hidden name="<%=formulario%>" property = "modo" value = "descargaFicheroGlobal"/>
 	<html:hidden name="<%=formulario%>" property = "rutaFichero" value = "<%=rutaFichero%>"/>
+	<html:hidden name="<%=formulario%>" property = "nombreFichero" value = "<%=nombreFichero%>"/>
 	<%if(borrarFichero!=null){%>
 	<html:hidden property = "borrarFichero" value = "<%=borrarFichero%>"/>
 	<%}%>
