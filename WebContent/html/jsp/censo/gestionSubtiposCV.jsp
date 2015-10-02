@@ -192,7 +192,7 @@
 		
 		error = '';
 		
-		if(document.forms['FormularioGestion'].subTipo1IdTipo.value!==''){
+		if(document.forms['FormularioGestion'].subTipo1IdTipo.value!=''){
 			
 			
 			errorSubtipo1 = '';
@@ -213,7 +213,7 @@
 			
 			
 		}
-		if(document.forms['FormularioGestion'].subTipo2IdTipo.value!==''){
+		if(document.forms['FormularioGestion'].subTipo2IdTipo.value!=''){
 			errorSubtipo2 = '';
 			if(document.forms['FormularioGestion'].subTipo2Descripcion.value==''){
 				//error += "<siga:Idioma key='errors.required' arg0='censo.tiposDatosCurriculares.descripcion.literal'/>"+ '\n';
