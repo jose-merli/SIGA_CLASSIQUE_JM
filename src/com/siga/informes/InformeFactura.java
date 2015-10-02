@@ -156,22 +156,12 @@ public class InformeFactura extends MasterReport {
 				}
 			}
 			rutaAlmacen+=ClsConstants.FILE_SEP;
-			String nombrePDF="";
-			if(nColegiado != null && !"".equalsIgnoreCase(nColegiado)){
-				nombrePDF=nColegiado + "-"+(String) ht.get(FacFacturaBean.C_NUMEROFACTURA);
-			}else{
-				nombrePDF=(String) ht.get(FacFacturaBean.C_NUMEROFACTURA);
-			}
-			
+			String nombrePDF=nColegiado + "-"+(String) ht.get(FacFacturaBean.C_NUMEROFACTURA);
 			
 			//para las facturas que estan generadas pero no confirmadas por lo que no tienen número
 			//se le pondra de nombre del idfactura y se borrará una vez descargada
 			if(UtilidadesHash.getString(ht,FacFacturaBean.C_NUMEROFACTURA)==null ||UtilidadesHash.getString(ht,FacFacturaBean.C_NUMEROFACTURA).equals("")){
-				if(nColegiado != null && !"".equalsIgnoreCase(nColegiado)){
-					nombrePDF = nColegiado + "-"+(String) ht.get(FacFacturaBean.C_IDFACTURA);
-				}else{
-					nombrePDF = (String) ht.get(FacFacturaBean.C_IDFACTURA);
-				}
+				nombrePDF = nColegiado + "-"+(String) ht.get(FacFacturaBean.C_IDFACTURA);
 				request.setAttribute("borrarFichero", "true");
 			}
 			
