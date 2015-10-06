@@ -1029,8 +1029,8 @@ public class MaestroDesignasAction extends MasterAction {
 				String tipo =(String) ((Hashtable) datos.get(i)).get("TIPO_EJG");
 				ejg = abrir(request, anio, numero, tipo);
 				 //Damos formato a la fecha de ratificacion
-				  if(ejg.getFechaRatificacion()!= null && !"".equalsIgnoreCase(ejg.getFechaRatificacion())){ 
-					  ejg.setFechaRatificacion(GstDate.getFormatedDateShort("",ejg.getFechaRatificacion()));
+				  if(ejg.getFechaResolucionCAJG()!= null && !"".equalsIgnoreCase(ejg.getFechaResolucionCAJG())){ 
+					  ejg.setFechaResolucionCAJG(GstDate.getFormatedDateShort("",ejg.getFechaResolucionCAJG()));
 				  }
 				ejgList.add(ejg);
 		}
@@ -1204,7 +1204,7 @@ public class MaestroDesignasAction extends MasterAction {
 			// Ahora realizamos la consulta. Primero cogemos los campos que queremos recuperar 
 			String consulta = "select ejg.ANIO, lpad(ejg.NUMEJG,"+longitudNumEjg+",0) NUMEJG,designa.ESTADO,ejg.IDTIPOEJG AS IDTIPOEJG,ejg.NUMERO_CAJG AS NUMERO_CAJG, ejg.NUMERO, turno.ABREVIATURA AS NOMBRETURNO, guardia.NOMBRE AS NOMBREGUARDIA, guardia.IDGUARDIA AS IDGUARDIA, " + UtilidadesMultidioma.getCampoMultidiomaSimple("tipoejg.DESCRIPCION",this.getUserBean(request).getLanguage()) + " AS TIPOEJG, ejg.IDTIPOEJGCOLEGIO AS IDTIPOEJGCOLEGIO," +
 							  "decode(ejg.ORIGENAPERTURA,'M','Manual','S','SOJ','A','ASISTENCIA','DESIGNA'), ejg.IDPRETENSION as IDPRETENSION, ejg.IDINSTITUCION as IDINSTITUCION, ejg.idtipodictamenejg as IDTIPODICTAMENEJG, " + 
-							  "ejg.FECHAAPERTURA AS FECHAAPERTURA, personajg.NIF AS NIFASISTIDO, personajg.NOMBRE AS NOMBREASISTIDO, personajg.APELLIDO1 AS APELLIDO1ASISTIDO, personajg.APELLIDO2 AS APELLIDO2ASISTIDO, " +
+							  "ejg.FECHAAPERTURA AS FECHAAPERTURA,ejg.FECHARESOLUCIONCAJG, personajg.NIF AS NIFASISTIDO, personajg.NOMBRE AS NOMBREASISTIDO, personajg.APELLIDO1 AS APELLIDO1ASISTIDO, personajg.APELLIDO2 AS APELLIDO2ASISTIDO, " +
 							  " (Select Decode(Ejg.Idtipoencalidad, Null,'', f_Siga_Getrecurso(Tipcal.Descripcion,"+ this.getUserBean(request).getLanguage() + ")) "+
                               "  From Scs_Tipoencalidad Tipcal Where Tipcal.Idtipoencalidad = Ejg.Idtipoencalidad "+
                               "  And Tipcal.Idinstitucion = Ejg.Calidadidinstitucion) as calidad, Ejg.Idtipoencalidad, Ejg.Calidadidinstitucion, "+							  
@@ -1280,7 +1280,7 @@ public class MaestroDesignasAction extends MasterAction {
 			
 			// Volvemos a obtener de base de datos la información, para que se la más actúal que hay en la base de datos			
 			Vector resultado = admBean.selectGenerico(consulta);
-			String fechaapertura="", tipoejg="",dictamen="",fechapresen="", fechalimite="",idorigen="", ano="",num="", sufijo="",estadoEjg="",observaciones="";
+			String fechaapertura="", tipoejg="",dictamen="",fechapresen="", fechalimite="",idorigen="", ano="",num="", sufijo="",estadoEjg="",observaciones="",fechaResolucionCAJG="";
 			String lenguaje = this.getUserBean(request).getLanguage();
 			String idpreten= "";
 			String idcomi= "";
@@ -1289,7 +1289,7 @@ public class MaestroDesignasAction extends MasterAction {
 			String idjuzgadoInsti= "";
 			String idInsti= "";
 			String descripcionDictamen="";
-			
+		
 			try{
 				ejg = (Hashtable)resultado.get(0);
 			}catch (Exception e) {
@@ -1322,6 +1322,7 @@ public class MaestroDesignasAction extends MasterAction {
 			if (!resultado.isEmpty()) {idInsti = (String)((Hashtable)resultado.get(0)).get("IDINSTITUCION");}
 			if (!resultado.isEmpty()) {idTipoRatificacionEJG = (String)((Hashtable)resultado.get(0)).get("IDTIPORATIFICACIONEJG");}
 			if (!resultado.isEmpty()) {fechaRatificacion = (String)((Hashtable)resultado.get(0)).get("FECHARATIFICACION");}
+			if (!resultado.isEmpty()) {fechaResolucionCAJG = (String)((Hashtable)resultado.get(0)).get("FECHARESOLUCIONCAJG");}
 			
 			
 			String pretension = "", comisaria = "",origen ="", juzgado="";
@@ -1475,6 +1476,9 @@ public class MaestroDesignasAction extends MasterAction {
 				ejgBean.setIdTipoRatificacionEJG(Integer.parseInt(idTipoRatificacionEJG));
 			if(fechaRatificacion!=null && !"".equalsIgnoreCase(fechaRatificacion))
 				ejgBean.setFechaRatificacion(fechaRatificacion);
+			if(fechaResolucionCAJG!=null && !"".equalsIgnoreCase(fechaResolucionCAJG))
+				ejgBean.setFechaResolucionCAJG(fechaResolucionCAJG);
+	
 			if(descripcionDictamen !=null && !"".equalsIgnoreCase(descripcionDictamen))
 				ejgBean.setDescripcionDictamen(descripcionDictamen); 
 

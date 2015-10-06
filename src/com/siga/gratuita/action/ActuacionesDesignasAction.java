@@ -487,6 +487,14 @@ public class ActuacionesDesignasAction extends MasterAction {
 					  if(ejg.getFechaAuto()!= null && !"".equalsIgnoreCase(ejg.getFechaAuto())){
 						  ejg.setFechaAuto(GstDate.getFormatedDateShort("",ejg.getFechaAuto()));
 					  }
+					  //Fecha Notificación
+					  if(ejg.getFechaNotificacion()!= null && !"".equalsIgnoreCase(ejg.getFechaNotificacion())){
+						  ejg.setFechaNotificacion(GstDate.getFormatedDateShort("",ejg.getFechaNotificacion()));
+					  }
+					  //Fecha Resolución CAJG
+					  if(ejg.getFechaResolucionCAJG()!= null && !"".equalsIgnoreCase(ejg.getFechaResolucionCAJG())){
+						  ejg.setFechaResolucionCAJG(GstDate.getFormatedDateShort("",ejg.getFechaResolucionCAJG()));
+					  }
 					  //Insertamos el ejg a la lista
 						ejgList.add(ejg);
 					}

@@ -477,14 +477,17 @@
 										</c:choose>
 										</td>
 										<td class="labelText"  style="width:25%;">
-											<siga:Idioma key="gratuita.operarRatificacion.literal.fechaRatificacion"/>
+											<siga:Idioma key="gratuita.operarRatificacion.literal.fechaResolucionCAJG"/>
 										</td>
 											
 										<td class="labelTextValue"  style="width:25%;">
 										<c:choose>
-											<c:when test="${ejg2.fechaRatificacion != null && ejg2.fechaRatificacion !=''}">
-												<html:text name="DefinirEJGForm" property="fechaRatificacion" size="10" styleClass="boxConsulta" value="${ejg2.fechaRatificacion}" disabled="false" readonly="true"/>				
+											<c:when test="${ejg2.fechaResolucionCAJG != null && ejg2.fechaResolucionCAJG!=''}">
+												<siga:Fecha nombreCampo="fechaResolucionCAJG" valorInicial="${ejg2.fechaResolucionCAJG}" disabled="true" readOnly="true"></siga:Fecha>	
 											</c:when>
+											<c:otherwise>
+												-
+											</c:otherwise>
 										</c:choose>
 										</td>
 									</tr>

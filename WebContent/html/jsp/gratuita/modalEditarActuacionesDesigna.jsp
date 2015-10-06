@@ -812,7 +812,7 @@
 				List<ScsEJGBean> listadoEjgs = form.getEjgs();	
 		%>
 				<siga:ConjCampos leyenda="gratuita.operarEJG.literal.expedienteEJG" >
-					<div id="panel" style="width:100%;  height: 100px; ">
+					<div id="panel" style="width:100%;  height: 150px; ">
 						<ul id="tabs" style="width:100%;">
 							<logic:iterate name="ActuacionesDesignasForm" property="ejgs" id="ejg1" indexId="index">
 						    	<li id="tab_${index}"><a href="#"  onclick="tab('tab_${index}','panel_${index}');"><c:out
@@ -849,6 +849,38 @@
 											</c:otherwise>
 										</c:choose>
 										</td>
+										<td class="labelText" style="width:200px;">
+											<siga:Idioma key="gratuita.operarRatificacion.literal.fechaResolucionCAJG"/>
+										</td>	
+											
+										<td class="labelTextValue">
+										<c:choose>
+											<c:when test="${ejg2.fechaResolucionCAJG != null && ejg2.fechaResolucionCAJG!=''}">
+												<siga:Fecha nombreCampo="fechaResolucionCAJG" valorInicial="${ejg2.fechaResolucionCAJG}" disabled="true" readOnly="true"></siga:Fecha>	
+											</c:when>
+											<c:otherwise>
+												-
+											</c:otherwise>
+										</c:choose>
+										</td>
+									</tr>
+									
+									<tr>
+										<td class="labelText" style="width:200px;">
+											<siga:Idioma key="gratuita.operarRatificacion.literal.fechaNotificacion"/>
+										</td>
+											
+										<td class="labelTextValue">
+										<c:choose>
+											<c:when test="${ejg2.fechaNotificacion != null && ejg2.fechaNotificacion!=''}">
+												<siga:Fecha nombreCampo="fechaNotificacion" valorInicial="${ejg2.fechaNotificacion}" disabled="true" readOnly="true"></siga:Fecha>	
+											</c:when>
+											<c:otherwise>
+												-
+											</c:otherwise>
+										</c:choose>
+										</td>	
+										
 										<td class="labelText" style="width:160px;" >
 											<siga:Idioma key="gratuita.operarRatificacion.literal.fechaRatificacion"/>
 										</td>
@@ -862,19 +894,10 @@
 												-
 											</c:otherwise>
 										</c:choose>
-										</td>
-			
-									</tr>
+										</td>					
+									</tr>							
 									<c:if test="${ejg2.fechaAuto!=null && ejg2.fechaAuto !=''}">
 										<tr>
-											<td class="labelText">
-												<siga:Idioma key="pestana.justiciagratuitaejg.impugnacion"/>
-												<siga:Idioma key="gratuita.operarRatificacion.literal.fechaAuto"/>
-											</td>
-											<td class="labelTextValue">
-												<siga:Fecha nombreCampo="fechaAuto" valorInicial="${ejg2.fechaAuto}" disabled="true" readOnly="true"></siga:Fecha>
-											</td>
-											
 											<td class="labelText">
 												<siga:Idioma key="gratuita.EJG.literal.autoResolutorio"/>
 											</td>	
@@ -887,6 +910,14 @@
 														-
 													</c:otherwise>	
 												</c:choose>
+											</td>
+											
+											<td class="labelText">
+												<siga:Idioma key="pestana.justiciagratuitaejg.impugnacion"/>
+												<siga:Idioma key="gratuita.operarRatificacion.literal.fechaAuto"/>
+											</td>
+											<td class="labelTextValue">
+												<siga:Fecha nombreCampo="fechaAuto" valorInicial="${ejg2.fechaAuto}" disabled="true" readOnly="true"></siga:Fecha>
 											</td>
 											
 										</tr>
