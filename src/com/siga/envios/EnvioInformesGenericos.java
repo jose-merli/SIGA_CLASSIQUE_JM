@@ -650,7 +650,7 @@ public class EnvioInformesGenericos extends MasterReport {
 			Boolean isfirmado = null;
 			if (refMandatoSEPA == null || refMandatoSEPA.equals(""))
 				isfirmado = false;
-			List<Hashtable> mandatosList = mandatosAdm.getMandatos(beanMandato, isfirmado);
+			List<Hashtable<String,Object>> mandatosList = mandatosAdm.getMandatos(beanMandato, isfirmado);
 			if (mandatosList != null)
 				htDatosInforme.put("rows", mandatosList);
 

@@ -1,7 +1,6 @@
 package com.siga.beans;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Vector;
@@ -300,7 +299,7 @@ public class CenAnexosCuentasBancariasAdm extends MasterBeanAdministrador {
 			anexosList = new ArrayList<Hashtable>();
 			CenMandatosCuentasBancariasBean beanMandato = null;
 			Hashtable<String, Hashtable> auxHashtable = new Hashtable<String, Hashtable>();
-			Hashtable mandato = null;
+			Hashtable<String, Object> mandato = null;
 			Hashtable anexo = null;
 			if (rc.find(getSqlObtenerAnexo(beanAnexo,isFirmado)) && rc.size()>0) {
 				for (int i = 0; i < rc.size(); i++){

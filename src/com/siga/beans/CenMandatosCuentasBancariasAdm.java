@@ -16,63 +16,150 @@ import com.siga.general.EjecucionPLs;
 
 public class CenMandatosCuentasBancariasAdm extends MasterBeanAdministrador {
 	
-	private String sqlMandatosSelect = "SELECT MANDATOS." + CenMandatosCuentasBancariasBean.C_IDINSTITUCION + ", " + 
-										" MANDATOS." + CenMandatosCuentasBancariasBean.C_IDPERSONA + ", " +  
-										" MANDATOS." + CenMandatosCuentasBancariasBean.C_IDCUENTA + ", " +  
-										" MANDATOS." + CenMandatosCuentasBancariasBean.C_IDMANDATO + ", " +
-										" MANDATOS." + CenMandatosCuentasBancariasBean.C_TIPOMANDATO + ", " +										
-										" MANDATOS." + CenMandatosCuentasBancariasBean.C_REFMANDATOSEPA + ", " +
-										" MANDATOS." + CenMandatosCuentasBancariasBean.C_TIPOPAGO + ", " +										
-										" MANDATOS." + CenMandatosCuentasBancariasBean.C_ESQUEMA + ", " + 
-										" MANDATOS." + CenMandatosCuentasBancariasBean.C_AUTORIZACIONB2B + ", " +
-										" MANDATOS." + CenMandatosCuentasBancariasBean.C_ACREEDOR_TIPOID + ", " +
-										" MANDATOS." + CenMandatosCuentasBancariasBean.C_ACREEDOR_ID + ", " +
-										" MANDATOS." + CenMandatosCuentasBancariasBean.C_ACREEDOR_NOMBRE + ", " +  
-										" MANDATOS." + CenMandatosCuentasBancariasBean.C_ACREEDOR_DOMICILIO + ", " +  
-										" MANDATOS." + CenMandatosCuentasBancariasBean.C_ACREEDOR_CODIGOPOSTAL + ", " +  
-										" MANDATOS." + CenMandatosCuentasBancariasBean.C_ACREEDOR_IDPAIS + ", " +
-										" MANDATOS." + CenMandatosCuentasBancariasBean.C_ACREEDOR_PAIS + ", " +
-										" MANDATOS." + CenMandatosCuentasBancariasBean.C_ACREEDOR_IDPROVINCIA + ", " +
-										" MANDATOS." + CenMandatosCuentasBancariasBean.C_ACREEDOR_PROVINCIA + ", " +
-										" MANDATOS." + CenMandatosCuentasBancariasBean.C_ACREEDOR_IDPOBLACION + ", " +
-										" MANDATOS." + CenMandatosCuentasBancariasBean.C_ACREEDOR_POBLACION + ", " +
-										" MANDATOS." + CenMandatosCuentasBancariasBean.C_DEUDOR_TIPOID + ", " +
-										" MANDATOS." + CenMandatosCuentasBancariasBean.C_DEUDOR_ID + ", " + 
-										" CUENTAS." + CenCuentasBancariasBean.C_TITULAR + " AS " + CenMandatosCuentasBancariasBean.C_DEUDOR_NOMBRE + ", " + 
-										" MANDATOS." + CenMandatosCuentasBancariasBean.C_DEUDOR_DOMICILIO + ", " +  
-										" MANDATOS." + CenMandatosCuentasBancariasBean.C_DEUDOR_CODIGOPOSTAL + ", " +  
-										" MANDATOS." + CenMandatosCuentasBancariasBean.C_DEUDOR_IDPAIS + ", " +
-										" MANDATOS." + CenMandatosCuentasBancariasBean.C_DEUDOR_PAIS + ", " +  
-										" MANDATOS." + CenMandatosCuentasBancariasBean.C_DEUDOR_IDPROVINCIA + ", " +
-										" MANDATOS." + CenMandatosCuentasBancariasBean.C_DEUDOR_PROVINCIA + ", " +
-										" MANDATOS." + CenMandatosCuentasBancariasBean.C_DEUDOR_IDPOBLACION + ", " +
-										" MANDATOS." + CenMandatosCuentasBancariasBean.C_DEUDOR_POBLACION + ", " +
-										" F_SIGA_GETNCOL_NCOM(MANDATOS." + CenMandatosCuentasBancariasBean.C_IDINSTITUCION +", MANDATOS." + CenMandatosCuentasBancariasBean.C_IDPERSONA+") AS DEUDOR_NCOLEGIADO, "+
-										" TO_CHAR(MANDATOS." + CenMandatosCuentasBancariasBean.C_FIRMA_FECHA + ", 'DD/MM/YYYY') AS " + CenMandatosCuentasBancariasBean.C_FIRMA_FECHA + ", " +
-										" MANDATOS." + CenMandatosCuentasBancariasBean.C_FIRMA_LUGAR + ", " +  
-										" MANDATOS." + CenMandatosCuentasBancariasBean.C_IDFICHEROFIRMA + ", " +
-										" TO_CHAR(MANDATOS." + CenMandatosCuentasBancariasBean.C_FECHAUSO + ", 'DD/MM/YYYY') AS " + CenMandatosCuentasBancariasBean.C_FECHAUSO + ", " +
-										" CUENTAS." + CenCuentasBancariasBean.C_IBAN + " AS " + CenMandatosCuentasBancariasBean.C_IBAN + ", " +
-										" BANCOS." + CenBancosBean.C_BIC + " AS " + CenMandatosCuentasBancariasBean.C_BIC + ", " + 
-										" BANCOS." + CenBancosBean.C_NOMBRE + " AS " + CenMandatosCuentasBancariasBean.C_BANCO + ", " + 
-										" TO_CHAR(MANDATOS." + CenMandatosCuentasBancariasBean.C_FECHACREACION + ", 'DD/MM/YYYY') AS " + CenMandatosCuentasBancariasBean.C_FECHACREACION + ", " +
-										" MANDATOS." + CenMandatosCuentasBancariasBean.C_USUCREACION + ", " +
-										" TO_CHAR(MANDATOS." + CenMandatosCuentasBancariasBean.C_FECHAMODIFICACION + ", 'DD/MM/YYYY') AS " + CenMandatosCuentasBancariasBean.C_FECHAMODIFICACION + ", " + 
-										" MANDATOS." + CenMandatosCuentasBancariasBean.C_USUMODIFICACION;
-	
-	
-	private String sqlMandatosFrom = " FROM " + CenMandatosCuentasBancariasBean.T_NOMBRETABLA + " MANDATOS, " +
-										CenCuentasBancariasBean.T_NOMBRETABLA + " CUENTAS, " +
-										CenBancosBean.T_NOMBRETABLA + " BANCOS ";
-	
-	private String sqlMandatosWhere = " WHERE CUENTAS." + CenCuentasBancariasBean.C_IDINSTITUCION + " = MANDATOS." + CenMandatosCuentasBancariasBean.C_IDINSTITUCION +
-										" AND CUENTAS." + CenCuentasBancariasBean.C_IDPERSONA + " = MANDATOS." + CenMandatosCuentasBancariasBean.C_IDPERSONA +
-										" AND CUENTAS." + CenCuentasBancariasBean.C_IDCUENTA + " = MANDATOS." + CenMandatosCuentasBancariasBean.C_IDCUENTA +
-										//" AND CUENTAS." + CenCuentasBancariasBean.C_FECHABAJA + " IS NULL" +
-										" AND BANCOS." + CenBancosBean.C_CODIGO + " = CUENTAS." + CenCuentasBancariasBean.C_CBO_CODIGO;	
+	private StringBuilder sqlMandatosSelect = new StringBuilder();
+	private StringBuilder sqlMandatosFrom = new StringBuilder();
+	private StringBuilder sqlMandatosWhere = new StringBuilder();	
 						
 	public CenMandatosCuentasBancariasAdm(UsrBean usuario) {
 	    super(CenMandatosCuentasBancariasBean.T_NOMBRETABLA, usuario);
+	    
+	    StringBuilder sql = new StringBuilder();
+	    sql.append("SELECT MANDATOS.");
+	    sql.append(CenMandatosCuentasBancariasBean.C_IDINSTITUCION);
+	    sql.append(", MANDATOS.");
+	    sql.append(CenMandatosCuentasBancariasBean.C_IDPERSONA);
+	    sql.append(", MANDATOS.");
+	    sql.append(CenMandatosCuentasBancariasBean.C_IDCUENTA);
+	    sql.append(", MANDATOS.");
+	    sql.append(CenMandatosCuentasBancariasBean.C_IDMANDATO);
+	    sql.append(", MANDATOS.");
+	    sql.append(CenMandatosCuentasBancariasBean.C_TIPOMANDATO);
+	    sql.append(", MANDATOS.");
+	    sql.append(CenMandatosCuentasBancariasBean.C_REFMANDATOSEPA);
+	    sql.append(", MANDATOS.");
+	    sql.append(CenMandatosCuentasBancariasBean.C_TIPOPAGO);
+	    sql.append(", MANDATOS.");
+	    sql.append(CenMandatosCuentasBancariasBean.C_ESQUEMA);
+	    sql.append(", MANDATOS.");
+	    sql.append(CenMandatosCuentasBancariasBean.C_AUTORIZACIONB2B);
+	    sql.append(", MANDATOS.");
+	    sql.append(CenMandatosCuentasBancariasBean.C_ACREEDOR_TIPOID);
+	    sql.append(", MANDATOS.");
+	    sql.append(CenMandatosCuentasBancariasBean.C_ACREEDOR_ID);
+	    sql.append(", MANDATOS.");
+	    sql.append(CenMandatosCuentasBancariasBean.C_ACREEDOR_NOMBRE);
+	    sql.append(", MANDATOS.");
+	    sql.append(CenMandatosCuentasBancariasBean.C_ACREEDOR_DOMICILIO);
+	    sql.append(", MANDATOS.");
+	    sql.append(CenMandatosCuentasBancariasBean.C_ACREEDOR_CODIGOPOSTAL);
+	    sql.append(", MANDATOS.");
+	    sql.append(CenMandatosCuentasBancariasBean.C_ACREEDOR_IDPAIS);
+	    sql.append(", MANDATOS.");
+	    sql.append(CenMandatosCuentasBancariasBean.C_ACREEDOR_PAIS);
+	    sql.append(", MANDATOS.");
+	    sql.append(CenMandatosCuentasBancariasBean.C_ACREEDOR_IDPROVINCIA);
+	    sql.append(", MANDATOS.");
+	    sql.append(CenMandatosCuentasBancariasBean.C_ACREEDOR_PROVINCIA);
+	    sql.append(", MANDATOS.");
+	    sql.append(CenMandatosCuentasBancariasBean.C_ACREEDOR_IDPOBLACION);
+	    sql.append(", MANDATOS.");
+	    sql.append(CenMandatosCuentasBancariasBean.C_ACREEDOR_POBLACION);
+	    sql.append(", MANDATOS.");
+	    sql.append(CenMandatosCuentasBancariasBean.C_DEUDOR_TIPOID);
+	    sql.append(", MANDATOS.");
+	    sql.append(CenMandatosCuentasBancariasBean.C_DEUDOR_ID);
+	    sql.append(", CUENTAS.");
+	    sql.append(CenCuentasBancariasBean.C_FECHABAJA);
+	    sql.append(", CUENTAS.");
+	    sql.append(CenCuentasBancariasBean.C_TITULAR);
+	    sql.append(" AS ");
+	    sql.append(CenMandatosCuentasBancariasBean.C_DEUDOR_NOMBRE);
+	    sql.append(", MANDATOS.");
+	    sql.append(CenMandatosCuentasBancariasBean.C_DEUDOR_DOMICILIO);
+	    sql.append(", MANDATOS.");
+	    sql.append(CenMandatosCuentasBancariasBean.C_DEUDOR_CODIGOPOSTAL);
+	    sql.append(", MANDATOS.");
+	    sql.append(CenMandatosCuentasBancariasBean.C_DEUDOR_IDPAIS);
+	    sql.append(", MANDATOS.");
+	    sql.append(CenMandatosCuentasBancariasBean.C_DEUDOR_PAIS);
+	    sql.append(", MANDATOS.");
+	    sql.append(CenMandatosCuentasBancariasBean.C_DEUDOR_IDPROVINCIA);
+	    sql.append(", MANDATOS.");
+	    sql.append(CenMandatosCuentasBancariasBean.C_DEUDOR_PROVINCIA);
+	    sql.append(", MANDATOS.");
+	    sql.append(CenMandatosCuentasBancariasBean.C_DEUDOR_IDPOBLACION);
+	    sql.append(", MANDATOS.");
+	    sql.append(CenMandatosCuentasBancariasBean.C_DEUDOR_POBLACION);
+	    sql.append(", F_SIGA_GETNCOL_NCOM(MANDATOS.");
+	    sql.append(CenMandatosCuentasBancariasBean.C_IDINSTITUCION);
+	    sql.append(", MANDATOS.");
+	    sql.append(CenMandatosCuentasBancariasBean.C_IDPERSONA);
+	    sql.append(") AS DEUDOR_NCOLEGIADO, TO_CHAR(MANDATOS.");
+	    sql.append(CenMandatosCuentasBancariasBean.C_FIRMA_FECHA);
+	    sql.append(", 'DD/MM/YYYY') AS ");
+	    sql.append(CenMandatosCuentasBancariasBean.C_FIRMA_FECHA);
+	    sql.append(", MANDATOS.");
+	    sql.append(CenMandatosCuentasBancariasBean.C_FIRMA_LUGAR);
+	    sql.append(", MANDATOS.");
+	    sql.append(CenMandatosCuentasBancariasBean.C_IDFICHEROFIRMA);
+	    sql.append(", TO_CHAR(MANDATOS.");
+	    sql.append(CenMandatosCuentasBancariasBean.C_FECHAUSO);
+	    sql.append(", 'DD/MM/YYYY') AS ");
+	    sql.append(CenMandatosCuentasBancariasBean.C_FECHAUSO);
+	    sql.append(", CUENTAS.");
+	    sql.append(CenCuentasBancariasBean.C_IBAN);
+	    sql.append(" AS ");
+	    sql.append(CenMandatosCuentasBancariasBean.C_IBAN);
+	    sql.append(", BANCOS.");
+	    sql.append(CenBancosBean.C_BIC);
+	    sql.append(" AS ");
+	    sql.append(CenMandatosCuentasBancariasBean.C_BIC);
+	    sql.append(", BANCOS.");
+	    sql.append(CenBancosBean.C_NOMBRE);
+	    sql.append(" AS ");
+	    sql.append(CenMandatosCuentasBancariasBean.C_BANCO);
+	    sql.append(", TO_CHAR(MANDATOS.");
+	    sql.append(CenMandatosCuentasBancariasBean.C_FECHACREACION);
+	    sql.append(", 'DD/MM/YYYY') AS ");
+	    sql.append(CenMandatosCuentasBancariasBean.C_FECHACREACION);
+	    sql.append(", MANDATOS.");
+	    sql.append(CenMandatosCuentasBancariasBean.C_USUCREACION);
+	    sql.append(", TO_CHAR(MANDATOS.");
+	    sql.append(CenMandatosCuentasBancariasBean.C_FECHAMODIFICACION);
+	    sql.append(", 'DD/MM/YYYY') AS ");
+	    sql.append(CenMandatosCuentasBancariasBean.C_FECHAMODIFICACION);
+	    sql.append(", MANDATOS.");
+	    sql.append(CenMandatosCuentasBancariasBean.C_USUMODIFICACION);	    
+	    this.sqlMandatosSelect = sql;
+	    
+	    sql = new StringBuilder();
+	    sql.append(" FROM ");
+	    sql.append(CenMandatosCuentasBancariasBean.T_NOMBRETABLA);
+	    sql.append(" MANDATOS, ");
+	    sql.append(CenCuentasBancariasBean.T_NOMBRETABLA);
+	    sql.append(" CUENTAS, ");
+	    sql.append(CenBancosBean.T_NOMBRETABLA);
+	    sql.append(" BANCOS ");
+	    this.sqlMandatosFrom = sql;
+	    
+	    sql = new StringBuilder();
+	    sql.append(" WHERE CUENTAS.");
+	    sql.append(CenCuentasBancariasBean.C_IDINSTITUCION);
+	    sql.append(" = MANDATOS.");
+	    sql.append(CenMandatosCuentasBancariasBean.C_IDINSTITUCION);
+	    sql.append(" AND CUENTAS.");
+	    sql.append(CenCuentasBancariasBean.C_IDPERSONA);
+	    sql.append(" = MANDATOS.");
+	    sql.append(CenMandatosCuentasBancariasBean.C_IDPERSONA);
+	    sql.append(" AND CUENTAS.");
+	    sql.append(CenCuentasBancariasBean.C_IDCUENTA);
+	    sql.append(" = MANDATOS.");
+	    sql.append(CenMandatosCuentasBancariasBean.C_IDCUENTA);
+	    sql.append(" AND BANCOS.");
+	    sql.append(CenBancosBean.C_CODIGO);
+	    sql.append(" = CUENTAS.");
+	    sql.append(CenCuentasBancariasBean.C_CBO_CODIGO);
+	    this.sqlMandatosWhere = sql;
 	}
 
 	protected String[] getCamposBean() {
@@ -263,16 +350,26 @@ public class CenMandatosCuentasBancariasAdm extends MasterBeanAdministrador {
 	public Vector<CenMandatosCuentasBancariasBean> obtenerMandatos(Integer idInstitucion, Long idPersona, Integer idCuenta) throws ClsExceptions {
 		try {
 			// JPT: CEN_MANDATOS_CUENTASBANCARIAS UNION CEN_CUENTASBANCARIAS UNION CEN_BANCOS
-			String sql = this.sqlMandatosSelect + 
-						this.sqlMandatosFrom + 
-						this.sqlMandatosWhere +
-							" AND MANDATOS." + CenMandatosCuentasBancariasBean.C_IDINSTITUCION + " = " + idInstitucion +
-							" AND MANDATOS." + CenMandatosCuentasBancariasBean.C_IDPERSONA + " = " + idPersona + 
-							" AND MANDATOS." + CenMandatosCuentasBancariasBean.C_IDCUENTA + " = " + idCuenta;
+			StringBuffer sql = new StringBuffer();
+			sql.append(this.sqlMandatosSelect);
+			sql.append(this.sqlMandatosFrom);
+			sql.append(this.sqlMandatosWhere);
+			sql.append(" AND MANDATOS.");
+			sql.append(CenMandatosCuentasBancariasBean.C_IDINSTITUCION);
+			sql.append(" = ");
+			sql.append(idInstitucion);
+			sql.append(" AND MANDATOS.");
+			sql.append(CenMandatosCuentasBancariasBean.C_IDPERSONA);
+			sql.append(" = ");
+			sql.append(idPersona); 
+			sql.append(" AND MANDATOS.");
+			sql.append(CenMandatosCuentasBancariasBean.C_IDCUENTA);
+			sql.append(" = ");
+			sql.append(idCuenta);
 			
 			Vector<CenMandatosCuentasBancariasBean> vMandatos = null;
 			RowsContainer rc = new RowsContainer(); 												
-			if (rc.find(sql)) {        	   
+			if (rc.find(sql.toString())) {        	   
 				vMandatos = new Vector<CenMandatosCuentasBancariasBean>();
     			for (int i = 0; i < rc.size(); i++){
 					Row fila = (Row) rc.get(i);
@@ -368,14 +465,11 @@ public class CenMandatosCuentasBancariasAdm extends MasterBeanAdministrador {
 			throw new ClsExceptions (e, "Error al ejecutar el 'select' en B.D.");
 		}
 	}
-	public Hashtable getMandato(CenMandatosCuentasBancariasBean beanMandato,Boolean isFirmado) throws ClsExceptions {
-		Hashtable mandatoHashtable = null;
+	public Hashtable<String,Object> getMandato(CenMandatosCuentasBancariasBean beanMandato,Boolean isFirmado) throws ClsExceptions {
+		Hashtable<String,Object> mandatoHashtable = null;
 		try {
 			// JPT: CEN_MANDATOS_CUENTASBANCARIAS UNION CEN_CUENTASBANCARIAS UNION CEN_BANCOS
-			
-			
 			RowsContainer rc = new RowsContainer(); 												
-		
 			if (rc.find(getSqlObtenerMandato(beanMandato,isFirmado)) && rc.size()>0) {
 				Row fila = (Row) rc.get(0);
 				mandatoHashtable = fila.getRow();
@@ -387,18 +481,27 @@ public class CenMandatosCuentasBancariasAdm extends MasterBeanAdministrador {
 			throw new ClsExceptions (e, "Error al ejecutar el 'select' en B.D.");
 		}
 	}     	
-	public List<Hashtable> getMandatos(CenMandatosCuentasBancariasBean beanMandato,Boolean isFirmado) throws ClsExceptions {
-		List<Hashtable> mandatosList = null;
+	/**
+	 * 
+	 * @param beanMandato
+	 * @param isFirmado
+	 * @return
+	 * @throws ClsExceptions
+	 */
+	public List<Hashtable<String,Object>> getMandatos(CenMandatosCuentasBancariasBean beanMandato,Boolean isFirmado) throws ClsExceptions {
+		List<Hashtable<String,Object>> mandatosList = null;
 		try {
 			// JPT: CEN_MANDATOS_CUENTASBANCARIAS UNION CEN_CUENTASBANCARIAS UNION CEN_BANCOS
 			RowsContainer rc = new RowsContainer(); 												
-			mandatosList = new ArrayList<Hashtable>();
+			mandatosList = new ArrayList<Hashtable<String,Object>>();
 			if (rc.find(getSqlObtenerMandato(beanMandato,isFirmado)) && rc.size()>0) {
 				for (int i = 0; i < rc.size(); i++){
 					Row fila = (Row) rc.get(i);
-					mandatosList.add(fila.getRow());
+					Hashtable<String,Object> hMandato = fila.getRow();
+					String sFechaBaja = (String) UtilidadesHash.getString(hMandato, CenCuentasBancariasBean.C_FECHABAJA);
+					if (sFechaBaja==null)
+						mandatosList.add(hMandato);
 				}
-				
             }		
 			
 			return mandatosList;
