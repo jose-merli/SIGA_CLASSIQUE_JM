@@ -161,6 +161,7 @@ public class ClsConstants {
 	public static final int TIPO_DIRECCION_GUIA	    	= 5;
 	public static final int TIPO_DIRECCION_GUARDIA  	= 6;
 	public static final int TIPO_DIRECCION_FACTURACION  = 8;
+	public static final int TIPO_DIRECCION_TRASPASO_OJ  = 9;
 	public static final int TIPO_DIRECCION_PUBLICA		= 4;
 	
 	// Tipo Institucion

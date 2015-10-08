@@ -44,6 +44,7 @@ public class Direccion {
 		// Variables generales
 		Direccion dir = new Direccion();		
 		String idDireccionesCensoWeb="";
+		String idDireccionesTraspasoOJ="";
 		String idDireccionesFacturacion="";
 		
 		CenDireccionesAdm direccionesAdm = new CenDireccionesAdm (usr);
@@ -52,6 +53,7 @@ public class Direccion {
 		// Datos para las preguntas al usuario
 		String modificarPreferencias = null;
 		String modificarDireccionesCensoWeb = null;
+		String modificarDireccionesTraspasoOJ = null;
 		String modificarDireccionesFacturacion = null;
 		String control = null;
 		
@@ -83,6 +85,11 @@ public class Direccion {
 				if (request.getParameter("modificarDireccionesCensoWeb")!=null){
 					modificarDireccionesCensoWeb = request.getParameter("modificarDireccionesCensoWeb");
 				} // fin datos preguntas
+				if (request.getParameter("modificarDireccionesTraspasoOJ")!=null){
+					modificarDireccionesTraspasoOJ = request.getParameter("modificarDireccionesTraspasoOJ");
+				} // fin datos preguntas
+				
+				
 				if (request.getParameter("modificarDireccionesFacturacion")!=null){
 					modificarDireccionesFacturacion = request.getParameter("modificarDireccionesFacturacion");
 				}
@@ -98,6 +105,7 @@ public class Direccion {
 					if(!idDireccionesPreferentes.equals("")){
 						request.setAttribute("idDireccionesPreferentes", idDireccionesPreferentes);
 						request.setAttribute("idDireccionesFacturacion", idDireccionesFacturacion);
+						request.setAttribute("idDireccionesTraspasoOJ", idDireccionesTraspasoOJ);
 						request.setAttribute("idDireccionesCensoWeb", idDireccionesCensoWeb);
 						request.setAttribute("control", "0");
 						dir.setConfirmacionPregunta(true);
@@ -107,14 +115,19 @@ public class Direccion {
 				}
 				
 				//comprobando que el cliente no tenga ya una direccion de tipo guardia si es asi no se permite anyadir la direccion
-				if ((modificarDireccionesCensoWeb!=null && modificarDireccionesCensoWeb.equals("1")) ||(modificarDireccionesFacturacion!=null && modificarDireccionesFacturacion.equals("1")) ){
+				
+				if ((modificarDireccionesCensoWeb!=null && modificarDireccionesCensoWeb.equals("1")) ||(modificarDireccionesFacturacion!=null && modificarDireccionesFacturacion.equals("1")) || (modificarDireccionesTraspasoOJ!=null && modificarDireccionesTraspasoOJ.equals("1")) ){
 					idDireccionesCensoWeb=request.getParameter("idDireccionesCensoWeb");
+					idDireccionesTraspasoOJ=request.getParameter("idDireccionesTraspasoOJ");
 					idDireccionesFacturacion=request.getParameter("idDireccionesFacturacion");
+					
 				}else {		
 					idDireccionesCensoWeb=direccionesAdm.obtenerTipoDireccion(idPersona.toString(),idInstitucionPersona.toString (), tiposdireciones, idDireccion,ClsConstants.TIPO_DIRECCION_CENSOWEB);			  
+					idDireccionesTraspasoOJ=direccionesAdm.obtenerTipoDireccion(idPersona.toString(),idInstitucionPersona.toString (), tiposdireciones, idDireccion,ClsConstants.TIPO_DIRECCION_TRASPASO_OJ);
 					idDireccionesFacturacion=direccionesAdm.obtenerTipoDireccion(idPersona.toString (),idInstitucionPersona.toString (), tiposdireciones, idDireccion,ClsConstants.TIPO_DIRECCION_FACTURACION);
-					if  (!idDireccionesCensoWeb.equals("") ||!idDireccionesFacturacion.equals("")){			
+					if  (!idDireccionesCensoWeb.equals("") ||!idDireccionesFacturacion.equals("")||!idDireccionesTraspasoOJ.equals("")){			
 						request.setAttribute("idDireccionesFacturacion", idDireccionesFacturacion);			
+						request.setAttribute("idDireccionesTraspasoOJ", idDireccionesTraspasoOJ);
 						request.setAttribute("idDireccionesCensoWeb", idDireccionesCensoWeb);
 						
 						request.setAttribute("control", "1");
@@ -127,7 +140,7 @@ public class Direccion {
 			}
 			
 			// Comprobar tipo direccion
-			comprobarTipoDireccion(tipos, beanDir, direccionesAdm, dir, control, idDireccionesCensoWeb, idPersona, idInstitucionPersona, idDireccionesPreferentes, tipoDirAdm, modificarPreferencias, modificarDireccionesCensoWeb,modificarDireccionesFacturacion,idDireccionesFacturacion,tiposDireccionAValidarIntegers);
+			comprobarTipoDireccion(tipos, beanDir, direccionesAdm, dir, control, idDireccionesCensoWeb, idPersona, idInstitucionPersona, idDireccionesPreferentes, tipoDirAdm, modificarPreferencias, modificarDireccionesCensoWeb,modificarDireccionesFacturacion,idDireccionesFacturacion,modificarDireccionesTraspasoOJ,idDireccionesTraspasoOJ,tiposDireccionAValidarIntegers);
 			
 			//estableciendo los datos del tipo de direccion
 			CenDireccionTipoDireccionBean vBeanTipoDir [] = establecerTipoDireccion(tipos);
@@ -205,6 +218,7 @@ public class Direccion {
 		Direccion dir = new Direccion();	
 		String idDireccionesCensoWeb="";
 		String idDireccionesFacturacion="";
+		String idDireccionesTraspasoOJ="";
 
 		try	{
 			
@@ -225,6 +239,7 @@ public class Direccion {
 			String modificarPreferencias = null;
 			String modificarDireccionesCensoWeb = null;
 			String modificarDireccionesFacturacion = null;
+			String modificarDireccionesTraspasoOJ = null;
 			String control = null;
 			
 			//Solo se utiliza el parametro reques cuando se necesita confirmacion por parte del usuario
@@ -242,6 +257,9 @@ public class Direccion {
 				if (request.getParameter("modificarDireccionesCensoWeb")!=null){
 					modificarDireccionesCensoWeb = request.getParameter("modificarDireccionesCensoWeb");
 				} // fin datos preguntas
+				if (request.getParameter("modificarDireccionesTraspasoOJ")!=null){
+					modificarDireccionesTraspasoOJ = request.getParameter("modificarDireccionesTraspasoOJ");
+				}
 				if (request.getParameter("modificarDireccionesFacturacion")!=null){
 					modificarDireccionesFacturacion = request.getParameter("modificarDireccionesFacturacion");
 				}
@@ -258,6 +276,7 @@ public class Direccion {
 					    request.setAttribute("idDireccionesPreferentes", idDireccionesPreferentes);
 						request.setAttribute("idDireccionesCensoWeb", idDireccionesCensoWeb);
 						request.setAttribute("idDireccionesFacturacion", idDireccionesFacturacion);
+						request.setAttribute("idDireccionesTraspasoOJ", idDireccionesTraspasoOJ);
 						
 						request.setAttribute("control", "0");
 						dir.setConfirmacionPregunta(true);
@@ -270,16 +289,19 @@ public class Direccion {
 				
 				//esta es la parte que comprobra si tiene una dirección de tipo censoweb.
 		
-				if ((modificarDireccionesCensoWeb!=null && modificarDireccionesCensoWeb.equals("1")) ||(modificarDireccionesFacturacion!=null && modificarDireccionesFacturacion.equals("1")) ){
+				if ((modificarDireccionesCensoWeb!=null && modificarDireccionesCensoWeb.equals("1")) ||(modificarDireccionesFacturacion!=null && modificarDireccionesFacturacion.equals("1"))||(modificarDireccionesTraspasoOJ!=null && modificarDireccionesTraspasoOJ.equals("1")) ){
 					idDireccionesCensoWeb=request.getParameter("idDireccionesCensoWeb");				
 					idDireccionesFacturacion=request.getParameter("idDireccionesFacturacion");
+					idDireccionesTraspasoOJ=request.getParameter("idDireccionesTraspasoOJ");
 				
 				}else {		
 					idDireccionesCensoWeb=direccionesAdm.obtenerTipoDireccion(idPersona.toString (),idInstitucionPersona.toString (), tiposdireciones, idDireccion,ClsConstants.TIPO_DIRECCION_CENSOWEB);			  
+					idDireccionesTraspasoOJ=direccionesAdm.obtenerTipoDireccion(idPersona.toString (),idInstitucionPersona.toString (), tiposdireciones, idDireccion,ClsConstants.TIPO_DIRECCION_TRASPASO_OJ);
 					idDireccionesFacturacion=direccionesAdm.obtenerTipoDireccion(idPersona.toString (),idInstitucionPersona.toString (), tiposdireciones, idDireccion,ClsConstants.TIPO_DIRECCION_FACTURACION);
-					if  (!idDireccionesCensoWeb.equals("") ||!idDireccionesFacturacion.equals("")){			
+					if  (!idDireccionesCensoWeb.equals("") ||!idDireccionesFacturacion.equals("")||!idDireccionesTraspasoOJ.equals("")){			
 						request.setAttribute("idDireccionesCensoWeb", idDireccionesCensoWeb);
 						request.setAttribute("idDireccionesFacturacion", idDireccionesFacturacion);
+						request.setAttribute("idDireccionesTraspasoOJ", idDireccionesTraspasoOJ);
 						request.setAttribute("control", "1");
 						request.setAttribute("idDireccionesPreferentes", idDireccionesPreferentes);
 						dir.setConfirmacionPregunta(true);
@@ -291,7 +313,7 @@ public class Direccion {
 						
 			if(!tiposDir.equals("")){
 				// Comprobar tipo direccion
-				comprobarTipoDireccion(tipos, beanDir, direccionesAdm, dir, control, idDireccionesCensoWeb, idPersona, idInstitucionPersona, idDireccionesPreferentes, tipoDirAdm, modificarPreferencias, modificarDireccionesCensoWeb,modificarDireccionesFacturacion,idDireccionesFacturacion,tiposDireccionAValidarIntegers);
+				comprobarTipoDireccion(tipos, beanDir, direccionesAdm, dir, control, idDireccionesCensoWeb, idPersona, idInstitucionPersona, idDireccionesPreferentes, tipoDirAdm, modificarPreferencias, modificarDireccionesCensoWeb,modificarDireccionesFacturacion,idDireccionesFacturacion,modificarDireccionesTraspasoOJ,idDireccionesTraspasoOJ,tiposDireccionAValidarIntegers);
 
 				//estableciendo los datos del tipo de direccion
 				vBeanTipoDir = establecerTipoDireccion(tipos);
@@ -425,7 +447,9 @@ public class Direccion {
 
 	private static void comprobarTipoDireccion(String [] tipos,CenDireccionesBean beanDir, CenDireccionesAdm direccionesAdm, Direccion dir, String control, 
 			String idDireccionesCensoWeb, Long idPersona, Integer idInstitucionPersona, String idDireccionesPreferentes, CenDireccionTipoDireccionAdm tipoDirAdm, 
-			String modificarPreferencias, String modificarDireccionesCensoWeb, String modificarDireccionesFacturacion, String idDireccionesFacturacion,List<Integer> tiposDireccionAValidarIntegers) throws SIGAException, ClsExceptions, IllegalStateException, SecurityException, SystemException{
+			String modificarPreferencias, 
+			String modificarDireccionesCensoWeb, String modificarDireccionesFacturacion, String idDireccionesFacturacion, String modificarDireccionesTraspasoOJ, String idDireccionesTraspasoOJ,
+			List<Integer> tiposDireccionAValidarIntegers) throws SIGAException, ClsExceptions, IllegalStateException, SecurityException, SystemException{
 	
 		String preferenteModif = "";
 		int j=0;
@@ -472,6 +496,20 @@ public class Direccion {
 						cambioDirecciones (beanDir,sql1, tipo, idDireccionesCensoWeb, tipoDirAdm, direccionesAdm);
 					}
 				}
+			}else if (Integer.parseInt(tipos[i]) == ClsConstants.TIPO_DIRECCION_TRASPASO_OJ){//dirección de tipo censoweb					
+				String sql1 = direccionesAdm.comprobarTipoDireccion(tipo, beanDir.getIdInstitucion().toString(), beanDir.getIdPersona().toString());
+				cambioDirecciones(beanDir,sql1, tipo, idDireccionesTraspasoOJ, tipoDirAdm, direccionesAdm);
+				if ((modificarPreferencias!=null && modificarPreferencias.equals("1")) || (modificarDireccionesTraspasoOJ!=null && modificarDireccionesTraspasoOJ.equals("1"))){
+					
+					if (control != null && control.equals("0")){
+						if (!preferenteModif.equals("")){
+							
+							direccionesAdm.modificarDireccionesPreferentes(idPersona, idInstitucionPersona.toString (), idDireccionesPreferentes, preferenteModif,tiposDireccionAValidarIntegers);	
+						}
+					}else{ 
+						cambioDirecciones (beanDir,sql1, tipo, idDireccionesTraspasoOJ, tipoDirAdm, direccionesAdm);
+					}
+				}
 			} else if (Integer.parseInt(tipos[i]) == ClsConstants.TIPO_DIRECCION_FACTURACION) {
 				String sql1 = direccionesAdm.comprobarTipoDireccion(tipo, beanDir.getIdInstitucion().toString(), beanDir.getIdPersona().toString());
 				cambioDirecciones (beanDir,sql1, tipo, idDireccionesFacturacion, tipoDirAdm, direccionesAdm);
@@ -488,7 +526,7 @@ public class Direccion {
 				
 			}else { 
 				if (!preferenteModif.equals("")){
-					 if (!idDireccionesCensoWeb.equals("") &&(!idDireccionesPreferentes.equals(""))){
+					 if ((!idDireccionesCensoWeb.equals("") ||!idDireccionesTraspasoOJ.equals("")) &&(!idDireccionesPreferentes.equals(""))){
 						 direccionesAdm.modificarDireccionesPreferentes(idPersona, idInstitucionPersona.toString (), idDireccionesPreferentes, preferenteModif,tiposDireccionAValidarIntegers);
 					 }
 				
@@ -555,12 +593,14 @@ public class Direccion {
 			tiposDireccionAValidarIntegers.add(ClsConstants.TIPO_DIRECCION_CENSOWEB);
 			//En metodo que las validad mira si es ejerciente o no ejerciente para validar la de despacho y la de guia judicial
 			tiposDireccionAValidarIntegers.add(ClsConstants.TIPO_DIRECCION_DESPACHO);
+			tiposDireccionAValidarIntegers.add(ClsConstants.TIPO_DIRECCION_TRASPASO_OJ);
 			tiposDireccionAValidarIntegers.add(ClsConstants.TIPO_DIRECCION_GUIA);	
 		}else{
 			//Para no identyificados ponemos la restriccion maxima, por si acaso
 			tiposDireccionAValidarIntegers.add(ClsConstants.TIPO_DIRECCION_FACTURACION);
 			tiposDireccionAValidarIntegers.add(ClsConstants.TIPO_DIRECCION_CENSOWEB);
 			tiposDireccionAValidarIntegers.add(ClsConstants.TIPO_DIRECCION_DESPACHO);
+			tiposDireccionAValidarIntegers.add(ClsConstants.TIPO_DIRECCION_TRASPASO_OJ);
 			tiposDireccionAValidarIntegers.add(ClsConstants.TIPO_DIRECCION_GUIA);	
 		}
 		return tiposDireccionAValidarIntegers;

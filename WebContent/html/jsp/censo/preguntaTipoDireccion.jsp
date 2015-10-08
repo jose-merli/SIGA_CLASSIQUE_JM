@@ -20,17 +20,26 @@
 	
 	String idDireccionesCensoWeb=(String)request.getAttribute("idDireccionesCensoWeb") ;
 	String idDireccionesFacturacion=(String)request.getAttribute("idDireccionesFacturacion") ;
+	String idDireccionesTraspasoOJ=(String)request.getAttribute("idDireccionesTraspasoOJ") ;
 	String modo=(String)request.getAttribute("modo");
 	String modificarPre=(String)request.getAttribute("idDireccionesPreferentes") ;
 	String control=(String)request.getAttribute("control") ;
 
 	String recurso = "";
-	if(idDireccionesCensoWeb!=null && !idDireccionesCensoWeb.equals("")&&idDireccionesFacturacion!=null && !idDireccionesFacturacion.equals("")){
+	if(idDireccionesCensoWeb!=null && !idDireccionesCensoWeb.equals("")&&idDireccionesFacturacion!=null && !idDireccionesFacturacion.equals("")&&idDireccionesTraspasoOJ!=null && !idDireccionesTraspasoOJ.equals("")){
+		recurso = "messages.censo.direcciones.errorCensoWebTraspasoOJyFacturacion";
+	}else if(idDireccionesCensoWeb!=null && !idDireccionesCensoWeb.equals("")&&idDireccionesFacturacion!=null && !idDireccionesFacturacion.equals("")){
 		recurso = "messages.censo.direcciones.errorCensoWebyFacturacion";
+	}else if(idDireccionesTraspasoOJ!=null && !idDireccionesTraspasoOJ.equals("")&&idDireccionesFacturacion!=null && !idDireccionesFacturacion.equals("")){
+		recurso = "messages.censo.direcciones.errorTraspasoOJFacturacion";
+	}else if(idDireccionesCensoWeb!=null && !idDireccionesCensoWeb.equals("")&&idDireccionesTraspasoOJ!=null && !idDireccionesTraspasoOJ.equals("")){
+		recurso = "messages.censo.direcciones.errorCensoWebyTraspasoOJ";
 	}else if(idDireccionesCensoWeb!=null && !idDireccionesCensoWeb.equals("")){
 		recurso = "messages.censo.direcciones.errorCensoWeb";
 	}else if(idDireccionesFacturacion!=null && !idDireccionesFacturacion.equals("")){
 		recurso = "messages.censo.direcciones.errorFacturacion";
+	}else if(idDireccionesTraspasoOJ!=null && !idDireccionesTraspasoOJ.equals("")){
+		recurso = "messages.censo.direcciones.errorTraspasoOJ";
 	}
 
 %>
@@ -47,16 +56,26 @@
 			if (confirm(type)) {
 				parent.document.getElementById("idDireccionesCensoWeb").value="<%=idDireccionesCensoWeb%>";
 				parent.document.getElementById("idDireccionesFacturacion").value="<%=idDireccionesFacturacion%>";
+				parent.document.getElementById("idDireccionesTraspasoOJ").value="<%=idDireccionesTraspasoOJ%>";
 				parent.document.getElementById("modificarPreferencias").value="<%=modificarPre%>";
 			  	parent.document.getElementById("control").value="<%=control%>";
 			  	parent.document.getElementById("modo").value="<%=modo%>";
 			  	<%
-				if(idDireccionesCensoWeb!=null && !idDireccionesCensoWeb.equals("")&&idDireccionesFacturacion!=null && !idDireccionesFacturacion.equals("")){ %>
+			  	
+			  	if(idDireccionesCensoWeb!=null && !idDireccionesCensoWeb.equals("")&&idDireccionesFacturacion!=null && !idDireccionesFacturacion.equals("")&&idDireccionesTraspasoOJ!=null && !idDireccionesTraspasoOJ.equals("")){%>
+			  		parent.actualizarCensoTraspasoOJFacturacion();
+			  	<%}else if(idDireccionesCensoWeb!=null && !idDireccionesCensoWeb.equals("")&&idDireccionesFacturacion!=null && !idDireccionesFacturacion.equals("")){ %>
 					parent.actualizarCensoFacturacion();
+				<%}else if(idDireccionesTraspasoOJ!=null && !idDireccionesTraspasoOJ.equals("")&&idDireccionesFacturacion!=null && !idDireccionesFacturacion.equals("")){%>
+					parent.actualizarTraspasoOJFacturacion();
+				<%}else if(idDireccionesCensoWeb!=null && !idDireccionesCensoWeb.equals("")&&idDireccionesTraspasoOJ!=null && !idDireccionesTraspasoOJ.equals("")){%>
+					parent.actualizarCensoWebTraspasoOJ();
 				<%}else if(idDireccionesCensoWeb!=null && !idDireccionesCensoWeb.equals("")){%>
 					parent.actualizarCenso();
 				<%}else if(idDireccionesFacturacion!=null && !idDireccionesFacturacion.equals("")){%>
 					parent.actualizarFacturacion();
+				<%}else if(idDireccionesTraspasoOJ!=null && !idDireccionesTraspasoOJ.equals("")){%>
+					parent.actualizarTraspasoOJ();
 				<%}%>
 			  	
 			  	

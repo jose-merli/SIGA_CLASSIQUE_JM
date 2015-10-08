@@ -666,6 +666,7 @@
 	   	jQuery("#checkTipoDireccion_6").attr("disabled","disabled");
 	   	jQuery("#checkTipoDireccion_7").attr("disabled","disabled");
 	   	jQuery("#checkTipoDireccion_8").attr("disabled","disabled");
+	   	jQuery("#checkTipoDireccion_9").attr("disabled","disabled");
 
 	}	
 	  	
@@ -706,6 +707,7 @@
 	   	jQuery("#checkTipoDireccion_6").removeAttr("disabled");
 	   	jQuery("#checkTipoDireccion_7").removeAttr("disabled");
 	   	jQuery("#checkTipoDireccion_8").removeAttr("disabled");
+	   	jQuery("#checkTipoDireccion_9").removeAttr("disabled");
 
 	}		
 
@@ -747,6 +749,7 @@
 		document.getElementById("checkTipoDireccion_6").checked = "";
 		document.getElementById("checkTipoDireccion_7").checked = "";
 		document.getElementById("checkTipoDireccion_8").checked = "";
+		document.getElementById("checkTipoDireccion_9").checked = "";
 
 		//Datos direccion
 		jQuery("#domicilio").removeAttr("disabled");
@@ -779,6 +782,7 @@
 	   	jQuery("#checkTipoDireccion_6").removeAttr("disabled");
 	   	jQuery("#checkTipoDireccion_7").removeAttr("disabled");
 	   	jQuery("#checkTipoDireccion_8").removeAttr("disabled");
+	   	jQuery("#checkTipoDireccion_9").removeAttr("disabled");
 	}
 
 	var poblacionSeleccionada;
@@ -832,6 +836,7 @@
 		document.getElementById("checkTipoDireccion_6").checked = "";
 		document.getElementById("checkTipoDireccion_7").checked = "";
 		document.getElementById("checkTipoDireccion_8").checked = "";
+		document.getElementById("checkTipoDireccion_9").checked = "";
 
 		if(document.busquedaCensoModalForm.tipoDireccion.value != null && document.busquedaCensoModalForm.tipoDireccion.value != ""){
 			if (document.busquedaCensoModalForm.tipoDireccion.value.indexOf("1") >= 0)
@@ -850,6 +855,8 @@
 				document.getElementById("checkTipoDireccion_7").checked = "checked";
 			if (document.busquedaCensoModalForm.tipoDireccion.value.indexOf("8") >= 0)
 				document.getElementById("checkTipoDireccion_8").checked = "checked";			
+			if (document.busquedaCensoModalForm.tipoDireccion.value.indexOf("9") >= 0)
+				document.getElementById("checkTipoDireccion_9").checked = "checked";
 		}
 		
 		if(document.datosGeneralesForm.direcciones.value == "-1"){
@@ -1578,8 +1585,10 @@
 	<input type="hidden" id="control" 						name="control" 						value="">
 	<input type="hidden" id="modificarDireccionesCensoWeb" 	name="modificarDireccionesCensoWeb" value="">
 	<input type="hidden" id="modificarDireccionesFacturacion" 	name="modificarDireccionesFacturacion" value="">
+	<input type="hidden" id="modificarDireccionesTraspasoOJ" 	name="modificarDireccionesTraspasoOJ" value="">
 	<input type="hidden" id="idDireccionesPreferentes" 		name="idDireccionesPreferentes" 	value="" />
 	<input type="hidden" id="idDireccionesCensoWeb" 		name="idDireccionesCensoWeb" 		value="" />	
+	<input type="hidden" id="idDireccionesTraspasoOJ" 		name="idDireccionesTraspasoOJ" 		value="" />
 	<input type="hidden" id="idDireccionesFacturacion" 		name="idDireccionesFacturacion" 		value="" />
 	<input type="hidden" id="poblacionValue" value=""/>
 </html:form>
@@ -1697,6 +1706,7 @@
 		   	jQuery("#checkTipoDireccion_6").removeAttr("disabled");
 		   	jQuery("#checkTipoDireccion_7").removeAttr("disabled");
 		   	jQuery("#checkTipoDireccion_8").removeAttr("disabled");
+		   	jQuery("#checkTipoDireccion_9").removeAttr("disabled");
 		}
 	
 	function validarFormulario() {
@@ -1813,6 +1823,8 @@
 							tipoDir +="7,";
 						if (document.getElementById("checkTipoDireccion_8").checked)
 							tipoDir +="8";
+						if (document.getElementById("checkTipoDireccion_9").checked)
+							tipoDir +="9";
 
 						 //Se valida que se seleccione un tipoDireccion
 						if (tipoDir == ""){
@@ -2221,6 +2233,8 @@
 	    function actualizar(){			
 		    document.forms[1].modificarPreferencias.value="1";
 		    document.forms[1].modificarDireccionesCensoWeb.value="0";
+		    document.forms[1].modificarDireccionesTraspasoOJ.value="0";
+		    document.forms[1].modificarDireccionesFacturacion.value="0";
 		    document.forms[1].control.value="0";   
 		    document.forms[1].submit();
 			document.forms[1].modificarPreferencias.value="0";
@@ -2229,16 +2243,19 @@
 	    function actualizarCenso(){
 	    	document.forms[1].modificarDireccionesFacturacion.value="0";
 		    document.forms[1].modificarDireccionesCensoWeb.value="1";
+		    document.forms[1].modificarDireccionesTraspasoOJ.value="0";
 	    	document.forms[1].modificarPreferencias.value="1";	 
 	    	document.forms[1].control.value="1";   	
 		    document.forms[1].submit();
 			document.forms[1].modificarDireccionesCensoWeb.value="0";
+			document.forms[1].modificarDireccionesTraspasoOJ.value="0";
 			document.forms[1].modificarPreferencias.value="0";
 			
 	    }
 	    function actualizarFacturacion(){
 	    	document.forms[1].modificarDireccionesFacturacion.value="1";
 		    document.forms[1].modificarDireccionesCensoWeb.value="0";
+		    document.forms[1].modificarDireccionesTraspasoOJ.value="0";
 	    	document.forms[1].modificarPreferencias.value="1";	 
 	    	document.forms[1].control.value="1";   	
 		    document.forms[1].submit();
@@ -2249,14 +2266,64 @@
 	    function actualizarCensoFacturacion(){
 	    	document.forms[1].modificarDireccionesFacturacion.value="1";
 		    document.forms[1].modificarDireccionesCensoWeb.value="1";
+		    document.forms[1].modificarDireccionesTraspasoOJ.value="0";
 	    	document.forms[1].modificarPreferencias.value="1";	 
 	    	document.forms[1].control.value="1";   	
 		    document.forms[1].submit();
 			document.forms[1].modificarDireccionesCensoWeb.value="0";
+			document.forms[1].modificarDireccionesTraspasoOJ.value="0";
 			document.forms[1].modificarPreferencias.value="0";
 			document.forms[1].modificarDireccionesFacturacion.value="0";
 			
 	    }
+	    function actualizarCensoTraspasoOJFacturacion(){
+	    	document.forms[1].modificarDireccionesFacturacion.value="1";
+		    document.forms[1].modificarDireccionesCensoWeb.value="1";
+		    document.forms[1].modificarDireccionesTraspasoOJ.value="1";
+	    	document.forms[1].modificarPreferencias.value="1";	 
+	    	document.forms[1].control.value="1";   	
+		    document.forms[1].submit();
+			document.forms[1].modificarDireccionesCensoWeb.value="0";
+			document.forms[1].modificarDireccionesTraspasoOJ.value="0";
+			document.forms[1].modificarPreferencias.value="0";
+			document.forms[1].modificarDireccionesFacturacion.value="0";
+	    }
+		function actualizarTraspasoOJFacturacion(){
+			document.forms[1].modificarDireccionesFacturacion.value="1";
+		    document.forms[1].modificarDireccionesCensoWeb.value="0";
+		    document.forms[1].modificarDireccionesTraspasoOJ.value="1";
+	    	document.forms[1].modificarPreferencias.value="1";	 
+	    	document.forms[1].control.value="1";   	
+		    document.forms[1].submit();
+			document.forms[1].modificarDireccionesCensoWeb.value="0";
+			document.forms[1].modificarDireccionesTraspasoOJ.value="0";
+			document.forms[1].modificarPreferencias.value="0";
+			document.forms[1].modificarDireccionesFacturacion.value="0";
+	    }
+		function actualizarCensoWebTraspasoOJ(){
+			document.forms[1].modificarDireccionesFacturacion.value="0";
+		    document.forms[1].modificarDireccionesCensoWeb.value="1";
+		    document.forms[1].modificarDireccionesTraspasoOJ.value="1";
+	    	document.forms[1].modificarPreferencias.value="1";	 
+	    	document.forms[1].control.value="1";   	
+		    document.forms[1].submit();
+			document.forms[1].modificarDireccionesCensoWeb.value="0";
+			document.forms[1].modificarDireccionesTraspasoOJ.value="0";
+			document.forms[1].modificarPreferencias.value="0";
+			document.forms[1].modificarDireccionesFacturacion.value="0";
+	    }
+		function actualizarTraspasoOJ(){
+			document.forms[1].modificarDireccionesFacturacion.value="0";
+		    document.forms[1].modificarDireccionesCensoWeb.value="0";
+		    document.forms[1].modificarDireccionesTraspasoOJ.value="1";
+	    	document.forms[1].modificarPreferencias.value="1";	 
+	    	document.forms[1].control.value="1";   	
+		    document.forms[1].submit();
+			document.forms[1].modificarDireccionesCensoWeb.value="0";
+			document.forms[1].modificarDireccionesTraspasoOJ.value="0";
+			document.forms[1].modificarPreferencias.value="0";
+			document.forms[1].modificarDireccionesFacturacion.value="0";
+		}
 	    
 	</script>
 </body>

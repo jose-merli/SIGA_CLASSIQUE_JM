@@ -277,9 +277,10 @@
 	       	return validateMaxLength(form) && validateMask(form); 
 	    }
 	    
-	    function actualizar(){	     
+	    function actualizar(){			
 		    document.forms[0].modificarPreferencias.value="1";
 		    document.forms[0].modificarDireccionesCensoWeb.value="0";
+		    document.forms[0].modificarDireccionesTraspasoOJ.value="0";
 		    document.forms[0].modificarDireccionesFacturacion.value="0";
 		    document.forms[0].control.value="0";   
 		    document.forms[0].submit();
@@ -289,16 +290,19 @@
 	    function actualizarCenso(){
 	    	document.forms[0].modificarDireccionesFacturacion.value="0";
 		    document.forms[0].modificarDireccionesCensoWeb.value="1";
+		    document.forms[0].modificarDireccionesTraspasoOJ.value="0";
 	    	document.forms[0].modificarPreferencias.value="1";	 
 	    	document.forms[0].control.value="1";   	
 		    document.forms[0].submit();
 			document.forms[0].modificarDireccionesCensoWeb.value="0";
+			document.forms[0].modificarDireccionesTraspasoOJ.value="0";
 			document.forms[0].modificarPreferencias.value="0";
 			
 	    }
 	    function actualizarFacturacion(){
 	    	document.forms[0].modificarDireccionesFacturacion.value="1";
 		    document.forms[0].modificarDireccionesCensoWeb.value="0";
+		    document.forms[0].modificarDireccionesTraspasoOJ.value="0";
 	    	document.forms[0].modificarPreferencias.value="1";	 
 	    	document.forms[0].control.value="1";   	
 		    document.forms[0].submit();
@@ -309,15 +313,64 @@
 	    function actualizarCensoFacturacion(){
 	    	document.forms[0].modificarDireccionesFacturacion.value="1";
 		    document.forms[0].modificarDireccionesCensoWeb.value="1";
+		    document.forms[0].modificarDireccionesTraspasoOJ.value="0";
 	    	document.forms[0].modificarPreferencias.value="1";	 
 	    	document.forms[0].control.value="1";   	
 		    document.forms[0].submit();
 			document.forms[0].modificarDireccionesCensoWeb.value="0";
+			document.forms[0].modificarDireccionesTraspasoOJ.value="0";
 			document.forms[0].modificarPreferencias.value="0";
 			document.forms[0].modificarDireccionesFacturacion.value="0";
 			
 	    }
-	    
+	    function actualizarCensoTraspasoOJFacturacion(){
+	    	document.forms[0].modificarDireccionesFacturacion.value="1";
+		    document.forms[0].modificarDireccionesCensoWeb.value="1";
+		    document.forms[0].modificarDireccionesTraspasoOJ.value="1";
+	    	document.forms[0].modificarPreferencias.value="1";	 
+	    	document.forms[0].control.value="1";   	
+		    document.forms[0].submit();
+			document.forms[0].modificarDireccionesCensoWeb.value="0";
+			document.forms[0].modificarDireccionesTraspasoOJ.value="0";
+			document.forms[0].modificarPreferencias.value="0";
+			document.forms[0].modificarDireccionesFacturacion.value="0";
+	    }
+		function actualizarTraspasoOJFacturacion(){
+			document.forms[0].modificarDireccionesFacturacion.value="1";
+		    document.forms[0].modificarDireccionesCensoWeb.value="0";
+		    document.forms[0].modificarDireccionesTraspasoOJ.value="1";
+	    	document.forms[0].modificarPreferencias.value="1";	 
+	    	document.forms[0].control.value="1";   	
+		    document.forms[0].submit();
+			document.forms[0].modificarDireccionesCensoWeb.value="0";
+			document.forms[0].modificarDireccionesTraspasoOJ.value="0";
+			document.forms[0].modificarPreferencias.value="0";
+			document.forms[0].modificarDireccionesFacturacion.value="0";
+	    }
+		function actualizarCensoWebTraspasoOJ(){
+			document.forms[0].modificarDireccionesFacturacion.value="0";
+		    document.forms[0].modificarDireccionesCensoWeb.value="1";
+		    document.forms[0].modificarDireccionesTraspasoOJ.value="1";
+	    	document.forms[0].modificarPreferencias.value="1";	 
+	    	document.forms[0].control.value="1";   	
+		    document.forms[0].submit();
+			document.forms[0].modificarDireccionesCensoWeb.value="0";
+			document.forms[0].modificarDireccionesTraspasoOJ.value="0";
+			document.forms[0].modificarPreferencias.value="0";
+			document.forms[0].modificarDireccionesFacturacion.value="0";
+	    }
+		function actualizarTraspasoOJ(){
+			document.forms[0].modificarDireccionesFacturacion.value="0";
+		    document.forms[0].modificarDireccionesCensoWeb.value="0";
+		    document.forms[0].modificarDireccionesTraspasoOJ.value="1";
+	    	document.forms[0].modificarPreferencias.value="1";	 
+	    	document.forms[0].control.value="1";   	
+		    document.forms[0].submit();
+			document.forms[0].modificarDireccionesCensoWeb.value="0";
+			document.forms[0].modificarDireccionesTraspasoOJ.value="0";
+			document.forms[0].modificarPreferencias.value="0";
+			document.forms[0].modificarDireccionesFacturacion.value="0";
+		}
 	    
 	    function selPais(valor) {
 	    	
@@ -390,7 +443,7 @@
 					  if (tipoDir==6){
 			            checkGuardia = true;
 			          }
-			          if (tipoDir==3||tipoDir==2||tipoDir==5||tipoDir==8){					  
+			          if (tipoDir==3||tipoDir==2||tipoDir==5||tipoDir==8||tipoDir==9){					  
 					    checkPostal=true;						
 			          }
 				}
@@ -469,7 +522,7 @@
 					// si es de tipo correo, despacho o guia lo apunto
 					if(tipoDir == 3
 						|| tipoDir == 2
-						|| tipoDir == 5) {
+						|| tipoDir == 5|| tipoDir == 9) {
 						
 						checkPostal=true;
 					}
@@ -708,7 +761,7 @@
 						checkGuardia=true;
 					}
 					// si es de tipo correo, despacho o guia lo apunto
-					if(tipoDir == 3 || tipoDir == 2	|| tipoDir == 5 || tipoDir == 8) {						
+					if(tipoDir == 3 || tipoDir == 2	|| tipoDir == 5 || tipoDir == 8|| tipoDir == 9) {						
 						checkPostal=true;
 					}						
 				}
@@ -996,12 +1049,16 @@
 			<input type="hidden" id="control" name="control" value="">
 			<input type="hidden" id="modificarDireccionesCensoWeb"
 				name="modificarDireccionesCensoWeb" value="">
+				<input type="hidden" id="modificarDireccionesTraspasoOJ"
+				name="modificarDireccionesTraspasoOJ" value="">
 				<input type="hidden" id="modificarDireccionesFacturacion"
 				name="modificarDireccionesFacturacion" value="">
 			<input type="hidden" id="idDireccionesPreferentes"
 				name="idDireccionesPreferentes" value="" />
 			<input type="hidden" id="idDireccionesCensoWeb"
 				name="idDireccionesCensoWeb" value="" />
+			<input type="hidden" id="idDireccionesTraspasoOJ"
+				name="idDireccionesTraspasoOJ" value="" />
 			<input type="hidden" id="idDireccionesFacturacion"
 				name="idDireccionesFacturacion" value="" />	
 			<html:hidden property="vieneDe" styleId="vieneDe" />
@@ -1035,10 +1092,10 @@
 										<siga:Idioma key="censo.datosDireccion.literal.tipoDireccion" />&nbsp;(*)
 									</td>
 									<td class="labelText" colspan="2">
-										<div style='height: 200px; width: 250px; overflow-x: auto; overflow-y: auto'>
+										<div style='height: 250px; width: 260px; overflow-x: auto; overflow-y: auto'>
 											<table align="left" border="0" width="100%">
-												<tr>
-													<td class="labelText" align="left">
+												
+													
 														<%
 															String valorCheck = "";
 															if ((vTipos != null) && (vTipos.size() > 0)) {
@@ -1047,8 +1104,8 @@
 																	CenTipoDireccionBean recurso = (CenTipoDireccionBean) vTipos.get(i - 1);
 																	Integer idTipoDireccion1 = (Integer) recurso.getIdTipoDireccion();
 																	
-																	if(idTipoDireccion1 == ClsConstants.TIPO_DIRECCION_CENSOWEB && tipoCliente.equals("1")){
-																		//NO SE PINTA EL CHECK DE TIPO DIRECCION CENSO WEB PARA NO COLEGIADOS TIPO PERSONAL (1)
+																	if((idTipoDireccion1 == ClsConstants.TIPO_DIRECCION_CENSOWEB || idTipoDireccion1 == ClsConstants.TIPO_DIRECCION_TRASPASO_OJ)&& tipoCliente.equals("1")){
+																		//NO SE PINTA EL CHECK DE TIPO DIRECCION CENSO WEB ni de traspaso a organos judiciales PARA NO COLEGIADOS TIPO PERSONAL (1)
 																		
 																	} else {
 																	
@@ -1061,19 +1118,24 @@
 																			}
 																		}
 															%> 
-																		<input type=checkbox name="checkTipoDireccion" id="checkTipoDireccion" value="<%=idTipoDireccion1%>"
-																			<%=activarCheck%> onclick="comprobarAsterico()"
-																			<%=desactivarCheckTipos%> /> 
-																		<%=UtilidadesString.mostrarDatoJSP(descripcion)%>
-															<br> 
+																		<tr>
+																			<td class="labelText" align="left" width="100%">
+																				<input type=checkbox name="checkTipoDireccion" id="checkTipoDireccion" value="<%=idTipoDireccion1%>"
+																					<%=activarCheck%> onclick="comprobarAsterico()"
+																					<%=desactivarCheckTipos%> /> 
+																				<%=UtilidadesString.mostrarDatoJSP(descripcion)%>
+																			</td>
+																			
+																		</tr>
+													 
 															<%
 																	}
 													 			}
 														 	}
 														 %>
 
-													</td>
-													<td class="labelText"/>
+													
+													
 												</tr>
 											</table>
 										</div>

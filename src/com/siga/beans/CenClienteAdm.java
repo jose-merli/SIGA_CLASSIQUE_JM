@@ -3804,13 +3804,13 @@ public class CenClienteAdm extends MasterBeanAdmVisible
 							direccionesObligatorias.remove(d);
 					}	
 					
-					tiposDir = ClsConstants.TIPO_DIRECCION_CENSOWEB + "," +ClsConstants.TIPO_DIRECCION_DESPACHO + "," + ClsConstants.TIPO_DIRECCION_GUIA;
+					tiposDir = ClsConstants.TIPO_DIRECCION_CENSOWEB + "," +ClsConstants.TIPO_DIRECCION_TRASPASO_OJ + ","+ClsConstants.TIPO_DIRECCION_DESPACHO + "," + ClsConstants.TIPO_DIRECCION_GUIA;
 				}else{
-					tiposDir = ClsConstants.TIPO_DIRECCION_CENSOWEB + "," +ClsConstants.TIPO_DIRECCION_DESPACHO + "," + ClsConstants.TIPO_DIRECCION_GUIA+ "," + ClsConstants.TIPO_DIRECCION_FACTURACION;
+					tiposDir = ClsConstants.TIPO_DIRECCION_CENSOWEB+ "," +ClsConstants.TIPO_DIRECCION_TRASPASO_OJ +  "," +ClsConstants.TIPO_DIRECCION_DESPACHO + "," + ClsConstants.TIPO_DIRECCION_GUIA+ "," + ClsConstants.TIPO_DIRECCION_FACTURACION;
 				}
 			
 			}else{
-					tiposDir = ClsConstants.TIPO_DIRECCION_CENSOWEB + "," +ClsConstants.TIPO_DIRECCION_DESPACHO + "," + ClsConstants.TIPO_DIRECCION_GUIA+ "," + ClsConstants.TIPO_DIRECCION_FACTURACION;
+					tiposDir = ClsConstants.TIPO_DIRECCION_CENSOWEB+ "," +ClsConstants.TIPO_DIRECCION_TRASPASO_OJ +  "," +ClsConstants.TIPO_DIRECCION_DESPACHO + "," + ClsConstants.TIPO_DIRECCION_GUIA+ "," + ClsConstants.TIPO_DIRECCION_FACTURACION;
 			}
 
 			// Se llama a la interfaz Direccion para actualizar una nueva direccion

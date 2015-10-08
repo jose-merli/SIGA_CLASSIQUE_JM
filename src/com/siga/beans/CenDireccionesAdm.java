@@ -895,6 +895,11 @@ public class CenDireccionesAdm extends MasterBeanAdmVisible
 				SIGAException sigaExp = new SIGAException ("messages.censo.direcciones.tipoCorreo");
 				throw sigaExp;
 			}
+			if (idTipoDireccionAValidarIntegers!=null && idTipoDireccionAValidarIntegers.contains( ClsConstants.TIPO_DIRECCION_TRASPASO_OJ) && this.getNumDirecciones(beanDir, ClsConstants.TIPO_DIRECCION_TRASPASO_OJ) < 1) {
+				SIGAException sigaExp = new SIGAException ("messages.censo.direcciones.traspaso.required");
+				throw sigaExp;
+			}
+			
 			
 			Integer estado = UtilidadesHash.getInteger(d, CenEstadoColegialBean.C_IDESTADO);
 
