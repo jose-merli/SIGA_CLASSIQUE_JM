@@ -499,7 +499,7 @@ public class CenMandatosCuentasBancariasAdm extends MasterBeanAdministrador {
 					Row fila = (Row) rc.get(i);
 					Hashtable<String,Object> hMandato = fila.getRow();
 					String sFechaBaja = (String) UtilidadesHash.getString(hMandato, CenCuentasBancariasBean.C_FECHABAJA);
-					if (sFechaBaja==null)
+					if (sFechaBaja==null || sFechaBaja.equals(""))
 						mandatosList.add(hMandato);
 				}
             }		
