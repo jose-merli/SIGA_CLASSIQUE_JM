@@ -587,6 +587,7 @@ public class Direccion {
 		}else if(tipoCliente.equals(ClsConstants.TIPO_ACCESO_PESTANAS_LETRADO)){
 			//Para el letrado la unica restriccion es que tenga drecion de censo web
 			tiposDireccionAValidarIntegers.add(ClsConstants.TIPO_DIRECCION_CENSOWEB);
+			tiposDireccionAValidarIntegers.add(ClsConstants.TIPO_DIRECCION_TRASPASO_OJ);
 		}else if(tipoCliente.equals(ClsConstants.TIPO_ACCESO_PESTANAS_COLEGIADO)){
 			//Para los colegiados deben tener
 			tiposDireccionAValidarIntegers.add(ClsConstants.TIPO_DIRECCION_FACTURACION);
