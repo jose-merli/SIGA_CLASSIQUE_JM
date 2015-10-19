@@ -224,21 +224,39 @@ public class PCAJGxmlResponse extends SIGAWSClientAbstract implements PCAJGConst
 					tipoPrestacion = new StringBuffer();
 					
 					DatosExpediente datosExpediente = expediente.getDatosExpediente();
-					numExpediente = datosExpediente.getCodigoExpediente().getNumExpediente();
-					anyoExpediente = datosExpediente.getCodigoExpediente().getAnyoExpediente();
 					
-					TramiteResolucion tramiteResolucion = expediente.getDatosTramitacionExpediente().getTramiteResolucion();
-					fechaEstado = tramiteResolucion.getIdentificacionTramite().getFechaEstado();
-					identificadorResolucion = tramiteResolucion.getIdentificadorResolucion();
-					codTipoResolucion = tramiteResolucion.getCodTipoResolucion();
-					codMotivoResolucion = tramiteResolucion.getCodMotivoResolucion();
-					intervaloIngresosRecursos = tramiteResolucion.getIntervaloIngresosRecursos();
-					
-					for (PrestacionesResolucion prestacionesResolucion : tramiteResolucion.getPrestacionesResolucionArray()) {
-						tipoPrestacion.append("\n" + prestacionesResolucion.getCodTipoPrestacion());
-						tipoPrestacion.append(" " + prestacionesResolucion.getDescTipoPrestacion());
+					if (datosExpediente.getCodigoExpedienteServicio() != null) {
+						String descError = "El expediente no se puede relacionar en el sistema. Se ha recibido el siguiente código expediente servicio (año/número)" +
+								" = " + datosExpediente.getCodigoExpedienteServicio().getAnyoExpedienteServicio() + "/" + datosExpediente.getCodigoExpedienteServicio().getNumExpedienteServicio();
+						escribeLogRemesa(descError);
+						rellenaErrorContenido(datosError, datosExpediente.getCodigoExpedienteServicio().getOrigenExpedienteServicio(), anyoExpediente, numExpediente, "CodigoExpedienteServicio", descError);
+					} else {
+						
+						numExpediente = datosExpediente.getCodigoExpediente().getNumExpediente();
+						anyoExpediente = datosExpediente.getCodigoExpediente().getAnyoExpediente();
+						
+						if (expediente.getDatosTramitacionExpediente() == null || expediente.getDatosTramitacionExpediente().getTramiteResolucion() == null) {
+							String descError = "No se ha recibido resolución para el expediente (año/número)" +
+									" = " + anyoExpediente + "/" + numExpediente;
+							escribeLogRemesa(descError);
+							rellenaErrorContenido(datosError, datosExpediente.getCodigoExpediente().getColegioExpediente(), anyoExpediente, numExpediente, "TramiteResolucion", descError);
+							
+						} else {
+							
+							TramiteResolucion tramiteResolucion = expediente.getDatosTramitacionExpediente().getTramiteResolucion();
+							fechaEstado = tramiteResolucion.getIdentificacionTramite().getFechaEstado();
+							identificadorResolucion = tramiteResolucion.getIdentificadorResolucion();
+							codTipoResolucion = tramiteResolucion.getCodTipoResolucion();
+							codMotivoResolucion = tramiteResolucion.getCodMotivoResolucion();
+							intervaloIngresosRecursos = tramiteResolucion.getIntervaloIngresosRecursos();
+							
+							for (PrestacionesResolucion prestacionesResolucion : tramiteResolucion.getPrestacionesResolucionArray()) {
+								tipoPrestacion.append("\n" + prestacionesResolucion.getCodTipoPrestacion());
+								tipoPrestacion.append(" " + prestacionesResolucion.getDescTipoPrestacion());
+							}
+							actualizaExpediente(idInstitucion, datosExpediente.getCodigoExpediente().getColegioExpediente(), anyoExpediente, numExpediente, fechaEstado, identificadorResolucion, codTipoResolucion, codMotivoResolucion, intervaloIngresosRecursos, tipoPrestacion.toString(), datosError);
+						}
 					}
-					actualizaExpediente(idInstitucion, datosExpediente.getCodigoExpediente().getColegioExpediente(), anyoExpediente, numExpediente, fechaEstado, identificadorResolucion, codTipoResolucion, codMotivoResolucion, intervaloIngresosRecursos, tipoPrestacion.toString(), datosError);
 				}
 				
 				if (datosError.getErrorContenidoArray() == null || datosError.getErrorContenidoArray().length == 0) {
@@ -420,9 +438,7 @@ public class PCAJGxmlResponse extends SIGAWSClientAbstract implements PCAJGConst
 	}
 
 
-	private void rellenaErrorContenido(DatosError datosError,
-			String colegioExpediente, int anyoExpediente, String numExpediente,
-			String campoError, String descError) {
+	private void rellenaErrorContenido(DatosError datosError, String colegioExpediente, int anyoExpediente, String numExpediente, String campoError, String descError) {
 		ErrorContenido errorContenido = datosError.addNewErrorContenido();
 		CodigoExpedienteError codExpError = errorContenido.addNewCodigoExpedienteError();
 		codExpError.setColegioExpediente(colegioExpediente);
