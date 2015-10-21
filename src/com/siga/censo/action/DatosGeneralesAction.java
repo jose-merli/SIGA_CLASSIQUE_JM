@@ -253,6 +253,9 @@ public class DatosGeneralesAction extends MasterAction {
 				
 					if (clienteOtraInstitucion < CenClienteAdm.TIPOCLIENTE_PROD_NOCPRO) { // No esta en otros colegios en produccion
 						request.setAttribute("BDATOSGENERALESEDITABLES", "true");
+					} else if (clienteOtraInstitucion == CenClienteAdm.TIPOCLIENTE_PROD_NOCPRO && // Es no colegiado en otro colegio
+							Integer.parseInt(idInstitucion) == ClsConstants.INSTITUCION_CGAE) { // Y estamos en CGAE
+						request.setAttribute("BDATOSGENERALESEDITABLES", "true");
 					}
 				} else { // es colegiado o letrado
 					if (clienteEstaInstitucion == CenClienteAdm.TIPOCLIENTE_PROD_RESPRO) {
