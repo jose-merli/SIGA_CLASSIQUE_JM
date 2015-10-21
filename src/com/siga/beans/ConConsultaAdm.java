@@ -861,7 +861,7 @@ public class ConConsultaAdm extends MasterBeanAdministrador {
 										
 									
 									sentencia = sentenciaAux+sentenciaAuxFin;
-									pos_ini = pos_iniEtiqueta+etiqueta.length();
+									pos_ini = pos_iniEtiqueta+sentenciaAux1.length();
 
 									j++;
 								}
