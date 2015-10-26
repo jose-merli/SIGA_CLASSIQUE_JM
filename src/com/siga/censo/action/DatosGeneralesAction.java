@@ -244,7 +244,7 @@ public class DatosGeneralesAction extends MasterAction {
 				if (idPersona.length() <= 4) { // Es Institucion
 					if (Integer.parseInt(idInstitucion) == ClsConstants.INSTITUCION_CGAE) {
 						request.setAttribute("BDATOSGENERALESEDITABLES", "true");
-					} else if (insAdm.getIdInstitucion(idPersona) == idInstitucion) {
+					} else if (idInstitucion.equalsIgnoreCase(insAdm.getIdInstitucion(idPersona))) {
 						request.setAttribute("BDATOSGENERALESEDITABLES", "true");
 					}
 				} else if (!tipo.equals("LETRADO") && 
