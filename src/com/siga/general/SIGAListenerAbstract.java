@@ -10,6 +10,7 @@ import javax.management.NotificationListener;
 import javax.servlet.ServletContextEvent;
 
 import org.apache.log4j.Logger;
+import org.redabogacia.sigaservices.app.AppConstants;
 import org.redabogacia.sigaservices.app.AppConstants.MODULO;
 import org.redabogacia.sigaservices.app.AppConstants.PARAMETRO;
 import org.redabogacia.sigaservices.app.autogen.model.GenParametros;
@@ -160,7 +161,7 @@ public abstract class SIGAListenerAbstract extends SIGAContextListenerAdapter im
 				
 				if (genParametros != null) {
 					for (GenParametros genParametro : genParametros) {
-						if ("1".equals(genParametro.getValor())) {
+						if (AppConstants.DB_TRUE.equals(genParametro.getValor())) {
 							execute(genParametro.getIdinstitucion());
 						}
 					}

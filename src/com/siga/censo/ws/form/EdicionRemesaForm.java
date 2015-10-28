@@ -29,12 +29,16 @@ public class EdicionRemesaForm extends MasterForm {
 	private String idincidencia = null;
 	private String idestadocolegiado = null;
 	private Short idEstadoenvio = null;
+	private Long tipoEnvio = null;
 	
 	private List<ValueKeyVO> tiposIdentificacion;
 	private List<ValueKeyVO> estadosColegiado;
 	private List<ValueKeyVO> incidenciasColegiado;
 	
 	private Integer incidencias;
+	private Integer countTotalColegiados;
+	private String umbral;
+	private Integer porcentajeCalculado;
 	
 	private boolean modificado = false;
 	
@@ -56,10 +60,23 @@ public class EdicionRemesaForm extends MasterForm {
 		idincidencia = null;
 		idestadocolegiado = null;
 		modificado = false;
+		tipoEnvio = null;
 	}
 		
 	
 	
+	public Long getTipoEnvio() {
+		return tipoEnvio;
+	}
+
+
+
+	public void setTipoEnvio(Long tipoEnvio) {
+		this.tipoEnvio = tipoEnvio;
+	}
+
+
+
 	public String getNumeroPeticion() {
 		return numeroPeticion;
 	}
@@ -260,6 +277,46 @@ public class EdicionRemesaForm extends MasterForm {
 	public void setModificado(boolean modificado) {
 		this.modificado = modificado;
 	}
+
+
+
+	public Integer getCountTotalColegiados() {
+		return countTotalColegiados;
+	}
+
+
+
+	public void setCountTotalColegiados(Integer countTotalColegiados) {
+		this.countTotalColegiados = countTotalColegiados;
+	}
+
+
+
+	public String getUmbral() {
+		return umbral;
+	}
+
+
+
+	public void setUmbral(String umbral) {
+		this.umbral = umbral;
+	}
+
+
+
+	public Integer getPorcentajeCalculado() {
+		return porcentajeCalculado;
+	}
+
+
+
+	public void setPorcentajeCalculado(Integer porcentajeCalculado) {
+		this.porcentajeCalculado = porcentajeCalculado;
+	}
+
+
+
+	
 
 
 }

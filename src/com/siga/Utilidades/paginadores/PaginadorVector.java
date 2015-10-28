@@ -28,6 +28,9 @@ public class PaginadorVector<E> extends PaginadorAdapter<E> {
 	private void inicializar() throws ClsExceptions {
 		if (datos != null) {
 			calculaPaginas(datos.size());
+			paginaFinalCache = ultimaPagina;
+			paginaInicialCache = 1;
+			setCache(1, datos.size());
 		} else {
 			calculaPaginas(0);
 		}

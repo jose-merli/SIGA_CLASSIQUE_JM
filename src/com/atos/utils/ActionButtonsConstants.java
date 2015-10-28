@@ -108,10 +108,9 @@ public enum ActionButtonsConstants {
 	PAGAR_ABONOS_BANCO("pgban","facturacion.abonosPagos.boton.pagoBanco","accionPagarBanco()",90),
 	PAGAR_ABONOS_CAJA("pgcaj","facturacion.abonosPagos.boton.pagoCaja","accionPagarCaja()",91),
 	DESCARGAR_PLANTILLA("dp","general.boton.descargar.plantilla","accionDescargarPlantilla()","idButtonDescPlant",92),
-	DESCARGAR_SEL ("dse","facturacion.facturasMasivo.descarga","accionDescargarSel()",93);
-	
+	DESCARGAR_SEL ("dse","facturacion.facturasMasivo.descarga","accionDescargarSel()",93),
+	DESCARTAR ("desc","general.botons.Descartar","accionArchivar()",76);
 
-	
     private final String valor;   
 	private final String label;   
     private final String accion;

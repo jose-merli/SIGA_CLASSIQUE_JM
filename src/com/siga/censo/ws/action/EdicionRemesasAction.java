@@ -2,27 +2,36 @@ package com.siga.censo.ws.action;
 
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Map;
 import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.log4j.Logger;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.redabogacia.sigaservices.app.AppConstants;
 import org.redabogacia.sigaservices.app.AppConstants.ECOM_CEN_MAESESTADOENVIO;
+import org.redabogacia.sigaservices.app.AppConstants.MODULO;
+import org.redabogacia.sigaservices.app.AppConstants.PARAMETRO;
 import org.redabogacia.sigaservices.app.autogen.model.EcomCenColegiado;
 import org.redabogacia.sigaservices.app.autogen.model.EcomCenDatos;
 import org.redabogacia.sigaservices.app.autogen.model.EcomCenDatosExample;
 import org.redabogacia.sigaservices.app.autogen.model.EcomCenDatosExample.Criteria;
 import org.redabogacia.sigaservices.app.autogen.model.EcomCenWsEnvio;
+import org.redabogacia.sigaservices.app.autogen.model.GenParametros;
 import org.redabogacia.sigaservices.app.services.cen.CenWSService;
 import org.redabogacia.sigaservices.app.services.cen.ws.EcomCenColegiadoService;
+import org.redabogacia.sigaservices.app.services.ecom.EcomColaService;
+import org.redabogacia.sigaservices.app.services.gen.GenParametrosService;
 import org.redabogacia.sigaservices.app.vo.EcomCenColegiadoVO;
 
 import com.atos.utils.ClsExceptions;
@@ -43,6 +52,8 @@ import es.satec.businessManager.BusinessManager;
 public class EdicionRemesasAction extends MasterAction {
 	
 	public static final String DATAPAGINADOR = "DATAPAGINADOR_LISTADO_COLEGIADOS";
+	
+	private static final Logger log = Logger.getLogger(EdicionRemesasAction.class);
 	
 	private enum camposExcelEnum {
     	NUM_COLEGIADO
@@ -87,6 +98,10 @@ public class EdicionRemesasAction extends MasterAction {
 					mapDestino = erroresCarga(mapping, miForm, request, response);
 				} else if (accion.equalsIgnoreCase("generaExcel")){							
 					mapDestino = generaExcel(mapping, miForm, request, response);					
+				} else if (accion.equalsIgnoreCase("actualizarCenso")){							
+					mapDestino = actualizarCenso(mapping, miForm, request, response);
+				} else if (accion.equalsIgnoreCase("actualizarCensoProgramado")){							
+					mapDestino = actualizarCensoProgramado(mapping, miForm, request, response);
 				} else {
 					return super.executeInternal(mapping,formulario,request,response);
 				}
@@ -167,27 +182,27 @@ public class EdicionRemesasAction extends MasterAction {
 		Criteria datosCriteria = ecomCenDatosExample.createCriteria();
 		
 		if (isNotnull(form.getNumeroColegiado())) {
-			datosCriteria.andNcolegiadoUpperLike(getCampoLike(form.getNumeroColegiado()));
+			datosCriteria.andNcolegiadoUpperLike(getCampoLike(form.getNumeroColegiado().trim()));
 		}
 		//nombre
 		if (isNotnull(form.getNombre())) {
-			datosCriteria.andNombreUpperLike(getCampoLike(form.getNombre()));
+			datosCriteria.andNombreUpperLike(getCampoLike(form.getNombre().trim()));
 		}
 		//apellido 1
 		if (isNotnull(form.getPrimerApellido())) {
-			datosCriteria.andApellido1UpperLike(getCampoLike(form.getPrimerApellido()));
+			datosCriteria.andApellido1UpperLike(getCampoLike(form.getPrimerApellido().trim()));
 		}
 		//apellido 2
 		if (isNotnull(form.getSegundoApellido())) {
-			datosCriteria.andApellido2UpperLike(getCampoLike(form.getSegundoApellido()));
+			datosCriteria.andApellido2UpperLike(getCampoLike(form.getSegundoApellido().trim()));
 		}
 		//tipo identificación
 		if (isNotnull(form.getIdTipoIdentificacion())) {
-			datosCriteria.andIdcensotipoidentificacionEqualTo(Short.valueOf(form.getIdTipoIdentificacion()));
+			datosCriteria.andIdcensotipoidentificacionEqualTo(Short.valueOf(form.getIdTipoIdentificacion().trim()));
 		}
 		//identificación
 		if (isNotnull(form.getIdentificacion())) {
-			datosCriteria.andNumdocumentoUpperLike(getCampoLike(form.getIdentificacion()));
+			datosCriteria.andNumdocumentoUpperLike(getCampoLike(form.getIdentificacion().trim()));
 		}
 		if (isNotnull(form.getIdestadocolegiado())) {
 			datosCriteria.andIdestadocolegiadoEqualTo(Short.valueOf(form.getIdestadocolegiado()));
@@ -245,6 +260,76 @@ public class EdicionRemesasAction extends MasterAction {
 		return verEditar("editar", formulario, request);		
 	}
 	
+	protected String actualizarCenso(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+		actualizaCenso(formulario, null);		
+//		return exitoRefresco("messages.actualizar.censo", request);
+		request.setAttribute("mensaje", "messages.actualizar.censo");
+		return verEditar("ver", formulario, request);
+	}
+	
+	protected String actualizarCensoProgramado(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+		try {
+			EdicionRemesaForm edicionRemesaForm = (EdicionRemesaForm) formulario;
+			
+			GenParametros genParametros = new GenParametros();
+			genParametros.setModulo(MODULO.CEN.name());
+			genParametros.setParametro(PARAMETRO.EXCEL_HORA_ACTUALIZA_CENSO.name());
+			genParametros.setIdinstitucion(edicionRemesaForm.getIdinstitucion());
+			
+			GenParametrosService genParametrosService = (GenParametrosService) getBusinessManager().getService(GenParametrosService.class);
+			genParametros = genParametrosService.getGenParametroInstitucionORvalor0(genParametros);
+			
+			String value = genParametros.getValor();
+			log.debug("La hora recibido por parámetro es: " + value);
+			
+			String[] horaMin = value.split(":");
+			String hora = horaMin[0];
+			String min = horaMin[1];
+			
+			Calendar cal = Calendar.getInstance();
+			cal.set(Calendar.HOUR_OF_DAY, Integer.parseInt(hora));
+			cal.set(Calendar.MINUTE, Integer.parseInt(min));
+			
+			if (Calendar.getInstance().getTimeInMillis() > cal.getTimeInMillis()) {
+				cal.add(Calendar.DAY_OF_MONTH, 1);
+			}
+		
+			actualizaCenso(formulario, cal.getTime());
+		} catch (Exception e) {
+			throwExcp("messages.general.error", e, null);
+		}
+				
+//		return exitoRefresco("messages.actualizar.censoProgramado", request);
+		request.setAttribute("mensaje", "messages.actualizar.censoProgramado");
+		return verEditar("ver", formulario, request);
+	}
+	
+	
+	private void actualizaCenso(MasterForm formulario, Date fechaEjecucion) throws SIGAException {
+		try {
+			
+			EdicionRemesaForm edicionRemesaForm = (EdicionRemesaForm) formulario;
+			
+			if (AppConstants.ECOM_CEN_MAESESTADOENVIO.PENDIENTE.getCodigo() == edicionRemesaForm.getIdEstadoenvio()) {
+			
+				//creamos el mapa de parámetros
+				Map<String, String> mapa = new HashMap<String, String>();
+				mapa.put(EcomCenWsEnvio.C_IDCENWSENVIO, edicionRemesaForm.getIdcensowsenvio().toString());
+				mapa.put(AppConstants.ENVIO_MAIL, Boolean.TRUE.toString());
+				
+				EcomColaService ecomColaService = (EcomColaService) getBusinessManager().getService(EcomColaService.class);	
+				ecomColaService.insertaColaProcesarEnvioCensoProgramado(mapa, edicionRemesaForm.getIdcensowsenvio(), fechaEjecucion);
+				
+				edicionRemesaForm.setIdEstadoenvio(AppConstants.ECOM_CEN_MAESESTADOENVIO.PROCESANDO.getCodigo());
+				edicionRemesaForm.setAccion("ver");
+			}
+		} catch (Exception e) {
+			throwExcp("messages.general.error", e, null);
+		}
+		
+	}
+
+
 	protected String generaExcel(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		Vector datos = new Vector();
 		String[] cabeceras = new String[camposExcelEnum.values().length];
@@ -318,11 +403,13 @@ public class EdicionRemesasAction extends MasterAction {
 			EdicionRemesaForm edicionRemesaForm = (EdicionRemesaForm) formulario;
 			HttpSession session = request.getSession();
 			
-			session.removeAttribute(DATAPAGINADOR);
-			
 			if (request.getParameter("volver") == null) {				
-				edicionRemesaForm.reset();
+				edicionRemesaForm.reset();				
 			}
+			
+			//debemos siempre borrar la paginación al editar o dar a volver 
+			//pq al volver puede que cambie el colegiado y no debe estar en memoria el antiguo
+			session.removeAttribute(DATAPAGINADOR);
 			
 			
 			// Recuperamos los datos del registro que hemos seleccionado
@@ -344,6 +431,7 @@ public class EdicionRemesasAction extends MasterAction {
 			CenInstitucionAdm institucionAdm = new CenInstitucionAdm(getUserBean(request));
 			edicionRemesaForm.setIdcensowsenvio(ecomCenWsEnvio.getIdcenwsenvio());
 			edicionRemesaForm.setNombreColegio(institucionAdm.getNombreInstitucion(ecomCenWsEnvio.getIdinstitucion().toString()));
+			edicionRemesaForm.setIdinstitucion(ecomCenWsEnvio.getIdinstitucion());
 			
 			edicionRemesaForm.setNumeroPeticion(ecomCenWsEnvio.getNumeropeticion());
 			edicionRemesaForm.setFechapeticion(GstDate.getFormatedDateShort(ecomCenWsEnvio.getFechacreacion()));

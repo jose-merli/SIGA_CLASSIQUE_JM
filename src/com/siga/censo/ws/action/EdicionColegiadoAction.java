@@ -20,6 +20,7 @@ import org.redabogacia.sigaservices.app.autogen.model.CenPais;
 import org.redabogacia.sigaservices.app.autogen.model.CenPoblaciones;
 import org.redabogacia.sigaservices.app.autogen.model.EcomCenColegiado;
 import org.redabogacia.sigaservices.app.autogen.model.EcomCenDatos;
+import org.redabogacia.sigaservices.app.autogen.model.EcomCenDatosIncidencias;
 import org.redabogacia.sigaservices.app.autogen.model.EcomCenDireccion;
 import org.redabogacia.sigaservices.app.autogen.model.EcomCenMaestroIncidenc;
 import org.redabogacia.sigaservices.app.services.cen.CenPaisService;
@@ -185,6 +186,8 @@ public class EdicionColegiadoAction extends MasterAction {
 			} else {
 				ecomCenDatos.setMediador(null);
 			}
+			//eliminamos el hash que tuviera
+			ecomCenDatos.setHash(null);
 			
 			EcomCenDireccion ecomCenDireccion = new EcomCenDireccion();
 	//		ecomCenDireccion.setIdcensodireccion(edicionColegiadoForm.getIdcensodireccion());
@@ -328,20 +331,22 @@ public class EdicionColegiadoAction extends MasterAction {
 			edicionColegiadoForm.setResidente(getCheckShort(ecomCenDatos.getResidente()));
 			
 			EcomCenDireccion ecomCenDireccion = cenWSService.getEcomCenDireccionesByPk(ecomCenDatos.getIdcensodireccion());
-			edicionColegiadoForm.setIdcensodireccion(ecomCenDatos.getIdcensodireccion());
-			edicionColegiadoForm.setPublicardireccion(getCheckShort(ecomCenDireccion.getPublicar()));
-			edicionColegiadoForm.setDesctipovia(getValue(ecomCenDireccion.getDesctipovia()));
-			edicionColegiadoForm.setDomicilio(getValue(ecomCenDireccion.getDomicilio()));
-			edicionColegiadoForm.setCodigopostal(getValue(ecomCenDireccion.getCodigopostal()));
-			if (ecomCenDireccion.getCodigopaisextranj() != null) {
-				edicionColegiadoForm.setCodigopaisextranj(getValue(ecomCenDireccion.getCodigopaisextranj()));
-			} else {
-				edicionColegiadoForm.setCodigopaisextranj(ClsConstants.ID_PAIS_ESPANA);
+			if (ecomCenDireccion != null) {
+				edicionColegiadoForm.setIdcensodireccion(ecomCenDatos.getIdcensodireccion());
+				edicionColegiadoForm.setPublicardireccion(getCheckShort(ecomCenDireccion.getPublicar()));
+				edicionColegiadoForm.setDesctipovia(getValue(ecomCenDireccion.getDesctipovia()));
+				edicionColegiadoForm.setDomicilio(getValue(ecomCenDireccion.getDomicilio()));
+				edicionColegiadoForm.setCodigopostal(getValue(ecomCenDireccion.getCodigopostal()));
+				if (ecomCenDireccion.getCodigopaisextranj() != null) {
+					edicionColegiadoForm.setCodigopaisextranj(getValue(ecomCenDireccion.getCodigopaisextranj()));
+				} else {
+					edicionColegiadoForm.setCodigopaisextranj(ClsConstants.ID_PAIS_ESPANA);
+				}
+									
+				edicionColegiadoForm.setCodigoprovincia(getValue(ecomCenDireccion.getCodigoprovincia()));
+				edicionColegiadoForm.setCodigopoblacion(getValue(ecomCenDireccion.getCodigopoblacion()));
+				edicionColegiadoForm.setDescripcionpoblacion(getValue(ecomCenDireccion.getDescripcionpoblacion()));
 			}
-								
-			edicionColegiadoForm.setCodigoprovincia(getValue(ecomCenDireccion.getCodigoprovincia()));
-			edicionColegiadoForm.setCodigopoblacion(getValue(ecomCenDireccion.getCodigopoblacion()));
-			edicionColegiadoForm.setDescripcionpoblacion(getValue(ecomCenDireccion.getDescripcionpoblacion()));
 			
 			edicionColegiadoForm.setIdestadocolegiado(ecomCenDatos.getIdestadocolegiado());
 			
@@ -360,7 +365,12 @@ public class EdicionColegiadoAction extends MasterAction {
 				}
 			}
 			
-			edicionColegiadoForm.setIncidencias(getDescripcionIncidenciasColegiado(incidencias));
+			
+			List<EcomCenDatosIncidencias> incidenciasdatos = cenWSService.getIncidenciasCenDatos(ecomCenDatos.getIdcensodatos());
+			
+			
+			//edicionColegiadoForm.setIncidencias(getDescripcionIncidenciasColegiado(incidencias));
+			edicionColegiadoForm.setIncidencias(getDescripcionIncidenciasColegiadoCenDatos(incidenciasdatos,incidencias));
 			
 			edicionColegiadoForm.setTiposIdentificacion(CombosCenWS.getTiposIdentificacion(getUserBean(request)));
 			edicionColegiadoForm.setSituacionesEjerciente(CombosCenWS.getSituacionesEjeciente(getUserBean(request)));
@@ -462,6 +472,26 @@ public class EdicionColegiadoAction extends MasterAction {
 		}
 		return descripciones;
 	}
+	
+	private List<String> getDescripcionIncidenciasColegiadoCenDatos(List<EcomCenDatosIncidencias> incidenciasdatos,List<EcomCenMaestroIncidenc> incidencias) {
+		List<String> descripciones = new ArrayList<String>();
+		
+		if (incidencias != null && incidencias.size() > 0) {	
+			for (EcomCenMaestroIncidenc ecomCenMaestroIncidenc : incidencias) {
+				for (EcomCenDatosIncidencias ecomCenIncidenc : incidenciasdatos) {
+					if(ecomCenIncidenc.getDetalleincidencia()!=null && ecomCenIncidenc.getIdcensomaestroincidencias().equals(ecomCenMaestroIncidenc.getIdcensomaestroincidencias())){
+						ecomCenMaestroIncidenc.setDescripcion(ecomCenIncidenc.getDetalleincidencia());
+						break;	
+					}
+				}
+				descripciones.add(ecomCenMaestroIncidenc.getDescripcion());
+			}
+		}
+		
+		return descripciones;
+	}
+	
+	
 
 	private List<EcomCenDatos> getDatos(EdicionColegiadoForm edicionColegiadoForm) {
 		CenWSService cenWSService = (CenWSService) BusinessManager.getInstance().getService(CenWSService.class);

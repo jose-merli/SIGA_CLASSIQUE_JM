@@ -2,6 +2,7 @@ package com.siga.censo.ws.action;
 
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 
@@ -12,17 +13,22 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.redabogacia.sigaservices.app.AppConstants;
+import org.redabogacia.sigaservices.app.AppConstants.MODULO;
+import org.redabogacia.sigaservices.app.AppConstants.PARAMETRO;
 import org.redabogacia.sigaservices.app.autogen.model.EcomCenDatosExample;
 import org.redabogacia.sigaservices.app.autogen.model.EcomCenWsEnvioExample;
+import org.redabogacia.sigaservices.app.autogen.model.GenParametros;
+import org.redabogacia.sigaservices.app.exceptions.ValidationException;
 import org.redabogacia.sigaservices.app.model.EcomCenWsEnvioExtended;
+import org.redabogacia.sigaservices.app.services.cen.CenInstitucionService;
 import org.redabogacia.sigaservices.app.services.cen.CenWSService;
+import org.redabogacia.sigaservices.app.services.gen.GenParametrosService;
 
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.GstDate;
 import com.siga.Utilidades.UtilidadesBDAdm;
 import com.siga.Utilidades.paginadores.PaginadorVector;
 import com.siga.beans.CenInstitucionAdm;
-import com.siga.censo.service.CensoService;
 import com.siga.censo.ws.form.BusquedaRemesasForm;
 import com.siga.censo.ws.form.EdicionRemesaForm;
 import com.siga.censo.ws.util.CombosCenWS;
@@ -78,6 +84,12 @@ public class BusquedaRemesasAction extends MasterAction {
 		
 		BusquedaRemesasForm busquedaRemesasForm = (BusquedaRemesasForm) formulario;
 		busquedaRemesasForm.reset();
+		request.getSession().removeAttribute(DATAPAGINADOR);
+		
+		Calendar cal = Calendar.getInstance();
+		cal.add(Calendar.MONTH, -2);
+				
+		busquedaRemesasForm.setFechaPeticionDesde(AppConstants.DATE_FORMAT.format(cal.getTime()));
 		
 		return abrirAvanzada(mapping, formulario, request, response);
 		
@@ -129,13 +141,12 @@ public class BusquedaRemesasAction extends MasterAction {
 	private List<InstitucionVO> getColegiosDependientes(String idInstitucion) throws SIGAException{
 		List<InstitucionVO> instituciones = null;
 		//Si la institucion conectada es General se recuperan todos los colegios (no los consejos)
+		CenInstitucionService service = (CenInstitucionService) getBusinessManager().getService(CenInstitucionService.class);
 		if (institucionEsGeneral(idInstitucion)){
-			CensoService service = (CensoService) getBusinessManager().getService(CensoService.class);
 			instituciones = service.getColegiosNoConsejo(idInstitucion);
 		}
 		//Si la institucion no conectada es un Consejo, se recuperan sus colegios dependientes
 		else if (institucionEsConsejo(idInstitucion)){
-			CensoService service = (CensoService) getBusinessManager().getService(CensoService.class);
 			instituciones = service.getColegiosDeConsejo(idInstitucion);
 		}
 		return instituciones;
@@ -157,6 +168,7 @@ public class BusquedaRemesasAction extends MasterAction {
 		try {
 			BusquedaRemesasForm form = (BusquedaRemesasForm) formulario;			
 			HashMap databackup = new HashMap();
+			CenWSService cenWSService = (CenWSService) BusinessManager.getInstance().getService(CenWSService.class);
 
 			if (request.getSession().getAttribute(DATAPAGINADOR) != null) {
 				databackup = (HashMap) request.getSession().getAttribute(DATAPAGINADOR);
@@ -177,10 +189,12 @@ public class BusquedaRemesasAction extends MasterAction {
 				}
 
 				databackup.put("paginador", paginador);
+				calculaIncidencias(cenWSService, datos);
 				databackup.put("datos", datos);
 
-			} else {									
-				List<EdicionRemesaForm> datos = getDatos(form);																	
+			} else {	
+				
+				List<EdicionRemesaForm> datos = getDatos(cenWSService, form);																	
 				
 				PaginadorVector<EdicionRemesaForm> paginador = new PaginadorVector(datos);
 				int totalRegistros = paginador.getNumeroTotalRegistros();
@@ -192,6 +206,7 @@ public class BusquedaRemesasAction extends MasterAction {
 				databackup.put("paginador", paginador);
 				if (paginador != null) {
 					datos = paginador.obtenerPagina(1);
+					calculaIncidencias(cenWSService, datos);
 					databackup.put("datos", datos);
 					request.getSession().setAttribute(DATAPAGINADOR, databackup);
 					request.getSession().setAttribute("HORABUSQUEDA", UtilidadesBDAdm.getFechaCompletaBD("es"));
@@ -205,10 +220,73 @@ public class BusquedaRemesasAction extends MasterAction {
 	}
 
 
-	private List<EdicionRemesaForm> getDatos(BusquedaRemesasForm form) throws ParseException, ClsExceptions {
+	private void calculaIncidencias(CenWSService cenWSService,	List<EdicionRemesaForm> datos) throws SIGAException {
+		double porcentaCalculado=0;
+		int totalincidencias =0;
+		int totalRegistros=0;
+		if (datos != null) {
+			for (EdicionRemesaForm edicionRemesaForm : datos) {
+				//si tiene errores no tiene incidencias
+				if (edicionRemesaForm.getConerrores() == null || edicionRemesaForm.getConerrores() < 1) {
+					try {
+						totalincidencias=cenWSService.selectCountIncidenciasEnvio(edicionRemesaForm.getIdcensowsenvio());
+						totalRegistros =cenWSService.selectCountColegiadosEnvio(edicionRemesaForm.getIdcensowsenvio());
+						edicionRemesaForm.setIncidencias(cenWSService.selectCountIncidenciasEnvio(edicionRemesaForm.getIdcensowsenvio()));
+						edicionRemesaForm.setCountTotalColegiados(cenWSService.selectCountColegiadosEnvio(edicionRemesaForm.getIdcensowsenvio()));
+						if(totalRegistros>0){
+							porcentaCalculado = ((totalincidencias*100)/totalRegistros);
+						}else{
+							porcentaCalculado=0;
+						}
+						
+						int porcentajeRedondeo = (int) Math.round(porcentaCalculado);
+						edicionRemesaForm.setPorcentajeCalculado(porcentajeRedondeo);
+						edicionRemesaForm.setUmbral(getUmbral(edicionRemesaForm.getIdinstitucion()));
+						
+					} catch (ValidationException e) {
+						throwExcp("messages.general.error",new String[] {"modulo.censo"},e,null);
+					}
+				}
+			}
+		}
+	}
+	
+	
+	/**
+	 * 
+	 * @param idinstitucion
+	 * @return
+	 * @throws ValidationException
+	 */
+	private String getUmbral(Short idinstitucion) throws ValidationException {
+		String modulo = MODULO.CEN.toString();
+		String parametro  = PARAMETRO.UMBRAL_ERROR.toString();
+		
+		GenParametrosService genParametrosService = (GenParametrosService) BusinessManager.getInstance().getService(GenParametrosService.class);
+		
+		GenParametros genParametros = new GenParametros();
+		genParametros.setIdinstitucion(idinstitucion);
+		genParametros.setModulo(modulo);
+		genParametros.setParametro(parametro);
+		
+		genParametros = genParametrosService.getGenParametroInstitucionORvalor0(genParametros);
+		
+		if (genParametros == null) {
+			String error = String.format("No se ha encontrado el parámetro '%s', con módulo '%s' para el colegio %s", parametro, modulo, idinstitucion);
+			throw new ValidationException(error);
+		}
+		String valor = genParametros.getValor();
+		return valor;
+	}
+	
+	
+	
+	
+
+	private List<EdicionRemesaForm> getDatos(CenWSService cenWSService, BusquedaRemesasForm form) throws ParseException, ClsExceptions {
 		
 		List<EdicionRemesaForm> lista = null;
-		CenWSService cenWSService = (CenWSService) BusinessManager.getInstance().getService(CenWSService.class);
+		
 		EcomCenWsEnvioExample ecomCenWsEnvioExample = new EcomCenWsEnvioExample();
 		EcomCenWsEnvioExample.Criteria ecomWSCriteria = ecomCenWsEnvioExample.createCriteria();
 		
@@ -219,7 +297,7 @@ public class BusquedaRemesasAction extends MasterAction {
 		}		
 		//numero de peticion
 		if (isNotnull(form.getNumeroPeticion())) {
-			ecomWSCriteria.andNumeropeticionLike(getCampoLike(form.getNumeroPeticion()));
+			ecomWSCriteria.andNumeropeticionLike(getCampoLike(form.getNumeroPeticion().trim()));
 		}
 		//fecha peticion desde
 		if (isNotnull(form.getFechaPeticionDesde())) {
@@ -232,33 +310,46 @@ public class BusquedaRemesasAction extends MasterAction {
 		
 		//busqueda referente a los datos del colegiado
 		EcomCenDatosExample ecomCenDatosExample = new EcomCenDatosExample();
-		EcomCenDatosExample.Criteria datosCriteria = ecomCenDatosExample.createCriteria();		
+		EcomCenDatosExample.Criteria datosCriteria = ecomCenDatosExample.createCriteria();	
+		
+		boolean busquedaDatos = false;
 		
 		//número de colegiado
 		if (isNotnull(form.getNumeroColegiado())) {
-			datosCriteria.andNcolegiadoUpperLike(getCampoLike(form.getNumeroColegiado()));
+			datosCriteria.andNcolegiadoUpperLike(getCampoLike(form.getNumeroColegiado().trim()));
+			busquedaDatos = true;
 		}
 		//nombre
 		if (isNotnull(form.getNombre())) {
-			datosCriteria.andNombreUpperLike(getCampoLike(form.getNombre()));
+			datosCriteria.andNombreUpperLike(getCampoLike(form.getNombre().trim()));
+			busquedaDatos = true;
 		}
 		//apellido 1
 		if (isNotnull(form.getPrimerApellido())) {
-			datosCriteria.andApellido1UpperLike(getCampoLike(form.getPrimerApellido()));
+			datosCriteria.andApellido1UpperLike(getCampoLike(form.getPrimerApellido().trim()));
+			busquedaDatos = true;
 		}
 		//apellido 2
 		if (isNotnull(form.getSegundoApellido())) {
-			datosCriteria.andApellido2UpperLike(getCampoLike(form.getSegundoApellido()));
+			datosCriteria.andApellido2UpperLike(getCampoLike(form.getSegundoApellido().trim()));
+			busquedaDatos = true;
 		}
 		//tipo identificación
 		if (isNotnull(form.getIdTipoIdentificacion())) {
 			datosCriteria.andIdcensotipoidentificacionEqualTo(Short.valueOf(form.getIdTipoIdentificacion()));
+			busquedaDatos = true;
 		}
 		//identificación
 		if (isNotnull(form.getIdentificacion())) {
-			datosCriteria.andNumdocumentoUpperLike(getCampoLike(form.getIdentificacion()));
+			datosCriteria.andNumdocumentoUpperLike(getCampoLike(form.getIdentificacion().trim()));
+			busquedaDatos = true;
 		}
-		ecomCenWsEnvioExample.orderByNumeropeticionDESC();
+		if (!busquedaDatos) {
+			//así conseguimos que sea más rápida la query al no cruzar con las tablas para usar este criterio
+			ecomCenDatosExample = null;
+		}
+		
+		ecomCenWsEnvioExample.orderByIdcenwsenvioDESC();
 				
 		List<EcomCenWsEnvioExtended> listaEcomCenWsEnvio = cenWSService.getEcomCenWsEnvioList(ecomCenWsEnvioExample, ecomCenDatosExample, form.isConIncidencia(), form.isConError());
 		if (listaEcomCenWsEnvio != null) {
@@ -268,11 +359,12 @@ public class BusquedaRemesasAction extends MasterAction {
 				edicionRemesaForm.setIdcensowsenvio(ecomCenWsEnvio.getIdcenwsenvio());
 				edicionRemesaForm.setIdinstitucion(ecomCenWsEnvio.getIdinstitucion());
 				edicionRemesaForm.setNumeroPeticion(ecomCenWsEnvio.getNumeropeticion());
-				edicionRemesaForm.setFechapeticion(GstDate.getFormatedDateShort(ecomCenWsEnvio.getFechacreacion()));
-				edicionRemesaForm.setListaErrores(cenWSService.getListaErrores(ecomCenWsEnvio.getIdcenwsenvio()));
-				edicionRemesaForm.setIncidencias(ecomCenWsEnvio.getIncidencias());
+				//edicionRemesaForm.setFechapeticion(GstDate.getFormatedDateShort(ecomCenWsEnvio.getFechacreacion()));
+				edicionRemesaForm.setFechapeticion(GstDate.getFormatedDateLong("ES", ecomCenWsEnvio.getFechacreacion()));
+//				edicionRemesaForm.setIncidencias(ecomCenWsEnvio.getIncidencias());
 				edicionRemesaForm.setConerrores(ecomCenWsEnvio.getConerrores());
 				edicionRemesaForm.setIdEstadoenvio(ecomCenWsEnvio.getIdestadoenvio());
+				edicionRemesaForm.setTipoEnvio(ecomCenWsEnvio.getIdtipoenvio());
 				lista.add(edicionRemesaForm);
 			}
 		}

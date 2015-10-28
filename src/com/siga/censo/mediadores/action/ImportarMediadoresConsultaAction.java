@@ -15,6 +15,7 @@ import org.apache.struts.action.ActionMapping;
 import org.redabogacia.sigaservices.app.autogen.model.CenMediadorFicherocsv;
 import org.redabogacia.sigaservices.app.autogen.model.CenMediadorFicherocsvExample;
 import org.redabogacia.sigaservices.app.autogen.model.CenMediadorFicherocsv;
+import org.redabogacia.sigaservices.app.services.cen.CenInstitucionService;
 import org.redabogacia.sigaservices.app.services.cen.MediadoresService;
 
 import com.atos.utils.ClsExceptions;
@@ -61,16 +62,22 @@ public class ImportarMediadoresConsultaAction extends MasterAction {
 		
 	}
 	
+	/**
+	 * Recupera los colegios asociados a la institucion <code>idInstitucion</code>
+	 * @param idInstitucion Institucion para la cual se buscan sus colegios asociados
+	 * @return Una lista con los colegios dependientes de la institucion, o <code>null</code> si la institucion
+	 * no tiene colegios dependientes, es decir, si es un Colegio y no un Consejo.
+	 * @throws SIGAException 
+	 */
 	private List<InstitucionVO> getColegiosDependientes(String idInstitucion) throws SIGAException{
 		List<InstitucionVO> instituciones = null;
 		//Si la institucion conectada es General se recuperan todos los colegios (no los consejos)
+		CenInstitucionService service = (CenInstitucionService) getBusinessManager().getService(CenInstitucionService.class);
 		if (institucionEsGeneral(idInstitucion)){
-			CensoService service = (CensoService) getBusinessManager().getService(CensoService.class);
 			instituciones = service.getColegiosNoConsejo(idInstitucion);
 		}
 		//Si la institucion no conectada es un Consejo, se recuperan sus colegios dependientes
 		else if (institucionEsConsejo(idInstitucion)){
-			CensoService service = (CensoService) getBusinessManager().getService(CensoService.class);
 			instituciones = service.getColegiosDeConsejo(idInstitucion);
 		}
 		return instituciones;

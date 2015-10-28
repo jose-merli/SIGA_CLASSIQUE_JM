@@ -12,6 +12,7 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.upload.FormFile;
 import org.redabogacia.sigaservices.app.autogen.model.CenMediadorCsv;
+import org.redabogacia.sigaservices.app.services.cen.CenInstitucionService;
 import org.redabogacia.sigaservices.app.services.cen.MediadoresService;
 import org.redabogacia.sigaservices.app.vo.cen.MediadorCSVVo;
 
@@ -102,13 +103,12 @@ public class ImportarMediadoresAction extends MasterAction {
 	private List<InstitucionVO> getColegiosDependientes(String idInstitucion) throws SIGAException{
 		List<InstitucionVO> instituciones = null;
 		//Si la institucion conectada es General se recuperan todos los colegios (no los consejos)
+		CenInstitucionService service = (CenInstitucionService) getBusinessManager().getService(CenInstitucionService.class);
 		if (institucionEsGeneral(idInstitucion)){
-			CensoService service = (CensoService) getBusinessManager().getService(CensoService.class);
 			instituciones = service.getColegiosNoConsejo(idInstitucion);
 		}
 		//Si la institucion no conectada es un Consejo, se recuperan sus colegios dependientes
 		else if (institucionEsConsejo(idInstitucion)){
-			CensoService service = (CensoService) getBusinessManager().getService(CensoService.class);
 			instituciones = service.getColegiosDeConsejo(idInstitucion);
 		}
 		return instituciones;

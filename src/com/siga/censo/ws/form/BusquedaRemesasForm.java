@@ -2,6 +2,8 @@ package com.siga.censo.ws.form;
 
 import java.util.List;
 
+import org.apache.struts.upload.FormFile;
+
 import com.siga.comun.vos.InstitucionVO;
 import com.siga.comun.vos.ValueKeyVO;
 import com.siga.general.MasterForm;
@@ -22,6 +24,7 @@ public class BusquedaRemesasForm extends MasterForm {
 	private String identificacion = null;
 	private boolean conIncidencia = false;
 	private boolean conError = false;
+	
 	
 	private List<InstitucionVO> instituciones;
 	private List<ValueKeyVO> tiposIdentificacion;
@@ -45,7 +48,7 @@ public class BusquedaRemesasForm extends MasterForm {
 		segundoApellido = null;
 		idTipoIdentificacion = null;
 		identificacion = null;
-		conIncidencia = false;
+		conIncidencia = true;
 		conError = false;
 		nombreColegio = null;
 	}
