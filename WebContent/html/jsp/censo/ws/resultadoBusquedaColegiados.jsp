@@ -224,7 +224,7 @@
 			 	
 			 	
 			 	function accionVolver() {
-					document.forms[0].action="./CEN_BusquedaRemesas.do?noReset=true&buscar=true";	
+					document.forms[0].action="./CEN_BusquedaRemesas.do?noReset=true";	
 					document.forms[0].modo.value="abrirAvanzada";
 					document.forms[0].target="mainWorkArea"; 
 					document.forms[0].submit();

@@ -229,7 +229,8 @@
 							<siga:Idioma key="censo.ws.literal.sexo"/>
 						</td>
 						<td>
-							<html:select property="sexo" name="EdicionColegiadoForm" styleClass="boxCombo" disabled="${htmlTextReadOnly}">								
+							<html:select property="sexo" name="EdicionColegiadoForm" styleClass="boxCombo" disabled="${htmlTextReadOnly}">
+							 	<html:option value=""></html:option>
 								<html:optionsCollection name="EdicionColegiadoForm" property="sexos" value="key" label="value"></html:optionsCollection>
 							</html:select>													
 						</td>						
@@ -331,7 +332,8 @@
 						</td>
 						<td>						
 							
-							<html:select property="idecomcensosituacionejer" name="EdicionColegiadoForm" styleClass="boxCombo" disabled="${htmlTextReadOnly}">								
+							<html:select property="idecomcensosituacionejer" name="EdicionColegiadoForm" styleClass="boxCombo" disabled="${htmlTextReadOnly}">
+								<html:option value=""></html:option>								
 								<html:optionsCollection name="EdicionColegiadoForm" property="situacionesEjerciente" value="key" label="value"></html:optionsCollection>
 							</html:select>							
 						</td>
@@ -499,7 +501,7 @@
 		
 		<c:choose>
 			<c:when test="${!EdicionColegiadoForm.historico && EdicionColegiadoForm.accion=='editar'}">
-				<siga:ConjBotonesAccion botones="G, AR" titulo="censo.ws.gestioncolegiado.historicoCambios" clase="botonesSeguido"/>		
+				<siga:ConjBotonesAccion botones="G, DESC" titulo="censo.ws.gestioncolegiado.historicoCambios" clase="botonesSeguido"/>		
 			</c:when>
 			<c:when test="${!EdicionColegiadoForm.historico && EdicionColegiadoForm.accion!='editar'}">
 				<siga:ConjBotonesAccion botones="" titulo="censo.ws.gestioncolegiado.historicoCambios" clase="botonesSeguido"/>

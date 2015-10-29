@@ -144,8 +144,8 @@
 		<siga:Table 		   
 		   name="listadoRemesas"
 		   border="1"
-		   columnNames="censo.ws.literal.colegio,censo.ws.literal.numeroPeticion,censo.ws.literal.fechaPeticion,censo.ws.literal.estado,"
-		   columnSizes="55,15,10,10">
+		   columnNames="censo.ws.literal.colegio,censo.carga.tipoenvio.TIPOENVIO,censo.carga.excel.literal.num.incidencias,censo.ws.literal.fechaPeticion,censo.ws.literal.estado,"
+		   columnSizes="20,15,25,15,15">
 		   
 		   	<%
    				if (resultado != null && resultado.size() > 0) {
@@ -155,31 +155,71 @@
    						EdicionRemesaForm edicionRemesaForm = (EdicionRemesaForm)resultado.get(i);
   				   		   		
 		   		   		botones = null;
-		   		   		String visibleConsulta = null;
+		   		   		String visibleConsulta = "true";
 		   		   		String size = "&nbsp;";
 		   		   		
 		   		   		botones = "C,E";
+	   		   			
+	   		   			String incidencias = "&nbsp;";
+	   		   			String porcentaje = "&nbsp;";
+	   		   			String tabPorcentaje = "&nbsp;";
+	   		   			String tipoEnvio = "";
 	   		   			
 	   		   			if (edicionRemesaForm.getConerrores() != null && edicionRemesaForm.getConerrores() > 0) {
 	   		   				elems = new FilaExtElement[1];
 	   		   				elems[0]=new FilaExtElement("error", "erroresCarga", "censo.ws.literal.errorFormato", SIGAConstants.ACCESS_FULL);	   		   				
 	   		   				botones = "";
 	   		   			} else if (edicionRemesaForm.getIncidencias() != null && edicionRemesaForm.getIncidencias() > 0) {
-	   		   				elems = new FilaExtElement[1];
-	   		   				elems[0]=new FilaExtElement("incidencia", "editar", "censo.ws.literal.revisarIncidencias", SIGAConstants.ACCESS_FULL);
-	   		   				botones = "C";
+	   		   				
+	   		   				
+	   		   				incidencias = edicionRemesaForm.getIncidencias() + " / " + edicionRemesaForm.getCountTotalColegiados();
+	   		   				int umbral = Integer.valueOf(edicionRemesaForm.getUmbral());
+	   		   				elems = new FilaExtElement[1];	
+	   		   				int margenUP =umbral+15;
+	   		   				
+	   		   				
+	   		   				if(edicionRemesaForm.getPorcentajeCalculado()>umbral && edicionRemesaForm.getPorcentajeCalculado()<margenUP ){
+		   		   				elems[0]=new FilaExtElement("incidencia", "editar", "censo.ws.literal.revisarIncidencias", SIGAConstants.ACCESS_FULL);
+	   		   					tabPorcentaje="orange";
+	   		   					botones = "C";
+	   		   				}
+	   		   				else if(edicionRemesaForm.getPorcentajeCalculado()<=umbral){
+		   		   				
+		   		   				elems[0]=new FilaExtElement("incidencia", "editar", "censo.ws.literal.revisarIncidencias", SIGAConstants.ACCESS_FULL);
+	   		   					tabPorcentaje="green";
+	   		   					botones = "C";
+	   		   				}else{
+	   		   					elems = new FilaExtElement[0];	
+	   		   					tabPorcentaje="red";
+	   		   					botones = "C";
+	   		   				}
+	   		   				porcentaje =String.valueOf(edicionRemesaForm.getPorcentajeCalculado())+"%";	
+	   		   				
 	   		   			} else {
 	   		   				elems = new FilaExtElement[0];	   		   				
 	   		   			}
 	   		   			
-	   		   			visibleConsulta = "true";		   		   		
+	   		   			if (AppConstants.ECOM_CEN_MAESESTADOENVIO.ANALIZANDO.getCodigo() == edicionRemesaForm.getIdEstadoenvio()) {
+	   		   				botones = "";
+	   		   			}
+	   		   			
+	   		   			
+	   		   			if(edicionRemesaForm.getTipoEnvio()!=null){
+	   		   				tipoEnvio=	AppConstants.ECOM_CEN_TIPO_ENVIO.getDescripcion(edicionRemesaForm.getTipoEnvio());
+	   		   			}
+	   		   			
+	   		   			
+	   		   					   		   		
 		   		   	%>
 		   		<siga:FilaConIconos fila='<%=String.valueOf(i+1)%>' elementos="<%=elems%>" visibleBorrado="false" visibleEdicion="false" visibleConsulta="<%=visibleConsulta%>" pintarEspacio="no" botones="<%=botones%>" clase="listaNonEdit">
 					<td>
 					<input type="hidden" name="oculto<%=String.valueOf(i+1)%>_1" value="<%=edicionRemesaForm.getIdcensowsenvio()%>">
-					<%=institucionAdm.getNombreInstitucion(edicionRemesaForm.getIdinstitucion().toString())%></td>										
-					<td style="text-align: center"><%=edicionRemesaForm.getNumeroPeticion()%></td>					
-					<td style="text-align: center"><%=edicionRemesaForm.getFechapeticion()%></td>					
+					<%=institucionAdm.getAbreviaturaInstitucion(edicionRemesaForm.getIdinstitucion().toString())%></td>	
+														
+					<td style="text-align: center"><siga:Idioma key="<%=tipoEnvio%>"/></td>
+					<td style="text-align: center"><%=incidencias%>&nbsp; <font  color="<%=tabPorcentaje%>"><%=porcentaje%></font></td>
+					<td style="text-align: center"><%=edicionRemesaForm.getFechapeticion()%></td>
+							
 					<td style="text-align: center"><siga:Idioma key="<%=AppConstants.ECOM_CEN_MAESESTADOENVIO.getDescripcion(edicionRemesaForm.getIdEstadoenvio())%>"/></td>
 				</siga:FilaConIconos>	
 							<% }

@@ -25,6 +25,7 @@
 <%@ page import="com.atos.utils.GstDate"%>
 <%@ page import="com.siga.beans.ConModuloBean"%>
 <%@page import="org.redabogacia.sigaservices.app.AppConstants"%>
+<%@ page import="com.siga.Utilidades.UtilidadesString"%>
 
 
 
@@ -33,6 +34,12 @@
 
 UsrBean userBean = (UsrBean) request.getSession().getAttribute("USRBEAN");
 CenInstitucionAdm institucionAdm = new CenInstitucionAdm(userBean);
+
+String mensaje = (String)request.getAttribute("mensaje");
+
+  
+String botones = "B";
+
 
 %> 
 
@@ -59,6 +66,14 @@ CenInstitucionAdm institucionAdm = new CenInstitucionAdm(userBean);
 	
 		<!-- INICIO: SCRIPTS BOTONES BUSQUEDA -->
 		<script language="JavaScript">
+		
+			function refrescarLocal(){				
+				recargarBusqueda();
+			}
+			
+			function recargarBusqueda(){
+				buscarPaginador();
+			}
 	
 			// Funcion asociada a boton buscar
 			function buscarPaginador() {	
@@ -84,6 +99,36 @@ CenInstitucionAdm institucionAdm = new CenInstitucionAdm(userBean);
 				document.forms[0].target="mainWorkArea";	
 				document.forms[0].submit();	
 			}
+			
+			function actualizarCenso() {
+				sub();
+				document.forms[0].modo.value="actualizarCenso";
+				document.forms[0].target="mainWorkArea";	
+				document.forms[0].submit();
+			}
+			
+			function actualizarCensoProgramado() {
+				sub();
+				document.forms[0].modo.value="actualizarCensoProgramado";
+				document.forms[0].target="mainWorkArea";	
+				document.forms[0].submit();
+			}
+			
+			
+			
+			<%  if (mensaje != null && !mensaje.trim().equals("")){
+				String msg=UtilidadesString.escape(UtilidadesString.getMensajeIdioma(userBean.getLanguage(),mensaje));
+				String estilo="notice";
+				if(mensaje.contains("error")){
+					estilo="error";
+				}else if(mensaje.contains("success")||mensaje.contains("updated")){
+					estilo="success";
+				} 
+			%>
+				alert(unescape("<%=msg %>"),"<%=estilo%>");
+						
+			<%  } %>
+			
 			
 			
 		</script>
@@ -154,6 +199,7 @@ CenInstitucionAdm institucionAdm = new CenInstitucionAdm(userBean);
 							
 						</table>
 					</siga:ConjCampos>
+					
 								
 					<siga:ConjCampos leyenda="censo.ws.edicionremesas.filtroColegiado">
 						<html:form action="/CEN_EdicionRemesas.do?noReset=true" method="POST" target="resultado">
@@ -275,12 +321,20 @@ CenInstitucionAdm institucionAdm = new CenInstitucionAdm(userBean);
 			 boton una funcion que abajo se reescribe. Los valores asociados separados por comas
 			 son: V Volver, B Buscar,A Avanzada ,S Simple,N Nuevo registro ,L Limpiar,R Borrar Log
 		-->
-		<%  
-			String botones = "B";
-						 
-		%>
+		
+		<bean:define id="idEstadoenvio" name="EdicionRemesaForm" property="idEstadoenvio" type="Short"></bean:define>
+		<bean:define name="EdicionRemesaForm" property="accion" id="accion"/>
+		
+		<c:choose>
+			<c:when test='<%=(AppConstants.ECOM_CEN_MAESESTADOENVIO.PENDIENTE.getCodigo()==idEstadoenvio && !accion.equals("ver"))%>'>
+				<siga:ConjBotonesBusqueda botones="B,AC,ACP" titulo="censo.ws.edicionRemesa.listadoColegiados" />		
+			</c:when>
+			<c:otherwise>
+				<siga:ConjBotonesBusqueda botones="B" titulo="censo.ws.edicionRemesa.listadoColegiados" />
+			</c:otherwise>
+		</c:choose>
 
-		<siga:ConjBotonesBusqueda botones="<%=botones %>"  titulo="censo.ws.edicionRemesa.listadoColegiados" />
+		
 		<!-- FIN: BOTONES BUSQUEDA -->
 
 		<!-- INICIO: IFRAME LISTA RESULTADOS -->

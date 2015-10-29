@@ -1,22 +1,35 @@
-<!-- busquedaRemesas.jsp -->
 <!DOCTYPE html>
+<html>
+<head>
+<!-- busquedaRemesas.jsp -->
+
 <!-- CABECERA JSP -->
-<%@page import="com.siga.beans.ConModuloAdm"%>
 <meta http-equiv="Expires" content="0">
-<meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-1"%>
+<meta http-equiv="Pragma" content="no-cache">
+<%@ page pageEncoding="ISO-8859-1"%>
 <meta http-equiv="Cache-Control" content="no-cache">
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <%@ page contentType="text/html" language="java" errorPage="/html/jsp/error/errorSIGA.jsp"%>
 
+
 <!-- TAGLIBS -->
-<%@ taglib uri = "libreria_SIGA.tld" prefix="siga"%>
-<%@ taglib uri = "struts-bean.tld" prefix="bean"%>
-<%@ taglib uri = "struts-html.tld" prefix="html"%>
-<%@ taglib uri = "struts-logic.tld" prefix="logic"%>
+<%@ taglib uri="libreria_SIGA.tld" prefix="siga"%>
+<%@ taglib uri="struts-bean.tld" prefix="bean"%>
+<%@ taglib uri="struts-html.tld" prefix="html"%>
+<%@ taglib uri="struts-logic.tld" prefix="logic"%>
+<%@ taglib uri="c.tld" prefix="c"%>
+
+
+
+
+
+
 
 <!-- IMPORTS -->
 <%@ page import="com.siga.administracion.SIGAConstants"%>
 <%@ page import="com.siga.censo.ws.form.BusquedaRemesasForm"%>
+<%@ page import="com.siga.censo.ws.form.NuevaRemesaForm"%>
+
 <%@ page import="com.siga.beans.CenInstitucionAdm"%>
 <%@ page import="com.atos.utils.ClsConstants"%>
 <%@ page import="com.atos.utils.UsrBean"%>
@@ -27,10 +40,22 @@
 
 <!-- HEAD -->
 <head>
+
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
-	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js?v=${sessionScope.VERSIONJS}'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
+	
+	<!-- Incluido jquery en siga.js -->
+	
+	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js?v=${sessionScope.VERSIONJS}'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>	
 	<script type="text/javascript" src="<html:rewrite page='/html/js/validacionStruts.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/validation.js'/>"></script>   
+	
+		
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-ui-1.10.3.custom.min.js?v=${sessionScope.VERSIONJS}'/>"></script>
+	
+	
+	
+  	<link rel="stylesheet" href="<html:rewrite page='/html/js/jquery.ui/css/smoothness/jquery-ui-1.10.3.custom.min.css'/>">
 	
 
 	<!-- INICIO: TITULO Y LOCALIZACION -->
@@ -42,70 +67,34 @@
 	<!-- Validaciones en Cliente -->
 	<!-- El nombre del formulario se obtiene del struts-config -->
 		<html:javascript formName="BusquedaRemesasForm" staticJavascript="false" />  
+		<html:javascript formName="NuevaRemesaForm" staticJavascript="false" />
 	<!-- FIN: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->	
 	
-		<!-- INICIO: SCRIPTS BOTONES BUSQUEDA -->
-		<script language="JavaScript">
-	
-			// Funcion asociada a boton buscar
-			function buscarPaginador() {		
-				document.forms[0].modo.value="buscarPor";
-				document.forms[0].target="resultado";	
-				document.forms[0].submit();	
-			}
 			
-			function buscar() {				
-				sub();
-				document.forms[0].modo.value="buscar";
-				document.forms[0].target="resultado";	
-				document.forms[0].submit();					
-			}
-			
-			// Funcion asociada a boton limpiar
-			function limpiar() {		
-				
-				//document.forms[0].nombrePersona.value="";
-				
-				document.forms[0].modo.value="abrir";
-				document.forms[0].target="mainWorkArea";	
-				document.forms[0].submit();	
-			}
-			
-			function inicio() {
-				<%if (request.getAttribute("buscar") != null) {%>
-					sub();
-					document.forms[0].modo.value="buscarPor";
-					document.forms[0].target="resultado";	
-					document.forms[0].submit();				
-				<%}%>
-				
-			}
-			
-			function consultas() {		
-				document.RecuperarConsultasForm.submit();				
-			}
-			
-			
-		</script>
-		<!-- FIN: SCRIPTS BOTONES BUSQUEDA -->	
 </head>
 
-<body onLoad="ajusteAlto('resultado');inicio();">
+<body onLoad="inicio();ajusteAlto('resultado');">
 	<bean:define id="path" name="org.apache.struts.action.mapping.instance"	property="path" scope="request" />
+	
+	
+	
 	
 	<!-- ******* BOTONES Y CAMPOS DE BUSQUEDA ****** -->
 	<div id="camposRegistro" class="posicionBusquedaSolo" align="center">
 
 		<!-- INICIO: CAMPOS DE BUSQUEDA-->
 		<!-- Zona de campos de busqueda o filtro -->
+		
+		
 		<table  class="tablaCentralCampos"  align="center">
 			<tr>				
 				<td>
 					<siga:ConjCampos leyenda="menu.censo.gestionCensoWS.gestionRemesas">
 						<table class="tablaCampos" align="center">
 							<html:form action="/CEN_BusquedaRemesas.do?noReset=true" method="POST" target="resultado">
-								<html:hidden name="BusquedaRemesasForm" property = "modo" value = ""/>
+								<html:hidden name="BusquedaRemesasForm" property = "modo"/>
 								<html:hidden property="seleccionarTodos" />
+								
 								<input type="hidden" id="limpiarFilaSeleccionada" name="limpiarFilaSeleccionada" value=""/>								
 	
 								<!-- FILA -->
@@ -222,6 +211,7 @@
 									</td>
 								</tr>
 								
+								
 														
 							</html:form>
 						</table>
@@ -244,7 +234,7 @@
 			 son: V Volver, B Buscar,A Avanzada ,S Simple,N Nuevo registro ,L Limpiar,R Borrar Log
 		-->
 		<%  
-			String botones = "B,CON,L";
+			String botones = "N,B,CON,L";
 						 
 		%>
 
@@ -265,12 +255,168 @@
 	  	
 		<!-- FIN: IFRAME LISTA RESULTADOS -->
 		<!-- FIN  ******* BOTONES Y CAMPOS DE BUSQUEDA ****** -->
+		
+		
 	</div>	
+	
+	
+	
+
+
+	<div id="dialogoNuevoExcel"  title='<bean:message key="censo.dialogo.nuevoExcel"/>' style="display:none">
+			
+			<div class="labelTextArea"><bean:message key="censo.ws.literal.aviso.carga.excel"/></div>
+			</br>	
+		  	<siga:ConjCampos >
+		  	
+				  	<html:form action="/CEN_NuevaRemesa.do?noReset=true" method="POST" target="submitArea" enctype="multipart/form-data">
+							<html:hidden name="NuevaRemesaForm" property = "modo"/>
+							<html:hidden property="seleccionarTodos" />
+				  		
+							<div class="labelText">
+								<label for="idColegioInsertar"   style="width:140px;float:left;color: black"><bean:message key="censo.ws.literal.colegio"/></label>
+								
+								<html:select property="idColegioInsertar" name="NuevaRemesaForm">
+									<html:option value=""><siga:Idioma key="general.combo.seleccionar" /></html:option>
+									<html:optionsCollection name="BusquedaRemesasForm" property="instituciones" value="id" label="nombre"></html:optionsCollection>
+								</html:select>
+											
+								
+								<!--  siga:Select queryId="getCenTiposCv" id="idTipoCV" required="true" /-->
+								
+							</div>
+							
+							</br>
+							
+							<div class="labelText">
+								<label for="fechaExportacion"   style="width:140px;float:left;color: black"><bean:message key="censo.ws.literal.fechaExportacion"/></label>
+								<siga:Fecha nombreCampo="fechaExportacion"  atributos='style="background-color: #FFFFFF; color: #000000; width: 100px;"'></siga:Fecha>
+							</div>
+							
+							</br>
+							
+							<div class="labelText">
+								<label for="file"   style="width:140px;float:left;color: black"><bean:message key="censo.ws.literal.fichero"/></label>
+								<input type="file" id="file" name="file" size="35" styleClass="box" style="background-color: #FFFFFF;" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"/>
+								
+							</div>
+					
+					</html:form>
+					
+				</siga:ConjCampos>
+				
+				
+		
+		</div>
+	
+
 
 	<!-- INICIO: SUBMIT AREA -->
 	<!-- Obligatoria en todas las páginas-->
 	<iframe name="submitArea" src="<html:rewrite page='/html/jsp/general/blank.jsp'/>" style="display:none"></iframe>
 	<!-- FIN: SUBMIT AREA -->
+	
+		
+		<!-- INICIO: SCRIPTS BOTONES BUSQUEDA -->
+		<script language="JavaScript">
+			jQuery.noConflict();
+			
+			function refrescarLocal(){
+				closeDialog('dialogoNuevoExcel');
+			}
+			
+			// Funcion asociada a boton buscar
+			function buscarPaginador() {		
+				document.forms[0].modo.value="buscarPor";
+				document.forms[0].target="resultado";	
+				document.forms[0].submit();	
+			}
+			
+			function buscar() {				
+				sub();
+				document.forms[0].modo.value="buscar";
+				document.forms[0].target="resultado";	
+				document.forms[0].submit();					
+			}
+			
+			// Funcion asociada a boton limpiar
+			function limpiar() {		
+				document.forms[0].modo.value="abrir";
+				document.forms[0].target="mainWorkArea";	
+				document.forms[0].submit();	
+			}
+			
+			function inicio() {
+				if (document.forms['BusquedaRemesasForm'].modo.value == "abrirAvanzada") {
+					buscarPaginador();				
+				}
+				
+			}
+			
+			function consultas() {		
+				document.RecuperarConsultasForm.submit();				
+			}
+			
+			function nuevo() {
+				
+				document.forms['NuevaRemesaForm'].reset();							
+								
+				jQuery("#dialogoNuevoExcel").dialog(
+						{
+						      height: 300,
+						      width: 600,
+						      modal: true,
+						      resizable: false,						      
+						      buttons: {
+						    	  "Guardar": { id: 'Guardar', text: '<siga:Idioma key="general.boton.guardar"/>', click: function(){ accionInsercion(); }},
+						          "Cerrar": { id: 'Cerrar', text: '<siga:Idioma key="general.boton.close"/>', click: function(){closeDialog("dialogoNuevoExcel");}}
+						      }
+						}
+					);
+					
+				jQuery(".ui-widget-overlay").css("opacity","0");
+			}
+			
+			
+			function accionInsercion(){
+				//sub();
+				document.forms['NuevaRemesaForm'].modo.value = "insertar";
+				
+				error = '';
+				if(document.forms['NuevaRemesaForm'].idColegioInsertar.value==''){
+					error += "<siga:Idioma key='errors.required' arg0='censo.ws.literal.colegio'/>"+ '\n';
+					
+				}
+				if(document.forms['NuevaRemesaForm'].fechaExportacion.value==''){
+					error += "<siga:Idioma key='errors.required' arg0='censo.ws.literal.fechaExportacion'/>"+ '\n';
+					
+				}
+				if(document.forms['NuevaRemesaForm'].file.value==''){
+					error += "<siga:Idioma key='errors.required' arg0='censo.ws.literal.fichero'/>"+ '\n';
+					
+				}
+				
+				if (error!=''){
+					alert(error);
+					//fin();
+					return false;
+				} else {
+					
+					document.forms['NuevaRemesaForm'].submit();	
+				}
+				
+				
+				
+			}
+			
+			
+			function closeDialog(dialogo){
+				 jQuery("#"+dialogo).dialog("close"); 
+			}
+			
+			
+		</script>
+		<!-- FIN: SCRIPTS BOTONES BUSQUEDA -->
 
 </body>
 </html>

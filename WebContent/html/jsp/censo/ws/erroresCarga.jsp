@@ -73,7 +73,7 @@
 			<table border='1' width='100%' cellspacing='0' cellpadding='0' align='center'>		
 				<c:forEach items="${EdicionRemesaForm.listaErrores}" var="error" varStatus="i">							
 					<tr class="labelTextValue">									
-						<td id="${i.index}">${error}"</td>						
+						<td id="${i.index}">${error}</td>						
 					</tr>
 				</c:forEach>					
 		 	</table>
