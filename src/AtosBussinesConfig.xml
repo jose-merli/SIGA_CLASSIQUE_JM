@@ -126,9 +126,8 @@
 		<service interface="org.redabogacia.sigaservices.app.services.est.EstadisticasUserRegistryService"	implementation="org.redabogacia.sigaservices.app.services.est.impl.EstadisticasUserRegistryServiceImpl"/>
 		<service interface="org.redabogacia.sigaservices.app.services.scs.ScsEEJGPeticionesService"			implementation="org.redabogacia.sigaservices.app.services.scs.impl.ScsEEJGPeticionesServiceImpl"/>
 		<service interface="org.redabogacia.sigaservices.app.services.scs.ScsComisariaService" 												implementation="org.redabogacia.sigaservices.app.services.scs.impl.ScsComisariaServiceImpl"/>
-		
-		
-		
+		<service interface="org.redabogacia.sigaservices.app.services.cen.EcomCenWsEnvioService"			implementation="org.redabogacia.sigaservices.app.services.cen.impl.EcomCenWsEnvioServiceImpl"/>
+
 	</context>
 </configuration> 
 	
