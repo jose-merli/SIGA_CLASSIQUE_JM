@@ -22,7 +22,7 @@ import es.satec.businessManager.BusinessManager;
 
 public class CombosCenWS {
 	
-	public static List<ValueKeyVO> getSituacionesEjeciente(UsrBean usrBean) {
+	public List<ValueKeyVO> getSituacionesEjeciente(UsrBean usrBean) {
 		List<ValueKeyVO> lista = null;
 		EcomCenSituacionEjercienteService ecomCenSituacionEjercienteService = (EcomCenSituacionEjercienteService) BusinessManager.getInstance().getService(EcomCenSituacionEjercienteService.class);
 		EcomCenSituacionejercienteExample ecomCenSituacionejercienteExample = new EcomCenSituacionejercienteExample();
@@ -37,7 +37,7 @@ public class CombosCenWS {
 		return lista;
 	}
 	
-	public static List<ValueKeyVO> getTiposIdentificacion(UsrBean usrBean) {
+	public List<ValueKeyVO> getTiposIdentificacion(UsrBean usrBean) {
 		List<ValueKeyVO> lista = null;
 		
 		EcomCenTipoIdentificacionService ecomCenTipoIdentificacionService = (EcomCenTipoIdentificacionService) BusinessManager.getInstance().getService(EcomCenTipoIdentificacionService.class);
@@ -53,7 +53,7 @@ public class CombosCenWS {
 		return lista;
 	}
 	
-	public static List<ValueKeyVO> getEstadosColegiado(UsrBean usrBean) {
+	public List<ValueKeyVO> getEstadosColegiado(UsrBean usrBean) {
 		List<ValueKeyVO> lista = new ArrayList<ValueKeyVO>();		
 		for (ECOM_CEN_MAESESTADOCOLEGIAL maestroEstadosColegiado : ECOM_CEN_MAESESTADOCOLEGIAL.values()) {
 			lista.add(getValueKeyVO(usrBean, String.valueOf(maestroEstadosColegiado.getCodigo()), maestroEstadosColegiado.getRecurso()));
@@ -62,7 +62,7 @@ public class CombosCenWS {
 		return lista;
 	}
 	
-	public static List<ValueKeyVO> getIncidencaisColegiado(UsrBean usrBean) {
+	public List<ValueKeyVO> getIncidencaisColegiado(UsrBean usrBean) {
 		List<ValueKeyVO> lista = new ArrayList<ValueKeyVO>();		
 		for (ECOM_CEN_MAESTRO_INCIDENCIAS maestroIncidencias : ECOM_CEN_MAESTRO_INCIDENCIAS.values()) {
 			lista.add(getValueKeyVO(usrBean, String.valueOf(maestroIncidencias.getCodigo()), maestroIncidencias.name()));
@@ -71,7 +71,7 @@ public class CombosCenWS {
 		return lista;
 	}
 	
-	public static List<ValueKeyVO> getEstadosEnvio(UsrBean usrBean) {
+	public List<ValueKeyVO> getEstadosEnvio(UsrBean usrBean) {
 		List<ValueKeyVO> lista = new ArrayList<ValueKeyVO>();		
 		for (ECOM_CEN_MAESESTADOENVIO maestroEstadosEnvio : ECOM_CEN_MAESESTADOENVIO.values()) {
 			lista.add(getValueKeyVO(usrBean, String.valueOf(maestroEstadosEnvio.getCodigo()), maestroEstadosEnvio.getRecurso()));
@@ -80,7 +80,7 @@ public class CombosCenWS {
 		return lista;
 	}
 
-	private static ValueKeyVO getValueKeyVO(UsrBean usrBean, String key, String value) {
+	private ValueKeyVO getValueKeyVO(UsrBean usrBean, String key, String value) {
 		ValueKeyVO valueKeyVO = new ValueKeyVO();
 		valueKeyVO.setKey(key);
 		valueKeyVO.setValue(UtilidadesString.getMensajeIdioma(usrBean, value));
@@ -89,7 +89,7 @@ public class CombosCenWS {
 	
 	
 
-	public static List<ValueKeyVO> getSexos(UsrBean userBean) {
+	public List<ValueKeyVO> getSexos(UsrBean userBean) {
 		List<ValueKeyVO> lista = new ArrayList<ValueKeyVO>();		
 		for (ECOM_CEN_SEXO ecomCen_SEXO : ECOM_CEN_SEXO.values()) {
 			lista.add(getValueKeyVO(userBean, ecomCen_SEXO.getCodigo(), ecomCen_SEXO.getRecurso()));
