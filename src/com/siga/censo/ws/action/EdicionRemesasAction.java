@@ -176,7 +176,6 @@ public class EdicionRemesasAction extends MasterAction {
 	private List<EdicionColegiadoForm> getDatos(EdicionRemesaForm form) throws ParseException {
 		List<EdicionColegiadoForm> datos = new ArrayList<EdicionColegiadoForm>();
 		CenWSService cenWSService = (CenWSService) BusinessManager.getInstance().getService(CenWSService.class);
-		EcomCenColegiadoService ecomCenColegiadoService = (EcomCenColegiadoService) BusinessManager.getInstance().getService(EcomCenColegiadoService.class);
 		
 		EcomCenDatosExample ecomCenDatosExample = new EcomCenDatosExample();
 		Criteria datosCriteria = ecomCenDatosExample.createCriteria();
@@ -438,10 +437,12 @@ public class EdicionRemesasAction extends MasterAction {
 			
 			edicionRemesaForm.setConerrores(ecomCenWsEnvio.getConerrores());
 			edicionRemesaForm.setListaErrores(cenWSService.getListaErrores(idcensowsenvio));
+			
+			CombosCenWS combosCenWS = new CombosCenWS();
 			 			
-			edicionRemesaForm.setTiposIdentificacion(CombosCenWS.getTiposIdentificacion(getUserBean(request)));
-			edicionRemesaForm.setEstadosColegiado(CombosCenWS.getEstadosColegiado(getUserBean(request)));
-			edicionRemesaForm.setIncidenciasColegiado(CombosCenWS.getIncidencaisColegiado(getUserBean(request)));
+			edicionRemesaForm.setTiposIdentificacion(combosCenWS.getTiposIdentificacion(getUserBean(request)));
+			edicionRemesaForm.setEstadosColegiado(combosCenWS.getEstadosColegiado(getUserBean(request)));
+			edicionRemesaForm.setIncidenciasColegiado(combosCenWS.getIncidencaisColegiado(getUserBean(request)));
 			
 			edicionRemesaForm.setIdEstadoenvio(ecomCenWsEnvio.getIdestadoenvio());
 			
