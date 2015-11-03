@@ -230,24 +230,19 @@ public class BusquedaRemesasAction extends MasterAction {
 			for (EdicionRemesaForm edicionRemesaForm : datos) {
 				//si tiene errores no tiene incidencias
 				if (edicionRemesaForm.getConerrores() == null || edicionRemesaForm.getConerrores() < 1) {
-					try {
-						totalincidencias=cenWSService.selectCountIncidenciasEnvio(edicionRemesaForm.getIdcensowsenvio());
-						totalRegistros =cenWSService.selectCountColegiadosEnvio(edicionRemesaForm.getIdcensowsenvio());
-						edicionRemesaForm.setIncidencias(cenWSService.selectCountIncidenciasEnvio(edicionRemesaForm.getIdcensowsenvio()));
-						edicionRemesaForm.setCountTotalColegiados(cenWSService.selectCountColegiadosEnvio(edicionRemesaForm.getIdcensowsenvio()));
-						if(totalRegistros>0){
-							porcentaCalculado = ((totalincidencias*100)/totalRegistros);
-						}else{
-							porcentaCalculado=0;
-						}
-						
-						int porcentajeRedondeo = (int) Math.round(porcentaCalculado);
-						edicionRemesaForm.setPorcentajeCalculado(porcentajeRedondeo);
-						edicionRemesaForm.setUmbral(getUmbral(edicionRemesaForm.getIdinstitucion()));
-						
-					} catch (ValidationException e) {
-						throwExcp("messages.general.error",new String[] {"modulo.censo"},e,null);
+					//totalincidencias=cenWSService.selectCountIncidenciasEnvio(edicionRemesaForm.getIdcensowsenvio());
+					//totalRegistros =cenWSService.selectCountColegiadosEnvio(edicionRemesaForm.getIdcensowsenvio());
+					edicionRemesaForm.setIncidencias(cenWSService.selectCountIncidenciasEnvio(edicionRemesaForm.getIdcensowsenvio()));
+					/*edicionRemesaForm.setCountTotalColegiados(cenWSService.selectCountColegiadosEnvio(edicionRemesaForm.getIdcensowsenvio()));
+					if(totalRegistros>0){
+						porcentaCalculado = ((totalincidencias*100)/totalRegistros);
+					}else{
+						porcentaCalculado=0;
 					}
+					
+					int porcentajeRedondeo = (int) Math.round(porcentaCalculado);
+					edicionRemesaForm.setPorcentajeCalculado(porcentajeRedondeo);
+					edicionRemesaForm.setUmbral(getUmbral(edicionRemesaForm.getIdinstitucion()));*/
 				}
 			}
 		}
