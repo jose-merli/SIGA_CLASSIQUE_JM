@@ -144,7 +144,7 @@
 		<siga:Table 		   
 		   name="listadoRemesas"
 		   border="1"
-		   columnNames="censo.ws.literal.colegio,censo.carga.tipoenvio.TIPOENVIO,censo.carga.excel.literal.num.incidencias,censo.ws.literal.fechaPeticion,censo.ws.literal.estado,"
+		   columnNames="censo.ws.literal.colegio,censo.carga.tipoenvio.TIPOENVIO,censo.ws.literal.fechaPeticion,censo.ws.literal.estado,"
 		   columnSizes="20,15,25,15,15">
 		   
 		   	<%
@@ -171,14 +171,17 @@
 	   		   				botones = "";
 	   		   			} else if (edicionRemesaForm.getIncidencias() != null && edicionRemesaForm.getIncidencias() > 0) {
 	   		   				
+	   		   				elems = new FilaExtElement[1];
+	   		   				elems[0]=new FilaExtElement("incidencia", "editar", "censo.ws.literal.revisarIncidencias", SIGAConstants.ACCESS_FULL);
+	   		   				botones = "C";
 	   		   				
-	   		   				incidencias = edicionRemesaForm.getIncidencias() + " / " + edicionRemesaForm.getCountTotalColegiados();
+	   		   				/*incidencias = edicionRemesaForm.getIncidencias() + " / " + edicionRemesaForm.getCountTotalColegiados();
 	   		   				int umbral = Integer.valueOf(edicionRemesaForm.getUmbral());
 	   		   				elems = new FilaExtElement[1];	
-	   		   				int margenUP =umbral+15;
+	   		   				int margenUP =umbral+15;*/
 	   		   				
 	   		   				
-	   		   				if(edicionRemesaForm.getPorcentajeCalculado()>umbral && edicionRemesaForm.getPorcentajeCalculado()<margenUP ){
+	   		   				/*if(edicionRemesaForm.getPorcentajeCalculado()>umbral && edicionRemesaForm.getPorcentajeCalculado()<margenUP ){
 		   		   				elems[0]=new FilaExtElement("incidencia", "editar", "censo.ws.literal.revisarIncidencias", SIGAConstants.ACCESS_FULL);
 	   		   					tabPorcentaje="orange";
 	   		   					botones = "C";
@@ -193,7 +196,7 @@
 	   		   					tabPorcentaje="red";
 	   		   					botones = "C";
 	   		   				}
-	   		   				porcentaje =String.valueOf(edicionRemesaForm.getPorcentajeCalculado())+"%";	
+	   		   				porcentaje =String.valueOf(edicionRemesaForm.getPorcentajeCalculado())+"%";*/	
 	   		   				
 	   		   			} else {
 	   		   				elems = new FilaExtElement[0];	   		   				
@@ -217,7 +220,7 @@
 					<%=institucionAdm.getAbreviaturaInstitucion(edicionRemesaForm.getIdinstitucion().toString())%></td>	
 														
 					<td style="text-align: center"><siga:Idioma key="<%=tipoEnvio%>"/></td>
-					<td style="text-align: center"><%=incidencias%>&nbsp; <font  color="<%=tabPorcentaje%>"><%=porcentaje%></font></td>
+					
 					<td style="text-align: center"><%=edicionRemesaForm.getFechapeticion()%></td>
 							
 					<td style="text-align: center"><siga:Idioma key="<%=AppConstants.ECOM_CEN_MAESESTADOENVIO.getDescripcion(edicionRemesaForm.getIdEstadoenvio())%>"/></td>
