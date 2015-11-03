@@ -119,9 +119,11 @@ public class BusquedaRemesasAction extends MasterAction {
 			String nombreInstitucionAcceso=institucionAdm.getNombreInstitucion(getUserBean(request).getLocation());
 			busquedaRemesasForm.setNombreColegio(nombreInstitucionAcceso);
 			busquedaRemesasForm.setIdColegio(getUserBean(request).getLocation());
+			
+			CombosCenWS combosCenWS = new CombosCenWS();
 
 			busquedaRemesasForm.setInstituciones(getColegiosDependientes(getUserBean(request).getLocation()));
-			busquedaRemesasForm.setTiposIdentificacion(CombosCenWS.getTiposIdentificacion(getUserBean(request)));
+			busquedaRemesasForm.setTiposIdentificacion(combosCenWS.getTiposIdentificacion(getUserBean(request)));
 			
 			String buscar = request.getParameter("buscar");
 			request.setAttribute("buscar",buscar);
