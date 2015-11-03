@@ -124,6 +124,8 @@ public class EdicionColegiadoAction extends MasterAction {
 		} catch (Exception e) {
 			BusinessManager.getInstance().endTransaction();
 			throwExcp("messages.general.error", e, null);
+		} finally {
+			BusinessManager.getInstance().endTransaction();
 		}
 		
 		return verEditar(accion, mapping, formulario, request, response, idcensodatos);
@@ -248,6 +250,8 @@ public class EdicionColegiadoAction extends MasterAction {
 		} catch (Exception e) {
 			BusinessManager.getInstance().endTransaction();
 			throwExcp("messages.general.error", e, null);
+		} finally {
+			BusinessManager.getInstance().endTransaction();
 		}
 		
 		return verEditar(accion, mapping, formulario, request, response, idcensodatos);
@@ -372,9 +376,10 @@ public class EdicionColegiadoAction extends MasterAction {
 			//edicionColegiadoForm.setIncidencias(getDescripcionIncidenciasColegiado(incidencias));
 			edicionColegiadoForm.setIncidencias(getDescripcionIncidenciasColegiadoCenDatos(incidenciasdatos,incidencias));
 			
-			edicionColegiadoForm.setTiposIdentificacion(CombosCenWS.getTiposIdentificacion(getUserBean(request)));
-			edicionColegiadoForm.setSituacionesEjerciente(CombosCenWS.getSituacionesEjeciente(getUserBean(request)));
-			edicionColegiadoForm.setSexos(CombosCenWS.getSexos(getUserBean(request)));
+			CombosCenWS combosCenWS = new CombosCenWS();
+			edicionColegiadoForm.setTiposIdentificacion(combosCenWS.getTiposIdentificacion(getUserBean(request)));
+			edicionColegiadoForm.setSituacionesEjerciente(combosCenWS.getSituacionesEjeciente(getUserBean(request)));
+			edicionColegiadoForm.setSexos(combosCenWS.getSexos(getUserBean(request)));
 				
 			if (!edicionColegiadoForm.isColegiadoEditable()) {
 				accion = "ver";
