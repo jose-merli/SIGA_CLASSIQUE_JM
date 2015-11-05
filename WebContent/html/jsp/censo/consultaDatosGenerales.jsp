@@ -1137,11 +1137,10 @@ function str_replace(search, replace, subject) {
 						<siga:Idioma key="censo.consultaDatosGenerales.literal.tratamiento"/>&nbsp;(*)
 					</td>
 					<td  style="width:200px">
-						<% if (!breadonly && bDatosGeneralesEditables) { %>
+						<% if (("false").equalsIgnoreCase(readonly)) { %>
 							<html:select styleId="tratamiento" styleClass="boxCombo" style="width:190px;" property="tratamiento" >		
 							</html:select>
 						<% } else { %>
-							
 							<html:select styleId="tratamiento" styleClass="boxCombo" style="width:190px; display:none" property="tratamiento" >		
 							</html:select>
 						    <html:text name="datosGeneralesForm" property="tratamiento" styleId="textTratamiento" size="20" styleClass="boxConsulta" value="" readonly="true" ></html:text>
