@@ -1,8 +1,7 @@
 package com.siga.censo.ws.form;
 
 import java.util.List;
-
-import org.apache.struts.upload.FormFile;
+import java.util.Map;
 
 import com.siga.comun.vos.InstitucionVO;
 import com.siga.comun.vos.ValueKeyVO;
@@ -29,6 +28,8 @@ public class BusquedaRemesasForm extends MasterForm {
 	private List<InstitucionVO> instituciones;
 	private List<ValueKeyVO> tiposIdentificacion;
 	private String nombreColegio = null;
+	
+	private static Map<String, String> mapaInstituciones = null;
 	
 	public enum FILTRO_INCIDENCIAS {
 		SIN_INCIDENCIAS
@@ -169,4 +170,11 @@ public class BusquedaRemesasForm extends MasterForm {
 		this.conError = conError;
 	}
 
+	public void setMapaInstituciones(Map<String, String> mapaInstituciones) {
+		this.mapaInstituciones  = mapaInstituciones;		
+	}
+
+	public static String getIdinstitucionNombre(String idinstitucion) {
+		return mapaInstituciones.get(idinstitucion);
+	}
 }
