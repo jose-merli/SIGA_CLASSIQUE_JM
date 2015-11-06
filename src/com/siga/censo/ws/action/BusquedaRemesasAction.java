@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -28,7 +29,6 @@ import com.atos.utils.ClsExceptions;
 import com.atos.utils.GstDate;
 import com.siga.Utilidades.UtilidadesBDAdm;
 import com.siga.Utilidades.paginadores.PaginadorVector;
-import com.siga.beans.CenInstitucionAdm;
 import com.siga.censo.ws.form.BusquedaRemesasForm;
 import com.siga.censo.ws.form.EdicionRemesaForm;
 import com.siga.censo.ws.util.CombosCenWS;
@@ -115,15 +115,18 @@ public class BusquedaRemesasAction extends MasterAction {
 			
 			request.getSession().removeAttribute(DATAPAGINADOR);
 			
-			CenInstitucionAdm institucionAdm = new CenInstitucionAdm(getUserBean(request));
-			String nombreInstitucionAcceso=institucionAdm.getNombreInstitucion(getUserBean(request).getLocation());
-			busquedaRemesasForm.setNombreColegio(nombreInstitucionAcceso);
-			busquedaRemesasForm.setIdColegio(getUserBean(request).getLocation());
-			
 			CombosCenWS combosCenWS = new CombosCenWS();
-
-			busquedaRemesasForm.setInstituciones(getColegiosDependientes(getUserBean(request).getLocation()));
+			List<InstitucionVO> listInstitucionVOs = getColegiosDependientes(getUserBean(request).getLocation());
+			busquedaRemesasForm.setInstituciones(listInstitucionVOs);
 			busquedaRemesasForm.setTiposIdentificacion(combosCenWS.getTiposIdentificacion(getUserBean(request)));
+			
+			if (listInstitucionVOs != null) {
+				Map<String, String> mapa = new HashMap<String, String>();
+				for (InstitucionVO institucionVO : listInstitucionVOs) {
+					mapa.put(institucionVO.getId(), institucionVO.getNombre());
+				}
+				busquedaRemesasForm.setMapaInstituciones(mapa);
+			}
 			
 			String buscar = request.getParameter("buscar");
 			request.setAttribute("buscar",buscar);
@@ -223,27 +226,21 @@ public class BusquedaRemesasAction extends MasterAction {
 
 
 	private void calculaIncidencias(CenWSService cenWSService,	List<EdicionRemesaForm> datos) throws SIGAException {
-		double porcentaCalculado=0;
-		int totalincidencias =0;
-		int totalRegistros=0;
+
 		if (datos != null) {
+			List<Long> listaIdcensowsenvio = new ArrayList<Long>();
 			for (EdicionRemesaForm edicionRemesaForm : datos) {
 				//si tiene errores no tiene incidencias
 				if (edicionRemesaForm.getConerrores() == null || edicionRemesaForm.getConerrores() < 1) {
-					//totalincidencias=cenWSService.selectCountIncidenciasEnvio(edicionRemesaForm.getIdcensowsenvio());
-					//totalRegistros =cenWSService.selectCountColegiadosEnvio(edicionRemesaForm.getIdcensowsenvio());
-					edicionRemesaForm.setIncidencias(cenWSService.selectCountIncidenciasEnvio(edicionRemesaForm.getIdcensowsenvio()));
-					/*edicionRemesaForm.setCountTotalColegiados(cenWSService.selectCountColegiadosEnvio(edicionRemesaForm.getIdcensowsenvio()));
-					if(totalRegistros>0){
-						porcentaCalculado = ((totalincidencias*100)/totalRegistros);
-					}else{
-						porcentaCalculado=0;
-					}
-					
-					int porcentajeRedondeo = (int) Math.round(porcentaCalculado);
-					edicionRemesaForm.setPorcentajeCalculado(porcentajeRedondeo);
-					edicionRemesaForm.setUmbral(getUmbral(edicionRemesaForm.getIdinstitucion()));*/
+					listaIdcensowsenvio.add(edicionRemesaForm.getIdcensowsenvio());
 				}
+			}
+			if (listaIdcensowsenvio != null && listaIdcensowsenvio.size() > 0) {
+				Map<Long, Integer> mapa = cenWSService.selectCountIncidenciasEnvio(listaIdcensowsenvio);
+				for (EdicionRemesaForm edicionRemesaForm : datos) {
+					edicionRemesaForm.setIncidencias(mapa.get(edicionRemesaForm.getIdcensowsenvio()));					
+				}
+				
 			}
 		}
 	}
