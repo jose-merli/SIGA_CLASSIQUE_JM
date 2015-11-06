@@ -24,11 +24,11 @@
 <%@ page import="com.atos.utils.*"%>
 <%@ page import="java.util.*"%>
 <%@page import="java.text.DecimalFormat"%>
-<%@ page import="com.siga.beans.CenInstitucionAdm"%>
 
 
 <%@ page import="com.siga.Utilidades.UtilidadesString"%>
 <%@ page import="com.siga.censo.ws.action.BusquedaRemesasAction"%>
+<%@ page import="com.siga.censo.ws.form.BusquedaRemesasForm"%>
 
 
 <%@ page import="com.siga.tlds.FilaExtElement"%>
@@ -42,10 +42,6 @@
 	String app = request.getContextPath();
 	HttpSession ses = request.getSession();
 	UsrBean usr = (UsrBean) ses.getAttribute("USRBEAN");
-	
-	CenInstitucionAdm institucionAdm = new CenInstitucionAdm(usr);
-	
-			
 	
 
 	String idioma=usr.getLanguage().toUpperCase();
@@ -140,6 +136,8 @@
 		<html:hidden property="datosPaginador"  styleId="datosPaginador" />
 		<html:hidden property="seleccionarTodos"  styleId="seleccionarTodos" />		
 	</html:form>
+	
+	 
 		
 		<siga:Table 		   
 		   name="listadoRemesas"
@@ -217,7 +215,7 @@
 		   		<siga:FilaConIconos fila='<%=String.valueOf(i+1)%>' elementos="<%=elems%>" visibleBorrado="false" visibleEdicion="false" visibleConsulta="<%=visibleConsulta%>" pintarEspacio="no" botones="<%=botones%>" clase="listaNonEdit">
 					<td>
 					<input type="hidden" name="oculto<%=String.valueOf(i+1)%>_1" value="<%=edicionRemesaForm.getIdcensowsenvio()%>">
-					<%=institucionAdm.getAbreviaturaInstitucion(edicionRemesaForm.getIdinstitucion().toString())%></td>	
+					<%=BusquedaRemesasForm.getIdinstitucionNombre(edicionRemesaForm.getIdinstitucion().toString())%></td>	
 														
 					<td style="text-align: center"><siga:Idioma key="<%=tipoEnvio%>"/></td>
 					

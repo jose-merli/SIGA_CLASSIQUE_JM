@@ -103,16 +103,10 @@
 										<siga:Idioma key="censo.ws.literal.colegio"/>
 									</td>
 									<td>
-										<logic:empty property="instituciones" name="BusquedaRemesasForm">
-											<html:hidden property="idColegio" name="BusquedaRemesasForm"  />
-											<html:text property="nombreColegio" name="BusquedaRemesasForm" size="70" styleClass="boxComboConsulta" readonly="true"/>
-										</logic:empty>
-										<logic:notEmpty property="instituciones" name="BusquedaRemesasForm">
 											<html:select property="idColegio" name="BusquedaRemesasForm" styleClass="boxCombo">
 												<html:option value="">&nbsp;</html:option>
 												<html:optionsCollection name="BusquedaRemesasForm" property="instituciones" value="id" label="nombre"></html:optionsCollection>
 											</html:select>
-										</logic:notEmpty>
 									</td>
 	
 									<td class="labelText">
