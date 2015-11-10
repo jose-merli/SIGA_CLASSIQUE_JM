@@ -236,9 +236,12 @@ public class BusquedaRemesasAction extends MasterAction {
 				}
 			}
 			if (listaIdcensowsenvio != null && listaIdcensowsenvio.size() > 0) {
-				Map<Long, Integer> mapa = cenWSService.selectCountIncidenciasEnvio(listaIdcensowsenvio);
+				Map<Long, EcomCenWsEnvioExtended> mapa = cenWSService.selectCountIncidenciasEnvio(listaIdcensowsenvio);
 				for (EdicionRemesaForm edicionRemesaForm : datos) {
-					edicionRemesaForm.setIncidencias(mapa.get(edicionRemesaForm.getIdcensowsenvio()));					
+					EcomCenWsEnvioExtended ecomCenWsEnvioExtended = mapa.get(edicionRemesaForm.getIdcensowsenvio());
+					if (ecomCenWsEnvioExtended != null) {
+						edicionRemesaForm.setIncidencias(ecomCenWsEnvioExtended.getIncidencias());
+					}
 				}
 				
 			}
