@@ -30,10 +30,10 @@
 <% 
 	String app=request.getContextPath();
 	HttpSession ses=request.getSession();
-		
 	UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");
 	String idioma = user.getLanguage();
-	
+	String idInstitucion = user.getLocation();
+	String [] parametroCombo = {idInstitucion};
 	SancionesLetradoForm formulario = (SancionesLetradoForm)request.getAttribute("SancionesLetradoForm");
 	
 	//  tratamiento de readonly
@@ -368,9 +368,13 @@
 								<siga:Idioma key="censo.busquedaSancionesLetrado.literal.colegio"/> &nbsp;(*)
 							</td>
 							<td style="padding-left:25px;">
+							<% if (formulario.getModo().equalsIgnoreCase("Ver") || Integer.parseInt(idInstitucion) == 2000) { %>
 								<siga:ComboBD nombre = "nombreInstitucion" ancho="200" tipo="cmbInstitucionesAbreviadas"  readonly="<%=readonly%>" clase="<%=estiloCombo %>" obligatorio="true" elementoSel="<%=colegioSel %>"/>
+							<% }else{ %>
+								<siga:ComboBD nombre = "nombreInstitucion" ancho="200" tipo="cmbInstitucionLocal" parametro="<%=parametroCombo%>" readonly="<%=readonly%>"  clase="<%=estiloCombo %>" obligatorio="true" elementoSel="<%=colegioSel %>"/>							
+							<% } %>	
+
 							</td>
-							
 							<td class="labelText">
 								<siga:Idioma key="censo.BusquedaSancionesLetrado.literal.refColegio"/>
 							</td>
@@ -391,7 +395,7 @@
 								<% } %>									
 							</td>						
 						
-							<% if(	(Integer.parseInt(user.getLocation()) == 2000) || (Integer.parseInt(user.getLocation()) >= 3000)) { %>		
+							<% if(	(Integer.parseInt(idInstitucion) == 2000) || (Integer.parseInt(idInstitucion) >= 3000)) { %>		
 								<td class="labelText">
 									<siga:Idioma key="censo.BusquedaSancionesLetrado.literal.refCGAE"/>
 								</td>
@@ -482,7 +486,7 @@
 						<tr>		
 							<td  colspan="4">
 						     	&nbsp;&nbsp;<html:textarea property="texto" 
-						     		onKeyDown="cuenta(this,3500)" onChange="cuenta(this,3500)"
+						     		onKeyDown="cuenta(this,4000)" onChange="cuenta(this,4000)"
 						     		style="overflow-y:auto; overflow-x:hidden; width:875px; height:175px; resize:none;" 
 						     		readOnly="<%=breadonly%>" styleclass="<%=estiloCaja %>" value="<%=texto%>"></html:textarea> 
 							</td>							
@@ -497,7 +501,7 @@
 						<tr>		
 							<td colspan="4" valign="top">
 						     	&nbsp;&nbsp;<html:textarea property="observaciones"
-						     		onKeyDown="cuenta(this,3500)" onChange="cuenta(this,3500)"
+						     		onKeyDown="cuenta(this,4000)" onChange="cuenta(this,4000)"
 						     		style="overflow-y:auto; overflow-x:hidden; width:875px; height:50px; resize:none;" 
 						     		readOnly="<%=breadonly%>" styleclass="<%=estiloCaja%>" value="<%=observaciones%>"></html:textarea> 
 							</td>

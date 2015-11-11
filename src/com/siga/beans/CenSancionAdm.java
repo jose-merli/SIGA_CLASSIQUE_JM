@@ -331,8 +331,9 @@ public class CenSancionAdm extends MasterBeanAdministrador {
               
              }
 
-            // filtro por institucion mia
-			sql += " AND " + CenSancionBean.T_NOMBRETABLA +"."+ CenSancionBean.C_IDINSTITUCION+ "=" + idInstitucionAlta;				 										
+            /** Se añade al filtro por la institucion actual y las del de 2000 que sean firmes **/
+			sql += " AND (" + CenSancionBean.T_NOMBRETABLA +"."+ CenSancionBean.C_IDINSTITUCION+ " = " + idInstitucionAlta + " OR (" + 
+					CenSancionBean.T_NOMBRETABLA +"."+ CenSancionBean.C_IDINSTITUCION + " = " + ClsConstants.INSTITUCION_CGAE + " AND " + CenSancionBean.T_NOMBRETABLA +"."+ CenSancionBean.C_CHKFIRMEZA + " = '1'))";				 										
             
 			// filtros de busqueda
 			if (!form.getNombreInstitucionBuscar().trim().equals("")) {

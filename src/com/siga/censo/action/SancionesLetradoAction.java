@@ -308,6 +308,7 @@ public class SancionesLetradoAction extends MasterAction
 				UtilidadesHash.set(hash, CenSancionBean.C_CHKARCHIVADA, "0");
 			}
 
+
 			if (checkFirmeza) {
 				if(ClsConstants.esConsejoGeneral(idinstitucion)){
 					UtilidadesHash.set(hash, CenSancionBean.C_CHKFIRMEZA, "1");
@@ -741,7 +742,6 @@ public class SancionesLetradoAction extends MasterAction
 		try {
 			SancionesLetradoForm miform = (SancionesLetradoForm) formulario;
 			user = (UsrBean) request.getSession().getAttribute("USRBEAN");
-			String idinstitucion = user.getLocation();
 			String username = user.getUserName();
 
 			CenSancionAdm admSancion=new CenSancionAdm(this.getUserBean(request));
@@ -750,7 +750,7 @@ public class SancionesLetradoAction extends MasterAction
 			Hashtable hashF = new Hashtable();
 			hashF.put(CenSancionBean.C_IDPERSONA, (String)miform.getDatosTablaOcultos(0).get(0));
 			hashF.put(CenSancionBean.C_IDSANCION, (String)miform.getDatosTablaOcultos(0).get(1)); 	
-			hashF.put(CenSancionBean.C_IDINSTITUCION, idinstitucion);
+			hashF.put(CenSancionBean.C_IDINSTITUCION, (String)miform.getDatosTablaOcultos(0).get(2)); 
 			Vector v = admSancion.select(hashF);
 			CenSancionBean b = null;
 			if (v!=null && v.size()>0) {

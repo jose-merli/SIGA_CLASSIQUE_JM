@@ -46,6 +46,7 @@
 		
 	UsrBean usrbean = (UsrBean)session.getAttribute(ClsConstants.USERBEAN);
 	String idioma=usrbean.getLanguage().toUpperCase();
+	String idinstitucionActual = usrbean.getLocation();
 	String accion=(String)request.getAttribute("ACCION");
 	String activarFilaSel = (String)request.getAttribute("activarFilaSel");	
 
@@ -181,7 +182,7 @@
 	String tamanosCol = "";
 	String nombresCol = "";
 	//Es consejo
-	if(	(Integer.parseInt(usrbean.getLocation()) == 2000) || (Integer.parseInt(usrbean.getLocation()) >= 3000)){
+	if(	(Integer.parseInt(idinstitucionActual) == 2000) || (Integer.parseInt(idinstitucionActual) >= 3000)){
 		tamanosCol="8,24,8,6,6,8,8,10,10,12";
 		nombresCol+="censo.busquedaSancionesLetrado.literal.colegio,";
 		nombresCol+="censo.busquedaSancionesLetrado.literal.ncolegiado,censo.busquedaSancionesLetrado.literal.tipoSancion,";
@@ -255,6 +256,9 @@
 				if(ClsConstants.esConsejoGeneral(idInstitucionAlta) && idSancionOrigen != null && !idSancionOrigen.equals("")){
 					//Si se trata de una sancion traspasada al CGAE solo se puede consultar
 					permisos="C";				
+				} else if (!idInstitucionAlta.equals(idinstitucionActual)){
+					//Si se trata de una sancion de otro colegio
+					permisos="C";
 				} else {
 					permisos="C,E,B";					
 				}
@@ -269,6 +273,7 @@
 					<td>
 						<input type="hidden" id="oculto<%=cont %>_1" name="oculto<%=cont %>_1" value="<%=idPersona %>">
 						<input type="hidden" id="oculto<%=cont %>_2" name="oculto<%=cont %>_2" value="<%=idSancion %>">
+						<input type="hidden" id="oculto<%=cont %>_3" name="oculto<%=cont %>_3" value="<%=idInstitucionAlta %>">
 
 						<%=UtilidadesString.mostrarDatoJSP(institucion) %>					
 					</td>
@@ -281,7 +286,7 @@
 						<%=UtilidadesString.mostrarDatoJSP(tipoSancion) %>
 					</td>
 					
-					<% if(	(Integer.parseInt(user.getLocation()) == 2000) || (Integer.parseInt(user.getLocation()) >= 3000)) { %>	
+					<% if(	(Integer.parseInt(idinstitucionActual) == 2000) || (Integer.parseInt(idinstitucionActual) >= 3000)) { %>	
 						<td>			
 							<%=UtilidadesString.mostrarDatoJSP(refCGAE)   %>
 						</td>
