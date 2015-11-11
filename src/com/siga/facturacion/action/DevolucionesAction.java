@@ -533,18 +533,139 @@ public class DevolucionesAction extends MasterAction {
 		    		//retrieve the file data
 		    		stream = ficheroOriginal.getInputStream();
 		    		//write the file to the file specified
-		    		File camino = new File (rutaServidor);
+		    		File camino = new File (rutaServidor);		    		
 		    		camino.mkdirs();
 
 		    		rdr = new BufferedReader(new InputStreamReader(stream));
 		    		out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(nombreFichero),"ISO-8859-1"));
 
-		    		String line = rdr.readLine();
+		    		String linea = rdr.readLine();
+		    		boolean esXML = false;
+		    		boolean controlarDocument = true;
 		    		
-		    		while (line!=null) {
-			    		out.write(line);
-			    		out.write("\n");
-			    		line = rdr.readLine();
+		    		while (linea!=null) {
+		    			
+			    		/** Jorge PT (11/11/2015):
+			    		 * Este codigo es necesario para el tratamiento de los ficheros xml.
+			    		 * Porque en la version SIGA_121 se necesitaba crear el fichero en java y sobreescribirlo en pl (para quitar los atributos XMLNS de la etiqueta Document).
+			    		 * Se han detectado dos problemas en pl que podemos evitar desde java:
+			    		 * - Cuando viene todo el xml en una linea muy grande (37.XXX), no funciona bien el pl, aunque trabaja con funciones CLOB, por debajo debe trabajar con VARCHAR2.
+			    		 * - Cuando crea un fichero desde java se crea con usuario root, y cuando se sobreescribe desde pl se utiliza un usuario de oracle, con lo que en pl no es el propietario del fichero.
+			    		 * - Al crear un fichero el propietario tiene permisos de lectura y escritura, pero para el resto tiene permisos de solo lectura. 
+			    		 */
+		    			
+		    			String lineaFichero = linea;
+		    			
+		    			// Control que valida si es un fichero XML
+		    			if (!esXML && linea.indexOf("<?")>=0) {
+		    				esXML = true;
+		    			}
+			    		
+		    			// Control que realiza una serie de cambios cuando es XML
+			    		if (esXML) {	
+			    			
+			    			// Comienzo a buscar por la primera letra
+			    			int buscador = 0;
+			    			
+			    			// Control de longitud de linea
+			    			while (buscador < linea.length()) {
+			    				
+			    				// Busco < (principio de etiqueta)
+			    				buscador = linea.indexOf("<", buscador);
+			    				
+			    				// Si no tiene etiqueta pinto la linea
+			    				if (buscador < 0) {		    					
+			    					break;
+			    					
+			    				}
+			    				
+			    				// Si tiene < pasamos de letra
+			    				buscador++;
+			    				
+			    				// Comprueba que tenga por lo menos alguna letra mas
+			    				if (linea.length() < buscador) {
+			    					break;
+			    				}
+			    				
+			    				// Obtengo la siguiente letra al <
+			    				char letra = linea.charAt(buscador);
+			    					
+			    				// Si no encuentra </ es que es una apertura de etiqueta
+			    				if (letra != '/') { 
+			    					
+			    					final String etiquetaDocument = "DOCUMENT"; 
+			    					
+			    					// Control de si hay que validar la etiqueta DOCUMENT
+			    					if (controlarDocument && linea.length() > buscador + etiquetaDocument.length()) {
+			    						
+				    					// Obtengo el nombre de la etiqueta
+				    					String buscaDocument = linea.substring(buscador, buscador + etiquetaDocument.length());
+				    					
+				    					// Compruebo si la etiqueta es DOCUMENT
+				    					if (buscaDocument.equalsIgnoreCase(etiquetaDocument)) {
+				    						
+				    						// Hay que buscar el final de la etiqueta DOCUMENT
+						    				int buscadorDocument = linea.indexOf(">", buscador + etiquetaDocument.length());
+						    							
+						    				// Encuento el final de la etiqueta DOCUMENT
+						    				if (buscadorDocument > 0) {
+						    					
+						    					// Elimino los atributos de la etiqueta DOCUMENT
+						    					linea = linea.substring(0, buscador + etiquetaDocument.length()) + linea.substring(buscadorDocument);
+						    					
+						    					// Indico que hay que buscar despues de la etiqueta DOCUMENT
+						    					buscador += etiquetaDocument.length();
+						    					
+						    					// Indicamos que ya hemos controlado la etiqueta DOCUMENT
+						    					controlarDocument = false;
+						    				}
+				    					}
+			    					}
+			    					
+			    					// Pasamos a la siguiente letra
+			    					buscador++;
+			    					continue;
+			    				}
+			    					
+			    				// Encuentro </ y buscamos el final de la etiqueta
+			    				buscador = linea.indexOf(">", buscador);
+			    							
+			    				// Encuento el final de la etiqueta </...>
+			    				if (buscador<0) {
+			    					break;
+			    				}
+			    				
+			    				// Pasamos a la siguiente letra >
+			    				buscador++;
+			    				
+			    				// ponemos un retorno de linea al finalizar cada etiqueta final, porque asi evitamos un xml en una linea inmensa
+			    				lineaFichero = linea.substring(0, buscador);
+			    				
+			    				// Escribimos la linea
+			    				out.write(lineaFichero);
+			    				out.write("\n");
+			    				
+			    				// Eliminamos los datos escritos
+			    				linea = linea.substring(buscador);
+			    				
+			    				// Volvemos a empezar
+			    				buscador = 0;
+				    		}
+			    			
+			    			// Guardamos la linea tal como esta ahora
+			    			lineaFichero = linea;
+			    		} // FIN WHILE		    			
+		    			
+			    		// Comprueba si queda algo por escribir de la linea
+		    			if (!lineaFichero.trim().equals("")) {
+		    				
+		    				// Escribimos la linea 
+		    				out.write(lineaFichero);
+		    				out.write("\n");
+		    			}
+		    			
+		    			// Obtenemos la siguiente linea
+			    		linea = rdr.readLine();
 		    		}
 		    		
 		    	} catch (FileNotFoundException fnfe) {
