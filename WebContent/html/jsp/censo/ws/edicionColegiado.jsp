@@ -247,7 +247,8 @@
 							<siga:Idioma key="censo.ws.literal.tipoIdentificacion"/>
 						</td>
 						<td>							
-							<html:select property="idcensotipoidentificacion" name="EdicionColegiadoForm" styleClass="boxCombo" disabled="${htmlTextReadOnly}">								
+							<html:select property="idcensotipoidentificacion" name="EdicionColegiadoForm" styleClass="boxCombo" disabled="${htmlTextReadOnly}">	
+								<html:option value=""></html:option>							
 								<html:optionsCollection name="EdicionColegiadoForm" property="tiposIdentificacion" value="key" label="value"></html:optionsCollection>
 							</html:select>						
 						</td>
