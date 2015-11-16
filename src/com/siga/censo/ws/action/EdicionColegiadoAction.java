@@ -160,12 +160,21 @@ public class EdicionColegiadoAction extends MasterAction {
 			ecomCenDatos.setNombre(edicionColegiadoForm.getNombre());
 			ecomCenDatos.setApellido1(edicionColegiadoForm.getApellido1());
 			ecomCenDatos.setApellido2(edicionColegiadoForm.getApellido2());
-			ecomCenDatos.setSexo(edicionColegiadoForm.getSexo());
+			if (edicionColegiadoForm.getSexo() != null && !edicionColegiadoForm.getSexo().trim().equals("")) {
+				ecomCenDatos.setSexo(edicionColegiadoForm.getSexo());
+			} else {
+				ecomCenDatos.setSexo(null);
+			}
 			if (edicionColegiadoForm.getFechanacimiento() != null && !edicionColegiadoForm.getFechanacimiento().trim().equals("")) {
 				ecomCenDatos.setFechanacimiento(GstDate.convertirFechaDiaMesAnio(edicionColegiadoForm.getFechanacimiento()));
+			} else {
+				ecomCenDatos.setFechanacimiento(null);
 			}
-			
-			ecomCenDatos.setIdcensotipoidentificacion(edicionColegiadoForm.getIdcensotipoidentificacion());
+			if (edicionColegiadoForm.getIdcensotipoidentificacion() != null && edicionColegiadoForm.getIdcensotipoidentificacion().shortValue() > 0) {
+				ecomCenDatos.setIdcensotipoidentificacion(edicionColegiadoForm.getIdcensotipoidentificacion());
+			} else {
+				ecomCenDatos.setIdcensotipoidentificacion(null);
+			}
 			ecomCenDatos.setNumdocumento(edicionColegiadoForm.getNumdocumento());
 			ecomCenDatos.setPublicartelefono(getCheckShort(edicionColegiadoForm.isPublicartelefono()));
 			ecomCenDatos.setTelefono(edicionColegiadoForm.getTelefono());
@@ -175,10 +184,16 @@ public class EdicionColegiadoAction extends MasterAction {
 			ecomCenDatos.setFax(edicionColegiadoForm.getFax());
 			ecomCenDatos.setPublicaremail(getCheckShort(edicionColegiadoForm.isPublicaremail()));
 			ecomCenDatos.setEmail(edicionColegiadoForm.getEmail());
-			ecomCenDatos.setIdecomcensosituacionejer(edicionColegiadoForm.getIdecomcensosituacionejer());
+			if (edicionColegiadoForm.getIdecomcensosituacionejer() != null && edicionColegiadoForm.getIdecomcensosituacionejer().shortValue() > 0) {
+				ecomCenDatos.setIdecomcensosituacionejer(edicionColegiadoForm.getIdecomcensosituacionejer());
+			} else {
+				ecomCenDatos.setIdecomcensosituacionejer(null);
+			}
 			
 			if (edicionColegiadoForm.getFechasituacion() != null && !edicionColegiadoForm.getFechasituacion().trim().equals("")) {
 				ecomCenDatos.setFechasituacion(GstDate.convertirFechaDiaMesAnio(edicionColegiadoForm.getFechasituacion()));
+			} else {
+				ecomCenDatos.setFechasituacion(null);
 			}
 			
 			ecomCenDatos.setResidente(getCheckShort(edicionColegiadoForm.isResidente()));
