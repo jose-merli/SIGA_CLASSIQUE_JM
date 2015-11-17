@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
@@ -496,15 +497,24 @@ public class EdicionColegiadoAction extends MasterAction {
 	private List<String> getDescripcionIncidenciasColegiadoCenDatos(List<EcomCenDatosIncidencias> incidenciasdatos,List<EcomCenMaestroIncidenc> incidencias) {
 		List<String> descripciones = new ArrayList<String>();
 		
-		if (incidencias != null && incidencias.size() > 0) {	
+		Map<Short, EcomCenMaestroIncidenc> mapa = new HashMap<Short, EcomCenMaestroIncidenc>();
+		
+		if (incidencias != null) {
 			for (EcomCenMaestroIncidenc ecomCenMaestroIncidenc : incidencias) {
-				for (EcomCenDatosIncidencias ecomCenIncidenc : incidenciasdatos) {
-					if(ecomCenIncidenc.getDetalleincidencia()!=null && ecomCenIncidenc.getIdcensomaestroincidencias().equals(ecomCenMaestroIncidenc.getIdcensomaestroincidencias())){
-						ecomCenMaestroIncidenc.setDescripcion(ecomCenIncidenc.getDetalleincidencia());
-						break;	
+				mapa.put(ecomCenMaestroIncidenc.getIdcensomaestroincidencias(), ecomCenMaestroIncidenc);
+			}
+		}
+		
+		if (incidenciasdatos != null && incidenciasdatos.size() > 0) {	
+			for (EcomCenDatosIncidencias ecomCenIncidenc : incidenciasdatos) {
+				EcomCenMaestroIncidenc ecomCenMaestroIncidenc = mapa.get(ecomCenIncidenc.getIdcensomaestroincidencias());
+				if (ecomCenMaestroIncidenc != null) {
+					if (ecomCenIncidenc.getDetalleincidencia() != null) {
+						descripciones.add(ecomCenIncidenc.getDetalleincidencia());
+					} else {
+						descripciones.add(ecomCenMaestroIncidenc.getDescripcion());	
 					}
 				}
-				descripciones.add(ecomCenMaestroIncidenc.getDescripcion());
 			}
 		}
 		
