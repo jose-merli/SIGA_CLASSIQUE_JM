@@ -366,6 +366,17 @@ public class EdicionColegiadoAction extends MasterAction {
 				edicionColegiadoForm.setCodigoprovincia(getValue(ecomCenDireccion.getCodigoprovincia()));
 				edicionColegiadoForm.setCodigopoblacion(getValue(ecomCenDireccion.getCodigopoblacion()));
 				edicionColegiadoForm.setDescripcionpoblacion(getValue(ecomCenDireccion.getDescripcionpoblacion()));
+			} else {
+				edicionColegiadoForm.setIdcensodireccion(null);
+				edicionColegiadoForm.setPublicardireccion(false);
+				edicionColegiadoForm.setDesctipovia(null);
+				edicionColegiadoForm.setDomicilio(null);
+				edicionColegiadoForm.setCodigopostal(null);
+				edicionColegiadoForm.setCodigopaisextranj(null);
+									
+				edicionColegiadoForm.setCodigoprovincia(null);
+				edicionColegiadoForm.setCodigopoblacion(null);
+				edicionColegiadoForm.setDescripcionpoblacion(null);
 			}
 			
 			edicionColegiadoForm.setIdestadocolegiado(ecomCenDatos.getIdestadocolegiado());
