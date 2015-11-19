@@ -538,10 +538,22 @@ public class DevolucionesAction extends MasterAction {
 
 		    		rdr = new BufferedReader(new InputStreamReader(stream));
 		    		out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(nombreFichero),"ISO-8859-1"));
-
-		    		String linea = rdr.readLine();
+		    		
 		    		boolean esXML = false;
 		    		boolean controlarDocument = true;
+		    		
+		    		String nombreFicheroDevoluciones = ficheroOriginal.getFileName();
+		    		if (nombreFicheroDevoluciones.toUpperCase().endsWith("XML")) {
+		    			esXML = true;
+		    		}
+		    		
+		    		String linea = "";		    		
+		    		while (linea!=null && linea.equals("")) {
+		    			linea = rdr.readLine();
+		    			if (linea!=null) {
+		    				linea = linea.trim();
+		    			}
+		    		}
 		    		
 		    		while (linea!=null) {
 		    			
@@ -557,7 +569,7 @@ public class DevolucionesAction extends MasterAction {
 		    			String lineaFichero = linea;
 		    			
 		    			// Control que valida si es un fichero XML
-		    			if (!esXML && linea.indexOf("<?")>=0) {
+		    			if (!esXML && linea.indexOf("<")>=0) {
 		    				esXML = true;
 		    			}
 			    		
@@ -657,7 +669,8 @@ public class DevolucionesAction extends MasterAction {
 			    		} // FIN WHILE		    			
 		    			
 			    		// Comprueba si queda algo por escribir de la linea
-		    			if (!lineaFichero.trim().equals("")) {
+			    		lineaFichero = lineaFichero.trim();
+		    			if (!lineaFichero.equals("")) {
 		    				
 		    				// Escribimos la linea 
 		    				out.write(lineaFichero);
@@ -665,7 +678,13 @@ public class DevolucionesAction extends MasterAction {
 		    			}
 		    			
 		    			// Obtenemos la siguiente linea
-			    		linea = rdr.readLine();
+		    			linea = "";		    		
+			    		while (linea!=null && linea.equals("")) {
+			    			linea = rdr.readLine();
+			    			if (linea!=null) {
+			    				linea = linea.trim();
+			    			}
+			    		}
 		    		}
 		    		
 		    	} catch (FileNotFoundException fnfe) {
@@ -691,7 +710,6 @@ public class DevolucionesAction extends MasterAction {
 			codretorno = resultado[0];
 			String fechaDevolucion = resultado[2];
 			
-			boolean isTodasRenegociadas = true;
 			Facturacion facturacion = new Facturacion(user);
 			if (codretorno.equalsIgnoreCase("0")){
 				String nuevaFormaPago 	= miForm.getDatosPagosRenegociarNuevaFormaPago();
@@ -727,17 +745,13 @@ public class DevolucionesAction extends MasterAction {
 		            		facturaBean = (FacFacturaBean) facturaAdm.hashTableToBean(htFila);
 						}
 	            		
-						int resultadoRenegociacion = facturacion.insertarRenegociar(
+						facturacion.insertarRenegociar(
 								facturaBean, 
 								nuevaFormaPago, 
 								null, 
 								miForm.getDatosPagosRenegociarObservaciones(), 
 								miForm.getDatosRenegociarFecha(), 
 								true);
-						
-						if (resultadoRenegociacion > 0) {
-							isTodasRenegociadas = false;
-						}
 					}
 					
 				} else {
@@ -807,13 +821,6 @@ public class DevolucionesAction extends MasterAction {
 					request.setAttribute("parametrosArray", resultado);
 					request.setAttribute("modal","");							
 					return "exitoParametros";
-	
-					/*if (isTodasRenegociadas) {
-						result=exitoModal("facturacion.nuevoFichero.literal.procesoCorrecto",request);
-						
-					} else {
-						result=exitoModal("facturacion.renegociar.aviso.noTodasRenegociadas",request);
-					}*/
 					
 				} else {
 					tx.rollback();		
@@ -969,7 +976,6 @@ public class DevolucionesAction extends MasterAction {
 			codretorno = resultado[0];
 			String fechaDevolucion = resultado[2];			
 			
-			boolean isTodasRenegociadas = true;
 			Facturacion facturacion = new Facturacion(user);
 			if (codretorno.equalsIgnoreCase("0")){
 				String nuevaFormaPago 	= miForm.getDatosPagosRenegociarNuevaFormaPago();
@@ -1005,17 +1011,13 @@ public class DevolucionesAction extends MasterAction {
 		            		facturaBean = (FacFacturaBean) facturaAdm.hashTableToBean(htFila);
 						}
 						
-						int resultadoRenegociacion = facturacion.insertarRenegociar(
+						facturacion.insertarRenegociar(
 								facturaBean, 
 								nuevaFormaPago, 
 								null, 
 								miForm.getDatosPagosRenegociarObservaciones(), 
 								miForm.getDatosRenegociarFecha(), 
 								true);
-						
-						if (resultadoRenegociacion > 0) {
-							isTodasRenegociadas = false;
-						}
 					}				
 					
 				} else {
@@ -1079,13 +1081,6 @@ public class DevolucionesAction extends MasterAction {
 				request.setAttribute("parametrosArray", resultado);
 				request.setAttribute("modal","");							
 				return "exitoParametros";			
-
-				/*if (isTodasRenegociadas) {
-					result=exitoRefresco("facturacion.nuevoFichero.literal.procesoCorrecto",request);
-					
-				} else {
-					result=exitoRefresco("facturacion.renegociar.aviso.noTodasRenegociadas",request);
-				}*/
 				
 			} else {
 				tx.rollback();		
