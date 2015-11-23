@@ -237,6 +237,11 @@
 					if (oculto3) {
 						oculto3.value = "LETRADO";
 					}
+					var oculto2 = document.getElementById("oculto" + fila + "_2");
+					if (oculto2) {
+						oculto2.value = "2000";
+					}
+					
 					selectRow(fila);	
 					editar(fila);					
 				}
