@@ -5,6 +5,7 @@
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/WebContent/WEB-INF/properties"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/WebContent/html"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/.apt_src"/>
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="/src"/>
         <dependent-module archiveName="SIGAServices.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/SIGAServices/SIGAServices">
             <dependency-type>uses</dependency-type>
         </dependent-module>
