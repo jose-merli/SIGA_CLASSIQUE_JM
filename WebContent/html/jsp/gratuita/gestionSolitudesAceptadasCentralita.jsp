@@ -83,10 +83,11 @@
 	function onChangeColegiado(){
 		var colegiadoNumero = document.getElementById("colegiadoNumero").value;
 		var idInstitucion = document.SolicitudAceptadaCentralitaForm.idInstitucion.value;
+		var accion = document.SolicitudAceptadaCentralitaForm.action;
 		if(colegiadoNumero!=""){
 			jQuery.ajax({ //Comunicación jQuery hacia JSP  
 				type: "POST",
-				url: "/SIGA/JGR_GestionSolicitudesAceptadasCentralita.do?modo=getColegiadoAjax",
+				url: accion+"?modo=getColegiadoAjax",
 				data: "colegiadoNumero="+colegiadoNumero+"&idInstitucion="+idInstitucion,
 				dataType: "json",
 				success: function(json){		
@@ -185,9 +186,10 @@
 
         }
         sub();
+        var accion = document.SolicitudAceptadaCentralitaForm.action;
 	     jQuery.ajax({
             type: "POST",
-            url: "/SIGA/JGR_GestionSolicitudesAceptadasCentralita.do?modo=getAjaxBusqueda",
+            url: accion+"?modo=getAjaxBusqueda",
             data: data,
             success: function(response){
                 jQuery('#divListado').html(response);
