@@ -1377,7 +1377,7 @@ public class FcsPagosJGAdm extends MasterBeanAdministrador {
 	public List<Hashtable> getFacturacionesGruposPagos(String idPago, String idInstitucion) throws ClsExceptions {
 		
 		StringBuffer sql = new StringBuffer();
-		sql.append(" select fcs_pagosjg.idfacturacion,FCS_FACT_GRUPOFACT_HITO.Idgrupofacturacion ");
+		sql.append(" select Distinct fcs_pagosjg.idfacturacion,FCS_FACT_GRUPOFACT_HITO.Idgrupofacturacion ");
 		sql.append(" from fcs_pagosjg, FCS_FACT_GRUPOFACT_HITO ");
 		sql.append(" where FCS_FACT_GRUPOFACT_HITO.IDINSTITUCION(+) = fcs_pagosjg.idinstitucion ");
 		sql.append(" and FCS_FACT_GRUPOFACT_HITO.IDFACTURACION(+) = fcs_pagosjg.idfacturacion ");
