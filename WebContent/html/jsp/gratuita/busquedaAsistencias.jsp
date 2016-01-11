@@ -571,8 +571,13 @@
 				sub();
 				if (!errorValidacion()) {
 					// obtenemos el idturno y el idguardia
-					document.forms[0].idGuardia.value 	= document.forms[0].scsinscripcionguardia.value;
-					document.forms[0].idTurno.value		= document.forms[0].turnos.value.substr(document.forms[0].turnos.value.indexOf(",")+1);
+					<% if((esVolver!=null && esVolver.equals("1"))&&(busqueda!=null)){ %>
+						document.forms[0].idTurno.value		= <%= idTurno%>;
+						document.forms[0].idGuardia.value 	= <%= idGuardia%>;
+					<% } else { %>
+						document.forms[0].idTurno.value		= document.forms[0].turnos.value.substr(document.forms[0].turnos.value.indexOf(",")+1);
+						document.forms[0].idGuardia.value 	= document.forms[0].scsinscripcionguardia.value;
+					<% } %>
 					document.forms[0].target			= "resultado";
 					document.forms[0].modo.value 		= "buscarInit";
 					document.forms[0].submit();
