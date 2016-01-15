@@ -3,7 +3,8 @@
               Any modifications will be overwritten.
               To include a user specific buildfile here, simply create one in the same
               directory with the processing instruction <?eclipse.ant.import?>
-              as the first entry and export the buildfile again. --><project basedir="." default="build" name="SIGA92">
+              as the first entry and export the buildfile again. -->
+<project basedir="." default="build" name="SIGA92">
     <property environment="env"/>
     <property name="SIGA92.location" value="../SIGA92"/>
     <property name="SIGAServices.location" value="../SIGAServices"/>
@@ -85,7 +86,7 @@
         <pathelement location="${SIGA92.location}/WebContent/WEB-INF/lib/MediadoresConcursales.jar"/>
         <pathelement location="${SIGAServices.location}/lib/mybatis-generator-core-1.3.2.jar"/>
         <pathelement location="${SIGA92.location}/WebContent/WEB-INF/lib/Aspose.Words.14.2.jdk16.jar"/>
-        <pathelement location="${SIGA92.location}/WebContent/WEB-INF/lib/poi-3.2-FINAL-20081019.jar"/>
+        <pathelement location="${SIGA92.location}/WebContent/WEB-INF/lib/poi-3.12-20150511.jar"/>
         <pathelement location="${SIGA92.location}/WebContent/WEB-INF/lib/jsch-0.1.42.jar"/>
         <pathelement location="${SIGA92.location}/WebContent/WEB-INF/lib/commons-net-ftp-2.0.jar"/>
     </path>
