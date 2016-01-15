@@ -21,7 +21,7 @@
 	<!-- 
 	<property name="workspace.home" 		value="C:/Users/josemg/.jenkins/workspace/SIGA"/>
 	-->
-	<property name="workspace.home" 		value="C:/ci/jenkins/SIGA/workspace"/>
+	<property name="workspace.home" 		value="C:/ci/Jenkins/jobs/SIGA/workspace"/>
 	
 	<!-- Rutas de origen -->
 	<property name="services.home" 			value="${workspace.home}/SIGAServices/bin"/>
