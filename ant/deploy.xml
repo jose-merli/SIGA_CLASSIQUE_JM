@@ -30,7 +30,7 @@
 	<!-- Rutas de destino -->
 	<property name="redeploy.name" 			value="SIGA"/>
 	<!-- <property name="redeploy.targets" 		value="serverSIGA"/>  -->
-	<property name="redeploy.targets" 		value="AdminServer(admin)"/>
+	<property name="redeploy.targets" 		value="AdminServer"/>
 	
 <!--NO SE USA?
  	<property name="redeploy.modulo.siga" 	value="/siga@serverSIGA"/>  -->
