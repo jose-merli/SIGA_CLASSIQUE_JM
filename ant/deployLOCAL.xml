@@ -1,6 +1,6 @@
 ﻿
 <project name="SIGA" default="DEPLOY" basedir=".">
-	<property name="projectsdesarrollo.home" 		value="C:/Oracle/Middleware"/>	
+	<property name="projectsdesarrollo.home" 		value="P:"/>	
 	<property name="wldesarrollo.deploy.adminurl" 	value="t3://itcgae-ws0202:7001/"/>
 	<property name="wldesarrollo.deploy.user" 		value="weblogic"/>	
 	<property name="wldesarrollo.deploy.password" 	value="weblogic12"/>
@@ -25,7 +25,7 @@
 	
 	<property name="redeploy.retiretimeout" value="30"/>
 	<property name="redeploy.source" 		value="C:/Oracle/Middleware/user_projects/domains/domainSIGA/SIGA/entrega"/>
-	<property name="deploy.home" 			value="${projectsdesarrollo.home}/user_projects/domains/domainSIGA/applications/${redeploy.name}/entrega"/>
+	<property name="deploy.home" 			value="${projectsdesarrollo.home}/pruebas jose"/>
 	
 	<property name="web.inf.deploy.home"	value="${deploy.home}/WEB-INF"/>
 	<property name="html.deploy.home"   	value="${deploy.home}/html"/>			
