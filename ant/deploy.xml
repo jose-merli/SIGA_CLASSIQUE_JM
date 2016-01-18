@@ -1,7 +1,7 @@
 ﻿
 <project name="SIGA" default="DEPLOY" basedir=".">
 	
-	<property name="projectsdesarrollo.home" 		value="//10.60.3.77"/>
+	<property name="projectsdesarrollo.home" 		value="V:"/>
 	<property name="wldesarrollo.deploy.adminurl" 	value="t3://10.60.3.77:7011"/>
 	<property name="wldesarrollo.deploy.user" 		value="weblogic"/>	
 	<property name="wldesarrollo.deploy.password" 	value="desarrollo1"/>
@@ -14,7 +14,7 @@
 	-->
 	
 	<echo message="Poject Desarrollo home : ${projectsdesarrollo.home}"/>
-	 
+	<echo message="Usuario: ${user.name}" /> 
 	
 	<!-- ************************************************* PROPIEDADES ************************************************ -->
 	<property name="bea.weblogic.jar" 		value="C:/oracle/Middleware/wlserver_12.1/server/lib/weblogic.jar"/>
@@ -59,7 +59,7 @@
 
 		<target name="updatesrc">		
 			<echo message="Copiando recursos web ..."/>
-			<copy todir="${html.deploy.home}" includeEmptyDirs="no"  overwrite="yes">
+			<copy todir="${html.deploy.home}" includeEmptyDirs="no"  overwrite="yes" verbose="true">
 			<fileset dir="${html.home}">
 			  <include name="**/*"/>
 			</fileset>
