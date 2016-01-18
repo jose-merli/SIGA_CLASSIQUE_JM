@@ -1,0 +1,79 @@
+﻿
+<project name="SIGA" default="DEPLOY" basedir=".">
+	<property name="projectsdesarrollo.home" 		value="C:/Oracle/Middleware"/>	
+	<property name="wldesarrollo.deploy.adminurl" 	value="t3://itcgae-ws0202:7001/"/>
+	<property name="wldesarrollo.deploy.user" 		value="weblogic"/>	
+	<property name="wldesarrollo.deploy.password" 	value="weblogic12"/>
+	
+	<echo message="Poject Desarrollo home : ${projectsdesarrollo.home}"/>
+	<echo message="Usuario: ${user.name}" /> 
+	
+	<!-- ************************************************* PROPIEDADES ************************************************ -->
+	<property name="bea.weblogic.jar" 		value="C:/oracle/Middleware/wlserver_12.1/server/lib/weblogic.jar"/>
+	<property name="workspace.home" 		value="C:/Users/josemg/.jenkins/workspace/SIGA"/>
+	
+	<!-- Rutas de origen -->
+	<property name="services.home" 			value="${workspace.home}/SIGAServices/bin"/>
+	<property name="proyecto.home" 			value="${workspace.home}/SIGA92/WebContent"/>
+	<property name="web.inf.home"  			value="${proyecto.home}/WEB-INF"/>
+	<property name="html.home"				value="${proyecto.home}/html"/>
+
+	<!-- Rutas de destino -->
+	<property name="redeploy.name" 			value="SIGA"/>
+	
+	<property name="redeploy.targets" 		value="AdminServer"/>
+	
+	<property name="redeploy.retiretimeout" value="30"/>
+	<property name="redeploy.source" 		value="C:/Oracle/Middleware/user_projects/domains/domainSIGA/SIGA/entrega"/>
+	<property name="deploy.home" 			value="${projectsdesarrollo.home}/user_projects/domains/domainSIGA/applications/${redeploy.name}/entrega"/>
+	
+	<property name="web.inf.deploy.home"	value="${deploy.home}/WEB-INF"/>
+	<property name="html.deploy.home"   	value="${deploy.home}/html"/>			
+
+
+<!-- ##########################################################################################################-->	
+
+		<target name="DEPLOY" description="Despliega aplicación con la versión seleccionada">
+			<antcall target="updatesrc" />
+			<antcall target="redeploy" />
+		</target>
+
+		<target name="updatesrc">		
+			<echo message="Copiando recursos web ..."/>
+			<copy todir="${html.deploy.home}" includeEmptyDirs="no"  overwrite="yes">
+			<fileset dir="${html.home}">
+			  <include name="**/*"/>
+			</fileset>
+			</copy>
+			<copy todir="${web.inf.deploy.home}" includeEmptyDirs="no"  overwrite="yes">
+			<fileset dir="${web.inf.home}">
+			  <include name="**/*"/>
+			  <exclude name="META-INF"/>
+			</fileset>
+			</copy>
+			<copy todir="${web.inf.deploy.home}/classes/org" includeEmptyDirs="no"  overwrite="yes">
+			<fileset dir="${services.home}/org">
+			  <include name="**/*"/>
+			</fileset>
+			</copy>
+		</target>
+	
+		<taskdef name="wldeploy" classname="weblogic.ant.taskdefs.management.WLDeploy" classpath="${bea.weblogic.jar}"/>
+		
+		<target name="redeploy">    	 	
+	 		<wldeploy action="redeploy" 
+			  	verbose="true" 
+		      	debug="true"
+		      	name="${redeploy.name}" 
+			  	source="${redeploy.source}"
+		      	user="${wldesarrollo.deploy.user}" 
+		      	password="${wldesarrollo.deploy.password}"
+		      	adminurl="${wldesarrollo.deploy.adminurl}"
+		      	targets="${redeploy.targets}"  
+			  	remote="true"	 		
+			/>
+		 </target>
+
+
+		
+</project>
