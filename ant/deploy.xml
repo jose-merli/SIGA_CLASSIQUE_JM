@@ -39,13 +39,17 @@
  	<property name="redeploy.modulo.siga" 	value="/siga@serverSIGA"/>  -->
 	
 	<property name="redeploy.retiretimeout" value="30"/>
-	<property name="redeploy.source" 		value="C:/Oracle/Middleware/user_projects/domains/domainCGAE/applications/${redeploy.name}/entrega"/>
-	
 	<!-- <property name="redeploy.source" 		value="C:/Oracle/Middleware/user_projects/domains/domainSIGA/SIGA/entrega"/> -->
+	
+	<!--
+	Deploy home no es correcto, usaremos deploy.home que es el correcto.
+	<property name="redeploy.source" 		value="C:/Oracle/Middleware/user_projects/domains/domainCGAE/applications/${redeploy.name}/entrega"/>
+	-->
 	
 	<!-- <property name="deploy.home" 			value="${projectsdesarrollo.home}/user_projects/domains/domainSIGA/applications/${redeploy.name}/entrega"/> -->
 	
 	<property name="deploy.home" 			value="${projectsdesarrollo.home}/user_projects/domains/domainCGAE/applications/${redeploy.name}/entrega"/>
+	
 	<property name="web.inf.deploy.home"	value="${deploy.home}/WEB-INF"/>
 	<property name="html.deploy.home"   	value="${deploy.home}/html"/>			
 
@@ -84,7 +88,7 @@
 			  	verbose="true" 
 		      	debug="true"
 		      	name="${redeploy.name}" 
-			  	source="${redeploy.source}"
+			  	source="${deploy.home}"
 		      	user="${wldesarrollo.deploy.user}" 
 		      	password="${wldesarrollo.deploy.password}"
 		      	adminurl="${wldesarrollo.deploy.adminurl}"
