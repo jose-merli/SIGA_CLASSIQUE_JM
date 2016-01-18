@@ -4,7 +4,7 @@
 	<property name="projectsdesarrollo.home" 		value="V:"/>
 	<property name="wldesarrollo.deploy.adminurl" 	value="t3://10.60.3.77:7011"/>
 	<property name="wldesarrollo.deploy.user" 		value="weblogic"/>	
-	<property name="wldesarrollo.deploy.password" 	value="desarrollo1"/>
+	<property name="wldesarrollo.deploy.password" 	value="desarrollo"/>
 	
 	<!--
 	<property name="projectsdesarrollo.home" 		value="C:/Oracle/Middleware"/>	
