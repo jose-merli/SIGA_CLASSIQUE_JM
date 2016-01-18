@@ -49,7 +49,6 @@
 	<!-- <property name="deploy.home" 			value="${projectsdesarrollo.home}/user_projects/domains/domainSIGA/applications/${redeploy.name}/entrega"/> -->
 	
 	<property name="deploy.home" 			value="${projectsdesarrollo.home}/user_projects/domains/domainCGAE/applications/${redeploy.name}/entrega"/>
-	<property name="redeploy.source" 			value="/home/Datos/user_projects/domains/domainCGAE/applications/${redeploy.name}/entrega"/>
 	
 	<property name="web.inf.deploy.home"	value="${deploy.home}/WEB-INF"/>
 	<property name="html.deploy.home"   	value="${deploy.home}/html"/>			
@@ -89,7 +88,7 @@
 			  	verbose="true" 
 		      	debug="true"
 		      	name="${redeploy.name}" 
-			  	source="${redeploy.source}"
+			  	source="${deploy.home}"
 		      	user="${wldesarrollo.deploy.user}" 
 		      	password="${wldesarrollo.deploy.password}"
 		      	adminurl="${wldesarrollo.deploy.adminurl}"
