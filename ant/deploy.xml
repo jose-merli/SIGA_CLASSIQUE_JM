@@ -45,6 +45,7 @@
 
 		<target name="DEPLOY" description="Despliega aplicación con la versión seleccionada">
 			<antcall target="updatesrc" />
+			<antcall target="UndeployApplication"/>
 			<antcall target="redeploy" />
 		</target>
 
@@ -88,6 +89,17 @@
 			  	remote="true"
 	 			upload="true"
 			  	appversion="${nombre.Fichero.Despliegue}"
+			/>
+		 </target>
+	
+		<target name="UndeployApplication" description="Retira aplicación con la versión seleccionada">	 	
+		 	<wldeploy action="undeploy" 
+		 		verbose="true" 
+		      	debug="true"
+		      	name="${redeploy.name}" 
+		      	user="${wldesarrollo.deploy.user}" 
+		      	password="${wldesarrollo.deploy.password}"
+		      	adminurl="${wldesarrollo.deploy.adminurl}"			  		
 			/>
 		 </target>
 
