@@ -48,6 +48,7 @@
 
 		<target name="DEPLOY" description="Despliega aplicación con la versión seleccionada">
 			<antcall target="updatesrc" />
+			<antcall target="crearFicheroVersion" />
 			<antcall target="redeploy" />
 		</target>
 
