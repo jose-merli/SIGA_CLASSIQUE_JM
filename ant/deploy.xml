@@ -82,6 +82,7 @@
 		      	targets="${redeploy.targets}"  
 			  	remote="true"
 	 			upload="true"
+			  	appversion="${nombre.Fichero.Despliegue}"
 			/>
 		 </target>
 
