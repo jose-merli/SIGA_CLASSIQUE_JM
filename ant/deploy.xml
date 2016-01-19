@@ -52,7 +52,7 @@
 			<echo message="Copiando recursos web ..."/>
 			<copy todir="${html.deploy.home}" includeEmptyDirs="no"  overwrite="yes" verbose="true">
 			<fileset dir="${html.home}">
-			  <insclude name="**/*"/>
+			  <include name="**/*"/>
 			</fileset>
 			</copy>
 			<copy todir="${web.inf.deploy.home}" includeEmptyDirs="no"  overwrite="yes">
