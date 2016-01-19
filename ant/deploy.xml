@@ -46,7 +46,7 @@
 		<target name="DEPLOY" description="Despliega aplicación con la versión seleccionada">
 			<antcall target="updatesrc" />
 			<antcall target="UndeployApplication"/>
-			<antcall target="redeploy" />
+			<antcall target="redeploy" />			
 		</target>
 
 		<target name="updatesrc">		
@@ -76,7 +76,8 @@
 	
 		<taskdef name="wldeploy" classname="weblogic.ant.taskdefs.management.WLDeploy" classpath="${bea.weblogic.jar}"/>
 		
-		<target name="redeploy">    	 	
+		<target name="redeploy">   
+			<echo message="Deploy aplicación: ${redeploy.name}"/>
 	 		<wldeploy action="redeploy" 
 			  	verbose="true" 
 		      	debug="true"
@@ -90,9 +91,12 @@
 	 			upload="true"
 			  	appversion="${nombre.Fichero.Despliegue}"
 			/>
+			
+			<antcall target="StartApplication" />
 		 </target>
 	
-		<target name="UndeployApplication" description="Retira aplicación con la versión seleccionada">	 	
+		<target name="UndeployApplication" description="Retira aplicación con la versión seleccionada">	 
+			<echo message="Retira aplicación con la versión antigua de la aplicación:  ${redeploy.name}"/>
 		 	<wldeploy action="undeploy" 
 		 		verbose="true" 
 		      	debug="true"
@@ -102,7 +106,19 @@
 		      	adminurl="${wldesarrollo.deploy.adminurl}"			  		
 			/>
 		 </target>
-
-
+	
+	<target name="StartApplication">	 
+		<echo message="Reiniciamos aplicación ${redeploy.name}"/>
+ 		<wldeploy action="start" 
+	  		verbose="true" 
+      		debug="true"
+      		name="${redeploy.name}" 
+      		user="${wldesarrollo.deploy.user}" 
+      		password="${wldesarrollo.deploy.password}"
+      		targets="${redeploy.targets}"  	 		
+	  		adminurl="${wldesarrollo.deploy.adminurl}"
+      		appversion="${nombre.Fichero.Despliegue}"  
+		/>
+	</target>
 		
 </project>
