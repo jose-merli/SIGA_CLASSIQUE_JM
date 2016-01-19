@@ -118,7 +118,6 @@
 		<br>
 		
 		<p class="titulos"><siga:Idioma key="index.bienvenida"/></p>
-		<p class="titulos">Pruebas de despligue José</p>
 		
 		<table align="center">
 			<tr>
