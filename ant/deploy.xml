@@ -8,11 +8,11 @@
 	
 	<!-- ************************************************* PROPIEDADES ************************************************ -->
 	<property name="bea.weblogic.jar" 		value="C:/oracle/Middleware/wlserver_12.1/server/lib/weblogic.jar"/>
-	<property name="workspace.home" 		value="C:/ci/Jenkins/jobs/SIGA/workspace"/>
+	<!-- <property name="workspace.home" 		value="C:/ci/Jenkins/jobs/SIGA/workspace"/> -->
 	
 	<!-- Rutas de origen -->
-	<property name="services.home" 			value="${workspace.home}/SIGAServices/bin"/>
-	<property name="proyecto.home" 			value="${workspace.home}/SIGA92/WebContent"/>
+	<property name="services.home" 			value="../../SIGAServices/bin"/>
+	<property name="proyecto.home" 			value="../../SIGA92/WebContent"/>
 	<property name="web.inf.home"  			value="${proyecto.home}/WEB-INF"/>
 	<property name="html.home"				value="${proyecto.home}/html"/>
 
@@ -22,11 +22,13 @@
 	<!-- PROPERTIES PARA DESPLEGAR EN INTEGRACIÓN -->
 			
 	<property name="entorno.Despliegue"		value="PRE" />
+	<property name="entorno.Despliegue.visible"		value="INT" />
 	<property name="version.Despliegue"		value="122" />
 	<property name="subVersion.Despliegue"	value="001" />
 				
 	<tstamp>
 		<format property="date.execution" pattern="yyyyMMddHHmm" locale="es,ES"/>
+		<format property="date.execution.visible" pattern="dd/MM HH:mm" locale="es,ES"/>
 	</tstamp>
 		
 	<property name="nombre.Fichero.Despliegue" value="${redeploy.name}_${entorno.Despliegue}_${version.Despliegue}_${subVersion.Despliegue}_${date.execution}" />
@@ -46,6 +48,7 @@
 		<target name="DEPLOY" description="Despliega aplicación con la versión seleccionada">
 			<antcall target="updatesrc" />
 			<antcall target="UndeployApplication"/>
+			<antcall target="crearFicheroVersion"/>
 			<antcall target="redeploy" />			
 		</target>
 
@@ -121,4 +124,8 @@
 		/>
 	</target>
 		
+	<target name="crearFicheroVersion">	 
+		<echo message="Creamos el fichero para la version ${nombre.Fichero.Despliegue}"/>
+		<echo file="${web.inf.deploy.home}/properties/version${redeploy.name}.properties">version:${entorno.Despliegue.visible}_${version.Despliegue}_${subVersion.Despliegue} (${date.execution.visible})</echo>
+	</target>
 </project>
