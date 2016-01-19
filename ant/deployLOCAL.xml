@@ -4,14 +4,14 @@
 	<property name="wldesarrollo.deploy.adminurl" 	value="t3://itcgae-ws0202:7001/"/>
 	<property name="wldesarrollo.deploy.user" 		value="weblogic"/>	
 	<property name="wldesarrollo.deploy.password" 	value="weblogic12"/>
-	<property name="date_execution"/>
+	
 	<tstamp>
 		   <format property="date_execution" pattern="yyyyMMddHHmmss" locale="es,ES"/>
 	</tstamp>
 		
 	<echo message="Poject Desarrollo home : ${projectsdesarrollo.home}"/>
 	<echo message="Usuario: ${user.name}" /> 
-	<echo message="Fecha del sistema : ${TODAY}"/>
+	<echo message="Fecha del sistema : ${date_execution}"/>
 	
 	<!-- ************************************************* PROPIEDADES ************************************************ -->
 	<property name="bea.weblogic.jar" 		value="C:/oracle/Middleware/wlserver_12.1/server/lib/weblogic.jar"/>
