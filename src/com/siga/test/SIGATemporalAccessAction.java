@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Properties;
+import java.util.ResourceBundle;
 import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
@@ -267,7 +268,21 @@ public class SIGATemporalAccessAction extends Action
         	MDC.put("idSesion", idSesion);
             
         }
-		
+        
+        /*
+         * Obtenemos la versión de SIGA.
+         * A partir de ahora con despliegues desde Jenkins este dato se almacena en ficheros .properties.
+         */
+        
+        try{
+        	ResourceBundle rb = ResourceBundle.getBundle("versionSIGA");
+        	String version = rb.getString("version");
+        	request.setAttribute("versionSiga", (version == null ? "" : version));
+        }catch (Exception e){
+        	request.setAttribute("versionSiga", "");
+        	ClsLogging.writeFileLogError("Error al obtener la versión de SIGA desplegada.", e, 1);
+        }
+        
 		return mapping.findForward(result);
 	}	
 
@@ -288,7 +303,10 @@ public class SIGATemporalAccessAction extends Action
 		}
 		else {
 			// Usamos el Usuario comodin para pruebas (Entorno Local)
-			sql = " WHERE " + AdmUsuariosBean.C_IDUSUARIO + " = 1 "; 
+			//sql = " WHERE " + AdmUsuariosBean.C_IDUSUARIO + " = 1 ";
+			
+			//Para Baleares usuario de Jorge Paez
+			sql = " WHERE " + AdmUsuariosBean.C_IDUSUARIO + " = 1342 ";
 		}
 		
         sql += " AND " + AdmUsuariosBean.C_IDINSTITUCION + " = " + usrBean.getLocation();  

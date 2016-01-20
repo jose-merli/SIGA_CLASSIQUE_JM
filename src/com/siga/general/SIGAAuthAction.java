@@ -2,6 +2,7 @@ package com.siga.general;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.ResourceBundle;
 
 import com.atos.utils.*;
 
@@ -84,6 +85,16 @@ public class SIGAAuthAction extends Action
 	        	MDC.put("idSesion", idSesion);
 	            
 	        }
+	        
+	        try{
+	        	ResourceBundle rb = ResourceBundle.getBundle("versionSIGA");
+	        	String version = rb.getString("version");
+	        	request.setAttribute("versionSiga", (version == null ? "" : version));
+	        }catch (Exception e){
+	        	request.setAttribute("versionSiga", "");
+	        	ClsLogging.writeFileLogError("Error al obtener la versión de SIGA desplegada.", e, 1);
+	        }
+	        	        
 		return mapping.findForward(result);
 	}
 }
