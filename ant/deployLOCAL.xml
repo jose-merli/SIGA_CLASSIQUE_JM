@@ -47,15 +47,21 @@
 	
 	<property name="nombre.Fichero.Despliegue" value="${redeploy.name}_${entorno.Despliegue}_${version.Despliegue}_${subVersion.Despliegue}_${date.execution}" />
 				   	
-	<echo message="Nombre del fichero : ${nombre.Fichero.Despliegue}"/>		
-
 	<property name="redeploy.source" 		value="C:/Oracle/Middleware/user_projects/domains/domainSIGA/SIGA/${nombre.Fichero.Despliegue}"/>
 <!-- ##########################################################################################################-->	
 
 		<target name="DEPLOY" description="Despliega aplicación con la versión seleccionada">
+			<echo level="info" message="Entorno de despliegue: ${entorno.Despliegue}"/>
+			<echo level="info" message="Versión de despliegue: ${version.Despliegue}"/>
+			<echo level="info" message="Subversión de despliegue: ${subVersion.Despliegue}"/>
+			<echo level="info" message="Subversión de despliegue: ${subVersion.Despliegue}"/>
+			
 			<antcall target="crearFicheroVersion" />
 			<antcall target="updatesrc" />
 			<antcall target="redeploy" />
+				
+			<echo level="info" message="Nombre del fichero : ${nombre.Fichero.Despliegue}"/>
+			<echo level="info" message="Fin del despliegue"/>			
 		</target>
 
 		<target name="updatesrc">		
