@@ -126,6 +126,6 @@
 		
 	<target name="crearFicheroVersion">	 
 		<echo message="Creamos el fichero para la version ${nombre.Fichero.Despliegue}"/>
-		<echo file="${web.inf.deploy.home}/properties/version${redeploy.name}.properties">version:${entorno.Despliegue.visible}_${version.Despliegue}_${subVersion.Despliegue} (${date.execution.visible})</echo>
+		<echo file="${web.inf.deploy.home}/classes/version${redeploy.name}.properties">version:${entorno.Despliegue.visible}_${version.Despliegue}_${subVersion.Despliegue} (${date.execution.visible})</echo>
 	</target>
 </project>
