@@ -1,9 +1,9 @@
 ﻿
 <project name="SIGA" default="DEPLOY" basedir=".">
-	<property name="projectsdesarrollo.home" 		value="P:"/>	
+	<!-- <property name="projectsdesarrollo.home" 		value="P:"/> 	
 	<property name="wldesarrollo.deploy.adminurl" 	value="t3://itcgae-ws0202:7001/"/>
 	<property name="wldesarrollo.deploy.user" 		value="weblogic"/>	
-	<property name="wldesarrollo.deploy.password" 	value="weblogic12"/>
+	<property name="wldesarrollo.deploy.password" 	value="weblogic12"/> -->
 	
 	<!-- ************************************************* PROPIEDADES ************************************************ -->
 	<property name="bea.weblogic.jar" 		value="C:/oracle/Middleware/wlserver_12.1/server/lib/weblogic.jar"/>
@@ -18,7 +18,7 @@
 	<!-- Rutas de destino -->
 	<property name="redeploy.name" 			value="SIGA"/>
 	
-	<property name="redeploy.targets" 		value="AdminServer"/>
+	<!-- <property name="redeploy.targets" 		value="AdminServer"/> -->
 	
 	<property name="redeploy.retiretimeout" value="30"/>
 	
