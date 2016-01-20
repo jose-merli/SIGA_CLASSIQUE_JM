@@ -34,7 +34,7 @@
 <%
 	String app = request.getContextPath();
 	HttpSession ses = request.getSession();	
-	
+	String versionSiga = (String) request.getAttribute("versionSiga");
 	UsrBean userBean = (UsrBean) ses.getAttribute("USRBEAN");
 	
 	if (userBean == null)
@@ -274,8 +274,8 @@
 				<tr>
 				<td width="300px">
 				<a href="javascript://"  class="imageLink" onclick="return version();" onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('AbrirVersiones','','<%=app%>/html/imagenes/botonVersion.gif',1)" >
-					<img src="<%=app%>/html/imagenes/botonVersion.gif" alt="<siga:Idioma key="general.icono.version"/>" align="middle" name="AbrirVersiones" border="0">
-					&nbsp;<siga:Idioma key="general.icono.version"/>
+					<img src="<%=app%>/html/imagenes/botonVersion.gif" alt="<siga:Idioma key="<%= versionSiga %>"/>" align="middle" name="AbrirVersiones" border="0">
+					&nbsp;<%= versionSiga %>
 				</a>
 				</td>
 				<td width="175px">
