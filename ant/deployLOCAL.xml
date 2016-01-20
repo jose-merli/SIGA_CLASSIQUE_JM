@@ -29,10 +29,28 @@
 
 	<!-- PROPERTIES PARA DESPLEGAR EN INTEGRACIÓN -->
 		
-	<property name="entorno.Despliegue"		value="PRE" />
-	<property name="version.Despliegue"		value="122" />
-	<property name="subVersion.Despliegue"	value="001" />
+	<!-- <property name="entorno.Despliegue"		value="PRE" /> -->
+	<input
+	    message="Entorno Despliegue: "
+		validargs="INT,PRE"
+	    addproperty="entorno.Despliegue"
+		defaultvalue="INT"
+	  />
+	
+	<!-- <property name="version.Despliegue"		value="122" /> --> 
+	<input 
+		message="Versión a desplegar: "
+		addproperty="subVersion.Despliegue"
+	/>
+	
+	<!-- <property name="subVersion.Despliegue"	value="001" /> -->
+	
 	<property name="entorno.Despliegue.visible"		value="INT" />
+	
+	<input 
+		message="Subversión a desplegar: "
+		addproperty="subVersion.Despliegue"
+	/>
 	
 	<tstamp>
 		<format property="date.execution" pattern="yyyyMMddHHmm" locale="es,ES"/>
