@@ -1,10 +1,11 @@
 ﻿
 <project name="SIGA" default="DEPLOY" basedir=".">
-	
-	<property name="projectsdesarrollo.home" 		value="V:"/>
-	<property name="wldesarrollo.deploy.adminurl" 	value="t3://10.60.3.77:7011"/>
-	<property name="wldesarrollo.deploy.user" 		value="weblogic"/>	
-	<property name="wldesarrollo.deploy.password" 	value="desarrollo"/>
+	<!--
+		<property name="projectsdesarrollo.home" 		value="V:"/>
+		<property name="wldesarrollo.deploy.adminurl" 	value="t3://10.60.3.77:7011"/>
+		<property name="wldesarrollo.deploy.user" 		value="weblogic"/>	
+		<property name="wldesarrollo.deploy.password" 	value="desarrollo"/>
+	-->
 	
 	<!-- ************************************************* PROPIEDADES ************************************************ -->
 	<property name="bea.weblogic.jar" 		value="C:/oracle/Middleware/wlserver_12.1/server/lib/weblogic.jar"/>
@@ -19,13 +20,13 @@
 	<!-- Rutas de destino -->
 	<property name="redeploy.name" 			value="SIGA"/>
 
-	<!-- PROPERTIES PARA DESPLEGAR EN INTEGRACIÓN -->
+	<!-- PROPERTIES PARA DESPLEGAR EN INTEGRACIÓN 
 			
 	<property name="entorno.Despliegue"		value="PRE" />
 	<property name="entorno.Despliegue.visible"		value="INT" />
 	<property name="version.Despliegue"		value="122" />
 	<property name="subVersion.Despliegue"	value="001" />
-				
+				-->
 	<tstamp>
 		<format property="date.execution" pattern="yyyyMMddHHmm" locale="es,ES"/>
 		<format property="date.execution.visible" pattern="dd/MM HH:mm" locale="es,ES"/>
