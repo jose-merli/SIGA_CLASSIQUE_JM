@@ -54,7 +54,6 @@
 			<echo level="info" message="Entorno de despliegue: ${entorno.Despliegue}"/>
 			<echo level="info" message="Versión de despliegue: ${version.Despliegue}"/>
 			<echo level="info" message="Subversión de despliegue: ${subVersion.Despliegue}"/>
-			<echo level="info" message="Subversión de despliegue: ${subVersion.Despliegue}"/>
 			
 			<antcall target="crearFicheroVersion" />
 			<antcall target="updatesrc" />
