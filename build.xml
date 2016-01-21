@@ -5,6 +5,7 @@
               directory with the processing instruction <?eclipse.ant.import?>
               as the first entry and export the buildfile again. -->
 <project basedir="." default="build" name="SIGA92">
+	<property name="bea.weblogic.jar" 		value="C:/oracle/Middleware/wlserver_12.1/server/lib/weblogic.jar"/>
     <property environment="env"/>
     <property name="SIGA92.location" value="../SIGA92"/>
     <property name="SIGAServices.location" value="../SIGAServices"/>
@@ -715,7 +716,7 @@
     <target depends="clean" name="cleanall">
         <ant antfile="build.xml" dir="${SIGAServices.location}" inheritAll="false" target="clean"/>
     </target>
-    <target depends="build-subprojects,build-project" name="build"/>
+    <target depends="build-subprojects,build-project, jspcompile" name="build"/>
     <target name="build-subprojects">
         <ant antfile="build.xml" dir="${SIGAServices.location}" inheritAll="false" target="build-project"/>
     </target>
@@ -726,5 +727,17 @@
             <classpath refid="SIGA92.classpath"/>
         </javac>
     </target>
+	
+	<target name="jspcompile">
+		<echo message="Compilamos las JSP del proyecto ${ant.project.name}" />
+		<wlappc deprecation="true" verbose="true" destdir="WebContent/WEB-INF/classes" source="WebContent/html">
+		    <classpath>
+		        <path refid="SIGA92.classpath" />
+		    </classpath>
+		</wlappc>
+	</target>
+	
+	<taskdef name="wlappc" classname="weblogic.ant.taskdefs.j2ee.Appc" classpath="${bea.weblogic.jar}"/>
+
     <target description="Build all projects which reference this project. Useful to propagate changes." name="build-refprojects"/>
 </project>
