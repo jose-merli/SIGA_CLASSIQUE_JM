@@ -302,11 +302,15 @@ public class SIGATemporalAccessAction extends Action
 			sql = " WHERE LTRIM (" + AdmUsuariosBean.C_NIF + ",'0') = '" + UtilidadesString.LTrim(nif, "0") + "' ";
 		}
 		else {
-			// Usamos el Usuario comodin para pruebas (Entorno Local)
-			//sql = " WHERE " + AdmUsuariosBean.C_IDUSUARIO + " = 1 ";
-			
-			//Para Baleares usuario de Jorge Paez
-			sql = " WHERE " + AdmUsuariosBean.C_IDUSUARIO + " = 1342 ";
+
+			if(usrBean.getLocation().equals("2011")){
+				//Para Baleares usuario de Jorge Paez
+				sql = " WHERE " + AdmUsuariosBean.C_IDUSUARIO + " = 1342 ";
+			}else{
+				// Usamos el Usuario comodin para pruebas (Entorno Local)
+				sql = " WHERE " + AdmUsuariosBean.C_IDUSUARIO + " = 1 ";
+				
+			}
 		}
 		
         sql += " AND " + AdmUsuariosBean.C_IDINSTITUCION + " = " + usrBean.getLocation();  
