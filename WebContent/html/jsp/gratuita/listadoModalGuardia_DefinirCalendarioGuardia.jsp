@@ -254,7 +254,7 @@
 				else
 					activarCheck="";
 				
-				//facturada = ((String)hash.get("GUARDIAFACTURADA")).equalsIgnoreCase("false")?false:true;
+				facturada = ((String)hash.get("GUARDIAFACTURADA")).equalsIgnoreCase("false")?false:true;
 				//PL:
 				pl = ((String)hash.get("PL")).equals("")?"":(String)hash.get("PL");
 				elems = new FilaExtElement[3];	
@@ -269,7 +269,8 @@
 				if (!facturada && !modoOriginal.equalsIgnoreCase("VER")&& pl!=null && !pl.equals("6"))
 					elems[1]=new FilaExtElement("sustituir","sustituir",SIGAConstants.ACCESS_FULL);
 				
-				elems[2]=new FilaExtElement("denegar", "anular","anular", SIGAConstants.ACCESS_FULL);
+				if (!facturada && !modoOriginal.equalsIgnoreCase("VER"))
+					elems[2]=new FilaExtElement("denegar", "anular","anular", SIGAConstants.ACCESS_FULL);
 				
 				String numeroColegiadoBusqueda = "" + recordNumber + "_" + numerocolegiado;
 				String botones="C";
@@ -355,8 +356,8 @@
 		    var idturno = 'oculto' + fila + '_' + 2;
 		    var idguardia = 'oculto' + fila + '_' + 3;
 		    var idpersona = 'oculto' + fila + '_' + 6;		    
-		    var fechainicio = 'oculto' + fila + '_' + 7;
-		    var fechafin = 'oculto' + fila + '_' + 9;
+		    //var fechainicio = 'oculto' + fila + '_' + 7;
+		    //var fechafin = 'oculto' + fila + '_' + 9;
 			var fechainicioPermuta = 'oculto' + fila + '_' + 10;
 		    var fechafinPermuta = 'oculto' + fila + '_' + 11;
 	

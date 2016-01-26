@@ -24,12 +24,9 @@ import com.siga.beans.EnvEnviosAdm;
 import com.siga.beans.EnvEnviosBean;
 import com.siga.beans.EnvPlantillaGeneracionAdm;
 import com.siga.beans.EnvPlantillaGeneracionBean;
-import com.siga.beans.EnvPlantillasEnviosAdm;
-import com.siga.beans.EnvPlantillasEnviosBean;
 import com.siga.beans.EnvTipoEnviosAdm;
 import com.siga.beans.EnvTipoEnviosBean;
 import com.siga.envios.form.SIGAEnviosDatosGeneralesForm;
-import com.siga.envios.form.SIGAPlantillasEnviosForm;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
@@ -256,7 +253,7 @@ public class SIGAEnviosDatosGeneralesAction extends MasterAction
 		    tx = userBean.getTransaction();
 		    tx.begin();
 
-		    admEnvio.copiarCamposPlantilla(Integer.valueOf(idInstitucion), Integer.valueOf(idEnvio), Integer.valueOf(idTipoEnvio),Integer.valueOf(idPlantilla));
+		    admEnvio.copiarCamposPlantilla(Integer.valueOf(idInstitucion), Integer.valueOf(idEnvio), Integer.valueOf(idTipoEnvio),Integer.valueOf(idPlantilla),null);
 
 		    if (admEnvio.update(htNew, htOld))
 		    {

@@ -62,7 +62,7 @@
 	<!-- INICIO: CONJUNTO DE PESTAÑAS (LINEA) -->
 	<!-- TAG DE CONJUNTO DE PESTANAS -->
 	
-	<% if(esComision&&elementoActivo!=9){
+	<% if(esComision && elementoActivo!=9 && elementoActivo!=7){
 		elementoActivo = 6;
 	}%>
 		<siga:PestanasExt 

@@ -86,6 +86,11 @@ public class SIGAAuthAction extends Action
 	            
 	        }
 	        
+	        /*
+	         * Obtenemos la versión de SIGA.
+	         * A partir de ahora con despliegues desde Jenkins este dato se almacena en ficheros .properties.
+	         */
+	        
 	        try{
 	        	ResourceBundle rb = ResourceBundle.getBundle("versionSIGA");
 	        	String version = rb.getString("version");
@@ -94,7 +99,6 @@ public class SIGAAuthAction extends Action
 	        	request.setAttribute("versionSiga", "");
 	        	ClsLogging.writeFileLogError("Error al obtener la versión de SIGA desplegada.", e, 1);
 	        }
-	        	        
 		return mapping.findForward(result);
 	}
 }

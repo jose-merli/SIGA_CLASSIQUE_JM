@@ -37,7 +37,7 @@
 	<!-- FIN: TITULO OPCIONAL DE LA TABLA -->
 
 	<!-- INICIO: CAPA DE REGISTRO CON MEDIDAS EN EL ESTILO -->
-<div id="campos" class="posicionModalPeque" align="center">
+<div id="campos" class="posicionModalMedia" align="center">
 
 <bean:define id="path" name="org.apache.struts.action.mapping.instance" property="path" scope="request"/>
 <% 
@@ -61,6 +61,7 @@
 	<html:hidden styleId="solicitante" property = "solicitante" value="${DefinirDocumentacionEJGForm.solicitante}"/>
 	<html:hidden styleId="borrarFichero" property = "borrarFichero" />
 	<html:hidden styleId="idFichero" property = "idFichero" />
+	<html:hidden styleId="comisionAJG" property = "comisionAJG" value="${DefinirDocumentacionEJGForm.comisionAJG}" />
 	
 	<html:hidden styleId="idPresentadorAnterior" property = "idPresentadorAnterior" value ="${DefinirDocumentacionEJGForm.idPresentador}"/>
 	<html:hidden styleId="idTipoDocumentoAnterior" property = "idTipoDocumentoAnterior" value ="${DefinirDocumentacionEJGForm.idTipoDocumento}"/>
@@ -77,15 +78,23 @@
 		
 	<!-- SUBCONJUNTO DE DATOS -->
 	<!-- Ejemplo de conjunto de campos recuadrado y con titulo -->
-	<siga:ConjCampos leyenda="pestana.justiciagratuitaejg.documentacion">
+	
 		
-	<table class="tablaCampos" align="center" border ="0">
+	<table class="tablaCampos" align="center" border ="0" style="width: 100%" >
+	<tr>
+		<td width="30%"></td>
+		<td width="20%"></td>
+		<td width="25%"></td>
+		<td width="20%"></td>
+		<td width="5%"></td>
+	</tr>	
+	
 	<tr>
 	<td class="labelText">
 		<siga:Idioma key="gratuita.operarEJG.literal.fechaLimitePresentacion"/>
 		
 	</td>
-	<td>
+	<td class="labelTextValor">
 		<c:choose>
 			<c:when test="${accionModo=='ver'}">
 				<html:text name="DefinirDocumentacionEJGForm" property="fechaLimite" size="10" styleClass="boxConsulta"readonly="true"></html:text>
@@ -99,7 +108,7 @@
 	<td class="labelText">
 		<siga:Idioma key="gratuita.operarEJG.literal.fechaPresentacion"/>
 	</td>
-	<td>
+	<td class="labelTextValor">
 		<c:choose>
 			<c:when test="${accionModo=='ver'}">
 				<html:text name="DefinirDocumentacionEJGForm" property="fechaEntrega" size="10" styleClass="boxConsulta" readonly="true"></html:text>
@@ -111,12 +120,13 @@
 		
 			
 	</td>
+	<td></td>
 	</tr>
 	<tr>
 	<td class="labelText">
 		<siga:Idioma key="gratuita.documentacionEJG.regentrada"/>
 	</td>
-	<td>
+	<td class="labelTextValor">
 		<c:choose>
 			<c:when test="${accionModo=='ver'}">
 				<html:text name="DefinirDocumentacionEJGForm" property="regEntrada"  size="20" styleClass="boxConsulta" readonly="true"/>
@@ -129,7 +139,7 @@
 	<td class="labelText">
 		<siga:Idioma key="gratuita.documentacionEJG.regsalida"/>
 	</td>
-	<td>
+	<td class="labelTextValor">
 		<c:choose>
 			<c:when test="${accionModo=='ver'}">
 				<html:text name="DefinirDocumentacionEJGForm" property="regSalida" size="20" styleClass="boxConsulta"  readonly="true"></html:text>&nbsp;&nbsp;
@@ -139,12 +149,13 @@
 			</c:otherwise>
 		</c:choose>
 	</td>
+	<td></td>
 	</tr>	
 	<tr>
 		<td class="labelText">	
 			<siga:Idioma key='sjcs.ejg.documentacion.presentador'/>&nbsp;(*)
 		</td>
-		<td colspan="3">
+		<td class="labelTextValor" colspan="3">
 			<c:choose>
 				<c:when test="${DefinirDocumentacionEJGForm.modo=='insertar'}">
 					<siga:Select id="idPresentador" queryId="getPresentador" queryParamId="idpresentador" params="${paramsPresentadorJSON}" required="true" width="300"   />
@@ -158,12 +169,13 @@
 			</c:choose>
 				
 		</td>
+		<td></td>
 	</tr>
 	<tr>
 		<td class="labelText">	
 			<siga:Idioma key='sjcs.ejg.documentacion.tipoDocumentacion'/>&nbsp;(*)
 		</td>
-		<td colspan="3">
+		<td class="labelTextValor" colspan="3">
 			<c:choose>
 				<c:when test="${DefinirDocumentacionEJGForm.modo=='insertar'}">
 					<siga:Select id="idTipoDocumento" queryId="getTipoDocumentacionEjg" queryParamId="idtipodocumento" childrenIds="idDocumento"   required="true"  width="300"   />
@@ -177,12 +189,13 @@
 			</c:choose>
 		
 		</td>
+		<td></td>
 	</tr>					
 	<tr>
 		<td class="labelText">	
 			<siga:Idioma key='sjcs.ejg.documentacion.documentacion'/>&nbsp;(*)
 		</td>
-		<td colspan="3">
+		<td class="labelTextValor" colspan="3">
 			<c:choose>
 				<c:when test="${DefinirDocumentacionEJGForm.modo=='insertar'}">
 					<siga:Select  id="idDocumento" queryId="getTipoDocumentoEjg" firstLabel="general.combo.todos" parentQueryParamIds="idtipodocumento"  required="true"  width="300"   />
@@ -198,12 +211,13 @@
 			</c:choose>
 		
 		</td>
+		<td></td>
 	</tr>
 	<tr>
 		<td class="labelText">
 			<siga:Idioma key="pestana.justiciagratuitaejg.documentacion"/><c:out value="${ClsConstants.ACCESS_FULL}"></c:out>
 		</td>
-		<td colspan="3">
+		<td class="labelTextValor" colspan="3">
 			<c:choose>
 				<c:when test="${accionModo=='ver'}">
 				<html:textarea property="documentacion"  rows="6" cols="60" style="width:600" styleClass="boxConsulta" readonly="true"/>
@@ -213,9 +227,10 @@
 				</c:otherwise>
 			</c:choose>
 		</td>	
+		<td></td>
 	</tr>
 	</table>
-	</siga:ConjCampos>
+
 </div>
 <%@ include file="/html/jsp/general/ficheros.jsp"%>
 </html:form>

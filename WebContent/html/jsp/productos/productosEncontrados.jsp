@@ -90,7 +90,12 @@
 					alert (mensaje);					
 					return false;
 			}
-				
+			if(f.idInstitucionPresentador.value == "") {
+				var mensaje = "<siga:Idioma key="pys.solicitudCompra.literal.presentador"/> <siga:Idioma key="messages.campoObligatorio.error"/>";
+				alert (mensaje);
+				return false;
+			}
+			
 			f.target="resultado";
 			f.modo.value = "solicitar";
 			if (f.catalogo.value!='S'){

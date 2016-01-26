@@ -108,6 +108,7 @@
 		
 		<siga:ConjCampos leyenda="facturacion.fechasficherobancario.fechas">
 			<%@ include file="/html/jsp/facturacion/fechasFicheroBancario.jsp"%>
+			<%-- <jsp:include page="/html/jsp/facturacion/fechasFicheroBancario.jsp"></jsp:include> --%>
 		</siga:ConjCampos>
 	</html:form>
 

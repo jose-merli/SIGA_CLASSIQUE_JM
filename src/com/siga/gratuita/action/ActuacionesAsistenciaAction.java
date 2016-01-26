@@ -26,6 +26,7 @@ import com.siga.beans.ScsActuacionAsistenciaAdm;
 import com.siga.beans.ScsActuacionAsistenciaBean;
 import com.siga.beans.ScsAsistenciasAdm;
 import com.siga.beans.ScsAsistenciasBean;
+import com.siga.beans.ScsHitoFacturableGuardiaAdm;
 import com.siga.comun.vos.ValueKeyVO;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
@@ -299,6 +300,10 @@ public class ActuacionesAsistenciaAction extends MasterAction {
 			actuacionAsistenciaFormEdicion.setTipoPcajg(""+valorPcajgActivo);
 			request.setAttribute("botones", "R,Y,C");
 			forward=  "edicion";
+			
+			// Obtiene si la configuracion de la guardia es por asistencias (0) o por actuaciones (1)
+			this.comunGestionActuacionesAsistencia(request, asistenciaForm);
+			
 		} catch (Exception e) {
 			throwExcp("messages.general.errorExcepcion", e, null); 
 		}
@@ -372,6 +377,10 @@ public class ActuacionesAsistenciaAction extends MasterAction {
 			request.setAttribute("tipoPcajg", new Integer(valorPcajgActivo));			
 			request.setAttribute("botones", "C");
 			forward=  "edicion";
+			
+			// Obtiene si la configuracion de la guardia es por asistencias (0) o por actuaciones (1)
+			this.comunGestionActuacionesAsistencia(request, asistenciaForm);
+			
 		} catch (Exception e) {
 			throwExcp("messages.general.errorExcepcion", e, null); 
 		}
@@ -456,6 +465,10 @@ public class ActuacionesAsistenciaAction extends MasterAction {
 			actuacionAsistenciaFormEdicion.setTipoPcajg(""+valorPcajgActivo);
 			request.setAttribute("botones", "R,Y,C"); 
 			forward=  "edicion";
+			
+			// Obtiene si la configuracion de la guardia es por asistencias (0) o por actuaciones (1)
+			this.comunGestionActuacionesAsistencia(request, asistenciaForm);
+			
 		} catch (Exception e) {
 			throwExcp("messages.general.errorExcepcion", e, null); 
 		}
@@ -788,5 +801,20 @@ public class ActuacionesAsistenciaAction extends MasterAction {
 		
 	}
 	
-
+	/**
+	 * Obtiene si la configuracion de la guardia es por asistencias (0) o por actuaciones (1) 
+	 * @param request
+	 * @param asistenciaForm
+	 * @throws SIGAException
+	 */
+	private void comunGestionActuacionesAsistencia(HttpServletRequest request, AsistenciaForm asistenciaForm) throws SIGAException {
+		try {
+			// Obtiene si la configuracion de la guardia es por asistencias (0) o por actuaciones (1) 
+			ScsHitoFacturableGuardiaAdm admHitoFacturableGuardia = new ScsHitoFacturableGuardiaAdm(this.getUserBean(request));
+			String porAsAct = admHitoFacturableGuardia.porAsAct(asistenciaForm.getIdInstitucion(), asistenciaForm.getIdTurno(), asistenciaForm.getIdGuardia());
+			request.setAttribute("porAsAct", porAsAct); 
+		} catch (Exception e) {
+			throwExcp("messages.general.errorExcepcion", e, null); 
+		}
+	}
 }

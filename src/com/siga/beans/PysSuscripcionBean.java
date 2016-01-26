@@ -20,7 +20,7 @@ public class PysSuscripcionBean extends MasterBean {
 	/* Variables */
 	private Integer idInstitucion, idTipoServicios, cantidad, idSuscripcion, idFormaPago, idCuenta;
 	private Long 	idServicio, idPeticion, idServicioInstitucion, idPersona;
-	private String 	descripcion, idFactura, fechaBaja, fechaSuscripcion;	
+	private String 	descripcion, idFactura, fechaBaja, fechaSuscripcion, fechaBajaFacturacion;	
 	private Float 	iva;
 	private Double  importeUnitario, importeAnticipado; 
 	/* Nombre tabla */
@@ -36,6 +36,7 @@ public class PysSuscripcionBean extends MasterBean {
 	static public final String C_IDPERSONA					= "IDPERSONA";
 	static public final String C_DESCRIPCION				= "DESCRIPCION";
 	static public final String C_FECHABAJA 					= "FECHABAJA";
+	static public final String C_FECHABAJAFACTURACION		= "FECHABAJAFACTURACION";
 	static public final String C_FECHASUSCRIPCION 			= "FECHASUSCRIPCION";
 	static public final String C_CANTIDAD					= "CANTIDAD";
 	static public final String C_IMPORTEUNITARIO			= "IMPORTEUNITARIO";
@@ -249,4 +250,11 @@ public class PysSuscripcionBean extends MasterBean {
 	public void setImporteAnticipado(Double importeAnticipado) {
 		this.importeAnticipado = importeAnticipado;
 	}
+	
+	public String getFechaBajaFacturacion() {
+		return fechaBajaFacturacion;
+	}
+	public void setFechaBajaFacturacion(String fechaBajaFacturacion) {
+		this.fechaBajaFacturacion = fechaBajaFacturacion;
+	}	
 }

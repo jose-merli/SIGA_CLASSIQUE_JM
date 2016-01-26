@@ -815,6 +815,7 @@ public class BusquedaAsistenciasAction extends MasterAction {
 		String actuacionValidada 	= miForm.getActuacionValidada();
 		String comisaria			= miForm.getComisaria();
 		String tipoActuacion		= miForm.getTipoActuacion();
+		String origen = miForm.getOrigen();
 		String comisariaInstitucionAsi = "";
 		String numeroColegiado      = "";
 		if (!nColegiado.equalsIgnoreCase("")){
@@ -832,6 +833,8 @@ public class BusquedaAsistenciasAction extends MasterAction {
 		
 		String juzgado				= miForm.getJuzgado();
 		String asunto				= miForm.getAsunto();
+		String procedimiento =  miForm.getProcedimiento();
+		String nig2 =  miForm.getNig2();
 		miHash.put("numero",numero);
 		miHash.put("anio",anio);
 		miHash.put("fechaDesde",fechaDesde);
@@ -854,6 +857,9 @@ public class BusquedaAsistenciasAction extends MasterAction {
 		miHash.put("asunto",asunto);
 		miHash.put("tipoActuacion",tipoActuacion);
 		miHash.put("numeroColegiado",numeroColegiado);
+		miHash.put("origen",origen);
+		miHash.put("procedimiento",procedimiento);
+		miHash.put("nig2",nig2);
 		return miHash;
 		
 	}

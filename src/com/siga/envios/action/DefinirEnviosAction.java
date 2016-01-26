@@ -24,6 +24,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.transaction.UserTransaction;
 
+import org.apache.commons.beanutils.BeanUtils;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
@@ -32,8 +33,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.redabogacia.sigaservices.app.AppConstants;
 import org.redabogacia.sigaservices.app.AppConstants.TipoIntercambioEnum;
+import org.redabogacia.sigaservices.app.autogen.model.CerEnvios;
 import org.redabogacia.sigaservices.app.autogen.model.EnvEnvios;
 import org.redabogacia.sigaservices.app.helper.ExcelHelper;
+import org.redabogacia.sigaservices.app.services.cer.CerSolicitudCertificadosEnviosService;
 import org.redabogacia.sigaservices.app.util.ReadProperties;
 import org.redabogacia.sigaservices.app.util.SIGAReferences;
 
@@ -41,6 +44,7 @@ import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsLogging;
 import com.atos.utils.GstDate;
+import com.atos.utils.LogFileWriter;
 import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.Paginador;
@@ -53,7 +57,7 @@ import com.siga.beans.AdmInformeAdm;
 import com.siga.beans.AdmInformeBean;
 import com.siga.beans.CenClienteAdm;
 import com.siga.beans.CenClienteBean;
-import com.siga.beans.CenColegiadoAdm;
+import com.siga.beans.CenDireccionesAdm;
 import com.siga.beans.CenDireccionesBean;
 import com.siga.beans.CenInstitucionAdm;
 import com.siga.beans.CenInstitucionBean;
@@ -74,6 +78,7 @@ import com.siga.beans.EnvTipoEnviosBean;
 import com.siga.beans.FacFacturaAdm;
 import com.siga.beans.FacFacturaBean;
 import com.siga.beans.GenParametrosAdm;
+import com.siga.beans.PysCompraBean;
 import com.siga.beans.PysProductosInstitucionAdm;
 import com.siga.beans.PysProductosInstitucionBean;
 import com.siga.beans.ScsDefendidosDesignaAdm;
@@ -148,6 +153,9 @@ public class DefinirEnviosAction extends MasterAction {
 				} else if (accion.equalsIgnoreCase("insertarEnvioModalCertificado")){
 					ClsLogging.writeFileLog("DefinirEnviosAction:insertarEnvioModalCertificado. IdInstitucion:" + userBean.getLocation(), 10);
 					mapDestino = insertarEnvioModalCertificado(mapping, miForm, request, response);
+				}else if (accion.equalsIgnoreCase("envioModalMasivoCertificado")){
+					ClsLogging.writeFileLog("DefinirEnviosAction:insertarEnvioModalMasivoCertificado. IdInstitucion:" + userBean.getLocation(), 10);
+					mapDestino = envioModalMasivoCertificado(mapping, miForm, request, response);
 				}
 				else if (accion.equalsIgnoreCase("insertarEnvioGenerico")){
 					ClsLogging.writeFileLog("DefinirEnviosAction:insertarEnvioGenerico. IdInstitucion:" + userBean.getLocation(), 10);
@@ -198,8 +206,12 @@ public class DefinirEnviosAction extends MasterAction {
 					String idPaginador = getIdPaginador(super.paginador,getClass().getName());
 					request.getSession().removeAttribute(idPaginador);
 					mapDestino = buscar(mapping, miForm, request, response);
+				}else if(accion.equalsIgnoreCase("descargarCertificadosYFacturas")){
+					ClsLogging.writeFileLog("descargarCertificadosYFacturas. IdInstitucion:" + userBean.getLocation(), 10);
+					mapDestino = descargarCertificadosYFacturas(mapping, miForm, request, response);
+					
 				}
-				
+					
 				/*else if (accion.equalsIgnoreCase("procesarCorreoOrdinario"))
 	            {
 	                mapDestino = procesarCorreoOrdinario(mapping, miForm, request, response);
@@ -359,7 +371,7 @@ public class DefinirEnviosAction extends MasterAction {
 			envioAdm.copiarCamposPlantilla(Integer.valueOf(userBean.getLocation()), 
 					id, 
 					idTipoEnvio,
-					Integer.valueOf(form.getIdPlantillaEnvios()));
+					Integer.valueOf(form.getIdPlantillaEnvios()),null);
 
 
 			request.setAttribute("descOperation","messages.inserted.success");
@@ -1207,11 +1219,21 @@ public class DefinirEnviosAction extends MasterAction {
 
 
 			} else if (subModo!=null && subModo.equalsIgnoreCase("envioFactura")){
-				vDocs = tratarFactura(request, idInstitucion,idFactura,this.getUserBean(request),subModo);
+				vDocs = this.tratarFactura(request, idInstitucion,idFactura,this.getUserBean(request),subModo);
 				//Generamos el envío del certificado:
 				//Para idinstitucion=CGAE(2000) se realiza el commit aunque no tenga direccion:
 				Envio envio = new Envio(enviosBean,userBean);
-				tieneDireccion = envio.generarEnvioFactura(idPersona,vDocs,idFactura);	
+				tieneDireccion = envio.generarEnvioFactura(idPersona,vDocs,idFactura);
+				
+				Documento doc = (Documento) vDocs.get(0); 
+				File fichero = doc.getDocumento();
+				File directorio = fichero.getParentFile();
+				fichero.delete(); // Se borra el pdf firmado
+				if (directorio!=null && directorio.isDirectory() && directorio.list().length==0) {
+	    			directorio.delete(); // borra el directorio de las firmas
+				}	
+				
+				
 			} else if (subModo!=null && subModo.equalsIgnoreCase("solicitudIncorporacion")){
 				EnvDestinatariosBean dest = tratarSolicitudIncorporacion(idSolicitud,this.getUserBean(request), new Integer(idInstitucion),idTipoEnvio);
 
@@ -1323,7 +1345,6 @@ public class DefinirEnviosAction extends MasterAction {
 			String idPlantillaGeneracion = form.getIdPlantillaGeneracion();
 			String acuseRecibo = form.getAcuseRecibo();
 			// Obtenemos el coegio destino
-			String colegio = form.getColegio();
 
 			// obtener fechaProgramada
 			String fechaProgramada = null;
@@ -1359,7 +1380,6 @@ public class DefinirEnviosAction extends MasterAction {
 				StringBuilder datosSolicitudError = null;
 				try {
 					String[] campos = lineas[i].split("%%");
-					String nombreSolicitud = "";
 					if (campos.length > 1) {
 						String idInstitucion = campos[6];
 
@@ -1556,7 +1576,6 @@ public class DefinirEnviosAction extends MasterAction {
 		return exitoModal(mensaje, request);
 	}
 
-
 	private EnvDestinatariosBean tratarSolicitudIncorporacion(String idSolicitud, UsrBean userBean, Integer idInstitucion, String idTipoEnvio)
 	throws ClsExceptions, SIGAException {
 
@@ -1680,31 +1699,17 @@ public class DefinirEnviosAction extends MasterAction {
 	private Vector tratarFactura(HttpServletRequest request, String idInstitucion,String idFactura, UsrBean userBean, String desc) throws ClsExceptions, SIGAException {
 
 		//obtenemos la ruta al documento a partir del bean de solicitud
-		Hashtable htPk = new Hashtable();
-		htPk.put(FacFacturaBean.C_IDINSTITUCION,idInstitucion);
-		htPk.put(FacFacturaBean.C_IDFACTURA,idFactura);
-		FacFacturaAdm facAdm = new FacFacturaAdm(userBean);
-		FacFacturaBean facBean = null;
-		facBean = (FacFacturaBean)facAdm.selectByPK(htPk).firstElement();        
-		CenColegiadoAdm admCol = new CenColegiadoAdm(userBean);
-		Hashtable htCol = admCol.obtenerDatosColegiado(idInstitucion,facBean.getIdPersona().toString(),userBean.getLanguage());
-		String nColegiado = "";
-		if (htCol!=null && htCol.size()>0) {
-			nColegiado = (String)htCol.get("NCOLEGIADO_LETRADO");
-		}			 
+		Hashtable<String,Object> hFacFactura = new Hashtable<String,Object>();
+		hFacFactura.put(FacFacturaBean.C_IDINSTITUCION, idInstitucion);
+		hFacFactura.put(FacFacturaBean.C_IDFACTURA, idFactura);
 
-
-		InformeFactura inf = new InformeFactura (userBean);
-		File f = inf.generarFactura(request, this.getLenguaje(request), "" + this.getIDInstitucion(request), idFactura,nColegiado);
-		String rutaFichero = f.getPath();
-
-
-		//	String rutaFichero = facAdm.getRutaFactura(facBean);
+		InformeFactura infFactura = new InformeFactura(userBean);
+		File fichero = infFactura.generarPdfFacturaFirmada(request, hFacFactura);
 
 		//Generamos el vector de documentos 
-		Documento doc = new Documento(rutaFichero,desc);
+		Documento doc = new Documento(fichero, desc);
 		Vector vDocs = new Vector();
-		vDocs.add(doc);
+		vDocs.add(doc);		
 
 		ClsLogging.writeFileLog("DefinirEnviosAction:fin tratarFactura. IdInstitucion:" + userBean.getLocation(), 10);
 		return vDocs;
@@ -2270,7 +2275,7 @@ public class DefinirEnviosAction extends MasterAction {
 		return "finalizar";
 	}	
 
-	protected String download(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+	protected String descargarCertificadosYFacturas(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 
 		UsrBean userBean = ((UsrBean) request.getSession().getAttribute(("USRBEAN")));
 		UserTransaction tx = userBean.getTransactionLigera();
@@ -2292,80 +2297,177 @@ public class DefinirEnviosAction extends MasterAction {
 			List<Documento> documentosList = new ArrayList<Documento>();
 			List<CerSolicitudCertificadosBean> cerSolicitudCertificadosBeans = new ArrayList<CerSolicitudCertificadosBean>();
 			Vector<Hashtable<String, Object>> datosVectorError = new Vector<Hashtable<String,Object>>();
+			Vector<Hashtable<String, Object>> datosVectorErrorFacturas = new Vector<Hashtable<String,Object>>();
 			
-				 
-				 
-			
-			
-			
-			
-			
-			
-			
-			String[] lineas = form.getIdsParaEnviar().split(";");
-			for (int i = 0; i < lineas.length; i++) {
-				StringBuilder datosSolicitudError = null;
-				Hashtable<String, Object> datosHashtable = null;
-				try {
-					String[] campos = lineas[i].split("%%");
-					String nombreSolicitud = "";
-					if (campos.length > 1) {
-						String idInstitucion = campos[6];
+			if(form.getCheckCertificados().equalsIgnoreCase("0") && form.getCheckFacturas().equalsIgnoreCase("0")){
+				throw new SIGAException("messages.general.error.seleccion.documentos");
+			}else{
+				if(form.getCheckCertificados().equalsIgnoreCase("1")){
 
-						String idSolicitud = campos[1];
-
-						Hashtable<String, Object> htSolicitud = new Hashtable<String, Object>();
-						htSolicitud.put(CerSolicitudCertificadosBean.C_IDINSTITUCION, idInstitucion);
-						htSolicitud.put(CerSolicitudCertificadosBean.C_IDSOLICITUD, idSolicitud);
-
-						Vector vDatos = admSolicitud.selectByPK(htSolicitud);
-
-						CerSolicitudCertificadosBean beanSolicitud = (CerSolicitudCertificadosBean) vDatos.elementAt(0);
-
-						File certificadoFile = admSolicitud.recuperarCertificado(beanSolicitud);
-						
-						
-
-						if (certificadoFile == null || !certificadoFile.exists()) {
-							datosHashtable =  new Hashtable<String, Object>();
-							datosHashtable.put("Nº Solicitud",idSolicitud);
-							
-							datosVectorError.add(datosHashtable);
-							
-							datosSolicitudError = new StringBuilder();
-							datosSolicitudError.append("[Institucion:");
-							datosSolicitudError.append(idInstitucion);
-							datosSolicitudError.append(", solicitud:");
-							datosSolicitudError.append(idSolicitud);
-							datosSolicitudError.append("],");
-							throw new SIGAException("messages.general.error.ficheroNoExiste");
+						String[] lineas = form.getIdsParaEnviar().split(";");
+						for (int i = 0; i < lineas.length; i++) {
+							StringBuilder datosSolicitudError = null;
+							Hashtable<String, Object> datosHashtable = null;
+							try {
+								String[] campos = lineas[i].split("\\|\\|");
+								String nombreSolicitud = "";
+								if (campos.length > 1) {
+									String idInstitucion = campos[6];
+			
+									String idSolicitud = campos[1];
+			
+									Hashtable<String, Object> htSolicitud = new Hashtable<String, Object>();
+									htSolicitud.put(CerSolicitudCertificadosBean.C_IDINSTITUCION, idInstitucion);
+									htSolicitud.put(CerSolicitudCertificadosBean.C_IDSOLICITUD, idSolicitud);
+			
+									Vector vDatos = admSolicitud.selectByPK(htSolicitud);
+			
+									CerSolicitudCertificadosBean beanSolicitud = (CerSolicitudCertificadosBean) vDatos.elementAt(0);
+			
+									ArrayList<File> file=admSolicitud.recuperarVariosCertificado(beanSolicitud);
+									
+									//Si file es mayor que uno quiere decir que esa solicitud tiene plantillas adjuntas
+									
+									if(file.size()>1){
+										//Recorremos las plantillas
+										//Recorro los certificados hasta obtener el .zip
+										Iterator<File> iteratorFicheros = file.iterator();
+										File fichero = null;
+										while (iteratorFicheros.hasNext() ) {
+											fichero = (File) iteratorFicheros.next();
+											
+											if (fichero == null || !fichero.exists()) {
+												datosHashtable =  new Hashtable<String, Object>();
+												datosHashtable.put("Nº Solicitud",idSolicitud);
+												
+												datosVectorError.add(datosHashtable);
+												
+												datosSolicitudError = new StringBuilder();
+												datosSolicitudError.append("[Institucion:");
+												datosSolicitudError.append(idInstitucion);
+												datosSolicitudError.append(", solicitud:");
+												datosSolicitudError.append(idSolicitud);
+												datosSolicitudError.append("],");
+												throw new SIGAException("messages.general.error.ficheroNoExiste");
+												
+											}
+												Documento certificado = new Documento(fichero,admSolicitud.getNombreVariosFicheroSalida(beanSolicitud,fichero.getName()));
+												documentosList.add(certificado);
+												beanSolicitud.setCertificado(certificado);
+												cerSolicitudCertificadosBeans.add(beanSolicitud);
+										    
+										}
+									}else{
+										
+										if (file.isEmpty() || file.get(0) == null || !file.get(0).exists()) {
+											datosHashtable =  new Hashtable<String, Object>();
+											datosHashtable.put("Nº Solicitud",idSolicitud);
+											
+											datosVectorError.add(datosHashtable);
+											datosSolicitudError = new StringBuilder();
+											datosSolicitudError.append("[Institucion:");
+											datosSolicitudError.append(idInstitucion);
+											datosSolicitudError.append(", solicitud:");
+											datosSolicitudError.append(idSolicitud);
+											datosSolicitudError.append("],");
+											throw new SIGAException("messages.general.error.ficheroNoExiste");
+										}
+											
+											Documento certificado = new Documento(file.get(0),admSolicitud.getNombreVariosFicheroSalida(beanSolicitud,file.get(0).getName()));
+											documentosList.add(certificado);
+											beanSolicitud.setCertificado(certificado);
+											cerSolicitudCertificadosBeans.add(beanSolicitud);
+										
+										
+									}
+									beanSolicitud.setFechaDescarga("SYSDATE");
+									
+									
+			
+									
+								}
+			
+							} catch (SIGAException e) {
+								ClsLogging.writeFileLog("Error descarga Certificado" + datosSolicitudError.toString() + " Error: " + e.getLiteral(userBean.getLanguage()), 3);
+							}
 						}
 						
-						
-						
-						beanSolicitud.setFechaDescarga("SYSDATE");
-						Documento certificado = new Documento(certificadoFile,admSolicitud.getNombreFicheroSalida(beanSolicitud));
-						documentosList.add(certificado);
-						beanSolicitud.setCertificado(certificado);
-						cerSolicitudCertificadosBeans.add(beanSolicitud);
-						
-
-						
+						Boolean exito = admSolicitud.actualizarFechaDescargaCertificados(cerSolicitudCertificadosBeans);
+						if(exito == Boolean.FALSE){
+							throw new ClsExceptions("Error al actualizar la fecha de descarga: " + admSolicitud.getError());
+						}
+						String aviso = null;
+				}
+				if(form.getCheckFacturas().equalsIgnoreCase("1")){
+					
+					    FacFacturaAdm admFactura = new FacFacturaAdm(userBean);
+					    InformeFactura informe = new InformeFactura(userBean);	
+					    CenPersonaAdm personaAdm = new CenPersonaAdm(userBean);
+					    Vector<Hashtable<String,Object>> vFacturas = new Vector<Hashtable<String,Object>>();
+						String[] lineas = form.getIdsParaEnviar().split(";");
+						for (int i = 0; i < lineas.length; i++) {
+							Hashtable<String, Object> datosHashtable = null;
+							String idSolicitud="";
+							try{
+								StringBuilder datosSolicitudError = null;
+								
+								
+								
+									String[] campos = lineas[i].split("\\|\\|");
+									String nombreSolicitud = "";
+									if (campos.length > 1) {
+										String idInstitucion = campos[6];
+										
+										idSolicitud = campos[1];
+										
+										// Obtiene las facturas de una solicitud de certificado
+							        	vFacturas = admFactura.obtenerFacturasFacturacionRapida(idInstitucion, null, idSolicitud);	
+							        	
+							        	  if (vFacturas==null || vFacturas.size()==0) {
+							        		  datosHashtable =  new Hashtable<String, Object>();
+											  datosHashtable.put("Nº Solicitud",idSolicitud);
+											  datosVectorErrorFacturas.add(datosHashtable);
+							        	  }else{
+						        			// Obtengo los datos de la factura
+							        		Hashtable<String,Object> hFactura = vFacturas.get(0);
+							        		
+							        		// Obtengo la peticion del certificado
+							        		String idPeticion = UtilidadesHash.getString(hFactura, PysCompraBean.C_IDPETICION);
+							        		  // GENERAR FICHERO: Siempre elimina el zip con los pdfs firmads o el pdf firmado 	    
+							      			File fichero = informe.generarInformeFacturacionRapida(request, idInstitucion, idPeticion, vFacturas);
+							      			
+							      		// DESCARGAR FICHERO
+							    			String nombreColegiado ="";
+							    			if(vFacturas != null &&  vFacturas.size()>0){
+							    			Hashtable<String,Object> obj = vFacturas.get(0);
+							    			String idPersona = (String)obj.get("IDPERSONA");
+							    		    nombreColegiado ="";
+							    			if(idPersona != null && !"".equalsIgnoreCase(idPersona)){
+							    				 nombreColegiado = personaAdm.obtenerNombreApellidos(idPersona);
+							    				if(nombreColegiado != null && !"".equalsIgnoreCase(nombreColegiado)){
+							    					nombreColegiado = UtilidadesString.eliminarAcentosYCaracteresEspeciales(nombreColegiado)+"-";	
+							    				}else{
+							    					nombreColegiado="";
+							    				}
+							    			}
+							    			}
+							      			
+							      			Documento certificado = new Documento(fichero,nombreColegiado+ fichero.getName());
+											documentosList.add(certificado);
+							         }
+									
+								}
+							} catch (SIGAException e) {
+								datosHashtable =  new Hashtable<String, Object>();
+								datosHashtable.put("Nº Solicitud",idSolicitud);
+								
+								datosVectorErrorFacturas.add(datosHashtable);
+								ClsLogging.writeFileLog("Error descarga Factura Error: " + e.getLiteral(userBean.getLanguage()), 3);
+								
+							}	
 					}
-
-				} catch (SIGAException e) {
-					ClsLogging.writeFileLog("Error descarga Certificado" + datosSolicitudError.toString() + " Error: " + e.getLiteral(userBean.getLanguage()), 3);
 				}
 			}
-			tx.begin();
-			for (CerSolicitudCertificadosBean cerSolicitudCertificadosBean : cerSolicitudCertificadosBeans) {
-
-				if (!admSolicitud.updateDirect(cerSolicitudCertificadosBean)) {
-					throw new ClsExceptions("Error al actualizar la fecha de descarga: " + admSolicitud.getError());
-				}
-			}
-			tx.commit();
-			String aviso = null;
 			
 			if (documentosList.size() > 0) {
 				
@@ -2375,12 +2477,21 @@ public class DefinirEnviosAction extends MasterAction {
 					directorio.mkdir();
 				pathZip.append(File.separatorChar);
 				pathZip.append("Certificados_");
-				pathZip.append(GstDate.parseDateToString(new Date(),"yyyyMMdd_hhmm",new Locale("ES")));
+				pathZip.append(GstDate.parseDateToString(new Date(),"yyyyMMdd_hhmmss",new Locale("ES")));
 				pathZip.append(".zip");
 				
 				if (datosVectorError.size()>0){
 					File erroresFile = ExcelHelper.createExcelFile(new ArrayList<String>(datosVectorError.get(0).keySet()) , datosVectorError, "LogErrorCertificadosNoDescargados");
 					Documento erroresDoc = new Documento(erroresFile,"LogErrorCertificadosNoDescargados.xls");
+					documentosList.add(erroresDoc);
+					request.setAttribute("aviso","certificados.descarga.incompleta");
+					
+					
+				}
+				
+				if (datosVectorErrorFacturas.size()>0){
+					File erroresFile = ExcelHelper.createExcelFile(new ArrayList<String>(datosVectorErrorFacturas.get(0).keySet()) , datosVectorErrorFacturas, "LogErrorFacturasNoDescargados");
+					Documento erroresDoc = new Documento(erroresFile,"LogErrorFacturasNoDescargados.xls");
 					documentosList.add(erroresDoc);
 					request.setAttribute("aviso","certificados.descarga.incompleta");
 					
@@ -2395,7 +2506,7 @@ public class DefinirEnviosAction extends MasterAction {
 				request.setAttribute("borrarFichero", "true");
 				request.setAttribute("generacionOK", "OK");
 
-			}else if(datosVectorError.size()>0){
+			}else if(datosVectorError.size()>0 || datosVectorErrorFacturas.size()>0){
 				
 				StringBuilder pathZip = new StringBuilder(pathDirectorioTemporal);
 				File directorio = new File(pathZip.toString());
@@ -2403,12 +2514,18 @@ public class DefinirEnviosAction extends MasterAction {
 					directorio.mkdir();
 				pathZip.append(File.separatorChar);
 				pathZip.append("Certificados_");
-				pathZip.append(GstDate.parseDateToString(new Date(),"yyyyMMdd_hhmm",new Locale("ES")));
+				pathZip.append(GstDate.parseDateToString(new Date(),"yyyyMMdd_hhmmss",new Locale("ES")));
 				pathZip.append(".zip");
-
-				File erroresFile = ExcelHelper.createExcelFile(new ArrayList<String>(datosVectorError.get(0).keySet()) , datosVectorError, "LogErrorCertificadosNoDescargados");
-				Documento erroresDoc = new Documento(erroresFile,"LogErrorCertificadosNoDescargados.xls");
-				documentosList.add(erroresDoc);
+				if(datosVectorError.size()>0){
+					File erroresFile = ExcelHelper.createExcelFile(new ArrayList<String>(datosVectorError.get(0).keySet()) , datosVectorError, "LogErrorCertificadosNoDescargados");
+					Documento erroresDoc = new Documento(erroresFile,"LogErrorCertificadosNoDescargados.xls");
+					documentosList.add(erroresDoc);
+				}
+				if(datosVectorErrorFacturas.size()>0){
+					File erroresFileFacturas = ExcelHelper.createExcelFile(new ArrayList<String>(datosVectorErrorFacturas.get(0).keySet()) , datosVectorErrorFacturas, "LogErrorFacturasNoDescargados");
+					Documento erroresDocFacturas = new Documento(erroresFileFacturas,"LogErrorFacturasNoDescargados.xls");
+					documentosList.add(erroresDocFacturas);
+				}
 				
 				File filezip = UtilidadesFicheros.doZip(pathZip.toString(), documentosList);
 				filezip.deleteOnExit();
@@ -2431,6 +2548,591 @@ public class DefinirEnviosAction extends MasterAction {
 	}
 	
 	
-	
+	/**
+	 * Metodo que implementa el modo enviarPersona
+	 * @param  mapping - Mapeo de los struts
+	 * @param  formulario -  Action Form asociado a este Action
+	 * @param  request - objeto llamada HTTP 
+	 * @param  response - objeto respuesta HTTP
+	 * @return  String  Destino del action  
+	 * @exception  ClsExceptions  En cualquier caso de error
+	 */
+	protected String envioModalMasivoCertificado(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+		
+		UsrBean userBean = ((UsrBean) request.getSession().getAttribute(("USRBEAN")));
+		DefinirEnviosForm form = (DefinirEnviosForm) formulario;
+		String mensaje = "";
+		// Obtenemos el certificado
+		CerSolicitudCertificadosAdm admCer = new CerSolicitudCertificadosAdm(userBean);
 
+		CerSolicitudCertificadosAdm admSolicitud = new CerSolicitudCertificadosAdm(userBean);
+		PysProductosInstitucionAdm admProd = new PysProductosInstitucionAdm(userBean);
+		CenInstitucionAdm admInst = new CenInstitucionAdm(userBean);
+		EnvEnviosAdm enviosAdm =  new EnvEnviosAdm(userBean);
+		
+		//Cuando es más de 20 se ejecuta el proceso automático cada min
+		CerSolicitudCertificadosEnviosService cerSolicitudCertificadosEnviosService = (CerSolicitudCertificadosEnviosService) BusinessManager.getInstance().getService(CerSolicitudCertificadosEnviosService.class);
+		CerEnvios cerEnvios = new CerEnvios();
+		
+		try {
+
+			// obtener tipoEnvio
+			String idTipoEnvio = form.getIdTipoEnvio();
+			// obtener plantilla
+			String idPlantilla = form.getIdPlantillaEnvios();
+			// obtener plantilla de generacion
+			String idPlantillaGeneracion = form.getIdPlantillaGeneracion();
+			String acuseRecibo = form.getAcuseRecibo();
+			String fechaProg = form.getFechaProgramada();
+			String destinatario = form.getRadioDestinatario();
+			String comunicacionAsunto = form.getComunicacionAsunto();
+			String[] lineas = form.getIdsParaEnviar().split(";");
+			
+			
+			if(form.getCheckCertificados().equalsIgnoreCase("0") && form.getCheckFacturas().equalsIgnoreCase("0")){
+				throw new SIGAException("messages.general.error.seleccion.documentos");
+				
+			}else{
+				
+				//Menor que 21 debido a la posición primera que va vacia.		
+				if(lineas != null && lineas.length <=21){
+					insertarEnvioModalMasivoCertificado(idTipoEnvio, idPlantilla, idPlantillaGeneracion,
+							 acuseRecibo, fechaProg, lineas, form.getCheckCertificados(), form.getCheckFacturas(), userBean,request, destinatario,comunicacionAsunto,"NO");
+				}else{
+					//Obtenemos el identificador que indicará qué solicitudes pertenecen a la misma solicitud.
+					 Long idEnvio = enviosAdm.getSecuenciaNextVal(EnvEnviosBean.SEQ_ENV_ENVIOS_MASIVOS);
+					 Short activo = 1;
+					 Short desactivado = 0;
+					 //Insertamos de uno.
+					 for (int i = 0; i < lineas.length; i++) {
+							StringBuilder datosSolicitudError = null;
+								String linea = lineas[i];
+						
+								String[] campos = linea.split("\\|\\|");
+								if (campos.length > 1) {
+									String idInstitucion = campos[6];
+									String idSolicitud = campos[1];
+									
+									cerEnvios.setIdinstitucion(Short.valueOf(idInstitucion));
+									cerEnvios.setIdsolicitud(Long.valueOf(idSolicitud));
+									cerEnvios.setAsunto(comunicacionAsunto);
+									if(fechaProg != null && !"".equalsIgnoreCase(fechaProg)){
+										SimpleDateFormat formatoDelTexto = new SimpleDateFormat("dd/mm/yyyy");
+										Date fecha = null;
+										fecha = formatoDelTexto.parse(fechaProg);
+										cerEnvios.setFechaprogramada(fecha);
+									}
+									cerEnvios.setDestinatario(Short.valueOf(destinatario));
+									cerEnvios.setTipoenvio(Short.valueOf(idTipoEnvio));
+									cerEnvios.setTipoplantilla(Short.valueOf(idPlantilla));
+									if(idPlantillaGeneracion != null && !"".equalsIgnoreCase(idPlantillaGeneracion))
+										cerEnvios.setPlantilla(Short.valueOf(idPlantillaGeneracion));
+									
+									if (form.getCheckCertificados().equalsIgnoreCase("1"))
+										cerEnvios.setCertificados(activo);
+									else
+										cerEnvios.setCertificados(desactivado);
+									
+									if(form.getCheckFacturas().equalsIgnoreCase("1"))
+										cerEnvios.setFacturas(activo);
+									else
+										cerEnvios.setFacturas(desactivado);
+									cerEnvios.setAcuselectura(Short.valueOf(acuseRecibo));
+									cerEnvios.setIdpeticiondeenvio(idEnvio);
+									cerEnvios.setUsucreacion(new Integer(userBean.getUserName()));
+									cerEnvios.setFechacreacion(new Date());
+									cerEnvios.setUsumodificacion(new Integer(userBean.getUserName()));
+									cerEnvios.setFechamodificacion(new Date());
+								
+									cerSolicitudCertificadosEnviosService.insert(cerEnvios);
+								}
+				  }
+			   }
+			}
+					
+		} catch (Exception e) {
+			this.throwExcp("messages.general.error", new String[] { "modulo.envios" }, e, null);
+		}
+		ClsLogging.writeFileLog("DefinirEnviosAction:fin insertarEnvioModalCertificado. IdInstitucion:" + userBean.getLocation(), 10);
+		mensaje = "Envio masivo procesado correctamente";
+		return exitoModal(mensaje, request);
+	}
+	
+	
+	
+	/**
+	 * Metodo que implementa el modo enviarPersona
+	 * @param  mapping - Mapeo de los struts
+	 * @param  formulario -  Action Form asociado a este Action
+	 * @param  request - objeto llamada HTTP 
+	 * @param  response - objeto respuesta HTTP
+	 * @return  String  Destino del action  
+	 * @exception  ClsExceptions  En cualquier caso de error
+	 */
+	public static String insertarEnvioModalMasivoCertificado(String idTipoEnvio,String idPlantilla,String idPlantillaGeneracion,
+			String acuseRecibo,String fechaProg, String[] lineas,String checkCertificados, String checkFacturas,UsrBean userBean,
+			HttpServletRequest request, String destinatario, String comunicacionAsunto, String origenDemonio) throws SIGAException {
+
+		UserTransaction tx = userBean.getTransactionPesada();
+		LogFileWriter log = null;
+
+		String mensaje = "";
+		try {
+		
+			// obtener fechaProgramada
+			String fechaProgramada = null;
+			// fechaProg = GstDate.anyadeHora(fechaProg);
+			if (fechaProg != null && fechaProg.length() == 10)
+				fechaProg += " " + new Date().getHours() + ":" + new Date().getMinutes() + ":" + new Date().getSeconds();
+
+			String language = userBean.getLanguage();
+			String format = language.equalsIgnoreCase("1") ? ClsConstants.DATE_FORMAT_LONG_ENGLISH : ClsConstants.DATE_FORMAT_LONG_SPANISH;
+			SimpleDateFormat formatoDelTexto = new SimpleDateFormat(format);
+			GstDate gstDate = new GstDate();
+			if (fechaProg != null && !fechaProg.equals("")) {
+				Date date = formatoDelTexto.parse(fechaProg);
+				SimpleDateFormat sdf = new SimpleDateFormat(ClsConstants.DATE_FORMAT_JAVA);
+				fechaProgramada = sdf.format(date);
+			} else {
+				fechaProgramada = null;
+			}
+
+			// Obtenemos el certificado
+			CerSolicitudCertificadosAdm admCer = new CerSolicitudCertificadosAdm(userBean);
+
+			CerSolicitudCertificadosAdm admSolicitud = new CerSolicitudCertificadosAdm(userBean);
+			PysProductosInstitucionAdm admProd = new PysProductosInstitucionAdm(userBean);
+			CenInstitucionAdm admInst = new CenInstitucionAdm(userBean);
+			CenPersonaAdm admPersona = new CenPersonaAdm(userBean);
+			EnvEnviosAdm enviosAdm =  new EnvEnviosAdm(userBean);
+
+			HashMap<Long, List<CerSolicitudCertificadosBean>> hashCertificadosPorDestinatario = new HashMap<Long, List<CerSolicitudCertificadosBean>>();
+			List<CerSolicitudCertificadosBean> cerSolicitudCertificadosBeans = new ArrayList<CerSolicitudCertificadosBean>();
+			StringBuilder errores = new StringBuilder("");
+			for (int i = 0; i < lineas.length; i++) {
+				StringBuilder datosSolicitudError = null;
+				try {
+					
+					String[] campos = lineas[i].split("\\|\\|");
+					String idInstitucion = null;
+					String idSolicitud = null;
+					
+					if (campos.length > 1) {
+						if(origenDemonio.equalsIgnoreCase("NO")){
+							idInstitucion = campos[6];
+	
+							idSolicitud = campos[1];
+						}else{
+							idInstitucion = campos[0];
+							
+							idSolicitud = campos[1];
+						}
+
+						Hashtable<String, Object> solicitudCertificadosPkHashtable = new Hashtable<String, Object>();
+						solicitudCertificadosPkHashtable.put(CerSolicitudCertificadosBean.C_IDINSTITUCION, idInstitucion);
+						solicitudCertificadosPkHashtable.put(CerSolicitudCertificadosBean.C_IDSOLICITUD, idSolicitud);
+
+						Vector solicitudCertificadoPKVector = admSolicitud.selectByPK(solicitudCertificadosPkHashtable);
+						if (solicitudCertificadoPKVector == null || solicitudCertificadoPKVector.size() < 1)
+							throw new SIGAException("No se ha encontrado la solicitud");
+						CerSolicitudCertificadosBean solicitudCertificadoBean = (CerSolicitudCertificadosBean) solicitudCertificadoPKVector.get(0);
+
+						//Creamos el log de error
+				        log = LogFileWriter.getLogFileWriter(admSolicitud.obtenerRutaLogError(solicitudCertificadoBean),idSolicitud+"-LogError");
+						log.clear();
+						
+						Hashtable<String, Object> productoInstitucionPKHashtable = new Hashtable<String, Object>();
+						productoInstitucionPKHashtable.put(PysProductosInstitucionBean.C_IDINSTITUCION, solicitudCertificadoBean.getIdInstitucion());
+						productoInstitucionPKHashtable.put(PysProductosInstitucionBean.C_IDTIPOPRODUCTO, solicitudCertificadoBean.getPpn_IdTipoProducto());
+						productoInstitucionPKHashtable.put(PysProductosInstitucionBean.C_IDPRODUCTO, solicitudCertificadoBean.getPpn_IdProducto());
+						productoInstitucionPKHashtable.put(PysProductosInstitucionBean.C_IDPRODUCTOINSTITUCION, solicitudCertificadoBean.getPpn_IdProductoInstitucion());
+
+						Vector productoInstitucionPKVector = admProd.selectByPK(productoInstitucionPKHashtable);
+						if (productoInstitucionPKVector == null || productoInstitucionPKVector.size() < 1){
+							datosSolicitudError = new StringBuilder();
+							datosSolicitudError.append("[Institucion:");
+							datosSolicitudError.append(idInstitucion);
+							datosSolicitudError.append(", solicitud:");
+							datosSolicitudError.append(idSolicitud);
+							datosSolicitudError.append("],");
+							errores.append(datosSolicitudError);
+							
+							log.addLog(new String[] { new SimpleDateFormat("dd/MM/yyyy HH:mm").format(new Date()), "Error: No se ha encontrado el producto"});
+					    	  /** Escribiendo fichero de log **/
+							if (log != null)
+								log.flush();
+							
+							throw new SIGAException("No se ha encontrado el producto");
+						}
+						PysProductosInstitucionBean beanProd = (PysProductosInstitucionBean) productoInstitucionPKVector.get(0);
+						// Seteamos al descripcion del producto para el nombre
+						// del envio
+						solicitudCertificadoBean.setProductoDescripcion(beanProd.getDescripcion());
+						Long idPersonaDestinataria;
+						if(destinatario.equals("0")){
+								// decidimos sobre cual es la institucion para enviar
+								Integer idInstitucionDestinatario = null;
+						
+								if (solicitudCertificadoBean.getIdInstitucionOrigen() == null) {
+									// Es certificado y no han definido colegio
+									// presentador
+									datosSolicitudError = new StringBuilder();
+									datosSolicitudError.append("[Institucion:");
+									datosSolicitudError.append(idInstitucion);
+									datosSolicitudError.append(", solicitud:");
+									datosSolicitudError.append(idSolicitud);
+									datosSolicitudError.append("],");
+									errores.append(datosSolicitudError);
+									
+									log.addLog(new String[] { new SimpleDateFormat("dd/MM/yyyy HH:mm").format(new Date()), "Error: Es un certificado y no se ha definido colegio presentador (No se envía)."});
+							    	  /** Escribiendo fichero de log **/
+									if (log != null)
+										log.flush();
+									
+									throw new SIGAException("Es un certificado y no se ha definido colegio presentador (No se envía).");
+								} else {
+									// destinatario el colegio origen / PRESENTADOR
+									idInstitucionDestinatario = solicitudCertificadoBean.getIdInstitucionOrigen();
+								}
+								
+								
+								// obtenemos el nombre del colegio
+								Hashtable<String, Object> institucionPKHashtable = new Hashtable<String, Object>();
+								institucionPKHashtable.put(CenInstitucionBean.C_IDINSTITUCION, idInstitucionDestinatario);
+								
+								
+								//TODO: Si es solicitante debo de obtener la persona destinataria del certificado y guardarlo en un CenPersonaBean
+								
+								// Obtenemos la persona de la isntitucion
+								Vector institucionPKVector = admInst.selectByPK(institucionPKHashtable);
+								if (institucionPKVector == null || institucionPKVector.size() < 1){
+									datosSolicitudError = new StringBuilder();
+									datosSolicitudError.append("[Institucion:");
+									datosSolicitudError.append(idInstitucion);
+									datosSolicitudError.append(", solicitud:");
+									datosSolicitudError.append(idSolicitud);
+									datosSolicitudError.append("],");
+									errores.append(datosSolicitudError);
+									log.addLog(new String[] { new SimpleDateFormat("dd/MM/yyyy HH:mm").format(new Date()), "Error: No se ha encontrado la institucion destinataria"});
+							    	  /** Escribiendo fichero de log **/
+									if (log != null)
+										log.flush();
+									
+									throw new SIGAException("No se ha encontrado la institucion destinataria");
+								}
+		
+								CenInstitucionBean beanInst = (CenInstitucionBean) institucionPKVector.get(0);
+								// Seteamos al abreviatura de la institucino para el
+								// nombre del envio
+								solicitudCertificadoBean.setInstitucionAbreviatura(beanInst.getAbreviatura());
+								
+								//Obtenemos el idPersona
+								idPersonaDestinataria = beanInst.getIdPersona().longValue();
+						}else{
+							//Si se ha seleccionado solicitante, se cogerá la persona destinataria del certificado.
+							idPersonaDestinataria = solicitudCertificadoBean.getIdPersona_Des();
+							solicitudCertificadoBean.setInstitucionAbreviatura(admPersona.obtenerNombreApellidos(String.valueOf(idPersonaDestinataria)));
+							
+						}
+						//Si se ha seleccionado el check de certificados 
+						if(checkCertificados.equalsIgnoreCase("1")){
+							try{
+								ArrayList<File> file=admSolicitud.recuperarVariosCertificado(solicitudCertificadoBean);
+								
+									if(file.size() >1){
+										//Recorremos las plantillas
+										//Recorro los certificados hasta obtener el .zip
+										Iterator<File> iteratorFicheros = file.iterator();
+										File fichero = null;
+										CerSolicitudCertificadosBean solicitudCertificadoBeanAux = null;
+										while (iteratorFicheros.hasNext() ) {
+											fichero = (File) iteratorFicheros.next();
+											
+											String rutaFichero =fichero.getPath();
+											Documento certificadoDoc = new Documento(rutaFichero,admSolicitud.getNombreVariosFicheroSalida(solicitudCertificadoBean,fichero.getName()));
+											
+											solicitudCertificadoBeanAux = (CerSolicitudCertificadosBean) BeanUtils.cloneBean(solicitudCertificadoBean);
+											solicitudCertificadoBeanAux.setCertificado(certificadoDoc);
+			
+											if (certificadoDoc.getDocumento() == null || !certificadoDoc.getDocumento().exists()) {
+												datosSolicitudError = new StringBuilder();
+												datosSolicitudError.append("[Institucion:");
+												datosSolicitudError.append(idInstitucion);
+												datosSolicitudError.append(", solicitud:");
+												datosSolicitudError.append(idSolicitud);
+												datosSolicitudError.append("],");
+												errores.append(datosSolicitudError);
+												log.addLog(new String[] { new SimpleDateFormat("dd/MM/yyyy HH:mm").format(new Date()), "No existe fichero de Certificado generado"});
+										    	  /** Escribiendo fichero de log **/
+												if (log != null)
+													log.flush();
+												
+												throw new SIGAException("No existe fichero de Certificado generado");
+											}
+			
+											if (hashCertificadosPorDestinatario.containsKey(idPersonaDestinataria)) {
+												cerSolicitudCertificadosBeans = hashCertificadosPorDestinatario.get(idPersonaDestinataria);
+											} else {
+												cerSolicitudCertificadosBeans = new ArrayList<CerSolicitudCertificadosBean>();
+											}
+											cerSolicitudCertificadosBeans.add(solicitudCertificadoBeanAux);
+											solicitudCertificadoBeanAux = new CerSolicitudCertificadosBean();
+											hashCertificadosPorDestinatario.put(idPersonaDestinataria,cerSolicitudCertificadosBeans);
+										}
+										
+									}else{
+										//Este if esta puesto para el caso de certificados que aún no se han aprobado ni generado
+										if(solicitudCertificadoBean.getContadorCer() != null && !"".equalsIgnoreCase(solicitudCertificadoBean.getContadorCer())){
+											
+											String rutaFichero = admSolicitud.getRutaCertificadoFichero(solicitudCertificadoBean,admSolicitud.getRutaCertificadoDirectorioBD(solicitudCertificadoBean.getIdInstitucion()));
+											Documento certificadoDoc = new Documento(rutaFichero,admSolicitud.getNombreFicheroSalida(solicitudCertificadoBean));
+											
+											 
+											solicitudCertificadoBean.setCertificado(certificadoDoc);
+				
+											if (certificadoDoc.getDocumento() == null || !certificadoDoc.getDocumento().exists()) {
+												datosSolicitudError = new StringBuilder();
+												datosSolicitudError.append("[Institucion:");
+												datosSolicitudError.append(idInstitucion);
+												datosSolicitudError.append(", solicitud:");
+												datosSolicitudError.append(idSolicitud);
+												datosSolicitudError.append("],");
+												errores.append(datosSolicitudError);
+												log.addLog(new String[] { new SimpleDateFormat("dd/MM/yyyy HH:mm").format(new Date()), "No existe fichero de Certificado generado"});
+										    	  /** Escribiendo fichero de log **/
+												if (log != null)
+													log.flush();
+												throw new SIGAException("No existe fichero de Certificado generado");
+											}
+				
+											if (hashCertificadosPorDestinatario.containsKey(idPersonaDestinataria)) {
+												cerSolicitudCertificadosBeans = hashCertificadosPorDestinatario.get(idPersonaDestinataria);
+											} else {
+												cerSolicitudCertificadosBeans = new ArrayList<CerSolicitudCertificadosBean>();
+											}
+											cerSolicitudCertificadosBeans.add(solicitudCertificadoBean);
+											
+											hashCertificadosPorDestinatario.put(idPersonaDestinataria,cerSolicitudCertificadosBeans);
+										
+										}else{
+											datosSolicitudError = new StringBuilder();
+											datosSolicitudError.append("[Institucion:");
+											datosSolicitudError.append(idInstitucion);
+											datosSolicitudError.append(", solicitud:");
+											datosSolicitudError.append(idSolicitud);
+											datosSolicitudError.append("],");
+											errores.append(datosSolicitudError);
+											log.addLog(new String[] { new SimpleDateFormat("dd/MM/yyyy HH:mm").format(new Date()), "No existe fichero de Certificado generado"});
+									    	  /** Escribiendo fichero de log **/
+											if (log != null)
+												log.flush();
+											throw new SIGAException("No existe fichero de Certificado generado");
+										}
+									}
+								} catch (SIGAException e) {
+									ClsLogging.writeFileLog(e.getMessage(),3);
+								}									
+							}
+						//Si se ha seleccionado el check de facturas 
+						if(checkFacturas.equalsIgnoreCase("1")){
+							FacFacturaAdm admFactura = new FacFacturaAdm(userBean);
+						    InformeFactura informe = new InformeFactura(userBean);	
+						    CenPersonaAdm personaAdm = new CenPersonaAdm(userBean);
+						    Vector<Hashtable<String,Object>> vFacturas = new Vector<Hashtable<String,Object>>();
+						    CerSolicitudCertificadosBean solicitudCertificadoBeanAux = new CerSolicitudCertificadosBean();
+						    
+						 // Obtiene las facturas de una solicitud de certificado
+				        	vFacturas = admFactura.obtenerFacturasFacturacionRapida(idInstitucion, null, idSolicitud);	
+							
+				        	
+				        	  if (vFacturas==null || vFacturas.size()==0) {
+				        		
+								datosSolicitudError = new StringBuilder();
+								datosSolicitudError.append("[Institucion:");
+								datosSolicitudError.append(idInstitucion);
+								datosSolicitudError.append(", solicitud:");
+								datosSolicitudError.append(idSolicitud);
+								datosSolicitudError.append("],");
+								errores.append(datosSolicitudError);
+								log.addLog(new String[] { new SimpleDateFormat("dd/MM/yyyy HH:mm").format(new Date()), "No se ha podido generar el fichero de Factura"});
+						    	  /** Escribiendo fichero de log **/
+								if (log != null)
+									log.flush();
+								throw new SIGAException("No se ha podido generar el fichero de Factura");
+						
+				        	  }else{
+				        		  try{
+				        			// Obtengo los datos de la factura
+					        		Hashtable<String,Object> hFactura = vFacturas.get(0);
+					        		
+					        		// Obtengo la peticion del certificado
+					        		String idPeticion = UtilidadesHash.getString(hFactura, PysCompraBean.C_IDPETICION);
+					        		  // GENERAR FICHERO: Siempre elimina el zip con los pdfs firmads o el pdf firmado 	    
+					      			File fichero = informe.generarInformeFacturacionRapida(request, idInstitucion, idPeticion, vFacturas);
+					      			
+					      		// DESCARGAR FICHERO
+					    			String nombreColegiado ="";
+					    			if(vFacturas != null &&  vFacturas.size()>0){
+					    			Hashtable<String,Object> obj = vFacturas.get(0);
+					    			String idPersona = (String)obj.get("IDPERSONA");
+					    		    nombreColegiado ="";
+					    			if(idPersona != null && !"".equalsIgnoreCase(idPersona)){
+					    				 nombreColegiado = personaAdm.obtenerNombreApellidos(idPersona);
+					    				if(nombreColegiado != null && !"".equalsIgnoreCase(nombreColegiado)){
+					    					nombreColegiado = UtilidadesString.eliminarAcentosYCaracteresEspeciales(nombreColegiado)+"-";	
+					    				}else{
+					    					nombreColegiado="";
+					    				}
+					    			}
+					    			}
+					      			
+					      			Documento certificado = new Documento(fichero,nombreColegiado+ fichero.getName());
+									
+					      			solicitudCertificadoBeanAux = (CerSolicitudCertificadosBean) BeanUtils.cloneBean(solicitudCertificadoBean);
+									solicitudCertificadoBeanAux.setCertificado(certificado);
+									
+					      			
+									if (certificado.getDocumento() == null || !certificado.getDocumento().exists()) {
+										datosSolicitudError = new StringBuilder();
+										datosSolicitudError.append("[Institucion:");
+										datosSolicitudError.append(idInstitucion);
+										datosSolicitudError.append(", solicitud:");
+										datosSolicitudError.append(idSolicitud);
+										datosSolicitudError.append("],");
+										errores.append(datosSolicitudError);
+										log.addLog(new String[] { new SimpleDateFormat("dd/MM/yyyy HH:mm").format(new Date()), "No se ha podido generar el fichero de Factura"});
+								    	  /** Escribiendo fichero de log **/
+										if (log != null)
+											log.flush();
+										throw new SIGAException("No se ha podido generar el fichero de Factura");
+									}
+		
+									if (hashCertificadosPorDestinatario.containsKey(idPersonaDestinataria)) {
+										cerSolicitudCertificadosBeans = hashCertificadosPorDestinatario.get(idPersonaDestinataria);
+									} else {
+										cerSolicitudCertificadosBeans = new ArrayList<CerSolicitudCertificadosBean>();
+									}
+									 cerSolicitudCertificadosBeans.add(solicitudCertificadoBeanAux);
+					        	
+									 hashCertificadosPorDestinatario.put(idPersonaDestinataria,cerSolicitudCertificadosBeans);
+									
+				        	  }catch (SIGAException e) {
+				        			log.addLog(new String[] { new SimpleDateFormat("dd/MM/yyyy HH:mm").format(new Date()), "No se ha podido generar el fichero de Factura, posiblemente sea un fallo al obtener el fichero firmado"});
+							    	  /** Escribiendo fichero de log **/
+									if (log != null)
+										log.flush();
+									throw new SIGAException("No se ha podido generar el fichero de Factura");
+							}
+						}
+				    }
+				}
+
+				} catch (SIGAException e) {
+					ClsLogging.writeFileLog(e.getMessage(),3);
+				}
+			}
+			
+			EnvEnviosBean enviosBean = null;
+
+			Iterator<Long> iteratorDestinatarios = hashCertificadosPorDestinatario.keySet().iterator();
+			while (iteratorDestinatarios.hasNext()) {
+				StringBuilder datosSolicitudError = null;
+				try {
+				Long keyPersonaDestinataria = (Long) iteratorDestinatarios.next();
+
+				List<CerSolicitudCertificadosBean> solicitudCertificadosBeans = (List<CerSolicitudCertificadosBean>) hashCertificadosPorDestinatario.get(keyPersonaDestinataria);
+				Vector<Documento> certificadosVector = new Vector<Documento>();
+				for (int i = 0; i < solicitudCertificadosBeans.size(); i++) {
+					CerSolicitudCertificadosBean cerSolicitudCertificadosBean = solicitudCertificadosBeans.get(i);
+					if(i==0){
+						enviosBean = new EnvEnviosBean();
+						enviosBean.setAcuseRecibo(acuseRecibo);
+						enviosBean.setIdInstitucion(cerSolicitudCertificadosBean.getIdInstitucion());
+						enviosBean.setGenerarDocumento("C");
+						enviosBean.setImprimirEtiquetas("1");
+						enviosBean.setIdEnvio(enviosAdm.getNewIdEnvio(userBean.getLocation()));
+						String nombreEnvio = comunicacionAsunto+" "+ cerSolicitudCertificadosBean.getInstitucionAbreviatura();
+						// trunco la descripción
+						if (nombreEnvio.length() > 200)
+							nombreEnvio = nombreEnvio.substring(0, 99);
+	
+						enviosBean.setDescripcion(nombreEnvio);
+						enviosBean.setIdTipoEnvios(Integer.valueOf(idTipoEnvio));
+						enviosBean.setIdPlantillaEnvios(Integer.valueOf(idPlantilla));
+						if (idPlantillaGeneracion != null && !idPlantillaGeneracion.equals("")) {
+							enviosBean.setIdPlantilla(Integer.valueOf(idPlantillaGeneracion));
+						} else {
+							enviosBean.setIdPlantilla(null);
+						}
+						enviosBean.setFechaProgramada(fechaProgramada);
+						enviosBean.setFechaCreacion("SYSDATE");
+						if (fechaProgramada == null || fechaProgramada.equals(""))
+							enviosBean.setIdEstado(new Integer(EnvEnviosAdm.ESTADO_INICIAL));
+						else {
+							if (idTipoEnvio != null && !idTipoEnvio.equals(EnvTipoEnviosAdm.K_CORREO_ELECTRONICO))
+								enviosBean.setIdEstado(new Integer(EnvEnviosAdm.ESTADO_INICIAL));
+							else
+								enviosBean.setIdEstado(new Integer(EnvEnviosAdm.ESTADO_PENDIENTE_AUTOMATICO));
+						}
+
+						
+	
+					}
+					certificadosVector.add(cerSolicitudCertificadosBean.getCertificado());
+					
+				}
+				Envio envio = new Envio(enviosBean, userBean);
+				CenDireccionesAdm dirAdm;
+				CenDireccionesBean dirBean;
+				// obteniendo la direccion
+				dirAdm = new CenDireccionesAdm(userBean);
+				dirBean = dirAdm.obtenerDireccionPorTipo(keyPersonaDestinataria.toString(), String.valueOf(enviosBean.getIdInstitucion()), enviosBean.getIdTipoEnvios().toString()); 
+				if(dirBean != null){
+					envio.generarEnvioCertificado(keyPersonaDestinataria.toString(),	certificadosVector, enviosBean);
+						
+					solicitudCertificadosBeans = (List<CerSolicitudCertificadosBean>) hashCertificadosPorDestinatario.get(keyPersonaDestinataria);
+					for (CerSolicitudCertificadosBean cerSolicitudCertificadosBean  : solicitudCertificadosBeans) {
+						cerSolicitudCertificadosBean.setFechaEnvio("SYSDATE");
+						if (!admCer.updateDirect(cerSolicitudCertificadosBean)) {
+							throw new ClsExceptions("No se ha podido actualizar la fecha de envío. envio: " + cerSolicitudCertificadosBean.getIdSolicitud() + " Error: " + admCer.getError());
+						}		
+					}
+				}else{
+					//Como no hay dirección habrá que poner log de error a todos los certificados seleccionados que tienen la misma dirección (dirección que no existe).
+					//Es necesario realizar el for ya que si no se realiza sólo se pondrá el log de error en una solicitud.
+					for (int i = 0; i < solicitudCertificadosBeans.size(); i++) {
+						//Creamos el log de error
+				        log = LogFileWriter.getLogFileWriter(admSolicitud.obtenerRutaLogError(solicitudCertificadosBeans.get(i)),solicitudCertificadosBeans.get(i).getIdSolicitud()+"-LogError");
+						log.clear();
+						log.addLog(new String[] { new SimpleDateFormat("dd/MM/yyyy HH:mm").format(new Date()), "La dirección del destinatario no es correcta"});
+				    	  /** Escribiendo fichero de log **/
+						if (log != null)
+							log.flush();
+					}
+				}
+					
+					
+				
+				// Enviado. Ahora ponemos la fecha de envio
+				
+				} catch (SIGAException e) {
+					ClsLogging.writeFileLog("Error envio Certificado", 3);
+				}
+				
+
+			}
+			if (errores.toString().equals("")) {
+				mensaje = "messages.inserted.success";
+			} else {
+				mensaje = UtilidadesString.getMensaje("messages.envios.envioCertificadosMasivo.success", new String[] {errores.toString() }, userBean.getLanguage());
+			}
+
+		} catch (Exception e) {
+			ClsLogging.writeFileLog("messages.general.error", 10);
+		}
+		ClsLogging.writeFileLog("DefinirEnviosAction:fin insertarEnvioModalCertificado. IdInstitucion:" + userBean.getLocation(), 10);
+		return "exito";
+	}
+	
+	
 }

@@ -515,30 +515,6 @@ public class FacFacturacionProgramadaAdm extends MasterBeanAdministrador {
 	    			v.add("messages.facturacion.comprueba.noPermisosPathFicheroBancario"); // El path temporal de facturas no tiene los permisos adecuados.
 	    		} 
 			
-
-	    		//hay que borrar este comentario, Carlos
-				// Obtencion de la ruta donde se almacenan las facturas en formato PDF			
-//			    String rutaAlmacen = p.returnProperty("facturacion.directorioFisicoFacturaPDFJava")+p.returnProperty("facturacion.directorioFacturaPDFJava");
-//	    		String barraAlmacen = "";
-//	    		String nombreFicheroAlmacen = "";
-//	    		if (rutaAlmacen.indexOf("/") > -1){ 
-//	    			barraAlmacen = "/";
-//	    		}
-//	    		if (rutaAlmacen.indexOf("\\") > -1){ 
-//	    			barraAlmacen = "\\";
-//	    		}    		
-	/**/   		
-//	    		rutaAlmacen += barraAlmacen+institucion.toString()+barraAlmacen+idserieidprogramacion;
-				
-				/*File rutaPDF=new File(rutaAlmacen);
-				rutaPDF.mkdirs();
-				if (!rutaPDF.exists()) {
-	    			v.add("messages.facturacion.comprueba.noPathFacturas") ; // No existe el path de las facturas
-	    		} else 
-	    		if (!rutaPDF.canWrite()) {
-	    			v.add("messages.facturacion.comprueba.noPermisosPathFacturas"); // El path de facturas no tiene los permisos adecuados.
-	    		} */
-
 				// Obtencion de la ruta de donde se obtiene la plantilla adecuada			
 			    String rutaPlantilla = p.returnProperty("facturacion.directorioFisicoPlantillaFacturaJava")+p.returnProperty("facturacion.directorioPlantillaFacturaJava");
 			    String barraPlantilla="";
@@ -613,31 +589,6 @@ public class FacFacturacionProgramadaAdm extends MasterBeanAdministrador {
 		}
 		return v;	
 	}
-	
-	
-    public FacFacturacionProgramadaBean getFacturacionProgramadaDesdeCompra (PysCompraBean beanCompra)
-    {	
-		try {
-	    	FacFacturaAdm facturaAdm = new FacFacturaAdm (this.usrbean);
-	    	Hashtable h = new Hashtable();
-	    	UtilidadesHash.set(h, FacFacturaBean.C_IDFACTURA, beanCompra.getIdFactura());
-	    	UtilidadesHash.set(h, FacFacturaBean.C_IDINSTITUCION, beanCompra.getIdInstitucion());
-	    	Vector v = facturaAdm.selectByPK(h);
-			if (v != null && v.size() == 1) {
-	    		FacFacturaBean b = (FacFacturaBean) v.get(0);
-	    		h.clear();
-		    	UtilidadesHash.set(h, FacFacturacionProgramadaBean.C_IDINSTITUCION, b.getIdInstitucion());
-		    	UtilidadesHash.set(h, FacFacturacionProgramadaBean.C_IDSERIEFACTURACION, b.getIdSerieFacturacion());
-		    	UtilidadesHash.set(h, FacFacturacionProgramadaBean.C_IDPROGRAMACION, b.getIdProgramacion());
-		    	Vector v1 = this.selectByPK(h);
-		    	if (v1 != null && v1.size() == 1) {
-		    		return (FacFacturacionProgramadaBean) v1.get(0);
-		    	}
-	    	}
-		} 
-		catch (ClsExceptions e) {}
-    	return null;
-    }
    
     public Paginador getProgramacioneFacturacionPaginador(ConfirmarFacturacionForm confirmarFacturacionForm) throws ClsExceptions, SIGAException{
 		

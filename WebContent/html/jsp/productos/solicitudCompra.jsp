@@ -500,7 +500,14 @@
 						return false;
 					}
 				}
+				if(f.idInstitucionPresentador.value == "") {
+					var mensaje = "<siga:Idioma key="pys.solicitudCompra.literal.presentador"/> <siga:Idioma key="messages.campoObligatorio.error"/>";
+					alert (mensaje);
+					fin();	
+					return false;
+				}
 				
+				//AKI PONGO LA SOLICITUDDDDDD
    			    document.solicitudCompraForm.target="resultado";
 				document.solicitudCompraForm.modo.value = "solicitar";
 				document.solicitudCompraForm.concepto.value = tipo;
@@ -728,7 +735,7 @@
 							
 								<tr id="presentador" style="<%=stylePresentador%>">
 									<td class="labelText" width="50px">
-										<siga:Idioma key="pys.solicitudCompra.literal.presentador"/>
+										<siga:Idioma key="pys.solicitudCompra.literal.presentador"/>&nbsp;(*)</td>
 									</td>
 									
 									<td colspan="5">

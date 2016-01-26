@@ -19,6 +19,11 @@
 <%@ taglib uri="c.tld" prefix="c"%>
 <%@ taglib uri="ajaxtags.tld" prefix="ajax"%>
 
+<%
+	// Consulto si tiene configurado la guardia por asistencias(0) o por actuaciones(1)
+	String porAsAct = (String) request.getAttribute("porAsAct");
+%>
+
 	<!-- HEAD -->
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>	
 	
@@ -380,7 +385,7 @@
 						</c:choose>
 					</td>
 
-					<td class="labelText">
+					<td class="labelText" id="checkDiaDespuesText">
 						<siga:Idioma key='gratuita.mantActuacion.literal.diadespues' />
 					</td>
 					<td>
@@ -665,6 +670,19 @@
 			//Para que se rellene el combo de costes
 			document.getElementById("tiposActuacion").onchange();
 			document.getElementById("checkDiaDespues").checked = document.ActuacionAsistenciaFormEdicion.diaDespues.value=='S';
+			
+			// Si no tiene marcado el check del dia despues, consulto si tiene configurado la guardia por asistencias(0) o por actuaciones(1) y la oculto en caso de ser por asistencias
+			if (document.ActuacionAsistenciaFormEdicion.diaDespues.value!='S') {
+<%			
+				if (porAsAct!=null && porAsAct.equals("0")) {
+%>					
+					jQuery("#checkDiaDespues").hide();
+					jQuery("#checkDiaDespuesText").hide();				
+<%
+				}
+%>			
+			}
+			
 			document.getElementById("checkAnulacion").checked = document.ActuacionAsistenciaFormEdicion.anulacion.value=='1';
 			if(document.ActuacionAsistenciaFormEdicion.validada.value=="1"){
 				document.getElementById('fechaJustificacion').className="boxConsulta";
@@ -875,19 +893,31 @@
 		}
 	
 		function compruebaDiaDespues(fecha2){
-			 var fechaAct=document.getElementById("fecha").value;
-			 var fechaHora=fecha2;
-			  if (isAfter(fechaAct,fechaHora)){				  	
+			var fechaAct=document.getElementById("fecha").value;
+			var fechaHora=fecha2;
+			if (isAfter(fechaAct,fechaHora)){				
+<%			
+				// Consulto si tiene configurado la guardia por asistencias(0) o por actuaciones(1) y la activo en caso de ser por actuaciones
+				if (porAsAct!=null && porAsAct.equals("1")) {
+%>					
 					document.getElementById("checkDiaDespues").checked = true;
-			  }else{
-			    	if (isEquals(fechaHora,fechaAct)){
-			    		document.getElementById("checkDiaDespues").checked = false;
-					}else{// cuando la fecha de asistencia es igual que la de la actuacion el check del dia despues no se chequea.
-						alert("La fecha de actuación no puede ser anterior a la fecha de la asistencia ("+fechaHora+")");
-				  		document.ActuacionAsistenciaFormEdicion.fecha.value = '';
-				  		document.getElementById("checkDiaDespues").checked = false;				
-					}// fin del if
-			  }// fin del if
+<%
+				} else {			
+%>					
+					document.getElementById("checkDiaDespues").checked = false;
+<%
+				}
+%>			
+	
+			} else {
+			    if (isEquals(fechaHora,fechaAct)){
+			    	document.getElementById("checkDiaDespues").checked = false;
+				} else {// cuando la fecha de asistencia es igual que la de la actuacion el check del dia despues no se chequea.
+					alert("La fecha de actuación no puede ser anterior a la fecha de la asistencia ("+fechaHora+")");
+				  	document.ActuacionAsistenciaFormEdicion.fecha.value = '';
+				  	document.getElementById("checkDiaDespues").checked = false;				
+				}// fin del if
+			}// fin del if
 		}
 	
 		function onclickCheckAnulacion () {		

@@ -115,12 +115,12 @@ public class MutualidadWSClient extends SIGAWSClientAbstract {
 	            respuesta.setValorRespuesta(response.getValorRespuesta()!=null?response.getValorRespuesta():"");
 	            respuesta.setRutaPDF(this.getRutaPDF(response.getPDF(),nif, super.getUsrBean().getLocation()));
             }
+            
             if(respuesta.getValorRespuesta()!=null&&respuesta.getValorRespuesta().equalsIgnoreCase("1")){
             	respuesta.setPosibleAlta(true);
             }else{
             	respuesta.setCorrecto(false);
             	respuesta.setPosibleAlta(false);
-            	respuesta.setValorRespuesta("");
             }
            
         } catch (Exception e) {

@@ -1782,7 +1782,7 @@
 		</action>
 
 		<!-- ***** Certificados / Gestión Solicitudes ***** -->
-		<action path="/CER_GestionSolicitudes" type="com.siga.certificados.action.SIGASolicitudesCertificadosAction" name="SolicitudesCertificadosForm" scope="request">
+		<action path="/CER_GestionSolicitudes" type="com.siga.certificados.action.SIGASolicitudesCertificadosAction" name="SolicitudesCertificadosForm" scope="session">
 			<forward name="abrir" path="/html/jsp/certificados/abrirListadoSolicitudes.jsp"/>
 			<forward name="buscar" path="/html/jsp/certificados/buscarListadoSolicitudes.jsp"/>
 			<forward name="asignarPlantillaCertificado" path="/html/jsp/certificados/asignarPlantillaCertificado.jsp"/>
@@ -1791,7 +1791,7 @@
 			<forward name="copiarSanciones" path="/html/jsp/certificados/copiarSanciones.jsp"/>
 			<forward name="seleccionarPlantilla" path="/html/jsp/certificados/seleccionarPlantilla.jsp"/>
 			<forward name="preguntaNumeroFacturas" path="/html/jsp/certificados/preguntaNumeroFacturas.jsp"/>
-			
+			<forward name="exitoConStringDescarga" path="/html/jsp/certificados/exitoConStringDescarga.jsp"/>
 		</action>
 
 		<!-- ***** Certificados / Mantenimiento de Certificados ***** -->
@@ -1814,6 +1814,7 @@
 		<action path="/CER_Plantillas" type="com.siga.certificados.action.SIGAMantenimientoCertificadosPlantillasAction" name="MantenimientoCertificadosPlantillasForm" scope="request">
 			<forward name="abrir" path="/html/jsp/certificados/pestanaPlantillas.jsp"/>
 			<forward name="mostrar" path="/html/jsp/certificados/detalleRegistroPlantillasCertificado.jsp"/>
+			<forward name="mostrarPestanas" path="/html/jsp/certificados/pestanasRelacionPlantillas.jsp"/>	
 		</action>
 
 		<!-- ***** Certificados / Informes ***** -->
@@ -3145,10 +3146,13 @@
 		</action>
 		
 		<!-- ***** Fichero abonos SJCS ***** -->
-		<action path="/CEN_MantenimientoFicherosPago" forward="/FAC_EnvioAbonosABanco.do?sjcs=1">
-			<forward name="abrir" path="/html/jsp/facturacion/ficheroBancarioAbonos.jsp"/>
+		<action path="/CEN_MantenimientoFicherosPago" type="com.siga.facturacion.action.FicheroBancarioAbonosAction" name="ficheroBancarioAbonosForm" scope="request">
+			<forward name="abrir" path="/html/jsp/facturacion/busquedaEnvioBancosAbonos.jsp"/>
+			<forward name="listado" path="/html/jsp/facturacion/ficheroBancarioAbonos.jsp"/>			
 			<forward name="generarFichero" path="/html/jsp/facturacion/ficheroBancarioAbonos.jsp"/>
 			<forward name="exitoConString" path="/html/jsp/facturacion/exitoConString.jsp"/>
+			<forward name="informeRemesa" path="/html/jsp/facturacion/informeRemesa.jsp"/>
+			<forward name="configurarFicheroBancario" path="/html/jsp/facturacion/configEnvioBancosAbonos.jsp"/>
 		</action>
 
 		<!-- ***** Facturación SJCS / Mantenimiento de Pago ***** -->

@@ -41,20 +41,20 @@
 		<script>
 			function generar(fila)
 			{
-	
+				sub();
 				SolicitudesCertificadosForm.idsTemp.value=SolicitudesCertificadosForm.idsParaGenerarFicherosPDF.value;
-				
 				SolicitudesCertificadosForm.modo.value="asignarPlantillaCertificado";
-				
 				var resultado = ventaModalGeneral("SolicitudesCertificadosForm", "P");
-				if (resultado!=undefined)
-				{
-					SolicitudesCertificadosForm.idsParaGenerarFicherosPDF.value=SolicitudesCertificadosForm.idsParaGenerarFicherosPDF.value + "%%" + resultado;
+				if (resultado!=undefined) {
+					SolicitudesCertificadosForm.idsParaGenerarFicherosPDF.value=SolicitudesCertificadosForm.idsParaGenerarFicherosPDF.value + "||" + resultado;
 					SolicitudesCertificadosForm.action="<%=app%>/CER_GestionSolicitudes.do";
 					SolicitudesCertificadosForm.modo.value="generarPDF";
 					SolicitudesCertificadosForm.target="submitArea";
 					SolicitudesCertificadosForm.submit();
+				} else {
+					fin();					
 				}
+				
 			}
 
 
@@ -66,6 +66,8 @@
 		<html:form action="/CER_GestionSolicitudes.do" method="POST" target="resultado">
 			<html:hidden property = "modo" value = ""/>
 			<html:hidden property = "hiddenFrame" value = "1"/>
+			<html:hidden property="idInstitucion" styleId="idInstitucion"/>
+			<html:hidden property="idSolicitud" styleId="idSolicitud" />
 
 			<input type="hidden" name="idsParaGenerarFicherosPDF" value="<%=sTemp%>">
 			<input type="hidden" name="idsTemp" value="">

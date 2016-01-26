@@ -3,16 +3,23 @@ package com.siga.certificados;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Vector;
-
-import javax.servlet.http.HttpServletRequest;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 import com.atos.utils.ClsExceptions;
+import com.atos.utils.ClsLogging;
 import com.atos.utils.UsrBean;
 import com.siga.beans.CenClienteAdm;
 import com.siga.beans.CerPlantillasAdm;
+import com.siga.beans.CerSolicitudCertificadosAdm;
+import com.siga.beans.CerSolicitudCertificadosBean;
 import com.siga.general.SIGAException;
 import com.siga.informes.InformeCertificadosEspeciales;
 import com.siga.informes.MasterReport;
@@ -31,7 +38,8 @@ public class Certificado {
 	public static final String CERT_TIPO_COMPONENTES = "COMPONENTES";
 	public static final String INI = "INI_";
 
-	public static void generarCertificadoPDF(String idTipoProducto, String idProducto, String idProductoInstitucion, String idInstitucion, String idPlantilla, String idPersona, File fIn, File fOut, String sBaseDir, String idSolicitud, String idInstitucionOrigen, boolean usarIdInstitucion, UsrBean usr, HttpServletRequest request) throws SIGAException {
+	public static void generarCertificadoPDF(String idTipoProducto, String idProducto, String idProductoInstitucion, String idInstitucion,
+			String idPlantilla, String idPersona, File fIn, File fOut, String sBaseDir, String idSolicitud, String idInstitucionOrigen, boolean usarIdInstitucion, UsrBean usr) throws SIGAException {
 		try {
 			CerPlantillasAdm admPlantilla = new CerPlantillasAdm(usr);
 			File fPlantilla = admPlantilla.obtenerPlantilla(String.valueOf(idInstitucion), idTipoProducto, idProducto, idProductoInstitucion, idPlantilla);
@@ -76,7 +84,7 @@ public class Certificado {
 				} else {
 
 					InformeCertificadosEspeciales informe = new InformeCertificadosEspeciales(usr);
-					informe.generarListadoCertificados(request, htParametros, fOut.getParent(), fOut.getName(), fPlantilla.getParent(), fPlantilla.getName(), sBaseDir);
+					informe.generarListadoCertificados(usr, htParametros, fOut.getParent(), fOut.getName(), fPlantilla.getParent(), fPlantilla.getName(), sBaseDir);
 				}
 			} else {
 				if (extension.equalsIgnoreCase("doc")) {
@@ -155,6 +163,77 @@ public class Certificado {
 			throw new SIGAException("Error al leer la plantilla del Certificado.", e);
 		}
 		return etiquetasMultiregistro;
+	}
+	
+	/**
+	 * Generar zip cuando hay varios ficheros de certificados
+	 * @param rutaServidorDescargasZip
+	 * @param nombreFichero
+	 * @param ficherosPDF
+	 * @throws ClsExceptions
+	 * @throws SIGAException 
+	 */
+	public void doZip(String rutaServidorDescargasZip, String nombreFichero, ArrayList<File> ficherosPDF,CerSolicitudCertificadosBean solicitudCertificadoBean,CerSolicitudCertificadosAdm admSolicitud) throws ClsExceptions, SIGAException	{
+		// Generar Zip
+		File ficZip=null;
+		byte[] buffer = new byte[8192];
+		int leidos;
+		ZipOutputStream outTemp = null;
+		
+		try {
+		    ClsLogging.writeFileLog("DESCARGA DE CERTIFICADOS: numero de certificados = "+ficherosPDF.size(),10);
+
+			if ((ficherosPDF!=null) && (ficherosPDF.size()>0)) {
+				
+				ficZip = new File(rutaServidorDescargasZip +  nombreFichero + ".zip");
+
+				// RGG 
+				if (ficZip.exists()) {
+				    ficZip.delete();
+				    ClsLogging.writeFileLog("DESCARGA DE CERTIFICADOS: el fichero zip ya existia. Se elimina",10);
+				}
+				
+				outTemp = new ZipOutputStream(new FileOutputStream(ficZip));
+				
+				for (int i=0; i<ficherosPDF.size(); i++)
+				{
+
+				    File auxFile = (File)ficherosPDF.get(i);
+				    ClsLogging.writeFileLog("DESCARGA DE CERTIFICADOS: fichero numero "+i+" longitud="+auxFile.length(),10);
+					if (auxFile.exists()) {
+						ZipEntry ze = new ZipEntry(admSolicitud.getNombreVariosFicheroSalida(solicitudCertificadoBean,auxFile.getName()));
+						outTemp.putNextEntry(ze);
+						FileInputStream fis=new FileInputStream(auxFile);
+						
+						buffer = new byte[8192];
+						
+						while ((leidos = fis.read(buffer, 0, buffer.length)) > 0)
+						{
+							outTemp.write(buffer, 0, leidos);
+						}
+						
+						fis.close();
+						outTemp.closeEntry();
+					}
+				}
+			    ClsLogging.writeFileLog("DESCARGA DE CERTIFICADOS: ok ",10);
+				
+				outTemp.close();
+
+			}
+		} catch (FileNotFoundException e) {
+			throw new ClsExceptions(e,"Error al crear fichero zip");
+		} catch (IOException e) {
+			throw new ClsExceptions(e,"Error al crear fichero zip");
+		}
+		finally {
+			try {
+				outTemp.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		
 	}
 
 }

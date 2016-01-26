@@ -2,6 +2,7 @@
 <html>
 <head>
 <!-- consultaDatosGenerales.jsp -->
+
 <!-- CABECERA JSP -->
 <%@ page contentType="text/html" language="java" errorPage="/html/jsp/error/errorSIGA.jsp"%>
 
@@ -12,16 +13,21 @@
 <%@ taglib uri="struts-logic.tld" prefix="logic"%>
 
 <!-- IMPORTS -->
-<%@ page import="com.siga.administracion.SIGAConstants"%>
-<%@ page import="com.siga.censo.form.DatosGeneralesForm"%>
 <%@ page import="com.atos.utils.ClsConstants"%>
+<%@ page import="com.atos.utils.GstDate"%>
 <%@ page import="com.atos.utils.UsrBean"%>
-<%@ page import="com.siga.Utilidades.UtilidadesString"%>
-<%@ page import="com.siga.beans.CenPersonaBean"%>
+<%@ page import="com.siga.administracion.SIGAConstants"%>
 <%@ page import="com.siga.beans.CenClienteBean"%>
 <%@ page import="com.siga.beans.CenInstitucionAdm"%>
 <%@ page import="com.siga.beans.CenInstitucionBean"%>
-<%@ page import="com.atos.utils.GstDate"%>
+<%@ page import="com.siga.beans.CenPersonaBean"%>
+<%@ page import="com.siga.censo.form.DatosGeneralesForm"%>
+<%@ page import="com.siga.Utilidades.UtilidadesString"%>
+<%@ page import="java.io.File"%>
+<%@ page import="java.util.ArrayList"%>
+<%@ page import="java.util.Hashtable"%>
+<%@ page import="java.util.Properties"%>
+<%@ page import="java.util.Vector"%>
 
 <!-- JSP -->
 <%  
@@ -61,8 +67,6 @@
 	Vector resultado = null;
 	
 	if (!formulario.getIdPersona().equals("")) {
-		// modo != nuevo
-
 		// Obteniendo atributos varios
 		resultado = (Vector) request.getAttribute("CenResultadoDatosGenerales");
 		
@@ -88,9 +92,7 @@
 			fechaCertificado=UtilidadesString.getMensajeIdioma(user, "censo.ConsultaDatosGenerales.mensaje.NoCertificado");
 			bfCertificado=false;
 		}
-
-	} // del if de modo != nuevo
-	
+	} 
 	
 	// Definicion de variables a usar en la JSP
 	ArrayList tipoIdentificacionSel = new ArrayList();
@@ -132,7 +134,6 @@
 	int tipoIdenNIF = ClsConstants.TIPO_IDENTIFICACION_NIF;
     int tipoIdenCIF = ClsConstants.TIPO_IDENTIFICACION_CIF;
     String paramsTipoIdenJSON = "{\"idtipoidentificacion\":\"-1\"}";
-	
     
 	// Obteniendo idinstitucion
 	String [] institucionParam = new String[1];
@@ -141,8 +142,6 @@
 	} else {
 	   	institucionParam[0] = user.getLocation();
 	}
-	
-	
 	
 	// Obteniendo Tipo de cliente
     String sTipo = (String) request.getAttribute("TIPO");
@@ -191,42 +190,38 @@
 	
 	// Calculando estilos para controlar edicion de datos generales de persona
 	boolean bDatosGeneralesEditables = ((String) request.getAttribute("BDATOSGENERALESEDITABLES")).equals("true") ? true : false;
-	
 %>
-	   	
-<%@page import="java.util.Properties"%>
-<%@page import="java.util.ArrayList"%>
-<%@page import="java.util.Vector"%>
-<%@page import="java.util.Hashtable"%>
-<%@page import="java.io.File"%>
 
 	<!-- HEAD -->
-	
-	
 	<meta http-equiv="Expires" content="0">
 	<meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-1"%>
 	<meta http-equiv="Cache-Control" content="no-cache">
 	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-			<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
-	
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
 	<!-- Incluido jquery en siga.js -->
-	
 	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js?v=${sessionScope.VERSIONJS}'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
-				
-		<script src="<%=app%>/html/jsp/general/validacionSIGA.jsp" type="text/javascript"></script>
-
-
-		<!-- INICIO: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->
-		<!-- Validaciones en Cliente -->
-		<!-- El nombre del formulario se obtiene del struts-config -->
-			<html:javascript formName="datosGeneralesForm" staticJavascript="false" />  
-		  	<script src="<%=app%>/html/js/validacionStruts.js" type="text/javascript"></script>
-		<!-- FIN: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->	
-
-		<script>
+	<script src="<%=app%>/html/jsp/general/validacionSIGA.jsp" type="text/javascript"></script>
+	
+	<!-- INICIO: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->
+	<!-- Validaciones en Cliente -->
+	<!-- El nombre del formulario se obtiene del struts-config -->
+	<html:javascript formName="datosGeneralesForm" staticJavascript="false" />  
+	 	<script src="<%=app%>/html/js/validacionStruts.js" type="text/javascript"></script>
+	<!-- FIN: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->	
+	
+	<script>
+		// Si fechaNacimiento es editable, indica si es valida o no (ver esFechaNacimientoInvalida)
+		function comprobarFechaNacimiento(valorFechaNacimiento) {
+			if (!jQuery("#fechaNacimiento").is('[readonly]') && esFechaNacimientoInvalida(valorFechaNacimiento)) {
+				alert("<siga:Idioma key='errors.date.past' arg0='censo.consultaDatosGenerales.literal.fechaNacimiento'/>");
+				return false;
+			} else {
+				return true;
+			}
+		}
 		
-		<!-- Funcion asociada a buscarGrupos() -->
+		// Funcion asociada a buscarGrupos()
 		function buscarGrupos(){
 				document.GruposClienteClienteForm.modo.value="buscar";
 				document.GruposClienteClienteForm.modoAnterior.value=document.forms[0].accion.value;				
@@ -237,7 +232,7 @@
 		}
 		
 		function refrescarLocal() {
-
+	
 				<% if (modo.equalsIgnoreCase("NUEVO")) { %>
 				document.forms[0].accion.value="editar";
 				<% } %>
@@ -247,64 +242,63 @@
 				
 				//Refresco el iframe de grupos:
 				buscarGrupos();				
-
-			}
-		
-	//Funcion que quita blancos a derecha e izquierda de la cadena
-	function fTrim(Str)	{				 
-		Str = Str.replace(/(^\s*)|(\s*$)/g,"");			
-		return Str;
-	}
-			
-	function formatearDocumento(){
-       //Se aplica la funcion ftrim para eliminar blancos
-	   document.forms[0].numIdentificacion.value = fTrim(document.forms[0].numIdentificacion.value);
-	   if((document.forms[0].tipoIdentificacion.value== "<%=ClsConstants.TIPO_IDENTIFICACION_NIF%>")&&(document.forms[0].numIdentificacion.value!="")) {
-			var sNIF = document.forms[0].numIdentificacion.value;
-			var sNIFFormateado = formateaNIF(sNIF);
-			
-			if(esNIFCorrecto(sNIFFormateado,true)){
-				document.forms[0].numIdentificacion.value = sNIFFormateado;				
-			}else{
-				document.forms[0].numIdentificacion.value = sNIF;
-			}
-			
-	   }else if((document.forms[0].tipoIdentificacion.value == "<%=ClsConstants.TIPO_IDENTIFICACION_TRESIDENTE%>") ){		   
-	   		var sNIE = document.forms[0].numIdentificacion.value;
-	   		var sNIEFormetado = formateaNIE(sNIE);
-	   		
-			if(esNIECorrecto(sNIEFormetado,true)){
-				document.forms[0].numIdentificacion.value = sNIEFormetado;				
-			}else{
-				document.forms[0].numIdentificacion.value = sNIE;
-			}	   		
-	   }
-	}
 	
-	function generaNumOtro()
-	{
-		//Ejerciente - Letrado
-		
-	   if((document.forms[0].tipoIdentificacion.value== "<%=ClsConstants.TIPO_IDENTIFICACION_OTRO%>") && (document.forms[0].numIdentificacion.value=="")) {
-		   <%if (cliente.equals("") || cliente.equals("No Colegiado")){%>
-				generarIdenHistorico();
-			<%}%>
-			//NIHN (Número de Identificación Histórico para No colegiados) = 'NIHN' + idinstitucion + [0-9]{4}, donde el ultimo numero sera un max+1. Ej. NIHN20400011
-		}
-	   	
-	}	
-	jQuery(document).ready(function(){
-		jQuery(".box").change(function() {	
-		//jQuery("input[type=select][name='tipoIdentificacion']").change(function(){
-			if(jQuery(this).attr("name")=="tipoIdentificacion"){
-				generaNumOtro();
 			}
-		 });	 
-	});
-	function generarIdenHistorico()
-	{
-
-		jQuery.ajax({ //Comunicación jQuery hacia JSP  
+			
+		//Funcion que quita blancos a derecha e izquierda de la cadena
+		function fTrim(Str)	{				 
+			Str = Str.replace(/(^\s*)|(\s*$)/g,"");			
+			return Str;
+		}
+				
+		function formatearDocumento(){
+	       //Se aplica la funcion ftrim para eliminar blancos
+		   document.forms[0].numIdentificacion.value = fTrim(document.forms[0].numIdentificacion.value);
+		   if((document.forms[0].tipoIdentificacion.value== "<%=ClsConstants.TIPO_IDENTIFICACION_NIF%>")&&(document.forms[0].numIdentificacion.value!="")) {
+				var sNIF = document.forms[0].numIdentificacion.value;
+				var sNIFFormateado = formateaNIF(sNIF);
+				
+				if(esNIFCorrecto(sNIFFormateado,true)){
+					document.forms[0].numIdentificacion.value = sNIFFormateado;				
+				}else{
+					document.forms[0].numIdentificacion.value = sNIF;
+				}
+				
+		   }else if((document.forms[0].tipoIdentificacion.value == "<%=ClsConstants.TIPO_IDENTIFICACION_TRESIDENTE%>") ){		   
+		   		var sNIE = document.forms[0].numIdentificacion.value;
+		   		var sNIEFormetado = formateaNIE(sNIE);
+		   		
+				if(esNIECorrecto(sNIEFormetado,true)){
+					document.forms[0].numIdentificacion.value = sNIEFormetado;				
+				}else{
+					document.forms[0].numIdentificacion.value = sNIE;
+				}	   		
+		   }
+		}
+		
+		function generaNumOtro() {
+			//Ejerciente - Letrado
+			
+		   if((document.forms[0].tipoIdentificacion.value== "<%=ClsConstants.TIPO_IDENTIFICACION_OTRO%>") && (document.forms[0].numIdentificacion.value=="")) {
+			   <%if (cliente.equals("") || cliente.equals("No Colegiado")){%>
+					generarIdenHistorico();
+				<%}%>
+				//NIHN (Número de Identificación Histórico para No colegiados) = 'NIHN' + idinstitucion + [0-9]{4}, donde el ultimo numero sera un max+1. Ej. NIHN20400011
+			}
+		   	
+		}	
+		
+		jQuery(document).ready(function(){
+			jQuery(".box").change(function() {	
+			//jQuery("input[type=select][name='tipoIdentificacion']").change(function(){
+				if(jQuery(this).attr("name")=="tipoIdentificacion"){
+					generaNumOtro();
+				}
+			 });	 
+		});
+			
+		function generarIdenHistorico() {
+			jQuery.ajax({ //Comunicación jQuery hacia JSP  
 	           type: "POST",
 	           url: "/SIGA/CEN_DatosGenerales.do?modo=getIdenHistorico",
 	           data: "idInstitucion="+'<%=institucionParam[0]%>',
@@ -318,10 +312,9 @@
 	        	   alert("Error: "+msg);//jQuery("span#ap").text(" Error");
 	           }
 	        }); 
-	}
-
-	function adaptaTamanoFoto () 
-		{
+		}
+	
+		function adaptaTamanoFoto () {
 			widthMax = 180;
 			heightMax = 240;
 			foto = document.getElementById ("fotoNueva");
@@ -340,19 +333,19 @@
 			}
 			return;
 		}
-		
-	function formateaNIF(valorX) {
-    		var longitud=9;
-    		var salida='';
-    		valorX = quitarCeros(valorX);
-    		
-    		if(isNumero(valorX)==true)
-    			longitud=8;
-    		
-    		
-    		if(valorX.length==8 && isNumero(valorX)==true)
-    			return valorX;
-    		
+			
+		function formateaNIF(valorX) {
+	   		var longitud=9;
+	   		var salida='';
+	   		valorX = quitarCeros(valorX);
+	   		
+	   		if(isNumero(valorX)==true)
+	   			longitud=8;
+	   		
+	   		
+	   		if(valorX.length==8 && isNumero(valorX)==true)
+	   			return valorX;
+	   		
 			if (valorX==null) {
 				salida = relleno("0",longitud);  
 			} else {
@@ -381,26 +374,26 @@
 				}   
 				  
 			}
-  return salida; 
-	
-}
-	function formateaNIE(valorX) {
+	  
+			return salida; 	
+		}
 		
-    		var longitud=8;
-    		var salida='';
-    		
-    		if( isNumero(valorX)==true){
-    			if(valorX.length==8)
-    				return valorX;
-    		}else{
-    			if(valorX.length==9)
-    				return valorX;
-    			//else
-    				//longitud=9;
-    		
-    		}
-    		
-    		
+		function formateaNIE(valorX) {
+	   		var longitud=8;
+	   		var salida='';
+	   		
+	   		if( isNumero(valorX)==true){
+	   			if(valorX.length==8)
+	   				return valorX;
+	   		}else{
+	   			if(valorX.length==9)
+	   				return valorX;
+	   			//else
+	   				//longitud=9;
+	   		
+	   		}
+	   		
+	   		
 			if (valorX==null) {
 				//salida = relleno("0",longitud);
 			} else {
@@ -429,397 +422,377 @@
 				}   
 				  
 			}
-  // alert("Salida formateaNIFMio:"+salida);
-	return salida; 
-	
-}
-
-	
-		
-	function generarLetra() {
-		var numId = datosGeneralesForm.numIdentificacion.value;
-		var tipoIdentificacion = datosGeneralesForm.tipoIdentificacion.value;
-	  	var letra='TRWAGMYFPDXBNJZSQVHLCKET';
-		if(numId.length==0){
-			return false;		
-		}if( (tipoIdentificacion == "<%=ClsConstants.TIPO_IDENTIFICACION_NIF%>")){
-			if(isNumero(numId)==true){
-				if(numId.length==8){
-				 	numero = numId;
-				 	numero = numero % 23;
-				 	letra=letra.substring(numero,numero+1);
-				 	datosGeneralesForm.numIdentificacion.value =numId+letra;
-				 		
-				}else{
-				 	numero = numId.substr(0,numId.length-1);
-				 	numero = numero % 23;
-				 	let = numId.substr(numId.length-1,1);
-				 	letra=letra.substring(numero,numero+1);
-	 			 	//if (letra.tolowercase()!=let.tolowercase())
-			 		//alert('DNI Erroneo. Ponemos el correcto');
-					datosGeneralesForm.numIdentificacion.value = numId.substring(0,8)+letra;
-					
-				 } 	
-				 	
-			}else{
-				rc = validarNIFCIF(tipoIdentificacion, numId);
-				 
-				if(rc==true)
-					alert('<siga:Idioma key="messages.nifcif.comprobacion.correcto"/>');
-				
-			}
-		} else	if((tipoIdentificacion == "<%=ClsConstants.TIPO_IDENTIFICACION_TRESIDENTE%>") ){
-			if(numId.length==8){
+			return salida; 
+		}
+			
+		function generarLetra() {
+			var numId = datosGeneralesForm.numIdentificacion.value;
+			var tipoIdentificacion = datosGeneralesForm.tipoIdentificacion.value;
+		  	var letra='TRWAGMYFPDXBNJZSQVHLCKET';
+			if(numId.length==0){
+				return false;		
+			}if( (tipoIdentificacion == "<%=ClsConstants.TIPO_IDENTIFICACION_NIF%>")){
 				if(isNumero(numId)==true){
-					numero = numId;
-					//Buscamo la letra derecha. Aplicamos algoritmo de letra derecha
-					var numero_23 = numero % 23;
-					letra=letra.substring(numero_23,numero_23+1);
-					//Sustituimos primer numero por letra
-					primerNumero = numId.substring(0,1);
-				 	if(primerNumero==0)
-				 		primerNumero = 'X';
-				 	else if  (primerNumero==1)
-				 		primerNumero = 'Y';
-				 	else if  (primerNumero==2)
-				 		primerNumero = 'Z';
-				 	
-				 	numero = primerNumero+numId.substring(1);
-				 	
-				 	//añadimos la letra derecha
-				 	numero = numero + letra;
-				 	
-					datosGeneralesForm.numIdentificacion.value = numero;
+					if(numId.length==8){
+					 	numero = numId;
+					 	numero = numero % 23;
+					 	letra=letra.substring(numero,numero+1);
+					 	datosGeneralesForm.numIdentificacion.value =numId+letra;
+					 		
+					}else{
+					 	numero = numId.substr(0,numId.length-1);
+					 	numero = numero % 23;
+					 	let = numId.substr(numId.length-1,1);
+					 	letra=letra.substring(numero,numero+1);
+		 			 	//if (letra.tolowercase()!=let.tolowercase())
+				 		//alert('DNI Erroneo. Ponemos el correcto');
+						datosGeneralesForm.numIdentificacion.value = numId.substring(0,8)+letra;
+						
+					 } 	
 					 	
-					 	
-					 	
-					
 				}else{
-					//Miramos que solo sea letra el primer caracter. si no lo es no hacemos nada
-					if(isNumero(numId.substring(1))==false){
-						return false;
+					rc = validarNIFCIF(tipoIdentificacion, numId);
+					 
+					if(rc==true)
+						alert('<siga:Idioma key="messages.nifcif.comprobacion.correcto"/>');
 					
+				}
+			} else	if((tipoIdentificacion == "<%=ClsConstants.TIPO_IDENTIFICACION_TRESIDENTE%>") ){
+				if(numId.length==8){
+					if(isNumero(numId)==true){
+						numero = numId;
+						//Buscamo la letra derecha. Aplicamos algoritmo de letra derecha
+						var numero_23 = numero % 23;
+						letra=letra.substring(numero_23,numero_23+1);
+						//Sustituimos primer numero por letra
+						primerNumero = numId.substring(0,1);
+					 	if(primerNumero==0)
+					 		primerNumero = 'X';
+					 	else if  (primerNumero==1)
+					 		primerNumero = 'Y';
+					 	else if  (primerNumero==2)
+					 		primerNumero = 'Z';
+					 	
+					 	numero = primerNumero+numId.substring(1);
+					 	
+					 	//añadimos la letra derecha
+					 	numero = numero + letra;
+					 	
+						datosGeneralesForm.numIdentificacion.value = numero;
+						 	
+						 	
+						 	
+						
+					}else{
+						//Miramos que solo sea letra el primer caracter. si no lo es no hacemos nada
+						if(isNumero(numId.substring(1))==false){
+							return false;
+						
+						}
+						//Sustituimos primera letra por numero para aplicar algoritmo para buscar la letra derecha
+						
+					  		primeraLetra = numId.substring(0,1);
+					    	if(primeraLetra.toUpperCase()=='X')
+					 		primeraLetra = '0';
+					 	else if  (primeraLetra.toUpperCase()=='Y')
+					 		primeraLetra = '1';
+					 	else if  (primeraLetra.toUpperCase()=='Z')
+					 		primeraLetra = '2';
+					 	else{
+					 		//Si no es X o Y o Z no hacemos nada 
+					 		return false;
+					 	}
+					 	//Sistituimos la letra por el numero
+					 	numero = primeraLetra+numId.substring(1);
+					 	//Aplicamos algoritmo de letra derecha
+					 	var numero_23 = numero % 23;
+						letra=letra.substring(numero_23,numero_23+1);
+						
+						//Le ponemos la letra derecha al alfanumerico inicial					
+						numero = numId +letra;
+						datosGeneralesForm.numIdentificacion.value = numero;
+					  	
+					  	
+					}	
+				}else{
+					rc = validaNIE(numId);
+					 
+					if(rc==true)
+						alert('<siga:Idioma key="messages.nifcif.comprobacion.correcto"/>');
+				}
+				
+			}else {
+				//Si no es nif ni nie no hay generacion de letra
+				return true;
+			}
+		}
+		
+		function esNIECorrecto(nie){
+			var nieNew=nie.toUpperCase();
+		  	var nieAux=nieNew.substring(0,1);
+			  
+		  	if ((nieAux=="X")||(nieAux=="Y")||(nieAux=="Z")){
+				nieAux=str_replace(['X','Y','Z'],['0','1','2'], nieAux);
+		     	nieNew = nieAux+nieNew.substring(1);
+		     	if(esNIFCorrecto(nieNew,false)){
+			 		return true;
+			 	}
+			  
+		  	} else {
+	   			return false; 
+		  	}
+		}
+		
+		function validarNIE(a) {
+			var temp=a.toUpperCase();
+			var cadenadni="TRWAGMYFPDXBNJZSQVHLCKE";
+	 		
+			//comprobacion de NIEs
+			//T
+			if (/^[T]{1}/.test(temp))
+			{
+				
+				if (a[8] == /^[T]{1}[A-Z0-9]{8}jQuery/.test(temp))
+				{
+					
+					return 3;
+					
+				}
+				else
+				{
+					
+					return -3;
+					
+				}
+			}
+	 
+			//XYZ
+			if (/^[XYZ]{1}/.test(temp))
+			{
+				alert("comp");
+				pos = str_replace(['X', 'Y', 'Z'], ['0','1','2'], temp).substring(0, 8) % 23;
+				alert("comp1"+a[8]);
+				alert("comp10"+cadenadni.substring(pos, pos + 1));
+				if (a[8] == cadenadni.substring(pos, pos + 1))
+				
+				{
+					alert("comp2");
+					return 3;
+				}
+				else
+				{
+					alert("comp3");
+					return -3;
+				}
+			}
+			alert("comp4");
+			return 0;
+		} 		
+		
+		function nif(a) {
+			var a = datosGeneralesForm.numIdentificacion.value;
+			var temp=a.toUpperCase();
+			var cadenadni="TRWAGMYFPDXBNJZSQVHLCKE";
+		 
+			if (temp!==''){
+				//si no tiene un formato valido devuelve error
+				if ((!/^[A-Z]{1}[0-9]{7}[A-Z0-9]{1}jQuery/.test(temp) && !/^[T]{1}[A-Z0-9]{8}jQuery/.test(temp)) && !/^[0-9]{8}[A-Z]{1}jQuery/.test(temp))
+				{
+					return 0;
+				}
+		 
+				//comprobacion de NIFs estandar
+				if (/^[0-9]{8}[A-Z]{1}jQuery/.test(temp))
+				{
+					posicion = a.substring(8,0) % 23;
+					letra = cadenadni.charAt(posicion);
+					var letradni=temp.charAt(8);
+					if (letra == letradni)
+					{
+					   	return 1;
 					}
-					//Sustituimos primera letra por numero para aplicar algoritmo para buscar la letra derecha
+					else
+					{
+						return -1;
+					}
+				}
+		 
+				//algoritmo para comprobacion de codigos tipo CIF
+				suma = parseInt(a[2])+parseInt(a[4])+parseInt(a[6]);
+				for (var i = 1; i < 8; i += 2) {
+					temp1 = 2 * parseInt(a[i]);
+					temp1 += '';
+					temp1 = temp1.substring(0,1);
+					temp2 = 2 * parseInt(a[i]);
+					temp2 += '';
+					temp2 = temp2.substring(1,2);
+					if (temp2 == '')
+					{
+						temp2 = '0';
+					}
 					
-				  		primeraLetra = numId.substring(0,1);
-				    	if(primeraLetra.toUpperCase()=='X')
-				 		primeraLetra = '0';
-				 	else if  (primeraLetra.toUpperCase()=='Y')
-				 		primeraLetra = '1';
-				 	else if  (primeraLetra.toUpperCase()=='Z')
-				 		primeraLetra = '2';
-				 	else{
-				 		//Si no es X o Y o Z no hacemos nada 
-				 		return false;
-				 	}
-				 	//Sistituimos la letra por el numero
-				 	numero = primeraLetra+numId.substring(1);
-				 	//Aplicamos algoritmo de letra derecha
-				 	var numero_23 = numero % 23;
-					letra=letra.substring(numero_23,numero_23+1);
+					suma += (parseInt(temp1) + parseInt(temp2));
+				}
 					
-					//Le ponemos la letra derecha al alfanumerico inicial					
-					numero = numId +letra;
-					datosGeneralesForm.numIdentificacion.value = numero;
-				  	
-				  	
-				}	
-			}else{
-				rc = validaNIE(numId);
-				 
-				if(rc==true)
-					alert('<siga:Idioma key="messages.nifcif.comprobacion.correcto"/>');
+				suma += '';
+				n = 10 - parseInt(suma.substring(suma.length-1, suma.length));
+		 
+				//comprobacion de NIFs especiales (se calculan como CIFs)
+				if (/^[KLM]{1}/.test(temp))
+				{
+					if (a[8] == String.fromCharCode(64 + n))
+					{
+						return 1;
+					}
+					else
+					{
+						return -1;
+					}
+				}
+		 
+				//comprobacion de CIFs
+				if (/^[ABCDEFGHJNPQRSUVW]{1}/.test(temp))
+				{
+					temp = n + '';
+					if (a[8] == String.fromCharCode(64 + n) || a[8] == parseInt(temp.substring(temp.length-1, temp.length)))
+					{
+						return 2;
+					}
+					else
+					{
+						return -2;
+					}
+				}
+		 
+				//comprobacion de NIEs
+				//T
+				if (/^[T]{1}/.test(temp))
+				{
+					if (a[8] == /^[T]{1}[A-Z0-9]{8}jQuery/.test(temp))
+					{
+						return 3;
+					}
+					else
+					{
+						return -3;
+					}
+				}
+		 
+				//XYZ
+				if (/^[XYZ]{1}/.test(temp))
+				{
+					pos = str_replace(['X', 'Y', 'Z'], ['0','1','2'], temp).substring(0, 8) % 23;
+					if (a[8] == cadenadni.substring(pos, pos + 1))
+					{
+						return 3;
+					}
+					else
+					{
+						return -3;
+					}
+				}
 			}
-			
-		}else {
-			//Si no es nif ni nie no hay generacion de letra
-			return true;
-		}
-	}
-	
-	function esNIECorrecto(nie){
-	  var nieNew=nie.toUpperCase();
-	  var nieAux=nieNew.substring(0,1);
-		  
-	  if ((nieAux=="X")||(nieAux=="Y")||(nieAux=="Z")){
-	     nieAux=str_replace(['X','Y','Z'],['0','1','2'], nieAux);
-	     nieNew = nieAux+nieNew.substring(1);
-	     if(esNIFCorrecto(nieNew,false)){
-		 	return true;
-		 }
-		  
-	  }else{
-	   	return false; 
-	  }
-		  
-	}
-	
-	
-	function validarNIE(a) 
-	{
-		
-		var temp=a.toUpperCase();
-		var cadenadni="TRWAGMYFPDXBNJZSQVHLCKE";
- 		
-		//comprobacion de NIEs
-		//T
-		if (/^[T]{1}/.test(temp))
-		{
-			
-			if (a[8] == /^[T]{1}[A-Z0-9]{8}jQuery/.test(temp))
-			{
-				
-				return 3;
-				
-			}
-			else
-			{
-				
-				return -3;
-				
-			}
-		}
- 
-		//XYZ
-		if (/^[XYZ]{1}/.test(temp))
-		{
-			alert("comp");
-			pos = str_replace(['X', 'Y', 'Z'], ['0','1','2'], temp).substring(0, 8) % 23;
-			alert("comp1"+a[8]);
-			alert("comp10"+cadenadni.substring(pos, pos + 1));
-			if (a[8] == cadenadni.substring(pos, pos + 1))
-			
-			{
-				alert("comp2");
-				return 3;
-			}
-			else
-			{
-				alert("comp3");
-				return -3;
-			}
-		}
-		alert("comp4");
-		return 0;
-	} 		
-		
-	
-	
-	function nif(a) 
-{
-	var a = datosGeneralesForm.numIdentificacion.value;
-	var temp=a.toUpperCase();
-	var cadenadni="TRWAGMYFPDXBNJZSQVHLCKE";
- 
-	if (temp!==''){
-		//si no tiene un formato valido devuelve error
-		if ((!/^[A-Z]{1}[0-9]{7}[A-Z0-9]{1}jQuery/.test(temp) && !/^[T]{1}[A-Z0-9]{8}jQuery/.test(temp)) && !/^[0-9]{8}[A-Z]{1}jQuery/.test(temp))
-		{
+		 
 			return 0;
 		}
- 
-		//comprobacion de NIFs estandar
-		if (/^[0-9]{8}[A-Z]{1}jQuery/.test(temp))
-		{
-			posicion = a.substring(8,0) % 23;
-			letra = cadenadni.charAt(posicion);
-			var letradni=temp.charAt(8);
-			if (letra == letradni)
-			{
-			   	return 1;
-			}
-			else
-			{
-				return -1;
-			}
+	
+		function str_replace(search, replace, subject) {
+		    // http://kevin.vanzonneveld.net
+		    // +   original by: Kevin van Zonneveld (http://kevin.vanzonneveld.net)
+		    // +   improved by: Gabriel Paderni
+		    // +   improved by: Philip Peterson
+		    // +   improved by: Simon Willison (http://simonwillison.net)
+		    // +    revised by: Jonas Raoni Soares Silva (http://www.jsfromhell.com)
+		    // +   bugfixed by: Anton Ongson
+		    // +      input by: Onno Marsman
+		    // +   improved by: Kevin van Zonneveld (http://kevin.vanzonneveld.net)
+		    // +    tweaked by: Onno Marsman
+		    // *     example 1: str_replace(' ', '.', 'Kevin van Zonneveld');
+		    // *     returns 1: 'Kevin.van.Zonneveld'
+		    // *     example 2: str_replace(['{name}', 'l'], ['hello', 'm'], '{name}, lars');
+		    // *     returns 2: 'hemmo, mars'
+		 
+		    var f = search, r = replace, s = subject;
+		    var ra = r instanceof Array, sa = s instanceof Array, f = [].concat(f), r = [].concat(r), i = (s = [].concat(s)).length;
+		 
+		    while (j = 0, i--) {
+		        if (s[i]) {
+		            while (s[i] = s[i].split(f[j]).join(ra ? r[j] || "" : r[0]), ++j in f){};
+		        }
+		    };
+		 
+		    return sa ? s : s[0];
+		} 		
+	
+		function mostrarMensaje() {		
+			<% if (mostrarMensaje!=null && !(mostrarMensaje.equals(""))) { %>			
+				alert ("<siga:Idioma key="messages.tipoIdenti.comprobacion.existeEnBBDD"/>");
+			<% }else if(mostrarMensajeNifCif!=null && !(mostrarMensajeNifCif.equals(""))){ %>
+				alert ("<siga:Idioma key="messages.tipoIdenti.comprobacion.existeEnBBDDNIFCIF"/>");
+			<%}%>			
 		}
- 
-		//algoritmo para comprobacion de codigos tipo CIF
-		suma = parseInt(a[2])+parseInt(a[4])+parseInt(a[6]);
-		for (var i = 1; i < 8; i += 2) {
-			temp1 = 2 * parseInt(a[i]);
-			temp1 += '';
-			temp1 = temp1.substring(0,1);
-			temp2 = 2 * parseInt(a[i]);
-			temp2 += '';
-			temp2 = temp2.substring(1,2);
-			if (temp2 == '')
-			{
-				temp2 = '0';
-			}
 			
-			suma += (parseInt(temp1) + parseInt(temp2));
-		}
-			
-		suma += '';
-		n = 10 - parseInt(suma.substring(suma.length-1, suma.length));
- 
-		//comprobacion de NIFs especiales (se calculan como CIFs)
-		if (/^[KLM]{1}/.test(temp))
-		{
-			if (a[8] == String.fromCharCode(64 + n))
-			{
-				return 1;
-			}
-			else
-			{
-				return -1;
-			}
-		}
- 
-		//comprobacion de CIFs
-		if (/^[ABCDEFGHJNPQRSUVW]{1}/.test(temp))
-		{
-			temp = n + '';
-			if (a[8] == String.fromCharCode(64 + n) || a[8] == parseInt(temp.substring(temp.length-1, temp.length)))
-			{
-				return 2;
-			}
-			else
-			{
-				return -2;
-			}
-		}
- 
-		//comprobacion de NIEs
-		//T
-		if (/^[T]{1}/.test(temp))
-		{
-			if (a[8] == /^[T]{1}[A-Z0-9]{8}jQuery/.test(temp))
-			{
-				return 3;
-			}
-			else
-			{
-				return -3;
-			}
-		}
- 
-		//XYZ
-		if (/^[XYZ]{1}/.test(temp))
-		{
-			pos = str_replace(['X', 'Y', 'Z'], ['0','1','2'], temp).substring(0, 8) % 23;
-			if (a[8] == cadenadni.substring(pos, pos + 1))
-			{
-				return 3;
-			}
-			else
-			{
-				return -3;
-			}
-		}
-	}
- 
-	return 0;
-}
-
-function str_replace(search, replace, subject) {
-    // http://kevin.vanzonneveld.net
-    // +   original by: Kevin van Zonneveld (http://kevin.vanzonneveld.net)
-    // +   improved by: Gabriel Paderni
-    // +   improved by: Philip Peterson
-    // +   improved by: Simon Willison (http://simonwillison.net)
-    // +    revised by: Jonas Raoni Soares Silva (http://www.jsfromhell.com)
-    // +   bugfixed by: Anton Ongson
-    // +      input by: Onno Marsman
-    // +   improved by: Kevin van Zonneveld (http://kevin.vanzonneveld.net)
-    // +    tweaked by: Onno Marsman
-    // *     example 1: str_replace(' ', '.', 'Kevin van Zonneveld');
-    // *     returns 1: 'Kevin.van.Zonneveld'
-    // *     example 2: str_replace(['{name}', 'l'], ['hello', 'm'], '{name}, lars');
-    // *     returns 2: 'hemmo, mars'
- 
-    var f = search, r = replace, s = subject;
-    var ra = r instanceof Array, sa = s instanceof Array, f = [].concat(f), r = [].concat(r), i = (s = [].concat(s)).length;
- 
-    while (j = 0, i--) {
-        if (s[i]) {
-            while (s[i] = s[i].split(f[j]).join(ra ? r[j] || "" : r[0]), ++j in f){};
-        }
-    };
- 
-    return sa ? s : s[0];
-} 		
-
-	function mostrarMensaje() 
-	{		
-		<% if (mostrarMensaje!=null && !(mostrarMensaje.equals(""))) { %>			
-			alert ("<siga:Idioma key="messages.tipoIdenti.comprobacion.existeEnBBDD"/>");
-		<% }else if(mostrarMensajeNifCif!=null && !(mostrarMensajeNifCif.equals(""))){ %>
-			alert ("<siga:Idioma key="messages.tipoIdenti.comprobacion.existeEnBBDDNIFCIF"/>");
-		<%}%>			
-	}
 		
-	
-		//Función encargada de obtener los tratamientos a partir del sexo seleccionado
-	
+		//Funcion encargada de obtener los tratamientos a partir del sexo seleccionado
 		function obtenerTratamientos (idSexo,idTratamiento){
 			//Limpiamos el combo tratamiento para que no se sumen los resultados
 			jQuery("#tratamiento").html("");
-
-			jQuery.ajax({  
-		           type: "POST",
-		           url: "/SIGA/CEN_Censo.do?modo=getTratamientoAPartirDelSexo",
-		           data: "idSexo="+idSexo,
-		           dataType: "json",
-		           success:  function(json) {
-		        	   jQuery("#tratamiento").append('<option value="">'+"--Seleccionar"+'</option>');
-		           
-		        		jQuery.each(json, function(index, value) {
-		        			jQuery("#tratamiento").append('<option value='+value.id+'>'+value.descripcion+'</option>');
-		        		   });
-		        		
-		        		// Realizado para que se marque por defecto un valor cada vez que se cambie de sexo
-		        		//Si tratamiento trae valor.
-		        		
-		        		if(idTratamiento != null && idTratamiento !=""){
-		        			jQuery('#tratamiento > option[value='+idTratamiento+']').attr('selected', 'selected');
-			        		jQuery('#textTratamiento').val(jQuery("#tratamiento option:selected").text());
-		        		}else{//Si no trae valor por defecto si es mujer tendrá que salir seleccionado Sra, si es hombre Sr.
-		        			
-		        			var id_sr = "<%=ClsConstants.ID_SR%>";
-		        			var id_sra = "<%=ClsConstants.ID_SRA%>";
-		        			var id_sr_sra = "<%=ClsConstants.ID_SR_SRA%>";
-		        			
-		        			if(idSexo == "<%=ClsConstants.GENERO_HOMBRE%>"){
-		        				jQuery('#tratamiento > option[value='+id_sr+']').attr('selected', 'selected');
-				        		jQuery('#textTratamiento').val(jQuery("#tratamiento option:selected").text());
-		        			}else{
-		        				if(idSexo == "<%=ClsConstants.GENERO_MUJER%>"){
-		        					jQuery('#tratamiento > option[value='+id_sra+']').attr('selected', 'selected');
-					        		jQuery('#textTratamiento').val(jQuery("#tratamiento option:selected").text());
-		        				}else{//Neutro
-		        					jQuery('#tratamiento > option[value='+id_sr_sra+']').attr('selected', 'selected');
-					        		jQuery('#textTratamiento').val(jQuery("#tratamiento option:selected").text());
-		        				}
-		        			}
-		        		}
-       		
-		           },
-		           error: function(xml,msg){
-		        	   alert("Error: "+msg);
-		           }
-		        }); 
-				
-		}
 	
-		</script>
-
-		<!-- INICIO: TITULO Y LOCALIZACION -->
-		<!-- Escribe el título y localización en la barra de título del frame principal -->
-		<% if (sTipo!=null && sTipo.equals("LETRADO")){%>
-		 <siga:Titulo 
-			titulo="censo.fichaCliente.datosGenerales.cabecera"
-			localizacion="censo.fichaLetrado.localizacion"/>
-		<%}else{%>
-		<siga:TituloExt 
-			titulo="censo.fichaCliente.datosGenerales.cabecera" 
-			localizacion="censo.fichaCliente.datosGenerales.localizacion"/>
-		<%}%>	
-		<!-- FIN: TITULO Y LOCALIZACION -->
-
-	</head>
+			jQuery.ajax({  
+	           type: "POST",
+	           url: "/SIGA/CEN_Censo.do?modo=getTratamientoAPartirDelSexo",
+	           data: "idSexo="+idSexo,
+	           dataType: "json",
+	           success:  function(json) {
+	        	   jQuery("#tratamiento").append('<option value="">'+"--Seleccionar"+'</option>');
+	           
+	        		jQuery.each(json, function(index, value) {
+	        			jQuery("#tratamiento").append('<option value='+value.id+'>'+value.descripcion+'</option>');
+	        		   });
+	        		
+	        		// Realizado para que se marque por defecto un valor cada vez que se cambie de sexo
+	        		//Si tratamiento trae valor.
+	        		
+	        		if(idTratamiento != null && idTratamiento !=""){
+	        			jQuery('#tratamiento > option[value='+idTratamiento+']').attr('selected', 'selected');
+		        		jQuery('#textTratamiento').val(jQuery("#tratamiento option:selected").text());
+	        		}else{//Si no trae valor por defecto si es mujer tendrá que salir seleccionado Sra, si es hombre Sr.
+	        			
+	        			var id_sr = "<%=ClsConstants.ID_SR%>";
+	        			var id_sra = "<%=ClsConstants.ID_SRA%>";
+	        			var id_sr_sra = "<%=ClsConstants.ID_SR_SRA%>";
+	        			
+	        			if(idSexo == "<%=ClsConstants.GENERO_HOMBRE%>"){
+	        				jQuery('#tratamiento > option[value='+id_sr+']').attr('selected', 'selected');
+			        		jQuery('#textTratamiento').val(jQuery("#tratamiento option:selected").text());
+	        			}else{
+	        				if(idSexo == "<%=ClsConstants.GENERO_MUJER%>"){
+	        					jQuery('#tratamiento > option[value='+id_sra+']').attr('selected', 'selected');
+				        		jQuery('#textTratamiento').val(jQuery("#tratamiento option:selected").text());
+	        				}else{//Neutro
+	        					jQuery('#tratamiento > option[value='+id_sr_sra+']').attr('selected', 'selected');
+				        		jQuery('#textTratamiento').val(jQuery("#tratamiento option:selected").text());
+	        				}
+	        			}
+	        		}
+	     		
+	           },
+	           error: function(xml,msg){
+	        	   alert("Error: "+msg);
+	           }
+	        }); 
+		}
+	</script>
+	
+	<!-- INICIO: TITULO Y LOCALIZACION -->
+	<!-- Escribe el título y localización en la barra de título del frame principal -->
+	<% if (sTipo!=null && sTipo.equals("LETRADO")){%>
+		<siga:Titulo titulo="censo.fichaCliente.datosGenerales.cabecera" localizacion="censo.fichaLetrado.localizacion"/>
+	<% } else { %>
+		<siga:TituloExt titulo="censo.fichaCliente.datosGenerales.cabecera" localizacion="censo.fichaCliente.datosGenerales.localizacion"/>
+	<% } %>	
+	<!-- FIN: TITULO Y LOCALIZACION -->
+</head>
 
 
 <%	if (!formulario.getAccion().equals("nuevo") && (resultado==null || resultado.size()==0)) { %>			
@@ -1193,11 +1166,17 @@ function str_replace(search, replace, subject) {
 						<siga:Idioma key="censo.consultaDatosGenerales.literal.fechaNacimiento"/>&nbsp;
 					</td>				
 					<td>
-					<% if (!breadonly && bDatosGeneralesEditables) { %>
-					<siga:Fecha  nombreCampo= "fechaNacimiento" valorInicial="<%=fechaNacimiento %>"/>
-					<% } else { %>
-					<siga:Fecha  nombreCampo= "fechaNacimiento" valorInicial="<%=fechaNacimiento %>" disabled="true"/>
-					<% } %>
+<% 
+						if (!breadonly && bDatosGeneralesEditables) { 
+%>
+							<siga:Fecha id="fechaNacimiento" nombreCampo="fechaNacimiento" valorInicial="<%=fechaNacimiento%>" postFunction="comprobarFechaNacimiento(this.value)"/>
+<% 
+						} else { 
+%>
+							<siga:Fecha id="fechaNacimiento" nombreCampo="fechaNacimiento" valorInicial="<%=fechaNacimiento%>" disabled="true"/>
+<% 
+						} 
+%>
 					</td>
 					
 					<td class="labelText">
@@ -1446,7 +1425,7 @@ function str_replace(search, replace, subject) {
 	<!-- INICIO: BOTONES REGISTRO -->
 	<!-- Esto pinta los botones que le digamos. Ademas, tienen asociado cada
 		 boton una funcion que abajo se reescribe. Los valores asociados separados por comas
-		 son: V Volver, G Guardar,Y GuardaryCerrar,R Restablecer,N Nuevo,C Cerrar,X Cancelar
+		 son: V Volver, G ,Y GuardaryCerrar,R Restablecer,N Nuevo,C Cerrar,X Cancelar
 		 LA PROPIEDAD CLASE SE CARGA CON EL ESTILO "botonesDetalle" 
 		 PARA POSICIONARLA EN SU SITIO NATURAL, SI NO SE POSICIONA A MANO
 	-->
@@ -1538,48 +1517,44 @@ function str_replace(search, replace, subject) {
 		}
 		
 		function validarFormulario() {
-	
-			
-			if (validateDatosGeneralesForm(document.forms[0]))
-			{
-				var rc	= true;
+			if (validateDatosGeneralesForm(document.forms[0])) {
+				var rc = true;
 				var tipoIden = document.datosGeneralesForm.tipoIdentificacion.value;
 				
-				if ((tipoIden == <%=tipoIdenNIF%>))
-				{
+				if (tipoIden == <%=tipoIdenNIF%>) {
 					rc = validarNIFCIF(tipoIden, document.datosGeneralesForm.numIdentificacion.value);
-					if(rc==false){
+					if (rc == false) {
 						alert("<siga:Idioma key='messages.nif.comprobacion.digitos.error'/>");
 					}
-				}
-				else if((tipoIden == "<%=ClsConstants.TIPO_IDENTIFICACION_TRESIDENTE%>") )
-				{
-					rc=validaNIE(document.datosGeneralesForm.numIdentificacion.value);
 					
-				}
-				else if((tipoIden == "<%=ClsConstants.TIPO_IDENTIFICACION_PASAPORTE%>") && (document.forms[0].numIdentificacion.value=="") )
-				{
-					alert ('<siga:Idioma key="messages.pasaporte.comprobacion.error"/>');
-					rc=false;
-				}
-				else if((tipoIden == "<%=ClsConstants.TIPO_IDENTIFICACION_OTRO%>") && (document.forms[0].numIdentificacion.value=="") )
-				{	
-					alert ('<siga:Idioma key="messages.otro.comprobacion.error"/>');
-					rc=false;
-				}
-				else if((document.forms[0].tipoIdentificacion.value== "") && (document.forms[0].numIdentificacion.value==""))
-				{
-					if((document.forms[0].cliente.valyue== "Letrado") || (document.forms[0].cliente.value=="Ejerciente"))
-					{
+				} else if (tipoIden == "<%=ClsConstants.TIPO_IDENTIFICACION_TRESIDENTE%>") {
+					rc = validaNIE(document.datosGeneralesForm.numIdentificacion.value);
+					
+				} else if (tipoIden == "<%=ClsConstants.TIPO_IDENTIFICACION_PASAPORTE%>" && document.forms[0].numIdentificacion.value=="") {
+					alert('<siga:Idioma key="messages.pasaporte.comprobacion.error"/>');
+					rc = false;
+					
+				} else if (tipoIden == "<%=ClsConstants.TIPO_IDENTIFICACION_OTRO%>" && document.forms[0].numIdentificacion.value=="") {	
+					alert('<siga:Idioma key="messages.otro.comprobacion.error"/>');
+					rc = false;
+					
+				} else if (document.forms[0].tipoIdentificacion.value== "" && document.forms[0].numIdentificacion.value=="") {
+					if (document.forms[0].cliente.valyue== "Letrado" || document.forms[0].cliente.value=="Ejerciente") {
 						alert('<siga:Idioma key="messages.tipoIdenNumIden.comprobacion.error"/>');
-						rc=false;
+						rc = false;
 					}
 				}
-				return rc;	
-			}
-			else
-			{			
-			  return false;
+				
+				if (rc) {					
+					if (!comprobarFechaNacimiento(jQuery("#fechaNacimiento").val())) {
+						rc = false;
+					}
+				}
+				
+				return rc;
+				
+			} else {			
+			  	return false;
 			}
 		}
 	

@@ -161,11 +161,11 @@
 								<td class="labelTextValue">
 									<% if (nextModo.equalsIgnoreCase("insertar")){ %>
 										<html:textarea property="descripcion" readonly="<%=breadonly%>"  styleClass="<%=estiloBox%>"
-											onkeydown="cuenta(this,255)" onchange="cuenta(this,255)" 
+											onkeydown="cuenta(this,1000)" onchange="cuenta(this,1000)" 
 											style="overflow-y:auto; overflow-x:hidden; width:850px; height:50px; resize:none;"></html:textarea> 
 									<% } else { %>
 										<html:textarea property="descripcion" styleClass="<%=estiloBox%>" readonly="<%=breadonly%>"  value="<%=registro.getString(FacLineaAbonoBean.C_DESCRIPCIONLINEA)%>" 
-											onkeydown="cuenta(this,255)" onchange="cuenta(this,255)" 
+											onkeydown="cuenta(this,1000)" onchange="cuenta(this,1000)" 
 											style="overflow-y:auto; overflow-x:hidden; width:500px; height:50px; resize:none;"></html:textarea> 
 						  	    	<% } %>
 								</td>

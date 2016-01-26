@@ -5,6 +5,7 @@ import java.util.Date;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.transaction.UserTransaction;
 
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
@@ -131,6 +132,7 @@ public class AnexosCuentasBancariasAction extends MasterAction{
 				//hacemos lo siguiente para setear el permiso de esta accion
 				testAccess(request.getContextPath()+mapping.getPath()+".do",null,request);
 			}
+			
 			if(beanAnexo.getIdFicheroFirma()!=null && !beanAnexo.getIdFicheroFirma().equals("")){
 				FicherosService ficherosService = (FicherosService)getBusinessManager().getService(FicherosService.class);
 				FicheroVo ficheroVo =  new FicheroVo();
@@ -175,36 +177,47 @@ public class AnexosCuentasBancariasAction extends MasterAction{
 	 * @return
 	 * @throws SIGAException
 	 */
-	private String modificarFirmaAnexoCuentaBancaria(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {		
-		try {								
+	private String modificarFirmaAnexoCuentaBancaria(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+		UserTransaction tx = null;
+		try {
+			UsrBean usuario = (UsrBean) request.getSession().getAttribute("USRBEAN");
+			
 			// Obtengo los datos del formulario
 			AnexosCuentasBancariasForm formAnexo = (AnexosCuentasBancariasForm) formulario;
 			
-			ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);			
-			String maxsize = rp.returnProperty(AppConstants.GEN_PROPERTIES.ficheros_maxsize_MB.getValor());
-			int maxSizebytes = Integer.parseInt(maxsize) * 1000 * 1024;
-			if(formAnexo.getTheFile()!=null && formAnexo.getTheFile().getFileSize() > maxSizebytes){				
-				throw new SIGAException("messages.general.file.maxsize",new String[] { (maxsize) });
-			}			
+			boolean bGestionarFichero = false;
+			if (formAnexo.getTheFile()!=null && formAnexo.getTheFile().getFileData()!=null && formAnexo.getTheFile().getFileData().length>0){
+				ReadProperties rp = new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);			
+				String maxsize = rp.returnProperty(AppConstants.GEN_PROPERTIES.ficheros_maxsize_MB.getValor());
+				int maxSizebytes = Integer.parseInt(maxsize) * 1000 * 1024;
+				if (formAnexo.getTheFile().getFileSize() > maxSizebytes){				
+					throw new SIGAException("messages.general.file.maxsize",new String[] { (maxsize) });
+				}	
+				
+				this.uploadFile(formAnexo, usuario);
+				bGestionarFichero = true;
+			}
 			
 			// Transformo los datos del formulario en un bean
 			CenAnexosCuentasBancariasBean beanAnexo = new CenAnexosCuentasBancariasBean(formAnexo);
+						
+			tx = usuario.getTransaction();
+			tx.begin();
 			
 			// Modifico los datos de la firma del mandato
-			UsrBean usuario = (UsrBean) request.getSession().getAttribute("USRBEAN");
 			CenAnexosCuentasBancariasAdm anexosAdm = new CenAnexosCuentasBancariasAdm(usuario);
 			if (!anexosAdm.modificarFirmaAnexo(beanAnexo)) {
 				return exito("messages.updated.error", request);
-
-			}else{
-					if(formAnexo.getTheFile()!=null && formAnexo.getTheFile().getFileData()!=null && formAnexo.getTheFile().getFileData().length>0){
-						uploadFile(formAnexo, usuario);
-						anexosAdm.asociarFichero(formAnexo);
-					}
-			}	
+			}
+			
+			if (bGestionarFichero) {				
+				anexosAdm.asociarFichero(formAnexo);
+			}
+			
+			tx.commit();
 		
 		} catch (Exception e) {
-			throwExcp("messages.general.error",new String[] {"modulo.censo"}, e, null);
+			throwExcp("messages.general.error",new String[] {"modulo.censo"}, e, tx);
 		}
 		
 		return exitoModal("messages.updated.success", request);
@@ -219,35 +232,46 @@ public class AnexosCuentasBancariasAction extends MasterAction{
 	 * @return
 	 * @throws SIGAException
 	 */
-	private String insertarFirmaAnexoCuentaBancaria(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {		
+	private String insertarFirmaAnexoCuentaBancaria(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+		UserTransaction tx = null;
 		try {			
+			UsrBean usuario = (UsrBean) request.getSession().getAttribute("USRBEAN");
+			
 			// Obtengo los datos del formulario
 			AnexosCuentasBancariasForm formAnexo = (AnexosCuentasBancariasForm) formulario;
+			
+			boolean bGestionarFichero = false;
+			if (formAnexo.getTheFile()!=null && formAnexo.getTheFile().getFileData()!=null && formAnexo.getTheFile().getFileData().length>0){
+				ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+				String maxsize = rp.returnProperty(AppConstants.GEN_PROPERTIES.ficheros_maxsize_MB.getValor());
+				int maxSizebytes = Integer.parseInt(maxsize) * 1000 * 1024;
+				if (formAnexo.getTheFile().getFileSize() > maxSizebytes){				
+					throw new SIGAException("messages.general.file.maxsize",new String[] { (maxsize) });
+				}
+				
+				this.uploadFile(formAnexo, usuario);
+				bGestionarFichero = true;
+			}
 			
 			// Transformo los datos del formulario en un bean
 			CenAnexosCuentasBancariasBean beanAnexo = new CenAnexosCuentasBancariasBean(formAnexo);
 			
-			// Genero un nuevo anexos
-			UsrBean usuario = (UsrBean) request.getSession().getAttribute("USRBEAN");
+			tx = usuario.getTransaction();
+			tx.begin();
+
+			// Genero un nuevo anexos			
 			CenAnexosCuentasBancariasAdm anexosAdm = new CenAnexosCuentasBancariasAdm(usuario);
 			anexosAdm.insertarFirmaAnexo(beanAnexo);
-			
-			ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
-			String maxsize = rp.returnProperty(AppConstants.GEN_PROPERTIES.ficheros_maxsize_MB.getValor());
-			int maxSizebytes = Integer.parseInt(maxsize) * 1000 * 1024;
-			if(formAnexo.getTheFile()!=null && formAnexo.getTheFile().getFileSize() > maxSizebytes){				
-				throw new SIGAException("messages.general.file.maxsize",new String[] { (maxsize) });
-			}			
 
-			// Cargo el nuevo identificador del anexo
-			formAnexo.setIdAnexo(beanAnexo.getIdAnexo());
-			if (formAnexo.getTheFile()!=null && formAnexo.getTheFile().getFileData()!=null && formAnexo.getTheFile().getFileData().length>0){
-				uploadFile(formAnexo, usuario);
+			if (bGestionarFichero) {
+				formAnexo.setIdAnexo(beanAnexo.getIdAnexo());
 				anexosAdm.asociarFichero(formAnexo);
 			}
+			
+			tx.commit();
 		
 		} catch (Exception e) {
-			throwExcp("messages.general.error",new String[] {"modulo.censo"}, e, null);
+			throwExcp("messages.general.error",new String[] {"modulo.censo"}, e, tx);
 		}
 		
 		return exitoModal("messages.inserted.success", request);
@@ -262,10 +286,12 @@ public class AnexosCuentasBancariasAction extends MasterAction{
 	 * @return
 	 * @throws SIGAException
 	 */
-	private String borrarFirmaAnexoCuentaBancaria(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {		
+	private String borrarFirmaAnexoCuentaBancaria(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+		UserTransaction tx = null;
 		try {			
 			// Obtengo los datos del formulario
 			AnexosCuentasBancariasForm formAnexo = (AnexosCuentasBancariasForm) formulario;
+			String idFichero = formAnexo.getIdFichero();
 			
 			// Transformo los datos del formulario en un bean
 			CenAnexosCuentasBancariasBean beanAnexo = new CenAnexosCuentasBancariasBean(formAnexo);
@@ -273,24 +299,42 @@ public class AnexosCuentasBancariasAction extends MasterAction{
 			// Elimino un anexo
 			UsrBean usuario = (UsrBean) request.getSession().getAttribute("USRBEAN");
 			CenAnexosCuentasBancariasAdm anexosAdm = new CenAnexosCuentasBancariasAdm(usuario);
+			
+			tx = usuario.getTransaction();
+			tx.begin();
+			
+			// Borramos el registro
 			if (!anexosAdm.borrarFirmaAnexo(beanAnexo)) {
 				return exitoRefresco("messages.deleted.error", request);
-			}				
+			}		
+			
+			tx.commit();
+			
+			if (idFichero!=null && !idFichero.equals("")) {
+				FicherosService ficherosService = (FicherosService)getBusinessManager().getService(FicherosService.class);
+				FicheroVo ficheroVo =  new FicheroVo();
+				ficheroVo.setIdinstitucion(Short.valueOf(formAnexo.getIdInstitucion()));
+				ficheroVo.setIdfichero(Long.valueOf(idFichero));
+				ficheroVo = ficherosService.getFichero(ficheroVo);					
+				
+				//borramos el fichero fisico			
+				ficherosService.delete(ficheroVo);
+			}
 		
 		} catch (Exception e) {
-			throwExcp("messages.general.error",new String[] {"modulo.censo"}, e, null);
+			throwExcp("messages.general.error", new String[] {"modulo.censo"}, e, tx);
 		}
 		
 		return exitoRefresco("messages.deleted.success", request);
-	}		
-	public void uploadFile(AnexosCuentasBancariasForm formAnexosMandato, UsrBean usrBean ) throws BusinessException
-   	{
+	}	
+	
+	private void uploadFile(AnexosCuentasBancariasForm formAnexosMandato, UsrBean usrBean ) throws BusinessException {
 		FicherosService ficherosService = (FicherosService)getBusinessManager().getService(FicherosService.class);
 		
 		FicheroVo ficheroVo =  new FicheroVo();
 		ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
 		String pathFicheros = rp.returnProperty("gen.ficheros.path");
-		String directorioFichero = getDirectorioFichero(formAnexosMandato.getIdPersona(),formAnexosMandato.getIdInstitucion(), pathFicheros);
+		String directorioFichero = this.getDirectorioFichero(formAnexosMandato.getIdPersona(),formAnexosMandato.getIdInstitucion(), pathFicheros);
 		ficheroVo.setDirectorio(directorioFichero);
 		ficheroVo.setDescripcion(UtilidadesString.getMensajeIdioma(usrBean, "fichero.mandatos.anexos.descripcion"));
 		ficheroVo.setIdinstitucion(Short.valueOf(formAnexosMandato.getIdInstitucion()));
@@ -299,6 +343,7 @@ public class AnexosCuentasBancariasAction extends MasterAction{
 		} catch (Exception e) {
 			throw new BusinessException(e.toString());
 		}
+		
 		if(formAnexosMandato.getTheFile().getFileName().lastIndexOf(".")!=-1)
 			ficheroVo.setExtension(formAnexosMandato.getTheFile().getFileName().substring(formAnexosMandato.getTheFile().getFileName().lastIndexOf(".")+1));
 		
@@ -307,9 +352,9 @@ public class AnexosCuentasBancariasAction extends MasterAction{
 		ficherosService.insert(ficheroVo);
 		SIGAServicesHelper.uploadFichero(ficheroVo.getDirectorio(),ficheroVo.getNombre(),ficheroVo.getFichero());
 		formAnexosMandato.setIdFichero(ficheroVo.getIdfichero().toString());
-	
    	}
-	private String  getDirectorioFichero(String idPersona,String idInstitucion , String pathFicheros){
+	
+	private String getDirectorioFichero(String idPersona, String idInstitucion, String pathFicheros) {
 		StringBuffer directorioFichero = new StringBuffer(pathFicheros);
 		directorioFichero.append(idInstitucion);
 		directorioFichero.append(File.separator);
@@ -322,71 +367,73 @@ public class AnexosCuentasBancariasAction extends MasterAction{
 		return directorioFichero.toString();
 	}
 	
-	protected String downloadFichero(ActionMapping mapping,
-			MasterForm formulario, HttpServletRequest request,
-			HttpServletResponse response) throws SIGAException {
+	private String downloadFichero(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		String forward = "descargaFichero";
 		try {
-			AnexosCuentasBancariasForm formMandato = (AnexosCuentasBancariasForm) formulario;
+			AnexosCuentasBancariasForm formAnexo = (AnexosCuentasBancariasForm) formulario;
 			
 			ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
 			String pathFicheros = rp.returnProperty("gen.ficheros.path");
-			String directorioFichero = getDirectorioFichero(formMandato.getIdPersona(),formMandato.getIdInstitucion(), pathFicheros);
+			String directorioFichero = this.getDirectorioFichero(formAnexo.getIdPersona(), formAnexo.getIdInstitucion(), pathFicheros);
 			FicherosService ficherosService = (FicherosService)getBusinessManager().getService(FicherosService.class);
 			
 			FicheroVo ficheroVo =  new FicheroVo();
-			ficheroVo.setIdinstitucion(Short.valueOf(formMandato.getIdInstitucion()));
-			ficheroVo.setIdfichero(Long.valueOf(formMandato.getIdFichero()));
+			ficheroVo.setIdinstitucion(Short.valueOf(formAnexo.getIdInstitucion()));
+			ficheroVo.setIdfichero(Long.valueOf(formAnexo.getIdFichero()));
 			ficheroVo = ficherosService.getFichero(ficheroVo);
 			
 			StringBuffer pathFichero = new StringBuffer(directorioFichero);
 			pathFichero.append(File.separator);
-			pathFichero.append(formMandato.getIdInstitucion());
+			pathFichero.append(formAnexo.getIdInstitucion());
 			pathFichero.append("_");
-			pathFichero.append(formMandato.getIdFichero());
+			pathFichero.append(formAnexo.getIdFichero());
 			pathFichero.append(".");
 			pathFichero.append(ficheroVo.getExtension());
 			File file = new File(pathFichero.toString());
 			request.setAttribute("nombreFichero", file.getName());
 			request.setAttribute("rutaFichero", file.getPath());
 			request.setAttribute("accion", "");
-			
 
 		}catch (BusinessException e) {
 			throwExcp(e.getMessage(), e,null);
+			
 		} catch (Exception e) {
 			throwExcp("messages.general.error", new String[] { "modulo.gratuita"}, e, null);
 		}
 
 		return forward;
-		
-		
 	}
 	
-	protected String borrarFichero(ActionMapping mapping,
-			MasterForm formulario, HttpServletRequest request,
-			HttpServletResponse response) throws SIGAException {
-
+	private String borrarFichero(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+		UserTransaction tx = null;
 		try {
-			UsrBean usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
-			AnexosCuentasBancariasForm formMandato = (AnexosCuentasBancariasForm) formulario;
+			UsrBean usuario = (UsrBean) request.getSession().getAttribute("USRBEAN");
+			AnexosCuentasBancariasForm formAnexo = (AnexosCuentasBancariasForm) formulario;
+			String idFichero = formAnexo.getIdFichero();
+			
+			tx = usuario.getTransaction();
+			tx.begin();
+			
+			//borramos la referencia al fichero de la tabla cen_mandatos
+			CenAnexosCuentasBancariasAdm anexosAdm = new CenAnexosCuentasBancariasAdm(usuario);
+			formAnexo.setIdFichero("");
+			anexosAdm.asociarFichero(formAnexo);
+			
+			tx.commit();
+			
 			FicherosService ficherosService = (FicherosService)getBusinessManager().getService(FicherosService.class);
 			FicheroVo ficheroVo =  new FicheroVo();
-			ficheroVo.setIdinstitucion(Short.valueOf(formMandato.getIdInstitucion()));
-			ficheroVo.setIdfichero(Long.valueOf(formMandato.getIdFichero()));
-			ficheroVo = ficherosService.getFichero(ficheroVo);
-			formMandato.setIdFichero("");
-			CenAnexosCuentasBancariasAdm mandatosAdm = new CenAnexosCuentasBancariasAdm(usr);
-			//borramos la referencia al fichero de la tabla cen_mandatos
-			mandatosAdm.asociarFichero(formMandato);
-			//borramos el fichero ficsico y el registyo de BBDD
-			ficherosService.delete(ficheroVo);
+			ficheroVo.setIdinstitucion(Short.valueOf(formAnexo.getIdInstitucion()));
+			ficheroVo.setIdfichero(Long.valueOf(idFichero));
+			ficheroVo = ficherosService.getFichero(ficheroVo);					
 			
+			//borramos el fichero ficsico	
+			ficherosService.delete(ficheroVo);			
 
 		} catch (Exception e) {
-			throwExcp("messages.general.error", new String[] { "modulo.gratuita" }, e, null);
+			throwExcp("messages.general.error", new String[] { "modulo.gratuita" }, e, tx);
 		}
 
 		return exitoModal("messages.deleted.success", request);
 	}
-}
+}			

@@ -13,19 +13,41 @@
 package com.siga.censo.action;
 
 
-import javax.servlet.http.*;
-import javax.transaction.*;
+import java.util.ArrayList;
+import java.util.Hashtable;
+import java.util.Vector;
 
-import org.apache.struts.action.*;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.transaction.UserTransaction;
+
+import org.apache.struts.action.ActionForm;
+import org.apache.struts.action.ActionForward;
+import org.apache.struts.action.ActionMapping;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.Row;
 import com.atos.utils.UsrBean;
-import com.siga.beans.*;
-import com.siga.general.*;
+import com.siga.beans.CenClienteAdm;
+import com.siga.beans.CenClienteBean;
+import com.siga.beans.CenSolModiFacturacionServicioAdm;
+import com.siga.beans.CenSolModiFacturacionServicioBean;
+import com.siga.beans.CenSoliModiDireccionesAdm;
+import com.siga.beans.CenSolicModiCuentasAdm;
+import com.siga.beans.CenSolicModifExportarFotoAdm;
+import com.siga.beans.CenSolicitModifDatosBasicosAdm;
+import com.siga.beans.CenSolicitudModificacionCVAdm;
+import com.siga.beans.CenSolicitudesModificacionAdm;
+import com.siga.beans.ExpExpedienteAdm;
+import com.siga.beans.ExpSolicitudBorradoAdm;
+import com.siga.beans.ExpSolicitudBorradoBean;
+import com.siga.beans.PysServiciosSolicitadosAdm;
+import com.siga.beans.PysServiciosSolicitadosBean;
 import com.siga.censo.form.SolicitudesModificacionEspecificasForm;
-import java.util.*;
+import com.siga.general.MasterAction;
+import com.siga.general.MasterForm;
+import com.siga.general.SIGAException;
 
 
 public class SolicitudesModificacionEspecificasAction extends MasterAction {
@@ -256,7 +278,7 @@ public class SolicitudesModificacionEspecificasAction extends MasterAction {
 				hashBusqueda.put(PysServiciosSolicitadosBean.C_IDSERVICIOSINSTITUCION,temporal.get(CenSolModiFacturacionServicioBean.C_IDSERVICIOSINSTITUCION));
 				hashBusqueda.put(PysServiciosSolicitadosBean.C_IDPETICION,temporal.get(CenSolModiFacturacionServicioBean.C_IDPETICION));
 				// Realizo la busqueda
-				original = solicAdm.getServiciosSolicitados(hashBusqueda,new Integer((String)ocultos.get(1)),false);					
+				original = solicAdm.getServiciosSolicitados(hashBusqueda,new Integer((String)ocultos.get(1)));					
 				result="verFacturacion";				
 			}
 			if (tipoBusqueda.equalsIgnoreCase(String.valueOf(ClsConstants.TIPO_SOLICITUD_MODIF_EXPEDIENTES))){
@@ -268,7 +290,6 @@ public class SolicitudesModificacionEspecificasAction extends MasterAction {
 				// Obtencion de los datos originales si procede
 				ExpExpedienteAdm adminExpII = new ExpExpedienteAdm(this.getUserBean(request));
 				temporal=adminExpII.getExpedienteCenso(beanExp.getIdTipoExpediente().toString(),beanExp.getIdInstitucion().toString(),beanExp.getIdInstitucion_tipoExpediente().toString(),beanExp.getAnioExpediente().toString(),beanExp.getNumeroExpediente().toString());				
-				ExpExpedienteBean beannn = new ExpExpedienteBean();				
 				original.addElement(temporal);					
 				result="verExpediente";								
 			}
@@ -309,7 +330,6 @@ public class SolicitudesModificacionEspecificasAction extends MasterAction {
 	 */
 	protected String insertar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		String result="error";
-		boolean acceso=true;
 		UserTransaction tx=null;
 
 		try{
@@ -321,9 +341,6 @@ public class SolicitudesModificacionEspecificasAction extends MasterAction {
 			
 			// Creo manejador para acceder a la BBDD
 			CenSolicitudesModificacionAdm admin=new CenSolicitudesModificacionAdm(user);
-
-			// Obtengo los datos del formulario
-			SolicitudesModificacionEspecificasForm miForm = (SolicitudesModificacionEspecificasForm)formulario;
 
 			// Cargo la tabla hash con los valores del formulario para insertar en CEN_SOLICITUDESMODIFICACION
 			Hashtable hash = formulario.getDatos();
@@ -397,16 +414,8 @@ public class SolicitudesModificacionEspecificasAction extends MasterAction {
 		String textoTipo="";
 
 		try{
-			Vector vector1=new Vector();
-			Vector vector2=new Vector();
-			Vector vector3=new Vector();
-			Vector vector4=new Vector();
-			Vector vector5=new Vector();
-			Vector vector6=new Vector();
 			Vector vector=new Vector();
 			
-			UsrBean usr = (UsrBean) request.getSession().getAttribute("USRBEAN");		
-		
 			// Manejadores para el formulario y el acceso a las BBDDs
 			SolicitudesModificacionEspecificasForm form = (SolicitudesModificacionEspecificasForm) formulario;
 			CenSolicitModifDatosBasicosAdm adminDB = new CenSolicitModifDatosBasicosAdm(this.getUserBean(request));
@@ -543,16 +552,9 @@ public class SolicitudesModificacionEspecificasAction extends MasterAction {
 		
 		String result="modificarDatos";
 		String modo="";
-		UserTransaction tx = null;
-		
 		try {		
-			CenColegiadoBean original;		
-			Hashtable hash= new Hashtable(); 		
 			Vector camposOcultos=new Vector();
 
-			// Obtengo el userbean
-			UsrBean usr = (UsrBean) request.getSession().getAttribute("USRBEAN");			
- 			
 			// Obtengo los datos del formulario
 			SolicitudesModificacionEspecificasForm miForm = (SolicitudesModificacionEspecificasForm)formulario;
 
@@ -592,17 +594,12 @@ public class SolicitudesModificacionEspecificasAction extends MasterAction {
 		
 		try {
 			//String tipoModif="";		
-			Hashtable hashOriginal = new Hashtable(); 		
-			Hashtable hash = new Hashtable();		
-			Vector original;
 			boolean correcto=true;
-			Enumeration listaPeticiones;
 			String[] solicitudes;
 			String[] solicitudesTipoModif;
 			ArrayList noProcesadas=new ArrayList();		
 			String peticiones="";
 			int i=0;
-			int procesados=0;		
 
 			// Obtengo usuario
 			UsrBean usr = (UsrBean) request.getSession().getAttribute("USRBEAN");			
@@ -638,7 +635,6 @@ public class SolicitudesModificacionEspecificasAction extends MasterAction {
 						tx.begin();					
 						correcto=adminDB.procesarSolicitud(solicitudes[i],this.getUserName(request), this.getLenguaje(request));
 						if (correcto){							
-							procesados++;
 							tx.commit();
 						}
 						else{
@@ -651,7 +647,6 @@ public class SolicitudesModificacionEspecificasAction extends MasterAction {
 					tx.begin();					
 					correcto=adminExpFoto.procesarSolicitud(solicitudes[i],this.getUserName(request), this.getLenguaje(request));
 					if (correcto){							
-						procesados++;
 						tx.commit();
 					} else{
 						noProcesadas.add(solicitudes[i]);
@@ -665,7 +660,6 @@ public class SolicitudesModificacionEspecificasAction extends MasterAction {
 						tx.begin();					
 						correcto=adminDir.procesarSolicitud(solicitudes[i], this.getLenguaje(request));
 						if (correcto){
-							procesados++;
 							tx.commit();
 						}
 						else{
@@ -681,7 +675,6 @@ public class SolicitudesModificacionEspecificasAction extends MasterAction {
 						tx.begin();					
 						correcto=adminCB.procesarSolicitud(solicitudes[i],this.getUserName(request), this.getLenguaje(request));
 						if (correcto){
-							procesados++;
 							tx.commit();
 						}
 						else{
@@ -697,7 +690,6 @@ public class SolicitudesModificacionEspecificasAction extends MasterAction {
 						tx.begin();					
 						correcto=adminCV.procesarSolicitud(solicitudes[i],this.getUserName(request), this.getLenguaje(request));
 						if (correcto){
-							procesados++;
 							tx.commit();
 						}
 						else{
@@ -713,7 +705,6 @@ public class SolicitudesModificacionEspecificasAction extends MasterAction {
 						tx.begin();					
 						correcto=adminFact.procesarSolicitud(solicitudes[i], this.getLenguaje(request));
 						if (correcto){
-							procesados++;
 							tx.commit();
 						}
 						else{
@@ -729,7 +720,6 @@ public class SolicitudesModificacionEspecificasAction extends MasterAction {
 						tx.begin();					
 						correcto=adminExp.procesarSolicitud(solicitudes[i],this.getUserName(request), this.getLenguaje(request));
 						if (correcto){
-							procesados++;
 							tx.commit();
 						}
 						else{
@@ -767,17 +757,14 @@ public class SolicitudesModificacionEspecificasAction extends MasterAction {
 	protected String denegarSolicitud(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		
 		String result="error";
-		String tipoModif="";				
 		UserTransaction tx = null;
 		
 		try {		
-			Vector original;
 			boolean correcto=true;
-			Enumeration listaPeticiones;
 			String[] solicitudes;
 			String[] solicitudesTipoModif;
 			String peticiones="";
-			int procesados=0 , i;
+			int i;
 
 			// Obtengo usuario
 			UsrBean usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
@@ -787,7 +774,6 @@ public class SolicitudesModificacionEspecificasAction extends MasterAction {
 
 			// Obtengo las solicitudes yl tipo de modificacion
 			peticiones=miForm.getSolicitudes();			
-			tipoModif=miForm.getTipoModifEspec();
 
 			// Procedo a realizar la pertinente gestion
 			if (peticiones.equalsIgnoreCase("")){
@@ -810,7 +796,6 @@ public class SolicitudesModificacionEspecificasAction extends MasterAction {
 						tx.begin();
 						correcto=adminDB.denegarSolicitud(solicitudes[i]);
 						if (correcto){
-							procesados++;
 							tx.commit();
 						} else
 							tx.rollback();
@@ -821,7 +806,6 @@ public class SolicitudesModificacionEspecificasAction extends MasterAction {
 					tx.begin();
 					correcto=adminExpFoto.denegarSolicitud(solicitudes[i]);
 					if (correcto){
-						procesados++;
 						tx.commit();
 					} else
 						tx.rollback();
@@ -833,7 +817,6 @@ public class SolicitudesModificacionEspecificasAction extends MasterAction {
 						tx.begin();					
 						correcto=adminDir.denegarSolicitud(solicitudes[i]);
 						if (correcto){
-							procesados++;							
 							tx.commit();
 						} else
 							tx.rollback();
@@ -847,7 +830,6 @@ public class SolicitudesModificacionEspecificasAction extends MasterAction {
 						tx.begin();									
 						correcto=adminCB.denegarSolicitud(solicitudes[i]);
 						if (correcto){
-							procesados++;							
 							tx.commit();
 						} else
 							tx.rollback();
@@ -860,7 +842,6 @@ public class SolicitudesModificacionEspecificasAction extends MasterAction {
 						tx.begin();					
 						correcto=adminCV.denegarSolicitud(solicitudes[i]);
 						if (correcto){
-							procesados++;
 							tx.commit();
 						} else
 							tx.rollback();
@@ -873,7 +854,6 @@ public class SolicitudesModificacionEspecificasAction extends MasterAction {
 						tx.begin();					
 						correcto=adminFact.denegarSolicitud(solicitudes[i]);
 						if (correcto){
-							procesados++;
 							tx.commit();
 						} else
 							tx.rollback();
@@ -886,7 +866,6 @@ public class SolicitudesModificacionEspecificasAction extends MasterAction {
 						tx.begin();					
 						correcto=adminExp.denegarSolicitud(solicitudes[i]);
 						if (correcto){
-							procesados++;
 							tx.commit();
 						} else
 							tx.rollback();

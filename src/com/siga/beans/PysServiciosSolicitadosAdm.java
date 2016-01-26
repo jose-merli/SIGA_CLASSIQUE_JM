@@ -142,19 +142,40 @@ public class PysServiciosSolicitadosAdm extends MasterBeanAdministrador {
 	/**
 	 * Funcion getServiciosSolicitados
 	 * Obtiene los datos de los servicios solicitados a partir de unos criterios
+	 * 
+	 * JPT - Accesos:
+	 * 1. PysPeticionCompraSuscripcionAdm.getPeticionDetalle()
+	 * - datos => PysPeticionCompraSuscripcionBean.C_IDPETICION	
+	 * 
+	 * 2. DatosFacturacionAction.abrirServicios()
+	 * - datos => PysServiciosSolicitadosBean.C_IDPERSONA
+	 * - datos => PysPeticionCompraSuscripcionBean.C_TIPOPETICION
+	 * - datos => PysServiciosSolicitadosBean.C_ACEPTADO
+	 * 
+	 * 3. SolicitudesModificacionEspecificasAction.ver()
+	 * - datos => PysServiciosSolicitadosBean.C_IDINSTITUCION
+	 * - datos => PysServiciosSolicitadosBean.C_IDTIPOSERVICIOS
+	 * - datos => PysServiciosSolicitadosBean.C_IDSERVICIO
+	 * - datos => PysServiciosSolicitadosBean.C_IDSERVICIOSINSTITUCION
+	 * - datos => PysServiciosSolicitadosBean.C_IDPETICION
+	 * 	 
+	 * 4. SolicitudBajaAction.getProductosServicios()
+	 * - datos => PysPeticionCompraSuscripcionBean.C_IDPERSONA
+	 * - datos => PysPeticionCompraSuscripcionBean.C_TIPOPETICION
+	 * - datos => "ES_SOLICITUD_BAJA"
+	 * 
 	 * @param Hashtable con los datos necesarios para la consulta
 	 * @param idInstitucion
-	 * @param peticionBaja en funcion de este parametro se obtienen o no los servicios pendientes de confirmar su solicitud.
+	 * 
 	 * @return vector con todos los registros recuperados
 	 * @throws SIGAException, ClsExceptions
 	 */
-	public Vector getServiciosSolicitados (Hashtable datos, Integer idInstitucion, boolean peticionBaja) throws ClsExceptions, SIGAException {
+	public Vector getServiciosSolicitados (Hashtable datos, Integer idInstitucion) throws ClsExceptions, SIGAException {
 
 		try { 
 			Long idPeticion = UtilidadesHash.getLong(datos, PysServiciosSolicitadosBean.C_IDPETICION);
 			Long idPersona = UtilidadesHash.getLong(datos, PysPeticionCompraSuscripcionBean.C_IDPERSONA);
-			String tipoPeticion = UtilidadesHash.getString(datos, PysPeticionCompraSuscripcionBean.C_TIPOPETICION);
-			
+			String tipoPeticion = UtilidadesHash.getString(datos, PysPeticionCompraSuscripcionBean.C_TIPOPETICION);			
 			String distintoCampoAceptado = UtilidadesHash.getString(datos, PysServiciosSolicitadosBean.C_ACEPTADO);
 			
 			
@@ -171,244 +192,817 @@ public class PysServiciosSolicitadosAdm extends MasterBeanAdministrador {
 			String fechaDesde = UtilidadesHash.getString(datos, "FECHA_DESDE");
 			String fechaHasta = UtilidadesHash.getString(datos, "FECHA_HASTA");
 			
-			String select = "SELECT 'SERVICIO' AS CONSULTA, " + 
-									PysServiciosSolicitadosBean.T_NOMBRETABLA + "." + PysServiciosSolicitadosBean.C_IDPETICION + ", " +
-									PysServiciosSolicitadosBean.T_NOMBRETABLA + "." + PysServiciosSolicitadosBean.C_IDINSTITUCION + ", " +
-									PysServiciosSolicitadosBean.T_NOMBRETABLA + "." + PysServiciosSolicitadosBean.C_IDSERVICIO + ", " +
-									PysServiciosSolicitadosBean.T_NOMBRETABLA + "." + PysServiciosSolicitadosBean.C_IDSERVICIOSINSTITUCION+ ", " +
-									PysServiciosSolicitadosBean.T_NOMBRETABLA + "." + PysServiciosSolicitadosBean.C_IDTIPOSERVICIOS + ", " +
-									PysServiciosSolicitadosBean.T_NOMBRETABLA + "." + PysServiciosSolicitadosBean.C_IDCUENTA + ", " + 
-									PysServiciosSolicitadosBean.T_NOMBRETABLA + "." + PysServiciosSolicitadosBean.C_CANTIDAD + ", " +
-									PysServiciosSolicitadosBean.T_NOMBRETABLA + "." + PysServiciosSolicitadosBean.C_ACEPTADO + ", " +
-									PysServiciosSolicitadosBean.T_NOMBRETABLA + "." + PysServiciosSolicitadosBean.C_IDFORMAPAGO + ", " +
-									
-									PysPeticionCompraSuscripcionBean.T_NOMBRETABLA + "." + PysPeticionCompraSuscripcionBean.C_TIPOPETICION + ", " +
-									PysPeticionCompraSuscripcionBean.T_NOMBRETABLA + "." + PysPeticionCompraSuscripcionBean.C_FECHA + ", " +
-									
-         							" CASE WHEN (" + PysPeticionCompraSuscripcionBean.T_NOMBRETABLA + "." + PysPeticionCompraSuscripcionBean.C_TIPOPETICION + " = 'B') THEN " +
-		 									PysPeticionCompraSuscripcionBean.T_NOMBRETABLA + "." + PysPeticionCompraSuscripcionBean.C_IDPETICIONALTA +
-		 								" ELSE ( " +
-		 									" SELECT PC." + PysPeticionCompraSuscripcionBean.C_IDPETICION + 
-		 									" FROM " + PysPeticionCompraSuscripcionBean.T_NOMBRETABLA + " PC, " +
-		 										PysServiciosSolicitadosBean.T_NOMBRETABLA + " PS " + 
-											" WHERE PS." + PysServiciosSolicitadosBean.C_IDINSTITUCION + " = PC." + PysPeticionCompraSuscripcionBean.C_IDINSTITUCION + 
-												" AND PS." + PysServiciosSolicitadosBean.C_IDPETICION + " = PC." + PysPeticionCompraSuscripcionBean.C_IDPETICION +                                   
-												" AND PC." + PysPeticionCompraSuscripcionBean.C_IDPETICIONALTA + " = " + PysServiciosSolicitadosBean.T_NOMBRETABLA + "." + PysServiciosSolicitadosBean.C_IDPETICION +
-												" AND PS." + PysServiciosSolicitadosBean.C_IDINSTITUCION + " = " + PysServiciosSolicitadosBean.T_NOMBRETABLA + "." + PysServiciosSolicitadosBean.C_IDINSTITUCION +
-												" AND PS." + PysServiciosSolicitadosBean.C_IDTIPOSERVICIOS + " = " + PysServiciosSolicitadosBean.T_NOMBRETABLA + "." + PysServiciosSolicitadosBean.C_IDTIPOSERVICIOS +
-												" AND PS." + PysServiciosSolicitadosBean.C_IDSERVICIO + " = " + PysServiciosSolicitadosBean.T_NOMBRETABLA + "." + PysServiciosSolicitadosBean.C_IDSERVICIO +
-												" AND PS." + PysServiciosSolicitadosBean.C_IDSERVICIOSINSTITUCION + " = " + PysServiciosSolicitadosBean.T_NOMBRETABLA + "." + PysServiciosSolicitadosBean.C_IDSERVICIOSINSTITUCION +
-												" AND PS." + PysServiciosSolicitadosBean.C_IDPERSONA + " = " + PysServiciosSolicitadosBean.T_NOMBRETABLA + "." + PysServiciosSolicitadosBean.C_IDPERSONA +
-										" ) " +
-									" END AS IDPETICIONRELACIONADA, " +   									
-									
-									" F_SIGA_CALCULOPRECIOSERVICIO( " + 
-										PysServiciosSolicitadosBean.T_NOMBRETABLA + "." + PysServiciosSolicitadosBean.C_IDINSTITUCION + ", " + 
-										PysServiciosSolicitadosBean.T_NOMBRETABLA + "." + PysServiciosSolicitadosBean.C_IDTIPOSERVICIOS + ", " + 
-										PysServiciosSolicitadosBean.T_NOMBRETABLA + "." + PysServiciosSolicitadosBean.C_IDSERVICIO + ", " + 
-										PysServiciosSolicitadosBean.T_NOMBRETABLA + "." + PysServiciosSolicitadosBean.C_IDSERVICIOSINSTITUCION + ", " + 
-										PysPeticionCompraSuscripcionBean.T_NOMBRETABLA + "." + PysPeticionCompraSuscripcionBean.C_IDPERSONA + ", " +
-										this.usrbean.getLanguageInstitucion() + ") AS PRECIO_SERVICIO, " +
-									
-									" F_SIGA_COMPROBAR_ANTICIPAR( " + 
-										PysServiciosSolicitadosBean.T_NOMBRETABLA + "." + PysServiciosSolicitadosBean.C_IDINSTITUCION + ", " + 
-										PysServiciosSolicitadosBean.T_NOMBRETABLA + "." + PysServiciosSolicitadosBean.C_IDTIPOSERVICIOS + ", " + 
-										PysServiciosSolicitadosBean.T_NOMBRETABLA + "." + PysServiciosSolicitadosBean.C_IDSERVICIO + ", " + 
-										PysServiciosSolicitadosBean.T_NOMBRETABLA + "." + PysServiciosSolicitadosBean.C_IDSERVICIOSINSTITUCION + ", " + 
-										"'S', " + 
-										PysPeticionCompraSuscripcionBean.T_NOMBRETABLA + "." + PysPeticionCompraSuscripcionBean.C_IDPETICION + ", " +
-										PysPeticionCompraSuscripcionBean.T_NOMBRETABLA + "." + PysPeticionCompraSuscripcionBean.C_IDPERSONA + ", " +
-										" F_SIGA_CALCULOPRECIOSERVICIO( " + 
-											PysServiciosSolicitadosBean.T_NOMBRETABLA + "." + PysServiciosSolicitadosBean.C_IDINSTITUCION + ", " + 
-											PysServiciosSolicitadosBean.T_NOMBRETABLA + "." + PysServiciosSolicitadosBean.C_IDTIPOSERVICIOS + ", " + 
-											PysServiciosSolicitadosBean.T_NOMBRETABLA + "." + PysServiciosSolicitadosBean.C_IDSERVICIO + ", " + 
-											PysServiciosSolicitadosBean.T_NOMBRETABLA + "." + PysServiciosSolicitadosBean.C_IDSERVICIOSINSTITUCION + ", " + 
-											PysPeticionCompraSuscripcionBean.T_NOMBRETABLA + "." + PysPeticionCompraSuscripcionBean.C_IDPERSONA + ", " +
-											this.usrbean.getLanguageInstitucion() + 
-										" ) " +
-									" ) AS ANTICIPAR, " + 
-									
-									// Forma Pago
-									" ( " +
-										"SELECT " + UtilidadesMultidioma.getCampoMultidioma(PysFormaPagoBean.T_NOMBRETABLA + "." + PysFormaPagoBean.C_DESCRIPCION, this.usrbean.getLanguage()) +
-										" FROM " + PysFormaPagoBean.T_NOMBRETABLA + 
-										" WHERE " + PysFormaPagoBean.T_NOMBRETABLA + "." + PysFormaPagoBean.C_IDFORMAPAGO + " = " + PysServiciosSolicitadosBean.T_NOMBRETABLA + "." + PysServiciosSolicitadosBean.C_IDFORMAPAGO +
-									" ) AS FORMAPAGO, " +
-
-									
-									// Fecha Efectiva:									
-									" NVL( " +
-										" ( " +
-											" SELECT " + PysSuscripcionBean.T_NOMBRETABLA + "." + PysSuscripcionBean.C_FECHASUSCRIPCION + 
-											" FROM " + PysSuscripcionBean.T_NOMBRETABLA +
-											" WHERE " + PysSuscripcionBean.T_NOMBRETABLA + "." + PysSuscripcionBean.C_IDINSTITUCION + " = " + PysServiciosSolicitadosBean.T_NOMBRETABLA + "." + PysServiciosSolicitadosBean.C_IDINSTITUCION +										  
-										  		" AND " + PysSuscripcionBean.T_NOMBRETABLA + "." + PysSuscripcionBean.C_IDTIPOSERVICIOS + " = " + PysServiciosSolicitadosBean.T_NOMBRETABLA + "." + PysServiciosSolicitadosBean.C_IDTIPOSERVICIOS +
-										  		" AND " + PysSuscripcionBean.T_NOMBRETABLA + "." + PysSuscripcionBean.C_IDSERVICIO + " = " + PysServiciosSolicitadosBean.T_NOMBRETABLA + "." + PysServiciosSolicitadosBean.C_IDSERVICIO +
-										  		" AND " + PysSuscripcionBean.T_NOMBRETABLA + "." + PysSuscripcionBean.C_IDSERVICIOSINSTITUCION + " = " + PysServiciosSolicitadosBean.T_NOMBRETABLA + "." + PysServiciosSolicitadosBean.C_IDSERVICIOSINSTITUCION +
-										  		" AND " + PysSuscripcionBean.T_NOMBRETABLA + "." + PysSuscripcionBean.C_IDPETICION + " = " + PysServiciosSolicitadosBean.T_NOMBRETABLA + "." + PysServiciosSolicitadosBean.C_IDPETICION +
-										  		" AND ROWNUM = 1 " +
-										  " ), NVL( " + 
-									  		" ( " +
-									  			" SELECT " + PysSuscripcionBean.T_NOMBRETABLA + "." + PysSuscripcionBean.C_FECHABAJA + 
-									  			" FROM " + PysSuscripcionBean.T_NOMBRETABLA +
-									  			" WHERE " + PysSuscripcionBean.T_NOMBRETABLA + "." + PysSuscripcionBean.C_IDINSTITUCION + " = " + PysServiciosSolicitadosBean.T_NOMBRETABLA + "." + PysServiciosSolicitadosBean.C_IDINSTITUCION +										  
-									  				" AND " + PysSuscripcionBean.T_NOMBRETABLA + "." + PysSuscripcionBean.C_IDTIPOSERVICIOS + " = " + PysServiciosSolicitadosBean.T_NOMBRETABLA + "." + PysServiciosSolicitadosBean.C_IDTIPOSERVICIOS +
-								  					" AND " + PysSuscripcionBean.T_NOMBRETABLA + "." + PysSuscripcionBean.C_IDSERVICIO + " = " + PysServiciosSolicitadosBean.T_NOMBRETABLA + "." + PysServiciosSolicitadosBean.C_IDSERVICIO +
-								  					" AND " + PysSuscripcionBean.T_NOMBRETABLA + "." + PysSuscripcionBean.C_IDSERVICIOSINSTITUCION + " = " + PysServiciosSolicitadosBean.T_NOMBRETABLA + "." + PysServiciosSolicitadosBean.C_IDSERVICIOSINSTITUCION +
-								  					" AND " + PysSuscripcionBean.T_NOMBRETABLA + "." + PysSuscripcionBean.C_IDPETICION + " = " + PysPeticionCompraSuscripcionBean.T_NOMBRETABLA + "." + PysPeticionCompraSuscripcionBean.C_IDPETICIONALTA +
-								  					" AND ROWNUM = 1 " +
-								  			" ), ( " +
-												" SELECT PC." + PysPeticionCompraSuscripcionBean.C_FECHA + 
-												" FROM " + PysPeticionCompraSuscripcionBean.T_NOMBRETABLA + " PC, " +
-												PysServiciosSolicitadosBean.T_NOMBRETABLA + " PS " +
-												" WHERE PS." + PysServiciosSolicitadosBean.C_IDINSTITUCION + " = PC." + PysPeticionCompraSuscripcionBean.C_IDINSTITUCION + 
-	     											" AND PS." + PysServiciosSolicitadosBean.C_IDPETICION + " = PC." + PysPeticionCompraSuscripcionBean.C_IDPETICION +
-	     											" AND PS." + PysServiciosSolicitadosBean.C_IDPERSONA + " = PC." + PysPeticionCompraSuscripcionBean.C_IDPERSONA +
-													" AND PC." + PysPeticionCompraSuscripcionBean.C_IDESTADOPETICION + " <> " + ClsConstants.ESTADO_PETICION_COMPRA_PENDIENTE +
-													" AND PC." + PysPeticionCompraSuscripcionBean.C_TIPOPETICION + " = 'B' " +
-													" AND PC." + PysPeticionCompraSuscripcionBean.C_IDPETICIONALTA + " IS NOT NULL " +
-													" AND PS." + PysServiciosSolicitadosBean.C_ACEPTADO + " = 'B' " +	
-	     											" AND PS." + PysServiciosSolicitadosBean.C_IDINSTITUCION + " = " + PysServiciosSolicitadosBean.T_NOMBRETABLA + "." + PysServiciosSolicitadosBean.C_IDINSTITUCION +
-	     											" AND PS." + PysServiciosSolicitadosBean.C_IDTIPOSERVICIOS + " = " + PysServiciosSolicitadosBean.T_NOMBRETABLA + "." + PysServiciosSolicitadosBean.C_IDTIPOSERVICIOS +
-	     											" AND PS." + PysServiciosSolicitadosBean.C_IDSERVICIO + " = " + PysServiciosSolicitadosBean.T_NOMBRETABLA + "." + PysServiciosSolicitadosBean.C_IDSERVICIO +
-	     											" AND PS." + PysServiciosSolicitadosBean.C_IDSERVICIOSINSTITUCION + " = " + PysServiciosSolicitadosBean.T_NOMBRETABLA + "." + PysServiciosSolicitadosBean.C_IDSERVICIOSINSTITUCION +
-	     											" AND PS." + PysServiciosSolicitadosBean.C_IDPETICION + " = " + PysServiciosSolicitadosBean.T_NOMBRETABLA + "." + PysServiciosSolicitadosBean.C_IDPETICION +
-	     											" AND PS." + PysServiciosSolicitadosBean.C_IDPERSONA + " = " + PysServiciosSolicitadosBean.T_NOMBRETABLA + "." + PysServiciosSolicitadosBean.C_IDPERSONA +
-											" ) " +
-	     								" ) " +
-									" ) AS FECHAEFEC, " +
-									
-									// Concepto
-									" ( " +
-										"SELECT " + PysServiciosInstitucionBean.T_NOMBRETABLA + "." + PysServiciosInstitucionBean.C_DESCRIPCION + 
-										" FROM " + PysServiciosInstitucionBean.T_NOMBRETABLA + 
-										" WHERE " + PysServiciosInstitucionBean.T_NOMBRETABLA + "." + PysServiciosInstitucionBean.C_IDINSTITUCION + " = " + PysServiciosSolicitadosBean.T_NOMBRETABLA + "." + PysServiciosSolicitadosBean.C_IDINSTITUCION + 
-											" AND " + PysServiciosInstitucionBean.T_NOMBRETABLA + "." + PysServiciosInstitucionBean.C_IDTIPOSERVICIOS + " = " + PysServiciosSolicitadosBean.T_NOMBRETABLA + "." + PysServiciosSolicitadosBean.C_IDTIPOSERVICIOS +
-											" AND " + PysServiciosInstitucionBean.T_NOMBRETABLA + "." + PysServiciosInstitucionBean.C_IDSERVICIO + " = " + PysServiciosSolicitadosBean.T_NOMBRETABLA + "." + PysServiciosSolicitadosBean.C_IDSERVICIO +
-											" AND " + PysServiciosInstitucionBean.T_NOMBRETABLA + "." + PysServiciosInstitucionBean.C_IDSERVICIOSINSTITUCION + " = " + PysServiciosSolicitadosBean.T_NOMBRETABLA + "." + PysServiciosSolicitadosBean.C_IDSERVICIOSINSTITUCION +
-									" ) AS CONCEPTO, " +
-									
-									// Solicitar Baja
-									" ( " +
-										"SELECT " + PysServiciosInstitucionBean.T_NOMBRETABLA + "." + PysServiciosInstitucionBean.C_SOLICITARBAJA + 
-										" FROM " + PysServiciosInstitucionBean.T_NOMBRETABLA + 
-										" WHERE " + PysServiciosInstitucionBean.T_NOMBRETABLA + "." + PysServiciosInstitucionBean.C_IDINSTITUCION + " = " + PysServiciosSolicitadosBean.T_NOMBRETABLA + "." + PysServiciosSolicitadosBean.C_IDINSTITUCION + 
-											" AND " + PysServiciosInstitucionBean.T_NOMBRETABLA + "." + PysServiciosInstitucionBean.C_IDTIPOSERVICIOS + " = " + PysServiciosSolicitadosBean.T_NOMBRETABLA + "." + PysServiciosSolicitadosBean.C_IDTIPOSERVICIOS +
-											" AND " + PysServiciosInstitucionBean.T_NOMBRETABLA + "." + PysServiciosInstitucionBean.C_IDSERVICIO + " = " + PysServiciosSolicitadosBean.T_NOMBRETABLA + "." + PysServiciosSolicitadosBean.C_IDSERVICIO +
-											" AND " + PysServiciosInstitucionBean.T_NOMBRETABLA + "." + PysServiciosInstitucionBean.C_IDSERVICIOSINSTITUCION + " = " + PysServiciosSolicitadosBean.T_NOMBRETABLA + "." + PysServiciosSolicitadosBean.C_IDSERVICIOSINSTITUCION +
-									" ) AS SOLICITARBAJA, " +
-
-									// Está facturado
-									" ( " +
-										"SELECT 1 " + 
-										" FROM " + FacFacturacionSuscripcionBean.T_NOMBRETABLA + ", " + 
-											PysSuscripcionBean.T_NOMBRETABLA +
-										" WHERE " + FacFacturacionSuscripcionBean.T_NOMBRETABLA + "." + FacFacturacionSuscripcionBean.C_IDINSTITUCION + " = " + PysSuscripcionBean.T_NOMBRETABLA + "." + PysSuscripcionBean.C_IDINSTITUCION + 
-											" AND " + FacFacturacionSuscripcionBean.T_NOMBRETABLA + "." + FacFacturacionSuscripcionBean.C_IDTIPOSERVICIOS + " = " + PysSuscripcionBean.T_NOMBRETABLA + "." + PysSuscripcionBean.C_IDTIPOSERVICIOS + 
-											" AND " + FacFacturacionSuscripcionBean.T_NOMBRETABLA + "." + FacFacturacionSuscripcionBean.C_IDSERVICIO + " = " + PysSuscripcionBean.T_NOMBRETABLA + "." + PysSuscripcionBean.C_IDSERVICIO + 
-											" AND " + FacFacturacionSuscripcionBean.T_NOMBRETABLA + "." + FacFacturacionSuscripcionBean.C_IDSERVICIOSINSTITUCION + " = " + PysSuscripcionBean.T_NOMBRETABLA + "." + PysSuscripcionBean.C_IDSERVICIOSINSTITUCION + 
-											" AND " + FacFacturacionSuscripcionBean.T_NOMBRETABLA + "." + FacFacturacionSuscripcionBean.C_IDSUSCRIPCION + " = " + PysSuscripcionBean.T_NOMBRETABLA + "." + PysSuscripcionBean.C_IDSUSCRIPCION + 
-											" AND " + PysSuscripcionBean.T_NOMBRETABLA + "." + PysSuscripcionBean.C_IDINSTITUCION + " = " + PysPeticionCompraSuscripcionBean.T_NOMBRETABLA + "." + PysPeticionCompraSuscripcionBean.C_IDINSTITUCION + 
-											" AND " + PysSuscripcionBean.T_NOMBRETABLA + "." + PysSuscripcionBean.C_IDPETICION + " = " + PysPeticionCompraSuscripcionBean.T_NOMBRETABLA + "." + PysPeticionCompraSuscripcionBean.C_IDPETICION + 
-											" AND " + FacFacturacionSuscripcionBean.T_NOMBRETABLA + "." + FacFacturacionSuscripcionBean.C_NUMEROLINEA + " = 1 " + 
-											" AND ROWNUM < 2) AS ESTAFACTURADO, " +
-
-									// Cuenta
-									" NVL( " +
-										" ( " +
-											" SELECT "+ CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_IBAN +
-											" FROM " + CenCuentasBancariasBean.T_NOMBRETABLA + 
-											" WHERE " + CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_IDCUENTA + " = " + PysServiciosSolicitadosBean.T_NOMBRETABLA + "." + PysServiciosSolicitadosBean.C_IDCUENTA +
-												" AND " + CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_IDINSTITUCION + " = " + PysServiciosSolicitadosBean.T_NOMBRETABLA + "." + PysServiciosSolicitadosBean.C_IDINSTITUCION + 
-												" AND " + CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_IDPERSONA + " = " + PysServiciosSolicitadosBean.T_NOMBRETABLA + "." + PysServiciosSolicitadosBean.C_IDPERSONA + 
-										" ) " + 
-									" ,'-') AS NCUENTA, " +
-
-									" F_SIGA_ESTADOSUSCRIPCION( " +
-										PysServiciosSolicitadosBean.T_NOMBRETABLA + "." + PysServiciosSolicitadosBean.C_IDINSTITUCION + ", " +
-										PysServiciosSolicitadosBean.T_NOMBRETABLA + "." + PysServiciosSolicitadosBean.C_IDPETICION + ", " +
-										PysServiciosSolicitadosBean.T_NOMBRETABLA + "." + PysServiciosSolicitadosBean.C_IDSERVICIO + ", " +
-										PysServiciosSolicitadosBean.T_NOMBRETABLA + "." + PysServiciosSolicitadosBean.C_IDTIPOSERVICIOS + ", " +
-										PysServiciosSolicitadosBean.T_NOMBRETABLA + "." + PysServiciosSolicitadosBean.C_IDSERVICIOSINSTITUCION +
-									" ) AS ESTADOPAGO ";
+			StringBuilder consulta = new StringBuilder();
+			consulta.append("SELECT 'SERVICIO' AS CONSULTA, "); 
+			consulta.append(PysServiciosSolicitadosBean.T_NOMBRETABLA);
+			consulta.append(".");
+			consulta.append(PysServiciosSolicitadosBean.C_IDPETICION);
+			consulta.append(", ");
+			consulta.append(PysServiciosSolicitadosBean.T_NOMBRETABLA);
+			consulta.append(".");
+			consulta.append(PysServiciosSolicitadosBean.C_IDINSTITUCION);
+			consulta.append(", ");
+			consulta.append(PysServiciosSolicitadosBean.T_NOMBRETABLA);
+			consulta.append(".");
+			consulta.append(PysServiciosSolicitadosBean.C_IDSERVICIO);
+			consulta.append(", ");
+			consulta.append(PysServiciosSolicitadosBean.T_NOMBRETABLA);
+			consulta.append(".");
+			consulta.append(PysServiciosSolicitadosBean.C_IDSERVICIOSINSTITUCION);
+			consulta.append(", ");
+			consulta.append(PysServiciosSolicitadosBean.T_NOMBRETABLA);
+			consulta.append(".");
+			consulta.append(PysServiciosSolicitadosBean.C_IDTIPOSERVICIOS);
+			consulta.append(", ");
+			consulta.append(PysServiciosSolicitadosBean.T_NOMBRETABLA);
+			consulta.append(".");
+			consulta.append(PysServiciosSolicitadosBean.C_IDCUENTA);
+			consulta.append(", "); 
+			consulta.append(PysServiciosSolicitadosBean.T_NOMBRETABLA);
+			consulta.append(".");
+			consulta.append(PysServiciosSolicitadosBean.C_CANTIDAD);
+			consulta.append(", ");
+			consulta.append(PysServiciosSolicitadosBean.T_NOMBRETABLA);
+			consulta.append(".");
+			consulta.append(PysServiciosSolicitadosBean.C_ACEPTADO);
+			consulta.append(", ");
+			consulta.append(PysServiciosSolicitadosBean.T_NOMBRETABLA);
+			consulta.append(".");
+			consulta.append(PysServiciosSolicitadosBean.C_IDFORMAPAGO);
+			consulta.append(", ");									
+			consulta.append(PysPeticionCompraSuscripcionBean.T_NOMBRETABLA);
+			consulta.append(".");
+			consulta.append(PysPeticionCompraSuscripcionBean.C_TIPOPETICION);
+			consulta.append(", ");
+			consulta.append(PysPeticionCompraSuscripcionBean.T_NOMBRETABLA);
+			consulta.append(".");
+			consulta.append(PysPeticionCompraSuscripcionBean.C_FECHA);
+			consulta.append(", ");
 			
-			String from  =  " FROM " + PysServiciosSolicitadosBean.T_NOMBRETABLA + ", " + 
-							PysPeticionCompraSuscripcionBean.T_NOMBRETABLA;
+			if (isSolicitudBaja) {
+				consulta.append("( SELECT COUNT(*) ");
+				consulta.append(" FROM ");
+				consulta.append(PysPeticionCompraSuscripcionBean.T_NOMBRETABLA);
+				consulta.append(" PCSB, ");
+				consulta.append(PysServiciosSolicitadosBean.T_NOMBRETABLA);
+				consulta.append(" SSB ");
+				consulta.append(" WHERE PCSB.");
+				consulta.append(PysPeticionCompraSuscripcionBean.C_IDINSTITUCION);
+				consulta.append(" = ");
+				consulta.append(PysPeticionCompraSuscripcionBean.T_NOMBRETABLA);
+				consulta.append(".");
+				consulta.append(PysPeticionCompraSuscripcionBean.C_IDINSTITUCION);
+				consulta.append(" AND PCSB.");
+				consulta.append(PysPeticionCompraSuscripcionBean.C_IDPERSONA);
+				consulta.append(" = ");
+				consulta.append(PysPeticionCompraSuscripcionBean.T_NOMBRETABLA);
+				consulta.append(".");
+				consulta.append(PysPeticionCompraSuscripcionBean.C_IDPERSONA);
+				consulta.append(" AND PCSB.");
+				consulta.append(PysPeticionCompraSuscripcionBean.C_TIPOPETICION);
+				consulta.append(" = '");
+				consulta.append(ClsConstants.TIPO_PETICION_COMPRA_BAJA);
+				consulta.append("' AND PCSB.");
+				consulta.append(PysPeticionCompraSuscripcionBean.C_IDESTADOPETICION);
+				consulta.append(" = ");
+				consulta.append(ClsConstants.ESTADO_PETICION_COMPRA_PENDIENTE);
+				consulta.append(" AND PCSB.");
+				consulta.append(PysPeticionCompraSuscripcionBean.C_IDPETICIONALTA);
+				consulta.append(" = ");
+				consulta.append(PysPeticionCompraSuscripcionBean.T_NOMBRETABLA);
+				consulta.append(".");
+				consulta.append(PysPeticionCompraSuscripcionBean.C_IDPETICION);
+				consulta.append(" AND SSB.");
+				consulta.append(PysServiciosSolicitadosBean.C_IDTIPOSERVICIOS);
+				consulta.append(" = ");
+				consulta.append(PysServiciosSolicitadosBean.T_NOMBRETABLA);
+				consulta.append(".");
+				consulta.append(PysServiciosSolicitadosBean.C_IDTIPOSERVICIOS);
+				consulta.append(" AND SSB.");
+				consulta.append(PysServiciosSolicitadosBean.C_IDSERVICIO);
+				consulta.append(" = ");
+				consulta.append(PysServiciosSolicitadosBean.T_NOMBRETABLA);
+				consulta.append(".");
+				consulta.append(PysServiciosSolicitadosBean.C_IDSERVICIO);
+				consulta.append(" AND SSB.");
+				consulta.append(PysServiciosSolicitadosBean.C_IDSERVICIOSINSTITUCION);
+				consulta.append(" = ");
+				consulta.append(PysServiciosSolicitadosBean.T_NOMBRETABLA);
+				consulta.append(".");
+				consulta.append(PysServiciosSolicitadosBean.C_IDSERVICIOSINSTITUCION);
+				consulta.append(" AND SSB.");
+				consulta.append(PysServiciosSolicitadosBean.C_IDINSTITUCION);
+				consulta.append(" = PCSB.");
+				consulta.append(PysPeticionCompraSuscripcionBean.C_IDINSTITUCION);
+				consulta.append(" AND SSB.");
+				consulta.append(PysServiciosSolicitadosBean.C_IDPETICION);
+				consulta.append(" = PCSB.");
+				consulta.append(PysPeticionCompraSuscripcionBean.C_IDPETICION);
+				consulta.append(" AND SSB.");
+				consulta.append(PysServiciosSolicitadosBean.C_IDPERSONA);
+				consulta.append(" = PCSB.");
+				consulta.append(PysPeticionCompraSuscripcionBean.C_IDPERSONA);
+				consulta.append(") AS ESTADO_BAJA, ");
+				
+			} else {
+				consulta.append(" CASE WHEN (");
+				consulta.append(PysPeticionCompraSuscripcionBean.T_NOMBRETABLA);
+				consulta.append(".");
+				consulta.append(PysPeticionCompraSuscripcionBean.C_TIPOPETICION);
+				consulta.append(" = 'B') THEN ");
+				consulta.append(PysPeticionCompraSuscripcionBean.T_NOMBRETABLA);
+				consulta.append(".");
+				consulta.append(PysPeticionCompraSuscripcionBean.C_IDPETICIONALTA);
+				consulta.append(" ELSE ( ");
+				consulta.append(" SELECT PC.");
+				consulta.append(PysPeticionCompraSuscripcionBean.C_IDPETICION); 
+				consulta.append(" FROM ");
+				consulta.append(PysPeticionCompraSuscripcionBean.T_NOMBRETABLA);
+				consulta.append(" PC, ");
+				consulta.append(PysServiciosSolicitadosBean.T_NOMBRETABLA);
+				consulta.append(" PS "); 
+				consulta.append(" WHERE PS.");
+				consulta.append(PysServiciosSolicitadosBean.C_IDINSTITUCION);
+				consulta.append(" = PC.");
+				consulta.append(PysPeticionCompraSuscripcionBean.C_IDINSTITUCION); 
+				consulta.append(" AND PS.");
+				consulta.append(PysServiciosSolicitadosBean.C_IDPETICION);
+				consulta.append(" = PC.");
+				consulta.append(PysPeticionCompraSuscripcionBean.C_IDPETICION);                                   
+				consulta.append(" AND PC.");
+				consulta.append(PysPeticionCompraSuscripcionBean.C_IDPETICIONALTA);
+				consulta.append(" = ");
+				consulta.append(PysServiciosSolicitadosBean.T_NOMBRETABLA);
+				consulta.append(".");
+				consulta.append(PysServiciosSolicitadosBean.C_IDPETICION);
+				consulta.append(" AND PS.");
+				consulta.append(PysServiciosSolicitadosBean.C_IDINSTITUCION);
+				consulta.append(" = ");
+				consulta.append(PysServiciosSolicitadosBean.T_NOMBRETABLA);
+				consulta.append(".");
+				consulta.append(PysServiciosSolicitadosBean.C_IDINSTITUCION);
+				consulta.append(" AND PS.");
+				consulta.append(PysServiciosSolicitadosBean.C_IDTIPOSERVICIOS);
+				consulta.append(" = ");
+				consulta.append(PysServiciosSolicitadosBean.T_NOMBRETABLA);
+				consulta.append(".");
+				consulta.append(PysServiciosSolicitadosBean.C_IDTIPOSERVICIOS);
+				consulta.append(" AND PS.");
+				consulta.append(PysServiciosSolicitadosBean.C_IDSERVICIO);
+				consulta.append(" = ");
+				consulta.append(PysServiciosSolicitadosBean.T_NOMBRETABLA);
+				consulta.append(".");
+				consulta.append(PysServiciosSolicitadosBean.C_IDSERVICIO);
+				consulta.append(" AND PS.");
+				consulta.append(PysServiciosSolicitadosBean.C_IDSERVICIOSINSTITUCION);
+				consulta.append(" = ");
+				consulta.append(PysServiciosSolicitadosBean.T_NOMBRETABLA);
+				consulta.append(".");
+				consulta.append(PysServiciosSolicitadosBean.C_IDSERVICIOSINSTITUCION);
+				consulta.append(" AND PS.");
+				consulta.append(PysServiciosSolicitadosBean.C_IDPERSONA);
+				consulta.append(" = ");
+				consulta.append(PysServiciosSolicitadosBean.T_NOMBRETABLA);
+				consulta.append(".");
+				consulta.append(PysServiciosSolicitadosBean.C_IDPERSONA);
+				consulta.append(" ) ");
+				consulta.append(" END AS IDPETICIONRELACIONADA, ");
+				
+				consulta.append(" F_SIGA_COMPROBAR_ANTICIPAR( "); 
+				consulta.append(PysServiciosSolicitadosBean.T_NOMBRETABLA);
+				consulta.append(".");
+				consulta.append(PysServiciosSolicitadosBean.C_IDINSTITUCION);
+				consulta.append(", "); 
+				consulta.append(PysServiciosSolicitadosBean.T_NOMBRETABLA);
+				consulta.append(".");
+				consulta.append(PysServiciosSolicitadosBean.C_IDTIPOSERVICIOS);
+				consulta.append(", "); 
+				consulta.append(PysServiciosSolicitadosBean.T_NOMBRETABLA);
+				consulta.append(".");
+				consulta.append(PysServiciosSolicitadosBean.C_IDSERVICIO);
+				consulta.append(", "); 
+				consulta.append(PysServiciosSolicitadosBean.T_NOMBRETABLA);
+				consulta.append(".");
+				consulta.append(PysServiciosSolicitadosBean.C_IDSERVICIOSINSTITUCION);
+				consulta.append(", "); 
+				consulta.append("'S', "); 
+				consulta.append(PysPeticionCompraSuscripcionBean.T_NOMBRETABLA);
+				consulta.append(".");
+				consulta.append(PysPeticionCompraSuscripcionBean.C_IDPETICION);
+				consulta.append(", ");
+				consulta.append(PysPeticionCompraSuscripcionBean.T_NOMBRETABLA);
+				consulta.append(".");
+				consulta.append(PysPeticionCompraSuscripcionBean.C_IDPERSONA);
+				consulta.append(", ");
+				consulta.append(" F_SIGA_CALCULOPRECIOSERVICIO( "); 
+				consulta.append(PysServiciosSolicitadosBean.T_NOMBRETABLA);
+				consulta.append(".");
+				consulta.append(PysServiciosSolicitadosBean.C_IDINSTITUCION);
+				consulta.append(", "); 
+				consulta.append(PysServiciosSolicitadosBean.T_NOMBRETABLA);
+				consulta.append(".");
+				consulta.append(PysServiciosSolicitadosBean.C_IDTIPOSERVICIOS);
+				consulta.append(", "); 
+				consulta.append(PysServiciosSolicitadosBean.T_NOMBRETABLA);
+				consulta.append(".");
+				consulta.append(PysServiciosSolicitadosBean.C_IDSERVICIO);
+				consulta.append(", "); 
+				consulta.append(PysServiciosSolicitadosBean.T_NOMBRETABLA);
+				consulta.append(".");
+				consulta.append(PysServiciosSolicitadosBean.C_IDSERVICIOSINSTITUCION);
+				consulta.append(", "); 
+				consulta.append(PysPeticionCompraSuscripcionBean.T_NOMBRETABLA);
+				consulta.append(".");
+				consulta.append(PysPeticionCompraSuscripcionBean.C_IDPERSONA);
+				consulta.append(", ");
+				consulta.append(this.usrbean.getLanguageInstitucion()); 
+				consulta.append(" ) ");
+				consulta.append(" ) AS ANTICIPAR, "); 		
+				
+				// Fecha Efectiva:									
+				consulta.append(" NVL( ");
+				consulta.append(" ( ");
+				consulta.append(" SELECT MIN(");
+				consulta.append(PysSuscripcionBean.T_NOMBRETABLA);
+				consulta.append(".");
+				consulta.append(PysSuscripcionBean.C_FECHASUSCRIPCION);
+				consulta.append(")"); 
+				consulta.append(" FROM ");
+				consulta.append(PysSuscripcionBean.T_NOMBRETABLA);
+				consulta.append(" WHERE ");
+				consulta.append(PysSuscripcionBean.T_NOMBRETABLA);
+				consulta.append(".");
+				consulta.append(PysSuscripcionBean.C_IDINSTITUCION);
+				consulta.append(" = ");
+				consulta.append(PysServiciosSolicitadosBean.T_NOMBRETABLA);
+				consulta.append(".");
+				consulta.append(PysServiciosSolicitadosBean.C_IDINSTITUCION);										  
+				consulta.append(" AND ");
+				consulta.append(PysSuscripcionBean.T_NOMBRETABLA);
+				consulta.append(".");
+				consulta.append(PysSuscripcionBean.C_IDTIPOSERVICIOS);
+				consulta.append(" = ");
+				consulta.append(PysServiciosSolicitadosBean.T_NOMBRETABLA);
+				consulta.append(".");
+				consulta.append(PysServiciosSolicitadosBean.C_IDTIPOSERVICIOS);
+				consulta.append(" AND ");
+				consulta.append(PysSuscripcionBean.T_NOMBRETABLA);
+				consulta.append(".");
+				consulta.append(PysSuscripcionBean.C_IDSERVICIO);
+				consulta.append(" = ");
+				consulta.append(PysServiciosSolicitadosBean.T_NOMBRETABLA);
+				consulta.append(".");
+				consulta.append(PysServiciosSolicitadosBean.C_IDSERVICIO);
+				consulta.append(" AND ");
+				consulta.append(PysSuscripcionBean.T_NOMBRETABLA);
+				consulta.append(".");
+				consulta.append(PysSuscripcionBean.C_IDSERVICIOSINSTITUCION);
+				consulta.append(" = ");
+				consulta.append(PysServiciosSolicitadosBean.T_NOMBRETABLA);
+				consulta.append(".");
+				consulta.append(PysServiciosSolicitadosBean.C_IDSERVICIOSINSTITUCION);
+				consulta.append(" AND ");
+				consulta.append(PysSuscripcionBean.T_NOMBRETABLA);
+				consulta.append(".");
+				consulta.append(PysSuscripcionBean.C_IDPETICION);
+				consulta.append(" = ");
+				consulta.append(PysServiciosSolicitadosBean.T_NOMBRETABLA);
+				consulta.append(".");
+				consulta.append(PysServiciosSolicitadosBean.C_IDPETICION);
+				consulta.append(" ), NVL( "); 
+				consulta.append(" ( ");
+				consulta.append(" SELECT MAX(");
+				consulta.append(PysSuscripcionBean.T_NOMBRETABLA);
+				consulta.append(".");
+				consulta.append(PysSuscripcionBean.C_FECHABAJAFACTURACION);
+				consulta.append(")");
+				consulta.append(" FROM ");
+				consulta.append(PysSuscripcionBean.T_NOMBRETABLA);
+				consulta.append(" WHERE ");
+				consulta.append(PysSuscripcionBean.T_NOMBRETABLA);
+				consulta.append(".");
+				consulta.append(PysSuscripcionBean.C_IDINSTITUCION);
+				consulta.append(" = ");
+				consulta.append(PysServiciosSolicitadosBean.T_NOMBRETABLA);
+				consulta.append(".");
+				consulta.append(PysServiciosSolicitadosBean.C_IDINSTITUCION);										  
+				consulta.append(" AND ");
+				consulta.append(PysSuscripcionBean.T_NOMBRETABLA);
+				consulta.append(".");
+				consulta.append(PysSuscripcionBean.C_IDTIPOSERVICIOS);
+				consulta.append(" = ");
+				consulta.append(PysServiciosSolicitadosBean.T_NOMBRETABLA);
+				consulta.append(".");
+				consulta.append(PysServiciosSolicitadosBean.C_IDTIPOSERVICIOS);
+				consulta.append(" AND ");
+				consulta.append(PysSuscripcionBean.T_NOMBRETABLA);
+				consulta.append(".");
+				consulta.append(PysSuscripcionBean.C_IDSERVICIO);
+				consulta.append(" = ");
+				consulta.append(PysServiciosSolicitadosBean.T_NOMBRETABLA);
+				consulta.append(".");
+				consulta.append(PysServiciosSolicitadosBean.C_IDSERVICIO);
+				consulta.append(" AND ");
+				consulta.append(PysSuscripcionBean.T_NOMBRETABLA);
+				consulta.append(".");
+				consulta.append(PysSuscripcionBean.C_IDSERVICIOSINSTITUCION);
+				consulta.append(" = ");
+				consulta.append(PysServiciosSolicitadosBean.T_NOMBRETABLA);
+				consulta.append(".");
+				consulta.append(PysServiciosSolicitadosBean.C_IDSERVICIOSINSTITUCION);
+				consulta.append(" AND ");
+				consulta.append(PysSuscripcionBean.T_NOMBRETABLA);
+				consulta.append(".");
+				consulta.append(PysSuscripcionBean.C_IDPETICION);
+				consulta.append(" = ");
+				consulta.append(PysPeticionCompraSuscripcionBean.T_NOMBRETABLA);
+				consulta.append(".");
+				consulta.append(PysPeticionCompraSuscripcionBean.C_IDPETICIONALTA);
+				consulta.append(" ), ( ");
+				consulta.append(" SELECT PC.");
+				consulta.append(PysPeticionCompraSuscripcionBean.C_FECHA); 
+				consulta.append(" FROM ");
+				consulta.append(PysPeticionCompraSuscripcionBean.T_NOMBRETABLA);
+				consulta.append(" PC, ");
+				consulta.append(PysServiciosSolicitadosBean.T_NOMBRETABLA);
+				consulta.append(" PS ");
+				consulta.append(" WHERE PS.");
+				consulta.append(PysServiciosSolicitadosBean.C_IDINSTITUCION);
+				consulta.append(" = PC.");
+				consulta.append(PysPeticionCompraSuscripcionBean.C_IDINSTITUCION); 
+				consulta.append(" AND PS.");
+				consulta.append(PysServiciosSolicitadosBean.C_IDPETICION);
+				consulta.append(" = PC.");
+				consulta.append(PysPeticionCompraSuscripcionBean.C_IDPETICION);
+				consulta.append(" AND PS.");
+				consulta.append(PysServiciosSolicitadosBean.C_IDPERSONA);
+				consulta.append(" = PC.");
+				consulta.append(PysPeticionCompraSuscripcionBean.C_IDPERSONA);
+				consulta.append(" AND PC.");
+				consulta.append(PysPeticionCompraSuscripcionBean.C_IDESTADOPETICION);
+				consulta.append(" <> ");
+				consulta.append(ClsConstants.ESTADO_PETICION_COMPRA_PENDIENTE);
+				consulta.append(" AND PC.");
+				consulta.append(PysPeticionCompraSuscripcionBean.C_TIPOPETICION);
+				consulta.append(" = 'B' ");
+				consulta.append(" AND PC.");
+				consulta.append(PysPeticionCompraSuscripcionBean.C_IDPETICIONALTA);
+				consulta.append(" IS NOT NULL ");
+				consulta.append(" AND PS.");
+				consulta.append(PysServiciosSolicitadosBean.C_ACEPTADO);
+				consulta.append(" = 'B' ");	
+				consulta.append(" AND PS.");
+				consulta.append(PysServiciosSolicitadosBean.C_IDINSTITUCION);
+				consulta.append(" = ");
+				consulta.append(PysServiciosSolicitadosBean.T_NOMBRETABLA);
+				consulta.append(".");
+				consulta.append(PysServiciosSolicitadosBean.C_IDINSTITUCION);
+				consulta.append(" AND PS.");
+				consulta.append(PysServiciosSolicitadosBean.C_IDTIPOSERVICIOS);
+				consulta.append(" = ");
+				consulta.append(PysServiciosSolicitadosBean.T_NOMBRETABLA);
+				consulta.append(".");
+				consulta.append(PysServiciosSolicitadosBean.C_IDTIPOSERVICIOS);
+				consulta.append(" AND PS.");
+				consulta.append(PysServiciosSolicitadosBean.C_IDSERVICIO);
+				consulta.append(" = ");
+				consulta.append(PysServiciosSolicitadosBean.T_NOMBRETABLA);
+				consulta.append(".");
+				consulta.append(PysServiciosSolicitadosBean.C_IDSERVICIO);
+				consulta.append(" AND PS.");
+				consulta.append(PysServiciosSolicitadosBean.C_IDSERVICIOSINSTITUCION);
+				consulta.append(" = ");
+				consulta.append(PysServiciosSolicitadosBean.T_NOMBRETABLA);
+				consulta.append(".");
+				consulta.append(PysServiciosSolicitadosBean.C_IDSERVICIOSINSTITUCION);
+				consulta.append(" AND PS.");
+				consulta.append(PysServiciosSolicitadosBean.C_IDPETICION);
+				consulta.append(" = ");
+				consulta.append(PysServiciosSolicitadosBean.T_NOMBRETABLA);
+				consulta.append(".");
+				consulta.append(PysServiciosSolicitadosBean.C_IDPETICION);
+				consulta.append(" AND PS.");
+				consulta.append(PysServiciosSolicitadosBean.C_IDPERSONA);
+				consulta.append(" = ");
+				consulta.append(PysServiciosSolicitadosBean.T_NOMBRETABLA);
+				consulta.append(".");
+				consulta.append(PysServiciosSolicitadosBean.C_IDPERSONA);
+				consulta.append(" ) ");
+				consulta.append(" ) ");
+				consulta.append(" ) AS FECHAEFEC, ");		
+				
+				// Esta facturado
+				consulta.append(" ( ");
+				consulta.append("SELECT 1 "); 
+				consulta.append(" FROM ");
+				consulta.append(FacFacturacionSuscripcionBean.T_NOMBRETABLA);
+				consulta.append(", "); 
+				consulta.append(PysSuscripcionBean.T_NOMBRETABLA);
+				consulta.append(" WHERE ");
+				consulta.append(FacFacturacionSuscripcionBean.T_NOMBRETABLA);
+				consulta.append(".");
+				consulta.append(FacFacturacionSuscripcionBean.C_IDINSTITUCION);
+				consulta.append(" = ");
+				consulta.append(PysSuscripcionBean.T_NOMBRETABLA);
+				consulta.append(".");
+				consulta.append(PysSuscripcionBean.C_IDINSTITUCION); 
+				consulta.append(" AND ");
+				consulta.append(FacFacturacionSuscripcionBean.T_NOMBRETABLA);
+				consulta.append(".");
+				consulta.append(FacFacturacionSuscripcionBean.C_IDTIPOSERVICIOS);
+				consulta.append(" = ");
+				consulta.append(PysSuscripcionBean.T_NOMBRETABLA);
+				consulta.append(".");
+				consulta.append(PysSuscripcionBean.C_IDTIPOSERVICIOS); 
+				consulta.append(" AND ");
+				consulta.append(FacFacturacionSuscripcionBean.T_NOMBRETABLA);
+				consulta.append(".");
+				consulta.append(FacFacturacionSuscripcionBean.C_IDSERVICIO);
+				consulta.append(" = ");
+				consulta.append(PysSuscripcionBean.T_NOMBRETABLA);
+				consulta.append(".");
+				consulta.append(PysSuscripcionBean.C_IDSERVICIO); 
+				consulta.append(" AND ");
+				consulta.append(FacFacturacionSuscripcionBean.T_NOMBRETABLA);
+				consulta.append(".");
+				consulta.append(FacFacturacionSuscripcionBean.C_IDSERVICIOSINSTITUCION);
+				consulta.append(" = ");
+				consulta.append(PysSuscripcionBean.T_NOMBRETABLA);
+				consulta.append(".");
+				consulta.append(PysSuscripcionBean.C_IDSERVICIOSINSTITUCION); 
+				consulta.append(" AND ");
+				consulta.append(FacFacturacionSuscripcionBean.T_NOMBRETABLA);
+				consulta.append(".");
+				consulta.append(FacFacturacionSuscripcionBean.C_IDSUSCRIPCION);
+				consulta.append(" = ");
+				consulta.append(PysSuscripcionBean.T_NOMBRETABLA);
+				consulta.append(".");
+				consulta.append(PysSuscripcionBean.C_IDSUSCRIPCION); 
+				consulta.append(" AND ");
+				consulta.append(PysSuscripcionBean.T_NOMBRETABLA);
+				consulta.append(".");
+				consulta.append(PysSuscripcionBean.C_IDINSTITUCION);
+				consulta.append(" = ");
+				consulta.append(PysPeticionCompraSuscripcionBean.T_NOMBRETABLA);
+				consulta.append(".");
+				consulta.append(PysPeticionCompraSuscripcionBean.C_IDINSTITUCION); 
+				consulta.append(" AND ");
+				consulta.append(PysSuscripcionBean.T_NOMBRETABLA);
+				consulta.append(".");
+				consulta.append(PysSuscripcionBean.C_IDPETICION);
+				consulta.append(" = ");
+				consulta.append(PysPeticionCompraSuscripcionBean.T_NOMBRETABLA);
+				consulta.append(".");
+				consulta.append(PysPeticionCompraSuscripcionBean.C_IDPETICION); 
+				consulta.append(" AND ");
+				consulta.append(FacFacturacionSuscripcionBean.T_NOMBRETABLA);
+				consulta.append(".");
+				consulta.append(FacFacturacionSuscripcionBean.C_NUMEROLINEA);
+				consulta.append(" = 1 "); 
+				consulta.append(" AND ROWNUM < 2) AS ESTAFACTURADO, ");		
+			}
+									
+			consulta.append(" F_SIGA_CALCULOPRECIOSERVICIO( "); 
+			consulta.append(PysServiciosSolicitadosBean.T_NOMBRETABLA);
+			consulta.append(".");
+			consulta.append(PysServiciosSolicitadosBean.C_IDINSTITUCION);
+			consulta.append(", "); 
+			consulta.append(PysServiciosSolicitadosBean.T_NOMBRETABLA);
+			consulta.append(".");
+			consulta.append(PysServiciosSolicitadosBean.C_IDTIPOSERVICIOS);
+			consulta.append(", "); 
+			consulta.append(PysServiciosSolicitadosBean.T_NOMBRETABLA);
+			consulta.append(".");
+			consulta.append(PysServiciosSolicitadosBean.C_IDSERVICIO);
+			consulta.append(", "); 
+			consulta.append(PysServiciosSolicitadosBean.T_NOMBRETABLA);
+			consulta.append(".");
+			consulta.append(PysServiciosSolicitadosBean.C_IDSERVICIOSINSTITUCION);
+			consulta.append(", "); 
+			consulta.append(PysPeticionCompraSuscripcionBean.T_NOMBRETABLA);
+			consulta.append(".");
+			consulta.append(PysPeticionCompraSuscripcionBean.C_IDPERSONA);
+			consulta.append(", ");
+			consulta.append(this.usrbean.getLanguageInstitucion());
+			consulta.append(") AS PRECIO_SERVICIO, ");
+									
+			// Forma Pago
+			consulta.append(" ( ");
+			consulta.append("SELECT ");
+			consulta.append(UtilidadesMultidioma.getCampoMultidioma(PysFormaPagoBean.T_NOMBRETABLA + "." + PysFormaPagoBean.C_DESCRIPCION, this.usrbean.getLanguage()));
+			consulta.append(" FROM ");
+			consulta.append(PysFormaPagoBean.T_NOMBRETABLA); 
+			consulta.append(" WHERE ");
+			consulta.append(PysFormaPagoBean.T_NOMBRETABLA);
+			consulta.append(".");
+			consulta.append(PysFormaPagoBean.C_IDFORMAPAGO);
+			consulta.append(" = ");
+			consulta.append(PysServiciosSolicitadosBean.T_NOMBRETABLA);
+			consulta.append(".");
+			consulta.append(PysServiciosSolicitadosBean.C_IDFORMAPAGO);
+			consulta.append(" ) AS FORMAPAGO, ");
+									
+			// Concepto
+			consulta.append(" ( ");
+			consulta.append("SELECT ");
+			consulta.append(PysServiciosInstitucionBean.T_NOMBRETABLA);
+			consulta.append(".");
+			consulta.append(PysServiciosInstitucionBean.C_DESCRIPCION); 
+			consulta.append(" FROM ");
+			consulta.append(PysServiciosInstitucionBean.T_NOMBRETABLA); 
+			consulta.append(" WHERE ");
+			consulta.append(PysServiciosInstitucionBean.T_NOMBRETABLA);
+			consulta.append(".");
+			consulta.append(PysServiciosInstitucionBean.C_IDINSTITUCION);
+			consulta.append(" = ");
+			consulta.append(PysServiciosSolicitadosBean.T_NOMBRETABLA);
+			consulta.append(".");
+			consulta.append(PysServiciosSolicitadosBean.C_IDINSTITUCION); 
+			consulta.append(" AND ");
+			consulta.append(PysServiciosInstitucionBean.T_NOMBRETABLA);
+			consulta.append(".");
+			consulta.append(PysServiciosInstitucionBean.C_IDTIPOSERVICIOS);
+			consulta.append(" = ");
+			consulta.append(PysServiciosSolicitadosBean.T_NOMBRETABLA);
+			consulta.append(".");
+			consulta.append(PysServiciosSolicitadosBean.C_IDTIPOSERVICIOS);
+			consulta.append(" AND ");
+			consulta.append(PysServiciosInstitucionBean.T_NOMBRETABLA);
+			consulta.append(".");
+			consulta.append(PysServiciosInstitucionBean.C_IDSERVICIO);
+			consulta.append(" = ");
+			consulta.append(PysServiciosSolicitadosBean.T_NOMBRETABLA);
+			consulta.append(".");
+			consulta.append(PysServiciosSolicitadosBean.C_IDSERVICIO);
+			consulta.append(" AND ");
+			consulta.append(PysServiciosInstitucionBean.T_NOMBRETABLA);
+			consulta.append(".");
+			consulta.append(PysServiciosInstitucionBean.C_IDSERVICIOSINSTITUCION);
+			consulta.append(" = ");
+			consulta.append(PysServiciosSolicitadosBean.T_NOMBRETABLA);
+			consulta.append(".");
+			consulta.append(PysServiciosSolicitadosBean.C_IDSERVICIOSINSTITUCION);
+			consulta.append(" ) AS CONCEPTO, ");
+									
+			// Solicitar Baja
+			consulta.append(" ( ");
+			consulta.append("SELECT ");
+			consulta.append(PysServiciosInstitucionBean.T_NOMBRETABLA);
+			consulta.append(".");
+			consulta.append(PysServiciosInstitucionBean.C_SOLICITARBAJA); 
+			consulta.append(" FROM ");
+			consulta.append(PysServiciosInstitucionBean.T_NOMBRETABLA);
+			consulta.append(" WHERE ");
+			consulta.append(PysServiciosInstitucionBean.T_NOMBRETABLA);
+			consulta.append(".");
+			consulta.append(PysServiciosInstitucionBean.C_IDINSTITUCION);
+			consulta.append(" = ");
+			consulta.append(PysServiciosSolicitadosBean.T_NOMBRETABLA);
+			consulta.append(".");
+			consulta.append(PysServiciosSolicitadosBean.C_IDINSTITUCION); 
+			consulta.append(" AND ");
+			consulta.append(PysServiciosInstitucionBean.T_NOMBRETABLA);
+			consulta.append(".");
+			consulta.append(PysServiciosInstitucionBean.C_IDTIPOSERVICIOS);
+			consulta.append(" = ");
+			consulta.append(PysServiciosSolicitadosBean.T_NOMBRETABLA);
+			consulta.append(".");
+			consulta.append(PysServiciosSolicitadosBean.C_IDTIPOSERVICIOS);
+			consulta.append(" AND ");
+			consulta.append(PysServiciosInstitucionBean.T_NOMBRETABLA);
+			consulta.append(".");
+			consulta.append(PysServiciosInstitucionBean.C_IDSERVICIO);
+			consulta.append(" = ");
+			consulta.append(PysServiciosSolicitadosBean.T_NOMBRETABLA);
+			consulta.append(".");
+			consulta.append(PysServiciosSolicitadosBean.C_IDSERVICIO);
+			consulta.append(" AND ");
+			consulta.append(PysServiciosInstitucionBean.T_NOMBRETABLA);
+			consulta.append(".");
+			consulta.append(PysServiciosInstitucionBean.C_IDSERVICIOSINSTITUCION);
+			consulta.append(" = ");
+			consulta.append(PysServiciosSolicitadosBean.T_NOMBRETABLA);
+			consulta.append(".");
+			consulta.append(PysServiciosSolicitadosBean.C_IDSERVICIOSINSTITUCION);
+			consulta.append(" ) AS SOLICITARBAJA, ");
+
+			// Cuenta
+			consulta.append(" NVL( ");
+			consulta.append(" ( ");
+			consulta.append(" SELECT ");
+			consulta.append(CenCuentasBancariasBean.T_NOMBRETABLA);
+			consulta.append(".");
+			consulta.append(CenCuentasBancariasBean.C_IBAN);
+			consulta.append(" FROM ");
+			consulta.append(CenCuentasBancariasBean.T_NOMBRETABLA); 
+			consulta.append(" WHERE ");
+			consulta.append(CenCuentasBancariasBean.T_NOMBRETABLA);
+			consulta.append(".");
+			consulta.append(CenCuentasBancariasBean.C_IDCUENTA);
+			consulta.append(" = ");
+			consulta.append(PysServiciosSolicitadosBean.T_NOMBRETABLA);
+			consulta.append(".");
+			consulta.append(PysServiciosSolicitadosBean.C_IDCUENTA);
+			consulta.append(" AND ");
+			consulta.append(CenCuentasBancariasBean.T_NOMBRETABLA);
+			consulta.append(".");
+			consulta.append(CenCuentasBancariasBean.C_IDINSTITUCION);
+			consulta.append(" = ");
+			consulta.append(PysServiciosSolicitadosBean.T_NOMBRETABLA);
+			consulta.append(".");
+			consulta.append(PysServiciosSolicitadosBean.C_IDINSTITUCION); 
+			consulta.append(" AND ");
+			consulta.append(CenCuentasBancariasBean.T_NOMBRETABLA);
+			consulta.append(".");
+			consulta.append(CenCuentasBancariasBean.C_IDPERSONA);
+			consulta.append(" = ");
+			consulta.append(PysServiciosSolicitadosBean.T_NOMBRETABLA);
+			consulta.append(".");
+			consulta.append(PysServiciosSolicitadosBean.C_IDPERSONA); 
+			consulta.append(" ) "); 
+			consulta.append(" ,'-') AS NCUENTA ");
 			
-			String where =  " WHERE " + PysServiciosSolicitadosBean.T_NOMBRETABLA + "." + PysServiciosSolicitadosBean.C_IDINSTITUCION + " = " + idInstitucion +
-								" AND " + PysServiciosSolicitadosBean.T_NOMBRETABLA + "." + PysServiciosSolicitadosBean.C_IDPETICION + " = " + PysPeticionCompraSuscripcionBean.T_NOMBRETABLA + "." + PysPeticionCompraSuscripcionBean.C_IDPETICION + 
-								" AND " + PysServiciosSolicitadosBean.T_NOMBRETABLA + "." + PysServiciosSolicitadosBean.C_IDINSTITUCION + " = " + PysPeticionCompraSuscripcionBean.T_NOMBRETABLA + "." + PysPeticionCompraSuscripcionBean.C_IDINSTITUCION;	
+			consulta.append(" FROM ");
+			consulta.append(PysServiciosSolicitadosBean.T_NOMBRETABLA);
+			consulta.append(", ");
+			consulta.append(PysPeticionCompraSuscripcionBean.T_NOMBRETABLA);
+			
+			consulta.append(" WHERE ");
+			consulta.append(PysServiciosSolicitadosBean.T_NOMBRETABLA);
+			consulta.append(".");
+			consulta.append(PysServiciosSolicitadosBean.C_IDINSTITUCION);
+			consulta.append(" = ");
+			consulta.append(idInstitucion);
+			consulta.append(" AND ");
+			consulta.append(PysServiciosSolicitadosBean.T_NOMBRETABLA);
+			consulta.append(".");
+			consulta.append(PysServiciosSolicitadosBean.C_IDPETICION);
+			consulta.append(" = ");
+			consulta.append(PysPeticionCompraSuscripcionBean.T_NOMBRETABLA);
+			consulta.append(".");
+			consulta.append(PysPeticionCompraSuscripcionBean.C_IDPETICION); 
+			consulta.append(" AND ");
+			consulta.append(PysServiciosSolicitadosBean.T_NOMBRETABLA);
+			consulta.append(".");
+			consulta.append(PysServiciosSolicitadosBean.C_IDINSTITUCION);
+			consulta.append(" = ");
+			consulta.append(PysPeticionCompraSuscripcionBean.T_NOMBRETABLA);
+			consulta.append(".");
+			consulta.append(PysPeticionCompraSuscripcionBean.C_IDINSTITUCION);	
 			
 			if (idPeticion != null) {
-				where += " AND " + PysPeticionCompraSuscripcionBean.T_NOMBRETABLA + "." + PysServiciosSolicitadosBean.C_IDPETICION + " = " + idPeticion;
+				consulta.append(" AND ");
+				consulta.append(PysPeticionCompraSuscripcionBean.T_NOMBRETABLA);
+				consulta.append(".");
+				consulta.append(PysServiciosSolicitadosBean.C_IDPETICION);
+				consulta.append(" = ");
+				consulta.append(idPeticion);
 			}
 			
 			if (idPersona != null) {
-				where += " AND " +  PysPeticionCompraSuscripcionBean.T_NOMBRETABLA + "." + PysPeticionCompraSuscripcionBean.C_IDPERSONA + " = " + idPersona;
+				consulta.append(" AND ");
+				consulta.append(PysPeticionCompraSuscripcionBean.T_NOMBRETABLA);
+				consulta.append(".");
+				consulta.append(PysPeticionCompraSuscripcionBean.C_IDPERSONA);
+				consulta.append(" = ");
+				consulta.append(idPersona);
 			}
 			
 			if (tipoPeticion != null) {
-				where += " AND " +  PysPeticionCompraSuscripcionBean.T_NOMBRETABLA + "." + PysPeticionCompraSuscripcionBean.C_TIPOPETICION + " = '" + tipoPeticion + "' ";
+				consulta.append(" AND ");
+				consulta.append(PysPeticionCompraSuscripcionBean.T_NOMBRETABLA);
+				consulta.append(".");
+				consulta.append(PysPeticionCompraSuscripcionBean.C_TIPOPETICION);
+				consulta.append(" = '");
+				consulta.append(tipoPeticion);
+				consulta.append("' ");
 			}
 			
 			if (distintoCampoAceptado != null) {
-				where += " AND " +  PysServiciosSolicitadosBean.T_NOMBRETABLA + "." + PysServiciosSolicitadosBean.C_ACEPTADO + " <> '" + distintoCampoAceptado + "' ";
+				consulta.append(" AND ");
+				consulta.append(PysServiciosSolicitadosBean.T_NOMBRETABLA);
+				consulta.append(".");
+				consulta.append(PysServiciosSolicitadosBean.C_ACEPTADO);
+				consulta.append(" <> '");
+				consulta.append(distintoCampoAceptado);
+				consulta.append("' ");
 			}
 		
 			// MODIFICADO POR MAV PARA INCLUIR NUEVOS FILTROS ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-			if (idTipoServicios != null) {																																	//
-				where += " AND " + PysServiciosSolicitadosBean.T_NOMBRETABLA + "." + PysServiciosSolicitadosBean.C_IDTIPOSERVICIOS + " = " + idTipoServicios;				//
+			if (idTipoServicios != null) {
+				consulta.append(" AND ");
+				consulta.append(PysServiciosSolicitadosBean.T_NOMBRETABLA);
+				consulta.append(".");
+				consulta.append(PysServiciosSolicitadosBean.C_IDTIPOSERVICIOS);
+				consulta.append(" = ");
+				consulta.append(idTipoServicios);
 			}			
-			//
-			if (idServicio != null) {																																		//
-				where += " AND " +  PysServiciosSolicitadosBean.T_NOMBRETABLA + "." + PysServiciosSolicitadosBean.C_IDSERVICIO + " = " + idServicio;						//
-			}																																								//
+
+			if (idServicio != null) {
+				consulta.append(" AND ");
+				consulta.append(PysServiciosSolicitadosBean.T_NOMBRETABLA);
+				consulta.append(".");
+				consulta.append(PysServiciosSolicitadosBean.C_IDSERVICIO);
+				consulta.append(" = ");
+				consulta.append(idServicio);
+			}
 			
-			if (idServiciosInstitucion != null) {																															//
-				where += " AND " +  PysServiciosSolicitadosBean.T_NOMBRETABLA + "." + PysServiciosSolicitadosBean.C_IDSERVICIOSINSTITUCION + " = " + idServiciosInstitucion;	//
-			}																																								//
+			if (idServiciosInstitucion != null) {
+				consulta.append(" AND ");
+				consulta.append(PysServiciosSolicitadosBean.T_NOMBRETABLA);
+				consulta.append(".");
+				consulta.append(PysServiciosSolicitadosBean.C_IDSERVICIOSINSTITUCION);
+				consulta.append(" = ");
+				consulta.append(idServiciosInstitucion);
+			}
 			// FIN MODIFICACION //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 			
 			// Fechas
 			if (fechaDesde != null) {
 				if (fechaDesde.indexOf("SYSDATE")!=-1) {
-					where += " AND " + PysPeticionCompraSuscripcionBean.T_NOMBRETABLA + "." + PysPeticionCompraSuscripcionBean.C_FECHA + " >= " + fechaDesde ;
+					consulta.append(" AND ");
+					consulta.append(PysPeticionCompraSuscripcionBean.T_NOMBRETABLA);
+					consulta.append(".");
+					consulta.append(PysPeticionCompraSuscripcionBean.C_FECHA);
+					consulta.append(" >= ");
+					consulta.append(fechaDesde);
 				} else {
-					where += " AND " + PysPeticionCompraSuscripcionBean.T_NOMBRETABLA + "." + PysPeticionCompraSuscripcionBean.C_FECHA + " >= " + " TO_DATE('" + fechaDesde + "', '" + ClsConstants.DATE_FORMAT_SQL + "') ";
+					consulta.append(" AND ");
+					consulta.append(PysPeticionCompraSuscripcionBean.T_NOMBRETABLA);
+					consulta.append(".");
+					consulta.append(PysPeticionCompraSuscripcionBean.C_FECHA);
+					consulta.append(" >= TO_DATE('");
+					consulta.append(fechaDesde);
+					consulta.append("', '");
+					consulta.append(ClsConstants.DATE_FORMAT_SQL);
+					consulta.append("') ");
 				}
 			}
 			
 			if (fechaHasta != null) {
 				if (fechaHasta.indexOf("SYSDATE")!=-1) {
-					where += " AND " + PysPeticionCompraSuscripcionBean.T_NOMBRETABLA + "." + PysPeticionCompraSuscripcionBean.C_FECHA + " <= " + fechaHasta;
+					consulta.append(" AND ");
+					consulta.append(PysPeticionCompraSuscripcionBean.T_NOMBRETABLA);
+					consulta.append(".");
+					consulta.append(PysPeticionCompraSuscripcionBean.C_FECHA);
+					consulta.append(" <= ");
+					consulta.append(fechaHasta);
 				} else {
-					where += " AND " + PysPeticionCompraSuscripcionBean.T_NOMBRETABLA + "." + PysPeticionCompraSuscripcionBean.C_FECHA + " <= " + " TO_DATE('" + fechaHasta + "', '" + ClsConstants.DATE_FORMAT_SQL + "') ";
+					consulta.append(" AND ");
+					consulta.append(PysPeticionCompraSuscripcionBean.T_NOMBRETABLA);
+					consulta.append(".");
+					consulta.append(PysPeticionCompraSuscripcionBean.C_FECHA);
+					consulta.append(" <= TO_DATE('");
+					consulta.append(fechaHasta);
+					consulta.append("', '");
+					consulta.append(ClsConstants.DATE_FORMAT_SQL);
+					consulta.append("') ");
 				}
 			}
 			
-			if (peticionBaja){
-				where += " AND " + PysPeticionCompraSuscripcionBean.T_NOMBRETABLA + "." + PysPeticionCompraSuscripcionBean.C_IDESTADOPETICION + " = " + ClsConstants.ESTADO_PETICION_COMPRA_PROCESADA;
+			if (isSolicitudBaja){
+				consulta.append(" AND "); // Debe tener la peticion de suscripcion procesada (como tiene tipoPeticion ya comprueba que es una peticion de alta)
+				consulta.append(PysPeticionCompraSuscripcionBean.T_NOMBRETABLA);
+				consulta.append(".");
+				consulta.append(PysPeticionCompraSuscripcionBean.C_IDESTADOPETICION);
+				consulta.append(" = ");
+				consulta.append(ClsConstants.ESTADO_PETICION_COMPRA_PROCESADA);
+				consulta.append(" AND "); // No debe ser una solicitud denegada o de baja
+				consulta.append(PysServiciosSolicitadosBean.T_NOMBRETABLA);
+				consulta.append(".");
+				consulta.append(PysServiciosSolicitadosBean.C_ACEPTADO);
+				consulta.append(" NOT IN ('");
+				consulta.append(ClsConstants.PRODUCTO_DENEGADO);
+				consulta.append("',' ");
+				consulta.append(ClsConstants.PRODUCTO_BAJA);
+				consulta.append("')");
 			}
 			
-			String orderBy = " ORDER BY " + PysPeticionCompraSuscripcionBean.T_NOMBRETABLA + "." + PysPeticionCompraSuscripcionBean.C_FECHA + " DESC ";
-			
-			String consulta = select + from + where + orderBy; 
+			consulta.append(" ORDER BY ");
+			consulta.append(PysPeticionCompraSuscripcionBean.T_NOMBRETABLA);
+			consulta.append(".");
+			consulta.append(PysPeticionCompraSuscripcionBean.C_FECHA);
+			consulta.append(" DESC ");
 			
 			RowsContainer rc = new RowsContainer();
-			if (rc.query(consulta)) {
+			if (rc.query(consulta.toString())) {
 				Vector resultados = new Vector (); 
 				for (int i = 0; i < rc.size(); i++)	{
 					
 					Hashtable a = (Hashtable)((Row) rc.get(i)).getRow();
 					
+					String idTipoServicio = (String)a.get(PysServiciosSolicitadosBean.C_IDTIPOSERVICIOS);
+					String idServicios = (String)a.get(PysServiciosSolicitadosBean.C_IDSERVICIO);
+					String idServicioInstitucion = (String)a.get(PysServiciosSolicitadosBean.C_IDSERVICIOSINSTITUCION);
+					String idPeticionConsulta = (String)a.get(PysServiciosSolicitadosBean.C_IDPETICION);
+					
+					String estadoPago = this.getEstadoSuscripcion(idInstitucion.toString(), idTipoServicio, idServicios, idServicioInstitucion, idPeticionConsulta);
+					UtilidadesHash.set(a, "ESTADOPAGO", estadoPago);					
+					
 					// Tratamos los datos de la funcion 'F_SIGA_CALCULOPRECIOSERVICIO'
 					String valor = UtilidadesHash.getString(a, "PRECIO_SERVICIO");
-					
-					//ClsLogging.writeFileLogWithoutSession("Valor recuperado de la consulta  "+valor, 10);
-					
 
 					// "-1" --> Error no existen datos en la tabla Pys_ServicioInstitucion
-					//if (!valor.equalsIgnoreCase("0#0#0#0#")){
 					if (!valor.equalsIgnoreCase("-1")){
 						
 						String datosPrecio[] =  UtilidadesString.splitIgual(valor, "#");
@@ -418,9 +1012,6 @@ public class PysServiciosSolicitadosAdm extends MasterBeanAdministrador {
 						diezg = diezg.replaceAll(",",".");
 						
 						UtilidadesHash.set(a, "VALOR", new Double(diezg));
-						
-						//ClsLogging.writeFileLogWithoutSession("Valor del importe= "+datosPrecio[0], 10);
-						//ClsLogging.writeFileLogWithoutSession("Valor del importe tras cambio 10g= "+diezg, 10);
 				
 						// RGG cambio para 10g
 						String diezgg = datosPrecio[1];
@@ -441,22 +1032,7 @@ public class PysServiciosSolicitadosAdm extends MasterBeanAdministrador {
 							UtilidadesHash.set(a, "SERVICIO_DESCRIPCION_PERIODICIDAD", datosPrecio[4]);
 						}
 					}
-
-					//Consulto si la baja ha sido solicitada:
-					String idTipoServicio = (String)a.get(PysServiciosSolicitadosBean.C_IDTIPOSERVICIOS);
-					String idServicios = (String)a.get(PysServiciosSolicitadosBean.C_IDSERVICIO);
-					String idServicioInstitucion = (String)a.get(PysServiciosSolicitadosBean.C_IDSERVICIOSINSTITUCION);
-					String idPeticionConsulta = (String)a.get(PysServiciosSolicitadosBean.C_IDPETICION);
-					if(isSolicitudBaja){
-						if (this.getTipoPeticion(idInstitucion,idPersona,idTipoServicio,idServicios,idServicioInstitucion,idPeticionConsulta))
-							a.put("ESTADO_BAJA","SI");
-						else
-							a.put("ESTADO_BAJA","NO");
-						// CRM--> SI SE PUEDE ANULAR LOS SERVICIOS FACTURADOS
-						resultados.add(a);
-					}else{
-						resultados.add(a);
-					}
+					resultados.add(a);
 				}
 				return resultados;
 			}
@@ -709,12 +1285,13 @@ public class PysServiciosSolicitadosAdm extends MasterBeanAdministrador {
 						     }
 					    }
 				    }
-				    if(fechaEfectiva.equals("0")){
+				    
+				    if (fechaEfectiva.equals("0")) {
 				    	suscripcionBean.setFechaBaja("sysdate");
-						
-					}
-					else{
+				    	suscripcionBean.setFechaBajaFacturacion("sysdate");						
+					} else {
 						suscripcionBean.setFechaBaja(fechaEfectiva);
+						suscripcionBean.setFechaBajaFacturacion(fechaEfectiva);
 					}	
 				    
 				    if (!suscripcionAdm.updateDirect(suscripcionBean)) {
@@ -922,43 +1499,6 @@ public class PysServiciosSolicitadosAdm extends MasterBeanAdministrador {
 	}
 
 	/**
-	 * Obtiene si hay una peticion de baja.
-	 * @param idinstitucion
-	 * @param idpeticion
-	 * @return boolean
-	 */
-	public boolean getTipoPeticion(Integer idinstitucion, Long idpersona, String idTipoServicios, String idServicio, String idServiciosInstitucion, String idPeticion){
-		boolean hay = false;
-
-		try {
-			String where = " SELECT 1 "+
-						   " FROM "+
-						   PysPeticionCompraSuscripcionBean.T_NOMBRETABLA+" pet,"+
-						   PysServiciosSolicitadosBean.T_NOMBRETABLA+" serv"+
-						   " WHERE " +
-						   " pet."+PysPeticionCompraSuscripcionBean.C_IDINSTITUCION+"="+idinstitucion.toString()+
-						   " AND pet."+PysPeticionCompraSuscripcionBean.C_IDPERSONA+"="+idpersona.toString()+
-						   " AND pet."+PysPeticionCompraSuscripcionBean.C_TIPOPETICION+"='"+ClsConstants.TIPO_PETICION_COMPRA_BAJA+"'"+
-						   " AND pet."+PysPeticionCompraSuscripcionBean.C_IDESTADOPETICION+"="+ClsConstants.ESTADO_PETICION_COMPRA_PENDIENTE+
-						   " AND pet."+PysPeticionCompraSuscripcionBean.C_IDPETICIONALTA+"="+idPeticion+
-						   //SERVICIO:
-						   " AND serv."+PysServiciosSolicitadosBean.C_IDTIPOSERVICIOS+"="+idTipoServicios+
-						   " AND serv."+PysServiciosSolicitadosBean.C_IDSERVICIO+"="+idServicio+
-						   " AND serv."+PysServiciosSolicitadosBean.C_IDSERVICIOSINSTITUCION+"="+idServiciosInstitucion+
-						   //JOIN:
-						   " AND serv."+PysServiciosSolicitadosBean.C_IDINSTITUCION+"=pet."+PysPeticionCompraSuscripcionBean.C_IDINSTITUCION+
-						   " AND serv."+PysServiciosSolicitadosBean.C_IDPETICION+"=pet."+PysPeticionCompraSuscripcionBean.C_IDPETICION+
-						   " AND serv."+PysServiciosSolicitadosBean.C_IDPERSONA+"=pet."+PysPeticionCompraSuscripcionBean.C_IDPERSONA;
-			Vector v = this.selectGenerico(where);
-			if (!v.isEmpty())
-				hay = true;
-		} catch(Exception e){
-			hay = false;
-		}
-		return hay;
-	}
-	
-	/**
 	 * Inserta en un vector cada fila como una tabla hash del resultado de ejecutar la query
 	 * @param Hashtable miHash: tabla hash de datos necesarios para la consulta SQL.
 	 * @param String consulta: consulta SQL del SELECT almacenada en un String.
@@ -1010,15 +1550,9 @@ public class PysServiciosSolicitadosAdm extends MasterBeanAdministrador {
 	 */
 	private String getQueryServiciosSolicitadosBind(Hashtable datos, Integer idInstitucion) throws ClsExceptions, SIGAException {
 
-		Long idPeticion = UtilidadesHash.getLong(datos, PysServiciosSolicitadosBean.C_IDPETICION);
 		Long idPersona = UtilidadesHash.getLong(datos, PysPeticionCompraSuscripcionBean.C_IDPERSONA);
 		String tipoPeticion = UtilidadesHash.getString(datos, PysPeticionCompraSuscripcionBean.C_TIPOPETICION);		
 		String distintoCampoAceptado = UtilidadesHash.getString(datos, PysServiciosSolicitadosBean.C_ACEPTADO);
-		Integer idTipoServicios = UtilidadesHash.getInteger(datos, PysServiciosSolicitadosBean.C_IDTIPOSERVICIOS);		 
-		Long idServicio = UtilidadesHash.getLong(datos, PysServiciosSolicitadosBean.C_IDSERVICIO);						 
-		Long idServiciosInstitucion = UtilidadesHash.getLong(datos, PysServiciosSolicitadosBean.C_IDSERVICIOSINSTITUCION);
-		String fechaDesde = UtilidadesHash.getString(datos, "FECHA_DESDE"); // JPT: Segun la incidencia INC-6529 estos campos para servicios no deberian estar 
-		String fechaHasta = UtilidadesHash.getString(datos, "FECHA_HASTA"); // JPT: Segun la incidencia INC-6529 estos campos para servicios no deberian estar 
 		
 		StringBuilder consulta = new StringBuilder();  
 		consulta.append("SELECT 'SERVICIO' AS CONSULTA, "); 
@@ -1060,7 +1594,7 @@ public class PysServiciosSolicitadosAdm extends MasterBeanAdministrador {
 		consulta.append(", "); 
 		consulta.append(PysSuscripcionBean.T_NOMBRETABLA);
 		consulta.append(".");
-		consulta.append(PysSuscripcionBean.C_FECHABAJA);
+		consulta.append(PysSuscripcionBean.C_FECHABAJAFACTURACION);
 		consulta.append(", ");						
 		consulta.append(PysPeticionCompraSuscripcionBean.T_NOMBRETABLA);
 		consulta.append(".");
@@ -1132,7 +1666,13 @@ public class PysServiciosSolicitadosAdm extends MasterBeanAdministrador {
 		consulta.append(PysSuscripcionBean.C_IDSERVICIOSINSTITUCION);
 		consulta.append(" ) AS CONCEPTO, " );								
 		consulta.append(" ( ");
-		consulta.append("SELECT 1 "); 
+		consulta.append("SELECT TO_CHAR(MAX(");
+		consulta.append(FacFacturacionSuscripcionBean.T_NOMBRETABLA);
+		consulta.append(".");
+		consulta.append(FacFacturacionSuscripcionBean.C_FECHAFIN);
+		consulta.append("), '");
+		consulta.append(ClsConstants.DATE_FORMAT_SHORT_SPANISH);
+		consulta.append("') ");
 		consulta.append(" FROM ");
 		consulta.append(FacFacturacionSuscripcionBean.T_NOMBRETABLA);
 		consulta.append(" WHERE ");
@@ -1175,14 +1715,18 @@ public class PysServiciosSolicitadosAdm extends MasterBeanAdministrador {
 		consulta.append(PysSuscripcionBean.T_NOMBRETABLA);
 		consulta.append(".");
 		consulta.append(PysSuscripcionBean.C_IDSUSCRIPCION);  
-		consulta.append(" AND ROWNUM < 2 ");
-		consulta.append(" ) AS ESTAFACTURADO "); 
+		consulta.append(" ) AS ULTIMAFECHAFACTURADA, ");
+		consulta.append(PysServiciosInstitucionBean.T_NOMBRETABLA);
+		consulta.append(".");
+		consulta.append(PysServiciosInstitucionBean.C_AUTOMATICO);  
 		consulta.append(" FROM ");
 		consulta.append(PysServiciosSolicitadosBean.T_NOMBRETABLA);
 		consulta.append(", "); 
 		consulta.append(PysPeticionCompraSuscripcionBean.T_NOMBRETABLA);
 		consulta.append(", "); 
 		consulta.append(PysSuscripcionBean.T_NOMBRETABLA);
+		consulta.append(", "); 
+		consulta.append(PysServiciosInstitucionBean.T_NOMBRETABLA);
 		consulta.append(" WHERE ");
 		consulta.append(PysSuscripcionBean.T_NOMBRETABLA);
 		consulta.append(".");
@@ -1245,15 +1789,38 @@ public class PysServiciosSolicitadosAdm extends MasterBeanAdministrador {
 		consulta.append(PysServiciosSolicitadosBean.T_NOMBRETABLA);
 		consulta.append(".");
 		consulta.append(PysServiciosSolicitadosBean.C_IDSERVICIOSINSTITUCION);
-		
-		if (idPeticion != null) {
-			consulta.append(" AND ");
-			consulta.append(PysSuscripcionBean.T_NOMBRETABLA);
-			consulta.append(".");
-			consulta.append(PysSuscripcionBean.C_IDPETICION);
-			consulta.append(" = ");
-			consulta.append(idPeticion);
-		}
+		consulta.append(" AND ");
+		consulta.append(PysServiciosInstitucionBean.T_NOMBRETABLA);
+		consulta.append(".");
+		consulta.append(PysServiciosInstitucionBean.C_IDINSTITUCION);
+		consulta.append(" = ");
+		consulta.append(PysServiciosSolicitadosBean.T_NOMBRETABLA);
+		consulta.append(".");
+		consulta.append(PysServiciosSolicitadosBean.C_IDINSTITUCION);
+		consulta.append(" AND ");
+		consulta.append(PysServiciosInstitucionBean.T_NOMBRETABLA);
+		consulta.append(".");
+		consulta.append(PysServiciosInstitucionBean.C_IDTIPOSERVICIOS);
+		consulta.append(" = ");
+		consulta.append(PysServiciosSolicitadosBean.T_NOMBRETABLA);
+		consulta.append(".");
+		consulta.append(PysServiciosSolicitadosBean.C_IDTIPOSERVICIOS);
+		consulta.append(" AND ");
+		consulta.append(PysServiciosInstitucionBean.T_NOMBRETABLA);
+		consulta.append(".");
+		consulta.append(PysServiciosInstitucionBean.C_IDSERVICIO);
+		consulta.append(" = ");
+		consulta.append(PysServiciosSolicitadosBean.T_NOMBRETABLA);
+		consulta.append(".");
+		consulta.append(PysServiciosSolicitadosBean.C_IDSERVICIO); 
+		consulta.append(" AND ");
+		consulta.append(PysServiciosInstitucionBean.T_NOMBRETABLA);
+		consulta.append(".");
+		consulta.append(PysServiciosInstitucionBean.C_IDSERVICIOSINSTITUCION);
+		consulta.append(" = ");
+		consulta.append(PysServiciosSolicitadosBean.T_NOMBRETABLA);
+		consulta.append(".");
+		consulta.append(PysServiciosSolicitadosBean.C_IDSERVICIOSINSTITUCION);
 		
 		if (idPersona != null) {
 			consulta.append(" AND ");
@@ -1274,79 +1841,6 @@ public class PysServiciosSolicitadosAdm extends MasterBeanAdministrador {
 			consulta.append("' ");
 		}
 
-		if (idTipoServicios != null) {																																	
-			consulta.append(" AND ");
-			consulta.append(PysSuscripcionBean.T_NOMBRETABLA);
-			consulta.append(".");
-			consulta.append(PysSuscripcionBean.C_IDTIPOSERVICIOS);
-			consulta.append(" = ");
-			consulta.append(idTipoServicios);
-		}																																								
-		
-		if (idServicio != null) {																																		
-			consulta.append(" AND ");
-			consulta.append(PysSuscripcionBean.T_NOMBRETABLA);
-			consulta.append(".");
-			consulta.append(PysSuscripcionBean.C_IDSERVICIO);
-			consulta.append(" = ");
-			consulta.append(idServicio);
-		}																																								
-		
-		if (idServiciosInstitucion != null) {																															
-			consulta.append(" AND ");
-			consulta.append(PysSuscripcionBean.T_NOMBRETABLA);
-			consulta.append(".");
-			consulta.append(PysSuscripcionBean.C_IDSERVICIOSINSTITUCION);
-			consulta.append(" = ");
-			consulta.append(idServiciosInstitucion);
-		}																																								
-		
-		if (fechaDesde != null) { // JPT: Segun la incidencia INC-6529 estos campos para servicios no deberian estar 
-			if (fechaDesde.indexOf("SYSDATE")!=-1) {
-				consulta.append(" AND ");
-				consulta.append(PysPeticionCompraSuscripcionBean.T_NOMBRETABLA);
-				consulta.append(".");
-				consulta.append(PysPeticionCompraSuscripcionBean.C_FECHA);
-				consulta.append(" >= ");
-				consulta.append(fechaDesde);
-				
-			} else {
-				consulta.append(" AND ");
-				consulta.append(PysPeticionCompraSuscripcionBean.T_NOMBRETABLA);
-				consulta.append(".");
-				consulta.append(PysPeticionCompraSuscripcionBean.C_FECHA);
-				consulta.append(" >= ");
-				consulta.append(" TO_DATE('");
-				consulta.append(fechaDesde);
-				consulta.append("', '");
-				consulta.append(ClsConstants.DATE_FORMAT_SQL);
-				consulta.append("') ");
-			}
-		}
-		
-		if (fechaHasta != null) { // JPT: Segun la incidencia INC-6529 estos campos para servicios no deberian estar 
-			if (fechaHasta.indexOf("SYSDATE")!=-1) {
-				consulta.append(" AND ");
-				consulta.append(PysPeticionCompraSuscripcionBean.T_NOMBRETABLA);
-				consulta.append(".");
-				consulta.append(PysPeticionCompraSuscripcionBean.C_FECHA);
-				consulta.append(" <= ");
-				consulta.append(fechaHasta);
-				
-			} else {
-				consulta.append(" AND ");
-				consulta.append(PysPeticionCompraSuscripcionBean.T_NOMBRETABLA);
-				consulta.append(".");
-				consulta.append(PysPeticionCompraSuscripcionBean.C_FECHA);
-				consulta.append(" <= ");
-				consulta.append(" TO_DATE('");
-				consulta.append(fechaHasta);
-				consulta.append("', '");
-				consulta.append(ClsConstants.DATE_FORMAT_SQL);
-				consulta.append("') ");
-			}
-		}		
-		
 		if (distintoCampoAceptado != null) {
 			consulta.append(" AND (");
 			consulta.append(PysServiciosSolicitadosBean.C_ACEPTADO);
@@ -1369,7 +1863,7 @@ public class PysServiciosSolicitadosAdm extends MasterBeanAdministrador {
 			consulta.append("' AND ");
 			consulta.append(PysSuscripcionBean.T_NOMBRETABLA);
 			consulta.append(".");
-			consulta.append(PysSuscripcionBean.C_FECHABAJA);
+			consulta.append(PysSuscripcionBean.C_FECHABAJAFACTURACION);
 			consulta.append(" > SYSDATE ) "); 
 			consulta.append(" ) ");
 		}

@@ -47,7 +47,7 @@
 	<!-- Incluido jquery en siga.js -->
 	
 	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js?v=${sessionScope.VERSIONJS}'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
-		
+		<siga:Titulo titulo="pestana.certificados.campos" localizacion="certificados.mantenimientoCertificados.plantillas.localizacion"/>	
 		<!-- INICIO: SCRIPTS BOTONES -->
 		<script language="JavaScript">
 			// Asociada al boton Volver -->

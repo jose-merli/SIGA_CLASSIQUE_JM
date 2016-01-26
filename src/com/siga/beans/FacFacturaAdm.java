@@ -1,13 +1,3 @@
-/*
- * VERSIONES:
- * 
- * miguel.villegas - 09-03-2005 - Creacion
- * nuria.rgonzalez - 17-03-05 - incorporación: Almacenar(), selectImporteFactura(Integer, String)
- * emilio.grau     - 21-03-05 - incorporacion selectMorosos(ConsultaMorososForm)
- * miguel.villegas - 08-04-05 - incorporacion getFacturasPendientes() getDatosInformeFactura()
- * miguel.villegas - 26-04-05 - implementa almacenar() y las relacionadas con ella
- *	
- */
 package com.siga.beans;
 
 import java.io.File;
@@ -50,7 +40,6 @@ import com.siga.general.SIGAException;
 * 
 */
 public class FacFacturaAdm extends MasterBeanAdministrador {
-	public static String IDESTADO_FACTURA_ANULADA="8";
 	private String incluirRegistrosConBajaLogica;
 
 	
@@ -102,6 +91,8 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
 							FacFacturaBean.C_IMPTOTALPAGADOSOLOTARJETA,
 							FacFacturaBean.C_IMPTOTALPORPAGAR,
 							FacFacturaBean.C_ESTADO,
+							FacFacturaBean.C_IDMANDATO,
+							FacFacturaBean.C_REFMANDATOSEPA,
 							FacFacturaBean.C_COMISIONIDFACTURA,
 							FacFacturaBean.C_USUMODIFICACION,
 							FacFacturaBean.C_FECHAMODIFICACION};
@@ -358,65 +349,6 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
 	       return datos;                        
 	    }	
 	
-	
-	/** 
-	 * Recoge toda informacion del registro seleccionado a partir de sus claves<br/> 
-	 * @param  institucion - identificador de la institucion
-	 * @param  factura - identificador de la factura	 	  
-	 * @return  Vector - Fila seleccionada  
-	 * @exception  ClsExceptions  En cualquier caso de error
-	 */
-	public Vector getFacturaConDescEstado (String institucion, String factura) throws ClsExceptions,SIGAException {
-		
-		   Vector datos=new Vector();
-		   Hashtable codigosBind = new Hashtable();
-		   int contador = 0;
-		   
-	       try {
-	            RowsContainer rc = new RowsContainer(); 
-	            String sql ="SELECT " +
-    						FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDFACTURA + "," +
-			    			FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDINSTITUCION + "," +
-			    			FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_FECHAEMISION + "," +
-			    			FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_NUMEROFACTURA + "," +
-			    			// RGG 26/05/2009 cambio de funciones de facturas
-			    			FacEstadoFacturaBean.T_NOMBRETABLA + "." + FacEstadoFacturaBean.C_DESCRIPCION + " AS DESCESTADO ," +
-							//" F_SIGA_DESCESTADOSFACTURA("+FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDINSTITUCION+","+FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDFACTURA+") AS DESCESTADO ," +
-							FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_CONTABILIZADA + "," +
-			    			FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_OBSERVACIONES + "," +
-			    			FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_OBSERVINFORME + "," +
-							FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDSERIEFACTURACION + "," +
-							FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDPROGRAMACION + "," +
-							FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDFORMAPAGO + "," +
-							FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_CTACLIENTE + "," +
-							FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDCUENTA + "," +
-							FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDPERSONA +
-							" FROM " + FacFacturaBean.T_NOMBRETABLA + "," + FacEstadoFacturaBean.T_NOMBRETABLA +
-							" WHERE " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_ESTADO + "=" + FacEstadoFacturaBean.T_NOMBRETABLA + "." + FacEstadoFacturaBean.C_IDESTADO;
-	            contador++;
-	            codigosBind.put(new Integer(contador), factura);
-						sql+=FacFacturaBean.T_NOMBRETABLA +"."+ FacFacturaBean.C_IDFACTURA + "= :"+contador;
-						sql+=" AND ";
-				contador++;
-				codigosBind.put(new Integer(contador), institucion);
-						sql+=FacFacturaBean.T_NOMBRETABLA +"."+ FacFacturaBean.C_IDINSTITUCION + "= :"+contador;
-														
-	            if (rc.findBind(sql, codigosBind)) {
-	               for (int i = 0; i < rc.size(); i++){
-	                  Row fila = (Row) rc.get(i);
-	                  datos.add(fila);
-	               }
-	            } 
-	       }
-//			catch (SIGAException e) {
-//				throw e;
-//			}
-	       catch (Exception e) {
-	       	throw new ClsExceptions (e, "Error al obtener la informacion sobre una entrada de la tabla de abonos.");
-	       }
-	       return datos;                        
-	    }
-	
 	/** 
 	 * Recoge toda informacion del registro seleccionado a partir de su institucion y su numero<br/> 
 	 * @param  institucion - identificador de la institucion
@@ -424,68 +356,71 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
 	 * @return  Vector - Fila seleccionada  
 	 * @exception  ClsExceptions  En cualquier caso de error
 	 */
-	public Vector getFacturaPorNumero (String institucion, String factura,boolean comprobarFacturaSinAbono) throws ClsExceptions,SIGAException {
+	public Vector getFacturaPorNumero (String institucion, String numFactura, String idFactura, boolean comprobarFacturaSinAbono) throws ClsExceptions,SIGAException {
 		
-		   Vector datos=new Vector();
-		   Hashtable codigosBind = new Hashtable();
-		   int contador = 0;
-		   
-	       try {
-	            RowsContainer rc = new RowsContainer(); 
-	            String sql ="SELECT " +
-    						FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDFACTURA + "," +
-			    			FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDINSTITUCION + "," +
-			    			FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_FECHAEMISION + "," +
-							FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_NUMEROFACTURA + "," +
-			    			FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_CONTABILIZADA + "," +
-			    			FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_OBSERVACIONES + "," +
-			    			FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_OBSERVINFORME + "," +
-							FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDSERIEFACTURACION + "," +
-			    			FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_ESTADO + "," +
-							// RGG 26/05/2009 cambio de funciones de facturas
-			    			FacEstadoFacturaBean.T_NOMBRETABLA + "." + FacEstadoFacturaBean.C_DESCRIPCION + " AS DESCESTADO ," +
-							//" F_SIGA_DESCESTADOSFACTURA("+FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDINSTITUCION+","+FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDFACTURA+") AS DESCESTADO ," +
-							FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDPROGRAMACION + "," +
-							FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDFORMAPAGO + "," +
-							FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_CTACLIENTE + "," +
-							FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDCUENTA + "," +
-							FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDPERSONA +
-							" FROM " + FacFacturaBean.T_NOMBRETABLA + "," + FacEstadoFacturaBean.T_NOMBRETABLA +
-							" WHERE " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_ESTADO + "=" + FacEstadoFacturaBean.T_NOMBRETABLA + "." + FacEstadoFacturaBean.C_IDESTADO + 
-							" AND ";
-	            contador++;
-	            codigosBind.put(new Integer(contador), factura);
-	            		//sql += ComodinBusquedas.prepararSentenciaCompletaUPPERBind(":"+contador,FacFacturaBean.T_NOMBRETABLA +"."+ FacFacturaBean.C_NUMEROFACTURA);
-						sql+="UPPER("+FacFacturaBean.T_NOMBRETABLA +"."+ FacFacturaBean.C_NUMEROFACTURA + ")= :"+contador;
-						sql+=" AND " ;
+	   Vector datos=new Vector();
+	   Hashtable codigosBind = new Hashtable();
+	   int contador = 0;
+	   
+       try {
+            RowsContainer rc = new RowsContainer(); 
+            String sql ="SELECT " +
+						FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDFACTURA + "," +
+		    			FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDINSTITUCION + "," +
+		    			FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_FECHAEMISION + "," +
+						FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_NUMEROFACTURA + "," +
+		    			FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_CONTABILIZADA + "," +
+		    			FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_OBSERVACIONES + "," +
+		    			FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_OBSERVINFORME + "," +
+						FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDSERIEFACTURACION + "," +
+		    			FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_ESTADO + "," +
+						// RGG 26/05/2009 cambio de funciones de facturas
+		    			FacEstadoFacturaBean.T_NOMBRETABLA + "." + FacEstadoFacturaBean.C_DESCRIPCION + " AS DESCESTADO ," +
+						FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDPROGRAMACION + "," +
+						FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDFORMAPAGO + "," +
+						FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_CTACLIENTE + "," +
+						FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDCUENTA + "," +
+						FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDPERSONA +
+						" FROM " + FacFacturaBean.T_NOMBRETABLA + "," + FacEstadoFacturaBean.T_NOMBRETABLA +
+						" WHERE " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_ESTADO + "=" + FacEstadoFacturaBean.T_NOMBRETABLA + "." + FacEstadoFacturaBean.C_IDESTADO + 
+						" AND ";
+            
+			if (numFactura != null && !numFactura.equals("")) {
 				contador++;
-				codigosBind.put(new Integer(contador),institucion);
-						sql+=FacFacturaBean.T_NOMBRETABLA +"."+ FacFacturaBean.C_IDINSTITUCION + "= :"+contador;
-				if(comprobarFacturaSinAbono){
-					sql+= " AND ";
-					sql+=FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDFACTURA  
-							+" NOT IN (select "+FacAbonoBean.T_NOMBRETABLA+"."+FacAbonoBean.C_IDFACTURA+" from "+FacAbonoBean.T_NOMBRETABLA
-							+" where "+FacAbonoBean.T_NOMBRETABLA+"."+FacAbonoBean.C_IDINSTITUCION+"="+FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDINSTITUCION
-							+" and "+FacAbonoBean.T_NOMBRETABLA+"."+FacAbonoBean.C_IDFACTURA+" = "+FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDFACTURA+")";
-					
+				codigosBind.put(new Integer(contador), numFactura);
+				sql += "UPPER(" + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_NUMEROFACTURA + ")= :" + contador;
+				sql += " AND ";
+			} else {
+				contador++;
+				codigosBind.put(new Integer(contador), idFactura);
+				sql += FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDFACTURA + " = : " + contador;
+				sql += " AND ";
+			}
+
+			contador++;
+			codigosBind.put(new Integer(contador), institucion);
+			sql += FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDINSTITUCION + "= :" + contador;
+			
+			if (comprobarFacturaSinAbono) {
+				sql+= " AND ";
+				sql+=FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDFACTURA  
+						+" NOT IN (select "+FacAbonoBean.T_NOMBRETABLA+"."+FacAbonoBean.C_IDFACTURA+" from "+FacAbonoBean.T_NOMBRETABLA
+						+" where "+FacAbonoBean.T_NOMBRETABLA+"."+FacAbonoBean.C_IDINSTITUCION+"="+FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDINSTITUCION
+						+" and "+FacAbonoBean.T_NOMBRETABLA+"."+FacAbonoBean.C_IDFACTURA+" = "+FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDFACTURA+")";
+			}
+
+			if (rc.findBind(sql, codigosBind)) {
+				for (int i = 0; i < rc.size(); i++) {
+					Row fila = (Row) rc.get(i);
+					datos.add(fila);
 				}
-						
-						
-	            if (rc.findBind(sql, codigosBind)) {
-	               for (int i = 0; i < rc.size(); i++){
-	                  Row fila = (Row) rc.get(i);
-	                  datos.add(fila);
-	               }
-	            } 
-	       }
-//			catch (SIGAException e) {
-//				throw e;
-//			}
-	       catch (Exception e) {
-	       	throw new ClsExceptions (e, "Error al obtener la informacion sobre una entrada de la tabla de abonos.");
-	       }
-	       return datos;                        
-	    }
+			}
+			
+		} catch (Exception e) {
+			throw new ClsExceptions(e, "Error al obtener la informacion sobre una entrada de la tabla de abonos.");
+		}
+		return datos;
+	}
 
 	
 	public Double getPkgSigaTotalesFactura(String tipoImporte,String institucion, String factura) throws ClsExceptions,SIGAException {
@@ -557,66 +492,6 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
 	       }
 	       return salida;                        
 	    }
-
-	/** 
-	 * Recoge toda informacion del registro seleccionado a partir de su institucion y su numero<br/> 
-	 * @param  institucion - identificador de la institucion
-	 * @param  factura - numero de la factura	 	  
-	 * @return  Vector - Fila seleccionada  
-	 * @exception  ClsExceptions  En cualquier caso de error
-	 */
-	public Vector getFacturaPorNumeroSimple (String institucion, String factura) throws ClsExceptions,SIGAException {
-		
-		   Vector datos=new Vector();
-		   Hashtable codigosBind = new Hashtable();
-		   int contador = 0;
-		   
-	       try {
-	            RowsContainer rc = new RowsContainer(); 
-	            String sql ="SELECT " +
-    						FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDFACTURA + "," +
-			    			FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDINSTITUCION + "," +
-			    			FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_FECHAEMISION + "," +
-							FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_NUMEROFACTURA + "," +
-			    			FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_CONTABILIZADA + "," +
-			    			FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_OBSERVACIONES + "," +
-			    			FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_OBSERVINFORME + "," +
-							FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDSERIEFACTURACION + "," +
-							FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDPROGRAMACION + "," +
-							FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_CTACLIENTE + "," +
-							FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDFORMAPAGO + "," +
-							FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDCUENTA + "," +
-							FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDPERSONA +"," +
-							FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDCUENTADEUDOR + "," +
-							FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDPERSONADEUDOR +
-							
-							" FROM " + FacFacturaBean.T_NOMBRETABLA + 
-							" WHERE ";
-	            contador++;
-	            codigosBind.put(new Integer(contador),factura);
-	            		sql+=" regexp_like(UPPER(FAC_FACTURA.NUMEROFACTURA),:"+contador+")";
-	            		//sql+=FacFacturaBean.T_NOMBRETABLA +"."+ FacFacturaBean.C_NUMEROFACTURA + "= :"+contador;
-						sql+=" AND ";
-				contador++;
-				codigosBind.put(new Integer(contador),institucion);
-						sql+=FacFacturaBean.T_NOMBRETABLA +"."+ FacFacturaBean.C_IDINSTITUCION + "= :"+contador;
-														
-	            if (rc.findBind(sql, codigosBind)) {
-	               for (int i = 0; i < rc.size(); i++){
-	                  Row fila = (Row) rc.get(i);
-	                  datos.add(fila);
-	               }
-	            } 
-	       }
-//			catch (SIGAException e) {
-//				throw e;
-//			}
-	       catch (Exception e) {
-	       	throw new ClsExceptions (e, "Error al obtener la informacion sobre una entrada de la tabla de abonos.");
-	       }
-	       return datos;                        
-	    }
-
 
 	/**
 	 * getFacturas
@@ -1145,7 +1020,6 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
    			
    			
    			//Miramos la descripcion del estado de la factura
-//   			String estado = admFac.getDescEstadoFactura(idInstitucion,idFactura);
    			String sEstado =  UtilidadesString.getMensajeIdioma(idioma, estado);
    			if(idEstado.equals("8")){ // anulada
    				admAbono = new FacAbonoAdm(usrbean);
@@ -1288,7 +1162,7 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
 				
 				//modificacion nueva iag
 				
-			   String idFacturaFila = resultado.get("IDFACTURA").toString();
+			   //String idFacturaFila = resultado.get("IDFACTURA").toString();
                // rgg 26/05/2009 CAMBIO DE FUNCIONES DE IMPORTES
 //               ConsPLFacturacion pl=new ConsPLFacturacion();
 //               
@@ -1404,37 +1278,6 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
 		}
 	}
 	
-	/** Funcion selectImporteFactura, obtiene el importe pendiente por pagar de la factura.
-	 * @param idInstitucion - identificador de la institución
-	 * @param idFactura - identificador de la factura.
-	 * @return Float: Cantidad pendiente por pagar de la factura
-	 * */
-	public Float selectImporteFactura(Integer idInstitucion, String idFactura) throws ClsExceptions,SIGAException {
-		
-		Float importe = null;
-		// Acceso a BBDD
-		try {
-		    Hashtable codigos = new Hashtable();
-		    codigos.put(new Integer(1),idInstitucion.toString());
-		    codigos.put(new Integer(2),idFactura);
-
-//		  RGG 26/05/2009 CAMBIO DE FUNCIONES DE IMPORTES
-            String select ="SELECT "+FacFacturaBean.C_IMPTOTAL+" AS IMPORTE FROM FAC_FACTURA WHERE IDINSTITUCION=:1 AND IDFACTURA=:2 ";
-            //String select =	"SELECT PKG_SIGA_TOTALESFACTURA.TOTAL(:1,:2) as IMPORTE FROM DUAL";
-
-			RowsContainer rc = new RowsContainer(); 
-			if (rc.queryBind(select,codigos)) {
-				if (rc.size() != 1) return null;
-				Hashtable aux = (Hashtable)((Row) rc.get(0)).getRow();
-				importe = UtilidadesHash.getFloat(aux, "IMPORTE");				
-			}
-		}
-	   	catch (Exception e) { 	
-			throw new ClsExceptions (e, "Error al ejecutar el \"select\" en B.D."); 
-		}
-		return importe;
-	}
-	
 	/** Funcion selectMorosos (UsrBean user, ConsultaMorososForm form)
 	 * Búsqueda sobre la tabla de facturas para recuperar los morosos
 	 * @param form
@@ -1448,142 +1291,234 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
 		boolean isFacturasPendientes = (form.getFacturasImpagadasDesde()!=null && !form.getFacturasImpagadasDesde().equals(""))
 										||(form.getFacturasImpagadasHasta()!=null && !form.getFacturasImpagadasHasta().equals("")); 
 		try { 
-			RowsContainer rc = new RowsContainer(); 				        
-	        
 			int contador=0;
 			Hashtable codigos = new Hashtable();
 			String nComunicacionesDesde = form.getNumeroComunicacionesDesde();
-			 String nComunicacionesHasta = form.getNumeroComunicacionesHasta();
-			 String sql="";
+			String nComunicacionesHasta = form.getNumeroComunicacionesHasta();
+			StringBuilder sql = new StringBuilder();
 			 
 			 if ((nComunicacionesDesde!=null && !nComunicacionesDesde.equalsIgnoreCase("")) || 
 				 (nComunicacionesHasta!=null && !nComunicacionesHasta.equalsIgnoreCase("")) || 
-				 (isFacturasPendientes) ||
+				 isFacturasPendientes ||
 				 (form.getImporteAdeudadoDesde()!=null && !form.getImporteAdeudadoDesde().equals("")) ||
 				 (form.getImporteAdeudadoHasta()!=null && !form.getImporteAdeudadoHasta().equals(""))) {
-		         sql = "SELECT " + FacFacturaBean.C_IDINSTITUCION + ", " + 
-			        		 FacFacturaBean.C_IDPERSONA + ", " +
-			        		 FacFacturaBean.C_IDFACTURA + ", " +
-			        		 FacFacturaBean.C_NUMEROFACTURA + ", " +
-			        		 " TRUNC(" + FacFacturaBean.C_FECHAEMISION + ") AS " + FacFacturaBean.C_FECHAEMISION + ", " +
-			        		 " DEUDA, " +			        		 
-			        		 " NCOLEGIADO AS " + CenColegiadoBean.C_NCOLEGIADO + ", " +			        		 
-			        		 " NOMBRE, " +
-			        		 " ORDEN_APELLIDOS, " +
-			        		 " ORDEN_NOMBRE, " +
-			        		 " COMUNICACIONES, " +			        		 
-			        		 " ESTADO_FACTURA " +
-			        		 (isFacturasPendientes ? ", FACTURASPENDIENTES " : "") +
-		        		 " FROM ( ";
+				 
+		         sql.append("SELECT ");
+		         sql.append(FacFacturaBean.C_IDINSTITUCION);
+		         sql.append(", "); 
+		         sql.append(FacFacturaBean.C_IDPERSONA);
+		         sql.append(", ");
+		         sql.append(FacFacturaBean.C_IDFACTURA);
+		         sql.append(", ");
+		         sql.append(FacFacturaBean.C_NUMEROFACTURA);
+		         sql.append(", TRUNC(");
+		         sql.append(FacFacturaBean.C_FECHAEMISION);
+		         sql.append(") AS ");
+		         sql.append(FacFacturaBean.C_FECHAEMISION);
+		         sql.append(", DEUDA, NCOLEGIADO AS ");
+		         sql.append(CenColegiadoBean.C_NCOLEGIADO);
+		         sql.append(", NOMBRE, ORDEN_APELLIDOS, ORDEN_NOMBRE, COMUNICACIONES, ESTADO_FACTURA ");
+		         sql.append(isFacturasPendientes ? ", FACTURASPENDIENTES " : "");
+		         sql.append(" FROM ( ");
 			 }
 			 
-		    sql += " SELECT F." + FacFacturaBean.C_IDINSTITUCION + ", " +
-		    			" F." + FacFacturaBean.C_IDPERSONA + ", " +
-		    			" F." + FacFacturaBean.C_IDFACTURA + ", " +
-		    			" F." + FacFacturaBean.C_NUMEROFACTURA + ", " +		    			
-		    			" F." + FacFacturaBean.C_FECHAEMISION + ", " +		    			
-		    			" F." + FacFacturaBean.C_IMPTOTALPORPAGAR + " AS DEUDA, " +
-		    			" F_SIGA_CALCULONCOLEGIADO(F." + FacFacturaBean.C_IDINSTITUCION + ", F." + FacFacturaBean.C_IDPERSONA + ") AS " + CenColegiadoBean.C_NCOLEGIADO + ", " +
-		    			" P." + CenPersonaBean.C_NOMBRE + " || ' ' || P." + CenPersonaBean.C_APELLIDOS1 + " || ' ' || P." + CenPersonaBean.C_APELLIDOS2 + " AS NOMBRE, " +
-		    			" P." + CenPersonaBean.C_APELLIDOS1 + " || ' ' || P." + CenPersonaBean.C_APELLIDOS2 + " AS ORDEN_APELLIDOS, " +
-		    			" P." + CenPersonaBean.C_NOMBRE + " AS ORDEN_NOMBRE, " +
-		    			" F_SIGA_GETCOMFACTURA(F." + FacFacturaBean.C_IDINSTITUCION + ", F." + FacFacturaBean.C_IDPERSONA + ", F." + FacFacturaBean.C_IDFACTURA + ", 0) AS COMUNICACIONES, " +
-		    			" F_SIGA_GETRECURSO_ETIQUETA(ef." + FacEstadoFacturaBean.C_DESCRIPCION + ", " + this.usrbean.getLanguage() + ") AS ESTADO_FACTURA ";
+			 sql.append(" SELECT F.");
+			 sql.append(FacFacturaBean.C_IDINSTITUCION);
+			 sql.append(", F.");
+			 sql.append(FacFacturaBean.C_IDPERSONA);
+			 sql.append(", F.");
+			 sql.append(FacFacturaBean.C_IDFACTURA);
+			 sql.append(", F.");
+			 sql.append(FacFacturaBean.C_NUMEROFACTURA);
+			 sql.append(", F.");
+			 sql.append(FacFacturaBean.C_FECHAEMISION);
+			 sql.append(", F.");
+			 sql.append(FacFacturaBean.C_IMPTOTALPORPAGAR);
+			 sql.append(" AS DEUDA, F_SIGA_CALCULONCOLEGIADO(F.");
+			 sql.append(FacFacturaBean.C_IDINSTITUCION);
+			 sql.append(", F.");
+			 sql.append(FacFacturaBean.C_IDPERSONA);
+			 sql.append(") AS ");
+			 sql.append(CenColegiadoBean.C_NCOLEGIADO);
+			 sql.append(", P.");
+			 sql.append(CenPersonaBean.C_NOMBRE);
+			 sql.append(" || ' ' || P.");
+			 sql.append(CenPersonaBean.C_APELLIDOS1);
+			 sql.append(" || ' ' || P.");
+			 sql.append(CenPersonaBean.C_APELLIDOS2);
+			 sql.append(" AS NOMBRE, P.");
+			 sql.append(CenPersonaBean.C_APELLIDOS1);
+			 sql.append(" || ' ' || P.");
+			 sql.append(CenPersonaBean.C_APELLIDOS2);
+			 sql.append(" AS ORDEN_APELLIDOS, P.");
+			 sql.append(CenPersonaBean.C_NOMBRE);
+			 sql.append(" AS ORDEN_NOMBRE, F_SIGA_GETCOMFACTURA(F.");
+			 sql.append(FacFacturaBean.C_IDINSTITUCION);
+			 sql.append(", F.");
+			 sql.append(FacFacturaBean.C_IDPERSONA);
+			 sql.append(", F.");
+			 sql.append(FacFacturaBean.C_IDFACTURA);
+			 sql.append(", 0) AS COMUNICACIONES, F_SIGA_GETRECURSO_ETIQUETA(ef.");
+			 sql.append(FacEstadoFacturaBean.C_DESCRIPCION);
+			 sql.append(", ");
+			 sql.append(this.usrbean.getLanguage());
+			 sql.append(") AS ESTADO_FACTURA ");
 		    
 		    if ((nComunicacionesDesde!=null && !nComunicacionesDesde.equalsIgnoreCase("")) || 
 		    		(nComunicacionesHasta!=null && !nComunicacionesHasta.equalsIgnoreCase(""))) {
-		    	sql += ", ( " +
-			    			" SELECT COUNT(" + EnvComunicacionMorososBean.C_IDINSTITUCION + ") " +
-			    			" FROM " + EnvComunicacionMorososBean.T_NOMBRETABLA + " ECM " + 
-			    			" WHERE ECM." + EnvComunicacionMorososBean.C_IDINSTITUCION + " = F." + FacFacturaBean.C_IDINSTITUCION +
-			    				" AND ECM." + EnvComunicacionMorososBean.C_IDPERSONA + " = F." + FacFacturaBean.C_IDPERSONA +
-			    				" AND ECM." + EnvComunicacionMorososBean.C_IDFACTURA + " = F." + FacFacturaBean.C_IDFACTURA +
-		    			") AS NCOMUNICACIONES ";		    
+		    	 sql.append(", (SELECT COUNT(");
+		    	 sql.append(EnvComunicacionMorososBean.C_IDINSTITUCION);
+		    	 sql.append(") FROM ");
+		    	 sql.append(EnvComunicacionMorososBean.T_NOMBRETABLA);
+		    	 sql.append(" ECM WHERE ECM.");
+		    	 sql.append(EnvComunicacionMorososBean.C_IDINSTITUCION);
+		    	 sql.append(" = F.");
+		    	 sql.append(FacFacturaBean.C_IDINSTITUCION);
+		    	 sql.append(" AND ECM.");
+		    	 sql.append(EnvComunicacionMorososBean.C_IDPERSONA);
+		    	 sql.append(" = F.");
+		    	 sql.append(FacFacturaBean.C_IDPERSONA);
+		    	 sql.append(" AND ECM.");
+		    	 sql.append(EnvComunicacionMorososBean.C_IDFACTURA);
+		    	 sql.append(" = F.");
+		    	 sql.append(FacFacturaBean.C_IDFACTURA);
+		    	 sql.append(") AS NCOMUNICACIONES ");		    
 		    }
 		    
 		    if(isFacturasPendientes){
-		    	sql += ", ( " +
-		    				" SELECT count(F2." + FacFacturaBean.C_IDINSTITUCION + ") " +
-		    				" FROM " + FacFacturaBean.T_NOMBRETABLA + " F2 " +
-		    				" WHERE F2." + FacFacturaBean.C_IDINSTITUCION + " = F." + FacFacturaBean.C_IDINSTITUCION +
-		    					" AND F2." + FacFacturaBean.C_IDPERSONA + " = F." + FacFacturaBean.C_IDPERSONA +
-								" AND F2." + FacFacturaBean.C_NUMEROFACTURA + " IS NOT NULL " +
-			    				" AND F2." + FacFacturaBean.C_IMPTOTALPORPAGAR + " > 0 " +
-	    				") AS FACTURASPENDIENTES ";
+		    	 sql.append(", (SELECT count(F2.");
+		    	 sql.append(FacFacturaBean.C_IDINSTITUCION);
+		    	 sql.append(") FROM ");
+		    	 sql.append(FacFacturaBean.T_NOMBRETABLA);
+		    	 sql.append(" F2 WHERE F2.");
+		    	 sql.append(FacFacturaBean.C_IDINSTITUCION);
+		    	 sql.append(" = F.");
+		    	 sql.append(FacFacturaBean.C_IDINSTITUCION);
+		    	 sql.append(" AND F2.");
+		    	 sql.append(FacFacturaBean.C_IDPERSONA);
+		    	 sql.append(" = F.");
+		    	 sql.append(FacFacturaBean.C_IDPERSONA);
+		    	 sql.append(" AND F2.");
+		    	 sql.append(FacFacturaBean.C_NUMEROFACTURA);
+		    	 sql.append(" IS NOT NULL AND F2.");
+		    	 sql.append(FacFacturaBean.C_IMPTOTALPORPAGAR);
+		    	 sql.append(" > 0) AS FACTURASPENDIENTES ");
 		    }
 		    
-		    contador++;
-		    codigos.put(new Integer(contador),this.usrbean.getLocation());
-		    sql += " FROM " + FacFacturaBean.T_NOMBRETABLA + " F, " +
-		    			CenClienteBean.T_NOMBRETABLA + " C, " +
-		    			CenPersonaBean.T_NOMBRETABLA + " P, " + 
-		    			CenPersonaBean.T_NOMBRETABLA + " DEUDOR, " +		    			
-		    			CenInstitucionBean.T_NOMBRETABLA + " I, " +
-		    			FacEstadoFacturaBean.T_NOMBRETABLA + " EF " +
-		    		" WHERE F." + FacFacturaBean.C_IDINSTITUCION + " = :" + contador + 	    				
-	    				" AND F." + FacFacturaBean.C_ESTADO + " <> " + ClsConstants.ESTADO_FACTURA_ANULADA + // JPT: No se muestran las facturas anuladas
-	    				" AND F." + FacFacturaBean.C_IMPTOTALPORPAGAR + " > 0 " +
-	    				" AND C." + CenClienteBean.C_IDINSTITUCION + " = F." + FacFacturaBean.C_IDINSTITUCION +
-		    			" AND C." + CenClienteBean.C_IDPERSONA + "= F." + CenPersonaBean.C_IDPERSONA +
-		    			" AND P." + CenPersonaBean.C_IDPERSONA + " = F." + FacFacturaBean.C_IDPERSONA +
-		    			" AND DEUDOR." + CenPersonaBean.C_IDPERSONA + "(+) = F." + FacFacturaBean.C_IDPERSONADEUDOR + 
-		    			" AND I." + CenInstitucionBean.C_IDPERSONA  + "(+) = F." + FacFacturaBean.C_IDPERSONADEUDOR +
-		    			" AND EF." + FacEstadoFacturaBean.C_IDESTADO + " = F." + FacFacturaBean.C_ESTADO;
-		    
-		    //Comento por ordenes de LP
-		    //sql += " AND F." + FacFacturaBean.C_ESTADO + " <> " + FacFacturaAdm.IDESTADO_FACTURA_ANULADA;
+		    sql.append(" FROM ");
+		    sql.append(FacFacturaBean.T_NOMBRETABLA);
+		    sql.append(" F, ");
+		    sql.append(CenClienteBean.T_NOMBRETABLA);
+		    sql.append(" C, ");
+		    sql.append(CenPersonaBean.T_NOMBRETABLA);
+		    sql.append(" P, "); 
+		    sql.append(CenPersonaBean.T_NOMBRETABLA);
+		    sql.append(" DEUDOR, ");		    			
+		    sql.append(CenInstitucionBean.T_NOMBRETABLA);
+		    sql.append(" I, ");
+		    sql.append(FacEstadoFacturaBean.T_NOMBRETABLA);
+		    sql.append(" EF WHERE F.");
+		    sql.append(FacFacturaBean.C_IDINSTITUCION);
+		    sql.append(" = ");
+		    sql.append(this.usrbean.getLocation());	    				
+		    sql.append(" AND F.");
+		    sql.append(FacFacturaBean.C_ESTADO);
+		    sql.append(" <> ");
+		    sql.append(ClsConstants.ESTADO_FACTURA_ANULADA); // JPT: No se muestran las facturas anuladas
+		    sql.append(" AND F.");
+		    sql.append(FacFacturaBean.C_IMPTOTALPORPAGAR);
+		    sql.append(" > 0 AND C.");
+		    sql.append(CenClienteBean.C_IDINSTITUCION);
+		    sql.append(" = F.");
+		    sql.append(FacFacturaBean.C_IDINSTITUCION);
+		    sql.append(" AND C.");
+		    sql.append(CenClienteBean.C_IDPERSONA);
+		    sql.append("= F.");
+		    sql.append(CenPersonaBean.C_IDPERSONA);
+		    sql.append(" AND P.");
+		    sql.append(CenPersonaBean.C_IDPERSONA);
+		    sql.append(" = F.");
+		    sql.append(FacFacturaBean.C_IDPERSONA);
+		    sql.append(" AND DEUDOR.");
+		    sql.append(CenPersonaBean.C_IDPERSONA);
+		    sql.append("(+) = F.");
+		    sql.append(FacFacturaBean.C_IDPERSONADEUDOR);
+		    sql.append(" AND I.");
+		    sql.append(CenInstitucionBean.C_IDPERSONA);
+		    sql.append("(+) = F.");
+		    sql.append(FacFacturaBean.C_IDPERSONADEUDOR);
+		    sql.append(" AND EF.");
+		    sql.append(FacEstadoFacturaBean.C_IDESTADO);
+		    sql.append(" = F.");
+		    sql.append(FacFacturaBean.C_ESTADO);
 		    
 		   // FILTRO CLIENTE TAG BUSQUEDA
 		    String letrado = form.getLetrado();
 		    if(letrado!=null && !letrado.equalsIgnoreCase("")){
-		        contador++;
-			    codigos.put(new Integer(contador),letrado);
-			    sql += " AND F." + FacFacturaBean.C_IDPERSONA + " = :" + contador;
+			    sql.append(" AND F.");
+			    sql.append(FacFacturaBean.C_IDPERSONA);
+			    sql.append(" = ");
+			    sql.append(letrado);
 		    }
 		    
 		    // FILTRO CLIENTE NOMBRE Y APELLIDOS
 		    String nombre = form.getInteresadoNombre();
-		    if(nombre!=null && !nombre.equalsIgnoreCase("")){
-		        contador++;
-			    codigos.put(new Integer(contador), "%" + nombre.toLowerCase() + "%");
-			    sql += " AND LOWER(P." + CenPersonaBean.C_NOMBRE + ") LIKE :" + contador;
+		    if(nombre!=null && !nombre.trim().equalsIgnoreCase("")){
+			    sql.append(" AND TRANSLATE(UPPER(P.");
+			    sql.append(CenPersonaBean.C_NOMBRE);
+			    sql.append("), 'ÑÁÉÍÓÚÀÈÌÒÙÃÕÂÊÎÔÛÄËÏÖÜÇ', 'NAEIOUAEIOUAOAEIOOAEIOUC') LIKE '%' || TRANSLATE(UPPER('");
+			    sql.append(nombre.trim());
+			    sql.append("'), 'ÑÁÉÍÓÚÀÈÌÒÙÃÕÂÊÎÔÛÄËÏÖÜÇ', 'NAEIOUAEIOUAOAEIOOAEIOUC') || '%'");
 		    }
 		    
 		    String apellidos = form.getInteresadoApellidos();
-		    if(apellidos!=null && !apellidos.equalsIgnoreCase("")){
-		        contador++;
-			    codigos.put(new Integer(contador), "%" + apellidos.toLowerCase() + "%");
-		    	sql += " AND LOWER(P." + CenPersonaBean.C_APELLIDOS1 + " || ' ' || P." + CenPersonaBean.C_APELLIDOS2 + ") LIKE :" + contador;
+		    if(apellidos!=null && !apellidos.trim().equalsIgnoreCase("")){
+			    sql.append(" AND TRANSLATE(UPPER(P.");
+			    sql.append(CenPersonaBean.C_APELLIDOS1);
+			    sql.append(" || ' ' || P.");
+			    sql.append(CenPersonaBean.C_APELLIDOS2);
+			    sql.append("), 'ÑÁÉÍÓÚÀÈÌÒÙÃÕÂÊÎÔÛÄËÏÖÜÇ', 'NAEIOUAEIOUAOAEIOOAEIOUC') LIKE '%' || TRANSLATE(UPPER('");
+			    sql.append(apellidos.trim());
+			    sql.append("'), 'ÑÁÉÍÓÚÀÈÌÒÙÃÕÂÊÎÔÛÄËÏÖÜÇ', 'NAEIOUAEIOUAOAEIOOAEIOUC') || '%'");
 		    }
 		    
 		    // FILTRO CLIENTE ESTADOCOLEGIAL
 		    String estadoColegial = form.getCmbEstadoColegial();
 		    if (estadoColegial!=null && !estadoColegial.equalsIgnoreCase("")) {
-		    	//Se hace esto(grrr) para coger los dos estados colegiales
-		        contador++;
-			    codigos.put(new Integer(contador), estadoColegial);
-		    	sql += " AND :" + contador +" LIKE '%' || F_SIGA_GETTIPOCLIENTE(C." + CenClienteBean.C_IDPERSONA + ", C." + CenClienteBean.C_IDINSTITUCION + ", SYSDATE) || '%' " +
-		    			" AND NOT EXISTS ( " +
-		    				" SELECT 1 " +
-		    				" FROM " + CenNoColegiadoBean.T_NOMBRETABLA + " NC " +
-		    				" WHERE NC." + CenNoColegiadoBean.C_IDINSTITUCION + " = C." + CenClienteBean.C_IDINSTITUCION + 
-		    					" AND NC." + CenNoColegiadoBean.C_IDPERSONA + " = C." + CenClienteBean.C_IDPERSONA + 
-		    			" ) "; 
+			    sql.append(" AND ");
+			    sql.append(estadoColegial);
+			    sql.append(" = F_SIGA_GETTIPOCLIENTE(C.");
+			    sql.append(CenClienteBean.C_IDPERSONA);
+			    sql.append(", C.");
+			    sql.append(CenClienteBean.C_IDINSTITUCION);
+			    sql.append(", SYSDATE) AND NOT EXISTS (SELECT 1 FROM ");
+			    sql.append(CenNoColegiadoBean.T_NOMBRETABLA);
+			    sql.append(" NC WHERE NC.");
+			    sql.append(CenNoColegiadoBean.C_IDINSTITUCION);
+			    sql.append(" = C.");
+			    sql.append(CenClienteBean.C_IDINSTITUCION); 
+			    sql.append(" AND NC.");
+			    sql.append(CenNoColegiadoBean.C_IDPERSONA);
+			    sql.append(" = C.");
+			    sql.append(CenClienteBean.C_IDPERSONA); 
+			    sql.append(") "); 
 		    }
 		    
 		    // FILTRO DEUDOR
 		    String denominacion = form.getDenominacionDeudor();
-		    if (denominacion!=null && !denominacion.equalsIgnoreCase("")) {
-		        contador++;
-			    codigos.put(new Integer(contador), denominacion);
-			    sql += " AND I." + CenInstitucionBean.C_IDINSTITUCION + " = :" + contador;
+		    if (denominacion!=null && !denominacion.equals("")) {
+			    sql.append(" AND I.");
+			    sql.append(CenInstitucionBean.C_IDINSTITUCION);
+			    sql.append(" = ");
+			    sql.append(denominacion);
 		    }
 		    
-		    if (form.getCmbEstadosFactura()!=null && !form.getCmbEstadosFactura().equalsIgnoreCase("")) {
-		    	//Se hace esto(grrr) para coger los dos estados colegiales
-		        contador++;
-			    codigos.put(new Integer(contador), form.getCmbEstadosFactura());
-		    	sql += " AND EF." + FacEstadoFacturaBean.C_IDESTADO + " = :" + contador;
+		    String idEstado = form.getCmbEstadosFactura();
+		    if (idEstado!=null && !idEstado.equals("")) {
+			    sql.append(" AND EF.");
+			    sql.append(FacEstadoFacturaBean.C_IDESTADO);
+			    sql.append(" = ");
+			    sql.append(idEstado);
 		    }
 		    
 		    String fDesde = form.getFechaDesde(); 
@@ -1599,71 +1534,73 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
 			    String st = (String)v.get(1);
 			    contador = in.intValue();
 
-				sql += " AND " + st;
+			    sql.append(" AND ");
+			    sql.append(st);
 			}
 		    
 		    String numeroFactura = form.getNumeroFactura();
-		    if (numeroFactura!=null && !numeroFactura.equalsIgnoreCase("")) {
-		        contador++;
-			    codigos.put(new Integer(contador), numeroFactura);
-		    	sql += " AND F." + FacFacturaBean.C_NUMEROFACTURA + " = :" + contador;
+		    if (numeroFactura!=null && !numeroFactura.equals("")) {
+			    sql.append(" AND F.");
+			    sql.append(FacFacturaBean.C_NUMEROFACTURA);
+			    sql.append(" = '");
+			    sql.append(numeroFactura);
+			    sql.append("'");
 		    } else {
-		    	sql += " AND F." + FacFacturaBean.C_NUMEROFACTURA + " IS NOT NULL ";
+		    	sql.append(" AND F.");
+			    sql.append(FacFacturaBean.C_NUMEROFACTURA);
+			    sql.append(" IS NOT NULL ");
 		    }
 	    	
-	    	if ((nComunicacionesDesde!=null && !nComunicacionesDesde.equalsIgnoreCase("")) || 
-	    		(nComunicacionesHasta!=null && !nComunicacionesHasta.equalsIgnoreCase("")) || 
-				(isFacturasPendientes) ||
+	    	if ((nComunicacionesDesde!=null && !nComunicacionesDesde.equals("")) || 
+	    		(nComunicacionesHasta!=null && !nComunicacionesHasta.equals("")) || 
+				isFacturasPendientes ||
 				(form.getImporteAdeudadoDesde()!=null && !form.getImporteAdeudadoDesde().equals("")) ||
 				(form.getImporteAdeudadoHasta()!=null && !form.getImporteAdeudadoHasta().equals(""))) {
-	    		sql += " ) WHERE 1 = 1 ";
+	    		sql.append(") WHERE 1 = 1 ");
 	    		
 		    	// fin modificacion			   	   
 			    if (nComunicacionesDesde!=null && !nComunicacionesDesde.equalsIgnoreCase("")) {
-			        contador++;
-				    codigos.put(new Integer(contador), nComunicacionesDesde);
-			    	sql += " AND NCOMUNICACIONES >= :"+contador;
+				    sql.append(" AND NCOMUNICACIONES >= ");
+				    sql.append(nComunicacionesDesde);
 			    }
 
 			    if (nComunicacionesHasta!=null && !nComunicacionesHasta.equalsIgnoreCase("")) {
-			    	contador++;
-				    codigos.put(new Integer(contador), nComunicacionesHasta);
-			    	sql += " AND NCOMUNICACIONES <= :" + contador;
+				    sql.append(" AND NCOMUNICACIONES <= ");
+				    sql.append(nComunicacionesHasta);
 			    }
 
-			    if(isFacturasPendientes){		    	
-			    	if(form.getFacturasImpagadasDesde()!=null && !form.getFacturasImpagadasDesde().equals("")){
-			    		contador++;
-					    codigos.put(new Integer(contador), form.getFacturasImpagadasDesde());
-				    	sql += " AND FACTURASPENDIENTES >= :" + contador;
+			    if (isFacturasPendientes) {		
+			    	String nFacturasImpagadasDesde = form.getFacturasImpagadasDesde();
+			    	if (nFacturasImpagadasDesde!=null && !nFacturasImpagadasDesde.equals("")){
+					    sql.append(" AND FACTURASPENDIENTES >= ");
+					    sql.append(nFacturasImpagadasDesde);
 			    	}
 			    	
-			    	if(form.getFacturasImpagadasHasta()!=null && !form.getFacturasImpagadasHasta().equals("")){
-			    		contador++;
-					    codigos.put(new Integer(contador), form.getFacturasImpagadasHasta());
-				    	sql += " AND FACTURASPENDIENTES <= :" + contador;
-			    	}
+			    	String nFacturasImpagadasHasta = form.getFacturasImpagadasHasta();
+			    	if (nFacturasImpagadasHasta!=null && !nFacturasImpagadasHasta.equals("")){
+					    sql.append(" AND FACTURASPENDIENTES <= ");
+					    sql.append(nFacturasImpagadasHasta);
+			    	}			    	
 			    }
 			    
-			    if ((form.getImporteAdeudadoDesde()!=null && !form.getImporteAdeudadoDesde().equals("")) ||
-				    	(form.getImporteAdeudadoHasta()!=null && !form.getImporteAdeudadoHasta().equals(""))) {
-			    	if (form.getImporteAdeudadoDesde()!=null && !form.getImporteAdeudadoDesde().equals("")) {
-			    		contador++;
-					    codigos.put(new Integer(contador), form.getImporteAdeudadoDesde());
-				    	sql += " AND DEUDA >= :" + contador;
-			    	}
-			    	
-			    	if (form.getImporteAdeudadoHasta()!=null && !form.getImporteAdeudadoHasta().equals("")) {
-			    		contador++;
-					    codigos.put(new Integer(contador), form.getImporteAdeudadoHasta());
-				    	sql += " AND DEUDA <= :" + contador;
-			    	}
-			    }
+			    String importeAdeudadoDesde = form.getImporteAdeudadoDesde();			    
+		    	if (importeAdeudadoDesde!=null && !importeAdeudadoDesde.equals("")) {
+				    sql.append(" AND DEUDA >= ");
+				    sql.append(importeAdeudadoDesde);
+		    	}
+		    	
+			    String importeAdeudadoHasta = form.getImporteAdeudadoHasta();			    
+		    	if (importeAdeudadoHasta!=null && !importeAdeudadoHasta.equals("")) {
+				    sql.append(" AND DEUDA <= ");
+				    sql.append(importeAdeudadoHasta);
+		    	}		    	
 	    	}
 		    
-		    sql += " ORDER BY TO_NUMBER(" + FacFacturaBean.C_IDFACTURA + ") DESC";   		 
+	    	sql.append(" ORDER BY TO_NUMBER(");
+	    	sql.append(FacFacturaBean.C_IDFACTURA);
+	    	sql.append(") DESC");   		 
 		    
-		    PaginadorCaseSensitiveBind paginador = new PaginadorCaseSensitiveBind(sql,codigos);				
+		    PaginadorCaseSensitiveBind paginador = new PaginadorCaseSensitiveBind(sql.toString(), codigos);				
 			int totalRegistros = paginador.getNumeroTotalRegistros();
 			
 			if (totalRegistros==0){					
@@ -1883,92 +1820,6 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
 	    }
 		return null;
 	}
-
-
-	
-	/**
-	 * Obtiene la descripcion del estado de una factura
-	 * @param idInstitucion
-	 * @param idFactura
-	 * @return
-	 * @throws ClsExceptions
-	 * @throws SIGAException
-	 */
-	public String getDescEstadoFactura (Integer idInstitucion, String idFactura) throws ClsExceptions,SIGAException {
-	    Hashtable codigos = new Hashtable();
-	    try {
-	        codigos.put(new Integer(1),idInstitucion.toString());
-	        codigos.put(new Integer(2),idFactura);
-	        
-	        // RGG 26/05/2009 cambio de funciones de facturas
-	        String select =	"SELECT FAC_ESTADOFACTURA.DESCRIPCION AS ESTADO_FACTURA FROM FAC_FACTURA, FAC_ESTADOFACTURA WHERE FAC_FACTURA.ESTADO=FAC_ESTADOFACTURA.IDESTADO AND FAC_FACTURA.IDINSTITUCION=:1 AND FAC_FACTURA.IDFACTURA=:2"; 
-	        //String select =	"SELECT F_SIGA_DESCESTADOSFACTURA(:1, :2) as ESTADO_FACTURA FROM DUAL"; 
-
-			RowsContainer rc = new RowsContainer(); 
-			if (rc.queryBind(select, codigos)) {
-				if (rc.size() != 1) return null;
-				Hashtable aux = (Hashtable)((Row) rc.get(0)).getRow();
-				String num = UtilidadesHash.getString(aux, "ESTADO_FACTURA");
-				return num;
-			}
-		}
-	    catch (Exception e) {
-	   		if (e instanceof SIGAException){
-	   			throw (SIGAException)e;
-	   		}
-	   		else {
-	   			if (e instanceof ClsExceptions){
-	   				throw (ClsExceptions)e;
-	   			}
-	   			else {
-	   				throw new ClsExceptions(e, "Error al obtener el estado de las facturas.");
-	   			}
-	   		}	
-	    }
-		return null;
-	}
-	
-	/**
-	 * Obtiene el el total de una factura
-	 * @param idInstitucion
-	 * @param idFactura
-	 * @return
-	 * @throws ClsExceptions
-	 * @throws SIGAException
-	 */
-	public Double getTotalFactura (Integer idInstitucion, String idFactura) throws ClsExceptions,SIGAException {
-		try {
-		    Hashtable codigos = new Hashtable();
-		    codigos.put(new Integer(1),idInstitucion.toString());
-		    codigos.put(new Integer(2),idFactura);
-
-//		  RGG 26/05/2009 CAMBIO DE FUNCIONES DE IMPORTES
-            String select ="SELECT "+FacFacturaBean.C_IMPTOTAL+" AS TOTAL FROM FAC_FACTURA WHERE IDINSTITUCION=:1 AND IDFACTURA=:2 ";
-            //String select =	"SELECT PKG_SIGA_TOTALESFACTURA.TOTAL(:1,:2) as TOTAL FROM DUAL"; 
-
-			RowsContainer rc = new RowsContainer(); 
-			if (rc.queryBind(select,codigos)) {
-				if (rc.size() != 1) return null;
-				Hashtable aux = (Hashtable)((Row) rc.get(0)).getRow();
-				Double num = UtilidadesHash.getDouble(aux, "TOTAL");
-				return num;
-			}
-		}
-	    catch (Exception e) {
-	   		if (e instanceof SIGAException){
-	   			throw (SIGAException)e;
-	   		}
-	   		else {
-	   			if (e instanceof ClsExceptions){
-	   				throw (ClsExceptions)e;
-	   			}
-	   			else {
-	   				throw new ClsExceptions(e, "Error al obtener el estado de las facturas.");
-	   			}
-	   		}	
-	    }
-		return null;
-	}
 	
 	/** 
 	 * Recoge las facturas incluidas en una serie de facturacion ya confirmada
@@ -2119,121 +1970,6 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
 	    }
 
 	/**
-	 * Obtiene los datos fundamentales que se mostrara en el informe de una factura
-	 * @param idInstitucion de la factura
-	 * @param idFActura de la factura
-	 * @return datos asociados al informe
-	 * @throws ClsExceptions
-	 * @throws SIGAException
-	 */
-	public Hashtable getDatosInformeFactura (String idInstitucion, String idFactura)  throws ClsExceptions,SIGAException {
-		
-		Hashtable resultado = new Hashtable();
-        Hashtable codigosBind = new Hashtable();
-		int contador = 0;	            
-
-		
-		try {
-			String select = " SELECT " + 
-							FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDINSTITUCION + ", " +
-							FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDFACTURA 	+ ", " +
-							FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_NUMEROFACTURA + ", " +
-							FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_FECHAEMISION + ", " +
-							FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_OBSERVACIONES + ", " +
-							FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_OBSERVINFORME + "," +
-							FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDPERSONA + ", " +
-							FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDCUENTA + ", " +
-							CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_IBAN + ", " +
-							CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_CBO_CODIGO + ", " +
-							CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_CODIGOSUCURSAL + ", " +
-							CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_DIGITOCONTROL + ", " +
-							FacFacturaBean.T_NOMBRETABLA + "."  + FacFacturaBean.C_IMPTOTALNETO	+ " AS TOTAL_NETO, " +
-							FacFacturaBean.T_NOMBRETABLA + "."  + FacFacturaBean.C_IMPTOTALIVA	+ " AS TOTAL_IVA, " +
-							FacFacturaBean.T_NOMBRETABLA + "."  + FacFacturaBean.C_IMPTOTAL	+ " AS TOTAL_FACTURA, " +
-							FacFacturaBean.T_NOMBRETABLA + "."  + FacFacturaBean.C_IMPTOTALPAGADO	+ " AS TOTAL_PAGADO, " +
-							FacFacturaBean.T_NOMBRETABLA + "."  + FacFacturaBean.C_IMPTOTALANTICIPADO	+ " AS TOTAL_ANTICIPADO, " +							
-							FacFacturaBean.T_NOMBRETABLA + "."  + FacFacturaBean.C_IMPTOTALCOMPENSADO	+ " AS TOTAL_COMPENSADO, " +							
-							FacFacturaBean.T_NOMBRETABLA + "."  + FacFacturaBean.C_IMPTOTALPAGADOPORBANCO	+ " AS TOTAL_PAGADOPORBANCO, " +							
-							FacFacturaBean.T_NOMBRETABLA + "."  + FacFacturaBean.C_IMPTOTALPAGADOPORCAJA	+ " AS TOTAL_PAGADOPORCAJA, " +							
-							FacFacturaBean.T_NOMBRETABLA + "."  + FacFacturaBean.C_IMPTOTALPAGADOSOLOCAJA	+ " AS TOTAL_PAGADOSOLOCAJA, " +							
-							FacFacturaBean.T_NOMBRETABLA + "."  + FacFacturaBean.C_IMPTOTALPAGADOSOLOTARJETA	+ " AS TOTAL_PAGADOSOLOTARJETA, " +							
-							FacFacturaBean.T_NOMBRETABLA + "."  + FacFacturaBean.C_IMPTOTALPORPAGAR	+ " AS TOTAL_PENDIENTEPAGAR, " +							
-							"lpad(substr("+CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_NUMEROCUENTA + ",7),10,'*') NUMEROCUENTA " +
-/*							"PKG_SIGA_TOTALESFACTURA.TOTAL(" + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDINSTITUCION + ", " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDFACTURA + ") as TOTAL_FACTURA, " +
-							"PKG_SIGA_TOTALESFACTURA.TOTALANTICIPADO(" + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDINSTITUCION + ", " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDFACTURA + ") as TOTAL_ANTICIPADO, " + 
-							"PKG_SIGA_TOTALESFACTURA.TOTALCOMPENSADO(" + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDINSTITUCION + ", " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDFACTURA + ") as TOTAL_COMPENSADO, " + 
-							"PKG_SIGA_TOTALESFACTURA.TOTALPAGADOSOLOCAJA(" + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDINSTITUCION + ", " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDFACTURA + ") as TOTAL_PAGADOSOLOCAJA, " +
-							"PKG_SIGA_TOTALESFACTURA.TOTALPAGADOSOLOTARJETA(" + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDINSTITUCION + ", " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDFACTURA + ") as TOTAL_PAGADOSOLOTARJETA, " +
-							"PKG_SIGA_TOTALESFACTURA.TOTALPAGADOPORCAJA(" + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDINSTITUCION + ", " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDFACTURA + ") as TOTAL_PAGADOPORCAJA, " +
-							"PKG_SIGA_TOTALESFACTURA.TOTALPAGADOPORBANCO(" + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDINSTITUCION + ", " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDFACTURA + ") as TOTAL_PAGADOPORBANCO, " +
-							"PKG_SIGA_TOTALESFACTURA.TOTALPAGADO(" + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDINSTITUCION + ", " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDFACTURA + ") as TOTAL_PAGADO, " +
-							"PKG_SIGA_TOTALESFACTURA.PENDIENTEPORPAGAR(" + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDINSTITUCION + ", " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDFACTURA + ") as TOTAL_PENDIENTEPAGAR, " +
-							"PKG_SIGA_TOTALESFACTURA.TOTALNETO(" + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDINSTITUCION + ", " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDFACTURA + ") as TOTAL_NETO, " +
-							"PKG_SIGA_TOTALESFACTURA.TOTALIVA(" + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDINSTITUCION + ", " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDFACTURA + ") as TOTAL_IVA " + */
-							" FROM " + 
-							FacFacturaBean.T_NOMBRETABLA + 
-							" LEFT JOIN " + 
-								CenCuentasBancariasBean.T_NOMBRETABLA + 
-								" ON " + 
-										 CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_IDPERSONA + " = " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDPERSONA +
-										 " AND " + 
-										 CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_IDINSTITUCION + " = " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDINSTITUCION +
-										 " AND " + 
-										 CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_IDCUENTA + " = " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDCUENTA +
-							" WHERE ";
-					contador++;
-					codigosBind.put(new Integer(contador), idInstitucion);
-					select+=FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDINSTITUCION + " = :" +contador;
-							select+=" AND ";
-					contador++;
-					codigosBind.put(new Integer(contador), idFactura);
-					select+=FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDFACTURA + " = :" +contador;
-	
-			RowsContainer rc = new RowsContainer(); 
-			if (rc.queryBind(select, codigosBind)) {
-				if (rc.size() > 1) return null;
-					resultado = (Hashtable)((Row) rc.get(0)).getRow();
-					
-					//nuevo iag 
-//				   String idFacturaFila = resultado.get(FacFacturaBean.C_IDFACTURA).toString();
-//	               ConsPLFacturacion pl=new ConsPLFacturacion();
-//	               
-//	               Hashtable codigos2 = new Hashtable();
-//	               codigos2.put(new Integer(1), idInstitucion);
-//	               codigos2.put(new Integer(2), idFacturaFila);
-//	               
-//	               resultado.put("TOTAL_FACTURA", pl.getFuncionEjecutada(codigos2, "PKG_SIGA_TOTALESFACTURA.TOTAL"));
-//	               resultado.put("TOTAL_ANTICIPADO", pl.getFuncionEjecutada(codigos2, "PKG_SIGA_TOTALESFACTURA.TOTALANTICIPADO"));
-//	               resultado.put("TOTAL_COMPENSADO", pl.getFuncionEjecutada(codigos2, "PKG_SIGA_TOTALESFACTURA.TOTALCOMPENSADO"));
-//	               resultado.put("TOTAL_PAGADOSOLOCAJA", pl.getFuncionEjecutada(codigos2, "PKG_SIGA_TOTALESFACTURA.TOTALPAGADOSOLOCAJA"));
-//	               resultado.put("TOTAL_PAGADOSOLOTARJETA", pl.getFuncionEjecutada(codigos2, "PKG_SIGA_TOTALESFACTURA.TOTALPAGADOSOLOTARJETA"));
-//	               resultado.put("TOTAL_PAGADOPORCAJA", pl.getFuncionEjecutada(codigos2, "PKG_SIGA_TOTALESFACTURA.TOTALPAGADOPORCAJA"));
-//	               resultado.put("TOTAL_PAGADOPORBANCO", pl.getFuncionEjecutada(codigos2, "PKG_SIGA_TOTALESFACTURA.TOTALPAGADOPORBANCO"));
-//	               resultado.put("TOTAL_PAGADO", pl.getFuncionEjecutada(codigos2, "PKG_SIGA_TOTALESFACTURA.TOTALPAGADO"));
-//	               resultado.put("TOTAL_PENDIENTEPAGAR", pl.getFuncionEjecutada(codigos2, "PKG_SIGA_TOTALESFACTURA.PENDIENTEPORPAGAR"));
-//	               resultado.put("TOTAL_NETO", pl.getFuncionEjecutada(codigos2, "PKG_SIGA_TOTALESFACTURA.TOTALNETO"));
-//	               resultado.put("TOTAL_IVA", pl.getFuncionEjecutada(codigos2, "PKG_SIGA_TOTALESFACTURA.TOTALIVA"));
-
-				return resultado;
-			}
-		}
-	    catch (Exception e) {
-	   		if (e instanceof SIGAException){
-	   			throw (SIGAException)e;
-	   		}
-	   		else {
-	   			if (e instanceof ClsExceptions){
-	   				throw (ClsExceptions)e;
-	   			}
-	   			else {
-	   				throw new ClsExceptions(e, "Error al obtener los datos para el informe de una factura.");
-	   			}
-	   		}	
-	    }
-		return null;
-	}
-
-	/**
 	 * Obtiene los datos fundamentales que se mostrara en el informe tipo MasterRepor de una factura
 	 * @param idInstitucion de la factura
 	 * @param idFActura de la factura
@@ -2242,247 +1978,418 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
 	 * @throws SIGAException
 	 */
 	public Hashtable getDatosImpresionInformeFactura (String idInstitucion, String idFactura)  throws ClsExceptions,SIGAException {
-		
-		Hashtable nuevo= new Hashtable();
-		Hashtable codigosBind = new Hashtable();
-		int contador=0;
+		Hashtable nuevo = new Hashtable();		
 		
 		try {
-			String select = " SELECT " + 
-							FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDINSTITUCION + ", " +
-							FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDFACTURA 	+ ", " +
-							FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_NUMEROFACTURA + ", " +
-							FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_FECHAEMISION + ", " +
-							FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_OBSERVACIONES + ", " +
-							FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_OBSERVINFORME + "," +
-							FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDPERSONA + ", " +
-							FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDCUENTA + ", " +
-							FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDCUENTADEUDOR + ", " +
-							CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_IBAN + ", " +
-							CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_CBO_CODIGO + ", " +
-							CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_CODIGOSUCURSAL + ", " +
-							CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_DIGITOCONTROL + ", " +
-							FacFacturaBean.T_NOMBRETABLA + "."  + FacFacturaBean.C_IMPTOTALNETO	+ " AS IMPORTE_NETO, " +
-							FacFacturaBean.T_NOMBRETABLA + "."  + FacFacturaBean.C_IMPTOTALIVA	+ " AS IMPORTE_IVA, " +
-							FacFacturaBean.T_NOMBRETABLA + "."  + FacFacturaBean.C_IMPTOTAL	+ " AS TOTAL_FACTURA, " +
-							FacFacturaBean.T_NOMBRETABLA + "."  + FacFacturaBean.C_IMPTOTALPAGADO	+ " AS TOTAL_PAGOS, " +
-							FacFacturaBean.T_NOMBRETABLA + "."  + FacFacturaBean.C_IMPTOTALANTICIPADO	+ " AS ANTICIPADO, " +							
-							FacFacturaBean.T_NOMBRETABLA + "."  + FacFacturaBean.C_IMPTOTALCOMPENSADO	+ " AS COMPENSADO, " +							
-							FacFacturaBean.T_NOMBRETABLA + "."  + FacFacturaBean.C_IMPTOTALPAGADOPORBANCO	+ " AS POR_BANCO, " +							
-							FacFacturaBean.T_NOMBRETABLA + "."  + FacFacturaBean.C_IMPTOTALPAGADOPORCAJA	+ " AS POR_CAJA, " +							
-							FacFacturaBean.T_NOMBRETABLA + "."  + FacFacturaBean.C_IMPTOTALPAGADOSOLOCAJA	+ " AS POR_SOLOCAJA, " +							
-							FacFacturaBean.T_NOMBRETABLA + "."  + FacFacturaBean.C_IMPTOTALPAGADOSOLOTARJETA	+ " AS POR_SOLOTARJETA, " +							
-							FacFacturaBean.T_NOMBRETABLA + "."  + FacFacturaBean.C_IMPTOTALPORPAGAR	+ " AS PENDIENTE_PAGAR, " +							
-							"lpad(substr("+CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_NUMEROCUENTA + ",7),10,'*') NUMEROCUENTA, " +
-							CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_TITULAR + 
-/*					        "PKG_SIGA_TOTALESFACTURA.TOTAL(" + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDINSTITUCION + ", " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDFACTURA + ") as TOTAL_FACTURA, " +
-							"PKG_SIGA_TOTALESFACTURA.TOTALANTICIPADO(" + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDINSTITUCION + ", " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDFACTURA + ") as TOTAL_ANTICIPADO, " + 
-							"PKG_SIGA_TOTALESFACTURA.TOTALCOMPENSADO(" + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDINSTITUCION + ", " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDFACTURA + ") as TOTAL_COMPENSADO, " + 
-							"PKG_SIGA_TOTALESFACTURA.TOTALPAGADOSOLOCAJA(" + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDINSTITUCION + ", " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDFACTURA + ") as TOTAL_PAGADOSOLOCAJA, " +
-							"PKG_SIGA_TOTALESFACTURA.TOTALPAGADOSOLOTARJETA(" + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDINSTITUCION + ", " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDFACTURA + ") as TOTAL_PAGADOSOLOTARJETA, " +
-							"PKG_SIGA_TOTALESFACTURA.TOTALPAGADOPORCAJA(" + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDINSTITUCION + ", " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDFACTURA + ") as TOTAL_PAGADOPORCAJA, " +
-							"PKG_SIGA_TOTALESFACTURA.TOTALPAGADOPORBANCO(" + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDINSTITUCION + ", " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDFACTURA + ") as TOTAL_PAGADOPORBANCO, " +
-							"PKG_SIGA_TOTALESFACTURA.TOTALPAGADO(" + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDINSTITUCION + ", " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDFACTURA + ") as TOTAL_PAGADO, " +
-							"PKG_SIGA_TOTALESFACTURA.PENDIENTEPORPAGAR(" + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDINSTITUCION + ", " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDFACTURA + ") as TOTAL_PENDIENTEPAGAR, " +
-							"PKG_SIGA_TOTALESFACTURA.TOTALNETO(" + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDINSTITUCION + ", " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDFACTURA + ") as TOTAL_NETO, " +
-							"PKG_SIGA_TOTALESFACTURA.TOTALIVA(" + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDINSTITUCION + ", " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDFACTURA + ") as TOTAL_IVA " + */
-							" FROM " + 
-							FacFacturaBean.T_NOMBRETABLA + 
-							" LEFT JOIN " + 
-								CenCuentasBancariasBean.T_NOMBRETABLA + 
-								" ON " + 
-										 CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_IDPERSONA + " = " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDPERSONA +
-										 " AND " + 
-										 CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_IDINSTITUCION + " = " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDINSTITUCION +
-										 " AND " + 
-										 CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_IDCUENTA + " = " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDCUENTA +
-							" WHERE ";
+			StringBuilder sql = new StringBuilder();
+			sql.append("SELECT "); 
+			sql.append(FacFacturaBean.T_NOMBRETABLA);
+			sql.append(".");
+			sql.append(FacFacturaBean.C_IDINSTITUCION);
+			sql.append(", ");
+			sql.append(FacFacturaBean.T_NOMBRETABLA);
+			sql.append(".");
+			sql.append(FacFacturaBean.C_IDFACTURA);
+			sql.append(", ");
+			sql.append(FacFacturaBean.T_NOMBRETABLA);
+			sql.append(".");
+			sql.append(FacFacturaBean.C_NUMEROFACTURA);
+			sql.append(", ");
+			sql.append(FacFacturaBean.T_NOMBRETABLA);
+			sql.append(".");
+			sql.append(FacFacturaBean.C_FECHAEMISION);
+			sql.append(", ");
+			sql.append(FacFacturaBean.T_NOMBRETABLA);
+			sql.append(".");
+			sql.append(FacFacturaBean.C_OBSERVACIONES);
+			sql.append(", ");
+			sql.append(FacFacturaBean.T_NOMBRETABLA);
+			sql.append(".");
+			sql.append(FacFacturaBean.C_OBSERVINFORME);
+			sql.append(",");
+			sql.append(FacFacturaBean.T_NOMBRETABLA);
+			sql.append(".");
+			sql.append(FacFacturaBean.C_IDPERSONA);
+			sql.append(", ");
+			sql.append(FacFacturaBean.T_NOMBRETABLA);
+			sql.append(".");
+			sql.append(FacFacturaBean.C_IDCUENTA);
+			sql.append(", ");
+			sql.append(FacFacturaBean.T_NOMBRETABLA);
+			sql.append(".");
+			sql.append(FacFacturaBean.C_IDCUENTADEUDOR);
+			sql.append(", ");
+			sql.append(CenCuentasBancariasBean.T_NOMBRETABLA);
+			sql.append(".");
+			sql.append(CenCuentasBancariasBean.C_IBAN);
+			sql.append(", ");
+			sql.append(CenCuentasBancariasBean.T_NOMBRETABLA);
+			sql.append(".");
+			sql.append(CenCuentasBancariasBean.C_CBO_CODIGO);
+			sql.append(", ");
+			sql.append(CenCuentasBancariasBean.T_NOMBRETABLA);
+			sql.append(".");
+			sql.append(CenCuentasBancariasBean.C_CODIGOSUCURSAL);
+			sql.append(", ");
+			sql.append(CenCuentasBancariasBean.T_NOMBRETABLA);
+			sql.append(".");
+			sql.append(CenCuentasBancariasBean.C_DIGITOCONTROL);
+			sql.append(", ");
+			sql.append(FacFacturaBean.T_NOMBRETABLA);
+			sql.append(".");
+			sql.append(FacFacturaBean.C_IMPTOTALNETO);
+			sql.append(" AS IMPORTE_NETO, ");
+			sql.append(FacFacturaBean.T_NOMBRETABLA);
+			sql.append(".");
+			sql.append(FacFacturaBean.C_IMPTOTALIVA);
+			sql.append(" AS IMPORTE_IVA, ");
+			sql.append(FacFacturaBean.T_NOMBRETABLA);
+			sql.append(".");
+			sql.append(FacFacturaBean.C_IMPTOTAL);
+			sql.append(" AS TOTAL_FACTURA, ");
+			sql.append(FacFacturaBean.T_NOMBRETABLA);
+			sql.append(".");
+			sql.append(FacFacturaBean.C_IMPTOTALPAGADO);
+			sql.append(" AS TOTAL_PAGOS, ");
+			sql.append(FacFacturaBean.T_NOMBRETABLA);
+			sql.append(".");
+			sql.append(FacFacturaBean.C_IMPTOTALANTICIPADO);
+			sql.append(" AS ANTICIPADO, ");							
+			sql.append(FacFacturaBean.T_NOMBRETABLA);
+			sql.append(".");
+			sql.append(FacFacturaBean.C_IMPTOTALCOMPENSADO);
+			sql.append(" AS COMPENSADO, ");							
+			sql.append(FacFacturaBean.T_NOMBRETABLA);
+			sql.append(".");
+			sql.append(FacFacturaBean.C_IMPTOTALPAGADOPORBANCO);
+			sql.append(" AS POR_BANCO, ");							
+			sql.append(FacFacturaBean.T_NOMBRETABLA);
+			sql.append(".");
+			sql.append(FacFacturaBean.C_IMPTOTALPAGADOPORCAJA);
+			sql.append(" AS POR_CAJA, ");							
+			sql.append(FacFacturaBean.T_NOMBRETABLA);
+			sql.append(".");
+			sql.append(FacFacturaBean.C_IMPTOTALPAGADOSOLOCAJA);
+			sql.append(" AS POR_SOLOCAJA, ");							
+			sql.append(FacFacturaBean.T_NOMBRETABLA);
+			sql.append(".");
+			sql.append(FacFacturaBean.C_IMPTOTALPAGADOSOLOTARJETA);
+			sql.append(" AS POR_SOLOTARJETA, ");							
+			sql.append(FacFacturaBean.T_NOMBRETABLA);
+			sql.append(".");
+			sql.append(FacFacturaBean.C_IMPTOTALPORPAGAR);
+			sql.append(" AS PENDIENTE_PAGAR, LPAD(SUBSTR(");
+			sql.append(CenCuentasBancariasBean.T_NOMBRETABLA);
+			sql.append(".");
+			sql.append(CenCuentasBancariasBean.C_NUMEROCUENTA);
+			sql.append(", 7), 10, '*') AS NUMEROCUENTA, ");
+			sql.append(CenCuentasBancariasBean.T_NOMBRETABLA);
+			sql.append(".");
+			sql.append(CenCuentasBancariasBean.C_TITULAR);
+			sql.append(", ");
+			sql.append(FacFacturaBean.T_NOMBRETABLA);
+			sql.append(".");
+			sql.append(FacFacturaBean.C_IDMANDATO);
+			sql.append(", ");
+			sql.append(FacFacturaBean.T_NOMBRETABLA);
+			sql.append(".");
+			sql.append(FacFacturaBean.C_COMISIONIDFACTURA);
+			
+			sql.append(", ");
+			sql.append(FacEstadoFacturaBean.T_NOMBRETABLA);
+			sql.append(".");
+			sql.append(FacEstadoFacturaBean.C_DESCRIPCION);
+			sql.append(" AS DESCRIPCION_ESTADO ");
+			
+			sql.append(" FROM "); 
+			sql.append(FacFacturaBean.T_NOMBRETABLA); 
+			sql.append(" LEFT JOIN "); 
+			sql.append(CenCuentasBancariasBean.T_NOMBRETABLA); 
+			sql.append(" ON "); 
+			sql.append(CenCuentasBancariasBean.T_NOMBRETABLA);
+			sql.append(".");
+			sql.append(CenCuentasBancariasBean.C_IDPERSONA);
+			sql.append(" = ");
+			sql.append(FacFacturaBean.T_NOMBRETABLA);
+			sql.append(".");
+			sql.append(FacFacturaBean.C_IDPERSONA);
+			sql.append(" AND "); 
+			sql.append(CenCuentasBancariasBean.T_NOMBRETABLA);
+			sql.append(".");
+			sql.append(CenCuentasBancariasBean.C_IDINSTITUCION);
+			sql.append(" = ");
+			sql.append(FacFacturaBean.T_NOMBRETABLA);
+			sql.append(".");
+			sql.append(FacFacturaBean.C_IDINSTITUCION);
+			sql.append(" AND "); 
+			sql.append(CenCuentasBancariasBean.T_NOMBRETABLA);
+			sql.append(".");
+			sql.append(CenCuentasBancariasBean.C_IDCUENTA);
+			sql.append(" = ");
+			sql.append(FacFacturaBean.T_NOMBRETABLA);
+			sql.append(".");
+			sql.append(FacFacturaBean.C_IDCUENTA);			
+			
+			sql.append(" INNER JOIN ");
+			sql.append(FacEstadoFacturaBean.T_NOMBRETABLA);
+			sql.append(" ON ");
+			sql.append(FacFacturaBean.T_NOMBRETABLA);
+			sql.append(".");
+			sql.append(FacFacturaBean.C_ESTADO);
+			sql.append(" = ");
+			sql.append(FacEstadoFacturaBean.T_NOMBRETABLA);
+			sql.append(".");
+			sql.append(FacEstadoFacturaBean.C_IDESTADO);
+			
+			Hashtable codigosBind = new Hashtable();
+			int contador = 0;
 			contador++;
-			codigosBind.put(new Integer(contador),idInstitucion);
-					select+=FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDINSTITUCION + " = :"+contador;
-					select+=" AND ";
+			codigosBind.put(new Integer(contador), idInstitucion);
+			sql.append(" WHERE ");
+			sql.append(FacFacturaBean.T_NOMBRETABLA);
+			sql.append(".");
+			sql.append(FacFacturaBean.C_IDINSTITUCION);
+			sql.append(" = :");
+			sql.append(contador);
+					
 			contador++;
-			codigosBind.put(new Integer(contador),idFactura);		
-					select+=FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDFACTURA + " = :"+contador;
+			codigosBind.put(new Integer(contador), idFactura);
+			sql.append(" AND ");
+			sql.append(FacFacturaBean.T_NOMBRETABLA);
+			sql.append(".");
+			sql.append(FacFacturaBean.C_IDFACTURA);
+			sql.append(" = :");
+			sql.append(contador);
 	
 			RowsContainer rc = new RowsContainer(); 
-			if (rc.queryBind(select,codigosBind)) {
-				if (rc.size() > 1) return null;
-				Hashtable factura = ((Row) rc.get(0)).getRow();
+			if (rc.queryBind(sql.toString(), codigosBind)) {
+				if (rc.size() > 1) 
+					return null;
+				
+				CenColegiadoAdm colegiadoAdm = new CenColegiadoAdm(this.usrbean);
+				CenDireccionesAdm direccionAdm = new CenDireccionesAdm(this.usrbean);
+				CenInstitucionAdm institucionAdm = new CenInstitucionAdm(this.usrbean);
+				CenMandatosCuentasBancariasAdm mandatosCuentasBancariasAdm = new CenMandatosCuentasBancariasAdm(this.usrbean);
+				CenPaisAdm admPais = new CenPaisAdm(this.usrbean);
+				CenPersonaAdm personaAdm = new CenPersonaAdm(this.usrbean);
+				
+				Row fila = (Row) rc.get(0);
+				Hashtable<String, Object> factura = fila.getRow();
+				
+				String sIdInstitucion = (String)factura.get(CenInstitucionBean.C_IDINSTITUCION);
 				
 				// RGG 15/02/2007 OBTENEMOS LOS VALORES, CALCULAMOS OTROS Y CAMBIAMOS LAS ETIQUETAS
-				String kk="";
-
-				CenInstitucionAdm institucionAdm = new CenInstitucionAdm(this.usrbean);
-				nuevo.put("NOMBRE_COLEGIO",institucionAdm.getNombreInstitucion((String)factura.get(CenInstitucionBean.C_IDINSTITUCION)));
+				String sNombreInstitucion = institucionAdm.getNombreInstitucion(sIdInstitucion);
+				nuevo.put("NOMBRE_COLEGIO", sNombreInstitucion);
  
-				String idPersona=institucionAdm.getIdPersona((String)factura.get(CenInstitucionBean.C_IDINSTITUCION));
-				// direccion institucion
-				CenDireccionesAdm direccionAdm = new CenDireccionesAdm(this.usrbean);
-				Hashtable direccion=direccionAdm.getEntradaDireccionEspecifica(idPersona,(String)factura.get(FacFacturaBean.C_IDINSTITUCION),"3");
-				if (direccion.get("DOMICILIO")!=null){
-					nuevo.put("DIRECCION_COLEGIO",(String)direccion.get(CenDireccionesBean.C_DOMICILIO));
-				}	
+				String idPersona = institucionAdm.getIdPersona(sIdInstitucion);				
+				nuevo.put("CIF_COLEGIO",personaAdm.obtenerNIF(idPersona));
+				
+				// direccion institucion				
+				Hashtable<String, Object> direccion = direccionAdm.getEntradaDireccionEspecifica(idPersona, sIdInstitucion, String.valueOf(ClsConstants.TIPO_DIRECCION_CENSOWEB));
+				String sDomicilio = (String)direccion.get(CenDireccionesBean.C_DOMICILIO);
+				if (sDomicilio!=null && !sDomicilio.equals("")) {
+					nuevo.put("DIRECCION_COLEGIO", sDomicilio);
+				}
 
-				direccion=direccionAdm.getEntradaDireccionEspecificaYUbicacion(idPersona,(String)factura.get(FacFacturaBean.C_IDINSTITUCION),"3");
-				if (direccion.get(CenDireccionesBean.C_IDPAIS)!=null){
-					if ((direccion.get(CenDireccionesBean.C_IDPAIS).equals("") || direccion.get(CenDireccionesBean.C_IDPAIS).equals(ClsConstants.ID_PAIS_ESPANA)) && (direccion.get(CenDireccionesBean.C_CODIGOPOSTAL)!=null)&&(direccion.get("POBLACION")!=null) &&(direccion.get("PROVINCIA")!=null)){
-						nuevo.put("CODIGO_POSTAL_POBLACION_PROVINCIA_COLEGIO",(String)direccion.get(CenDireccionesBean.C_CODIGOPOSTAL)+", "+(String)direccion.get("POBLACION")+", "+(String)direccion.get("PROVINCIA"));
+				direccion = direccionAdm.getEntradaDireccionEspecificaYUbicacion(idPersona, sIdInstitucion, String.valueOf(ClsConstants.TIPO_DIRECCION_CENSOWEB));
+				String sPais = (String) direccion.get(CenDireccionesBean.C_IDPAIS);							
+				if (sPais!=null){					
+					String sCodigoPostal = (String)direccion.get(CenDireccionesBean.C_CODIGOPOSTAL);
+					String sPoblacion = (String)direccion.get("POBLACION");
+					String sProvincia = (String)direccion.get("PROVINCIA");
+					if ((sPais.equals("") || sPais.equals(ClsConstants.ID_PAIS_ESPANA)) && sCodigoPostal!=null && sPoblacion!=null && sProvincia!=null) {
+						nuevo.put("CODIGO_POSTAL_POBLACION_PROVINCIA_COLEGIO", sCodigoPostal + ", " + sPoblacion + ", " + sProvincia);
 					} else {
-						CenPaisAdm admPais = new CenPaisAdm(this.usrbean);
-						String pais = admPais.getDescripcion((String)direccion.get(CenDireccionesBean.C_IDPAIS));
-						nuevo.put("CODIGO_POSTAL_POBLACION_PROVINCIA_COLEGIO",(String)direccion.get(CenDireccionesBean.C_CODIGOPOSTAL)+", "+(String)direccion.get("POBLACIONEXTRANJERA") + ", "+ pais);
+						String sPoblacionExtranjera = (String) direccion.get("POBLACIONEXTRANJERA");						
+						String pais = admPais.getDescripcion(sPais);
+						nuevo.put("CODIGO_POSTAL_POBLACION_PROVINCIA_COLEGIO", sCodigoPostal + ", " + sPoblacionExtranjera + ", " + pais);
 					}
+				} else {
+					nuevo.put("CODIGO_POSTAL_POBLACION_PROVINCIA_COLEGIO","-");
 				}
 
-				direccion=direccionAdm.getEntradaDireccionEspecifica(idPersona,(String)factura.get(FacFacturaBean.C_IDINSTITUCION),"3");
-				String resultado="";
-				if (direccion.get("TELEFONO1")!=null){
-					if (!((String)direccion.get("TELEFONO1")).equalsIgnoreCase("")){
-						resultado+=(String)direccion.get(CenDireccionesBean.C_TELEFONO1);
-						nuevo.put("TELEFONO1",(String)direccion.get(CenDireccionesBean.C_TELEFONO1));
-					}	
+				StringBuilder resultado = new StringBuilder();
+				direccion = direccionAdm.getEntradaDireccionEspecifica(idPersona, sIdInstitucion, String.valueOf(ClsConstants.TIPO_DIRECCION_CENSOWEB));
+				
+				String sTelefono1 = (String)direccion.get(CenDireccionesBean.C_TELEFONO1);
+				if (sTelefono1!=null && !sTelefono1.equals("")) {
+					resultado.append(sTelefono1);
+					nuevo.put("TELEFONO1", sTelefono1);
 				}
-				if (direccion.get("TELEFONO2")!=null){
-					if (!((String)direccion.get("TELEFONO2")).equalsIgnoreCase("")){
-						resultado+=", "+(String)direccion.get(CenDireccionesBean.C_TELEFONO2);
+				
+				String sTelefono2 = (String)direccion.get(CenDireccionesBean.C_TELEFONO2);
+				if (sTelefono2!=null && !sTelefono2.equals("")) {
+					if (resultado.length()>0) {
+						resultado.append(", ");
 					}
+					resultado.append(sTelefono2);
 				}
-				if (direccion.get("MOVIL")!=null){
-					if (!((String)direccion.get("MOVIL")).equalsIgnoreCase("")){
-						resultado+=", "+(String)direccion.get(CenDireccionesBean.C_MOVIL);
+				
+				String sMovil = (String)direccion.get(CenDireccionesBean.C_MOVIL);
+				if (sMovil!=null && !sMovil.equals("")) {
+					if (resultado.length()>0) {
+						resultado.append(", ");
 					}
+					resultado.append(sMovil);
 				}
-				if (direccion.get(CenDireccionesBean.C_CORREOELECTRONICO)!=null){
-					if (!((String)direccion.get(CenDireccionesBean.C_CORREOELECTRONICO)).equalsIgnoreCase("")){
-						resultado+="  "+(String)direccion.get("CORREOELECTRONICO");
+				
+				String sCorreoElectronico = (String)direccion.get(CenDireccionesBean.C_CORREOELECTRONICO);
+				if (sCorreoElectronico!=null && !sCorreoElectronico.equals("")) {
+					if (resultado.length()>0) {
+						resultado.append(" ");
 					}
+					resultado.append(sCorreoElectronico);
 				}
-				nuevo.put("TELEFONOS_EMAIL_COLEGIO",resultado);
-
-				idPersona=institucionAdm.getIdPersona((String)factura.get(CenInstitucionBean.C_IDINSTITUCION));
-				CenPersonaAdm personaAdm = new CenPersonaAdm(this.usrbean);
-				nuevo.put("CIF_COLEGIO",personaAdm.obtenerNIF(idPersona));	
+				nuevo.put("TELEFONOS_EMAIL_COLEGIO", resultado.toString());
 
 				// TRATAMIENTO PARA LA PERSONA DE LA FACTURA
-				idPersona=(String)factura.get(CenInstitucionBean.C_IDPERSONA);
-				
-				// RGG ?? nuevo.put("CIF_COLEGIO",personaAdm.obtenerNombreApellidos(idPersona));
+				idPersona = (String)factura.get(CenInstitucionBean.C_IDPERSONA);
 				
 				String nombre = personaAdm.obtenerNombreApellidos(idPersona);
-				if (nombre!=null) {
-					nuevo.put("NOMBRE_CLIENTE",nombre);
-				}else{
-					nuevo.put("NOMBRE_CLIENTE","-");
+				if (nombre!=null && !nombre.equals("")) {
+					nuevo.put("NOMBRE_CLIENTE", nombre);
+				} else {
+					nuevo.put("NOMBRE_CLIENTE", "-");
 				}
-				direccion = new Hashtable();
-				direccion=direccionAdm.getEntradaDireccionEspecifica(idPersona,(String)factura.get(FacFacturaBean.C_IDINSTITUCION),""+ClsConstants.TIPO_DIRECCION_FACTURACION);
+				
+				direccion = direccionAdm.getEntradaDireccionEspecifica(idPersona, sIdInstitucion, String.valueOf(ClsConstants.TIPO_DIRECCION_FACTURACION));
 				if (direccion.size()==0){
 					throw new SIGAException("messages.censo.direcciones.facturacion");
 			    }
-				
-				
-				
-				
 
-				if (direccion.get(CenDireccionesBean.C_DOMICILIO)!=null&&!((String)direccion.get(CenDireccionesBean.C_DOMICILIO)).equals("")){
-					nuevo.put("DIRECCION_CLIENTE",(String)direccion.get(CenDireccionesBean.C_DOMICILIO));
-				}else{
+				sDomicilio = (String)direccion.get(CenDireccionesBean.C_DOMICILIO);
+				if (sDomicilio!=null && !sDomicilio.equals("")){
+					nuevo.put("DIRECCION_CLIENTE", sDomicilio);
+				} else {
 					nuevo.put("DIRECCION_CLIENTE","-");
 				}
 				
-				if (direccion.get(CenDireccionesBean.C_IDPAIS)!=null){
-					if ((direccion.get(CenDireccionesBean.C_IDPAIS).equals("") || direccion.get(CenDireccionesBean.C_IDPAIS).equals(ClsConstants.ID_PAIS_ESPANA)) && (direccion.get(CenDireccionesBean.C_CODIGOPOSTAL)!=null)&&(direccion.get("POBLACION")!=null) &&(direccion.get("PROVINCIA")!=null)){
-						nuevo.put("CODIGO_POSTAL_POBLACION_PROVINCIA_CLIENTE",(String)direccion.get(CenDireccionesBean.C_CODIGOPOSTAL)+", "+(String)direccion.get("POBLACION")+", "+(String)direccion.get("PROVINCIA"));
-					}else{
-						CenPaisAdm admPais = new CenPaisAdm(this.usrbean);
-						String pais = admPais.getDescripcion((String)direccion.get(CenDireccionesBean.C_IDPAIS));
-						nuevo.put("CODIGO_POSTAL_POBLACION_PROVINCIA_CLIENTE",(String)direccion.get(CenDireccionesBean.C_CODIGOPOSTAL)+", "+(String)direccion.get("POBLACIONEXTRANJERA") + ", "+ pais);
+				sPais = (String) direccion.get(CenDireccionesBean.C_IDPAIS);							
+				if (sPais!=null){					
+					String sCodigoPostal = (String) direccion.get(CenDireccionesBean.C_CODIGOPOSTAL);
+					String sPoblacion = (String) direccion.get("POBLACION");
+					String sProvincia = (String) direccion.get("PROVINCIA");
+					if ((sPais.equals("") || sPais.equals(ClsConstants.ID_PAIS_ESPANA)) && sCodigoPostal!=null && sPoblacion!=null && sProvincia!=null) {
+						nuevo.put("CODIGO_POSTAL_POBLACION_PROVINCIA_CLIENTE", sCodigoPostal + ", " + sPoblacion + ", " + sProvincia);
+					} else {
+						String sPoblacionExtranjera = (String) direccion.get("POBLACIONEXTRANJERA");
+						String pais = admPais.getDescripcion(sPais);
+						nuevo.put("CODIGO_POSTAL_POBLACION_PROVINCIA_CLIENTE", sCodigoPostal + ", " + sPoblacionExtranjera + ", " + pais);
 					}
-				}else{
+				} else {
 					nuevo.put("CODIGO_POSTAL_POBLACION_PROVINCIA_CLIENTE","-");
-					
 				}
 
-				resultado="";
+				resultado = new StringBuilder();				
+				sTelefono1 = (String)direccion.get(CenDireccionesBean.C_TELEFONO1);
+				if (sTelefono1!=null && !sTelefono1.equals("")) {
+					resultado.append(sTelefono1);
+				} else {
+					resultado.append("-");
+				}
 				
-				if (direccion.get(CenDireccionesBean.C_TELEFONO1)!=null){
-					if (!((String)direccion.get(CenDireccionesBean.C_TELEFONO1)).equalsIgnoreCase("")){
-						resultado=(String)direccion.get(CenDireccionesBean.C_TELEFONO1);
-					}else{
-						resultado="-";
+				sTelefono2 = (String)direccion.get(CenDireccionesBean.C_TELEFONO2);
+				if (sTelefono2!=null && !sTelefono2.equals("")) {
+					if (resultado.length()>0) {
+						resultado.append(", ");
 					}
-				}else{
-					resultado="-";
+					resultado.append(sTelefono2);
 				}
-				if (direccion.get(CenDireccionesBean.C_TELEFONO2)!=null){
-					if (!((String)direccion.get(CenDireccionesBean.C_TELEFONO2)).equalsIgnoreCase("")){
-						resultado+=", "+(String)direccion.get(CenDireccionesBean.C_TELEFONO2);
-					}
-				}
-				if (direccion.get(CenDireccionesBean.C_MOVIL)!=null){
-					if (!((String)direccion.get(CenDireccionesBean.C_MOVIL)).equalsIgnoreCase("")){
-						resultado+=", "+(String)direccion.get(CenDireccionesBean.C_MOVIL);
-					}
-				}				
-				nuevo.put("TELEFONOS_CLIENTE",resultado);
 				
+				sMovil = (String)direccion.get(CenDireccionesBean.C_MOVIL);
+				if (sMovil!=null && !sMovil.equals("")) {
+					if (resultado.length()>0) {
+						resultado.append(", ");
+					}
+					resultado.append(sMovil);
+				}
+				nuevo.put("TELEFONOS_CLIENTE", resultado.toString());
 				
-				if (direccion.get(CenDireccionesBean.C_CORREOELECTRONICO)!=null&&!((String)direccion.get(CenDireccionesBean.C_CORREOELECTRONICO)).equals("")){
-					nuevo.put("EMAIL_CLIENTE",(String)direccion.get(CenDireccionesBean.C_CORREOELECTRONICO));
-				}else{
-					nuevo.put("EMAIL_CLIENTE","-");
+				sCorreoElectronico = (String)direccion.get(CenDireccionesBean.C_CORREOELECTRONICO);
+				if (sCorreoElectronico!=null && !sCorreoElectronico.equals("")) {
+					nuevo.put("EMAIL_CLIENTE", sCorreoElectronico);
+				} else {
+					nuevo.put("EMAIL_CLIENTE", "-");
+				}
+				
+				String sNif = personaAdm.obtenerNIF(idPersona);
+				if (sNif!=null && !sNif.equals("")) {
+					nuevo.put("NIFCIF_CLIENTE", sNif);
+				} else {
+					nuevo.put("NIFCIF_CLIENTE", "-");
+				}
+				
+				String sNumeroFactura = (String)factura.get(FacFacturaBean.C_NUMEROFACTURA);
+				if (sNumeroFactura!=null && !sNumeroFactura.equals("")) {
+					nuevo.put("NUMERO_FACTURA", sNumeroFactura);
+				} else {
+					nuevo.put("NUMERO_FACTURA", "-");
 				}
 
-				resultado=personaAdm.obtenerNIF(idPersona);	
-				if (resultado.equalsIgnoreCase("")){
-					nuevo.put("NIFCIF_CLIENTE","-");
+				String sFechaFactura = GstDate.getFormatedDateShort("", (String)factura.get(FacFacturaBean.C_FECHAEMISION));
+				if (sFechaFactura!=null && !sFechaFactura.equals("")) {
+					nuevo.put("FECHA_FACTURA", sFechaFactura);
 				} else {
-					nuevo.put("NIFCIF_CLIENTE",resultado);
-				}
-						
-				resultado=(String)factura.get(FacFacturaBean.C_NUMEROFACTURA);
-				if (resultado.equalsIgnoreCase("")){
-					nuevo.put("NUMERO_FACTURA","-");
-				} else {
-					nuevo.put("NUMERO_FACTURA",resultado);
+					nuevo.put("FECHA_FACTURA", "-");
 				}
 
-				resultado=GstDate.getFormatedDateShort("",(String)factura.get(FacFacturaBean.C_FECHAEMISION));
-				if (resultado.equalsIgnoreCase("")){
-					nuevo.put("FECHA_FACTURA","-");
+				CenColegiadoBean datosColegiales = colegiadoAdm.getDatosColegiales(Long.valueOf(idPersona), Integer.valueOf(sIdInstitucion));
+				String sNumeroColegiado = colegiadoAdm.getIdentificadorColegiado(datosColegiales);
+				if (sNumeroColegiado!=null && !sNumeroColegiado.equals("")) {
+					nuevo.put("NUMERO_COLEGIADO_FACTURA", sNumeroColegiado);
 				} else {
-					nuevo.put("FECHA_FACTURA",resultado);
-				}
-
-				CenColegiadoAdm colegiadoAdm = new CenColegiadoAdm(this.usrbean);
-				CenColegiadoBean datosColegiales = colegiadoAdm.getDatosColegiales(new Long(idPersona), new Integer((String)factura.get(FacFacturaBean.C_IDINSTITUCION)));
-				resultado = colegiadoAdm.getIdentificadorColegiado(datosColegiales);
-				if (resultado.equalsIgnoreCase("")){
-					nuevo.put("NUMERO_COLEGIADO_FACTURA","-");
-				} else {
-					nuevo.put("NUMERO_COLEGIADO_FACTURA",resultado);
+					nuevo.put("NUMERO_COLEGIADO_FACTURA", "-");
 				}
                 
-				if (factura.get(FacFacturaBean.C_IDCUENTADEUDOR)!=null && (!((String)factura.get(FacFacturaBean.C_IDCUENTADEUDOR)).equalsIgnoreCase("")) ){
-					resultado=UtilidadesString.getMensajeIdioma(this.usrbean,"facturacion.abonosPagos.boton.pagoDomiciliacionBanco");
-				}else{
-				  if ((factura.get(FacFacturaBean.C_IDCUENTA)==null)||(((String)factura.get(FacFacturaBean.C_IDCUENTA))).equalsIgnoreCase("")){
-					resultado=UtilidadesString.getMensajeIdioma(this.usrbean,"facturacion.abonosPagos.boton.pagoCaja");
-				  }else{
-					
-					resultado= UtilidadesString.mostrarIBANConAsteriscos((String)factura.get("IBAN"));					
-					nuevo.put("TITULARCUENTA",(String)factura.get(CenCuentasBancariasBean.C_TITULAR));
-				  }
+				String sIdCuentaDeudor = (String)factura.get(FacFacturaBean.C_IDCUENTADEUDOR);
+				String sFormaPago;
+				if (sIdCuentaDeudor!=null && !sIdCuentaDeudor.equals("")) {
+					sFormaPago = UtilidadesString.getMensajeIdioma(this.usrbean,"facturacion.abonosPagos.boton.pagoDomiciliacionBanco");
+				} else {
+					String sIdCuenta = (String)factura.get(FacFacturaBean.C_IDCUENTA);
+					if (sIdCuenta!=null && !sIdCuenta.equals("")) {
+						String sIBAN = (String)factura.get(CenCuentasBancariasBean.C_IBAN);
+						String sTitular = (String)factura.get(CenCuentasBancariasBean.C_TITULAR);
+						sFormaPago = UtilidadesString.mostrarIBANConAsteriscos(sIBAN);
+						nuevo.put("TITULARCUENTA", sTitular);
+												
+						Hashtable<String,Object> hMandatosCuentasBancarias = new Hashtable<String,Object>();
+						hMandatosCuentasBancarias.put(CenMandatosCuentasBancariasBean.C_IDINSTITUCION, sIdInstitucion);
+						hMandatosCuentasBancarias.put(CenMandatosCuentasBancariasBean.C_IDPERSONA, idPersona);
+						hMandatosCuentasBancarias.put(CenMandatosCuentasBancariasBean.C_IDCUENTA, sIdCuenta);
+						
+						Vector<CenMandatosCuentasBancariasBean> vMandatosCuentasBancarias = null;
+						String sIdMandato = (String)factura.get(FacFacturaBean.C_IDMANDATO);
+						String sRefMandatoSepa = (String)factura.get(FacFacturaBean.C_REFMANDATOSEPA);
+						if (sIdMandato != null && !"".equals(sIdMandato)) {
+							hMandatosCuentasBancarias.put(CenMandatosCuentasBancariasBean.C_IDMANDATO, sIdMandato);
+							vMandatosCuentasBancarias = mandatosCuentasBancariasAdm.selectByPK(hMandatosCuentasBancarias);
+						} else if (sRefMandatoSepa != null && !"".equals(sRefMandatoSepa)) {							
+							hMandatosCuentasBancarias.put(CenMandatosCuentasBancariasBean.C_REFMANDATOSEPA, sRefMandatoSepa);
+							vMandatosCuentasBancarias = mandatosCuentasBancariasAdm.select(hMandatosCuentasBancarias);
+						}
+						if (vMandatosCuentasBancarias!=null && vMandatosCuentasBancarias.size()>0) {
+							CenMandatosCuentasBancariasBean bMandatosCuentasBancarias = (CenMandatosCuentasBancariasBean)vMandatosCuentasBancarias.get(0);
+							String sNifCifDeudor = bMandatosCuentasBancarias.getDeudorId();
+							nuevo.put("NIFCIF_TITULAR", sNifCifDeudor);
+						}
+					} else {
+						sFormaPago = UtilidadesString.getMensajeIdioma(this.usrbean,"facturacion.abonosPagos.boton.pagoCaja");
+					}
 				}  
-				nuevo.put("FORMA_PAGO_FACTURA",resultado);
+				nuevo.put("FORMA_PAGO_FACTURA", sFormaPago);
 				
-				resultado=(String)factura.get(FacFacturaBean.C_OBSERVACIONES);	
-				nuevo.put("OBSERVACIONES",resultado);
+				String sObservaciones = (String)factura.get(FacFacturaBean.C_OBSERVACIONES);	
+				nuevo.put("OBSERVACIONES", sObservaciones);
 				
-				//nuevo iag 
+				String sObservacionesInforme = (String)factura.get(FacFacturaBean.C_OBSERVINFORME);	
+				nuevo.put(FacFacturaBean.C_OBSERVINFORME, sObservacionesInforme);
 				
-			   String idFacturaFila = factura.get(FacFacturaBean.C_IDFACTURA).toString();
+				String sDescripcionEstado = (String)factura.get("DESCRIPCION_ESTADO");
+				sDescripcionEstado = UtilidadesString.getMensajeIdioma(this.usrbean, sDescripcionEstado);
+				nuevo.put("ESTADO", sDescripcionEstado);
+				
 			   // formateo de valores
 			   nuevo.put("ANTICIPADO", UtilidadesNumero.formato((String)factura.get("ANTICIPADO")));
 			   nuevo.put("COMPENSADO", UtilidadesNumero.formato((String)factura.get("COMPENSADO")));
@@ -2495,99 +2402,15 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
 			   nuevo.put("PENDIENTE_PAGAR", UtilidadesNumero.formato((String)factura.get("PENDIENTE_PAGAR")));
 			   nuevo.put("IMPORTE_NETO", UtilidadesNumero.formato((String)factura.get("IMPORTE_NETO")));
 			   nuevo.put("IMPORTE_IVA", UtilidadesNumero.formato((String)factura.get("IMPORTE_IVA")));
-			   
-//               ConsPLFacturacion pl=new ConsPLFacturacion();
-//               
-//               Hashtable codigos2 = new Hashtable();
-//               codigos2.put(new Integer(1), idInstitucion.toString());
-//               codigos2.put(new Integer(2), idFacturaFila);	
-//
-//
-////				resultado=UtilidadesString.formatoImporte((String)factura.get("TOTAL_ANTICIPADO"));//+" \u20AC";
-////				nuevo.put("ANTICIPADO",resultado);
-//				//resultado=(String)factura.get("TOTAL_ANTICIPADO");//+" \u20AC";
-//				//nuevo.put("ANTICIPADO",UtilidadesNumero.formato(resultado));
-//				//nuevo iag 
-//				nuevo.put("ANTICIPADO", UtilidadesNumero.formato(pl.getFuncionEjecutada(codigos2, "PKG_SIGA_TOTALESFACTURA.TOTALANTICIPADO")));
-//				
-////				resultado=UtilidadesString.formatoImporte((String)factura.get("TOTAL_COMPENSADO"));//+" \u20AC";
-////				nuevo.put("COMPENSADO",resultado);
-//				//resultado=(String)factura.get("TOTAL_COMPENSADO");//+" \u20AC";
-//				//nuevo.put("COMPENSADO",UtilidadesNumero.formato(resultado));
-//				//nuevo iag 
-//				nuevo.put("COMPENSADO", UtilidadesNumero.formato(pl.getFuncionEjecutada(codigos2, "PKG_SIGA_TOTALESFACTURA.TOTALCOMPENSADO")));
-//				
-////				resultado=UtilidadesString.formatoImporte((String)factura.get("TOTAL_PAGADOPORCAJA"));//+" \u20AC";
-////				nuevo.put("POR_CAJA",resultado);
-//				//resultado=(String)factura.get("TOTAL_PAGADOPORCAJA");//+" \u20AC";
-//				//nuevo.put("POR_CAJA",UtilidadesNumero.formato(resultado));
-//				//nuevo iag 
-//				nuevo.put("POR_CAJA", UtilidadesNumero.formato(pl.getFuncionEjecutada(codigos2, "PKG_SIGA_TOTALESFACTURA.TOTALPAGADOPORCAJA")));
-//				
-////				resultado=UtilidadesString.formatoImporte((String)factura.get("TOTAL_PAGADOSOLOCAJA"));//+" \u20AC";
-////				nuevo.put("POR_SOLOCAJA",resultado);
-////				resultado=(String)factura.get("TOTAL_PAGADOSOLOCAJA");//+" \u20AC";
-////				nuevo.put("POR_SOLOCAJA",UtilidadesNumero.formato(resultado));
-//				//nuevo iag 
-//				nuevo.put("POR_SOLOCAJA", UtilidadesNumero.formato(pl.getFuncionEjecutada(codigos2, "PKG_SIGA_TOTALESFACTURA.TOTALPAGADOSOLOCAJA")));
-//				
-////				resultado=UtilidadesString.formatoImporte((String)factura.get("TOTAL_PAGADOSOLOTARJETA"));//+" \u20AC";
-////				nuevo.put("POR_SOLOTARJETA",resultado);
-//				//resultado=(String)factura.get("TOTAL_PAGADOSOLOTARJETA");//+" \u20AC";
-//				//nuevo.put("POR_SOLOTARJETA",UtilidadesNumero.formato(resultado));
-//				//nuevo iag 
-//				nuevo.put("POR_SOLOTARJETA", UtilidadesNumero.formato(pl.getFuncionEjecutada(codigos2, "PKG_SIGA_TOTALESFACTURA.TOTALPAGADOSOLOTARJETA")));
-//				
-//				
-////				resultado=UtilidadesString.formatoImporte((String)factura.get("TOTAL_PAGADOPORBANCO"));//+" \u20AC";
-////				nuevo.put("POR_BANCO",resultado);
-//				//resultado=(String)factura.get("TOTAL_PAGADOPORBANCO");//+" \u20AC";
-//				//nuevo.put("POR_BANCO",UtilidadesNumero.formato(resultado));
-//				//nuevo iag 
-//				nuevo.put("POR_BANCO", UtilidadesNumero.formato(pl.getFuncionEjecutada(codigos2, "PKG_SIGA_TOTALESFACTURA.TOTALPAGADOPORBANCO")));
-//				
-////				resultado=UtilidadesString.formatoImporte((String)factura.get("TOTAL_FACTURA"));//+" \u20AC";
-////				nuevo.put("TOTAL_FACTURA",resultado);
-//				//resultado=(String)factura.get("TOTAL_FACTURA");//+" \u20AC";
-//				//nuevo.put("TOTAL_FACTURA",UtilidadesNumero.formato(resultado));
-//				//nuevo iag 
-//				nuevo.put("TOTAL_FACTURA", UtilidadesNumero.formato(pl.getFuncionEjecutada(codigos2, "PKG_SIGA_TOTALESFACTURA.TOTAL")));
-//				
-////				resultado=UtilidadesString.formatoImporte((String)factura.get("TOTAL_PAGADO"));//+" \u20AC";
-////				nuevo.put("TOTAL_PAGOS",resultado);
-//				//resultado=(String)factura.get("TOTAL_PAGADO");//+" \u20AC";
-//				//nuevo.put("TOTAL_PAGOS",UtilidadesNumero.formato(resultado));
-//				//nuevo iag 
-//				nuevo.put("TOTAL_PAGOS", UtilidadesNumero.formato(pl.getFuncionEjecutada(codigos2, "PKG_SIGA_TOTALESFACTURA.TOTALPAGADO")));
-//				
-////				resultado=UtilidadesString.formatoImporte((String)factura.get("TOTAL_PENDIENTEPAGAR"));//+" \u20AC";
-////				nuevo.put("PENDIENTE_PAGAR",resultado);
-//				//resultado=(String)factura.get("TOTAL_PENDIENTEPAGAR");//+" \u20AC";
-//				//nuevo.put("PENDIENTE_PAGAR",UtilidadesNumero.formato(resultado));
-//				//nuevo iag 
-//				nuevo.put("PENDIENTE_PAGAR", UtilidadesNumero.formato(pl.getFuncionEjecutada(codigos2, "PKG_SIGA_TOTALESFACTURA.PENDIENTEPORPAGAR")));
-//				
-////				resultado=UtilidadesString.formatoImporte((String)factura.get("TOTAL_NETO"));//+" \u20AC";
-////				nuevo.put("IMPORTE_NETO",resultado);
-//				//resultado=(String)factura.get("TOTAL_NETO");//+" \u20AC";
-//				//nuevo.put("IMPORTE_NETO",UtilidadesNumero.formato(resultado));
-//				//nuevo iag 
-//				nuevo.put("IMPORTE_NETO", UtilidadesNumero.formato(pl.getFuncionEjecutada(codigos2, "PKG_SIGA_TOTALESFACTURA.TOTALNETO")));
-//				
-////				resultado=UtilidadesString.formatoImporte((String)factura.get("TOTAL_IVA"));//+" \u20AC";
-////				nuevo.put("IMPORTE_IVA",resultado);
-//				//resultado=(String)factura.get("TOTAL_IVA");//+" \u20AC";
-//				//nuevo.put("IMPORTE_IVA",UtilidadesNumero.formato(resultado));
-//				//nuevo iag 
-//				nuevo.put("IMPORTE_IVA", UtilidadesNumero.formato(pl.getFuncionEjecutada(codigos2, "PKG_SIGA_TOTALESFACTURA.TOTALIVA")));				
 			}
-		}
-		catch (SIGAException e) {
+			
+		} catch (SIGAException e) {
 	    	throw e;
-	    }
-	    catch (Exception e) {
+	    	
+	    } catch (Exception e) {
 	    	throw new ClsExceptions(e, "Error al obtener los datos para el informe MasterRepor de una factura.");
 	    }
+		
 		return nuevo;
 	}
 
@@ -2972,46 +2795,6 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
 //		}
 //		return v;
 	}
-	
-	
-	/**
-	 * 
-	 * @param beanFacturacionProgramada
-	 * @return
-	 * @throws ClsExceptions
-	 */
-	public Vector getFacturasProgramadas(FacFacturacionProgramadaBean beanFacturacionProgramada) throws ClsExceptions {
-	    Vector salida = new Vector();
-	    try {
-	        Hashtable ht = new Hashtable();
-	        UtilidadesHash.set(ht, FacFacturaBean.C_IDINSTITUCION, beanFacturacionProgramada.getIdInstitucion());
-	        UtilidadesHash.set(ht, FacFacturaBean.C_IDSERIEFACTURACION, beanFacturacionProgramada.getIdSerieFacturacion());
-	        UtilidadesHash.set(ht, FacFacturaBean.C_IDPROGRAMACION, beanFacturacionProgramada.getIdProgramacion());
-	        salida = this.select(ht);
-	        
-		} catch (Exception e) {
-		    throw new ClsExceptions(e.toString());
-	    }
-	    
-		return salida;
-	}
-	
-	public Vector getFacturasFacturacionProgramada(FacFacturacionProgramadaBean facturacionProgramada)   throws ClsExceptions 
-	{
-	    Vector salida = new Vector();
-	    try {
-	        Hashtable ht = new Hashtable();
-	        UtilidadesHash.set(ht, FacFacturaBean.C_IDINSTITUCION,      facturacionProgramada.getIdInstitucion());
-	        UtilidadesHash.set(ht, FacFacturaBean.C_IDPROGRAMACION,     facturacionProgramada.getIdProgramacion());
-	        UtilidadesHash.set(ht, FacFacturaBean.C_IDSERIEFACTURACION, facturacionProgramada.getIdSerieFacturacion());
-	        salida = this.select(ht);
-		} 
-	    catch (Exception e) {
-		    throw new ClsExceptions(e.toString());
-	    }
-		return salida;
-	}
-
 
 	public String consultarActNuevoEstadoFactura(FacFacturaBean facturaBean, Integer usuario, boolean actualizar) throws ClsExceptions{
 		
@@ -3223,58 +3006,6 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
 	} // getSelectPersonas()			
 	
 	/**
-	 *Comprueba si se han seleccionado personas diferentes
-	 * @param form Formulario con los criterios
-	 * @param idInstitucionAlta,usuario
-	 * @return se muestra un resultado con un numero si tiene permiso.
-	 * @throws ClsExceptions
-	 */
-	public String getCuentaPersona(Integer idInstitucion, Long idPersona) throws ClsExceptions,SIGAException {
-		String diferentes = "";
-		RowsContainer rc = new RowsContainer();
-		try {
-		    Hashtable codigos = new Hashtable();
-		    codigos.put(new Integer(1),idInstitucion.toString());
-		    StringBuffer sql = new StringBuffer();
-		    Hashtable codigosHashtable = new Hashtable();
-			int contador = 0;
-		    
-			sql.append  ("Select c." + CenCuentasBancariasBean.C_IDCUENTA + " as idcuenta");
-			sql.append  ("  From  " + CenCuentasBancariasBean.T_NOMBRETABLA);
-			sql.append  (" c,  " + CenBancosBean.T_NOMBRETABLA);
-			sql.append  (" b  " );
-			sql.append  (" Where c." + CenCuentasBancariasBean.C_CBO_CODIGO + " = b." + CenBancosBean.C_CODIGO);
-			sql.append  (" and c." + CenCuentasBancariasBean.C_IDINSTITUCION + " = " + idInstitucion );
-			sql.append  ("   And c." + CenCuentasBancariasBean.C_IDPERSONA + " = " + idPersona);
-			sql.append  ("   And (c." + CenCuentasBancariasBean.C_FECHABAJA + " is null ");
-			sql.append  ("   or c." + CenCuentasBancariasBean.C_FECHABAJA + " > sysdate) ");
-			sql.append  ("   And c." + CenCuentasBancariasBean.C_ABONOCARGO + " in ('C', 'T') ");
-			sql.append  ("   order by c." + CenCuentasBancariasBean.C_FECHAMODIFICACION + " desc "); 
-
-			if (rc.findBind(sql.toString(),codigosHashtable) && rc.size() >= 1) {
-				Row fila = (Row) rc.get(0);
-				Hashtable resultado = fila.getRow();
-				return diferentes = (String) resultado.get("IDCUENTA").toString();
-			}
-			else {
-				return diferentes = "0";
-			}
-		} 	    catch (Exception e) {
-	   		if (e instanceof SIGAException){
-	   			throw (SIGAException)e;
-	   		}
-	   		else {
-	   			if (e instanceof ClsExceptions){
-	   				throw (ClsExceptions)e;
-	   			}
-	   			else {
-	   				throw new ClsExceptions(e, "Error al obtener si existen diferentes personas.");
-	   			}
-	   		}	
-	    }
-	} // getSelectPersonas()		
-	
-	/**
 	 * Obtiene las facturas a renegociar
 	 * @param idInstitucion
 	 * @param strFacturas
@@ -3369,35 +3100,125 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
     public Vector<Hashtable<String,Object>> obtenerFacturasFacturacionRapida (String idInstitucion, String idPeticion, String idSolicitudCertificado) throws ClsExceptions {
 	    Vector<Hashtable<String,Object>> salida = new Vector<Hashtable<String,Object>>();
 	    try {
-	    	String sql = "SELECT DISTINCT " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDPERSONA + ", " +
-								FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDFACTURA + ", " +								
-								FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_NUMEROFACTURA + ", " +
-								FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDSERIEFACTURACION + ", " +
-								FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDPROGRAMACION + ", " +
-								PysCompraBean.T_NOMBRETABLA + "." + PysCompraBean.C_IDPETICION +
-							" FROM " + FacFacturaBean.T_NOMBRETABLA + ", " +
-								PysCompraBean.T_NOMBRETABLA +
-							" WHERE " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDINSTITUCION + " = " + idInstitucion +
-								" AND " + PysCompraBean.T_NOMBRETABLA + "." + PysCompraBean.C_IDINSTITUCION + " = " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDINSTITUCION +
-								" AND " + PysCompraBean.T_NOMBRETABLA + "." + PysCompraBean.C_IDFACTURA + " = " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDFACTURA;
+	    	StringBuilder sql = new StringBuilder();
+	    	
+	    	
+	    	sql.append("SELECT DISTINCT ");
+	    	sql.append(FacFacturaBean.T_NOMBRETABLA);
+	    	sql.append(".");
+	    	sql.append(FacFacturaBean.C_IDINSTITUCION);
+	    	sql.append(", "); 
+	    	sql.append(FacFacturaBean.T_NOMBRETABLA);
+	    	sql.append(".");
+	    	sql.append(FacFacturaBean.C_IDPERSONA);
+	    	sql.append(", ");
+	    	sql.append(FacFacturaBean.T_NOMBRETABLA);
+	    	sql.append(".");
+	    	sql.append(FacFacturaBean.C_IDFACTURA);
+	    	sql.append(", ");								
+	    	sql.append(FacFacturaBean.T_NOMBRETABLA);
+	    	sql.append(".");
+	    	sql.append(FacFacturaBean.C_NUMEROFACTURA);
+	    	sql.append(", ");
+	    	sql.append(FacFacturaBean.T_NOMBRETABLA);
+	    	sql.append(".");
+	    	sql.append(FacFacturaBean.C_IDSERIEFACTURACION);
+	    	sql.append(", ");
+	    	sql.append(FacFacturaBean.T_NOMBRETABLA);
+	    	sql.append(".");
+	    	sql.append(FacFacturaBean.C_IDPROGRAMACION);
+	    	sql.append(", ");
+	    	sql.append(PysCompraBean.T_NOMBRETABLA);
+	    	sql.append(".");
+	    	sql.append(PysCompraBean.C_IDPETICION);
+	    	sql.append(" FROM ");
+	    	sql.append(FacFacturaBean.T_NOMBRETABLA);
+	    	sql.append(", ");
+	    	sql.append(PysCompraBean.T_NOMBRETABLA);
+	    	sql.append(" WHERE ");
+	    	sql.append(FacFacturaBean.T_NOMBRETABLA);
+	    	sql.append(".");
+	    	sql.append(FacFacturaBean.C_IDINSTITUCION);
+	    	sql.append(" = ");
+	    	sql.append(idInstitucion);
+	    	sql.append(" AND ");
+	    	sql.append(PysCompraBean.T_NOMBRETABLA);
+	    	sql.append(".");
+	    	sql.append(PysCompraBean.C_IDINSTITUCION);
+	    	sql.append(" = ");
+	    	sql.append(FacFacturaBean.T_NOMBRETABLA);
+	    	sql.append(".");
+	    	sql.append(FacFacturaBean.C_IDINSTITUCION);
+	    	sql.append(" AND ");
+	    	sql.append(PysCompraBean.T_NOMBRETABLA);
+	    	sql.append(".");
+	    	sql.append(PysCompraBean.C_IDFACTURA);
+	    	sql.append(" = ");
+	    	sql.append(FacFacturaBean.T_NOMBRETABLA);
+	    	sql.append(".");
+	    	sql.append(FacFacturaBean.C_IDFACTURA);
 	    	
 	    	if (idPeticion!=null && !idPeticion.equals("")) {
-	    		sql += " AND " + PysCompraBean.T_NOMBRETABLA + "." + PysCompraBean.C_IDPETICION + " = " + idPeticion;				
+	    		sql.append(" AND ");
+	    		sql.append(PysCompraBean.T_NOMBRETABLA);
+	    		sql.append(".");
+	    		sql.append(PysCompraBean.C_IDPETICION);
+	    		sql.append(" = ");
+	    		sql.append(idPeticion);				
 	    		
 	    	} else {
-	    		sql += " AND EXISTS ( " +
-						" SELECT 1 " +
-						" FROM " + CerSolicitudCertificadosBean.T_NOMBRETABLA +
-						" WHERE " + PysCompraBean.T_NOMBRETABLA + "." + PysCompraBean.C_IDINSTITUCION + " = " + CerSolicitudCertificadosBean.T_NOMBRETABLA + "." + CerSolicitudCertificadosBean.C_IDINSTITUCION +
-							" AND " + PysCompraBean.T_NOMBRETABLA + "." + PysCompraBean.C_IDPETICION + " = " + CerSolicitudCertificadosBean.T_NOMBRETABLA + "." + CerSolicitudCertificadosBean.C_IDPETICIONPRODUCTO +
-							" AND " + PysCompraBean.T_NOMBRETABLA + "." + PysCompraBean.C_IDTIPOPRODUCTO + " = " + CerSolicitudCertificadosBean.T_NOMBRETABLA + "." + CerSolicitudCertificadosBean.C_PPN_IDTIPOPRODUCTO +
-							" AND " + PysCompraBean.T_NOMBRETABLA + "." + PysCompraBean.C_IDPRODUCTO + " = " + CerSolicitudCertificadosBean.T_NOMBRETABLA + "." + CerSolicitudCertificadosBean.C_PPN_IDPRODUCTO +
-							" AND " + PysCompraBean.T_NOMBRETABLA + "." + PysCompraBean.C_IDPRODUCTOINSTITUCION + " = " + CerSolicitudCertificadosBean.T_NOMBRETABLA + "." + CerSolicitudCertificadosBean.C_PPN_IDPRODUCTOINSTITUCION +
-							" AND " + CerSolicitudCertificadosBean.T_NOMBRETABLA + "." + CerSolicitudCertificadosBean.C_IDSOLICITUD + " = " + idSolicitudCertificado +
-					" ) ";
+	    		sql.append(" AND EXISTS (SELECT 1 FROM ");
+	    		sql.append(CerSolicitudCertificadosBean.T_NOMBRETABLA);
+	    		sql.append(" WHERE ");
+	    		sql.append(PysCompraBean.T_NOMBRETABLA);
+	    		sql.append(".");
+	    		sql.append(PysCompraBean.C_IDINSTITUCION);
+	    		sql.append(" = ");
+	    		sql.append(CerSolicitudCertificadosBean.T_NOMBRETABLA);
+	    		sql.append(".");
+	    		sql.append(CerSolicitudCertificadosBean.C_IDINSTITUCION);
+	    		sql.append(" AND ");
+	    		sql.append(PysCompraBean.T_NOMBRETABLA);
+	    		sql.append(".");
+	    		sql.append(PysCompraBean.C_IDPETICION);
+	    		sql.append(" = ");
+	    		sql.append(CerSolicitudCertificadosBean.T_NOMBRETABLA);
+	    		sql.append(".");
+	    		sql.append(CerSolicitudCertificadosBean.C_IDPETICIONPRODUCTO);
+	    		sql.append(" AND ");
+	    		sql.append(PysCompraBean.T_NOMBRETABLA);
+	    		sql.append(".");
+	    		sql.append(PysCompraBean.C_IDTIPOPRODUCTO);
+	    		sql.append(" = ");
+	    		sql.append(CerSolicitudCertificadosBean.T_NOMBRETABLA);
+	    		sql.append(".");
+	    		sql.append(CerSolicitudCertificadosBean.C_PPN_IDTIPOPRODUCTO);
+	    		sql.append(" AND ");
+	    		sql.append(PysCompraBean.T_NOMBRETABLA);
+	    		sql.append(".");
+	    		sql.append(PysCompraBean.C_IDPRODUCTO);
+	    		sql.append(" = ");
+	    		sql.append(CerSolicitudCertificadosBean.T_NOMBRETABLA);
+	    		sql.append(".");
+	    		sql.append(CerSolicitudCertificadosBean.C_PPN_IDPRODUCTO);
+	    		sql.append(" AND ");
+	    		sql.append(PysCompraBean.T_NOMBRETABLA);
+	    		sql.append(".");
+	    		sql.append(PysCompraBean.C_IDPRODUCTOINSTITUCION);
+	    		sql.append(" = ");
+	    		sql.append(CerSolicitudCertificadosBean.T_NOMBRETABLA);
+	    		sql.append(".");
+	    		sql.append(CerSolicitudCertificadosBean.C_PPN_IDPRODUCTOINSTITUCION);
+	    		sql.append(" AND ");
+	    		sql.append(CerSolicitudCertificadosBean.T_NOMBRETABLA);
+	    		sql.append(".");
+	    		sql.append(CerSolicitudCertificadosBean.C_IDSOLICITUD);
+	    		sql.append(" = ");
+	    		sql.append(idSolicitudCertificado);
+	    		sql.append(" ) ");
 	    	}
 					
-	        salida = this.getHashSQL(sql);
+	        salida = this.getHashSQL(sql.toString());
 	        
 		} catch(Exception e) {
 			throw new ClsExceptions(e,"Error al buscar las facturas asociadas a una peticion o factura.");

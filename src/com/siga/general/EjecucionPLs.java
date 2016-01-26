@@ -209,12 +209,13 @@ public class EjecucionPLs {
 	 * @param idTipoServicio
 	 * @param idServio
 	 * @param idServicioInstitucion
+	 * @param fechaEfectiva
+	 * @param usuario
 	 * @return
 	 * @throws ClsExceptions
 	 */
-	public static String[] ejecutarPL_BajaServicio (String idInstitucion, String idTipoServicio, String idServio, String idServicioInstitucion, String fechaEfectiva) throws ClsExceptions {
-
-		Object[] paramIn = new Object[5]; //Parametros de entrada del PL
+	public static String[] ejecutarPL_BajaServicio (String idInstitucion, String idTipoServicio, String idServio, String idServicioInstitucion, String fechaEfectiva, String usuario) throws ClsExceptions {
+		Object[] paramIn = new Object[6]; //Parametros de entrada del PL
 		String resultado[] = new String[2]; //Parametros de salida del PL
 	
 		try {
@@ -224,16 +225,16 @@ public class EjecucionPLs {
 	        paramIn[2] = idServio;
 	        paramIn[3] = idServicioInstitucion;
 	        paramIn[4] = fechaEfectiva;
+	        paramIn[5] = usuario;
 
 	        // Ejecucion del PL
-			resultado = ClsMngBBDD.callPLProcedure("{call PKG_SERVICIOS_AUTOMATICOS.PROCESO_BAJA_SERVICIO (?,?,?,?,?,?,?)}", 
-													2, 
-													paramIn);
+			resultado = ClsMngBBDD.callPLProcedure("{call PKG_SERVICIOS_AUTOMATICOS.PROCESO_BAJA_SERVICIO (?,?,?,?,?,?,?,?)}", 2, paramIn);
+			
 		} catch (Exception e) {
 			resultado[0] = "1"; 	// P_NUMREGISTRO
 	    	resultado[1] = "ERROR"; // ERROR P_DATOSERROR        	
 		}
-	    //Resultado del PL        
+		
 	    return resultado;
 	}
 
@@ -262,15 +263,14 @@ public class EjecucionPLs {
 	        paramIn[5] = usuario;
 
 	        // Ejecucion del PL
-			resultado = ClsMngBBDD.callPLProcedure("{call PKG_SERVICIOS_AUTOMATICOS.PROCESO_SUSCRIPCION_AUTO (?,?,?,?,?,?,?,?)}", 
-													2, 
-													paramIn);
+			resultado = ClsMngBBDD.callPLProcedure("{call PKG_SERVICIOS_AUTOMATICOS.PROCESO_SUSCRIPCION_AUTO (?,?,?,?,?,?,?,?)}", 2, paramIn);
+			
 		} catch (Exception e) {
 			resultado[0] = "1"; 	// P_NUMREGISTRO
 	    	resultado[1] = "ERROR"; // ERROR P_DATOSERROR        	
 		}
-	    //Resultado del PL        
-	    return resultado;
+
+		return resultado;
 	}
 
 	/**
@@ -279,19 +279,15 @@ public class EjecucionPLs {
 	 * @param idTipoServicio
 	 * @param idServio
 	 * @param idServicioInstitucion
+	 * @param alta
+	 * @param fechaAlta
+	 * @param incluirBajaManual
 	 * @param usuario
 	 * @return
 	 * @throws ClsExceptions
 	 */
-	public static String[] ejecutarPL_EliminarSuscripcion(String idInstitucion,
-			String idTipoServicio,
-			String idServio,
-			String idServicioInstitucion,
-			String alta,
-			String fechaAlta,
-			String incluirBajaManual) throws ClsExceptions
-	{
-		int nParamIn = 7, nParamOut = 3;
+	public static String[] ejecutarPL_EliminarSuscripcion(String idInstitucion, String idTipoServicio, String idServio, String idServicioInstitucion, String alta, String fechaAlta, String incluirBajaManual, String usuario) throws ClsExceptions {
+		int nParamIn = 8, nParamOut = 3;
 		Object[] paramIn = new Object[nParamIn]; // Parametros de entrada del PL
 		String resultado[] = new String[nParamOut]; // Parametros de salida del PL
 
@@ -304,15 +300,16 @@ public class EjecucionPLs {
 			paramIn[4] = alta;
 			paramIn[5] = fechaAlta;
 			paramIn[6] = incluirBajaManual;
+			paramIn[7] = usuario;
 
 			// Ejecucion del PL
-			resultado = ClsMngBBDD.callPLProcedure("{call PKG_SERVICIOS_AUTOMATICOS.PROCESO_ELIMINAR_SUSCRIPCION(?,?,?,?,?,?,?,?,?,?)}", 
-					nParamOut,
-					paramIn);
+			resultado = ClsMngBBDD.callPLProcedure("{call PKG_SERVICIOS_AUTOMATICOS.PROCESO_ELIMINAR_SUSCRIPCION(?,?,?,?,?,?,?,?,?,?,?)}", nParamOut, paramIn);
+			
 		} catch (Exception e) {
 			resultado[0] = "1"; // P_NUMREGISTRO
 			resultado[1] = "ERROR"; // ERROR P_DATOSERROR
 		}
+		
 		// Resultado del PL
 		return resultado;
 	}
@@ -338,14 +335,13 @@ public class EjecucionPLs {
 	        paramIn[3] = usuario;
 
 	        // Ejecucion del PL
-			resultado = ClsMngBBDD.callPLProcedure("{call PKG_SERVICIOS_AUTOMATICOS.PROCESO_REVISION_LETRADO (?,?,?,?,?,?)}", 
-													2, 
-													paramIn);
+			resultado = ClsMngBBDD.callPLProcedure("{call PKG_SERVICIOS_AUTOMATICOS.PROCESO_REVISION_LETRADO (?,?,?,?,?,?)}", 2, paramIn);
+			
 		} catch (Exception e) {
 			resultado[0] = "1"; 	// P_NUMREGISTRO
 	    	resultado[1] = "ERROR"; // ERROR P_DATOSERROR        	
 		}
-	    //Resultado del PL        
+		
 	    return resultado;
 	}
 	
@@ -361,15 +357,14 @@ public class EjecucionPLs {
 	        paramIn[2] = usuario;
 
 	        // Ejecucion del PL
-			resultado = ClsMngBBDD.callPLProcedure("{call PKG_SERVICIOS_AUTOMATICOS.PROCESO_REVISION_AUTO (?,?,?,?,?)}", 
-													2, 
-													paramIn);
+			resultado = ClsMngBBDD.callPLProcedure("{call PKG_SERVICIOS_AUTOMATICOS.PROCESO_REVISION_AUTO (?,?,?,?,?)}", 2, paramIn);
+			
 		} catch (Exception e) {
 			resultado[0] = "1"; 	// P_NUMREGISTRO
 	    	resultado[1] = "ERROR"; // ERROR P_DATOSERROR        	
 		}
-	    //Resultado del PL        
-	    return resultado;
+
+		return resultado;
 	}
 	public static String[] ejecutarPL_RevisionAnticiposLetrado (String idInstitucion, String idPersona, String usuario) throws ClsExceptions {
 
@@ -393,56 +388,6 @@ public class EjecucionPLs {
 	    //Resultado del PL        
 	    return resultado;
 	}	
-	
-	public static String[] ejecutarPL_RevisionCuentaBanco (String idInstitucion, String idPersona, String usuario) throws ClsExceptions {
-
-		Object[] paramIn = new Object[3]; //Parametros de entrada del PL
-		String resultado[] = new String[2]; //Parametros de salida del PL
-	
-		try {
-	 		// Parametros de entrada del PL
-	        paramIn[0] = idInstitucion;
-	        paramIn[1] = idPersona;
-	        paramIn[2] = usuario;
-
-	        // Ejecucion del PL
-			resultado = ClsMngBBDD.callPLProcedure("{call PKG_SERVICIOS_AUTOMATICOS.PROCESO_REVISION_CUENTABANCO (?,?,?,?,?)}", 
-													2, 
-													paramIn);
-		} catch (Exception e) {
-			resultado[0] = "1"; 	// P_NUMREGISTRO
-	    	resultado[1] = "ERROR"; // ERROR P_DATOSERROR        	
-		}
-	    //Resultado del PL        
-	    return resultado;
-	}
-	
-	public static String[] ejecutarPL_ActualizarCuentaBanco (String idInstitucion, String idPersona,String idCuenta, String usuario) throws ClsExceptions {
-
-		Object[] paramIn = new Object[4]; //Parametros de entrada del PL
-		String resultado[] = new String[2]; //Parametros de salida del PL
-	
-		try {
-	 		// Parametros de entrada del PL
-	        paramIn[0] = idInstitucion;
-	        paramIn[1] = idPersona;
-	        paramIn[2] = idCuenta;
-	        paramIn[3] = usuario;
-
-	        // Ejecucion del PL
-			resultado = ClsMngBBDD.callPLProcedure("{call PKG_SERVICIOS_AUTOMATICOS.PROCESO_ACTUALIZAR_CUENTABANCO (?,?,?,?,?,?)}", 
-													2, 
-													paramIn);
-		} catch (Exception e) {
-			resultado[0] = "1"; 	// P_NUMREGISTRO
-	    	resultado[1] = "ERROR"; // ERROR P_DATOSERROR        	
-		}
-	    //Resultado del PL        
-	    return resultado;
-	}
-	
-	
-	
 	
 	public static String ejecutarPLExportarTurno(String idInstitucion,
 			String idFacturacionDesde, String idFacturacionHasta, String idPersona,
@@ -507,30 +452,6 @@ public class EjecucionPLs {
 		// Resultado del PL
 		return resultado[0];
 	} // ejecutarPLExportarGuardias()
-	
-	// PROC_SIGA_ACTESTADOABONO
-	public static String[] ejecutarProcPROC_SIGA_ACTESTADOABONO(String idInstitucion, String idAbono, String usu) throws ClsExceptions{
-		Object[] param_in; //Parametros de entrada del PL
-		String resultado[] = null; //Parametros de salida del PL
-	
-		try {
-			resultado = new String[2];
-			param_in = new Object[3];
-			param_in[0] = idInstitucion;
-			param_in[1] = idAbono;
-			param_in[2] = usu;
-		        
-			//Ejecucion del PL
-		    resultado = ClsMngBBDD.callPLProcedure("{call PROC_SIGA_ACTESTADOABONO (?,?,?,?,?)}", 2, param_in);
-			
-		} catch (Exception e){
-			resultado[0] = "1"; //ERROR P_CODRETORNO
-	    	resultado[1] = "ERROR"; //ERROR P_DATOSERROR        	
-		}
-	    
-	    //Resultado del PL        
-	    return resultado;
-	}	
 	
 	public static String [] ejecutarPL_ActualizarDatosLetrado (Integer idInstitucion, Long idPersona, Integer idTipoCambio, Long idDireccion, Integer usuMod) 
 	{
@@ -1001,14 +922,13 @@ public class EjecucionPLs {
 	        paramIn[3] = usuario;
 
 	        // Ejecucion del PL
-			resultado = ClsMngBBDD.callPLProcedure("{call PKG_SERVICIOS_AUTOMATICOS.PROCESO_ACT_CUENTA_BANCO_PEND (?,?,?,?,?,?)}", 
-													2, 
-													paramIn);
+			resultado = ClsMngBBDD.callPLProcedure("{call PKG_SERVICIOS_AUTOMATICOS.PROCESO_ACT_CUENTA_BANCO_PEND (?,?,?,?,?,?)}", 2, paramIn);
+			
 		} catch (Exception e) {
 			resultado[0] = "1"; 	// P_CODRETORNO
 	    	resultado[1] = "ERROR"; // ERROR P_DATOSERROR        	
 		}
-	    //Resultado del PL        
+		
 	    return resultado;
 	}
 	

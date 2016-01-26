@@ -6,6 +6,7 @@
 package com.siga.beans;
 
 import java.util.Hashtable;
+import java.util.Vector;
 
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.Row;
@@ -160,5 +161,97 @@ public class FacFacturacionSuscripcionAdm extends MasterBeanAdministrador {
 			throw new ClsExceptions(e, "Error al realizar el \"delete\" en B.D.");
 		}
 		return true;
-	}	
+	}
+	
+    public boolean moverFacturacionSuscripcion (String idInstitucion, String idFactura) throws ClsExceptions {
+	    try {
+	    	// 1. Consulta si existe FAC_FACTURACIONSUSCRIPCION de la factura
+	    	Hashtable<String, String> hFacFacturacionSuscripcion = new Hashtable<String, String>();
+	    	hFacFacturacionSuscripcion.put(FacFacturacionSuscripcionBean.C_IDINSTITUCION, idInstitucion);
+	    	hFacFacturacionSuscripcion.put(FacFacturacionSuscripcionBean.C_IDFACTURA, idFactura);	    	
+	    	Vector<FacFacturacionSuscripcionBean> vFacFacturacionSuscripcion = this.select(hFacFacturacionSuscripcion);
+	    	
+	    	if (vFacFacturacionSuscripcion!=null && vFacFacturacionSuscripcion.size()>0) {	    	
+	    	
+		    	// 2. Copia el registro de FAC_FACTURACIONSUSCRIPCION a FAC_FACTURACIONSUSCRIPCION_ANU
+	    		StringBuilder consulta = new StringBuilder();
+		    	consulta.append("INSERT INTO FAC_FACTURACIONSUSCRIPCION_ANU (");
+		    	consulta.append(FacFacturacionSuscripcionBean.C_DESCRIPCION);
+		    	consulta.append(",");
+		    	consulta.append(FacFacturacionSuscripcionBean.C_FECHAFIN);
+		    	consulta.append(",");
+		    	consulta.append(FacFacturacionSuscripcionBean.C_FECHAINICIO);
+		    	consulta.append(",");
+		    	consulta.append(FacFacturacionSuscripcionBean.C_FECHAMODIFICACION);
+		    	consulta.append(",");
+		    	consulta.append(FacFacturacionSuscripcionBean.C_IDFACTURA);
+		    	consulta.append(",");
+		    	consulta.append(FacFacturacionSuscripcionBean.C_IDFACTURACIONSUSCRIPCION);
+		    	consulta.append(",");
+		    	consulta.append(FacFacturacionSuscripcionBean.C_IDINSTITUCION);
+		    	consulta.append(",");
+		    	consulta.append(FacFacturacionSuscripcionBean.C_IDSERVICIO);
+		    	consulta.append(",");
+		    	consulta.append(FacFacturacionSuscripcionBean.C_IDSERVICIOSINSTITUCION);
+		    	consulta.append(",");
+		    	consulta.append(FacFacturacionSuscripcionBean.C_IDSUSCRIPCION);
+		    	consulta.append(",");
+		    	consulta.append(FacFacturacionSuscripcionBean.C_IDTIPOSERVICIOS);
+		    	consulta.append(",");
+		    	consulta.append(FacFacturacionSuscripcionBean.C_NUMEROLINEA);
+		    	consulta.append(",");
+		    	consulta.append(FacFacturacionSuscripcionBean.C_USUMODIFICACION);
+		    	consulta.append(") (SELECT ");
+		    	consulta.append(FacFacturacionSuscripcionBean.C_DESCRIPCION);
+		    	consulta.append(",");
+		    	consulta.append(FacFacturacionSuscripcionBean.C_FECHAFIN);
+		    	consulta.append(",");
+		    	consulta.append(FacFacturacionSuscripcionBean.C_FECHAINICIO);
+		    	consulta.append(",");
+		    	consulta.append(FacFacturacionSuscripcionBean.C_FECHAMODIFICACION);
+		    	consulta.append(",");
+		    	consulta.append(FacFacturacionSuscripcionBean.C_IDFACTURA);
+		    	consulta.append(",");
+		    	consulta.append(FacFacturacionSuscripcionBean.C_IDFACTURACIONSUSCRIPCION);
+		    	consulta.append(",");
+		    	consulta.append(FacFacturacionSuscripcionBean.C_IDINSTITUCION);
+		    	consulta.append(",");
+		    	consulta.append(FacFacturacionSuscripcionBean.C_IDSERVICIO);
+		    	consulta.append(",");
+		    	consulta.append(FacFacturacionSuscripcionBean.C_IDSERVICIOSINSTITUCION);
+		    	consulta.append(",");
+		    	consulta.append(FacFacturacionSuscripcionBean.C_IDSUSCRIPCION);
+		    	consulta.append(",");
+		    	consulta.append(FacFacturacionSuscripcionBean.C_IDTIPOSERVICIOS);
+		    	consulta.append(",");
+		    	consulta.append(FacFacturacionSuscripcionBean.C_NUMEROLINEA);
+		    	consulta.append(",");
+		    	consulta.append(FacFacturacionSuscripcionBean.C_USUMODIFICACION);
+		    	consulta.append(" FROM ");
+		    	consulta.append(FacFacturacionSuscripcionBean.T_NOMBRETABLA);
+		    	consulta.append(" WHERE ");
+		    	consulta.append(FacFacturacionSuscripcionBean.C_IDINSTITUCION);
+		    	consulta.append(" = ");
+		    	consulta.append(idInstitucion);
+		    	consulta.append(" AND ");
+		    	consulta.append(FacFacturacionSuscripcionBean.C_IDFACTURA);
+		    	consulta.append(" = '");
+		    	consulta.append(idFactura);
+		    	consulta.append("')");
+		    	if (!this.insertSQL(consulta.toString())) {
+		    		return false;
+		    	}
+		    
+		    	// 3. Elimina el registro de FAC_FACTURACIONSUSCRIPCION
+		    	if (!this.deleteMasivo(hFacFacturacionSuscripcion)) {
+		    		return false;
+		    	}
+	    	}
+	        
+		} catch (Exception e) {
+			throw new ClsExceptions(e,"Error al mover el registro de FAC_FACTURACIONSUSCRIPCION a FAC_FACTURACIONSUSCRIPCION_ANU.");
+		}
+	    
+    	return true;
+    }		
 }

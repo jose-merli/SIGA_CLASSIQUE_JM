@@ -3,10 +3,8 @@ package com.siga.gratuita.service;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.redabogacia.sigaservices.app.exceptions.BusinessException;
@@ -175,12 +173,14 @@ public class SIGADocumentacionEjgService {
 				for (ScsDocumentoEJGBean scsDocumentoejg : documentoejgs) {
 					documentacionEjgVo.setIdDocumentacion(ejgDocuAdm.getNuevoId());
 					documentacionEjgVo.setIdDocumento(scsDocumentoejg.getIdDocumentoEJG().toString());
+					documentacionEjgVo.setComisionAJG( usrBean.isComision()?(short)1:(short)0);
 					ejgDocuAdm.insert(documentacionEjgVo);
 				}
 
 			} else {
 				ScsDocumentacionEJGBean documentacionejg = documentacionEjgVo;
 				documentacionejg.setIdDocumentacion(ejgDocuAdm.getNuevoId());
+				documentacionejg.setComisionAJG( usrBean.isComision()?(short)1:(short)0);
 				ejgDocuAdm.insert(documentacionejg);
 				documentacionEjgVo.setIdDocumentacion(documentacionejg.getIdDocumentacion());
 			}
@@ -261,6 +261,8 @@ public class SIGADocumentacionEjgService {
 				documentacionEjgVo2.setIdPresentador(scsDocumentacionEJGExtended.getIdPresentador());
 				documentacionEjgVo2.setDescPresentador(scsDocumentacionEJGExtended.getDescPresentador());
 				documentacionEjgVo2.setDocumentoAbreviatura(scsDocumentacionEJGExtended.getDocumentoAbreviatura());
+				if(scsDocumentacionEJGExtended.getComisionAJG()!=null && !scsDocumentacionEJGExtended.getComisionAJG().equals(""))
+					documentacionEjgVo2.setComisionAJG(new Short(scsDocumentacionEJGExtended.getComisionAJG()));
 				documentacionEjgVos.add(documentacionEjgVo2);
 
 			}
@@ -304,6 +306,8 @@ public class SIGADocumentacionEjgService {
 			documentacionEjgVo.setRegSalida(objectDb.getRegSalida());
 		if (objectDb.getDocumentacion() != null && !objectDb.getDocumentacion().equals(""))
 			documentacionEjgVo.setDocumentacion(objectDb.getDocumentacion());
+		if(objectDb.getComisionAJG()!=null && !objectDb.getComisionAJG().equals(""))
+			documentacionEjgVo.setComisionAJG(new Short(objectDb.getComisionAJG()));
 		return documentacionEjgVo;
 	}	
 

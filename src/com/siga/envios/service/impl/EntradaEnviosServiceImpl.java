@@ -33,7 +33,6 @@ import org.redabogacia.sigaservices.app.autogen.model.EcomSoldesignaprovisional;
 import org.redabogacia.sigaservices.app.autogen.model.EcomSoldesignaprovisionalExample;
 import org.redabogacia.sigaservices.app.autogen.model.EnvEntradaEnvios;
 import org.redabogacia.sigaservices.app.autogen.model.EnvEntradaEnviosExample;
-import org.redabogacia.sigaservices.app.autogen.model.EnvEnvios;
 import org.redabogacia.sigaservices.app.autogen.model.EnvEntradaEnviosExample.Criteria;
 import org.redabogacia.sigaservices.app.autogen.model.EnvEntradaEnviosKey;
 import org.redabogacia.sigaservices.app.autogen.model.EnvEntradaEnviosWithBLOBs;
@@ -46,10 +45,11 @@ import org.redabogacia.sigaservices.app.log4j.SatecLogger;
 import org.redabogacia.sigaservices.app.mapper.EnvEntradaEnviosExtendsMapper;
 import org.redabogacia.sigaservices.app.services.ecom.EcomColaService;
 import org.redabogacia.sigaservices.app.services.scs.ComunicacionesService;
+import org.redabogacia.sigaservices.app.services.scs.EjgService;
 import org.redabogacia.sigaservices.app.services.scs.ScsDesignaService;
-import org.redabogacia.sigaservices.app.services.scs.ScsEjgService;
 import org.redabogacia.sigaservices.app.vo.Designacion;
-import org.redabogacia.sigaservices.app.vo.Ejg;
+import org.redabogacia.sigaservices.app.vo.scs.EjgVo;
+import org.redabogacia.sigaservices.app.vo.scs.service.EjgVoService;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.UsrBean;
@@ -58,7 +58,6 @@ import com.siga.envios.form.EntradaEnviosForm;
 import com.siga.envios.service.EntradaEnviosService;
 import com.siga.envios.service.ca_sigp.mapper.SolDesignacionProvisionalMapper;
 import com.siga.envios.service.ca_sigp.vos.TipoDesignaLetradoProcurador;
-import com.siga.general.SIGAException;
 
 import es.satec.businessManager.BusinessException;
 import es.satec.businessManager.BusinessManager;
@@ -549,7 +548,7 @@ public  class EntradaEnviosServiceImpl extends MyBatisBusinessServiceTemplate im
 				entradaEnviosForm.setCaso(solDesProv.getCaso().toString());
 				
 				if(solDesProv.getCaso() == 1){ //CASO 1
-					ScsEjg scsEjg = null;
+					ScsEjgWithBLOBs scsEjg = null;
 					ScsEjgMapper ejgMapper =  getMyBatisSqlSessionManager().getMapper(ScsEjgMapper.class);
 					ScsEjgKey scsEjgKey = new ScsEjgKey();					
 					if(solDesProv.getEjgnewanio() != null){
@@ -630,8 +629,9 @@ public  class EntradaEnviosServiceImpl extends MyBatisBusinessServiceTemplate im
 						}
 					}
 					BusinessManager businessManager =  BusinessManager.getInstance();
-					ScsEjgService ejgService = (ScsEjgService) businessManager.getService(ScsEjgService.class);
-					boolean isPreceptivoProcurador = ejgService.isProcuradorPreceptivo(scsEjg);
+					EjgService ejgService = (EjgService) businessManager.getService(EjgService.class);
+					EjgVo ejg = new EjgVoService().getDb2Vo(scsEjg);
+					boolean isPreceptivoProcurador = ejgService.isProcuradorPreceptivo(ejg);
 					entradaEnviosForm.setPreceptivoProcurador(isPreceptivoProcurador);
 					
 				}else if(solDesProv.getCaso() == 2){ //CASO 2
@@ -718,16 +718,13 @@ public  class EntradaEnviosServiceImpl extends MyBatisBusinessServiceTemplate im
 				
 				//Se borra el registro del EJG
 				if(entradaEnviosForm.getAnioEJGNew()!=null && !entradaEnviosForm.getAnioEJGNew().equals("")){
-					ScsEjgService ejgService = (ScsEjgService) BusinessManager.getInstance().getService(ScsEjgService.class);
-					ScsEjgWithBLOBs obj = new ScsEjgWithBLOBs();
+					EjgService ejgService = (EjgService) BusinessManager.getInstance().getService(EjgService.class);
+					EjgVo obj = new EjgVo();
 					obj.setAnio(new Short(entradaEnviosForm.getAnioEJGNew()));
 					obj.setIdinstitucion(new Short(entradaEnviosForm.getIdInstitucion()));
 					obj.setNumero(new Long(entradaEnviosForm.getNumeroEJGNew()));
 					obj.setIdtipoejg(new Short(entradaEnviosForm.getIdTipoEJGNew()));
-					
-					Ejg ejg = new Ejg();
-					ejg.setEjg(obj);
-					ejgService.delete(ejg);
+					ejgService.delete(obj);
 				}
 				
 				

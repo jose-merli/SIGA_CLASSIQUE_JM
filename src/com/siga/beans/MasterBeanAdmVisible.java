@@ -46,7 +46,7 @@ public abstract class MasterBeanAdmVisible extends MasterBeanAdministrador {
 	public MasterBeanAdmVisible(String tabla, UsrBean _usrbean) {
 		super(tabla, _usrbean);
 		//usrbean=_usrbean;
-		idInstitucionCliente=new Integer((_usrbean!=null && _usrbean.getLocation()!=null)?_usrbean.getLocation():"-1").intValue();
+		idInstitucionCliente=new Integer((_usrbean!=null && _usrbean.getLocation()!=null && !"".equalsIgnoreCase(usrbean.getLocation()))?_usrbean.getLocation():"-1").intValue();
 		idPersonaCliente=new Long((_usrbean!=null && _usrbean.getUserName()!=null)?_usrbean.getUserName():"-1").longValue();
 	}  
 	

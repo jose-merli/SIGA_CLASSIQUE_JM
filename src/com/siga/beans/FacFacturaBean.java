@@ -47,7 +47,8 @@ public class FacFacturaBean extends MasterBean{
 	private Double impTotalPagadoSoloTarjeta;
 	private Integer estado;
 	private String comisionIdFactura;
-	
+	private String refMandatoSepa;
+	private Integer idMandato;	
 	
 	/* Nombre tabla */
 	static public String T_NOMBRETABLA = "FAC_FACTURA";
@@ -82,10 +83,11 @@ public class FacFacturaBean extends MasterBean{
 	static public final String C_IMPTOTALPAGADOSOLOCAJA = "IMPTOTALPAGADOSOLOCAJA";
 	static public final String C_IMPTOTALPAGADOSOLOTARJETA = "IMPTOTALPAGADOSOLOTARJETA";
 	static public final String C_ESTADO = "ESTADO";
+	static public final String C_IDMANDATO = "IDMANDATO";
+	static public final String C_REFMANDATOSEPA = "REFMANDATOSEPA";
 	static public final String C_COMISIONIDFACTURA = "COMISIONIDFACTURA";
 
 	// Metodos SET
-
 	public void setIdFactura (String id) 	{ this.idFactura = id; }
 	public void setIdInstitucion (Integer id) 	{ this.idInstitucion = id; }
 	public void setFechaEmision (String f) 	{ this.fechaEmision = f; }
@@ -101,7 +103,6 @@ public class FacFacturaBean extends MasterBean{
 	public void setCtaCliente (String s)	{ this.ctaCliente = s; }
 	public void setIdPersonaDeudor (Long id) 	{ this.idPersonaDeudor = id; }
 	public void setIdCuentaDeudor (Integer id) 	{ this.idCuentaDeudor = id; }
-
 	public void setImpTotalNeto (Double id) 	{ this.impTotalNeto = id; }
 	public void setImpTotalIva (Double id) 	{ this.impTotalIva = id; }
 	public void setImpTotal (Double id) 	{ this.impTotal = id; }
@@ -114,6 +115,9 @@ public class FacFacturaBean extends MasterBean{
 	public void setImpTotalPagadoSoloCaja (Double id) 	{ this.impTotalPagadoSoloCaja = id; }
 	public void setImpTotalPagadoSoloTarjeta (Double id) 	{ this.impTotalPagadoSoloTarjeta = id; }
 	public void setEstado (Integer id) 	{ this.estado = id; }
+	public void setComisionIdFactura(String comisionIdFactura) { this.comisionIdFactura = comisionIdFactura; }
+	public void setRefMandatoSepa(String refMandatoSepa) { this.refMandatoSepa = refMandatoSepa; }
+	public void setIdMandato(Integer idMandato) { this.idMandato = idMandato; }
 
 	// Metodos GET
 	public String getIdFactura () 	{ return this.idFactura; }
@@ -131,7 +135,6 @@ public class FacFacturaBean extends MasterBean{
 	public String getCtaCliente ()	{ return this.ctaCliente; }
 	public Long getIdPersonaDeudor () 	{ return this.idPersonaDeudor; }
 	public Integer getIdCuentaDeudor () 	{ return this.idCuentaDeudor; }	
-	
 	public Double getImpTotalNeto () 	{ return this.impTotalNeto; }
 	public Double getImpTotalIva () 	{ return this.impTotalIva;  }
 	public Double getImpTotal () 		{ return this.impTotal; }
@@ -144,11 +147,7 @@ public class FacFacturaBean extends MasterBean{
 	public Double getImpTotalPagadoSoloCaja () 	{ return this.impTotalPagadoSoloCaja; }
 	public Double getImpTotalPagadoSoloTarjeta () 	{ return this.impTotalPagadoSoloTarjeta; }
 	public Integer getEstado () 	{ return this.estado;  }
-	
-	public String getComisionIdFactura() {
-		return comisionIdFactura;
-	}
-	public void setComisionIdFactura(String comisionIdFactura) {
-		this.comisionIdFactura = comisionIdFactura;
-	}	
+	public String getComisionIdFactura() {return comisionIdFactura;}
+	public String getRefMandatoSepa() { return refMandatoSepa; }
+	public Integer getIdMandato() { return idMandato; }	
 }

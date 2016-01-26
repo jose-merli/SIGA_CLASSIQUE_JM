@@ -45,6 +45,7 @@ public class FcsPagoColegiadoBean extends MasterBean {
 	static public final String C_IMPIRPF					= "IMPIRPF";
 	static public final String C_PORCENTAJEIRPF				= "PORCENTAJEIRPF";
 	static public final String C_IMPRET						= "IMPRET";
+	static public final String C_IDRETENCION 				= "IDRETENCION";
 	static public final String C_FECHAMODIFICACION			= "FECHAMODIFICACION";
 	static public final String C_USUMODIFICACION			= "USUMODIFICACION";
 	

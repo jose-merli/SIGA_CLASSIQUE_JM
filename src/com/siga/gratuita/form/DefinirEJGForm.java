@@ -48,7 +48,7 @@ import com.siga.censo.form.DatosRegTelForm;
 	 
 	 boolean chkBusquedaExactaSolicitante;
 	 String valorBusquedaExactaSolicitante;
- 	
+ 	String notasCAJG;
 
 	public void setRefAuto 					(String refAuto)					{ this.datos.put(ScsEJGBean.C_REFAUTO, refAuto);									} 	
  	
@@ -1107,6 +1107,14 @@ import com.siga.censo.form.DatosRegTelForm;
 		public void setValorBusquedaExactaSolicitante(
 				String valorBusquedaExactaSolicitante) {
 			this.valorBusquedaExactaSolicitante = valorBusquedaExactaSolicitante;
+		}
+
+		public String getNotasCAJG() {
+			return notasCAJG;
+		}
+
+		public void setNotasCAJG(String notasCAJG) {
+			this.notasCAJG = notasCAJG;
 		}
 
 		

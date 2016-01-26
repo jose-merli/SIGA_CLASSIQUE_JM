@@ -23,7 +23,7 @@
 	HttpSession ses = request.getSession();
 	String app = request.getContextPath();
 	UsrBean usr = (UsrBean)ses.getAttribute("USRBEAN");
-	String 	dato[] = {(String)usr.getLocation()};
+	String 	dato[] = {(String)usr.getLocation(),"-1"};
 	
 	//mhg - INC_10639_SIGA
 	ArrayList presidenteA = new ArrayList();
@@ -92,11 +92,11 @@
 						</tr>
 						<tr>
 							<td class="labelText"><siga:Idioma key="sjcs.actas.presidente"/></td>
-							<td class="labelText" colspan="8"><siga:ComboBD nombre="idPresidente"  tipo="tipoPonente" parametro="<%=dato%>" clase="boxCombo" elementoSel="<%=presidenteA%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false" ancho="800"/></td>
+							<td class="labelText" colspan="8"><siga:ComboBD nombre="idPresidente"  tipo="tipoPonenteAll" parametro="<%=dato%>" clase="boxCombo" elementoSel="<%=presidenteA%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false" ancho="800"/></td>
 						</tr>
 						<tr>
 							<td class="labelText"><siga:Idioma key="sjcs.actas.secretario"/></td>
-							<td class="labelText" colspan="8"><siga:ComboBD nombre="idSecretario"  tipo="tipoPonente" parametro="<%=dato%>" clase="boxCombo" elementoSel="<%=secretarioA%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false" ancho="800"/></td>
+							<td class="labelText" colspan="8"><siga:ComboBD nombre="idSecretario"  tipo="tipoPonenteAll" parametro="<%=dato%>" clase="boxCombo" elementoSel="<%=secretarioA%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false" ancho="800"/></td>
 						</tr>
 						</table>
 					</siga:ConjCampos>	

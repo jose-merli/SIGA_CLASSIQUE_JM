@@ -342,7 +342,7 @@ public class CenHistoricoAdm extends MasterBeanAdministrador
 				}							
 				*/
 				
-				sql += " ORDER BY " + CenHistoricoBean.T_NOMBRETABLA + "." + CenHistoricoBean.C_FECHAEFECTIVA + " DESC, " + CenHistoricoBean.T_NOMBRETABLA + "." + CenHistoricoBean.C_IDTIPOCAMBIO ; 										
+				sql += " ORDER BY " + CenHistoricoBean.T_NOMBRETABLA + "." + CenHistoricoBean.C_FECHAENTRADA + " DESC, " + CenHistoricoBean.T_NOMBRETABLA + "." + CenHistoricoBean.C_IDTIPOCAMBIO ; 										
 							
 	            if (rc.find(sql)) {
 	               for (int i = 0; i < rc.size(); i++){
@@ -974,6 +974,9 @@ public class CenHistoricoAdm extends MasterBeanAdministrador
 					CenDatosColegialesEstadoAdm adm = new CenDatosColegialesEstadoAdm(this.usrbean);
 					hBeanAsociado = adm.beanToHashTable(beanDatosColegiales);
 					hBeanAsociadoAnterior = adm.beanToHashTable(adm.hashTableToBean(beanDatosColegiales.getOriginalHash()));
+					
+					if(beanDatosColegiales.getFechaEstado()!=null && !beanDatosColegiales.getFechaEstado().equals(""))
+						beanHistorico.setFechaEfectiva(beanDatosColegiales.getFechaEstado());
 					
 					beanHistorico.setIdPersona(beanDatosColegiales.getIdPersona());			
 					beanHistorico.setIdInstitucion(beanDatosColegiales.getIdInstitucion());

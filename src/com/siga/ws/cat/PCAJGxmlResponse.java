@@ -229,7 +229,10 @@ public class PCAJGxmlResponse extends SIGAWSClientAbstract implements PCAJGConst
 						String descError = "El expediente no se puede relacionar en el sistema. Se ha recibido el siguiente código expediente servicio (año/número)" +
 								" = " + datosExpediente.getCodigoExpedienteServicio().getAnyoExpedienteServicio() + "/" + datosExpediente.getCodigoExpedienteServicio().getNumExpedienteServicio();
 						escribeLogRemesa(descError);
-						rellenaErrorContenido(datosError, datosExpediente.getCodigoExpedienteServicio().getOrigenExpedienteServicio(), anyoExpediente, numExpediente, "CodigoExpedienteServicio", descError);
+						rellenaErrorContenido(datosError, datosExpediente.getCodigoExpedienteServicio().getOrigenExpedienteServicio(), 
+								datosExpediente.getCodigoExpedienteServicio().getAnyoExpedienteServicio(), 
+								datosExpediente.getCodigoExpedienteServicio().getNumExpedienteServicio(), 
+								"CodigoExpedienteServicio", descError);
 					} else {
 						
 						numExpediente = datosExpediente.getCodigoExpediente().getNumExpediente();
@@ -442,8 +445,8 @@ public class PCAJGxmlResponse extends SIGAWSClientAbstract implements PCAJGConst
 		ErrorContenido errorContenido = datosError.addNewErrorContenido();
 		CodigoExpedienteError codExpError = errorContenido.addNewCodigoExpedienteError();
 		codExpError.setColegioExpediente(colegioExpediente);
-		codExpError.setAnyoExpediente(anyoExpediente);
 		codExpError.setNumExpediente(numExpediente);
+		codExpError.setAnyoExpediente(anyoExpediente);		
 		
 		DetalleError detalleError = errorContenido.addNewDetalleError();
 		detalleError.setCampoError(campoError);

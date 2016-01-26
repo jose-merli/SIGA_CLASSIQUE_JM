@@ -248,6 +248,27 @@ public class InformeCertificadosEspeciales extends MasterReport {
 		}
 		return fPdf;
 	}
+	
+	//Eitamos el uso de la request
+	public File generarListadoCertificados(UsrBean usr, Hashtable datos, String pdfRuta, String pdfNombre, String plantillaRuta, String plantillaNombre, String dirTemporal) throws ClsExceptions, SIGAException {
+		File fPdf = null;
+
+		try {
+			String contenidoPlantilla = this.obtenerContenidoPlantilla(plantillaRuta, plantillaNombre);
+			fPdf = this.generarInforme(usr, datos, dirTemporal, contenidoPlantilla, pdfRuta, pdfNombre.substring(0, pdfNombre.indexOf(".pdf")));
+		} catch (SIGAException se) {
+			throw se;
+		} catch (ClsExceptions ex) {
+			throw ex;
+		} catch (Exception e) {
+			throw new ClsExceptions(e, "Error al generar el informe: " + e.getLocalizedMessage());
+		} finally {
+
+		}
+		return fPdf;
+	}
+	
+	
 
 	public Vector getDatosIterables(Hashtable ht) throws ClsExceptions, SIGAException {
 		Vector v = null;

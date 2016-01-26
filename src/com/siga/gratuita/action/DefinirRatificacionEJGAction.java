@@ -10,11 +10,14 @@ import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.transaction.UserTransaction;
 
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.redabogacia.sigaservices.app.services.scs.EjgResolucionService;
+import org.redabogacia.sigaservices.app.services.scs.EjgService;
+import org.redabogacia.sigaservices.app.vo.scs.EjgResolucionVo;
+import org.redabogacia.sigaservices.app.vo.scs.EjgVo;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
@@ -28,6 +31,8 @@ import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
 import com.siga.gratuita.form.DefinirEJGForm;
 import com.siga.gratuita.pcajg.resoluciones.ResolucionesFicheroAbstract;
+
+import es.satec.businessManager.BusinessManager;
 
 /**
 * Maneja las acciones que se pueden realizar sobre la tabla SCS_SOJ
@@ -49,62 +54,111 @@ public class DefinirRatificacionEJGAction extends MasterAction {
 		else return super.executeInternal(mapping, formulario, request, response); 
 	}
 	
-	/**
-	 * Rellena un hash con los valores recogidos del formulario y los modifica en la base de datos.
-	 * 
-	 * @param mapping Mapeador de las acciones. De tipo ActionMapping.
-	 * @param formulario del que se recoge la información. De tipo MasterForm.
-	 * @param request Información de sesión. De tipo HttpServletRequest
-	 * @param response De tipo HttpServletResponse
-	 * 
-	 * @return String que indicará la siguiente acción a llevar a cabo. 
-	 */
 	protected String modificar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
-	
+//		Accederemos al ejg por clave unica
 		Hashtable nuevos = new Hashtable();
-		UserTransaction tx=null;		
 		UsrBean usr=(UsrBean)request.getSession().getAttribute("USRBEAN");
 		DefinirEJGForm miForm = (DefinirEJGForm)formulario;		
 		nuevos = miForm.getDatos();
-		ScsEJGAdm ejgAdm = new ScsEJGAdm(this.getUserBean(request));
+		
+		EjgVo ejgVo = new EjgVo();
+		EjgResolucionVo ejgResolucionVo = new EjgResolucionVo();
+		ejgVo.setResolucion(ejgResolucionVo);
 		
 		try {
-			
+
+			ejgVo.setIdinstitucion(new Short(miForm.getIdInstitucion()));
+			ejgVo.setAnio(new Short(miForm.getAnio()));
+			ejgVo.setIdtipoejg(new Short(miForm.getIdTipoEJG()));
+			ejgVo.setNumero(new Long(miForm.getNumero()));
 			//Se realiza el nuevo parseo de IDTIPORATIFICACIONEJG
 			if (!nuevos.get("IDTIPORATIFICACIONEJG").equals("")&&nuevos.get("IDTIPORATIFICACIONEJG").toString().contains(",")) {
 				// Ponemos el IDTIPORATIFICACIONEJG en el formato correcto
 				String[] idTipoRatificacionEjg = nuevos.get("IDTIPORATIFICACIONEJG").toString().split(",");
-				nuevos.put("IDTIPORATIFICACIONEJG", idTipoRatificacionEjg[0] );
+				ejgVo.setIdtiporatificacionejg(new Short(idTipoRatificacionEjg[0]));
+				nuevos.put("IDTIPORATIFICACIONEJG", idTipoRatificacionEjg[0]);
 			}			
 			
 			// Ponemos la fecha en el formato correcto
-			if (nuevos.get("FECHARATIFICACION")!=null && !nuevos.get("FECHARATIFICACION").equals(""))
+			if (nuevos.get("FECHARATIFICACION")!=null && !nuevos.get("FECHARATIFICACION").equals("")){
+				ejgVo.setFecharatificacion(GstDate.convertirFechaDiaMesAnio(nuevos.get("FECHARATIFICACION").toString()));
 				nuevos.put("FECHARATIFICACION", GstDate.getApplicationFormatDate("",nuevos.get("FECHARATIFICACION").toString()));
+			}
 
-			if (nuevos.get("FECHARESOLUCIONCAJG")!=null && !nuevos.get("FECHARESOLUCIONCAJG").equals(""))
+			if (nuevos.get("FECHARESOLUCIONCAJG")!=null && !nuevos.get("FECHARESOLUCIONCAJG").equals("")){
+				ejgVo.setFecharesolucioncajg(GstDate.convertirFechaDiaMesAnio(nuevos.get("FECHARESOLUCIONCAJG").toString()));
 				nuevos.put("FECHARESOLUCIONCAJG", GstDate.getApplicationFormatDate("",nuevos.get("FECHARESOLUCIONCAJG").toString()));
+			}
 			
-			if (nuevos.get("FECHANOTIFICACION")!=null && !nuevos.get("FECHANOTIFICACION").equals(""))
+			if (nuevos.get("FECHANOTIFICACION")!=null && !nuevos.get("FECHANOTIFICACION").equals("")){
+				ejgVo.setFechanotificacion(GstDate.convertirFechaDiaMesAnio(nuevos.get("FECHANOTIFICACION").toString()));
 				nuevos.put("FECHANOTIFICACION", GstDate.getApplicationFormatDate("",nuevos.get("FECHANOTIFICACION").toString()));
+			}
 			
-			if (nuevos.get("FECHAPRESENTACIONPONENTE")!=null && !nuevos.get("FECHAPRESENTACIONPONENTE").equals(""))
+			if (nuevos.get("FECHAPRESENTACIONPONENTE")!=null && !nuevos.get("FECHAPRESENTACIONPONENTE").equals("")){
+				ejgVo.setFechapresentacionponente(GstDate.convertirFechaDiaMesAnio(nuevos.get("FECHAPRESENTACIONPONENTE").toString()));
 				nuevos.put("FECHAPRESENTACIONPONENTE", GstDate.getApplicationFormatDate("",nuevos.get("FECHAPRESENTACIONPONENTE").toString()));
+			}
 			
 			nuevos.put("TURNADORATIFICACION",(nuevos.containsKey("TURNADORATIFICACION")?nuevos.get("TURNADORATIFICACION"):ClsConstants.DB_FALSE));
+			ejgVo.setTurnadoratificacion((String) nuevos.get("TURNADORATIFICACION"));
 			nuevos.put("REQUIERENOTIFICARPROC",(nuevos.containsKey("REQUIERENOTIFICARPROC")?nuevos.get("REQUIERENOTIFICARPROC"):ClsConstants.DB_FALSE));
+			ejgVo.setRequierenotificarproc((String) nuevos.get("REQUIERENOTIFICARPROC"));
 			
-			if (nuevos.get("IDPONENTE")!=null && !nuevos.get("IDPONENTE").equals(""))
+			if (nuevos.get("IDPONENTE")!=null && !nuevos.get("IDPONENTE").equals("")){
 				nuevos.put("IDINSTITUCIONPONENTE", usr.getIdInstitucionComision());
+				ejgVo.setIdinstitucionponente((Short)nuevos.get("IDINSTITUCIONPONENTE"));
+				ejgVo.setIdponente(new Integer((String)nuevos.get("IDPONENTE")));
+			}
+			
+			if (nuevos.get("ANIOACTA")!=null && !nuevos.get("ANIOACTA").equals("")){
+				ejgVo.setAnioacta(new Short((String)nuevos.get("ANIOACTA")));
+				ejgVo.setIdacta(new Long((String)nuevos.get("IDACTA")));
+				ejgVo.setIdinstitucionacta(new Short((String)nuevos.get("IDINSTITUCIONACTA")));
+			}
+			if (nuevos.get("ANIOCAJG")!=null && !nuevos.get("ANIOCAJG").equals("")){
+				ejgVo.setAniocajg(new Short((String)nuevos.get("ANIOCAJG")));
+			}
+			if (nuevos.get("NUMERO_CAJG")!=null && !nuevos.get("NUMERO_CAJG").equals("")){
+				ejgVo.setNumeroCajg((String)nuevos.get("NUMERO_CAJG"));
+			}
+			if (nuevos.get("IDORIGENCAJG")!=null && !nuevos.get("IDORIGENCAJG").equals("")){
+				ejgVo.setIdorigencajg(new Short((String)nuevos.get("IDORIGENCAJG")));
+			}
+			
+			if (nuevos.get("DOCRESOLUCION")!=null && !nuevos.get("DOCRESOLUCION").equals("")){
+				ejgVo.setDocresolucion((String)nuevos.get("DOCRESOLUCION"));
+			}
+			ejgVo.setUsumodificacion(new  Integer(usr.getUserName()));
+			
+			if (nuevos.get("REFAUTO")!=null && !nuevos.get("REFAUTO").equals("")){
+				ejgVo.setRefauto((String)nuevos.get("REFAUTO"));
+			}
+			if (nuevos.get("IDFUNDAMENTOJURIDICO")!=null && !nuevos.get("IDFUNDAMENTOJURIDICO").equals("")){
+				ejgVo.setIdfundamentojuridico(new Short((String)nuevos.get("IDFUNDAMENTOJURIDICO")));
+			}
+			
+			if (nuevos.get("RATIFICACIONDICTAMEN")!=null && !nuevos.get("RATIFICACIONDICTAMEN").equals("")){
+				ejgVo.setRatificaciondictamen((String)nuevos.get("RATIFICACIONDICTAMEN"));
+			}
+			if(usr.isComision()){
+				if (miForm.getNotasCAJG()!=null && !miForm.getNotasCAJG().equals("")){
+					ejgResolucionVo.setNotascajg(miForm.getNotasCAJG());
+				}else
+					ejgResolucionVo.setNotascajg("");
+			}
+			EjgService ejgService = (EjgService) BusinessManager.getInstance().getService(EjgService.class);
+			ejgService.update(ejgVo);
 			
 			// Actualizamos en la base de datos
-			ejgAdm.update(nuevos,(Hashtable)request.getSession().getAttribute("DATABACKUP"));
+//			ejgAdm.update(nuevos,(Hashtable)request.getSession().getAttribute("DATABACKUP"));
 
 			// En DATABACKUP almacenamos los datos más recientes por si se vuelve a actualizar seguidamente
-			nuevos.put("FECHAMODIFICACION", "sysdate");
+//			nuevos.put("FECHAMODIFICACION", "sysdate");
 			request.getSession().setAttribute("DATABACKUP",nuevos);
 			
 		} catch (Exception e) {
-			throwExcp("messages.general.error", new String[] {"modulo.gratuita"}, e, tx); 
+			throwExcp("messages.general.error", new String[] {"modulo.gratuita"}, e, null); 
 		}
 		
 		return exitoRefresco("messages.updated.success",request);
@@ -165,10 +219,33 @@ public class DefinirRatificacionEJGAction extends MasterAction {
 		
 		ScsEJGAdm ejgAdm = new ScsEJGAdm(this.getUserBean(request));
 		
-		try {			
+		try {		
+			if(usr.isComision()){
+				EjgResolucionService ejgResolucionService = (EjgResolucionService) BusinessManager.getInstance().getService(EjgResolucionService.class);
+				EjgResolucionVo ejgResolucionVo = new EjgResolucionVo();
+				ejgResolucionVo.setIdinstitucion(new Short(idInstitucion));
+				ejgResolucionVo.setAnio(new Short((String)miHash.get("ANIO")));
+				ejgResolucionVo.setIdtipoejg(new Short((String)miHash.get("IDTIPOEJG")));
+				ejgResolucionVo.setNumero(new Long((String)miHash.get("NUMERO")));
+				ejgResolucionVo = ejgResolucionService.get(ejgResolucionVo);
+				if(ejgResolucionVo!=null)
+					miForm.setNotasCAJG(ejgResolucionVo.getNotascajg());
+				
+			}
+			
 			v = ejgAdm.selectPorClave(miHash);
 			try{
-				request.getSession().setAttribute("DATABACKUP",ejgAdm.beanToHashTable((ScsEJGBean)v.get(0)));
+				Hashtable ejgBeanHashtable = ejgAdm.beanToHashTable((ScsEJGBean)v.get(0));
+				if(request.getParameter("IDINSTITUCIONACTA")!=null){
+					ejgBeanHashtable.put("IDINSTITUCIONACTA",(String)request.getParameter("IDINSTITUCIONACTA"));
+					ejgBeanHashtable.put("IDACTA",(String)request.getParameter("IDACTA"));
+					ejgBeanHashtable.put("NUMEROACTA", (String)request.getParameter("NUMEROACTA"));
+					ejgBeanHashtable.put("ANIOACTA", (String)request.getParameter("ANIOACTA"));
+					ejgBeanHashtable.put("FECHARESOLUCIONCAJG", (String)request.getParameter("FECHARESOLUCION"));
+					ejgBeanHashtable.put("IDTIPORATIFICACIONEJG", (String)request.getParameter("IDTIPORATIFICACIONEJG"));
+					ejgBeanHashtable.put("IDFUNDAMENTOJURIDICO", (String)request.getParameter("IDFUNDAMENTOJURIDICO"));
+				}
+				request.getSession().setAttribute("DATABACKUP",ejgBeanHashtable);
 			}catch (Exception e) {
 				throwExcp("error.general.yanoexiste",e,null);
 			}

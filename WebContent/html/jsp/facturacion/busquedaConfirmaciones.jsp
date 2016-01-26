@@ -187,9 +187,8 @@
 			buscar();
 		}
 		
-		<!-- Funcion asociada a boton buscar -->
-		function buscar() 
-		{
+		// Funcion asociada a boton buscar
+		function buscar() {
 			sub();	
 			if (validateConfirmarFacturacion1Form(document.confirmarFacturacionForm)){
 				setFilaSeleccionadaD('true');
@@ -203,9 +202,8 @@
 			}
 		}
 		
-		//Asociada al boton Nuevo -->
-		function nuevo() 
-		{		
+		// Asociada al boton Nuevo
+		function nuevo() {		
 			document.confirmarFacturacionForm.target="mainWorkArea";
 			document.confirmarFacturacionForm.modo.value = "nuevo";
 			document.confirmarFacturacionForm.submit();
@@ -224,7 +222,6 @@
 				jQuery('#fechaRealGeneracionConAsterisco').show();
 			}
 		}
-
 	</script>
 	
 	<!-- FIN: SCRIPTS BOTONES BUSQUEDA -->

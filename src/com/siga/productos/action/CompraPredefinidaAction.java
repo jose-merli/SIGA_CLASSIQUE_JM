@@ -1121,24 +1121,23 @@ public class CompraPredefinidaAction extends MasterAction {
 			if(request.getParameter("idInstitucionColegiacion")!= null && !request.getParameter("idInstitucionColegiacion").equals("")){
 				idInstitucionColegiacionX=request.getParameter("idInstitucionColegiacion");
 			}
+			
 			String idBoton=request.getParameter("idBoton");
 			String metodoSolicitud=request.getParameter("metodoSolicitud");
 			String fechaSolicitud=request.getParameter("fechaSolicitud");
-
 			String idProductoCertificado=request.getParameter("idProductoCertificado");
-			//String idPlantilla=request.getParameter("idPlantilla");
 
 			PysProductosInstitucionAdm admPI = new PysProductosInstitucionAdm(this.getUserBean(request));
-		    
-		    AdmBotonAccionAdm admBot= new AdmBotonAccionAdm(this.getUserBean(request));
-		    AdmBotonAccionBean beanBot = null;
-			Vector v = admBot.select(" WHERE IDBOTON="+idBoton+" AND IDINSTITUCION="+user.getLocation());
-			if (v!=null && v.size()>0) {
-				beanBot = (AdmBotonAccionBean) v.get(0);
-			} else {
-				throw new SIGAException("certificados.boton.mensaje.malConfigurado");
-			}
-		    
+		    if(idBoton != null && !idBoton.equals("")){
+		    	AdmBotonAccionAdm admBot= new AdmBotonAccionAdm(this.getUserBean(request));
+		    	AdmBotonAccionBean beanBot = null;
+				Vector v = admBot.select(" WHERE IDBOTON="+idBoton+" AND IDINSTITUCION="+user.getLocation());
+				if (v!=null && v.size()>0) {
+					beanBot = (AdmBotonAccionBean) v.get(0);
+				} else {
+					throw new SIGAException("certificados.boton.mensaje.malConfigurado");
+				}
+		    }
 			
 			StringTokenizer st = new StringTokenizer(idProductoCertificado,"_");
 			String idInstitucionP="";
@@ -1174,39 +1173,44 @@ public class CompraPredefinidaAction extends MasterAction {
 		    	throw new SIGAException("certificados.boton.mensaje.productoNoExiste");
 		    }
 	
-		    AdmValorPreferenteAdm admVal= new AdmValorPreferenteAdm(this.getUserBean(request));
-		    AdmValorPreferenteBean beanVal = null;
-			Vector v2 = admVal.select(" WHERE IDBOTON="+idBoton+" AND IDINSTITUCION="+user.getLocation()+" AND CAMPO='FORMA_PAGO'");
-			String formaPago=null; 
+		    String formaPago=null; 
 			String tipoEnvio=null; 
-			if (v2!=null && v2.size()>0) {
-				beanVal=(AdmValorPreferenteBean)v2.get(0);
-				if(beanPI.getnoFacturable()!=null && beanPI.getnoFacturable().trim().equals("1"))
-					formaPago=null;
-				else
-					formaPago=beanVal.getValor();
-			} else {
-				throw new SIGAException("certificados.boton.mensaje.preferenciasMal");
-			} 
-			
-			PysFormaPagoProductoAdm admForm= new PysFormaPagoProductoAdm(this.getUserBean(request));
-			PysFormaPagoProductoBean beanForm = null;
-			Vector v3 = admForm.select(" WHERE IDINSTITUCION="+beanPI.getIdInstitucion()+" AND IDTIPOPRODUCTO="+beanPI.getIdTipoProducto()+" AND IDPRODUCTO="+beanPI.getIdProducto()+" AND IDPRODUCTOINSTITUCION="+beanPI.getIdProductoInstitucion());
-			if (v2==null || v2.size()==0) {
-				throw new SIGAException("certificados.boton.mensaje.formaPagoMAL");
-			} 
-			
-			
-			
-			v2 = admVal.select(" WHERE IDBOTON="+idBoton+" AND IDINSTITUCION="+user.getLocation()+" AND CAMPO='TIPO_ENVIO'");
-			if (v2!=null && v2.size()>0) {
-				beanVal=(AdmValorPreferenteBean)v2.get(0);
-				tipoEnvio=beanVal.getValor();
-			} else {
-				throw new SIGAException("certificados.boton.mensaje.preferenciasMal");
-			}		
+		    if(idBoton != null && !idBoton.equals("")){
+			    AdmValorPreferenteAdm admVal= new AdmValorPreferenteAdm(this.getUserBean(request));
+			    AdmValorPreferenteBean beanVal = null;
+				Vector v2 = admVal.select(" WHERE IDBOTON="+idBoton+" AND IDINSTITUCION="+user.getLocation()+" AND CAMPO='FORMA_PAGO'");
+	
+				if (v2!=null && v2.size()>0) {
+					beanVal=(AdmValorPreferenteBean)v2.get(0);
+					if(beanPI.getnoFacturable()!=null && beanPI.getnoFacturable().trim().equals("1"))
+						formaPago=null;
+					else
+						formaPago=beanVal.getValor();
+				} else {
+					throw new SIGAException("certificados.boton.mensaje.preferenciasMal");
+				} 
+				
+				PysFormaPagoProductoAdm admForm= new PysFormaPagoProductoAdm(this.getUserBean(request));
+				PysFormaPagoProductoBean beanForm = null;
+				Vector v3 = admForm.select(" WHERE IDINSTITUCION="+beanPI.getIdInstitucion()+" AND IDTIPOPRODUCTO="+beanPI.getIdTipoProducto()+" AND IDPRODUCTO="+beanPI.getIdProducto()+" AND IDPRODUCTOINSTITUCION="+beanPI.getIdProductoInstitucion());
+				if (v2==null || v2.size()==0) {
+					throw new SIGAException("certificados.boton.mensaje.formaPagoMAL");
+				} 
 
-			
+				v2 = admVal.select(" WHERE IDBOTON="+idBoton+" AND IDINSTITUCION="+user.getLocation()+" AND CAMPO='TIPO_ENVIO'");
+				if (v2!=null && v2.size()>0) {
+					beanVal=(AdmValorPreferenteBean)v2.get(0);
+					tipoEnvio=beanVal.getValor();
+				} else {
+					throw new SIGAException("certificados.boton.mensaje.preferenciasMal");
+				}		
+		    
+		    } else {
+		    	/** Se pone por defecto valor 30 a forma de pago y valor 1 a tipo envio **/
+		    	formaPago = "30";
+		    	tipoEnvio = "1";
+		    }
+
 			tx = user.getTransaction(); 
 			tx.begin();
 			
@@ -1241,8 +1245,7 @@ public class CompraPredefinidaAction extends MasterAction {
 
 	        salida = "exitoHaciaCertificados";
 
-		} 
-		catch (Exception e) { 
+		} catch (Exception e) { 
 			throwExcp("messages.general.error",new String[] {"modulo.productos"},e,tx); 
 		} 
 		return salida;

@@ -156,7 +156,7 @@ public class ScsDocumentacionEJGAdm extends MasterBeanAdministrador {
 							ScsDocumentacionEJGBean.C_FECHAMODIFICACION,	ScsDocumentacionEJGBean.C_USUMODIFICACION,
 							ScsDocumentacionEJGBean.C_REGENTRADA,			ScsDocumentacionEJGBean.C_REGSALIDA,
 							ScsDocumentacionEJGBean.C_PRESENTADOR,ScsDocumentacionEJGBean.C_IDPRESENTADORMAESTRO,			ScsDocumentacionEJGBean.C_IDDOCUMENTO,
-						 	ScsDocumentacionEJGBean.C_IDTIPODOCUMENTO,ScsDocumentacionEJGBean.C_IDFICHERO};
+						 	ScsDocumentacionEJGBean.C_IDTIPODOCUMENTO,ScsDocumentacionEJGBean.C_IDFICHERO,ScsDocumentacionEJGBean.C_COMISIONAJG};
 
 		return campos;
 	}
@@ -205,6 +205,7 @@ public class ScsDocumentacionEJGAdm extends MasterBeanAdministrador {
 			bean.setIdDocumento(UtilidadesHash.getString(hash,ScsDocumentacionEJGBean.C_IDDOCUMENTO));
 			bean.setIdTipoDocumento(UtilidadesHash.getString(hash,ScsDocumentacionEJGBean.C_IDTIPODOCUMENTO));
 			bean.setIdFichero(UtilidadesHash.getLong(hash,ScsDocumentacionEJGBean.C_IDFICHERO));
+			bean.setComisionAJG(UtilidadesHash.getShort(hash,ScsDocumentacionEJGBean.C_COMISIONAJG));
 		}
 		catch (Exception e){
 			 throw new ClsExceptions(e,"EXCEPCION EN TRANSFORMAR HASHTABLE A BEAN");
@@ -237,6 +238,7 @@ public class ScsDocumentacionEJGAdm extends MasterBeanAdministrador {
 			UtilidadesHash.setForCompare(htData, ScsDocumentacionEJGBean.C_IDDOCUMENTO, String.valueOf(b.getIdDocumento()));
 			UtilidadesHash.setForCompare(htData, ScsDocumentacionEJGBean.C_IDTIPODOCUMENTO, String.valueOf(b.getIdTipoDocumento()));
 			UtilidadesHash.setForCompare(htData, ScsDocumentacionEJGBean.C_IDFICHERO, String.valueOf(b.getIdFichero()));
+			UtilidadesHash.setForCompare(htData, ScsDocumentacionEJGBean.C_COMISIONAJG, String.valueOf(b.getComisionAJG()));
 		} catch (Exception e) {
 			throw new ClsExceptions(e, "EXCEPCION EN TRANSFORMAR EL BEAN A HASHTABLE");
 		}
@@ -298,6 +300,7 @@ public class ScsDocumentacionEJGAdm extends MasterBeanAdministrador {
 			sql.append("WHERE SCS_PARENTESCO.IDINSTITUCION =   FAMILIA.IDINSTITUCION ");
 			sql.append("AND SCS_PARENTESCO.IDPARENTESCO =    FAMILIA.IDPARENTESCO)) || ')') AS PRESENTADOR ");
 			sql.append(",     D.ABREVIATURA DOCUMENTO,     DE.IDDOCUMENTACION,     DE.IDINSTITUCION ");
+			sql.append(",     DE.COMISIONAJG ");
 
 			sql.append("FROM SCS_DOCUMENTACIONEJG  DE,     SCS_DOCUMENTOEJG      D,      SCS_UNIDADFAMILIAREJG FAMILIA, ");
 			sql.append("SCS_PERSONAJG         PERSONA,	SCS_PRESENTADOR       MAESTROPRESENTADOR ");
@@ -439,7 +442,7 @@ public class ScsDocumentacionEJGAdm extends MasterBeanAdministrador {
 
 
 	public RowsContainer getDocumentacionEJG(String idInstitucion, String idTipoEJG, String anio, String numero,
-			String idioma, String longitudNumEjg) throws ClsExceptions {
+			String idioma, String longitudNumEjg, boolean isComision) throws ClsExceptions {
 		
 		String sql = "SELECT  lpad(EJG.numejg,"+longitudNumEjg+",0) NUMEJG, EJG.ANIO, DECODE(EJG.IDPERSONAJG,PER.IDPERSONA, 1,0) AS INTERESADO" +
 				", DECODE(U.SOLICITANTE, 1, f_siga_getrecurso_etiqueta('gratuita.busquedaEJG.literal.solicitante', " + idioma + ")" +
@@ -459,7 +462,7 @@ public class ScsDocumentacionEJGAdm extends MasterBeanAdministrador {
 				", (SELECT PRO.NOMBRE FROM Cen_Provincias PRO WHERE PRO.IDPROVINCIA=PER.IDPROVINCIA) AS PROVINCIA"+
 				", (SELECT F_SIGA_GETRECURSO(PAI.NOMBRE,1) FROM CEN_PAIS PAI WHERE PAI.IDPAIS=PER.IDPAIS) AS PAIS"+			
 				", EJG.FECHALIMITEPRESENTACION, ejg.FECHAPRESENTACION, DOC.Fechalimite as FECLIMITEPRESENTADOC, DOC.Fechaentrega as FECPRESENTACIONDOC" + 
-				
+				" ,DOC.COMISIONAJG "+
 				" FROM SCS_EJG EJG, SCS_DOCUMENTACIONEJG DOC, SCS_TIPODOCUMENTOEJG TDOC, SCS_DOCUMENTOEJG DOCU" +
 				"		, SCS_PERSONAJG PER, SCS_UNIDADFAMILIAREJG U" +
 				
@@ -480,8 +483,13 @@ public class ScsDocumentacionEJGAdm extends MasterBeanAdministrador {
 					" AND DOC.NUMERO = U.NUMERO" +				
 					" AND DOC.IDINSTITUCION = U.IDINSTITUCION" +
 					" AND DOC.PRESENTADOR = U.IDPERSONA" +
+					" AND nvl(DOC.COMISIONAJG,0) =   " ;
+					if(isComision)
+						sql += "1";
+					else
+						sql += "0";
 					
-					 " AND EJG.IDTIPOEJG = " + idTipoEJG +
+					sql += " AND EJG.IDTIPOEJG = " + idTipoEJG +
 					 " AND EJG.IDINSTITUCION = " + idInstitucion +
 					 " AND EJG.ANIO = " + anio +
 					 " AND EJG.NUMERO = " + numero +
@@ -593,6 +601,7 @@ public class ScsDocumentacionEJGAdm extends MasterBeanAdministrador {
 					      "                        FAMILIA.IDPARENTESCO)) || ')') AS DESCPRESENTADOR, " +
 					      
 					      "  	D.ABREVIATURA DOCUMENTOABREVIATURA " +
+					      "  	,DE.COMISIONAJG " +
 						  " FROM SCS_DOCUMENTACIONEJG  DE, " +
 						  "      SCS_DOCUMENTOEJG      D, " +
 						  "      SCS_UNIDADFAMILIAREJG FAMILIA, " +
@@ -630,6 +639,7 @@ public class ScsDocumentacionEJGAdm extends MasterBeanAdministrador {
                   extendedBean.setIdPresentador((String) hash.get("IDPRESENTADOR"));
                   extendedBean.setDescPresentador((String) hash.get("DESCPRESENTADOR"));
                   extendedBean.setDocumentoAbreviatura((String) hash.get("DOCUMENTOABREVIATURA"));
+                  extendedBean.setComisionAJG((String) hash.get("COMISIONAJG"));
                   list.add(extendedBean);
                }
 			}

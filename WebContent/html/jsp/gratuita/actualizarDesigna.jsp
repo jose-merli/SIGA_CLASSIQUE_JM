@@ -27,7 +27,6 @@
 <%@ page import="com.siga.gratuita.form.MaestroDesignasForm"%>
 <%@ page import="com.siga.beans.ScsEJGBean"%>
 
-
 <!-- JSP -->
 <%  
 	String app=request.getContextPath();
@@ -351,7 +350,6 @@
 					</logic:notEmpty>		   
 				    </ul>
 					<div id="paneles">
-
 					<logic:notEmpty name="MaestroDesignasForm" property="ejgs">
 					<%
 						MaestroDesignasForm form = (MaestroDesignasForm) request.getAttribute("MaestroDesignasForm");

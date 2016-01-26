@@ -175,7 +175,17 @@
 	
 			jQuery("#idButtonB").removeAttr("disabled");
 		}
-		
+
+		// Si fechaNacimiento es editable, indica si es valida o no (ver esFechaNacimientoInvalida)
+		function comprobarFechaNacimiento(valorFechaNacimiento) {
+			if (!jQuery("#fechaNacimiento").is('[disabled]') && esFechaNacimientoInvalida(valorFechaNacimiento)) {
+				alert("<siga:Idioma key='errors.date.past' arg0='censo.consultaDatosGenerales.literal.fechaNacimiento'/>");
+				return false;
+			} else {
+				return true;
+			}
+		}
+
 		function buscarDesignados (){
 			
 			if ((document.getElementById('colegiadoen').value 			== null || document.getElementById('colegiadoen').value == "") &&
@@ -990,7 +1000,11 @@
 				if(document.busquedaCensoModalForm.textoAlerta.value != null && document.busquedaCensoModalForm.textoAlerta.value != ""){
 					alert(document.busquedaCensoModalForm.textoAlerta.value);
 				}
-	
+				
+				//idioma automatico
+				if (jQuery("#idioma > option").length == 2) {
+					jQuery('#idioma > option:last').attr('selected', 'selected');
+				}
 				
 				if(datosGeneralesForm.numIdentificacion.value != null && datosGeneralesForm.numIdentificacion.value != ""){
 					//Aparecen los menus de abajo
@@ -1262,7 +1276,7 @@
 							<siga:Idioma key="censo.consultaDatosGenerales.literal.fechaNacimiento"/>&nbsp;
 						</td>				
 						<td>
-							<siga:Fecha styleId="fechaNacimiento" nombreCampo="fechaNacimiento" valorInicial="<%=fechaNacimiento%>"></siga:Fecha>
+							<siga:Fecha styleId="fechaNacimiento" nombreCampo="fechaNacimiento" valorInicial="<%=fechaNacimiento%>" postFunction="comprobarFechaNacimiento(this.value)" />
 						</td>
 					
 						<!-- LUGAR NACIMIENTO -->
@@ -1734,7 +1748,11 @@
 		if (trim(document.getElementById("idioma").value)=="") {
 			alert ('<siga:Idioma key="messages.campos.required"/> <siga:Idioma key="censo.consultaDatosGenerales.literal.idiomacomunicaciones"/>');
 		   	return false;
-		}		
+		}
+		
+		if (!comprobarFechaNacimiento(document.getElementById("fechaNacimiento").value)) {
+			return false;
+		}
 		
 		var tipoIden = document.datosGeneralesForm.tipoIdentificacion.value;
 		var dev = -1;

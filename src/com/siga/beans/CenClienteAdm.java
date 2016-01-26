@@ -5049,7 +5049,7 @@ public class CenClienteAdm extends MasterBeanAdmVisible
 	    }
 		return null;
 	}
-
+     
      public String getFechaEstadoColegial (String idPersona, String idInstitucion) throws ClsExceptions,SIGAException {
 	    Hashtable codigos = new Hashtable();
 	    try {
@@ -5080,163 +5080,163 @@ public class CenClienteAdm extends MasterBeanAdmVisible
 	   		}	
 	    }
 		return null;
-	}
+ 	}
 
      
- 	/** 
- 	 * Nos devuelve una persona en funcion de su nifcif y numero colegiado
- 	 * @param  colegiado 
- 	 * @param  idInstitucion  	
- 	 * @param  nifcif  
- 	 * @return  Vector - Filas de la tabla seleccionadas  
- 	 * @exception  ClsExceptions  En cualquier caso de error
- 	 */	  
- 	public Vector buscarPersona(String idInstitucion, String nifcif, String colegiado) throws ClsExceptions, SIGAException {
-		
- 		Vector v = new Vector();
-       	Hashtable codigos = new Hashtable();
-       	Hashtable registro = new Hashtable();
-       	int contador = 0;
-		RowsContainer rc = null;
-		boolean buscado = false;
-       try {
+  	/** 
+  	 * Nos devuelve una persona en funcion de su nifcif y numero colegiado
+  	 * @param  colegiado 
+  	 * @param  idInstitucion  	
+  	 * @param  nifcif  
+  	 * @return  Vector - Filas de la tabla seleccionadas  
+  	 * @exception  ClsExceptions  En cualquier caso de error
+  	 */	  
+  	public Vector buscarPersona(String idInstitucion, String nifcif, String colegiado) throws ClsExceptions, SIGAException {
+ 		
+  		Vector v = new Vector();
+        	Hashtable codigos = new Hashtable();
+        	Hashtable registro = new Hashtable();
+        	int contador = 0;
+ 		RowsContainer rc = null;
+ 		boolean buscado = false;
+        try {
 
-    	   String sql = " SELECT col.idinstitucion, per.idpersona AS IDPERSONA,per.nombre AS NOMBRE,per.apellidos1 AS APELLIDOS1,per.apellidos2 AS APELLIDOS2";
-            	  sql+= " FROM cen_colegiado col, cen_persona per";
-            	  sql+= " WHERE col.idpersona = per.idpersona";
-            	   
-            	  contador ++;
-            	  codigos.put(new Integer(contador), idInstitucion);
-            	   
-            	  sql+= " AND col.idinstitucion =:"+contador;
-     
-            	  if(!colegiado.equals("")){
-            		  
-		     	      contador++;
-			      	  codigos.put(new Integer(contador),colegiado);
-			      	   
-			          sql+= " AND LTRIM(DECODE(col.COMUNITARIO,'1',col.NCOMUNITARIO, col.NCOLEGIADO),'0') = LTRIM(:"+contador+",'0') " ;
-			          
-			          buscado= true;
-       			  }
-		          if(!nifcif.equals("")){
-		        	  
-			          contador++;
-			           
-			          sql+= " AND "+ComodinBusquedas.prepararSentenciaCompletaBind(nifcif,"per.nifcif",contador,codigos);
-			          
-			          buscado = true;
-		          }
-		          if (buscado == true){
-		          
-		            rc = this.findBind(sql,codigos);
-		 			if (rc!=null) {
-						for (int i = 0; i < rc.size(); i++)	{
-							Row fila = (Row) rc.get(i);
-							registro = fila.getRow();
-							
-							if (registro != null) 
-								v=this.selectByPK(registro);
-						}
-					}
-		          }
-       }
-       catch (Exception e) {
-       	throw new ClsExceptions (e, "Error al obtener la informacion sobre una entrada de la tabla cliente.");
-       }
-       return v;                        
-	}
- 	
- 	/** 
- 	 * Nos devuelve una persona en funcion de su nombre completo (apellido1 apellido2 , nombre)
- 	 * @param  nombreCompleto 
- 	 * @return  Vector - Filas de la tabla seleccionadas  
- 	 * @exception  ClsExceptions  En cualquier caso de error
- 	 */	  
- 	public Vector buscarPersonaNombre(String nombreCompleto) throws ClsExceptions, SIGAException {
-		
- 		Vector v = new Vector();
-       	Hashtable codigos = new Hashtable();
-       	Hashtable registro = new Hashtable();
-       	int contador = 0;
-		RowsContainer rc = null;
-       try {
+     	   String sql = " SELECT col.idinstitucion, per.idpersona AS IDPERSONA,per.nombre AS NOMBRE,per.apellidos1 AS APELLIDOS1,per.apellidos2 AS APELLIDOS2";
+             	  sql+= " FROM cen_colegiado col, cen_persona per";
+             	  sql+= " WHERE col.idpersona = per.idpersona";
+             	   
+             	  contador ++;
+             	  codigos.put(new Integer(contador), idInstitucion);
+             	   
+             	  sql+= " AND col.idinstitucion =:"+contador;
+      
+             	  if(!colegiado.equals("")){
+             		  
+ 		     	      contador++;
+ 			      	  codigos.put(new Integer(contador),colegiado);
+ 			      	   
+ 			          sql+= " AND LTRIM(DECODE(col.COMUNITARIO,'1',col.NCOMUNITARIO, col.NCOLEGIADO),'0') = LTRIM(:"+contador+",'0') " ;
+ 			          
+ 			          buscado= true;
+        			  }
+ 		          if(!nifcif.equals("")){
+ 		        	  
+ 			          contador++;
+ 			           
+ 			          sql+= " AND "+ComodinBusquedas.prepararSentenciaCompletaBind(nifcif,"per.nifcif",contador,codigos);
+ 			          
+ 			          buscado = true;
+ 		          }
+ 		          if (buscado == true){
+ 		          
+ 		            rc = this.findBind(sql,codigos);
+ 		 			if (rc!=null) {
+ 						for (int i = 0; i < rc.size(); i++)	{
+ 							Row fila = (Row) rc.get(i);
+ 							registro = fila.getRow();
+ 							
+ 							if (registro != null) 
+ 								v=this.selectByPK(registro);
+ 						}
+ 					}
+ 		          }
+        }
+        catch (Exception e) {
+        	throw new ClsExceptions (e, "Error al obtener la informacion sobre una entrada de la tabla cliente.");
+        }
+        return v;                        
+ 	}
+  	
+  	/** 
+  	 * Nos devuelve una persona en funcion de su nombre completo (apellido1 apellido2 , nombre)
+  	 * @param  nombreCompleto 
+  	 * @return  Vector - Filas de la tabla seleccionadas  
+  	 * @exception  ClsExceptions  En cualquier caso de error
+  	 */	  
+  	public Vector buscarPersonaNombre(String nombreCompleto) throws ClsExceptions, SIGAException {
+ 		
+  		Vector v = new Vector();
+        	Hashtable codigos = new Hashtable();
+        	Hashtable registro = new Hashtable();
+        	int contador = 0;
+ 		RowsContainer rc = null;
+        try {
 
-    	   String sql = " SELECT per.idpersona AS IDPERSONA ";
-            	  sql+= " FROM cen_cliente cli, cen_persona per";
-            	  sql+= " WHERE cli.idpersona = per.idpersona ";
-            	  
-            	  contador ++;
-            	  codigos.put(new Integer(contador), this.usrbean.getLocation());
-            	   
-            	  sql+= " AND cli.idinstitucion = :"+contador;
-            
-	     	      contador++;
-		      	  codigos.put(new Integer(contador),nombreCompleto.toUpperCase());
-		      	   
-		          sql+= " AND UPPER(PER.APELLIDO1 || ' ' PER.APELLIDO2 || ', ' PER.NOMBRE) = :"+contador ;
-		           
- 
-            rc = this.findBind(sql,codigos);
- 			if (rc!=null) {
-				for (int i = 0; i < rc.size(); i++)	{
-					Row fila = (Row) rc.get(i);
-					registro = fila.getRow(); 
-					if (registro != null) 
-						v.add(registro);
-				}
-			}
-       }
-       catch (Exception e) {
-       	throw new ClsExceptions (e, "Error al obtener la informacion sobre una entrada de la tabla cliente.");
-       }
-       return v;                        
-	}
- 	
- 	/** 
- 	 * Nos devuelve una persona en funcion de su nombre DNI
- 	 * @param  nombreCompleto 
- 	 * @return  Vector - Filas de la tabla seleccionadas  
- 	 * @exception  ClsExceptions  En cualquier caso de error
- 	 */	  
- 	public Vector buscarPersonaNifCif(String nifcif) throws ClsExceptions, SIGAException {
-		
- 		Vector v = new Vector();
-       	Hashtable codigos = new Hashtable();
-       	Hashtable registro = new Hashtable();
-       	int contador = 0;
-		RowsContainer rc = null;
-		try {
+     	   String sql = " SELECT per.idpersona AS IDPERSONA ";
+             	  sql+= " FROM cen_cliente cli, cen_persona per";
+             	  sql+= " WHERE cli.idpersona = per.idpersona ";
+             	  
+             	  contador ++;
+             	  codigos.put(new Integer(contador), this.usrbean.getLocation());
+             	   
+             	  sql+= " AND cli.idinstitucion = :"+contador;
+             
+ 	     	      contador++;
+ 		      	  codigos.put(new Integer(contador),nombreCompleto.toUpperCase());
+ 		      	   
+ 		          sql+= " AND UPPER(PER.APELLIDO1 || ' ' PER.APELLIDO2 || ', ' PER.NOMBRE) = :"+contador ;
+ 		           
+  
+             rc = this.findBind(sql,codigos);
+  			if (rc!=null) {
+ 				for (int i = 0; i < rc.size(); i++)	{
+ 					Row fila = (Row) rc.get(i);
+ 					registro = fila.getRow(); 
+ 					if (registro != null) 
+ 						v.add(registro);
+ 				}
+ 			}
+        }
+        catch (Exception e) {
+        	throw new ClsExceptions (e, "Error al obtener la informacion sobre una entrada de la tabla cliente.");
+        }
+        return v;                        
+ 	}
+  	
+  	/** 
+  	 * Nos devuelve una persona en funcion de su nombre DNI
+  	 * @param  nombreCompleto 
+  	 * @return  Vector - Filas de la tabla seleccionadas  
+  	 * @exception  ClsExceptions  En cualquier caso de error
+  	 */	  
+  	public Vector buscarPersonaNifCif(String nifcif) throws ClsExceptions, SIGAException {
+ 		
+  		Vector v = new Vector();
+        	Hashtable codigos = new Hashtable();
+        	Hashtable registro = new Hashtable();
+        	int contador = 0;
+ 		RowsContainer rc = null;
+ 		try {
 
-			String sql = "SELECT cli.idinstitucion, per.idpersona AS IDPERSONA,per.nombre AS NOMBRE,per.apellidos1 AS APELLIDOS1,per.apellidos2 AS APELLIDOS2";
-			sql+= " FROM cen_cliente cli, cen_persona per";
-			sql+= " WHERE cli.idpersona = per.idpersona ";
-			
-			contador ++;
-			codigos.put(new Integer(contador), this.usrbean.getLocation());   
-			sql+= " AND cli.idinstitucion =:"+contador;
-			
-			contador++;
-			sql+= " AND "+ComodinBusquedas.prepararSentenciaCompletaBind(nifcif,"per.nifcif",contador,codigos);
-		  
-			
-			rc = this.findBind(sql,codigos);
- 			if (rc!=null) {
-				for (int i = 0; i < rc.size(); i++)	{
-					Row fila = (Row) rc.get(i);
-					registro = fila.getRow();
-					
-					if (registro != null) 
-						v=this.selectByPK(registro);
-				}
-			}
-       }
-       catch (Exception e) {
-       	throw new ClsExceptions (e, "Error al obtener la informacion sobre una entrada de la tabla cliente.");
-       }
-       return v;                        
-	}
- 	
+ 			String sql = "SELECT cli.idinstitucion, per.idpersona AS IDPERSONA,per.nombre AS NOMBRE,per.apellidos1 AS APELLIDOS1,per.apellidos2 AS APELLIDOS2";
+ 			sql+= " FROM cen_cliente cli, cen_persona per";
+ 			sql+= " WHERE cli.idpersona = per.idpersona ";
+ 			
+ 			contador ++;
+ 			codigos.put(new Integer(contador), this.usrbean.getLocation());   
+ 			sql+= " AND cli.idinstitucion =:"+contador;
+ 			
+ 			contador++;
+ 			sql+= " AND "+ComodinBusquedas.prepararSentenciaCompletaBind(nifcif,"per.nifcif",contador,codigos);
+ 		  
+ 			
+ 			rc = this.findBind(sql,codigos);
+  			if (rc!=null) {
+ 				for (int i = 0; i < rc.size(); i++)	{
+ 					Row fila = (Row) rc.get(i);
+ 					registro = fila.getRow();
+ 					
+ 					if (registro != null) 
+ 						v=this.selectByPK(registro);
+ 				}
+ 			}
+        }
+        catch (Exception e) {
+        	throw new ClsExceptions (e, "Error al obtener la informacion sobre una entrada de la tabla cliente.");
+        }
+        return v;                        
+ 	}
+  	
  	
  	/**
  	 * Obtiene las instituciones en las cuales el cliente es colegiado ejerciente

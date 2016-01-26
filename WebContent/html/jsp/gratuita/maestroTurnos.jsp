@@ -178,7 +178,7 @@
 				
 			<%String mensaje = UtilidadesString.getMensajeIdioma(usr, "messages.subzona.obligatoria");%>
 			var mensaje="<%=mensaje%>";
-			var f=document.getElementById("DefinirTurnosForm");
+			//var f=document.getElementById("DefinirTurnosForm");
 			
 			if (<%=obligatorioCodigoExterno%> && document.forms[0].codigoExterno.value.length<1) {
 				<%String mensajecodigoexterno = UtilidadesString.getMensajeIdioma(usr, "messages.codigoExterno.obligatoria");%>
@@ -449,11 +449,11 @@
 <%
 						if (accion.equalsIgnoreCase("ver")) {
 %>
-						    <html:text name="DefinirTurnosForm" property="codigoExterno"  size="10" maxlength="10"  styleClass="boxConsulta" readonly="true" value='<%=(String)turno.get("CODIGOEXT")%>' />			
+						    <html:text name="DefinirTurnosForm" property="codigoExterno"  size="10" maxlength="10"  styleClass="boxConsulta" readonly="true" value='<%=(String)turno.get("CODIGOEXT")%>' />		
 <%
 						} else {
 %>				
-							<html:text name="DefinirTurnosForm" property="codigoExterno"  size="10" maxlength="10"  styleClass="Box" readonly="false" value='<%=(String)turno.get("CODIGOEXT")%>' />
+							<html:text name="DefinirTurnosForm" property="codigoExterno"  size="10" maxlength="10"  styleClass="box" readonly="false" value='<%=(String)turno.get("CODIGOEXT")%>' />
 <%
 						}
 %>	

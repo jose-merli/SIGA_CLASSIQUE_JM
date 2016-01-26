@@ -36,7 +36,7 @@ public class DefinirDocumentacionEJGForm extends FicheroForm {
 	private String	idDocumentoAnterior;
 	private String	idTipoDocumentoAnterior;
 	private String solicitante;
-	
+	private String comisionAJG;
 	
 	
 	
@@ -155,6 +155,12 @@ public class DefinirDocumentacionEJGForm extends FicheroForm {
 	}
 	public void setIdPresentadorAnterior(String idPresentadorAnterior) {
 		this.idPresentadorAnterior = idPresentadorAnterior;
+	}
+	public String getComisionAJG() {
+		return comisionAJG;
+	}
+	public void setComisionAJG(String comisionAJG) {
+		this.comisionAJG = comisionAJG;
 	}
 		
 	

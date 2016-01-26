@@ -501,10 +501,15 @@
 									<siga:Idioma key='gratuita.mantAsistencias.literal.fsolicitud'/>
 								</td>
 								<td class="labelTextValor" width="220px">
-									<siga:Fecha  nombreCampo= "fechaSolicitud" valorInicial="<%=fechaSolicitud%>"/>	&nbsp;
-									<html:text property="horaSolicitud" size="2" maxlength="2" styleClass="box" value="<%=horaSolicitud %>" style="text-align:center" />
-									:
-									<html:text property="minutoSolicitud" size="2" maxlength="2" styleClass="box" value="<%=minutoSolicitud %>" style="text-align:center" />
+									<% if (!modo.equalsIgnoreCase("ver")) { %>
+										<siga:Fecha  nombreCampo= "fechaSolicitud" valorInicial="<%=fechaSolicitud%>"/>	
+										&nbsp;
+										<html:text property="horaSolicitud" size="2" maxlength="2" styleClass="box" value="<%=horaSolicitud%>" style="text-align:center" />
+										:
+										<html:text property="minutoSolicitud" size="2" maxlength="2" styleClass="box" value="<%=minutoSolicitud%>" style="text-align:center" />
+									<% } else { %>
+										<%=fechaSolicitud%>&nbsp;<%=horaSolicitud%>:<%=minutoSolicitud%>
+									<% } %>	
 								</td>
 					
 								<td class="labelText" width="120px">	
@@ -612,7 +617,11 @@
    									<siga:Idioma key='gratuita.mantAsistencias.literal.numeroDiligencia'/>
    								</td>	
    								<td>
-									<input name="numeroDilegencia" type="text" value="<%=numeroDiligenciaAsi%>" class="<%=estilo%>" maxLength="<%=maxLenghtProc%>" />
+   									<% if (!modo.equalsIgnoreCase("ver")) { %>
+										<input name="numeroDilegencia" type="text" value="<%=numeroDiligenciaAsi%>" class="<%=estilo%>" maxLength="<%=maxLenghtProc%>" />
+									<% } else { %>
+										<input name="numeroDilegencia" type="text" value="<%=numeroDiligenciaAsi%>" class="boxConsulta" readonly maxLength="<%=maxLenghtProc%>" />
+									<% } %>	
 								</td> 
 		
 								<td class="labelText" style="vertical-align:text-top; text-align:right">
@@ -644,7 +653,11 @@
    									<siga:Idioma key='gratuita.mantAsistencias.literal.numeroProcedimiento'/>&nbsp;
    								</td>			   	
    								<td>
-   									<input name="numeroProcedimiento" maxLength="<%=maxLenghtProc%>" type="text" value="<%=numeroProcedimientoAsi%>" class="<%=estilo%>"/>
+   									<% if (!modo.equalsIgnoreCase("ver")) { %>
+   										<input name="numeroProcedimiento" maxLength="<%=maxLenghtProc%>" type="text" value="<%=numeroProcedimientoAsi%>" class="<%=estilo%>"/>
+   									<% } else { %>
+										<input name="numeroProcedimiento" maxLength="<%=maxLenghtProc%>" type="text" value="<%=numeroProcedimientoAsi%>" class="boxConsulta" readonly/>
+									<% } %>	
 								</td>
 					
 								<td class="labelText" style="vertical-align:text-top; text-align:right">	
@@ -681,9 +694,9 @@
 								<td> 
 									<% if (!modo.equalsIgnoreCase("ver")) { %>
 									 	<input name="nig" id="nig" type="text" value="<%=nig%>" class="<%=estilo%>" style="size:19;width:200px"/>
-									<%}else{%>
-										<input name="nig" id="nig" type="text" value="<%=nig%>" class="boxConsulta" style="size:19;width:200px"/>
-									<%}%>						
+									<% } else { %>
+										<input name="nig" id="nig" type="text" value="<%=nig%>" class="boxConsulta" readonly style="size:19;width:200px"/>
+									<% } %>						
 								</td>
 								<td id="info" style="display:none"><img  id="imagenInfo" src="/SIGA/html/imagenes/info.gif"	style="cursor: hand;"	title="" border="0" />
 								</td>

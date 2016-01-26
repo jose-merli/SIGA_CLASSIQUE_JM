@@ -1,0 +1,19 @@
+En esta carpeta se entregaran todos los cambios realizados en BD.
+
+El desarrollador:
+- Prepara los scripts y ejecutalos en la BD Local/Desarrollo.
+- Añade los scripts en el fichero de la entrega (SIGA_XXX_XXX). Los scripts tienen que estar completos y funcionar (copia exactamente lo que ejecutaste en Local/Desarrollo).
+- Para los bloques PL/SQL almacenados (vistas, paquetes, etc.), busca o añade el fichero nuevo (con el mismo nombre que tiene en BD).
+  En el fichero de la entrega (SIGA_XXX_XXX), añade la referencia al fichero nuevo (esto es para que ejecutarlos en orden, es importante). 
+- Recuerda que se puede:
+  * Añadir punto y coma al final de las sentencias.
+  * Añadir punto y coma, salto de línea y barra inclinada (/) al final de los bloques PL/SQL, vistas, procedimientos, funciones y paquetes.
+  * No dejar saltos de linea en la creacion de tablas o vistas.
+  * Añadir comentarios con nombre y funcionalidad, que serviran por si falla durante la implantacion. 
+
+El responsable de la entrega:
+- Revisa los scripts y separa en varios ficheros para entregar a Explotacion.
+  La separacion sirve para limitar problemas: si falla un fichero, es mas manejable a la hora de tratar con Explotacion.
+- Añade los tablespaces adecuados y los permisos necesarios:
+  H:\10.- Des_SIGA\Documentacion\Manuales internos\ITCGAE-BBDD-Procedimiento_Entregas con Bases de Datos Oracle.docx
+- Una vez terminada la entrega, busca los sinonimos publicos que falten y sobren para añadirlos a la entrega.

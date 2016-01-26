@@ -27,7 +27,7 @@
 	boolean esComisionMultiple = userBean.getInstitucionesComision()!=null &&userBean.getInstitucionesComision().length>1;
 	
 	String sTipoCombo = CenVisibilidad.getNivelInstitucion(userBean.getLocation());
-	if(esComision && esComisionMultiple){
+	if(esComision || esComisionMultiple){
 		sTipoCombo = "getTablasMaestrasComisionMultiple";
 	}else{
 		String intitucionComisionMultiple = (String)request.getAttribute("intitucionComisionMultiple");

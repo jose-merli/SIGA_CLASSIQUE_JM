@@ -5,9 +5,11 @@
 	<wls:jsp-descriptor>
 		<wls:keepgenerated>true</wls:keepgenerated>
 		<wls:page-check-seconds>1</wls:page-check-seconds>
+		<!-- Desactivar la precompilacion en LOCAL -->
 		<wls:precompile>true</wls:precompile>
 		<wls:precompile-continue>true</wls:precompile-continue>
 		<wls:verbose>true</wls:verbose>
+		<!--  -->
 		<wls:working-dir>.\WEB-INF\classes</wls:working-dir>
 		<wls:debug>true</wls:debug>
 	</wls:jsp-descriptor>

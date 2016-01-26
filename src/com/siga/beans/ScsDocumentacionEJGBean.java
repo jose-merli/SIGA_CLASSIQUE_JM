@@ -25,7 +25,7 @@ public class ScsDocumentacionEJGBean extends MasterBean{
 	private String	idDocumento;
 	private String	idTipoDocumento;
 	private Long idFichero;
-	
+	private Short comisionAJG;
 	/* Nombre de Tabla*/
 	static public String T_NOMBRETABLA = "SCS_DOCUMENTACIONEJG";
 	
@@ -46,6 +46,7 @@ public class ScsDocumentacionEJGBean extends MasterBean{
 	static public final String 	C_IDDOCUMENTO 		= 				"IDDOCUMENTO";
 	static public final String 	C_IDTIPODOCUMENTO 	= 				"IDTIPODOCUMENTO";	
 	static public final String 	C_IDFICHERO 		= 				"IDFICHERO";
+	static public final String 	C_COMISIONAJG 		= 				"COMISIONAJG";
 		
 	
 	/* Metodos SET */
@@ -289,5 +290,13 @@ public class ScsDocumentacionEJGBean extends MasterBean{
 
 	public void setIdPresentadorMaestro(String idPresentadorMaestro) {
 		this.idPresentadorMaestro = idPresentadorMaestro;
+	}
+
+	public Short getComisionAJG() {
+		return comisionAJG;
+	}
+
+	public void setComisionAJG(Short comisionAJG) {
+		this.comisionAJG = comisionAJG;
 	}
 }

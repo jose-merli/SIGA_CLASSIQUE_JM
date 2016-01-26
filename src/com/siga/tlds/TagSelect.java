@@ -404,7 +404,11 @@ public class TagSelect extends TagSupport {
 		}
 		
 		if (!multiple && showSearchBox){
-			out.println("<input type='text' id='"+this.id+"_searchBox' name='"+this.id+"_searchBox' "+selectClass+styleSearchBox+sSearchBoxMaxLength+searchBoxSize+" />");
+			if (this.readOnly){
+				out.println("<input type='text' id='"+this.id+"_searchBox' name='"+this.id+"_searchBox' "+selectClass+styleSearchBox+sSearchBoxMaxLength+searchBoxSize+" readonly />");
+			} else {
+				out.println("<input type='text' id='"+this.id+"_searchBox' name='"+this.id+"_searchBox' "+selectClass+styleSearchBox+sSearchBoxMaxLength+searchBoxSize+" />");
+			}
 		}
 		
 		String pagination = "";

@@ -917,7 +917,7 @@ public class ScsAsistenciasAdm extends MasterBeanAdministrador {
 				asistenciaHashtable.put("fks", fksActuacionMap);
 
 				CenHistoricoAdm admHis = new CenHistoricoAdm (this.usrbean);
-				boolean isInsertado = admHis.auditoriaColegiados(Long.valueOf(idPersona),motivo.toString(), ClsConstants.TIPO_CAMBIO_HISTORICO_ASISTENCIAALTA ,asistenciaHashtable, 
+				admHis.auditoriaColegiados(Long.valueOf(idPersona),motivo.toString(), ClsConstants.TIPO_CAMBIO_HISTORICO_ASISTENCIAALTA ,asistenciaHashtable, 
 						null, this.getCamposActualizablesBean(),getListCamposOcultarHistoricoAltaAsistencia(),null, CenHistoricoAdm.ACCION_INSERT, usrbean.getLanguage(), false); 
 			}
 			
@@ -970,11 +970,9 @@ public class ScsAsistenciasAdm extends MasterBeanAdministrador {
 	}
 
 	public Hashtable getCabeceraGuardia(Hashtable hashAsistencia) throws ClsExceptions,SIGAException {
-		   Vector datos=new Vector();
 		   Hashtable resultado = null;
 		   
-			String idinstitucion="", idturno="", idguardia="", fechaHora="", idPersona="", fechaFin="";
-			boolean salida = false;
+			String idinstitucion="", idturno="", idguardia="", fechaHora="", idPersona="";
 			StringBuffer sql = new StringBuffer();
 			
 		    try {
@@ -1183,8 +1181,6 @@ public class ScsAsistenciasAdm extends MasterBeanAdministrador {
 	public PaginadorBind getBusquedaAsistencias(AsistenciasForm miForm, String idPersona)throws ClsExceptions,SIGAException {
 	    PaginadorBind paginador=null;
    try {
-        RowsContainer rc = new RowsContainer(); 
-
 	    Hashtable codigos = new Hashtable();
 	    int contador=0;
 	    
@@ -2351,7 +2347,7 @@ public  List<ScsAsistenciasBean> getAsistenciasVolantesExpres(VolantesExpressVo 
 		Hashtable<Integer, Object> htCodigos = new Hashtable<Integer, Object>();
 		int contador = 0;
 		sql.append(" SELECT AA.ANIO||'/'||AA.NUMERO||DECODE(AA.IDPERSONAJG,null,null,' - '||PJG.NOMBRE ||' '||PJG.APELLIDO1||' '||PJG.APELLIDO2) DESCRIPCIONASISTENCIA ");
-		sql.append(" ,AA.FECHAANULACION, AA.IDTIPOASISTENCIACOLEGIO,AA.IDTURNO,AA.FECHAHORA, AA.FECHASOLICITUD ");
+		sql.append(" ,AA.FECHAANULACION, AA.IDTIPOASISTENCIACOLEGIO,AA.IDTURNO,AA.IDGUARDIA,AA.FECHAHORA, AA.FECHASOLICITUD ");
 		sql.append(" ,AA.NUMERODILIGENCIA, AA.NUMEROPROCEDIMIENTO ");
 		sql.append(" ,AA.COMISARIA, AA.JUZGADO, AA.NIG ");
 		
@@ -2420,6 +2416,7 @@ public  List<ScsAsistenciasBean> getAsistenciasVolantesExpres(VolantesExpressVo 
 					asistenciaForm.setPersonaJG(personaJG);
 					asistenciaForm.setIdTipoAsistenciaColegio(UtilidadesHash.getString(htFila, "IDTIPOASISTENCIACOLEGIO"));
 					asistenciaForm.setIdTurno(UtilidadesHash.getString(htFila, "IDTURNO"));
+					asistenciaForm.setIdGuardia(UtilidadesHash.getString(htFila, "IDGUARDIA"));
 					asistenciaForm.setDescripcion(UtilidadesHash.getString(htFila, "DESCRIPCIONASISTENCIA"));
 					asistenciaForm.setFechaAnulacion(UtilidadesHash.getString(htFila, "FECHAANULACION"));
 					asistenciaForm.setLetradoActuaciones(UtilidadesHash.getString(htFila, "LETRADOACTUACIONES"));
@@ -2443,19 +2440,13 @@ public  List<ScsAsistenciasBean> getAsistenciasVolantesExpres(VolantesExpressVo 
 					persona.setApellido2(UtilidadesHash.getString(htFila, "PAPELLIDOS2"));
 					persona.setNombre(UtilidadesHash.getString(htFila, "PNOMBRE"));
 					colegiado.setNColegiado(UtilidadesHash.getString(htFila, "CNCOLEGIADO"));
-					
-					
-					
-					
 				}
-
 			} 
+			
 		} catch (Exception e) {
 			throw new ClsExceptions (e, "Error al ejecutar consulta getDatosAsistencia.");
 		}
 
 		return asistenciaForm;
 	}
-
-	
 }

@@ -323,7 +323,7 @@ public class MantenimientoJuzgadoAction extends MasterAction {
 			beanJuzgado.setTelefono2(miForm.getTelefono2());
 			beanJuzgado.setFax1(miForm.getFax1());			
 			beanJuzgado.setIdJuzgado(juzgadoAdm.getNuevoIdJuzgado(idInstitucion));
-			beanJuzgado.setVisible(miForm.getVisible());
+			beanJuzgado.setVisible(ClsConstants.DB_TRUE);
 			beanJuzgado.setMovil(miForm.getMovil());
 			if(miForm.getPonerBaja() != null && miForm.getPonerBaja().equalsIgnoreCase("S"))
 				beanJuzgado.setFechabaja("SYSDATE");

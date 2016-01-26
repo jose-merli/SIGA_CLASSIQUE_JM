@@ -51,10 +51,8 @@ public class FacSerieFacturacionAdm extends MasterBeanAdministrador {
 		return claves;
 	}
 	
-	protected MasterBean hashTableToBean(Hashtable hash) throws ClsExceptions 
-	{
+	protected MasterBean hashTableToBean(Hashtable hash) throws ClsExceptions {
 		FacSerieFacturacionBean bean = null;
-		
 		try {
 			bean = new FacSerieFacturacionBean();
 			bean.setIdInstitucion(UtilidadesHash.getInteger(hash, FacSerieFacturacionBean.C_IDINSTITUCION));
@@ -77,19 +75,17 @@ public class FacSerieFacturacionAdm extends MasterBeanAdministrador {
 			bean.setFechaBaja(UtilidadesHash.getString(hash, FacSerieFacturacionBean.C_FECHABAJA));
 			bean.setFechaMod(UtilidadesHash.getString(hash, FacSerieFacturacionBean.C_FECHAMODIFICACION));
 			bean.setUsuMod(UtilidadesHash.getInteger(hash,FacSerieFacturacionBean.C_USUMODIFICACION));
-		}
-		catch (Exception e) { 
+		} catch (Exception e) { 
 			bean = null;	
 			throw new ClsExceptions (e, "Error al construir el bean a partir del hashTable");
 		}
 		return bean;
 	}
 
-	protected Hashtable beanToHashTable(MasterBean bean) throws ClsExceptions 
-	{
-		Hashtable htData = null;
+	protected Hashtable beanToHashTable(MasterBean bean) throws ClsExceptions {
+		Hashtable<String,Object> htData = null;
 		try {
-			htData = new Hashtable();
+			htData = new Hashtable<String,Object>();
 			FacSerieFacturacionBean b = (FacSerieFacturacionBean) bean;
 			UtilidadesHash.set(htData, FacSerieFacturacionBean.C_IDINSTITUCION, b.getIdInstitucion());
 			UtilidadesHash.set(htData, FacSerieFacturacionBean.C_IDSERIEFACTURACION, b.getIdSerieFacturacion());
@@ -111,8 +107,7 @@ public class FacSerieFacturacionAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(htData, FacSerieFacturacionBean.C_FECHABAJA, b.getFechaBaja());
 			UtilidadesHash.set(htData, FacSerieFacturacionBean.C_FECHAMODIFICACION, b.getFechaMod());
 			UtilidadesHash.set(htData, FacSerieFacturacionBean.C_USUMODIFICACION, b.getUsuMod());
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 			htData = null;
 			throw new ClsExceptions (e, "Error al crear el hashTable a partir del bean");
 		}
@@ -126,7 +121,7 @@ public class FacSerieFacturacionAdm extends MasterBeanAdministrador {
 		return this.getClavesBean();
 	}
 
-	protected String[] getCamposSelect() {
+	private String[] getCamposSelect() {
 		String [] campos = {"DISTINCT " + FacSerieFacturacionBean.T_NOMBRETABLA + "." + FacSerieFacturacionBean.C_IDINSTITUCION + " AS IDINSTITUCION", 		
 										  FacSerieFacturacionBean.T_NOMBRETABLA + "." + FacSerieFacturacionBean.C_IDSERIEFACTURACION + " AS IDSERIEFACTURACION",
 										  FacSerieFacturacionBean.T_NOMBRETABLA + "." + FacSerieFacturacionBean.C_IDSERIEFACTURACIONPREVIA + " AS IDSERIEFACTURACIONPREVIA",
@@ -142,51 +137,61 @@ public class FacSerieFacturacionAdm extends MasterBeanAdministrador {
 		return campos;
 	}
 	
-	protected String getTablasSelect(String tipoProducto, String tipoServicio, String grupoClienteFijo, String grupoClientesDinamico){
-		
-		String campos = FacSerieFacturacionBean.T_NOMBRETABLA;
+	private String getTablasSelect(String tipoProducto, String tipoServicio, String grupoClienteFijo, String grupoClientesDinamico) {
+		StringBuilder campos = new StringBuilder();  
+		campos.append(FacSerieFacturacionBean.T_NOMBRETABLA);
 		
 		if (tipoProducto!=null && !tipoProducto.trim().equals("")) {
-			campos += ", "+FacTiposProduIncluEnFactuBean.T_NOMBRETABLA+
-					  ", "+PysTiposProductosBean.T_NOMBRETABLA+
-					  ", "+PysProductosBean.T_NOMBRETABLA;
+			campos.append(", ");
+			campos.append(FacTiposProduIncluEnFactuBean.T_NOMBRETABLA);
+			campos.append(", ");
+			campos.append(PysTiposProductosBean.T_NOMBRETABLA);
+			campos.append(", ");
+			campos.append(PysProductosBean.T_NOMBRETABLA);
 		}
 		
 		if (tipoServicio!=null && !tipoServicio.trim().equals("")) {
-			campos += ", "+FacTiposServInclsEnFactBean.T_NOMBRETABLA+
-					  ", "+PysTipoServiciosBean.T_NOMBRETABLA+
-					  ", "+PysServiciosBean.T_NOMBRETABLA;
+			campos.append(", ");
+			campos.append(FacTiposServInclsEnFactBean.T_NOMBRETABLA);
+			campos.append(", ");
+			campos.append(PysTipoServiciosBean.T_NOMBRETABLA);
+			campos.append(", ");
+			campos.append(PysServiciosBean.T_NOMBRETABLA);
 		}
 				 		
 		if (grupoClienteFijo!=null && !grupoClienteFijo.trim().equals("")) {
-			campos += ", "+FacTipoCliIncluidoEnSerieFacBean.T_NOMBRETABLA+
-					  ", "+CenGruposClienteBean.T_NOMBRETABLA;
+			campos.append(", ");
+			campos.append(FacTipoCliIncluidoEnSerieFacBean.T_NOMBRETABLA);
+			campos.append(", ");
+			campos.append(CenGruposClienteBean.T_NOMBRETABLA);
 		}
 		
 		if (grupoClientesDinamico!=null && !grupoClientesDinamico.trim().equals("")) {
-			campos += ", "+FacGrupCritIncluidosEnSerieBean.T_NOMBRETABLA+
-					  ", "+CenGruposCriteriosBean.T_NOMBRETABLA;
+			campos.append(", ");
+			campos.append(FacGrupCritIncluidosEnSerieBean.T_NOMBRETABLA);
+			campos.append(", ");
+			campos.append(CenGruposCriteriosBean.T_NOMBRETABLA);
 		}		 		
 				 		
+		return campos.toString();
+	}
+	
+	private String[] getOrdenSelect(){
+		String[] campos = { FacSerieFacturacionBean.T_NOMBRETABLA + "." + FacSerieFacturacionBean.C_NOMBREABREVIADO,
+							FacSerieFacturacionBean.T_NOMBRETABLA + "." + FacSerieFacturacionBean.C_DESCRIPCION};
 		return campos;
 	}
 	
-	protected String[] getOrdenSelect(){
-		String[] campos = { FacSerieFacturacionBean.T_NOMBRETABLA+"."+FacSerieFacturacionBean.C_NOMBREABREVIADO,
-							FacSerieFacturacionBean.T_NOMBRETABLA+"."+FacSerieFacturacionBean.C_DESCRIPCION};
-		return campos;
-	}
-	
-	public Vector<Hashtable<String, Object>> selectTabla(String tipoProducto, String tipoServicio, String grupoClienteFijo, String grupoClientesDinamico, String where){
+	public Vector<Hashtable<String, Object>> selectTabla(String tipoProducto, String tipoServicio, String grupoClienteFijo, String grupoClientesDinamico, String where) {
 		Vector<Hashtable<String, Object>> v = new Vector<Hashtable<String, Object>>();
 		RowsContainer rc = null;
-		try{
+		try {
 			rc = new RowsContainer(); 
-			String sql = UtilidadesBDAdm.sqlSelect(this.getTablasSelect(tipoProducto, tipoServicio, grupoClienteFijo, grupoClientesDinamico), this.getCamposSelect());
-			
-			sql += where;
-			sql += UtilidadesBDAdm.sqlOrderBy(this.getOrdenSelect());
-			if (rc.queryNLS(sql)) {
+			StringBuilder sql = new StringBuilder();
+			sql.append(UtilidadesBDAdm.sqlSelect(this.getTablasSelect(tipoProducto, tipoServicio, grupoClienteFijo, grupoClientesDinamico), this.getCamposSelect()));			
+			sql.append(where);
+			sql.append(UtilidadesBDAdm.sqlOrderBy(this.getOrdenSelect()));
+			if (rc.queryNLS(sql.toString())) {
 				for (int i = 0; i < rc.size(); i++)	{
 					Row fila = (Row) rc.get(i);
 					Hashtable<String, Object> registro = (Hashtable<String, Object>)fila.getRow(); 
@@ -194,10 +199,11 @@ public class FacSerieFacturacionAdm extends MasterBeanAdministrador {
 						v.add(registro);
 				}
 			}
-		}
-		catch(ClsExceptions e){
+			
+		} catch (ClsExceptions e){
 			e.printStackTrace();
 		}
+		
 		return v;
 	}
 
@@ -206,93 +212,33 @@ public class FacSerieFacturacionAdm extends MasterBeanAdministrador {
      * @param IdInstitucion
      * @return
      */
-	public String getNuevoId(String IdInstitucion) throws ClsExceptions {
+	public String getNuevoId(String idInstitucion) throws ClsExceptions {
 		String salida = "";
 		try {
 			RowsContainer rc = new RowsContainer(); 
-			String sql = "SELECT NVL(MAX(" + FacSerieFacturacionBean.C_IDSERIEFACTURACION + "), 0) + 1 AS " + FacSerieFacturacionBean.C_IDSERIEFACTURACION + 
-						" FROM " + FacSerieFacturacionBean.T_NOMBRETABLA + 
-						" WHERE " + FacSerieFacturacionBean.C_IDINSTITUCION + " = " +IdInstitucion;
+			StringBuilder sql = new StringBuilder();
+			sql.append("SELECT NVL(MAX(");
+			sql.append(FacSerieFacturacionBean.C_IDSERIEFACTURACION);
+			sql.append("), 0) + 1 AS ");
+			sql.append(FacSerieFacturacionBean.C_IDSERIEFACTURACION); 
+			sql.append(" FROM ");
+			sql.append(FacSerieFacturacionBean.T_NOMBRETABLA); 
+			sql.append(" WHERE ");
+			sql.append(FacSerieFacturacionBean.C_IDINSTITUCION);
+			sql.append(" = ");
+			sql.append(idInstitucion);
 			
-			if (rc.query(sql) && rc.size()>0)	{
+			if (rc.query(sql.toString()) && rc.size()>0)	{
 				Row fila = (Row) rc.get(0);
 				salida = fila.getString(FacSerieFacturacionBean.C_IDSERIEFACTURACION);
 			}
 			
 		} catch (Exception e) {		
 			throw new ClsExceptions (e, "Error al obtener un nuevo identificador de serie de facturación");		
-		}			
+		}	
 		
 		return salida;
 	}
-	
-	/**
-	 * Busca series de facturacion que tengan todos los tipos de productos 
-	 * de los productos de cada compra.
-	 * @param compras
-	 * @return
-	 * @throws ClsExceptions
-	 */
-	public Vector<FacSerieFacturacionBean> obtenerSeriesAdecuadas(Vector<PysCompraBean> compras) throws ClsExceptions {
-	    Vector<FacSerieFacturacionBean> salida = new Vector<FacSerieFacturacionBean>();
-	    try{
-	        if (compras==null || compras.size()==0) {
-	            throw new ClsExceptions("Error: No se han recibido compras.");
-	        }
-	        
-	        String listadoProductos="", idInstitucion="", idPersona="";
-	        int numeroTipos=0;
-	        
-	        // Obtiene un listado de los tipos de productos y un contador
-	        for (int i=0; i<compras.size(); i++) {
-	            PysCompraBean b = (PysCompraBean) compras.get(i);
-	            String sTipoProducto = "('" + b.getIdProducto() + "','" + b.getIdTipoProducto() + "')";
-	            
-	            if (listadoProductos.length()>0) {
-	            	if (listadoProductos.indexOf(sTipoProducto) == -1) {
-	            		numeroTipos++;
-	            		listadoProductos += "," + sTipoProducto;
-	            	}
-
-	            } else {
-	            	numeroTipos++;
-	            	listadoProductos = sTipoProducto;
-	            	idInstitucion = b.getIdInstitucion().toString();
-	            	idPersona = b.getIdPersonaDeudor()!=null && !b.getIdPersonaDeudor().toString().equals("") ? b.getIdPersonaDeudor().toString() : b.getIdPersona().toString();
-	            }
-	        }
-	        
-	        String sql = UtilidadesBDAdm.sqlSelect(this.nombreTabla, this.getCamposBean()) + 
-	        				" WHERE " + FacSerieFacturacionBean.C_IDINSTITUCION + " = " + idInstitucion +
-	        					" AND " + FacSerieFacturacionBean.C_FECHABAJA + " IS NULL " +         
-	        					" AND " + numeroTipos + " = (" +
-	        						" SELECT COUNT(*) " +
-	        						" FROM " + FacTiposProduIncluEnFactuBean.T_NOMBRETABLA +
-	        						" WHERE (" + 
-		                						FacTiposProduIncluEnFactuBean.T_NOMBRETABLA + "." + FacTiposProduIncluEnFactuBean.C_IDPRODUCTO + ", " + 
-		                						FacTiposProduIncluEnFactuBean.T_NOMBRETABLA + "." + FacTiposProduIncluEnFactuBean.C_IDTIPOPRODUCTO + 
-		                					") IN (" + listadoProductos + ") " +
-		                				" AND " + FacTiposProduIncluEnFactuBean.T_NOMBRETABLA + "." + FacTiposProduIncluEnFactuBean.C_IDINSTITUCION + " = " + FacSerieFacturacionBean.T_NOMBRETABLA + "." + FacSerieFacturacionBean.C_IDINSTITUCION +
-		                				" AND " + FacTiposProduIncluEnFactuBean.T_NOMBRETABLA + "." + FacTiposProduIncluEnFactuBean.C_IDSERIEFACTURACION + " = " + FacSerieFacturacionBean.T_NOMBRETABLA + "." + FacSerieFacturacionBean.C_IDSERIEFACTURACION +
-	                					" AND EXISTS ( " +
-				            				" SELECT 1 " +
-				            				" FROM TABLE(PKG_SIGA_FACTURACION.OBTENCIONPOBLACIONCLIENTES(" + 
-				            					FacTiposProduIncluEnFactuBean.T_NOMBRETABLA + "." + FacTiposProduIncluEnFactuBean.C_IDINSTITUCION + ", " + 
-				            					FacTiposProduIncluEnFactuBean.T_NOMBRETABLA + "." + FacTiposProduIncluEnFactuBean.C_IDSERIEFACTURACION + ")) PoblSF " +
-			        						" WHERE PoblSF.IDPERSONA = " + idPersona +
-		        						" ) " + 
-                				" ) " + 		            	
-            				" ORDER BY " + FacSerieFacturacionBean.C_DESCRIPCION;
-	        
-	        salida = this.selectSQL(sql);
-	        
-	        
-		} catch(Exception e) {
-			throw new ClsExceptions(e,"Error al buscar las series de facturacion candidatas.");
-		}
-	    
-		return salida;
-	}	
 	
 	/** 
 	 * Recoge las formas de pago relacionadas con un determinado registro por sus claves y su atributo Internet
@@ -306,17 +252,54 @@ public class FacSerieFacturacionAdm extends MasterBeanAdministrador {
 	 */
 	public Vector<Hashtable<String, Object>> obtenerFormasPago (String idInstitucion, String idSerieFacturacion) throws ClsExceptions {
 		Vector<Hashtable<String, Object>> datos = new Vector<Hashtable<String, Object>>();
-       try {
-            String sql ="SELECT " + FacSerieFacturacionBean.T_NOMBRETABLA + "." + FacSerieFacturacionBean.C_IDINSTITUCION  + ", " +
-	    					FacSerieFacturacionBean.T_NOMBRETABLA + "." + FacSerieFacturacionBean.C_IDSERIEFACTURACION + ", " +
-	    					FacFormaPagoSerieBean.T_NOMBRETABLA + "." + FacFormaPagoSerieBean.C_IDFORMAPAGO + 				
-						" FROM " + FacSerieFacturacionBean.T_NOMBRETABLA + ", " + FacFormaPagoSerieBean.T_NOMBRETABLA + 
-						" WHERE " + FacSerieFacturacionBean.T_NOMBRETABLA + "." + FacSerieFacturacionBean.C_IDINSTITUCION + " = " + idInstitucion +
-							" AND " + FacSerieFacturacionBean.T_NOMBRETABLA + "." + FacSerieFacturacionBean.C_IDSERIEFACTURACION + " = " + idSerieFacturacion +
-							" AND " + FacSerieFacturacionBean.T_NOMBRETABLA + "." + FacSerieFacturacionBean.C_IDINSTITUCION + " = " + FacFormaPagoSerieBean.T_NOMBRETABLA + "." + PysFormaPagoProductoBean.C_IDINSTITUCION +
-							" AND " + FacSerieFacturacionBean.T_NOMBRETABLA + "." + FacSerieFacturacionBean.C_IDSERIEFACTURACION + " = " + FacFormaPagoSerieBean.T_NOMBRETABLA + "." + FacFormaPagoSerieBean.C_IDSERIEFACTURACION;
+		try {
+    	   StringBuilder sql = new StringBuilder();
+    	   sql.append("SELECT ");
+    	   sql.append(FacSerieFacturacionBean.T_NOMBRETABLA);
+    	   sql.append(".");
+    	   sql.append(FacSerieFacturacionBean.C_IDINSTITUCION);
+    	   sql.append(", ");
+    	   sql.append(FacSerieFacturacionBean.T_NOMBRETABLA);
+    	   sql.append(".");
+    	   sql.append(FacSerieFacturacionBean.C_IDSERIEFACTURACION);
+    	   sql.append(", ");
+    	   sql.append(FacFormaPagoSerieBean.T_NOMBRETABLA);
+    	   sql.append(".");
+    	   sql.append(FacFormaPagoSerieBean.C_IDFORMAPAGO); 				
+    	   sql.append(" FROM ");
+    	   sql.append(FacSerieFacturacionBean.T_NOMBRETABLA);
+    	   sql.append(", ");
+    	   sql.append(FacFormaPagoSerieBean.T_NOMBRETABLA); 
+    	   sql.append(" WHERE ");
+    	   sql.append(FacSerieFacturacionBean.T_NOMBRETABLA);
+    	   sql.append(".");
+    	   sql.append(FacSerieFacturacionBean.C_IDINSTITUCION);
+    	   sql.append(" = ");
+    	   sql.append(idInstitucion);
+    	   sql.append(" AND ");
+    	   sql.append(FacSerieFacturacionBean.T_NOMBRETABLA);
+    	   sql.append(".");
+    	   sql.append(FacSerieFacturacionBean.C_IDSERIEFACTURACION);
+    	   sql.append(" = ");
+    	   sql.append(idSerieFacturacion);
+    	   sql.append(" AND ");
+    	   sql.append(FacSerieFacturacionBean.T_NOMBRETABLA);
+    	   sql.append(".");
+    	   sql.append(FacSerieFacturacionBean.C_IDINSTITUCION);
+    	   sql.append(" = ");
+    	   sql.append(FacFormaPagoSerieBean.T_NOMBRETABLA);
+    	   sql.append(".");
+    	   sql.append(PysFormaPagoProductoBean.C_IDINSTITUCION);
+    	   sql.append(" AND ");
+    	   sql.append(FacSerieFacturacionBean.T_NOMBRETABLA);
+    	   sql.append(".");
+    	   sql.append(FacSerieFacturacionBean.C_IDSERIEFACTURACION);
+    	   sql.append(" = ");
+    	   sql.append(FacFormaPagoSerieBean.T_NOMBRETABLA);
+    	   sql.append(".");
+    	   sql.append(FacFormaPagoSerieBean.C_IDSERIEFACTURACION);
             
-			datos = this.getHashSQL(sql);
+			datos = this.getHashSQL(sql.toString());
             
 		} catch (Exception e) {
 			throw new ClsExceptions(e,"Error al obtener las formas de pago relacionadas.");	
@@ -334,21 +317,37 @@ public class FacSerieFacturacionAdm extends MasterBeanAdministrador {
 	 */
 	public Vector<Hashtable<String,Object>> obtenerPoblacionSerieFacturacion(String idInstitucion, String idSerieFacturacion) throws ClsExceptions {
 		Vector<Hashtable<String,Object>> resultado = new Vector<Hashtable<String,Object>>();
-		try{			
-			String sql = "SELECT NVL(F_SIGA_CALCULONCOLEGIADO(PoblSF.IDINSTITUCION, PoblSF.IDPERSONA), ' ') AS NCOLEGIADO, " +
-							CenPersonaBean.T_NOMBRETABLA + "." + CenPersonaBean.C_NOMBRE + " AS NOMBRE, " +
-							CenPersonaBean.T_NOMBRETABLA + "." + CenPersonaBean.C_APELLIDOS1 + " AS APELLIDOS1, " +
-							CenPersonaBean.T_NOMBRETABLA + "." + CenPersonaBean.C_APELLIDOS2 + " AS APELLIDOS2 " + 
-						" FROM " + CenPersonaBean.T_NOMBRETABLA + ", " +
-							" TABLE(PKG_SIGA_FACTURACION.OBTENCIONPOBLACIONCLIENTES(" + idInstitucion + ", " + idSerieFacturacion + ")) PoblSF " +
-						" WHERE " + CenPersonaBean.T_NOMBRETABLA + "." + CenPersonaBean.C_IDPERSONA + " = PoblSF.IDPERSONA "+
-						" ORDER BY NCOLEGIADO, APELLIDOS1, APELLIDOS2, NOMBRE";
+		try {		
+			StringBuilder sql = new StringBuilder();
+			sql.append("SELECT NVL(F_SIGA_CALCULONCOLEGIADO(PoblSF.IDINSTITUCION, PoblSF.IDPERSONA), ' ') AS NCOLEGIADO, ");
+			sql.append(CenPersonaBean.T_NOMBRETABLA);
+			sql.append(".");
+			sql.append(CenPersonaBean.C_NOMBRE);
+			sql.append(" AS NOMBRE, ");
+			sql.append(CenPersonaBean.T_NOMBRETABLA);
+			sql.append(".");
+			sql.append(CenPersonaBean.C_APELLIDOS1);
+			sql.append(" AS APELLIDOS1, ");
+			sql.append(CenPersonaBean.T_NOMBRETABLA);
+			sql.append(".");
+			sql.append(CenPersonaBean.C_APELLIDOS2);
+			sql.append(" AS APELLIDOS2 FROM ");
+			sql.append(CenPersonaBean.T_NOMBRETABLA);
+			sql.append(", TABLE(PKG_SIGA_FACTURACION.OBTENCIONPOBLACIONCLIENTES(");
+			sql.append(idInstitucion);
+			sql.append(", ");
+			sql.append(idSerieFacturacion);
+			sql.append(")) PoblSF WHERE PoblSF.IDPERSONA=");
+			sql.append(CenPersonaBean.T_NOMBRETABLA);
+			sql.append(".");
+			sql.append(CenPersonaBean.C_IDPERSONA);
+			sql.append(" ORDER BY NCOLEGIADO, APELLIDOS1, APELLIDOS2, NOMBRE");
 			
 			RowsContainer rc = new RowsContainer();
-			if (rc.query(sql)) {
+			if (rc.query(sql.toString())) {
 				for (int i = 0; i < rc.size(); i++)	{
 					Row fila = (Row) rc.get(i);
-					resultado.add(fila.getRow()); 
+					resultado.add((Hashtable<String,Object>) fila.getRow()); 
 				}
 			}
 		
@@ -371,33 +370,252 @@ public class FacSerieFacturacionAdm extends MasterBeanAdministrador {
 	public Vector<FacSerieFacturacionBean> obtenerSeriesFacturacionProducto(String idInstitucion, String idTipoProducto, String idProducto, String idPersona) throws ClsExceptions {
 	    Vector<FacSerieFacturacionBean> salida = new Vector<FacSerieFacturacionBean>();
 	    try{	        
-	        String sql = UtilidadesBDAdm.sqlSelect(this.nombreTabla, this.getCamposBean()) + 
-	        		" WHERE " + FacSerieFacturacionBean.C_FECHABAJA + " IS NULL " + 
-	        			" AND (" + FacSerieFacturacionBean.C_IDINSTITUCION + ", " + FacSerieFacturacionBean.C_IDSERIEFACTURACION + ") IN (" +
-		                	" SELECT " + FacTiposProduIncluEnFactuBean.T_NOMBRETABLA + "." + FacTiposProduIncluEnFactuBean.C_IDINSTITUCION + ", " +
-	                			FacTiposProduIncluEnFactuBean.T_NOMBRETABLA + "." + FacTiposProduIncluEnFactuBean.C_IDSERIEFACTURACION +
-		                	" FROM " + FacTiposProduIncluEnFactuBean.T_NOMBRETABLA +
-		                	" WHERE " + FacTiposProduIncluEnFactuBean.T_NOMBRETABLA + "." + FacTiposProduIncluEnFactuBean.C_IDINSTITUCION + " = " + idInstitucion +
-		                		" AND " + FacTiposProduIncluEnFactuBean.T_NOMBRETABLA + "." + FacTiposProduIncluEnFactuBean.C_IDTIPOPRODUCTO + " = " + idTipoProducto +
-		                		" AND " + FacTiposProduIncluEnFactuBean.T_NOMBRETABLA + "." + FacTiposProduIncluEnFactuBean.C_IDPRODUCTO + " = " + idProducto +
-	        					" AND EXISTS ( " +
-		            				" SELECT 1 " +
-		            				" FROM TABLE(PKG_SIGA_FACTURACION.OBTENCIONPOBLACIONCLIENTES(" + 
-		            					FacTiposProduIncluEnFactuBean.T_NOMBRETABLA + "." + FacTiposProduIncluEnFactuBean.C_IDINSTITUCION + ", " + 
-		            					FacTiposProduIncluEnFactuBean.T_NOMBRETABLA + "." + FacTiposProduIncluEnFactuBean.C_IDSERIEFACTURACION + ")) PoblSF " +
-	        						" WHERE PoblSF.IDPERSONA = " + idPersona +
-	    						" ) " + 	                		
-		            	" ) " + 
-	            	" ORDER BY " + FacSerieFacturacionBean.C_DESCRIPCION;
+	    	StringBuilder sql = new StringBuilder();
+	    	sql = new StringBuilder();
+	    	sql.append(UtilidadesBDAdm.sqlSelect(this.nombreTabla, this.getCamposBean()));
+	    	sql.append(" WHERE ");
+	    	sql.append(FacSerieFacturacionBean.C_IDINSTITUCION);
+	    	sql.append("=");
+	    	sql.append(idInstitucion);
+	    	sql.append(" AND ");
+	    	sql.append(FacSerieFacturacionBean.C_TIPOSERIE);
+	    	sql.append("='G' AND ");
+	    	sql.append(FacSerieFacturacionBean.C_FECHABAJA);
+	    	sql.append(" IS NULL AND EXISTS (SELECT 1 FROM ");
+	    	sql.append(FacTiposProduIncluEnFactuBean.T_NOMBRETABLA);
+	    	sql.append(" WHERE ");
+	    	sql.append(FacTiposProduIncluEnFactuBean.T_NOMBRETABLA);
+	    	sql.append(".");
+	    	sql.append(FacTiposProduIncluEnFactuBean.C_IDINSTITUCION);
+	    	sql.append(" = ");
+	    	sql.append(FacSerieFacturacionBean.T_NOMBRETABLA);
+	    	sql.append(".");
+	    	sql.append(FacSerieFacturacionBean.C_IDINSTITUCION);
+	    	sql.append(" AND ");
+	    	sql.append(FacTiposProduIncluEnFactuBean.T_NOMBRETABLA);
+	    	sql.append(".");
+	    	sql.append(FacTiposProduIncluEnFactuBean.C_IDSERIEFACTURACION);
+	    	sql.append(" = ");
+	    	sql.append(FacSerieFacturacionBean.T_NOMBRETABLA);
+	    	sql.append(".");
+	    	sql.append(FacSerieFacturacionBean.C_IDSERIEFACTURACION);
+	    	sql.append(" AND ");
+	    	sql.append(FacTiposProduIncluEnFactuBean.T_NOMBRETABLA);
+	    	sql.append(".");
+	    	sql.append(FacTiposProduIncluEnFactuBean.C_IDTIPOPRODUCTO);
+	    	sql.append(" = ");
+	    	sql.append(idTipoProducto);
+	    	sql.append(" AND ");
+	    	sql.append(FacTiposProduIncluEnFactuBean.T_NOMBRETABLA);
+	    	sql.append(".");
+	    	sql.append(FacTiposProduIncluEnFactuBean.C_IDPRODUCTO);
+	    	sql.append(" = ");
+	    	sql.append(idProducto);
+	    	sql.append(") ORDER BY ");
+	    	sql.append(FacSerieFacturacionBean.C_DESCRIPCION);	        
+	        salida = this.selectSQL(sql.toString());
 	        
-	        salida = this.selectSQL(sql);
-	        
+	        if (salida==null || salida.size()==0) {	    		    	
+		    	sql = new StringBuilder();
+		    	sql.append(UtilidadesBDAdm.sqlSelect(this.nombreTabla, this.getCamposBean()));
+		    	sql.append(" WHERE ");
+		    	sql.append(FacSerieFacturacionBean.C_IDINSTITUCION);
+		    	sql.append("=");
+		    	sql.append(idInstitucion);
+		    	sql.append(" AND ");
+		    	sql.append(FacSerieFacturacionBean.C_FECHABAJA);
+		    	sql.append(" IS NULL AND EXISTS (SELECT 1 FROM ");
+		    	sql.append(FacTiposProduIncluEnFactuBean.T_NOMBRETABLA);
+		    	sql.append(" WHERE ");
+		    	sql.append(FacTiposProduIncluEnFactuBean.T_NOMBRETABLA);
+		    	sql.append(".");
+		    	sql.append(FacTiposProduIncluEnFactuBean.C_IDINSTITUCION);
+		    	sql.append(" = ");
+		    	sql.append(FacSerieFacturacionBean.T_NOMBRETABLA);
+		    	sql.append(".");
+		    	sql.append(FacSerieFacturacionBean.C_IDINSTITUCION);
+		    	sql.append(" AND ");
+		    	sql.append(FacTiposProduIncluEnFactuBean.T_NOMBRETABLA);
+		    	sql.append(".");
+		    	sql.append(FacTiposProduIncluEnFactuBean.C_IDSERIEFACTURACION);
+		    	sql.append(" = ");
+		    	sql.append(FacSerieFacturacionBean.T_NOMBRETABLA);
+		    	sql.append(".");
+		    	sql.append(FacSerieFacturacionBean.C_IDSERIEFACTURACION);
+		    	sql.append(" AND ");
+		    	sql.append(FacTiposProduIncluEnFactuBean.T_NOMBRETABLA);
+		    	sql.append(".");
+		    	sql.append(FacTiposProduIncluEnFactuBean.C_IDTIPOPRODUCTO);
+		    	sql.append(" = ");
+		    	sql.append(idTipoProducto);
+		    	sql.append(" AND ");
+		    	sql.append(FacTiposProduIncluEnFactuBean.T_NOMBRETABLA);
+		    	sql.append(".");
+		    	sql.append(FacTiposProduIncluEnFactuBean.C_IDPRODUCTO);
+		    	sql.append(" = ");
+		    	sql.append(idProducto);
+		    	sql.append(" AND EXISTS (SELECT 1 FROM TABLE(PKG_SIGA_FACTURACION.OBTENCIONPOBLACIONCLIENTES("); 
+		    	sql.append(FacTiposProduIncluEnFactuBean.T_NOMBRETABLA);
+		    	sql.append(".");
+		    	sql.append(FacTiposProduIncluEnFactuBean.C_IDINSTITUCION);
+		    	sql.append(", "); 
+		    	sql.append(FacTiposProduIncluEnFactuBean.T_NOMBRETABLA);
+		    	sql.append(".");
+		    	sql.append(FacTiposProduIncluEnFactuBean.C_IDSERIEFACTURACION);
+		    	sql.append(")) PoblSF WHERE PoblSF.IDPERSONA=");
+		    	sql.append(idPersona);
+		    	sql.append(")) ORDER BY ");
+		    	sql.append(FacSerieFacturacionBean.C_DESCRIPCION);	        
+		        salida = this.selectSQL(sql.toString());
+	        }
 	        
 		} catch(Exception e) {
 			throw new ClsExceptions(e,"Error al buscar las series de facturacion del producto.");
 		}
 	    
 		return salida;
-	}	
-		
+	}
+	
+	/**
+	 * Busca series de facturacion que tengan todos los tipos de productos 
+	 * de los productos de cada compra.
+	 * @param compras
+	 * @return
+	 * @throws ClsExceptions
+	 */
+	public Vector<FacSerieFacturacionBean> obtenerSeriesAdecuadas(Vector<PysCompraBean> compras) throws ClsExceptions {
+	    Vector<FacSerieFacturacionBean> salida = new Vector<FacSerieFacturacionBean>();
+	    try{
+	        if (compras==null || compras.size()==0) {
+	            throw new ClsExceptions("Error: No se han recibido compras.");
+	        }
+	        
+	        String idInstitucion="", idPersona="";
+	        StringBuilder listadoProductos = new StringBuilder();
+	        int numeroTipos=0;
+	        
+	        // Obtiene un listado de los tipos de productos y un contador
+	        for (int i=0; i<compras.size(); i++) {
+	            PysCompraBean b = (PysCompraBean) compras.get(i);
+	            String sTipoProducto = "('" + b.getIdProducto() + "','" + b.getIdTipoProducto() + "')";
+	            
+	            if (listadoProductos.length()>0) {
+	            	if (listadoProductos.indexOf(sTipoProducto) == -1) {
+	            		numeroTipos++;
+	            		listadoProductos.append(",");
+	            		listadoProductos.append(sTipoProducto);
+	            	}
+
+	            } else {
+	            	numeroTipos++;
+	            	listadoProductos.append(sTipoProducto);
+	            	idInstitucion = b.getIdInstitucion().toString();
+	            	idPersona = (b.getIdPersonaDeudor()!=null && !b.getIdPersonaDeudor().toString().equals("") ? b.getIdPersonaDeudor().toString() : b.getIdPersona().toString());
+	            }
+	        }
+	        
+	        StringBuilder sql = new StringBuilder();
+	        sql.append(UtilidadesBDAdm.sqlSelect(this.nombreTabla, this.getCamposBean())); 
+	        sql.append(" WHERE ");
+	        sql.append(FacSerieFacturacionBean.C_IDINSTITUCION);
+	        sql.append("=");
+	        sql.append(idInstitucion);
+	        sql.append(" AND ");
+	    	sql.append(FacSerieFacturacionBean.C_TIPOSERIE);
+	    	sql.append("='G' AND ");
+	        sql.append(FacSerieFacturacionBean.C_FECHABAJA);
+	        sql.append(" IS NULL AND ");
+	        sql.append(numeroTipos);
+	        sql.append("=(SELECT COUNT(*) FROM ");
+	        sql.append(FacTiposProduIncluEnFactuBean.T_NOMBRETABLA);
+	        sql.append(" WHERE ("); 
+	        sql.append(FacTiposProduIncluEnFactuBean.T_NOMBRETABLA);
+	        sql.append(".");
+	        sql.append(FacTiposProduIncluEnFactuBean.C_IDPRODUCTO);
+	        sql.append(", "); 
+	        sql.append(FacTiposProduIncluEnFactuBean.T_NOMBRETABLA);
+	        sql.append(".");
+	        sql.append(FacTiposProduIncluEnFactuBean.C_IDTIPOPRODUCTO); 
+	        sql.append(") IN (");
+	        sql.append(listadoProductos);
+	        sql.append(") AND ");
+	        sql.append(FacTiposProduIncluEnFactuBean.T_NOMBRETABLA);
+	        sql.append(".");
+	        sql.append(FacTiposProduIncluEnFactuBean.C_IDINSTITUCION);
+	        sql.append(" = ");
+	        sql.append(FacSerieFacturacionBean.T_NOMBRETABLA);
+	        sql.append(".");
+	        sql.append(FacSerieFacturacionBean.C_IDINSTITUCION);
+	        sql.append(" AND ");
+	        sql.append(FacTiposProduIncluEnFactuBean.T_NOMBRETABLA);
+	        sql.append(".");
+	        sql.append(FacTiposProduIncluEnFactuBean.C_IDSERIEFACTURACION);
+	        sql.append(" = ");
+	        sql.append(FacSerieFacturacionBean.T_NOMBRETABLA);
+	        sql.append(".");
+	        sql.append(FacSerieFacturacionBean.C_IDSERIEFACTURACION);
+	        sql.append(") ORDER BY ");
+	        sql.append(FacSerieFacturacionBean.C_DESCRIPCION);	        
+	        salida = this.selectSQL(sql.toString());
+	        
+	        if (salida==null || salida.size()==0) {	 
+		        sql = new StringBuilder();
+		        sql.append(UtilidadesBDAdm.sqlSelect(this.nombreTabla, this.getCamposBean())); 
+		        sql.append(" WHERE ");
+		        sql.append(FacSerieFacturacionBean.C_IDINSTITUCION);
+		        sql.append("=");
+		        sql.append(idInstitucion);
+		        sql.append(" AND ");
+		        sql.append(FacSerieFacturacionBean.C_FECHABAJA);
+		        sql.append(" IS NULL AND ");
+		        sql.append(numeroTipos);
+		        sql.append("=(SELECT COUNT(*) FROM ");
+		        sql.append(FacTiposProduIncluEnFactuBean.T_NOMBRETABLA);
+		        sql.append(" WHERE ("); 
+		        sql.append(FacTiposProduIncluEnFactuBean.T_NOMBRETABLA);
+		        sql.append(".");
+		        sql.append(FacTiposProduIncluEnFactuBean.C_IDPRODUCTO);
+		        sql.append(", "); 
+		        sql.append(FacTiposProduIncluEnFactuBean.T_NOMBRETABLA);
+		        sql.append(".");
+		        sql.append(FacTiposProduIncluEnFactuBean.C_IDTIPOPRODUCTO); 
+		        sql.append(") IN (");
+		        sql.append(listadoProductos);
+		        sql.append(") AND ");
+		        sql.append(FacTiposProduIncluEnFactuBean.T_NOMBRETABLA);
+		        sql.append(".");
+		        sql.append(FacTiposProduIncluEnFactuBean.C_IDINSTITUCION);
+		        sql.append(" = ");
+		        sql.append(FacSerieFacturacionBean.T_NOMBRETABLA);
+		        sql.append(".");
+		        sql.append(FacSerieFacturacionBean.C_IDINSTITUCION);
+		        sql.append(" AND ");
+		        sql.append(FacTiposProduIncluEnFactuBean.T_NOMBRETABLA);
+		        sql.append(".");
+		        sql.append(FacTiposProduIncluEnFactuBean.C_IDSERIEFACTURACION);
+		        sql.append(" = ");
+		        sql.append(FacSerieFacturacionBean.T_NOMBRETABLA);
+		        sql.append(".");
+		        sql.append(FacSerieFacturacionBean.C_IDSERIEFACTURACION);
+		        sql.append(" AND EXISTS (SELECT 1 FROM TABLE(PKG_SIGA_FACTURACION.OBTENCIONPOBLACIONCLIENTES("); 
+		        sql.append(FacTiposProduIncluEnFactuBean.T_NOMBRETABLA);
+		        sql.append(".");
+		        sql.append(FacTiposProduIncluEnFactuBean.C_IDINSTITUCION);
+		        sql.append(", "); 
+		        sql.append(FacTiposProduIncluEnFactuBean.T_NOMBRETABLA);
+		        sql.append(".");
+		        sql.append(FacTiposProduIncluEnFactuBean.C_IDSERIEFACTURACION);
+		        sql.append(")) PoblSF WHERE PoblSF.IDPERSONA=");
+		        sql.append(idPersona);
+		        sql.append(")) ORDER BY ");
+		        sql.append(FacSerieFacturacionBean.C_DESCRIPCION);	        
+		        salida = this.selectSQL(sql.toString());	        
+	        }
+	        
+		} catch(Exception e) {
+			throw new ClsExceptions(e,"Error al buscar las series de facturacion candidatas.");
+		}
+	    
+		return salida;
+	}		
 }

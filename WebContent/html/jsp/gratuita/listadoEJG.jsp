@@ -510,6 +510,11 @@
 		document.ActaComisionForm.seleccionados.value=seleccionados;
 		document.ActaComisionForm.modo.value='edicionMasiva';
 		var resultado = ventaModalGeneral("ActaComisionForm","M");	
+		if(resultado=='MODIFICADO'){
+			alert('<siga:Idioma key="messages.updated.success"/>','success');
+			parent.buscar();
+		}
+
 		fin();
 	}
 	</script>

@@ -197,7 +197,7 @@ public class GestionInformesAction extends MasterAction {
 		boolean esComision = usrBean.isComision();
 		boolean esComisionMultiple = usrBean.getInstitucionesComision()!=null &&usrBean.getInstitucionesComision().length>1;
 		List<AdmTipoInformeBean> tiposInformeList = null;
-		if(esComision && esComisionMultiple){
+		if(esComision || esComisionMultiple){
 			tiposInformeList = informeService.getTiposInformeComisionMultiple(usrBean);
 		}else{
 			//sin o es comision vamos aver si su comision es multiple, con lo que tendremos que ocultar ciertos tipos de informe

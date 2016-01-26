@@ -711,7 +711,8 @@
 				</tr>
 			</table>
 				
-			<%@ include file="/html/jsp/facturacion/fechasFicheroBancario.jsp"%>
+ 			<%@ include file="/html/jsp/facturacion/fechasFicheroBancario.jsp"%>
+<%-- 			<jsp:include page="/html/jsp/facturacion/fechasFicheroBancario.jsp"></jsp:include> --%>
 		</siga:ConjCampos>
 
 		<siga:ConjCampos leyenda="facturacion.seriesFacturacion.literal.configuracionCheck" oculto="<%=desplegar%>" desplegable="<%=desplegar%>">

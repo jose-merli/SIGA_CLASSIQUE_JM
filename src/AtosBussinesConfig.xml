@@ -56,6 +56,11 @@
    		   		
 		<service interface="org.redabogacia.sigaservices.app.services.ecom.EcomColaService" 	 											implementation="org.redabogacia.sigaservices.app.services.ecom.impl.EcomColaServiceImpl"/>
 		<service interface="org.redabogacia.sigaservices.app.services.scs.ScsEjgService" 	 												implementation="org.redabogacia.sigaservices.app.services.scs.impl.ScsEjgServiceImpl"/>
+		<service interface="org.redabogacia.sigaservices.app.services.scs.ScsEjgResolucionService" 	 										implementation="org.redabogacia.sigaservices.app.services.scs.impl.ScsEjgResolucionServiceImpl"/>
+		<service interface="org.redabogacia.sigaservices.app.services.scs.EjgResolucionService" 	 													implementation="org.redabogacia.sigaservices.app.services.scs.impl.EjgResolucionServiceImpl"/>
+		<service interface="org.redabogacia.sigaservices.app.services.scs.EjgService" 	 													implementation="org.redabogacia.sigaservices.app.services.scs.impl.EjgServiceImpl"/>
+		
+		
 		<service interface="org.redabogacia.sigaservices.app.services.scs.ScsDesignasLetradoService" 										implementation="org.redabogacia.sigaservices.app.services.scs.impl.ScsDesignasLetradoServiceImpl"/>	
 		<service interface="org.redabogacia.sigaservices.app.services.scs.ScsDesignaService" 												implementation="org.redabogacia.sigaservices.app.services.scs.impl.ScsDesignaServiceImpl"/>			
 		<service interface="org.redabogacia.sigaservices.app.services.scs.ScsJuzgadoService" 												implementation="org.redabogacia.sigaservices.app.services.scs.impl.ScsJuzgadoServiceImpl"/>		
@@ -125,9 +130,17 @@
 		<service interface="org.redabogacia.sigaservices.app.services.pys.CargaMasivaProductos"				implementation="org.redabogacia.sigaservices.app.services.pys.impl.CargaMasivaProductosImpl"/>
 		<service interface="org.redabogacia.sigaservices.app.services.est.EstadisticasUserRegistryService"	implementation="org.redabogacia.sigaservices.app.services.est.impl.EstadisticasUserRegistryServiceImpl"/>
 		<service interface="org.redabogacia.sigaservices.app.services.scs.ScsEEJGPeticionesService"			implementation="org.redabogacia.sigaservices.app.services.scs.impl.ScsEEJGPeticionesServiceImpl"/>
-		<service interface="org.redabogacia.sigaservices.app.services.scs.ScsComisariaService" 												implementation="org.redabogacia.sigaservices.app.services.scs.impl.ScsComisariaServiceImpl"/>
+		<service interface="org.redabogacia.sigaservices.app.services.scs.ScsComisariaService" 				implementation="org.redabogacia.sigaservices.app.services.scs.impl.ScsComisariaServiceImpl"/>
+		<service interface="org.redabogacia.sigaservices.app.services.cer.CerSolicitudCertificadosAccionService" 	implementation="org.redabogacia.sigaservices.app.services.cer.impl.CerSolicitudCertificadosAccionServiceImpl"/>
+		<service interface="org.redabogacia.sigaservices.app.services.cer.CerSolicitudCertificadosService" 	implementation="org.redabogacia.sigaservices.app.services.cer.impl.CerSolicitudCertificadosServiceImpl"/>
+		<service interface="org.redabogacia.sigaservices.app.services.cer.CerSolicitudCertificadosEnviosService" 	implementation="org.redabogacia.sigaservices.app.services.cer.impl.CerSolicitudCertificadosEnviosServiceImpl"/>
+		<service interface="org.redabogacia.sigaservices.app.services.cen.CenDatosCVService" 				implementation="org.redabogacia.sigaservices.app.services.cen.impl.CenDatosCVServiceImpl"/>
+		<service interface="org.redabogacia.sigaservices.app.services.cen.CenGruposClienteClienteService" 	implementation="org.redabogacia.sigaservices.app.services.cen.impl.CenGruposClienteClienteServiceImpl"/>
+		<service interface="org.redabogacia.sigaservices.app.services.pys.PYSCompraProductosService" 		implementation="org.redabogacia.sigaservices.app.services.pys.impl.PYSCompraProductosServiceImpl"/>	
+		<service interface="org.redabogacia.sigaservices.app.services.scs.EjgActaBusinessService" 				implementation="org.redabogacia.sigaservices.app.services.scs.impl.EjgActaBusinessServiceImpl"/>
+		<service interface="org.redabogacia.sigaservices.app.services.scs.ScsEjgActaService" 				implementation="org.redabogacia.sigaservices.app.services.scs.impl.ScsEjgActaServiceImpl"/>
 		<service interface="org.redabogacia.sigaservices.app.services.cen.EcomCenWsEnvioService"			implementation="org.redabogacia.sigaservices.app.services.cen.impl.EcomCenWsEnvioServiceImpl"/>
-
+		
 	</context>
 </configuration> 
 	

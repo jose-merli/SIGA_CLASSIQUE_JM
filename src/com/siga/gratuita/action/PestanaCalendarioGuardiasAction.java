@@ -201,7 +201,6 @@ public class PestanaCalendarioGuardiasAction extends MasterAction {
 		DefinirPermutaGuardiasForm miForm = (DefinirPermutaGuardiasForm)formulario;
 		ScsPermutaGuardiasAdm admPermuta = new ScsPermutaGuardiasAdm(this.getUserBean(request));
 		
-		Hashtable solicitanteHash = new Hashtable();
 		Vector registros = new Vector();
 		String idInstitucion="", idPersona="", orden="";
 		UsrBean usr;
@@ -323,13 +322,13 @@ public class PestanaCalendarioGuardiasAction extends MasterAction {
 	protected String insertar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		UsrBean usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
 		
-		DefinirPermutaGuardiasForm miForm = (DefinirPermutaGuardiasForm) formulario;
-		ScsPermutaGuardiasAdm admPermutas = new ScsPermutaGuardiasAdm(usr);
-		ScsPermutaCabeceraAdm admPermutasCabeceras = new ScsPermutaCabeceraAdm(usr);
-		ScsGuardiasColegiadoAdm admGuardias = new ScsGuardiasColegiadoAdm(usr);
-		ScsCabeceraGuardiasAdm admCabeceraGuardias = new ScsCabeceraGuardiasAdm(usr);		
 		CenBajasTemporalesAdm bajasTemporalescioneAdm = new CenBajasTemporalesAdm(usr);
-		ScsPermutaGuardiasBean beanPermutasGuardias = new ScsPermutaGuardiasBean();
+		DefinirPermutaGuardiasForm miForm = (DefinirPermutaGuardiasForm) formulario;
+		ScsCabeceraGuardiasAdm admCabeceraGuardias = new ScsCabeceraGuardiasAdm(usr);
+		ScsGuardiasColegiadoAdm admGuardias = new ScsGuardiasColegiadoAdm(usr);
+		ScsPermutaCabeceraAdm admPermutasCabeceras = new ScsPermutaCabeceraAdm(usr);
+		ScsPermutaGuardiasAdm admPermutas = new ScsPermutaGuardiasAdm(usr);									
+		ScsPermutaGuardiasBean beanPermutasGuardias = new ScsPermutaGuardiasBean();		
 		
 		String forward = "exito";
 		
@@ -428,8 +427,17 @@ public class PestanaCalendarioGuardiasAction extends MasterAction {
 				request.setAttribute("sinrefresco","sinrefresco");				
 				request.setAttribute("mensaje", UtilidadesString.getMensajeIdioma(usr, "error.messages.noupdated"));	
 				return "exito"; 
-			}						
+			}
 			
+			ScsCabeceraGuardiasBean bCabeceraGuarSolicitante = (ScsCabeceraGuardiasBean) cabeceraGuarSolicitante.elementAt(0);
+			ScsCabeceraGuardiasBean bCabeceraGuarConfirmador = (ScsCabeceraGuardiasBean) cabeceraGuarConfirmador.elementAt(0);
+			
+			//Antes de insertar el registro se comprueba si el letrado ya tiene una guardia en ese turno y periodo
+			if (admCabeceraGuardias.validaGuardiaLetradoPeriodo(bCabeceraGuarSolicitante.getIdInstitucion(), bCabeceraGuarSolicitante.getIdTurno(), bCabeceraGuarSolicitante.getIdGuardia(), bCabeceraGuarSolicitante.getIdPersona(), miForm.getFechaInicioConfirmador(), miForm.getFechaFinConfirmador()))
+				throw new SIGAException("gratuita.calendarios.guardias.mensaje.existe");
+			
+			if (admCabeceraGuardias.validaGuardiaLetradoPeriodo(bCabeceraGuarConfirmador.getIdInstitucion(), bCabeceraGuarConfirmador.getIdTurno(), bCabeceraGuarConfirmador.getIdGuardia(), bCabeceraGuarConfirmador.getIdPersona(), miForm.getFechaInicioSolicitante(), miForm.getFechaFinSolicitante()))
+				throw new SIGAException("gratuita.calendarios.guardias.mensaje.existe");
 			
 			//Datos comunes:
 			miHash.put(ScsPermutaGuardiasBean.C_IDINSTITUCION,miForm.getIdInstitucion());
@@ -647,18 +655,13 @@ public class PestanaCalendarioGuardiasAction extends MasterAction {
 		ScsCabeceraGuardiasAdm cabeceraGuardiasAdm = new ScsCabeceraGuardiasAdm(this.getUserBean(request));
 		ScsGuardiasColegiadoAdm guardiasColegiadoAdm = new ScsGuardiasColegiadoAdm(this.getUserBean(request));
 		
-		String forward = "exito";
 		UsrBean usr;
 		UserTransaction tx = null;
-		Hashtable miHash = new Hashtable();
 		Hashtable cabeceraGuarSol = new Hashtable();
 		Hashtable cabeceraGuarConf = new Hashtable();
 		Hashtable guardiasColSol = new Hashtable();
 		Hashtable guardiasColConf = new Hashtable();
-		Hashtable backupHash = new Hashtable();
 		Hashtable permuta = new Hashtable();
-		String numero = "", texto = "";
-		boolean poolRW = false;	
 		
 		String idInstitucion = miForm.getIdInstitucion();
 		

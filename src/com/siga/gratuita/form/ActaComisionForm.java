@@ -46,6 +46,9 @@ public class ActaComisionForm extends MasterForm {
 	private boolean guardaRatificacion = false;
 	
 	private String fechaPresentacionPonente;
+	
+	private String numActa;
+	private String sufijoNumActa;
 
 	
 	public void setNumeroActa(String valor) 	{this.numeroActa = valor;}
@@ -133,6 +136,8 @@ public class ActaComisionForm extends MasterForm {
 		guardaFundamento 	= false;
 		guardaRatificacion 	= false;
 		fechaPresentacionPonente = null;
+		sufijoNumActa = null;
+		numActa = null;
 	}
 	
 	public ActionErrors validate(ActionMapping mapping, HttpServletRequest request ) {		
@@ -140,9 +145,10 @@ public class ActaComisionForm extends MasterForm {
 		UsrBean user = (UsrBean)request.getSession().getAttribute("USRBEAN");			
 
 		try {
-			if (this.numeroActa==null || this.numeroActa.equalsIgnoreCase(""))
-				errors.add(UtilidadesString.getMensajeIdioma(user, "sjcs.actas.numeroActa"),new ActionMessage("errors.required"));
-			
+			if (this.numeroActa==null || this.numeroActa.equalsIgnoreCase("")){
+				if (this.numActa==null || this.numActa.equalsIgnoreCase(""))
+					errors.add(UtilidadesString.getMensajeIdioma(user, "sjcs.actas.numeroActa"),new ActionMessage("errors.required"));
+			}
 			if (this.anioActa==null || this.anioActa.equalsIgnoreCase(""))
 				errors.add(UtilidadesString.getMensajeIdioma(user, "sjcs.actas.anio"),new ActionMessage("errors.required"));
 			
@@ -160,6 +166,7 @@ public class ActaComisionForm extends MasterForm {
 			
 		}
 		catch (Exception e) {
+			System.out.println("ERROR:"+e.toString());
 			errors.add(user.getUserName(), new ActionMessage(e.getMessage()));
 		}	
 		
@@ -168,5 +175,17 @@ public class ActaComisionForm extends MasterForm {
 		}
 
 		return errors;
+	}
+	public String getNumActa() {
+		return numActa;
+	}
+	public void setNumActa(String numActa) {
+		this.numActa = numActa;
+	}
+	public String getSufijoNumActa() {
+		return sufijoNumActa;
+	}
+	public void setSufijoNumActa(String sufijoNumActa) {
+		this.sufijoNumActa = sufijoNumActa;
 	}	
 }

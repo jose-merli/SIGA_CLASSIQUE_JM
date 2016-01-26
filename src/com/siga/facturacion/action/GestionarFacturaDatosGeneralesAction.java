@@ -9,7 +9,6 @@ package com.siga.facturacion.action;
 
 import java.io.File;
 import java.util.Hashtable;
-import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -25,7 +24,6 @@ import com.atos.utils.ClsLogging;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;
-import com.siga.beans.CenColegiadoAdm;
 import com.siga.beans.CenDireccionesAdm;
 import com.siga.beans.CenPersonaAdm;
 import com.siga.beans.FacFacturaAdm;
@@ -175,68 +173,44 @@ public class GestionarFacturaDatosGeneralesAction extends MasterAction{
 	 * @see com.siga.general.MasterAction#insertar(org.apache.struts.action.ActionMapping, com.siga.general.MasterForm, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
 	 */
 	protected String imprimirFactura(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, SIGAException {
-		
-		File ficFOP=null;
-		File ficPDF=null;
-		boolean correcto=false;
-		Vector desglose=null;
-		String idInstitucion="";
-		String idFactura="";
-		int tamanho=27;
-		
 		try {
 			// Obtener los datos necesarios a mostrar en la factura
 			Hashtable facturaOrigen = (Hashtable) request.getSession().getAttribute("DATABACKUP");
-			idFactura=(String)facturaOrigen.get(FacFacturaBean.C_IDFACTURA);
-			UsrBean usr = (UsrBean)request.getSession().getAttribute("USRBEAN");
-			CenPersonaAdm personaAdm = new CenPersonaAdm(usr);
-			String institucion =usr.getLocation();
+			String idFactura = (String)facturaOrigen.get(FacFacturaBean.C_IDFACTURA);
 			
-			// RGG 15/02/2007 CAMBIOS PARA INFORME MASTER REPOR
-			InformeFactura inf=new InformeFactura(usr);
+			UsrBean usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
+			String institucion = usr.getLocation();
+			
+			CenPersonaAdm personaAdm = new CenPersonaAdm(usr);
+			InformeFactura infFactura = new InformeFactura(usr);			
+			CenDireccionesAdm admCenDirecciones = new CenDireccionesAdm(usr);
+			FacFacturaAdm admFacFactura = new FacFacturaAdm(usr);
 			
 			// PDM Antes de generar la factura comprobamos si existe la direccion del receptor de la factura
-			FacFacturaAdm facturaAdm= new FacFacturaAdm(this.getUserBean(request));
-			CenDireccionesAdm direccionAdm = new CenDireccionesAdm(this.getUserBean(request));
-			Hashtable datosFactura =new Hashtable();
-			datosFactura.put(FacFacturaBean.C_IDINSTITUCION,institucion);
-			datosFactura.put(FacFacturaBean.C_IDFACTURA,idFactura);
-			Vector vFactura=facturaAdm.selectByPK(datosFactura);
-			FacFacturaBean idPersona=(FacFacturaBean)vFactura.get(0);
-			String idPersonaFactura=idPersona.getIdPersona().toString();
-			CenColegiadoAdm admCol = new CenColegiadoAdm(this.getUserBean(request));
- 			Hashtable htCol = admCol.obtenerDatosColegiado(institucion,idPersonaFactura,this.getUserBean(request).getLanguage());
- 			String nColegiado = "";
- 			if (htCol!=null && htCol.size()>0) {
- 			    nColegiado = (String)UtilidadesHash.getString(htCol,"NCOLEGIADO_LETRADO");
- 			}			 
+			Hashtable<String,String> hFacFactura = new Hashtable<String,String>();			
+			hFacFactura.put(FacFacturaBean.C_IDINSTITUCION, institucion);
+			hFacFactura.put(FacFacturaBean.C_IDFACTURA, idFactura);
+			
+			FacFacturaBean bFacFactura = (FacFacturaBean) admFacFactura.selectByPK(hFacFactura).firstElement();			
+			String idPersonaFactura = bFacFactura.getIdPersona().toString();
 			 
-			Hashtable direccion=direccionAdm.getEntradaDireccionEspecifica(idPersonaFactura,institucion,""+ClsConstants.TIPO_DIRECCION_FACTURACION);
-			if (direccion.size()==0){
+			Hashtable<String,Object> direccion = admCenDirecciones.getEntradaDireccionEspecifica(idPersonaFactura, institucion, ""+ClsConstants.TIPO_DIRECCION_FACTURACION);
+			if (direccion.size()==0) {
 			    // Si no hay direccion de despacho (porque es un no colegiado), miramos su direccion de correo
-			 	direccion=direccionAdm.getEntradaDireccionEspecifica(idPersonaFactura,institucion,""+ClsConstants.TIPO_DIRECCION_DESPACHO);
+			 	direccion = admCenDirecciones.getEntradaDireccionEspecifica(idPersonaFactura, institucion, ""+ClsConstants.TIPO_DIRECCION_DESPACHO);
 		    }
 			
-			if (direccion.size()==0){							// jbd // inc8271 // En vez de mirar primero la direccion de despacho y luego la de censo se comprueba primero la facturacion
-				direccion=direccionAdm.getEntradaDireccionEspecifica(idPersonaFactura,institucion,""+ClsConstants.TIPO_DIRECCION_CENSOWEB);
+			if (direccion.size()==0) {							
+				// jbd // inc8271 // En vez de mirar primero la direccion de despacho y luego la de censo se comprueba primero la facturacion
+				direccion = admCenDirecciones.getEntradaDireccionEspecifica(idPersonaFactura, institucion, ""+ClsConstants.TIPO_DIRECCION_CENSOWEB);
 			}
-			
 		
 			if (direccion.size()>0 || (direccion.size()==0 && request.getParameter("generarFactura")!=null && request.getParameter("generarFactura").equals("1"))){
 
 			    ClsLogging.writeFileLog("ANTES DE LA GENERACION DE LA FACTURA. ",10);
-				File filePDF = inf.generarFactura(request,usr.getLanguage().toUpperCase(),institucion,idFactura,nColegiado);
-	
-				if (filePDF==null) {
-					throw new ClsExceptions("Error al generar la factura. Fichero devuelto es nulo.");				
-				} else {
-				    ClsLogging.writeFileLog("DESPUES DE LA GENERACION DE LA FACTURA: "+filePDF.getAbsolutePath(),10);
-				    ClsLogging.writeFileLog("Existe el fichero: "+((filePDF.exists())?"SI":"NO"),10);
-				}
-	//
-				FacFacturaAdm facfactura=new FacFacturaAdm(usr);
-				facfactura.firmarPDF(filePDF,institucion);
+				File filePDF = infFactura.generarPdfFacturaFirmada(request, bFacFactura, true);
 				
+				// Siempre se debe borrar el fichero pdf con la firma
 				String nombreColegiado = personaAdm.obtenerNombreApellidos(idPersonaFactura);
 				if(nombreColegiado != null && !"".equalsIgnoreCase(nombreColegiado)){
 					nombreColegiado = UtilidadesString.eliminarAcentosYCaracteresEspeciales(nombreColegiado)+"-";	
@@ -244,22 +218,20 @@ public class GestionarFacturaDatosGeneralesAction extends MasterAction{
 					nombreColegiado="";
 				}
 				
+				// Siempre se debe borrar el fichero pdf con la firma
 				request.setAttribute("nombreFichero",nombreColegiado+filePDF.getName());
 				request.setAttribute("rutaFichero", filePDF.getPath());			
-	
-	
 				
-			}else{
+			} else {
 			    // si no existe la direccion sacamos un mensaje informando de la situacion antes de generar la factura
 				return "ValidarDireccion";
 			}
-		} 
-		catch (Exception e) { 
+			
+		} catch (Exception e) { 
 			throwExcp("messages.general.error", new String[] {"modulo.facturacion"}, e,null); 
-		}				
+		}
+		
 		request.setAttribute("generacionOK","OK");
 		return "descarga";
 	}
-	
-	
 }

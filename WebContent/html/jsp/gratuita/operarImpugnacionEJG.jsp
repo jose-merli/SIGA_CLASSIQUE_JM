@@ -182,13 +182,13 @@
 				<%}%>
 			</td>
 			<td class="labelText">
-				<siga:Idioma key="gratuita.EJG.literal.autoResolutorio"/>
+				<siga:Idioma key="gratuita.EJG.literal.autoResolutorio"/>&nbsp;(*)
 			</td>	
 			<td class="labelText">
 				<%if (accion.equalsIgnoreCase("ver")) {%>
 					<siga:ComboBD nombre="idTipoResolAuto" tipo="idTipoResolAuto" clase="boxConsulta"  filasMostrar="1" seleccionMultiple="false" obligatorio="false" elementoSel="<%=vTipoResolAuto%>" readonly="true"/>
 				<%}else{%>
-					<siga:ComboBD nombre="idTipoResolAuto" tipo="idTipoResolAuto" clase="boxCombo"  filasMostrar="1" seleccionMultiple="false" obligatorio="false" elementoSel="<%=vTipoResolAuto%>"/>
+					<siga:ComboBD nombre="idTipoResolAuto" tipo="idTipoResolAuto" clase="boxCombo"  filasMostrar="1" seleccionMultiple="false" obligatorio="false" accion="onchangeidtiporesolucion();" elementoSel="<%=vTipoResolAuto%>"/>
 				<%}%>
 			</td>
 		</tr>
@@ -311,11 +311,28 @@
 		{
 			sub();
 			var fecha  = document.forms[0].fechaAuto.value;
-			if(fecha==''){
-				alert('<siga:Idioma key="gratuita.operarRatificacion.literal.fechaAuto"/> <siga:Idioma key="messages.campoObligatorio.error"/>');
-				fin();
-				return false;
+			var tipoResolucionAuto  = document.forms[0].idTipoResolAuto.value;
+			
+			
+			error = '';
+			
+			if((fecha!='' && tipoResolucionAuto=='')||(fecha=='' && tipoResolucionAuto!='') ){
+				if(fecha ==""){
+					error += "<siga:Idioma key='errors.required' arg0='gratuita.operarRatificacion.literal.fechaAuto'/>"+ '\n';				
+				}
+				
+				if(tipoResolucionAuto ==""){
+					error += "<siga:Idioma key='errors.required' arg0='gratuita.EJG.literal.autoResolutorio'/>"+ '\n';
+				}
+				
+				if(error!=''){
+					alert(error);
+					fin();
+					return false;
+				}
 			}
+			
+			
 			document.forms[0].submit();
 		}
 
@@ -332,6 +349,21 @@
 					jQuery("#bisResolucion").attr("disabled","disabled");	
 				}
 		}
+		
+		function onchangeidtiporesolucion()
+		{
+			
+			
+			var tipoResolucionAuto  = document.forms[0].idTipoResolAuto.value;
+			
+			
+			
+			
+			if(tipoResolucionAuto =='')
+				document.forms[0].idTipoSentidoAuto.value = '';
+				
+		}
+		
 	</script>
 	<!-- FIN: SCRIPTS BOTONES -->
 

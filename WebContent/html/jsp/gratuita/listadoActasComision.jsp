@@ -125,7 +125,7 @@
 						<input type='hidden' name='oculto<%=fila%>_1' value='<%=row.getString(ScsActaComisionBean.C_IDACTA)%>'>
 						<input type='hidden' name='oculto<%=fila%>_2' value='<%=row.getString(ScsActaComisionBean.C_IDINSTITUCION)%>'>
 						<input type='hidden' name='oculto<%=fila%>_3' value='<%=row.getString(ScsActaComisionBean.C_ANIOACTA)%>'>
-					<%=row.getString(ScsActaComisionBean.C_ANIOACTA)%>/<%=row.getString(ScsActaComisionBean.C_NUMEROACTA)%>&nbsp;</td>
+					<%=row.getString(ScsActaComisionBean.C_ANIOACTA)%>/<%=row.getString(ScsActaComisionBean.C_NUMEROACTA)%></td>
 				<td><%=UtilidadesString.formatoFecha(row.getString(ScsActaComisionBean.C_FECHARESOLUCION),ClsConstants.DATE_FORMAT_JAVA, ClsConstants.DATE_FORMAT_SHORT_SPANISH)%>&nbsp;</td>
 				<td><%=UtilidadesString.formatoFecha(row.getString(ScsActaComisionBean.C_FECHAREUNION),ClsConstants.DATE_FORMAT_JAVA, ClsConstants.DATE_FORMAT_SHORT_SPANISH)%>&nbsp;</td>
 				<td><%=row.getString("NOMBREPRESIDENTE")%>&nbsp;</td>

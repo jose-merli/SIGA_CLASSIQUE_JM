@@ -623,9 +623,17 @@ public class EnvioInformesGenericos extends MasterReport {
 			ScsActaComisionAdm actaAdm = new ScsActaComisionAdm(usrBean);
 			Vector vDatosInformeFinal = actaAdm.getDatosInforme(idInstitucion, idActa, anioActa);
 
-			Vector vDatosEJGs = actaAdm.getEJGsInforme(idInstitucion, idActa, anioActa,longitudNumEjg!=null?longitudNumEjg:"5");
+			Vector vDatosEJGs = actaAdm.getEJGsInforme(idInstitucion, idActa, anioActa,longitudNumEjg!=null?longitudNumEjg:"5",null);
 			htDatosInforme.put("ejgs", vDatosEJGs);
+			
+			Vector vDatosEJGImpugnados = actaAdm.getEJGsInforme(idInstitucion, idActa, anioActa,longitudNumEjg!=null?longitudNumEjg:"5",true);
+			htDatosInforme.put("ejgsimpugnados", vDatosEJGImpugnados);
+			
+			Vector vDatosEJGNoImpugnados = actaAdm.getEJGsInforme(idInstitucion, idActa, anioActa,longitudNumEjg!=null?longitudNumEjg:"5",false);
+			htDatosInforme.put("ejgsnoimpugnados", vDatosEJGNoImpugnados);
 
+			
+			
 			Vector vDatosEJGPendientes = actaAdm.getEJGsPendientes(idInstitucion, idActa, anioActa,longitudNumEjg!=null?longitudNumEjg:"5");
 			Vector vDatosEJGPendientesPonentes = actaAdm.getEJGsPendientesPonentes(idInstitucion, idActa, anioActa,longitudNumEjg!=null?longitudNumEjg:"5");
 
@@ -667,7 +675,7 @@ public class EnvioInformesGenericos extends MasterReport {
 			beanAnexo.setIdCuenta(idCuenta);
 			beanAnexo.setIdMandato(idMandato);
 			beanAnexo.setIdAnexo(idAnexo);
-			List<Hashtable> anexosList = anexosAdm.getAnexos(beanAnexo, false);
+			List<Hashtable<String,Object>> anexosList = anexosAdm.getAnexos(beanAnexo, false);
 			if (anexosList != null) {
 				htDatosInforme.put("rows", anexosList);
 			}
@@ -3650,13 +3658,16 @@ public class EnvioInformesGenericos extends MasterReport {
 			}
 			// }
 		}
-
-		// identificador = identificador + ".doc";
-		if (beanInforme.getTipoformato() != null && beanInforme.getTipoformato().equals("P"))
-			identificador = identificador + ".pdf";
-		else
-			identificador = identificador + ".doc";
 		String nombreArchivo = beanInforme.getNombreSalida() + "_" + identificador;
+		if(beanInforme.getIdTipoInforme()!=null && beanInforme.getIdTipoInforme().equals(EnvioInformesGenericos.comunicacionesCAJG)){
+			nombreArchivo = identificador+"_"+beanInforme.getNombreSalida() ;
+		}
+			
+		if (beanInforme.getTipoformato() != null && beanInforme.getTipoformato().equals("P"))
+			nombreArchivo = nombreArchivo + ".pdf";
+		else
+			nombreArchivo = nombreArchivo + ".doc";
+		
 		ficheroSalida = masterWord.grabaDocumento(documento, rutaAlm, nombreArchivo);
 		Date fin = new Date();
 		ClsLogging.writeFileLog(Calendar.getInstance().getTimeInMillis() + ",==> SIGA: FIN InformesGenericos.getInformeGenerico", 10);
@@ -8205,7 +8216,7 @@ public class EnvioInformesGenericos extends MasterReport {
 					throw new SIGAException("Error no controlado. No hay referenciasepa por lo que no se puede obtener el mandato");
 				beanMandato.setRefMandatoSepa(refMandatoSEPA);
 				beanMandato.setIdInstitucion(idInstitucion);
-				Hashtable beanMandatoHashtable = cuentasBancariasAdm.getMandato(beanMandato, null);
+				Hashtable<String,Object> beanMandatoHashtable = cuentasBancariasAdm.getMandato(beanMandato, null);
 				String idPersona = (String) beanMandatoHashtable.get("IDPERSONA");
 				ht.put("idPersona", idPersona);
 

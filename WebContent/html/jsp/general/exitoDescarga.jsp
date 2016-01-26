@@ -77,7 +77,7 @@
 							alert(unescape("<%=msg %>"),"<%=estilo%>");
 				<%  } %>
 				<%if(rutaFichero!=null && nombreFichero!=null && borrarFichero!=null){%>
-					setTimeout(descargaFichero, 500);
+					descargaFichero();
 				<%}%>
 				return false;
 		}

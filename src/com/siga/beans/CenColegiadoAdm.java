@@ -11,7 +11,6 @@ import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesMultidioma;
-import com.siga.Utilidades.UtilidadesString;
 import com.siga.general.EjecucionPLs;
 import com.siga.general.SIGAException;
 
@@ -678,203 +677,6 @@ public class CenColegiadoAdm extends MasterBeanAdmVisible
 			throw new ClsExceptions (e, "Error al obtener un nuevo numero de colegiado / comunitario.");
 		}
 	}
-	
-	
-//	/** 
-//	 * Obtiene un numero de colegiado nuevo para una institucion
-//	 * @param  idInstitucion - identificador de la institucion	
-//	 * @return  String  con el uevo identificador
-//	 * @exception  SIGAExceptions  Error de aplicacion 
-//	 */		
-//	public String getNColegiado (Integer idInstitucion) throws ClsExceptions, SIGAException{
-//		String salida = null;
-//		try{
-//            RowsContainer rc = new RowsContainer(); 
-//            /* CAMBIO DE UNICIDAD NCOLEGIADO/NCOMUNITARIO
-//            String sql ="SELECT DECODE((MAX(TO_NUMBER(NVL("+CenColegiadoBean.T_NOMBRETABLA+"."+CenColegiadoBean.C_NCOLEGIADO+","+CenColegiadoBean.T_NOMBRETABLA+"."+CenColegiadoBean.C_NCOMUNITARIO+")))+1),NULL,1,(MAX(TO_NUMBER(NVL("+CenColegiadoBean.T_NOMBRETABLA+"."+CenColegiadoBean.C_NCOLEGIADO+","+CenColegiadoBean.T_NOMBRETABLA+"."+CenColegiadoBean.C_NCOMUNITARIO+")))+1)) AS MAXIMO FROM " + 
-//			CenColegiadoBean.T_NOMBRETABLA + 
-//			" WHERE " + 
-//			CenColegiadoBean.T_NOMBRETABLA +"."+ CenColegiadoBean.C_IDINSTITUCION + "=" + idInstitucion.toString();						 										
-//			*/
-//            
-//
-//	        String sql = " SELECT DECODE (COUNT(1), 0, 1, MAX(TO_NUMBER(NVL("+CenColegiadoBean.T_NOMBRETABLA+"."+CenColegiadoBean.C_NCOLEGIADO+",'0'))) + 1) AS MAXIMO " +
-//	  			    " FROM " + CenColegiadoBean.T_NOMBRETABLA + 
-//	  			   " WHERE " + CenColegiadoBean.T_NOMBRETABLA +"."+ CenColegiadoBean.C_IDINSTITUCION + "=" + idInstitucion.toString();						 										
-//	
-//            // RGG cambio visibilidad
-//			rc = this.find(sql);
-//            if (rc!=null) {
-//				if (rc.size()>0)	{
-//					Row fila = (Row) rc.get(0);
-//					Hashtable prueba = fila.getRow();
-//	            	salida = (String)prueba.get("MAXIMO");
-//				}
-//			}
-//            return salida;
-//		}
-//		catch(Exception e) {
-//			throw new ClsExceptions (e, "Error al obtener un nuevo numero de colegiado.");
-//		}
-//	}
-//
-//	/** 
-//	 * Obtiene un numero de comunitario nuevo para una institucion
-//	 * @param  idInstitucion - identificador de la institucion	
-//	 * @return  String  con el uevo identificador
-//	 * @exception  SIGAExceptions  Error de aplicacion 
-//	 */		
-//	public String getNComunitario (Integer idInstitucion) throws ClsExceptions, SIGAException{
-//		String salida = null;
-//		try{
-//            RowsContainer rc = new RowsContainer(); 
-//            /* se cambia la unicidad de ncolegiado/ncomunitario
-//            String sql ="SELECT DECODE((MAX(TO_NUMBER(NVL("+CenColegiadoBean.T_NOMBRETABLA+"."+CenColegiadoBean.C_NCOLEGIADO+","+CenColegiadoBean.T_NOMBRETABLA+"."+CenColegiadoBean.C_NCOMUNITARIO+")))+1),NULL,1,(MAX(TO_NUMBER(NVL("+CenColegiadoBean.T_NOMBRETABLA+"."+CenColegiadoBean.C_NCOLEGIADO+","+CenColegiadoBean.T_NOMBRETABLA+"."+CenColegiadoBean.C_NCOMUNITARIO+")))+1)) AS MAXIMO FROM " + 
-//			CenColegiadoBean.T_NOMBRETABLA + 
-//			" WHERE " + 
-//			CenColegiadoBean.T_NOMBRETABLA +"."+ CenColegiadoBean.C_IDINSTITUCION + "=" + idInstitucion.toString();						 										
-//			*/
-//            String sql = " SELECT DECODE (COUNT(1), 0, 1, MAX(TO_NUMBER(NVL("+CenColegiadoBean.T_NOMBRETABLA+"."+CenColegiadoBean.C_NCOMUNITARIO+",'0'))) + 1) AS MAXIMO " +
-//            			   " FROM " + CenColegiadoBean.T_NOMBRETABLA + 
-//            			  " WHERE " + CenColegiadoBean.T_NOMBRETABLA +"."+ CenColegiadoBean.C_IDINSTITUCION + "=" + idInstitucion.toString();						 										
-//			
-//            // RGG cambio visibilidad
-//            rc = this.find(sql);
-//            if (rc!=null) {
-//				if (rc.size()>0)	{
-//					Row fila = (Row) rc.get(0);
-//					Hashtable prueba = fila.getRow();
-//	            	salida = (String)prueba.get("MAXIMO");
-//				}
-//			}
-//            return salida;
-//		}
-//		catch(Exception e) {
-//			throw new ClsExceptions (e, "Error al obtener un nuevo numero de comunitario.");
-//		}
-//	}
-
-	
-	/** 
-	 * Comprueba si existe el numero de colegiado o comunitario en la tabla de colegiados para una misma institucion
-	 * @param  numero: Número de colegiado 
-	 * @param  tipo de colegiacion
-	 * @param  idInstitucion 
-	 * @return  boolean con el resultado  
-	 * @exception  ClsExceptions  En cualquier caso de error
-	 */		
-	public boolean existeNColegiado_NComunitario_X_Institucion (String numero, int tipo, String idInstitucion) throws ClsExceptions, SIGAException
-	{
-	    try {
-	        GenParametrosAdm parametrosAdm = new GenParametrosAdm(this.usrbean);
-	        String sContadorUnico = parametrosAdm.getValor(idInstitucion, ClsConstants.MODULO_CENSO, "CONTADOR_UNICO_NCOLEGIADO_NCOMUNIT", "1"); 
-	        if (sContadorUnico == null || sContadorUnico.equals("")) {
-	            sContadorUnico = new String (ClsConstants.DB_TRUE);
-	        }
-	        
-	        // hay un unico contador para ncolegiado y ncomunitario
-	        if (sContadorUnico.equals(ClsConstants.DB_TRUE)) {
-	            Hashtable codigos = new Hashtable();
-	            codigos.put(new Integer(1),idInstitucion);
-	            codigos.put(new Integer(2),numero);
-	            codigos.put(new Integer(3),numero);
-			    String where = " WHERE " + CenColegiadoBean.C_IDINSTITUCION + " =:1  AND (" + CenColegiadoBean.C_NCOLEGIADO + " = :2 OR " + CenColegiadoBean.C_NCOMUNITARIO + " = :3)";
-				Vector v = this.selectBind(where,codigos);
-				if ((v != null) && (v.size()>0))
-					return true;
-				else 
-					return false;
-	        }
-	        // hay dos contadores distintos para ncolegiado y ncomunitario
-	        else {
-	            Hashtable codigos = new Hashtable();
-	            codigos.put(new Integer(1),idInstitucion);
-	            codigos.put(new Integer(2),numero);
-	            
-	            String where = " WHERE " + CenColegiadoBean.C_IDINSTITUCION + " = :1 AND " + (tipo == ClsConstants.TIPO_COLEGIACION_COMUNITARIO ? CenColegiadoBean.C_NCOMUNITARIO : CenColegiadoBean.C_NCOLEGIADO) + " = :2 ";
-				Vector v = this.selectBind(where,codigos);
-				if ((v != null) && (v.size()>0))
-					return true;
-	        	else
-					return false;
-	        }
-		}
-		catch (Exception e) {
-			throw new ClsExceptions (e, "Error al recuperar los datos");
-		}
-	}
-
-//	/** 
-//	 * Comprueba si existe el numero  de colegiado o el número de comunitario 
-//	 * en la tabla de colegiados (Solo uno de los dos valores debe tener valor)
-//	 * @param  nColegiado Número de colegiado 
-//	 * @return  boolean con el resultado  
-//	 * @exception  ClsExceptions  En cualquier caso de error
-//	 */		
-//	public boolean existeNColegiado(String nColegiado) throws ClsExceptions, SIGAException{
-//		try {
-//			String valor=nColegiado;
-//			Vector v = this.select(" WHERE "+CenColegiadoBean.C_NCOLEGIADO+"='"+valor+"' OR "+CenColegiadoBean.C_NCOMUNITARIO+"='"+valor+"'");
-//			if ((v != null) && (v.size()>0)) {
-//				return true;
-//			} else {
-//				return false;
-//			}
-//		}
-//		catch (Exception e) {
-//			throw new ClsExceptions (e, "Error al recuperar los datos");
-//		}
-//	}
-
-//	/** 
-//	 * Comprueba si existe el numero  de colegiado
-//	 * en la tabla de colegiados 
-//	 * para una misma institucion
-//	 * @param  nColegiado Número de colegiado 
-//	 * @param  idInstitucion 
-//	 * @return  boolean con el resultado  
-//	 * @exception  ClsExceptions  En cualquier caso de error
-//	 */		
-//	public boolean existeNColegiadoInstitucion(String nColegiado,String idInstitucion) throws ClsExceptions, SIGAException{
-//		try {
-//			String valor=nColegiado;
-//			//Vector v = this.select(" WHERE ("+CenColegiadoBean.C_NCOLEGIADO+"='"+valor+"' OR "+CenColegiadoBean.C_NCOMUNITARIO+"='"+valor+"') AND ("+CenColegiadoBean.C_IDINSTITUCION+"="+idInstitucion+")");
-//			Vector v = this.select(" WHERE "+CenColegiadoBean.C_NCOLEGIADO+"='"+valor+"' AND ("+CenColegiadoBean.C_IDINSTITUCION+"="+idInstitucion+")");
-//			if ((v != null) && (v.size()>0)) {
-//				return true;
-//			} else {
-//				return false;
-//			}
-//		}
-//		catch (Exception e) {
-//			throw new ClsExceptions (e, "Error al recuperar los datos");
-//		}
-//	}
-//
-//	/** 
-//	 * Comprueba si existe el numero  de comunitario 
-//	 * en la tabla de colegiados 
-//	 * para una misma institucion
-//	 * @param  nColegiado Número de colegiado 
-//	 * @param  idInstitucion 
-//	 * @return  boolean con el resultado  
-//	 * @exception  ClsExceptions  En cualquier caso de error
-//	 */		
-//	public boolean existeNComunitarioInstitucion(String nColegiado,String idInstitucion) throws ClsExceptions, SIGAException{
-//		try {
-//			String valor=nColegiado;
-//			//Vector v = this.select(" WHERE ("+CenColegiadoBean.C_NCOLEGIADO+"='"+valor+"' OR "+CenColegiadoBean.C_NCOMUNITARIO+"='"+valor+"') AND ("+CenColegiadoBean.C_IDINSTITUCION+"="+idInstitucion+")");
-//			Vector v = this.select(" WHERE "+CenColegiadoBean.C_NCOMUNITARIO+"='"+valor+"' AND ("+CenColegiadoBean.C_IDINSTITUCION+"="+idInstitucion+")");
-//			if ((v != null) && (v.size()>0)) {
-//				return true;
-//			} else {
-//				return false;
-//			}
-//		}
-//		catch (Exception e) {
-//			throw new ClsExceptions (e, "Error al recuperar los datos");
-//		}
-//	}
 
 	/** 
 	 * Obtiene el estado colegial y los datos asociados de una persona dependiendo de la institucion
@@ -1053,7 +855,6 @@ public class CenColegiadoAdm extends MasterBeanAdmVisible
 	{
 		try
 		{
-			CenColegiadoBean salida = null;
 			Hashtable codigos = new Hashtable();
             codigos.put(new Integer(1),nColegiado);
             codigos.put(new Integer(2),nColegiado);
@@ -1182,6 +983,14 @@ public class CenColegiadoAdm extends MasterBeanAdmVisible
 		return vInforme;						
 	}
 	
+	/**
+	 * 
+	 * @param idInstitucion
+	 * @param idPersona
+	 * @param registro
+	 * @param idioma
+	 * @throws Exception
+	 */
 	public void getDatosInforme (String idInstitucion, String idPersona, Hashtable registro, String idioma) throws Exception {
 		
 		if(registro.get("FECHAPRESENTACION_DD")==null)
@@ -1301,33 +1110,46 @@ public class CenColegiadoAdm extends MasterBeanAdmVisible
 		if(registro.get("CUENTABANCARIA_SJCS_ABIERTA")==null)
 			registro.put("CUENTABANCARIA_SJCS_ABIERTA", "");
 		
-		String strFechaActual = this.getFechaActual(idioma);
-		if(strFechaActual==null)
+		Hashtable<String,Object> hFechasActuales = this.getFechaActual(idioma);
+		if (hFechasActuales==null) {
 			registro.put("FECHAACTUAL_LETRAYDIA", "");
-		else
-			registro.put("FECHAACTUAL_LETRAYDIA", strFechaActual);
+			registro.put("FECHAACTUAL_LETRA", "");
+		} else {
+			registro.put("FECHAACTUAL_LETRAYDIA", UtilidadesHash.getString(hFechasActuales, "FECHAACTUAL_LETRAYDIA"));
+			registro.put("FECHAACTUAL_LETRA", UtilidadesHash.getString(hFechasActuales, "FECHAACTUAL_LETRA"));
+		}
 	}			
 	
-	public String getFechaActual (String idioma) throws ClsExceptions {
-
-		RowsContainer rc = null;
+	/**
+	 * 
+	 * @param idioma
+	 * @return
+	 * @throws ClsExceptions
+	 */
+	private Hashtable<String,Object> getFechaActual (String idioma) throws ClsExceptions {
 		try { 
-			rc = new RowsContainer(); 						
+			RowsContainer rc = new RowsContainer(); 		
 			
-			String sql = "SELECT F_SIGA_GETRECURSO_ETIQUETA('calendario.literal.semana.'||TO_CHAR(SYSDATE, 'd'),"+idioma+") || ', ' || PKG_SIGA_FECHA_EN_LETRA.F_SIGA_FECHACOMPLETAENLETRA(SYSDATE, 'M', "+idioma+") "
-					+ " FECHAACTUAL_LETRAYDIA FROM DUAL";
+			StringBuilder sql = new StringBuilder();
 			
-			rc = this.find(sql);
-			if (rc!=null) {
-				if (rc.size() >= 1) {
-					Row fila = (Row) rc.get(0);
-					return fila.getString("FECHAACTUAL_LETRAYDIA");
-				}
+			sql.append("SELECT F_SIGA_GETRECURSO_ETIQUETA('calendario.literal.semana.' || TO_CHAR(SYSDATE, 'd'), ");
+			sql.append(idioma);
+			sql.append(") || ', ' || PKG_SIGA_FECHA_EN_LETRA.F_SIGA_FECHACOMPLETAENLETRA(SYSDATE, 'M', ");
+			sql.append(idioma);
+			sql.append(") AS FECHAACTUAL_LETRAYDIA, PKG_SIGA_FECHA_EN_LETRA.F_SIGA_FECHACOMPLETAENLETRA(SYSDATE, 'DMA', ");
+			sql.append(idioma);
+			sql.append(") AS FECHAACTUAL_LETRA FROM DUAL");
+			
+			rc = this.find(sql.toString());
+			if (rc!=null && rc.size() == 1) {
+				Row fila = (Row) rc.get(0);				
+				return fila.getRow();
 			}
-		} 
-		catch (Exception e) {
+			
+		} catch (Exception e) {
 			throw new ClsExceptions (e, "Error al obtener la fecha actual en formato de letra");
 		}
+		
 		return null;
 	}	
 	
@@ -1611,40 +1433,6 @@ public class CenColegiadoAdm extends MasterBeanAdmVisible
 		return colegiaciones;
 	}
 	
-	public int getNumeroColegiaciones (Long idPersona)throws ClsExceptions{
-		RowsContainer rc = null;
-		int resultado = 0;
-		
-		try { 
-			rc = new RowsContainer(); 
-			String sql = "";
-			Hashtable codigos = new Hashtable();
-            codigos.put(new Integer(1),idPersona);
-            sql = " SELECT COUNT(C." + CenColegiadoBean.C_IDPERSONA	+ ") as COLEGIACIONES" +
-				  " FROM " + CenColegiadoBean.T_NOMBRETABLA + " C , " + CenDatosColegialesEstadoBean.T_NOMBRETABLA + " DC " +
-				  " WHERE C." + CenColegiadoBean.C_IDPERSONA + " = :1 " +
-            	  " AND C.IDINSTITUCION = DC.IDINSTITUCION "+
-            	  " AND C.IDPERSONA = DC.IDPERSONA "+
-				  " AND dc.fechaestado = "+
-            	  " 	(select max(DC2.fechaestado) "+
-				  "       from CEN_DATOSCOLEGIALESESTADO DC2 "+
-				  "       where DC2.idinstitucion = c.idinstitucion "+
-				  "          and DC2.idpersona = c.idpersona "+
-				  "          and trunc(DC2.fechaestado) < trunc(sysdate))";
-            	  			
-			if (rc.findBind(sql,codigos)) {
-				if (rc.size() >= 1) {
-					Row fila = (Row) rc.get(0);					
-					Hashtable prueba = fila.getRow();
-	            	resultado = Integer.parseInt((String)prueba.get("COLEGIACIONES"));
-				}
-			}
-		} catch (Exception e) {
-			throw new ClsExceptions (e, "Error al recueperar los datos");
-		}
-		
-		return resultado;
-	}
 	/** 
 	 * aalg. inc 504
 	 * Procesa la actualización del campo SITUACIONEJERCICIO según la fecha actual y los estados

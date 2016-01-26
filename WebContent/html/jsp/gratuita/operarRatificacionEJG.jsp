@@ -45,12 +45,14 @@
 	String datoFundamentosResolucion[] = new String[3];		
 	String anio= "", numero="", idTipoEJG = "", observaciones = "",refA="",docResolucion="",idInstitucion="";
 	String fechaRatificacion = "", fechaResolucionCAJG= "", fechaNotificacion= "", fechaPresentacionPonente="";
-	String numeroCAJG="", anioCAJG="";
+	String numeroCAJG="", anioCAJG="", notasCAJG="";
 	boolean requiereTurnado= false,requiereNotificarProc=false;
 	ArrayList vFundamentoJuridico= new ArrayList(), vTipoRatificacion= new ArrayList(), vPonente = new ArrayList(), vActa = new ArrayList();
 	String idActa = "";
+	String idActaSel = "0";
+	String anioActaSel = "0";
 	ArrayList vOrigenCAJGSel = new ArrayList();
-	
+	String idPonente = "-1"	;
 	boolean accesoActas=false;
 	if(request.getAttribute("accesoActa")!=null){
 		String accesoActasST = (String)request.getAttribute("accesoActa");
@@ -62,6 +64,8 @@
 		idTipoEJG = miHash.get("IDTIPOEJG").toString();
 		idInstitucion = miHash.get("IDINSTITUCION").toString();
 		if (miHash.containsKey("RATIFICACIONDICTAMEN")) observaciones = miHash.get("RATIFICACIONDICTAMEN").toString();
+		
+		
 		if (miHash.containsKey("REFAUTO")) refA = miHash.get("REFAUTO").toString();
 
 		if (miHash.containsKey("FECHARATIFICACION")) fechaRatificacion = GstDate.getFormatedDateShort("",miHash.get("FECHARATIFICACION").toString()).toString();
@@ -109,12 +113,13 @@
 			
 		}
 			
-			
+		
 		//datoTipoResolucion[1]=(String)usr.getLocation();
 		if (miHash.containsKey("DOCRESOLUCION") && miHash.get("DOCRESOLUCION") != null) {
 			docResolucion = miHash.get("DOCRESOLUCION").toString();
 		}
 		if (miHash.containsKey("IDPONENTE") && miHash.get("IDPONENTE") != null) {
+			idPonente = miHash.get("IDPONENTE").toString();
 			vPonente.add(miHash.get("IDPONENTE").toString());
 		}
 		String vOrigenCAJG = (String) miHash.get("IDORIGENCAJG");
@@ -126,14 +131,16 @@
 				&& miHash.containsKey(ScsEJGBean.C_IDINSTITUCIONACTA) && miHash.get(ScsEJGBean.C_IDINSTITUCIONACTA) != null 
 				&& miHash.containsKey(ScsEJGBean.C_ANIOACTA) && miHash.get(ScsEJGBean.C_ANIOACTA) != null) {
 			idActa = miHash.get(ScsEJGBean.C_IDINSTITUCIONACTA).toString() + "," + miHash.get(ScsEJGBean.C_ANIOACTA) + "," + miHash.get(ScsEJGBean.C_IDACTA);
+			idActaSel = miHash.get(ScsEJGBean.C_IDACTA)!=null&&(!(""+miHash.get(ScsEJGBean.C_IDACTA)).equals(""))?""+miHash.get(ScsEJGBean.C_IDACTA):"0";
+			anioActaSel = miHash.get(ScsEJGBean.C_ANIOACTA)!=null&&(!(""+miHash.get(ScsEJGBean.C_ANIOACTA)).equals(""))?""+miHash.get(ScsEJGBean.C_ANIOACTA):"0";
 			vActa.add(idActa);
 		}
 		
 	}catch(Exception e){
 		e.printStackTrace();
 	}
-	String datoActas[] = {idInstitucionComision,idInstitucionComision};
-	String datoPonente[] = {idInstitucionComision,idInstitucionComision};
+	String datoActas[] = {idInstitucionComision,idInstitucionComision,anioActaSel,idActaSel};
+	String datoPonente[] = {idInstitucionComision,idPonente};
 %>
 
 
@@ -293,7 +300,7 @@
 											<%if (accion.equalsIgnoreCase("ver")){%>
 												<siga:ComboBD nombre="idActaComp"  tipo="cmbActaComision" clase="boxConsulta" ancho="200" filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=datoActas%>" elementoSel="<%=vActa %>" readonly="true"/>
 											<%}else{%>
-												<siga:ComboBD nombre="idActaComp"  tipo="cmbActaComision" clase="boxCombo" ancho="200" filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=datoActas%>" elementoSel="<%=vActa %>" accion="setFechaResolucionCAJG();"/>
+												<siga:ComboBD nombre="idActaComp"  tipo="cmbActaComisionAbiertos" clase="boxCombo" ancho="200" filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=datoActas%>" elementoSel="<%=vActa %>" accion="setFechaResolucionCAJG();"/>
 											<%}%>
 											<%if(esComision){%>
 												<input type="button" alt="abrir"  id="botonAbrirActa" onclick="return abrirActa();" class="button" name="idButton" value='<%=UtilidadesString.getMensajeIdioma(usr,"general.boton.abrirActa")%>' />
@@ -451,21 +458,55 @@
 					</td>
 				</tr>	
 				
-				<tr>
-					<td class="labelText" colspan="1">
-						<siga:Idioma key="gratuita.operarRatificacion.literal.observacionRatificacion"/>
-					</td>
-					<td colspan="3">	
-						<%if (accion.equalsIgnoreCase("ver")) {%>	
-							<textarea name="ratificacionDictamen" class="boxConsulta"
-							style="overflow-y:auto; overflow-x:hidden; width:750px; height:200px; resize:none;" 
-							readOnly><%=observaciones%></textarea>
-						<%} else {%>
-							<textarea name="ratificacionDictamen" class="box" 					
-							style="overflow-y:auto; overflow-x:hidden; width:730px; height:200px; resize:none;"><%=observaciones%></textarea>
-						<%}%>
-					</td>		
-				</tr>
+				
+				<%if(esComision){%>
+					<tr>
+						<td class="labelText" colspan="1">
+							<siga:Idioma key="gratuita.operarRatificacion.literal.observacionRatificacion"/>
+						</td>
+						<td colspan="3">	
+							<%if (accion.equalsIgnoreCase("ver")) {%>	
+								<textarea name="ratificacionDictamen" class="boxConsulta"
+								style="overflow-y:auto; overflow-x:hidden; width:750px; height:130px; resize:none;" 
+								readOnly><%=observaciones%></textarea>
+							<%} else {%>
+								<textarea name="ratificacionDictamen" class="box" 					
+								style="overflow-y:auto; overflow-x:hidden; width:730px; height:130px; resize:none;"><%=observaciones%></textarea>
+							<%}%>
+						</td>		
+					</tr>
+					<tr>
+						<td class="labelText" colspan="1">
+							Notas
+						</td>
+						<td colspan="3">	
+							<%if (accion.equalsIgnoreCase("ver")) {%>	
+								<html:textarea property="notasCAJG" styleId="notasCAJG" styleClass="boxConsulta" style="overflow-y:auto; overflow-x:hidden; width:750px; height:130px; resize:none;"  readonly="true"/>
+							<%} else {%>
+								<html:textarea property="notasCAJG" styleId="notasCAJG" styleClass="box" style="overflow-y:auto; overflow-x:hidden; width:730px; height:130px; resize:none;"/>
+							<%}%>
+						</td>		
+					</tr>
+				<%}else{ %>
+					<tr>
+						<td class="labelText" colspan="1">
+							<siga:Idioma key="gratuita.operarRatificacion.literal.observacionRatificacion"/>
+						</td>
+						<td colspan="3">	
+							<%if (accion.equalsIgnoreCase("ver")) {%>	
+								<textarea name="ratificacionDictamen" class="boxConsulta"
+								style="overflow-y:auto; overflow-x:hidden; width:750px; height:200px; resize:none;" 
+								readOnly><%=observaciones%></textarea>
+							<%} else {%>
+								<textarea name="ratificacionDictamen" class="box" 					
+								style="overflow-y:auto; overflow-x:hidden; width:730px; height:200px; resize:none;"><%=observaciones%></textarea>
+							<%}%>
+						</td>		
+					</tr>
+				
+				<%} %>
+				
+				
 			</html:form>
 		</table>	
 	</siga:ConjCampos>
@@ -532,6 +573,7 @@
 		{ 
 			sub();
 			error = "";
+			
 			if( !((document.forms[0].anioCAJG.value!="" && document.forms[0].numeroCAJG.value!="" && document.forms[0].idOrigenCAJG.value!="")
 			    || (document.forms[0].anioCAJG.value=="" && document.forms[0].numeroCAJG.value=="" && document.forms[0].idOrigenCAJG.value=="")) ){
 				error += '<siga:Idioma key="gratuita.operarEJG.message.anioNumeroOrigen.obligatorios"/>'+ '\n';
@@ -629,12 +671,14 @@
 					jQuery("#fechaResolucionCAJG").removeClass("box").removeClass("editable");
 					jQuery("#fechaResolucionCAJG").addClass("boxConsulta").addClass("noEditable");
 					jQuery("#fechaResolucionCAJG").removeAttr('readOnly');
+					//jQuery("#idActaComp").attr("disabled", "disabled");
 					jQuery("#fechaResolucionCAJG-datepicker-trigger").hide();
 				}else{
 					//jQuery("#fechaResolucionCAJG").val('');
 					jQuery("#fechaResolucionCAJG").removeClass("boxConsulta").removeClass("noEditable");
 					jQuery("#fechaResolucionCAJG").addClass("box").addClass("editable");
-					jQuery("#fechaResolucionCAJG").attr("readOnly", "readOnly");					
+					jQuery("#fechaResolucionCAJG").attr("readOnly", "readOnly");
+					//jQuery("#idActaComp").removeAttr('disabled');
 					jQuery("#fechaResolucionCAJG-datepicker-trigger").show();
 				}
 			}

@@ -1504,7 +1504,7 @@ public class InformesGenericosAction extends MasterAction {
 
 
 			ScsDocumentacionEJGAdm scsDocumentacionEJGAdm = new ScsDocumentacionEJGAdm(getUserBean(request));
-			RowsContainer rowscontainer = scsDocumentacionEJGAdm.getDocumentacionEJG(idInstitucion, idTipoEJG, anio, numero, idiomaInt,longitudNumEjg);
+			RowsContainer rowscontainer = scsDocumentacionEJGAdm.getDocumentacionEJG(idInstitucion, idTipoEJG, anio, numero, idiomaInt,longitudNumEjg,getUserBean(request).isComision());
 
 			if (rowscontainer == null || rowscontainer.size() == 0) {
 				throw new SIGAException("messages.informes.noDocumentos");
@@ -1947,7 +1947,7 @@ public class InformesGenericosAction extends MasterAction {
 					miForm.setIdInforme(idInformes);
 					return download(mapping, formulario, request, response);
 				}
-			}else if(idTipoInforme.equals("DEJG")){
+			}else if(idTipoInforme.equals("DEJG") || idTipoInforme.equals("DCAJG")){
 				if(informeBeans.size()==1&&miForm.getEnviar().equals(ClsConstants.DB_FALSE)){
 					AdmInformeBean informeBean = (AdmInformeBean)informeBeans.get(0);
 					String idInformes = informeBean.getIdPlantilla()+","+informeBean.getIdInstitucion()+"";
@@ -2458,7 +2458,7 @@ public class InformesGenericosAction extends MasterAction {
 					mapDestino = informeGenerico(mapping, miForm, request, response,EnvioInformesGenericos.comunicacionesOrdenDomicializacion);
 				}else if (idTipoInforme.equals("ASEPA")) {
 					mapDestino = informeGenerico(mapping, miForm, request, response,EnvioInformesGenericos.comunicacionesAnexoOrdenDomiciliacion);
-				} else if (idTipoInforme.equals("DEJG")) {
+				} else if (idTipoInforme.equals("DEJG") || idTipoInforme.equals("DCAJG") ) {
 					mapDestino = dejg(mapping, miForm, request, response);
 				} else if (idTipoInforme.equals("ACTAC")) {
 					mapDestino = informeGenerico(mapping, miForm, request, response,EnvioInformesGenericos.comunicacionesEjg);

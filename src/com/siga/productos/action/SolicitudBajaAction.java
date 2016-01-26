@@ -143,7 +143,7 @@ public class SolicitudBajaAction extends MasterAction{
 					idPersona=null;
 				}
 				
-				hash = getProductosServicios(this.getUserBean(request), idPersona, idInstitucion, false);
+				hash = getProductosServicios(this.getUserBean(request), idPersona, idInstitucion);
 				
 			}
 			UtilidadesHash.set(hash, "idPersona", idPersona);
@@ -250,7 +250,7 @@ public class SolicitudBajaAction extends MasterAction{
 			Long idPersona = form.getIdPersona();	
 					
 			Hashtable hash = new Hashtable();
-			hash = getProductosServicios(this.getUserBean(request), idPersona, idInstitucion, true);
+			hash = getProductosServicios(this.getUserBean(request), idPersona, idInstitucion);
 			
 			UtilidadesHash.set(hash, "idPersona", idPersona);
 			request.getSession().setAttribute("DATABACKUP", hash);	
@@ -268,14 +268,15 @@ public class SolicitudBajaAction extends MasterAction{
 	 }
 	
 	/**
-	 * Obtiene los productos y servicios que tiene solicitados el usuario cuyo idPersona se corresponda con el parámetro.	 
+	 * Obtiene los productos y servicios que tiene solicitados el usuario cuyo idPersona se corresponda con el parámetro.
+	 * @param usuario - identificador del usuario que realiza la peticion
+	 * @param idPersona - identificador de la persona para la que se realiza la peticion	 
 	 * @param idInstitucion - identificador de la institución
-	 * @param idPersona - identificador de la persona para la que se realiza la peticion 
-	 * @param usuario - identificador del usuario que realiza la peticion  
+	 *   
 	 * @return  Hashtable contiene todos los productos y servicios solicitado
 	 * @exception  SIGAException  En cualquier caso de error
 	 */
-	protected Hashtable getProductosServicios(UsrBean usuario, Long idPersona, Integer idInstitucion, boolean peticionBaja)  throws SIGAException {
+	protected Hashtable getProductosServicios(UsrBean usuario, Long idPersona, Integer idInstitucion)  throws SIGAException {
 		Hashtable hash = new Hashtable();
 		try{			
 			PysProductosSolicitadosAdm productosAdm = new PysProductosSolicitadosAdm(usuario);
@@ -284,17 +285,17 @@ public class SolicitudBajaAction extends MasterAction{
 			String tipoPeticion = ClsConstants.TIPO_PETICION_COMPRA_ALTA;
 			Hashtable hDatos = new Hashtable();	
 			
-			UtilidadesHash.set(hDatos, PysProductosSolicitadosBean.C_IDPERSONA, idPersona); 
+			UtilidadesHash.set(hDatos, PysPeticionCompraSuscripcionBean.C_IDPERSONA, idPersona); 
 			UtilidadesHash.set(hDatos, PysPeticionCompraSuscripcionBean.C_TIPOPETICION, tipoPeticion);
 			UtilidadesHash.set(hDatos, "ES_SOLICITUD_BAJA", "true");
 			
 			
 			Vector vAux = null;
-			vAux = productosAdm.getProductosSolicitados(hDatos, idInstitucion, peticionBaja);
+			vAux = productosAdm.getProductosSolicitados(hDatos, idInstitucion);
 			if(vAux != null) {
 				hash.put("vProductos", vAux);
 			}
-			vAux = serviciosAdm.getServiciosSolicitados(hDatos, idInstitucion, peticionBaja);
+			vAux = serviciosAdm.getServiciosSolicitados(hDatos, idInstitucion);
 			if(vAux != null) {
 				hash.put("vServicios", vAux);
 	 		}

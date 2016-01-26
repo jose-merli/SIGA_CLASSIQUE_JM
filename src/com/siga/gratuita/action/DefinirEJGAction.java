@@ -74,6 +74,7 @@ import com.siga.beans.ScsEJGAdm;
 import com.siga.beans.ScsEJGBean;
 import com.siga.beans.ScsEJGDESIGNAAdm;
 import com.siga.beans.ScsEJGDESIGNABean;
+import com.siga.beans.ScsEstadoEJGAdm;
 import com.siga.beans.ScsGuardiasTurnoAdm;
 import com.siga.beans.ScsGuardiasTurnoBean;
 import com.siga.beans.ScsPersonaJGAdm;
@@ -529,9 +530,16 @@ public class DefinirEJGAction extends MasterAction
 			  pestanasOcultas[0]=ClsConstants.IDPROCESO_REGTEL_EJG;
 			  request.setAttribute("pestanasOcultas",pestanasOcultas);
 	 		}
+	 		UsrBean usr = (UsrBean)request.getSession().getAttribute("USRBEAN");
+	 		
 	 		if(miForm.getOrigen()!=null &&miForm.getOrigen().equalsIgnoreCase("/JGR_ComunicacionEJG")){
-	 			
 	 			request.setAttribute("elementoActivo","9");
+	 		}else if(usr.isComision()){
+	 			//Miramos si existe algun estado de impugnacion no nulo, mostraremos la pestaña de impugnacion
+	 			ScsEstadoEJGAdm scsEstadoEJGAdm = new ScsEstadoEJGAdm(usr);
+	 			if(scsEstadoEJGAdm.isImpugnado(obj))
+	 				request.setAttribute("elementoActivo","7");
+	 			
 	 		}
 	 		
 	 		//Guardamos el modo de gestión del acta
@@ -617,24 +625,27 @@ public class DefinirEJGAction extends MasterAction
 			}
 			// CONCEPTO
 			miHash.put("conceptoE",PersonaJGAction.EJG);
-
 			
 			
-			if ((ocultos != null && visibles != null) || ((ocultos != null && miForm.getDesdeDesigna() != null) && (miForm.getDesdeDesigna().equalsIgnoreCase("si")))) {			
-				miHash.put("idInstitucionJG",ocultos.get(1));
+			
+			if ((ocultos != null && visibles != null) || ((ocultos != null && miForm.getDesdeDesigna() != null) && (miForm.getDesdeDesigna().equalsIgnoreCase("si")))) {
+				
+				miHash.put("idInstitucionJG",idInstitucion);
 				// clave EJG
 				miHash.put("idTipoEJG",ocultos.get(0));
 				miHash.put("idInstitucionEJG",ocultos.get(1));
 				miHash.put("anioEJG",ocultos.get(2));
 				miHash.put("numeroEJG",ocultos.get(3));
 			} else  {
-				miHash.put("idInstitucionJG",miForm.getIdInstitucion());
+				
+				miHash.put("idInstitucionJG",idInstitucion);
 				// clave EJG
 				miHash.put("idTipoEJG",miForm.getIdTipoEJG());
 				miHash.put("idInstitucionEJG",miForm.getIdInstitucion());
 				miHash.put("anioEJG",miForm.getAnio());
 				miHash.put("numeroEJG",miForm.getNumero());
 			}
+			
 
 			
 			
@@ -648,7 +659,7 @@ public class DefinirEJGAction extends MasterAction
 			
 			
 			GenParametrosAdm parametrosAdm = new GenParametrosAdm(this.getUserBean(request));
-	 		String valor = parametrosAdm.getValor(miForm.getIdInstitucion(), ClsConstants.MODULO_GENERAL, "REGTEL", "0");
+	 		String valor = parametrosAdm.getValor(idInstitucion, ClsConstants.MODULO_GENERAL, "REGTEL", "0");
 	 		if (valor!=null && valor.equals(ClsConstants.DB_FALSE)){
 			  String[] pestanasOcultas=new String [1];
 			  pestanasOcultas[0]=ClsConstants.IDPROCESO_REGTEL_EJG;
@@ -660,8 +671,32 @@ public class DefinirEJGAction extends MasterAction
 	 		}
 			
 	 		//Guardamos el modo de gestión del acta
-	 		if(miForm.getModoActa() != null)
-	 			miHash.put("modoActa", miForm.getModoActa());	 
+	 		if(miForm.getModoActa() != null){
+	 			miHash.put("idInstitucionJG",idInstitucion);
+				// clave EJG
+				Short idTipoEjg = Short.parseShort((String)miHash.get("idTipoEJG"));
+				Short anioEJG = Short.parseShort((String)miHash.get("anioEJG"));
+				Integer numeroEJG = Integer.parseInt((String)miHash.get("numeroEJG"));
+				try {
+					Short idInstitucionActa = Short.parseShort((String)ocultos.get(4));
+					Integer idActa = Integer.parseInt((String)ocultos.get(5));
+					Short anioActa = Short.parseShort((String)ocultos.get(6));
+					
+
+					
+		 			Hashtable hashtable = admi.getHistoricoActaEjg(Short.parseShort(idInstitucion), idTipoEjg, anioEJG, numeroEJG, idInstitucionActa, anioActa, idActa);
+		 			if(hashtable!=null){
+		 				miHash.putAll(hashtable);
+		 			}
+		 			
+				} catch (Exception e) {
+					// TODO: handle exception
+				}
+				
+	 			miHash.put("modoActa", miForm.getModoActa());
+	 			
+	 			
+	 		}
 			
 			// En EJG pasamos la clave principal a todas las pestanhas que constituyen el mantenimiento de un EJG
 			request.setAttribute("EJG",miHash);

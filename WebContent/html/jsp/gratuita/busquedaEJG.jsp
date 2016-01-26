@@ -507,7 +507,7 @@ if(usr.isComision()){
 							<td style="vertical-align:middle">
 								<html:text name="<%=formulario%>" styleId="anio" styleClass="box" property="anio"  value="<%=anio%>" style="width:40px" maxlength="4"></html:text>
 								&nbsp;/&nbsp;
-								<html:text name="<%=formulario%>" styleClass="box" property="numEJG" value="<%=numEJG%>" size="8" maxlength="10"> </html:text>
+								<html:text name="<%=formulario%>" styleClass="box" property="numEJG" value="<%=numEJG%>" style="width:90px" maxlength="13"> </html:text>
 							</td>
 						
 							<td class="labelText" style="vertical-align:middle">
@@ -688,7 +688,7 @@ if(usr.isComision()){
 				</td>
 
 				<td style="vertical-align:middle">
-					<siga:ComboBD nombre="idPonente"  ancho="375" tipo="tipoPonente" clase="boxCombo"  	  filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=datoPonente%>" elementoSel="<%=vPonente%>"  />
+					<siga:ComboBD nombre="idPonente"  ancho="375" tipo="tipoPonenteAll" clase="boxCombo"  	  filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=datoPonente%>" elementoSel="<%=vPonente%>"  />
 				</td>
 				
 				<td class="labelText" style="vertical-align:middle" width="160px">
@@ -966,6 +966,7 @@ if(usr.isComision()){
 			<%if (!esComision){%>
 				document.forms[0].descripcionEstado.value = document.forms[0].estadoEJG[document.forms[0].estadoEJG.selectedIndex].text;
 			<% } %>
+
 			document.forms[0].guardiaTurnoIdTurno.value = document.forms[0].identificador.value;
 			if (isNaN(document.forms[0].anio.value)) {
 				alert('<siga:Idioma key="gratuita.busquedaEJG.literal.errorAnio"/>');
@@ -979,6 +980,31 @@ if(usr.isComision()){
 		}		
 		
 	function buscar(){ 
+		
+		var numeroEJG = document.forms[0].numEJG.value;
+		numEJGS = numeroEJG.split(',');
+		
+		if(numEJGS.length>1){
+			for ( var i = 0; i < numEJGS.length; i++) {
+				if(!isNumero(numEJGS[i])){
+					error = "<siga:Idioma key='errors.integer' arg0='gratuita.busquedaEJG.literal.codigo'/>";
+					alert(error);
+					return;
+				}
+			}
+		}else{
+		
+			numEJGS = numeroEJG.split('-');
+			if(numEJGS.length>1){
+				for ( var i = 0; i < numEJGS.length; i++) {
+					if(!isNumero(numEJGS[i])){
+						error = "<siga:Idioma key='errors.integer' arg0='gratuita.busquedaEJG.literal.codigo'/>";
+						alert(error);
+						return;
+					}
+				}
+			}
+		}
 		
 		if (document.getElementById('chkBusquedaExactaSolicitante').checked){
 	    	document.forms[0].valorBusquedaExactaSolicitante.value="1";
@@ -1042,7 +1068,7 @@ if(usr.isComision()){
 			<%if (!esComision){%>
 					document.forms[0].descripcionEstado.value = document.forms[0].estadoEJG[document.forms[0].estadoEJG.selectedIndex].text;
 			<%}%>
-			
+
 			document.forms[0].guardiaTurnoIdTurno.value = document.forms[0].identificador.value;
 			if (isNaN(document.forms[0].anio.value)) {
 				fin();

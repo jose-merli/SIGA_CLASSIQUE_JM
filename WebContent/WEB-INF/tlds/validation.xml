@@ -1419,7 +1419,7 @@
         <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
         <var>
             <var-name>maxlength</var-name>
-            <var-value>100</var-value>
+            <var-value>1000</var-value>
         </var>
     </field>
 
@@ -2930,7 +2930,7 @@
 
                 <var-name>maxlength</var-name>
 
-                <var-value>80</var-value>
+                <var-value>1000</var-value>
 
             </var> 
 
@@ -3564,7 +3564,7 @@
 			<arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
 			<var>
 				<var-name>maxlength</var-name>
-				<var-value>100</var-value>
+				<var-value>1000</var-value>
 			</var>
 		</field>
 	 
@@ -4042,11 +4042,12 @@
 							<var-value>20</var-value>
 						</var>
 				</field>
+				-->
 				<field 	property = "tipoIdentificacion" 		
 						depends = "required"> 			
 						<arg0 key="censo.consultaDatosGenerales.literal.tipoIdentificacion"/>	
 				</field>
-				-->
+				
 				<field 	property = "lugarNacimiento" 			
 						depends = "maxlength"> 			
 						<arg0 key="censo.consultaDatosGenerales.literal.nacido"/>							

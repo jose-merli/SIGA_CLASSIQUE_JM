@@ -29,6 +29,10 @@
 <%@ page import="java.util.ArrayList"%>
 <%@ page import="com.siga.Utilidades.*"%>
 <%@ page import="java.util.Properties"%>
+<%@ page import="java.util.Date"%>
+<%@ page import="java.text.ParseException"%>
+<%@ page import="java.text.SimpleDateFormat"%>
+
 <!-- JSP -->
 <%  
 	String app=request.getContextPath();
@@ -38,6 +42,10 @@
 	String idInstitucion[] = {user.getLocation()};	
 
 	String fecha = UtilidadesString.getMensajeIdioma(user,"envios.definir.literal.fechaprogramada");
+	
+    SimpleDateFormat sdfDestination = new SimpleDateFormat("dd/MM/yyyy");
+    String fechaInicial =  sdfDestination.format(new Date());
+	
 	String obligatorio = UtilidadesString.getMensajeIdioma(user,"messages.campoObligatorio.error");
 	
 	String envioSms = (String)request.getAttribute("smsHabilitado");
@@ -69,7 +77,6 @@
 </head>
 
 <body>
-
 <!-- INICIO ******* CAPA DE PRESENTACION ****** -->
 <!-- dentro de esta capa se tienen que situar los diferentes componentes 
 	 que se van a mostrar, para que quepen dentro de la ventana.
@@ -87,12 +94,12 @@
 			</tr>
 		</table>
 
-<div id="camposRegistro" class="posicionModalPeque" align="center">
+<div id="camposRegistro" class="posicionModalMedia" align="center">
 
 	<!-- INICIO: CAMPOS -->
 	<!-- Zona de campos de busqueda o filtro -->
 
-		<table class="tablaCentralCamposPeque" align="center">
+		<table class="posicionModalMedia" align="center">
 
 			<html:form action="/ENV_DefinirEnvios.do" method="POST"
 				target="submitArea">
@@ -107,6 +114,8 @@
 				<html:hidden property="idEnvioBuscar" value="" />
 				<html:hidden property="idsParaEnviar" />
 				<html:hidden property="acuseRecibo" value="0" />
+				<html:hidden property="checkCertificados" value="1" />
+				<html:hidden property="checkFacturas" value="1" />
 				<html:hidden property="colegio" value="o" />
 
 				<tr>
@@ -122,8 +131,28 @@
 								
 										
 							</tr>	
+								<tr><td class="labelText"><siga:Idioma key="certificados.tipocertificado.literal.comunicacion" />&nbsp;(*)</td>
+									<td colspan="3"> <html:text name="DefinirEnviosForm" property="comunicacionAsunto" size="20" maxlength="100" styleClass="box" style='width:190px;' value="Certificados"  ></html:text></td>
+								</tr>
 								<tr>
 									<td class="labelText"><siga:Idioma
+											key="envios.definir.literal.fechaprogramada" /></td>
+									<td colspan="3">										
+										<siga:Fecha nombreCampo="fechaProgramada" valorInicial="<%=fechaInicial%>"></siga:Fecha>
+									</td>
+								</tr>
+								<tr><td class="labelText"><siga:Idioma key="envios.certificados.literal.destinatario" /></td>
+									<td >
+										<input type="radio" id ="radioDestinatario" name='radioDestinatario' value="0" onclick="" />
+										<siga:Idioma key="certificados.envios.colegioPresentador"/>
+									</td>
+									<td >
+										<input type="radio" id ="radioDestinatario" name='radioDestinatario' value="1" onclick="" checked="checked"/>
+										<siga:Idioma key="certificados.envios.solicitantes"/>
+									</td>
+								
+								</tr>							
+								<tr><td class="labelText"><siga:Idioma
 											key="envios.definir.literal.tipoenvio" />&nbsp;(*)</td>
 									<td colspan="3"><siga:ComboBD nombre="comboTipoEnvio"
 											tipo="<%=consultaPlantillas%>" clase="boxCombo"
@@ -156,15 +185,35 @@
 
 								</tr>
 
-								<tr>
-									<td class="labelText"><siga:Idioma
-											key="envios.definir.literal.fechaprogramada" /></td>
-									<td colspan="3">										
-										<siga:Fecha nombreCampo="fechaProgramada"></siga:Fecha>
-									</td>
-								</tr>
+								
 							</table>
 						</siga:ConjCampos></td>
+				</tr>
+				<tr>
+					<td>
+						<siga:ConjCampos leyenda="certificados.envios.documentos">
+						
+								<table class="tablaCampos" align="center" border="0">
+									<tr>	
+										<td width="25%"></td>
+										<td width="40%"></td>
+										<td width="30%"></td>
+										<td width="10%"></td>
+										
+												
+									</tr>	
+										<tr>
+											<td><input type="checkbox" id="idCheckCertificados" name="idCheckCertificados" onclick="" checked="checked"/>	
+											<siga:Idioma key="certificados.envios.documentos.certificados" /></td>
+										</tr>
+										<tr>
+											<td><input type="checkbox" id="idCheckFacturas" name ="idCheckCertificados" onclick="" checked="checked"/>	
+											<siga:Idioma key="certificados.envios.documentos.facturas" /></td>
+										</tr>
+										
+								</table>
+						</siga:ConjCampos>
+					</td>
 				</tr>
 
 			</html:form>
@@ -184,7 +233,7 @@
 		 La propiedad modal dice el tamanho de la ventana (M,P,G)
 	-->
 
-		<siga:ConjBotonesAccion botones="D,Y,C" modal="P" />
+		<siga:ConjBotonesAccion botones="D,EYC,C" modal="P" />
 
 
 	<!-- INICIO: SCRIPTS BOTONES -->
@@ -196,10 +245,28 @@
 		function accionGuardarCerrar() 
 		{	
 			sub();
-			document.DefinirEnviosForm.modo.value = 'insertarEnvioModalCertificado';
+			
+			document.DefinirEnviosForm.modo.value = 'envioModalMasivoCertificado';
+			var mensaje;
+			if (document.DefinirEnviosForm.comunicacionAsunto.value.length<=0){
+				   mensaje='<siga:Idioma key="messages.enviosCertificados.comunicacion"/>';
+	  			   alert(mensaje);
+	  			   fin();
+	  			   return false;
+			}
 			if (validateDefinirEnviosForm(document.DefinirEnviosForm)){
 				var insTipoEnvio = document.forms[0].comboTipoEnvio.value;
 				var opcion_array=insTipoEnvio.split(",");
+				if(document.getElementById("idCheckCertificados").checked)
+					document.DefinirEnviosForm.checkCertificados.value = "1";
+				else
+					document.DefinirEnviosForm.checkCertificados.value = "0";
+				
+				if(document.getElementById("idCheckFacturas").checked)
+					document.DefinirEnviosForm.checkFacturas.value = "1";
+				else
+					document.DefinirEnviosForm.checkFacturas.value = "0";
+				
 				if(document.getElementById("idCheckAcuseRecibo").checked)
 					document.DefinirEnviosForm.acuseRecibo.value = "1";
 				else
@@ -254,7 +321,17 @@
 		function accionDownload() 
 		{
 			sub();	
-			document.DefinirEnviosForm.modo.value = 'download';
+			if(document.getElementById("idCheckCertificados").checked)
+				document.DefinirEnviosForm.checkCertificados.value = "1";
+			else
+				document.DefinirEnviosForm.checkCertificados.value = "0";
+			
+			if(document.getElementById("idCheckFacturas").checked)
+				document.DefinirEnviosForm.checkFacturas.value = "1";
+			else
+				document.DefinirEnviosForm.checkFacturas.value = "0";
+			
+			document.DefinirEnviosForm.modo.value = 'descargarCertificadosYFacturas';
 			document.DefinirEnviosForm.submit();
 		}
 	

@@ -39,6 +39,8 @@
 	String nombreColegiado =  request.getAttribute("nombreColegiado")==null?"":(String)request.getAttribute("nombreColegiado");
 
 	String[] dato = {usr.getLocation()};
+	String[] datoGuardia = new String[2];
+	datoGuardia[0] = usr.getLocation();
 	// Comprobamos si existe busqueda anterior
 	Hashtable busqueda = (Hashtable) ses.getAttribute("DATOSFORMULARIO");
 	//ses.removeAttribute("DATOSFORMULARIO");
@@ -59,12 +61,13 @@
 	String actuacionValidada =        "";	
 	String asunto	=		  "";
 	String procedimiento =	  "";
-	String nig	=		  	"";
+	String nig2	=		  	"";
 	String juzgado=			  "";
 	String comisariaAsi="";
 	String tipoActuacion =	  "";
 	String comisariaInstitucionAsi="";
 	String numeroColegiado = "";
+	String origen ="";
 	ArrayList tipoActuacionSel   = new ArrayList();
 	ArrayList juzgadoActu   = new ArrayList();
 	ArrayList acreditacion   = new ArrayList();	
@@ -101,7 +104,10 @@
 		fechaDesde =       (String) datosBusqueda.get("fechaDesde");        
 		fechaHasta =       (String) datosBusqueda.get("fechaHasta");        
 		idTurno =          (String) datosBusqueda.get("idTurno");           
-		idGuardia =        (String) datosBusqueda.get("idGuardia");         
+		idGuardia =        (String) datosBusqueda.get("idGuardia");  
+		if(!idTurno.equals("")){
+			datoGuardia[1] = idTurno;
+		}
 		nColegiado =       (String) datosBusqueda.get("nColegiado");    
 		tAsistencia =      (String) datosBusqueda.get("tAsistencia");       
 		tAsistenciaColegio = (String) datosBusqueda.get("tAsistenciaColegio");
@@ -113,12 +119,13 @@
 		actuacionesPendientes = (String) datosBusqueda.get("actuacionesPendientes");   
 		asunto=				(String) datosBusqueda.get("asunto");
 		procedimiento=		(String) datosBusqueda.get("procedimiento");
-		nig=				(String) datosBusqueda.get("nig");
+		nig2=				(String) datosBusqueda.get("nig2");
 		juzgado=			(String) datosBusqueda.get("JUZGADO");
 		comisariaAsi=		(String) datosBusqueda.get(ScsAsistenciasBean.C_COMISARIA);
 		comisariaInstitucionAsi=		(String) datosBusqueda.get(ScsAsistenciasBean.C_COMISARIA_IDINSTITUCION);
 		tipoActuacion= 		(String) datosBusqueda.get("tipoActuacion");
 		numeroColegiado = (String)datosBusqueda.get("numeroColegiado");
+		origen =  (String)datosBusqueda.get("origen");
 		// Preparamos la seleccion de los combos
 		tAsistenciaA.add(tAsistencia);
 		tAsistenciaColegioA.add(tAsistenciaColegio);
@@ -307,7 +314,7 @@
 				<siga:Idioma key="gratuita.busquedaAsistencias.literal.y"/>
 			</td>
 			<td>	
-				<siga:Fecha nombreCampo="fechaHasta" valorInicial="<%=fechaHasta%>" campoCargarFechaDesde="fechaDesde"/>
+				<siga:Fecha nombreCampo="fechaHasta" valorInicial="<%=fechaHasta%>" />
 			</td>
 		</tr>
 		<tr>
@@ -317,11 +324,12 @@
 			<td colspan="3">
 				<siga:ComboBD nombre ="turnos" tipo ="turnosDesignacion" clase="boxCombo" ancho="300" obligatorio="false" accion="Hijo:scsinscripcionguardia" parametro="<%=dato%>" elementoSel="<%=turnosA%>" />
 			</td>	
+			
 			<td class="labelText">
 				<siga:Idioma key="gratuita.busquedaAsistencias.literal.guardia"/>
 			</td>
 			<td colspan="3">
-				<siga:ComboBD nombre = "scsinscripcionguardia" tipo="guardias" clase="boxCombo" hijo="t" parametro="<%=dato%>"  elementoSel="<%=guardiasA%>" ancho="200"/>
+				<siga:ComboBD nombre = "scsinscripcionguardia" tipo="guardias" clase="boxCombo" hijo="t" parametro="<%=datoGuardia%>"  elementoSel="<%=guardiasA%>" ancho="200"/>
 			</td>	
 		</tr>
 		
@@ -330,7 +338,7 @@
 				<siga:Idioma key="gratuita.busquedaAsistencias.literal.origen"/>			
 			</td>
 			<td >	
-				<Select name="origen" class="boxCombo">
+				<Select name="origen" id="origen" class="boxCombo" >
 					<option value='' ></option>
 					<option value='10' ><siga:Idioma key="gratuita.busquedaAsistencias.origen.colegioSIGA"/></option>
 					<option value='30' ><siga:Idioma key="gratuita.busquedaAsistencias.origen.colegiadoVolanteExpresMovil"/></option>
@@ -465,7 +473,7 @@
 					</td>	
 					
 					 <td>
-						<html:text name="AsistenciasForm" property="nig2" styleId="nig2"  styleClass="box" style="size:19;width:200px"/>
+						<html:text name="AsistenciasForm" property="nig2" styleId="nig2" value="<%=nig2%>" styleClass="box" style="size:19;width:200px"/>
 					
 					</td>			
 					
@@ -565,19 +573,14 @@
 					return false;
 				}			
 			<% } %>
-
+			
 			if((validarFecha(document.forms[0].fechaDesde.value))&&
 				(validarFecha(document.forms[0].fechaHasta.value))){
 				sub();
-				if (!errorValidacion()) {
+				if (!errorValidacion()) {					
 					// obtenemos el idturno y el idguardia
-					<% if((esVolver!=null && esVolver.equals("1"))&&(busqueda!=null)){ %>
-						document.forms[0].idTurno.value		= <%= idTurno%>;
-						document.forms[0].idGuardia.value 	= <%= idGuardia%>;
-					<% } else { %>
-						document.forms[0].idTurno.value		= document.forms[0].turnos.value.substr(document.forms[0].turnos.value.indexOf(",")+1);
-						document.forms[0].idGuardia.value 	= document.forms[0].scsinscripcionguardia.value;
-					<% } %>
+					document.forms[0].idGuardia.value 	= document.forms[0].scsinscripcionguardia.value;
+					document.forms[0].idTurno.value		= document.forms[0].turnos.value.substr(document.forms[0].turnos.value.indexOf(",")+1);
 					document.forms[0].target			= "resultado";
 					document.forms[0].modo.value 		= "buscarInit";
 					document.forms[0].submit();
@@ -628,10 +631,16 @@
 	   		var resultado = ventaModalGeneral(document.ValidarVolantesGuardiasForm.name,"G");
 		}
 		
+		jQuery('#origen option[value=<%=origen%>]').attr('selected','selected');
+		jQuery('#actuacionesPendientes option[value=<%=actuacionesPendientes%>]').attr('selected','selected');
+		document.forms[0].colegiado.value = '<%=nColegiado%>';
+		document.forms[0].nig2.value = '<%=nig2%>';
 	</script>
-	<%
-		// para el boton volver
-		if(buscar) %><script>buscar();</script>
+	
+	
+	<% if(buscar && (esVolver==null || esVolver.equals("0"))){%>
+		<script>buscar();</script>
+	<% } %>
 	
 	<!-- INICIO: BOTONES BUSQUEDA -->	
 	<!-- FIN: BOTONES BUSQUEDA -->

@@ -24,6 +24,8 @@
 	String  idInstitucionLocation = (String)usr.getLocation(); 
 	String 	datoComision[] = {idInstitucionLocation,idInstitucionLocation,idInstitucionLocation,idInstitucionLocation};
 	String dato[] = {idInstitucionLocation};
+	String datoActas[] = {idInstitucionComision.toString(),idInstitucionComision.toString(),"0","0"};
+	String datoPonente[] = {idInstitucionComision.toString(),"-1"};
 	String seleccionados = (String)request.getParameter("seleccionados");
 	boolean esComisionMultiple = usr.getInstitucionesComision()!=null &&usr.getInstitucionesComision().length>1;
 	
@@ -61,7 +63,7 @@
 						</label>
 					</td>
 					<td style="vertical-align:middle" width="90px">
-						<siga:ComboBD nombre="idActaComp"  tipo="cmbActaComision" clase="boxCombo" ancho="160" filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=dato%>" />
+						<siga:ComboBD nombre="idActaComp"  tipo="cmbActaComisionAbiertos" clase="boxCombo" ancho="160" filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=datoActas%>" />
 					</td>
 				</tr>
 				
@@ -75,7 +77,7 @@
 						</label>
 					</td>
 					<td style="vertical-align:middle" width="90px">
-						<siga:ComboBD nombre="idPonente"  tipo="tipoPonente" clase="boxCombo" ancho="500" filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=dato%>" />
+						<siga:ComboBD nombre="idPonente"  tipo="tipoPonente" clase="boxCombo" ancho="500" filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=datoPonente%>" />
 					</td>
 				</tr>
 				<tr>

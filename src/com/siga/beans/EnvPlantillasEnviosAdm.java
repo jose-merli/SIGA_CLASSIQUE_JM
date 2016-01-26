@@ -96,7 +96,7 @@ public class EnvPlantillasEnviosAdm extends MasterBeanAdministrador
 
     protected String[] getOrdenCampos()
     {
-        return null;
+        return new String[]{EnvPlantillasEnviosBean.C_NOMBRE};
     }
 
     public Vector buscarPlantillas(String idInstitucion, String idTipoEnvios, String nombre, boolean conPlantillasBaja) {

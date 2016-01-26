@@ -340,19 +340,23 @@ public class MasterWords {
 		return archivo;
 	}
 
-	public Document nuevoDocumento() throws ClsExceptions {
+	public Document nuevoDocumento() throws ClsExceptions, SIGAException {
 		Document doc;
 		try {
-			doc = new Document(pathPlantilla);
+			if(new File(pathPlantilla).exists())
+				doc = new Document(pathPlantilla);
+			else
+				throw new SIGAException("messages.informes.generico.noPlantilla");
+		} catch (SIGAException e) {
+			throw e;
+		
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new ClsExceptions(e, "Error al generar informe");
 		}
 		return doc;
 	}
-	
-	
-	
+
 	public Document sustituyeDocumento(Document doc, Hashtable<String, Object> dato) throws ClsExceptions {
 
 		try {

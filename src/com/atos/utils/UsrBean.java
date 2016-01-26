@@ -99,6 +99,11 @@ public class UsrBean implements Serializable {
 		trans = ldapProperties.returnProperty("JNDI.TX");
 	}
 
+	public UsrBean(String _usuario, String _idInstitucion, String _lenguaje) {
+	    this(_usuario, _lenguaje);
+		location = _idInstitucion;
+		languageInstitucion = "1";
+	}
 	public UsrBean(String _usuario, String _lenguaje) {
 		try {
 		    ReadProperties ldapProperties= new ReadProperties(SIGAReferences.RESOURCE_FILES.JNDI);

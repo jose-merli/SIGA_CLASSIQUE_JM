@@ -1,9 +1,7 @@
 
 package com.siga.beans;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -25,7 +23,6 @@ import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesBDAdm;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;
-import com.siga.general.EjecucionPLs;
 import com.siga.general.SIGAException;
 import com.siga.gratuita.util.calendarioSJCS.CalendarioSJCS;
 import com.siga.gratuita.util.calendarioSJCS.LetradoInscripcion;
@@ -259,7 +256,7 @@ public class ScsGuardiasColegiadoAdm extends MasterBeanAdministrador
 	 * @throws ClsExceptions
 	 */
 	public boolean deleteGuardiaCalendario(Hashtable hash) throws ClsExceptions {
-		String idinstitucion="", idturno="", idguardia="", fechaInicio="", fechaFin="", idPersona="";
+		String idinstitucion="", idturno="", idguardia="", fechaInicio="", idPersona="";
 		boolean salida = false;
 		StringBuffer sql = new StringBuffer();
 		
@@ -268,9 +265,7 @@ public class ScsGuardiasColegiadoAdm extends MasterBeanAdministrador
 			idturno = (String)hash.get(ScsCalendarioGuardiasBean.C_IDTURNO);
 			idguardia = (String)hash.get(ScsCalendarioGuardiasBean.C_IDGUARDIA);
 			idPersona = (String)hash.get("IDPERSONA");
-			//Fechas del periodo:
 			fechaInicio = (String)hash.get(ScsCalendarioGuardiasBean.C_FECHAINICIO);
-			fechaFin = (String)hash.get(ScsCalendarioGuardiasBean.C_FECHAFIN);
 
 			sql.append(" delete from "+ScsGuardiasColegiadoBean.T_NOMBRETABLA);
 			sql.append(" where "+ScsGuardiasColegiadoBean.C_IDINSTITUCION+"="+idinstitucion);
@@ -285,42 +280,6 @@ public class ScsGuardiasColegiadoAdm extends MasterBeanAdministrador
 			salida = false;
 		}
 		return salida;
-	}	
-
-	
-	/** 
-	 * Validacion: Devuelve el numero de letrados para una guardia de un turno y un dia concreto.
-	 * 
-	 * @param Hashtable miHash: identificadores de busqueda de la tabla SCS_GUARDIASCOLEGIADO
-	 * @return String con la consulta SQL.
-	 * @throws ClsExceptions
-	 */	
-	public String numeroLetrados(Hashtable miHash) throws ClsExceptions{
-		String consulta = "";
-		String idinstitucion="", idguardia="", idturno="", fechaInicio="", fechaFin="";
-		
-		try {
-			idinstitucion = (String)miHash.get("IDINSTITUCION");
-			idguardia = (String)miHash.get("IDGUARDIA");
-			idturno = (String)miHash.get("IDTURNO");
-			fechaInicio = (String)miHash.get("FECHAINICIO");
-			fechaFin = (String)miHash.get("FECHAFIN");
-				
-			consulta = "SELECT COUNT(distinct guard."+ScsGuardiasColegiadoBean.C_IDPERSONA+") AS TOTAL";
-			consulta += " FROM "+ScsGuardiasColegiadoBean.T_NOMBRETABLA+" guard";
-			consulta += " WHERE ";
-			consulta += " guard."+ScsGuardiasColegiadoBean.C_IDINSTITUCION+"="+idinstitucion;
-			consulta += " AND guard."+ScsGuardiasColegiadoBean.C_IDTURNO+"="+idturno;
-			consulta += " AND guard."+ScsGuardiasColegiadoBean.C_IDGUARDIA+"="+idguardia;
-			consulta += " AND guard."+ScsGuardiasColegiadoBean.C_FECHAINICIO+"=TO_DATE('"+fechaInicio+"','DD/MM/YYYY')";
-			consulta += " AND guard."+ScsGuardiasColegiadoBean.C_FECHAFIN+">=TO_DATE('"+fechaInicio+"','DD/MM/YYYY')";
-			consulta += " AND guard."+ScsGuardiasColegiadoBean.C_FECHAFIN+"<=TO_DATE('"+fechaFin+"','DD/MM/YYYY')";
-		}
-		catch (Exception e){
-			throw new ClsExceptions(e,"Excepcion en ScsGuardiasColegiadoAdm.buscarColegiados(). Consulta SQL:"+consulta);
-		}
-		
-		return consulta;
 	}	
 
 	/** 
@@ -343,8 +302,8 @@ public class ScsGuardiasColegiadoAdm extends MasterBeanAdministrador
 	 */	
 	public String validacionSeparacionGuardias(Hashtable miHash) throws ClsExceptions{
 		String consulta = "";
-		String idinstitucion="", idguardia="", idturno="", idpersona="", idcalendario="";
-		String fechaPeriodoUltimoDia="", fechaPeriodoPrimerDia="", fechaPeriodoUltimoDiaOriginal="", fechaPeriodoPrimerDiaOriginal="";
+		String idinstitucion="", idguardia="", idturno="", idpersona="";
+		String fechaPeriodoUltimoDia="", fechaPeriodoPrimerDia="", fechaPeriodoPrimerDiaOriginal="";
 		StringBuffer sBuffer; 
 		Vector vResultados; 
 		String fechaMIN="", fechaMAX="";
@@ -357,7 +316,6 @@ public class ScsGuardiasColegiadoAdm extends MasterBeanAdministrador
 			fechaPeriodoPrimerDia = (String)miHash.get("FECHAINICIO"); //Fecha del periodo de la primera guardia
 			fechaPeriodoUltimoDia = (String)miHash.get("FECHAFIN"); //Fecha del periodo	de la ultima guardia
 			fechaPeriodoPrimerDiaOriginal = (String)miHash.get("FECHAINICIO_ORIGINAL"); //Fecha del periodo de la primera guardia
-			fechaPeriodoUltimoDiaOriginal = (String)miHash.get("FECHAFIN_ORIGINAL"); //Fecha del periodo	de la ultima guardia	
 			
 			//Si tenemos fechas originales (venimos de permutas) es true.
 			boolean esPermuta = miHash.containsKey("FECHAFIN_ORIGINAL") && miHash.containsKey("FECHAINICIO_ORIGINAL");
@@ -434,37 +392,6 @@ public class ScsGuardiasColegiadoAdm extends MasterBeanAdministrador
 		}
 		return consulta;
 	}	
-
-	
-	//
-	// VALIDACIONES (1-5) ANTES DE INSERTAR UN REGISTRO DE UN COLEGIADO EN EL CALENDARIO
-	//
-
-	/** 
-	 * Valida si fecha1 es posterior o igual que fecha2
-	 * 
-	 * @param String fecha1: fecha a validar
-	 * @param String fecha1: fecha fin
-	 * @return boolean: true si la fecha fin es correcta.
-	 */	
-	public boolean validarFechaFin(String fecha1, String fecha2) {
-		boolean salida = false;
-		//Recupero del String fechaInicial con formato dd/mm/yyyy la fecha como Date
-		String jsdf = "dd/MM/yyyy";//Java Short Date Format
-		SimpleDateFormat formateo = new SimpleDateFormat(jsdf);
-		Date date1 = new Date();
-		Date date2 = new Date();
-
-		try {
-			date1 = formateo.parse(fecha1);
-			date2 = formateo.parse(fecha2);
-			salida = date1.equals(date2) || date1.after(date2);
-		}
-		catch (Exception e) {
-		}
-		return salida;
-	}
-	
 
 	/**
 	 * Valida que la separacion de dias para una guardia de un calendario es correcta.
@@ -634,8 +561,6 @@ public class ScsGuardiasColegiadoAdm extends MasterBeanAdministrador
 	
 	public void sustitucionLetradoGuardiaPuntual(UsrBean usr,HttpServletRequest request,String idInstitucion, String idTurno,String idGuardia,String idCalendarioGuardias,String idPersonaSaliente,String fechaInicio,String fechaFin,String idPersonaEntrante,String salto,String compensacion,String sustituta, String comenSustitucion) throws ClsExceptions, SIGAException
 	{
-		String mensaje = "OK";
-				 
 		//Hashtables
 		Hashtable clavesPermuta = new Hashtable();
 		Hashtable clavesCabecera = new Hashtable();
@@ -668,9 +593,6 @@ public class ScsGuardiasColegiadoAdm extends MasterBeanAdministrador
 		//-----------------------------------------------------------------------------------------------------
 		//  Comprobamos si el letrado entrante cumple los criteriosde separación de guardias i de incompatibilidades
 		//------------------------------------------------------------------------------------------------------
-		
-		boolean poolRW = false;	
-		
 		
 		//-----------------------------------------------------------------------------------------------------
 		// Recuperamos todas las permutas en las que el saliente sea o confirmador o solicitante. Posteriormente
@@ -915,7 +837,7 @@ public class ScsGuardiasColegiadoAdm extends MasterBeanAdministrador
 							+ "   AND " + ScsAsistenciasBean.C_IDINSTITUCION + "=" + idInstitucion
 							+ "   AND TRUNC(" + ScsAsistenciasBean.C_FECHAHORA + ")= TRUNC(TO_DATE('" + fecha + "', 'DD/MM/YYYY'))";
 							
-					int a = ClsMngBBDD.executeUpdate(update);
+					ClsMngBBDD.executeUpdate(update);
 				}
 			}
 		} catch (Exception e) {
@@ -1000,53 +922,68 @@ public class ScsGuardiasColegiadoAdm extends MasterBeanAdministrador
 		return salida;
 	}	
 	
-	public Vector getColegiadosGuardiaDia(String idInstitucion, String idTurno, String idGuardia, String fecha) throws ClsExceptions {
-		Vector salida = new Vector();
+	/**
+	 * 
+	 * @param idInstitucion
+	 * @param idTurno
+	 * @param idGuardia
+	 * @param fecha
+	 * @return
+	 * @throws ClsExceptions
+	 */
+	public Vector<Hashtable<String,Object>> getColegiadosGuardiaDia(String idInstitucion, String idTurno, String idGuardia, String fecha) throws ClsExceptions {
+		Vector<Hashtable<String,Object>> salida = new Vector<Hashtable<String,Object>>();
 		Hashtable<Integer, Object> htCodigos = new Hashtable<Integer, Object>();
 		int contador = 0;	
 		StringBuffer sql = new StringBuffer();
-		sql.append(" ");
 		sql.append("SELECT P.IDPERSONA AS ID, ");
-		sql.append("P.NOMBRE || ' ' || P.APELLIDOS1 || ' ' ||NVL(P.APELLIDOS2,'') DESCRIPCION , ");
-
-		sql.append("DECODE(COL.COMUNITARIO,'1',COL.NCOMUNITARIO,COL.NCOLEGIADO) AS NCOLEGIADO ");
-		sql.append("FROM SCS_GUARDIASCOLEGIADO GC, SCS_CABECERAGUARDIAS CG,CEN_PERSONA P,CEN_COLEGIADO COL ");
-		sql.append("WHERE GC.IDINSTITUCION = CG.IDINSTITUCION ");
-		sql.append("AND GC.IDTURNO = CG.IDTURNO ");
-		sql.append("AND GC.IDGUARDIA = CG.IDGUARDIA ");
-		sql.append("AND GC.FECHAINICIO = CG.FECHAINICIO ");
-		sql.append("AND GC.IDPERSONA = CG.IDPERSONA ");
-		sql.append("AND GC.IDPERSONA = P.IDPERSONA ");
-		sql.append("AND P.IDPERSONA = COL.IDPERSONA "); 
-		sql.append("AND GC.IDINSTITUCION = COL.IDINSTITUCION "); 
-		sql.append("AND GC.IDINSTITUCION =:");
-		contador ++;
-		sql.append(contador);
-		htCodigos.put(new Integer(contador),idInstitucion);
-		sql.append("AND GC.IDTURNO =:");
-		contador ++;
-		sql.append(contador);
-		htCodigos.put(new Integer(contador),idTurno);
-		sql.append("AND GC.IDGUARDIA =:");
-		contador ++;
-		sql.append(contador);
-		htCodigos.put(new Integer(contador),idGuardia);
-		sql.append("AND TRUNC(GC.FECHAFIN) = :");
-		contador ++;
-		sql.append(contador);
-		htCodigos.put(new Integer(contador),fecha);
-		sql.append("ORDER BY CG.POSICION ");
-
+		sql.append(" P.NOMBRE || ' ' || P.APELLIDOS1 || ' ' || NVL(P.APELLIDOS2, '') AS DESCRIPCION, ");
+		sql.append(" DECODE(COL.COMUNITARIO, '1', COL.NCOMUNITARIO, COL.NCOLEGIADO) AS NCOLEGIADO ");
+		sql.append(" FROM SCS_GUARDIASCOLEGIADO GC, ");
+		sql.append(" SCS_CABECERAGUARDIAS CG, ");
+		sql.append(" CEN_PERSONA P, ");
+		sql.append(" CEN_COLEGIADO COL ");
+		sql.append(" WHERE GC.IDINSTITUCION = CG.IDINSTITUCION ");
+		sql.append(" AND GC.IDTURNO = CG.IDTURNO ");
+		sql.append(" AND GC.IDGUARDIA = CG.IDGUARDIA ");
+		sql.append(" AND GC.FECHAINICIO = CG.FECHAINICIO ");
+		sql.append(" AND GC.IDPERSONA = CG.IDPERSONA ");
+		sql.append(" AND GC.IDPERSONA = P.IDPERSONA ");
+		sql.append(" AND P.IDPERSONA = COL.IDPERSONA "); 
+		sql.append(" AND GC.IDINSTITUCION = COL.IDINSTITUCION ");
 		
+		sql.append(" AND GC.IDINSTITUCION = :");
+		contador++;
+		sql.append(contador);
+		htCodigos.put(new Integer(contador), idInstitucion);
 		
+		sql.append(" AND GC.IDTURNO = :");
+		contador ++;
+		sql.append(contador);
+		htCodigos.put(new Integer(contador), idTurno);
+		
+		sql.append(" AND GC.IDGUARDIA = :");
+		contador++;
+		sql.append(contador);
+		htCodigos.put(new Integer(contador), idGuardia);
+		
+		sql.append(" AND TRUNC(GC.FECHAFIN) = :");
+		contador++;
+		sql.append(contador);
+		htCodigos.put(new Integer(contador), fecha);
+		
+		sql.append(" ORDER BY CG.POSICION");
 		
 		try {
-			salida = this.selectGenericoBind(sql.toString(),htCodigos);
+			salida = this.selectGenericoBind(sql.toString(), htCodigos);
+			
 		} catch (Exception e) {
 			throw new ClsExceptions(e,"Error en consulta de getColegiadosGuardiaDia");
 		}
+		
 		return salida;
 	}
+	
 	public List<CenPersonaBean> getColegiadosGuardia(VolantesExpressVo volanteExpres,boolean withAsistencias)throws ClsExceptions{
 		Hashtable<Integer, Object> htCodigos = new Hashtable<Integer, Object>();
 		int contador = 0;
@@ -1186,8 +1123,6 @@ public class ScsGuardiasColegiadoAdm extends MasterBeanAdministrador
 	
 	static public String getNombreGuardia (String idinstitucion,String idTurno, String idGuardia)  throws ClsExceptions,SIGAException 
 	{
-		
-		Vector v;
 		Hashtable codigos = new Hashtable();
 		String consulta="";
 		try {

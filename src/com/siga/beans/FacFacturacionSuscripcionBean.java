@@ -29,7 +29,7 @@ public class FacFacturacionSuscripcionBean extends MasterBean {
 	static public final String C_IDFACTURACIONSUSCRIPCION 	= "IDFACTURACIONSUSCRIPCION";
 	static public final String C_FECHAINICIO 				= "FECHAINICIO";
 	static public final String C_FECHAFIN 					= "FECHAFIN";
-	static public final String C_DESCRIPCION 				= "C_DESCRIPCION";	
+	static public final String C_DESCRIPCION 				= "DESCRIPCION";	
 
 	// Metodos GET	
 	public String getDescripcion() 				{return descripcion;}	

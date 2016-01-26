@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<%@page import="com.atos.utils.UsrBean"%>
 <%@page import="java.util.ArrayList"%>
 <%@page import="com.siga.gratuita.vos.SIGADocumentacionEjgVo"%>
 <html>
@@ -26,6 +27,7 @@
 <% 
 	ArrayList obj = (ArrayList) request.getAttribute("resultado");
 	String accion = (String)request.getSession().getAttribute("accion");
+	UsrBean usr=(UsrBean)request.getSession().getAttribute("USRBEAN");
 	String botonesFila="";
 	String	botones="V,N,i";
 	if (accion.equalsIgnoreCase("ver")){
@@ -85,16 +87,20 @@
 		<siga:Table 		   
 		   name="listadoDocumentacion"
 		   border="1"
-		   columnNames="gratuita.operarEJG.literal.fechaLimitePresentacion,sjcs.ejg.documentacion.presentador,expedientes.auditoria.literal.documento,gratuita.documentacionEJG.regentrada,gratuita.documentacionEJG.regsalida,gratuita.operarEJG.literal.fechaPresentacion,"
-		   columnSizes="10,25,25,10,10,10"
-		   modal="G">
+		   columnNames="gratuita.operarEJG.literal.fechaLimitePresentacion,sjcs.ejg.documentacion.presentador,expedientes.auditoria.literal.documento,gratuita.documentacionEJG.regentrada,gratuita.documentacionEJG.regsalida,gratuita.operarEJG.literal.fechaPresentacion,Prop.,"
+		   columnSizes="10,25,25,8,8,6,8"
+		   modal="M">
 		   
   	<% if (obj.size()>0){
 	    	int recordNumber=1;
-	    	while (recordNumber-1 < obj.size())	{			
+	    	while (recordNumber-1 < obj.size())	{
+	    		
 	    		SIGADocumentacionEjgVo documentacionEjgVo = (SIGADocumentacionEjgVo)obj.get(recordNumber-1);
+	    		String botonFila = botonesFila;
+	    		if(!botonesFila.equals("C") &&( (documentacionEjgVo.getComisionAJG()!=null && documentacionEjgVo.getComisionAJG().toString().equals("1")&&!usr.isComision()) || (documentacionEjgVo.getComisionAJG()!=null && documentacionEjgVo.getComisionAJG().toString().equals("0")&&usr.isComision()) ))
+	    			botonFila = "C";
 			%>				
-					<siga:FilaConIconos fila='<%=String.valueOf(recordNumber)%>' botones="<%=botonesFila%>" clase="listaNonEdit" >
+					<siga:FilaConIconos fila='<%=String.valueOf(recordNumber)%>' botones="<%=botonFila%>" clase="listaNonEdit" >
 					
 					<td><input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_1" value="<%=documentacionEjgVo.getIdDocumentacion()%>">
 					<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_2" value="<%=documentacionEjgVo.getIdInstitucion()%>">
@@ -120,6 +126,10 @@
 					<%=documentacionEjgVo.getFechaEntrega()==null||documentacionEjgVo.getFechaEntrega().equals("")?"&nbsp;":documentacionEjgVo.getFechaEntrega()%>
 					
 					</td>
+					<td>
+					<%=documentacionEjgVo.getComisionAJG()==null||documentacionEjgVo.getComisionAJG()==0?"ICA":"CAJG"%>
+					
+					</td>
 				</siga:FilaConIconos>		
 		<% recordNumber++;		   
 		} %>
@@ -140,7 +150,7 @@
 
 <html:form action="/INF_InformesGenericos" method="post"	target="submitArea">
 	<html:hidden property="idInstitucion" value ="${DefinirDocumentacionEJGForm.idInstitucion}"/>
-	<html:hidden property="idTipoInforme" value="DEJG"/>
+	<html:hidden property="idTipoInforme" value='<%= usr.isComision() ?"DCAJG":"DEJG"%>'/>
 	<html:hidden property="enviar" value="0"/>
 	<html:hidden property="descargar" value="1"/>
 	<html:hidden property="datosInforme"/>
@@ -167,7 +177,7 @@
 		{
 			document.forms[0].modo.value = "nuevo";
 			document.forms[0].target = "mainPestanas";
-			var resultado=ventaModalGeneral(document.forms[0].name,"G");
+			var resultado=ventaModalGeneral(document.forms[0].name,"M");
 			if(resultado=='MODIFICADO') buscar();
 		}
 		function buscar()

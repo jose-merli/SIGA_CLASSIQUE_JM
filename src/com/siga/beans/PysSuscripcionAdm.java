@@ -37,7 +37,7 @@ public class PysSuscripcionAdm extends MasterBeanAdministrador {
 							PysSuscripcionBean.C_IDSERVICIOSINSTITUCION,PysSuscripcionBean.C_IDTIPOSERVICIOS,
 							PysSuscripcionBean.C_IDSUSCRIPCION, 		PysSuscripcionBean.C_IMPORTEUNITARIO,
 							PysSuscripcionBean.C_IMPORTEANTICIPADO,		PysSuscripcionBean.C_IDCUENTA,
-							PysSuscripcionBean.C_USUMODIFICACION};
+							PysSuscripcionBean.C_USUMODIFICACION,		PysSuscripcionBean.C_FECHABAJAFACTURACION};
 		return campos;
 	}
 
@@ -67,6 +67,7 @@ public class PysSuscripcionAdm extends MasterBeanAdministrador {
 			bean.setCantidad(UtilidadesHash.getInteger(hash,PysSuscripcionBean.C_CANTIDAD));
 			bean.setDescripcion(UtilidadesHash.getString(hash,PysSuscripcionBean.C_DESCRIPCION));
 			bean.setFechaBaja(UtilidadesHash.getString(hash,PysSuscripcionBean.C_FECHABAJA));
+			bean.setFechaBajaFacturacion(UtilidadesHash.getString(hash,PysSuscripcionBean.C_FECHABAJAFACTURACION));
 			bean.setFechaSuscripcion(UtilidadesHash.getString(hash,PysSuscripcionBean.C_FECHASUSCRIPCION));
 			bean.setFechaMod(UtilidadesHash.getString(hash,PysSuscripcionBean.C_FECHAMODIFICACION));
 			bean.setIdFormaPago(UtilidadesHash.getInteger(hash,PysSuscripcionBean.C_IDFORMAPAGO));
@@ -103,6 +104,7 @@ public class PysSuscripcionAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(hash, PysSuscripcionBean.C_DESCRIPCION, b.getDescripcion());
 			UtilidadesHash.set(hash, PysSuscripcionBean.C_FECHASUSCRIPCION, b.getFechaSuscripcion());
 			UtilidadesHash.set(hash, PysSuscripcionBean.C_FECHABAJA, b.getFechaBaja());
+			UtilidadesHash.set(hash, PysSuscripcionBean.C_FECHABAJAFACTURACION, b.getFechaBajaFacturacion());
 			UtilidadesHash.set(hash, PysSuscripcionBean.C_FECHAMODIFICACION, b.getFechaMod());
 			UtilidadesHash.set(hash, PysSuscripcionBean.C_IDFORMAPAGO, b.getIdFormaPago());
 			UtilidadesHash.set(hash, PysSuscripcionBean.C_IDINSTITUCION, b.getIdInstitucion());

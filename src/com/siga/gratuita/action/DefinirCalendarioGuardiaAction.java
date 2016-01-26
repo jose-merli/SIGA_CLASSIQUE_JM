@@ -925,7 +925,7 @@ public class DefinirCalendarioGuardiaAction extends MasterAction
 		try {
 			usr = (UsrBean) request.getSession().getAttribute("USRBEAN");			
 
-			//Datos necesarios para la consulta
+			// obteniendo datos del formulario
 			idinstitucion = miForm.getIdInstitucion();
 			idturno = miForm.getIdTurno();
 			idguardia = miForm.getIdGuardia();
@@ -936,365 +936,194 @@ public class DefinirCalendarioGuardiaAction extends MasterAction
 			diasacobrar = miForm.getDiasACobrar();
 			tipodias = miForm.getTipoDias();
 			modoOriginal = miForm.getModoOriginal();
+
+			// obteniendo parametros de busqueda
 			buscarFechaDesde=miForm.getBuscarFechaDesde();
 			buscarFechaHasta=miForm.getBuscarFechaHasta();
 			buscarNcolegiado=miForm.getBuscarColegiado();
+			if (buscarNcolegiado!=null && !buscarNcolegiado.trim().equals("")){
+				UtilidadesHash.set(miHash, "NUMCOLEGIADO", buscarNcolegiado);	
+			}
+			if (buscarFechaDesde!=null && !buscarFechaDesde.trim().equals("")){
+				UtilidadesHash.set(miHash, "FECHA_INICIO", buscarFechaDesde);
+			}
+			if (buscarFechaHasta!=null && !buscarFechaHasta.trim().equals("")){
+				UtilidadesHash.set(miHash, "FECHA_FIN", buscarFechaHasta);
+			}
+
+			// buscando las guardias con/sin parametros de busqueda
 			miHash.put("IDINSTITUCION",idinstitucion);
 			miHash.put("IDTURNO",idturno);
 			miHash.put("IDGUARDIA",idguardia);
 			miHash.put("IDCALENDARIOGUARDIAS",idcalendarioguardias);
+			RowsContainer rc = admGuardiaColegiado.findNLS(admCabeceraGuardia.buscarColegiados(miHash));
+			
+			for (int i = 0; i < rc.size(); i++)	{		
+				Row fila = (Row) rc.get(i);
+				Hashtable registro = (Hashtable)fila.getRow();
 
-			if ((buscarFechaDesde==null || buscarFechaDesde.trim().equals(""))&&(buscarFechaHasta==null || buscarFechaHasta.trim().equals(""))&& (buscarNcolegiado==null || buscarNcolegiado.trim().equals("")) ){
-				//Busqueda de colegiados. Obtengo el nombre, numero de colegiado, observaciones y las fechas de inicio y fin
-				RowsContainer rc = admGuardiaColegiado.findNLS(admCabeceraGuardia.buscarColegiados(miHash));
-
-				for (int i = 0; i < rc.size(); i++)	{		
-					Row fila = (Row) rc.get(i);
-					Hashtable registro = (Hashtable)fila.getRow();
-
-					String nombre = (String)registro.get(CenPersonaBean.C_NOMBRE);
-					String fechaInicioPK = (String)registro.get("FECHA_INICIO_PK");
-					String fechaFin = (String)registro.get(ScsCabeceraGuardiasBean.C_FECHA_FIN);
-					idturno = (String)registro.get(ScsCabeceraGuardiasBean.C_IDTURNO);
-					idguardia = (String)registro.get(ScsCabeceraGuardiasBean.C_IDGUARDIA);
-					idpersona = (String)registro.get(ScsCabeceraGuardiasBean.C_IDPERSONA);
-					String idCalendarioGuardias = (String)registro.get(ScsCabeceraGuardiasBean.C_IDCALENDARIOGUARDIAS);
-					orden = (String)registro.get(ScsCabeceraGuardiasBean.C_POSICION);
-					String fechaInicioPKBind = GstDate.getFormatedDateShort(usr.getLanguage(),fechaInicioPK);
-					
-					//Se añaden los campos de validacion
-					String validado = (String)registro.get(ScsCabeceraGuardiasBean.C_VALIDADO);
-
-					Hashtable htCodigo = new Hashtable();
-					htCodigo.put(new Integer(1), idinstitucion);
-					htCodigo.put(new Integer(2), idturno);
-					htCodigo.put(new Integer(3), idguardia);
-					htCodigo.put(new Integer(4), idCalendarioGuardias);
-					htCodigo.put(new Integer(5), idpersona);
-					htCodigo.put(new Integer(6), fechaInicioPKBind);
-
-					helperInformes.completarHashSalida(registro,helperInformes.ejecutaFuncionSalida(htCodigo, "F_SIGA_TIENE_ACTS_VALIDADAS", "ACT_VALIDADAS"));
-					helperInformes.completarHashSalida(registro,helperInformes.ejecutaFuncionSalida(htCodigo, "F_SIGA_ES_MODIFICABLE_GUARDIAS", "ESMODIFICABLE"));
-
-					htCodigo = new Hashtable();
-					htCodigo.put(new Integer(1), idinstitucion);
-					htCodigo.put(new Integer(2), idturno);
-					htCodigo.put(new Integer(3), idguardia);
-					htCodigo.put(new Integer(4), idpersona);
-					htCodigo.put(new Integer(5), fechaInicioPKBind);
-					htCodigo.put(new Integer(6), idCalendarioGuardias);
-
-					//FECHAINICIOPERMUTA
-					helperInformes.completarHashSalida(registro,helperInformes.ejecutaFuncionSalida(
-							htCodigo, "F_SIGA_FECHAINISOLICITANTE", "FECHAINICIOPERMUTA"));
-					String fInicioPermuta = (String)registro.get("FECHAINICIOPERMUTA");
-					//Si la fecha de inicio del solicitante es nula miramos  la fecha de inicio del confirmador
-					if(fInicioPermuta==null||fInicioPermuta.trim().equals("")){
-						helperInformes.completarHashSalida(registro,helperInformes.ejecutaFuncionSalida(
-								htCodigo, "F_SIGA_FECHAINICONFIRMADOR", "FECHAINICIOPERMUTA"));
-						fInicioPermuta = (String)registro.get("FECHAINICIOPERMUTA");
-						//Si la fecha de inicio del confirmador es nula ponemos como fecha de inicio de la permuta 
-						//la fecha de inicio real
-						if(fInicioPermuta==null||fInicioPermuta.trim().equals("")){
-							fInicioPermuta = fechaInicioPK;
-							registro.put("FECHAINICIOPERMUTA", fInicioPermuta);
-						}
-
-					}
-					//FECHAFINPERMUTA
-					helperInformes.completarHashSalida(registro,helperInformes.ejecutaFuncionSalida(
-							htCodigo, "F_SIGA_FECHAFINSOLICITANTE", "FECHAFINPERMUTA"));
-					String fFinPermuta = (String)registro.get("FECHAFINPERMUTA");
-					//Si la fecha de fin del solicitante es nula miramos  la fecha de fin del confirmador
-					if(fFinPermuta==null||fFinPermuta.trim().equals("")){
-						helperInformes.completarHashSalida(registro,helperInformes.ejecutaFuncionSalida(
-								htCodigo, "F_SIGA_FECHAFINCONFIRMADOR", "FECHAFINPERMUTA"));
-						fFinPermuta = (String)registro.get("FECHAFINPERMUTA");
-						//Si la fecha de fin del confirmador es nula ponemos como fecha de fin de la permuta 
-						//la fecha de fin real
-						if(fFinPermuta==null||fFinPermuta.trim().equals("")){
-							fFinPermuta = fechaFin;
-							registro.put("FECHAFINPERMUTA", fFinPermuta);
-						}
-
-					}
-
-					//FECHAINICIO
-					helperInformes.completarHashSalida(registro,helperInformes.ejecutaFuncionSalida(
-							htCodigo, "F_SIGA_FECHAORIGSOLICITANTE", "FECHAINICIO"));
-					String fInicio = (String)registro.get("FECHAINICIO");
-					//Si la fecha de origen del solicitante es nula miramos  la fecha de origen del confirmador
-					if(fInicio==null||fInicio.trim().equals("")){
-						helperInformes.completarHashSalida(registro,helperInformes.ejecutaFuncionSalida(
-								htCodigo, "F_SIGA_FECHAORIGCONFIRMADOR", "FECHAINICIO"));
-						fInicio = (String)registro.get("FECHAINICIO");
-						//Si la fecha de origen del confirmador es nula ponemos como fecha de origen de la permuta 
-						//la fecha de origen real
-						if(fInicio==null||fInicio.trim().equals("")){
-							fInicio = fechaInicioPK;
-							registro.put("FECHAINICIO", fInicio);
-						}
-
-					}
-					//NUMEROPERMUTA 
-					helperInformes.completarHashSalida(registro,helperInformes.ejecutaFuncionSalida(
-							htCodigo, "F_SIGA_NUMERO", "NUMEROPERMUTA"));
-
-
-
-					htCodigo = new Hashtable();
-					htCodigo.put(new Integer(1), idinstitucion);
-					htCodigo.put(new Integer(2), idpersona);
-
-					//F_SIGA_CALCULONCOLEGIADO(coleg.IDINSTITUCION, coleg.IDPERSONA) as NCOLEGIADO
-					//NCOLEGIADO
-					helperInformes.completarHashSalida(registro,helperInformes.ejecutaFuncionSalida(
-							htCodigo, "F_SIGA_CALCULONCOLEGIADO", "NCOLEGIADO"));
-
-					numeroColegiado = (String)registro.get(CenColegiadoBean.C_NCOLEGIADO);
-
-					String numeroPermuta = (String)registro.get("NUMEROPERMUTA");
-					if (numeroPermuta==null || numeroPermuta.equals("")){
-						numeroPermuta="NINGUNO";
-					}
-
-
-
-
-					//Chequeo si existe una permuta de esa persona como solicitante o como confirmador
-					//Consulta como solicitante
-
-					//Ejecuto el PL de Permutas que me dice el tipo de Permuta posible:				
-					pl = admPermutaguardias.ejecutarFuncionPermutas(idinstitucion,idturno,idguardia,idpersona,GstDate.getFormatedDateShort(usr.getLanguage(),fInicio));
-					if (pl.equals("5")){//si buscando por la fecha de inicio (para el caso en el que todavia no se haya confirmado la solicitud de la permuta) devuelve el valor "5" (pendiente de permutar) volvemos a ejecutar
-						// el procedimiento pasando la fecha de inicio de permuta (para el caso en el que ya se haya 
-						// confirmado la permuta) por si sigue devolviendo "5" o devuelve otro
-						// valor como "3" (guardia permutada), como "2" (Permuta solicitada) o "4" (Pendiente de confirmar).
-
-						pl = admPermutaguardias.ejecutarFuncionPermutas(idinstitucion,idturno,idguardia,idpersona,GstDate.getFormatedDateShort(usr.getLanguage(),fInicioPermuta));
-					} 
-
-					
-					String guardiaFacturada = admApuntes.exiteApunteGuardia(idinstitucion,idturno,idguardia,idpersona,GstDate.getFormatedDateShort(usr.getLanguage(),fInicio))?"true":"false";
-
-					//Inserto los datos a visualizar en el JSP
-					Hashtable nueva = new Hashtable();
-					nueva.put("FECHAINICIO",fInicio);
-					nueva.put("FECHA_INICIO_PK",fechaInicioPK);
-					nueva.put("FECHAFIN",fechaFin);			
-					nueva.put("FECHAINICIOPERMUTA",fInicioPermuta);
-					nueva.put("FECHAFINPERMUTA",fFinPermuta);
-					/*nueva.put("FECHAINICIO",fechaInicio);
-					nueva.put("FECHAFIN",fechaFin);			
-					nueva.put("FECHAINICIOPERMUTA",fechaInicioPermuta);
-					nueva.put("FECHAFINPERMUTA",fechaFinPermuta);				
-					nueva.put("FECHAPERMUTA",fechaPermuta);*/
-					nueva.put("NUMEROPERMUTA",numeroPermuta);
-					nueva.put("NUMEROCOLEGIADO",numeroColegiado);
-					nueva.put("NOMBRE",nombre);
-					nueva.put("IDPERSONA",idpersona);
-					nueva.put("IDINSTITUCION",idinstitucion);
-					nueva.put("IDTURNO",idturno);
-					nueva.put("IDGUARDIA",idguardia);
-					nueva.put("IDCALENDARIOGUARDIAS",idcalendarioguardias);
-					nueva.put("OBSERVACIONES",observaciones);
-					nueva.put("PL",pl);
-					nueva.put("GUARDIAFACTURADA",guardiaFacturada);
-					nueva.put("ORDEN", orden);
-					nueva.put("VALIDADO", validado);
+				String nombre = (String)registro.get(CenPersonaBean.C_NOMBRE);
+				String fechaInicioPK = (String)registro.get("FECHA_INICIO_PK");
+				String fechaFin = (String)registro.get(ScsCabeceraGuardiasBean.C_FECHA_FIN);
+				idturno = (String)registro.get(ScsCabeceraGuardiasBean.C_IDTURNO);
+				idguardia = (String)registro.get(ScsCabeceraGuardiasBean.C_IDGUARDIA);
+				idpersona = (String)registro.get(ScsCabeceraGuardiasBean.C_IDPERSONA);
+				String idCalendarioGuardias = (String)registro.get(ScsCabeceraGuardiasBean.C_IDCALENDARIOGUARDIAS);
+				orden = (String)registro.get(ScsCabeceraGuardiasBean.C_POSICION);
+				String fechaInicioPKBind = GstDate.getFormatedDateShort(usr.getLanguage(),fechaInicioPK);
 				
-					ScsGuardiasColegiadoAdm admGuardiasColegiado = new ScsGuardiasColegiadoAdm(this.getUserBean(request));
-					if (admGuardiasColegiado.validarBorradoGuardia(idinstitucion,idturno,idguardia,GstDate.getFormatedDateShort(usr.getLanguage(),fInicio),GstDate.getFormatedDateShort(usr.getLanguage(),fechaFin))){
-						nueva.put("PINTARBOTONBORRAR", "1");
+				//Se añaden los campos de validacion
+				String validado = (String)registro.get(ScsCabeceraGuardiasBean.C_VALIDADO);
 
-					}else{
-						nueva.put("PINTARBOTONBORRAR", "0");
-					}
+				Hashtable htCodigo = new Hashtable();
+				htCodigo.put(new Integer(1), idinstitucion);
+				htCodigo.put(new Integer(2), idturno);
+				htCodigo.put(new Integer(3), idguardia);
+				htCodigo.put(new Integer(4), idCalendarioGuardias);
+				htCodigo.put(new Integer(5), idpersona);
+				htCodigo.put(new Integer(6), fechaInicioPKBind);
 
-					resultado.add(nueva);	
-				}//Fin del while
-			}else{//con criterios de búsqueda
-				if (buscarNcolegiado!=null && !buscarNcolegiado.trim().equals("")){
-					miHash.put("NUMCOLEGIADO",buscarNcolegiado);	
-				}
-				if (buscarFechaDesde!=null && !buscarFechaDesde.trim().equals("")){
-					UtilidadesHash.set(miHash, "FECHA_INICIO", buscarFechaDesde);
-				}
-				if (buscarFechaHasta!=null && !buscarFechaHasta.trim().equals("")){
-					UtilidadesHash.set(miHash, "FECHA_FIN", buscarFechaHasta);
-				}
+				helperInformes.completarHashSalida(registro,helperInformes.ejecutaFuncionSalida(htCodigo, "F_SIGA_TIENE_ACTS_VALIDADAS", "ACT_VALIDADAS"));
+				helperInformes.completarHashSalida(registro,helperInformes.ejecutaFuncionSalida(htCodigo, "F_SIGA_ES_MODIFICABLE_GUARDIAS", "ESMODIFICABLE"));
 
+				htCodigo = new Hashtable();
+				htCodigo.put(new Integer(1), idinstitucion);
+				htCodigo.put(new Integer(2), idturno);
+				htCodigo.put(new Integer(3), idguardia);
+				htCodigo.put(new Integer(4), idpersona);
+				htCodigo.put(new Integer(5), fechaInicioPKBind);
+				htCodigo.put(new Integer(6), idCalendarioGuardias);
 
-
-				RowsContainer rc = admGuardiaColegiado.findNLS(admCabeceraGuardia.buscarColegiados(miHash));
-
-				for (int i = 0; i < rc.size(); i++)	{		
-					Row fila = (Row) rc.get(i);
-					Hashtable registro = (Hashtable)fila.getRow();
-					String nombre = (String)registro.get(CenPersonaBean.C_NOMBRE);
-
-					String fechaInicioPK = (String)registro.get("FECHA_INICIO_PK");
-					String fechaFin = (String)registro.get(ScsCabeceraGuardiasBean.C_FECHA_FIN);
-					idturno = (String)registro.get(ScsCabeceraGuardiasBean.C_IDTURNO);
-					idguardia = (String)registro.get(ScsCabeceraGuardiasBean.C_IDGUARDIA);
-					idpersona = (String)registro.get(ScsCabeceraGuardiasBean.C_IDPERSONA);
-					String idCalendarioGuardias = (String)registro.get(ScsCabeceraGuardiasBean.C_IDCALENDARIOGUARDIAS);
-					orden = (String)registro.get(ScsCabeceraGuardiasBean.C_POSICION);
-
-					String fechaInicioPKBind = GstDate.getFormatedDateShort(usr.getLanguage(),fechaInicioPK); 
-					
-					//Se añaden los campos de validacion
-					String validado = (String)registro.get(ScsCabeceraGuardiasBean.C_VALIDADO);
-
-					Hashtable htCodigo = new Hashtable();
-					htCodigo.put(new Integer(1), idinstitucion);
-					htCodigo.put(new Integer(2), idturno);
-					htCodigo.put(new Integer(3), idguardia);
-					htCodigo.put(new Integer(4), idCalendarioGuardias);
-					htCodigo.put(new Integer(5), idpersona);
-					htCodigo.put(new Integer(6), fechaInicioPKBind);
-
-					helperInformes.completarHashSalida(registro,helperInformes.ejecutaFuncionSalida(htCodigo, "F_SIGA_TIENE_ACTS_VALIDADAS", "ACT_VALIDADAS"));
-					helperInformes.completarHashSalida(registro,helperInformes.ejecutaFuncionSalida(htCodigo, "F_SIGA_ES_MODIFICABLE_GUARDIAS", "ESMODIFICABLE"));
-
-					htCodigo = new Hashtable();
-					htCodigo.put(new Integer(1), idinstitucion);
-					htCodigo.put(new Integer(2), idturno);
-					htCodigo.put(new Integer(3), idguardia);
-					htCodigo.put(new Integer(4), idpersona);
-					htCodigo.put(new Integer(5), fechaInicioPKBind);
-					htCodigo.put(new Integer(6), idCalendarioGuardias);
-
-					//FECHAINICIOPERMUTA
+				//FECHAINICIOPERMUTA
+				helperInformes.completarHashSalida(registro,helperInformes.ejecutaFuncionSalida(
+						htCodigo, "F_SIGA_FECHAINISOLICITANTE", "FECHAINICIOPERMUTA"));
+				String fInicioPermuta = (String)registro.get("FECHAINICIOPERMUTA");
+				//Si la fecha de inicio del solicitante es nula miramos  la fecha de inicio del confirmador
+				if(fInicioPermuta==null||fInicioPermuta.trim().equals("")){
 					helperInformes.completarHashSalida(registro,helperInformes.ejecutaFuncionSalida(
-							htCodigo, "F_SIGA_FECHAINISOLICITANTE", "FECHAINICIOPERMUTA"));
-					String fInicioPermuta = (String)registro.get("FECHAINICIOPERMUTA");
-					//Si la fecha de inicio del solicitante es nula miramos  la fecha de inicio del confirmador
+							htCodigo, "F_SIGA_FECHAINICONFIRMADOR", "FECHAINICIOPERMUTA"));
+					fInicioPermuta = (String)registro.get("FECHAINICIOPERMUTA");
+					//Si la fecha de inicio del confirmador es nula ponemos como fecha de inicio de la permuta 
+					//la fecha de inicio real
 					if(fInicioPermuta==null||fInicioPermuta.trim().equals("")){
-						helperInformes.completarHashSalida(registro,helperInformes.ejecutaFuncionSalida(
-								htCodigo, "F_SIGA_FECHAINICONFIRMADOR", "FECHAINICIOPERMUTA"));
-						fInicioPermuta = (String)registro.get("FECHAINICIOPERMUTA");
-						//Si la fecha de inicio del confirmador es nula ponemos como fecha de inicio de la permuta 
-						//la fecha de inicio real
-						if(fInicioPermuta==null||fInicioPermuta.trim().equals("")){
-							fInicioPermuta = fechaInicioPK;
-							registro.put("FECHAINICIOPERMUTA", fInicioPermuta);
-						}
-
+						fInicioPermuta = fechaInicioPK;
+						registro.put("FECHAINICIOPERMUTA", fInicioPermuta);
 					}
-					//FECHAFINPERMUTA
+
+				}
+				//FECHAFINPERMUTA
+				helperInformes.completarHashSalida(registro,helperInformes.ejecutaFuncionSalida(
+						htCodigo, "F_SIGA_FECHAFINSOLICITANTE", "FECHAFINPERMUTA"));
+				String fFinPermuta = (String)registro.get("FECHAFINPERMUTA");
+				//Si la fecha de fin del solicitante es nula miramos  la fecha de fin del confirmador
+				if(fFinPermuta==null||fFinPermuta.trim().equals("")){
 					helperInformes.completarHashSalida(registro,helperInformes.ejecutaFuncionSalida(
-							htCodigo, "F_SIGA_FECHAFINSOLICITANTE", "FECHAFINPERMUTA"));
-					String fFinPermuta = (String)registro.get("FECHAFINPERMUTA");
-					//Si la fecha de fin del solicitante es nula miramos  la fecha de fin del confirmador
+							htCodigo, "F_SIGA_FECHAFINCONFIRMADOR", "FECHAFINPERMUTA"));
+					fFinPermuta = (String)registro.get("FECHAFINPERMUTA");
+					//Si la fecha de fin del confirmador es nula ponemos como fecha de fin de la permuta 
+					//la fecha de fin real
 					if(fFinPermuta==null||fFinPermuta.trim().equals("")){
-						helperInformes.completarHashSalida(registro,helperInformes.ejecutaFuncionSalida(
-								htCodigo, "F_SIGA_FECHAFINCONFIRMADOR", "FECHAFINPERMUTA"));
-						fFinPermuta = (String)registro.get("FECHAFINPERMUTA");
-						//Si la fecha de fin del confirmador es nula ponemos como fecha de fin de la permuta 
-						//la fecha de fin real
-						if(fFinPermuta==null||fFinPermuta.trim().equals("")){
-							fFinPermuta = fechaFin;
-							registro.put("FECHAFINPERMUTA", fFinPermuta);
-						}
-
+						fFinPermuta = fechaFin;
+						registro.put("FECHAFINPERMUTA", fFinPermuta);
 					}
 
-					//FECHAINICIO
+				}
+
+				//FECHAINICIO
+				helperInformes.completarHashSalida(registro,helperInformes.ejecutaFuncionSalida(
+						htCodigo, "F_SIGA_FECHAORIGSOLICITANTE", "FECHAINICIO"));
+				String fInicio = (String)registro.get("FECHAINICIO");
+				//Si la fecha de origen del solicitante es nula miramos  la fecha de origen del confirmador
+				if(fInicio==null||fInicio.trim().equals("")){
 					helperInformes.completarHashSalida(registro,helperInformes.ejecutaFuncionSalida(
-							htCodigo, "F_SIGA_FECHAORIGSOLICITANTE", "FECHAINICIO"));
-					String fInicio = (String)registro.get("FECHAINICIO");
-					//Si la fecha de origen del solicitante es nula miramos  la fecha de origen del confirmador
+							htCodigo, "F_SIGA_FECHAORIGCONFIRMADOR", "FECHAINICIO"));
+					fInicio = (String)registro.get("FECHAINICIO");
+					//Si la fecha de origen del confirmador es nula ponemos como fecha de origen de la permuta 
+					//la fecha de origen real
 					if(fInicio==null||fInicio.trim().equals("")){
-						helperInformes.completarHashSalida(registro,helperInformes.ejecutaFuncionSalida(
-								htCodigo, "F_SIGA_FECHAORIGCONFIRMADOR", "FECHAINICIO"));
-						fInicio = (String)registro.get("FECHAINICIO");
-						//Si la fecha de origen del confirmador es nula ponemos como fecha de origen de la permuta 
-						//la fecha de origen real
-						if(fInicio==null||fInicio.trim().equals("")){
-							fInicio = fechaInicioPK;
-							registro.put("FECHAINICIO", fInicio);
-						}
-
-					}
-					//NUMEROPERMUTA 
-					helperInformes.completarHashSalida(registro,helperInformes.ejecutaFuncionSalida(
-							htCodigo, "F_SIGA_NUMERO", "NUMEROPERMUTA"));
-
-
-
-					htCodigo = new Hashtable();
-					htCodigo.put(new Integer(1), idinstitucion);
-					htCodigo.put(new Integer(2), idpersona);
-
-					//F_SIGA_CALCULONCOLEGIADO(coleg.IDINSTITUCION, coleg.IDPERSONA) as NCOLEGIADO
-					//NCOLEGIADO
-					helperInformes.completarHashSalida(registro,helperInformes.ejecutaFuncionSalida(
-							htCodigo, "F_SIGA_CALCULONCOLEGIADO", "NCOLEGIADO"));
-
-					numeroColegiado = (String)registro.get(CenColegiadoBean.C_NCOLEGIADO);
-
-					String numeroPermuta = (String)registro.get("NUMEROPERMUTA");
-					if (numeroPermuta==null || numeroPermuta.equals("")){
-						numeroPermuta="NINGUNO";
+						fInicio = fechaInicioPK;
+						registro.put("FECHAINICIO", fInicio);
 					}
 
+				}
+				//NUMEROPERMUTA 
+				helperInformes.completarHashSalida(registro,helperInformes.ejecutaFuncionSalida(
+						htCodigo, "F_SIGA_NUMERO", "NUMEROPERMUTA"));
 
 
 
-					//Chequeo si existe una permuta de esa persona como solicitante o como confirmador
-					//Consulta como solicitante
+				htCodigo = new Hashtable();
+				htCodigo.put(new Integer(1), idinstitucion);
+				htCodigo.put(new Integer(2), idpersona);
 
-					//Ejecuto el PL de Permutas que me dice el tipo de Permuta posible:				
-					pl = admPermutaguardias.ejecutarFuncionPermutas(idinstitucion,idturno,idguardia,idpersona,GstDate.getFormatedDateShort(usr.getLanguage(),fInicio));
-					if (pl.equals("5")){//si buscando por la fecha de inicio (para el caso en el que todavia no se haya confirmado la solicitud de la permuta) devuelve el valor "5" (pendiente de permutar) volvemos a ejecutar
-						// el procedimiento pasando la fecha de inicio de permuta (para el caso en el que ya se haya 
-						// confirmado la permuta) por si sigue devolviendo "5" o devuelve otro
-						// valor como "3" (guardia permutada), como "2" (Permuta solicitada) o "4" (Pendiente de confirmar).
+				//F_SIGA_CALCULONCOLEGIADO(coleg.IDINSTITUCION, coleg.IDPERSONA) as NCOLEGIADO
+				//NCOLEGIADO
+				helperInformes.completarHashSalida(registro,helperInformes.ejecutaFuncionSalida(
+						htCodigo, "F_SIGA_CALCULONCOLEGIADO", "NCOLEGIADO"));
 
-						pl = admPermutaguardias.ejecutarFuncionPermutas(idinstitucion,idturno,idguardia,idpersona,GstDate.getFormatedDateShort(usr.getLanguage(),fInicioPermuta));
-					} 
+				numeroColegiado = (String)registro.get(CenColegiadoBean.C_NCOLEGIADO);
 
-					//Inserto los datos a visualizar en el JSP
-					Hashtable nueva = new Hashtable();
-					nueva.put("FECHAINICIO",fInicio);
-					nueva.put("FECHA_INICIO_PK",fechaInicioPK);
-					nueva.put("FECHAFIN",fechaFin);			
-					nueva.put("FECHAINICIOPERMUTA",fInicioPermuta);
-					nueva.put("FECHAFINPERMUTA",fFinPermuta);
+				String numeroPermuta = (String)registro.get("NUMEROPERMUTA");
+				if (numeroPermuta==null || numeroPermuta.equals("")){
+					numeroPermuta="NINGUNO";
+				}
 
 
 
-					/*nueva.put("FECHAINICIO",fechaInicio);
-					nueva.put("FECHAFIN",fechaFin);			
-					nueva.put("FECHAINICIOPERMUTA",fechaInicioPermuta);
-					nueva.put("FECHAFINPERMUTA",fechaFinPermuta);				
-					nueva.put("FECHAPERMUTA",fechaPermuta);*/
-					nueva.put("NUMEROPERMUTA",numeroPermuta);
-					nueva.put("NUMEROCOLEGIADO",numeroColegiado);
-					nueva.put("NOMBRE",nombre);
-					nueva.put("IDPERSONA",idpersona);
-					nueva.put("IDINSTITUCION",idinstitucion);
-					nueva.put("IDTURNO",idturno);
-					nueva.put("IDGUARDIA",idguardia);
-					nueva.put("IDCALENDARIOGUARDIAS",idcalendarioguardias);
-					nueva.put("OBSERVACIONES",observaciones);
-					nueva.put("PL",pl);
-					nueva.put("ORDEN", orden);
-					nueva.put("VALIDADO", validado);
 
-					ScsGuardiasColegiadoAdm admGuardiasColegiado = new ScsGuardiasColegiadoAdm(this.getUserBean(request));
-					if (admGuardiasColegiado.validarBorradoGuardia(idinstitucion,idturno,idguardia,GstDate.getFormatedDateShort(usr.getLanguage(),fInicio),GstDate.getFormatedDateShort(usr.getLanguage(),fechaFin))){
-						nueva.put("PINTARBOTONBORRAR", "1");
+				//Chequeo si existe una permuta de esa persona como solicitante o como confirmador
+				//Consulta como solicitante
 
-					}else{
-						nueva.put("PINTARBOTONBORRAR", "0");
-					}
+				//Ejecuto el PL de Permutas que me dice el tipo de Permuta posible:				
+				pl = admPermutaguardias.ejecutarFuncionPermutas(idinstitucion,idturno,idguardia,idpersona,GstDate.getFormatedDateShort(usr.getLanguage(),fInicio));
+				if (pl.equals("5")){//si buscando por la fecha de inicio (para el caso en el que todavia no se haya confirmado la solicitud de la permuta) devuelve el valor "5" (pendiente de permutar) volvemos a ejecutar
+					// el procedimiento pasando la fecha de inicio de permuta (para el caso en el que ya se haya 
+					// confirmado la permuta) por si sigue devolviendo "5" o devuelve otro
+					// valor como "3" (guardia permutada), como "2" (Permuta solicitada) o "4" (Pendiente de confirmar).
 
-					resultado.add(nueva);	
-				}//Fin del while
-			}
+					pl = admPermutaguardias.ejecutarFuncionPermutas(idinstitucion,idturno,idguardia,idpersona,GstDate.getFormatedDateShort(usr.getLanguage(),fInicioPermuta));
+				} 
 
+				
+				String guardiaFacturada = admApuntes.exiteApunteGuardia(idinstitucion,idturno,idguardia,idpersona,GstDate.getFormatedDateShort(usr.getLanguage(),fInicio))?"true":"false";
+
+				//Inserto los datos a visualizar en el JSP
+				Hashtable nueva = new Hashtable();
+				nueva.put("FECHAINICIO",fInicio);
+				nueva.put("FECHA_INICIO_PK",fechaInicioPK);
+				nueva.put("FECHAFIN",fechaFin);			
+				nueva.put("FECHAINICIOPERMUTA",fInicioPermuta);
+				nueva.put("FECHAFINPERMUTA",fFinPermuta);
+				/*nueva.put("FECHAINICIO",fechaInicio);
+				nueva.put("FECHAFIN",fechaFin);			
+				nueva.put("FECHAINICIOPERMUTA",fechaInicioPermuta);
+				nueva.put("FECHAFINPERMUTA",fechaFinPermuta);				
+				nueva.put("FECHAPERMUTA",fechaPermuta);*/
+				nueva.put("NUMEROPERMUTA",numeroPermuta);
+				nueva.put("NUMEROCOLEGIADO",numeroColegiado);
+				nueva.put("NOMBRE",nombre);
+				nueva.put("IDPERSONA",idpersona);
+				nueva.put("IDINSTITUCION",idinstitucion);
+				nueva.put("IDTURNO",idturno);
+				nueva.put("IDGUARDIA",idguardia);
+				nueva.put("IDCALENDARIOGUARDIAS",idcalendarioguardias);
+				nueva.put("OBSERVACIONES",observaciones);
+				nueva.put("PL",pl);
+				nueva.put("GUARDIAFACTURADA",guardiaFacturada);
+				nueva.put("ORDEN", orden);
+				nueva.put("VALIDADO", validado);
+			
+				ScsGuardiasColegiadoAdm admGuardiasColegiado = new ScsGuardiasColegiadoAdm(this.getUserBean(request));
+				if (admGuardiasColegiado.validarBorradoGuardia(idinstitucion,idturno,idguardia,GstDate.getFormatedDateShort(usr.getLanguage(),fInicio),GstDate.getFormatedDateShort(usr.getLanguage(),fechaFin))){
+					nueva.put("PINTARBOTONBORRAR", "1");
+
+				}else{
+					nueva.put("PINTARBOTONBORRAR", "0");
+				}
+
+				resultado.add(nueva);	
+			}//Fin del while
+			
 			//Busco los colegiado de guardias
 			forward = "buscarModalGuardia";
 

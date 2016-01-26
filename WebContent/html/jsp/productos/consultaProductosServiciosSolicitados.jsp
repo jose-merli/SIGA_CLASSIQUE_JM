@@ -254,10 +254,10 @@
 							((solicitarBaja.equalsIgnoreCase(DB_TRUE) && esLetrado) || (!esLetrado))) {
 							k++;
 							String tipopeticion = (String)hash.get("ESTADO_BAJA");
-							if (tipopeticion!=null && tipopeticion.equals("SI")) {
-								elems=null;
+							if (tipopeticion==null || tipopeticion.equals("0")) {
+								elems[0]=new FilaExtElement("solicitarbaja","solicitarbaja",SIGAConstants.ACCESS_READ);								
 							} else {
-								elems[0]=new FilaExtElement("solicitarbaja","solicitarbaja",SIGAConstants.ACCESS_READ);
+								elems=null;
 							}
 							
 							if (hash.get(PysProductosSolicitadosBean.C_VALOR)!=null){	
@@ -291,10 +291,9 @@
 		  						<td><siga:Idioma key="<%=estadoPago%>"/></td>
 		  						<td>
 <%
-									//String tipopeticion = (String)hash.get("ESTADO_BAJA");
-									if (tipopeticion!=null && tipopeticion.equals("SI")) { 
+									if (tipopeticion!=null && tipopeticion.equals("1")) { 
 %>
-				  						<siga:Idioma key="pys.solicitarBaja.literal.bajaSolicitada"/>
+				  						<siga:Idioma key="pys.solicitarBaja.literal.bajaSolicitada"/></td><td>&nbsp;
 <% 
 									} else { 
 %>
@@ -363,10 +362,10 @@
 							k++; 				 	  							
 						
 							String tipopeticion = (String)hash.get("ESTADO_BAJA");
-							if (tipopeticion!=null && tipopeticion.equals("SI")) {
-								elems=null;
-							}else{
+							if (tipopeticion==null || tipopeticion.equals("0")) {
 								elems[0]=new FilaExtElement("solicitarbaja","solicitarbaja",SIGAConstants.ACCESS_READ);
+							}else{
+								elems=null;
 							}
 								
 							if (hash.get(PysProductosSolicitadosBean.C_VALOR)!=null){					
@@ -400,10 +399,9 @@
 			  					<td><siga:Idioma key="<%=estadoPago%>"/></td>			  					
 			  					<td>
 <%
-									tipopeticion = (String)hash.get("ESTADO_BAJA");
-			  						if (tipopeticion!=null && tipopeticion.equals("SI")) { 
+			  						if (tipopeticion!=null && tipopeticion.equals("1")) { 
 %>
-					  					<siga:Idioma key="pys.solicitarBaja.literal.bajaSolicitada"/>
+					  					<siga:Idioma key="pys.solicitarBaja.literal.bajaSolicitada"/></td><td>&nbsp;
 <% 
 									} else { 
 %>

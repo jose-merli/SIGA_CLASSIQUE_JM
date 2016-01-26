@@ -9,6 +9,7 @@ import org.redabogacia.sigaservices.app.AppConstants.EEJG_ESTADO;
 import org.redabogacia.sigaservices.app.AppConstants.GEN_PROPERTIES;
 import org.redabogacia.sigaservices.app.AppConstants.MODULO;
 import org.redabogacia.sigaservices.app.AppConstants.PARAMETRO;
+import org.redabogacia.sigaservices.app.exceptions.BusinessException;
 import org.redabogacia.sigaservices.app.services.gen.GenParametrosService;
 import org.redabogacia.sigaservices.app.services.helper.SigaServiceHelperService;
 
@@ -81,6 +82,7 @@ private static Boolean alguienEjecutando=Boolean.FALSE;
 			SolicitudesEEJG solicitudesEEJG = new SolicitudesEEJG();
 			String idPeticionInfoAAPP = null;
 			for (ScsEejgPeticionesBean scsEejgPeticionesBean : listaPeticiones) {
+				boolean isValidadoCorrectamente = true;
 				try {
 					idPeticionInfoAAPP = null;
 					if (numeroErrores < NUM_ERROR_CONEXION) {
@@ -95,6 +97,11 @@ private static Boolean alguienEjecutando=Boolean.FALSE;
 						scsEejgPeticionesBean.setMsgError("");
 					} 
 					
+				} catch (BusinessException e) {					
+					ClsLogging.writeFileLogError("Errores controlados en validaciones de campos ampliados",e,3);
+					scsEejgPeticionesBean.setMsgError(e.getMessage());
+					isValidadoCorrectamente = false;
+					
 				} catch (AxisFault e) {					
 					if (e.getCause() instanceof ConnectException) {
 						numeroErrores++;
@@ -107,7 +114,11 @@ private static Boolean alguienEjecutando=Boolean.FALSE;
 					
 				} finally {
 					scsEejgPeticionesBean.setNumeroIntentosSolicitud(scsEejgPeticionesBean.getNumeroIntentosSolicitud() + 1);
-					if (idPeticionInfoAAPP == null && scsEejgPeticionesBean.getNumeroIntentosSolicitud() >= NUMERO_REINTENTOS_SOLICITUD) {
+					if(!isValidadoCorrectamente){
+						scsEejgPeticionesBean.setEstado((int)EEJG_ESTADO.ERROR_SOLICITUD.getId());
+						
+					}
+					else if (idPeticionInfoAAPP == null && scsEejgPeticionesBean.getNumeroIntentosSolicitud() >= NUMERO_REINTENTOS_SOLICITUD) {
 						scsEejgPeticionesBean.setEstado((int)EEJG_ESTADO.ERROR_SOLICITUD.getId());
 					}
 					

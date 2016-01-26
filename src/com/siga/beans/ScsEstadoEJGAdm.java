@@ -369,5 +369,31 @@ public class ScsEstadoEJGAdm extends MasterBeanAdministrador
 		
 		return v;
 	}
+	public boolean isImpugnado(ScsEJGBean ejg) throws ClsExceptions, SIGAException{
+		
+		Vector v = new Vector();
+		Hashtable claves = new Hashtable();
+		
+		claves.put (new Integer (1), ejg.getIdInstitucion());
+		claves.put (new Integer (2), ejg.getIdTipoEJG());
+		claves.put (new Integer (3), ejg.getAnio());
+		claves.put (new Integer (4), ejg.getNumero());
+		
+		StringBuilder query = new StringBuilder();
+		query.append("SELECT estado.IDESTADOEJG ");
+		query.append("  FROM SCS_ESTADOEJG  ESTADO ");
+		query.append(" WHERE estado.IDESTADOEJG = 11 ");
+		query.append("   AND estado.IDINSTITUCION =:1");
+		query.append("   AND estado.IDTIPOEJG =:2");
+		query.append("   AND estado.ANIO =:3");
+		query.append("   AND estado.NUMERO =:4");
+		query.append("   AND estado.FECHABAJA IS NULL ");
+		
+		v = this.selectGenericoBind(query.toString(), claves);
+		
+		
+		return v==null || v.size()>0;
+	}
+	
 	
 }

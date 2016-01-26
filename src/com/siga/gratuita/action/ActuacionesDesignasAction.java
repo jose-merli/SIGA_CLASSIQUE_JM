@@ -636,10 +636,10 @@ public class ActuacionesDesignasAction extends MasterAction {
 			if(vDes != null && vDes.size() > 0){
 				for (int i = 0; i < vDes.size(); i++) {
 					designaActual = (Hashtable)vDes.get(i);
-					UtilidadesHash.set(hashEJG,ScsEJGBean.C_IDINSTITUCION,(String)designaActual.get("IDINSTITUCION"));
-					UtilidadesHash.set(hashEJG,ScsEJGBean.C_NUMERO,(String)designaActual.get("NUMEROEJG"));
-					UtilidadesHash.set(hashEJG,ScsEJGBean.C_ANIO,(String)designaActual.get("ANIOEJG"));
-					UtilidadesHash.set(hashEJG,ScsEJGBean.C_IDTIPOEJG,(String)designaActual.get("IDTIPOEJG"));
+				UtilidadesHash.set(hashEJG,ScsEJGBean.C_IDINSTITUCION,(String)designaActual.get("IDINSTITUCION"));
+				UtilidadesHash.set(hashEJG,ScsEJGBean.C_NUMERO,(String)designaActual.get("NUMEROEJG"));
+				UtilidadesHash.set(hashEJG,ScsEJGBean.C_ANIO,(String)designaActual.get("ANIOEJG"));
+				UtilidadesHash.set(hashEJG,ScsEJGBean.C_IDTIPOEJG,(String)designaActual.get("IDTIPOEJG"));
 					Vector vEjgRelacionado=(Vector)ejgAdm.selectByPK(hashEJG);
 					
 					if(vEjgRelacionado != null &&  vEjgRelacionado.size()>0){
@@ -649,9 +649,9 @@ public class ActuacionesDesignasAction extends MasterAction {
 						    if(ejg.getNumEJG() !=null && !"".equalsIgnoreCase(ejg.getNumEJG())){
 						    	   String longitudNumEjg = (String) request.getSession().getAttribute(PARAMETRO.LONGITUD_CODEJG.toString());	
 						    	   ejg.setNumEJG(SIGAServicesHelper.lpad(ejg.getNumEJG(), Integer.parseInt(longitudNumEjg), '0'));
-						    }
-						 
-						    
+			}
+
+			
 						    //Si el ejg tiene resolucionAuto, obtenemos su desripción
 						    if(ejg.getIdTipoResolAuto() != null && ejg.getIdTipoResolAuto()>=0){
 							    BusinessManager bm = getBusinessManager();
@@ -681,10 +681,10 @@ public class ActuacionesDesignasAction extends MasterAction {
 					}
 					ejgs.addAll(vEjgRelacionado);
 					ejg = new ScsEJGBean();
-					
+		
 				}
-				
-			}
+			 
+		    }
 
 			
 			miform.setEjgs(ejgs);

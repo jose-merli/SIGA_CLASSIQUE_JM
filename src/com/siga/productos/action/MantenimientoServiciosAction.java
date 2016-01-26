@@ -834,7 +834,8 @@ public class MantenimientoServiciosAction extends MasterAction {
 																		 	(String)hash.get(PysFormaPagoServiciosBean.C_IDTIPOSERVICIOS),
 																		 	(String)hash.get(PysFormaPagoServiciosBean.C_IDSERVICIO),
 																		 	(String)hash.get(PysFormaPagoServiciosBean.C_IDSERVICIOSINSTITUCION),
-																		 	(String)fechaEfectiva);
+																		 	(String)fechaEfectiva,
+																		 	""+this.getUserName(request));
 						if ((rc == null) || (!rc[0].equals("0")))
 							throw new ClsExceptions ("Error al ejecutar el PL: PKG_SERVICIOS_AUTOMATICOS.PROCESO_BAJA_SERVICIO: "+rc[1]);
 						
@@ -1926,7 +1927,7 @@ public class MantenimientoServiciosAction extends MasterAction {
 			// Comienzo la transaccion
 			tx.begin();	
 
-			String [] rc = EjecucionPLs.ejecutarPL_EliminarSuscripcion(form.getIdInstitucion(), form.getIdTipoServicios(), form.getIdServicio(), form.getIdServiciosInstitucion(), form.getRadioAlta(), form.getFechaAlta(), form.getChkSolicitudBaja());
+			String [] rc = EjecucionPLs.ejecutarPL_EliminarSuscripcion(form.getIdInstitucion(), form.getIdTipoServicios(), form.getIdServicio(), form.getIdServiciosInstitucion(), form.getRadioAlta(), form.getFechaAlta(), form.getChkSolicitudBaja(), usr.getUserName());
 			if ((rc == null) || (!rc[0].equals("0"))) {
 				throw new ClsExceptions ("Error al ejecutar el PL:PKG_SERVICIOS_AUTOMATICOS.PROCESO_ELIMINAR_SUSCRIPCION. "+rc[1]);
 			} else {

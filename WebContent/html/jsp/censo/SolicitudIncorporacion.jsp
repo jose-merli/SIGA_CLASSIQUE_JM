@@ -2,6 +2,7 @@
 <html>
 <head>
 <!-- SolicitudIncorporacion.jsp -->
+
 <!-- EJEMPLO DE VENTANA DE DETALLE DE UN REGISTRO -->
 <!-- Contiene un posible titulo del mantenimiento, ademas de la zona de campos
 	 a mantener, que utilizara conjuntos de datos si fuera necesario.
@@ -44,9 +45,6 @@
 	String paramsTipoIdenJSON = "{\"idtipoidentificacion\":\"-1\"}";
 %>
 
-
-
-
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
 	
@@ -62,6 +60,17 @@
 </head>
 
 <script type="text/javascript">
+
+	// Si fechaNacimiento es editable, indica si es valida o no (ver esFechaNacimientoInvalida)
+	function comprobarFechaNacimiento(valorFechaNacimiento) {
+		if (!jQuery("#fechaNacimiento").is('[disabled]') && esFechaNacimientoInvalida(valorFechaNacimiento)) {
+			alert("<siga:Idioma key='errors.date.past' arg0='censo.SolicitudIncorporacion.literal.FNacimiento'/>");
+			return false;
+		} else {
+			return true;
+		}
+	}
+
 	function refrescarLocal() {		
 		document.getElementById("modo").value="abrirAvanzada";
 		document.getElementById("SolicitudIncorporacionForm").setAttribute("target","mainWorkArea");
@@ -95,7 +104,9 @@
 				errores += "<siga:Idioma key='errors.required' arg0='censo.SolicitudIncorporacion.literal.apellido1'/>" + '\n';
 			}
 			if(document.getElementById("fechaNacimiento").value==""){
-				errores += "<siga:Idioma key='errors.required' arg0='censo.SolicitudIncorporacion.literal.fechaNacimiento'/>" + '\n';
+				errores += "<siga:Idioma key='errors.required' arg0='censo.SolicitudIncorporacion.literal.FNacimiento'/>" + '\n';
+			} else if (esFechaNacimientoInvalida(document.getElementById("fechaNacimiento").value)) {
+				errores += "<siga:Idioma key='errors.date.past' arg0='censo.SolicitudIncorporacion.literal.FNacimiento'/>" + '\n';			
 			}
 			if(document.getElementById("domicilio").value==""){
 				errores += "<siga:Idioma key='errors.required' arg0='censo.SolicitudIncorporacion.literal.domicilio'/>" + '\n';
@@ -1158,7 +1169,7 @@
 						<siga:Idioma key='censo.SolicitudIncorporacion.literal.FNacimiento'/>&nbsp;(*)
 					</td>						
 					<td>
-						<siga:Fecha nombreCampo="fechaNacimiento" valorInicial=""/>
+						<siga:Fecha nombreCampo="fechaNacimiento" valorInicial="" postFunction="comprobarFechaNacimiento(this.value)" />
 					</td>		
 											
 					<td class="labelText">

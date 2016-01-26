@@ -4,7 +4,6 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.struts.action.ActionMapping;
 
-
 import com.siga.general.MasterForm;
 
 public class SIGASolicitudesCertificadosForm extends MasterForm
@@ -18,6 +17,8 @@ public class SIGASolicitudesCertificadosForm extends MasterForm
     private String fechaHasta="";
     private String fechaEmisionDesde="";
     private String fechaEmisionHasta="";
+    private String fechaSolicitudDesde="";
+    private String fechaSolicitudHasta="";
     private String estado="";
     private String tipoCertificado="";
     private String numeroCertificado="";
@@ -27,6 +28,7 @@ public class SIGASolicitudesCertificadosForm extends MasterForm
     private String apellido2="";
     private String idsParaGenerarFicherosPDF="";
     private String idsParaFinalizar="";
+    private String idsParaFacturar="";
     private String idsTemp="";
     private String buscarIdPeticionCompra;
     private String idInstitucionOrigen="";
@@ -34,6 +36,7 @@ public class SIGASolicitudesCertificadosForm extends MasterForm
     private String idInstitucionSolicitud="";
     private String idInstitucionColegiacion="";
     private String idInstitucion="";
+    private String idSerieSeleccionada = "";
     
     private String observaciones="";
 
@@ -59,8 +62,25 @@ public class SIGASolicitudesCertificadosForm extends MasterForm
     private String codigoBanco;
     private String sucursalBanco;
     private String bancoNombre;
-    
+    private String nidSolicitante;
+    private String idPersonaSolicitante;
+    private String idInstitucionOrigenSolicitante;    
+    private String nColSolicitante;    
+    private String idProductoCertificado;
     private String aceptaCesionMutualidad;
+    private String cobrado;
+    private String descargado;
+    private String enviado;                                          //15-12-2015 valores "SI/NO/''" para indicar si queremos visualizar los certificados que tengan fecha de envio o no. 
+    
+    private String busquedaNombre;
+    private String busquedaApellidos;
+    private String busquedaNIF;
+    private String busquedaNumCol;
+    private String busquedaTipoCertificado;
+    private String busquedaEstado;
+    private String busquedaIdSolicitud;
+    private String busquedaIdInstitucionDestino;
+    private String busquedaIdInstitucionOrigen;
         
 	public String getIdTipoProducto() {
 		return idTipoProducto;
@@ -102,49 +122,34 @@ public class SIGASolicitudesCertificadosForm extends MasterForm
 			resetCamposSolicitud();
 		}
 	}
-	public void resetCamposSolicitud() 
-	{
-		this.fechaDesde="";
-	    this.fechaHasta="";
-	    this.fechaEmisionDesde="";
-	    this.fechaEmisionHasta="";
-	    this.estado="";
-	    this.tipoCertificado="";
-	    this.numeroCertificado="";
-	    this.CIFNIF="";
-	    this.nombre="";
-	    this.apellido1="";
-	    this.apellido2="";
-	    this.idsParaGenerarFicherosPDF="";
-	    this.idsParaFinalizar="";
-	    this.idsTemp="";
-	    this.buscarIdPeticionCompra="";
-	    this.idInstitucionOrigen="";
-	    this.idInstitucionDestino="";
-	    this.idInstitucion="";
-	    this.idSolicitud="";
-	    this.fechaDescarga="";
-	    this.fechaCobro="";
-	    this.fechaEmision="";
-	    this.fechaSolicitud="";
-	    this.textoSanciones="";
-	    this.buscarNumCertificadoCompra="";
-	    this.buscarIdSolicitudCertif="";
-	    this.comentario="";
-	    this.observaciones="";
-	    this.aceptaCesionMutualidad="";
-	
+
+	public void resetCamposSolicitud() {
+		this.estado = "";
+		this.tipoCertificado = "";
+		this.numeroCertificado = "";
+		this.CIFNIF = "";
+		this.nombre = "";
+		this.apellido1 = "";
+		this.apellido2 = "";
+		this.idsParaGenerarFicherosPDF = "";
+		this.idsParaFinalizar = "";
+		this.idsParaFacturar = "";
+		this.idsTemp = "";
+		this.idSerieSeleccionada = "";
+		this.idInstitucionOrigen = "";
+		this.idInstitucionDestino = "";
+		this.idInstitucion = "";
+		this.idSolicitud = "";
+		this.fechaDescarga = "";
+		this.fechaCobro = "";
+		this.fechaEmision = "";
+		this.fechaSolicitud = "";
+		this.textoSanciones = "";
+		this.comentario = "";
+		this.observaciones = "";
+		this.aceptaCesionMutualidad = "";
 	}
-//    public String getModo() 
-//    {
-//        return modo;
-//    }
-//    
-//    public void setModo(String modo) 
-//    {
-//        this.modo = modo;
-//    }
-    
+
     public String getFechaDesde()
     {
     	return fechaDesde;
@@ -281,8 +286,20 @@ public class SIGASolicitudesCertificadosForm extends MasterForm
     {
     	this.idsParaFinalizar=idsParaFinalizar;
     }
-
-    public String getIdsTemp()
+    public String getIdsParaFacturar() {
+		return idsParaFacturar;
+	}
+	public void setIdsParaFacturar(String idsParaFacturar) {
+		this.idsParaFacturar = idsParaFacturar;
+	}
+	
+	public String getIdSerieSeleccionada() {
+		return idSerieSeleccionada;
+	}
+	public void setIdSerieSeleccionada(String idSerieSeleccionada) {
+		this.idSerieSeleccionada = idSerieSeleccionada;
+	}
+	public String getIdsTemp()
     {
     	return idsTemp;
     }
@@ -481,6 +498,135 @@ public class SIGASolicitudesCertificadosForm extends MasterForm
 	public void setAceptaCesionMutualidad(String aceptaCesionMutualidad) {
 		this.aceptaCesionMutualidad = aceptaCesionMutualidad;
 	}
+	public String getIdPersonaSolicitante() {
+		return idPersonaSolicitante;
+	}
+	public void setIdPersonaSolicitante(String idPersonaSolicitante) {
+		this.idPersonaSolicitante = idPersonaSolicitante;
+	}
+	public String getIdInstitucionOrigenSolicitante() {
+		return idInstitucionOrigenSolicitante;
+	}
+	public void setIdInstitucionOrigenSolicitante(String idInstitucionOrigenSolicitante) {
+		this.idInstitucionOrigenSolicitante = idInstitucionOrigenSolicitante;
+	}
+	public String getnColSolicitante() {
+		return nColSolicitante;
+	}
+	public void setnColSolicitante(String nColSolicitante) {
+		this.nColSolicitante = nColSolicitante;
+	}
+	public String getNidSolicitante() {
+		return nidSolicitante;
+	}
+	public void setNidSolicitante(String nidSolicitante) {
+		this.nidSolicitante = nidSolicitante;
+	}
+	public String getIdProductoCertificado() {
+		return idProductoCertificado;
+	}
+	public void setIdProductoCertificado(String idProductoCertificado) {
+		this.idProductoCertificado = idProductoCertificado;
+	}
+	public String getCobrado() {
+		return cobrado;
+	}
+	public void setCobrado(String cobrado) {
+		this.cobrado = cobrado;
+	}
+	public String getDescargado() {
+		return descargado;
+	}
+	public void setDescargado(String descargado) {
+		this.descargado = descargado;
+	}
+	public String getEnviado() {
+		return enviado;
+	}
+	public void setEnviado(String enviado) {
+		this.enviado = enviado;
+	}
+	public String getFechaSolicitudDesde() {
+		return fechaSolicitudDesde;
+	}
+	public void setFechaSolicitudDesde(String fechaSolicitudDesde) {
+		this.fechaSolicitudDesde = fechaSolicitudDesde;
+	}
+	public String getFechaSolicitudHasta() {
+		return fechaSolicitudHasta;
+	}
+	public void setFechaSolicitudHasta(String fechaSolicitudHasta) {
+		this.fechaSolicitudHasta = fechaSolicitudHasta;
+	}
+	public String getBusquedaNombre() {
+		return busquedaNombre;
+	}
+	public void setBusquedaNombre(String busquedaNombre) {
+		this.busquedaNombre = busquedaNombre;
+	}
+	public String getBusquedaApellidos() {
+		return busquedaApellidos;
+	}
+	public void setBusquedaApellidos(String busquedaApellidos) {
+		this.busquedaApellidos = busquedaApellidos;
+	}
+	public String getBusquedaNIF() {
+		return busquedaNIF;
+	}
+	public void setBusquedaNIF(String busquedaNIF) {
+		this.busquedaNIF = busquedaNIF;
+	}
+	public String getBusquedaNumCol() {
+		return busquedaNumCol;
+	}
+	public void setBusquedaNumCol(String busquedaNumCol) {
+		this.busquedaNumCol = busquedaNumCol;
+	}
+	public String getBusquedaTipoCertificado() {
+		return busquedaTipoCertificado;
+	}
+	public void setBusquedaTipoCertificado(String busquedaTipoCertificado) {
+		this.busquedaTipoCertificado = busquedaTipoCertificado;
+	}
+	public String getBusquedaEstado() {
+		return busquedaEstado;
+	}
+	public void setBusquedaEstado(String busquedaEstado) {
+		this.busquedaEstado = busquedaEstado;
+	}
+	public String getBusquedaIdSolicitud() {
+		return busquedaIdSolicitud;
+	}
+	public void setBusquedaIdSolicitud(String busquedaIdSolicitud) {
+		this.busquedaIdSolicitud = busquedaIdSolicitud;
+	}
+	public String getBusquedaIdInstitucionDestino() {
+		return busquedaIdInstitucionDestino;
+	}
+	public void setBusquedaIdInstitucionDestino(String busquedaIdInstitucionDestino) {
+		this.busquedaIdInstitucionDestino = busquedaIdInstitucionDestino;
+	}
+
+	public String getBusquedaIdInstitucionOrigen() {
+		return busquedaIdInstitucionOrigen;
+	}
+	public void setBusquedaIdInstitucionOrigen(String busquedaIdInstitucionOrigen) {
+		this.busquedaIdInstitucionOrigen = busquedaIdInstitucionOrigen;
+	}
 	
-	
+	public void resetCamposBusqueda() {
+		this.cobrado = "";
+		this.descargado = "";
+		this.enviado = "";
+		this.busquedaNombre = "";
+		this.busquedaApellidos = "";
+		this.busquedaNIF = "";
+		this.busquedaNumCol = "";
+		this.busquedaTipoCertificado = "";
+		this.busquedaEstado = "";
+		this.busquedaIdSolicitud = "";
+		this.busquedaIdInstitucionDestino = "";		
+		this.buscarNumCertificadoCompra = "";
+		this.busquedaIdInstitucionOrigen = "";
+	}
 }

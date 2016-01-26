@@ -23,8 +23,6 @@ import javax.transaction.UserTransaction;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
-import org.redabogacia.sigaservices.app.util.ReadProperties;
-import org.redabogacia.sigaservices.app.util.SIGAReferences;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
@@ -36,7 +34,6 @@ import com.siga.Utilidades.PaginadorBind;
 import com.siga.Utilidades.UtilidadesFicheros;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;
-import com.siga.beans.CenColegiadoAdm;
 import com.siga.beans.CenDireccionesAdm;
 import com.siga.beans.CenPersonaAdm;
 import com.siga.beans.CerSolicitudCertificadosAdm;
@@ -47,7 +44,6 @@ import com.siga.beans.FacFacturaAdm;
 import com.siga.beans.FacFacturaBean;
 import com.siga.envios.Documento;
 import com.siga.envios.form.DefinirEnviosForm;
-import com.siga.facturacion.form.AltaAbonosForm;
 import com.siga.facturacion.form.BusquedaFacturaForm;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
@@ -318,7 +314,6 @@ public class BusquedaFacturaAction extends MasterAction {
 			htAbono.put(FacAbonoBean.C_IDFACTURA,idFactura);
 			
 			//Cogemos el total de la factura
-			//Double total = admFac.getTotalFactura(idInstitucion,idFactura);
 			Double total = new Double(UtilidadesHash.getString(registro, "IMPTOTAL"));
 			//Miramos la descripcion del estado de la factura
 			String sEstado =  UtilidadesString.getMensajeIdioma(idioma, estado);
@@ -400,17 +395,18 @@ public class BusquedaFacturaAction extends MasterAction {
 	}
 	
 	protected String descargaFacturas(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
-
 		try {
-
-			UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");
+			UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");			
 			CenPersonaAdm personaAdm = new CenPersonaAdm(user);
 			String idInstitucion = user.getLocation();
-			FacFacturaAdm facturaAdm = new FacFacturaAdm(user);
-			CenDireccionesAdm direccionAdm = new CenDireccionesAdm(this.getUserBean(request));
+			
+			FacFacturaAdm admFacFactura = new FacFacturaAdm(user);
+			CenDireccionesAdm admCenDirecciones = new CenDireccionesAdm(user);
+			InformeFactura infFactura = new InformeFactura(user);
+			
 			BusquedaFacturaForm form = (BusquedaFacturaForm) formulario;
 			String datosFacturas = form.getFacturas();
-			InformeFactura inf = new InformeFactura(user);
+			
 			StringBuilder errores = new StringBuilder("");
 			List<Documento> documentosList = new ArrayList<Documento>();
 			if (datosFacturas != null && !datosFacturas.equals("")) {
@@ -426,30 +422,28 @@ public class BusquedaFacturaAction extends MasterAction {
 
 					String idFactura = datosFactura.substring(0, datosFactura.indexOf("||"));
 					String numfactura = datosFactura.substring(datosFactura.indexOf("||") + 2, datosFactura.lastIndexOf("||"));
-
-					Hashtable datosFacturaHash = new Hashtable();
-					datosFacturaHash.put(FacFacturaBean.C_IDINSTITUCION, idInstitucion);
-					datosFacturaHash.put(FacFacturaBean.C_IDFACTURA, idFactura);
-					Vector vFactura = facturaAdm.selectByPK(datosFacturaHash);
-					FacFacturaBean idPersona = (FacFacturaBean) vFactura.get(0);
-					String idPersonaFactura = idPersona.getIdPersona().toString();
-					CenColegiadoAdm admCol = new CenColegiadoAdm(this.getUserBean(request));
-					Hashtable htCol = admCol.obtenerDatosColegiado(idInstitucion, idPersonaFactura, this.getUserBean(request).getLanguage());
-					String nColegiado = "";
-					if (htCol != null && htCol.size() > 0) {
-						nColegiado = (String) UtilidadesHash.getString(htCol, "NCOLEGIADO_LETRADO");
-					}
-					Hashtable direccion = direccionAdm.getEntradaDireccionEspecifica(idPersonaFactura, idInstitucion, "" + ClsConstants.TIPO_DIRECCION_FACTURACION);
+					
+					Hashtable<String,Object> hFacFactura = new Hashtable<String,Object>();
+					hFacFactura.put(FacFacturaBean.C_IDINSTITUCION, idInstitucion);
+					hFacFactura.put(FacFacturaBean.C_IDFACTURA, idFactura);
+					
+					FacFacturaBean bFacFactura = (FacFacturaBean) admFacFactura.selectByPK(hFacFactura).firstElement();					
+					String idPersonaFactura = bFacFactura.getIdPersona().toString();
+					
+					Hashtable direccion = admCenDirecciones.getEntradaDireccionEspecifica(idPersonaFactura, idInstitucion, "" + ClsConstants.TIPO_DIRECCION_FACTURACION);
 					if (direccion.size() == 0) {
 						// Si no hay direccion de despacho (porque es un no colegiado), miramos su direccion de correo
-						direccion = direccionAdm.getEntradaDireccionEspecifica(idPersonaFactura, idInstitucion, "" + ClsConstants.TIPO_DIRECCION_DESPACHO);
+						direccion = admCenDirecciones.getEntradaDireccionEspecifica(idPersonaFactura, idInstitucion, "" + ClsConstants.TIPO_DIRECCION_DESPACHO);
 					}
+					
 					if (direccion.size() == 0) {
-						direccion = direccionAdm.getEntradaDireccionEspecifica(idPersonaFactura, idInstitucion, "" + ClsConstants.TIPO_DIRECCION_CENSOWEB);
+						direccion = admCenDirecciones.getEntradaDireccionEspecifica(idPersonaFactura, idInstitucion, "" + ClsConstants.TIPO_DIRECCION_CENSOWEB);
 					}
+					
 					if (direccion.size() > 0) {
 						ClsLogging.writeFileLog("ANTES DE LA GENERACION DE LA FACTURA. ", 10);
-						filePDF = inf.generarFacturaFirmada(request, user.getLanguage().toUpperCase(), idInstitucion, idFactura, nColegiado);
+						filePDF = infFactura.generarPdfFacturaFirmada(request, bFacFactura, false);
+						
 						if (filePDF == null) {
 							datosSolicitudError = new StringBuilder();
 							datosSolicitudError.append("[Num. Factura:");
@@ -462,6 +456,7 @@ public class BusquedaFacturaAction extends MasterAction {
 							ClsLogging.writeFileLog("DESPUES DE LA GENERACION DE LA FACTURA: " + filePDF.getAbsolutePath(), 10);
 							ClsLogging.writeFileLog("Existe el fichero: " + ((filePDF.exists()) ? "SI" : "NO"), 10);
 						}
+						
 					} else {
 						datosSolicitudError = new StringBuilder();
 						datosSolicitudError.append("[Num. Factura:");
@@ -470,6 +465,7 @@ public class BusquedaFacturaAction extends MasterAction {
 						
 						errores.append(datosSolicitudError);
 					}
+					
 					if (datosSolicitudError == null) {
 						String nombreColegiado = personaAdm.obtenerNombreApellidos(idPersonaFactura);
 						Documento documento = new Documento(filePDF, filePDF.getName());
@@ -482,7 +478,6 @@ public class BusquedaFacturaAction extends MasterAction {
 						documento.setDescripcion(nombreColegiado+documento.getDescripcion());
 						documentosList.add(documento);
 					}
-
 				}
 			}
 			
@@ -490,56 +485,57 @@ public class BusquedaFacturaAction extends MasterAction {
 				if(documentosList.size()==1){
 					request.setAttribute("nombreFichero", documentosList.get(0).getDescripcion());
 					request.setAttribute("rutaFichero",  documentosList.get(0).getDocumento().getPath());
-				}else{
-					ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
-					StringBuilder pathDirectorioTemporal = new StringBuilder();
 					
-					pathDirectorioTemporal.append(rp.returnProperty("facturacion.directorioFisicoFacturaPDFJava"));
-					pathDirectorioTemporal.append(rp.returnProperty("facturacion.directorioFacturaPDFJava"));
-					pathDirectorioTemporal.append(ClsConstants.FILE_SEP);
-					pathDirectorioTemporal.append(idInstitucion);
-					pathDirectorioTemporal.append(ClsConstants.FILE_SEP);
-					pathDirectorioTemporal.append("tmp");
-					StringBuilder pathZip = new StringBuilder(pathDirectorioTemporal);
-					File directorio = new File(pathZip.toString());
-					if (!directorio.exists())
-						directorio.mkdir();
-					pathZip.append(File.separatorChar);
-					pathZip.append("Facturas");
-					pathZip.append(GstDate.parseDateToString(new Date(),"yyyyMMdd_hhmm",new Locale("ES")));
-					pathZip.append(".zip");
+				} else {
+					File fichero = documentosList.get(0).getDocumento();					 					
+					File directorio = fichero.getParentFile();
+					directorio.mkdirs();
+					if (!directorio.exists()) {
+						throw new SIGAException("messages.facturacion.comprueba.noPathFacturas");					
+					} else {
+						if (!directorio.canWrite()) {
+							throw new SIGAException("messages.facturacion.comprueba.noPermisosPathFacturas");					
+						}
+					}
+
+					StringBuilder sRutaZip = new StringBuilder();
+					sRutaZip.append(directorio.getPath()); // Elimina el nombre del fichero
+					sRutaZip.append(ClsConstants.FILE_SEP);
+					sRutaZip.append("Facturas");
+					sRutaZip.append(GstDate.parseDateToString(new Date(),"yyyyMMdd_hhmm",new Locale("ES")));
+					sRutaZip.append(".zip");
 					
-					
-					File filezip = UtilidadesFicheros.doZip(pathZip.toString(), documentosList);
+					File filezip = UtilidadesFicheros.doZip(sRutaZip.toString(), documentosList);
 					filezip.deleteOnExit();
 					
-					for (int i=0; i<documentosList.size(); i++) {
-						Documento documento = documentosList.get(i);
-						documento.getDocumento().delete();
-						File carpetaFicheroPdf = new File(documento.getDocumento().getParent());
-						if(carpetaFicheroPdf.listFiles().length==0)
-							carpetaFicheroPdf.delete();
-					}
-		
+		    		// Eliminacion de los pdfs firmados, el documento excel de la facturacion y su carpeta
+		    		for (int i=0; i<documentosList.size(); i++) {
+		    			File ficheroPdfFirmado = documentosList.get(i).getDocumento();
+		    			ficheroPdfFirmado.delete(); // Elimina los pdfs firmados
+		    		}
+		    		if (directorio!=null && directorio.isDirectory() && directorio.list().length==0) {
+		    			directorio.delete(); // borra el directorio de las firmas
+					}					
+				
 					request.setAttribute("nombreFichero", filezip.getName());
 					request.setAttribute("rutaFichero", filezip.getPath());
-					
-					
 				}
+				
 				request.setAttribute("borrarFichero", "true");
 				request.setAttribute("generacionOK", "OK");
 
 			} else {
 				ClsLogging.writeFileLog("No hay ficheros que descargar ", 3);
 			}
+			
 			if (!errores.toString().equals(""))
 				request.setAttribute("avisoFicherosNoGenerado", errores.toString());
-			return "descarga";
 
 		} catch (Exception e) {
 			throwExcp("messages.general.error", new String[] { "modulo.facturacion" }, e, null);
 		}
-		return "exception";
+		
+		return "descarga";
 	}
 	
 	
@@ -549,12 +545,9 @@ public class BusquedaFacturaAction extends MasterAction {
 		UserTransaction tx = userBean.getTransactionLigera();
 		DefinirEnviosForm form = (DefinirEnviosForm) formulario;
 
-		ReadProperties rp = new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
-
 		try {
 
 			// Obtenemos el certificado
-			CerSolicitudCertificadosAdm admCer = new CerSolicitudCertificadosAdm(userBean);
 			CerSolicitudCertificadosAdm admSolicitud = new CerSolicitudCertificadosAdm(userBean);
 			StringBuilder pathDirectorioTemporal = new StringBuilder(admSolicitud.getRutaCertificadoDirectorioBD(2000));
 			pathDirectorioTemporal.append(ClsConstants.FILE_SEP);
@@ -567,7 +560,6 @@ public class BusquedaFacturaAction extends MasterAction {
 				StringBuilder datosSolicitudError = null;
 				try {
 					String[] campos = lineas[i].split("%%");
-					String nombreSolicitud = "";
 					if (campos.length > 1) {
 						String idInstitucion = campos[6];
 
@@ -620,7 +612,6 @@ public class BusquedaFacturaAction extends MasterAction {
 				}
 			}
 			tx.commit();
-			String aviso = null;
 			
 			if (documentosList.size() > 0) {
 				

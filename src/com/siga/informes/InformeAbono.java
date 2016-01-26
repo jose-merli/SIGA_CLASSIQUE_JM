@@ -11,7 +11,6 @@ import javax.servlet.http.HttpSession;
 import org.redabogacia.sigaservices.app.util.ReadProperties;
 import org.redabogacia.sigaservices.app.util.SIGAReferences;
 
-
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.Row;
@@ -143,6 +142,7 @@ public class InformeAbono extends MasterReport {
 		File rutaFin=null;
 		File rutaTmp=null;
 		int numeroCarta=0;
+		String idFacturaParametro = "-1";    //Necesario para que la facturación masiva por el demonio funcione
 			
 		try {
 		    HttpSession ses = request.getSession();
@@ -183,7 +183,7 @@ public class InformeAbono extends MasterReport {
 			rutaTmp = new File(rutaServidorTmp);
 			String contenidoPlantilla = this.obtenerContenidoPlantilla(rutaPlantilla,nombrePlantilla);
 			
-			fPdf = this.generarInforme(request,rutaServidorTmp,contenidoPlantilla,rutaAlmacen,nombrePDF);
+			fPdf = this.generarInforme(request,rutaServidorTmp,contenidoPlantilla,rutaAlmacen,nombrePDF,idFacturaParametro);
 			
 		}catch (SIGAException se) {
 			throw se;

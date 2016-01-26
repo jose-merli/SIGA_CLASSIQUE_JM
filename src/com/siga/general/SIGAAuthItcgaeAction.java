@@ -18,8 +18,10 @@ import org.apache.struts.action.ActionMapping;
 import org.redabogacia.sigaservices.app.AppConstants.MODULO;
 import org.redabogacia.sigaservices.app.AppConstants.PARAMETRO;
 import org.redabogacia.sigaservices.app.autogen.model.CenInstitucion;
+import org.redabogacia.sigaservices.app.autogen.model.EstUserRegistry;
 import org.redabogacia.sigaservices.app.autogen.model.GenParametros;
 import org.redabogacia.sigaservices.app.services.cen.CenInstitucionService;
+import org.redabogacia.sigaservices.app.services.est.EstadisticasUserRegistryService;
 import org.redabogacia.sigaservices.app.services.gen.GenParametrosService;
 import org.redabogacia.sigaservices.app.util.PropertyReader;
 import org.redabogacia.sigaservices.app.util.SIGAReferences;
@@ -261,15 +263,20 @@ public class SIGAAuthItcgaeAction extends Action
 		result="topMenu";
 		ses.setAttribute(SIGAConstants.MENU_POSITION_REF, SIGAConstants.MENU_TOP);
 		
-	   try{
-		   	ResourceBundle rb = ResourceBundle.getBundle("versionSIGA");
-       		String version = rb.getString("version");
-       		request.setAttribute("versionSiga", (version == null ? "" : version));
+		 /*
+         * Obtenemos la versión de SIGA.
+         * A partir de ahora con despliegues desde Jenkins este dato se almacena en ficheros .properties.
+         */
+        
+        try{
+        	ResourceBundle rb = ResourceBundle.getBundle("versionSIGA");
+        	String version = rb.getString("version");
+        	request.setAttribute("versionSiga", (version == null ? "" : version));
         }catch (Exception e){
         	request.setAttribute("versionSiga", "");
-        	ClsLogging.writeFileLogError("Error al obtener la versión de SIGA desplegada.", e, 1);        	
+        	ClsLogging.writeFileLogError("Error al obtener la versión de SIGA desplegada.", e, 1);
         }
-		   
+		
 		return mapping.findForward(result);
 
 }	

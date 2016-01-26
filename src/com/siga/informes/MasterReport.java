@@ -763,7 +763,7 @@ Así que hemos logrado convertirse en el documento en formato RTF xml. So that we
 	 * @author RGG 
 	 * @since 15/02/2007
 	 */
-	public File generarInforme(HttpServletRequest request, String rutaServidorTmp, String contenidoPlantilla, String rutaServidorDescargas, String nombreFicheroPDF) throws ClsExceptions , SIGAException
+	public File generarInforme(HttpServletRequest request, String rutaServidorTmp, String contenidoPlantilla, String rutaServidorDescargas, String nombreFicheroPDF,String idFactura) throws ClsExceptions , SIGAException
 	{
 	
 		File ficheroFOP=null;		
@@ -782,7 +782,7 @@ Así que hemos logrado convertirse en el documento en formato RTF xml. So that we
 			
 			// Generacion del fichero .FOP para este usuario a partir de la plantilla .FO 		
 			ClsLogging.writeFileLog("ANTES DE REEMPLAZAR LOS DATOS DE LA PLANTILLA. ",10);
-			String content=reemplazarDatos(request,contenidoPlantilla);
+			String content=reemplazarDatos(request,contenidoPlantilla,idFactura);
 			ClsLogging.writeFileLog("DESPUES DE REEMPLAZAR LOS DATOS DE LA PLANTILLA. ",10);
 			UtilidadesString.setFileContent(ficheroFOP,content);
 
@@ -851,6 +851,10 @@ Así que hemos logrado convertirse en el documento en formato RTF xml. So that we
 	 * @throws ClsExceptions
 	 */
 	protected String reemplazarDatos(HttpServletRequest request, String plantillaFO) throws ClsExceptions,SIGAException{
+		 return plantillaFO;
+	 }
+	
+	protected String reemplazarDatos(HttpServletRequest request, String plantillaFO,String idFactura) throws ClsExceptions,SIGAException{
 		 return plantillaFO;
 	 }
 	protected String reemplazarDatos(UsrBean usr, String plantillaFO) throws ClsExceptions{

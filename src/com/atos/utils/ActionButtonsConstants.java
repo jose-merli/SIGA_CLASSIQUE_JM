@@ -6,7 +6,10 @@ import java.util.List;
 public enum ActionButtonsConstants {
 
 	VOLVER ("V","general.boton.volver","accionVolver()",1),
+	GENERAR_APROBAR_PDF ("GAC","general.boton.generar","generarPDFMostrados()",2),
+	FINALIZAR_CHECK ("FSC","general.boton.finalizar","accionFinalizarSel()",2),
 	FINALIZAR_SEL ("fs","general.boton.finalizarSel","accionFinalizarSel()",2),
+	FACTURAR_SEL("FAC","general.boton.facturar","accionFacturarSel()",2),
 	IMPRIMIR_APAISADO ("ia","general.aviso.imprimirApaisado","accionImprimirApaisado()",3),
 	NUEVO_LETRADO ("nl","gratuita.modalCambioLetradoDesigna.titulo","accionNuevoLetrado()",4),
 	CREAR_EJG ("ce","general.boton.crearEJG","accionCrearEJG()",5),
@@ -44,7 +47,8 @@ public enum ActionButtonsConstants {
 	ENVIAR ("en","general.boton.enviar","accionEnviar()",32),
 	FINALIZAR_COMPARA ("fc","general.boton.finalizarCompra","accionfinalizarCompra()",33),
 	PROCESAR_SOLICITUDES ("ps","general.boton.procesarSolicitud","accionProcesarSolicitud()",34),
-	DENEGAR_SOLICITUDES ("ds","general.boton.denegarSolicitud","accionDenegarSolicitud()",35),
+	DENEGAR_SOLICITUDES ("DS","general.boton.denegarSolicitud","accionDenegarSolicitud()",35),
+	DENEGAR_SOLICITUD ("DSOL","Denegar Solicitud","accionDenegarSolicitud()",35),
 	PROCESAR_DEVOLUCIONES ("pd","general.boton.procesarDevoluciones","accionProcesarDevoluciones()",36),
 	CONFIRMA_COMPRA ("cc","general.boton.confirmarCompra","accionConfirmarCompra()",37),
 	LISTA_CONSEJO ("lc","general.boton.listaParaConsejo","accionListaConsejo()",38),
@@ -63,6 +67,7 @@ public enum ActionButtonsConstants {
 	GENERAR_FICHERO ("gf","general.boton.generarFichero","generarFichero(true)",49),
 	GENERAR_CERRAR ("ygc","general.boton.generarCerrar","accionGenerarCerrar()",50),
 	GUARDAR_CERRAR ("y","general.boton.guardarCerrar","accionGuardarCerrar()",51),
+	ENVIAR_CERRAR ("eyc","general.boton.enviar","accionGuardarCerrar()",51),
 	GUARDAR_ANYADIR_HISTORICO ("gah","general.boton.guardarAnyadirHistorico","accionGuardarAnyadirHistorico()",52),
 	GUARDAR ("g","general.boton.guardar","accionGuardar()", "idButtonGuardar",53),
 	GENERAR_CARTA ("cg","general.boton.cartaInteresados","generarCarta()",54),
@@ -83,7 +88,7 @@ public enum ActionButtonsConstants {
 	LOG_FACTURACION ("lf","general.boton.descargaLogFacturacion","descargaLogFacturacion()",69),
 	CERRAR ("c","general.boton.close","accionCerrar()",70),
 	ENVIAR_SEL ("es","general.boton.enviarSel","accionEnviarSel()",71),
-	
+	ENVIAR_MASIVO ("esm","general.boton.comunicar","accionEnviarSel()",71),
 	VALIDA_REMESA("val","general.boton.validarRemesa","validarRemesa(this)", "idButtonValidarRemesa",71),
 	ENVIO_FTP ("ftp","general.boton.envioFTP","envioFTP(this)", "idButtonEnvioFTP",72),
 	RESPUESTA_FTP ("respFTP","general.boton.respuestaFTP","respuestaFTP(this)", "idButtonRespuestaFTP",73),
@@ -109,7 +114,9 @@ public enum ActionButtonsConstants {
 	PAGAR_ABONOS_CAJA("pgcaj","facturacion.abonosPagos.boton.pagoCaja","accionPagarCaja()",91),
 	DESCARGAR_PLANTILLA("dp","general.boton.descargar.plantilla","accionDescargarPlantilla()","idButtonDescPlant",92),
 	DESCARGAR_SEL ("dse","facturacion.facturasMasivo.descarga","accionDescargarSel()",93),
-	DESCARTAR ("desc","general.botons.Descartar","accionArchivar()",76);
+	DESCARTAR ("desc","general.botons.Descartar","accionArchivar()",76),
+	APROBAR_GENERAR ("ag","general.boton.generar","accionAprobarGenerar()",94),
+	REGENERAR ("rg","cert.boton.regenerar","accionRegenerar()",95);
 
     private final String valor;   
 	private final String label;   

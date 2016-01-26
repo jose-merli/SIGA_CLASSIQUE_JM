@@ -1,13 +1,34 @@
 package com.siga.beans;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
-import java.util.*;
-import java.util.zip.*;
-import com.atos.utils.*;
+import java.util.Date;
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.Locale;
+import java.util.StringTokenizer;
+import java.util.Vector;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
+import java.util.zip.ZipOutputStream;
 
-import com.siga.general.*;
-import com.siga.Utilidades.*;
+import com.atos.utils.ClsConstants;
+import com.atos.utils.ClsExceptions;
+import com.atos.utils.ClsLogging;
+import com.atos.utils.Row;
+import com.atos.utils.RowsContainer;
+import com.atos.utils.UsrBean;
+import com.siga.Utilidades.UtilidadesHash;
+import com.siga.general.EjecucionPLs;
+import com.siga.general.FiltroFicheros;
+import com.siga.general.SIGAException;
 
 public class CerPlantillasAdm extends MasterBeanAdministrador
 {
@@ -1017,4 +1038,210 @@ public class CerPlantillasAdm extends MasterBeanAdministrador
 
 		return htDatos;
 	}
+	/**
+	 * Obtienes las subplantillas de una plantilla
+	 * @param idInstitucion
+	 * @param idTipoProducto
+	 * @param idProducto
+	 * @param idProductoInstitucion
+	 * @param idPlantilla
+	 * @return
+	 * @throws ClsExceptions 
+	 */
+	   public Vector obtenerListaRelacionesPlantillas(String idInstitucion, String idTipoProducto, String idProducto, String idProductoInstitucion,String idPlantilla) throws ClsExceptions
+	    {
+	    	try
+	    	{
+	    		String sql = "  select plant.idInstitucion, plant.idTipoProducto, plant.Idproducto, "+
+							 "	plant.Idproductoinstitucion, plant.Idplantilla, plant.descripcion, "+
+							 "	plant.fechamodificacion, plant.usumodificacion, plant.pordefecto "+
+							 "	from cer_plantillas plant, cer_relacion_plantillas rel_plant "+
+							 "	where "+
+							 "	rel_plant.IDPLANTILLAPADRE = "+idPlantilla+" and "+ 
+							 "	rel_plant.IDINSTITUCION = " +idInstitucion+" and "+
+							 "	rel_plant.IDTIPOPRODUCTO = "+idTipoProducto+" and "+
+							 "	rel_plant.IDPRODUCTO = "+idProducto+" and "+
+							 "	rel_plant.IDPRODUCTOINSTITUCION= "+idProductoInstitucion+" and "+
+							 "	plant.idPlantilla = rel_plant.Idplantilla and "+
+							 "	plant.IDINSTITUCION  = rel_plant.IDINSTITUCION  and "+
+							 "	plant.IDTIPOPRODUCTO  = rel_plant.IDTIPOPRODUCTO and "+
+							 "	plant.IDPRODUCTO  = rel_plant.IDPRODUCTO and "+
+							 "	plant.IDPRODUCTOINSTITUCION  = rel_plant.IDPRODUCTOINSTITUCION ";
+
+	    		return selectSQL(sql);
+	    		
+	    	}
+
+	    	catch(Exception e)
+	    	{
+	    		throw new ClsExceptions(e, "Error al obtener la lista de relaciones entre plantillas");
+	    	}
+	    }
+	    /**
+	     * Comprueba si la plantilla es hijo
+	     * @param idInstitucion
+	     * @param idTipoProducto
+	     * @param idProducto
+	     * @param idProductoInstitucion
+	     * @param idPlantilla
+	     * @return
+	     * @throws ClsExceptions 
+	     */
+	    public Vector comprobarSiEsHijo(String idInstitucion, String idTipoProducto, String idProducto, String idProductoInstitucion,String idPlantilla) throws ClsExceptions
+	    {
+	    	try
+	    	{
+	    		String sql =   "select plant.idInstitucion, plant.idTipoProducto, plant.Idproducto, "+
+							 "	plant.Idproductoinstitucion, plant.Idplantilla, plant.descripcion, "+
+							 "	plant.fechamodificacion, plant.usumodificacion, plant.pordefecto "+
+	    						" from cer_plantillas plant, cer_relacion_plantillas rel_plant "+
+	    						" where rel_plant.IDPLANTILLA = "+idPlantilla+
+	    						" and rel_plant.IDINSTITUCION = "+idInstitucion+
+	    						" and rel_plant.IDTIPOPRODUCTO = "+idTipoProducto+
+	    						" and rel_plant.IDPRODUCTO ="+idProducto+
+	    						" and rel_plant.IDPRODUCTOINSTITUCION ="+idProductoInstitucion+
+	    						" and plant.idPlantilla = rel_plant.Idplantilla "+
+	    						" and plant.IDINSTITUCION = rel_plant.IDINSTITUCION "+
+	    						" and plant.IDTIPOPRODUCTO = rel_plant.IDTIPOPRODUCTO "+
+	    						" and plant.IDPRODUCTO = rel_plant.IDPRODUCTO "+
+	    						" and plant.IDPRODUCTOINSTITUCION = "+
+	    						" rel_plant.IDPRODUCTOINSTITUCION ";
+
+	    		return selectSQL(sql);
+	    		
+	    	}
+
+	    	catch(Exception e)
+	    	{
+	    		throw new ClsExceptions(e, "Error al comprobar si es hijo");
+	    	}
+	    }
+	    /**
+	     * Obtiene las plantillas que se pueden asociar a una plantilla y que no estén ya asociadas
+	     * @param idInstitucion
+	     * @param idTipoProducto
+	     * @param idProducto
+	     * @param idProductoInstitucion
+	     * @param idPlantilla
+	     * @return
+	     * @throws ClsExceptions 
+	     */
+	    public Vector obtenerComboRelacionesPlantillas(String idInstitucion, String idTipoProducto, String idProducto, String idProductoInstitucion,String idPlantilla) throws ClsExceptions
+	    {
+	    	try
+	    	{	  
+	    		String sql = " select * from cer_plantillas "+
+		                      " where idPlantilla!= "+idPlantilla+
+		                      " and idPlantilla not in(select idPlantilla from cer_relacion_plantillas where idPlantillaPadre="+idPlantilla+
+																			                      " and 	IDINSTITUCION = "+idInstitucion+" and "+ 
+																			         			  "	IDTIPOPRODUCTO = "+idTipoProducto+" and "+
+																			         			  " IDPRODUCTO = "+idProducto+" and "+
+																			         			  " IDPRODUCTOINSTITUCION= "+idProductoInstitucion+")"+
+		                      "  and 	IDINSTITUCION = "+idInstitucion+" and "+ 
+		         			  "	IDTIPOPRODUCTO = "+idTipoProducto+" and "+
+		         			  " IDPRODUCTO = "+idProducto+" and "+
+		         			  " IDPRODUCTOINSTITUCION= "+idProductoInstitucion+
+		         			  "  and idPlantilla not in  (select idPlantillaPadre "+
+		         			  " from cer_relacion_plantillas "+
+		         			  " where IDINSTITUCION = "+idInstitucion+
+		         			  " and IDTIPOPRODUCTO = "+idTipoProducto+
+		         			  " and IDPRODUCTO = "+idProducto+
+		         			  " and IDPRODUCTOINSTITUCION = "+idProductoInstitucion+")";
+	               
+	               return selectSQL(sql);
+	    		
+	    	}
+
+	    	catch(Exception e)
+	    	{
+	    		throw new ClsExceptions(e, "Error al obtener obtener la lista de plantillas que aún se pueden asociar");
+	    	}
+	    }
+	    
+	    /**
+	     * Inserta la relación entre la plantilla y la subplantilla
+	     * @param idPlantillaRelacion
+	     * @param idPlantilla
+	     * @param idInstitucion
+	     * @param idTipoProducto
+	     * @param idProducto
+	     * @param idProductoInstitucion
+	     * @return
+	     * @throws ClsExceptions 
+	     */
+	    public boolean insertarRelacionPlantillas(String idPlantillaRelacion, String idPlantilla, String idInstitucion, String idTipoProducto, String idProducto, String idProductoInstitucion) throws ClsExceptions
+	    {
+	    	try
+	    	{
+	    		 
+	    		String sql = "insert into CER_RELACION_PLANTILLAS "+
+	    					  "(IDPLANTILLA, IDPLANTILLAPADRE, IDINSTITUCION, IDTIPOPRODUCTO, IDPRODUCTO, IDPRODUCTOINSTITUCION, FECHA_ALTA,USU_ALTA) "+
+	    					  "values ("+idPlantillaRelacion+","+idPlantilla+","+idInstitucion+","+idTipoProducto+","+idProducto+","+idProductoInstitucion+",SYSDATE,0)";
+
+	    		return insertSQL(sql);
+	    		
+	    	}
+
+	    	catch(Exception e)
+	    	{
+	    		throw new ClsExceptions(e, "Error al insertar la relación entre plantillas");
+	    	}
+	    }
+	    
+	 	/**
+	 	 * Borrar la relación con la plantilla
+	 	 * @param idInstitucion
+	 	 * @param idTipoProducto
+	 	 * @param idProducto
+	 	 * @param idProductoInstitucion
+	 	 * @param idPlantilla
+	 	 * @param idPlantillaPadre
+	 	 * @return
+	 	 * @throws SIGAException
+	 	 * @throws ClsExceptions
+	 	 */
+	   	public boolean borrarRelacionPlantilla(String idInstitucion, String idTipoProducto, String idProducto, String idProductoInstitucion, String idPlantilla, String idPlantillaPadre) 
+		{
+			
+			try
+	    	{
+				String sql = null;
+				sql = "DELETE FROM CER_RELACION_PLANTILLAS WHERE IDPLANTILLA="+idPlantilla+ 
+						" AND IDPLANTILLAPADRE="+idPlantillaPadre+" AND IDINSTITUCION ="+idInstitucion+" AND IDTIPOPRODUCTO="+idTipoProducto+" AND IDPRODUCTO="+idProducto+" AND IDPRODUCTOINSTITUCION="+idProductoInstitucion;
+				
+				return deleteSQL(sql);
+				
+	    	}catch(Exception e)
+	    	{
+	    		return false;
+	    	}	
+		}
+	   	/**
+	   	 * Borrar cualquier relación que tenga la plantilla, tanto si es hija como si no.
+	   	 * @param idInstitucion
+	   	 * @param idTipoProducto
+	   	 * @param idProducto
+	   	 * @param idProductoInstitucion
+	   	 * @param idPlantilla
+	   	 * @return
+	   	 * @throws SIGAException
+	   	 * @throws ClsExceptions
+	   	 */
+	   	public boolean borrarHijosOPadres(String idInstitucion, String idTipoProducto, String idProducto, String idProductoInstitucion, String idPlantilla) throws SIGAException, ClsExceptions
+		{
+	   		try
+	    	{
+				String sql = null;
+				
+				sql = "DELETE FROM CER_RELACION_PLANTILLAS WHERE (IDPLANTILLA="+idPlantilla+" OR IDPLANTILLAPADRE="+idPlantilla+") AND IDINSTITUCION ="+idInstitucion+" AND IDTIPOPRODUCTO="+idTipoProducto+" AND IDPRODUCTO="+idProducto+" AND IDPRODUCTOINSTITUCION="+idProductoInstitucion;
+				
+				return deleteSQL(sql);
+				
+	    	}catch(Exception e)
+	    	{
+	    		return false;
+	    	}	
+		}
+
+	    
 }

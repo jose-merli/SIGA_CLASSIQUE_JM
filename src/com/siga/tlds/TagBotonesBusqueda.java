@@ -182,7 +182,19 @@ public class TagBotonesBusqueda extends TagSupport {
 								}
 								break;
 								
-					default:	printButton(usrbean, out, sbc);
+					default:	
+								if (sbc.equals(SearchButtonsConstants.FICHERO_RENEGOCIACIONES) ||
+									sbc.equals(SearchButtonsConstants.FICHERO_ABONOS) ||
+									sbc.equals(SearchButtonsConstants.FICHERO_DEVOLUCIONES)) {
+						
+									if (tipoAcceso.equalsIgnoreCase(SIGAPTConstants.ACCESS_FULL) && 
+										this.valoresEdicion.contains(this.modo)) {
+										printButton(usrbean, out, sbc);
+									}
+								
+								} else { 
+									printButton(usrbean, out, sbc);
+								}
 								break;
 					}
 				}

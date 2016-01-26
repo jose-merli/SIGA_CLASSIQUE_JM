@@ -23,7 +23,7 @@ public class ScsJurisdiccionAdm extends MasterBeanAdministrador {
 	/**
 	 * @param usuario
 	 */
-	ScsJurisdiccionAdm(UsrBean usuario) {
+	public ScsJurisdiccionAdm(UsrBean usuario) {
 		super( ScsJurisdiccionBean.T_NOMBRETABLA, usuario);
 	}
 

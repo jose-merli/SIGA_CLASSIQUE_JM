@@ -673,7 +673,7 @@ function habilitarCampos(isHabilitar) {
 						<html:hidden property="beneficiario"/>
 						</div>
 						<div>
-							<html:text property="otrosBeneficiarios"  size="40" styleClass="${estiloText}" style="width:700px;display:none"/>
+							<html:text property="otrosBeneficiarios"  size="40" maxlength="255" styleClass="${estiloText}" style="width:700px;display:none"/>
 						</div>
 					</c:when>
 					<c:otherwise>

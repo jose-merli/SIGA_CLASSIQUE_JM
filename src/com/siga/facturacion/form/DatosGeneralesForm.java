@@ -134,6 +134,13 @@ public class DatosGeneralesForm extends MasterForm {
  		return UtilidadesHash.getString(datos, FacSerieFacturacionBean.C_OBSERVACIONES);
  	}
  	
+ 	public void setTipoSerie (String d) {
+ 		UtilidadesHash.set(datos, FacSerieFacturacionBean.C_TIPOSERIE, d);
+ 	}
+ 	
+ 	public String getTipoSerie () { 
+ 		return UtilidadesHash.getString(datos, FacSerieFacturacionBean.C_TIPOSERIE);
+ 	}
  	
  	public void setGenerarPDF	(String d) 	{
  		UtilidadesHash.set(datos, FacSerieFacturacionBean.C_GENERARPDF, d);

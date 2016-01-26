@@ -260,7 +260,7 @@ public class DatosGeneralesAction extends MasterAction {
 				} else { // es colegiado o letrado
 					if (clienteEstaInstitucion == CenClienteAdm.TIPOCLIENTE_PROD_RESPRO) {
 						request.setAttribute("BDATOSGENERALESEDITABLES", "true");
-					} else if (clienteOtraInstitucion < CenClienteAdm.TIPOCLIENTE_PROD_COLPRO) { // No esta colegiado en otros colegios
+					} else if (clienteOtraInstitucion < CenClienteAdm.TIPOCLIENTE_PROD_COLPRO) { // No esta colegiado en otros colegios en produccion
 						request.setAttribute("BDATOSGENERALESEDITABLES", "true");
 					} else if (clienteOtraInstitucion == CenClienteAdm.TIPOCLIENTE_PROD_COLPRO && // No esta residente en ningun colegio
 							Integer.parseInt(idInstitucion) == ClsConstants.INSTITUCION_CGAE) { // Y estamos en CGAE
@@ -2165,68 +2165,54 @@ public class DatosGeneralesAction extends MasterAction {
 	 */
 	protected String modificarSociedad (ActionMapping mapping,	MasterForm formulario,	HttpServletRequest request,	HttpServletResponse response) throws SIGAException 
 	{
-		Hashtable hashOriginal = new Hashtable();
-		UsrBean usr = null;
+		// Obtengo usuario y creo manejadores para acceder a las BBDD
+		UsrBean usr = this.getUserBean(request);
 		UserTransaction tx = null;
 		
+		CenClienteAdm adminCli=new CenClienteAdm(usr);
+		CenPersonaAdm adminPer=new CenPersonaAdm(usr);
+			
 		try {		
-			// Obtengo usuario y creo manejadores para acceder a las BBDD
-			usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
-			tx = usr.getTransactionPesada();
+			// Obtengo los datos del formulario
 			Hashtable hashNoColegiadoOriginal = (Hashtable)request.getSession().getAttribute("hashNoColegiadoOriginal");
 
-			CenClienteAdm adminCli=new CenClienteAdm(this.getUserBean(request));
-			CenPersonaAdm adminPer=new CenPersonaAdm(this.getUserBean(request));
- 			
-			// Obtengo los datos del formulario
 			DatosGeneralesForm miForm = (DatosGeneralesForm)formulario;
 			
+			// calculando tipo
+			//TODO Realmente este calculo es una maraña sin sentido. Si hay algun cambio relativo a esto, por favor estudialo bien, borra todo esto y lo haces bien.
+			String tipoOriginal = request.getParameter("tipoOriginal");
+			String tipoComboOriginal = request.getParameter("tipoIdentificacion");
+			String tipoIdentificacionBloqueada = request.getParameter("tipoIdentificacionBloqueada");
+			
+			if(tipoComboOriginal == null || "".equals(tipoComboOriginal))
+				tipoComboOriginal = tipoIdentificacionBloqueada;
+			
+			//No entiendo que significa bloqueada u original.....
+			if(tipoIdentificacionBloqueada == null || "".equals(tipoIdentificacionBloqueada))
+				tipoIdentificacionBloqueada = tipoComboOriginal;
+			
+			if ("50".equals(tipoComboOriginal))
+				// Si tipoComboOriginal es 50 significa que el valor del combo seleccionado es Otro
+				// SI tipoComboOriginal es 20 significa que el valor del combo seleccionado es CIF
+				tipoOriginal="0";
+			else if("Y".equals(miForm.getTipo()))
+				tipoOriginal="Y";
+			else {
+				tipoOriginal= (String) miForm.getDatos().get("NIFCIF");
+				
+				if(tipoOriginal != null) {
+					if("20".equals(tipoComboOriginal) && "Y".equals(miForm.getTipoJY()))
+						tipoOriginal="Y";
+					else
+						tipoOriginal=tipoOriginal.substring(0,1);
+					request.setAttribute("tipo",tipoOriginal.toUpperCase());
+				}
+			}
+		    miForm.setTipo(tipoOriginal);
+		    
 			// tratamiento del fichero de fotografia
 		    String pathImagenes = "";
 		    String nombreFoto = "";
-		    
-		    String tipoOriginal = request.getParameter("tipoOriginal");
-		    String tipoComboOriginal = request.getParameter("tipoIdentificacion");
-		    String tipoIdentificacionBloqueada = request.getParameter("tipoIdentificacionBloqueada");
-		    
-		    if(tipoComboOriginal==null || tipoComboOriginal.equals(""))
-		    {
-		    	tipoComboOriginal = tipoIdentificacionBloqueada;
-		    }
-		    
-		    //No entiendo que significa bloqueada u original.....
-		    if(tipoIdentificacionBloqueada==null || tipoIdentificacionBloqueada.equals("")){
-		    	tipoIdentificacionBloqueada = tipoComboOriginal;
-		    }				    
-		    
-		    if(miForm.getTipo()!= null && miForm.getTipo().equals("Y"))
-		    	tipoOriginal="Y";
-		    else if(miForm.getTipo()!= null && miForm.getTipo().equals("J"))
-		    	tipoOriginal="J";
-
-		    // Si tipoComboOriginal es 50 significa que el valor del combo seleccionado es Otro
-		    // SI tipoComboOriginal es 20 significa que el valor del combo seleccionado es CIF
-		    if(tipoComboOriginal.equals("50"))
-		    	tipoOriginal="0";
-		    else if(!tipoOriginal.equals("Y"))
-		    	tipoOriginal="";
-		    
-		    if(tipoOriginal==null || tipoOriginal.equals(""))
-		    {
-		    	Hashtable hashNifCif = miForm.getDatos();
-		    	tipoOriginal= (String)hashNifCif.get("NIFCIF");
-		    
-		    	if(tipoOriginal!=null)
-		    	{
-		    		tipoOriginal=tipoOriginal.substring(0,1);
-		    		if(tipoComboOriginal.equals("20") && miForm.getTipoJY().equals("Y"))
-		    			tipoOriginal="Y";
-		    		request.setAttribute("tipo",tipoOriginal.toUpperCase());
-		    	}
-		    }
-		    else
-		    	request.setAttribute("tipo",tipoOriginal);
-		    miForm.setTipo(tipoOriginal);
 		    
 		    // obtencion del path app desde tabla parametros
 		    GenParametrosAdm paramAdm = new GenParametrosAdm(this.getUserBean(request)); 
@@ -2293,7 +2279,7 @@ public class DatosGeneralesAction extends MasterAction {
 			}
 
 			// Cargo una hastable con los valores originales del registro sobre el que se realizará la modificacion						
-			hashOriginal=(Hashtable)request.getSession().getAttribute("DATABACKUP");
+			Hashtable hashOriginal=(Hashtable)request.getSession().getAttribute("DATABACKUP");
 			
 			// primero compruebo la existencia del nif
 			// pero solamente cuando ha cambiado el NIF
@@ -2330,6 +2316,7 @@ public class DatosGeneralesAction extends MasterAction {
 			hashHist.put(CenHistoricoBean.C_IDTIPOCAMBIO, new Integer(ClsConstants.TIPO_CAMBIO_HISTORICO_DATOS_GENERALES).toString());			
 						
 			// Adecuo formatos
+			tx = usr.getTransactionPesada();
 			hash = this.prepararFormatosFechas(hash);
 			hash = this.controlFormatosCheck(hash);
 

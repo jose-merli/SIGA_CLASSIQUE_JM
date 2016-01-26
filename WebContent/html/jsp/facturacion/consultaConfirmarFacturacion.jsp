@@ -484,8 +484,10 @@
 										}else if(((String)htData.get("IDESTADOENVIO")).equals(String.valueOf(FacEstadoConfirmFactBean.ENVIO_PROCESANDO.intValue()))){
 											sEstadoConfirmacion +=  UtilidadesString.mostrarDatoJSP("\nGenerando Envío");
 										}else if(((String)htData.get("IDESTADOENVIO")).equals(String.valueOf(FacEstadoConfirmFactBean.ENVIO_PROGRAMADA.intValue()))){
-											sEstadoConfirmacion +=  UtilidadesString.mostrarDatoJSP("\nGenerando Envío");
-										}										
+											sEstadoConfirmacion +=  UtilidadesString.mostrarDatoJSP("\nEnvío programado");
+										}else if(((String)htData.get("IDESTADOENVIO")).equals(String.valueOf(FacEstadoConfirmFactBean.ENVIO_PENDIENTE.intValue()))){
+											sEstadoConfirmacion +=  UtilidadesString.mostrarDatoJSP("\nEnvío pendiente");
+										}											
 									}
 								}
 								

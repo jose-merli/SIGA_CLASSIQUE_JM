@@ -1052,10 +1052,9 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 				select.append(      FcsPagoColegiadoBean.C_IMPSOJ + " + ");
 				select.append(      FcsPagoColegiadoBean.C_IMPMOVVAR + " AS importepagado, ");
 				select.append(    " NVL((SELECT " + ScsRetencionesBean.C_CLAVEM190 );
-				select.append(		   " FROM  " + ScsRetencionesBean.T_NOMBRETABLA);
-				select.append(		   " WHERE " + ScsRetencionesBean.C_CLAVEM190 + " is not null ");
-				select.append(		   "   AND " + FcsPagoColegiadoBean.C_PORCENTAJEIRPF + " = " + ScsRetencionesBean.C_RETENCION + "), 'G01') AS CLAVEM190 ");
-				select.append("   FROM "  + FcsPagoColegiadoBean.T_NOMBRETABLA );
+				select.append(		   " FROM  " + ScsRetencionesBean.T_NOMBRETABLA + " Ret ");
+				select.append(		   " WHERE Ret." + ScsRetencionesBean.C_IDRETENCION + " = Pag." + FcsPagoColegiadoBean.C_IDRETENCION + "), 'G01') AS CLAVEM190 ");
+				select.append("   FROM "  + FcsPagoColegiadoBean.T_NOMBRETABLA + " Pag ");
 				select.append("   WHERE " + FcsPagoColegiadoBean.C_IDINSTITUCION + " = " + idInstitucion);
 				select.append("     AND "   + FcsPagoColegiadoBean.C_IDPAGOSJG + " IN (" + sPagos + ")");
 				select.append("     AND "   + FcsPagoColegiadoBean.C_PORCENTAJEIRPF + " > 0 ");
@@ -1395,7 +1394,10 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 					linea += relleno("0",4); // anho nacimiento
 					linea += relleno("0",1); // situacion familiar
 					linea += relleno(" ",9); // nif conyuge
-					linea += relleno("0",84); // resto datos adicionales
+					linea += relleno("0",2); // discapacidad, contrato o relacion
+					linea += relleno(" ",1); // MOVILIDAD GEOGRÁFICA - ACEPTACION EN 2014
+					linea += relleno("0",1); // movilidad geografica (170)
+					linea += relleno("0",80); // resto datos adicionales
 					
 					// jbd Adaptamos el modelo 190 al 2010, hay que completar hasta 500
 					linea += relleno("0", 3); // nº de hijos

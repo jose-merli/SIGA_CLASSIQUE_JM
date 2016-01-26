@@ -858,9 +858,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 	            ceBean.setIdCampo(cpBean.getIdCampo());
 	            ceBean.setIdFormato(cpBean.getIdFormato());
 	            ceBean.setTipoCampo(cpBean.getTipoCampo());
-//	            ceBean.setValor("Pepe");	            
-	            ceBean.setValor(cpBean.getValor());	            
-	            
+	            ceBean.setValor(cpBean.getValor());	             
 	            ceAdm.insert(ceBean);
 	        }
         }
@@ -5169,6 +5167,27 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 			scsComunicaciones.setFechamodificacion(new Date());
 			insertarComunicacionEjgEntrada(scsComunicaciones, usrBean);
 		}
+	}
+    
+    public Long	getSecuenciaNextVal(String nombreSecuencia)throws ClsExceptions {
+		int contador = 0;
+		Long id=null;
+		
+		RowsContainer rc = new RowsContainer(); 
+		StringBuffer sql = new StringBuffer();
+		sql.append("SELECT ");
+		sql.append(nombreSecuencia);
+		sql.append(".NEXTVAL from DUAL");
+		try {		
+			if (rc.findForUpdate(sql.toString())) {	
+				Row fila = (Row) rc.get(0);
+				id = Long.valueOf((String)fila.getRow().get("NEXTVAL"));														
+			}
+		}	
+		catch (ClsExceptions e) {		
+			throw new ClsExceptions (e, "Error al ejecutar el 'getSecuenciaNextVal' en BBDD");		
+		}		
+		return id;
 	}
 	
     

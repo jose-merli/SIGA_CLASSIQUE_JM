@@ -99,12 +99,25 @@ public class SIGASvlProcesoFacturacion extends HttpServlet
 
 					if (minutosQueFaltanAntesDeSiguienteAutomaticoFacturacion > duracionMediaFacturacion) {
 						
-						ClsLogging.writeFileLogWithoutSession(" ---------- INICIO REEENVIO DE FACTURAS. INSTITUCION: " + idinstitucion, 3);
+						ClsLogging.writeFileLogWithoutSession(" ---------- INICIO GENERACION Y ENVIO DE FACTURAS. INSTITUCION: " + idinstitucion, 3);
 						// Este proceso no deberia ejecutarse ya que se ejecuta en el mismo momento en que lo pide el usuario (proceso individual)
 						fac.generarPDFsYenviarFacturasProgramacion(request, "" + idinstitucion);
-						
-						ClsLogging.writeFileLogWithoutSession(" ---------- OK REEENVIO DE FACTURAS. INSTITUCION: " + idinstitucion, 3);
+						momentoActual = new Date();
+						minutosTranscurridos = (momentoActual.getTime() - momentoInicio.getTime()) / (1000 * 60);
+						minutosQueFaltanAntesDeSiguienteAutomaticoFacturacion = minutosEntreCadaProcesoAutomaticoFacturacion - minutosTranscurridos;
+						ClsLogging.writeFileLogWithoutSession(" ---------- OK  INICIO GENERACION Y ENVIO DE FACTURAS. INSTITUCION: " + idinstitucion, 3);
 					}
+					
+					if (minutosQueFaltanAntesDeSiguienteAutomaticoFacturacion > duracionMediaFacturacion) {
+						
+						ClsLogging.writeFileLogWithoutSession(" ---------- INICIO ENVIO DE FACTURAS. INSTITUCION: " + idinstitucion, 3);
+						// Este proceso no deberia ejecutarse ya que se ejecuta en el mismo momento en que lo pide el usuario (proceso individual)
+						fac.generarEnviosFacturasPendientes(request, "" + idinstitucion);
+						
+						ClsLogging.writeFileLogWithoutSession(" ---------- OK ENVIO DE FACTURAS. INSTITUCION: " + idinstitucion, 3);
+					}
+					
+					
 
 				} catch (Exception e) {
 					ClsLogging.writeFileLogWithoutSession(" ---------- ERROR GENERACION DE FACTURAS. INSTITUCION: "	+ idinstitucion, 3);

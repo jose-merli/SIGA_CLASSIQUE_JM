@@ -4,8 +4,6 @@
 
 package com.siga.censo.action;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Vector;
@@ -42,7 +40,6 @@ import com.siga.beans.PysPeticionCompraSuscripcionBean;
 import com.siga.beans.PysProductosSolicitadosAdm;
 import com.siga.beans.PysProductosSolicitadosBean;
 import com.siga.beans.PysServicioAnticipoAdm;
-import com.siga.beans.PysServiciosAdm;
 import com.siga.beans.PysServiciosSolicitadosAdm;
 import com.siga.beans.PysServiciosSolicitadosBean;
 import com.siga.beans.PysSuscripcionAdm;
@@ -452,95 +449,67 @@ public class DatosFacturacionAction extends MasterAction {
 	 * @return  String  Destino del action  
 	 * @exception  ClsExceptions  En cualquier caso de error
 	 */
-	protected String grabarCambiarFecha (ActionMapping mapping, 		
-							MasterForm formulario, 
-							HttpServletRequest request, 
-							HttpServletResponse response) throws SIGAException 
-	{
+	protected String grabarCambiarFecha (ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		String salida = "";
 		UserTransaction tx = null;
 		
 		try {
-
-			DatosFacturacionForm miform = (DatosFacturacionForm)formulario;
+			DatosFacturacionForm miform = (DatosFacturacionForm) formulario;
 			UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");
-			
-			String pos=miform.getPos();
-
 			tx=user.getTransaction();
 			
+			String pos=miform.getPos();
+			
 			String fecha = request.getParameter("fechaEfectiva");
-			fecha=GstDate.getApplicationFormatDate("EN",fecha);
+			fecha = GstDate.getApplicationFormatDate("EN",fecha);
 			
 			tx.begin();
 			
-			if(pos.equals("S")){ //Es un servicio
-				// busco la suscripcion
-				PysSuscripcionAdm admSus = new PysSuscripcionAdm(user);
-				PysServiciosSolicitadosAdm admSS = new PysServiciosSolicitadosAdm(user);
+			if (pos.equals("S")) { //Es un servicio
+				PysSuscripcionAdm admPysSuscripcion = new PysSuscripcionAdm(user);
+				PysServiciosSolicitadosAdm admPysServiciosSolicitados = new PysServiciosSolicitadosAdm(user);
 
 				String idTipoServicioSel = request.getParameter("idTipoServicioSel");
 				String idServicioSel = request.getParameter("idServicioSel");
 				String idServicioInstitucionSel = request.getParameter("idServicioInstitucionSel");
+				String idPeticionSel = request.getParameter("idPeticionSel");
 				
-				Hashtable ht = new Hashtable();
-				ht.put(PysSuscripcionBean.C_IDINSTITUCION,user.getLocation());
-				ht.put(PysSuscripcionBean.C_IDTIPOSERVICIOS,idTipoServicioSel);
-				ht.put(PysSuscripcionBean.C_IDSERVICIO,idServicioSel);
-				ht.put(PysSuscripcionBean.C_IDSERVICIOSINSTITUCION,request.getParameter("idServicioInstitucionSel"));
+				Hashtable<String,String> hServiciosSolicitados = new Hashtable<String,String>();
+				hServiciosSolicitados.put(PysSuscripcionBean.C_IDINSTITUCION, user.getLocation());
+				hServiciosSolicitados.put(PysSuscripcionBean.C_IDTIPOSERVICIOS, idTipoServicioSel);
+				hServiciosSolicitados.put(PysSuscripcionBean.C_IDSERVICIO, idServicioSel);
+				hServiciosSolicitados.put(PysSuscripcionBean.C_IDSERVICIOSINSTITUCION, idServicioInstitucionSel);				
+				hServiciosSolicitados.put(PysSuscripcionBean.C_IDPETICION, idPeticionSel); // Se incluye tambien el idPeticion porque si no le estamos cambiando la fecha efectiva a todas las personas que tengan el servicio seleccionado
 				
-				/* Se incluye tambien el idPeticion porque si no le estamos cambiando la fecha efectiva a todas las personas que tengan el servicio 
-				 seleccionado*/
-				ht.put(PysSuscripcionBean.C_IDPETICION,request.getParameter("idPeticionSel")); 
-								
-				
-				Vector v = admSS.select(ht);
-				if (v!=null && v.size()>0) {
-				    PysServiciosSolicitadosBean beanSS = (PysServiciosSolicitadosBean) v.get(0);
-					Vector v2 = admSus.select(ht);
-					for (int i=0;i<v2.size();i++) {
-					    PysSuscripcionBean beanSus = (PysSuscripcionBean) v2.get(i);
+				Vector<PysServiciosSolicitadosBean> vPysServiciosSolicitados = admPysServiciosSolicitados.select(hServiciosSolicitados);
+				if (vPysServiciosSolicitados!=null && vPysServiciosSolicitados.size()>0) {
+				    PysServiciosSolicitadosBean PysServiciosSolicitados = (PysServiciosSolicitadosBean) vPysServiciosSolicitados.get(0);
+				    
+					Vector<PysSuscripcionBean> vPysSuscripcion = admPysSuscripcion.select(hServiciosSolicitados);
+					
+					for (int i=0; i<vPysSuscripcion.size(); i++) {
+					    PysSuscripcionBean beanPysSuscripcion = (PysSuscripcionBean) vPysSuscripcion.get(i);
 					    
-					    if (beanSS.getAceptado().equals("A")) {
+					    if (PysServiciosSolicitados.getAceptado().equals("A")) {
 					        // Aceptado. Se mete en la fecha se suscripcion
-					        beanSus.setFechaSuscripcion(fecha);
-					    } else
-					    if (beanSS.getAceptado().equals("B")) {
-						    PysServiciosAdm psa = new PysServiciosAdm(user);
-						    String sFechaFacMayor = psa.obtenerFechaMayorServicioFacturado(
-						    		user.getLocation(), idTipoServicioSel, idServicioSel, idServicioInstitucionSel );
-						    SimpleDateFormat formato = new SimpleDateFormat("yyyy/MM/dd hh:mm:ss");
-						    Date dFecha = formato.parse(fecha);
-						    if (sFechaFacMayor!=null && !sFechaFacMayor.equals("")){
-							    Date dFechaFacMayor = formato.parse(sFechaFacMayor);
-							    
-							    if (dFecha.compareTo(dFechaFacMayor)<=0) {
-							    	// la fecha de baja es menor o igual que la fecha de facturacion mayor
-							    	formato.applyPattern("dd/MM/yyyy");
-							    	String [] datos = {formato.format(dFechaFacMayor)};
-							    	throw new SIGAException("messages.Servicios.GestionSolicitudes.FechaEfectivaMenorFacturacion", datos);
-							    }
-						    }
-						    else{
-						        // Si no existen facturaciones se comprueba la fecha de suscripcion
-							    Date dFechaSus = new Date(beanSus.getFechaSuscripcion());
-							    Date dFechaBaj = new Date(fecha);
-							    if (dFechaSus.compareTo(dFechaBaj)>0) {
-							        // la fecha de baja es menor que la fecha de suscripcion
-							        throw new SIGAException("messages.Servicios.GestionSolicitudes.FechaEfectivaMal");
-							    }
-						    }
-						    beanSus.setFechaBaja(fecha);
+					    	beanPysSuscripcion.setFechaSuscripcion(fecha);
+					        
+					    } else if (PysServiciosSolicitados.getAceptado().equals("B")) {
+					    	beanPysSuscripcion.setFechaBajaFacturacion(fecha);
 					    }
 					    
-					   if (!admSus.updateDirect(beanSus)) {
-					       throw new ClsExceptions("Error al actualizar la fecha efectiva. "+admSus.getError());
+					   if (!admPysSuscripcion.updateDirect(beanPysSuscripcion)) {
+					       throw new ClsExceptions("Error al actualizar la fecha efectiva. " + admPysSuscripcion.getError());
 					   }
 	
 					}
+					
 				} else {
 				    throw new ClsExceptions("No existe la peticion.");
 				}
+				
+				salida = this.exitoRefresco("messages.updated.success",request);
+				
 			}else{ /// Es un producto
 //				 busco la suscripcion
 				PysCompraAdm admCom = new PysCompraAdm(user);
@@ -593,11 +562,10 @@ public class DatosFacturacionAction extends MasterAction {
 				    throw new ClsExceptions("No existe la peticion.");
 				}	
 				
+				salida = this.exitoModal("messages.updated.success",request);
 			}
 			
 			tx.commit();
-			
-			salida = this.exitoModal("messages.updated.success",request);
 			
 	   } catch (Exception e) {
 	       throwExcp("messages.general.error",new String[] {"modulo.censo"},e,tx);
@@ -755,7 +723,7 @@ public class DatosFacturacionAction extends MasterAction {
 			criterios.put("FECHA_DESDE","SYSDATE-365"); // HACE UN AÑO
 			criterios.put("FECHA_HASTA","SYSDATE+1");
 			
-			Vector resultados = productosAdm.getProductosSolicitados(criterios,new Integer(miform.getIdInstitucion()),false);
+			Vector resultados = productosAdm.getProductosSolicitados(criterios,new Integer(miform.getIdInstitucion()));
 			//Vector resultados = new Vector();
 			request.setAttribute("CenProductosSolicitadosResultados",resultados);
 
@@ -1088,7 +1056,7 @@ public class DatosFacturacionAction extends MasterAction {
 				criterios.put(PysServiciosSolicitadosBean.C_ACEPTADO, ClsConstants.PRODUCTO_BAJA);
 			}
 			
-			Vector resultados = serviciosAdm.getServiciosSolicitados(criterios,new Integer(miform.getIdInstitucion()),false);
+			Vector resultados = serviciosAdm.getServiciosSolicitados(criterios,new Integer(miform.getIdInstitucion()));
 			//Vector resultados = new Vector();
 			request.setAttribute("CenServiciosSolicitadosResultados",resultados);
 
@@ -1209,11 +1177,6 @@ public class DatosFacturacionAction extends MasterAction {
 				Hashtable criterios = new Hashtable();
 				criterios.put(PysServiciosSolicitadosBean.C_IDPERSONA,miform.getIdPersona());
 				criterios.put(PysPeticionCompraSuscripcionBean.C_TIPOPETICION,ClsConstants.TIPO_PETICION_COMPRA_ALTA);
-				// inc-6529 Los servicios deben salir todos, no solo 2 años
-				/*if (!bIncluirRegistrosConBajaLogica){
-				criterios.put("FECHA_DESDE", "SYSDATE-730"); // HACE DOS AÑO
-				criterios.put("FECHA_HASTA", "SYSDATE+1");
-				}*/
 				request.setAttribute("bIncluirRegistrosConBajaLogica", "" + bIncluirRegistrosConBajaLogica);
 				
 				if (!bIncluirRegistrosConBajaLogica){

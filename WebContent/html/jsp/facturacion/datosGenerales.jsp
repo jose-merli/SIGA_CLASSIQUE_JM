@@ -45,7 +45,7 @@
 	ArrayList<String> aPlantillaEnviosSeleccionada = new ArrayList<String>();
 	ArrayList<String> aSerieSeleccionada = new ArrayList<String>();
 	Integer iPlantilla=new Integer(-1);
-	String sAbreviatura="", sDescripcion="", idSerieFacturacion="-1", idSeriePrevia="-1", enviarFacturas="", generarPDF="", observaciones="", sPlantilla="", sFechaBaja="";
+	String sAbreviatura="", sDescripcion="", idSerieFacturacion="-1", idSeriePrevia="-1", enviarFacturas="", generarPDF="", observaciones="", sPlantilla="", sFechaBaja="", sTipoSerieFacturacion="";
 	FacSerieFacturacionBean beanSerieFacturacion = (FacSerieFacturacionBean) request.getAttribute("beanSerieFacturacion");	
 	if (beanSerieFacturacion!=null) {		
 		sAbreviatura = beanSerieFacturacion.getNombreAbreviado();
@@ -54,6 +54,7 @@
 		idSerieFacturacion = String.valueOf(beanSerieFacturacion.getIdSerieFacturacion());
 		enviarFacturas = beanSerieFacturacion.getEnvioFactura();
 		generarPDF = beanSerieFacturacion.getGenerarPDF();
+		sTipoSerieFacturacion = beanSerieFacturacion.getTipoSerie();
 		observaciones = beanSerieFacturacion.getObservaciones();
 		sFechaBaja = (beanSerieFacturacion.getFechaBaja()!=null ? beanSerieFacturacion.getFechaBaja() : "");
 		if (beanSerieFacturacion.getIdSerieFacturacionPrevia()!=null) {
@@ -349,7 +350,7 @@
 												
 							<tr> 
        							<td class="labelText" width="10%" style="text-align:left"><siga:Idioma key="facturacion.datosGenerales.literal.descripcion"/>&nbsp;(*)</td>
-								<td colspan="5">
+								<td colspan="3">
 <%
 									if (!bEditable) {
 %>
@@ -360,6 +361,23 @@
 										<html:text name="DatosGeneralesForm" styleId="descripcion"  property="descripcion" size="100" maxlength="100" styleClass="box" value="<%=sDescripcion%>" readonly="false"/>
 <%
 									}
+%>
+								</td>
+								
+								<td class="labelText" nowrap title='<%=UtilidadesString.mostrarDatoJSP(UtilidadesString.getMensajeIdioma (user, "facturacion.seriesFacturacion.tipoGenerica.ayuda").replaceAll("\\\\n", ""))%>'>
+									<siga:Idioma key="facturacion.datosGenerales.literal.tipoGenerica"/>
+								</td>
+								<td title='<%=UtilidadesString.mostrarDatoJSP(UtilidadesString.getMensajeIdioma (user, "facturacion.seriesFacturacion.tipoGenerica.ayuda").replaceAll("\\\\n", ""))%>'>
+<% 
+									if (sTipoSerieFacturacion!=null && sTipoSerieFacturacion.equals("G")) { 
+%>
+										<input type="checkbox" name="tipoSerie" id="tipoSerie" <%=(accion.equals("ver") ? "disabled" : "") %> checked>
+<% 
+									} else { 
+%>
+										<input type="checkbox" name="tipoSerie" id="tipoSerie" <%=(accion.equals("ver") ? "disabled" : "") %> >
+<% 
+									} 
 %>
 								</td>
 							</tr>

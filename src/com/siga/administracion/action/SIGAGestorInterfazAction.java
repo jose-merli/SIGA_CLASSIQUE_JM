@@ -118,6 +118,7 @@ public class SIGAGestorInterfazAction extends MasterAction {
 			    	if (extension==null || extension.trim().equals("")
 			    			|| (!extension.trim().toUpperCase().equals(".JPG")
 						    && !extension.trim().toUpperCase().equals(".GIF")
+						    && !extension.trim().toUpperCase().equals(".PNG")
 							&& !extension.trim().toUpperCase().equals(".JPEG"))) {
 			    		
 			    		throw new SIGAException("messages.error.imagen.tipoNoCorrecto");

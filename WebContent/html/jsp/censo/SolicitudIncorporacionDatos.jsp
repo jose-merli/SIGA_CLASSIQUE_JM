@@ -196,6 +196,16 @@
 
 <script language="JavaScript">
 
+	// Si fechaNacimiento es editable, indica si es valida o no (ver esFechaNacimientoInvalida)
+	function comprobarFechaNacimiento(valorFechaNacimiento) {
+		if (!jQuery("#fechaNacimiento").is('[disabled]') && esFechaNacimientoInvalida(valorFechaNacimiento)) {
+			alert("<siga:Idioma key='errors.date.past' arg0='censo.SolicitudIncorporacion.literal.fechaNacimiento'/>");
+			return false;
+		} else {
+			return true;
+		}
+	}
+
 	function editarNColegiado(){
 		var numeroCol = jQuery("#numColBox");
 		var botNumeroCol = jQuery("#botonNCol"); 
@@ -289,6 +299,8 @@
 			}
 			if(document.SolicitudIncorporacionForm.fechaNacimiento.value==""){
 				errores += "<siga:Idioma key='errors.required' arg0='censo.SolicitudIncorporacion.literal.fechaNacimiento'/>" + '\n';
+			} else if (esFechaNacimientoInvalida(document.getElementById("fechaNacimiento").value)) {
+				errores += "<siga:Idioma key='errors.date.past' arg0='censo.SolicitudIncorporacion.literal.fechaNacimiento'/>" + '\n';			
 			}
 			if(document.SolicitudIncorporacionForm.domicilio.value==""){
 				errores += "<siga:Idioma key='errors.required' arg0='censo.SolicitudIncorporacion.literal.domicilio'/>" + '\n';
@@ -1941,7 +1953,8 @@
 						</span>
 						</td>
 					<%}else{%>
-						<td><siga:Fecha nombreCampo="fechaNacimiento" valorInicial="<%=datosPersonales.getFechaNacimiento()%>"/>
+						<td>
+							<siga:Fecha nombreCampo="fechaNacimiento" valorInicial="<%=datosPersonales.getFechaNacimiento()%>" postFunction="comprobarFechaNacimiento(this.value)"/>
 						&nbsp;&nbsp;
 						<span class="labelText">
 						<siga:Idioma key='censo.SolicitudIncorporacion.literal.naturalDe'/>

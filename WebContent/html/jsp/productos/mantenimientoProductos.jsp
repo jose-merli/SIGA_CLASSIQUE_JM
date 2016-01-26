@@ -540,13 +540,13 @@
 %>
 								  			<html:textarea property="nombre" styleClass="box" 
 								  				style="overflow-y:auto; overflow-x:hidden; width:300px; height:70px; resize:none;"
-								  				onKeyDown="cuenta(this,100)" onChange="cuenta(this,100)"/>								  				
+								  				onKeyDown="cuenta(this,1000+1)" onChange="cuenta(this,1000+1)"/>								  				
 <% 
 										} else { 
 											if (remitente=="modificar"){ %>
 												<html:textarea property="nombre" styleClass="box" 
 													style="overflow-y:auto; overflow-x:hidden; width:300px; height:70px; resize:none;"
-													onKeyDown="cuenta(this,100)" onChange="cuenta(this,100)" 
+													onKeyDown="cuenta(this,1000+1)" onChange="cuenta(this,1000+1)" 
 													value="<%=row.getString(PysProductosInstitucionBean.C_DESCRIPCION)%>"/>
 													
 <%

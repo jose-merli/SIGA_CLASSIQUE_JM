@@ -1325,6 +1325,7 @@ public class MaestroDesignasAction extends MasterAction {
 			if (!resultado.isEmpty()) {fechaResolucionCAJG = (String)((Hashtable)resultado.get(0)).get("FECHARESOLUCIONCAJG");}
 			
 			
+			
 			String pretension = "", comisaria = "",origen ="", juzgado="";
 			if(idpreten!=null && !idpreten.trim().equals("")){
 			

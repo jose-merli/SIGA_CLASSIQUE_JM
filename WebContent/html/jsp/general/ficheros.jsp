@@ -38,7 +38,7 @@
 										</td>
 										<td class="labelText">&nbsp;</td>
 	
-										<td class="tdBotones">
+										<td class="labelText">
 	
 										</td>
 									</tr>

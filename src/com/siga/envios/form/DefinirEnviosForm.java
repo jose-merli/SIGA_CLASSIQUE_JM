@@ -40,6 +40,7 @@ public class DefinirEnviosForm extends MasterForm
 	private String idIntercambio;
 	private String origen;
 	private String conArchivados;
+	private String comunicacionAsunto;
 	
 	
 
@@ -72,6 +73,12 @@ public class DefinirEnviosForm extends MasterForm
 	public String getDescargar() { return (String) this.datos.get("descargar"); }
 	public String getClavesIteracion() { return (String) this.datos.get("clavesIteracion"); }
 	public String getAcuseRecibo() { return (String) this.datos.get("acuseRecibo"); }
+	public String getCheckCertificados() { return (String) this.datos.get("checkCertificados"); }
+	public String getCheckFacturas() { return (String) this.datos.get("checkFacturas"); }
+	public String getRadioDestinatario() { return (String) this.datos.get("radioDestinatario"); }
+	
+	
+	
 	
 	
 	// SETTERS
@@ -98,6 +105,11 @@ public class DefinirEnviosForm extends MasterForm
 	public void setFechaProgramada(String fechaProgramada) { try { this.datos.put("fechaProgramada", fechaProgramada); } catch (Exception e) {} }
 	public void setIdPersona(String idPersona) { try { this.datos.put("idPersona", idPersona); } catch (Exception e) {} }
 	public void setAcuseRecibo(String acuseRecibo) { try { this.datos.put("acuseRecibo", acuseRecibo); } catch (Exception e) {} }
+	public void setCheckCertificados(String checkCertificados) { try { this.datos.put("checkCertificados", checkCertificados); } catch (Exception e) {} }
+	public void setCheckFacturas(String checkFacturas) { try { this.datos.put("checkFacturas", checkFacturas); } catch (Exception e) {} }
+	public void setRadioDestinatario(String radioDestinatario) { try { this.datos.put("radioDestinatario", radioDestinatario); } catch (Exception e) {} }
+	
+	
 	
 	public void setIdSolicitud(String idSolicitud) { try { this.datos.put("idSolicitud", idSolicitud); } catch (Exception e) {} }
 	public void setComboPlantillaEnvio(String comboPlantillaEnvio) {
@@ -236,5 +248,12 @@ public class DefinirEnviosForm extends MasterForm
 	public void setConArchivados(String conArchivados) {
 		this.conArchivados = conArchivados;
 	}
+	public String getComunicacionAsunto() {
+		return comunicacionAsunto;
+	}
+	public void setComunicacionAsunto(String comunicacionAsunto) {
+		this.comunicacionAsunto = comunicacionAsunto;
+	}
+	
 	
 }

@@ -19,7 +19,6 @@ import org.apache.struts.action.ActionMapping;
 import org.redabogacia.sigaservices.app.AppConstants;
 import org.redabogacia.sigaservices.app.AppConstants.PARAMETRO;
 import org.redabogacia.sigaservices.app.exceptions.BusinessException;
-import org.redabogacia.sigaservices.app.services.scs.DocumentacionEjgService;
 import org.redabogacia.sigaservices.app.util.ReadProperties;
 import org.redabogacia.sigaservices.app.util.SIGAReferences;
 import org.redabogacia.sigaservices.app.vo.scs.DocumentacionEjgVo;
@@ -41,8 +40,6 @@ import com.siga.gratuita.form.DefinirDocumentacionEJGForm;
 import com.siga.gratuita.form.service.DocumentacionEjgVoService;
 import com.siga.gratuita.service.SIGADocumentacionEjgService;
 import com.siga.gratuita.vos.SIGADocumentacionEjgVo;
-
-import es.satec.businessManager.BusinessManager;
 
 /**
  * Maneja las acciones que se pueden realizar sobre la tabla SCS_DOCUMENTACIONEJG
@@ -452,9 +449,13 @@ public class DefinirDocumentacionEJGAction extends MasterAction {
 					definirDocumentacionEJGForm.setNumEjg(b.getNumEJG());
 				}
 			}
-
+			
+			
+			
 			SIGADocumentacionEjgService documentacionEjgService = new SIGADocumentacionEjgService();
+			definirDocumentacionEJGForm.setComisionAJG(usr.isComision()?"1":"0");
 			List<SIGADocumentacionEjgVo> documentacionEjgVoList = documentacionEjgService.getListadoDocumentacionEJG(this.getForm2Vo(definirDocumentacionEJGForm),usrBean.getLanguage(),usr);
+			
 
 			request.setAttribute("resultado", documentacionEjgVoList);
 
@@ -589,6 +590,8 @@ public class DefinirDocumentacionEJGAction extends MasterAction {
 				}
 			}
 			documentacionEjgVo.setBorrarFichero(Boolean.parseBoolean(objectForm.getBorrarFichero()));
+			if(objectForm.getComisionAJG()!=null && !objectForm.getComisionAJG().equals(""))
+				documentacionEjgVo.setComisionAJG(new Short(objectForm.getComisionAJG()));
 
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
@@ -636,6 +639,8 @@ public class DefinirDocumentacionEJGAction extends MasterAction {
 				definirDocumentacionEJGForm.setFechaArchivo(sdf.format(objectVo.getFechaArchivo()));
 			}
 		}
+		if(objectVo.getComisionAJG()!=null)
+			definirDocumentacionEJGForm.setComisionAJG(objectVo.getComisionAJG().toString());
 
 		return definirDocumentacionEJGForm;
 	}	

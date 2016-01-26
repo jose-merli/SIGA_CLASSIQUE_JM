@@ -46,7 +46,9 @@
 	<!-- Incluido jquery en siga.js -->
 	
 	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js?v=${sessionScope.VERSIONJS}'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
-		
+	
+	<siga:Titulo titulo="pestana.certificados.plantillas" localizacion="certificados.mantenimientoCertificados.plantillas.localizacion"/>	
+	
 		<!-- INICIO: SCRIPTS BOTONES -->
 		<script language="JavaScript">
 			//Asociada al boton Volver
@@ -54,20 +56,15 @@
 			{
 				MantenimientoCertificadosPlantillasForm.action = "/SIGA/CER_MantenimientoCertificados.do";
 				MantenimientoCertificadosPlantillasForm.modo.value="abrirConParametros";
+				MantenimientoCertificadosPlantillasForm.target="mainWorkArea";
 				MantenimientoCertificadosPlantillasForm.submit();
 			}
 	
 			//Asociada al boton Nuevo
 			function accionNuevo()
 			{
-				MantenimientoCertificadosPlantillasForm.action = "/SIGA/CER_Plantillas.do";
-				MantenimientoCertificadosPlantillasForm.modo.value="nuevo";
-				var resultado=ventaModalGeneral("MantenimientoCertificadosPlantillasForm","P");
-				
-				if (resultado=="MODIFICADO")
-				{
-					parent.buscar();
-				}
+				document.MantenimientoCertificadosPlantillasForm.modo.value = "nuevo";
+				document.MantenimientoCertificadosPlantillasForm.submit();
 			}
 
 			function refrescarLocal()
@@ -81,11 +78,10 @@
 				datos = document.getElementById('tablaDatosDinamicosD');
 				datos.value = ""; 
 				preparaDatos(fila, 'tablaDatos', datos);
-				
 				document.forms[0].target="submitArea";
 				document.forms[0].modo.value = "download";
 				document.forms[0].submit();
-				document.forms[0].target="mainWorkArea";
+				document.forms[0].target="_self";
 			}
 		</script>
 		<!-- FIN: SCRIPTS BOTONES -->
@@ -93,14 +89,13 @@
 	</head>
 
 	<body class="detallePestanas">
-		<html:form action="/CER_Plantillas.do" method="POST" target="mainWorkArea">
+		<html:form action="/CER_Plantillas.do" method="POST">
 			<html:hidden styleId="modo" property="modo" value=""/>
 
 			<html:hidden styleId="idInstitucion" property="idInstitucion"  value="<%=sIdInstitucion%>"/>
 			<html:hidden styleId="idTipoProducto" property="idTipoProducto"  value="<%=sIdTipoProducto%>"/>
 			<html:hidden styleId="idProducto"  property="idProducto" value="<%=sIdProducto%>"/>
 			<html:hidden styleId="idProductoInstitucion"  property="idProductoInstitucion" value="<%=sIdProductoInstitucion%>"/>
-			
 			<html:hidden styleId="certificado"  property="certificado" value="<%=sCertificado%>"/>
 		</html:form>
 
@@ -116,8 +111,8 @@
 		   	      name="tablaDatos"
 		   		  border="1"
 		   		  columnNames="certificados.mantenimiento.literal.plantilla,certificados.mantenimiento.literal.pordefecto,"
-		   		  columnSizes="72,15,13"
-		   		  modal="M">
+		   		  columnSizes="72,18,10"
+		   		>
 
 <%
 				if (vDatos==null || vDatos.size()==0)
@@ -141,7 +136,7 @@
 						elems[0]=new FilaExtElement("download","download",SIGAConstants.ACCESS_READ);
 
 %>
-	  			<siga:FilaConIconos fila='<%=""+(i+1)%>' botones="<%=sBotones%>" elementos='<%=elems%>' clase="listaNonEdit" visibleConsulta="no">
+	  			<siga:FilaConIconos fila='<%=""+(i+1)%>' botones="<%=sBotones%>" elementos='<%=elems%>' clase="listaNonEdit" visibleConsulta="no" pintarEspacio="false">
 					<td>
 						<input type="hidden" id="oculto<%=""+(i+1)%>_1" name="oculto<%=""+(i+1)%>_1" value="<%=bean.getIdInstitucion()%>">
 						<input type="hidden" id="oculto<%=""+(i+1)%>_2" name="oculto<%=""+(i+1)%>_2" value="<%=bean.getIdTipoProducto()%>">

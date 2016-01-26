@@ -58,6 +58,7 @@ public class EnvEnviosBean extends MasterBean {
 	static public final String C_IDSOLICITUDECOS = "IDSOLICITUDECOS";
 	static public final String C_CSV = "CSV";
 	static public final String SEQ_ENV_ENVIOS = "SEQ_ENV_ENVIOS";
+	static public final String SEQ_ENV_ENVIOS_MASIVOS = "SEQ_CER_ENVIOS";
 	
 	static public final String T_NOMBRETABLA = "ENV_ENVIOS";	
 

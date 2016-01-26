@@ -67,9 +67,8 @@
 
 	<!-- Formulario de la lista de detalle multiregistro -->
 	<html:form action="/CEN_MantenimientoPago.do" method="POST" style="display:none">
-
-	<!-- Campo obligatorio -->
-	<html:hidden property = "modo" value = ""/>
+		<!-- Campo obligatorio -->
+		<html:hidden property="modo" value = ""/>
 	</html:form> 
 
 
@@ -82,6 +81,8 @@
 	    if (hashPestanas!=null) {
 		 	tipoAcceso = (String)hashPestanas.get("tipoAcceso");
 			idInstitucion = (String)hashPestanas.get("idInstitucion");
+			hashPestanas.put("sjcs", "1");
+			request.setAttribute("datos", hashPestanas);
 	    }else{
 	    	idInstitucion = usrbean.getLocation();
 	    }

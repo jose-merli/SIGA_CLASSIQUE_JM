@@ -5,11 +5,15 @@ import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FilenameFilter;
 import java.security.KeyStore;
 import java.security.PrivateKey;
 import java.security.cert.Certificate;
+import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Properties;
 import java.util.StringTokenizer;
 import java.util.Vector;
@@ -41,15 +45,30 @@ import com.siga.general.SIGAException;
 public class CerSolicitudCertificadosAdm extends MasterBeanAdministrador {
 	public static final String K_ESTADO_SOL_PEND="1";
 	public static final String K_ESTADO_SOL_APROBADO="2";
+	public static final String K_ESTADO_SOL_APROBANDO="7";    //Nuevo estado para los certificados 15/10/2015
+	public static final String K_ESTADO_SOL_FINALIZANDO="8";  //Nuevo estado para los certificados 19/10/2015
+	public static final String K_ESTADO_SOL_FACTURANDO="9";  //Nuevo estado para los certificados 19/10/2015
+	public static final String K_ESTADO_SOL_GENERANDO_APROBADO="11";    //Nuevo estado para los certificados 16/10/2015
+	public static final String K_ESTADO_SOL_GENERANDO_PENDIENTE_DE_FACTURAR="12";  //Nuevo estado para los certificados 19/10/2015
+	public static final String K_ESTADO_SOL_GENERANDO_FINALIZADO="13";  //Nuevo estado para los certificados 19/10/2015
 	public static final String K_ESTADO_SOL_ENVIOP="3";
 	public static final String K_ESTADO_SOL_FINALIZADO="4";
 	public static final String K_ESTADO_SOL_DENEGADO="5";
 	public static final String K_ESTADO_SOL_ANULADO="6";
+	public static final String K_ESTADO_SOL_PEND_FACTURAR="10";
 	public static final String K_ESTADO_CER_INICIAL="1";
 	public static final String K_ESTADO_CER_PEND="2";
 	public static final String K_ESTADO_CER_GENERADO="3";
 	public static final String K_ESTADO_CER_FIRMADO="4";
 	public static final String K_ESTADO_CER_ERRORGENERANDO="5";
+	
+	
+	
+	//ACCIONES
+	public static final String A_ABROBAR_GENERAR = "1";               //Acción de aprobar y generar 16/10/2015
+	public static final String A_FINALIZAR = "2";               //Acción de finalizar 26/10/2015
+	public static final String A_FACTURAR = "3";               //Acción de facturar 28/10/2015
+	
 	
 	public static final String IDCGAE = "2000";
 	
@@ -94,7 +113,9 @@ public class CerSolicitudCertificadosAdm extends MasterBeanAdministrador {
 		        		   CerSolicitudCertificadosBean.C_USUMODIFICACION,
 		        		   CerSolicitudCertificadosBean.C_CBO_CODIGO,
 		        		   CerSolicitudCertificadosBean.C_ACEPTACESIONMUTUALIDAD,
-		        		   CerSolicitudCertificadosBean.C_CODIGO_SUCURSAL};
+		        		   CerSolicitudCertificadosBean.C_CODIGO_SUCURSAL,
+		        		   CerSolicitudCertificadosBean.C_USUCREACION,
+		        		   CerSolicitudCertificadosBean.C_FECHACREACION};
 
 		return campos;
 	}
@@ -277,6 +298,8 @@ public class CerSolicitudCertificadosAdm extends MasterBeanAdministrador {
 
         try
         {
+        	final String idSolicitud= String.valueOf(solicitud.getIdSolicitud());
+        	
             String sRutaBD = getRutaCertificadoDirectorioBD(solicitud.getIdInstitucion());
 
             if (sRutaBD.equals(""))
@@ -290,6 +313,21 @@ public class CerSolicitudCertificadosAdm extends MasterBeanAdministrador {
 
             fDirectorio.mkdirs();
 
+            //Antes de crear el fichero borramos el que exista (casos en los que se guarda un .pdf y ya exista un .zip)
+            String[] myFiles = fDirectorio.list(new FilenameFilter() {
+                public boolean accept(File directory, String fileName) {
+                    return fileName.startsWith(idSolicitud);
+                }
+            });
+            if(myFiles != null){
+            	File f;
+            	for(int i = 0; i < myFiles.length; i++){
+            		
+            		f = new File(getRutaCertificadoDirectorio(solicitud, sRutaBD)+ File.separator +myFiles[i]); 
+            		f.delete();
+            	}
+            }
+            
             sRuta = getRutaCertificadoFichero(solicitud, sRutaBD);
 
             File fAux = new File(sRuta);
@@ -349,6 +387,112 @@ public class CerSolicitudCertificadosAdm extends MasterBeanAdministrador {
             }
         }
     }
+    
+    
+   /**
+     * Obtiene la ruta del fichero de Log
+     * @param solicitud
+     * @throws SIGAException
+     */
+
+ 
+    public String obtenerRutaLogError(CerSolicitudCertificadosBean solicitud) throws SIGAException
+    {
+        String sRutaBD = getRutaCertificadoDirectorioBD(solicitud.getIdInstitucion());
+        String sRuta = getRutaCertificadoFicheroLogError(solicitud, sRutaBD);
+        
+        return sRuta;
+    }
+
+    /**
+     * Guarda varios certificados. Este método se usa cuando la plantilla tiene a su vez plantillas asociadas.
+     * @param solicitud
+     * @param fPDF
+     * @param i
+     * @throws SIGAException
+     */
+    public void guardarVariosCertificado(CerSolicitudCertificadosBean solicitud, File fPDF,int i) throws SIGAException
+    {
+        DataInputStream inData = null;
+        DataOutputStream outData = null;
+
+        try
+        {
+        	final String idSolicitud= String.valueOf(solicitud.getIdSolicitud());
+        	
+            String sRutaBD = getRutaCertificadoDirectorioBD(solicitud.getIdInstitucion());
+
+            if (sRutaBD.equals(""))
+            {
+                throw new SIGAException("messages.general.error.ficheroNoExiste");
+            }
+
+            String sRuta = getRutaCertificadoDirectorio(solicitud, sRutaBD);
+
+            File fDirectorio = new File(sRuta);
+
+            fDirectorio.mkdirs();
+            
+            sRuta= getRutaCertificadoDirectorio(solicitud, sRutaBD) + File.separator + solicitud.getIdSolicitud() +"-"+i+".pdf";
+
+            File fAux = new File(sRuta);
+
+            FileInputStream inFile = new FileInputStream(fPDF);
+            inData = new DataInputStream(inFile);
+
+            FileOutputStream outFile = new FileOutputStream(fAux);
+            outData = new DataOutputStream(outFile);
+
+            byte[] cadena = new byte[1024];
+
+            while((inData.read(cadena, 0, 1024))!=-1)
+            {
+                outData.write(cadena, 0, cadena.length);
+            }
+            
+            inFile.close();
+            outFile.close();
+        }
+        catch(SIGAException e)
+        {
+        	throw e;
+        }
+        catch(Exception e)
+        {
+        	e.printStackTrace();
+            throw new SIGAException("messages.certificados.error.guardandocertificado");
+        }
+
+        finally
+        {
+            if (inData!=null)
+            {
+                try
+                {
+                    inData.close();
+                }
+
+                catch(Exception e)
+                {
+                    e.printStackTrace();
+                }
+            }
+
+            if (outData!=null)
+            {
+                try
+                {
+                    outData.close();
+                }
+
+                catch(Exception e)
+                {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
 
     public File recuperarCertificado(CerSolicitudCertificadosBean solicitud) throws SIGAException
     {
@@ -369,9 +513,17 @@ public class CerSolicitudCertificadosAdm extends MasterBeanAdministrador {
             throw new SIGAException("messages.certificados.error.obtenercertificado");
         }
     }
-
-    public void borrarCertificado(CerSolicitudCertificadosBean solicitud) throws SIGAException
+     /**
+     * Recupera varios certificados de una solicitud
+     * @param solicitud
+     * @param fPDF
+     * @param i
+     * @throws SIGAException
+     */
+    public ArrayList<File> recuperarVariosCertificado(CerSolicitudCertificadosBean solicitud) throws SIGAException
     {
+    	final String idSolicitud= String.valueOf(solicitud.getIdSolicitud());
+    	ArrayList<File> listaFicherosPDF = new ArrayList<File>();
         try
         {
             String sRutaBD = getRutaCertificadoDirectorioBD(solicitud.getIdInstitucion());
@@ -380,15 +532,32 @@ public class CerSolicitudCertificadosAdm extends MasterBeanAdministrador {
             {
                 throw new SIGAException("messages.general.error.ficheroNoExiste");
             }
-
-            File fCertificado = new File(getRutaCertificadoFichero(solicitud, sRutaBD));
-
-            fCertificado.delete();
+            
+            File dir = new File (getRutaCertificadoDirectorio(solicitud, sRutaBD));
+           
+         // create new filename filter
+            String[] myFiles = dir.list(new FilenameFilter() {
+                public boolean accept(File directory, String fileName) {
+                    return fileName.startsWith(idSolicitud);
+                }
+            });
+            if(myFiles != null){
+            	File f;
+            	for(int i = 0; i < myFiles.length; i++){
+            		//Almacenamos sólo lo que no sean de log
+            		if(myFiles[i].indexOf("LogError") == -1) {
+	            		f = new File(getRutaCertificadoDirectorio(solicitud, sRutaBD)+ File.separator +myFiles[i]); 
+	            		listaFicherosPDF.add(f);
+            		}
+            	}
+            }
+            
+            return listaFicherosPDF;
         }
 
         catch(Exception e)
         {
-            throw new SIGAException("messages.certificados.error.borrarcertificado");
+            throw new SIGAException("messages.certificados.error.obtenercertificado");
         }
     }
 
@@ -427,8 +596,19 @@ public class CerSolicitudCertificadosAdm extends MasterBeanAdministrador {
     {
         return getRutaCertificadoDirectorio(solicitud, sRutaBD) + File.separator + solicitud.getIdSolicitud() + ".pdf";
     }
+    
+    public String getRutaCertificadoFicheroLogError(CerSolicitudCertificadosBean solicitud, String sRutaBD)
+    {
+        return getRutaCertificadoDirectorio(solicitud, sRutaBD);
+    }
 
 	public String getNombreFicheroSalida(CerSolicitudCertificadosBean solicitudCertificadoBean) throws ClsExceptions, SIGAException {
+
+		return getNombreVariosFicheroSalida(solicitudCertificadoBean,null);
+
+	}
+	
+	public String getNombreVariosFicheroSalida(CerSolicitudCertificadosBean solicitudCertificadoBean, String idSolicitud) throws ClsExceptions, SIGAException {
 		PysProductosInstitucionAdm admProd = new PysProductosInstitucionAdm(this.usrbean);
 		Hashtable<String, Object> productoInstitucionPKHashtable = new Hashtable<String, Object>();
 		productoInstitucionPKHashtable.put(PysProductosInstitucionBean.C_IDINSTITUCION, solicitudCertificadoBean.getIdInstitucion());
@@ -472,74 +652,254 @@ public class CerSolicitudCertificadosAdm extends MasterBeanAdministrador {
 			nombreFicheroSalida.append(solicitudCertificadoBean.getSufijoCer().replaceAll("/", ""));
 		}
 		nombreFicheroSalida.append("-");
-		nombreFicheroSalida.append(solicitudCertificadoBean.getIdSolicitud());
-		nombreFicheroSalida.append(".pdf");
+		
+		if(idSolicitud != null && !"".equalsIgnoreCase(idSolicitud)){
+			//Recortamos el id de solicitud para obtener el id de la plantilla y con ese id obtener el nombre de la plantilla. Ejemplo de idSolicitud: 435678-1
+			String guionIdSolicitud = idSolicitud;
+			String[] arrayGuion = guionIdSolicitud.split("-");
+			if(arrayGuion.length == 1){
+				 nombreFicheroSalida.append(arrayGuion[0]);
+			}else{
+				String puntoIdPlantilla = arrayGuion[1];
+				String[] arrayPunto = puntoIdPlantilla.split("\\.");
+				
+				 CerPlantillasAdm admPlantilla = new CerPlantillasAdm (this.usrbean);
+				 Hashtable aux = new Hashtable();
+				 aux.put("IDPLANTILLA",arrayPunto[0]);
+				 aux.put("IDINSTITUCION",String.valueOf(solicitudCertificadoBean.getIdInstitucion()));
+				 aux.put("IDTIPOPRODUCTO",String.valueOf(solicitudCertificadoBean.getPpn_IdTipoProducto())); 
+				 aux.put("IDPRODUCTO", String.valueOf(solicitudCertificadoBean.getPpn_IdProducto()));
+				 aux.put("IDPRODUCTOINSTITUCION",String.valueOf(solicitudCertificadoBean.getPpn_IdProductoInstitucion()));
+				
+				 
+				 Vector vector = admPlantilla.selectByPK(aux);
+				
+				 CerPlantillasBean htDatos = (CerPlantillasBean)vector.elementAt(0);
+				
+				 nombreFicheroSalida.append(arrayGuion[0]);
+				 nombreFicheroSalida.append("-");
+				 nombreFicheroSalida.append(UtilidadesString.eliminarAcentosYCaracteresEspeciales(htDatos.getDescripcion()));
+				 nombreFicheroSalida.append(".pdf");
+			}
+			
+		}else{
+			nombreFicheroSalida.append(solicitudCertificadoBean.getIdSolicitud());
+			nombreFicheroSalida.append(".pdf");
+
+		}
+		
 
 		return nombreFicheroSalida.toString();
 
 	}
+	
 
-    /**
-     * 
-     * @param form
-     * @param idInstitucion
-     * @return
-     * @throws ClsExceptions
-     */
+	/**
+	 * 
+	 * @param form
+	 * @param idInstitucion
+	 * @return
+	 * @throws ClsExceptions
+	 */
 	public PaginadorBind buscarSolicitudes(SIGASolicitudesCertificadosForm form, String idInstitucion) throws ClsExceptions {
 		try {
-			String sql = "SELECT " + CerSolicitudCertificadosBean.T_NOMBRETABLA + "." + CerSolicitudCertificadosBean.C_FECHASOLICITUD + ", " +
-							CerSolicitudCertificadosBean.T_NOMBRETABLA + "." + CerSolicitudCertificadosBean.C_FECHAESTADO + ", " +
-							CerSolicitudCertificadosBean.T_NOMBRETABLA + "." + CerSolicitudCertificadosBean.C_FECHACOBRO + ", " +
-							CerSolicitudCertificadosBean.T_NOMBRETABLA + "." + CerSolicitudCertificadosBean.C_FECHAEMISIONCERTIFICADO + ", " +
-							CerSolicitudCertificadosBean.T_NOMBRETABLA + "." + CerSolicitudCertificadosBean.C_IDINSTITUCION + ", " +
-							CerSolicitudCertificadosBean.T_NOMBRETABLA + "." + CerSolicitudCertificadosBean.C_IDSOLICITUD + ", " +
-							CerSolicitudCertificadosBean.T_NOMBRETABLA + "." + CerSolicitudCertificadosBean.C_PPN_IDPRODUCTO + ", " +
-							CerSolicitudCertificadosBean.T_NOMBRETABLA + "." + CerSolicitudCertificadosBean.C_PPN_IDTIPOPRODUCTO + ", " +
-							CerSolicitudCertificadosBean.T_NOMBRETABLA + "." + CerSolicitudCertificadosBean.C_PPN_IDPRODUCTOINSTITUCION + ", " +
-							CerSolicitudCertificadosBean.T_NOMBRETABLA + "." + CerSolicitudCertificadosBean.C_IDINSTITUCIONORIGEN + ", " +
-							CerSolicitudCertificadosBean.T_NOMBRETABLA + "." + CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO + ", " +
-							CerSolicitudCertificadosBean.T_NOMBRETABLA + "." + CerSolicitudCertificadosBean.C_IDINSTITUCION_SOL + ", " +
-							CerSolicitudCertificadosBean.T_NOMBRETABLA + "." + CerSolicitudCertificadosBean.C_IDPERSONA_DES + ", " +
-							CerSolicitudCertificadosBean.T_NOMBRETABLA + "." + CerSolicitudCertificadosBean.C_IDPETICIONPRODUCTO + ", " +
-							CerSolicitudCertificadosBean.T_NOMBRETABLA + "." + CerSolicitudCertificadosBean.C_IDESTADOCERTIFICADO + ", " +
-							PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_TIPOCERTIFICADO + " AS TIPOCERTIFICADO2, " +					
-							PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_DESCRIPCION + " AS TIPOCERTIFICADO, " +
-							CenPersonaBean.T_NOMBRETABLA + "." + CenPersonaBean.C_APELLIDOS1 + " || ' ' || " + CenPersonaBean.T_NOMBRETABLA + "." + CenPersonaBean.C_APELLIDOS2 + " || ', ' || " + CenPersonaBean.T_NOMBRETABLA + "." + CenPersonaBean.C_NOMBRE + " AS CLIENTE, " +					
-							"INSO." + CenInstitucionBean.C_ABREVIATURA + " AS INSTITUCIONORIGEN, " +
-							"INSD." + CenInstitucionBean.C_ABREVIATURA + " AS INSTITUCIONDESTINO, " +					 
-							CerEstadoSoliCertifiBean.T_NOMBRETABLA + "." + CerEstadoSoliCertifiBean.C_DESCRIPCION + " AS ESTADOSOLICITUD, " + 					
-							CerEstadoCertificadoBean.T_NOMBRETABLA + "." + CerEstadoCertificadoBean.C_DESCRIPCION + " AS ESTADOCERTIFICADO " +
-						" FROM " + CerSolicitudCertificadosBean.T_NOMBRETABLA + ", " + 
-							PysProductosInstitucionBean.T_NOMBRETABLA + ", " + 
-							CenPersonaBean.T_NOMBRETABLA + ", " +
-							CenInstitucionBean.T_NOMBRETABLA + " INSO, " +
-							CenInstitucionBean.T_NOMBRETABLA + " INSD, " +
-							CerEstadoSoliCertifiBean.T_NOMBRETABLA + ", " +
-							CerEstadoCertificadoBean.T_NOMBRETABLA;
+			StringBuilder sql = new StringBuilder();
+			StringBuilder sqlAux;
+			sql.append("SELECT ");
+			sql.append(CerSolicitudCertificadosBean.T_NOMBRETABLA);
+			sql.append(".");
+			sql.append(CerSolicitudCertificadosBean.C_FECHASOLICITUD);
+			sql.append(", ");
+			sql.append(CerSolicitudCertificadosBean.T_NOMBRETABLA);
+			sql.append(".");
+			sql.append(CerSolicitudCertificadosBean.C_FECHAESTADO);
+			sql.append(", ");
+			sql.append(CerSolicitudCertificadosBean.T_NOMBRETABLA);
+			sql.append(".");
+			sql.append(CerSolicitudCertificadosBean.C_FECHACOBRO);
+			sql.append(", ");
+			sql.append(CerSolicitudCertificadosBean.T_NOMBRETABLA);
+			sql.append(".");
+			sql.append(CerSolicitudCertificadosBean.C_FECHAEMISIONCERTIFICADO);
+			sql.append(", ");
+			sql.append(CerSolicitudCertificadosBean.T_NOMBRETABLA);
+			sql.append(".");
+			sql.append(CerSolicitudCertificadosBean.C_IDINSTITUCION);
+			sql.append(", ");
+			sql.append(CerSolicitudCertificadosBean.T_NOMBRETABLA);
+			sql.append(".");
+			sql.append(CerSolicitudCertificadosBean.C_IDSOLICITUD);
+			sql.append(", ");
+			sql.append(CerSolicitudCertificadosBean.T_NOMBRETABLA);
+			sql.append(".");
+			sql.append(CerSolicitudCertificadosBean.C_PPN_IDPRODUCTO);
+			sql.append(", ");
+			sql.append(CerSolicitudCertificadosBean.T_NOMBRETABLA);
+			sql.append(".");
+			sql.append(CerSolicitudCertificadosBean.C_PPN_IDTIPOPRODUCTO);
+			sql.append(", ");
+			sql.append(CerSolicitudCertificadosBean.T_NOMBRETABLA);
+			sql.append(".");
+			sql.append(CerSolicitudCertificadosBean.C_PPN_IDPRODUCTOINSTITUCION);
+			sql.append(", ");
+			sql.append(CerSolicitudCertificadosBean.T_NOMBRETABLA);
+			sql.append(".");
+			sql.append(CerSolicitudCertificadosBean.C_IDINSTITUCIONORIGEN);
+			sql.append(", ");
+			sql.append(CerSolicitudCertificadosBean.T_NOMBRETABLA);
+			sql.append(".");
+			sql.append(CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO);
+			sql.append(", ");
+			sql.append(CerSolicitudCertificadosBean.T_NOMBRETABLA);
+			sql.append(".");
+			sql.append(CerSolicitudCertificadosBean.C_IDINSTITUCION_SOL);
+			sql.append(", ");
+			sql.append(CerSolicitudCertificadosBean.T_NOMBRETABLA);
+			sql.append(".");
+			sql.append(CerSolicitudCertificadosBean.C_IDPERSONA_DES);
+			sql.append(", ");
+			sql.append(CerSolicitudCertificadosBean.T_NOMBRETABLA);
+			sql.append(".");
+			sql.append(CerSolicitudCertificadosBean.C_IDPETICIONPRODUCTO);
+			sql.append(", ");
+			sql.append(CerSolicitudCertificadosBean.T_NOMBRETABLA);
+			sql.append(".");
+			sql.append(CerSolicitudCertificadosBean.C_IDESTADOCERTIFICADO);
+			sql.append(", ");
+			sql.append(PysProductosInstitucionBean.T_NOMBRETABLA);
+			sql.append(".");
+			sql.append(PysProductosInstitucionBean.C_TIPOCERTIFICADO);
+			sql.append(" AS TIPOCERTIFICADO2, ");					
+			sql.append("TRIM(TRAILING ' ' FROM "+PysProductosInstitucionBean.T_NOMBRETABLA);
+			sql.append(".");
+			sql.append(PysProductosInstitucionBean.C_DESCRIPCION+")"); //Se quita el espacio final que hay en algunas descripciones del certificado.
+			sql.append(" AS TIPOCERTIFICADO, ");
+			sql.append(CenPersonaBean.T_NOMBRETABLA);
+			sql.append(".");
+			sql.append(CenPersonaBean.C_APELLIDOS1);
+			sql.append(" || ' ' || ");
+			sql.append(CenPersonaBean.T_NOMBRETABLA);
+			sql.append(".");
+			sql.append(CenPersonaBean.C_APELLIDOS2);
+			sql.append(" || ', ' || ");
+			sql.append(CenPersonaBean.T_NOMBRETABLA);
+			sql.append(".");
+			sql.append(CenPersonaBean.C_NOMBRE);
+			sql.append(" AS CLIENTE, INSO.");
+			sql.append(CenInstitucionBean.C_ABREVIATURA);
+			sql.append(" AS INSTITUCIONORIGEN, INSD.");
+			sql.append(CenInstitucionBean.C_ABREVIATURA);
+			sql.append(" AS INSTITUCIONDESTINO, ");					 
+			sql.append(CerEstadoSoliCertifiBean.T_NOMBRETABLA);
+			sql.append(".");
+			sql.append(CerEstadoSoliCertifiBean.C_DESCRIPCION);
+			sql.append(" AS ESTADOSOLICITUD, "); 					
+			sql.append(CerEstadoCertificadoBean.T_NOMBRETABLA);
+			sql.append(".");
+			sql.append(CerEstadoCertificadoBean.C_DESCRIPCION);
+			sql.append(" AS ESTADOCERTIFICADO FROM ");
+			sql.append(CerSolicitudCertificadosBean.T_NOMBRETABLA);
+			sql.append(", "); 
+			sql.append(PysProductosInstitucionBean.T_NOMBRETABLA);
+			sql.append(", "); 
+			sql.append(CenPersonaBean.T_NOMBRETABLA);
+			sql.append(", ");
+			sql.append(CenInstitucionBean.T_NOMBRETABLA);
+			sql.append(" INSO, ");
+			sql.append(CenInstitucionBean.T_NOMBRETABLA);
+			sql.append(" INSD, ");
+			sql.append(CerEstadoSoliCertifiBean.T_NOMBRETABLA);
+			sql.append(", ");
+			sql.append(CerEstadoCertificadoBean.T_NOMBRETABLA);
 
-			String numeroColegiado = form.getNumeroCertificado();
+			String numeroColegiado = form.getBusquedaNumCol();
 			if (numeroColegiado != null && !numeroColegiado.equals("")) {
-				sql += ", " + CenColegiadoBean.T_NOMBRETABLA;
+				sql.append(", ");
+				sql.append(CenColegiadoBean.T_NOMBRETABLA);;
 			}
 
-			sql += " WHERE " + CerSolicitudCertificadosBean.T_NOMBRETABLA + "." + CerSolicitudCertificadosBean.C_IDINSTITUCION + " = " + idInstitucion +
-					" AND " + CerSolicitudCertificadosBean.T_NOMBRETABLA + "." + CerSolicitudCertificadosBean.C_IDPERSONA_DES + " = " + CenPersonaBean.T_NOMBRETABLA + "." + CenPersonaBean.C_IDPERSONA +
-					" AND " + CerSolicitudCertificadosBean.T_NOMBRETABLA + "." + CerSolicitudCertificadosBean.C_IDINSTITUCION + " = " + PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_IDINSTITUCION +
-					" AND " + CerSolicitudCertificadosBean.T_NOMBRETABLA + "." + CerSolicitudCertificadosBean.C_PPN_IDPRODUCTO + " = " + PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_IDPRODUCTO +
-					" AND " + CerSolicitudCertificadosBean.T_NOMBRETABLA + "." + CerSolicitudCertificadosBean.C_PPN_IDTIPOPRODUCTO + " = " + PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_IDTIPOPRODUCTO +
-					" AND " + CerSolicitudCertificadosBean.T_NOMBRETABLA + "." + CerSolicitudCertificadosBean.C_PPN_IDPRODUCTOINSTITUCION + " = " + PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_IDPRODUCTOINSTITUCION +
-					" AND " + CerSolicitudCertificadosBean.T_NOMBRETABLA + "." + CerSolicitudCertificadosBean.C_IDINSTITUCIONORIGEN + " = INSO." + CenInstitucionBean.C_IDINSTITUCION + "(+)" +
-					" AND " + CerSolicitudCertificadosBean.T_NOMBRETABLA + "." + CerSolicitudCertificadosBean.C_IDINSTITUCIONDESTINO + " = INSD." + CenInstitucionBean.C_IDINSTITUCION + "(+)" +
-					" AND " + CerSolicitudCertificadosBean.T_NOMBRETABLA + "." + CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO + " = " + CerEstadoSoliCertifiBean.T_NOMBRETABLA + "." + CerEstadoSoliCertifiBean.C_IDESTADOSOLICITUDCERTIFICADO +
-					" AND " + CerSolicitudCertificadosBean.T_NOMBRETABLA + "." + CerSolicitudCertificadosBean.C_IDESTADOCERTIFICADO + " = " + CerEstadoCertificadoBean.T_NOMBRETABLA + "." + CerEstadoCertificadoBean.C_IDESTADOCERTIFICADO;
+			sql.append(" WHERE ");
+			sql.append(CerSolicitudCertificadosBean.T_NOMBRETABLA);
+			sql.append(".");
+			sql.append(CerSolicitudCertificadosBean.C_IDINSTITUCION);
+			sql.append(" = ");
+			sql.append(idInstitucion); 
+			sql.append(" AND ");
+			sql.append(CerSolicitudCertificadosBean.T_NOMBRETABLA);
+			sql.append(".");
+			sql.append(CerSolicitudCertificadosBean.C_IDPERSONA_DES);
+			sql.append(" = ");
+			sql.append(CenPersonaBean.T_NOMBRETABLA);
+			sql.append(".");
+			sql.append(CenPersonaBean.C_IDPERSONA);
+			sql.append(" AND ");
+			sql.append(CerSolicitudCertificadosBean.T_NOMBRETABLA);
+			sql.append(".");
+			sql.append(CerSolicitudCertificadosBean.C_IDINSTITUCION);
+			sql.append(" = ");
+			sql.append(PysProductosInstitucionBean.T_NOMBRETABLA);
+			sql.append(".");
+			sql.append(PysProductosInstitucionBean.C_IDINSTITUCION);
+			sql.append(" AND ");
+			sql.append(CerSolicitudCertificadosBean.T_NOMBRETABLA);
+			sql.append(".");
+			sql.append(CerSolicitudCertificadosBean.C_PPN_IDPRODUCTO);
+			sql.append(" = ");
+			sql.append(PysProductosInstitucionBean.T_NOMBRETABLA);
+			sql.append(".");
+			sql.append(PysProductosInstitucionBean.C_IDPRODUCTO);
+			sql.append(" AND ");
+			sql.append(CerSolicitudCertificadosBean.T_NOMBRETABLA);
+			sql.append(".");
+			sql.append(CerSolicitudCertificadosBean.C_PPN_IDTIPOPRODUCTO);
+			sql.append(" = ");
+			sql.append(PysProductosInstitucionBean.T_NOMBRETABLA);
+			sql.append(".");
+			sql.append(PysProductosInstitucionBean.C_IDTIPOPRODUCTO);
+			sql.append(" AND ");
+			sql.append(CerSolicitudCertificadosBean.T_NOMBRETABLA);
+			sql.append(".");
+			sql.append(CerSolicitudCertificadosBean.C_PPN_IDPRODUCTOINSTITUCION);
+			sql.append(" = ");
+			sql.append(PysProductosInstitucionBean.T_NOMBRETABLA);
+			sql.append(".");
+			sql.append(PysProductosInstitucionBean.C_IDPRODUCTOINSTITUCION);
+			sql.append(" AND ");
+			sql.append(CerSolicitudCertificadosBean.T_NOMBRETABLA);
+			sql.append(".");
+			sql.append(CerSolicitudCertificadosBean.C_IDINSTITUCIONORIGEN);
+			sql.append(" = INSO.");
+			sql.append(CenInstitucionBean.C_IDINSTITUCION);
+			sql.append("(+) AND ");
+			sql.append(CerSolicitudCertificadosBean.T_NOMBRETABLA);
+			sql.append(".");
+			sql.append(CerSolicitudCertificadosBean.C_IDINSTITUCIONDESTINO);
+			sql.append(" = INSD.");
+			sql.append(CenInstitucionBean.C_IDINSTITUCION);
+			sql.append("(+) AND ");
+			sql.append(CerSolicitudCertificadosBean.T_NOMBRETABLA);
+			sql.append(".");
+			sql.append(CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO);
+			sql.append(" = ");
+			sql.append(CerEstadoSoliCertifiBean.T_NOMBRETABLA);
+			sql.append(".");
+			sql.append(CerEstadoSoliCertifiBean.C_IDESTADOSOLICITUDCERTIFICADO);
+			sql.append(" AND ");
+			sql.append(CerSolicitudCertificadosBean.T_NOMBRETABLA);
+			sql.append(".");
+			sql.append(CerSolicitudCertificadosBean.C_IDESTADOCERTIFICADO);
+			sql.append(" = ");
+			sql.append(CerEstadoCertificadoBean.T_NOMBRETABLA);
+			sql.append(".");
+			sql.append(CerEstadoCertificadoBean.C_IDESTADOCERTIFICADO);
 			
 			String fDesde = form.getFechaDesde(); 
 			String fHasta = form.getFechaHasta(); 
 			if ((fDesde!=null && !fDesde.trim().equals("")) || (fHasta!=null && !fHasta.trim().equals(""))) {
 				fDesde = UtilidadesFecha.getFechaApruebaDeFormato(fDesde);
 				fHasta = UtilidadesFecha.getFechaApruebaDeFormato(fHasta);
-				sql += " AND " + GstDate.dateBetweenDesdeAndHasta(CerSolicitudCertificadosBean.C_FECHAESTADO, fDesde, fHasta);
+				sql.append(" AND ");
+				sql.append(GstDate.dateBetweenDesdeAndHasta(CerSolicitudCertificadosBean.C_FECHAESTADO, fDesde, fHasta));
 			}	
 			
 			fDesde = form.getFechaEmisionDesde(); 
@@ -547,18 +907,31 @@ public class CerSolicitudCertificadosAdm extends MasterBeanAdministrador {
 			if ((fDesde!=null && !fDesde.trim().equals("")) || (fHasta!=null && !fHasta.trim().equals(""))) {
 				fDesde = UtilidadesFecha.getFechaApruebaDeFormato(fDesde);
 				fHasta = UtilidadesFecha.getFechaApruebaDeFormato(fHasta);
-				sql += " AND " + GstDate.dateBetweenDesdeAndHasta(CerSolicitudCertificadosBean.C_FECHAEMISIONCERTIFICADO, fDesde, fHasta);
+				sql.append(" AND ");
+				sql.append(GstDate.dateBetweenDesdeAndHasta(CerSolicitudCertificadosBean.C_FECHAEMISIONCERTIFICADO, fDesde, fHasta));
 			}	
+			
+			fDesde = form.getFechaSolicitudDesde(); 
+			fHasta = form.getFechaSolicitudHasta();
+			if ((fDesde!=null && !fDesde.trim().equals("")) || (fHasta!=null && !fHasta.trim().equals(""))) {
+				fDesde = UtilidadesFecha.getFechaApruebaDeFormato(fDesde);
+				fHasta = UtilidadesFecha.getFechaApruebaDeFormato(fHasta);
+				sql.append(" AND ");
+				sql.append(GstDate.dateBetweenDesdeAndHasta(CerSolicitudCertificadosBean.C_FECHASOLICITUD, fDesde, fHasta));
+			}				
 
-			String estadoSolicitud = form.getEstado();
-			if (estadoSolicitud!=null && !estadoSolicitud.equals("") && !estadoSolicitud.equals("99")) {
-				sql += " AND " + CerSolicitudCertificadosBean.T_NOMBRETABLA + "." + CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO + " = " + estadoSolicitud;
+			String estadoSolicitud = form.getBusquedaEstado();
+			if (estadoSolicitud!=null && !estadoSolicitud.equals("")) {
+				sql.append(" AND ");
+				sql.append(CerSolicitudCertificadosBean.T_NOMBRETABLA);
+				sql.append(".");
+				sql.append(CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO);
+				sql.append(" = ");
+				sql.append(estadoSolicitud.trim());
 				
-			} else if (estadoSolicitud!=null && estadoSolicitud.equals("99")) {
-				sql += " AND " + CerSolicitudCertificadosBean.T_NOMBRETABLA + "." + CerSolicitudCertificadosBean.C_FECHAENVIO + " IS NULL";
-			}
+			} 
 
-			String tipoCertificado = form.getTipoCertificado();
+			String tipoCertificado = form.getBusquedaTipoCertificado();
 			if (tipoCertificado != null && !tipoCertificado.equals("")) {
 				String idTipoProducto = "";
 				String idProducto = "";
@@ -569,75 +942,235 @@ public class CerSolicitudCertificadosAdm extends MasterBeanAdministrador {
 					idProducto = (String) st.nextElement();
 					idProductoInstitucion = (String) st.nextElement();
 				}
-				sql += " AND " + CerSolicitudCertificadosBean.T_NOMBRETABLA + "." + CerSolicitudCertificadosBean.C_PPN_IDTIPOPRODUCTO + " = " + idTipoProducto;
-				sql += " AND " + CerSolicitudCertificadosBean.T_NOMBRETABLA + "." + CerSolicitudCertificadosBean.C_PPN_IDPRODUCTO + " = " + idProducto;
-				sql += " AND " + CerSolicitudCertificadosBean.T_NOMBRETABLA + "." + CerSolicitudCertificadosBean.C_PPN_IDPRODUCTOINSTITUCION + " = " + idProductoInstitucion;
+				sql.append(" AND ");
+				sql.append(CerSolicitudCertificadosBean.T_NOMBRETABLA);
+				sql.append(".");
+				sql.append(CerSolicitudCertificadosBean.C_PPN_IDTIPOPRODUCTO);
+				sql.append(" = ");
+				sql.append(idTipoProducto);
+				sql.append(" AND ");
+				sql.append(CerSolicitudCertificadosBean.T_NOMBRETABLA);
+				sql.append(".");
+				sql.append(CerSolicitudCertificadosBean.C_PPN_IDPRODUCTO);
+				sql.append(" = ");
+				sql.append(idProducto);
+				sql.append(" AND ");
+				sql.append(CerSolicitudCertificadosBean.T_NOMBRETABLA);
+				sql.append(".");
+				sql.append(CerSolicitudCertificadosBean.C_PPN_IDPRODUCTOINSTITUCION);
+				sql.append(" = ");
+				sql.append(idProductoInstitucion);
 			}
 
 			if (numeroColegiado!=null && !numeroColegiado.equals("")) {
-				sql += " AND " + ComodinBusquedas.tratarNumeroColegiado(numeroColegiado, CenColegiadoBean.T_NOMBRETABLA + "." + CenColegiadoBean.C_NCOLEGIADO) +
-						" AND " + CerSolicitudCertificadosBean.T_NOMBRETABLA + "." + CerSolicitudCertificadosBean.C_IDINSTITUCION + " = " + CenColegiadoBean.T_NOMBRETABLA + "." + CenColegiadoBean.C_IDINSTITUCION + 
-						" AND " + CerSolicitudCertificadosBean.T_NOMBRETABLA + "." + CerSolicitudCertificadosBean.C_IDPERSONA_DES + " = " + CenColegiadoBean.T_NOMBRETABLA + "." + CenColegiadoBean.C_IDPERSONA;
+				sql.append(" AND ");
+				sqlAux = new StringBuilder();
+				sqlAux.append(CenColegiadoBean.T_NOMBRETABLA);
+				sqlAux.append(".");
+				sqlAux.append(CenColegiadoBean.C_NCOLEGIADO);
+				sql.append(ComodinBusquedas.tratarNumeroColegiado(numeroColegiado.trim(), sqlAux.toString()));
+				sql.append(" AND ");
+				sql.append(CerSolicitudCertificadosBean.T_NOMBRETABLA);
+				sql.append(".");
+				sql.append(CerSolicitudCertificadosBean.C_IDINSTITUCION);
+				sql.append(" = ");
+				sql.append(CenColegiadoBean.T_NOMBRETABLA);
+				sql.append(".");
+				sql.append(CenColegiadoBean.C_IDINSTITUCION); 
+				sql.append(" AND ");
+				sql.append(CerSolicitudCertificadosBean.T_NOMBRETABLA);
+				sql.append(".");
+				sql.append(CerSolicitudCertificadosBean.C_IDPERSONA_DES);
+				sql.append(" = ");
+				sql.append(CenColegiadoBean.T_NOMBRETABLA);
+				sql.append(".");
+				sql.append(CenColegiadoBean.C_IDPERSONA);
 			}
 			
 			// Consulta sobre el campo NIF/CIF, si el usuario mete comodines la búsqueda es como se hacía siempre, en el caso de no meter comodines se ha creado un nuevo metodo ComodinBusquedas.preparaCadenaNIFSinComodin para que monte la consulta adecuada.
-			String sCifNif = form.getCIFNIF();
+			String sCifNif = form.getBusquedaNIF();
 			if (sCifNif!=null && !sCifNif.trim().equals("")) {
-				if (ComodinBusquedas.hasComodin(sCifNif)){	
-					sql += " AND " + ComodinBusquedas.prepararSentenciaCompleta(sCifNif.trim(), CenPersonaBean.T_NOMBRETABLA + "." + CenPersonaBean.C_NIFCIF);
+				sql.append(" AND ");
+				sqlAux = new StringBuilder();
+				sqlAux.append(CenPersonaBean.T_NOMBRETABLA);
+				sqlAux.append(".");
+				sqlAux.append(CenPersonaBean.C_NIFCIF);
+				if (ComodinBusquedas.hasComodin(sCifNif)){										
+					sql.append(ComodinBusquedas.prepararSentenciaCompleta(sCifNif.trim(), sqlAux.toString()));
 				} else {
-					sql += " AND " + ComodinBusquedas.prepararSentenciaNIF(sCifNif, " UPPER(" + CenPersonaBean.T_NOMBRETABLA + "." + CenPersonaBean.C_NIFCIF + ") ");
+					sql.append(ComodinBusquedas.prepararSentenciaNIF(sCifNif, sqlAux.toString().toUpperCase()));
 				}
 			}			
 			
-			String nombre = form.getNombre();
+			String nombre = form.getBusquedaNombre();
 			if (nombre!=null && !nombre.trim().equals("")) {
-				sql += " AND " + ComodinBusquedas.prepararSentenciaCompleta(nombre.trim(), CenPersonaBean.T_NOMBRETABLA + "." + CenPersonaBean.C_NOMBRE);
+				sql.append(" AND ");
+				sqlAux = new StringBuilder();
+				sqlAux.append(CenPersonaBean.T_NOMBRETABLA);
+				sqlAux.append(".");
+				sqlAux.append(CenPersonaBean.C_NOMBRE);
+				sql.append(ComodinBusquedas.prepararSentenciaCompleta(nombre.trim(), sqlAux.toString()));
 			}
 			
-			String apellido1 = form.getApellido1();
+			String apellido1 = form.getBusquedaApellidos();
 			if (apellido1!=null && !apellido1.trim().equals("")) {
-				sql += " AND " + ComodinBusquedas.prepararSentenciaCompleta(apellido1.trim(), CenPersonaBean.T_NOMBRETABLA + "." + CenPersonaBean.C_APELLIDOS1);
+				sql.append(" AND ");
+				sqlAux = new StringBuilder();
+				sqlAux.append(CenPersonaBean.T_NOMBRETABLA);
+				sqlAux.append(".");
+				sqlAux.append(CenPersonaBean.C_APELLIDOS1);
+				sqlAux.append(" || ' ' || ");
+				sqlAux.append(CenPersonaBean.T_NOMBRETABLA);
+				sqlAux.append(".");
+				sqlAux.append(CenPersonaBean.C_APELLIDOS2);
+				sql.append(ComodinBusquedas.prepararSentenciaCompleta(apellido1.trim(), sqlAux.toString()));
 			}
 			
-			String idInstitucionOrigen = form.getIdInstitucionOrigen();
+			String idInstitucionOrigen = form.getBusquedaIdInstitucionOrigen();
 			if (idInstitucionOrigen!=null && !idInstitucionOrigen.equals("")) {
-				sql += " AND " + CerSolicitudCertificadosBean.T_NOMBRETABLA + "." + CerSolicitudCertificadosBean.C_IDINSTITUCIONORIGEN + " = " + idInstitucionOrigen;
+				sql.append(" AND ");
+				sql.append(CerSolicitudCertificadosBean.T_NOMBRETABLA);
+				sql.append(".");
+				sql.append(CerSolicitudCertificadosBean.C_IDINSTITUCIONORIGEN);
+				sql.append(" = ");
+				sql.append(idInstitucionOrigen);
 			}
 
-			String idInstitucionDestino = form.getIdInstitucionDestino();
+			String idInstitucionDestino = form.getBusquedaIdInstitucionDestino();
 			if (idInstitucionDestino!=null && !idInstitucionDestino.equals("")) {
-				sql += " AND " + CerSolicitudCertificadosBean.T_NOMBRETABLA + "." + CerSolicitudCertificadosBean.C_IDINSTITUCIONDESTINO + " = " + idInstitucionDestino;
+				sql.append(" AND ");
+				sql.append(CerSolicitudCertificadosBean.T_NOMBRETABLA);
+				sql.append(".");
+				sql.append(CerSolicitudCertificadosBean.C_IDINSTITUCIONCOLEGIACION);
+				sql.append(" = ");
+				sql.append(idInstitucionDestino);
 			}
 			
-			String idSolicitud = form.getBuscarIdSolicitudCertif();
+			String idSolicitud = form.getBusquedaIdSolicitud();
 			if (idSolicitud!=null && !idSolicitud.equals("")) {
-				sql += " AND " + CerSolicitudCertificadosBean.T_NOMBRETABLA + "." + CerSolicitudCertificadosBean.C_IDSOLICITUD + " = " + idSolicitud;
+				sql.append(" AND ");
+				sql.append(CerSolicitudCertificadosBean.T_NOMBRETABLA);
+				sql.append(".");
+				sql.append(CerSolicitudCertificadosBean.C_IDSOLICITUD);
+				sql.append(" = ");
+				sql.append(idSolicitud.trim());
 			}
 
 			String numeroCertificado = form.getBuscarNumCertificadoCompra();
 			if (numeroCertificado!=null && !numeroCertificado.equals("")) {
-				sql += " AND ( " +
-								ComodinBusquedas.prepararSentenciaCompleta(numeroCertificado.trim(), 
-									" NVL(" + CerSolicitudCertificadosBean.T_NOMBRETABLA + "." + CerSolicitudCertificadosBean.C_PREFIJO_CER + ", '') || " +
-									" NVL(" + CerSolicitudCertificadosBean.T_NOMBRETABLA + "." + CerSolicitudCertificadosBean.C_CONTADOR_CER + ", '') || " +
-									" NVL(" + CerSolicitudCertificadosBean.T_NOMBRETABLA + "." + CerSolicitudCertificadosBean.C_SUFIJO_CER + ", '') ") +
-							" OR " +
-								ComodinBusquedas.prepararSentenciaCompleta(numeroCertificado.trim(),
-									" NVL(" + CerSolicitudCertificadosBean.T_NOMBRETABLA + "." + CerSolicitudCertificadosBean.C_PREFIJO_CER + ",'') || " +
-									" NVL(LPAD(" + CerSolicitudCertificadosBean.T_NOMBRETABLA + "." + CerSolicitudCertificadosBean.C_CONTADOR_CER + ", (" +
-											" SELECT NVL(" + AdmContadorBean.T_NOMBRETABLA + "." + AdmContadorBean.C_LONGITUDCONTADOR + ", 1) " +
-											" FROM " + AdmContadorBean.T_NOMBRETABLA + 
-											" WHERE " + PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_IDCONTADOR + " = " + AdmContadorBean.T_NOMBRETABLA + "." + AdmContadorBean.C_IDCONTADOR +
-													" AND " + PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_IDINSTITUCION + " = " + AdmContadorBean.T_NOMBRETABLA + "." + AdmContadorBean.C_IDINSTITUCION + 
-										"), '0'), '') || " +
-									" NVL(" + CerSolicitudCertificadosBean.T_NOMBRETABLA + "." + CerSolicitudCertificadosBean.C_SUFIJO_CER + ", '')") +
-							" ) ";
+				sql.append(" AND ( ");
+				sqlAux = new StringBuilder();
+				sqlAux.append(" NVL(");
+				sqlAux.append(CerSolicitudCertificadosBean.T_NOMBRETABLA);
+				sqlAux.append(".");
+				sqlAux.append(CerSolicitudCertificadosBean.C_PREFIJO_CER);
+				sqlAux.append(", '') || NVL(");
+				sqlAux.append(CerSolicitudCertificadosBean.T_NOMBRETABLA);
+				sqlAux.append(".");
+				sqlAux.append(CerSolicitudCertificadosBean.C_CONTADOR_CER);
+				sqlAux.append(", '') || NVL(");
+				sqlAux.append(CerSolicitudCertificadosBean.T_NOMBRETABLA);
+				sqlAux.append(".");
+				sqlAux.append(CerSolicitudCertificadosBean.C_SUFIJO_CER);
+				sqlAux.append(", '') ");
+				sql.append(ComodinBusquedas.prepararSentenciaCompleta(numeroCertificado.trim(), sqlAux.toString()));
+				
+				sql.append(" OR ");
+				sqlAux = new StringBuilder();
+				sqlAux.append(" NVL(");
+				sqlAux.append(CerSolicitudCertificadosBean.T_NOMBRETABLA);
+				sqlAux.append(".");
+				sqlAux.append(CerSolicitudCertificadosBean.C_PREFIJO_CER);
+				sqlAux.append(",'') || NVL(LPAD(");
+				sqlAux.append(CerSolicitudCertificadosBean.T_NOMBRETABLA);
+				sqlAux.append(".");
+				sqlAux.append(CerSolicitudCertificadosBean.C_CONTADOR_CER);
+				sqlAux.append(", (SELECT NVL(");
+				sqlAux.append(AdmContadorBean.T_NOMBRETABLA);
+				sqlAux.append(".");
+				sqlAux.append(AdmContadorBean.C_LONGITUDCONTADOR);
+				sqlAux.append(", 1) FROM ");
+				sqlAux.append(AdmContadorBean.T_NOMBRETABLA); 
+				sqlAux.append(" WHERE ");
+				sqlAux.append(PysProductosInstitucionBean.T_NOMBRETABLA);
+				sqlAux.append(".");
+				sqlAux.append(PysProductosInstitucionBean.C_IDCONTADOR);
+				sqlAux.append(" = ");
+				sqlAux.append(AdmContadorBean.T_NOMBRETABLA);
+				sqlAux.append(".");
+				sqlAux.append(AdmContadorBean.C_IDCONTADOR);
+				sqlAux.append(" AND ");
+				sqlAux.append(PysProductosInstitucionBean.T_NOMBRETABLA);
+				sqlAux.append(".");
+				sqlAux.append(PysProductosInstitucionBean.C_IDINSTITUCION);
+				sqlAux.append(" = ");
+				sqlAux.append(AdmContadorBean.T_NOMBRETABLA);
+				sqlAux.append(".");
+				sqlAux.append(AdmContadorBean.C_IDINSTITUCION); 
+				sqlAux.append("), '0'), '') || NVL(");
+				sqlAux.append(CerSolicitudCertificadosBean.T_NOMBRETABLA);
+				sqlAux.append(".");
+				sqlAux.append(CerSolicitudCertificadosBean.C_SUFIJO_CER);
+				sqlAux.append(", '')");
+				sql.append(ComodinBusquedas.prepararSentenciaCompleta(numeroCertificado.trim(), sqlAux.toString()));
+				sql.append(" ) ");
+			}
+			
+			String cobrado = form.getCobrado();
+			if (cobrado != null && !cobrado.equals("")) {
+				if (cobrado.equals("1")) {
+					sql.append(" AND ");
+					sql.append(CerSolicitudCertificadosBean.T_NOMBRETABLA);
+					sql.append(".");
+					sql.append(CerSolicitudCertificadosBean.C_FECHACOBRO);
+					sql.append(" IS NOT NULL ");
+				} else if (cobrado.equals("0")) {
+					sql.append(" AND ");
+					sql.append(CerSolicitudCertificadosBean.T_NOMBRETABLA);
+					sql.append(".");
+					sql.append(CerSolicitudCertificadosBean.C_FECHACOBRO);
+					sql.append(" IS NULL ");
+				}
+			}
+			
+			String descargado = form.getDescargado();
+			if (descargado != null && !descargado.equals("")) {
+				if (descargado.equals("1")) {
+					sql.append(" AND ");
+					sql.append(CerSolicitudCertificadosBean.T_NOMBRETABLA);
+					sql.append(".");
+					sql.append(CerSolicitudCertificadosBean.C_FECHADESCARGA);
+					sql.append(" IS NOT NULL ");
+				} else if (descargado.equals("0")) {
+					sql.append(" AND ");
+					sql.append(CerSolicitudCertificadosBean.T_NOMBRETABLA);
+					sql.append(".");
+					sql.append(CerSolicitudCertificadosBean.C_FECHADESCARGA);
+					sql.append(" IS NULL ");
+				}
+			}	
+			
+			String enviado = form.getEnviado();
+			if(enviado != null && enviado.equals("1")){
+				sql.append(" AND ");
+				sql.append(CerSolicitudCertificadosBean.T_NOMBRETABLA);
+				sql.append(".");
+				sql.append(CerSolicitudCertificadosBean.C_FECHAENVIO);
+				sql.append(" IS NOT NULL");
+				
+			}else if (enviado.equals("0")) {
+				sql.append(" AND ");
+				sql.append(CerSolicitudCertificadosBean.T_NOMBRETABLA);
+				sql.append(".");
+				sql.append(CerSolicitudCertificadosBean.C_FECHAENVIO);
+				sql.append(" IS NULL");
 			}
 
-			sql += " ORDER BY " + CerSolicitudCertificadosBean.C_IDSOLICITUD + " DESC ";
+			sql.append(" ORDER BY ");
+			sql.append(CerSolicitudCertificadosBean.C_IDSOLICITUD);
+			sql.append(" DESC ");
 
-			PaginadorBind paginador = new PaginadorBind(sql, new Hashtable());
+			PaginadorBind paginador = new PaginadorBind(sql.toString(), new Hashtable());
 
 			if (paginador.getNumeroTotalRegistros() == 0) {
 				paginador = null;
@@ -876,7 +1409,7 @@ public class CerSolicitudCertificadosAdm extends MasterBeanAdministrador {
   
     }
  
- 	public boolean firmarPDF(String idSolicitud, String idInstitucion)
+ 	public boolean firmarPDF(String idSolicitud, String idInstitucion,Integer i)
  	{
         FileInputStream fisID = null;
         FileOutputStream fos = null;
@@ -909,7 +1442,14 @@ public class CerSolicitudCertificadosAdm extends MasterBeanAdministrador {
             CerSolicitudCertificadosBean beanSolicitud = (CerSolicitudCertificadosBean)vSolicitud.elementAt(0);
             
             String sNombreFicheroEntrada = getRutaCertificadoDirectorio(beanSolicitud, sPathCertificados);
-            sNombreFicheroEntrada = getRutaCertificadoFichero(beanSolicitud, sPathCertificados);
+           
+            if(i == -1){
+            	//Fichero principal (se realiza como siempre se había hecho)
+            	 sNombreFicheroEntrada = getRutaCertificadoFichero(beanSolicitud, sPathCertificados);
+            }else{
+            	//Ficheros subplantillas
+            	 sNombreFicheroEntrada =sNombreFicheroEntrada + File.separator + idSolicitud +"-"+i+".pdf";
+            }
             
             String sNombreFicheroSalida = sNombreFicheroEntrada + ".tmp";
 
@@ -1549,7 +2089,7 @@ public class CerSolicitudCertificadosAdm extends MasterBeanAdministrador {
 		sql.append(" and " + CerSolicitudCertificadosBean.C_PPN_IDTIPOPRODUCTO + " = " + idTipoProducto);	
 		sql.append(" and " + CerSolicitudCertificadosBean.C_PPN_IDPRODUCTO + " = " + idProducto);	
 		sql.append(" and " + CerSolicitudCertificadosBean.C_PPN_IDPRODUCTOINSTITUCION + " = " + idProductoInstitucion);	
-		
+	
 		try {				
 			if (rc.find(sql.toString())) {						
 				if(rc != null){
@@ -1646,6 +2186,21 @@ public class CerSolicitudCertificadosAdm extends MasterBeanAdministrador {
 				estadoCertificado = UtilidadesMultidioma.getDatoMaestroIdioma(estadoCertificado, this.usrbean);
 				hDatos.put("DESCRIPCION_ESTADOCERTIFICADO", estadoCertificado);
 				
+				String rutaFicheroLogError = "FICHERO_LOG_ERROR";
+				String sRutaBD = getRutaCertificadoDirectorioBD(Integer.parseInt(sIdInstitucion));
+				
+				String anhoSolicitud=UtilidadesHash.getString(hDatos, CerSolicitudCertificadosBean.C_FECHASOLICITUD).substring(0, UtilidadesHash.getString(hDatos, 
+						CerSolicitudCertificadosBean.C_FECHASOLICITUD).indexOf("/"));
+		        String mesSolicitud=UtilidadesHash.getString(hDatos, CerSolicitudCertificadosBean.C_FECHASOLICITUD).substring(UtilidadesHash.getString(hDatos, 
+		        		CerSolicitudCertificadosBean.C_FECHASOLICITUD).indexOf("/")+1, UtilidadesHash.getString(hDatos, CerSolicitudCertificadosBean.C_FECHASOLICITUD).lastIndexOf("/"));
+
+		        String rutaFinal= sRutaBD + File.separator + sIdInstitucion + File.separator + anhoSolicitud + File.separator + 
+		        		mesSolicitud+File.separator+UtilidadesHash.getString(hDatos, CerSolicitudCertificadosBean.C_IDSOLICITUD);
+				
+		        hDatos.put(rutaFicheroLogError, rutaFinal);
+				
+				
+				
 				String sCampo = "TIPO_ICONO";  // 0:SinIcono; 1:Descarga; 2:FacturacionRapida
 				if (sIdPeticion==null || sIdPeticion.equals("")) {
 					hDatos.put(sCampo, "0"); // Por defecto => aparece sin icono (0)
@@ -1695,5 +2250,46 @@ public class CerSolicitudCertificadosAdm extends MasterBeanAdministrador {
 		}
 		
 		return vResultado;
-	}		
+	}	
+	
+	public boolean actualizarFechaDescargaCertificados(List<CerSolicitudCertificadosBean> cerSolicitudCertificadosBeans){
+		boolean exito  = Boolean.TRUE;
+		String sql = "";
+		String sqlAux = "";
+		Row row = new Row();
+		
+		
+		if(cerSolicitudCertificadosBeans.size()>0){
+			Iterator<CerSolicitudCertificadosBean> iteratorSolicitudes = cerSolicitudCertificadosBeans.iterator();
+			sql =  "update CER_SOLICITUDCERTIFICADOS "+
+				"set "+
+				" FECHAMODIFICACION = SYSDATE, "+
+			    "  USUMODIFICACION = "+cerSolicitudCertificadosBeans.get(0).getUsuMod() +", "+
+			    "  FECHADESCARGA = SYSDATE "+
+			    "  WHERE (IDINSTITUCION, IDSOLICITUD) IN (";
+			    while (iteratorSolicitudes.hasNext()) {
+					CerSolicitudCertificadosBean solicitudes = (CerSolicitudCertificadosBean) iteratorSolicitudes.next();
+				
+					String cadena = solicitudes.getIdInstitucion()+","+solicitudes.getIdSolicitud();
+			        int resultado = sqlAux.indexOf(cadena);   
+			        if(resultado == -1) {
+			        	sqlAux+="("+solicitudes.getIdInstitucion()+","+solicitudes.getIdSolicitud()+"),";	
+			        }
+			    }
+			    sql+= sqlAux; 
+			    if(sql!= null){
+			    	sql = sql.substring(0, sql.length() - 1);
+			    	sql+=")";
+					try {
+						 row.updateSQL(sql.toString());
+					} catch (ClsExceptions e) {
+						exito =Boolean.FALSE;
+						return exito;
+					}
+			    }
+		
+		}
+	
+		return exito;
+	}
 }

@@ -210,13 +210,13 @@
 
 	if (datosPaginador!=null && datosPaginador.get("datos")!=null && !datosPaginador.get("datos").equals("")) {
 %>
-		<siga:Paginador totalRegistros="<%=totalRegistros%>" 
-						registrosPorPagina="<%=registrosPorPagina%>" 
-						paginaSeleccionada="<%=paginaSeleccionada%>" 
+		<siga:Paginador totalRegistros="<%=totalRegistros%>"
+						registrosPorPagina="<%=registrosPorPagina%>"
+						paginaSeleccionada="<%=paginaSeleccionada%>"
 						registrosSeleccionados="<%=regSeleccionados%>"
 						idioma="<%=idioma%>"
-						modo="buscarPor"								
-						clase="paginator" 
+						modo="buscarPor"
+						clase="paginator"
 						divStyle="position:absolute; width:100%; height:20; z-index:3; bottom:0px; left: 0px"
 						distanciaPaginas=""
 						action="<%=action%>" />

@@ -6,12 +6,9 @@
  */
 package com.siga.beans;
 
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Vector;
-
-import org.redabogacia.sigaservices.app.AppConstants.PARAMETRO;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
@@ -22,7 +19,6 @@ import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.Utilidades.paginadores.Paginador;
 import com.siga.general.SIGAException;
-import com.siga.ws.PCAJGConstantes;
 
 /**
  * @author angel corral
@@ -134,42 +130,9 @@ public class ScsActaComisionAdm extends MasterBeanAdministrador {
 		return hash;
 	}
 	
-	/**
-	 * Metodo que comprueba si los cambos de la query estan recogidos en java, así
-	 * si cambia una columna lanzará un error. Este método es solo de debug y luego puede
-	 * comentarse su contenido si la versión está estable
-	 * @param vector
-	 * @throws SIGAException
-	 */
-	private void compruebaCampos(Vector vector) throws SIGAException {
-		if (vector != null && vector.size() > 0) {
-			if (vector.get(0) instanceof Hashtable) {
-				 
-				Hashtable ht = (Hashtable)vector.get(0);
-				Enumeration enumeration = ht.keys();
-				while (enumeration.hasMoreElements()) {
-					String key = (String) enumeration.nextElement();
-					try {
-						PCAJGConstantes.class.getField(key);
-					} catch (Exception e) {
-						throw new SIGAException("No se encuentra la columna " + key);
-					}					
-				}
-			}
-		}
-	}
 	
-	/**
-	 * Obtiene un vector de hastables con los datos de la query que se pase por parametro
-	 * @param sql
-	 * @return
-	 * @throws ClsExceptions
-	 * @throws SIGAException
-	 */
-	private Vector getDatos(String sql) throws ClsExceptions, SIGAException {
-		Vector datos = this.selectGenerico(sql);
-		return datos;
-	}
+	
+	
 
 	
 	/**
@@ -198,6 +161,40 @@ public class ScsActaComisionAdm extends MasterBeanAdministrador {
 		
 		return nextVal;
 		
+	}
+	/**
+	 * Sacamos el numero de acta teniendo en cuenta que para aumentar el numero hay que reemplazar el sufijo. Elpriemr registro sera 1
+	 * @param idInstitucion
+	 * @param anio
+	 * @param sufijo
+	 * @return
+	 * @throws ClsExceptions
+	 */
+
+	public int getNuevoNumActa(String idInstitucion, String anio, String sufijo) throws ClsExceptions {
+
+		int nextVal = 1;
+
+		StringBuilder sql =  new StringBuilder();
+		sql.append(" SELECT NVL(MAX(NUMEROACTA), 0) AS NUMEROACTA FROM SCS_ACTACOMISION WHERE "); 
+		sql.append(" IDINSTITUCION =  ");
+		sql.append(idInstitucion);
+		sql.append(" AND ANIOACTA =  ");
+		sql.append(anio);
+		sql.append(" and numeroacta like '%"); 
+		sql.append(sufijo); 
+		sql.append("%'");
+				
+		RowsContainer rc = new RowsContainer();
+		if (rc.find(sql.toString())) {
+			Row r = (Row) rc.get(0);
+			String numeroActa = r.getString(ScsActaComisionBean.C_NUMEROACTA);
+			numeroActa = UtilidadesString.replaceAllIgnoreCase(numeroActa, sufijo, "");
+			nextVal = Integer.parseInt(numeroActa)+1;
+		}
+
+		return nextVal;
+
 	}
 
 	/**
@@ -257,7 +254,7 @@ public class ScsActaComisionAdm extends MasterBeanAdministrador {
 			consulta.append(" and act." + ScsActaComisionBean.C_ANIOACTA + " = " + filtros.get(ScsActaComisionBean.C_ANIOACTA).toString());
 		}
 		if(filtros.get(ScsActaComisionBean.C_NUMEROACTA)!=null && !filtros.get(ScsActaComisionBean.C_NUMEROACTA).toString().equalsIgnoreCase("")){
-			consulta.append(" and act." + ScsActaComisionBean.C_NUMEROACTA + " = " + filtros.get(ScsActaComisionBean.C_NUMEROACTA).toString());
+			consulta.append(" and act." + ScsActaComisionBean.C_NUMEROACTA + " like '%" + filtros.get(ScsActaComisionBean.C_NUMEROACTA).toString()+"%'");
 		}
 		if(filtros.get(ScsActaComisionBean.C_FECHARESOLUCION)!=null && !filtros.get(ScsActaComisionBean.C_FECHARESOLUCION).toString().equalsIgnoreCase("")){
 			consulta.append(" and act." + ScsActaComisionBean.C_FECHARESOLUCION + " = '" + filtros.get(ScsActaComisionBean.C_FECHARESOLUCION).toString() + "'");
@@ -384,8 +381,6 @@ public class ScsActaComisionAdm extends MasterBeanAdministrador {
 		
 		Vector salida = new Vector();
 		StringBuffer consulta = new StringBuffer();
-		RowsContainer rc = new RowsContainer(); 
-		Hashtable resultado = new Hashtable();
 		consulta.append("select ");
 
 		consulta.append(" act."+ScsActaComisionBean.C_IDACTA);
@@ -448,99 +443,188 @@ public class ScsActaComisionAdm extends MasterBeanAdministrador {
 	 * @throws ClsExceptions 
 	 * @throws SIGAException 
 	 */
-	public Vector getEJGsInforme(String idInstitucion, String idActa, String anioActa, String longitudNumEjg) throws ClsExceptions, SIGAException {
-		RowsContainer rc = new RowsContainer();
+	public Vector getEJGsInforme(String idInstitucion, String idActa, String anioActa, String longitudNumEjg, Boolean isImpugando) throws ClsExceptions, SIGAException {
 		Vector datos = new Vector();
-		
-		String sql = "SELECT rownum as NACUERDO, DATOS.* FROM (" +
-			"SELECT EJG." + ScsEJGBean.C_ANIO + " as ANIO, " +
-				" lpad(EJG."+ScsEJGBean.C_NUMEJG + ","+longitudNumEjg+",0) as NUMERO, "+
-				
-				" TO_CHAR(EJG." + ScsEJGBean.C_FECHAAPERTURA + ", 'dd/mm/yyyy') as " + ScsEJGBean.C_FECHAAPERTURA + ", " +
-				" TUR." + ScsTurnoBean.C_NOMBRE + " as TURNO, " + 
-				" GUA." + ScsGuardiasTurnoBean.C_NOMBRE  + " as GUARDIA, " + 
-				" SOL." + ScsPersonaJGBean.C_NOMBRE + " || ' ' || SOL." + ScsPersonaJGBean.C_APELLIDO1 + " || ' ' || SOL." + ScsPersonaJGBean.C_APELLIDO2 + " as SOLICITANTE, " +
-				" EJG." + ScsEJGBean.C_IDINSTITUCION + " as IDINSTITUCION, " +
-				" EJG." + ScsEJGBean.C_IDTIPOEJG + " as IDTIPOEJG, " +
-				" EJG." + ScsEJGBean.C_RATIFICACIONDICTAMEN + " as DICTAMEN, " +
-				" F_SIGA_GETRECURSO(FUN." + ScsTipoFundamentosBean.C_DESCRIPCION + ", " + this.usrbean.getLanguage() + ") as FUNDAMENTO, " +
-				" F_SIGA_GETRECURSO(RES.descripcion, " + this.usrbean.getLanguage() + ") as RESOLUCION, " +
-				" F_SIGA_GETRECURSO(PON." + ScsPonenteBean.C_NOMBRE + ", " + this.usrbean.getLanguage() + ") as PONENTE, " +
-				" F_SIGA_GETRECURSO(TIP." + ScsTipoEJGColegioBean.C_DESCRIPCION + ", " + this.usrbean.getLanguage() + ") as TIPOEJG, " +
-				" DECODE(EJG." + ScsEJGBean.C_REQUIERENOTIFICARPROC + ", '1', F_SIGA_GETRECURSO_ETIQUETA('gratuita.operarRatificacion.mensaje.requiereNotificarProc', " + this.usrbean.getLanguage() + ") || " +
-					" F_SIGA_GETPROCURADORCONTR_EJG(EJG." + ScsEJGBean.C_IDINSTITUCION + ", EJG." + ScsEJGBean.C_IDTIPOEJG + ", EJG." + ScsEJGBean.C_ANIO + ", EJG." + ScsEJGBean.C_NUMERO + "), '') as NOTIFICAR_PROCURADOR_CONTRARIO, " +
-				" FUN.TEXTOPLANTILLA3, " +
-				" FUN.TEXTOPLANTILLA4, " +
-				" F_SIGA_GETUNIDADEJG(EJG." + ScsEJGBean.C_IDINSTITUCION + ", EJG." + ScsEJGBean.C_ANIO + ", EJG." + ScsEJGBean.C_NUMERO + ", EJG." + ScsEJGBean.C_IDTIPOEJG + ") AS TOTAL_SOLICITANTE, " +
-				" EJG." + ScsEJGBean.C_RATIFICACIONDICTAMEN + 
-			" FROM " + ScsEJGBean.T_NOMBRETABLA + " EJG, " +
-				ScsTurnoBean.T_NOMBRETABLA + " TUR, " + 
-				ScsPersonaJGBean.T_NOMBRETABLA + " SOL, " +
-				ScsGuardiasTurnoBean.T_NOMBRETABLA + " GUA, " +
-				ScsTipoFundamentosBean.T_NOMBRETABLA + " FUN, " +
-				ScsPonenteBean.T_NOMBRETABLA + " PON, " +
-				ScsTipoEJGColegioBean.T_NOMBRETABLA + " TIP, " +
-				" SCS_TIPORESOLUCION RES " +
-			" WHERE TUR." + ScsTurnoBean.C_IDINSTITUCION + "(+) = EJG." + ScsEJGBean.C_IDINSTITUCION +
-				" AND TUR." + ScsTurnoBean.C_IDTURNO+ "(+) = EJG." + ScsEJGBean.C_GUARDIATURNO_IDTURNO +
-				" AND GUA." + ScsGuardiasTurnoBean.C_IDINSTITUCION + "(+) = EJG." + ScsEJGBean.C_IDINSTITUCION +
-				" AND GUA." + ScsGuardiasTurnoBean.C_IDTURNO + "(+) = EJG." + ScsEJGBean.C_GUARDIATURNO_IDTURNO +
-				" AND GUA." + ScsGuardiasTurnoBean.C_IDGUARDIA + "(+) = EJG." + ScsEJGBean.C_GUARDIATURNO_IDGUARDIA +
-				" AND SOL." + ScsPersonaJGBean.C_IDINSTITUCION + "(+) = EJG." + ScsEJGBean.C_IDINSTITUCION +
-				" AND SOL." + ScsPersonaJGBean.C_IDPERSONA + "(+) = EJG." + ScsEJGBean.C_IDPERSONAJG +
-				" AND PON." + ScsPonenteBean.C_IDPONENTE + "(+) = EJG." + ScsEJGBean.C_IDPONENTE +
-				" AND PON." + ScsPonenteBean.C_IDINSTITUCION + "(+) = EJG." + ScsEJGBean.C_IDINSTITUCIONPONENTE +
-				" AND EJG." + ScsEJGBean.C_IDTIPORATIFICACIONEJG + " <> 0" + 
-				" AND FUN." + ScsTipoFundamentosBean.C_IDFUNDAMENTO + "(+) = EJG." + ScsEJGBean.C_IDFUNDAMENTOJURIDICO +
-				" AND FUN.IDINSTITUCION(+) = EJG." + ScsEJGBean.C_IDINSTITUCION + 
-				" AND RES.idtiporesolucion(+) = EJG." + ScsEJGBean.C_IDTIPORATIFICACIONEJG +
-				" AND TIP." + ScsTipoEJGColegioBean.C_IDTIPOEJGCOLEGIO + "(+) = EJG." + ScsEJGBean.C_IDTIPOEJGCOLEGIO +
-				" AND TIP." + ScsTipoEJGColegioBean.C_IDINSTITUCION + "(+) = EJG." + ScsEJGBean.C_IDINSTITUCION + 
-				" AND EJG." + ScsEJGBean.C_IDINSTITUCIONACTA + " = " + idInstitucion +
-				" AND EJG." + ScsEJGBean.C_ANIOACTA + " = " + anioActa +
-				" AND EJG." + ScsEJGBean.C_IDACTA + " = " + idActa +  
-			" ORDER BY EJG." + ScsEJGBean.C_ANIO + " ASC , " + 
-				" EJG." + ScsEJGBean.C_NUMEJG + " ASC " + 
-			") DATOS";
-		
-       try{    	   	   
-    	   
-			 rc = this.find(sql);
-			 
- 			if (rc!=null){
- 				GenParametrosAdm paramAdm = new GenParametrosAdm (usrbean);
- 				CenInstitucionAdm cenInstitucionAdm = new CenInstitucionAdm (usrbean);
- 				Hashtable<String, String[]> etiquetasRepetidas =  new Hashtable<String, String[]>(); 
- 				String [] etiquetas = null;
-				for (int i = 0; i < rc.size(); i++)	{
-					Row fila = (Row) rc.get(i);
-					Hashtable registro = (Hashtable)fila.getRow(); 
-					
-					if (registro != null){
+		Hashtable htCodigos = new Hashtable();
+		int keyContador = 0;
+		StringBuilder stringBuilder = new StringBuilder();
+		if (isImpugando != null)
+			stringBuilder.append(" SELECT * FROM ( ");
+
+		stringBuilder.append(" SELECT ROWNUM AS NACUERDO,  DATOS.*, ");
+		stringBuilder.append(" F_SIGA_GETRECURSO(RES.DESCRIPCION, ");
+		stringBuilder.append(this.usrbean.getLanguage());
+		stringBuilder.append(") AS RESOLUCION, ");
+		stringBuilder.append(" FUN.TEXTOPLANTILLA3, FUN.TEXTOPLANTILLA4, ");
+		stringBuilder.append(" F_SIGA_GETRECURSO(FUN.DESCRIPCION, ");
+		stringBuilder.append(this.usrbean.getLanguage());
+		stringBuilder.append(") AS FUNDAMENTO ");
+		stringBuilder.append(",DECODE(GREATEST(DATOS.FECHA_IMPUGNADO, DATOS.FECHARESOLUCION),DATOS.FECHA_IMPUGNADO,0,1) ISIMPUGNADO ");
+
+		stringBuilder.append(" ,  (CASE WHEN greatest(DATOS.FECHA_IMPUGNADO, DATOS.Fecharesolucion) = DATOS.FECHA_IMPUGNADO THEN '' ELSE TO_CHAR(DATOS.FECHAAUTO, 'DD/MM/YYYY') END) IMPUGNACION_AUTOFECHA ");
+		stringBuilder.append(" , (CASE WHEN greatest(DATOS.FECHA_IMPUGNADO, DATOS.Fecharesolucion) = DATOS.FECHA_IMPUGNADO THEN '' ELSE DECODE(DATOS.FECHAAUTO, null, '', PKG_SIGA_FECHA_EN_LETRA.F_SIGA_FECHACOMPLETAENLETRA(DATOS.FECHAAUTO,'m',");
+		stringBuilder.append(this.usrbean.getLanguage());
+		stringBuilder.append(" )) END) IMPUGNACION_AUTOFECHALETRA ");
+		stringBuilder.append(" , (CASE WHEN greatest(DATOS.FECHA_IMPUGNADO, DATOS.Fecharesolucion) = DATOS.FECHA_IMPUGNADO THEN '' ELSE DECODE(DATOS.idtiporesolauto,  null,  '',  (SELECT f_siga_getrecurso(tra.DESCRIPCION, ");
+		stringBuilder.append(this.usrbean.getLanguage());
+		stringBuilder.append(" )     FROM scs_tiporesolauto tra    WHERE tra.idtiporesolauto = DATOS.IDTIPORESOLAUTO)) END) IMPUGNACION_AUTORESOLUTORIO ");
+		stringBuilder.append(" , (CASE WHEN greatest(DATOS.FECHA_IMPUGNADO, DATOS.Fecharesolucion) = DATOS.FECHA_IMPUGNADO THEN '' ELSE DECODE(DATOS.IDTIPOSENTIDOAUTO,  null,  '',  (SELECT f_siga_getrecurso(tsa.DESCRIPCION, ");
+		stringBuilder.append(this.usrbean.getLanguage());
+		stringBuilder.append(" )     FROM scs_tiposentidoauto tsa    WHERE tsa.idtiposentidoauto = DATOS.IDTIPOSENTIDOAUTO)) END) IMPUGNACION_AUTOSENTIDO ");
+		stringBuilder.append(" , (CASE WHEN greatest(DATOS.FECHA_IMPUGNADO, DATOS.Fecharesolucion) = DATOS.FECHA_IMPUGNADO THEN '' ELSE DECODE(DATOS.ANIORESOLUCION,  null,  '',  DATOS.ANIORESOLUCION || '/' || DATOS.NUMERORESOLUCION ||  decode(DATOS.BISRESOLUCION, null, '', 1, ' bis', ''))   END) IMPUGNACION_NUMRESOLUCION ");
+		stringBuilder.append(" , (CASE WHEN greatest(DATOS.FECHA_IMPUGNADO, DATOS.Fecharesolucion) = DATOS.FECHA_IMPUGNADO THEN '' ELSE TO_CHAR(DATOS.FECHAPUBLICACION, 'DD/MM/YYYY') END) IMPUGNACION_FECHAPUBLICACION ");
+		stringBuilder.append(" , (CASE WHEN greatest(DATOS.FECHA_IMPUGNADO, DATOS.Fecharesolucion) = DATOS.FECHA_IMPUGNADO THEN TO_CLOB('')   ELSE   DATOS.OBSERVACIONIMPUGNACION END) IMPUGNACION_OBSERVACIONES ");
+
+		stringBuilder.append(" FROM (SELECT EJG.ANIO AS ANIO,  EJG.NUMEJG, ");
+		stringBuilder.append(" LPAD(EJG.NUMEJG,");
+		stringBuilder.append(longitudNumEjg);
+		stringBuilder.append(", 0) AS NUMERO, ");
+		stringBuilder.append(" TO_CHAR(EJG.FECHAAPERTURA, 'DD/MM/YYYY') AS FECHAAPERTURA, ");
+		stringBuilder.append(" TUR.NOMBRE AS TURNO, ");
+		stringBuilder.append(" GUA.NOMBRE AS GUARDIA, ");
+		stringBuilder.append(" SOL.NOMBRE || ' ' || SOL.APELLIDO1 || ' ' || SOL.APELLIDO2 AS SOLICITANTE, ");
+		stringBuilder.append(" EJG.IDINSTITUCION AS IDINSTITUCION, ");
+		stringBuilder.append(" EJG.IDTIPOEJG AS IDTIPOEJG, ");
+		stringBuilder.append(" EJG.RATIFICACIONDICTAMEN AS DICTAMEN, ");
+		stringBuilder.append(" F_SIGA_GETRECURSO(PON.NOMBRE,");
+		stringBuilder.append(this.usrbean.getLanguage());
+		stringBuilder.append(") AS PONENTE, ");
+		stringBuilder.append(" F_SIGA_GETRECURSO(TIP.DESCRIPCION,");
+		stringBuilder.append(this.usrbean.getLanguage());
+		stringBuilder.append(") AS TIPOEJG, ");
+		stringBuilder.append(" DECODE(EJG.REQUIERENOTIFICARPROC, ");
+		stringBuilder.append(" '1', ");
+		stringBuilder.append(" F_SIGA_GETRECURSO_ETIQUETA('GRATUITA.OPERARRATIFICACION.MENSAJE.REQUIERENOTIFICARPROC', ");
+		stringBuilder.append(this.usrbean.getLanguage());
+		stringBuilder.append(" ) || ");
+
+		stringBuilder.append(" F_SIGA_GETPROCURADORCONTR_EJG(EJG.IDINSTITUCION, ");
+		stringBuilder.append(" EJG.IDTIPOEJG, ");
+		stringBuilder.append(" EJG.ANIO, ");
+		stringBuilder.append(" EJG.NUMERO), ");
+		stringBuilder.append(" '') AS NOTIFICAR_PROCURADOR_CONTRARIO, ");
+
+		stringBuilder.append(" F_SIGA_GETUNIDADEJG(EJG.IDINSTITUCION, ");
+		stringBuilder.append(" EJG.ANIO, ");
+		stringBuilder.append(" EJG.NUMERO, ");
+		stringBuilder.append(" EJG.IDTIPOEJG) AS TOTAL_SOLICITANTE, ");
+		stringBuilder.append(" EJG.RATIFICACIONDICTAMEN, ");
+		stringBuilder.append(" DECODE(EA.FECHARESOLUCION, ");
+		stringBuilder.append(" NULL, ");
+		stringBuilder.append(" EJG.IDTIPORATIFICACIONEJG, ");
+		stringBuilder.append(" EJGACTA.IDTIPORATIFICACIONEJG) IDTIPORATIFICACIONEJG, ");
+		stringBuilder.append(" DECODE(EA.FECHARESOLUCION, ");
+		stringBuilder.append(" NULL, ");
+		stringBuilder.append(" EJG.IDFUNDAMENTOJURIDICO, ");
+		stringBuilder.append(" EJGACTA.IDFUNDAMENTOJURIDICO) IDFUNDAMENTOJURIDICO ");
+		stringBuilder.append(" , (SELECT MAX(EE.FECHAINICIO) FROM SCS_ESTADOEJG EE WHERE EE.IDESTADOEJG = 11 AND EE.IDINSTITUCION = EJG.IDINSTITUCION ");
+		stringBuilder.append(" AND EE.IDTIPOEJG = EJG.IDTIPOEJG AND EE.ANIO = EJG.ANIO AND EE.NUMERO = EJG.NUMERO AND EE.FECHABAJA IS NULL) FECHA_IMPUGNADO, ");
+
+		stringBuilder.append(" EA.FECHARESOLUCION, EJG.FECHAAUTO, EJG.IDTIPORESOLAUTO,EJG.IDTIPOSENTIDOAUTO, ");
+		stringBuilder.append(" EJG.ANIORESOLUCION, EJG.NUMERORESOLUCION, EJG.BISRESOLUCION, EJG.FECHAPUBLICACION, EJG.OBSERVACIONIMPUGNACION ");
+
+		stringBuilder.append(" FROM SCS_EJG           EJG, ");
+		stringBuilder.append(" SCS_ACTACOMISION  EA, ");
+		stringBuilder.append(" SCS_EJG_ACTA      EJGACTA, ");
+		stringBuilder.append(" SCS_TURNO         TUR, ");
+		stringBuilder.append(" SCS_PERSONAJG     SOL, ");
+		stringBuilder.append(" SCS_GUARDIASTURNO GUA, ");
+		stringBuilder.append(" SCS_PONENTE        PON, ");
+		stringBuilder.append(" SCS_TIPOEJGCOLEGIO TIP ");
+
+		stringBuilder.append(" WHERE TUR.IDINSTITUCION(+) = EJG.IDINSTITUCION ");
+		stringBuilder.append(" AND TUR.IDTURNO(+) = EJG.GUARDIATURNO_IDTURNO ");
+		stringBuilder.append(" AND GUA.IDINSTITUCION(+) = EJG.IDINSTITUCION ");
+		stringBuilder.append(" AND GUA.IDTURNO(+) = EJG.GUARDIATURNO_IDTURNO ");
+		stringBuilder.append(" AND GUA.IDGUARDIA(+) = EJG.GUARDIATURNO_IDGUARDIA ");
+		stringBuilder.append(" AND SOL.IDINSTITUCION(+) = EJG.IDINSTITUCION ");
+		stringBuilder.append(" AND SOL.IDPERSONA(+) = EJG.IDPERSONAJG ");
+		stringBuilder.append(" AND PON.IDPONENTE(+) = EJG.IDPONENTE ");
+		stringBuilder.append(" AND PON.IDINSTITUCION(+) = EJG.IDINSTITUCIONPONENTE ");
+		stringBuilder.append(" AND TIP.IDTIPOEJGCOLEGIO(+) = EJG.IDTIPOEJGCOLEGIO ");
+		stringBuilder.append(" AND TIP.IDINSTITUCION(+) = EJG.IDINSTITUCION ");
+		stringBuilder.append(" AND EJGACTA.IDINSTITUCIONEJG = EJG.IDINSTITUCION ");
+		stringBuilder.append(" AND EJGACTA.IDTIPOEJG = EJG.IDTIPOEJG ");
+		stringBuilder.append(" AND EJGACTA.ANIOEJG = EJG.ANIO ");
+		stringBuilder.append(" AND EJGACTA.NUMEROEJG = EJG.NUMERO ");
+		stringBuilder.append(" AND EJGACTA.IDINSTITUCIONACTA = EA.IDINSTITUCION ");
+		stringBuilder.append(" AND EJGACTA.ANIOACTA = EA.ANIOACTA ");
+		stringBuilder.append(" AND EJGACTA.IDACTA = EA.IDACTA ");
+
+		stringBuilder.append(" AND EJGACTA.IDINSTITUCIONACTA =:");
+		keyContador++;
+		htCodigos.put(new Integer(keyContador), idInstitucion);
+		stringBuilder.append(keyContador);
+
+		stringBuilder.append(" AND EJGACTA.ANIOACTA = :");
+		keyContador++;
+		htCodigos.put(new Integer(keyContador), anioActa);
+		stringBuilder.append(keyContador);
+
+		stringBuilder.append(" AND EJGACTA.IDACTA =:");
+		keyContador++;
+		htCodigos.put(new Integer(keyContador), idActa);
+		stringBuilder.append(keyContador);
+
+		stringBuilder.append(" ) DATOS, ");
+		stringBuilder.append(" SCS_TIPORESOLUCION RES, ");
+		stringBuilder.append(" SCS_TIPOFUNDAMENTOS FUN ");
+		stringBuilder.append(" WHERE RES.IDTIPORESOLUCION(+) = DATOS.IDTIPORATIFICACIONEJG ");
+		stringBuilder.append(" AND FUN.IDFUNDAMENTO(+) = DATOS.IDFUNDAMENTOJURIDICO ");
+		stringBuilder.append(" AND FUN.IDINSTITUCION(+) = DATOS.IDINSTITUCION ");
+		stringBuilder.append(" ORDER BY ANIO ASC, NUMEJG ASC ");
+
+		if (isImpugando != null) {
+			if (isImpugando)
+				stringBuilder.append(") WHERE ISIMPUGNADO = 1 ");
+			else
+				stringBuilder.append(") WHERE ISIMPUGNADO = 0 ");
+
+		}
+
+		try {
+
+			Vector vector = this.selectGenericoBindHashVacio(stringBuilder.toString(), htCodigos);
+			if (vector != null) {
+				GenParametrosAdm paramAdm = new GenParametrosAdm(usrbean);
+				CenInstitucionAdm cenInstitucionAdm = new CenInstitucionAdm(usrbean);
+				Hashtable<String, String[]> etiquetasRepetidas = new Hashtable<String, String[]>();
+				String[] etiquetas = null;
+				for (int i = 0; i < vector.size(); i++) {
+
+					Hashtable registro = (Hashtable) vector.get(i);
+					if (registro != null && registro.get("IDINSTITUCION") != null && !registro.get("IDINSTITUCION").toString().trim().equals("")) {
 						String idInstitucionEJG = (String) registro.get("IDINSTITUCION");
-						if(!etiquetasRepetidas.containsKey(idInstitucionEJG)){
-							String prefijoExpedienteCajg =  paramAdm.getValor (idInstitucionEJG, ClsConstants.MODULO_SJCS, ClsConstants.GEN_PARAM_PREFIJO_EXPEDIENTES_CAJG, " ");
-							Vector institucionVector =  cenInstitucionAdm.selectByPK(registro);
-							String abreviaturaColegio =  ((CenInstitucionBean)institucionVector.get(0)).getAbreviatura();
-							etiquetas = new String[]{prefijoExpedienteCajg,UtilidadesString.getPrimeraMayuscula(abreviaturaColegio)};
+						if (!etiquetasRepetidas.containsKey(idInstitucionEJG)) {
+							String prefijoExpedienteCajg = paramAdm.getValor(idInstitucionEJG, ClsConstants.MODULO_SJCS, ClsConstants.GEN_PARAM_PREFIJO_EXPEDIENTES_CAJG, " ");
+							Vector institucionVector = cenInstitucionAdm.selectByPK(registro);
+							String abreviaturaColegio = ((CenInstitucionBean) institucionVector.get(0)).getAbreviatura();
+							etiquetas = new String[] { prefijoExpedienteCajg, UtilidadesString.getPrimeraMayuscula(abreviaturaColegio) };
 							etiquetasRepetidas.put(idInstitucionEJG, etiquetas);
-						}else{
+						} else {
 							etiquetas = etiquetasRepetidas.get(idInstitucionEJG);
-							
+
 						}
 						registro.put("PREFIJO_EXPEDIENTES_CAJG", etiquetas[0]);
 						registro.put("ABREVIATURA_COLEGIO", etiquetas[1]);
 						datos.add(registro);
+					} else {
+						registro.put("PREFIJO_EXPEDIENTES_CAJG", "");
+						registro.put("ABREVIATURA_COLEGIO", "");
+						datos.add(registro);
+
 					}
+
 				}
-			}		       
+			}
+
 		} catch (Exception e) {
-			throw new ClsExceptions (e, "Error ScsActaComisionAdm.getEJGsInforme.");	
-		} 
-		
-		return datos;			
+			throw new ClsExceptions(e, "Error ScsActaComisionAdm.getEJGsInforme.");
+		}
+
+		return datos;
 	}
-	
+
 	/**
 	 * 
 	 * @param idInstitucion
@@ -552,8 +636,9 @@ public class ScsActaComisionAdm extends MasterBeanAdministrador {
 	 * @throws SIGAException 
 	 */
 	public Vector getEJGsPendientes(String idInstitucion, String idActa, String anioActa, String longitudNumEjg) throws ClsExceptions, SIGAException {
-		RowsContainer rc = new RowsContainer();
 		Vector datos = new Vector();
+		Hashtable htCodigos = new Hashtable();
+		int keyContador = 0;
 		
 		String sql = "SELECT rownum as NACUERDO, DATOS.* FROM (" +
 			"SELECT EJG." + ScsEJGBean.C_ANIO + " as ANIO, " +
@@ -575,6 +660,7 @@ public class ScsActaComisionAdm extends MasterBeanAdministrador {
 				" F_SIGA_GETUNIDADEJG(EJG." + ScsEJGBean.C_IDINSTITUCION + ", EJG." + ScsEJGBean.C_ANIO + ", EJG." + ScsEJGBean.C_NUMERO + ", EJG." + ScsEJGBean.C_IDTIPOEJG + ") AS TOTAL_SOLICITANTE, " +
 				" EJG." + ScsEJGBean.C_RATIFICACIONDICTAMEN + 
 			" FROM " + ScsEJGBean.T_NOMBRETABLA + " EJG, " +
+				" SCS_EJG_ACTA      EJGACTA,"+
 				ScsTurnoBean.T_NOMBRETABLA + " TUR, " + 
 				ScsPersonaJGBean.T_NOMBRETABLA + " SOL, " +
 				ScsGuardiasTurnoBean.T_NOMBRETABLA + " GUA, " +
@@ -596,26 +682,37 @@ public class ScsActaComisionAdm extends MasterBeanAdministrador {
 				" AND FUN.IDINSTITUCION(+) = EJG." + ScsEJGBean.C_IDINSTITUCION + 
 				" AND RES.idtiporesolucion(+) = EJG." + ScsEJGBean.C_IDTIPORATIFICACIONEJG +
 				" AND TIP." + ScsTipoEJGColegioBean.C_IDTIPOEJGCOLEGIO + "(+) = EJG." + ScsEJGBean.C_IDTIPOEJGCOLEGIO +
-				" AND TIP." + ScsTipoEJGColegioBean.C_IDINSTITUCION + "(+) = EJG." + ScsEJGBean.C_IDINSTITUCION + 
-				" AND EJG." + ScsEJGBean.C_IDINSTITUCIONACTA + " = " + idInstitucion +
-				" AND EJG." + ScsEJGBean.C_ANIOACTA + " = " + anioActa +
-				" AND EJG." + ScsEJGBean.C_IDACTA + " = " + idActa +  
-			" ORDER BY EJG." + ScsEJGBean.C_ANIO + " ASC , " + 
+				" AND TIP." + ScsTipoEJGColegioBean.C_IDINSTITUCION + "(+) = EJG." + ScsEJGBean.C_IDINSTITUCION +
+				" AND EJGACTA.IDINSTITUCIONEJG = EJG.IDINSTITUCION "+
+				" AND EJGACTA.IDTIPOEJG = EJG.IDTIPOEJG "+
+				" AND EJGACTA.ANIOEJG = EJG.ANIO "+
+				" AND EJGACTA.NUMEROEJG = EJG.NUMERO ";
+				keyContador++;
+				htCodigos.put(new Integer(keyContador), idInstitucion);
+				sql +=" AND EJGACTA.IDINSTITUCIONACTA =  :"+keyContador;
+				keyContador++;
+				htCodigos.put(new Integer(keyContador), anioActa);
+				sql +=" AND EJGACTA.ANIOACTA =  :"+keyContador+"";
+				keyContador++;
+				htCodigos.put(new Integer(keyContador), idActa);
+				sql +=" AND EJGACTA.IDACTA =  :"+keyContador+"";
+				
+				 
+			sql +=" ORDER BY EJG." + ScsEJGBean.C_ANIO + " ASC , " + 
 				" EJG." + ScsEJGBean.C_NUMERO + " ASC " + 
-			") DATOS";		
+				") DATOS";		
 		
        try{    	   	    	   			
-			 rc = this.find(sql);
-			 if (rc!=null){
+			 Vector listaExp = this.selectGenericoBindHashVacio(sql,htCodigos);
+			 if (listaExp!=null){
 	 				GenParametrosAdm paramAdm = new GenParametrosAdm (usrbean);
 	 				CenInstitucionAdm cenInstitucionAdm = new CenInstitucionAdm (usrbean);
 	 				Hashtable<String, String[]> etiquetasRepetidas =  new Hashtable<String, String[]>(); 
 	 				String [] etiquetas = null;
-					for (int i = 0; i < rc.size(); i++)	{
-						Row fila = (Row) rc.get(i);
-						Hashtable registro = (Hashtable)fila.getRow(); 
+					for (int i = 0; i < listaExp.size(); i++)	{
+						Hashtable registro = (Hashtable)listaExp.get(i); 
 						
-						if (registro != null){
+						if (registro != null && registro.get("IDINSTITUCION")!=null && !registro.get("IDINSTITUCION").toString().trim().equals("") ){
 							String idInstitucionEJG = (String) registro.get("IDINSTITUCION");
 							if(!etiquetasRepetidas.containsKey(idInstitucionEJG)){
 								String prefijoExpedienteCajg =  paramAdm.getValor (idInstitucionEJG, ClsConstants.MODULO_SJCS, ClsConstants.GEN_PARAM_PREFIJO_EXPEDIENTES_CAJG, " ");
@@ -630,6 +727,11 @@ public class ScsActaComisionAdm extends MasterBeanAdministrador {
 							registro.put("PREFIJO_EXPEDIENTES_CAJG", etiquetas[0]);
 							registro.put("ABREVIATURA_COLEGIO", etiquetas[1]);
 							datos.add(registro);
+						}else{
+							registro.put("PREFIJO_EXPEDIENTES_CAJG", "");
+							registro.put("ABREVIATURA_COLEGIO", "");
+							datos.add(registro);
+							
 						}
 					}
 				}		       
@@ -651,34 +753,47 @@ public class ScsActaComisionAdm extends MasterBeanAdministrador {
 	 * @throws SIGAException 
 	 */
 	public Vector getEJGsPendientesPonentes(String idInstitucion, String idActa, String anioActa, String longitudNumEjg) throws ClsExceptions, SIGAException {
-		RowsContainer rc = new RowsContainer();
 		Vector datos = new Vector();
+		Hashtable htCodigos = new Hashtable();
+		int keyContador = 0;
 		
 		String sql = "SELECT F_SIGA_GETRECURSO(PON." + ScsPonenteBean.C_NOMBRE + ", 1) as PONENTE, " +
 				" REPLACE(WM_CONCAT(EJG." + ScsEJGBean.C_ANIO + " || '/' || LPAD(EJG." + ScsEJGBean.C_NUMEJG + ","+longitudNumEjg+",0)), ',', ', ') as LISTAEJG " +
 				" ,EJG." + ScsEJGBean.C_IDINSTITUCION +" " +
 			" FROM " + ScsEJGBean.T_NOMBRETABLA + " EJG, " + 
+				" SCS_EJG_ACTA      EJGACTA,"+
 				ScsPonenteBean.T_NOMBRETABLA +" PON " +
 			" WHERE PON." + ScsPonenteBean.C_IDPONENTE + "(+) = EJG." + ScsEJGBean.C_IDPONENTE + 
 				" AND PON." + ScsPonenteBean.C_IDINSTITUCION + "(+) = EJG." + ScsEJGBean.C_IDINSTITUCIONPONENTE + 
 				" AND EJG." + ScsEJGBean.C_IDTIPORATIFICACIONEJG + " is null " + 
-				" AND EJG." + ScsEJGBean.C_IDINSTITUCIONACTA + " = " + idInstitucion +
-				" AND EJG." + ScsEJGBean.C_ANIOACTA + " = " + anioActa +
-				" AND EJG." + ScsEJGBean.C_IDACTA + " = " + idActa +
-			" GROUP BY PON." + ScsPonenteBean.C_NOMBRE+" ,EJG." + ScsEJGBean.C_IDINSTITUCION;
+				" AND EJGACTA.IDINSTITUCIONEJG = EJG.IDINSTITUCION "+
+				" AND EJGACTA.IDTIPOEJG = EJG.IDTIPOEJG "+
+				" AND EJGACTA.ANIOEJG = EJG.ANIO "+
+				" AND EJGACTA.NUMEROEJG = EJG.NUMERO ";
+				keyContador++;
+				htCodigos.put(new Integer(keyContador), idInstitucion);
+				sql +=" AND EJGACTA.IDINSTITUCIONACTA =  :"+keyContador;
+				keyContador++;
+				htCodigos.put(new Integer(keyContador), anioActa);
+				sql +=" AND EJGACTA.ANIOACTA =  :"+keyContador+"";
+				keyContador++;
+				htCodigos.put(new Integer(keyContador), idActa);
+				sql +=" AND EJGACTA.IDACTA =  :"+keyContador+"";
+				
+			
+			sql +=" GROUP BY PON." + ScsPonenteBean.C_NOMBRE+" ,EJG." + ScsEJGBean.C_IDINSTITUCION;
 		
 		try{    	   	    	   			
-			rc = this.find(sql);
-			if (rc!=null){
+			Vector lista = this.selectGenericoBindHashVacio(sql,htCodigos);
+			if (lista!=null){
  				GenParametrosAdm paramAdm = new GenParametrosAdm (usrbean);
  				CenInstitucionAdm cenInstitucionAdm = new CenInstitucionAdm (usrbean);
  				Hashtable<String, String[]> etiquetasRepetidas =  new Hashtable<String, String[]>(); 
  				String [] etiquetas = null;
-				for (int i = 0; i < rc.size(); i++)	{
-					Row fila = (Row) rc.get(i);
-					Hashtable registro = (Hashtable)fila.getRow(); 
+				for (int i = 0; i < lista.size(); i++)	{
+					Hashtable registro = (Hashtable)lista.get(i); 
 					
-					if (registro != null){
+					if (registro != null && registro.get("IDINSTITUCION")!=null && !registro.get("IDINSTITUCION").toString().trim().equals("") ){
 						String idInstitucionEJG = (String) registro.get("IDINSTITUCION");
 						if(!etiquetasRepetidas.containsKey(idInstitucionEJG)){
 							String prefijoExpedienteCajg =  paramAdm.getValor (idInstitucionEJG, ClsConstants.MODULO_SJCS, ClsConstants.GEN_PARAM_PREFIJO_EXPEDIENTES_CAJG, " ");
@@ -693,6 +808,11 @@ public class ScsActaComisionAdm extends MasterBeanAdministrador {
 						registro.put("PREFIJO_EXPEDIENTES_CAJG", etiquetas[0]);
 						registro.put("ABREVIATURA_COLEGIO", etiquetas[1]);
 						datos.add(registro);
+					}else{
+						registro.put("PREFIJO_EXPEDIENTES_CAJG", "");
+						registro.put("ABREVIATURA_COLEGIO", "");
+						datos.add(registro);
+						
 					}
 				}
 			}		           
@@ -715,7 +835,6 @@ public class ScsActaComisionAdm extends MasterBeanAdministrador {
 	 */
 	public Vector getEJGsRetirados(int idInstitucion, int idActa, int anioActa, String longitudNumEjg) throws ClsExceptions, SIGAException {
 		RowsContainer rc = new RowsContainer();
-		Vector ejgPendientes = new Vector();
 		
 		String sql=getConsultaEJGsRetirados(idInstitucion, idActa, anioActa,longitudNumEjg);
  		
@@ -739,7 +858,6 @@ public class ScsActaComisionAdm extends MasterBeanAdministrador {
 	
 	public Vector updateEJGsRetirados(int idInstitucion, int idActa, int anioActa, String longitudNumejg) throws ClsExceptions, SIGAException {
 		RowsContainer rc = new RowsContainer();
-		Vector ejgPendientes = new Vector();
 		
 		ScsEJGAdm ejgAdm = new ScsEJGAdm(this.usrbean);
 		
@@ -775,9 +893,25 @@ public class ScsActaComisionAdm extends MasterBeanAdministrador {
 		where.append(" and " + ScsEJGBean.C_IDACTA + " = " + idActa);
 		where.append(" and " + ScsEJGBean.C_IDTIPORATIFICACIONEJG + " in (4,6)");
 		
+		StringBuilder delete = new StringBuilder();
+		delete.append(" DELETE FROM SCS_EJG_ACTA EJGACTA ");
+		delete.append(" WHERE EJGACTA.IDINSTITUCIONACTA = ");
+		delete.append(idInstitucion);
+		delete.append(" AND EJGACTA.ANIOACTA = ");
+		delete.append(anioActa);
+		delete.append(" AND EJGACTA.IDACTA = ");
+		delete.append(idActa);
+		delete.append(" AND EXISTS (SELECT 1 ");
+		delete.append(" FROM SCS_EJG EJG ");
+		delete.append(" WHERE EJGACTA.IDTIPOEJG = EJG.IDTIPOEJG ");
+		delete.append(" AND EJGACTA.ANIOEJG = EJG.ANIO ");
+		delete.append(" AND EJGACTA.NUMEROEJG = EJG.NUMERO ");
+		delete.append(" AND EJGACTA.IDINSTITUCIONEJG = EJG.IDINSTITUCION ");
+		delete.append(" AND EJG.IDTIPORATIFICACIONEJG IN (4, 6)) ");
 		
 		try {
 			ejgAdm.updateSQL(update.toString()+where.toString());
+			ejgAdm.deleteSQL(delete.toString());
 		} catch (ClsExceptions e) {
 			datos=new Vector();
 			throw new SIGAException("Error al procesar los EJGs retirados del acta.",e);
@@ -790,18 +924,91 @@ public class ScsActaComisionAdm extends MasterBeanAdministrador {
 	
 	private String getConsultaEJGsRetirados(int idInstitucion, int idActa, int anioActa,String longitudNumejg){
 		String sql = "select " + 
-		  " ejg."+ScsEJGBean.C_ANIO+"," + 
-		  " ejg."+ScsEJGBean.C_IDINSTITUCION+"," +
-		  " ejg."+ScsEJGBean.C_IDTIPOEJG+"," +
-		  " ejg."+ScsEJGBean.C_NUMERO+"," +
-		  " lpad(ejg."+ScsEJGBean.C_NUMEJG+","+longitudNumejg+",0) "+ScsEJGBean.C_NUMEJG+"," +
-		  " ejg."+ScsEJGBean.C_IDTIPORATIFICACIONEJG +
-		  " from "+ScsEJGBean.T_NOMBRETABLA +" ejg" +
-		  " where ejg."+ScsEJGBean.C_IDTIPORATIFICACIONEJG +" in (4,6) " +
-		  " and ejg."+ScsEJGBean.C_IDINSTITUCIONACTA+"="+ idInstitucion+
-		  " and ejg."+ScsEJGBean.C_ANIOACTA+"="+ anioActa+
-		  " and ejg."+ScsEJGBean.C_IDACTA+"="+idActa+
-		  " order by ejg."+ScsEJGBean.C_ANIO+" asc, ejg."+ScsEJGBean.C_NUMEJG;
+			" ejg."+ScsEJGBean.C_ANIO+"," + 
+			" ejg."+ScsEJGBean.C_IDINSTITUCION+"," +
+			" ejg."+ScsEJGBean.C_IDTIPOEJG+"," +
+			" ejg."+ScsEJGBean.C_NUMERO+"," +
+			" lpad(ejg."+ScsEJGBean.C_NUMEJG+","+longitudNumejg+",0) "+ScsEJGBean.C_NUMEJG+"," +
+			" ejg."+ScsEJGBean.C_IDTIPORATIFICACIONEJG +
+			" from SCS_EJG_ACTA       EJGACTA,"+ScsEJGBean.T_NOMBRETABLA +" ejg" +
+			" where " +
+			" EJGACTA.IDINSTITUCIONEJG = EJG.IDINSTITUCION " +
+			" AND EJGACTA.IDTIPOEJG = EJG.IDTIPOEJG " +
+			" AND EJGACTA.ANIOEJG = EJG.ANIO " +
+			" AND EJGACTA.NUMEROEJG = EJG.NUMERO " +
+			" AND EJGACTA.IDINSTITUCIONACTA =  " +idInstitucion+
+			" AND EJGACTA.ANIOACTA =  " +anioActa+
+			" AND EJGACTA.IDACTA =  " +idActa+
+			  
+			" AND ejg."+ScsEJGBean.C_IDTIPORATIFICACIONEJG +" in (4,6) " +
+			  
+			" order by ejg."+ScsEJGBean.C_ANIO+" asc, ejg."+ScsEJGBean.C_NUMEJG;
 		return sql;
 	}
+	
+	
+	/**
+	 * Metodo que devuelve un String con loss Ejgs que son necesarios sacar de los actas para poder abrir otro acta
+	 * Nos devolevera los expedientes que estan en el acta tratado y que esxisten en otros actas diferentes que estan abiertos
+	 * @param actaBean
+	 * @param usr
+	 * @return
+	 * @throws ClsExceptions
+	 */
+	
+	public String getExpedientesRepetidosEnActasAbiertas(ScsActaComisionBean actaBean, UsrBean usr) throws ClsExceptions {
+
+		StringBuilder query = new StringBuilder();
+		query.append(" SELECT EJG.ANIO||'/'|| EJG.NUMEJG EXPEDIENTE,AC.ANIOACTA||'/'||AC.NUMEROACTA ACTA ");
+		query.append(" FROM SCS_EJG_ACTA EAC, SCS_EJG EJG, SCS_ACTACOMISION AC WHERE ");
+		query.append(" EAC.IDINSTITUCIONEJG = EJG.IDINSTITUCION ");
+		query.append(" AND EAC.IDTIPOEJG = EJG.IDTIPOEJG");
+		query.append(" AND EAC.ANIOEJG = EJG.ANIO ");
+		query.append(" AND EAC.NUMEROEJG = EJG.NUMERO ");
+		query.append(" AND EAC.IDINSTITUCIONACTA = AC.IDINSTITUCION ");
+		query.append(" AND EAC.IDACTA = AC.IDACTA ");
+		query.append(" AND EAC.ANIOACTA = AC.ANIOACTA ");
+		
+		query.append(" AND EAC.IDINSTITUCIONACTA = ");
+		query.append(actaBean.getIdInstitucion());
+		query.append(" AND EAC.ANIOACTA =  ");
+		query.append(actaBean.getAnioActa());
+		query.append(" AND EAC.IDACTA =  ");
+		query.append(actaBean.getIdActa());
+		query.append(" AND EXISTS (SELECT 1 ");
+		query.append(" FROM SCS_EJG_ACTA EAC2, SCS_ACTACOMISION AC ");
+		query.append(" WHERE AC.IDINSTITUCION = EAC2.IDINSTITUCIONACTA ");
+		query.append(" AND AC.IDACTA = EAC2.IDACTA ");
+		query.append(" AND AC.ANIOACTA = EAC2.ANIOACTA ");
+		query.append(" AND AC.FECHARESOLUCION IS NULL ");
+		query.append(" AND EAC2.IDINSTITUCIONACTA = ");
+		query.append(actaBean.getIdInstitucion());
+		query.append(" AND EAC2.IDINSTITUCIONACTA||EAC2.ANIOACTA||EAC2.IDACTA <> EAC.IDINSTITUCIONACTA||EAC.ANIOACTA||EAC.IDACTA ");
+		query.append(" AND EAC.IDINSTITUCIONEJG = EAC2.IDINSTITUCIONEJG ");
+		query.append(" AND EAC.IDTIPOEJG = EAC2.IDTIPOEJG ");
+		query.append(" AND EAC.ANIOEJG = EAC2.ANIOEJG ");
+		query.append(" AND EAC.NUMEROEJG = EAC2.NUMEROEJG ");
+		query.append(" ) ");
+
+		StringBuilder detalleEjgsPteRetirarActas = null;
+		try {
+			RowsContainer rc = this.find(query.toString());
+			if (rc != null && rc.size() > 0) {
+				detalleEjgsPteRetirarActas = new StringBuilder();
+				for (int i = 0; i < rc.size(); i++) {
+					Row fila = (Row) rc.get(i);
+					detalleEjgsPteRetirarActas.append("Acta: ");
+					detalleEjgsPteRetirarActas.append((String) fila.getString("ACTA"));
+					detalleEjgsPteRetirarActas.append(" EJG: ");
+					detalleEjgsPteRetirarActas.append((String) fila.getString("EXPEDIENTE"));
+					detalleEjgsPteRetirarActas.append("\n ");
+				}
+			} else
+				return null;
+		} catch (Exception e) {
+			throw new ClsExceptions(e, "Error ScsActaComisionAdm.getExpedientesRepetidosEnActasAbiertas.");
+		}
+		return detalleEjgsPteRetirarActas.toString();
+	}
+	
 }

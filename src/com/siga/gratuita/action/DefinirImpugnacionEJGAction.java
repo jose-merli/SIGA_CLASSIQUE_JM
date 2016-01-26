@@ -59,11 +59,18 @@ public class DefinirImpugnacionEJGAction extends MasterAction {
 		DefinirEJGForm miForm = (DefinirEJGForm)formulario;		
 		nuevos = miForm.getDatos();
 		ScsEJGAdm admEJG = new ScsEJGAdm(this.getUserBean(request));
-		
+		String message = "messages.updated.success";
 			
 		try {
 			// Ponemos la fecha en el formato correcto
-			nuevos.put("FECHAAUTO", GstDate.getApplicationFormatDate(usr.getLanguage(), nuevos.get("FECHAAUTO").toString()));
+			if(nuevos.get("FECHAAUTO")!=null && !nuevos.get("FECHAAUTO").equals("")){
+				nuevos.put("FECHAAUTO", GstDate.getApplicationFormatDate(usr.getLanguage(), nuevos.get("FECHAAUTO").toString()));
+			}
+			if(nuevos.get("IDTIPORESOLAUTO")==null || nuevos.get("IDTIPORESOLAUTO").equals("")){
+				nuevos.put("IDTIPOSENTIDOAUTO", "");
+			}
+			
+			
 			//nuevos.put("FECHAAUTO", GstDate.getApplicationFormatDate("",nuevos.get("FECHAAUTO").toString()));
 			//Ponemos la fecha en el formato correcto
 			if(nuevos.get("FECHAPUBLICACION")!=null && !nuevos.get("FECHAPUBLICACION").toString().trim().equals(""))
@@ -74,18 +81,30 @@ public class DefinirImpugnacionEJGAction extends MasterAction {
 			nuevos.put("TURNADOAUTO",(nuevos.containsKey("TURNADOAUTO")?nuevos.get("TURNADOAUTO"):ClsConstants.DB_FALSE));
 			nuevos.put("TURNADORATIFICACION",(nuevos.containsKey("TURNADORATIFICACION")?nuevos.get("TURNADORATIFICACION"):ClsConstants.DB_FALSE));
 			// Actualizamos en la base de datos
+			Hashtable hashDataOld = (Hashtable)request.getSession().getAttribute("DATABACKUP"); 
+			
 			tx=usr.getTransaction();
 			tx.begin();
-			admEJG.update(nuevos,(Hashtable)request.getSession().getAttribute("DATABACKUP"));
+			admEJG.update(nuevos,hashDataOld);
 			tx.commit();
 			// En DATABACKUP almacenamos los datos más recientes por si se vuelve a actualizar seguidamente
 			nuevos.put("FECHAMODIFICACION", "sysdate");
-			request.getSession().setAttribute("DATABACKUP",nuevos);			
+			request.getSession().setAttribute("DATABACKUP",nuevos);		
+			
+			if(nuevos.get("FECHAAUTO")!=null && !nuevos.get("FECHAAUTO").toString().equalsIgnoreCase("")){
+				if(hashDataOld.get("FECHAAUTO")==null || hashDataOld.get("FECHAAUTO").toString().equalsIgnoreCase("") )
+					message = "messages.updated.impugnacion";
+			}else{
+				if(hashDataOld.get("FECHAAUTO")!=null && !hashDataOld.get("FECHAAUTO").toString().equalsIgnoreCase("")){
+					message = "messages.deleted.impugnacion";
+				}
+				
+			}
 		} catch (Exception e) {
 			throwExcp("messages.general.error", new String[] {"modulo.gratuita"}, e, tx); 
 		}
 		
-		return exitoRefresco("messages.updated.impugnacion",request);
+		return exitoRefresco(message,request);
 	}
 
 	protected String abrir(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {

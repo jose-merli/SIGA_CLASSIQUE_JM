@@ -15,48 +15,131 @@ import com.siga.censo.form.AnexosCuentasBancariasForm;
 
 public class CenAnexosCuentasBancariasAdm extends MasterBeanAdministrador {
 	
-	private String sqlMandatosSelect = "SELECT MANDATOS." + CenMandatosCuentasBancariasBean.C_IDINSTITUCION + " AS " + CenAnexosCuentasBancariasBean.C_IDINSTITUCION + ", " + 
-										" MANDATOS." + CenMandatosCuentasBancariasBean.C_IDPERSONA + " AS " + CenAnexosCuentasBancariasBean.C_IDPERSONA + ", " + 
-										" MANDATOS." + CenMandatosCuentasBancariasBean.C_IDCUENTA + " AS " + CenAnexosCuentasBancariasBean.C_IDCUENTA + ", " +  
-										" MANDATOS." + CenMandatosCuentasBancariasBean.C_IDMANDATO + " AS " + CenAnexosCuentasBancariasBean.C_IDMANDATO + ", " + 
-										" NULL AS " + CenAnexosCuentasBancariasBean.C_IDANEXO + ", " + 										
-										" NULL AS " + CenAnexosCuentasBancariasBean.C_ORIGEN + ", " + 
-										" NULL AS " + CenAnexosCuentasBancariasBean.C_DESCRIPCION + ", " + 
-										" TO_CHAR(MANDATOS." + CenMandatosCuentasBancariasBean.C_FIRMA_FECHA + ", 'DD/MM/YYYY') AS " + CenAnexosCuentasBancariasBean.C_FIRMA_FECHA + ", " +
-										" MANDATOS." + CenMandatosCuentasBancariasBean.C_FIRMA_LUGAR + " AS " + CenAnexosCuentasBancariasBean.C_FIRMA_LUGAR + ", " + 
-										" MANDATOS." + CenMandatosCuentasBancariasBean.C_IDFICHEROFIRMA + " AS " + CenAnexosCuentasBancariasBean.C_IDFICHEROFIRMA + ", " +
-										" TO_CHAR(MANDATOS." + CenMandatosCuentasBancariasBean.C_FECHACREACION + ", 'DD/MM/YYYY') AS " + CenAnexosCuentasBancariasBean.C_FECHACREACION + ", " +
-										" MANDATOS." + CenMandatosCuentasBancariasBean.C_USUCREACION + " AS " + CenAnexosCuentasBancariasBean.C_USUCREACION + ", " +
-										" TO_CHAR(MANDATOS." + CenMandatosCuentasBancariasBean.C_FECHAMODIFICACION + ", 'DD/MM/YYYY') AS " + CenAnexosCuentasBancariasBean.C_FECHAMODIFICACION + ", " + 
-										" MANDATOS." + CenMandatosCuentasBancariasBean.C_USUMODIFICACION + " AS " + CenAnexosCuentasBancariasBean.C_USUMODIFICACION + ", " +
-										" MANDATOS." + CenMandatosCuentasBancariasBean.C_FECHACREACION + " AS " + CenAnexosCuentasBancariasBean.C_FECHAORDEN + ", " +
-										" MANDATOS." + CenMandatosCuentasBancariasBean.C_FECHAUSO + ", " +
-										" NULL AS " + CenAnexosCuentasBancariasBean.C_ESAUTOMATICO;
-	
-	private String sqlMandatosFrom = " FROM " + CenMandatosCuentasBancariasBean.T_NOMBRETABLA + " MANDATOS ";
-	
-	private String sqlAnexosSelect = "SELECT ANEXOS." + CenAnexosCuentasBancariasBean.C_IDINSTITUCION + ", " + 
-										" ANEXOS." + CenAnexosCuentasBancariasBean.C_IDPERSONA + ", " +  
-										" ANEXOS." + CenAnexosCuentasBancariasBean.C_IDCUENTA + ", " +  
-										" ANEXOS." + CenAnexosCuentasBancariasBean.C_IDMANDATO + "," +
-										" ANEXOS." + CenAnexosCuentasBancariasBean.C_IDANEXO + "," +										
-										" ANEXOS." + CenAnexosCuentasBancariasBean.C_ORIGEN + "," +
-										" ANEXOS." + CenAnexosCuentasBancariasBean.C_DESCRIPCION + "," +
-										" TO_CHAR(ANEXOS." + CenAnexosCuentasBancariasBean.C_FIRMA_FECHA + ", 'DD/MM/YYYY') AS " + CenAnexosCuentasBancariasBean.C_FIRMA_FECHA + ", " +
-										" ANEXOS." + CenAnexosCuentasBancariasBean.C_FIRMA_LUGAR + "," +
-										" ANEXOS." + CenAnexosCuentasBancariasBean.C_IDFICHEROFIRMA + ", " +
-										" TO_CHAR(ANEXOS." + CenAnexosCuentasBancariasBean.C_FECHACREACION + ", 'DD/MM/YYYY') AS " + CenAnexosCuentasBancariasBean.C_FECHACREACION + ", " +
-										" ANEXOS." + CenAnexosCuentasBancariasBean.C_USUCREACION + ", " +
-										" TO_CHAR(ANEXOS." + CenAnexosCuentasBancariasBean.C_FECHAMODIFICACION + ", 'DD/MM/YYYY') AS " + CenAnexosCuentasBancariasBean.C_FECHAMODIFICACION + ", " + 
-										" ANEXOS." + CenAnexosCuentasBancariasBean.C_USUMODIFICACION + ", " +
-										" ANEXOS." + CenAnexosCuentasBancariasBean.C_FECHACREACION + " AS " + CenAnexosCuentasBancariasBean.C_FECHAORDEN + ", " +
-										" NULL AS " + CenMandatosCuentasBancariasBean.C_FECHAUSO + ", " +
-										" ANEXOS." + CenAnexosCuentasBancariasBean.C_ESAUTOMATICO;
-	
-	private String sqlAnexosFrom = " FROM " + CenAnexosCuentasBancariasBean.T_NOMBRETABLA + " ANEXOS ";								
+	private StringBuilder sqlMandatosSelect = new StringBuilder();
+	private StringBuilder sqlMandatosFrom = new StringBuilder();
+	private StringBuilder sqlAnexosSelect = new StringBuilder();
+	private StringBuilder sqlAnexosFrom = new StringBuilder();
 			
 	public CenAnexosCuentasBancariasAdm(UsrBean usuario) {
 	    super(CenAnexosCuentasBancariasBean.T_NOMBRETABLA, usuario);
+	    
+	    StringBuilder sql = new StringBuilder();
+	    sql.append("SELECT MANDATOS.");
+	    sql.append(CenMandatosCuentasBancariasBean.C_IDINSTITUCION);
+	    sql.append(" AS ");
+	    sql.append(CenAnexosCuentasBancariasBean.C_IDINSTITUCION);
+	    sql.append(", MANDATOS.");
+	    sql.append(CenMandatosCuentasBancariasBean.C_IDPERSONA);
+	    sql.append(" AS ");
+	    sql.append(CenAnexosCuentasBancariasBean.C_IDPERSONA);
+	    sql.append(", MANDATOS.");
+	    sql.append(CenMandatosCuentasBancariasBean.C_IDCUENTA);
+	    sql.append(" AS ");
+	    sql.append(CenAnexosCuentasBancariasBean.C_IDCUENTA);
+	    sql.append(", MANDATOS.");
+	    sql.append(CenMandatosCuentasBancariasBean.C_IDMANDATO);
+	    sql.append(" AS ");
+	    sql.append(CenAnexosCuentasBancariasBean.C_IDMANDATO);
+	    sql.append(", NULL AS ");
+	    sql.append(CenAnexosCuentasBancariasBean.C_IDANEXO);
+	    sql.append(", NULL AS ");
+	    sql.append(CenAnexosCuentasBancariasBean.C_ORIGEN);
+	    sql.append(", NULL AS ");
+	    sql.append(CenAnexosCuentasBancariasBean.C_DESCRIPCION);
+	    sql.append(", TO_CHAR(MANDATOS.");
+	    sql.append(CenMandatosCuentasBancariasBean.C_FIRMA_FECHA);
+	    sql.append(", 'DD/MM/YYYY') AS ");
+	    sql.append(CenAnexosCuentasBancariasBean.C_FIRMA_FECHA);
+	    sql.append(", MANDATOS.");
+	    sql.append(CenMandatosCuentasBancariasBean.C_FIRMA_LUGAR);
+	    sql.append(" AS ");
+	    sql.append(CenAnexosCuentasBancariasBean.C_FIRMA_LUGAR);
+	    sql.append(", MANDATOS.");
+	    sql.append(CenMandatosCuentasBancariasBean.C_IDFICHEROFIRMA);
+	    sql.append(" AS ");
+	    sql.append(CenAnexosCuentasBancariasBean.C_IDFICHEROFIRMA);
+	    sql.append(", TO_CHAR(MANDATOS.");
+	    sql.append(CenMandatosCuentasBancariasBean.C_FECHACREACION);
+	    sql.append(", 'DD/MM/YYYY') AS ");
+	    sql.append(CenAnexosCuentasBancariasBean.C_FECHACREACION);
+	    sql.append(", MANDATOS.");
+	    sql.append(CenMandatosCuentasBancariasBean.C_USUCREACION);
+	    sql.append(" AS ");
+	    sql.append(CenAnexosCuentasBancariasBean.C_USUCREACION);
+	    sql.append(", TO_CHAR(MANDATOS.");
+	    sql.append(CenMandatosCuentasBancariasBean.C_FECHAMODIFICACION);
+	    sql.append(", 'DD/MM/YYYY') AS ");
+	    sql.append(CenAnexosCuentasBancariasBean.C_FECHAMODIFICACION);
+	    sql.append(", MANDATOS.");
+	    sql.append(CenMandatosCuentasBancariasBean.C_USUMODIFICACION);
+	    sql.append(" AS ");
+	    sql.append(CenAnexosCuentasBancariasBean.C_USUMODIFICACION);
+	    sql.append(", MANDATOS.");
+	    sql.append(CenMandatosCuentasBancariasBean.C_FECHACREACION);
+	    sql.append(" AS ");
+	    sql.append(CenAnexosCuentasBancariasBean.C_FECHAORDEN);
+	    sql.append(", MANDATOS.");
+	    sql.append(CenMandatosCuentasBancariasBean.C_FECHAUSO);
+	    sql.append(", NULL AS ");
+	    sql.append(CenAnexosCuentasBancariasBean.C_ESAUTOMATICO);
+	    this.sqlMandatosSelect = sql;	  
+	    
+	    sql = new StringBuilder();
+	    sql.append(" FROM ");
+	    sql.append(CenMandatosCuentasBancariasBean.T_NOMBRETABLA);
+	    sql.append(" MANDATOS ");;
+	    this.sqlMandatosFrom = sql;
+	    
+	    sql = new StringBuilder();
+	    sql.append("SELECT ANEXOS.");
+	    sql.append(CenAnexosCuentasBancariasBean.C_IDINSTITUCION);
+	    sql.append(", ANEXOS.");
+	    sql.append(CenAnexosCuentasBancariasBean.C_IDPERSONA);
+	    sql.append(", ANEXOS.");
+	    sql.append(CenAnexosCuentasBancariasBean.C_IDCUENTA);
+	    sql.append(", ANEXOS.");
+	    sql.append(CenAnexosCuentasBancariasBean.C_IDMANDATO);
+	    sql.append(", ANEXOS.");
+	    sql.append(CenAnexosCuentasBancariasBean.C_IDANEXO);
+	    sql.append(", ANEXOS.");
+	    sql.append(CenAnexosCuentasBancariasBean.C_ORIGEN);
+	    sql.append(", ANEXOS.");
+	    sql.append(CenAnexosCuentasBancariasBean.C_DESCRIPCION);
+	    sql.append(", TO_CHAR(ANEXOS.");
+	    sql.append(CenAnexosCuentasBancariasBean.C_FIRMA_FECHA);
+	    sql.append(", 'DD/MM/YYYY') AS ");
+	    sql.append(CenAnexosCuentasBancariasBean.C_FIRMA_FECHA);
+	    sql.append(", ANEXOS.");
+	    sql.append(CenAnexosCuentasBancariasBean.C_FIRMA_LUGAR);
+	    sql.append(", ANEXOS.");
+	    sql.append(CenAnexosCuentasBancariasBean.C_IDFICHEROFIRMA);
+	    sql.append(", TO_CHAR(ANEXOS.");
+	    sql.append(CenAnexosCuentasBancariasBean.C_FECHACREACION);
+	    sql.append(", 'DD/MM/YYYY') AS ");
+	    sql.append(CenAnexosCuentasBancariasBean.C_FECHACREACION);
+	    sql.append(", ANEXOS.");
+	    sql.append(CenAnexosCuentasBancariasBean.C_USUCREACION);
+	    sql.append(", TO_CHAR(ANEXOS.");
+	    sql.append(CenAnexosCuentasBancariasBean.C_FECHAMODIFICACION);
+	    sql.append(", 'DD/MM/YYYY') AS ");
+	    sql.append(CenAnexosCuentasBancariasBean.C_FECHAMODIFICACION);
+	    sql.append(", ANEXOS.");
+	    sql.append(CenAnexosCuentasBancariasBean.C_USUMODIFICACION);
+	    sql.append(", ANEXOS.");
+	    sql.append(CenAnexosCuentasBancariasBean.C_FECHACREACION);
+	    sql.append(" AS ");
+	    sql.append(CenAnexosCuentasBancariasBean.C_FECHAORDEN);
+	    sql.append(", NULL AS ");
+	    sql.append(CenMandatosCuentasBancariasBean.C_FECHAUSO);
+	    sql.append(", ANEXOS.");
+	    sql.append(CenAnexosCuentasBancariasBean.C_ESAUTOMATICO);	 	    
+	    this.sqlAnexosSelect = sql;
+	    
+	    sql = new StringBuilder();
+	    sql.append(" FROM ");
+	    sql.append(CenAnexosCuentasBancariasBean.T_NOMBRETABLA);
+	    sql.append(" ANEXOS ");;
+	    this.sqlAnexosFrom = sql;
 	}
 
 	protected String[] getCamposBean() {
@@ -120,7 +203,7 @@ public class CenAnexosCuentasBancariasAdm extends MasterBeanAdministrador {
 	}
 
 	protected Hashtable beanToHashTable(MasterBean bean) throws ClsExceptions {
-		Hashtable htAnexo = new Hashtable();
+		Hashtable<String,Object> htAnexo = new Hashtable<String,Object>();
 
 		try {			
 			CenAnexosCuentasBancariasBean beanAnexo = (CenAnexosCuentasBancariasBean) bean;
@@ -162,24 +245,51 @@ public class CenAnexosCuentasBancariasAdm extends MasterBeanAdministrador {
 	public Vector<CenAnexosCuentasBancariasBean> obtenerAnexos(CenMandatosCuentasBancariasBean beanMandato) throws ClsExceptions {
 		try {
 			// JPT: CEN_MANDATOS_CUENTASBANCARIAS  UNION  CEN_ANEXOS_CUENTASBANCARIAS
-			String sql = this.sqlMandatosSelect + 
-						this.sqlMandatosFrom + 
-						" WHERE MANDATOS." + CenAnexosCuentasBancariasBean.C_IDINSTITUCION + " = " + beanMandato.getIdInstitucion() +
-							" AND MANDATOS." + CenAnexosCuentasBancariasBean.C_IDPERSONA + " = " + beanMandato.getIdPersona() + 
-							" AND MANDATOS." + CenAnexosCuentasBancariasBean.C_IDCUENTA + " = " + beanMandato.getIdCuenta() +
-							" AND MANDATOS." + CenAnexosCuentasBancariasBean.C_IDMANDATO + " = " + beanMandato.getIdMandato() +
-					" UNION ALL " +	
-						this.sqlAnexosSelect + 
-						this.sqlAnexosFrom + 
-						" WHERE ANEXOS." + CenAnexosCuentasBancariasBean.C_IDINSTITUCION + " = " + beanMandato.getIdInstitucion() +
-							" AND ANEXOS." + CenAnexosCuentasBancariasBean.C_IDPERSONA + " = " + beanMandato.getIdPersona() + 
-							" AND ANEXOS." + CenAnexosCuentasBancariasBean.C_IDCUENTA + " = " + beanMandato.getIdCuenta() +
-							" AND ANEXOS." + CenAnexosCuentasBancariasBean.C_IDMANDATO + " = " + beanMandato.getIdMandato() +
-					" ORDER BY " + CenAnexosCuentasBancariasBean.C_FECHAORDEN + " ASC";
+			StringBuilder sql = new StringBuilder(); 
+			sql.append(this.sqlMandatosSelect); 
+			sql.append(this.sqlMandatosFrom); 
+			sql.append(" WHERE MANDATOS.");
+			sql.append(CenAnexosCuentasBancariasBean.C_IDINSTITUCION);
+			sql.append(" = ");
+			sql.append(beanMandato.getIdInstitucion());
+			sql.append(" AND MANDATOS.");
+			sql.append(CenAnexosCuentasBancariasBean.C_IDPERSONA);
+			sql.append(" = ");
+			sql.append(beanMandato.getIdPersona()); 
+			sql.append(" AND MANDATOS.");
+			sql.append(CenAnexosCuentasBancariasBean.C_IDCUENTA);
+			sql.append(" = ");
+			sql.append(beanMandato.getIdCuenta());
+			sql.append(" AND MANDATOS.");
+			sql.append(CenAnexosCuentasBancariasBean.C_IDMANDATO);
+			sql.append(" = ");
+			sql.append(beanMandato.getIdMandato());
+			sql.append(" UNION ALL ");	
+			sql.append(this.sqlAnexosSelect); 
+			sql.append(this.sqlAnexosFrom); 
+			sql.append(" WHERE ANEXOS.");
+			sql.append(CenAnexosCuentasBancariasBean.C_IDINSTITUCION);
+			sql.append(" = ");
+			sql.append(beanMandato.getIdInstitucion());
+			sql.append(" AND ANEXOS.");
+			sql.append(CenAnexosCuentasBancariasBean.C_IDPERSONA);
+			sql.append(" = ");
+			sql.append(beanMandato.getIdPersona()); 
+			sql.append(" AND ANEXOS.");
+			sql.append(CenAnexosCuentasBancariasBean.C_IDCUENTA);
+			sql.append(" = ");
+			sql.append(beanMandato.getIdCuenta());
+			sql.append(" AND ANEXOS.");
+			sql.append(CenAnexosCuentasBancariasBean.C_IDMANDATO);
+			sql.append(" = ");
+			sql.append(beanMandato.getIdMandato());
+			sql.append(" ORDER BY ");
+			sql.append(CenAnexosCuentasBancariasBean.C_FECHAORDEN);
+			sql.append(" ASC");
 			
 			Vector<CenAnexosCuentasBancariasBean> vAnexos = null;
 			RowsContainer rc = new RowsContainer(); 												
-			if (rc.find(sql)) {        	   
+			if (rc.find(sql.toString())) {        	   
 				vAnexos = new Vector<CenAnexosCuentasBancariasBean>();
     			for (int i = 0; i < rc.size(); i++){
 					Row fila = (Row) rc.get(i);
@@ -191,7 +301,7 @@ public class CenAnexosCuentasBancariasAdm extends MasterBeanAdministrador {
 			return vAnexos;
 			
 		} catch(Exception e) {			
-			throw new ClsExceptions (e, "Error al ejecutar el 'select' en B.D.");
+			throw new ClsExceptions (e, "Error al ejecutar obtenerAnexos");
 		}
 	}      		
 	
@@ -203,17 +313,32 @@ public class CenAnexosCuentasBancariasAdm extends MasterBeanAdministrador {
      */
 	public CenAnexosCuentasBancariasBean obtenerAnexo(CenAnexosCuentasBancariasBean beanAnexo) throws ClsExceptions {
 		try {
-			String sql = this.sqlAnexosSelect + 
-						this.sqlAnexosFrom + 
-						" WHERE " + CenAnexosCuentasBancariasBean.C_IDINSTITUCION + " = " + beanAnexo.getIdInstitucion() +
-							" AND " + CenAnexosCuentasBancariasBean.C_IDPERSONA + " = " + beanAnexo.getIdPersona() + 
-							" AND " + CenAnexosCuentasBancariasBean.C_IDCUENTA + " = " + beanAnexo.getIdCuenta() + 
-							" AND " + CenAnexosCuentasBancariasBean.C_IDMANDATO + " = " + beanAnexo.getIdMandato() +
-							" AND " + CenAnexosCuentasBancariasBean.C_IDANEXO + " = " + beanAnexo.getIdAnexo();
+			StringBuilder sql = new StringBuilder(); 
+			sql.append(this.sqlAnexosSelect); 
+			sql.append(this.sqlAnexosFrom); 
+			sql.append(" WHERE ");
+			sql.append(CenAnexosCuentasBancariasBean.C_IDINSTITUCION);
+			sql.append(" = ");
+			sql.append(beanAnexo.getIdInstitucion());
+			sql.append(" AND ");
+			sql.append(CenAnexosCuentasBancariasBean.C_IDPERSONA);
+			sql.append(" = ");
+			sql.append(beanAnexo.getIdPersona()); 
+			sql.append(" AND ");
+			sql.append(CenAnexosCuentasBancariasBean.C_IDCUENTA);
+			sql.append(" = ");
+			sql.append(beanAnexo.getIdCuenta()); 
+			sql.append(" AND ");
+			sql.append(CenAnexosCuentasBancariasBean.C_IDMANDATO);
+			sql.append(" = ");
+			sql.append(beanAnexo.getIdMandato());
+			sql.append(" AND ");
+			sql.append(CenAnexosCuentasBancariasBean.C_IDANEXO);
+			sql.append(" = ");
+			sql.append(beanAnexo.getIdAnexo());
 			
 			RowsContainer rc = new RowsContainer(); 												
-		
-			if (rc.find(sql) && rc.size()>0) {
+			if (rc.find(sql.toString()) && rc.size()>0) {
 				Row fila = (Row) rc.get(0);
 				beanAnexo = (CenAnexosCuentasBancariasBean) this.hashTableToBean(fila.getRow());
             }		
@@ -221,9 +346,16 @@ public class CenAnexosCuentasBancariasAdm extends MasterBeanAdministrador {
 			return beanAnexo;
 			
 		} catch(Exception e) {			
-			throw new ClsExceptions (e, "Error al ejecutar el 'select' en B.D.");
+			throw new ClsExceptions (e, "Error al ejecutar obtenerAnexo");
 		}
 	}
+	
+	/**
+	 * 
+	 * @param beanAnexo
+	 * @param isFirmado
+	 * @return
+	 */
 	private String getSqlObtenerAnexo(CenAnexosCuentasBancariasBean beanAnexo, Boolean isFirmado){
 		StringBuffer sql = new StringBuffer();
 		sql.append(this.sqlAnexosSelect);
@@ -237,98 +369,87 @@ public class CenAnexosCuentasBancariasAdm extends MasterBeanAdministrador {
 		sql.append(" = ");
 		sql.append(beanAnexo.getIdPersona());
 		
-		if(beanAnexo.getIdCuenta()!=null){
+		if (beanAnexo.getIdCuenta()!=null) {
 			sql.append(" AND ");
 			sql.append(CenAnexosCuentasBancariasBean.C_IDCUENTA);
 			sql.append(" = ");
 			sql.append(beanAnexo.getIdCuenta());
 		}
-		if(beanAnexo.getIdMandato()!=null){
+		
+		if (beanAnexo.getIdMandato()!=null) {
 			sql.append(" AND ");
 			sql.append(CenAnexosCuentasBancariasBean.C_IDMANDATO);
 			sql.append(" = ");
 			sql.append(beanAnexo.getIdMandato());
-		}else{
-			if(isFirmado!=null){
-				if(isFirmado){
+		} else {
+			if (isFirmado!=null) {
+				if (isFirmado) {
 					sql.append(" AND ");
 					sql.append(CenAnexosCuentasBancariasBean.C_FIRMA_FECHA);
 					sql.append(" IS NOT NULL ");
-				}else{
+				} else {
 					sql.append(" AND  ");
 					sql.append(CenAnexosCuentasBancariasBean.C_FIRMA_FECHA);
 					sql.append(" IS  NULL ");
-					
-					
 				}
 			}	
 		}
-		if(beanAnexo.getIdAnexo()!=null){
+		
+		if (beanAnexo.getIdAnexo()!=null) {
 			sql.append(" AND ");
 			sql.append(CenAnexosCuentasBancariasBean.C_IDANEXO);
 			sql.append(" = ");
 			sql.append(beanAnexo.getIdAnexo());
 		}
+		
 		return sql.toString();
 	} 
 	
-	public Hashtable getAnexo(CenAnexosCuentasBancariasBean beanAnexo,Boolean isFirmado) throws ClsExceptions {
-		Hashtable anexoHashtable = null;
+	/**
+	 * 
+	 * @param beanAnexo
+	 * @param isFirmado
+	 * @return
+	 * @throws ClsExceptions
+	 */
+	public List<Hashtable<String,Object>> getAnexos(CenAnexosCuentasBancariasBean beanAnexo,Boolean isFirmado) throws ClsExceptions {
+		List<Hashtable<String,Object>> anexosList = null;		
 		try {
-		
-			RowsContainer rc = new RowsContainer(); 												
+			CenMandatosCuentasBancariasAdm cenMandatosCuentasBancariasAdm = new CenMandatosCuentasBancariasAdm(this.usrbean);
+			// JPT: CEN_MANDATOS_CUENTASBANCARIAS UNION CEN_CUENTASBANCARIAS UNION CEN_BANCOS													
+			anexosList = new ArrayList<Hashtable<String,Object>>();
+			Hashtable<String, Hashtable<String,Object>> auxHashtable = new Hashtable<String, Hashtable<String,Object>>();
+			Hashtable<String, Object> mandato = null;			
+			RowsContainer rc = new RowsContainer(); 
 			if (rc.find(getSqlObtenerAnexo(beanAnexo,isFirmado)) && rc.size()>0) {
-				 
-				Row fila = (Row) rc.get(0);
-				anexoHashtable = fila.getRow();
-            }		
-			
-			return anexoHashtable;
-			
-		} catch(Exception e) {			
-			throw new ClsExceptions (e, "Error al ejecutar el 'select' en B.D.");
-		}
-	}
-	
-	public List<Hashtable> getAnexos(CenAnexosCuentasBancariasBean beanAnexo,Boolean isFirmado) throws ClsExceptions {
-		List<Hashtable> anexosList = null;
-		CenMandatosCuentasBancariasAdm cenMandatosCuentasBancariasAdm = new CenMandatosCuentasBancariasAdm(this.usrbean);
-		try {
-			// JPT: CEN_MANDATOS_CUENTASBANCARIAS UNION CEN_CUENTASBANCARIAS UNION CEN_BANCOS
-			RowsContainer rc = new RowsContainer(); 												
-			anexosList = new ArrayList<Hashtable>();
-			CenMandatosCuentasBancariasBean beanMandato = null;
-			Hashtable<String, Hashtable> auxHashtable = new Hashtable<String, Hashtable>();
-			Hashtable<String, Object> mandato = null;
-			Hashtable anexo = null;
-			if (rc.find(getSqlObtenerAnexo(beanAnexo,isFirmado)) && rc.size()>0) {
-				for (int i = 0; i < rc.size(); i++){
+				for (int i = 0; i < rc.size(); i++) {
 					Row fila = (Row) rc.get(i);
-					beanMandato = new CenMandatosCuentasBancariasBean();
+					CenMandatosCuentasBancariasBean beanMandato = new CenMandatosCuentasBancariasBean();
 					beanMandato.setIdInstitucion(beanAnexo.getIdInstitucion());
 					beanMandato.setIdPersona(beanAnexo.getIdPersona());
 					beanMandato.setIdCuenta(fila.getString("IDCUENTA"));
 					String idMandato = fila.getString("IDMANDATO");
 					beanMandato.setIdMandato(idMandato);
-					if(!auxHashtable.containsKey(idMandato))
+					if (!auxHashtable.containsKey(idMandato)) {
 						mandato =  cenMandatosCuentasBancariasAdm.getMandato(beanMandato,isFirmado);
-					else
+					} else {
 						mandato = auxHashtable.get(idMandato);
+					}
 						
 					auxHashtable.put(idMandato, mandato);
-					anexo = new Hashtable();
+					
+					Hashtable<String,Object> anexo = new Hashtable<String,Object>();
 					anexo.putAll(mandato);
 					anexo.putAll(fila.getRow());
 					
 					anexosList.add(anexo);
 				}
-				
             }		
 			
 			return anexosList;
 			
 		} catch(Exception e) {			
-			throw new ClsExceptions (e, "Error al ejecutar el 'select' en B.D.");
+			throw new ClsExceptions (e, "Error al ejecutar getAnexos");
 		}
 	}     	
 	
@@ -342,14 +463,10 @@ public class CenAnexosCuentasBancariasAdm extends MasterBeanAdministrador {
 		try {
 			CenAnexosCuentasBancariasBean beanAnexoOld = (CenAnexosCuentasBancariasBean) (selectByPK(beanToHashTable(beanAnexo))).get(0);		
 			if (beanAnexo.getFirmaFecha()!=null && !beanAnexo.getFirmaFecha().equals("")) {
-				
 				beanAnexo.setFirmaFecha(GstDate.getApplicationFormatDate(this.usrbean.getLanguage(), beanAnexo.getFirmaFecha()));
 			}
 			
-			
-			
-			return update(beanAnexo,beanAnexoOld);
-			
+			return this.update(beanAnexo,beanAnexoOld);
 							
 		} catch(Exception e) {			
 			throw new ClsExceptions (e, "Error al modificarFirmaAnexo");
@@ -364,29 +481,23 @@ public class CenAnexosCuentasBancariasAdm extends MasterBeanAdministrador {
 	 */
 	public void insertarFirmaAnexo(CenAnexosCuentasBancariasBean beanAnexo) throws ClsExceptions {
 		try {
-			// Calculo la fecha de la firma
-			
-			
 			// Calculo nuevo identificador de anexo
 			Integer idAnexo = this.getNuevoID(beanAnexo);
 			
-			
+			// Calculo la fecha de la firma
 			if (beanAnexo.getFirmaFecha()!=null && !beanAnexo.getFirmaFecha().equals("")) {
 				beanAnexo.setFirmaFecha(GstDate.getApplicationFormatDate(this.usrbean.getLanguage(), beanAnexo.getFirmaFecha()));
 			}
 			
 			// Guardo el identificador del anexo en el bean
 			beanAnexo.setIdAnexo(idAnexo.toString());
-			beanAnexo.setUsuCreacion(this.usrbean.getUserName() );
+			beanAnexo.setUsuCreacion(this.usrbean.getUserName());
 			beanAnexo.setFechaCreacion("sysdate");
 			
-			
-			
-			insert(beanAnexo);
-			
+			this.insert(beanAnexo);
 						
 		} catch(Exception e) {			
-			throw new ClsExceptions (e, "Error al insertar un nuevo anexo en B.D.");
+			throw new ClsExceptions (e, "Error al insertarFirmaAnexo");
 		}		
 	}		
 	
@@ -397,35 +508,52 @@ public class CenAnexosCuentasBancariasAdm extends MasterBeanAdministrador {
 	 * @param Bean datos de la cuenta.
 	 * @return nuevo ID.
 	 */
-	public Integer getNuevoID (CenAnexosCuentasBancariasBean beanAnexo) throws ClsExceptions {
-		RowsContainer rc = null;
-		
-		try { 
-			rc = new RowsContainer(); 
-		} catch(Exception e) { 
-			e.printStackTrace(); 
-		}
-		
-		try {		
-			String sql = " SELECT NVL(MAX(" + CenAnexosCuentasBancariasBean.C_IDANEXO + "),0) + 1 AS " + CenAnexosCuentasBancariasBean.C_IDANEXO + 
-			  			 " FROM " + CenAnexosCuentasBancariasBean.T_NOMBRETABLA +
-						 " WHERE " + CenAnexosCuentasBancariasBean.T_NOMBRETABLA + "." + CenAnexosCuentasBancariasBean.C_IDINSTITUCION +" = " + beanAnexo.getIdInstitucion() +
-						 	" AND " + CenAnexosCuentasBancariasBean.T_NOMBRETABLA + "." + CenAnexosCuentasBancariasBean.C_IDPERSONA + " = " + beanAnexo.getIdPersona() +
-						 	" AND " + CenAnexosCuentasBancariasBean.T_NOMBRETABLA + "." + CenAnexosCuentasBancariasBean.C_IDCUENTA + " = " + beanAnexo.getIdCuenta() +
-						 	" AND " + CenAnexosCuentasBancariasBean.T_NOMBRETABLA + "." + CenAnexosCuentasBancariasBean.C_IDMANDATO + " = " + beanAnexo.getIdMandato();
+	private Integer getNuevoID (CenAnexosCuentasBancariasBean beanAnexo) throws ClsExceptions {
+		Integer idAnexo = null;
+		try {				
+			StringBuffer sql = new StringBuffer();
+			sql.append("SELECT NVL(MAX(");
+			sql.append(CenAnexosCuentasBancariasBean.C_IDANEXO);
+			sql.append("),0) + 1 AS ");
+			sql.append(CenAnexosCuentasBancariasBean.C_IDANEXO); 
+			sql.append(" FROM ");
+			sql.append(CenAnexosCuentasBancariasBean.T_NOMBRETABLA);
+			sql.append(" WHERE ");
+			sql.append(CenAnexosCuentasBancariasBean.T_NOMBRETABLA);
+			sql.append(".");
+			sql.append(CenAnexosCuentasBancariasBean.C_IDINSTITUCION);
+			sql.append(" = ");
+			sql.append(beanAnexo.getIdInstitucion());
+			sql.append(" AND ");
+			sql.append(CenAnexosCuentasBancariasBean.T_NOMBRETABLA);
+			sql.append(".");
+			sql.append(CenAnexosCuentasBancariasBean.C_IDPERSONA);
+			sql.append(" = ");
+			sql.append(beanAnexo.getIdPersona());
+			sql.append(" AND ");
+			sql.append(CenAnexosCuentasBancariasBean.T_NOMBRETABLA);
+			sql.append(".");
+			sql.append(CenAnexosCuentasBancariasBean.C_IDCUENTA);
+			sql.append(" = ");
+			sql.append(beanAnexo.getIdCuenta());
+			sql.append(" AND ");
+			sql.append(CenAnexosCuentasBancariasBean.T_NOMBRETABLA);
+			sql.append(".");
+			sql.append(CenAnexosCuentasBancariasBean.C_IDMANDATO);
+			sql.append(" = ");
+			sql.append(beanAnexo.getIdMandato());
 
-			rc = this.find(sql);
-			if (rc!=null && rc.size()>0) {
+			RowsContainer rc = new RowsContainer(); 
+			if (rc.find(sql.toString()) && rc.size()>0) {
 				Row fila = (Row) rc.get(0);
-				Integer idAnexo = UtilidadesHash.getInteger(fila.getRow(), CenAnexosCuentasBancariasBean.C_IDANEXO);
-				return idAnexo;
+				idAnexo = UtilidadesHash.getInteger(fila.getRow(), CenAnexosCuentasBancariasBean.C_IDANEXO);
 			}
 			
 		} catch (Exception e) {		
-			throw new ClsExceptions (e, "Error al ejecutar el 'getNuevoID' en B.D.");		
+			throw new ClsExceptions (e, "Error al ejecutar getNuevoID");		
 		}
 		
-		return null;
+		return idAnexo;
 	}
 	
 	/**
@@ -436,33 +564,59 @@ public class CenAnexosCuentasBancariasAdm extends MasterBeanAdministrador {
 	 */
 	public boolean borrarFirmaAnexo(CenAnexosCuentasBancariasBean beanAnexo) throws ClsExceptions {
 		try {			
-			
-			return (delete(beanAnexo));
+			return (this.delete(beanAnexo));
 							
 		} catch(Exception e) {			
-			throw new ClsExceptions (e, "Error al borrar un nuevo anexo en B.D.");
+			throw new ClsExceptions (e, "Error al ejecutar borrarFirmaAnexo");
 		}		
 	}		
+	
+	/**
+	 * 
+	 * @param anexoMandatosCuentasBancariasForm
+	 * @return
+	 * @throws ClsExceptions
+	 */
 	public boolean asociarFichero(AnexosCuentasBancariasForm anexoMandatosCuentasBancariasForm) throws ClsExceptions {
 		try {
 			// Calculo la fecha de la firma
-			String sql = "UPDATE " + CenAnexosCuentasBancariasBean.T_NOMBRETABLA ;
-						if(anexoMandatosCuentasBancariasForm.getIdFichero()!=null && !anexoMandatosCuentasBancariasForm.getIdFichero().equals(""))
-							sql += " SET IDFICHEROFIRMA = " + anexoMandatosCuentasBancariasForm.getIdFichero();
-						else
-							sql += " SET IDFICHEROFIRMA = null";
+			StringBuffer sql = new StringBuffer();
+			sql.append("UPDATE ");
+			sql.append(CenAnexosCuentasBancariasBean.T_NOMBRETABLA);
+			
+			if (anexoMandatosCuentasBancariasForm.getIdFichero()!=null && !anexoMandatosCuentasBancariasForm.getIdFichero().equals("")) {
+				sql.append(" SET IDFICHEROFIRMA = ");
+				sql.append(anexoMandatosCuentasBancariasForm.getIdFichero());
+			} else {
+				sql.append(" SET IDFICHEROFIRMA = NULL ");
+			}
 						
-						sql +=" WHERE " + CenAnexosCuentasBancariasBean.C_IDINSTITUCION + " = " + anexoMandatosCuentasBancariasForm.getIdInstitucion() +
-						" AND " + CenAnexosCuentasBancariasBean.C_IDPERSONA + " = " + anexoMandatosCuentasBancariasForm.getIdPersona() + 
-						" AND " + CenAnexosCuentasBancariasBean.C_IDCUENTA + " = " + anexoMandatosCuentasBancariasForm.getIdCuenta() + 
-						" AND " + CenAnexosCuentasBancariasBean.C_IDMANDATO + " = " + anexoMandatosCuentasBancariasForm.getIdMandato() +
-						" AND " + CenAnexosCuentasBancariasBean.C_IDANEXO + " = " + anexoMandatosCuentasBancariasForm.getIdAnexo();
+			sql.append(" WHERE ");
+			sql.append(CenAnexosCuentasBancariasBean.C_IDINSTITUCION);
+			sql.append(" = ");
+			sql.append(anexoMandatosCuentasBancariasForm.getIdInstitucion());
+			sql.append(" AND ");
+			sql.append(CenAnexosCuentasBancariasBean.C_IDPERSONA);
+			sql.append(" = ");
+			sql.append(anexoMandatosCuentasBancariasForm.getIdPersona()); 
+			sql.append(" AND ");
+			sql.append(CenAnexosCuentasBancariasBean.C_IDCUENTA);
+			sql.append(" = ");
+			sql.append(anexoMandatosCuentasBancariasForm.getIdCuenta()); 
+			sql.append(" AND ");
+			sql.append(CenAnexosCuentasBancariasBean.C_IDMANDATO);
+			sql.append(" = ");
+			sql.append(anexoMandatosCuentasBancariasForm.getIdMandato());
+			sql.append(" AND ");
+			sql.append(CenAnexosCuentasBancariasBean.C_IDANEXO);
+			sql.append(" = ");
+			sql.append(anexoMandatosCuentasBancariasForm.getIdAnexo());
 			
 			Row row = new Row();									
-			return (row.updateSQL(sql)>0);
+			return (row.updateSQL(sql.toString())>0);
 							
 		} catch(Exception e) {			
-			throw new ClsExceptions (e, "Error al ejecutar el 'select' en B.D.");
+			throw new ClsExceptions (e, "Error al ejecutar asociarFichero");
 		}		
 	}	
 }

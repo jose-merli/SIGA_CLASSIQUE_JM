@@ -316,7 +316,6 @@ public class SancionesLetradoAction extends MasterAction
 				/** Se comprueba si están rellenas la fecha inicio y fin de firmeza SOLO si es colegio **/
 				}else if (ClsConstants.esColegio(idinstitucion) && miForm.getFechaInicio() != null && !miForm.getFechaInicio().equals("") && miForm.getFechaFin() != null && !miForm.getFechaFin().equals("")) {
 					UtilidadesHash.set(hash, CenSancionBean.C_CHKFIRMEZA, "1");
-					
 				} else {
 					throw new SIGAException("censo.sancionesLetrado.error.fechasInicioFinFirmeza");
 				}				

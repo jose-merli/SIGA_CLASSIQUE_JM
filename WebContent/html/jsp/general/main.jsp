@@ -212,10 +212,12 @@
 								overlayCSS: { backgroundColor:'#FFF', opacity: .0} });
 						}catch (e) {
 							console.debug("[mainSub] blockUI");
+							jQuery("#divEspera").show();
 						}
 						
-					} else
+					} else{
 						jQuery("#divEspera").show();
+					}
 					bloqueado=true;
 				}
 			}
@@ -274,7 +276,7 @@
 				<tr>
 				<td width="300px">
 				<a href="javascript://"  class="imageLink" onclick="return version();" onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('AbrirVersiones','','<%=app%>/html/imagenes/botonVersion.gif',1)" >
-					<img src="<%=app%>/html/imagenes/botonVersion.gif" alt="<siga:Idioma key="<%= versionSiga %>"/>" align="middle" name="AbrirVersiones" border="0">
+					<img src="<%=app%>/html/imagenes/botonVersion.gif" alt="<%= versionSiga %>" align="middle" name="AbrirVersiones" border="0">
 					&nbsp;<%= versionSiga %>
 				</a>
 				</td>

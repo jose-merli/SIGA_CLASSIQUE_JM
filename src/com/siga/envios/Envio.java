@@ -14,8 +14,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 
-import javax.transaction.UserTransaction;
-
 import org.redabogacia.sigaservices.app.autogen.model.EcomComunicacionresolucionajgWithBLOBs;
 import org.redabogacia.sigaservices.app.autogen.model.EcomDesignaprovisionalWithBLOBs;
 import org.redabogacia.sigaservices.app.autogen.model.EcomSolimpugresolucionajgWithBLOBs;
@@ -668,7 +666,7 @@ public EnvDestinatariosBean addDestinatario(String idPersona,String tipoDestinat
         envAdm.copiarCamposPlantilla(enviosBean.getIdInstitucion(), 
 				enviosBean.getIdEnvio(), 
 				enviosBean.getIdTipoEnvios(),
-				enviosBean.getIdPlantillaEnvios());
+				enviosBean.getIdPlantillaEnvios(),null);
 
         if (idPersona!=null) 
         	addDocumentosDestinatario(idPersona,tipoDestinatario,documentos); 
@@ -782,7 +780,7 @@ public EnvDestinatariosBean addDestinatario(String idPersona,String tipoDestinat
         envAdm.copiarCamposPlantilla(enviosBean.getIdInstitucion(), 
 				enviosBean.getIdEnvio(), 
 				enviosBean.getIdTipoEnvios(),
-				enviosBean.getIdPlantillaEnvios());
+				enviosBean.getIdPlantillaEnvios(),null);
 
         if (idPersona!=null) 
         	addDocumentosDestinatarioDireccionEspecifica(idPersona, idDireccion, documentos);      
@@ -809,7 +807,7 @@ public EnvDestinatariosBean addDestinatario(String idPersona,String tipoDestinat
         envAdm.copiarCamposPlantilla(enviosBean.getIdInstitucion(), 
 				enviosBean.getIdEnvio(), 
 				enviosBean.getIdTipoEnvios(),
-				enviosBean.getIdPlantillaEnvios());
+				enviosBean.getIdPlantillaEnvios(),null);
         Iterator itePersona = htPersonas.keySet().iterator();
         while (itePersona.hasNext()) {
 			String idPersona = (String) itePersona.next();
@@ -852,7 +850,7 @@ public EnvDestinatariosBean addDestinatario(String idPersona,String tipoDestinat
         envAdm.copiarCamposPlantilla(enviosBean.getIdInstitucion(), 
 				enviosBean.getIdEnvio(), 
 				enviosBean.getIdTipoEnvios(),
-				enviosBean.getIdPlantillaEnvios());
+				enviosBean.getIdPlantillaEnvios(),null);
         Vector <EnvDestinatariosBean> destinatariosBeans =  new Vector<EnvDestinatariosBean>(); 
         Iterator itePersona = htPersonas.keySet().iterator();
         while (itePersona.hasNext()) {
@@ -1065,7 +1063,7 @@ public EnvDestinatariosBean addDestinatario(String idPersona,String tipoDestinat
    	        envAdm.copiarCamposPlantilla(enviosBean.getIdInstitucion(), 
    					enviosBean.getIdEnvio(), 
    					enviosBean.getIdTipoEnvios(),
-   					enviosBean.getIdPlantillaEnvios());
+   					enviosBean.getIdPlantillaEnvios(),null);
    	        
    	        //Anhadimos el destinatario y sus documentos:
    	        ok = this.addDestinatarioCertificado(idPersona,documentos,idSolicitud, envBean, existePersonaOrigen);
@@ -1109,7 +1107,7 @@ public EnvDestinatariosBean addDestinatario(String idPersona,String tipoDestinat
 	        envAdm.copiarCamposPlantilla(enviosBean.getIdInstitucion(), 
 					enviosBean.getIdEnvio(), 
 					enviosBean.getIdTipoEnvios(),
-					enviosBean.getIdPlantillaEnvios());
+					enviosBean.getIdPlantillaEnvios(),null);
 	        
 	        //Anhadimos el destinatario y sus documentos:
 	        ok = this.addDestinatarioFactura(idPersona,documentos,idFactura);
@@ -1152,7 +1150,7 @@ public EnvDestinatariosBean addDestinatario(String idPersona,String tipoDestinat
 			// obteniendo la direccion
 			dirAdm = new CenDireccionesAdm(this.usrBean);
 
-			dirBean = dirAdm.obtenerDireccionPorTipo(idPersona, "2000", envBean.getIdTipoEnvios().toString());
+			dirBean = dirAdm.obtenerDireccionPorTipo(idPersona,String.valueOf(envBean.getIdInstitucion()), envBean.getIdTipoEnvios().toString());
 
 			if (dirBean != null) {
 				destBean.setDomicilio(dirBean.getDomicilio());

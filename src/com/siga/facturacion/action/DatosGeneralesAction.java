@@ -201,7 +201,9 @@ public class DatosGeneralesAction extends MasterAction{
 			beanSerieFacturacion.setIdPlantilla(formDatosGenerales.getIdPlantilla());
 			beanSerieFacturacion.setDescripcion(formDatosGenerales.getDescripcion());
 			beanSerieFacturacion.setObservaciones(formDatosGenerales.getObservaciones());
-			beanSerieFacturacion.setNombreAbreviado(nombreAbreviado);				
+			beanSerieFacturacion.setNombreAbreviado(nombreAbreviado);	
+			String sTipoSerie = (formDatosGenerales.getTipoSerie()!=null && !formDatosGenerales.getTipoSerie().equals("") ? "G" : "");
+			beanSerieFacturacion.setTipoSerie(sTipoSerie);
 			beanSerieFacturacion.setEnvioFactura(envioFacturas!=null && !envioFacturas.equals("") ? "1" : "0");								
 			if (beanSerieFacturacion.getEnvioFactura().equals("1")) { 
 				beanSerieFacturacion.setGenerarPDF("1"); 
@@ -367,6 +369,9 @@ public class DatosGeneralesAction extends MasterAction{
 			hashNew.put(FacSerieFacturacionBean.C_NOMBREABREVIADO, formDatosGenerales.getNombreAbreviado());
 			hashNew.put(FacSerieFacturacionBean.C_DESCRIPCION, formDatosGenerales.getDescripcion());
 			hashNew.put(FacSerieFacturacionBean.C_OBSERVACIONES, formDatosGenerales.getObservaciones());
+			
+			String sTipoSerie = (formDatosGenerales.getTipoSerie()!=null && !formDatosGenerales.getTipoSerie().equals("") ? "G" : "");
+			hashNew.put(FacSerieFacturacionBean.C_TIPOSERIE, sTipoSerie);
 			
 			String envio = (formDatosGenerales.getEnvioFacturas()!=null && !formDatosGenerales.getEnvioFacturas().equals("") ? "1" : "0");
 			hashNew.put(FacSerieFacturacionBean.C_ENVIOFACTURA, envio);

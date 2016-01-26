@@ -491,88 +491,85 @@
 			return Str;
 		}
 			
-		function cambioTipo() {																									
-			if (document.forms[0].modo.value == "nuevaSociedad" || document.forms[0].modo.value == "editar") {		
-				document.forms[0].numIdentificacion.value = fTrim(document.forms[0].numIdentificacion.value);			
-				if (document.forms[0].numIdentificacion.value.charAt(0).toUpperCase()== "A"
-					|| document.forms[0].numIdentificacion.value.charAt(0).toUpperCase()== "B" 
-					|| document.forms[0].numIdentificacion.value.charAt(0).toUpperCase()== "F"
-					|| document.forms[0].numIdentificacion.value.charAt(0).toUpperCase()== "G"
-					|| document.forms[0].numIdentificacion.value.charAt(0).toUpperCase()== "J"
-					) {
-					document.forms[0].tipoIdentificacion.value = "<%=ClsConstants.TIPO_IDENTIFICACION_CIF%>";
+		function cambioTipo() {																										
+			document.forms[0].numIdentificacion.value = fTrim(document.forms[0].numIdentificacion.value);			
+			if (document.forms[0].numIdentificacion.value.charAt(0).toUpperCase()== "A"
+				|| document.forms[0].numIdentificacion.value.charAt(0).toUpperCase()== "B" 
+				|| document.forms[0].numIdentificacion.value.charAt(0).toUpperCase()== "F"
+				|| document.forms[0].numIdentificacion.value.charAt(0).toUpperCase()== "G"
+				|| document.forms[0].numIdentificacion.value.charAt(0).toUpperCase()== "J"
+				) {
+				document.forms[0].tipoIdentificacion.value = "<%=ClsConstants.TIPO_IDENTIFICACION_CIF%>";
 
-					if (!(validarCIF(document.forms[0].numIdentificacion.value))) {
-						//Ocultamos el select cuyo id es soloDos
+				if (!(validarCIF(document.forms[0].numIdentificacion.value))) {
+					//Ocultamos el select cuyo id es soloDos
+					jQuery("#soloDos1").hide();
+					jQuery("#soloDos2").hide();
+
+					//mostramos el select cuyo id es todas	
+					jQuery("#todas1").show();
+					jQuery("#todas2").show();
+						
+					document.forms[0].tipoIdentificacion.value = "<%=ClsConstants.TIPO_IDENTIFICACION_OTRO%>";
+					document.forms[0].tipo.value = "0";
+					return;
+				}
+
+					if (document.forms[0].numIdentificacion.value.charAt(0).toUpperCase()== "A") {
+						document.forms[0].tipo.value = "A";
+						//Ocultamos el select cuyo id es soloDos	
 						jQuery("#soloDos1").hide();
 						jQuery("#soloDos2").hide();
-
+						
 						//mostramos el select cuyo id es todas	
-						jQuery("#todas1").show();
-						jQuery("#todas2").show();
-							
-						document.forms[0].tipoIdentificacion.value = "<%=ClsConstants.TIPO_IDENTIFICACION_OTRO%>";
-						document.forms[0].tipo.value = "0";
-						return;
-					}
-
-					if (document.forms[0].modo.value == "nuevaSociedad" || document.forms[0].modo.value == "editar") {
-						if (document.forms[0].numIdentificacion.value.charAt(0).toUpperCase()== "A") {
-							document.forms[0].tipo.value = "A";
-							//Ocultamos el select cuyo id es soloDos	
-							jQuery("#soloDos1").hide();
-							jQuery("#soloDos2").hide();
-							
-							//mostramos el select cuyo id es todas	
-							 jQuery("#todas1").show();
-							 jQuery("#todas2").show();
-							
-						} else if (document.forms[0].numIdentificacion.value.charAt(0).toUpperCase()== "B") {
-							document.forms[0].tipo.value = "B";
-							//Ocultamos el select cuyo id es soloDos	
-							jQuery("#soloDos1").hide();
-							jQuery("#soloDos2").hide();
-							
-							//mostramos el select cuyo id es todas	
-							 jQuery("#todas1").show();
-							 jQuery("#todas2").show();
-							
-						} else if (document.forms[0].numIdentificacion.value.charAt(0).toUpperCase()== "F") {
-							document.forms[0].tipo.value = "F";
-							//Ocultamos el select cuyo id es soloDos	
-							jQuery("#soloDos1").hide();
-							jQuery("#soloDos2").hide();
-							
-							//mostramos el select cuyo id es todas	
-							 jQuery("#todas1").show();
-							 jQuery("#todas2").show();
-							
-						} else if (document.forms[0].numIdentificacion.value.charAt(0).toUpperCase()== "G") {
-							document.forms[0].tipo.value = "G";
-							//Ocultamos el select cuyo id es soloDos	
-							jQuery("#soloDos1").hide();
-							jQuery("#soloDos2").hide();
-							
-							//mostramos el select cuyo id es todas	
-							 jQuery("#todas1").show();
-							 jQuery("#todas2").show();
-							
-						} else if (document.forms[0].numIdentificacion.value.charAt(0).toUpperCase()== "J") {
-							 <%if (tipo.equals("J")){%>
-							 	document.forms[0].tipoJY.value = "J";
-							 	document.forms[0].tipo.value = "J";
-							 <%}else{%>
-							 	document.forms[0].tipoJY.value = "Y";
-							 	document.forms[0].tipo.value = "Y";
-							 <%}%>
-							//mostramos el select cuyo id es soloDos
-							jQuery("#soloDos1").show();
-							jQuery("#soloDos2").show();
-							 
-							//Ocultamos el select cuyo id es todas	
-							jQuery("#todas1").hide();
-							jQuery("#todas2").hide();
-						}
+						 jQuery("#todas1").show();
+						 jQuery("#todas2").show();
+						
+					} else if (document.forms[0].numIdentificacion.value.charAt(0).toUpperCase()== "B") {
+						document.forms[0].tipo.value = "B";
+						//Ocultamos el select cuyo id es soloDos	
+						jQuery("#soloDos1").hide();
+						jQuery("#soloDos2").hide();
+						
+						//mostramos el select cuyo id es todas	
+						 jQuery("#todas1").show();
+						 jQuery("#todas2").show();
+						
+					} else if (document.forms[0].numIdentificacion.value.charAt(0).toUpperCase()== "F") {
+						document.forms[0].tipo.value = "F";
+						//Ocultamos el select cuyo id es soloDos	
+						jQuery("#soloDos1").hide();
+						jQuery("#soloDos2").hide();
+						
+						//mostramos el select cuyo id es todas	
+						 jQuery("#todas1").show();
+						 jQuery("#todas2").show();
+						
+					} else if (document.forms[0].numIdentificacion.value.charAt(0).toUpperCase()== "G") {
+						document.forms[0].tipo.value = "G";
+						//Ocultamos el select cuyo id es soloDos	
+						jQuery("#soloDos1").hide();
+						jQuery("#soloDos2").hide();
+						
+						//mostramos el select cuyo id es todas	
+						 jQuery("#todas1").show();
+						 jQuery("#todas2").show();
+						
+					} else if (document.forms[0].numIdentificacion.value.charAt(0).toUpperCase()== "J") {
+						 <%if (tipo.equals("J")){%>
+						 	document.forms[0].tipoJY.value = "J";
+						 	document.forms[0].tipo.value = "J";
+						 <%}else{%>
+						 	document.forms[0].tipoJY.value = "Y";
+						 	document.forms[0].tipo.value = "Y";
+						 <%}%>
+						//mostramos el select cuyo id es soloDos
+						jQuery("#soloDos1").show();
+						jQuery("#soloDos2").show();
+						 
+						//Ocultamos el select cuyo id es todas	
+						jQuery("#todas1").hide();
+						jQuery("#todas2").hide();
 					}
 					
 				} else {
@@ -586,8 +583,7 @@
 
 					document.forms[0].tipoIdentificacion.value = "<%=ClsConstants.TIPO_IDENTIFICACION_OTRO%>";
 					document.forms[0].tipo.value = "0";
-				}					
-			}									
+				}													
 		}
 			
 		function adaptaTamanoFoto () {
@@ -778,62 +774,44 @@
 %>
 											</td>
 
-											<td class="labelText" id="todas1">
+											<td class="labelText" style="display:none" id="todas1">
 <%
-												String tipoEstilo="boxCombo";
-												String tipoReadOnly="false";
-												String tipoCombo="cmbTipoSociedadAlta";
 												tipoDisabled = "true";
-													
-												if (modo.equalsIgnoreCase("EDITAR") || modo.equalsIgnoreCase("VER") || modo.equalsIgnoreCase("nuevaSociedad")) {												
-													if(tipo.equalsIgnoreCase("J") || tipo.equalsIgnoreCase("Y")){
-														tipoEstilo="boxCombo";
-														tipoReadOnly="false";
-														tipoCombo="cmbTipoSociedadJ";														
-														//tipoDisabled = "true";
-													} else {
-														tipoEstilo="boxConsulta";
-														tipoReadOnly="true";
-														tipoCombo="cmbTipoSociedadAlta";														
-														//tipoDisabled = "true";
-													}
-												}
 %>  
 												<siga:Idioma key="censo.general.literal.tipoRegistro"/>&nbsp;(*) 
 												<input type="hidden" id="tipoOriginal"  name="tipoOriginal" value="<%=tipoOriginal%>">
 											</td>
 											
-											<td id="todas2">
-												
-<% 
-												if (tipoDisabled.equals("false")) {
-%>
-													<html:select styleId="tipos" styleClass="boxCombo" style="width:200px;" property="tipo" disabled="false">
-														<bean:define id="tipos" name="datosGeneralesForm" property="tipos" type="java.util.Collection" />
-														<html:optionsCollection name="tipos" value="letraCif" label="descripcion" />
-													</html:select>
-<% 
-												} else {
-%>
-													<html:select styleId="tipos" styleClass="boxCombo" style="width:200px;" property="tipo" disabled="true">
-														<bean:define id="tipos" name="datosGeneralesForm" property="tipos" type="java.util.Collection" />
-														<html:optionsCollection name="tipos" value="letraCif" label="descripcion" />
-													</html:select>
-<% 
-												} 
-%>											
+											<td id="todas2" style="display:none">
+												<html:select styleId="tipos" styleClass="boxCombo" style="width:200px;" property="tipo" disabled="true">
+													<bean:define id="tipos" name="datosGeneralesForm" property="tipos" type="java.util.Collection" />
+													<html:optionsCollection name="tipos" value="letraCif" label="descripcion" />
+												</html:select>
 											</td>
 										
 											<!-- Combo que muestra solo Soc.Civil (J) y  Soc.Civil (J) IRPF Reducido (7%)-->										
-											<td class="labelText" id="soloDos1">											
+											<td class="labelText" id="soloDos1">								
 												<siga:Idioma key="censo.general.literal.tipoRegistro"/>&nbsp;(*) 
 												<input type="hidden" name="tipoOriginalJY" value="<%=tipoOriginal%>">
 											</td>												
 											<td id="soloDos2">
-											 	<html:select styleId="tiposJY" styleClass="boxCombo" style="width:200px;" property="tipoJY" disabled="false">
-													<bean:define id="tiposJY" name="datosGeneralesForm" property="tiposJY" type="java.util.Collection" />
-													<html:optionsCollection name="tiposJY" value="letraCif" label="descripcion" />
-											 	</html:select>																																
+<%											
+												if (tipoDisabled.equals("false")) {
+%>													
+												 	<html:select styleId="tiposJY" styleClass="boxCombo" style="width:200px;" property="tipoJY" disabled="false">
+														<bean:define id="tiposJY" name="datosGeneralesForm" property="tiposJY" type="java.util.Collection" />
+														<html:optionsCollection name="tiposJY" value="letraCif" label="descripcion" />
+												 	</html:select>		
+<% 
+												} else {
+%>
+												 	<html:select styleId="tiposJY" styleClass="boxCombo" style="width:200px;" property="tipoJY" disabled="true">
+														<bean:define id="tiposJY" name="datosGeneralesForm" property="tiposJY" type="java.util.Collection" />
+														<html:optionsCollection name="tiposJY" value="letraCif" label="descripcion" />
+												 	</html:select>	
+<% 
+												} 
+%>	
 											</td>
 										
 																																					

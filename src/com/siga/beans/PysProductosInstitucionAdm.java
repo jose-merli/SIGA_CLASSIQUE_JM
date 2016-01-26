@@ -10,6 +10,7 @@ package com.siga.beans;
 
 import java.io.File;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Vector;
 
@@ -27,6 +28,7 @@ import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesMultidioma;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.certificados.Certificado;
+import com.siga.certificados.action.SIGASolicitudesCertificadosAction;
 import com.siga.general.Articulo;
 import com.siga.general.SIGAException;
 /**
@@ -765,7 +767,7 @@ public class PysProductosInstitucionAdm extends MasterBeanAdministrador
 				}
 			}
 			// jbd 17/02/2010 inc-6361
-			articulo.setMetodoSolicitud(new Integer(metodoSolicitud));
+			articulo.setMetodoSolicitud((metodoSolicitud.trim().equals(""))?null:new Integer(metodoSolicitud));
 			articulo.setFechaSolicitud(fechaSolicitud);
 			//articulo.getNoFacturable()
 			productosAdm.insertProducto(articulo, idPeticion, (idInstitucionPresentador.trim().equals(""))?null:new Integer(idInstitucionPresentador),(idInstitucionColegiacion.trim().equals(""))?null:new Integer(idInstitucionColegiacion), idPersona);
@@ -789,34 +791,9 @@ public class PysProductosInstitucionAdm extends MasterBeanAdministrador
 
 	        GenParametrosAdm admParametros = new GenParametrosAdm(this.usrbean);
 
-            String sRutaDB = admParametros.getValor(beanSolicitud.getIdInstitucion().toString(), "CER" ,"PATH_CERTIFICADOS", "");
+	        
+	        HashMap<String, Object> listaDeObjetos = SIGASolicitudesCertificadosAction.obtenerPathBD(admParametros,beanSolicitud.getIdInstitucion().toString(),beanSolicitud.getIdSolicitud().toString());
 
-	        if (sRutaDB==null || sRutaDB.equals(""))
-	        {
-	            throw new SIGAException("certificados.boton.mensaje.pathCertitificadosMAL");
-	        }
-	        
-	        String sRutaPlantillas = admParametros.getValor(beanSolicitud.getIdInstitucion().toString(), "CER" ,"PATH_PLANTILLAS", "");
-	        
-	        if (sRutaPlantillas==null || sRutaPlantillas.equals(""))
-	        {
-	            throw new SIGAException("certificados.boton.mensaje.pathPlantillasMAL");
-	        }
-	        
-	        sRutaPlantillas += File.separator + beanSolicitud.getIdInstitucion().toString();
-
-	        String sAux = beanSolicitud.getIdInstitucion().toString() + "_" + beanSolicitud.getIdSolicitud().toString();
-	        
-	        sRutaDB += File.separator + "tmp";
-	        
-	        File fDirTemp = new File(sRutaDB);
-	        fDirTemp.mkdirs();
-
-	        File fOut = new File(fDirTemp.getPath() + File.separator + sAux + "_" + System.currentTimeMillis() + ".pdf");
-	        File fIn = new File(fOut.getPath() + ".tmp");
-	        
-	        fOut.deleteOnExit();
-	        fIn.deleteOnExit();
 
         	// HACEMOS UNO NUEVO PARA ACTUALIZAR EL ESTADO
 	        //Hashtable htOld = beanSolicitud.getOriginalHash();
@@ -871,21 +848,22 @@ public class PysProductosInstitucionAdm extends MasterBeanAdministrador
 		    {
 		        throw new ClsExceptions("Error al APROBAR el/los PDF/s");
 		    }
-
+		  
 		    // GENERAR CERTIFICADO
         	Certificado.generarCertificadoPDF(beanProd.getIdTipoProducto().toString(), beanProd.getIdProducto().toString(), beanProd.getIdProductoInstitucion().toString(), 
-                    						  beanSolicitud.getIdInstitucion().toString(), idPlantilla, beanSolicitud.getIdPersona_Des().toString(), fIn, fOut, 
-                    						  sRutaPlantillas, beanSolicitud.getIdSolicitud().toString(), (beanSolicitud.getIdInstitucionOrigen()==null)?null:beanSolicitud.getIdInstitucionOrigen().toString(),usarIdInstitucion, this.usrbean,request);
+                    						  beanSolicitud.getIdInstitucion().toString(), idPlantilla, beanSolicitud.getIdPersona_Des().toString(), (File)listaDeObjetos.get("fIn"), (File)listaDeObjetos.get("fOut"), 
+                    						  (String)listaDeObjetos.get("sRutaPlantillas"), beanSolicitud.getIdSolicitud().toString(), (beanSolicitud.getIdInstitucionOrigen()==null)?null:beanSolicitud.getIdInstitucionOrigen().toString(),
+                    								  usarIdInstitucion, this.usrbean);
         	
         	
-        	admSolicitud.guardarCertificado(beanSolicitud, fOut);
-	        fOut.delete();
+        	admSolicitud.guardarCertificado(beanSolicitud, (File)listaDeObjetos.get("fOut"));
+        	((File)listaDeObjetos.get("fOut")).delete();
 
 		    htNew.put(CerSolicitudCertificadosBean.C_IDESTADOCERTIFICADO, CerSolicitudCertificadosAdm.K_ESTADO_CER_GENERADO);
 
 
 	        // FIRMAR CERTIFICADO
-	        if (!admSolicitud.firmarPDF(beanSolicitud.getIdSolicitud().toString(), beanSolicitud.getIdInstitucion().toString())) {
+	        if (!admSolicitud.firmarPDF(beanSolicitud.getIdSolicitud().toString(), beanSolicitud.getIdInstitucion().toString(),-1)) {
 		        ClsLogging.writeFileLog("Error al FIRMAR el PDF de la Solicitud: " + beanSolicitud.getIdSolicitud().toString(), 3);
 		    } else {
 		        htNew.put(CerSolicitudCertificadosBean.C_IDESTADOCERTIFICADO, CerSolicitudCertificadosAdm.K_ESTADO_CER_FIRMADO);
@@ -898,7 +876,7 @@ public class PysProductosInstitucionAdm extends MasterBeanAdministrador
 		        throw new ClsExceptions("Error al GENERAR el/los PDF/s:" + admSolicitud.getError());
 		    }
 		    
-	        fIn.delete();
+	        ((File)listaDeObjetos.get("fIn")).delete();
 	    	
         } catch (SIGAException e) {
             throw e;

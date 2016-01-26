@@ -20,7 +20,7 @@
 	HttpSession ses = request.getSession();
 	String app = request.getContextPath();
 	UsrBean usr = (UsrBean)ses.getAttribute("USRBEAN");
-	String 	dato[] = {(String)usr.getLocation()};
+	String 	dato[] = {(String)usr.getLocation(),"-1"};
 %>
 
 
@@ -44,21 +44,55 @@
 		<html:hidden property = "idInstitucion" value = ""/>
 		<html:hidden property = "actionModal" value = ""/>
 		<html:hidden property = "pendientes" value = ""/>
+		<html:hidden property = "sufijoNumActa"/>
+		
 
 		<siga:ConjCampos leyenda="general.criterios">	
 			<table class="tablaCampos" border="0" align="left">
 			<tr>
-				<td class="labelText" width="18%"><siga:Idioma key="sjcs.actas.anio" />/<siga:Idioma key="sjcs.actas.numeroActa" /> (*)</td>
+				<td  width="19%"></td>
+				<td  width="20%"></td>
+				<td  width="8%"></td>
+				<td  width="10%"></td>
+				<td  width="14%"></td>
+				<td  width="15%"></td>
+				<td  width="13%"></td>
+				<td  width="1%"></td>
+				
+			</tr>
+			
+			<tr>
+				<td class="labelText"><siga:Idioma key="sjcs.actas.anio" />/<siga:Idioma key="sjcs.actas.numeroActa" /> (*)</td>
 				<td>
 					<html:text name="ActaComisionForm" property="anioActa" style="width:40px" maxlength="4" styleClass="box" onkeypress="return soloDigitos(event)"></html:text>
-					&nbsp;/&nbsp;
-					<html:text name="ActaComisionForm" property="numeroActa" style="width:60px" maxlength="8" styleClass="box"></html:text>
+					/
+					<html:text name="ActaComisionForm" property="numActa" style="width:40px" maxlength="7" styleClass="box"></html:text>
+					
+					
 				</td>
-				<td class="labelText"><siga:Idioma key="sjcs.actas.fechaResolucion" /></td>
-				<td>
+				<c:choose>
+					<c:when test="${not empty sufijos}">
+						<td>
+							<select id="sufijo" onchange="onchangeSufijo();" style="width:60px;" class="boxCombo">
+								<c:forEach items="${sufijos}" var="sufijo" varStatus="status">
+									<option value="${sufijo}" ><c:out value="${sufijo}"/> </option>
+								</c:forEach>
+							</select>
+						</td>
+					</c:when>
+					<c:otherwise>
+						<td></td>
+					
+					</c:otherwise>
+				</c:choose>
+				
+				
+				<td colspan="2" class="labelText"><siga:Idioma key="sjcs.actas.fechaResolucion" /></td>
+				<td >
 					<siga:Fecha nombreCampo="fechaResolucion" valorInicial="${ActaComisionForm.fechaResolucion}"/> 
 					
 				</td>
+				<td>&nbsp;</td>
 			</tr>
 			<tr>
 				<td class="labelText"><siga:Idioma key="sjcs.actas.fechaReunion" /></td>
@@ -66,26 +100,31 @@
 					<siga:Fecha nombreCampo="fechaReunion" valorInicial="${ActaComisionForm.fechaReunion}"/> 
 					
 				</td>
-				<td class="labelText"><siga:Idioma key="sjcs.actas.horaInicio" /></td>
+				<td class="labelText" colspan ="2"><siga:Idioma key="sjcs.actas.horaInicio" /></td>
 				<td><html:text name="ActaComisionForm" property="horaIni" maxlength="2" styleClass="box" style="text-align:right; width:25px" onkeypress="return soloDigitos(event)"></html:text> : <html:text name="ActaComisionForm" property="minuIni" maxlength="2" styleClass="box" style="text-align:left; width:25px"  onkeypress="return soloDigitos(event)"></html:text></td>
 				<td class="labelText"><siga:Idioma key="sjcs.actas.horaFin" /></td>
 				<td><html:text name="ActaComisionForm" property="horaFin" maxlength="2" styleClass="box" style="text-align:right; width:25px" onkeypress="return soloDigitos(event)"></html:text> : <html:text name="ActaComisionForm" property="minuFin" maxlength="2" styleClass="box" style="text-align:left; width:25px"  onkeypress="return soloDigitos(event)"></html:text></td>
+				<td>&nbsp;</td>
 			</tr>
 			<tr>
 				<td class="labelText"><siga:Idioma key="sjcs.actas.presidente"/></td>
-				<td colspan="5"><siga:ComboBD nombre="idPresidente"  tipo="tipoPonente" parametro="<%=dato%>" clase="boxCombo"  filasMostrar="1" seleccionMultiple="false" obligatorio="false" ancho="500"/></td>
+				<td colspan="6"><siga:ComboBD nombre="idPresidente"  tipo="tipoPonente" parametro="<%=dato%>" clase="boxCombo"  filasMostrar="1" seleccionMultiple="false" obligatorio="false" ancho="500"/></td>
+				<td>&nbsp;</td>
 			</tr>
 			<tr>
 				<td class="labelText"><siga:Idioma key="sjcs.actas.secretario"/></td>
-				<td colspan="5"><siga:ComboBD nombre="idSecretario"  tipo="tipoPonente" parametro="<%=dato%>" clase="boxCombo"  filasMostrar="1" seleccionMultiple="false" obligatorio="false" ancho="500"/></td>
+				<td colspan="6"><siga:ComboBD nombre="idSecretario"  tipo="tipoPonente" parametro="<%=dato%>" clase="boxCombo"  filasMostrar="1" seleccionMultiple="false" obligatorio="false" ancho="500"/></td>
+				<td>&nbsp;</td>
 			</tr>
 			<tr>
 				<td class="labelText"><siga:Idioma key="sjcs.actas.miembrosComision"/></td>
-				<td colspan="5"><html:textarea styleClass="labelTextArea" property="miembros" style="width:500; height:100"></html:textarea></td>
+				<td colspan="6"><html:textarea styleClass="labelTextArea" property="miembros"  rows="3" cols="80"/></td>
+				<td>&nbsp;</td>
 			</tr>
 			<tr>
 				<td class="labelText"><siga:Idioma key="sjcs.actas.observaciones"/></td>
-				<td colspan="5"><html:textarea styleClass="labelTextArea" property="observaciones" style="width:500; height:100"></html:textarea></td>
+				<td colspan="6"><html:textarea styleClass="labelTextArea" property="observaciones" rows="3" cols="80"/></td>
+				<td>&nbsp;</td>
 			</tr>
 			</table>
 		</siga:ConjCampos>	
@@ -101,13 +140,39 @@
 		function accionCerrar(){
 			window.top.close();
 		}
+		function onchangeSufijo() {
+			
+			var sufijo = document.getElementById('sufijo');
+			var anioActa = document.getElementById('anioActa');
+			
+			jQuery.ajax({ //Comunicación jQuery hacia JSP  
+		           type: "POST",
+		           url: "/SIGA/JGR_ActasComision.do?modo=geJQuerytNumActaComision",
+		           data: "sufijo="+sufijo.value+"&anioActa="+anioActa.value,
+		           dataType: "json",
+		           success:  function(json) {
+		       			var numActa = json.numActa;
+		       			document.getElementById('numActa').value = numActa;
+		       			//Si tiene opciones el valor es el que iene que estar seleccioando
+		           },
+		           error: function(xml,msg){
+		        	   alert("Error: "+msg);
+		           }
+		        });
+			
+				
+		}
 		
 		function accionGuardarCerrar(){
 			sub();
 			var errores = "";
 			var error = false;
-			if(document.ActaComisionForm.numeroActa.value=="" || 
-			   document.ActaComisionForm.anioActa.value==""){
+			
+			var sufijo = document.getElementById('sufijo');
+			if(sufijo)
+				document.ActaComisionForm.sufijoNumActa.value = sufijo.value;
+			
+			if(document.ActaComisionForm.numActa.value=="" ||	document.ActaComisionForm.anioActa.value==""){
 				error = true;
 				errores += "<siga:Idioma key='errors.required' arg0='sjcs.actas.numeroActa'/>"+ '\n';
 			
@@ -154,28 +219,15 @@
 					}
 				}	
 			}					
-			
-			//if(document.ActaComisionForm.horaIni.value!=""&&document.ActaComisionForm.minuIni.value!=""&&document.ActaComisionForm.horaFin.value!=""&&document.ActaComisionForm.minuFin.value!=""){
-			//	if (document.ActaComisionForm.horaIni.value>document.ActaComisionForm.horaFin.value){
-			//		error = true;
-			//		//errores += "<siga:Idioma key='sjcs.actas.XXX'/>"+ '\n';
-			//	}
-			//	else {
-			//		if (document.ActaComisionForm.horaIni.value==document.ActaComisionForm.horaFin.value&&document.ActaComisionForm.minuIni.value>document.ActaComisionForm.minuFin.value){
-			//			error = true;
-			//			//errores += "<siga:Idioma key='sjcs.actas.XXX'/>"+ '\n';
-			//		}
-			//	}
-			//}		
-			
-			if(error==false){
+			if(error){
+				alert(error);
+			}else{
 				document.ActaComisionForm.modo.value="insertar";
 				document.ActaComisionForm.submit();
-			}else{
-				alert(errores);
-				fin();
+	
 			}
 		}
+	
 	</script>
 </body>
 </html>

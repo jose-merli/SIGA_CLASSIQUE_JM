@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html>
 <head>
 <!-- editarActaComision.jsp -->
@@ -14,9 +15,12 @@
 <%@ taglib uri = "struts-bean.tld" 		prefix="bean"%>
 <%@ taglib uri = "struts-html.tld" 		prefix="html"%>
 <%@ taglib uri = "c.tld" 				prefix="c"%>
-
+ 
+<%@page import="com.siga.gratuita.form.EjgActaForm"%>
+<%@page import="java.util.List"%>
 <%@ page import="com.siga.Utilidades.*"%>
 <%@ page import="com.atos.utils.*"%>
+<%@ page import="com.siga.gratuita.form.EjgActaForm"%>
 <%@ page import="com.siga.beans.ScsActaComisionBean"%>
 <%@ page import="java.util.Hashtable"%>
 <%@ page import="com.siga.Utilidades.UtilidadesString"%>
@@ -27,10 +31,10 @@
 	HttpSession ses = request.getSession();
 	String app = request.getContextPath();
 	UsrBean usr = (UsrBean)ses.getAttribute("USRBEAN");
-	String 	dato[] = {(String)usr.getLocation()};
+	
 	boolean esComisionMultiple = usr.getInstitucionesComision()!=null &&usr.getInstitucionesComision().length>1;
 	Hashtable datosActa = (Hashtable)request.getAttribute("datosActa");
-	Vector ejgs = (Vector)request.getAttribute("ejgsRelacionados");
+	List<EjgActaForm> ejgsActaForms = (List<EjgActaForm>)request.getAttribute("ejgsActaFormList");
 	
 	String idActa = datosActa.get(ScsActaComisionBean.C_IDACTA)!=null?(String)datosActa.get(ScsActaComisionBean.C_IDACTA):"";
 	String idInstitucion = datosActa.get(ScsActaComisionBean.C_IDINSTITUCION)!=null?(String)datosActa.get(ScsActaComisionBean.C_IDINSTITUCION):"";
@@ -48,6 +52,10 @@
 	String minInicioReunion = datosActa.get(ScsActaComisionBean.C_HORAINICIOREUNION)!=null?UtilidadesString.formatoFecha((String)datosActa.get(ScsActaComisionBean.C_HORAINICIOREUNION),ClsConstants.DATE_FORMAT_JAVA, "mm"):"";;
 	String horaFinReunion = datosActa.get(ScsActaComisionBean.C_HORAFINREUNION)!=null?UtilidadesString.formatoFecha((String)datosActa.get(ScsActaComisionBean.C_HORAFINREUNION),ClsConstants.DATE_FORMAT_JAVA, "HH"):"";;
 	String minFinReunion = datosActa.get(ScsActaComisionBean.C_HORAFINREUNION)!=null?UtilidadesString.formatoFecha((String)datosActa.get(ScsActaComisionBean.C_HORAFINREUNION),ClsConstants.DATE_FORMAT_JAVA, "mm"):"";;
+	String idDatoPresidente = idPresidente!=null && !idPresidente.equals("")?idPresidente:"-1";
+	String idDatosSecretario = idSecretario!=null && !idSecretario.equals("")?idSecretario:"-1";
+	String 	datoPonentePresidente[] = {(String)usr.getLocation(),idDatoPresidente};
+	String 	datoPonenteSecretario[] = {(String)usr.getLocation(),idDatosSecretario};
 	
 	ArrayList presidenteSel = new ArrayList();
 	presidenteSel.add(idPresidente);
@@ -142,13 +150,14 @@
 				</tr>
 			
 				<tr>
+				
 					<td class="labelText"><siga:Idioma key="sjcs.actas.presidente"/></td>
-					<td colspan="5"><siga:ComboBD nombre="idPresidente"  tipo="tipoPonente" parametro="<%=dato%>" clase="<%=estiloCombo%>" readonly="<%=readOnlySt%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false" ancho="700" elementoSel="<%=presidenteSel%>"/></td>
+					<td colspan="5"><siga:ComboBD nombre="idPresidente"  tipo="tipoPonente" parametro="<%=datoPonentePresidente%>" clase="<%=estiloCombo%>" readonly="<%=readOnlySt%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false" ancho="700" elementoSel="<%=presidenteSel%>"/></td>
 				</tr>
 				
 				<tr>
 					<td class="labelText"><siga:Idioma key="sjcs.actas.secretario"/></td>
-					<td colspan="5"><siga:ComboBD nombre="idSecretario"  tipo="tipoPonente" parametro="<%=dato%>" clase="<%=estiloCombo%>" readonly="<%=readOnlySt%>"filasMostrar="1" seleccionMultiple="false" obligatorio="false" ancho="700" elementoSel="<%=secretarioSel%>"/></td>
+					<td colspan="5"><siga:ComboBD nombre="idSecretario"  tipo="tipoPonente" parametro="<%=datoPonenteSecretario%>" clase="<%=estiloCombo%>" readonly="<%=readOnlySt%>"filasMostrar="1" seleccionMultiple="false" obligatorio="false" ancho="700" elementoSel="<%=secretarioSel%>"/></td>
 				</tr>
 				
 				<tr>
@@ -168,10 +177,10 @@
 				
 				<tr>
 					<td class="labelText"><siga:Idioma key="sjcs.actas.ejgsEnActa"/></td>
-					<td colspan="5"><c:out value="<%=ejgs.size()%>"/></td>
+					<td colspan="5"><c:out value="<%=ejgsActaForms.size()%>"/></td>
 				</tr>
 				
-				<%if(!readOnly){%>
+				<%if(!readOnly && (fechaResolucionCAJG==null||fechaResolucionCAJG.equals(""))){%>
 					<tr>
 						<td colspan="6" align="right"><input type="button" alt="Retirar"  id="idButtonRetirar" onclick="return accionRetirarPendientes();" class="button" name="idButton" value="<siga:Idioma key='sjcs.actas.retirarEJGs'/>"></input></td>
 					</tr>
@@ -205,31 +214,37 @@
 		   	columnSizes="<%=tamanioColumnas.toString() %>">
 			   
 <%
-				if (ejgs!=null && ejgs.size()>0) {
-					Row fila;
-			   		Hashtable hash;
+				if (ejgsActaForms!=null && ejgsActaForms.size()>0) {
+					
 			   		String filaSt;
-			   		String botones = readOnly?"C":"C,E";
-			   		for (int i=0;i<ejgs.size();i++) {
+			   	
+			   		String botones = readOnly||(fechaResolucionCAJG!=null && !fechaResolucionCAJG.equals(""))?"C":"C,E";
+			   		for (int i=0;i<ejgsActaForms.size();i++) {
 			   			filaSt=""+(i+1);
-				   		fila=(Row)ejgs.get(i);
-				   		hash=(Hashtable)fila.getRow();
+			   			EjgActaForm ejgActaForm=(EjgActaForm)ejgsActaForms.get(i);
 %>			   		
 				   		<siga:FilaConIconos fila="<%=filaSt%>" botones="<%=botones%>" clase="listaNonEdit" visibleBorrado="no" >	
 				   		<% if(esComisionMultiple){%>
-				   			<td><%=hash.get("INST_ABREV")%></td>
+				   			<td><%=ejgActaForm.getNombreInstitucionEjg()%>
+				   			</td>
 					   		<%}%>
 							<td>
-							   	<input type="hidden" name="oculto<%=filaSt%>_1" id="oculto<%=filaSt%>_1" value="<%=hash.get("IDTIPOEJG")%>">
-								<input type="hidden" name="oculto<%=filaSt%>_2" id="oculto<%=filaSt%>_2" value="<%=hash.get("IDINSTITUCION")%>">
-								<input type="hidden" name="oculto<%=filaSt%>_3" id="oculto<%=filaSt%>_3" value="<%=hash.get("ANIO")%>">
-								<input type="hidden" name="oculto<%=filaSt%>_4" id="oculto<%=filaSt%>_4" value="<%=hash.get("NUM")%>">
-							   	<%=hash.get("ANIO")%>/<%=hash.get("NUMERO")%>
+							   	<input type="hidden" name="oculto<%=filaSt%>_1" id="oculto<%=filaSt%>_1" value="<%=ejgActaForm.getIdTipoEjg()%>">
+								<input type="hidden" name="oculto<%=filaSt%>_2" id="oculto<%=filaSt%>_2" value="<%=ejgActaForm.getIdInstitucionEjg()%>">
+								<input type="hidden" name="oculto<%=filaSt%>_3" id="oculto<%=filaSt%>_3" value="<%=ejgActaForm.getAnioEjg()%>">
+								<input type="hidden" name="oculto<%=filaSt%>_4" id="oculto<%=filaSt%>_4" value="<%=ejgActaForm.getNumeroEjg()%>">
+								<input type="hidden" name="oculto<%=filaSt%>_5" id="oculto<%=filaSt%>_5" value="<%=ejgActaForm.getIdInstitucionActa()%>">
+								<input type="hidden" name="oculto<%=filaSt%>_6" id="oculto<%=filaSt%>_6" value="<%=ejgActaForm.getIdActa()%>">
+								<input type="hidden" name="oculto<%=filaSt%>_7" id="oculto<%=filaSt%>_7" value="<%=ejgActaForm.getAnioActa()%>">
+								
+								
+								
+								<%=ejgActaForm.getDescripcionEjg()%>
 					   		</td>
-					   		<td><%= hash.get("TURNO")!=null&&!((String)hash.get("TURNO")).equals("")?hash.get("TURNO")+" / "+hash.get("GUARDIA"):"&nbsp;"%></td>
-					   		<td align="center"><%=UtilidadesString.formatoFecha((String)hash.get("FECHAAPERTURA"), ClsConstants.DATE_FORMAT_JAVA, ClsConstants.DATE_FORMAT_SHORT_SPANISH)%>&nbsp;</td>
-					   		<td><%=hash.get("SOLICITANTE")!=null&&!((String)hash.get("SOLICITANTE")).trim().equals("")?(String)hash.get("SOLICITANTE"):"&nbsp;"%></td>
-					   		<td><%=hash.get("RESOLUCION")!=null&&!((String)hash.get("RESOLUCION")).trim().equals("")?(String)hash.get("RESOLUCION"):"&nbsp;"%></td>				   
+					   		<td><%=ejgActaForm.getTurnoGuardiaEjg()!=null&&!ejgActaForm.getTurnoGuardiaEjg().trim().equals("")?ejgActaForm.getTurnoGuardiaEjg():"&nbsp;"%></td>
+					   		<td align="center"><%=ejgActaForm.getFechaEjg()%></td>
+					   		<td><%=ejgActaForm.getSolicitanteEjg()!=null&&!ejgActaForm.getSolicitanteEjg().trim().equals("")?ejgActaForm.getSolicitanteEjg():"&nbsp;"%></td>
+					   		<td><%=ejgActaForm.getDescripcionResolucion()!=null&&!ejgActaForm.getDescripcionResolucion().trim().equals("")?ejgActaForm.getDescripcionResolucion():"&nbsp;"%></td>				   
 				   		</siga:FilaConIconos>
 <%
 					}
@@ -245,9 +260,9 @@
 		</div>
 		
 		<% if(readOnly) { %>
-			<siga:ConjBotonesAccion botones="V,GA" modal="G"/>		
+			<siga:ConjBotonesAccion botones="V,GA"/>		
 		<% } else { %>
-			<siga:ConjBotonesAccion botones="V,G,GA" modal="G"/>		
+			<siga:ConjBotonesAccion botones="V,G,GA"/>		
 		<% } %>	
 	</html:form>
 
@@ -348,7 +363,7 @@
 		function generarActa() {
 			sub();
 			var idInstitucion  = <%=idInstitucion%>;
-			var datos = "idInstitucion=="+<%=idInstitucion%>+"##idActa=="+<%=idActa%>+"##anioActa=="+<%=anioActa%>+"##numeroActa=="+<%=numeroActa%>;
+			var datos = "idInstitucion==<%=idInstitucion%>##idActa==<%=idActa%>##anioActa==<%=anioActa%>##numeroActa==<%=numeroActa%>";
 			document.InformesGenericosForm.datosInforme.value =datos;
 			if(document.getElementById("informeUnico").value=='1'){
 				document.InformesGenericosForm.submit();
@@ -362,6 +377,7 @@
 			}
 		} 	
 		
+		
 		function accionRetirarPendientes(){
 			if(confirm("<siga:Idioma key='sjcs.actas.confirmacionRetirar'/>")){
 				document.ActaComisionForm.target.value="submitArea";
@@ -369,6 +385,7 @@
 				document.ActaComisionForm.submit();
 			}
 		}
+		 
 	</script>
 	
 	<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>

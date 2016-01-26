@@ -303,10 +303,10 @@ public class PysPeticionCompraSuscripcionAdm extends MasterBeanAdministrador {
 	public Vector getPeticionDetalle (Hashtable datos, Integer idInstitucion) throws SIGAException, ClsExceptions {
 		try {
 			PysProductosSolicitadosAdm produtosAdm = new PysProductosSolicitadosAdm (this.usrbean);
-			Vector productos = produtosAdm.getProductosSolicitados (datos, idInstitucion, false);
+			Vector productos = produtosAdm.getProductosSolicitados (datos, idInstitucion);
 	
 			PysServiciosSolicitadosAdm serviciosAdm = new PysServiciosSolicitadosAdm (this.usrbean);
-			Vector servicios = serviciosAdm.getServiciosSolicitados (datos, idInstitucion, false);
+			Vector servicios = serviciosAdm.getServiciosSolicitados (datos, idInstitucion);
 			
 			Vector resultado = new Vector ();
 			if (productos != null) {
@@ -545,30 +545,6 @@ public class PysPeticionCompraSuscripcionAdm extends MasterBeanAdministrador {
 			throw new ClsExceptions(e,"Error al insertar el carro de la compra");
 		}
 		return idPeticion;
-	}
-	
-	/**
-	 * Obtiene si hay una peticion de baja.
-	 * @param idinstitucion
-	 * @param idpeticion
-	 * @return boolean
-	 */
-	public boolean getTipoPeticion(Integer idinstitucion, Long idpeticionalta, Long idpersona){
-		boolean hay = false;
-
-		try {
-			String where = " WHERE "+PysPeticionCompraSuscripcionBean.C_IDINSTITUCION+"="+idinstitucion.toString()+
-						   " AND "+PysPeticionCompraSuscripcionBean.C_IDPERSONA+"="+idpersona.toString()+
-						   " AND "+PysPeticionCompraSuscripcionBean.C_TIPOPETICION+"='"+ClsConstants.TIPO_PETICION_COMPRA_BAJA+"'";
-			if (idpeticionalta!=null)
-				where += " AND "+PysPeticionCompraSuscripcionBean.C_IDPETICIONALTA+"="+idpeticionalta.toString();
-			Vector v = this.select(where);
-			if (!v.isEmpty())
-				hay = true;
-		} catch(Exception e){
-			hay = false;
-		}
-		return hay;
 	}
 	
 	/**

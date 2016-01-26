@@ -8,8 +8,8 @@ import java.util.List;
  *
  * La imaginación es más importante que el conocimiento
  *
- * @param <L>
- * @param <J>
+ * @param <L> formObject
+ * @param <J> voObject
  */
 
 public interface VoUiService<L, J> {

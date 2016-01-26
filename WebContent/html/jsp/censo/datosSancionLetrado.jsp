@@ -30,6 +30,7 @@
 <% 
 	String app=request.getContextPath();
 	HttpSession ses=request.getSession();
+		
 	UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");
 	String idioma = user.getLanguage();
 	String idInstitucion = user.getLocation();
@@ -103,9 +104,12 @@
 	}
 
 	ArrayList colegioSel = new ArrayList();
-	if (registro.get("IDINSTITUCIONSANCION")!=null) {
+	if (formulario.getModo().equals("nuevo") && ClsConstants.esColegio(idInstitucion)){
+		colegioSel.add(idInstitucion);	
+	} else if (registro.get("IDINSTITUCIONSANCION")!=null) {
 		colegioSel.add((String)registro.get("IDINSTITUCIONSANCION"));
 	}
+	
 	ArrayList tipoSancionSel = new ArrayList();
 	if (registro.get("IDTIPOSANCION")!=null) {
 		tipoSancionSel.add((String)registro.get("IDTIPOSANCION"));
@@ -369,12 +373,13 @@
 							</td>
 							<td style="padding-left:25px;">
 							<% if (formulario.getModo().equalsIgnoreCase("Ver") || Integer.parseInt(idInstitucion) == 2000) { %>
-								<siga:ComboBD nombre = "nombreInstitucion" ancho="200" tipo="cmbInstitucionesAbreviadas"  readonly="<%=readonly%>" clase="<%=estiloCombo %>" obligatorio="true" elementoSel="<%=colegioSel %>"/>
+								<siga:ComboBD nombre = "nombreInstitucion" ancho="200" tipo="cmbColegiosAbreviados"  readonly="<%=readonly%>" clase="<%=estiloCombo %>" obligatorio="true" elementoSel="<%=colegioSel %>"/>
 							<% }else{ %>
 								<siga:ComboBD nombre = "nombreInstitucion" ancho="200" tipo="cmbInstitucionLocal" parametro="<%=parametroCombo%>" readonly="<%=readonly%>"  clase="<%=estiloCombo %>" obligatorio="true" elementoSel="<%=colegioSel %>"/>							
 							<% } %>	
 
 							</td>
+							
 							<td class="labelText">
 								<siga:Idioma key="censo.BusquedaSancionesLetrado.literal.refColegio"/>
 							</td>
@@ -477,7 +482,7 @@
 							<% }else{%>
 								<html:hidden  name="SancionesLetradoForm" property="chkArchivada"/>
 								<html:hidden  name="SancionesLetradoForm" property="fechaArchivada"/>
-							<%}%>					
+					   <%}%>						
 											
 						<tr>
 							<td class="labelText" colspan="4">

@@ -4,6 +4,7 @@ import java.util.Hashtable;
 import java.util.Vector;
 
 import com.siga.Utilidades.UtilidadesBDAdm;
+import com.siga.Utilidades.UtilidadesNumero;
 
 //import com.siga.Utilidades.UtilidadesString;
 
@@ -67,6 +68,17 @@ public class ComodinBusquedas {
         posicion = cadena.indexOf('*') + 1;              //  -1 + 1 si no está
         posicion = posicion + cadena.indexOf('?') + 1;   //  -1 + 1 si no está
         return (posicion != 0);                          //  si cero, falso
+    }
+    
+    public static boolean hasComa(String cadena ){
+    	if (cadena == null)
+    		return false;
+        return cadena.indexOf(',')>=0;
+    }
+    public static boolean hasGuion(String cadena ){
+    	if (cadena == null)
+    		return false;
+        return cadena.indexOf('-')>=0;                     //  si cero, falso
     }
     
     /** Devuelve una cadena de caracteres con los comodines reemplazados: 
@@ -420,6 +432,75 @@ public class ComodinBusquedas {
         
         return sentenciaCompleta;
     }
+
+	public String prepararSentenciaCompletaEJGBind(String cadena, String Campo, int contador, Hashtable codigos) {
+		String temp = "";
+		String sentenciaCompleta = "";
+		/*
+		 * La cadena introducida se pasa a mayusculas y se eliminan los blancos
+		 * por la derecha y por la izquierda
+		 */
+		// cadena = cadena.trim();
+		cadena = UtilidadesBDAdm.validateChars(cadena);
+
+		if (ComodinBusquedas.hasComa(cadena)) {
+			String[] cadenaAux = cadena.split(",");
+			temp += "to_number(" + Campo + ") IN (";
+			for (int i = 0; i < cadenaAux.length; i++) {
+				try {
+					int numero = Integer.parseInt(cadenaAux[i]);
+					codigos.put(new Integer(contador),numero );
+					temp += ":" + contador + " ";
+					temp += " ,";
+					contador++;	
+				} catch (Exception e) {
+					//El caracter que hay entre las comas no es numerico
+					//System.out.println("Cadena:"+cadenaAux[i]);
+				}
+				
+
+			}
+			temp = temp.substring(0, temp.length() - 1);
+			temp += " )";
+			sentenciaCompleta = temp;
+		} else if (ComodinBusquedas.hasGuion(cadena)) {
+
+			String[] cadenaAux = cadena.split("-");
+			String cadenaDesde = cadenaAux[0];
+			if (cadenaAux.length == 1 ) {
+				codigos.put(new Integer(contador), cadenaDesde);
+				temp = "to_number(" + Campo + ")=:" + contador + "";
+
+			} else if (cadenaAux.length == 2 && cadenaDesde.equals("")) {
+				codigos.put(new Integer(contador), cadenaAux[1]);
+				temp = "to_number(" + Campo + ")=:" + contador + "";
+
+			} else {
+				// BETWEEN LEAST(130,120) AND GREATEST(120,130)
+				temp = " to_number(" + Campo + ") BETWEEN LEAST( :" + contador + ", ";
+				codigos.put(new Integer(contador), cadenaAux[0]);
+				contador++;
+				temp += ":" + contador + ") ";
+				codigos.put(new Integer(contador), cadenaAux[1]);
+				contador++;
+				temp += " AND GREATEST( :" + contador + ", ";
+				codigos.put(new Integer(contador), cadenaAux[0]);
+				contador++;
+				temp += ":" + contador + ") ";
+				codigos.put(new Integer(contador), cadenaAux[1]);
+			}
+			sentenciaCompleta = temp;
+		} else {
+
+			codigos.put(new Integer(contador), cadena);
+			sentenciaCompleta = "regexp_like(" + Campo + ",:" + contador + ")";
+
+		}
+
+		return sentenciaCompleta;
+	}
+    
+    
     
     
     

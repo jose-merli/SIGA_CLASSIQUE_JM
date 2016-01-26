@@ -514,8 +514,16 @@ public abstract class SIGAAuxAction extends SIGAActionBase{
 				request.setAttribute("nombreFichero", fichero.getName());
 			}	
 			request.setAttribute("rutaFichero", fichero.getPath());
-			request.setAttribute("borrarFichero","true");
-
+			
+			String sBorrarFichero = (String)request.getParameter("borrarFichero");			
+			if (sBorrarFichero==null) {
+				sBorrarFichero = (String)request.getAttribute("borrarFichero");
+			}
+			
+			// Si viene a false, no se borra el fichero final
+			if (sBorrarFichero==null || sBorrarFichero.equalsIgnoreCase("true")) {
+				request.setAttribute("borrarFichero", "true");
+			}
 			
 		}
 		catch (Exception e) {
@@ -569,8 +577,4 @@ public abstract class SIGAAuxAction extends SIGAActionBase{
 		return BusinessManager.getInstance();		
 		
 	}
-	
-
-
 }
-

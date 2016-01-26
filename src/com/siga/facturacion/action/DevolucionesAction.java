@@ -548,11 +548,8 @@ public class DevolucionesAction extends MasterAction {
 		    		}
 		    		
 		    		String linea = "";		    		
-		    		while (linea!=null && linea.equals("")) {
+		    		while (linea!=null && linea.trim().equals("")) {
 		    			linea = rdr.readLine();
-		    			if (linea!=null) {
-		    				linea = linea.trim();
-		    			}
 		    		}
 		    		
 		    		while (linea!=null) {
@@ -669,8 +666,7 @@ public class DevolucionesAction extends MasterAction {
 			    		} // FIN WHILE		    			
 		    			
 			    		// Comprueba si queda algo por escribir de la linea
-			    		lineaFichero = lineaFichero.trim();
-		    			if (!lineaFichero.equals("")) {
+		    			if (!lineaFichero.trim().equals("")) {
 		    				
 		    				// Escribimos la linea 
 		    				out.write(lineaFichero);
@@ -679,11 +675,8 @@ public class DevolucionesAction extends MasterAction {
 		    			
 		    			// Obtenemos la siguiente linea
 		    			linea = "";		    		
-			    		while (linea!=null && linea.equals("")) {
+			    		while (linea!=null && linea.trim().equals("")) {
 			    			linea = rdr.readLine();
-			    			if (linea!=null) {
-			    				linea = linea.trim();
-			    			}
 			    		}
 		    		}
 		    		

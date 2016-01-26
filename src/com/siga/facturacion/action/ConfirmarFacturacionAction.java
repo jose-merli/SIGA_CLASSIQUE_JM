@@ -650,7 +650,7 @@ public class ConfirmarFacturacionAction extends MasterAction{
 	protected String enviarFacturas(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException, ClsExceptions {
 		Hashtable<String,Object> hash = new Hashtable<String,Object>();
 		String [] claves = {FacFacturacionProgramadaBean.C_IDINSTITUCION,FacFacturacionProgramadaBean.C_IDPROGRAMACION,FacFacturacionProgramadaBean.C_IDSERIEFACTURACION};
-		String [] camposEnvioPdf = {FacFacturacionProgramadaBean.C_IDESTADOENVIO,FacFacturacionProgramadaBean.C_IDESTADOPDF};
+		String [] camposEnvioPdf = {FacFacturacionProgramadaBean.C_IDESTADOENVIO};
 		FacFacturacionProgramadaAdm adm = new FacFacturacionProgramadaAdm(this.getUserBean(request));
 
 		try {
@@ -672,45 +672,9 @@ public class ConfirmarFacturacionAction extends MasterAction{
 				FacFacturacionProgramadaBean bean = (FacFacturacionProgramadaBean) v.get(0);				
 				if (bean.getIdTipoPlantillaMail() != null && !bean.getIdTipoPlantillaMail().equals("")){
 				  	Facturacion facturacion = new Facturacion(userBean);
-				  	UserTransaction tx = userBean.getTransaction();
-				  	int resultadoEnvioFacturacion = facturacion.generaryEnviarProgramacionFactura(request, bean.getIdInstitucion(), bean.getIdSerieFacturacion(), bean.getIdProgramacion(), true, null, tx);	
-				  	String msjAviso = null;
-					switch (resultadoEnvioFacturacion) {
-						case 0: //NO HAY ERROR. SE HA GENERADO CORRECTAMENTE Y SE PROCESADO EL ENVIO
-							UtilidadesHash.set(hash, FacFacturacionProgramadaBean.C_IDESTADOPDF, FacEstadoConfirmFactBean.PDF_FINALIZADA); // cambio de estado PDF a FINALIZADA
-							UtilidadesHash.set(hash, FacFacturacionProgramadaBean.C_IDESTADOENVIO, FacEstadoConfirmFactBean.ENVIO_FINALIZADA); // cambio de estado ENVIO a FINALIZADO
-							adm.updateDirect(hash, claves, camposEnvioPdf);
-							ClsLogging.writeFileLog("OK TODO. CAMBIO DE ESTADOS",10);
-							break;
-							
-						case 1: // ERROR EN GENERAR PDF
-							ClsLogging.writeFileLog("ERROR AL ALMACENAR FACTURA. RETORNO=" + resultadoEnvioFacturacion, 3);
-							msjAviso = "messages.facturacion.confirmacion.errorPdf";
-							UtilidadesHash.set(hash, FacFacturacionProgramadaBean.C_IDESTADOPDF, FacEstadoConfirmFactBean.PDF_FINALIZADAERRORES); // cambio de estado PDF a FINALIZADA CON ERRRORES
-							UtilidadesHash.set(hash, FacFacturacionProgramadaBean.C_IDESTADOENVIO, FacEstadoConfirmFactBean.ENVIO_FINALIZADAERRORES); // cambio de estado ENVIO a FINALIZADO CON ERRRORES
-							adm.updateDirect(hash, claves, camposEnvioPdf);
-							break;
-							
-						case 2: // ERROR EN ENVIO FACTURA
-							ClsLogging.writeFileLog("ERROR AL ENVIAR FACTURA. RETORNO="+resultadoEnvioFacturacion,3);					
-							msjAviso = "messages.facturacion.confirmacion.errorEnvio";
-							UtilidadesHash.set(hash, FacFacturacionProgramadaBean.C_IDESTADOPDF, FacEstadoConfirmFactBean.PDF_FINALIZADA); // cambio de estado PDF a FINALIZADA
-							UtilidadesHash.set(hash, FacFacturacionProgramadaBean.C_IDESTADOENVIO, FacEstadoConfirmFactBean.ENVIO_FINALIZADAERRORES); // cambio de estado ENVIO a FINALIZADO CON ERRRORES
-							adm.updateDirect(hash, claves, camposEnvioPdf);
-							break;
-							
-						default:
-							msjAviso = "messages.facturacion.confirmacion.errorPdf";
-							UtilidadesHash.set(hash, FacFacturacionProgramadaBean.C_IDESTADOPDF, FacEstadoConfirmFactBean.PDF_FINALIZADAERRORES); // cambio de estado PDF a FINALIZADA CON ERRRORES
-							UtilidadesHash.set(hash, FacFacturacionProgramadaBean.C_IDESTADOENVIO, FacEstadoConfirmFactBean.ENVIO_FINALIZADAERRORES); // cambio de estado ENVIO a FINALIZADO CON ERRRORES
-							adm.updateDirect(hash, claves, camposEnvioPdf);
-							ClsLogging.writeFileLog("ERROR GENERAL GENERAR/ENVIAR FACTURA. CAMBIO DE ESTADOS",10);
-							break;
-					}
-				  	
-					if(msjAviso!=null){
-						throw new SIGAException(msjAviso); //Si hay mensaje entonces hay error y se le muestra al usuario
-					}
+					UtilidadesHash.set(hash, FacFacturacionProgramadaBean.C_IDESTADOENVIO, FacEstadoConfirmFactBean.ENVIO_PROGRAMADA); // cambio de estado ENVIO a FINALIZADO
+					adm.updateDirect(hash, claves, camposEnvioPdf);
+					ClsLogging.writeFileLog("OK TODO. CAMBIO DE ESTADOS ENVIO A PENDIENTE",10);
 				  	
 				}else{
 		    		throw new SIGAException("messages.facturacion.almacenar.plantillasEnvioMal"); //No existen plantillas de envio configuradas		

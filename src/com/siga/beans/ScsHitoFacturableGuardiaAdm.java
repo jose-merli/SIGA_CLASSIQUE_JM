@@ -234,6 +234,45 @@ public class ScsHitoFacturableGuardiaAdm extends MasterBeanAdministrador
 		}
 		return datos;
 	}
-	
-		
+
+	/**
+	 * Obtiene si la configuracion de la guardia es por asistencias (0) o por actuaciones (1) 
+	 * @param idInstitucion
+	 * @param idTurno
+	 * @param idGuardia
+	 * @return
+	 * @throws ClsExceptions
+	 */
+	public String porAsAct (String idInstitucion, String idTurno, String idGuardia) throws ClsExceptions {
+		try {
+			StringBuilder consulta = new StringBuilder();
+			consulta.append(" SELECT * ");
+			consulta.append(" FROM ");
+			consulta.append(ScsHitoFacturableGuardiaBean.T_NOMBRETABLA);
+			consulta.append(" WHERE ");
+			consulta.append(ScsHitoFacturableGuardiaBean.C_IDINSTITUCION);
+			consulta.append(" = ");
+			consulta.append(idInstitucion);
+			consulta.append(" AND ");
+			consulta.append(ScsHitoFacturableGuardiaBean.C_IDTURNO);
+			consulta.append(" = ");
+			consulta.append(idTurno);
+			consulta.append(" AND ");
+			consulta.append(ScsHitoFacturableGuardiaBean.C_IDGUARDIA);
+			consulta.append(" = ");
+			consulta.append(idGuardia);
+			consulta.append(" AND ");
+			consulta.append(ScsHitoFacturableGuardiaBean.C_IDHITO);
+			consulta.append(" IN (2,5) "); // As o GDAs 
+			
+			RowsContainer rc = this.find(consulta.toString());
+	        if (rc!=null && rc.size()>0) {
+	        	return "0";
+	        } 
+	        return "1";
+			
+		} catch (Exception e) {
+	       	throw new ClsExceptions (e, "Error al obtener si la configuración de la guardia es por asistencias o por actuaciones .");
+	    }               
+    }				
 }

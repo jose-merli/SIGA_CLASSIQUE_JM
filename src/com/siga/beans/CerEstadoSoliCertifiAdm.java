@@ -26,6 +26,13 @@ public class CerEstadoSoliCertifiAdm extends MasterBeanAdministrador
 
 		return claves;
 	}
+	
+	protected String[] getOrdenDescripcion()
+	{
+		String[] claves = {CerEstadoSoliCertifiBean.C_DESCRIPCION};
+
+		return claves;
+	}
 
 	protected MasterBean hashTableToBean(Hashtable hash) throws ClsExceptions
 	{
@@ -92,7 +99,7 @@ public class CerEstadoSoliCertifiAdm extends MasterBeanAdministrador
 						 			  CerEstadoSoliCertifiBean.C_USUMODIFICACION + 						 			
 						   " FROM " + CerEstadoSoliCertifiBean.T_NOMBRETABLA + " ";
 			sql += " " + where;
-			sql += this.getOrdenCampos()!=null ? UtilidadesBDAdm.sqlOrderBy(this.getOrdenCampos()) : UtilidadesBDAdm.sqlOrderBy(this.getClavesBean());
+			sql += this.getOrdenCampos()!=null ? UtilidadesBDAdm.sqlOrderBy(this.getOrdenCampos()) : UtilidadesBDAdm.sqlOrderBy(this.getOrdenDescripcion());
 			if (rc.query(sql)) {
 				for (int i = 0; i < rc.size(); i++)	{
 					Row fila = (Row) rc.get(i);
@@ -136,5 +143,28 @@ public class CerEstadoSoliCertifiAdm extends MasterBeanAdministrador
 			throw new ClsExceptions (e, "Error al ejecutar el \"select\" en B.D."); 
 		}
 		return datos;
-	}    
+	}  
+	
+	public String getNombreEstadoSolicitudCert(String idEstado) throws ClsExceptions {
+		String nombreEstado = "";
+
+		// Acceso a BBDD
+		RowsContainer rc = null;
+		try {
+			rc = new RowsContainer();
+			String sql = " SELECT  " + UtilidadesMultidioma.getCampoMultidioma(CerEstadoSoliCertifiBean.C_DESCRIPCION, this.usrbean.getLanguage()) + " FROM  " + CerEstadoSoliCertifiBean.T_NOMBRETABLA + " ";
+			sql += " WHERE " + CerEstadoSoliCertifiBean.C_IDESTADOSOLICITUDCERTIFICADO + " = " + idEstado;
+			if (rc.query(sql)) {
+				for (int i = 0; i < rc.size(); i++) {
+					Row fila = (Row) rc.get(i);
+					CerEstadoSoliCertifiBean registro = (CerEstadoSoliCertifiBean) this.hashTableToBeanInicial(fila.getRow());
+					if (registro != null)
+						nombreEstado = registro.getDescripcion();
+				}
+			}
+		} catch (Exception e) {
+			throw new ClsExceptions(e, "Error al ejecutar el \"select\" en B.D.");
+		}
+		return nombreEstado;
+	}
 }

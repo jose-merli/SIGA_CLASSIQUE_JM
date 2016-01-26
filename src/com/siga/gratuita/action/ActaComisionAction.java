@@ -6,11 +6,14 @@
 
 package com.siga.gratuita.action;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
@@ -22,14 +25,21 @@ import javax.transaction.UserTransaction;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.redabogacia.sigaservices.app.AppConstants.MODULO;
 import org.redabogacia.sigaservices.app.AppConstants.PARAMETRO;
+import org.redabogacia.sigaservices.app.exceptions.BusinessException;
+import org.redabogacia.sigaservices.app.services.gen.GenParametrosService;
+import org.redabogacia.sigaservices.app.services.scs.EjgActaBusinessService;
+import org.redabogacia.sigaservices.app.services.scs.EjgService;
+import org.redabogacia.sigaservices.app.vo.scs.EjgActaVo;
+import org.redabogacia.sigaservices.app.vo.scs.EjgVo;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.GstDate;
-import com.atos.utils.Row;
 import com.atos.utils.UsrBean;
-import com.siga.Utilidades.UtilidadesFecha;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.Utilidades.paginadores.Paginador;
 import com.siga.beans.AdmInformeAdm;
@@ -40,10 +50,14 @@ import com.siga.beans.ScsEJGAdm;
 import com.siga.beans.ScsEJGBean;
 import com.siga.beans.ScsEstadoEJGAdm;
 import com.siga.beans.ScsEstadoEJGBean;
+import com.siga.censo.form.service.EjgActaVoUiService;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
 import com.siga.gratuita.form.ActaComisionForm;
+import com.siga.gratuita.form.EjgActaForm;
+
+import es.satec.businessManager.BusinessManager;
 
 
 /**
@@ -104,7 +118,11 @@ public class ActaComisionAction extends MasterAction{
 					mapDestino = updateMasivo(mapping, miForm, request, response);
 				}else if (accion.equalsIgnoreCase("procesarRetirados")){
 					mapDestino = procesarRetirados(mapping, miForm, request, response);
-				} else {
+				} else if (accion.equalsIgnoreCase("geJQuerytNumActaComision")){
+					geJQuerytNumActaComision(mapping, miForm, request, response);
+					return null;
+				
+				}else {
 					return super.executeInternal(mapping, formulario, request, response);
 				}
 
@@ -178,22 +196,56 @@ public class ActaComisionAction extends MasterAction{
 		ScsActaComisionAdm actasAdm = new ScsActaComisionAdm(usr);
 		String idInstitucion = usr.getLocation();
 		Date hoy = new Date();
-//		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 		SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy");
 		String anio = sdf2.format(hoy);
-		int numActa;
+		int numActa =1;
 		try {
-//			actasForm.setFechaResolucion(sdf.format(hoy));
+			GenParametrosService genParametrosService = (GenParametrosService) BusinessManager.getInstance().getService(GenParametrosService.class);
+	    	   
+			String sufijosActa = genParametrosService.getValorParametroWithNull(Short.valueOf(idInstitucion), PARAMETRO.CAJG_SUFIJO_ACTAS,MODULO.SCS);
+			if(sufijosActa!=null){
+				
+				String sufijos[] = sufijosActa.split(",");
+				if(sufijos!=null && sufijos.length>0){
+					numActa = actasAdm.getNuevoNumActa(idInstitucion,anio,sufijos[0]);
+					request.setAttribute("sufijos",sufijos );
+				}else{
+					numActa = actasAdm.getNuevoNumActa(idInstitucion,anio);
+					request.setAttribute("sufijos",new String[]{} );
+				}
+			}else{
+				numActa = actasAdm.getNuevoNumActa(idInstitucion,anio);
+				request.setAttribute("sufijos",new String[]{} );
+			}
+			
 			actasForm.setAnioActa(anio);
-			numActa = actasAdm.getNuevoNumActa(idInstitucion,anio);
-			actasForm.setNumeroActa(String.valueOf(numActa));
+			
+			actasForm.setNumActa(String.valueOf(numActa));
 		} catch (ClsExceptions e) {
 			throw new SIGAException(e);
 		}
 		
 		return "nuevo";
 	}
-	
+
+	protected void geJQuerytNumActaComision(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, JSONException, IOException {
+		UsrBean usr = this.getUserBean(request);
+		String anioActa = request.getParameter("anioActa");
+		String sufijo = request.getParameter("sufijo");
+		JSONObject json = new JSONObject();
+		ScsActaComisionAdm actasAdm = new ScsActaComisionAdm(usr);
+		int numActa = actasAdm.getNuevoNumActa(usr.getLocation(), anioActa, sufijo);
+
+		json.put("numActa", numActa);
+
+		// json.
+		response.setContentType("text/x-json;charset=UTF-8");
+		response.setHeader("Cache-Control", "no-cache");
+		response.setHeader("Content-Type", "application/json");
+		response.setHeader("X-JSON", json.toString());
+		response.getWriter().write(json.toString());
+
+	}
 	/** 
 	 * Funcion que implementa el modo insertar
 	 * @param  mapping - Mapeo de los struts
@@ -213,6 +265,8 @@ public class ActaComisionAction extends MasterAction{
 		
 		UserTransaction tx=null;
 		
+		
+		
 		try {
 
 			if(actaForm.getIdPresidente()!=null && !actaForm.getIdPresidente().equalsIgnoreCase(""))
@@ -225,6 +279,8 @@ public class ActaComisionAction extends MasterAction{
 			
 			SimpleDateFormat sdf = new SimpleDateFormat(ClsConstants.DATE_FORMAT_SHORT_SPANISH);
 			sdf = new SimpleDateFormat(ClsConstants.DATE_FORMAT_JAVA);
+			
+			
 			
 			if( actaForm.getFechaResolucion()!=null && 
 				!actaForm.getFechaResolucion().equalsIgnoreCase("")){
@@ -255,7 +311,12 @@ public class ActaComisionAction extends MasterAction{
 			
 			actaBean.setIdActa(actaAdm.getNuevoIdActa(usr.getLocation(), actaForm.getAnioActa()));
 			actaBean.setIdInstitucion(Integer.valueOf(usr.getLocation()));
-			actaBean.setNumeroActa(actaForm.getNumeroActa());
+			StringBuilder numeroActa = new StringBuilder(actaForm.getNumActa());
+			if(!actaForm.getSufijoNumActa().equals("")){
+				numeroActa.append(actaForm.getSufijoNumActa());
+				
+			}
+			actaBean.setNumeroActa(numeroActa.toString().trim());
 			actaBean.setAnioActa(Integer.valueOf(actaForm.getAnioActa()));
 			
 			actaAdm.insert(actaBean);
@@ -279,62 +340,73 @@ public class ActaComisionAction extends MasterAction{
 	 * @exception  SIGAException  En cualquier caso de error
 	 * @throws ClsExceptions 
 	 */	
-	@Override
 	protected String editar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException, ClsExceptions {
 		ActaComisionForm actaForm = (ActaComisionForm) formulario;
-		UsrBean usr = (UsrBean)request.getSession().getAttribute("USRBEAN");
+		UsrBean usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
 		String longitudNumEjg = (String) request.getSession().getAttribute(PARAMETRO.LONGITUD_CODEJG.toString());
 		ScsActaComisionAdm actaAdm = new ScsActaComisionAdm(usr);
-		String idActa		 = "";
+		String idActa = "";
 		String idInstitucion = "";
-		String anioActa		 = "";
-		Hashtable<String, String>  datosActa = null;
-		Vector ejgsRelacionados = null;
-		try{
+		String anioActa = "";
+		Hashtable<String, String> datosActa = null;
+//		Vector ejgsRelacionados = null;
+		try {
 			// Si editamos desde la lista los datos vendran en ocultos
 			Vector ocultos = actaForm.getDatosTablaOcultos(0);
 			formulario = new MasterForm();
 			// Recuperamos la clave del acta
-			idActa		 = (String) ocultos.get(0);
+			idActa = (String) ocultos.get(0);
 			idInstitucion = (String) ocultos.get(1);
-			anioActa		 = (String) ocultos.get(2);
-		}catch (Exception e) {
-			// Si editamos desde la la pestaña de resolucion los datos vendran en formulario
-			idActa		 	= actaForm.getIdActa();
-			idInstitucion 	= actaForm.getIdInstitucion();
-			anioActa		= actaForm.getAnioActa();
+			anioActa = (String) ocultos.get(2);
+
+		} catch (Exception e) {
+			// Si editamos desde la la pestaña de resolucion los datos vendran
+			// en formulario
+			idActa = actaForm.getIdActa();
+			idInstitucion = actaForm.getIdInstitucion();
+			anioActa = actaForm.getAnioActa();
 		}
+
+		EjgActaForm ejgActaForm = new EjgActaForm();
+		ejgActaForm.setIdInstitucionActa(idInstitucion);
+		ejgActaForm.setIdActa(idActa);
+		ejgActaForm.setAnioActa(anioActa);
+		ejgActaForm.setLongitudNumEjg(longitudNumEjg);
+
+		EjgActaBusinessService ejgActaBusinessService = (EjgActaBusinessService) getBusinessManager().getService(EjgActaBusinessService.class);
 		try {
 			// Con la clave recuperamos sus datos
-			datosActa = actaAdm.getDatosActa(idActa,anioActa,idInstitucion);
-			ejgsRelacionados = actaAdm.getListadoEJGActa(idActa,anioActa, idInstitucion,longitudNumEjg);
+			List<EjgActaForm> ejgActaForms = new EjgActaVoUiService().getVo2FormList(ejgActaBusinessService.getList(new EjgActaVoUiService().getForm2Vo(ejgActaForm)));
+
+			datosActa = actaAdm.getDatosActa(idActa, anioActa, idInstitucion);
+//			ejgsRelacionados = actaAdm.getListadoEJGActa(idActa, anioActa, idInstitucion, longitudNumEjg);
+
+			request.setAttribute("datosActa", datosActa);
+			request.setAttribute("ejgsActaFormList", ejgActaForms);
+			//request.setAttribute("ejgsRelacionados", ejgsRelacionados);
+			String accion = actaForm.getModo();
+			if (accion != null && accion.equalsIgnoreCase("ver")) {
+				request.setAttribute("modo", "consulta");
+				request.setAttribute("modoActa", "ver");
+
+			} else if (accion != null && accion.equalsIgnoreCase("editar")) {
+				request.setAttribute("modo", "editar");
+				request.setAttribute("modoActa", "editar");
+			}
+
+			String informeUnico = ClsConstants.DB_TRUE;
+			AdmInformeAdm adm = new AdmInformeAdm(this.getUserBean(request));
+			Vector informeBeans = adm.obtenerInformesTipo(this.getUserBean(request).getLocation(), "ACTAC", null, null);
+			if (informeBeans != null && informeBeans.size() > 1) {
+				informeUnico = ClsConstants.DB_FALSE;
+
+			}
+
+			request.setAttribute("informeUnico", informeUnico);
 		} catch (Exception e) {
-			throwExcp("messages.general.error",new String[] {"modulo.gratuita"},e,null);
-		}
-		request.setAttribute("datosActa", datosActa);
-		request.setAttribute("ejgsRelacionados", ejgsRelacionados);
-		String accion = actaForm.getModo();
-		if(accion!=null && accion.equalsIgnoreCase("ver")){
-			request.setAttribute("modo", "consulta");
-			request.setAttribute("modoActa", "ver");
-			
-		} else if(accion!=null && accion.equalsIgnoreCase("editar")){
-			request.setAttribute("modo", "editar");
-			request.setAttribute("modoActa", "editar");
+			throwExcp("messages.general.error", new String[] { "modulo.gratuita" }, e, null);
 		}
 
-
-		String informeUnico = ClsConstants.DB_TRUE;
-		AdmInformeAdm adm = new AdmInformeAdm(this.getUserBean(request));
-		Vector informeBeans=adm.obtenerInformesTipo(this.getUserBean(request).getLocation(),"ACTAC",null, null);
-		if(informeBeans!=null && informeBeans.size()>1){
-			informeUnico = ClsConstants.DB_FALSE;
-			
-		}
-
-		request.setAttribute("informeUnico", informeUnico);
-
-		
 		return "editar";
 	}
 
@@ -438,10 +510,7 @@ public class ActaComisionAction extends MasterAction{
 		ScsActaComisionAdm actaAdm = new ScsActaComisionAdm(usr);
 		String longitudNumEjg = (String) request.getSession().getAttribute(PARAMETRO.LONGITUD_CODEJG.toString());
 		ScsEJGAdm ejgAdm = new ScsEJGAdm(usr);
-		Vector listadoEJGs = new Vector();
 		UserTransaction tx=null;
-		//Requisito 1. Se modificara la fecha de resolucion cuando no queden expedientes pendientes de retirar
-		String detalleEjgsPtesRetirar = null;
 		//Requisito 2. Se modificara la fecha de resolucion cuando no queden expedientes sin resolver. Esto a su vez depende del parametro GEN_PARAM_VALIDAR_OBLIGATORIEDAD_RESOLUCION
 		String detalleEjgsNoResueltos = null;
 		try {
@@ -496,6 +565,7 @@ public class ActaComisionAction extends MasterAction{
 			String validarObligatoriedadResolucion = paramAdm.getValor (usr.getLocation (), ClsConstants.MODULO_SJCS, ClsConstants.GEN_PARAM_VALIDAR_OBLIGATORIEDAD_RESOLUCION, "0");
 			String fechaResOld = (String)actaOld.get(ScsActaComisionBean.C_FECHARESOLUCION);
 			StringBuffer sql = null;
+			StringBuilder ejgActaBuilder = null; 
 			//si la fecha de resolucion es nueva o si la modifica
 			
 			
@@ -504,30 +574,75 @@ public class ActaComisionAction extends MasterAction{
 					(actaBean.getFechaResolucionCAJG()!=null&&!actaBean.getFechaResolucionCAJG().equalsIgnoreCase("")))||(fechaResOld!=null &&
 					actaBean.getFechaResolucionCAJG()!=null&&GstDate.compararFechas(actaBean.getFechaResolucionCAJG(), fechaResOld) !=0 ) ){
 				//
-				detalleEjgsPtesRetirar = getEJGsPtesRetirar(actaBean,usr,longitudNumEjg);
+//				detalleEjgsPtesRetirar = getEJGsPtesRetirar(actaBean,usr,longitudNumEjg);
 				if(validarObligatoriedadResolucion!=null && validarObligatoriedadResolucion.equals(ClsConstants.DB_TRUE)){
-					
 					detalleEjgsNoResueltos =  getEJGsActaSinResolucion(actaBean,usr,longitudNumEjg);
 				}
 				// Si no hay ejg pendientes de retirar y estan todos con resolucion y fundamento actualizamos la fecha de resolucion, si no dejamos la antigua
-				if(detalleEjgsNoResueltos==null && detalleEjgsPtesRetirar==null){
+				if(detalleEjgsNoResueltos==null){
 					sql = new StringBuffer();
 					sql.append("update " + ScsEJGBean.T_NOMBRETABLA+ " set ");
 					sql.append(ScsEJGBean.C_FECHARESOLUCIONCAJG+ " = TO_DATE('" + actaBean.getFechaResolucionCAJG() + "', 'YYYY/MM/DD HH24:MI:SS')"); 
 					sql.append(" where " + ScsEJGBean.C_IDACTA + " = " + actaBean.getIdActa());
 					sql.append(" and " + ScsEJGBean.C_IDINSTITUCIONACTA + " = " + actaBean.getIdInstitucion());
 					sql.append(" and " + ScsEJGBean.C_ANIOACTA + " = " + actaBean.getAnioActa());
+					
+					
+					//Actualizamos la resolucion del hostorico
+					ejgActaBuilder = new StringBuilder();
+					ejgActaBuilder.append(" UPDATE SCS_EJG_ACTA EJGACTA ");
+					ejgActaBuilder.append(" SET (EJGACTA.IDTIPORATIFICACIONEJG, EJGACTA.IDFUNDAMENTOJURIDICO) ");
+					       
+					ejgActaBuilder.append(" = (SELECT EJG.IDTIPORATIFICACIONEJG, EJG.IDFUNDAMENTOJURIDICO ");
+					ejgActaBuilder.append(" FROM SCS_EJG EJG ");
+					ejgActaBuilder.append(" WHERE EJGACTA.IDINSTITUCIONEJG = EJG.IDINSTITUCION ");
+					ejgActaBuilder.append(" AND EJGACTA.IDTIPOEJG = EJG.IDTIPOEJG ");
+					ejgActaBuilder.append(" AND EJGACTA.ANIOEJG = EJG.ANIO ");
+					ejgActaBuilder.append(" AND EJGACTA.NUMEROEJG = EJG.NUMERO) ");
+
+					ejgActaBuilder.append(" WHERE EJGACTA.IDINSTITUCIONACTA =  ");
+					ejgActaBuilder.append(actaBean.getIdInstitucion());
+					ejgActaBuilder.append(" AND EJGACTA.ANIOACTA =  ");
+					ejgActaBuilder.append(actaBean.getAnioActa());
+					ejgActaBuilder.append(" AND EJGACTA.IDACTA =  ");
+					ejgActaBuilder.append(actaBean.getIdActa());
+					
+					
+					
 				}else{
 					actaBean.setFechaResolucionCAJG(fechaResOld);
 				}
 				
 			}else if(actaBean.getFechaResolucionCAJG()==null||actaBean.getFechaResolucionCAJG().equalsIgnoreCase("")){
+				String expedientesRepetidosEnActasAbiertas = actaAdm.getExpedientesRepetidosEnActasAbiertas(actaBean, usr);
+				
+				
+				
+				if(expedientesRepetidosEnActasAbiertas!=null){
+					StringBuilder descr = new StringBuilder();
+					descr.append("Los siguientes expedientes estan asociados a actas otros abiertos:");
+					descr.append("\n");
+					descr.append(expedientesRepetidosEnActasAbiertas);
+					descr.append("La fecha de resolución del acta no será modificada hasta que no finalice esos actas o saque los expedientes de los actas abiertos.");
+					throw new BusinessException(descr.toString());
+				}
+				
 				sql = new StringBuffer();
 				sql.append("update " + ScsEJGBean.T_NOMBRETABLA+ " set ");
 				sql.append(ScsEJGBean.C_FECHARESOLUCIONCAJG+ " = null "); 
 				sql.append(" where " + ScsEJGBean.C_IDACTA + " = " + actaBean.getIdActa());
 				sql.append(" and " + ScsEJGBean.C_IDINSTITUCIONACTA + " = " + actaBean.getIdInstitucion());
 				sql.append(" and " + ScsEJGBean.C_ANIOACTA + " = " + actaBean.getAnioActa());
+				
+				ejgActaBuilder = new StringBuilder();
+				ejgActaBuilder.append(" UPDATE SCS_EJG_ACTA EJGACTA ");
+				ejgActaBuilder.append(" SET EJGACTA.IDTIPORATIFICACIONEJG = null, EJGACTA.IDFUNDAMENTOJURIDICO= null ");
+				ejgActaBuilder.append(" WHERE EJGACTA.IDINSTITUCIONACTA =  ");
+				ejgActaBuilder.append(actaBean.getIdInstitucion());
+				ejgActaBuilder.append(" AND EJGACTA.ANIOACTA =  ");
+				ejgActaBuilder.append(actaBean.getAnioActa());
+				ejgActaBuilder.append(" AND EJGACTA.IDACTA =  ");
+				ejgActaBuilder.append(actaBean.getIdActa());
 				
 			}
 			
@@ -537,6 +652,9 @@ public class ActaComisionAction extends MasterAction{
 			if(sql!=null){
 				// Hay que actualizar los EJGs del acta
 				ejgAdm.updateSQL(sql.toString());
+				if(ejgActaBuilder!=null)
+					ejgAdm.updateSQL(ejgActaBuilder.toString());
+				
 			}
 			
 			tx.commit();
@@ -544,18 +662,14 @@ public class ActaComisionAction extends MasterAction{
 			// Una vez guardada el acta ya no nos interesa el form
 			actaForm.reset();
 			
-		} catch (Exception e) {
+		}  catch (BusinessException e) {
+			return errorRefresco(e.getMessage(),new ClsExceptions(e.getMessage()), request);
+		}catch (Exception e) {
 			throw new SIGAException("Error al modificar el acta.",e);
 		}
-		if(detalleEjgsPtesRetirar!=null || detalleEjgsNoResueltos!=null){
+		if(detalleEjgsNoResueltos!=null){
 			StringBuffer descripcion = new StringBuffer("");
-			if(detalleEjgsPtesRetirar!=null){
-				descripcion.append("Los siguientes expedientes deben ser desvinculados del acta al estar Devueltos o Pendientes CAJG:");
-				descripcion.append("\n");
-				descripcion.append(detalleEjgsPtesRetirar);
-				descripcion.append("\nPara ello debe pulsar el botón habilitado para ello.");
-				
-			}
+			
 			
 			if(detalleEjgsNoResueltos!=null){
 				if(!descripcion.equals(""))
@@ -570,33 +684,38 @@ public class ActaComisionAction extends MasterAction{
 			return errorRefresco(descripcion.toString(),new ClsExceptions(descripcion.toString()), request);
 			
 		}
-		return exito("messages.updated.success", request);
+		return exitoRefresco("messages.updated.success", request);
 	}
 	
 	private String getEJGsActaSinResolucion(ScsActaComisionBean actaBean,UsrBean usr,String longitudNumEjg ) throws ClsExceptions{
-		ScsActaComisionAdm actaAdm = new ScsActaComisionAdm(usr);
 		String idActa		 = actaBean.getIdActa().toString();
 		String idInstitucion = actaBean.getIdInstitucion().toString();
 		String anioActa		 = actaBean.getAnioActa().toString();
 		StringBuffer detalleEjgsNoResueltos = new StringBuffer("");
-		Vector ejgsRelacionados = actaAdm.getListadoEJGActa(idActa,anioActa, idInstitucion,longitudNumEjg);
-		for (int i = 0; i < ejgsRelacionados.size(); i++) {
-			Row row = (Row) ejgsRelacionados.get(i);
-			if((row.getString("IDTIPORATIFICACIONEJG")==null||row.getString("IDTIPORATIFICACIONEJG").equals(""))||(row.getString("IDFUNDAMENTOJURIDICO")==null||row.getString("IDFUNDAMENTOJURIDICO").equals(""))){
-				detalleEjgsNoResueltos.append(row.getString("ANIO"));
-				detalleEjgsNoResueltos.append("/");
-				detalleEjgsNoResueltos.append(row.getString("NUMERO"));
+		EjgActaBusinessService ejgActaBusinessService = (EjgActaBusinessService) getBusinessManager().getService(EjgActaBusinessService.class);
+		EjgActaVo ejgActaVo = new EjgActaVo(); 
+		ejgActaVo.setIdacta(Long.valueOf(idActa));
+		ejgActaVo.setIdinstitucionacta(Short.valueOf(idInstitucion));
+		ejgActaVo.setAnioacta(Short.valueOf(anioActa));
+		ejgActaVo.setLongitudNumEjg(longitudNumEjg);
+		
+		
+		List<EjgActaVo> actaVos = ejgActaBusinessService.getList(ejgActaVo);
+		
+		
+		for (EjgActaVo ejgActaVo2 : actaVos) {
+			if(ejgActaVo2.getIdtiporatificacionejg()==null || ejgActaVo2.getIdfundamentojuridico() ==null){
+				detalleEjgsNoResueltos.append(ejgActaVo2.getDescripcionEjg());
 				detalleEjgsNoResueltos.append(", ");
 			}
 		}
+		//quitamos la come del final
 		if(!detalleEjgsNoResueltos.equals("")&&detalleEjgsNoResueltos.length()>0){
 			detalleEjgsNoResueltos= detalleEjgsNoResueltos.delete(detalleEjgsNoResueltos.length()-2,detalleEjgsNoResueltos.length());
 			return detalleEjgsNoResueltos.toString();
 		}
 		else
 			return null;
-		
-		
 		
 	}
 	
@@ -621,6 +740,8 @@ public class ActaComisionAction extends MasterAction{
 		
 		
 	}
+	
+	
 	
 	
 	
@@ -690,85 +811,83 @@ public class ActaComisionAction extends MasterAction{
 	 * @throws SystemException 
 	 * @throws NotSupportedException 
 	 * @throws ClsExceptions 
-	 */	
-	protected String updateMasivo(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException{
-		ActaComisionForm actaForm = (ActaComisionForm)formulario;
-		UsrBean usr = (UsrBean)request.getSession().getAttribute("USRBEAN");
-		ScsEJGAdm ejgAdm = new ScsEJGAdm(usr);  
-		String anioActa 	= actaForm.getAnioActa().equalsIgnoreCase("")?"null":actaForm.getAnioActa();
-		String idActa 		= actaForm.getIdActa().equalsIgnoreCase("")?"null":actaForm.getIdActa();
-		String idPonente 	= actaForm.getIdPonente().equalsIgnoreCase("")?"null":actaForm.getIdPonente();
-		
-		
-		String idInstitucion 	= actaForm.getIdInstitucion().equalsIgnoreCase("")?"null":actaForm.getIdInstitucion();
-		String idFundamentoJuridico 	= actaForm.getIdFundamentoJuridico().equalsIgnoreCase("")?"null":actaForm.getIdFundamentoJuridico();
-		
-		String idTipoRatificacionEJG 	= actaForm.getIdTipoRatificacionEJG().equalsIgnoreCase("")?"null":actaForm.getIdTipoRatificacionEJG();
+	 */	              
+	protected String updateMasivo(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+		ActaComisionForm actaForm = (ActaComisionForm) formulario;
+		UsrBean usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
+		String anioActa = actaForm.getAnioActa().equalsIgnoreCase("") ? null : actaForm.getAnioActa();
+		String idActa = actaForm.getIdActa().equalsIgnoreCase("") ? null : actaForm.getIdActa();
+		String idPonente = actaForm.getIdPonente().equalsIgnoreCase("") ? null : actaForm.getIdPonente();
+		String idInstitucion = actaForm.getIdInstitucion().equalsIgnoreCase("") ? null : actaForm.getIdInstitucion();
+		String idFundamentoJuridico = actaForm.getIdFundamentoJuridico().equalsIgnoreCase("") ? null : actaForm.getIdFundamentoJuridico();
+		String idTipoRatificacionEJG = actaForm.getIdTipoRatificacionEJG().equalsIgnoreCase("") ? null : actaForm.getIdTipoRatificacionEJG();
+
 		String[] seleccionados = actaForm.getSeleccionados().split("%%%");
-		
-		StringBuffer consulta = new StringBuffer();
-		StringBuffer update = new StringBuffer();
-		StringBuffer where = new StringBuffer();
-		
-		// Creamos la sentencia del update con todos los campos a actualizar
-		consulta.append("update " + ScsEJGBean.T_NOMBRETABLA);
-		consulta.append(" set ");
-		
-		if(actaForm.getGuardaActa()){
-			update.append(" " + ScsEJGBean.C_IDACTA + "=" + idActa);
-			update.append(" , " + ScsEJGBean.C_IDINSTITUCIONACTA + "=" + idInstitucion);
-			update.append(" , " + ScsEJGBean.C_ANIOACTA + "=" + anioActa);
-			update.append(" , " + ScsEJGBean.C_FECHARESOLUCIONCAJG + "= (select " + ScsActaComisionBean.C_FECHARESOLUCION + " from " + ScsActaComisionBean.T_NOMBRETABLA );
-			update.append(" where " + ScsActaComisionBean.C_IDACTA + "=" + idActa);
-			update.append(" and " + ScsActaComisionBean.C_IDINSTITUCION + "=" + idInstitucion);
-			update.append(" and " + ScsActaComisionBean.C_ANIOACTA + "=" + anioActa + ") , ");
-		}
-		if(actaForm.getGuardaPonente()){
-			update.append(ScsEJGBean.C_IDPONENTE + "=" + idPonente + " , ");
-			update.append(ScsEJGBean.C_IDINSTITUCIONPONENTE + "=" + idInstitucion + " , ");
-			
-			if(actaForm.getFechaPresentacionPonente()!=null && !actaForm.getFechaPresentacionPonente().equalsIgnoreCase(""))
-				update.append(ScsEJGBean.C_FECHAPRESENTACIONPONENTE + "='" + actaForm.getFechaPresentacionPonente() + "' , ");
-			else
-				update.append(ScsEJGBean.C_FECHAPRESENTACIONPONENTE + "=null , ");
-		}
-		if(actaForm.getGuardaRatificacion()){
-			update.append(ScsEJGBean.C_IDTIPORATIFICACIONEJG + "=" + idTipoRatificacionEJG + " , ");
-		}
-		if(actaForm.getGuardaFundamento()){
-			update.append(ScsEJGBean.C_IDFUNDAMENTOJURIDICO + "=" + idFundamentoJuridico + " , ");
-			
-		}
-		update.deleteCharAt(update.lastIndexOf(","));
-		
-		// Creamos el where, con la clave de los ejg que se van a modificar
-		where.append(" where ");
-		String numeroEJG, anioEJG, idInstitucionEJG, idTipoEJG;
-		for(int i=0;i<seleccionados.length;i++){
-			String[] claves = seleccionados[i].split("##");
-			idInstitucionEJG = UtilidadesString.replaceAllIgnoreCase(claves[0], "==", "=");
-			idTipoEJG 	= UtilidadesString.replaceAllIgnoreCase(claves[1], "==", "=");
-			idTipoEJG	= UtilidadesString.replaceAllIgnoreCase(idTipoEJG, "idtipo", "idtipoejg");
-			anioEJG		= UtilidadesString.replaceAllIgnoreCase(claves[2], "==", "=");
-			numeroEJG	= UtilidadesString.replaceAllIgnoreCase(claves[3], "==", "=");
-			// Añadimos el EJG al where
-			where.append(" (" + idInstitucionEJG + " and " + anioEJG + " and " + idTipoEJG + " and " + numeroEJG + ") ");
-			
-			// Si no es el ultimo añadimos un OR con el siguiente
-			if((i+1)<seleccionados.length){
-				where.append(" or ");
+
+		try {
+
+			List<EjgVo> ejgVoList = new ArrayList<EjgVo>();
+			EjgVo ejgVo = null;
+			List<String> camposGuardarList = null;
+			for (int i = 0; i < seleccionados.length; i++) {
+				String[] claves = seleccionados[i].split("##");
+
+				ejgVo = new EjgVo();
+				ejgVo.setUsumodificacion(Integer.parseInt(usr.getUserName()));
+				ejgVo.setIdinstitucion(Short.valueOf(claves[0].split("idinstitucion==")[1]));
+				ejgVo.setIdtipoejg(Short.valueOf(claves[1].split("idtipo==")[1]));
+				ejgVo.setNumero(Long.valueOf(claves[3].split("numero==")[1]));
+				ejgVo.setAnio(Short.valueOf(claves[2].split("anio==")[1]));
+
+				camposGuardarList = new ArrayList<String>();
+				if (actaForm.getGuardaActa()) {
+					if(idActa!=null){
+						ejgVo.setIdacta(Long.valueOf(idActa));
+						ejgVo.setIdinstitucionacta(Short.valueOf(idInstitucion));
+						ejgVo.setAnioacta(Short.valueOf(anioActa));
+					}
+					camposGuardarList.add("Acta");
+				}
+				if (actaForm.getGuardaPonente()) {
+					camposGuardarList.add("Ponente");
+
+					if (actaForm.getFechaPresentacionPonente() != null && !actaForm.getFechaPresentacionPonente().equalsIgnoreCase(""))
+						ejgVo.setFechapresentacionponente(GstDate.convertirFecha(actaForm.getFechaPresentacionPonente(), "dd/MM/yyyy"));
+
+					else
+						ejgVo.setFechapresentacionponente(null);
+
+					if (idPonente != null) {
+						ejgVo.setIdponente(Integer.valueOf(idPonente));
+						ejgVo.setIdinstitucionponente(Short.valueOf(idInstitucion));
+					}
+
+				}
+				if (actaForm.getGuardaRatificacion()) {
+					camposGuardarList.add("Resolucion");
+					if (idTipoRatificacionEJG != null)
+						ejgVo.setIdtiporatificacionejg(Short.valueOf(idTipoRatificacionEJG));
+				}
+				if (actaForm.getGuardaFundamento()) {
+					camposGuardarList.add("Fundamento");
+					if (idTipoRatificacionEJG != null)
+						ejgVo.setIdfundamentojuridico(Short.valueOf(idFundamentoJuridico));
+
+				}
+
+				ejgVoList.add(ejgVo);
 			}
 
+			EjgService ejgService = (EjgService) getBusinessManager().getService(EjgService.class);
+			ejgService.updateMasivoByCajg(camposGuardarList, ejgVoList);
+
+			// ejgAdm.updateSQL(consulta.toString()+update.toString()+where.toString());
+		} catch (Exception e) {
+			throw new SIGAException("Error al realizar la actualización masiva de datos.", e);
 		}
-		try {
-			ejgAdm.updateSQL(consulta.toString()+update.toString()+where.toString());
-		} catch (ClsExceptions e) {
-			throw new SIGAException("Error al realizar la actualización masiva de datos.",e);
-		}
-		
+
 		return exitoModal("messages.updated.success", request);
 	}
-	
 	
 	/** 
 	 * Funcion que procesa los EJGs del acta que quedan pendientes y se deben eliminar del acta
@@ -786,7 +905,6 @@ public class ActaComisionAction extends MasterAction{
 		ScsActaComisionBean actaBean = new ScsActaComisionBean();
 		ScsActaComisionAdm actaAdm = new ScsActaComisionAdm(usr);
 		String longitudNumEjg = (String) request.getSession().getAttribute(PARAMETRO.LONGITUD_CODEJG.toString());
-		ScsEJGAdm ejgAdm = new ScsEJGAdm(usr);
 		ScsEstadoEJGAdm estadoAdm = new ScsEstadoEJGAdm(usr);
 		Vector listadoEJGs = new Vector<Hashtable>();
 		
@@ -836,7 +954,8 @@ public class ActaComisionAction extends MasterAction{
 			}
 			
 			// finalmente añadimos la lista de pendientes al texto que ya existiese y guardamos el acta
-			actaBean.setPendientes(actaForm.getPendientes() + " " + listaRetirados);
+			String pendientes = actaForm.getPendientes() + " " + listaRetirados;
+			actaBean.setPendientes(pendientes.trim());
 			actaAdm.updateDirect(actaAdm.beanToHashTable(actaBean),actaAdm.getClavesBean() , new String[]{ScsActaComisionBean.C_PENDIENTES});
 			
 			tx.commit();

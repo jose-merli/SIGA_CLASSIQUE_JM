@@ -149,7 +149,7 @@ import com.siga.Utilidades.UtilidadesString;
 		public List<AdmTipoInformeBean> getTiposInformeComisionMultiple(boolean isCombo)throws ClsExceptions{
 
 			StringBuffer sql = new StringBuffer();
-			sql.append("SELECT * FROM ADM_TIPOINFORME WHERE ADM_TIPOINFORME.CLASE in ('G','C') AND IDTIPOINFORME IN ('ACTAC','CAJG') ORDER BY DESCRIPCION ");			
+			sql.append("SELECT * FROM ADM_TIPOINFORME WHERE ADM_TIPOINFORME.CLASE in ('G','C') AND IDTIPOINFORME IN ('ACTAC','CAJG','REJG','DCAJG') ORDER BY DESCRIPCION ");			
 			List<AdmTipoInformeBean> tipoInformeList = null;
 			try {
 				RowsContainer rc = new RowsContainer(); 
@@ -180,7 +180,7 @@ import com.siga.Utilidades.UtilidadesString;
 		public List<AdmTipoInformeBean> getTiposInformeIntitucionComisionMultiple(boolean isCombo)throws ClsExceptions{
 
 			StringBuffer sql = new StringBuffer();
-			sql.append("SELECT * FROM ADM_TIPOINFORME WHERE ADM_TIPOINFORME.CLASE in ('G','C') AND IDTIPOINFORME NOT IN ('ACTAC','CAJG') ORDER BY DESCRIPCION ");			
+			sql.append("SELECT * FROM ADM_TIPOINFORME WHERE ADM_TIPOINFORME.CLASE in ('G','C') AND IDTIPOINFORME NOT IN ('ACTAC','CAJG','REJG','DCAJG') ORDER BY DESCRIPCION ");			
 			List<AdmTipoInformeBean> tipoInformeList = null;
 			try {
 				RowsContainer rc = new RowsContainer(); 

@@ -1,7 +1,8 @@
 package com.siga.certificados.form;
 
+import org.apache.struts.upload.FormFile;
+
 import com.siga.general.MasterForm;
-import org.apache.struts.upload.*;
 
 public class SIGAMantenimientoCertificadosPlantillasForm extends MasterForm
 {
@@ -20,6 +21,12 @@ public class SIGAMantenimientoCertificadosPlantillasForm extends MasterForm
     private String descripcion="";
     private String porDefecto="";
     private FormFile theFile;
+    private String[] modos = {"modosRelacionPlantillas"};
+    public String[] getModos () {return this.modos;}
+    private String recarga;
+    private String nuevo;
+    private String relacion;     //indica si es vamos por el camino de relación o simplemente es editar.
+    private String idRelacion;
     
     private String descripcionCertificado="";
 
@@ -142,4 +149,37 @@ public class SIGAMantenimientoCertificadosPlantillasForm extends MasterForm
     {
     	this.descripcionCertificado=descripcionCertificado;
     }
+
+	public String getRecarga() {
+		return recarga;
+	}
+
+	public void setRecarga(String recarga) {
+		this.recarga = recarga;
+	}
+
+	public String getNuevo() {
+		return nuevo;
+	}
+
+	public void setNuevo(String nuevo) {
+		this.nuevo = nuevo;
+	}
+
+	public String getRelacion() {
+		return relacion;
+	}
+
+	public void setRelacion(String relacion) {
+		this.relacion = relacion;
+	}
+
+	public String getIdRelacion() {
+		return idRelacion;
+	}
+
+	public void setIdRelacion(String idRelacion) {
+		this.idRelacion = idRelacion;
+	}
+    
 }
