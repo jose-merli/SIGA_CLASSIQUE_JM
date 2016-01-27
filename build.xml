@@ -5,6 +5,33 @@
               directory with the processing instruction <?eclipse.ant.import?>
               as the first entry and export the buildfile again. -->
 <project basedir="." default="build" name="SIGA92">
+	<!-- ************************************************* PROPIEDADES PARA EL DESPLIEGUE ************************************************ -->
+	<property name="bea.weblogic.jar" 		value="C:/oracle/Middleware/wlserver_12.1/server/lib/weblogic.jar" />
+	
+	<!-- Rutas de origen  -->
+	<property name="services.home" 			value="../../SIGAServices/bin" />
+	<property name="proyecto.home" 			value="../../SIGA92/WebContent" />
+	<property name="web.inf.home"  			value="${proyecto.home}/WEB-INF" />
+	<property name="html.home"				value="${proyecto.home}/html" />
+
+	<!-- Rutas de destino -->
+	<property name="redeploy.name" 			value="SIGA" />
+
+	<tstamp>
+		<format property="date.execution" pattern="yyyyMMddHHmm" locale="es,ES"/>
+		<format property="date.execution.visible" pattern="dd/MM HH:mm" locale="es,ES"/>
+	</tstamp>
+		
+	<property name="nombre.Fichero.Despliegue" value="${redeploy.name}_${entorno.Despliegue}_${version.Despliegue}_${subVersion.Despliegue}_${date.execution}" />
+	<property name="redeploy.targets" 		value="serverSIGA"/>
+	<property name="redeploy.retiretimeout" value="30"/>
+	<property name="deploy.home" 			value="${projectsdesarrollo.home}/user_projects/domains/domainCGAE/applications/${redeploy.name}/${nombre.Fichero.Despliegue}"/>
+	
+	<property name="web.inf.deploy.home"	value="${deploy.home}/WEB-INF"/>
+	<property name="html.deploy.home"   	value="${deploy.home}/html"/>			
+
+	<!-- ##########################################################################################################-->	
+	
 	<property name="bea.weblogic.jar" 		value="C:/oracle/Middleware/wlserver_12.1/server/lib/weblogic.jar"/>
     <property environment="env"/>
     <property name="SIGA92.location" value="../SIGA92"/>
@@ -83,7 +110,7 @@
         <pathelement location="${SIGA92.location}/WebContent/WEB-INF/lib/log4j-1.2.15.jar"/>
         <pathelement location="${SIGA92.location}/WebContent/WEB-INF/lib/mybatis-3.1.1.jar"/>
         <pathelement location="${SIGA92.location}/WebContent/WEB-INF/lib/xmlbeans-2.5.0.jar"/>
-        <path refid="WebLogic System Libraries.libraryclasspath"/>
+        <path refid="WebSystem Libraries.libraryclasspath"/>
         <pathelement location="${SIGAServices.location}/lib/plataformaFirmaCore-3.1.0.jar"/>
         <pathelement location="${SIGA92.location}/WebContent/WEB-INF/lib/MediadoresConcursales.jar"/>
         <pathelement location="${SIGAServices.location}/lib/mybatis-generator-core-1.3.2.jar"/>
@@ -731,28 +758,92 @@
             <classpath refid="SIGA92.classpath"/>
         </javac>
     </target>
-	
-	<!--
-	<target name="compileapp">
-		<java jvm="E:\bea\jdk160_29\bin\java.exe" classname="weblogic.appc" fork="yes" classpathref="SIGA92.classpath">
-			<arg line="-webapp ${jsp.location}" />
-			<arg value="-compiler javac" />
-			<arg value="-depend" />
-			<arg value="-nowarn" />
-		</java>
-	</target>
-
-	<target name="jspcompile">
-		<echo message="Compilamos las JSP del proyecto ${ant.project.name}" />
-		<wlappc deprecation="true" verbose="true" destdir="WebContent/WEB-INF/classes" source="WebContent/html">
-		    <classpath>
-		        <path refid="SIGA92.classpath" />
-		    </classpath>
-		</wlappc>
-	</target>
-	
-	<taskdef name="wlappc" classname="weblogic.ant.taskdefs.j2ee.Appc" classpath="${bea.weblogic.jar}"/>
-	-->
 
     <target description="Build all projects which reference this project. Useful to propagate changes." name="build-refprojects"/>
+	
+	<!-- TARGETS PARA EL DESPLIEGUE DE LA APLICACIÓN -->
+	<target name="DEPLOY" depends="cleanall, build" description="Despliega aplicación con la versión seleccionada">
+			<antcall target="updatesrc" />
+			<antcall target="UndeployApplication"/>
+			<antcall target="crearFicheroVersion"/>
+			<antcall target="redeploy" />			
+		</target>
+
+		<target name="updatesrc">		
+			<echo message="Copiando recursos web ..."/>
+			<copy todir="${html.deploy.home}" includeEmptyDirs="no"  overwrite="yes" verbose="true">
+			<fileset dir="${html.home}">
+			  <include name="**/*"/>
+			</fileset>
+			</copy>
+			<copy todir="${web.inf.deploy.home}" includeEmptyDirs="no"  overwrite="yes">
+			<fileset dir="${web.inf.home}">
+			  <include name="**/*"/>
+			  <exclude name="META-INF"/>
+			</fileset>
+			</copy>
+			<copy todir="${web.inf.deploy.home}/classes/org" includeEmptyDirs="no"  overwrite="yes">
+			<fileset dir="${services.home}/org">
+			  <include name="**/*"/>
+			</fileset>
+			</copy>
+			<copy todir="${web.inf.deploy.home}/classes/com" includeEmptyDirs="no"  overwrite="yes">
+			<fileset dir="${services.home}/com">
+			  <include name="**/*"/>
+			</fileset>
+			</copy>
+		</target>
+
+		<taskdef name="wldeploy" classname="weblogic.ant.taskdefs.management.WLDeploy" classpath="${bea.weblogic.jar}"/>
+		
+		<target name="redeploy">   
+			<echo message="Deploy aplicación: ${redeploy.name}"/>
+	 		<wldeploy action="redeploy" 
+			  	verbose="true" 
+		      	debug="true"
+		      	name="${redeploy.name}" 
+			  	source="${deploy.home}"
+		      	user="${wldesarrollo.deploy.user}" 
+		      	password="${wldesarrollo.deploy.password}"
+		      	adminurl="${wldesarrollo.deploy.adminurl}"
+		      	targets="${redeploy.targets}"  
+			  	remote="true"
+	 			upload="true"
+			  	appversion="${nombre.Fichero.Despliegue}"
+			/>
+			
+			<antcall target="StartApplication" />
+		 </target>
+
+		<target name="UndeployApplication" description="Retira aplicación con la versión seleccionada">	 
+			<echo message="Retira aplicación con la versión antigua de la aplicación:  ${redeploy.name}"/>
+		 	<wldeploy action="undeploy" 
+		 		verbose="true" 
+		      	debug="true"
+		      	name="${redeploy.name}" 
+		      	user="${wldesarrollo.deploy.user}" 
+		      	password="${wldesarrollo.deploy.password}"
+		      	adminurl="${wldesarrollo.deploy.adminurl}"		
+		      	failonerror="false"	  		
+			/>
+		 </target>
+		
+		<target name="StartApplication" >	 
+			<echo message="Reiniciamos aplicación ${redeploy.name}"/>
+	 		<wldeploy action="start" 
+		  		verbose="true" 
+	      		debug="true"
+	      		name="${redeploy.name}" 
+	      		user="${wldesarrollo.deploy.user}" 
+	      		password="${wldesarrollo.deploy.password}"
+	      		targets="${redeploy.targets}"  	 		
+		  		adminurl="${wldesarrollo.deploy.adminurl}"
+	      		appversion="${nombre.Fichero.Despliegue}"  
+			/>
+		</target>
+			
+		<target name="crearFicheroVersion">	 
+			<echo message="Creamos el fichero para la version ${nombre.Fichero.Despliegue}"/>
+			<echo file="${web.inf.deploy.home}/classes/version${redeploy.name}.properties">version:${entorno.Despliegue.visible}_${version.Despliegue}_${subVersion.Despliegue} (${date.execution.visible})</echo>
+		</target>
 </project>
