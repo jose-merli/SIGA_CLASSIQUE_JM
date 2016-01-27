@@ -385,11 +385,11 @@
 						</c:choose>
 					</td>
 
-					<td class="labelText" id="checkDiaDespuesText">
+					<td class="labelText" id="checkDiaDespuesText" style="display:none">
 						<siga:Idioma key='gratuita.mantActuacion.literal.diadespues' />
 					</td>
 					<td>
-						<input type="checkbox" id="checkDiaDespues" />
+						<input type="checkbox" id="checkDiaDespues" style="display:none"/>
 					</td>
 				</tr>
 				
@@ -671,16 +671,19 @@
 			document.getElementById("tiposActuacion").onchange();
 			document.getElementById("checkDiaDespues").checked = document.ActuacionAsistenciaFormEdicion.diaDespues.value=='S';
 			
-			// Si no tiene marcado el check del dia despues, consulto si tiene configurado la guardia por asistencias(0) o por actuaciones(1) y la oculto en caso de ser por asistencias
-			if (document.ActuacionAsistenciaFormEdicion.diaDespues.value!='S') {
-<%			
-				if (porAsAct!=null && porAsAct.equals("0")) {
-%>					
-					jQuery("#checkDiaDespues").hide();
-					jQuery("#checkDiaDespuesText").hide();				
+			var porActuaciones = true; 
 <%
-				}
-%>			
+			if (porAsAct!=null && porAsAct.equals("0")) { // PorAsistencias=0; PorActuaciones=1
+%>
+				porActuaciones = false;
+<%
+			}
+%>
+			
+			// Si tiene marcado el check del dia despues o tiene configurado la guardia por por actuaciones, muestro la casilla del dia despues
+			if (document.ActuacionAsistenciaFormEdicion.diaDespues.value=='S' || porActuaciones) {
+				jQuery("#checkDiaDespues").show();
+				jQuery("#checkDiaDespuesText").show();				
 			}
 			
 			document.getElementById("checkAnulacion").checked = document.ActuacionAsistenciaFormEdicion.anulacion.value=='1';
