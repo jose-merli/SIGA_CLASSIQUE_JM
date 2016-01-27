@@ -968,6 +968,8 @@
 			   		</patternset>
 				</fileset>
 			</copy>	
+			<echo message="Se crea el fichero de la versión desplegado dentro de ${src.desa}}" />
+			<echo file="${src.desa}/version${redeploy.name}.properties">version:${entorno.Despliegue.visible}_${version.Despliegue}_${subVersion.Despliegue} (${date.execution.visible})</echo>
 		</target>
 
 		<target name="E07.ActualizacionLib">		
