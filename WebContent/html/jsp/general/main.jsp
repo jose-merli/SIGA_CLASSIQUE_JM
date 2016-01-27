@@ -277,7 +277,16 @@
 				<td width="300px">
 				<a href="javascript://"  class="imageLink" onclick="return version();" onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('AbrirVersiones','','<%=app%>/html/imagenes/botonVersion.gif',1)" >
 					<img src="<%=app%>/html/imagenes/botonVersion.gif" alt="<%= versionSiga %>" align="middle" name="AbrirVersiones" border="0">
+<% if (versionSiga == null || "".equals(versionSiga.trim())) {
+%>
+					&nbsp;<siga:Idioma key="general.icono.version"/>
+<%
+} else {
+%>
 					&nbsp;<%= versionSiga %>
+<%
+}
+%>
 				</a>
 				</td>
 				<td width="175px">
