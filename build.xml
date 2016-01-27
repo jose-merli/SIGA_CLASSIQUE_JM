@@ -110,7 +110,7 @@
         <pathelement location="${SIGA92.location}/WebContent/WEB-INF/lib/log4j-1.2.15.jar"/>
         <pathelement location="${SIGA92.location}/WebContent/WEB-INF/lib/mybatis-3.1.1.jar"/>
         <pathelement location="${SIGA92.location}/WebContent/WEB-INF/lib/xmlbeans-2.5.0.jar"/>
-        <path refid="WebSystem Libraries.libraryclasspath"/>
+        <!-- <path refid="WebSystem Libraries.libraryclasspath"/> -->
         <pathelement location="${SIGAServices.location}/lib/plataformaFirmaCore-3.1.0.jar"/>
         <pathelement location="${SIGA92.location}/WebContent/WEB-INF/lib/MediadoresConcursales.jar"/>
         <pathelement location="${SIGAServices.location}/lib/mybatis-generator-core-1.3.2.jar"/>
