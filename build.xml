@@ -35,7 +35,7 @@
 	<!-- ************************************************* PROPIEDADES ************************************************ -->
 	<property file="buildDESA.properties"/>
 	
-	<property name="eclipseLocal.workspace.home" 	value="D:/eclipse/workspace"/>
+	<property name="eclipseLocal.workspace.home" 	value="C:/eclipse/workspace"/>
 	<property name="home.local"  			value="../../SIGA92"/>
 	<property name="home.desa"  			value="${eclipseLocal.workspace.home}/entregas/${nombre.Fichero.Despliegue}/SIGA"/>
 	
