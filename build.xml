@@ -1010,7 +1010,7 @@
 			</copy>
 		</target>
 
-		<target name="E50.Generar entrega DESA" depends="cleanall, build">
+		<target name="E50.GenerarentregaDESA" depends="cleanall, build">
 			<antcall target="E01.CrearEstructuraAplicacion" />
 			<antcall target="E03.ActualizacionAnt" />
 			<antcall target="E04.ActualizacionDescriptores" />
