@@ -299,7 +299,7 @@
 				}	
 				
 				if (idEstadoSolicitud.equals(CerSolicitudCertificadosAdm.K_ESTADO_SOL_PEND)){
-					elems[5]=new FilaExtElement("borrar", "borrar", "Borrar", SIGAConstants.ACCESS_READ);
+					botones += ",B";
 				}
 				
 				String fechaSolicitud = UtilidadesHash.getString(hDatos, CerSolicitudCertificadosBean.C_FECHASOLICITUD);
@@ -324,7 +324,7 @@
 				
 %>
 
-  				<siga:FilaConIconos fila='<%=""+(i+1)%>' botones="<%=botones%>" elementos="<%=elems%>"  visibleConsulta="false" pintarEspacio="no" clase="listaNonEdit">
+  				<siga:FilaConIconos fila='<%=""+(i+1)%>' botones="<%=botones%>" elementos="<%=elems%>"  visibleConsulta="false" pintarEspacio="no" clase="listaNonEdit" visibleBorrado="false">
 					<td>
 						<input type="hidden" name="oculto<%=""+(i+1)%>_1" value="<%=idInstitucionCertificado%>">
 						<input type="hidden" name="oculto<%=""+(i+1)%>_2" value="<%=idSolicitud%>">
