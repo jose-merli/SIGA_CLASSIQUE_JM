@@ -107,11 +107,12 @@
 		      	name="${redeploy.name}" 
 		      	user="${wldesarrollo.deploy.user}" 
 		      	password="${wldesarrollo.deploy.password}"
-		      	adminurl="${wldesarrollo.deploy.adminurl}"			  		
+		      	adminurl="${wldesarrollo.deploy.adminurl}"		
+		      	failonerror="false"	  		
 			/>
 		 </target>
 	
-	<target name="StartApplication">	 
+	<target name="StartApplication" >	 
 		<echo message="Reiniciamos aplicación ${redeploy.name}"/>
  		<wldeploy action="start" 
 	  		verbose="true" 
