@@ -56,9 +56,9 @@
 	<property name="src.desa"				value="${home.desa}/src"/>
 	<property name="iis.desa"				value="${etc.desa}/iis"/>
 	
-	<property name="services.home"			value="../SIGAServices"/>
-	<property name="src.java.services"		value="${services.home}/src/main/java"/>
-	<property name="src.resources.services"	value="${services.home}/src/main/resources"/>
+	<property name="services.home.entrega"			value="../SIGAServices"/>
+	<property name="src.java.services"		value="${services.home.entrega}/src/main/java"/>
+	<property name="src.resources.services"	value="${services.home.entrega}/src/main/resources"/>
 
 	<!-- ***************************************************************************************************** -->
 	
