@@ -33,8 +33,6 @@
 	<!-- ##########################################################################################################-->	
 	
 	<!-- ************************************************* PROPIEDADES ************************************************ -->
-	<property file="buildDESA.properties"/>
-	
 	<property name="eclipseLocal.workspace.home" 	value="C:/eclipse/workspace"/>
 	<property name="home.local"  			value="../../SIGA92"/>
 	<property name="home.desa"  			value="${eclipseLocal.workspace.home}/entregas/${nombre.Fichero.Despliegue}/SIGA"/>
@@ -896,7 +894,7 @@
 		</target> 
 
 		<target name="E03.ActualizacionAnt">
-			<echo message="Copiando descriptor: build.xml"/>
+			<echo message="Copiando descriptor: build.xml desde : ${ant.local}"/>
 	    	<copy file="${ant.local}/build.xml"
 	            todir="${ant.desa}"  overwrite="true" /> 
 
