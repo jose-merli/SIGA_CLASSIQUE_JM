@@ -51,7 +51,7 @@
 		estiloCombo = "boxConsulta";
 		readonly = "true";
 		breadonly = true;
-		botonesAccion = "V";
+		botonesAccion = "V,I";
 	} else {
 		estiloCaja = "box";
 		estiloCombo = "boxCombo";
