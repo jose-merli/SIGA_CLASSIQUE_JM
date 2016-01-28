@@ -229,8 +229,10 @@
 		}		
 		
 		function abrirPDF () {
-			GestionarFacturaForm.modo.value = "imprimirFactura";
-			GestionarFacturaForm.submit();
+			if (confirm('<siga:Idioma key="facturacion.facturas.datosGenerales.regenerarFactura"/>')) { 
+				GestionarFacturaForm.modo.value = "imprimirFactura";
+				GestionarFacturaForm.submit();
+			}
 		}
 		
 		function mensaje ()	{

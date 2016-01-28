@@ -1142,3 +1142,8 @@ Update Gen_Recursos   Set Descripcion = 'Origen / Presentación' Where Idlenguaje
 Update Gen_Recursos   Set Descripcion = 'Origen / Presentació' Where Idlenguaje = 2   And Idrecurso In ('certificados.solicitudes.literal.colegioOrigen',        'certificados.solicitudes.literal.institucionOrigenLista');
 Update Gen_Recursos   Set Descripcion = 'Origen / Presentación#EU' Where Idlenguaje = 3   And Idrecurso In ('certificados.solicitudes.literal.colegioOrigen',        'certificados.solicitudes.literal.institucionOrigenLista');
 Update Gen_Recursos   Set Descripcion = 'Origen / Presentación#GL' Where Idlenguaje = 4   And Idrecurso In ('certificados.solicitudes.literal.colegioOrigen',        'certificados.solicitudes.literal.institucionOrigenLista');
+
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('facturacion.facturas.datosGenerales.regenerarFactura', '¿Desea regenerar la factura?', 0, '1', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('facturacion.facturas.datosGenerales.regenerarFactura', '¿Desea regenerar la factura?#GL', 0, '4', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('facturacion.facturas.datosGenerales.regenerarFactura', '¿Desea regenerar la factura?#CA', 0, '2', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('facturacion.facturas.datosGenerales.regenerarFactura', '¿Desea regenerar la factura?#EU', 0, '3', sysdate, 0, '19');
