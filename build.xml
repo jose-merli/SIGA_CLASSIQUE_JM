@@ -948,7 +948,7 @@
 		</target>
 
 		<target name="E06.ActualizacionClases">
-			<echo message="Copiando fuentes"/>
+			<echo message="Copiando fuentes : ${src.local} - ${src.java.services} - ${src.resources.services}"/>
 			<copy todir="${src.desa}" >
 				<fileset dir="${src.local}">
 			  		<patternset>
