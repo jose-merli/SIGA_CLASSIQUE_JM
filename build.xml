@@ -34,7 +34,7 @@
 	
 	<!-- ************************************************* PROPIEDADES ************************************************ -->
 	<property name="eclipseLocal.workspace.home" 	value="C:/eclipse/workspace"/>
-	<property name="home.local"  			value="../../SIGA92"/>
+	<property name="home.local"  			value="../SIGA92"/>
 	<property name="home.desa"  			value="${eclipseLocal.workspace.home}/entregas/${nombre.Fichero.Despliegue}/SIGA"/>
 	
 	<property name="src.local"    			value="${home.local}/src"/>	
@@ -56,7 +56,7 @@
 	<property name="src.desa"				value="${home.desa}/src"/>
 	<property name="iis.desa"				value="${etc.desa}/iis"/>
 	
-	<property name="services.home"			value="../../SIGAServices"/>
+	<property name="services.home"			value="../SIGAServices"/>
 	<property name="src.java.services"		value="${services.home}/src/main/java"/>
 	<property name="src.resources.services"	value="${services.home}/src/main/resources"/>
 
