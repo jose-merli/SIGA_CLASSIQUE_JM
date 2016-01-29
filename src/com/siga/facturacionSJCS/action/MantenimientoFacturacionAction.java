@@ -383,76 +383,35 @@ public class MantenimientoFacturacionAction extends MasterAction {
 	 * @return  String  Destino del action  
 	 * @exception  ClsExceptions  En cualquier caso de error
 	 */	
-	protected String borrar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+	protected String borrar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException 
+	{
+		// Controles generales
+		UsrBean usr = this.getUserBean(request);
+		FcsFacturacionJGAdm fcsFacturacionJGAdm = new FcsFacturacionJGAdm(usr);
 		
-		String result="error";		
-		boolean correcto=false;		
-		Hashtable hash = new Hashtable();		
-		Vector camposOcultos = new Vector();
+		MantenimientoFacturacionForm miForm = (MantenimientoFacturacionForm)formulario;
 		UserTransaction tx = null;
 		
 		try{
-			// Obtengo usuario y creo manejadores para acceder a las BBDD
-			UsrBean usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
-			
-			// Obtengo los datos del formulario		
-			MantenimientoFacturacionForm miForm = (MantenimientoFacturacionForm)formulario;		
-
+			// obteniendo los datos del formulario		
 			Vector fila = miForm.getDatosTablaOcultos(0);
 			String idFacturacion = (String)fila.get(0);
-			String idInstitucionRegistro = (String)fila.get(1);
-			String idInstitucionUsuario = (String)fila.get(2);
+			String idInstitucion = (String)fila.get(1);
 
-			FcsFacturacionJGAdm adm = new FcsFacturacionJGAdm(this.getUserBean(request));
-
-			// Recupero el nombre de los ficheros asociados a la facturacion
-			Hashtable nombreFicheros = UtilidadesFacturacionSJCS.getNombreFicherosFacturacion(new Integer(idInstitucionRegistro), new Integer(idFacturacion), this.getUserBean(request));
-			
-			//Se comprueba si la facturación tiene mov. varios asociados
-			FcsMovimientosVariosAdm movVariosAdm= new FcsMovimientosVariosAdm(this.getUserBean(request));
-			
-			String sql="SELECT * FROM "+FcsMovimientosVariosBean.T_NOMBRETABLA+
-					   " WHERE "+FcsMovimientosVariosBean.C_IDINSTITUCION+"="+idInstitucionRegistro+
-					   "   AND "+ FcsMovimientosVariosBean.C_IDFACTURACION+"="+idFacturacion;
- 			
-			Vector vmovs=movVariosAdm.selectGenerico(sql);
-			
-			if((vmovs!=null)&&(vmovs.size()>0)){
-				throw new SIGAException("factSJCS.facturacion.error.borrarFact.mov");
-			}
-			
-			// Comienzo control de transacciones 
 			tx = usr.getTransactionPesada();			
 			tx.begin();
 
-			Object[] param_in = new Object[2];
-	 		String resultadoPl[] = new String[2];
-	 		//Parametros de entrada del PL
-	        HttpSession ses = (HttpSession)request.getSession();
-			param_in[0] = idInstitucionRegistro;			
-			param_in[1] = idFacturacion;
-
-	 		//Ejecucion del PL
-			resultadoPl = ClsMngBBDD.callPLProcedure("{call PKG_SIGA_FACTURACION_SJCS.PROC_FCS_BORRAR_FACTURACION (?,?,?,?)}", 2, param_in);
-			correcto = ((String)resultadoPl[0]).equals("0");
-			if (!correcto) 
-				throw new SIGAException("messages.deleted.error");
+			fcsFacturacionJGAdm.borrarFacturacion(idInstitucion, idFacturacion, usr);
 
 			tx.commit();
 
-			// borrado fisico de ficheros del servidor web
-			UtilidadesFacturacionSJCS.borrarFicheros(new Integer(idInstitucionRegistro), nombreFicheros, this.getUserBean(request));
-
-			request.setAttribute("descOperation","messages.deleted.success");				
-		 }
-		 catch (Exception e) {
+			request.setAttribute("descOperation","messages.deleted.success");
+		}
+		catch (Exception e) {
 			throwExcp("messages.general.error",new String[] {"modulo.facturacionSJCS"},e,tx);
-	   	 }
-		 if (correcto) 
-		 	return exitoRefresco("messages.deleted.success",request);
-		 else 
-		 	return exitoRefresco("messages.deleted.error",request);
-	}
+		}
+	 	return exitoRefresco("messages.deleted.success",request);
+	} //borrar()
 	
 
 

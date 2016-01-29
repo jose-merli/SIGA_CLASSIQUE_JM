@@ -4452,24 +4452,41 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 		}
 	}
 	
-	public void borrarFacturacion(String idInstitucion, String idFacturacion, UsrBean usr) throws SIGAException, ClsExceptions {
-		
-		Hashtable nombreFicheros = UtilidadesFacturacionSJCS.getNombreFicherosFacturacion(new Integer(idInstitucion), new Integer(idFacturacion), usr);	
+	/**
+	 * Borra fisicamente una facturacion de SJCS
+	 * @param idInstitucion
+	 * @param idFacturacion
+	 * @param usr
+	 * @throws SIGAException
+	 * @throws ClsExceptions
+	 */
+	public void borrarFacturacion(String idInstitucion, String idFacturacion, UsrBean usr) throws SIGAException, ClsExceptions
+	{
+		// comprobando si la facturación tiene mov. varios asociados
+		FcsMovimientosVariosAdm movVariosAdm = new FcsMovimientosVariosAdm(usr);
 
+		Hashtable hMovVarios = new Hashtable();
+		hMovVarios.put(FcsMovimientosVariosBean.C_IDINSTITUCION, idInstitucion);
+		hMovVarios.put(FcsMovimientosVariosBean.C_IDFACTURACION, idFacturacion);
+		Vector vmovs = movVariosAdm.select(hMovVarios);
+		if (vmovs != null && vmovs.size() > 0) {
+			throw new SIGAException("factSJCS.facturacion.error.borrarFact.mov");
+		}
+
+		// ejecutando el borrado de la facturacion en BD
 		Object[] param_in = new Object[2];
- 		String resultadoPl[] = new String[2];
- 		//Parametros de entrada del PL
 		param_in[0] = idInstitucion;
 		param_in[1] = idFacturacion;
- 		//Ejecucion del PL
+		String resultadoPl[] = new String[2];
 		resultadoPl = ClsMngBBDD.callPLProcedure("{call PKG_SIGA_FACTURACION_SJCS.PROC_FCS_BORRAR_FACTURACION (?,?,?,?)}", 2, param_in);
-		
-		if (!((String)resultadoPl[0]).equals("0")) 
+
+		if (!((String) resultadoPl[0]).equals("0"))
 			throw new SIGAException("messages.deleted.error");
 
 		// borrado fisico de ficheros del servidor web
+		Hashtable nombreFicheros = UtilidadesFacturacionSJCS.getNombreFicherosFacturacion(new Integer(idInstitucion), new Integer(idFacturacion), usr);
 		UtilidadesFacturacionSJCS.borrarFicheros(new Integer(idInstitucion), nombreFicheros, usr);
-	}
+	} // borrarFacturacion()
 
 	public void insertar(Hashtable datos, UsrBean usr, String idInstitucion, String fechaDeInicio, String fechaDeFin, String usrName) throws ClsExceptions, SIGAException {
 		FcsFactEstadosFacturacionAdm fcsFactEstadosFacturacionAdm = new FcsFactEstadosFacturacionAdm(usr);

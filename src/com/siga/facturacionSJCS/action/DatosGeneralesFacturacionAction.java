@@ -564,7 +564,7 @@ public class DatosGeneralesFacturacionAction extends MasterAction {
 				FcsFactEstadosFacturacionAdm admEstado = new FcsFactEstadosFacturacionAdm(usr);
 				String  estado = (String) ((Hashtable) (new FcsFacturacionJGAdm(usr)).getEstadoFacturacion(idInstitucion, idFacturacion)).get(FcsEstadosFacturacionBean.C_IDESTADOFACTURACION);
 				if (estado!=null && estado.equals(String.valueOf(ESTADO_FACTURACION.ESTADO_FACTURACION_EJECUTADA.getCodigo())) && usr.getStrutsTrans().equalsIgnoreCase("CEN_MantenimientoFacturacion")){
-						volverGenerarFacturacion ( mapping,  formulario,  request,  response);
+						volverGenerarFacturacion ( mapping,  formulario,  request,  response, tx);
 				}
 							
 				String idOrdenEstado= admEstado.getIdordenestadoMaximo(idInstitucion, idFacturacion);		
@@ -597,38 +597,46 @@ public class DatosGeneralesFacturacionAction extends MasterAction {
 	}
 	
 	
-	protected void volverGenerarFacturacion (ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+	protected void volverGenerarFacturacion(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response, UserTransaction tx)
+			throws SIGAException
+	{
+		// Controles generales
+		UsrBean usr = this.getUserBean(request);
+		FcsFacturacionJGAdm fcsFacturacionJGAdm = new FcsFacturacionJGAdm(usr);
+
+		DatosGeneralesFacturacionForm miform = (DatosGeneralesFacturacionForm) formulario;
+		Vector criteriosFacturacion;
 		
-		DatosGeneralesFacturacionForm miform = (DatosGeneralesFacturacionForm)formulario;
-		UsrBean usr = (UsrBean)request.getSession().getAttribute("USRBEAN");
-		FcsFactGrupoFactHitoAdm criterioAdm = new FcsFactGrupoFactHitoAdm(this.getUserBean(request));
-		
-		UserTransaction tx = null;
-		Vector resultadoConsulta = null;
-		String ok="";
-		try{
+		try {
+			// obteniendo los datos del formulario
+			String idInstitucion = miform.getIdInstitucion();
 			String idFacturacion = miform.getIdFacturacion();
-			String idInstitucion = usr.getLocation();
-			resultadoConsulta = guardarCriterio( mapping,  formulario,  request,  response);	
-			borrarFacturacion(idFacturacion, miform.getIdInstitucion(), idInstitucion,   formulario,  request);
-			insertar( mapping,  formulario,  request,  response);
-			if (resultadoConsulta!=null && resultadoConsulta.size()>0) {
-				Integer hito ;
-				Integer Grupofac;
-				for (int i = 0; i < resultadoConsulta.size(); i++) {
-						hito = ((FcsFactGrupoFactHitoBean)resultadoConsulta.get(i)).getIdHitoGeneral();
-						Grupofac = ((FcsFactGrupoFactHitoBean)resultadoConsulta.get(i)).getIdGrupoFacturacion();
-						miform.setHito(hito.toString());
-						miform.setGrupoF(Grupofac.toString());
-					insertarCriterio ( mapping,  formulario,  request,  response);	
+
+			// guardando de forma temporal los criterios de la facturacion
+			criteriosFacturacion = guardarCriterio( mapping,  formulario,  request,  response);
+			
+			// borrando toda la facturacion
+			fcsFacturacionJGAdm.borrarFacturacion(idInstitucion, idFacturacion, usr);
+
+			//insertando el registro de la facturacion
+			insertar(mapping, formulario, request, response);
+			
+			// volviendo a anyadir los criterios de la facturacion que se borraron
+			if (criteriosFacturacion!=null && criteriosFacturacion.size()>0) {
+				FcsFactGrupoFactHitoBean grupoFactHitoBean;
+				for (int i = 0; i < criteriosFacturacion.size(); i++) {
+					grupoFactHitoBean = (FcsFactGrupoFactHitoBean) criteriosFacturacion.get(i);
+					miform.setHito(grupoFactHitoBean.getIdHitoGeneral().toString());
+					miform.setGrupoF(grupoFactHitoBean.getIdGrupoFacturacion().toString());
+					insertarCriterio (mapping, miform, request, response);	
 				}	
 			}
-			
-		} 
-		catch (Exception e) { 
-			throwExcp("messages.general.error",new String[] {"modulo.facturacionSJCS"},e,tx); 
+
+		} catch (Exception e) {
+			throwExcp("messages.general.error", new String[] { "modulo.facturacionSJCS" }, e, tx);
 		}
-	}
+	} // volverGenerarFacturacion()
+	
 	protected Vector guardarCriterio (ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		
 		DatosGeneralesFacturacionForm miform = (DatosGeneralesFacturacionForm)formulario;
@@ -646,31 +654,6 @@ public class DatosGeneralesFacturacionAction extends MasterAction {
 		}
 		return resultadoConsulta;
 	}
-	
-	protected String borrarFacturacion(String idFacturacion, String idInstitucionRegistro, String idInstitucionUsuario, MasterForm formulario, HttpServletRequest request) throws SIGAException {
-		UserTransaction tx = null;
-		
-		try{
-			// Obtengo usuario y creo manejadores para acceder a las BBDD
-			UsrBean usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
-			FcsFacturacionJGAdm fcsFacturacionJGAdm = new FcsFacturacionJGAdm(usr);
-			// Comienzo control de transacciones 
-			tx = usr.getTransactionPesada();			
-			tx.begin();
-			
-			fcsFacturacionJGAdm.borrarFacturacion(idInstitucionRegistro, idFacturacion, usr);
-			
-			tx.commit();
-
-
-			request.setAttribute("descOperation","messages.deleted.success");				
-		 } catch (Exception e) {
-			throwExcp("messages.general.error",new String[] {"modulo.facturacionSJCS"},e,tx);
-	   	 }
-		
-		return exitoRefresco("messages.deleted.success",request);
-	}
-
 	
 	/** 
 	 *  Funcion que implementa la accion ver
