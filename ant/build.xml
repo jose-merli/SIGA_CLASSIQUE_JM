@@ -119,7 +119,16 @@
 				   			<include name="**/*.*"/>
 				   		</patternset>
 					</fileset>
-				</copy>	
+				</copy>
+			
+			<echo message="Copiando fichero versionSIGA.properties"/>
+			<copy todir="${classes.lib.deploy.home}" >
+				<fileset dir="${home}/src">
+			  		<patternset>
+			   			<include name="versionSIGA.properties"/>
+			   		</patternset>
+				</fileset>
+			</copy>	
 		</target>
 		<target name="07.ActualizacionLib">		
 			<!-- - - - - - - - - - - - - - - - - - 
