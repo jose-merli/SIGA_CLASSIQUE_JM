@@ -19,7 +19,7 @@ public class PruebaEnviosms {
 	
 	public static void main (String[] args0){
 		System.out.println("Pruebas SVN ramas!!");	
-		System.out.println("Pruebas SVN ramas de cristina!!");
+		System.out.println("Pruebas SVN ramas de cristina trunk!!");
 		SolicitudEnvioSMS sesms01 = new SolicitudEnvioSMS();
 		sesms01.setIdClienteECOS("SIGA");
 		sesms01.setIdColegio("2040");
