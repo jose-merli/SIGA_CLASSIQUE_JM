@@ -9,8 +9,8 @@
 	<property name="bea.weblogic.jar" 		value="C:/oracle/Middleware/wlserver_12.1/server/lib/weblogic.jar" />
 	
 	<!-- Rutas de origen  -->
-	<property name="services.home" 			value="../../SIGAServices/bin" />
-	<property name="proyecto.home" 			value="../../SIGA92/WebContent" />
+	<property name="services.home" 			value="../SIGAServices/bin" />
+	<property name="proyecto.home" 			value="../SIGA92/WebContent" />
 	<property name="web.inf.home"  			value="${proyecto.home}/WEB-INF" />
 	<property name="html.home"				value="${proyecto.home}/html" />
 
