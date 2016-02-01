@@ -761,10 +761,10 @@
 	</tr>
 </table>
 	
-<% if (modo.equals("nuevo") && !isSolicitudColegio){%> 
-	<div id="camposRegistro" class="posicionModalGrande">
+<% if (modo.equals("nuevo") || !isSolicitudColegio){%> 
+	<div id="camposRegistro">
 <% } else {%> 
-	<div id="camposRegistro" class="posicionModalGrande" style="overflow-x:hidden; overflow-y:auto">
+	<div id="camposRegistro"  style="overflow-x:hidden; overflow-y:auto">
 <% } %> 
 	
 <table class="tablaCentralCamposGrande" align="center" >
