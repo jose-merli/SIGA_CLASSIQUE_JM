@@ -11,18 +11,9 @@ import com.siga.gratuita.form.AsistenciaForm;
 
 public class ScsAsistenciasBean extends MasterBean{
 	
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 196085411981959095L;
-	/*
-	 *  Variables */ 
-	ScsTurnoBean turno ;
-	ScsGuardiasTurnoBean guardia;
-	ScsPersonaJGBean asistido;
-	CenPersonaBean personaColegiado;
-	ScsDesignaBean designa;
-	ScsEJGBean ejg;
+	
+	// Variables de campos
 	private Integer	idInstitucion;
 	private Integer	anio;
 	private Integer numero;
@@ -42,22 +33,16 @@ public class ScsAsistenciasBean extends MasterBean{
 	private Integer idPersonaColegiado;
 	private Integer idPersonaJG;
 	private Integer idFacturacion;
-	private String	fechaGuardia;
 	private String	fechaModificacion;
 	private String	usuModificacion;
-	private Integer idPersonaRepresentante;
 	private Integer designaAnio;
 	private Integer designaNumero;
 	private Integer designaTurno;
-	
 	private Integer ejgidtipoejg;
 	private Integer ejganio;
 	private Long ejgnumero;
-	private String ejgNumEjg;
-	
-	private Double facturado;
+	private Integer facturado;
 	private Double pagado;
-
 	private String numeroDiligencia;
 	private String numeroProcedimiento;
 	private Long comisaria;
@@ -66,7 +51,12 @@ public class ScsAsistenciasBean extends MasterBean{
 	private Integer juzgadoIdInstitucion;
 	private Integer idEstadoAsistencia;
 	private String  fechaEstadoAsistencia;
+	private String NIG;
+	private Integer idPretension;
+	private String	fechaSolicitud;
+	private Short idOrigenAsistencia;
 	
+	// Variables auxiliares
 	private String hora;
 	private String minuto;
 	private String asistidoNif;
@@ -74,16 +64,22 @@ public class ScsAsistenciasBean extends MasterBean{
 	private String asistidoApellido1;
 	private String asistidoApellido2;
 	private Integer idDelito;
-	private String NIG;
-	private Integer idPretension;
-	private String	fechaSolicitud;
-	private Short idOrigenAsistencia;
-	
-	/*
-	 *  Nombre de Tabla*/
+	private String ejgNumEjg;
+	private String	fechaGuardia;
+	private Integer idPersonaRepresentante;
+	ScsTurnoBean turno ;
+	ScsGuardiasTurnoBean guardia;
+	ScsPersonaJGBean asistido;
+	CenPersonaBean personaColegiado;
+	ScsDesignaBean designa;
+	ScsEJGBean ejg;
+	AsistenciaForm asistenciaForm;
+	private String fichaColegial;
+
+	// Nombre de Tabla
 	static public String T_NOMBRETABLA = "SCS_ASISTENCIA";
-	/*
-	 * Nombre de campos de la tabla*/
+	
+	// Nombre de campos de la tabla
 	static public final String	C_IDINSTITUCION          	=   "IDINSTITUCION";
 	static public final String	C_ANIO                   	=	"ANIO";
 	static public final String	C_NUMERO                	=	"NUMERO";                			
@@ -104,24 +100,20 @@ public class ScsAsistenciasBean extends MasterBean{
 	static public final String	C_IDPERSONAJG            	=	"IDPERSONAJG";
 	static public final String	C_FECHAMODIFICACION      	=	"FECHAMODIFICACION";
 	static public final String	C_USUMODIFICACION        	=	"USUMODIFICACION";
-	static public final String	C_IDPERSONA_REPRESENTANTE	=	"IDPERSONA_REPRESENTANTE";
 	static public final String	C_DESIGNA_ANIO        		=	"DESIGNA_ANIO";
 	static public final String	C_DESIGNA_NUMERO       		=	"DESIGNA_NUMERO";
 	static public final String	C_DESIGNA_TURNO       		=	"DESIGNA_TURNO";
-
-	static public final String C_FACTURADO = "FACTURADO";
-	static public final String C_PAGADO = "PAGADO";
-	static public final String C_IDFACTURACION = "IDFACTURACION";
-	
-	static public final String C_JUZGADO                 = "JUZGADO";
-	static public final String C_COMISARIA               = "COMISARIA";
-	static public final String C_NUMERODILIGENCIA        = "NUMERODILIGENCIA";
-	static public final String C_NUMEROPROCEDIMIENTO     = "NUMEROPROCEDIMIENTO";
-	static public final String C_COMISARIA_IDINSTITUCION = "COMISARIAIDINSTITUCION";
-	static public final String C_JUZGADO_IDINSTITUCION   = "JUZGADOIDINSTITUCION";
-	static public final String C_IDESTADOASISTENCIA      = "IDESTADOASISTENCIA";
-	static public final String C_FECHAESTADOASISTENCIA   = "FECHAESTADOASISTENCIA";
-
+	static public final String	C_FACTURADO = "FACTURADO";
+	static public final String	C_PAGADO = "PAGADO";
+	static public final String	C_IDFACTURACION = "IDFACTURACION";
+	static public final String	C_JUZGADO                 = "JUZGADO";
+	static public final String	C_COMISARIA               = "COMISARIA";
+	static public final String	C_NUMERODILIGENCIA        = "NUMERODILIGENCIA";
+	static public final String	C_NUMEROPROCEDIMIENTO     = "NUMEROPROCEDIMIENTO";
+	static public final String	C_COMISARIA_IDINSTITUCION = "COMISARIAIDINSTITUCION";
+	static public final String	C_JUZGADO_IDINSTITUCION   = "JUZGADOIDINSTITUCION";
+	static public final String	C_IDESTADOASISTENCIA      = "IDESTADOASISTENCIA";
+	static public final String	C_FECHAESTADOASISTENCIA   = "FECHAESTADOASISTENCIA";
 	static public final String	C_EJGIDTIPOEJG       	=	"EJGIDTIPOEJG";
 	static public final String	C_EJGANIO       		=	"EJGANIO";
 	static public final String	C_EJGNUMERO       		=	"EJGNUMERO";
@@ -129,8 +121,10 @@ public class ScsAsistenciasBean extends MasterBean{
 	static public final String  C_IDPRETENSION   		= 	"IDPRETENSION";
 	static public final String	C_FECHASOLICITUD       	=	"FECHASOLICITUD";
 	static public final String	C_IDORIGENASISTENCIA       	=	"IDORIGENASISTENCIA";
+	
+	static public final String	C_IDPERSONA_REPRESENTANTE	=	"IDPERSONA_REPRESENTANTE";
 
-	/* Metodos SET*/
+	// Metodos SET
 	public void    setIdInstitucion          (Integer valor)	{ this.idInstitucion           = 	valor;}
 	public void    setAnio                   (Integer valor)	{ this.anio                    = 	valor;}
 	public void    setNumero                 (Integer valor)	{ this.numero                  = 	valor;}
@@ -158,6 +152,7 @@ public class ScsAsistenciasBean extends MasterBean{
 	public void    setEjgAnio		     	 (Integer valor)	{ this.ejganio      	   = 	valor;}
 	public void    setEjgNumero		     	 (Long valor)	{ this.ejgnumero      	   = 	valor;}
 	
+	// Metodos GET
 	public Integer getIdInstitucion          ()	{ return idInstitucion           ;}
 	public Integer getAnio                   ()	{ return anio                    ;}
 	public Integer getNumero                 ()	{ return numero                  ;}
@@ -181,76 +176,41 @@ public class ScsAsistenciasBean extends MasterBean{
 	public Integer getIdPersonaRepresentante ()	{ return idPersonaRepresentante  ;}
 	public Integer getDesignaAnio		     ()	{ return designaAnio		     ;}
 	public Integer getDesignaNumero		     ()	{ return designaNumero      	 ;}
-	//public String  getFacturado		     	 ()	{ return facturado      	 	 ;}
-	
 	public Integer getEjgIdTipoEjg		     ()	{ return this.ejgidtipoejg      	 ;}
-	public Integer getEjgAnio		     ()	{ return this.ejganio      	 ;}
-	public Long getEjgNumero		     ()	{ return this.ejgnumero      	 ;}
-	AsistenciaForm asistenciaForm;
-	private String fichaColegial;
-	/**
-	 * @return Returns the facturado.
-	 */
-	public Double getFacturado() {
+	public Integer getEjgAnio			     ()	{ return this.ejganio      	 ;}
+	public Long getEjgNumero			     ()	{ return this.ejgnumero      	 ;}
+	
+	// Mas Metodos SET y GET
+	public Integer getFacturado() {
 		return facturado;
 	}
-	/**
-	 * @param facturado The facturado to set.
-	 */
-	public void setFacturado(Double facturado) {
+	public void setFacturado(Integer facturado) {
 		this.facturado = facturado;
 	}
-	/**
-	 * @return Returns the fechaGuardia.
-	 */
 	public String getFechaGuardia() {
 		return fechaGuardia;
 	}
-	/**
-	 * @param fechaGuardia The fechaGuardia to set.
-	 */
 	public void setFechaGuardia(String fechaGuardia) {
 		this.fechaGuardia = fechaGuardia;
 	}
-	/**
-	 * @return Returns the idFacturacion.
-	 */
 	public Integer getIdFacturacion() {
 		return idFacturacion;
 	}
-	/**
-	 * @param idFacturacion The idFacturacion to set.
-	 */
 	public void setIdFacturacion(Integer idFacturacion) {
 		this.idFacturacion = idFacturacion;
 	}
-	/**
-	 * @return Returns the pagado.
-	 */
 	public Double getPagado() {
 		return pagado;
 	}
-	/**
-	 * @param pagado The pagado to set.
-	 */
 	public void setPagado(Double pagado) {
 		this.pagado = pagado;
 	}
-	
-	/**
-	 * @return Returns the designaIdTurno.
-	 */
 	public Integer getDesignaTurno() {
 		return designaTurno;
 	}
-	/**
-	 * @param designaIdTurno The designaIdTurno to set.
-	 */
 	public void setDesignaTurno(Integer designaIdTurno) {
 		this.designaTurno = designaIdTurno;
 	}
-	
-	
 	public Long getComisaria() {
 		return comisaria;
 	}
@@ -311,7 +271,6 @@ public class ScsAsistenciasBean extends MasterBean{
 	public void setMinuto(String minuto) {
 		this.minuto = minuto;
 	}
-	
 	public String getAsistidoNombre() {
 		return asistidoNombre;
 	}
@@ -384,7 +343,36 @@ public class ScsAsistenciasBean extends MasterBean{
 	public void setEjg(ScsEJGBean ejg) {
 		this.ejg = ejg;
 	}
-	
+	public String getFichaColegial() {
+		return fichaColegial;
+	}
+	public void setFichaColegial(String fichaColegial) {
+		this.fichaColegial = fichaColegial;
+	}
+	public String getNIG() {
+		return NIG;
+	}
+	public void setNIG(String nIG) {
+		NIG = nIG;
+	}
+	public Integer getIdPretension() {
+		return idPretension;
+	}
+	public Short getIdOrigenAsistencia() {
+		return idOrigenAsistencia;
+	}
+	public void setIdOrigenAsistencia(Short idOrigenAsistencia) {
+		this.idOrigenAsistencia = idOrigenAsistencia;
+	}
+	public void setIdPretension(Integer idPretension) {
+		this.idPretension = idPretension;
+	}
+	public String getFechaSolicitud() {
+		return fechaSolicitud;
+	}
+	public void setFechaSolicitud(String fechaSolicitud) {
+		this.fechaSolicitud = fechaSolicitud;
+	}
 	
 	public AsistenciaForm getAsistenciaForm(){
 		if(asistenciaForm==null)
@@ -406,43 +394,5 @@ public class ScsAsistenciasBean extends MasterBean{
 		return asistenciaForm;
 		
 	}
-	public String getFichaColegial() {
-		return fichaColegial;
-	}
-	public void setFichaColegial(String fichaColegial) {
-		this.fichaColegial = fichaColegial;
-	}
-	public String getNIG() {
-		return NIG;
-	}
-	public void setNIG(String nIG) {
-		NIG = nIG;
-	}
-	public Integer getIdPretension() {
-		return idPretension;
-	}
-	/**
-	 * @return the idOrigenAsistencia
-	 */
-	public Short getIdOrigenAsistencia() {
-		return idOrigenAsistencia;
-	}
-	/**
-	 * @param idOrigenAsistencia the idOrigenAsistencia to set
-	 */
-	public void setIdOrigenAsistencia(Short idOrigenAsistencia) {
-		this.idOrigenAsistencia = idOrigenAsistencia;
-	}
-	public void setIdPretension(Integer idPretension) {
-		this.idPretension = idPretension;
-	}
-	public String getFechaSolicitud() {
-		return fechaSolicitud;
-	}
-	public void setFechaSolicitud(String fechaSolicitud) {
-		this.fechaSolicitud = fechaSolicitud;
-	}
-	
-	
 	
 }

@@ -105,71 +105,69 @@ public class ScsAsistenciasAdm extends MasterBeanAdministrador {
 	 *  @return conjunto de datos con los nombres de todas las claves del bean
 	 * */
 	protected String[] getClavesBean() {
-		String[] campos = {	ScsAsistenciasBean.C_IDINSTITUCION, ScsAsistenciasBean.C_ANIO,ScsAsistenciasBean.C_NUMERO};
+		String[] campos = {	ScsAsistenciasBean.C_IDINSTITUCION, ScsAsistenciasBean.C_ANIO, ScsAsistenciasBean.C_NUMERO };
 		return campos;
 	}
 	/** Funcion getClavesBean ()
 	 *  @return conjunto de datos con los nombres de todas las claves del bean, con nomenclatura Tabla.Campo
 	 * */
 	protected String[] getClavesSelect(){
-		String[] campos = { ScsAsistenciasBean.C_IDINSTITUCION,
-				ScsAsistenciasBean.C_ANIO,
-				ScsAsistenciasBean.C_NUMERO};
+		String[] campos = {	ScsAsistenciasBean.C_IDINSTITUCION, ScsAsistenciasBean.C_ANIO, ScsAsistenciasBean.C_NUMERO };
 		return campos;
 	}
 	/** Funcion hashTableToBean (Hashtable hash)
 	 *  @param hash Hashtable para crear el bean
 	 *  @return bean con la información de la hashtable
 	 * */
-	protected MasterBean hashTableToBean(Hashtable hash) throws ClsExceptions {
+	protected MasterBean hashTableToBean(Hashtable hash) throws ClsExceptions
+	{
 		ScsAsistenciasBean bean = null;
-		try{
+		try {
 			bean = new ScsAsistenciasBean();
-			bean.setIdInstitucion          (UtilidadesHash.getInteger(hash,ScsAsistenciasBean.C_IDINSTITUCION        ));
-			bean.setAnio                   (UtilidadesHash.getInteger(hash,ScsAsistenciasBean.C_ANIO                 ));
-			bean.setDesignaAnio            (UtilidadesHash.getInteger(hash,ScsAsistenciasBean.C_DESIGNA_ANIO         ));
-			bean.setDesignaNumero          (UtilidadesHash.getInteger(hash,ScsAsistenciasBean.C_DESIGNA_NUMERO       ));
-			bean.setDesignaTurno		   (UtilidadesHash.getInteger(hash,ScsAsistenciasBean.C_DESIGNA_TURNO        ));
-			bean.setNumero                 (UtilidadesHash.getInteger(hash,ScsAsistenciasBean.C_NUMERO               ));
-			bean.setFechaHora              (UtilidadesHash.getString(hash,ScsAsistenciasBean.C_FECHAHORA             ));
-			bean.setObservaciones          (UtilidadesHash.getString(hash,ScsAsistenciasBean.C_OBSERVACIONES         ));
-			bean.setIncidencias            (UtilidadesHash.getString(hash,ScsAsistenciasBean.C_INCIDENCIAS           ));
-			bean.setFechaAnulacion         (UtilidadesHash.getString(hash,ScsAsistenciasBean.C_FECHAANULACION        ));
-			bean.setMotivosAnulacion       (UtilidadesHash.getString(hash,ScsAsistenciasBean.C_MOTIVOSANULACION      ));
-			bean.setDelitosImputados       (UtilidadesHash.getString(hash,ScsAsistenciasBean.C_DELITOSIMPUTADOS      ));
-			bean.setContrarios             (UtilidadesHash.getString(hash,ScsAsistenciasBean.C_CONTRARIOS            ));
-			bean.setDatosDefensaJuridica   (UtilidadesHash.getString(hash,ScsAsistenciasBean.C_DATOSDEFENSAJURIDICA  ));
-			bean.setFechaCierre            (UtilidadesHash.getString(hash,ScsAsistenciasBean.C_FECHACIERRE           ));
-			bean.setIdTipoAsistencia       (UtilidadesHash.getInteger(hash,ScsAsistenciasBean.C_IDTIPOASISTENCIA     ));
-			bean.setIdTipoAsistenciaColegio(UtilidadesHash.getInteger(hash,ScsAsistenciasBean.C_IDTIPOASISTENCIACOLEGIO));
-			bean.setIdturno                (UtilidadesHash.getInteger(hash,ScsAsistenciasBean.C_IDTURNO              ));
-			bean.setIdguardia              (UtilidadesHash.getInteger(hash,ScsAsistenciasBean.C_IDGUARDIA            ));
-			bean.setIdPersonaColegiado     (UtilidadesHash.getInteger(hash,ScsAsistenciasBean.C_IDPERSONACOLEGIADO   ));
-			bean.setIdPersonaJG            (UtilidadesHash.getInteger(hash,ScsAsistenciasBean.C_IDPERSONAJG          ));
-			bean.setFechaModificacion      (UtilidadesHash.getString(hash,ScsAsistenciasBean.C_FECHAMODIFICACION     ));
-			bean.setUsuModificacion        (UtilidadesHash.getString(hash,ScsAsistenciasBean.C_USUMODIFICACION		 ));
-			//bean.setFacturado		       (UtilidadesHash.getString(hash,ScsAsistenciasBean.C_FACTURADO			 ));
-
-			bean.setJuzgado(UtilidadesHash.getLong(hash,ScsAsistenciasBean.C_JUZGADO));
-			bean.setJuzgadoIdInstitucion(UtilidadesHash.getInteger(hash,ScsAsistenciasBean.C_JUZGADO_IDINSTITUCION));
-			bean.setComisaria(UtilidadesHash.getLong(hash,ScsAsistenciasBean.C_COMISARIA));
-			bean.setComisariaIdInstitucion(UtilidadesHash.getInteger(hash,ScsAsistenciasBean.C_COMISARIA_IDINSTITUCION));
-			bean.setNumeroDiligencia(UtilidadesHash.getString(hash,ScsAsistenciasBean.C_NUMERODILIGENCIA));
-			bean.setNumeroProcedimiento(UtilidadesHash.getString(hash,ScsAsistenciasBean.C_NUMEROPROCEDIMIENTO));
-			bean.setIdEstadoAsistencia(UtilidadesHash.getInteger(hash,ScsAsistenciasBean.C_IDESTADOASISTENCIA));
-			bean.setFechaEstadoAsistencia(UtilidadesHash.getString(hash,ScsAsistenciasBean.C_FECHAESTADOASISTENCIA));
-
-			bean.setEjgIdTipoEjg(UtilidadesHash.getInteger(hash,ScsAsistenciasBean.C_EJGIDTIPOEJG));
-			bean.setEjgAnio(UtilidadesHash.getInteger(hash,ScsAsistenciasBean.C_EJGANIO));
-			bean.setEjgNumero(UtilidadesHash.getLong(hash,ScsAsistenciasBean.C_EJGNUMERO));
-			bean.setNIG(UtilidadesHash.getString(hash,ScsAsistenciasBean.C_NIG));
-			bean.setIdPretension(UtilidadesHash.getInteger(hash,ScsAsistenciasBean.C_IDPRETENSION));
-			bean.setFechaSolicitud      (UtilidadesHash.getString(hash,ScsAsistenciasBean.C_FECHASOLICITUD            ));
-			bean.setIdOrigenAsistencia(UtilidadesHash.getShort(hash,ScsAsistenciasBean.C_IDORIGENASISTENCIA));
-		}
-		catch(Exception e){
+			bean.setIdInstitucion			(UtilidadesHash.getInteger(hash, ScsAsistenciasBean.C_IDINSTITUCION));
+			bean.setAnio					(UtilidadesHash.getInteger(hash, ScsAsistenciasBean.C_ANIO));
+			bean.setDesignaAnio				(UtilidadesHash.getInteger(hash, ScsAsistenciasBean.C_DESIGNA_ANIO));
+			bean.setDesignaNumero			(UtilidadesHash.getInteger(hash, ScsAsistenciasBean.C_DESIGNA_NUMERO));
+			bean.setDesignaTurno			(UtilidadesHash.getInteger(hash, ScsAsistenciasBean.C_DESIGNA_TURNO));
+			bean.setNumero					(UtilidadesHash.getInteger(hash, ScsAsistenciasBean.C_NUMERO));
+			bean.setFechaHora				(UtilidadesHash.getString(hash, ScsAsistenciasBean.C_FECHAHORA));
+			bean.setObservaciones			(UtilidadesHash.getString(hash, ScsAsistenciasBean.C_OBSERVACIONES));
+			bean.setIncidencias				(UtilidadesHash.getString(hash, ScsAsistenciasBean.C_INCIDENCIAS));
+			bean.setFechaAnulacion			(UtilidadesHash.getString(hash, ScsAsistenciasBean.C_FECHAANULACION));
+			bean.setMotivosAnulacion		(UtilidadesHash.getString(hash, ScsAsistenciasBean.C_MOTIVOSANULACION));
+			bean.setDelitosImputados		(UtilidadesHash.getString(hash, ScsAsistenciasBean.C_DELITOSIMPUTADOS));
+			bean.setContrarios				(UtilidadesHash.getString(hash, ScsAsistenciasBean.C_CONTRARIOS));
+			bean.setDatosDefensaJuridica	(UtilidadesHash.getString(hash, ScsAsistenciasBean.C_DATOSDEFENSAJURIDICA));
+			bean.setFechaCierre				(UtilidadesHash.getString(hash, ScsAsistenciasBean.C_FECHACIERRE));
+			bean.setIdTipoAsistencia		(UtilidadesHash.getInteger(hash, ScsAsistenciasBean.C_IDTIPOASISTENCIA));
+			bean.setIdTipoAsistenciaColegio	(UtilidadesHash.getInteger(hash, ScsAsistenciasBean.C_IDTIPOASISTENCIACOLEGIO));
+			bean.setIdturno					(UtilidadesHash.getInteger(hash, ScsAsistenciasBean.C_IDTURNO));
+			bean.setIdguardia				(UtilidadesHash.getInteger(hash, ScsAsistenciasBean.C_IDGUARDIA));
+			bean.setIdPersonaColegiado		(UtilidadesHash.getInteger(hash, ScsAsistenciasBean.C_IDPERSONACOLEGIADO));
+			bean.setIdPersonaJG				(UtilidadesHash.getInteger(hash, ScsAsistenciasBean.C_IDPERSONAJG));
+			bean.setFechaModificacion		(UtilidadesHash.getString(hash, ScsAsistenciasBean.C_FECHAMODIFICACION));
+			bean.setUsuModificacion			(UtilidadesHash.getString(hash, ScsAsistenciasBean.C_USUMODIFICACION));
+			bean.setFacturado 				(UtilidadesHash.getInteger(hash,ScsAsistenciasBean.C_FACTURADO));
+			bean.setPagado	 				(UtilidadesHash.getDouble(hash,ScsAsistenciasBean.C_PAGADO));
+			bean.setIdFacturacion			(UtilidadesHash.getInteger(hash, ScsAsistenciasBean.C_IDFACTURACION));
+			bean.setJuzgado					(UtilidadesHash.getLong(hash, ScsAsistenciasBean.C_JUZGADO));
+			bean.setJuzgadoIdInstitucion	(UtilidadesHash.getInteger(hash, ScsAsistenciasBean.C_JUZGADO_IDINSTITUCION));
+			bean.setComisaria				(UtilidadesHash.getLong(hash, ScsAsistenciasBean.C_COMISARIA));
+			bean.setComisariaIdInstitucion	(UtilidadesHash.getInteger(hash, ScsAsistenciasBean.C_COMISARIA_IDINSTITUCION));
+			bean.setNumeroDiligencia		(UtilidadesHash.getString(hash, ScsAsistenciasBean.C_NUMERODILIGENCIA));
+			bean.setNumeroProcedimiento		(UtilidadesHash.getString(hash, ScsAsistenciasBean.C_NUMEROPROCEDIMIENTO));
+			bean.setIdEstadoAsistencia		(UtilidadesHash.getInteger(hash, ScsAsistenciasBean.C_IDESTADOASISTENCIA));
+			bean.setFechaEstadoAsistencia	(UtilidadesHash.getString(hash, ScsAsistenciasBean.C_FECHAESTADOASISTENCIA));
+			bean.setEjgIdTipoEjg			(UtilidadesHash.getInteger(hash, ScsAsistenciasBean.C_EJGIDTIPOEJG));
+			bean.setEjgAnio					(UtilidadesHash.getInteger(hash, ScsAsistenciasBean.C_EJGANIO));
+			bean.setEjgNumero				(UtilidadesHash.getLong(hash, ScsAsistenciasBean.C_EJGNUMERO));
+			bean.setNIG						(UtilidadesHash.getString(hash, ScsAsistenciasBean.C_NIG));
+			bean.setIdPretension			(UtilidadesHash.getInteger(hash, ScsAsistenciasBean.C_IDPRETENSION));
+			bean.setFechaSolicitud			(UtilidadesHash.getString(hash, ScsAsistenciasBean.C_FECHASOLICITUD));
+			bean.setIdOrigenAsistencia		(UtilidadesHash.getShort(hash, ScsAsistenciasBean.C_IDORIGENASISTENCIA));
+		} catch (Exception e) {
 			bean = null;
-			throw new ClsExceptions (e, "Error al construir el bean a partir del hashTable");
+			throw new ClsExceptions(e, "Error al construir el bean a partir del hashTable");
 		}
 		return bean;
 	}
@@ -177,37 +175,39 @@ public class ScsAsistenciasAdm extends MasterBeanAdministrador {
 	 *  @param bean para crear el hashtable asociado
 	 *  @return hashtable con la información del bean
 	 * */
-	protected Hashtable beanToHashTable(MasterBean bean) throws ClsExceptions {
+	protected Hashtable beanToHashTable(MasterBean bean) throws ClsExceptions
+	{
 		Hashtable hash = null;
-		try{
+		try {
 			hash = new Hashtable();
 			ScsAsistenciasBean b = (ScsAsistenciasBean) bean;
 
-			UtilidadesHash.set(hash,ScsAsistenciasBean.C_IDINSTITUCION          , b.getIdInstitucion          ());
-			UtilidadesHash.set(hash,ScsAsistenciasBean.C_ANIO                   , b.getAnio                   ());
-			UtilidadesHash.set(hash,ScsAsistenciasBean.C_DESIGNA_ANIO           , b.getDesignaAnio());
-			UtilidadesHash.set(hash,ScsAsistenciasBean.C_DESIGNA_NUMERO         , b.getDesignaNumero());
-			UtilidadesHash.set(hash,ScsAsistenciasBean.C_DESIGNA_TURNO			, b.getDesignaTurno());
-			UtilidadesHash.set(hash,ScsAsistenciasBean.C_NUMERO                 , b.getNumero                 ());
-			UtilidadesHash.set(hash,ScsAsistenciasBean.C_FECHAHORA              , b.getFechaHora              ());
-			UtilidadesHash.set(hash,ScsAsistenciasBean.C_OBSERVACIONES          , b.getObservaciones          ());
-			UtilidadesHash.set(hash,ScsAsistenciasBean.C_INCIDENCIAS            , b.getIncidencias            ());
-			UtilidadesHash.set(hash,ScsAsistenciasBean.C_FECHAANULACION         , b.getFechaAnulacion         ());
-			UtilidadesHash.set(hash,ScsAsistenciasBean.C_MOTIVOSANULACION       , b.getMotivosAnulacion       ());
-			UtilidadesHash.set(hash,ScsAsistenciasBean.C_DELITOSIMPUTADOS       , b.getDelitosImputados       ());
-			UtilidadesHash.set(hash,ScsAsistenciasBean.C_CONTRARIOS             , b.getContrarios             ());
-			UtilidadesHash.set(hash,ScsAsistenciasBean.C_DATOSDEFENSAJURIDICA   , b.getDatosDefensaJuridica   ());
-			UtilidadesHash.set(hash,ScsAsistenciasBean.C_FECHACIERRE            , b.getFechaCierre            ());
-			UtilidadesHash.set(hash,ScsAsistenciasBean.C_IDTIPOASISTENCIA       , b.getIdTipoAsistencia       ());
-			UtilidadesHash.set(hash,ScsAsistenciasBean.C_IDTIPOASISTENCIACOLEGIO, b.getIdTipoAsistenciaColegio());
-			UtilidadesHash.set(hash,ScsAsistenciasBean.C_IDTURNO                , b.getIdTurno                ());
-			UtilidadesHash.set(hash,ScsAsistenciasBean.C_IDGUARDIA              , b.getIdGuardia              ());
-			UtilidadesHash.set(hash,ScsAsistenciasBean.C_IDPERSONACOLEGIADO     , b.getIdPersonaColegiado     ());
-			UtilidadesHash.set(hash,ScsAsistenciasBean.C_IDPERSONAJG            , b.getIdPersonaJG            ());
-			UtilidadesHash.set(hash,ScsAsistenciasBean.C_FECHAMODIFICACION      , b.getFechaModificacion      ());
-			UtilidadesHash.set(hash,ScsAsistenciasBean.C_USUMODIFICACION		 , b.getUsuModificacion        ());
-			//UtilidadesHash.set(hash,ScsAsistenciasBean.C_FACTURADO				 , b.getFacturado		      ());
-
+			UtilidadesHash.set(hash, ScsAsistenciasBean.C_IDINSTITUCION, b.getIdInstitucion());
+			UtilidadesHash.set(hash, ScsAsistenciasBean.C_ANIO, b.getAnio());
+			UtilidadesHash.set(hash, ScsAsistenciasBean.C_DESIGNA_ANIO, b.getDesignaAnio());
+			UtilidadesHash.set(hash, ScsAsistenciasBean.C_DESIGNA_NUMERO, b.getDesignaNumero());
+			UtilidadesHash.set(hash, ScsAsistenciasBean.C_DESIGNA_TURNO, b.getDesignaTurno());
+			UtilidadesHash.set(hash, ScsAsistenciasBean.C_NUMERO, b.getNumero());
+			UtilidadesHash.set(hash, ScsAsistenciasBean.C_FECHAHORA, b.getFechaHora());
+			UtilidadesHash.set(hash, ScsAsistenciasBean.C_OBSERVACIONES, b.getObservaciones());
+			UtilidadesHash.set(hash, ScsAsistenciasBean.C_INCIDENCIAS, b.getIncidencias());
+			UtilidadesHash.set(hash, ScsAsistenciasBean.C_FECHAANULACION, b.getFechaAnulacion());
+			UtilidadesHash.set(hash, ScsAsistenciasBean.C_MOTIVOSANULACION, b.getMotivosAnulacion());
+			UtilidadesHash.set(hash, ScsAsistenciasBean.C_DELITOSIMPUTADOS, b.getDelitosImputados());
+			UtilidadesHash.set(hash, ScsAsistenciasBean.C_CONTRARIOS, b.getContrarios());
+			UtilidadesHash.set(hash, ScsAsistenciasBean.C_DATOSDEFENSAJURIDICA, b.getDatosDefensaJuridica());
+			UtilidadesHash.set(hash, ScsAsistenciasBean.C_FECHACIERRE, b.getFechaCierre());
+			UtilidadesHash.set(hash, ScsAsistenciasBean.C_IDTIPOASISTENCIA, b.getIdTipoAsistencia());
+			UtilidadesHash.set(hash, ScsAsistenciasBean.C_IDTIPOASISTENCIACOLEGIO, b.getIdTipoAsistenciaColegio());
+			UtilidadesHash.set(hash, ScsAsistenciasBean.C_IDTURNO, b.getIdTurno());
+			UtilidadesHash.set(hash, ScsAsistenciasBean.C_IDGUARDIA, b.getIdGuardia());
+			UtilidadesHash.set(hash, ScsAsistenciasBean.C_IDPERSONACOLEGIADO, b.getIdPersonaColegiado());
+			UtilidadesHash.set(hash, ScsAsistenciasBean.C_IDPERSONAJG, b.getIdPersonaJG());
+			UtilidadesHash.set(hash, ScsAsistenciasBean.C_FECHAMODIFICACION, b.getFechaModificacion());
+			UtilidadesHash.set(hash, ScsAsistenciasBean.C_USUMODIFICACION, b.getUsuModificacion());
+			UtilidadesHash.set(hash, ScsAsistenciasBean.C_FACTURADO, b.getFacturado());
+			UtilidadesHash.set(hash, ScsAsistenciasBean.C_PAGADO, b.getPagado());
+			UtilidadesHash.set(hash, ScsAsistenciasBean.C_IDFACTURACION, b.getIdFacturacion());
 			UtilidadesHash.set(hash, ScsAsistenciasBean.C_JUZGADO, b.getJuzgado());
 			UtilidadesHash.set(hash, ScsAsistenciasBean.C_JUZGADO_IDINSTITUCION, b.getJuzgadoIdInstitucion());
 			UtilidadesHash.set(hash, ScsAsistenciasBean.C_COMISARIA, b.getComisaria());
@@ -216,19 +216,17 @@ public class ScsAsistenciasAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(hash, ScsAsistenciasBean.C_NUMEROPROCEDIMIENTO, b.getNumeroProcedimiento());
 			UtilidadesHash.set(hash, ScsAsistenciasBean.C_IDESTADOASISTENCIA, b.getIdEstadoAsistencia());
 			UtilidadesHash.set(hash, ScsAsistenciasBean.C_FECHAESTADOASISTENCIA, b.getFechaEstadoAsistencia());
-
 			UtilidadesHash.set(hash, ScsAsistenciasBean.C_EJGIDTIPOEJG, b.getEjgIdTipoEjg());
 			UtilidadesHash.set(hash, ScsAsistenciasBean.C_EJGANIO, b.getEjgAnio());
 			UtilidadesHash.set(hash, ScsAsistenciasBean.C_EJGNUMERO, b.getEjgNumero());
 			UtilidadesHash.set(hash, ScsAsistenciasBean.C_NIG, b.getNIG());
 			UtilidadesHash.set(hash, ScsAsistenciasBean.C_IDPRETENSION, b.getIdPretension());
 			UtilidadesHash.set(hash, ScsAsistenciasBean.C_IDORIGENASISTENCIA, b.getIdOrigenAsistencia());
-			UtilidadesHash.set(hash,ScsAsistenciasBean.C_FECHASOLICITUD             , b.getFechaSolicitud());
-		
-		}
-		catch (Exception e){
+			UtilidadesHash.set(hash, ScsAsistenciasBean.C_FECHASOLICITUD, b.getFechaSolicitud());
+
+		} catch (Exception e) {
 			hash = null;
-			throw new ClsExceptions (e, "Error al construir el hashTable a partir del bean");			
+			throw new ClsExceptions(e, "Error al construir el hashTable a partir del bean");
 		}
 		return hash;
 	}
