@@ -11,6 +11,7 @@ import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import javax.transaction.UserTransaction;
 
 import net.sourceforge.ajaxtags.xml.AjaxXmlBuilder;
@@ -348,7 +349,6 @@ public class GestionInscripcionesTGAction extends MasterAction {
 	private String sitConsultaTurno(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		String forward = "";
 		try {
-			UsrBean usrBean = this.getUserBean(request);
 			InscripcionTGForm miForm = (InscripcionTGForm) formulario;
 			miForm.reset(true,true);
 			miForm.setIdGuardia(null);
@@ -434,26 +434,6 @@ public class GestionInscripcionesTGAction extends MasterAction {
 	private String sitDatos(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		try {
 			InscripcionTGForm miForm = (InscripcionTGForm) formulario;
-
-			ScsInscripcionTurnoAdm admInsTurno = new ScsInscripcionTurnoAdm(this.getUserBean(request));
-
-			/* JPT: Se hacen comprobaciones cuando se termina la operación de alta de inscripcion de turno
-
-			// comprobando si la ultima inscripcion tiene fecha de baja para que se pueda solicitar alta nueva
-			ScsInscripcionTurnoBean insUltimaConBaja = admInsTurno.getInscripcion(
-					new Integer(miForm.getIdInstitucion()), 
-					new Integer(miForm.getIdTurno()), 
-					new Long(miForm.getIdPersona()), 
-					null);
-			
-			boolean existeInscConBaja = insUltimaConBaja != null && insUltimaConBaja.getFechaBaja() != null && !insUltimaConBaja.getFechaBaja().equals("");			
-			
-			if (existeInscConBaja) {
-				miForm.setFechaBajaTurno(insUltimaConBaja.getFechaBaja());
-			} else {
-				miForm.setFechaBajaTurno(null);
-			}
-			*/
 
 			// comprobando si alguna de las guardias es por grupo
 			boolean isAlgunaGuardiaPorGrupo = false;
@@ -906,15 +886,10 @@ public class GestionInscripcionesTGAction extends MasterAction {
 	private String sbtConsultaTurno(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
  		String forward = "";
 		try {
-			UsrBean usrBean = this.getUserBean(request);
 			InscripcionTGForm miForm = (InscripcionTGForm) formulario;
 			miForm.setFechaValidacionTurno(miForm.getFechaValidacion());
 			miForm.reset(false,true);
 			miForm.setIdGuardia(null);
-//			String estadoPendientes = getEstadoGuardiasDesignasPendientes(
-//						  usrBean, 
-//						Long.valueOf(miForm.getIdPersona()), new Integer(miForm.getIdInstitucion()), new Integer(miForm.getIdTurno()),null,null,null); 
-//			miForm.setEstadoPendientes(estadoPendientes);
 			ScsInscripcionTurnoAdm inscripcionTurnoAdm = new ScsInscripcionTurnoAdm(this.getUserBean(request));
 			ScsInscripcionTurnoBean inscripcionTurno = inscripcionTurnoAdm.getInscripcionTurno(
 					new Integer(miForm.getIdInstitucion()),
@@ -1802,7 +1777,6 @@ public class GestionInscripcionesTGAction extends MasterAction {
 		return "editarFechaBaja";
 	}
 		
-	@SuppressWarnings("unchecked")
 	private String inicio (ActionMapping mapping, 		
 				MasterForm formulario, 
 				HttpServletRequest request, 
@@ -1856,13 +1830,11 @@ public class GestionInscripcionesTGAction extends MasterAction {
 			} catch (ClsExceptions e) {
 				validaTurnosForm.setInscripcionesGuardia(new ArrayList<ScsInscripcionGuardiaBean>());
 				validaTurnosForm.setInscripcionesTurno(new ArrayList<ScsInscripcionTurnoBean>());
-				String error = UtilidadesString.getMensajeIdioma(usrBean,e.getMsg());
 				throw e;
 		
 			}catch (Exception e){
 				validaTurnosForm.setInscripcionesGuardia(new ArrayList<ScsInscripcionGuardiaBean>());
 				validaTurnosForm.setInscripcionesTurno(new ArrayList<ScsInscripcionTurnoBean>());
-				String error = UtilidadesString.getMensajeIdioma(usrBean,"messages.general.errorExcepcion");
 				throw e;
 				
 			}
@@ -2468,14 +2440,9 @@ public class GestionInscripcionesTGAction extends MasterAction {
  		String forward = "";
 		
 		try {
-			UsrBean usrBean = this.getUserBean(request);
 			InscripcionTGForm miForm = (InscripcionTGForm) formulario;
 			miForm.setFechaValidacionTurno(miForm.getFechaValidacion());
 			miForm.reset(false,false);
-//			String estadoPendientes = getEstadoGuardiasDesignasPendientes(
-//						  usrBean, 
-//						Long.valueOf(miForm.getIdPersona()), new Integer(miForm.getIdInstitucion()), new Integer(miForm.getIdTurno()),new Integer(miForm.getIdGuardia()),null,null); 
-//			miForm.setEstadoPendientes(estadoPendientes);
 			ScsInscripcionTurnoAdm inscripcionTurnoAdm = new ScsInscripcionTurnoAdm(this.getUserBean(request));
 			ScsInscripcionTurnoBean inscripcionTurno = inscripcionTurnoAdm.getInscripcionTurno(
 				new Integer(miForm.getIdInstitucion()),
@@ -2512,15 +2479,10 @@ public class GestionInscripcionesTGAction extends MasterAction {
  		String forward = "";
 		
 		try {
-			UsrBean usrBean = this.getUserBean(request);
 			InscripcionTGForm miForm = (InscripcionTGForm) formulario;
 			miForm.setFechaValidacionTurno(miForm.getFechaValidacion());
 			miForm.reset(false,false);
 			miForm.setIdGuardia(null);
-//			String estadoPendientes = getEstadoGuardiasDesignasPendientes(
-//						  usrBean, 
-//						Long.valueOf(miForm.getIdPersona()), new Integer(miForm.getIdInstitucion()), new Integer(miForm.getIdTurno()),null,null,null); 
-//			miForm.setEstadoPendientes(estadoPendientes);
 			ScsInscripcionTurnoAdm inscripcionTurnoAdm = new ScsInscripcionTurnoAdm(this.getUserBean(request));
 			ScsInscripcionTurnoBean inscripcionTurno = inscripcionTurnoAdm.getInscripcionTurno(new Integer(miForm.getIdInstitucion()),
 					new Integer(miForm.getIdTurno()), new Long(miForm.getIdPersona()), null,true);
@@ -2774,14 +2736,9 @@ public class GestionInscripcionesTGAction extends MasterAction {
  		String forward = "";
 		
 		try {
-			UsrBean usrBean = this.getUserBean(request);
 			InscripcionTGForm miForm = (InscripcionTGForm) formulario;
 			miForm.setFechaValidacionTurno(miForm.getFechaValidacion());
 			miForm.reset(false,true);
-//			String estadoPendientes = getEstadoGuardiasDesignasPendientes(
-//						  usrBean, 
-//						Long.valueOf(miForm.getIdPersona()), new Integer(miForm.getIdInstitucion()), new Integer(miForm.getIdTurno()),new Integer(miForm.getIdGuardia()),null,null); 
-//			miForm.setEstadoPendientes(estadoPendientes);
 			ScsInscripcionTurnoAdm inscripcionTurnoAdm = new ScsInscripcionTurnoAdm(this.getUserBean(request));
 			ScsInscripcionTurnoBean inscripcionTurno = inscripcionTurnoAdm.getInscripcionTurno(
 					new Integer(miForm.getIdInstitucion()),
@@ -2928,7 +2885,6 @@ public class GestionInscripcionesTGAction extends MasterAction {
 	private String smbtInsertarBaja(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		InscripcionTGForm miForm = (InscripcionTGForm) formulario;
 		UsrBean usr = this.getUserBean(request);
-		String forward = "error";
 		
 		try {
 			String turnosSel = miForm.getTurnosSel();
@@ -2945,7 +2901,7 @@ public class GestionInscripcionesTGAction extends MasterAction {
 				
 				String idTurnoSel=d[0];
 				String validarInscripciones=d[1];
-				String fechaSolicitud=d[2];
+				//String fechaSolicitud=d[2];
 				String fechaValidacionTurno=d[3];
 				
 				/* La baja de inscripcion se realiza desde la ficha de un colegiado.
@@ -3317,7 +3273,7 @@ public class GestionInscripcionesTGAction extends MasterAction {
 				String idTurno= d[2];
 //				String idGuardia= d[3];
 				String fechaSolicitud= d[4];
-				String validarInscripciones = d[5];
+				//String validarInscripciones = d[5];
 				//String tipoGuardias = d[6];
 				
 				/* La confirmacion de inscripciones de turno pendientes no se realizan desde la ficha de un colegiado.
@@ -3425,7 +3381,6 @@ public class GestionInscripcionesTGAction extends MasterAction {
 			String turnosSel = miForm.getTurnosSel();
 			GstStringTokenizer st1 = new GstStringTokenizer(turnosSel,",");
 			boolean existenErrores = false;			
-			boolean isTodasOninguna = false;
 			List<String> turnosTodosoNingunoList = new ArrayList<String>();
 			
 			//cuando es todas o ninguna solo es necesario llamar al proceso de validadcion una vez ya que este se encraga de validarlas todas a la vez
@@ -3545,7 +3500,6 @@ public class GestionInscripcionesTGAction extends MasterAction {
 	private String vmbtComprobarValidar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		InscripcionTGForm miForm = (InscripcionTGForm) formulario;
 		UsrBean usr = this.getUserBean(request);		
-		String forward = "error";
 		
 		try {
 			String turnosSel = miForm.getTurnosSel();
@@ -3756,7 +3710,6 @@ public class GestionInscripcionesTGAction extends MasterAction {
 	private String vmbgComprobarValidar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		InscripcionTGForm miForm = (InscripcionTGForm) formulario;
 		UsrBean usr = this.getUserBean(request);		
-		String forward = "error";
 		
 		try {		
 			String turnosSel = miForm.getTurnosSel();
@@ -3772,7 +3725,7 @@ public class GestionInscripcionesTGAction extends MasterAction {
 				String idPersona= d[1];
 				String idTurno= d[2];
 				String idGuardiaStr= d[3];
-				String validarInscripciones = d[5];	
+				//String validarInscripciones = d[5];	
 				String tipoGuardias = d[6];								
 				String fechaValidacion = d[7];
 				if(fechaValidacion!=null && fechaValidacion.equals("-"))
@@ -3961,7 +3914,6 @@ public class GestionInscripcionesTGAction extends MasterAction {
 	private String comprobarAmfvtModificar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		InscripcionTGForm miForm = (InscripcionTGForm) formulario;
 		UsrBean usr = this.getUserBean(request);
-		String forward = "error";
 		String sms = "";
 		
 		try {			
@@ -4795,25 +4747,21 @@ public class GestionInscripcionesTGAction extends MasterAction {
 	 * @return
 	 * @throws SIGAException
 	 */
-	protected String listadoTurnosDisponiblesBaja(ActionMapping mapping, 
-			MasterForm formulario, 
-			HttpServletRequest request, 
-			HttpServletResponse response) throws SIGAException {
-		UsrBean usr = (UsrBean)request.getSession().getAttribute("USRBEAN");
+	private String listadoTurnosDisponiblesBaja(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+		HttpSession sesion = request.getSession();
+		UsrBean usuario = (UsrBean)sesion.getAttribute("USRBEAN");
 		String forward = "listadoTurnosDisponiblesBaja";
 		try {
-			ScsTurnoAdm turnoAdm = new ScsTurnoAdm(this.getUserBean(request));
-			Hashtable hash = (Hashtable)formulario.getDatos();
+			Hashtable<String,Object> hDatos = formulario.getDatos();
+			
+			ScsTurnoAdm turnoAdm = new ScsTurnoAdm(usuario);
+			Vector<Hashtable<String,Object>> vTurno = turnoAdm.getTurnosDisponiblesBaja(hDatos, new Long((String)sesion.getAttribute("idPersonaTurno")), new Integer(usuario.getLocation()));
 
-			request.getSession().setAttribute("DATOSFORMULARIO",hash);
-			request.getSession().setAttribute("BUSQUEDAREALIZADA","SI");
-			Vector vTurno = turnoAdm.getTurnosDisponiblesBaja(
-					hash,
-					new Long((String)request.getSession().getAttribute("idPersonaTurno")),
-					new Integer(usr.getLocation()));
-			request.setAttribute("resultado",vTurno);
-			request.setAttribute("mantTurnos","1");
-			request.setAttribute("idPersonaTurno",(String)request.getSession().getAttribute("idPersonaTurno"));
+			sesion.setAttribute("DATOSFORMULARIO", hDatos);
+			sesion.setAttribute("BUSQUEDAREALIZADA", "SI");
+			request.setAttribute("resultado", vTurno);
+			request.setAttribute("mantTurnos", "1");
+			request.setAttribute("idPersonaTurno", (String)request.getSession().getAttribute("idPersonaTurno"));
 
 		} catch (Exception e) {
 			throwExcp("messages.general.error",new String[] {"modulo.gratuita"},e,null);
@@ -4885,7 +4833,6 @@ public class GestionInscripcionesTGAction extends MasterAction {
 	private String comprobarAmfvgModificar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		InscripcionTGForm miForm = (InscripcionTGForm) formulario;
 		UsrBean usr = this.getUserBean(request);
-		String forward = "error";
 		String sms = "";
 		
 		try {
@@ -5125,7 +5072,6 @@ public class GestionInscripcionesTGAction extends MasterAction {
 	private String comprobarAmfbtModificar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		InscripcionTGForm miForm = (InscripcionTGForm) formulario;
 		UsrBean usr = this.getUserBean(request);
-		String forward = "error";
 		String sms = "";
 		
 		try {
@@ -5389,7 +5335,6 @@ public class GestionInscripcionesTGAction extends MasterAction {
 	private String comprobarAmfbgModificar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		InscripcionTGForm miForm = (InscripcionTGForm) formulario;
 		UsrBean usr = this.getUserBean(request);
-		String forward = "error";
 		String sHayEstadosPendientes = "";
 		String sms = "";		
 		

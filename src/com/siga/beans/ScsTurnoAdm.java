@@ -949,149 +949,142 @@ public class ScsTurnoAdm extends MasterBeanAdministrador {
 	 * @return
 	 * @throws ClsExceptions
 	 */
-	public Vector getTurnosDisponiblesBaja(Hashtable hashFiltro,Long idPersona,Integer idInstitucion) throws ClsExceptions{
-		String sql = " SELECT TUR.IDTURNO IDTURNO, " +
-				" TUR.NOMBRE NOMBRE, " +
-				" TUR.ABREVIATURA ABREVIATURA,  " +
-				" AR.NOMBRE AREA, " +
-				" AR.IDAREA IDAREA, " +
-				" MA.NOMBRE MATERIA, " +
-				" MA.IDMATERIA IDMATERIA, " +
-				" ZO.NOMBRE ZONA, " +
-				" ZO.IDZONA IDZONA, " +
-				" SZ.NOMBRE SUBZONA, " +
-				" SZ.IDSUBZONA IDSUBZONA, " +
-				" Pkg_Siga_Sjcs.FUN_SJ_PARTIDOSJUDICIALES(" + idInstitucion + ", SZ.IDSUBZONA, ZO.IDZONA) PARTIDOS, " +
-				" PJ.NOMBRE PARTIDOJUDICIAL, " +
-				" PJ.IDPARTIDO IDPARTIDOJUDICIAL, " +
-				" PP.NOMBREPARTIDA PARTIDAPRESUPUESTARIA, " +
-				" PP.IDPARTIDAPRESUPUESTARIA IDPARTIDAPRESUPUESTARIA, " +
-				UtilidadesMultidioma.getCampoMultidiomaSimple("GF.NOMBRE", usrbean.getLanguage()) + " GRUPOFACTURACION, " +
-				" GF.IDGRUPOFACTURACION IDGRUPOFACTURACION, " +
-				" TUR.GUARDIAS GUARDIAS, " +
-				" TUR.VALIDARJUSTIFICACIONES VALIDARJUSTIFICACIONES, " +
-				" TUR.VALIDARINSCRIPCIONES VALIDARINSCRIPCIONES, " +
-				" TUR.DESIGNADIRECTA DESIGNADIRECTA, " +
-				" TUR.DESCRIPCION DESCRIPCION, " +
-				" TUR.REQUISITOS REQUISITOS, " +
-				" TUR.IDPERSONA_ULTIMO IDPERSONAULTIMO, " +
-				" TUR.FECHASOLICITUD_ULTIMO FECHASOLICITUD_ULTIMO, " +
-				" TUR.IDORDENACIONCOLAS IDORDENACIONCOLAS, " +
-				" OC.ALFABETICOAPELLIDOS ALFABETICOAPELLIDOS, " +
-				" OC.FECHANACIMIENTO EDAD, " +
-				" OC.NUMEROCOLEGIADO ANTIGUEDAD, " +
-				" OC.ANTIGUEDADCOLA ANTIGUEDADENCOLA, " +
-				" (select count(1) "+
-				"  from scs_guardiasturno g "+
-				"  where g.idinstitucion = TUR.Idinstitucion "+
-					"  and g.idturno = TUR.idturno) NGUARDIAS, " +
-				" TUR.IDINSTITUCION, " +
-				" IT.FECHASOLICITUD, " +
-				" IT.FECHAVALIDACION " +
+	public Vector<Hashtable<String,Object>> getTurnosDisponiblesBaja(Hashtable<String,Object> hashFiltro, Long idPersona, Integer idInstitucion) throws ClsExceptions {
+		StringBuilder sql = new StringBuilder();
+		sql.append("SELECT TUR.IDTURNO AS IDTURNO, ");
+		sql.append(" TUR.NOMBRE AS NOMBRE, ");
+		sql.append(" TUR.ABREVIATURA AS ABREVIATURA, ");
+		sql.append(" AR.NOMBRE AS AREA, ");
+		sql.append(" AR.IDAREA AS IDAREA, ");
+		sql.append(" MA.NOMBRE AS MATERIA, ");
+		sql.append(" MA.IDMATERIA AS IDMATERIA, ");
+		sql.append(" ZO.NOMBRE AS ZONA, ");
+		sql.append(" ZO.IDZONA AS IDZONA, ");
+		sql.append(" SZ.NOMBRE AS SUBZONA, ");
+		sql.append(" SZ.IDSUBZONA AS IDSUBZONA, ");
+		sql.append(" Pkg_Siga_Sjcs.FUN_SJ_PARTIDOSJUDICIALES(IT.idinstitucion, SZ.IDSUBZONA, ZO.IDZONA) AS PARTIDOS, ");
+		sql.append(" PJ.NOMBRE AS PARTIDOJUDICIAL, ");
+		sql.append(" PJ.IDPARTIDO AS IDPARTIDOJUDICIAL, ");
+		sql.append(" PP.NOMBREPARTIDA AS PARTIDAPRESUPUESTARIA, ");
+		sql.append(" PP.IDPARTIDAPRESUPUESTARIA AS IDPARTIDAPRESUPUESTARIA, ");
+		sql.append(UtilidadesMultidioma.getCampoMultidiomaSimple("GF.NOMBRE", usrbean.getLanguage()));
+		sql.append(" AS GRUPOFACTURACION, ");
+		sql.append(" GF.IDGRUPOFACTURACION AS IDGRUPOFACTURACION, ");
+		sql.append(" TUR.GUARDIAS AS GUARDIAS, ");
+		sql.append(" TUR.VALIDARJUSTIFICACIONES AS VALIDARJUSTIFICACIONES, ");
+		sql.append(" TUR.VALIDARINSCRIPCIONES AS VALIDARINSCRIPCIONES, ");
+		sql.append(" TUR.DESIGNADIRECTA AS DESIGNADIRECTA, ");
+		sql.append(" TUR.DESCRIPCION AS DESCRIPCION, ");
+		sql.append(" TUR.REQUISITOS AS REQUISITOS, ");
+		sql.append(" TUR.IDPERSONA_ULTIMO AS IDPERSONAULTIMO, ");
+		sql.append(" TUR.FECHASOLICITUD_ULTIMO AS FECHASOLICITUD_ULTIMO, ");
+		sql.append(" TUR.IDORDENACIONCOLAS AS IDORDENACIONCOLAS, ");
+		sql.append(" OC.ALFABETICOAPELLIDOS AS ALFABETICOAPELLIDOS, ");
+		sql.append(" OC.FECHANACIMIENTO AS EDAD, ");
+		sql.append(" OC.NUMEROCOLEGIADO AS ANTIGUEDAD, ");
+		sql.append(" OC.ANTIGUEDADCOLA AS ANTIGUEDADENCOLA, ");
+		sql.append(" (SELECT count(1) ");
+		sql.append(" FROM scs_guardiasturno g ");
+		sql.append(" WHERE g.idinstitucion = TUR.Idinstitucion ");
+		sql.append(" AND g.idturno = TUR.idturno) AS NGUARDIAS, ");
+		sql.append(" TUR.IDINSTITUCION, ");
+		sql.append(" IT.FECHASOLICITUD, ");
+		sql.append(" IT.FECHAVALIDACION ");
 				
-			" FROM SCS_TURNO TUR, "+                                         
-			 	" SCS_PARTIDAPRESUPUESTARIA PP, "+                                         
-			 	" SCS_GRUPOFACTURACION GF, "+                                         
-			 	" SCS_MATERIA MA, "+                                         
-			 	" SCS_AREA AR, "+                                         
-			 	" SCS_SUBZONA SZ, "+ 
-			 	" SCS_ZONA ZO, "+ 
-			 	" CEN_PARTIDOJUDICIAL PJ, "+ 
-			 	" SCS_INSCRIPCIONTURNO IT, "+ 
-			 	" SCS_ORDENACIONCOLAS OC " + 
+		sql.append(" FROM SCS_TURNO TUR, ");                                         
+		sql.append(" SCS_PARTIDAPRESUPUESTARIA PP, ");                                         
+		sql.append(" SCS_GRUPOFACTURACION GF, ");                                         
+		sql.append(" SCS_MATERIA MA, ");                                         
+		sql.append(" SCS_AREA AR, ");                                         
+		sql.append(" SCS_SUBZONA SZ, "); 
+		sql.append(" SCS_ZONA ZO, "); 
+		sql.append(" CEN_PARTIDOJUDICIAL PJ, "); 
+		sql.append(" SCS_INSCRIPCIONTURNO IT, "); 
+		sql.append(" SCS_ORDENACIONCOLAS OC "); 
 			 	
-			 " WHERE PP.idinstitucion(+) = TUR.idinstitucion "+ 
-			 	" AND PP.idpartidapresupuestaria(+) = TUR.idpartidapresupuestaria " + 
-			 	" AND GF.idinstitucion = TUR.idinstitucion " + 
-			 	" AND GF.idgrupofacturacion = TUR.idgrupofacturacion " + 
-			 	" AND MA.idinstitucion = TUR.idinstitucion " + 
-			 	" AND MA.idarea = TUR.idarea " + 
-			 	" AND MA.idmateria = TUR.idmateria " + 
-			 	" AND AR.idinstitucion = MA.idinstitucion " + 
-			 	" AND AR.idarea = MA.idarea "+ 
-			 	" AND SZ.idinstitucion(+) = TUR.idinstitucion "+ 
-			 	" AND SZ.idzona(+) = TUR.idzona "+ 
-			 	" AND SZ.idsubzona(+) = TUR.idsubzona "+ 
-			 	" AND ZO.idinstitucion(+) = TUR.idinstitucion "+ 
-			 	" AND ZO.idzona(+) = TUR.idzona "+ 
-			 	" AND PJ.idpartido(+) = SZ.idpartido "+ 
-			 	" AND OC.idordenacioncolas = TUR.idordenacioncolas "+ 
-			 	" AND TUR.idinstitucion = " + idInstitucion +
-			 	" AND IT.idinstitucion = " + idInstitucion +
-			 	" AND IT.idturno = TUR.idturno " + 
-			 	" AND IT.idpersona = " + idPersona + 
-			 	//"   --altas pendientes de validar                                            "+ 
-			 	" AND ((IT.FECHAVALIDACION IS NULL " + 
-			 		" AND IT.FECHASOLICITUDBAJA IS NULL " + 
-			 		" AND IT.fechabaja IS NULL " + 
-			 		" AND IT.FECHADENEGACION IS NULL " + 
-			 		" ) " +  
-		 		//"        --altas validadas                                                   "+ 
-		 			" OR (IT.FECHAVALIDACION IS NOT NULL " + 
-		 				" AND IT.FECHASOLICITUDBAJA IS NULL " + 
-		 				" AND IT.fechabaja IS NULL " + 
-		 				" AND IT.Fechadenegacion IS NULL) " +  
-	 			//"        --bajas denegadas                                         "+ 
-	 				" OR (IT.fechavalidacion IS NOT NULL " + 
-	 					" AND IT.FECHASOLICITUDBAJA IS NOT NULL " + 
-	 					" AND IT.fechabaja IS NULL " + 
-	 					" AND IT.FECHADENEGACION IS NOT NULL)) ";
+		sql.append(" WHERE PP.idinstitucion(+) = TUR.idinstitucion "); 
+		sql.append(" AND PP.idpartidapresupuestaria(+) = TUR.idpartidapresupuestaria "); 
+		sql.append(" AND GF.idinstitucion = TUR.idinstitucion "); 
+		sql.append(" AND GF.idgrupofacturacion = TUR.idgrupofacturacion "); 
+		sql.append(" AND MA.idinstitucion = TUR.idinstitucion "); 
+		sql.append(" AND MA.idarea = TUR.idarea "); 
+		sql.append(" AND MA.idmateria = TUR.idmateria "); 
+		sql.append(" AND AR.idinstitucion = MA.idinstitucion "); 
+		sql.append(" AND AR.idarea = MA.idarea "); 
+		sql.append(" AND SZ.idinstitucion(+) = TUR.idinstitucion "); 
+		sql.append(" AND SZ.idzona(+) = TUR.idzona "); 
+		sql.append(" AND SZ.idsubzona(+) = TUR.idsubzona "); 
+		sql.append(" AND ZO.idinstitucion(+) = TUR.idinstitucion "); 
+		sql.append(" AND ZO.idzona(+) = TUR.idzona "); 
+		sql.append(" AND PJ.idpartido(+) = SZ.idpartido "); 
+		sql.append(" AND OC.idordenacioncolas = TUR.idordenacioncolas "); 
+		sql.append(" AND TUR.idinstitucion =  IT.idinstitucion "); 
+		sql.append(" AND IT.idinstitucion = ");
+		sql.append(idInstitucion);
+		sql.append(" AND IT.idturno = TUR.idturno "); 
+		sql.append(" AND IT.idpersona = ");
+		sql.append(idPersona); 
+		
+		// altas validadas o bajas denegadas
+		sql.append(" AND ((IT.FECHAVALIDACION IS NOT NULL AND IT.FECHASOLICITUDBAJA IS NULL AND IT.FECHABAJA IS NULL AND IT.Fechadenegacion IS NULL) ");
+		sql.append(" OR (IT.FECHAVALIDACION IS NOT NULL AND IT.FECHASOLICITUDBAJA IS NOT NULL AND IT.FECHABAJA IS NULL AND IT.FECHADENEGACION IS NOT NULL)) ");
 
-		try{
+		try {
 			Integer.parseInt((String)hashFiltro.get("IDPARTIDOJUDICIAL"));
-		}catch(Exception e){
-			hashFiltro.put("IDPARTIDOJUDICIAL","-1");
+		} catch(Exception e){
+			hashFiltro.put("IDPARTIDOJUDICIAL", "-1");
 		}
-						
-		if(!((String)hashFiltro.get("ABREVIATURA")).equalsIgnoreCase("")){
-			sql += " AND "+ComodinBusquedas.prepararSentenciaCompleta(((String)hashFiltro.get("ABREVIATURA")).trim(), "TUR."+ScsTurnoBean.C_ABREVIATURA);
-		}
-		
-		if(!((String)hashFiltro.get("NOMBRE")).equalsIgnoreCase("")){
-			sql += " AND "+ComodinBusquedas.prepararSentenciaCompleta(((String)hashFiltro.get("NOMBRE")).trim(), "TUR."+ScsTurnoBean.C_NOMBRE);
-		}
-		
-		//if((ant)&&(Integer.parseInt((String)hash.get("IDAREA"))>0))where+=" and ";
-		if(Integer.parseInt((String)hashFiltro.get("IDAREA"))>0){
-			sql+=	" AND AR.idarea = "+(String)hashFiltro.get("IDAREA");
-				//ScsTurnoBean.T_NOMBRETABLA+"."+ScsTurnoBean.C_IDAREA+" = "+((String)hash.get("IDAREA")).toUpperCase();
-		}
-		
-		//if((ant)&&(Integer.parseInt((String)hash.get("IDMATERIA"))>0))where+=" and ";
-		try{
-			if(Integer.parseInt((String)hashFiltro.get("IDMATERIA"))>0){
-				sql+=	" AND MA.idmateria ="+(String)hashFiltro.get("IDMATERIA");
-				// ScsTurnoBean.T_NOMBRETABLA+"."+ScsTurnoBean.C_IDAREA+" = "+((String)hash.get("IDAREA")).toUpperCase();
-			}
-		}catch(Exception e){}
-		
-		//if((ant)&&(Integer.parseInt((String)hash.get("IDZONA"))>0))where+=" and ";
-		String idzon = "";
-		if (hashFiltro.get("IDZONA")!=null && !hashFiltro.get("IDZONA").equals("0")&& !hashFiltro.get("IDZONA").equals("")) {
-			idzon=(String)hashFiltro.get("IDZONA");
-			//idzon=idzon.substring(idzon.indexOf(","),idzon.length());
-			if(Integer.parseInt(idzon)>0){
-				sql+=	" AND ZO.idzona ="+idzon;
-				//ScsTurnoBean.T_NOMBRETABLA+"."+ScsTurnoBean.C_IDZONA+" = "+((String)hash.get("IDZONA")).toUpperCase();
-			}
-		}
-		
-		//if((ant)&&(Integer.parseInt((String)hash.get("IDSUBZONA"))>0))where+=" and ";
-		try{
-			if(Integer.parseInt((String)hashFiltro.get("IDSUBZONA"))>0) {
-				sql+=	" AND SZ.idsubzona = "+(String)hashFiltro.get("IDSUBZONA");
-			}
-		}catch(Exception e){}
-		//if((ant)&&(Integer.parseInt((String)hash.get("IDPARTIDAPRESUPUESTARIA"))>0))where+=" and ";
-		//ScsTurnoBean.T_NOMBRETABLA+"."+ScsTurnoBean.C_IDSUBZONA+"="+form.getSubzona()+" and "+
-		sql+=" ORDER BY NOMBRE, FECHASOLICITUD ";
-		
-		Vector vTurno;
-		
-		vTurno = this.ejecutaSelect(sql);
 			
-	return vTurno;
-}
+		String abreviatura = UtilidadesHash.getString(hashFiltro, "ABREVIATURA");
+		if (abreviatura!=null && !abreviatura.equals("")) {
+			sql.append(" AND ");
+			sql.append(ComodinBusquedas.prepararSentenciaCompleta(abreviatura.trim(), "TUR." + ScsTurnoBean.C_ABREVIATURA));
+		}
+		
+		String nombre = UtilidadesHash.getString(hashFiltro, "NOMBRE");
+		if (nombre!=null && !nombre.equals("")) {
+			sql.append(" AND ");
+			sql.append(ComodinBusquedas.prepararSentenciaCompleta(nombre.trim(), "TUR." + ScsTurnoBean.C_NOMBRE));
+		}
+		
+		try {
+			String idArea = UtilidadesHash.getString(hashFiltro, "IDAREA");
+			if (idArea!=null && !idArea.equals("") && Integer.parseInt(idArea)>0) {
+				sql.append(" AND AR.idarea = ");
+				sql.append(idArea);
+			}
+		} catch(Exception e){}
+		
+		try {
+			String idMateria = UtilidadesHash.getString(hashFiltro, "IDMATERIA");
+			if (idMateria!=null && !idMateria.equals("") && Integer.parseInt(idMateria)>0) {
+				sql.append(" AND MA.idmateria = ");
+				sql.append(idMateria);
+			}
+		} catch(Exception e){}
+		
+		try {
+			String idZona = UtilidadesHash.getString(hashFiltro, "IDZONA");
+			if (idZona!=null && !idZona.equals("") && Integer.parseInt(idZona)>0) {
+				sql.append(" AND ZO.idzona = ");
+				sql.append(idZona);
+			}
+		} catch(Exception e){}
+		
+		try {
+			String idSubZona = UtilidadesHash.getString(hashFiltro, "IDSUBZONA");
+			if (idSubZona!=null && !idSubZona.equals("") && Integer.parseInt(idSubZona)>0) {
+				sql.append(" AND SZ.idsubzona = ");
+				sql.append(idSubZona);
+			}
+		} catch(Exception e){}
+		
+		sql.append(" ORDER BY NOMBRE, FECHASOLICITUD ");
+		
+		Vector<Hashtable<String,Object>> vTurno = this.ejecutaSelect(sql.toString());
+			
+		return vTurno;
+	}
 	
 	public void cambiarUltimoCola (Integer idInstitucion,
 			Integer idTurno,
